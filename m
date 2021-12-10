@@ -2,97 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83E846FFE9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Dec 2021 12:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EBD470056
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Dec 2021 12:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240379AbhLJLfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Dec 2021 06:35:44 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:19104 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234921AbhLJLfn (ORCPT
+        id S240807AbhLJLx5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Dec 2021 06:53:57 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:47566 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240459AbhLJLxz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Dec 2021 06:35:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1639135929; x=1670671929;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4rvlZI/rh7axzyN2zCP0QG6GAX0rkMJqLGWZ/6UgLHc=;
-  b=IlCNwBoji2fbZLYjS6I6EBiF6C6Xzu+QKg038AtkF+ngRPvQp/XM/aHU
-   xs5iABdLOmAcLjlsFzC8VeaipjktpBm76lM4nw6E41CLjLwGp0NGNPFJi
-   a6qhMJN5EMennKY9Q+l94/R71F+GjbzljznyXAvgxZXEFatMhYM2G0YPh
-   JsP459lXkQuMLtERXmGxzo4LB2DysTgFbUFypHFXVOHyp8wd0C8kf+tgb
-   U6iEz1X2Bltu0g4Slsdgv11LRs2d3heWW2qtO8M3lJTHI88IF1s9JOuiv
-   tV3RDe+9TvUoC1pIvcOYQ1G3Pcv5XqDLgBKNmc6eNQc3VkhBJ8iTJEbus
-   w==;
-X-IronPort-AV: E=Sophos;i="5.88,195,1635177600"; 
-   d="scan'208";a="299779451"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Dec 2021 19:32:09 +0800
-IronPort-SDR: jwlx+iDDehJpn5xeUQWGO7M0rqHVaAUz28mhlXVgeN24TXRQHFwcn8RqJr7zzU3ieBWDiDZS05
- Dd0p6Nskiil/zMGBazE9lq1BqtozvKcbHVEphbfqiYfieHm3VayfM5OUQ8sRC1Ii88CIVbgMRH
- uSM9rE59giJSIvunmzxVNdoNoETbPPHKxJwVUcVffI9Br5798N+mCqV27Gq+MuSWfY+QHwqrzE
- AiBz/+LlE7sGvTcQePJF391G7nRv92d4Tzqg+7UfjTNfBM/X2hU4p7wFkWnn/3nvS7yhuy5xZ7
- Uw5PCumiy9kVg1jjxePSeh6J
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2021 03:06:40 -0800
-IronPort-SDR: 6Rii8YTk74Fkqy73xG0qJX7ifElNCjXzDoiOzjQS27JEOzDauqgHW9rWdfnsIyWpBgKAzxCBK7
- 1CIwn6XRenoe+PKtAFAviXm/pKeGWEHyJnB0T31GTyBunHiC3/Mgw3Uyu0dte7qtFWaqygH5uH
- QeLFMTNpwP78ElQXJ/5i0n4Vpvm0PZCujpoGtvq1+8o5fChz345TW1Hol5C2tp5/nPTPiglx7T
- LeiXJtrHRRB5kVYcfjpEZ5mjd9Ff5OTLNTZyg7KxRe9PQpzjUXVdLliGsNUa8o9m2F0c9QL0bK
- q2c=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 10 Dec 2021 03:32:08 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Fri, 10 Dec 2021 06:53:55 -0500
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D2C1B1F387;
+        Fri, 10 Dec 2021 11:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1639137019;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OCsq5pT5Azw+v4Pmrowio5eIjlfN22z9PSVDV2kfaYg=;
+        b=m4lPhHB8H1s3FXcXAK4nNA/HVeBx7KqCd27+0/VIohFEuoI8nMQ0LKEIxqRwL5GIHoFyA0
+        r+8O9bHRUoh05j3tDIqyKogFZ8XkCfvsBPvcQE3YmnPonSg67/o244+XNhzFa/4sCE7lWo
+        zj4a4LJNXjaQDS3pDg4SnIFuo5Pi5bw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1639137019;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OCsq5pT5Azw+v4Pmrowio5eIjlfN22z9PSVDV2kfaYg=;
+        b=QflEKKR3XgCRPQP+jvUZ2aij93uOxHBryU1jjJcL0jfY7vT2P74mtc2HfYWwJMIlSKPXcu
+        PjrlVvLtgxvPiUDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay1.suse.de (Postfix) with ESMTP id 9B9BF25CB4;
+        Fri, 10 Dec 2021 11:50:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 08F1FDA799; Fri, 10 Dec 2021 12:44:32 +0100 (CET)
+Date:   Fri, 10 Dec 2021 12:44:32 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
         Dan Carpenter <dan.carpenter@oracle.com>,
         linux-btrfs@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH] btrfs: zoned: fix leak of zone_info in btrfs_get_dev_zone_info
-Date:   Fri, 10 Dec 2021 03:32:00 -0800
-Message-Id: <8a54e85cf93d2042f1a2e29517f8f91fce56f6ab.1639135880.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.31.1
+Subject: Re: [PATCH] btrfs: zoned: fix leak of zone_info in
+ btrfs_get_dev_zone_info
+Message-ID: <20211210114432.GO28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-btrfs@vger.kernel.org, kernel test robot <lkp@intel.com>
+References: <8a54e85cf93d2042f1a2e29517f8f91fce56f6ab.1639135880.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a54e85cf93d2042f1a2e29517f8f91fce56f6ab.1639135880.git.johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Some error paths of  btrfs_get_dev_zone_info do not free zone_info,
-so assign zone_info to device->zone_info as soon as we've successfully
-allocated it, so it wiill get freed by the error handling.
+On Fri, Dec 10, 2021 at 03:32:00AM -0800, Johannes Thumshirn wrote:
+> Some error paths of  btrfs_get_dev_zone_info do not free zone_info,
+> so assign zone_info to device->zone_info as soon as we've successfully
+> allocated it, so it wiill get freed by the error handling.
+> 
+> a411e32badc4 ("btrfs: zoned: cache reported zone during mount")
 
-a411e32badc4 ("btrfs: zoned: cache reported zone during mount")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/zoned.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 5e5cb9aa0569..f559d517c7c4 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -375,6 +375,8 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
- 	if (!zone_info)
- 		return -ENOMEM;
- 
-+	device->zone_info = zone_info;
-+
- 	if (!bdev_is_zoned(bdev)) {
- 		if (!fs_info->zone_size) {
- 			ret = calculate_emulated_zone_size(fs_info);
-@@ -460,8 +462,6 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
- 		}
- 	}
- 
--	device->zone_info = zone_info;
--
- 	/* Get zones type */
- 	nactive = 0;
- 	while (sector < nr_sectors) {
--- 
-2.31.1
-
+As this patch is still in misc-next I'll fold the fixup, thanks.
