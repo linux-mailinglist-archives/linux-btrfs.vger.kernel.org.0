@@ -2,227 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAC24708E7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Dec 2021 19:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744B14708F9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Dec 2021 19:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhLJSid convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 10 Dec 2021 13:38:33 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40470 "EHLO
+        id S242281AbhLJSk7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 10 Dec 2021 13:40:59 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40952 "EHLO
         drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229502AbhLJSic (ORCPT
+        by vger.kernel.org with ESMTP id S242061AbhLJSk4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Dec 2021 13:38:32 -0500
+        Fri, 10 Dec 2021 13:40:56 -0500
 Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 6DEACCF6DD; Fri, 10 Dec 2021 13:34:56 -0500 (EST)
-Date:   Fri, 10 Dec 2021 13:34:56 -0500
+        id 90E0CCF709; Fri, 10 Dec 2021 13:37:19 -0500 (EST)
+Date:   Fri, 10 Dec 2021 13:37:19 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Miklos Szeredi <mszeredi@redhat.com>
-Subject: bisected: btrfs dedupe regression in v5.11-rc1: 3078d85c9a10 vfs:
- verify source area in vfs_dedupe_file_range_one()
-Message-ID: <20211210183456.GP17148@hungrycats.org>
+Subject: Re: BUG_ON in relocation.c:4037 (seen on 5.14.18, 5.10.79) (not
+ really a bug after all)
+Message-ID: <20211210183719.GQ17148@hungrycats.org>
+References: <20211120161414.GD17148@hungrycats.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20211120161414.GD17148@hungrycats.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I've been getting deadlocks in dedupe on btrfs since kernel 5.11, and
-some bees users have reported it as well.  I bisected to this commit:
+On Sat, Nov 20, 2021 at 11:14:14AM -0500, Zygo Blaxell wrote:
+> I've been hitting this BUG_ON a few times recently on kernel 5.14.18 and
+> kernel 5.10.79.  The filesystem is 98% full, and maintenance balances
+> often fail with ENOSPC due to free space fragmentation.  Only two hosts
+> are hitting this BUG_ON in my fleet, and they both have filesystems with
+> similar fullness and fragmentation (and also half the same data contents,
+> which probably contributes to their similar structural properties).
+> 
+> The filesystem itself seems healthy.
 
-	3078d85c9a10 vfs: verify source area in vfs_dedupe_file_range_one()
+It turns out that isn't true.  There were references to extents from
+snapshots that no longer exist, and a few extents (from files dated 2018
+with contemporary transids) are referenced by inodes that are symlinks
+(oops!).  Some block groups fail with ENOENT (because the referencing
+inode is a symlink and can't have a data extent reference), others fail
+because the root referencing the data extent doesn't exist (buf->start
+is NULL and the referencing root is a deleted snapshot).
 
-These kernels work for at least 18 hours:
+These references can be deleted with the 'rm' or 'btrfs fi defrag' or
+'btrfs sub del' commands, so they don't seem to be bothering btrfs
+very much.  There are apparently _thousands_ of these sprinkled over
+the filesystem, and balance stops with BUG_ON as soon as any of them
+is encountered.
 
-	5.10.83 (months)
-	5.11.22 with 3078d85c9a10 reverted (36 hours)
-	btrfs misc-next 66dc4de326b0 with 3078d85c9a10 reverted
+TL;DR the kernel is not really broken here, balance is just responding
+to invalid metadata by crashing.
 
-These kernels lock up in 3 hours or less:
+I have no idea where the bad metadata came from.  Affected files have
+extents with vintages covering mid-2018 to November 2021.  They could
+have been put there just as easily by kernel 4.14 or 5.14.  I only
+have one filesystem behaving this way.
 
-	5.11.22
-	5.12.19
-	5.14.21
-	5.15.6
-	btrfs for-next 279373dee83e
-
-All of the failing kernels include this commit, none of the non-failing
-kernels include the commit.
-
-Kernel logs from the lockup:
-
-	[19647.696042][ T3721] sysrq: Show Blocked State
-	[19647.697024][ T3721] task:btrfs-transacti state:D stack:    0 pid: 6161 ppid:     2 flags:0x00004000
-	[19647.698203][ T3721] Call Trace:
-	[19647.698608][ T3721]  __schedule+0x388/0xaf0
-	[19647.699125][ T3721]  schedule+0x68/0xe0
-	[19647.699615][ T3721]  btrfs_commit_transaction+0x97c/0xbf0
-	[19647.700276][ T3721]  ? start_transaction+0xd5/0x6f0
-	[19647.700897][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
-	[19647.701507][ T3721]  transaction_kthread+0x138/0x1b0
-	[19647.702154][ T3721]  kthread+0x151/0x170
-	[19647.702651][ T3721]  ? btrfs_cleanup_transaction.isra.0+0x620/0x620
-	[19647.703404][ T3721]  ? kthread_create_worker_on_cpu+0x70/0x70
-	[19647.704119][ T3721]  ret_from_fork+0x22/0x30
-	[19647.704679][ T3721] task:crawl_257_291   state:D stack:    0 pid: 6494 ppid:  6435 flags:0x00000000
-	[19647.705797][ T3721] Call Trace:
-	[19647.706188][ T3721]  __schedule+0x388/0xaf0
-	[19647.706723][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
-	[19647.707414][ T3721]  schedule+0x68/0xe0
-	[19647.707905][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
-	[19647.708597][ T3721]  down_write_nested+0xc1/0x130
-	[19647.709167][ T3721]  lock_two_nondirectories+0x59/0x70
-	[19647.709831][ T3721]  btrfs_remap_file_range+0x54/0x3c0
-	[19647.710505][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-	[19647.711197][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-	[19647.711902][ T3721]  do_vfs_ioctl+0x551/0x720
-	[19647.712434][ T3721]  ? __fget_files+0x109/0x1d0
-	[19647.713010][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-	[19647.713544][ T3721]  do_syscall_64+0x38/0x90
-	[19647.714098][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-	[19647.714818][ T3721] RIP: 0033:0x7f0ab2429cc7
-	[19647.715327][ T3721] RSP: 002b:00007f0ab03241d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-	[19647.716326][ T3721] RAX: ffffffffffffffda RBX: 00007f0ab0324420 RCX: 00007f0ab2429cc7
-	[19647.717264][ T3721] RDX: 00007f0a981afe50 RSI: 00000000c0189436 RDI: 0000000000000012
-	[19647.718203][ T3721] RBP: 00007f0a981afe50 R08: 00007f0a983759e0 R09: 0000000000000000
-	[19647.719151][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a981afe50
-	[19647.720087][ T3721] R13: 00007f0ab0324428 R14: 0000000000000000 R15: 00007f0ab0324448
-	[19647.721041][ T3721] task:crawl_256_295   state:D stack:    0 pid: 6496 ppid:  6435 flags:0x00000000
-	[19647.722126][ T3721] Call Trace:
-	[19647.722517][ T3721]  __schedule+0x388/0xaf0
-	[19647.723060][ T3721]  schedule+0x68/0xe0
-	[19647.723524][ T3721]  wait_current_trans+0xed/0x150
-	[19647.724117][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
-	[19647.724697][ T3721]  start_transaction+0x37e/0x6f0
-	[19647.725273][ T3721]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-	[19647.725969][ T3721]  btrfs_attach_transaction+0x1d/0x20
-	[19647.726625][ T3721]  iterate_extent_inodes+0x7b/0x270
-	[19647.727236][ T3721]  iterate_inodes_from_logical+0x9f/0xe0
-	[19647.727912][ T3721]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-	[19647.728599][ T3721]  btrfs_ioctl_logical_to_ino+0x183/0x210
-	[19647.729263][ T3721]  btrfs_ioctl+0xa83/0x2fe0
-	[19647.729818][ T3721]  ? kvm_sched_clock_read+0x18/0x30
-	[19647.730430][ T3721]  ? sched_clock+0x9/0x10
-	[19647.730976][ T3721]  ? __fget_files+0xe6/0x1d0
-	[19647.731521][ T3721]  ? __fget_files+0x109/0x1d0
-	[19647.732096][ T3721]  __x64_sys_ioctl+0x91/0xc0
-	[19647.732647][ T3721]  ? __x64_sys_ioctl+0x91/0xc0
-	[19647.733209][ T3721]  do_syscall_64+0x38/0x90
-	[19647.733750][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-	[19647.734438][ T3721] RIP: 0033:0x7f0ab2429cc7
-	[19647.734992][ T3721] RSP: 002b:00007f0aaf322378 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-	[19647.735994][ T3721] RAX: ffffffffffffffda RBX: 0000558110d25dd0 RCX: 00007f0ab2429cc7
-	[19647.736949][ T3721] RDX: 00007f0aaf322608 RSI: 00000000c038943b RDI: 0000000000000003
-	[19647.737895][ T3721] RBP: 00007f0aaf322550 R08: 0000000000000000 R09: 00007f0aaf3227e0
-	[19647.738862][ T3721] R10: 000019f231c642a4 R11: 0000000000000246 R12: 00007f0aaf322600
-	[19647.739799][ T3721] R13: 0000000000000003 R14: 00007f0aaf322608 R15: 00007f0aaf3225e0
-	[19647.740748][ T3721] task:crawl_257_292   state:D stack:    0 pid: 6502 ppid:  6435 flags:0x00000000
-	[19647.741832][ T3721] Call Trace:
-	[19647.742216][ T3721]  __schedule+0x388/0xaf0
-	[19647.742761][ T3721]  schedule+0x68/0xe0
-	[19647.743225][ T3721]  wait_current_trans+0xed/0x150
-	[19647.743825][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
-	[19647.744399][ T3721]  start_transaction+0x587/0x6f0
-	[19647.745003][ T3721]  btrfs_start_transaction+0x1e/0x20
-	[19647.745638][ T3721]  btrfs_replace_file_extents+0x135/0x8d0
-	[19647.746305][ T3721]  ? release_extent_buffer+0xae/0xf0
-	[19647.746973][ T3721]  btrfs_clone+0x828/0x8c0
-	[19647.747513][ T3721]  btrfs_extent_same_range+0x75/0xa0
-	[19647.748152][ T3721]  btrfs_remap_file_range+0x354/0x3c0
-	[19647.748802][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-	[19647.749460][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-	[19647.750098][ T3721]  do_vfs_ioctl+0x551/0x720
-	[19647.750666][ T3721]  ? __fget_files+0x109/0x1d0
-	[19647.751216][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-	[19647.751777][ T3721]  do_syscall_64+0x38/0x90
-	[19647.752290][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-	[19647.752992][ T3721] RIP: 0033:0x7f0ab2429cc7
-	[19647.753511][ T3721] RSP: 002b:00007f0aac31c1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-	[19647.754500][ T3721] RAX: ffffffffffffffda RBX: 00007f0aac31c420 RCX: 00007f0ab2429cc7
-	[19647.755460][ T3721] RDX: 00007f0a787fc690 RSI: 00000000c0189436 RDI: 0000000000000012
-	[19647.756406][ T3721] RBP: 00007f0a787fc690 R08: 00007f0a78f4fd40 R09: 0000000000000000
-	[19647.757340][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a787fc690
-	[19647.758291][ T3721] R13: 00007f0aac31c428 R14: 0000000000000000 R15: 00007f0aac31c448
-	[19647.759261][ T3721] task:crawl_257_293   state:D stack:    0 pid: 6503 ppid:  6435 flags:0x00000000
-	[19647.760362][ T3721] Call Trace:
-	[19647.760761][ T3721]  __schedule+0x388/0xaf0
-	[19647.761261][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
-	[19647.761958][ T3721]  schedule+0x68/0xe0
-	[19647.762425][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
-	[19647.763126][ T3721]  down_write+0xbd/0x120
-	[19647.763643][ T3721]  btrfs_remap_file_range+0x2eb/0x3c0
-	[19647.764278][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-	[19647.764954][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-	[19647.765589][ T3721]  do_vfs_ioctl+0x551/0x720
-	[19647.766115][ T3721]  ? __fget_files+0x109/0x1d0
-	[19647.766700][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-	[19647.767238][ T3721]  do_syscall_64+0x38/0x90
-	[19647.767772][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-	[19647.768458][ T3721] RIP: 0033:0x7f0ab2429cc7
-	[19647.768990][ T3721] RSP: 002b:00007f0aabb1b1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-	[19647.769986][ T3721] RAX: ffffffffffffffda RBX: 00007f0aabb1b420 RCX: 00007f0ab2429cc7
-	[19647.770951][ T3721] RDX: 00007f0a6c1f5ac0 RSI: 00000000c0189436 RDI: 0000000000000012
-	[19647.771894][ T3721] RBP: 00007f0a6c1f5ac0 R08: 00007f0a6d00da10 R09: 0000000000000000
-	[19647.772839][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a6c1f5ac0
-	[19647.773789][ T3721] R13: 00007f0aabb1b428 R14: 0000000000000000 R15: 00007f0aabb1b448
-	[19647.774784][ T3721] task:crawl_256_289   state:D stack:    0 pid: 6504 ppid:  6435 flags:0x00000000
-	[19647.775882][ T3721] Call Trace:
-	[19647.776271][ T3721]  __schedule+0x388/0xaf0
-	[19647.776807][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
-	[19647.777499][ T3721]  schedule+0x68/0xe0
-	[19647.777994][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
-	[19647.778712][ T3721]  down_write_nested+0xc1/0x130
-	[19647.779285][ T3721]  lock_two_nondirectories+0x59/0x70
-	[19647.779931][ T3721]  btrfs_remap_file_range+0x54/0x3c0
-	[19647.780564][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-	[19647.781366][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-	[19647.782009][ T3721]  do_vfs_ioctl+0x551/0x720
-	[19647.782554][ T3721]  ? __fget_files+0x109/0x1d0
-	[19647.783230][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-	[19647.783804][ T3721]  do_syscall_64+0x38/0x90
-	[19647.784319][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-	[19647.785031][ T3721] RIP: 0033:0x7f0ab2429cc7
-	[19647.785548][ T3721] RSP: 002b:00007f0aab31a1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-	[19647.786660][ T3721] RAX: ffffffffffffffda RBX: 00007f0aab31a420 RCX: 00007f0ab2429cc7
-	[19647.787609][ T3721] RDX: 00007f0a70008f00 RSI: 00000000c0189436 RDI: 0000000000000012
-	[19647.788551][ T3721] RBP: 00007f0a70008f00 R08: 00007f0a708e66e0 R09: 0000000000000000
-	[19647.789533][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a70008f00
-	[19647.790482][ T3721] R13: 00007f0aab31a428 R14: 0000000000000000 R15: 00007f0aab31a448
-	[32609.668575][ T3721] sysrq: Show Locks Held
-	[32609.673950][ T3721] 
-	[32609.673950][ T3721] Showing all locks held in the system:
-	[32609.675276][ T3721] 1 lock held by in:imklog/3603:
-	[32609.675885][ T3721] 1 lock held by dmesg/3720:
-	[32609.676432][ T3721]  #0: ffff8a1406ac80e0 (&user->lock){+.+.}-{3:3}, at: devkmsg_read+0x4d/0x320
-	[32609.678403][ T3721] 3 locks held by bash/3721:
-	[32609.678972][ T3721]  #0: ffff8a142a589498 (sb_writers#4){.+.+}-{0:0}, at: ksys_write+0x70/0xf0
-	[32609.680364][ T3721]  #1: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: __handle_sysrq+0x5/0xa0
-	[32609.682046][ T3721]  #2: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x23/0x187
-	[32609.683847][ T3721] 1 lock held by btrfs-transacti/6161:
-	[32609.684498][ T3721]  #0: ffff8a14e0178850 (&fs_info->transaction_kthread_mutex){+.+.}-{3:3}, at: transaction_kthread+0x5a/0x1b0
-	[32609.686275][ T3721] 3 locks held by crawl_257_265/6491:
-	[32609.686937][ T3721] 3 locks held by crawl_257_291/6494:
-	[32609.687578][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-	[32609.689126][ T3721]  #1: ffff8a1410d7c848 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
-	[32609.690694][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
-	[32609.692091][ T3721] 4 locks held by crawl_257_292/6502:
-	[32609.692763][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-	[32609.694014][ T3721]  #1: ffff8a131637a908 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
-	[32609.695377][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
-	[32609.696764][ T3721]  #3: ffff8a14bd0926b8 (sb_internal#2){.+.+}-{0:0}, at: btrfs_start_transaction+0x1e/0x20
-	[32609.697986][ T3721] 2 locks held by crawl_257_293/6503:
-	[32609.698629][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-	[32609.699882][ T3721]  #1: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: btrfs_remap_file_range+0x2eb/0x3c0
-	[32609.701674][ T3721] 3 locks held by crawl_256_289/6504:
-	[32609.702443][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-	[32609.703927][ T3721]  #1: ffff8a140f2c4748 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
-	[32609.705444][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
-	[32609.706899][ T3721] 
-	[32609.707177][ T3721] =============================================
-
-There is also a severe performance regression (50% slower) in btrfs dedupe
-starting in 5.11, but reverting this commit doesn't make the performance
-regression go away.  I'll follow up on that separately.
+> I attempted to balance this
+> particular block group with 5.10.79 and I got ENOSPC instead of the
+> BUG_ON, but a day later 5.10 later crashed with the same BUG_ON (different
+> line in the sources) on a different block group.
+> 
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS debug (device dm-34): Drop subvolume 18446744073709551608
+> 	[Tue Nov 16 23:09:47 2021] BTRFS info (device dm-34): found 11051 extents
+> 	[Tue Nov 16 23:11:01 2021] ------------[ cut here ]------------
+> 	[Tue Nov 16 23:11:01 2021] kernel BUG at fs/btrfs/relocation.c:4307!
+> 	[Tue Nov 16 23:11:01 2021] invalid opcode: 0000 [#1] SMP NOPTI
+> 	[Tue Nov 16 23:11:01 2021] CPU: 4 PID: 548 Comm: btrfs-balance-l Tainted: G        W         5.14.18-zb64-260c4e85dcba+ #1 f242a5476f7f35fa14c415ee82e5b20e0d28c8e8
+> 	[Tue Nov 16 23:11:01 2021] Hardware name: ASUS System Product Name/PRIME B550-PLUS, BIOS 2423 08/09/2021
+> 	[Tue Nov 16 23:11:01 2021] RIP: 0010:btrfs_reloc_cow_block+0x280/0x290
+> 	[Tue Nov 16 23:11:01 2021] Code: 8b 4d a0 48 8b 45 c8 48 89 79 70 49 89 42 30 49 89 72 38 48 89 3e 41 80 4a 71 20 e9 e5 fe ff ff 49 3b 52 20 0f 84 8f fe ff ff <0f> 0b c7 45 d0 00 00 00 00 e9 6f fe ff ff 66 90 0f 1f 44 00 00 55
+> 	[Tue Nov 16 23:11:01 2021] RSP: 0018:ffffa7e8f1a37840 EFLAGS: 00010287
+> 	[Tue Nov 16 23:11:01 2021] RAX: 0000000000000001 RBX: ffff93336f9b79a8 RCX: fffffffffffffff8
+> 	[Tue Nov 16 23:11:01 2021] RDX: 00004f795eae8000 RSI: 0000000000000001 RDI: ffff9334d0bac478
+> 	[Tue Nov 16 23:11:01 2021] RBP: ffffa7e8f1a378a0 R08: ffff9334d0bac478 R09: 0000000000000000
+> 	[Tue Nov 16 23:11:01 2021] R10: ffff933a95e29680 R11: 0000000000000000 R12: ffff934de5dd1000
+> 	[Tue Nov 16 23:11:01 2021] R13: ffff9341866fb800 R14: ffff93336f9b7d38 R15: 0000000000000001
+> 	[Tue Nov 16 23:11:01 2021] FS:  00007eff68938740(0000) GS:ffff935168000000(0000) knlGS:0000000000000000
+> 	[Tue Nov 16 23:11:01 2021] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	[Tue Nov 16 23:11:01 2021] CR2: 000055a1623e6880 CR3: 0000001ae5df4000 CR4: 0000000000350ee0
+> 	[Tue Nov 16 23:11:01 2021] Call Trace:
+> 	[Tue Nov 16 23:11:01 2021]  ? update_ref_for_cow+0x2a6/0x330
+> 	[Tue Nov 16 23:11:01 2021]  __btrfs_cow_block+0x3ad/0x5c0
+> 	[Tue Nov 16 23:11:01 2021]  btrfs_cow_block+0xfc/0x200
+> 	[Tue Nov 16 23:11:01 2021]  btrfs_search_slot+0x584/0x870
+> 	[Tue Nov 16 23:11:01 2021]  do_relocation+0x123/0x680
+> 	[Tue Nov 16 23:11:01 2021]  ? btrfs_block_rsv_refill+0x48/0xa0
+> 	[Tue Nov 16 23:11:01 2021]  relocate_tree_blocks+0x2bf/0x670
+> 	[Tue Nov 16 23:11:01 2021]  ? add_data_references+0x399/0x4a0
+> 	[Tue Nov 16 23:11:01 2021]  relocate_block_group+0x1fe/0x580
+> 	[Tue Nov 16 23:11:01 2021]  btrfs_relocate_block_group+0x187/0x340
+> 	[Tue Nov 16 23:11:01 2021]  btrfs_relocate_chunk+0x3d/0x120
+> 	[Tue Nov 16 23:11:01 2021]  btrfs_balance+0x7d3/0xf60
+> 	[Tue Nov 16 23:11:01 2021]  btrfs_ioctl_balance+0x33c/0x410
+> 	[Tue Nov 16 23:11:01 2021]  btrfs_ioctl+0x383/0x2dc0
+> 	[Tue Nov 16 23:11:01 2021]  ? rcu_read_lock_sched_held+0x16/0x80
+> 	[Tue Nov 16 23:11:01 2021]  ? syscall_exit_to_user_mode+0x4c/0x60
+> 	[Tue Nov 16 23:11:01 2021]  ? do_syscall_64+0x69/0xc0
+> 	[Tue Nov 16 23:11:01 2021]  __x64_sys_ioctl+0x91/0xc0
+> 	[Tue Nov 16 23:11:01 2021]  ? __x64_sys_ioctl+0x91/0xc0
+> 	[Tue Nov 16 23:11:01 2021]  do_syscall_64+0x5c/0xc0
+> 	[Tue Nov 16 23:11:01 2021]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 	[Tue Nov 16 23:11:01 2021] RIP: 0033:0x7eff68a2f957
+> 	[Tue Nov 16 23:11:01 2021] Code: 3c 1c 48 f7 d8 4c 39 e0 77 b9 e8 24 ff ff ff 85 c0 78 be 4c 89 e0 5b 5d 41 5c c3 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 94 0c 00 f7 d8 64 89 01 48
+> 	[Tue Nov 16 23:11:01 2021] RSP: 002b:00007ffc4b7dec88 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> 	[Tue Nov 16 23:11:01 2021] RAX: ffffffffffffffda RBX: 00000000c4009420 RCX: 00007eff68a2f957
+> 	[Tue Nov 16 23:11:01 2021] RDX: 00007ffc4b7decef RSI: 00000000c4009420 RDI: 0000000000000003
+> 	[Tue Nov 16 23:11:01 2021] RBP: 0000000000000400 R08: 0000000000000000 R09: 00007ffc4b7ded40
+> 	[Tue Nov 16 23:11:01 2021] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000003
+> 	[Tue Nov 16 23:11:01 2021] R13: 0000000000000001 R14: 0000000001a42c30 R15: 00000000019a1cb0
+> 	[Tue Nov 16 23:11:01 2021] Modules linked in: uinput rpcsec_gss_krb5 rfcomm nfsv3 nf_conntrack_netlink cmac algif_hash algif_skcipher af_alg bnep cpufreq_userspace cpufreq_powersave cpufreq_conservative binfmt_misc nfsd auth_rpcgss nfs_acl nfs lockd grace fscache netfs sunrpc nbd ip_tables ipt_REJECT nf_reject_ipv4 xt_MASQUERADE xt_state xt_conntrack nft_chain_nat xt_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_tcpudp nft_counter xt_LOG nft_compat x_tables nf_tables nfnetlink tcp_cubic sch_fq_codel nct6775 hwmon_vid jc42 netconsole dummy parport_pc ppdev lp parport intel_rapl_msr intel_rapl_common amd64_edac edac_mce_amd snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi kvm_amd snd_hda_codec snd_hda_core snd_hwdep kvm snd_pcm_oss eeepc_wmi pktcdvd asus_wmi snd_mixer_oss irqbypass battery amdgpu joydev rapl snd_pcm sparse_keymap wmi_bmof input_leds btusb ccp snd_timer btrtl btbcm sp5100_tco k10temp
+> 	[Tue Nov 16 23:11:01 2021]  btintel snd iommu_v2 soundcore gpu_sched bluetooth drm_ttm_helper ecdh_generic sg rfkill ecc acpi_cpufreq evdev dm_crypt trusted asn1_encoder tee af_packet efivars raid10 raid0 multipath linear dm_mirror dm_region_hash dm_log hid_generic uas dm_cache_smq dm_cache dm_persistent_data dm_bio_prison dm_bufio dm_raid raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx crct10dif_pclmul ghash_clmulni_intel raid1 sr_mod md_mod aesni_intel cdrom r8169 i2c_piix4 realtek xhci_pci xhci_pci_renesas xhci_hcd wmi rtc_cmos gpio_amdpt
+> 	[Tue Nov 16 23:11:01 2021] ---[ end trace 0972673383e1b609 ]---
+> 	[Tue Nov 16 23:11:01 2021] RIP: 0010:btrfs_reloc_cow_block+0x280/0x290
+> 	[Tue Nov 16 23:11:01 2021] Code: 8b 4d a0 48 8b 45 c8 48 89 79 70 49 89 42 30 49 89 72 38 48 89 3e 41 80 4a 71 20 e9 e5 fe ff ff 49 3b 52 20 0f 84 8f fe ff ff <0f> 0b c7 45 d0 00 00 00 00 e9 6f fe ff ff 66 90 0f 1f 44 00 00 55
+> 	[Tue Nov 16 23:11:01 2021] RSP: 0018:ffffa7e8f1a37840 EFLAGS: 00010287
+> 	[Tue Nov 16 23:11:01 2021] RAX: 0000000000000001 RBX: ffff93336f9b79a8 RCX: fffffffffffffff8
+> 	[Tue Nov 16 23:11:01 2021] RDX: 00004f795eae8000 RSI: 0000000000000001 RDI: ffff9334d0bac478
+> 	[Tue Nov 16 23:11:01 2021] RBP: ffffa7e8f1a378a0 R08: ffff9334d0bac478 R09: 0000000000000000
+> 	[Tue Nov 16 23:11:01 2021] R10: ffff933a95e29680 R11: 0000000000000000 R12: ffff934de5dd1000
+> 	[Tue Nov 16 23:11:01 2021] R13: ffff9341866fb800 R14: ffff93336f9b7d38 R15: 0000000000000001
+> 	[Tue Nov 16 23:11:01 2021] FS:  00007eff68938740(0000) GS:ffff935168000000(0000) knlGS:0000000000000000
+> 	[Tue Nov 16 23:11:01 2021] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	[Tue Nov 16 23:11:01 2021] CR2: 000055a1623e6880 CR3: 0000001ae5df4000 CR4: 0000000000350ee0
+> 
+> 	(gdb) l *(btrfs_reloc_cow_block+0x280)
+> 	0xffffffff81619ad0 is in btrfs_reloc_cow_block (fs/btrfs/relocation.c:4307).
+> 	4302            if (root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID &&
+> 	4303                rc->create_reloc_tree) {
+> 	4304                    WARN_ON(!first_cow && level == 0);
+> 	4305
+> 	4306                    node = rc->backref_cache.path[level];
+> 	4307                    BUG_ON(node->bytenr != buf->start &&
+> 	4308                           node->new_bytenr != buf->start);
+> 	4309
+> 	4310                    btrfs_backref_drop_node_buffer(node);
+> 	4311                    atomic_inc(&cow->refs);
