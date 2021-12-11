@@ -2,313 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC154471103
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Dec 2021 03:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6684712DF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Dec 2021 09:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhLKC5W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Dec 2021 21:57:22 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:37820 "EHLO
-        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229886AbhLKC5W (ORCPT
+        id S229622AbhLKI1F convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 11 Dec 2021 03:27:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhLKI1F (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Dec 2021 21:57:22 -0500
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 6E117D0776; Fri, 10 Dec 2021 21:53:45 -0500 (EST)
-Date:   Fri, 10 Dec 2021 21:53:45 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Lukas Pirl <btrfs@lukas-pirl.de>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Balance loop on "device delete missing"? (RAID 1, Linux 5.15,
- "found 1 extents, stage: update data pointers")
-Message-ID: <20211211025344.GR17148@hungrycats.org>
-References: <5a73c349971ff005640af3854667f492e0697724.camel@lukas-pirl.de>
- <f5766e3cb0e2b7bcf3ef45cb7b9a7f3ef96b07ce.camel@lukas-pirl.de>
- <20211202181152.GK17148@hungrycats.org>
- <d946882c8042f779cdccc8de59cc10166f77fb04.camel@lukas-pirl.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d946882c8042f779cdccc8de59cc10166f77fb04.camel@lukas-pirl.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Sat, 11 Dec 2021 03:27:05 -0500
+X-Greylist: delayed 377 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 11 Dec 2021 00:27:04 PST
+Received: from rx2.rx-server.de (rx2.rx-server.de [IPv6:2a03:4000:45:69b::100:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D1AC061714
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Dec 2021 00:27:04 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by rx2.rx-server.de (Postfix) with ESMTP id AB6B943017;
+        Sat, 11 Dec 2021 09:20:43 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on rx2.rx-server.de
+X-Spam-Flag: NO
+X-Spam-Score: -2.402
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.402 required=5 tests=[BAYES_00=-1.9,
+        FROM_IS_REPLY_TO=-0.5, NO_RECEIVED=-0.001, NO_RELAYS=-0.001]
+        autolearn=ham autolearn_force=no
+X-Spam-Pyzor: Reported 0 times.
+Received: from rx2.rx-server.de ([127.0.0.1])
+        by localhost (rx2.rx-server.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id INjWr6tBZ8CO; Sat, 11 Dec 2021 09:20:41 +0100 (CET)
+X-Original-To: patrik.lundquist@gmail.com
+X-Original-To: quwenruo.btrfs@gmx.com
+X-Original-To: linux-btrfs@vger.kernel.org
+From:   Mia <9speysdx24@kr33.de>
+To:     "Patrik Lundquist" <patrik.lundquist@gmail.com>,
+        "Qu Wenruo" <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: filesystem corrupt - error -117
+Date:   Sat, 11 Dec 2021 08:20:39 +0000
+Message-Id: <embddc7343-8fdf-4be8-87d8-644e20ea86c0@rx2.rx-server.de>
+In-Reply-To: <emb611c0ff-705d-4c01-b50f-320f962f39fb@frystation>
+References: <em969af203-04e6-4eff-a115-1129ae853867@frystation>
+ <em33e101b0-d634-48b5-8a32-45e295f48f16@rx2.rx-server.de>
+ <c2941415-e32f-b31d-0bc2-911ede3717b7@gmx.com>
+ <69109d24-efa7-b9d1-e1df-c79b3989e7bf@rx2.rx-server.de>
+ <em0473d04b-06b0-43aa-91d6-1b0298103701@rx2.rx-server.de>
+ <146cff2c-3081-7d03-04c8-4cc2b4ef6ff1@suse.com>
+ <884d76d1-5836-9a91-a39b-41c37441e020@rx2.rx-server.de>
+ <em6e5eb690-6dcd-482d-b4f2-1b940b6cb770@rx2.rx-server.de>
+ <3ce1dd17-b574-abe3-d6cc-eb16f00117cc@rx2.rx-server.de>
+ <em2512c4e9-1e5e-4aa0-b9fc-fb68891e615d@rx2.rx-server.de>
+ <CAA7pwKOrgt6syr5C3X1+bC14QXZEJ+8HTMZruBBPBT574zNkkQ@rx2.rx-server.de>
+ <emb611c0ff-705d-4c01-b50f-320f962f39fb@frystation>
+Reply-To: Mia <9speysdx24@kr33.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 10, 2021 at 02:28:28PM +0100, Lukas Pirl wrote:
-> (friendly, humble re-post)
-> 
-> Hello Zygo,
-> 
-> it took me (and the disks) a while to report back; here we go:
-> 
-> On Thu, 2021-12-02 13:11 -0500, Zygo Blaxell wrote as excerpted:
-> > > On Thu, 2021-11-25 19:06 +0100, Lukas Pirl wrote as excerpted:
-> > > > Dear btrfs community,
-> > > > 
-> > > > this is another report of a probably endless balance which loops on
-> > > > "found 1 extents, stage: update data pointers".
-> > > > 
-> > > > I observe it on a btrfs RAID 1 on around 7 luks-encrypted spinning
-> > > > disks (more fs details below) used for storing cold data. One disk
-> > > > failed physically. Now, I try to "btrfs device delete missing". The
-> > > > operation runs forever (probably, waited more than 30 days, another
-> > > > time more than 50 days).
-> > > > 
-> > > > dmesg says:
-> > > > [      22:26] BTRFS info (device dm-1): relocating block group
-> > > > 1109204664320
-> > > > flags data|raid1
-> > > > [      22:27] BTRFS info (device dm-1): found 4164 extents, stage: move
-> > > > data
-> > > > extents
-> > > > [  +5.476247] BTRFS info (device dm-1): found 4164 extents, stage:
-> > > > update
-> > > > data pointers
-> > > > [  +2.545299] BTRFS info (device dm-1): found 1 extents, stage: update
-> > > > data
-> > > > pointers
-> > > > 
-> > > > and then the last message repeats every ~ .25 seconds ("forever").
-> > > > Memory and CPU usage are not excessive (most is IO wait, I assume).
-> > > > 
-> > > > What I have tried:
-> > > > * Linux 4 (multiple minor versions, don't remember which exactly)
-> > > > * Linux 5.10
-> > > > * Linux 5.15
-> > > > * btrfs-progs v5.15
-> > > > * remove subvolues (before: ~ 200, after: ~ 90)
-> > > > * free space cache v1, v2, none
-> > > > * reboot, restart removal/balance (multiple times)
-> > 
-> > Does it always happen on the same block group?  If so, that points to
-> > something lurking in your metadata.  If a reboot fixes it for one block
-> > group and then it gets stuck on some other block group, it points to
-> > an issue in kernel memory state.
-> 
-> Although I haven't paid attention to the block group number in the past,
-> another run of ``btrfs dev del`` just now gave the same last block group
-> number (1109204664320) before, presumably, looping.
-> 
-> > What do you get from 'btrfs check --readonly'?
-> 
-> $ btrfs check --readonly --mode lowmem /dev/disk/by-label/pool_16-03
-> 
-> [1/7] checking root items
-> Opening filesystem to check...
-> warning, device 6 is missing
-> Checking filesystem on /dev/disk/by-label/pool_16-03
-> UUID: 59301fea-434a-4c43-bb45-08fcfe8ce113
-> [2/7] checking extents
-> ERROR: extent[1109584044032, 8192] referencer count mismatch (root: 276,
-> owner: 1154248, offset: 100401152) wanted: 1, have: 0
-> ERROR: errors found in extent allocation tree or chunk allocation
-> [3/7] checking free space tree
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs done with fs roots in lowmem mode, skipping
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 4252313206784 bytes used, error(s) found
-> total csum bytes: 4128183360
-> total tree bytes: 25053184000
-> total fs tree bytes: 16415014912
-> total extent tree bytes: 3662594048
-> btree space waste bytes: 4949241278
-> file data blocks allocated: 8025128243200
->  referenced 7552211206144
+Hello,
 
-OK that's not too bad, just one bad reference.
+after the switching to the newer kernel I had no further problems until 
+now.
+It happened again.
 
-> So what can be done? ``check --repair``? Or too dangerous? :)
+[1653860.040458] BTRFS error (device sda3): tree first key mismatch 
+detected, bytenr=543379832832 parent_transid=1349283 key 
+expected=(468977471488,168,16384) has=(468983328768,168,61440)
+[1653860.041095] ------------[ cut here ]------------
+[1653860.041098] BTRFS: Transaction aborted (error -117)
+[1653860.041289] WARNING: CPU: 2 PID: 219 at fs/btrfs/extent-tree.c:2148 
+btrfs_run_delayed_refs+0x1a6/0x1f0 [btrfs]
+[1653860.041291] Modules linked in: dm_mod veth ip6t_REJECT 
+nf_reject_ipv6 ip6_tables nf_log_ipv6 xfrm_user xfrm_algo br_netfilter 
+xt_recent ipt_REJECT nf_reject_ipv4 xt_multiport xt_comment xt_hashlimit 
+xt_conntrack xt_addrtype xt_mark xt_nat xt_CT nfnetlink_log xt_NFLOG 
+nf_log_ipv4 nf_log_common xt_LOG nf_nat_tftp nf_nat_snmp_basic 
+nf_conntrack_snmp nf_nat_sip nf_nat_pptp nf_nat_irc nf_nat_h323 
+nf_nat_ftp nf_nat_amanda ts_kmp nf_conntrack_amanda nf_conntrack_sane 
+nf_conntrack_tftp nf_conntrack_sip nf_conntrack_pptp 
+nf_conntrack_netlink nf_conntrack_netbios_ns nf_conntrack_broadcast 
+nf_conntrack_irc nf_conntrack_h323 nf_conntrack_ftp nft_counter 
+nft_chain_nat xt_CHECKSUM xt_MASQUERADE nf_nat nf_conntrack 
+nf_defrag_ipv6 nf_defrag_ipv4 xt_tcpudp nft_compat wireguard 
+libchacha20poly1305 chacha_x86_64 nf_tables poly1305_x86_64 
+ip6_udp_tunnel udp_tunnel libblake2s nfnetlink blake2s_x86_64 
+curve25519_x86_64 libcurve25519_generic libchacha libblake2s_generic 
+overlay bridge stp llc fuse ext4
+[1653860.041392]  amd_energy crc32_pclmul crc16 mbcache 
+ghash_clmulni_intel jbd2 aesni_intel libaes crypto_simd cryptd 
+glue_helper joydev sg virtio_console virtio_balloon evdev serio_raw 
+pcspkr qemu_fw_cfg sunrpc ip_tables x_tables autofs4 btrfs 
+blake2b_generic xor raid6_pq libcrc32c crc32c_generic hid_generic usbhid 
+hid sd_mod sr_mod cdrom t10_pi crc_t10dif crct10dif_generic ata_generic 
+virtio_net net_failover virtio_scsi failover bochs_drm drm_vram_helper 
+drm_ttm_helper ttm drm_kms_helper cec ata_piix uhci_hcd drm libata 
+ehci_hcd usbcore crct10dif_pclmul crct10dif_common virtio_pci 
+crc32c_intel virtio_ring psmouse virtio usb_common scsi_mod i2c_piix4 
+floppy button
+[1653860.041483] CPU: 2 PID: 219 Comm: btrfs-transacti Tainted: G        
+      L    5.10.0-0.bpo.9-amd64 #1 Debian 5.10.70-1~bpo10+1
+[1653860.041484] Hardware name: netcup KVM Server, BIOS RS 2000 G9 
+06/01/2021
+[1653860.041530] RIP: 0010:btrfs_run_delayed_refs+0x1a6/0x1f0 [btrfs]
+[1653860.041535] Code: 8b 55 50 f0 48 0f ba aa 40 0a 00 00 02 72 20 83 
+f8 fb 74 39 83 f8 e2 74 34 89 c6 48 c7 c7 68 0d 86 c0 89 04 24 e8 ac 12 
+4b e7 <0f> 0b 8b 04 24 89 c1 ba 64 08 00 00 48 89 ef 89 04 24 48 c7 c6 
+a0
+[1653860.041538] RSP: 0018:ffffa9ea8040fe10 EFLAGS: 00010282
+[1653860.041541] RAX: 0000000000000000 RBX: ffff9d51c5fb9f70 RCX: 
+0000000000000027
+[1653860.041543] RDX: 0000000000000027 RSI: ffff9d54efd18a00 RDI: 
+ffff9d54efd18a08
+[1653860.041546] RBP: ffff9d51c5fb9f70 R08: 0000000000000000 R09: 
+c0000000ffffefff
+[1653860.041548] R10: 0000000000000001 R11: ffffa9ea8040fc18 R12: 
+ffff9d51f0cda800
+[1653860.041550] R13: ffff9d51e183b460 R14: ffff9d51e183b340 R15: 
+0000000000000cca
+[1653860.041556] FS:  0000000000000000(0000) GS:ffff9d54efd00000(0000) 
+knlGS:0000000000000000
+[1653860.041558] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[1653860.041561] CR2: 00007fd3ecdd1000 CR3: 0000000102288000 CR4: 
+0000000000350ee0
+[1653860.041583] Call Trace:
+[1653860.041675]  btrfs_commit_transaction+0x57/0xb70 [btrfs]
+[1653860.041722]  ? start_transaction+0xd3/0x580 [btrfs]
+[1653860.041767]  transaction_kthread+0x15d/0x180 [btrfs]
+[1653860.041810]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+[1653860.041817]  kthread+0x116/0x130
+[1653860.041821]  ? __kthread_cancel_work+0x40/0x40
+[1653860.041826]  ret_from_fork+0x22/0x30
+[1653860.041831] ---[ end trace af79c203a5452514 ]---
+[1653860.041835] BTRFS: error (device sda3) in 
+btrfs_run_delayed_refs:2148: errno=-117 Filesystem corrupted
+[1653860.042111] BTRFS info (device sda3): forced readonly
 
-If you have backups are you are prepared to restore them, you can try
-check --repair.
+root@rx1 ~ # btrfs fi show
+Label: none  uuid: 21306973-6bf3-4877-9543-633d472dcb46
+     Total devices 1 FS bytes used 186.78GiB
+     devid    1 size 319.00GiB used 199.08GiB path /dev/sda3
 
-> Thanks for your help
-> 
-> Lukas
-> 
-> > > > ======================================================================
-> > > > 
-> > > > filesystem show
-> > > > ===============
-> > > > 
-> > > > Label: 'pool_16-03'  uuid: 59301fea-434a-xxxx-bb45-08fcfe8ce113
-> > > >         Total devices 8 FS bytes used 3.84TiB
-> > > >         devid    1 size 931.51GiB used 592.00GiB path /dev/mapper/WD-
-> > > > WCAU45xxxx03
-> > > >         devid    3 size 1.82TiB used 1.37TiB path /dev/mapper/WD-
-> > > > WCAZAFxxxx78
-> > > >         devid    4 size 931.51GiB used 593.00GiB path /dev/mapper/WD-
-> > > > WCC4J7xxxxSZ
-> > > >         devid    5 size 1.82TiB used 1.46TiB path /dev/mapper/WD-
-> > > > WCC4M2xxxxXH
-> > > >         devid    7 size 931.51GiB used 584.00GiB path
-> > > > /dev/mapper/S1xxxxJ3
-> > > >         devid    9 size 2.73TiB used 2.28TiB path /dev/mapper/WD-
-> > > > WCC4N3xxxx17
-> > > >         devid   10 size 3.64TiB used 1.03TiB path /dev/mapper/WD-
-> > > > WCC7K2xxxxNS
-> > > >         *** Some devices missing
-> > > > 
-> > > > subvolumes
-> > > > ==========
-> > > > 
-> > > > ~ 90, of which ~ 60 are read-only snapshots of the other ~ 30
-> > > > 
-> > > > filesystem usage
-> > > > ================
-> > > > 
-> > > > Overall:
-> > > >     Device size:                  12.74TiB
-> > > >     Device allocated:              8.36TiB
-> > > >     Device unallocated:            4.38TiB
-> > > >     Device missing:                  0.00B
-> > > >     Used:                          7.69TiB
-> > > >     Free (estimated):              2.50TiB      (min: 2.50TiB)
-> > > >     Free (statfs, df):             1.46TiB
-> > > >     Data ratio:                       2.00
-> > > >     Metadata ratio:                   2.00
-> > > >     Global reserve:              512.00MiB      (used: 48.00KiB)
-> > > >     Multiple profiles:                  no
-> > > > 
-> > > > Data,RAID1: Size:4.14TiB, Used:3.82TiB (92.33%)
-> > > >    /dev/mapper/WD-WCAU45xxxx03   584.00GiB
-> > > >    /dev/mapper/WD-WCAZAFxxxx78     1.35TiB
-> > > >    /dev/mapper/WD-WCC4J7xxxxSZ   588.00GiB
-> > > >    /dev/mapper/WD-WCC4M2xxxxXH     1.44TiB
-> > > >    missing       510.00GiB
-> > > >    /dev/mapper/S1xxxxJ3  579.00GiB
-> > > >    /dev/mapper/WD-WCC4N3xxxx17     2.26TiB
-> > > >    /dev/mapper/WD-WCC7K2xxxxNS     1.01TiB
-> > > > 
-> > > > Metadata,RAID1: Size:41.00GiB, Used:23.14GiB (56.44%)
-> > > >    /dev/mapper/WD-WCAU45xxxx03     8.00GiB
-> > > >    /dev/mapper/WD-WCAZAFxxxx78    17.00GiB
-> > > >    /dev/mapper/WD-WCC4J7xxxxSZ     5.00GiB
-> > > >    /dev/mapper/WD-WCC4M2xxxxXH    13.00GiB
-> > > >    missing         3.00GiB
-> > > >    /dev/mapper/S1xxxxJ3    5.00GiB
-> > > >    /dev/mapper/WD-WCC4N3xxxx17    16.00GiB
-> > > >    /dev/mapper/WD-WCC7K2xxxxNS    15.00GiB
-> > > > 
-> > > > System,RAID1: Size:32.00MiB, Used:848.00KiB (2.59%)
-> > > >    missing        32.00MiB
-> > > >    /dev/mapper/WD-WCC4N3xxxx17    32.00MiB
-> > > > 
-> > > > Unallocated:
-> > > >    /dev/mapper/WD-WCAU45xxxx03   339.51GiB
-> > > >    /dev/mapper/WD-WCAZAFxxxx78   461.01GiB
-> > > >    /dev/mapper/WD-WCC4J7xxxxSZ   338.51GiB
-> > > >    /dev/mapper/WD-WCC4M2xxxxXH   373.01GiB
-> > > >    missing      -513.03GiB
-> > > >    /dev/mapper/S1xxxxJ3  347.51GiB
-> > > >    /dev/mapper/WD-WCC4N3xxxx17   460.47GiB
-> > > >    /dev/mapper/WD-WCC7K2xxxxNS     2.61TiB
-> > > > 
-> > > > dump-super
-> > > > ==========
-> > > > 
-> > > > superblock: bytenr=65536, device=/dev/mapper/WD-WCAU45xxxx03
-> > > > ---------------------------------------------------------
-> > > > csum_type               0 (crc32c)
-> > > > csum_size               4
-> > > > csum                    0x51beb068 [match]
-> > > > bytenr                  65536
-> > > > flags                   0x1
-> > > >                         ( WRITTEN )
-> > > > magic                   _BHRfS_M [match]
-> > > > fsid                    59301fea-434a-xxxx-bb45-08fcfe8ce113
-> > > > metadata_uuid           59301fea-434a-xxxx-bb45-08fcfe8ce113
-> > > > label                   pool_16-03
-> > > > generation              113519755
-> > > > root                    15602414796800
-> > > > sys_array_size          129
-> > > > chunk_root_generation   63394299
-> > > > root_level              1
-> > > > chunk_root              19216820502528
-> > > > chunk_root_level        1
-> > > > log_root                0
-> > > > log_root_transid        0
-> > > > log_root_level          0
-> > > > total_bytes             16003136864256
-> > > > bytes_used              4227124142080
-> > > > sectorsize              4096
-> > > > nodesize                16384
-> > > > leafsize (deprecated)   16384
-> > > > stripesize              4096
-> > > > root_dir                6
-> > > > num_devices             8
-> > > > compat_flags            0x0
-> > > > compat_ro_flags         0x0
-> > > > incompat_flags          0x371
-> > > >                         ( MIXED_BACKREF |
-> > > >                           COMPRESS_ZSTD |
-> > > >                           BIG_METADATA |
-> > > >                           EXTENDED_IREF |
-> > > >                           SKINNY_METADATA |
-> > > >                           NO_HOLES )
-> > > > cache_generation        2975866
-> > > > uuid_tree_generation    113519755
-> > > > dev_item.uuid           a9b2e4ea-404c-xxxx-a450-dc84b0956ce1
-> > > > dev_item.fsid           59301fea-434a-xxxx-bb45-08fcfe8ce113 [match]
-> > > > dev_item.type           0
-> > > > dev_item.total_bytes    1000201740288
-> > > > dev_item.bytes_used     635655159808
-> > > > dev_item.io_align       4096
-> > > > dev_item.io_width       4096
-> > > > dev_item.sector_size    4096
-> > > > dev_item.devid          1
-> > > > dev_item.dev_group      0
-> > > > dev_item.seek_speed     0
-> > > > dev_item.bandwidth      0
-> > > > dev_item.generation     0
-> > > > 
-> > > > device stats
-> > > > ============
-> > > > 
-> > > > [/dev/mapper/WD-WCAU45xxxx03].write_io_errs    0
-> > > > [/dev/mapper/WD-WCAU45xxxx03].read_io_errs     0
-> > > > [/dev/mapper/WD-WCAU45xxxx03].flush_io_errs    0
-> > > > [/dev/mapper/WD-WCAU45xxxx03].corruption_errs  0
-> > > > [/dev/mapper/WD-WCAU45xxxx03].generation_errs  0
-> > > > [/dev/mapper/WD-WCAZAFxxxx78].write_io_errs    0
-> > > > [/dev/mapper/WD-WCAZAFxxxx78].read_io_errs     0
-> > > > [/dev/mapper/WD-WCAZAFxxxx78].flush_io_errs    0
-> > > > [/dev/mapper/WD-WCAZAFxxxx78].corruption_errs  0
-> > > > [/dev/mapper/WD-WCAZAFxxxx78].generation_errs  0
-> > > > [/dev/mapper/WD-WCC4J7xxxxSZ].write_io_errs    0
-> > > > [/dev/mapper/WD-WCC4J7xxxxSZ].read_io_errs     1
-> > > > [/dev/mapper/WD-WCC4J7xxxxSZ].flush_io_errs    0
-> > > > [/dev/mapper/WD-WCC4J7xxxxSZ].corruption_errs  0
-> > > > [/dev/mapper/WD-WCC4J7xxxxSZ].generation_errs  0
-> > > > [/dev/mapper/WD-WCC4M2xxxxXH].write_io_errs    0
-> > > > [/dev/mapper/WD-WCC4M2xxxxXH].read_io_errs     0
-> > > > [/dev/mapper/WD-WCC4M2xxxxXH].flush_io_errs    0
-> > > > [/dev/mapper/WD-WCC4M2xxxxXH].corruption_errs  0
-> > > > [/dev/mapper/WD-WCC4M2xxxxXH].generation_errs  0
-> > > > [devid:6].write_io_errs    0
-> > > > [devid:6].read_io_errs     0
-> > > > [devid:6].flush_io_errs    0
-> > > > [devid:6].corruption_errs  72016
-> > > > [devid:6].generation_errs  100
-> > > > [/dev/mapper/S1xxxxJ3].write_io_errs    0
-> > > > [/dev/mapper/S1xxxxJ3].read_io_errs     0
-> > > > [/dev/mapper/S1xxxxJ3].flush_io_errs    0
-> > > > [/dev/mapper/S1xxxxJ3].corruption_errs  2
-> > > > [/dev/mapper/S1xxxxJ3].generation_errs  0
-> > > > [/dev/mapper/WD-WCC4N3xxxx17].write_io_errs    0
-> > > > [/dev/mapper/WD-WCC4N3xxxx17].read_io_errs     0
-> > > > [/dev/mapper/WD-WCC4N3xxxx17].flush_io_errs    0
-> > > > [/dev/mapper/WD-WCC4N3xxxx17].corruption_errs  0
-> > > > [/dev/mapper/WD-WCC4N3xxxx17].generation_errs  0
-> > > > [/dev/mapper/WD-WCC7K2xxxxNS].write_io_errs    0
-> > > > [/dev/mapper/WD-WCC7K2xxxxNS].read_io_errs     0
-> > > > [/dev/mapper/WD-WCC7K2xxxxNS].flush_io_errs    0
-> > > > [/dev/mapper/WD-WCC7K2xxxxNS].corruption_errs  0
-> > > > [/dev/mapper/WD-WCC7K2xxxxNS].generation_errs  0
-> > > 
-> 
-> 
+root@rx1 ~ # btrfs fi df /                                               
+                                                                          
+                                                :(
+Data, single: total=194.89GiB, used=185.16GiB
+System, single: total=32.00MiB, used=48.00KiB
+Metadata, single: total=4.16GiB, used=1.62GiB
+GlobalReserve, single: total=385.84MiB, used=0.00B
 
+root@rx1 ~ # btrfs --version
+btrfs-progs v5.10.1
+
+root@rx1 ~ # uname -a
+Linux rx1 5.10.0-0.bpo.9-amd64 #1 SMP Debian 5.10.70-1~bpo10+1 
+(2021-10-10) x86_64 GNU/Linux
+
+Regards
+Mia
+
+------ Originalnachricht ------
+Von: "Mia" <9speysdx24@kr33.de>
+An: "Patrik Lundquist" <patrik.lundquist@gmail.com>; "Qu Wenruo" 
+<quwenruo.btrfs@gmx.com>
+Cc: "Linux Btrfs" <linux-btrfs@vger.kernel.org>
+Gesendet: 26.10.2021 19:28:14
+Betreff: Re: filesystem corrupt - error -117
+
+>Hi Patrik,
+>
+>good suggestion, I'm on 5.10.0-0.bpo.8-amd64 #1 SMP Debian 5.10.46-4~bpo10+1 (2021-08-07) now.
+>
+>Hi Qu,
+>regarding the memtest. This is a virtual machine, I have no access to the host system.
+>I don't know if a memtest inside the vm would bring legit results?
+>
+>Regards
+>Mia
+>
+>------ Originalnachricht ------
+>Von: "Patrik Lundquist" <patrik.lundquist@gmail.com>
+>An: "Mia" <9speysdx24@kr33.de>
+>Cc: "Linux Btrfs" <linux-btrfs@vger.kernel.org>
+>Gesendet: 26.10.2021 16:12:45
+>Betreff: Re: filesystem corrupt - error -117
+>
+>>On Tue, 26 Oct 2021 at 09:15, Mia <9speysdx24@kr33.de> wrote:
+>>>
+>>>  Problem with updating is that this is currently still Debian 10 and a
+>>>  production environment and I don't know when it is possible to upgrade
+>>>  because of dependencies.
+>>
+>>Maybe you can install the buster-backports kernel which currently is 5.10.70?
+>>
+>>https://backports.debian.org/Instructions/
 
