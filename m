@@ -2,112 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26028470BFA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Dec 2021 21:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF74F470F1C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Dec 2021 01:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344220AbhLJUph (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Dec 2021 15:45:37 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:44476 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243037AbhLJUph (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Dec 2021 15:45:37 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A67B5210F2;
-        Fri, 10 Dec 2021 20:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1639168920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=vecIXNnU5/oP9s5Sp+k/IRk5aV3S4MzUZwpPNFkvqFY=;
-        b=I4ZbOFJZ0YuMl7hfSsB4n+lQ4C2ELgN7pkz2XN89r/M3gYj7TrPFDI1qPNX8AWo6mWB5tx
-        fHyO62MJIMsj5Spe7tm6KmSYPOQd03Fe22+PnDReQFqNYPDLFPU2jwfoPOO0l9WIXuulqj
-        2tQsWwtl8eWjMeUV4iuPv89PtPyNRZs=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 9EED1A3B84;
-        Fri, 10 Dec 2021 20:42:00 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6E40ADA799; Fri, 10 Dec 2021 21:41:44 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.16-rc5
-Date:   Fri, 10 Dec 2021 21:41:43 +0100
-Message-Id: <cover.1638975228.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
+        id S240509AbhLKAEf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Dec 2021 19:04:35 -0500
+Received: from mout.gmx.net ([212.227.15.18]:43861 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230472AbhLKAEf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Dec 2021 19:04:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1639180854;
+        bh=ohEPsRGSCQZ6+gPtRulJccM6yWZQc0koCfOl2q61kxc=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=DlRLB2JSQ4dYBJI8CNfMy0xu0dBrdqKOb56f56AiSa+S4CMCucIKhIhQzdm549fzk
+         44x/L6J7+81nKOUgLW1CWWPur9+wS9RWTEdZbSNjJu1/RjRKdx4ntzIyS4+fzkMsZT
+         m6DC42gBdrNF9gMXuLyOXymvz3m6AZKrCPm5L4CY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mplc7-1mCIyu3sb7-00qBEx; Sat, 11
+ Dec 2021 01:00:54 +0100
+Message-ID: <b9f09724-6455-037c-ffb8-c70b0b7430ab@gmx.com>
+Date:   Sat, 11 Dec 2021 08:00:51 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH] btrfs: fix double free of anon_dev after failure to
+ create subvolume
+Content-Language: en-US
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <b6c30d9569d56552e38dc6bd305c6eb6578f3782.1639162814.git.fdmanana@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <b6c30d9569d56552e38dc6bd305c6eb6578f3782.1639162814.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OA4xIhQFh1QZ9oXOycUT7EeGa9SzscHCRDyRTSsFcggHdGubkxS
+ gjLGVFtuWvGuWzqPW1mc8XAZIETTkjv2Mc7Wm7JdWIKZTQrrYc6i+/O/dBIZJuP27U+1VZr
+ 0XMFFiTGy7tKOWTR04t54VLrqc6TghY/0OY2mZPZY/JFworXbWCY6nr8Vrn0Uj3fueeF4YC
+ ueg9uOeRTZIkLjIggZSVw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:P2hrO9neVbI=:QwtnCJ/HOtIessopYB30SY
+ 6/m044raB9faSVAKGDRCAhxtJ8rE3AHGASWKSuNno2rR+zxrQMSLoRqfk8ZLYAbb99NTWCAIZ
+ zkET9E4CHoNXzON3YbgGj46BzJka5saisbRUVTGQgIaEUsjOmPdBx0ll0UAJH3nYgSpTEo4q0
+ SFTio0e7M+/WAF59EnjL9lrWkbj/4ma8DjVK/X92aIXgI7duTL0/t2Dh9AsTQwc9tjA8M/TBa
+ y4/wybMJHn1qRPkHOaHWowR3WpUBXTWyae2bFOYiYlrWcGv4ybatYZ0OusdF+7Zsrtfw08mJJ
+ 8XqjfZmg/8jbEBZaYTjwva7YM27m0Or2lvpkstdqk8qxxEnih/x6QUUwO71ldIEp03NIan3hI
+ gl7mVuIs1HumWGrnUM52yz5XWAUHpAc4l65e30KTssuldsnGKQtGh+JjHuw8dSDziEaoFwtpQ
+ +DayNvf1SsSCb7etpgEb4Qm6Pd04p/spDHcqbipx1CUZqfBgFu6qRggRYXnXBTLyQYOF7PlPF
+ 07nl44wPU0yZV53FJ5Pdnla+E+yM1Z7sS89C4g21Iil3yOaO7Hjeu0PAzWP5j6btAbgt7r4jh
+ YhfSDDlrryz8APiPFM6O09aepCIb31uV63xv7/0BqFQMhY/QGq4JeQ0I9nBUjBQRVdziueLVz
+ 5uN5aDUH8ZSgWhR6/cyPFgsMtxCMwUG1ImMotXUQFo66ORkeRc7wmTCW92iJmQRze4Gcj1SHr
+ oaCn8ohaxYKa/VDJAL1NHgbXBhifYzqsBUbua/3JJbCaC6TUMG1DpaT8FTqzFGAH7oH3SAdbq
+ gFYzR6qU4NJnWfrhWNS+lBfMuOqLaM18vhL0KRzYmFC0DFvtda+G7HvXrM2ch8gWPaRbDHAWl
+ 9Id3CL+XckWSpSOkarL0y5W+/b4A/nsrA0xYbr1hYy++rVb+GoyFvb/MPOCEEMqsFeBQxrUgU
+ XxWgYOyS9xQJnh/aTY10+S/6bropXwIohSABEKXmBwit10Fsftp+XPrxjJjKMVM+Tz6P0Bd8d
+ ZxQJhL9apOCp9ndJGSrCzHkEqIcREHmH73l0vMfUkqTSBQhI1CLOYUkFNzwb7xx+3nFnExOs/
+ IyazXS5gW7p9nM=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-a few more regression fixes and stable patches, mostly one-liners.
-Please pull, thanks.
 
-Regression fixes:
+On 2021/12/11 03:02, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> When creating a subvolume, at create_subvol(), we allocate an anonymous
+> device and later call btrfs_get_new_fs_root(), which in turn just calls
+> btrfs_get_root_ref(). There we call btrfs_init_fs_root() which assigns
+> the anonymous device to the root, but if after that call there's an erro=
+r,
+> when we jump to 'fail' label, we call btrfs_put_root(), which frees the
+> anonymous device and then returns an error that is propagated back to
+> create_subvol(). Than create_subvol() frees the anonymous device again.
+>
+> When this happens, if the anonymous device was not reallocated after
+> the first time it was freed with btrfs_put_root(), we get a kernel
+> message like the following:
+>
+>    (...)
+>    [13950.282466] BTRFS: error (device dm-0) in create_subvol:663: errno=
+=3D-5 IO failure
+>    [13950.283027] ida_free called for id=3D65 which is not allocated.
+>    [13950.285974] BTRFS info (device dm-0): forced readonly
+>    (...)
+>
+> If the anonymous device gets reallocated by another btrfs filesystem
+> or any other kernel subsystem, then bad things can happen.
+>
+> So fix this by setting the root's anonymous device to 0 at
+> btrfs_get_root_ref(), before we call btrfs_put_root(), if an error
+> happened.
+>
+> Fixes: 2dfb1e43f57dd3 ("btrfs: preallocate anon block device at first ph=
+ase of snapshot creation")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-- fix pointer/ERR_PTR mismatch returned from memdup_user
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-- reset dedicated zoned mode relocation block group to avoid using it
-  and filling it without any recourse
+Thanks,
+Qu
 
-Fixes:
-
-- handle a case to FITRIM range (also to make fstests/generic/260 work)
-
-- fix warning when extent buffer state and pages get out of sync after
-  an IO error
-
-- fix transaction abort when syncing due to missing mapping error set on
-  metadata inode after inlining a compressed file
-
-- fix transaction abort due to tree-log and zoned mode interacting in an
-  unexpected way
-
-- fix memory leak of additional extent data when qgroup reservation
-  fails
-
-- do proper handling of slot search call when deleting root refs
-
-----------------------------------------------------------------
-The following changes since commit daf87e953527b03c0bd4c0f41d704ba71186256d:
-
-  btrfs: fix the memory leak caused in lzo_compress_pages() (2021-11-26 16:10:05 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-rc4-tag
-
-for you to fetch changes up to 8289ed9f93bef2762f9184e136d994734b16d997:
-
-  btrfs: replace the BUG_ON in btrfs_del_root_ref with proper error handling (2021-12-08 15:45:27 +0100)
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      btrfs: fix error pointer dereference in btrfs_ioctl_rm_dev_v2()
-
-Johannes Thumshirn (2):
-      btrfs: free exchange changeset on failures
-      btrfs: zoned: clear data relocation bg on zone finish
-
-Josef Bacik (3):
-      btrfs: fail if fstrim_range->start == U64_MAX
-      btrfs: clear extent buffer uptodate when we fail to write it
-      btrfs: call mapping_set_error() on btree inode with a write error
-
-Naohiro Aota (1):
-      btrfs: fix re-dirty process of tree-log nodes
-
-Qu Wenruo (1):
-      btrfs: replace the BUG_ON in btrfs_del_root_ref with proper error handling
-
- fs/btrfs/delalloc-space.c | 12 +++++++++---
- fs/btrfs/extent-tree.c    |  3 +++
- fs/btrfs/extent_io.c      | 14 ++++++++++++++
- fs/btrfs/ioctl.c          |  6 ++----
- fs/btrfs/root-tree.c      |  3 ++-
- fs/btrfs/tree-log.c       |  5 +++--
- fs/btrfs/zoned.c          |  2 ++
- 7 files changed, 35 insertions(+), 10 deletions(-)
+> ---
+>   fs/btrfs/disk-io.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 5c598e124c25..fc7dd5109806 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1826,6 +1826,14 @@ static struct btrfs_root *btrfs_get_root_ref(stru=
+ct btrfs_fs_info *fs_info,
+>   	}
+>   	return root;
+>   fail:
+> +	/*
+> +	 * If our caller provided us an anonymous device, then it's his
+> +	 * responsability to free it in case we fail. So we have to set our
+> +	 * root's anon_dev to 0 to avoid a double free, once by btrfs_put_root=
+()
+> +	 * and once again by our caller.
+> +	 */
+> +	if (anon_dev)
+> +		root->anon_dev =3D 0;
+>   	btrfs_put_root(root);
+>   	return ERR_PTR(ret);
+>   }
