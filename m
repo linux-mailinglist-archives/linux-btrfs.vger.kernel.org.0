@@ -2,294 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2589B471990
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Dec 2021 11:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629E1471FA6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Dec 2021 04:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhLLKDs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Dec 2021 05:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhLLKDr (ORCPT
+        id S231514AbhLMDno (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Dec 2021 22:43:44 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:38984 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229724AbhLMDno (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Dec 2021 05:03:47 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7545FC061714
-        for <linux-btrfs@vger.kernel.org>; Sun, 12 Dec 2021 02:03:47 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mwLho-00009I-KZ; Sun, 12 Dec 2021 11:03:44 +0100
-Message-ID: <c76968ea-f3c3-1ae7-e47a-6eed4e1bae71@leemhuis.info>
-Date:   Sun, 12 Dec 2021 11:03:44 +0100
+        Sun, 12 Dec 2021 22:43:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1639367023; x=1670903023;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=UnL2ARUKUZELiR/g/y4b4UydQMuERT/WXTUOO9nrYSU=;
+  b=VxQI+/hT35ZVtq+m4iRUFQ1iHUmDMWaDv8Ui20a9+vt/OxeGlhw9xu42
+   tbAphPHgTEuvwqgDxyaOCNJO7Pwmwm5k98egZCpQHjoC9wOnpoaf9ry34
+   JLizdFJRDYxWUXEdORzeohiYY3hlZjOB+nVBDkqbjQBm0i0NycbT6TpNr
+   ibQVO8uqXu/M/5XubAGBwV6V+4bQX+t85NnzFPcz9ivGO86HfPxWej2KF
+   PEjETgxRxGW7TyK0HoI8WonkOR17kysVHdNA19BXvue17Er/0/X2fvWVf
+   0zwgZBKnSQ4HlGHNmAXgSB7OZ0Av82bEz909nSZhFRITCkN7UpNHZmOUO
+   A==;
+X-IronPort-AV: E=Sophos;i="5.88,201,1635177600"; 
+   d="scan'208";a="192868600"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Dec 2021 11:43:42 +0800
+IronPort-SDR: Sg47LpC4s+APfPe1/vBPPlWmwhZu68e7w+V3FZsULfnWNOW8k/N5ZtmNnMHJsZVpisQcSoPahK
+ sdLQroAU8PjNasxonEc9rzuBVWFPIEvPSL+8CQ0CJBHI9OE1wOLDTQmmVhHM4ZQtyvBRsoddXV
+ LWParzIXxWTZQabi1TQbrgeXTvOCM2MqswstR12mOw6XN46QAghdr4Zs+KQJNKNwCDiY07rGPB
+ ptQJ0tCbKI5iUGH0MvbUp1MYorHRHR2juN4KI0dFRLG3J7JGBOA6TFYUP7iQYnG13Z7P+IqWQw
+ TBO69rIsPEnQdzOwVWCC1mgG
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2021 19:16:42 -0800
+IronPort-SDR: isShulqptjWVjJkc9APrFMGyT7O/SSGI+etn1UIPHymZconi+cPptNArqpNh8xTZTBCbrS/hlf
+ jz3F6/DD186n35Bsq5yQBx5WpbobSRzHpysVyfdXEnMPin5WX0HnssopgMXdyNRIjte2TnPQIa
+ bAsic1rV9B1DpCf59Cfdz3yYqS2ztHFL6f2kpJGCn7XnwN4z/KpDsiabrU5s0w8k/1a/vfIWBV
+ h6vPbz9Klws72GhGxJzgiQTSVp+ibjJDPQeDCfXUCQcweOzao0aDs/Q7DmAU73iTuFZxLBjOee
+ poc=
+WDCIronportException: Internal
+Received: from 57k5qf2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.53.16])
+  by uls-op-cesaip01.wdc.com with ESMTP; 12 Dec 2021 19:43:43 -0800
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: ensure pages are unlocked on cow_file_range() failure
+Date:   Mon, 13 Dec 2021 12:43:38 +0900
+Message-Id: <20211213034338.949507-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1: 3078d85c9a10 vfs:
- verify source area in vfs_dedupe_file_range_one()
-Content-Language: en-BS
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        linux-btrfs@vger.kernel.org
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-References: <20211210183456.GP17148@hungrycats.org>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20211210183456.GP17148@hungrycats.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1639303427;74ac07d2;
-X-HE-SMSGID: 1mwLho-00009I-KZ
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[TLDR: adding this regression to regzbot; most of this mail is compiled
-from a few templates paragraphs some of you might have seen already.]
+There is a hung_task report regarding page lock on zoned btrfs like below.
 
-Hi, this is your Linux kernel regression tracker speaking.
+https://github.com/naota/linux/issues/59
 
-Top-posting for once, to make this easy accessible to everyone.
+[  726.328648] INFO: task rocksdb:high0:11085 blocked for more than 241 seconds.
+[  726.329839]       Not tainted 5.16.0-rc1+ #1
+[  726.330484] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  726.331603] task:rocksdb:high0   state:D stack:    0 pid:11085 ppid: 11082 flags:0x00000000
+[  726.331608] Call Trace:
+[  726.331611]  <TASK>
+[  726.331614]  __schedule+0x2e5/0x9d0
+[  726.331622]  schedule+0x58/0xd0
+[  726.331626]  io_schedule+0x3f/0x70
+[  726.331629]  __folio_lock+0x125/0x200
+[  726.331634]  ? find_get_entries+0x1bc/0x240
+[  726.331638]  ? filemap_invalidate_unlock_two+0x40/0x40
+[  726.331642]  truncate_inode_pages_range+0x5b2/0x770
+[  726.331649]  truncate_inode_pages_final+0x44/0x50
+[  726.331653]  btrfs_evict_inode+0x67/0x480
+[  726.331658]  evict+0xd0/0x180
+[  726.331661]  iput+0x13f/0x200
+[  726.331664]  do_unlinkat+0x1c0/0x2b0
+[  726.331668]  __x64_sys_unlink+0x23/0x30
+[  726.331670]  do_syscall_64+0x3b/0xc0
+[  726.331674]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  726.331677] RIP: 0033:0x7fb9490a171b
+[  726.331681] RSP: 002b:00007fb943ffac68 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
+[  726.331684] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb9490a171b
+[  726.331686] RDX: 00007fb943ffb040 RSI: 000055a6bbe6ec20 RDI: 00007fb94400d300
+[  726.331687] RBP: 00007fb943ffad00 R08: 0000000000000000 R09: 0000000000000000
+[  726.331688] R10: 0000000000000031 R11: 0000000000000246 R12: 00007fb943ffb000
+[  726.331690] R13: 00007fb943ffb040 R14: 0000000000000000 R15: 00007fb943ffd260
+[  726.331693]  </TASK>
 
-Thanks for the report.
+While we debug the issue, we found running fstests generic/551 on 5GB
+non-zoned null_blk device in the emulated zoned mode also had a
+similar hung issue.
 
-Adding the regression mailing list to the list of recipients, as it
-should be in the loop for all regressions, as explained here:
-https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
+The hang occurs when cow_file_range() fails in the middle of
+allocation. cow_file_range() called from do_allocation_zoned() can
+split the give region ([start, end]) for allocation depending on
+current block group usages. When btrfs can allocate bytes for one part
+of the split regions but fails for the other region (e.g. because of
+-ENOSPC), we return the error leaving the pages in the succeeded regions
+locked. Technically, this occurs only when @unlock == 0. Otherwise, we
+unlock the pages in an allocated region after creating an ordered
+extent.
 
-To be sure this issue doesn't fall through the cracks unnoticed, I'm
-adding it to regzbot, my Linux kernel regression tracking bot:
+Theoretically, the same issue can happen on
+submit_uncompressed_range(). However, I could not make it happen even
+if I modified the code to go always through
+submit_uncompressed_range().
 
-#regzbot ^introduced 3078d85c9a10
-#regzbot title btrfs: deadlocks in dedupe
-#regzbot ignore-activity
+Considering the callers of cow_file_range(unlock=0) won't write out
+the pages, we can unlock the pages on error exit from
+cow_file_range(). So, we can ensure all the pages except @locked_page
+are unlocked on error case.
 
-Reminder: when fixing the issue, please add a 'Link:' tag with the URL
-to the report (the parent of this mail), then regzbot will automatically
-mark the regression as resolved once the fix lands in the appropriate
-tree. For more details about regzbot see footer.
+In summary, cow_file_range now behaves like this:
 
-Sending this to everyone that got the initial report, to make all aware
-of the tracking. I also hope that messages like this motivate people to
-directly get at least the regression mailing list and ideally even
-regzbot involved when dealing with regressions, as messages like this
-wouldn't be needed then.
+- page_started == 1 (return value)
+  - All the pages are unlocked. IO is started.
+- unlock == 0
+  - All the pages except @locked_page are unlocked in any case
+- unlock == 1
+  - On success, all the pages are locked for writing out them
+  - On failure, all the pages except @locked_page are unlocked
 
-Don't worry, I'll send further messages wrt to this regression just to
-the lists (with a tag in the subject so people can filter them away), as
-long as they are intended just for regzbot. With a bit of luck no such
-messages will be needed anyway.
+Fixes: 42c011000963 ("btrfs: zoned: introduce dedicated data write path for zoned filesystems")
+CC: stable@vger.kernel.org # 5.12+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+Theoretically, this can fix a potential issue in
+submit_uncompressed_range(). However, I set the stable target only
+related to zoned code, because I cannot make compress writes fail on
+regular btrfs.
+---
+ fs/btrfs/inode.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-Ciao, Thorsten (wearing his 'Linux kernel regression tracker' hat).
-
-P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
-on my table. I can only look briefly into most of them. Unfortunately
-therefore I sometimes will get things wrong or miss something important.
-I hope that's not the case here; if you think it is, don't hesitate to
-tell me about it in a public reply. That's in everyone's interest, as
-what I wrote above might be misleading to everyone reading this; any
-suggestion I gave thus might sent someone reading this down the wrong
-rabbit hole, which none of us wants.
-
-BTW, I have no personal interest in this issue, which is tracked using
-regzbot, my Linux kernel regression tracking bot
-(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
-this mail to get things rolling again and hence don't need to be CC on
-all further activities wrt to this regression.
-
-On 10.12.21 19:34, Zygo Blaxell wrote:
-> I've been getting deadlocks in dedupe on btrfs since kernel 5.11, and
-> some bees users have reported it as well.  I bisected to this commit:
-> 
-> 	3078d85c9a10 vfs: verify source area in vfs_dedupe_file_range_one()
-> 
-> These kernels work for at least 18 hours:
-> 
-> 	5.10.83 (months)
-> 	5.11.22 with 3078d85c9a10 reverted (36 hours)
-> 	btrfs misc-next 66dc4de326b0 with 3078d85c9a10 reverted
-> 
-> These kernels lock up in 3 hours or less:
-> 
-> 	5.11.22
-> 	5.12.19
-> 	5.14.21
-> 	5.15.6
-> 	btrfs for-next 279373dee83e
-> 
-> All of the failing kernels include this commit, none of the non-failing
-> kernels include the commit.
-> 
-> Kernel logs from the lockup:
-> 
-> 	[19647.696042][ T3721] sysrq: Show Blocked State
-> 	[19647.697024][ T3721] task:btrfs-transacti state:D stack:    0 pid: 6161 ppid:     2 flags:0x00004000
-> 	[19647.698203][ T3721] Call Trace:
-> 	[19647.698608][ T3721]  __schedule+0x388/0xaf0
-> 	[19647.699125][ T3721]  schedule+0x68/0xe0
-> 	[19647.699615][ T3721]  btrfs_commit_transaction+0x97c/0xbf0
-> 	[19647.700276][ T3721]  ? start_transaction+0xd5/0x6f0
-> 	[19647.700897][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
-> 	[19647.701507][ T3721]  transaction_kthread+0x138/0x1b0
-> 	[19647.702154][ T3721]  kthread+0x151/0x170
-> 	[19647.702651][ T3721]  ? btrfs_cleanup_transaction.isra.0+0x620/0x620
-> 	[19647.703404][ T3721]  ? kthread_create_worker_on_cpu+0x70/0x70
-> 	[19647.704119][ T3721]  ret_from_fork+0x22/0x30
-> 	[19647.704679][ T3721] task:crawl_257_291   state:D stack:    0 pid: 6494 ppid:  6435 flags:0x00000000
-> 	[19647.705797][ T3721] Call Trace:
-> 	[19647.706188][ T3721]  __schedule+0x388/0xaf0
-> 	[19647.706723][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
-> 	[19647.707414][ T3721]  schedule+0x68/0xe0
-> 	[19647.707905][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
-> 	[19647.708597][ T3721]  down_write_nested+0xc1/0x130
-> 	[19647.709167][ T3721]  lock_two_nondirectories+0x59/0x70
-> 	[19647.709831][ T3721]  btrfs_remap_file_range+0x54/0x3c0
-> 	[19647.710505][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-> 	[19647.711197][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-> 	[19647.711902][ T3721]  do_vfs_ioctl+0x551/0x720
-> 	[19647.712434][ T3721]  ? __fget_files+0x109/0x1d0
-> 	[19647.713010][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-> 	[19647.713544][ T3721]  do_syscall_64+0x38/0x90
-> 	[19647.714098][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 	[19647.714818][ T3721] RIP: 0033:0x7f0ab2429cc7
-> 	[19647.715327][ T3721] RSP: 002b:00007f0ab03241d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> 	[19647.716326][ T3721] RAX: ffffffffffffffda RBX: 00007f0ab0324420 RCX: 00007f0ab2429cc7
-> 	[19647.717264][ T3721] RDX: 00007f0a981afe50 RSI: 00000000c0189436 RDI: 0000000000000012
-> 	[19647.718203][ T3721] RBP: 00007f0a981afe50 R08: 00007f0a983759e0 R09: 0000000000000000
-> 	[19647.719151][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a981afe50
-> 	[19647.720087][ T3721] R13: 00007f0ab0324428 R14: 0000000000000000 R15: 00007f0ab0324448
-> 	[19647.721041][ T3721] task:crawl_256_295   state:D stack:    0 pid: 6496 ppid:  6435 flags:0x00000000
-> 	[19647.722126][ T3721] Call Trace:
-> 	[19647.722517][ T3721]  __schedule+0x388/0xaf0
-> 	[19647.723060][ T3721]  schedule+0x68/0xe0
-> 	[19647.723524][ T3721]  wait_current_trans+0xed/0x150
-> 	[19647.724117][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
-> 	[19647.724697][ T3721]  start_transaction+0x37e/0x6f0
-> 	[19647.725273][ T3721]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-> 	[19647.725969][ T3721]  btrfs_attach_transaction+0x1d/0x20
-> 	[19647.726625][ T3721]  iterate_extent_inodes+0x7b/0x270
-> 	[19647.727236][ T3721]  iterate_inodes_from_logical+0x9f/0xe0
-> 	[19647.727912][ T3721]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-> 	[19647.728599][ T3721]  btrfs_ioctl_logical_to_ino+0x183/0x210
-> 	[19647.729263][ T3721]  btrfs_ioctl+0xa83/0x2fe0
-> 	[19647.729818][ T3721]  ? kvm_sched_clock_read+0x18/0x30
-> 	[19647.730430][ T3721]  ? sched_clock+0x9/0x10
-> 	[19647.730976][ T3721]  ? __fget_files+0xe6/0x1d0
-> 	[19647.731521][ T3721]  ? __fget_files+0x109/0x1d0
-> 	[19647.732096][ T3721]  __x64_sys_ioctl+0x91/0xc0
-> 	[19647.732647][ T3721]  ? __x64_sys_ioctl+0x91/0xc0
-> 	[19647.733209][ T3721]  do_syscall_64+0x38/0x90
-> 	[19647.733750][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 	[19647.734438][ T3721] RIP: 0033:0x7f0ab2429cc7
-> 	[19647.734992][ T3721] RSP: 002b:00007f0aaf322378 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> 	[19647.735994][ T3721] RAX: ffffffffffffffda RBX: 0000558110d25dd0 RCX: 00007f0ab2429cc7
-> 	[19647.736949][ T3721] RDX: 00007f0aaf322608 RSI: 00000000c038943b RDI: 0000000000000003
-> 	[19647.737895][ T3721] RBP: 00007f0aaf322550 R08: 0000000000000000 R09: 00007f0aaf3227e0
-> 	[19647.738862][ T3721] R10: 000019f231c642a4 R11: 0000000000000246 R12: 00007f0aaf322600
-> 	[19647.739799][ T3721] R13: 0000000000000003 R14: 00007f0aaf322608 R15: 00007f0aaf3225e0
-> 	[19647.740748][ T3721] task:crawl_257_292   state:D stack:    0 pid: 6502 ppid:  6435 flags:0x00000000
-> 	[19647.741832][ T3721] Call Trace:
-> 	[19647.742216][ T3721]  __schedule+0x388/0xaf0
-> 	[19647.742761][ T3721]  schedule+0x68/0xe0
-> 	[19647.743225][ T3721]  wait_current_trans+0xed/0x150
-> 	[19647.743825][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
-> 	[19647.744399][ T3721]  start_transaction+0x587/0x6f0
-> 	[19647.745003][ T3721]  btrfs_start_transaction+0x1e/0x20
-> 	[19647.745638][ T3721]  btrfs_replace_file_extents+0x135/0x8d0
-> 	[19647.746305][ T3721]  ? release_extent_buffer+0xae/0xf0
-> 	[19647.746973][ T3721]  btrfs_clone+0x828/0x8c0
-> 	[19647.747513][ T3721]  btrfs_extent_same_range+0x75/0xa0
-> 	[19647.748152][ T3721]  btrfs_remap_file_range+0x354/0x3c0
-> 	[19647.748802][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-> 	[19647.749460][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-> 	[19647.750098][ T3721]  do_vfs_ioctl+0x551/0x720
-> 	[19647.750666][ T3721]  ? __fget_files+0x109/0x1d0
-> 	[19647.751216][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-> 	[19647.751777][ T3721]  do_syscall_64+0x38/0x90
-> 	[19647.752290][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 	[19647.752992][ T3721] RIP: 0033:0x7f0ab2429cc7
-> 	[19647.753511][ T3721] RSP: 002b:00007f0aac31c1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> 	[19647.754500][ T3721] RAX: ffffffffffffffda RBX: 00007f0aac31c420 RCX: 00007f0ab2429cc7
-> 	[19647.755460][ T3721] RDX: 00007f0a787fc690 RSI: 00000000c0189436 RDI: 0000000000000012
-> 	[19647.756406][ T3721] RBP: 00007f0a787fc690 R08: 00007f0a78f4fd40 R09: 0000000000000000
-> 	[19647.757340][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a787fc690
-> 	[19647.758291][ T3721] R13: 00007f0aac31c428 R14: 0000000000000000 R15: 00007f0aac31c448
-> 	[19647.759261][ T3721] task:crawl_257_293   state:D stack:    0 pid: 6503 ppid:  6435 flags:0x00000000
-> 	[19647.760362][ T3721] Call Trace:
-> 	[19647.760761][ T3721]  __schedule+0x388/0xaf0
-> 	[19647.761261][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
-> 	[19647.761958][ T3721]  schedule+0x68/0xe0
-> 	[19647.762425][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
-> 	[19647.763126][ T3721]  down_write+0xbd/0x120
-> 	[19647.763643][ T3721]  btrfs_remap_file_range+0x2eb/0x3c0
-> 	[19647.764278][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-> 	[19647.764954][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-> 	[19647.765589][ T3721]  do_vfs_ioctl+0x551/0x720
-> 	[19647.766115][ T3721]  ? __fget_files+0x109/0x1d0
-> 	[19647.766700][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-> 	[19647.767238][ T3721]  do_syscall_64+0x38/0x90
-> 	[19647.767772][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 	[19647.768458][ T3721] RIP: 0033:0x7f0ab2429cc7
-> 	[19647.768990][ T3721] RSP: 002b:00007f0aabb1b1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> 	[19647.769986][ T3721] RAX: ffffffffffffffda RBX: 00007f0aabb1b420 RCX: 00007f0ab2429cc7
-> 	[19647.770951][ T3721] RDX: 00007f0a6c1f5ac0 RSI: 00000000c0189436 RDI: 0000000000000012
-> 	[19647.771894][ T3721] RBP: 00007f0a6c1f5ac0 R08: 00007f0a6d00da10 R09: 0000000000000000
-> 	[19647.772839][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a6c1f5ac0
-> 	[19647.773789][ T3721] R13: 00007f0aabb1b428 R14: 0000000000000000 R15: 00007f0aabb1b448
-> 	[19647.774784][ T3721] task:crawl_256_289   state:D stack:    0 pid: 6504 ppid:  6435 flags:0x00000000
-> 	[19647.775882][ T3721] Call Trace:
-> 	[19647.776271][ T3721]  __schedule+0x388/0xaf0
-> 	[19647.776807][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
-> 	[19647.777499][ T3721]  schedule+0x68/0xe0
-> 	[19647.777994][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
-> 	[19647.778712][ T3721]  down_write_nested+0xc1/0x130
-> 	[19647.779285][ T3721]  lock_two_nondirectories+0x59/0x70
-> 	[19647.779931][ T3721]  btrfs_remap_file_range+0x54/0x3c0
-> 	[19647.780564][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
-> 	[19647.781366][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
-> 	[19647.782009][ T3721]  do_vfs_ioctl+0x551/0x720
-> 	[19647.782554][ T3721]  ? __fget_files+0x109/0x1d0
-> 	[19647.783230][ T3721]  __x64_sys_ioctl+0x6f/0xc0
-> 	[19647.783804][ T3721]  do_syscall_64+0x38/0x90
-> 	[19647.784319][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 	[19647.785031][ T3721] RIP: 0033:0x7f0ab2429cc7
-> 	[19647.785548][ T3721] RSP: 002b:00007f0aab31a1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> 	[19647.786660][ T3721] RAX: ffffffffffffffda RBX: 00007f0aab31a420 RCX: 00007f0ab2429cc7
-> 	[19647.787609][ T3721] RDX: 00007f0a70008f00 RSI: 00000000c0189436 RDI: 0000000000000012
-> 	[19647.788551][ T3721] RBP: 00007f0a70008f00 R08: 00007f0a708e66e0 R09: 0000000000000000
-> 	[19647.789533][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a70008f00
-> 	[19647.790482][ T3721] R13: 00007f0aab31a428 R14: 0000000000000000 R15: 00007f0aab31a448
-> 	[32609.668575][ T3721] sysrq: Show Locks Held
-> 	[32609.673950][ T3721] 
-> 	[32609.673950][ T3721] Showing all locks held in the system:
-> 	[32609.675276][ T3721] 1 lock held by in:imklog/3603:
-> 	[32609.675885][ T3721] 1 lock held by dmesg/3720:
-> 	[32609.676432][ T3721]  #0: ffff8a1406ac80e0 (&user->lock){+.+.}-{3:3}, at: devkmsg_read+0x4d/0x320
-> 	[32609.678403][ T3721] 3 locks held by bash/3721:
-> 	[32609.678972][ T3721]  #0: ffff8a142a589498 (sb_writers#4){.+.+}-{0:0}, at: ksys_write+0x70/0xf0
-> 	[32609.680364][ T3721]  #1: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: __handle_sysrq+0x5/0xa0
-> 	[32609.682046][ T3721]  #2: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x23/0x187
-> 	[32609.683847][ T3721] 1 lock held by btrfs-transacti/6161:
-> 	[32609.684498][ T3721]  #0: ffff8a14e0178850 (&fs_info->transaction_kthread_mutex){+.+.}-{3:3}, at: transaction_kthread+0x5a/0x1b0
-> 	[32609.686275][ T3721] 3 locks held by crawl_257_265/6491:
-> 	[32609.686937][ T3721] 3 locks held by crawl_257_291/6494:
-> 	[32609.687578][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-> 	[32609.689126][ T3721]  #1: ffff8a1410d7c848 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
-> 	[32609.690694][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
-> 	[32609.692091][ T3721] 4 locks held by crawl_257_292/6502:
-> 	[32609.692763][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-> 	[32609.694014][ T3721]  #1: ffff8a131637a908 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
-> 	[32609.695377][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
-> 	[32609.696764][ T3721]  #3: ffff8a14bd0926b8 (sb_internal#2){.+.+}-{0:0}, at: btrfs_start_transaction+0x1e/0x20
-> 	[32609.697986][ T3721] 2 locks held by crawl_257_293/6503:
-> 	[32609.698629][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-> 	[32609.699882][ T3721]  #1: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: btrfs_remap_file_range+0x2eb/0x3c0
-> 	[32609.701674][ T3721] 3 locks held by crawl_256_289/6504:
-> 	[32609.702443][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
-> 	[32609.703927][ T3721]  #1: ffff8a140f2c4748 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
-> 	[32609.705444][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
-> 	[32609.706899][ T3721] 
-> 	[32609.707177][ T3721] =============================================
-> 
-> There is also a severe performance regression (50% slower) in btrfs dedupe
-> starting in 5.11, but reverting this commit doesn't make the performance
-> regression go away.  I'll follow up on that separately.
-> 
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index b8c911a4a320..e21c94bbc56c 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1109,6 +1109,22 @@ static u64 get_extent_allocation_hint(struct btrfs_inode *inode, u64 start,
+  * *page_started is set to one if we unlock locked_page and do everything
+  * required to start IO on it.  It may be clean and already done with
+  * IO when we return.
++ *
++ * When unlock == 1, we unlock the pages in successfully allocated regions. We
++ * leave them locked otherwise for writing them out.
++ *
++ * However, we unlock all the pages except @locked_page in case of failure.
++ *
++ * In summary, page locking state will be as follow:
++ *
++ * - page_started == 1 (return value)
++ *     - All the pages are unlocked. IO is started.
++ *     - Note that this can happen only on success
++ * - unlock == 0
++ *     - All the pages except @locked_page are unlocked in any case
++ * - unlock == 1
++ *     - On success, all the pages are locked for writing out them
++ *     - On failure, all the pages except @locked_page are unlocked
+  */
+ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 				   struct page *locked_page,
+@@ -1118,6 +1134,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	struct btrfs_root *root = inode->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	u64 alloc_hint = 0;
++	u64 orig_start = start;
+ 	u64 num_bytes;
+ 	unsigned long ram_size;
+ 	u64 cur_alloc_size = 0;
+@@ -1305,6 +1322,10 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
+ 		EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV;
+ 	page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
++	/* Ensure we unlock all the pages except @locked_page in the error case */
++	if (!unlock && orig_start < start)
++		extent_clear_unlock_delalloc(inode, orig_start, start - 1,
++					     locked_page, clear_bits, page_ops);
+ 	/*
+ 	 * If we reserved an extent for our delalloc range (or a subrange) and
+ 	 * failed to create the respective ordered extent, then it means that
+-- 
+2.34.1
 
