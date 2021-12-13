@@ -2,195 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A61473038
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Dec 2021 16:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3C9473144
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Dec 2021 17:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238657AbhLMPOQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Dec 2021 10:14:16 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:57304 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhLMPOQ (ORCPT
+        id S240446AbhLMQIL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Dec 2021 11:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235140AbhLMQIK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Dec 2021 10:14:16 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D8BD01F3B9;
-        Mon, 13 Dec 2021 15:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1639408454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VWD6Wz6lKcIRObFlT8ZFdtZryGQOrENU9yEA3+yeZ1k=;
-        b=C44FH0RwS6uIjjJlsmNG9xIkFhdBCE/RQ53JCgnFCGsbcd7ubQOwtd557U29AESYD2igaC
-        nYf+OX7c1w9CXRkP+qkO9sgfTNaPQWCvu0CmO2ty9+WBltKn2qS26FQ8xwuFN1MtIKnMWR
-        TILn4DbvA87TKk5qwwptEnlDwXS4+1s=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D12213E11;
-        Mon, 13 Dec 2021 15:14:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id g/VDI0Zjt2GkPgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 13 Dec 2021 15:14:14 +0000
-Subject: Re: [PATCH v2 1/2] btrfs: harden identification of the stale device
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com
-References: <cover.1639155519.git.anand.jain@oracle.com>
- <612eac6f9309cbee107afbbd4817c0a628207438.1639155519.git.anand.jain@oracle.com>
- <12c701b1-d8c8-e645-201f-ac5a411ab03f@suse.com>
-Message-ID: <55ef44fc-6293-50a8-db5f-914226e1a89c@suse.com>
-Date:   Mon, 13 Dec 2021 17:14:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 13 Dec 2021 11:08:10 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB2FC06173F
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Dec 2021 08:08:10 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id bu11so14852182qvb.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Dec 2021 08:08:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LQ6V+5PKWmKsrEUDdUTkk+sDCV7Os7+b/QCukNdxnyA=;
+        b=bVu7OVxvmdxpDId8dPKzAKiErFEY5VylFumr61+cJkl/RmlqoN+vmMAlMIzTBdF597
+         neH69s8hxt2wB/84JL+mUeO8Ij1qPtv/kQ2S9GDlztbuT6ZjXvrt7a84urjVL7VxB69M
+         PrxWFcQLcOvnuNwny3cIKzFsM5K6TmeOqyxFyfPl/ZRmPETwgIvGEqOE4os8upc7yYk4
+         Ivuh/DHSMVA+CR85Gm38ycqLNB1dNMKC0xOyo0BH+H9o1fGzMfk0kW5UB6Jj5XwNZ2ba
+         /+gLy/P+Owyk+8CAF0YPeRClMJKwTqqkshEYjeQMui1rer9SSYGVB56yltNCZc9UNAyo
+         lYhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LQ6V+5PKWmKsrEUDdUTkk+sDCV7Os7+b/QCukNdxnyA=;
+        b=Pnos00TffC24wWRNUqyA0O/Q7HA6Rlesp4UYXseCpnefxgpYZeefsesMhyoyUk0KGY
+         35gSBBOrilT5sc2nLoUSQZc63hIN4IVaWngqCXDbxWIdwysQE2oJS6TylOkFaRa32D8v
+         IStBq2dqAMKcbX7VehhPeLgWnObKlSQMYg00Z5j2yV6pigg84Et7V2avFKJedHuZgM9F
+         xmry0nOqGdOVLQPYi/W3rbk0F9d5VUKd6MMiEGjUXuRY9D4Vmv2wYp189JetSOScZaZc
+         9QSxl9DDmTwTpszpMVN594azQ39Qt/PVvgkSSU50+EOrYQm3scdhNCJ4O/RMyUMTHgOE
+         4gfg==
+X-Gm-Message-State: AOAM533QbmBrF1LZlYfC11Xi+LpwUJFViGSYJ2mlG984VO0oQHa+cI0l
+        lRdvHrpMiUVJQ/0UzGQIe67qqOX3W3wZXg==
+X-Google-Smtp-Source: ABdhPJwaDxO9T+GT42UVZBTxmFmyNJwihneP9LUUGty0VgKviiOsWrbYExRkutoKH3/YmPRxJ6oTag==
+X-Received: by 2002:a05:6214:20e4:: with SMTP id 4mr44533120qvk.95.1639411689048;
+        Mon, 13 Dec 2021 08:08:09 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id j12sm11154521qta.54.2021.12.13.08.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Dec 2021 08:08:08 -0800 (PST)
+Date:   Mon, 13 Dec 2021 11:08:07 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Subject: Re: [PATCH] btrfs: ensure pages are unlocked on cow_file_range()
+ failure
+Message-ID: <Ybdv53DkPk7+XdYn@localhost.localdomain>
+References: <20211213034338.949507-1-naohiro.aota@wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <12c701b1-d8c8-e645-201f-ac5a411ab03f@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211213034338.949507-1-naohiro.aota@wdc.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Dec 13, 2021 at 12:43:38PM +0900, Naohiro Aota wrote:
+> There is a hung_task report regarding page lock on zoned btrfs like below.
+> 
+> https://github.com/naota/linux/issues/59
+> 
+> [  726.328648] INFO: task rocksdb:high0:11085 blocked for more than 241 seconds.
+> [  726.329839]       Not tainted 5.16.0-rc1+ #1
+> [  726.330484] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  726.331603] task:rocksdb:high0   state:D stack:    0 pid:11085 ppid: 11082 flags:0x00000000
+> [  726.331608] Call Trace:
+> [  726.331611]  <TASK>
+> [  726.331614]  __schedule+0x2e5/0x9d0
+> [  726.331622]  schedule+0x58/0xd0
+> [  726.331626]  io_schedule+0x3f/0x70
+> [  726.331629]  __folio_lock+0x125/0x200
+> [  726.331634]  ? find_get_entries+0x1bc/0x240
+> [  726.331638]  ? filemap_invalidate_unlock_two+0x40/0x40
+> [  726.331642]  truncate_inode_pages_range+0x5b2/0x770
+> [  726.331649]  truncate_inode_pages_final+0x44/0x50
+> [  726.331653]  btrfs_evict_inode+0x67/0x480
+> [  726.331658]  evict+0xd0/0x180
+> [  726.331661]  iput+0x13f/0x200
+> [  726.331664]  do_unlinkat+0x1c0/0x2b0
+> [  726.331668]  __x64_sys_unlink+0x23/0x30
+> [  726.331670]  do_syscall_64+0x3b/0xc0
+> [  726.331674]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  726.331677] RIP: 0033:0x7fb9490a171b
+> [  726.331681] RSP: 002b:00007fb943ffac68 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
+> [  726.331684] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb9490a171b
+> [  726.331686] RDX: 00007fb943ffb040 RSI: 000055a6bbe6ec20 RDI: 00007fb94400d300
+> [  726.331687] RBP: 00007fb943ffad00 R08: 0000000000000000 R09: 0000000000000000
+> [  726.331688] R10: 0000000000000031 R11: 0000000000000246 R12: 00007fb943ffb000
+> [  726.331690] R13: 00007fb943ffb040 R14: 0000000000000000 R15: 00007fb943ffd260
+> [  726.331693]  </TASK>
+> 
+> While we debug the issue, we found running fstests generic/551 on 5GB
+> non-zoned null_blk device in the emulated zoned mode also had a
+> similar hung issue.
+> 
+> The hang occurs when cow_file_range() fails in the middle of
+> allocation. cow_file_range() called from do_allocation_zoned() can
+> split the give region ([start, end]) for allocation depending on
+> current block group usages. When btrfs can allocate bytes for one part
+> of the split regions but fails for the other region (e.g. because of
+> -ENOSPC), we return the error leaving the pages in the succeeded regions
+> locked. Technically, this occurs only when @unlock == 0. Otherwise, we
+> unlock the pages in an allocated region after creating an ordered
+> extent.
+> 
+> Theoretically, the same issue can happen on
+> submit_uncompressed_range(). However, I could not make it happen even
+> if I modified the code to go always through
+> submit_uncompressed_range().
+> 
+> Considering the callers of cow_file_range(unlock=0) won't write out
+> the pages, we can unlock the pages on error exit from
+> cow_file_range(). So, we can ensure all the pages except @locked_page
+> are unlocked on error case.
+> 
+> In summary, cow_file_range now behaves like this:
+> 
+> - page_started == 1 (return value)
+>   - All the pages are unlocked. IO is started.
+> - unlock == 0
+>   - All the pages except @locked_page are unlocked in any case
+> - unlock == 1
+>   - On success, all the pages are locked for writing out them
+>   - On failure, all the pages except @locked_page are unlocked
+> 
+> Fixes: 42c011000963 ("btrfs: zoned: introduce dedicated data write path for zoned filesystems")
+> CC: stable@vger.kernel.org # 5.12+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+> Theoretically, this can fix a potential issue in
+> submit_uncompressed_range(). However, I set the stable target only
+> related to zoned code, because I cannot make compress writes fail on
+> regular btrfs.
+> ---
 
+I spent a good deal of time going through this code, and it needs some cleaning
+up that can be done separately from this patch.  However this patch isn't quite
+right either.
 
-On 13.12.21 г. 17:04, Nikolay Borisov wrote:
-> 
-> 
-> On 10.12.21 г. 20:15, Anand Jain wrote:
->> Identifying and removing the stale device from the fs_uuids list is done
->> by the function btrfs_free_stale_devices().
->> btrfs_free_stale_devices() in turn depends on the function
->> device_path_matched() to check if the device repeats in more than one
->> btrfs_device structure.
->>
->> The matching of the device happens by its path, the device path. However,
->> when dm mapper is in use, the dm device paths are nothing but a link to
->> the actual block device, which leads to the device_path_matched() failing
->> to match.
->>
->> Fix this by matching the dev_t as provided by lookup_bdev() instead of
->> plain strcmp() the device paths.
->>
->> Reported-by: Josef Bacik <josef@toxicpanda.com>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->>
->> v2: Fix 
->>      sparse: warning: incorrect type in argument 1 (different address spaces)
->>      For using device->name->str
->>
->>     Fix Josef suggestion to pass dev_t instead of device-path in the
->>      patch 2/2.
->>
->>  fs/btrfs/volumes.c | 41 ++++++++++++++++++++++++++++++++++++-----
->>  1 file changed, 36 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 1b02c03a882c..559fdb0c4a0e 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -534,15 +534,46 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
->>  	return ret;
->>  }
->>  
->> -static bool device_path_matched(const char *path, struct btrfs_device *device)
->> +/*
->> + * Check if the device in the 'path' matches with the device in the given
->> + * struct btrfs_device '*device'.
->> + * Returns:
->> + *	0	If it is the same device.
->> + *	1	If it is not the same device.
->> + *	-errno	For error.
-> 
-> This convention is somewhat confusing. This function returns a boolean
-> meaniing if a device matched or not, yet the retval follows strcmp
-> convention of return values. That is make 1 mean "device matched" and
-> "0" mean device not matched. Because ultimately that's what we care for.
-> 
-> Furthermore you give it the ability to return an error which not
-> consumed at all. Simply make the function boolean and return false if an
-> error is encountered by some of the internal calls.
-> 
->> + */
->> +static int device_matched(struct btrfs_device *device, const char *path)
->>  {
->> -	int found;
->> +	char *device_name;
->> +	dev_t dev_old;
->> +	dev_t dev_new;
->> +	int ret;
->> +
->> +	device_name = kzalloc(BTRFS_PATH_NAME_MAX, GFP_KERNEL);
->> +	if (!device_name)
->> +		return -ENOMEM;
->>  
->>  	rcu_read_lock();
->> -	found = strcmp(rcu_str_deref(device->name), path);
->> +	ret = sprintf(device_name, "%s", rcu_str_deref(device->name));
->>  	rcu_read_unlock();
->> +	if (!ret) {
->> +		kfree(device_name);
->> +		return -EINVAL;
->> +	}
->>  
->> -	return found == 0;
->> +	ret = lookup_bdev(device_name, &dev_old);
-> 
-> Instead of allocating memory for storing device->name and freeing it,
-> AFAICS lookup_bdev can be called under rcu read section so you can
-> simply call lookup_bdev under rcu_read_lock which simplifies memory
-> management.
+For the unlock == 1 case we'll just leave the ordered extent sitting around,
+never submitting it for IO.  So eventually we'll come around and do
+btrfs_wait_ordered_extent() and hang.
 
-lookup_bdev calls kern_path->filejame_lookup which does an initial try
-to lookup the name via an RCU but if it gets a ESTALE/ECHILD it will
-fallback to a full path resolution and that *might* sleep so actually
-doing the dynamic memory allocation is necessary... Bummer.
+We need the extent_clear_unlock_delalloc() with START_WRITEBACK and
+END_WRITEBACK so the ordered extent cleanup for the one we created gets run, we
+just need to not do the PAGE_UNLOCK for that range.
 
-> 
-> 
-> In the end this function really boils down to making 2 calls to
-> lookup_bdev and comparing their values for equality, no need for
-> anything more fancy than that.
-> 
-> 
->> +	kfree(device_name);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = lookup_bdev(path, &dev_new);
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (dev_old == dev_new)
->> +		return 0;
->> +
->> +	return 1;
->>  }
->>  
->>  /*
->> @@ -577,7 +608,7 @@ static int btrfs_free_stale_devices(const char *path,
-> 
-> What's more lookinng at the body of free_stale_device I find the name of
-> the function somewhat confusing. What it does is really delete all
-> devices from all fs_devices which match a particular criterion for a
-> device path i.e the function's body doesn't deal with the concept of
-> "stale" at all. As such I think it should be renamed and given a more
-> generic name like btrfs_free_specific_device or something along those
-> lines.
-> 
->>  				continue;
->>  			if (path && !device->name)
->>  				continue;
->> -			if (path && !device_path_matched(path, device))
->> +			if (path && device_matched(device, path) != 0)
->>  				continue;
->>  			if (fs_devices->opened) {
->>  				/* for an already deleted device return 0 */
->>
-> 
+Also you are doing CLEAR_META_RESV here, which isn't correct because that'll be
+handled at ordered extent cleanup time.  I'm sort of surprised you didn't get
+leak errors with this fix.
+
+There's like 3 different error conditions we want to handle here, all with
+subtly different error handling.
+
+1. We didn't do anything, we can just clean everything up.  We can just do
+
+        clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |  
+                EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV;
+        page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;   
+        extent_clear_unlock_delalloc(inode, start, end, locked_page,
+                                     clear_bits | EXTENT_CLEAR_DATA_RESV,                                  
+                                     page_ops);
+
+  This is because we need to clear the META and DATA reservations, and we need
+  to unlock all pages (except lock_page) and be done.
+
+2. start == orig_start, but we couldn't create our ordered_extent.  The above
+   needs to be called on [start, start+ins.offset-1] without DATA_RESV because
+   that was handled by the btrfs_reserve_extent().  Then we need to do the above
+   for [start+ins.offset, end] if they aren't equal.
+
+3. Finally your case, start != orig_start, and btrfs_reserve_extent() failed.
+   In both the unlock == 1 and unlock == 0 case we have to make sure that we get
+   START_WRITEBACK | END_WRITEBACK for the [orig_start, start - 1] range,
+   without DATA_RESV or META_RESV as that'll be handled by the ordered extent
+   cleanup.  Then we need to do the above with the range [start, end].
+
+I'd like to see the error handling cleaned up, but at the very least your fix is
+incomplete.  If you tackle the cleanup that can be separate.  Thanks,
+
+Josef
