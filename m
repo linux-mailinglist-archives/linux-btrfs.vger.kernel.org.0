@@ -2,134 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1A74743A8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 14:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923CE4744AC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 15:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhLNNjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Dec 2021 08:39:45 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:53030 "EHLO
+        id S234863AbhLNOT4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 09:19:56 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:58324 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbhLNNjo (ORCPT
+        with ESMTP id S232574AbhLNOTz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 08:39:44 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4AAA31F37C;
-        Tue, 14 Dec 2021 13:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1639489183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=kCfdNKANQDjdZd9a2+K2InADM55fbbOxcBwjJd0VgK4=;
-        b=iWO/DfBzUiYqDZXMHJ/oX7EVfMhLrSbTY4tHpEbeR40KiVfV1ZvnSGpb0aMUMk0Fi0AytC
-        KNaLYXgXfwKLzbJ8mEMz2AlLZYH+dbRhaQe9VniZu9v7DFLvggInFAaJd7MRIEHGVVEpJc
-        2QdUczNzcjigoUoYpcXcqlwUeOtQXMU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 125BD13C66;
-        Tue, 14 Dec 2021 13:39:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1GJmAZ+euGGALwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 14 Dec 2021 13:39:43 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Refactor unlock_up
-Date:   Tue, 14 Dec 2021 15:39:39 +0200
-Message-Id: <20211214133939.751395-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Dec 2021 09:19:55 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CE8AB1F37C;
+        Tue, 14 Dec 2021 14:19:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1639491594;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+K46k478oUVkXYKrqTdVKkvw91f4yk7wFvLkWw42J9A=;
+        b=H2R6yLAVtjfzfth92t4UqD/c7VhvnKFrDUkgfhLs1UJbVGn6B395lW/IpCYYTanMb1gl2X
+        I2dkT2wlLEjRzJkTmUTHR3yo4UFn+jrLovDCrrtXxKv+0TXNd4DPp1n43YvDfGLIfRX00W
+        K2ALpb40AhemdQWXjuqeh4A1PHzQv60=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1639491594;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+K46k478oUVkXYKrqTdVKkvw91f4yk7wFvLkWw42J9A=;
+        b=koWl/oiKNmQ5QfaKWu+i17+0zuQNXLgKRk7aIQqMzgz4cZR+/4FS+aOuwUus29eD8rGy6u
+        +ipVOHgiVIMd80Dw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C50BDA3B81;
+        Tue, 14 Dec 2021 14:19:54 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8EC1DDA781; Tue, 14 Dec 2021 15:19:36 +0100 (CET)
+Date:   Tue, 14 Dec 2021 15:19:36 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: check WRITE_ERR when trying to read an extent
+ buffer
+Message-ID: <20211214141936.GU28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, Filipe Manana <fdmanana@suse.com>
+References: <1676bf652be3e37ef3ae55ed784c8f0ab2ff3f8f.1639423346.git.josef@toxicpanda.com>
+ <YbhyxZPERYm4DYFU@debian9.Home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YbhyxZPERYm4DYFU@debian9.Home>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The purpose of this function is to unlock all nodes in a btrfs path
-which are above 'lowest_unlock' and whose slot used is different than 0.
-As such it used slightly awkward structure of 'if' as well as somewhat
-cryptic "no_skip" control variable which denotes whether we should
-check the current level of skipiability or no.
+On Tue, Dec 14, 2021 at 10:32:37AM +0000, Filipe Manana wrote:
+> On Mon, Dec 13, 2021 at 02:22:33PM -0500, Josef Bacik wrote:
+> > Filipe reported a hang when we have errors on btrfs.  This turned out to
+> > be a side-effect of my fix 666cc468424b ("btrfs: clear extent buffer
+> > uptodate when we fail to write it") which made it so we clear
+> 
+> The commit in Linus' tree is c2e39305299f0118298c2201f6d6cc7d3485f29e.
+> 
+> > EXTENT_BUFFER_UPTODATE on an eb when we fail to write it out.
+> > 
+> > Below is a paste of Filipe's analysis he got from using drgn to debug
+> > the hang
+> > 
+> > """
+> > btree readahead code calls read_extent_buffer_pages(), sets ->io_pages to
+> > a value while writeback of all pages has not yet completed:
+> >    --> writeback for the first 3 pages finishes, we clear
+> >        EXTENT_BUFFER_UPTODATE from eb on the first page when we get an
+> >        error.
+> >    --> at this point eb->io_pages is 1 and we cleared Uptodate bit from the
+> >        first 3 pages
+> >    --> read_extent_buffer_pages() does not see EXTENT_BUFFER_UPTODATE() so
+> >        it continues, it's able to lock the pages since we obviously don't
+> >        hold the pages locked during writeback
+> >    --> read_extent_buffer_pages() then computes 'num_reads' as 3, and sets
+> >        eb->io_pages to 3, since only the first page does not have Uptodate
+> >        bit set at this point
+> >    --> writeback for the remaining page completes, we ended decrementing
+> >        eb->io_pages by 1, resulting in eb->io_pages == 2, and therefore
+> >        never calling end_extent_buffer_writeback(), so
+> >        EXTENT_BUFFER_WRITEBACK remains in the eb's flags
+> >    --> of course, when the read bio completes, it doesn't and shouldn't
+> >        call end_extent_buffer_writeback()
+> >    --> we should clear EXTENT_BUFFER_UPTODATE only after all pages of
+> >        the eb finished writeback?  or maybe make the read pages code
+> >        wait for writeback of all pages of the eb to complete before
+> >        checking which pages need to be read, touch ->io_pages, submit
+> >        read bio, etc
+> > 
+> > writeback bit never cleared means we can hang when aborting a
+> > transaction, at:
+> > 
+> >     btrfs_cleanup_one_transaction()
+> >        btrfs_destroy_marked_extents()
+> >          wait_on_extent_buffer_writeback()
+> > """
+> > 
+> > This is a problem because our writes are not synchronized with reads in
+> > any way.  We clear the UPTODATE flag and then we can easily come in and
+> > try to read the EB while we're still waiting on other bio's to
+> > complete.
+> > 
+> > We have two options here, we could lock all the pages, and then check to
+> > see if eb->io_pages != 0 to know if we've already got an outstanding
+> > write on the eb.
+> > 
+> > Or we can simply check to see if we have WRITE_ERR set on this extent
+> > buffer.  We set this bit _before_ we clear UPTODATE, so if the read gets
+> > triggered because we aren't UPTODATE because of a write error we're
+> > guaranteed to have WRITE_ERR set, and in this case we can simply return
+> > -EIO.  This will fix the reported hang.
+> > 
+> > Reported-by: Filipe Manana <fdmanana@suse.com>
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> As this is already in Linus' tree, and it was tagged for stable backports, it should
+> include:
+> 
+> Fixes: c2e39305299f01 ("btrfs: clear extent buffer uptodate when we fail to write it")
+> 
+> David can probably add that and fix the commit id above.
 
-This patch does the following (cosmetic) refactorings:
-
-* Renames 'no_skip' to 'check_skip' and makes it a boolean. This
-variable controls whether we are below the lowest_unlock/skip_level
-levels.
-
-* Consolidates the 2 conditions which warrant checking whether the
-current level should be skipped under 1 common if (check_skip) branch,
-this increase indentation level but is not critical.
-
-* Consolidates the 'skip_level < i && i >= lowest_unlock' and
-'i >= lowest_unlock && i > skip_level' condition into a common branch
-since those are identical.
-
-* Eliminates the local extent_buffer variable as in this case it doesn't
-bring anything to function readability.
-
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/ctree.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 62066c034363..ab2ea0b2863c 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1348,33 +1348,34 @@ static noinline void unlock_up(struct btrfs_path *path, int level,
- {
- 	int i;
- 	int skip_level = level;
--	int no_skips = 0;
--	struct extent_buffer *t;
-+	int check_skip = true;
- 
- 	for (i = level; i < BTRFS_MAX_LEVEL; i++) {
- 		if (!path->nodes[i])
- 			break;
- 		if (!path->locks[i])
- 			break;
--		if (!no_skips && path->slots[i] == 0) {
--			skip_level = i + 1;
--			continue;
--		}
--		if (!no_skips && path->keep_locks) {
--			u32 nritems;
--			t = path->nodes[i];
--			nritems = btrfs_header_nritems(t);
--			if (nritems < 1 || path->slots[i] >= nritems - 1) {
-+
-+		if (check_skip) {
-+			if (path->slots[i] == 0) {
- 				skip_level = i + 1;
- 				continue;
- 			}
-+
-+			if (path->keep_locks) {
-+				u32 nritems;
-+
-+				nritems = btrfs_header_nritems(path->nodes[i]);
-+				if (nritems < 1 || path->slots[i] >= nritems - 1) {
-+					skip_level = i + 1;
-+					continue;
-+				}
-+			}
- 		}
--		if (skip_level < i && i >= lowest_unlock)
--			no_skips = 1;
- 
--		t = path->nodes[i];
- 		if (i >= lowest_unlock && i > skip_level) {
--			btrfs_tree_unlock_rw(t, path->locks[i]);
-+			check_skip = false;
-+			btrfs_tree_unlock_rw(path->nodes[i], path->locks[i]);
- 			path->locks[i] = 0;
- 			if (write_lock_level &&
- 			    i > min_write_lock_level &&
--- 
-2.25.1
-
+Yeah, thanks for catching it. The stable backport of c2e39305299f01 has
+been released meanwhile so this one need to go in the next round.
