@@ -2,97 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA8A474CBB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 21:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E923474DE3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 23:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhLNUl2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Dec 2021 15:41:28 -0500
-Received: from smtp-31-wd.italiaonline.it ([213.209.13.31]:45341 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237681AbhLNUlZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 15:41:25 -0500
-Received: from [192.168.1.27] ([78.12.25.242])
-        by smtp-31.iol.local with ESMTPA
-        id xEbym6Bneg9rVxEbymb4B1; Tue, 14 Dec 2021 21:41:23 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1639514483; bh=9lZjsFpySmOBoDRps+RBOy/dPsgDYjIKXslZ4Y5NwgU=;
-        h=From;
-        b=rZhVIVtfbquJVR/d2nuTf9WL992AF8JehTCZf1HO1qvIUV/o+yRq/Q8ed1H9Fi5QZ
-         YkKQ+gVBxDiol/a4g56LKfcq5sCh7MZArl6qEsriAPwKJPGErl4JNLLnUlqbeQGjtY
-         zC+9pdqnsdaAt2tJXGUQ9+X2w7BgJ/qsnhCrOEWPsswbz71KOk4nkk46EU/Ftm3nR7
-         4JOkzTXwaRGRjsZfOKGPVc1EVKhH6T6kdrbmm9DbK6mlNfOZ8orzfsZPROIYhPt3lo
-         itJ35jdog/o+8a2bsPEnhAjQNnlG7BdtK/AyT4Uxu+tcAb718NDjbM72Zbjrg3+zef
-         tnGrcoWwdpKZQ==
-X-CNFS-Analysis: v=2.4 cv=T8hJ89GQ c=1 sm=1 tr=0 ts=61b90173 cx=a_exe
- a=IXMPufAKhGEaWfwa3qtiyQ==:117 a=IXMPufAKhGEaWfwa3qtiyQ==:17
- a=IkcTkHD0fZMA:10 a=8YGpo9N-opDnXBGvkPAA:9 a=QEXdDO2ut3YA:10
-Message-ID: <be4e6028-7d1d-6ba9-d16f-f5f38a79866f@libero.it>
-Date:   Tue, 14 Dec 2021 21:41:21 +0100
+        id S233242AbhLNWZG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 17:25:06 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:58662 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231132AbhLNWZF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Dec 2021 17:25:05 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C7CD7210E8;
+        Tue, 14 Dec 2021 22:25:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1639520704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w2VJp5tz8QE9d9DblbqM8CrpkrjZKmlpSZWUCgjE+P8=;
+        b=K/kKnjG5sc/fXYWFQCoNsyDou8tXPKyKiuy+78APBEVIFFhVKCxKIRJH4Jgzm0cIJlb901
+        gO+hzIEWjRkbA4oBNZ4gttkRQwchTj09CBmjQ8YdHylGqVcfcU72fx9T1gACsVJo375nS2
+        gxRtwEeUVIk4BHp3XyZzwfUP+KzHk3U=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9934413ED3;
+        Tue, 14 Dec 2021 22:25:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OfdwIsAZuWFNAwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 14 Dec 2021 22:25:04 +0000
+Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1: 3078d85c9a10 vfs:
+ verify source area in vfs_dedupe_file_range_one()
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20211210183456.GP17148@hungrycats.org>
+ <25f4d4fd-1727-1c9f-118a-150d9c263c93@suse.com>
+ <YbfTYFQVGCU0Whce@hungrycats.org>
+ <fc395aed-2cbd-f6e5-d167-632c14a07188@suse.com>
+ <Ybj1jVYu3MrUzVTD@hungrycats.org>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <c6125582-a1dc-1114-8211-48437dbf4976@suse.com>
+Date:   Wed, 15 Dec 2021 00:25:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Reply-To: kreijack@inwind.it
-Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+In-Reply-To: <Ybj1jVYu3MrUzVTD@hungrycats.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1635089352.git.kreijack@inwind.it>
- <SYXPR01MB1918689AF49BE6E6E031C8B69E749@SYXPR01MB1918.ausprd01.prod.outlook.com>
- <1d725df7-b435-4acf-4d17-26c2bd171c1a@libero.it>
- <Ybe34gfrxl8O89PZ@localhost.localdomain> <YbfN8gXHsZ6KZuil@hungrycats.org>
- <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
- <Ybj40IuxdaAy75Ue@hungrycats.org> <Ybj/0ITsCQTBLkQF@localhost.localdomain>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <Ybj/0ITsCQTBLkQF@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNRTcwzd/K/5ZIzq/nnvpXkDP+nUeknjVqqDP7Zz5YzxDfVHSR58U1g6QTxzm/v283XXd8+ZRNs1PeCREt8a1Udb0xdLsoDoJOfNeUIampiNdXnCW/ga
- OgC22nH2uuuia1IYcrB48IxelGlxvrONNu8WJ6MTCp4wKcItWOrrAYqNLswBJEa3wTUYYVCZ+UKhh+NxAfsnNKeOtvIfW8NoFZDDxFokFAU4WO4PglOmZM5q
- C0YFh+ifh9grkqVFwidrCSafWdHB/opYAVjPW3zSCAd889xVj2nu5xEnvvFbpNiAJ0ZqdaSlTq500fgO+pdQaR+vbXqgbTlo9fw4e2B+khQgg8kK15Q8XnuZ
- ygK4/KMI
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/14/21 21:34, Josef Bacik wrote:
-> On Tue, Dec 14, 2021 at 03:04:32PM -0500, Zygo Blaxell wrote:
->> On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
 
+
+On 14.12.21 г. 21:50, Zygo Blaxell wrote:
+> On Tue, Dec 14, 2021 at 01:11:24PM +0200, Nikolay Borisov wrote:
 >>
->> I don't have a strong preference for either sysfs or ioctl, nor am I
->> opposed to simply implementing both.  I'll let someone who does have
->> such a preference make their case.
+>>
+>> On 14.12.21 г. 1:12, Zygo Blaxell wrote:
+>>> On Mon, Dec 13, 2021 at 03:28:26PM +0200, Nikolay Borisov wrote:
+>>>> On 10.12.21 г. 20:34, Zygo Blaxell wrote:
+>>>>> I've been getting deadlocks in dedupe on btrfs since kernel 5.11, and
+>>>>> some bees users have reported it as well.  I bisected to this commit:
+>>>>>
+>>>>> 	3078d85c9a10 vfs: verify source area in vfs_dedupe_file_range_one()
+>>>>>
+>>>>> These kernels work for at least 18 hours:
+>>>>>
+>>>>> 	5.10.83 (months)
+>>>>> 	5.11.22 with 3078d85c9a10 reverted (36 hours)
+>>>>> 	btrfs misc-next 66dc4de326b0 with 3078d85c9a10 reverted
+>>>>>
+>>>>> These kernels lock up in 3 hours or less:
+>>>>>
+>>>>> 	5.11.22
+>>>>> 	5.12.19
+>>>>> 	5.14.21
+>>>>> 	5.15.6
+>>>>> 	btrfs for-next 279373dee83e
+>>>>>
+>>>>> All of the failing kernels include this commit, none of the non-failing
+>>>>> kernels include the commit.
+>>>>>
+>>>>> Kernel logs from the lockup:
+>>>>>
+>>>>> 	[19647.696042][ T3721] sysrq: Show Blocked State
+>>>>> 	[19647.697024][ T3721] task:btrfs-transacti state:D stack:    0 pid: 6161 ppid:     2 flags:0x00004000
+>>>>> 	[19647.698203][ T3721] Call Trace:
+>>>>> 	[19647.698608][ T3721]  __schedule+0x388/0xaf0
+>>>>> 	[19647.699125][ T3721]  schedule+0x68/0xe0
+>>>>> 	[19647.699615][ T3721]  btrfs_commit_transaction+0x97c/0xbf0
+>>>>
+>>>> Can you run this through symbolize script as I'd like to understand
+>>>> where in transaction commit the sleep is happening. 
+>>>
+>>> 	btrfs_commit_transaction+0x97c/0xbf0:
+>>>
+>>> 	btrfs_commit_transaction at fs/btrfs/transaction.c:2159 (discriminator 9)
+>>> 	 2154
+>>> 	 2155           ret = btrfs_run_delayed_items(trans);
+>>> 	 2156           if (ret)
+>>> 	 2157                   goto cleanup_transaction;
+>>> 	 2158
+>>> 	>2159<          wait_event(cur_trans->writer_wait,
+>>> 	 2160                      extwriter_counter_read(cur_trans) == 0);
+>>> 	 2161
+>>> 	 2162           /* some pending stuffs might be added after the previous flush. */
+>>> 	 2163           ret = btrfs_run_delayed_items(trans);
+>>> 	 2164           if (ret)
+>>>
+>>
+>> So it seems there is an open transaction handle thus commit can't
+>> continue and everything is stalled behind. Would you be able to run the
+>> attached python script on a host which is stuck. It requires you having
+>> debug symbols for the kernel installed as well as
+>> https://github.com/osandov/drgn/ which is a scriptable debugger. The
+>> easiest way would to follow the instructions at
+>> https://drgn.readthedocs.io/en/latest/installation.html and just get it
+>> via pip.
+>>
+>>
+>> Once you have it installed run it by doing:
+>>
+>> "sudo drgn get-num-extwriters.py 310dd372-0fd1-4496-a232-0fb46ca4afd6"
+>>
+>> Where 310dd372-0fd1-4496-a232-0fb46ca4afd6 is the fsid as taken from
+>> 'blkid' which corresponds to the wedged fs.
 > 
-> I think echo'ing a name into sysfs is better than bits for sure.  However I want
-> the ability to set the device properties via a btrfs-progs command offline so I
-> can setup the storage and then mount the file system.  I want
+> [drum roll noises...]
 > 
-> 1) The sysfs interface so you can change things on the fly.  This stays
->     persistent of course, so the way it works is perfect.
-> 
-> 2) The btrfs-progs command sets it on offline devices.  If you point it at a
->     live mounted fs it can simply use the sysfs thing to do it live.
+> 	[f79c1081-d81d-4abc-8b47-3b15bf2f93c5] num_extwriters is: 1
 
-#2 is currently not implemented. However I think that we should do.
+Huhz, this means there is an open transaction handle somewhere o_O. I
+checked back the stacktraces in your original email but couldn't see
+where that might be coming from. I.e all processes are waiting on
+wait_current_trans and this happens _before_ the transaction handle is
+opened, hence num_extwriters can't have been incremented by them.
 
-The problem is that we need to update both:
+When an fs wedges, and you get again num_extwriters can you provde the
+output of "echo w > /proc/sysrq-trigger"
 
-- the superblock		(simple)
-- the dev_item item		(not so simple...)
-
-What about using only bits from the superblock to store this property ?
-
-> 
-> Does this seem reasonable?  Thanks,
-> 
-> Josef
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+<snip>
