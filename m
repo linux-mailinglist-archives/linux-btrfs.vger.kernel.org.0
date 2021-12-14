@@ -2,138 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE01D474C47
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 20:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F39474C6A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 21:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237522AbhLNTuj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 14 Dec 2021 14:50:39 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:42154 "EHLO
+        id S237554AbhLNUEd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 15:04:33 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:43422 "EHLO
         drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234594AbhLNTui (ORCPT
+        by vger.kernel.org with ESMTP id S230188AbhLNUEd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 14:50:38 -0500
+        Tue, 14 Dec 2021 15:04:33 -0500
 Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 84C63E1130; Tue, 14 Dec 2021 14:50:37 -0500 (EST)
-Date:   Tue, 14 Dec 2021 14:50:37 -0500
+        id 9FBDAE1181; Tue, 14 Dec 2021 15:04:32 -0500 (EST)
+Date:   Tue, 14 Dec 2021 15:04:32 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1: 3078d85c9a10
- vfs: verify source area in vfs_dedupe_file_range_one()
-Message-ID: <Ybj1jVYu3MrUzVTD@hungrycats.org>
-References: <20211210183456.GP17148@hungrycats.org>
- <25f4d4fd-1727-1c9f-118a-150d9c263c93@suse.com>
- <YbfTYFQVGCU0Whce@hungrycats.org>
- <fc395aed-2cbd-f6e5-d167-632c14a07188@suse.com>
+To:     kreijack@inwind.it
+Cc:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+Message-ID: <Ybj40IuxdaAy75Ue@hungrycats.org>
+References: <cover.1635089352.git.kreijack@inwind.it>
+ <SYXPR01MB1918689AF49BE6E6E031C8B69E749@SYXPR01MB1918.ausprd01.prod.outlook.com>
+ <1d725df7-b435-4acf-4d17-26c2bd171c1a@libero.it>
+ <Ybe34gfrxl8O89PZ@localhost.localdomain>
+ <YbfN8gXHsZ6KZuil@hungrycats.org>
+ <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <fc395aed-2cbd-f6e5-d167-632c14a07188@suse.com>
+In-Reply-To: <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 14, 2021 at 01:11:24PM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 14.12.21 г. 1:12, Zygo Blaxell wrote:
-> > On Mon, Dec 13, 2021 at 03:28:26PM +0200, Nikolay Borisov wrote:
-> >> On 10.12.21 г. 20:34, Zygo Blaxell wrote:
-> >>> I've been getting deadlocks in dedupe on btrfs since kernel 5.11, and
-> >>> some bees users have reported it as well.  I bisected to this commit:
-> >>>
-> >>> 	3078d85c9a10 vfs: verify source area in vfs_dedupe_file_range_one()
-> >>>
-> >>> These kernels work for at least 18 hours:
-> >>>
-> >>> 	5.10.83 (months)
-> >>> 	5.11.22 with 3078d85c9a10 reverted (36 hours)
-> >>> 	btrfs misc-next 66dc4de326b0 with 3078d85c9a10 reverted
-> >>>
-> >>> These kernels lock up in 3 hours or less:
-> >>>
-> >>> 	5.11.22
-> >>> 	5.12.19
-> >>> 	5.14.21
-> >>> 	5.15.6
-> >>> 	btrfs for-next 279373dee83e
-> >>>
-> >>> All of the failing kernels include this commit, none of the non-failing
-> >>> kernels include the commit.
-> >>>
-> >>> Kernel logs from the lockup:
-> >>>
-> >>> 	[19647.696042][ T3721] sysrq: Show Blocked State
-> >>> 	[19647.697024][ T3721] task:btrfs-transacti state:D stack:    0 pid: 6161 ppid:     2 flags:0x00004000
-> >>> 	[19647.698203][ T3721] Call Trace:
-> >>> 	[19647.698608][ T3721]  __schedule+0x388/0xaf0
-> >>> 	[19647.699125][ T3721]  schedule+0x68/0xe0
-> >>> 	[19647.699615][ T3721]  btrfs_commit_transaction+0x97c/0xbf0
-> >>
-> >> Can you run this through symbolize script as I'd like to understand
-> >> where in transaction commit the sleep is happening. 
+On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
+> On 12/13/21 23:49, Zygo Blaxell wrote:
+> > On Mon, Dec 13, 2021 at 04:15:14PM -0500, Josef Bacik wrote:
+> > > On Mon, Dec 13, 2021 at 08:54:24PM +0100, Goffredo Baroncelli wrote:
+> > > > Gentle ping :-)
+> > > > 
+> > > > Are there anyone of the mains developer interested in supporting this patch ?
+> > > > 
+> > > > I am open to improve it if required.
+> > > > 
+> > > 
+> > > Sorry I missed this go by.  I like the interface, we don't have a use for
+> > > device->type yet, so this fits nicely.
+> > > 
+> > > I don't see the btrfs-progs patches in my inbox, and these don't apply, so
+> > > you'll definitely need to refresh for a proper review, but looking at these
+> > > patches they seem sane enough, and I like the interface.  I'd like to hear
+> > > Zygo's opinion as well.
 > > 
-> > 	btrfs_commit_transaction+0x97c/0xbf0:
+> > I've been running earlier versions with modifications since summer 2020,
+> > and this version mostly unmodified (rebase changes only) since it was
+> > posted.  It seems to work, even in corner cases like converting balances,
+> > replacing drives, and running out of space.  The "running out of space"
+> > experience is on btrfs is weird at the best of times, and these patches
+> > add some more new special cases, but it doesn't behave in ways that
+> > would surprise a sysadmin familiar with how btrfs chunk allocation works.
 > > 
-> > 	btrfs_commit_transaction at fs/btrfs/transaction.c:2159 (discriminator 9)
-> > 	 2154
-> > 	 2155           ret = btrfs_run_delayed_items(trans);
-> > 	 2156           if (ret)
-> > 	 2157                   goto cleanup_transaction;
-> > 	 2158
-> > 	>2159<          wait_event(cur_trans->writer_wait,
-> > 	 2160                      extwriter_counter_read(cur_trans) == 0);
-> > 	 2161
-> > 	 2162           /* some pending stuffs might be added after the previous flush. */
-> > 	 2163           ret = btrfs_run_delayed_items(trans);
-> > 	 2164           if (ret)
+> > One major piece that's missing is adjusting the statvfs (aka df)
+> > available blocks field so that it doesn't include unallocated space on
+> > any metadata-only devices.  Right now all the unallocated space on
+> > metadata-only devices is counted as free even though it's impossible to
+> > put a data block there, so anything that is triggered automatically
+> > on "f_bavail < some_threshold" will be confused.
 > > 
+> > I don't think that piece has to block the rest of the patch series--if
+> > you're not using the feature, df gives the right number (or at least the
+> > same number it gave before), and if you are using the feature, you can
+> > subtract the unavailable data space until a later patch comes along to
+> > fix it.
+> > 
+> > I like
+> > 
+> > 	echo data_only > /sys/fs/btrfs/$uuid/devinfo/3/type
 > 
-> So it seems there is an open transaction handle thus commit can't
-> continue and everything is stalled behind. Would you be able to run the
-> attached python script on a host which is stuck. It requires you having
-> debug symbols for the kernel installed as well as
-> https://github.com/osandov/drgn/ which is a scriptable debugger. The
-> easiest way would to follow the instructions at
-> https://drgn.readthedocs.io/en/latest/installation.html and just get it
-> via pip.
+> Only to be clear, for now you can pass a numeric value to "type". Not a text
+> like your example.
 > 
+> However I want to put on the table another option: to not expose all the
+> "type" field, but only the "allocation policy"; we can add a new sysfs field
+> called "allocation policy" that internally change the dev_item->type field.
 > 
-> Once you have it installed run it by doing:
+> It is not only a "cosmetic" change. If we want to change the allocation
+> policy, now the correct way is:
+> - read the type field
+> - change the "allocation policy" bits
+> - write the type field
 > 
-> "sudo drgn get-num-extwriters.py 310dd372-0fd1-4496-a232-0fb46ca4afd6"
-> 
-> Where 310dd372-0fd1-4496-a232-0fb46ca4afd6 is the fsid as taken from
-> 'blkid' which corresponds to the wedged fs.
+> Which is race 'prone'
 
-[drum roll noises...]
+> For now it is not a problem, because type contains only the allocation bits.
+> But in future when the type field will contains further properties this could
+> be a problem.
 
-	[f79c1081-d81d-4abc-8b47-3b15bf2f93c5] num_extwriters is: 1
+Yeah, keep the interface very narrow, don't hand out access to random bits.
 
-> <snip>
+If the kernel supports additional bits, it should support additional
+sysfs filenames to go with them.  Or it could put all the supported
+options in the sysfs field, like block IO schedulers do, so you could
+find this in the file by reading it:
 
-> #!/bin/python3
-> 
-> import uuid, sys
-> from drgn.helpers.linux import list_for_each_entry
-> 
-> if len(sys.argv) != 2:
->     print("Run with 'sudo drgn {} UUID'".format(sys.argv[0]))
->     exit()
-> 
-> fsid = sys.argv[1]
-> found = False
-> 
-> btrfs_fs = prog['fs_uuids']
-> for fs in list_for_each_entry("struct btrfs_fs_devices", btrfs_fs.address_of_(), "fs_list"):
->     current_fsid = uuid.UUID(bytes=fs.fsid.string_())
->     user_fsid = uuid.UUID(fsid)
->     if current_fsid.int == user_fsid.int:
->         transaction = fs.fs_info.running_transaction
->         found = True
->         print("[{}] num_extwriters is: {}".format(fsid, transaction.num_extwriters.value_()["counter"]));
-> 
-> if found == False:
->     print("Couldn't find matching UUID belonging to a BTRFS filesystem")
+	[prefer_data] prefer_metadata metadata_only data_only
 
+> > more than patching btrfs-progs so I can use
+> > 
+> > 	btrfs prop set /dev/... allocation_hint data_only
+> > 
+> > but I admit that might be because I'm weird.
+> 
+> I prefer the echo approach too; however it is not very ergonomics in conjunction
+> to sudo....
+
+For /proc/sys/* we have the 'sysctl' tool, so you can write 'sysctl
+vm.drop_caches=1' or 'sudo sysctl vm.drop_caches=1'.  For some reason
+we don't have this for sysfs (or maybe it's just Debian...?) so we have
+to write things like 'echo foo | sudo tee /sys/fs/...'.
+
+Of course btrfs-progs could always open the
+/sys/fs/btrfs/.../allocation_policy file and write to it.  But if we're
+modifying btrfs-progs then we could use the ioctl interface anyway.
+
+I don't have a strong preference for either sysfs or ioctl, nor am I
+opposed to simply implementing both.  I'll let someone who does have
+such a preference make their case.
+
+> > > If we're going to use device->type for this, and since we don't have a user of
+> > > device->type, I'd also like you to go ahead and re-name ->type to
+> > > ->allocation_policy, that way it's clear what we're using it for now.
+> > > 
+> > > I'd also like some xfstests to validate the behavior so we're sure we're testing
+> > > this.  I'd want 1 test to just test the mechanics, like mkfs with different
+> > > policies and validate they're set right, change policies, add/remove disks with
+> > > different policies.
+> > > 
+> > > Then a second test to do something like fsstress with each set of allocation
+> > > policies to validate that we did actually allocate from the correct disks.  For
+> > > this please also test with compression on to make sure the test validation works
+> > > for both normal allocation and compression (ie it doesn't assume writing 5gib of
+> > > data == 5 gib of data usage, as compression chould give you a different value).
+> > > 
+> > > With that in place I think this is the correct way to implement this feature.
+> > > Thanks,
+> > > 
+> > > Josef
+> 
+> 
+> -- 
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
