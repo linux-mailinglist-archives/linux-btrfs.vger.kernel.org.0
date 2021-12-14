@@ -2,130 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8B547451D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 15:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570E9474544
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 15:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhLNOcF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Dec 2021 09:32:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
+        id S234921AbhLNOhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 09:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234033AbhLNOb5 (ORCPT
+        with ESMTP id S230525AbhLNOhl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 09:31:57 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F1CC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 06:31:57 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id m25so18436294qtq.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 06:31:57 -0800 (PST)
+        Tue, 14 Dec 2021 09:37:41 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DFCC061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 06:37:41 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id z9so18478279qtj.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 06:37:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=bloqDIurAzwWlCDQrCfYHO1hcSlaFEjNEVUo5WA7Qtg=;
-        b=QvfbRGQGbmnYF8/a5MzvFUoTTyMvIr6B0WIMstOXKwBWDrcI/hw06LM1Cg9uAvuzNK
-         bw/LFhmG9eq/nkDOmUp2iahk3X0y+wJbKKG50GQElju6oLOWu36CSS03ZCSSI1qNyt/6
-         rjZTdH5ffsdsGpgP/SwtmUC64zu8P8ppLcZg6qcPiLi7C56hkycjiCIbvFhwmKRFeGsH
-         +NyeK6PpR7L0yWenF6R//0EBFWNWJWU1E8YlWIQ3ibGsWwhNbnYbsRtVwyW+CwFyxtRk
-         kJZZbcw+s27w8u6+bywfpOgqplFiRBnexnGZNpVVnRuJeufxJ/E6qecSUx7T7m4Yd0Gm
-         wQ1g==
+        bh=v/k5JQmSseU9No2Wa38IWiENPeJovOJowFpJ/ACEnDE=;
+        b=yIQbMURkXMtlYRZIAk2wfqMUYPRg1c3YnSXPpbcpGLuPH4mM9KTyeIPhSNT0zDW1uj
+         fIgUh8a0+DeJ3AXuZ1pceWGrOkvdeqMEq53DpFfHXqcMFQM3jz6y90cW2YYWxLZAiFt0
+         otvsrKtZo4aotcG9R5W98AP6A9776BeEmO5dBFRDblZ9wiB3eFgdUWxW7FynNMVJivaI
+         9nXhKd15Z6yu9VgwsAkKhEGCuoSTwtFNkfIOV9cyPI6r03onzHPNICIt1TT3eDUWcAst
+         a2dus01gxiZ+2BDtYxJvA48sPb8L5uItv1GbnlcWJl7Uj7wuWKWhRr5BOy59HDdSeCiG
+         ekNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bloqDIurAzwWlCDQrCfYHO1hcSlaFEjNEVUo5WA7Qtg=;
-        b=JPdtlujpApIjNRV3A+RPL6EaByUnaKEcKbJLUf03pJwx18AhFn9rvrZu97wz7vcutE
-         Fk+wGNjsao2nA87bzzBMvUtNGmrpHfffaD6K5tIPBseOX7QYX4fZBwp4JOR2rwAQHrFD
-         a9xgeX3sqtoVcgIemS1COANh80yK5yi7X5MQaGGsUJ6Vgl99BquP/ji6a4YcSzOctSAW
-         VRO4KqS12ft4UQKoSQS4Lxm4scfJ+4sLrCw5sO43MjY8dpDb3jnDs89Mg7mpzxlxkyDQ
-         CQyZ/fWobma0xWSglkItPuNS/ZkESAc6Kv+aub0fTuEweN5FOPRfdvHRW6nsq3rp5lmC
-         2Kzg==
-X-Gm-Message-State: AOAM532lOYAuzy87MXUD5j0LYyDl/GqUgy+SvRCgXYZyQZJ39Dr7v465
-        QpR9DisAdaxKVmruEUBFUzh5qg==
-X-Google-Smtp-Source: ABdhPJyR+JiNQYwJWDUCxussHwrsayrPpTIy4Q8rIRPkB/xSrMSoHnkuuW1adgVWCWs8cbL+6WXDQA==
-X-Received: by 2002:ac8:5510:: with SMTP id j16mr6136576qtq.664.1639492316676;
-        Tue, 14 Dec 2021 06:31:56 -0800 (PST)
+        bh=v/k5JQmSseU9No2Wa38IWiENPeJovOJowFpJ/ACEnDE=;
+        b=Ll4NTZYHTvSKpnysNY0tKtx/vAG0et1EH5ztk2KENwBZri+GccIL271RFpGfyInXs0
+         cUWsb9Td2NBZFYAbqdFnkRCzi7Iyyd14vhsP0knoAbJX+DflrBh0jopURoXTGcqyrM3A
+         bwdacT0KvijOffugS1WFXRzEitKSBzLh7st1eyE6EFZqMe19shRWFuech+ld3tc1s7Rr
+         XKK7tjIQKX2ZceuEO8NWcIHYYZYZv4ZNC8Xts+MjW+or4Bqy5SEnGklWpIznXuTjzoB7
+         dGQmkQ/6unyZmD7h/tume7UPipcC1w0iqGcSk1xgid/D4SsRbXQ9YS8JOJzM2I/+qYJm
+         8d7A==
+X-Gm-Message-State: AOAM533DkTIW5FPkhHQ36aZZKB9P9FbHsXeV/vXLn4NpkMHrAGvIR5qL
+        K/JgfJQ7q8qhN5zq+g924XpzAL86YHKZLQ==
+X-Google-Smtp-Source: ABdhPJwgWLGonXfP+iJwSO8QZme4gUuKbYS15J/RbSgEMiIQXotPaiXtBFSd6X4alOJHn1pj4gHM+w==
+X-Received: by 2002:ac8:5c93:: with SMTP id r19mr6235090qta.67.1639492660200;
+        Tue, 14 Dec 2021 06:37:40 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u11sm42918qtw.29.2021.12.14.06.31.54
+        by smtp.gmail.com with ESMTPSA id s2sm60284qtw.22.2021.12.14.06.37.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Dec 2021 06:31:54 -0800 (PST)
-Date:   Tue, 14 Dec 2021 09:31:53 -0500
+        Tue, 14 Dec 2021 06:37:39 -0800 (PST)
+Date:   Tue, 14 Dec 2021 09:37:38 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     kreijack@inwind.it, David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
-Message-ID: <Ybiq2YeAjjGNnd3g@localhost.localdomain>
-References: <cover.1635089352.git.kreijack@inwind.it>
- <SYXPR01MB1918689AF49BE6E6E031C8B69E749@SYXPR01MB1918.ausprd01.prod.outlook.com>
- <1d725df7-b435-4acf-4d17-26c2bd171c1a@libero.it>
- <Ybe34gfrxl8O89PZ@localhost.localdomain>
- <YbfN8gXHsZ6KZuil@hungrycats.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove some duplicated checks in
+ btrfs_previous_*_item()
+Message-ID: <YbisMuAVHVnCxYg7@localhost.localdomain>
+References: <20211214071411.48324-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YbfN8gXHsZ6KZuil@hungrycats.org>
+In-Reply-To: <20211214071411.48324-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 05:49:22PM -0500, Zygo Blaxell wrote:
-> On Mon, Dec 13, 2021 at 04:15:14PM -0500, Josef Bacik wrote:
-> > On Mon, Dec 13, 2021 at 08:54:24PM +0100, Goffredo Baroncelli wrote:
-> > > Gentle ping :-)
-> > > 
-> > > Are there anyone of the mains developer interested in supporting this patch ?
-> > > 
-> > > I am open to improve it if required.
-> > > 
-> > 
-> > Sorry I missed this go by.  I like the interface, we don't have a use for
-> > device->type yet, so this fits nicely.
-> > 
-> > I don't see the btrfs-progs patches in my inbox, and these don't apply, so
-> > you'll definitely need to refresh for a proper review, but looking at these
-> > patches they seem sane enough, and I like the interface.  I'd like to hear
-> > Zygo's opinion as well.
+On Tue, Dec 14, 2021 at 03:14:11PM +0800, Qu Wenruo wrote:
+> In btrfs_previous_item() and btrfs_previous_extent_item() we check
+> btrfs_header_nritems() in a loop.
 > 
-> I've been running earlier versions with modifications since summer 2020,
-> and this version mostly unmodified (rebase changes only) since it was
-> posted.  It seems to work, even in corner cases like converting balances,
-> replacing drives, and running out of space.  The "running out of space"
-> experience is on btrfs is weird at the best of times, and these patches
-> add some more new special cases, but it doesn't behave in ways that
-> would surprise a sysadmin familiar with how btrfs chunk allocation works.
+> But in fact we don't need to do it in a loop at all.
 > 
-> One major piece that's missing is adjusting the statvfs (aka df)
-> available blocks field so that it doesn't include unallocated space on
-> any metadata-only devices.  Right now all the unallocated space on
-> metadata-only devices is counted as free even though it's impossible to
-> put a data block there, so anything that is triggered automatically
-> on "f_bavail < some_threshold" will be confused.
+> Firstly, if a tree block is empty, the whole tree is empty and nodes[0]
+> is the tree root.
+> We don't need to do anything and can exit immediately.
 > 
-> I don't think that piece has to block the rest of the patch series--if
-> you're not using the feature, df gives the right number (or at least the
-> same number it gave before), and if you are using the feature, you can
-> subtract the unavailable data space until a later patch comes along to
-> fix it.
+> Secondly, the only timing we could get a slots[0] >= nritems is when the
+> function get called. After the first slots[0]--, the slot should always
+> be <= nritems.
 > 
-> I like
+> So this patch will move all the nritems related checks out of the loop
+> by:
 > 
-> 	echo data_only > /sys/fs/btrfs/$uuid/devinfo/3/type
+> - Check nritems of nodes[0] to do a quick exit
 > 
-> more than patching btrfs-progs so I can use
+> - Sanitize path->slots[0] before entering the loop
+>   I doubt if there is any caller setting path->slots[0] beyond
+>   nritems + 1 (setting to nritems is possible when item is not found).
+>   Sanitize path->slots[0] to nritems won't hurt anyway.
 > 
-> 	btrfs prop set /dev/... allocation_hint data_only
+> - Unconditionally reduce path->slots[0]
+>   Since we're sure all tree blocks should not be empty, and
+>   btrfs_prev_leaf() will return with path->slots[0] == nritems, we
+>   can safely reduce slots[0] unconditionally.
+>   Just keep an extra ASSERT() to make sure no tree block is empty.
 > 
-> but I admit that might be because I'm weird.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/ctree.c | 52 +++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 36 insertions(+), 16 deletions(-)
 > 
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 781537692a4a..555345aed84d 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -4704,23 +4704,39 @@ int btrfs_previous_item(struct btrfs_root *root,
+>  {
+>  	struct btrfs_key found_key;
+>  	struct extent_buffer *leaf;
+> -	u32 nritems;
+> +	const u32 nritems = btrfs_header_nritems(path->nodes[0]);
+>  	int ret;
+>  
+> +	/*
+> +	 * Check nritems first, if the tree is empty we exit immediately.
+> +	 * And if this leave is not empty, none of the tree blocks of this root
+> +	 * should be empty.
+> +	 */
+> +	if (nritems == 0)
+> +		return 1;
+> +
+> +	/*
+> +	 * If we're several slots beyond nritems, we reset slot to nritems,
+> +	 * and it will be handled properly inside the loop.
+> +	 */
+> +	if (unlikely(path->slots[0] > nritems))
+> +		path->slots[0] = nritems;
+> +
+>  	while (1) {
+>  		if (path->slots[0] == 0) {
+>  			ret = btrfs_prev_leaf(root, path);
+>  			if (ret != 0)
+>  				return ret;
+> -		} else {
+> -			path->slots[0]--;
+>  		}
+>  		leaf = path->nodes[0];
+> -		nritems = btrfs_header_nritems(leaf);
+> -		if (nritems == 0)
+> -			return 1;
+> -		if (path->slots[0] == nritems)
+> -			path->slots[0]--;
+> +		ASSERT(btrfs_header_nritems(leaf));
+> +		/*
+> +		 * This is for both regular case and above btrfs_prev_leaf() case.
+> +		 * As btrfs_prev_leaf() will return with path->slots[0] == nritems,
+> +		 * and we're sure no tree block is empty, we can go safely
+> +		 * reduce slots[0] here.
+> +		 */
+> +		path->slots[0]--;
 
-Ok this is good enough for me.  Refresh the series Goffredo and I'll review it,
-get some xfstests as I described, and fix up btrfs-progs to show the preferences
-via either btrfs filesystem show or some other mechanism since the df thing will
-be confusing.  We'll assume if you're using this feature you are aware of the
-space gotchas and then fix up bugs as they show up.  With the testing and user
-feedback tho this looks good enough for me, I just want to make sure we have
-tests and such in place before merging.  Thanks,
+This requires trusting that the thing on disk was ok.  The tree-checker won't
+complain if we read a block with nritems == 0.  I think it would be better to do
+
+	if (btrfs_header_nritems(leaf) == 0) {
+		ASSERT(btrfs_header_nritems(leaf));
+		return -EUCLEAN;
+	}
+
+so we don't get ourselves in trouble.  Thanks,
 
 Josef
