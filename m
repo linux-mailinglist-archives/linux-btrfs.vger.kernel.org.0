@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED55474792
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 17:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA04474837
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 17:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235641AbhLNQWJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Dec 2021 11:22:09 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:46090 "EHLO
+        id S235495AbhLNQfg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 11:35:36 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:47774 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235648AbhLNQWH (ORCPT
+        with ESMTP id S234083AbhLNQff (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 11:22:07 -0500
+        Tue, 14 Dec 2021 11:35:35 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7F02E1F381;
-        Tue, 14 Dec 2021 16:22:06 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id B1F011F381;
+        Tue, 14 Dec 2021 16:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1639498926;
+        t=1639499734;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RhK281cXublE+rc8gPffkfCC9z0ydpUHm1neWpvNyI4=;
-        b=mBFs1prrb+U8leqMGG0eCPAFcRcydh9Fuwgm4gspAr1SVKkBQ1DaD9YE6qG0QsxRzKVsru
-        HOZFnf3QX3NqpXIl3DNwA5nE5xXeGl3L4IRlWc12hBBJFYBFpw1J/xw1fa7YcNmkHl3+jz
-        3bwY6BE01BvdJzPtZSFUtjQ72QVGj4M=
+        bh=/Arjua0wvjZuZ871p4NqGVFn9sd0364bT0bZwdBSwHE=;
+        b=wuT/q166yjJ8Or8oLAxQIfwDb3Qrc9kRU6bGujadl9AKYvcoAJnyN1h3TQOG1ekdacXFm+
+        D6hosgVUY9DY00IhKn6wMaGM8jrh09JVYM8U1ninRwZv/K+ZFfSjpdlBVRZdmkqyt2XOEV
+        Q0q/9Hb2AZkyjr0qDJIXn3w7v67pJ+8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1639498926;
+        s=susede2_ed25519; t=1639499734;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RhK281cXublE+rc8gPffkfCC9z0ydpUHm1neWpvNyI4=;
-        b=5GWYuuLA7pDF4IhtPOirUZsVhsBCgryF9Qjg5Id5PkoRrqiiVUmZVETOEVXDE2xLEk8ANd
-        WAoGPp2Rt8FgV+AQ==
+        bh=/Arjua0wvjZuZ871p4NqGVFn9sd0364bT0bZwdBSwHE=;
+        b=i3L/2wiwC0LmqVQAaqKd742Omh4YuO818rROs/GrviFaSmeHukP8FfVVceATFfzTPe8pYX
+        wKHSJx+vF1w3HEAw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 78D95A3B91;
-        Tue, 14 Dec 2021 16:22:06 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id AB2DBA3B8D;
+        Tue, 14 Dec 2021 16:35:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 39F5FDA781; Tue, 14 Dec 2021 17:21:48 +0100 (CET)
-Date:   Tue, 14 Dec 2021 17:21:48 +0100
+        id 8C0F6DA781; Tue, 14 Dec 2021 17:35:16 +0100 (CET)
+Date:   Tue, 14 Dec 2021 17:35:16 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH] btrfs: Refactor unlock_up
-Message-ID: <20211214162148.GW28560@twin.jikos.cz>
+Message-ID: <20211214163516.GX28560@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
         linux-btrfs@vger.kernel.org
@@ -81,20 +81,5 @@ On Tue, Dec 14, 2021 at 03:39:39PM +0200, Nikolay Borisov wrote:
 > bring anything to function readability.
 > 
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  fs/btrfs/ctree.c | 31 ++++++++++++++++---------------
->  1 file changed, 16 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 62066c034363..ab2ea0b2863c 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -1348,33 +1348,34 @@ static noinline void unlock_up(struct btrfs_path *path, int level,
->  {
->  	int i;
->  	int skip_level = level;
-> -	int no_skips = 0;
-> -	struct extent_buffer *t;
-> +	int check_skip = true;
 
-this should be bool, right
+Much better, added to misc-next, thanks.
