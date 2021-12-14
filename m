@@ -2,109 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7D7474CB3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 21:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA8A474CBB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 21:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234714AbhLNUfk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Dec 2021 15:35:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237657AbhLNUfj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 15:35:39 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B352C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 12:35:39 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id u16so18415181qvk.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 12:35:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DypEDe+W4llGtwOyBEWx+X8HULbYvgxT6h2vkqMSC0I=;
-        b=xHikJ3Zpi6CW8kXLRMius/iUDvXYJbGB2dqZlGLM8OtQrkkmRS15yF1Sed1yrjg5hn
-         gMZhzwv47hJEKDUo3m3+Ta7JJtHdob/VvwQn3MXL/iiS3+pA7cywAMwSOZqgK86x4Gse
-         0T0uwFbRWVx8xCsKEyGJC2S8FdOVXyFFm9/gfvSeL+fPYpCjzhugBtb+/J2VOHsZl9Me
-         V7gOUJqzmHgvH1VO+LTftMclIP878o9AYPGSGP/77cH6gm7TtpK8Qvfcb2KJrlDehd16
-         TeVhKhpUTBV7saL54cbDDXGnzYVY/KarCZMlxqWxCked4tTE9pXSFSuvSEv+GXFyJcS3
-         rj6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DypEDe+W4llGtwOyBEWx+X8HULbYvgxT6h2vkqMSC0I=;
-        b=Jjo2K/YjrCWnsSPmLBx63JNPNQ1QA5OX754ubEOxNR2tkSWN7ImVwCaGj9wxlrnBCC
-         wkI4Enq05BKlUsVqMXZoKfewLtK93JeoftjCV9f6s1UuvHPsj4Qf7T6EDH3vgEOllrRo
-         hhGhgMltyWVO3evLWwoo8lZknkesGgJUKIivyvPl9d53A0BTBGweSdnqXeXQR3VRsokm
-         vc92PTpr1vcHjEEweHGO38dvSpC3nhSwfvZ1r9Qpxv9st0GM769pWRGiTrA1c0YQXkKU
-         lrhG2NYOkPJGIkz2I+hiQvoxKxacIgeJv4T0FralnpGS9RJq1mBioVk+cZc9g1OnQnJT
-         1bsQ==
-X-Gm-Message-State: AOAM533rC7PHNq7iwXNJh0AtGWeBZMtNjm1jxC11RG+nENBLSI+edl3P
-        6kVky4TJLcvyKVEJ9ZPVxzxatg==
-X-Google-Smtp-Source: ABdhPJzR0d1XeVwieKQ+aoGkKMOs4Yz8VfpjdTOxQ5UQdutEpq2bSQYfjXf3c4PjO1tzT+Juuwjs8w==
-X-Received: by 2002:ad4:5cac:: with SMTP id q12mr8254190qvh.52.1639514138554;
-        Tue, 14 Dec 2021 12:35:38 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g14sm710077qko.55.2021.12.14.12.35.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Dec 2021 12:35:38 -0800 (PST)
-Date:   Tue, 14 Dec 2021 15:35:36 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     kreijack@inwind.it
+        id S230358AbhLNUl2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 15:41:28 -0500
+Received: from smtp-31-wd.italiaonline.it ([213.209.13.31]:45341 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237681AbhLNUlZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Dec 2021 15:41:25 -0500
+Received: from [192.168.1.27] ([78.12.25.242])
+        by smtp-31.iol.local with ESMTPA
+        id xEbym6Bneg9rVxEbymb4B1; Tue, 14 Dec 2021 21:41:23 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1639514483; bh=9lZjsFpySmOBoDRps+RBOy/dPsgDYjIKXslZ4Y5NwgU=;
+        h=From;
+        b=rZhVIVtfbquJVR/d2nuTf9WL992AF8JehTCZf1HO1qvIUV/o+yRq/Q8ed1H9Fi5QZ
+         YkKQ+gVBxDiol/a4g56LKfcq5sCh7MZArl6qEsriAPwKJPGErl4JNLLnUlqbeQGjtY
+         zC+9pdqnsdaAt2tJXGUQ9+X2w7BgJ/qsnhCrOEWPsswbz71KOk4nkk46EU/Ftm3nR7
+         4JOkzTXwaRGRjsZfOKGPVc1EVKhH6T6kdrbmm9DbK6mlNfOZ8orzfsZPROIYhPt3lo
+         itJ35jdog/o+8a2bsPEnhAjQNnlG7BdtK/AyT4Uxu+tcAb718NDjbM72Zbjrg3+zef
+         tnGrcoWwdpKZQ==
+X-CNFS-Analysis: v=2.4 cv=T8hJ89GQ c=1 sm=1 tr=0 ts=61b90173 cx=a_exe
+ a=IXMPufAKhGEaWfwa3qtiyQ==:117 a=IXMPufAKhGEaWfwa3qtiyQ==:17
+ a=IkcTkHD0fZMA:10 a=8YGpo9N-opDnXBGvkPAA:9 a=QEXdDO2ut3YA:10
+Message-ID: <be4e6028-7d1d-6ba9-d16f-f5f38a79866f@libero.it>
+Date:   Tue, 14 Dec 2021 21:41:21 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Reply-To: kreijack@inwind.it
+Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     David Sterba <dsterba@suse.cz>,
         Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
         Paul Jones <paul@pauljones.id.au>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
-Message-ID: <YbkAGOhOdyJpO/2F@localhost.localdomain>
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <cover.1635089352.git.kreijack@inwind.it>
  <SYXPR01MB1918689AF49BE6E6E031C8B69E749@SYXPR01MB1918.ausprd01.prod.outlook.com>
  <1d725df7-b435-4acf-4d17-26c2bd171c1a@libero.it>
- <Ybe34gfrxl8O89PZ@localhost.localdomain>
- <97c118df-e7ec-1ef5-8362-e0ecc949db35@libero.it>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97c118df-e7ec-1ef5-8362-e0ecc949db35@libero.it>
+ <Ybe34gfrxl8O89PZ@localhost.localdomain> <YbfN8gXHsZ6KZuil@hungrycats.org>
+ <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
+ <Ybj40IuxdaAy75Ue@hungrycats.org> <Ybj/0ITsCQTBLkQF@localhost.localdomain>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <Ybj/0ITsCQTBLkQF@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNRTcwzd/K/5ZIzq/nnvpXkDP+nUeknjVqqDP7Zz5YzxDfVHSR58U1g6QTxzm/v283XXd8+ZRNs1PeCREt8a1Udb0xdLsoDoJOfNeUIampiNdXnCW/ga
+ OgC22nH2uuuia1IYcrB48IxelGlxvrONNu8WJ6MTCp4wKcItWOrrAYqNLswBJEa3wTUYYVCZ+UKhh+NxAfsnNKeOtvIfW8NoFZDDxFokFAU4WO4PglOmZM5q
+ C0YFh+ifh9grkqVFwidrCSafWdHB/opYAVjPW3zSCAd889xVj2nu5xEnvvFbpNiAJ0ZqdaSlTq500fgO+pdQaR+vbXqgbTlo9fw4e2B+khQgg8kK15Q8XnuZ
+ ygK4/KMI
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 14, 2021 at 07:53:34PM +0100, Goffredo Baroncelli wrote:
-> On 12/13/21 22:15, Josef Bacik wrote:
-> > On Mon, Dec 13, 2021 at 08:54:24PM +0100, Goffredo Baroncelli wrote:
-> > > Gentle ping :-)
-> > > 
-> > > Are there anyone of the mains developer interested in supporting this patch ?
-> > > 
-> > > I am open to improve it if required.
-> > > 
-> > 
-> > Sorry I missed this go by.  I like the interface, we don't have a use for
-> > device->type yet, so this fits nicely.
-> > 
-> > I don't see the btrfs-progs patches in my inbox, and these don't apply, so
-> > you'll definitely need to refresh for a proper review, but looking at these
-> > patches they seem sane enough, and I like the interface.  I'd like to hear
-> > Zygo's opinion as well.
-> > 
-> > If we're going to use device->type for this, and since we don't have a user of
-> > device->type, I'd also like you to go ahead and re-name ->type to
-> > ->allocation_policy, that way it's clear what we're using it for now.
-> 
-> The allocation policy requires only few bits (3 or 4); instead "type" is 64 bit wide.
-> We can allocate more bits for future extension, but I don't think that it is necessary
-> to allocate all the bits to the "allocation_policy".
-> 
-> This to say that renaming the field as allocation_policy is too restrictive if in future
-> we will use the other bits for another purposes.
-> 
-> I don't like the terms "type". May be flags, is it better ?
+On 12/14/21 21:34, Josef Bacik wrote:
+> On Tue, Dec 14, 2021 at 03:04:32PM -0500, Zygo Blaxell wrote:
+>> On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
 
-Sure, rename it to flags and make the allocation policies flags.  The important
-part is that "type" isn't accurate, and since it's not used by anything
-currently we're free to rename it so it better represents the information it
-holds.  Thanks,
+>>
+>> I don't have a strong preference for either sysfs or ioctl, nor am I
+>> opposed to simply implementing both.  I'll let someone who does have
+>> such a preference make their case.
+> 
+> I think echo'ing a name into sysfs is better than bits for sure.  However I want
+> the ability to set the device properties via a btrfs-progs command offline so I
+> can setup the storage and then mount the file system.  I want
+> 
+> 1) The sysfs interface so you can change things on the fly.  This stays
+>     persistent of course, so the way it works is perfect.
+> 
+> 2) The btrfs-progs command sets it on offline devices.  If you point it at a
+>     live mounted fs it can simply use the sysfs thing to do it live.
 
-Josef
+#2 is currently not implemented. However I think that we should do.
+
+The problem is that we need to update both:
+
+- the superblock		(simple)
+- the dev_item item		(not so simple...)
+
+What about using only bits from the superblock to store this property ?
+
+> 
+> Does this seem reasonable?  Thanks,
+> 
+> Josef
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
