@@ -2,79 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47A5474336
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 14:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1A74743A8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 14:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbhLNNNQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Dec 2021 08:13:16 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:38610 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbhLNNNP (ORCPT
+        id S234487AbhLNNjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 08:39:45 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:53030 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhLNNjo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 08:13:15 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0B0D12114E;
-        Tue, 14 Dec 2021 13:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1639487594;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jb/qK4n55YrzzvgsRiBa0Acw6Mf2xOKXaf7QIwBgOOY=;
-        b=NgvkjPwRYzDqPzySXyoXS5Ggjv0LYvLs6IKyd17oSv8PQBtOXcC6BxHiDkluZ8D/cv459X
-        DQo96RQC8jAMIW4n+BpBQtAoEpDU7JeqWDQYrI3JiBzFXwWqx2qfgcyKI8mZgvNr1vZmNd
-        JNIhCaoPb+HrBYeEZBgFDX20oV22+d0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1639487594;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jb/qK4n55YrzzvgsRiBa0Acw6Mf2xOKXaf7QIwBgOOY=;
-        b=Nmb7NUT98hPvZaZ/+/Fa9sNWYgIzblgkFyifW/+S0Xp4gfRVvrvlcXCCmZKKKO+p72mvg1
-        TJTl9gc2wewhOPDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 022BDA3B83;
-        Tue, 14 Dec 2021 13:13:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E0956DA781; Tue, 14 Dec 2021 14:12:55 +0100 (CET)
-Date:   Tue, 14 Dec 2021 14:12:55 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs/254: test cleaning up of the stale device
-Message-ID: <20211214131255.GT28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <c1c22a67c90f1b0b94ea3f99d6d6fd4a4d5d5473.1638953165.git.anand.jain@oracle.com>
- <YbDGIWHVD4cmdZz0@localhost.localdomain>
- <5864b5a8-7572-1f43-b217-761bb6e4bfce@oracle.com>
- <YbISe4E9/Yr8OGFH@localhost.localdomain>
+        Tue, 14 Dec 2021 08:39:44 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4AAA31F37C;
+        Tue, 14 Dec 2021 13:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1639489183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=kCfdNKANQDjdZd9a2+K2InADM55fbbOxcBwjJd0VgK4=;
+        b=iWO/DfBzUiYqDZXMHJ/oX7EVfMhLrSbTY4tHpEbeR40KiVfV1ZvnSGpb0aMUMk0Fi0AytC
+        KNaLYXgXfwKLzbJ8mEMz2AlLZYH+dbRhaQe9VniZu9v7DFLvggInFAaJd7MRIEHGVVEpJc
+        2QdUczNzcjigoUoYpcXcqlwUeOtQXMU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 125BD13C66;
+        Tue, 14 Dec 2021 13:39:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1GJmAZ+euGGALwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 14 Dec 2021 13:39:43 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: Refactor unlock_up
+Date:   Tue, 14 Dec 2021 15:39:39 +0200
+Message-Id: <20211214133939.751395-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YbISe4E9/Yr8OGFH@localhost.localdomain>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 09, 2021 at 09:28:11AM -0500, Josef Bacik wrote:
-> On Thu, Dec 09, 2021 at 02:41:22PM +0800, Anand Jain wrote:
-> > On 08/12/2021 22:50, Josef Bacik wrote:
-> > > On Wed, Dec 08, 2021 at 10:07:46PM +0800, Anand Jain wrote:
-> Yup, its the following, I was using -s btrfs_normal
-> 
-> [btrfs_normal]
-> TEST_DIR=/mnt/test
-> TEST_DEV=/dev/mapper/vg0-lv0
-> SCRATCH_DEV_POOL="/dev/mapper/vg0-lv9 /dev/mapper/vg0-lv8 /dev/mapper/vg0-lv7 /dev/mapper/vg0-lv6 /dev/mapper/vg0-lv5 /dev/mapper/vg0-lv4 /dev/mapper/vg0-lv3 /dev/mapper/vg0-lv2 /dev/mapper/vg0-lv1 "
-> SCRATCH_MNT=/mnt/scratch
-> LOGWRITES_DEV=/dev/mapper/vg0-lv10
-> PERF_CONFIGNAME=jbacik
-> MKFS_OPTIONS="-K -O ^no-holes -R ^free-space-tree"
+The purpose of this function is to unlock all nodes in a btrfs path
+which are above 'lowest_unlock' and whose slot used is different than 0.
+As such it used slightly awkward structure of 'if' as well as somewhat
+cryptic "no_skip" control variable which denotes whether we should
+check the current level of skipiability or no.
 
-Unrelated to the patch, but why do you disable no-holes and
-free-space-tree? Is this a special testing setup?
+This patch does the following (cosmetic) refactorings:
+
+* Renames 'no_skip' to 'check_skip' and makes it a boolean. This
+variable controls whether we are below the lowest_unlock/skip_level
+levels.
+
+* Consolidates the 2 conditions which warrant checking whether the
+current level should be skipped under 1 common if (check_skip) branch,
+this increase indentation level but is not critical.
+
+* Consolidates the 'skip_level < i && i >= lowest_unlock' and
+'i >= lowest_unlock && i > skip_level' condition into a common branch
+since those are identical.
+
+* Eliminates the local extent_buffer variable as in this case it doesn't
+bring anything to function readability.
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/btrfs/ctree.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 62066c034363..ab2ea0b2863c 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1348,33 +1348,34 @@ static noinline void unlock_up(struct btrfs_path *path, int level,
+ {
+ 	int i;
+ 	int skip_level = level;
+-	int no_skips = 0;
+-	struct extent_buffer *t;
++	int check_skip = true;
+ 
+ 	for (i = level; i < BTRFS_MAX_LEVEL; i++) {
+ 		if (!path->nodes[i])
+ 			break;
+ 		if (!path->locks[i])
+ 			break;
+-		if (!no_skips && path->slots[i] == 0) {
+-			skip_level = i + 1;
+-			continue;
+-		}
+-		if (!no_skips && path->keep_locks) {
+-			u32 nritems;
+-			t = path->nodes[i];
+-			nritems = btrfs_header_nritems(t);
+-			if (nritems < 1 || path->slots[i] >= nritems - 1) {
++
++		if (check_skip) {
++			if (path->slots[i] == 0) {
+ 				skip_level = i + 1;
+ 				continue;
+ 			}
++
++			if (path->keep_locks) {
++				u32 nritems;
++
++				nritems = btrfs_header_nritems(path->nodes[i]);
++				if (nritems < 1 || path->slots[i] >= nritems - 1) {
++					skip_level = i + 1;
++					continue;
++				}
++			}
+ 		}
+-		if (skip_level < i && i >= lowest_unlock)
+-			no_skips = 1;
+ 
+-		t = path->nodes[i];
+ 		if (i >= lowest_unlock && i > skip_level) {
+-			btrfs_tree_unlock_rw(t, path->locks[i]);
++			check_skip = false;
++			btrfs_tree_unlock_rw(path->nodes[i], path->locks[i]);
+ 			path->locks[i] = 0;
+ 			if (write_lock_level &&
+ 			    i > min_write_lock_level &&
+-- 
+2.25.1
+
