@@ -2,151 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C59474078
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 11:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14434740CE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Dec 2021 11:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhLNKcm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Dec 2021 05:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhLNKcl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Dec 2021 05:32:41 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9608FC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 02:32:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 32A3A612FE
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Dec 2021 10:32:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 061B4C34600;
-        Tue, 14 Dec 2021 10:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639477960;
-        bh=dROSUdSROQeqay56JyoCgwGa58lC2iN3KPoRcyrH230=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WE1e2kbQz+F/UKjfCHlhwP6gf0HxpDBCxZjA5kA9SujrSIa1jFg6PNhNFbqvLKZ54
-         UYE0raU4FUijgnhpoM5TdKX55ZhsB9oL1fxWXOHSZgTTHoP85u2d2ySTuEXh62Oy/c
-         hpSaFdxeySyvFE19Rk0Ag86iNrlKnxVHw0gzfd7gOLKpMCxqJpg9g6LQfUhi0pJ8iZ
-         acDD+3HK2u8sTOr6mQwfIVNmVGwMnuqktZ8fDetv+rYCD/N+6Y7/TQCKiZSZljM15N
-         gcCwfPM7pwgI/ONnytw9nlSiG8ter9QugQyvcf1kJLjdggE8JHjlOlqjYUb8rCIPIa
-         XHpvgnNL2plGg==
-Date:   Tue, 14 Dec 2021 10:32:37 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: check WRITE_ERR when trying to read an extent
- buffer
-Message-ID: <YbhyxZPERYm4DYFU@debian9.Home>
-References: <1676bf652be3e37ef3ae55ed784c8f0ab2ff3f8f.1639423346.git.josef@toxicpanda.com>
+        id S233239AbhLNKua (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Dec 2021 05:50:30 -0500
+Received: from mout.gmx.net ([212.227.17.20]:59731 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231400AbhLNKu2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Dec 2021 05:50:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1639479020;
+        bh=uwJLzdFTz1L6I21rYFvBHOxz7PzHf9UOZRltOa38T3M=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=IVRWx23+/VvsN/BIe+n86JCKSoUeGfGjp7u9DNZTEE0jEYpzaWR9sHuhAqsG1kQgS
+         vsyD6N9yr0WkhoSNlhkcH1kYA6ogoSwEpTd2DpN3rxkU1e31Mzlrj25mWSwHdtRa79
+         sNzw2CBZjNODaQ75XVmpFV0Pk0cTWQ8uH1PgXydY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MgvvJ-1mImxN0OLd-00hRiL; Tue, 14
+ Dec 2021 11:50:20 +0100
+Message-ID: <0a61338e-fd6f-0500-b395-a1d4a868aa21@gmx.com>
+Date:   Tue, 14 Dec 2021 18:50:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1676bf652be3e37ef3ae55ed784c8f0ab2ff3f8f.1639423346.git.josef@toxicpanda.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20211214071411.48324-1-wqu@suse.com>
+ <Ybhxngswi6vN+vH4@debian9.Home>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] btrfs: remove some duplicated checks in
+ btrfs_previous_*_item()
+In-Reply-To: <Ybhxngswi6vN+vH4@debian9.Home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZFnsK57U/cxW29cTNgzoRf+T+/XoJz82tL0KK2TWAN0WonAlkaQ
+ FVJNHzGSL8AAQQJKCSsRbEm5CzTuUouGUPYy4bcPjzX+9BE1PZuYNv/kvkuCseTPsCA3XeL
+ CBBAIZ4DqlxnQ57IFe/BF/TnMdbSTaKVuoj8BuM0CY6qq0glzGo41DjDUqq9uY31bhIEa5z
+ sClvwhEnK6zkYKKwVRj1g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7bDQtLRnk9I=:aVIVy2yy7kqnZxYv5YucJK
+ 2IvWn+mkm4EkqX3gTcLLE81pl/WMcDwaX43N1R+B0D8mukxST/WclLNkhtC+D4le9kXUKmmPW
+ Kp2aFviB+rhei9DeKanuHtM8ucE3VJAcd49X9a3La0skoGivZRfKIKtMlI2JeBkeTpAMVawVO
+ AyT4GdQ0dOx9jkISgS6Ps2SXAQJ0tm8sblhcVWQrE+mlhIRtItt6Mdx7SVWP6hTfxuBWLI2mt
+ I/CDkneQNGXWXwk1MOWxsG9DRzzZOWfVNvuFCDIqsxgfKHrrJL+1EinJkJlqzPZUsq42l3WsT
+ wQ1t/P51+xLenbdLGKb+NWVj9mLjU/4scE/O/ZLH/YxVBfcCT8trXUWkAlWLkKwwB3lRJJu3N
+ +d3ik1o5lrgeJU8HaIb/9pKvwUtWJct0Z51+BrwqnpsF8o6J5wFlKLuB6q0+jXOwwey7IrNtx
+ DML98fbqKgM1yuNGN3deQCLdYuKCAoN7dxFzRjDBExrB/UkH2OUbFfIjMC1zC/pX6bltBTshz
+ tUUCHv/OEdkN9HLttlr4h4B6lOwaOkAQ6Z+e+m0Pedt36lQ+ozWOC/s+8GEDOgw0lcatll1dB
+ bj2BjHxfqr9B/XGuQ0jp3ROcis0HYB+4pBMyG8FC5c5XfEQDYm+sE4IthBoEae6NbN8d9n7+f
+ 5IXCLnlls/2L2VCqBV0AQtmXRUtOzFWxK/ydrgF49rkdPnQ5LmB62GKNU9XziyaRabWym4Ct5
+ X7hhazv3ADMaaBwatZgQ/O52mNimfQmEqaYrSdy79mVU8J3p/KILCWYIa0vu62cECSZpPwwKG
+ s3uyzV4ZXry8D4Kfyz7+YXZ4Ak6srTtOAiGMiEJ23om2VXttWPVbIWErBLvBLDb80kFZACRam
+ GJPkwAWsZ7fs+dlNA28r2rhZiYxSsbqGTVwlcF7CAZyoGx66YVGQc+sm7LmGBxvvBsribBQcK
+ KOaUFrMlZj7or80w4T/5jOZqN5PCxWMUr0j5Rk7ljLtxUOVbgBWQaXMQH5hpLVKSGXaqqS7Qe
+ nlIWBNHZObJzy1QE0xRizSEA9mSyLaRlZgrWD1N9JPtNRntQphkpjgNxA5c3qtRuJ9IYNa3Md
+ AY97D95BRshJnU=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 02:22:33PM -0500, Josef Bacik wrote:
-> Filipe reported a hang when we have errors on btrfs.  This turned out to
-> be a side-effect of my fix 666cc468424b ("btrfs: clear extent buffer
-> uptodate when we fail to write it") which made it so we clear
 
-The commit in Linus' tree is c2e39305299f0118298c2201f6d6cc7d3485f29e.
 
-> EXTENT_BUFFER_UPTODATE on an eb when we fail to write it out.
-> 
-> Below is a paste of Filipe's analysis he got from using drgn to debug
-> the hang
-> 
-> """
-> btree readahead code calls read_extent_buffer_pages(), sets ->io_pages to
-> a value while writeback of all pages has not yet completed:
->    --> writeback for the first 3 pages finishes, we clear
->        EXTENT_BUFFER_UPTODATE from eb on the first page when we get an
->        error.
->    --> at this point eb->io_pages is 1 and we cleared Uptodate bit from the
->        first 3 pages
->    --> read_extent_buffer_pages() does not see EXTENT_BUFFER_UPTODATE() so
->        it continues, it's able to lock the pages since we obviously don't
->        hold the pages locked during writeback
->    --> read_extent_buffer_pages() then computes 'num_reads' as 3, and sets
->        eb->io_pages to 3, since only the first page does not have Uptodate
->        bit set at this point
->    --> writeback for the remaining page completes, we ended decrementing
->        eb->io_pages by 1, resulting in eb->io_pages == 2, and therefore
->        never calling end_extent_buffer_writeback(), so
->        EXTENT_BUFFER_WRITEBACK remains in the eb's flags
->    --> of course, when the read bio completes, it doesn't and shouldn't
->        call end_extent_buffer_writeback()
->    --> we should clear EXTENT_BUFFER_UPTODATE only after all pages of
->        the eb finished writeback?  or maybe make the read pages code
->        wait for writeback of all pages of the eb to complete before
->        checking which pages need to be read, touch ->io_pages, submit
->        read bio, etc
-> 
-> writeback bit never cleared means we can hang when aborting a
-> transaction, at:
-> 
->     btrfs_cleanup_one_transaction()
->        btrfs_destroy_marked_extents()
->          wait_on_extent_buffer_writeback()
-> """
-> 
-> This is a problem because our writes are not synchronized with reads in
-> any way.  We clear the UPTODATE flag and then we can easily come in and
-> try to read the EB while we're still waiting on other bio's to
-> complete.
-> 
-> We have two options here, we could lock all the pages, and then check to
-> see if eb->io_pages != 0 to know if we've already got an outstanding
-> write on the eb.
-> 
-> Or we can simply check to see if we have WRITE_ERR set on this extent
-> buffer.  We set this bit _before_ we clear UPTODATE, so if the read gets
-> triggered because we aren't UPTODATE because of a write error we're
-> guaranteed to have WRITE_ERR set, and in this case we can simply return
-> -EIO.  This will fix the reported hang.
-> 
-> Reported-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On 2021/12/14 18:27, Filipe Manana wrote:
+> On Tue, Dec 14, 2021 at 03:14:11PM +0800, Qu Wenruo wrote:
+>> In btrfs_previous_item() and btrfs_previous_extent_item() we check
+>> btrfs_header_nritems() in a loop.
+>>
+>> But in fact we don't need to do it in a loop at all.
+>>
+>> Firstly, if a tree block is empty, the whole tree is empty and nodes[0]
+>> is the tree root.
+>> We don't need to do anything and can exit immediately.
+>>
+>> Secondly, the only timing we could get a slots[0] >=3D nritems is when =
+the
+>> function get called. After the first slots[0]--, the slot should always
+>> be <=3D nritems.
+>>
+>> So this patch will move all the nritems related checks out of the loop
+>> by:
+>>
+>> - Check nritems of nodes[0] to do a quick exit
+>>
+>> - Sanitize path->slots[0] before entering the loop
+>>    I doubt if there is any caller setting path->slots[0] beyond
+>>    nritems + 1 (setting to nritems is possible when item is not found).
+>>    Sanitize path->slots[0] to nritems won't hurt anyway.
+>>
+>> - Unconditionally reduce path->slots[0]
+>>    Since we're sure all tree blocks should not be empty, and
+>>    btrfs_prev_leaf() will return with path->slots[0] =3D=3D nritems, we
+>>    can safely reduce slots[0] unconditionally.
+>>    Just keep an extra ASSERT() to make sure no tree block is empty.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/ctree.c | 52 +++++++++++++++++++++++++++++++++--------------=
+-
+>>   1 file changed, 36 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+>> index 781537692a4a..555345aed84d 100644
+>> --- a/fs/btrfs/ctree.c
+>> +++ b/fs/btrfs/ctree.c
+>> @@ -4704,23 +4704,39 @@ int btrfs_previous_item(struct btrfs_root *root=
+,
+>>   {
+>>   	struct btrfs_key found_key;
+>>   	struct extent_buffer *leaf;
+>> -	u32 nritems;
+>> +	const u32 nritems =3D btrfs_header_nritems(path->nodes[0]);
+>>   	int ret;
+>>
+>> +	/*
+>> +	 * Check nritems first, if the tree is empty we exit immediately.
+>> +	 * And if this leave is not empty, none of the tree blocks of this ro=
+ot
+>> +	 * should be empty.
+>> +	 */
+>> +	if (nritems =3D=3D 0)
+>> +		return 1;
+>> +
+>> +	/*
+>> +	 * If we're several slots beyond nritems, we reset slot to nritems,
+>> +	 * and it will be handled properly inside the loop.
+>> +	 */
+>> +	if (unlikely(path->slots[0] > nritems))
+>> +		path->slots[0] =3D nritems;
+>> +
+>>   	while (1) {
+>>   		if (path->slots[0] =3D=3D 0) {
+>>   			ret =3D btrfs_prev_leaf(root, path);
+>>   			if (ret !=3D 0)
+>>   				return ret;
+>> -		} else {
+>> -			path->slots[0]--;
+>>   		}
+>>   		leaf =3D path->nodes[0];
+>> -		nritems =3D btrfs_header_nritems(leaf);
+>> -		if (nritems =3D=3D 0)
+>> -			return 1;
+>> -		if (path->slots[0] =3D=3D nritems)
+>> -			path->slots[0]--;
+>> +		ASSERT(btrfs_header_nritems(leaf));
+>> +		/*
+>> +		 * This is for both regular case and above btrfs_prev_leaf() case.
+>> +		 * As btrfs_prev_leaf() will return with path->slots[0] =3D=3D nrite=
+ms,
+>> +		 * and we're sure no tree block is empty, we can go safely
+>> +		 * reduce slots[0] here.
+>> +		 */
+>> +		path->slots[0]--;
+>
+> No, this is wrong.
+> btrfs_prev_leaf() computes the previous key and does a search_slot() for=
+ it.
+> With this unconditional decrement we can miss the previous key in 2 ways=
+:
+>
+> 1) The previous key exists, and btrfs_prev_leaf() leaves us in a leaf th=
+at has it
+>     and the slot is btrfs_header_nritems(prev_leaf) - 1 -> the last key =
+on a leaf;
+>
+> 2) The previous key exists, but after btrfs_prev_leaf() released the pat=
+h and
+>     before it called search_slot(), there was a balance operation and it=
+ pushed the
+>     previous key in the middle of the leaf we had, or some other leaf, a=
+nd the slot
+>     will be something less than btrfs_header_nritems(), it can even be 0=
+.
 
-As this is already in Linus' tree, and it was tagged for stable backports, it should
-include:
+You're totally right about both cases.
 
-Fixes: c2e39305299f01 ("btrfs: clear extent buffer uptodate when we fail to write it")
+I totally forget that btrfs_prev_leaf() is using serch_slot() other than
+going up several levels to find the sibling leaf.
 
-David can probably add that and fix the commit id above.
+Please discard the patch.
 
-Other than that, it looks good, thanks.
+Thanks,
+Qu
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-> ---
->  fs/btrfs/extent_io.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 762100a00978..38c5e9eb9a10 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -6601,6 +6601,14 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
->  	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
->  		return 0;
->  
-> +	/*
-> +	 * We could have had EXTENT_BUFFER_UPTODATE cleared by the write
-> +	 * operation, which could potentially still be in flight.  In this case
-> +	 * we simply want to return an error.
-> +	 */
-> +	if (unlikely(test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)))
-> +		return -EIO;
-> +
->  	if (eb->fs_info->sectorsize < PAGE_SIZE)
->  		return read_extent_buffer_subpage(eb, wait, mirror_num);
->  
-> -- 
-> 2.26.3
-> 
+>
+> That's why we have the call to header_nritems() in the loop, and check i=
+f slots[0]
+> is =3D=3D to nritems before decrementing...
+>
+> Thanks.
+>
+>
+>>
+>>   		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+>>   		if (found_key.objectid < min_objectid)
+>> @@ -4745,23 +4761,27 @@ int btrfs_previous_extent_item(struct btrfs_roo=
+t *root,
+>>   {
+>>   	struct btrfs_key found_key;
+>>   	struct extent_buffer *leaf;
+>> -	u32 nritems;
+>> +	const u32 nritems =3D btrfs_header_nritems(path->nodes[0]);
+>>   	int ret;
+>>
+>> +	/*
+>> +	 * Refer to btrfs_previous_item() for the reason of all nritems relat=
+ed
+>> +	 * checks/modifications.
+>> +	 */
+>> +	if (nritems =3D=3D 0)
+>> +		return 1;
+>> +	if (unlikely(path->slots[0] > nritems))
+>> +		path->slots[0] =3D nritems;
+>> +
+>>   	while (1) {
+>>   		if (path->slots[0] =3D=3D 0) {
+>>   			ret =3D btrfs_prev_leaf(root, path);
+>>   			if (ret !=3D 0)
+>>   				return ret;
+>> -		} else {
+>> -			path->slots[0]--;
+>>   		}
+>>   		leaf =3D path->nodes[0];
+>> -		nritems =3D btrfs_header_nritems(leaf);
+>> -		if (nritems =3D=3D 0)
+>> -			return 1;
+>> -		if (path->slots[0] =3D=3D nritems)
+>> -			path->slots[0]--;
+>> +		ASSERT(btrfs_header_nritems(leaf));
+>> +		path->slots[0]--;
+>>
+>>   		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+>>   		if (found_key.objectid < min_objectid)
+>> --
+>> 2.34.1
+>>
