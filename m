@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E76476380
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4B8476381
 	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236292AbhLOUkR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:40:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
+        id S236294AbhLOUkT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236226AbhLOUkR (ORCPT
+        with ESMTP id S236226AbhLOUkS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:40:17 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB17C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:16 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id m192so21342597qke.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:16 -0800 (PST)
+        Wed, 15 Dec 2021 15:40:18 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AABAC061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:18 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id m17so21409807qvx.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=3iTFlYtNrMYgDXIfuU04hbupZdDoxqqS2koMZHGozfw=;
-        b=5DkYLkSf1mLMrXKPWDcFHCYpPzoAujt1ydOYko5WbJysPglJzYOjr2pK96avhekQmn
-         zn+o9YmeX1KnXwcVglioLxmNNYFx6/EsVF0/Bkm7WPu1D46IdN1Xb3yXGb5DkLFpTE+q
-         UTsJ2nK6yW69TFjHZVTlaLutgppiPrAyh9piXkuWESxu0a1DiIgaWg4h8g15unhZWAIM
-         2bZFcsTdUdXe/6CSdKIl6yVmCum7s1U82N1UOhKQrqnJWpRO+uAs79ykih3HiHf1isA5
-         hQrMF64NRcDGUdADVJRdlXoQ5aMbghYGN5muwcHWW9T9TSoGuh3D8xtVe4WmAHRvU26N
-         HG7Q==
+        bh=1owcWEvVYPl/i/hgu3wi3tsBxbOUtbofsOYweG3x9Ys=;
+        b=n83yXyGbXDMh8U3JZZEULEjHx1YIsoOC9e9nbYi9PYFiAQ5KwHv+IRkS2WFTNQpS9+
+         JXsf/7SmrskSpjnDoMbq9AR1MTcvOxuGjDuNZjCtgStfYbTTRsTorKfeMoPwkKEA3eLS
+         EnISS0mIawFDd+6DT+xxrJSf/Eus10orYe3XYIISZg31CUsNY59Ms3Hl4zuRpuSLorRj
+         Vl8gJ8LznWatatBVZNlW616Dx3/yCEyhKFVSjnan4lBpYFqEiwx1vtGUoyOaQ2eV80SM
+         oqhaOh2Agr3McaUTatnED2FY7lUsEJTVUvVH2qxxX4d0SgSq/lfMTJ/ErV1ym3Imlc2p
+         dlAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3iTFlYtNrMYgDXIfuU04hbupZdDoxqqS2koMZHGozfw=;
-        b=Y7BPyTUHsAdVWtYveQMVByX4QVhxosAG03iS2mKvQjDLWbAwPDab7vEdphyXLdgPnN
-         AmSI6Pgc/abys1cUT36meNz3JFhO9jgpTjWMKkjIX+jwKGpnsOrTHoneAofk9+L12G2j
-         8Q7rcH2P5Ul8/gdm7pQDIq3lHp/jblRlTTNTFYT9vWURGZF64JtnA+uc/OZUh6JgFXpS
-         6d3dwx1E/k60ITV/HYZ/AYqxqQgLEKWdLLSzwNV92qahRb7texDLKoG8H0oygssN0Bva
-         aNMu1a31+uxiDI9mcuuBYcJQ3DxDXVGoHtdfkuKINut9cHcNh6UBxLnqbY+YCvhox2gC
-         gw5Q==
-X-Gm-Message-State: AOAM5323kXHWtFtXEVnaGUAWYRtJ13UdO6vdTrLW2B+OsZVgLN+f02Bv
-        wUbhadRse6gvrtQ0Z0l+NjPrREoU8A9n4w==
-X-Google-Smtp-Source: ABdhPJzfmErXTnqhq3ttJov0ffZoZEDv8nEv0ejP8MATlGpbvxIV79w72aIW/SJVtpvmGNzTQWiAtA==
-X-Received: by 2002:a05:620a:1727:: with SMTP id az39mr10170039qkb.567.1639600815890;
-        Wed, 15 Dec 2021 12:40:15 -0800 (PST)
+        bh=1owcWEvVYPl/i/hgu3wi3tsBxbOUtbofsOYweG3x9Ys=;
+        b=6EaiOrMJ2o+yEavICBgZYAL7uD6J5xCVo8M11I9gc5uolrFfY3ef9g5m9z/JZtsQtR
+         D2OAqJIT8i0CCqwjqSKKe+vmdpH5Pqg+94q+KPjQcpE6V/y45rZyLHrXOc1phmILVbq+
+         v4PcmFB5r8difrWs6q+kTSIX3hs0DE7RxFkGXDc7dImZiZPQsCJv6/gRYaXL6KyeHuA+
+         Cr5KpYD2fdlgOUSwyl9zvO5q7sV6dqCgXwP6CuT3zHcMPgctzdfqkQil5geKa1XE6VEV
+         N1SzGub42R8ICvVlRarhXgjokapwQNq5ImMM8rmaPsx7TyBzif8sBK7D7UjKxUgILqTC
+         hS/g==
+X-Gm-Message-State: AOAM532mLSX7yQQQ8/oYcEb+5+2z6IQLodDRrRubk0hXTI02+RfD3ftc
+        FWIYNjtw0f2ARMdhl3/pnFLc78KFOw8dGw==
+X-Google-Smtp-Source: ABdhPJw+9m9vB8beLjA4xu4YXLGtqLR6YRcejHpeuD8QQnOtRrkgmMGB4OtckNpfUa5hPqGkcteXIA==
+X-Received: by 2002:a0c:beca:: with SMTP id f10mr7406751qvj.97.1639600817287;
+        Wed, 15 Dec 2021 12:40:17 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 2sm1602498qkr.126.2021.12.15.12.40.15
+        by smtp.gmail.com with ESMTPSA id m9sm1612493qkn.59.2021.12.15.12.40.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 12:40:15 -0800 (PST)
+        Wed, 15 Dec 2021 12:40:16 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 04/11] btrfs: disable qgroups in extent tree v2
-Date:   Wed, 15 Dec 2021 15:40:01 -0500
-Message-Id: <5860e4d1ca5ea800b762b4b3a8865bde1ea260fc.1639600719.git.josef@toxicpanda.com>
+Subject: [PATCH v2 05/11] btrfs: disable scrub for extent-tree-v2
+Date:   Wed, 15 Dec 2021 15:40:02 -0500
+Message-Id: <1a661954275c0a092756a0cad668a92848250e11.1639600719.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639600719.git.josef@toxicpanda.com>
 References: <cover.1639600719.git.josef@toxicpanda.com>
@@ -62,32 +62,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Backref lookups are going to be drastically different with extent tree
-v2, disable qgroups until we do the work to add this support for extent
-tree v2.
+Scrub depends on extent references for every block, and with extent tree
+v2 we won't have that, so disable scrub until we can add back the proper
+code to handle extent-tree-v2.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/qgroup.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/btrfs/ioctl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index b126cc39ffd4..1c686c0be352 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -948,6 +948,12 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 	 */
- 	lockdep_assert_held_write(&fs_info->subvol_sem);
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 4ae87f44ce46..c81f50774cec 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3708,6 +3708,11 @@ static long btrfs_ioctl_scrub(struct file *file, void __user *arg)
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
  
 +	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-+		btrfs_err(fs_info,
-+			  "qgroups are currently unsupported in extent tree v2");
++		btrfs_err(fs_info, "scrub is not supported on extent tree v2 yet.");
 +		return -EINVAL;
 +	}
 +
- 	mutex_lock(&fs_info->qgroup_ioctl_lock);
- 	if (fs_info->quota_root)
- 		goto out;
+ 	sa = memdup_user(arg, sizeof(*sa));
+ 	if (IS_ERR(sa))
+ 		return PTR_ERR(sa);
 -- 
 2.26.3
 
