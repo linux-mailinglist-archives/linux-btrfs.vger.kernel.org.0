@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32E04762E6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6EB4762E7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235223AbhLOUO6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:14:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
+        id S235261AbhLOUPA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234938AbhLOUO6 (ORCPT
+        with ESMTP id S234938AbhLOUO7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:14:58 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE24C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:14:57 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id m25so23061811qtq.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:14:57 -0800 (PST)
+        Wed, 15 Dec 2021 15:14:59 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26858C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:14:59 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id 8so23100242qtx.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:14:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=NkHISBCj0ArxF11KRE/7CBbF3T2f7E1ZD2m++82RtMM=;
-        b=j/7lSTBJV2iyTBnl3xeHq1I4PQ/Y/mTsgZ15dFjAxvF5wTcsr0tyfQFVSxSgVIXW4U
-         FDfiYN3a/lzed/zpUCejjGuhVke7+A5FGoA3ShSxWmR2QgR6opcgIBtDmr5YpM6sbj2m
-         inwqBpDXojRFdiY5/H6gQxj0cZLSr1qgW3ZbAP763cayPifDpVe0L53w0S9gMqit8WdC
-         WFRWGH61p5is6f6LOlH73yV5WDJMbGnR2MP/xEITcWJ372QB+lBPMNFWeQudXJl+t8GV
-         xMptDUTrszvpO1Ew4O2FRk33iFt9jLqsDT9AdhZUAI9VFKu9y5P3Ji87JUUim6RwV47m
-         sy8Q==
+        bh=IU26d6NARysVXRmiAZpUKB9PDS4gjM34Bct7yUbHRE0=;
+        b=M+iQ6i3QLmXd0fYDhumVGbSqi9CCugXNcQPMWvZzI+LfG6ktdUwScLhr9mAhwkKovj
+         RmI6zthpmOWmHXbXURfbonWkRDTJKiG3OQqsJk7noX2oDBc+8sw638+jiZIa6L4O8sVi
+         5Qq+DF+rSUJLdxU5xkwQi6UaE1lkKb0LhEpes0JdnPiOv/M78PRrBp0J9RlacEcyBkzv
+         tPVezM1QJ1h4sXWxj3dFR19FD0FOcuwgNIBVsJhpY+5d+IatCsT40Mq0tVji9S2OGjlp
+         RILGeXU4HaWjWum5kuScrdrafSBE3riQdQPCOfSzBs8105v+0Dc3flLS+fQDWO7NYLxA
+         N6ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NkHISBCj0ArxF11KRE/7CBbF3T2f7E1ZD2m++82RtMM=;
-        b=ueuGNQxbApeOHRNvQz9cd+nB2d8xaCCz5DGj02VBBfOFBfvhwZr48Hd9X92nQ4nU0c
-         7vk91XPcEZSXEGn3dt71giKpurxX273bWnXRWq0tUi+03xOvTVrNHjvROIoAv8jvY0BS
-         L5Zx79CncMyCH0C5KfTux9gpCDxGHR1GYCqNRvVRh13Tfp8vHC0Cl1s1mNgClI9Dx5A0
-         k4k1SEY9QR0N2pjlj13F3WwYVWGI/JwbrV9OGSBzlran5eWCY22lw6xrUtTVccgQexxv
-         2yE5RBeGLuAFqG69zWy61FLqBkj95jb/uYbcxRbzp4zmp03sP65LbNA7dtHRlZQKrgz7
-         eE/Q==
-X-Gm-Message-State: AOAM533s2O1qCn5wUbpza1lxjqDzp3YK03r/4I292eun+XUJ+tzn/weo
-        nV1KqtWmwHtUthCz2aNDwO0PCxDTxk1EvA==
-X-Google-Smtp-Source: ABdhPJzrZWzYsPV0UwRdn+Vq+MjzB0mi7fDz/vmu2WUDxNO/KTHEDod5jxgBHLnNOWcVK3YiZ4gNNg==
-X-Received: by 2002:a05:622a:1a1c:: with SMTP id f28mr13848031qtb.308.1639599296693;
-        Wed, 15 Dec 2021 12:14:56 -0800 (PST)
+        bh=IU26d6NARysVXRmiAZpUKB9PDS4gjM34Bct7yUbHRE0=;
+        b=pr/vukKl1fiuqrQcrPoGX9nyB4DkB93QG8YTJXvoQbsJXpp/Ablc52QOodTXDhq1Nf
+         +F7zeOcqCMAtWHit/yLDpohemgAeWQnb98FdvsyRjXIBJQ7MHHfRRXRYTTvmapnnL5/Q
+         J+sz3H/RMPgu9r44ZCXOYgL4uBV2ooOH3Wmmt0zxwjJYCCg55YfMnw6N2n4OtoSOWAiO
+         GOjjqqE152fJWoG/wMQI0POZQK6vtI1aW6A9PRxhdHuhMCjnthVBUe9uD/LJMbVp21NN
+         n/Nw+5yXD5PODwxeY4F5PvQMuMFkzKmLa7p0FNb8i10BzEnzRyhHMLNVJ/aOM3Z2OyW0
+         /I2g==
+X-Gm-Message-State: AOAM530FwNRQ/yuq+K0VM7smSnzSvJCyPyyzF3OjttOZSv6DSzBkk5U/
+        MZSkAMwIx8hRLFNzmWlHSe9aMRwDNk2ZuQ==
+X-Google-Smtp-Source: ABdhPJzWLpvYCV5UUB9bfJV6YB06jwiy8c2s4xqVWBNFhLojJq7xhxJsMCNRcUvZaOA6wybpBDz4cw==
+X-Received: by 2002:ac8:5f52:: with SMTP id y18mr14146380qta.534.1639599298067;
+        Wed, 15 Dec 2021 12:14:58 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id q12sm2278562qtx.16.2021.12.15.12.14.56
+        by smtp.gmail.com with ESMTPSA id t15sm2320143qta.45.2021.12.15.12.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 12:14:56 -0800 (PST)
+        Wed, 15 Dec 2021 12:14:57 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 01/15] btrfs-progs: extract out free extent accounting handling
-Date:   Wed, 15 Dec 2021 15:14:39 -0500
-Message-Id: <94d0edde14356cd695f7ab7efd24fe209afc4a7c.1639598612.git.josef@toxicpanda.com>
+Subject: [PATCH 02/15] btrfs-progs: check: skip owner ref check for extent tree v2
+Date:   Wed, 15 Dec 2021 15:14:40 -0500
+Message-Id: <5fa67a0628f41f822675a956770beb7e009e35d5.1639598612.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639598612.git.josef@toxicpanda.com>
 References: <cover.1639598612.git.josef@toxicpanda.com>
@@ -62,91 +62,32 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-__free_extent() currently handles the modification of the tree, but also
-the accounting and cleaning up when we free the extent properly.
-Extract the accounting portion out into it's own helper so it can be
-used in the future.
+We do not track extent references for metadata in extent tree v2, simply
+skip this check if it is enabled.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/extent-tree.c | 45 +++++++++++++++++++++----------------
- 1 file changed, 26 insertions(+), 19 deletions(-)
+ check/main.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 1469f5c3..1af3eb06 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -1905,6 +1905,30 @@ void btrfs_unpin_extent(struct btrfs_fs_info *fs_info,
- 	update_pinned_extents(fs_info, bytenr, num_bytes, 0);
- }
+diff --git a/check/main.c b/check/main.c
+index 0eab91b5..c522116e 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -4102,6 +4102,13 @@ static int check_owner_ref(struct btrfs_root *root,
+ 	int found = 0;
+ 	int ret;
  
-+static int do_free_extent_accounting(struct btrfs_trans_handle *trans,
-+				     u64 bytenr, u64 num_bytes, bool is_data)
-+{
-+	int ret, mark_free = 0;
++	/*
++	 * We don't have extent references for metadata with extent tree v2,
++	 * just return.
++	 */
++	if (btrfs_fs_incompat(gfs_info, EXTENT_TREE_V2))
++		return 0;
 +
-+	ret = pin_down_bytes(trans, bytenr, num_bytes, is_data);
-+	if (ret > 0)
-+		mark_free = 1;
-+	else if (ret < 0)
-+		return ret;
-+
-+	if (is_data) {
-+		ret = btrfs_del_csums(trans, bytenr, num_bytes);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = add_to_free_space_tree(trans, bytenr, num_bytes);
-+	if (ret)
-+		return ret;
-+	update_block_group(trans, bytenr, num_bytes, 0, mark_free);
-+	return ret;
-+}
-+
- /*
-  * remove an extent from the root, returns 0 on success
-  */
-@@ -2075,8 +2099,6 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 			BUG_ON(ret);
- 		}
- 	} else {
--		int mark_free = 0;
--
- 		if (found_extent) {
- 			BUG_ON(is_data && refs_to_drop !=
- 			       extent_data_ref_count(path, iref));
-@@ -2089,28 +2111,13 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 			}
- 		}
- 
--		ret = pin_down_bytes(trans, bytenr, num_bytes,
--				     is_data);
--		if (ret > 0)
--			mark_free = 1;
--		BUG_ON(ret < 0);
--
- 		ret = btrfs_del_items(trans, extent_root, path, path->slots[0],
- 				      num_to_del);
- 		BUG_ON(ret);
- 		btrfs_release_path(path);
- 
--		if (is_data) {
--			ret = btrfs_del_csums(trans, bytenr, num_bytes);
--			BUG_ON(ret);
--		}
--
--		ret = add_to_free_space_tree(trans, bytenr, num_bytes);
--		if (ret) {
--			goto fail;
--		}
--
--		update_block_group(trans, bytenr, num_bytes, 0, mark_free);
-+		ret = do_free_extent_accounting(trans, bytenr, num_bytes, is_data);
-+		BUG_ON(ret);
- 	}
- fail:
- 	btrfs_free_path(path);
+ 	rbtree_postorder_for_each_entry_safe(node, tmp,
+ 					     &rec->backref_tree, node) {
+ 		if (node->is_data)
 -- 
 2.26.3
 
