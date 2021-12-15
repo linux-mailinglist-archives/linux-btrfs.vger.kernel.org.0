@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3A7476386
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB95476387
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbhLOUk0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:40:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
+        id S236331AbhLOUk1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:40:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236226AbhLOUkZ (ORCPT
+        with ESMTP id S236226AbhLOUk0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:40:25 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D28EC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:25 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id p4so21326282qkm.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:25 -0800 (PST)
+        Wed, 15 Dec 2021 15:40:26 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CC2C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:26 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id i13so21437135qvm.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=3IZ5GwuhKVYoc4IE9WPlzXj4PhIOz+svPAoI4OdcRXQ=;
-        b=IHyTwZcDfO2a4JYF+7NmoGooe4roCOzVV3DQIzg+eDaOgzxrwPH3rG5jZv8ySODV8V
-         Fv9cxnD2MIX/peFWdD/36MYDChU8KZS38pkGkh/11SOn58HK2aD6qg6TBDB9sRb8YRwH
-         E51aNnode2t8jleMGOQj2csN/4kPzh6fVEp4CMV1ZrOZljbGS/v/ZUduJP34Y173J/Ez
-         RJqtFQLI0zHdNukRhtnY8ttfYl+o9EgP99VWSU5MxpBA9B0l9P8OMmK2pIy8kQc419fv
-         60ac7d2/G8WD9AnMTK8wVCajbs3rnW1gAGbTvSHdg6QmkN6tSAFrcbHyyAWlJ/Ai65/b
-         8fow==
+        bh=tBs8rzIxqDbFKLR6xeaSZ6Ouc4MDn3eG2F/LxoTkMfg=;
+        b=OTUyAgUvB/dRjSA2BZIdgKt/Te0UNlgyN/Lf+qgwc8+MJ3o7lmBMzJ3Je2ivJy5saS
+         ndGPcS5uU3Gyl77bsR6Qk40n2Lz2vC/qB2B+JgSwOVwsxgAQEnhIa465odjVDmAOPQMi
+         D0mSrt/1b/oNUsMYh/739EVV/KyXYIW4X2zS1Zfyj/Qh9uNKXQ1W370S3Plk3H9cfDAZ
+         CcZaljHr8LXJi/U9+32G6Elui20p7OT8uqLiSTuPtSbsM7mLO7I8y5xPaL74/K0WGmyO
+         QIsofEra8WbNd2ukPwgWzceUycIj0qvYAqthkLbSHRTI2zCFEbM1QLHe8sEs29aHO7SU
+         39iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3IZ5GwuhKVYoc4IE9WPlzXj4PhIOz+svPAoI4OdcRXQ=;
-        b=kaWk+8GmFifyV+3EQcQAr9KCe+y+pYrJBLeTqkJ86x5iYE4c+D8hkIiSNjWaKm4Z5H
-         9+8wgIKd1kam+yQZeIlVjGSpl8RhBnELC6UJ4J/Gi3LkSE8PQXN19bw0Swgh1fn29sIP
-         uQ++5UKvQ7ckTmlscRccS2/YgSNM+gUmo87tLu/iri+mPp6qjI1HA9wH39XC6KuCxcsX
-         IzIrpzCUfnUlDgbOSHNKe0CRVLzH3zw0behnbrC7u7z6GVae3F3FbfNAazpnhgT8cFzb
-         zvPBaLY5YALwrDvgKFwbUsgG8RQsu3mcjPTic7fXb7xWUsfIVO3L7Gmd/BTyE1VvTEIH
-         mCNw==
-X-Gm-Message-State: AOAM531wSCFLYx8d8gxl/v7WjgS0ix9VoABJopefekfIs5XWRG0j1DQQ
-        nji/qR4irmaB5NlBcPy2OCeF2qwmRfq6UQ==
-X-Google-Smtp-Source: ABdhPJzz4sh2OBp5DNVvZu4M5/IVP/9O1yAvAx7w/pfi6vmjS6KEFSzoXGugC1rFTSce/TMoXzKmUA==
-X-Received: by 2002:a05:620a:94d:: with SMTP id w13mr10340389qkw.419.1639600823955;
-        Wed, 15 Dec 2021 12:40:23 -0800 (PST)
+        bh=tBs8rzIxqDbFKLR6xeaSZ6Ouc4MDn3eG2F/LxoTkMfg=;
+        b=W4Uz/EwOuHhBHjopBdfNimZxCbFeKzmJmV1qD2C8Lhh54AxNqNjrbsTeIDUFKgw9gb
+         4S23Kf1M2jG0u9qmqqqG/ZfgP7IUP7/uB8yi6pNHTTJqF4GTjhTGGycY7eBOYwRcbqw4
+         TrkMMtN28WyfXqb3wpPPyR13ktcS8d+NFVn8GxlgWahLsL5tqoqj1nqe7JK1EzqbQrmx
+         rrERXxQieiw1DNSLFvt+K1ew8EBn3dF1vVqUISYeFPkqlLNaPowTl+aXDSWkCvq+qoIZ
+         VDShj2634hx3a0EvJiO8yO3xy9/9DdDmrxU5GEhQQVQfOu8Z50SxpEu5/isN0xQsT/LQ
+         mZPw==
+X-Gm-Message-State: AOAM533+9/tnP3zjTTERuG8KMrPWAMuMrpewnP0A2yn+zscx8fms1Dii
+        k1aurWrWf7ARb3csCx/pDBfJGpwdD9QU+Q==
+X-Google-Smtp-Source: ABdhPJx2puvRooqSTGw1qAFVXiFcrhpqvX/QF8ydSH+RopiCSg0wRAmq6Fn/XoYdpF/dJ3/cjbWiqA==
+X-Received: by 2002:ad4:598f:: with SMTP id ek15mr13107043qvb.128.1639600825343;
+        Wed, 15 Dec 2021 12:40:25 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p10sm2269091qtw.97.2021.12.15.12.40.23
+        by smtp.gmail.com with ESMTPSA id p12sm1506234qtx.56.2021.12.15.12.40.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 12:40:23 -0800 (PST)
+        Wed, 15 Dec 2021 12:40:24 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 10/11] btrfs: add code to support the block group root
-Date:   Wed, 15 Dec 2021 15:40:07 -0500
-Message-Id: <6989c644d619aa6c829310bb9f508e12a36ea8af.1639600719.git.josef@toxicpanda.com>
+Subject: [PATCH v2 11/11] btrfs: add support for multiple global roots
+Date:   Wed, 15 Dec 2021 15:40:08 -0500
+Message-Id: <4bbf183895f620ff6fc6fc1b7a1288d9ab3b68ba.1639600719.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639600719.git.josef@toxicpanda.com>
 References: <cover.1639600719.git.josef@toxicpanda.com>
@@ -62,225 +62,326 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This code adds the on disk structures for the block group root, which
-will hold the block group items for extent tree v2.
+With extent tree v2 you will be able to create multiple csum, extent,
+and free space trees.  They will be used based on the block group, which
+will now use the block_group_item->chunk_objectid to point to the set of
+global roots that it will use.  When allocating new block groups we'll
+simply mod the gigabyte offset of the block group against the number of
+global roots we have and that will be the block groups global id.
+
+From there we can take the bytenr that we're modifying in the respective
+tree, look up the block group and get that block groups corresponding
+global root id.  From there we can get to the appropriate global root
+for that bytenr.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h                | 26 ++++++++++++++++-
- fs/btrfs/disk-io.c              | 49 ++++++++++++++++++++++++++++-----
- fs/btrfs/disk-io.h              |  2 ++
- fs/btrfs/print-tree.c           |  1 +
- include/trace/events/btrfs.h    |  1 +
- include/uapi/linux/btrfs_tree.h |  3 ++
- 6 files changed, 74 insertions(+), 8 deletions(-)
+ fs/btrfs/block-group.c     | 25 +++++++++++++++++--
+ fs/btrfs/block-group.h     |  1 +
+ fs/btrfs/ctree.h           |  2 ++
+ fs/btrfs/disk-io.c         | 49 +++++++++++++++++++++++++++++++-------
+ fs/btrfs/free-space-tree.c |  2 ++
+ fs/btrfs/transaction.c     | 15 ++++++++++++
+ fs/btrfs/tree-checker.c    | 21 ++++++++++++++--
+ 7 files changed, 102 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index f70b6772b3ad..40c1e5869cef 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -271,8 +271,13 @@ struct btrfs_super_block {
- 	/* the UUID written into btree blocks */
- 	u8 metadata_uuid[BTRFS_FSID_SIZE];
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 1db24e6d6d90..6215bc53b219 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1997,6 +1997,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+ 	cache->length = key->offset;
+ 	cache->used = btrfs_stack_block_group_used(bgi);
+ 	cache->flags = btrfs_stack_block_group_flags(bgi);
++	cache->global_root_id = btrfs_stack_block_group_chunk_objectid(bgi);
  
-+	__le64 block_group_root;
-+	__le64 block_group_root_generation;
-+	u8 block_group_root_level;
-+
- 	/* future expansion */
--	__le64 reserved[28];
-+	u8 reserved8[7];
-+	__le64 reserved[25];
- 	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
- 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
+ 	set_free_space_tree_thresholds(cache);
  
-@@ -648,6 +653,7 @@ struct btrfs_fs_info {
- 	struct btrfs_root *quota_root;
- 	struct btrfs_root *uuid_root;
- 	struct btrfs_root *data_reloc_root;
-+	struct btrfs_root *block_group_root;
- 
- 	/* the log root tree is a directory of all the other log roots */
- 	struct btrfs_root *log_root_tree;
-@@ -2336,6 +2342,17 @@ BTRFS_SETGET_STACK_FUNCS(backup_bytes_used, struct btrfs_root_backup,
- BTRFS_SETGET_STACK_FUNCS(backup_num_devices, struct btrfs_root_backup,
- 		   num_devices, 64);
+@@ -2279,7 +2280,7 @@ static int insert_block_group_item(struct btrfs_trans_handle *trans,
+ 	spin_lock(&block_group->lock);
+ 	btrfs_set_stack_block_group_used(&bgi, block_group->used);
+ 	btrfs_set_stack_block_group_chunk_objectid(&bgi,
+-				BTRFS_FIRST_CHUNK_TREE_OBJECTID);
++						   block_group->global_root_id);
+ 	btrfs_set_stack_block_group_flags(&bgi, block_group->flags);
+ 	key.objectid = block_group->start;
+ 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+@@ -2435,6 +2436,24 @@ void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans)
+ 	btrfs_trans_release_chunk_metadata(trans);
+ }
  
 +/*
-+ * for extent tree v2 we overload the extent root with the block group root, as
-+ * we will have multiple extent roots.
++ * For extent tree v2 we use the block_group_item->chunk_offset to point at our
++ * global root id.  For v1 it's always set to BTRFS_FIRST_CHUNK_TREE_OBJECTID.
 + */
-+BTRFS_SETGET_STACK_FUNCS(backup_block_group_root, struct btrfs_root_backup,
-+			 extent_root, 64);
-+BTRFS_SETGET_STACK_FUNCS(backup_block_group_root_gen, struct btrfs_root_backup,
-+			 extent_root_gen, 64);
-+BTRFS_SETGET_STACK_FUNCS(backup_block_group_root_level,
-+			 struct btrfs_root_backup, extent_root_level, 8);
++static u64 calculate_global_root_id(struct btrfs_fs_info *fs_info, u64 offset)
++{
++	u64 div = SZ_1G;
 +
- /* struct btrfs_balance_item */
- BTRFS_SETGET_FUNCS(balance_flags, struct btrfs_balance_item, flags, 64);
- 
-@@ -2470,6 +2487,13 @@ BTRFS_SETGET_STACK_FUNCS(super_cache_generation, struct btrfs_super_block,
- BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
- BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
- 			 uuid_tree_generation, 64);
-+BTRFS_SETGET_STACK_FUNCS(super_block_group_root, struct btrfs_super_block,
-+			 block_group_root, 64);
-+BTRFS_SETGET_STACK_FUNCS(super_block_group_root_generation,
-+			 struct btrfs_super_block,
-+			 block_group_root_generation, 64);
-+BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level, struct btrfs_super_block,
-+			 block_group_root_level, 8);
- 
- int btrfs_super_csum_size(const struct btrfs_super_block *s);
- const char *btrfs_super_csum_name(u16 csum_type);
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ddc3b9fcbabc..b31f20a9da2f 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1734,6 +1734,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
- 	btrfs_put_root(fs_info->uuid_root);
- 	btrfs_put_root(fs_info->fs_root);
- 	btrfs_put_root(fs_info->data_reloc_root);
-+	btrfs_put_root(fs_info->block_group_root);
- 	btrfs_check_leaked_roots(fs_info);
- 	btrfs_extent_buffer_leak_debug_check(fs_info);
- 	kfree(fs_info->super_copy);
-@@ -2094,7 +2095,6 @@ static void backup_super_roots(struct btrfs_fs_info *info)
- {
- 	const int next_backup = info->backup_root_index;
- 	struct btrfs_root_backup *root_backup;
--	struct btrfs_root *extent_root = btrfs_extent_root(info, 0);
- 	struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
- 
- 	root_backup = info->super_for_commit->super_roots + next_backup;
-@@ -2120,11 +2120,23 @@ static void backup_super_roots(struct btrfs_fs_info *info)
- 	btrfs_set_backup_chunk_root_level(root_backup,
- 			       btrfs_header_level(info->chunk_root->node));
- 
--	btrfs_set_backup_extent_root(root_backup, extent_root->node->start);
--	btrfs_set_backup_extent_root_gen(root_backup,
--			       btrfs_header_generation(extent_root->node));
--	btrfs_set_backup_extent_root_level(root_backup,
--			       btrfs_header_level(extent_root->node));
-+	if (btrfs_fs_incompat(info, EXTENT_TREE_V2)) {
-+		btrfs_set_backup_block_group_root(root_backup,
-+					info->block_group_root->node->start);
-+		btrfs_set_backup_block_group_root_gen(root_backup,
-+			btrfs_header_generation(info->block_group_root->node));
-+		btrfs_set_backup_block_group_root_level(root_backup,
-+			btrfs_header_level(info->block_group_root->node));
-+	} else {
-+		struct btrfs_root *extent_root = btrfs_extent_root(info, 0);
++	if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
++		return BTRFS_FIRST_CHUNK_TREE_OBJECTID;
 +
-+		btrfs_set_backup_extent_root(root_backup,
-+					     extent_root->node->start);
-+		btrfs_set_backup_extent_root_gen(root_backup,
-+				btrfs_header_generation(extent_root->node));
-+		btrfs_set_backup_extent_root_level(root_backup,
-+					btrfs_header_level(extent_root->node));
-+	}
++	/* If we have a smaller fs index based on 128m. */
++	if (btrfs_super_total_bytes(fs_info->super_copy) <= (SZ_1G * 10ULL))
++		div = SZ_128M;
++
++	return (div_u64(offset, div) % fs_info->nr_global_roots);
++}
++
+ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *trans,
+ 						 u64 bytes_used, u64 type,
+ 						 u64 chunk_offset, u64 size)
+@@ -2455,6 +2474,8 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
+ 	cache->flags = type;
+ 	cache->last_byte_to_unpin = (u64)-1;
+ 	cache->cached = BTRFS_CACHE_FINISHED;
++	cache->global_root_id = calculate_global_root_id(fs_info, cache->start);
++
+ 	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
+ 		cache->needs_free_space = 1;
+ 
+@@ -2671,7 +2692,7 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 	bi = btrfs_item_ptr_offset(leaf, path->slots[0]);
+ 	btrfs_set_stack_block_group_used(&bgi, cache->used);
+ 	btrfs_set_stack_block_group_chunk_objectid(&bgi,
+-			BTRFS_FIRST_CHUNK_TREE_OBJECTID);
++						   cache->global_root_id);
+ 	btrfs_set_stack_block_group_flags(&bgi, cache->flags);
+ 	write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
+ 	btrfs_mark_buffer_dirty(leaf);
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 5878b7ce3b78..93aabc68bb6a 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -68,6 +68,7 @@ struct btrfs_block_group {
+ 	u64 bytes_super;
+ 	u64 flags;
+ 	u64 cache_generation;
++	u64 global_root_id;
  
  	/*
- 	 * we might commit during log recovery, which happens before we set
-@@ -2269,6 +2281,7 @@ static void free_root_pointers(struct btrfs_fs_info *info, bool free_chunk_root)
- 	free_root_extent_buffers(info->uuid_root);
- 	free_root_extent_buffers(info->fs_root);
- 	free_root_extent_buffers(info->data_reloc_root);
-+	free_root_extent_buffers(info->block_group_root);
- 	if (free_chunk_root)
- 		free_root_extent_buffers(info->chunk_root);
+ 	 * If the free space extent count exceeds this number, convert the block
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 40c1e5869cef..2a5ed393eb21 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1056,6 +1056,8 @@ struct btrfs_fs_info {
+ 	spinlock_t relocation_bg_lock;
+ 	u64 data_reloc_bg;
+ 
++	u64 nr_global_roots;
++
+ 	spinlock_t zone_active_bgs_lock;
+ 	struct list_head zone_active_bgs;
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index b31f20a9da2f..2a70f61345aa 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1296,12 +1296,32 @@ struct btrfs_root *btrfs_global_root(struct btrfs_fs_info *fs_info,
+ 	return root;
  }
-@@ -2969,8 +2982,20 @@ static int load_important_roots(struct btrfs_fs_info *fs_info)
- 	gen = btrfs_super_generation(sb);
- 	level = btrfs_super_root_level(sb);
- 	ret = load_super_root(fs_info->tree_root, bytenr, gen, level);
--	if (ret)
-+	if (ret) {
- 		btrfs_warn(fs_info, "couldn't read tree root");
-+		return ret;
-+	}
+ 
++static u64 btrfs_global_root_id(struct btrfs_fs_info *fs_info, u64 bytenr)
++{
++	struct btrfs_block_group *block_group;
++	u64 ret;
 +
 +	if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
 +		return 0;
 +
-+	bytenr = btrfs_super_block_group_root(sb);
-+	gen = btrfs_super_block_group_root_generation(sb);
-+	level = btrfs_super_block_group_root_level(sb);
-+	ret = load_super_root(fs_info->block_group_root, bytenr, gen, level);
-+	if (ret)
-+		btrfs_warn(fs_info, "couldn't read block group root");
- 	return ret;
++	if (likely(bytenr))
++		block_group = btrfs_lookup_block_group(fs_info, bytenr);
++	else
++		block_group = btrfs_lookup_first_block_group(fs_info, bytenr);
++	ASSERT(block_group);
++	if (!block_group)
++		return 0;
++	ret = block_group->global_root_id;
++	btrfs_put_block_group(block_group);
++	return ret;
++}
++
+ struct btrfs_root *btrfs_csum_root(struct btrfs_fs_info *fs_info, u64 bytenr)
+ {
+ 	struct btrfs_key key = {
+ 		.objectid = BTRFS_CSUM_TREE_OBJECTID,
+ 		.type = BTRFS_ROOT_ITEM_KEY,
+-		.offset = 0,
++		.offset = btrfs_global_root_id(fs_info, bytenr),
+ 	};
+ 
+ 	return btrfs_global_root(fs_info, &key);
+@@ -1312,7 +1332,7 @@ struct btrfs_root *btrfs_extent_root(struct btrfs_fs_info *fs_info, u64 bytenr)
+ 	struct btrfs_key key = {
+ 		.objectid = BTRFS_EXTENT_TREE_OBJECTID,
+ 		.type = BTRFS_ROOT_ITEM_KEY,
+-		.offset = 0,
++		.offset = btrfs_global_root_id(fs_info, bytenr),
+ 	};
+ 
+ 	return btrfs_global_root(fs_info, &key);
+@@ -2095,7 +2115,6 @@ static void backup_super_roots(struct btrfs_fs_info *info)
+ {
+ 	const int next_backup = info->backup_root_index;
+ 	struct btrfs_root_backup *root_backup;
+-	struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
+ 
+ 	root_backup = info->super_for_commit->super_roots + next_backup;
+ 
+@@ -2129,6 +2148,7 @@ static void backup_super_roots(struct btrfs_fs_info *info)
+ 			btrfs_header_level(info->block_group_root->node));
+ 	} else {
+ 		struct btrfs_root *extent_root = btrfs_extent_root(info, 0);
++		struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
+ 
+ 		btrfs_set_backup_extent_root(root_backup,
+ 					     extent_root->node->start);
+@@ -2136,6 +2156,12 @@ static void backup_super_roots(struct btrfs_fs_info *info)
+ 				btrfs_header_generation(extent_root->node));
+ 		btrfs_set_backup_extent_root_level(root_backup,
+ 					btrfs_header_level(extent_root->node));
++
++		btrfs_set_backup_csum_root(root_backup, csum_root->node->start);
++		btrfs_set_backup_csum_root_gen(root_backup,
++					       btrfs_header_generation(csum_root->node));
++		btrfs_set_backup_csum_root_level(root_backup,
++						 btrfs_header_level(csum_root->node));
+ 	}
+ 
+ 	/*
+@@ -2157,12 +2183,6 @@ static void backup_super_roots(struct btrfs_fs_info *info)
+ 	btrfs_set_backup_dev_root_level(root_backup,
+ 				       btrfs_header_level(info->dev_root->node));
+ 
+-	btrfs_set_backup_csum_root(root_backup, csum_root->node->start);
+-	btrfs_set_backup_csum_root_gen(root_backup,
+-				       btrfs_header_generation(csum_root->node));
+-	btrfs_set_backup_csum_root_level(root_backup,
+-					 btrfs_header_level(csum_root->node));
+-
+ 	btrfs_set_backup_total_bytes(root_backup,
+ 			     btrfs_super_total_bytes(info->super_copy));
+ 	btrfs_set_backup_bytes_used(root_backup,
+@@ -2550,6 +2570,7 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
+ {
+ 	struct btrfs_fs_info *fs_info = tree_root->fs_info;
+ 	struct btrfs_root *root;
++	u64 max_global_id = 0;
+ 	int ret;
+ 	struct btrfs_key key = {
+ 		.objectid = objectid,
+@@ -2585,6 +2606,13 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
+ 			break;
+ 		btrfs_release_path(path);
+ 
++		/*
++		 * Just worry about this for extent tree, it'll be the same for
++		 * everybody.
++		 */
++		if (objectid == BTRFS_EXTENT_TREE_OBJECTID)
++			max_global_id = max(max_global_id, key.offset);
++
+ 		found = true;
+ 		root = read_tree_root_path(tree_root, path, &key);
+ 		if (IS_ERR(root)) {
+@@ -2602,6 +2630,9 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
+ 	}
+ 	btrfs_release_path(path);
+ 
++	if (objectid == BTRFS_EXTENT_TREE_OBJECTID)
++		fs_info->nr_global_roots = max_global_id + 1;
++
+ 	if (!found || ret) {
+ 		if (objectid == BTRFS_CSUM_TREE_OBJECTID)
+ 			set_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state);
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index a3eb6bce2a4d..67d723b9ce0f 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -25,6 +25,8 @@ static struct btrfs_root *btrfs_free_space_root(
+ 		.offset = 0,
+ 	};
+ 
++	if (btrfs_fs_incompat(block_group->fs_info, EXTENT_TREE_V2))
++		key.offset = block_group->global_root_id;
+ 	return btrfs_global_root(block_group->fs_info, &key);
  }
  
-@@ -2983,6 +3008,16 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- 	int ret = 0;
- 	int i;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 03de89b45f27..0b73b3ad1e57 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1850,6 +1850,14 @@ static void update_super_roots(struct btrfs_fs_info *fs_info)
+ 		super->cache_generation = 0;
+ 	if (test_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags))
+ 		super->uuid_tree_generation = root_item->generation;
++
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
++		root_item = &fs_info->block_group_root->root_item;
++
++		super->block_group_root = root_item->bytenr;
++		super->block_group_root_generation = root_item->generation;
++		super->block_group_root_level = root_item->level;
++	}
+ }
+ 
+ int btrfs_transaction_in_commit(struct btrfs_fs_info *info)
+@@ -2269,6 +2277,13 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	list_add_tail(&fs_info->chunk_root->dirty_list,
+ 		      &cur_trans->switch_commits);
  
 +	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-+		struct btrfs_root *root;
-+		root = btrfs_alloc_root(fs_info,
-+					BTRFS_BLOCK_GROUP_TREE_OBJECTID,
-+					GFP_KERNEL);
-+		if (!root)
-+			return -ENOMEM;
-+		fs_info->block_group_root = root;
++		btrfs_set_root_node(&fs_info->block_group_root->root_item,
++				    fs_info->block_group_root->node);
++		list_add_tail(&fs_info->block_group_root->dirty_list,
++			      &cur_trans->switch_commits);
 +	}
 +
- 	for (i = 0; i < BTRFS_NUM_BACKUP_ROOTS; i++) {
- 		if (handle_error) {
- 			if (!IS_ERR(tree_root->node))
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 5e8bef4b7563..2e10514ecda8 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -111,6 +111,8 @@ static inline struct btrfs_root *btrfs_grab_root(struct btrfs_root *root)
+ 	switch_commit_roots(trans);
  
- static inline struct btrfs_root *btrfs_block_group_root(struct btrfs_fs_info *fs_info)
+ 	ASSERT(list_empty(&cur_trans->dirty_bgs));
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index ef7d624b0672..96b687e0f820 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -639,8 +639,10 @@ static void block_group_err(const struct extent_buffer *eb, int slot,
+ static int check_block_group_item(struct extent_buffer *leaf,
+ 				  struct btrfs_key *key, int slot)
  {
-+	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
-+		return fs_info->block_group_root;
- 	return btrfs_extent_root(fs_info, 0);
- }
++	struct btrfs_fs_info *fs_info = leaf->fs_info;
+ 	struct btrfs_block_group_item bgi;
+ 	u32 item_size = btrfs_item_size(leaf, slot);
++	u64 chunk_objectid;
+ 	u64 flags;
+ 	u64 type;
  
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index 0775ae9f4419..524fdb0ddd74 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -23,6 +23,7 @@ static const struct root_name_map root_map[] = {
- 	{ BTRFS_QUOTA_TREE_OBJECTID,		"QUOTA_TREE"		},
- 	{ BTRFS_UUID_TREE_OBJECTID,		"UUID_TREE"		},
- 	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
-+	{ BTRFS_BLOCK_GROUP_TREE_OBJECTID,	"BLOCK_GROUP_TREE"	},
- 	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
- };
+@@ -663,8 +665,23 @@ static int check_block_group_item(struct extent_buffer *leaf,
  
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 0d729664b4b4..f068ff30d654 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -53,6 +53,7 @@ struct btrfs_space_info;
- 		{ BTRFS_TREE_RELOC_OBJECTID,	"TREE_RELOC"	},	\
- 		{ BTRFS_UUID_TREE_OBJECTID,	"UUID_TREE"	},	\
- 		{ BTRFS_FREE_SPACE_TREE_OBJECTID, "FREE_SPACE_TREE" },	\
-+		{ BTRFS_BLOCK_GROUP_TREE_OBJECTID, "BLOCK_GROUP_TREE" },\
- 		{ BTRFS_DATA_RELOC_TREE_OBJECTID, "DATA_RELOC_TREE" })
- 
- #define show_root_type(obj)						\
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 5416f1f1a77a..854df92520a1 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -53,6 +53,9 @@
- /* tracks free space in block groups. */
- #define BTRFS_FREE_SPACE_TREE_OBJECTID 10ULL
- 
-+/* holds the block group items for extent tree v2. */
-+#define BTRFS_BLOCK_GROUP_TREE_OBJECTID 11ULL
-+
- /* device stats in the device tree */
- #define BTRFS_DEV_STATS_OBJECTID 0ULL
- 
+ 	read_extent_buffer(leaf, &bgi, btrfs_item_ptr_offset(leaf, slot),
+ 			   sizeof(bgi));
+-	if (unlikely(btrfs_stack_block_group_chunk_objectid(&bgi) !=
+-		     BTRFS_FIRST_CHUNK_TREE_OBJECTID)) {
++	chunk_objectid = btrfs_stack_block_group_chunk_objectid(&bgi);
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
++		/*
++		 * We don't init the nr_global_roots until we load the global
++		 * roots, so this could be 0 at mount time.  If it's 0 we'll
++		 * just assume we're fine, and later we'll check against our
++		 * actual value.
++		 */
++		if (unlikely(fs_info->nr_global_roots &&
++			     chunk_objectid >= fs_info->nr_global_roots)) {
++			block_group_err(leaf, slot,
++	"invalid block group global root id, have %llu, needs to be <= %llu",
++					chunk_objectid,
++					fs_info->nr_global_roots);
++			return -EUCLEAN;
++		}
++	} else if (unlikely(chunk_objectid != BTRFS_FIRST_CHUNK_TREE_OBJECTID)) {
+ 		block_group_err(leaf, slot,
+ 		"invalid block group chunk objectid, have %llu expect %llu",
+ 				btrfs_stack_block_group_chunk_objectid(&bgi),
 -- 
 2.26.3
 
