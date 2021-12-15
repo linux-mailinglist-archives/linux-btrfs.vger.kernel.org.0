@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4B8476381
+	by mail.lfdr.de (Postfix) with ESMTP id 9B31F476382
 	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236294AbhLOUkT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
+        id S236299AbhLOUkU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236226AbhLOUkS (ORCPT
+        with ESMTP id S236226AbhLOUkU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:40:18 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AABAC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:18 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id m17so21409807qvx.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:18 -0800 (PST)
+        Wed, 15 Dec 2021 15:40:20 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A51C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:19 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id 8so23179300qtx.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=1owcWEvVYPl/i/hgu3wi3tsBxbOUtbofsOYweG3x9Ys=;
-        b=n83yXyGbXDMh8U3JZZEULEjHx1YIsoOC9e9nbYi9PYFiAQ5KwHv+IRkS2WFTNQpS9+
-         JXsf/7SmrskSpjnDoMbq9AR1MTcvOxuGjDuNZjCtgStfYbTTRsTorKfeMoPwkKEA3eLS
-         EnISS0mIawFDd+6DT+xxrJSf/Eus10orYe3XYIISZg31CUsNY59Ms3Hl4zuRpuSLorRj
-         Vl8gJ8LznWatatBVZNlW616Dx3/yCEyhKFVSjnan4lBpYFqEiwx1vtGUoyOaQ2eV80SM
-         oqhaOh2Agr3McaUTatnED2FY7lUsEJTVUvVH2qxxX4d0SgSq/lfMTJ/ErV1ym3Imlc2p
-         dlAA==
+        bh=DiFAXI6IvBOyQ1Zght5PfvS6NLFNrSM05Fq0huFf1hI=;
+        b=YUdB7tOHO0LCvzNSiZbmmWO6cyCSndpS+pqZkxrLup0ZEt+EgiEDPynDFVup6ChIH1
+         sRQGnG6Pzp/yRuNx+kkccFiHot+jaLGSaO3SVfdon3tcPjUzSa7Qimc7HXHg9y/MYHQf
+         y4CeNvYorhPQSO200gwq3Hprz0qbjVH4pRKB7ltLcmiXJlx3dObijAQOXaJcHcCciaaK
+         s67o7f9ogsNrC2MfTaj39dKxouEkJOvlIfz+LBXwZz7mehI/a4VQY/Ftbhm8l1oYi1Mm
+         Qj/PPgg0NxUjMD0+sCrcUqwNTH1CVTkmoQqj87SNsa2DywWQK/g2sdpX9uS/8w9yu+tn
+         yfpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1owcWEvVYPl/i/hgu3wi3tsBxbOUtbofsOYweG3x9Ys=;
-        b=6EaiOrMJ2o+yEavICBgZYAL7uD6J5xCVo8M11I9gc5uolrFfY3ef9g5m9z/JZtsQtR
-         D2OAqJIT8i0CCqwjqSKKe+vmdpH5Pqg+94q+KPjQcpE6V/y45rZyLHrXOc1phmILVbq+
-         v4PcmFB5r8difrWs6q+kTSIX3hs0DE7RxFkGXDc7dImZiZPQsCJv6/gRYaXL6KyeHuA+
-         Cr5KpYD2fdlgOUSwyl9zvO5q7sV6dqCgXwP6CuT3zHcMPgctzdfqkQil5geKa1XE6VEV
-         N1SzGub42R8ICvVlRarhXgjokapwQNq5ImMM8rmaPsx7TyBzif8sBK7D7UjKxUgILqTC
-         hS/g==
-X-Gm-Message-State: AOAM532mLSX7yQQQ8/oYcEb+5+2z6IQLodDRrRubk0hXTI02+RfD3ftc
-        FWIYNjtw0f2ARMdhl3/pnFLc78KFOw8dGw==
-X-Google-Smtp-Source: ABdhPJw+9m9vB8beLjA4xu4YXLGtqLR6YRcejHpeuD8QQnOtRrkgmMGB4OtckNpfUa5hPqGkcteXIA==
-X-Received: by 2002:a0c:beca:: with SMTP id f10mr7406751qvj.97.1639600817287;
-        Wed, 15 Dec 2021 12:40:17 -0800 (PST)
+        bh=DiFAXI6IvBOyQ1Zght5PfvS6NLFNrSM05Fq0huFf1hI=;
+        b=xSNUpUTJ8qBGJWdqrw5UiUyicAOcVKxAKdEqbAVW+ZyAUokdl6yFD3I1Oqe8qK2kXY
+         bviEoIV8P8Olb8VSfrN4XWzWlWhgOt52EBVFYMBYP0vEOA8n5Agz11Wkkoo5M5LhNN/C
+         Y5o818L3AfIA6L5eP8zcCEi138e3LucBnGzyMRxmQn2ieYa+S9ILXnEt5v9Oe/QKmkFc
+         oAJgDBJ5JOfgnNeftAxW9qGsrhEZyw/vF41GD3hzgCxQN1HyAkqW5UCoKExu8YoCGOGR
+         WDVGbUx/jyR0SohoIHM7OTjcawBR2BOywLlVnv2bqLI/pW9nusVQXlV67DvGJ/WPiyvx
+         mEOA==
+X-Gm-Message-State: AOAM531caLiPsZZXR1oPgOXNMYcGMWLKPT7yTpqCUxhuFwOsd8EUa9mW
+        JeMqqSgq5QYo5QAh9Lt8PM5bfQLNrkWh2Q==
+X-Google-Smtp-Source: ABdhPJyVfO4Ivf23jtiI530pxMpG9mephwkQVfeyTkl4XTHrhKRqc+cZmgPE4EHlUg6dnnNRkLu2gg==
+X-Received: by 2002:a05:622a:181d:: with SMTP id t29mr13997294qtc.338.1639600818553;
+        Wed, 15 Dec 2021 12:40:18 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m9sm1612493qkn.59.2021.12.15.12.40.16
+        by smtp.gmail.com with ESMTPSA id de13sm1652619qkb.81.2021.12.15.12.40.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 12:40:16 -0800 (PST)
+        Wed, 15 Dec 2021 12:40:18 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 05/11] btrfs: disable scrub for extent-tree-v2
-Date:   Wed, 15 Dec 2021 15:40:02 -0500
-Message-Id: <1a661954275c0a092756a0cad668a92848250e11.1639600719.git.josef@toxicpanda.com>
+Subject: [PATCH v2 06/11] btrfs: disable snapshot creation/deletion for extent tree v2
+Date:   Wed, 15 Dec 2021 15:40:03 -0500
+Message-Id: <2e64cd01ee1e1cfd77f0050fd43f3bec379a8443.1639600719.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639600719.git.josef@toxicpanda.com>
 References: <cover.1639600719.git.josef@toxicpanda.com>
@@ -62,31 +62,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Scrub depends on extent references for every block, and with extent tree
-v2 we won't have that, so disable scrub until we can add back the proper
-code to handle extent-tree-v2.
+When we stop tracking metadata blocks all of snapshotting will break, so
+disable it until I add the snapshot root and drop tree support.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/btrfs/inode.c | 11 +++++++++--
+ fs/btrfs/ioctl.c | 14 ++++++++++++++
+ 2 files changed, 23 insertions(+), 2 deletions(-)
 
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a88130c7782e..3d590a96f5d0 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4565,14 +4565,21 @@ int btrfs_delete_subvolume(struct inode *dir, struct dentry *dentry)
+ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
+ {
+ 	struct inode *inode = d_inode(dentry);
++	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
+ 	int err = 0;
+ 	struct btrfs_trans_handle *trans;
+ 	u64 last_unlink_trans;
+ 
+ 	if (inode->i_size > BTRFS_EMPTY_DIR_SIZE)
+ 		return -ENOTEMPTY;
+-	if (btrfs_ino(BTRFS_I(inode)) == BTRFS_FIRST_FREE_OBJECTID)
++	if (btrfs_ino(BTRFS_I(inode)) == BTRFS_FIRST_FREE_OBJECTID) {
++		if (unlikely(btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))) {
++			btrfs_err(fs_info,
++				  "extent tree v2 doesn't support snapshot deletion yet.");
++			return -EOPNOTSUPP;
++		}
+ 		return btrfs_delete_subvolume(dir, dentry);
++	}
+ 
+ 	trans = __unlink_start_trans(dir);
+ 	if (IS_ERR(trans))
+@@ -4611,7 +4618,7 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
+ 	}
+ out:
+ 	btrfs_end_transaction(trans);
+-	btrfs_btree_balance_dirty(BTRFS_I(dir)->root->fs_info);
++	btrfs_btree_balance_dirty(fs_info);
+ 
+ 	return err;
+ }
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 4ae87f44ce46..c81f50774cec 100644
+index c81f50774cec..cfcffb69d5fe 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -3708,6 +3708,11 @@ static long btrfs_ioctl_scrub(struct file *file, void __user *arg)
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
+@@ -751,6 +751,13 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
+ 	struct btrfs_trans_handle *trans;
+ 	int ret;
  
++	/* We do not support snapshotting right now. */
 +	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-+		btrfs_err(fs_info, "scrub is not supported on extent tree v2 yet.");
-+		return -EINVAL;
++		btrfs_warn(fs_info,
++			   "extent tree v2 doesn't support snapshotting yet.");
++		return -EOPNOTSUPP;
 +	}
 +
- 	sa = memdup_user(arg, sizeof(*sa));
- 	if (IS_ERR(sa))
- 		return PTR_ERR(sa);
+ 	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
+ 		return -EINVAL;
+ 
+@@ -2901,6 +2908,13 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 	int err = 0;
+ 	bool destroy_parent = false;
+ 
++	/* We don't support snapshots with extent tree v2 yet. */
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
++		btrfs_err(fs_info,
++			  "extent tree v2 doesn't support snapshot deletion yet.");
++		return -EOPNOTSUPP;
++	}
++
+ 	if (destroy_v2) {
+ 		vol_args2 = memdup_user(arg, sizeof(*vol_args2));
+ 		if (IS_ERR(vol_args2))
 -- 
 2.26.3
 
