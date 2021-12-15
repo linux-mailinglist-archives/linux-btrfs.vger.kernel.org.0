@@ -2,105 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7674475F1A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 18:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD4C476121
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 19:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245714AbhLOR1k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 12:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343601AbhLOR02 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 12:26:28 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A4BC07E5C5
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 09:25:50 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id y196so17117864wmc.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 09:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
-        b=cJlDUfpq46FBvNkVqLdgj18Rg1pAxJtGFVkJcLJKl30hPbe2xQVyhgQWoW1d2lXEEh
-         C8PBY8w63Pt8eeQsGSLKWHKgNOTGT3uZTgPjf15asCS0I8nZhfufl1APElY2ecpKoY9i
-         giCxeqg1cduFIgZqbqZxckqJqWozDoq7wngC0Gvq1q8TwPPGWTyH2tSqZpLvOH2qDc5F
-         Mm25cIp7AZESyTDNdbQL7PCy/j0OKxCrTiEhSNeJlyqRn7Gc0xm8p+GbK38QekLxArnc
-         gVoUT3DAaWi+rLvuKt+q1teZDMi5q1a3FSlupC/coKcc6aGNLcv3PI01yZbZXLg0TY70
-         lomA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
-        b=t8AOw7twSiJvgL4JZ0CoWcFoHWg7kWpRu0WJ2YDrXI75suVDhWgsnvaj4cAWHM24kq
-         VfYkzy0jRf3QqW4uuUDGVl3xgujePv1gwD6b5grhMK3eaqox73lp7Qrznqk+6BWckSOA
-         ASyb9YIGlAcv0S2iGuk2+R+JRJX/NgFkdzgCwMCcO2OnXDhlA91eYaMleGYD+y6x4dV5
-         +VQ/O7z0kwlNEm+hZyMCSjVeouATnxwn+gwmJ2I2+JyvLbaaeHGY4xJRshGdSB1iGqGd
-         qRDSPVXZA+BsCqyLctJyBa+eLXrrwx6VQ96uSDwxDSHHo670KRXR4/dr76DwIU6y3qkh
-         50tQ==
-X-Gm-Message-State: AOAM530aO627/uNcpD9ZVvb7WpMlACrpRodbdYublvBlKmi0a2EY//lc
-        J4TZGHdY9xGK6w8iFfD1Ux9JVSlJaHRruGc1394=
-X-Google-Smtp-Source: ABdhPJzRnwzQ/5F4rhSxrQnNlB9PpQLBHPvH6HtGcgdhNhce2mo1/jx92j50Qs2H3/Xyc99Lx1SNMoU2jYKvxKmsdBU=
-X-Received: by 2002:a7b:c5cc:: with SMTP id n12mr962639wmk.162.1639589149481;
- Wed, 15 Dec 2021 09:25:49 -0800 (PST)
+        id S1344048AbhLOSxp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 13:53:45 -0500
+Received: from smtp-31-wd.italiaonline.it ([213.209.13.31]:58332 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1344044AbhLOSxo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Dec 2021 13:53:44 -0500
+Received: from [192.168.1.27] ([78.12.25.242])
+        by smtp-31.iol.local with ESMTPA
+        id xZPImoczROKKIxZPIm7vIa; Wed, 15 Dec 2021 19:53:42 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1639594422; bh=GQ+6OI5DDW0F5WVFX6yi0PQWdAvUEP5330CDCk1USyM=;
+        h=From;
+        b=IKb28FNxoaS62cjnJvFbrVacpuvTxEmt1sewctS7tbX6ooycY4na/JoaC/1JBy0CA
+         7Qe1Ku3Omd96hNJxp/4fDgKbc4b6yiHnnrcuyexb+bgG4llX+rc5uxXnzOjdnSNoAk
+         CA6khb8YG8LcC4lz+1cY612ay4lk8zpCHVQx+10w3iQlTmOYq2ZFL4vjBZRZFQ1ozE
+         SykQ/G7fVtg8zhNTYEjmRG1pn5/ZbBjntDvh7CEwLWaEg79FLWagJJ3TMbqDI03eyb
+         sfWzoWLHA47ofimnQ/gD0o3AA9WYauTfI2lFbbyPIoTF6YDz853UMZ83VkQ2EgFuZr
+         /LeSMy8H/aGnw==
+X-CNFS-Analysis: v=2.4 cv=QuabYX+d c=1 sm=1 tr=0 ts=61ba39b6 cx=a_exe
+ a=IXMPufAKhGEaWfwa3qtiyQ==:117 a=IXMPufAKhGEaWfwa3qtiyQ==:17
+ a=IkcTkHD0fZMA:10 a=TtYj0HvxvMiuLhkx3OIA:9 a=QEXdDO2ut3YA:10
+Message-ID: <633ccf8f-3118-1dda-69d2-0398ef3ffdb7@libero.it>
+Date:   Wed, 15 Dec 2021 19:53:40 +0100
 MIME-Version: 1.0
-Sender: donnalouisemchince@gmail.com
-Received: by 2002:a5d:674f:0:0:0:0:0 with HTTP; Wed, 15 Dec 2021 09:25:49
- -0800 (PST)
-From:   DINA MCKENNA <dinamckennahowley@gmail.com>
-Date:   Wed, 15 Dec 2021 17:25:49 +0000
-X-Google-Sender-Auth: kMiTZ3QE85-_xNffHzgb-NGmk9E
-Message-ID: <CA+4Ruvsyza7nAVVhc_6qSTrEQ2M1yG7bVS7TUvTqPCD2cft0XA@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Reply-To: kreijack@inwind.it
+Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <cover.1635089352.git.kreijack@inwind.it>
+ <SYXPR01MB1918689AF49BE6E6E031C8B69E749@SYXPR01MB1918.ausprd01.prod.outlook.com>
+ <1d725df7-b435-4acf-4d17-26c2bd171c1a@libero.it>
+ <Ybe34gfrxl8O89PZ@localhost.localdomain> <YbfN8gXHsZ6KZuil@hungrycats.org>
+ <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
+ <Ybj40IuxdaAy75Ue@hungrycats.org> <Ybj/0ITsCQTBLkQF@localhost.localdomain>
+ <be4e6028-7d1d-6ba9-d16f-f5f38a79866f@libero.it>
+ <Ybn0aq548kQsQu+z@localhost.localdomain>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <Ybn0aq548kQsQu+z@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJ8eVPsVDlRPbRISuwf0XJY1kANVMpVbPgHepIoNVXODMszLn0W5elu9QPNkWytoRmFo4ySBh9Te4SlXBrUO4zU8WWBDUTGQA7neMSRd1K3Y7OvsE9FP
+ 41pYpzB8DXTTdhBpDqIeLLZJ1UY5Qvs2/44jVFk5/qyKGWyvdzqY+R+HtF2Jvcjhd5Rv+eF8cCDS2+m4Cty9qGywhAzCY2Iib9ZgJkHTJKMq0uToCUAbhww2
+ NsAdFNhMmdKCK3BoK/fXzlYcRlGjhQTunYA1v2ow6E8lXFi3BGDnNjLOLdsmtYmk6v5w/ewDYmReOvcWOOUXQgRQLze8jYg1ckMe0GS2g5cIozUr1398bPwQ
+ gXq7lxBy
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello my dear,
+On 12/15/21 14:58, Josef Bacik wrote:
+> On Tue, Dec 14, 2021 at 09:41:21PM +0100, Goffredo Baroncelli wrote:
+>> On 12/14/21 21:34, Josef Bacik wrote:
+>>> On Tue, Dec 14, 2021 at 03:04:32PM -0500, Zygo Blaxell wrote:
+>>>> On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
+>>
+>>>>
+>>>> I don't have a strong preference for either sysfs or ioctl, nor am I
+>>>> opposed to simply implementing both.  I'll let someone who does have
+>>>> such a preference make their case.
+>>>
+>>> I think echo'ing a name into sysfs is better than bits for sure.  However I want
+>>> the ability to set the device properties via a btrfs-progs command offline so I
+>>> can setup the storage and then mount the file system.  I want
+>>>
+>>> 1) The sysfs interface so you can change things on the fly.  This stays
+>>>      persistent of course, so the way it works is perfect.
+>>>
+>>> 2) The btrfs-progs command sets it on offline devices.  If you point it at a
+>>>      live mounted fs it can simply use the sysfs thing to do it live.
+>>
+>> #2 is currently not implemented. However I think that we should do.
+>>
+>> The problem is that we need to update both:
+>>
+>> - the superblock		(simple)
+>> - the dev_item item		(not so simple...)
+>>
+>> What about using only bits from the superblock to store this property ?
+> 
+> I'm looking at the patches and you only are updating the dev_item, am I missing
+> something for the super block?
 
- I sent this mail praying it will get to you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day. I bring peace and love to you. It is by the grace of God, I
-had no choice than to do what is lawful and right in the sight of God
-for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
-y
-and glory upon my life. I am Mrs. Dina Howley Mckenna, a widow. I am
-suffering from a long time brain tumor, It has defiled all forms of
-medical treatment, and right now I have about a few months to leave,
-according to medical experts. The situation has gotten complicated
-recently with my inability to hear proper, am communicating with you
-with the help of the chief nurse herein the hospital, from all
-indication my conditions is really deteriorating and it is quite
-obvious that, according to my doctors they have advised me that I may
-not live too long, Because this illness has gotten to a very bad
-stage. I plead that you will not expose or betray this trust and
-confidence that I am about to repose on you for the mutual benefit of
-the orphans and the less privilege. I have some funds I inherited from
-my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
-Having known my condition, I decided to donate this fund to you
-believing that you will utilize it the way i am going to instruct
-herein. I need you to assist me and reclaim this money and use it for
-Charity works therein your country  for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of God
-and the effort that the house of God is maintained. I do not want a
-situation where this money will be used in an ungodly manner. That's
-why I'm taking this decision. I'm not afraid of death, so I know where
-I'm going. I accept this decision because I do not have any child who
-will inherit this money after I die.. Please I want your sincerely and
-urgent answer to know if you will be able to execute this project for
-the glory of God, and I will give you more information on how the fund
-will be transferred to your bank account.. May the grace, peace, love
-and the truth in the Word of God be with you and all those that you
-love and care for.
+When btrfs write the superblocks (see write_all_supers() in disk-io.c), it copies
+the dev_item fields (contained in fs_info->fs_devices->devices lists) in each
+superblock before updating it.
 
-I'm waiting for your immediate reply..
+> 
+> For offline all you would need to do is do the normal open_ctree,
+> btrfs_search_slot to the item and update the device item type, that's
+> straightforward.
+> 
+> For online if you use btrfs prop you can see if the fs is mounted and just find
+> the sysfs file to modify and do it that way.
+> 
+> But this also brings up another point, we're going to want a compat bit for
+> this.  It doesn't make the fs unusable for old kernels, so just a normal
+> BTRFS_FS_COMPAT_<whatever> flag is fine.  If the setting gets set you set the
+> compat flag.
 
-May God Bless you,
-Mrs. Dina Howley Mckenna.
+Why we need a "compact" bit ? The new kernels know how treat the dev_item_type field.
+The old kernels ignore it. The worst thing is that a filesystem may require a balance
+before reaching a good shape (i.e. the metadata on ssd and the data on a spinning disk)
+  
+
+
+
+> You'll also need to modify the tree checker to check the dev item allocation
+> hints to make sure they're valid, via check_dev_item.  Thanks,
+
+Ok
+
+> 
+> Josef
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
