@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4155476383
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E42476384
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236308AbhLOUkV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        id S236312AbhLOUkX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236226AbhLOUkV (ORCPT
+        with ESMTP id S236226AbhLOUkW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:40:21 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E8CC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:21 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id gu12so21419714qvb.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:21 -0800 (PST)
+        Wed, 15 Dec 2021 15:40:22 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2E7C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:22 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id d21so14009936qkl.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=8MG4uDwmla5Lj4d5wOP0QAjU4ZTXVUA83IznF/I9GTs=;
-        b=c/puuqr8x7n/BuMFInt62BMT4ZJ4xVgDCUAIfx/rbgZ4ZP627SuIKD9q1nHNbILFeS
-         zBjfZ7IRUdt2q9R16GnDyW6Sp4AmYGY6KB5Q53CqmmTfOqAI9AlT9yRs5GGInspYlAE1
-         UaPwszlE+fGYMgW1Ej9GmTf6GYpui3mQEe2xo8+/b9TVsgOAkrl0S9dkzlH4ld5x7Vhs
-         VCbCpW8fk9QR+siHsPXSNfOG+ZbaADXUMjYRKA+FXy3/xz9nBVzrcRel7V102sWGtzF2
-         Maw9HTWJp6JHmIw5UDWFZ+Qyud9ZWqwKbp/oPIv9K8uJfx3ejz8Jv2/dEGmo5OO/YHGM
-         Ztbg==
+        bh=EGxXdYS04ohly22ErslGy7DWlMCbHKr36m2lpVdaULQ=;
+        b=A1ROlvyqukdoXB3unQqr3P86ZGzqByGGrzqdMV7A79uu4z/lJV8sxgF+wA5sXXNWLL
+         xF6YHyFTRp5VxfPLFql/xpGL2mtnI3K/wxhElhRGXueAxmawD4ksZyNlUlpvtVz0bXW8
+         gQEoKXalIkiij/38iB2r4Mfs0DvZp6tOphyIB/Y3ZAo9p20/kA5O/L7xF219spWDCxTy
+         TvTOqz4ZjZLqy7PSw3q8vW4QcFowtXfvuV5GEOnmPGlIp5g8lbmJmT1+d5GlAFrGOX5Y
+         Hs80HBOeMfIh0L2oJAzJWzELmp+DqfNwR4khbSHrwiF84ylhhvwTqzK0u/Mo1UYNNZBk
+         +zRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8MG4uDwmla5Lj4d5wOP0QAjU4ZTXVUA83IznF/I9GTs=;
-        b=4RWRSdyGHBp82VZ3VxSW+w070CRxzYEQPwJLilf8TIwmSChk1Q7R/x/0Bj808Cresm
-         a5DARhq9atCGsYwe2fKECTICFEKQ6jpK0pxeqSivbBkauWJGYkPr7T9RERzXmi6M2P3b
-         ukDjd5fnnoO4zdb3sFXXULHKEQCoaoDlrz0oytvMmk6/izsSd102BgIrdxQ4RjWeoUDJ
-         3WhgdmCh8SeUhOjTAztlskUQ4ZqrqCMFWrT5tKHcxJar7FknyiPV9Ac5gFgtwYD8Xea7
-         ctVqVL/8d9wj0YSVNK/p3QOf1YMtC+IDo6kFCKYX5qbRj0YSTnLSnsYiepfkAd+BkXP/
-         pnXg==
-X-Gm-Message-State: AOAM530ACYgfguTbee21Xtjwziuf4PmIbJJ1NRTjmMTU5E+Bm2Z5aH1e
-        ZehCFh37zmlmyMljaxGy370gwmRijsqKWQ==
-X-Google-Smtp-Source: ABdhPJy7Z5UEV4b301v+L8/DffCo/2Jhgx6+/1LGnuOanhvdjG6r8RI9ae1rpRe8Oa/d1StSH8bDuQ==
-X-Received: by 2002:a05:6214:2589:: with SMTP id fq9mr13400058qvb.38.1639600819897;
-        Wed, 15 Dec 2021 12:40:19 -0800 (PST)
+        bh=EGxXdYS04ohly22ErslGy7DWlMCbHKr36m2lpVdaULQ=;
+        b=JXri/QqZMNTqRN4z8o9bu6jQkd8wfj6eaxF+SBbL7VZhrAolwH0i8NI3lnfNHdQ/8h
+         lA+TdW8vFd7I31Nm4fpMcoSnmcXO7TigjYKdOG1C2vuJbBgY3xJJE4TNeD9yurtWexbg
+         Ep+DSC6ckmiRi5fUX6l65oXzg/6tAS/ppLoaS7YxvcL3RhLzfRB1QLFtYaVk8iG8614h
+         DBQvaTxSBoYfxx4/gKjRR/nccJPdyM/zYboGlWFdUdfsvpt7wtilGX1kPIS4rJYid5EH
+         y028bwnrdfUfpVgi4EbX1mIKMq/h0fg1TrEJaqDA8Oo2T0ZvWxuXzvMULlVZZS28ZilN
+         w+sQ==
+X-Gm-Message-State: AOAM531Ko8PiocMCkHSmDtb3wpqCIq7ry9P05jVCp1weaM++7Xok/XB+
+        2oOVDQRFugYun+8gvE8HfRSigXDh62QZjQ==
+X-Google-Smtp-Source: ABdhPJyrdRRSCOAOop1NSbnvpFj3nBWaR91Zq+rIFSsgshMIaT5T3LaRufH9XEtRK+NzH+gWuMdF+A==
+X-Received: by 2002:a05:620a:4712:: with SMTP id bs18mr10085591qkb.246.1639600821364;
+        Wed, 15 Dec 2021 12:40:21 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h5sm1710616qkn.62.2021.12.15.12.40.19
+        by smtp.gmail.com with ESMTPSA id m8sm1610148qkh.120.2021.12.15.12.40.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 12:40:19 -0800 (PST)
+        Wed, 15 Dec 2021 12:40:20 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 07/11] btrfs: disable space cache related mount options for extent tree v2
-Date:   Wed, 15 Dec 2021 15:40:04 -0500
-Message-Id: <39a18beef7a0737542ed68ff3a004374b2a6e1f8.1639600719.git.josef@toxicpanda.com>
+Subject: [PATCH v2 08/11] btrfs: tree-checker: don't fail on empty extent roots for extent tree v2
+Date:   Wed, 15 Dec 2021 15:40:05 -0500
+Message-Id: <dea7aad47114697da7646dd0b4c19c25e76c9ca6.1639600719.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639600719.git.josef@toxicpanda.com>
 References: <cover.1639600719.git.josef@toxicpanda.com>
@@ -62,61 +62,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We cannot fall back on the slow caching for extent tree v2, which means
-we can't just arbitrarily clear the free space trees at mount time.
-Furthermore we can't do v1 space cache with extent tree v2.  Simply
-ignore these mount options for extent tree v2 as they aren't relevant.
+For extent tree v2 we can definitely have empty extent roots, so skip
+this particular check if we have that set.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/super.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ fs/btrfs/tree-checker.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index a1c54a2c787c..7c7c0c36f461 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -862,6 +862,14 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			break;
- 		case Opt_space_cache:
- 		case Opt_space_cache_version:
-+			/*
-+			 * We already set FREE_SPACE_TREE above because we have
-+			 * compat_ro(FREE_SPACE_TREE) set, and we aren't going
-+			 * to allow v1 to be set for extent tree v2, simply
-+			 * ignore this setting if we're extent tree v2.
-+			 */
-+			if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
-+				break;
- 			if (token == Opt_space_cache ||
- 			    strcmp(args[0].from, "v1") == 0) {
- 				btrfs_clear_opt(info->mount_opt,
-@@ -882,6 +890,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			btrfs_set_opt(info->mount_opt, RESCAN_UUID_TREE);
- 			break;
- 		case Opt_no_space_cache:
-+			/*
-+			 * We cannot operate without the free space tree with
-+			 * extent tree v2, ignore this option.
-+			 */
-+			if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
-+				break;
- 			if (btrfs_test_opt(info, SPACE_CACHE)) {
- 				btrfs_clear_and_info(info, SPACE_CACHE,
- 					     "disabling disk space caching");
-@@ -897,6 +911,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 	"the 'inode_cache' option is deprecated and has no effect since 5.11");
- 			break;
- 		case Opt_clear_cache:
-+			/*
-+			 * We cannot clear the free space tree with extent tree
-+			 * v2, ignore this option.
-+			 */
-+			if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
-+				break;
- 			btrfs_set_and_info(info, CLEAR_CACHE,
- 					   "force clearing of disk cache");
- 			break;
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 72e1c942197d..ef7d624b0672 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -1633,7 +1633,6 @@ static int check_leaf(struct extent_buffer *leaf, bool check_item_data)
+ 		/* These trees must never be empty */
+ 		if (unlikely(owner == BTRFS_ROOT_TREE_OBJECTID ||
+ 			     owner == BTRFS_CHUNK_TREE_OBJECTID ||
+-			     owner == BTRFS_EXTENT_TREE_OBJECTID ||
+ 			     owner == BTRFS_DEV_TREE_OBJECTID ||
+ 			     owner == BTRFS_FS_TREE_OBJECTID ||
+ 			     owner == BTRFS_DATA_RELOC_TREE_OBJECTID)) {
+@@ -1642,12 +1641,25 @@ static int check_leaf(struct extent_buffer *leaf, bool check_item_data)
+ 				    owner);
+ 			return -EUCLEAN;
+ 		}
++
+ 		/* Unknown tree */
+ 		if (unlikely(owner == 0)) {
+ 			generic_err(leaf, 0,
+ 				"invalid owner, root 0 is not defined");
+ 			return -EUCLEAN;
+ 		}
++
++		/* EXTENT_TREE_V2 can have empty extent trees. */
++		if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
++			return 0;
++
++		if (unlikely(owner == BTRFS_EXTENT_TREE_OBJECTID)) {
++			generic_err(leaf, 0,
++			"invalid root, root %llu must never be empty",
++				    owner);
++			return -EUCLEAN;
++		}
++
+ 		return 0;
+ 	}
+ 
 -- 
 2.26.3
 
