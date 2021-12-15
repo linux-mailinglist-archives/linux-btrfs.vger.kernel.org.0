@@ -2,179 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FB6475E48
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 18:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7674475F1A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 18:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245095AbhLORMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 12:12:13 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:60760 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhLORMM (ORCPT
+        id S245714AbhLOR1k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 12:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343601AbhLOR02 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 12:12:12 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8BD9C1F3CB;
-        Wed, 15 Dec 2021 17:12:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1639588331;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QvFJ0W0l/L2dhaeHJWfZLXN2dF+ZtzcHstyu0MMzeIk=;
-        b=jSJZoHCMM/bnPKVYZ//yRZVcDNEtf9fG21QH6iLxfjeU6WRrh70th9Pl//clmQ12oPYby6
-        M5K8+ENJOiKF0is8qti1NwdWolZWtst/vOjgTnDljhUmeyhucWmmt1mQ8UiCwpqXJareNa
-        SsfKx4k/6OuwKtEWgPK3e0mVYIGakdE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1639588331;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QvFJ0W0l/L2dhaeHJWfZLXN2dF+ZtzcHstyu0MMzeIk=;
-        b=blHe6cNk9QS+x/lybP2WWm/0DErBmX6nTH1WDF6zbpKj1kd5/C9NOqPi0tLbOHQNKxnI72
-        E8F1LoCkED11GUCA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 84A1FA3B83;
-        Wed, 15 Dec 2021 17:12:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B0AB7DA781; Wed, 15 Dec 2021 18:11:52 +0100 (CET)
-Date:   Wed, 15 Dec 2021 18:11:52 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] btrfs: use btrfs_path::reada to replace the
- under-utilized btrfs_reada_add() mechanism
-Message-ID: <20211215171152.GD28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211214130145.82384-1-wqu@suse.com>
+        Wed, 15 Dec 2021 12:26:28 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A4BC07E5C5
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 09:25:50 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id y196so17117864wmc.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 09:25:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
+        b=cJlDUfpq46FBvNkVqLdgj18Rg1pAxJtGFVkJcLJKl30hPbe2xQVyhgQWoW1d2lXEEh
+         C8PBY8w63Pt8eeQsGSLKWHKgNOTGT3uZTgPjf15asCS0I8nZhfufl1APElY2ecpKoY9i
+         giCxeqg1cduFIgZqbqZxckqJqWozDoq7wngC0Gvq1q8TwPPGWTyH2tSqZpLvOH2qDc5F
+         Mm25cIp7AZESyTDNdbQL7PCy/j0OKxCrTiEhSNeJlyqRn7Gc0xm8p+GbK38QekLxArnc
+         gVoUT3DAaWi+rLvuKt+q1teZDMi5q1a3FSlupC/coKcc6aGNLcv3PI01yZbZXLg0TY70
+         lomA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
+        b=t8AOw7twSiJvgL4JZ0CoWcFoHWg7kWpRu0WJ2YDrXI75suVDhWgsnvaj4cAWHM24kq
+         VfYkzy0jRf3QqW4uuUDGVl3xgujePv1gwD6b5grhMK3eaqox73lp7Qrznqk+6BWckSOA
+         ASyb9YIGlAcv0S2iGuk2+R+JRJX/NgFkdzgCwMCcO2OnXDhlA91eYaMleGYD+y6x4dV5
+         +VQ/O7z0kwlNEm+hZyMCSjVeouATnxwn+gwmJ2I2+JyvLbaaeHGY4xJRshGdSB1iGqGd
+         qRDSPVXZA+BsCqyLctJyBa+eLXrrwx6VQ96uSDwxDSHHo670KRXR4/dr76DwIU6y3qkh
+         50tQ==
+X-Gm-Message-State: AOAM530aO627/uNcpD9ZVvb7WpMlACrpRodbdYublvBlKmi0a2EY//lc
+        J4TZGHdY9xGK6w8iFfD1Ux9JVSlJaHRruGc1394=
+X-Google-Smtp-Source: ABdhPJzRnwzQ/5F4rhSxrQnNlB9PpQLBHPvH6HtGcgdhNhce2mo1/jx92j50Qs2H3/Xyc99Lx1SNMoU2jYKvxKmsdBU=
+X-Received: by 2002:a7b:c5cc:: with SMTP id n12mr962639wmk.162.1639589149481;
+ Wed, 15 Dec 2021 09:25:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211214130145.82384-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Sender: donnalouisemchince@gmail.com
+Received: by 2002:a5d:674f:0:0:0:0:0 with HTTP; Wed, 15 Dec 2021 09:25:49
+ -0800 (PST)
+From:   DINA MCKENNA <dinamckennahowley@gmail.com>
+Date:   Wed, 15 Dec 2021 17:25:49 +0000
+X-Google-Sender-Auth: kMiTZ3QE85-_xNffHzgb-NGmk9E
+Message-ID: <CA+4Ruvsyza7nAVVhc_6qSTrEQ2M1yG7bVS7TUvTqPCD2cft0XA@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 14, 2021 at 09:01:42PM +0800, Qu Wenruo wrote:
-> [PROBLEMS]
-> The metadata readahead code is introduced in 2011 (surprisingly, the
-> commit message even contains changelog), but now there is only one user
-> for it, and even for the only one user, the readahead mechanism can't
-> provide all it needs:
-> 
-> - No support for commit tree readahead
->   Only support readahead on current tree.
-> 
-> - Bad layer separation
->   To manage on-fly bios, btrfs_reada_add() mechanism internally manages
->   a kinda complex zone system, and it's bind to per-device.
-> 
->   This is against the common layer separation, as metadata should all be
->   in btrfs logical address space, should not be bound to device physical
->   layer.
-> 
->   In fact, this is the cause of all recent reada related bugs.
-> 
-> - No caller for asynchronous metadata readahead
->   Even btrfs_reada_add() is designed to be fully asynchronous, scrub
->   only calls it in a synchronous way (call btrfs_reada_add() and
->   immediately call btrfs_reada_wait()).
->   Thus rendering a lot of code unnecessary.
-> 
-> [ALTERNATIVE]
-> On the other hand, we have btrfs_path::reada mechanism, which is already
-> used by tons of btrfs sub-systems like send.
-> 
-> [MODIFICATION]
-> This patch will use btrfs_path::reada to replace btrfs_reada_add()
-> mechanism.
-> 
-> [BENCHMARK]
-> The conclusion looks like this:
-> 
-> For the worst case (no dirty metadata, slow HDD), there will be around 5%
-> performance drop for scrub.
-> For other cases (even SATA SSD), there is no distinguishable performance
-> difference.
-> 
-> The number is reported scrub speed, in MiB/s.
-> The resolution is limited by the reported duration, which only has a
-> resolution of 1 second.
-> 
-> 	Old		New		Diff
-> SSD	455.3		466.332		+2.42%
-> HDD	103.927 	98.012		-5.69%
-> 
-> 
-> [BENCHMARK DETAILS]
-> Both tests are done in the same host and VM, the VM has one dedicated
-> SSD and one dedicated HDD attached to it (virtio driver though)
-> 
-> Host:
-> CPU:	5900X
-> RAM:	DDR4 3200MT, no ECC
-> 
-> 	During the benchmark, there is no other active other than light
-> 	DE operations.
-> 
-> VM:
-> vCPU:	16x
-> RAM:	4G
-> 
-> 	The VM kernel doesn't have any heavy debug options to screw up
-> 	the benchmark result.
-> 
-> Test drives:
-> SSD:	500G SATA SSD
-> 	Crucial CT500MX500SSD1
-> 	(With quite some wear, as it's my main test drive for fstests)
-> 
-> HDD:	2T 5400rpm SATA HDD (device-managed SMR)
-> 	WDC WD20SPZX-22UA7T0
-> 	(Very new, invested just for this benchmark)
-> 
-> Filesystem contents:
-> For filesystems on SSD and HDD, they are generated using the following
-> fio job file:
-> 
->   [scrub-populate]
->   directory=/mnt/btrfs
->   nrfiles=16384
->   openfiles=16
->   filesize=2k-512k
->   readwrite=randwrite
->   ioengine=libaio
->   fallocate=none
->   numjobs=4
->   
-> Then randomly remove 4096 files (1/16th of total files) to create enough
-> gaps in extent tree.
-> 
-> Finally run scrub on each filesystem 5 times, with cycle mount and
-> module reload between each run.
-> 
-> Full result can be fetched here:
-> https://docs.google.com/spreadsheets/d/1cwUAlbKPfp4baKrS92debsCt6Ejqvxr_Ylspj_SDFT0/edit?usp=sharing
-> 
-> [CHANGELOG]
-> RFC->v1:
-> - Add benchmark result
-> - Add extent tree readahead using btrfs_path::reada
-> 
-> v2:
-> - Reorder the patches
->   So that the reada removal comes at last
-> 
-> - Add benchmark result into the reada removal patch
-> 
-> - Fix a bug that can cause false alert for RAID56 dev-replace/scrub
->   Caused by missing ->search_commit_root assignment during refactor.
-> 
-> Qu Wenruo (3):
->   btrfs: remove the unnecessary path parameter for scrub_raid56_parity()
->   btrfs: use btrfs_path::reada for scrub extent tree readahead
->   btrfs: remove reada mechanism
+Hello my dear,
 
-Added to misc-next, thanks.
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs. Dina Howley Mckenna, a widow. I am
+suffering from a long time brain tumor, It has defiled all forms of
+medical treatment, and right now I have about a few months to leave,
+according to medical experts. The situation has gotten complicated
+recently with my inability to hear proper, am communicating with you
+with the help of the chief nurse herein the hospital, from all
+indication my conditions is really deteriorating and it is quite
+obvious that, according to my doctors they have advised me that I may
+not live too long, Because this illness has gotten to a very bad
+stage. I plead that you will not expose or betray this trust and
+confidence that I am about to repose on you for the mutual benefit of
+the orphans and the less privilege. I have some funds I inherited from
+my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
+Having known my condition, I decided to donate this fund to you
+believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works therein your country  for orphanages and gives justice
+and help to the poor, needy and widows says The Lord." Jeremiah
+22:15-16.=E2=80=9C and also build schools for less privilege that will be
+named after my late husband if possible and to promote the word of God
+and the effort that the house of God is maintained. I do not want a
+situation where this money will be used in an ungodly manner. That's
+why I'm taking this decision. I'm not afraid of death, so I know where
+I'm going. I accept this decision because I do not have any child who
+will inherit this money after I die.. Please I want your sincerely and
+urgent answer to know if you will be able to execute this project for
+the glory of God, and I will give you more information on how the fund
+will be transferred to your bank account.. May the grace, peace, love
+and the truth in the Word of God be with you and all those that you
+love and care for.
+
+I'm waiting for your immediate reply..
+
+May God Bless you,
+Mrs. Dina Howley Mckenna.
