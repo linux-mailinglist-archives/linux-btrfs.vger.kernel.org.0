@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B31F476382
+	by mail.lfdr.de (Postfix) with ESMTP id E4155476383
 	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236299AbhLOUkU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        id S236308AbhLOUkV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:40:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236226AbhLOUkU (ORCPT
+        with ESMTP id S236226AbhLOUkV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:40:20 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A51C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:19 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id 8so23179300qtx.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:19 -0800 (PST)
+        Wed, 15 Dec 2021 15:40:21 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E8CC061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:21 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id gu12so21419714qvb.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:40:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=DiFAXI6IvBOyQ1Zght5PfvS6NLFNrSM05Fq0huFf1hI=;
-        b=YUdB7tOHO0LCvzNSiZbmmWO6cyCSndpS+pqZkxrLup0ZEt+EgiEDPynDFVup6ChIH1
-         sRQGnG6Pzp/yRuNx+kkccFiHot+jaLGSaO3SVfdon3tcPjUzSa7Qimc7HXHg9y/MYHQf
-         y4CeNvYorhPQSO200gwq3Hprz0qbjVH4pRKB7ltLcmiXJlx3dObijAQOXaJcHcCciaaK
-         s67o7f9ogsNrC2MfTaj39dKxouEkJOvlIfz+LBXwZz7mehI/a4VQY/Ftbhm8l1oYi1Mm
-         Qj/PPgg0NxUjMD0+sCrcUqwNTH1CVTkmoQqj87SNsa2DywWQK/g2sdpX9uS/8w9yu+tn
-         yfpQ==
+        bh=8MG4uDwmla5Lj4d5wOP0QAjU4ZTXVUA83IznF/I9GTs=;
+        b=c/puuqr8x7n/BuMFInt62BMT4ZJ4xVgDCUAIfx/rbgZ4ZP627SuIKD9q1nHNbILFeS
+         zBjfZ7IRUdt2q9R16GnDyW6Sp4AmYGY6KB5Q53CqmmTfOqAI9AlT9yRs5GGInspYlAE1
+         UaPwszlE+fGYMgW1Ej9GmTf6GYpui3mQEe2xo8+/b9TVsgOAkrl0S9dkzlH4ld5x7Vhs
+         VCbCpW8fk9QR+siHsPXSNfOG+ZbaADXUMjYRKA+FXy3/xz9nBVzrcRel7V102sWGtzF2
+         Maw9HTWJp6JHmIw5UDWFZ+Qyud9ZWqwKbp/oPIv9K8uJfx3ejz8Jv2/dEGmo5OO/YHGM
+         Ztbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DiFAXI6IvBOyQ1Zght5PfvS6NLFNrSM05Fq0huFf1hI=;
-        b=xSNUpUTJ8qBGJWdqrw5UiUyicAOcVKxAKdEqbAVW+ZyAUokdl6yFD3I1Oqe8qK2kXY
-         bviEoIV8P8Olb8VSfrN4XWzWlWhgOt52EBVFYMBYP0vEOA8n5Agz11Wkkoo5M5LhNN/C
-         Y5o818L3AfIA6L5eP8zcCEi138e3LucBnGzyMRxmQn2ieYa+S9ILXnEt5v9Oe/QKmkFc
-         oAJgDBJ5JOfgnNeftAxW9qGsrhEZyw/vF41GD3hzgCxQN1HyAkqW5UCoKExu8YoCGOGR
-         WDVGbUx/jyR0SohoIHM7OTjcawBR2BOywLlVnv2bqLI/pW9nusVQXlV67DvGJ/WPiyvx
-         mEOA==
-X-Gm-Message-State: AOAM531caLiPsZZXR1oPgOXNMYcGMWLKPT7yTpqCUxhuFwOsd8EUa9mW
-        JeMqqSgq5QYo5QAh9Lt8PM5bfQLNrkWh2Q==
-X-Google-Smtp-Source: ABdhPJyVfO4Ivf23jtiI530pxMpG9mephwkQVfeyTkl4XTHrhKRqc+cZmgPE4EHlUg6dnnNRkLu2gg==
-X-Received: by 2002:a05:622a:181d:: with SMTP id t29mr13997294qtc.338.1639600818553;
-        Wed, 15 Dec 2021 12:40:18 -0800 (PST)
+        bh=8MG4uDwmla5Lj4d5wOP0QAjU4ZTXVUA83IznF/I9GTs=;
+        b=4RWRSdyGHBp82VZ3VxSW+w070CRxzYEQPwJLilf8TIwmSChk1Q7R/x/0Bj808Cresm
+         a5DARhq9atCGsYwe2fKECTICFEKQ6jpK0pxeqSivbBkauWJGYkPr7T9RERzXmi6M2P3b
+         ukDjd5fnnoO4zdb3sFXXULHKEQCoaoDlrz0oytvMmk6/izsSd102BgIrdxQ4RjWeoUDJ
+         3WhgdmCh8SeUhOjTAztlskUQ4ZqrqCMFWrT5tKHcxJar7FknyiPV9Ac5gFgtwYD8Xea7
+         ctVqVL/8d9wj0YSVNK/p3QOf1YMtC+IDo6kFCKYX5qbRj0YSTnLSnsYiepfkAd+BkXP/
+         pnXg==
+X-Gm-Message-State: AOAM530ACYgfguTbee21Xtjwziuf4PmIbJJ1NRTjmMTU5E+Bm2Z5aH1e
+        ZehCFh37zmlmyMljaxGy370gwmRijsqKWQ==
+X-Google-Smtp-Source: ABdhPJy7Z5UEV4b301v+L8/DffCo/2Jhgx6+/1LGnuOanhvdjG6r8RI9ae1rpRe8Oa/d1StSH8bDuQ==
+X-Received: by 2002:a05:6214:2589:: with SMTP id fq9mr13400058qvb.38.1639600819897;
+        Wed, 15 Dec 2021 12:40:19 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id de13sm1652619qkb.81.2021.12.15.12.40.18
+        by smtp.gmail.com with ESMTPSA id h5sm1710616qkn.62.2021.12.15.12.40.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 12:40:18 -0800 (PST)
+        Wed, 15 Dec 2021 12:40:19 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 06/11] btrfs: disable snapshot creation/deletion for extent tree v2
-Date:   Wed, 15 Dec 2021 15:40:03 -0500
-Message-Id: <2e64cd01ee1e1cfd77f0050fd43f3bec379a8443.1639600719.git.josef@toxicpanda.com>
+Subject: [PATCH v2 07/11] btrfs: disable space cache related mount options for extent tree v2
+Date:   Wed, 15 Dec 2021 15:40:04 -0500
+Message-Id: <39a18beef7a0737542ed68ff3a004374b2a6e1f8.1639600719.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639600719.git.josef@toxicpanda.com>
 References: <cover.1639600719.git.josef@toxicpanda.com>
@@ -62,83 +62,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When we stop tracking metadata blocks all of snapshotting will break, so
-disable it until I add the snapshot root and drop tree support.
+We cannot fall back on the slow caching for extent tree v2, which means
+we can't just arbitrarily clear the free space trees at mount time.
+Furthermore we can't do v1 space cache with extent tree v2.  Simply
+ignore these mount options for extent tree v2 as they aren't relevant.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 11 +++++++++--
- fs/btrfs/ioctl.c | 14 ++++++++++++++
- 2 files changed, 23 insertions(+), 2 deletions(-)
+ fs/btrfs/super.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a88130c7782e..3d590a96f5d0 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4565,14 +4565,21 @@ int btrfs_delete_subvolume(struct inode *dir, struct dentry *dentry)
- static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
- {
- 	struct inode *inode = d_inode(dentry);
-+	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
- 	int err = 0;
- 	struct btrfs_trans_handle *trans;
- 	u64 last_unlink_trans;
- 
- 	if (inode->i_size > BTRFS_EMPTY_DIR_SIZE)
- 		return -ENOTEMPTY;
--	if (btrfs_ino(BTRFS_I(inode)) == BTRFS_FIRST_FREE_OBJECTID)
-+	if (btrfs_ino(BTRFS_I(inode)) == BTRFS_FIRST_FREE_OBJECTID) {
-+		if (unlikely(btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))) {
-+			btrfs_err(fs_info,
-+				  "extent tree v2 doesn't support snapshot deletion yet.");
-+			return -EOPNOTSUPP;
-+		}
- 		return btrfs_delete_subvolume(dir, dentry);
-+	}
- 
- 	trans = __unlink_start_trans(dir);
- 	if (IS_ERR(trans))
-@@ -4611,7 +4618,7 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
- 	}
- out:
- 	btrfs_end_transaction(trans);
--	btrfs_btree_balance_dirty(BTRFS_I(dir)->root->fs_info);
-+	btrfs_btree_balance_dirty(fs_info);
- 
- 	return err;
- }
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index c81f50774cec..cfcffb69d5fe 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -751,6 +751,13 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 	struct btrfs_trans_handle *trans;
- 	int ret;
- 
-+	/* We do not support snapshotting right now. */
-+	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-+		btrfs_warn(fs_info,
-+			   "extent tree v2 doesn't support snapshotting yet.");
-+		return -EOPNOTSUPP;
-+	}
-+
- 	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
- 		return -EINVAL;
- 
-@@ -2901,6 +2908,13 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
- 	int err = 0;
- 	bool destroy_parent = false;
- 
-+	/* We don't support snapshots with extent tree v2 yet. */
-+	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-+		btrfs_err(fs_info,
-+			  "extent tree v2 doesn't support snapshot deletion yet.");
-+		return -EOPNOTSUPP;
-+	}
-+
- 	if (destroy_v2) {
- 		vol_args2 = memdup_user(arg, sizeof(*vol_args2));
- 		if (IS_ERR(vol_args2))
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index a1c54a2c787c..7c7c0c36f461 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -862,6 +862,14 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 			break;
+ 		case Opt_space_cache:
+ 		case Opt_space_cache_version:
++			/*
++			 * We already set FREE_SPACE_TREE above because we have
++			 * compat_ro(FREE_SPACE_TREE) set, and we aren't going
++			 * to allow v1 to be set for extent tree v2, simply
++			 * ignore this setting if we're extent tree v2.
++			 */
++			if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
++				break;
+ 			if (token == Opt_space_cache ||
+ 			    strcmp(args[0].from, "v1") == 0) {
+ 				btrfs_clear_opt(info->mount_opt,
+@@ -882,6 +890,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 			btrfs_set_opt(info->mount_opt, RESCAN_UUID_TREE);
+ 			break;
+ 		case Opt_no_space_cache:
++			/*
++			 * We cannot operate without the free space tree with
++			 * extent tree v2, ignore this option.
++			 */
++			if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
++				break;
+ 			if (btrfs_test_opt(info, SPACE_CACHE)) {
+ 				btrfs_clear_and_info(info, SPACE_CACHE,
+ 					     "disabling disk space caching");
+@@ -897,6 +911,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 	"the 'inode_cache' option is deprecated and has no effect since 5.11");
+ 			break;
+ 		case Opt_clear_cache:
++			/*
++			 * We cannot clear the free space tree with extent tree
++			 * v2, ignore this option.
++			 */
++			if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
++				break;
+ 			btrfs_set_and_info(info, CLEAR_CACHE,
+ 					   "force clearing of disk cache");
+ 			break;
 -- 
 2.26.3
 
