@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD04447626C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F9147626D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbhLOUAC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:00:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S234114AbhLOUAD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:00:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbhLOUAB (ORCPT
+        with ESMTP id S234066AbhLOUAC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:00:01 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB85C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:00:01 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id t6so21254102qkg.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:00:01 -0800 (PST)
+        Wed, 15 Dec 2021 15:00:02 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C199C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:00:02 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id t6so21254169qkg.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=/0LUlN7r84Vmvh4QSmuPyKyiYeMOSOiqHsQFIIyRp6s=;
-        b=Pi7xd+UY/l03rx8M1Xe+ldZZJlgkp8ur/yQEe4n2WGb05IhjwD6T2D4rOgIhWUAwhG
-         TBeBczASCsU4ewolpTbXCCHDURrdJha/JiDfMZ97EPtkrtOagUoEWb95Kg2HHOt6y4zV
-         Ri1bpat3Vq31uQ+JyrUTjhKHmDHRblrrukbGcpGB47HlwQ2xe35JBUy0fqbepGCQfHpG
-         gISYWiNlWN3VHw7w4L8v2EM6LCXqUUBrWWPA1K/qOmAzK9IbtUZF/KHlEPPXOuZMhV1r
-         yGSsW+ool1m+/pzn2sc7u9Qve+4rmePhvUp3ZPs58Qr6HCgrHpZd+G1eLm/NJk5k+I0o
-         5Gfg==
+        bh=73XRzuy8oCfpUBBwUBIexjzdvBy9a0dZ8atJyXaOSpI=;
+        b=dwRYhL0q0KKd45dhBKRy7mxoTVWkwrx8mayshVl2WJrOaoJNQtgl9LGHb5KQpfM9t0
+         DwCKIW1/yOb8y2HLKRZHlLkezguk0eym00fjNExvlPHXHI/gBDQfYDxCoN83uwwvbH6t
+         v8X9YLjVgP1ajo6P/SllWyw4A6Fe0zSUgNTL+fcetYpmef/Yrt73nMnPNeQHgr8LE6Ug
+         aKERUqqS68yWPJabCfArBFWOakyFdOLu+YzPk7b25Qcc3iG0ftFZoVfxS5BBCWCtI4ul
+         r25jGBfsYAC95MQWsFfA/KEBM8rkMecDishf436LfZZzE4HXmTcWy1CHAoTQTCDnJdLr
+         8Hfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/0LUlN7r84Vmvh4QSmuPyKyiYeMOSOiqHsQFIIyRp6s=;
-        b=I6cdwODcf8rolDOssw/rz0S9eswSAK/NBverjkkfLijOlbEIbJ2ZbApVIeN2PjCLCx
-         vp+GbpIi1nGRXdlL4T5YCvS63fVmgYj5Ns+/XI8DArVYU8IKKhnICwNLXiaPhPtkVMuY
-         8lExfJ/0LtWaW0zUSifHVnMnuXGLp4HK99AStMeOYIc2SX+fQn2wkIRYugwJXrIRM/pE
-         6y8zkmqnaKgxvFf+OZZfMaVchRuJZVKpiX8pjrBh/76+orn/mgLEeomxZgGpbaerOsTq
-         8QNHbm0c3HIzeZZ12Sgj+SyyLa8Btx80V6oJQVHibMNsb4mX8mw7iu3ojvc2ZALG7vZX
-         gbew==
-X-Gm-Message-State: AOAM533XS/waxx4SUvqNp+Aq6W2flMag2m2b5CG7GIilu3oq1kYxgMEu
-        y7oF3EF5650cIsKO4hEZAVgachVmLzRO6Q==
-X-Google-Smtp-Source: ABdhPJxLFCt5lWZVZjkKDTdUhDtSBKUZmHZ8DkrIh85zBLw4MiRdimT68MTnnvS5ACWDJPFJtY4TvQ==
-X-Received: by 2002:a05:620a:4082:: with SMTP id f2mr9978124qko.590.1639598400037;
-        Wed, 15 Dec 2021 12:00:00 -0800 (PST)
+        bh=73XRzuy8oCfpUBBwUBIexjzdvBy9a0dZ8atJyXaOSpI=;
+        b=Zt4GaKvkg47Z7Q+gmNGjgkKdwTkdjjxPgz5ruFbyA6JIQjwyHvwZzj3hYdDXkuAmwt
+         2IkzCy9na9eQl7FBRx/DPM/AdxhZK0z4hvjhE9ODfVmhZtS3+VcNBPXFGVC5cpVClVcw
+         Oyzm5poJFB+Mr9yfj44nriyhv8v4PjasJSk2wIb2RHhjOCEnmRpbgnYOR3N/r8rNZAFX
+         f5+Qzt35h0qFlqoEAAnfPWSsEIv0ujj+jFsjWhrKxkeJEp1KnMpFx3uKqX4PI2Yq4XYr
+         jnWoOYZatpqhBPFPzY77YaygIA8dtCQ+uIYXDZpDM6KoxJx9OIgOtM1MCcZV2RlAMSBb
+         +Keg==
+X-Gm-Message-State: AOAM530gEvaShUQt07EUpaXNafvWJIptHhUEMd9CB91nBAAz8fHV0DIp
+        46jOt3bqwwL6H8jiw5BlAS49KQVH3r6dCA==
+X-Google-Smtp-Source: ABdhPJx+NnhKX8H0LPScfFI7lc04435cZdxfb3BZ5w6ICnh1kfOh1ivpRjD6zHMDwTF5jRv4xy6qmQ==
+X-Received: by 2002:a05:620a:892:: with SMTP id b18mr9992047qka.360.1639598401380;
+        Wed, 15 Dec 2021 12:00:01 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id i23sm1584562qkl.101.2021.12.15.11.59.59
+        by smtp.gmail.com with ESMTPSA id d187sm1556772qkc.122.2021.12.15.12.00.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 11:59:59 -0800 (PST)
+        Wed, 15 Dec 2021 12:00:00 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 06/22] btrfs-progs: mkfs: use the btrfs_block_group_root helper
-Date:   Wed, 15 Dec 2021 14:59:32 -0500
-Message-Id: <e0c01e11d09b2a351921d634db5359c9f0948135.1639598278.git.josef@toxicpanda.com>
+Subject: [PATCH v4 07/22] btrfs-progs: check-lowmem: use the btrfs_block_group_root helper
+Date:   Wed, 15 Dec 2021 14:59:33 -0500
+Message-Id: <e5e754d5a713a3503a50b51142e7b6bb55eec9bd.1639598278.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639598278.git.josef@toxicpanda.com>
 References: <cover.1639598278.git.josef@toxicpanda.com>
@@ -62,58 +62,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of accessing the extent root directory for modifying block
-groups, use the helper which will do the correct thing based on the
-flags of the file system.
+When we're messing with block group items use the
+btrfs_block_group_root() helper to get the correct root to search, and
+this will do the right thing based on the file system flags.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/main.c | 4 ++--
- mkfs/main.c  | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ check/mode-lowmem.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/check/main.c b/check/main.c
-index a4d89636..d0d52f69 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -9413,6 +9413,7 @@ static int reinit_global_roots(struct btrfs_trans_handle *trans, u64 objectid)
- 
- static int reinit_extent_tree(struct btrfs_trans_handle *trans, bool pin)
+diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+index 6d222247..5ec3c090 100644
+--- a/check/mode-lowmem.c
++++ b/check/mode-lowmem.c
+@@ -266,7 +266,7 @@ static int modify_block_group_cache(struct btrfs_block_group *block_group, int c
+  */
+ static int modify_block_groups_cache(u64 flags, int cache)
  {
-+	struct btrfs_root *bg_root = btrfs_block_group_root(trans->fs_info);
- 	u64 start = 0;
+-	struct btrfs_root *root = btrfs_extent_root(gfs_info, 0);
++	struct btrfs_root *root = btrfs_block_group_root(gfs_info);
+ 	struct btrfs_key key;
+ 	struct btrfs_path path;
+ 	struct btrfs_block_group *bg_cache;
+@@ -331,7 +331,7 @@ static int clear_block_groups_full(u64 flags)
+ static int create_chunk_and_block_group(u64 flags, u64 *start, u64 *nbytes)
+ {
+ 	struct btrfs_trans_handle *trans;
+-	struct btrfs_root *root = btrfs_extent_root(gfs_info, 0);
++	struct btrfs_root *root = btrfs_block_group_root(gfs_info);
  	int ret;
  
-@@ -9486,7 +9487,6 @@ again:
- 	while (1) {
- 		struct btrfs_block_group_item bgi;
- 		struct btrfs_block_group *cache;
--		struct btrfs_root *extent_root = btrfs_extent_root(gfs_info, 0);
- 		struct btrfs_key key;
- 
- 		cache = btrfs_lookup_first_block_group(gfs_info, start);
-@@ -9500,7 +9500,7 @@ again:
- 		key.objectid = cache->start;
- 		key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
- 		key.offset = cache->length;
--		ret = btrfs_insert_item(trans, extent_root, &key, &bgi,
-+		ret = btrfs_insert_item(trans, bg_root, &key, &bgi,
- 					sizeof(bgi));
- 		if (ret) {
- 			fprintf(stderr, "Error adding block group\n");
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 2c4b7b00..9a57cef8 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -596,7 +596,7 @@ static int cleanup_temp_chunks(struct btrfs_fs_info *fs_info,
+ 	if ((flags & BTRFS_BLOCK_GROUP_TYPE_MASK) == 0)
+@@ -419,7 +419,7 @@ static int is_chunk_almost_full(u64 start)
  {
- 	struct btrfs_trans_handle *trans = NULL;
- 	struct btrfs_block_group_item *bgi;
--	struct btrfs_root *root = btrfs_extent_root(fs_info, 0);
-+	struct btrfs_root *root = btrfs_block_group_root(fs_info);
- 	struct btrfs_key key;
- 	struct btrfs_key found_key;
  	struct btrfs_path path;
+ 	struct btrfs_key key;
+-	struct btrfs_root *root = btrfs_extent_root(gfs_info, 0);
++	struct btrfs_root *root = btrfs_block_group_root(gfs_info);
+ 	struct btrfs_block_group_item *bi;
+ 	struct btrfs_block_group_item bg_item;
+ 	struct extent_buffer *eb;
+@@ -4593,7 +4593,7 @@ next:
+ static int find_block_group_item(struct btrfs_path *path, u64 bytenr, u64 len,
+ 				 u64 type)
+ {
+-	struct btrfs_root *root = btrfs_extent_root(gfs_info, 0);
++	struct btrfs_root *root = btrfs_block_group_root(gfs_info);
+ 	struct btrfs_block_group_item bgi;
+ 	struct btrfs_key key;
+ 	int ret;
 -- 
 2.26.3
 
