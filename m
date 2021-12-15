@@ -2,154 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB8347613B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 19:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC69E476266
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344062AbhLOSz4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 13:55:56 -0500
-Received: from smtp-31-wd.italiaonline.it ([213.209.13.31]:44058 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1344090AbhLOSzy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 13:55:54 -0500
-Received: from [192.168.1.27] ([78.12.25.242])
-        by smtp-31.iol.local with ESMTPA
-        id xZRPmodg3OKKIxZRQm7vsB; Wed, 15 Dec 2021 19:55:52 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1639594552; bh=vLXcBmck+Hm5yBQhLGnrzcIMUTKXqB8qgUzyNEhe8ko=;
-        h=From;
-        b=hQTJLoZ/Oh07vBdDtHYIFgdOdvOPSIzicoRVHV98/JJ13CNZL+vpEAgaRjDpKGh/s
-         0PuoYnOd6Mxf4ZC5mznmfDTRP6dfc5+RgdYrMqM6Qd9WPCm48lhIKAsjAX0+cdWqRk
-         zCJxkcdUABEomQEzZbgQ0RFUENKqsHmGenjiJhGGV+W04jq7r5P+sByF86Llzm2IL5
-         l/qI39bTTVEP1lfx4bou1vn6BkwFLrcXUYUxlgTzBItj+Z+4StgyB09THV4eC+N4d7
-         caDEpxdQl5ylodhWALsbs1Fa/6I+H9ENAx0f/1E64yc4tLNBnl5aUi2H07QlDToBmz
-         YZ/AGMfZ0n8rA==
-X-CNFS-Analysis: v=2.4 cv=QuabYX+d c=1 sm=1 tr=0 ts=61ba3a38 cx=a_exe
- a=IXMPufAKhGEaWfwa3qtiyQ==:117 a=IXMPufAKhGEaWfwa3qtiyQ==:17
- a=IkcTkHD0fZMA:10 a=iox4zFpeAAAA:8 a=bQj5x6bgdn_wVhPAZkIA:9 a=QEXdDO2ut3YA:10
- a=WzC6qhA0u3u7Ye7llzcV:22
-Message-ID: <b08f828e-6336-fc09-521a-d4cf439e45d8@libero.it>
-Date:   Wed, 15 Dec 2021 19:55:51 +0100
+        id S229445AbhLOT7x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 14:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232254AbhLOT7w (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Dec 2021 14:59:52 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C002EC061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 11:59:51 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id v22so23047516qtx.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 11:59:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HGp96S5BFHtSp4e1A2BVijBAde79wrUqft67KS6qF8w=;
+        b=z4KR1kiLOsTtqoOY86zcCDrbQDoUk0/0EQyxP4gUBcwF3injzGkkOwa+TnsXEJvDDi
+         sCbxI3uuX59pTSMoONH3zGdYHT3btG3gk2/Q7uol72i6qC0SkwHWqO8c9tgwF5MsX/b4
+         nMdncAA0B2qnhk6VDPDTC5LCsg0hAfkGNrj6bsnF7S4bk5y2TopBOsvxWG1Cc2aN7r04
+         pER2LAo9ndy4yJ1Eq08BFA0UuykGH7Ep1/zyfxSOxJh+5fWGHlFcGXqU1d80I9i53WWo
+         uCjpDWB5QFTWcAfmWxqUmmuaN7lhXt14369Nil/yFgm6XNq9v57J7eA23cA42MPndGvS
+         8tmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HGp96S5BFHtSp4e1A2BVijBAde79wrUqft67KS6qF8w=;
+        b=mltatGc1B25pkw4I0y5po/fFAO2oywWWxsuNkLz8Gro+TxgDBEUsoulyCoC9byRxDJ
+         4kfntf+fsEqDbFwYWGTvbpnZ6i96SV4OFd8ttFJ3eZXzF9QBGuiyNK3CrsRR6d8jx53l
+         d5XfFzmbXRWHyWhnOpg3Nsj+JnbtUuH91diEHsQ6GHUHwiZhfNHT3Y+4AcJMedgS2/XH
+         /RLczuKMKna8BQDDhz+ZqnjXjshv1+OL90aMms/kKo0WhIDlOTfHzmD/nalyVpFyMH2D
+         Qrl5uzykbGXE94N/FYRaTutPXN6WJ2710j8kMNpg+49bkpwemRcdEjASuYN4gLx/7oiD
+         +Ujw==
+X-Gm-Message-State: AOAM530sTaOV6i18lR9UMGsozoEEE3UjBuhCVsB6tfDpxrLpTbW0Vjfz
+        Wli+CY6AD+0nSRgrQRfh3exDJp0OXKGSIw==
+X-Google-Smtp-Source: ABdhPJxBSBZue1EQSd34xR88CBHAKCFU0B0q696gF754Snk0LdNq5wqWOo/w+H28a65efTfFnphpoQ==
+X-Received: by 2002:a05:622a:c8:: with SMTP id p8mr13914545qtw.52.1639598390549;
+        Wed, 15 Dec 2021 11:59:50 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id 8sm2300850qtz.28.2021.12.15.11.59.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Dec 2021 11:59:50 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v4 00/22] btrfs-progs: extent tree v2 support, global roots
+Date:   Wed, 15 Dec 2021 14:59:26 -0500
+Message-Id: <cover.1639598278.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH] btrfs: Create sysfs entries only for non-stale devices
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20211215144639.876776-1-nborisov@suse.com>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <20211215144639.876776-1-nborisov@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKAXds/y5nyMMfsrFJMpt9o3b7aUGqsetc5SRiZzwZwU+/mn50otX0byv2BdASCnAxX2eDDWGTVFfgiiO4b8h3UA6u5qbt0rIhInPYQebn2Q02Xg3voY
- sQROIORcJvRPTqjpk8izFW1TZXi0/c6Ak4bepS03VXUmI4JA2f3k0LWC3cvdVU9WYLh8qcpXE/P0w1bk1qhU5wNHjN8YBpBPaVBTZ8MNZH0CK/U7bi+P/gUh
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Nikolay,
+v3->v4:
+- Rebase onto devel, depends on the v3 prep patches that were sent on December
+  1st which has the rest of the "don't access ->*_root" patches.
+- I think I screwed up the versioning of this, but I lost the other submission,
+  so call this v3.
 
-On 12/15/21 15:46, Nikolay Borisov wrote:
-> Currently /sys/fs/btrfs/<uuid>/devinfo/<devid> entry is always created
-> for a device present in btrfs_fs_devices on the other hand
-> /sys/fs/btrfs/<uuid>/devices/<devname> sysfs link is created only when
-> the given btrfs_device::bdisk member is populated. This can lead to
-> cases where a filesystem consisting of 2 device, one of which is stale
-> ends up having 2 entries under /sys/fs/btrfs/<uuid>/devinfo/<devid>
-> but only one under /sys/fs/btrfs/<uuid>/devices/<devname>.
+v1->v2:
+- These depend on the v3 of the prep patches (it's marked as v2 because I'm
+  stupid, but the second v2 posting I sent.)
+- I've moved the global root rb tree patches into this series to differentiate
+  them from the actual fixes in the prep series.
 
-What happened in case of a degraded mode ? Is correct to not show a missing devices ?
+--- Original email ---
+Hello,
+
+These patches are the first chunk of the extent tree v2 format changes.  This
+includes the separate block group root which will hold all of the block group
+items.  This also includes the global root support, which is the work to allow
+us to have multiple extent, csum, and free space trees in the same file system.
+
+The goal of these two changes are straightforward.  For the block group root, on
+very large file systems the block group items are very widely separated, which
+means it takes a very long time to mount the file system on large, slow disks.
+Putting the block group items in their own root will allow us to densely
+populate the tree and dramatically increase mount times in these cases.
+
+The global roots change is motivated by lock contention on the root nodes of
+these global roots.  I've had to make many changes to how we run delayed refs to
+speed up things like the transaction commit because of all the delayed refs
+going into one tree and contending on the root node of the extent tree.  In the
+same token you can have heavy lock contention on the csum roots when writing to
+many files.  Allowing for multiple roots will let us spread the lock contention
+load around.
+
+I have disabled a few key features, namely balance and qgroups.  There will be
+more to come as I make more and more invasive changes, and then they will slowly
+be re-enabled as the work is added.  These are disabled to avoid a bunch of work
+that would be thrown away by future changes.
+
+These patches have passed xfstests without panicing, but clearly failing a lot
+of tests because of the disabled features.  I've also run it through fsperf to
+validate that there are no major performance regressions.
+
+WARNING: there are many more format changes planned, this is just the first
+batch.  If you want to test then please feel free, but know that the format is
+still in flux.  Thanks,
+
+Josef
 
 
-> Another case that occurs is if a filesystem initially occupied 2
-> devices, then got unmounted, and a new filesystem is created, which
-> occupies a single device but with the same UUID as the one occupying 2
-> devices. In this case /sys/fs/btrfs/<uuid>/devices/<devname> will
-> correctly have 1 entry but /sys/fs/btrfs/<uuid>/devices/<devname> will
-> incorrectly has 2. This behavior is demonstrated by the following
-> script:
-> 
->      UUID=292afefb-6e8c-4fb3-9d12-8c4ecb1f2374
->      rm /tmp/d1
->      rm /tmp/d2
->      truncate -s 1G /tmp/d1
->      truncate -s 1G /tmp/d2
->      sudo losetup /dev/loop1 /tmp/d1
->      sudo losetup /dev/loop2 /tmp/d2
->      sudo mkfs.btrfs -U $UUID /dev/loop1 /dev/loop2
->      sudo mount /dev/loop1 /mnt/btrfs1
->      sudo umount /dev/loop1
->      sudo losetup -d /dev/loop2
->      sudo losetup -d /dev/loop1
-> 
->      # create a new filesystem with only ONE loop-device; mount it
->      rm /tmp/d1
->      truncate -s 1G /tmp/d1
->      sudo losetup /dev/loop1 /tmp/d1
->      sudo mkfs.btrfs -U $UUID /dev/loop1
->      sudo mount /dev/loop1 /mnt/btrfs1
-> 
-> Fix this by ensuring that device sysfs attributes are only added for
-> devices which are actually present at the time of mount.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->   fs/btrfs/sysfs.c | 21 ++++++++++++---------
->   1 file changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index beb7f72d50b8..e2e110d7798a 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -12,6 +12,7 @@
->   #include <crypto/hash.h>
->   
->   #include "ctree.h"
-> +#include "rcu-string.h"
->   #include "discard.h"
->   #include "disk-io.h"
->   #include "send.h"
-> @@ -1611,9 +1612,13 @@ int btrfs_sysfs_add_device(struct btrfs_device *device)
->   {
->   	int ret;
->   	unsigned int nofs_flag;
-> +	struct kobject *disk_kobj;
->   	struct kobject *devices_kobj;
->   	struct kobject *devinfo_kobj;
->   
-> +	if (!device->bdev)
-> +		return 0;
-> +
->   	/*
->   	 * Make sure we use the fs_info::fs_devices to fetch the kobjects even
->   	 * for the seed fs_devices
-> @@ -1625,16 +1630,14 @@ int btrfs_sysfs_add_device(struct btrfs_device *device)
->   
->   	nofs_flag = memalloc_nofs_save();
->   
-> -	if (device->bdev) {
-> -		struct kobject *disk_kobj = bdev_kobj(device->bdev);
-> +	disk_kobj = bdev_kobj(device->bdev);
->   
-> -		ret = sysfs_create_link(devices_kobj, disk_kobj, disk_kobj->name);
-> -		if (ret) {
-> -			btrfs_warn(device->fs_info,
-> -				"creating sysfs device link for devid %llu failed: %d",
-> -				device->devid, ret);
-> -			goto out;
-> -		}
-> +	ret = sysfs_create_link(devices_kobj, disk_kobj, disk_kobj->name);
-> +	if (ret) {
-> +		btrfs_warn(device->fs_info,
-> +			   "creating sysfs device link for devid %llu failed: %d",
-> +			   device->devid, ret);
-> +		goto out;
->   	}
->   
->   	init_completion(&device->kobj_unregister);
+Josef Bacik (22):
+  btrfs-progs: common: allow users to select extent-tree-v2 option
+  btrfs-progs: add definitions for the block group tree
+  btrfs-progs: add on disk pointers to global tree ids
+  btrfs-progs: add support for loading the block group root
+  btrfs-progs: add print support for the block group tree
+  btrfs-progs: mkfs: use the btrfs_block_group_root helper
+  btrfs-progs: check-lowmem: use the btrfs_block_group_root helper
+  btrfs-progs: handle no bg item in extent tree for free space tree
+  btrfs-progs: mkfs: add support for the block group tree
+  btrfs-progs: check: add block group tree support
+  btrfs-progs: qgroup-verify: scan extents based on block groups
+  btrfs-progs: check: make free space tree validation extent tree v2
+    aware
+  btrfs-progs: check: add helper to reinit the root based on a key
+  btrfs-progs: check: handle the block group tree properly
+  btrfs-progs: load the number of global roots into the fs_info
+  btrfs-progs: handle the per-block group global root id
+  btrfs-progs: add a btrfs_delete_and_free_root helper
+  btrfs-progs: make btrfs_clear_free_space_tree extent tree v2 aware
+  btrfs-progs: make btrfs_create_tree take a key for the root key
+  btrfs-progs: mkfs: set chunk_item_objectid properly for extent tree v2
+  btrfs-progs: mkfs: create the global root's
+  btrfs-progs: check: don't do the root item check for extent tree v2
 
+ check/main.c                    | 233 ++++++++++++++------------
+ check/mode-lowmem.c             |  12 +-
+ check/qgroup-verify.c           |  32 +++-
+ cmds/inspect-dump-tree.c        |  37 +++-
+ common/fsfeatures.c             |  11 ++
+ common/repair.c                 |   3 +
+ kernel-shared/ctree.h           |  66 +++++++-
+ kernel-shared/disk-io.c         | 287 ++++++++++++++++++++++++++------
+ kernel-shared/disk-io.h         |  15 +-
+ kernel-shared/extent-tree.c     |  32 +++-
+ kernel-shared/free-space-tree.c |  72 ++++----
+ kernel-shared/print-tree.c      |  26 ++-
+ kernel-shared/transaction.c     |   2 +
+ libbtrfsutil/btrfs_tree.h       |   3 +
+ mkfs/common.c                   |  93 ++++++++---
+ mkfs/common.h                   |  12 ++
+ mkfs/main.c                     |  96 ++++++++++-
+ 17 files changed, 791 insertions(+), 241 deletions(-)
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.26.3
+
