@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405D047639C
+	by mail.lfdr.de (Postfix) with ESMTP id 8996E47639D
 	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236478AbhLOUn5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 15:43:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
+        id S236482AbhLOUn6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 15:43:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235170AbhLOUn4 (ORCPT
+        with ESMTP id S235170AbhLOUn6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 15:43:56 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B82C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:43:56 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id t34so23199058qtc.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:43:56 -0800 (PST)
+        Wed, 15 Dec 2021 15:43:58 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7012C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:43:57 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id de30so21389790qkb.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:43:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=Q41sGwQV/wZeaG+cAVt7MnUBaDkdfWww1o0C3YLitoA=;
-        b=g8V9JF6ZRNVCvggXkrGfrSDYIg9NNTQQdgPilc0xBdgaSeAsS30+C4kdkbb1TJcF5w
-         cs3GuU6XDLjGSFkK+vXdJWSjB9ws6u9xnVuSLLEwJRLLinvmQGh6VtXw5r4s0PguMLtW
-         K9OLYaYTyO1TifKweajRn5muXVHrlml1WNndiwxIpCYKvJReLG32HqpDHOuvld1ZleEz
-         MJSINGzaverVUueA6gsJBGyzhy7TZ2fSlEebIvtTeFvzA3WX7jqzra/j3rCwvgSRWVtO
-         Ok7gZy7JTVNZYLL39wLzaq0kabFj5K33wFiOG3TvR8B3l4ZJ6XujhXA2mEYDQ1OUlTJF
-         9n1A==
+        bh=rWLAtjizEnheBFycFFLYahPAgWeIZaHLmkDO7UBlmv8=;
+        b=2aiJuaGFvK2A4EFCDrBSk+pO53efiyADmffszvUqFYcbjyp7Ly0VBW5IkRHliWuVp0
+         20Z2QWzlrSlzZtlo/uGcI+zDvgS+pInAyD8T9dlyCyJSXWs1pbrDZRuVQIgr6GzKUOvq
+         NBY9BvBkf37LobijqsjJCmVjOf0fJjfsry2qYSxVQaSbBdLFFicSKlNDQ8WLeRVVmYhT
+         lKsWbWefxw6EtQm56KaDqjAycPRwH8dGCjSl2hRzHSwPp7jTwalgZzV5xqHJIZ8/HgRw
+         glpu/GqZZH1HlH97NhNdkDLMmj7QOgNCRx0TS9txrkar40bXq1FokMsrJHKLdH7dRqSP
+         4f2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Q41sGwQV/wZeaG+cAVt7MnUBaDkdfWww1o0C3YLitoA=;
-        b=XAgui7qfGNqZ6UNTlTU0kYmTmh/smbvisVYbKz5kMJWH5TdkMdpGqITgBV68rMwUEe
-         pc+6GWdV1jEgndlswZgifYha6SO7grHAiCvN0FOzSFlpkKrQw6cIncjCJH35LFechtzv
-         4Vbnm87iD+4a4jbWuOvClt0gj5l5Pezf7aHRUnhXudQWPoKbWn3W2W6hBvDojCl/lDVq
-         GV7XQWPxYTTO4d9zMt9Ar3iHjhWZHJh/TEdnCfca0SaxOAIdinmtoWspzrfSU1C0kcjT
-         7/fPPKDWlt6P7aXoURV476IXuTzNN0mIiU1SsEpISJ6Uqfd/loj22sqWGbIMaXc+UgUI
-         jcYg==
-X-Gm-Message-State: AOAM532ygCXnXs3PZIGJHwZ+Lhl8ghR45upiX3w7eW/OEoL706scyNaY
-        B/4G4+OkmpRe8/CMjzWeS3ejhUcnUhbvJQ==
-X-Google-Smtp-Source: ABdhPJxwwOgBRXI8iGyXJqd2Z1gAlEYs5XqTcMT7E/6uNHjvC+kRYe/RHcW4co/TwVksCodg1W2Usg==
-X-Received: by 2002:a05:622a:1c6:: with SMTP id t6mr13918646qtw.211.1639601035130;
-        Wed, 15 Dec 2021 12:43:55 -0800 (PST)
+        bh=rWLAtjizEnheBFycFFLYahPAgWeIZaHLmkDO7UBlmv8=;
+        b=X8id+CoB2wJu8fWCUDJbn8oaICYgQI18zSVzCzgoeiwLk9s8EEcUlYnEiNVO1Ujl+L
+         S7WrCLGPt4xWXshANj4J38NFJntxt1TJZd93RdBeGpx9xrxGnNKhn4AdtHYdPWnkkReR
+         h52d0mCoMWWgXOFHnDsWJkgO/TgYk5aR+OrBtwDcgxnQhJgFjVX1maSQlTVcWPnIVhKl
+         LYqMujn1KW1QnIGMV1yndom/TXg4k+jK9ZNfu3IYr9q7eK5/NZZVdCgCJVIcmHzdNlsr
+         f/RLXWV9K33X6eRH3FWQP6CWPsUHeoQ0aGhnS5FXcUZmZWTB8bVQSlyaqXl9J1pVS3UO
+         M/jQ==
+X-Gm-Message-State: AOAM530ZhAcI5lsrg5Qo2Csct9icrhJ9LYtXqNchCA3gLjbdnQvmNKMW
+        S47EsiI5J1kZDzKrvAwsPI4314kEJuGqXw==
+X-Google-Smtp-Source: ABdhPJwxnn3gFKPuZKiWobf+tEIHQOx7Mw8oe/BOUqacYe1HPriQMtFph/K2qAn+N2Y/k1GzZB17Kw==
+X-Received: by 2002:a37:c94:: with SMTP id 142mr10231299qkm.470.1639601036569;
+        Wed, 15 Dec 2021 12:43:56 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v10sm2317521qtk.13.2021.12.15.12.43.54
+        by smtp.gmail.com with ESMTPSA id o10sm2325606qtx.33.2021.12.15.12.43.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 12:43:54 -0800 (PST)
+        Wed, 15 Dec 2021 12:43:56 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 6/9] btrfs: add definitions and read support for the garbage collection tree
-Date:   Wed, 15 Dec 2021 15:43:42 -0500
-Message-Id: <37b33df7b776efe884385f73f92f9d01b5ec0689.1639600854.git.josef@toxicpanda.com>
+Subject: [PATCH 7/9] btrfs: add a btrfs_first_item helper
+Date:   Wed, 15 Dec 2021 15:43:43 -0500
+Message-Id: <42fa95e1cdbd30457dcec8c2b0a3f55966b133af.1639600854.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1639600854.git.josef@toxicpanda.com>
 References: <cover.1639600854.git.josef@toxicpanda.com>
@@ -62,79 +62,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This adds the on disk definitions for the garbage collection tree and
-the code to load it on mount.
+The GC tree stuff is going to use this helper and it'll make the code a
+bit cleaner to abstract this into a helper.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c              | 6 ++++++
- fs/btrfs/print-tree.c           | 4 ++++
- include/uapi/linux/btrfs_tree.h | 6 ++++++
- 3 files changed, 16 insertions(+)
+ fs/btrfs/ctree.c | 23 +++++++++++++++++++++++
+ fs/btrfs/ctree.h |  1 +
+ 2 files changed, 24 insertions(+)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2a70f61345aa..98b37850d614 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2668,6 +2668,12 @@ static int load_global_roots(struct btrfs_root *tree_root)
- 	ret = load_global_roots_objectid(tree_root, path,
- 					 BTRFS_FREE_SPACE_TREE_OBJECTID,
- 					 "free space");
-+	if (ret)
-+		goto out;
-+	if (!btrfs_fs_incompat(tree_root->fs_info, EXTENT_TREE_V2))
-+		goto out;
-+	ret = load_global_roots_objectid(tree_root, path,
-+					 BTRFS_GC_TREE_OBJECTID, "gc");
- out:
- 	btrfs_free_path(path);
- 	return ret;
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index 524fdb0ddd74..7fa202105e97 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -24,6 +24,7 @@ static const struct root_name_map root_map[] = {
- 	{ BTRFS_UUID_TREE_OBJECTID,		"UUID_TREE"		},
- 	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
- 	{ BTRFS_BLOCK_GROUP_TREE_OBJECTID,	"BLOCK_GROUP_TREE"	},
-+	{ BTRFS_GC_TREE_OBJECTID,		"GC_TREE"		},
- 	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
- };
- 
-@@ -348,6 +349,9 @@ void btrfs_print_leaf(struct extent_buffer *l)
- 			print_uuid_item(l, btrfs_item_ptr_offset(l, i),
- 					btrfs_item_size(l, i));
- 			break;
-+		case BTRFS_GC_INODE_ITEM_KEY:
-+			pr_info("\t\tgc inode item\n");
-+			break;
- 		}
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 781537692a4a..efb413a6db0c 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -4775,3 +4775,26 @@ int btrfs_previous_extent_item(struct btrfs_root *root,
  	}
+ 	return 1;
  }
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 854df92520a1..690b01e0138b 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -56,6 +56,9 @@
- /* holds the block group items for extent tree v2. */
- #define BTRFS_BLOCK_GROUP_TREE_OBJECTID 11ULL
- 
-+/* holds the garbage collection itesm for extent tree v2. */
-+#define BTRFS_GC_TREE_OBJECTID 12ULL
 +
- /* device stats in the device tree */
- #define BTRFS_DEV_STATS_OBJECTID 0ULL
- 
-@@ -147,6 +150,9 @@
- #define BTRFS_ORPHAN_ITEM_KEY		48
- /* reserve 2-15 close to the inode for later flexibility */
- 
-+/* The garbage collection items. */
-+#define BTRFS_GC_INODE_ITEM_KEY		49
++/**
++ * btrfs_first_item - search the given root for the first item.
++ * @root: the root to search.
++ * @path: the path to use for the search.
++ * @return: 0 if it found something, 1 if nothing was found and < on error.
++ *
++ * Search down and find the first item in a tree.  If the root is empty return
++ * 1, otherwise we'll return 0 or < 0 if there was an error.
++ */
++int btrfs_first_item(struct btrfs_root *root, struct btrfs_path *path)
++{
++	struct btrfs_key key = {};
++	int ret;
 +
- /*
-  * dir items are the name -> inode pointers in a directory.  There is one
-  * for every name in a directory.  BTRFS_DIR_LOG_ITEM_KEY is no longer used
++	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
++	if (ret > 0) {
++		if (btrfs_header_nritems(path->nodes[0]) == 0)
++			return 1;
++		ret = 0;
++	}
++	return ret;
++}
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 2a5ed393eb21..6bcf112f9872 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2892,6 +2892,7 @@ void btrfs_wait_for_snapshot_creation(struct btrfs_root *root);
+ int btrfs_bin_search(struct extent_buffer *eb, const struct btrfs_key *key,
+ 		     int *slot);
+ int __pure btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
++int btrfs_first_item(struct btrfs_root *root, struct btrfs_path *path);
+ int btrfs_previous_item(struct btrfs_root *root,
+ 			struct btrfs_path *path, u64 min_objectid,
+ 			int type);
 -- 
 2.26.3
 
