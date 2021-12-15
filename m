@@ -2,38 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2C44758B2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 13:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696334758B4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 13:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240817AbhLOMUI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 07:20:08 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:55404 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237182AbhLOMUH (ORCPT
+        id S242345AbhLOMUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 07:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237191AbhLOMUJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 07:20:07 -0500
+        Wed, 15 Dec 2021 07:20:09 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9659AC061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 04:20:08 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E9A4618A0
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:20:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 331BCC34606
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3906C618A0
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:20:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25BDDC34605
         for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639570806;
-        bh=ZDMT6CCNG4ys31udZJmk8N/Ool2wMuebz82Nnx3MQqY=;
+        s=k20201202; t=1639570807;
+        bh=HQ8V/vhFsGUV5sv7xSnZEStTbHY4OdSmS+XLfPkrn+4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=R2xrte6+8/vQMuzP4J4iK5TQTckiSKlLxLtnCOmhX8sOPL5sesBkHH/GMgTHf1fkg
-         Zlah8u9qg/Ub8VqIkgX4skJ7DE+z6AN6c6fNXmPksfO9iZaNJZbIm4lVCuF3LpnuiZ
-         UXwbFw9bUPMebFAukPZmJci1EmbPRDQjJF5xua9aC5VYiR+BdFoy4xTEnRqOtkPlU3
-         JoqG6YdNQYoIDveYVjD6e4wEu3ZKZG2vD7vDiegc7vMJRh4yqGVoaWcpDZANqQwTTd
-         eiRDoHx6ZoB8WHGncmcvPuc5OMYj3QEybax0GO5bzFAqoxpjnSaTblbBxnq60kWECQ
-         wYmzxzD6Xtd2Q==
+        b=RAu47+WClgGtf7fBCOiA0TgId1d/BJI5uTdRvfaLJoNFb1Er+Bt+mk2xt0kMKbYHJ
+         16plYNESSBYYlf0AHgXUMAg3MpBcBmnzCVrT9K5btzC/D7ALo6RHRWe8OginKRbKhT
+         QcS1BzCZKhFh8KAtTzKscZHFpyTUIg9feoieBIDxzjiusKT/kJ0gEEC7Vj36bnnIbV
+         o5Q0ywmlPs9euZzfKIh0OnJn0dxz8b2uovhOC9nTXrFRHlVkRe75A2UZO7tFCL3QqW
+         +RQeA4T7XknVWwuXoF78a4fDkXH+stRyPZTfvNr90WTGZsMJfBDFwJfCNAganIMJk0
+         nD4rrF+K5G5sg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/4] btrfs: don't log unnecessary boundary keys when logging directory
-Date:   Wed, 15 Dec 2021 12:19:58 +0000
-Message-Id: <ca245c0459ed742acbf0fa48b7f4f298fe1fb0b5.1639568905.git.fdmanana@suse.com>
+Subject: [PATCH 2/4] btrfs: put initial index value of a directory in a constant
+Date:   Wed, 15 Dec 2021 12:19:59 +0000
+Message-Id: <80c71845e132bb5677dd280aa33fcdce08bc5542.1639568905.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1639568905.git.fdmanana@suse.com>
 References: <cover.1639568905.git.fdmanana@suse.com>
@@ -45,102 +48,78 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Before we start to log dir index keys from a leaf, we check if there is a
-previous index key, which normally is at the end of a leaf that was not
-changed in the current transaction. Then we log that key and set the start
-of logged range (item of type BTRFS_DIR_LOG_INDEX_KEY) to the offset of
-that key. This is to ensure that if there were deleted index keys between
-that key and the first key we are going to log, those deletions are
-replayed in case we need to replay to the log after a power failure.
-However we really don't need to log that previous key, we can just set the
-start of the logged range to that key's offset plus 1. This achieves the
-same and avoids logging one dir index key.
-
-The same logic is performed when we finish logging the index keys of a
-leaf and we find that the next leaf has index keys and was not changed in
-the current transaction. We are logging the first key of that next leaf
-and use its offset as the end of range we log. This is just to ensure that
-if there were deleted index keys between the last index key we logged and
-the first key of that next leaf, those index keys are deleted if we end
-up replaying the log. However that is not necessary, we can avoid logging
-that first index key of the next leaf and instead set the end of the
-logged range to match the offset of that index key minus 1.
-
-So avoid logging those index keys at the boundaries and adjust the start
-and end offsets of the logged ranges as described above.
-
-This patch is part of a patchset comprised of the following patches:
-
-  1/4 btrfs: don't log unnecessary boundary keys when logging directory
-  2/4 btrfs: put initial index value of a directory in a constant
-  3/4 btrfs: stop copying old dir items when logging a directory
-  4/4 btrfs: stop trying to log subdirectories created in past transactions
-
-Performance test results are listed in the changelog of patch 3/4.
+At btrfs_set_inode_index_count() we refer twice to the number 2 as the
+initial index value for a directory (when it's empty), with a proper
+comment explaining the reason for that value. In the next patch I'll
+have to use that magic value in the directory logging code, so put
+the value in a #define at btrfs_inode.h, to avoid hardcoding the
+magic value again at tree-log.c.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 39 +++++++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 18 deletions(-)
+ fs/btrfs/btrfs_inode.h | 12 ++++++++++--
+ fs/btrfs/inode.c       | 10 ++--------
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index c1ddbe800897..a80f14df5b81 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3883,17 +3883,18 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 	ret = btrfs_previous_item(root, path, ino, BTRFS_DIR_INDEX_KEY);
- 	if (ret == 0) {
- 		struct btrfs_key tmp;
-+
- 		btrfs_item_key_to_cpu(path->nodes[0], &tmp, path->slots[0]);
--		if (tmp.type == BTRFS_DIR_INDEX_KEY) {
--			first_offset = tmp.offset;
--			ret = overwrite_item(trans, log, dst_path,
--					     path->nodes[0], path->slots[0],
--					     &tmp);
--			if (ret) {
--				err = ret;
--				goto done;
--			}
--		}
-+		/*
-+		 * The dir index key before the first one we found that needs to
-+		 * be logged might be in a previous leaf, and there might be a
-+		 * gap between these keys, meaning that we had deletions that
-+		 * happened. So the key range item we log (key type
-+		 * BTRFS_DIR_LOG_INDEX_KEY) must cover a range that starts at the
-+		 * previous key's offset plus 1, so that those deletes are replayed.
-+		 */
-+		if (tmp.type == BTRFS_DIR_INDEX_KEY)
-+			first_offset = tmp.offset + 1;
- 	}
- 	btrfs_release_path(path);
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index b3e46aabc3d8..6d4f42b0fdce 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -13,6 +13,13 @@
+ #include "ordered-data.h"
+ #include "delayed-inode.h"
  
-@@ -3941,14 +3942,16 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 			goto done;
- 		}
- 		if (btrfs_header_generation(path->nodes[0]) != trans->transid) {
--			ctx->last_dir_item_offset = min_key.offset;
--			ret = overwrite_item(trans, log, dst_path,
--					     path->nodes[0], path->slots[0],
--					     &min_key);
--			if (ret)
--				err = ret;
--			else
--				last_offset = min_key.offset;
-+			/*
-+			 * The next leaf was not changed in the current transaction
-+			 * and has at least one dir index key.
-+			 * We check for the next key because there might have been
-+			 * one or more deletions between the last key we logged and
-+			 * that next key. So the key range item we log (key type
-+			 * BTRFS_DIR_LOG_INDEX_KEY) must end at the next key's
-+			 * offset minus 1, so that those deletes are replayed.
-+			 */
-+			last_offset = min_key.offset - 1;
- 			goto done;
- 		}
- 		if (need_resched()) {
++/*
++ * Since we search a directory based on f_pos (struct dir_context::pos) we have
++ * to start at 2 since '.' and '..' have f_pos of 0 and 1 respectively, so
++ * everybody else has to start at 2 (see btrfs_real_readdir() and dir_emit_dots()).
++ */
++#define BTRFS_DIR_START_INDEX 2
++
+ /*
+  * ordered_data_close is set by truncate when a file that used
+  * to have good data has been truncated to zero.  When it is set
+@@ -173,8 +180,9 @@ struct btrfs_inode {
+ 	u64 disk_i_size;
+ 
+ 	/*
+-	 * if this is a directory then index_cnt is the counter for the index
+-	 * number for new files that are created
++	 * If this is a directory then index_cnt is the counter for the index
++	 * number for new files that are created. For an empty directory, this
++	 * must be initialized to BTRFS_DIR_START_INDEX.
+ 	 */
+ 	u64 index_cnt;
+ 
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a88130c7782e..97fd33d599eb 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5971,14 +5971,8 @@ static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
+ 		goto out;
+ 	ret = 0;
+ 
+-	/*
+-	 * MAGIC NUMBER EXPLANATION:
+-	 * since we search a directory based on f_pos we have to start at 2
+-	 * since '.' and '..' have f_pos of 0 and 1 respectively, so everybody
+-	 * else has to start at 2
+-	 */
+ 	if (path->slots[0] == 0) {
+-		inode->index_cnt = 2;
++		inode->index_cnt = BTRFS_DIR_START_INDEX;
+ 		goto out;
+ 	}
+ 
+@@ -5989,7 +5983,7 @@ static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
+ 
+ 	if (found_key.objectid != btrfs_ino(inode) ||
+ 	    found_key.type != BTRFS_DIR_INDEX_KEY) {
+-		inode->index_cnt = 2;
++		inode->index_cnt = BTRFS_DIR_START_INDEX;
+ 		goto out;
+ 	}
+ 
 -- 
 2.33.0
 
