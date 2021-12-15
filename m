@@ -2,66 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9734547589D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 13:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70164758B3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 13:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhLOMOK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 07:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhLOMOJ (ORCPT
+        id S242322AbhLOMUI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 07:20:08 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59396 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237191AbhLOMUI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 07:14:09 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831EFC06173E
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 04:14:09 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id y13so73650494edd.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 04:14:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=sMVXZmEK+H09avKUHH3w2S8Bcher2YrYywIf+YnGSP0=;
-        b=YbzM+pq6lPle91XZd/tHTKUuVC3nKAmpdccdOHUCyzCPN+jzz/UPv/FVtKWL+cTNAa
-         E+evFpWwrpYUAgqy+cqqTxSBLHR6//kWOdP4CMbWy/JP7winFL17lnm6cjuZdTuGyFn/
-         yiz5CNgc0nXkyhcNZ0TTdMFuSexxOo+c/xeun7CpC/gtzLKymk8tIgc3g1v/ZD0vyYH5
-         nqDh3otj84udSMlKhkRS96Zx5U3sP2r7U6G1tIQZcwaRyoVQCb6pcy9FFBJqXiqV/iX7
-         I0+d5xY0uJ7RO/gtz5W39DSCSEoT4N23iXWohsi1Y1LfAFki8zf4fHPApWOySd8Pvxca
-         /34w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=sMVXZmEK+H09avKUHH3w2S8Bcher2YrYywIf+YnGSP0=;
-        b=UzGhS0QWlpxjQJVmKwxXTQ4Ik5Bm6MU/FVaoMEL3vBIXxFw3sa/pWrGmss4zoxewwq
-         Nhy1SP24T1IvBiBrQx2ebvZfQUXj0MCqoEV2yhT44w+fHC1s7WLz3bLKvjEC/+/uoJoH
-         1NSxsXy9ZJ+AAOo1nJziR+wjZOa+Ov05+XkZn/wEJTVB+U5qzJhYZ1FZ02cLnOIH3q0q
-         Jo+4tGc5cTLDYqH+uuQHLvASU/gMpnV6d5Rumqm8QE+hz63EQBFZJFxelJDipbOv4p2e
-         5YPx7MIoplIgvFdU//5fcsbk4DCyn2OgrxlCjNj/O2bA0SttXr/HWZlnKOm4bU+AyK6z
-         06zg==
-X-Gm-Message-State: AOAM533bn6ZvZg50U6bZzvkLgQB1JMxWIC4EFIc5e/3Hxjw2TAQc2yK+
-        4wEsu6TN9lujTvKc6oLoPmxBJmzfniTcdQtd7ic=
-X-Google-Smtp-Source: ABdhPJxnLbk8UgvirW3A1mPET7VDPRRRxQD+czOXac2i0JovX/KB4DbyG5rwM3nFAQ+j2gSRkhZAgPt6mYQ30i45+9s=
-X-Received: by 2002:a50:9fac:: with SMTP id c41mr2845533edf.97.1639570448199;
- Wed, 15 Dec 2021 04:14:08 -0800 (PST)
+        Wed, 15 Dec 2021 07:20:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E3865B81EC1
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:20:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F666C34603
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 12:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639570805;
+        bh=Ju+5uKobxvvaJ3xlb0bnRiNQEulGq2NFsmlbgMx9mMo=;
+        h=From:To:Subject:Date:From;
+        b=N+GpJfrGUwumWAb8hrPCzlX2Y0IZZc4dHBcF8isRRVYSD2rJRAKRsGQ/K92+tTy9B
+         rr/mhWhbXTf6F8DO2+Ac5NcNu5gRMqXvfdk5dXSg47rHmUMFf+Uz2VXvCjKCExiZDX
+         hMkrlzCKqLxzA+NNkKvudFmKMv1g4rWC3LF+1mIqSt229HSWxQi75LYODGVYoC2KLq
+         42EZh5vErHJHnl7cXHHs5FdOz3oTodINcQW+l5ZIj3wsYSSO6ETGF5xQfYc6vRKy43
+         4KsLmY++rRTN5Xe5H4Nei5g2o0g0CbRx6yimDBNf6Rm0X8tmUbfa/GpDPSE+6Gw7o1
+         NBL1fPgqvwsKg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/4] btrfs: some more speedups for directory logging/fsync
+Date:   Wed, 15 Dec 2021 12:19:57 +0000
+Message-Id: <cover.1639568905.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a7c:83d6:0:b0:12c:4ab9:93f8 with HTTP; Wed, 15 Dec 2021
- 04:14:07 -0800 (PST)
-Reply-To: mrsbillchantal2022@mail.com
-From:   Oneal brian <onealbrian736@gmail.com>
-Date:   Wed, 15 Dec 2021 13:14:07 +0100
-Message-ID: <CAC_93+mT86f9v_U03HYWOfEofNcTm4+1tdC+ULW=_KXMyqxCNw@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 5.4 million dollars in this
-united nation the payment will be Issue into ATM visa card and send to
-you from the bank  we need your address, passport and your Whatsapp
-Number.
-Thanks
+From: Filipe Manana <fdmanana@suse.com>
 
-Mrs.Bill Chantal
+This patchset brings some more performance improvements for directory
+logging/fsync, by doing some changes to the logging algorithm to avoid
+logging dentries created in past transactions, which helps reducing a
+lot the amount of logged metadata, and therefore less IO as well for
+large directories.
+
+It specially benefits the case when some dentries were removed, either
+due to file deletes or renames, where it can reduce the total time spent
+in an fsync by an order of magnitude even if the number of dentries removed
+is a small percentage of the total dentries in the directory (for e.g. as
+little as 1%, like in the test results of the changelog of patch 3/4).
+
+This builds on top of my previous patchset to make directory logging copy
+only dir index keys and skip dir item keys, which has been on misc-next
+since the previous merge window closed.
+
+Patches 1/4 and 3/4 are the changes that accomplish this, while patch 2/4
+is just preparation for patch 3/4, and patch 4/4 is more of a cleanup of
+old, unnecessary and unreliable logic. Test case generic/335 was recently
+updated in fstests, so that after applying patch 4/4 it passes.
+
+Patch 3/4 contains in its changelog the test and results.
+
+We are close to the 5.17 merge window, holiday season is approaching and
+there's already a significant change for directory logging coming to 5.17
+(log only dir index keys and skip dir item keys), so I think this patchset
+is better suited for the 5.18 merge window.
+
+Thanks.
+
+Filipe Manana (4):
+  btrfs: don't log unnecessary boundary keys when logging directory
+  btrfs: put initial index value of a directory in a constant
+  btrfs: stop copying old dir items when logging a directory
+  btrfs: stop trying to log subdirectories created in past transactions
+
+ fs/btrfs/btrfs_inode.h |  12 +++-
+ fs/btrfs/inode.c       |  10 +---
+ fs/btrfs/tree-log.c    | 123 +++++++++++++++++++++++++----------------
+ 3 files changed, 86 insertions(+), 59 deletions(-)
+
+-- 
+2.33.0
+
