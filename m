@@ -2,158 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC69E476266
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3173C476267
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 21:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbhLOT7x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 14:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
+        id S232356AbhLOT7y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 14:59:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhLOT7w (ORCPT
+        with ESMTP id S232254AbhLOT7x (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 14:59:52 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C002EC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 11:59:51 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id v22so23047516qtx.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 11:59:51 -0800 (PST)
+        Wed, 15 Dec 2021 14:59:53 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84782C06173E
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 11:59:53 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id g28so21204563qkk.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 11:59:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=HGp96S5BFHtSp4e1A2BVijBAde79wrUqft67KS6qF8w=;
-        b=z4KR1kiLOsTtqoOY86zcCDrbQDoUk0/0EQyxP4gUBcwF3injzGkkOwa+TnsXEJvDDi
-         sCbxI3uuX59pTSMoONH3zGdYHT3btG3gk2/Q7uol72i6qC0SkwHWqO8c9tgwF5MsX/b4
-         nMdncAA0B2qnhk6VDPDTC5LCsg0hAfkGNrj6bsnF7S4bk5y2TopBOsvxWG1Cc2aN7r04
-         pER2LAo9ndy4yJ1Eq08BFA0UuykGH7Ep1/zyfxSOxJh+5fWGHlFcGXqU1d80I9i53WWo
-         uCjpDWB5QFTWcAfmWxqUmmuaN7lhXt14369Nil/yFgm6XNq9v57J7eA23cA42MPndGvS
-         8tmQ==
+        bh=HuGfPdSGj3prkysuHHWnX3MA/RiJrsDPJ2DhpnRJ6Yw=;
+        b=lJo+ntBPLqOXP25NVBJuA5UCJ/6iPjPtmLY0uFZCf30JkR0VwOekU4oMWvrgFHS2G2
+         /JG6MHAiY/Be8lYT0mkGhZ+G/id6/2cQWSOhDdyoBrpF1J2qP7dUUrovkOJr4FRj9TFY
+         zEQF/252tXAfGwxVsns9Fp9nCFSrgOAU9daUjEBdH146xMynJmm1x7Ih2NXE62xmHrVv
+         wYGnQPbK8SYvnKrlnUpq/2Bt2KjjazrqO7sC5ERGlLbDDNM8rQsYWflkhnpmHBl2/ajk
+         VDNfDIK73HSooU++BratXES1zHJM1fVr9lZ4whqOMHjKp5BAACfGBW6hp4eeVLNHpS0m
+         afKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HGp96S5BFHtSp4e1A2BVijBAde79wrUqft67KS6qF8w=;
-        b=mltatGc1B25pkw4I0y5po/fFAO2oywWWxsuNkLz8Gro+TxgDBEUsoulyCoC9byRxDJ
-         4kfntf+fsEqDbFwYWGTvbpnZ6i96SV4OFd8ttFJ3eZXzF9QBGuiyNK3CrsRR6d8jx53l
-         d5XfFzmbXRWHyWhnOpg3Nsj+JnbtUuH91diEHsQ6GHUHwiZhfNHT3Y+4AcJMedgS2/XH
-         /RLczuKMKna8BQDDhz+ZqnjXjshv1+OL90aMms/kKo0WhIDlOTfHzmD/nalyVpFyMH2D
-         Qrl5uzykbGXE94N/FYRaTutPXN6WJ2710j8kMNpg+49bkpwemRcdEjASuYN4gLx/7oiD
-         +Ujw==
-X-Gm-Message-State: AOAM530sTaOV6i18lR9UMGsozoEEE3UjBuhCVsB6tfDpxrLpTbW0Vjfz
-        Wli+CY6AD+0nSRgrQRfh3exDJp0OXKGSIw==
-X-Google-Smtp-Source: ABdhPJxBSBZue1EQSd34xR88CBHAKCFU0B0q696gF754Snk0LdNq5wqWOo/w+H28a65efTfFnphpoQ==
-X-Received: by 2002:a05:622a:c8:: with SMTP id p8mr13914545qtw.52.1639598390549;
-        Wed, 15 Dec 2021 11:59:50 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HuGfPdSGj3prkysuHHWnX3MA/RiJrsDPJ2DhpnRJ6Yw=;
+        b=2mejcGgX2JcQKf2PVM17hOlL7BLdBXPM5E4WiCRvAFvxMHhFzrGXMZR+5ADfJLuSsw
+         2FF37z+WKO8BCYmICwxYUSvTiwHw5Gnt1wgj3M+DI2MIK1o4bNX41VsHMn5r7/pUFRoT
+         SRo++J8Kul/CQgXVA+2nLMhsHd4vVpv3zF1aq7DmvZtjj9nesrFOHxpeTgv1tuVNDwJx
+         6XylLTdjg/xmsh+TAjHiaablqwBmPsgm7Iok/QHGJwnbE3OXgulSH/F22meYDiYdbJ8w
+         c5PRRgKFXBNLTS8LZBPmjHmmLC0doAdH+No4Ntos5p09pNme7UyNZPNT/dVxNru9BCCn
+         pk7w==
+X-Gm-Message-State: AOAM531vumFFPKSF31e35E+TiXfyLEtzYFKp7JHOP8PUUhQDP5co2n3+
+        CeXUBH3LpSqcA8TvFed1RYBUcE11jItErA==
+X-Google-Smtp-Source: ABdhPJz0kMmhVHKWHyZVRxIX5WlprcA8mR1zxybMo8AmWoJnT1uoOCmSkymxEGe5snJRIIaf9eSWMA==
+X-Received: by 2002:a05:620a:1f8:: with SMTP id x24mr10101854qkn.780.1639598392319;
+        Wed, 15 Dec 2021 11:59:52 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 8sm2300850qtz.28.2021.12.15.11.59.49
+        by smtp.gmail.com with ESMTPSA id u27sm2186600qtc.58.2021.12.15.11.59.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 11:59:50 -0800 (PST)
+        Wed, 15 Dec 2021 11:59:51 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 00/22] btrfs-progs: extent tree v2 support, global roots
-Date:   Wed, 15 Dec 2021 14:59:26 -0500
-Message-Id: <cover.1639598278.git.josef@toxicpanda.com>
+Subject: [PATCH v4 01/22] btrfs-progs: common: allow users to select extent-tree-v2 option
+Date:   Wed, 15 Dec 2021 14:59:27 -0500
+Message-Id: <78151390ea8c1087776aceca2b993e43fca2c4c4.1639598278.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1639598278.git.josef@toxicpanda.com>
+References: <cover.1639598278.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v3->v4:
-- Rebase onto devel, depends on the v3 prep patches that were sent on December
-  1st which has the rest of the "don't access ->*_root" patches.
-- I think I screwed up the versioning of this, but I lost the other submission,
-  so call this v3.
+We want to enable developers to test the extent tree v2 features as they
+are added, add the ability to mkfs an extent tree v2 fs if we have
+experimental enabled.
 
-v1->v2:
-- These depend on the v3 of the prep patches (it's marked as v2 because I'm
-  stupid, but the second v2 posting I sent.)
-- I've moved the global root rb tree patches into this series to differentiate
-  them from the actual fixes in the prep series.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ common/fsfeatures.c   | 11 +++++++++++
+ kernel-shared/ctree.h | 18 ++++++++++++++++++
+ mkfs/main.c           |  6 ++++++
+ 3 files changed, 35 insertions(+)
 
---- Original email ---
-Hello,
-
-These patches are the first chunk of the extent tree v2 format changes.  This
-includes the separate block group root which will hold all of the block group
-items.  This also includes the global root support, which is the work to allow
-us to have multiple extent, csum, and free space trees in the same file system.
-
-The goal of these two changes are straightforward.  For the block group root, on
-very large file systems the block group items are very widely separated, which
-means it takes a very long time to mount the file system on large, slow disks.
-Putting the block group items in their own root will allow us to densely
-populate the tree and dramatically increase mount times in these cases.
-
-The global roots change is motivated by lock contention on the root nodes of
-these global roots.  I've had to make many changes to how we run delayed refs to
-speed up things like the transaction commit because of all the delayed refs
-going into one tree and contending on the root node of the extent tree.  In the
-same token you can have heavy lock contention on the csum roots when writing to
-many files.  Allowing for multiple roots will let us spread the lock contention
-load around.
-
-I have disabled a few key features, namely balance and qgroups.  There will be
-more to come as I make more and more invasive changes, and then they will slowly
-be re-enabled as the work is added.  These are disabled to avoid a bunch of work
-that would be thrown away by future changes.
-
-These patches have passed xfstests without panicing, but clearly failing a lot
-of tests because of the disabled features.  I've also run it through fsperf to
-validate that there are no major performance regressions.
-
-WARNING: there are many more format changes planned, this is just the first
-batch.  If you want to test then please feel free, but know that the format is
-still in flux.  Thanks,
-
-Josef
-
-
-Josef Bacik (22):
-  btrfs-progs: common: allow users to select extent-tree-v2 option
-  btrfs-progs: add definitions for the block group tree
-  btrfs-progs: add on disk pointers to global tree ids
-  btrfs-progs: add support for loading the block group root
-  btrfs-progs: add print support for the block group tree
-  btrfs-progs: mkfs: use the btrfs_block_group_root helper
-  btrfs-progs: check-lowmem: use the btrfs_block_group_root helper
-  btrfs-progs: handle no bg item in extent tree for free space tree
-  btrfs-progs: mkfs: add support for the block group tree
-  btrfs-progs: check: add block group tree support
-  btrfs-progs: qgroup-verify: scan extents based on block groups
-  btrfs-progs: check: make free space tree validation extent tree v2
-    aware
-  btrfs-progs: check: add helper to reinit the root based on a key
-  btrfs-progs: check: handle the block group tree properly
-  btrfs-progs: load the number of global roots into the fs_info
-  btrfs-progs: handle the per-block group global root id
-  btrfs-progs: add a btrfs_delete_and_free_root helper
-  btrfs-progs: make btrfs_clear_free_space_tree extent tree v2 aware
-  btrfs-progs: make btrfs_create_tree take a key for the root key
-  btrfs-progs: mkfs: set chunk_item_objectid properly for extent tree v2
-  btrfs-progs: mkfs: create the global root's
-  btrfs-progs: check: don't do the root item check for extent tree v2
-
- check/main.c                    | 233 ++++++++++++++------------
- check/mode-lowmem.c             |  12 +-
- check/qgroup-verify.c           |  32 +++-
- cmds/inspect-dump-tree.c        |  37 +++-
- common/fsfeatures.c             |  11 ++
- common/repair.c                 |   3 +
- kernel-shared/ctree.h           |  66 +++++++-
- kernel-shared/disk-io.c         | 287 ++++++++++++++++++++++++++------
- kernel-shared/disk-io.h         |  15 +-
- kernel-shared/extent-tree.c     |  32 +++-
- kernel-shared/free-space-tree.c |  72 ++++----
- kernel-shared/print-tree.c      |  26 ++-
- kernel-shared/transaction.c     |   2 +
- libbtrfsutil/btrfs_tree.h       |   3 +
- mkfs/common.c                   |  93 ++++++++---
- mkfs/common.h                   |  12 ++
- mkfs/main.c                     |  96 ++++++++++-
- 17 files changed, 791 insertions(+), 241 deletions(-)
-
+diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+index df1bb8f7..23a92c21 100644
+--- a/common/fsfeatures.c
++++ b/common/fsfeatures.c
+@@ -131,6 +131,17 @@ static const struct btrfs_feature mkfs_features[] = {
+ 		VERSION_NULL(default),
+ 		.desc		= "support zoned devices"
+ 	},
++#endif
++#if EXPERIMENTAL
++	{
++		.name		= "extent-tree-v2",
++		.flag		= BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2,
++		.sysfs_name	= "extent_tree_v2",
++		VERSION_TO_STRING2(compat, 5,15),
++		VERSION_NULL(safe),
++		VERSION_NULL(default),
++		.desc		= "new extent tree format"
++	},
+ #endif
+ 	/* Keep this one last */
+ 	{
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 7a80fa0c..9f7ccd38 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -513,6 +513,23 @@ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
+ 	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
+ 	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID)
+ 
++#if EXPERIMENTAL
++#define BTRFS_FEATURE_INCOMPAT_SUPP			\
++	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
++	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
++	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
++	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
++	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
++	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
++	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
++	 BTRFS_FEATURE_INCOMPAT_NO_HOLES |		\
++	 BTRFS_FEATURE_INCOMPAT_RAID1C34 |		\
++	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID |		\
++	 BTRFS_FEATURE_INCOMPAT_ZONED |			\
++	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
++#else
+ #define BTRFS_FEATURE_INCOMPAT_SUPP			\
+ 	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
+ 	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
+@@ -527,6 +544,7 @@ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
+ 	 BTRFS_FEATURE_INCOMPAT_RAID1C34 |		\
+ 	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID |		\
+ 	 BTRFS_FEATURE_INCOMPAT_ZONED)
++#endif
+ 
+ /*
+  * A leaf is full of items. offset and size tell us where to find
+diff --git a/mkfs/main.c b/mkfs/main.c
+index d0c863fd..2c4b7b00 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -1223,6 +1223,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		features |= BTRFS_FEATURE_INCOMPAT_RAID1C34;
+ 	}
+ 
++	/* Extent tree v2 comes with a set of mandatory features. */
++	if (features & BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2) {
++		features |= BTRFS_FEATURE_INCOMPAT_NO_HOLES;
++		runtime_features |= BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE;
++	}
++
+ 	if (zoned) {
+ 		if (source_dir_set) {
+ 			error("the option -r and zoned mode are incompatible");
 -- 
 2.26.3
 
