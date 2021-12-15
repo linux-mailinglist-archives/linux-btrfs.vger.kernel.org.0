@@ -2,90 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D3A47651F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Dec 2021 23:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFAE476679
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 00:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhLOWCb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 17:02:31 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:43220 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhLOWCa (ORCPT
+        id S231927AbhLOX0U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 18:26:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhLOX0U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 17:02:30 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4B0191F3A6;
-        Wed, 15 Dec 2021 22:02:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1639605749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9RS1lvRU7zavK2/weu87T24yiHFAvxOhu7Rdjf0OTG8=;
-        b=CV1/ej8VyVNYGPw6g8gUWdCELOc4I0BGSK4zMiVY+95N3fXdr7dAVX15vtqjwLg4Z8i5yX
-        WnYX2PYoSIC/shEHE+T5Tvrgf+BQOQw3xvta+mQQpRVQJgj7Xcc1ZuHjnJE7Z2uKU9EXaO
-        I++6ZH5YOgZW0ZJOND5J3a1NE6fKj1k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C876613BBE;
-        Wed, 15 Dec 2021 22:02:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TEbiLfRlumGeEQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 15 Dec 2021 22:02:28 +0000
-Subject: Re: [PATCH] btrfs: Create sysfs entries only for non-stale devices
-To:     kreijack@inwind.it, linux-btrfs@vger.kernel.org
-References: <20211215144639.876776-1-nborisov@suse.com>
- <b08f828e-6336-fc09-521a-d4cf439e45d8@libero.it>
-Cc:     David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <86e0c499-da7a-2e3a-1782-502d9b1ef944@suse.com>
-Date:   Thu, 16 Dec 2021 00:02:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 15 Dec 2021 18:26:20 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4315C06173E
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 15:26:19 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id y12so79430796eda.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 15:26:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=IaRsgBlWgnx9GrfzJihqiqvA4PAdPnmSYdhUbhyhQsM=;
+        b=f+DEItmZtkAV6n8qvey9StHSJCYNGxxOcQBtyI62g+n2NfsiI6HZuAymcpCGzpHlDE
+         RfxOtBujHVJOksaXatVtEh1uz7isgjFxn6H7Ag75gs6LbQJBoRjwq765hKVLBNLpLSh5
+         zn8fQwmtJcCfePoMLMwYsntxVACK5GyVeeZ1i+BXh7Exn+4mf4vRoGYioKxE/KuCA1DQ
+         +6HSxOFeg4o3gz2H+OxLTXerlyxVmxrYYZjoUp5VBm1FCWSjjfOEJzzf8TXxY5TGSt1p
+         Pu+vfyi/KXy6SnV9mtbTLGckf8bvZpexY1SaJpMCzX1CJCMq11Gofxk7JRL06ATk3DXX
+         TqLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=IaRsgBlWgnx9GrfzJihqiqvA4PAdPnmSYdhUbhyhQsM=;
+        b=XsFDMOLxbmNeBDrclu1PEArQSYoBNUHAddNzDRpERsMv1miZiVgTXIS6P6uGaHuqUq
+         3cg7aYRaAl1/aUVbaaFkHGOUAS63zeb3/BMf079ISAvODai6r1Ku4CgfNXdjXKojeqd8
+         QcZvzijsv1kftRhR89ld0GYQIRzNFPGQBtcQP9Ph6V53SeT6ElUeWc0jA0ZO+27AaTBH
+         YqdO/grd0p67iU/f0OdddoecIPTBsUopVTi1WhWxWOdXS1C++is1FZxnRN5m0Hyg3HvQ
+         Q7N3uC2qmXy7A9Bqvz5HeMdfTX42yl5CnS1WmqVYP1gP8SkSO3Ue7dAUiewEK2BKzA1b
+         MyLw==
+X-Gm-Message-State: AOAM531q6ehV537Jv5HprVWrJNUjELJvah7VzpYpSUFqHJbF0ZIYhONs
+        N/sFVwskYzpkJf+5kDvjTocDfXogTuyfUZlFQkY=
+X-Google-Smtp-Source: ABdhPJxKzmoJ+X2RMH7i0KPIw6spJex3mtKYWDMIW2exKJWx7+yN91sl2v8RCBuKlqwW7Vx5wLMgzZL0+iRWZh7lEnI=
+X-Received: by 2002:a05:6402:2c4:: with SMTP id b4mr17011569edx.265.1639610778146;
+ Wed, 15 Dec 2021 15:26:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b08f828e-6336-fc09-521a-d4cf439e45d8@libero.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6402:11c9:0:0:0:0 with HTTP; Wed, 15 Dec 2021 15:26:17
+ -0800 (PST)
+Reply-To: alahmedhassan5602@gmail.com
+From:   Mr Ahmed Hassan <drhajizongohz@gmail.com>
+Date:   Thu, 16 Dec 2021 00:26:17 +0100
+Message-ID: <CAMSrsH=AUfGy89bBUQWVrF_TB2vDGMMLiq9Nfwm0nG0xTf0dRA@mail.gmail.com>
+Subject: Please respond urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Greetings,
 
+I am contacting you independently of my investigation and no one is
+informed of this communication. I need your urgent assistance in
+transferring the sum of $11.3million immediately to your private
+account.The money has been here in our Bank lying dormant for years
+now without anybody coming for the claim of it.
 
-On 15.12.21 г. 20:55, Goffredo Baroncelli wrote:
-> Hi Nikolay,
-> 
-> On 12/15/21 15:46, Nikolay Borisov wrote:
->> Currently /sys/fs/btrfs/<uuid>/devinfo/<devid> entry is always created
->> for a device present in btrfs_fs_devices on the other hand
->> /sys/fs/btrfs/<uuid>/devices/<devname> sysfs link is created only when
->> the given btrfs_device::bdisk member is populated. This can lead to
->> cases where a filesystem consisting of 2 device, one of which is stale
->> ends up having 2 entries under /sys/fs/btrfs/<uuid>/devinfo/<devid>
->> but only one under /sys/fs/btrfs/<uuid>/devices/<devname>.
-> 
-> What happened in case of a degraded mode ? Is correct to not show a
-> missing devices ?
+I want to release the money to you as the relative to our deceased
+customer (the account owner) who died a long with his supposed NEXT OF
+KIN since 16th October 2005. The Banking laws here does not allow such
+money to stay more than 17 years, because the money will be recalled
+to the Bank treasury account as unclaimed fund.
 
-Good question, now I'm thinking if 'devices' show the currently
-available devices to the filesystem, whilst 'devinfo' is supposed to
-show what devices the fs knows about. So in the case of degraded mount
-it should really have 2 devices under devinfo and only 1 under device.
-But this also means the case you reported shouldn't be handled by the
-devinfo sysfs code but rather the admin should do 'btrfs device scan -u'
-to remove the stale device.
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
+Please respond urgently and delete if you are not interested.
 
-I'd say this is all pretty open to interpretation so I'd like to also
-see David's and Josef's opinions on this.
-
-
-> 
-> 
-<snip>
+Best Regards,
+Mr. Ahmed Hassan
