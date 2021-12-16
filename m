@@ -2,231 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF53478061
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 00:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF474780D1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 00:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhLPXQd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Dec 2021 18:16:33 -0500
-Received: from beige.elm.relay.mailchannels.net ([23.83.212.16]:56779 "EHLO
-        beige.elm.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234193AbhLPXQc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Dec 2021 18:16:32 -0500
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 10113861A18;
-        Thu, 16 Dec 2021 23:16:32 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-        (Authenticated sender: instrampxe0y3a)
-        by relay.mailchannels.net (Postfix) with ESMTPA id D2CF1861914;
-        Thu, 16 Dec 2021 23:16:30 +0000 (UTC)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-        by 100.97.65.154 (trex/6.4.3);
-        Thu, 16 Dec 2021 23:16:31 +0000
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Glossy-Grain: 1cc825d12c2f33ef_1639696591710_1812184599
-X-MC-Loop-Signature: 1639696591710:2585811879
-X-MC-Ingress-Time: 1639696591710
-Received: from ppp-88-217-34-119.dynamic.mnet-online.de ([88.217.34.119]:59866 helo=heisenberg.fritz.box)
-        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <calestyo@scientia.org>)
-        id 1mxzz7-0000aj-Td; Thu, 16 Dec 2021 23:16:28 +0000
-Message-ID: <2e0f4856d8132f39e5d668929f77aac7ed01d476.camel@scientia.org>
-Subject: Re: ENOSPC while df shows 826.93GiB free
-From:   Christoph Anton Mitterer <calestyo@scientia.org>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Date:   Fri, 17 Dec 2021 00:16:21 +0100
-In-Reply-To: <20211207181437.GM17148@hungrycats.org>
-References: <f001f3e81d413ea290722c38b14d95f3f1f52249.camel@scientia.org>
-         <25d305e5-c75f-3d71-fc5a-c2019e49bed9@gmx.com>
-         <c64be50bdc99b993b910a7ab019af8d552eeb0d4.camel@scientia.org>
-         <b7b6a6a7-700e-f83d-dae6-581ed6befbef@gmx.com>
-         <3239b2307fae4c7f9e8be9f194d5f3ef470ddb8c.camel@scientia.org>
-         <20211207072128.GL17148@hungrycats.org>
-         <b913833639d11a0242f781d94452e5e31d7cbf1b.camel@scientia.org>
-         <20211207181437.GM17148@hungrycats.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.2-1 
+        id S229718AbhLPXpN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Dec 2021 18:45:13 -0500
+Received: from mout.gmx.net ([212.227.17.20]:50139 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhLPXpN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Dec 2021 18:45:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1639698306;
+        bh=cAlJmF0+xD3XIhS7orFoLLZQKqUelaIhEBjGxcUDlYc=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=OCHo/eh0hKqV/kWMUxtQzwn8MHFrZq2QSzETUsHzyVi8rGWdABfXI16rwccecouW3
+         TZl6qXtLXBgBvnkmxp/b5lZpuK5JGGGGVWw9r32x+cned51K0yHmB2Mwt4pcxytAL/
+         gu7UhHAlHpLxOOHNzbtPNh2/32162KGAx+tNnaGk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Ml6qC-1mEnCH1nrQ-00lXmf; Fri, 17
+ Dec 2021 00:45:06 +0100
+Message-ID: <aff0b294-b7f2-b016-3628-348812268607@gmx.com>
+Date:   Fri, 17 Dec 2021 07:45:01 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AuthUser: calestyo@scientia.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Content-Language: en-US
+To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        u-boot@lists.denx.de
+References: <20211217000515.0e087027@thinkpad>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: U-Boot btrfs implementation - will there by syncing?
+In-Reply-To: <20211217000515.0e087027@thinkpad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fjYGTBIV8FdTCAUUuTb2j1c0Qz0iTmbl8ZFuiDkrmf538mtJ1VI
+ T52jCbHeaP0iwI1D9VsykYCspwS5Kmype3WSa4D3nEI1vVsv1ObZETCAfaRseFsZS88NAPy
+ xSJ6H9y9OTaNqDvqdyVVLl1aYeWRMxuV2/A4oVX/R1yujiu/kUOwsCUFRHiRukaaCjAAssU
+ iQdTe+49asoLt4UvKL6aw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pHKk83dGJPE=:gjN2RKy1xZvfPozjX5sdlH
+ KhXvnUKObvhJhB5SSDRk/1bpw06pHhtqoicT0k0stBe4eFG336Wfbb4OIhgBNOofvJ/wzDoOG
+ S7k5rBAbj6PTp9nwNxecjG0tDS5AT/gMf1oS/t8NqEd+2k3NRE+TDAJ1NtiAjto9QcXfyVFDE
+ rTg343DklgkBIs4mqKLJJe9IDf3MXGvJSru1chVNdPPSBRbfbLkt4MM2J2UriS5S+RUnsk9H3
+ GNXV6kSJ1gRneD5dRgipHigNGelM5gFk+Qp6ylU1EgsfUb5O7BY4Mp0XbPbvWIE/Xp1Mc+3ro
+ SYQqAePWqzU1s9t3hEWq8sIcecfLwgxYmvZCky/juBaW3xJZn1ajEXlZrSy3oHTNXuq9c+XH9
+ oztHHLUSzy0GUfA/SuTaeYSEHFd126qTPBg9hNv68GU68UMJJFvTH+rBpYmmd09KEbmg9rXM4
+ kHXS9UMLLv5uubN1NlcLOIrdAWJS8Z4OJT2C6ZZ+vsnPM/EucITLWVat1e+bUwKgPPLIJ2Q/o
+ Axa2Aj3BbKfyCNq9OHg/jUR2SeuZJ91oXTd7w/0tMDE+cgq7E/zznN95B3tf34xyCuqQjbWW2
+ Hy8Uh0tISjYz/dIOqroZ36qf8eZX1uyjJnoy8SHZrIquwj3bY3cC+vQjRdJW6Wx5Bqiv8w/1j
+ 6fj2q0oUTGxu3jHYY2maxqNhqXnWCKC9d11YoFasXhJjSlFuLWhABhdh2kAoUOhmXAzG3Vu+L
+ AiIn5WY9F1lTAx7SeSTTVIu5lmetX9TUcRUy5oanKk2SAeIMqwIntF5NH0oHADkruqcuTDUIS
+ ftmT3LjxzUvnIQ9RD2yH6p3YsZfj+WbJGV4GTy23vFO3DCqxvhBOMuvbF6t8Pv2VsfMn9RRvP
+ 0uTpCeh58BjVr9OKAFfr4ViysivszwrEkr3JAjrPbWQLrOW3CaTEQiZf0GfYZjUcD8r+Q87en
+ FS9IS7njbG9vYzHgVLyqhsAFQlUkRvKZMP5nXym8YRrsAjg0jzYU83yhlA3G9ar23Bsy4cR7c
+ OUrbAj/tQ+E+Rb9ecYQamEmMDiBOB0ysZ1UbaB3zyNVV6AyZs0/7InwEU+Nra3J6oFBsT9hX3
+ UYofq1DkVmpsCI=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 2021-12-07 at 13:14 -0500, Zygo Blaxell wrote:
-> It coalesces the free space in each block group into big contiguous
-> regions, eventually growing them to regions over 1GB in size. 
-> Usually
-> this gives back unallocated space.
-
-Ah, I see... an yes that worked.
-
-Not sure if I missed anything, but I think this should be somehow
-explained in the btrfs-balance(8).
-I mean there *is* the section "MAKING BLOCK GROUP LAYOUT MORE COMPACT",
-but that also kinda misses the point that this can be used to get
-unallocated space back, doesn't it?
 
 
-Is there some way to see a distribution of the space usage of block
-groups?
-Like some print out that shows me:
-- there are n block groups
-- xx = 100%
-- xx > 90%
-- xx > 80%
-...
-- xx = 0%
-?
+On 2021/12/17 07:05, Marek Beh=C3=BAn wrote:
+> Hello Qu and others,
+>
+> one of the points of Qu's reimplementation of U-Boot's btrfs code that
+> made it somehow synced with btrfs-progs, was that the old
+> implementation was, quote
+>
+>    pretty different from btrfs-progs nor kernel, making it pretty hard t=
+o
+>    sync code between different projects
+>
+> Another point was that afterwards Qu wanted to bring some of the missing
+> btrfs features into U-Boot, since they should be much easier to
+> implement after the reimplementation.
+>
+> I was looking at current btrfs-progs, and noticed that there were many
+> changes since then, but only one or two were ever synced to U-Boot.
 
-That would also give some better idea on how worth it is to balance,
-and which options to use.
+Yep, those changes are mostly preparation for the incoming extent-tree
+v2 feature, they bring no real behavior change for now.
 
+And I'm planning to cross-port them just to make later cross-port easier.
 
-> If balance can't pack the extents in 1GB units without changing their
-> sizes or crossing a block group boundary, then balance might not be
-> able to free any block groups this way, so this tends to fail when
-> the
-> filesystem is over about 97% full.
+Thanks for the reminder.
 
-So that's basically the point when one can only move data away... do
-the balance and move it back afterwards.
+>
+> I would like to know if Qu, or anyone else, is planning to do this
+> code-syncing, and maybe implement some of the missing features?
+>
+> The reason I am asking this is that in the meantime I've reached the
+> opinion that the idea of code-syncing in this sense almost never really
+> works. It is usually proposed by one person who ports the code from
+> another project, and then keeps it synced for a time, but then stops
+> doing it because they have too much other work, or change employer, or
+> another reason.
+>
+> It happened multiple times. One example is U-Boot's Hush shell, which
+> was imported from busybox, with the intention to keep it in sync, but
+> the reality is that U-Boot's implementation is now years (decade?) old,
+> and there were so many ad-hoc fixes done in U-Boot that currently the
+> only way to sync is basically to change the whole code (which will also
+> cause issues with existing user scripts, but maybe it should be done
+> anyway).
+>
+> Another reason why I am writing this is that I think that with the
+> amount of work Qu put into that reimplementation last year, he could
+> have instead implemented some of the new features in the old
+> implementation and spend a similar amount of time doing that, and the
+> result would be those new features in U-Boot for over a year by now.
 
-Which btw. worked quite nicely. (so thanks to all involved people for
-the help with that).
+I doubt that, the original interface is completely different than the
+interface we have in kernel/progs.
 
+That means, if one wants to cross port the recent extent-tree v2
+changes, it will be a hell.
 
-> Minimal balance is exactly one data block group, i.e.
-> 
->         btrfs balance start -dlimit=1 /fs
-> 
-> Run it when unallocated space gets low.  The exact threshold is low
-> enough that the time between new data block group allocations is less
-> than the balance time.
+So in the long run, it's still beneficial, even they get de-synced somehow=
+.
 
-What the sysadmin of large storage farms needs is something that one
-can run basically always (so even if unallocated space is NOT low),
-which kinda works out of the box and automatically (run via cron?) and
-doesn't impact the IO too much.
-Or one would need some daemon, which monitors unallocated space and
-kicks in if necessary.
+>
+> Also, I've come to the opinion that maybe two different and maintained
+> implementations are a good thing for such a project as a filesystem,
+> similar to how multiple implementations of C/C++ compiler are a good
+> thing.
+>
+> For the last few months I was on-and-off thinking about whether it
+> would make sense to revert to the original implementation and then
+> implement some of the missing features. But it would not make sense if
+> Qu, or anyone else, is planning to do that code syncing and bringing of
+> new features from btrfs-progs, so that's why I am asking.
 
-Does it make sense to use -dusage=xx in addition to -dlimit?
-I mean if space is already tight... would just -dlimit=1 try to find a
-block group that it can balance (because it's usage is low enough)...
-or might it just fail when the first tried one is nearly fully (and not
-enough space is left for that in other block groups)?
+The worst example for different implementations are another bootloader,
+GRUB.
 
+Its btrfs implementation has way less features, no sanity checks, and is
+super easy to craft an image to cause infinite loop for GRUB.
+And it even can not handle the new default mkfs features (NO_HOLES,
+which is there for long long time).
 
-> It has to be run for a short time because metadata_ratio=1 means 1:1
-> metadata to data allocation.  You only want to do this to rescue a
-> filesystem that has become stuck with too little metadata.  Once the
-> required amount of metadata is allocated, remove the metadata_ratio
-> option and do minimal data balancing going forward.
+Thus I even re-implemented a new license compatible project from
+scratch, btrfs-fuse, to provide a basis for later cross-port.
+(That only has read-only support, and is mostly MIT licesnsed, the
+interface is almost the same as progs/kernel).
 
-But that's also something rather only suitable for "rescuing"... one
-wouldn't want to do that in big storage systems on hundreds of
-filesystems, just to make sure that btrfs doesn't run into that
-situation in the first place.
+It may be possible for simpler filesystems, but for complex filesysmtes
+like btrfs, a completely different implementation with completely
+different interfaces is really not an ideal situation.
 
-For that it would be much nicer if one had other means to tell btrfs to
-allocate more for metadata,... like either a command to reserve xx GB,
-that one can run when one sees that space get tight... or by some
-bother logic when btrfs does that automatically.
-
-
-> You can set metadata_ratio=30, which will allocate (100 / 30) = ~3%
-> of the space for metadata, if you are starting with an empty
-> filesystem.
-
-Okay that sounds more like a way...
-
-
-> TBH it's never been a problem--but I run the minimal data balance
-> daily,
-> and scrub every month, and never balance metadata, and have snapshots
-> and dedupe.  Between these they trigger all the necessary metadata
-> allocations.
-
-I'm also still not really sure why this happened here.
-
-I've asked the developers of our storage middleware software in the
-meantime, and it seems in fact that dCache does pre-allocate the space
-of files that it wants to write.
-
-But even then, shouldn't btrfs be able to know how much it will
-generally need for csum metadata?
-
-I can only think of IO patterns where one would end up with too
-aggressive meta-data allocation (e.g. when writing lots of directories
-or XATTRS) and where not enough data block groups are left.
-
-But the other way round?
-If one writes very small files (so that they are inlined) -> meta-data
-should grow.
-
-If one writes non-inlined files, regardless of whether small or big...
-shouldn't it always be clear how much space could be needed for csum
-meta-data, when a new block group is allocated for data and if that
-would be fully written?
-
-
-> In theory if the average file size decreases drastically it can
-> change
-> the amount of metadata required and maybe require an increase in
-> metadata ratio after the metadata has been allocated.
-
-I cannot totally rule this out, but it's pretty unlikely.
-
-
-> Another case happens when you suddenly start using a lot of reflinks
-> when the filesystem is already completely allocated.
-
-That I can rule out, we didn't make any snapshots or ref-copies.
-
-
-> That's possible (and there are patches attempting to address it).
-> We don't want to be too aggressive, or the disk fills up with unused
-> metadata allocations...but we need to be about 5 block groups more
-> aggressive than we are now to handle special cases like "mount and
-> write until full without doing any backups or maintenance."
-
-Wouldn't a "simple" (at least in my mind ;-) ) solution be, that:
-- if the case arises, that either data or meta-data block groups are
-  full
-- and not unallocated space is left
-- and if the other kind of block groups has plenty of free space left
-  (say in total something like > 10 times the size of a block group...
-  or maybe more (depending on the total filesystem size), cause one
-  probably doesn't want to shuffle loads of data around, just for the
-  last 0.005% to be squeezed out.)
-then:
-- btrfs automatically does the balance?
-  Or maybe something "better" that also works when it would need to
-  break up extents?
-
-If there are cases where one doesn't like that automatic shuffling, one
-could make it opt-in via some mount option.
-
-
-> A couple more suggestions (more like exploitable side-effects):
-> 
->         - Run regular scrubs.  If a write occurs to a block group
->         while it's being scrubbed, there's an extra metadata block
->         group allocation.
-
-But writes during scrubs would only happen when it finds and corrupted
-blocks?
-
+I don't really want to do it again and again, using different (and
+sometimes very crappy) interfaces to do the same work.
 
 Thanks,
-Chris.
+Qu
+
+>
+> Please give your opinions, people.
+>
+> Thanks.
+>
+> Marek
