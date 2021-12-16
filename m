@@ -2,100 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EEB477532
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 16:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90F0477BF3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 19:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238193AbhLPPAk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Dec 2021 10:00:40 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:49910 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238195AbhLPPAh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Dec 2021 10:00:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFBC861E43
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 15:00:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1079C36AE0
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 15:00:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639666836;
-        bh=BK63VNenmu0BvmH9lBRMDIxFSDTqV5BR0vAOlfNwkjI=;
-        h=From:To:Subject:Date:From;
-        b=dZ3q4L4pkqEVLvjMwH7NYcd3AphfUMC2MSs6aWwfxJb/Xyjw4evcNUTdKeAEkivtI
-         TSSl7w6hip0kbTyIRLtiPadmj+LZ31cwQ9gu3MbxwprSbwIUppzJHWr+CdoNMekUGF
-         TnRYLGqCPZ6NTJjxrRy0Wvlqn4/Fs2GuAFaUb2bNsdICXGQ4jwN6wH54770SMDFKMB
-         UshRy+9m5L1eiAheo22Id38/5n8oFLe9eyZQclj2azGltVj+of3rDfejNozaqlDwKe
-         UAUFCq33TjYn/0KdWd9299V0WP9wpqK25+66Hb9mfj83CThVtG9Wz0lS7PZBGjAAac
-         V/urEqQUAY0Pg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: respect the max size in the header when activating swap file
-Date:   Thu, 16 Dec 2021 15:00:32 +0000
-Message-Id: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S236374AbhLPSwJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Dec 2021 13:52:09 -0500
+Received: from smtp-31-wd.italiaonline.it ([213.209.13.31]:47914 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236342AbhLPSwI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Dec 2021 13:52:08 -0500
+Received: from [192.168.1.27] ([78.12.25.242])
+        by smtp-31.iol.local with ESMTPA
+        id xvrJmvzkaOKKIxvrJmCtBq; Thu, 16 Dec 2021 19:52:06 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1639680726; bh=NN47qTfgd5agStcSiATy6wKcyq4HlCJGku6CBknxxpQ=;
+        h=From;
+        b=Uq6G01WLJg2k5ecgX7zaf9KZrGnAG0Ol83sm+kT5DRFiO7mHBf+bSgct/TGLsLR6r
+         fD+yKpgYRavrajb5H8ymox5kiuDrjqzMT+ulVaTGZ6KD7+HiaCfSlXjrEql/lmsuXX
+         eq5r5Fz3rLseFk+eD2tWBgSjBX7VXkBhPRNBOztLfirHJ7GmWFzeF3CZiFEJ2kPFVn
+         EWvYy4wngQl9hIEXKjuvHZ5T02bMV9NLqCqeSRAf/RBbRPK9dml5YG5SJd7jGDEVRW
+         HDa3/TdvMpzdRtr9MiWGUIfMvvbE7oWzyOGGcaDbiCHPZL6IE2fgf5JQsDPqSaqqqX
+         aiti2woYLhgYg==
+X-CNFS-Analysis: v=2.4 cv=QuabYX+d c=1 sm=1 tr=0 ts=61bb8ad6 cx=a_exe
+ a=IXMPufAKhGEaWfwa3qtiyQ==:117 a=IXMPufAKhGEaWfwa3qtiyQ==:17
+ a=IkcTkHD0fZMA:10 a=1DWNq_REXNAiyZ3G7W8A:9 a=QEXdDO2ut3YA:10
+Message-ID: <4c0d1459-b44f-f25b-035f-0e75d6cec07e@libero.it>
+Date:   Thu, 16 Dec 2021 19:52:05 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs: Create sysfs entries only for non-stale devices
+Content-Language: en-US
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>
+References: <20211215144639.876776-1-nborisov@suse.com>
+ <b08f828e-6336-fc09-521a-d4cf439e45d8@libero.it>
+ <86e0c499-da7a-2e3a-1782-502d9b1ef944@suse.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <86e0c499-da7a-2e3a-1782-502d9b1ef944@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfA8DEgeM7dKs1WXPRCKBHf7yHqHI5FG9uzUZAny4z8f8rJ6goktpvaD9Mewy2GLftJPxdjJaauSYdZg06ZUDRul07v6fKMDPlRDlP7oK5/NyEe4nWjjj
+ yRIdx9PjLgbE/3bcwZT7RS4WlArTCXO4669uGffdFEr98D3tRwH6OiHTUAOrIQmqtxttij1ND8bVacAgTAxbYSGafzvkWOZ6aaujF8lbCZDVUj3hII4SlyHO
+ +s8Pn1P4lTx54sugcHx7Wyqn5+a7PALkoE6QCWJJi+lafb2wQM6pmf4E4ISGB3t2
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On 12/15/21 23:02, Nikolay Borisov wrote:
+> 
+> 
+> On 15.12.21 г. 20:55, Goffredo Baroncelli wrote:
+>> Hi Nikolay,
+>>
+>> On 12/15/21 15:46, Nikolay Borisov wrote:
+>>> Currently /sys/fs/btrfs/<uuid>/devinfo/<devid> entry is always created
+>>> for a device present in btrfs_fs_devices on the other hand
+>>> /sys/fs/btrfs/<uuid>/devices/<devname> sysfs link is created only when
+>>> the given btrfs_device::bdisk member is populated. This can lead to
+>>> cases where a filesystem consisting of 2 device, one of which is stale
+>>> ends up having 2 entries under /sys/fs/btrfs/<uuid>/devinfo/<devid>
+>>> but only one under /sys/fs/btrfs/<uuid>/devices/<devname>.
+>>
+>> What happened in case of a degraded mode ? Is correct to not show a
+>> missing devices ?
+> 
+> Good question, now I'm thinking if 'devices' show the currently
+> available devices to the filesystem, whilst 'devinfo' is supposed to
+> show what devices the fs knows about. So in the case of degraded mount
+> it should really have 2 devices under devinfo and only 1 under device.
+> But this also means the case you reported shouldn't be handled by the
+> devinfo sysfs code but rather the admin should do 'btrfs device scan -u'
+> to remove the stale device.
+> 
+> 
+> I'd say this is all pretty open to interpretation so I'd like to also
+> see David's and Josef's opinions on this.
 
-If we extended the size of a swapfile after its header was created (by the
-mkswap utility) and then try to activate it, we will map the entire file
-when activating the swap file, instead of limiting to the max size defined
-in the swap file's header.
+After some thinking, I reach the conclusion that devices/ shows the correct
+values by mistake :-)
 
-Currently test case generic/643 from fstests fails because we do not
-respect that size limit defined in the swap file's header.
+My understanding of a btrfs filesystem bootstrap is the following:
 
-So fix this by not mapping file ranges beyond the max size defined in the
-swap header.
+- each time a new block device appears, if this is a valid BTRFS device,
+it is registered in a list
+- at mount time, BTRFS groups all the devices with the same FS-UUID
+- during the mount, it is assumed that if a device has a valid FS-UUID it
+is a valid block devices for the filesystem
 
-This is the same type of bug that iomap used to have, and was fixed in
-commit 36ca7943ac18ae ("mm/swap: consider max pages in
-iomap_swapfile_add_extent").
+BTRFS has the following information to detect "foreign" block devices:
+1) the UUID of each block devices should match the ones stored in DEV_ITEM (in the metadata)
+2) the generation number should match
+3) the "num_devices" field of superblock should match the total number of devices
 
-Fixes: ed46ff3d423780 ("Btrfs: support swap files")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+In this case I see two problems:
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 97fd33d599eb..b17d14ec4d46 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -10263,9 +10263,19 @@ static int btrfs_add_swap_extent(struct swap_info_struct *sis,
- 				 struct btrfs_swap_info *bsi)
- {
- 	unsigned long nr_pages;
-+	unsigned long max_pages;
- 	u64 first_ppage, first_ppage_reported, next_ppage;
- 	int ret;
- 
-+	/*
-+	 * Our swapfile may have had its size extended after the swap header was
-+	 * written. In that case activating the swapfile should not go beyond
-+	 * the max size set in the swap header.
-+	 */
-+	if (bsi->nr_pages >= sis->max)
-+		return 0;
-+
-+	max_pages = sis->max - bsi->nr_pages;
- 	first_ppage = ALIGN(bsi->block_start, PAGE_SIZE) >> PAGE_SHIFT;
- 	next_ppage = ALIGN_DOWN(bsi->block_start + bsi->block_len,
- 				PAGE_SIZE) >> PAGE_SHIFT;
-@@ -10273,6 +10283,7 @@ static int btrfs_add_swap_extent(struct swap_info_struct *sis,
- 	if (first_ppage >= next_ppage)
- 		return 0;
- 	nr_pages = next_ppage - first_ppage;
-+	nr_pages = min(nr_pages, max_pages);
- 
- 	first_ppage_reported = first_ppage;
- 	if (bsi->start == 0)
+a) the device was registered but it was unavailable at the time of mounting.
+I don't think that it should be considered valid at all and it should be
+removed from the list of the available devices when the first access for
+check 1) and 2) is tried.
+I know that a device can disappear after, but this case is different: if we
+can perform 1) and 2) we can classify the device as valid/invalid
+If we cannot do (as this case) we can consider it an artifact and discard enterly
+
+b) in any case the check 3) ( 1) and 1) cannot be performed without the device)
+should prevent the filesystem to be mounted if num_devices < number of the
+listed devices (which is different from the available device). Looking at the
+code it seems that only the case of a missing devices is handled
+
+
+
+
+
+
+
+
+
+
+> 
+>>
+>>
+> <snip>
+
+
 -- 
-2.33.0
-
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
