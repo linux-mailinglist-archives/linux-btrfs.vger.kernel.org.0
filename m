@@ -2,131 +2,323 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90F0477BF3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 19:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3AC477DE3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 21:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236374AbhLPSwJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Dec 2021 13:52:09 -0500
-Received: from smtp-31-wd.italiaonline.it ([213.209.13.31]:47914 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236342AbhLPSwI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Dec 2021 13:52:08 -0500
-Received: from [192.168.1.27] ([78.12.25.242])
-        by smtp-31.iol.local with ESMTPA
-        id xvrJmvzkaOKKIxvrJmCtBq; Thu, 16 Dec 2021 19:52:06 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1639680726; bh=NN47qTfgd5agStcSiATy6wKcyq4HlCJGku6CBknxxpQ=;
-        h=From;
-        b=Uq6G01WLJg2k5ecgX7zaf9KZrGnAG0Ol83sm+kT5DRFiO7mHBf+bSgct/TGLsLR6r
-         fD+yKpgYRavrajb5H8ymox5kiuDrjqzMT+ulVaTGZ6KD7+HiaCfSlXjrEql/lmsuXX
-         eq5r5Fz3rLseFk+eD2tWBgSjBX7VXkBhPRNBOztLfirHJ7GmWFzeF3CZiFEJ2kPFVn
-         EWvYy4wngQl9hIEXKjuvHZ5T02bMV9NLqCqeSRAf/RBbRPK9dml5YG5SJd7jGDEVRW
-         HDa3/TdvMpzdRtr9MiWGUIfMvvbE7oWzyOGGcaDbiCHPZL6IE2fgf5JQsDPqSaqqqX
-         aiti2woYLhgYg==
-X-CNFS-Analysis: v=2.4 cv=QuabYX+d c=1 sm=1 tr=0 ts=61bb8ad6 cx=a_exe
- a=IXMPufAKhGEaWfwa3qtiyQ==:117 a=IXMPufAKhGEaWfwa3qtiyQ==:17
- a=IkcTkHD0fZMA:10 a=1DWNq_REXNAiyZ3G7W8A:9 a=QEXdDO2ut3YA:10
-Message-ID: <4c0d1459-b44f-f25b-035f-0e75d6cec07e@libero.it>
-Date:   Thu, 16 Dec 2021 19:52:05 +0100
+        id S241473AbhLPUxD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Dec 2021 15:53:03 -0500
+Received: from vs2.lukas-pirl.de ([5.45.100.90]:47498 "EHLO pim.lukas-pirl.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234024AbhLPUxA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Dec 2021 15:53:00 -0500
+Received: from pygmy.fritz.box (dslb-084-063-024-119.084.063.pools.vodafone-ip.de [84.63.24.119])
+        by pim.lukas-pirl.de (Postfix) with ESMTPSA id 33510A160F18;
+        Thu, 16 Dec 2021 21:52:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lukas-pirl.de;
+        s=201701; t=1639687979;
+        bh=C3FSzQcFxpmsHVQZI1U0FdyEuDskjA6A/A61QS6dBxQ=;
+        h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Date:
+         MIME-Version:From;
+        b=lyu6w5uP/VuQiRy5zT1j5wZZN4DpK1CDsVCljSCXjHSv81uzn7R0odL/isfFyLe1t
+         qIHSYqxctyVHNpeCkg3uNbnysoHJ+iXx6e7r9RJlIGJhL+2G2zmqC37R96B36KVDQd
+         DXoxYqmaynheXHwgZ61abqbTG6TdmwcdUN1fCAKvbTLbGLpg3jsvvao7iwYMsQPgZx
+         NNUgeralvoBaqVNcv5pUVt+ywFHvTh8QQPjTLsOwhHFnDHHh59DNxuK8k090d6mdHw
+         YCJcsIYj8QRGsPnLcRMPZgb3AU8uuENnPs3cfUCfYW1OAzwGZxywp4Ryyb/V+im4Lp
+         xDAZQ2u5VF/VqgZ4E1wR2nUzltlBjYXkOVrYc6Wp5mjNbOzbgJSudUyzVOOVw/WyBM
+         qlpAhAGJL1W647nNvrwFxTJBnuMzsF38iD3HnXbZ0GMQwxAVs7ZjkISd1zP7AYrHqV
+         sTXulyqc77mdl+3iQc3sZM8vaeNJzejRQ5VfknTX7hZBoTOkLMDL9TNnNpwoMVs/hM
+         Ss5e0AwN3obWOGCM1vyqE9HJNobMJDe4QaiZiGyy3unOASLQ7e+PXSZdhf+Gz2+QPy
+         MI2BxbYwg4RJqUkgiivor7mfd43k0f77SdTuj08Oes5u4WTd1qJkAkSpGW19I8R4i6
+         pSkg431I9Ajmvprx4UiNrZlk=
+Message-ID: <a9ebd4465d947e8a233a52411b753e83a11ff768.camel@lukas-pirl.de>
+Subject: Re: Balance loop on "device delete missing"? (RAID 1, Linux 5.15,
+ "found 1 extents, stage: update data pointers")
+From:   Lukas Pirl <btrfs@lukas-pirl.de>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+In-Reply-To: <20211211025344.GR17148@hungrycats.org>
+References: <5a73c349971ff005640af3854667f492e0697724.camel@lukas-pirl.de>
+         <f5766e3cb0e2b7bcf3ef45cb7b9a7f3ef96b07ce.camel@lukas-pirl.de>
+         <20211202181152.GK17148@hungrycats.org>
+         <d946882c8042f779cdccc8de59cc10166f77fb04.camel@lukas-pirl.de>
+         <20211211025344.GR17148@hungrycats.org>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-actip7QE5H+XuQ86QPnu"
+Date:   Thu, 16 Dec 2021 21:52:58 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH] btrfs: Create sysfs entries only for non-stale devices
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>
-References: <20211215144639.876776-1-nborisov@suse.com>
- <b08f828e-6336-fc09-521a-d4cf439e45d8@libero.it>
- <86e0c499-da7a-2e3a-1782-502d9b1ef944@suse.com>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <86e0c499-da7a-2e3a-1782-502d9b1ef944@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfA8DEgeM7dKs1WXPRCKBHf7yHqHI5FG9uzUZAny4z8f8rJ6goktpvaD9Mewy2GLftJPxdjJaauSYdZg06ZUDRul07v6fKMDPlRDlP7oK5/NyEe4nWjjj
- yRIdx9PjLgbE/3bcwZT7RS4WlArTCXO4669uGffdFEr98D3tRwH6OiHTUAOrIQmqtxttij1ND8bVacAgTAxbYSGafzvkWOZ6aaujF8lbCZDVUj3hII4SlyHO
- +s8Pn1P4lTx54sugcHx7Wyqn5+a7PALkoE6QCWJJi+lafb2wQM6pmf4E4ISGB3t2
+User-Agent: Evolution 3.42.2-1 
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/15/21 23:02, Nikolay Borisov wrote:
-> 
-> 
-> On 15.12.21 г. 20:55, Goffredo Baroncelli wrote:
->> Hi Nikolay,
->>
->> On 12/15/21 15:46, Nikolay Borisov wrote:
->>> Currently /sys/fs/btrfs/<uuid>/devinfo/<devid> entry is always created
->>> for a device present in btrfs_fs_devices on the other hand
->>> /sys/fs/btrfs/<uuid>/devices/<devname> sysfs link is created only when
->>> the given btrfs_device::bdisk member is populated. This can lead to
->>> cases where a filesystem consisting of 2 device, one of which is stale
->>> ends up having 2 entries under /sys/fs/btrfs/<uuid>/devinfo/<devid>
->>> but only one under /sys/fs/btrfs/<uuid>/devices/<devname>.
->>
->> What happened in case of a degraded mode ? Is correct to not show a
->> missing devices ?
-> 
-> Good question, now I'm thinking if 'devices' show the currently
-> available devices to the filesystem, whilst 'devinfo' is supposed to
-> show what devices the fs knows about. So in the case of degraded mount
-> it should really have 2 devices under devinfo and only 1 under device.
-> But this also means the case you reported shouldn't be handled by the
-> devinfo sysfs code but rather the admin should do 'btrfs device scan -u'
-> to remove the stale device.
-> 
-> 
-> I'd say this is all pretty open to interpretation so I'd like to also
-> see David's and Josef's opinions on this.
 
-After some thinking, I reach the conclusion that devices/ shows the correct
-values by mistake :-)
+--=-actip7QE5H+XuQ86QPnu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-My understanding of a btrfs filesystem bootstrap is the following:
+T24gRnJpLCAyMDIxLTEyLTEwIDIxOjUzIC0wNTAwLCBaeWdvIEJsYXhlbGwgd3JvdGUgYXMgZXhj
+ZXJwdGVkOgo+IE9uIEZyaSwgRGVjIDEwLCAyMDIxIGF0IDAyOjI4OjI4UE0gKzAxMDAsIEx1a2Fz
+IFBpcmwgd3JvdGU6Cj4gPiAKPiAKPiA+IGl0IHRvb2sgbWUgKGFuZCB0aGUgZGlza3MpIGEgd2hp
+bGUgdG8gcmVwb3J0IGJhY2s7IGhlcmUgd2UgZ286Cj4gPiAKPiA+IE9uIFRodSwgMjAyMS0xMi0w
+MiAxMzoxMSAtMDUwMCwgWnlnbyBCbGF4ZWxsIHdyb3RlIGFzIGV4Y2VycHRlZDoKPiA+ID4gPiBP
+biBUaHUsIDIwMjEtMTEtMjUgMTk6MDYgKzAxMDAsIEx1a2FzIFBpcmwgd3JvdGUgYXMgZXhjZXJw
+dGVkOgo+ID4gPiA+ID4gRGVhciBidHJmcyBjb21tdW5pdHksCj4gPiA+ID4gPiAKPiA+ID4gPiA+
+IHRoaXMgaXMgYW5vdGhlciByZXBvcnQgb2YgYSBwcm9iYWJseSBlbmRsZXNzIGJhbGFuY2Ugd2hp
+Y2ggbG9vcHMgb24KPiA+ID4gPiA+ICJmb3VuZCAxIGV4dGVudHMsIHN0YWdlOiB1cGRhdGUgZGF0
+YSBwb2ludGVycyIuCj4gPiA+ID4gPiAKPiA+ID4gPiA+IEkgb2JzZXJ2ZSBpdCBvbiBhIGJ0cmZz
+IFJBSUQgMSBvbiBhcm91bmQgNyBsdWtzLWVuY3J5cHRlZCBzcGlubmluZwo+ID4gPiA+ID4gZGlz
+a3MgKG1vcmUgZnMgZGV0YWlscyBiZWxvdykgdXNlZCBmb3Igc3RvcmluZyBjb2xkIGRhdGEuIE9u
+ZSBkaXNrCj4gPiA+ID4gPiBmYWlsZWQgcGh5c2ljYWxseS4gTm93LCBJIHRyeSB0byAiYnRyZnMg
+ZGV2aWNlIGRlbGV0ZSBtaXNzaW5nIi4gVGhlCj4gPiA+ID4gPiBvcGVyYXRpb24gcnVucyBmb3Jl
+dmVyIChwcm9iYWJseSwgd2FpdGVkIG1vcmUgdGhhbiAzMCBkYXlzLCBhbm90aGVyCj4gPiA+ID4g
+PiB0aW1lIG1vcmUgdGhhbiA1MCBkYXlzKS4KPiA+ID4gPiA+IAo+ID4gPiA+ID4gZG1lc2cgc2F5
+czoKPiA+ID4gPiA+IFvCoMKgwqDCoMKgIDIyOjI2XSBCVFJGUyBpbmZvIChkZXZpY2UgZG0tMSk6
+IHJlbG9jYXRpbmcgYmxvY2sgZ3JvdXAKPiA+ID4gPiA+IDExMDkyMDQ2NjQzMjAKPiA+ID4gPiA+
+IGZsYWdzIGRhdGF8cmFpZDEKPiA+ID4gPiA+IFvCoMKgwqDCoMKgIDIyOjI3XSBCVFJGUyBpbmZv
+IChkZXZpY2UgZG0tMSk6IGZvdW5kIDQxNjQgZXh0ZW50cywgc3RhZ2U6Cj4gPiA+ID4gPiBtb3Zl
+Cj4gPiA+ID4gPiBkYXRhCj4gPiA+ID4gPiBleHRlbnRzCj4gPiA+ID4gPiBbwqAgKzUuNDc2MjQ3
+XSBCVFJGUyBpbmZvIChkZXZpY2UgZG0tMSk6IGZvdW5kIDQxNjQgZXh0ZW50cywgc3RhZ2U6Cj4g
+PiA+ID4gPiB1cGRhdGUKPiA+ID4gPiA+IGRhdGEgcG9pbnRlcnMKPiA+ID4gPiA+IFvCoCArMi41
+NDUyOTldIEJUUkZTIGluZm8gKGRldmljZSBkbS0xKTogZm91bmQgMSBleHRlbnRzLCBzdGFnZToK
+PiA+ID4gPiA+IHVwZGF0ZQo+ID4gPiA+ID4gZGF0YQo+ID4gPiA+ID4gcG9pbnRlcnMKPiA+ID4g
+PiA+IAo+ID4gPiA+ID4gYW5kIHRoZW4gdGhlIGxhc3QgbWVzc2FnZSByZXBlYXRzIGV2ZXJ5IH4g
+LjI1IHNlY29uZHMgKCJmb3JldmVyIikuCj4gPiA+ID4gPiBNZW1vcnkgYW5kIENQVSB1c2FnZSBh
+cmUgbm90IGV4Y2Vzc2l2ZSAobW9zdCBpcyBJTyB3YWl0LCBJIGFzc3VtZSkuCj4gPiA+ID4gPiAK
+PiA+ID4gPiA+IFdoYXQgSSBoYXZlIHRyaWVkOgo+ID4gPiA+ID4gKiBMaW51eCA0IChtdWx0aXBs
+ZSBtaW5vciB2ZXJzaW9ucywgZG9uJ3QgcmVtZW1iZXIgd2hpY2ggZXhhY3RseSkKPiA+ID4gPiA+
+ICogTGludXggNS4xMAo+ID4gPiA+ID4gKiBMaW51eCA1LjE1Cj4gPiA+ID4gPiAqIGJ0cmZzLXBy
+b2dzIHY1LjE1Cj4gPiA+ID4gPiAqIHJlbW92ZSBzdWJ2b2x1ZXMgKGJlZm9yZTogfiAyMDAsIGFm
+dGVyOiB+IDkwKQo+ID4gPiA+ID4gKiBmcmVlIHNwYWNlIGNhY2hlIHYxLCB2Miwgbm9uZQo+ID4g
+PiA+ID4gKiByZWJvb3QsIHJlc3RhcnQgcmVtb3ZhbC9iYWxhbmNlIChtdWx0aXBsZSB0aW1lcykK
+PiA+ID4gCj4gPiA+IERvZXMgaXQgYWx3YXlzIGhhcHBlbiBvbiB0aGUgc2FtZSBibG9jayBncm91
+cD/CoCBJZiBzbywgdGhhdCBwb2ludHMgdG8KPiA+ID4gc29tZXRoaW5nIGx1cmtpbmcgaW4geW91
+ciBtZXRhZGF0YS7CoCBJZiBhIHJlYm9vdCBmaXhlcyBpdCBmb3Igb25lIGJsb2NrCj4gPiA+IGdy
+b3VwIGFuZCB0aGVuIGl0IGdldHMgc3R1Y2sgb24gc29tZSBvdGhlciBibG9jayBncm91cCwgaXQg
+cG9pbnRzIHRvCj4gPiA+IGFuIGlzc3VlIGluIGtlcm5lbCBtZW1vcnkgc3RhdGUuCj4gPiAKPiA+
+IEFsdGhvdWdoIEkgaGF2ZW4ndCBwYWlkIGF0dGVudGlvbiB0byB0aGUgYmxvY2sgZ3JvdXAgbnVt
+YmVyIGluIHRoZSBwYXN0LAo+ID4gYW5vdGhlciBydW4gb2YgYGBidHJmcyBkZXYgZGVsYGAganVz
+dCBub3cgZ2F2ZSB0aGUgc2FtZSBsYXN0IGJsb2NrIGdyb3VwCj4gPiBudW1iZXIgKDExMDkyMDQ2
+NjQzMjApIGJlZm9yZSwgcHJlc3VtYWJseSwgbG9vcGluZy4KPiA+IAo+ID4gPiBXaGF0IGRvIHlv
+dSBnZXQgZnJvbSAnYnRyZnMgY2hlY2sgLS1yZWFkb25seSc/Cj4gPiAKPiA+ICQgYnRyZnMgY2hl
+Y2sgLS1yZWFkb25seSAtLW1vZGUgbG93bWVtIC9kZXYvZGlzay9ieS1sYWJlbC9wb29sXzE2LTAz
+Cj4gPiAKPiA+IFsxLzddIGNoZWNraW5nIHJvb3QgaXRlbXMKPiA+IE9wZW5pbmcgZmlsZXN5c3Rl
+bSB0byBjaGVjay4uLgo+ID4gd2FybmluZywgZGV2aWNlIDYgaXMgbWlzc2luZwo+ID4gQ2hlY2tp
+bmcgZmlsZXN5c3RlbSBvbiAvZGV2L2Rpc2svYnktbGFiZWwvcG9vbF8xNi0wMwo+ID4gVVVJRDog
+NTkzMDFmZWEtNDM0YS00YzQzLWJiNDUtMDhmY2ZlOGNlMTEzCj4gPiBbMi83XSBjaGVja2luZyBl
+eHRlbnRzCj4gPiBFUlJPUjogZXh0ZW50WzExMDk1ODQwNDQwMzIsIDgxOTJdIHJlZmVyZW5jZXIg
+Y291bnQgbWlzbWF0Y2ggKHJvb3Q6IDI3NiwKPiA+IG93bmVyOiAxMTU0MjQ4LCBvZmZzZXQ6IDEw
+MDQwMTE1Mikgd2FudGVkOiAxLCBoYXZlOiAwCj4gPiBFUlJPUjogZXJyb3JzIGZvdW5kIGluIGV4
+dGVudCBhbGxvY2F0aW9uIHRyZWUgb3IgY2h1bmsgYWxsb2NhdGlvbgo+ID4gWzMvN10gY2hlY2tp
+bmcgZnJlZSBzcGFjZSB0cmVlCj4gPiBbNC83XSBjaGVja2luZyBmcyByb290cwo+ID4gWzUvN10g
+Y2hlY2tpbmcgb25seSBjc3VtcyBpdGVtcyAod2l0aG91dCB2ZXJpZnlpbmcgZGF0YSkKPiA+IFs2
+LzddIGNoZWNraW5nIHJvb3QgcmVmcyBkb25lIHdpdGggZnMgcm9vdHMgaW4gbG93bWVtIG1vZGUs
+IHNraXBwaW5nCj4gPiBbNy83XSBjaGVja2luZyBxdW90YSBncm91cHMgc2tpcHBlZCAobm90IGVu
+YWJsZWQgb24gdGhpcyBGUykKPiA+IGZvdW5kIDQyNTIzMTMyMDY3ODQgYnl0ZXMgdXNlZCwgZXJy
+b3IocykgZm91bmQKPiA+IHRvdGFsIGNzdW0gYnl0ZXM6IDQxMjgxODMzNjAKPiA+IHRvdGFsIHRy
+ZWUgYnl0ZXM6IDI1MDUzMTg0MDAwCj4gPiB0b3RhbCBmcyB0cmVlIGJ5dGVzOiAxNjQxNTAxNDkx
+Mgo+ID4gdG90YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDM2NjI1OTQwNDgKPiA+IGJ0cmVlIHNwYWNl
+IHdhc3RlIGJ5dGVzOiA0OTQ5MjQxMjc4Cj4gPiBmaWxlIGRhdGEgYmxvY2tzIGFsbG9jYXRlZDog
+ODAyNTEyODI0MzIwMAo+ID4gwqByZWZlcmVuY2VkIDc1NTIyMTEyMDYxNDQKPiAKPiBPSyB0aGF0
+J3Mgbm90IHRvbyBiYWQsIGp1c3Qgb25lIGJhZCByZWZlcmVuY2UuCj4gCj4gPiBTbyB3aGF0IGNh
+biBiZSBkb25lPyBgYGNoZWNrIC0tcmVwYWlyYGA/IE9yIHRvbyBkYW5nZXJvdXM/IDopCj4gCj4g
+SWYgeW91IGhhdmUgYmFja3VwcyBhcmUgeW91IGFyZSBwcmVwYXJlZCB0byByZXN0b3JlIHRoZW0s
+IHlvdSBjYW4gdHJ5Cj4gY2hlY2sgLS1yZXBhaXIuCgpUbyByZXBvcnQgYmFjaywgYWxsIEkgZ290
+IGZyb20gYGBjaGVjayAtLXJlcGFpcmBgIHdhcyBhIHNlZ2ZhdWx0IChwcm9ncwp2NS4xNS4xLCBM
+aW51eCA1LjE1LjApOgoK4oCmClsyLzddIGNoZWNraW5nIGV4dGVudHMKRVJST1I6IGV4dGVudFsx
+MTA5NTg0MDQ0MDMyLCA4MTkyXSByZWZlcmVuY2VyIGNvdW50IG1pc21hdGNoIChyb290OiAyNzYs
+Cm93bmVyOiAxMTU0MjQ4LCBvZmZzZXQ6IDEwMDQwMTE1Mikgd2FudGVkOiAxLCBoYXZlOiAwCnpz
+aDogc2VnbWVudGF0aW9uIGZhdWx0ICBidHJmcyBjaGVjayAtLXJlcGFpciAtLW1vZGUgbG93bWVt
+IC9kZXYvZGlzay9ieS0KbGFiZWwv4oCmCgpBbnkgb3Blbiwga25vd24sIGFuZCBwb3NzaWJseSBy
+ZWxhdGVkIGJ1Z3MgSSBjYW4gd2FpdCBmb3IgdG8gYmUgZml4ZWQgdG8gdHJ5CmFnYWluPyA6KQoK
+Q2hlZXJzLAoKTHVrYXMKCj4gPiBUaGFua3MgZm9yIHlvdXIgaGVscAo+ID4gCj4gPiBMdWthcwo+
+ID4gCj4gPiA+ID4gPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PQo+ID4gPiA+ID4gPT0KPiA+ID4gPiA+IAo+ID4gPiA+
+ID4gZmlsZXN5c3RlbSBzaG93Cj4gPiA+ID4gPiA9PT09PT09PT09PT09PT0KPiA+ID4gPiA+IAo+
+ID4gPiA+ID4gTGFiZWw6ICdwb29sXzE2LTAzJ8KgIHV1aWQ6IDU5MzAxZmVhLTQzNGEteHh4eC1i
+YjQ1LTA4ZmNmZThjZTExMwo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqAgVG90YWwgZGV2aWNlcyA4
+IEZTIGJ5dGVzIHVzZWQgMy44NFRpQgo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqAgZGV2aWTCoMKg
+wqAgMSBzaXplIDkzMS41MUdpQiB1c2VkIDU5Mi4wMEdpQiBwYXRoCj4gPiA+ID4gPiAvZGV2L21h
+cHBlci9XRC0KPiA+ID4gPiA+IFdDQVU0NXh4eHgwMwo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqAg
+ZGV2aWTCoMKgwqAgMyBzaXplIDEuODJUaUIgdXNlZCAxLjM3VGlCIHBhdGggL2Rldi9tYXBwZXIv
+V0QtCj4gPiA+ID4gPiBXQ0FaQUZ4eHh4NzgKPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKgIGRldmlk
+wqDCoMKgIDQgc2l6ZSA5MzEuNTFHaUIgdXNlZCA1OTMuMDBHaUIgcGF0aAo+ID4gPiA+ID4gL2Rl
+di9tYXBwZXIvV0QtCj4gPiA+ID4gPiBXQ0M0Sjd4eHh4U1oKPiA+ID4gPiA+IMKgwqDCoMKgwqDC
+oMKgIGRldmlkwqDCoMKgIDUgc2l6ZSAxLjgyVGlCIHVzZWQgMS40NlRpQiBwYXRoIC9kZXYvbWFw
+cGVyL1dELQo+ID4gPiA+ID4gV0NDNE0yeHh4eFhICj4gPiA+ID4gPiDCoMKgwqDCoMKgwqDCoCBk
+ZXZpZMKgwqDCoCA3IHNpemUgOTMxLjUxR2lCIHVzZWQgNTg0LjAwR2lCIHBhdGgKPiA+ID4gPiA+
+IC9kZXYvbWFwcGVyL1MxeHh4eEozCj4gPiA+ID4gPiDCoMKgwqDCoMKgwqDCoCBkZXZpZMKgwqDC
+oCA5IHNpemUgMi43M1RpQiB1c2VkIDIuMjhUaUIgcGF0aCAvZGV2L21hcHBlci9XRC0KPiA+ID4g
+PiA+IFdDQzROM3h4eHgxNwo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqAgZGV2aWTCoMKgIDEwIHNp
+emUgMy42NFRpQiB1c2VkIDEuMDNUaUIgcGF0aCAvZGV2L21hcHBlci9XRC0KPiA+ID4gPiA+IFdD
+QzdLMnh4eHhOUwo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqAgKioqIFNvbWUgZGV2aWNlcyBtaXNz
+aW5nCj4gPiA+ID4gPiAKPiA+ID4gPiA+IHN1YnZvbHVtZXMKPiA+ID4gPiA+ID09PT09PT09PT0K
+PiA+ID4gPiA+IAo+ID4gPiA+ID4gfiA5MCwgb2Ygd2hpY2ggfiA2MCBhcmUgcmVhZC1vbmx5IHNu
+YXBzaG90cyBvZiB0aGUgb3RoZXIgfiAzMAo+ID4gPiA+ID4gCj4gPiA+ID4gPiBmaWxlc3lzdGVt
+IHVzYWdlCj4gPiA+ID4gPiA9PT09PT09PT09PT09PT09Cj4gPiA+ID4gPiAKPiA+ID4gPiA+IE92
+ZXJhbGw6Cj4gPiA+ID4gPiDCoMKgwqAgRGV2aWNlIHNpemU6wqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCAxMi43NFRpQgo+ID4gPiA+ID4gwqDCoMKgIERldmljZSBhbGxvY2F0ZWQ6
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgOC4zNlRpQgo+ID4gPiA+ID4gwqDCoMKgIERldmlj
+ZSB1bmFsbG9jYXRlZDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDQuMzhUaUIKPiA+ID4gPiA+IMKg
+wqDCoCBEZXZpY2UgbWlzc2luZzrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDAu
+MDBCCj4gPiA+ID4gPiDCoMKgwqAgVXNlZDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCA3LjY5VGlCCj4gPiA+ID4gPiDCoMKgwqAgRnJlZSAoZXN0aW1h
+dGVkKTrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAyLjUwVGlCwqDCoMKgwqDCoCAobWluOiAy
+LjUwVGlCKQo+ID4gPiA+ID4gwqDCoMKgIEZyZWUgKHN0YXRmcywgZGYpOsKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAxLjQ2VGlCCj4gPiA+ID4gPiDCoMKgwqAgRGF0YSByYXRpbzrCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAyLjAwCj4gPiA+ID4gPiDCoMKgwqAg
+TWV0YWRhdGEgcmF0aW86wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDIuMDAK
+PiA+ID4gPiA+IMKgwqDCoCBHbG9iYWwgcmVzZXJ2ZTrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCA1MTIuMDBNaULCoMKgwqDCoMKgICh1c2VkOiA0OC4wMEtpQikKPiA+ID4gPiA+IMKgwqDCoCBN
+dWx0aXBsZSBwcm9maWxlczrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG5vCj4g
+PiA+ID4gPiAKPiA+ID4gPiA+IERhdGEsUkFJRDE6IFNpemU6NC4xNFRpQiwgVXNlZDozLjgyVGlC
+ICg5Mi4zMyUpCj4gPiA+ID4gPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQVU0NXh4eHgwM8KgwqAg
+NTg0LjAwR2lCCj4gPiA+ID4gPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQVpBRnh4eHg3OMKgwqDC
+oMKgIDEuMzVUaUIKPiA+ID4gPiA+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0NDNEo3eHh4eFNawqDC
+oCA1ODguMDBHaUIKPiA+ID4gPiA+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0NDNE0yeHh4eFhIwqDC
+oMKgwqAgMS40NFRpQgo+ID4gPiA+ID4gwqDCoCBtaXNzaW5nwqDCoMKgwqDCoMKgIDUxMC4wMEdp
+Qgo+ID4gPiA+ID4gwqDCoCAvZGV2L21hcHBlci9TMXh4eHhKM8KgIDU3OS4wMEdpQgo+ID4gPiA+
+ID4gwqDCoCAvZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4MTfCoMKgwqDCoCAyLjI2VGlCCj4gPiA+
+ID4gPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQzdLMnh4eHhOU8KgwqDCoMKgIDEuMDFUaUIKPiA+
+ID4gPiA+IAo+ID4gPiA+ID4gTWV0YWRhdGEsUkFJRDE6IFNpemU6NDEuMDBHaUIsIFVzZWQ6MjMu
+MTRHaUIgKDU2LjQ0JSkKPiA+ID4gPiA+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0NBVTQ1eHh4eDAz
+wqDCoMKgwqAgOC4wMEdpQgo+ID4gPiA+ID4gwqDCoCAvZGV2L21hcHBlci9XRC1XQ0FaQUZ4eHh4
+NzjCoMKgwqAgMTcuMDBHaUIKPiA+ID4gPiA+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0NDNEo3eHh4
+eFNawqDCoMKgwqAgNS4wMEdpQgo+ID4gPiA+ID4gwqDCoCAvZGV2L21hcHBlci9XRC1XQ0M0TTJ4
+eHh4WEjCoMKgwqAgMTMuMDBHaUIKPiA+ID4gPiA+IMKgwqAgbWlzc2luZ8KgwqDCoMKgwqDCoMKg
+wqAgMy4wMEdpQgo+ID4gPiA+ID4gwqDCoCAvZGV2L21hcHBlci9TMXh4eHhKM8KgwqDCoCA1LjAw
+R2lCCj4gPiA+ID4gPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQzROM3h4eHgxN8KgwqDCoCAxNi4w
+MEdpQgo+ID4gPiA+ID4gwqDCoCAvZGV2L21hcHBlci9XRC1XQ0M3SzJ4eHh4TlPCoMKgwqAgMTUu
+MDBHaUIKPiA+ID4gPiA+IAo+ID4gPiA+ID4gU3lzdGVtLFJBSUQxOiBTaXplOjMyLjAwTWlCLCBV
+c2VkOjg0OC4wMEtpQiAoMi41OSUpCj4gPiA+ID4gPiDCoMKgIG1pc3NpbmfCoMKgwqDCoMKgwqDC
+oCAzMi4wME1pQgo+ID4gPiA+ID4gwqDCoCAvZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4MTfCoMKg
+wqAgMzIuMDBNaUIKPiA+ID4gPiA+IAo+ID4gPiA+ID4gVW5hbGxvY2F0ZWQ6Cj4gPiA+ID4gPiDC
+oMKgIC9kZXYvbWFwcGVyL1dELVdDQVU0NXh4eHgwM8KgwqAgMzM5LjUxR2lCCj4gPiA+ID4gPiDC
+oMKgIC9kZXYvbWFwcGVyL1dELVdDQVpBRnh4eHg3OMKgwqAgNDYxLjAxR2lCCj4gPiA+ID4gPiDC
+oMKgIC9kZXYvbWFwcGVyL1dELVdDQzRKN3h4eHhTWsKgwqAgMzM4LjUxR2lCCj4gPiA+ID4gPiDC
+oMKgIC9kZXYvbWFwcGVyL1dELVdDQzRNMnh4eHhYSMKgwqAgMzczLjAxR2lCCj4gPiA+ID4gPiDC
+oMKgIG1pc3NpbmfCoMKgwqDCoMKgIC01MTMuMDNHaUIKPiA+ID4gPiA+IMKgwqAgL2Rldi9tYXBw
+ZXIvUzF4eHh4SjPCoCAzNDcuNTFHaUIKPiA+ID4gPiA+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0ND
+NE4zeHh4eDE3wqDCoCA0NjAuNDdHaUIKPiA+ID4gPiA+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0ND
+N0syeHh4eE5TwqDCoMKgwqAgMi42MVRpQgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBkdW1wLXN1cGVy
+Cj4gPiA+ID4gPiA9PT09PT09PT09Cj4gPiA+ID4gPiAKPiA+ID4gPiA+IHN1cGVyYmxvY2s6IGJ5
+dGVucj02NTUzNiwgZGV2aWNlPS9kZXYvbWFwcGVyL1dELVdDQVU0NXh4eHgwMwo+ID4gPiA+ID4g
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+Cj4gPiA+ID4gPiBjc3VtX3R5cGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDAgKGNyYzMy
+YykKPiA+ID4gPiA+IGNzdW1fc2l6ZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNAo+ID4g
+PiA+ID4gY3N1bcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDB4NTFiZWIw
+NjggW21hdGNoXQo+ID4gPiA+ID4gYnl0ZW5ywqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCA2NTUzNgo+ID4gPiA+ID4gZmxhZ3PCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgMHgxCj4gPiA+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgICggV1JJVFRFTiApCj4gPiA+ID4gPiBtYWdpY8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBfQkhSZlNfTSBbbWF0Y2hdCj4gPiA+ID4gPiBmc2lkwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNTkzMDFmZWEtNDM0YS14eHh4LWJiNDUtMDhm
+Y2ZlOGNlMTEzCj4gPiA+ID4gPiBtZXRhZGF0YV91dWlkwqDCoMKgwqDCoMKgwqDCoMKgwqAgNTkz
+MDFmZWEtNDM0YS14eHh4LWJiNDUtMDhmY2ZlOGNlMTEzCj4gPiA+ID4gPiBsYWJlbMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwb29sXzE2LTAzCj4gPiA+ID4gPiBnZW5lcmF0
+aW9uwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMTEzNTE5NzU1Cj4gPiA+ID4gPiByb290wqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMTU2MDI0MTQ3OTY4MDAKPiA+ID4g
+PiA+IHN5c19hcnJheV9zaXplwqDCoMKgwqDCoMKgwqDCoMKgIDEyOQo+ID4gPiA+ID4gY2h1bmtf
+cm9vdF9nZW5lcmF0aW9uwqDCoCA2MzM5NDI5OQo+ID4gPiA+ID4gcm9vdF9sZXZlbMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIDEKPiA+ID4gPiA+IGNodW5rX3Jvb3TCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAxOTIxNjgyMDUwMjUyOAo+ID4gPiA+ID4gY2h1bmtfcm9vdF9sZXZlbMKgwqDC
+oMKgwqDCoMKgIDEKPiA+ID4gPiA+IGxvZ19yb290wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIDAKPiA+ID4gPiA+IGxvZ19yb290X3RyYW5zaWTCoMKgwqDCoMKgwqDCoCAwCj4gPiA+ID4g
+PiBsb2dfcm9vdF9sZXZlbMKgwqDCoMKgwqDCoMKgwqDCoCAwCj4gPiA+ID4gPiB0b3RhbF9ieXRl
+c8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNjAwMzEzNjg2NDI1Ngo+ID4gPiA+ID4gYnl0ZXNf
+dXNlZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDQyMjcxMjQxNDIwODAKPiA+ID4gPiA+IHNl
+Y3RvcnNpemXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA0MDk2Cj4gPiA+ID4gPiBub2Rlc2l6
+ZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNjM4NAo+ID4gPiA+ID4gbGVhZnNpemUg
+KGRlcHJlY2F0ZWQpwqDCoCAxNjM4NAo+ID4gPiA+ID4gc3RyaXBlc2l6ZcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIDQwOTYKPiA+ID4gPiA+IHJvb3RfZGlywqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIDYKPiA+ID4gPiA+IG51bV9kZXZpY2VzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IDgKPiA+ID4gPiA+IGNvbXBhdF9mbGFnc8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMHgwCj4gPiA+
+ID4gPiBjb21wYXRfcm9fZmxhZ3PCoMKgwqDCoMKgwqDCoMKgIDB4MAo+ID4gPiA+ID4gaW5jb21w
+YXRfZmxhZ3PCoMKgwqDCoMKgwqDCoMKgwqAgMHgzNzEKPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKCBNSVhFRF9CQUNLUkVGIHwKPiA+ID4g
+PiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIENP
+TVBSRVNTX1pTVEQgfAo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgQklHX01FVEFEQVRBIHwKPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEVYVEVOREVEX0lSRUYgfAo+ID4g
+PiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+U0tJTk5ZX01FVEFEQVRBIHwKPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIE5PX0hPTEVTICkKPiA+ID4gPiA+IGNhY2hlX2dlbmVyYXRp
+b27CoMKgwqDCoMKgwqDCoCAyOTc1ODY2Cj4gPiA+ID4gPiB1dWlkX3RyZWVfZ2VuZXJhdGlvbsKg
+wqDCoCAxMTM1MTk3NTUKPiA+ID4gPiA+IGRldl9pdGVtLnV1aWTCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBhOWIyZTRlYS00MDRjLXh4eHgtYTQ1MC1kYzg0YjA5NTZjZTEKPiA+ID4gPiA+IGRldl9pdGVt
+LmZzaWTCoMKgwqDCoMKgwqDCoMKgwqDCoCA1OTMwMWZlYS00MzRhLXh4eHgtYmI0NS0wOGZjZmU4
+Y2UxMTMgW21hdGNoXQo+ID4gPiA+ID4gZGV2X2l0ZW0udHlwZcKgwqDCoMKgwqDCoMKgwqDCoMKg
+IDAKPiA+ID4gPiA+IGRldl9pdGVtLnRvdGFsX2J5dGVzwqDCoMKgIDEwMDAyMDE3NDAyODgKPiA+
+ID4gPiA+IGRldl9pdGVtLmJ5dGVzX3VzZWTCoMKgwqDCoCA2MzU2NTUxNTk4MDgKPiA+ID4gPiA+
+IGRldl9pdGVtLmlvX2FsaWduwqDCoMKgwqDCoMKgIDQwOTYKPiA+ID4gPiA+IGRldl9pdGVtLmlv
+X3dpZHRowqDCoMKgwqDCoMKgIDQwOTYKPiA+ID4gPiA+IGRldl9pdGVtLnNlY3Rvcl9zaXplwqDC
+oMKgIDQwOTYKPiA+ID4gPiA+IGRldl9pdGVtLmRldmlkwqDCoMKgwqDCoMKgwqDCoMKgIDEKPiA+
+ID4gPiA+IGRldl9pdGVtLmRldl9ncm91cMKgwqDCoMKgwqAgMAo+ID4gPiA+ID4gZGV2X2l0ZW0u
+c2Vla19zcGVlZMKgwqDCoMKgIDAKPiA+ID4gPiA+IGRldl9pdGVtLmJhbmR3aWR0aMKgwqDCoMKg
+wqAgMAo+ID4gPiA+ID4gZGV2X2l0ZW0uZ2VuZXJhdGlvbsKgwqDCoMKgIDAKPiA+ID4gPiA+IAo+
+ID4gPiA+ID4gZGV2aWNlIHN0YXRzCj4gPiA+ID4gPiA9PT09PT09PT09PT0KPiA+ID4gPiA+IAo+
+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dELVdDQVU0NXh4eHgwM10ud3JpdGVfaW9fZXJyc8KgwqDC
+oCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvV0QtV0NBVTQ1eHh4eDAzXS5yZWFkX2lvX2VycnPC
+oMKgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvV0QtV0NBVTQ1eHh4eDAzXS5mbHVzaF9p
+b19lcnJzwqDCoMKgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0FVNDV4eHh4MDNdLmNv
+cnJ1cHRpb25fZXJyc8KgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0FVNDV4eHh4MDNd
+LmdlbmVyYXRpb25fZXJyc8KgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0FaQUZ4eHh4
+NzhdLndyaXRlX2lvX2VycnPCoMKgwqAgMAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dELVdDQVpB
+Rnh4eHg3OF0ucmVhZF9pb19lcnJzwqDCoMKgwqAgMAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dE
+LVdDQVpBRnh4eHg3OF0uZmx1c2hfaW9fZXJyc8KgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBw
+ZXIvV0QtV0NBWkFGeHh4eDc4XS5jb3JydXB0aW9uX2VycnPCoCAwCj4gPiA+ID4gPiBbL2Rldi9t
+YXBwZXIvV0QtV0NBWkFGeHh4eDc4XS5nZW5lcmF0aW9uX2VycnPCoCAwCj4gPiA+ID4gPiBbL2Rl
+di9tYXBwZXIvV0QtV0NDNEo3eHh4eFNaXS53cml0ZV9pb19lcnJzwqDCoMKgIDAKPiA+ID4gPiA+
+IFsvZGV2L21hcHBlci9XRC1XQ0M0Sjd4eHh4U1pdLnJlYWRfaW9fZXJyc8KgwqDCoMKgIDEKPiA+
+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0M0Sjd4eHh4U1pdLmZsdXNoX2lvX2VycnPCoMKgwqAg
+MAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dELVdDQzRKN3h4eHhTWl0uY29ycnVwdGlvbl9lcnJz
+wqAgMAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dELVdDQzRKN3h4eHhTWl0uZ2VuZXJhdGlvbl9l
+cnJzwqAgMAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dELVdDQzRNMnh4eHhYSF0ud3JpdGVfaW9f
+ZXJyc8KgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE0yeHh4eFhIXS5yZWFk
+X2lvX2VycnPCoMKgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE0yeHh4eFhI
+XS5mbHVzaF9pb19lcnJzwqDCoMKgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0M0TTJ4
+eHh4WEhdLmNvcnJ1cHRpb25fZXJyc8KgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0M0
+TTJ4eHh4WEhdLmdlbmVyYXRpb25fZXJyc8KgIDAKPiA+ID4gPiA+IFtkZXZpZDo2XS53cml0ZV9p
+b19lcnJzwqDCoMKgIDAKPiA+ID4gPiA+IFtkZXZpZDo2XS5yZWFkX2lvX2VycnPCoMKgwqDCoCAw
+Cj4gPiA+ID4gPiBbZGV2aWQ6Nl0uZmx1c2hfaW9fZXJyc8KgwqDCoCAwCj4gPiA+ID4gPiBbZGV2
+aWQ6Nl0uY29ycnVwdGlvbl9lcnJzwqAgNzIwMTYKPiA+ID4gPiA+IFtkZXZpZDo2XS5nZW5lcmF0
+aW9uX2VycnPCoCAxMDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9TMXh4eHhKM10ud3JpdGVfaW9f
+ZXJyc8KgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvUzF4eHh4SjNdLnJlYWRfaW9fZXJy
+c8KgwqDCoMKgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9TMXh4eHhKM10uZmx1c2hfaW9fZXJy
+c8KgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvUzF4eHh4SjNdLmNvcnJ1cHRpb25fZXJy
+c8KgIDIKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9TMXh4eHhKM10uZ2VuZXJhdGlvbl9lcnJzwqAg
+MAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dELVdDQzROM3h4eHgxN10ud3JpdGVfaW9fZXJyc8Kg
+wqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE4zeHh4eDE3XS5yZWFkX2lvX2Vy
+cnPCoMKgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE4zeHh4eDE3XS5mbHVz
+aF9pb19lcnJzwqDCoMKgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4MTdd
+LmNvcnJ1cHRpb25fZXJyc8KgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4
+MTddLmdlbmVyYXRpb25fZXJyc8KgIDAKPiA+ID4gPiA+IFsvZGV2L21hcHBlci9XRC1XQ0M3SzJ4
+eHh4TlNdLndyaXRlX2lvX2VycnPCoMKgwqAgMAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVyL1dELVdD
+QzdLMnh4eHhOU10ucmVhZF9pb19lcnJzwqDCoMKgwqAgMAo+ID4gPiA+ID4gWy9kZXYvbWFwcGVy
+L1dELVdDQzdLMnh4eHhOU10uZmx1c2hfaW9fZXJyc8KgwqDCoCAwCj4gPiA+ID4gPiBbL2Rldi9t
+YXBwZXIvV0QtV0NDN0syeHh4eE5TXS5jb3JydXB0aW9uX2VycnPCoCAwCj4gPiA+ID4gPiBbL2Rl
+di9tYXBwZXIvV0QtV0NDN0syeHh4eE5TXS5nZW5lcmF0aW9uX2VycnPCoCAwCj4gPiA+ID4gCj4g
+PiAKPiA+IAo+IAo+IAoK
 
-- each time a new block device appears, if this is a valid BTRFS device,
-it is registered in a list
-- at mount time, BTRFS groups all the devices with the same FS-UUID
-- during the mount, it is assumed that if a device has a valid FS-UUID it
-is a valid block devices for the filesystem
 
-BTRFS has the following information to detect "foreign" block devices:
-1) the UUID of each block devices should match the ones stored in DEV_ITEM (in the metadata)
-2) the generation number should match
-3) the "num_devices" field of superblock should match the total number of devices
+--=-actip7QE5H+XuQ86QPnu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-In this case I see two problems:
+-----BEGIN PGP SIGNATURE-----
 
-a) the device was registered but it was unavailable at the time of mounting.
-I don't think that it should be considered valid at all and it should be
-removed from the list of the available devices when the first access for
-check 1) and 2) is tried.
-I know that a device can disappear after, but this case is different: if we
-can perform 1) and 2) we can classify the device as valid/invalid
-If we cannot do (as this case) we can consider it an artifact and discard enterly
+iQIzBAABCgAdFiEEIfDl2cvwrHf6TgsUf2MCUJXpoBgFAmG7pyoACgkQf2MCUJXp
+oBi0Bw/+I+vEfyUbldrAkVYMiue+k70cJmoV/sGpFj6SoQxRdytDvOuO1Nv8YGob
+7aN3HQe1V9Uo/ao4u08UjTxAQlu+8hjMPrpbkob2YtlahvatxmsV556j13+dDxVG
+6fVxm0QxNpzjycb2AsFdXoVSiwuEkSY1ZUaXJOQ6y7iYXkRjOipvd2CYjmGiyu7O
+ozvYeaYrnwchF5LgeZNbQUHBAsNmcNMiQPpLQ5xn9wT5PGaeCJXTFwg5qIo9bbNC
+C9ZdscuvyHtu6AwaJDzgnB8GveR9ae0sPbOo+yB1sHevK1eBoHDGWEw5R0jqTqhZ
+lZXrZQZ73PKoLLXVJTL+i5KG9FGMgTB8IfAWbbJNwXpM1kNaxqwuqQ4jSk3rkAuH
+sM84HjxX6DZnQyHN3nRZXYXcdQ5Bfn3rgw01vUFJ6If3wCQfoNJILk+n5QgUZGgq
+jfK1YbXEZFhGFgyxkQBpYIleNqMQHczphyvpSmulNC1q04wPLfMJQDMKlugWn+Yf
+TTMkdZBhpTCyrVS+N7yzU72DB0HBbUfhHvKck4VipFVKiKpiZITg9gpJC6P/TELg
+LF6yT3I2Uq6vYwoljsnXhvSckfZAoDO6ggFost2QsTtSCxDrYKAv9PsjQvTO9F1o
+7zWMzssdxfwOZFa45tSKk4nCDpKFoCrRAZ2xAlCHndlYG9eCyWI=
+=MwQf
+-----END PGP SIGNATURE-----
 
-b) in any case the check 3) ( 1) and 1) cannot be performed without the device)
-should prevent the filesystem to be mounted if num_devices < number of the
-listed devices (which is different from the available device). Looking at the
-code it seems that only the case of a missing devices is handled
-
-
-
-
-
-
-
-
-
-
-> 
->>
->>
-> <snip>
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+--=-actip7QE5H+XuQ86QPnu--
