@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF4047710C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 12:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A033347710F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 12:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233748AbhLPLsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Dec 2021 06:48:03 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:45636 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbhLPLr7 (ORCPT
+        id S233573AbhLPLsH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Dec 2021 06:48:07 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:58562 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233160AbhLPLsA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Dec 2021 06:47:59 -0500
+        Thu, 16 Dec 2021 06:48:00 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 133A821125;
-        Thu, 16 Dec 2021 11:47:58 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4699D1F3A7
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 11:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1639655278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1639655279; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rsBX4wutKe9mRVpZaMba57dO9duB2x/I0X75JghO1iU=;
-        b=C08JTmmfiLylxazC5rkkJEvd5rJIbML2Ew7Xogc+hAXJIKk0oH3RiHQLdQfm90URxB6L2B
-        K+HQyTAAM71HkAaapVNt7FfcGjCSm8lM6aeNLu6m9msF+Kv2YBXWjalC2owMGpzvZB8Noa
-        qEF84JpykTDbvsVTMwdIoU9XP7oDmh4=
+        bh=EDmUtaxHi/vm+MDBGv5FdKNqDrNaZ+3blk/U4yZ5/zk=;
+        b=VbxXtNKEc5MZSjmBmO2zY05NZbuSlYpGgoh4hzazPg3+CmhkFZOeUVSbthGBhUA5CxG9aH
+        K4bnLNDTR0FmkldDSBtWQGiC3FrZdjh0sCb9zZCwu1qnGxlmvsodtpZqNr60XIVxAGIq0h
+        1JLjkD/uDkxRJ0jk1squtp1LRiDqZ/k=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12BD413B4B;
-        Thu, 16 Dec 2021 11:47:56 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82DFD13B4B
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 11:47:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2KBaMWwnu2FvQwAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 16 Dec 2021 11:47:56 +0000
+        id 6LQ4EW4nu2FvQwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 11:47:58 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: don't start transaction for scrub if the fs is mounted read-only
-Date:   Thu, 16 Dec 2021 19:47:35 +0800
-Message-Id: <20211216114736.69757-2-wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: output more debug message for uncommitted transaction
+Date:   Thu, 16 Dec 2021 19:47:36 +0800
+Message-Id: <20211216114736.69757-3-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211216114736.69757-1-wqu@suse.com>
 References: <20211216114736.69757-1-wqu@suse.com>
@@ -52,86 +52,75 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-The following super simple script would crash btrfs at unmount time, if
-CONFIG_BTRFS_ASSERT() is set.
+The extra info like how many dirty bytes this uncommitted transaction
+has can be very helpful.
 
- mkfs.btrfs -f $dev
- mount $dev $mnt
- xfs_io -f -c "pwrite 0 4k" $mnt/file
- umount $mnt
- mount -r ro $dev $mnt
- btrfs scrub start -Br $mnt
- umount $mnt
-
-This will trigger the following ASSERT() introduced by commit
-0a31daa4b602 ("btrfs: add assertion for empty list of transactions at
-late stage of umount").
-
-That patch is deifnitely not the cause, it just makes enough noise for
-us developer.
-
-[CAUSE]
-We will start transaction for the following call chain during scrub:
-
-  scrub_enumerate_chunks()
-  |- btrfs_inc_block_group_ro()
-     |- btrfs_join_transaction()
-
-However for RO mount, there is no running transaction at all, thus
-btrfs_join_transaction() will start a new transaction.
-
-Furthermore, since it's read-only mount, btrfs_sync_fs() will not call
-btrfs_commit_super() to commit the new but empty transaction.
-
-And lead to the ASSERT() being triggered.
-
-The bug should be there for a long time. Only the new ASSERT() makes it
-noisy enough to be noticed.
-
-[FIX]
-For read-only scrub on read-only mount, there is no need to start a
-transaction nor to allocate new chunks in btrfs_inc_block_group_ro().
-
-Just do extra read-only mount check in btrfs_inc_block_group_ro(), and
-if it's read-only, skip all chunk allocation and go inc_block_group_ro()
-directly.
-
-Since we're here, also add extra debug message at unmount for
-btrfs_fs_info::trans_list.
-Sometimes just knowing that there is no dirty metadata bytes for a
-uncommitted transaction can tell us a lot of things.
-
-Cc: stable@vger.kernel.org # 5.4+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/block-group.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ fs/btrfs/disk-io.c | 43 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 1db24e6d6d90..702219361b12 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2544,6 +2544,19 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
- 	int ret;
- 	bool dirty_bg_running;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 5c598e124c25..25e0248e3c55 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4491,6 +4491,47 @@ int btrfs_commit_super(struct btrfs_fs_info *fs_info)
+ 	return btrfs_commit_transaction(trans);
+ }
  
-+	/*
-+	 * This can only happen when we are doing read-only scrub on read-only
-+	 * mount.
-+	 * In that case we should not start a new transaction on read-only fs.
-+	 * Thus here we skip all chunk allocation.
-+	 */
-+	if (sb_rdonly(fs_info->sb)) {
-+		mutex_lock(&fs_info->ro_block_group_mutex);
-+		ret = inc_block_group_ro(cache, 0);
-+		mutex_unlock(&fs_info->ro_block_group_mutex);
-+		return ret;
-+	}
++static void warn_about_uncommitted_trans(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_transaction *trans;
++	struct btrfs_transaction *tmp;
++	bool found = false;
 +
- 	do {
- 		trans = btrfs_join_transaction(root);
- 		if (IS_ERR(trans))
++	if (likely(list_empty(&fs_info->trans_list)))
++		return;
++
++	/*
++	 * This function is only called at the very end of close_ctree(),
++	 * thus no other running transaction, no need to take trans_lock.
++	 */
++	list_for_each_entry_safe(trans, tmp, &fs_info->trans_list, list) {
++		struct extent_state *cached = NULL;
++		u64 dirty_bytes = 0;
++		u64 cur = 0;
++		u64 found_start;
++		u64 found_end;
++
++		found = true;
++		while (!find_first_extent_bit(&trans->dirty_pages, cur,
++			&found_start, &found_end, EXTENT_DIRTY, &cached)) {
++			dirty_bytes += found_end + 1 - found_start;
++			cur = found_end + 1;
++		}
++		btrfs_warn(fs_info,
++	"transaction %llu (with %llu dirty metadata bytes) is not committed",
++			   trans->transid, dirty_bytes);
++		btrfs_cleanup_one_transaction(trans, fs_info);
++
++		if (trans == fs_info->running_transaction)
++			fs_info->running_transaction = NULL;
++		list_del_init(&trans->list);
++
++		btrfs_put_transaction(trans);
++		trace_btrfs_transaction_commit(fs_info);
++	}
++	ASSERT(!found);
++}
++
+ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ {
+ 	int ret;
+@@ -4599,7 +4640,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	btrfs_stop_all_workers(fs_info);
+ 
+ 	/* We shouldn't have any transaction open at this point */
+-	ASSERT(list_empty(&fs_info->trans_list));
++	warn_about_uncommitted_trans(fs_info);
+ 
+ 	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
+ 	free_root_pointers(fs_info, true);
 -- 
 2.34.1
 
