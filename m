@@ -2,73 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0083F47732B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 14:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EEB477532
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 16:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhLPNb1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Dec 2021 08:31:27 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:53962 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbhLPNb1 (ORCPT
+        id S238193AbhLPPAk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Dec 2021 10:00:40 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:49910 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238195AbhLPPAh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Dec 2021 08:31:27 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E0C93212B6;
-        Thu, 16 Dec 2021 13:31:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1639661485;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kgZ85dUi7/e3j0iGpbKX5ecZJklujz7goJ8ufzL4EwQ=;
-        b=g6l/e8OathTxSfK/o4gjPdcbPGVSDKTfXEAaTBJr2BOCeuMG0VySYJruKvDRpfWWcr2lcf
-        vBsENDzbjCNZtKkdnHlH/jckuI6TiAJCRLYdOz/aC2aFmODVdtM8RepdEc3JiFfyOZPck2
-        YAeeJ0tEFcAGgPHvL7F2WafHC9ZPsJM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1639661485;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kgZ85dUi7/e3j0iGpbKX5ecZJklujz7goJ8ufzL4EwQ=;
-        b=MtkaLr33AdSjZbT4xyhb6ghvUDwSAqefFvCAtkk6+u1k0V9L9GGMdSsFrsWyKlXXIyqSvN
-        sc7cpjG6XlOKf3Bw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id B6EBFA3B81;
-        Thu, 16 Dec 2021 13:31:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6795BDA781; Thu, 16 Dec 2021 14:31:06 +0100 (CET)
-Date:   Thu, 16 Dec 2021 14:31:06 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] btrfs: Fix kernel-doc formatting issues
-Message-ID: <20211216133106.GE28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Yang Li <yang.lee@linux.alibaba.com>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-References: <20211216070813.28183-1-yang.lee@linux.alibaba.com>
+        Thu, 16 Dec 2021 10:00:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFBC861E43
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 15:00:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1079C36AE0
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 15:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639666836;
+        bh=BK63VNenmu0BvmH9lBRMDIxFSDTqV5BR0vAOlfNwkjI=;
+        h=From:To:Subject:Date:From;
+        b=dZ3q4L4pkqEVLvjMwH7NYcd3AphfUMC2MSs6aWwfxJb/Xyjw4evcNUTdKeAEkivtI
+         TSSl7w6hip0kbTyIRLtiPadmj+LZ31cwQ9gu3MbxwprSbwIUppzJHWr+CdoNMekUGF
+         TnRYLGqCPZ6NTJjxrRy0Wvlqn4/Fs2GuAFaUb2bNsdICXGQ4jwN6wH54770SMDFKMB
+         UshRy+9m5L1eiAheo22Id38/5n8oFLe9eyZQclj2azGltVj+of3rDfejNozaqlDwKe
+         UAUFCq33TjYn/0KdWd9299V0WP9wpqK25+66Hb9mfj83CThVtG9Wz0lS7PZBGjAAac
+         V/urEqQUAY0Pg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: respect the max size in the header when activating swap file
+Date:   Thu, 16 Dec 2021 15:00:32 +0000
+Message-Id: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211216070813.28183-1-yang.lee@linux.alibaba.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 03:08:13PM +0800, Yang Li wrote:
-> Add function names to the kernel-doc of some functions and upgrade
-> descriptions of some parameters in it.
-> 
-> The warnings were found by running scripts/kernel-doc, which is
-> caused by using 'make W=1'.
+From: Filipe Manana <fdmanana@suse.com>
 
-Thanks, we care only about the argument list that the kdoc format and
-script can verify, the rest is not really useful for internal functions
-and makes it less pleasant to read.  The script will report that though
-but we won't fix it, rather would like to see the script updated to
-skip that.
+If we extended the size of a swapfile after its header was created (by the
+mkswap utility) and then try to activate it, we will map the entire file
+when activating the swap file, instead of limiting to the max size defined
+in the swap file's header.
+
+Currently test case generic/643 from fstests fails because we do not
+respect that size limit defined in the swap file's header.
+
+So fix this by not mapping file ranges beyond the max size defined in the
+swap header.
+
+This is the same type of bug that iomap used to have, and was fixed in
+commit 36ca7943ac18ae ("mm/swap: consider max pages in
+iomap_swapfile_add_extent").
+
+Fixes: ed46ff3d423780 ("Btrfs: support swap files")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/inode.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 97fd33d599eb..b17d14ec4d46 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -10263,9 +10263,19 @@ static int btrfs_add_swap_extent(struct swap_info_struct *sis,
+ 				 struct btrfs_swap_info *bsi)
+ {
+ 	unsigned long nr_pages;
++	unsigned long max_pages;
+ 	u64 first_ppage, first_ppage_reported, next_ppage;
+ 	int ret;
+ 
++	/*
++	 * Our swapfile may have had its size extended after the swap header was
++	 * written. In that case activating the swapfile should not go beyond
++	 * the max size set in the swap header.
++	 */
++	if (bsi->nr_pages >= sis->max)
++		return 0;
++
++	max_pages = sis->max - bsi->nr_pages;
+ 	first_ppage = ALIGN(bsi->block_start, PAGE_SIZE) >> PAGE_SHIFT;
+ 	next_ppage = ALIGN_DOWN(bsi->block_start + bsi->block_len,
+ 				PAGE_SIZE) >> PAGE_SHIFT;
+@@ -10273,6 +10283,7 @@ static int btrfs_add_swap_extent(struct swap_info_struct *sis,
+ 	if (first_ppage >= next_ppage)
+ 		return 0;
+ 	nr_pages = next_ppage - first_ppage;
++	nr_pages = min(nr_pages, max_pages);
+ 
+ 	first_ppage_reported = first_ppage;
+ 	if (bsi->start == 0)
+-- 
+2.33.0
+
