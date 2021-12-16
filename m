@@ -2,60 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD7D476E72
+	by mail.lfdr.de (Postfix) with ESMTP id 542E2476E73
 	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 11:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhLPKAI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Dec 2021 05:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235571AbhLPKAH (ORCPT
+        id S235601AbhLPKAP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Dec 2021 05:00:15 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:49020 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235590AbhLPKAO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Dec 2021 05:00:07 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DEAC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 02:00:07 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id gj24so6140602pjb.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Dec 2021 02:00:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=yPuu9Y1nfoSf7BxZ7nQkv/LcBv5jfdj2X5wxcA+zFb0=;
-        b=nqej9SYs2yJnodQSkqWt8OIH0WavnK71JajiimlFqKfqCcmoDLcAFXFtgqrFefxo9K
-         nGC9RvfoPoYBctVDOjp9VnQTaovmGhVShNF4TEI+UNna5QkxSQjmPNlK4TtIG9zLTcli
-         A8SsiRN0VhoG374wQguFRVBSyaqRddsocK6FXeldvBzN/dy4448KQ8KxngXhAOO2VzFp
-         WkNbjBadG/YG4GT4jUEG6JOeW4pZafvOJxtAdxtGvhlH/Jof/LaqVF8RZv6Yq906jYXE
-         urjMCid77IUT+IoJqVdMLzyj6i10bFjtHVZ9pwDYpFgZfFuRqIPEWBjwNGwXgnPz0iHb
-         qP+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=yPuu9Y1nfoSf7BxZ7nQkv/LcBv5jfdj2X5wxcA+zFb0=;
-        b=gkVhARK1NE6DV5VmIFyuJOXwaGPbCZgZ0c6OG6UxGWYHVGIq7892nNNzqst3fNvtmx
-         mNdpsLbtw1kWTEcexNyEFikZQ0DSRZ6ZUiM4bSBoYSHlDvw8FCZN7/9Rk2BVw7imYsCL
-         Xc9l4OZWmtAZfSf6RY7M8qLP3u9zdMnbZsc221wzrRpYiLXf/2RNM94R1ZWtXuDCmNiW
-         PnV+oRViL6aFk/tOz9X6rOhIUja97WMgB+09L9PbTEwiQcrZoDnP5BBZgc8KShtRIsdH
-         0JbhYGAMg0t/XqikuQsl4kKeSxVf6eC4ve83cbzbmLmUfIRChNh4EpXGxEkAonteyezu
-         WNmw==
-X-Gm-Message-State: AOAM533KyOyBqLieykJcspBRnhWMOFNBxRYW8v5NvQLfC6BGrncPNLr0
-        ZtTZl/S9C9jbPA8fbo92Q81sJ/kz2P+9XUjjr3A=
-X-Google-Smtp-Source: ABdhPJzbh53pB9VZnWo3qs4ip1ga3IZJ2MhSlAWnGZqLwon4ZbhybnD8PAclXdDEUUdTuK9Shjhe4Qs+EKW2a/vtCyc=
-X-Received: by 2002:a17:90a:3d42:: with SMTP id o2mr5143712pjf.150.1639648806800;
- Thu, 16 Dec 2021 02:00:06 -0800 (PST)
+        Thu, 16 Dec 2021 05:00:14 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BCA781F3A5;
+        Thu, 16 Dec 2021 10:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1639648813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=0OQ3LOUrKUgvSOLb4eqNUSkeGBeOw9X6fkVXId+hYpY=;
+        b=PHEIgzBXCfOvACgrvwLU2Rl1G37y18jUapFa4ppwckWBiwBzgbvKG1hYSYpzrVK3eqREXe
+        e3safZVBgxTVsIQvveVY2n2ILkbQ40BymYWXs8lbeB2PjCZOl7PBz/Mv/TLq2U5QzFAEiH
+        mutUKF5NzA2H5qAvo8TCDfd3Mro2bGc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8934613C32;
+        Thu, 16 Dec 2021 10:00:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0IfPHi0Ou2FkFAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 16 Dec 2021 10:00:13 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs-progs: remove redundant fs uuid validation from make_btrf
+Date:   Thu, 16 Dec 2021 12:00:12 +0200
+Message-Id: <20211216100012.911835-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Sender: koaranurudeen70@gmail.com
-Received: by 2002:a17:90b:fd7:0:0:0:0 with HTTP; Thu, 16 Dec 2021 02:00:06
- -0800 (PST)
-From:   Laura Adams <lauraadams217@gmail.com>
-Date:   Thu, 16 Dec 2021 10:00:06 +0000
-X-Google-Sender-Auth: hPUPT53JYywvD-jcGtYbrVPbSik
-Message-ID: <CAGxMOQW5AOc-UbxsoJYRim6=TST16SZaoaFuUi_jGYRO5Z2mAg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings , How Are you? can i have the honor to talk to you?
+cfg->fs_uuid is either 0 or set to the value of the -U parameter
+passed to mkfs.btrfs. However the value of the latter is already being
+validated in the main mkfs function. Just remove the duplicated checks
+in make_btrfs as they effectively can never be executed.
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ mkfs/common.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
+
+diff --git a/mkfs/common.c b/mkfs/common.c
+index fec23e64b2b2..72e84bc01712 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -260,18 +260,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	memset(&super, 0, sizeof(super));
+
+ 	num_bytes = (cfg->num_bytes / cfg->sectorsize) * cfg->sectorsize;
+-	if (*cfg->fs_uuid) {
+-		if (uuid_parse(cfg->fs_uuid, super.fsid) != 0) {
+-			error("cannot not parse UUID: %s", cfg->fs_uuid);
+-			ret = -EINVAL;
+-			goto out;
+-		}
+-		if (!test_uuid_unique(cfg->fs_uuid)) {
+-			error("non-unique UUID: %s", cfg->fs_uuid);
+-			ret = -EBUSY;
+-			goto out;
+-		}
+-	} else {
++	if (!*cfg->fs_uuid) {
+ 		uuid_generate(super.fsid);
+ 		uuid_unparse(super.fsid, cfg->fs_uuid);
+ 	}
+--
+2.17.1
+
