@@ -2,119 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFAA476731
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 02:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B528476729
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Dec 2021 01:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhLPBAr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Dec 2021 20:00:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
+        id S229565AbhLPA4h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Dec 2021 19:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhLPBAr (ORCPT
+        with ESMTP id S229441AbhLPA4g (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Dec 2021 20:00:47 -0500
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F63C06173E
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 17:00:47 -0800 (PST)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 06A069B800; Thu, 16 Dec 2021 01:00:43 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1639616444;
-        bh=n3nIOu0EfJnYAzPkkRZ+QRd8UWmnjWTMXIk5YsFMdLQ=;
-        h=From:To:References:Subject:Date:In-Reply-To:From;
-        b=kU6cIoPGK7yd5d+RFUw8vHQtu7EVtyQNaOet1TlGHxVzAkXZ816XujdCdH7uSdZdk
-         1FRl1GSOZg+SLJ4GGr2+wO8qLvggg8qaHFjN26hHISNoK8iqn63eJaE9aybiaDWcgd
-         fh/MBHGTGWa7NZcio6HwOuJ4avg7vQ2tDhE2iOsoScxtstiVmkxCde0eG6WT/4+9bs
-         f6WeOX7ndqQMS4qA2ms40vpLVYjYMpFbzWrKYvBmNXypIugWmTr5CfyCdx6Spd9IB8
-         1Pdsy/i6WIIAqHazIT1wH6zu/9+c1wpOLndue/p+bwULZ1oq529XFOu0Fw4EQyUuYk
-         Wy5FZYMxD51uw==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-6.5 required=12.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 13DF49B800;
-        Thu, 16 Dec 2021 00:55:43 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1639616143;
-        bh=n3nIOu0EfJnYAzPkkRZ+QRd8UWmnjWTMXIk5YsFMdLQ=;
-        h=From:To:References:Subject:Date:In-Reply-To:From;
-        b=v/xG7O2PDrvubhTypxwCEd6R43zL4A47kDHZSpTX5fXp8Jh4zCUnENvk+Npdh/V93
-         MVlBQPmzrU0vzkYe01OR+1KVhHIswQduXtzRnRgBfBFTwyNw4MJtGP4u+KfrMBwF6j
-         XkEDua2ASxhAr+st6p3W9/RHYn/vAdjvjMdI+Wxlok6yxHkXUlNKASL2hCuMxMqJ6V
-         gq9brVNAeFM7qwLIXvd+/2BkG+DySUnoo5HlKVDgTr8BeVgDUHmzyeWxRa1fI8ajOF
-         683w75s5LGJVI7nFbDRUWdevdiH6Rgr7ndxJJMg98Bt6UxDcFp1NoBBQXtd4UO7txt
-         +ejyOwbvkH6ug==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id C77322D63C1;
-        Thu, 16 Dec 2021 00:55:42 +0000 (GMT)
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-To:     Eric Levy <contact@ericlevy.name>, linux-btrfs@vger.kernel.org
-References: <03e34c5431b08996476408303a9881ba667083ed.camel@ericlevy.name>
- <55ddb05b-04ad-172e-bda7-757db37a37b2@cobb.uk.net>
- <0735c9e2d4d6fa246965663a4f0d4f5211a5b8dc.camel@ericlevy.name>
-Subject: Re: receive failing for incremental streams
-Message-ID: <ea6260d5-c383-9079-8a53-2051972b11d3@cobb.uk.net>
-Date:   Thu, 16 Dec 2021 00:55:42 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 15 Dec 2021 19:56:36 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65289C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 16:56:36 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id l25so12562077qkl.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Dec 2021 16:56:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WlbzKA0Dh0y167HEVyQ3OV93bMyva7n73RzMDGybT/8=;
+        b=hqdGAcVyOXR0fU9c1BICtMmlzcIAEgEhc+imIPNBL3fB1Kh/Zw367vXNgrFNh8cFYP
+         Ra9iScbvMnvQGzsQwsLuhJ1bNMWYj7rN7VLgmuz1GDIhhyZcAbfHcjrcrvauqeEVkxQb
+         nJ1rT79v1V0ChYwhYbBgMGXaWuVO0GTbM2GnMpQuRsc3I7ErlF94h/vcX0tG3SEWGkGr
+         IstU30UY1iT5jKWBCFZNUjlX7PIY2g65T0s4hmj4oOr6jgckBcsOFWVK1b/wyCG4lovY
+         hP8HC5NKWC9aVtEqLA8J4/iCkqGXmBIP8qUh0eWqbuWST8brhfjvdk9g+W1Pg4QYNUMc
+         7Zkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WlbzKA0Dh0y167HEVyQ3OV93bMyva7n73RzMDGybT/8=;
+        b=U47qYr0iuhKsAW3jdYlD27OH0PwYPiSNRVsL4KYJokJgMzN//qpY8R45KsuaFlL91b
+         qLIqluhcq1PM1WqpU+SgaKq+hhXsNMk7ExJIIl06hTag4jNafwJ+VFIcwr+OgnlY9O9W
+         erO+FLy3ataLsoV0ETjNPT/6pz+HgpIQ1P7C5JlaZJfr4izqvbqRnepwoQK6OOdy2ESJ
+         HeFzYFabg5QIumbzPRT1c6FWsIAL8Gx2WwOM9afxMcK/DHNoRZl/K/nQaj+n7IoJEJ8j
+         V2Jmn7ZOgmpf8w1vyF6a1NGqJE2oPVKQheSEXLnrqKyyQOlT3DkuNiGf8uJWm4XQN6Nm
+         KYqg==
+X-Gm-Message-State: AOAM533SVqrd64qaQ+lOHfrXuNqwpiuvhLSwJ65XGlXGSSIFXEmKH35J
+        pAGYsrxNiST8zLy1QBc19BrurA==
+X-Google-Smtp-Source: ABdhPJyvWsSmAE7sJr56JGz5ZAD0++Uth0FNsIXGWeqrEeolcADOFxX9mWoWnlta4SfWX5AUajU6OA==
+X-Received: by 2002:a05:620a:c47:: with SMTP id u7mr10956227qki.568.1639616195355;
+        Wed, 15 Dec 2021 16:56:35 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id s126sm1950991qkf.7.2021.12.15.16.56.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Dec 2021 16:56:34 -0800 (PST)
+Date:   Wed, 15 Dec 2021 19:56:32 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     kreijack@inwind.it
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+Message-ID: <YbqOwN7SW7NWm5/S@localhost.localdomain>
+References: <SYXPR01MB1918689AF49BE6E6E031C8B69E749@SYXPR01MB1918.ausprd01.prod.outlook.com>
+ <1d725df7-b435-4acf-4d17-26c2bd171c1a@libero.it>
+ <Ybe34gfrxl8O89PZ@localhost.localdomain>
+ <YbfN8gXHsZ6KZuil@hungrycats.org>
+ <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
+ <Ybj40IuxdaAy75Ue@hungrycats.org>
+ <Ybj/0ITsCQTBLkQF@localhost.localdomain>
+ <be4e6028-7d1d-6ba9-d16f-f5f38a79866f@libero.it>
+ <Ybn0aq548kQsQu+z@localhost.localdomain>
+ <633ccf8f-3118-1dda-69d2-0398ef3ffdb7@libero.it>
 MIME-Version: 1.0
-In-Reply-To: <0735c9e2d4d6fa246965663a4f0d4f5211a5b8dc.camel@ericlevy.name>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <633ccf8f-3118-1dda-69d2-0398ef3ffdb7@libero.it>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-On 15/12/2021 23:52, Eric Levy wrote:
-> Thank you for the reply. Please see my questions, below.
+On Wed, Dec 15, 2021 at 07:53:40PM +0100, Goffredo Baroncelli wrote:
+> On 12/15/21 14:58, Josef Bacik wrote:
+> > On Tue, Dec 14, 2021 at 09:41:21PM +0100, Goffredo Baroncelli wrote:
+> > > On 12/14/21 21:34, Josef Bacik wrote:
+> > > > On Tue, Dec 14, 2021 at 03:04:32PM -0500, Zygo Blaxell wrote:
+> > > > > On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
+> > > 
+> > > > > 
+> > > > > I don't have a strong preference for either sysfs or ioctl, nor am I
+> > > > > opposed to simply implementing both.  I'll let someone who does have
+> > > > > such a preference make their case.
+> > > > 
+> > > > I think echo'ing a name into sysfs is better than bits for sure.  However I want
+> > > > the ability to set the device properties via a btrfs-progs command offline so I
+> > > > can setup the storage and then mount the file system.  I want
+> > > > 
+> > > > 1) The sysfs interface so you can change things on the fly.  This stays
+> > > >      persistent of course, so the way it works is perfect.
+> > > > 
+> > > > 2) The btrfs-progs command sets it on offline devices.  If you point it at a
+> > > >      live mounted fs it can simply use the sysfs thing to do it live.
+> > > 
+> > > #2 is currently not implemented. However I think that we should do.
+> > > 
+> > > The problem is that we need to update both:
+> > > 
+> > > - the superblock		(simple)
+> > > - the dev_item item		(not so simple...)
+> > > 
+> > > What about using only bits from the superblock to store this property ?
+> > 
+> > I'm looking at the patches and you only are updating the dev_item, am I missing
+> > something for the super block?
 > 
-> On Wed, 2021-12-15 at 23:35 +0000, Graham Cobb wrote:
-> 
->> There is no such thing as an incremental stream. Send sends all the
->> information necessary to create a subvolume. Some of that includes
->> instructions to share data in other subvolumes but it is not
->> incremental.
-> 
-> Perhaps you would clarify the distinction, as to me an incremental
-> backup is a minimal set of data needed to recreate the original volume
-> when combined with the previous capture.
-
-Maybe it isn't a real difference. I mean that the stream is not intended
-to make **changes** to an existing subvolume to create the new version.
-It is intended to **create** a new version, reusing some of the extents
-from the earlier version (but, not changing the earlier version at all).
-
-> 
->> You don't. Receive will create a new subvolume - which will include
->> unchanged data from the initial stage and whatever changes have
->> happened. If you want, you can then snapshot that (read-only or
->> read-write as you wish) into any position you want in your
->> destination
->> filesystem.
-> 
-> How should I use the latter stream? From the stream length it is
-> obvious it does not contain most of the data from the earlier one.
+> When btrfs write the superblocks (see write_all_supers() in disk-io.c), it copies
+> the dev_item fields (contained in fs_info->fs_devices->devices lists) in each
+> superblock before updating it.
 > 
 
-Imagine you have a subvolume called /data on the source system. One day
-you snapshot it to create /data-1. You then send /data-1 to the second
-system to create a read-only subvolume on that system - let's call it
-/copy-data-1.
+Oh right.  Still, I hope we're doing this correctly in btrfs-progs, if not
+that's a problem.
 
-Later you snapshot /data again to create /data-2 on the source system.
-You btrfs-send /data-2 to the other system again and it creates a new
-read-only subvolume - you tell btrfs-receive what to call it and where
-to put it, let's say you call it /copy-data-2 - using the data in the
-stream and reusing some extents from the existing /copy-data-1.
-/copy-data-2 is now a (read-only) copy of /data-2 from the source system.
+> > 
+> > For offline all you would need to do is do the normal open_ctree,
+> > btrfs_search_slot to the item and update the device item type, that's
+> > straightforward.
+> > 
+> > For online if you use btrfs prop you can see if the fs is mounted and just find
+> > the sysfs file to modify and do it that way.
+> > 
+> > But this also brings up another point, we're going to want a compat bit for
+> > this.  It doesn't make the fs unusable for old kernels, so just a normal
+> > BTRFS_FS_COMPAT_<whatever> flag is fine.  If the setting gets set you set the
+> > compat flag.
+> 
+> Why we need a "compact" bit ? The new kernels know how treat the dev_item_type field.
+> The old kernels ignore it. The worst thing is that a filesystem may require a balance
+> before reaching a good shape (i.e. the metadata on ssd and the data on a spinning disk)
+> 
 
-How you use that copy is up to you. If you are just taking backups you
-probably do nothing with it unless you have a problem (it will form part
-of the source for data for any future /copy-data-3). If you want to use
-it to initialize a read-write subvolume on the destination system you
-can take a read-write snapshot of /copy-data-2 to create a new subvolume
-(say /my-new-data) on the destination system.
+So you can do the validation below, tho I'm thinking I care about it less, if we
+just make sure that type is correct regardless of the compat bit then that's
+fine.  Thanks,
+
+Josef
