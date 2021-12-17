@@ -2,250 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4944790EB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 17:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3D0479182
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 17:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238657AbhLQQFg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Dec 2021 11:05:36 -0500
-Received: from syrinx.knorrie.org ([82.94.188.77]:46838 "EHLO
-        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235165AbhLQQFf (ORCPT
+        id S235672AbhLQQby (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Dec 2021 11:31:54 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:41864 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231193AbhLQQbx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Dec 2021 11:05:35 -0500
-X-Greylist: delayed 417 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Dec 2021 11:05:35 EST
-Received: from [IPv6:2a02:a213:2b80:4c00::12] (unknown [IPv6:2a02:a213:2b80:4c00::12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 2487961038994;
-        Fri, 17 Dec 2021 16:58:37 +0100 (CET)
-Subject: Re: [PATCH 4/4] btrfs: add allocator_hint mode
-To:     Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>,
+        Fri, 17 Dec 2021 11:31:53 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id E6001FBD74; Fri, 17 Dec 2021 11:31:52 -0500 (EST)
+Date:   Fri, 17 Dec 2021 11:31:52 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kreijack@inwind.it, David Sterba <dsterba@suse.cz>,
         Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-References: <cover.1635089352.git.kreijack@inwind.it>
- <bf30502eb53ea2c1c05c2ae96c3788d3e327d59e.1635089352.git.kreijack@inwind.it>
-From:   Hans van Kranenburg <hans@knorrie.org>
-Message-ID: <0fbfde93-3a00-7f20-8891-dd0fa798676e@knorrie.org>
-Date:   Fri, 17 Dec 2021 16:58:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+Message-ID: <Yby7eEHYmA+iFhYi@hungrycats.org>
+References: <YbfN8gXHsZ6KZuil@hungrycats.org>
+ <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
+ <Ybj40IuxdaAy75Ue@hungrycats.org>
+ <Ybj/0ITsCQTBLkQF@localhost.localdomain>
+ <be4e6028-7d1d-6ba9-d16f-f5f38a79866f@libero.it>
+ <Ybn0aq548kQsQu+z@localhost.localdomain>
+ <633ccf8f-3118-1dda-69d2-0398ef3ffdb7@libero.it>
+ <YbqOwN7SW7NWm5/S@localhost.localdomain>
+ <Ybwi58Uivf29oGhw@hungrycats.org>
+ <YbyjSBX3tbpLax7P@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <bf30502eb53ea2c1c05c2ae96c3788d3e327d59e.1635089352.git.kreijack@inwind.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YbyjSBX3tbpLax7P@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-On 10/24/21 5:31 PM, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
+On Fri, Dec 17, 2021 at 09:48:40AM -0500, Josef Bacik wrote:
+> On Fri, Dec 17, 2021 at 12:40:55AM -0500, Zygo Blaxell wrote:
+> > On Wed, Dec 15, 2021 at 07:56:32PM -0500, Josef Bacik wrote:
+> > > On Wed, Dec 15, 2021 at 07:53:40PM +0100, Goffredo Baroncelli wrote:
+> > > > On 12/15/21 14:58, Josef Bacik wrote:
+> > > > > On Tue, Dec 14, 2021 at 09:41:21PM +0100, Goffredo Baroncelli wrote:
+> > > > > > On 12/14/21 21:34, Josef Bacik wrote:
+> > > > > > > On Tue, Dec 14, 2021 at 03:04:32PM -0500, Zygo Blaxell wrote:
+> > > > > > > > On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
+> > > > > > 
+> > > > > > > > 
+> > > > > > > > I don't have a strong preference for either sysfs or ioctl, nor am I
+> > > > > > > > opposed to simply implementing both.  I'll let someone who does have
+> > > > > > > > such a preference make their case.
+> > > > > > > 
+> > > > > > > I think echo'ing a name into sysfs is better than bits for sure.  However I want
+> > > > > > > the ability to set the device properties via a btrfs-progs command offline so I
+> > > > > > > can setup the storage and then mount the file system.  I want
+> > > > > > > 
+> > > > > > > 1) The sysfs interface so you can change things on the fly.  This stays
+> > > > > > >      persistent of course, so the way it works is perfect.
+> > > > > > > 
+> > > > > > > 2) The btrfs-progs command sets it on offline devices.  If you point it at a
+> > > > > > >      live mounted fs it can simply use the sysfs thing to do it live.
+> > > > > > 
+> > > > > > #2 is currently not implemented. However I think that we should do.
+> > > > > > 
+> > > > > > The problem is that we need to update both:
+> > > > > > 
+> > > > > > - the superblock		(simple)
+> > > > > > - the dev_item item		(not so simple...)
+> > > > > > 
+> > > > > > What about using only bits from the superblock to store this property ?
+> > > > > 
+> > > > > I'm looking at the patches and you only are updating the dev_item, am I missing
+> > > > > something for the super block?
+> > > > 
+> > > > When btrfs write the superblocks (see write_all_supers() in disk-io.c), it copies
+> > > > the dev_item fields (contained in fs_info->fs_devices->devices lists) in each
+> > > > superblock before updating it.
+> > > > 
+> > > 
+> > > Oh right.  Still, I hope we're doing this correctly in btrfs-progs, if not
+> > > that's a problem.
+> > > 
+> > > > > 
+> > > > > For offline all you would need to do is do the normal open_ctree,
+> > > > > btrfs_search_slot to the item and update the device item type, that's
+> > > > > straightforward.
+> > > > > 
+> > > > > For online if you use btrfs prop you can see if the fs is mounted and just find
+> > > > > the sysfs file to modify and do it that way.
+> > > > > 
+> > > > > But this also brings up another point, we're going to want a compat bit for
+> > > > > this.  It doesn't make the fs unusable for old kernels, so just a normal
+> > > > > BTRFS_FS_COMPAT_<whatever> flag is fine.  If the setting gets set you set the
+> > > > > compat flag.
+> > > > 
+> > > > Why we need a "compact" bit ? The new kernels know how treat the dev_item_type field.
+> > > > The old kernels ignore it. The worst thing is that a filesystem may require a balance
+> > > > before reaching a good shape (i.e. the metadata on ssd and the data on a spinning disk)
+> > > 
+> > > So you can do the validation below, tho I'm thinking I care about it less, if we
+> > > just make sure that type is correct regardless of the compat bit then that's
+> > > fine.  Thanks,
+> > 
+> > In theory if you get stuck in an impossible allocation situation (like all
+> > your disks are data-only and you run out of metadata space) then one way
+> > to recover from it is to mount with an old kernel which doesn't respect
+> > the type bits.  Another way to recover would be to flip the type bits
+> > while the filesystem is offline with btrfs-progs.  A third way would be to
+> > have a mount option for newer kernels to ignore the allocation bits like
+> > old kernels do (yes I know I already said I didn't like that idea).
+> > 
 > 
-> When this mode is enabled, the chunk allocation policy is modified as
-> follow.
+> This is the "preferred" vs "only" category.  You set "preferred" if you want to
+> be able to handle failures cleanly, you set "only" if you'd rather reprovision a
+> box than lose performance.
+
+Yeah, you're right here...and I was right the first time.  ;)
+In case I forget again, I'll write down why...
+
+It's a corner of a corner of a corner case.  To get there, we have to 1)
+set up the unsatisfiable allocation preferences, 2) run out of existing
+metadata allocations so we're one big commit away from metadata ENOSPC,
+and 3) in a small commit, write something to the filesystem that forces
+big metadata allocations during the next mount (like a deleted but
+uncleaned snapshot, or an orphan inode).  It's not a new case: steps 2
+and 3 are sufficient to get into this corner, and allocation preferences
+in step 1 only get us to step 2 faster.  At any time before step 3,
+we can change the allocation preferences and avoid the whole thing.
+
+mkfs changes this slightly, since it's possible in mkfs to set up
+condition 1 without having any metadata on the filesystem; however,
+the filesystem would be unmountable, and it would require a separate bug
+in mkfs to create the filesystem at all.  So the filesystem blows up,
+but it can only happen on an empty filesystem.  I can live with that.
+
+It would be nice to have a way to avoid step 3 in general (like disable
+orphan inode cleanup and snapshot delete on mount, so we can arrange
+for some more metadata storage before those run) but that's completely
+orthogonal to the allocation preferences patch, solving a problem that
+existed before and after.
+
+> > If we have a bit that says "old kernels don't mount this filesystem any
+> > more" then we lose one of those recovery options, and the other options
+> > aren't implemented yet.
+> > 
+> > While I think of it, the metadata reservation system eventually needs
+> > to know that it can't use data-only devices for metadata, the same way
+> > that df eventually needs to know about metadata-only devices.
 > 
-> Each disk may have a different tag:
-> - BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
-> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
-> - BTRFS_DEV_ALLOCATION_DATA_ONLY
-> - BTRFS_DEV_ALLOCATION_PREFERRED_DATA (default)
+> Yeah, I'm willing to throw that into the power user bucket.  It really only
+> affects overcommit, because once we've allocated all our chunks we'll stop
+> overcommitting.  There may be some corners that need to be addressed, but we can
+> burn those bridges when we get to them.  Thanks,
+
+> Josef
 > 
-> Where:
-> - ALLOCATION_PREFERRED_X means that it is preferred to use this disk for
-> the X chunk type (the other type may be allowed when the space is low)
-> - ALLOCATION_X_ONLY means that it is used *only* for the X chunk type.
-> This means also that it is a preferred choice.
-> 
-> Each time the allocator allocates a chunk of type X , first it takes the
-> disks tagged as ALLOCATION_X_ONLY or ALLOCATION_PREFERRED_X; if the space
-> is not enough, it uses also the disks tagged as ALLOCATION_METADATA_ONLY;
-> if the space is not enough, it uses also the other disks, with the
-> exception of the one marked as ALLOCATION_PREFERRED_Y, where Y the other
-> type of chunk (i.e. not X).
-
-I read this last paragraph for 5 times now, I think, but I still have no
-idea what's going on here. Can you rephrase it? It's more complex than
-the actual code below.
-
-What the above text tells me is that if I start filling up my disks, it
-will happily write DATA to METADATA_ONLY disks when the DATA ones are
-full? And if the METADATA_ONLY disks are full with DATA also, it will
-not write DATA into PREFERRED_METADATA disks.
-
-I don't think that's what the code actually does. At least, I hope not.
-
-Hans
-
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->  fs/btrfs/volumes.c | 98 +++++++++++++++++++++++++++++++++++++++++++++-
->  fs/btrfs/volumes.h |  1 +
->  2 files changed, 98 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 8ac99771f43c..7ee9c6e7bd44 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -153,6 +153,20 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
->  	},
->  };
->  
-> +#define BTRFS_DEV_ALLOCATION_MASK ((1ULL << \
-> +		BTRFS_DEV_ALLOCATION_MASK_BIT_COUNT) - 1)
-> +#define BTRFS_DEV_ALLOCATION_MASK_COUNT (1ULL << \
-> +		BTRFS_DEV_ALLOCATION_MASK_BIT_COUNT)
-> +
-> +static const char alloc_hint_map[BTRFS_DEV_ALLOCATION_MASK_COUNT] = {
-> +	[BTRFS_DEV_ALLOCATION_DATA_ONLY] = -1,
-> +	[BTRFS_DEV_ALLOCATION_PREFERRED_DATA] = 0,
-> +	[BTRFS_DEV_ALLOCATION_PREFERRED_METADATA] = 1,
-> +	[BTRFS_DEV_ALLOCATION_METADATA_ONLY] = 2,
-> +	/* the other values are set to 0 */
-> +};
-> +
-> +
->  const char *btrfs_bg_type_to_raid_name(u64 flags)
->  {
->  	const int index = btrfs_bg_flags_to_raid_index(flags);
-> @@ -4997,13 +5011,18 @@ static int btrfs_add_system_chunk(struct btrfs_fs_info *fs_info,
->  }
->  
->  /*
-> - * sort the devices in descending order by max_avail, total_avail
-> + * sort the devices in descending order by alloc_hint,
-> + * max_avail, total_avail
->   */
->  static int btrfs_cmp_device_info(const void *a, const void *b)
->  {
->  	const struct btrfs_device_info *di_a = a;
->  	const struct btrfs_device_info *di_b = b;
->  
-> +	if (di_a->alloc_hint > di_b->alloc_hint)
-> +		return -1;
-> +	if (di_a->alloc_hint < di_b->alloc_hint)
-> +		return 1;
->  	if (di_a->max_avail > di_b->max_avail)
->  		return -1;
->  	if (di_a->max_avail < di_b->max_avail)
-> @@ -5166,6 +5185,8 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->  	int ndevs = 0;
->  	u64 max_avail;
->  	u64 dev_offset;
-> +	int hint;
-> +	int i;
->  
->  	/*
->  	 * in the first pass through the devices list, we gather information
-> @@ -5218,16 +5239,91 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->  		devices_info[ndevs].max_avail = max_avail;
->  		devices_info[ndevs].total_avail = total_avail;
->  		devices_info[ndevs].dev = device;
-> +
-> +		if ((ctl->type & BTRFS_BLOCK_GROUP_DATA) &&
-> +		     (ctl->type & BTRFS_BLOCK_GROUP_METADATA)) {
-> +			/*
-> +			 * if mixed bg set all the alloc_hint
-> +			 * fields to the same value, so the sorting
-> +			 * is not affected
-> +			 */
-> +			devices_info[ndevs].alloc_hint = 0;
-> +		} else if (ctl->type & BTRFS_BLOCK_GROUP_DATA) {
-> +			hint = device->type & BTRFS_DEV_ALLOCATION_MASK;
-> +
-> +			/*
-> +			 * skip BTRFS_DEV_METADATA_ONLY disks
-> +			 */
-> +			if (hint == BTRFS_DEV_ALLOCATION_METADATA_ONLY)
-> +				continue;
-> +			/*
-> +			 * if a data chunk must be allocated,
-> +			 * sort also by hint (data disk
-> +			 * higher priority)
-> +			 */
-> +			devices_info[ndevs].alloc_hint = -alloc_hint_map[hint];
-> +		} else { /* BTRFS_BLOCK_GROUP_METADATA */
-> +			hint = device->type & BTRFS_DEV_ALLOCATION_MASK;
-> +
-> +			/*
-> +			 * skip BTRFS_DEV_DATA_ONLY disks
-> +			 */
-> +			if (hint == BTRFS_DEV_ALLOCATION_DATA_ONLY)
-> +				continue;
-> +			/*
-> +			 * if a data chunk must be allocated,
-> +			 * sort also by hint (metadata hint
-> +			 * higher priority)
-> +			 */
-> +			devices_info[ndevs].alloc_hint = alloc_hint_map[hint];
-> +		}
-> +
->  		++ndevs;
->  	}
->  	ctl->ndevs = ndevs;
->  
-> +	/*
-> +	 * no devices available
-> +	 */
-> +	if (!ndevs)
-> +		return 0;
-> +
->  	/*
->  	 * now sort the devices by hole size / available space
->  	 */
->  	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
->  	     btrfs_cmp_device_info, NULL);
->  
-> +	/*
-> +	 * select the minimum set of disks grouped by hint that
-> +	 * can host the chunk
-> +	 */
-> +	ndevs = 0;
-> +	while (ndevs < ctl->ndevs) {
-> +		hint = devices_info[ndevs++].alloc_hint;
-> +		while (ndevs < ctl->ndevs &&
-> +		       devices_info[ndevs].alloc_hint == hint)
-> +				ndevs++;
-> +		if (ndevs >= ctl->devs_min)
-> +			break;
-> +	}
-> +
-> +	BUG_ON(ndevs > ctl->ndevs);
-> +	ctl->ndevs = ndevs;
-> +
-> +	/*
-> +	 * the next layers require the devices_info ordered by
-> +	 * max_avail. If we are returing two (or more) different
-> +	 * group of alloc_hint, this is not always true. So sort
-> +	 * these gain.
-> +	 */
-> +
-> +	for (i = 0 ; i < ndevs ; i++)
-> +		devices_info[i].alloc_hint = 0;
-> +
-> +	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
-> +	     btrfs_cmp_device_info, NULL);
-> +
->  	return 0;
->  }
->  
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index b8250f29df6e..37eb37b533c5 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -369,6 +369,7 @@ struct btrfs_device_info {
->  	u64 dev_offset;
->  	u64 max_avail;
->  	u64 total_avail;
-> +	int alloc_hint;
->  };
->  
->  struct btrfs_raid_attr {
-> 
-
