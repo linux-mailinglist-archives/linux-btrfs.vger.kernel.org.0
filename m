@@ -2,178 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75C747849A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 06:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADF547849B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 06:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhLQFih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Dec 2021 00:38:37 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40540 "EHLO
+        id S233013AbhLQFk5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Dec 2021 00:40:57 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40686 "EHLO
         drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230052AbhLQFig (ORCPT
+        by vger.kernel.org with ESMTP id S230052AbhLQFk4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Dec 2021 00:38:36 -0500
+        Fri, 17 Dec 2021 00:40:56 -0500
 Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id DECF8F923D; Fri, 17 Dec 2021 00:38:35 -0500 (EST)
-Date:   Fri, 17 Dec 2021 00:38:35 -0500
+        id 6B7B0F9260; Fri, 17 Dec 2021 00:40:55 -0500 (EST)
+Date:   Fri, 17 Dec 2021 00:40:55 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1: 3078d85c9a10
- vfs: verify source area in vfs_dedupe_file_range_one()
-Message-ID: <YbwiW5+wLnNH7Cp8@hungrycats.org>
-References: <20211210183456.GP17148@hungrycats.org>
- <25f4d4fd-1727-1c9f-118a-150d9c263c93@suse.com>
- <YbfTYFQVGCU0Whce@hungrycats.org>
- <fc395aed-2cbd-f6e5-d167-632c14a07188@suse.com>
- <Ybj1jVYu3MrUzVTD@hungrycats.org>
- <c6125582-a1dc-1114-8211-48437dbf4976@suse.com>
- <YbrPkZVC/MazdQdc@hungrycats.org>
- <ab295d78-d250-fe8f-33a5-09cc90d5e406@suse.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kreijack@inwind.it, David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+Message-ID: <Ybwi58Uivf29oGhw@hungrycats.org>
+References: <1d725df7-b435-4acf-4d17-26c2bd171c1a@libero.it>
+ <Ybe34gfrxl8O89PZ@localhost.localdomain>
+ <YbfN8gXHsZ6KZuil@hungrycats.org>
+ <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
+ <Ybj40IuxdaAy75Ue@hungrycats.org>
+ <Ybj/0ITsCQTBLkQF@localhost.localdomain>
+ <be4e6028-7d1d-6ba9-d16f-f5f38a79866f@libero.it>
+ <Ybn0aq548kQsQu+z@localhost.localdomain>
+ <633ccf8f-3118-1dda-69d2-0398ef3ffdb7@libero.it>
+ <YbqOwN7SW7NWm5/S@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ab295d78-d250-fe8f-33a5-09cc90d5e406@suse.com>
+In-Reply-To: <YbqOwN7SW7NWm5/S@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 11:29:06PM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 16.12.21 г. 7:33, Zygo Blaxell wrote:
-> > On Wed, Dec 15, 2021 at 12:25:04AM +0200, Nikolay Borisov wrote:
-> >> Huhz, this means there is an open transaction handle somewhere o_O. I
-> >> checked back the stacktraces in your original email but couldn't see
-> >> where that might be coming from. I.e all processes are waiting on
-> >> wait_current_trans and this happens _before_ the transaction handle is
-> >> opened, hence num_extwriters can't have been incremented by them.
-> >>
-> >> When an fs wedges, and you get again num_extwriters can you provde the
-> >> output of "echo w > /proc/sysrq-trigger"
+On Wed, Dec 15, 2021 at 07:56:32PM -0500, Josef Bacik wrote:
+> On Wed, Dec 15, 2021 at 07:53:40PM +0100, Goffredo Baroncelli wrote:
+> > On 12/15/21 14:58, Josef Bacik wrote:
+> > > On Tue, Dec 14, 2021 at 09:41:21PM +0100, Goffredo Baroncelli wrote:
+> > > > On 12/14/21 21:34, Josef Bacik wrote:
+> > > > > On Tue, Dec 14, 2021 at 03:04:32PM -0500, Zygo Blaxell wrote:
+> > > > > > On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
+> > > > 
+> > > > > > 
+> > > > > > I don't have a strong preference for either sysfs or ioctl, nor am I
+> > > > > > opposed to simply implementing both.  I'll let someone who does have
+> > > > > > such a preference make their case.
+> > > > > 
+> > > > > I think echo'ing a name into sysfs is better than bits for sure.  However I want
+> > > > > the ability to set the device properties via a btrfs-progs command offline so I
+> > > > > can setup the storage and then mount the file system.  I want
+> > > > > 
+> > > > > 1) The sysfs interface so you can change things on the fly.  This stays
+> > > > >      persistent of course, so the way it works is perfect.
+> > > > > 
+> > > > > 2) The btrfs-progs command sets it on offline devices.  If you point it at a
+> > > > >      live mounted fs it can simply use the sysfs thing to do it live.
+> > > > 
+> > > > #2 is currently not implemented. However I think that we should do.
+> > > > 
+> > > > The problem is that we need to update both:
+> > > > 
+> > > > - the superblock		(simple)
+> > > > - the dev_item item		(not so simple...)
+> > > > 
+> > > > What about using only bits from the superblock to store this property ?
+> > > 
+> > > I'm looking at the patches and you only are updating the dev_item, am I missing
+> > > something for the super block?
 > > 
-> > Here you go...
-> 
-> <snip>
-> 
+> > When btrfs write the superblocks (see write_all_supers() in disk-io.c), it copies
+> > the dev_item fields (contained in fs_info->fs_devices->devices lists) in each
+> > superblock before updating it.
 > > 
-> > Again we have "3 locks held" but no list of locks.  WTF is 10883 doing?
-> > Well, first of all it's using 100% CPU in the kernel.  Some samples of
-> > kernel stacks:
+> 
+> Oh right.  Still, I hope we're doing this correctly in btrfs-progs, if not
+> that's a problem.
+> 
+> > > 
+> > > For offline all you would need to do is do the normal open_ctree,
+> > > btrfs_search_slot to the item and update the device item type, that's
+> > > straightforward.
+> > > 
+> > > For online if you use btrfs prop you can see if the fs is mounted and just find
+> > > the sysfs file to modify and do it that way.
+> > > 
+> > > But this also brings up another point, we're going to want a compat bit for
+> > > this.  It doesn't make the fs unusable for old kernels, so just a normal
+> > > BTRFS_FS_COMPAT_<whatever> flag is fine.  If the setting gets set you set the
+> > > compat flag.
 > > 
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] down_read_nested+0x32/0x140
-> > 	[<0>] __btrfs_tree_read_lock+0x2d/0x110
-> > 	[<0>] btrfs_tree_read_lock+0x10/0x20
-> > 	[<0>] btrfs_search_old_slot+0x627/0x8a0
-> > 	[<0>] btrfs_next_old_leaf+0xcb/0x340
-> > 	[<0>] find_parent_nodes+0xcd7/0x1c40
-> > 	[<0>] btrfs_find_all_leafs+0x63/0xb0
-> > 	[<0>] iterate_extent_inodes+0xc8/0x270
-> > 	[<0>] iterate_inodes_from_logical+0x9f/0xe0
+> > Why we need a "compact" bit ? The new kernels know how treat the dev_item_type field.
+> > The old kernels ignore it. The worst thing is that a filesystem may require a balance
+> > before reaching a good shape (i.e. the metadata on ssd and the data on a spinning disk)
 > 
-> That's the real culprit, in this case we are not searching the commit
-> root hence we've attached to the transaction.  So we are doing backref
-> resolution which either:
-> 
-> a) Hits some pathological case and loops for very long time, backref
-> resolution is known to take a lot of time.
+> So you can do the validation below, tho I'm thinking I care about it less, if we
+> just make sure that type is correct regardless of the compat bit then that's
+> fine.  Thanks,
 
-backref resolve is known to take a long time, which is why bees measures
-that time, and avoids extents where the kernel CPU time in LOGICAL_INO
-starts climbing up the exponential curve.  In older kernels performance
-got worse as more extent refs were added, but it did so slowly enough
-that bees could detect and evade the bug before it created multi-second
-transaction latencies.  Since 5.7 this isn't really a problem any more,
-but bees still has this workaround in its code.
+In theory if you get stuck in an impossible allocation situation (like all
+your disks are data-only and you run out of metadata space) then one way
+to recover from it is to mount with an old kernel which doesn't respect
+the type bits.  Another way to recover would be to flip the type bits
+while the filesystem is offline with btrfs-progs.  A third way would be to
+have a mount option for newer kernels to ignore the allocation bits like
+old kernels do (yes I know I already said I didn't like that idea).
 
-This bug is not that bug:  CPU usage in LOGICAL_INO goes from less than
-100 ms to >40 hours (the longest I've let it run before forcing reboot)
-in a single step.  On this test setup the 100 ms threshold is hit about
-once every 18 testing hours, or once per 2.3M LOGICAL_INO calls, and
-it's only 150 ms or so.  Usually these happen when the kernel thread
-gets stuck with the CPU bill for flushing delayed refs or something
-equally harmless, and they happen hours before the lockup (if at all).
+If we have a bit that says "old kernels don't mount this filesystem any
+more" then we lose one of those recovery options, and the other options
+aren't implemented yet.
 
-In the "take a lot of time" case, we get a lot of warning as the time
-ramps up.  In this case, we go from zero to two days with nothing
-in between.
+While I think of it, the metadata reservation system eventually needs
+to know that it can't use data-only devices for metadata, the same way
+that df eventually needs to know about metadata-only devices.
 
-> b) We hit a bug in backref resolution and loop forever which again
-> results in the transaction being kept open.
-> 
-> Now I wonder why you were able to bisect this to the seemingly unrelated
-> commit in the vfs code.
 
-Meh, bisection isn't particularly reliable, and this bug might be very
-sensitive to its environment, particularly if it's a race condition
-between two or more threads running a tight loop over the same objects
-(like tree mod log).  I've been running a few more bisection runs and
-they're landing all over the place, including things like TI SoC commits.
-So I'm now testing btrfs commits chosen myself instead of following
-git's bisect algorithm.
-
-There's a definite probability shift somewhere in the middle of v5.11-rc1.
-We go from hourly failure rates below 0.002 at v5.10 to above 0.3 by
-v5.11-rc1.  But that could as easily be a 10-year-old bug surfacing due
-to apparently unrelated changes as it is something that was added in
-v5.11-rc1 itself.
-
-> Josef any ideas how to proceed further to debug why backref resolution
-> takes a long time and if it's just an infinite loop?
-> 
-> > 	[<0>] btrfs_ioctl_logical_to_ino+0x183/0x210
-> > 	[<0>] btrfs_ioctl+0xa81/0x2fb0
-> > 	[<0>] __x64_sys_ioctl+0x91/0xc0
-> > 	[<0>] do_syscall_64+0x38/0x90
-> > 	[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > 	# cat /proc/*/task/10883/stack
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
-> > 	# cat /proc/*/task/10883/stack
-> > 	# cat /proc/*/task/10883/stack
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] free_extent_buffer.part.0+0x51/0xa0
-> > 	# cat /proc/*/task/10883/stack
-> > 	[<0>] find_held_lock+0x38/0x90
-> > 	[<0>] kmem_cache_alloc+0x22d/0x360
-> > 	[<0>] __alloc_extent_buffer+0x2a/0xa0
-> > 	[<0>] btrfs_clone_extent_buffer+0x42/0x130
-> > 	[<0>] btrfs_search_old_slot+0x660/0x8a0
-> > 	[<0>] btrfs_next_old_leaf+0xcb/0x340
-> > 	[<0>] find_parent_nodes+0xcd7/0x1c40
-> > 	[<0>] btrfs_find_all_leafs+0x63/0xb0
-> > 	[<0>] iterate_extent_inodes+0xc8/0x270
-> > 	[<0>] iterate_inodes_from_logical+0x9f/0xe0
-> > 	[<0>] btrfs_ioctl_logical_to_ino+0x183/0x210
-> > 	[<0>] btrfs_ioctl+0xa81/0x2fb0
-> > 	[<0>] __x64_sys_ioctl+0x91/0xc0
-> > 	[<0>] do_syscall_64+0x38/0x90
-> > 	[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > 
-> > So it looks like tree mod log is doing some infinite (or very large
-> > finite) looping in the LOGICAL_INO ioctl.  That ioctl holds a transaction
-> > open while it runs, but it's not blocked per se, so it doesn't show up
-> > in SysRq-W output.
-> > 
+> Josef
 > 
