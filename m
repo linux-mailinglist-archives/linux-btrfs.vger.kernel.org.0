@@ -2,93 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A69478F18
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 16:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4944790EB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 17:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237922AbhLQPIW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Dec 2021 10:08:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237909AbhLQPIV (ORCPT
+        id S238657AbhLQQFg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Dec 2021 11:05:36 -0500
+Received: from syrinx.knorrie.org ([82.94.188.77]:46838 "EHLO
+        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235165AbhLQQFf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Dec 2021 10:08:21 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C35C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Dec 2021 07:08:21 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id js9so2591701qvb.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Dec 2021 07:08:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eqFQ7i3QDcyqT2Ls6j3G58hfc9FCQlrooRih/ePV+Y8=;
-        b=2s0tZ+9NjSOnziq2qqozAhdaGvifSsd52xOlCH9NGlMvsli7W7C1hVx671en2ldxJv
-         rRlgFGTkVlq+Z2CHUWK1Z1jV2I0tqHm3YP2OJPEkhpb7Xfga9JaTXrzZoJv+yZ63z7/h
-         luydyd1UKZOhKflAP6tOSta0kswQn3GL8H8XxkANmQJ4XjriRtIJSckUpqBmwrhdEq8d
-         axuhg1pg+P89RPHn/cOJzAj91c+fg3dBrxsDrk1IhgIwlDx8cv8CtopbYNhkjKZiNCeS
-         aX872VR3dMMuOt4pnBlgXwo9AUrs7zbL35GpiVYEsNVlHi9EhdAfa0gVZszVN3dcFaCV
-         qJvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eqFQ7i3QDcyqT2Ls6j3G58hfc9FCQlrooRih/ePV+Y8=;
-        b=FqQUVERalfHAvEo12CnRQ5OxQi9QoeBUZeUMZZ6Oqsneoap7kgzqngolIxJYXselTL
-         xveXKR462VeMqx7w1E1WrM3tgy7qcx+z4Cnggw+0p6DoLxV+tJpyhJU26K0t7Lb75qh6
-         IaKRiN2eRq148pBNC0tBC2fK0Rd5lr1bHkt+R2VstXlA+B+4Y8Bv30ofEX7zeG65tVVK
-         OWekINToZYKrwI7ZyaQaSgaNchMH5FQfnVy9KTjF3CGDCUQOHe5II/1+6weCbC+FpTzP
-         mNEplatcVm5gD17XGsvfFkwGKQTNUKr5AeqjBnC0soKpaz3Q29d8eNRctGtd3W2kPyKV
-         n+wQ==
-X-Gm-Message-State: AOAM531tIn8zxgKcuWIwZVQsGG+yWsl8FgyzqElO8En2AFsy+BwgphNv
-        1ll4ts+NUjWfDLQ5y7m2n5Gqnw==
-X-Google-Smtp-Source: ABdhPJw0xPhCiTDe4W5jCBhnIX8MEzW7DCn+UP1w1MoAMf7qv7Ms7ZU/S+PZ8PXJa3YWiEaJ2RTJMg==
-X-Received: by 2002:ad4:4eac:: with SMTP id ed12mr2836052qvb.59.1639753699813;
-        Fri, 17 Dec 2021 07:08:19 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d11sm6695181qtj.4.2021.12.17.07.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Dec 2021 07:08:19 -0800 (PST)
-Date:   Fri, 17 Dec 2021 10:08:17 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: respect the max size in the header when
- activating swap file
-Message-ID: <Ybyn4VfgnlXVHdUW@localhost.localdomain>
-References: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
+        Fri, 17 Dec 2021 11:05:35 -0500
+X-Greylist: delayed 417 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Dec 2021 11:05:35 EST
+Received: from [IPv6:2a02:a213:2b80:4c00::12] (unknown [IPv6:2a02:a213:2b80:4c00::12])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id 2487961038994;
+        Fri, 17 Dec 2021 16:58:37 +0100 (CET)
+Subject: Re: [PATCH 4/4] btrfs: add allocator_hint mode
+To:     Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+References: <cover.1635089352.git.kreijack@inwind.it>
+ <bf30502eb53ea2c1c05c2ae96c3788d3e327d59e.1635089352.git.kreijack@inwind.it>
+From:   Hans van Kranenburg <hans@knorrie.org>
+Message-ID: <0fbfde93-3a00-7f20-8891-dd0fa798676e@knorrie.org>
+Date:   Fri, 17 Dec 2021 16:58:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
+In-Reply-To: <bf30502eb53ea2c1c05c2ae96c3788d3e327d59e.1635089352.git.kreijack@inwind.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 03:00:32PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> If we extended the size of a swapfile after its header was created (by the
-> mkswap utility) and then try to activate it, we will map the entire file
-> when activating the swap file, instead of limiting to the max size defined
-> in the swap file's header.
-> 
-> Currently test case generic/643 from fstests fails because we do not
-> respect that size limit defined in the swap file's header.
-> 
-> So fix this by not mapping file ranges beyond the max size defined in the
-> swap header.
-> 
-> This is the same type of bug that iomap used to have, and was fixed in
-> commit 36ca7943ac18ae ("mm/swap: consider max pages in
-> iomap_swapfile_add_extent").
-> 
-> Fixes: ed46ff3d423780 ("Btrfs: support swap files")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Hi,
 
-Validated it to make sure it fixes the problem, you can add
+On 10/24/21 5:31 PM, Goffredo Baroncelli wrote:
+> From: Goffredo Baroncelli <kreijack@inwind.it>
+> 
+> When this mode is enabled, the chunk allocation policy is modified as
+> follow.
+> 
+> Each disk may have a different tag:
+> - BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
+> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
+> - BTRFS_DEV_ALLOCATION_DATA_ONLY
+> - BTRFS_DEV_ALLOCATION_PREFERRED_DATA (default)
+> 
+> Where:
+> - ALLOCATION_PREFERRED_X means that it is preferred to use this disk for
+> the X chunk type (the other type may be allowed when the space is low)
+> - ALLOCATION_X_ONLY means that it is used *only* for the X chunk type.
+> This means also that it is a preferred choice.
+> 
+> Each time the allocator allocates a chunk of type X , first it takes the
+> disks tagged as ALLOCATION_X_ONLY or ALLOCATION_PREFERRED_X; if the space
+> is not enough, it uses also the disks tagged as ALLOCATION_METADATA_ONLY;
+> if the space is not enough, it uses also the other disks, with the
+> exception of the one marked as ALLOCATION_PREFERRED_Y, where Y the other
+> type of chunk (i.e. not X).
 
-Reviewed-and-tested-by: Josef Bacik <josef@toxicpanda.com>
+I read this last paragraph for 5 times now, I think, but I still have no
+idea what's going on here. Can you rephrase it? It's more complex than
+the actual code below.
 
-Thanks,
+What the above text tells me is that if I start filling up my disks, it
+will happily write DATA to METADATA_ONLY disks when the DATA ones are
+full? And if the METADATA_ONLY disks are full with DATA also, it will
+not write DATA into PREFERRED_METADATA disks.
 
-Josef
+I don't think that's what the code actually does. At least, I hope not.
+
+Hans
+
+> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
+> ---
+>  fs/btrfs/volumes.c | 98 +++++++++++++++++++++++++++++++++++++++++++++-
+>  fs/btrfs/volumes.h |  1 +
+>  2 files changed, 98 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 8ac99771f43c..7ee9c6e7bd44 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -153,6 +153,20 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+>  	},
+>  };
+>  
+> +#define BTRFS_DEV_ALLOCATION_MASK ((1ULL << \
+> +		BTRFS_DEV_ALLOCATION_MASK_BIT_COUNT) - 1)
+> +#define BTRFS_DEV_ALLOCATION_MASK_COUNT (1ULL << \
+> +		BTRFS_DEV_ALLOCATION_MASK_BIT_COUNT)
+> +
+> +static const char alloc_hint_map[BTRFS_DEV_ALLOCATION_MASK_COUNT] = {
+> +	[BTRFS_DEV_ALLOCATION_DATA_ONLY] = -1,
+> +	[BTRFS_DEV_ALLOCATION_PREFERRED_DATA] = 0,
+> +	[BTRFS_DEV_ALLOCATION_PREFERRED_METADATA] = 1,
+> +	[BTRFS_DEV_ALLOCATION_METADATA_ONLY] = 2,
+> +	/* the other values are set to 0 */
+> +};
+> +
+> +
+>  const char *btrfs_bg_type_to_raid_name(u64 flags)
+>  {
+>  	const int index = btrfs_bg_flags_to_raid_index(flags);
+> @@ -4997,13 +5011,18 @@ static int btrfs_add_system_chunk(struct btrfs_fs_info *fs_info,
+>  }
+>  
+>  /*
+> - * sort the devices in descending order by max_avail, total_avail
+> + * sort the devices in descending order by alloc_hint,
+> + * max_avail, total_avail
+>   */
+>  static int btrfs_cmp_device_info(const void *a, const void *b)
+>  {
+>  	const struct btrfs_device_info *di_a = a;
+>  	const struct btrfs_device_info *di_b = b;
+>  
+> +	if (di_a->alloc_hint > di_b->alloc_hint)
+> +		return -1;
+> +	if (di_a->alloc_hint < di_b->alloc_hint)
+> +		return 1;
+>  	if (di_a->max_avail > di_b->max_avail)
+>  		return -1;
+>  	if (di_a->max_avail < di_b->max_avail)
+> @@ -5166,6 +5185,8 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+>  	int ndevs = 0;
+>  	u64 max_avail;
+>  	u64 dev_offset;
+> +	int hint;
+> +	int i;
+>  
+>  	/*
+>  	 * in the first pass through the devices list, we gather information
+> @@ -5218,16 +5239,91 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+>  		devices_info[ndevs].max_avail = max_avail;
+>  		devices_info[ndevs].total_avail = total_avail;
+>  		devices_info[ndevs].dev = device;
+> +
+> +		if ((ctl->type & BTRFS_BLOCK_GROUP_DATA) &&
+> +		     (ctl->type & BTRFS_BLOCK_GROUP_METADATA)) {
+> +			/*
+> +			 * if mixed bg set all the alloc_hint
+> +			 * fields to the same value, so the sorting
+> +			 * is not affected
+> +			 */
+> +			devices_info[ndevs].alloc_hint = 0;
+> +		} else if (ctl->type & BTRFS_BLOCK_GROUP_DATA) {
+> +			hint = device->type & BTRFS_DEV_ALLOCATION_MASK;
+> +
+> +			/*
+> +			 * skip BTRFS_DEV_METADATA_ONLY disks
+> +			 */
+> +			if (hint == BTRFS_DEV_ALLOCATION_METADATA_ONLY)
+> +				continue;
+> +			/*
+> +			 * if a data chunk must be allocated,
+> +			 * sort also by hint (data disk
+> +			 * higher priority)
+> +			 */
+> +			devices_info[ndevs].alloc_hint = -alloc_hint_map[hint];
+> +		} else { /* BTRFS_BLOCK_GROUP_METADATA */
+> +			hint = device->type & BTRFS_DEV_ALLOCATION_MASK;
+> +
+> +			/*
+> +			 * skip BTRFS_DEV_DATA_ONLY disks
+> +			 */
+> +			if (hint == BTRFS_DEV_ALLOCATION_DATA_ONLY)
+> +				continue;
+> +			/*
+> +			 * if a data chunk must be allocated,
+> +			 * sort also by hint (metadata hint
+> +			 * higher priority)
+> +			 */
+> +			devices_info[ndevs].alloc_hint = alloc_hint_map[hint];
+> +		}
+> +
+>  		++ndevs;
+>  	}
+>  	ctl->ndevs = ndevs;
+>  
+> +	/*
+> +	 * no devices available
+> +	 */
+> +	if (!ndevs)
+> +		return 0;
+> +
+>  	/*
+>  	 * now sort the devices by hole size / available space
+>  	 */
+>  	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+>  	     btrfs_cmp_device_info, NULL);
+>  
+> +	/*
+> +	 * select the minimum set of disks grouped by hint that
+> +	 * can host the chunk
+> +	 */
+> +	ndevs = 0;
+> +	while (ndevs < ctl->ndevs) {
+> +		hint = devices_info[ndevs++].alloc_hint;
+> +		while (ndevs < ctl->ndevs &&
+> +		       devices_info[ndevs].alloc_hint == hint)
+> +				ndevs++;
+> +		if (ndevs >= ctl->devs_min)
+> +			break;
+> +	}
+> +
+> +	BUG_ON(ndevs > ctl->ndevs);
+> +	ctl->ndevs = ndevs;
+> +
+> +	/*
+> +	 * the next layers require the devices_info ordered by
+> +	 * max_avail. If we are returing two (or more) different
+> +	 * group of alloc_hint, this is not always true. So sort
+> +	 * these gain.
+> +	 */
+> +
+> +	for (i = 0 ; i < ndevs ; i++)
+> +		devices_info[i].alloc_hint = 0;
+> +
+> +	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+> +	     btrfs_cmp_device_info, NULL);
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index b8250f29df6e..37eb37b533c5 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -369,6 +369,7 @@ struct btrfs_device_info {
+>  	u64 dev_offset;
+>  	u64 max_avail;
+>  	u64 total_avail;
+> +	int alloc_hint;
+>  };
+>  
+>  struct btrfs_raid_attr {
+> 
+
