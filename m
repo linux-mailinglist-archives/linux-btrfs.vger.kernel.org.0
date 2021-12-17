@@ -2,240 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69660478CFB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 15:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07137478E63
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 15:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhLQOCU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Dec 2021 09:02:20 -0500
-Received: from out20-27.mail.aliyun.com ([115.124.20.27]:36182 "EHLO
-        out20-27.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhLQOCT (ORCPT
+        id S237562AbhLQOsq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Dec 2021 09:48:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237531AbhLQOsn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Dec 2021 09:02:19 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436326|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.04242-0.00138574-0.956194;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.MHYD0o3_1639749737;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.MHYD0o3_1639749737)
-          by smtp.aliyun-inc.com(10.147.41.199);
-          Fri, 17 Dec 2021 22:02:17 +0800
-Date:   Fri, 17 Dec 2021 22:02:23 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: fix reserved space leak on log tree nodes after transaction abort
-In-Reply-To: <049306dd5efc8cbe11501e7efebf56f615ef7360.1639744398.git.fdmanana@suse.com>
-References: <f0bed6300fc1dcad405c894640f7140b4a8e04f4.1639743512.git.fdmanana@suse.com> <049306dd5efc8cbe11501e7efebf56f615ef7360.1639744398.git.fdmanana@suse.com>
-Message-Id: <20211217220222.DF7C.409509F4@e16-tech.com>
+        Fri, 17 Dec 2021 09:48:43 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610ACC06173E
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Dec 2021 06:48:43 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id p3so2536021qvj.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Dec 2021 06:48:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2ggfJ9U6oUOBYbWhIUlZH6DOhP/ZohknODpQm3sbOs0=;
+        b=hxswZSzSp+zRzuQldB2s/cGpdPJXhYhRW7ro/7MC0NUaaplTZvvvDPOSQncVcs6IDx
+         Fx5Y0zSwpR7MiI+20e9lxcScw2+aWjxSAQ1glev00cZjaqrPSVKklCIp1KGbRx36jinh
+         BmcFAIXpKxIvWE6mwYtlEvOpi6KWypaf3RGDxumGVh4U2fC2uePjdULW8Z8W+5WSDIaN
+         VP3PjvkNnQV+vwDvRlpgKqMuIrVhDJ729c/jOlwoOuSzBnmMK5/APClKNRlAuNsO3ziV
+         Ek0OQOLLNIQ4BXU/Eo5SwMfrE0ilYl94+GDEgI5CCJPDkpTVdYovT82euZjW7F68k/du
+         LXrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2ggfJ9U6oUOBYbWhIUlZH6DOhP/ZohknODpQm3sbOs0=;
+        b=eTNtE7PsB3l44N+p3DvWJp7KSK1z4PwEiXRZF8YHVwfRQASvQxos1RatNP3Ef/WfMw
+         ms+V1tHrIYuUu3zZpXEHOgU5u7GToY1GwcDvdTTJRT2NZpjl9+31imURb5d0ac281H43
+         jixI0Ep/BjF8tQMFTJo/APUzd60cgJvaXHukTpqkED+jJA0F5RNWpjT/FTWnLYVbpgGh
+         /caZQYqRQ6K19MLlTQ0gVElCi8C5B7ZMa3T0k9/W5fhzzYU/GszaZ2hnZhuelizKI7fp
+         +5ujsXiS8GxmjsLdxc2eU0EKS98P5na0574a4ehSJ0NPGp/PMbNOej58PXUzX8rfyK6m
+         pYEA==
+X-Gm-Message-State: AOAM530LlmvRZERDHq+Olv/n9O+llmv7FtwebeNZELkGZ8+UkrREo6Lg
+        4RioWJGAW+NnRZRbX8YUlbll0ryjbttXxw==
+X-Google-Smtp-Source: ABdhPJyZR/0eA+/sVVGIlEdavVTl9aGjpkiq4koU3X19wN9g1o/ReWVcTX4pU01n9Ws++v4jR04quQ==
+X-Received: by 2002:ad4:5cef:: with SMTP id iv15mr2476163qvb.102.1639752522219;
+        Fri, 17 Dec 2021 06:48:42 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id e20sm7446083qty.14.2021.12.17.06.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Dec 2021 06:48:41 -0800 (PST)
+Date:   Fri, 17 Dec 2021 09:48:40 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     kreijack@inwind.it, David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC][V8][PATCH 0/5] btrfs: allocation_hint mode
+Message-ID: <YbyjSBX3tbpLax7P@localhost.localdomain>
+References: <Ybe34gfrxl8O89PZ@localhost.localdomain>
+ <YbfN8gXHsZ6KZuil@hungrycats.org>
+ <71e523dc-2854-ca9b-9eee-e36b0bd5c2cb@libero.it>
+ <Ybj40IuxdaAy75Ue@hungrycats.org>
+ <Ybj/0ITsCQTBLkQF@localhost.localdomain>
+ <be4e6028-7d1d-6ba9-d16f-f5f38a79866f@libero.it>
+ <Ybn0aq548kQsQu+z@localhost.localdomain>
+ <633ccf8f-3118-1dda-69d2-0398ef3ffdb7@libero.it>
+ <YbqOwN7SW7NWm5/S@localhost.localdomain>
+ <Ybwi58Uivf29oGhw@hungrycats.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ybwi58Uivf29oGhw@hungrycats.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Dec 17, 2021 at 12:40:55AM -0500, Zygo Blaxell wrote:
+> On Wed, Dec 15, 2021 at 07:56:32PM -0500, Josef Bacik wrote:
+> > On Wed, Dec 15, 2021 at 07:53:40PM +0100, Goffredo Baroncelli wrote:
+> > > On 12/15/21 14:58, Josef Bacik wrote:
+> > > > On Tue, Dec 14, 2021 at 09:41:21PM +0100, Goffredo Baroncelli wrote:
+> > > > > On 12/14/21 21:34, Josef Bacik wrote:
+> > > > > > On Tue, Dec 14, 2021 at 03:04:32PM -0500, Zygo Blaxell wrote:
+> > > > > > > On Tue, Dec 14, 2021 at 08:03:45PM +0100, Goffredo Baroncelli wrote:
+> > > > > 
+> > > > > > > 
+> > > > > > > I don't have a strong preference for either sysfs or ioctl, nor am I
+> > > > > > > opposed to simply implementing both.  I'll let someone who does have
+> > > > > > > such a preference make their case.
+> > > > > > 
+> > > > > > I think echo'ing a name into sysfs is better than bits for sure.  However I want
+> > > > > > the ability to set the device properties via a btrfs-progs command offline so I
+> > > > > > can setup the storage and then mount the file system.  I want
+> > > > > > 
+> > > > > > 1) The sysfs interface so you can change things on the fly.  This stays
+> > > > > >      persistent of course, so the way it works is perfect.
+> > > > > > 
+> > > > > > 2) The btrfs-progs command sets it on offline devices.  If you point it at a
+> > > > > >      live mounted fs it can simply use the sysfs thing to do it live.
+> > > > > 
+> > > > > #2 is currently not implemented. However I think that we should do.
+> > > > > 
+> > > > > The problem is that we need to update both:
+> > > > > 
+> > > > > - the superblock		(simple)
+> > > > > - the dev_item item		(not so simple...)
+> > > > > 
+> > > > > What about using only bits from the superblock to store this property ?
+> > > > 
+> > > > I'm looking at the patches and you only are updating the dev_item, am I missing
+> > > > something for the super block?
+> > > 
+> > > When btrfs write the superblocks (see write_all_supers() in disk-io.c), it copies
+> > > the dev_item fields (contained in fs_info->fs_devices->devices lists) in each
+> > > superblock before updating it.
+> > > 
+> > 
+> > Oh right.  Still, I hope we're doing this correctly in btrfs-progs, if not
+> > that's a problem.
+> > 
+> > > > 
+> > > > For offline all you would need to do is do the normal open_ctree,
+> > > > btrfs_search_slot to the item and update the device item type, that's
+> > > > straightforward.
+> > > > 
+> > > > For online if you use btrfs prop you can see if the fs is mounted and just find
+> > > > the sysfs file to modify and do it that way.
+> > > > 
+> > > > But this also brings up another point, we're going to want a compat bit for
+> > > > this.  It doesn't make the fs unusable for old kernels, so just a normal
+> > > > BTRFS_FS_COMPAT_<whatever> flag is fine.  If the setting gets set you set the
+> > > > compat flag.
+> > > 
+> > > Why we need a "compact" bit ? The new kernels know how treat the dev_item_type field.
+> > > The old kernels ignore it. The worst thing is that a filesystem may require a balance
+> > > before reaching a good shape (i.e. the metadata on ssd and the data on a spinning disk)
+> > 
+> > So you can do the validation below, tho I'm thinking I care about it less, if we
+> > just make sure that type is correct regardless of the compat bit then that's
+> > fine.  Thanks,
+> 
+> In theory if you get stuck in an impossible allocation situation (like all
+> your disks are data-only and you run out of metadata space) then one way
+> to recover from it is to mount with an old kernel which doesn't respect
+> the type bits.  Another way to recover would be to flip the type bits
+> while the filesystem is offline with btrfs-progs.  A third way would be to
+> have a mount option for newer kernels to ignore the allocation bits like
+> old kernels do (yes I know I already said I didn't like that idea).
+> 
 
-fstests generic/648 still trigger this two WARNING
-(btrfs_put_block_group/btrfs_free_block_groups) even with this path.
+This is the "preferred" vs "only" category.  You set "preferred" if you want to
+be able to handle failures cleanly, you set "only" if you'd rather reprovision a
+box than lose performance.
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/12/17
+> If we have a bit that says "old kernels don't mount this filesystem any
+> more" then we lose one of those recovery options, and the other options
+> aren't implemented yet.
+> 
+> While I think of it, the metadata reservation system eventually needs
+> to know that it can't use data-only devices for metadata, the same way
+> that df eventually needs to know about metadata-only devices.
+> 
 
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> After the recent changes by commit c2e39305299f01 ("btrfs: clear extent
-> buffer uptodate when we fail to write it") and its followup fix that has
-> the subject "btrfs: check WRITE_ERR when trying to read an extent buffer"
-> (not yet in Linus' tree), after a transaction abort we can often end up
-> not unreserving the space that was reserved for log tree extent buffers.
-> 
-> This happens because if writeback for a log tree extent buffer failed,
-> than we have cleared the EXTENT_BUFFER_UPTODATE from the extent buffer
-> and we have also set the bit EXTENT_BUFFER_WRITE_ERR on it. Later on,
-> when trying to free the log tree with free_log_tree(), which iterates
-> over the tree, we can end up getting an -EIO error when trying to read
-> a node or leaf, since read_extent_buffer_pages() returns -EIO if an
-> extent buffer does not have EXTENT_BUFFER_UPTODATE set and has the
-> EXTENT_BUFFER_WRITE_ERR bit set. Getting that -EIO means we return
-> immediately as we can not iterate over the entire tree.
-> 
-> In that case we never update the reserved space for every extent buffer
-> in the respective block group and space_info object. When this happens
-> we get the following traces when unmmounting the filesystem:
-> 
-> [174957.284509] BTRFS: error (device dm-0) in cleanup_transaction:1913: errno=-5 IO failure
-> [174957.286497] BTRFS: error (device dm-0) in free_log_tree:3420: errno=-5 IO failure
-> [174957.399379] ------------[ cut here ]------------
-> [174957.402497] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:127 btrfs_put_block_group+0x77/0xb0 [btrfs]
-> [174957.407523] Modules linked in: btrfs overlay dm_zero (...)
-> [174957.424917] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
-> [174957.426689] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [174957.428716] RIP: 0010:btrfs_put_block_group+0x77/0xb0 [btrfs]
-> [174957.429717] Code: 21 48 8b bd (...)
-> [174957.432867] RSP: 0018:ffffb70d41cffdd0 EFLAGS: 00010206
-> [174957.433632] RAX: 0000000000000001 RBX: ffff8b09c3848000 RCX: ffff8b0758edd1c8
-> [174957.434689] RDX: 0000000000000001 RSI: ffffffffc0b467e7 RDI: ffff8b0758edd000
-> [174957.436068] RBP: ffff8b0758edd000 R08: 0000000000000000 R09: 0000000000000000
-> [174957.437114] R10: 0000000000000246 R11: 0000000000000000 R12: ffff8b09c3848148
-> [174957.438140] R13: ffff8b09c3848198 R14: ffff8b0758edd188 R15: dead000000000100
-> [174957.439317] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
-> [174957.440402] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [174957.441164] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
-> [174957.442117] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [174957.443076] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [174957.443948] Call Trace:
-> [174957.444264]  <TASK>
-> [174957.444538]  btrfs_free_block_groups+0x255/0x3c0 [btrfs]
-> [174957.445238]  close_ctree+0x301/0x357 [btrfs]
-> [174957.445803]  ? call_rcu+0x16c/0x290
-> [174957.446250]  generic_shutdown_super+0x74/0x120
-> [174957.446832]  kill_anon_super+0x14/0x30
-> [174957.447305]  btrfs_kill_super+0x12/0x20 [btrfs]
-> [174957.447890]  deactivate_locked_super+0x31/0xa0
-> [174957.448440]  cleanup_mnt+0x147/0x1c0
-> [174957.448888]  task_work_run+0x5c/0xa0
-> [174957.449336]  exit_to_user_mode_prepare+0x1e5/0x1f0
-> [174957.449934]  syscall_exit_to_user_mode+0x16/0x40
-> [174957.450512]  do_syscall_64+0x48/0xc0
-> [174957.450980]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [174957.451605] RIP: 0033:0x7f328fdc4a97
-> [174957.452059] Code: 03 0c 00 f7 (...)
-> [174957.454320] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> [174957.455262] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
-> [174957.456131] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
-> [174957.457118] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
-> [174957.458005] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
-> [174957.459113] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
-> [174957.460193]  </TASK>
-> [174957.460534] irq event stamp: 0
-> [174957.461003] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [174957.461947] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.463147] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.465116] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [174957.466323] ---[ end trace bc7ee0c490bce3af ]---
-> [174957.467282] ------------[ cut here ]------------
-> [174957.468184] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:3976 btrfs_free_block_groups+0x330/0x3c0 [btrfs]
-> [174957.470066] Modules linked in: btrfs overlay dm_zero (...)
-> [174957.483137] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
-> [174957.484691] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [174957.486853] RIP: 0010:btrfs_free_block_groups+0x330/0x3c0 [btrfs]
-> [174957.488050] Code: 00 00 00 ad de (...)
-> [174957.491479] RSP: 0018:ffffb70d41cffde0 EFLAGS: 00010206
-> [174957.492520] RAX: ffff8b08d79310b0 RBX: ffff8b09c3848000 RCX: 0000000000000000
-> [174957.493868] RDX: 0000000000000001 RSI: fffff443055ee600 RDI: ffffffffb1131846
-> [174957.495183] RBP: ffff8b08d79310b0 R08: 0000000000000000 R09: 0000000000000000
-> [174957.496580] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8b08d7931000
-> [174957.498027] R13: ffff8b09c38492b0 R14: dead000000000122 R15: dead000000000100
-> [174957.499438] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
-> [174957.500990] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [174957.502117] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
-> [174957.503513] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [174957.504864] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [174957.506167] Call Trace:
-> [174957.506654]  <TASK>
-> [174957.507047]  close_ctree+0x301/0x357 [btrfs]
-> [174957.507867]  ? call_rcu+0x16c/0x290
-> [174957.508567]  generic_shutdown_super+0x74/0x120
-> [174957.509447]  kill_anon_super+0x14/0x30
-> [174957.510194]  btrfs_kill_super+0x12/0x20 [btrfs]
-> [174957.511123]  deactivate_locked_super+0x31/0xa0
-> [174957.511976]  cleanup_mnt+0x147/0x1c0
-> [174957.512610]  task_work_run+0x5c/0xa0
-> [174957.513309]  exit_to_user_mode_prepare+0x1e5/0x1f0
-> [174957.514231]  syscall_exit_to_user_mode+0x16/0x40
-> [174957.515069]  do_syscall_64+0x48/0xc0
-> [174957.515718]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [174957.516688] RIP: 0033:0x7f328fdc4a97
-> [174957.517413] Code: 03 0c 00 f7 d8 (...)
-> [174957.521052] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> [174957.522514] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
-> [174957.523950] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
-> [174957.525375] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
-> [174957.526763] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
-> [174957.528058] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
-> [174957.529404]  </TASK>
-> [174957.529843] irq event stamp: 0
-> [174957.530256] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [174957.531061] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.532075] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.533083] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [174957.533865] ---[ end trace bc7ee0c490bce3b0 ]---
-> [174957.534452] BTRFS info (device dm-0): space_info 4 has 1070841856 free, is not full
-> [174957.535404] BTRFS info (device dm-0): space_info total=1073741824, used=2785280, pinned=0, reserved=49152, may_use=0, readonly=65536 zone_unusable=0
-> [174957.537029] BTRFS info (device dm-0): global_block_rsv: size 0 reserved 0
-> [174957.537859] BTRFS info (device dm-0): trans_block_rsv: size 0 reserved 0
-> [174957.538697] BTRFS info (device dm-0): chunk_block_rsv: size 0 reserved 0
-> [174957.539552] BTRFS info (device dm-0): delayed_block_rsv: size 0 reserved 0
-> [174957.540403] BTRFS info (device dm-0): delayed_refs_rsv: size 0 reserved 0
-> 
-> This is often triggered with test cases generic/475 and generic/648 from
-> fstests, which makes the tests fail.
-> 
-> So fix this by iterating over the io tree that contains the ranges of all
-> log tree metadata extents and call unaccount_log_buffer() for the range of
-> each metadata extent. This is only called during the transaction abort
-> path if we failed to walk over the entire log tree.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
-> 
-> V2: Added missing bit EXTENT_NEED_WAIT.
-> 
->  fs/btrfs/tree-log.c | 32 ++++++++++++++++++++++++++++++--
->  1 file changed, 30 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 4b89ac769347..9062073407fd 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -3402,6 +3402,32 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
->  	return ret;
->  }
->  
-> +/*
-> + * If when freeing a log tree we fail to iterate over the entire tree due to a
-> + * past writeback failure, then we have not properly freed every metadata extent.
-> + * In that case we use this function that does not iterate the log tree but it
-> + * still adjusts the reserved bytes in the block group of each metadata extent.
-> + */
-> +static void unaccount_all_log_buffers(struct btrfs_root *log)
-> +{
-> +	struct btrfs_fs_info *fs_info = log->fs_info;
-> +	u64 start = 0;
-> +	u64 end;
-> +
-> +	while (!find_first_extent_bit(&log->dirty_log_pages, start, &start, &end,
-> +		      EXTENT_DIRTY | EXTENT_NEW | EXTENT_NEED_WAIT, NULL)) {
-> +		u64 bytenr;
-> +
-> +		for (bytenr = start; bytenr < end; bytenr += fs_info->nodesize) {
-> +			unaccount_log_buffer(fs_info, bytenr);
-> +			cond_resched();
-> +		}
-> +
-> +		start = end + 1;
-> +	}
-> +
-> +}
-> +
->  static void free_log_tree(struct btrfs_trans_handle *trans,
->  			  struct btrfs_root *log)
->  {
-> @@ -3414,10 +3440,12 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
->  	if (log->node) {
->  		ret = walk_log_tree(trans, log, &wc);
->  		if (ret) {
-> -			if (trans)
-> +			if (trans) {
->  				btrfs_abort_transaction(trans, ret);
-> -			else
-> +			} else {
->  				btrfs_handle_fs_error(log->fs_info, ret, NULL);
-> +				unaccount_all_log_buffers(log);
-> +			}
->  		}
->  	}
->  
-> -- 
-> 2.33.0
+Yeah, I'm willing to throw that into the power user bucket.  It really only
+affects overcommit, because once we've allocated all our chunks we'll stop
+overcommitting.  There may be some corners that need to be addressed, but we can
+burn those bridges when we get to them.  Thanks,
 
-
+Josef
