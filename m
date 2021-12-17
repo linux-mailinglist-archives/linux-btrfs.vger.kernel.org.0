@@ -2,212 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21404478386
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 04:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75C747849A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 06:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhLQDKu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Dec 2021 22:10:50 -0500
-Received: from bee.birch.relay.mailchannels.net ([23.83.209.14]:54963 "EHLO
-        bee.birch.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229471AbhLQDKu (ORCPT
+        id S233010AbhLQFih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Dec 2021 00:38:37 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40540 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230052AbhLQFig (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Dec 2021 22:10:50 -0500
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 60AF5621310;
-        Fri, 17 Dec 2021 03:10:49 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-        (Authenticated sender: instrampxe0y3a)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 362CD6226C8;
-        Fri, 17 Dec 2021 03:10:48 +0000 (UTC)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-        by 100.114.196.210 (trex/6.4.3);
-        Fri, 17 Dec 2021 03:10:49 +0000
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Battle-Arch: 1c7ffa0e669d40c6_1639710649029_3108255308
-X-MC-Loop-Signature: 1639710649029:3131773081
-X-MC-Ingress-Time: 1639710649029
-Received: from ppp-88-217-34-119.dynamic.mnet-online.de ([88.217.34.119]:59922 helo=heisenberg.fritz.box)
-        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <calestyo@scientia.org>)
-        id 1my3dr-0008Pj-PD; Fri, 17 Dec 2021 03:10:46 +0000
-Message-ID: <36245dcfd13d23eee0add6719b1da0c23e7c3936.camel@scientia.org>
-Subject: Re: ENOSPC while df shows 826.93GiB free
-From:   Christoph Anton Mitterer <calestyo@scientia.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-Date:   Fri, 17 Dec 2021 04:10:39 +0100
-In-Reply-To: <6ed64808-1161-6cea-214c-88a1ac883101@gmx.com>
-References: <f001f3e81d413ea290722c38b14d95f3f1f52249.camel@scientia.org>
-         <25d305e5-c75f-3d71-fc5a-c2019e49bed9@gmx.com>
-         <c64be50bdc99b993b910a7ab019af8d552eeb0d4.camel@scientia.org>
-         <b7b6a6a7-700e-f83d-dae6-581ed6befbef@gmx.com>
-         <3239b2307fae4c7f9e8be9f194d5f3ef470ddb8c.camel@scientia.org>
-         <20211207072128.GL17148@hungrycats.org>
-         <b913833639d11a0242f781d94452e5e31d7cbf1b.camel@scientia.org>
-         <20211207181437.GM17148@hungrycats.org>
-         <2e0f4856d8132f39e5d668929f77aac7ed01d476.camel@scientia.org>
-         <6ed64808-1161-6cea-214c-88a1ac883101@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.2-1 
+        Fri, 17 Dec 2021 00:38:36 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id DECF8F923D; Fri, 17 Dec 2021 00:38:35 -0500 (EST)
+Date:   Fri, 17 Dec 2021 00:38:35 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1: 3078d85c9a10
+ vfs: verify source area in vfs_dedupe_file_range_one()
+Message-ID: <YbwiW5+wLnNH7Cp8@hungrycats.org>
+References: <20211210183456.GP17148@hungrycats.org>
+ <25f4d4fd-1727-1c9f-118a-150d9c263c93@suse.com>
+ <YbfTYFQVGCU0Whce@hungrycats.org>
+ <fc395aed-2cbd-f6e5-d167-632c14a07188@suse.com>
+ <Ybj1jVYu3MrUzVTD@hungrycats.org>
+ <c6125582-a1dc-1114-8211-48437dbf4976@suse.com>
+ <YbrPkZVC/MazdQdc@hungrycats.org>
+ <ab295d78-d250-fe8f-33a5-09cc90d5e406@suse.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AuthUser: calestyo@scientia.org
+In-Reply-To: <ab295d78-d250-fe8f-33a5-09cc90d5e406@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 2021-12-17 at 10:00 +0800, Qu Wenruo wrote:
-> Or, let's change how we output our vanilla `df` command output, by
-> taking metadata free space and unallocated space into consideration,
-> like:
+On Thu, Dec 16, 2021 at 11:29:06PM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 16.12.21 г. 7:33, Zygo Blaxell wrote:
+> > On Wed, Dec 15, 2021 at 12:25:04AM +0200, Nikolay Borisov wrote:
+> >> Huhz, this means there is an open transaction handle somewhere o_O. I
+> >> checked back the stacktraces in your original email but couldn't see
+> >> where that might be coming from. I.e all processes are waiting on
+> >> wait_current_trans and this happens _before_ the transaction handle is
+> >> opened, hence num_extwriters can't have been incremented by them.
+> >>
+> >> When an fs wedges, and you get again num_extwriters can you provde the
+> >> output of "echo w > /proc/sysrq-trigger"
+> > 
+> > Here you go...
+> 
+> <snip>
+> 
+> > 
+> > Again we have "3 locks held" but no list of locks.  WTF is 10883 doing?
+> > Well, first of all it's using 100% CPU in the kernel.  Some samples of
+> > kernel stacks:
+> > 
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] down_read_nested+0x32/0x140
+> > 	[<0>] __btrfs_tree_read_lock+0x2d/0x110
+> > 	[<0>] btrfs_tree_read_lock+0x10/0x20
+> > 	[<0>] btrfs_search_old_slot+0x627/0x8a0
+> > 	[<0>] btrfs_next_old_leaf+0xcb/0x340
+> > 	[<0>] find_parent_nodes+0xcd7/0x1c40
+> > 	[<0>] btrfs_find_all_leafs+0x63/0xb0
+> > 	[<0>] iterate_extent_inodes+0xc8/0x270
+> > 	[<0>] iterate_inodes_from_logical+0x9f/0xe0
+> 
+> That's the real culprit, in this case we are not searching the commit
+> root hence we've attached to the transaction.  So we are doing backref
+> resolution which either:
+> 
+> a) Hits some pathological case and loops for very long time, backref
+> resolution is known to take a lot of time.
 
-Actually I was thinking about this before as well, but that would
-rather just remedy the consequences of that particular ENOSPC situation
-and not prevent it.
+backref resolve is known to take a long time, which is why bees measures
+that time, and avoids extents where the kernel CPU time in LOGICAL_INO
+starts climbing up the exponential curve.  In older kernels performance
+got worse as more extent refs were added, but it did so slowly enough
+that bees could detect and evade the bug before it created multi-second
+transaction latencies.  Since 5.7 this isn't really a problem any more,
+but bees still has this workaround in its code.
 
+This bug is not that bug:  CPU usage in LOGICAL_INO goes from less than
+100 ms to >40 hours (the longest I've let it run before forcing reboot)
+in a single step.  On this test setup the 100 ms threshold is hit about
+once every 18 testing hours, or once per 2.3M LOGICAL_INO calls, and
+it's only 150 ms or so.  Usually these happen when the kernel thread
+gets stuck with the CPU bill for flushing delayed refs or something
+equally harmless, and they happen hours before the lockup (if at all).
 
+In the "take a lot of time" case, we get a lot of warning as the time
+ramps up.  In this case, we go from zero to two days with nothing
+in between.
 
-> - If there is no more unallocated space can be utilized
->    Then take metadata free space into consideration, like if there is
->    only 1G free metadata space, while several tera free data space,
->    we only report free metadata space * some ratio as free data
-> space.
+> b) We hit a bug in backref resolution and loop forever which again
+> results in the transaction being kept open.
+> 
+> Now I wonder why you were able to bisect this to the seemingly unrelated
+> commit in the vfs code.
 
-Not sure whether this is so good... because then the shown free space
-is completely made up... it could be like that value if the remaining
-unallocated space and the remaining meta-data space are eaten up as
-"anticipated"... but it could also be much more or much less (depending
-on what actually happens), right?
+Meh, bisection isn't particularly reliable, and this bug might be very
+sensitive to its environment, particularly if it's a race condition
+between two or more threads running a tight loop over the same objects
+(like tree mod log).  I've been running a few more bisection runs and
+they're landing all over the place, including things like TI SoC commits.
+So I'm now testing btrfs commits chosen myself instead of following
+git's bisect algorithm.
 
-What I'd rather do is:
-*If* btrfs realises that there's still free space in the data block
-groups... but really nothing at all (that isn't reserved for special
-operations) is left in the meta-data block groups AND nothing more
-could be allocated... then suddenly drop the shown free space to
-exactly 0.
+There's a definite probability shift somewhere in the middle of v5.11-rc1.
+We go from hourly failure rates below 0.002 at v5.10 to above 0.3 by
+v5.11-rc1.  But that could as easily be a 10-year-old bug surfacing due
+to apparently unrelated changes as it is something that was added in
+v5.11-rc1 itself.
 
-Because from a classic programs point of view, that's what the case, it
-cannot further add any files (not even empty ones).
-
-
-This would also allow programs like dCache to better deal with that
-situation.
-What dCache does is laid out here:
-https://github.com/dCache/dcache/issues/5352#issuecomment-989793555
-
-Perhaps some background... dCache is a distributed storage system, so
-it runs on multiple nodes managing files placed in many filesystems (on
-so called pools).
-Clients first connect via some protocol to a "door node", from which
-they are (at least if the respective protocol supports it) redirected
-to a pool, where dCache thinks the file could be written to (in the
-write case, obviously).
-
-dCache decides that by known all it's pools and monitoring their
-(filesystems') free space. It also has a configurable gap value
-(defaulting to 4GB), which it will try to leave free on a pool.
-
-If the file is expected to fit in (I think it again depends on the
-protocol, whether it really knows in advance how much the client will
-write) while still observing the gap,... plus several more load
-balancing metrics... a pool may be selected and the client redirected.
-
-Seems to me like a fairly reasonable process.
-
-
-So as things are currently with btrfs and when that particular
-situation arises that I've had now (plenty free space in data block
-groups, but zero in meta-data block groups plus zero unallocated
-space), then dCache cannot really deal properly with that:
-
-- df (respectively the usual syscalls) will show it that much more
-space is available than what the gap would help against
-
-- the client tries to write to the pool, there's immediately ENOSPC and
-the transfer is properly aborted with some failure
-
-- but dCache cannot really tell whether the situation is still there or
-not... so it will run into broken write transfers over and over
-
-- typically also, once a client is redirected to a pool, there is no
-going back and retrying the same on another one (at least not
-automatically from within the protocol)... so the failure is really
-"permanent", unless the client itself tries again and then (by chance)
-lands on another pool where the btrfs is still good
-
-
-If df respectively the syscalls would return 0 free space in that
-situation, we'd still have ~800 GB lost (without manual
-intervention)... but at least the middleware should be able to deal
-with that.
-
-
-
-> By this, we under-report the amount of available space, although
-> users
-> may (and for most cases, they indeed can) write way more space than
-> the
-> reported available space, we have done our best to show end users
-> that
-> they need to take care of the fs.
-> Either by deleting unused data, or do proper maintenance before
-> reported
-> available space reaches 0.
-
-Well but at least when the problem has happened, then - without any
-further intervention - no further writes (of new files respectively new
-data) will be possible... so the "under-reporting" is only true if one
-assumes that this intervention will happen.
-
-If it does, like by a some maintenance "minimal" balance as Zygo
-suggested, then the whole situation should anyway not happen, AFAIU.
-And if its by some intervention after the ENOSPC, then the "under-
-reporting" would also go away, as soon as the problem was fixed
-(manually).
-
-
-
-
-But what do you think about my idea of btrfs automatically solving the
-situation by doing a balance on it's own, once the problem of arose?
-
-
-One could also think of something like the following:
-Add some 2nd level global reserve, which is much bigger than the
-current one... at least enough that one could manually balance the fs
-(or btrfs to that automatically if it decided it needs to)
-
-If the problem of this mail thread occurs it could be used to more
-easily solve it without the need to move data to somewhere else (which
-may not always be feasible), because it would be reserved to be e.g.
-used for such a balance.
-
-One could make its dependent on the size of the fs. If the fs has e.g.
-1TB, then reserving e.g. 4GB is barely noticeably. And if the fs should
-be too small, one simply doesn't have the 2nd level global reserve.
-
-If(!) the fs runs full in a proper way (i.e. no more unallocated space
-an meta-data and data block groups are equally full) then btrfs could
-decide to release that 2nd level global reserve back to be used, to
-squeeze out as much space as possible not loosing too much.
-
-Once it's really full, it's full and not much new could happen
-anyway... and the normal global reserve would be still there for the
-*very* important things.
-
-If files should later on be deleted, btrfs could decide to try to re-
-establish the 2nd level global reserve... again to be "reserved" until
-the fs is again really really full and it would be just wasted space.
-
-
-Cheers,
-Chris.
+> Josef any ideas how to proceed further to debug why backref resolution
+> takes a long time and if it's just an infinite loop?
+> 
+> > 	[<0>] btrfs_ioctl_logical_to_ino+0x183/0x210
+> > 	[<0>] btrfs_ioctl+0xa81/0x2fb0
+> > 	[<0>] __x64_sys_ioctl+0x91/0xc0
+> > 	[<0>] do_syscall_64+0x38/0x90
+> > 	[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 	# cat /proc/*/task/10883/stack
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] __tree_mod_log_rewind+0x57/0x250
+> > 	# cat /proc/*/task/10883/stack
+> > 	# cat /proc/*/task/10883/stack
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] free_extent_buffer.part.0+0x51/0xa0
+> > 	# cat /proc/*/task/10883/stack
+> > 	[<0>] find_held_lock+0x38/0x90
+> > 	[<0>] kmem_cache_alloc+0x22d/0x360
+> > 	[<0>] __alloc_extent_buffer+0x2a/0xa0
+> > 	[<0>] btrfs_clone_extent_buffer+0x42/0x130
+> > 	[<0>] btrfs_search_old_slot+0x660/0x8a0
+> > 	[<0>] btrfs_next_old_leaf+0xcb/0x340
+> > 	[<0>] find_parent_nodes+0xcd7/0x1c40
+> > 	[<0>] btrfs_find_all_leafs+0x63/0xb0
+> > 	[<0>] iterate_extent_inodes+0xc8/0x270
+> > 	[<0>] iterate_inodes_from_logical+0x9f/0xe0
+> > 	[<0>] btrfs_ioctl_logical_to_ino+0x183/0x210
+> > 	[<0>] btrfs_ioctl+0xa81/0x2fb0
+> > 	[<0>] __x64_sys_ioctl+0x91/0xc0
+> > 	[<0>] do_syscall_64+0x38/0x90
+> > 	[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 
+> > So it looks like tree mod log is doing some infinite (or very large
+> > finite) looping in the LOGICAL_INO ioctl.  That ioctl holds a transaction
+> > open while it runs, but it's not blocked per se, so it doesn't show up
+> > in SysRq-W output.
+> > 
+> 
