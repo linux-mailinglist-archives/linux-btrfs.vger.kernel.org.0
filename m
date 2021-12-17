@@ -2,97 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8392478EA2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 15:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A69478F18
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Dec 2021 16:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237653AbhLQO40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Dec 2021 09:56:26 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:49545 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234609AbhLQO40 (ORCPT
+        id S237922AbhLQPIW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Dec 2021 10:08:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237909AbhLQPIV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Dec 2021 09:56:26 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id C54943201EA8;
-        Fri, 17 Dec 2021 09:56:24 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 17 Dec 2021 09:56:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=uWdbuu7/zAxioolr7xAyIcvJl7f
-        t2nWZebfQdaeVQgM=; b=qTyIVfTTuCKwH6l/RtdsRYhh3fnDFTl3QPIZVdW8Ul2
-        Wgs3CoS7uOLhMP8VD6l+PdLQGUMLD4ZpbzpAIEENDftY79s/AHXdeBTLWmc0gKIK
-        hqz+BPFoXiFLU5OPaNe4Ow/0IYW5ImxROdf2FBOULsP8cp6N6+CMwdXyCLwnnRzm
-        AbYGpfc69CJTCUC9cLrVk0c9vFnVaSDzr02teeNCZ2eT2gAYrkv0tIjb9V22kvGK
-        5uiAfj7DZsJwBQ1NV0jlCNk8HdEhp//wAPnXxMCfooQEnuvb8pIiwsT8CnmAuN2f
-        muELjq2+1u4Et2xOluBg6QFFiS5L/vkaoOWI8x3W/Lw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=uWdbuu
-        7/zAxioolr7xAyIcvJl7ft2nWZebfQdaeVQgM=; b=GS+AoKvCZdAHon+Y+NBM4l
-        zBWeo2CCgFCZ8ozv1EiSmqLC05P1RJDQ6qgIOBonW6/zdvMghxa/5nJGaQggCtt/
-        +XIcZcu0HzqsANUx7quJJO7+DSwGd6RbO6LZk5y1rfqpVeqNj+l0KCcGztDpu7ff
-        AKLQzUjsHgNqA3r3y/NWsloTwgQgSNuztD+xth2C9vLXHs6ke3dVUlctk3fvpQIH
-        QgvaevPneSu+PvJGf3rHBtDJ6l7wAZ00dhLCz0tsqGcgvER3SmEz2P6Icagl1e/C
-        fKKxI6oR4ATijz00ZLuvIutOZeLQZfLebwHoueuktfix7ArR5mzMATLJzvsWrwHQ
-        ==
-X-ME-Sender: <xms:GKW8YRDCaVTC5rP-8GU73DHcg8bQhRpKaP-ZE3jdF6smUYLlYbN4OA>
-    <xme:GKW8YfgcGAQgmDhVub3BzaNrug6oZAW_zHpqZGo66ynbvOundOEgpaCyMsrGfe8ph
-    980AN7z1q184w>
-X-ME-Received: <xmr:GKW8Ycl9SyS3qOPO-nc1rDMVvS9eeqJhJtCzlfwqwEOD_ABemeUqNK3mE-Ab4GkzL-t35I6FiFoHhJmr7dbTkBvoaL2xGQAW>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrleeigdejudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:GKW8YbyQVs8WHIBUt1xbmrEsaG4ynJLPiLjFEqW9XjSZLwZHKsB40g>
-    <xmx:GKW8YWRMeL8UOK3FncxlMMF-hn74n_WIfZWpEcGV4LHQhFbM9kbewQ>
-    <xmx:GKW8Yeb68D_1TWKTobksf4p2omVZ3ayXjipgtZ47RRrXPP9HTJiKaA>
-    <xmx:GKW8YVHLC90QWDhTrBQ_D591XFWi7s90PtGJFYWyAFgbEZ5ZQc8Pbg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 17 Dec 2021 09:56:23 -0500 (EST)
-Date:   Fri, 17 Dec 2021 15:56:21 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH stable-5.15.y 0/4] backport test case btrfs/216 fixes
-Message-ID: <YbylFav0uyKztfKX@kroah.com>
-References: <cover.1639658429.git.anand.jain@oracle.com>
+        Fri, 17 Dec 2021 10:08:21 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C35C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Dec 2021 07:08:21 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id js9so2591701qvb.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Dec 2021 07:08:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eqFQ7i3QDcyqT2Ls6j3G58hfc9FCQlrooRih/ePV+Y8=;
+        b=2s0tZ+9NjSOnziq2qqozAhdaGvifSsd52xOlCH9NGlMvsli7W7C1hVx671en2ldxJv
+         rRlgFGTkVlq+Z2CHUWK1Z1jV2I0tqHm3YP2OJPEkhpb7Xfga9JaTXrzZoJv+yZ63z7/h
+         luydyd1UKZOhKflAP6tOSta0kswQn3GL8H8XxkANmQJ4XjriRtIJSckUpqBmwrhdEq8d
+         axuhg1pg+P89RPHn/cOJzAj91c+fg3dBrxsDrk1IhgIwlDx8cv8CtopbYNhkjKZiNCeS
+         aX872VR3dMMuOt4pnBlgXwo9AUrs7zbL35GpiVYEsNVlHi9EhdAfa0gVZszVN3dcFaCV
+         qJvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eqFQ7i3QDcyqT2Ls6j3G58hfc9FCQlrooRih/ePV+Y8=;
+        b=FqQUVERalfHAvEo12CnRQ5OxQi9QoeBUZeUMZZ6Oqsneoap7kgzqngolIxJYXselTL
+         xveXKR462VeMqx7w1E1WrM3tgy7qcx+z4Cnggw+0p6DoLxV+tJpyhJU26K0t7Lb75qh6
+         IaKRiN2eRq148pBNC0tBC2fK0Rd5lr1bHkt+R2VstXlA+B+4Y8Bv30ofEX7zeG65tVVK
+         OWekINToZYKrwI7ZyaQaSgaNchMH5FQfnVy9KTjF3CGDCUQOHe5II/1+6weCbC+FpTzP
+         mNEplatcVm5gD17XGsvfFkwGKQTNUKr5AeqjBnC0soKpaz3Q29d8eNRctGtd3W2kPyKV
+         n+wQ==
+X-Gm-Message-State: AOAM531tIn8zxgKcuWIwZVQsGG+yWsl8FgyzqElO8En2AFsy+BwgphNv
+        1ll4ts+NUjWfDLQ5y7m2n5Gqnw==
+X-Google-Smtp-Source: ABdhPJw0xPhCiTDe4W5jCBhnIX8MEzW7DCn+UP1w1MoAMf7qv7Ms7ZU/S+PZ8PXJa3YWiEaJ2RTJMg==
+X-Received: by 2002:ad4:4eac:: with SMTP id ed12mr2836052qvb.59.1639753699813;
+        Fri, 17 Dec 2021 07:08:19 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id d11sm6695181qtj.4.2021.12.17.07.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Dec 2021 07:08:19 -0800 (PST)
+Date:   Fri, 17 Dec 2021 10:08:17 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: respect the max size in the header when
+ activating swap file
+Message-ID: <Ybyn4VfgnlXVHdUW@localhost.localdomain>
+References: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1639658429.git.anand.jain@oracle.com>
+In-Reply-To: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 09:04:09PM +0800, Anand Jain wrote:
-> In an attempt to make all the fstests test cases pass on stable-5.15.y,
-> backport fixes for the test case btrfs/216.
+On Thu, Dec 16, 2021 at 03:00:32PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Anand Jain (4):
->   btrfs: convert latest_bdev type to btrfs_device and rename
->   btrfs: use latest_dev in btrfs_show_devname
->   btrfs: update latest_dev when we create a sprout device
->   btrfs: remove stale comment about the btrfs_show_devname
+> If we extended the size of a swapfile after its header was created (by the
+> mkswap utility) and then try to activate it, we will map the entire file
+> when activating the swap file, instead of limiting to the max size defined
+> in the swap file's header.
 > 
->  fs/btrfs/disk-io.c   |  6 +++---
->  fs/btrfs/extent_io.c |  2 +-
->  fs/btrfs/inode.c     |  2 +-
->  fs/btrfs/super.c     | 26 ++++++--------------------
->  fs/btrfs/volumes.c   | 19 +++++++------------
->  fs/btrfs/volumes.h   |  6 +++++-
->  6 files changed, 23 insertions(+), 38 deletions(-)
+> Currently test case generic/643 from fstests fails because we do not
+> respect that size limit defined in the swap file's header.
 > 
-> -- 
-> 2.33.1
+> So fix this by not mapping file ranges beyond the max size defined in the
+> swap header.
 > 
+> This is the same type of bug that iomap used to have, and was fixed in
+> commit 36ca7943ac18ae ("mm/swap: consider max pages in
+> iomap_swapfile_add_extent").
+> 
+> Fixes: ed46ff3d423780 ("Btrfs: support swap files")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Now queued up, thanks.
+Validated it to make sure it fixes the problem, you can add
 
-greg k-h
+Reviewed-and-tested-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
