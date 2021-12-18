@@ -2,191 +2,289 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7C34799D9
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Dec 2021 10:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1394479A92
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Dec 2021 12:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhLRJHX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Dec 2021 04:07:23 -0500
-Received: from smtp-31-wd.italiaonline.it ([213.209.13.31]:57639 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229757AbhLRJHX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Dec 2021 04:07:23 -0500
-Received: from [192.168.1.27] ([78.12.25.242])
-        by smtp-31.iol.local with ESMTPA
-        id yVgUm6iKLOKKIyVgUmJnR7; Sat, 18 Dec 2021 10:07:21 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1639818441; bh=497+HmYN3xLjQt8holRA/vlUMkgU+hB9rgSfYyOo9xg=;
-        h=From;
-        b=D0v1KINXnjQ6md72wWrGBLvIJfv0e+vwmlu8Ob7s2OXg4qcfiH5vHDELvdaIx2Nfl
-         HwHlW1Zr8PO3JCzC40OIiRxr4aFLlAto3DcWs6FXzyHrnFYL9JcVBqGHtFICs8nCyR
-         z9fhhmXMsKW4URR2DvrXKlJ34eCCCgIzsHB6Y3hD3Pb1wnG1Ejo0ghBNv87GXiJESL
-         pMsmvZrYXJuplXzLhGcdKIvQuzIO748VFs6AvEALz1oFdnB5e8b4WRf45Ioj+6VKQm
-         Jvff8FlqypK5MOcW+8Gd3mt4y/M/RBY8Mwp/gHcQgGB14+cQUtXuOQb3JEfz6WBVTo
-         O5vHvQHqy253Q==
-X-CNFS-Analysis: v=2.4 cv=QuabYX+d c=1 sm=1 tr=0 ts=61bda4c9 cx=a_exe
- a=IXMPufAKhGEaWfwa3qtiyQ==:117 a=IXMPufAKhGEaWfwa3qtiyQ==:17
- a=IkcTkHD0fZMA:10 a=AOSdHPIagXhFMvAwA9cA:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
- a=QEXdDO2ut3YA:10
-Message-ID: <5afe9f17-d171-c4e5-84f0-24f9a7fa250f@libero.it>
-Date:   Sat, 18 Dec 2021 10:07:18 +0100
+        id S232969AbhLRL1B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Dec 2021 06:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhLRL1A (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 18 Dec 2021 06:27:00 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6DEC061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 03:27:00 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E73960A3A
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 11:27:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88716C36AE5
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 11:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639826819;
+        bh=Pi+niSlRyrXGQL8NYgYwhQKis/b49VW2NopK3ZAr9gg=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=HJygK/raxX83ti1+3+4Aqaw0GHB/k2woPX1Xpqo6/F1Ys1/Uu9qdY+Jd16PIg71bT
+         ljG6HT4F/EOvXc9yyY3iXbBusdkelFVUOFuVzlkTNULNtauCvyENqcqUShn7S2zVNG
+         Dpt695DpCS/a5NlE99KIZXmWyO0uPMcCbm2oQM0zL6os/g78ZWFmj+SbfhwRltnaPw
+         TwxqIUztPojvYI86M6fNk/PxStohN0DrN0BVIUzOlTWYwKVZYsSsx4iNsSJIzy1aGP
+         mjC7xmw6x76MtHNZI0Uij1EJS7xXwu/vQWqSP/UvbnaSYqMxKHXCvM8txqdkI8zvS9
+         8hZ25wAPBDqHA==
+Received: by mail-qt1-f175.google.com with SMTP id z9so5254998qtj.9
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 03:26:59 -0800 (PST)
+X-Gm-Message-State: AOAM530T12dGnHsCDkGRArMHR/h5RyNN9HxGCzyUumUkRfZUKMC+Nlb0
+        3rVq543mevSyrJ2Xc60brOdt23Hyob38PxIaSNA=
+X-Google-Smtp-Source: ABdhPJz+lUu72vbAEZw+7BOwCKdGj/CfbLFNtG1okWgfSlnAGpvY6WM16hJYOTznyPFpXkSTFm4HAZV1bhX2qcGDykM=
+X-Received: by 2002:ac8:5796:: with SMTP id v22mr5659349qta.304.1639826818209;
+ Sat, 18 Dec 2021 03:26:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 4/4] btrfs: add allocator_hint mode
-Content-Language: en-US
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Hans van Kranenburg <hans@knorrie.org>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>
-References: <cover.1635089352.git.kreijack@inwind.it>
- <bf30502eb53ea2c1c05c2ae96c3788d3e327d59e.1635089352.git.kreijack@inwind.it>
- <0fbfde93-3a00-7f20-8891-dd0fa798676e@knorrie.org>
- <5767702c-665f-d1a1-ea65-12eb1db96c51@libero.it>
- <YbzoA6n8D7jT7y/F@hungrycats.org>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <YbzoA6n8D7jT7y/F@hungrycats.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOKz4Ph5WCn/2CUOWe00o+KJ3ONSfkwXEFptUUz+Gwbas7CMOaVJe+jRmCqTC7ryhmyc0JvnUTKbz0G9Cz/j6auybhCMxooDq3jM5xFY/Q2MxNFi/X2p
- fafJGxNtyIAmc59WPEP0mbW79adWz84o/9ImNUcq6FPxk349D0/zlOD7fAkvq4KTzrKsrO0+erEyaty3QQinQD/tkUpJI9/94ZklKqOAM4YlhkA9LVScpudL
- f4XSg7g5WuPqMNNbC/kpYt3L7Du+80PSMl4vkyrNo5zUkUiNABfRnINdrqQ2Q5sj2ddRNue/sv/XSdIU5FMUG5owt38W+i0PCZ2Nx5NWmEICf6az+a5qSIyO
- EsRlk+1N
+References: <f0bed6300fc1dcad405c894640f7140b4a8e04f4.1639743512.git.fdmanana@suse.com>
+ <049306dd5efc8cbe11501e7efebf56f615ef7360.1639744398.git.fdmanana@suse.com>
+In-Reply-To: <049306dd5efc8cbe11501e7efebf56f615ef7360.1639744398.git.fdmanana@suse.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Sat, 18 Dec 2021 11:26:22 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4c-Soi5i1POLOmTLQDW-acEWTF3WagLc7J7ASe_juN6w@mail.gmail.com>
+Message-ID: <CAL3q7H4c-Soi5i1POLOmTLQDW-acEWTF3WagLc7J7ASe_juN6w@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: fix reserved space leak on log tree nodes after
+ transaction abort
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/17/21 20:41, Zygo Blaxell wrote:
-> On Fri, Dec 17, 2021 at 07:28:28PM +0100, Goffredo Baroncelli wrote:
->> On 12/17/21 16:58, Hans van Kranenburg wrote:
-[...]
->> -----------------------------
->> The chunk allocation policy is modified as follow.
->>
->> Each disk may have one of the following tags:
->> - BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
->> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
->> - BTRFS_DEV_ALLOCATION_DATA_ONLY
->> - BTRFS_DEV_ALLOCATION_PREFERRED_DATA (default)
-> 
-> Is it too late to rename these?  The order of the words is inconsistent
-> and the English usage is a bit odd.
-> 
-> I'd much rather have:
-> 
->> - BTRFS_DEV_ALLOCATION_PREFER_METADATA
->> - BTRFS_DEV_ALLOCATION_ONLY_METADATA
->> - BTRFS_DEV_ALLOCATION_ONLY_DATA
->> - BTRFS_DEV_ALLOCATION_PREFER_DATA (default)
-> 
-> English speakers would say "[I/we/you] prefer X" or "X [is] preferred".
-> 
-> or
-> 
->> - BTRFS_DEV_ALLOCATION_METADATA_PREFERRED
->> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
->> - BTRFS_DEV_ALLOCATION_DATA_ONLY
->> - BTRFS_DEV_ALLOCATION_DATA_PREFERRED (default)
-> 
-> I keep typing "data_preferred" and "only_data" when it's really
-> "preferred_data" and "data_only" because they're not consistent.
-> 
+On Fri, Dec 17, 2021 at 5:51 PM <fdmanana@kernel.org> wrote:
+>
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> After the recent changes by commit c2e39305299f01 ("btrfs: clear extent
+> buffer uptodate when we fail to write it") and its followup fix that has
+> the subject "btrfs: check WRITE_ERR when trying to read an extent buffer"
+> (not yet in Linus' tree), after a transaction abort we can often end up
+> not unreserving the space that was reserved for log tree extent buffers.
+>
+> This happens because if writeback for a log tree extent buffer failed,
+> than we have cleared the EXTENT_BUFFER_UPTODATE from the extent buffer
+> and we have also set the bit EXTENT_BUFFER_WRITE_ERR on it. Later on,
+> when trying to free the log tree with free_log_tree(), which iterates
+> over the tree, we can end up getting an -EIO error when trying to read
+> a node or leaf, since read_extent_buffer_pages() returns -EIO if an
+> extent buffer does not have EXTENT_BUFFER_UPTODATE set and has the
+> EXTENT_BUFFER_WRITE_ERR bit set. Getting that -EIO means we return
+> immediately as we can not iterate over the entire tree.
+>
+> In that case we never update the reserved space for every extent buffer
+> in the respective block group and space_info object. When this happens
+> we get the following traces when unmmounting the filesystem:
+>
+> [174957.284509] BTRFS: error (device dm-0) in cleanup_transaction:1913: errno=-5 IO failure
+> [174957.286497] BTRFS: error (device dm-0) in free_log_tree:3420: errno=-5 IO failure
+> [174957.399379] ------------[ cut here ]------------
+> [174957.402497] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:127 btrfs_put_block_group+0x77/0xb0 [btrfs]
+> [174957.407523] Modules linked in: btrfs overlay dm_zero (...)
+> [174957.424917] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
+> [174957.426689] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [174957.428716] RIP: 0010:btrfs_put_block_group+0x77/0xb0 [btrfs]
+> [174957.429717] Code: 21 48 8b bd (...)
+> [174957.432867] RSP: 0018:ffffb70d41cffdd0 EFLAGS: 00010206
+> [174957.433632] RAX: 0000000000000001 RBX: ffff8b09c3848000 RCX: ffff8b0758edd1c8
+> [174957.434689] RDX: 0000000000000001 RSI: ffffffffc0b467e7 RDI: ffff8b0758edd000
+> [174957.436068] RBP: ffff8b0758edd000 R08: 0000000000000000 R09: 0000000000000000
+> [174957.437114] R10: 0000000000000246 R11: 0000000000000000 R12: ffff8b09c3848148
+> [174957.438140] R13: ffff8b09c3848198 R14: ffff8b0758edd188 R15: dead000000000100
+> [174957.439317] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
+> [174957.440402] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [174957.441164] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
+> [174957.442117] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [174957.443076] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [174957.443948] Call Trace:
+> [174957.444264]  <TASK>
+> [174957.444538]  btrfs_free_block_groups+0x255/0x3c0 [btrfs]
+> [174957.445238]  close_ctree+0x301/0x357 [btrfs]
+> [174957.445803]  ? call_rcu+0x16c/0x290
+> [174957.446250]  generic_shutdown_super+0x74/0x120
+> [174957.446832]  kill_anon_super+0x14/0x30
+> [174957.447305]  btrfs_kill_super+0x12/0x20 [btrfs]
+> [174957.447890]  deactivate_locked_super+0x31/0xa0
+> [174957.448440]  cleanup_mnt+0x147/0x1c0
+> [174957.448888]  task_work_run+0x5c/0xa0
+> [174957.449336]  exit_to_user_mode_prepare+0x1e5/0x1f0
+> [174957.449934]  syscall_exit_to_user_mode+0x16/0x40
+> [174957.450512]  do_syscall_64+0x48/0xc0
+> [174957.450980]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [174957.451605] RIP: 0033:0x7f328fdc4a97
+> [174957.452059] Code: 03 0c 00 f7 (...)
+> [174957.454320] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> [174957.455262] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
+> [174957.456131] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
+> [174957.457118] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
+> [174957.458005] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
+> [174957.459113] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
+> [174957.460193]  </TASK>
+> [174957.460534] irq event stamp: 0
+> [174957.461003] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [174957.461947] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+> [174957.463147] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+> [174957.465116] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [174957.466323] ---[ end trace bc7ee0c490bce3af ]---
+> [174957.467282] ------------[ cut here ]------------
+> [174957.468184] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:3976 btrfs_free_block_groups+0x330/0x3c0 [btrfs]
+> [174957.470066] Modules linked in: btrfs overlay dm_zero (...)
+> [174957.483137] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
+> [174957.484691] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [174957.486853] RIP: 0010:btrfs_free_block_groups+0x330/0x3c0 [btrfs]
+> [174957.488050] Code: 00 00 00 ad de (...)
+> [174957.491479] RSP: 0018:ffffb70d41cffde0 EFLAGS: 00010206
+> [174957.492520] RAX: ffff8b08d79310b0 RBX: ffff8b09c3848000 RCX: 0000000000000000
+> [174957.493868] RDX: 0000000000000001 RSI: fffff443055ee600 RDI: ffffffffb1131846
+> [174957.495183] RBP: ffff8b08d79310b0 R08: 0000000000000000 R09: 0000000000000000
+> [174957.496580] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8b08d7931000
+> [174957.498027] R13: ffff8b09c38492b0 R14: dead000000000122 R15: dead000000000100
+> [174957.499438] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
+> [174957.500990] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [174957.502117] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
+> [174957.503513] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [174957.504864] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [174957.506167] Call Trace:
+> [174957.506654]  <TASK>
+> [174957.507047]  close_ctree+0x301/0x357 [btrfs]
+> [174957.507867]  ? call_rcu+0x16c/0x290
+> [174957.508567]  generic_shutdown_super+0x74/0x120
+> [174957.509447]  kill_anon_super+0x14/0x30
+> [174957.510194]  btrfs_kill_super+0x12/0x20 [btrfs]
+> [174957.511123]  deactivate_locked_super+0x31/0xa0
+> [174957.511976]  cleanup_mnt+0x147/0x1c0
+> [174957.512610]  task_work_run+0x5c/0xa0
+> [174957.513309]  exit_to_user_mode_prepare+0x1e5/0x1f0
+> [174957.514231]  syscall_exit_to_user_mode+0x16/0x40
+> [174957.515069]  do_syscall_64+0x48/0xc0
+> [174957.515718]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [174957.516688] RIP: 0033:0x7f328fdc4a97
+> [174957.517413] Code: 03 0c 00 f7 d8 (...)
+> [174957.521052] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> [174957.522514] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
+> [174957.523950] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
+> [174957.525375] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
+> [174957.526763] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
+> [174957.528058] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
+> [174957.529404]  </TASK>
+> [174957.529843] irq event stamp: 0
+> [174957.530256] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [174957.531061] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+> [174957.532075] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+> [174957.533083] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [174957.533865] ---[ end trace bc7ee0c490bce3b0 ]---
+> [174957.534452] BTRFS info (device dm-0): space_info 4 has 1070841856 free, is not full
+> [174957.535404] BTRFS info (device dm-0): space_info total=1073741824, used=2785280, pinned=0, reserved=49152, may_use=0, readonly=65536 zone_unusable=0
+> [174957.537029] BTRFS info (device dm-0): global_block_rsv: size 0 reserved 0
+> [174957.537859] BTRFS info (device dm-0): trans_block_rsv: size 0 reserved 0
+> [174957.538697] BTRFS info (device dm-0): chunk_block_rsv: size 0 reserved 0
+> [174957.539552] BTRFS info (device dm-0): delayed_block_rsv: size 0 reserved 0
+> [174957.540403] BTRFS info (device dm-0): delayed_refs_rsv: size 0 reserved 0
+>
+> This is often triggered with test cases generic/475 and generic/648 from
+> fstests, which makes the tests fail.
+>
+> So fix this by iterating over the io tree that contains the ranges of all
+> log tree metadata extents and call unaccount_log_buffer() for the range of
+> each metadata extent. This is only called during the transaction abort
+> path if we failed to walk over the entire log tree.
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>
+> V2: Added missing bit EXTENT_NEED_WAIT.
+>
+>  fs/btrfs/tree-log.c | 32 ++++++++++++++++++++++++++++++--
+>  1 file changed, 30 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 4b89ac769347..9062073407fd 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -3402,6 +3402,32 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+>         return ret;
+>  }
+>
+> +/*
+> + * If when freeing a log tree we fail to iterate over the entire tree due to a
+> + * past writeback failure, then we have not properly freed every metadata extent.
+> + * In that case we use this function that does not iterate the log tree but it
+> + * still adjusts the reserved bytes in the block group of each metadata extent.
+> + */
+> +static void unaccount_all_log_buffers(struct btrfs_root *log)
+> +{
+> +       struct btrfs_fs_info *fs_info = log->fs_info;
+> +       u64 start = 0;
+> +       u64 end;
+> +
+> +       while (!find_first_extent_bit(&log->dirty_log_pages, start, &start, &end,
+> +                     EXTENT_DIRTY | EXTENT_NEW | EXTENT_NEED_WAIT, NULL)) {
+> +               u64 bytenr;
+> +
+> +               for (bytenr = start; bytenr < end; bytenr += fs_info->nodesize) {
+> +                       unaccount_log_buffer(fs_info, bytenr);
+> +                       cond_resched();
+> +               }
+> +
+> +               start = end + 1;
+> +       }
 
-Sorry but it is unclear to me the last sentence :-)
+Ok, so this isn't actually very reliable.
 
-Anyway I prefer
-BTRFS_DEV_ALLOCATION_METADATA_PREFERRED
-BTRFS_DEV_ALLOCATION_METADATA_ONLY
-[...]
+The main problem is that for log tree extent buffers that had
+writeback through the log sync path (the most common case),
+their range was cleared from the log's ->dirty_log_pages. So we'll end
+up not do the unaccount for those.
 
-Because it seems to me more consistent
+Also, for those that are still dirty we should probably call
+clear_extent_buffer_dirty() on them too.
 
+> +
+> +}
+> +
+>  static void free_log_tree(struct btrfs_trans_handle *trans,
+>                           struct btrfs_root *log)
+>  {
+> @@ -3414,10 +3440,12 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
+>         if (log->node) {
+>                 ret = walk_log_tree(trans, log, &wc);
+>                 if (ret) {
+> -                       if (trans)
+> +                       if (trans) {
+>                                 btrfs_abort_transaction(trans, ret);
+> -                       else
+> +                       } else {
+>                                 btrfs_handle_fs_error(log->fs_info, ret, NULL);
+> +                               unaccount_all_log_buffers(log);
 
+And given that the trans == NULL case is only used for the transaction
+abort path, it would make things simpler
+to always go through unaccount_all_log_buffers() instead of trying to
+iterate the log tree, as we'll likely get -EIO from there
+in the case of tests like generic/475 and generic/648, and then
+fallback to unaccount_all_log_buffers().
 
->> During a *mixed data/metadata* chunk allocation, BTRFS works as
->> usual.
->>
->> During a *data* chunk allocation, the space are searched first in
->> BTRFS_DEV_ALLOCATION_DATA_ONLY and BTRFS_DEV_ALLOCATION_PREFERRED_DATA
->> tagged disks. If no space is found or the space found is not enough (eg.
->> in raid5, only two disks are available), then also the disks tagged
->> BTRFS_DEV_ALLOCATION_PREFERRED_METADATA are evaluated. If even in this
->> case this the space is not sufficient, -ENOSPC is raised.
->> A disk tagged with BTRFS_DEV_ALLOCATION_METADATA_ONLY is never considered
->> for a data BG allocation.
->>
->> During a *metadata* chunk allocation, the space are searched first in
->> BTRFS_DEV_ALLOCATION_METADATA_ONLY and BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
->> tagged disks. If no space is found or the space found is not enough (eg.
->> in raid5, only two disks are available), then also the disks tagged
->> BTRFS_DEV_ALLOCATION_PREFERRED_DATA are considered. If even in this
->> case this the space is not sufficient, -ENOSPC is raised.
->> A disk tagged with BTRFS_DEV_ALLOCATION_DATA_ONLY is never considered
->> for a metadata BG allocation.
->>
->> By default the disks are tagged as BTRFS_DEV_ALLOCATION_PREFERRED_DATA,
->> so the default behavior happens. If the user prefer to store the
->> metadata in the faster disks (e.g. the SSD), he can tag these with
->> BTRFS_DEV_ALLOCATION_PREFERRED_DATA: in this case the data BG go in the
->> BTRFS_DEV_ALLOCATION_PREFERRED_DATA disks and the metadata BG in the
->> others, until there is enough space. Only if one disks set is filled,
->> the other is occupied.
->>
->> WARNING: if the user tags a disk with BTRFS_DEV_ALLOCATION_DATA_ONLY,
->> this means that this disk will never be used for allocating metadata
->> increasing the likelihood of exhausting the metadata space.
-> 
-> This WARNING is not correct.  We use a combination of METADATA_ONLY and
-> DATA_ONLY preferences to exclude data allocations from metadata devices,
-> reducing the likelihood of exhausting the metadata space all the way
-> to zero.  We do have to provide correctly-sized metadata devices, but
-> SSDs come in powers-of-2 sizes, so we just bump up to the next power of
-> two or add another SSD to the filesystem every time a metadata device
-> goes over 50%.
-> 
-> Metadata-only devices completely eliminate our need to do other
-> workarounds like data balances to reclaim unallocated space for metadata.
-> 
-> _PREFERRED devices are the problematic case.  Since no space is
-> exclusively reserved for metadata, it means you have to do maintenance
-> data balances as the filesystem fills up because you will be constantly
-> getting data clogging up your metadata devices.
+I'll probably don't have much availability to look into it any time
+soon, due to holiday season, but here's a tentative patch in case
+anyone is
+interested:
+
+https://gist.github.com/fdmanana/08d0e28191f4c491c0c09a7811d28b60
+
+That approach currently almost always fails on generic/475, due to
+leaks of reserved space in a block group and the metadata space_info.
+I haven't checked why.
+
+Thanks.
 
 
-> 
-> There is a use case for a mix of _PREFERRED and _ONLY devices:  a system
-> with NVMe, SSD, and HDD might want to have the SSD use DATA_PREFERRED or
-> METADATA_PREFERRED while the NVMe and HDD use METADATA_ONLY and DATA_ONLY
-> respectively.  But this use case is not a very good match for what the
-> implementation does--we'd want to separate device selection ("can I use
-> this device for metadata, ever?") from ordering ("which devices should
-> I use for metadata first?").
-> 
-> To keep things simple I'd say that use case is out of scope, and recommend
-> not mixing _PREFERRED and _ONLY in the same filesystem.  Either explicitly
-> allocate everything with _ONLY, or mark every device _PREFERRED one way
-> or the other, but don't use both _ONLY and _PREFERRED at the same time
-> unless you really know what you're doing.
-
-In what METADATA_ONLY + DATA_PREFERRED would be more dangerous than
-METADATA_ONLY + DATA_ONLY ?
-
-If fact there I see two mains differents use cases:
-- I want to put my metadata on a SSD for performance reasoning:
-	METADATA_PREFERRED + DATA_PREFERRED
-    as the most conservative approach
-- I want to protect the metadata BG space from exhaustion (assuming that
-   a "today standard" disk is far larger than the total BG metadata)
-	METADATA_ONLY + X
-   is a valid approach
-
-
-
-
-[...]
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+> +                       }
+>                 }
+>         }
+>
+> --
+> 2.33.0
+>
