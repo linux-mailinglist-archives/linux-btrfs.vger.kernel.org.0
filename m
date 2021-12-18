@@ -2,289 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1394479A92
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Dec 2021 12:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50983479A93
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Dec 2021 12:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbhLRL1B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Dec 2021 06:27:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        id S232971AbhLRL1X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Dec 2021 06:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbhLRL1A (ORCPT
+        with ESMTP id S230098AbhLRL1W (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Dec 2021 06:27:00 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6DEC061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 03:27:00 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E73960A3A
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 11:27:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88716C36AE5
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 11:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639826819;
-        bh=Pi+niSlRyrXGQL8NYgYwhQKis/b49VW2NopK3ZAr9gg=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=HJygK/raxX83ti1+3+4Aqaw0GHB/k2woPX1Xpqo6/F1Ys1/Uu9qdY+Jd16PIg71bT
-         ljG6HT4F/EOvXc9yyY3iXbBusdkelFVUOFuVzlkTNULNtauCvyENqcqUShn7S2zVNG
-         Dpt695DpCS/a5NlE99KIZXmWyO0uPMcCbm2oQM0zL6os/g78ZWFmj+SbfhwRltnaPw
-         TwxqIUztPojvYI86M6fNk/PxStohN0DrN0BVIUzOlTWYwKVZYsSsx4iNsSJIzy1aGP
-         mjC7xmw6x76MtHNZI0Uij1EJS7xXwu/vQWqSP/UvbnaSYqMxKHXCvM8txqdkI8zvS9
-         8hZ25wAPBDqHA==
-Received: by mail-qt1-f175.google.com with SMTP id z9so5254998qtj.9
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 03:26:59 -0800 (PST)
-X-Gm-Message-State: AOAM530T12dGnHsCDkGRArMHR/h5RyNN9HxGCzyUumUkRfZUKMC+Nlb0
-        3rVq543mevSyrJ2Xc60brOdt23Hyob38PxIaSNA=
-X-Google-Smtp-Source: ABdhPJz+lUu72vbAEZw+7BOwCKdGj/CfbLFNtG1okWgfSlnAGpvY6WM16hJYOTznyPFpXkSTFm4HAZV1bhX2qcGDykM=
-X-Received: by 2002:ac8:5796:: with SMTP id v22mr5659349qta.304.1639826818209;
- Sat, 18 Dec 2021 03:26:58 -0800 (PST)
+        Sat, 18 Dec 2021 06:27:22 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD6BC061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 03:27:22 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id y12so17675604eda.12
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 03:27:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ceremcem-net.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=bzIb9bHmJVNyWyjTUmyLPKnj9BWSO30gO+CvD4R9D+o=;
+        b=YGhk//JzcUbhPy3DiNQcM9urxGcGZyPgbSMO5ocMDkycH/jbAaMUsQ0t9I8q6V17pk
+         vvombF/Z0Dw2lRSkVmcBoodw1yDTXNBgTiSEeWWno3kHhqEWv5k/c9DMu9kLaXLUtap1
+         UsOPeXKc1a3EBxEXxZcONA3JscjsXOnS3nzxr0b7xNRPxYTmmKncLF0CUp1hBtfgg6s/
+         rEZ1J+GJiS3pTNvMvtNQMk1b9+iYYbfrEOXt7Mt1Wy/mHlqpOFD/AAeyGpOucSN+qwrN
+         0J/em/3mYTjU16DBaen8kkG9FPEzW08nT2UOkr16X7ctAlWrBwRiOi4y5stRdkQS0C9z
+         H7rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=bzIb9bHmJVNyWyjTUmyLPKnj9BWSO30gO+CvD4R9D+o=;
+        b=EZwKsLBbrXCjWumzr1gYev40H5Pp1u/6ca2SSBMBq3wUNXlFBiLpPohNrpvSNdKG/p
+         AvPsTdJoNjqdiCo5vAkVXQIhtTQz74/g3+UFSps2B9N0bw5quw9+1ZbD15kvSAdZj8H4
+         LANrowsfmT4/0NMTgPX1nYCnWKkZ2OdQ0b0xMF09DMfLWfllBQi+jQxRMPBn2a25fWcq
+         XtSM5MOUOiAipwM9r1CumqKE7o/IK8GBV8R6ZZFKG7NzERx8NjFjplVfKEhPb4w7Q2q4
+         LUwWpThih3ZjJ/quoKX7FounE31bYh98YkzILh1BnLI/5iWv3w9Qsr8W9+AI3e7kQMDU
+         CSGA==
+X-Gm-Message-State: AOAM532YjH4cfEWh2zQrPciHsvvDGi0k/qBHNcggZbiNBdtie/SiPKbI
+        PcNizg1Gv39HipW863+mffUgrGDzt455U2U1N5w4ahaO3wNnioVf4tY=
+X-Google-Smtp-Source: ABdhPJyULAv4xcwpq+b1hC944Ch8TetwW5HsDL0qJntz/Pg88owLF+wWrDsP3y9wlSEjxVWZgMAzL2/R+Q/lb9uDGsQ=
+X-Received: by 2002:a50:ec89:: with SMTP id e9mr2638330edr.162.1639826840567;
+ Sat, 18 Dec 2021 03:27:20 -0800 (PST)
 MIME-Version: 1.0
-References: <f0bed6300fc1dcad405c894640f7140b4a8e04f4.1639743512.git.fdmanana@suse.com>
- <049306dd5efc8cbe11501e7efebf56f615ef7360.1639744398.git.fdmanana@suse.com>
-In-Reply-To: <049306dd5efc8cbe11501e7efebf56f615ef7360.1639744398.git.fdmanana@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Sat, 18 Dec 2021 11:26:22 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4c-Soi5i1POLOmTLQDW-acEWTF3WagLc7J7ASe_juN6w@mail.gmail.com>
-Message-ID: <CAL3q7H4c-Soi5i1POLOmTLQDW-acEWTF3WagLc7J7ASe_juN6w@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: fix reserved space leak on log tree nodes after
- transaction abort
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Cerem Cem ASLAN <ceremcem@ceremcem.net>
+Date:   Sat, 18 Dec 2021 14:27:09 +0300
+Message-ID: <CAN4oSBfeCFauLZkXPYD+dgj5dbDde7L1HK1KNXP0O4176=94xw@mail.gmail.com>
+Subject: Feature Request: Support subvolume UUID modification
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 5:51 PM <fdmanana@kernel.org> wrote:
->
-> From: Filipe Manana <fdmanana@suse.com>
->
-> After the recent changes by commit c2e39305299f01 ("btrfs: clear extent
-> buffer uptodate when we fail to write it") and its followup fix that has
-> the subject "btrfs: check WRITE_ERR when trying to read an extent buffer"
-> (not yet in Linus' tree), after a transaction abort we can often end up
-> not unreserving the space that was reserved for log tree extent buffers.
->
-> This happens because if writeback for a log tree extent buffer failed,
-> than we have cleared the EXTENT_BUFFER_UPTODATE from the extent buffer
-> and we have also set the bit EXTENT_BUFFER_WRITE_ERR on it. Later on,
-> when trying to free the log tree with free_log_tree(), which iterates
-> over the tree, we can end up getting an -EIO error when trying to read
-> a node or leaf, since read_extent_buffer_pages() returns -EIO if an
-> extent buffer does not have EXTENT_BUFFER_UPTODATE set and has the
-> EXTENT_BUFFER_WRITE_ERR bit set. Getting that -EIO means we return
-> immediately as we can not iterate over the entire tree.
->
-> In that case we never update the reserved space for every extent buffer
-> in the respective block group and space_info object. When this happens
-> we get the following traces when unmmounting the filesystem:
->
-> [174957.284509] BTRFS: error (device dm-0) in cleanup_transaction:1913: errno=-5 IO failure
-> [174957.286497] BTRFS: error (device dm-0) in free_log_tree:3420: errno=-5 IO failure
-> [174957.399379] ------------[ cut here ]------------
-> [174957.402497] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:127 btrfs_put_block_group+0x77/0xb0 [btrfs]
-> [174957.407523] Modules linked in: btrfs overlay dm_zero (...)
-> [174957.424917] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
-> [174957.426689] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [174957.428716] RIP: 0010:btrfs_put_block_group+0x77/0xb0 [btrfs]
-> [174957.429717] Code: 21 48 8b bd (...)
-> [174957.432867] RSP: 0018:ffffb70d41cffdd0 EFLAGS: 00010206
-> [174957.433632] RAX: 0000000000000001 RBX: ffff8b09c3848000 RCX: ffff8b0758edd1c8
-> [174957.434689] RDX: 0000000000000001 RSI: ffffffffc0b467e7 RDI: ffff8b0758edd000
-> [174957.436068] RBP: ffff8b0758edd000 R08: 0000000000000000 R09: 0000000000000000
-> [174957.437114] R10: 0000000000000246 R11: 0000000000000000 R12: ffff8b09c3848148
-> [174957.438140] R13: ffff8b09c3848198 R14: ffff8b0758edd188 R15: dead000000000100
-> [174957.439317] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
-> [174957.440402] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [174957.441164] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
-> [174957.442117] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [174957.443076] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [174957.443948] Call Trace:
-> [174957.444264]  <TASK>
-> [174957.444538]  btrfs_free_block_groups+0x255/0x3c0 [btrfs]
-> [174957.445238]  close_ctree+0x301/0x357 [btrfs]
-> [174957.445803]  ? call_rcu+0x16c/0x290
-> [174957.446250]  generic_shutdown_super+0x74/0x120
-> [174957.446832]  kill_anon_super+0x14/0x30
-> [174957.447305]  btrfs_kill_super+0x12/0x20 [btrfs]
-> [174957.447890]  deactivate_locked_super+0x31/0xa0
-> [174957.448440]  cleanup_mnt+0x147/0x1c0
-> [174957.448888]  task_work_run+0x5c/0xa0
-> [174957.449336]  exit_to_user_mode_prepare+0x1e5/0x1f0
-> [174957.449934]  syscall_exit_to_user_mode+0x16/0x40
-> [174957.450512]  do_syscall_64+0x48/0xc0
-> [174957.450980]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [174957.451605] RIP: 0033:0x7f328fdc4a97
-> [174957.452059] Code: 03 0c 00 f7 (...)
-> [174957.454320] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> [174957.455262] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
-> [174957.456131] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
-> [174957.457118] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
-> [174957.458005] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
-> [174957.459113] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
-> [174957.460193]  </TASK>
-> [174957.460534] irq event stamp: 0
-> [174957.461003] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [174957.461947] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.463147] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.465116] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [174957.466323] ---[ end trace bc7ee0c490bce3af ]---
-> [174957.467282] ------------[ cut here ]------------
-> [174957.468184] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:3976 btrfs_free_block_groups+0x330/0x3c0 [btrfs]
-> [174957.470066] Modules linked in: btrfs overlay dm_zero (...)
-> [174957.483137] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
-> [174957.484691] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [174957.486853] RIP: 0010:btrfs_free_block_groups+0x330/0x3c0 [btrfs]
-> [174957.488050] Code: 00 00 00 ad de (...)
-> [174957.491479] RSP: 0018:ffffb70d41cffde0 EFLAGS: 00010206
-> [174957.492520] RAX: ffff8b08d79310b0 RBX: ffff8b09c3848000 RCX: 0000000000000000
-> [174957.493868] RDX: 0000000000000001 RSI: fffff443055ee600 RDI: ffffffffb1131846
-> [174957.495183] RBP: ffff8b08d79310b0 R08: 0000000000000000 R09: 0000000000000000
-> [174957.496580] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8b08d7931000
-> [174957.498027] R13: ffff8b09c38492b0 R14: dead000000000122 R15: dead000000000100
-> [174957.499438] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
-> [174957.500990] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [174957.502117] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
-> [174957.503513] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [174957.504864] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [174957.506167] Call Trace:
-> [174957.506654]  <TASK>
-> [174957.507047]  close_ctree+0x301/0x357 [btrfs]
-> [174957.507867]  ? call_rcu+0x16c/0x290
-> [174957.508567]  generic_shutdown_super+0x74/0x120
-> [174957.509447]  kill_anon_super+0x14/0x30
-> [174957.510194]  btrfs_kill_super+0x12/0x20 [btrfs]
-> [174957.511123]  deactivate_locked_super+0x31/0xa0
-> [174957.511976]  cleanup_mnt+0x147/0x1c0
-> [174957.512610]  task_work_run+0x5c/0xa0
-> [174957.513309]  exit_to_user_mode_prepare+0x1e5/0x1f0
-> [174957.514231]  syscall_exit_to_user_mode+0x16/0x40
-> [174957.515069]  do_syscall_64+0x48/0xc0
-> [174957.515718]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [174957.516688] RIP: 0033:0x7f328fdc4a97
-> [174957.517413] Code: 03 0c 00 f7 d8 (...)
-> [174957.521052] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> [174957.522514] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
-> [174957.523950] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
-> [174957.525375] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
-> [174957.526763] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
-> [174957.528058] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
-> [174957.529404]  </TASK>
-> [174957.529843] irq event stamp: 0
-> [174957.530256] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [174957.531061] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.532075] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
-> [174957.533083] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [174957.533865] ---[ end trace bc7ee0c490bce3b0 ]---
-> [174957.534452] BTRFS info (device dm-0): space_info 4 has 1070841856 free, is not full
-> [174957.535404] BTRFS info (device dm-0): space_info total=1073741824, used=2785280, pinned=0, reserved=49152, may_use=0, readonly=65536 zone_unusable=0
-> [174957.537029] BTRFS info (device dm-0): global_block_rsv: size 0 reserved 0
-> [174957.537859] BTRFS info (device dm-0): trans_block_rsv: size 0 reserved 0
-> [174957.538697] BTRFS info (device dm-0): chunk_block_rsv: size 0 reserved 0
-> [174957.539552] BTRFS info (device dm-0): delayed_block_rsv: size 0 reserved 0
-> [174957.540403] BTRFS info (device dm-0): delayed_refs_rsv: size 0 reserved 0
->
-> This is often triggered with test cases generic/475 and generic/648 from
-> fstests, which makes the tests fail.
->
-> So fix this by iterating over the io tree that contains the ranges of all
-> log tree metadata extents and call unaccount_log_buffer() for the range of
-> each metadata extent. This is only called during the transaction abort
-> path if we failed to walk over the entire log tree.
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->
-> V2: Added missing bit EXTENT_NEED_WAIT.
->
->  fs/btrfs/tree-log.c | 32 ++++++++++++++++++++++++++++++--
->  1 file changed, 30 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 4b89ac769347..9062073407fd 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -3402,6 +3402,32 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
->         return ret;
->  }
->
-> +/*
-> + * If when freeing a log tree we fail to iterate over the entire tree due to a
-> + * past writeback failure, then we have not properly freed every metadata extent.
-> + * In that case we use this function that does not iterate the log tree but it
-> + * still adjusts the reserved bytes in the block group of each metadata extent.
-> + */
-> +static void unaccount_all_log_buffers(struct btrfs_root *log)
-> +{
-> +       struct btrfs_fs_info *fs_info = log->fs_info;
-> +       u64 start = 0;
-> +       u64 end;
-> +
-> +       while (!find_first_extent_bit(&log->dirty_log_pages, start, &start, &end,
-> +                     EXTENT_DIRTY | EXTENT_NEW | EXTENT_NEED_WAIT, NULL)) {
-> +               u64 bytenr;
-> +
-> +               for (bytenr = start; bytenr < end; bytenr += fs_info->nodesize) {
-> +                       unaccount_log_buffer(fs_info, bytenr);
-> +                       cond_resched();
-> +               }
-> +
-> +               start = end + 1;
-> +       }
+I'm basically experiencing a similar issue to this one:
+https://www.spinics.net/lists/linux-btrfs/msg75313.html. I broke the
+"btrfs send | btrfs receive" mechanizm by performing the following
+operations:
 
-Ok, so this isn't actually very reliable.
+1.There was only one common snapshot on both sides. I cloned that
+snapshot (MYSNAP) on host, making MYSNAP.backup.
+2. btrfs sub del MYSNAP
+3. restored it by "btrfs sub snap -r MYSNAP.backup MYSNAP".
 
-The main problem is that for log tree extent buffers that had
-writeback through the log sync path (the most common case),
-their range was cleared from the log's ->dirty_log_pages. So we'll end
-up not do the unaccount for those.
+Now incremental transfer is broken because "Received UUID" of MYSNAP
+on the target is different from UUID of MYSNAP on the host.
 
-Also, for those that are still dirty we should probably call
-clear_extent_buffer_dirty() on them too.
+Yes, I could change the Received UUID by python-btrfs, however this
+makes overall backup procedure very complex. Could you add such a
+kernel API function to modify UUID of a snapshot?
 
-> +
-> +}
-> +
->  static void free_log_tree(struct btrfs_trans_handle *trans,
->                           struct btrfs_root *log)
->  {
-> @@ -3414,10 +3440,12 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
->         if (log->node) {
->                 ret = walk_log_tree(trans, log, &wc);
->                 if (ret) {
-> -                       if (trans)
-> +                       if (trans) {
->                                 btrfs_abort_transaction(trans, ret);
-> -                       else
-> +                       } else {
->                                 btrfs_handle_fs_error(log->fs_info, ret, NULL);
-> +                               unaccount_all_log_buffers(log);
+Also, native tools for such modifications would be awesome.
 
-And given that the trans == NULL case is only used for the transaction
-abort path, it would make things simpler
-to always go through unaccount_all_log_buffers() instead of trying to
-iterate the log tree, as we'll likely get -EIO from there
-in the case of tests like generic/475 and generic/648, and then
-fallback to unaccount_all_log_buffers().
-
-I'll probably don't have much availability to look into it any time
-soon, due to holiday season, but here's a tentative patch in case
-anyone is
-interested:
-
-https://gist.github.com/fdmanana/08d0e28191f4c491c0c09a7811d28b60
-
-That approach currently almost always fails on generic/475, due to
-leaks of reserved space in a block group and the metadata space_info.
-I haven't checked why.
-
-Thanks.
-
-
-> +                       }
->                 }
->         }
->
-> --
-> 2.33.0
->
+Regards
