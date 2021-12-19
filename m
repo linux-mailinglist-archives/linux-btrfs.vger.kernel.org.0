@@ -2,82 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE50479E5A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Dec 2021 00:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1B7479E80
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Dec 2021 01:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235090AbhLRXyr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Dec 2021 18:54:47 -0500
-Received: from zmcc-3-mx.zmailcloud.com ([34.200.143.36]:32790 "EHLO
-        zmcc-3-mx.zmailcloud.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbhLRXye (ORCPT
+        id S230079AbhLSAE2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Dec 2021 19:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhLSAE2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Dec 2021 18:54:34 -0500
-Received: from zmcc-3.zmailcloud.com (zmcc-3-mta-1.zmailcloud.com [104.154.87.183])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id 832D240555
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 17:55:09 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id 61BA48034783
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 17:54:33 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id 534B98034BE2
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 17:54:33 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
-        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iXXQNeUvXru4 for <linux-btrfs@vger.kernel.org>;
-        Sat, 18 Dec 2021 17:54:33 -0600 (CST)
-Received: from epl-dy1-mint (unknown [154.21.21.52])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id BC2828034783
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 17:54:26 -0600 (CST)
-Message-ID: <f33d052d30ba5a8fd592e584b86a8cdcb1a2fe22.camel@ericlevy.name>
-Subject: Re: receive failing for incremental streams
-From:   Eric Levy <contact@ericlevy.name>
-To:     linux-btrfs@vger.kernel.org
-Date:   Sat, 18 Dec 2021 18:53:40 -0500
-In-Reply-To: <20211216113848.GA21083@savella.carfax.org.uk>
-References: <03e34c5431b08996476408303a9881ba667083ed.camel@ericlevy.name>
-         <55ddb05b-04ad-172e-bda7-757db37a37b2@cobb.uk.net>
-         <0735c9e2d4d6fa246965663a4f0d4f5211a5b8dc.camel@ericlevy.name>
-         <ea6260d5-c383-9079-8a53-2051972b11d3@cobb.uk.net>
-         <70553d13e265a2c7bced888f1a3d3b3e65539ce1.camel@ericlevy.name>
-         <e479561d-98be-5da2-4853-e697eb9690b3@cobb.uk.net>
-         <20211216113848.GA21083@savella.carfax.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Sat, 18 Dec 2021 19:04:28 -0500
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A55C06173E
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Dec 2021 16:04:28 -0800 (PST)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 3AF079B9BB; Sun, 19 Dec 2021 00:04:22 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1639872262;
+        bh=AjKlllqAmsArW/uwZbpFuHIdo1g0lwEV4+XDk/R+A3w=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=U4D0Uw1ceTT1GMKgCEoxG/HORz19PEGFctSjxWlyrjBaXxRPDEv0KTtwpjYBtkAe/
+         6Acs2H9NrOLHzxESTHgeP92q+10Wn6cDkihyPhxleYGGWe5h9xjuoare775Ek5jp/W
+         gDVF/oij+wOqrRmOUN0JFsrQJwi0bKTkMIrThNWyMyLe/9kez4IOwuliU8cW/BUyYT
+         zzBMlPuzlTtQqTl16abAGVZWthNmMFwKeJhu6KGRb/9XZ4ISKjDh65tqZJaQzoZSfD
+         aCJ5v2TYVskvW6spA9DgnA2/NTk+z8Dhmogk0YxpX79ZB6g4JwS7HvvGO3iyhw2Btq
+         vJhzNiA+0UPXg==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-6.6 required=12.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 1B7D89B800;
+        Sun, 19 Dec 2021 00:03:33 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1639872213;
+        bh=AjKlllqAmsArW/uwZbpFuHIdo1g0lwEV4+XDk/R+A3w=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=WP3FqVlMKJfKuD17TfsVtdBcYRUYogwQc+LK9mfTiOcZh+tvdh4Oaz+HpKtWDsHSz
+         cWknlmzs/mDXZwldUqC3kFnbXKQcDLTf2HRUZkEU7bp/FGbp/W89C8EW8rrvoJAK+9
+         iitPFaWR5JYUxYtHqJCQCp/CyPdIxEEY087Vi2/xXQi44SI0RsjloFhM1FYxC5aZRo
+         +orLzk85XxFNjzzNRuJOft8426dFAAWsihi+g3H3rT3h8swToxJ75EYtsZv7fx+okq
+         r1YNBCeCLZLMy8EMI+eSkWE/Pm+Rmwve1H8kHdk4A5TF6GY9//+aZMwosQO3IDGz4/
+         lbmAWTD5tqQeQ==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+        by black.home.cobb.me.uk (Postfix) with ESMTP id CF2032D76C5;
+        Sun, 19 Dec 2021 00:03:32 +0000 (GMT)
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>, kreijack@inwind.it
+Cc:     Hans van Kranenburg <hans@knorrie.org>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>
+References: <cover.1635089352.git.kreijack@inwind.it>
+ <bf30502eb53ea2c1c05c2ae96c3788d3e327d59e.1635089352.git.kreijack@inwind.it>
+ <0fbfde93-3a00-7f20-8891-dd0fa798676e@knorrie.org>
+ <5767702c-665f-d1a1-ea65-12eb1db96c51@libero.it>
+ <YbzoA6n8D7jT7y/F@hungrycats.org>
+ <5afe9f17-d171-c4e5-84f0-24f9a7fa250f@libero.it>
+ <Yb5lSevjq3eURuYB@hungrycats.org>
+Subject: Re: [PATCH 4/4] btrfs: add allocator_hint mode
+Message-ID: <4e18eff2-fca1-bde2-b942-159f89569f0f@cobb.uk.net>
+Date:   Sun, 19 Dec 2021 00:03:32 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <Yb5lSevjq3eURuYB@hungrycats.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you for the explanation about streams.
+On 18/12/2021 22:48, Zygo Blaxell wrote:
+> On Sat, Dec 18, 2021 at 10:07:18AM +0100, Goffredo Baroncelli wrote:
+>> On 12/17/21 20:41, Zygo Blaxell wrote:
+>>> On Fri, Dec 17, 2021 at 07:28:28PM +0100, Goffredo Baroncelli wrote:
+>>>> On 12/17/21 16:58, Hans van Kranenburg wrote:
+>> [...]
+>>>> -----------------------------
+>>>> The chunk allocation policy is modified as follow.
+>>>>
+>>>> Each disk may have one of the following tags:
+>>>> - BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
+>>>> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
+>>>> - BTRFS_DEV_ALLOCATION_DATA_ONLY
+>>>> - BTRFS_DEV_ALLOCATION_PREFERRED_DATA (default)
+>>>
+>>> Is it too late to rename these?  The order of the words is inconsistent
+>>> and the English usage is a bit odd.
+>>>
+>>> I'd much rather have:
+>>>
+>>>> - BTRFS_DEV_ALLOCATION_PREFER_METADATA
+>>>> - BTRFS_DEV_ALLOCATION_ONLY_METADATA
+>>>> - BTRFS_DEV_ALLOCATION_ONLY_DATA
+>>>> - BTRFS_DEV_ALLOCATION_PREFER_DATA (default)
+>>>
+>>> English speakers would say "[I/we/you] prefer X" or "X [is] preferred".
+>>>
+>>> or
+>>>
+>>>> - BTRFS_DEV_ALLOCATION_METADATA_PREFERRED
+>>>> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
+>>>> - BTRFS_DEV_ALLOCATION_DATA_ONLY
+>>>> - BTRFS_DEV_ALLOCATION_DATA_PREFERRED (default)
+>>>
+>>> I keep typing "data_preferred" and "only_data" when it's really
+>>> "preferred_data" and "data_only" because they're not consistent.
+>>>
+>>
+>> Sorry but it is unclear to me the last sentence :-)
+>>
+>> Anyway I prefer
+>> BTRFS_DEV_ALLOCATION_METADATA_PREFERRED
+>> BTRFS_DEV_ALLOCATION_METADATA_ONLY
+>> [...]
+>>
+>> Because it seems to me more consistent
+> 
+> Sounds good.
+> 
+>>> There is a use case for a mix of _PREFERRED and _ONLY devices:  a system
+>>> with NVMe, SSD, and HDD might want to have the SSD use DATA_PREFERRED or
+>>> METADATA_PREFERRED while the NVMe and HDD use METADATA_ONLY and DATA_ONLY
+>>> respectively.  But this use case is not a very good match for what the
+>>> implementation does--we'd want to separate device selection ("can I use
+>>> this device for metadata, ever?") from ordering ("which devices should
+>>> I use for metadata first?").
+>>>
+>>> To keep things simple I'd say that use case is out of scope, and recommend
+>>> not mixing _PREFERRED and _ONLY in the same filesystem.  Either explicitly
+>>> allocate everything with _ONLY, or mark every device _PREFERRED one way
+>>> or the other, but don't use both _ONLY and _PREFERRED at the same time
+>>> unless you really know what you're doing.
+>>
+>> In what METADATA_ONLY + DATA_PREFERRED would be more dangerous than
+>> METADATA_ONLY + DATA_ONLY ?
+> 
+> If capacity is our first priority, we use METADATA_PREFERRED
+> and DATA_PREFERRED (everything can be allocated everywhere, we try
+> the highest performance but fall back).
+> 
+> If performance is our first priority, we use METADATA_ONLY and DATA_ONLY
+> (so we never have to balance which would reduce performance) or
+> METADATA_PREFERRED and DATA_ONLY (so we have more capacity, but get
+> lower performance because we must balance data in some cases, but not
+> as low as any combination of options with DATA_PREFERRED).
 
-My first observation is that the details clarified in this conversation
-are easily understood from the man page, nor from any official online
-documentation I had found, nor even from any other discussion or
-documentation I had found through web searches. Thus, even if it were
-the only change to result from these considerations, I would suggest
-that the man page should include a more robust explanation of the
-design.
+I think it would be a mistake to think that your performance and
+capacity use cases are the only ones others will care about.
 
-Next, the child stream being restored to a new subvolume, with the
-result sharing references with the parent, may be practical from a
-standpoint of underlying implementation, but may not be intuitive for a
-user in a typical work flow. It might be helpful for users to have some
-direct support for the use case of updating an existing stream in
-place.
+Your analysis misses a third option for priority: resilience. I have a
+nearline backup server. It stores a lot of data but it is almost
+entirely write-only. My priority is to be able to get at most of the
+data quickly if I need it sometime - it isn't critical for any specific
+piece of data as I have additional, slower backups, but I want to be
+able to restore as much as possible from this server for speed and
+convenience. To keep as much nearline backup as possible, I keep data in
+SINGLE and metadata in RAID1. Fine - I can do that today.
 
-Finally, the constraint that a restore target must have the same file
-name as the original subvolume is, at least to my thinking,
-inconvenient, if not also in many cases challenging, as when the
-original name is not known, perhaps having been chosen arbitrarily. A
-useful feature would be an option in the administrative tool to choose
-the name of the restored subvolume, not simply the parent directory.
+However, in normal use the main activity is btrfs receive of many mostly
+unchanged subvolumes every day. So, what I do today is have a large data
+disk and a second small disk for the RAID1 copy of the metadata. I want
+to keep data off that second disk. With this patch, I expect to set the
+metadata disk as METADATA_ONLY and the data disk as DATA_PREFERRED.
 
-Whether any such enhancements require changes to the file system
-functionality is beyond my knowledge, but it is certainly worthwhile to
-consider any that are possible through changing only tools in user
-space.
+Of course I would *also* like to be able to get btrfs to mostly read the
+RAID1 copy from the fast metadata disk for reading metadata. This patch
+does not address that, but I hope one day there will be a separate
+option for that.
 
+I think the proposed settings are a useful step and will allow some
+experimentation and learning with different scenarios. They certainly
+aren't the answer to all allocation problems but I would like to see
+them available as soon as possible,
 
+Graham
