@@ -2,94 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021B247A0C2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Dec 2021 14:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F89847A0C3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Dec 2021 15:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhLSN7V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Dec 2021 08:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231822AbhLSN7U (ORCPT
+        id S233028AbhLSOCd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Dec 2021 09:02:33 -0500
+Received: from out20-97.mail.aliyun.com ([115.124.20.97]:57975 "EHLO
+        out20-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231822AbhLSOCd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Dec 2021 08:59:20 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E73EC061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Dec 2021 05:59:20 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id c10so1805801vkn.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Dec 2021 05:59:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=8lRUbeDOU13CvrjNfZAWDe+x6O+GDAHKbf5BsZOCy/k=;
-        b=JaTzjsQaxlNg6PLyCY5urJnEdO0UdiWrLmTxdks4FRpu8yZqHq4LrF1fA8QMz4l+xa
-         zzKKMrPGWbtfkr1soNVjFgdCBgNRcZzgfR0wLsRaHjs9dTVzb9Yn+TBEMjx8vhH5uweD
-         /VHRmetoO/2c/WqIan5wKfRZaUyaha6k2+dOf0j6oNwD9RYtr77JcLH3Il46kqa3GQlN
-         xD6IhnqWORpjrC8+oMPmfH3vzpPtgJP/u3CjSFeDS/zfjSfSJf/AN7u5LJHJOOo/gGs6
-         Hv8NJ0zBucP6XGpVG53O076fLkNw8+Wa7nKxhorPAYJTAigxtQATUMcDp8p56P+kCORo
-         kc7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=8lRUbeDOU13CvrjNfZAWDe+x6O+GDAHKbf5BsZOCy/k=;
-        b=GJTFUO8ehWx3G+7Hvp2/Es7OdVh+EFcTbWOHsSL4ZZe87a2l936H/xkbc0KivpIzbY
-         4GPFuWSX0ll1FCVZU7BVM+36QUFZwb6hfgFp1UwtNE56mtMfnSje/MijuPFfnVaOBDjA
-         1LZCnT1qHsEk51mD5JoBsJr4agp93YaaKFp8jfJVC3OtCiqBH1nX8bBVvp+jCc59/h5c
-         1HpF6tozIdeglvl80mA6A6RUfjd16EbmwairBpZTadPAKkaphED12WSCeM77/lYCchsT
-         73fTzkhDt1q+VUliKmJjrcqnN8ov9bDPkY3zqqCKMFjjk5LpY1037vOmBpCavZym1AYV
-         +b2w==
-X-Gm-Message-State: AOAM531HkflKbD1qRL7LhhwEyO6t60Kjpq12rUwVYpimVo1io9+uE8SN
-        qa9OweXFGIOUzOYLO2sl7XAz8d490YUnXnfZAOVrwUDOQeU=
-X-Google-Smtp-Source: ABdhPJwnz9SdOKbQZkKW1qKVtspcEW2+wNFPaSLYk0zANN9yu7S9j6eBh0uyX8aAMvkOTmIw5Yl47P88jJw/FKE0h6g=
-X-Received: by 2002:a1f:d903:: with SMTP id q3mr4456703vkg.37.1639922359570;
- Sun, 19 Dec 2021 05:59:19 -0800 (PST)
+        Sun, 19 Dec 2021 09:02:33 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436549|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0276295-0.00761075-0.96476;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.MJa-Hox_1639922550;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.MJa-Hox_1639922550)
+          by smtp.aliyun-inc.com(10.147.41.158);
+          Sun, 19 Dec 2021 22:02:31 +0800
+Date:   Sun, 19 Dec 2021 22:02:30 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        josef@toxicpanda.com
+Subject: Re: [PATCH v2] btrfs/254: test cleaning up of the stale device
+Message-ID: <Yb87dkizAxoqC+1c@desktop>
+References: <61c0bd3a345d8cb64f1117da58c63c2cd08a8a2c.1639156699.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-From:   Jorge Bastos <jorge.mrbastos@gmail.com>
-Date:   Sun, 19 Dec 2021 13:59:09 +0000
-Message-ID: <CAHzMYBQ5zMw=dUMRqn-_qYoAjYKadj6qio=5t3nudiOftTaqOQ@mail.gmail.com>
-Subject: Balance metadata
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61c0bd3a345d8cb64f1117da58c63c2cd08a8a2c.1639156699.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, I remember reading in the mailing list that we should avoid
-balancing metadata, I have a filesystem that acts exclusive as receive
-side for daily btrfs incremental snapshots from a couple of btrfs
-filesystems containing 3 Windows VMs, it's composed of 5 HDDs in raid5
-(raid1 metadata), the snapshots appear to be very metadata heavy, not
-much data is changed daily, I noticed that the script was starting to
-take much longer than in the beginning, it usually took a couple of
-hours or so but I've been using for many months and it kept taking
-longer and longer, especially in the last month, these are just some
-examples from the last few days:
+On Sat, Dec 11, 2021 at 02:14:41AM +0800, Anand Jain wrote:
+> Recreating a new filesystem or adding a device to a mounted the filesystem
+> should remove the device entries under its previous fsid even when
+> confused with different device paths to the same device.
+> 
+> Fixed by the kernel patch (in the ml):
+>   btrfs: harden identification of the stale device
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
+I was testing with v5.16-rc2 kernel, which should not contain the kernel
+fix, but test still passed for me, I was testing with three loop devices
+as SCRATCH_DEV_POOL, and all default mkfs & mount options
 
-Script Starting Dec 06, 2021  02:30.01
-Script Finished Dec 06, 2021  06:13.50
+SECTION       -- btrfs                         
+RECREATING    -- btrfs on /dev/mapper/testvg-lv1                                                                                         
+FSTYP         -- btrfs
+PLATFORM      -- Linux/x86_64 fedoravm 5.16.0-rc2 #22 SMP PREEMPT Mon Nov 29 00:54:26 CST 2021
+MKFS_OPTIONS  -- /dev/loop0                    
+MOUNT_OPTIONS -- /dev/loop0 /mnt/scratch                      
+                                                                    
+btrfs/254 5s ...  5s
+Ran: btrfs/254                                         
+Passed all 1 tests
 
-Script Starting Dec 12, 2021  02:30.01
-Script Finished Dec 12, 2021  09:30.11
+Anything wrong with my setup?
 
-Script Starting Dec 16, 2021  02:30.01
-Script Finished Dec 16, 2021  10:59.36
+And if tested with lv devices as SCRATCH_DEV_POOL
 
-I'd like to keep this script limited to the night hours, so I thought
-to try raid10 for metadata to see if it would help, and this was the
-result:
+SCRATCH_DEV_POOL="/dev/mapper/testvg-lv2 /dev/mapper/testvg-lv3 /dev/mapper/testvg-lv4 /dev/mapper/testvg-lv5 /dev/mapper/testvg-lv6"
 
-Script Starting Dec 18, 2021  02:30.01
-Script Finished Dec 18, 2021  03:52.21
+I got the following test failure
 
-Seeing this, I thought no way just raid10 would make such a big
-difference, so I rebalanced the metadata to raid1 and this was the
-result:
+ QA output created by 254
++ERROR: cannot unregister device '/dev/mapper/254-test': No such file or directory
+ Label: none  uuid: <UUID>
+        Total devices <NUM> FS bytes used <SIZE>
+        devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
 
-Script Starting Dec 19, 2021  02:30.01
-Script Finished Dec 19, 2021  03:50.09
+Maybe we should use _require_scratch_nolvm as well?
 
-So it looks to me like that, at least in some cases, a metadata
-balance can be beneficial, so I thought to share.
+> ---
+> v2: Add kernel patch title in the test case
+>     Redirect device add output to /dev/null (avoids tirm message)
+>     Use the lv path for mkfs and the dm path for the device add
+>      so that now path used in udev scan should match with what
+>      we already have in the kernel memory.
+> 
+> -       _mkfs_dev $uuid -draid1 -mraid1 $dmdev $scratch_dev2
+> +       _mkfs_dev $uuid -draid1 -mraid1 $lvdev $scratch_dev2
+>  
+>         # Add device should free the device under $uuid in the kernel.
+> -       $BTRFS_UTIL_PROG device add -f $lvdev $seq_mnt > /dev/null 2>&1
+> +       $BTRFS_UTIL_PROG device add -f $dmdev $seq_mnt > /dev/null 2>&1
+> 
+> 
+>  tests/btrfs/254     | 113 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/254.out |   6 +++
+>  2 files changed, 119 insertions(+)
+>  create mode 100755 tests/btrfs/254
+>  create mode 100644 tests/btrfs/254.out
+> 
+> diff --git a/tests/btrfs/254 b/tests/btrfs/254
+> new file mode 100755
+> index 000000000000..b70b9d165897
+> --- /dev/null
+> +++ b/tests/btrfs/254
+> @@ -0,0 +1,113 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2021 Anand Jain. All Rights Reserved.
+> +# Copyright (c) 2021 Oracle. All Rights Reserved.
+> +#
+> +# FS QA Test No. 254
+> +#
+> +# Test if the kernel can free the stale device entries.
+> +#
+> +# Tests bug fixed by the kernel patch:
+> +#	btrfs: harden identification of the stale device
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick
+> +
+> +# Override the default cleanup function.
+> +node=$seq-test
+> +cleanup_dmdev()
+> +{
+> +	_dmsetup_remove $node
+> +}
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +	rm -rf $seq_mnt > /dev/null 2>&1
+> +	cleanup_dmdev
 
-Regards,
-Jorge Bastos
+Should wipefs in cleanup as well, otherwise test fails with non-unique
+UUID
+
+-Label: none  uuid: <UUID>                                                                                                                                                                                                                                                        
+-       Total devices <NUM> FS bytes used <SIZE>                                                                                                                                                                                                                                  
+-       devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+-       *** Some devices missing                                                                                                         
++ERROR: non-unique UUID: 12345678-1234-1234-1234-123456789abc
++btrfs-progs v5.4 
++See http://btrfs.wiki.kernel.org for more information.
+
+Thanks,
+Eryu
+
+> +}
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +. ./common/filter.btrfs
+> +
+> +# real QA test starts here
+> +_supported_fs btrfs
+> +_require_scratch_dev_pool 3
+> +_require_block_device $SCRATCH_DEV
+> +_require_dm_target linear
+> +_require_btrfs_forget_or_module_loadable
+> +_require_scratch_nocheck
+> +_require_command "$WIPEFS_PROG" wipefs
+> +
+> +_scratch_dev_pool_get 3
+> +
+> +setup_dmdev()
+> +{
+> +	# Some small size.
+> +	size=$((1024 * 1024 * 1024))
+> +	size_in_sector=$((size / 512))
+> +
+> +	table="0 $size_in_sector linear $SCRATCH_DEV 0"
+> +	_dmsetup_create $node --table "$table" || \
+> +		_fail "setup dm device failed"
+> +}
+> +
+> +# Use a known it is much easier to debug.
+> +uuid="--uuid 12345678-1234-1234-1234-123456789abc"
+> +lvdev=/dev/mapper/$node
+> +
+> +seq_mnt=$TEST_DIR/$seq.mnt
+> +mkdir -p $seq_mnt
+> +
+> +test_forget()
+> +{
+> +	setup_dmdev
+> +	dmdev=$(realpath $lvdev)
+> +
+> +	_mkfs_dev $uuid $dmdev
+> +
+> +	# Check if we can un-scan using the mapper device path.
+> +	$BTRFS_UTIL_PROG device scan --forget $lvdev
+> +
+> +	# Cleanup
+> +	$WIPEFS_PROG -a $lvdev > /dev/null 2>&1
+> +	$BTRFS_UTIL_PROG device scan --forget
+> +
+> +	cleanup_dmdev
+> +}
+> +
+> +test_add_device()
+> +{
+> +	setup_dmdev
+> +	dmdev=$(realpath $lvdev)
+> +	scratch_dev2=$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
+> +	scratch_dev3=$(echo $SCRATCH_DEV_POOL | awk '{print $3}')
+> +
+> +	_mkfs_dev $scratch_dev3
+> +	_mount $scratch_dev3 $seq_mnt
+> +
+> +	_mkfs_dev $uuid -draid1 -mraid1 $lvdev $scratch_dev2
+> +
+> +	# Add device should free the device under $uuid in the kernel.
+> +	$BTRFS_UTIL_PROG device add -f $dmdev $seq_mnt > /dev/null 2>&1
+> +
+> +	_mount -o degraded $scratch_dev2 $SCRATCH_MNT
+> +
+> +	# Check if the missing device is shown.
+> +	$BTRFS_UTIL_PROG filesystem show -m $SCRATCH_MNT | \
+> +					_filter_btrfs_filesystem_show
+> +
+> +	$UMOUNT_PROG $seq_mnt
+> +	_scratch_unmount
+> +	cleanup_dmdev
+> +}
+> +
+> +test_forget
+> +test_add_device
+> +
+> +_scratch_dev_pool_put
+> +
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/254.out b/tests/btrfs/254.out
+> new file mode 100644
+> index 000000000000..20819cf5140c
+> --- /dev/null
+> +++ b/tests/btrfs/254.out
+> @@ -0,0 +1,6 @@
+> +QA output created by 254
+> +Label: none  uuid: <UUID>
+> +	Total devices <NUM> FS bytes used <SIZE>
+> +	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+> +	*** Some devices missing
+> +
+> -- 
+> 2.27.0
