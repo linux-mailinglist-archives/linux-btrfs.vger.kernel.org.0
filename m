@@ -2,163 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B41947B862
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Dec 2021 03:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C3347B863
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Dec 2021 03:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233233AbhLUCeJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Dec 2021 21:34:09 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:43522 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbhLUCeI (ORCPT
+        id S233238AbhLUCeK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Dec 2021 21:34:10 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:45540 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233195AbhLUCeJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Dec 2021 21:34:08 -0500
+        Mon, 20 Dec 2021 21:34:09 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7D6FB212C3
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:07 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 90E1B1F3A6
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1640054047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=dxFfJcNbgD7gDtxEJH0har8f3GU+4Y7PsWJB5De9+54=;
-        b=sVgVIWzTeF1X/7Xter6Uj1zVdSVKfSyrfgQy6BhwhNFwoVvfVqA+hf7qDrm5rDVC44+lfx
-        D7MMoQDtb1K/yGC3/Q0UK7iQo9BCGtUdJUMYbAfB+LyyRLltQn8Sr002UI01xzO950Lj3z
-        CmNCxAUL95/H7EMdsREelYXwWBJZdpo=
+        t=1640054048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OgjG1sv/1myRnF/12b+quhK4mBqR7ZpkkEVAIsbI7gE=;
+        b=aYwY6DghnfS16497+puXbeRAXhWWjw1rcQGX7H6cXcIknkSUGrL1dKUGvvWsf5v4cC6lgh
+        4zWCflAoPlizGGEvJm8kUwEoVn+dPq4EPhNG77NgUiwOX1D/q4UQg9XS8+RlobD4nO6r7+
+        qtGSyeri8MXQkJ6dBsDlvhcXY5AUolI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3BCB13BDA
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:06 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DDF9113BDA
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1Lw9Ih49wWEOLwAAMHmgww
+        id YA7/KB89wWEOLwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:06 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:07 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 0/4] btrfs: refactor scrub entrances for each profile
-Date:   Tue, 21 Dec 2021 10:33:45 +0800
-Message-Id: <20211221023349.27696-1-wqu@suse.com>
+Subject: [PATCH RFC 1/4] btrfs: introduce a helper to locate an extent item
+Date:   Tue, 21 Dec 2021 10:33:46 +0800
+Message-Id: <20211221023349.27696-2-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211221023349.27696-1-wqu@suse.com>
+References: <20211221023349.27696-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Merry Chrismas and happy new year!
+The new helper, find_first_extent_item(), will locate an extent item
+(either EXTENT_ITEM or METADATA_ITEM) which covers the any byte of the
+search range.
 
-The branch is based on several recent submitted small cleanups, thus
-it's better to fetch the branch from github:
+This helper will later be used to refactor scrub code.
 
-https://github.com/adam900710/linux/tree/refactor_scrub
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/scrub.c | 108 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
 
-[CRAP-BUT-IT-WORKS(TM)]
-Scrub is one of the area we seldom touch because:
-
-- It's a mess
-  Just check scrub_stripe() function.
-  It's a function scrubbing a stripe for *all* profiles.
-
-  It's near 400 lines for a single complex function, with double while()
-  loop and several different jumps inside the loop.
-
-  Not to mention the lack of comments for various structures.
-
-  This should and will never happen under our current code standard.
-
-- It just works
-  I have hit more than 10 bugs during development, and I just want to
-  give up the refactor, as even the code is crap, it works, passing the
-  existing scrub/replace group.
-  While no matter how small code change I'm doing, it always fails to pass
-  the same tests.
-
-[REFACTOR-IDEA]
-
-The core idea here, is to get rid of one-fit-all solution for
-scrub_stripe().
-
-Instead, we explicitly separate the scrub into 3 groups (the idea is
-from my btrfs-fuse project):
-
-- Simple-mirror based profiles
-  This includes SINGLE/DUP/RAID1/RAID1C* profiles.
-  They have no stripe, and their repair is purely mirror based.
-
-- Simple-stripe based profiles
-  This includes RAID0/RAID10 profiles.
-  They are just simple stripe (without P/Q nor rotation), with extra
-  mirrors to support their repair.
-
-- RAID56
-  The most complex profiles, they have extra P/Q, and have rotation.
-
-[REFACTOR-IMPLEMENTATION]
-
-So we have 3 entrances for all those supported profiles:
-
-- scrub_simple_mirror()
-  For SINGLE/DUP/RAID1/RAID1C* profiles.
-  Just go through each extent and scrub the extent.
-
-- scrub_simple_stripe()
-  For RAID0/RAID10 profiles.
-  Instead we go each data stripe first, then inside each data stripe, we
-  can call scrub_simple_mirror(), since after stripe split, RAID0 is
-  just SINGLE and RAID10 is just RAID1.
-
-- scrub_stripe() untouched for RAID56
-  RAID56 still has all the complex things to do, but they can still be
-  split into two types (already done by the original code)
-
-  * data stripes
-    They are no different in the verification part, RAID56 is just
-    SINGLE if we ignore the repair path.
-    It's only in repair path that our path divides.
-
-    So we can reuse scrub_simple_mirror() again.
-
-  * P/Q stripes
-    They already have a dedicated function handling the case.
-
-With all these refactors, although we have several more functions, we
-get rid of:
-
-- A double while () loop
-
-- Several jumps inside the double loop
-
-- Complex calculation to try to fit all profiles
-
-And we get:
-
-- Better comments
-
-- More dedicated functions
-
-- A better basis for further refactors
-
-[RFC]
-- Whether this refactor is preferred
-  As one entrance, scrub_simple_mirror(), gets reused in other
-  entrances, not sure if this is layer breakage.
-
-- More testing in the real world
-  Although it passes all known scrub/replace tests.
-  I'm not yet confident in the RAID56 coverage.
-
-Qu Wenruo (4):
-  btrfs: introduce a helper to locate an extent item
-  btrfs: introduce dedicated helper to scrub simple-mirror based range
-  btrfs: introduce dedicated helper to scrub simple-stripe based range
-  btrfs: use scrub_simple_mirror() to handle RAID56 data stripe scrub
-
- fs/btrfs/scrub.c | 680 ++++++++++++++++++++++++++++-------------------
- 1 file changed, 400 insertions(+), 280 deletions(-)
-
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index f20ad60dcc0e..640f3de38e18 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3172,6 +3172,114 @@ static int sync_write_pointer_for_zoned(struct scrub_ctx *sctx, u64 logical,
+ 	return ret;
+ }
+ 
++/*
++ * Return 0 if the extent item range covers any byte of the range.
++ * Return <0 if the extent item is before @search_start.
++ * Return >0 if the extent item is after @start_start + @search_len.
++ */
++static int compare_extent_item_range(struct btrfs_path *path,
++				     u64 search_start, u64 search_len)
++{
++	struct btrfs_fs_info *fs_info = path->nodes[0]->fs_info;
++	u64 len;
++	struct btrfs_key key;
++
++	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
++	ASSERT(key.type == BTRFS_EXTENT_ITEM_KEY ||
++	       key.type == BTRFS_METADATA_ITEM_KEY);
++	if (key.type == BTRFS_METADATA_ITEM_KEY)
++		len = fs_info->nodesize;
++	else
++		len = key.offset;
++
++	if (key.objectid + len <= search_start)
++		return -1;
++	if (key.objectid >= search_start + search_len)
++		return 1;
++	return 0;
++}
++
++/*
++ * Helper to locate one extent item which covers any byte in range
++ * [@search_start, @search_start + @search_length)
++ *
++ * If the path is not initialized, we will initialize the search by doing
++ * a btrfs_search_slot().
++ * If the path is already initialized, we will use the path as the initial
++ * slot, to avoid duplicated btrfs_search_slot() calls.
++ *
++ * NOTE: If an extent item starts before @search_start, we will still
++ * return the extent item. This is for data extent crossing stripe boundary.
++ *
++ * Return 0 if we found such extent item, and @path will point to the
++ * extent item.
++ * Return >0 if no such extent item can be found, and @path will be released.
++ * Return <0 if hit fatal error, and @path will be released.
++ */
++static int find_first_extent_item(struct btrfs_root *extent_root,
++				  struct btrfs_path *path,
++				  u64 search_start, u64 search_len)
++{
++	struct btrfs_fs_info *fs_info = extent_root->fs_info;
++	struct btrfs_key key;
++	int ret;
++
++	/* Continue using the existing path */
++	if (path->nodes[0])
++		goto search_forward;
++
++	if (btrfs_fs_incompat(fs_info, SKINNY_METADATA))
++		key.type = BTRFS_METADATA_ITEM_KEY;
++	else
++		key.type = BTRFS_EXTENT_ITEM_KEY;
++	key.objectid = search_start;
++	key.offset = (u64)-1;
++
++	ret = btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
++	if (ret < 0)
++		return ret;
++
++	ASSERT(ret > 0);
++	/*
++	 * Here we intentionally pass 0 as @min_objectid, as there could be
++	 * an extent item starting before @search_start.
++	 */
++	ret = btrfs_previous_extent_item(extent_root, path, 0);
++	if (ret < 0)
++		return ret;
++	/*
++	 * No matter whether we have found an extent item, the next loop will
++	 * properly do every check on the key.
++	 */
++search_forward:
++	while (true) {
++		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
++		if (key.objectid >= search_start + search_len)
++			break;
++		if (key.type != BTRFS_METADATA_ITEM_KEY &&
++		    key.type != BTRFS_EXTENT_ITEM_KEY)
++			goto next;
++
++		ret = compare_extent_item_range(path, search_start, search_len);
++		if (ret == 0)
++			return ret;
++		if (ret > 0)
++			break;
++next:
++		path->slots[0]++;
++		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
++			ret = btrfs_next_leaf(extent_root, path);
++			if (ret) {
++				/* Either no more item or fatal error */
++				btrfs_release_path(path);
++				return ret;
++			}
++		}
++	}
++	btrfs_release_path(path);
++	return 1;
++}
++
+ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 					   struct btrfs_block_group *bg,
+ 					   struct map_lookup *map,
 -- 
 2.34.1
 
