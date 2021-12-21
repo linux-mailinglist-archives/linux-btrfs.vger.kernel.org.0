@@ -2,114 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8318647C8A6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Dec 2021 22:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB8547C96F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Dec 2021 23:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235035AbhLUVHG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Dec 2021 16:07:06 -0500
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:42543 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230326AbhLUVHG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Dec 2021 16:07:06 -0500
-X-Greylist: delayed 489 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Dec 2021 16:07:05 EST
-Received: from [192.168.1.27] ([78.12.29.103])
-        by smtp-34.iol.local with ESMTPA
-        id zmDkmQWB3xASIzmDkmsS2R; Tue, 21 Dec 2021 21:58:54 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1640120334; bh=bGN4OiGo5rAz037O9k6yWmpv5/0Tri8SmffBsLiUIt8=;
-        h=From;
-        b=bnfCVhW2IWcyudi7acW+fi3AVnXZ57+jE8pWk446non4KigA4iXoEal2Yb256bjvd
-         uLGGx1wcUqhiGF1Pi5iDeQZFjEaVQOaVElKsDA2QrF1eQHZ15syfQTUmnOAR4u67dZ
-         cyeZvdmV5OHPzI91CgZVa1TKoIY+1dq5rA5qnMj6pPH9tjCL0VwKXOzIIbhhPCG2GO
-         PYZHw98NsjOIif4FAsQ6eYnupwIohHWUwN3LBzFc1SeH0wvyEaTMW5q2rf8SB7WHLs
-         JnZVR2/ich3bYENmAvv4csKaj7hTR0siAwogGgwVvt6WBj8q7Ipl3YHeyY+AfNBewu
-         aa50UWb+kmw4Q==
-X-CNFS-Analysis: v=2.4 cv=d64wdTvE c=1 sm=1 tr=0 ts=61c2400e cx=a_exe
- a=VgbZ0xkbG+fWpNcKYgCcrg==:117 a=VgbZ0xkbG+fWpNcKYgCcrg==:17
- a=IkcTkHD0fZMA:10 a=JLGhq52oNz1wbGGyxLYA:9 a=QEXdDO2ut3YA:10
-Message-ID: <39ec824b-4c01-a7b0-23cb-cf314a703857@libero.it>
-Date:   Tue, 21 Dec 2021 21:58:52 +0100
+        id S234914AbhLUW4y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Dec 2021 17:56:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234639AbhLUW4y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Dec 2021 17:56:54 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4B2C061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 14:56:53 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id p1-20020a1c7401000000b00345c2d068bdso182907wmc.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 14:56:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0/HL/Mn/ZJWJAVTEF9x6GFUpX/XP6twAxhquHtQ1wz8=;
+        b=djLie2+esI0ZpHXpvoIcDGR0tVlz58PUh3AN9CegJjGgoVkv9V9iMAiwJKA1ZbCZ6E
+         zLHXDXEaiA0tfK7STD9+b8n5ApGHLfJrgtdowMj/ZE3e52fOLAVnLIlKluGSy2ezZGXv
+         d+wqKgtdDCo5wuz4X/+XxJp6HBRTtCt46RFSiRpke9038Mwm+6Wf0EyYU3ih4+nqSBGr
+         wpuusSWLgbm7KyJ+R1Vt/2kETgD0USDxjDnCQijO7gVrvun8bzwfrGjsj0xExuX1nG93
+         2fPNggTohHvdhW+gMJOUHV3Lss01VfQrwP2zVQGfD7X/8MWYKp0ETK3E5bV39x48QCmP
+         J3Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0/HL/Mn/ZJWJAVTEF9x6GFUpX/XP6twAxhquHtQ1wz8=;
+        b=D084EsJAOoiLs+EAmtrchoh14OGWkhuq/CvOM8AQ0F+dxQZglZHhUoptW4PwqcwcbW
+         xs5D8iI/Tq47ZEqY99O28gM2WTRghOjzgZie1u2PBV1xFIZHq2MQF087wsCrz4eJKRnd
+         WEcQNKr1/PPjGFulE4VToc+N+bzLkPQpAKNwHemfebBXcTz4luoqKemTRHCku5v3ApG8
+         NKADa9eMC/QVOh9BqtQF/x17P/qvuIWSIFelb5ZpGnti+/fxvP5zZYnVRnkhfnONBfKt
+         t74d9BpVxmxrK9Szp3rUwLlLCwITFMzpVSmtkvfi/8YLAXqxzWMt+60AHOYqhAZsYgnF
+         rh2Q==
+X-Gm-Message-State: AOAM533eqh+snNffZDX/qtElKTKtcukrqj0O6XmG2iWiug88iBtN6WB1
+        P9bDwCQYgUHppFH349cS4jSczRUME2xepd2PNQeSywuYkiU=
+X-Google-Smtp-Source: ABdhPJznfv0X/ISpm/sSThdbB/KDEMo7vGtdYtVl4g7yhOMc+dXElUeCu+pMNfLGD+ELdWQG0xnoCmLHOy/25vXI9sU=
+X-Received: by 2002:a1c:ed0a:: with SMTP id l10mr282811wmh.104.1640127412279;
+ Tue, 21 Dec 2021 14:56:52 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Subject: Re: Script to test allocation_hint - [Was Re: [PATCH 0/2][V9]
- btrfs-progs: allocation_hint disk property]
-Reply-To: kreijack@inwind.it
-To:     Paul Jones <paul@pauljones.id.au>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1639766708.git.kreijack@inwind.it>
- <b2236689-fd1d-c5bb-0be9-4a62a308d938@libero.it>
- <SYXPR01MB1918C21391070CCC6F12E1DF9E7C9@SYXPR01MB1918.ausprd01.prod.outlook.com>
-Content-Language: en-US
-In-Reply-To: <SYXPR01MB1918C21391070CCC6F12E1DF9E7C9@SYXPR01MB1918.ausprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJsyVlnxD7DW1OclPTpGANQ5ACMgR56llewi8u7Ik99YCI0HVjBCmhX7M0ggOEHlS4FHURrQ3J1UgOKdplsptwo93kcV/jpbqaW7p+Jkuz9giomSYyXP
- VDMMUSeTK2pWDCIjPe3U5Jfw4x5p++AdV6nYpzkyS56MHeSEwkkWl0QCLC7GeCbWVPZPLgf8XDHsUwIW8IJZxRHMafd7UNoTqOpUXCTwzYPKl89bcsGco9Vg
- InfESUBeInSMidmDNy06V6Vsbi0vK4I5lsl7Z1aEjmfXsK3UeBhz8Be+Guwy4oCzVGSESOuGt+Y4+EWFITjiY6CcBss5cMRKeErN3jWFn1Yx9YVFHYTM+hTi
- aTSHJk4L
+References: <b4d71024788f64c0012b8bb601bdba6603445219.camel@stj.jus.br>
+ <CAMnT83t1WXvX210_UEfNy7Q4dfKkgJn2j=AMNB9zbVAPU3MEfg@mail.gmail.com> <68123ebff72088e42ae1840210161ffee6622087.camel@stj.jus.br>
+In-Reply-To: <68123ebff72088e42ae1840210161ffee6622087.camel@stj.jus.br>
+From:   Matthew Warren <matthewwarren101010@gmail.com>
+Date:   Tue, 21 Dec 2021 16:56:41 -0600
+Message-ID: <CA+H1V9x7zR+nRME+-Em5YF8c6aWnNrRu8nyn13BJFAPBNfKDxg@mail.gmail.com>
+Subject: Re: Recommendation: laptop with SATA HDD, NVMe SSD; compression; fragmentation
+To:     Jorge Peixoto de Morais Neto <jpeixoto@stj.jus.br>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/21/21 06:36, Paul Jones wrote:
+> Does Btrfs unsuitability to QEMU VM images relate exclusively to
+> synchronous write *performance*, or does it also harm SSD lifetime
+> (assuming nodatacow and raw format)?  I intend to give my VM a second
+> disk image.  One image will be on the SSD (holding system files) and the
+> other on the SATA HDD (holding user files).  The NVMe SSD is probably
+> fast enough that the VM will have overall good performance even with the
+> synchronous write slowness you mentioned; but would it excessively wear
+> the SSD?  Do I have to create an ext4 partition on the SSD just for the
+> QEMU VM disk image?
 
-> 
-> FYI something has broken in 5.15 - Only the first device in a raid set gets allocation_hint set
-> 
-> server /media/storage/peejay/linux/btrfs-progs # cat .err.log
-> dd: error writing 'mnt/giant-file-x': No space left on device
-> 110+0 records in
-> 109+0 records out
-> 1828716544 bytes (1.8 GB, 1.7 GiB) copied, 4.4846 s, 408 MB/s
-> File too big: check mnt/
-> server /media/storage/peejay/linux/btrfs-progs # ./btrfs-hint prop get /dev/loop1
-> label=
-> devid=1, path=/dev/loop1: allocation_hint=METADATA_ONLY
-> server /media/storage/peejay/linux/btrfs-progs # ./btrfs-hint prop get /dev/loop2
-> label=
-> server /media/storage/peejay/linux/btrfs-progs # ./btrfs-hint prop get /dev/loop3
-> label=
-> server /media/storage/peejay/linux/btrfs-progs # ./btrfs-hint prop get /dev/loop4
-> label=
-> 
+I was running with VM images on an SSD formatted with btrfs with COW
+and didn't see much in the way of performance issues, but they weren't
+disk-heavy VMs in the first place. I did have an issue with
+fragmentation though, so I'd recommend storing them on a separate
+partition formatted as either xfs or ext4.
 
-Yes, I can reproduce it. However the strange if I do
+Matthew Warren
 
-# sudo ./btrfs prop get /dev/loop1 allocation_hint
-devid=2, path=/dev/loop1: allocation_hint=DATA_PREFERRED
-
-it works; instead if I do (no property name)
-
-# sudo ./btrfs prop get /dev/loop1
-label=
-
-it doesn't work.
-
-
-My suspect is that the guilty is get_label() and how the "global" internal state of btrfs is not re-entrant.
-
-Let me to explain what (I think) happens: if you don't pass a property name to "btrfs get prop", btrfs-progs iterates over all the "get" properties handlers.
-One of these handlers is the manager of the "label" property. This handler check the kind of object passed. If the object is a device (like this case), it assume that the filesystem is not mounted and call get_label_unmounted (otherwise it calls the get_label_mounted, which in turn ask the label using an ioctl).
-get_label_unmounted() instead calls open_ctree() (anyway I suspect that this is not a good thing on an mounted filesystem).
-
-My *suspect* is that open_ctree()/close_ctree() (called by get_label) and btrfs_scan_devices() (called by the allocation_hint handler) interact badly.
-In fact if I comment the code of get_label_unmounted(), the bug goes away.
-
-In conclusion, yes there is a BUG. The bug is raise when "btrfs get prop <obj>" is called without a specific property. It seems not related to the code of the allocation_hint property, but how the internal state of btrfs is handled in general. But a more deeper analysis is needed.
-
-BR
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+On Mon, Dec 20, 2021 at 7:48 AM Jorge Peixoto de Morais Neto
+<jpeixoto@stj.jus.br> wrote:
+>
+> Hello,
+> On Mon, 2021-12-20 at 13:29 +0300, Vadim Akimov wrote:
+> > From my limited experience, it would be better installing at some
+> > (extra) HDD in "normal" mode and then copying everything to newly
+> > formatted btrfs volume with all options as you like. After that, you
+> > do usual 'chroot, grub-install' thing et voila.
+>
+> Is that experience from before Bullseye?  I heard that the Bullseye
+> installer has better Btrfs support.
+>
+> > Also from my experience, it's better not to use btrfs for qemu
+> > images at all.
+> > [...]
+> > Even with such file you'll get synchronous writes in the VM 3-4 times
+> > slower than you'd have with image on ext4.
+>
+> Does Btrfs unsuitability to QEMU VM images relate exclusively to
+> synchronous write *performance*, or does it also harm SSD lifetime
+> (assuming nodatacow and raw format)?  I intend to give my VM a second
+> disk image.  One image will be on the SSD (holding system files) and the
+> other on the SATA HDD (holding user files).  The NVMe SSD is probably
+> fast enough that the VM will have overall good performance even with the
+> synchronous write slowness you mentioned; but would it excessively wear
+> the SSD?  Do I have to create an ext4 partition on the SSD just for the
+> QEMU VM disk image?
+>
+> > you still can have swap in a file over btrfs, no need for separate
+> > partition.
+>
+> I am aware Btrfs has official support for swap files (with some
+> restrictions), but is it reliable, efficient and light on the SSD
+> lifetime?  The Debian wiki recommends against swap file on Btrfs
+> (although some parts of Debian wiki are visibly outdated).
+>
+> Thank you for your help!
+>
+> Kindest regards,
+>   Jorge
+>
