@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480EA47B864
+	by mail.lfdr.de (Postfix) with ESMTP id 909A847B865
 	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Dec 2021 03:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbhLUCeL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Dec 2021 21:34:11 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:43528 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233250AbhLUCeK (ORCPT
+        id S233299AbhLUCeM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Dec 2021 21:34:12 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:45546 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233250AbhLUCeL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Dec 2021 21:34:10 -0500
+        Mon, 20 Dec 2021 21:34:11 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AA617212C3
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C3B021F3A6
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1640054049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1640054050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1hf5SD9tjCmOyKpPS56soNyOy20tby1DUY178lPUTZA=;
-        b=AZdKBJKmT1VSV+DlNbCmfO2hL6jA1xyKnQpUZBgxcguzF09D2yUucargd/ddhMw2DpuOTU
-        Trz63tqgD4lX5vGCVuGtO52juaduS9vpSOGNx0i4g/04AkRYfhChrvb+8r4KpNIeUY+BJg
-        erK4xRl05WVwQz+KqUL5FDESYtxjl/c=
+        bh=3xYFFseNGONNETBDNqXiwSU5uDpeLgm02DpEifL6Rbs=;
+        b=nnKpSkDclQMJLm+t6rhS9vKLQ97obEyteyzZ4GPLqdzoVsxIXVkffySrFl0A/mjqxyRUYo
+        /3x5/ChukVfLFoq38SxzePp+Lr1phAycPz8ihiER8VWOAGDvfEkw2lHyrW4Erl/FUeCTYx
+        xxfs2CAS2zF0fOq+oAT/gclRcIfIZVE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0388313BDA
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D7DC13BDA
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id iMZULyA9wWEOLwAAMHmgww
+        id OI2WNSE9wWEOLwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:08 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Dec 2021 02:34:09 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 2/4] btrfs: introduce dedicated helper to scrub simple-mirror based range
-Date:   Tue, 21 Dec 2021 10:33:47 +0800
-Message-Id: <20211221023349.27696-3-wqu@suse.com>
+Subject: [PATCH RFC 3/4] btrfs: introduce dedicated helper to scrub simple-stripe based range
+Date:   Tue, 21 Dec 2021 10:33:48 +0800
+Message-Id: <20211221023349.27696-4-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211221023349.27696-1-wqu@suse.com>
 References: <20211221023349.27696-1-wqu@suse.com>
@@ -52,239 +52,95 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new helper, scrub_simple_mirror(), will scrub all extents inside a range
-which only has simple mirror based duplication.
+The new entrance will iterate through each data stripe which belongs to
+the target device.
 
-This covers every range of SINGLE/DUP/RAID1/RAID1C*, and inside each
-data stripe for RAID0/RAID10.
-
-Currently we will use this function to scrub SINGLE/DUP/RAID1/RAID1C*
-profiles.
-As one can see, the new entrance for those simple-mirror based profiles
-can be small enough (with comments, just reach 100 lines).
-
-This function will be the basis for the incoming scrub refactor.
+And since inside each data stripe, RAID0 is just SINGLE, while RAID10 is
+just RAID1, we can reuse scrub_simple_mirror() to do the scrub properly.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 190 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 190 insertions(+)
+ fs/btrfs/scrub.c | 60 +++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 57 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 640f3de38e18..ddd069bd2375 100644
+index ddd069bd2375..aff9db6fbc7e 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -3280,6 +3280,172 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
- 	return 1;
+@@ -3446,6 +3446,55 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
+ 	return ret;
  }
  
-+static void get_extent_info(struct btrfs_path *path, u64 *extent_start_ret,
-+			    u64 *size_ret, u64 *flags_ret, u64 *generation_ret)
-+{
-+	struct btrfs_key key;
-+	struct btrfs_extent_item *ei;
-+
-+	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+	ASSERT(key.type == BTRFS_METADATA_ITEM_KEY ||
-+	       key.type == BTRFS_EXTENT_ITEM_KEY);
-+	*extent_start_ret = key.objectid;
-+	if (key.type == BTRFS_METADATA_ITEM_KEY)
-+		*size_ret = path->nodes[0]->fs_info->nodesize;
-+	else
-+		*size_ret = key.offset;
-+	ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
-+			    struct btrfs_extent_item);
-+	*flags_ret = btrfs_extent_flags(path->nodes[0], ei);
-+	*generation_ret = btrfs_extent_generation(path->nodes[0], ei);
-+}
-+				
-+static bool does_range_cross_boundary(u64 extent_start, u64 extent_len,
-+				      u64 boundary_start, u64 boudary_len)
-+{
-+	return (extent_start < boundary_start &&
-+		extent_start + extent_len > boundary_start) ||
-+	       (extent_start < boundary_start + boudary_len &&
-+		extent_start + extent_len > boundary_start + boudary_len);
-+}
-+
-+/*
-+ * Scrub one range which can only has simple mirror based profile.
-+ * (Including all range in SINGLE/DUP/RAID1/RAID1C*, and each stripe in
-+ *  RAID0/RAID10).
-+ *
-+ * Since we may need to handle a subset of block group, we need @logical_start
-+ * and @logical_length parameter.
-+ */
-+static int scrub_simple_mirror(struct scrub_ctx *sctx,
++static int scrub_simple_stripe(struct scrub_ctx *sctx,
 +				struct btrfs_root *extent_root,
 +				struct btrfs_root *csum_root,
 +				struct btrfs_block_group *bg,
 +				struct map_lookup *map,
-+				u64 logical_start, u64 logical_length,
 +				struct btrfs_device *device,
-+				u64 physical, int mirror_num)
++				int stripe_index)
 +{
-+	struct btrfs_fs_info *fs_info = sctx->fs_info;
-+	const u64 logical_end = logical_start + logical_length;
-+	/* An artificial limit, inherit from old scrub behavior */
-+	const u32 max_length = SZ_64K;
-+	struct btrfs_path path = {};
-+	u64 cur_logical = logical_start;
-+	int ret;
++	/* The increment of logical bytenr */
++	const u64 logical_increment = (map->num_stripes / map->sub_stripes) *
++				      map->stripe_len;
++	/*
++	 * Our starting logical bytenr needs to be calculated based on
++	 * stripe_index.
++	 *
++	 * stripe_index / sub_stripes gives how many data stripes we need to
++	 * skip.
++	 */
++	const u64 orig_logical = (stripe_index / map->sub_stripes) *
++				 map->stripe_len + bg->start;
++	const u64 orig_physical = map->stripes[stripe_index].physical;
++	/*
++	 * For RAID0, it's fixed to 1.
++	 * For RAID10, the mirror_num is always 0,1,0,1,...
++	 */
++	const int mirror_num = stripe_index % map->sub_stripes + 1;
++	u64 cur_logical = orig_logical;
++	u64 cur_physical = orig_physical;
++	int ret = 0;
 +
-+	/* The range must be inside the bg */
-+	ASSERT(logical_start >= bg->start &&
-+	       logical_end <= bg->start + bg->length);
-+
-+	path.search_commit_root = 1;
-+	path.skip_locking = 1;
-+	/* Go through each */
-+	while (cur_logical < logical_end) {
-+		int cur_mirror = mirror_num;
-+		struct btrfs_device *target_dev = device;
-+		u64 extent_start;
-+		u64 extent_len;
-+		u64 extent_flags;
-+		u64 extent_gen;
-+		u64 scrub_len;
-+		u64 cur_physical;
-+
-+		/* Canceled ? */
-+		if (atomic_read(&fs_info->scrub_cancel_req) ||
-+		    atomic_read(&sctx->cancel_req)) {
-+			ret = -ECANCELED;
-+			break;
-+		}
-+		/* Paused ? */
-+		if (atomic_read(&fs_info->scrub_pause_req)) {
-+			/* Push queued extents */
-+			sctx->flush_all_writes = true;
-+			scrub_submit(sctx);
-+			mutex_lock(&sctx->wr_lock);
-+			scrub_wr_submit(sctx);
-+			mutex_unlock(&sctx->wr_lock);
-+			wait_event(sctx->list_wait,
-+				   atomic_read(&sctx->bios_in_flight) == 0);
-+			sctx->flush_all_writes = false;
-+			scrub_blocked_if_needed(fs_info);
-+		}
-+		/* Block group removed? */
-+		spin_lock(&bg->lock);
-+		if (bg->removed) {
-+			spin_unlock(&bg->lock);
-+			ret = 0;
-+			break;
-+		}
-+		spin_unlock(&bg->lock);
-+
-+		ret = find_first_extent_item(extent_root, &path, cur_logical,
-+					     logical_end - cur_logical);
-+		if (ret > 0) {
-+			/* No more extent, just update the accounting */
-+			sctx->stat.last_physical = physical + logical_length;
-+			ret = 0;
-+			break;
-+		}
-+		if (ret < 0)
-+			break;
-+		get_extent_info(&path, &extent_start, &extent_len,
-+				&extent_flags, &extent_gen);
-+		/* Skip hole range which doesn't have any extent */
-+		cur_logical = max(extent_start, cur_logical);
-+
++	while (cur_logical < bg->start + bg->length) {
 +		/*
-+		 * Scrub len has three limits:
-+		 * - Extent size limit
-+		 * - Scrub range limit
-+		 *   This is especially imporatant for RAID0/RAID10 to reuse
-+		 *   this function
-+		 * - Max scrub size limit
++		 * Inside each stripe, RAID0 is just SINGLE, and RAID10 is
++		 * just RAID1, so we can reuse scrub_simple_mirror() to scrub
++		 * this stripe.
 +		 */
-+		scrub_len = min(min(extent_start + extent_len,
-+				    logical_end), cur_logical + max_length) -
-+			    cur_logical;
-+		cur_physical = cur_logical - logical_start + physical;
-+
-+		if (sctx->is_dev_replace)
-+			scrub_remap_extent(fs_info, cur_logical, scrub_len,
-+					   &cur_physical, &target_dev, &cur_mirror);
-+		if (extent_flags & BTRFS_EXTENT_FLAG_DATA) {
-+			ret = btrfs_lookup_csums_range(csum_root, cur_logical,
-+					cur_logical + scrub_len - 1,
-+					&sctx->csum_list, 1);
-+			if (ret)
-+				break;
-+		}
-+		if ((extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) &&
-+		    does_range_cross_boundary(extent_start, extent_len,
-+			    		      logical_start, logical_length)) {
-+			btrfs_err(fs_info,
-+"scrub: tree block %llu spanning boundaries, ignored. boundary=[%llu, %llu)",
-+				  extent_start, logical_start, logical_end);
-+			spin_lock(&sctx->stat_lock);
-+			sctx->stat.uncorrectable_errors++;
-+			spin_unlock(&sctx->stat_lock);
-+			cur_logical += scrub_len;
-+			continue;
-+		}
-+		ret = scrub_extent(sctx, map, cur_logical, scrub_len, cur_physical,
-+				   target_dev, extent_flags, extent_gen,
-+				   cur_mirror, cur_logical - logical_start +
-+				   physical);
-+		scrub_free_csums(sctx);
++		ret = scrub_simple_mirror(sctx, extent_root, csum_root, bg, map,
++					  cur_logical, map->stripe_len, device,
++					  cur_physical, mirror_num);
 +		if (ret)
-+			break;
-+		if (sctx->is_dev_replace)
-+			sync_replace_for_zoned(sctx);
-+		cur_logical += scrub_len;
-+		/* Don't hold CPU for too long time */
-+		cond_resched();
++			return ret;
++		/* Skip to next stripe which belongs to the target device */
++		cur_logical += logical_increment;
++		/* For physical offset, we just go to next stripe */
++		cur_physical += map->stripe_len;
 +	}
-+	btrfs_release_path(&path);
 +	return ret;
 +}
 +
  static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
  					   struct btrfs_block_group *bg,
  					   struct map_lookup *map,
-@@ -3292,6 +3458,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 	struct btrfs_root *csum_root;
- 	struct btrfs_extent_item *extent;
- 	struct blk_plug plug;
-+	const u64 profile = map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
- 	const u64 chunk_logical = bg->start;
- 	u64 flags;
- 	int ret;
-@@ -3386,6 +3553,29 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 		sctx->flush_all_writes = true;
+@@ -3576,9 +3625,14 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 				stripe_index + 1);
+ 		goto out;
  	}
- 
-+	/*
-+	 * There used to be a big double loop to handle all profiles using the
-+	 * same routine, which grows larger and more gross over time.
-+	 *
-+	 * So here we handle each profile differently, so simpler profiles
-+	 * have simpler scrubing function.
-+	 */
-+	if (!(profile & (BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID10 |
-+			 BTRFS_BLOCK_GROUP_RAID56_MASK))) {
-+		/*
-+		 * Above check rules out all complex profile, the remaining
-+		 * profiles are SINGLE|DUP|RAID1|RAID1C*, which is simple
-+		 * mirrored duplication without stripe.
-+		 *
-+		 * Only @phsyical and @mirror_num needs to calculated using
-+		 * @stripe_index.
-+		 */
-+		ret = scrub_simple_mirror(sctx, root, csum_root, bg, map,
-+				bg->start, bg->length, scrub_dev,
-+				map->stripes[stripe_index].physical,
-+				stripe_index + 1);
+-	/*
+-	 * now find all extents for each stripe and scrub them
+-	 */
++	if (profile & (BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID10)) {
++		ret = scrub_simple_stripe(sctx, root, csum_root, bg, map,
++					  scrub_dev, stripe_index);
 +		goto out;
 +	}
- 	/*
- 	 * now find all extents for each stripe and scrub them
- 	 */
++
++	/* Only RAID56 goes through the old code */
++	ASSERT(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK);
+ 	ret = 0;
+ 	while (physical < physical_end) {
+ 		/*
 -- 
 2.34.1
 
