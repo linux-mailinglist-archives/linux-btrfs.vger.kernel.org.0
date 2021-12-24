@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F8E47EBD1
+	by mail.lfdr.de (Postfix) with ESMTP id B14C147EBD2
 	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Dec 2021 06:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351414AbhLXFun (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Dec 2021 00:50:43 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:54250 "EHLO
+        id S1351416AbhLXFuo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Dec 2021 00:50:44 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:54256 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351410AbhLXFun (ORCPT
+        with ESMTP id S1351410AbhLXFuo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Dec 2021 00:50:43 -0500
+        Fri, 24 Dec 2021 00:50:44 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 575CB1F389
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Dec 2021 05:50:42 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7C6FE1F396
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Dec 2021 05:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1640325042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1640325043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FGPPVjW6aYiYbgIHxmhJjP2ENAqcEioJf3iNoGApW+o=;
-        b=HjUoC/rKccSZLy7yZzEc67xzWhXqM8PBebC+AiDjZpFE6o5rBhXcptPQpGSrTrANI7tYXU
-        9xEbuSTZ5bsdhnYWTDABDiosiY+HY4eHwknMfvRSYZoUpfWSjcNEHv+txe8yPDFANYF7Ec
-        qtiW8eLwcGDB7eg5RGkXHb++XAvC1NU=
+        bh=1e1iIHKO4Rhy1uYlColn051KhxRjY4uPAfvqZ62ViJ8=;
+        b=s9AWxoeIYm/qOPlhTftzf4N/pxAAQSPFlQNSqcXXj4Z5yt7CpDmWvMiT1LA7cEGL1h8YAV
+        wG+RFxHX1jLTCZpN2M99qNXcvo2hd5Lald3rQrj4Tdb+p/6DOXcIvtf2Si9iV5fNCJe5sO
+        7n0/2G/1M6e+NuDFX/v/iBKWOzXsz3M=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DCF613A97
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Dec 2021 05:50:41 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C35AD13A97
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Dec 2021 05:50:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WBXoGLFfxWGCGQAAMHmgww
+        id 2NPwIbJfxWGCGQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Dec 2021 05:50:41 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Dec 2021 05:50:42 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/5] btrfs-progs: check: skip NODATASUM inodes for `--init-csum-tree --init-extent-tree`
-Date:   Fri, 24 Dec 2021 13:50:18 +0800
-Message-Id: <20211224055019.51555-5-wqu@suse.com>
+Subject: [PATCH 5/5] btrfs-progs: fsck-tests: add test case for init-csum-tree
+Date:   Fri, 24 Dec 2021 13:50:19 +0800
+Message-Id: <20211224055019.51555-6-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211224055019.51555-1-wqu@suse.com>
 References: <20211224055019.51555-1-wqu@suse.com>
@@ -52,95 +52,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When using `--init-csum-tree` with `--init-extent-tree`, csum tree
-population will be done by iterating all file extent items.
+This new test script will create a fs with the following situations:
 
-This allow us to skip preallocated extents, but it still has the
-folllwing problems:
+- Preallocated extents (no data csum)
+- Nodatasum inodes (no data csum)
+- Partially written preallocated extents (no data csum for part of the
+  extent)
+- Regular data extents (with data csum)
 
-- Inodes with NODATASUM
-
-- Hole file extents
-
-- Written preallocated extents
-  We will generate csum for the whole extent, while other part may still
-  be unwritten.
-
-Make it to follow the same behavior of recently introduced
-fill_csum_for_file_extent(), so we can generate correct csum.
+And make sure after --init-csum-tree (with or without
+--init-extent-tree) the result fs can still pass fsck.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/mode-common.c | 43 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 40 insertions(+), 3 deletions(-)
+ tests/fsck-tests/052-init-csum-tree/test.sh | 54 +++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100755 tests/fsck-tests/052-init-csum-tree/test.sh
 
-diff --git a/check/mode-common.c b/check/mode-common.c
-index dd0b1d695bfa..1c1374bae70b 100644
---- a/check/mode-common.c
-+++ b/check/mode-common.c
-@@ -1225,6 +1225,7 @@ static int fill_csum_tree_from_one_fs_root(struct btrfs_trans_handle *trans,
- 	struct extent_buffer *node;
- 	struct btrfs_file_extent_item *fi;
- 	char *buf = NULL;
-+	u64 skip_ino = 0;
- 	u64 start = 0;
- 	u64 len = 0;
- 	int slot = 0;
-@@ -1245,15 +1246,51 @@ static int fill_csum_tree_from_one_fs_root(struct btrfs_trans_handle *trans,
- 	while (1) {
- 		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
- 
--		if (key.type != BTRFS_EXTENT_DATA_KEY)
-+		if (key.type != BTRFS_EXTENT_DATA_KEY &&
-+		    key.type != BTRFS_INODE_ITEM_KEY)
-+			goto next;
+diff --git a/tests/fsck-tests/052-init-csum-tree/test.sh b/tests/fsck-tests/052-init-csum-tree/test.sh
+new file mode 100755
+index 000000000000..d3bf03fab491
+--- /dev/null
++++ b/tests/fsck-tests/052-init-csum-tree/test.sh
+@@ -0,0 +1,54 @@
++#!/bin/bash
++#
++# Verify that `btrfs check --init-csum-tree` can handle various nodatasum
++# cases.
 +
-+		/* This item belongs to an inode with NODATASUM, skip it */
-+		if (key.objectid == skip_ino)
-+			goto next;
++source "$TEST_TOP/common"
 +
-+		if (key.type == BTRFS_INODE_ITEM_KEY) {
-+			struct btrfs_inode_item *ii;
++check_prereq btrfs
++check_global_prereq fallocate
++check_global_prereq dd
++setup_root_helper
++prepare_test_dev
 +
-+			ii = btrfs_item_ptr(path.nodes[0], path.slots[0],
-+					    struct btrfs_inode_item);
-+			/* Check if the inode has NODATASUM flag */
-+			if (btrfs_inode_flags(path.nodes[0], ii) &
-+			    BTRFS_INODE_NODATASUM)
-+				skip_ino = key.objectid;
- 			goto next;
-+		}
- 		node = path.nodes[0];
- 		slot = path.slots[0];
- 		fi = btrfs_item_ptr(node, slot, struct btrfs_file_extent_item);
++run_check_mkfs_test_dev
 +
-+		/* Skip preallocated/inline extents */
- 		if (btrfs_file_extent_type(node, fi) != BTRFS_FILE_EXTENT_REG)
- 			goto next;
--		start = btrfs_file_extent_disk_bytenr(node, fi);
--		len = btrfs_file_extent_disk_num_bytes(node, fi);
++# Create an inode with nodatasum and some content
++run_check_mount_test_dev -o nodatasum
 +
-+		/* Skip hole extents */
-+		if (btrfs_file_extent_disk_bytenr(node, fi) == 0)
-+			goto next;
++run_check $SUDO_HELPER dd if=/dev/urandom of="$TEST_MNT/nodatasum_file" \
++	bs=16k count=1 status=noxfer > /dev/null 2>&1
 +
-+		if (btrfs_file_extent_compression(node, fi) ==
-+		    BTRFS_COMPRESS_NONE) {
-+			/*
-+			 * Non-compressed extent, only calculate csum for the
-+			 * referred part, as the original larger extent can
-+			 * be preallocated.
-+			 */
-+			start = btrfs_file_extent_disk_bytenr(node, fi) +
-+				btrfs_file_extent_offset(node, fi);
-+			len = btrfs_file_extent_num_bytes(node, fi);
-+		} else {
-+			start = btrfs_file_extent_disk_bytenr(node, fi);
-+			len = btrfs_file_extent_disk_num_bytes(node, fi);
-+		}
- 
- 		csum_root = btrfs_csum_root(gfs_info, start);
- 		ret = populate_csum(trans, csum_root, buf, start, len);
++# Revert to default datasum
++run_check $SUDO_HELPER mount -o remount,datasum "$TEST_MNT"
++
++# Then create an inode with datasum, but all preallocated extents
++run_check fallocate -l 32k "$TEST_MNT/prealloc1"
++
++# Create preallocated extent but partially written
++run_check fallocate -l 32k "$TEST_MNT/prealloc2"
++run_check $SUDO_HELPER dd if=/dev/urandom of="$TEST_MNT/prealloc2" \
++	bs=16k count=1 conv=notrunc status=noxfer> /dev/null 2>&1
++
++# Then some regular files
++run_check $SUDO_HELPER dd if=/dev/urandom of="$TEST_MNT/regular" \
++	bs=16k count=1 status=noxfer > /dev/null 2>&1
++
++# And create a snapshot, every data extent is at least shared twice
++run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot "$TEST_MNT" \
++	"$TEST_MNT/snapshot"
++run_check_umount_test_dev
++
++# --init-csum-tree should not fail
++run_check $SUDO_HELPER "$TOP/btrfs" check --force \
++	--init-csum-tree "$TEST_DEV"
++
++# No error should be found
++run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
++
++# --init-csum-tree with --init-extent-tree should not fail
++run_check $SUDO_HELPER "$TOP/btrfs" check --force \
++	--init-csum-tree --init-extent-tree "$TEST_DEV"
++
++# No error should be found
++run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
 -- 
 2.34.1
 
