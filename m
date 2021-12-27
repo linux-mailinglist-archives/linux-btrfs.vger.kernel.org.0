@@ -2,90 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8D847FBD2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Dec 2021 11:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696DA47FC3C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Dec 2021 12:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236032AbhL0K1A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Dec 2021 05:27:00 -0500
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:43676 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236030AbhL0K1A (ORCPT
+        id S236390AbhL0Ley (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Dec 2021 06:34:54 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:53531 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233591AbhL0Lex (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Dec 2021 05:27:00 -0500
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Dec 2021 05:26:59 EST
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 3F3696C00733;
-        Mon, 27 Dec 2021 12:18:50 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1640600330; bh=bs1E7OoqIx81sSocBr936l+8bwV3sY89H+jSoVxBp6M=;
-        h=From:To:Cc:Subject:Date;
-        b=r3s/cftjMtso/Y49b4awjaDykKbrghex2OmbDgODLpAZUxjPTZABsP5Qme1ZrIehG
-         n0NqULX/Vr3SwhZ/88dPCTjCAbDOstnr36YwUKch0Pj0HM0OxJxaLY07ZydTQ1oewD
-         myi4MF+pZ6VHiMupbVWz9J81o/Kw1eFRT8MPBq7A=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 31EBB6C0072E;
-        Mon, 27 Dec 2021 12:18:50 +0200 (EET)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id RUvop0kWHgmA; Mon, 27 Dec 2021 12:18:50 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id DC8BC6C0072B;
-        Mon, 27 Dec 2021 12:18:49 +0200 (EET)
-From:   Su Yue <l@damenly.su>
-To:     linux-btrfs@vger.kernel.org
-Cc:     l@damenly.su
-Subject: [PATCH] btrfs: remove unnecessary parameter type from compression_decompress_bio
-Date:   Mon, 27 Dec 2021 18:18:39 +0800
-Message-Id: <20211227101839.77682-1-l@damenly.su>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Mon, 27 Dec 2021 06:34:53 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V.vZjZa_1640604876;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0V.vZjZa_1640604876)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 27 Dec 2021 19:34:41 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] btrfs: Use min() instead of doing it manually
+Date:   Mon, 27 Dec 2021 19:34:35 +0800
+Message-Id: <20211227113435.88262-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: OK
-X-ESPOL: 885mlYpNBD+giECgR3rABwY+s1k3Ua26u/vYoxBbgAiJPFTkYip5XRGxnW10RX+5ujkX
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_decompress_bio, the only caller of compression_decompress_bio gets
-type from @cb and passes it to compression_decompress_bio.
-However, compression_decompress_bio can get compression type directly
-from @cb.
+Eliminate following coccicheck warning:
 
-So remove the parameter and access it through @cb.
-No functional change.
+./fs/btrfs/volumes.c:7768:13-14: WARNING opportunity for min().
 
-Signed-off-by: Su Yue <l@damenly.su>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- fs/btrfs/compression.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/volumes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 32da97c3c19d..f941b7ed23f5 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -96,10 +96,10 @@ static int compression_compress_pages(int type, struct list_head *ws,
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 730355b55b42..dca3f0cedff9 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7765,7 +7765,7 @@ static int btrfs_device_init_dev_stats(struct btrfs_device *device,
+ 			btrfs_dev_stat_set(device, i, 0);
+ 		device->dev_stats_valid = 1;
+ 		btrfs_release_path(path);
+-		return ret < 0 ? ret : 0;
++		return min(ret, 0);
  	}
- }
- 
--static int compression_decompress_bio(int type, struct list_head *ws,
--		struct compressed_bio *cb)
-+static int compression_decompress_bio(struct list_head *ws,
-+				      struct compressed_bio *cb)
- {
--	switch (type) {
-+	switch (cb->compress_type) {
- 	case BTRFS_COMPRESS_ZLIB: return zlib_decompress_bio(ws, cb);
- 	case BTRFS_COMPRESS_LZO:  return lzo_decompress_bio(ws, cb);
- 	case BTRFS_COMPRESS_ZSTD: return zstd_decompress_bio(ws, cb);
-@@ -1359,7 +1359,7 @@ static int btrfs_decompress_bio(struct compressed_bio *cb)
- 	int type = cb->compress_type;
- 
- 	workspace = get_workspace(type, 0);
--	ret = compression_decompress_bio(type, workspace, cb);
-+	ret = compression_decompress_bio(workspace, cb);
- 	put_workspace(type, workspace);
- 
- 	return ret;
+ 	slot = path->slots[0];
+ 	eb = path->nodes[0];
 -- 
-2.30.1
+2.20.1.7.g153144c
 
