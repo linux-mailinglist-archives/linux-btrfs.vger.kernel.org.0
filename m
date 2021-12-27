@@ -2,182 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4212147FC4F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Dec 2021 12:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E9D47FC64
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Dec 2021 13:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236495AbhL0LtS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Dec 2021 06:49:18 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:37802 "EHLO
+        id S233700AbhL0MBO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Dec 2021 07:01:14 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:41507 "EHLO
         de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236492AbhL0LtR (ORCPT
+        by vger.kernel.org with ESMTP id S230075AbhL0MBN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Dec 2021 06:49:17 -0500
+        Mon, 27 Dec 2021 07:01:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1640605755;
+        t=1640606472;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=W//EnDTeNz1kbNUTkiwYe/SspeFrNirzlGl4RnFR/Eg=;
-        b=T/aSeVcl3kiJ4JKtBeoo6PLD8jbfazuDcuWzKAcH2HTGgOmf4KA+QKoTyH7jHRiDnQdRG3
-        EW7VEf2gi3s7RT0E9VjvhG/P7kAFdVBwAWrpx+GU7ykovh5Vhkyh7LoRa6gpN5rmp0PJO6
-        Ae+55HnO+18HLeB6c6kSvFYGk0otER8=
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur02lp2057.outbound.protection.outlook.com [104.47.6.57]) by
+        bh=XM+6vw9qmIGSm4MbWS7SnI4j7UqIFdY0yaUB4rhsgNc=;
+        b=M3cehssYGgyEBiPdkcT+S0jJ/YkeDwPaCqULCTrTf5WXbweHU/h0J9Yzl6e4ljpdPNjgW/
+        Gk1724fOxLOyP8IzVvL4lRY4DcU8SnLzwZQ6TbgARGdlnt9RwMwOGw5IHFtf2q0lFWB42l
+        w2s4y/zTbtslgO6tZq2WQQ6sjytKTT4=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2055.outbound.protection.outlook.com [104.47.12.55]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- de-mta-5-PeVBrM7gPMSFMAMTtBSUWw-1; Mon, 27 Dec 2021 12:49:14 +0100
-X-MC-Unique: PeVBrM7gPMSFMAMTtBSUWw-1
+ de-mta-16-oaLV4-CuNwaGJn2je5ouhg-1; Mon, 27 Dec 2021 13:01:10 +0100
+X-MC-Unique: oaLV4-CuNwaGJn2je5ouhg-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WHRC6ay+iNxNk7+v0sDHjf8wYFhYivh9U0lUBsDMprzDGLl3pWMI8ACqG83xiByVwR7Bgkwmvfw288MlxOaSbTrq/tyLON/8+kafxzeKS8TCaotT5uJAL/gUYjB1vw6xDW7hc8tgjcazNTUaWTAYwhSDO4d13K9VAp6gs/Kl0XaQ26s2LzqclKnZnCFxGSsyWS+JVvRFAANSnU0yPgNK65qQA96JakPNlX8w0PFsVsTyawWRl14WtCNuYlShQoY80biAoqWytNZc8qZ0prXi0pQJpq9RrOOL190CwXjODq7VO8fE7SxjQGPmBvKFvxgekfKycV3ofKRxuX0ZI9F8nQ==
+ b=RgfdI9vEdscYM6ke4GVJsKpUhDijxzd+AXiEGghVoSiRE2+DP4ab9/ZjQtcaV4EVgut7T2+14yerxlrqGpbyOD6J8zgKe6nsQS3QMyTzFbgPNVEVnfWoHS7fCo7MglvWJ8Jg2YeKZCWYMPObhZNhezX6a9XneXGnQ432r8Mck4CkMWLmyh89/EiuL+eLFsn7VXaf2qttJE3p4ASzufcUGvWh970ACuYwioIHRpottajTAVHjMobH4ZQWjjyqdoGw8vpL2VKovY7qzKAhJff+xg3yrZBu2nID7ZImZjvxo3mx2UObBLEidERJhY1p1MYIID5SpFg+23xKCMEuRSX+/w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W//EnDTeNz1kbNUTkiwYe/SspeFrNirzlGl4RnFR/Eg=;
- b=Qx/Aq9SSwWUBp4/pU+wG12EhJeVrgNcrxyEKFA0HYIh16Cx1FQ5yFvX0nINQvo7+R0Uc7VsLIqKkjrfNrtTyRpFF11oqilB+4zeukDrn9efCdkF/58DJjKn1JUbw9qfVGtA3HvGLfHI2Uhhp+Zehaf2jRvA8SeYdEnIe1BoL0u/uAIednsSmTAVUguGKVoRtg/JPi+x9v3fN2Gk5LWwk8tov2fftaMWAYI7vy2fuHRyVtxphqfSp/JLn6zWXxapnDv1PAOyQEeFTAq8SVZj7f8bacJ3w9OrHYrAE/uPxPxzjdtuTUwpx9C2KDDCgpWBF8uGe6bViS+D6YpvuylEhwg==
+ bh=XM+6vw9qmIGSm4MbWS7SnI4j7UqIFdY0yaUB4rhsgNc=;
+ b=ImChbyzL+GRhx5h888TSTa9elclvtLR4qFXhpD3tL4orrSSfntPbgqosUEMd1xkj2ay0ZlNutWE2TrFo9Epsog2Qu3BqiKJvvUSkDcGkD6yWom623nBhLhNnCzmhnwOy5z4QlmWK+/78a5W0vIxiGXqWCDIS2ohmLlbu4YSaQbKyIqVqKBhA/eqEzi/72iFPg30yuOmSJkI6uy0bzBD9uq2n5W4GOyoUIxTEJydGJuk5aP1vQeT/Q+ttI1RUODvPHjyhgS/FrAR3Y4A0QCOPpiw5R5HhuswL0zFTkCbUaN9kKxQJGRmsBsL31fVvj/hPAo8GFgJBVcxbSLVZqhnyxg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from PAXPR04MB9423.eurprd04.prod.outlook.com (2603:10a6:102:2b3::7)
- by PA4PR04MB9270.eurprd04.prod.outlook.com (2603:10a6:102:2a5::11) with
+ by PAXPR04MB8814.eurprd04.prod.outlook.com (2603:10a6:102:20d::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.16; Mon, 27 Dec
- 2021 11:49:13 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.19; Mon, 27 Dec
+ 2021 12:01:09 +0000
 Received: from PAXPR04MB9423.eurprd04.prod.outlook.com
  ([fe80::830:e01a:7a86:6caa]) by PAXPR04MB9423.eurprd04.prod.outlook.com
  ([fe80::830:e01a:7a86:6caa%3]) with mapi id 15.20.4778.016; Mon, 27 Dec 2021
- 11:49:12 +0000
-Message-ID: <7a37b841-3b82-ce8d-0459-ebaea539fc89@suse.com>
-Date:   Mon, 27 Dec 2021 19:49:01 +0800
+ 12:01:09 +0000
+Message-ID: <f10847fc-d3c5-0f95-da49-001681f3d19f@suse.com>
+Date:   Mon, 27 Dec 2021 20:01:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.4.1
+Subject: Re: [PATCH] btrfs: remove unnecessary parameter type from
+ compression_decompress_bio
 Content-Language: en-US
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-References: <20211227113435.88262-1-jiapeng.chong@linux.alibaba.com>
+To:     Su Yue <l@damenly.su>, linux-btrfs@vger.kernel.org
+References: <20211227101839.77682-1-l@damenly.su>
 From:   Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH] btrfs: Use min() instead of doing it manually
-In-Reply-To: <20211227113435.88262-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20211227101839.77682-1-l@damenly.su>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR05CA0082.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::23) To PAXPR04MB9423.eurprd04.prod.outlook.com
+X-ClientProxiedBy: BYAPR08CA0064.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::41) To PAXPR04MB9423.eurprd04.prod.outlook.com
  (2603:10a6:102:2b3::7)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 401a3f60-404b-4359-9fe5-08d9c92ee6a8
-X-MS-TrafficTypeDiagnostic: PA4PR04MB9270:EE_
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-Microsoft-Antispam-PRVS: <PA4PR04MB9270D1C79147BE5B553AD363D6429@PA4PR04MB9270.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: f1b1f926-e597-42db-67b3-08d9c93091f0
+X-MS-TrafficTypeDiagnostic: PAXPR04MB8814:EE_
+X-Microsoft-Antispam-PRVS: <PAXPR04MB88149FA1951220B6A670E3ABD6429@PAXPR04MB8814.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GF598qCJPJPpAw7c6EKEOar0O1T3CIpwe/NfuWr7cjvMhAx6901pUqNm5sf6ZDbumDX/26ILjHkokf9mF0rt8sCsXhi8VV5Avq8ZvHEWEdNout+bt/63VES31WMDEDyivTRDgEsB4vZmliDLTTulxaPeImv1dVDlDB/OrnHgOMpbfneMdEAkmUdPL/y2Fqh633jXffhTKPtqw1MW6YeedLEp/GQPfwqFIuHfeOO0VNLhygMSGi2sni6onpJvz+lTj06jWWAsO5lWRLMaeqCHD78IZk6cb9SP+cxIYCQkv8htYXlF0vRMV+hgxfX5AiFTzjclTZ78FPu4DCDoqgtWwgFAQz5lOkypAXRoZ0JydPqfhA79+9L7umgUEP68yoWq7bLvv/szd8W09Sr7jY7iV9zxQ3tc6/UaakqVEF91SDh/PVHIsx2Q3fSk2Xc4bGqT4BbtKQBQEbbcnRqdp0MO0rnXmbVuom8gK7ryYiYP7/CtuX1Bp2pzB1zI7tXfjG1CfQoZXYLaEsHvCfw6wdcmNHCdla+sk/SQ4wqutLUed480lc/QRT2aHVgr9zdagNmdMTnkuDF4u0AODZEM887mkKZWLJ2N+mf+a1gVOumVVYF7i164tz6qCAjBeU/rHFn7+LVmX85MT9Wh9VUCzRAcZrVCfg7WFYzMu5iXFP5EySern0rvxw4vQwo9WWlQng2xasQKkWfF9t+GBgtFItQAaeH6WLBK31Bbo5/z1voHMZw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9423.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(36756003)(2906002)(8936002)(2616005)(66556008)(83380400001)(31686004)(508600001)(6506007)(5660300002)(53546011)(316002)(6486002)(8676002)(31696002)(6666004)(86362001)(4326008)(26005)(38100700002)(6512007)(186003)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: D//By1Cf3Xo0bm7eRurYfPJS64C17ByzDPlJDF+qiAKcZynK2RtqEJ6XWB6LQUG5fW/IUgILqeZPOiC7KI5DcKuNQqXkdCU5DDTxyZxLPnZ/KQHn04NH0r/TOz4HuCK9NP+SUOffO/9wSNHVJ1+3gl5sZxwiVZ8sVoDGBFrnJxDZk9kPrugaQ+DoQaTrK8AX6383tWtr0vqHnFHB2pqkF0YxWb8UCcPEing+ibAJl1+cGqrWl+4HlUiyYBLX647M5oVlNv454AmyFESPrWo63gUcjWOjNfdRBqA8s8PGfEgx1KDHmv8rdT+hVAWRzjd2zceugyzDNL9E8cLt59y1BmRIBmWmjs3hzkJGQhQ8V5Yx8ZO20zmUMYk8RP+lxPDrFzHcbvVmL5JX3o/gCL4uV/Vdx9UNYkpNsNQKN/aJlK5/Qso9XpFQKbFAatKURY4LMt/Guxd9SPMYQTDssiuvwtHYohO3awTD+08PLP89bIjGYHsbIERL2XF1n4Q2+zAM0NOJvf3IzbjV2lXBeID4KIm8wpX3SySn+PVBtt8dNl3P/TaOypx3L8W6YHz8ZDWsP0Rz0NxzSFS+W72KybsVF6zvl7FQddEwdfiw+Tb2gzxEtIDNtPVlLscZZbjTPJuRRtKKjBeTQWiMwB9ggCMC+pGh/clEQ9cJx5dz99byjzh5TSrSif0D0enly2OvdUUMk6Yba9veQql5vuSjfaVtB7hUFgVbeWq6UuuklRq2RyMRUxhiUEquYCB4SoLxy5jN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9423.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(6512007)(6506007)(53546011)(508600001)(38100700002)(6486002)(31686004)(86362001)(83380400001)(8676002)(66946007)(8936002)(186003)(26005)(31696002)(2906002)(36756003)(316002)(66476007)(66556008)(2616005)(6666004)(781001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?amhacVB3SUhWUEhpUmxWM1BmQ25DVE5pVzQ1SFVwV2FYT01KWFBuSDY5ZVNR?=
- =?utf-8?B?RTN0NkRxcysyd2dNd2J4QjFhZjV1V3JTSEZxeXVrMGhGK21rNno3elkvZ0lG?=
- =?utf-8?B?LytIZFI5TG9mVi92K08vcFZUUHBqRm1aVmxCbElhWjJBZHN1NU52ZmF6Y0RY?=
- =?utf-8?B?cDNUYWxyd0V3Tmd1QklzUkNuYVhaV3BuZWplZklQVUJZc05ZTEkzbkVsNGJJ?=
- =?utf-8?B?R0pRK3YwZ2hKSzZEK0R5dmt5VzRjV09MR1VlYjFVcEJjZ2YvTWRyVHVWOStm?=
- =?utf-8?B?eHZoaW4vYUpUaFQzT1V0M24rN3pRcTZ0dnZrK0pPbzRDbm1mRWJ6UFJLNTFU?=
- =?utf-8?B?ZU9qSWtSckhqR3dsN1Y5REhQVHYrNDJZTXpKejY5elBIR0pFVzUzYzJQbk9J?=
- =?utf-8?B?U1Jnb1lZT2VoK25KbllFSHFZT0FVVGhXckVJMXhnK0NQV3c4N2xVem5DcFdi?=
- =?utf-8?B?b2VjdHdXSzJVZHV0b1N6TFB1RTFiU1RBdVk5SXhGLys0N2cwOVAzVVlFRGUr?=
- =?utf-8?B?MWk0alVBL0JUc2Z3bG1EY21uRkJ5OFdxZEgvdFh1T2JrenVBRCtJRFRrZ3ZL?=
- =?utf-8?B?QytJR0FkNlZTd1l4QjFRNWh6dXJHeTBkWFpiMUpCazBjL0ltQUR4OEc3eGxy?=
- =?utf-8?B?YThTMS9ra2VJSW01NytlTHYrT3liWjI1NWF2KzhrOWFiK2dXZVp4aUEwY3lo?=
- =?utf-8?B?bzE5UTcrYzc5cy9JV3JYZVVuSmcyYVpza3hXVHgvRzdpSGwybERVN2U0SWsz?=
- =?utf-8?B?SmNIYXlxNUNFUVVWSHB6Z3VyVHFQNHZjSWpBUTVKZjBROWxIMlNQc0hxQTRF?=
- =?utf-8?B?WnlaRDJTaGNQU1hTQ1I0bkE4WlZhKzd4RW5TQW1KYktYdWRpY0FBcTlwSHE4?=
- =?utf-8?B?M3cyVWhyOHdMdUNGMWEwbzdyaWZvZDgvSHVmZWk5Wld1eUlGazlBVDMvdlQ2?=
- =?utf-8?B?dUl0VGk4dEUvUXNYOTdlYVFFU2JDSGNkMzFYbHQwVGVFaGs1UGk3TkRSTFVJ?=
- =?utf-8?B?VWdENjJiRDFpSmUvWEpQMmF5MmU0MlF0Qlg4OTh2RkIva280VXk5VWU1Qk9B?=
- =?utf-8?B?NERQZ2dlMGJ0UFhPN1R4cnJIcmVIczNZVVF3OHBkZnF6bm5BbitlMzUzWlRr?=
- =?utf-8?B?cngzTVhiTTRYWFM4T0s5YTJtMVNCNnhZU2dpMXllcGNGSzFRb1pnRWIxTEo0?=
- =?utf-8?B?UW1LNDR5eHNObndsamRvZzFmaHFHRkdyL0JOMHg4d3BOVUo0dGt3VmV5R0J4?=
- =?utf-8?B?aWhyaGRvV2xDUHpWMndBNXBGaTN0ZkRqS3hrcGUxSjZsYzUrU2M2UEd5elhr?=
- =?utf-8?B?OTBlNEk4UW5LSzNibXJQN2g5R0RQVEFOSnhvakRnNjEwMUQveXhPMUFlOTVp?=
- =?utf-8?B?VHU4akorQk9YdDBnRmJyMkttZzJCNEtiZlNnRFhSNjk4QndKbHFtTGFnUkJT?=
- =?utf-8?B?MXVUMytrdms3bjlFczhNV1licXVaSHNTZElSQ1dUczFwR0piazBObmQwZ0h4?=
- =?utf-8?B?VndXQnFMMStJVkV4aDkyS1JpWVlXKzFFbll0aVF4OFZpWWZlQ1pxdWJvZW5j?=
- =?utf-8?B?Wng2MHFyNk90RU5yalJYQXB0Q3ZUcnpUM0MwSHF0TEN5R1pLckZTVWtEd1hE?=
- =?utf-8?B?Uk16YTIyUTh3ZkxIdml3aGR2blZ5UFloTnlLVGMwZkpKZE1XdVNqcFhnTkpm?=
- =?utf-8?B?ZWpqcVBVZEJhWGRrUmVqZ3F0NTFEd2d6UXhsY2Nnakh2ZHZ5c0RKbzltdktE?=
- =?utf-8?B?cXBadjNUMU0vTHFMN05MdXJVMkcyRHFxdlJxS21wdk1Pd0daNGxIbkdmZWZZ?=
- =?utf-8?B?L0d2dkpycFFURnpaNE8xMWJlSTJ1d0t0bEpSSi9ZWGs1aTFRdHVNelRhM1hw?=
- =?utf-8?B?clo1UFd2VGxKVTJFTi96NGMxT3FIdjBWUWRsbzNBU3IxcERqcDVwNDRkSmpw?=
- =?utf-8?B?Z2IwRzAxWVAxdVIrSFYyVUtFQkNRRE01VjdKZ2ZsV0hJbWtGeU80RENTaUx6?=
- =?utf-8?B?MHBxTFBKMW8yaytWQnpxcyt4ZS9OZmF2SzBjNURHa3plaURGdzNsZlF5Wjlq?=
- =?utf-8?B?Q3IxOXpwd0VManpiQWtIQUlmcVVMQVJVVkFSbm8vVElsaHQrMUErVHFQZTdT?=
- =?utf-8?Q?tnug=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bEViZ1BUK1dLcG1GMDI4aG1yT1RSU0hTdHRIMVIxQVExSTdvdFE5bjI1Nzc0?=
+ =?utf-8?B?NEhIYnAzL3RVTVBsWHR5emc4R2dvM25OTk4veUdGWFJTTnV2Q2tGOXZWbTJv?=
+ =?utf-8?B?VjdUcStvUm1kTmZwNEp0dVhDWnJJTHBPc3VtUkxIL01Sc1RCSWpPUjFkc3VM?=
+ =?utf-8?B?dHhkL09rOHQrQ1E4ejF5U3ZlUHAzVVNvcHFvaXlCaGhTYXp4aVFZazBrc2hl?=
+ =?utf-8?B?ZU56V2lmOTNENkJiRHZFcXJrenBjZk1jdTBtS3NpVExqNEZaSVUvY2p2ZTBH?=
+ =?utf-8?B?QlNQMVJxZjNHSE1abWlsWWdmb2xYK1FtdlhxYi9pOVJjL1dSa2NpSVhhclc0?=
+ =?utf-8?B?VGs5RVpGczhrSHZvSzJzS3hzSU5IaWZDcGdvcWQrcWhyeGpRV1dmV01xWVVr?=
+ =?utf-8?B?RTk1bGdXdWRiTGFycmdJa2p6dk1maDU5RjVVNmY5TktVdlBlWWFackFiYUhx?=
+ =?utf-8?B?U0d3NWl3WGlEemsyZGUxV3ZpVDV6dEJPeEJKZDRRMWx2NWh5VkJOSmo3NkNM?=
+ =?utf-8?B?N21ZcCsxRG1qZkM3SmxCT3BaL0NEdWJ3UzlmYmhmdGVZYkxXSG51M21Ob29D?=
+ =?utf-8?B?KzhmRHBsZjdHRUV6bWdRdmtGK3RJNTRMRjA2b3k4d09mdVRJOHBQRlBWdmln?=
+ =?utf-8?B?L0wwN2FqMU5ZaWxvdVFCcDQ3QmdTMXJtMVZ4akpJbTcvYW8ycnd3WCtqNGFu?=
+ =?utf-8?B?VThVczlHOTJPS3h5UURXK1dWSzlTL0FYckVSdTFZMWxSZ0tGeFBTd0dzQ1RC?=
+ =?utf-8?B?b3owcTY0bEF2K2hwTTdScGNTem9HYjFSNFYrVjVvdzVEZ2NKZHAvVTR3Zklq?=
+ =?utf-8?B?VElMVy91VXJITEROd2dVTmgyMkFYcmJ5ZUhmZXRsWkVXTFdTd2ZtaWt5ZVpL?=
+ =?utf-8?B?Z0xtRXRrNUJWKy9IYUxuMFNodm5sYVN0SXZYMXlDandxZWp5N3NpbFRGZDFj?=
+ =?utf-8?B?eU9NNmVRSHVOdjU4ejA1M0t5K2JEcXhtamVHVXFWOVh2K0JNK0lZVHN2di9z?=
+ =?utf-8?B?OTg4YWE0SXk1ZHd0NTc1QXQzbHJJUStFT3NaVzlMRE5kKzZFVERuK1JJdkk2?=
+ =?utf-8?B?eEVkd1hLSFArbWt1R0dtV05tTzE3NHlmUVl2YW1RTUJLRW43MnNRbjJaNEd5?=
+ =?utf-8?B?RjdTazhWdEEzSFVvNTQwRFJqcGhUaWxUNHFIVHVkOEpJamoybGZDeE40b3FW?=
+ =?utf-8?B?MGNHMjVlVzJqdGNiRlJKZlA4T1hLb0hVVEZlR1hkSExhcW5pNjViYkFKNG9p?=
+ =?utf-8?B?S21FVE1PNStqM2hDM1h4Wml6WCtHWEl0aGJlZkxiNzdVdGhRVHpQc25xRTJW?=
+ =?utf-8?B?dER5VFFJQWdxMjRyWWF5dTRaOTdxbnB0SCtXK0djei9qYTEzQlRVWGlsNDgz?=
+ =?utf-8?B?UGh5dFVUT3hkSXcrTDEzZGZWK2lsc0FXODhlUlVoenJnY2c1MUlrUzJHb0x3?=
+ =?utf-8?B?NC96WENCRkRnd0EzaU1jSnIyenYvcWJDbU1yUnJRdkE1RVpaTHN2WndtT3Ur?=
+ =?utf-8?B?VW1uTkxEMC81Z0dsV0VFdFo3TE9CRzJKQ24wQittUm42alVJTWVWVm94T2No?=
+ =?utf-8?B?M2t2STE4UVVCNXJKdjhEcllnNklkb0pyZmcxazJsR09WTllUZDhvSDNzcysr?=
+ =?utf-8?B?aFF3V1J0YnVIdDQ5NVp0UnFONUJXUlh2VkRvRks5dHJNOTZTTnVwU3gvSTdK?=
+ =?utf-8?B?OWMrTWhYelNRRFFaTTN6YXBQMlFla3ZSZkVqNHBzWFFlU3o3OG5xd0JOOGho?=
+ =?utf-8?B?d09RbTFXRVRzM2VOS2lLWWxGS08wRHVLd29PdnhveXFVVW1OT0dMSWErdmlL?=
+ =?utf-8?B?bVhEeFpKbGJuWjFrZlUvQUhOaTRkYTJhS2hIQnFPYm9TZEd6SEo3UERNWStp?=
+ =?utf-8?B?dkZyMkRmSFpHVUNOdFNqdjZSNUpESEFlVlNrNGJYYUhkQlNCN0FhVTRZK0Jw?=
+ =?utf-8?B?VDFSKzJaRTRWa3NuMkI4bmJTR1RSRlM2WTRFUm1BQU9WVURvYkVuTnMxWW95?=
+ =?utf-8?B?cWhEbW56TTdnK1hURHk5Mng5a09sZXFCa1VlY2lXa0E1bG9vdDhkeHJhcWxa?=
+ =?utf-8?B?Sjd2Z01abUF3MFU5cEQwTzd0blV2NlM3OVlWQXNCcEw3Uy9DVzVvV0daQ2ND?=
+ =?utf-8?Q?uU6M=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 401a3f60-404b-4359-9fe5-08d9c92ee6a8
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1b1f926-e597-42db-67b3-08d9c93091f0
 X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9423.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2021 11:49:12.7733
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2021 12:01:09.6328
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eKf3sUKuEk0z+w7MpQpavrhXcryCw1zfFbC2knJtBK2WP4LaKyOXz/4YIINi2PmX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9270
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7J0tEgxw7ptjVquU+P0JEaPBRpU5GdlNnN7qjp7RUAyUMdTUhMx8T7FTPz7lzX/6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8814
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/12/27 19:34, Jiapeng Chong wrote:
-> Eliminate following coccicheck warning:
+On 2021/12/27 18:18, Su Yue wrote:
+> btrfs_decompress_bio, the only caller of compression_decompress_bio gets
+> type from @cb and passes it to compression_decompress_bio.
+> However, compression_decompress_bio can get compression type directly
+> from @cb.
 > 
-> ./fs/btrfs/volumes.c:7768:13-14: WARNING opportunity for min().
+> So remove the parameter and access it through @cb.
+> No functional change.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   fs/btrfs/volumes.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 730355b55b42..dca3f0cedff9 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7765,7 +7765,7 @@ static int btrfs_device_init_dev_stats(struct btrfs_device *device,
->   			btrfs_dev_stat_set(device, i, 0);
->   		device->dev_stats_valid = 1;
->   		btrfs_release_path(path);
-> -		return ret < 0 ? ret : 0;
-> +		return min(ret, 0);
+> Signed-off-by: Su Yue <l@damenly.su>
 
-Nope, please don't blindly follow whatever the static checker reports, 
-but spend sometime on the code.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-In this particular case, min(ret, 0) is not really making the code any 
-easier to read.
-
-The "if (ret)" branch means, either we got a critical error (ret < 0) or 
-we didn't find the dev status item
-
-For no dev status item case, it's no big deal and we can continue 
-returning 0. For fatal error case, it mostly means the device tree is 
-corrupted, and we return @ret directly.
-
-Are you really thinking we're calculating a minimal value between 0 and ret?
-
-
-And I have already stated that, there is no need to CC maintainers.
-Especially you didn't even bother to check who is the one pushing the 
-code to Linus.
+And since it's decompression time, cb->compress_type should have already 
+been initialized.
 
 Thanks,
 Qu
+> ---
+>   fs/btrfs/compression.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 32da97c3c19d..f941b7ed23f5 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -96,10 +96,10 @@ static int compression_compress_pages(int type, struct list_head *ws,
 >   	}
->   	slot = path->slots[0];
->   	eb = path->nodes[0];
+>   }
+>   
+> -static int compression_decompress_bio(int type, struct list_head *ws,
+> -		struct compressed_bio *cb)
+> +static int compression_decompress_bio(struct list_head *ws,
+> +				      struct compressed_bio *cb)
+>   {
+> -	switch (type) {
+> +	switch (cb->compress_type) {
+>   	case BTRFS_COMPRESS_ZLIB: return zlib_decompress_bio(ws, cb);
+>   	case BTRFS_COMPRESS_LZO:  return lzo_decompress_bio(ws, cb);
+>   	case BTRFS_COMPRESS_ZSTD: return zstd_decompress_bio(ws, cb);
+> @@ -1359,7 +1359,7 @@ static int btrfs_decompress_bio(struct compressed_bio *cb)
+>   	int type = cb->compress_type;
+>   
+>   	workspace = get_workspace(type, 0);
+> -	ret = compression_decompress_bio(type, workspace, cb);
+> +	ret = compression_decompress_bio(workspace, cb);
+>   	put_workspace(type, workspace);
+>   
+>   	return ret;
 
