@@ -2,54 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB4F47FAA7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Dec 2021 07:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8D847FBD2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Dec 2021 11:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235394AbhL0GyV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 27 Dec 2021 01:54:21 -0500
-Received: from mail-wr1-f100.google.com ([209.85.221.100]:41745 "EHLO
-        mail-wr1-f100.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhL0GyU (ORCPT
+        id S236032AbhL0K1A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Dec 2021 05:27:00 -0500
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:43676 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236030AbhL0K1A (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Dec 2021 01:54:20 -0500
-Received: by mail-wr1-f100.google.com with SMTP id a9so30526539wrr.8
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Dec 2021 22:54:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:mime-version
-         :content-transfer-encoding:content-description:subject:to:from:date
-         :reply-to;
-        bh=TPPWK3AEJz2BpcFnhUaAzlB0mKAMI/i0SVxqCOEE3R0=;
-        b=GBk2+TpVcWnIXsN46CqZRf+ftLUvuejeHLaaoZXjvt//kn1U2FJPD1EswBVBtetAUT
-         s23NeqZNba7mBNNcduYqWNMJywYw0azRIUAZ9/NG7ZtG4V780D1T9KQS5XLLI7V9b1O8
-         tSlYeBVyZysNoMwSkzKn4OQ0LKgj2h07cGKcp7S1ZpAtHQT9nDFLbhCh5TTYDC83Gyya
-         1Nn2WmN6QM2Yitpo/GEYAfiGmPs5PAfCAIJdsSEYUcjCG1UeDSH8Xg6hj2GX+5IEAiV5
-         psJlIfkEAXSBgtbWSQECg5wR34ag78AuRt8F2xIISbicyaYPQd03V/lO7ap5NFg7qVfC
-         6bXw==
-X-Gm-Message-State: AOAM531LN8/4+1vEHdRRmWvNYdd/kOsJGC7pECaFcHPzkIabUjBLx1gN
-        i/sqwzcc/bsFZyzyfDCgxRlSRTp8kCFaUKsc/adH+7omVPEAQA==
-X-Google-Smtp-Source: ABdhPJx+k3s2kvPz/hswi0GKtdx4w7EDchKpEpd+pcp6NT9XtfZI61AM5DJxcUz8IGAS6x4y0OUTrU/goTkD
-X-Received: by 2002:adf:e109:: with SMTP id t9mr11283430wrz.387.1640588059070;
-        Sun, 26 Dec 2021 22:54:19 -0800 (PST)
-Received: from [192.168.0.107] ([164.160.92.174])
-        by smtp-relay.gmail.com with ESMTPS id l19sm680737wms.34.2021.12.26.22.54.08
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sun, 26 Dec 2021 22:54:19 -0800 (PST)
-X-Relaying-Domain: rewalopiste.com
-Message-ID: <61c9631b.1c69fb81.bd2bd.4cdeSMTPIN_ADDED_MISSING@mx.google.com>
-Content-Type: text/plain; charset="iso-8859-1"
+        Mon, 27 Dec 2021 05:27:00 -0500
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Dec 2021 05:26:59 EST
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 3F3696C00733;
+        Mon, 27 Dec 2021 12:18:50 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1640600330; bh=bs1E7OoqIx81sSocBr936l+8bwV3sY89H+jSoVxBp6M=;
+        h=From:To:Cc:Subject:Date;
+        b=r3s/cftjMtso/Y49b4awjaDykKbrghex2OmbDgODLpAZUxjPTZABsP5Qme1ZrIehG
+         n0NqULX/Vr3SwhZ/88dPCTjCAbDOstnr36YwUKch0Pj0HM0OxJxaLY07ZydTQ1oewD
+         myi4MF+pZ6VHiMupbVWz9J81o/Kw1eFRT8MPBq7A=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 31EBB6C0072E;
+        Mon, 27 Dec 2021 12:18:50 +0200 (EET)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id RUvop0kWHgmA; Mon, 27 Dec 2021 12:18:50 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id DC8BC6C0072B;
+        Mon, 27 Dec 2021 12:18:49 +0200 (EET)
+From:   Su Yue <l@damenly.su>
+To:     linux-btrfs@vger.kernel.org
+Cc:     l@damenly.su
+Subject: [PATCH] btrfs: remove unnecessary parameter type from compression_decompress_bio
+Date:   Mon, 27 Dec 2021 18:18:39 +0800
+Message-Id: <20211227101839.77682-1-l@damenly.su>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Business proposal
-To:     Recipients <suzaira@smartglove.com.my>
-From:   "Mrs Amina Medjahed" <suzaira@smartglove.com.my>
-Date:   Sun, 26 Dec 2021 22:53:57 -0800
-Reply-To: mrsaminamedjahedgofbnk@gmail.com
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: OK
+X-ESPOL: 885mlYpNBD+giECgR3rABwY+s1k3Ua26u/vYoxBbgAiJPFTkYip5XRGxnW10RX+5ujkX
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Good day,
-Please i have a business proposal that will benefit both of us. Please respond if you are interested.
-Thanks and God bless.
+btrfs_decompress_bio, the only caller of compression_decompress_bio gets
+type from @cb and passes it to compression_decompress_bio.
+However, compression_decompress_bio can get compression type directly
+from @cb.
+
+So remove the parameter and access it through @cb.
+No functional change.
+
+Signed-off-by: Su Yue <l@damenly.su>
+---
+ fs/btrfs/compression.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 32da97c3c19d..f941b7ed23f5 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -96,10 +96,10 @@ static int compression_compress_pages(int type, struct list_head *ws,
+ 	}
+ }
+ 
+-static int compression_decompress_bio(int type, struct list_head *ws,
+-		struct compressed_bio *cb)
++static int compression_decompress_bio(struct list_head *ws,
++				      struct compressed_bio *cb)
+ {
+-	switch (type) {
++	switch (cb->compress_type) {
+ 	case BTRFS_COMPRESS_ZLIB: return zlib_decompress_bio(ws, cb);
+ 	case BTRFS_COMPRESS_LZO:  return lzo_decompress_bio(ws, cb);
+ 	case BTRFS_COMPRESS_ZSTD: return zstd_decompress_bio(ws, cb);
+@@ -1359,7 +1359,7 @@ static int btrfs_decompress_bio(struct compressed_bio *cb)
+ 	int type = cb->compress_type;
+ 
+ 	workspace = get_workspace(type, 0);
+-	ret = compression_decompress_bio(type, workspace, cb);
++	ret = compression_decompress_bio(workspace, cb);
+ 	put_workspace(type, workspace);
+ 
+ 	return ret;
+-- 
+2.30.1
+
