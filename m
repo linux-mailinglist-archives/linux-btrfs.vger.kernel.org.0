@@ -2,365 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B9B4806B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Dec 2021 07:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7563E480E3A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Dec 2021 01:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbhL1G3m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Dec 2021 01:29:42 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:33810 "EHLO
-        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232480AbhL1G3m (ORCPT
+        id S232376AbhL2AWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Dec 2021 19:22:35 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:59194 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232621AbhL2AWe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Dec 2021 01:29:42 -0500
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 9060B1208F5; Tue, 28 Dec 2021 01:29:41 -0500 (EST)
-Date:   Tue, 28 Dec 2021 01:29:41 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: KASAN use-after free in misc-next a8eb3521f240
-Message-ID: <Ycqu1Wr8p3aJNcaf@hungrycats.org>
+        Tue, 28 Dec 2021 19:22:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1640737354; x=1672273354;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=XFIPEX2tKM23pvTz9OiMMlIVFmndcmZnQO17lAj20QI=;
+  b=S8ni7o6d+uTV+8HCFRizvH2WRqDtCXUYP9ebts0nlfvMqKqrwogGWTti
+   +89PXjjYue71NcOnj13t+NlTKHKUJYkrsgBFmm+ndzWzHQrJgjEuheCAr
+   S/G30Y2T9UCAnWPAsyfVOEpIOkRvn3nLF8jJTl3DKRpT99SVMkvyh6eiu
+   qBrVsVfebTQsIVLO+FZYfVWuKh2QnQURloujrgz+pIhVONtG+29ZhmicZ
+   gsjCzdWXvefPsPubiZJwtGCGDFfSMBK3fU0B8jkgJbF2wkheD9e5gUuN8
+   U8SnvlzM1Yp5F71ts7CqgzKkscWhYu/7NWD0vhc5p6auCB4sjUgWCW/wK
+   g==;
+X-IronPort-AV: E=Sophos;i="5.88,243,1635177600"; 
+   d="scan'208";a="190300889"
+Received: from mail-sn1anam02lp2044.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.44])
+  by ob1.hgst.iphmx.com with ESMTP; 29 Dec 2021 08:22:33 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bgp/dAq04I4rObPRHjHIs9x0edyf37QVJxnlWXVZeyVr+a5MlcZL2YhU+i5ewVKtMhE8qCmGSQAcjCUCR9O4JYpbg+Fjq/PK+Y3hR1rPiBM4g678A1uQRkxq9l/s2sbe9H+2VDmUU/fJFSPEmMtie2ywM6d3ezJG7QnlKS/uXlibQJIeYIEgex73JTWLzBOzput7j4lC7SqaEUgOJVT0ySDrN/vl1SSc4JOIRjABNay6Pn76TwEBA8wgWRNcDqp4Si/LfdjtiMIA1Xt+JjnlbXGXazNmkhjCdIlAkER7X2M1TvIT3kCxYe+AHubeKOYLw2i4KHgFZa3Wj0CJhg2jvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cb8ZQTOFRyVcTV5GH1wBBXtOXt50F02o9DOQUNLgAxs=;
+ b=j0HTZEXggWTlWR/b0WMyRYCq5qGvzkdtiMY4DhBd/3jXxgKfZNlpJK2G5cq8kSjky/LieGZ/LGK7m4YBZbCEDMxKV15kaaApxxvHM4lOFfGMPtlFbqvPfuo3piU8wta4LuqdKsBRDEXIO0J1kfacOUZW31XkQShtWCJf7qEXPoRLT8OpksPtzBuP3lDB542SBIL4uxDDGm20Mz2NaC2dleFjxGg2V5IRYUPVa/vU6ybSfgM6ZtB9ARq+kK6nrz7uW2AH9X4S3DT/AThqF1Ba1X0vEWwQyOhO2PSocnflH8G/y5mfDVvfC3HqLJNLpQ1h9f4KgxMHmw4gTeNQAD4mKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cb8ZQTOFRyVcTV5GH1wBBXtOXt50F02o9DOQUNLgAxs=;
+ b=vl0WfIbGYzgNBOVHodErFDktbbyJ4qYm38nAi6TRfq0YR88kygRs99JV6JgZOFPIaG9G0Xgjd4Srsn3wKAduvu1FEREn+L2u4fneWCB0ygg2awwLG4eEHIej/lojiRXOeNXNf8jNAa/Z7PTKI4FohYJavMgAa1fYZ42ghMUWXe8=
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
+ DM8PR04MB8071.namprd04.prod.outlook.com (2603:10b6:8:2::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4823.19; Wed, 29 Dec 2021 00:22:32 +0000
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::51ef:6913:e33f:cfc]) by DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::51ef:6913:e33f:cfc%6]) with mapi id 15.20.4823.023; Wed, 29 Dec 2021
+ 00:22:32 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 0/3] btrfs: zoned: fix zoned extent allocator
+Thread-Topic: [PATCH 0/3] btrfs: zoned: fix zoned extent allocator
+Thread-Index: AQHX/Eor2QL7xhF92UG0W9y8378Z0Q==
+Date:   Wed, 29 Dec 2021 00:22:31 +0000
+Message-ID: <20211229002230.6qvi5jelmitwjvlz@shindev>
+References: <20211207153549.2946602-1-naohiro.aota@wdc.com>
+ <20211208161814.GL28560@twin.jikos.cz>
+In-Reply-To: <20211208161814.GL28560@twin.jikos.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 880f97d6-dd34-4ed9-932e-08d9ca614e18
+x-ms-traffictypediagnostic: DM8PR04MB8071:EE_
+x-microsoft-antispam-prvs: <DM8PR04MB807166E813722D80F36FE3E3ED449@DM8PR04MB8071.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5UQupanluZnXe6jtHaK7q5sY4BFPqd5AbsNyZ3IuckDY6v2tf4CKf7zkdmWuV/iwsVidWTRfOSW/ZiNiixrlTJ1acnRPw5ZTHWapLNfmTSWorUHxS8E6o5+NDzydoaOZvU1mHlJOVtlQpdCsAnmBgiBHzv8OZU5+yrONcGWnuZSjUlqr/FKieNHcyqP3raOpzoJsF5avs8Gwi+vYcqund3qgsOwtIUnx8FZ4q1SZ2kqxgSmiINgSjP6HImGXTxhuzkKWwCmClq5npaoCt6ithQU69TEfOVweqQgYjKiPkfOtfFXkLpn3se756twOzHFVhktAMkVNgH9o+6YHaU2rPeHQFwdEmEeNezaSa51PWnb59Zr9tclqvh7inhWNHtdKsyb7h4T0vm9v4i8OKfdFjTG68b5N//s+w0a49wisxAojcKIu8I/moN9Cg3fb+YZzA+9lq1DzxgZVilOrEQlOYhJthDmw8WGTu36Q3ZmKSAhnsfiO/VpiLfpZC0koAt90RFwSXn6TKkkzZb3lL0UjCCudVZd/gouuaPhHStZ3ZzwBzG3hFSDtgkzc4pP2TaMjZ4fTjrcLxe0e6dzLyQg8ZYV1Hnn5VEgM2UCJ/nuJSeoOjRrbxoqz+PJvY0I0LWGhVI8DAgWjr1wePEz0ABz+lOwPNQyBWT47ZEEpDUC0H37H7UtH474sJ7lRp0iFFPpHVmTaAYmTPnfYdZxmxDtZpE5xZ2Lgn27/ydUq3hwVrpMiI/aNO6YvVP0P0hyTHKSQDptKRkS70NHeaQWZBVb5LwJjvC86g8YIRxwM+vuGAYlZm51MRbpOdib7V5nK0V+UJ0Ia3IOXr55VbkSRP1eLug==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(33716001)(26005)(110136005)(83380400001)(8676002)(86362001)(122000001)(82960400001)(2906002)(5660300002)(316002)(186003)(8936002)(38070700005)(66946007)(66476007)(508600001)(66556008)(38100700002)(64756008)(1076003)(66446008)(966005)(91956017)(6512007)(9686003)(76116006)(44832011)(71200400001)(6506007)(6486002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?h/1HEcPuDBEGCl/gkliO79xcf2yfym39/YhRLMJx9+tFUSdApQaRfKPeOvpO?=
+ =?us-ascii?Q?Wg4TrpHj+Umy5vTlz6nSj5rxYWjvFjOlZg8cizpWIJ/i4CRx2lQNNprr0SgM?=
+ =?us-ascii?Q?iebnQGwE6fPReTgGDetODMMFG0uXbH8AGYgT3V9EfbVxSTHJ6DzHru344NCD?=
+ =?us-ascii?Q?9lQlgl32hUe2U0skOz+d/F0wWmHRtFE09nqaADXYzLkAMQvFsGk0hNxttGvS?=
+ =?us-ascii?Q?+/LaSgamsWb9wR9fM0vEAekzC1FYJURMcshFvbL+nPX/HHK0xabQucSfvb2s?=
+ =?us-ascii?Q?fGq6MQVvrJJMbuor3MqjfyelGmX7Ueo3dGgVnelIe1biT/+/H9J7U/awLfwK?=
+ =?us-ascii?Q?tkY6JnTV50Qsxzt+vGZhuHA+KJB4hrAPyxISs/T7aC/OJB6VDrYMe1isMg4i?=
+ =?us-ascii?Q?mh0+xIxQTRBGDL1MtRnWfc5z+aQd9PYWO6ubWaQtIMfaclr6I5ldl/Q2XgRX?=
+ =?us-ascii?Q?OgreswmbNLvomdDyG8yD3wSPwjyg2PXMEmgRyLMsQ10ktMwCgb2aztglkZxa?=
+ =?us-ascii?Q?cE/tnNgRbb0vKW1E+vxiV62758jq/AkHiwjrt3/j/q2nG+Il/jllVTfZcaVR?=
+ =?us-ascii?Q?6cBT+OraKuaja+z4yiQWViOiJYfXFq2q9k9u1cgKtZ2eLvoUOprP6f1Kcu/s?=
+ =?us-ascii?Q?d33GLKzaIlly6YzlvMcGGxNp7DB43WvF9MneqxNGsuUQYUIh5JNj7y8aH6oE?=
+ =?us-ascii?Q?zHF50W8cZE2msDsBIPA7DV/gRNcGs1KF58A1QzlGnJbOG9EEYEZbO1ziEVDf?=
+ =?us-ascii?Q?BlYP6FiRtoeF1YOqgCnd6AiYeVgDckYbS5kcjUWLIs3/u52PU7zOfIuUZp+l?=
+ =?us-ascii?Q?LOMo79wLPaJMTRf8EBEBfq7FbiQhkeIz9hwQOQ/E7A1E/HRK2eR3kklBGDZn?=
+ =?us-ascii?Q?kIqqxHSvDNAubbq2JfZ0sDjcxf8Aawjc+eZxJm7nijuxxervLRFXE3vKXJ7a?=
+ =?us-ascii?Q?d9GlRkVUGcOtQEZatPMmMv0BcfprfJFYREzlSc+W6DcydxToqlgFOwtN/FsM?=
+ =?us-ascii?Q?Vy02Uhtg8ANCyE9LkEFeyneH4/eti8Vkx2VVOQGRqxSbG7W09GHZRts1yxaX?=
+ =?us-ascii?Q?42qFFONAnvUBlf1dfEckuee3BqXTXiH2owMhRiJklIUjQsQAb/k1hghyIctQ?=
+ =?us-ascii?Q?XB+OqH1+D0oZb9F34oTnCdJY3H5ZO/r1TVHRp3QkZ2ziGfB+8bAahaKWo/wh?=
+ =?us-ascii?Q?c7szktBvnNX4ZCf5xRd44DD2RIQYZQN6UA2wepGyZar14luTOXyl9XSIFxBY?=
+ =?us-ascii?Q?WDi/g/4htXvjyh6RGOU4C43kYHr4ejwSGU/xj//ex3Et6UvN4wcWiV9qKnJB?=
+ =?us-ascii?Q?qTiA9icMVmLI/5qonx/orPpakjAwcmGuGkQjvBWOunWdrtjS8yNTkBp8qJzm?=
+ =?us-ascii?Q?lLRwlFI3htc37aZElYyVIFrmv5xaKLqakV/Nh1R8FlQy8HPnTH8dG7UGimSN?=
+ =?us-ascii?Q?iVJJqDCzZY/Pr6bhQvrbQoreN0faa0/MnsEWRVcZatCMjFUWVhKIqKXFaekU?=
+ =?us-ascii?Q?pUt/MY9uMAH8d+KhP7Gf4OJjw9xlqR7QzYRakVcmIZ26GXsRciPtpuLRu6Y3?=
+ =?us-ascii?Q?7q1bpxV+mGzFIeBEjKjXYdUfAVF4MqbPoy7LGqsq6QOeQ+SEoY64N1UxyRKJ?=
+ =?us-ascii?Q?xXUEzeWSeE0M0HPRa2CQFVTjYl3Z5phJc5WO72p1fZfmjp0F+0eVwOxeSRZ/?=
+ =?us-ascii?Q?X10Y83WuCEZr23sj0rsSs2niVcE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <633AE8AC0F5D2E42A04B876EAEA04E03@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 880f97d6-dd34-4ed9-932e-08d9ca614e18
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2021 00:22:31.9726
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jjQDTc2wmvL8a5QJWe8eY65wYGENuEdcAhEWbW6WNTPD7CtOBWfwKqRKNslVPOqJod1xTXScrMQSRKZy9LHJDnl5r6duhm7nrNYt6C4nV48=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB8071
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Running a slightly different workload than my usual regression test:
+On Dec 08, 2021 / 17:18, David Sterba wrote:
+> On Wed, Dec 08, 2021 at 12:35:46AM +0900, Naohiro Aota wrote:
+> > There are several reports of hung_task on btrfs recently.
+> >=20
+> > - https://github.com/naota/linux/issues/59
+> > - https://lore.kernel.org/linux-btrfs/CAJCQCtR=3DjztS3P34U_iUNoBodExHcu=
+d44OQ8oe4Jn3TK=3D1yFNw@mail.gmail.com/T/
 
-	- mount options rw,noatime,degraded,compress=zstd:3,ssd,flushoncommit,space_cache=v2,autodefrag
+(snip)
 
-	- metadata raid1, data raid5
+> > While we are debugging this issue, we found some faulty behaviors on
+> > the zoned extent allocator. It is not the root cause of the hung as we
+> > see a similar report also on a regular btrfs. But, it looks like that
+> > early -ENOSPC is, at least, making the hung to happen often.
+> >=20
+> > So, this series fixes the faulty behaviors of the zoned extent
+> > allocator.
+> >=20
+> > Patch 1 fixes a case when allocation fails in a dedicated block group.
+> >=20
+> > Patches 2 and 3 fix the chunk allocation condition for zoned
+> > allocator, so that it won't block a possible chunk allocation.
+> >=20
+> > Naohiro Aota (3):
+> >   btrfs: zoned: unset dedicated block group on allocation failure
+> >   btrfs: add extent allocator hook to decide to allocate chunk or not
+> >   btrfs: zoned: fix chunk allocation condition for zoned allocator
+>=20
+> All seem to be relevant for 5.16-rc so I'll add them to misc-next now to
+> give it some testing, pull request next week. Thanks.
 
-	- workload is a continuous loop of all of the following at once:
+Hello David, thanks for your maintainer-ship always.
 
-		- rsync x10
+When I run my test set for zoned btrfs configuration, I keep on observing t=
+he
+issue that Naohiro addressed with the three patches. The patches are not ye=
+t
+merged to 5.16-rc7. Can I expect they get merged to rc8?
 
-		- bees dedupe
-
-		- create and rename files with 16 threads in one directory
-
-		- btrfs replace
-
-Probably the most relevant part of the above is the replace on raid5
-data, which was the most recent change to the workload (previously it
-was looping replace on raid1 data).  This happened soon after:
-
-	[134141.419795][T4038472] ==================================================================
-	[134141.421408][T4038472] BUG: KASAN: use-after-free in __remove_rbio_from_cache+0x26/0x2e0
-	[134141.423281][T4038472] Read of size 8 at addr ffff888129702800 by task kworker/u8:24/4038472
-	[134141.426074][T4038472] 
-	[134141.427362][T4038472] CPU: 1 PID: 4038472 Comm: kworker/u8:24 Tainted: G        W         5.16.0-77deb3be908f-misc-next+ #141 4aa87610d6aeaaaf53dd48d092c1e09cd06399d8
-	[134141.435115][T4038472] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-	[134141.439704][T4038472] Workqueue: btrfs-worker btrfs_work_helper
-	[134141.442785][T4038472] Call Trace:
-	[134141.444593][T4038472]  <TASK>
-	[134141.446177][T4038472]  dump_stack_lvl+0x74/0xa6
-	[134141.448662][T4038472]  print_address_description.constprop.0+0x24/0x120
-	[134141.452242][T4038472]  ? __remove_rbio_from_cache+0x26/0x2e0
-	[134141.455357][T4038472]  kasan_report.cold+0x82/0xdb
-	[134141.457965][T4038472]  ? __remove_rbio_from_cache+0x26/0x2e0
-	[134141.461065][T4038472]  __asan_load8+0x69/0x90
-	[134141.463540][T4038472]  __remove_rbio_from_cache+0x26/0x2e0
-	[134141.466528][T4038472]  remove_rbio_from_cache+0x7d/0x90
-	[134141.469316][T4038472]  lock_stripe_add+0x1c7/0x700
-	[134141.472111][T4038472]  raid56_parity_write+0x253/0x2b0
-	[134141.474972][T4038472]  btrfs_map_bio+0x762/0x930
-	[134141.477470][T4038472]  ? irqentry_exit+0x3a/0x90
-	[134141.480107][T4038472]  ? trace_hardirqs_on+0x55/0x130
-	[134141.482963][T4038472]  ? btrfs_map_sblock+0x20/0x20
-	[134141.485560][T4038472]  ? lock_downgrade+0x420/0x420
-	[134141.488310][T4038472]  ? lock_contended+0x770/0x770
-	[134141.490892][T4038472]  ? do_raw_spin_lock+0x1c0/0x1c0
-	[134141.493656][T4038472]  ? kfree+0x197/0x290
-	[134141.495981][T4038472]  run_one_async_done+0xa9/0x120
-	[134141.498671][T4038472]  btrfs_work_helper+0x16f/0x620
-	[134141.501663][T4038472]  process_one_work+0x56b/0xac0
-	[134141.504527][T4038472]  ? pwq_dec_nr_in_flight+0x120/0x120
-	[134141.507777][T4038472]  ? worker_thread+0xd0/0x700
-	[134141.510579][T4038472]  ? kthread_data+0x38/0x50
-	[134141.513222][T4038472]  worker_thread+0x2f1/0x700
-	[134141.515851][T4038472]  ? trace_hardirqs_on+0x55/0x130
-	[134141.518788][T4038472]  ? process_one_work+0xac0/0xac0
-	[134141.521623][T4038472]  kthread+0x254/0x290
-	[134141.523780][T4038472]  ? set_kthread_struct+0x80/0x80
-	[134141.526620][T4038472]  ret_from_fork+0x22/0x30
-	[134141.529146][T4038472]  </TASK>
-
-	__remove_rbio_from_cache+0x26/0x2e0:
-
-	__remove_rbio_from_cache at fs/btrfs/raid56.c:273
-	 268    /*
-	 269     * we hash on the first logical address of the stripe
-	 270     */
-	 271    static int rbio_bucket(struct btrfs_raid_bio *rbio)
-	 272    {
-	>273<           u64 num = rbio->bioc->raid_map[0];
-	 274
-	 275            /*
-	 276             * we shift down quite a bit.  We're using byte
-	 277             * addressing, and most of the lower bits are zeros.
-	 278             * This tends to upset hash_64, and it consistently
-
-	lock_stripe_add+0x1c7/0x700:
-
-	lock_stripe_add at fs/btrfs/raid56.c:734
-	 729            refcount_inc(&rbio->refs);
-	 730            list_add(&rbio->hash_list, &h->hash_list);
-	 731    out:
-	 732            spin_unlock_irqrestore(&h->lock, flags);
-	 733            if (cache_drop)
-	>734<                   remove_rbio_from_cache(cache_drop);
-	 735            if (freeit)
-	 736                    __free_raid_bio(freeit);
-	 737            return ret;
-	 738    }
-	 739
-
-	raid56_parity_write+0x253/0x2b0:
-
-	raid56_parity_write at fs/btrfs/raid56.c:1597
-	 1592   static int partial_stripe_write(struct btrfs_raid_bio *rbio)
-	 1593   {
-	 1594           int ret;
-	 1595
-	 1596           ret = lock_stripe_add(rbio);
-	>1597<          if (ret == 0)
-	 1598                   start_async_work(rbio, rmw_work);
-	 1599           return 0;
-	 1600   }
-	 1601
-	 1602   /*
-
-	[134141.530723][T4038472] 
-	[134141.532092][T4038472] Allocated by task 82995:
-	[134141.534703][T4038472]  kasan_save_stack+0x26/0x60
-	[134141.537524][T4038472]  __kasan_kmalloc+0xab/0xe0
-	[134141.540156][T4038472]  __kmalloc+0x22b/0x4a0
-	[134141.542580][T4038472]  alloc_rbio.constprop.0+0x88/0x320
-	[134141.545533][T4038472]  raid56_parity_write+0x37/0x2b0
-	[134141.548390][T4038472]  btrfs_map_bio+0x762/0x930
-	[134141.551259][T4038472]  run_one_async_done+0xa9/0x120
-	[134141.554112][T4038472]  btrfs_work_helper+0x16f/0x620
-	[134141.556845][T4038472]  process_one_work+0x56b/0xac0
-	[134141.559573][T4038472]  worker_thread+0x2f1/0x700
-	[134141.562193][T4038472]  kthread+0x254/0x290
-	[134141.564518][T4038472]  ret_from_fork+0x22/0x30
-
-	alloc_rbio.constprop.0+0x88/0x320:
-
-	alloc_rbio.constprop.0 at fs/btrfs/raid56.c:980
-	 975                           sizeof(*rbio->finish_pointers) * real_stripes +
-	 976                           sizeof(*rbio->dbitmap) * BITS_TO_LONGS(stripe_npages) +
-	 977                           sizeof(*rbio->finish_pbitmap) *
-	 978                                    BITS_TO_LONGS(stripe_npages),
-	 979                           GFP_NOFS);
-	>980<           if (!rbio)
-	 981                    return ERR_PTR(-ENOMEM);
-	 982
-	 983            bio_list_init(&rbio->bio_list);
-	 984            INIT_LIST_HEAD(&rbio->plug_list);
-	 985            spin_lock_init(&rbio->bio_list_lock);
-
-	raid56_parity_write+0x37/0x2b0:
-
-	raid56_parity_write at fs/btrfs/raid56.c:1728
-	 1723           struct btrfs_raid_bio *rbio;
-	 1724           struct btrfs_plug_cb *plug = NULL;
-	 1725           struct blk_plug_cb *cb;
-	 1726           int ret;
-	 1727
-	>1728<          rbio = alloc_rbio(fs_info, bioc, stripe_len);
-	 1729           if (IS_ERR(rbio)) {
-	 1730                   btrfs_put_bioc(bioc);
-	 1731                   return PTR_ERR(rbio);
-	 1732           }
-	 1733           bio_list_add(&rbio->bio_list, bio);
-
-	[134141.567063][T4038472] 
-	[134141.568423][T4038472] Freed by task 737008:
-	[134141.570793][T4038472]  kasan_save_stack+0x26/0x60
-	[134141.573272][T4038472]  kasan_set_track+0x25/0x30
-	[134141.575813][T4038472]  kasan_set_free_info+0x24/0x40
-	[134141.578689][T4038472]  __kasan_slab_free+0xf0/0x140
-	[134141.581378][T4038472]  kfree+0x109/0x290
-	[134141.583550][T4038472]  __free_raid_bio+0x155/0x1a0
-	[134141.586183][T4038472]  __remove_rbio_from_cache+0x1bd/0x2e0
-	[134141.589223][T4038472]  unlock_stripe+0x5d8/0x7e0
-	[134141.591757][T4038472]  rbio_orig_end_io+0x80/0x170
-	[134141.594382][T4038472]  raid_write_end_io+0xc5/0xe0
-	[134141.597009][T4038472]  bio_endio+0x2f4/0x340
-	[134141.599378][T4038472]  dm_io_dec_pending+0x2bc/0x4f0
-	[134141.602267][T4038472]  clone_endio+0x14c/0x4a0
-	[134141.604931][T4038472]  bio_endio+0x2f4/0x340
-	[134141.607428][T4038472]  blk_update_request+0x206/0x7d0
-	[134141.610375][T4038472]  blk_mq_end_request+0x30/0x50
-	[134141.613213][T4038472]  virtblk_request_done+0x69/0x100
-	[134141.616180][T4038472]  blk_mq_complete_request+0x46/0x50
-	[134141.619194][T4038472]  virtblk_done+0xf8/0x1e0
-	[134141.621780][T4038472]  vring_interrupt+0xdd/0x170
-	[134141.624481][T4038472]  __handle_irq_event_percpu+0x168/0x440
-	[134141.627133][T4038472]  handle_irq_event+0xba/0x160
-	[134141.628319][T4038472]  handle_edge_irq+0x122/0x3e0
-	[134141.629489][T4038472]  __common_interrupt+0x85/0x170
-	[134141.630684][T4038472]  common_interrupt+0xae/0xd0
-	[134141.631858][T4038472]  asm_common_interrupt+0x1e/0x40
-
-	__free_raid_bio+0x155/0x1a0:
-
-	__free_raid_bio at fs/btrfs/raid56.c:841
-	 836                    }
-	 837            }
-	 838
-	 839            btrfs_put_bioc(rbio->bioc);
-	 840            kfree(rbio);
-	>841<   }
-	 842
-	 843    static void rbio_endio_bio_list(struct bio *cur, blk_status_t err)
-	 844    {
-	 845            struct bio *next;
-	 846
-
-	__remove_rbio_from_cache+0x1bd/0x2e0:
-
-	__remove_rbio_from_cache at fs/btrfs/raid56.c:389
-	 384            spin_unlock(&rbio->bio_list_lock);
-	 385            spin_unlock(&h->lock);
-	 386
-	 387            if (freeit)
-	 388                    __free_raid_bio(rbio);
-	>389<   }
-	 390
-	 391    /*
-	 392     * prune a given rbio from the cache
-	 393     */
-	 394    static void remove_rbio_from_cache(struct btrfs_raid_bio *rbio)
-
-	[134141.633113][T4038472]
-	[134141.633665][T4038472] Last potentially related work creation:
-	[134141.634969][T4038472]  kasan_save_stack+0x26/0x60
-	[134141.636505][T4038472]  __kasan_record_aux_stack+0x9b/0xb0
-	[134141.637780][T4038472]  kasan_record_aux_stack_noalloc+0xb/0x10
-	[134141.639191][T4038472]  insert_work+0x3a/0x170
-	[134141.640332][T4038472]  __queue_work+0x35b/0x810
-	[134141.641489][T4038472]  queue_work_on+0x9d/0xb0
-	[134141.642609][T4038472]  btrfs_queue_work+0x178/0x280
-	[134141.643844][T4038472]  raid56_parity_write+0x2a7/0x2b0
-	[134141.645180][T4038472]  btrfs_map_bio+0x762/0x930
-	[134141.646396][T4038472]  run_one_async_done+0xa9/0x120
-	[134141.648004][T4038472]  btrfs_work_helper+0x16f/0x620
-	[134141.649302][T4038472]  process_one_work+0x56b/0xac0
-	[134141.650537][T4038472]  worker_thread+0x2f1/0x700
-	[134141.651733][T4038472]  kthread+0x254/0x290
-	[134141.652784][T4038472]  ret_from_fork+0x22/0x30
-
-	btrfs_queue_work+0x178/0x280:
-
-	btrfs_queue_work at fs/btrfs/async-thread.c:379
-	 374            if (test_bit(WORK_HIGH_PRIO_BIT, &work->flags) && wq->high)
-	 375                    dest_wq = wq->high;
-	 376            else
-	 377                    dest_wq = wq->normal;
-	 378            __btrfs_queue_work(dest_wq, work);
-	>379<   }
-	 380
-	 381    static inline void
-	 382    __btrfs_destroy_workqueue(struct __btrfs_workqueue *wq)
-	 383    {
-	 384            destroy_workqueue(wq->normal_wq);
-
-	raid56_parity_write+0x2a7/0x2b0:
-
-	raid56_parity_write at fs/btrfs/raid56.c:1762
-	 1757                   }
-	 1758                   list_add_tail(&rbio->plug_list, &plug->rbio_list);
-	 1759                   ret = 0;
-	 1760           } else {
-	 1761                   ret = __raid56_parity_write(rbio);
-	>1762<                  if (ret)
-	 1763                           btrfs_bio_counter_dec(fs_info);
-	 1764           }
-	 1765           return ret;
-	 1766   }
-	 1767
-
-	[134141.653929][T4038472] 
-	[134141.654566][T4038472] The buggy address belongs to the object at ffff888129702800
-	[134141.654566][T4038472]  which belongs to the cache kmalloc-1k of size 1024
-	[134141.658180][T4038472] The buggy address is located 0 bytes inside of
-	[134141.658180][T4038472]  1024-byte region [ffff888129702800, ffff888129702c00)
-	[134141.661501][T4038472] The buggy address belongs to the page:
-	[134141.662974][T4038472] page:0000000039d6f61b refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8881092366c0 pfn:0x129702
-	[134141.665899][T4038472] flags: 0x17ffe0000000200(slab|node=0|zone=2|lastcpupid=0x3fff)
-	[134141.667918][T4038472] raw: 017ffe0000000200 ffffea0000dab088 ffffea0005a93a48 ffff888101040e40
-	[134141.670096][T4038472] raw: ffff8881092366c0 ffff888129702000 0000000100000002 0000000000000000
-	[134141.672370][T4038472] page dumped because: kasan: bad access detected
-	[134141.674074][T4038472] 
-	[134141.674732][T4038472] Memory state around the buggy address:
-	[134141.676208][T4038472]  ffff888129702700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-	[134141.678323][T4038472]  ffff888129702780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-	[134141.680404][T4038472] >ffff888129702800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-	[134141.682559][T4038472]                    ^
-	[134141.683674][T4038472]  ffff888129702880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-	[134141.685883][T4038472]  ffff888129702900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-	[134141.688125][T4038472] ==================================================================
-	[134141.690315][T4038472] BUG: kernel NULL pointer dereference, address: 0000000000000000
-	[134141.692465][T4038472] #PF: supervisor read access in kernel mode
-	[134141.694157][T4038472] #PF: error_code(0x0000) - not-present page
-	[134141.695832][T4038472] PGD 0 P4D 0
-	[134141.696773][T4038472] Oops: 0000 [#1] PREEMPT SMP KASAN PTI
-	[134141.698327][T4038472] CPU: 1 PID: 4038472 Comm: kworker/u8:24 Tainted: G    B   W         5.16.0-77deb3be908f-misc-next+ #141 4aa87610d6aeaaaf53dd48d092c1e09cd06399d8
-	[134141.702374][T4038472] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-	[134141.704857][T4038472] Workqueue: btrfs-worker btrfs_work_helper
-	[134141.706417][T4038472] RIP: 0010:__remove_rbio_from_cache+0x47/0x2e0
-	[134141.708099][T4038472] Code: 48 83 ec 10 e8 2a e0 b3 ff 49 8b 1c 24 48 8d 7b 50 e8 1d e0 b3 ff 48 8b 5b 50 48 89 df e8 11 e0 b3 ff be 08 00 00 00 4c 89 ff <4c> 8b 2b e8 a1 ea b3 ff 4c 89 ff e8 f9 df b3 ff 49 8b 84 24 18 01
-	[134141.713268][T4038472] RSP: 0018:ffffc90002e4fa20 EFLAGS: 00010086
-	[134141.714890][T4038472] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffffaba3d0bf
-	[134141.717029][T4038472] RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff888129702918
-	[134141.719101][T4038472] RBP: ffffc90002e4fa58 R08: ffffffffab17ef68 R09: ffffffffae594e83
-	[134141.721164][T4038472] R10: fffffbfff5cb29d0 R11: 0000000000000001 R12: ffff888129702800
-	[134141.723172][T4038472] R13: ffff888149580010 R14: 0000000000000282 R15: ffff888129702918
-	[134141.725147][T4038472] FS:  0000000000000000(0000) GS:ffff8881f1000000(0000) knlGS:0000000000000000
-	[134141.727355][T4038472] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-	[134141.728995][T4038472] CR2: 0000000000000000 CR3: 000000005e8ec005 CR4: 0000000000170ee0
-	[134141.730918][T4038472] Call Trace:
-	[134141.731770][T4038472]  <TASK>
-	[134141.732535][T4038472]  remove_rbio_from_cache+0x7d/0x90
-	[134141.733857][T4038472]  lock_stripe_add+0x1c7/0x700
-	[134141.735061][T4038472]  raid56_parity_write+0x253/0x2b0
-	[134141.736354][T4038472]  btrfs_map_bio+0x762/0x930
-	[134141.737530][T4038472]  ? irqentry_exit+0x3a/0x90
-	[134141.738689][T4038472]  ? trace_hardirqs_on+0x55/0x130
-	[134141.740011][T4038472]  ? btrfs_map_sblock+0x20/0x20
-	[134141.741290][T4038472]  ? lock_downgrade+0x420/0x420
-	[134141.742577][T4038472]  ? lock_contended+0x770/0x770
-	[134141.743780][T4038472]  ? do_raw_spin_lock+0x1c0/0x1c0
-	[134141.745101][T4038472]  ? kfree+0x197/0x290
-	[134141.746156][T4038472]  run_one_async_done+0xa9/0x120
-	[134141.747436][T4038472]  btrfs_work_helper+0x16f/0x620
-	[134141.748744][T4038472]  process_one_work+0x56b/0xac0
-	[134141.749972][T4038472]  ? pwq_dec_nr_in_flight+0x120/0x120
-	[134141.751383][T4038472]  ? worker_thread+0xd0/0x700
-	[134141.752599][T4038472]  ? kthread_data+0x38/0x50
-	[134141.753757][T4038472]  worker_thread+0x2f1/0x700
-	[134141.754924][T4038472]  ? trace_hardirqs_on+0x55/0x130
-	[134141.756178][T4038472]  ? process_one_work+0xac0/0xac0
-	[134141.757525][T4038472]  kthread+0x254/0x290
-	[134141.758642][T4038472]  ? set_kthread_struct+0x80/0x80
-	[134141.759977][T4038472]  ret_from_fork+0x22/0x30
-	[134141.761109][T4038472]  </TASK>
-	[134141.761926][T4038472] Modules linked in:
-	[134141.762970][T4038472] CR2: 0000000000000000
-	[134141.764057][T4038472] ---[ end trace 6c0429dcff12055d ]---
-	[134141.765454][T4038472] RIP: 0010:__remove_rbio_from_cache+0x47/0x2e0
-	[134141.767026][T4038472] Code: 48 83 ec 10 e8 2a e0 b3 ff 49 8b 1c 24 48 8d 7b 50 e8 1d e0 b3 ff 48 8b 5b 50 48 89 df e8 11 e0 b3 ff be 08 00 00 00 4c 89 ff <4c> 8b 2b e8 a1 ea b3 ff 4c 89 ff e8 f9 df b3 ff 49 8b 84 24 18 01
-	[134141.771832][T4038472] RSP: 0018:ffffc90002e4fa20 EFLAGS: 00010086
-	[134141.773284][T4038472] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffffaba3d0bf
-	[134141.775321][T4038472] RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff888129702918
-	[134141.777344][T4038472] RBP: ffffc90002e4fa58 R08: ffffffffab17ef68 R09: ffffffffae594e83
-	[134141.779460][T4038472] R10: fffffbfff5cb29d0 R11: 0000000000000001 R12: ffff888129702800
-	[134141.781654][T4038472] R13: ffff888149580010 R14: 0000000000000282 R15: ffff888129702918
-	[134141.783746][T4038472] FS:  0000000000000000(0000) GS:ffff8881f1000000(0000) knlGS:0000000000000000
-	[134141.786112][T4038472] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-	[134141.787872][T4038472] CR2: 0000000000000000 CR3: 000000005e8ec005 CR4: 0000000000170ee0
-	[134141.789968][T4038472] note: kworker/u8:24[4038472] exited with preempt_count 1
+--=20
+Best Regards,
+Shin'ichiro Kawasaki=
