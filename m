@@ -2,66 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32828482547
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Dec 2021 18:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D85482598
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Dec 2021 20:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhLaRMh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Dec 2021 12:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhLaRMg (ORCPT
+        id S231396AbhLaTOM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Dec 2021 14:14:12 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:36972 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229862AbhLaTOL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Dec 2021 12:12:36 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABB2C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Dec 2021 09:12:36 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id x15so110795815edv.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Dec 2021 09:12:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=D11gFOEfWR3gSBswQ5x6UHINZPcj+R5hp/EqK6R5/TU=;
-        b=UvyGOWOEEsP4FZ+sb+HsrT/r8LZlC4/6bVLFm4c/wLfIl0mPWvSItKtAF182Zo2QPw
-         O9ujIMRdU5UN4iHqkHbwSqa38/hJIFmZqIopokbA9MvgIp7wDxet67IWzAIA0OxIpKKt
-         EoKWGcsVWFAYPKJq8ydVIPHNFEWKha9FoLJN5+GGk7q+9CmDxPFCgzp9KxEcvlqdrqop
-         ZM3HVs3QRy7gOGA7bXxgF8p9OQOjG9FDReZtSjX4qUv9dR0//YHLiMVXXnUeAv7XuWmt
-         7iywC1qGAotWbzeTurkbsMFVjLwwjHamDaFP3q01sanPiEtvF5GOpsvsgOY96jwicZO1
-         BsGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=D11gFOEfWR3gSBswQ5x6UHINZPcj+R5hp/EqK6R5/TU=;
-        b=rId1ob98cFngw5Hy8gglIWPXcqoDNFYsOmlk+WQ15MP2DLR8OqkRk7UZC4yqY3hqVV
-         jSQLu3dJ0S+GNMj2tuUuUKbc781vPVvcmsXriVTB5tDj0pONykBBLTcL4TK6RBxca/QW
-         42QInsqFX3+h19dF//2oNrLQVDmF1r+dWGEZQmlnYn268IQQ9/UzNO348Jbht1HegMHs
-         l7KOROuUEE63oO1I8vVCRFI2DooHATS/4djiy8OkGyk9X0yjb9nPzJd5hPGt8Tahlohk
-         MVCwu4H9s276P7TiUJVEzKRWq2t1bII8y1ZR6IuM8QLdandBxlIgPQd3nVtUkbYiXl4C
-         wUhQ==
-X-Gm-Message-State: AOAM5303RlGriUKGLJxbIetrRlFKem01BekX5oKX5f4bL+gdjg4FThYq
-        7bep8Pd/e2VyfsomK98qILDcXNSdkI6dwoe7qUU=
-X-Google-Smtp-Source: ABdhPJw4mmobM8fDnBOvGjaQyKwyn2dHNXSqja1+sfQquXe19AuwNsX0j5JcZQEZJskCpysN6Ljb/npRTssV0Iyhbhw=
-X-Received: by 2002:a17:906:c156:: with SMTP id dp22mr30316639ejc.36.1640970754029;
- Fri, 31 Dec 2021 09:12:34 -0800 (PST)
+        Fri, 31 Dec 2021 14:14:11 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id F083712C402; Fri, 31 Dec 2021 14:14:10 -0500 (EST)
+Date:   Fri, 31 Dec 2021 14:14:10 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Eric Levy <contact@ericlevy.name>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: parent transid verify failed
+Message-ID: <Yc9Wgsint947Tj59@hungrycats.org>
+References: <c0c6ec8de80b8e10185fe1980377dcc7af8d3200.camel@ericlevy.name>
 MIME-Version: 1.0
-Received: by 2002:ab4:9951:0:0:0:0:0 with HTTP; Fri, 31 Dec 2021 09:12:33
- -0800 (PST)
-Reply-To: cephasagbeh1@gmail.com
-From:   Cephas Agbeh <christopher.mulei12@gmail.com>
-Date:   Fri, 31 Dec 2021 18:12:33 +0100
-Message-ID: <CADQsUqjv+kQJpF-sSDzVUGU3Gj=Xw6yi6zA0FE6QehuCh39f=A@mail.gmail.com>
-Subject: Important Notification
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0c6ec8de80b8e10185fe1980377dcc7af8d3200.camel@ericlevy.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I am bringing this notice to your attention in respect of the death of
-a client of mine that has the same surname with you and his fund
-valued at $19.9M to be paid to you.contact me at
-cephasagbeh1@gmail.com for more details.
+On Thu, Dec 30, 2021 at 04:10:23PM -0500, Eric Levy wrote:
+> Hello.
+> 
+> I had a simple Btrfs partition, with only one subvolume, about 250 Gb
+> in size. As it began to fill, I added a second volume, live. By the
+> time the size of the file system reached the limit for the first
+> volume, the file system reverted to read only.
+> 
+> >From journalctl, the following message has recurred, with the same
+> numeric values:
+> 
+> BTRFS error (device sdc1): parent transid verify failed on 867434496
+> wanted 9212 found 8675
 
-Yours Sincerely,
-Cephas Agbeh,
-Attorney At Law.
+To be clear, do the parent transid verify failed messages appear _before_
+or _after_ the filesystem switches to read-only?
+
+"After" is fine.  When the kernel switches btrfs to read-only, it stops
+updating the disk, so pointers in memory no longer match what's on disk
+and you will get a whole stream of errors that only exist in btrfs's
+kernel RAM.  A umount/mount will clear those.  This is most likely caused
+by running out of metadata space because you didn't balance data block
+groups on the first drive after (or in some cases before) adding the
+second drive.
+
+"Before" is the unrecoverable case.  Some drives silently dropped writes,
+which is a failure btrfs can detect but not recover from except in
+cases where the missing data is present on some other drive (i.e. RAID1
+configurations).  Depending on how "added a second volume, live" was done,
+writes could be interrupted or lost on the first drive without reporting
+to the kernel (e.g. bumping the cables or browning out a power supply).
+
+Since the "after" case can happen on healthy hardware in this scenario,
+but the "before" case requires a hardware failure, it's more likely
+you're in the "after" case, and the filesystem can be recovered by
+carefully rearranging the data on the disks.  We'll need the output of
+'btrfs fi usage' to see where to start with this.
+
+> Presently, the file system mounts only as read only. It will not mount
+> in read-write, even with the usebackuproot option. 
+> 
+> It seems that balance and scrub are not available, either due to read-
+> only mode, or some other reason. Both abort as soon as they begin to
+> run.
+
+Mount with '-o skip_balance'.  If you're in the "after" case then this
+will avoid running out of metadata space again during mount.
+
+> What is the best next step for recovery?
+
+Confirm whether the first "parent transid verify failed" message appears
+before or after the filesystem is forced read-only.  If it's before,
+the best next step is mkfs and restore your backups.
+
+If it's after, try -o skip_balance and provide us with 'btrfs fi usage'
+details.
+
+You will need to rearrange free space (balance with filters, delete some
+data, or add additional drives temporarily) so that you can do a data
+balance, then balance data block groups until both drives have equal free
+space on them.  Also you should convert all existing metadata to raid1
+profile (there's no sane use case for dup metadata on multiple drives)
+but you'll have to do that after making space with data balances.
