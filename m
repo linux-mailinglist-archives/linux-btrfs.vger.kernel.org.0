@@ -2,231 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9AC482888
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jan 2022 22:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A07482895
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jan 2022 22:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbiAAVH2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Jan 2022 16:07:28 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:36354 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbiAAVH0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jan 2022 16:07:26 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S232732AbiAAV5G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Jan 2022 16:57:06 -0500
+Received: from zmcc-3-mx.zmailcloud.com ([34.200.143.36]:48324 "EHLO
+        zmcc-3-mx.zmailcloud.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232719AbiAAV5G (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jan 2022 16:57:06 -0500
+Received: from zmcc-3.zmailcloud.com (zmcc-3-mta-1.zmailcloud.com [104.154.87.183])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1C870210F9;
-        Sat,  1 Jan 2022 21:07:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1641071245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EXAfX21uOMrKQAAT2plFIR3gNKQ/PkjDRvdPz/VpFIg=;
-        b=agjC1Wv2iXn2IJRjuD5DLJ83chg8wuviNd24CV96Js9jemUCjiKq8urzHT6hHLs+mO5e8N
-        oHpqiG+EnF5bURf+JBsqS3jEUDsrlF9pmH5CohZ1azbf6HtBFaeUiMFSWZN6KqcYAySJ9C
-        udIhL9SdlipaOKFmjKekgmUfBIb+RVI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA00813B06;
-        Sat,  1 Jan 2022 21:07:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yiFkMYzC0GHkMgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Sat, 01 Jan 2022 21:07:24 +0000
-Subject: Re: 'btrfs replace' hangs at end of replacing a device (v5.10.82)
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20211129214647.GH17148@hungrycats.org>
- <cfceba98-f925-8a95-5b09-caec932efc42@suse.com>
- <eb5804bc-10d0-ab12-73c4-bcaa08b297e0@suse.com>
- <YdDB0PSBKa2GMAPV@hungrycats.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <ac3a3216-2beb-3365-0430-38865faccc83@suse.com>
-Date:   Sat, 1 Jan 2022 23:07:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id 9352A405B6
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:57:50 -0600 (CST)
+Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id 6108D8034D34
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:57:05 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id 51B778034D37
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:57:05 -0600 (CST)
+Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
+        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id VHAH4WWMfSzY for <linux-btrfs@vger.kernel.org>;
+        Sat,  1 Jan 2022 15:57:05 -0600 (CST)
+Received: from epl-dy1-mint (unknown [154.21.21.52])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id 084A68034D34
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:57:04 -0600 (CST)
+Message-ID: <450cba2819b620f8553fd73417102a4c3a153bb9.camel@ericlevy.name>
+Subject: Re: parent transid verify failed
+From:   Eric Levy <contact@ericlevy.name>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Date:   Sat, 01 Jan 2022 16:57:03 -0500
+In-Reply-To: <CAJCQCtSYBv805+Yi4EJ-sZh6b4d0BX7=XAufQYtdqvmHvXKZMw@mail.gmail.com>
+References: <c0c6ec8de80b8e10185fe1980377dcc7af8d3200.camel@ericlevy.name>
+         <Yc9Wgsint947Tj59@hungrycats.org>
+         <baa90652685a400aa60636f8596e3d28304da1ad.camel@ericlevy.name>
+         <CAJCQCtRxkZ4NjQA9KrOvb_ybDE-sg_BzzMU=91fT_p8gMEKw6Q@mail.gmail.com>
+         <7cffc181c0b01a52dfd82128eb656ec2ec44b94d.camel@ericlevy.name>
+         <CAJCQCtSYBv805+Yi4EJ-sZh6b4d0BX7=XAufQYtdqvmHvXKZMw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <YdDB0PSBKa2GMAPV@hungrycats.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, 2022-01-01 at 13:49 -0700, Chris Murphy wrote:
 
 
-On 1.01.22 г. 23:04, Zygo Blaxell wrote:
-> On Sat, Jan 01, 2022 at 09:48:28PM +0200, Nikolay Borisov wrote:
->>
->>
->> On 30.11.21 г. 15:55, Nikolay Borisov wrote:
->>>
->>>
->>> On 29.11.21 г. 23:46, Zygo Blaxell wrote:
->>>> Not a new bug, but it's still there.  btrfs replace ends in a transaction
->>>> deadlock.
->>>>
->>>> 'btrfs replace status' reports the replace completed and exits:
->>>>
->>>> 	Started on 27.Nov 02:05:07, finished on 29.Nov 14:11:20, 0 write errs, 0 uncorr. read errs
->>>>
->>>> Magic-SysRq-W:
->>>>
->>>> 	sysrq: Show Blocked State
->>>> 	task:btrfs-transacti state:D stack:    0 pid:29509 ppid:     2 flags:0x00004000
->>>> 	Call Trace:
->>>> 	 __schedule+0x35a/0xaa0
->>>> 	 schedule+0x68/0xe0
->>>> 	 schedule_preempt_disabled+0x15/0x20
->>>> 	 __mutex_lock+0x1ac/0x7e0
->>>> 	 ? lock_acquire+0x190/0x2d0
->>>> 	 ? btrfs_run_dev_stats+0x46/0x450
->>>> 	 ? rcu_read_lock_sched_held+0x16/0x80
->>>> 	 mutex_lock_nested+0x1b/0x20
->>>> 	 btrfs_run_dev_stats+0x46/0x450
->>>> 	 ? _raw_spin_unlock+0x23/0x30
->>>> 	 ? release_extent_buffer+0xa7/0xe0
->>>> 	 commit_cowonly_roots+0xa2/0x2a0
->>>> 	 ? btrfs_qgroup_account_extents+0x2d3/0x320
->>>> 	 btrfs_commit_transaction+0x51f/0xc60
->>>> 	 transaction_kthread+0x15a/0x180
->>>> 	 kthread+0x151/0x170
->>>> 	 ? btrfs_cleanup_transaction.isra.0+0x630/0x630
->>>> 	 ? kthread_create_worker_on_cpu+0x70/0x70
->>>> 	 ret_from_fork+0x22/0x30
->>>> 	task:nfsd            state:D stack:    0 pid:31445 ppid:     2 flags:0x00004000
->>>> 	Call Trace:
->>>> 	 __schedule+0x35a/0xaa0
->>>> 	 schedule+0x68/0xe0
->>>> 	 btrfs_bio_counter_inc_blocked+0xe3/0x120
->>>> 	 ? add_wait_queue_exclusive+0x80/0x80
->>>> 	 btrfs_map_bio+0x4d/0x3f0
->>>> 	 ? rcu_read_lock_sched_held+0x16/0x80
->>>> 	 ? kmem_cache_alloc+0x2e8/0x360
->>>> 	 btrfs_submit_metadata_bio+0xe9/0x100
->>>> 	 submit_one_bio+0x67/0x80
->>>> 	 read_extent_buffer_pages+0x277/0x380
->>>> 	 btree_read_extent_buffer_pages+0xa1/0x120
->>>> 	 read_tree_block+0x3b/0x70
->>>> 	 read_block_for_search.isra.0+0x1a2/0x350
->>>> 	 ? rcu_read_lock_sched_held+0x16/0x80
->>>> 	 btrfs_search_slot+0x20f/0x910
->>>> 	 btrfs_lookup_dir_item+0x78/0xc0
->>>> 	 btrfs_lookup_dentry+0xca/0x540
->>>> 	 btrfs_lookup+0x13/0x40
->>>> 	 __lookup_slow+0x10d/0x1e0
->>>> 	 ? rcu_read_lock_sched_held+0x16/0x80
->>>> 	 lookup_one_len+0x77/0x90
->>>> 	 nfsd_lookup_dentry+0xe0/0x440 [nfsd]
->>>> 	 nfsd_lookup+0x89/0x150 [nfsd]
->>>> 	 nfsd4_lookup+0x1a/0x20 [nfsd]
->>>> 	 nfsd4_proc_compound+0x58b/0x8a0 [nfsd]
->>>> 	 nfsd_dispatch+0xe6/0x1a0 [nfsd]
->>>> 	 svc_process+0x55e/0x990 [sunrpc]
->>>> 	 ? nfsd_svc+0x6a0/0x6a0 [nfsd]
->>>> 	 nfsd+0x173/0x2a0 [nfsd]
->>>> 	 kthread+0x151/0x170
->>>> 	 ? nfsd_destroy+0x190/0x190 [nfsd]
->>>> 	 ? kthread_create_worker_on_cpu+0x70/0x70
->>>> 	 ret_from_fork+0x22/0x30
->>>> 	task:btrfs           state:D stack:    0 pid:14692 ppid: 14687 flags:0x00004000
->>>> 	Call Trace:
->>>> 	 __schedule+0x35a/0xaa0
->>>> 	 schedule+0x68/0xe0
->>>> 	 btrfs_rm_dev_replace_blocked+0x8a/0xc0
->>>> 	 ? add_wait_queue_exclusive+0x80/0x80
->>>> 	 btrfs_dev_replace_finishing+0x59a/0x790
->>>> 	 btrfs_dev_replace_by_ioctl+0x59d/0x6f0
->>>> 	 ? btrfs_dev_replace_by_ioctl+0x59d/0x6f0
->>>> 	 btrfs_ioctl+0x27b2/0x2fe0
->>>> 	 ? _raw_spin_unlock_irq+0x28/0x40
->>>> 	 ? _raw_spin_unlock_irq+0x28/0x40
->>>> 	 ? trace_hardirqs_on+0x54/0xf0
->>>> 	 ? _raw_spin_unlock_irq+0x28/0x40
->>>> 	 ? do_sigaction+0xfd/0x250
->>>> 	 ? __might_fault+0x79/0x80
->>>> 	 __x64_sys_ioctl+0x91/0xc0
->>>> 	 ? __x64_sys_ioctl+0x91/0xc0
->>>> 	 do_syscall_64+0x38/0x90
->>>> 	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>> 	RIP: 0033:0x7f1d8a0f4cc7
->>>> 	RSP: 002b:00007ffc6cffe588 EFLAGS: 00000202 ORIG_RAX: 0000000000000010
->>>> 	RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f1d8a0f4cc7
->>>> 	RDX: 00007ffc6cfff400 RSI: 00000000ca289435 RDI: 0000000000000003
->>>> 	RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
->>>> 	R10: 0000000000000008 R11: 0000000000000202 R12: 0000000000000003
->>>> 	R13: 00005583a17fb2e0 R14: 00007ffc6d001b7a R15: 0000000000000001
->>>> 	task:mkdir           state:D stack:    0 pid: 2349 ppid:  2346 flags:0x00000000
->>>> 	Call Trace:
->>>> 	 __schedule+0x35a/0xaa0
->>>> 	 schedule+0x68/0xe0
->>>> 	 wait_current_trans+0xed/0x150
->>>> 	 ? add_wait_queue_exclusive+0x80/0x80
->>>> 	 start_transaction+0x551/0x700
->>>> 	 btrfs_start_transaction+0x1e/0x20
->>>> 	 btrfs_mkdir+0x5f/0x210
->>>> 	 vfs_mkdir+0x150/0x200
->>>> 	 do_mkdirat+0x118/0x140
->>>> 	 __x64_sys_mkdir+0x1b/0x20
->>>> 	 do_syscall_64+0x38/0x90
->>>> 	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>> 	RIP: 0033:0x7f608a3c6b07
->>>> 	RSP: 002b:00007fffbbd2bab8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
->>>> 	RAX: ffffffffffffffda RBX: 0000563d79f1dc30 RCX: 00007f608a3c6b07
->>>> 	RDX: 0000000000000000 RSI: 00000000000001ff RDI: 00007fffbbd2db5e
->>>> 	RBP: 00007fffbbd2db39 R08: 0000000000000000 R09: 0000563d79f1dd60
->>>> 	R10: fffffffffffff284 R11: 0000000000000246 R12: 00000000000001ff
->>>> 	R13: 00007fffbbd2bc30 R14: 00007fffbbd2db5e R15: 0000000000000000
->>>>
->>>> After a reboot (still in degraded mode), btrfs finishes the replace in
->>>> a little under 5 seconds:
->>>>
->>>> 	[  508.664454] BTRFS info (device dm-34): continuing dev_replace from <missing disk> (devid 5) to target /dev/mapper/md17 @100%
->>>> 	[  513.285473] BTRFS info (device dm-34): dev_replace from <missing disk> (devid 5) to /dev/mapper/md17 finished
->>>>
->>>
->>>
->>> I have a working hypothesis what might be going wrong, however without a
->>> crash dump to investigate I can't really confirm it. Basically I think
->>> btrfs_rm_dev_replace_blocked is not seeing the decrement aka the store
->>> to running bios count since it's using cond_wake_up_nomb. If I'm right
->>> then the following should fix it:
->>>
->>> @@ -1122,7 +1123,8 @@ void btrfs_bio_counter_inc_noblocked(struct
->>> btrfs_fs_info *fs_info)
->>>  void btrfs_bio_counter_sub(struct btrfs_fs_info *fs_info, s64 amount)
->>>  {
->>>         percpu_counter_sub(&fs_info->dev_replace.bio_counter, amount);
->>> -       cond_wake_up_nomb(&fs_info->dev_replace.replace_wait);
->>> +       /* paired with the wait_event barrier in replace_blocked */
->>> +       cond_wake_up(&fs_info->dev_replace.replace_wait);
->>>  }
->>
->> Ping, any feedback on this patch?
-> 
-> I've had a VM running 37 replaces completed without hanging.  In the
-> 2 failing cases, I hit the KASAN bug[1] and the dedupe/logical_ino/bees
-> lockup bug[2].
+> OK except we've got kernel messages clearly showing /dev/sdc is
+> rejecting writes, and that's what btrfs is complaining about. Since
+> there's only a partial dmesg to go on, I can really say if there's
+> something else going on, but pretty straightforward when there's
+> multiple of these:
 
-How does that compare vs without the patch? The KASAN thing looks like
-raid56-related so I'd discount it. The logical_ino lockup also isn't
-directly related to this patch. So without the patch you should have had
-some incident rate greater than 0 of the replace lock up ?
+All I'm suggesting is that the write issue is far more likely to be
+occurring at the layer of logical volumes than physical media, based on
+the symptoms.
+ 
+If you go back a few messages, you can find one with the full output,
+attached as a file. 
 
+
+> Dec 30 03:47:10 hostname kernel: blk_update_request: I/O error, dev
+> sdc, sector 523542288 op 0x1:(WRITE) flags 0x104000 phys_seg 128 prio
+> class 0
 > 
-> [1] https://lore.kernel.org/linux-btrfs/Ycqu1Wr8p3aJNcaf@hungrycats.org/
-> [2] https://lore.kernel.org/linux-btrfs/Ybz4JI+Kl2J7Py3z@hungrycats.org/
+> That it will result in these:
 > 
->>> Can you apply it and see if it can reproduce, I don't know what's the
->>> incident rate of this bug so you have to decide at what point it should
->>> be fixed. In any case this patch can't have any negative functional
->>> impact, it just makes the ordering slightly stronger to ensure the write
->>> happens before possibly waking up someone on the queue.
->>>
->>>
->>
+> Dec 30 03:47:10 hostname kernel: BTRFS error (device sdc1): bdev
+> /dev/sdc1 errs: wr 10, rd 0, flush 0, corrupt 0, gen 0
 > 
+> Btrfs is telling us that writes are being dropped. I'm not sure why
+> /dev/sdc is dropping writes but the block layer also knows they're
+> being rejected and what sector, so I kinda suspect the block device
+> itself is aware of and reporting the write failures with sector
+> address to the kernel.
+
+If the problem is at the logical layer, then I would suspect the same,
+that the block layer knows whether block writes are committed.
+
+
+> I can't tell if you've tried umounting this file system and then
+> mounting it again cleanly (not remount) and what messages appear in
+> dmesg if it fails.
+
+Yes. Clean mount/umount only. No remount option.
+
+
+> It's definitely an issue with /dev/sdc, but I can't tell from the
+> available info why it's dropping writes, only that two parts of the
+> kernel are seeing it, btrfs and blk_update_request
+
+I'm simply giving the inference that there must have been some bock
+writes on sdc(1) following the addition of sdd as a system device,
+otherwise we would have seen failures trying to join the two devices
+into the same file system. Right?
+
+So there was some interval during which both block devices were
+writable. Right?
+
+
+> > If the problem is device-level, then there is much to try,
+including
+> 
+> > renewing the iSCSI login. I can also restart the daemon, reboot the
+> > host, even restart the iSCSI backend service or appliance.
+> > 
+> > Would any operations of such a kind be helpful to try?
+> 
+> iSCSI isn't my area of expertise, someone else might have an idea
+> what
+> could be going on.
+
+Nor mine, but I'm trying to make infereences based on how the parts
+fit together.
+
+
+
