@@ -2,112 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C0048289B
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jan 2022 22:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4953C4828BF
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 00:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbiAAV7F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Jan 2022 16:59:05 -0500
-Received: from zmcc-3-mx.zmailcloud.com ([34.200.143.36]:48333 "EHLO
-        zmcc-3-mx.zmailcloud.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbiAAV7A (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jan 2022 16:59:00 -0500
-Received: from zmcc-3.zmailcloud.com (zmcc-3-mta-1.zmailcloud.com [104.154.87.183])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id 9B6AC405B6
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:59:44 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id 680D88034D34
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:58:59 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id 579148034D37
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:58:59 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
-        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id wR5Bub7KGHKk for <linux-btrfs@vger.kernel.org>;
-        Sat,  1 Jan 2022 15:58:59 -0600 (CST)
-Received: from epl-dy1-mint (unknown [154.21.21.52])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id 19B918034D34
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 15:58:59 -0600 (CST)
-Message-ID: <59a9506eb880b054f8eff90d5b26ad0c673c7e1f.camel@ericlevy.name>
-Subject: Re: parent transid verify failed
-From:   Eric Levy <contact@ericlevy.name>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Sat, 01 Jan 2022 16:58:58 -0500
-In-Reply-To: <YdDAGLU7M5mx7rL8@hungrycats.org>
-References: <c0c6ec8de80b8e10185fe1980377dcc7af8d3200.camel@ericlevy.name>
-         <Yc9Wgsint947Tj59@hungrycats.org>
-         <baa90652685a400aa60636f8596e3d28304da1ad.camel@ericlevy.name>
-         <YdDAGLU7M5mx7rL8@hungrycats.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S232745AbiAAXM6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Jan 2022 18:12:58 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:47182 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231582AbiAAXM5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 1 Jan 2022 18:12:57 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 6087612FC08; Sat,  1 Jan 2022 18:12:56 -0500 (EST)
+Date:   Sat, 1 Jan 2022 18:12:55 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: 'btrfs replace' hangs at end of replacing a device (v5.10.82)
+Message-ID: <YdDf9xTbdRwgE9JS@hungrycats.org>
+References: <20211129214647.GH17148@hungrycats.org>
+ <cfceba98-f925-8a95-5b09-caec932efc42@suse.com>
+ <eb5804bc-10d0-ab12-73c4-bcaa08b297e0@suse.com>
+ <YdDB0PSBKa2GMAPV@hungrycats.org>
+ <ac3a3216-2beb-3365-0430-38865faccc83@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac3a3216-2beb-3365-0430-38865faccc83@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Here is the new information:
+On Sat, Jan 01, 2022 at 11:07:24PM +0200, Nikolay Borisov wrote:
+> >>> I have a working hypothesis what might be going wrong, however without a
+> >>> crash dump to investigate I can't really confirm it. Basically I think
+> >>> btrfs_rm_dev_replace_blocked is not seeing the decrement aka the store
+> >>> to running bios count since it's using cond_wake_up_nomb. If I'm right
+> >>> then the following should fix it:
+> >>>
+> >>> @@ -1122,7 +1123,8 @@ void btrfs_bio_counter_inc_noblocked(struct
+> >>> btrfs_fs_info *fs_info)
+> >>>  void btrfs_bio_counter_sub(struct btrfs_fs_info *fs_info, s64 amount)
+> >>>  {
+> >>>         percpu_counter_sub(&fs_info->dev_replace.bio_counter, amount);
+> >>> -       cond_wake_up_nomb(&fs_info->dev_replace.replace_wait);
+> >>> +       /* paired with the wait_event barrier in replace_blocked */
+> >>> +       cond_wake_up(&fs_info->dev_replace.replace_wait);
+> >>>  }
+> >>
+> >> Ping, any feedback on this patch?
+> > 
+> > I've had a VM running 37 replaces completed without hanging.  In the
+> > 2 failing cases, I hit the KASAN bug[1] and the dedupe/logical_ino/bees
+> > lockup bug[2].
+> 
+> How does that compare vs without the patch? The KASAN thing looks like
+> raid56-related so I'd discount it. The logical_ino lockup also isn't
+> directly related to this patch.
 
+I added the device replace loop to my existing regression test workload
+(with a kernel that has KASAN enabled) and left it since the beginning
+of December.  So it's testing for all the currently known and active
+bugs at once (the ghost dirents bug, the logical_ino bug, and the dev
+replace hang, as well as general regressions affecting our workload)
+and counting how often each kind of failure event occurs.
 
-1) Previously, the system log from R/W mount attempt, which failed:
+The KASAN thing would probably disrupt bio counters during a replace?
+It wouldn't explain replace hangs on RAID1, but maybe there are multiple
+separate bugs here.  KASAN isn't enabled on our baremetal hosts where
+the majority of device replace operations are running, so any previous
+UAF bugs would have been invisible.  We are replacing drives in RAID1
+and RAID5 profiles.
 
-Dec 31 15:15:48 hostname sudo[1477409]:      user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/mount -o skip_balance /dev/sdc1
-Dec 31 15:15:48 hostname sudo[1477409]: pam_unix(sudo:session): session opened for user root by (uid=0)
-Dec 31 15:15:48 hostname sudo[1477409]: pam_unix(sudo:session): session closed for user root
-Dec 31 15:15:48 hostname kernel: BTRFS info (device sdc1): disk space caching is enabled
-Dec 31 15:15:48 hostname kernel: BTRFS error (device sdc1): Remounting read-write after error is not allowed
+Note these test results are for 5.10.  On kernels starting with 5.11,
+the logical_ino bug hits every few hours so replace never gets a chance
+to finish running.  All the hangs do make it easier to test for ghost
+dirents though.  We use every part of the buffalo.
 
+> So without the patch you should have had
+> some incident rate greater than 0 of the replace lock up ?
 
-2) Same, but in RO:
+Under the same conditions without the patch, there would be between 10
+and 30 replace hangs by now.
 
-Dec 31 15:14:50 hostname sudo[1477248]:      user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/mount -o skip_balance,ro /dev/sdc1
-Dec 31 15:14:50 hostname sudo[1477248]: pam_unix(sudo:session): session opened for user root by (uid=0)
-Dec 31 15:14:50 hostname sudo[1477248]: pam_unix(sudo:session): session closed for user root
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (Device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
-
-
-3) After running iSCSI logout, and login, the devices were assigned new
-names (sdc -> sdf, sdd -> sde). Then checking with readonly flag, using
-admin tools, while unmounted:
-
-$ sudo btrfs check --readonly /dev/sdf1
-Opening filesystem to check...
-Checking filesystem on /dev/sdf1
-UUID: c6f83d24-1ac3-4417-bdd9-6249c899604d
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space cache
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 266107584512 bytes used, no error found
-total csum bytes: 259546380
-total tree bytes: 586268672
-total fs tree bytes: 214188032
-total extent tree bytes: 52609024
-btree space waste bytes: 89657360
-file data blocks allocated: 1019677446144
- referenced 300654301184
-
-
-4) However, mount still fails. Here is log output from trying to mount
-/dev/sdf1:
-
-kernel: BTRFS warning: duplicate device /dev/sdf1 devid 1 generation 9211 scanned by mount (1641108)
-
-
-5) Same kind of results for /dev/sde:
-
-kernel: BTRFS warning: duplicate device /dev/sde devid 2 generation 9211 scanned by mount (1642247)
-
+> > [1] https://lore.kernel.org/linux-btrfs/Ycqu1Wr8p3aJNcaf@hungrycats.org/
+> > [2] https://lore.kernel.org/linux-btrfs/Ybz4JI+Kl2J7Py3z@hungrycats.org/
+> > 
+> >>> Can you apply it and see if it can reproduce, I don't know what's the
+> >>> incident rate of this bug so you have to decide at what point it should
+> >>> be fixed. In any case this patch can't have any negative functional
+> >>> impact, it just makes the ordering slightly stronger to ensure the write
+> >>> happens before possibly waking up someone on the queue.
+> >>>
+> >>>
+> >>
+> > 
+> 
