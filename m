@@ -2,118 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF6F482B8A
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 15:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0A6482CB6
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 21:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbiABOTs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 Jan 2022 09:19:48 -0500
-Received: from mail1.arhont.com ([178.248.108.111]:60436 "EHLO
-        mail1.arhont.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbiABOTs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jan 2022 09:19:48 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail1.arhont.com (Postfix) with ESMTP id 92C91400AA4;
-        Sun,  2 Jan 2022 14:19:46 +0000 (UTC)
-Received: from mail1.arhont.com ([127.0.0.1])
-        by localhost (mail1.arhont.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id py4wzeWRz2Cf; Sun,  2 Jan 2022 14:19:45 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail1.arhont.com (Postfix) with ESMTP id 5A025400AA5;
-        Sun,  2 Jan 2022 14:19:45 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail1.arhont.com 5A025400AA5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arhont.com;
-        s=157CE280-B46F-11E5-BB22-6D46E05691A3; t=1641133185;
-        bh=5WbTvpukWb6ON+wKpm9qkW88kUnmQpTVl04VhMKPN4A=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=FD9ICldBEfqR8IbfsUjNftjgk0qiOLgrrA9Y/Ai081MBvgtteeQP2xyvecaDR1Aqd
-         vEH/DXbzQTHPY52mLzTgjcUb72on6FSY92FQdPPBj7pswv5g4ONCNZ+RcsEvCTB1q+
-         7aGQ5cQi9OYNtLqQA5dQR0A8xmH8DgK3+zEhkyr8=
-X-Virus-Scanned: amavisd-new at arhont.com
-Received: from mail1.arhont.com ([127.0.0.1])
-        by localhost (mail1.arhont.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id MVUJA_kswilr; Sun,  2 Jan 2022 14:19:45 +0000 (UTC)
-Received: from mail1.arhont.com (mail1.arhont.com [10.1.70.26])
-        by mail1.arhont.com (Postfix) with ESMTP id 42A0C400AA4;
-        Sun,  2 Jan 2022 14:19:45 +0000 (UTC)
-Date:   Sun, 2 Jan 2022 14:19:45 +0000 (UTC)
-From:   "Konstantin V. Gavrilenko" <k.gavrilenko@arhont.com>
-To:     Lukas Straub <lukasstraub2@web.de>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <171674146.2313.1641133185194.JavaMail.zimbra@arhont.com>
-In-Reply-To: <20220102140833.2605a773@gecko>
-References: <1056918704.2047.1641123173265.JavaMail.zimbra@arhont.com> <20220102140833.2605a773@gecko>
-Subject: Re: CEPH to BTRFS over NFS results in no compression
+        id S229797AbiABUhq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 Jan 2022 15:37:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229450AbiABUhp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jan 2022 15:37:45 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7F9C061761
+        for <linux-btrfs@vger.kernel.org>; Sun,  2 Jan 2022 12:37:45 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id l68so1698501vkh.4
+        for <linux-btrfs@vger.kernel.org>; Sun, 02 Jan 2022 12:37:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4t1n3lz0h2Sos9PG1FGyV5dZvzDaNsB9p1MF9+J9JqY=;
+        b=HYnTF/Gko1K6ne1ivWmnoLAXMh9dpqq1mAq6o07QXieg251EI0b6HBgXDFzzlo6uSP
+         /Njw2E8CKPGHkdPSOb5BeXzB3oBCesSkPYQfrmrFiowIWYbQWM3cj/FZJlyUqy6v1GfR
+         ttzwl4eGtNR1Ccq+1pZB975+jNdRb8m0CudiNEQYhOeBCgjFduQa/4/fimyL5sPbANQE
+         QYpP+mnCPk2dYNJ+hF6lXlA3CZw2m1lIXH7gEWyqMdPhiFJzeJz/0FloYBGdz3iuYoG2
+         N40HRCp7gtkxcjFkz5xeJOjZrIHZJ8bY721THKLBUnhkdAlsH6Rkem39Nw6CNSZ+gREH
+         Gbig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4t1n3lz0h2Sos9PG1FGyV5dZvzDaNsB9p1MF9+J9JqY=;
+        b=UmUSS/Fx9Jf5hCcGSPm9/i8NG7VtisC/z7gZNw8MfrNWiUKvFL4DBcLc1GxmBerjaw
+         gAF2JoM7ewZ4wvo0MzSta9fEye6A9tFFphlT4iEOEdQDIryXrpcsa0DHQWQhTz3+PupJ
+         ROSASXata7gRXJ7HN611bP7UpzWFyY5QxJaqbV8kHgGCHuiVakGqoKCXP08fnMzvN75C
+         APHtktf+QVReGw2+rsgO/oM7d811kG2xM+Pr4CyEpzzLJJACuydQ3yySeLU5yiGFVwYU
+         XL1oZhKZ3sdT9cgebPdRFfskgZyHBh9xms4hCeWxARAFFN2fsOWYWzXaw4/nsjPcL9ic
+         azEw==
+X-Gm-Message-State: AOAM532V0f2AnMuBtYVdScAGMF5c/r5CLEgGVwz2tQFwPGRGAJkc+/4J
+        0kmfTzH+g+ljxX1vzg+WOxNns4D2U25+CxNkjeo=
+X-Google-Smtp-Source: ABdhPJzM4FZmTTL6aiVbPOhVQcPuuSod3l7dWtCsy7CHYjaZgAZTkysyee+48w9J7Sv2ETC3huqq0WkRGWtn13AZeU8=
+X-Received: by 2002:ac5:c4f4:: with SMTP id b20mr5994713vkl.17.1641155864605;
+ Sun, 02 Jan 2022 12:37:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.8.15_GA_4180 (ZimbraWebClient - GC96 (Linux)/8.8.15_GA_4177)
-Thread-Topic: CEPH to BTRFS over NFS results in no compression
-Thread-Index: YJTVMXW/0Ro1eVnAD43Z7A5HgQUSAA==
+References: <CAOE4rSz2f3xHj7Mi_JFgSMHHN8XSGxMr4NWZdcu4qd1-zOYOsg@mail.gmail.com>
+In-Reply-To: <CAOE4rSz2f3xHj7Mi_JFgSMHHN8XSGxMr4NWZdcu4qd1-zOYOsg@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Date:   Sun, 2 Jan 2022 23:37:32 +0300
+Message-ID: <CAA91j0XmeOUA=sioDh7p8Of6O3n8=E8nCAeYs6GXE4awr=Cs+Q@mail.gmail.com>
+Subject: Re: btrfs send picks wrong subvolume UUID
+To:     =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Cc:     Btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thanks for clarification Lukas. I didn't know that. 
+On Sun, Jan 2, 2022 at 8:05 PM D=C4=81vis Mos=C4=81ns <davispuh@gmail.com> =
+wrote:
+>
+> Hi,
+>
+> I have a bunch of snapshots I want to send from one fs to another,
+> but it seems btrfs send is using received UUID instead of subvolumes own =
+UUID
+> causing wrong subvolume to be picked by btrfs receive and thus failing.
+>
+> $ btrfs subvolume show /mnt/fs/2019-11-02/etc | head -n 5
+> 2019-11-02/etc
+>         Name:                   etc
+>         UUID:                   389ebc5e-341a-fb4a-b838-a2b7976b8220
+>         Parent UUID:            36d5d44b-9eaf-8542-8243-ad0dc45b8abd
+>         Received UUID:          15bd7d35-9f98-0b48-854c-422c445f7403
+>
 
-I guess the easiest option for me is to recompress snapshots on a daily basis after they get uploaded.
+btrfs send will always use received UUID if available, it works as
+designed and is not a bug. Bug is to have received UUID on read-write
+subvolume. btrfs does not prevent it and it is the result of wrong
+handling on the user side. You should never ever change read-only
+subvolume used for send/receive to read-write directly - instead you
+should always create writable clone from it.
 
-yours,
-kos
-
-
------ Original Message -----
-> From: "Lukas Straub" <lukasstraub2@web.de>
-> To: "Konstantin V Gavrilenko" <k.gavrilenko@arhont.com>
-> Cc: "linux-btrfs" <linux-btrfs@vger.kernel.org>
-> Sent: Sunday, 2 January, 2022 15:08:33
-> Subject: Re: CEPH to BTRFS over NFS results in no compression
-
-> On Sun, 2 Jan 2022 11:32:53 +0000 (UTC)
-> "Konstantin V. Gavrilenko" <k.gavrilenko@arhont.com> wrote:
-> 
->> Hi list,
->> 
->> I have noticed an interesting and surprising behaviour of my BTRFS with regards
->> to compression of the files and NFS.
->> 
->> I have BTRFS RAID10 with 8 disks , that is mounted with the "
->> nofail,noatime,space_cache=v2,compress-force=zstd:9,subvol=@cloudstack-secondary"
->> flags and is exported via NFS.
->> 
->> When I create a snapshot of a disk in Cloudstack from CEPH and save it to a
->> secondary storage to this BTRFS RAID10 over NFS, the file does not compress,
->> despite the compress-force mount option being set on FS
->> So in the below example, the file eeceaf0e-9780-408b-a748-1495d517a9b6 was
->> copied over NFS and is not compressed. When I copy the same file directly on a
->> host, it does get compressed pretty well, as per example below.
->> 
->> [...]
->> 
->> 
->> So what I have checked so far what works
->> - after the original files is copied over NFS, the copy of the file using #cp
->> gets compressed.
->> - after the original files is copied over NFS, the original file can be
->> compressed using #btrfs defrag -czstd option
->> - If I copy the original file to some other host, and copy it back via NFS using
->> cp, it does get compressed.
->> 
->> So the problem seems to appear only when the file is exported from Ceph and
->> copied to NFS.
->> 
->> Any hints what could be causing such a behaviour?
->> 
->> 
->> 
->> Yours sincerely,
->> Kos
->> 
-> 
-> Btrfs doesn't compress direct-io writes. This suggests that whatever you use for
-> "I create a snapshot of a disk in Cloudstack from CEPH and save it to a
-> secondary storage to this BTRFS RAID10 over NFS", it writes with O_DIRECT.
-> 
-> Regards,
-> Lukas Straub
-> 
-> --
+This was discussed extensively, see e.g.
+https://lore.kernel.org/linux-btrfs/d73a72b5-7b53-4ff3-f9b7-1a098868b967@gm=
+ail.com/
