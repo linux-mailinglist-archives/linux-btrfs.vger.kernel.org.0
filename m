@@ -2,207 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7964828CC
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 01:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5794828D0
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 01:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbiABAEU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Jan 2022 19:04:20 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:33246 "EHLO
+        id S232832AbiABAPm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Jan 2022 19:15:42 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:33888 "EHLO
         drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232731AbiABAET (ORCPT
+        by vger.kernel.org with ESMTP id S230286AbiABAPm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 1 Jan 2022 19:04:19 -0500
+        Sat, 1 Jan 2022 19:15:42 -0500
 Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 9541B12FE2A; Sat,  1 Jan 2022 19:04:18 -0500 (EST)
-Date:   Sat, 1 Jan 2022 19:04:18 -0500
+        id 3FB7612FE91; Sat,  1 Jan 2022 19:15:41 -0500 (EST)
+Date:   Sat, 1 Jan 2022 19:15:41 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Martin Raiber <martin@urbackup.org>
-Subject: Re: Ghost directory entries (previously "Unable to remove directory
- entry")
-Message-ID: <YdDsAl0bx6DLZT+i@hungrycats.org>
-References: <20211118210905.GB17148@hungrycats.org>
- <CAL3q7H4T57mBLLyoFQAP=gJKB44XBOW3FMCBAe7dHuMxdphZNw@mail.gmail.com>
- <YZcYBTt4UI542VRx@hungrycats.org>
- <CAL3q7H51ytJ12WuY5Gem3khcECAKtOUnk1441jss1BvTF1S+VQ@mail.gmail.com>
- <YZkOkNTRtG29FGhx@hungrycats.org>
- <CAL3q7H4CYtaW_aEQSEZ_KxZ_ba3u=FmPT8VtXH+OE6FTR8oxOQ@mail.gmail.com>
- <20211120193627.GE17148@hungrycats.org>
+To:     Eric Levy <contact@ericlevy.name>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: parent transid verify failed
+Message-ID: <YdDurReZpZQeo+7/@hungrycats.org>
+References: <c0c6ec8de80b8e10185fe1980377dcc7af8d3200.camel@ericlevy.name>
+ <Yc9Wgsint947Tj59@hungrycats.org>
+ <baa90652685a400aa60636f8596e3d28304da1ad.camel@ericlevy.name>
+ <YdDAGLU7M5mx7rL8@hungrycats.org>
+ <59a9506eb880b054f8eff90d5b26ad0c673c7e1f.camel@ericlevy.name>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="qhof47B7ieYqWFBE"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211120193627.GE17148@hungrycats.org>
+In-Reply-To: <59a9506eb880b054f8eff90d5b26ad0c673c7e1f.camel@ericlevy.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
---qhof47B7ieYqWFBE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Nov 20, 2021 at 02:36:27PM -0500, Zygo Blaxell wrote:
-> On Sat, Nov 20, 2021 at 05:13:39PM +0000, Filipe Manana wrote:
-[...]
-> > > > I just tried that loop using that case, and several variations
-> > > > (different names, different directories, etc), I still couldn't
-> > > > reproduce and I don't see how that alone could lead to any issue.
-> > > >
-> > > > I think there must be something else happening in parallel besides that loop.
-> > >
-> > > Definitely something else is required, the loop by itself won't reproduce
-> > > the issue.
-> > >
-> > > I don't know what the other thing is.  Candidates are:  balance or
-> > > snapshot delete pushing commit times above watchdog threshold, hitting
-> > > a BUG_ON, filesystem ENOSPC, kernel out of memory (i.e.  events that
-> > > would normally force a host to reboot).
-
-I've been able to reproduce it 3 times on 5.15.6 with the attached
-test program.  It runs 16 threads that try to create, write to, sometimes
-fsync(!), and rename files from a pool of 256 fixed names.  Run the script
-in an empty directory, load the machine up so that transaction commits
-take a long time to run, crash it, and about a third of the time there
-will be dirents without inodes behind them, sometimes several hundred
-of each file name.
-
-After collecting a few more reports on IRC I found that there's two
-sets of behaviors:  on kernels before 5.14, fsync() correlates strongly
-with the issue, while on 5.14 and later, fsync() correlates negatively.
-I examined the applications that were using the directories where the
-ghost dirents appeared, and divided them into a group of apps that call
-fsync() and those that don't, and then matched those apps up with incident
-reports.  So there might be two distinct bugs leading to a similar result
-(or it was always one bug but in 5.14 something changed the mechanics).
-
-In the repro program I call fsync() on half the files and not on the
-other half of the files, so it should work on kernels before and after
-5.14.
-
-Some more reports of the issue have come in over IRC and in GNOME
-bug reports.  They are reporting it on 5.10 which I haven't been able
-to reproduce.  I don't think there's anything special about 5.10's code,
-but it's the kernel most people will be running now, so "a thing that
-happens on all kernel versions before 5.14" will be reported much more
-often on 5.10 than any other kernel at this time.
-
-I have one case where a machine rebooted from 5.14 to 5.10 and the issue
-was found after the reboot.  The app involved is non-fsyncing, which
-would suggest the problem occurred while running 5.14 and not during log
-replay on 5.10.  That data seems to fit with what we understand about
-the problem, i.e. that it's putting junk in the log tree that is getting
-replayed to create the ghost dirents at mount time after the crash.
-
-> > If a transaction abort happened (fs turned into RO), than it's very
-> > likely to have been fixed recently in 5.16-rc1 by:
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9a35fc9542fa6c220d69987612b88c54cba2bc33
-> > 
-> > The code paths fixed are triggered during a rename of a previously
-> > fsynced file, and they are precisely about deleting directory items.
-> > 
-> > IIRC, the problem Martin reported some months ago, he had transaction aborts.
+On Sat, Jan 01, 2022 at 04:58:58PM -0500, Eric Levy wrote:
+> Here is the new information:
 > 
-> OK, if I can cherry-pick or backport that, I can test it in a lot more
-> machines than I can run misc-next on.  With a multi-year gap between
-> incidents, it will be some time before I can confirm any fix works.
 > 
-> If this commit is in a -rc kernel anyway (and presumably heading to
-> -stable?) then the reports on IRC should come to a stop on their own,
-> no action required.
-
-I haven't been able to reproduce this on misc-next (which has the
-patch below), or 5.16-rc kernels, or any earlier kernel that I've
-tested with the patch backported.
-
-Maybe we should put this commit in -stable?  5.15 is still alive and
-definitely affected.
-
-> Thanks!
+> 1) Previously, the system log from R/W mount attempt, which failed:
 > 
+> Dec 31 15:15:48 hostname sudo[1477409]:      user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/mount -o skip_balance /dev/sdc1
+> Dec 31 15:15:48 hostname sudo[1477409]: pam_unix(sudo:session): session opened for user root by (uid=0)
+> Dec 31 15:15:48 hostname sudo[1477409]: pam_unix(sudo:session): session closed for user root
+> Dec 31 15:15:48 hostname kernel: BTRFS info (device sdc1): disk space caching is enabled
+> Dec 31 15:15:48 hostname kernel: BTRFS error (device sdc1): Remounting read-write after error is not allowed
+> 
+> 
+> 2) Same, but in RO:
+> 
+> Dec 31 15:14:50 hostname sudo[1477248]:      user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/mount -o skip_balance,ro /dev/sdc1
+> Dec 31 15:14:50 hostname sudo[1477248]: pam_unix(sudo:session): session opened for user root by (uid=0)
+> Dec 31 15:14:50 hostname sudo[1477248]: pam_unix(sudo:session): session closed for user root
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (Device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
+> Dec 31 15:14:50 hostname kernel: BTRFS error (device sdc1): parent transid verify failed on 867434496 wanted 9212 found 8675
 
---qhof47B7ieYqWFBE
-Content-Type: text/x-c++src; charset=us-ascii
-Content-Disposition: attachment; filename="repro-ghost-dirent.cc"
+There's no log messages from the ctree open and it's complaining about
+remounting, so you still have the filesystem mounted somewhere, i.e. you
+did not umount it successfully.  This would also lead to assigning new
+SCSI device IDs instead of reusing the old ones, and getting duplicate
+device complains during device scan.
 
-#include <iostream>
-#include <list>
-#include <memory>
-#include <random>
-#include <sstream>
-#include <string>
-#include <thread>
+Maybe you did a lazy umount and there's still an open file on the
+filesystem?
 
-#include <cstring>
+> 3) After running iSCSI logout, and login, the devices were assigned new
+> names (sdc -> sdf, sdd -> sde). Then checking with readonly flag, using
+> admin tools, while unmounted:
+> 
+> $ sudo btrfs check --readonly /dev/sdf1
+> Opening filesystem to check...
+> Checking filesystem on /dev/sdf1
+> UUID: c6f83d24-1ac3-4417-bdd9-6249c899604d
+> [1/7] checking root items
+> [2/7] checking extents
+> [3/7] checking free space cache
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 266107584512 bytes used, no error found
+> total csum bytes: 259546380
+> total tree bytes: 586268672
+> total fs tree bytes: 214188032
+> total extent tree bytes: 52609024
+> btree space waste bytes: 89657360
+> file data blocks allocated: 1019677446144
+>  referenced 300654301184
 
-#include <fcntl.h>
-#include <unistd.h>
+That's a good sign that the data on disk is OK.
 
-#include <sys/ioctl.h>
+> 4) However, mount still fails. Here is log output from trying to mount
+> /dev/sdf1:
+> 
+> kernel: BTRFS warning: duplicate device /dev/sdf1 devid 1 generation 9211 scanned by mount (1641108)
 
-using namespace std;
+Again there are no ctree open messages, so you're adding a new subvol
+mount point to a filesystem that is already mounted, which means you
+didn't successfully umount earlier.
 
-int
-main(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
-	const size_t thread_count = 16;
-	random_device rd;
-	uniform_int_distribution<default_random_engine::result_type> uid(
-		numeric_limits<default_random_engine::result_type>::min(),
-		numeric_limits<default_random_engine::result_type>::max()
-	);
-	default_random_engine generator(uid(rd));
-	list<shared_ptr<thread>> threads;
-	ostringstream data_str;
-	for (size_t x = 0; x < 1024; ++x) {
-		data_str << x << endl;
-	}
-	const string data = data_str.str();
-	for (size_t x = 0; x < thread_count; ++x) {
-		const size_t base = x * thread_count;
-		threads.push_back(make_shared<thread>([x, &data, base, &generator]() {
-			uniform_int_distribution<size_t> name_dist(base, base + thread_count - 1);
-			uniform_int_distribution<size_t> size_dist(1, data.size());
-			char thread_name[32];
-			sprintf(thread_name, "%zu ", x);
-			while (true) {
-				char name[32];
-				const size_t file_num = name_dist(generator);
-				sprintf(name, "file_%08zx", file_num);
-				char tmp_name[1024];
-				sprintf(tmp_name, "%s.tmp", name);
-				const int fd = open(tmp_name, O_WRONLY | O_CREAT | O_NOFOLLOW | O_EXCL, 0777);
-				if (fd < 0) {
-					cerr << "open " << tmp_name << " failed: " << strerror(errno) << endl;
-				}
-				const int rv = write(fd, data.data(), size_dist(generator));
-				if (rv < 1) {
-					cerr << "write " << tmp_name << " failed: " << strerror(errno) << endl;
-				}
-				if (file_num & 1) {
-					const int fv = fsync(fd);
-					if (fv) {
-						cerr << "fsync " << tmp_name << " failed: " << strerror(errno) << endl;
-					}
-				}
-				if (close(fd)) {
-					cerr << "close " << tmp_name << " failed: " << strerror(errno) << endl;
-				}
-				if (rename(tmp_name, name)) {
-					cerr << "rename " << tmp_name << " -> " << name << " failed: " << strerror(errno) << endl;
-				}
-				cerr << thread_name;
-			}
-		}));
-	}
-	for (auto i : threads) {
-		i->join();
-	}
+The old device (/dev/sdc and /dev/sdd1) is still mounted, so btrfs device
+scan and/or mount will complain about duplicate devices.
 
-	return EXIT_SUCCESS;
-}
+> 5) Same kind of results for /dev/sde:
+> 
+> kernel: BTRFS warning: duplicate device /dev/sde devid 2 generation 9211 scanned by mount (1642247)
 
---qhof47B7ieYqWFBE--
+Try rebooting to make sure the old mount is truly gone.
+
+If the filesystem has been lazily umounted with open files it can be
+very difficult to find all the processes that are still holding the
+files open and force them to close.  Tools like 'fuser' and 'lsof'
+don't work after all the mount points have been deleted.
