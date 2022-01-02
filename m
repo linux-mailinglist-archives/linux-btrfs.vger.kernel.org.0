@@ -2,184 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A624829C5
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 06:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548214829C6
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 06:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbiABF5f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 Jan 2022 00:57:35 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:47058 "EHLO
-        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229528AbiABF5e (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 2 Jan 2022 00:57:34 -0500
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id B17401308ED; Sun,  2 Jan 2022 00:57:33 -0500 (EST)
-Date:   Sun, 2 Jan 2022 00:57:33 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Eric Levy <contact@ericlevy.name>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: parent transid verify failed
-Message-ID: <YdE+zWLrQhAmAX6F@hungrycats.org>
-References: <c0c6ec8de80b8e10185fe1980377dcc7af8d3200.camel@ericlevy.name>
- <Yc9Wgsint947Tj59@hungrycats.org>
- <baa90652685a400aa60636f8596e3d28304da1ad.camel@ericlevy.name>
- <YdDAGLU7M5mx7rL8@hungrycats.org>
- <59a9506eb880b054f8eff90d5b26ad0c673c7e1f.camel@ericlevy.name>
- <YdDurReZpZQeo+7/@hungrycats.org>
- <109cc618254b1f8d9365bd4ecb7eb435dea91353.camel@ericlevy.name>
- <YdEbsxw7Nk0GKKzN@hungrycats.org>
- <b6f84999f9506ca2e72673d8e94e72a0f29cea11.camel@ericlevy.name>
+        id S229528AbiABF63 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 Jan 2022 00:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbiABF62 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jan 2022 00:58:28 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760BEC061574
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 21:58:28 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id d189so5476061vkg.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 Jan 2022 21:58:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=H9g9efcpevzkcnh7j0DXzg1jRNuTeRc+sTlVuDWohBY=;
+        b=jlah0OKooD4i9z4Ur0mdHqSS1v380jwBxAD9IJ1Z6qF94dqtOEJnT7asFPryS3lcbv
+         eYaewg5RVWRiE2GaXK6wO95RhkO8/EqFxW5kqaV2AkyZfW0WYb2KXRIk3SUe8tnkXDvU
+         c7472V73Y8tiKQUuWtPiEKt8eA0um5UQBGrBdEfUjr0CVVAYghvBck2A9Pa2B0tBFXWt
+         008Ba1JNgUSxIDM+Lv+nXNRyqbLLhR0+FQS1KbRNpCiZiuT6suTnB9uocCmrwaunXF8s
+         qWtXTXbRogwT5FZHZIBqHgIuUz5QyXwhwru3qp7m4LqqZ3pIgZX4x75ijGrAEbOtpSF7
+         yP+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=H9g9efcpevzkcnh7j0DXzg1jRNuTeRc+sTlVuDWohBY=;
+        b=FAVy24O0R14QmQJaqZnuybG+3WWIYOSPoKDdOH8SQ3VR+hmPp15R06X+Yv6moh95FR
+         1SvD/l57qSY9mcchQ42uyzjVUxe3GaTV5K10J6foHca+JwZHt8XWxVUv4oorvWEr0UfC
+         tT/vtKsqZpIWSWAmyEmbdtDoJmMK//zx7kiOM8gfwPoCz7Ool5BUiCey9XQPqLqYRnVT
+         me/0dxvGjp9qyx5HAaeT65Yk8uYP8eRv5zbPTdqOndQ9KPBnGgc5JxPkm+gH9Pth8jbd
+         Y1RuNQVEmuloJkdKH+qPWiG7/hfOKh95fDuJ63tDw6xNteM9AP5c2j5LQX29fpuNxrUx
+         K2Tw==
+X-Gm-Message-State: AOAM5314+yGxEG0OWIQ1dQyX0wnscpioPY8pcIzfU4XNN5OvFpZSEowz
+        o839Nb7YVKb8mOxmzV94TK+kygyWmUkXq7NuhLDpQgWw9FyTGg==
+X-Google-Smtp-Source: ABdhPJzM79UXKoJnupj1w8UD5kH+5HnFwyKbM45Xh0D5z1w7cQWIGnFWpFQdO6QgRrEdPbI6OZX/lWDVR18Uz1G4CV4=
+X-Received: by 2002:a05:6122:8ca:: with SMTP id 10mr9061265vkg.32.1641103107395;
+ Sat, 01 Jan 2022 21:58:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6f84999f9506ca2e72673d8e94e72a0f29cea11.camel@ericlevy.name>
+References: <1443641013-26765-1-git-send-email-rruede+git@gmail.com>
+In-Reply-To: <1443641013-26765-1-git-send-email-rruede+git@gmail.com>
+From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Date:   Sun, 2 Jan 2022 07:58:16 +0200
+Message-ID: <CAOE4rSwjOuNx-Ou=G0tER4nAtKROx9SeqKqxYuE7MDgPsZKQSw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix resending received snapshot with parent
+To:     Robin Ruede <r.ruede@gmail.com>
+Cc:     Btrfs <linux-btrfs@vger.kernel.org>,
+        Robin Ruede <rruede+git@gmail.com>,
+        David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 01, 2022 at 11:03:25PM -0500, Eric Levy wrote:
-> On Sat, 2022-01-01 at 22:27 -0500, Zygo Blaxell wrote:
-> 
-> > Yes, that's normal with lazy umounts.  With a lazy umount, the mount
-> > point is removed immediately, so you get all the behavior you
-> > described,
-> > but the filesystem is not actually umounted until after the last open
-> > file descriptors referencing the filesystem are closed (that's the
-> > "lazy" part).
-> 
-> All of the explicit umount calls I gave had no lazy flag. I don't
-> understand the full details of your comments, as I am only aware of
-> lazy umount as a fallback for failing umount calls in synchronous
-> operations.
-> 
-> It seems the way mounts work, especially when interacting with user
-> space solutions, such as FUSE and Gvfs, is often burdened by legacy
-> design never updated to work properly. I have seen Gvfs pull down an
-> entire system from trying to access a file in a user mount, since the
-> mount was made before a network connection with the Samba server was
-> dropped.
-> 
-> For laptops these kinds of vulnerability are quite debilitating.
-
-Indeed.  A lot of users get bitten by this.
-
-If there were block device connectivity issues (or udev integration
-issues) then systemd or udev seem to "helpfully" lazy-umount filesystems
-in some cases.
-
-With other filesystems, multiple instances of the same filesystem uuid
-can be mounted on different block devices and mount points, so the
-lingering lazy-umounted filesystem can be ignored.  They take up some
-kernel memory and make a little noise during writeback events, but they
-are otherwise inert as no process can access them and they have no access
-to any device they could write to.
-
-With btrfs, this is a disaster, as each btrfs filesystem uuid can be
-mounted exactly once in any given kernel, and all following mounts
-of the same uuid are converted into bind mounts on subvols.  If the
-filesystem gets into a bad state and is lazy-umounted, there's no easy
-way to recover.
-
-> > Since you're transitioning from one disk to multiple disks, you
-> > should
-> > convert metadata to raid1, and ensure there's sufficient unallocated
-> > space on the first drive to hold metadata as it grows.  This can be
-> > done
-> 
-> I thought it was the default for disk pools, fully duplicated metadata,
-> and JBOD-style for payload data.
-
-If you mkfs and start with a completely empty filesystem, that's true.
-
-If you add a second disk to a previously single-disk filesystem, the
-existing data will be in single and dup profiles.  New data will still
-be single profile, but new metadata will be raid1, and that imposes the
-requirement that there be sufficient space on _both_ disks to allocate
-all existing and future metadata in raid1.  If the first disk is near
-full when the second disk is added, this requirement is almost certainly
-not met.
-
-> > with two balance commands:
-> > 
-> > 	btrfs balance start -dlimit=16 /fs
-> > 
-> > 	btrfs balance start -mconvert=raid1,soft /fs
-> 
-> Does balance manage balanced utilization of disks? For specific
-> scenarios, unbalanced disk usage is actually desirable, for example, my
-> current one, in which the devices are logical volumes on a redundant
-> back end. Using as much of one volume as possible simplifies
-> reallocation of back end storage resources.
-
-btrfs balance is a tool for relocating data, converting between RAID
-profiles, or changing chunk allocations from data to metadata.  In this
-case, we want to move a few GB of data to the second disk so that there
-will be room for metadata on both disks.  With the limit filter, this
-is only 3% of a full balance for a 500GB filesystem (though if you have
-enough IO time to spare for that, you can go ahead and do a full balance
-if that's simpler to manage).  This will get the filesystem close enough
-to its final state with two disks that normal allocations can proceed
-until the disks fill up.
-
-btrfs balance does not manage future disk utilization, other than by
-rearranging data and free space to get desirable allocator behavior
-in the future.  The allocator algorithms are all fixed, and optimized
-for maximum available space usage starting from an empty filesystem.
-All use cases that are different from that are a bit of a challenge on
-btrfs (e.g. SSD metadata, remote mirror devices, starting from non-initial
-conditions after a profile change, adding a device, increasing the size
-of a device...the list goes on).
-
-Note that btrfs 'single' profile always fills the disk with the most
-free space first ('raid1' profile fills the two disks with the most free
-space first).  If you add a new disk to an existing array with single
-data, all the new data will typically be allocated on the new disk
-(unless the old disk is much larger than the new one).  This makes all
-the space usable regardless of which profile is used for metadata.
-
-If this is not what you want, you could use 'btrfs fi resize' to resize
-the second device smaller, and resize it larger again over time as it
-fills up, but you'll have to monitor that closely and make continuous
-adjustments as you're forcing the allocator to do the opposite of its
-normal behavior (don't resize the physical device, just the amount of
-the device that btrfs will use).
-
+tre=C5=A1d., 2015. g. 30. sept., plkst. 22:25 =E2=80=94 lietot=C4=81js Robi=
+n Ruede
+(<r.ruede@gmail.com>) rakst=C4=ABja:
+>
+> This fixes a regression introduced by 37b8d27d between v4.1 and v4.2.
+>
+> When a snapshot is received, its received_uuid is set to the original
+> uuid of the subvolume. When that snapshot is then resent to a third
+> filesystem, it's received_uuid is set to the second uuid
+> instead of the original one. The same was true for the parent_uuid.
+> This behaviour was partially changed in 37b8d27d, but in that patch
+> only the parent_uuid was taken from the real original,
+> not the uuid itself, causing the search for the parent to fail in
+> the case below.
+>
+> This happens for example when trying to send a series of linked
+> snapshots (e.g. created by snapper) from the backup file system back to t=
+he original one.
+>
+> The following commands reproduce the issue in v4.2.1
+> (no error in 4.1.6)
+>
+>     # setup three test file systems
+>     for i in 1 2 3; do
+>             truncate -s 50M fs$i
+>             mkfs.btrfs fs$i
+>             mkdir $i
+>             mount fs$i $i
+>     done
+>     echo "content" > 1/testfile
+>     btrfs su snapshot -r 1/ 1/snap1
+>     echo "changed content" > 1/testfile
+>     btrfs su snapshot -r 1/ 1/snap2
+>
+>     # works fine:
+>     btrfs send 1/snap1 | btrfs receive 2/
+>     btrfs send -p 1/snap1 1/snap2 | btrfs receive 2/
+>
+>     # ERROR: could not find parent subvolume
+>     btrfs send 2/snap1 | btrfs receive 3/
+>     btrfs send -p 2/snap1 2/snap2 | btrfs receive 3/
+>
+> Signed-off-by: Robin Ruede <rruede+git@gmail.com>
 > ---
-> 
-> I am noticing that the order of devices in now reversed. I am wondering
-> whether what happened is that iSCSI, either on the client or server
-> side, reversed the order, by some quirk or design flaw. while I had the
-> live mount. 
+>  fs/btrfs/send.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index aa72bfd..890933b 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -2351,8 +2351,14 @@ static int send_subvol_begin(struct send_ctx *sctx=
+)
+>         }
+>
+>         TLV_PUT_STRING(sctx, BTRFS_SEND_A_PATH, name, namelen);
+> -       TLV_PUT_UUID(sctx, BTRFS_SEND_A_UUID,
+> -                       sctx->send_root->root_item.uuid);
+> +
+> +       if (!btrfs_is_empty_uuid(sctx->send_root->root_item.received_uuid=
+))
+> +               TLV_PUT_UUID(sctx, BTRFS_SEND_A_UUID,
+> +                           sctx->send_root->root_item.received_uuid);
+> +       else
+> +               TLV_PUT_UUID(sctx, BTRFS_SEND_A_UUID,
+> +                           sctx->send_root->root_item.uuid);
+> +
+>         TLV_PUT_U64(sctx, BTRFS_SEND_A_CTRANSID,
+>                     le64_to_cpu(sctx->send_root->root_item.ctransid));
+>         if (parent_root) {
+> --
+> 2.6.0
+>
+> --
 
-Device order (mapping of /dev/sd? device to underlying storage) usually
-isn't guaranteed, but once it's set it tends to be persistent; otherwise,
-disastrous problems would occur with every multi-device Linux subsystem:
-btrfs, mdadm, lvm, and dm-crypt would all significantly damage their data
-if the mapping from subdevice to physical storage changed unexpectedly
-while they were active.
+Hi,
 
-In disconnect-reconnect cases, the old device is reconnected only if it
-can be reliably identified; otherwise, an entirely new device is created
-(as in the case where sdc became sdf after iSCSI logout and reconnect).
+This breaks use case when snapshot is sent from one system to another
+where it's set to read-write, modified, set back to read-only to send
+to 3rd system.
+This will cause received_uuid to be present but it won't match
+original first snapshot anymore so 2nd system's UUID should be used
+instead of first.
+Only very recently (Oct 2021) "btrfs property set" was changed to
+clear received_uuid when switching ro -> rw thus it means there could
+be a lot of rw filesystems with it set. And it can cause strange send
+failure, see my email titled "btrfs send picks wrong subvolume UUID".
+Also I'm not only one who encountered such issue [1].
+Workaround is to clear received_uuid, but that might not be obvious or
+not even possible for filesystems mounted as read-only (or corrupted
+ones that can't be remounted rw).
 
-> Still, it doesn't explain why I originally was able to see
-> the new, unpartitioned device and add it to the pool.
+[1] "Wrong received UUIDs after backup restore and onward" -
+https://www.spinics.net/lists/linux-btrfs/msg65142.html
 
-Why would you not be able to see both raw and partition devices?
-Normally you can use either, just not both at the same time.
-
-> Another possibility is that the sequence of add/remove/add, which I
-> explained earlier, caused some problem, but it also seems not clear
-> how, since all of these operations are synchronous.
-
-I don't know the fine details of what the lower storage layers you've
-chosen are doing, so I can't comment on specific sequences of operations.
-
-Some interesting things can happen if the last writes before a device is
-closed are lost--in the device add and remove cases, the device would
-or would not be marked as belonging to the filesystem, with possible
-surprising results when the filesystem is reassembled.  On the other
-hand, most of the possible results are "the filesystem goes splat and
-can't be mounted any more" or "the filesystem permanently adopts a
-device that wasn't expected" and it doesn't sound like either of those
-events happened.
+Best regards,
+D=C4=81vis
