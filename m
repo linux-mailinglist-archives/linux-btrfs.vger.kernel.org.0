@@ -2,128 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B714828D9
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 01:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DC94828E7
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 02:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbiABA4A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Jan 2022 19:56:00 -0500
-Received: from zmcc-3-mx.zmailcloud.com ([34.200.143.36]:49245 "EHLO
-        zmcc-3-mx.zmailcloud.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiABAz7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jan 2022 19:55:59 -0500
-Received: from zmcc-3.zmailcloud.com (zmcc-3-mta-1.zmailcloud.com [104.154.87.183])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id 21329405B8
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 18:56:44 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id C5C998034D34
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 18:55:58 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id B7AE38034D37
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 18:55:58 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
-        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id BlVrdkpn9BNy for <linux-btrfs@vger.kernel.org>;
-        Sat,  1 Jan 2022 18:55:58 -0600 (CST)
-Received: from epl-dy1-mint (unknown [154.21.21.52])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id 710708034D34
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 18:55:58 -0600 (CST)
-Message-ID: <109cc618254b1f8d9365bd4ecb7eb435dea91353.camel@ericlevy.name>
-Subject: Re: parent transid verify failed
-From:   Eric Levy <contact@ericlevy.name>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Sat, 01 Jan 2022 19:55:57 -0500
-In-Reply-To: <YdDurReZpZQeo+7/@hungrycats.org>
-References: <c0c6ec8de80b8e10185fe1980377dcc7af8d3200.camel@ericlevy.name>
-         <Yc9Wgsint947Tj59@hungrycats.org>
-         <baa90652685a400aa60636f8596e3d28304da1ad.camel@ericlevy.name>
-         <YdDAGLU7M5mx7rL8@hungrycats.org>
-         <59a9506eb880b054f8eff90d5b26ad0c673c7e1f.camel@ericlevy.name>
-         <YdDurReZpZQeo+7/@hungrycats.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S229613AbiABBuY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Jan 2022 20:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbiABBuW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jan 2022 20:50:22 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6A1C061574
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 17:50:22 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id x6so14829829lfa.5
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 Jan 2022 17:50:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LQmVDNbbV9a+1iShDMtfaLaHvrSLwU26UCHwRxqks/w=;
+        b=VIVoxVAzeN0jkGD5I0U020E3A3YseShQiL7UL2a2OCwowq/2u0pg/2P57AWhv6H2+h
+         A7D/S9WcKIs+ibPGGVyZvKzpjnuOUXOkycIoEO4W6+PRIK2twFcakrGleGwsfmvwAWxa
+         G2qZ0T13Xl1nVsrB7/b+2PnSZ9ZxGTQqlDYU7r7uKLT6Dpotd8N3Oqwd0wg4e8baaiPq
+         cVoWTdZcwUQw9b77AQCH+HTI11z/tV/eIE0Li+MyKnPCwaMq7rnvJroadIsvvALTTxmq
+         NXNaovAchUqxnCVPRdBMdJNe53F9e3lZUqRzgoLwR8nyKqX+oOgCYBTA5DrVyYgtkwOJ
+         hqGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LQmVDNbbV9a+1iShDMtfaLaHvrSLwU26UCHwRxqks/w=;
+        b=pu2Wv241z+ZX4bCgOqv6bhhwrFn9ONKM7odsJX1m9Dc/4gnzmKc7JhLOZNYOLvayHr
+         cMOKVrR6i9fZWaW1EzZw1w+6wGLSrqZQXb24Uwat5TRiT96IDgj7F9iahkc/cy/NROOS
+         UvkN1ARcyM5EFgf6LRfj8rqIPa+U3C7M2mGQhSGIk7XyqwKGuyeUWairdsmObtvpOjGc
+         aFgraM8AmCqbBFzUSp2gXxZGOz9Zng6Dtto1v+LHbRdu3IQrsu/mJ35JLU4HfpILGJCN
+         BZa6KvtpIeiMdL4CFx3WXWN5ff5AFll/EGSrCrByMBsxZJqPQb87A8iKIeIQFqERPMw1
+         2jGg==
+X-Gm-Message-State: AOAM532Cl2hM/FDFFnI/5MY10UWYFulTrTfF43lz7LYQ0AsOTm3dpcDn
+        tca00IQIqDTuFQNLO1bmGWwlXkGXWLATNQ==
+X-Google-Smtp-Source: ABdhPJzk8kJzTmreKylb0n7vbQwG2PbprvJgxoowS5EpATh3epjuyfaPnZdRGZqV/xaUeCUfgdEsNg==
+X-Received: by 2002:a05:6512:2626:: with SMTP id bt38mr36655899lfb.255.1641088220134;
+        Sat, 01 Jan 2022 17:50:20 -0800 (PST)
+Received: from ArchRescue.. ([95.68.95.192])
+        by smtp.gmail.com with ESMTPSA id bq30sm816233lfb.222.2022.01.01.17.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Jan 2022 17:50:19 -0800 (PST)
+From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+Subject: [PATCH] btrfs-progs: process_snapshot: don't free ERR
+Date:   Sun,  2 Jan 2022 03:50:16 +0200
+Message-Id: <20220102015016.48470-1-davispuh@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, 2022-01-01 at 19:15 -0500, Zygo Blaxell wrote:
-> Try rebooting to make sure the old mount is truly gone.
-> 
-> If the filesystem has been lazily umounted with open files it can be
-> very difficult to find all the processes that are still holding the
-> files open and force them to close.  Tools like 'fuser' and 'lsof'
-> don't work after all the mount points have been deleted.
+When some error happens when trying to search for parent subvolume
+then parent_subvol will contain errno so don't try to free that
 
-I couldn't find any indication that the file system remained mounted.
-The mount point was empty, umount commands failed for all target
-devices, as well as the mount point, and the mount table showed no
-relevant entries.
+Crash backtrace would look like:
+0  process_snapshot at cmds/receive.c:358
+    358		free(parent_subvol->path);
+1  0x00005646898aaa67 in read_and_process_cmd at common/send-stream.c:348
+2  btrfs_read_and_process_send_stream at common/send-stream.c:525
+3  0x00005646898c9b8b in do_receive at cmds/receive.c:1113
+4  cmd_receive at cmds/receive.c:1316
+5  0x00005646898750b1 in cmd_execute at cmds/commands.h:125
+6  main at btrfs.c:405
 
-I rebooted, and the file system mounted automatically (as normal). I
-found no reports of problems in the log (below).
+(gdb) p parent_subvol
+$1 = (struct subvol_info *) 0xfffffffffffffffe
 
-I performed a trivial test (writing "Hello world" to a file, and
-reading), and it performed correctly.
-
-Is it likely that data written before the bad events is entirely
-intact, that all parts of the file tree not touched afterward have not
-been damaged? How confident should I be of not having corruption?
-
-Is it safe to try to continue to write data beyond the capacity of the
-first device, into the additional device?
-
+Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
 ---
+ cmds/receive.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Jan 01 19:26:43 hostname kernel: Loading iSCSI transport class v2.0-870.
-Jan 01 19:26:43 hostname kernel: iscsi: registered transport (tcp)
-Jan 01 19:26:43 hostname kernel: aufs 5.x-rcN-20210809
-Jan 01 19:26:43 hostname kernel: scsi host4: iSCSI Initiator over TCP/IP
-Jan 01 19:26:43 hostname kernel: scsi host5: iSCSI Initiator over TCP/IP
-Jan 01 19:26:43 hostname kernel: scsi 4:0:0:2: Direct-Access     SYNOLOGY Storage          4.0  PQ: 0 ANSI: 5
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:2: Attached scsi generic sg4 type 0
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:2: [sdc] 524288000 512-byte logical blocks: (268 GB/250 GiB)
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:2: [sdc] Write Protect is off
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:2: [sdc] Mode Sense: 43 00 10 08
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:2: [sdc] Write cache: enabled, read cache: enabled, supports DPO and FUA
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:2: [sdc] Optimal transfer size 16384 logical blocks > dev_max (8192 logical blocks)
-Jan 01 19:26:43 hostname kernel: scsi 4:0:0:1: Direct-Access     SYNOLOGY iSCSI Storage    4.0  PQ: 0 ANSI: 5
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:1: Attached scsi generic sg5 type 0
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:1: [sdd] 524288000 512-byte logical blocks: (268 GB/250 GiB)
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:1: [sdd] Write Protect is off
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:1: [sdd] Mode Sense: 43 00 10 08
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:1: [sdd] Write cache: enabled, read cache: enabled, supports DPO and FUA
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:1: [sdd] Optimal transfer size 16384 logical blocks > dev_max (8192 logical blocks)
-Jan 01 19:26:43 hostname kernel:  sdd: sdd1
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:2: [sdc] Attached SCSI disk
-Jan 01 19:26:43 hostname kernel: sd 4:0:0:1: [sdd] Attached SCSI disk
-Jan 01 19:26:43 hostname kernel: BTRFS: device fsid c6f83d24-1ac3-4417-bdd9-6249c899604d devid 2 transid 9211 /dev/sdc scanned by systemd-udevd (386)
-Jan 01 19:26:44 hostname kernel: BTRFS: device fsid c6f83d24-1ac3-4417-bdd9-6249c899604d devid 1 transid 9211 /dev/sdd1 scanned by systemd-udevd (396)
-Jan 01 19:26:44 hostname kernel: kauditd_printk_skb: 13 callbacks suppressed
-Jan 01 19:26:44 hostname kernel: audit: type=1400 audit(1641083204.403:25): apparmor="DENIED" operation="capable" profile="/usr/sbin/cups-browsed" pid=670 comm="cups-browsed" capability=23  capname="sys_nice"
-Jan 01 19:26:47 hostname kernel: audit: type=1400 audit(1641083207.587:26): apparmor="STATUS" operation="profile_load" profile="unconfined" name="docker-default" pid=993 comm="apparmor_parser"
-Jan 01 19:26:49 hostname kernel: bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this.
-Jan 01 19:26:49 hostname kernel: Bridge firewalling registered
-Jan 01 19:26:49 hostname kernel: bpfilter: Loaded bpfilter_umh pid 1017
-Jan 01 19:26:49 hostname unknown: Started bpfilter
-Jan 01 19:26:50 hostname kernel: Initializing XFRM netlink socket
-Jan 01 19:28:45 hostname kernel: BTRFS info (device sdd1): flagging fs with big metadata feature
-Jan 01 19:28:45 hostname kernel: BTRFS info (device sdd1): disk space caching is enabled
-Jan 01 19:28:45 hostname kernel: BTRFS info (device sdd1): has skinny extents
-Jan 01 19:28:45 hostname kernel: FS-Cache: Loaded
-Jan 01 19:28:45 hostname kernel: FS-Cache: Netfs 'nfs' registered for caching
-Jan 01 19:28:45 hostname kernel: NFS: Registering the id_resolver key type
-Jan 01 19:28:45 hostname kernel: Key type id_resolver registered
-Jan 01 19:28:45 hostname kernel: Key type id_legacy registered
-Jan 01 19:28:45 hostname kernel: FS-Cache: Duplicate cookie detected
-Jan 01 19:28:45 hostname kernel: FS-Cache: O-cookie c=00000000eab55a10 [p=00000000197b94cc fl=222 nc=0 na=1]
-Jan 01 19:28:45 hostname kernel: FS-Cache: O-cookie d=000000007bc6e6c7 n=00000000d6efde4c
-Jan 01 19:28:45 hostname kernel: FS-Cache: O-key=[16] '0400000001000000020008010a040102'
-Jan 01 19:28:45 hostname kernel: FS-Cache: N-cookie c=00000000d8681119 [p=00000000197b94cc fl=2 nc=0 na=1]
-Jan 01 19:28:45 hostname kernel: FS-Cache: N-cookie d=000000007bc6e6c7 n=00000000fd46ace5
-Jan 01 19:28:45 hostname kernel: FS-Cache: N-key=[16] '0400000001000000020008010a040102'
-Jan 01 19:29:15 hostname kernel: BTRFS info (device sdd1): the free space cache file (274908315648) is invalid, skip it
+diff --git a/cmds/receive.c b/cmds/receive.c
+index 4d123a1f..d106e554 100644
+--- a/cmds/receive.c
++++ b/cmds/receive.c
+@@ -354,7 +354,7 @@ static int process_snapshot(const char *path, const u8 *uuid, u64 ctransid,
+ 	}
+ 
+ out:
+-	if (parent_subvol) {
++	if (!IS_ERR_OR_NULL(parent_subvol)) {
+ 		free(parent_subvol->path);
+ 		free(parent_subvol);
+ 	}
+-- 
+2.34.1
 
