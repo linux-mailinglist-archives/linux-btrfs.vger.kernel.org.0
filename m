@@ -2,153 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B49482912
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 05:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FE148291E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jan 2022 05:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbiABER2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Jan 2022 23:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbiABER2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jan 2022 23:17:28 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4D7C061574
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jan 2022 20:17:27 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id l68so982931vkh.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 01 Jan 2022 20:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UxWJPeEhYRDJdmdALJRgMvCUizvIMCLHPGERMYLf7aU=;
-        b=niF+GIPFJI+jBt8ON30pBDXqriCqUg0VwobH+Fx6+KEdE7JDNj0st4vgSuEUsq8/UD
-         /Lb8bsB+7yoFSathOFyM6p41WF2IIAZn/mQfZnwSE35bJ6XjTK12CdMV6FIv4XbqTOeU
-         G1NS9jtwS9DEWHbDA7Zh8nvAsDiRKzQ73lZ6PR070K/NK7+uSENXdZ6JSF2YwRBETw06
-         FwPUvxLfM8XWX5MrpeVzm6xU2hfvaiNFlsoQwb8yN9b5puyNQf1soTBD0a2EnYCde2+e
-         iqeJgeVD1rf8tZ5wNGlz4FrzZZnVY1khfO9fUE7VhPxrSht/cnwvKb65rIjo4YoqYSq0
-         waKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UxWJPeEhYRDJdmdALJRgMvCUizvIMCLHPGERMYLf7aU=;
-        b=QR3IcWpNog4gY1MYEO7FuM7DK6DuAMMtLQqqP4N2ycrRYWSgcOaLq1mL/pFa0cC8mb
-         Y6Ppu7Ht5x3LfWLBYCLAqS2Z4KMWh45Hy4D0JJyYQRy+/I1Owfgyk6dUM/b+NCKiuc1x
-         LxZi3DX34dgziKI+ozKqF4NtQhEa1G26NbGgzmEZvdBUTm+gVxboOShsHPVHT1T1oqao
-         J3E46OVEfqCVDT1D9nM6rq46uSgbGCalPaoPcxeKbl2K1wf4kmCJxqiCNXztnke2G14w
-         y+aaD1CbsUoHDVgBQybiOXJbtppmSI3Ggo9YqjG+Qu42LYrffDsmjeXOCPo0BcFuMnY9
-         0HAw==
-X-Gm-Message-State: AOAM532oaLQI7gnzdqWkRHnWyEzV5Z4RyKBG2b95gCG2CnBxc47yCiVe
-        +uNM7G1vb9uTg34t8FX5QRRnf2GYeUzfVNs5wBFh4gsSSPXu0Q==
-X-Google-Smtp-Source: ABdhPJyOs/xx6Us/vo2Tjkruuev0Vucf3Tm3LMzlOna4IGRZJjROSu53Di/VoR5XHujRWPkKrCcE+mD5UMROoBN5czY=
-X-Received: by 2002:a05:6122:9a8:: with SMTP id g40mr13492390vkd.22.1641097046032;
- Sat, 01 Jan 2022 20:17:26 -0800 (PST)
+        id S229832AbiABEpy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Jan 2022 23:45:54 -0500
+Received: from mout.gmx.net ([212.227.17.22]:50489 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229767AbiABEpy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 1 Jan 2022 23:45:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1641098752;
+        bh=Qyx0OTrtCAVr8MTIEJVoSjimRFSWgFOE4AC9l787p3Q=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=d8L2+WrA2dfBPm5d5Huw871WaM9rqdEcdftTxOfh5miNHE+u5dF+0Kk6aGr73TJUd
+         /RGP+sEBOOU9SK9AMMq9EEnq7ektBJ9ZVElIN73PuvFGphTBzM167/d2/C+70ufbPP
+         wbvCSxR95U4u3s9v86r4oa+aRVNRohgu3mJGnsig=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv31c-1mDI6B2mXI-00qwDk; Sun, 02
+ Jan 2022 05:45:52 +0100
+Message-ID: <0f76334e-b7c5-3177-a3fc-8de217f75ac1@gmx.com>
+Date:   Sun, 2 Jan 2022 12:45:48 +0800
 MIME-Version: 1.0
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Sun, 2 Jan 2022 06:17:15 +0200
-Message-ID: <CAOE4rSz2f3xHj7Mi_JFgSMHHN8XSGxMr4NWZdcu4qd1-zOYOsg@mail.gmail.com>
-Subject: btrfs send picks wrong subvolume UUID
-To:     Btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH] btrfs-progs: process_snapshot: don't free ERR
+Content-Language: en-US
+To:     =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <20220102015016.48470-1-davispuh@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220102015016.48470-1-davispuh@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ClHi6SUoY2scw5qXItaTTcUu6ZYHl4elxq+EWRHOpgvgjbLHPyJ
+ OPD9VqXxl0Qwy5/3lX3XrAQard1kemZEf3NfoZnE4JC2jHnSxjuNsBmOSMXp9JjfUMAw78s
+ QZ9F0P15yGnss6f80Av8/rD8D0+mRcP02gHRXgemhk0CVSgdOLTSV8E9KVzBQ6wDsEeJKiT
+ UyOcoZFXSZ1k7XTsMq5uw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nRBqrDyltPE=:2gdUuZ97CUEowaAh1kaxh+
+ XpJqmabsL/5v+ScWP+BzVQsH5yH8lBcIqbDDP36nm4oomocvAZpRnOMhffQ9UmDVpx2xuTbMx
+ SUGa00pxkG+zXlIsdu+jS3jGITI2OvU94XRe/sjgGm3LQSk9kIOu5wOptojnZ/5a/9tQWmy+w
+ cjluVcgt2olohrHZPCCtItXXuMQr5SvdGVjIiYBXwFoZ5/z9oMYESD8nS3G/UivXu3dg5aj26
+ tjO2XBmMoIBHuOgTR3kTZupBZs+WA4kszL+9cEVI3uW33dFdm0fhnSQxmqyadkvbmRlYOr/gZ
+ vKfGb0D9FYwX0BW5/J/6/LTK9HnXV4A6NmA2yJU2p6zSeu/hA/v9Ldy35EhOXt2hZPE4HKcZz
+ Z0GmmenvO7Agx46xIlZyg9Dv6i0uLp5VcLXBMmrBx5yYsq8iYwMmezrEQBAqF3DqGdCp0zrF3
+ oY+vuvuRiQWTcOtniVhePtNiIWNoLw8xngBnnGIJeA+FSbbqoEJloOvtlp6U7GJUCKVpyQz1r
+ 0ve/OJDQ7YTEx/Ksm5GYz45I7NEJ/rZXWZneND0PHZTYmwteM0euwG+aEqYvCxswlBXKONFnL
+ p6JlgJ/oNmMvYkowhsbRvUFN0J+m1Rg1vKDV60+kEv2OT1Um9dLOACtCqhW1mIkmBC8vcpTSh
+ 5KedDiLEOLKKjp6XAM9FzDR11HzlZc7luUYJmen5cLa+fn6Rm4NysM1iRmqgmfukeSGhJqY6Q
+ ayXV5lk/0NCUKjcW8L+CIfywYJQ1SuJftjwcx/5kggczwjKqvJ4MKZ28UQ4E0looP/vzDMHLf
+ LavVvgIqlHs1+g7QTkyYwz89/Xe3BkOJ4IbRXAqhGVVuduUXmAlmv5eik3kHCAkeJ/nG3M0Ss
+ 601Yg3Cyy8tb+ztlsYSUnG/UX963bPVw9+4rr5dY6ZwLTO4pWZjsRVbp4eMc5H+K0lWIbuBag
+ kdZ2CFiAsC2dOHivWkbiDC7qnIvhFVOEhs/uAyfU+d+UjfSs/7RqUXbRu2v2SNwISbBivLcTk
+ DUeJ4jpcnmmiWK5EpUB0dcnbNcYtPRnsN9Ypm/fLOM/ny7CEci/XLCFvEgYtu1bMbNlacvbME
+ KQ4KUMSzDeV1rg=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-I have a bunch of snapshots I want to send from one fs to another,
-but it seems btrfs send is using received UUID instead of subvolumes own UU=
-ID
-causing wrong subvolume to be picked by btrfs receive and thus failing.
-
-$ btrfs subvolume show /mnt/fs/2019-11-02/etc | head -n 5
-2019-11-02/etc
-        Name:                   etc
-        UUID:                   389ebc5e-341a-fb4a-b838-a2b7976b8220
-        Parent UUID:            36d5d44b-9eaf-8542-8243-ad0dc45b8abd
-        Received UUID:          15bd7d35-9f98-0b48-854c-422c445f7403
-
-$ btrfs send /mnt/fs/2019-11-02/etc | btrfs receive --dump | head -n 2
-At subvol /mnt/fs/2019-11-02/etc
-subvol          ./etc
-uuid=3D15bd7d35-9f98-0b48-854c-422c445f7403 transid=3D1727996
-chown           ./etc/                          gid=3D0 uid=3D0
-$ btrfs send /mnt/fs/2019-11-02/etc | btrfs receive /mnt/newFS/2019-11-02/
-At subvol /mnt/fs/2019-11-02/etc
-At subvol etc
-
-$ btrfs subvolume show /mnt/fs/2020-09-21/etc | head -n 5
-2020-09-21/etc
-        Name:                   etc
-        UUID:                   1c6a0138-b23b-244f-82d8-e2fcaa20870f
-        Parent UUID:            36d5d44b-9eaf-8542-8243-ad0dc45b8abd
-        Received UUID:          15bd7d35-9f98-0b48-854c-422c445f7403
-
-$ btrfs send -c /mnt/fs/2019-11-02/etc -p /mnt/fs/2019-11-02/etc
-/mnt/fs/2020-09-21/etc | btrfs receive --dump | head -n 2
-At subvol /mnt/fs/2020-09-21/etc
-snapshot        ./etc
-uuid=3D15bd7d35-9f98-0b48-854c-422c445f7403 transid=3D2148016
-parent_uuid=3D15bd7d35-9f98-0b48-854c-422c445f7403
-parent_transid=3D1727996
-utimes          ./etc/
-atime=3D2019-08-11T14:56:46+0300 mtime=3D2020-09-21T20:30:38+0300
-ctime=3D2020-09-21T20:30:38+0300
-$ btrfs send -c /mnt/fs/2019-11-02/etc -p /mnt/fs/2019-11-02/etc
-/mnt/fs/2020-09-21/etc | btrfs receive /mnt/newFS/2020-09-21/
-At subvol /mnt/fs/2020-09-21/etc
-At snapshot etc
-
-$ btrfs subvolume list -opuqR /mnt/newFS/
-ID 373 gen 1965 parent 276 top level 276 parent_uuid -
-                   received_uuid 15bd7d35-9f98-0b48-854c-422c445f7403
-uuid 4a21e16f-ab4e-1f45-900a-541ead4e9fa4 path 2019-11-02/etc
-ID 374 gen 1968 parent 276 top level 276 parent_uuid
-4a21e16f-ab4e-1f45-900a-541ead4e9fa4 received_uuid
-15bd7d35-9f98-0b48-854c-422c445f7403 uuid
-7e19706d-4cf4-8245-ae02-1bdd99f92e48 path 2020-09-21/etc
-
-As you can see received_uuid is same for both and it's not the UUID of
-source subvolume
 
 
-$ btrfs subvolume show /mnt/fs/2020-12-09/etc | head -n 5
-2020-12-09/etc
-        Name:                   etc
-        UUID:                   2902708e-2ebf-654a-8b03-f854e031f8c7
-        Parent UUID:            36d5d44b-9eaf-8542-8243-ad0dc45b8abd
-        Received UUID:          15bd7d35-9f98-0b48-854c-422c445f7403
+On 2022/1/2 09:50, D=C4=81vis Mos=C4=81ns wrote:
+> When some error happens when trying to search for parent subvolume
+> then parent_subvol will contain errno so don't try to free that
+>
+> Crash backtrace would look like:
+> 0  process_snapshot at cmds/receive.c:358
+>      358		free(parent_subvol->path);
+> 1  0x00005646898aaa67 in read_and_process_cmd at common/send-stream.c:34=
+8
+> 2  btrfs_read_and_process_send_stream at common/send-stream.c:525
+> 3  0x00005646898c9b8b in do_receive at cmds/receive.c:1113
+> 4  cmd_receive at cmds/receive.c:1316
+> 5  0x00005646898750b1 in cmd_execute at cmds/commands.h:125
+> 6  main at btrfs.c:405
+>
+> (gdb) p parent_subvol
+> $1 =3D (struct subvol_info *) 0xfffffffffffffffe
+>
+> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
 
-$ btrfs send -c /mnt/fs/2020-09-21/etc -p /mnt/fs/2020-09-21/etc
-/mnt/fs/2020-12-09/etc | btrfs receive --dump | head -n 2
-At subvol /mnt/fs/2020-12-09/etc
-snapshot        ./etc
-uuid=3D15bd7d35-9f98-0b48-854c-422c445f7403 transid=3D2212940
-parent_uuid=3D15bd7d35-9f98-0b48-854c-422c445f7403
-parent_transid=3D2148016
-utimes          ./etc/
-atime=3D2019-08-11T14:56:46+0300 mtime=3D2020-12-08T17:50:18+0200
-ctime=3D2020-12-08T17:50:18+0200
-$ btrfs send -c /mnt/fs/2020-09-21/etc -p /mnt/fs/2020-09-21/etc
-/mnt/fs/2020-12-09/etc | btrfs receive /mnt/newFS/2020-12-09/
-At subvol /mnt/fs/2020-12-09/etc
-At snapshot etc
-ERROR: unlink o86334-1390558-0/d42ee4920c54898f1957cd2f38799f735dfa05
-failed: No such file or directory
+Good catch.
 
-Here it fails because it actually used target's 2019-11-02/etc
-subvolume as parent instead of 2020-09-21/etc like we specified.
-We can see that in strace:
-$ btrfs send -c /mnt/fs/2020-09-21/etc -p /mnt/fs/2020-09-21/etc
-/mnt/fs/2020-12-09/etc | strace btrfs receive /mnt/newFS/2020-12-09/
-2>&1 | grep -E '2019-11-02|SNAP_CREATE'
-At subvol /mnt/fs/2020-12-09/etc
-ioctl(4, BTRFS_IOC_INO_LOOKUP, {treeid=3D276, objectid=3D261} =3D>
-{name=3D"2019-11-02/"}) =3D 0
-openat(4, "2019-11-02/etc", O_RDONLY|O_NOATIME) =3D 5
-ioctl(3, BTRFS_IOC_SNAP_CREATE_V2, {fd=3D5, flags=3D0, name=3D"etc"} =3D>
-{transid=3D0}) =3D 0
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Best regards,
-D=C4=81vis
+Thanks,
+Qu
+
+> ---
+>   cmds/receive.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index 4d123a1f..d106e554 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -354,7 +354,7 @@ static int process_snapshot(const char *path, const =
+u8 *uuid, u64 ctransid,
+>   	}
+>
+>   out:
+> -	if (parent_subvol) {
+> +	if (!IS_ERR_OR_NULL(parent_subvol)) { >   		free(parent_subvol->path);
+>   		free(parent_subvol);
+>   	}
