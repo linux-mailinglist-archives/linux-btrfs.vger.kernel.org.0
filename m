@@ -2,80 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB9D4836D3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jan 2022 19:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3CC4836D9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jan 2022 19:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235578AbiACS1i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jan 2022 13:27:38 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:57934 "EHLO
+        id S235599AbiACSb1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jan 2022 13:31:27 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:58028 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233518AbiACS1h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jan 2022 13:27:37 -0500
+        with ESMTP id S229728AbiACSb0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jan 2022 13:31:26 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 59717210F7;
-        Mon,  3 Jan 2022 18:27:36 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 996A1210F7;
+        Mon,  3 Jan 2022 18:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1641234456;
+        t=1641234685;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=N0VRBtg6V9GDoGo9gDzncefKbk0iCyX0aKCwEEj7EXU=;
-        b=fzbwzY8up9uniFQjhRkvQKMag+Xg6Oe1noteTvBzcM2EpbP/o4Yj3Ckhwg1h4hBfm+GPlF
-        IKjBjwIpWwekudMmtwlUqkzgg600V4OTRcWr/CAY7s5gHtgxHrIliacJV0H3Een/3pnUKt
-        uY/jldhAMf/QA+kUEexhwCf/d6We/SM=
+        bh=dpepkSBzO94d8huSS7Gq5ikqSFdnOscDTdRnSOl9CSc=;
+        b=BqdOKKdTIY4NtAQQ7MvaLo12+Z+b2uRyO89kU/9GB9PYely7UKuK+22uE72K9yakDSfSk9
+        MIkrKI6LNYQ8pox7Eh3b/4IaTNfBmnV+pruD65RmWT6DIqFMy72WnNXIVXc2ljrtIw5N88
+        lvivfhDujX3Ol79mXuxR2ANLArwFdks=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1641234456;
+        s=susede2_ed25519; t=1641234685;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=N0VRBtg6V9GDoGo9gDzncefKbk0iCyX0aKCwEEj7EXU=;
-        b=R7Pe65DCh/fwlebIpH2uAz2PIjYlGIuBrGyePS9pcx63+95rYCT24NBon5KhViWm5d9Qt1
-        9l8AR4wEipSIR5DQ==
+        bh=dpepkSBzO94d8huSS7Gq5ikqSFdnOscDTdRnSOl9CSc=;
+        b=fHxbG6Qkc80zXQGogDg4b3UjqRQ1Q+JGzLRH3Dfv6/EhIl949sJ3VQo8G7eSnSnyO5lGki
+        3RPE+ekw+bgZuSCQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2C5A5A3B81;
-        Mon,  3 Jan 2022 18:27:36 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 91F6CA3B81;
+        Mon,  3 Jan 2022 18:31:25 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6DF30DA729; Mon,  3 Jan 2022 19:27:07 +0100 (CET)
-Date:   Mon, 3 Jan 2022 19:27:07 +0100
+        id 95C2DDA729; Mon,  3 Jan 2022 19:30:56 +0100 (CET)
+Date:   Mon, 3 Jan 2022 19:30:56 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] btrfs: Fix argument list that the kdoc format and
- script verified.
-Message-ID: <20220103182707.GO28560@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: respect the max size in the header when
+ activating swap file
+Message-ID: <20220103183056.GP28560@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Yang Li <yang.lee@linux.alibaba.com>,
-        clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-References: <20211220072306.42133-1-yang.lee@linux.alibaba.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211220072306.42133-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <639eadb028056b60364ba7461c5e20e5737229a2.1639666714.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 20, 2021 at 03:23:06PM +0800, Yang Li wrote:
-> The warnings were found by running scripts/kernel-doc, which is
-> caused by using 'make W=1'.
+On Thu, Dec 16, 2021 at 03:00:32PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> fs/btrfs/extent_io.c:3210: warning: Function parameter or member
-> 'bio_ctrl' not described in 'btrfs_bio_add_page'
-> fs/btrfs/extent_io.c:3210: warning: Excess function parameter 'bio'
-> description in 'btrfs_bio_add_page'
-> fs/btrfs/extent_io.c:3210: warning: Excess function parameter
-> 'prev_bio_flags' description in 'btrfs_bio_add_page'
-> fs/btrfs/space-info.c:1602: warning: Excess function parameter 'root'
-> description in 'btrfs_reserve_metadata_bytes'
-> fs/btrfs/space-info.c:1602: warning: Function parameter or member
-> 'fs_info' not described in 'btrfs_reserve_metadata_bytes'
+> If we extended the size of a swapfile after its header was created (by the
+> mkswap utility) and then try to activate it, we will map the entire file
+> when activating the swap file, instead of limiting to the max size defined
+> in the swap file's header.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Currently test case generic/643 from fstests fails because we do not
+> respect that size limit defined in the swap file's header.
+> 
+> So fix this by not mapping file ranges beyond the max size defined in the
+> swap header.
+> 
+> This is the same type of bug that iomap used to have, and was fixed in
+> commit 36ca7943ac18ae ("mm/swap: consider max pages in
+> iomap_swapfile_add_extent").
+> 
+> Fixes: ed46ff3d423780 ("Btrfs: support swap files")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Added to misc-next, thanks. I've added a note why it's fixing only the
-parameter warnings.
+Added to misc-next, thanks.
