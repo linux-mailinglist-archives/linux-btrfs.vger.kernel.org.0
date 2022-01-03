@@ -2,128 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360684830BE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jan 2022 12:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AB34830C7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jan 2022 12:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbiACLvq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jan 2022 06:51:46 -0500
-Received: from mout.gmx.net ([212.227.15.19]:49031 "EHLO mout.gmx.net"
+        id S233099AbiACL5r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jan 2022 06:57:47 -0500
+Received: from mout.gmx.net ([212.227.17.22]:36541 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbiACLvp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Jan 2022 06:51:45 -0500
+        id S229788AbiACL5r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Jan 2022 06:57:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1641210702;
-        bh=PnKXNdk/NA/LlhLs/gRQU2PBjJddXkq0hMOatb38FWo=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=lbsvFna0/rq7XKgf0OvvPd4q+oJ/xDUJ2LQxt2gdReKdsdFA2jdBBzTmpANqFM2nL
-         cp/dD2kxDZ+2AH7wwQl18gCdL19tO5rCe1QYekuNJF2zi95DNl1x2/AGoMKoj70tr9
-         F9EK2mFIRqev/jDSJMtNDTIw33+VzMoKgKnnTzZI=
+        s=badeba3b8450; t=1641211063;
+        bh=sygVF50g4JngWa9+DB9XYy8E6cW0RE+EU8fvCf3C6Ek=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=FmIsiG+9Fx3wit9tfdamnsbnTP28sMas0mrIUyaBGJ3bsI889JXfVFqVtLHamd2fF
+         mrTA1O/8ECXogYufnuUaA1HKsJiPvMozz3wqHLp+2UDAhcICxjKl7a+OGkkELjvE+d
+         3Oi1/QNRotIu4RqNCnay5f2mqVn50SeMYaLXwWP0=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M4JmN-1n4crE2m9Z-000JmI; Mon, 03
- Jan 2022 12:51:42 +0100
-Message-ID: <e3fd9851-ccf4-6f04-b376-56c6f7383de7@gmx.com>
-Date:   Mon, 3 Jan 2022 19:51:38 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhlKy-1mQdQk0iae-00dpTd; Mon, 03
+ Jan 2022 12:57:43 +0100
+Message-ID: <409d6824-bf81-111e-286d-e004025b25c2@gmx.com>
+Date:   Mon, 3 Jan 2022 19:57:39 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.4.1
-Content-Language: en-US
-To:     Eric Levy <contact@ericlevy.name>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <2c80ca8507181b1e65a67bbd4dca459d24a47da2.camel@ericlevy.name>
- <b0d434dd-e76d-fdfa-baa2-bb7e00d28b01@gmx.com>
- <487b4d965a6942d6c2d1fad91e4e5a4aa29e2871.camel@ericlevy.name>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: "hardware-assisted zeroing"
-In-Reply-To: <487b4d965a6942d6c2d1fad91e4e5a4aa29e2871.camel@ericlevy.name>
+Content-Language: en-US
+To:     David Disseldorp <ddiss@suse.de>, Eric Levy <contact@ericlevy.name>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <2c80ca8507181b1e65a67bbd4dca459d24a47da2.camel@ericlevy.name>
+ <20220103124607.524882f8@suse.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220103124607.524882f8@suse.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:t43MH834QEA2HkNgRKwLJpKoXDSMCU4HLv+LUSrhrDaP5AWhN/R
- y3gwwPUrJGBebGtkRYI1drPKM+7EOe3+Hd1B3UEpUKntwVHNdUVDcqD4lY9ABnZk5mJFcyR
- MXVDW/2td18HKpgxjA+ijRjmk7lG6udm3lOzrhnhrhmI6/Z2b+dNxvbH2bmiLY9SZ7PdOoX
- DR+dY+OJZ9Sl1QW6ZPkUg==
+X-Provags-ID: V03:K1:aqhCww8ejgNf0lpgzWJfU3L9ycnBnEii7sdnYBME5sbDoSatWmt
+ vt6L/yvb1dvk2WWyga1LqWV2CHMZ4LZKQfb8HDTWOBt1AhHzjIABCZCAMo2SneLIW2zrZJS
+ 1/vNv9zIlWfsLqV4+bXvpoHPevhf+L8nVy/XImafdbvCyZGasHaNujx3NhZvNaPVotZ3oqz
+ gRQm5uB+k33hV2j5PSbPQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9opj2QZR4js=:bYaigZbxtpGyMzML6bGJhg
- Sc1BSb4HrHBl3v4TexbgKsGHcP+epg9GgK+SSvX/+THdVSUjTYTKP4Ns8no0wmGCYxLGjMsmn
- kLWVuIIVVelx5auHinkpXOG4+66tlcapM7Xh96p9cGcDzkuAKGYkakJ2E9utQocUGuJnDAioI
- tRf3qOCkjWuUs6iT2EnH2SWvjPUJbzi+ZYO9PmG+AGtwLIJ4sIH8bxP7mOa8q0pErpiDUaJp9
- Q8CjXOqK5MV12hWXVCjRzaudlg6qKc5RgiDL7tcbLUgcwbQUeRhfEg9Tr/lafvELRsJo4MqjN
- fYBAwmS5XmBbyKFSqaZLQjsbtPiqjydERpuPBfdHFnVDtgOCUoY9qIEYmFElVaB3aD/WwBryN
- TaUuBpE/epxv4AHszEfU89xxh2rEI1rjwHMEuP3AWS6Cza1R17Sw7koxWvF9ocD7v3RnFRW/G
- Yg+J36nRGQOjlTrNIg/FJ0M2bBiSnCkEyb6YtbPQLFGexwuerTVSgAh93tgCt07bgvmeSqV4c
- XXYZcYeWLGu5arMCiIXxQc9nAqvZfUW4IV9wytHB2cjo7TY4yR2jsPnyV83Ruyx/wOE+zePqk
- g9geME1WFeTRw94SQ8tTM0PVfPUuhHMmpSPtURQBQZbSSNQDmzxol5WEpsOrZMJ5AU3Odo4Z1
- kB790zxA/scS4zYi9QbI2hzhZjFa+U13Pj2yx54y3FojFcWH9y56QB06IYE/kPdiCv11UsYve
- wSiqdxBp2CE33kNk81sFEWVe1ebuCseZZpdUKe1CT8OFlU5tZW04HM1ugg6Sherd3co5dnTgO
- 3EnRjzQOyY+A7tqeD5mMkhI53MYX84cOe8QJGS6qGETO7UHpFGw129W+XrgByhtb5TPj0pUTJ
- zMW3OkaxKHEsIHOk7TSyjyOZ1GKiZ3qgnqvmDOEiihylRtWun3aVfIl8LiciM16VO5fkvZNvo
- uvnAHqKUUvsUzPPg5VY1T9ONWBUrcGyxzkSB1iruc8Taei9nG4KJln1u0wcx95O4UyqXq6QsR
- rlNrfraDmaAhmPbKUGf34ZOS6vXYqrGjFeLvkjDcaQdqs0a1eXuA6WfcHyJo3LJjhkFnHS11h
- jgCVITbw931eMQ=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L+viYXYRgV0=:QIwvkSHtJVjWyFQdi8rGYH
+ EIYYRBeRoZ7rO/8blyIJEsV3n8o+44zDgoPTuFru5lT3GK/wDUt3D1uwu4dpRFvpOfUCzNUR7
+ E9AwivOXSBLtc9I7F7wmfI1dFWNrymt6a5MrC55p1zyTHG66zdabIELgZz1SzlPUqhobRotM1
+ Zhm6url5Q6mnSK8PVxNUargeP/68jffHeBgwhr385G+pzSqX5oe0R87XhpAwjnx6/+tOItRGo
+ 9XePALUQEq+FGJ96BSJp/w7M/3d54yY1R0Y5BkNoDzBnibZZ7gwkbXiafqub8WisR6FnQ37x9
+ 44D1hUkKRKDyHeephX9nbB3aESFJpUotv0/Fp86tpJ1W0OE9LKCUvG+/UxtVLiBDyTQLdks3h
+ 4NWo8lryaZbUQcmONZE4Wo0mP3WSXvmX4SAdyvueeVA+qTBEiCDOljYHJsAS8TPkjAkIfeTGK
+ VieWqglT8pu71l3R0WRsHuF4clYGnMKxMrTY8kdQaYtKPWLhHkyvdF9srwktjfAuDQXZZHQIk
+ 4cWOAFdWZIx4XrltwUNhpuyw7XcIvVTmmbDRE2/BF4p+C7EF8FJsp/oYTOxYGOUZ5dYNw1qf8
+ v5EdYQV7G7f5MXsFRPs0ABjOjUeeyuZb7TOIySbH5+rYaVoLL8pE0jxsjnMJldB5eU2PdCKHk
+ pDVKlkmB/+nAQL2YuPJ708r9sPXMCftvQlC/fZTMFg3y8Eqv5tLv+x9nL1mTGMMn2p58gty1o
+ Uh+Vqdy/TEWdoly4JpKTcFdp9FIhqyxIqBoCJj4zt7DHL5+WuuFsCFPUiETrB4vrb+fxw0Syv
+ 9kUuhiaIhy3KsImp/3AYruEdCvecrg3MTuJnYj6AgSi4L2yeYh4ZPEzUL3/HsitDbg2zU3Seh
+ xp848qgCQTmLQZ93gPeF9bTzgU2vPhzDrlxhK7keZ4gj4+OHSBOK86blQHKT427RcV5omRqme
+ aa7EJpSRmxaqyNL9KpSv1CigGSNGrx70ojuTC+AI9OX2cvLlOl/lLLGBcYQ+EsEBeTh0HgvMb
+ Qy/NNb1E3Zwn3BaUN0Kgv4g83cV/93mobwG50G/XqkGjpBfKCvPhr9w7JJeMa1THGS5f8Ra6m
+ VPtkjCbq8J/qPc=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/1/3 19:24, Eric Levy wrote:
->>> an iSCSI target. The software managing the volumes shows that they
->>> are
->>> configured for certain features, which include "hardware-assisted
->>> zeroing" and "space reclamation". Presumably the meaning of these
->>> features, at least the former, is that a file system, with support
->>> of
->>> the kernel, may issue a SCSI command indicating that a region of a
->>> block device would be cleared.
->>
->> This looks pretty much like ATA TRIM or SCSI UNMAP command.
->>
->> If they are the same, then btrfs supports it by either fstrim command
->> (recommended) or discard mount option.
+On 2022/1/3 19:46, David Disseldorp wrote:
+> On Mon, 03 Jan 2022 06:08:46 -0500, Eric Levy wrote:
 >
-> Thanks for the explanation. How does trimming work?
+>> I am operating a Btrfs file system on logical volumes provided through
+>> an iSCSI target. The software managing the volumes shows that they are
+>> configured for certain features, which include "hardware-assisted
+>> zeroing" and "space reclamation". Presumably the meaning of these
+>> features, at least the former, is that a file system, with support of
+>> the kernel, may issue a SCSI command indicating that a region of a
+>> block device would be cleared. For a file system, such an operation has
+>> no direct value, because the contents of de-allocated space is
+>> irrelevant, but for a logical volume, it creates an opportunity to free
+>> space on the underlying file system on the back end.
+>>
+>> I have searched the term "hardware-assisted zeroing", without finding
+>> any useful resources on the application of the term.
+>
+> "hardware-assisted zeroing" is often marketing speak for the WRITE SAME
+> SCSI command, which is used by VMFS. I'm not aware of any Linux
+> filesystems which make use of it.
 
-The filesystem will call blkdev_issue_discard() to do the trimming.
-Which will in turn issue corresponding command according to the driver.
+Thanks for pointing this out, really not familiar with WRITE SAME command.
 
-For ATA devices, it will be a ATA TRIM command. For SCSI it will be a
-SCSI UNMAP command, and for loop device backed up by a file, it will
-punch holes (and then handled by the filesystem holding the loop file).
+After some quick search, it looks like it's kinda of hole punching for
+SCSI command set.
 
-> Does the file
-> system maintain a register of blocks that have been cleared?
+Then I guess that explains why Linux filesystems don't really make use
+of it.
 
-The filesystem (normally) doesn't maintain such info, what a filesystem
-really care is the unused/used space.
-
-For fstrim case, the filesystem will issue such discard comand to most
-(if not all) unused space.
-
-And one can call fstrim multiple times to do the same work again and
-again, the filesystem won't really care.
-(even the operation can be very time consuming)
-
-The special thing in btrfs is, there is a cache to record which blocks
-have been trimmed. (only in memory, thus after unmount, such cache is
-lost, and on next mount will need to be rebuilt)
-
-This is to reduce the trim workload with recent async-discard optimization=
-.
-
-> Why is the
-> command not sent instantly, as soon as the space is freed by the file
-> system?
-
-If you use discard mount option, then most filesystems will send the
-discard command to the underlying device when some space is freed.
-
-But please keep in mind that, how such discard command gets handled is
-hardware/storage stack dependent.
-
-Some disk firmware may choose to do discard synchronously, which can
-hugely slow down other operations.
-(That's why btrfs has async-discard optimization, and also why fstrim is
-preferred, to avoid unexpected slow down).
+If we want a large zeroed file, both hole punching and fallocate will be
+faster, and we don't need to issue any data IO.
+All data read will be zeroed at read time. No IO is always faster than
+any IO, even if it's "hardware-assisted".
 
 Thanks,
 Qu
+>
+> As Qu mentioned, "space reclamation" would refer to UNMAP / discard.
+>
+> Cheers, David
