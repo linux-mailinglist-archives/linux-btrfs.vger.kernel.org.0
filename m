@@ -2,128 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BDB4834A0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jan 2022 17:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5044834A9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jan 2022 17:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbiACQQG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jan 2022 11:16:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        id S234417AbiACQWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jan 2022 11:22:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbiACQQE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jan 2022 11:16:04 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115C6C061784
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jan 2022 08:16:04 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id kc16so31452670qvb.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jan 2022 08:16:04 -0800 (PST)
+        with ESMTP id S232511AbiACQWR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jan 2022 11:22:17 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81461C061761
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jan 2022 08:22:17 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id r139so30836482qke.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jan 2022 08:22:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=4lnBz7y+HqHexkHu8TWqsOp15ajk1MYSnd1h+t0Gl00=;
-        b=6b7YK+dJ/+B8PWU9PQPW8Y4+jOOh/rMol1cB8fijX4rBnqt56iGkqbyfrkvMLvcsJL
-         RqQMdvz/bS3mTt2fgyudtMvjz7uSlHAUT3Q93laJ74dV7lKKA9rnHygm7AKpnKfw+iSf
-         OTEXLXz2GjMx1NE09iIfLJxiltppHtFT+VS1/1rDtk4bba4UPAOEniy7ndfi5RdCQU0r
-         5z45MvNXASQhdIH/w2isTjeoulu5rVZzQ7uhwbhXcwIRMvBQ7z8VZ6zRHcSMQbSMPz1Z
-         OUdrif+3yLPbpJZdfTVDcLGR4iW+suxjD/VhDWu26wQyVJMjYjwf+JhxnOWz61EDoaPg
-         SzcA==
+        bh=zxJ1QDpUGRZdBYwoMf3rRMuXWg8qHgGMbR+gHpeK7S0=;
+        b=QKB/3a0xJXn9TXVA1lyIN0s/IVFP96n6Dbna8ERuvCkmirBnbhWnJU54wBHWYH5S1T
+         iVQIYlWKIkljl8DAvvXNwvST8NeqPeRyV7mtjHafWaBTJSenfUtssrxTcCzp3kEHhHF7
+         fNXaBk4Jyvt0F2Dx9UdWlbr/n/vDc0yge7jUCf5hTLDileVEqRTthcqiC3Ubmf1Ckyka
+         NLaLBVZOAyYgYET0JMKfkCcezeEODF/4R/76RI3zQc2ss+xh6leAZddcHBaPRZ1lvoDT
+         gsM69czAPynEXcFqPhTd8HSf9EFax3rfWuH0/cKcnROcUG8BtOrGDop6Pk0WYALnT/VU
+         Vw4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4lnBz7y+HqHexkHu8TWqsOp15ajk1MYSnd1h+t0Gl00=;
-        b=Q9bgL19sNpiGE315MG7vOMek2YFzMRp4R5UXj5ucicvi8E1bqlOzQss5td+CQ1eGFy
-         NigudjsJqQqFARwtPq7qPUpNZwjRIXnQ6aSeKj9bvp6ldTmiBAeO6n7oh5zbyfgxSf95
-         FhpA4YU4RKFX/6nw+sg49kp/znprx9uCQ/uYUFwSQUV1t4OVbjSYOO1Cb6vnGYket6vG
-         at6GQJ+R+cCGcTpR4SHOavVRQZ7fWsJEkjaUh0P6voBCU7ksOVecV0S3RtrhAJxxXpAs
-         wJ264NnLqN0ziC5EZrjCOWiHHAcI0cbinBfKsp0qlCC80d4K0nCgSjB2Dt77wRq2fZv1
-         +aHw==
-X-Gm-Message-State: AOAM533wxWox6fSuZNyGFVlAx/35FD7eu41FeKYFqcgfdmQCkZ4JfRc4
-        yZh3WpelvhKkM/l5Yc8dBbvk9Q==
-X-Google-Smtp-Source: ABdhPJz9yO9KqWHncxDlZTn49xw+RA4V5LL+vY6yw3k33ejUybJxtWlrnJBMNNKTucIYnaKibylTfA==
-X-Received: by 2002:a05:6214:d0d:: with SMTP id 13mr11491975qvh.15.1641226563118;
-        Mon, 03 Jan 2022 08:16:03 -0800 (PST)
+        bh=zxJ1QDpUGRZdBYwoMf3rRMuXWg8qHgGMbR+gHpeK7S0=;
+        b=EN8flvB+KfqbsYMlTsoGQMklPMpZPkxsSSn+O48zajxlivXfv+ySaPWA28KpE9YfAM
+         EQIRk6Hs4r1NWT5lNU0QSCD1CBc/QC4vqxsH3AcVkmaGKdejT1mdjt/84sFbazyygLtM
+         7VqjghN30abLV5FP/y7NxV5mJriCvIG132w9CIUNYXa84zKYARtWc8RiBUz/HCYOqV4y
+         heVHtFKdEQUSZOuVoYflBtAwMZVWU0ZQIeTCe7L2oHwBA+6b1R1LiofWliKHV2I41VzD
+         LHgITdvsGAphacQqL/M+2sp6H4AHDdovHtm1tc4iMKOfWFgC+H32Q6qx22bAEodYLlK0
+         LMRw==
+X-Gm-Message-State: AOAM533f7rDojk4IvCHYuybcrIA38SqyKzrPDPh4oEr3GZHqKXJbWeOH
+        nQuPlsborT8f8/ahHUifZxtWN0krm2dyQQ==
+X-Google-Smtp-Source: ABdhPJyouNkcf2Z0fNBRUF9HhsJsd7Xi9rSH6Jbnj2xtdEnHWCjYxWfW8B4HIHxnOkue+OnH9luQzw==
+X-Received: by 2002:a05:620a:68a:: with SMTP id f10mr32439867qkh.651.1641226936590;
+        Mon, 03 Jan 2022 08:22:16 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t5sm27640418qtp.60.2022.01.03.08.16.02
+        by smtp.gmail.com with ESMTPSA id p67sm25179660qkf.49.2022.01.03.08.22.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jan 2022 08:16:02 -0800 (PST)
-Date:   Mon, 3 Jan 2022 11:16:01 -0500
+        Mon, 03 Jan 2022 08:22:16 -0800 (PST)
+Date:   Mon, 3 Jan 2022 11:22:15 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, guro@fb.com, clm@fb.com
-Subject: Re: [REGRESSION] 5-10% increase in IO latencies with nohz balance
- patch
-Message-ID: <YdMhQRq1K8tW+S05@localhost.localdomain>
-References: <87bl22byq2.mognet@arm.com>
- <YaUuyN3h07xlEx8j@localhost.localdomain>
- <878rx6bia5.mognet@arm.com>
- <87wnklaoa8.mognet@arm.com>
- <YappSLDS2EvRJmr9@localhost.localdomain>
- <87lf0y9i8x.mognet@arm.com>
- <87v8zx8zia.mognet@arm.com>
- <YbJWBGaGAW/MenOn@localhost.localdomain>
- <99452126-661e-9a0c-6b51-d345ed0f76ee@leemhuis.info>
- <87tuf07hdk.mognet@arm.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/5] btrfs-progs: check: properly skip
+ preallocated/nodatasum extents when re-calculating csum tree
+Message-ID: <YdMit5hpCtAxlJHW@localhost.localdomain>
+References: <20211224055019.51555-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tuf07hdk.mognet@arm.com>
+In-Reply-To: <20211224055019.51555-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 22, 2021 at 04:07:35PM +0000, Valentin Schneider wrote:
+On Fri, Dec 24, 2021 at 01:50:14PM +0800, Qu Wenruo wrote:
+> Merry Christmas and happy new year!
 > 
-> Hi,
+> [BUG]
+> Issue #420 mentions that --init-csum-tree creates extra csum for
+> preallocated extents.
 > 
-> On 22/12/21 13:42, Thorsten Leemhuis wrote:
-> > What's the status here? Just wondering, because there hasn't been any
-> > activity in this thread since 11 days and the festive season is upon us.
-> >
-> > Was the discussion moved elsewhere? Or is this still a mystery? And if
-> > it is: how bad is it, does it need to be fixed before Linus releases 5.16?
-> >
+> Causing extra errors after --init-csum-tree.
 > 
-> I got to the end of bisect #3 yesterday, the incriminated commit doesn't
-> seem to make much sense but I've just re-tested it and there is a clear
-> regression between that commit and its parent (unlike bisect #1 and #2):
+> [CAUSE]
+> Csum re-calculation code doesn't take the following factors into
+> consideration:
 > 
-> 2127d22509aec3a83dffb2a3c736df7ba747a7ce mm, slub: fix two bugs in slab_debug_trace_open()
-> write_clat_ns_p99     195395.92     199638.20      4797.01    2.17%
-> write_iops             17305.79      17188.24       250.66   -0.68%
+> - NODATASUM inodes
+> - Preallocated extents
+>   No csum should be calculated for those data extents
 > 
-> write_clat_ns_p99     195543.84     199996.70      5122.88    2.28%
-> write_iops             17300.61      17241.86       251.56   -0.34%
+> - Partically written preallocated csum
+>   Csum should only be created for the referred part
 > 
-> write_clat_ns_p99     195543.84     200724.48      5122.88    2.65%
-> write_iops             17300.61      17246.63       251.56   -0.31%
+> So currently csum recalculation will just create csum for any data
+> extents it found, causing the mentioned errors.
 > 
-> write_clat_ns_p99     195543.84     200445.41      5122.88    2.51%
-> write_iops             17300.61      17215.47       251.56   -0.49%
+> [FIX]
 > 
-> 6d2aec9e123bb9c49cb5c7fc654f25f81e688e8c mm/mempolicy: do not allow illegal MPOL_F_NUMA_BALANCING | MPOL_LOCAL in mbind() 
-> write_clat_ns_p99     195395.92     197942.30      4797.01    1.30%
-> write_iops             17305.79      17246.56       250.66   -0.34%
+> - Bug fix for backref iteration
+>   Firstly fix a bug in backref code where indirect ref is not properly
+>   resolved.
 > 
-> write_clat_ns_p99     195543.84     196183.92      5122.88    0.33%
-> write_iops             17300.61      17310.33       251.56    0.06%
+>   This allows us to use iterate_extent_inodes() to make our lives much
+>   easier checking the file extents.
 > 
-> write_clat_ns_p99     195543.84     196990.71      5122.88    0.74%
-> write_iops             17300.61      17346.32       251.56    0.26%
+> - Code move for --init-csum-tree
+>   Move it to mode independent mode-common.[ch]
 > 
-> write_clat_ns_p99     195543.84     196362.24      5122.88    0.42%
-> write_iops             17300.61      17315.71       251.56    0.09%
+> - Fix for --init-csum-tree
+>   Using iterate_extent_inodes() to do that.
 > 
-> It's pure debug stuff and AFAICT is a correct fix...
-> @Josef, could you test that on your side?
+> - Fix for --init-csum-tree --init-extent-tree
+>   The same fix, just into a different context
+> 
+> - New test case
+> 
 
-Sorry, holidays and all that.  I see 0 difference between the two commits, and
-no regression from baseline.  It'll take me a few days to recover from the
-holidays, but I'll put some more effort into actively debugging wtf is going on
-here on my side since we're all having trouble pinning down what's going on.
+Eesh that's not great.  Thanks for fixing this up,
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
 Thanks,
 
 Josef
