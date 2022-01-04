@@ -2,38 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B183D4841ED
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 13:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D287D4841EE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 13:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbiADMxs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Jan 2022 07:53:48 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:49206 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiADMxr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jan 2022 07:53:47 -0500
+        id S232027AbiADMyU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jan 2022 07:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbiADMyU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jan 2022 07:54:20 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00270C061761
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 04:54:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B5E1EB81215
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 12:53:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BE7BC36AE7
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 12:53:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 733E661295
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 12:54:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37747C36AE9
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 12:54:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641300825;
-        bh=oNVb/yiOiKmg27MKe4tfrrkL9KDiigwjy4DNXYfgBcs=;
-        h=From:To:Subject:Date:From;
-        b=VXPN8tYjxEAA4oKcz9h+/RlSujF8HNNcpWkySZEtNOchR35y8nclNtMEWW0hIZIMB
-         RZguCysWCo/4+rqrZc7Hl3AlRXfJwVByQpwyFm2ZsRF9JbWxpHOi8Z3uq5wkMgh1ck
-         SRbyEc9t6BtCFKfb2ATH/RbnlN7TLFSCfDxsd81NMg1vYBk5m/nuKulsIla/Unnsl1
-         KTIwpaPaxC65gos+wN6oYO7MRNjjjl4CcycWSXFDe1CZy9CVyhzRnTvARQlOC94API
-         PkKMpoPSpIZIOu4t6pvV2fqptso7Wq70r/xwDnpd7jvohbcsZIMp77KvrTnsQhz8zH
-         UaNeBdrTz2+Fw==
+        s=k20201202; t=1641300858;
+        bh=WPd7Jn2EYOSI6ky+2CMK21at4OvRSx1Bnxp5vnhv9Mo=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=Uh8Hen6acGBAU2f2HzgLVY26Gb0rMs0k/QXcgLw0as9c/qjykdK4Ncgbf6aJhMOnV
+         4Tr+z1lHjTr9jR3o9czO4d9FaQbH0LOM4Ex8Xh3wqPm5NMjZRoDpLvgtz5BO5dIIdX
+         aji7rptfkcsRnBA6NsobqySKs23dFVWUuviMYVG1n2bbwGW/3fYoq1fsvL8gDcxxqe
+         tNe/MNmTIFGtb/x39pByrZS89+T/ffR7eRbXyLVPKCkKStOuwTadyt4MKPpdbTj77V
+         tmOC7nsx4gViiLx6fn7MYR2ooA1frJnR3Q9PCvYTDlkudjAqBrwBScMKzYUM5nnLrl
+         /137fK4Bum1bQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove write and wait of struct walk_control
-Date:   Tue,  4 Jan 2022 12:53:41 +0000
-Message-Id: <a67495dc1ec5616c5ad09d6a0a761ae1d518ab06.1641300202.git.fdmanana@suse.com>
+Subject: [PATCH v3] btrfs: fix log tree cleanup after a transaction abort
+Date:   Tue,  4 Jan 2022 12:54:15 +0000
+Message-Id: <3aae7c6728257c7ce2279d6660ee2797e5e34bbd.1641300250.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <f0bed6300fc1dcad405c894640f7140b4a8e04f4.1639743512.git.fdmanana@suse.com>
+References: <f0bed6300fc1dcad405c894640f7140b4a8e04f4.1639743512.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -42,76 +47,623 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The ->write and ->wait fields of struct walk_control, used for log trees,
-are not used since 2008, more specifically since commit d0c803c4049c5c
-("Btrfs: Record dirty pages tree-log pages in an extent_io tree") and
-since commit d0c803c4049c5c ("Btrfs: Record dirty pages tree-log pages in
-an extent_io tree"). So just remove them, along with the function
-btrfs_write_tree_block(), which is also not used anymore after removing
-the ->write member.
+After the recent changes made by commit c2e39305299f01 ("btrfs: clear
+extent buffer uptodate when we fail to write it") and its followup fix,
+commit 651740a5024117 ("btrfs: check WRITE_ERR when trying to read an
+extent buffer"), we can now end up not cleaning up space reservations of
+log tree extent buffers after a transaction abort happens, as well as not
+cleaning up still dirty extent buffers.
+
+This happens because if writeback for a log tree extent buffer failed,
+than we have cleared the EXTENT_BUFFER_UPTODATE from the extent buffer
+and we have also set the bit EXTENT_BUFFER_WRITE_ERR on it. Later on,
+when trying to free the log tree with free_log_tree(), which iterates
+over the tree, we can end up getting an -EIO error when trying to read
+a node or a leaf, since read_extent_buffer_pages() returns -EIO if an
+extent buffer does not have EXTENT_BUFFER_UPTODATE set and has the
+EXTENT_BUFFER_WRITE_ERR bit set. Getting that -EIO means that we return
+immediately as we can not iterate over the entire tree.
+
+In that case we never update the reserved space for an extent buffer in
+the respective block group and space_info object, as well as for any other
+extent buffers that we not yet iterated over.
+
+When this happens we get the following traces when unmounting the fs:
+
+[174957.284509] BTRFS: error (device dm-0) in cleanup_transaction:1913: errno=-5 IO failure
+[174957.286497] BTRFS: error (device dm-0) in free_log_tree:3420: errno=-5 IO failure
+[174957.399379] ------------[ cut here ]------------
+[174957.402497] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:127 btrfs_put_block_group+0x77/0xb0 [btrfs]
+[174957.407523] Modules linked in: btrfs overlay dm_zero (...)
+[174957.424917] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
+[174957.426689] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[174957.428716] RIP: 0010:btrfs_put_block_group+0x77/0xb0 [btrfs]
+[174957.429717] Code: 21 48 8b bd (...)
+[174957.432867] RSP: 0018:ffffb70d41cffdd0 EFLAGS: 00010206
+[174957.433632] RAX: 0000000000000001 RBX: ffff8b09c3848000 RCX: ffff8b0758edd1c8
+[174957.434689] RDX: 0000000000000001 RSI: ffffffffc0b467e7 RDI: ffff8b0758edd000
+[174957.436068] RBP: ffff8b0758edd000 R08: 0000000000000000 R09: 0000000000000000
+[174957.437114] R10: 0000000000000246 R11: 0000000000000000 R12: ffff8b09c3848148
+[174957.438140] R13: ffff8b09c3848198 R14: ffff8b0758edd188 R15: dead000000000100
+[174957.439317] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
+[174957.440402] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[174957.441164] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
+[174957.442117] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[174957.443076] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[174957.443948] Call Trace:
+[174957.444264]  <TASK>
+[174957.444538]  btrfs_free_block_groups+0x255/0x3c0 [btrfs]
+[174957.445238]  close_ctree+0x301/0x357 [btrfs]
+[174957.445803]  ? call_rcu+0x16c/0x290
+[174957.446250]  generic_shutdown_super+0x74/0x120
+[174957.446832]  kill_anon_super+0x14/0x30
+[174957.447305]  btrfs_kill_super+0x12/0x20 [btrfs]
+[174957.447890]  deactivate_locked_super+0x31/0xa0
+[174957.448440]  cleanup_mnt+0x147/0x1c0
+[174957.448888]  task_work_run+0x5c/0xa0
+[174957.449336]  exit_to_user_mode_prepare+0x1e5/0x1f0
+[174957.449934]  syscall_exit_to_user_mode+0x16/0x40
+[174957.450512]  do_syscall_64+0x48/0xc0
+[174957.450980]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[174957.451605] RIP: 0033:0x7f328fdc4a97
+[174957.452059] Code: 03 0c 00 f7 (...)
+[174957.454320] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+[174957.455262] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
+[174957.456131] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
+[174957.457118] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
+[174957.458005] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
+[174957.459113] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
+[174957.460193]  </TASK>
+[174957.460534] irq event stamp: 0
+[174957.461003] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[174957.461947] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.463147] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.465116] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[174957.466323] ---[ end trace bc7ee0c490bce3af ]---
+[174957.467282] ------------[ cut here ]------------
+[174957.468184] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:3976 btrfs_free_block_groups+0x330/0x3c0 [btrfs]
+[174957.470066] Modules linked in: btrfs overlay dm_zero (...)
+[174957.483137] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
+[174957.484691] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[174957.486853] RIP: 0010:btrfs_free_block_groups+0x330/0x3c0 [btrfs]
+[174957.488050] Code: 00 00 00 ad de (...)
+[174957.491479] RSP: 0018:ffffb70d41cffde0 EFLAGS: 00010206
+[174957.492520] RAX: ffff8b08d79310b0 RBX: ffff8b09c3848000 RCX: 0000000000000000
+[174957.493868] RDX: 0000000000000001 RSI: fffff443055ee600 RDI: ffffffffb1131846
+[174957.495183] RBP: ffff8b08d79310b0 R08: 0000000000000000 R09: 0000000000000000
+[174957.496580] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8b08d7931000
+[174957.498027] R13: ffff8b09c38492b0 R14: dead000000000122 R15: dead000000000100
+[174957.499438] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
+[174957.500990] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[174957.502117] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
+[174957.503513] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[174957.504864] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[174957.506167] Call Trace:
+[174957.506654]  <TASK>
+[174957.507047]  close_ctree+0x301/0x357 [btrfs]
+[174957.507867]  ? call_rcu+0x16c/0x290
+[174957.508567]  generic_shutdown_super+0x74/0x120
+[174957.509447]  kill_anon_super+0x14/0x30
+[174957.510194]  btrfs_kill_super+0x12/0x20 [btrfs]
+[174957.511123]  deactivate_locked_super+0x31/0xa0
+[174957.511976]  cleanup_mnt+0x147/0x1c0
+[174957.512610]  task_work_run+0x5c/0xa0
+[174957.513309]  exit_to_user_mode_prepare+0x1e5/0x1f0
+[174957.514231]  syscall_exit_to_user_mode+0x16/0x40
+[174957.515069]  do_syscall_64+0x48/0xc0
+[174957.515718]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[174957.516688] RIP: 0033:0x7f328fdc4a97
+[174957.517413] Code: 03 0c 00 f7 d8 (...)
+[174957.521052] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+[174957.522514] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
+[174957.523950] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
+[174957.525375] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
+[174957.526763] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
+[174957.528058] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
+[174957.529404]  </TASK>
+[174957.529843] irq event stamp: 0
+[174957.530256] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[174957.531061] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.532075] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.533083] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[174957.533865] ---[ end trace bc7ee0c490bce3b0 ]---
+[174957.534452] BTRFS info (device dm-0): space_info 4 has 1070841856 free, is not full
+[174957.535404] BTRFS info (device dm-0): space_info total=1073741824, used=2785280, pinned=0, reserved=49152, may_use=0, readonly=65536 zone_unusable=0
+[174957.537029] BTRFS info (device dm-0): global_block_rsv: size 0 reserved 0
+[174957.537859] BTRFS info (device dm-0): trans_block_rsv: size 0 reserved 0
+[174957.538697] BTRFS info (device dm-0): chunk_block_rsv: size 0 reserved 0
+[174957.539552] BTRFS info (device dm-0): delayed_block_rsv: size 0 reserved 0
+[174957.540403] BTRFS info (device dm-0): delayed_refs_rsv: size 0 reserved 0
+
+This also means that in case we have log tree extent buffers that are
+still dirty, we can end up not cleaning them up in case we find an
+extent buffer with EXTENT_BUFFER_WRITE_ERR set on it, as in that case
+we have no way for iterating over the rest of the tree.
+
+This issue is very often triggered with test cases generic/475 and
+generic/648 from fstests.
+
+So instead of trying to iterate a log tree when freeing it after a
+transaction abort, iterate over the io tree that tracks the ranges of the
+log tree's extent buffers, and unaccount each extent buffer's range as
+well as clear any extent buffers that are still dirty. Also because when
+we trigger writeback of log tree extent buffers we clear their range from
+the ->dirty_log_pages io tree, we need to make sure the range is kept but
+with a different bit, so that we can find it if we ever run into a
+transaction abort - so when triggering the writeback, instead of clearing
+the range, convert it to the EXTENT_UPTODATE bit.
+
+As a final note, while the commits mentioned above make this issue easy to
+trigger with tests that use the device mapper to simulate device errors,
+the issue could happen before, it was just much less likely. For example
+after writing an extent buffer of a log tree, it could be evicted from
+memory due to memory pressure, and then later during transaction commit
+while cleaning up the log tree through walk_log_tree() we get an -EIO when
+trying to read the extent buffer from disk - resulting in cleanup of the
+remaining log tree extent buffers not being made.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 28 +++++-----------------------
- 1 file changed, 5 insertions(+), 23 deletions(-)
 
+V3: Renamed subject (was "btrfs: fix reserved space leak on log tree nodes after transaction abort").
+    Reworked the patch to take into account that after writeback is triggered through log syncing,
+    the range of the extent buffers is removed from the log dirty pages io tree. That was making
+    the mentioned test cases still fail often (just a bit less often however).
+    Also take into account that if fail during the cleanup, we stopped iterating over the tree
+    and leaving some extent buffers not being cleaned up - this was actually often triggered by
+    generic/648.
+
+V2: Added missing bit EXTENT_NEED_WAIT.
+
+ fs/btrfs/ctree.c       |  40 ++++++---
+ fs/btrfs/transaction.c |  23 +++++-
+ fs/btrfs/tree-log.c    | 180 +++++++++++++++++++++++++----------------
+ fs/btrfs/tree-log.h    |   7 ++
+ 4 files changed, 166 insertions(+), 84 deletions(-)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index defc494a2d08..7af8bb4f9092 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -16,6 +16,7 @@
+ #include "volumes.h"
+ #include "qgroup.h"
+ #include "tree-mod-log.h"
++#include "tree-log.h"
+ 
+ static int split_node(struct btrfs_trans_handle *trans, struct btrfs_root
+ 		      *root, struct btrfs_path *path, int level);
+@@ -112,6 +113,30 @@ noinline void btrfs_release_path(struct btrfs_path *p)
+ 	}
+ }
+ 
++static void delete_tree_block(struct btrfs_trans_handle *trans,
++			      struct btrfs_root *root,
++			      struct extent_buffer *eb,
++			      u64 parent,
++			      bool is_last_ref)
++{
++	const u64 root_id = btrfs_root_id(root);
++
++	btrfs_free_tree_block(trans, root_id, eb, parent, is_last_ref);
++	/*
++	 * If we are deleting a block from a log tree, then delete its range from
++	 * the io tree that tracks the blocks. This is only to ensure that if a
++	 * transaction abort happens, we are able to do proper cleanup of space
++	 * reservations, because we may not be able to iterate over the log tree
++	 * in case he had a writeback failure for a log tree node - so we rely on
++	 * the io tree to figure out the range of each log tree block. We ignore
++	 * any error from clear_extent_bits() because it's not common and it's
++	 * not critical either.
++	 */
++	if (root_id == BTRFS_TREE_LOG_OBJECTID)
++		clear_extent_bits(&root->dirty_log_pages, eb->start,
++				  eb->start + eb->len - 1, BTRFS_LOG_PAGES_BITS);
++}
++
+ /*
+  * safely gets a reference on the root node of a tree.  A lock
+  * is not taken, so a concurrent writer may put a different node
+@@ -463,8 +488,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 		BUG_ON(ret < 0);
+ 		rcu_assign_pointer(root->node, cow);
+ 
+-		btrfs_free_tree_block(trans, btrfs_root_id(root), buf,
+-				      parent_start, last_ref);
++		delete_tree_block(trans, root, buf, parent_start, last_ref);
+ 		free_extent_buffer(buf);
+ 		add_root_to_dirty_list(root);
+ 	} else {
+@@ -485,8 +509,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 				return ret;
+ 			}
+ 		}
+-		btrfs_free_tree_block(trans, btrfs_root_id(root), buf,
+-				      parent_start, last_ref);
++		delete_tree_block(trans, root, buf, parent_start, last_ref);
+ 	}
+ 	if (unlock_orig)
+ 		btrfs_tree_unlock(buf);
+@@ -930,7 +953,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		free_extent_buffer(mid);
+ 
+ 		root_sub_used(root, mid->len);
+-		btrfs_free_tree_block(trans, btrfs_root_id(root), mid, 0, 1);
++		delete_tree_block(trans, root, mid, 0, true);
+ 		/* once for the root ptr */
+ 		free_extent_buffer_stale(mid);
+ 		return 0;
+@@ -989,8 +1012,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 			btrfs_tree_unlock(right);
+ 			del_ptr(root, path, level + 1, pslot + 1);
+ 			root_sub_used(root, right->len);
+-			btrfs_free_tree_block(trans, btrfs_root_id(root), right,
+-					      0, 1);
++			delete_tree_block(trans, root, right, 0, true);
+ 			free_extent_buffer_stale(right);
+ 			right = NULL;
+ 		} else {
+@@ -1035,7 +1057,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		btrfs_tree_unlock(mid);
+ 		del_ptr(root, path, level + 1, pslot);
+ 		root_sub_used(root, mid->len);
+-		btrfs_free_tree_block(trans, btrfs_root_id(root), mid, 0, 1);
++		delete_tree_block(trans, root, mid, 0, true);
+ 		free_extent_buffer_stale(mid);
+ 		mid = NULL;
+ 	} else {
+@@ -4157,7 +4179,7 @@ static noinline void btrfs_del_leaf(struct btrfs_trans_handle *trans,
+ 	root_sub_used(root, leaf->len);
+ 
+ 	atomic_inc(&leaf->refs);
+-	btrfs_free_tree_block(trans, btrfs_root_id(root), leaf, 0, 1);
++	delete_tree_block(trans, root, leaf, 0, true);
+ 	free_extent_buffer_stale(leaf);
+ }
+ /*
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 03de89b45f27..75342004351a 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1083,7 +1083,8 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+  * on all the pages and clear them from the dirty pages state tree
+  */
+ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
+-				       struct extent_io_tree *dirty_pages)
++				       struct extent_io_tree *dirty_pages,
++				       bool is_log_tree)
+ {
+ 	int err = 0;
+ 	int werr = 0;
+@@ -1101,8 +1102,22 @@ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
+ 		 * after committing the log because the tree can be accessed
+ 		 * concurrently - we do it only at transaction commit time when
+ 		 * it's safe to do it (through extent_io_tree_release()).
++		 *
++		 * For a log tree, we convert the range bit so that we know
++		 * about the range of log tree extent buffers even after they
++		 * were written, so that if a transaction abort happens we
++		 * know about the logical bytenr of the extents and can free
++		 * them up, releasing reserved space in their block groups and
++		 * in the metadata space_info. Ignore any errors in this case,
++		 * we have no way to handle them, if they happen they are
++		 * harmless, they only result in some warnings during unmount.
+ 		 */
+-		err = clear_extent_bit(dirty_pages, start, end,
++		if (is_log_tree)
++			convert_extent_bit(dirty_pages, start, end,
++					   EXTENT_UPTODATE, EXTENT_NEED_WAIT,
++					   &cached_state);
++		else
++			err = clear_extent_bit(dirty_pages, start, end,
+ 				       EXTENT_NEED_WAIT, 0, 0, &cached_state);
+ 		if (err == -ENOMEM)
+ 			err = 0;
+@@ -1126,7 +1141,7 @@ static int btrfs_wait_extents(struct btrfs_fs_info *fs_info,
+ 	bool errors = false;
+ 	int err;
+ 
+-	err = __btrfs_wait_marked_extents(fs_info, dirty_pages);
++	err = __btrfs_wait_marked_extents(fs_info, dirty_pages, false);
+ 	if (test_and_clear_bit(BTRFS_FS_BTREE_ERR, &fs_info->flags))
+ 		errors = true;
+ 
+@@ -1144,7 +1159,7 @@ int btrfs_wait_tree_log_extents(struct btrfs_root *log_root, int mark)
+ 
+ 	ASSERT(log_root->root_key.objectid == BTRFS_TREE_LOG_OBJECTID);
+ 
+-	err = __btrfs_wait_marked_extents(fs_info, dirty_pages);
++	err = __btrfs_wait_marked_extents(fs_info, dirty_pages, true);
+ 	if ((mark & EXTENT_DIRTY) &&
+ 	    test_and_clear_bit(BTRFS_FS_LOG1_ERR, &fs_info->flags))
+ 		errors = true;
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 4b89ac769347..a54ee3a1d082 100644
+index a54ee3a1d082..f9641a656eef 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -270,12 +270,6 @@ void btrfs_end_log_trans(struct btrfs_root *root)
- 	}
+@@ -2742,6 +2742,28 @@ static void unaccount_log_buffer(struct btrfs_fs_info *fs_info, u64 start)
+ 	btrfs_put_block_group(cache);
  }
  
--static int btrfs_write_tree_block(struct extent_buffer *buf)
--{
--	return filemap_fdatawrite_range(buf->pages[0]->mapping, buf->start,
--					buf->start + buf->len - 1);
--}
--
- static void btrfs_wait_tree_block_writeback(struct extent_buffer *buf)
++static int release_tree_block(struct btrfs_trans_handle *trans,
++			      struct btrfs_root *log,
++			      struct extent_buffer *eb)
++{
++	btrfs_tree_lock(eb);
++	btrfs_clean_tree_block(eb);
++	btrfs_wait_tree_block_writeback(eb);
++	btrfs_tree_unlock(eb);
++
++	/*
++	 * We ignore errors here on purpose. They should be rare and if they
++	 * happen then nothing really serious happens, we just trigger some
++	 * warnings on unmount due to releasing reserved space twice for an
++	 * extent buffer - plus only in the transaction abort case, so it's
++	 * very rare for this to happen.
++	 */
++	clear_extent_bits(&log->dirty_log_pages, eb->start,
++			  eb->start + eb->len - 1, BTRFS_LOG_PAGES_BITS);
++
++	return btrfs_pin_reserved_extent(trans, eb->start, eb->len);
++}
++
+ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 				   struct btrfs_root *root,
+ 				   struct btrfs_path *path, int *level,
+@@ -2752,7 +2774,6 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 	u64 ptr_gen;
+ 	struct extent_buffer *next;
+ 	struct extent_buffer *cur;
+-	u32 blocksize;
+ 	int ret = 0;
+ 
+ 	while (*level > 0) {
+@@ -2769,7 +2790,6 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 		bytenr = btrfs_node_blockptr(cur, path->slots[*level]);
+ 		ptr_gen = btrfs_node_ptr_generation(cur, path->slots[*level]);
+ 		btrfs_node_key_to_cpu(cur, &first_key, path->slots[*level]);
+-		blocksize = fs_info->nodesize;
+ 
+ 		next = btrfs_find_create_tree_block(fs_info, bytenr,
+ 						    btrfs_header_owner(cur),
+@@ -2794,24 +2814,12 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 					return ret;
+ 				}
+ 
+-				if (trans) {
+-					btrfs_tree_lock(next);
+-					btrfs_clean_tree_block(next);
+-					btrfs_wait_tree_block_writeback(next);
+-					btrfs_tree_unlock(next);
+-					ret = btrfs_pin_reserved_extent(trans,
+-							bytenr, blocksize);
+-					if (ret) {
+-						free_extent_buffer(next);
+-						return ret;
+-					}
+-					btrfs_redirty_list_add(
+-						trans->transaction, next);
+-				} else {
+-					if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &next->bflags))
+-						clear_extent_buffer_dirty(next);
+-					unaccount_log_buffer(fs_info, bytenr);
++				ret = release_tree_block(trans, root, next);
++				if (ret) {
++					free_extent_buffer(next);
++					return ret;
+ 				}
++				btrfs_redirty_list_add(trans->transaction, next);
+ 			}
+ 			free_extent_buffer(next);
+ 			continue;
+@@ -2840,7 +2848,6 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ 				 struct btrfs_path *path, int *level,
+ 				 struct walk_control *wc)
  {
- 	filemap_fdatawait_range(buf->pages[0]->mapping,
-@@ -294,16 +288,6 @@ struct walk_control {
- 	 */
- 	int free;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	int i;
+ 	int slot;
+ 	int ret;
+@@ -2863,26 +2870,10 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ 				struct extent_buffer *next;
  
--	/* should we write out the extent buffer?  This is used
--	 * while flushing the log tree to disk during a sync
--	 */
--	int write;
+ 				next = path->nodes[*level];
 -
--	/* should we wait for the extent buffer io to finish?  Also used
--	 * while flushing the log tree to disk for a sync
--	 */
--	int wait;
+-				if (trans) {
+-					btrfs_tree_lock(next);
+-					btrfs_clean_tree_block(next);
+-					btrfs_wait_tree_block_writeback(next);
+-					btrfs_tree_unlock(next);
+-					ret = btrfs_pin_reserved_extent(trans,
+-						     path->nodes[*level]->start,
+-						     path->nodes[*level]->len);
+-					if (ret)
+-						return ret;
+-					btrfs_redirty_list_add(trans->transaction,
+-							       next);
+-				} else {
+-					if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &next->bflags))
+-						clear_extent_buffer_dirty(next);
 -
- 	/* pin only walk, we record which extents on disk belong to the
- 	 * log trees
- 	 */
-@@ -354,17 +338,15 @@ static int process_one_buffer(struct btrfs_root *log,
- 			return ret;
+-					unaccount_log_buffer(fs_info,
+-						path->nodes[*level]->start);
+-				}
++				ret = release_tree_block(trans, root, next);
++				if (ret)
++					return ret;
++				btrfs_redirty_list_add(trans->transaction, next);
+ 			}
+ 			free_extent_buffer(path->nodes[*level]);
+ 			path->nodes[*level] = NULL;
+@@ -2900,13 +2891,14 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ static int walk_log_tree(struct btrfs_trans_handle *trans,
+ 			 struct btrfs_root *log, struct walk_control *wc)
+ {
+-	struct btrfs_fs_info *fs_info = log->fs_info;
+ 	int ret = 0;
+ 	int wret;
+ 	int level;
+ 	struct btrfs_path *path;
+ 	int orig_level;
+ 
++	ASSERT(trans != NULL);
++
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+ 		return -ENOMEM;
+@@ -2946,22 +2938,10 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
+ 			struct extent_buffer *next;
+ 
+ 			next = path->nodes[orig_level];
+-
+-			if (trans) {
+-				btrfs_tree_lock(next);
+-				btrfs_clean_tree_block(next);
+-				btrfs_wait_tree_block_writeback(next);
+-				btrfs_tree_unlock(next);
+-				ret = btrfs_pin_reserved_extent(trans,
+-						next->start, next->len);
+-				if (ret)
+-					goto out;
+-				btrfs_redirty_list_add(trans->transaction, next);
+-			} else {
+-				if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &next->bflags))
+-					clear_extent_buffer_dirty(next);
+-				unaccount_log_buffer(fs_info, next->start);
+-			}
++			ret = release_tree_block(trans, log, next);
++			if (ret)
++				goto out;
++			btrfs_redirty_list_add(trans->transaction, next);
+ 		}
  	}
  
--	if (wc->pin)
-+	if (wc->pin) {
- 		ret = btrfs_pin_extent_for_log_replay(wc->trans, eb->start,
- 						      eb->len);
-+		if (ret)
-+			return ret;
- 
--	if (!ret && btrfs_buffer_uptodate(eb, gen, 0)) {
--		if (wc->pin && btrfs_header_level(eb) == 0)
-+		if (btrfs_buffer_uptodate(eb, gen, 0) &&
-+		    btrfs_header_level(eb) == 0)
- 			ret = btrfs_exclude_logged_extents(eb);
--		if (wc->write)
--			btrfs_write_tree_block(eb);
--		if (wc->wait)
--			btrfs_wait_tree_block_writeback(eb);
- 	}
+@@ -3384,35 +3364,93 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
  	return ret;
  }
+ 
++/*
++ * When cleaning up an aborted transaction we can't iterate the log tree because
++ * in case writeback failed for one of its extent buffers, we won't be able to
++ * read it, we'll get -EIO from btrfs_read_buffer(). So we instead iterate over
++ * the log tree's ->dirty_log_pages io tree.
++ */
++static void unaccount_all_log_buffers(struct btrfs_root *log)
++{
++	u64 start = 0;
++	u64 end;
++
++	while (!find_first_extent_bit(&log->dirty_log_pages, start, &start, &end,
++				      BTRFS_LOG_PAGES_BITS, NULL)) {
++		struct btrfs_fs_info *fs_info = log->fs_info;
++
++		for (; start < end; start += fs_info->nodesize) {
++			struct extent_buffer *eb;
++
++			cond_resched();
++
++			unaccount_log_buffer(fs_info, start);
++			eb = find_extent_buffer(fs_info, start);
++			/*
++			 * eb can be NULL in case it was already written and
++			 * evicted from memory.
++			 */
++			if (!eb)
++				continue;
++
++			wait_on_extent_buffer_writeback(eb);
++			if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags))
++				clear_extent_buffer_dirty(eb);
++			free_extent_buffer(eb);
++		}
++
++		start = end + 1;
++	}
++}
++
+ static void free_log_tree(struct btrfs_trans_handle *trans,
+ 			  struct btrfs_root *log)
+ {
+-	int ret;
+-	struct walk_control wc = {
+-		.free = 1,
+-		.process_func = process_one_buffer
+-	};
++	if (trans && log->node) {
++		int ret;
++		struct walk_control wc = {
++			  .free = 1,
++			  .process_func = process_one_buffer
++		};
+ 
+-	if (log->node) {
+ 		ret = walk_log_tree(trans, log, &wc);
+ 		if (ret) {
+-			if (trans)
+-				btrfs_abort_transaction(trans, ret);
+-			else
+-				btrfs_handle_fs_error(log->fs_info, ret, NULL);
++			btrfs_abort_transaction(trans, ret);
++			/*
++			 * We may have failed iterating the whole tree, so we
++			 * fallback to the transaction abort cleanup path.
++			 */
++			unaccount_all_log_buffers(log);
+ 		}
++	} else if (!trans) {
++		unaccount_all_log_buffers(log);
+ 	}
+ 
+-	clear_extent_bits(&log->dirty_log_pages, 0, (u64)-1,
+-			  EXTENT_DIRTY | EXTENT_NEW | EXTENT_NEED_WAIT);
++	/*
++	 * Cleanup every state record. When walking the log tree we clean the
++	 * range for each extent buffer as we clean it up, but that might fail
++	 * with -ENOMEM due to extent state record splits and we ignore such
++	 * errors during the walk - it's rare but it could happen. By clearing
++	 * the whole range here we don't need to have such state splits and
++	 * allocations, so this way it's guaranteed to always succeed. So we
++	 * almosts always end up here with an empty io tree, except for the
++	 * transaction abort case (when @trans is NULL).
++	 */
++	clear_extent_bits(&log->dirty_log_pages, 0, (u64)-1, BTRFS_LOG_PAGES_BITS);
+ 	extent_io_tree_release(&log->log_csum_range);
+ 
+ 	btrfs_put_root(log);
+ }
+ 
+ /*
+- * free all the extents used by the tree log.  This should be called
+- * at commit time of the full transaction
++ * Free all the extents used by a log tree.
++ *
++ * @trans:	A transaction handle or NULL.
++ * @root:	The parent root of a log tree.
++ *
++ * This should be called either at commit time of the full transaction, or when
++ * cleaning up a transaction that was aborted. In the former case @trans is not
++ * NULL, while in the second case @trans must be NULL.
+  */
+ int btrfs_free_log(struct btrfs_trans_handle *trans, struct btrfs_root *root)
+ {
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index f6811c3df38a..d11a16a97e32 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -12,6 +12,13 @@
+ /* return value for btrfs_log_dentry_safe that means we don't need to log it at all */
+ #define BTRFS_NO_LOG_SYNC 256
+ 
++/*
++ * All the bits we can set for an extent buffer's range in a log root's
++ * ->dirty_log_pages io tree.
++ */
++#define BTRFS_LOG_PAGES_BITS (EXTENT_DIRTY | EXTENT_NEW | EXTENT_NEED_WAIT | \
++			      EXTENT_UPTODATE)
++
+ struct btrfs_log_ctx {
+ 	int log_ret;
+ 	int log_transid;
 -- 
 2.33.0
 
