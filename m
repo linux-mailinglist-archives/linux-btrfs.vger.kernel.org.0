@@ -2,28 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA26B484ACF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 23:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CF2484AE5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 23:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbiADWhR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Jan 2022 17:37:17 -0500
-Received: from mout.gmx.net ([212.227.15.19]:42191 "EHLO mout.gmx.net"
+        id S235751AbiADWqx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jan 2022 17:46:53 -0500
+Received: from mout.gmx.net ([212.227.15.15]:45235 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235613AbiADWhR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Jan 2022 17:37:17 -0500
+        id S235613AbiADWqw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Jan 2022 17:46:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1641335833;
-        bh=S3A3xQHO7Y4iXnVcTkO2SKJoOvxeVmwedlzzB7N6Gng=;
+        s=badeba3b8450; t=1641336409;
+        bh=ZuHxqGk/fjrA3GAGSsuTFFOJH+EHXq2uIfiP3gX5/qU=;
         h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=RonSA1p8lJ8BXzrW32nnO3bHgtvk+QAygmVhEtWObDTXtN7xylMGKYnymQKrefSgA
-         S9yiqEKYYxce6Nb45QUvW79hXX30iOUPT39BJurYX7ssd0pmkwvBduOm9sZntPByX6
-         7QPn8nrRseYPDNP7NKZ77ilxhvmycuw/AkSNoPZY=
+        b=he7dPqvRUFOhX5vuIKYqrEZz9IHy56gLqEKq6cu0M3v5LNoWs6+8EhGlP1ZQZ4puG
+         +pjlbfIyDe1Q8Rbj4OdUiysb89EAiywpukbeW3EZlgvKk4bqMf2Z/a7hjuZTzmdi2Y
+         ZoUXyyIdG1dntWkYnqkN0XdMFar59yLGLE5YOTas=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mn2W5-1me6Gd3Q5X-00k5CF; Tue, 04
- Jan 2022 23:37:13 +0100
-Message-ID: <09ee7152-a650-32a8-a036-e322a1afe177@gmx.com>
-Date:   Wed, 5 Jan 2022 06:37:10 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MoO2E-1mcBfM2ZY0-00ooGx; Tue, 04
+ Jan 2022 23:46:49 +0100
+Message-ID: <2193547e-d88e-9f53-6777-793b58130afd@gmx.com>
+Date:   Wed, 5 Jan 2022 06:46:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.4.1
@@ -35,118 +35,92 @@ References: <2c80ca8507181b1e65a67bbd4dca459d24a47da2.camel@ericlevy.name>
  <487b4d965a6942d6c2d1fad91e4e5a4aa29e2871.camel@ericlevy.name>
  <e3fd9851-ccf4-6f04-b376-56c6f7383de7@gmx.com>
  <faa7edb08a5cf68e8668546facbb8c60ae5a22e7.camel@ericlevy.name>
+ <YdSy09eCHqU5sgez@hungrycats.org>
+ <f264615001da2f24ca418fdaa4b4567b7ff4cb22.camel@ericlevy.name>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: "hardware-assisted zeroing"
-In-Reply-To: <faa7edb08a5cf68e8668546facbb8c60ae5a22e7.camel@ericlevy.name>
+In-Reply-To: <f264615001da2f24ca418fdaa4b4567b7ff4cb22.camel@ericlevy.name>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xxQ00FhJeDJU/QBCPlMp4lCzfBlN4JEMDr1IoRfYH97vMGXUc/E
- 35Er2/fes11ti3zmQqXJ8VgvyRmmdevi5nfoTApv9FgDS5d/3fvS8M7yknP3M1q90zZbh15
- bn2cQnIPBSZXgGDGkOJ5+9o6FHFyQ/FWwqU4ViNQkud6LrgQI5GafJ6JBg/dk5g+uO1x+qY
- Z4PF3dTB8IykEOQlZBC1g==
+X-Provags-ID: V03:K1:O+cFGnTVtHB2MZekNMTUuPzERp1aIWWhmw1V1HBvoeF1PW2YBBU
+ GrS8azdYjdCxMCEFHzqHJGCZZKgadMPDmwo69Mn1ctK9yn3AMxdVP+i95fQovcqCJsGP6iP
+ r/xuTrJ7XjBulk3pN5OdE0VKSp060p+TY6VWS5zNMBXE/2gERxU6xe7RSjM1N5PWobsRKfe
+ rul4htBv3dBJFX+x5zZWQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T/qZrkg4a/I=:oPgYz2SFfb3HbC/6MqBLgr
- k4nHuyjcsBL0338kHnf0L+vh3krn+QLiMgjaxwrmNCTFEzR0p22Q6tq7rTJnB6i9IzPFa8fQy
- NwSXYoLHOfY4OubMIcJGAjuBWaMwEYyu1s4t4b4FU/oXcqYBUDivvU5NU0QrKFzsxb3cV2WQd
- oguOHCLh8TnHD4t3BstWlRP1HQgmvonyE4JSWVCemE2kpSPElDFZ8K6ZMOCRrienWp56q4qy6
- 6SBi807tw/9rJWqL552vjvOWLq1Mcvf5TdpVLKe7Ue8e2FXTMjAhjErL1LnNiNrG7ZtQLRCx7
- PApEJPj3KwlsV1X/y75kGuTVmv6yd7ZfYgBUp2chdAUDZAxEvC19Wvpuy233vRfyYQfPpgFl+
- 2AEUmjwNzewHxmwLwXvW0jV7m7b0Gv7t8tMl5kbZxNVDbaXAzxYkMaAsKLuHCpqYyJc8xfGBY
- E8tUw6C6MnR4yyNdNB7a8owqfiW+ug+xtVGR55FMHXsTQYreqonHjhYyWeoM97jbVVTi3q6+R
- CIGe4GvQBYdiq+qUj60csB9wOYloqygBPUwdBAAln7+K4AFjw7B20q/dJOpW03wj/oWgQLZUI
- ynV2R+4VMSoqwqnuYLmS+e7wCb6dBMn/FWOpYV+FV0vsSV6MQtQxoHrmVHtcPTXWNnOiKWiMJ
- dBPqxNxSvBnLsuo0p6vB+YMg/xvAsmHcZodLvfBtz3tZ8GCoYfF5+SYwGRdXqAClIKL9nEEBV
- FrN6tXHIkjxn6CuLK1UsMx/O4uSiFBpr7iN22U7KWsqxd5e6DU9B3xsNxVFeYi6zidwyz2WRo
- bzei23Jhnzspmms1k4/s1y1hvi/dh3leaO90Y1ZLVU2rhvOYReqWQqVKEebBD37eb/7N+lwGq
- zkccjrQVYmf3CyvZ2pAg24gAfXC+li3Sz9Iq6wdUyOqrVT3uA7WNcChbbaBeBr+ya4sgQ+HMr
- wdEqllqyWBMeKrTw225EuP95KN+u1rDmU6Sy2qOGi/NBON8IcJeI6w5xNeq0XlhI84A8K1fOy
- 8dp0SuxPu5Bg7yYd/tsvB7YE4li6BhV7kDo2Q7U4PLl72QlMx7TFo3lfgmizREBBc7CQ3sjGY
- A/J6IedqAoRiIM=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EiMAMXQj49A=:ga/gLws/zDHDy8/IFZse7G
+ W/pJk/tQjlZJ+9ZY7HasupOYvyiUuacZUT2Vx2ya7SgZKJwlIBrG1QgblFt2bWQfI/55w+16e
+ 96bMlog+wtVo50Ji3rDHLKIZ77m39QBMkGdhCTz3mKacfSfqbJoXBpJnpXeq/YoOxovi9GdH7
+ uAXEuqj8jdLiEJ2uZ3RiW5h1AGCMFoOF4kzwr1oPdrfEDtt9tGpDFdc08JdsGAQdWgyrgL+QZ
+ PKiXy1XahDtRwMIdLA7ijq5waKKmu+0Dsav4HRdPsyjq7mCmb5NA0xndGDTdgcip2DxZOHfqP
+ 4YueYrqgThrGWB7HLUHby4mOKbQXHwIRYn4HA+nL8zSqqwaGWuTLH9Ori2CwvZAMXr441SU//
+ ifij+XU9+td14oRBMz7uylvIztue87smD9+QcLyPRfhbzyP6FTUw2YRxl2bzqj4QgSZYmOv1J
+ 7P7TV+ebG+QhC5/rJafrUmH/JvLxvyXWU28tJQlSzD3X9NCVhA3HuUv81w7CjWpA4zcJrLC8f
+ WQOPCWv2rFskCfgnXjNTZbxPqAIuwrIvzwMIqmlYGC71AWHzGHdn8IPpLSkc9RtFnoDysyhII
+ b9a3vXUXZI6AeJuaMg6CsXxLmgfYGawpqV+/7LC2XQqiqDVwHTrszEPSzbOo1dP7Ev+L3KEX4
+ ABvPlw9ARcgsI4tG01vtVm/kzdTieYdHiw8JyicWxVihauMaPJxsyumDTvRKpRyxWtZjq08Av
+ bP2YDz0YdiRGmOQJyZlNt4SmVkK4bkg19qJvgLBpH9996953jA/ZgGQVhq0fl+G+uFpN3cHkR
+ mokqm7wzEG5KIBFJW4hnbv66KP5iOaTdhsffxLB6OHz88tfXMfab9wB3YRvXSiV+y1zxex7s7
+ H/iNubYdl9CuxtRDn4yY8ETiBK/JZFOQy3NCNAHfhzd6UiGk82XpS7aYiWoadOchN1NlFi7kb
+ lQM42KnLCggJFnxdxBUmvGVXvLfZyzZHxlAblJV4U1Ay2S7PVj/fgN/5FPPlPWpjrReK3DWHr
+ Xsv6u6iPLzHj90qvn0YDcBxHknX+qbip9VFBS10SYJTI2Uh+nfT5CTeEV6EbHNzWqUNyKXUf8
+ xZde001x+ffNow=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/1/4 18:50, Eric Levy wrote:
-> On Mon, 2022-01-03 at 19:51 +0800, Qu Wenruo wrote:
+On 2022/1/5 06:37, Eric Levy wrote:
+> On Tue, 2022-01-04 at 15:49 -0500, Zygo Blaxell wrote:
 >
->> The filesystem (normally) doesn't maintain such info, what a
->> filesystem
->> really care is the unused/used space.
->>
->> For fstrim case, the filesystem will issue such discard comand to
->> most
->> (if not all) unused space.
->>
->> And one can call fstrim multiple times to do the same work again and
->> again, the filesystem won't really care.
->> (even the operation can be very time consuming)
->>
->> The special thing in btrfs is, there is a cache to record which
->> blocks
->> have been trimmed. (only in memory, thus after unmount, such cache is
->> lost, and on next mount will need to be rebuilt)
->>
->> This is to reduce the trim workload with recent async-discard
->> optimization.
+>> Cheap SSD devices wear out faster when issued a lot of discards mixed
+>> with small writes, as they lack the specialized hardware and firmware
+>> necessary to make discards low-wear operations.  The same flash
+>> component
+>> is used for both FTL persistence (where discards cause wear) and user
+>> data (where writes cause wear), so interleaved short writes and
+>> discards
+>> cause double the wear compared to the same short writes without
+>> discards.
+>> The fstrim man page advises not running trim more than once a week to
+>> avoid prematurely aging SSDs in this category, while the discard
+>> mount
+>> option is equivalent to running fstrim 2000-3000 times a day.
 >
-> So in the general case (i.e. no session cache), the trim operation
-> scans all the allocation structures, to process all non-allocated
-> space?
+> It seems much of the discussion relates to the design of physical
+> hardware. I would need to learn more about SDD to understand why the
+> operations are useful on them, as my thought had been that they would
+> be helpful for thin-provisioned logical volumes, but not meaningful on
+> physical devices.
 
-Yes, and that's almost for all filesystems supporting trim.
+I'm not an expert in this area, but IMHO the trim for SSD is to average
+the wear, since NAND used in most (if not all) SSD has a write lifespan
+limit.
 
-All filesystems supporing read-write need to maintain such info anyway.
-IIRC for filesystems like ext4, there is a bitmap storing which sector
-is used and which is not.
-
-Btrfs has a more complex one (extent tree), not only recording which
-range is used, but also which tree is using it.
+This is a little different from thin-provisioned device.
 
 >
->>> Why is the
->>> command not sent instantly, as soon as the space is freed by the
->>> file
->>> system?
->>
->> If you use discard mount option, then most filesystems will send the
->> discard command to the underlying device when some space is freed.
->>
->> But please keep in mind that, how such discard command gets handled
->> is
->> hardware/storage stack dependent.
->>
->> Some disk firmware may choose to do discard synchronously, which can
->> hugely slow down other operations.
->> (That's why btrfs has async-discard optimization, and also why fstrim
->> is
->> preferred, to avoid unexpected slow down).
+> I wonder whether the same or a different set of concerns from the ones
+> raised would be most helpful when considering management of non-
+> physical devices.
 >
-> Yes, but of course as I have used "instantly", I meant, not necessarily
-> synchronously, but simply near in time.
->
-> The trim operation is not avoiding bottlenecks, even if it is non-
-> blocking, because it operates at the level of the entire file system,
-> in a single operation. If Btrfs is able to process discard operations
-> asynchronously, then mounting with the discard option seems preferable,
-> as it requires no redundant work, adds no serious delay until until the
-> calls are made, and depends on no activity (not even automatic
-> activity) from the admin.
 
-IIRC this async discard is currently only specific to btrfs, thus it's
-not really generic.
+For thin-provisioned device, it's a pretty different story then.
 
-Another thing is, just as Zygo said, there is not much benefit from
-discarding some frequently used/freed metadata.
+If the thin-provisioned device is just file backed, then trim brings
+little to none performance penalty.
 
-But the overhead is always there for discard mount option, thus that's
-why we don't recommend discard mount option, even we have async-discard
-behavior.
+As such trim command will just be converted to hole punch of the
+filesystem, and even on filesystems like btrfs which has very slow
+metadata operations, it's still super fast.
+
+So in that case, you don't really need to bother about the performance
+penalty.
+
+But please keep in mind that, even for heavily stacked storage, if the
+final physical stack is still on SSD, the trim/discard discussion is
+still true, that it's still recommended to use periodic fstrim over
+discard mount option.
 
 Thanks,
 Qu
-
->
-> I fail to see a reason for preferring trim over discard.
->
