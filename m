@@ -2,277 +2,570 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEB3483AD4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 04:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DA7483BD6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 07:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbiADDJw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 3 Jan 2022 22:09:52 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:33194 "EHLO
-        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232503AbiADDJv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Jan 2022 22:09:51 -0500
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 7EA8B13709D; Mon,  3 Jan 2022 22:09:50 -0500 (EST)
-Date:   Mon, 3 Jan 2022 22:09:50 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Libor =?utf-8?B?S2xlcMOhxI0=?= <libor.klepac@bcom.cz>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Btrfs lockups on ubuntu with bees
-Message-ID: <YdO6fnInJNMjlHkw@hungrycats.org>
-References: <c9f1640177563f545ef70eb6ec1560faa1bb1bd7.camel@bcom.cz>
- <20211209044438.GO17148@hungrycats.org>
- <5f1f3114281659c7869cb3f8aa4016c85f2b47cb.camel@bcom.cz>
- <Yc9ZBE8lioRZY0cB@hungrycats.org>
- <8767d98bb4c9d705ac1fd00d27e93684d39d0cfd.camel@bcom.cz>
+        id S231758AbiADGNK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jan 2022 01:13:10 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:59182 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231533AbiADGNK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jan 2022 01:13:10 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D92F51F397
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 06:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1641276788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=m2QnBedkW1oucyxQOsC9B7mSwFfzGAWQi/n9a1Rzmhs=;
+        b=S8XQOoUu/gNqI2ctyb+AiyatsdX/jIJPjuIerU4voasf/A7bK3ztvHE5z1IiSSeDlt7ymq
+        Iy52Fd96iLQqAuYLfnlMPTOywHp153cvQJnmxHXLzeoyzaNMgEK0YISGz3keCP/4n4uTha
+        h9JETJ0hnHEu3Ti9jhyviKx8pm1MtTc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 231F913AA5
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 06:13:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1dDbNXPl02HKOAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Jan 2022 06:13:07 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: make nodesize >= PAGE_SIZE case to reuse the non-subpage routine
+Date:   Tue,  4 Jan 2022 14:12:50 +0800
+Message-Id: <20220104061250.42703-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <8767d98bb4c9d705ac1fd00d27e93684d39d0cfd.camel@bcom.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 03, 2022 at 10:47:08AM +0000, Libor Klepáč wrote:
-> Hi,
-> 
-> On Pá, 2021-12-31 at 14:24 -0500, Zygo Blaxell wrote:
-> > On Fri, Dec 24, 2021 at 11:40:56AM +0000, Libor Klepáč wrote:
-> > > Hi, i think, we hit it on 5.10.x
-> > 
-> > Over the last week I've hit it every ~400 machine-hours on 5.10.80+
-> > as well.  Compare to once every ~3 machine-hours for kernels after
-> > 5.11-rc1.
-> > 
-> 
-> What if i try to restart beesd every day. Should it help to avoid
-> lockup?
+The reason why we only support 64K page size for subpage is, for 64K
+page size we can ensure no matter what the nodesize is, we can fit it
+into one page.
 
-Test results so far indicates it's a kernel issue that doesn't depend on
-prior state, i.e. every Nth logical_ino or dedupe call, the kernel will
-lock up.  N is pretty large (100 million or so on 5.10).  You can hit
-the bug after 22 days of continuous beesing, or you can hit it in the
-first 5 minutes, because it's behavior is stateless and random.
+When other page size comes, especially like 16K, the limitation is a bit
+blockage.
 
-> > It does get worse when there is more contention for various locks,
-> > so more bees threads or a different distribution of work between the
-> > threads will reproduce it faster.
-> 
-> Ok, i will try to lower number of threads, if it helps
+To remove such limitation, we allow nodesize >= PAGE_SIZE case to go
+the non-subpage routine.
+By this, we can allow 4K sectorsize on 16K page size.
 
-Lowering the number of threads reduces the number of dedupe/logical_ino
-calls per second, so the rate at which you hit the Nth call gets slower.
-It also reduces dedupe performance.  Anything that makes bees faster
-seems to make the kernel crash more often.
+Although this introduces another smaller limitation, the metadata can
+not cross page boundary, which is already met by most recent mkfs.
 
-> Thanks,
-> 
-> Libor
-> 
-> 
-> > 
-> > > Not sure what version is it
-> > > Linux nakivo 5.10.0-051000-generic #202012132330 SMP Sun Dec 13
-> > > 23:33:36 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
-> > > 
-> > > It is taken from
-> > > https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.10/
-> > > 
-> > > Maybe i should go for specific version like
-> > > https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.10.88/
-> > > 
-> > > It was running fine for few days with bees doing it's job.
-> > > One thing i changed yesterday was changing
-> > > --loadavg-target 5
-> > > to
-> > > --loadavg-target 6
-> > > (VM has 6 virtual CPUs)
-> > > 
-> > > Here is trace from machine
-> > > https://download.bcom.cz/btrfs/trace6.txt
-> > > 
-> > > Thanks,
-> > > Libor
-> > > 
-> > > On St, 2021-12-08 at 23:44 -0500, Zygo Blaxell wrote:
-> > > > On Fri, Nov 26, 2021 at 02:36:30PM +0000, Libor Klepáč wrote:
-> > > > > Hi,
-> > > > > we are trying to use btrfs with compression and deduplication
-> > > > > using
-> > > > > bees to host filesystem for nakivo repository.
-> > > > > Nakivo repository is in "incremental with full backups" format
-> > > > > -
-> > > > > ie.
-> > > > > one file per VM snapshot transferred from vmware, full backup
-> > > > > every
-> > > > > x
-> > > > > days, no internal deduplication. 
-> > > > > We have also disabled internal compression in nakivo repository
-> > > > > and
-> > > > > put
-> > > > > compression-force=zstd:13 on filesystem.
-> > > > > 
-> > > > > It's a VM on vmware 6.7.0 Update 3 (Build 17700523) on Dell
-> > > > > R540.
-> > > > > It has 6vCPU, 16GB of ram.
-> > > > > 
-> > > > > Bees is run with this parameters
-> > > > > OPTIONS="--strip-paths --no-timestamps --verbose 5 --loadavg-
-> > > > > target
-> > > > > 5 
-> > > > > --thread-min 1"
-> > > > > DB_SIZE=$((8*1024*1024*1024)) # 8G in bytes
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > Until today it was running ubuntu provided kernel 5.11.0-
-> > > > > 40.44~20.04.2
-> > > > > (not sure about exact upstream version),
-> > > > > today we switched to 5.13.0-21.21~20.04.1 after first crash.
-> > > > > 
-> > > > > It was working ok for 7+days, all data were in (around 10TB),
-> > > > > so i
-> > > > > started bees. 
-> > > > > It now locks the FS, bees runs on 100% CPU, i cannot enter
-> > > > > directory
-> > > > > with btrfs
-> > > > > 
-> > > > > # btrfs filesystem usage /mnt/btrfs/repo02/
-> > > > > Overall:
-> > > > >     Device size:                  20.00TiB
-> > > > >     Device allocated:             10.88TiB
-> > > > >     Device unallocated:            9.12TiB
-> > > > >     Device missing:                  0.00B
-> > > > >     Used:                         10.87TiB
-> > > > >     Free (estimated):              9.13TiB      (min: 4.57TiB)
-> > > > >     Data ratio:                       1.00
-> > > > >     Metadata ratio:                   1.00
-> > > > >     Global reserve:              512.00MiB      (used: 0.00B)
-> > > > > 
-> > > > > Data,single: Size:10.85TiB, Used:10.83TiB (99.91%)
-> > > > >    /dev/sdd       10.85TiB
-> > > > > 
-> > > > > Metadata,single: Size:35.00GiB, Used:34.71GiB (99.17%)
-> > > > >    /dev/sdd       35.00GiB
-> > > > > 
-> > > > > System,DUP: Size:32.00MiB, Used:1.14MiB (3.56%)
-> > > > >    /dev/sdd       64.00MiB
-> > > > > 
-> > > > > Unallocated:
-> > > > >    /dev/sdd        9.12TiB
-> > > > > 
-> > > > > This happened yesterday on kernel 5.11
-> > > > > https://download.bcom.cz/btrfs/trace1.txt
-> > > > > 
-> > > > > This is today, on 5.13
-> > > > > https://download.bcom.cz/btrfs/trace2.txt
-> > > > > 
-> > > > > this is trace from sysrq later, when i noticed it happened
-> > > > > again
-> > > > > https://download.bcom.cz/btrfs/trace3.txt
-> > > > > 
-> > > > > 
-> > > > > Any clue what can be done?
-> > > > 
-> > > > I am currently hitting this bug on all kernel versions starting
-> > > > from
-> > > > 5.11.
-> > > > Test runs end with the filesystem locked up, 100% CPU usage in
-> > > > bees
-> > > > and the following lockdep dump:
-> > > > 
-> > > >         [Wed Dec  8 14:14:03 2021] Linux version 5.11.22-zb64-
-> > > > e4d48558d24c+ (zblaxell@waya) (gcc (Debian 10.2.1-6) 10.2.1
-> > > > 20210110,
-> > > > GNU ld (GNU Binutils for Debian) 2.37) #1 SMP Sun Dec 5 04:18:31
-> > > > EST
-> > > > 2021
-> > > > 
-> > > >         [Wed Dec  8 23:17:32 2021] sysrq: Show Locks Held
-> > > >         [Wed Dec  8 23:17:32 2021] 
-> > > >                                    Showing all locks held in the
-> > > > system:
-> > > >         [Wed Dec  8 23:17:32 2021] 1 lock held by in:imklog/3603:
-> > > >         [Wed Dec  8 23:17:32 2021] 1 lock held by dmesg/3720:
-> > > >         [Wed Dec  8 23:17:32 2021]  #0: ffff8a1406ac80e0 (&user-
-> > > > > lock){+.+.}-{3:3}, at: devkmsg_read+0x4d/0x320
-> > > >         [Wed Dec  8 23:17:32 2021] 3 locks held by bash/3721:
-> > > >         [Wed Dec  8 23:17:32 2021]  #0: ffff8a142a589498
-> > > > (sb_writers#4){.+.+}-{0:0}, at: ksys_write+0x70/0xf0
-> > > >         [Wed Dec  8 23:17:32 2021]  #1: ffffffff98f199a0
-> > > > (rcu_read_lock){....}-{1:2}, at: __handle_sysrq+0x5/0xa0
-> > > >         [Wed Dec  8 23:17:32 2021]  #2: ffffffff98f199a0
-> > > > (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x23/0x187
-> > > >         [Wed Dec  8 23:17:32 2021] 1 lock held by btrfs-
-> > > > transacti/6161:
-> > > >         [Wed Dec  8 23:17:32 2021]  #0: ffff8a14e0178850
-> > > > (&fs_info-
-> > > > > transaction_kthread_mutex){+.+.}-{3:3}, at:
-> > > > transaction_kthread+0x5a/0x1b0
-> > > >         [Wed Dec  8 23:17:32 2021] 3 locks held by
-> > > > crawl_257_265/6491:
-> > > >         [Wed Dec  8 23:17:32 2021] 3 locks held by
-> > > > crawl_257_291/6494:
-> > > >         [Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498
-> > > > (sb_writers#12){.+.+}-{0:0}, at:
-> > > > vfs_dedupe_file_range_one+0x3b/0x180
-> > > >         [Wed Dec  8 23:17:32 2021]  #1: ffff8a1410d7c848 (&sb-
-> > > > > s_type->i_mutex_key#17){+.+.}-{3:3}, at:
-> > > > lock_two_nondirectories+0x6b/0x70
-> > > >         [Wed Dec  8 23:17:32 2021]  #2: ffff8a14161a39c8 (&sb-
-> > > > > s_type->i_mutex_key#17/4){+.+.}-{3:3}, at:
-> > > > lock_two_nondirectories+0x59/0x70
-> > > >         [Wed Dec  8 23:17:32 2021] 4 locks held by
-> > > > crawl_257_292/6502:
-> > > >         [Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498
-> > > > (sb_writers#12){.+.+}-{0:0}, at:
-> > > > vfs_dedupe_file_range_one+0x3b/0x180
-> > > >         [Wed Dec  8 23:17:32 2021]  #1: ffff8a131637a908 (&sb-
-> > > > > s_type->i_mutex_key#17){+.+.}-{3:3}, at:
-> > > > lock_two_nondirectories+0x6b/0x70
-> > > >         [Wed Dec  8 23:17:32 2021]  #2: ffff8a14161a39c8 (&sb-
-> > > > > s_type->i_mutex_key#17/4){+.+.}-{3:3}, at:
-> > > > lock_two_nondirectories+0x59/0x70
-> > > >         [Wed Dec  8 23:17:32 2021]  #3: ffff8a14bd0926b8
-> > > > (sb_internal#2){.+.+}-{0:0}, at:
-> > > > btrfs_start_transaction+0x1e/0x20
-> > > >         [Wed Dec  8 23:17:32 2021] 2 locks held by
-> > > > crawl_257_293/6503:
-> > > >         [Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498
-> > > > (sb_writers#12){.+.+}-{0:0}, at:
-> > > > vfs_dedupe_file_range_one+0x3b/0x180
-> > > >         [Wed Dec  8 23:17:32 2021]  #1: ffff8a14161a39c8 (&sb-
-> > > > > s_type->i_mutex_key#17){+.+.}-{3:3}, at:
-> > > > btrfs_remap_file_range+0x2eb/0x3c0
-> > > >         [Wed Dec  8 23:17:32 2021] 3 locks held by
-> > > > crawl_256_289/6504:
-> > > >         [Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498
-> > > > (sb_writers#12){.+.+}-{0:0}, at:
-> > > > vfs_dedupe_file_range_one+0x3b/0x180
-> > > >         [Wed Dec  8 23:17:32 2021]  #1: ffff8a140f2c4748 (&sb-
-> > > > > s_type->i_mutex_key#17){+.+.}-{3:3}, at:
-> > > > lock_two_nondirectories+0x6b/0x70
-> > > >         [Wed Dec  8 23:17:32 2021]  #2: ffff8a14161a39c8 (&sb-
-> > > > > s_type->i_mutex_key#17/4){+.+.}-{3:3}, at:
-> > > > lock_two_nondirectories+0x59/0x70
-> > > > 
-> > > >         [Wed Dec  8 23:17:32 2021]
-> > > > =============================================
-> > > > 
-> > > > There's only one commit touching vfs_dedupe_file_range_one
-> > > > between v5.10 and v5.15 (3078d85c9a10 "vfs: verify source area in
-> > > > vfs_dedupe_file_range_one()"), so I'm now testing 5.11 with that
-> > > > commit
-> > > > reverted to see if it introduced a regression.
-> > > > 
-> > > > > We would really like to use btrfs for this use case, because
-> > > > > nakivo,
-> > > > > with this type of repository format, needs to be se to do full
-> > > > > backup
-> > > > > every x days and does not do deduplication on its own.
-> > > > > 
-> > > > > 
-> > > > > With regards,
-> > > > > Libor
-> > > > > 
+Another small improvement is, we can avoid the overhead for metadata if
+nodesize >= PAGE_SIZE.
+For 4K sector size and 64K page size/node size, or 4K sector size and
+16K page size/node size, we don't need to allocate extra memory for the
+metadata pages.
+
+Please note that, this patch will not yet enable other page size support
+yet.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
+
+I have tried my best to create btrfs_is_subpage() wrapper to handle both
+data and metadata pages.
+
+But the truth is, there is always some odd balls for that function.
+
+We have no way to determine if a unmapped page is data or metadata.
+As compression/DIO have unammped data page, while metadata can have
+cloned extent mapped.
+
+Thus we have some open nodesize >= PAGE_SIZE check in metadata paths, to
+handle unmapped extent buffer.
+
+I'm still not super happy with the solution, thus any idea to remove the
+several open nodesize check would be welcomed.
+---
+ fs/btrfs/disk-io.c   |  4 +--
+ fs/btrfs/extent_io.c | 80 ++++++++++++++++++++++++++------------------
+ fs/btrfs/inode.c     |  2 +-
+ fs/btrfs/subpage.c   | 31 ++++++++---------
+ fs/btrfs/subpage.h   | 25 ++++++++++++++
+ 5 files changed, 92 insertions(+), 50 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 87a5addbedf6..884e0b543136 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -505,7 +505,7 @@ static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct bio_vec *bvec
+ 	u64 found_start;
+ 	struct extent_buffer *eb;
+ 
+-	if (fs_info->sectorsize < PAGE_SIZE)
++	if (fs_info->nodesize < PAGE_SIZE)
+ 		return csum_dirty_subpage_buffers(fs_info, bvec);
+ 
+ 	eb = (struct extent_buffer *)page->private;
+@@ -690,7 +690,7 @@ int btrfs_validate_metadata_buffer(struct btrfs_bio *bbio,
+ 
+ 	ASSERT(page->private);
+ 
+-	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
++	if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
+ 		return validate_subpage_buffer(page, start, end, mirror);
+ 
+ 	eb = (struct extent_buffer *)page->private;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index d6d48ecf823c..f43a23bb67eb 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2710,7 +2710,7 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+ 		btrfs_page_set_error(fs_info, page, start, len);
+ 	}
+ 
+-	if (fs_info->sectorsize == PAGE_SIZE)
++	if (!btrfs_is_subpage(fs_info, page))
+ 		unlock_page(page);
+ 	else
+ 		btrfs_subpage_end_reader(fs_info, page, start, len);
+@@ -2943,7 +2943,7 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
+ static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
+ {
+ 	ASSERT(PageLocked(page));
+-	if (fs_info->sectorsize == PAGE_SIZE)
++	if (!btrfs_is_subpage(fs_info, page))
+ 		return;
+ 
+ 	ASSERT(PagePrivate(page));
+@@ -2965,7 +2965,7 @@ static struct extent_buffer *find_extent_buffer_readpage(
+ 	 * For regular sectorsize, we can use page->private to grab extent
+ 	 * buffer
+ 	 */
+-	if (fs_info->sectorsize == PAGE_SIZE) {
++	if (fs_info->nodesize >= PAGE_SIZE) {
+ 		ASSERT(PagePrivate(page) && page->private);
+ 		return (struct extent_buffer *)page->private;
+ 	}
+@@ -3458,7 +3458,7 @@ static int attach_extent_buffer_page(struct extent_buffer *eb,
+ 	if (page->mapping)
+ 		lockdep_assert_held(&page->mapping->private_lock);
+ 
+-	if (fs_info->sectorsize == PAGE_SIZE) {
++	if (fs_info->nodesize >= PAGE_SIZE) {
+ 		if (!PagePrivate(page))
+ 			attach_page_private(page, eb);
+ 		else
+@@ -3493,7 +3493,7 @@ int set_page_extent_mapped(struct page *page)
+ 
+ 	fs_info = btrfs_sb(page->mapping->host->i_sb);
+ 
+-	if (fs_info->sectorsize < PAGE_SIZE)
++	if (btrfs_is_subpage(fs_info, page))
+ 		return btrfs_attach_subpage(fs_info, page, BTRFS_SUBPAGE_DATA);
+ 
+ 	attach_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
+@@ -3510,7 +3510,7 @@ void clear_page_extent_mapped(struct page *page)
+ 		return;
+ 
+ 	fs_info = btrfs_sb(page->mapping->host->i_sb);
+-	if (fs_info->sectorsize < PAGE_SIZE)
++	if (btrfs_is_subpage(fs_info, page))
+ 		return btrfs_detach_subpage(fs_info, page);
+ 
+ 	detach_page_private(page);
+@@ -3868,7 +3868,7 @@ static void find_next_dirty_byte(struct btrfs_fs_info *fs_info,
+ 	 * For regular sector size == page size case, since one page only
+ 	 * contains one sector, we return the page offset directly.
+ 	 */
+-	if (fs_info->sectorsize == PAGE_SIZE) {
++	if (!btrfs_is_subpage(fs_info, page)) {
+ 		*start = page_offset(page);
+ 		*end = page_offset(page) + PAGE_SIZE;
+ 		return;
+@@ -4250,7 +4250,7 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
+ 	 * Subpage metadata doesn't use page locking at all, so we can skip
+ 	 * the page locking.
+ 	 */
+-	if (!ret || fs_info->sectorsize < PAGE_SIZE)
++	if (!ret || fs_info->nodesize < PAGE_SIZE)
+ 		return ret;
+ 
+ 	num_pages = num_extent_pages(eb);
+@@ -4410,7 +4410,7 @@ static void end_bio_subpage_eb_writepage(struct bio *bio)
+ 	struct bvec_iter_all iter_all;
+ 
+ 	fs_info = btrfs_sb(bio_first_page_all(bio)->mapping->host->i_sb);
+-	ASSERT(fs_info->sectorsize < PAGE_SIZE);
++	ASSERT(fs_info->nodesize < PAGE_SIZE);
+ 
+ 	ASSERT(!bio_flagged(bio, BIO_CLONED));
+ 	bio_for_each_segment_all(bvec, bio, iter_all) {
+@@ -4737,7 +4737,7 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
+ 	if (!PagePrivate(page))
+ 		return 0;
+ 
+-	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
++	if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
+ 		return submit_eb_subpage(page, wbc, epd);
+ 
+ 	spin_lock(&mapping->private_lock);
+@@ -5793,7 +5793,7 @@ static void detach_extent_buffer_page(struct extent_buffer *eb, struct page *pag
+ 		return;
+ 	}
+ 
+-	if (fs_info->sectorsize == PAGE_SIZE) {
++	if (fs_info->nodesize >= PAGE_SIZE) {
+ 		/*
+ 		 * We do this since we'll remove the pages after we've
+ 		 * removed the eb from the radix tree, so we could race
+@@ -6113,7 +6113,7 @@ static struct extent_buffer *grab_extent_buffer(
+ 	 * don't try to insert two ebs for the same bytenr.  So here we always
+ 	 * return NULL and just continue.
+ 	 */
+-	if (fs_info->sectorsize < PAGE_SIZE)
++	if (fs_info->nodesize < PAGE_SIZE)
+ 		return NULL;
+ 
+ 	/* Page not yet attached to an extent buffer */
+@@ -6135,6 +6135,23 @@ static struct extent_buffer *grab_extent_buffer(
+ 	return NULL;
+ }
+ 
++static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
++{
++	if (!IS_ALIGNED(start, fs_info->sectorsize)) {
++		btrfs_err(fs_info, "bad tree block start %llu", start);
++		return -EINVAL;
++	}
++
++	if (fs_info->sectorsize < PAGE_SIZE &&
++	    offset_in_page(start) + fs_info->nodesize > PAGE_SIZE) {
++		btrfs_err(fs_info,
++		"tree block crosses page boundary, start %llu nodesize %u",
++			  start, fs_info->nodesize);
++		return -EINVAL;
++	}
++	return 0;
++}
++
+ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 					  u64 start, u64 owner_root, int level)
+ {
+@@ -6149,10 +6166,8 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	int uptodate = 1;
+ 	int ret;
+ 
+-	if (!IS_ALIGNED(start, fs_info->sectorsize)) {
+-		btrfs_err(fs_info, "bad tree block start %llu", start);
++	if (check_eb_alignment(fs_info, start))
+ 		return ERR_PTR(-EINVAL);
+-	}
+ 
+ #if BITS_PER_LONG == 32
+ 	if (start >= MAX_LFS_FILESIZE) {
+@@ -6165,14 +6180,6 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		btrfs_warn_32bit_limit(fs_info);
+ #endif
+ 
+-	if (fs_info->sectorsize < PAGE_SIZE &&
+-	    offset_in_page(start) + len > PAGE_SIZE) {
+-		btrfs_err(fs_info,
+-		"tree block crosses page boundary, start %llu nodesize %lu",
+-			  start, len);
+-		return ERR_PTR(-EINVAL);
+-	}
+-
+ 	eb = find_extent_buffer(fs_info, start);
+ 	if (eb)
+ 		return eb;
+@@ -6202,7 +6209,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		 * page, but it may change in the future for 16K page size
+ 		 * support, so we still preallocate the memory in the loop.
+ 		 */
+-		if (fs_info->sectorsize < PAGE_SIZE) {
++		if (fs_info->nodesize < PAGE_SIZE) {
+ 			prealloc = btrfs_alloc_subpage(fs_info, BTRFS_SUBPAGE_METADATA);
+ 			if (IS_ERR(prealloc)) {
+ 				ret = PTR_ERR(prealloc);
+@@ -6421,7 +6428,7 @@ void clear_extent_buffer_dirty(const struct extent_buffer *eb)
+ 	int num_pages;
+ 	struct page *page;
+ 
+-	if (eb->fs_info->sectorsize < PAGE_SIZE)
++	if (eb->fs_info->nodesize < PAGE_SIZE)
+ 		return clear_subpage_extent_buffer_dirty(eb);
+ 
+ 	num_pages = num_extent_pages(eb);
+@@ -6453,7 +6460,7 @@ bool set_extent_buffer_dirty(struct extent_buffer *eb)
+ 	WARN_ON(!test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags));
+ 
+ 	if (!was_dirty) {
+-		bool subpage = eb->fs_info->sectorsize < PAGE_SIZE;
++		bool subpage = eb->fs_info->nodesize < PAGE_SIZE;
+ 
+ 		/*
+ 		 * For subpage case, we can have other extent buffers in the
+@@ -6510,7 +6517,16 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
+ 	num_pages = num_extent_pages(eb);
+ 	for (i = 0; i < num_pages; i++) {
+ 		page = eb->pages[i];
+-		btrfs_page_set_uptodate(fs_info, page, eb->start, eb->len);
++
++		/*
++		 * This is special handling for metadata subpage, as regular
++		 * btrfs_is_subpage() can not handle cloned/dummy metadata.
++		 */
++		if (fs_info->nodesize >= PAGE_SIZE)
++			SetPageUptodate(page);
++		else
++			btrfs_subpage_set_uptodate(fs_info, page, eb->start,
++						   eb->len);
+ 	}
+ }
+ 
+@@ -6605,7 +6621,7 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+ 	if (unlikely(test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)))
+ 		return -EIO;
+ 
+-	if (eb->fs_info->sectorsize < PAGE_SIZE)
++	if (eb->fs_info->nodesize < PAGE_SIZE)
+ 		return read_extent_buffer_subpage(eb, wait, mirror_num);
+ 
+ 	num_pages = num_extent_pages(eb);
+@@ -6851,7 +6867,7 @@ static void assert_eb_page_uptodate(const struct extent_buffer *eb,
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 
+-	if (fs_info->sectorsize < PAGE_SIZE) {
++	if (fs_info->nodesize < PAGE_SIZE) {
+ 		bool uptodate;
+ 
+ 		uptodate = btrfs_subpage_test_uptodate(fs_info, page,
+@@ -6952,7 +6968,7 @@ void copy_extent_buffer_full(const struct extent_buffer *dst,
+ 
+ 	ASSERT(dst->len == src->len);
+ 
+-	if (dst->fs_info->sectorsize == PAGE_SIZE) {
++	if (dst->fs_info->nodesize >= PAGE_SIZE) {
+ 		num_pages = num_extent_pages(dst);
+ 		for (i = 0; i < num_pages; i++)
+ 			copy_page(page_address(dst->pages[i]),
+@@ -6961,7 +6977,7 @@ void copy_extent_buffer_full(const struct extent_buffer *dst,
+ 		size_t src_offset = get_eb_offset_in_page(src, 0);
+ 		size_t dst_offset = get_eb_offset_in_page(dst, 0);
+ 
+-		ASSERT(src->fs_info->sectorsize < PAGE_SIZE);
++		ASSERT(src->fs_info->nodesize < PAGE_SIZE);
+ 		memcpy(page_address(dst->pages[0]) + dst_offset,
+ 		       page_address(src->pages[0]) + src_offset,
+ 		       src->len);
+@@ -7354,7 +7370,7 @@ int try_release_extent_buffer(struct page *page)
+ {
+ 	struct extent_buffer *eb;
+ 
+-	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
++	if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
+ 		return try_release_subpage_extent_buffer(page);
+ 
+ 	/*
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 3b2403b6127f..89e888409609 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8129,7 +8129,7 @@ static void wait_subpage_spinlock(struct page *page)
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
+ 	struct btrfs_subpage *subpage;
+ 
+-	if (fs_info->sectorsize == PAGE_SIZE)
++	if (!btrfs_is_subpage(fs_info, page))
+ 		return;
+ 
+ 	ASSERT(PagePrivate(page) && page->private);
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 29bd8c7a7706..17c0bda3ab12 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -107,7 +107,7 @@ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
+ 		ASSERT(PageLocked(page));
+ 
+ 	/* Either not subpage, or the page already has private attached */
+-	if (fs_info->sectorsize == PAGE_SIZE || PagePrivate(page))
++	if (!btrfs_is_subpage(fs_info, page) || PagePrivate(page))
+ 		return 0;
+ 
+ 	subpage = btrfs_alloc_subpage(fs_info, type);
+@@ -124,7 +124,7 @@ void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_subpage *subpage;
+ 
+ 	/* Either not subpage, or already detached */
+-	if (fs_info->sectorsize == PAGE_SIZE || !PagePrivate(page))
++	if (!btrfs_is_subpage(fs_info, page) || !PagePrivate(page))
+ 		return;
+ 
+ 	subpage = (struct btrfs_subpage *)detach_page_private(page);
+@@ -175,7 +175,7 @@ void btrfs_page_inc_eb_refs(const struct btrfs_fs_info *fs_info,
+ {
+ 	struct btrfs_subpage *subpage;
+ 
+-	if (fs_info->sectorsize == PAGE_SIZE)
++	if (!btrfs_is_subpage(fs_info, page))
+ 		return;
+ 
+ 	ASSERT(PagePrivate(page) && page->mapping);
+@@ -190,7 +190,7 @@ void btrfs_page_dec_eb_refs(const struct btrfs_fs_info *fs_info,
+ {
+ 	struct btrfs_subpage *subpage;
+ 
+-	if (fs_info->sectorsize == PAGE_SIZE)
++	if (!btrfs_is_subpage(fs_info, page))
+ 		return;
+ 
+ 	ASSERT(PagePrivate(page) && page->mapping);
+@@ -208,6 +208,7 @@ static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
+ 	ASSERT(PagePrivate(page) && page->private);
+ 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+ 	       IS_ALIGNED(len, fs_info->sectorsize));
++	ASSERT(btrfs_is_subpage(fs_info, page));
+ 	/*
+ 	 * The range check only works for mapped page, we can still have
+ 	 * unmapped page like dummy extent buffer pages.
+@@ -319,7 +320,7 @@ bool btrfs_subpage_end_and_test_writer(const struct btrfs_fs_info *fs_info,
+ int btrfs_page_start_writer_lock(const struct btrfs_fs_info *fs_info,
+ 		struct page *page, u64 start, u32 len)
+ {
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {
+ 		lock_page(page);
+ 		return 0;
+ 	}
+@@ -336,7 +337,7 @@ int btrfs_page_start_writer_lock(const struct btrfs_fs_info *fs_info,
+ void btrfs_page_end_writer_lock(const struct btrfs_fs_info *fs_info,
+ 		struct page *page, u64 start, u32 len)
+ {
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page))
+ 		return unlock_page(page);
+ 	btrfs_subpage_clamp_range(page, &start, &len);
+ 	if (btrfs_subpage_end_and_test_writer(fs_info, page, start, len))
+@@ -620,7 +621,7 @@ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(checked);
+ void btrfs_page_set_##name(const struct btrfs_fs_info *fs_info,		\
+ 		struct page *page, u64 start, u32 len)			\
+ {									\
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
+ 		set_page_func(page);					\
+ 		return;							\
+ 	}								\
+@@ -629,7 +630,7 @@ void btrfs_page_set_##name(const struct btrfs_fs_info *fs_info,		\
+ void btrfs_page_clear_##name(const struct btrfs_fs_info *fs_info,	\
+ 		struct page *page, u64 start, u32 len)			\
+ {									\
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
+ 		clear_page_func(page);					\
+ 		return;							\
+ 	}								\
+@@ -638,14 +639,14 @@ void btrfs_page_clear_##name(const struct btrfs_fs_info *fs_info,	\
+ bool btrfs_page_test_##name(const struct btrfs_fs_info *fs_info,	\
+ 		struct page *page, u64 start, u32 len)			\
+ {									\
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)	\
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page))	\
+ 		return test_page_func(page);				\
+ 	return btrfs_subpage_test_##name(fs_info, page, start, len);	\
+ }									\
+ void btrfs_page_clamp_set_##name(const struct btrfs_fs_info *fs_info,	\
+ 		struct page *page, u64 start, u32 len)			\
+ {									\
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
+ 		set_page_func(page);					\
+ 		return;							\
+ 	}								\
+@@ -655,7 +656,7 @@ void btrfs_page_clamp_set_##name(const struct btrfs_fs_info *fs_info,	\
+ void btrfs_page_clamp_clear_##name(const struct btrfs_fs_info *fs_info, \
+ 		struct page *page, u64 start, u32 len)			\
+ {									\
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
+ 		clear_page_func(page);					\
+ 		return;							\
+ 	}								\
+@@ -665,7 +666,7 @@ void btrfs_page_clamp_clear_##name(const struct btrfs_fs_info *fs_info, \
+ bool btrfs_page_clamp_test_##name(const struct btrfs_fs_info *fs_info,	\
+ 		struct page *page, u64 start, u32 len)			\
+ {									\
+-	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)	\
++	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page))	\
+ 		return test_page_func(page);				\
+ 	btrfs_subpage_clamp_range(page, &start, &len);			\
+ 	return btrfs_subpage_test_##name(fs_info, page, start, len);	\
+@@ -694,7 +695,7 @@ void btrfs_page_assert_not_dirty(const struct btrfs_fs_info *fs_info,
+ 		return;
+ 
+ 	ASSERT(!PageDirty(page));
+-	if (fs_info->sectorsize == PAGE_SIZE)
++	if (!btrfs_is_subpage(fs_info, page))
+ 		return;
+ 
+ 	ASSERT(PagePrivate(page) && page->private);
+@@ -722,8 +723,8 @@ void btrfs_page_unlock_writer(struct btrfs_fs_info *fs_info, struct page *page,
+ 	struct btrfs_subpage *subpage;
+ 
+ 	ASSERT(PageLocked(page));
+-	/* For regular page size case, we just unlock the page */
+-	if (fs_info->sectorsize == PAGE_SIZE)
++	/* For non-subpage case, we just unlock the page */
++	if (!btrfs_is_subpage(fs_info, page))
+ 		return unlock_page(page);
+ 
+ 	ASSERT(PagePrivate(page) && page->private);
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index 7accb5c40d33..a87e53e8c24c 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -4,6 +4,7 @@
+ #define BTRFS_SUBPAGE_H
+ 
+ #include <linux/spinlock.h>
++#include "btrfs_inode.h"
+ 
+ /*
+  * Extra info for subpapge bitmap.
+@@ -74,6 +75,30 @@ enum btrfs_subpage_type {
+ 	BTRFS_SUBPAGE_DATA,
+ };
+ 
++static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info,
++				    struct page *page)
++{
++	if (fs_info->sectorsize >= PAGE_SIZE)
++		return false;
++
++	/*
++	 * Only data pages (either through DIO or compression) can have no
++	 * mapping. And if page->mapping->host is data inode, it's subpage.
++	 * As we have ruled our sectorsize >= PAGE_SIZE case already.
++	 */
++	if (!page->mapping || !page->mapping->host ||
++	    is_data_inode(page->mapping->host))
++		return true;
++
++	/*
++	 * Now the only remaining case is metadata, which we only go subpage
++	 * routine if nodesize < PAGE_SIZE.
++	 */
++	if (fs_info->nodesize < PAGE_SIZE)
++		return true;
++	return false;
++}
++
+ void btrfs_init_subpage_info(struct btrfs_subpage_info *subpage_info, u32 sectorsize);
+ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
+ 			 struct page *page, enum btrfs_subpage_type type);
+-- 
+2.34.1
+
