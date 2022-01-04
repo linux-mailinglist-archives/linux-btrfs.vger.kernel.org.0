@@ -2,90 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006CF484837
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 20:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D033484971
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 21:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbiADTGk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Jan 2022 14:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234678AbiADTGk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jan 2022 14:06:40 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABDDC061785
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 11:06:40 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id l16so15617780plg.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Jan 2022 11:06:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wIU3J482L2HImj/M7R+fXYKFsH0w5gR4YGEoAmTcGjc=;
-        b=JqUfSCH0gNRmBEZivXmIZBqiJWZC3f0gKXawXUk/5m81ir0nsEab8NnikNVCnTcv58
-         DPY/ZNMzske4DAC3qW8/DLG5yzRvXWVhuec4ZfWH2YXtvLWPKvNcuksYK9i40dwOcMsP
-         t6wQdZzdgqdWepVsDdwp1di0fLpKCOEH2XMYCtSYRmSTjflbk2gGiGDBKS1eX1xPLZRQ
-         q/To+qpyyGftKnvUPpKii3aMYeQXLUAHc/jqnx54CAU+1xT5xU1Loi827jxvy+irpYRh
-         AENMWfS4vjakeqFse5b3PrOSfU7XWqMqWP9U3MTNjZrqHOZXCK4QXcpG57MOvBety5jO
-         5rrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wIU3J482L2HImj/M7R+fXYKFsH0w5gR4YGEoAmTcGjc=;
-        b=Hej1jr8QzmAkDpBib98tpj6CY1AKjeIpuF8XH3NoZQ31yau4uK6jeSfFKWndbiaCoK
-         62z7XE0KysCDcfxi8a730ioRRuJiCQmpzayAPMijPZGb487Y15VDtovZT5OEcoCAgH6B
-         eJB+wXsdBrsPWpLtsAC2aK9GyBa2ufr5j8G4VrqDKnECmrJnyerdu/BgtAb6Luy4kdwl
-         eirexUIBqxiwfluwnVggfklqnmwM0FR45dMNUAWA4p44yGPcmYQUA1x1GQtVLFuIwPci
-         5JKxPfJf7yDRS8YP/h74Csmpo84Be7i9RAtIYG3fnSOrlk8Hw/NlbWlA+FZI5fCxNMPJ
-         leJg==
-X-Gm-Message-State: AOAM530IJRkAgJ/WDGAdF/fITsDvhv7EjkV/lnLxMbbila2vpbKkWG8j
-        QyTxcKHk/h1WnLJ16ldNz7qduCfCQw92Rw==
-X-Google-Smtp-Source: ABdhPJx2Knho2SUpw0270NeHzwWXeefQ77+9gVkZzvHPJPl8XnmGVGi0b0nSalDE/G82t9/BjYsRAA==
-X-Received: by 2002:a17:90b:1b04:: with SMTP id nu4mr19349907pjb.205.1641323199661;
-        Tue, 04 Jan 2022 11:06:39 -0800 (PST)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:7bfc])
-        by smtp.gmail.com with ESMTPSA id x40sm40917010pfu.185.2022.01.04.11.06.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jan 2022 11:06:39 -0800 (PST)
-Date:   Tue, 4 Jan 2022 11:06:38 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v11 01/14] fs: export rw_verify_area()
-Message-ID: <YdSavheBK2RcpKZ1@relinquished.localdomain>
-References: <cover.1630514529.git.osandov@fb.com>
- <9cd494dbd55c46a22f07c56ca42a399af78accd1.1630514529.git.osandov@fb.com>
- <YZanS89YcCeN9i3y@relinquished.localdomain>
+        id S233429AbiADUtY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jan 2022 15:49:24 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:42626 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233308AbiADUtY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Jan 2022 15:49:24 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 4053B13A05C; Tue,  4 Jan 2022 15:49:23 -0500 (EST)
+Date:   Tue, 4 Jan 2022 15:49:23 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Eric Levy <contact@ericlevy.name>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: "hardware-assisted zeroing"
+Message-ID: <YdSy09eCHqU5sgez@hungrycats.org>
+References: <2c80ca8507181b1e65a67bbd4dca459d24a47da2.camel@ericlevy.name>
+ <b0d434dd-e76d-fdfa-baa2-bb7e00d28b01@gmx.com>
+ <487b4d965a6942d6c2d1fad91e4e5a4aa29e2871.camel@ericlevy.name>
+ <e3fd9851-ccf4-6f04-b376-56c6f7383de7@gmx.com>
+ <faa7edb08a5cf68e8668546facbb8c60ae5a22e7.camel@ericlevy.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZanS89YcCeN9i3y@relinquished.localdomain>
+In-Reply-To: <faa7edb08a5cf68e8668546facbb8c60ae5a22e7.camel@ericlevy.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 11:19:39AM -0800, Omar Sandoval wrote:
-> On Wed, Sep 01, 2021 at 10:00:56AM -0700, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > I'm adding Btrfs ioctls to read and write compressed data, and rather
-> > than duplicating the checks in rw_verify_area(), let's just export it.
-> > 
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > ---
-> >  fs/internal.h      | 5 -----
-> >  fs/read_write.c    | 1 +
-> >  include/linux/fs.h | 1 +
-> >  3 files changed, 2 insertions(+), 5 deletions(-)
+On Tue, Jan 04, 2022 at 05:50:47AM -0500, Eric Levy wrote:
+> On Mon, 2022-01-03 at 19:51 +0800, Qu Wenruo wrote:
 > 
-> Could I please get an ack from the VFS side on this patch and "fs:
-> export variant of generic_write_checks without iov_iter"? We're going
-> the route of doing this as a Btrfs ioctl since we couldn't agree on a
-> generic interface, so this is all I need from the VFS.
+> > The filesystem (normally) doesn't maintain such info, what a
+> > filesystem
+> > really care is the unused/used space.
+> > 
+> > For fstrim case, the filesystem will issue such discard comand to
+> > most
+> > (if not all) unused space.
+> > 
+> > And one can call fstrim multiple times to do the same work again and
+> > again, the filesystem won't really care.
+> > (even the operation can be very time consuming)
+> > 
+> > The special thing in btrfs is, there is a cache to record which
+> > blocks
+> > have been trimmed. (only in memory, thus after unmount, such cache is
+> > lost, and on next mount will need to be rebuilt)
+> > 
+> > This is to reduce the trim workload with recent async-discard
+> > optimization.
+> 
+> So in the general case (i.e. no session cache), the trim operation
+> scans all the allocation structures, to process all non-allocated
+> space?
+> 
+> > > Why is the
+> > > command not sent instantly, as soon as the space is freed by the
+> > > file
+> > > system?
+> > 
+> > If you use discard mount option, then most filesystems will send the
+> > discard command to the underlying device when some space is freed.
+> > 
+> > But please keep in mind that, how such discard command gets handled
+> > is
+> > hardware/storage stack dependent.
+> > 
+> > Some disk firmware may choose to do discard synchronously, which can
+> > hugely slow down other operations.
+> > (That's why btrfs has async-discard optimization, and also why fstrim
+> > is
+> > preferred, to avoid unexpected slow down).
+> 
+> Yes, but of course as I have used "instantly", I meant, not necessarily
+> synchronously, but simply near in time.
+> 
+> The trim operation is not avoiding bottlenecks, even if it is non-
+> blocking, because it operates at the level of the entire file system,
+> in a single operation. If Btrfs is able to process discard operations
+> asynchronously, then mounting with the discard option seems preferable,
+> as it requires no redundant work, adds no serious delay until until the
+> calls are made, and depends on no activity (not even automatic
+> activity) from the admin.
+> 
+> I fail to see a reason for preferring trim over discard.
 
-Ping.
+Discard isn't free, and it can cost more than it gives back.
+
+The gain from discard can be close to zero if you're overwriting the
+same blocks over and over again (e.g. as btrfs does in metadata pages).
+The SSD will keep recycling the blocks without hints from outside to help.
+It depends on workload, but on many use cases 60-90% of the discards
+btrfs will issue with the mount option are not necessary.  For the rest,
+a fstrim every few days is sufficient.
+
+The cost of discard can be significantly higher than zero.  Discard
+requires time on the bus to send the trim command, which is a significant
+hit for SATA (about the same as a short flushed write).  Popular drive
+firmwares can't queue the discard command, which is a significant hit for
+IO latency as the IO queue has to be brought to a full stop, the discard
+command has to be sent and run, and the IO queue has to be started back
+up again.  Before the 'discard=async' option was implemented, 'discard'
+was unusably slow on many SSD models, some of them popular.
+
+Cheap SSD devices wear out faster when issued a lot of discards mixed
+with small writes, as they lack the specialized hardware and firmware
+necessary to make discards low-wear operations.  The same flash component
+is used for both FTL persistence (where discards cause wear) and user
+data (where writes cause wear), so interleaved short writes and discards
+cause double the wear compared to the same short writes without discards.
+The fstrim man page advises not running trim more than once a week to
+avoid prematurely aging SSDs in this category, while the discard mount
+option is equivalent to running fstrim 2000-3000 times a day.
+
+Discard has other side-effects in btrfs as well.  While a block group
+is undergoing discard, it cannot be modified, which will force btrfs
+to spread allocations out across more of the logical address space.
+That can cause performance issues with fragmentation later on (more CPU
+usage, more metadata fan-out for extents of the same file).  The discard
+mount option can affect performance benchmarks in either direction, even
+if the underlying storage is RAM that doesn't implement discard at all.
+
+You'll need to benchmark this with your hardware and your workload to
+find out if trim is better than discard or the other way around for you,
+but don't be surprised by either result.
