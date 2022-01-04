@@ -2,570 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DA7483BD6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 07:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EE3483DE6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jan 2022 09:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbiADGNK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Jan 2022 01:13:10 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:59182 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbiADGNK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jan 2022 01:13:10 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D92F51F397
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 06:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1641276788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=m2QnBedkW1oucyxQOsC9B7mSwFfzGAWQi/n9a1Rzmhs=;
-        b=S8XQOoUu/gNqI2ctyb+AiyatsdX/jIJPjuIerU4voasf/A7bK3ztvHE5z1IiSSeDlt7ymq
-        Iy52Fd96iLQqAuYLfnlMPTOywHp153cvQJnmxHXLzeoyzaNMgEK0YISGz3keCP/4n4uTha
-        h9JETJ0hnHEu3Ti9jhyviKx8pm1MtTc=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 231F913AA5
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 06:13:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1dDbNXPl02HKOAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Jan 2022 06:13:07 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: make nodesize >= PAGE_SIZE case to reuse the non-subpage routine
-Date:   Tue,  4 Jan 2022 14:12:50 +0800
-Message-Id: <20220104061250.42703-1-wqu@suse.com>
-X-Mailer: git-send-email 2.34.1
+        id S232728AbiADIPU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jan 2022 03:15:20 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:37386 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232675AbiADIPT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Jan 2022 03:15:19 -0500
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2047xnrV006494;
+        Tue, 4 Jan 2022 08:15:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : from : to : cc : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=rcR8Ar5KTvo8Dnq37nGQ0zPVMeTiJJSzW03drXNAa3w=;
+ b=NG47cVAkUSM+9Tw5ZyF9BT/B2JKqHjsUpxhJINOvVxInJQ53y0HYwQtORFu/+vs9q6cu
+ Nehjt0JqYssQiBSv6U4Wsdc9GgNap7BoLYqgZ/vHt29QgybqI1OMJ1LWB+ddaU0hCwXK
+ TBHpckhrniudjkz3BzT7KjxTPD8TbL0nJ22ehR0olSO+J38II9NL974qzsUdazjhzp/G
+ BaCKpG3hsvXrHZVaQPleAu99E0WFLvHZS8Z6tvsk+JQwY1869gZumlC6CnrfiNBDLKEn
+ K6Vy33vGG2gWIJltD9qgBitxlnR6fbxnP7yTJNZpJmjhUDvEBR2by7b4eoB9Q8TG4qUG Tg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3dc3v4hjh4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 04 Jan 2022 08:15:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 20485hhY195300;
+        Tue, 4 Jan 2022 08:15:12 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+        by userp3030.oracle.com with ESMTP id 3dac2w5am3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 04 Jan 2022 08:15:12 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O4kgpVPB9333VwAfDCqJIun9EflCcQIpmG68g/iNEXozvsq8gBNBG9e+vdilaquCuV2JX4TDVoWHqvVGAJK5MGPA1FI4KbctY2Hcdnvvtj/Ij6QON7NRGMo/pKX/ydmbcurFBxNF2luhh2ojvf3oj1hjJ8gvNID/v30ZZR6ed8P/qD8RSxQoQRTjUN3cw2BK0pcPqk9iblnts2Spj+8orW/Ukf7n3eVKpB5QvHpapLkOAbzIChmhsTZYdQmh0bSPFUEZGFHtL8AYVRTkEMUFk13W4UstV9UzX2oR0qPHsdVnb+68fE9EbN88WAQkR6WDD0ieicFCKFGwbXod4P1W/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rcR8Ar5KTvo8Dnq37nGQ0zPVMeTiJJSzW03drXNAa3w=;
+ b=U4ja4lqJlrhaYkgI7qr43XvPaeCJS4Q+jhJK8ZREn8CXc+9iRLMxqnwbfY5E9dDG8vxsL8MkAJO361CAggEhN7HyF5Z2tHldpySQ4HVh7jLzjJMQttvrK0S9bleLatZ05DclVj0bckJe97HnpesHBTL5yXZiJk+Ykh68T0B3FW8xuKcsBsPxjhpZ+GsP8hjwal80CKXJ3/8bfu29/Bl467fByLxZAZTvLvS91z9fWOqc77TV7zA9oTQUQinpLw8Q/6t+9/DwKO/jxLjU3Q79CJP1qkWbY29+n17FQQ/eyipVnA8tUhi7FrK2ljx2tg1UemYthj6JIi3Rdpb5Lc4XwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rcR8Ar5KTvo8Dnq37nGQ0zPVMeTiJJSzW03drXNAa3w=;
+ b=u6l18rrdRPA9fWIm55pKTT9XwDxZTm0OLrh2/TQ2Qy+GWAuVKO0KJhk21aGsIiiBuOhtirx+Nbr1dfldp9DHYqyNeRtVRqLAl3lkxWYjHdEpTqSBxjMj7PePEMyMV5mKScMHj+80sPTBfa2arE0vcA7vDGcrwhqo0OUzRJaxtVM=
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BLAPR10MB5188.namprd10.prod.outlook.com (2603:10b6:208:30d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4844.14; Tue, 4 Jan
+ 2022 08:15:10 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::f450:87d2:4d68:5e00]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::f450:87d2:4d68:5e00%8]) with mapi id 15.20.4844.016; Tue, 4 Jan 2022
+ 08:15:10 +0000
+Message-ID: <18d607da-3d98-3414-d93e-4267a61fa4c3@oracle.com>
+Date:   Tue, 4 Jan 2022 16:15:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH v2 0/2] btrfs: match device by dev_t
+Content-Language: en-US
+From:   Anand Jain <anand.jain@oracle.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+References: <cover.1639155519.git.anand.jain@oracle.com>
+In-Reply-To: <cover.1639155519.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG3P274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::36)
+ To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 926c8244-8752-4c6c-68b1-08d9cf5a530e
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5188:EE_
+X-Microsoft-Antispam-PRVS: <BLAPR10MB5188C1647D8EEBB8358E9341E54A9@BLAPR10MB5188.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gi8KEIBOE4cfQe/rruQ5PrbLpYdXEdAijH/GpJWrUDjqWlyfTJIGAT9Cc2xnzvRfSWo8O9Mj9YfTvlXJduFPiw5bT4bHjr1HyhwMr+OSGDr4iZAhJJv0D2QPnigePzr6sJ0LIfBwT4v0sC/w8mAmAPppsJCkXQKJawxBXA9qSjU4U2axoFjQimOToJE75k5HUzHe5K8oXYvVEOPO2oDrmRBioN+oUFuYNy22oVhmesexEChPZKmyw5lzasgF0dJGbNP9+HmXtBSnkwIGD8q4z/m+odaU3wJ3MXEvrjbJL0Wa1jTrL5QDhAyrYcnpHzUm/8xD4vzTnKWTGAdHJhN8NehP9VKHEonPnpBw2AXyp8bX6hRVV3yvbDAKIEl5vg+uf/0BEAxInZmSy56ZW0xF01w0ZJOKQuoCkZj+O/Rjj6ZEOBhfnhtRa3xtYUBB/qRoiXtFjs5RPD+/JnD1x45qpxL9Jf3QZBe2+eyhf0wyyO5+2aTTPsVCf7oBOjEj29oQ0wF6GLV4URhneJgMqcTiZpghfQ1qiN/evflqs77Hkuzh0OAYSxGoCJhybVf1ybVT3yDWMfSjAx2osKVEFURrORTrdft6ekR04a/3lF7RpWZQ6hooDqvevGCWZvkGmZcQtRahrMl3eyoudbsLjkGk66fZCSq7u+gChqPpX7+rV9AE9rbpZ30trVHQYUW5jJVVXR9yRTIFnQUErDckgFy6N3iQ3lPX8Gd939hpJNaO+Ps=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2906002)(5660300002)(4326008)(44832011)(6666004)(186003)(38100700002)(86362001)(6506007)(53546011)(31686004)(36756003)(2616005)(66946007)(31696002)(83380400001)(66556008)(66476007)(8936002)(316002)(8676002)(508600001)(26005)(6512007)(6486002)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VVQ4eFh6Wjh2SWswY014c3BJZ3IvZm5HVEs5NGdZQlowWG1VZU81R01hemVy?=
+ =?utf-8?B?OWs2RVd4ckNObi9HRDNacUUzSS9VSy9uOGl5WFFuV2tOb0lMYUtjeDk1UVRP?=
+ =?utf-8?B?V1FlbGh5WlAwdmdmaFA1TUhXUWl1ZVhHQ0cvcEtTUm5vd1N5bGxQT3ZKd1Fa?=
+ =?utf-8?B?NVVXaEJMSURSRzNUaVgxb0NlMXYrOFBBcWFsUVkzdnZvT2lrOWhtaXVvbVRQ?=
+ =?utf-8?B?ZGVNcTRrbVhBMjYwcHhTMmdUaDNxWnZINlh3ZTF4bmlUaVF5MTd1a1ZzZUwz?=
+ =?utf-8?B?a1hJbGpLOWFlaXNUbGlWVE54MVIvUnE0aXUrd1FISndUcDcxa2xhMVluWkRW?=
+ =?utf-8?B?dmtFZGRyc2t6ZFVRRmpUaTZLY29pQlNVaStzeHRXa1FxT0lEUHRSNjBrNGZa?=
+ =?utf-8?B?Z2NkMGpoL2J2MWJnQnlsUmZvRlZuTSthamJGcW10dVlzRW55MjcyTnZnRld6?=
+ =?utf-8?B?dm1YYkc1a3dOTEdBR1Z2cFFMUTBOWlFwQmdQT0YwN0NaTWppQkZlWFhWTytx?=
+ =?utf-8?B?RFZKQ2d5NlZDMklZNG91ejJkUkNQUFFxMUMyMmhZRnZMS2twREJsVnVpaVNu?=
+ =?utf-8?B?ZkZlTnFFM285eXhweEwyb3NrMENRcitMZWcrblVDUmQrMXlHcWNPTE9vWVVG?=
+ =?utf-8?B?S1FoazBGOWpETTgzcDlOSklLSVc3emJKYzhOSzVDUUdJNU5OQytJQ1dmSWYy?=
+ =?utf-8?B?c281ZktxWUtydDV4eEJPanJLWmp6cnhNTW5KSFhRWWFBNzdiK0txYWpvbmcx?=
+ =?utf-8?B?OWFiTWxIZDkwdUI3aWNOZElVbGRZREFsd0tTdFFtSGRTL0tmOEZQd0JRcHhE?=
+ =?utf-8?B?d3k2Y3FmYXlGaUMwWjVMWnFvMGZaQklOYnE2OUZ2cnFPeFdrSWhKNkswelht?=
+ =?utf-8?B?aGJFQk43L25kQWx1VndUdXZBb0xxTGZQenVyZGRhVm45enlLc3NNZzhHZFVk?=
+ =?utf-8?B?WSs5cnR2RmtLMS9tZ2tDRzZrNDZQQlA0QWV5a1ltNWJ2OFBDVStqalhLUFJh?=
+ =?utf-8?B?alVHVGcrWVVkQTZWREdqbEoyajhNUmVsQVlZT1dRN0xxTmxUbmtSSy9yWTds?=
+ =?utf-8?B?SmpYWEIzbWNJN3VOajRtV0R5ZVVSQnJqc3RxZGRlNy9HRzVBQ1hxcWZCbmlt?=
+ =?utf-8?B?MzVka0k4WkJOLzV3Wjh1ZEtRZjhMTVdyakk3TGx1MC9nRTJwdndxbFdyUWNn?=
+ =?utf-8?B?Nk55bHllNENpY0NiZWw3TmdxeHQrS2xRL0dPRkg0cDBqajFiZGhJNEtQZGRI?=
+ =?utf-8?B?WHpkcGdmTGk0Ri9hb2FjSDNYQU0wZ1JVdlc4RmpLUW9KTHdRRzdwaHIxeElN?=
+ =?utf-8?B?Z2pFbUswS2NjMlkvWkxDK09aTVhhUC9vQ1JEY3BpaHJjeS9TRXdSOWpzQktG?=
+ =?utf-8?B?UXlTYlFmbFdwRGdHVE1WOGwrVU1kRDRXM0NtUG56ZUxobTN1bVBlTjN4NC9S?=
+ =?utf-8?B?NHBHSktWdVNEamptU3V5YnFKaUY4MW9taHIwdnkzRGRYYkFsam9PVHdTS0lK?=
+ =?utf-8?B?Y1EzOWV5TmluM1gzRUJTbkkzR242ZGkzZHowNWFVZTU3OC85NnNJVllHcWJx?=
+ =?utf-8?B?RDlaa1FraGM3eUNVeDlYZ29tMSt6YjZMR01mRGROSFRVbDRHTkhXZ2ppcjNC?=
+ =?utf-8?B?MTlNNFM1WlB0WEFXQUhid3BTeHVYb3pqRkxWa3JSQk1LY3Rleld3d2VPOUw5?=
+ =?utf-8?B?eWtrTEY3Z1RZYVFQUnNpY0hjQ01VTGxvdTZ1RUZuQ05PQTlWWXcwWENUaXdV?=
+ =?utf-8?B?RitQb3NoeDBlaklwRGlrRmJuZlAzM0dIb2pXK2RlNGJsb2NxcXZNL1E5Z2Jt?=
+ =?utf-8?B?V21WNVB1OFVYZVN5SnFwUUtLb29YZlVkQlgvdFh4eWhWZUpiTG9KNzFDbjNo?=
+ =?utf-8?B?dTFCMXYzazFqNUprVVIwYnhMWHBVRk1tbG1YamQyNEZpdXljMHQ3OFJJSDdI?=
+ =?utf-8?B?R1JxSG51UnFsODNiaDh5dmgzRm5GY2ExNnRqQUo4cCtpNmw1cUl2bEFqVUc5?=
+ =?utf-8?B?MzR3RU8rWmZQcmRuRUpnZ0VCMmNGOGR0YU1ma3ZNbDhGbVFuU2MxQnVaWHdj?=
+ =?utf-8?B?MDhiRkkxVkdoVFV0YlBWbDdtMmFiZGJHS3NnZkZGRTBycFJZL2w5ckhuREV6?=
+ =?utf-8?B?RHV4S3l0UUc5WmNOSURPcVFwQnJGTERsZytvbmRHTUlvajkwWnA1ajBPak9z?=
+ =?utf-8?Q?RwFjTBGg0MeRsBtVVZ1bg6Q=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 926c8244-8752-4c6c-68b1-08d9cf5a530e
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2022 08:15:10.1469
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OiAGrpsUQ3AqO0BOgzGEi+YfSo8uXET4D36Q89PTEu7Q5F+4O+6FWOCI8o6jlQWRkDRsWl+7MZCGZpONnuZSYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5188
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10216 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 spamscore=0 phishscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2201040054
+X-Proofpoint-GUID: ePAboU8qQ6ieP1bumjFDwOkJdvb_Jc4N
+X-Proofpoint-ORIG-GUID: ePAboU8qQ6ieP1bumjFDwOkJdvb_Jc4N
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The reason why we only support 64K page size for subpage is, for 64K
-page size we can ensure no matter what the nodesize is, we can fit it
-into one page.
 
-When other page size comes, especially like 16K, the limitation is a bit
-blockage.
+Gentle ping?
 
-To remove such limitation, we allow nodesize >= PAGE_SIZE case to go
-the non-subpage routine.
-By this, we can allow 4K sectorsize on 16K page size.
+Thanks, Anand
 
-Although this introduces another smaller limitation, the metadata can
-not cross page boundary, which is already met by most recent mkfs.
 
-Another small improvement is, we can avoid the overhead for metadata if
-nodesize >= PAGE_SIZE.
-For 4K sector size and 64K page size/node size, or 4K sector size and
-16K page size/node size, we don't need to allocate extra memory for the
-metadata pages.
-
-Please note that, this patch will not yet enable other page size support
-yet.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Reason for RFC:
-
-I have tried my best to create btrfs_is_subpage() wrapper to handle both
-data and metadata pages.
-
-But the truth is, there is always some odd balls for that function.
-
-We have no way to determine if a unmapped page is data or metadata.
-As compression/DIO have unammped data page, while metadata can have
-cloned extent mapped.
-
-Thus we have some open nodesize >= PAGE_SIZE check in metadata paths, to
-handle unmapped extent buffer.
-
-I'm still not super happy with the solution, thus any idea to remove the
-several open nodesize check would be welcomed.
----
- fs/btrfs/disk-io.c   |  4 +--
- fs/btrfs/extent_io.c | 80 ++++++++++++++++++++++++++------------------
- fs/btrfs/inode.c     |  2 +-
- fs/btrfs/subpage.c   | 31 ++++++++---------
- fs/btrfs/subpage.h   | 25 ++++++++++++++
- 5 files changed, 92 insertions(+), 50 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 87a5addbedf6..884e0b543136 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -505,7 +505,7 @@ static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct bio_vec *bvec
- 	u64 found_start;
- 	struct extent_buffer *eb;
- 
--	if (fs_info->sectorsize < PAGE_SIZE)
-+	if (fs_info->nodesize < PAGE_SIZE)
- 		return csum_dirty_subpage_buffers(fs_info, bvec);
- 
- 	eb = (struct extent_buffer *)page->private;
-@@ -690,7 +690,7 @@ int btrfs_validate_metadata_buffer(struct btrfs_bio *bbio,
- 
- 	ASSERT(page->private);
- 
--	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
-+	if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
- 		return validate_subpage_buffer(page, start, end, mirror);
- 
- 	eb = (struct extent_buffer *)page->private;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d6d48ecf823c..f43a23bb67eb 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2710,7 +2710,7 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
- 		btrfs_page_set_error(fs_info, page, start, len);
- 	}
- 
--	if (fs_info->sectorsize == PAGE_SIZE)
-+	if (!btrfs_is_subpage(fs_info, page))
- 		unlock_page(page);
- 	else
- 		btrfs_subpage_end_reader(fs_info, page, start, len);
-@@ -2943,7 +2943,7 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
- static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
- {
- 	ASSERT(PageLocked(page));
--	if (fs_info->sectorsize == PAGE_SIZE)
-+	if (!btrfs_is_subpage(fs_info, page))
- 		return;
- 
- 	ASSERT(PagePrivate(page));
-@@ -2965,7 +2965,7 @@ static struct extent_buffer *find_extent_buffer_readpage(
- 	 * For regular sectorsize, we can use page->private to grab extent
- 	 * buffer
- 	 */
--	if (fs_info->sectorsize == PAGE_SIZE) {
-+	if (fs_info->nodesize >= PAGE_SIZE) {
- 		ASSERT(PagePrivate(page) && page->private);
- 		return (struct extent_buffer *)page->private;
- 	}
-@@ -3458,7 +3458,7 @@ static int attach_extent_buffer_page(struct extent_buffer *eb,
- 	if (page->mapping)
- 		lockdep_assert_held(&page->mapping->private_lock);
- 
--	if (fs_info->sectorsize == PAGE_SIZE) {
-+	if (fs_info->nodesize >= PAGE_SIZE) {
- 		if (!PagePrivate(page))
- 			attach_page_private(page, eb);
- 		else
-@@ -3493,7 +3493,7 @@ int set_page_extent_mapped(struct page *page)
- 
- 	fs_info = btrfs_sb(page->mapping->host->i_sb);
- 
--	if (fs_info->sectorsize < PAGE_SIZE)
-+	if (btrfs_is_subpage(fs_info, page))
- 		return btrfs_attach_subpage(fs_info, page, BTRFS_SUBPAGE_DATA);
- 
- 	attach_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
-@@ -3510,7 +3510,7 @@ void clear_page_extent_mapped(struct page *page)
- 		return;
- 
- 	fs_info = btrfs_sb(page->mapping->host->i_sb);
--	if (fs_info->sectorsize < PAGE_SIZE)
-+	if (btrfs_is_subpage(fs_info, page))
- 		return btrfs_detach_subpage(fs_info, page);
- 
- 	detach_page_private(page);
-@@ -3868,7 +3868,7 @@ static void find_next_dirty_byte(struct btrfs_fs_info *fs_info,
- 	 * For regular sector size == page size case, since one page only
- 	 * contains one sector, we return the page offset directly.
- 	 */
--	if (fs_info->sectorsize == PAGE_SIZE) {
-+	if (!btrfs_is_subpage(fs_info, page)) {
- 		*start = page_offset(page);
- 		*end = page_offset(page) + PAGE_SIZE;
- 		return;
-@@ -4250,7 +4250,7 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
- 	 * Subpage metadata doesn't use page locking at all, so we can skip
- 	 * the page locking.
- 	 */
--	if (!ret || fs_info->sectorsize < PAGE_SIZE)
-+	if (!ret || fs_info->nodesize < PAGE_SIZE)
- 		return ret;
- 
- 	num_pages = num_extent_pages(eb);
-@@ -4410,7 +4410,7 @@ static void end_bio_subpage_eb_writepage(struct bio *bio)
- 	struct bvec_iter_all iter_all;
- 
- 	fs_info = btrfs_sb(bio_first_page_all(bio)->mapping->host->i_sb);
--	ASSERT(fs_info->sectorsize < PAGE_SIZE);
-+	ASSERT(fs_info->nodesize < PAGE_SIZE);
- 
- 	ASSERT(!bio_flagged(bio, BIO_CLONED));
- 	bio_for_each_segment_all(bvec, bio, iter_all) {
-@@ -4737,7 +4737,7 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
- 	if (!PagePrivate(page))
- 		return 0;
- 
--	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
-+	if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
- 		return submit_eb_subpage(page, wbc, epd);
- 
- 	spin_lock(&mapping->private_lock);
-@@ -5793,7 +5793,7 @@ static void detach_extent_buffer_page(struct extent_buffer *eb, struct page *pag
- 		return;
- 	}
- 
--	if (fs_info->sectorsize == PAGE_SIZE) {
-+	if (fs_info->nodesize >= PAGE_SIZE) {
- 		/*
- 		 * We do this since we'll remove the pages after we've
- 		 * removed the eb from the radix tree, so we could race
-@@ -6113,7 +6113,7 @@ static struct extent_buffer *grab_extent_buffer(
- 	 * don't try to insert two ebs for the same bytenr.  So here we always
- 	 * return NULL and just continue.
- 	 */
--	if (fs_info->sectorsize < PAGE_SIZE)
-+	if (fs_info->nodesize < PAGE_SIZE)
- 		return NULL;
- 
- 	/* Page not yet attached to an extent buffer */
-@@ -6135,6 +6135,23 @@ static struct extent_buffer *grab_extent_buffer(
- 	return NULL;
- }
- 
-+static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
-+{
-+	if (!IS_ALIGNED(start, fs_info->sectorsize)) {
-+		btrfs_err(fs_info, "bad tree block start %llu", start);
-+		return -EINVAL;
-+	}
-+
-+	if (fs_info->sectorsize < PAGE_SIZE &&
-+	    offset_in_page(start) + fs_info->nodesize > PAGE_SIZE) {
-+		btrfs_err(fs_info,
-+		"tree block crosses page boundary, start %llu nodesize %u",
-+			  start, fs_info->nodesize);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
- struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 					  u64 start, u64 owner_root, int level)
- {
-@@ -6149,10 +6166,8 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	int uptodate = 1;
- 	int ret;
- 
--	if (!IS_ALIGNED(start, fs_info->sectorsize)) {
--		btrfs_err(fs_info, "bad tree block start %llu", start);
-+	if (check_eb_alignment(fs_info, start))
- 		return ERR_PTR(-EINVAL);
--	}
- 
- #if BITS_PER_LONG == 32
- 	if (start >= MAX_LFS_FILESIZE) {
-@@ -6165,14 +6180,6 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		btrfs_warn_32bit_limit(fs_info);
- #endif
- 
--	if (fs_info->sectorsize < PAGE_SIZE &&
--	    offset_in_page(start) + len > PAGE_SIZE) {
--		btrfs_err(fs_info,
--		"tree block crosses page boundary, start %llu nodesize %lu",
--			  start, len);
--		return ERR_PTR(-EINVAL);
--	}
--
- 	eb = find_extent_buffer(fs_info, start);
- 	if (eb)
- 		return eb;
-@@ -6202,7 +6209,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * page, but it may change in the future for 16K page size
- 		 * support, so we still preallocate the memory in the loop.
- 		 */
--		if (fs_info->sectorsize < PAGE_SIZE) {
-+		if (fs_info->nodesize < PAGE_SIZE) {
- 			prealloc = btrfs_alloc_subpage(fs_info, BTRFS_SUBPAGE_METADATA);
- 			if (IS_ERR(prealloc)) {
- 				ret = PTR_ERR(prealloc);
-@@ -6421,7 +6428,7 @@ void clear_extent_buffer_dirty(const struct extent_buffer *eb)
- 	int num_pages;
- 	struct page *page;
- 
--	if (eb->fs_info->sectorsize < PAGE_SIZE)
-+	if (eb->fs_info->nodesize < PAGE_SIZE)
- 		return clear_subpage_extent_buffer_dirty(eb);
- 
- 	num_pages = num_extent_pages(eb);
-@@ -6453,7 +6460,7 @@ bool set_extent_buffer_dirty(struct extent_buffer *eb)
- 	WARN_ON(!test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags));
- 
- 	if (!was_dirty) {
--		bool subpage = eb->fs_info->sectorsize < PAGE_SIZE;
-+		bool subpage = eb->fs_info->nodesize < PAGE_SIZE;
- 
- 		/*
- 		 * For subpage case, we can have other extent buffers in the
-@@ -6510,7 +6517,16 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
- 	num_pages = num_extent_pages(eb);
- 	for (i = 0; i < num_pages; i++) {
- 		page = eb->pages[i];
--		btrfs_page_set_uptodate(fs_info, page, eb->start, eb->len);
-+
-+		/*
-+		 * This is special handling for metadata subpage, as regular
-+		 * btrfs_is_subpage() can not handle cloned/dummy metadata.
-+		 */
-+		if (fs_info->nodesize >= PAGE_SIZE)
-+			SetPageUptodate(page);
-+		else
-+			btrfs_subpage_set_uptodate(fs_info, page, eb->start,
-+						   eb->len);
- 	}
- }
- 
-@@ -6605,7 +6621,7 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
- 	if (unlikely(test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)))
- 		return -EIO;
- 
--	if (eb->fs_info->sectorsize < PAGE_SIZE)
-+	if (eb->fs_info->nodesize < PAGE_SIZE)
- 		return read_extent_buffer_subpage(eb, wait, mirror_num);
- 
- 	num_pages = num_extent_pages(eb);
-@@ -6851,7 +6867,7 @@ static void assert_eb_page_uptodate(const struct extent_buffer *eb,
- {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
- 
--	if (fs_info->sectorsize < PAGE_SIZE) {
-+	if (fs_info->nodesize < PAGE_SIZE) {
- 		bool uptodate;
- 
- 		uptodate = btrfs_subpage_test_uptodate(fs_info, page,
-@@ -6952,7 +6968,7 @@ void copy_extent_buffer_full(const struct extent_buffer *dst,
- 
- 	ASSERT(dst->len == src->len);
- 
--	if (dst->fs_info->sectorsize == PAGE_SIZE) {
-+	if (dst->fs_info->nodesize >= PAGE_SIZE) {
- 		num_pages = num_extent_pages(dst);
- 		for (i = 0; i < num_pages; i++)
- 			copy_page(page_address(dst->pages[i]),
-@@ -6961,7 +6977,7 @@ void copy_extent_buffer_full(const struct extent_buffer *dst,
- 		size_t src_offset = get_eb_offset_in_page(src, 0);
- 		size_t dst_offset = get_eb_offset_in_page(dst, 0);
- 
--		ASSERT(src->fs_info->sectorsize < PAGE_SIZE);
-+		ASSERT(src->fs_info->nodesize < PAGE_SIZE);
- 		memcpy(page_address(dst->pages[0]) + dst_offset,
- 		       page_address(src->pages[0]) + src_offset,
- 		       src->len);
-@@ -7354,7 +7370,7 @@ int try_release_extent_buffer(struct page *page)
- {
- 	struct extent_buffer *eb;
- 
--	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
-+	if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
- 		return try_release_subpage_extent_buffer(page);
- 
- 	/*
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 3b2403b6127f..89e888409609 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8129,7 +8129,7 @@ static void wait_subpage_spinlock(struct page *page)
- 	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
- 	struct btrfs_subpage *subpage;
- 
--	if (fs_info->sectorsize == PAGE_SIZE)
-+	if (!btrfs_is_subpage(fs_info, page))
- 		return;
- 
- 	ASSERT(PagePrivate(page) && page->private);
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 29bd8c7a7706..17c0bda3ab12 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -107,7 +107,7 @@ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
- 		ASSERT(PageLocked(page));
- 
- 	/* Either not subpage, or the page already has private attached */
--	if (fs_info->sectorsize == PAGE_SIZE || PagePrivate(page))
-+	if (!btrfs_is_subpage(fs_info, page) || PagePrivate(page))
- 		return 0;
- 
- 	subpage = btrfs_alloc_subpage(fs_info, type);
-@@ -124,7 +124,7 @@ void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info,
- 	struct btrfs_subpage *subpage;
- 
- 	/* Either not subpage, or already detached */
--	if (fs_info->sectorsize == PAGE_SIZE || !PagePrivate(page))
-+	if (!btrfs_is_subpage(fs_info, page) || !PagePrivate(page))
- 		return;
- 
- 	subpage = (struct btrfs_subpage *)detach_page_private(page);
-@@ -175,7 +175,7 @@ void btrfs_page_inc_eb_refs(const struct btrfs_fs_info *fs_info,
- {
- 	struct btrfs_subpage *subpage;
- 
--	if (fs_info->sectorsize == PAGE_SIZE)
-+	if (!btrfs_is_subpage(fs_info, page))
- 		return;
- 
- 	ASSERT(PagePrivate(page) && page->mapping);
-@@ -190,7 +190,7 @@ void btrfs_page_dec_eb_refs(const struct btrfs_fs_info *fs_info,
- {
- 	struct btrfs_subpage *subpage;
- 
--	if (fs_info->sectorsize == PAGE_SIZE)
-+	if (!btrfs_is_subpage(fs_info, page))
- 		return;
- 
- 	ASSERT(PagePrivate(page) && page->mapping);
-@@ -208,6 +208,7 @@ static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
- 	ASSERT(PagePrivate(page) && page->private);
- 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
- 	       IS_ALIGNED(len, fs_info->sectorsize));
-+	ASSERT(btrfs_is_subpage(fs_info, page));
- 	/*
- 	 * The range check only works for mapped page, we can still have
- 	 * unmapped page like dummy extent buffer pages.
-@@ -319,7 +320,7 @@ bool btrfs_subpage_end_and_test_writer(const struct btrfs_fs_info *fs_info,
- int btrfs_page_start_writer_lock(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {
- 		lock_page(page);
- 		return 0;
- 	}
-@@ -336,7 +337,7 @@ int btrfs_page_start_writer_lock(const struct btrfs_fs_info *fs_info,
- void btrfs_page_end_writer_lock(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page))
- 		return unlock_page(page);
- 	btrfs_subpage_clamp_range(page, &start, &len);
- 	if (btrfs_subpage_end_and_test_writer(fs_info, page, start, len))
-@@ -620,7 +621,7 @@ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(checked);
- void btrfs_page_set_##name(const struct btrfs_fs_info *fs_info,		\
- 		struct page *page, u64 start, u32 len)			\
- {									\
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
- 		set_page_func(page);					\
- 		return;							\
- 	}								\
-@@ -629,7 +630,7 @@ void btrfs_page_set_##name(const struct btrfs_fs_info *fs_info,		\
- void btrfs_page_clear_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len)			\
- {									\
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
- 		clear_page_func(page);					\
- 		return;							\
- 	}								\
-@@ -638,14 +639,14 @@ void btrfs_page_clear_##name(const struct btrfs_fs_info *fs_info,	\
- bool btrfs_page_test_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len)			\
- {									\
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)	\
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page))	\
- 		return test_page_func(page);				\
- 	return btrfs_subpage_test_##name(fs_info, page, start, len);	\
- }									\
- void btrfs_page_clamp_set_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len)			\
- {									\
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
- 		set_page_func(page);					\
- 		return;							\
- 	}								\
-@@ -655,7 +656,7 @@ void btrfs_page_clamp_set_##name(const struct btrfs_fs_info *fs_info,	\
- void btrfs_page_clamp_clear_##name(const struct btrfs_fs_info *fs_info, \
- 		struct page *page, u64 start, u32 len)			\
- {									\
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page)) {	\
- 		clear_page_func(page);					\
- 		return;							\
- 	}								\
-@@ -665,7 +666,7 @@ void btrfs_page_clamp_clear_##name(const struct btrfs_fs_info *fs_info, \
- bool btrfs_page_clamp_test_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len)			\
- {									\
--	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)	\
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, page))	\
- 		return test_page_func(page);				\
- 	btrfs_subpage_clamp_range(page, &start, &len);			\
- 	return btrfs_subpage_test_##name(fs_info, page, start, len);	\
-@@ -694,7 +695,7 @@ void btrfs_page_assert_not_dirty(const struct btrfs_fs_info *fs_info,
- 		return;
- 
- 	ASSERT(!PageDirty(page));
--	if (fs_info->sectorsize == PAGE_SIZE)
-+	if (!btrfs_is_subpage(fs_info, page))
- 		return;
- 
- 	ASSERT(PagePrivate(page) && page->private);
-@@ -722,8 +723,8 @@ void btrfs_page_unlock_writer(struct btrfs_fs_info *fs_info, struct page *page,
- 	struct btrfs_subpage *subpage;
- 
- 	ASSERT(PageLocked(page));
--	/* For regular page size case, we just unlock the page */
--	if (fs_info->sectorsize == PAGE_SIZE)
-+	/* For non-subpage case, we just unlock the page */
-+	if (!btrfs_is_subpage(fs_info, page))
- 		return unlock_page(page);
- 
- 	ASSERT(PagePrivate(page) && page->private);
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 7accb5c40d33..a87e53e8c24c 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -4,6 +4,7 @@
- #define BTRFS_SUBPAGE_H
- 
- #include <linux/spinlock.h>
-+#include "btrfs_inode.h"
- 
- /*
-  * Extra info for subpapge bitmap.
-@@ -74,6 +75,30 @@ enum btrfs_subpage_type {
- 	BTRFS_SUBPAGE_DATA,
- };
- 
-+static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info,
-+				    struct page *page)
-+{
-+	if (fs_info->sectorsize >= PAGE_SIZE)
-+		return false;
-+
-+	/*
-+	 * Only data pages (either through DIO or compression) can have no
-+	 * mapping. And if page->mapping->host is data inode, it's subpage.
-+	 * As we have ruled our sectorsize >= PAGE_SIZE case already.
-+	 */
-+	if (!page->mapping || !page->mapping->host ||
-+	    is_data_inode(page->mapping->host))
-+		return true;
-+
-+	/*
-+	 * Now the only remaining case is metadata, which we only go subpage
-+	 * routine if nodesize < PAGE_SIZE.
-+	 */
-+	if (fs_info->nodesize < PAGE_SIZE)
-+		return true;
-+	return false;
-+}
-+
- void btrfs_init_subpage_info(struct btrfs_subpage_info *subpage_info, u32 sectorsize);
- int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
- 			 struct page *page, enum btrfs_subpage_type type);
--- 
-2.34.1
-
+On 11/12/2021 02:15, Anand Jain wrote:
+> Patch 1 is the actual bug fix and should go to stable 5.4 as well.
+> On 5.4 patch1 conflicts (outside of the changes in the patch),
+> so not yet marked for the stable.
+> 
+> Patch 2 simplifies calling lookup_bdev() in the device_matched()
+> by moving the same to the parent function two levels up.
+> 
+> Patch 2 is not merged with 1 because to keep the patch 1 changes local
+> to a function so that it can be easily backported to 5.4 and 5.10.
+> 
+> We should save the dev_t in struct btrfs_device with that may be
+> we could clean up a few more things, including fixing the below sparse
+> warning.
+> 
+>    sparse: sparse: incorrect type in argument 1 (different address spaces)
+> 
+> For using without rcu:
+> 
+>    error = lookup_bdev(device->name->str, &dev_old);
+> 
+> Anand Jain (2):
+>    btrfs: harden identification of the stale device
+>    btrfs: redeclare btrfs_stale_devices arg1 to dev_t
+> 
+>   fs/btrfs/super.c   |  8 +++++-
+>   fs/btrfs/volumes.c | 72 +++++++++++++++++++++++++++++++++-------------
+>   fs/btrfs/volumes.h |  2 +-
+>   3 files changed, 60 insertions(+), 22 deletions(-)
+> 
