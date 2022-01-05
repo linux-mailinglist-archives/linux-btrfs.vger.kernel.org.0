@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB50E484C7C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 03:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 793E0484C91
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 03:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237085AbiAEC3x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Jan 2022 21:29:53 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:49135 "EHLO
+        id S237137AbiAECoj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jan 2022 21:44:39 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33007 "EHLO
         out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237084AbiAEC3x (ORCPT
+        by vger.kernel.org with ESMTP id S230074AbiAECoh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Jan 2022 21:29:53 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 82EC35C0115;
-        Tue,  4 Jan 2022 21:29:52 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 04 Jan 2022 21:29:52 -0500
+        Tue, 4 Jan 2022 21:44:37 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id EDA965C0199;
+        Tue,  4 Jan 2022 21:44:34 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 04 Jan 2022 21:44:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
         :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=Sj2RCDJ+B3I7dnia6sC1RZdyZmW
-        vebIpUx8dfpBV+Rg=; b=srzzuuvrhYnvis3WDTMZr9v01FwmvxyTcCg/5o6qqPi
-        02EDS2GWKgfGCFhZBr8ch4yhZJteyu1VITIFXiByYz46gXfEPBQNSzuo03bOoCem
-        THbh68ozYVUBFzxf5c3tqO3s92l1dToVKX+HNyjrTPMsoVDIg6JvTktQkIuIrvTw
-        oaT4f39u1/FiGdUY7jf3HZ8eU/4AHC4OcFRu96JksJt8SHPNAcW4k3fj5xkxynud
-        tZXVmMGrzl1FY6X0UizXwXgPbF3+0sVNyZyigYdjEAX7gCJ7LY0W/F7ZQTyh5x+8
-        YkISXYQZLsUNCW/A6waemNbl/IxOTqZdN41yZgZQHRQ==
+        :content-type:in-reply-to; s=fm2; bh=DM+WeNTYDfewoo7MDqW/8qrxtf3
+        EyoUOizNQTxx2lco=; b=PiVhACOTKg7zsJGz6K3dwrbUc3iJENL3FsbJk8DaBr1
+        M3NI4oQ+X5qdl2R8rKBbL/IUPmIY4qR1tHyKTiCBGESoTjDk9jqTFWoJiY9SdQaL
+        v1Z3ZLLB1D/QWrXeh+IJ8vq70NBbzhUGkhGgxeRvbhjX+v1uGn7p5RXA2X2Mzj34
+        70UEffMXp5UdZTqG32IJHMH8OUI36+ccIyR/su2rBb6fmp59ixWKzhGCeNMm2oa3
+        EeUhbhRC1pgMW7l2s5pWAq5R3WAFyxyCgs5qJiF5ZB9tayp0RfcDnCZFY116gzJE
+        hmEW8VrumggzfbAtZPETwMoFohwubrtShbTZa76F4cQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Sj2RCD
-        J+B3I7dnia6sC1RZdyZmWvebIpUx8dfpBV+Rg=; b=YLEO7AOGtkhnR/btN9fhF8
-        ThMu1tEJqigXNH6D4oUJ+i5p8jegXV8mytrCf6Hpe+AOvoUoftwt0mdyq2MGB4/L
-        x7b9FKaTY6FguPtn6cHOZQbTqvj+39t+JrTB4Q7Oq+tg2C+TkYPKSbVVMrTiPur0
-        qbBk2sUwGxpAEFpL+bWqcaXA5qIhz/qEljDdgU80O3+nn2k12keCM4qkaepIVVve
-        k4RqAEpxWpaBpgm0hMyTJbOdsF0CjEdLP1+VbLKQajPKR1lys6q9ce9rzrEmJ6ZF
-        43ZefqDPFjGLdInUl/e7eTzin6E6rg8yFYIkUgMM1sCr3134XqR63yh0rdNc7KvQ
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=DM+WeN
+        TYDfewoo7MDqW/8qrxtf3EyoUOizNQTxx2lco=; b=Z9Ork9Vgt1CITo6YY8D5em
+        vjrcYSsAYe4qljopBD38nFbfbzf8MYkG9WWkvEgesH9vDrJcFVvtAYmBck1CERAu
+        xr2lCQgVYJ95R3UIu5czF0tdtXgAgBTLWt0dUgaqFjqlguZY/o3YEZgW1V1MWcRo
+        I/lGmLVZ0wWGWFN1GvS3+xVfCVkh8NeLyoEA3nrGEtZp6Er80i0pHoUYJglA3z0r
+        RzTY0SKWerjzxh3SpxVbxBuHB6iSMLqlEzbfjDEr+Zm/1vAqgo2kiUFxy8JHCLBV
+        lNf53IQN8jNC8VlqRSUkiT8jIE3zQ3EkXTzCkK3BT0lLYfpFGjkH5/veW/CoTW/w
         ==
-X-ME-Sender: <xms:nwLVYQ8XUjouxrWaQMK9X3mo5RU0FTn3e5V9AE0-ZXoeQBgGZF-dBg>
-    <xme:nwLVYYtndSERVgsBCzCWxaheJDN2A3rtC5OO7-MHcHDD_p1gCoMKNtvdMkTxXYzKh
-    HG7nSMWuxojBYwWMk4>
-X-ME-Received: <xmr:nwLVYWBQiK9NP3G3_rMQ1MVZYU-yyQSRCYSmOKoLLP3_vNxFtBsrCnSv7nVyQDa1WKYve2yoRz9pWhyA_0ZzVXgpDnFleQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefgedggeehucetufdoteggodetrfdotf
+X-ME-Sender: <xms:EgbVYUkBqz95jG2PUVwn5Fx0HxFRCsVJ5UoXF3kP91QZNkHhe2ZMbA>
+    <xme:EgbVYT0-OYShGUbyW21Uk3zO1MvnvRbpDI4wpjkCmJNXEUejNQwSf7O_mu7ji-ugH
+    DyNUw5grjNA2_ki_rM>
+X-ME-Received: <xmr:EgbVYSqm5vcqZlElpU1gF-PxK45dvRyyaZ2pb63h_cx7FvTUoL1sserFpnNOtEuMwid82BJyxCVYMzlilnA3Jkt54ekDOQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefgedggeekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephf
-    fgveejteegtdelhedtiedvkedvtdfgveelledtjeffveekgeefleeuleejudevnecuffho
-    mhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:nwLVYQflo9LggWUuzqovJLFCmzYgU78meakxPRqTsAhb8-Guqh5kFg>
-    <xmx:nwLVYVOSRGAMpf9lEdZs0zCHENRibG92C_z04pjA53_TQ8_MDAQuJA>
-    <xmx:nwLVYal7E_g4Xt3Ma6k5ZmZV7ndLojVi3SaIaDDpO3RsBq227tUCRA>
-    <xmx:oALVYY33kxYiEoEEiM8xB3OfrhVc8fp_Ij1C0EFHeEn935N9x-zGQQ>
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
+    fgteehudffkeettefhtdefueeufeekudeffffghedtgedufffgtdekteeigffhnecuffho
+    mhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:EgbVYQnoGaZ4jjT4hnIAl4iuy6aum6mWSGSoHiizD7ar4BUW4BCQUA>
+    <xmx:EgbVYS2mD_IsMlOMUCz4IcR6rD4BtegrcJrT23DOTSBgfPspv133CA>
+    <xmx:EgbVYXvLWNgUrcaa-3Y8mZLrQPyYkWp2OZpk8r8PjRFOmWz0F_Y2Zg>
+    <xmx:EgbVYcpK7yAAokY4Tw0MUTzNtqQpwTR4ktQ2HZuJzATueLq6E44hUQ>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 4 Jan 2022 21:29:51 -0500 (EST)
-Date:   Tue, 4 Jan 2022 18:29:49 -0800
+ 4 Jan 2022 21:44:34 -0500 (EST)
+Date:   Tue, 4 Jan 2022 18:44:32 -0800
 From:   Boris Burkov <boris@bur.io>
 To:     Goffredo Baroncelli <kreijack@libero.it>
 Cc:     linux-btrfs@vger.kernel.org,
@@ -63,317 +63,303 @@ Cc:     linux-btrfs@vger.kernel.org,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.cz>,
         Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>,
         Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH 1/2] btrfs-progs: new "allocation_hint" property.
-Message-ID: <YdUChLjZz80FS5u4@zen>
-References: <cover.1639766708.git.kreijack@inwind.it>
- <21fcdf5d4186555b743190e62ad3011c08aaad9b.1639766708.git.kreijack@inwind.it>
+Subject: Re: [RFC][V9][PATCH 0/6] btrfs: allocation_hint mode
+Message-ID: <YdUGAg1TB8FCfqnr@zen>
+References: <cover.1639766364.git.kreijack@inwind.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <21fcdf5d4186555b743190e62ad3011c08aaad9b.1639766708.git.kreijack@inwind.it>
+In-Reply-To: <cover.1639766364.git.kreijack@inwind.it>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 07:47:04PM +0100, Goffredo Baroncelli wrote:
+On Fri, Dec 17, 2021 at 07:47:16PM +0100, Goffredo Baroncelli wrote:
 > From: Goffredo Baroncelli <kreijack@inwind.it>
 > 
-> Handle the property allocation_hint of a btrfs device. Below
-> an example of use:
+> Hi all,
 > 
-> $ # set a new value
-> $ sudo btrfs property set /dev/vde allocation_hint DATA_ONLY
+> This patches set was born after some discussion between me, Zygo and Josef.
+> Some details can be found in https://github.com/btrfs/btrfs-todo/issues/19.
+> 
+> Some further information about a real use case can be found in
+> https://lore.kernel.org/linux-btrfs/20210116002533.GE31381@hungrycats.org/
+> 
+> Reently Shafeeq told me that he is interested too, due to the performance gain.
+> 
+> In V8 revision I switched away from an ioctl API in favor of a sysfs API (
+> see patch #2 and #3).
+> 
+> In V9 I renamed the sysfs interface from devinfo/type to devinfo/allocation_hint.
+> Moreover I renamed dev_info->type to dev_info->flags.
+> 
+> The idea behind this patches set, is to dedicate some disks (the fastest one)
+> to the metadata chunk. My initial idea was a "soft" hint. However Zygo
+> asked an option for a "strong" hint (== mandatory). The result is that
+> each disk can be "tagged" by one of the following flags:
+> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
+> - BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
+> - BTRFS_DEV_ALLOCATION_PREFERRED_DATA
+> - BTRFS_DEV_ALLOCATION_DATA_ONLY
+> 
+> When the chunk allocator search a disks to allocate a chunk, scans the disks
+> in an order decided by these tags. For metadata, the order is:
+> *_METADATA_ONLY
+> *_PREFERRED_METADATA
+> *_PREFERRED_DATA
+> 
+> The *_DATA_ONLY are not eligible from metadata chunk allocation.
+> 
+> For the data chunk, the order is reversed, and the *_METADATA_ONLY are
+> excluded.
+> 
+> The exact sort logic is to sort first for the "tag", and then for the space
+> available. If there is no space available, the next "tag" disks set are
+> selected.
+> 
+> To set these tags, a new property called "allocation_hint" was created.
+> There is a dedicated btrfs-prog patches set [[PATCH V9] btrfs-progs:
+> allocation_hint disk property].
+> 
+> $ sudo mount /dev/loop0 /mnt/test-btrfs/
+> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
+> devid=1, path=/dev/loop0: allocation_hint=PREFERRED_METADATA
+> devid=2, path=/dev/loop1: allocation_hint=PREFERRED_METADATA
+> devid=3, path=/dev/loop2: allocation_hint=PREFERRED_DATA
+> devid=4, path=/dev/loop3: allocation_hint=PREFERRED_DATA
+> devid=5, path=/dev/loop4: allocation_hint=PREFERRED_DATA
+> devid=6, path=/dev/loop5: allocation_hint=DATA_ONLY
+> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
+> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
+> 
+> $ sudo ./btrfs fi us /mnt/test-btrfs/
+> Overall:
+>     Device size:           2.75GiB
+>     Device allocated:           1.34GiB
+>     Device unallocated:           1.41GiB
+>     Device missing:             0.00B
+>     Used:             400.89MiB
+>     Free (estimated):           1.04GiB    (min: 1.04GiB)
+>     Data ratio:                  2.00
+>     Metadata ratio:              1.00
+>     Global reserve:           3.25MiB    (used: 0.00B)
+>     Multiple profiles:                no
+> 
+> Data,RAID1: Size:542.00MiB, Used:200.25MiB (36.95%)
+>    /dev/loop0     288.00MiB
+>    /dev/loop1     288.00MiB
+>    /dev/loop2     127.00MiB
+>    /dev/loop3     127.00MiB
+>    /dev/loop4     127.00MiB
+>    /dev/loop5     127.00MiB
+> 
+> Metadata,single: Size:256.00MiB, Used:384.00KiB (0.15%)
+>    /dev/loop1     256.00MiB
+> 
+> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+>    /dev/loop0      32.00MiB
+> 
+> Unallocated:
+>    /dev/loop0     704.00MiB
+>    /dev/loop1     480.00MiB
+>    /dev/loop2       1.00MiB
+>    /dev/loop3       1.00MiB
+>    /dev/loop4       1.00MiB
+>    /dev/loop5       1.00MiB
+>    /dev/loop6     128.00MiB
+>    /dev/loop7     128.00MiB
+> 
+> # change the tag of some disks
+> 
+> $ sudo ./btrfs prop set /dev/loop0 allocation_hint DATA_ONLY
+> $ sudo ./btrfs prop set /dev/loop1 allocation_hint DATA_ONLY
+> $ sudo ./btrfs prop set /dev/loop5 allocation_hint METADATA_ONLY
+> 
+> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
+> devid=1, path=/dev/loop0: allocation_hint=DATA_ONLY
+> devid=2, path=/dev/loop1: allocation_hint=DATA_ONLY
+> devid=3, path=/dev/loop2: allocation_hint=PREFERRED_DATA
+> devid=4, path=/dev/loop3: allocation_hint=PREFERRED_DATA
+> devid=5, path=/dev/loop4: allocation_hint=PREFERRED_DATA
+> devid=6, path=/dev/loop5: allocation_hint=METADATA_ONLY
+> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
+> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
+> 
+> $ sudo btrfs bal start --full-balance /mnt/test-btrfs/
+> $ sudo ./btrfs fi us /mnt/test-btrfs/
+> Overall:
+>     Device size:           2.75GiB
+>     Device allocated:         735.00MiB
+>     Device unallocated:           2.03GiB
+>     Device missing:             0.00B
+>     Used:             400.72MiB
+>     Free (estimated):           1.10GiB    (min: 1.10GiB)
+>     Data ratio:                  2.00
+>     Metadata ratio:              1.00
+>     Global reserve:           3.25MiB    (used: 0.00B)
+>     Multiple profiles:                no
+> 
+> Data,RAID1: Size:288.00MiB, Used:200.19MiB (69.51%)
+>    /dev/loop0     288.00MiB
+>    /dev/loop1     288.00MiB
+> 
+> Metadata,single: Size:127.00MiB, Used:336.00KiB (0.26%)
+>    /dev/loop5     127.00MiB
+> 
+> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+>    /dev/loop7      32.00MiB
+> 
+> Unallocated:
+>    /dev/loop0     736.00MiB
+>    /dev/loop1     736.00MiB
+>    /dev/loop2     128.00MiB
+>    /dev/loop3     128.00MiB
+>    /dev/loop4     128.00MiB
+>    /dev/loop5       1.00MiB
+>    /dev/loop6     128.00MiB
+>    /dev/loop7      96.00MiB
+> 
+> 
+> #As you can see all the metadata were placed on the disk loop5/loop7 even if
+> #the most empty one are loop0 and loop1.
+> 
+> 
+> 
+> TODO:
+> - more tests
+> - the tool which show the space available should consider the tagging (eg
+>   the disks tagged by _METADATA_ONLY should be excluded from the data
+>   availability)
+> - allow btrfs-prog to change the allocation_hint even when the filesystem
+>   is not mounted.
+> 
+> 
+> Comments are welcome
 
-I applied this patchset to the master branch of
-git://github.com/kdave/btrfs-progs.git
-and this command failed with something like "not a btrfs object".
+This is cool, thanks for building it!
 
-However, it worked fine as:
-$ sudo btrfs property set -t device /dev/DEV allocation_hint DATA_ONLY
+I'm playing with setting this up for a test I'm working on where I want
+to send data to a dm-zero device. To that end, I applied this patchset
+on top of misc-next and ran:
 
-I can't think of a reason I would hit this error and you wouldn't, since
-that check is relatively old, but figured I would mention it.
+$ mkfs.btrfs -f /dev/vg0/lv0 -dsingle -msingle
+$ mount /dev/vg0/lv0 /mnt/lol
+$ btrfs device add /dev/mapper/zero-data /mnt/lol
+$ btrfs fi usage /mnt/lol
+Overall:
+    Device size:                  50.01TiB
+    Device allocated:             20.00MiB
+    Device unallocated:           50.01TiB
+    Device missing:                  0.00B
+    Used:                        128.00KiB
+    Free (estimated):             50.01TiB      (min: 50.01TiB)
+    Free (statfs, df):            50.01TiB
+    Data ratio:                       1.00
+    Metadata ratio:                   1.00
+    Global reserve:                3.25MiB      (used: 0.00B)
+    Multiple profiles:                  no
 
+Data,single: Size:8.00MiB, Used:0.00B (0.00%)
+   /dev/mapper/vg0-lv0     8.00MiB
+
+Metadata,single: Size:8.00MiB, Used:112.00KiB (1.37%)
+   /dev/mapper/vg0-lv0     8.00MiB
+
+System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
+   /dev/mapper/vg0-lv0     4.00MiB
+
+Unallocated:
+   /dev/mapper/vg0-lv0     9.98GiB
+   /dev/mapper/zero-data          50.00TiB
+
+$ ./btrfs property set -t device /dev/mapper/zero-data allocation_hint DATA_ONLY
+$ ./btrfs property set -t device /dev/vg0/lv0 allocation_hint METADATA_ONLY
+
+$ btrfs balance start --full-balance /mnt/lol
+Done, had to relocate 3 out of 3 chunks
+
+$ btrfs fi usage /mnt/lol
+Overall:
+    Device size:                  50.01TiB
+    Device allocated:              2.03GiB
+    Device unallocated:           50.01TiB
+    Device missing:                  0.00B
+    Used:                        640.00KiB
+    Free (estimated):             50.01TiB      (min: 50.01TiB)
+    Free (statfs, df):            50.01TiB
+    Data ratio:                       1.00
+    Metadata ratio:                   1.00
+    Global reserve:                3.25MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,single: Size:1.00GiB, Used:512.00KiB (0.05%)
+   /dev/mapper/zero-data           1.00GiB
+
+Metadata,single: Size:1.00GiB, Used:112.00KiB (0.01%)
+   /dev/mapper/zero-data           1.00GiB
+
+System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+   /dev/mapper/zero-data          32.00MiB
+
+Unallocated:
+   /dev/mapper/vg0-lv0    10.00GiB
+   /dev/mapper/zero-data          50.00TiB
+
+
+I expected that I would have data on /dev/mapper/zero-data and metadata
+on /dev/mapper/vg0-lv0, but it seems both of them were written to the zero
+device. Attempting to actually use the file system eventually fails, since
+the metadata is black-holed :)
+
+Did I make some mistake in how I used it, or is this a bug?
+
+Thanks,
+Boris
+
+> BR
+> G.Baroncelli
 > 
-> $ # get the current value
-> $ sudo btrfs property get /dev/vde allocation_hint
-> devid=4, path=/dev/vde: allocation_hint=DATA_ONLY
+> Revision:
+> V9:
+> - rename dev_item->type to dev_item->flags
+> - rename /sys/fs/btrfs/$UUID/devinfo/type -> allocation_hint
 > 
-> The following values are availables:
-> - DATA_ONLY
-> - PREFERRED_DATA (default)
-> - PREFERRED_METADATA
-> - METADATA_ONLY
+> V8:
+> - drop the ioctl API, instead use a sysfs one
 > 
-> Root privileges are required.
+> V7:
+> - make more room in the struct btrfs_ioctl_dev_properties up to 1K
+> - leave in btrfs_tree.h only the costants
+> - removed the mount option (sic)
+> - correct an 'use before check' in the while loop (signaled
+>   by Zygo)
+> - add a 2nd sort to be sure that the device_info array is in the
+>   expected order
 > 
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->  cmds/property.c       | 204 ++++++++++++++++++++++++++++++++++++++++++
->  kernel-shared/ctree.h |  13 +++
->  2 files changed, 217 insertions(+)
+> V6:
+> - add further values to the hints: add the possibility to
+>   exclude a disk for a chunk type 
 > 
-> diff --git a/cmds/property.c b/cmds/property.c
-> index 59ef997c..e6a38ee1 100644
-> --- a/cmds/property.c
-> +++ b/cmds/property.c
-> @@ -22,6 +22,7 @@
->  #include <sys/ioctl.h>
->  #include <sys/stat.h>
->  #include <sys/xattr.h>
-> +#include <sys/sysmacros.h>
->  #include <uuid/uuid.h>
->  #include <btrfsutil.h>
->  #include "cmds/commands.h"
-> @@ -30,6 +31,7 @@
->  #include "common/open-utils.h"
->  #include "common/utils.h"
->  #include "common/help.h"
-> +#include "common/path-utils.h"
->  
->  #define XATTR_BTRFS_PREFIX     "btrfs."
->  #define XATTR_BTRFS_PREFIX_LEN (sizeof(XATTR_BTRFS_PREFIX) - 1)
-> @@ -232,6 +234,202 @@ out:
->  	return ret;
->  }
->  
-> +static int btrfs_find_devid_and_mnt(const char *devpath, int *devid,
-> +				    char *path, int maxpath)
-> +{
-> +	int ret, i, fd;
-> +	DIR *dir;
-> +	struct stat stdevpath;
-> +	struct btrfs_ioctl_fs_info_args fi_args;
-> +	struct btrfs_ioctl_dev_info_args dev_info;
-> +
-> +	ret = get_btrfs_mount(devpath, path, maxpath);
-> +	if (ret)
-> +		return ret;
-> +
-> +	fd = btrfs_open_dir(path, &dir, 1);
-> +	if (fd < 0)
-> +		return fd;
-> +
-> +	ret = stat(devpath, &stdevpath);
-> +	if (ret) {
-> +		error("cannot stat '%s'", devpath);
-> +		goto out;
-> +	}
-> +
-> +	ret = ioctl(fd, BTRFS_IOC_FS_INFO, &fi_args);
-> +	if (ret < 0) {
-> +		if (errno == EPERM)
-> +			return -errno;
-> +		error("cannot get filesystem info: %m");
-> +		ret = -10;
-> +		goto out;
-> +	}
-> +
-> +	for (i = 0 ; i <= fi_args.max_id ; i++) {
-> +		struct stat st;
-> +
-> +		memset(&dev_info, 0, sizeof(dev_info));
-> +		ret = get_device_info(fd, i, &dev_info);
-> +		if (ret == -ENODEV)
-> +			continue;
-> +		if (ret) {
-> +			error("cannot get info about device devid=%d", i);
-> +			goto out;
-> +		}
-> +
-> +		if (!dev_info.path)
-> +			/* missing devices */
-> +			continue;
-> +
-> +		ret = stat((char *)dev_info.path, &st);
-> +		if (ret) {
-> +			error("cannot stat '%s'", devpath);
-> +			goto out;
-> +		}
-> +
-> +		if (major(st.st_rdev) == major(stdevpath.st_rdev) &&
-> +		    minor(st.st_rdev) == minor(stdevpath.st_rdev)) {
-> +			*devid = dev_info.devid;
-> +			ret = 0;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	ret = -12;
-> +
-> +out:
-> +	close_file_or_dir(fd, dir);
-> +	return ret;
-> +}
-> +
-> +static struct ull_charp_pair_t {
-> +	u64		value;
-> +	const char	*descr;
-> +} allocation_hint_description[] = {
-> +	{BTRFS_DEV_ALLOCATION_HINT_PREFERRED_METADATA, "PREFERRED_METADATA"},
-> +	{BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY, "METADATA_ONLY"},
-> +	{BTRFS_DEV_ALLOCATION_HINT_PREFERRED_DATA, "PREFERRED_DATA"},
-> +	{BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY, "DATA_ONLY"},
-> +	{0, NULL}
-> +};
-> +
-> +static int prop_allocation_hint(enum prop_object_type type,
-> +				const char *object,
-> +				const char *name,
-> +				const char *value,
-> +				bool force)
-> +{
-> +	int ret, devid, fd, fd2;
-> +	char path[PATH_MAX];
-> +	DIR *dir;
-> +	u8 fsid[BTRFS_UUID_SIZE];
-> +	char fsid_str[BTRFS_UUID_UNPARSED_SIZE];
-> +	char sysfs_file[PATH_MAX];
-> +	char filename[PATH_MAX];
-> +	int i;
-> +	u64 v, devtype;
-> +	char buf[1024];
-> +
-> +	ret = btrfs_find_devid_and_mnt(object, &devid, path, sizeof(path));
-> +	if (ret)
-> +		return -5;
-> +
-> +	fd = btrfs_open_dir(path, &dir, 1);
-> +	if (fd < 0)
-> +		return fd;
-> +
-> +	ret = get_fsid_fd(fd, fsid);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	uuid_unparse(fsid, fsid_str);
-> +	sprintf(filename, "devinfo/%d/allocation_hint", devid);
-> +
-> +	/* build /sys/fs/btrfs/<UUID>/devinfo/<DEVID>/type */
-> +	ret = path_cat3_out(sysfs_file, "/sys/fs/btrfs", fsid_str, filename);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	fd2 = open(sysfs_file, O_RDONLY);
-> +	if (fd2 < 0) {
-> +		error("'allocation_hint' property not available or accessible.");
-> +		ret = -errno;
-> +		goto out;
-> +	}
-> +
-> +	ret = read(fd2, buf, sizeof(buf) - 1);
-> +	close(fd2);
-> +	if (ret < 0) {
-> +		error("Unable to read the 'allocation_hint' property.");
-> +		ret = -errno;
-> +		goto out;
-> +	}
-> +
-> +	buf[sizeof(buf) - 1] = 0;
-> +	devtype = strtoull(buf, NULL, 0);
-> +
-> +	if (!value) {
-> +		/* READ */
-> +		for (i = 0 ; allocation_hint_description[i].descr ; i++)
-> +			if (devtype == allocation_hint_description[i].value)
-> +				break;
-> +		if (allocation_hint_description[i].descr)
-> +			printf("devid=%d, path=%s: allocation_hint=%s\n",
-> +				devid, object,
-> +				allocation_hint_description[i].descr);
-> +		else
-> +			printf("devid=%d, path=%s: allocation_hint=unknown:%llu\n",
-> +				devid, object,
-> +				devtype);
-> +		ret = 0;
-> +	} else {
-> +		/* WRITE */
-> +		for (i = 0 ; allocation_hint_description[i].descr ; i++)
-> +			if (!strcmp(value, allocation_hint_description[i].descr))
-> +				break;
-> +
-> +		if (allocation_hint_description[i].descr) {
-> +			v = allocation_hint_description[i].value;
-> +		} else if (sscanf(value, "%llu", &v) != 1) {
-> +			error("Invalid value '%s'\n", value);
-> +			ret = -3;
-> +			goto out;
-> +		} 
-> +		if (v & ~BTRFS_DEV_ALLOCATION_HINT_MASK) {
-> +			error("Invalid value '%s'\n", value);
-> +			ret = -3;
-> +			goto out;
-> +		}
-> +
-> +		devtype &= ~BTRFS_DEV_ALLOCATION_HINT_MASK;
-> +		devtype |= (v & BTRFS_DEV_ALLOCATION_HINT_MASK);
-> +
-> +		fd2 = open(sysfs_file, O_RDWR);
-> +		if (fd2 < 0) {
-> +			error("'allocation_hint' property not available or accessible for updating.");
-> +			ret = -errno;
-> +			goto out;
-> +		}
-> +
-> +		sprintf(buf, "%llu", devtype);
-> +
-> +		ret = write(fd2, buf, strlen(buf));
-> +		close(fd2);
-> +		if (ret < 0) {
-> +			error("Unable to update 'allocation_hint' property.");
-> +			ret = -errno;
-> +			goto out;
-> +		}
-> +
-> +	}
-> +
-> +	ret = 0;
-> +out:
-> +	close_file_or_dir(fd, dir);
-> +	return ret;
-> +}
-> +
->  const struct prop_handler prop_handlers[] = {
->  	{
->  		.name ="ro",
-> @@ -254,6 +452,12 @@ const struct prop_handler prop_handlers[] = {
->  		.types = prop_object_inode,
->  		.handler = prop_compression
->  	},
-> +	{
-> +		.name = "allocation_hint",
-> +		.desc = "hint to store the data/metadata chunks",
-> +		.types = prop_object_dev,
-> +		.handler = prop_allocation_hint
-> +	},
->  	{NULL, NULL, 0, 0, NULL}
->  };
->  
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index 966490d3..adc869fe 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -213,6 +213,19 @@ struct btrfs_mapping_tree {
->  	struct cache_tree cache_tree;
->  };
->  
-> +/* btrfs chunk allocation hints */
-> +#define BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT    2
-> +#define BTRFS_DEV_ALLOCATION_HINT_MASK ((1ULL << \
-> +	       BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT) - 1)
-> +/* preferred metadata chunk, but data chunk allowed */
-> +#define BTRFS_DEV_ALLOCATION_HINT_PREFERRED_METADATA        (1ULL)
-> +/* only metadata chunk are allowed */
-> +#define BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY     (2ULL)
-> +/* only data chunk allowed */
-> +#define BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY         (3ULL)
-> +/* preferred data chunk, but metadata chunk allowed */
-> +#define BTRFS_DEV_ALLOCATION_HINT_PREFERRED_DATA    (0ULL)
-> +
->  #define BTRFS_UUID_SIZE 16
->  struct btrfs_dev_item {
->  	/* the internal btrfs device id */
+> 
+> Goffredo Baroncelli (6):
+>   btrfs: add flags to give an hint to the chunk allocator
+>   btrfs: export the device allocation_hint property in sysfs
+>   btrfs: change the device allocation_hint property via sysfs
+>   btrfs: add allocation_hint mode
+>   btrfs: rename dev_item->type to dev_item->flags
+>   btrfs: add allocation_hint option.
+> 
+>  fs/btrfs/ctree.h                |  18 +++++-
+>  fs/btrfs/disk-io.c              |   4 +-
+>  fs/btrfs/super.c                |  17 ++++++
+>  fs/btrfs/sysfs.c                |  73 ++++++++++++++++++++++
+>  fs/btrfs/volumes.c              | 105 ++++++++++++++++++++++++++++++--
+>  fs/btrfs/volumes.h              |   7 ++-
+>  include/uapi/linux/btrfs_tree.h |  20 +++++-
+>  7 files changed, 232 insertions(+), 12 deletions(-)
+> 
 > -- 
 > 2.34.1
 > 
