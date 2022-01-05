@@ -2,97 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63DB485683
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 17:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3FC485752
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 18:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241855AbiAEQLj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 11:11:39 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:46674 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241849AbiAEQLf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 11:11:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34CD36164D;
-        Wed,  5 Jan 2022 16:11:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FC5CC36AE0;
-        Wed,  5 Jan 2022 16:11:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641399094;
-        bh=ZKKlCVjotxQ/mWW+wBX7WNgKdj9sFqeaW4C5i3zAAK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U6CTWgBp2mHIz528O9KmNIS/Lo349/KB4sc5YDeWhjmTVRBNElXaHcuj6qF5z/XzK
-         8nlMoczvRyJPEqTWZUt7fCnWcL+HWQfFlkhc/66vz9ZssFWyDdfyuRQIEBR4QekWpZ
-         D98i7JXIYWZqMBzg+NSTqniWxvjEwakxV/+7MQwJdS1B9qdAtVpHaSkwoP3wCNL5M2
-         eTQIp4MKdS9syGrutbWyBsBzZ877pK/nFsuSfp5yMHPi1r7jxJGUAN4DhsAyP7CPc6
-         ggLTN/96IU9htJM4m0s4NkZzd7upk5myqkogSpei6fy185zAa5OCao3KRebfjUXJXP
-         sCOnLPTwoiXng==
-Date:   Wed, 5 Jan 2022 16:11:30 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH v2] btrfs: Remove redundant assignment of slot and leaf
-Message-ID: <YdXDMjJcUKLwJdiW@debian9.Home>
-References: <20220105150758.29670-1-jiapeng.chong@linux.alibaba.com>
+        id S242336AbiAERe1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 12:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231202AbiAERe0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 12:34:26 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AC4C061245
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 09:34:26 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id e202so77417692ybf.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jan 2022 09:34:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=OsAnZDUgDxmn/Do38dRaqwEP7cDCwfWwfANc7Mgkfzk=;
+        b=NYNnJLmzZYVJB5M8tWqffjAXhzNH05ASVIGM0I1aBg0yaEqhYtiL9n1CmVjcmuZ35x
+         DEeJVpuS+wYmjMcxzOzlyiwdF0uweoRtxKSCiODxxhpwooID3KeJhIVs+KASfqLl1hqx
+         IxPlYGMz76xZ0zZBbSRARo2VFY797kDhST6RCDsfnLmQgkM/QrDlUEsEld7KZoaZMLNH
+         rUhlDXbBhishqUbCk5vdZD5wC5FcCn2ej2L7AwYZMxgOwpA0UeDT1iF//exLbc3XAoop
+         8c2169H3eUqmePxlPejpih+I7CkRYj09273xxvW9WjdNENiCgiBIeqW/2tOrk+qVyfZz
+         tsOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=OsAnZDUgDxmn/Do38dRaqwEP7cDCwfWwfANc7Mgkfzk=;
+        b=X43bAXsqsLnn31KjZd3RTvEI4A9lQzX5bpp8mkUpMECncwaeXP9/Rb1KDZ1Nup9Bgn
+         TiOfbR0HqcHmKQVBfjfrv+9wO0G8Fc01CxdufQqaIfUbuqyINcTQ8YVwbmk16ipiZeTn
+         MXwWoPLK5M4w6tJdPD+iLbfAANUPTlCYV8my3WLy7u41oHJ7l1AJ23V94AajFIrJ1ySq
+         XBVXDCE6CPWpCpP+aXt524xyBwFTBuNhWGk/2IbidwWOW1UjZ9U5n4XCm8QHsHMGThQs
+         07rBf8NndP53rU5R3ztWrT1XJ4p2w076w2g37NJHktrGc4YcdC+fl8WdXe8qXz5KKOiu
+         gdqA==
+X-Gm-Message-State: AOAM5301Qkf1uqqYinQz9pA/2xIZkyeYl9uurhcSnarhLlh5Q9EmIgAf
+        ztaMVa5BjDm7UPrp5QEmDCv6lyHVeHinDamhoLzCCpriWMqqEMap
+X-Google-Smtp-Source: ABdhPJyUcwOzSfRTh5Bjd/SHdcuMPSwyThxkXEC/bVl/qFsa0bNKL/EbdKyOzgHa6OOYy9LzFavAkGCZYjfXiQZR4p0=
+X-Received: by 2002:a25:bb07:: with SMTP id z7mr32488661ybg.509.1641404065576;
+ Wed, 05 Jan 2022 09:34:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220105150758.29670-1-jiapeng.chong@linux.alibaba.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 5 Jan 2022 10:34:10 -0700
+Message-ID: <CAJCQCtRnyUHEwV1o9k565B_u_RwQ2OQqdXHtcfa-LWAbUSB7Gg@mail.gmail.com>
+Subject: [bug] GNOME loses all settings following failure to resume from suspend
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 11:07:58PM +0800, Jiapeng Chong wrote:
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> 
-> slot and leaf are being initialized to path->slots[0] and
-> path->nodes[0], but this is never read as slot and leaf
-> is overwritten later on. Remove the redundant assignment.
-> 
-> Cleans up the following clang-analyzer warning:
-> 
-> fs/btrfs/tree-log.c:6125:7: warning: Value stored to 'slot' during its
-> initialization is never read [clang-analyzer-deadcode.DeadStores].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> ---
-> Changes in v2:
->   -Remove redundant assignment of leaf.
-> 
->  fs/btrfs/tree-log.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 4b89ac769347..d99cda0acd95 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -6188,8 +6188,6 @@ static int log_new_ancestors(struct btrfs_trans_handle *trans,
->  		if (ret < 0)
->  			return ret;
->  
-> -		leaf = path->nodes[0];
-> -		slot = path->slots[0];
+https://gitlab.gnome.org/GNOME/dconf/-/issues/73
 
-No, this is not correct.
+Following a crash, instead of either the old or new dconf database
+file being present, a corrupt one is present.
 
-Right before those assignments we called btrfs_search_slot(), which updates
-path->nodes and path->slots, and we need those updated values below.
+dconf uses g_file_set_contents() to atomically update the database
+file, which effectively inhibits (one or more?) fsync's, yet somehow
+in the crash/powerfail case this is resulting in a corrupt dconf
+database. I don't know if by "corrupt" this is a 0 length file or some
+other effect.
 
-The redundant assignments are not these two, but instead the ones when the
-variables are declared at the top of the loop:
+Thanks,
 
-   struct extent_buffer *leaf = path->nodes[0];
-   int slot = path->slots[0];
-
-Thanks.
-
->  		if (slot >= btrfs_header_nritems(leaf)) {
->  			ret = btrfs_next_leaf(root, path);
->  			if (ret < 0)
-> -- 
-> 2.19.1.6.gb485710b
-> 
+-- 
+Chris Murphy
