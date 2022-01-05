@@ -2,139 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F68485A0B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 21:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FBD485A1A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 21:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244055AbiAEUdI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 15:33:08 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:39802 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244036AbiAEUdG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 15:33:06 -0500
+        id S244095AbiAEUjQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 15:39:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244088AbiAEUjP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 15:39:15 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760AEC061245
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 12:39:15 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BAFDC618DE
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 20:33:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28708C36AE0
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 20:33:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1ED176192C
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 20:39:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 769BDC36AE9
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 20:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641414785;
-        bh=JivcVcQtQ9y4g0noSIvjhVK6/oN+Tj4YAamBxHecBAs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n0xDEvcLv2mq+69x5dT0rw421cHvpeoU7L58xo7P7kToggnqFHeKXfnuGkvdVTXD2
-         znRYiopzRCHE0Mzq4JqvRO6G8HFHVgZNt2FVV8GcQWVz6kJFY0oTybCplRehQnF7DA
-         0ihtt1T5Z4bvqLLrVsPAWRCyBQOYV99319ppbPfvn9iHR8Srg2+Q4EKfRMc6DYbqO1
-         f4A0Ip26jgFrGM01z7IxWvL0xsgCvH/+CfAOvq+i4jhOq3+6QgWImIt/ZvjwkdkqjI
-         CpXg3HEGi6WR/C1wZ/O+mSzxnHSw8EvW3v58f2EX2HOmqpVhjHP6Q7C2CVqY6h4uCJ
-         nQoLDvEruO5cg==
-Received: by mail-qk1-f180.google.com with SMTP id i187so615059qkf.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jan 2022 12:33:05 -0800 (PST)
-X-Gm-Message-State: AOAM533WfehzVXYwOErtGRBtYoKtXz/fyLAP+sWuhL/7RrIur5iAlyFs
-        gEavilSD9STu0jq3fQZiY9dxjp7C60kf0iUjBVI=
-X-Google-Smtp-Source: ABdhPJxVNapjoa1KWZJupfGgx8Z6GyLE39OIs4wrDGRi7DKIpKwVcJxlWDEeagTEE+qCEQjbDjWDUoUvcyymdUOeYQk=
-X-Received: by 2002:a05:620a:4092:: with SMTP id f18mr38513024qko.629.1641414784237;
- Wed, 05 Jan 2022 12:33:04 -0800 (PST)
+        s=k20201202; t=1641415154;
+        bh=KhWH8qeCreGzFePdAWJqhwXQTtHutBcnYXm4oIfBVRE=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=gKgQpjtKJJlOiWtfvbA2C2JnDkKaOx62aeEnTm0YWNEIitsgO5b5Zz+1vcoZVWzrN
+         AFGSgCy52Adwdltq+M6ie02EKgDWk4HMYPrFqsJ1e8HnCP4Yck7O4TjYOQ7V6chVbV
+         e186k18lFBHK0bnI3QHdMOBIQK6TD/nBQGWkv4mojdNGJD51QJHvL4MmIC+XkB4cMq
+         9KK6nS3A848RcWkwEfFBc+AdzbNfGhe5uSrHIIhGonGJzX4UKAaMoA+Jb6ptQzfOFo
+         5Xxjf3xbbpmpJEl+s5zm7kTf5kmUS1mxDQbExFdY+SEdTHU8m8Cb3p94Z8vLTbka7w
+         HmhmEb2tfnbpg==
+Received: by mail-qt1-f174.google.com with SMTP id p19so188405qtw.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jan 2022 12:39:14 -0800 (PST)
+X-Gm-Message-State: AOAM5315+xVhwIMq+ipcco3wW1ta/NwYidhgcBRncTiJdiMLUo5HDmUA
+        rWAQunETuSiWlQTUYgy8wE06yQI2TduWpWtOuCM=
+X-Google-Smtp-Source: ABdhPJxnjnQooCfyF6jZMXaSVIVphZuVzlY5+iGK1WEZhFbch4OwhgO5muBKr0LpwdOAiDHD2NLDH8anP60yo/EBOQI=
+X-Received: by 2002:ac8:674d:: with SMTP id n13mr49167158qtp.491.1641415153530;
+ Wed, 05 Jan 2022 12:39:13 -0800 (PST)
 MIME-Version: 1.0
 References: <CAJCQCtRnyUHEwV1o9k565B_u_RwQ2OQqdXHtcfa-LWAbUSB7Gg@mail.gmail.com>
- <YdXdtrHb9nTYgFo7@debian9.Home> <CAJCQCtSd8B-qgW=eehcLDxb6oHoj69UiMtvixz=WwWCuy_Fggg@mail.gmail.com>
-In-Reply-To: <CAJCQCtSd8B-qgW=eehcLDxb6oHoj69UiMtvixz=WwWCuy_Fggg@mail.gmail.com>
+ <YdXdtrHb9nTYgFo7@debian9.Home> <20220105183407.GD14058@savella.carfax.org.uk>
+In-Reply-To: <20220105183407.GD14058@savella.carfax.org.uk>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 5 Jan 2022 20:32:28 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4L4QkexSCCowJEx8MTjRgAQhQ0n=mjDjnQdGtVYKTPBA@mail.gmail.com>
-Message-ID: <CAL3q7H4L4QkexSCCowJEx8MTjRgAQhQ0n=mjDjnQdGtVYKTPBA@mail.gmail.com>
+Date:   Wed, 5 Jan 2022 20:38:37 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4ofLVoGA3YC6M8gdBuW9g2W-C644gXgr9Z+r4MZBJZGA@mail.gmail.com>
+Message-ID: <CAL3q7H4ofLVoGA3YC6M8gdBuW9g2W-C644gXgr9Z+r4MZBJZGA@mail.gmail.com>
 Subject: Re: [bug] GNOME loses all settings following failure to resume from suspend
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>
+To:     Hugo Mills <hugo@carfax.org.uk>,
+        Filipe Manana <fdmanana@kernel.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 5, 2022 at 6:40 PM Chris Murphy <lists@colorremedies.com> wrote:
+On Wed, Jan 5, 2022 at 6:34 PM Hugo Mills <hugo@carfax.org.uk> wrote:
 >
-> On Wed, Jan 5, 2022 at 11:04 AM Filipe Manana <fdmanana@kernel.org> wrote:
-> >
-> > Looking at the code before that patch, it explicitly skips fsync after
-> > a rename pointing out to:
-> >
-> > https://btrfs.wiki.kernel.org/index.php/FAQ#What_are_the_crash_guarantees_of_overwrite-by-rename.3F
-> >
-> > I'm afraid that information is wrong, perhaps it might have been true in
-> > some very distant past, but certainly not for many years.
+>    Hi, Filipe,
 >
-> However, the system does suspend correctly and before that there
-> should be "Filesystems sync" message from the kernel (this is the case
-> on my laptops, unconfirmed for the GNOME bug case). [1]
->
-> If the sequence is:
->
-> write to file
-> no fsync
-> "filesystem sync" (I guess that's syncfs for all mounted filesystems? no idea)
-> suspend
-> crash
->
-> Still seems like the file should be either old or new, not 0 length?
-
-Nop, it can still be 0.
-
-So where that message is printed, before it, ksys_sync() is called,
-which will indeed call btrfs' sync_fs() callback (btrfs_sync_fs()).
-
-However btrfs_sync_fs() will only wait for existing ordered extents to
-complete, and then commit the current transaction.
-Ordered extents are created when writeback is started.
-
-In the rename path (btrfs_rename()) we trigger writeback with
-filemap_flush() (mm/filemap.c), but that does not guarantee that
-I/O is started for all dirty pages:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/filemap.c?h=v5.16-rc8#n462
-
-/**
- * filemap_flush - mostly a non-blocking flush
- * @mapping: target address_space
- *
- * This is a mostly non-blocking flush.  Not suitable for data-integrity
- * purposes - I/O may not be started against all dirty pages.
- *
- * Return: %0 on success, negative error code otherwise.
- */
-int filemap_flush(struct address_space *mapping)
-{
-return __filemap_fdatawrite(mapping, WB_SYNC_NONE);
-}
-EXPORT_SYMBOL(filemap_flush);
-
-I.e., we have no guarantee that writeback was started by the time the
-rename returns to user space.
-
-Regardless of that, it was not safe... a crash can happen after the
-rename and before ksys_sync() is called.
-
->
->
+> On Wed, Jan 05, 2022 at 06:04:38PM +0000, Filipe Manana wrote:
 > > I don't think I have a wiki account enabled, but I'll see if I get that
 > > updated soon.
 >
-> Thanks Felipe!
+>    If you can't (or don't want to), feel free to put the text you want
+> to replace it with here, and I'll update the wiki for you...
 
-Filipe
+Hi Hugo,
+
+That would be great.
+I don't have a concrete text, but as you are a native english speaker,
+a version from you would sound better :)
+
+Perhaps just mention that as of kernel 3.17 (and maybe point to that
+commit too), the behaviour is no longer guaranteed, and we can end up
+getting a file of 0 bytes.
+So an explicit fsync on the file is needed (just like ext4 and other
+filesystems).
+
+I asked for an account creation before seeing your reply.
+Anyway, if you want to do it, go ahead.
 
 Thanks.
 
 >
-> [1] "Filesystems sync" message appears to come from here
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/power/main.c?h=v5.16-rc8#n62
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/power/main.c?h=v5.16-rc8#n195
->
->
->
+>    Hugo.
 >
 > --
-> Chris Murphy
+> Hugo Mills             | "There's a Martian war machine outside -- they want
+> hugo@... carfax.org.uk | to talk to you about a cure for the common cold."
+> http://carfax.org.uk/  |
+> PGP: E2AB1DE4          |                           Stephen Franklin, Babylon 5
