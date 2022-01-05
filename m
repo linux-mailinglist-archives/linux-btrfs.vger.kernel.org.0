@@ -2,109 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D365485A3D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 21:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C785E485ABD
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 22:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244208AbiAEUss (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 15:48:48 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:36917 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244200AbiAEUss (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jan 2022 15:48:48 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id B56983201FCE;
-        Wed,  5 Jan 2022 15:48:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 05 Jan 2022 15:48:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=+/iD6Qkterd60DJO8sOx8flGa+f
-        7015Gk4I7A6Dd+IE=; b=AieE7ZlqDpxLli7I81UnV7nb/ajMXgdCuFzY3nrXUE6
-        LUF6rV3uVN0Bv7fGQBNMwCJaula3GFf/YGlokhNfpDkFn9pX505NcDJQ0f1HTCv3
-        HGjsGSQP8BZUllG5oYZoVxLjBeSsrDvgRA+SrHgIgQ8W4vxtyKeuy/tq+JnmSX92
-        7QimZaq58jl/Xzoi4l9oL0LhZLoiiipYm7BrW0Zs03lUlbyeOkE10kb8hA7yCcQ6
-        ZF5ZMt4M4tdtj1XHToWuW/ibT0OaBlqDRLxuo83/ltauxR3qzgNx8G8s9feBy6Xj
-        grUIfgXzYEr8KKpDSAEuce1/PcwCtueSfhbrMNpVxZA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+/iD6Q
-        kterd60DJO8sOx8flGa+f7015Gk4I7A6Dd+IE=; b=gSkkWN4ufMJlZnk+/3Kl93
-        /igJ70WkF0G7a+eo3HXmw3jwvUrya0kI1z+IOPLogs2lxGeijfSfX2QvvK5/BFMG
-        n+u+AdJquK01n9G0kXWQOM3mKn0/9GebsNXT8u5CAaKVnNs6fM4GnkgxZzpe0InI
-        gS/Mzs4TdSPbhINf/qnpKwe7JZLGA1uOdvOp212xGwgn2O4HHnwnX/thFP66kXom
-        TY/osSaQlQY69zf+5yXiehcAOLQvBcSytt1kh88HTvt8pFiSoEG3w6OYTRnI2HVH
-        oBFpiFDN/ToCYQ6/xVDFyVZ+1oYWC3ktkgSJ+cwsOEsdpcSxSg606bAkAdEwzNpQ
-        ==
-X-ME-Sender: <xms:JgTWYfxhZTc3yxgvRQHfQ0-39p_wIFZL46XqXc0zp1b_mSiULdTPdQ>
-    <xme:JgTWYXQ8edCY0ueyp0PXktruUfbUaaJrouzzbHFemBS2lIr2RebjMOMmKH_EpAopI
-    ABJ374_fxpIJWWIz3M>
-X-ME-Received: <xmr:JgTWYZVNP_qGifHx4cmDcLB73EqcRkrTwPYvjKGlITltafxKH2GFGDx5rmJxY-vqvLLRtD418Qorc5_Y3PjKLuX_fdATug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtro
-    dttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeehffdvudfgveefgfejiedvhfekiefghfeujeetje
-    egffduffdtheevueeuvedtkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:JgTWYZhS52xfbC3Oo7MMdHy87QQI1ppQXuTX7zCqCpYspiHnQUPtEA>
-    <xmx:JgTWYRB_FmN61LSCh30wZqpGT1EbZ9i0pmudXfrMWmijOJ2Rpiea5Q>
-    <xmx:JgTWYSIWY-oAM9_RKjk0DFnaA8eygeBQMpPiAC30xK0OhGi76AiS6Q>
-    <xmx:JwTWYe4YbSkGCbDsY2d5QRuERET55vsnCe9veJ9P4-cSvy4tdWbbRg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Jan 2022 15:48:38 -0500 (EST)
-Date:   Wed, 5 Jan 2022 12:48:36 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     Goffredo Baroncelli <kreijack@libero.it>
-Cc:     linux-btrfs@vger.kernel.org,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH][V2] btrfs-progs: allow autodetect_object_types() to
- handle link.
-Message-ID: <YdYEJAvLhndfHTIT@zen>
-References: <da4a4e0cf18df259e63c19872093bf12635da576.1641415488.git.kreijack@inwind.it>
+        id S244495AbiAEVdk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 16:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244503AbiAEVcb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 16:32:31 -0500
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DC3C061212
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 13:32:01 -0800 (PST)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1n5Dsz-0007Cg-UZ; Wed, 05 Jan 2022 21:31:57 +0000
+Date:   Wed, 5 Jan 2022 21:31:57 +0000
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [bug] GNOME loses all settings following failure to resume from
+ suspend
+Message-ID: <20220105213157.GE14058@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        Filipe Manana <fdmanana@kernel.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <CAJCQCtRnyUHEwV1o9k565B_u_RwQ2OQqdXHtcfa-LWAbUSB7Gg@mail.gmail.com>
+ <YdXdtrHb9nTYgFo7@debian9.Home>
+ <20220105183407.GD14058@savella.carfax.org.uk>
+ <CAL3q7H4ofLVoGA3YC6M8gdBuW9g2W-C644gXgr9Z+r4MZBJZGA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <da4a4e0cf18df259e63c19872093bf12635da576.1641415488.git.kreijack@inwind.it>
+In-Reply-To: <CAL3q7H4ofLVoGA3YC6M8gdBuW9g2W-C644gXgr9Z+r4MZBJZGA@mail.gmail.com>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 09:45:52PM +0100, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
+On Wed, Jan 05, 2022 at 08:38:37PM +0000, Filipe Manana wrote:
+> On Wed, Jan 5, 2022 at 6:34 PM Hugo Mills <hugo@carfax.org.uk> wrote:
+> >
+> >    Hi, Filipe,
+> >
+> > On Wed, Jan 05, 2022 at 06:04:38PM +0000, Filipe Manana wrote:
+> > > I don't think I have a wiki account enabled, but I'll see if I get that
+> > > updated soon.
+> >
+> >    If you can't (or don't want to), feel free to put the text you want
+> > to replace it with here, and I'll update the wiki for you...
 > 
-> The function autodetect_object_types() tries to detect the type of
-> btrfs object passed. If it is an "inode" type (e.g. file) this function
-> returns the type as "inode". If it is a block device, it return it as
-> "block device".
-> However it doesn't handle the case where the object passed is a link
-> to a block device (which could be a valid btrfs device). For example
-> LVM/DM creates link to block devices. In this case it should return
-> the type as "block device".
+> Hi Hugo,
 > 
-> This patch replace the lstat() call with a stat().
+> That would be great.
+> I don't have a concrete text, but as you are a native english speaker,
+> a version from you would sound better :)
 > 
-> Reported-by: Boris Burkov <boris@bur.io>
-Reviewed-by: Boris Burkov <boris@bur.io>
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->  cmds/property.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/cmds/property.c b/cmds/property.c
-> index 59ef997c..b3ccc0ff 100644
-> --- a/cmds/property.c
-> +++ b/cmds/property.c
-> @@ -373,7 +373,7 @@ static int autodetect_object_types(const char *object, int *types_out)
->  
->  	is_btrfs_object = check_btrfs_object(object);
->  
-> -	ret = lstat(object, &st);
-> +	ret = stat(object, &st);
->  	if (ret < 0) {
->  		ret = -errno;
->  		goto out;
-> -- 
-> 2.34.1
-> 
+> Perhaps just mention that as of kernel 3.17 (and maybe point to that
+> commit too), the behaviour is no longer guaranteed, and we can end up
+> getting a file of 0 bytes.
+
+   I'd rather not reinforce the wrong usage with an example of it. :)
+Better to document the correct usage...
+
+> So an explicit fsync on the file is needed (just like ext4 and other
+> filesystems).
+
+   At what point in the process does the fsync need to be done?
+Before/after/instead of the sync?
+
+   Hugo.
+
+-- 
+Hugo Mills             | Geek, n.:
+hugo@... carfax.org.uk | Circus sideshow performer specialising in the eating
+http://carfax.org.uk/  | of live animals.
+PGP: E2AB1DE4          |                                                   OED
