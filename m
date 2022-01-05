@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4A1485B2E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 22:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BE7485B60
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 23:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244660AbiAEV5W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 16:57:22 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43853 "EHLO
+        id S244742AbiAEWLi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 17:11:38 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:58123 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244642AbiAEV5U (ORCPT
+        by vger.kernel.org with ESMTP id S244755AbiAEWKj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jan 2022 16:57:20 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2B2B65C015B;
-        Wed,  5 Jan 2022 16:57:17 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 05 Jan 2022 16:57:17 -0500
+        Wed, 5 Jan 2022 17:10:39 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1A3515C019B;
+        Wed,  5 Jan 2022 17:10:38 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 05 Jan 2022 17:10:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
         :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=EBUWN10mGHzAphvy3N2ZUUhFoJ3
-        LJRdu1afnym469CU=; b=Wtz4W+QZE/yCj/Y3cgY9Vo4Izaaa63xZPcRkhyGItwc
-        +Fq8AJyeYIIeC5O+g/TEvvhe4qgkjPZv1v8Ra9xDuYjCMq7Q0+pl19popdYky66V
-        ApThTHR7W5kiPEpeDic4yeIT8hgWTZY/91VbwMXGmDtCrsc1K+wCdGtQ2JLpkVfX
-        ke6OK/ui+cYZhqtuJU6fzZ+i3BJcqYa6dUF3QQIriSOKpAD7XCzngVHMGRg7eW8x
-        jHufWhucZfSZRjBB6E2H+vECG/ZGRsM5WzekjbIJlUTD9bu4c1NNDOmcxPtD1Qa6
-        WHbkg0Ge+R3KBq5fQVGj4zpFkGbiTNeBAvVecZP7Tzw==
+        :content-type:in-reply-to; s=fm2; bh=S8eO72u6xqHcufS9xv6OLzz+P6s
+        qdBx8kaenKpq8WNU=; b=03yXLG0FYYzYWeaQR/4ZzzX/+5GYiyG3jufcVhS3N6S
+        mg7VWJUcwiw+08FGV49M6rcGdQKQno0PmnEdPOTrB6aD2zLs/U31D+2ggYWv/jKZ
+        IDdu+LRQW8gXeHwzQ0Kg6kGb8LhkGcI6sh8OHFvBQVKVJj9QYzpA/2OGu4UzUrhO
+        SJQK6So70L+1D1z9G58LlwRzPyQu3rrxtg/whnVxStXb9TtdB4VVWYHLJTaKfKAn
+        UaLnsWbxa613Z9h4E58UBCD7yGbw/OhxND0BaZqysUnJuOE1LlZseK1stqYdcAsI
+        R1dmVoHYgwL9oDhoY6RXJ3T5OEmTy5wklHn1tx2ruDA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=EBUWN1
-        0mGHzAphvy3N2ZUUhFoJ3LJRdu1afnym469CU=; b=Yb4vOieD8MfjmWz+7AuWNO
-        Qw5TFmIv97LpHEy1sPGf8nNUTdBzExrOCiOl/9g++WPjTnCouLafRYgZWRePF8zO
-        EndvxeSUNrQUrJwp9ZZIj+GFHjJKjI1sN4pz9O12FTNyUNgXWpLqb1EMkx3nnBFQ
-        7fmhZYagHNydSpypKitOZ08LAPJrAM6KZHdS90qOgbi7V1oXSGKCyEO68mfM5A6K
-        nGqzYZ3C3rl2tNhE/BfIXXoySipDfDwmPsB8wAcE1ze0lu0Kjb5pWIIhDRkGDach
-        P0OwHTbYmDJWvmi/Lm2q+/HStZTPSELuMWGqRWbufRb/CAe4Wfrp8PBtONgZzosg
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=S8eO72
+        u6xqHcufS9xv6OLzz+P6sqdBx8kaenKpq8WNU=; b=dL0HN1QMr3YC2GbaYgZFiS
+        lSP+xOaTDDGgaM//0YlxQXvHDdyIeEci7RyZuj7ASowvhMInRMmwkOABkBJbUK31
+        Ix2Wa/doKwGvbi/Pwx4jSxyZJV9ninVM6RsjnMaRrHqu6+7DLlsDzluMr26ho04s
+        hh0KaFK6Z9B9v4oIXRgYxbDHsLl3dlhiA2nppGE3w06vrCqeuH9/BH0m48cmhjR8
+        x20JnxZo1PxG26PlMviu/kD9VaWyOU3KfhJ4AnXw9AyH7ye5s0pNZ9jMwMRbJ0Yl
+        V0INZB0F7PoKcldpkaaVH8Wgb7rUah/yfABNcHqLAfn28pGOfwPFq7iebWAgUS4A
         ==
-X-ME-Sender: <xms:PBTWYdW3Cz88JCq4JPrzvEn-UcduyU9AZtQW1yvJ3vsMlxmvvlM4Iw>
-    <xme:PBTWYdm_eNV32olFIROJyTDyP7SZfsOAttVBnDVQKp8WamE-uR4oVeCvAronewcSA
-    YSBHTnTNg4LnB_N1tw>
-X-ME-Received: <xmr:PBTWYZb9MmId7wrtcyYR-NZijNK4e7PpMdSi8ROf6fhv0hYpzcHdXUXat8dIyoFK8zt0NQegkhfGKjHHoUaY_hce6NNscA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgjedtucetufdoteggodetrfdotf
+X-ME-Sender: <xms:XBfWYcDjCFXNGRH16uvZNUSvhZCGRkG8kUg2CGUcYm_dXceeXuk1ow>
+    <xme:XBfWYeiUXe41e7cxUW730iw7LE32BaSFiELLn0oc3mR5bH4SsPt3qF6wuMolB19wX
+    Piu9rVKvCY5ASUeK9I>
+X-ME-Received: <xmr:XBfWYfku4f5glaWsvogpwI8P_mW9_rphn1otsLrreYu9G85zWeO-5STOyduYDngivPPBjy2hoOC_eFz1sP-Js371q7kktw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgjeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeeuohhrihhs
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
     uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    ffvddugfevfefgjeeivdfhkeeigffhueejteejgeffudfftdehveeuueevtdeknecuvehl
+    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecuvehl
     uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
     hurhdrihho
-X-ME-Proxy: <xmx:PBTWYQUptr4G0b_XiLBsHEwJZIcSITcYwx2WDR5oar9nWObwEnN5fA>
-    <xmx:PBTWYXm5ST9V7GFpchuTuY7o5l9LOnuyWxQwua1SOi6VSdiO-5WRGQ>
-    <xmx:PBTWYddKeZnc1DJ0etBHfnD7dTmDFy_XzJBFqCRkTgfqLDEuhgGpTw>
-    <xmx:PRTWYVa8WvEtjYY9JDR_hG7GH-eIsDitd2YIZY59MIAzEiw8CTIRpA>
+X-ME-Proxy: <xmx:XBfWYSwihFYUTRUMEhhW4yk80ILCxJgkSUiLxBNB7Uvf7D6vYNfLiA>
+    <xmx:XBfWYRTZyXFgqhS3DrYq2yLjXjc-Mc3jPduc6Ow9kM6jv4BQufWyUA>
+    <xmx:XBfWYdYBUMOGjsgrG6D6zGlwfz_6wuFZXZSw8LRheWbqJFJ5ws4buw>
+    <xmx:XhfWYQG5dofUpfYSaXoVnZu2J37yBdks_AkPRhJg9vjIk3isEQpqUw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Jan 2022 16:57:15 -0500 (EST)
-Date:   Wed, 5 Jan 2022 13:57:14 -0800
+ 5 Jan 2022 17:10:36 -0500 (EST)
+Date:   Wed, 5 Jan 2022 14:10:34 -0800
 From:   Boris Burkov <boris@bur.io>
 To:     Goffredo Baroncelli <kreijack@libero.it>
 Cc:     linux-btrfs@vger.kernel.org,
@@ -65,66 +65,78 @@ Cc:     linux-btrfs@vger.kernel.org,
         Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
         Paul Jones <paul@pauljones.id.au>,
         Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH 2/6] btrfs: export the device allocation_hint property in
- sysfs
-Message-ID: <YdYUOtfuNRczGMNT@zen>
+Subject: Re: [PATCH 1/6] btrfs: add flags to give an hint to the chunk
+ allocator
+Message-ID: <YdYXWlp+naKtzV+E@zen>
 References: <cover.1639766364.git.kreijack@inwind.it>
- <9a3c5371722ab7d10e2eb974c53d07eba53400a5.1639766364.git.kreijack@inwind.it>
+ <377d6c51cb957fbad5627bb93ff0a76ce9ba79da.1639766364.git.kreijack@inwind.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a3c5371722ab7d10e2eb974c53d07eba53400a5.1639766364.git.kreijack@inwind.it>
+In-Reply-To: <377d6c51cb957fbad5627bb93ff0a76ce9ba79da.1639766364.git.kreijack@inwind.it>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 07:47:18PM +0100, Goffredo Baroncelli wrote:
+On Fri, Dec 17, 2021 at 07:47:17PM +0100, Goffredo Baroncelli wrote:
 > From: Goffredo Baroncelli <kreijack@inwind.it>
 > 
-> Eport the device allocation_hint property via
-> /sys/fs/btrfs/<uuid>/devinfo/<devid>/allocation_hint
+> Add the following flags to give an hint about which chunk should be
+> allocated in which a disk:
 > 
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-Reviewed-by: Boris Burkov <boris@bur.io>
+> - BTRFS_DEV_ALLOCATION_HINT_PREFERRED_DATA
+>   preferred data chunk, but metadata chunk allowed
+> - BTRFS_DEV_ALLOCATION_HINT_PREFERRED_METADATA
+>   preferred metadata chunk, but data chunk allowed
+> - BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY
+>   only metadata chunk allowed
+> - BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY
+>   only data chunk allowed
+
+Weighing in on the naming discussion:
+
+I think DATA_ONLY > ONLY_DATA, with my best argument for this subjective
+opinion being that it follows the example of read-only.
+
+Therefore, I think you should go with DATA_ONLY, DATA_PREFERRED,
+METADATA_ONLY, METADATA_PREFERRED. Definitely put ONLY/PREFERRED on the
+same side of DATA/METADATA for all four, regardless of which you choose.
+
+Looks good otherwise.
+
+> 
+> Signed-off-by: Goffredo Baroncelli <kreijack@inwid.it>
 > ---
->  fs/btrfs/sysfs.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  include/uapi/linux/btrfs_tree.h | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index beb7f72d50b8..a8d918700d2b 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -1575,6 +1575,17 @@ static ssize_t btrfs_devinfo_error_stats_show(struct kobject *kobj,
->  }
->  BTRFS_ATTR(devid, error_stats, btrfs_devinfo_error_stats_show);
+> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> index 5416f1f1a77a..55da906c2eac 100644
+> --- a/include/uapi/linux/btrfs_tree.h
+> +++ b/include/uapi/linux/btrfs_tree.h
+> @@ -386,6 +386,22 @@ struct btrfs_key {
+>  	__u64 offset;
+>  } __attribute__ ((__packed__));
 >  
-> +static ssize_t btrfs_devinfo_allocation_hint_show(struct kobject *kobj,
-> +					struct kobj_attribute *a, char *buf)
-> +{
-> +	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-> +						   devid_kobj);
+> +/* dev_item.type */
 > +
-> +	return scnprintf(buf, PAGE_SIZE, "0x%08llx\n",
-> +		device->type & BTRFS_DEV_ALLOCATION_HINT_MASK );
-
-I think I lightly prefer the string based interface like what was
-discussed on V8, but this is fine as well, especially with the progs
-change in mind to add the extra usability.
-
-> +}
-> +BTRFS_ATTR(devid, allocation_hint, btrfs_devinfo_allocation_hint_show);
+> +/* btrfs chunk allocation hint */
+> +#define BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT	2
+> +/* btrfs chunk allocation hint mask */
+> +#define BTRFS_DEV_ALLOCATION_HINT_MASK	\
+> +	((1 << BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT) -1)
+> +/* preferred data chunk, but metadata chunk allowed */
+> +#define BTRFS_DEV_ALLOCATION_HINT_PREFERRED_DATA	(0ULL)
+> +/* preferred metadata chunk, but data chunk allowed */
+> +#define BTRFS_DEV_ALLOCATION_HINT_PREFERRED_METADATA	(1ULL)
+> +/* only metadata chunk are allowed */
+> +#define BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY		(2ULL)
+> +/* only data chunk allowed */
+> +#define BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY		(3ULL)
 > +
->  /*
->   * Information about one device.
->   *
-> @@ -1588,6 +1599,7 @@ static struct attribute *devid_attrs[] = {
->  	BTRFS_ATTR_PTR(devid, replace_target),
->  	BTRFS_ATTR_PTR(devid, scrub_speed_max),
->  	BTRFS_ATTR_PTR(devid, writeable),
-> +	BTRFS_ATTR_PTR(devid, allocation_hint),
->  	NULL
->  };
->  ATTRIBUTE_GROUPS(devid);
+>  struct btrfs_dev_item {
+>  	/* the internal btrfs device id */
+>  	__le64 devid;
 > -- 
 > 2.34.1
 > 
