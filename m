@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5105484FDD
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 10:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B8E484FE7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 10:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238793AbiAEJQP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 04:16:15 -0500
-Received: from smtp-36.italiaonline.it ([213.209.10.36]:45504 "EHLO libero.it"
+        id S238812AbiAEJTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 04:19:51 -0500
+Received: from smtp-36.italiaonline.it ([213.209.10.36]:60012 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238792AbiAEJQO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jan 2022 04:16:14 -0500
+        id S238799AbiAEJTu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Jan 2022 04:19:50 -0500
 Received: from [192.168.1.27] ([84.220.25.125])
         by smtp-36.iol.local with ESMTPA
-        id 52OunThxneQ4z52OunDbrD; Wed, 05 Jan 2022 10:16:11 +0100
+        id 52SRnTkg2eQ4z52SRnDdjS; Wed, 05 Jan 2022 10:19:48 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1641374171; bh=t7/fNe/lzmtklFyMh8SHhN75Baj1Hh4Sgv2wWag6EXs=;
+        t=1641374388; bh=o/9tuIWHP0QAQ8rALKsePH8feHNsybVQQnZgRQo95w8=;
         h=From;
-        b=kTKsWi/qNqGXcQ26FdiEyopmQHOkPsQHHPBjyY1Dl86dNIcqXgUr2o0yP6S8wHt7m
-         LbUdYPP4qoQBdMHJa/zN5IrLvm09wMuG9uFNU/kPZJlVhkkSuTDniZO+CKc3KtjTp6
-         T5SENMhAIiCLvWmJ0XCSgXqcWDjwjQIrau2nc2b4RZ4q623on9tjNiW7sTcChgzewq
-         g8MohpvwRTsg6M45TEA3XLn1e0XljeXdp9a3N/tB2BFzWqaBWn2pJtULUy//pHfDGs
-         of5s6XL/OYghbsOxbuVaFn6Rf5oWXr9qhqSinXOd0HqvFBzw5EX4MsYteta8Z42El/
-         KrdABTwkGr6dw==
-X-CNFS-Analysis: v=2.4 cv=WK+64lgR c=1 sm=1 tr=0 ts=61d561db cx=a_exe
+        b=dAFfjTinkdri3m/j06p4IIVURYC7FoKalqiwsQ7SMSUIrWpmlK+hipvNXPUowCp4z
+         SGpKbizE2gt5wtNvomCEgUxcUcTIl822I+neIVqa3fgtimWZWjMpbjbMy4FBxcUiyJ
+         4QBq38MO3HHuNEGX/5+wNiQ3inRJnL9Y4iqV/9IOPRNq/bwwCPyXWr+K5rtQT2q3nn
+         hWZYlvAhjwR4OEpOln6ZYgJ3lq8uki7EmGn0RqhxMtY63Ww5ArpJZ7khJBy7xC2CaV
+         XCH+ldD4oXIj2LzjtbRwhh0fZgZNFhQRoYlycN6vhLJ1s+CPfL97iVRplWqNBBO2FS
+         ismcRKuYQTi2g==
+X-CNFS-Analysis: v=2.4 cv=WK+64lgR c=1 sm=1 tr=0 ts=61d562b4 cx=a_exe
  a=hx1hjU+azB0cnDRRU3Lo+Q==:117 a=hx1hjU+azB0cnDRRU3Lo+Q==:17
- a=IkcTkHD0fZMA:10 a=ugnqW_ybRu3nDPTLqKQA:9 a=QEXdDO2ut3YA:10
-Message-ID: <7377b63d-23a7-5efd-4ae2-cffe70463d0b@libero.it>
-Date:   Wed, 5 Jan 2022 10:16:08 +0100
+ a=IkcTkHD0fZMA:10 a=NEAV23lmAAAA:8 a=0lOFetO7kJ6Uyi1PW4gA:9 a=QEXdDO2ut3YA:10
+Message-ID: <f0db6390-3f6b-1b20-0049-be010695c764@libero.it>
+Date:   Wed, 5 Jan 2022 10:19:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.4.1
 Reply-To: kreijack@inwind.it
-Subject: Re: [RFC][V9][PATCH 0/6] btrfs: allocation_hint mode
+Subject: Re: [PATCH 1/2] btrfs-progs: new "allocation_hint" property.
 Content-Language: en-US
 To:     Boris Burkov <boris@bur.io>
 Cc:     linux-btrfs@vger.kernel.org,
@@ -41,167 +41,47 @@ Cc:     linux-btrfs@vger.kernel.org,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.cz>,
         Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>,
         Goffredo Baroncelli <kreijack@inwind.it>
-References: <cover.1639766364.git.kreijack@inwind.it> <YdUGAg1TB8FCfqnr@zen>
+References: <cover.1639766708.git.kreijack@inwind.it>
+ <21fcdf5d4186555b743190e62ad3011c08aaad9b.1639766708.git.kreijack@inwind.it>
+ <YdUChLjZz80FS5u4@zen>
 From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <YdUGAg1TB8FCfqnr@zen>
+In-Reply-To: <YdUChLjZz80FS5u4@zen>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBaeLuXquwRk/mJ9R5K5WrcZGfFh2UISrsUN9o/LwGYsd9z0icHFyV5wWX+hAo6mlhfKvKqbBbAwkYcMGexK1BoJwIVnCnbQ1qh2colSHNn82M1oQ0ac
- geSYFPNNe4NyCYPVF02VOaLqJBfNpq53Yl820ceun/WFdPbinkZIgPwR/WEKUJMkOmexVd+BYjgk2cn5F+YpFO558+vW0C194SEz8Y9qLdWm/VwsuhO/bhK2
- XhiUzW1F2AMlI1kL0Sm3D0j6shhX1xuKhDoNjkccjFjpp8IufItLlNL8zMfbeUEZIg2W7XA5qMpIqzfFQVnLY2PbteqgojGDSckAJrZBb5CWJ/bKRHV42qz+
- M4+z1RisjtMnnSXpgmkfO1NWy0HKbAZa+NX6Ct8xOsbNMYItD5/AZkaHAgou+aLvTmgpl2i0
+X-CMAE-Envelope: MS4xfIi1IsNFjRrsClLScB8EzYY6pbxaq5456Blrl/LRuycHRmKeGSVpvJtKXUA2zhgpvyUd6N7GONGD/Gasb09y/EQJ4Y6jLw853Z5q/6tllipFaNCLVUZr
+ UlSVXM4X0b1YFk4fscUAXwsa+WJTV8/68pOtzPbdWU9p4SV1PnqLZ9B+kvTxpao1X+7jqrAODdUMT2GMSDV1ZL9Fpc44viyXp4sucDRm6ZpwaZhXt2x4N1vL
+ cFC5P7qyztzBFD/T6xB5w9y+n4S68ELFEtK809LN1Y5dfIxIqMM9nEJBaVtsqet3PUNmKmzWnuF8sIJlO/DtNZ5e+efe8jqorz3igab7qIYL+UGNVYJiMtKr
+ NmkoNxSh3v1mn6cs+qx07y7r+QjUSw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Boris,
-
-
-
-On 1/5/22 03:44, Boris Burkov wrote:
-[...]
+On 1/5/22 03:29, Boris Burkov wrote:
+> On Fri, Dec 17, 2021 at 07:47:04PM +0100, Goffredo Baroncelli wrote:
+>> From: Goffredo Baroncelli <kreijack@inwind.it>
+>>
+>> Handle the property allocation_hint of a btrfs device. Below
+>> an example of use:
+>>
+>> $ # set a new value
+>> $ sudo btrfs property set /dev/vde allocation_hint DATA_ONLY
 > 
-> This is cool, thanks for building it!
+> I applied this patchset to the master branch of
+> git://github.com/kdave/btrfs-progs.git
+> and this command failed with something like "not a btrfs object".
 > 
-> I'm playing with setting this up for a test I'm working on where I want
-> to send data to a dm-zero device. To that end, I applied this patchset
-> on top of misc-next and ran:
+> However, it worked fine as:
+> $ sudo btrfs property set -t device /dev/DEV allocation_hint DATA_ONLY
 > 
-> $ mkfs.btrfs -f /dev/vg0/lv0 -dsingle -msingle
-> $ mount /dev/vg0/lv0 /mnt/lol
+> I can't think of a reason I would hit this error and you wouldn't, since
+> that check is relatively old, but figured I would mention it.
 
-You should mount the filesystem with
+It seems that you missed the "failing command". However my guess is that this command fails on the LVM/DM devices, which often are link to the real devices.
 
-$ mount -o allocation_hint=1 /dev/vg0/lv0 /mnt/lol
-
-
-In the previous iteration I missed the patch #6, which activates this option. You can drop patch #6 and avoid to pass this option.
-
-Please give me a feedback if this resolve.
+Further investigation is needed.
 
 BR
-G.Baroncelli
-
-> $ btrfs device add /dev/mapper/zero-data /mnt/lol
-> $ btrfs fi usage /mnt/lol
-> Overall:
->      Device size:                  50.01TiB
->      Device allocated:             20.00MiB
->      Device unallocated:           50.01TiB
->      Device missing:                  0.00B
->      Used:                        128.00KiB
->      Free (estimated):             50.01TiB      (min: 50.01TiB)
->      Free (statfs, df):            50.01TiB
->      Data ratio:                       1.00
->      Metadata ratio:                   1.00
->      Global reserve:                3.25MiB      (used: 0.00B)
->      Multiple profiles:                  no
-> 
-> Data,single: Size:8.00MiB, Used:0.00B (0.00%)
->     /dev/mapper/vg0-lv0     8.00MiB
-> 
-> Metadata,single: Size:8.00MiB, Used:112.00KiB (1.37%)
->     /dev/mapper/vg0-lv0     8.00MiB
-> 
-> System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
->     /dev/mapper/vg0-lv0     4.00MiB
-> 
-> Unallocated:
->     /dev/mapper/vg0-lv0     9.98GiB
->     /dev/mapper/zero-data          50.00TiB
-> 
-> $ ./btrfs property set -t device /dev/mapper/zero-data allocation_hint DATA_ONLY
-> $ ./btrfs property set -t device /dev/vg0/lv0 allocation_hint METADATA_ONLY
-> 
-> $ btrfs balance start --full-balance /mnt/lol
-> Done, had to relocate 3 out of 3 chunks
-> 
-> $ btrfs fi usage /mnt/lol
-> Overall:
->      Device size:                  50.01TiB
->      Device allocated:              2.03GiB
->      Device unallocated:           50.01TiB
->      Device missing:                  0.00B
->      Used:                        640.00KiB
->      Free (estimated):             50.01TiB      (min: 50.01TiB)
->      Free (statfs, df):            50.01TiB
->      Data ratio:                       1.00
->      Metadata ratio:                   1.00
->      Global reserve:                3.25MiB      (used: 0.00B)
->      Multiple profiles:                  no
-> 
-> Data,single: Size:1.00GiB, Used:512.00KiB (0.05%)
->     /dev/mapper/zero-data           1.00GiB
-> 
-> Metadata,single: Size:1.00GiB, Used:112.00KiB (0.01%)
->     /dev/mapper/zero-data           1.00GiB
-> 
-> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
->     /dev/mapper/zero-data          32.00MiB
-> 
-> Unallocated:
->     /dev/mapper/vg0-lv0    10.00GiB
->     /dev/mapper/zero-data          50.00TiB
-> 
-> 
-> I expected that I would have data on /dev/mapper/zero-data and metadata
-> on /dev/mapper/vg0-lv0, but it seems both of them were written to the zero
-> device. Attempting to actually use the file system eventually fails, since
-> the metadata is black-holed :)
-> 
-> Did I make some mistake in how I used it, or is this a bug?
-> 
-> Thanks,
-> Boris
-> 
->> BR
->> G.Baroncelli
->>
->> Revision:
->> V9:
->> - rename dev_item->type to dev_item->flags
->> - rename /sys/fs/btrfs/$UUID/devinfo/type -> allocation_hint
->>
->> V8:
->> - drop the ioctl API, instead use a sysfs one
->>
->> V7:
->> - make more room in the struct btrfs_ioctl_dev_properties up to 1K
->> - leave in btrfs_tree.h only the costants
->> - removed the mount option (sic)
->> - correct an 'use before check' in the while loop (signaled
->>    by Zygo)
->> - add a 2nd sort to be sure that the device_info array is in the
->>    expected order
->>
->> V6:
->> - add further values to the hints: add the possibility to
->>    exclude a disk for a chunk type
->>
->>
->> Goffredo Baroncelli (6):
->>    btrfs: add flags to give an hint to the chunk allocator
->>    btrfs: export the device allocation_hint property in sysfs
->>    btrfs: change the device allocation_hint property via sysfs
->>    btrfs: add allocation_hint mode
->>    btrfs: rename dev_item->type to dev_item->flags
->>    btrfs: add allocation_hint option.
->>
->>   fs/btrfs/ctree.h                |  18 +++++-
->>   fs/btrfs/disk-io.c              |   4 +-
->>   fs/btrfs/super.c                |  17 ++++++
->>   fs/btrfs/sysfs.c                |  73 ++++++++++++++++++++++
->>   fs/btrfs/volumes.c              | 105 ++++++++++++++++++++++++++++++--
->>   fs/btrfs/volumes.h              |   7 ++-
->>   include/uapi/linux/btrfs_tree.h |  20 +++++-
->>   7 files changed, 232 insertions(+), 12 deletions(-)
->>
->> -- 
->> 2.34.1
->>
-
 
 -- 
 gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
