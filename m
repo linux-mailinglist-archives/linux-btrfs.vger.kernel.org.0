@@ -2,94 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FBD485A1A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 21:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEBD485A33
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 21:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244095AbiAEUjQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 15:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244088AbiAEUjP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 15:39:15 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760AEC061245
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 12:39:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1ED176192C
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 20:39:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 769BDC36AE9
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 20:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641415154;
-        bh=KhWH8qeCreGzFePdAWJqhwXQTtHutBcnYXm4oIfBVRE=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=gKgQpjtKJJlOiWtfvbA2C2JnDkKaOx62aeEnTm0YWNEIitsgO5b5Zz+1vcoZVWzrN
-         AFGSgCy52Adwdltq+M6ie02EKgDWk4HMYPrFqsJ1e8HnCP4Yck7O4TjYOQ7V6chVbV
-         e186k18lFBHK0bnI3QHdMOBIQK6TD/nBQGWkv4mojdNGJD51QJHvL4MmIC+XkB4cMq
-         9KK6nS3A848RcWkwEfFBc+AdzbNfGhe5uSrHIIhGonGJzX4UKAaMoA+Jb6ptQzfOFo
-         5Xxjf3xbbpmpJEl+s5zm7kTf5kmUS1mxDQbExFdY+SEdTHU8m8Cb3p94Z8vLTbka7w
-         HmhmEb2tfnbpg==
-Received: by mail-qt1-f174.google.com with SMTP id p19so188405qtw.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jan 2022 12:39:14 -0800 (PST)
-X-Gm-Message-State: AOAM5315+xVhwIMq+ipcco3wW1ta/NwYidhgcBRncTiJdiMLUo5HDmUA
-        rWAQunETuSiWlQTUYgy8wE06yQI2TduWpWtOuCM=
-X-Google-Smtp-Source: ABdhPJxnjnQooCfyF6jZMXaSVIVphZuVzlY5+iGK1WEZhFbch4OwhgO5muBKr0LpwdOAiDHD2NLDH8anP60yo/EBOQI=
-X-Received: by 2002:ac8:674d:: with SMTP id n13mr49167158qtp.491.1641415153530;
- Wed, 05 Jan 2022 12:39:13 -0800 (PST)
+        id S244185AbiAEUqJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 15:46:09 -0500
+Received: from michael.mail.tiscali.it ([213.205.33.246]:55402 "EHLO
+        smtp.tiscali.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S244196AbiAEUp6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 15:45:58 -0500
+Received: from venice.bhome ([84.220.25.125])
+        by michael.mail.tiscali.it with 
+        id f8lv2601f2hwt04018lwus; Wed, 05 Jan 2022 20:45:56 +0000
+X-Spam-Final-Verdict: clean
+X-Spam-State: 0
+X-Spam-Score: -100
+X-Spam-Verdict: clean
+x-auth-user: kreijack@tiscali.it
+From:   Goffredo Baroncelli <kreijack@tiscali.it>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Boris Burkov <boris@bur.io>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+Subject: [PATCH][V2] btrfs-progs: allow autodetect_object_types() to handle link.
+Date:   Wed,  5 Jan 2022 21:45:52 +0100
+Message-Id: <da4a4e0cf18df259e63c19872093bf12635da576.1641415488.git.kreijack@inwind.it>
+X-Mailer: git-send-email 2.34.1
+Reply-To: Goffredo Baroncelli <kreijack@libero.it>
 MIME-Version: 1.0
-References: <CAJCQCtRnyUHEwV1o9k565B_u_RwQ2OQqdXHtcfa-LWAbUSB7Gg@mail.gmail.com>
- <YdXdtrHb9nTYgFo7@debian9.Home> <20220105183407.GD14058@savella.carfax.org.uk>
-In-Reply-To: <20220105183407.GD14058@savella.carfax.org.uk>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 5 Jan 2022 20:38:37 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4ofLVoGA3YC6M8gdBuW9g2W-C644gXgr9Z+r4MZBJZGA@mail.gmail.com>
-Message-ID: <CAL3q7H4ofLVoGA3YC6M8gdBuW9g2W-C644gXgr9Z+r4MZBJZGA@mail.gmail.com>
-Subject: Re: [bug] GNOME loses all settings following failure to resume from suspend
-To:     Hugo Mills <hugo@carfax.org.uk>,
-        Filipe Manana <fdmanana@kernel.org>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
+        t=1641415556; bh=14gRAPqQVDzWBB64W+qcfcYn/WPFiBg95T1ddjmg15E=;
+        h=From:To:Cc:Subject:Date:Reply-To;
+        b=EPxyZtcIVReMDg4xJozhJ8nIwb4zZoV+lcLfbibi1Q7H+Q+GxjUyPlBSbUmljrS8o
+         FMDwQKgvlkhcz8cF470KPkmJcOhsod31T8oOspM4CY49JsY4Z6iyAl7WEHRpIBVl1v
+         q3TXSJYYx1Dt5ziArjNTe4IBqKJAvuXxPFEEmy2M=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 5, 2022 at 6:34 PM Hugo Mills <hugo@carfax.org.uk> wrote:
->
->    Hi, Filipe,
->
-> On Wed, Jan 05, 2022 at 06:04:38PM +0000, Filipe Manana wrote:
-> > I don't think I have a wiki account enabled, but I'll see if I get that
-> > updated soon.
->
->    If you can't (or don't want to), feel free to put the text you want
-> to replace it with here, and I'll update the wiki for you...
+From: Goffredo Baroncelli <kreijack@inwind.it>
 
-Hi Hugo,
+The function autodetect_object_types() tries to detect the type of
+btrfs object passed. If it is an "inode" type (e.g. file) this function
+returns the type as "inode". If it is a block device, it return it as
+"block device".
+However it doesn't handle the case where the object passed is a link
+to a block device (which could be a valid btrfs device). For example
+LVM/DM creates link to block devices. In this case it should return
+the type as "block device".
 
-That would be great.
-I don't have a concrete text, but as you are a native english speaker,
-a version from you would sound better :)
+This patch replace the lstat() call with a stat().
 
-Perhaps just mention that as of kernel 3.17 (and maybe point to that
-commit too), the behaviour is no longer guaranteed, and we can end up
-getting a file of 0 bytes.
-So an explicit fsync on the file is needed (just like ext4 and other
-filesystems).
+Reported-by: Boris Burkov <boris@bur.io>
+Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
+---
+ cmds/property.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I asked for an account creation before seeing your reply.
-Anyway, if you want to do it, go ahead.
+diff --git a/cmds/property.c b/cmds/property.c
+index 59ef997c..b3ccc0ff 100644
+--- a/cmds/property.c
++++ b/cmds/property.c
+@@ -373,7 +373,7 @@ static int autodetect_object_types(const char *object, int *types_out)
+ 
+ 	is_btrfs_object = check_btrfs_object(object);
+ 
+-	ret = lstat(object, &st);
++	ret = stat(object, &st);
+ 	if (ret < 0) {
+ 		ret = -errno;
+ 		goto out;
+-- 
+2.34.1
 
-Thanks.
-
->
->    Hugo.
->
-> --
-> Hugo Mills             | "There's a Martian war machine outside -- they want
-> hugo@... carfax.org.uk | to talk to you about a cure for the common cold."
-> http://carfax.org.uk/  |
-> PGP: E2AB1DE4          |                           Stephen Franklin, Babylon 5
