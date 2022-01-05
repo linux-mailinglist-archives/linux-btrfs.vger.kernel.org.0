@@ -2,105 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CE8484EEF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 08:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEB2484F3B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 09:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbiAEH5g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 02:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        id S230407AbiAEIXV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 03:23:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbiAEH5g (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 02:57:36 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3613C061761
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jan 2022 23:57:35 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id c14-20020a17090a674e00b001b31e16749cso1290979pjm.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Jan 2022 23:57:35 -0800 (PST)
+        with ESMTP id S238431AbiAEIXT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 03:23:19 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7F3C061784
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 00:23:19 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id v14so50044307uau.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jan 2022 00:23:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=muDLpDbWJ7+5o2h/WSFjj/IcElI1JnlzjYoFpnWANM4=;
-        b=PPfcU/uw+4ZLRzrbtTfe4rM7jSnsUvQS/orpEHfo6SAiw4lIeefSfdPYbssI9hVeKD
-         5c8vtIMpiRk59rzg00ywQVtZBgYdWH0LFuxIWCHECvhHTEYjx1VMfkEHnx6Gf29nCH4/
-         X7Q/56OE5Fctr+pgGdY3F/1HzfKWR5+9HlVvuz6G5EJUFRxTiUmnqaTCFOw0ICXB7cND
-         R2Er72y+lkBPs15pW5ln2KzWyqSn/r/6tFMYEXLSGWsuL4OAUuk1pTDj7t/AfVEyVeAW
-         vceq5kjsH7yaqOLrjRhsF9FxcDIYIvL9KUU3sARuhKmRHbHBNuX/gL7d6OjBcYJnzDfk
-         EflQ==
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
+        b=etO+9O2WZSyUQ3n8VcO/RO9xIoTnk6xZ78BDsoRs08dz/9jNUbxrk1xTgatV1eLV3j
+         xttA7SeBsey0kwN6L1pv7ycBolEgOVH+4WLzuaadgJzXzgFxFhRt7LPvcKMKFrhudoOy
+         UMsuCBr8nvo4Kra3qZAM7obU0jMnDVmQGb08AeEkH49bD4gBIHy/dS0NjeqVKOPIHddU
+         2T4kBVvOZfHwiBmDU2HibBu9mXxPGSziy0nCr+PQXvRvUSRmvJ62JpaM7/oPEcswmydh
+         bcWRFmLC1xu1cjb1gngySb/tpKsEVzCs/hnzwwDySRYjUi+084F8GC4WGEpPyZXbHbBl
+         lwsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=muDLpDbWJ7+5o2h/WSFjj/IcElI1JnlzjYoFpnWANM4=;
-        b=t/bkd3r0IzI57JfVxOrTBikznpgNJ2UKnGTwkpxKwNCmFUgW47vAYmfgw9GcQvx5m2
-         j+Bt2067XYqi9KLW+zkAIPylydz6J0YktKpNY9o41CwazGonZdsu4q8Ha9E7UKYMUC/v
-         XC5rdNyudvVnYWi+NasH3RqfAOJPL1w6N/Tbjdfig/3sRcgWYjKrjD+Rd9Jf/rqHQrZt
-         jEbKZJO9r1IA3rXZFBJzaqYlSUdr5cA+fbUsAeeMs3EsEKbKQO3zAhu9XxTjCAofxyFC
-         oCAhQJDOdYAzUvpYyXw9dxOzzP95Sp6DJdEorEXJLYYCNCVCieGWAxy5sRfxHkKEYVm/
-         qcDA==
-X-Gm-Message-State: AOAM533yhbMY3zZIuMBRT6JbPI/8xutG88gS6qgmUBsi6bOTdqla/7io
-        4GP+KNo8/GVMhSVS2UAB5zxSiCa0ATWnYrfyOrY=
-X-Google-Smtp-Source: ABdhPJxeKN/NtUGwOReCOhqOj6xF1SL9/NS5vYWHDBRft1ycqwa9DbFTP9fx4zXHG9v8kv1ZkSQJJ39A3Mgu0odUgZc=
-X-Received: by 2002:a17:902:b591:b0:149:66d6:7589 with SMTP id
- a17-20020a170902b59100b0014966d67589mr46560507pls.24.1641369455322; Tue, 04
- Jan 2022 23:57:35 -0800 (PST)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
+        b=fuDAR4ISPfZ5lnrnrZNALg5zrdJx4b0JX4mZKCFxZxG/slWZsI8pUSc9F5/frberIk
+         /W9uaz6BnVYq4eBjVBdgwPjhlQ6gJ6OdWff2I02T/yUPc7tik9Ru3VVFAgnAyzvlq3eC
+         gi43QjJAw8ZaUsEymWlKBthWjTOi3OQBC1QRsvz2j4fbCz7vKMBwlIBtrqrvsxXJu2iE
+         vMGaxSvPNzcXtvCStvR+ff/xkAzwfPltTOjxyOrl8FvagvDpwE/frhyvohfTjuUK59Aa
+         WgSADbWSdM8G4Hmil1SSgfOeTbSOjO246ZnB3USOpH0D5k5lYttrCW9gQJMQXEx7nvFU
+         5Ilw==
+X-Gm-Message-State: AOAM531yw/PgByuROLlWg5DsbGfo3hN6Hl//Ng0N5Vnt0f/u4wdXgEWc
+        dRJTkMv/fKa9nRJsfxxEbkMCdymmXV4iTtl84ss=
+X-Google-Smtp-Source: ABdhPJzWGm0bfO2hNgUeIFToQwxC0kXs1Pt5B0ieuR6ie3pjsKwA+1/m9Nx2CLbhH8pWgQvYum6DSDI4CWj32srKiOE=
+X-Received: by 2002:a67:bd02:: with SMTP id y2mr16953270vsq.56.1641370998414;
+ Wed, 05 Jan 2022 00:23:18 -0800 (PST)
 MIME-Version: 1.0
-Reply-To: mrselodieantonie778@yahoo.com
-Sender: pastorjohn1991@gmail.com
-Received: by 2002:a17:90a:cc13:0:0:0:0 with HTTP; Tue, 4 Jan 2022 23:57:34
- -0800 (PST)
-From:   Mrs Elodie Antoine <mrselodieantoinea@gmail.com>
-Date:   Tue, 4 Jan 2022 23:57:34 -0800
-X-Google-Sender-Auth: 9wto83WTsSbvIkk5Iy5wgf28yLM
-Message-ID: <CABk23+k1Gq8KWLbja0953GRTSdtpjbcpPReLjfE2tu44PZoG5A@mail.gmail.com>
-Subject: Calvary Greetings
+Sender: aishagaddafi1056@gmail.com
+Received: by 2002:a05:612c:1a3:b0:273:a2dd:3116 with HTTP; Wed, 5 Jan 2022
+ 00:23:17 -0800 (PST)
+From:   DINA MCKENNA <dinamckennahowley@gmail.com>
+Date:   Wed, 5 Jan 2022 08:23:17 +0000
+X-Google-Sender-Auth: Ivoxnb9zGfHcIwSLYw3y8ri9O58
+Message-ID: <CANtwLy20u-T31pkp4RCu431sNSV8aHTuR90xjtzLkuhMRrL-rQ@mail.gmail.com>
+Subject: Calvary greetings.
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-CAN I TRUST YOU WITH  THIS (US$4.5 Million Dollars) FOR CHARITY WORKS,
+Hello my dear,
 
-Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
-CHRIST the giver of every good thing. Good day,i know this letter will
-definitely come to you as a huge surprise, but I implore you to take
-the time to go through it carefully as the decision you make will go
-off a long way to determine my future and continued existence. I am
-Mrs Elodie Antoine
-aging widow of 59 years old suffering from long time illness. I have
-some funds I inherited from my late husband,
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs. Dina. Howley Mckenna, a widow. I am
+suffering from a long time brain tumor, It has defiled all forms of
+medical treatment, and right now I have about a few months to leave,
+according to medical experts. The situation has gotten complicated
+recently with my inability to hear proper, am communicating with you
+with the help of the chief nurse herein the hospital, from all
+indication my conditions is really deteriorating and it is quite
+obvious that, according to my doctors they have advised me that I may
+not live too long, Because this illness has gotten to a very bad
+stage. I plead that you will not expose or betray this trust and
+confidence that I am about to repose on you for the mutual benefit of
+the orphans and the less privilege. I have some funds I inherited from
+my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
+Having known my condition, I decided to donate this fund to you
+believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works therein your country  for orphanages and gives justice
+and help to the poor, needy and widows says The Lord." Jeremiah
+22:15-16.=E2=80=9C and also build schools for less privilege that will be
+named after my late husband if possible and to promote the word of God
+and the effort that the house of God is maintained. I do not want a
+situation where this money will be used in an ungodly manner. That's
+why I'm taking this decision. I'm not afraid of death, so I know where
+I'm going. I accept this decision because I do not have any child who
+will inherit this money after I die.. Please I want your sincerely and
+urgent answer to know if you will be able to execute this project for
+the glory of God, and I will give you more information on how the fund
+will be transferred to your bank account. May the grace, peace, love
+and the truth in the Word of God be with you and all those that you
+love and care for.
 
-The sum of (US$4.5 Million Dollars) and I needed a very honest and God
-fearing  who can withdraw this money then use the funds for Charity
-works. I WISH TO GIVE THIS FUNDS TO YOU FOR CHARITY WORKS. I found
-your email address from the internet after honest prayers  to the LORD
-to bring me a helper and i decided to contact you if you may be
-willing and interested to handle these trust funds in good faith
-before anything happens to me.
-I accept this decision because I do not have any child who will
-inherit this money after I die. I want your urgent reply to me so that
-I will give you the deposit receipt which the  COMPANY issued to me as
-next of kin for immediate transfer of the money to your account in
-your country, to start the good work of God, I want you to use the
-15/percent of the total amount to help yourself in doing the project.
+I'm waiting for your immediate reply..
 
-
-I am desperately in keen need of assistance and I have summoned up
-courage to contact you for this task, you must not fail me and the
-millions of the poor people in our todays WORLD. This is no stolen
-money and there are no dangers involved,100% RISK FREE with full legal
-proof. Please if you would be able to use the funds for the Charity
-works kindly let me know immediately.I will appreciate your utmost
-confidentiality and trust in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish. I
-want you to take 15 percent of the total money for your personal use
-while 85% of the money will go to charity.I will appreciate your
-utmost confidentiality and trust in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish.
-
-
-Kindly reply me
-
-Thanks and God bless you,
-
-Mrs Elodie Antoine
+May God Bless you,
+Mrs. Dina. Howley Mckenna.
