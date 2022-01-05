@@ -2,174 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58604857A7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 18:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2D54857C6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 18:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242533AbiAERuq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 12:50:46 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:50509 "EHLO
+        id S242649AbiAER4g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 12:56:36 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:53907 "EHLO
         out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242546AbiAERub (ORCPT
+        by vger.kernel.org with ESMTP id S242654AbiAERzn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jan 2022 12:50:31 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9A8435C0151;
-        Wed,  5 Jan 2022 12:50:30 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 05 Jan 2022 12:50:30 -0500
+        Wed, 5 Jan 2022 12:55:43 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id AE2E45C017F;
+        Wed,  5 Jan 2022 12:55:42 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 05 Jan 2022 12:55:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
         :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=Xs+UaHhj0GFgr2co0bND/XiBjun
-        2HSHag97jVJxw3mE=; b=iLUVOVkMwvPMTUCRcVzH03XCWmbb/IlKX4saI7HgvoK
-        fUzEnHJMEVRRUktJdvXY8tsKJy6S6SLCBP5PD6toBDFu1Tk7Bru0Q4fpTERzJiwz
-        ltFA1M7bB3KDx4/Mih7tkP2Uaaq9zgYZ6i0f1KPacfsZKNsGf++Rvgx0u2W0VFQA
-        iI9LllXM0cREd3JYY/XWqHbYPdz4V04VCJrLL1Ic04Vh+jLe8o9/d6Eaeea1yBKv
-        PEFi/gqYHN7cZp0a0OtdIBgjzr4vQQUHxK1RVo0DxZBSVxQu3/JBUCJFQYGO7ltl
-        9M7zsvGLWOGanslUkKpgwaD9w48pa6erSzbXX7D9OfA==
+        :content-type:in-reply-to; s=fm2; bh=J7/2kaBRNMViNGNj/h5HC3jBb03
+        rM7FS1dQjfVO8H2Q=; b=SQV8cgpRPZZlIct1IIVQ5yr1yPePlCbEbE1br67GQ6d
+        zB8ZNgTENvJeJyPKv1RQwoZWOTAqmWf8y98m/x1OdkV3tBUmQYxakjlSQco1ucY0
+        +WDEdh4aj/o39DLoYy/Kjotrq4VLjttC5yjMN18FZCY6sOMijY+1GN16zQG1CykA
+        0WzgV5vDYoxbytEBAYweMu//m77vFum0iyYP4+hBJAdyLXqnS9Nm3tNJln1S9yBu
+        uCY0c9zhYiWVZNwKekWcvH1F5DbQkuk2545USMd2PzUzoSU6XkGOpd8HHDNovHOi
+        UgK+2HIKED6DjHELPTSvllL9YRrV+P9Xc5VFC6EGmeA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Xs+UaH
-        hj0GFgr2co0bND/XiBjun2HSHag97jVJxw3mE=; b=LNikAb1uXgObQaZW+DG37T
-        DpQkK0QV9P13DPFw/VnyCwkv6RfmKKgQrM0TXNdMUzs1MTjKTzJDkkkXwZxqN3aw
-        3Zy6igIjYbhnZiZzcaA+ZtmmBC40KK+ptMi5TmwjBNaX+iET6FeyKr2yiW5S7iJ4
-        NuL8iO8lRdVYTHSPeWiZc3CUVFq8PkzIfDDmjC9lsMgS7L9e7JW0CmsHn7eh/jeS
-        TqF2j+7r230bPbTpXzWLkZonfi+xzMf+1d6R5GkurssdzK3+uMCjRVMES4x7jgny
-        9r5C/KQWNm7V1zmWNEs64hp3ACxCuH0Gw/Ztz0yNFGov/UIwv+PylmYt+6Hi+aUg
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=J7/2ka
+        BRNMViNGNj/h5HC3jBb03rM7FS1dQjfVO8H2Q=; b=WawhrT0q0Z4hGzwvpTx+dN
+        WoJyV1GTND4h9evbJ3X/o3629vkVsktaJGQKQWKPYkaSWP3YiSIdzXIKdjPrJgCv
+        djEqgwko/oY1NpCU3glfWrj2z06FkTD1TRz9NKBox+xyCXltSCTo7acd2mSqmiEs
+        R7+nKFTplVik1GM1ryq4ge1cc5hEjds43Z3bV5uOvYissDRWSDvUJnaoOf+IbdAV
+        I/9diSCYJfT8x5TRCyghEcSYipnL+D8YGNQKIlMA9U3De5trawRm3luxE2VvFg2W
+        b3wvmDyTMjPnvn+WE1Ic0Kf3VtIziI0nYqJ30DJHHUUvTy0NRdoUr/1HZTppcuAQ
         ==
-X-ME-Sender: <xms:ZtrVYaceJbu4C0KEBdTXitCk7MwX5DNyiIHf3lZgn1_GPtrufLhj1A>
-    <xme:ZtrVYUMzQmRzQqqbGJYEriRGXKYGZK2x0tIEsPCkACXDry76hoDVHT37UIPrMJXuR
-    dJl81TVYeqViKEQdC8>
-X-ME-Received: <xmr:ZtrVYbhdYn2lt-gWjhYHZkvYwRRwcSKJKLSee_uks3W9ZijVTXpDAojudXH3ScZKPAppBm5uI_1lT7HBUJ30Lg0RsDc2FQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgvddtucetufdoteggodetrfdotf
+X-ME-Sender: <xms:ndvVYVnCfRdTMgt3G02BOdQ7vispYkkO2tWRUoiK1hAJQiPh0HGsjA>
+    <xme:ndvVYQ3SKZ2Epec_rsMYwLIukJiatxL8O7rXGZbP6Bw6RTeagQ1f2WM3SEG1tMy_E
+    Ic5xDX9yRmGSsWggqw>
+X-ME-Received: <xmr:ndvVYbp14l4W6NM94eA81PMQiHgZQlJAiVRudy87GM0UQGH4lfJMDtcv3UzkuldHcbgKtA8BMfIx_cJPQTxaVaFPgldddA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgvdduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeehudevleekieetleevieeuhfduhedtiefgheekfe
-    efgeelvdeuveeggfduueevfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:ZtrVYX-jmP0U8LE7JM5wgIm2Zl459RkhGeeYTMbwQXFT_eli-r3wLQ>
-    <xmx:ZtrVYWt7OTQdMHSttg_JzqyImluqvDA87toNmEU32A7u1WK28thcZA>
-    <xmx:ZtrVYeFK5vJGdpGCEiy6Zc60UIBWwAESO_-C1-e1q4JC9FcK1Q6Btw>
-    <xmx:ZtrVYbX_6hsEGHedZ0bPysqm9GhDHUL1H5CvZ307Lbx8R57QaOgJ-g>
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
+    ffvddugfevfefgjeeivdfhkeeigffhueejteejgeffudfftdehveeuueevtdeknecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:ndvVYVmojPSV3r5fhVSk7kpBPznZVXbfEGHLmMIKt9wuxOJBim9YKQ>
+    <xmx:ndvVYT1ocxtIh-EmmDsAsrZEw4lYIsDTIpK30D5Xkb5gkQrhMXiW3g>
+    <xmx:ndvVYUvM7N4lUvqpSiiauIYqf3kU5hU9tCPbn1H-p5d089aBnR5c_Q>
+    <xmx:ntvVYT_6w1zetKzKp_6IJXIJO-5VAA-I25o3OnETQ5dtlXFcDR0CFg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Jan 2022 12:50:29 -0500 (EST)
-Date:   Wed, 5 Jan 2022 09:50:28 -0800
+ 5 Jan 2022 12:55:41 -0500 (EST)
+Date:   Wed, 5 Jan 2022 09:55:39 -0800
 From:   Boris Burkov <boris@bur.io>
-To:     Goffredo Baroncelli <kreijack@libero.it>
+To:     kreijack@inwind.it
 Cc:     linux-btrfs@vger.kernel.org,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH][TRIVIAL] btrfs-progs: Allow autodetect_object_types() to
- handle the link.
-Message-ID: <YdXaZP27ALM6KJ9G@zen>
-References: <f4345fcac83ba226efdadcd4610861e434f8a73e.1641389199.git.kreijack@inwind.it>
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>
+Subject: Re: [RFC][V9][PATCH 0/6] btrfs: allocation_hint mode
+Message-ID: <YdXbmwHZneMdxcly@zen>
+References: <cover.1639766364.git.kreijack@inwind.it>
+ <YdUGAg1TB8FCfqnr@zen>
+ <7377b63d-23a7-5efd-4ae2-cffe70463d0b@libero.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f4345fcac83ba226efdadcd4610861e434f8a73e.1641389199.git.kreijack@inwind.it>
+In-Reply-To: <7377b63d-23a7-5efd-4ae2-cffe70463d0b@libero.it>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 02:32:58PM +0100, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
+On Wed, Jan 05, 2022 at 10:16:08AM +0100, Goffredo Baroncelli wrote:
+> Hi Boris,
 > 
 > 
-> Hi All,
 > 
-> Boris Burkov reported a problem when "btrfs prop get" is invoked on a link of a block
-> device. This happens when btrfs is invoked on a LVM device (which typically is
-> a link with an user friendly name to the real block device). In this case btrfs
-> reports 'ERROR: object is not a btrfs object'.
+> On 1/5/22 03:44, Boris Burkov wrote:
+> [...]
+> > 
+> > This is cool, thanks for building it!
+> > 
+> > I'm playing with setting this up for a test I'm working on where I want
+> > to send data to a dm-zero device. To that end, I applied this patchset
+> > on top of misc-next and ran:
+> > 
+> > $ mkfs.btrfs -f /dev/vg0/lv0 -dsingle -msingle
+> > $ mount /dev/vg0/lv0 /mnt/lol
 > 
-> ------------------
-> Steps to reproduce:
+> You should mount the filesystem with
 > 
-> $ sudo losetup -f disk-1.img 
-> $ sudo losetup -f disk-2.img 
-> $ sudo losetup -O NAME,BACK-FILE
-> NAME       BACK-FILE
-> /dev/loop1 /home/ghigo/test-allocation-hint/disk-2.img
-> /dev/loop0 /home/ghigo/test-allocation-hint/disk-1.img
->                                   
-> $ cd /dev/
-> $ mv loop1 loop1-tmp
-> $ ln -sf loop1-tmp loop1
-> $ ls -l /dev/loop[01]*
-> brw-rw---- 1 root disk 7, 0 Jan  5 13:42 /dev/loop0
-> lrwxrwxrwx 1 root root    9 Jan  5 13:41 /dev/loop1 -> loop1-tmp
-> brw-rw---- 1 root disk 7, 1 Jan  5 13:42 /dev/loop1-tmp
+> $ mount -o allocation_hint=1 /dev/vg0/lv0 /mnt/lol
 > 
-> $ sudo mkfs.btrfs /dev/loop[0-1]
-> [....]
-> $ sudo mount /dev/loop1 mnt/
-> 
-> $ # this is the error
-> $ sudo btrfs prop get /dev/loop1
-> ERROR: object is not a btrfs object: /dev/loop1
-> 
-> $ # this is what should happen
-> $ sudo btrfs prop get /dev/loop0
-> label=
-> 
-> ------------------
-> 
-> The cause is in the function autodetect_object_types() that detects the type of
-> btrfs object passed. If the object is an "inode" type (e.g. file, link...) it
-> returns the type of object. If the object is a block device (it doesn't matter
-> if it is in a btrfs filesystem), it returns it as block device.
-> However it doesn't handle well the case where the object passed is a link
-> to a block device (which could be a valid btrfs object). For example
-> LVM/DM creates link to block devices.
-> 
-> This patch adds a further call to stat() (instead of reusing the previous lstat()
-> returned value) when btrfs-progs checks if the object is a block device.
 
-Thank you very much for investigating and fixing this. I tested this
-patch an it works as advertised.
+With this option, I got the expected usage output:
+
+Data,single: Size:1.00GiB, Used:512.00KiB (0.05%)
+   /dev/mapper/zero-data           1.00GiB
+
+Metadata,single: Size:1.00GiB, Used:112.00KiB (0.01%)
+   /dev/mapper/vg0-lv0     1.00GiB
+
+Sorry I missed that, and thanks for the quick reply.
 
 > 
-> Reported-by: Boris Burkov <boris@bur.io>
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->  cmds/property.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> In the previous iteration I missed the patch #6, which activates this option. You can drop patch #6 and avoid to pass this option.
 > 
-> diff --git a/cmds/property.c b/cmds/property.c
-> index 59ef997c..97dc5ae1 100644
-> --- a/cmds/property.c
-> +++ b/cmds/property.c
-> @@ -391,6 +391,14 @@ static int autodetect_object_types(const char *object, int *types_out)
->  			types |= prop_object_root;
->  	}
->  
-> +	/*
-> +	 * Do a new stat to follow a possible link
-> +	 */
-
-I took a look at the original lstat and it doesn't seem super strongly
-motivated. It is used to detect a subvolume object (ino==256) so I don't
-see why we would hate to have property get/set work on a symlink to a
-subvol.
-
-I tested a patch that just changes lstat to stat instead of adding the
-second stat, and it handled the subvol case nicely too.
-
-e.g.
-ln -s /mnt/real /mnt/lnk
-./btrfs property get /mnt/real ro
-ro=false
-./btrfs property get /mnt/lnk ro
-ro=false
-
-> +	ret = stat(object, &st);
-> +	if (ret < 0) {
-> +		ret = -errno;
-> +		goto out;
-> +	}
->  	if (S_ISBLK(st.st_mode))
->  		types |= prop_object_dev;
->  
+> Please give me a feedback if this resolve.
+> 
+> BR
+> G.Baroncelli
+> 
+> > $ btrfs device add /dev/mapper/zero-data /mnt/lol
+> > $ btrfs fi usage /mnt/lol
+> > Overall:
+> >      Device size:                  50.01TiB
+> >      Device allocated:             20.00MiB
+> >      Device unallocated:           50.01TiB
+> >      Device missing:                  0.00B
+> >      Used:                        128.00KiB
+> >      Free (estimated):             50.01TiB      (min: 50.01TiB)
+> >      Free (statfs, df):            50.01TiB
+> >      Data ratio:                       1.00
+> >      Metadata ratio:                   1.00
+> >      Global reserve:                3.25MiB      (used: 0.00B)
+> >      Multiple profiles:                  no
+> > 
+> > Data,single: Size:8.00MiB, Used:0.00B (0.00%)
+> >     /dev/mapper/vg0-lv0     8.00MiB
+> > 
+> > Metadata,single: Size:8.00MiB, Used:112.00KiB (1.37%)
+> >     /dev/mapper/vg0-lv0     8.00MiB
+> > 
+> > System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
+> >     /dev/mapper/vg0-lv0     4.00MiB
+> > 
+> > Unallocated:
+> >     /dev/mapper/vg0-lv0     9.98GiB
+> >     /dev/mapper/zero-data          50.00TiB
+> > 
+> > $ ./btrfs property set -t device /dev/mapper/zero-data allocation_hint DATA_ONLY
+> > $ ./btrfs property set -t device /dev/vg0/lv0 allocation_hint METADATA_ONLY
+> > 
+> > $ btrfs balance start --full-balance /mnt/lol
+> > Done, had to relocate 3 out of 3 chunks
+> > 
+> > $ btrfs fi usage /mnt/lol
+> > Overall:
+> >      Device size:                  50.01TiB
+> >      Device allocated:              2.03GiB
+> >      Device unallocated:           50.01TiB
+> >      Device missing:                  0.00B
+> >      Used:                        640.00KiB
+> >      Free (estimated):             50.01TiB      (min: 50.01TiB)
+> >      Free (statfs, df):            50.01TiB
+> >      Data ratio:                       1.00
+> >      Metadata ratio:                   1.00
+> >      Global reserve:                3.25MiB      (used: 0.00B)
+> >      Multiple profiles:                  no
+> > 
+> > Data,single: Size:1.00GiB, Used:512.00KiB (0.05%)
+> >     /dev/mapper/zero-data           1.00GiB
+> > 
+> > Metadata,single: Size:1.00GiB, Used:112.00KiB (0.01%)
+> >     /dev/mapper/zero-data           1.00GiB
+> > 
+> > System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+> >     /dev/mapper/zero-data          32.00MiB
+> > 
+> > Unallocated:
+> >     /dev/mapper/vg0-lv0    10.00GiB
+> >     /dev/mapper/zero-data          50.00TiB
+> > 
+> > 
+> > I expected that I would have data on /dev/mapper/zero-data and metadata
+> > on /dev/mapper/vg0-lv0, but it seems both of them were written to the zero
+> > device. Attempting to actually use the file system eventually fails, since
+> > the metadata is black-holed :)
+> > 
+> > Did I make some mistake in how I used it, or is this a bug?
+> > 
+> > Thanks,
+> > Boris
+> > 
+> > > BR
+> > > G.Baroncelli
+> > > 
+> > > Revision:
+> > > V9:
+> > > - rename dev_item->type to dev_item->flags
+> > > - rename /sys/fs/btrfs/$UUID/devinfo/type -> allocation_hint
+> > > 
+> > > V8:
+> > > - drop the ioctl API, instead use a sysfs one
+> > > 
+> > > V7:
+> > > - make more room in the struct btrfs_ioctl_dev_properties up to 1K
+> > > - leave in btrfs_tree.h only the costants
+> > > - removed the mount option (sic)
+> > > - correct an 'use before check' in the while loop (signaled
+> > >    by Zygo)
+> > > - add a 2nd sort to be sure that the device_info array is in the
+> > >    expected order
+> > > 
+> > > V6:
+> > > - add further values to the hints: add the possibility to
+> > >    exclude a disk for a chunk type
+> > > 
+> > > 
+> > > Goffredo Baroncelli (6):
+> > >    btrfs: add flags to give an hint to the chunk allocator
+> > >    btrfs: export the device allocation_hint property in sysfs
+> > >    btrfs: change the device allocation_hint property via sysfs
+> > >    btrfs: add allocation_hint mode
+> > >    btrfs: rename dev_item->type to dev_item->flags
+> > >    btrfs: add allocation_hint option.
+> > > 
+> > >   fs/btrfs/ctree.h                |  18 +++++-
+> > >   fs/btrfs/disk-io.c              |   4 +-
+> > >   fs/btrfs/super.c                |  17 ++++++
+> > >   fs/btrfs/sysfs.c                |  73 ++++++++++++++++++++++
+> > >   fs/btrfs/volumes.c              | 105 ++++++++++++++++++++++++++++++--
+> > >   fs/btrfs/volumes.h              |   7 ++-
+> > >   include/uapi/linux/btrfs_tree.h |  20 +++++-
+> > >   7 files changed, 232 insertions(+), 12 deletions(-)
+> > > 
+> > > -- 
+> > > 2.34.1
+> > > 
+> 
+> 
 > -- 
-> 2.34.1
-> 
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
