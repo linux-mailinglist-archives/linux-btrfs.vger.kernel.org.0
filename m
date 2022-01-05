@@ -2,103 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289A0485898
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 19:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 094604858D5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 20:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243121AbiAESkV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 13:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243116AbiAESkU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 13:40:20 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8E7C061245
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 10:40:20 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id m19so436423ybf.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jan 2022 10:40:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cdKUBaVm5EvZTPGxY1+6hIrXsEMQpnu/tHbhgjm/M1s=;
-        b=FG3pFI+oY400gajE609044lFKEZrAUW8okHCcu+NuU5IAbjdn+w6e3D+EH1vEyzIBc
-         FTHqVegmyuoMfryvL14tTg/55/KuLIrqIXZh2Xn9ymPX1IoC5bmS58tR+Lkv6qslrq8/
-         Wb28o5eyf+fDrMnXOioZ4uWTzTHTQHtzFqDUVZAY62EHkYT3HRZWC4zbwJeW4PPFn3in
-         SV4CJglqSVZHZJteNgX102gSg+ZsmixEYRhGWy8LcnFCiGCVQC2ypO4oizM+AwHkb1cV
-         Np7MfIoBt4r7ahW9fUnM6QiqGGfysRhJDXanJVlrYiSP+7kRFo7QGJXn4IZqfU7WqnHg
-         GbMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cdKUBaVm5EvZTPGxY1+6hIrXsEMQpnu/tHbhgjm/M1s=;
-        b=kj7zownqq/4AhkSQHFT0PPL6uME2GMzsvZShrwvACLwGfZ/yCwepsOTzPVgEnfYhcU
-         2UBidMhkDQKXo25UGyBE7GFm5sw/qXATqxOjuDXwPrAw5NAbg8SUbNfdj7KuCyBjb3Th
-         6zjv/PefVjy9tYH8BCqo23ZuhrRe0spM06HHUcoCS5U0kXYqZ7FGlqEDjw5lOsxrTnLw
-         Fi+vw+4GnhXPxAfsEl3SQFiblIchDCTc3mF04SkdlwVuOy9EuNHqybydW8QZw9l4o/rF
-         VWAs44t28LgD9alc6R2RohFJ2xi7LxhGXeIeqXCsd+VbCAE2icSuC7fFgN0xdZ7EZ+Hr
-         BFjA==
-X-Gm-Message-State: AOAM530/cEJi/lfqG+umuz/gCl2tJ5Q15z0P4ANnhxdAESfwoubSKdmq
-        fuOG1syYQBPTr1bWq/xVSZL2O0BGUyVMGZV+KNt99A==
-X-Google-Smtp-Source: ABdhPJwFrTDcxG3jltAh+5rUTMzAgjwJclaHC4/d12EgfCgIIvrWDihd6lbYm4OOdbZgYYDBfmzB4TBbAvt+Ih4YPN4=
-X-Received: by 2002:a25:1505:: with SMTP id 5mr57639688ybv.695.1641408019616;
- Wed, 05 Jan 2022 10:40:19 -0800 (PST)
+        id S243297AbiAETF5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 14:05:57 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:59079 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243276AbiAETF4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Jan 2022 14:05:56 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 28143320208F;
+        Wed,  5 Jan 2022 14:05:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 05 Jan 2022 14:05:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=DiOnjRvfxp53fTT6KQ/z8DOAH/9
+        O9YP9nls8tN8B4Vw=; b=RNC6Gpfx1PgntmHKkZ1nA9kmIQb0v/DQXsoYd/HrAu/
+        il/IgVoNF654RbYlkCfGkdfnhgYGPNlMx2BRVqGG+QktA571pWJ655HAWOVZSVb9
+        DlscTTmZKhINiUhiwZPjzlKKz75R3oK4FskBebaUfSGCeOfEZzxrQBQDTVI9MTOX
+        4HRmp196JapX/hvCQvwFLlKb05heoLtfBS1gYys/zarMuiAKqeZiXuggbxfSX9V7
+        8SUca4uHQwy/edP7HTbIQ7wkh1BkE8SerfoXAwX0M22+PGQljYglvaVcby2Ta70R
+        +vplHvFk8ljjdM10lyIUUSW6P0bxZspBRoU8hvHH5Tw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=DiOnjR
+        vfxp53fTT6KQ/z8DOAH/9O9YP9nls8tN8B4Vw=; b=FsjAqaoKA+q31Om9YuBnHW
+        tMpLQuNYJ3o3R/uHIAR9KRRyZrZ28r8TY92yoGzeaWNKRRAHQQwJqzHIUeDLv4uJ
+        OmLXIurpGPkhy4w8VXchI8atAPEjIdS84X74Bts6ZxfChTYD81CSG/jmyuo9m6vS
+        wLvextr8g6KO1bO7LbCoY3zDImmQLMu4eSs7k4X9IDNYdi08bK60N45uaBX+ghyD
+        JSJUv1OAjv3HW7PLP7mGTbVgunNIkFJsZELCGc4vdcAviQm0+o1eeQHhXwinF9lh
+        TGRc9QJd9dA8Jn42TZmmBx2Xl7r0tiK8KwFFU7EJwSG2b/v/fvNH3rjdSVAHAGrw
+        ==
+X-ME-Sender: <xms:EezVYWJZR3R5hAsoIZqUQqvbcdCeB4M6btx0KNGsKwruuYZIbZDnzw>
+    <xme:EezVYeI2_UbhTpcOCW9yVxtLid2rUy9AiCJ6DX1eyY14WehmO3MaQUeKxWKiJ_VGU
+    REpP6y3pJTMIxKKgz4>
+X-ME-Received: <xmr:EezVYWvC10THbLl7YXxCZCBaOD3upkipHtGwmHlSE_o3USAOgQl1MNXOaA0kMR16pR_GeG8g7e5GcVQyjdysoNOeybWCDQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgfeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpeehudevleekieetleevieeuhfduhedtiefgheekfe
+    efgeelvdeuveeggfduueevfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:EezVYbZVEXKLiy7-S7kuhEjDhluPC6ghMpCRzJROZ6LSiqYej8de3g>
+    <xmx:EezVYdbGbjhL4sx-i4DAjD_yJJrSP93vmIihOoal5iH_sSqwiJ333g>
+    <xmx:EezVYXCJ_e-bkS0gUZ7CveCk_5B1I2yGRnUXHJnVBJQql550n0ldcA>
+    <xmx:EuzVYeChVJjDwmqG8x9Ov6pzNQbyXyzkRCDvnU1DgdrjziXXSzVImQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 5 Jan 2022 14:05:53 -0500 (EST)
+Date:   Wed, 5 Jan 2022 11:05:51 -0800
+From:   Boris Burkov <boris@bur.io>
+To:     kreijack@inwind.it
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH][TRIVIAL] btrfs-progs: Allow autodetect_object_types() to
+ handle the link.
+Message-ID: <YdXsD+oQ8Z3DNYtG@zen>
+References: <f4345fcac83ba226efdadcd4610861e434f8a73e.1641389199.git.kreijack@inwind.it>
+ <YdXaZP27ALM6KJ9G@zen>
+ <d4132584-faef-713e-aa7f-542257de3cfd@libero.it>
 MIME-Version: 1.0
-References: <CAJCQCtRnyUHEwV1o9k565B_u_RwQ2OQqdXHtcfa-LWAbUSB7Gg@mail.gmail.com>
- <YdXdtrHb9nTYgFo7@debian9.Home>
-In-Reply-To: <YdXdtrHb9nTYgFo7@debian9.Home>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 5 Jan 2022 11:40:03 -0700
-Message-ID: <CAJCQCtSd8B-qgW=eehcLDxb6oHoj69UiMtvixz=WwWCuy_Fggg@mail.gmail.com>
-Subject: Re: [bug] GNOME loses all settings following failure to resume from suspend
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4132584-faef-713e-aa7f-542257de3cfd@libero.it>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 5, 2022 at 11:04 AM Filipe Manana <fdmanana@kernel.org> wrote:
->
-> Looking at the code before that patch, it explicitly skips fsync after
-> a rename pointing out to:
->
-> https://btrfs.wiki.kernel.org/index.php/FAQ#What_are_the_crash_guarantees_of_overwrite-by-rename.3F
->
-> I'm afraid that information is wrong, perhaps it might have been true in
-> some very distant past, but certainly not for many years.
+On Wed, Jan 05, 2022 at 07:23:33PM +0100, Goffredo Baroncelli wrote:
+> On 05/01/2022 18.50, Boris Burkov wrote:
+> > On Wed, Jan 05, 2022 at 02:32:58PM +0100, Goffredo Baroncelli wrote:
+> > > From: Goffredo Baroncelli <kreijack@inwind.it>
+> [...]
+> > 
+> > I took a look at the original lstat and it doesn't seem super strongly
+> > motivated. It is used to detect a subvolume object (ino==256) so I don't
+> > see why we would hate to have property get/set work on a symlink to a
+> > subvol.
+> 
+> It is not so simple: think about a case where the symlink points to a
+> subvolume of *another* filesystem.
+> 
+> Now, "btrfs prop get" returns the property (e.g. the label) of the *underlining*
+> filesystem. If we change statl to stat, it still return the property of the
+> underlining filesystem, thinking that it is a subvolume (of a foreign filesystem).
+> 
+> If fact I added an exception of that rule, because if we pass a block device, we
+> don't consider the underling filesystem, but the filesystem contained in the block
+> device. But there is a precedence in get/set label.
+> 
+> Anyway, symlink created some confusion, and I bet that in btrfs there are areas
+> with incoherence around symlink between the pointed object and the underling
+> filesystem.
 
-However, the system does suspend correctly and before that there
-should be "Filesystems sync" message from the kernel (this is the case
-on my laptops, unconfirmed for the GNOME bug case). [1]
+Good point. I agree that btrfs (the tool) is not the most rigorous with
+symlinks. In this very function, we check if it is a btrfs object by
+opening the file without O_NOFOLLOW, but then we do this lstat.
 
-If the sequence is:
+I'm not exactly sure what you are alluding to regarding the precedent set
+by label, but I tested links and labels and it seems to exhibit the link
+following behavior.
 
-write to file
-no fsync
-"filesystem sync" (I guess that's syncfs for all mounted filesystems? no idea)
-suspend
-crash
+mkfs.btrfs -f /dev/loop0
+mkfs.btrfs -f -L LOOP /dev/loop1
+mount /dev/loop0 /mnt/0
+mount /dev/loop1 /mnt/1
+ln -s /mnt/1 /mnt/0/lnk
+btrfs property get /mnt/0 label
+label=
+btrfs property get /mnt/1 label
+label=LOOP
+btrfs property get /mnt/0/lnk label
+label=LOOP
+btrfs property get /mnt/0/lnk ro
+ERROR: object is not compatible with property: ro
 
-Still seems like the file should be either old or new, not 0 length?
+So it looks like root detection follows links but subvol detection does
+not. Without testing, but judging by the code, I think inode follows
+symlinks too. So with all that said, I think the most consistent is to
+make subvol follow the symlink, unless you have a really confusing
+unexpected behavior in mind with links out to another btrfs that I am
+failing to see.
 
+Thanks,
+Boris
 
-> I don't think I have a wiki account enabled, but I'll see if I get that
-> updated soon.
-
-Thanks Felipe!
-
-[1] "Filesystems sync" message appears to come from here
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/power/main.c?h=v5.16-rc8#n62
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/power/main.c?h=v5.16-rc8#n195
-
-
-
-
--- 
-Chris Murphy
+> 
+> BR
+> G.Baroncelli
+> 
+> -- 
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
