@@ -2,240 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2D54857C6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 18:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5574857E5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jan 2022 19:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242649AbiAER4g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 12:56:36 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:53907 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242654AbiAERzn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jan 2022 12:55:43 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id AE2E45C017F;
-        Wed,  5 Jan 2022 12:55:42 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 05 Jan 2022 12:55:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=J7/2kaBRNMViNGNj/h5HC3jBb03
-        rM7FS1dQjfVO8H2Q=; b=SQV8cgpRPZZlIct1IIVQ5yr1yPePlCbEbE1br67GQ6d
-        zB8ZNgTENvJeJyPKv1RQwoZWOTAqmWf8y98m/x1OdkV3tBUmQYxakjlSQco1ucY0
-        +WDEdh4aj/o39DLoYy/Kjotrq4VLjttC5yjMN18FZCY6sOMijY+1GN16zQG1CykA
-        0WzgV5vDYoxbytEBAYweMu//m77vFum0iyYP4+hBJAdyLXqnS9Nm3tNJln1S9yBu
-        uCY0c9zhYiWVZNwKekWcvH1F5DbQkuk2545USMd2PzUzoSU6XkGOpd8HHDNovHOi
-        UgK+2HIKED6DjHELPTSvllL9YRrV+P9Xc5VFC6EGmeA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=J7/2ka
-        BRNMViNGNj/h5HC3jBb03rM7FS1dQjfVO8H2Q=; b=WawhrT0q0Z4hGzwvpTx+dN
-        WoJyV1GTND4h9evbJ3X/o3629vkVsktaJGQKQWKPYkaSWP3YiSIdzXIKdjPrJgCv
-        djEqgwko/oY1NpCU3glfWrj2z06FkTD1TRz9NKBox+xyCXltSCTo7acd2mSqmiEs
-        R7+nKFTplVik1GM1ryq4ge1cc5hEjds43Z3bV5uOvYissDRWSDvUJnaoOf+IbdAV
-        I/9diSCYJfT8x5TRCyghEcSYipnL+D8YGNQKIlMA9U3De5trawRm3luxE2VvFg2W
-        b3wvmDyTMjPnvn+WE1Ic0Kf3VtIziI0nYqJ30DJHHUUvTy0NRdoUr/1HZTppcuAQ
-        ==
-X-ME-Sender: <xms:ndvVYVnCfRdTMgt3G02BOdQ7vispYkkO2tWRUoiK1hAJQiPh0HGsjA>
-    <xme:ndvVYQ3SKZ2Epec_rsMYwLIukJiatxL8O7rXGZbP6Bw6RTeagQ1f2WM3SEG1tMy_E
-    Ic5xDX9yRmGSsWggqw>
-X-ME-Received: <xmr:ndvVYbp14l4W6NM94eA81PMQiHgZQlJAiVRudy87GM0UQGH4lfJMDtcv3UzkuldHcbgKtA8BMfIx_cJPQTxaVaFPgldddA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    ffvddugfevfefgjeeivdfhkeeigffhueejteejgeffudfftdehveeuueevtdeknecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:ndvVYVmojPSV3r5fhVSk7kpBPznZVXbfEGHLmMIKt9wuxOJBim9YKQ>
-    <xmx:ndvVYT1ocxtIh-EmmDsAsrZEw4lYIsDTIpK30D5Xkb5gkQrhMXiW3g>
-    <xmx:ndvVYUvM7N4lUvqpSiiauIYqf3kU5hU9tCPbn1H-p5d089aBnR5c_Q>
-    <xmx:ntvVYT_6w1zetKzKp_6IJXIJO-5VAA-I25o3OnETQ5dtlXFcDR0CFg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Jan 2022 12:55:41 -0500 (EST)
-Date:   Wed, 5 Jan 2022 09:55:39 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     kreijack@inwind.it
-Cc:     linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>
-Subject: Re: [RFC][V9][PATCH 0/6] btrfs: allocation_hint mode
-Message-ID: <YdXbmwHZneMdxcly@zen>
-References: <cover.1639766364.git.kreijack@inwind.it>
- <YdUGAg1TB8FCfqnr@zen>
- <7377b63d-23a7-5efd-4ae2-cffe70463d0b@libero.it>
+        id S242711AbiAESFD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 13:05:03 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:45358 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242755AbiAESEq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jan 2022 13:04:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BC6F7B8114E
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jan 2022 18:04:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08FA0C36AE3;
+        Wed,  5 Jan 2022 18:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641405884;
+        bh=xPfOLbFGou4a3QT43EhDfjJv/GlYq2DhwMWgT9z3ZXA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NwLOAAItJjUSMWiKzf+7N4XrOPICusXmqgCoJ6E6iAUDMqxHzUHtJ1ASDKr0YHXDY
+         XaYXHIOOXHzfqRavVyqDtR+uIFNbqwA17MCml47g7SwMH/lsNP++RBJRTtyqKW9SlB
+         XqV9eHRVzald7HZ5okAhaMf1MhRKefljFnNVq4aiwgxqFr8fWzQ0tw8H1sF8qMDJot
+         /II8qdTCIMwws1nESz6CddfjTb9Uc7xH2xlQpS+VszWoysOKH6Bbgt9DuxNStrx31P
+         ryrKopL18U1SREhu9B7GXPnHywEffiy4yQ/71EEzgg0ASjXK+RHTP4hSoSJX0xVYfD
+         4y+7pmyFFdgzg==
+Date:   Wed, 5 Jan 2022 18:04:38 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [bug] GNOME loses all settings following failure to resume from
+ suspend
+Message-ID: <YdXdtrHb9nTYgFo7@debian9.Home>
+References: <CAJCQCtRnyUHEwV1o9k565B_u_RwQ2OQqdXHtcfa-LWAbUSB7Gg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7377b63d-23a7-5efd-4ae2-cffe70463d0b@libero.it>
+In-Reply-To: <CAJCQCtRnyUHEwV1o9k565B_u_RwQ2OQqdXHtcfa-LWAbUSB7Gg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 10:16:08AM +0100, Goffredo Baroncelli wrote:
-> Hi Boris,
+On Wed, Jan 05, 2022 at 10:34:10AM -0700, Chris Murphy wrote:
+> https://gitlab.gnome.org/GNOME/dconf/-/issues/73
 > 
+> Following a crash, instead of either the old or new dconf database
+> file being present, a corrupt one is present.
 > 
-> 
-> On 1/5/22 03:44, Boris Burkov wrote:
-> [...]
-> > 
-> > This is cool, thanks for building it!
-> > 
-> > I'm playing with setting this up for a test I'm working on where I want
-> > to send data to a dm-zero device. To that end, I applied this patchset
-> > on top of misc-next and ran:
-> > 
-> > $ mkfs.btrfs -f /dev/vg0/lv0 -dsingle -msingle
-> > $ mount /dev/vg0/lv0 /mnt/lol
-> 
-> You should mount the filesystem with
-> 
-> $ mount -o allocation_hint=1 /dev/vg0/lv0 /mnt/lol
-> 
+> dconf uses g_file_set_contents() to atomically update the database
+> file, which effectively inhibits (one or more?) fsync's, yet somehow
+> in the crash/powerfail case this is resulting in a corrupt dconf
+> database. I don't know if by "corrupt" this is a 0 length file or some
+> other effect.
 
-With this option, I got the expected usage output:
+Looking at the issue, Sebastian Keller posted a patch to disable one
+optimization in glib, that should fix it.
 
-Data,single: Size:1.00GiB, Used:512.00KiB (0.05%)
-   /dev/mapper/zero-data           1.00GiB
+Looking at the code before that patch, it explicitly skips fsync after
+a rename pointing out to:
 
-Metadata,single: Size:1.00GiB, Used:112.00KiB (0.01%)
-   /dev/mapper/vg0-lv0     1.00GiB
+https://btrfs.wiki.kernel.org/index.php/FAQ#What_are_the_crash_guarantees_of_overwrite-by-rename.3F
 
-Sorry I missed that, and thanks for the quick reply.
+I'm afraid that information is wrong, perhaps it might have been true in
+some very distant past, but certainly not for many years.
+
+The wiki says, doing something like this:
+
+   echo "oldcontent" > file
+
+   # make sure oldcontent is on disk
+   sync
+
+   echo "newcontent" > file.tmp
+   mv -f file.tmp file
+
+   # *crash*
+
+Will give either:
+
+file contains "newcontent"; file.tmp does not exist
+file contains "oldcontent"; file.tmp may contain "newcontent", be zero-length or not exists at all.
+
+However that's not true, there's a chance 'file' will be empty.
+
+During a rename with overwrite we trigger writeback (via filemap_flush())
+of the file being renamed but never wait for it to complete before
+returning to user space. So what can happen is:
+
+1) We trigger writeback;
+
+2) We join the current transaction and do the rename;
+
+3) We return from rename to user space with success (0);
+
+4) Writeback didn't finish yet, or it has finished but the
+   ordered extent is not yet complete - i.e. btrfs_finish_ordered_io()
+   did not complete yet;
+
+5) The transaction used by the rename is committed;
+   A transaction commit does not wait for any writeback or in flight
+   ordered extents to complete - except if the fs is mounted with
+   "-o flushoncommit";
+
+6) Crash
+
+After mounting the fs again 'file' is empty and 'file.tmp' does not exists.
+
+The only for that to guarantee 'file' is not empty and has the expected
+data ("newcontent"), would be to mount with -o flushoncommit.
+
+I don't think I have a wiki account enabled, but I'll see if I get that
+updated soon.
+
+Thanks.
 
 > 
-> In the previous iteration I missed the patch #6, which activates this option. You can drop patch #6 and avoid to pass this option.
-> 
-> Please give me a feedback if this resolve.
-> 
-> BR
-> G.Baroncelli
-> 
-> > $ btrfs device add /dev/mapper/zero-data /mnt/lol
-> > $ btrfs fi usage /mnt/lol
-> > Overall:
-> >      Device size:                  50.01TiB
-> >      Device allocated:             20.00MiB
-> >      Device unallocated:           50.01TiB
-> >      Device missing:                  0.00B
-> >      Used:                        128.00KiB
-> >      Free (estimated):             50.01TiB      (min: 50.01TiB)
-> >      Free (statfs, df):            50.01TiB
-> >      Data ratio:                       1.00
-> >      Metadata ratio:                   1.00
-> >      Global reserve:                3.25MiB      (used: 0.00B)
-> >      Multiple profiles:                  no
-> > 
-> > Data,single: Size:8.00MiB, Used:0.00B (0.00%)
-> >     /dev/mapper/vg0-lv0     8.00MiB
-> > 
-> > Metadata,single: Size:8.00MiB, Used:112.00KiB (1.37%)
-> >     /dev/mapper/vg0-lv0     8.00MiB
-> > 
-> > System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
-> >     /dev/mapper/vg0-lv0     4.00MiB
-> > 
-> > Unallocated:
-> >     /dev/mapper/vg0-lv0     9.98GiB
-> >     /dev/mapper/zero-data          50.00TiB
-> > 
-> > $ ./btrfs property set -t device /dev/mapper/zero-data allocation_hint DATA_ONLY
-> > $ ./btrfs property set -t device /dev/vg0/lv0 allocation_hint METADATA_ONLY
-> > 
-> > $ btrfs balance start --full-balance /mnt/lol
-> > Done, had to relocate 3 out of 3 chunks
-> > 
-> > $ btrfs fi usage /mnt/lol
-> > Overall:
-> >      Device size:                  50.01TiB
-> >      Device allocated:              2.03GiB
-> >      Device unallocated:           50.01TiB
-> >      Device missing:                  0.00B
-> >      Used:                        640.00KiB
-> >      Free (estimated):             50.01TiB      (min: 50.01TiB)
-> >      Free (statfs, df):            50.01TiB
-> >      Data ratio:                       1.00
-> >      Metadata ratio:                   1.00
-> >      Global reserve:                3.25MiB      (used: 0.00B)
-> >      Multiple profiles:                  no
-> > 
-> > Data,single: Size:1.00GiB, Used:512.00KiB (0.05%)
-> >     /dev/mapper/zero-data           1.00GiB
-> > 
-> > Metadata,single: Size:1.00GiB, Used:112.00KiB (0.01%)
-> >     /dev/mapper/zero-data           1.00GiB
-> > 
-> > System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
-> >     /dev/mapper/zero-data          32.00MiB
-> > 
-> > Unallocated:
-> >     /dev/mapper/vg0-lv0    10.00GiB
-> >     /dev/mapper/zero-data          50.00TiB
-> > 
-> > 
-> > I expected that I would have data on /dev/mapper/zero-data and metadata
-> > on /dev/mapper/vg0-lv0, but it seems both of them were written to the zero
-> > device. Attempting to actually use the file system eventually fails, since
-> > the metadata is black-holed :)
-> > 
-> > Did I make some mistake in how I used it, or is this a bug?
-> > 
-> > Thanks,
-> > Boris
-> > 
-> > > BR
-> > > G.Baroncelli
-> > > 
-> > > Revision:
-> > > V9:
-> > > - rename dev_item->type to dev_item->flags
-> > > - rename /sys/fs/btrfs/$UUID/devinfo/type -> allocation_hint
-> > > 
-> > > V8:
-> > > - drop the ioctl API, instead use a sysfs one
-> > > 
-> > > V7:
-> > > - make more room in the struct btrfs_ioctl_dev_properties up to 1K
-> > > - leave in btrfs_tree.h only the costants
-> > > - removed the mount option (sic)
-> > > - correct an 'use before check' in the while loop (signaled
-> > >    by Zygo)
-> > > - add a 2nd sort to be sure that the device_info array is in the
-> > >    expected order
-> > > 
-> > > V6:
-> > > - add further values to the hints: add the possibility to
-> > >    exclude a disk for a chunk type
-> > > 
-> > > 
-> > > Goffredo Baroncelli (6):
-> > >    btrfs: add flags to give an hint to the chunk allocator
-> > >    btrfs: export the device allocation_hint property in sysfs
-> > >    btrfs: change the device allocation_hint property via sysfs
-> > >    btrfs: add allocation_hint mode
-> > >    btrfs: rename dev_item->type to dev_item->flags
-> > >    btrfs: add allocation_hint option.
-> > > 
-> > >   fs/btrfs/ctree.h                |  18 +++++-
-> > >   fs/btrfs/disk-io.c              |   4 +-
-> > >   fs/btrfs/super.c                |  17 ++++++
-> > >   fs/btrfs/sysfs.c                |  73 ++++++++++++++++++++++
-> > >   fs/btrfs/volumes.c              | 105 ++++++++++++++++++++++++++++++--
-> > >   fs/btrfs/volumes.h              |   7 ++-
-> > >   include/uapi/linux/btrfs_tree.h |  20 +++++-
-> > >   7 files changed, 232 insertions(+), 12 deletions(-)
-> > > 
-> > > -- 
-> > > 2.34.1
-> > > 
-> 
+> Thanks,
 > 
 > -- 
-> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+> Chris Murphy
