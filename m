@@ -2,81 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5192148670B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jan 2022 16:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3844E4867B7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jan 2022 17:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240626AbiAFPs6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jan 2022 10:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
+        id S241280AbiAFQbm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jan 2022 11:31:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbiAFPs5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jan 2022 10:48:57 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8340BC061245
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jan 2022 07:48:57 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id g80so8785069ybf.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Jan 2022 07:48:57 -0800 (PST)
+        with ESMTP id S241273AbiAFQbl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jan 2022 11:31:41 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CF4C061245;
+        Thu,  6 Jan 2022 08:31:40 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id d1so8971582ybh.6;
+        Thu, 06 Jan 2022 08:31:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=T4t331y5UUNxT80t/8le8tklJUXwFG4E+TGhF/gzQG8=;
-        b=Mz7L9zX8Dk1dKbn2p/aDXWK4bEA2Lsaw5cj5yLjvQWycpEB7uvt6TW3oNpLeBzah14
-         U9XIz7Bs4Mce8+S7H1HvOEkpNgBp+bpxR3y2KWZWRq+/Z09H8M7Bu0ZMc85te/krv8d+
-         bawpwuqYijq5ZJzZFWIYqUODZFFJMgFEQOz/cSTlNavHUvQ95BPlS451itNJ4ss9fXCk
-         Oi2XUapn2aqCUVRWKgY/+Ujtr/3rM1ihZXSZpvWsG6O8+q71QuapONPr+4itGhUGjP3X
-         aVYI0qYel4wdf9F4XfjVAbVWC+9DkADGqt4UOigtFTxFSJUcqMRrBMQGW2hB2vUnX00z
-         o57w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZM6UOM3FnObRgkqEaRi7ZwsD77LyLEAv2E7+Qwz8Kpo=;
+        b=VFCxEpktrpxVRGftdbTMwrw0K0F4iRBgf/FyutcTsvjBshi4XyaAR9z8aQ1XSsuPMW
+         XZwBWhC7xGFrRA7qJ7ZCdRCnCl3IG07J41NrYQOdtNeZqyCkfb5gxVv2gzovjf1S25Cj
+         nJ29mE0DJcinUaYPSRFG5CMLPZ07BcCe7mxdeI68C44G5pvX4NxPtvOQ8OJOdUKqp5MW
+         C5sEj1X1RkO53v91PxhkmXXMFrJzFHg/ztn4QrrH3hd7EKUzxrmaIm7JXC15fZEf4G8u
+         1vEdnf77nA9yfZBXMbnpXAZTi/STZdYof23Fsi08VjH8kIwtknhGklWB+Jhh+1ZfaWgr
+         yZlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=T4t331y5UUNxT80t/8le8tklJUXwFG4E+TGhF/gzQG8=;
-        b=xgoop1NqjhxriVVojALYqKjRIrhIUwjm+HeuLif+s4GGi2O15T51CLYaeymUea7QJ8
-         oYYB4W0KEWq+z4cD2rPVjYw/RhlhvZ5TVUUTejaLAPKPGIs5P6KK/5bjZ1eeqinvVS00
-         KvpqxIIahUDak3L5uq83vFU5W2xHg49ljdnwS+Wu4aooZEwSadf2/Vic4MUQjewBs769
-         soTzEsYzSOc+nPqogSiH8+H9VUi1W6XzjxZ1385ut6o33lAlzDl/PMjaTusRhDboxhdh
-         Pul4OLW8zz2jG2xy7Pi7YKzumcu4ndc1PRCNsg8Om8WEngtCFjkgN4lGT8O3Crj+PcT1
-         ijJw==
-X-Gm-Message-State: AOAM5331n+fz+b2hBA5yn7Iy196TSYGe/gONvqTgWwyGWNQ2u2zisfsF
-        G/iPcrVAQNRXZX+zpVYIYQvHnZ9Ya9uk3HyOxJzQx+sFCQY=
-X-Google-Smtp-Source: ABdhPJwDtmyPfXnGV7xAWalk3ZH7m6QwLECIRkhlb0twYROXPfqMiEJS7jmdz44oCimoe0Fua63nE7bfFIG1nc9iTW8=
-X-Received: by 2002:a25:c143:: with SMTP id r64mr62881135ybf.286.1641484136585;
- Thu, 06 Jan 2022 07:48:56 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZM6UOM3FnObRgkqEaRi7ZwsD77LyLEAv2E7+Qwz8Kpo=;
+        b=HAdMAA8PwLOscZQ1cBHKBbmtEetjaQkccNhmX3OmmySSveXYpCVn55Qmea+JvOHcyL
+         i9zwFgiooAKkZfJDkwLeenoanmhziH/BM07k/fC7JaLnwWibeUeJMEn7J6i5ZdZmmOwC
+         v7/feSSDHLTXmFqipKdgrrg6wiNr5Askimj6jN+KoR9oB7+vj/yL3DC5gHnvEHn6LZRO
+         txf8LpW99zF22cTMUPSL9UoK4nYKQ8Pb+luPox5ssuGH34ScOV5ZJ7tvuAfepDdo+JwI
+         I6NPyiDTyIls8FpNdi69pf+3SWmfnGe65mWHYeTnPw1mXTp3ndC1BDZqFWSmF91qFB9w
+         EcpA==
+X-Gm-Message-State: AOAM5307/5xI4K8ylF/TDg6t99mx9yasnwJRzmXVJB/rgVw077Mq5cJk
+        lFX/cYYM6fJ1X361g/vSpuzm8qkHWwidlRETCTM=
+X-Google-Smtp-Source: ABdhPJzNdTP4XFd9P9NPS3ZzTPTsau2wGRp5cUn725XM9mHDW1ZcoJ4wEL3J1x4enMFKNDk4Az+hl/frDFPXPcgZERY=
+X-Received: by 2002:a25:d708:: with SMTP id o8mr65492245ybg.582.1641486699930;
+ Thu, 06 Jan 2022 08:31:39 -0800 (PST)
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Juan_Sim=C3=B3n?= <decedion@gmail.com>
-Date:   Thu, 6 Jan 2022 16:48:21 +0100
-Message-ID: <CAMQzBqCSzr4UO1VFTjtSDPt+0ukhf6yqK=q+eLA+Tp1hiB_weA@mail.gmail.com>
-Subject: 48 seconds to mount a BTRFS hard disk drive seems too long to me
-To:     linux-btrfs@vger.kernel.org
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+ <6c7a6762-6bec-842b-70b4-4a53297687d1@gmx.com>
+In-Reply-To: <6c7a6762-6bec-842b-70b4-4a53297687d1@gmx.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Thu, 6 Jan 2022 11:31:04 -0500
+Message-ID: <CAEg-Je9UJDJ=hvLLqQDsHijWnxh1Z1CwaLKCFm+-bLTfCFingg@mail.gmail.com>
+Subject: Re: [PATCH] fs: btrfs: Disable BTRFS on platforms having 256K pages
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-hexagon@vger.kernel.org, Hector Martin <marcan@marcan.st>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hard disk: 16TB SEAGATE IRONWOLF PRO 3.5", 7200 RPM 256MB CACHE
-Arch Linux
-Linux juan-PC 5.15.13-xanmod1-tt-1 #1 SMP Thu, 06 Jan 2022 12:14:06
-+0000 x86_64 GNU/Linux
-btrfs-progs v5.15.1
+On Wed, Jan 5, 2022 at 7:05 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+> Hi Christophe,
+>
+> I'm recently enhancing the subpage support for btrfs, and my current
+> branch should solve the problem for btrfs to support larger page sizes.
+>
+> But unfortunately my current test environment can only provide page size
+> with 64K or 4K, no 16K or 128K/256K support.
+>
+> Mind to test my new branch on 128K page size systems?
+> (256K page size support is still lacking though, which will be addressed
+> in the future)
+>
+> https://github.com/adam900710/linux/tree/metadata_subpage_switch
+>
 
-$ btrfs fi df /multimedia
-Data, single: total=10.89TiB, used=10.72TiB
-System, DUP: total=8.00MiB, used=1.58MiB
-Metadata, DUP: total=15.00GiB, used=13.19GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
+The Linux Asahi folks have a 16K page environment (M1 Macs)...
 
-I have formatted it as BTRFS and the mounting options (fstab) are:
+Hector, could you look at it too?
 
-/multimedia     btrfs
-rw,noatime,autodefrag,compress-force=zstd,nossd,space_cache=v2    0 0
 
-The disk works fine, I have not detected any problems but every time I
-reboot the system takes a long time due to the mounting of this drive
 
-$ systemd-analyze blame
-48.575s multimedia.mount
-....
-
-I find it too long to mount a drive, is this normal, is it because of
-one of the mounting options, or because of the size of the hard drive?
-
-Thanks in advance. Regards.
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
