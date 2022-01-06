@@ -2,229 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DF848607E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jan 2022 07:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9839F4861AB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jan 2022 09:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbiAFGNM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jan 2022 01:13:12 -0500
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:60424 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiAFGNM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jan 2022 01:13:12 -0500
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id D2EAB6C00898;
-        Thu,  6 Jan 2022 08:13:10 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1641449590; bh=DZKoqdRysdcFwonU8Uz03tlrRh8bxjcDucu0BJghQQA=;
-        h=References:From:To:Subject:Date:In-reply-to:Message-ID:
-         Content-Type:X-ESPOL:from:date;
-        b=Lb0uyKCQjN+QL50CcKWBuYNmLenL8Tx/elTUAkBEqswTX8G84oBZmWBPoKv8U+/wk
-         WL+moiFQbsuS/6/weD8jsyOXYhNXQ/2I6ET6XPE8fDVTxmJIREweOFVutQdzvHnCir
-         QN8rOAfCodXkzG9chxBQ/FD1saeoeD8kwsj2WyOE=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id C34BB6C00895;
-        Thu,  6 Jan 2022 08:13:10 +0200 (EET)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id XaEnxANdoSSb; Thu,  6 Jan 2022 08:13:10 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 4DC0D6C00894;
-        Thu,  6 Jan 2022 08:13:10 +0200 (EET)
-References: <cover.1639155519.git.anand.jain@oracle.com>
- <612eac6f9309cbee107afbbd4817c0a628207438.1639155519.git.anand.jain@oracle.com>
- <20220104185611.GX28560@twin.jikos.cz>
- <4210807a-c727-19be-9f72-797f0e1897f2@oracle.com>
-User-agent: mu4e 1.7.0; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, josef@toxicpanda.com
-Subject: Re: [PATCH v2 1/2] btrfs: harden identification of the stale device
-Date:   Thu, 06 Jan 2022 14:05:21 +0800
-In-reply-to: <4210807a-c727-19be-9f72-797f0e1897f2@oracle.com>
-Message-ID: <mtk9o0ia.fsf@damenly.su>
+        id S237058AbiAFIxQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jan 2022 03:53:16 -0500
+Received: from smtp-36.italiaonline.it ([213.209.10.36]:56088 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236914AbiAFIxQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jan 2022 03:53:16 -0500
+Received: from [192.168.1.27] ([84.220.25.125])
+        by smtp-36.iol.local with ESMTPA
+        id 5OWFnjSVDeQ4z5OWFnJRh8; Thu, 06 Jan 2022 09:53:14 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1641459194; bh=pueEp1SNhoqOAL6K+CYfMzk97RtV3pjdwr7kGiydJGk=;
+        h=From;
+        b=la5JTmVRCYCn8htvMQDilhq8AarbfyQHp/O0KlNGHibbiHVS7+t66njbysPXXnILB
+         qKEDETG6owPmgEL5dONuunVDBDBcuDHH1kF+ay/7icPmWbaF3J2/ufqd5yDnqYFiv0
+         rfWqyWX8XG1vlNdsaqSvwc1/fL+e2HIFK3jsVFB+KKLx2IJ6OJXl6T6NSiUsL+7GBf
+         LqVQ2sk1zCBkMQ83uxz1QdEoEpSWa88xkkoZK5qxJHVPwIkH5GCnEH9SymCfEdvYDf
+         On0armzMhMNuMOW63ensFtZoFMYIOmapevSlSlMlFThjKJa9426yVQ46xO2otOQClu
+         SykSAFotztdsA==
+X-CNFS-Analysis: v=2.4 cv=WK+64lgR c=1 sm=1 tr=0 ts=61d6adfa cx=a_exe
+ a=hx1hjU+azB0cnDRRU3Lo+Q==:117 a=hx1hjU+azB0cnDRRU3Lo+Q==:17
+ a=IkcTkHD0fZMA:10 a=xKy2jhtLynXqGDVUPboA:9 a=QEXdDO2ut3YA:10
+Message-ID: <82a340b5-6cd3-ec5b-827b-417eaede3f44@libero.it>
+Date:   Thu, 6 Jan 2022 09:53:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: +d1m7upSaUCpygHhXwK+CAc3rDRIWO/7+uO7zh9YmGeYRSOFeEgMUhi0nGhwUR7LszsX
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH 1/6] btrfs: add flags to give an hint to the chunk
+ allocator
+Content-Language: en-US
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+References: <cover.1639766364.git.kreijack@inwind.it>
+ <377d6c51cb957fbad5627bb93ff0a76ce9ba79da.1639766364.git.kreijack@inwind.it>
+ <YdYXWlp+naKtzV+E@zen>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <YdYXWlp+naKtzV+E@zen>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfGdw5eLhvucyoQgSJcetHZOCYMryu9Xyv3tcQ70xiG9ufCosx0FZy788a5C5Fn0bfkdwjmb8O17LSs1RewI/O6lJyNk29wlnez+6r8kD288arst9wuTn
+ 3CslJOXnEFmYhYmH3TwsxjEB0n/wZmIZU4UvZi+hChD7Gpvvu8P8Y/kUtIkcZ7j0ulJSBwNDbyPu9Wrhf7k0cr/NMrWJSXOVrdyhtfvRKKV7+Z+M2FXvFreA
+ I9ea1pTXKhda59WtLs19ggRpYEosdUC5YtpOeMWe9L/j2A6K7dcl6csFxKRKlR1VdLKKJcSWGfqcsqilhX+j1iZM42bvUDnvvRGTy1uCIzs0pRfNV/36hEZz
+ dGOE8PxRMxDNrYeVS/nND6bQ+Wj87bhymUq/bqyRdNhL50MabiSIOh1LRFYDcdHgeVHOTS6Y
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 05/01/2022 23.10, Boris Burkov wrote:
+> On Fri, Dec 17, 2021 at 07:47:17PM +0100, Goffredo Baroncelli wrote:
+[...]
+> 
+> Therefore, I think you should go with DATA_ONLY, DATA_PREFERRED,
+> METADATA_ONLY, METADATA_PREFERRED. Definitely put ONLY/PREFERRED on the
+> same side of DATA/METADATA for all four, regardless of which you choose.
 
-On Wed 05 Jan 2022 at 19:31, Anand Jain <anand.jain@oracle.com> 
-wrote:
+This was the conclusion that I already reached with Zygo. The next patches set
+will rename the flag in this way.
 
-> On 05/01/2022 02:56, David Sterba wrote:
->> On Sat, Dec 11, 2021 at 02:15:29AM +0800, Anand Jain wrote:
->>> Identifying and removing the stale device from the fs_uuids 
->>> list is done
->>> by the function btrfs_free_stale_devices().
->>> btrfs_free_stale_devices() in turn depends on the function
->>> device_path_matched() to check if the device repeats in more 
->>> than one
->>> btrfs_device structure.
->>>
->>> The matching of the device happens by its path, the device 
->>> path. However,
->>> when dm mapper is in use, the dm device paths are nothing but 
->>> a link to
->>> the actual block device, which leads to the 
->>> device_path_matched() failing
->>> to match.
->>>
->>> Fix this by matching the dev_t as provided by lookup_bdev() 
->>> instead of
->>> plain strcmp() the device paths.
->>>
->>> Reported-by: Josef Bacik <josef@toxicpanda.com>
->>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>> ---
->>>
->>> v2: Fix
->>>       sparse: warning: incorrect type in argument 1 (different 
->>>       address spaces)
->>>       For using device->name->str
->>>
->>>      Fix Josef suggestion to pass dev_t instead of device-path 
->>>      in the
->>>       patch 2/2.
->>>
->>>   fs/btrfs/volumes.c | 41 
->>>   ++++++++++++++++++++++++++++++++++++-----
->>>   1 file changed, 36 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>> index 1b02c03a882c..559fdb0c4a0e 100644
->>> --- a/fs/btrfs/volumes.c
->>> +++ b/fs/btrfs/volumes.c
->>> @@ -534,15 +534,46 @@ btrfs_get_bdev_and_sb(const char 
->>> *device_path, fmode_t flags, void *holder,
->>>   	return ret;
->>>   }
->>>   -static bool device_path_matched(const char *path, struct 
->>>   btrfs_device
->>> *device)
->>> +/*
->>> + * Check if the device in the 'path' matches with the device 
->>> in the given
->>> + * struct btrfs_device '*device'.
->>> + * Returns:
->>> + *	0	If it is the same device.
->>> + *	1	If it is not the same device.
->>> + *	-errno	For error.
->>> + */
->>> +static int device_matched(struct btrfs_device *device, const 
->>> char *path)
->>>   {
->>> -	int found;
->>> +	char *device_name;
->>> +	dev_t dev_old;
->>> +	dev_t dev_new;
->>> +	int ret;
->>> +
->>> +	device_name = kzalloc(BTRFS_PATH_NAME_MAX, GFP_KERNEL);
->>> +	if (!device_name)
->>> +		return -ENOMEM;
->>>     	rcu_read_lock();
->>> -	found = strcmp(rcu_str_deref(device->name), path);
->>> +	ret = sprintf(device_name, "%s", 
->>> rcu_str_deref(device->name));
->> I wonder if the temporary allocation could be avoided, as it's 
->> the
->> exactly same path of the device, so it could be passed to 
->> lookup_bdev.
->
->  Yeah, I tried but to no avail. Unless I drop the rcu read lock 
->  and
->  use the str directly as below.
->
->  lookup_bdev(device->name->str, &dev_old);
->
->  We do skip rcu access for device->name at a few locations.
->
->  Also, pls note lookup_bdev() can't be called within 
->  rcu_read_lock(),
->  (calling sleep function warning).
->
 
-Got it. And another evil and dirty solution is that open code the 
-logic in
-the only user btrfs_free_stale_devices(). Do the memory allocation 
-and
-lookup_bdev(path) before the big big loop so we won't be disturbed
-error handling and save some times of lookup_bdev ;)
+> 
+> Looks good otherwise.
+> 
+>>
+>> Signed-off-by: Goffredo Baroncelli <kreijack@inwid.it>
+>> ---
+>>   include/uapi/linux/btrfs_tree.h | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
+>>
+>> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+>> index 5416f1f1a77a..55da906c2eac 100644
+>> --- a/include/uapi/linux/btrfs_tree.h
+>> +++ b/include/uapi/linux/btrfs_tree.h
+>> @@ -386,6 +386,22 @@ struct btrfs_key {
+>>   	__u64 offset;
+>>   } __attribute__ ((__packed__));
+>>   
+>> +/* dev_item.type */
+>> +
+>> +/* btrfs chunk allocation hint */
+>> +#define BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT	2
+>> +/* btrfs chunk allocation hint mask */
+>> +#define BTRFS_DEV_ALLOCATION_HINT_MASK	\
+>> +	((1 << BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT) -1)
+>> +/* preferred data chunk, but metadata chunk allowed */
+>> +#define BTRFS_DEV_ALLOCATION_HINT_PREFERRED_DATA	(0ULL)
+>> +/* preferred metadata chunk, but data chunk allowed */
+>> +#define BTRFS_DEV_ALLOCATION_HINT_PREFERRED_METADATA	(1ULL)
+>> +/* only metadata chunk are allowed */
+>> +#define BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY		(2ULL)
+>> +/* only data chunk allowed */
+>> +#define BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY		(3ULL)
+>> +
+>>   struct btrfs_dev_item {
+>>   	/* the internal btrfs device id */
+>>   	__le64 devid;
+>> -- 
+>> 2.34.1
+>>
 
---
-Su
->
->>>   	rcu_read_unlock();
->>> +	if (!ret) {
->>> +		kfree(device_name);
->>> +		return -EINVAL;
->>> +	}
->>>   -	return found == 0;
->>> +	ret = lookup_bdev(device_name, &dev_old);
->>> +	kfree(device_name);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	ret = lookup_bdev(path, &dev_new);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	if (dev_old == dev_new)
->>> +		return 0;
->>> +
->>> +	return 1;
->>>   }
->>>     /*
->>> @@ -577,7 +608,7 @@ static int btrfs_free_stale_devices(const 
->>> char *path,
->>>   				continue;
->>>   			if (path && !device->name)
->>>   				continue;
->>> -			if (path && !device_path_matched(path, 
->>> device))
->>> +			if (path && device_matched(device, path) 
->>> != 0)
->> You've changed the fuction to return errors but it's not 
->> checked,
->> besides the memory allocation failure, the lookup functions 
->> could fail
->> for various reasons so I don't think it's safe to ignore the 
->> errors.
->
-> IMO there isn't much that the parent function should do even if 
-> the
-> device_matched() returns an error for the reasons you stated.
->
-> Mainly because btrfs_free_stale_devices() OR 
-> btrfs_forget_devices()
-> is used as a cleanup ops in the primary task functions such as
-> btrfs_scan_one_device() and btrfs_init_new_device(). Even if we 
-> don't
-> remove the stale there is no harm.
->
-> Further btrfs_forget_devices() is called from 
-> btrfs_control_ioctl()
-> which is a userland call for forget devices. So as we traverse 
-> the
-> device list, if a device lookup fails IMO, it is ok to skip to 
-> the next
-> device in the list and return the status of the device match.
->
-> Even more, IMO we should save the dev_t in the struct 
-> btrfs_device,
-> upon which the device_matched() will go away altogether. This 
-> change
-> is outside of the bug that we intended to fix here. I will clean 
-> that
-> up separately.
->
-> Thanks, Anand
->
->>>   				continue;
->>>   			if (fs_devices->opened) {
->>>   				/* for an already deleted device 
->>>   return 0 */
->>> -- 2.33.1
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
