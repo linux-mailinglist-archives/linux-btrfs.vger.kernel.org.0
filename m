@@ -2,279 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2989485C7A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jan 2022 00:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109EE485CCD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jan 2022 01:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245617AbiAEXvZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jan 2022 18:51:25 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:48919 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245554AbiAEXvA (ORCPT
+        id S245713AbiAFAFB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jan 2022 19:05:01 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:3926 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245752AbiAFAEu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jan 2022 18:51:00 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6D5105C0153;
-        Wed,  5 Jan 2022 18:50:59 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 05 Jan 2022 18:50:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=W1TEIQ7b9wK45f4BS0pyktbSuyS
-        XwQMihDV5arRnKXo=; b=XmOgC6BJR8rs48JvHRM/LixYzohsqy7XNjc0m1ZY4Up
-        GUw6aw6HZym9hZDKMhKBJzAis5ZKiZkT/pU8mTsi40VKJL6nOWdW/4tMxAbrbSkY
-        nZObm99xOJ7AB1/vY2WzRcpYK8Tv0IXJhzxuQNgV58C7zwOy4gx944/ZizFoW+ay
-        2VmB8ofHaA8EE6Qi+Vt09im45adB9RimSS85YP+nlmx21Ke7UHaU1Ddft5k2B2E4
-        wYqNKcrxbEFavM32F7OZTHPA2afmJGu5dg1jaS8tis0SBa2fKw+2rhAKrF4sckLc
-        mMsEm1eeyy15yTTJPVKGV2LydcWjOcEtRstSp3/d+8g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=W1TEIQ
-        7b9wK45f4BS0pyktbSuySXwQMihDV5arRnKXo=; b=U1LvDgbGjNYwmNKdD3B2pY
-        Ehv/QYcnHXqFnNIPR/aUljM7V3IP3wwWrQyKtt5lnHyLj78GaMPrM+IgLWaDrkJE
-        Uaph2kpCEW7x7/Ybn/+j74fI7BU+vCRRolyJKD6I3QvHi3JLAPDQBh5/7pF6RLpd
-        ceeVAbEifsNTsEGlRm0LOTUMk70/FCwXyawGqC0oYu+9fEyRZDO69+NDHzQfvhU1
-        1tzq/KNl5n96uPis5Yw8s9cNQOkbYkt296DHkXdDEheZ+HGKwQBSZ3TlUHqKK3Sl
-        HSKRBu9ZQ60kJDtH1uhXfDw3/l6+NPks810yDWduvsRDeq1LzxQIbFsM9QCakKqg
-        ==
-X-ME-Sender: <xms:4y7WYQ5i2MeLuDD-8g0_4gbG1Jo2vyxRbIfANMBhsq4ZJB0K6eytGA>
-    <xme:4y7WYR5wGFCNextNakKF_aIaR2s559IxjMMzeMhPR2kE3wzMlwLovZvy2LSq-wRhY
-    Rj0wHvyBSNDcAm3tLU>
-X-ME-Received: <xmr:4y7WYfcIK2awZH8IjLWe85BEW00xKgIjhbaGGDdmXT-VLgrzLwjdPRaC0GRZI6KpRz8nBwdEWZNFD_UaqGJ-sK42zni-AQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudefjedgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:4y7WYVIn-OS-gag97Z5CD4EXj4HQ5h6GQrlrkDu-H5vXghVZAmGu0g>
-    <xmx:4y7WYUIu2AjvcpbCYnDgtt5kd25Acuj3p7rurUMb3_XgIZxt_FIlMg>
-    <xmx:4y7WYWyaWV8KgLcIfa4-btm2Bx1F_U53pvVKRJ91hWTLmI38xPsV5Q>
-    <xmx:4y7WYc9mesisHVyppZLxbL07Wmsk-jatdoP5bcZb3v3_4093RDpvRg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Jan 2022 18:50:58 -0500 (EST)
-Date:   Wed, 5 Jan 2022 15:50:57 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     Goffredo Baroncelli <kreijack@libero.it>
-Cc:     linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH 5/6] btrfs: rename dev_item->type to dev_item->flags
-Message-ID: <YdYu4Sy4tgZnvIqF@zen>
-References: <cover.1639766364.git.kreijack@inwind.it>
- <c03fe9a171e6e377a345dfebc56c6c49dfa494c3.1639766364.git.kreijack@inwind.it>
+        Wed, 5 Jan 2022 19:04:50 -0500
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 205N4Yxo023582;
+        Thu, 6 Jan 2022 00:04:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : from : to : references : cc : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=fFl2fl099xnVSFdccX/+giEu8RNHQuHjY3beFCMci0Y=;
+ b=JEEG7+5CqYBF5klOzwF9H1+FxXXpyQi3VvhLOZZnF77tUxrxcV1ZwnKpwiX5lsSqj5g6
+ tWoTIX6DrfBcHIxKkoGF/Q5jMeOeJ1e7MCDjO+el2hz+KL2v0LwgO/1iEBMvKHX5lxgY
+ dq52Gv8D/wdpBakkt1AJsy05yR0KV+9yp6Zr7bZ02qeOqZCz/Nr9NPwBEtIXkAErY7Se
+ yRv3/41GffYWHfnVHTpktchWCfI/24vn2FA+Qm5VyeAl12On06h2NLQMr1MY2uMpVSjg
+ ZJ9TtWrqd0PXU5XGk+cM/p7GVH7YaKRhvOnPNHCAPb9rdkJ0xuUdbIeniPH9BNHiZ65V wA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ddmpeg2gy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Jan 2022 00:04:47 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 205Ntm87187222;
+        Thu, 6 Jan 2022 00:04:45 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
+        by userp3030.oracle.com with ESMTP id 3ddmqbtqnw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Jan 2022 00:04:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SwrQ5bCGd7nztVMWusKaBkzw4QROzy5O+w8TLr6wG+HghydIeD6w/NTCHF7tTNEdLG7NlXa0uYZ4iYEDxYdeBAaky8YB7FYbFTdNz+hufw6cgVkNLdDIjopclA5HwQI8rAxuyA8G+JbkB5CbPCS0TSyTt8uPR+itML4OLYPLsbkDuvHGdbM9V3jeQoGtXWNxERN0UGaJM/bI1+DAOUfWw1BgL7Bu7fRnlykKk1V1LFulp2BFbCaILgCKAPA8X8uRTdz5rUzPPGOnsmsy0cu17mJ+ebfvHDTphwaEMiQ3uGf/EDE72A2GZYMbvZqkuQcLKCifqS9XXgCetkPjxMBkzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fFl2fl099xnVSFdccX/+giEu8RNHQuHjY3beFCMci0Y=;
+ b=EUBAz9Yi6PV5o3h2d4duI+7O7XJpkyvdaOqPq95cwtJ0xTSQIvdkDKIFQdpg2yVg5ZAb1EODvF6T6D4SsLE884PUMetCyiuUkddn0zSk5rFf723J9m1omB8amNwVUlNqEVSlVZ6hEhQkdUF7guaMz5e2pmfCGgdLVIdxiHdXit8B51xr8cGFEgSZz5LtGqcqdiQgeemLKtKT9dBr++DCtJTA3mjuxEX96BJ0aVc4dCTpp8qGZSADDvD9oJULDt57SixKIavN2nUCvVSA6f49djHbC7I/UzHHCvTEZ5OchVMRy3lfUPBxGeYsDFR4gqIhMs+cGnGkOMt6EvxV1Tg+pw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fFl2fl099xnVSFdccX/+giEu8RNHQuHjY3beFCMci0Y=;
+ b=owhWVWiW9Mm/GI/iwknwOvVAez1GNu6cSmSsdX6/ya+TYPMAf/E4xiMfxdCT/XF3mkd5I9zYR7g3pbz0VrBokTdFdjwXzAOobP9Wffue12a7R1LBOme8ocYDjN0KG1gV1TVQmIVY7SW19v/BGIGF3EqiS1KutaPbSzikTY11sKY=
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB4223.namprd10.prod.outlook.com (2603:10b6:208:1dd::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7; Thu, 6 Jan
+ 2022 00:04:43 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::f450:87d2:4d68:5e00]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::f450:87d2:4d68:5e00%8]) with mapi id 15.20.4844.017; Thu, 6 Jan 2022
+ 00:04:43 +0000
+Message-ID: <98a34772-990c-5e8e-5402-a6d857fc0292@oracle.com>
+Date:   Thu, 6 Jan 2022 08:04:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH 0/2] btrfs-progs: read device fsid from the sysfs
+Content-Language: en-US
+From:   Anand Jain <anand.jain@oracle.com>
+To:     David Sterba <dsterba@suse.com>
+References: <cover.1634598659.git.anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <cover.1634598659.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0156.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::36) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c03fe9a171e6e377a345dfebc56c6c49dfa494c3.1639766364.git.kreijack@inwind.it>
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0254d865-33a6-42fa-9397-08d9d0a823cd
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4223:EE_
+X-Microsoft-Antispam-PRVS: <MN2PR10MB42234F3E8E256EC116CEB4C5E54C9@MN2PR10MB4223.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: anCBohpWSmx/MDW6m1lLvmoUIPb8PdhZ1V/TKjW/3H6Xkm2dFviyuPELZcZ7eKjlorwJzSlPw97FSrGVA4/zI2KE97SS1j181XwhZ8RQKioV9tpXWN0M4yCUeESy+TawjaO9EDxjmNaQfnQU0QtI/pMUqkHwQpf9TDaOwn/+rXtDkwVPjGJsAXCx4xGs/hoxNqvkwkHsiRrRb7ao/B/sjKhZ12qN7/HzaCQ5ObKiGkDy6gcfjuSL8HShY088gVImM0g37FMOirUcoQ53zqldd5Rpg/K3va2XggDZL9iBKxmxab29Gf64Y9Mg+O4Vu2nwA77zi2zWWaJy4HQrQDw2rro8B5xpxNkVmCqqfBKHqDXuP012pv+SfARnyGfKul5m/c2LAn9P3by5D4jtnO4LNP2wiejI8I5bMUbaLruinHkYfO+NdJFxmUdw9EG5hkj231JbrCrl/RBzV/KA77gvGXC5IkbzBrPLXPUBr5Cw6wlreJp5fH6+GT5jDQMxabIBNsxrFREljR4pzVjRNUPqbYom6+BIpd4foNLX+xUq6PRGzJB/Oc2YyC4XAXCWKLzlBYInWu5vfJRCkTiO0Wc0j7SbeRRInQh09aVSC8DD/JeJ/RB45tXbMhp6cCR/QqUKAlcGuCRgXm4wpgEFcZ8b9AM98PO01+R360NXMGQ7Q2cQXO9pysP2KA576E969QP3Gtm7xQApwu4GTO5fqg5K11Ts4yOvqD2yM4f3ddOiMmg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(86362001)(316002)(31696002)(508600001)(31686004)(66556008)(6506007)(66476007)(6486002)(66946007)(53546011)(8676002)(4326008)(44832011)(38100700002)(2616005)(6512007)(5660300002)(6916009)(8936002)(6666004)(2906002)(83380400001)(186003)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YkpteW81ZjhRZGN0SmhaaittWldSR2UyT2tMVVdWT0d0RzF3OVhGVkJQa2tV?=
+ =?utf-8?B?TDBzTTRGV3NoRkxkZUhvOTN3Mm5ZOGZiVm1PMFhlaGVJK0ZaQ1VqYVFjRldL?=
+ =?utf-8?B?VFVJV0MzTDh5eGF1eWxVUmZGTi9kc3NIcFFieFdmK1EwUjZkMmZPLy90TG5I?=
+ =?utf-8?B?ZjJBYXJWcXYyOGs5YnArdHNFQzFhbFEwa3ZkQUoyaktzeTdJcUUrekwycUNm?=
+ =?utf-8?B?aTRYUnR1dWRicHkzUVllUFp3YW5QN21oZzdMQjRLL2UzN2ZXekFYb2RVODkz?=
+ =?utf-8?B?amV6V2hQVjdSSTh3aHF2Y0lnait2R2JOYStMLzVxUjRFc00rMTF5bk5DZGxy?=
+ =?utf-8?B?a203VC9CTDhkQWlJQjVCT1pNUENDeWFrM3BnVUNzOWZzb0JtK2d4K3lTdjJZ?=
+ =?utf-8?B?NFdaenZiWFUzQUNCQThqcERhN0tUVXF1d1ZRMm5yUVRKeVZGNUxURTdLU0xS?=
+ =?utf-8?B?UjczL3BUeE5LZFVwL0RtY3Y3cVFyVG85WE9uRUNlSGo2YzNnSFdoVUdsSE5J?=
+ =?utf-8?B?TEhhZ2JKVlF0YWt5cnBVR3E1VUdHTE40Y1lGMkFaTGo2RjMrUHdldGpZWTlH?=
+ =?utf-8?B?K0pVQThMVlVFUTZITEI1NUE4YTFzQlRzcjNpck4rb0VtMHRJUDRsUHllb1RW?=
+ =?utf-8?B?WTBxMzFiNW5hQ29yMkhmVjlEU2IyZFdJUC9tRTNwSjFyYmtrWmV4TnJabG9r?=
+ =?utf-8?B?eG5KdDBmWTAvTW12ajNhQTBuN1N0Q2gzMHorSEFMV1JUWU13aUFlMFFaeVJS?=
+ =?utf-8?B?R0hVOVlLcGc5SHVDR1h0U0xZeFJvRDI2Um9xcEpLWVh5azdybjVQQVducEhl?=
+ =?utf-8?B?L1FkcVVHaWFwYVFCWmcwbmIyYUU0SnFGU0NnN3k2M2wxY3ozKzZGd041Yy9Q?=
+ =?utf-8?B?Vm5SYTdwTUpjL0JMc0lZdThRV29jSEkwRzhZTEtEUitxanpFdHIwYjViVjBy?=
+ =?utf-8?B?MERWUWVEM2dmdEIzZllJeTEvQXhGZFBBQWJaOGx0RVUvZXFXRHFVOGo1cEdj?=
+ =?utf-8?B?VDdaRUFQM09WSmpxSm9rRzFKUmExSStUUnVxbnl2NDhBQmFTSFZGZWpqc0g3?=
+ =?utf-8?B?YWRyallyZHNBOW16YkdpMkpxUXNNSHpPcUpDeG82RFhRemF6ZFA2ejI4V1dx?=
+ =?utf-8?B?YUtmQXNEdWpSVGdZRUZydjdsUUlJOWJ1d2NpRW9yaGk5aDA3MVVrM2JqdUM3?=
+ =?utf-8?B?YkNZNGpiUTVUMmdoSmFPMG5Ob2dJdDY3cmwyc3JKVHZDdEg5bzEreFFka29i?=
+ =?utf-8?B?eWhzWUZIcXVyMnVOUkpuTVdGaUVMZEdkMU0wMi9DUW9jL2o3bWNRYmNUcEVz?=
+ =?utf-8?B?UG1jYUlzZnhtN2dPWWl4RThnVlA4K2hvMzNTNXoyb1BTek90L0I1R2FveXp4?=
+ =?utf-8?B?aGZsUDMvSGJ3MzJ5aFlJM0I3azJkNUdKMXpJYzVqVnBjNmNMR2tPVVNiSWZh?=
+ =?utf-8?B?UXF0eGNlc1h4ZDZmT3lUZkRzTGVmOHJXS1gwRHM0cEN3S2h3U1ExZU91bTNL?=
+ =?utf-8?B?SVhpQmQzc0dkRU9QcHAyVmVsZC80SWI2cjkrMHFxakF1QnppZkl3R2JWb001?=
+ =?utf-8?B?UkZaa1UwVEJ6NEp4RlBmUm5qdVIvNHNsR1pONHo2UzlpeGZaYVRLZTBwaWZ0?=
+ =?utf-8?B?YTd6TmFPZFZVTGtXZVUyNklub1J4L3FWdFdpOE9wa2xpYUh3bGlDNFg0OVFW?=
+ =?utf-8?B?UStubXFnRlh0QkdFOGNlMVZiNGVJNmhPV1RiaVhQRVNFUmIvZFVtbWxCem1z?=
+ =?utf-8?B?dGFncXFCV3JtelVQNDFITTlSWTB2QmZUSm9wV2pUSkdiV0VYVE11a2h0L1JY?=
+ =?utf-8?B?bGdYWkNFRk5SVllzMXZoUmFhSXdnM1d3SWM4anhQZ2pzL2Z2YVJncjkyN2VN?=
+ =?utf-8?B?RXBMZTlVb1NHNkIwTkdRYmNObVFhWTFkZUpsMW5wMHF0a2dTb2xtNTdXcFlt?=
+ =?utf-8?B?WTVRcTFLMkN6UXZCYTdvRDNLZjFFUVRrY2pMQ3c5ek1LUmJFMFdIZmdCV0FR?=
+ =?utf-8?B?QnhPQmd3TzBDWXJUUmdZdWtRQmt1bHFBR0NhUzh6UU4xTFFyeW5SSXpFR2pI?=
+ =?utf-8?B?N3lLWDJuWURuaFBnekx0OXNwRkN4YnZKNkQvTW44Szd0UkhmczVzZjJqVktW?=
+ =?utf-8?B?TEJKc3dOeVUzNFU4bFN0NFhpd0VoRnBFM2IzOWRHckJMcEZDczhhUmNPOVYr?=
+ =?utf-8?Q?ZMWd0vsnceOnhga2laFaHmw=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0254d865-33a6-42fa-9397-08d9d0a823cd
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2022 00:04:42.8718
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MW29QwpKC0MhUUrClrJDfqszMYBmMbfsumnIU0R95SEorL/VfOyHlPY6g4qy7xSM6BFUhdpPfOhgFJwylrJzOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4223
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10218 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2112160000
+ definitions=main-2201050152
+X-Proofpoint-ORIG-GUID: NhUCDcLW1A3-5AwetG5H8Es3Oc-SJnpG
+X-Proofpoint-GUID: NhUCDcLW1A3-5AwetG5H8Es3Oc-SJnpG
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 07:47:21PM +0100, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
-> 
-> Rename the field type of dev_item from 'type' to 'flags' changing the
-> struct btrfs_device and btrfs_dev_item.
-> 
-> Signed-off-by: Goffredo Baroncelli <krejack@inwind.it>
-> ---
->  fs/btrfs/ctree.h                |  4 ++--
->  fs/btrfs/disk-io.c              |  2 +-
->  fs/btrfs/sysfs.c                | 17 +++++++++--------
->  fs/btrfs/volumes.c              | 10 +++++-----
->  fs/btrfs/volumes.h              |  4 ++--
->  include/uapi/linux/btrfs_tree.h |  4 ++--
->  6 files changed, 21 insertions(+), 20 deletions(-)
 
-Can you also change the comment in include/uapi/linux/btrfs_tree.h to
-reflect changing from dev_item.type to dev_item.flags?
+Gentle ping?
 
-LGTM otherwise.
+The related kernel patch is already in misc-next.
+I don't find this btrfs-progs patch-set in the devel branch.
 
+Thanks, Anand
+
+
+On 19/10/2021 08:23, Anand Jain wrote:
+> The following test case fails as it trying to read the fsid from the sb
+> for a missing device.
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 459d00211181..778c7c807289 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -1669,7 +1669,7 @@ static inline void btrfs_set_device_total_bytes(const struct extent_buffer *eb,
->  }
->  
->  
-> -BTRFS_SETGET_FUNCS(device_type, struct btrfs_dev_item, type, 64);
-> +BTRFS_SETGET_FUNCS(device_flags, struct btrfs_dev_item, flags, 64);
->  BTRFS_SETGET_FUNCS(device_bytes_used, struct btrfs_dev_item, bytes_used, 64);
->  BTRFS_SETGET_FUNCS(device_io_align, struct btrfs_dev_item, io_align, 32);
->  BTRFS_SETGET_FUNCS(device_io_width, struct btrfs_dev_item, io_width, 32);
-> @@ -1682,7 +1682,7 @@ BTRFS_SETGET_FUNCS(device_seek_speed, struct btrfs_dev_item, seek_speed, 8);
->  BTRFS_SETGET_FUNCS(device_bandwidth, struct btrfs_dev_item, bandwidth, 8);
->  BTRFS_SETGET_FUNCS(device_generation, struct btrfs_dev_item, generation, 64);
->  
-> -BTRFS_SETGET_STACK_FUNCS(stack_device_type, struct btrfs_dev_item, type, 64);
-> +BTRFS_SETGET_STACK_FUNCS(stack_device_flags, struct btrfs_dev_item, flags, 64);
->  BTRFS_SETGET_STACK_FUNCS(stack_device_total_bytes, struct btrfs_dev_item,
->  			 total_bytes, 64);
->  BTRFS_SETGET_STACK_FUNCS(stack_device_bytes_used, struct btrfs_dev_item,
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index fc7dd5109806..02ffb8bc7d6b 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4342,7 +4342,7 @@ int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors)
->  			continue;
->  
->  		btrfs_set_stack_device_generation(dev_item, 0);
-> -		btrfs_set_stack_device_type(dev_item, dev->type);
-> +		btrfs_set_stack_device_flags(dev_item, dev->flags);
->  		btrfs_set_stack_device_id(dev_item, dev->devid);
->  		btrfs_set_stack_device_total_bytes(dev_item,
->  						   dev->commit_total_bytes);
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 53acc66065dd..be4196a1645c 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -1582,7 +1582,7 @@ static ssize_t btrfs_devinfo_allocation_hint_show(struct kobject *kobj,
->  						   devid_kobj);
->  
->  	return scnprintf(buf, PAGE_SIZE, "0x%08llx\n",
-> -		device->type & BTRFS_DEV_ALLOCATION_HINT_MASK );
-> +		device->flags & BTRFS_DEV_ALLOCATION_HINT_MASK );
->  }
->  
->  static ssize_t btrfs_devinfo_allocation_hint_store(struct kobject *kobj,
-> @@ -1595,7 +1595,7 @@ static ssize_t btrfs_devinfo_allocation_hint_store(struct kobject *kobj,
->  	int ret;
->  	struct btrfs_trans_handle *trans;
->  
-> -	u64 type, prev_type;
-> +	u64 flags, prev_flags;
->  
->  	device = container_of(kobj, struct btrfs_device, devid_kobj);
->  	fs_info = device->fs_info;
-> @@ -1606,24 +1606,25 @@ static ssize_t btrfs_devinfo_allocation_hint_store(struct kobject *kobj,
->  	if (sb_rdonly(fs_info->sb))
->  		return -EROFS;
->  
-> -	ret = kstrtou64(buf, 0, &type);
-> +	ret = kstrtou64(buf, 0, &flags);
->  	if (ret < 0)
->  		return -EINVAL;
->  
->  	/* for now, allow to touch only the 'allocation hint' bits */
-> -	if (type & ~BTRFS_DEV_ALLOCATION_HINT_MASK)
-> +	if (flags & ~BTRFS_DEV_ALLOCATION_HINT_MASK)
->  		return -EINVAL;
->  
->  	/* check if a change is really needed */
-> -	if ((device->type & BTRFS_DEV_ALLOCATION_HINT_MASK) == type)
-> +	if ((device->flags & BTRFS_DEV_ALLOCATION_HINT_MASK) == flags)
->  		return len;
->  
->  	trans = btrfs_start_transaction(root, 1);
->  	if (IS_ERR(trans))
->  		return PTR_ERR(trans);
->  
-> -	prev_type = device->type;
-> -	device->type = (device->type & ~BTRFS_DEV_ALLOCATION_HINT_MASK) | type;
-> +	prev_flags = device->flags;
-> +	device->flags = (device->flags & ~BTRFS_DEV_ALLOCATION_HINT_MASK) |
-> +			flags;
->  
->  	ret = btrfs_update_device(trans, device);
->  
-> @@ -1639,7 +1640,7 @@ static ssize_t btrfs_devinfo_allocation_hint_store(struct kobject *kobj,
->  
->  	return len;
->  abort:
-> -	device->type = prev_type;
-> +	device->flags = prev_flags;
->  	return  ret;
->  }
->  BTRFS_ATTR_RW(devid, allocation_hint, btrfs_devinfo_allocation_hint_show,
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index beee7d1ae79d..9184570c51b0 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1876,7 +1876,7 @@ static int btrfs_add_dev_item(struct btrfs_trans_handle *trans,
->  
->  	btrfs_set_device_id(leaf, dev_item, device->devid);
->  	btrfs_set_device_generation(leaf, dev_item, 0);
-> -	btrfs_set_device_type(leaf, dev_item, device->type);
-> +	btrfs_set_device_flags(leaf, dev_item, device->flags);
->  	btrfs_set_device_io_align(leaf, dev_item, device->io_align);
->  	btrfs_set_device_io_width(leaf, dev_item, device->io_width);
->  	btrfs_set_device_sector_size(leaf, dev_item, device->sector_size);
-> @@ -2900,7 +2900,7 @@ noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
->  	dev_item = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_dev_item);
->  
->  	btrfs_set_device_id(leaf, dev_item, device->devid);
-> -	btrfs_set_device_type(leaf, dev_item, device->type);
-> +	btrfs_set_device_flags(leaf, dev_item, device->flags);
->  	btrfs_set_device_io_align(leaf, dev_item, device->io_align);
->  	btrfs_set_device_io_width(leaf, dev_item, device->io_width);
->  	btrfs_set_device_sector_size(leaf, dev_item, device->sector_size);
-> @@ -5285,7 +5285,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->  			 */
->  			devices_info[ndevs].alloc_hint = 0;
->  		} else if (ctl->type & BTRFS_BLOCK_GROUP_DATA) {
-> -			hint = device->type & BTRFS_DEV_ALLOCATION_HINT_MASK;
-> +			hint = device->flags & BTRFS_DEV_ALLOCATION_HINT_MASK;
->  
->  			/*
->  			 * skip BTRFS_DEV_METADATA_ONLY disks
-> @@ -5299,7 +5299,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->  			 */
->  			devices_info[ndevs].alloc_hint = -alloc_hint_map[hint];
->  		} else { /* BTRFS_BLOCK_GROUP_METADATA */
-> -			hint = device->type & BTRFS_DEV_ALLOCATION_HINT_MASK;
-> +			hint = device->flags & BTRFS_DEV_ALLOCATION_HINT_MASK;
->  
->  			/*
->  			 * skip BTRFS_DEV_DATA_ONLY disks
-> @@ -7293,7 +7293,7 @@ static void fill_device_from_item(struct extent_buffer *leaf,
->  	device->commit_total_bytes = device->disk_total_bytes;
->  	device->bytes_used = btrfs_device_bytes_used(leaf, dev_item);
->  	device->commit_bytes_used = device->bytes_used;
-> -	device->type = btrfs_device_type(leaf, dev_item);
-> +	device->flags = btrfs_device_flags(leaf, dev_item);
->  	device->io_align = btrfs_device_io_align(leaf, dev_item);
->  	device->io_width = btrfs_device_io_width(leaf, dev_item);
->  	device->sector_size = btrfs_device_sector_size(leaf, dev_item);
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 61c0cba045e9..27ecf062d50c 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -96,8 +96,8 @@ struct btrfs_device {
->  
->  	/* optimal io width for this device */
->  	u32 io_width;
-> -	/* type and info about this device */
-> -	u64 type;
-> +	/* device flags (e.g. allocation hint) */
-> +	u64 flags;
->  
->  	/* minimal io size for this device */
->  	u32 sector_size;
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index 55da906c2eac..f9891c94a75e 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -421,8 +421,8 @@ struct btrfs_dev_item {
->  	/* minimal io size for this device */
->  	__le32 sector_size;
->  
-> -	/* type and info about this device */
-> -	__le64 type;
-> +	/* device flags (e.g. allocation hint) */
-> +	__le64 flags;
->  
->  	/* expected generation for this device */
->  	__le64 generation;
-> -- 
-> 2.34.1
+>     $ mkfs.btrfs -f -draid1 -mraid1 $DEV1 $DEV2
+>     $ btrfstune -S 1 $DEV1
+>     $ wipefs -a $DEV2
+>     $ btrfs dev scan --forget
+>     $ mount -o degraded $DEV1 /btrfs
+>     $ btrfs device add $DEV3 /btrfs -f
+> 
+>     $ btrfs fi us /btrfs
+>       ERROR: unexpected number of devices: 1 >= 1
+>       ERROR: if seed device is used, try running this command as root
+>   
+> The kernel patch [1] in the mailing list provided a sysfs interface
+> to read the fsid of the device, so use it instead.
+> 
+>   [1]  btrfs: sysfs add devinfo/fsid to retrieve fsid from the device
+> 
+> This patch also retains the old method that is to read the SB for
+> backward compatibility purposes.
+> 
+> Anand Jain (2):
+>    btrfs-progs: prepare helper device_is_seed
+>    btrfs-progs: read fsid from the sysfs in device_is_seed
+> 
+>   cmds/filesystem-usage.c | 47 ++++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 42 insertions(+), 5 deletions(-)
 > 
