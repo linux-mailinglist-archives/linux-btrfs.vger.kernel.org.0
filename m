@@ -2,116 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765BA486DC1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jan 2022 00:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685E7486E5F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jan 2022 01:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245564AbiAFX0P convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 6 Jan 2022 18:26:15 -0500
-Received: from pio-pvt-msa1.bahnhof.se ([79.136.2.40]:33048 "EHLO
-        pio-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245586AbiAFX0M (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jan 2022 18:26:12 -0500
-X-Greylist: delayed 539 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Jan 2022 18:26:11 EST
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 76C773F65E;
-        Fri,  7 Jan 2022 00:17:09 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -1.899
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.899 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7uWT8QsswoEH; Fri,  7 Jan 2022 00:17:08 +0100 (CET)
-Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 733453F49D;
-        Fri,  7 Jan 2022 00:17:08 +0100 (CET)
-Received: from [192.168.0.126] (port=55256)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1n5c0E-000116-JA; Fri, 07 Jan 2022 00:17:06 +0100
-Date:   Fri, 7 Jan 2022 00:17:02 +0100 (GMT+01:00)
-From:   Forza <forza@tnonline.net>
-To:     Chris Murphy <lists@colorremedies.com>,
-        =?UTF-8?Q?Juan_Sim=C3=B3n?= <decedion@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <fc57894.138b7c30.17e31ae6f21@tnonline.net>
-In-Reply-To: <CAJCQCtR_oogvxKozaMM8UUiW2kKxFUnc+1cqTuwT12ZBOTDFgQ@mail.gmail.com>
-References: <CAMQzBqCSzr4UO1VFTjtSDPt+0ukhf6yqK=q+eLA+Tp1hiB_weA@mail.gmail.com> <CAJCQCtR_oogvxKozaMM8UUiW2kKxFUnc+1cqTuwT12ZBOTDFgQ@mail.gmail.com>
-Subject: Re: 48 seconds to mount a BTRFS hard disk drive seems too long to
- me
+        id S1343746AbiAGANj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jan 2022 19:13:39 -0500
+Received: from mout.gmx.net ([212.227.15.19]:37655 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232819AbiAGANj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jan 2022 19:13:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1641514390;
+        bh=EyPi8Y3Gc+gTu2ILQBh3edI82bKKE2zEKRdiyUFahW4=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=RcqA07djH1Kg19mjjHZT9kQEF5PBB0i+eBHqAXaC6T9NjHBCkybTynF/giLuDnIBk
+         o1hL4kgES4Z+FDB0zoVkVRjNS/wyuVImH+OQgV2PL8ZzWlZMoLIAl+pPrvfVK52dtb
+         Xsa+hpVlC6iKG5amEr6vxBqPsdcEcJXZXxPodJTY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MStCe-1mxUEN0uR4-00UK15; Fri, 07
+ Jan 2022 01:13:10 +0100
+Message-ID: <db88497c-ea17-27ca-6158-2a987acb7a1c@gmx.com>
+Date:   Fri, 7 Jan 2022 08:13:01 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH] fs: btrfs: Disable BTRFS on platforms having 256K pages
+Content-Language: en-US
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-hexagon@vger.kernel.org, Hector Martin <marcan@marcan.st>
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+ <6c7a6762-6bec-842b-70b4-4a53297687d1@gmx.com>
+ <CAEg-Je9UJDJ=hvLLqQDsHijWnxh1Z1CwaLKCFm+-bLTfCFingg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAEg-Je9UJDJ=hvLLqQDsHijWnxh1Z1CwaLKCFm+-bLTfCFingg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:anCYYKhzpZMxqykyFCq+8YxKtyr10cQ84WLxzimaPuneijGdCqz
+ DCTt+qxKufcuCSCYh5BvF0kfQ7B0Ov4gS934FXjKQjR28CPsyZEYGntV8kpnaTxozhsyQRC
+ PmkBHzOARVbxjBbf8Gsxv62DXHnI2kJv+jLn2ZfjzaKplUnXZJaOCfBKAPin1Ic1yimFXpN
+ iHdKDG80XWbzbUv4D+TQg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HhiphtxHIBA=:jKABz3jdZsxi6EwxEaeBRz
+ /vugjzSA51qNzCKgJwvYaZa2YSql73GgHl83okMs26BXff4nbudCZBsGEKWxwZXwfbG6X0RCc
+ 7ZqRNly6LqVLWdgP03qj0D3t1BR7lzWByjCbE6zAdXaLVodjh6K75ihOiNQO2WBfyDz7qnmcX
+ mlPLUhIFTKDlZU6FgKxB8bUHGLSNKRPnqaaBDPdzs7Rv+xggVOMbyz+/CfbrSRdQxnmiMXjTv
+ dnsN+qmcMtklx2FKtAht9pdsgmGOB1HrHc5WUuGfOdEreSYKmRmjztIrtWoR9eHws0Dzbz7zN
+ 465Xbz9zbOPnEfp4Y+8HhJe9S1QeBOD1Ex0TFoVfrA9TGaSgApBs9Po5dC8H2Ia0vAxmlqOWZ
+ ik9jJHgVDg6m/6jPVQTF20+blPD1aQ8osdqUTz+8DROWqjJD2QzSHRTb9ZuGBQRW3lCkNJ1FK
+ zkNrPJXv0xpY4Lx4oAlUZECuudUudNJNQv+/41YIb+DeMq51xYqYntsNRKMMdqEak/NhbtIdI
+ e8VE4TVb/5f2Ylvu+6OD85RxjdcbVT5a9rq1YT0LAh/O899lnI00oz5NWppzgstdqCW/iD49R
+ 8qTZ5bx3jU1NEDjnUH/7qFeX5V9UdB/HC4puVARS23Z7FFf7iZ+YtfV0Ga3wDYqcbDsUfWP75
+ +3vXsOOZN7SgtMCI88jFddjtWd6RtMIX1NlXny5YhphJrOtSANWJstJp1qOuGKAYaoxx/MBMH
+ 7GfknbMczRPnhbprQ1Z68yC1wTkUnOhBs3f5d60ruWjSoJcccxt/cles38CuRyuP3z8V/Sqzp
+ 8V+3J6T7c7SaBTcXJjLCKVx/6jCZTK3rHzewI6iC04ioXD4TKgZGw8cGl8PYBf5JDzYYVp0if
+ 4tc9RiHfvCrFnhJ3DFB3oLDICGDWS7OR5Spz19FI7sN6suUSGMjHvEkwIbd+SBoC7ZCKYle6L
+ Er/fry33el3L1GNK6G4UH0ABvT5k0o1L1NUu9enWZ13N8Tg/QemjSkEm+ZlRXtPtIZLZGPP25
+ DPa/jDJ6GD1G1N8iAXD8pf8hLJD1wYQ7ElBvUlj05p6amX4OB7/VyDfCFUE90ZyzHhB9yWgn2
+ Hha+O/UqdMb8Nc=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
----- From: Chris Murphy <lists@colorremedies.com> -- Sent: 2022-01-06 - 20:58 ----
+On 2022/1/7 00:31, Neal Gompa wrote:
+> On Wed, Jan 5, 2022 at 7:05 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>
+>> Hi Christophe,
+>>
+>> I'm recently enhancing the subpage support for btrfs, and my current
+>> branch should solve the problem for btrfs to support larger page sizes.
+>>
+>> But unfortunately my current test environment can only provide page siz=
+e
+>> with 64K or 4K, no 16K or 128K/256K support.
+>>
+>> Mind to test my new branch on 128K page size systems?
+>> (256K page size support is still lacking though, which will be addresse=
+d
+>> in the future)
+>>
+>> https://github.com/adam900710/linux/tree/metadata_subpage_switch
+>>
+>
+> The Linux Asahi folks have a 16K page environment (M1 Macs)...
 
-> On Thu, Jan 6, 2022 at 8:48 AM Juan Simón <decedion@gmail.com> wrote:
->>
->> Hard disk: 16TB SEAGATE IRONWOLF PRO 3.5", 7200 RPM 256MB CACHE
->> Arch Linux
->> Linux juan-PC 5.15.13-xanmod1-tt-1 #1 SMP Thu, 06 Jan 2022 12:14:06
->> +0000 x86_64 GNU/Linux
->> btrfs-progs v5.15.1
->>
->> $ btrfs fi df /multimedia
->> Data, single: total=10.89TiB, used=10.72TiB
->> System, DUP: total=8.00MiB, used=1.58MiB
->> Metadata, DUP: total=15.00GiB, used=13.19GiB
->> GlobalReserve, single: total=512.00MiB, used=0.00B
->>
->> I have formatted it as BTRFS and the mounting options (fstab) are:
->>
->> /multimedia     btrfs
->> rw,noatime,autodefrag,compress-force=zstd,nossd,space_cache=v2    0 0
->>
->> The disk works fine, I have not detected any problems but every time I
->> reboot the system takes a long time due to the mounting of this drive
->>
->> $ systemd-analyze blame
->> 48.575s multimedia.mount
->> ....
->>
->> I find it too long to mount a drive, is this normal, is it because of
->> one of the mounting options, or because of the size of the hard drive?
-> 
-> I think it's due to reading all the block group items which are buried
-> in the extent tree. And on large file systems with a large extent
-> tree, it results in a lot of random IO reads, so on spinning drives
-> you get a ton of latency hits for this search.
-> 
-> This thread discusses some of the details as it relates to zoned
-> devices, which have even longer mount times I guess. But the comments
-> about block groups and extent tree apply the same to non-zoned.
-> https://lore.kernel.org/linux-btrfs/CAHQ7scVGPAwEGQOq3Kmn75GJzyzSQ9qrBBZrHFu+4YWQhGE0Lw@mail.gmail.com/
-> 
-> The mount options you're using aren't causing the mount delay. But be
-> certain you really want autodefrag - it's designed for the desktop,
-> small databases used by desktops, web browsers, and the like. If you
-> use it with bigger and/or very busy databases, it just results in a
-> ton of I/O and can really slow things down rather than speed them up.
-> You're better off in such a use case with scheduled defragment on a
-> dir by dir basis, which you can do using the btrfsmaintenance
-> package's btrfs-defrag.timer and .service unit, which you can
-> customize. It's maintained by kdave, also maintainer of btrfs-progs.
-> https://github.com/kdave/btrfsmaintenance
-> 
+Su Yue kindly helped me testing 16K page size, and it's pretty OK there.
 
-It might be worth trying to defragment the extent tree of each subvolume by pointing btrfs defrag to the subvolume and not use the -r option. I don't think the btrfsmaintenance script does this.
+So I'm not that concerned.
 
-# btrfs fi defragment /mnt/btrfs 
-# btrfs fi defragment /mnt/btrfs/subvol_A
-# btrfs fi defragment /mnt/btrfs/subvol_B
-...
+It's 128K page size that I'm a little concerned, and I have not machine
+supporting that large page size to do the test.
 
-Read-only snapshots can't be defragmented this way. 
+Thanks,
+Qu
 
-
+>
+> Hector, could you look at it too?
+>
+>
+>
