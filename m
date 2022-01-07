@@ -2,110 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685E7486E5F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jan 2022 01:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487C8487079
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jan 2022 03:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343746AbiAGANj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jan 2022 19:13:39 -0500
-Received: from mout.gmx.net ([212.227.15.19]:37655 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232819AbiAGANj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jan 2022 19:13:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1641514390;
-        bh=EyPi8Y3Gc+gTu2ILQBh3edI82bKKE2zEKRdiyUFahW4=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=RcqA07djH1Kg19mjjHZT9kQEF5PBB0i+eBHqAXaC6T9NjHBCkybTynF/giLuDnIBk
-         o1hL4kgES4Z+FDB0zoVkVRjNS/wyuVImH+OQgV2PL8ZzWlZMoLIAl+pPrvfVK52dtb
-         Xsa+hpVlC6iKG5amEr6vxBqPsdcEcJXZXxPodJTY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MStCe-1mxUEN0uR4-00UK15; Fri, 07
- Jan 2022 01:13:10 +0100
-Message-ID: <db88497c-ea17-27ca-6158-2a987acb7a1c@gmx.com>
-Date:   Fri, 7 Jan 2022 08:13:01 +0800
+        id S1344736AbiAGCet (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jan 2022 21:34:49 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:42452 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231945AbiAGCet (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jan 2022 21:34:49 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 871C81F39C
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jan 2022 02:34:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1641522888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=i08tGr2RMKt9K2RBzaXRzQpNPzSmj1Y/bU3gUatKOeE=;
+        b=kpYdzhIXEC3/GHpEDS32cmNMkB/G3Z9bg+8ZZXbK+dsgdBUB6fbYYPeBVb0pMNIovbSmxn
+        iqQ95gozf7bjUmny+xuU42rlhgwP8fiLlSFhJADno1YFm2BTKQHEGnXNXyGIKqTal1Oikw
+        hLUcuJ7hFZVn2S+yOUwqiuNR543pWy4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D51E313C9D
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jan 2022 02:34:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ki0XJ8em12FTUgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jan 2022 02:34:47 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/4] btrfs: refactor scrub entrances for each profile
+Date:   Fri,  7 Jan 2022 10:34:26 +0800
+Message-Id: <20220107023430.28288-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH] fs: btrfs: Disable BTRFS on platforms having 256K pages
-Content-Language: en-US
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        linux-hexagon@vger.kernel.org, Hector Martin <marcan@marcan.st>
-References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
- <6c7a6762-6bec-842b-70b4-4a53297687d1@gmx.com>
- <CAEg-Je9UJDJ=hvLLqQDsHijWnxh1Z1CwaLKCFm+-bLTfCFingg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAEg-Je9UJDJ=hvLLqQDsHijWnxh1Z1CwaLKCFm+-bLTfCFingg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:anCYYKhzpZMxqykyFCq+8YxKtyr10cQ84WLxzimaPuneijGdCqz
- DCTt+qxKufcuCSCYh5BvF0kfQ7B0Ov4gS934FXjKQjR28CPsyZEYGntV8kpnaTxozhsyQRC
- PmkBHzOARVbxjBbf8Gsxv62DXHnI2kJv+jLn2ZfjzaKplUnXZJaOCfBKAPin1Ic1yimFXpN
- iHdKDG80XWbzbUv4D+TQg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HhiphtxHIBA=:jKABz3jdZsxi6EwxEaeBRz
- /vugjzSA51qNzCKgJwvYaZa2YSql73GgHl83okMs26BXff4nbudCZBsGEKWxwZXwfbG6X0RCc
- 7ZqRNly6LqVLWdgP03qj0D3t1BR7lzWByjCbE6zAdXaLVodjh6K75ihOiNQO2WBfyDz7qnmcX
- mlPLUhIFTKDlZU6FgKxB8bUHGLSNKRPnqaaBDPdzs7Rv+xggVOMbyz+/CfbrSRdQxnmiMXjTv
- dnsN+qmcMtklx2FKtAht9pdsgmGOB1HrHc5WUuGfOdEreSYKmRmjztIrtWoR9eHws0Dzbz7zN
- 465Xbz9zbOPnEfp4Y+8HhJe9S1QeBOD1Ex0TFoVfrA9TGaSgApBs9Po5dC8H2Ia0vAxmlqOWZ
- ik9jJHgVDg6m/6jPVQTF20+blPD1aQ8osdqUTz+8DROWqjJD2QzSHRTb9ZuGBQRW3lCkNJ1FK
- zkNrPJXv0xpY4Lx4oAlUZECuudUudNJNQv+/41YIb+DeMq51xYqYntsNRKMMdqEak/NhbtIdI
- e8VE4TVb/5f2Ylvu+6OD85RxjdcbVT5a9rq1YT0LAh/O899lnI00oz5NWppzgstdqCW/iD49R
- 8qTZ5bx3jU1NEDjnUH/7qFeX5V9UdB/HC4puVARS23Z7FFf7iZ+YtfV0Ga3wDYqcbDsUfWP75
- +3vXsOOZN7SgtMCI88jFddjtWd6RtMIX1NlXny5YhphJrOtSANWJstJp1qOuGKAYaoxx/MBMH
- 7GfknbMczRPnhbprQ1Z68yC1wTkUnOhBs3f5d60ruWjSoJcccxt/cles38CuRyuP3z8V/Sqzp
- 8V+3J6T7c7SaBTcXJjLCKVx/6jCZTK3rHzewI6iC04ioXD4TKgZGw8cGl8PYBf5JDzYYVp0if
- 4tc9RiHfvCrFnhJ3DFB3oLDICGDWS7OR5Spz19FI7sN6suUSGMjHvEkwIbd+SBoC7ZCKYle6L
- Er/fry33el3L1GNK6G4UH0ABvT5k0o1L1NUu9enWZ13N8Tg/QemjSkEm+ZlRXtPtIZLZGPP25
- DPa/jDJ6GD1G1N8iAXD8pf8hLJD1wYQ7ElBvUlj05p6amX4OB7/VyDfCFUE90ZyzHhB9yWgn2
- Hha+O/UqdMb8Nc=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The branch is based on several recent submitted small cleanups, thus
+it's better to fetch the branch from github:
 
+https://github.com/adam900710/linux/tree/refactor_scrub
 
-On 2022/1/7 00:31, Neal Gompa wrote:
-> On Wed, Jan 5, 2022 at 7:05 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->> Hi Christophe,
->>
->> I'm recently enhancing the subpage support for btrfs, and my current
->> branch should solve the problem for btrfs to support larger page sizes.
->>
->> But unfortunately my current test environment can only provide page siz=
-e
->> with 64K or 4K, no 16K or 128K/256K support.
->>
->> Mind to test my new branch on 128K page size systems?
->> (256K page size support is still lacking though, which will be addresse=
-d
->> in the future)
->>
->> https://github.com/adam900710/linux/tree/metadata_subpage_switch
->>
->
-> The Linux Asahi folks have a 16K page environment (M1 Macs)...
+[CRAP-BUT-IT-WORKS(TM)]
 
-Su Yue kindly helped me testing 16K page size, and it's pretty OK there.
+Scrub is one of the area we seldom touch because:
 
-So I'm not that concerned.
+- It's a mess
+  Just check scrub_stripe() function.
+  It's a function scrubbing a stripe for *all* profiles.
 
-It's 128K page size that I'm a little concerned, and I have not machine
-supporting that large page size to do the test.
+  It's near 400 lines for a single complex function, with double while()
+  loop and several different jumps inside the loop.
 
-Thanks,
-Qu
+  Not to mention the lack of comments for various structures.
 
->
-> Hector, could you look at it too?
->
->
->
+  This should and will never happen under our current code standard.
+
+- It just works
+  I have hit more than 10 bugs during development, and I just want to
+  give up the refactor, as even the code is crap, it works, passing the
+  existing scrub/replace group.
+  While no matter how small code change I'm doing, it always fails to pass
+  the same tests.
+
+[REFACTOR-IDEA]
+
+The core idea here, is to get rid of one-fit-all solution for
+scrub_stripe().
+
+Instead, we explicitly separate the scrub into 3 groups (the idea is
+from my btrfs-fuse project):
+
+- Simple-mirror based profiles
+  This includes SINGLE/DUP/RAID1/RAID1C* profiles.
+  They have no stripe, and their repair is purely mirror based.
+
+- Simple-stripe based profiles
+  This includes RAID0/RAID10 profiles.
+  They are just simple stripe (without P/Q nor rotation), with extra
+  mirrors to support their repair.
+
+- RAID56
+  The most complex profiles, they have extra P/Q, and have rotation.
+
+[REFACTOR-IMPLEMENTATION]
+
+So we have 3 entrances for all those supported profiles:
+
+- scrub_simple_mirror()
+  For SINGLE/DUP/RAID1/RAID1C* profiles.
+  Just go through each extent and scrub the extent.
+
+- scrub_simple_stripe()
+  For RAID0/RAID10 profiles.
+  Instead we go each data stripe first, then inside each data stripe, we
+  can call scrub_simple_mirror(), since after stripe split, RAID0 is
+  just SINGLE and RAID10 is just RAID1.
+
+- scrub_stripe() untouched for RAID56
+  RAID56 still has all the complex things to do, but they can still be
+  split into two types (already done by the original code)
+
+  * data stripes
+    They are no different in the verification part, RAID56 is just
+    SINGLE if we ignore the repair path.
+    It's only in repair path that our path divides.
+
+    So we can reuse scrub_simple_mirror() again.
+
+  * P/Q stripes
+    They already have a dedicated function handling the case.
+
+With all these refactors, although we have several more functions, we
+get rid of:
+
+- A double while () loop
+- Several jumps inside the double loop
+- Complex calculation to try to fit all profiles
+
+And we get:
+
+- Better comments
+- More dedicated functions
+- A better basis for further refactors
+
+[INCOMING CLEANUPS]
+
+- Use find_first_extent_item() to cleanup the RAID56 code
+  This part itself can be as large this patchset already, thus will be
+  in its own patchset.
+
+- Refactor scrub_pages/scrub_parity/... structures
+
+Qu Wenruo (4):
+  btrfs: introduce a helper to locate an extent item
+  btrfs: introduce dedicated helper to scrub simple-mirror based range
+  btrfs: introduce dedicated helper to scrub simple-stripe based range
+  btrfs: use scrub_simple_mirror() to handle RAID56 data stripe scrub
+
+ fs/btrfs/scrub.c | 702 ++++++++++++++++++++++++++++-------------------
+ 1 file changed, 422 insertions(+), 280 deletions(-)
+
+-- 
+2.34.1
+
