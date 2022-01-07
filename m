@@ -2,109 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A96148750D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jan 2022 10:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E706148756E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jan 2022 11:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346576AbiAGJwt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Jan 2022 04:52:49 -0500
-Received: from mout.gmx.net ([212.227.15.15]:37355 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346631AbiAGJwp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Jan 2022 04:52:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1641549160;
-        bh=jg1P4l3t5qcYKcxxkj1gmBVLZ6mcvt4GGQ8dFMujjtY=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=gYpdlvfkKnPZZ3fVFdtho/DTbAeB7U7EodOjobHrvhzQSTYIXst2XUiOID73J1r6D
-         zJ4eOv/KEptftNDkmJ546ijkdYJ115AK1/1bqIFR+RIyD1LoYtV/kkOAzMkF62BFSL
-         XeYOlHSbDY8QgMvZnCps6r55itnPAZAEHuxvkS3E=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N6KUd-1mHhN81rwX-016hYm; Fri, 07
- Jan 2022 10:52:40 +0100
-Message-ID: <03d9ada8-1b57-90a8-c36a-b79f0e162359@gmx.com>
-Date:   Fri, 7 Jan 2022 17:52:33 +0800
+        id S237317AbiAGKYf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Jan 2022 05:24:35 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:57830 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237096AbiAGKYf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Jan 2022 05:24:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D2FF5B8255C
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jan 2022 10:24:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A30E2C36AE0;
+        Fri,  7 Jan 2022 10:24:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641551072;
+        bh=bPyDCYW6Cf4thHmcJcy+YX+Hqyd9+LMOMVft3jW4qrQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LK7OT4R+846cc3zE98kUA8CpWtmRbuCt0yhFJPQhAzJrHRfZW4Hci2KY/kCEz/D/n
+         nwCZFnzKqXZE3xy8gBU/ePQ7xTlOFzYtxLK4lF35vFSO+wNn6RbgzfzBuJsHtTC9Nx
+         PsxhKQsD/qF+475vpW/vyxaz85avUwVnedyB1Cnz0HmNm08w6u3SHYBxQvkC7jKeM3
+         I/JjMrqY7raoN43nfXLO3hQLjqna9OzAK/wnKDSPftBcQGwPk+MTdmchD8BCDA6VD7
+         8vcIXacZXsqjehchaG2jhBzRXnUIoP2a/n9E00EfQ3bVtkU6KdXi+Ay5XesczbO/qP
+         n3g3U1cUVJpXw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Cc:     dan.carpenter@oracle.com, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: send: fix double and unpaired semaphore unlocks on -ENOMEM
+Date:   Fri,  7 Jan 2022 10:24:18 +0000
+Message-Id: <a7b1b2094bb0697dda72bdd9bf1ed789cb0b9b08.1641550850.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH 1/2] btrfs: refactor scrub_raid56_parity()
-Content-Language: en-US
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20220107070951.48246-1-wqu@suse.com>
- <20220107070951.48246-2-wqu@suse.com>
- <1617e7dc-57e7-0c68-a8dd-1462ed246157@opensource.wdc.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <1617e7dc-57e7-0c68-a8dd-1462ed246157@opensource.wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:z6Txxuwg2bd/SspkaDFeSGwiS61Ag3tAx1YKArGhK3l9H8aQzEm
- g/z/n9XwaotJ4GjCujivkfjBnjoNYNqjxMquZa+sKIEjO+7CEWEaLd8uOz7bAb7qTB9SiUK
- DVc2/xPD/BWrPAAJHs1hART4wAgU7F26Rt5fyVWo2pDtuWkXYCLoANejYaYHZFs2Yh/TGzs
- ulXZ2+wYoshj6iO4ofRAg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kPtaEB82idU=:x+sErBh/5hPleR9KQGdELE
- RzVhwBwkb10fW3QHAOZaNAt8sLINYwzNR1Z/L9PIxpuGsD+RkoxeiehKudulJGJp4ocpd0fM6
- Y7/33ZEe9z6XeZt2RiBBQ5kOrJs/qGPf7qfEz0cnX9n5eDGMTsYdsM5YslBBYndr/IQe8Wz4o
- Pzg/AMGX/BrZLZ1NW+MF3pA5TO3NsCRh7sDzwWkHHQgba1ehZPaPHkwvxm/nTnj/b5J+qotmo
- Uv/VVramwjpPNg/nFObDkcObMoJkuUGoXcWT97yClMGHuiZfsxC8nZ4Wrebh4n4hpJWsHkqVh
- rWgMxl/0nBv+CrdxwMIfY7eaCRFPj6la+3mSH+RvmJAjZ+T0rvhqqeP3lmYRXJ8LRRsjX2mHl
- nliQieMrRZTMPcHOpwPGA/8F5EiaWZWGL60lVH7Tm43zTFtoU7NGvMAocgXviDZFSX3WtGLc/
- ofrTLDGnTG8PAi95lt68z9wUKkoYvf5iRShDYrisCJAYXZnSK2cs67LmMLdyUFNWAzoAaaCJc
- 2LK/NFozjODgYQ9RmajeztwbWRjbf/EiaYWbqOrntQVkqZNh5hj8cVV+gCZ3PN7bD5u2j8ZSN
- /ulxy7PWk2kpHIPyLJI7OyR4ogQc65JHNIkQeaOsqIb8TIAWwZGC5AtWtOAqDMwwXtRdNwdWs
- KwnZ6laftRTnKeIAymrj1U4weJSWDN8zmnhOn0vy8+2B7RwsfLG6FrrNBqch4JqDxhe4BKVd8
- 4EjouAL1uRCJpDySeQ5+tRsoeAQDt+zmWTtxsFG8biNRVNxfaBca4H/EF8BKIhYUbl7ouh7f7
- DC8+5r4J60D5OLpOb3QGYIluVZOccNpHcxDyXnQdM/2DAndTLA6FnWMrwJHsDVW1Yu1tSy6vu
- MCdQqzDGKwcNsdSoh7SDkglyXqbYc+zuGJ+l9NP7pwxowHjU0uBu0EsgMzRDl85disYSfasjD
- c8iohQYVFIsxwYGxmhWHIYUwbdrgMZOSeiOcty0nDoeuuU8NToiAd1S39Bg03bQSFQkm9EK6/
- RSUEXWWwiNsuaXXRVxzeg+BclLUkvtp9BbL9QTkWrxWKy3MjUefau5+d2KriTXXFL7oOvVMw/
- gL8fQEZZgzu6os=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
+When doing an incremental send, at btrfs_compare_trees(), if we fail to
+allocate the paths or clone extent buffers due to -ENOMEM:
 
-On 2022/1/7 16:20, Damien Le Moal wrote:
-> On 1/7/22 16:09, Qu Wenruo wrote:
->> +		if (!ret) {
->> +			if (!bioc || mapped_length < extent_size)
->> +				ret =3D -EIO;
->> +		}
->
-> The double "if" looks a little weird... You can simplify this:
->
-> 		if ((!ret) && (!bioc || mapped_length < extent_size))
-> 			ret =3D -EIO;
+1) We can end unlocking the commit root semaphore without having it
+   locked before, when we fail to allocate the paths, because we
+   jump to the 'out' label that always unlocks the semaphore;
 
-Sure, this is indeed better.
-[...]
->> +		ret =3D scrub_extent_for_parity(sparity, extent_start,
->> +					      extent_size, extent_physical,
->> +					      extent_dev, extent_flags,
->> +					      extent_gen, extent_mirror_num);
->> +		scrub_free_csums(sctx);
->> +
->> +		if (ret) {
->> +			scrub_parity_mark_sectors_error(sparity, extent_start,
->> +							extent_size);
->> +			break;
->> +		}
->> +
->
-> It would be nice to have the entire code above factored in one or more
-> functions to make reading the loop easier.
+2) When we fail to clone the extent buffers of the root nodes, we
+   end up doing a double unlock of the commit root semaphore, once
+   before jumping to the 'out' label and then once again under that
+   label.
 
-Originally there is a if (ret < 0) check before return, and at there
-call the mark_sectors_error().
+So fix those two issues.
 
-Since in this patch extent_start/extent_size is defined inside the loop,
-making it harder to keep the branch out of the main loop.
+This happens only after my previous patch that has the subject:
 
-But you mentioned this, I'd better move the
-scrub_parity_mark_sectors_error() out of the loop, as it's making the
-code reading harder.
+   "btrfs: make send work with concurrent block group relocation"
 
-Thanks,
-Qu
+And it's not yet in Linus' tree.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+Note: as the patch that introduced the issue is not yet in Linus' tree,
+this can probably still be squashed into the original patch.
+
+ fs/btrfs/send.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 3fc144b8c0d8..d8ccb62aa7d2 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -7152,9 +7152,8 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 	left_path->nodes[left_level] =
+ 			btrfs_clone_extent_buffer(left_root->commit_root);
+ 	if (!left_path->nodes[left_level]) {
+-		up_read(&fs_info->commit_root_sem);
+ 		ret = -ENOMEM;
+-		goto out;
++		goto out_unlock;
+ 	}
+ 
+ 	right_level = btrfs_header_level(right_root->commit_root);
+@@ -7162,9 +7161,8 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 	right_path->nodes[right_level] =
+ 			btrfs_clone_extent_buffer(right_root->commit_root);
+ 	if (!right_path->nodes[right_level]) {
+-		up_read(&fs_info->commit_root_sem);
+ 		ret = -ENOMEM;
+-		goto out;
++		goto out_unlock;
+ 	}
+ 	/*
+ 	 * Our right root is the parent root, while the left root is the "send"
+@@ -7204,7 +7202,7 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 						       left_level, right_level,
+ 						       sctx);
+ 			if (ret < 0)
+-				goto out;
++				goto out_unlock;
+ 			sctx->last_reloc_trans = fs_info->last_reloc_trans;
+ 		}
+ 
+@@ -7216,7 +7214,7 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 			if (ret == -1)
+ 				left_end_reached = ADVANCE;
+ 			else if (ret < 0)
+-				goto out;
++				goto out_unlock;
+ 			advance_left = 0;
+ 		}
+ 		if (advance_right && !right_end_reached) {
+@@ -7227,13 +7225,13 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 			if (ret == -1)
+ 				right_end_reached = ADVANCE;
+ 			else if (ret < 0)
+-				goto out;
++				goto out_unlock;
+ 			advance_right = 0;
+ 		}
+ 
+ 		if (left_end_reached && right_end_reached) {
+ 			ret = 0;
+-			goto out;
++			goto out_unlock;
+ 		} else if (left_end_reached) {
+ 			if (right_level == 0) {
+ 				up_read(&fs_info->commit_root_sem);
+@@ -7241,9 +7239,9 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 						&right_key,
+ 						BTRFS_COMPARE_TREE_DELETED,
+ 						sctx);
+-				down_read(&fs_info->commit_root_sem);
+ 				if (ret < 0)
+ 					goto out;
++				down_read(&fs_info->commit_root_sem);
+ 			}
+ 			advance_right = ADVANCE;
+ 			continue;
+@@ -7254,9 +7252,9 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 						&left_key,
+ 						BTRFS_COMPARE_TREE_NEW,
+ 						sctx);
+-				down_read(&fs_info->commit_root_sem);
+ 				if (ret < 0)
+ 					goto out;
++				down_read(&fs_info->commit_root_sem);
+ 			}
+ 			advance_left = ADVANCE;
+ 			continue;
+@@ -7293,9 +7291,9 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 				advance_right = ADVANCE;
+ 			}
+ 
+-			down_read(&fs_info->commit_root_sem);
+ 			if (ret < 0)
+ 				goto out;
++			down_read(&fs_info->commit_root_sem);
+ 		} else if (left_level == right_level) {
+ 			cmp = btrfs_comp_cpu_keys(&left_key, &right_key);
+ 			if (cmp < 0) {
+@@ -7335,8 +7333,9 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 		}
+ 	}
+ 
+-out:
++out_unlock:
+ 	up_read(&fs_info->commit_root_sem);
++out:
+ 	btrfs_free_path(left_path);
+ 	btrfs_free_path(right_path);
+ 	kvfree(tmp_buf);
+-- 
+2.33.0
+
