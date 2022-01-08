@@ -2,62 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F95487F67
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jan 2022 00:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D76848808D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jan 2022 02:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbiAGXeG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Jan 2022 18:34:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231465AbiAGXeG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Jan 2022 18:34:06 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D9DC06173E
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jan 2022 15:34:06 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id s1so6970229pga.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jan 2022 15:34:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=w9z9RS7jj0CUySlANDJTGyNUAMINqCD+yStFRFzbvI0=;
-        b=Brdbjz/DlcFt8zbQn04nhWUPjgbtChCljRnf4x7fCMcCbw8N6oXA2n9elVHNN8laOS
-         D+MdLpEjHpfCfHxzc/NkpUttBbLLG2FModau8j6Ng8cl8Bdu5EKs92m8YoekSe26LrHp
-         +oPlOUPWOKloPpzkUK1F3noVY8IRYFhgX6cP8W9H541Z+BXFTQYgJwO+qN5jf384cYkh
-         HZYHM0BmUIlZkDPdJeKzzg27S+g5l0+mZFXKykdliQewSZAISKvj68B93JqfF26IEofP
-         IS+MQKm3POyY79GI8edULRsSYMjATrY02PFb0n3AbsLWmwhUHj34f9W/QOojfVHlHy2u
-         cSNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=w9z9RS7jj0CUySlANDJTGyNUAMINqCD+yStFRFzbvI0=;
-        b=I6tAseny9wPyaUVQbiX0Il1RBrClHjpxKKTgP6gFb2F7VZZe+VOpnf3nufVjKMjMT2
-         N3CYpkRrtDTNVtWFqc0jTLghOcA8l5GjyBHcjuLTPULni8uBqcqtB2AQi8V84vWZSGch
-         shQyULIDaOidE6cRqY1TgOXOKmZ3/OmVOr7Y2CeIC62pMHyQuWbx81+TIe5+rE/8NdJA
-         gRNXPQ+OeGenkRxvxSqiqbHohyEyVOIoAY8xaUhccreAnOz0DV+xbJWQQD9FSIJ2Kwdk
-         P17vEpwjlbVYKBzmoGxj8WgmL2y/VK2cpNFsNrT0tiIlAnMlHA9OCSD0CGU7sJTmicxV
-         NiSg==
-X-Gm-Message-State: AOAM531E6WihJuk0zZk51j2tY9rO/Bi1L3qhDFgmTMSNM/BtYlXHhaUS
-        NlQ/LS1dT1KaH3XoZ6U2hbDvucC2Ty4JJk3vH+I=
-X-Google-Smtp-Source: ABdhPJzFN80R+gouO25W3V1HfLY6NjZlTkCeizzUfhfBQUPTalfMUgpXP0nntaR84dh6y93oH8tit3S+ohzzCq9zgzc=
-X-Received: by 2002:a05:6a00:2493:b0:4bb:7b30:ead with SMTP id
- c19-20020a056a00249300b004bb7b300eadmr67242446pfv.78.1641598445771; Fri, 07
- Jan 2022 15:34:05 -0800 (PST)
+        id S230311AbiAHBas (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Jan 2022 20:30:48 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:48557 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230185AbiAHBar (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Jan 2022 20:30:47 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 4F4043201DA0
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jan 2022 20:30:47 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 07 Jan 2022 20:30:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=to:from:subject:message-id:date:mime-version:content-type
+        :content-transfer-encoding; s=fm2; bh=Gg2gYtzbVJ0o7H08LqW12M/03s
+        Kwhq766ZrlrXaQ/m8=; b=hqoQkiGAwDhW4yyhAJv1VmWuyQzq/+y6v2Mc0lwtTq
+        cKGVoq/dUDBRzeztbQ3wUrGpLlUE/7miE1w8vhhaX7iyjxP5I/DDJzOhIDAWpnek
+        0lLZ9s94kBLOcv9HR7D9gptsraYeKua1OmPtqcv4vr6xfVEMtRGViRNmsDRJAjqG
+        LQLWvXzwBqf0hFeff1Q8NJLbV4q3eNEfBKSwvKyJUBsMiqMByXyRHzQ+9ejPja1g
+        yAa7p01gFhuHlmMtK7d0mj+An2xVHGWSunewoDp1OnIOFwycmr0wvujlQmOlZp8J
+        LPiaVUhPDARQu5ocLSqzYZRvhPAdOPYkkLCVgPD6S3DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Gg2gYt
+        zbVJ0o7H08LqW12M/03sKwhq766ZrlrXaQ/m8=; b=PZrvanLlHREZ6kFUwaqHAa
+        bAvM2RjJFu3EnhoC3EtbqWmx+L70FD+xXMesWQ+niSEz0AAm6vsmPcS3hJX3M0k7
+        N6HbeyFHO0qBJ7vadaYxJxeB1KeXEvz69KHMI+WzMieQ+P0wUFKFAmXvJt+9FLIK
+        mP1kSeH2PRizEy0CX6M3VgM2dQg94kO/MXDWkffyedCc+7WwVGvSILuMJQymyNX4
+        c9ZxKlTC1hIV2NwgomURou1Lxdz/a7GwI2R+t3U5ZbeI58e+IToI3zmpMnHRMODy
+        TEOj0QiQuusSQx5SItrKFZJvuqrhopgzpw7cmFNNJ9zJ8LYx4cUGXDug72u7soRA
+        ==
+X-ME-Sender: <xms:RunYYaLSWRcK2cKEfkfcJTa8X-fz5zUWKMNPwaM3hiqrOzlXXxjifg>
+    <xme:RunYYSJXypXCgl267ezfW6-Mol0tITsAtPPBQJEChGsxXKXLkVb2RoMLplTWyg_CQ
+    wuQ7h0uSiuC-USd7w>
+X-ME-Received: <xmr:RunYYav9J1hzLTre8NK1gv0ADlSksCsrE059PL9AUnYTgo-UI-oOresJsKDJUve8fPqqepqL6v7CzAQyfMq_XytXnYE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudegfedgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefvhffukffffgggtgfgsehtjeertd
+    dtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgr
+    nhhithdrtghomheqnecuggftrfgrthhtvghrnhepiedthfeijeduiedtudevueffudekud
+    egveeggeetgfeljeeivedvveettdfhiedvnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:RunYYfYPdt_b1VFSLJveYAlaL8sRQZ7WdPZUhd6r05qwF_cXTSBdJA>
+    <xmx:RunYYRaUp368pvLuv-pDkNBgCR5l8jnPpbAj0DsZA-ce9vfhxh8HOw>
+    <xmx:RunYYbBtlJWkeb6d1FtnhjW26QIRGyCNf7vIxipDHRCo5uOM4mQZlQ>
+    <xmx:RunYYT2M4SC583JlRbqw6PsCtddBraNVDnU25eZAsPEYk4sSVnUHXw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-btrfs@vger.kernel.org>; Fri, 7 Jan 2022 20:30:46 -0500 (EST)
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Remi Gauvin <remi@georgianit.com>
+Subject: Case for "datacow-forced" option
+Message-ID: <42e747ca-faf1-ed7c-9823-4ab333c07104@georgianit.com>
+Date:   Fri, 7 Jan 2022 20:30:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Received: by 2002:a05:7300:54c8:b0:4c:3702:1a24 with HTTP; Fri, 7 Jan 2022
- 15:34:05 -0800 (PST)
-Reply-To: fionahill.usa@hotmail.com
-From:   Fiona Hill <fionahill578@gmail.com>
-Date:   Fri, 7 Jan 2022 15:34:05 -0800
-Message-ID: <CAFw126FNZjX6PEpS8aTKz1Kuic9yaHEqviCgLp8gW_wZjoQyNg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Hello,
+I notice some software is silently creating files with +C attribute
+without user input.  (Systemd journals, libvert qcow files, etc.)... I
+can appreciate the goal of a performance boost, but I can only see this
+as disaster for users of btrfs RAID, which will lead to inconsistent
+mirrors on unclean shutdown, (and no way to fix, other than full balance.)
 
-Happy new year. Please  did you receive my message i send to you?
+I think a datacow-forced option would be a good idea to prevent
+accidental creation of critical files with nocow attribute.
