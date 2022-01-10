@@ -2,94 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2BD489606
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jan 2022 11:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFE44896AB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jan 2022 11:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243669AbiAJKLT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jan 2022 05:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243655AbiAJKLN (ORCPT
+        id S244174AbiAJKrE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jan 2022 05:47:04 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:38536 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244122AbiAJKrD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jan 2022 05:11:13 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF383C061748
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Jan 2022 02:11:12 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id d10-20020a17090a498a00b001b33bc40d01so5485972pjh.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Jan 2022 02:11:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=qH7DEHGX/pvouiOmaf+DP+DQ4PWFk+GMEcmnDIJfLZM=;
-        b=oBSaLMTg2tsLNP5PpRCozuh4wO6Qx4SvD7dHNnrpZJRWG+s2Ky1AP34ZD6SO5ikRFj
-         SnPE0mmME8Li0+go0itkvuv5CBu4Z9sk+jSbO3oX+/jfVey61YFN/Z8J7EtE73c2imHd
-         Lk7/I+i8oY5gWg9i1l2hxeaaFNINodgng4TpCAEVQNNUL7Bn1k1Bej/m069l6qpT/VkY
-         M3Qo5Q+N6Av6ArMKIPOB5tLs3sfuxyvBNf4aoHIsmX+mehMomuM8Jrdc2+hugx8GMuP5
-         pWbofF2USEMqLwKEyL6AW2RIp1wL0ku6ZPTrh1uVrwUdLKPYjaHZ2d+m+3PeD/etAyLN
-         8zHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=qH7DEHGX/pvouiOmaf+DP+DQ4PWFk+GMEcmnDIJfLZM=;
-        b=UnD2pJIj32z+4vK2OB8cgsdvoQYaodKhOUYFSp5S0RST+pk0nt29fWrUivFigQ3CQM
-         lyqXNKsSx0jEhTwIPFqRuwpzxPpwhz+uWnS0iGtgpkiFVbyqrs1dTZPpJ3kAZ/2TE96B
-         C5Auw18eWeRshkE6SurGV5gNcWfqm7C2mA6OVYOBd8mafp9BWOZlvMxmEpcRejxSl+Du
-         ZVJedrLjfWrLj+HKypW7yK1O6mnADRH8maPnHcv/1WsvIxwioEJD1Uo+hDK2g+INCQ7X
-         oOHzmq9AK1fLdSTHajkizp7zP1d0eqBUXSJRfZDm1Z6v1zRLaUtLKr4fzO+xSuqS4k6w
-         k/og==
-X-Gm-Message-State: AOAM532Qui8+jh49cNLpRfZl/St15r5M6CjEgT46Q2YCBYPoDEyq0Mnt
-        OS0p7YOwLfuO0NdouOegoI51lgWsp3Dd/ofCiMA=
-X-Google-Smtp-Source: ABdhPJw/e5LpkRgPxX/Oh+D6NxcTjzZ5h6tEggk+V8fC56tVe3sqatXUrbJqonZ8EnVngWiLrxGVoJKCQhgpND5a+cw=
-X-Received: by 2002:a17:90b:4f85:: with SMTP id qe5mr29407638pjb.99.1641809472028;
- Mon, 10 Jan 2022 02:11:12 -0800 (PST)
+        Mon, 10 Jan 2022 05:47:03 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8C30E1F393;
+        Mon, 10 Jan 2022 10:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1641811622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jy6axLnT/6KcJnJVVDywk3fTGZaTYflgEiVm6FMJFx0=;
+        b=SJo5mkMvODkDcoZ4GyPpzn9h4L5ohITltimE90pKDRzmJSwP4CQG4mm+D97O5uCFF14HQt
+        fQs3dILopAxylT3oCeebteeMxJ0b/clm9J029MPssuyZxOj/W5oWrz8Zwew2QhxKbJXi0a
+        tuD9KJBQtI9k0BOOOiNmoQT+Y8cVx0o=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57CF413A98;
+        Mon, 10 Jan 2022 10:47:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pN/UEaYO3GHbWQAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 10 Jan 2022 10:47:02 +0000
+Subject: Re: btrfs send/receive segfault
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtT-k3WbCSTvrvWLZQ7gLOUtTbXfOiKsGZxkPVb1g2srWg@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <f2e28c18-b5c0-d6cc-3f20-6ab7fcfb3c0d@suse.com>
+Date:   Mon, 10 Jan 2022 12:47:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e90a:0:0:0:0 with HTTP; Mon, 10 Jan 2022 02:11:11
- -0800 (PST)
-Reply-To: mgramtransfer110@gmail.com
-From:   deborah mgbogi <komadancasmir@gmail.com>
-Date:   Mon, 10 Jan 2022 02:11:11 -0800
-Message-ID: <CAKfpZ+7LKEhgqQW+Um4jv8DoCRLU+oudCx2=ULV_Zy-2-38C8A@mail.gmail.com>
-Subject: GOOD DAYBENEFICIARY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJCQCtT-k3WbCSTvrvWLZQ7gLOUtTbXfOiKsGZxkPVb1g2srWg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-ATTENTION
 
-we have concluded to Send your payment through Money Gram money
-transfer $4,000.00 daily until the total fund of ($10.5MILLION ) is
-completely transferred. Meanwhile, Mr Hector Giroud has Send you
-$4,000.00 in your name today. So contact Mr Hector Giroud, through
-Money
-Gram money transfer payment Agent to SEND you the MTCN to pick up this
-$4000 now:
 
-CONTACT PERSON: Mr Hector Giroud
-Whatsaap Number: (+229) 60738541
-Email Address:(mgramtransfer110@gmail.com)
+On 10.01.22 г. 4:45, Chris Murphy wrote:
+> kernel-5.16.0-0.rc8.20220106git75acfdb6fd92.56.fc36.x86_64
+> btrfs-progs-5.15.1-1.fc35.x86_64
+> 
+> I'm seeing a crash during send/receive. The destination does have the
+> source subvol, but it lacks received UUID for some reason, so this
+> might be the instigating cause of the segmentation fault.
 
-Please remember to Call and ask him to give you the Reference Number,
-sender name, question and answer to pick up the $4000.00. Also you
-should send to him your information to cross check it to avoid
-mistake.
-Receiver's Name________________
-Address: ______________________
-Country: ______________________
-Phone Number: _________________
-Your Occupation _______________
-I.D Card:______________________
+Right, so subvol_uuid_search returns an error which makes 'si' be the
+errval, yet when "goto out" is executed the following code is executed:
 
-Though, Mr Hector Giroud has sent $4000 in your name today so contact
-Mr Hector Girouad or you call him as soon as you
-receive
-this email and tell him to give you the Reference Number, sender name
-and question/answer to pick the $4000 Please let us know as soon as
-you
-received all your fund
+if (si) {
+        free(si->path);
 
-Best Regards.
-mrs deborah mgbogi
-...
+        free(si);
+
+    }
+
+
+this of course fails since 'si' has a bogus value.
+
+> 
+> $ sudo btrfs send -p debris.20190114 debris.20220109 | sudo btrfs
+> receive /mnt/tsrif/
+> At subvol debris.20220109
+> At snapshot debris.20220109
+> ERROR: clone: did not find source subvol
+> Segmentation fault
+> $ sudo btrfs sub show /mnt/tsrif/debris.20190114/
+> debris.20190114
+>         Name:                   debris.20190114
+>         UUID:                   872216a7-658e-444b-9583-11378eea6703
+>         Parent UUID:            11cbf558-b602-6e4c-852f-6eb5efb672f1
+>         Received UUID:          -
+>         Creation time:          2019-01-14 12:24:11 -0700
+>         Subvolume ID:           3091
+>         Generation:             41292
+>         Gen at creation:        25612
+>         Parent ID:              5
+>         Top level ID:           5
+>         Flags:                  readonly
+>         Send transid:           0
+>         Send time:              2019-01-14 12:24:11 -0700
+>         Receive transid:        0
+>         Receive time:           -
+>         Snapshot(s):
+>                                 debris.20220109
+> $ sudo btrfs sub show /mnt/first/debris.20190114/
+> debris.20190114
+>         Name:                   debris.20190114
+>         UUID:                   482659cd-c93a-5a4b-954d-6bee2fc7ce7e
+>         Parent UUID:            -
+>         Received UUID:          872216a7-658e-444b-9583-11378eea6703
+>         Creation time:          2020-05-06 12:19:55 -0600
+>         Subvolume ID:           422
+>         Generation:             5916
+>         Gen at creation:        462
+>         Parent ID:              5
+>         Top level ID:           5
+>         Flags:                  readonly
+>         Send transid:           564
+>         Send time:              2020-05-06 12:19:55 -0600
+>         Receive transid:        540
+>         Receive time:           2020-05-06 13:03:27 -0600
+>         Snapshot(s):
+> 
+> 
+> Jan 09 18:51:21 fnuc.local sudo[5393]:    chris : TTY=pts/1 ;
+> PWD=/mnt/first ; USER=root ; COMMAND=/usr/sbin/btrfs send -p
+> debris.20190114 debris.20220109
+> Jan 09 18:51:21 fnuc.local sudo[5394]:    chris : TTY=pts/1 ;
+> PWD=/mnt/first ; USER=root ; COMMAND=/usr/sbin/btrfs receive
+> /mnt/tsrif/
+> Jan 09 18:51:21 fnuc.local sudo[5394]: pam_unix(sudo:session): session
+> opened for user root(uid=0) by (uid=1000)
+> Jan 09 18:51:21 fnuc.local sudo[5393]: pam_unix(sudo:session): session
+> opened for user root(uid=0) by (uid=1000)
+> Jan 09 18:51:48 fnuc.local kernel: show_signal_msg: 4 callbacks suppressed
+> Jan 09 18:51:48 fnuc.local kernel: btrfs[5395]: segfault at 56 ip
+> 000055939d4efc6d sp 00007ffeb50978a0 error 4 in
+> btrfs[55939d497000+9b000]
+> Jan 09 18:51:48 fnuc.local kernel: Code: 58 5a e9 4e fe ff ff 66 0f 1f
+> 44 00 00 41 bd fe ff ff ff 48 8d 3d 33 82 06 00 31 c0 e8 bc bd fd ff
+> 4d 85 ff 0f 84 96 fe ff ff <49> 8b 7f 58 e8 ba 81 fa ff 4c 89 ff e8 b2
+> 81 fa ff e9 80 fe ff ff
+> Jan 09 18:51:48 fnuc.local audit[5395]: ANOM_ABEND auid=1000 uid=0
+> gid=0 ses=1 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+> pid=5395 comm="btrfs" exe="/usr/sbin/btrfs" sig=11 res=1
+> Jan 09 18:51:50 fnuc.local systemd[1]: Created slice Slice
+> /system/systemd-coredump.
+> Jan 09 18:51:50 fnuc.local audit: BPF prog-id=68 op=LOAD
+> Jan 09 18:51:50 fnuc.local audit: BPF prog-id=69 op=LOAD
+> Jan 09 18:51:50 fnuc.local audit: BPF prog-id=70 op=LOAD
+> Jan 09 18:51:50 fnuc.local systemd[1]: Started Process Core Dump (PID
+> 5398/UID 0).
+> Jan 09 18:51:50 fnuc.local audit[1]: SERVICE_START pid=1 uid=0
+> auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t:s0
+> msg='unit=systemd-coredump@0-5398-0 comm="systemd"
+> exe="/usr/lib/systemd/systemd" hostname=? addr=? terminal=?
+> res=success'
+> Jan 09 18:51:51 fnuc.local systemd-coredump[5399]: [🡕] Process 5395
+> (btrfs) of user 0 dumped core.
+> 
+>                                                    Found module
+> linux-vdso.so.1 with build-id:
+> 34559f148f176282c9dee6b448c7dbb357a60316
+>                                                    Found module
+> libgcc_s.so.1 with build-id: 88564abce789aa42536da1247a57ff6062d61dcb
+>                                                    Found module
+> ld-linux-x86-64.so.2 with build-id:
+> b43118df1fdb4c0aff150b6f8f926bccdec2a7f0
+>                                                    Found module
+> libc.so.6 with build-id: 644dac2c66a6e0b32674f0ec71e7431bd0c06a63
+>                                                    Found module
+> libzstd.so.1 with build-id: 0f6e793c8bbdb5bb5683c5b9e61aadfcb7a7454a
+>                                                    Found module
+> liblzo2.so.2 with build-id: c83f77cc751de75374d5763f4f3a6c483fb2f738
+>                                                    Found module
+> libz.so.1 with build-id: 5903f5c355c264403e4e7cdc66779584425ca3b8
+>                                                    Found module
+> libudev.so.1 with build-id: 7422938010fad35c79a9a6cb017799a1cc575e7f
+>                                                    Found module
+> libblkid.so.1 with build-id: 96be27216d8d6d7ba3694ca503cd1b07f60fa539
+>                                                    Found module
+> libuuid.so.1 with build-id: 2dee14d2566e86111e3f0a235ad58a0f27b8f826
+>                                                    Found module btrfs
+> with build-id: 92f57ed8ec33cf3c8979c29ccfe55cd3a6e19996
+>                                                    Stack trace of thread 5395:
+>                                                    #0
+> 0x000055939d4efc6d process_clone (btrfs + 0x6ec6d)
+>                                                    #1
+> 0x000055939d4d2d4c btrfs_read_and_process_send_stream (btrfs +
+> 0x51d4c)
+>                                                    #2
+> 0x000055939d4f0e41 cmd_receive.lto_priv.0 (btrfs + 0x6fe41)
+>                                                    #3
+> 0x000055939d498c9d main (btrfs + 0x17c9d)
+>                                                    #4
+> 0x00007fc3eb8f8560 __libc_start_call_main (libc.so.6 + 0x2d560)
+>                                                    #5
+> 0x00007fc3eb8f860c __libc_start_main@@GLIBC_2.34 (libc.so.6 + 0x2d60c)
+>                                                    #6
+> 0x000055939d498ff5 _start (btrfs + 0x17ff5)
+> 
+> 
+> result from coredumpctl gdb, thread apply all bt full
+> https://drive.google.com/file/d/1exrFFYEtgDs8BEkt1JWbNWUaQOSDRolc/view?usp=sharing
+> 
+> 
