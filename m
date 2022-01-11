@@ -2,126 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389D748B178
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jan 2022 17:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628CD48B182
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jan 2022 17:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245427AbiAKQA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jan 2022 11:00:29 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:56760 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243724AbiAKQA3 (ORCPT
+        id S1349772AbiAKQBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jan 2022 11:01:47 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:57664 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349774AbiAKQBq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jan 2022 11:00:29 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B8D01F3B1;
-        Tue, 11 Jan 2022 16:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1641916828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/BOa7X1buNW4GMzUcT9oEtkPN7Hf3XOwMjn1xZbpRgo=;
-        b=em9SVo9vZyLAGi+hr2kKJucDWGsLLKdqPItdu7Fc3IMYZBQpYpXo1B0pxvvjXyYf5gngT4
-        MEqvsHPipFrwa3vYbIgunY9+jRk3rAky2mxWgIRlj9B9S5Tv0bNo6dspGXdyI3fGApC05Z
-        7n07Ki9XF3/EcZnJ4wtNrnQkWu5MntI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 013AB13AF0;
-        Tue, 11 Jan 2022 16:00:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MPG7OJup3WF2IAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 11 Jan 2022 16:00:27 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Move missing device handling in a dedicate function
-Date:   Tue, 11 Jan 2022 18:00:26 +0200
-Message-Id: <20220111160026.1900599-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 11 Jan 2022 11:01:46 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B017B212FE;
+        Tue, 11 Jan 2022 16:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1641916905;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXKYs4ra3NRvTaNlfbEt3oNWU5VgasAIPHciq0jSQjw=;
+        b=uQETi83jsJukmfOl0B4ZiAncPHQ1WVUEo8deK8wn+udAyknwR6i/kpABSV4FHelh49a0xG
+        +7DSJ+JoX8mQpEzhjZQ1rIPrM3CrnjNhHiWqFinKPWl3FP0AUOpGzY1FE3zINg6FVY/Zk7
+        emPN6yijySGy2J4kW7/7h9QMgH+cuFw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1641916905;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXKYs4ra3NRvTaNlfbEt3oNWU5VgasAIPHciq0jSQjw=;
+        b=bHHGH4PL23017vWemiDoB/twNzesY0v5matHF/Ttf8r0g/OIXB30zk8vIP9sYge9cYtoGQ
+        KQH/KBBLGl/dHFCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id A9A66A3B8A;
+        Tue, 11 Jan 2022 16:01:45 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8534CDA7A9; Tue, 11 Jan 2022 17:01:12 +0100 (CET)
+Date:   Tue, 11 Jan 2022 17:01:12 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Remi Gauvin <remi@georgianit.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Case for "datacow-forced" option
+Message-ID: <20220111160112.GP14046@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Remi Gauvin <remi@georgianit.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <42e747ca-faf1-ed7c-9823-4ab333c07104@georgianit.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42e747ca-faf1-ed7c-9823-4ab333c07104@georgianit.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This simplifies the code flow in read_one_chunk and makes error handling
-when handling missing devices a bit simipler by reducing it to a single
-check if something went wrong. No functional changes.
+On Fri, Jan 07, 2022 at 08:30:46PM -0500, Remi Gauvin wrote:
+> I notice some software is silently creating files with +C attribute
+> without user input.  (Systemd journals, libvert qcow files, etc.)... I
+> can appreciate the goal of a performance boost, but I can only see this
+> as disaster for users of btrfs RAID, which will lead to inconsistent
+> mirrors on unclean shutdown, (and no way to fix, other than full balance.)
+> 
+> I think a datacow-forced option would be a good idea to prevent
+> accidental creation of critical files with nocow attribute.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/volumes.c | 39 +++++++++++++++++++++++++--------------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+Settings like that start some kind of "policy wars" and list of
+exceptions, ie. who decides what the filesystem is allowed to do. A
+mount option like you suggest would never allow to create a nocow file,
+but having some scratch nocow files with better performance would be
+nice to have. A global forced option would prevent accidental nocow
+files while you as user would consider them important.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b07d382d53a8..7518ac5c28dc 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7060,6 +7060,27 @@ static void warn_32bit_meta_chunk(struct btrfs_fs_info *fs_info,
- }
- #endif
- 
-+static struct btrfs_device *handle_missing_device(struct btrfs_fs_info *fs_info,
-+						  u64 devid, u8 *uuid)
-+{
-+	struct btrfs_device *dev;
-+
-+	if (!btrfs_test_opt(fs_info, DEGRADED)) {
-+		btrfs_report_missing_device(fs_info, devid, uuid, true);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	dev = add_missing_dev(fs_info->fs_devices, devid, uuid);
-+	if (IS_ERR(dev)) {
-+		btrfs_err(fs_info, "failed to init missing dev %llu: %ld",
-+			  devid, PTR_ERR(dev));
-+		return dev;
-+	}
-+	btrfs_report_missing_device(fs_info, devid, uuid, false);
-+
-+	return dev;
-+}
-+
- static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 			  struct btrfs_chunk *chunk)
- {
-@@ -7147,28 +7168,18 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 				   BTRFS_UUID_SIZE);
- 		args.uuid = uuid;
- 		map->stripes[i].dev = btrfs_find_device(fs_info->fs_devices, &args);
--		if (!map->stripes[i].dev &&
--		    !btrfs_test_opt(fs_info, DEGRADED)) {
--			free_extent_map(em);
--			btrfs_report_missing_device(fs_info, devid, uuid, true);
--			return -ENOENT;
--		}
- 		if (!map->stripes[i].dev) {
--			map->stripes[i].dev =
--				add_missing_dev(fs_info->fs_devices, devid,
--						uuid);
-+			map->stripes[i].dev = handle_missing_device(fs_info,
-+								    devid, uuid);
- 			if (IS_ERR(map->stripes[i].dev)) {
- 				free_extent_map(em);
--				btrfs_err(fs_info,
--					"failed to init missing dev %llu: %ld",
--					devid, PTR_ERR(map->stripes[i].dev));
- 				return PTR_ERR(map->stripes[i].dev);
-+
- 			}
--			btrfs_report_missing_device(fs_info, devid, uuid, false);
- 		}
-+
- 		set_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
- 				&(map->stripes[i].dev->dev_state));
--
- 	}
- 
- 	write_lock(&map_tree->lock);
--- 
-2.25.1
+I'd rather see that fixed or made configurable on the side of
+applications, the filesystem is really just providing features and
+options and limits the policies and forced options to the users.
 
+IIRC the systemd journals got +C because the write pattern is 'append'
+that over time creates highly fragmented files. For VM images it's a
+performance optimization at the cost of no checksums. Both performance
+vs reliability trade off, that somebody made on behalf of users. But not
+to satisfaction to all, wich I understand but don't agree that the
+filesystem should be the level where this gets resolved.
+
+If fragmentation is problem, eventual runs of the defrag ioctl on the
+files can make the problem bearable.
