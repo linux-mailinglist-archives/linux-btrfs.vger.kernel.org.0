@@ -2,87 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628CD48B182
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jan 2022 17:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC1F48B186
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jan 2022 17:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349772AbiAKQBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jan 2022 11:01:47 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:57664 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349774AbiAKQBq (ORCPT
+        id S1349780AbiAKQDO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jan 2022 11:03:14 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:56906 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240042AbiAKQDN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jan 2022 11:01:46 -0500
+        Tue, 11 Jan 2022 11:03:13 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B017B212FE;
-        Tue, 11 Jan 2022 16:01:45 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id B326D1F3B8;
+        Tue, 11 Jan 2022 16:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1641916905;
+        t=1641916992;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CXKYs4ra3NRvTaNlfbEt3oNWU5VgasAIPHciq0jSQjw=;
-        b=uQETi83jsJukmfOl0B4ZiAncPHQ1WVUEo8deK8wn+udAyknwR6i/kpABSV4FHelh49a0xG
-        +7DSJ+JoX8mQpEzhjZQ1rIPrM3CrnjNhHiWqFinKPWl3FP0AUOpGzY1FE3zINg6FVY/Zk7
-        emPN6yijySGy2J4kW7/7h9QMgH+cuFw=
+        bh=ldu4A3pYDTTJc5H5rWr6FAJHyMfjBagZNjgGZhXdbTA=;
+        b=t3zXmCvwNDjtMug4qnlFXke8zWRlrtb6jFOk9jhtGBctvWYiCB69IPHlLT+B/B2CjKckC5
+        Cpg661tqOvEkfORvHvqedarIwTerhMc5TC1i/5dlFWujQZ0GLN5+Sj+6bKVzfOOnL5KLo0
+        DiznXBoQh9vh8PAg1QcaC71ogxiLUzU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1641916905;
+        s=susede2_ed25519; t=1641916992;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CXKYs4ra3NRvTaNlfbEt3oNWU5VgasAIPHciq0jSQjw=;
-        b=bHHGH4PL23017vWemiDoB/twNzesY0v5matHF/Ttf8r0g/OIXB30zk8vIP9sYge9cYtoGQ
-        KQH/KBBLGl/dHFCA==
+        bh=ldu4A3pYDTTJc5H5rWr6FAJHyMfjBagZNjgGZhXdbTA=;
+        b=kQWhzX+IwK7Hp+k3FdsQ5gmHFRogW8rDBU42Bzn2mOMxan4X4twofMEBug/KXXdv/yfgDc
+        ZDmkjycSURdaRsBQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id A9A66A3B8A;
-        Tue, 11 Jan 2022 16:01:45 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id AAC9EA3B83;
+        Tue, 11 Jan 2022 16:03:12 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8534CDA7A9; Tue, 11 Jan 2022 17:01:12 +0100 (CET)
-Date:   Tue, 11 Jan 2022 17:01:12 +0100
+        id BAEBBDA7A9; Tue, 11 Jan 2022 17:02:39 +0100 (CET)
+Date:   Tue, 11 Jan 2022 17:02:39 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Remi Gauvin <remi@georgianit.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Remi Gauvin <remi@georgianit.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
 Subject: Re: Case for "datacow-forced" option
-Message-ID: <20220111160112.GP14046@twin.jikos.cz>
+Message-ID: <20220111160239.GQ14046@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Remi Gauvin <remi@georgianit.com>,
+Mail-Followup-To: dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
+        Remi Gauvin <remi@georgianit.com>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <42e747ca-faf1-ed7c-9823-4ab333c07104@georgianit.com>
+ <CAJCQCtR6_65_38PFp49_0HuH5-zd5Sf7C-B8tyYQ4oGNKNg0-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <42e747ca-faf1-ed7c-9823-4ab333c07104@georgianit.com>
+In-Reply-To: <CAJCQCtR6_65_38PFp49_0HuH5-zd5Sf7C-B8tyYQ4oGNKNg0-A@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 07, 2022 at 08:30:46PM -0500, Remi Gauvin wrote:
-> I notice some software is silently creating files with +C attribute
-> without user input.  (Systemd journals, libvert qcow files, etc.)... I
-> can appreciate the goal of a performance boost, but I can only see this
-> as disaster for users of btrfs RAID, which will lead to inconsistent
-> mirrors on unclean shutdown, (and no way to fix, other than full balance.)
-> 
-> I think a datacow-forced option would be a good idea to prevent
-> accidental creation of critical files with nocow attribute.
+On Sun, Jan 09, 2022 at 09:37:52AM -0700, Chris Murphy wrote:
+> On Fri, Jan 7, 2022 at 6:30 PM Remi Gauvin <remi@georgianit.com> wrote:
+> I know that zoned disallows nodatacow, but I have no idea what happens
+> to files being copied over with file attribute C. Does the entire copy
+> fail or just an error when trying to set chattr +C on the file while
+> it's still zero length.
 
-Settings like that start some kind of "policy wars" and list of
-exceptions, ie. who decides what the filesystem is allowed to do. A
-mount option like you suggest would never allow to create a nocow file,
-but having some scratch nocow files with better performance would be
-nice to have. A global forced option would prevent accidental nocow
-files while you as user would consider them important.
-
-I'd rather see that fixed or made configurable on the side of
-applications, the filesystem is really just providing features and
-options and limits the policies and forced options to the users.
-
-IIRC the systemd journals got +C because the write pattern is 'append'
-that over time creates highly fragmented files. For VM images it's a
-performance optimization at the cost of no checksums. Both performance
-vs reliability trade off, that somebody made on behalf of users. But not
-to satisfaction to all, wich I understand but don't agree that the
-filesystem should be the level where this gets resolved.
-
-If fragmentation is problem, eventual runs of the defrag ioctl on the
-files can make the problem bearable.
+If it's plain copy, ther'es no difference, but if it's based on reflink
+then the new file will be created without the +C flag and reflink won't
+work, leaving a 0 size file.
