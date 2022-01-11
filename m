@@ -2,101 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B1D48A55F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jan 2022 02:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DECE748A5B2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jan 2022 03:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346477AbiAKB5Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jan 2022 20:57:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346471AbiAKB5Z (ORCPT
+        id S1346605AbiAKCey (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jan 2022 21:34:54 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52260 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244116AbiAKCex (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jan 2022 20:57:25 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E6CC06173F;
-        Mon, 10 Jan 2022 17:57:24 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id m2so17559848qkd.8;
-        Mon, 10 Jan 2022 17:57:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fnk3aKUU8TTDQJEelWsA5ELdK1ZLlLJyjUDJuNNEPts=;
-        b=CJ2RPnsKcrYl4nadUXD5HbYLYgSIR+tiBN+v4dWx7xzsISppty1LGsgwGhB2QwZ9Wm
-         22OqLkTLgq80wCrbuxFnfBuqVuuAEOZE/ZlKuL3dUxHk6xfIu8ChOJAJiSAwUzCgnCK5
-         rWsOXDLcdu5bLEz2pcogGaixpHluGd2xEjT651zwm53KJCNH5LZwiHV27pfeLtiCFetw
-         x6QRkGlMTsoqirVUmRowwn0Rk5MqAZWSAC5INhc+SEH6/xrlI424XPyF1/npUv1wyTFx
-         xpFZSmIrp5uyi/Wk5+leI0SqLyijJmda8+/axavfl8lli/l65EnW5p/U1cvG7bZrZ3K6
-         GZew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fnk3aKUU8TTDQJEelWsA5ELdK1ZLlLJyjUDJuNNEPts=;
-        b=x5FIm1VSoUa6lE3JewRgzjgBKBORfMNtJ6LJ3zGbBYOiVk5jKS+pY/ph9M930NwqcP
-         b/Ou0rluvckpvOGn+xNQJGiPQDxbgYeCnHbBUSABPa/spCl7cL5oqUdegDyu0obhTcIL
-         Hqi41wkK2j32udgpTrAhRn66Ls+3lKEalJGGmfc2aeojG1RVsx6beq+fOyRyDfhBfjzY
-         mLU2Io/CE3X4wxCBCi+n3GbNrlsJC1H1Qs5luvf+rvfigLzr4nVSeuz2Xn92c0BhE+Hq
-         w9KPN1xyw38Kzsagu+tH5hCvqaXlIlqd/BzPVUYZijxHGLC0e4ZgrHbOb9rVQDLBSaNs
-         ZrDQ==
-X-Gm-Message-State: AOAM530ztfGs6Rx5ejgo/mXoRgjQ6+GELMHOEQtEFXYUNn4OQk/rfW71
-        tYYtgW2B56OJnVe0ER8m76ZAHAkPNb0=
-X-Google-Smtp-Source: ABdhPJwvlVq/9hQvVVvzPFp41+ow+FcRFj2/Fg4wA2+lE7BaMzIhpwKS1P5C8QXUIQA/+k3PJF+tpQ==
-X-Received: by 2002:a05:620a:254f:: with SMTP id s15mr1830374qko.241.1641866244026;
-        Mon, 10 Jan 2022 17:57:24 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id f33sm5926885qtb.56.2022.01.10.17.57.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jan 2022 17:57:23 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To:     clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Minghao Chi <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>, CGEL ZTE <cgel.zte@gmail.com>
-Subject: [PATCH] fs/btrfs: remove redundant ret variable
-Date:   Tue, 11 Jan 2022 01:57:16 +0000
-Message-Id: <20220111015716.649468-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 10 Jan 2022 21:34:53 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9F9E62114D
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jan 2022 02:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1641868492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=c6IJejq/aI0u4HuIaB9FT8BiC9qSpTXullLK+RpgFX4=;
+        b=h70qL8MPA+VdatEsVDbrlb1UMj3hTvFkHO4SxyTqYnwt5DpSsp6dAHz2VYndOpcfJANLQp
+        tW6SOOs0RGW+6RaQuQsMIEE59MdoXlkVTWBF+eFtJ27CKvik1vUlsrnL+6SAc2zRyPHquU
+        P4eV+fNsXORSV7OpswS16Idtp/PPTf8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF59E13A42
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jan 2022 02:34:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id oi09KMvs3GERFAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jan 2022 02:34:51 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/3] btrfs: support more pages sizes for the subpage support
+Date:   Tue, 11 Jan 2022 10:34:31 +0800
+Message-Id: <20220111023434.22915-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Minghao Chi <chi.minghao@zte.com.cn>
+The series can be fetched from github:
+https://github.com/adam900710/linux/tree/metadata_subpage_switch
 
-Return value from fs_path_add_path() directly instead
-of taking this in another redundant variable.
+Previously we only support 64K page size with 4K sector size for subpage
+support.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
-Signed-off-by: CGEL ZTE <cgel.zte@gmail.com>
----
- fs/btrfs/send.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+There are two reasons for such requirement:
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 3fc144b8c0d8..4ed13461cb07 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -528,14 +528,10 @@ static int fs_path_add_from_extent_buffer(struct fs_path *p,
- 
- static int fs_path_copy(struct fs_path *p, struct fs_path *from)
- {
--	int ret;
--
- 	p->reversed = from->reversed;
- 	fs_path_reset(p);
- 
--	ret = fs_path_add_path(p, from);
--
--	return ret;
-+	return fs_path_add_path(p, from);
- }
- 
- 
+- Make sure no matter what the nodesize is, metadata can be fit into one
+  page
+  This is to avoid multi-page metadata handling.
+
+- We use u16 as bitmap
+  That means we will waste extra memory for smaller page sizes.
+
+The 2nd problem is already solved by compacting all bitmap into one
+large bitmap, in commit 72a69cd03082 ("btrfs: subpage: pack all subpage
+bitmaps into a larger bitmap").
+
+And this patchset will address the first problem by going to non-subpage
+routine if nodesize >= PAGE_SIZE.
+
+This will still leave a small limitation, that for nodesize >= PAGE_SIZE
+and sectorsize < PAGE_SIZE case, we can not allow a tree block to cross
+page boundary.
+
+Thankfully we have btrfs-check to detect such problem, and mkfs and
+kernel chunk allocator have already ensured all our metadata will not
+cross such page boundaries.
+
+The following combinations has been tested:
+(p: page_size s: sectorsize, n: nodesize)
+
+- p=64K s=4K n=64K (aarch64, RK3399/CM4)
+  To cover the new metadata path
+
+- p=64K s=4K n=16K (aarch64, RK3399/CM4)
+- p=4k s=4k n=16k (x86_64)
+  The make sure no new bugs in the old path
+
+- p=16K s=4K n=16K (aarch64, M1)
+- p=16K s=4K n=64K (aarch64, M1)
+  Special thanks to Su Yue. He contributes his VM on M1 to me to do
+  extra tests, and exposed a bug in the btrfs_read_sys_array() affecting
+  16K page size cases.
+
+Changelog:
+RFC->v1:
+- Remove one ASSERT() which is causing false alert
+  As we have no way to distinguish unmapped extent buffer with anonymous
+  page used by DIO/compression.
+
+- Expand the subpage support to any PAGE_SIZE > 4K
+  There is still a limitation on not allowing metadata block crossing page
+  boundaries, but that should already be rare nowadays.
+
+  Another limit is we still don't support 256K page size due to it's
+  beyond max compressed extent size.
+
+v2:
+- Add extra supported sectorsizes in sysfs interface
+  Now for page size > 4K, all sector sizes up to page size will be
+  supported.
+
+- Fix a bug in btrfs_read_sys_array() that would cause false alert
+  Now btrfs_read_sys_array() will use dummy eb, and
+  set/clear_extent_buffer_uptodate() will handle both dummy and subpage
+  cases properly.
+
+- Fix a bug in check_eb_alignment() that would cause false alert
+  Since we handle nodesize >= PAGE_SIZE cases with the same page based
+  metadata routine, we need to make sure metadata is page aligned for
+  that case.
+
+Qu Wenruo (3):
+  btrfs: use dummy extent buffer for super block sys chunk array read
+  btrfs: make nodesize >= PAGE_SIZE case to reuse the non-subpage
+    routine
+  btrfs: expand subpage support to any PAGE_SIZE > 4K
+
+ fs/btrfs/disk-io.c   |  20 ++++++---
+ fs/btrfs/extent_io.c | 102 ++++++++++++++++++++++++++++---------------
+ fs/btrfs/inode.c     |   2 +-
+ fs/btrfs/subpage.c   |  30 ++++++-------
+ fs/btrfs/subpage.h   |  25 +++++++++++
+ fs/btrfs/sysfs.c     |  11 +++--
+ fs/btrfs/volumes.c   |  27 ++----------
+ 7 files changed, 130 insertions(+), 87 deletions(-)
+
 -- 
-2.25.1
+2.34.1
 
