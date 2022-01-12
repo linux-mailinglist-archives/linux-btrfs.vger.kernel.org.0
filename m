@@ -2,116 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2491448C345
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jan 2022 12:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3923048C6CA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jan 2022 16:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352901AbiALLho (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jan 2022 06:37:44 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:41990 "EHLO
+        id S244394AbiALPJV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jan 2022 10:09:21 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:33132 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239690AbiALLho (ORCPT
+        with ESMTP id S1354436AbiALPJR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jan 2022 06:37:44 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 594261F37F;
-        Wed, 12 Jan 2022 11:37:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1641987463;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 12 Jan 2022 10:09:17 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9C7721F3C7;
+        Wed, 12 Jan 2022 15:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1642000156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cTLj63OtNDKyTw5nqMpDPvkcnYC7H5NnNHwc+WUPlqI=;
-        b=ourqjNDM452Ou+yStziuK0MMHkHdONliN19njQPTG7df5LdR4QZ27v9GvzI0R/FIdZE+m1
-        Ta6gVamvpYsON1XBeBksPThwHFWzi5SD15fSLF5C1IPO+iaXNiOO1kS4nnyQNse9c5rG9L
-        p7WZ1VuU98kJOGhsG7dfNSfTPtNdMIQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1641987463;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cTLj63OtNDKyTw5nqMpDPvkcnYC7H5NnNHwc+WUPlqI=;
-        b=honapWfmLnr20NPythGf5hbSgQHdCsUahRIWWfznSgX1Q9SQrhu4OK+IYhCjg2V+ljHklU
-        uTbP5rLmjgaxDvBQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5207EA3B83;
-        Wed, 12 Jan 2022 11:37:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D95A8DA7A3; Wed, 12 Jan 2022 12:37:09 +0100 (CET)
-Date:   Wed, 12 Jan 2022 12:37:09 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     =?utf-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: btrfs send picks wrong subvolume UUID
-Message-ID: <20220112113709.GX14046@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        =?utf-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
-        Andrei Borzenkov <arvidjaar@gmail.com>,
-        Btrfs <linux-btrfs@vger.kernel.org>
-References: <CAOE4rSz2f3xHj7Mi_JFgSMHHN8XSGxMr4NWZdcu4qd1-zOYOsg@mail.gmail.com>
- <CAA91j0XmeOUA=sioDh7p8Of6O3n8=E8nCAeYs6GXE4awr=Cs+Q@mail.gmail.com>
- <CAOE4rSwtend5c2EeOZDwatXLRyEXsVwjQftawFB4asCvs-Cb8g@mail.gmail.com>
+        bh=d692RN1IrN9pBt7nMGQ7SLKPcFKscGnkAGxV9Cbq9Ac=;
+        b=SArFSuN/+U9SHuDsWYBj56LtHz4qTb1HjMtWNl3wdXDtGE73ZPrqgS1lHgE6k64X7nrIMu
+        ZzGlPZ4uUuHXnJn2/H03lcyiYVi7A6YMwI2s1VPstM6ZGlZ0+nfhNxAQk55i0ToLJSvCHj
+        0cPmiZfeYprD/ydY7/bROmC4CAvrkk4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 61A0513B70;
+        Wed, 12 Jan 2022 15:09:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wyTBFBzv3mHqFwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Wed, 12 Jan 2022 15:09:16 +0000
+Subject: Re: [PATCH v2 00/11] btrfs: extent tree v2, support for global roots
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1639600719.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <6ac1b7c7-b775-a48e-f84b-9feced206b77@suse.com>
+Date:   Wed, 12 Jan 2022 17:09:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <cover.1639600719.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOE4rSwtend5c2EeOZDwatXLRyEXsVwjQftawFB4asCvs-Cb8g@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 03, 2022 at 08:09:01PM +0200, Dāvis Mosāns wrote:
-> svētd., 2022. g. 2. janv., plkst. 22:37 — lietotājs Andrei Borzenkov
-> (<arvidjaar@gmail.com>) rakstīja:
-> >
-> > On Sun, Jan 2, 2022 at 8:05 PM Dāvis Mosāns <davispuh@gmail.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > I have a bunch of snapshots I want to send from one fs to another,
-> > > but it seems btrfs send is using received UUID instead of subvolumes own UUID
-> > > causing wrong subvolume to be picked by btrfs receive and thus failing.
-> > >
-> > > $ btrfs subvolume show /mnt/fs/2019-11-02/etc | head -n 5
-> > > 2019-11-02/etc
-> > >         Name:                   etc
-> > >         UUID:                   389ebc5e-341a-fb4a-b838-a2b7976b8220
-> > >         Parent UUID:            36d5d44b-9eaf-8542-8243-ad0dc45b8abd
-> > >         Received UUID:          15bd7d35-9f98-0b48-854c-422c445f7403
-> > >
-> >
-> > btrfs send will always use received UUID if available, it works as
-> > designed and is not a bug. Bug is to have received UUID on read-write
-> > subvolume. btrfs does not prevent it and it is the result of wrong
-> > handling on the user side. You should never ever change read-only
-> > subvolume used for send/receive to read-write directly - instead you
-> > should always create writable clone from it.
-> >
-> > This was discussed extensively, see e.g.
-> > https://lore.kernel.org/linux-btrfs/d73a72b5-7b53-4ff3-f9b7-1a098868b967@gmail.com/
+
+
+On 15.12.21 г. 22:39, Josef Bacik wrote:
+> v1->v2:
+> - Disabled some more operations for extent tree v2 that I found were problematic
+>   in testing.
+> - Rebased onto a recent misc-next
 > 
-> I consider it as bug. How can anyone know they shouldn't do that. It
-> is perfectly valid use case for sending subvolumes from one system to
-> another system. After sending using "btrfs property set ro false" to
-> set RW. Sounds very logical, why should I create a new snapshot? I
-> just sent new one. Original system's subvolume could even be deleted
-> with no plans to ever do any incremental sends. And seems many people
-> have had this issue which just proves my point it's a bug.
+> --- Original email ---
+> Hello,
+> 
+> This is the kernel side of the global roots and block group root support.  The
+> motivation for this change is described in the progs patches.  The important
+> part here is I've disabled qgroups and balance for now, this support will be
+> added back later.  I've also changed global block rsv size calculation, but it's
+> exactly the same result for !EXTENT_TREE_V2.  And finally there's the support
+> for loading the roots.  This doesn't panic and doesn't introduce any performance
+> regressions.  I've also hidden the support behind CONFIG_BTRFS_DEBUG so it
+> doesn't get used accidentally.  Thanks,
+> 
+> Josef
+> 
+> Josef Bacik (11):
+>   btrfs: add definition for EXTENT_TREE_V2
+>   btrfs: disable balance for extent tree v2 for now
+>   btrfs: disable device manipulation ioctl's EXTENT_TREE_V2
+>   btrfs: disable qgroups in extent tree v2
+>   btrfs: disable scrub for extent-tree-v2
+>   btrfs: disable snapshot creation/deletion for extent tree v2
+>   btrfs: disable space cache related mount options for extent tree v2
+>   btrfs: tree-checker: don't fail on empty extent roots for extent tree
+>     v2
+>   btrfs: abstract out loading the tree root
+>   btrfs: add code to support the block group root
+>   btrfs: add support for multiple global roots
+> 
+>  fs/btrfs/block-group.c          |  25 ++++-
+>  fs/btrfs/block-group.h          |   1 +
+>  fs/btrfs/ctree.h                |  46 ++++++++-
+>  fs/btrfs/disk-io.c              | 178 +++++++++++++++++++++++---------
+>  fs/btrfs/disk-io.h              |   2 +
+>  fs/btrfs/free-space-tree.c      |   2 +
+>  fs/btrfs/inode.c                |  11 +-
+>  fs/btrfs/ioctl.c                |  29 ++++++
+>  fs/btrfs/print-tree.c           |   1 +
+>  fs/btrfs/qgroup.c               |   6 ++
+>  fs/btrfs/super.c                |  20 ++++
+>  fs/btrfs/sysfs.c                |   5 +-
+>  fs/btrfs/transaction.c          |  15 +++
+>  fs/btrfs/tree-checker.c         |  35 ++++++-
+>  fs/btrfs/volumes.c              |  11 ++
+>  include/trace/events/btrfs.h    |   1 +
+>  include/uapi/linux/btrfs.h      |   1 +
+>  include/uapi/linux/btrfs_tree.h |   3 +
+>  18 files changed, 333 insertions(+), 59 deletions(-)
+> 
 
-It may sound logical but breaks assumptions of send, so yes it is a bug
-and the fix took more time than convenient, because just fixing the
-kernel was not enough and later I realized that's the wrong place to fix
-it. There's also updated documentation regarding the usecase so this
-should address the "how can anyone know not to do it".
+Overall this is a low-risk series and generally looks LGTM. I have a
+couple of points which apply too all patches and I'm gonna list them here:
 
-> So I would say first bug that needs fixing is changing "btrfs property
-> set ro false" in kernel
+1. This is minor but might be a bit more informative - instead of
+returning -EINVAL when an operation which is forbidden returning
+-EOPNOTSUPP is closer to what is actually meant. ANd not that something
+is invalid per-se. This is a minor point given for now this is purely a
+developer feature.
 
-So technically it gets cleared in kernel, using the
-BTRFS_IOC_SET_RECEIVED_SUBVOL ioctl, but it's initiated by the command
-'btrfs prop set ro false' for the subvolume. Effectively there's no
-difference for you as a user.
+2. The extent tree would be in development for quite some time, perhaps
+at least 3-4 release if not more, during that time the code will be
+sprinkled with the checks for the forbidden ops and even everyone will
+be paying the (arguably small cost) of having them in the code. My point
+is can't those compatibility checks be also gated behind
+CONFIG_BTRFS_DEBUG? Eventually they will be removed but until this time
+comes we'll have them in the respective call paths.
