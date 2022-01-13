@@ -2,68 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C297B48D87B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 14:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EE148DA8E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 16:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbiAMNG3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jan 2022 08:06:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbiAMNG2 (ORCPT
+        id S236024AbiAMPQV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jan 2022 10:16:21 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:42976 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230224AbiAMPQU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jan 2022 08:06:28 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0801EC06173F
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jan 2022 05:06:28 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id g11so19297245lfu.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jan 2022 05:06:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=G/ND3tntpBgwv8HQkehUDejMVtobvIq7mZphn2wM5KU=;
-        b=cpynSWYVLsBbDQT1PhDznoMc/pv2g3pXyXQhzUQulZt4AECG9a++lK5XAMCgJwBhRo
-         j0P51VPjuY1oI6Q45iE3E0YHNIpaEk5xX01lzpj0nieXikvRfFHvqGMXqvfoxCU4Wuxd
-         dQjbc/xY9Yob9cwXDgUPTk4uX+DwROXg6loZfK9H1LJrV90+OQUWY5ZZkQQVqIqvR+RQ
-         jwkNWq/HNWRYwWKiRpAtYYnvOlBDjrL6eqztn9IFUwB1jbIzW2A4acQCEZ2wkSwANFTz
-         DM0u0EjCIcrlY8ICJwp9PzZ6taUUh1Hcfq9zPCr5UYgUGJj2dOX30pzhxUs8M7Ym5iG0
-         Huow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=G/ND3tntpBgwv8HQkehUDejMVtobvIq7mZphn2wM5KU=;
-        b=TUrUdw4iNoqvZKO2Pt//IfNT7Y3yLF68JB7XLurI4HjBAF0BmmH14s/ap2yK9BPQYJ
-         1eYJyDvpkMWWPQ6ZdanGNevB4mFa1MvBx1ICIwkhoZQhfWTOp4xFCJ1W//KSIhgoLlb3
-         eBEUf9jJXYltwgpdpwJY7b43AcCDwgbZzDBSUEwZvmk4Fr1whclfolIF3aFnDrzsQOoV
-         bweU55zjFHR6JkudLrDWVS4z+FTYHutyixHxcieqTegYyb42hDia+qtb2F1IHc6chSAJ
-         NAWm+1ss6hkdNXgOC254nqZzz1EfTZMVdHuqEdIP8qrakeKHDcndtuXlWcIt41qAQQwY
-         XW1A==
-X-Gm-Message-State: AOAM532yTPvcyvGITWFXo3ZW9kRbriRXetkqRvQs5A7q+itK8bU/faAu
-        Mlk8d7VeACCQsQsBTzIvhJgv1c3cMr3sBOi3ar4=
-X-Google-Smtp-Source: ABdhPJwnREicBqoPYi02EuBfly21jl0TSHHIT0hyDEEvOQZNE5lkht/aRwezDbCDpcvPJeCXx5uT0h+stCuW8ErDN/8=
-X-Received: by 2002:a05:6512:110c:: with SMTP id l12mr3254990lfg.646.1642079186413;
- Thu, 13 Jan 2022 05:06:26 -0800 (PST)
+        Thu, 13 Jan 2022 10:16:20 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8D5931F3A8;
+        Thu, 13 Jan 2022 15:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1642086979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=FpcGP6lPvmzb6nITcd3nakm3XI/9qrAcRVehC2FGYmA=;
+        b=AAYM2l7UyxZsH4PSDbUgVmgJbPrBEGXuegy05fDC6IPX/0PP5+7yb2ryK4Wt/s1+3RaEU/
+        umv/fO1qq54N1b9UjxsF5IaB34alSt/dd9LTBF5wJvDCM9nAR7SWPYIxRmn7rKGPpz3ivr
+        uNb1VPLkIuknnC2raxwbAPIM5/4dV9w=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5476913DD1;
+        Thu, 13 Jan 2022 15:16:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6G95EUNC4GG/EgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 13 Jan 2022 15:16:19 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: move QUOTA_ENABLED check to rescan_should_stop from btrfs_qgroup_rescan_worker
+Date:   Thu, 13 Jan 2022 17:16:18 +0200
+Message-Id: <20220113151618.2149736-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:aa6:c781:0:b0:185:86e8:9da9 with HTTP; Thu, 13 Jan 2022
- 05:06:25 -0800 (PST)
-Reply-To: egomihnyemihdavidegomih02@gmail.com
-From:   Davids Nyemih <curtisdonald95@gmail.com>
-Date:   Thu, 13 Jan 2022 14:06:25 +0100
-Message-ID: <CAFnUQ=nSB4FhW3KVuNymg-9HmmqGPoyPjj_TfrJSbV00pFrNsg@mail.gmail.com>
-Subject: Re
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SEksDQpHb29kIGRheS4NCktpbmRseSBjb25maXJtIHRvIG1lIGlmIHRoaXMgaXMgeW91ciBjb3Jy
-ZWN0IGVtYWlsIEFkZHJlc3MgYW5kIGdldA0KYmFjayB0byBtZSBmb3Igb3VyIGludGVyZXN0Lg0K
-U2luY2VyZWx5LA0KRGF2aWRzDQoNCg0K0J/QoNCY0JLQldCiLA0K0JTQvtCx0YDRi9C5INC00LXQ
-vdGMLg0K0J/QvtC20LDQu9GD0LnRgdGC0LAsINC/0L7QtNGC0LLQtdGA0LTQuNGC0LUg0LzQvdC1
-LCDQtdGB0LvQuCDRjdGC0L4g0LLQsNGIINC/0YDQsNCy0LjQu9GM0L3Ri9C5INCw0LTRgNC10YEg
-0Y3Qu9C10LrRgtGA0L7QvdC90L7QuQ0K0L/QvtGH0YLRiywg0Lgg0YHQstGP0LbQuNGC0LXRgdGM
-INGB0L4g0LzQvdC+0Lkg0LTQu9GPINC90LDRiNC10LPQviDQuNC90YLQtdGA0LXRgdCwLg0K0JjR
-gdC60YDQtdC90L3QtSwNCtCU0LDQstC40LTRgQ0K
+Instead of having 2 places that short circuit the qgroup leaf scan have
+everything in the qgroup_rescan_leaf function. In addition to that, also
+ensure that the inconsistent qgroup flag is set when rescan_should_stop
+returns true. This both retains the old behavior when -EINTR was set
+in the body of the loop and at the same time also extends this behavior when
+scanning is interrupted due to remount or unmount operations.
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/btrfs/qgroup.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 83d38d68f8e2..59e19e646f6e 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3253,7 +3253,8 @@ static int qgroup_rescan_leaf(struct btrfs_trans_handle *trans,
+ static bool rescan_should_stop(struct btrfs_fs_info *fs_info)
+ {
+ 	return btrfs_fs_closing(fs_info) ||
+-		test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
++		test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state) ||
++		!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
+ }
+
+ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+@@ -3283,11 +3284,9 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+ 			err = PTR_ERR(trans);
+ 			break;
+ 		}
+-		if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
+-			err = -EINTR;
+-		} else {
+-			err = qgroup_rescan_leaf(trans, path);
+-		}
++
++		err = qgroup_rescan_leaf(trans, path);
++
+ 		if (err > 0)
+ 			btrfs_commit_transaction(trans);
+ 		else
+@@ -3301,7 +3300,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+ 	if (err > 0 &&
+ 	    fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT) {
+ 		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
+-	} else if (err < 0) {
++	} else if (err < 0 || stopped) {
+ 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
+ 	}
+ 	mutex_unlock(&fs_info->qgroup_rescan_lock);
+--
+2.25.1
+
