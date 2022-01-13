@@ -2,118 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1B948D1D6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 06:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A214C48D23F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 07:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbiAMFW2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jan 2022 00:22:28 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:47494 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiAMFW2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jan 2022 00:22:28 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 48ADE212C7
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jan 2022 05:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1642051347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QoV2NP1vxeMFTl16S062EuXBmX4hVW58cJgrMbw/P3w=;
-        b=UdAV4I4SDzpxNaaCGBv+1lH6HTLQiTukV27TLBMOn+CIP+8uSphJ/LipsZ2RizS4xbImLM
-        VP1JvHSMINO9EZg/E63LJ2MtEuQQC+0OyAXpg3s/08bdMjsZSEK5ZDSqoU3t+o9mc55h5+
-        F6EkmMTneojS7G4fEoQQKrgdFqIUIVs=
-Received: from adam-pc.suse.de (unknown [10.163.34.62])
-        by relay2.suse.de (Postfix) with ESMTP id 7F817A3B83
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jan 2022 05:22:25 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 3/3] btrfs: expand subpage support to any PAGE_SIZE > 4K
-Date:   Thu, 13 Jan 2022 13:22:10 +0800
-Message-Id: <20220113052210.23614-4-wqu@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220113052210.23614-1-wqu@suse.com>
-References: <20220113052210.23614-1-wqu@suse.com>
+        id S229996AbiAMGJV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jan 2022 01:09:21 -0500
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:37474 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229889AbiAMGJU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Jan 2022 01:09:20 -0500
+Received: from [192.168.1.27] ([84.220.25.125])
+        by smtp-33.iol.local with ESMTPA
+        id 7tITn6MdT06Tn7tIUnAsy6; Thu, 13 Jan 2022 07:09:18 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1642054158; bh=1l5qdvMiu/GKTwXhXZfW/Fp7JYihTar7q235YmWyGjY=;
+        h=From;
+        b=rGQG8jyC06bhKybg2kTcFE4H+eSN41ugID0nu5LTYRZq/vhUqvvRo1yxTqI6GywbO
+         gg1KbcAm05IgljGOGhJHXsAMhUqD8lcL/dv8m36L9JRuFK0g8oqR9PLQXbG/pxnitO
+         T5v4pCYt5EwlJd/ZtRL5Z1ke0gmlak4wYOGF/RBXzhzYtsOC3dw8Yz+8JgXO6G+TUx
+         n2mhHEVGXJhNHECzy/t/jNYPdF8Fo0OFldvlXcBsdPjxqD3iiCBqgrug6qdVlhVF6p
+         PJWBe4DvtSnJfKiU8YH8AK2WyVHCp2uFG65/5SzVl+n7tcop+KCJfbLTqG6ml1hNjS
+         UlAYSMxge5cdA==
+X-CNFS-Analysis: v=2.4 cv=YqbK+6UX c=1 sm=1 tr=0 ts=61dfc20e cx=a_exe
+ a=hx1hjU+azB0cnDRRU3Lo+Q==:117 a=hx1hjU+azB0cnDRRU3Lo+Q==:17
+ a=IkcTkHD0fZMA:10 a=MXlVO_er3h7Nu3ZKPw0A:9 a=QEXdDO2ut3YA:10
+Message-ID: <092d352f-0e4d-1636-5bf9-6f44fb549298@inwind.it>
+Date:   Thu, 13 Jan 2022 07:09:17 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH v4 3/4] btrfs: add device major-minor info in the struct
+ btrfs_device
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     josef@toxicpanda.com, dsterba@suse.com, nborisov@suse.com,
+        l@damenly.su
+References: <cover.1641794058.git.anand.jain@oracle.com>
+ <9dca55580c33938776b9024cc116f9f6913a65cf.1641794058.git.anand.jain@oracle.com>
+ <03c7c3d2-5abe-0087-90d9-698c77a98fc4@libero.it>
+ <ebd02efc-0ff0-0954-a7e6-308757d70e49@oracle.com>
+ <f8d4c133-e76b-656f-9c13-174a79298a92@inwind.it>
+ <324c7f27-05ee-c4bb-49a7-08c06a356b1c@oracle.com>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <324c7f27-05ee-c4bb-49a7-08c06a356b1c@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfBO9HVFB64BSWH/CO1CnCl3+IH9ZtcOoHT1w5KXG4vK94jIdyvVAWw3Hpju8YJW44OuLxjt90+J61EsAV0PEh+IE5iQTagogco4168El/qIiOp7OI45w
+ 9rPBVWKfhx9+EbDAIyf4Xm3uXy8MvOeFcRnl9vOtNmlBr8njsx1q2EM2QJRHBdWwWz4ImrS9RLz04ieLYhg1XTWKuWgdt5uFAOsuQo5dCfut/vSFCxidZoFM
+ ed4+n+vjmQy4TYNrGepRhGW4ok41Fr3AzK3LvplCHa+Rj9/g7UVbODQ67aLFRYrqKpVvI6SNxdHpt/MrO5tMb/qmyw4cGK5vZGEEfkG03BM=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With the recent change in metadata handling, we can handle metadata in
-the following cases:
+On 12/01/2022 04.17, Anand Jain wrote:
+> 
+> 
+[...]
+>>
+>> Ok, I think that this case (where devt!=0 and bdev==NULL) should be inserted as comment in the structure before the devt field.
+> 
+> I will add but, did you find any pitfall for breaking such a case?
+> Or are you submitting any patch based on this rule?
 
-- nodesize < PAGE_SIZE and sectorsize < PAGE_SIZE
-  Go subpage routine for both metadata and data.
+In a patch that I sent few days ago, I exported the major/minor
+in <UUID>/devinfo/<devid>/major-minor sysfs property.
+In order to do that, I taken the values from btrfs_device->bdev->bd_dev,
+checking that bdev is not NULL.
+So I didn't understood why we need to add copy of devt also
+is the btrfs_device structure, because it is easy to taken the bdev one.
 
-- nodesize < PAGE_SIZE and sectorsize >= PAGE_SIZE
-  Invalid case for now. As we require nodesize >= sectorsize.
+You answer was "we need that, because sometime bdev is NULL even
+if a reasonable devt value exist", which is a valid reason.
+So I suggest to add this info in the header so even the "next" developer
+with a no so deep knowledge of the btrfs device life-cycle will be
+aware of this case.
 
-- nodesize >= PAGE_SIZE and sectorsize < PAGE_SIZE
-  Go subpage routine for data, but regular page routine for metadata.
-
-- nodesize >= PAGE_SIZE and sectorsize >= PAGE_SIZE
-  Go regular page routine for both metadata and data.
-
-Now we can handle any sectorsize < PAGE_SIZE, plus the existing
-sectorsize == PAGE_SIZE support.
-
-But here we introduce an artificial limit, any PAGE_SIZE > 4K case, we
-will only support 4K and PAGE_SIZE as sector size.
-
-The idea here is to reduce the test combinations, and push 4K as the
-default standard in the future.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 13 ++++++++-----
- fs/btrfs/sysfs.c   |  6 ++----
- 2 files changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 884e0b543136..340fa1ce11d1 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2752,12 +2752,15 @@ static int validate_super(struct btrfs_fs_info *fs_info,
- 	}
- 
- 	/*
--	 * For 4K page size, we only support 4K sector size.
--	 * For 64K page size, we support 64K and 4K sector sizes.
-+	 * We only support at most two sectorsizes: 4K and PAGE_SIZE.
-+	 *
-+	 * We can support 16K sectorsize with 64K page size without problem,
-+	 * but such sectorsize/pagesize combination doesn't make much sense.
-+	 * 4K will be our future standard, PAGE_SIZE is supported from
-+	 * the very beginning.
- 	 */
--	if ((PAGE_SIZE == SZ_4K && sectorsize != PAGE_SIZE) ||
--	    (PAGE_SIZE == SZ_64K && (sectorsize != SZ_4K &&
--				     sectorsize != SZ_64K))) {
-+	if (sectorsize > PAGE_SIZE ||
-+	    (sectorsize != SZ_4K && sectorsize != PAGE_SIZE)) {
- 		btrfs_err(fs_info,
- 			"sectorsize %llu not yet supported for page size %lu",
- 			sectorsize, PAGE_SIZE);
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index beb7f72d50b8..f6f5c37fb2ea 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -391,11 +391,9 @@ static ssize_t supported_sectorsizes_show(struct kobject *kobj,
- {
- 	ssize_t ret = 0;
- 
--	/* 4K sector size is also supported with 64K page size */
--	if (PAGE_SIZE == SZ_64K)
-+	/* An artificial limit to only support 4K and PAGE_SIZE */
-+	if (PAGE_SIZE > SZ_4K)
- 		ret += sysfs_emit_at(buf, ret, "%u ", SZ_4K);
--
--	/* Only sectorsize == PAGE_SIZE is now supported */
- 	ret += sysfs_emit_at(buf, ret, "%lu\n", PAGE_SIZE);
- 
- 	return ret;
+BR
+G.Baroncelli
 -- 
-2.34.1
-
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
