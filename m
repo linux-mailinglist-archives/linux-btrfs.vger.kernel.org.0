@@ -2,63 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECBF48DBB2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 17:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BEF48DC0C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 17:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbiAMQ01 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jan 2022 11:26:27 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:51586 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236629AbiAMQ00 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jan 2022 11:26:26 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D90081F3BA;
-        Thu, 13 Jan 2022 16:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1642091185;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sWNs6pi3ChrNWBkJ0xq8CBjBDqs2+PgF/fYLTY89g/Y=;
-        b=d7tHMIJ7NavS1AhzfdobZnuDrNIS0jfhV5k8pDIbqNGNfF1yaPsTtovdSKEqi9yaInlpn4
-        w3V1eVpDLn4BD9rSnUBwJqOusB04khZg4yljVzskfRNfNwqYWhkRjdPgVqOFvNN2Zh1p2V
-        kOARYJ1E33M9eDUw+NOZOb+ydkq0u+8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1642091185;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sWNs6pi3ChrNWBkJ0xq8CBjBDqs2+PgF/fYLTY89g/Y=;
-        b=SCxRJbRPnk9VF9vjwsCmOYQtWwg0JQNlxiXozsnKM/+0kPeXif4F5cYQYR/egkbS2Jnzwp
-        FxFc3LR/Udd0hcDQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D1CD8A3B85;
-        Thu, 13 Jan 2022 16:26:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B7DD1DA781; Thu, 13 Jan 2022 17:25:51 +0100 (CET)
-Date:   Thu, 13 Jan 2022 17:25:51 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Adam Borowski <kilobyte@angband.pl>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: fix a bunch of typos
-Message-ID: <20220113162551.GB14046@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Adam Borowski <kilobyte@angband.pl>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20211106235742.13854-1-kilobyte@angband.pl>
+        id S236813AbiAMQmG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jan 2022 11:42:06 -0500
+Received: from foss.arm.com ([217.140.110.172]:48516 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231919AbiAMQmE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Jan 2022 11:42:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3223E106F;
+        Thu, 13 Jan 2022 08:42:04 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED6483F774;
+        Thu, 13 Jan 2022 08:42:02 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, guro@fb.com, clm@fb.com
+Subject: Re: [REGRESSION] 5-10% increase in IO latencies with nohz balance patch
+In-Reply-To: <YdMhQRq1K8tW+S05@localhost.localdomain>
+References: <87bl22byq2.mognet@arm.com> <YaUuyN3h07xlEx8j@localhost.localdomain> <878rx6bia5.mognet@arm.com> <87wnklaoa8.mognet@arm.com> <YappSLDS2EvRJmr9@localhost.localdomain> <87lf0y9i8x.mognet@arm.com> <87v8zx8zia.mognet@arm.com> <YbJWBGaGAW/MenOn@localhost.localdomain> <99452126-661e-9a0c-6b51-d345ed0f76ee@leemhuis.info> <87tuf07hdk.mognet@arm.com> <YdMhQRq1K8tW+S05@localhost.localdomain>
+Date:   Thu, 13 Jan 2022 16:41:57 +0000
+Message-ID: <87k0f37fl6.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211106235742.13854-1-kilobyte@angband.pl>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 12:57:42AM +0100, Adam Borowski wrote:
-> These have been detected by lintian and codespell.
-> 
-> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+On 03/01/22 11:16, Josef Bacik wrote:
+> On Wed, Dec 22, 2021 at 04:07:35PM +0000, Valentin Schneider wrote:
+>> 
+>> Hi,
+>> 
+>> On 22/12/21 13:42, Thorsten Leemhuis wrote:
+>> > What's the status here? Just wondering, because there hasn't been any
+>> > activity in this thread since 11 days and the festive season is upon us.
+>> >
+>> > Was the discussion moved elsewhere? Or is this still a mystery? And if
+>> > it is: how bad is it, does it need to be fixed before Linus releases 5.16?
+>> >
+>> 
+>> I got to the end of bisect #3 yesterday, the incriminated commit doesn't
+>> seem to make much sense but I've just re-tested it and there is a clear
+>> regression between that commit and its parent (unlike bisect #1 and #2):
+>> 
+>> 2127d22509aec3a83dffb2a3c736df7ba747a7ce mm, slub: fix two bugs in slab_debug_trace_open()
+>> write_clat_ns_p99     195395.92     199638.20      4797.01    2.17%
+>> write_iops             17305.79      17188.24       250.66   -0.68%
+>> 
+>> write_clat_ns_p99     195543.84     199996.70      5122.88    2.28%
+>> write_iops             17300.61      17241.86       251.56   -0.34%
+>> 
+>> write_clat_ns_p99     195543.84     200724.48      5122.88    2.65%
+>> write_iops             17300.61      17246.63       251.56   -0.31%
+>> 
+>> write_clat_ns_p99     195543.84     200445.41      5122.88    2.51%
+>> write_iops             17300.61      17215.47       251.56   -0.49%
+>> 
+>> 6d2aec9e123bb9c49cb5c7fc654f25f81e688e8c mm/mempolicy: do not allow illegal MPOL_F_NUMA_BALANCING | MPOL_LOCAL in mbind() 
+>> write_clat_ns_p99     195395.92     197942.30      4797.01    1.30%
+>> write_iops             17305.79      17246.56       250.66   -0.34%
+>> 
+>> write_clat_ns_p99     195543.84     196183.92      5122.88    0.33%
+>> write_iops             17300.61      17310.33       251.56    0.06%
+>> 
+>> write_clat_ns_p99     195543.84     196990.71      5122.88    0.74%
+>> write_iops             17300.61      17346.32       251.56    0.26%
+>> 
+>> write_clat_ns_p99     195543.84     196362.24      5122.88    0.42%
+>> write_iops             17300.61      17315.71       251.56    0.09%
+>> 
+>> It's pure debug stuff and AFAICT is a correct fix...
+>> @Josef, could you test that on your side?
+>
+> Sorry, holidays and all that.  I see 0 difference between the two commits, and
+> no regression from baseline.  It'll take me a few days to recover from the
+> holidays, but I'll put some more effort into actively debugging wtf is going on
+> here on my side since we're all having trouble pinning down what's going
+> on.
 
-Added to devel thanks.
+Humph, that's unfortunate... I just came back from my holidays, so I'll be
+untangling my inbox for the next few days. Do keep us posted!
+
+> Thanks,
+>
+> Josef
