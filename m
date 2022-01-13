@@ -2,102 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EE148DA8E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 16:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECBF48DBB2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jan 2022 17:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbiAMPQV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jan 2022 10:16:21 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:42976 "EHLO
+        id S236644AbiAMQ01 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jan 2022 11:26:27 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:51586 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbiAMPQU (ORCPT
+        with ESMTP id S236629AbiAMQ00 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jan 2022 10:16:20 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8D5931F3A8;
-        Thu, 13 Jan 2022 15:16:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1642086979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=FpcGP6lPvmzb6nITcd3nakm3XI/9qrAcRVehC2FGYmA=;
-        b=AAYM2l7UyxZsH4PSDbUgVmgJbPrBEGXuegy05fDC6IPX/0PP5+7yb2ryK4Wt/s1+3RaEU/
-        umv/fO1qq54N1b9UjxsF5IaB34alSt/dd9LTBF5wJvDCM9nAR7SWPYIxRmn7rKGPpz3ivr
-        uNb1VPLkIuknnC2raxwbAPIM5/4dV9w=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5476913DD1;
-        Thu, 13 Jan 2022 15:16:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6G95EUNC4GG/EgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 13 Jan 2022 15:16:19 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: move QUOTA_ENABLED check to rescan_should_stop from btrfs_qgroup_rescan_worker
-Date:   Thu, 13 Jan 2022 17:16:18 +0200
-Message-Id: <20220113151618.2149736-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 Jan 2022 11:26:26 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D90081F3BA;
+        Thu, 13 Jan 2022 16:26:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1642091185;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sWNs6pi3ChrNWBkJ0xq8CBjBDqs2+PgF/fYLTY89g/Y=;
+        b=d7tHMIJ7NavS1AhzfdobZnuDrNIS0jfhV5k8pDIbqNGNfF1yaPsTtovdSKEqi9yaInlpn4
+        w3V1eVpDLn4BD9rSnUBwJqOusB04khZg4yljVzskfRNfNwqYWhkRjdPgVqOFvNN2Zh1p2V
+        kOARYJ1E33M9eDUw+NOZOb+ydkq0u+8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1642091185;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sWNs6pi3ChrNWBkJ0xq8CBjBDqs2+PgF/fYLTY89g/Y=;
+        b=SCxRJbRPnk9VF9vjwsCmOYQtWwg0JQNlxiXozsnKM/+0kPeXif4F5cYQYR/egkbS2Jnzwp
+        FxFc3LR/Udd0hcDQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id D1CD8A3B85;
+        Thu, 13 Jan 2022 16:26:25 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B7DD1DA781; Thu, 13 Jan 2022 17:25:51 +0100 (CET)
+Date:   Thu, 13 Jan 2022 17:25:51 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Adam Borowski <kilobyte@angband.pl>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: fix a bunch of typos
+Message-ID: <20220113162551.GB14046@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Adam Borowski <kilobyte@angband.pl>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20211106235742.13854-1-kilobyte@angband.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211106235742.13854-1-kilobyte@angband.pl>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of having 2 places that short circuit the qgroup leaf scan have
-everything in the qgroup_rescan_leaf function. In addition to that, also
-ensure that the inconsistent qgroup flag is set when rescan_should_stop
-returns true. This both retains the old behavior when -EINTR was set
-in the body of the loop and at the same time also extends this behavior when
-scanning is interrupted due to remount or unmount operations.
+On Sun, Nov 07, 2021 at 12:57:42AM +0100, Adam Borowski wrote:
+> These have been detected by lintian and codespell.
+> 
+> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/qgroup.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 83d38d68f8e2..59e19e646f6e 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3253,7 +3253,8 @@ static int qgroup_rescan_leaf(struct btrfs_trans_handle *trans,
- static bool rescan_should_stop(struct btrfs_fs_info *fs_info)
- {
- 	return btrfs_fs_closing(fs_info) ||
--		test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
-+		test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state) ||
-+		!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
- }
-
- static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
-@@ -3283,11 +3284,9 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
- 			err = PTR_ERR(trans);
- 			break;
- 		}
--		if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
--			err = -EINTR;
--		} else {
--			err = qgroup_rescan_leaf(trans, path);
--		}
-+
-+		err = qgroup_rescan_leaf(trans, path);
-+
- 		if (err > 0)
- 			btrfs_commit_transaction(trans);
- 		else
-@@ -3301,7 +3300,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
- 	if (err > 0 &&
- 	    fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT) {
- 		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
--	} else if (err < 0) {
-+	} else if (err < 0 || stopped) {
- 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
- 	}
- 	mutex_unlock(&fs_info->qgroup_rescan_lock);
---
-2.25.1
-
+Added to devel thanks.
