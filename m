@@ -2,46 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9487C48E1C2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jan 2022 01:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802B748E1C3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jan 2022 01:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235734AbiANAvn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jan 2022 19:51:43 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:51580 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235723AbiANAvm (ORCPT
+        id S238422AbiANAvo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jan 2022 19:51:44 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50798 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235723AbiANAvo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jan 2022 19:51:42 -0500
+        Thu, 13 Jan 2022 19:51:44 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C94401F384
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jan 2022 00:51:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E9A9F21905
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jan 2022 00:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1642121501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=XzTcaZgaAYZqusuBxoscy9NkFMadyaVPnrB53kgcSaw=;
-        b=Ah5Qevm6ZoAQ7I+XE/YJ3rLwrOyK/jAkGHb7E0PPYLuOlNyWuFDyJnTU9sEZSsqM8KYsg/
-        VhW42gL0WS3G96tpFsjwf8Kniflxe/um5ulo6z/m4gLgN7c2LnoYqDOue3FppSBIgvjKij
-        /s5oQGM8ghZMX1CuPMWT8/7Dohwd4fo=
+        t=1642121502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4lvBr+pnf9BjsRHPYT2VtP1szJT7WTVh5UMGl31NIFI=;
+        b=nKFyQY6F5WUS02CC77Q8EeplEJuP+ANbHXVDyPJOoxTIMZlcg5iUBsAmfe6v+HX8nEJgaw
+        xzInZ7HmMp/tbOnyTLO1hc3zqGy3Nm8VOIpcj0fE/EiY14rA7oQ2KVfePPpxuSa4iGYWRh
+        9eAZk2cJp9cmSLw7aVVEOuwu17Fzjrk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 15B1C1344A
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jan 2022 00:51:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A0A61344A
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jan 2022 00:51:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1/FdMhzJ4GFWZAAAMHmgww
+        id ION5AB7J4GFWZAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jan 2022 00:51:40 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jan 2022 00:51:42 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/5] btrfs-progs: check: properly generate csum for various complex combinations
-Date:   Fri, 14 Jan 2022 08:51:18 +0800
-Message-Id: <20220114005123.19426-1-wqu@suse.com>
+Subject: [PATCH v2 1/5] btrfs-progs: backref: properly queue indirect refs
+Date:   Fri, 14 Jan 2022 08:51:19 +0800
+Message-Id: <20220114005123.19426-2-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220114005123.19426-1-wqu@suse.com>
+References: <20220114005123.19426-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -49,86 +53,71 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-Issue #420 mentions that --init-csum-tree creates extra csum for
-preallocated extents.
-
-Causing extra errors after --init-csum-tree.
+When calling iterate_extent_inodes() on data extents with indirect ref
+(with inline or keyed EXTENT_DATA_REF_KEY), it will fail to execute the
+call back function at all.
 
 [CAUSE]
-Csum re-calculation code doesn't take the following factors into
-consideration:
+In function find_parent_nodes(), we only add the target tree block if a
+backref has @parent populated.
 
-- NODATASUM inodes
-- Preallocated extents
-  No csum should be calculated for those data extents
+For indirect backref like EXTENT_DATA_REF_KEY, we rely on
+__resolve_indirect_ref() to get the parent leaves.
 
-- Partically written preallocated csum
-  Csum should only be created for the referred part
+However __resolve_indirect_ref() only grabs backrefs from
+&prefstate->pending_indirect_refs.
 
-So currently csum recalculation will just create csum for any data
-extents it found, causing the mentioned errors.
+Meaning callers should queue any indrect backref to
+pending_indirect_refs.
+
+But unfortunately in __add_prelim_ref() and __add_missing_keys(), none
+of them properly queue the indirect backrefs to pending_indirect_refs,
+but directly to pending.
+
+Making all indirect backrefs never got resolved, thus no callback
+function executed
 
 [FIX]
-- Bug fix for backref iteration
-  Firstly fix a bug in backref code where indirect ref is not properly
-  resolved.
+Fix __add_prelim_ref() and __add_missing_keys() to properly queue
+indirect backrefs to the correct list.
 
-  This allows us to use iterate_extent_inodes() to make our lives much
-  easier checking the file extents.
+Currently there is no such direct user in btrfs-progs, but later csum
+tree re-initialization code will rely this to do proper csum
+re-calculate (to avoid preallocated/nodatasum extents).
 
-- Code move for --init-csum-tree
-  Move it to mode independent mode-common.[ch]
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/backref.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-- Fix for --init-csum-tree
-  There are some extreme corner cases to consider, in fact we can not
-  really determine a range should have csum or not:
-  * Preallocated, written, then hole punched range
-    Should still have csum for the written (now hole) part.
-
-  * Preallocated, then hole punched range.
-    Should not have csum for the now hole part.
-
-  * Regular written extent, then hole punched range
-    Should have csum for the now hole part.
-
-  But there is still one thing to follow, if a range is preallocated,
-  it should not have csum.
-
-  So here we go a different route, by always generate csum for the whole
-  extent (as long as it's not belonging to NODATASUM inode), then remove
-  csums for preallocated range.
-
-- Fix for --init-csum-tree --init-extent-tree
-  The same fix, just into a different context
-
-- New test case
-
-[CHANGELOG]
-v2:
-- Handle written extents then hole punched cases
-  Now we always generate csum for a data extent as long as it doesn't
-  belong to a NODATASUM inode, then remove the csum for preallocated
-  range.
-
-- Enhance test case to include hole punching and compressed extents
-
-
-Qu Wenruo (5):
-  btrfs-progs: backref: properly queue indirect refs
-  btrfs-progs: check: move csum tree population into mode-common.[ch]
-  btrfs-progs: check: don't calculate csum for preallocated file extents
-  btrfs-progs: check: handle csum generation properly for
-    `--init-csum-tree --init-extent-tree`
-  btrfs-progs: fsck-tests: add test case for init-csum-tree
-
- check/main.c                                | 244 ------------
- check/mode-common.c                         | 393 ++++++++++++++++++++
- check/mode-common.h                         |   1 +
- kernel-shared/backref.c                     |  10 +-
- tests/fsck-tests/052-init-csum-tree/test.sh |  72 ++++
- 5 files changed, 474 insertions(+), 246 deletions(-)
- create mode 100755 tests/fsck-tests/052-init-csum-tree/test.sh
-
+diff --git a/kernel-shared/backref.c b/kernel-shared/backref.c
+index 42832c481cae..f1a638ededa8 100644
+--- a/kernel-shared/backref.c
++++ b/kernel-shared/backref.c
+@@ -192,7 +192,10 @@ static int __add_prelim_ref(struct pref_state *prefstate, u64 root_id,
+ 	ref->root_id = root_id;
+ 	if (key) {
+ 		ref->key_for_search = *key;
+-		head = &prefstate->pending;
++		if (parent)
++			head = &prefstate->pending;
++		else
++			head = &prefstate->pending_indirect_refs;
+ 	} else if (parent) {
+ 		memset(&ref->key_for_search, 0, sizeof(ref->key_for_search));
+ 		head = &prefstate->pending;
+@@ -467,7 +470,10 @@ static int __add_missing_keys(struct btrfs_fs_info *fs_info,
+ 		else
+ 			btrfs_node_key_to_cpu(eb, &ref->key_for_search, 0);
+ 		free_extent_buffer(eb);
+-		list_move(&ref->list, &prefstate->pending);
++		if (ref->parent)
++			list_move(&ref->list, &prefstate->pending);
++		else
++			list_move(&ref->list, &prefstate->pending_indirect_refs);
+ 	}
+ 	return 0;
+ }
 -- 
 2.34.1
 
