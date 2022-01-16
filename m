@@ -2,171 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0D148FBCA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FCF48FBCB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbiAPItE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 03:49:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
+        id S234486AbiAPIt0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 03:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbiAPItD (ORCPT
+        with ESMTP id S230421AbiAPItY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 03:49:03 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57577C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:49:03 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id w12-20020a17090a528c00b001b276aa3aabso2833751pjh.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:49:03 -0800 (PST)
+        Sun, 16 Jan 2022 03:49:24 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D33C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:49:23 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id s1so6860736pga.5
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:49:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id;
-        bh=e3mvjCRCsR0Swov/K+9n7idBmM6wdvyYWBZQcPD4B9k=;
-        b=UJkrpWWuhFUvUmb9AtBSaVo9Wcf93GPXVxVgiLhTf4sSw45d5dCGLc8jBA0PWwGq7N
-         hKSmgfJ9FC1b7Otq2sZAubgV+DnCNli4nqNzq788X1muCOc7oOyxglIdfWie5WVUytIv
-         AFPWC6iVmdAbGqdJmVJf+soHR3KTrb03OOIhMjwvKdyWxLRNxGe+MCZvkn62QSCwfOYr
-         ffhSEb4CQQ5vPfTBY6RCIOWQe20R6tyI/gzQ3et/yQJtqH26mvtBDTLnaCTCRs6nhQnY
-         W+YtsXQ3kEy87WC4+uPuRkZbScWaVeB9+88Vi2+wBGug5rOKpF00W+jpQlhD7WUV9YeI
-         HoUw==
+        bh=kj2rL3+EXNXNSigOfpfTRHKmQGvuAazq1uuleqK9hc4=;
+        b=nYSiOhwq60nZpL7ya6n4prIhAgKdcxyJF3106vvVpkiez3NfgUcUluKJtQ+f7ZInYh
+         DdwPgTXO2DA1Ne5KbID11Hgl6UtMInzk7tXI35b0ybVlf3ESHZ+4A5hR1/J1HWVcV6O5
+         KUey/5JjRvHK0OWfrzPUVowVucrP+MYqc2Y0pPV/ljCqrRBSBl16RqTjTf14TiMvbJoT
+         cP6bEPJxM/gHYiGmpmwc7B8dNYzX0THUMTZ79IZ4afWGdr59F+hRus719Qq6HnGUg1K0
+         5DQMSKyRXwelQrM70BXbeUUw7p572NtdQbVsMWk8ftOS6bRhjX/9qHx1ULohvG8H9oTb
+         IMfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=e3mvjCRCsR0Swov/K+9n7idBmM6wdvyYWBZQcPD4B9k=;
-        b=HL4X6hPYr6u77rJ/panz4eThHm4sjgOlbQM9cOwwXlPPfPMKKpJH+vKRhc1sdnmnO1
-         XLnwWYB7lwjID2k+QZJhjnRyOO3zV5xgFXA3uZ3zRyS3KPQSBRu1gLgjcKdiP3EHVrTq
-         F28wpXsOJ3jH1TLMbs/NzO7j4mSOndbTwNa2p7UZSxvoLCVFsqQ2ujiF1ZU4GgAMXboo
-         jEkO2lyd4BQy3EJS7r4UaDIxGWKDRH7TME+v9N5WzshFiGFsUYc6u0aXRIGSRSpfgpOo
-         vPZfmH/5VRnSmDMp5fjGGV1ssGQsPjhyY+rm95Am9kTnoWhbov7xMwRyhIXSmlXb6EJy
-         09Rg==
-X-Gm-Message-State: AOAM53316WpJt1AZrEtjAk3WRah18rp1Z7qVqDRPziqzWUqnzByt7ZWq
-        93lXJmhZ0dAOi/QaSR5oPFX1UJ6W0D4ltLGF
-X-Google-Smtp-Source: ABdhPJy1zmdQcuKffEZJoL30cAF2lAxyMhvA/8twj9VihuIPK0q1We40Cv2ZFUO1D3Gq+G4pwTldnQ==
-X-Received: by 2002:a17:90b:384a:: with SMTP id nl10mr5114187pjb.233.1642322942337;
-        Sun, 16 Jan 2022 00:49:02 -0800 (PST)
+        bh=kj2rL3+EXNXNSigOfpfTRHKmQGvuAazq1uuleqK9hc4=;
+        b=K3NmQP0pe8E6kear4TJZxRQYIuxKZTj8mygyEGLJz049DeKE6BwH1iN1bWK2adZGQE
+         NAGpF4j6v0t5j1NBMGVrz3NrMe6cbwJ/bbp8U5bomMxOXt2I1ZPPrDSerpb8FHWR3YH/
+         zquOpln+yfT+zdeNe0XVEoSToVeT/g0UlP+zAmOMIjH5YxDdfcJvjNCtAmIj+m+IVfSR
+         5w3cWRGrlJNrQD7A5n56dInVEw2vXJykwluBnvRrP8BJ//iE50eKiAsGFMwWKXaEE4R7
+         tq4djwWdTHZeGkT9vutjYYq2mxsWTkZ62GxUfUGFN2mpp6BLINX3G+hWZNo7ZE5D2p2L
+         fwPA==
+X-Gm-Message-State: AOAM530xoFR3ySPooHG3M1uyHm3LOdiKL5Msta2aBqzcavk2yGsPx9gs
+        21lIIS6hE5kqscR9jPCsVNjgXmLbDNIZr6Jc
+X-Google-Smtp-Source: ABdhPJwG1nScW0U1poVvLdybTIHPHszntwGbsoU1qcmlEwcNALEKyX28YJcJ6kBi3kIwO1X5Z9z8bA==
+X-Received: by 2002:a05:6a00:1905:b0:4a8:2f86:3f18 with SMTP id y5-20020a056a00190500b004a82f863f18mr16178208pfi.52.1642322963036;
+        Sun, 16 Jan 2022 00:49:23 -0800 (PST)
 Received: from zllke.localdomain ([113.99.5.116])
-        by smtp.gmail.com with ESMTPSA id ng18sm16964968pjb.36.2022.01.16.00.49.01
+        by smtp.gmail.com with ESMTPSA id 10sm10549626pjc.6.2022.01.16.00.49.21
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Jan 2022 00:49:01 -0800 (PST)
+        Sun, 16 Jan 2022 00:49:22 -0800 (PST)
 From:   Li Zhang <zhanglikernel@gmail.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     zhanglikernel@gmail.com
-Subject: [PATCH 1/5] btrfs: Introduce memory-only flag BTRFS_INODE_HEURISTIC_NOCOMPRESS.
-Date:   Sun, 16 Jan 2022 16:48:54 +0800
-Message-Id: <1642322934-1804-1-git-send-email-zhanglikernel@gmail.com>
+Subject: [PATCH 2/5] btrfs: Introduce helper functions for compression.
+Date:   Sun, 16 Jan 2022 16:49:13 +0800
+Message-Id: <1642322953-1856-1-git-send-email-zhanglikernel@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Introduce the memory flag BTRFS_INODE_HEURISTIC_NOCOMPRESS which is kept
-in memory only. This flag should be unset every time the filesystem writes
-to disk.
+1. Introduce the compression type and compression level
+combination function. Use the lowest 4 bits of unsigned
+int to record the compression type and 5 - 8 bits to record
+the compression level.
 
-1. If the compressed file is larger than the original size,
-BTRFS_INODE_HEURISTIC_NOCOMPRESS will be set.
-
-2. If the btrfs file system wants to write the btrfs_inode flag to
-the disk or journal tree, the btrfs_inode flag should be and
-with ~BTRFS_INODE_ONLY_MEM_FLAG_MASK to filter the memory-only flag.
-
-3. In the inode_need_compress function, if btrfs_info is set to
-BTRFS_INODE_HEURISTIC_NOCOMPRESS, it returns 0, which means
-that the file is not compressed as much as possible.
+2. Introduce functions to parse compression description strings
+into filesystem flags and vice versa.
 
 Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
 ---
- fs/btrfs/ctree.h    | 13 ++++++++++++-
- fs/btrfs/inode.c    | 13 +++++++++----
- fs/btrfs/tree-log.c |  8 ++++++--
- 3 files changed, 27 insertions(+), 7 deletions(-)
+ fs/btrfs/compression.c | 51 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/compression.h | 14 ++++++++++++++
+ 2 files changed, 65 insertions(+)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index b4a9b1c..754ac0f 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1507,6 +1507,7 @@ enum {
- #define BTRFS_INODE_NOATIME		(1U << 9)
- #define BTRFS_INODE_DIRSYNC		(1U << 10)
- #define BTRFS_INODE_COMPRESS		(1U << 11)
-+#define BTRFS_INODE_HEURISTIC_NOCOMPRESS  (1U << 12)
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 71e5b2e..019ed2d 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -49,6 +49,38 @@ const char* btrfs_compress_type2str(enum btrfs_compression_type type)
+ 	return NULL;
+ }
  
- #define BTRFS_INODE_ROOT_ITEM_INIT	(1U << 31)
++/*
++ * convert str to combination of compression type and level
++ * ret: combination of compression type and compress level
++ * return type and level separately if caller specify type and level pointer
++ */
++unsigned int btrfs_compress_str2type_level(const char *str, unsigned int *type, unsigned int *level){
++    int i;
++    unsigned int result_type, result_level;
++    size_t len = strlen(str);
++    result_type = BTRFS_COMPRESS_NONE;
++    result_level = 0;
++    for(i = 1; i < ARRAY_SIZE(btrfs_compress_types); i ++){
++        size_t comp_len = strlen(btrfs_compress_types[i]);
++        if(len < comp_len){
++            continue;
++        }
++        if(!strncmp(btrfs_compress_types[i], str, comp_len)){
++            result_type = BTRFS_COMPRESS_NONE + i;
++            result_level = btrfs_compress_str2level(result_type, str + comp_len);
++            break;
++        }
++    }
++    if(type != NULL){
++        *type = result_type;
++    }
++    if(level != NULL){
++        *level = result_level;
++    }
++    return btrfs_compress_combine_type_level(result_type, result_level);
++}
++
++
+ bool btrfs_compress_is_valid_type(const char *str, size_t len)
+ {
+ 	int i;
+@@ -1888,3 +1920,22 @@ unsigned int btrfs_compress_str2level(unsigned int type, const char *str)
  
-@@ -1523,7 +1524,17 @@ enum {
- 	 BTRFS_INODE_NOATIME |						\
- 	 BTRFS_INODE_DIRSYNC |						\
- 	 BTRFS_INODE_COMPRESS |						\
--	 BTRFS_INODE_ROOT_ITEM_INIT)
-+	 BTRFS_INODE_ROOT_ITEM_INIT |               \
-+     BTRFS_INODE_HEURISTIC_NOCOMPRESS )
+ 	return level;
+ }
++
 +
 +/*
-+ * Inode only memory flags
++ * convert combination of compression type and level to meaningful string
++ * the caller should specify buffer and buffer size
 + */
-+
-+#define BTRFS_INODE_ONLY_MEM_FLAG_MASK  \
-+    (BTRFS_INODE_HEURISTIC_NOCOMPRESS)
-+
-+
- 
- #define BTRFS_INODE_RO_VERITY		(1U << 0)
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 3b2403b..3fe485b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -550,7 +550,8 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
- 	if (inode->defrag_compress)
- 		return 1;
- 	/* bad compression ratios */
--	if (inode->flags & BTRFS_INODE_NOCOMPRESS)
-+	if (inode->flags & BTRFS_INODE_NOCOMPRESS ||
-+        inode->flags & BTRFS_INODE_HEURISTIC_NOCOMPRESS)
- 		return 0;
- 	if (btrfs_test_opt(fs_info, COMPRESS) ||
- 	    inode->flags & BTRFS_INODE_COMPRESS ||
-@@ -838,7 +839,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
- 		/* flag the file so we don't compress in the future */
- 		if (!btrfs_test_opt(fs_info, FORCE_COMPRESS) &&
- 		    !(BTRFS_I(inode)->prop_compress)) {
--			BTRFS_I(inode)->flags |= BTRFS_INODE_NOCOMPRESS;
-+			BTRFS_I(inode)->flags |= BTRFS_INODE_HEURISTIC_NOCOMPRESS;
- 		}
- 	}
- cleanup_and_bail_uncompressed:
-@@ -3970,8 +3971,12 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
- 	btrfs_set_token_inode_sequence(&token, item, inode_peek_iversion(inode));
- 	btrfs_set_token_inode_transid(&token, item, trans->transid);
- 	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
--	flags = btrfs_inode_combine_flags(BTRFS_I(inode)->flags,
--					  BTRFS_I(inode)->ro_flags);
-+    /*
-+     * get rid of memory only flag
-+     */
-+	flags = btrfs_inode_combine_flags(
-+                    BTRFS_I(inode)->flags & ~BTRFS_INODE_ONLY_MEM_FLAG_MASK,
-+					BTRFS_I(inode)->ro_flags);
- 	btrfs_set_token_inode_flags(&token, item, flags);
- 	btrfs_set_token_inode_block_group(&token, item, 0);
++char *btrfs_compress_type_level2str(unsigned type, unsigned level, char *out, size_t out_len){
++	switch (type) {
++	case BTRFS_COMPRESS_ZLIB:
++	case BTRFS_COMPRESS_LZO:
++	case BTRFS_COMPRESS_ZSTD:
++	case BTRFS_COMPRESS_NONE:
++        snprintf(out, out_len, "%s:%d", btrfs_compress_types[type], btrfs_compress_set_level(type, level));
++        return out;
++	default:
++		break;
++	}
++    return NULL;
++}
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 56eef08..b76473c 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -76,6 +76,16 @@ static inline unsigned int btrfs_compress_level(unsigned int type_level)
+ 	return ((type_level & 0xF0) >> 4);
  }
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index c1ddbe8..2d4e5fc 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4165,8 +4165,12 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
- 	btrfs_set_token_inode_sequence(&token, item, inode_peek_iversion(inode));
- 	btrfs_set_token_inode_transid(&token, item, trans->transid);
- 	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
--	flags = btrfs_inode_combine_flags(BTRFS_I(inode)->flags,
--					  BTRFS_I(inode)->ro_flags);
-+    /*
-+     * clear memory only flag
-+     */
-+	flags = btrfs_inode_combine_flags(
-+                BTRFS_I(inode)->flags & ~BTRFS_INODE_ONLY_MEM_FLAG_MASK,
-+			    BTRFS_I(inode)->ro_flags);
- 	btrfs_set_token_inode_flags(&token, item, flags);
- 	btrfs_set_token_inode_block_group(&token, item, 0);
- }
+ 
++/*
++ * helper function combine compression type and level
++ * combine compression type and level in one byte
++ * the lower 4bit represent compression type
++ * the upper 4bit represent compression level 
++ */
++static inline unsigned int btrfs_compress_combine_type_level(unsigned int type, unsigned level){
++    return (level << 4) | type;
++}
++
+ void __init btrfs_init_compress(void);
+ void __cold btrfs_exit_compress(void);
+ 
+@@ -101,6 +111,10 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 
+ unsigned int btrfs_compress_str2level(unsigned int type, const char *str);
+ 
++unsigned int btrfs_compress_str2type_level(const char *str, unsigned int * type, unsigned int *level);
++
++char *btrfs_compress_type_level2str(unsigned type, unsigned level, char *out, size_t out_len);
++
+ enum btrfs_compression_type {
+ 	BTRFS_COMPRESS_NONE  = 0,
+ 	BTRFS_COMPRESS_ZLIB  = 1,
 -- 
 1.8.3.1
 
