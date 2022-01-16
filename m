@@ -2,94 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF6348FB28
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 07:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FF348FB44
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 07:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbiAPGBK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 01:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
+        id S231807AbiAPGtD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 01:49:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbiAPGBK (ORCPT
+        with ESMTP id S230195AbiAPGtD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 01:01:10 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F0FC061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jan 2022 22:01:09 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id n139so6206829ybg.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jan 2022 22:01:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lG3F2oeq5MiiUlFMZRyGKgQk8UyOnSaiNg+YHOkTHAo=;
-        b=StWi26o2+g9Se+lhrglbm5YKxx9QWumnTijBUP1nBdspqGftQ4KigDCsU4yEB95cr/
-         DxbzJ3UsHsDQKUI8+C/txSbwm3N+KVlIghSJ053U4QdWttFKqzNEfZicIr4Gn/cVJpCp
-         DxaMkdx8kLfqSdxki8pVDUzJHzB6L088AKAzDrgSPOy53EcXvuYxAZFOrK7MdHP/rZp7
-         caXXiwKlUlr39zJ2MAcAXSpedTYsU5UKJzRh+AOrINb+L9ALmjQ69mrMLzEGrVOxFAYV
-         58wPp6XKycYjW+aNmByaxfdr5DbpCgSKxvOQtzQ8bq7+miZB0Ik9uD9MVERUfXjISv+V
-         2b+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lG3F2oeq5MiiUlFMZRyGKgQk8UyOnSaiNg+YHOkTHAo=;
-        b=rNndc59hFLYN+hM6ZcZp5iB8g+7dxUAnRBFIx8BEqqUZa3YeVGu1UrzzPqqB2YUw0H
-         uzYt6I3ex5aufJB/ZlHzWacqEGbnXzbTV+cY7Ww9rWbvRMXhGir/CJr6nsq2LlWTqo1F
-         y+Gav+t1Foi/CPlqQthK/J8vhadiA7ctgWskvn7hLAxXJvbAhepWHJD2VtL4VgkIvooy
-         s1pbi15HLiKdJKqw2VnzpJ+TVVD7V/lbxPuN9/QM3IG8fiev2xqgFUWMObxvXHV3S92Z
-         cBTXT81LuiaFtc6x71DxR9RsqE6S6sscWcqA1GEo39EmBBNnw0cw/ANvj2qBKIgypJHM
-         4JRw==
-X-Gm-Message-State: AOAM532pzAb9gMVMmdGjKGf5ymHLvQ4Xs25pVUxjGnLeKlOlcGBm1Z6Q
-        EbBEtCQ0EHihMJg6/3F1Uqrd4FBHJEWmmX49928r8Q==
-X-Google-Smtp-Source: ABdhPJwLTx9eYhZ48b873wuLSOwES3a2JNOlHzIO6i5K8cy+X5FMP27WgLqRYaAANXoUvrVjAu0LIOgJ7cCstF02130=
-X-Received: by 2002:a25:bb07:: with SMTP id z7mr19414619ybg.509.1642312868763;
- Sat, 15 Jan 2022 22:01:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20220111072058.2qehmc7qip2mtkr4@stgulik> <CAJCQCtTKd_yMUa_Fr9bGuhPvfYWPuY0=Vs=-+k85gfZJqLK_FA@mail.gmail.com>
- <ba6db0c3-6605-d5d1-de04-051b9f099547@suse.com>
-In-Reply-To: <ba6db0c3-6605-d5d1-de04-051b9f099547@suse.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 15 Jan 2022 23:00:52 -0700
-Message-ID: <CAJCQCtSDt=Yk_ircs5jS6KVMUACRiMvZPzF4ePDuqfzOibe4xQ@mail.gmail.com>
-Subject: Re: unable to remove device due to enospc
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Ross Vandegrift <ross@kallisti.us>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Sun, 16 Jan 2022 01:49:03 -0500
+Received: from ravenhurst.kallisti.us (ravenhurst-smtp-tx.kallisti.us [IPv6:2600:3c03:e000:2e0::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23EDC061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jan 2022 22:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kallisti.us
+        ; s=20220106; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=0VJhzkUSRAMQZDmo6a5pppnYdpqxOAMdHI1LCz7tZvg=; b=OsAcI9wX5br6mdNQ79KOD/fEl1
+        AxgJf/XUDTtAca7NuBPJY+04a3pUfq5qk+qxlXbeTHZv6SWcTkMMZnktKNwdbN2UsYjZhs16dfhUY
+        OEd0sJDrDk6Ev8co5KPjAmm/bZink0hScmufWHTo6++KTU37UQ9C9RAtF3M3XKP8S2a6/+FtF9vI0
+        v4KeqDO9Rd64QEvg4Bba64/ZmWOCcCeqRe+afIkKXod/1B66GS/jM/U1NhHKPrO9LP+2VGf0KodkL
+        pK3VL3GliWMpBRpmHEWYE+srewVBiLNBVBhX/GzeHgurPHGWM/dSvnCiAk0h1xzhooaMtDWj/JArs
+        lf4rNo0g==;
+Received: from [50.46.16.53] (helo=stgulik)
+        by ravenhurst.kallisti.us with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ross@kallisti.us>)
+        id 1n8zLZ-00Fwim-I6; Sun, 16 Jan 2022 01:49:01 -0500
+Date:   Sat, 15 Jan 2022 22:48:57 -0800
+From:   Ross Vandegrift <ross@kallisti.us>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
         Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: unable to remove device due to enospc
+Message-ID: <20220116064857.axyfyppj5x5kpsa5@stgulik>
+References: <20220111072058.2qehmc7qip2mtkr4@stgulik>
+ <CAJCQCtTKd_yMUa_Fr9bGuhPvfYWPuY0=Vs=-+k85gfZJqLK_FA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJCQCtTKd_yMUa_Fr9bGuhPvfYWPuY0=Vs=-+k85gfZJqLK_FA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 15, 2022 at 5:42 PM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> On 2022/1/16 08:39, Chris Murphy wrote:
-> > On Tue, Jan 11, 2022 at 12:41 AM Ross Vandegrift <ross@kallisti.us> wrote:
-> >>
-> >> Unallocated:
-> >>     /dev/mapper/backup      7.24TiB
-> >>     /dev/mapper/backup_a    2.55TiB
-> >>     /dev/mapper/backup_b    2.55TiB
+On Sat, Jan 15, 2022 at 05:39:12PM -0700, Chris Murphy wrote:
+> On Tue, Jan 11, 2022 at 12:41 AM Ross Vandegrift <ross@kallisti.us> wrote:
 > >
-> > You might be running into this bug I mentioned today in another
-> > thread. It's an overcommit related bug where the initial overcommit is
-> > based on a single device's unallocated space, in this case the 7T
-> > device - but then later logic results in ENOSPC because there aren't
-> > two devices that can handle that amount of overcommit. If you  can
-> > remove /dev/mapper/backup, leaving just _a and _b with equal
-> > unallocated, then try to reproduce. If you can't, you've likely hit
-> > the bug I'm thinking of. If you still can, then you're hitting
-> > something different.
->
-> I tend to believe it's a bug related to recent flush bugs Josef is
-> trying to solve.
+> > Unallocated:
+> >    /dev/mapper/backup      7.24TiB
+> >    /dev/mapper/backup_a    2.55TiB
+> >    /dev/mapper/backup_b    2.55TiB
+> 
+> You might be running into this bug I mentioned today in another
+> thread. It's an overcommit related bug where the initial overcommit is
+> based on a single device's unallocated space, in this case the 7T
+> device - but then later logic results in ENOSPC because there aren't
+> two devices that can handle that amount of overcommit. If you  can
+> remove /dev/mapper/backup, leaving just _a and _b with equal
+> unallocated, then try to reproduce. If you can't, you've likely hit
+> the bug I'm thinking of. If you still can, then you're hitting
+> something different.
+> 
+> However, since these unallocated values are orders of magnitude bigger
+> than discussed in the other thread, and orders of magnitude more space
+> than is needed to successfully create new chunks on multiple devices -
+> I'm not sure. Also I'm not sure without going through the change log
+> for 5.15 and 5.16 if this is fixed in one of those so the easiest
+> thing to do is try and reproduce it with 5.16. If ENOSPC happens, then
+> try to remove the device with 7T unallocated.
 
-Hmm, how recent? OP reports this happening with 5.10 series.
+Same behavior with 5.16:
+
+$ uname -a
+Linux vanvanmojo 5.16.0 #3 SMP PREEMPT Sat Jan 15 21:39:38 PST 2022 x86_64 GNU/Linux
+$ sudo btrfs device remove /dev/mapper/backup /mnt/backup
+ERROR: error removing device '/dev/mapper/backup': No space left on device
+WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+WARNING:   Data: single, raid1
+$ sudo btrfs fi usage /mnt/backup
+Overall:
+    Device size:	          18.80TiB
+    Device allocated:	          12.52TiB
+    Device unallocated:	           6.27TiB
+    Device missing:	             0.00B
+    Used:		          12.47TiB
+    Free (estimated):	           3.17TiB	(min: 3.16TiB)
+    Free (statfs, df):	           5.63TiB
+    Data ratio:	                      1.99
+    Metadata ratio:	              2.00
+    Global reserve:	         512.00MiB	(used: 0.00B)
+    Multiple profiles:	               yes	(data)
+
+Data,single: Size:35.00GiB, Used:34.87GiB (99.63%)
+   /dev/mapper/backup	  35.00GiB
+
+Data,RAID1: Size:6.23TiB, Used:6.20TiB (99.57%)
+   /dev/mapper/backup_b    6.23TiB
+   /dev/mapper/backup_a    6.23TiB
+
+Metadata,RAID1: Size:16.00GiB, Used:14.85GiB (92.80%)
+   /dev/mapper/backup_b    16.00GiB
+   /dev/mapper/backup_a    16.00GiB
+
+System,RAID1: Size:32.00MiB, Used:900.00KiB (2.75%)
+   /dev/mapper/backup_b    32.00MiB
+   /dev/mapper/backup_a    32.00MiB
+
+Unallocated:
+   /dev/mapper/backup	 715.00GiB
+   /dev/mapper/backup_b    2.79TiB
+   /dev/mapper/backup_a    2.79TiB
 
 
--- 
-Chris Murphy
+Here's the dmesg output from the removal attempt:
+[  581.830800] BTRFS info (device dm-16): relocating block group 749505347584 flags data
+[  648.464705] BTRFS info (device dm-16): relocating block group 419866607616 flags data
+[  724.635005] BTRFS info (device dm-16): relocating block group 411276673024 flags data
+[  752.047813] BTRFS info (device dm-16): relocating block group 403760480256 flags data
+[  756.749221] BTRFS info (device dm-16): relocating block group 395170545664 flags data
+[  760.778891] BTRFS info (device dm-16): relocating block group 387654352896 flags data
+[  787.116859] BTRFS info (device dm-16): relocating block group 379064418304 flags data
+[  812.351256] BTRFS info (device dm-16): relocating block group 749505347584 flags data
+[  838.589207] BTRFS info (device dm-16): relocating block group 419866607616 flags data
+[  885.964951] BTRFS info (device dm-16): relocating block group 411276673024 flags data
+[  901.889074] BTRFS info (device dm-16): relocating block group 403760480256 flags data
+[  904.306416] BTRFS info (device dm-16): relocating block group 395170545664 flags data
+[  906.514675] BTRFS info (device dm-16): relocating block group 387654352896 flags data
+[  923.680623] BTRFS info (device dm-16): relocating block group 379064418304 flags data
+
+
+Ross
