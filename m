@@ -2,268 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BD148FBCC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944AC48FBCD
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbiAPIuS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 03:50:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        id S234528AbiAPIvM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 03:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbiAPIuR (ORCPT
+        with ESMTP id S230421AbiAPIvM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 03:50:17 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86F1C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:50:17 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id a5so6920873pfo.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:50:17 -0800 (PST)
+        Sun, 16 Jan 2022 03:51:12 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC08FC061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:51:11 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id y16-20020a17090a6c9000b001b13ffaa625so26516196pjj.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:51:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id;
-        bh=zN+XDftrgAUHFMiUX9svS8GFo19XMARuamUVJNyydnc=;
-        b=WA40ANAqHR25SxTE3F5rnerQBxi3aHLvquzS3PswkUgH8Au991IJ0ANg5AOc0IWztZ
-         kkIzYsrgRmisaY/Ne9Ud4ZOt8Zgj/yoATefxBlJnSahegswQkb6rPS4PIPnNhmfpBBHu
-         kHo2btJRiXhcUmuRdmXBsbV5mtt9MtZEkV4Bm1kLxr5KawDwW92UHvewn2AHro1995U9
-         NSkPb42Up1MvEd6GXNsRkkGywqpxh33XaFBSYK+3BGQyj9zD+8RP3+rd+y+jt+C6Y0WM
-         NsYurx46O+DzY4+bLil+AcThUrl2YMRVAPMTvFpsrpsqBFiDmhjqYsveEU4z+y13w4pu
-         PGpQ==
+        bh=Aj8k9+/OKTeZFkRxHYPidLp3FJBXLDv6NXCNj/xJqMw=;
+        b=c1B7NegVS6xaFrxmZ07aCC/AzCZunkf/NG2gi+ngiciFV/U53SK4W1GJmsIJcx369e
+         MWRJPRHZcx+ukAjWtfO9uVgsFCBwf2pmbjhTeVg1CjBWJ0+ybA/aY4Va4Dxq7eCe8uG1
+         OfWdAssZ0dHzkTwgVcMmQHlmRMSr0sJf0hNWzOOC2WXgoaN3pD5qmjoTMQNM46qW5Kqg
+         7lqkKv+NIvcXUjAt0aU5U94Sh+RXBSk42vG8Rtk1bERLPtEn2/UXMke2N+zqkCAhuepB
+         5SQbLwUeQjOIQ7tTZDsNRVL+gAiw//5iOW/GY/uFGyPjfAXGpXx1/shQP56rzdADxv+t
+         wDRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=zN+XDftrgAUHFMiUX9svS8GFo19XMARuamUVJNyydnc=;
-        b=05mxAoI8E7AJcPdbRqujiV52gwnmJA9Cd0BumiRhS9vTYgAYPUl6hIp9oWu+WKxe6G
-         I7ZulYIya15fYDbJDP+WoC3SPtbBKHr2z7RI+JrStlUffuoXD2UH+drYgv3WzL6grUDL
-         Tjfosqa9ZLoZkpgbGT0sg6icT8oedNDbfYHsb7I1t/eWIMXirmC7xwE2fUEtCoXEth6q
-         dktaM05wk3X7skyUVEAzUb4lPGR6BY9SHedm5ozA0kdTtFC7Hq9782alXmdIPQDsZwrA
-         R2ivjYNRY01fsC4a6w/48sQ68QnpTsFOJugKfhnLT9O/gZpfpXVv/kA2Z39txsn8PJBo
-         5e6Q==
-X-Gm-Message-State: AOAM530kuvO0iwoj3v/JwrMj0Fk1b9fYMU/zJfI1/SLYRJ9sl8WtfS7B
-        P4pYghgkbaoDQmZb+WfvQ2hC9TWsFFZau6sX
-X-Google-Smtp-Source: ABdhPJy0HdpZnuLJrmB2CiizMTqGNZxDKTTsOiUnQJazYf1PTTaF8FpKXB5FMmHfd9spXXT1saEZUw==
-X-Received: by 2002:a05:6a00:1a94:b0:4c3:a8f8:1e46 with SMTP id e20-20020a056a001a9400b004c3a8f81e46mr3487020pfv.2.1642323016979;
-        Sun, 16 Jan 2022 00:50:16 -0800 (PST)
+        bh=Aj8k9+/OKTeZFkRxHYPidLp3FJBXLDv6NXCNj/xJqMw=;
+        b=Qu2pnmrAQPfQ+XYHLEuPmAUQ5hy7wER5lYtAZj2wd+DSLcfp1N9KQ/zXD2Ue0N8k4m
+         yATWjD67b8Re2awg/0kF0RPDHeBmtbU4Ymdu46icBQC9TxC/zJvaeF5H4b1MffnDc2/o
+         OHIXEV7uZL7nA14xY7DEbHtHkohE8ElBpsET1FTL7IPIcOcJ6gohrFEUYCHNHfaMbKcc
+         GQ2jil+wHg5vODXDOAotpmAAVxlVwdmnTvLs0WURn4abNyuoj9rh1ieg52LwzCskHurL
+         Czsgtl6SBsK28+uD0pr19HsIaxxIfkODzR4VKxeWxwmzz6gHOkhy+8bDHljkHlx7rDOB
+         W4hg==
+X-Gm-Message-State: AOAM5327M6Lb4SGZdBbQkN1kJ8wIw/dAovMFPclrPxrypUQVHBiUBM5v
+        g5VJ4mVw8Tik/WhK+MC4XCjnq8zUhMTEc4yf
+X-Google-Smtp-Source: ABdhPJwCascWQNh94M4afHF++/YsWkA/FAQh75rbtCC/Ld8c3wfRoHU93uhQVMZ0cs3QgImju1cvhQ==
+X-Received: by 2002:a17:903:191:b0:14a:5a6d:e86e with SMTP id z17-20020a170903019100b0014a5a6de86emr16876847plg.111.1642323071018;
+        Sun, 16 Jan 2022 00:51:11 -0800 (PST)
 Received: from zllke.localdomain ([113.99.5.116])
-        by smtp.gmail.com with ESMTPSA id l2sm9849028pfe.189.2022.01.16.00.50.15
+        by smtp.gmail.com with ESMTPSA id c21sm667787pgw.41.2022.01.16.00.51.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Jan 2022 00:50:16 -0800 (PST)
+        Sun, 16 Jan 2022 00:51:10 -0800 (PST)
 From:   Li Zhang <zhanglikernel@gmail.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     zhanglikernel@gmail.com
-Subject: [PATCH 3/5] btrfs: Convert compression description strings into system flags.
-Date:   Sun, 16 Jan 2022 16:50:09 +0800
-Message-Id: <1642323009-1953-1-git-send-email-zhanglikernel@gmail.com>
+Subject: [PATCH 4/5] btrfs: Synchronize compression flag BTRFS_INODE_NOCOMPRESS with xattr.
+Date:   Sun, 16 Jan 2022 16:50:57 +0800
+Message-Id: <1642323057-2044-1-git-send-email-zhanglikernel@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-1. Calls the function in compress.c to Clean
-up the redundant code that parses the compression
-description string into system flags.
-
-2. Convert the compressed description string
-to a combination of compression type and compression level.
+1. If the btrfs_inode flag is set to BTRFS_INODE_NOCOMPRESS,
+insert axttr btrfs.compression=none.
 
 Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
 ---
- fs/btrfs/props.c | 52 +++++++++++++++++++++++----------
- fs/btrfs/super.c | 89 ++++++++++++++++++++++++--------------------------------
- 2 files changed, 74 insertions(+), 67 deletions(-)
+ fs/btrfs/ioctl.c | 36 ++++++++++++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-index 1a6d2d5..f07be37 100644
---- a/fs/btrfs/props.c
-+++ b/fs/btrfs/props.c
-@@ -272,13 +272,16 @@ static int prop_compression_apply(struct inode *inode, const char *value,
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	int type;
-+    char* clean_value;
-+    int ret;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index a5bd692..7036463 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -223,7 +223,8 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
+ 	struct btrfs_trans_handle *trans;
+ 	unsigned int fsflags, old_fsflags;
+ 	int ret;
+-	const char *comp = NULL;
++	const char *comp;
++    char comp_xattr_str[512];
+ 	u32 binode_flags;
  
- 	/* Reset to defaults */
- 	if (len == 0) {
- 		BTRFS_I(inode)->flags &= ~BTRFS_INODE_COMPRESS;
- 		BTRFS_I(inode)->flags &= ~BTRFS_INODE_NOCOMPRESS;
- 		BTRFS_I(inode)->prop_compress = BTRFS_COMPRESS_NONE;
--		return 0;
-+		ret = 0;
-+        goto out;
+ 	if (btrfs_root_readonly(root))
+@@ -304,13 +305,19 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
  	}
  
- 	/* Set NOCOMPRESS flag */
-@@ -287,27 +290,44 @@ static int prop_compression_apply(struct inode *inode, const char *value,
- 		BTRFS_I(inode)->flags |= BTRFS_INODE_NOCOMPRESS;
- 		BTRFS_I(inode)->flags &= ~BTRFS_INODE_COMPRESS;
- 		BTRFS_I(inode)->prop_compress = BTRFS_COMPRESS_NONE;
+ 	/*
+-	 * The COMPRESS flag can only be changed by users, while the NOCOMPRESS
+-	 * flag may be changed automatically if compression code won't make
+-	 * things smaller.
++	 * The COMPRESS and NOCOMPRESS flag can only be changed by users, while the 
++     * BTRFS_INODE_HEURISTIC_NOCOMPRESS flag may be changed automatically if 
++     * compression code won't make things smaller.
+ 	 */
++    memset(comp_xattr_str, 0, sizeof(comp_xattr_str));
+ 	if (fsflags & FS_NOCOMP_FL) {
+ 		binode_flags &= ~BTRFS_INODE_COMPRESS;
+ 		binode_flags |= BTRFS_INODE_NOCOMPRESS;
++        /*
++         * set xattr btrfs.compression to none if user set the NOCOMPRESS flag
++         */
++        strncpy(comp_xattr_str, "none", 5);
++        comp = comp_xattr_str;
+ 	} else if (fsflags & FS_COMPR_FL) {
+ 
+ 		if (IS_SWAPFILE(inode))
+@@ -318,10 +325,19 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
+ 
+ 		binode_flags |= BTRFS_INODE_COMPRESS;
+ 		binode_flags &= ~BTRFS_INODE_NOCOMPRESS;
 -
--		return 0;
-+        ret = 0;
-+        goto out;
+-		comp = btrfs_compress_type2str(fs_info->compress_type);
+-		if (!comp || comp[0] == 0)
+-			comp = btrfs_compress_type2str(BTRFS_COMPRESS_ZLIB);
++        /*
++         * set xattr btrfs.compression to filesystem specify compression type:level
++         */
++        comp = btrfs_compress_type_level2str(fs_info->compress_type, 
++            fs_info->compress_level, comp_xattr_str, sizeof(comp_xattr_str));
++        /*
++         * filesystem doesn't specify compression method, use default compression type
++         */
++        if(!comp || comp[0] == ':') {
++            btrfs_compress_type_level2str(BTRFS_COMPRESS_ZLIB,
++                BTRFS_ZLIB_DEFAULT_LEVEL, comp_xattr_str,
++                sizeof(comp_xattr_str));
++        }
+ 	} else {
+ 		binode_flags &= ~(BTRFS_INODE_COMPRESS | BTRFS_INODE_NOCOMPRESS);
  	}
+@@ -335,8 +351,8 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
+ 		return PTR_ERR(trans);
  
--	if (!strncmp("lzo", value, 3)) {
--		type = BTRFS_COMPRESS_LZO;
--		btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
--	} else if (!strncmp("zlib", value, 4)) {
--		type = BTRFS_COMPRESS_ZLIB;
--	} else if (!strncmp("zstd", value, 4)) {
--		type = BTRFS_COMPRESS_ZSTD;
--		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
--	} else {
--		return -EINVAL;
--	}
-+    /*
-+     * The value contains gibberish at the end, we should clean it up.
-+     */
-+    clean_value = kzalloc(len + 1, GFP_NOFS);
-+    if(!clean_value){
-+        ret = -ENOMEM;
-+        goto out;
-+    }
-+    strncpy(clean_value, value, len);
-+
-+    if(!btrfs_compress_is_valid_type(value, len)){
-+        ret = -EINVAL;
-+        goto free_clean_value;
-+    }
-+    type = btrfs_compress_str2type_level(clean_value, NULL, NULL);
-+    switch(btrfs_compress_type(type)){
-+        case BTRFS_COMPRESS_LZO:
-+		    btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
-+            break;
-+        case BTRFS_COMPRESS_ZSTD:
-+		    btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
-+            break;
-+        default:
-+            break;
-+    }
- 
- 	BTRFS_I(inode)->flags &= ~BTRFS_INODE_NOCOMPRESS;
- 	BTRFS_I(inode)->flags |= BTRFS_INODE_COMPRESS;
- 	BTRFS_I(inode)->prop_compress = type;
--
--	return 0;
-+    ret = 0;
-+free_clean_value:
-+    kfree(clean_value);
-+out:
-+	return ret;
- }
- 
- static const char *prop_compression_extract(struct inode *inode)
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 0ec09fe..fea7e2d 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -574,6 +574,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 	int saved_compress_level;
- 	bool saved_compress_force;
- 	int no_compress = 0;
-+    unsigned compress_type_flag, compress_level_flag;
- 
- 	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
- 		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
-@@ -660,62 +661,48 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			saved_compress_force =
- 				btrfs_test_opt(info, FORCE_COMPRESS);
- 			saved_compress_level = info->compress_level;
--			if (token == Opt_compress ||
--			    token == Opt_compress_force ||
--			    strncmp(args[0].from, "zlib", 4) == 0) {
--				compress_type = "zlib";
--
--				info->compress_type = BTRFS_COMPRESS_ZLIB;
--				info->compress_level = BTRFS_ZLIB_DEFAULT_LEVEL;
--				/*
--				 * args[0] contains uninitialized data since
--				 * for these tokens we don't expect any
--				 * parameter.
--				 */
--				if (token != Opt_compress &&
--				    token != Opt_compress_force)
--					info->compress_level =
--					  btrfs_compress_str2level(
--							BTRFS_COMPRESS_ZLIB,
--							args[0].from + 4);
--				btrfs_set_opt(info->mount_opt, COMPRESS);
--				btrfs_clear_opt(info->mount_opt, NODATACOW);
--				btrfs_clear_opt(info->mount_opt, NODATASUM);
--				no_compress = 0;
--			} else if (strncmp(args[0].from, "lzo", 3) == 0) {
--				compress_type = "lzo";
--				info->compress_type = BTRFS_COMPRESS_LZO;
-+            if( token == Opt_compress || token == Opt_compress_force ){
-+                /*
-+                 * defaule compression type
-+                 */
-+                compress_type = "zlib";
-+            } else {
-+                compress_type = args[0].from;
-+            }
-+            if(!strncmp(compress_type, "no", 2)){
-+                /*
-+                 * Handle no compression specially
-+                 */
-+                btrfs_clear_opt(info->mount_opt, COMPRESS);
-+                btrfs_clear_opt(info->mount_opt, FORCE_COMPRESS);
-+                compress_force = false;
-+				info->compress_type = 0;
- 				info->compress_level = 0;
-+                no_compress++;
-+            } else {
-+                if(!btrfs_compress_is_valid_type(
-+                    compress_type, strlen(compress_type))){
-+                    ret = -EINVAL;
-+                    goto out;
-+                }
-+                btrfs_compress_str2type_level(compress_type, 
-+                    &compress_type_flag, &compress_level_flag);
-+                switch(compress_type_flag){
-+                    case BTRFS_COMPRESS_ZSTD:
-+				        btrfs_set_fs_incompat(info, COMPRESS_ZSTD);
-+                        break;
-+                    case BTRFS_COMPRESS_LZO:
-+				        btrfs_set_fs_incompat(info, COMPRESS_LZO);
-+                        break;
-+                }
- 				btrfs_set_opt(info->mount_opt, COMPRESS);
- 				btrfs_clear_opt(info->mount_opt, NODATACOW);
- 				btrfs_clear_opt(info->mount_opt, NODATASUM);
--				btrfs_set_fs_incompat(info, COMPRESS_LZO);
--				no_compress = 0;
--			} else if (strncmp(args[0].from, "zstd", 4) == 0) {
--				compress_type = "zstd";
--				info->compress_type = BTRFS_COMPRESS_ZSTD;
--				info->compress_level =
--					btrfs_compress_str2level(
--							 BTRFS_COMPRESS_ZSTD,
--							 args[0].from + 4);
--				btrfs_set_opt(info->mount_opt, COMPRESS);
--				btrfs_clear_opt(info->mount_opt, NODATACOW);
--				btrfs_clear_opt(info->mount_opt, NODATASUM);
--				btrfs_set_fs_incompat(info, COMPRESS_ZSTD);
- 				no_compress = 0;
--			} else if (strncmp(args[0].from, "no", 2) == 0) {
--				compress_type = "no";
--				info->compress_level = 0;
--				info->compress_type = 0;
--				btrfs_clear_opt(info->mount_opt, COMPRESS);
--				btrfs_clear_opt(info->mount_opt, FORCE_COMPRESS);
--				compress_force = false;
--				no_compress++;
--			} else {
--				ret = -EINVAL;
--				goto out;
--			}
--
-+				info->compress_type = compress_type_flag;
-+				info->compress_level = compress_level_flag;
-+            }
-+            
- 			if (compress_force) {
- 				btrfs_set_opt(info->mount_opt, FORCE_COMPRESS);
- 			} else {
+ 	if (comp) {
+-		ret = btrfs_set_prop(trans, inode, "btrfs.compression", comp,
+-				     strlen(comp), 0);
++		ret = btrfs_set_prop(trans, inode, "btrfs.compression", comp_xattr_str,
++				     strlen(comp_xattr_str), 0);
+ 		if (ret) {
+ 			btrfs_abort_transaction(trans, ret);
+ 			goto out_end_trans;
 -- 
 1.8.3.1
 
