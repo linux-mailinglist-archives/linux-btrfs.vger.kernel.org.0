@@ -2,82 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF7C48FBD3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF6548FBFD
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 10:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbiAPIwz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 03:52:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbiAPIwz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 03:52:55 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AED1C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:52:55 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id v2so2250596ply.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:52:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=fWXmG3G/AdLsle2fnK1sbGtWRrxKDcIMnaXvPH/92No=;
-        b=GpJYW1GIs3EQt+SYlQux2eLjqdzoULo9vkvWgpwYBgGIjeBjvBBmgEo0WUYdAB8OCL
-         5LlseI1l3WK9y7lu7aQBjFIZfNzfac+ZwCAbhfTAd8LXw0LpMYhaucps67wFYAPK2FYy
-         PyXlkQlnPLW60RyrQuuDHxOD4rwSbaDOJDbCDKVCp41RQg8bh+S7laUtgIxbSteARTZQ
-         zau/ybCN5U/krbWXZv2cy5PjNvE+42aLl98DwUnuUtS+HcmJZ0ogA0+lGzSP3PfOXhOT
-         OB6c6zAy7afwvI6cUJ3P/gsewe3eaiH/UC1Sgo2o7zfx/IG1qo2wNmI4e3Zcb+IKvW4l
-         nKSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fWXmG3G/AdLsle2fnK1sbGtWRrxKDcIMnaXvPH/92No=;
-        b=agRXpn81O9gzJrdPTVJANRcym/jnuSlZz6K9tz3EzUKSGbiaG+AkxIvMDW7CPW7cay
-         wiEwlJ10fotvzVuhxb0h63+ZBaGf6KPxBUHTY4ZqEPHCjF5+8ouzjQ4jyKm4cztJA10j
-         UtxQN618ET7Ujonoto189vr8Sy2w6FjWrEzHj26m2NnliL7a6Mb29XP4OW0LFtvPeHkp
-         oiCXAtUejznHV3WP6RK61lhfsqgFOhdlsgupEkPgp/oVkdCWUKTcQfPZit7oXU5vMfZn
-         2qrxfL7n6FVJlOWJNUtG9AGgX6DNWGQUPZDfUdVe+k/Sw9NRVr66SmTYGDcyY73MQTCe
-         LsKQ==
-X-Gm-Message-State: AOAM533AYBDlBtPdXuXoL/sccJK4mqGPU2cb9Kwy4MrvFwDNUTQF3dp9
-        tlJ4p1XVzslMJC7o3BXM78Rm5PK+RNcIQeoP
-X-Google-Smtp-Source: ABdhPJySxmBECDnKiCF/BqkqSTJ1mBECeJ11fdHEZdB5jV4F9isY2oczEZ6s7RfEHJEbT8UVFUua3w==
-X-Received: by 2002:a17:90b:3ec5:: with SMTP id rm5mr6471655pjb.15.1642323174248;
-        Sun, 16 Jan 2022 00:52:54 -0800 (PST)
-Received: from zllke.localdomain ([113.99.5.116])
-        by smtp.gmail.com with ESMTPSA id o15sm7016775pfg.176.2022.01.16.00.52.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Jan 2022 00:52:53 -0800 (PST)
-From:   Li Zhang <zhanglikernel@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     zhanglikernel@gmail.com
-Subject: [PATCH] btrfs-progs: allow user to insert property compression=none to file.
-Date:   Sun, 16 Jan 2022 16:52:43 +0800
-Message-Id: <1642323163-2235-1-git-send-email-zhanglikernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234782AbiAPJbg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 04:31:36 -0500
+Received: from mout01.posteo.de ([185.67.36.65]:41099 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231261AbiAPJbf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 16 Jan 2022 04:31:35 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 5ED65240026
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 10:31:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1642325494; bh=60k5TUfkH2Q5KRT5poLsevPxIQ1jK5qJ9yHkrWDPPmg=;
+        h=Subject:To:Cc:From:Date:From;
+        b=K0rFIsqUnkTHeVXE4vFrcbu1ijMcjop4/WviYF7KtZdZGU9x4Os1c83yGsbLkRNC8
+         W9sjUu56QbHsBZ5vaX+7gCeJ38AZ0pvAvGWf1AeHUfQTa1EXZdBrF/I+yBdl5Twotq
+         iEHcxyBayjmSa6cTM4RhcQar+G/E3d6G55S4K4N/HSklmxu7DaeAOEVcBVt4+kbee3
+         jJDvQbps1GUyhrKnXpQ/9SKO4TjAjWCpTSR+I8GhVrW3atu+YkJzkiQcYhzmD/rgLP
+         l08wgTIIzvfHskvrQ7voQaxxoTKm/A8oDlMEKLZ5pZqUpEQ+s540n4dGDh5akgy9OO
+         yGvDL6QTT1VrQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Jc8tY0wj6z6tpL;
+        Sun, 16 Jan 2022 10:31:33 +0100 (CET)
+Subject: Re: 'btrfs check' doesn't find errors in corrupted old btrfs (corrupt
+ leaf, invalid tree level)
+To:     lists@colorremedies.com, linux-btrfs@vger.kernel.org
+Cc:     quwenruo.btrfs@gmx.com
+References: <6ed4cd5a-7430-f326-4056-25ae7eb44416@posteo.de>
+ <CAJCQCtSO6HqkpzHWWovgaGY0C0QYoxzyL-HSsRxX-qYU2ZXPVA@mail.gmail.com>
+From:   Stickstoff <stickstoff@posteo.de>
+Message-ID: <13d3ebcb-f261-35eb-0675-3cb199ad3643@posteo.de>
+Date:   Sun, 16 Jan 2022 09:31:30 +0000
+MIME-Version: 1.0
+In-Reply-To: <CAJCQCtSO6HqkpzHWWovgaGY0C0QYoxzyL-HSsRxX-qYU2ZXPVA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-1. If the user adds the property "compression=none" to the file,
-remove the code that converts the None string to an empty string.
+On 1/15/22 9:45 PM, Chris Murphy wrote:
+[..]
+> 
+> Take advantage of the fact you can mount the file system, and freshen
+> backups to prepare to abandon this file system. Depending on the
+> problem, it might be fixable with current btrfs-progs' btrfs check but
+> ... if it's extent tree damage it's going to take a really long time
+> to find out, and then only at the end when it either fails or makes
+> things worse do you find out.
 
-Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
----
- cmds/property.c | 2 --
- 1 file changed, 2 deletions(-)
+Yes, that would be the safest way. If I can still get all data off the fs, that is.
+I would remove one of the two drives from the raid, create a new btrfs, then btrfs-send
+the volume and its snapshots to the new fs. And eventually format and add the other
+drive to form a raid again.
+Would in this procedure btrfs-send detect any data corruption, and hopefully continue to send?
+Scrub did abort, and force the fs read-only, but didn't unmount it.
+Also, my backupscheme depends on btrfs-send and the IDs of snapshots. Migrating from the
+old corrupted fs to a fresh one with btrfs-send should keep all the IDs as they were,
+so my backupscheme would not see any difference when picking up with the new fs?
 
-diff --git a/cmds/property.c b/cmds/property.c
-index b3ccc0f..ec1b408 100644
---- a/cmds/property.c
-+++ b/cmds/property.c
-@@ -190,8 +190,6 @@ static int prop_compression(enum prop_object_type type,
- 	xattr_name[XATTR_BTRFS_PREFIX_LEN + strlen(name)] = '\0';
- 
- 	if (value) {
--		if (strcmp(value, "no") == 0 || strcmp(value, "none") == 0)
--			value = "";
- 		sret = fsetxattr(fd, xattr_name, value, strlen(value), 0);
- 	} else {
- 		sret = fgetxattr(fd, xattr_name, NULL, 0);
--- 
-1.8.3.1
+> Interesting that btrfs check doesn't see any problem, while the tree
+> checker does. That's its own bug somewhere...
+> 
+> Can you provide a complete dmesg of the read time tree checker error?
+> Ideally everything from mount to going read-only.
+
+I will gladly help with dissecting this if I can before deleting the corrupt fs.
+
+I didn't touch the machine or fs since yesterday, and it still sits there as I left it. A minute
+after mounting it the error was thrown in syslog, no new entry shows up since then in dmesg. The
+fs still seems to be rw. I'm a bit uneasy to leave it in rw and to trip the fallback to ro with scrub.
+Would that give new insights? I'll keep it in ro for now.
+
+Thank you,
+
+Stickstoff
+
+
+dmesg -T
+[..]
+[Sat Jan 15 13:34:44 2022] BTRFS info (device dm-1): flagging fs with big metadata feature
+[Sat Jan 15 13:34:44 2022] BTRFS info (device dm-1): disk space caching is enabled
+[Sat Jan 15 13:34:44 2022] BTRFS info (device dm-1): has skinny extents
+[Sat Jan 15 13:34:45 2022] BTRFS info (device dm-1): bdev /dev/mapper/123 errs: wr 0, rd 77, flush 0, corrupt 0, gen 0
+[Sat Jan 15 13:34:50 2022] BTRFS info (device dm-1): checking UUID tree
+[Sat Jan 15 13:35:31 2022] BTRFS critical (device dm-1): corrupt leaf: block=934474399744 slot=68 extent bytenr=425173254144 len=16384 invalid tree level, have 33554432 expect [0, 7]
+[Sat Jan 15 13:35:31 2022] BTRFS error (device dm-1): block=934474399744 read time tree block corruption detected
+[Sat Jan 15 13:35:31 2022] BTRFS critical (device dm-1): corrupt leaf: block=934474399744 slot=68 extent bytenr=425173254144 len=16384 invalid tree level, have 33554432 expect [0, 7]
+[Sat Jan 15 13:35:31 2022] BTRFS error (device dm-1): block=934474399744 read time tree block corruption detected
+[EOF]
+
+
+mount | grep raid
+/dev/mapper/123 on /media/raid type btrfs (rw,noatime,nodiratime,space_cache,subvolid=5,subvol=/)
 
