@@ -2,141 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944AC48FBCD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6458948FBCE
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbiAPIvM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 03:51:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
+        id S234536AbiAPIve (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 03:51:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbiAPIvM (ORCPT
+        with ESMTP id S230421AbiAPIvd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 03:51:12 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC08FC061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:51:11 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id y16-20020a17090a6c9000b001b13ffaa625so26516196pjj.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:51:11 -0800 (PST)
+        Sun, 16 Jan 2022 03:51:33 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FCCC061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:51:33 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id f144so6163246pfa.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:51:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id;
-        bh=Aj8k9+/OKTeZFkRxHYPidLp3FJBXLDv6NXCNj/xJqMw=;
-        b=c1B7NegVS6xaFrxmZ07aCC/AzCZunkf/NG2gi+ngiciFV/U53SK4W1GJmsIJcx369e
-         MWRJPRHZcx+ukAjWtfO9uVgsFCBwf2pmbjhTeVg1CjBWJ0+ybA/aY4Va4Dxq7eCe8uG1
-         OfWdAssZ0dHzkTwgVcMmQHlmRMSr0sJf0hNWzOOC2WXgoaN3pD5qmjoTMQNM46qW5Kqg
-         7lqkKv+NIvcXUjAt0aU5U94Sh+RXBSk42vG8Rtk1bERLPtEn2/UXMke2N+zqkCAhuepB
-         5SQbLwUeQjOIQ7tTZDsNRVL+gAiw//5iOW/GY/uFGyPjfAXGpXx1/shQP56rzdADxv+t
-         wDRw==
+        bh=ZA5kyCBNMxZ16dMYBW2Z9FsXO+BvPxsy2eLlwspomlw=;
+        b=hVugHvCfyveGVHi8HOHOh+QvQtZY2TcKWc2shZCmdBpRh4pma9kArS2Xr6njNjfOpY
+         nRBG8OEBYOVctol4vHx2lbDg83yyd5KBrBzEV3Rxsi1snt5DWuE2LkoRTXvBIY/rbgTy
+         jdPdD2IJtw0rODYwyqMLP/6HRFNyItk6gu82kg/2LqzwWSfXNDbuU89FuYYblOMk8d21
+         SwnXlQdszCB+5pF/r3RoK/ioCAcvxrf6TEiJUu/Q0wUoKFsugTFylHP+GMktuBOs6gP8
+         TSXT7+5LaXQj798qA9vIsQX+iyTCx+aPNOdt/iUby8FEWuLg/f6724E821iJ4tTJWAVd
+         Ml4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Aj8k9+/OKTeZFkRxHYPidLp3FJBXLDv6NXCNj/xJqMw=;
-        b=Qu2pnmrAQPfQ+XYHLEuPmAUQ5hy7wER5lYtAZj2wd+DSLcfp1N9KQ/zXD2Ue0N8k4m
-         yATWjD67b8Re2awg/0kF0RPDHeBmtbU4Ymdu46icBQC9TxC/zJvaeF5H4b1MffnDc2/o
-         OHIXEV7uZL7nA14xY7DEbHtHkohE8ElBpsET1FTL7IPIcOcJ6gohrFEUYCHNHfaMbKcc
-         GQ2jil+wHg5vODXDOAotpmAAVxlVwdmnTvLs0WURn4abNyuoj9rh1ieg52LwzCskHurL
-         Czsgtl6SBsK28+uD0pr19HsIaxxIfkODzR4VKxeWxwmzz6gHOkhy+8bDHljkHlx7rDOB
-         W4hg==
-X-Gm-Message-State: AOAM5327M6Lb4SGZdBbQkN1kJ8wIw/dAovMFPclrPxrypUQVHBiUBM5v
-        g5VJ4mVw8Tik/WhK+MC4XCjnq8zUhMTEc4yf
-X-Google-Smtp-Source: ABdhPJwCascWQNh94M4afHF++/YsWkA/FAQh75rbtCC/Ld8c3wfRoHU93uhQVMZ0cs3QgImju1cvhQ==
-X-Received: by 2002:a17:903:191:b0:14a:5a6d:e86e with SMTP id z17-20020a170903019100b0014a5a6de86emr16876847plg.111.1642323071018;
-        Sun, 16 Jan 2022 00:51:11 -0800 (PST)
+        bh=ZA5kyCBNMxZ16dMYBW2Z9FsXO+BvPxsy2eLlwspomlw=;
+        b=f7tlUBJ2ZrWW2e5PtkfgDvXTWNDEd7vqk7txMmLQkbh8Lo+bjrTHAa2bkovrL4i8zV
+         SAYihdLRdMEZ9aL0iGAV5JU78YwXPMlhNR6mczmGlQ2wYhBa36VEzRRjxC4e8216CBEu
+         1AejTl1f80Hdr31v9wlne8IF5vXysd3N8EA8AT6/opdLe8ta8AF0nEnu6IavPbF6S+xk
+         M2i2IQHLC7b2iZSdZvGWKiS/z7ZLfRjxkNihbSUB9k82XeRqRJjrK3N6Bh8gi6NxkR3o
+         XoQtHQYJxCKkNecGdNdbvku3xRLcvLwjmsSPbVaJbMF3lXuG27fc6mPch24nNlgEOzZE
+         atUQ==
+X-Gm-Message-State: AOAM532JR0P1HSJxht20v9AtOYlbhOQ5qC628lpla+CXHoPtmEMVO/M1
+        DcN7hv1Bd7wBos9jaeitqetppcbS/00SKQCz
+X-Google-Smtp-Source: ABdhPJxvYUw78fcUpJ7j7hX18s4xN27yJhd+MySr4AkjSbHSwVpM+qz6p6WbQh+et2t4xMve8dcIng==
+X-Received: by 2002:a63:9e01:: with SMTP id s1mr14513392pgd.45.1642323093004;
+        Sun, 16 Jan 2022 00:51:33 -0800 (PST)
 Received: from zllke.localdomain ([113.99.5.116])
-        by smtp.gmail.com with ESMTPSA id c21sm667787pgw.41.2022.01.16.00.51.09
+        by smtp.gmail.com with ESMTPSA id h3sm6484560pfg.18.2022.01.16.00.51.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Jan 2022 00:51:10 -0800 (PST)
+        Sun, 16 Jan 2022 00:51:32 -0800 (PST)
 From:   Li Zhang <zhanglikernel@gmail.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     zhanglikernel@gmail.com
-Subject: [PATCH 4/5] btrfs: Synchronize compression flag BTRFS_INODE_NOCOMPRESS with xattr.
-Date:   Sun, 16 Jan 2022 16:50:57 +0800
-Message-Id: <1642323057-2044-1-git-send-email-zhanglikernel@gmail.com>
+Subject: [PATCH 5/5] btrfs: Compresses files using a combination of compression type and compression level.
+Date:   Sun, 16 Jan 2022 16:51:23 +0800
+Message-Id: <1642323083-2088-1-git-send-email-zhanglikernel@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-1. If the btrfs_inode flag is set to BTRFS_INODE_NOCOMPRESS,
-insert axttr btrfs.compression=none.
+1. If the file is being defragmented, combine defrag_compress
+and fs_info compression_level (defrag_compress will be
+extended in the future).
+
+2. Extract the compression type btrfs_inode using and write to extent,
+because decompression does not need to know the compression level.
 
 Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
 ---
- fs/btrfs/ioctl.c | 36 ++++++++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+ fs/btrfs/inode.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a5bd692..7036463 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -223,7 +223,8 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
- 	struct btrfs_trans_handle *trans;
- 	unsigned int fsflags, old_fsflags;
- 	int ret;
--	const char *comp = NULL;
-+	const char *comp;
-+    char comp_xattr_str[512];
- 	u32 binode_flags;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 3fe485b..fb44899 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -602,7 +602,8 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 	unsigned long total_in = 0;
+ 	int i;
+ 	int will_compress;
+-	int compress_type = fs_info->compress_type;
++	int compress_type = btrfs_compress_combine_type_level(
++        fs_info->compress_type, fs_info -> compress_level);
+ 	int compressed_extents = 0;
+ 	int redirty = 0;
  
- 	if (btrfs_root_readonly(root))
-@@ -304,13 +305,19 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
- 	}
+@@ -683,7 +684,8 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 		}
  
- 	/*
--	 * The COMPRESS flag can only be changed by users, while the NOCOMPRESS
--	 * flag may be changed automatically if compression code won't make
--	 * things smaller.
-+	 * The COMPRESS and NOCOMPRESS flag can only be changed by users, while the 
-+     * BTRFS_INODE_HEURISTIC_NOCOMPRESS flag may be changed automatically if 
-+     * compression code won't make things smaller.
- 	 */
-+    memset(comp_xattr_str, 0, sizeof(comp_xattr_str));
- 	if (fsflags & FS_NOCOMP_FL) {
- 		binode_flags &= ~BTRFS_INODE_COMPRESS;
- 		binode_flags |= BTRFS_INODE_NOCOMPRESS;
-+        /*
-+         * set xattr btrfs.compression to none if user set the NOCOMPRESS flag
-+         */
-+        strncpy(comp_xattr_str, "none", 5);
-+        comp = comp_xattr_str;
- 	} else if (fsflags & FS_COMPR_FL) {
+ 		if (BTRFS_I(inode)->defrag_compress)
+-			compress_type = BTRFS_I(inode)->defrag_compress;
++            compress_type = btrfs_compress_combine_type_level(
++                BTRFS_I(inode)->defrag_compress, fs_info->compress_level);
+ 		else if (BTRFS_I(inode)->prop_compress)
+ 			compress_type = BTRFS_I(inode)->prop_compress;
  
- 		if (IS_SWAPFILE(inode))
-@@ -318,10 +325,19 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
+@@ -706,7 +708,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
  
- 		binode_flags |= BTRFS_INODE_COMPRESS;
- 		binode_flags &= ~BTRFS_INODE_NOCOMPRESS;
--
--		comp = btrfs_compress_type2str(fs_info->compress_type);
--		if (!comp || comp[0] == 0)
--			comp = btrfs_compress_type2str(BTRFS_COMPRESS_ZLIB);
-+        /*
-+         * set xattr btrfs.compression to filesystem specify compression type:level
-+         */
-+        comp = btrfs_compress_type_level2str(fs_info->compress_type, 
-+            fs_info->compress_level, comp_xattr_str, sizeof(comp_xattr_str));
-+        /*
-+         * filesystem doesn't specify compression method, use default compression type
-+         */
-+        if(!comp || comp[0] == ':') {
-+            btrfs_compress_type_level2str(BTRFS_COMPRESS_ZLIB,
-+                BTRFS_ZLIB_DEFAULT_LEVEL, comp_xattr_str,
-+                sizeof(comp_xattr_str));
-+        }
- 	} else {
- 		binode_flags &= ~(BTRFS_INODE_COMPRESS | BTRFS_INODE_NOCOMPRESS);
- 	}
-@@ -335,8 +351,8 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
- 		return PTR_ERR(trans);
+ 		/* Compression level is applied here and only here */
+ 		ret = btrfs_compress_pages(
+-			compress_type | (fs_info->compress_level << 4),
++			compress_type,
+ 					   inode->i_mapping, start,
+ 					   pages,
+ 					   &nr_pages,
+@@ -743,7 +745,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 			/* try making a compressed inline extent */
+ 			ret = cow_file_range_inline(BTRFS_I(inode), start, end,
+ 						    total_compressed,
+-						    compress_type, pages);
++						    btrfs_compress_type(compress_type), pages);
+ 		}
+ 		if (ret <= 0) {
+ 			unsigned long clear_flags = EXTENT_DELALLOC |
+@@ -808,10 +810,12 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 			 * The async work queues will take care of doing actual
+ 			 * allocation on disk for these compressed pages, and
+ 			 * will submit them to the elevator.
++             * It only need to record compression type, because decompress don't need
++             * to know compression level
+ 			 */
+ 			add_async_extent(async_chunk, start, total_in,
+ 					total_compressed, pages, nr_pages,
+-					compress_type);
++					btrfs_compress_type(compress_type));
  
- 	if (comp) {
--		ret = btrfs_set_prop(trans, inode, "btrfs.compression", comp,
--				     strlen(comp), 0);
-+		ret = btrfs_set_prop(trans, inode, "btrfs.compression", comp_xattr_str,
-+				     strlen(comp_xattr_str), 0);
- 		if (ret) {
- 			btrfs_abort_transaction(trans, ret);
- 			goto out_end_trans;
+ 			if (start + total_in < end) {
+ 				start += total_in;
 -- 
 1.8.3.1
 
