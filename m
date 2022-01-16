@@ -2,137 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FF348FB44
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 07:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944C848FBC9
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 09:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbiAPGtD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 01:49:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
+        id S234750AbiAPIsY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 03:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbiAPGtD (ORCPT
+        with ESMTP id S230421AbiAPIsY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 01:49:03 -0500
-Received: from ravenhurst.kallisti.us (ravenhurst-smtp-tx.kallisti.us [IPv6:2600:3c03:e000:2e0::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23EDC061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jan 2022 22:49:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kallisti.us
-        ; s=20220106; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=0VJhzkUSRAMQZDmo6a5pppnYdpqxOAMdHI1LCz7tZvg=; b=OsAcI9wX5br6mdNQ79KOD/fEl1
-        AxgJf/XUDTtAca7NuBPJY+04a3pUfq5qk+qxlXbeTHZv6SWcTkMMZnktKNwdbN2UsYjZhs16dfhUY
-        OEd0sJDrDk6Ev8co5KPjAmm/bZink0hScmufWHTo6++KTU37UQ9C9RAtF3M3XKP8S2a6/+FtF9vI0
-        v4KeqDO9Rd64QEvg4Bba64/ZmWOCcCeqRe+afIkKXod/1B66GS/jM/U1NhHKPrO9LP+2VGf0KodkL
-        pK3VL3GliWMpBRpmHEWYE+srewVBiLNBVBhX/GzeHgurPHGWM/dSvnCiAk0h1xzhooaMtDWj/JArs
-        lf4rNo0g==;
-Received: from [50.46.16.53] (helo=stgulik)
-        by ravenhurst.kallisti.us with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ross@kallisti.us>)
-        id 1n8zLZ-00Fwim-I6; Sun, 16 Jan 2022 01:49:01 -0500
-Date:   Sat, 15 Jan 2022 22:48:57 -0800
-From:   Ross Vandegrift <ross@kallisti.us>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: unable to remove device due to enospc
-Message-ID: <20220116064857.axyfyppj5x5kpsa5@stgulik>
-References: <20220111072058.2qehmc7qip2mtkr4@stgulik>
- <CAJCQCtTKd_yMUa_Fr9bGuhPvfYWPuY0=Vs=-+k85gfZJqLK_FA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtTKd_yMUa_Fr9bGuhPvfYWPuY0=Vs=-+k85gfZJqLK_FA@mail.gmail.com>
+        Sun, 16 Jan 2022 03:48:24 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB37C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:48:24 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id b1-20020a17090a990100b001b14bd47532so18386605pjp.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 00:48:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=2douapQcBw0dTMWjdQYC+iZvVQ7Mrh/bNb2bnZuq+GM=;
+        b=C3/bqvGFc5XLawlGwYGB+UkSJwuWDk+utRYDrpRqaOAB+SxgJaxsYhWVoKJtOqNCAP
+         yV8dws2KL0FzR1kSnQsLa22741Q0RTs3+zJgP1cR2nAZYd4peFWC7hUKKvNNl2aVI9Nl
+         Ips13Mqq+6orFRN6wuOak+saUdGm8x8pGaZl+ZrLGNxW2vaFPWLPezbhO9auXFAbaw7J
+         IMdNpq4ZqAiOLIFydDsra/tdG6kXm2tGqcoDiXKudIW8tCZlpgo5guuL0JpAbSaMLZr5
+         dk2umD5PzHbPJ56oqoP4mKloOzswm4lKQigIfk13KfQ+dCaRFGJBodKgvS0mh7KhFDXX
+         ZybQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2douapQcBw0dTMWjdQYC+iZvVQ7Mrh/bNb2bnZuq+GM=;
+        b=S9d6QVoQQsgNuPRR0OgUX9fvvR93DCRCzej80Noki36mDdlh0ItjR7kZjOe91f6U5i
+         LM0FYhuGIQrswajseVbeVj0I01Z2wGcPLwLOoQ+BDmEIsWCOD03jPXxo/Wq4eEh7iHB1
+         zpNUTwV8Noo9cZyMHFXZ1nwhxCBvfSS+ATN0wULzinVFjHd8VK8eqONdUIAOWYm0AQKY
+         t10W/uVOPLvdhWqixRz91SA/wY50EC2+SYMDm+LOtAeRD5gs0RfifEHfPPeB6/wMLzlB
+         MrgykASaO7VWw24n/buPgYTLL16yH7c/OBe4tdaIzJdnyScKnxlKXvqz+Jy0qbWllxfI
+         Hdpg==
+X-Gm-Message-State: AOAM532AQ9cAT6j+jBgiDvLzkkPaU51/3PZgkzldN9amhnM64xK32Vtk
+        DpyXBk2WYNk3AfA3XAorr/4a344k+eEPyYWJ
+X-Google-Smtp-Source: ABdhPJy+vq8KjbEiHIu/h7CoUYryFZqH/GrBSrRHXuNZ6hAO/AuTiPAlyUtJNS7DxG6VxJLxa/AucQ==
+X-Received: by 2002:a17:902:7681:b0:149:bb15:c53f with SMTP id m1-20020a170902768100b00149bb15c53fmr17102098pll.159.1642322903212;
+        Sun, 16 Jan 2022 00:48:23 -0800 (PST)
+Received: from zllke.localdomain ([113.99.5.116])
+        by smtp.gmail.com with ESMTPSA id s26sm5479978pgk.28.2022.01.16.00.48.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 16 Jan 2022 00:48:22 -0800 (PST)
+From:   Li Zhang <zhanglikernel@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     zhanglikernel@gmail.com
+Subject: [PATCH 0/5] btrfs: Cleanup BTRFS_INODE_NOCOMPRESS usage and extend 
+Date:   Sun, 16 Jan 2022 16:48:17 +0800
+Message-Id: <1642322897-1739-1-git-send-email-zhanglikernel@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 15, 2022 at 05:39:12PM -0700, Chris Murphy wrote:
-> On Tue, Jan 11, 2022 at 12:41 AM Ross Vandegrift <ross@kallisti.us> wrote:
-> >
-> > Unallocated:
-> >    /dev/mapper/backup      7.24TiB
-> >    /dev/mapper/backup_a    2.55TiB
-> >    /dev/mapper/backup_b    2.55TiB
-> 
-> You might be running into this bug I mentioned today in another
-> thread. It's an overcommit related bug where the initial overcommit is
-> based on a single device's unallocated space, in this case the 7T
-> device - but then later logic results in ENOSPC because there aren't
-> two devices that can handle that amount of overcommit. If you  can
-> remove /dev/mapper/backup, leaving just _a and _b with equal
-> unallocated, then try to reproduce. If you can't, you've likely hit
-> the bug I'm thinking of. If you still can, then you're hitting
-> something different.
-> 
-> However, since these unallocated values are orders of magnitude bigger
-> than discussed in the other thread, and orders of magnitude more space
-> than is needed to successfully create new chunks on multiple devices -
-> I'm not sure. Also I'm not sure without going through the change log
-> for 5.15 and 5.16 if this is fixed in one of those so the easiest
-> thing to do is try and reproduce it with 5.16. If ENOSPC happens, then
-> try to remove the device with 7T unallocated.
+[RELATED ISSUES]
+https://github.com/btrfs/btrfs-todo/issues/26
+https://github.com/kdave/btrfs-progs/issues/329
 
-Same behavior with 5.16:
+[QUESION DESCRIBTION]
+1. There are two ways to set BTRFS_INODE_NOCOMPRESS, 
+one is user command setting, chattr +m <file>, etc., 
+indicating that the file does not need to be compressed;
+the other is to set this flag by file system heuristic algorithm,
+the most common case is after compression The file gets bigger.
+We need a flag to distinguish the two cases.
 
-$ uname -a
-Linux vanvanmojo 5.16.0 #3 SMP PREEMPT Sat Jan 15 21:39:38 PST 2022 x86_64 GNU/Linux
-$ sudo btrfs device remove /dev/mapper/backup /mnt/backup
-ERROR: error removing device '/dev/mapper/backup': No space left on device
-WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-WARNING:   Data: single, raid1
-$ sudo btrfs fi usage /mnt/backup
-Overall:
-    Device size:	          18.80TiB
-    Device allocated:	          12.52TiB
-    Device unallocated:	           6.27TiB
-    Device missing:	             0.00B
-    Used:		          12.47TiB
-    Free (estimated):	           3.17TiB	(min: 3.16TiB)
-    Free (statfs, df):	           5.63TiB
-    Data ratio:	                      1.99
-    Metadata ratio:	              2.00
-    Global reserve:	         512.00MiB	(used: 0.00B)
-    Multiple profiles:	               yes	(data)
+2. If the user runs the command "chattr +c <file>"
+and then gets the properties of the file via 
+"btrfs property get <file>", the user can know the 
+compression type and level of the file, but if the 
+user runs "chattr +m <file>" to disable compressing
+the file, "btrfs property get <file>" will return an
+empty string, the user does not know if the file is
+set by the property to not compress.
 
-Data,single: Size:35.00GiB, Used:34.87GiB (99.63%)
-   /dev/mapper/backup	  35.00GiB
+3. The user can set the compression type and level of
+the file through the command
+"btrfs property set <file> compression <compression_type>:<compression_level>",
+but the compression_level does not seem to take effect.
+Because the btrfs_inode structure only contains
+the member prop_compress to record the compression type,
+not the compression level.
 
-Data,RAID1: Size:6.23TiB, Used:6.20TiB (99.57%)
-   /dev/mapper/backup_b    6.23TiB
-   /dev/mapper/backup_a    6.23TiB
+4. There is redundant code in super.c and props.c
+to parse the compressed string into a system flag,
+so some cleanup is required.
 
-Metadata,RAID1: Size:16.00GiB, Used:14.85GiB (92.80%)
-   /dev/mapper/backup_b    16.00GiB
-   /dev/mapper/backup_a    16.00GiB
+[SOLUTION]
+1. Introduce memory-only flag BTRFS_INODE_HEURISTIC_NOCOMPRESS,
+which will only remain in memory. This flag should be unset
+every time filesystem write to disk.
 
-System,RAID1: Size:32.00MiB, Used:900.00KiB (2.75%)
-   /dev/mapper/backup_b    32.00MiB
-   /dev/mapper/backup_a    32.00MiB
+2. If the flag BTRFS_NOCOMPRESS is set,
+insert compression "none" to the file xattr.
 
-Unallocated:
-   /dev/mapper/backup	 715.00GiB
-   /dev/mapper/backup_b    2.79TiB
-   /dev/mapper/backup_a    2.79TiB
+3. Extend the btrfs_inode struct member prop_compress
+to use the lowest 4 bits to record the compression type and
+5 - 8 bits to record the compression level.
 
+4. In both the files super.c and props.c there is a function that converts
+the compression description string to system flags(btrfs_parse_options for
+super.c, prop_compression_apply for props.c), move it to compress.c,
+my options are compress.c except for the compression type and level flags,
+no Need to know the other flags about filesystem,
+so I left the compress none property and the incompat flag in super.c and props.c.
 
-Here's the dmesg output from the removal attempt:
-[  581.830800] BTRFS info (device dm-16): relocating block group 749505347584 flags data
-[  648.464705] BTRFS info (device dm-16): relocating block group 419866607616 flags data
-[  724.635005] BTRFS info (device dm-16): relocating block group 411276673024 flags data
-[  752.047813] BTRFS info (device dm-16): relocating block group 403760480256 flags data
-[  756.749221] BTRFS info (device dm-16): relocating block group 395170545664 flags data
-[  760.778891] BTRFS info (device dm-16): relocating block group 387654352896 flags data
-[  787.116859] BTRFS info (device dm-16): relocating block group 379064418304 flags data
-[  812.351256] BTRFS info (device dm-16): relocating block group 749505347584 flags data
-[  838.589207] BTRFS info (device dm-16): relocating block group 419866607616 flags data
-[  885.964951] BTRFS info (device dm-16): relocating block group 411276673024 flags data
-[  901.889074] BTRFS info (device dm-16): relocating block group 403760480256 flags data
-[  904.306416] BTRFS info (device dm-16): relocating block group 395170545664 flags data
-[  906.514675] BTRFS info (device dm-16): relocating block group 387654352896 flags data
-[  923.680623] BTRFS info (device dm-16): relocating block group 379064418304 flags data
+[TEST PROGRAM]
+After I add patch, it use following two way to test wether my patch is correctly
+1.For BTRFS_INODE_HEURISTIC_NOCOMPRESS, to be honest,
+I tested a lot of data, but I didn't find any data to trigger this flag,
+because the condition for setting this flag is that the compressed file
+is larger than the original after compression,
+but I found that this function shannon_entropy has done the filtering Work.
 
+2. Run chattr +m <file>, get the attributes of <file>, and find that
+xattr compression=none.
 
-Ross
+3. First I test all compression types and compression levels,
+I write the file to the btrfs system (print the compression type
+and level with btrfs_info to make sure both values are valid), then
+use diff <btrfs_file> <original file>, it tells me both file is the same.
+Also, I compress the file with the btrfs filesystem version before adding the patch,
+and then read it through the patched version,
+the file can be read without errors and data corruption.
+
+[TODO]
+1. Extend btrfs_inode struct member defrag_compress to record compression type and level.
+
+Li Zhang (5):
+    btrfs: Introduce memory-only flag BTRFS_INODE_HEURISTIC_NOCOMPRESS.
+    btrfs: Introduce helper functions for compression.
+    btrfs: Convert compression description strings into system flags.
+    btrfs: Synchronize compression flag BTRFS_INODE_NOCOMPRESS with xattr.
+    
+ fs/btrfs/compression.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/compression.h | 14 ++++++++++++++
+ fs/btrfs/ctree.h       | 13 ++++++++++++-
+ fs/btrfs/inode.c       | 27 ++++++++++++++++++---------
+ fs/btrfs/ioctl.c       | 36 ++++++++++++++++++++++++++----------
+ fs/btrfs/props.c       | 52 ++++++++++++++++++++++++++++++++++++----------------
+ fs/btrfs/super.c       | 89 ++++++++++++++++++++++++++++++++++++++---------------------------------------------------
+ fs/btrfs/tree-log.c    |  8 ++++++--
+
+Yours sincerely
+Li Zhang
+
