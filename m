@@ -2,483 +2,1684 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DD948FE9C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 20:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D54A48FECF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jan 2022 21:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236036AbiAPTPo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 14:15:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236016AbiAPTPo (ORCPT
+        id S236092AbiAPUWy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 15:22:54 -0500
+Received: from santino.mail.tiscali.it ([213.205.33.245]:48572 "EHLO
+        smtp.tiscali.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231277AbiAPUWx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 14:15:44 -0500
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9839EC061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 11:15:43 -0800 (PST)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:105:465:1:3:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4JcPrY6gM7zQkj1
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 20:15:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1642360540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=JVqRsdoAEaDQa3E8sJdNM8TFJuSVBCLawUdeqVQRIo0=;
-        b=OnFl9tX3o8YPuUTU04n6QKyraWeB+K5ZboVoBOL0QUlsJrvjqp60ZMLTjYMOphSkGSnCPv
-        tRfe3Njp+uxLy552scVatCozI5uCMJDm/ApLFNpiJYW296z9T5Yvqi+Y91Zr+0iuUgVoOU
-        HjI+uonqck+/SvC5zuTL/xvy5mzrazyN1H5e4Onnfykky3UDUD0Cgu1BVGYfQpiEpgaxEq
-        gfukntvmxY4rLJdOiRT63ImQrNS9thGvm7dsyeHUtgtej5Qi7HAORhXXHvR0a8XB7hR13o
-        N/8XLfAJX1XG080PWdcKqHMMg2kzskLL5Lj2f5X/lIYObGimhhQoujWzNvDnOg==
-Message-ID: <0a269612-e43f-da22-c5bc-b34b1b56ebe8@mailbox.org>
-Date:   Sun, 16 Jan 2022 20:15:37 +0100
-MIME-Version: 1.0
-From:   Anthony Ruhier <aruhier@mailbox.org>
-Subject: btrfs fi defrag hangs on small files, 100% CPU thread
+        Sun, 16 Jan 2022 15:22:53 -0500
+Received: from venice.bhome ([84.220.25.125])
+        by santino.mail.tiscali.it with 
+        id jYNq260082hwt0401YNq3y; Sun, 16 Jan 2022 20:22:51 +0000
+X-Spam-Final-Verdict: clean
+X-Spam-State: 0
+X-Spam-Score: -100
+X-Spam-Verdict: clean
+x-auth-user: kreijack@tiscali.it
+From:   Goffredo Baroncelli <kreijack@tiscali.it>
 To:     linux-btrfs@vger.kernel.org
-Content-Language: en-US
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------htjZMcLDYyP0bARC4m70eEZj"
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+Subject: [PATCH][V10] xfstest: add tests for allocation_hint
+Date:   Sun, 16 Jan 2022 21:22:46 +0100
+Message-Id: <1f47c7fa7b1256ed33718bc646596d259b05f5a2.1642364491.git.kreijack@inwind.it>
+X-Mailer: git-send-email 2.34.1
+Reply-To: Goffredo Baroncelli <kreijack@libero.it>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
+        t=1642364571; bh=IbhIus+Jzz5v1XM4IlTHJGXFYUivXgwMHkF4ATCVXNU=;
+        h=From:To:Cc:Subject:Date:Reply-To;
+        b=UUb6BSoIAffJit8HpIQehBlYBP9XXSJZxWvUxNzpDrhjwe8tcvW4OV1HrTI3F0foi
+         hhR4YvNc9f0u+/UHkFNwuGzdAWBAc3PPnrQUKvTqEztD5HOpJEJQgv6vn/MU5tDK2N
+         QxydjuoeMZmY1F3LLcWiFdzVDj+OmOZwdbO55HqQ=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------htjZMcLDYyP0bARC4m70eEZj
-Content-Type: multipart/mixed; boundary="------------MNcLR0FwJnAbpcSuVfbOZ6TQ";
- protected-headers="v1"
-From: Anthony Ruhier <aruhier@mailbox.org>
-To: linux-btrfs@vger.kernel.org
-Message-ID: <0a269612-e43f-da22-c5bc-b34b1b56ebe8@mailbox.org>
-Subject: btrfs fi defrag hangs on small files, 100% CPU thread
+From: Goffredo Baroncelli <kreijack@inwind.it>
 
---------------MNcLR0FwJnAbpcSuVfbOZ6TQ
-Content-Type: multipart/mixed; boundary="------------cFTqs6DcY0rvfool39fojz5Q"
+Hi All,
 
---------------cFTqs6DcY0rvfool39fojz5Q
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+the enclosed patch adds tests to the xfstest suite to check the
+btrfs allocation_hint property.
 
-SGksDQpTaW5jZSBJIHVwZ3JhZGVkIGZyb20gbGludXggNS4xNSB0byA1LjE2LCBgYnRyZnMg
-ZmlsZXN5c3RlbSBkZWZyYWcgDQotdDEyOEtgIGhhbmdzIG9uIHNtYWxsIGZpbGVzICh+MSBi
-eXRlKSBhbmQgdHJpZ2dlcnMgd2hhdCBpdCBzZWVtcyB0byBiZSANCmEgbG9vcCBpbiB0aGUg
-a2VybmVsLiBJdCByZXN1bHRzIGluIG9uZSBDUFUgdGhyZWFkIHJ1bm5pbmcgYmVpbmcgdXNl
-ZCBhdCANCjEwMCUuIEkgY2Fubm90IGtpbGwgdGhlIHByb2Nlc3MsIGFuZCByZWJvb3Rpbmcg
-aXMgYmxvY2tlZCBieSBidHJmcy4NCkl0IGlzIGEgY29weSBvZiB0aGUgYnVnIGh0dHBzOi8v
-YnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MjE1NDk4DQoNClJlYm9vdGlu
-ZyB0byBsaW51eCA1LjE1IHNob3dzIG5vIGlzc3VlLiBJIGhhdmUgbm8gaXNzdWUgdG8gcnVu
-IGEgZGVmcmFnIA0Kb24gYmlnZ2VyIGZpbGVzIChJIGZpbHRlciBvdXQgZmlsZXMgc21hbGxl
-ciB0aGFuIDMuOUtCKS4NCg0KSSBoYWQgYSBjb252ZXJzYXRpb24gb24gI2J0cmZzIG9uIElS
-Qywgc28gaGVyZSdzIHdoYXQgd2UgZGVidWdnZWQ6DQoNCkkgY2FuIHJlcGxpY2F0ZSB0aGUg
-aXNzdWUgYnkgY29weWluZyBhIGZpbGUgaW1wYWN0ZWQgYnkgdGhpcyBidWcsIGJ5IA0KdXNp
-bmcgYGNwIC0tcmVmbGluaz1uZXZlcmAuIEkgYXR0YWNoZWQgb25lIG9mIHRoZSBpbXBhY3Rl
-ZCBmaWxlcyB0byB0aGlzIA0KYnVnLCBuYW1lZCBSRUFETUUubWQuDQoNClNvbWVvbmUgdG9s
-ZCBtZSB0aGF0IGl0IGNvdWxkIGJlIGEgYnVnIGR1ZSB0byB0aGUgaW5saW5lIGV4dGVudC4g
-U28gd2UgDQp0cmllZCB0byBjaGVjayB0aGF0Lg0KDQpmaWxlZnJhZyBzaG93cyB0aGF0IHRo
-ZSBmaWxlIFJlYWRtZS5tZCBpcyAxIGlubGluZSBleHRlbnQuIEkgdHJpZWQgdG8gDQpjcmVh
-dGUgYSBuZXcgZmlsZSB3aXRoIHJhbmRvbSB0ZXh0LCBvZiAxOCBieXRlcyAoc2xpZ2h0bHkg
-YmlnZ2VyIHRoYW4gDQp0aGUgb3RoZXIgZmlsZSksIHRoYXQgaXMgYWxzbyAxIGlubGluZSBl
-eHRlbnQuIFRoaXMgZmlsZSBkb2Vzbid0IHRyaWdnZXIgDQp0aGUgYnVnIGFuZCBoYXMgbm8g
-aXNzdWUgdG8gYmUgZGVmcmFnbWVudGVkLg0KDQpJIHRyaWVkIHRvIG1vdW50IG15IHN5c3Rl
-bSB3aXRoIGBtYXhfaW5saW5lPTBgLCBjcmVhdGVkIGEgY29weSBvZiANClJFQURNRS5tZC4g
-YGZpbGVmcmFnYCBzaG93cyBtZSB0aGF0IHRoZSBuZXcgZmlsZSBpcyBub3cgMSBleHRlbnQs
-IG5vdCANCmlubGluZS4gVGhpcyBuZXcgZmlsZSBhbHNvIHRyaWdnZXJzIHRoZSBidWcsIHNv
-IGl0IGRvZXNuJ3Qgc2VlbSB0byBiZSANCmR1ZSB0byB0aGUgaW5saW5lIGV4dGVudC4NCg0K
-U29tZW9uZSBhc2tlZCBtZSB0byBwcm92aWRlIHRoZSBvdXRwdXQgb2YgYSBwZXJmIHRvcCB3
-aGVuIHRoZSBkZWZyYWcgaXMgDQpzdHVjazoNCg0KIMKgwqDCoCAyOC43MCXCoCBba2VybmVs
-XcKgwqDCoMKgwqDCoMKgwqDCoCBba10gZ2VuZXJpY19iaW5fc2VhcmNoDQogwqDCoMKgIDE0
-LjkwJcKgIFtrZXJuZWxdwqDCoMKgwqDCoMKgwqDCoMKgIFtrXSBmcmVlX2V4dGVudF9idWZm
-ZXINCiDCoMKgwqAgMTMuMTclwqAgW2tlcm5lbF3CoMKgwqDCoMKgwqDCoMKgwqAgW2tdIGJ0
-cmZzX3NlYXJjaF9zbG90DQogwqDCoMKgIDEyLjYzJcKgIFtrZXJuZWxdwqDCoMKgwqDCoMKg
-wqDCoMKgIFtrXSBidHJmc19yb290X25vZGUNCiDCoMKgwqDCoCA4LjMzJcKgIFtrZXJuZWxd
-wqDCoMKgwqDCoMKgwqDCoMKgIFtrXSBidHJmc19nZXRfNjQNCiDCoMKgwqDCoCAzLjg4JcKg
-IFtrZXJuZWxdwqDCoMKgwqDCoMKgwqDCoMKgIFtrXSBfX2Rvd25fcmVhZF9jb21tb24ubGx2
-bQ0KIMKgwqDCoMKgIDMuMDAlwqAgW2tlcm5lbF3CoMKgwqDCoMKgwqDCoMKgwqAgW2tdIHVw
-X3JlYWQNCiDCoMKgwqDCoCAyLjYzJcKgIFtrZXJuZWxdwqDCoMKgwqDCoMKgwqDCoMKgIFtr
-XSByZWFkX2Jsb2NrX2Zvcl9zZWFyY2gNCiDCoMKgwqDCoCAyLjQwJcKgIFtrZXJuZWxdwqDC
-oMKgwqDCoMKgwqDCoMKgIFtrXSByZWFkX2V4dGVudF9idWZmZXINCiDCoMKgwqDCoCAxLjM4
-JcKgIFtrZXJuZWxdwqDCoMKgwqDCoMKgwqDCoMKgIFtrXSBtZW1zZXRfZXJtcw0KIMKgwqDC
-oMKgIDEuMTElwqAgW2tlcm5lbF3CoMKgwqDCoMKgwqDCoMKgwqAgW2tdIGZpbmRfZXh0ZW50
-X2J1ZmZlcg0KIMKgwqDCoMKgIDAuNjklwqAgW2tlcm5lbF3CoMKgwqDCoMKgwqDCoMKgwqAg
-W2tdIGttZW1fY2FjaGVfZnJlZQ0KIMKgwqDCoMKgIDAuNjklwqAgW2tlcm5lbF3CoMKgwqDC
-oMKgwqDCoMKgwqAgW2tdIG1lbWNweV9lcm1zDQogwqDCoMKgwqAgMC41NyXCoCBba2VybmVs
-XcKgwqDCoMKgwqDCoMKgwqDCoCBba10ga21lbV9jYWNoZV9hbGxvYw0KIMKgwqDCoMKgIDAu
-NDUlwqAgW2tlcm5lbF3CoMKgwqDCoMKgwqDCoMKgwqAgW2tdIHJhZGl4X3RyZWVfbG9va3Vw
-DQoNCkkgY2FuIHJlcHJvZHVjZSB0aGUgYnVnIG9uIDIgZGlmZmVyZW50IG1hY2hpbmVzLCBy
-dW5uaW5nIDIgZGlmZmVyZW50IA0KbGludXggZGlzdHJpYnV0aW9ucyAoQXJjaCBhbmQgR2Vu
-dG9vKSB3aXRoIDIgZGlmZmVyZW50IGtlcm5lbCBjb25maWdzLg0KVGhpcyBrZXJuZWwgaXMg
-Y29tcGlsZWQgd2l0aCBjbGFuZywgdGhlIG90aGVyIHdpdGggR0NDLg0KDQpLZXJuZWwgdmVy
-c2lvbjogNS4xNi4wDQpNb3VudCBvcHRpb25zOg0KIMKgwqDCoCBNYWNoaW5lIDE6IA0Kcncs
-bm9hdGltZSxjb21wcmVzcy1mb3JjZT16c3RkOjIsc3NkLGRpc2NhcmQ9YXN5bmMsc3BhY2Vf
-Y2FjaGU9djIsYXV0b2RlZnJhZw0KIMKgwqDCoCBNYWNoaW5lIDI6IHJ3LG5vYXRpbWUsY29t
-cHJlc3MtZm9yY2U9enN0ZDozLG5vc3NkLHNwYWNlX2NhY2hlPXYyDQoNCldoZW4gdGhlIGVy
-cm9yIGhhcHBlbnMsIG5vIG1lc3NhZ2UgaXMgc2hvd24gaW4gZG1lc2cuDQoNClRoYW5rcywN
-CkFudGhvbnkgUnVoaWVyDQoNCg==
---------------cFTqs6DcY0rvfool39fojz5Q
-Content-Type: text/markdown; charset=UTF-8; name="README.md"
-Content-Disposition: attachment; filename="README.md"
-Content-Transfer-Encoding: base64
+Each test creates file and fills the different disks, up to
+trigger a new BG data (or metadata) allocation. Then the
+test checks if the allocation if the new BG is perfomed
+in the new disk.
 
-IA==
---------------cFTqs6DcY0rvfool39fojz5Q
-Content-Type: application/pgp-keys; name="OpenPGP_0xB00FBC7D08D231D9.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB00FBC7D08D231D9.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+Because we need to fill an entire disk, the tests are performed
+on some device-mapper slices of $SCRATCH_DEV. The slices have
+a length of 1GB (512MB for test 262/263)
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+This is my first xfstest patches, so I expected to do a lot
+of error :-); a deeply review is appreciated.
 
-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
-QwMfVQ=3D=3D
-=3DYmku
------END PGP PUBLIC KEY BLOCK-----
+Test 263 and 262 are quite long (about 5-8 minutes on my virtual
+machine with sync disabled). This because I need to fill a 512MB
+disk of metadata. The only way to do that is to fill the disk with
+a lot of 2k size files. This is very slow. If someone has a better
+way to do that, it is very appreciated.
 
---------------cFTqs6DcY0rvfool39fojz5Q--
+I added a V10 tag because the allocation_hint patch set is in
+the 10th revision.
 
---------------MNcLR0FwJnAbpcSuVfbOZ6TQ--
+BR
+G.Baroncelli
 
---------------htjZMcLDYyP0bARC4m70eEZj
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+ 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
------BEGIN PGP SIGNATURE-----
+---
+ common/btrfs        |  87 ++++++++++++++++++++++++
+ doc/group-names.txt |   1 +
+ tests/btrfs/255     | 120 +++++++++++++++++++++++++++++++++
+ tests/btrfs/255.out |   3 +
+ tests/btrfs/256     | 123 ++++++++++++++++++++++++++++++++++
+ tests/btrfs/256.out |   3 +
+ tests/btrfs/257     | 123 ++++++++++++++++++++++++++++++++++
+ tests/btrfs/257.out |   3 +
+ tests/btrfs/258     | 126 +++++++++++++++++++++++++++++++++++
+ tests/btrfs/258.out |   3 +
+ tests/btrfs/259     | 139 ++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/259.out |   5 ++
+ tests/btrfs/260     | 158 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/260.out |   3 +
+ tests/btrfs/261     | 144 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/261.out |   3 +
+ tests/btrfs/262     | 121 +++++++++++++++++++++++++++++++++
+ tests/btrfs/262.out |   3 +
+ tests/btrfs/263     | 123 ++++++++++++++++++++++++++++++++++
+ tests/btrfs/263.out |   3 +
+ tests/btrfs/264     | 121 +++++++++++++++++++++++++++++++++
+ tests/btrfs/264.out |   3 +
+ 22 files changed, 1418 insertions(+)
+ create mode 100755 tests/btrfs/255
+ create mode 100644 tests/btrfs/255.out
+ create mode 100755 tests/btrfs/256
+ create mode 100644 tests/btrfs/256.out
+ create mode 100755 tests/btrfs/257
+ create mode 100644 tests/btrfs/257.out
+ create mode 100755 tests/btrfs/258
+ create mode 100644 tests/btrfs/258.out
+ create mode 100755 tests/btrfs/259
+ create mode 100644 tests/btrfs/259.out
+ create mode 100755 tests/btrfs/260
+ create mode 100644 tests/btrfs/260.out
+ create mode 100755 tests/btrfs/261
+ create mode 100755 tests/btrfs/261.out
+ create mode 100755 tests/btrfs/262
+ create mode 100644 tests/btrfs/262.out
+ create mode 100755 tests/btrfs/263
+ create mode 100644 tests/btrfs/263.out
+ create mode 100755 tests/btrfs/264
+ create mode 100644 tests/btrfs/264.out
 
-iHUEARYKAB0WIQTNQhfAcx4Jlo6lbanXMzk8hoTszwUCYeRu2QAKCRDXMzk8hoTs
-z40DAQDycdX6c22S1xqgdhHMBUxBX8guqUrsjF0zmBLyF/1neAD/f3jndoZJ8yvv
-2G0ZQal3g0r2YIQFRUn3qMFlQHENFQA=
-=nIku
------END PGP SIGNATURE-----
+diff --git a/common/btrfs b/common/btrfs
+index 4afe81eb..a4f1947a 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -480,3 +480,90 @@ _btrfs_no_v1_cache_opt()
+ 	fi
+ 	echo -n "-onospace_cache"
+ }
++
++# Test if a property is available
++_require_btrfs_property_get()
++{
++	local propname
++
++	[ $# -eq 1 ] || _fail "_require_btrfs_get_property: expected property name as param"
++
++	propname="$1"
++	$BTRFS_UTIL_PROG property get $SCRATCH_DEV "$propname" |
++		grep -q "ERROR: unknown property" &&
++		_notrun "Need btrfs property '$propname' support"
++}
++
++__dump_bg_data_info() {
++	local dir=$1
++	$BTRFS_UTIL_PROG fi us -b $dir | awk '
++		/^$/    { flag=0 }
++		        { if(flag) print $0 }
++		/^Data/ { flag=1 }
++	'
++}
++
++__dump_bg_metadata_info() {
++	local dir=$1
++	$BTRFS_UTIL_PROG fi us -b $dir | awk '
++		/^$/        { flag=0 }
++		            { if(flag) print $0 }
++		/^Metadata/ { flag=1 }
++	'
++}
++
++# check if a disk not contains data bg
++btrfs_check_data_bg_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_data_info $mnt)"
++	while [ -n "$1" ]; do
++		if ! echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should contain a DATA BG"
++		fi
++		shift
++	done
++}
++
++# check if a disk not contains data bg
++btrfs_check_data_bg_not_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_data_info $mnt)"
++	while [ -n "$1" ]; do
++		if echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should not contain a DATA BG"
++		fi
++		shift
++	done
++}
++
++# check if a disk contains metadata bg
++btrfs_check_metadata_bg_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_metadata_info $mnt)"
++	while [ -n "$1" ]; do
++		if ! echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should contain a METADATA BG"
++		fi
++		shift
++	done
++}
++
++# check if a disk not contains metadata bg
++btrfs_check_metadata_bg_not_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_metadata_info $mnt)"
++	while [ -n "$1" ]; do
++		if echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should not contain a METADATA BG"
++		fi
++		shift
++	done
++}
+diff --git a/doc/group-names.txt b/doc/group-names.txt
+index e8e3477e..bbb83046 100644
+--- a/doc/group-names.txt
++++ b/doc/group-names.txt
+@@ -132,4 +132,5 @@ whiteout		overlayfs whiteout functionality
+ xino			overlayfs xino feature
+ zero			fallocate FALLOC_FL_ZERO_RANGE
+ zone			zoned (SMR) device support
++allocation_hint		allocation_hint property (BTRFS only)
+ ======================= =======================================================
+diff --git a/tests/btrfs/255 b/tests/btrfs/255
+new file mode 100755
+index 00000000..5efa961c
+--- /dev/null
++++ b/tests/btrfs/255
+@@ -0,0 +1,120 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 255
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file and check that the Data BG is in the correct disk
++#
++test_single_preferred_data() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x $(($MAXSIZE / 2)) )
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_preferred_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/255.out b/tests/btrfs/255.out
+new file mode 100644
+index 00000000..62800619
+--- /dev/null
++++ b/tests/btrfs/255.out
+@@ -0,0 +1,3 @@
++QA output created by 255
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/256 b/tests/btrfs/256
+new file mode 100755
+index 00000000..262b497b
+--- /dev/null
++++ b/tests/btrfs/256
+@@ -0,0 +1,123 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 256
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++UUID=292afefb-6e8c-4fb3-9d12-8c4ecb1f238c
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# mark some disks as DATA_PREFERRED and check that these are the only one used
++#
++test_raid1_preferred_data() {
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev  -U $UUID -draid1 -mraid1 $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2)  allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3)  allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x $(($MAXSIZE / 2)) )
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev2 $blkdev3
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0 $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_preferred_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/256.out b/tests/btrfs/256.out
+new file mode 100644
+index 00000000..85efa3dd
+--- /dev/null
++++ b/tests/btrfs/256.out
+@@ -0,0 +1,3 @@
++QA output created by 256
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/257 b/tests/btrfs/257
+new file mode 100755
+index 00000000..c349fb68
+--- /dev/null
++++ b/tests/btrfs/257
+@@ -0,0 +1,123 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 257
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file and check that the Data BG is in the correct disk
++#
++test_single_data_only() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file)
++
++	[ $size -gt $(($MAXSIZE * 2 * 2 / 3 )) ] && _fail "File too big: check mnt/"
++	[ $size -lt $(($MAXSIZE * 2 / 3 )) ] && _fail "File too small: check mnt/"
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_data_only
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/257.out b/tests/btrfs/257.out
+new file mode 100644
+index 00000000..0fc19614
+--- /dev/null
++++ b/tests/btrfs/257.out
+@@ -0,0 +1,3 @@
++QA output created by 257
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/258 b/tests/btrfs/258
+new file mode 100755
+index 00000000..dd5aa663
+--- /dev/null
++++ b/tests/btrfs/258
+@@ -0,0 +1,126 @@
++##! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 258
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++#	fill a filesystem with disks tagged METADATA/DATA ONLY and check that only the
++#	latter are used
++#
++test_raid1_data_only() {
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -draid1 -mraid1 $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0)  allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1)  allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2)  allocation_hint DATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3)  allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x )
++
++	[ $size -gt $(($MAXSIZE * 2 * 2 / 3 )) ] && _fail "File too big: check mnt/"
++	[ $size -lt $(($MAXSIZE * 2 / 3 )) ] && _fail "File too small: check mnt/"
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev2 $blkdev3
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0 $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_data_only
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/258.out b/tests/btrfs/258.out
+new file mode 100644
+index 00000000..36c5288a
+--- /dev/null
++++ b/tests/btrfs/258.out
+@@ -0,0 +1,3 @@
++QA output created by 258
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/259 b/tests/btrfs/259
+new file mode 100755
+index 00000000..a2f3ce18
+--- /dev/null
++++ b/tests/btrfs/259
+@@ -0,0 +1,139 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 259
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=2048
++	$WIPEFS_PROG -a $SCRATCH_DEV
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file , switch the METADATA_ONLY <-> DATA_ONLY disk and check
++# that the data-bg are stored in the data disk
++#
++test_single_data_bouncing() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x  $(($MAXSIZE * 2 / 4 )))
++
++	[ $size -gt $(($MAXSIZE * 2 / 3 )) ] && _fail "File too big: check mnt/"
++	[ $size -lt $(($MAXSIZE * 1 / 3 )) ] && _fail "File too small: check mnt/"
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev0
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_data_bouncing
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/259.out b/tests/btrfs/259.out
+new file mode 100644
+index 00000000..c3547c6a
+--- /dev/null
++++ b/tests/btrfs/259.out
+@@ -0,0 +1,5 @@
++QA output created by 259
++Done, had to relocate 3 out of 3 chunks
++Done, had to relocate 5 out of 5 chunks
++Done, had to relocate 5 out of 5 chunks
++Silence is golden
+diff --git a/tests/btrfs/260 b/tests/btrfs/260
+new file mode 100755
+index 00000000..949d7abc
+--- /dev/null
++++ b/tests/btrfs/260
+@@ -0,0 +1,158 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 260
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=2048
++	$WIPEFS_PROG -a $SCRATCH_DEV
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create files that consume the space avaiable on the disks, and check
++# that the order of allocation is maintained
++#
++test_single_progressive_fill_data() {
++
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -dsingle -msingle $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2) allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x  $(( $MAXSIZE / 3 )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev1 $blkdev2 $blkdev0
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill $blkdev3 then $blkdev2
++
++    size=$(create_file y  $(( $MAXSIZE )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev1 $blkdev0
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill $blkdev3 then $blkdev2, then $blkdev1
++
++    size=$(create_file z  $(( $MAXSIZE )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2 $blkdev1
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev0
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill the disk
++
++    size=$(create_file w  )
++
++	# when the disk is filled not balance is possible
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2 $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev0
++
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_progressive_fill_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/260.out b/tests/btrfs/260.out
+new file mode 100644
+index 00000000..1476ce8f
+--- /dev/null
++++ b/tests/btrfs/260.out
+@@ -0,0 +1,3 @@
++QA output created by 260
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/261 b/tests/btrfs/261
+new file mode 100755
+index 00000000..080f8b4d
+--- /dev/null
++++ b/tests/btrfs/261
+@@ -0,0 +1,144 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 261
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=5
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=2048
++	$WIPEFS_PROG -a $SCRATCH_DEV
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create files that consume the space avaiable on the disks, and check
++# that the order of allocation is maintained
++#
++test_raid1_progressive_fill_data() {
++
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	blkdev4=$(echo $disks | awk '{ print $5 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -dRAID1 -msingle $blkdev0 $blkdev1 $blkdev2 $blkdev3 $blkdev4
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2) allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3) allocation_hint DATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev4) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x  $(( $MAXSIZE / 5 )))
++
++	# fill $blkdev3 $blkdev4
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev4
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev1 $blkdev2 $blkdev0
++
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill $blkdev3 $blkdev4, then $blkdev1 and $blkdev2
++    size=$(create_file y  $(( $MAXSIZE )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2 $blkdev4 $blkdev1
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev0
++
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_progressive_fill_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/261.out b/tests/btrfs/261.out
+new file mode 100755
+index 00000000..eadc8a4e
+--- /dev/null
++++ b/tests/btrfs/261.out
+@@ -0,0 +1,3 @@
++QA output created by 261
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/262 b/tests/btrfs/262
+new file mode 100755
+index 00000000..82d2b5a9
+--- /dev/null
++++ b/tests/btrfs/262
+@@ -0,0 +1,121 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 262
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((512*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_small_file() {
++	local fn=$SCRATCH_MNT/small-file-$1
++	local size=$2
++	dd if=/dev/zero of=$fn bs=$size oflag=direct count=1 &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# near fill all the metadata dedicated disk, and check that the data dedicated
++# is unused
++#
++test_single_preferred_metadata_slow() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	# create files that fit in the metadata node (i.e. size <= 2048 bytes)
++	# fill up to 7/10 of a disk
++	fnsize=2048
++	for i in $(seq $(( $MAXSIZE / $fnsize * 700 / 1000))); do
++		create_small_file $i $fnsize &>/dev/null
++	done
++
++	btrfs_check_metadata_bg_in_disk $SCRATCH_MNT $blkdev0
++	btrfs_check_metadata_bg_not_in_disk $SCRATCH_MNT $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_preferred_metadata_slow
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/262.out b/tests/btrfs/262.out
+new file mode 100644
+index 00000000..a23bf303
+--- /dev/null
++++ b/tests/btrfs/262.out
+@@ -0,0 +1,3 @@
++QA output created by 262
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/263 b/tests/btrfs/263
+new file mode 100755
+index 00000000..bb876620
+--- /dev/null
++++ b/tests/btrfs/263
+@@ -0,0 +1,123 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 263
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((512*1024*1024))
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_small_file() {
++	local fn=$SCRATCH_MNT/small-file-$1
++	local size=$2
++	dd if=/dev/zero of=$fn bs=$size oflag=direct count=1 &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# near fill all the metadata dedicated disks, and check that the data dedicated
++# are unused
++#
++test_raid1_preferred_metadata_slow() {
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -draid1 -mraid1 $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2)  allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3)  allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	# create files that fit in the metadata node (i.e. size <= 2048 bytes)
++	# fill up to 6/10 of a disk
++	fnsize=2048
++	for i in $(seq $(( $MAXSIZE / $fnsize * 600 / 1000))); do
++		create_small_file $i $fnsize &>/dev/null
++	done
++
++	btrfs_check_metadata_bg_in_disk $SCRATCH_MNT $blkdev0 $blkdev1
++	btrfs_check_metadata_bg_not_in_disk $SCRATCH_MNT $blkdev2 $blkdev3
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_preferred_metadata_slow
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/263.out b/tests/btrfs/263.out
+new file mode 100644
+index 00000000..f7fc66ec
+--- /dev/null
++++ b/tests/btrfs/263.out
+@@ -0,0 +1,3 @@
++QA output created by 263
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/264 b/tests/btrfs/264
+new file mode 100755
+index 00000000..b00a35a7
+--- /dev/null
++++ b/tests/btrfs/264
+@@ -0,0 +1,121 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 264
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++# Override the default cleanup function.
++disks=""
++nodes=""
++
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file and check that the Data BG is in the correct disk
++# force the compression flag
++#
++test_single_preferred_data_compression() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount -o compress $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x $(($MAXSIZE / 2)) )
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_preferred_data_compression
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/264.out b/tests/btrfs/264.out
+new file mode 100644
+index 00000000..1611be72
+--- /dev/null
++++ b/tests/btrfs/264.out
+@@ -0,0 +1,3 @@
++QA output created by 264
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+-- 
+2.34.1
 
---------------htjZMcLDYyP0bARC4m70eEZj--
