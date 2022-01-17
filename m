@@ -2,135 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7231348FFD2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 01:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B104A490046
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 03:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236649AbiAQA5H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 19:57:07 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:58141 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236646AbiAQA5G (ORCPT
+        id S236724AbiAQCjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 21:39:10 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:45064 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbiAQCjJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 19:57:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1642381026; x=1673917026;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=W9uaJiom+9DVVRRSdntg/b/+yHB13yV0L0N0eumFGKs=;
-  b=FBZoHlCHwD0iNdJVRahzZfwAmq648LI+sL3lAfgKo08UYGXRvmVcDS4D
-   brAtIn9Y1XKsynCwUU+sRkjMjJdhNaAx2t4LgZ1NYL/ctrtAnndJIzBXY
-   dc9Qbwl2F3EVsMzd8WJHhu6odf2rOCZj2Xm5d0qT3Eh6fKiRLfL7ehj79
-   i7376H7t/2bLFIkPJsGkIXEkI1SvEBQCAWhZt73CiY9EU0O/X3VrGsRFl
-   uti0wXbb+KBZi8yJJV04IujFSvMzPA5a3Uf6W8685fpukhZ9wtcHiOFg3
-   oqlA77d/VhKwL3DsdssHHdlK8m1TzxbbCPzcCxyfoOGQmTk1PhrKQVsZ+
-   w==;
-X-IronPort-AV: E=Sophos;i="5.88,294,1635177600"; 
-   d="scan'208";a="302472793"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Jan 2022 08:57:06 +0800
-IronPort-SDR: Dl0Y5EyBo36N2f8zwlciVKNZPGI9srpntOpLMqyMvQlyb3BP2bhGKoc2K8AGjZ6aV1+TdLKN5D
- +lmmLopItqtoqjZvE4N/+5HmHOKnXJ8wr6aQJmwl9MbQwGL6VdPMMd2jYAhbWj6AyJp/4tzEwJ
- p2pFiHXSlkooIgtejBUxq6aB752Iy03Fq7AVKyzHmmVQnM9vvAiV4ewc7fmts86WDoCnxuMiEg
- ZFme4xcLwxwdFNXM61n+m1vqy6R55yX+pE2z4wz6m52+AuJd2VuYhRBXOnfYJfz4qHX3v1uE7f
- er7Q+fHrUBb4KC6699v1V0kL
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2022 16:29:22 -0800
-IronPort-SDR: oxYTvc/6Z4kPhA2wRIzfw0c7yFW/WUrpzuxh1bgLt3oiL+gkqVp1DsAZs2Bb+ko0Qn+QkOCtef
- m0R0mPct5G4MSoyCoBoW3C7Gsw9VEPW4whDLZDplgrMDhKg+9Jt5RmdqWYvCOeNLtPz6oG/oPP
- 0cbGUmYfrI8kBx5ffKXUN9Jazq84p35JsuIFo6rvBI7NffVXswXZH7zhM3pZ7+EnB7azshQ8AG
- oUvTej36fCYMzU6pIVSIMfRlDOgEHXXkDkk2AFgx5boKd6dHrIk6q/yMPGzGgf/lehz+FNU3Ky
- qKM=
-WDCIronportException: Internal
-Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
-  by uls-op-cesaip02.wdc.com with ESMTP; 16 Jan 2022 16:57:06 -0800
-From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: [PATCH] btrfs/255: add test for quota disable in parallel with balance
-Date:   Mon, 17 Jan 2022 09:57:05 +0900
-Message-Id: <20220117005705.956931-1-shinichiro.kawasaki@wdc.com>
-X-Mailer: git-send-email 2.33.1
+        Sun, 16 Jan 2022 21:39:09 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 354C5212BC
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jan 2022 02:39:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1642387148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=2RVeVvhWGrqEF2c+m2HzlezyrT1HrAHiByFobCeT02s=;
+        b=TXaIF8x+wvwZlKKpbtacoMWfiHoqIFERfUFkLK244o/zzpwOZA6ifimNqhflcR15uJVCfB
+        0B1nlCqU9umlPcPQOur6v4OuA5nkCoHJgBc2uh7Dh595JqzWgl4yUXq3TfgaIoaNBNMwXC
+        Y3/6AwNBvYltPXiSxRZ/QuU0LDToi3Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82F0713216
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jan 2022 02:39:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id x4bSEsvW5GG9MAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jan 2022 02:39:07 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/3] btrfs-progs: fsck: detect obviously invalid metadata backref level
+Date:   Mon, 17 Jan 2022 10:38:47 +0800
+Message-Id: <20220117023850.40337-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test quota disable during btrfs balance and confirm it does not cause
-kernel hang. This is a regression test for the problem reported to
-linux-btrfs list [1]. The hang was recreated using the test case and
-memory backed null_blk device with 5GB size as the scratch device.
+There is a report that kernel tree-checker rejects a tree block of
+extent tree, as it contains an obvious corrupted level (which is an
+obvious bit flip).
 
-[1] https://lore.kernel.org/linux-btrfs/20220115053012.941761-1-shinichiro.kawasaki@wdc.com/
+But btrfs check, at least original mode, doesn't detect it at all.
+While with my crafted image, lowmem mode would just crash due to the
+large level value overflowing path->nodes[level].
 
-Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
----
- tests/btrfs/255     | 42 ++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/255.out |  2 ++
- 2 files changed, 44 insertions(+)
- create mode 100755 tests/btrfs/255
- create mode 100644 tests/btrfs/255.out
+Lowmem is enhanced to reject such level, and the existing code will
+verify the level and report errors.
 
-diff --git a/tests/btrfs/255 b/tests/btrfs/255
-new file mode 100755
-index 00000000..16b682ca
---- /dev/null
-+++ b/tests/btrfs/255
-@@ -0,0 +1,42 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 Western Digital Corporation or its affiliates.
-+#
-+# FS QA Test No. btrfs/255
-+#
-+# Confirm that disabling quota during balance does not hang
-+#
-+. ./common/preamble
-+_begin_fstest auto qgroup
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+_require_scratch
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Fill 40% of the device or 2GB
-+fill_percent=40
-+max_fillsize=$((2*1024*1024*1024))
-+
-+devsize=$(($(_get_device_size $SCRATCH_DEV) * 512))
-+fillsize=$((devsize * fill_percent / 100))
-+((fillsize > max_fillsize)) && fillsize=$max_fillsize
-+
-+fs=$((4096*1024))
-+for ((i=0; i * fs < fillsize; i++)); do
-+	dd if=/dev/zero of=$SCRATCH_MNT/file.$i bs=$fs count=1 \
-+	   >> $seqres.full 2>&1
-+done
-+echo 3 > /proc/sys/vm/drop_caches
-+
-+# Run btrfs balance and quota enable/disable in parallel
-+_run_btrfs_balance_start $SCRATCH_MNT >> $seqres.full &
-+$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
-+$BTRFS_UTIL_PROG quota disable $SCRATCH_MNT
-+wait
-+
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/255.out b/tests/btrfs/255.out
-new file mode 100644
-index 00000000..7eefb828
---- /dev/null
-+++ b/tests/btrfs/255.out
-@@ -0,0 +1,2 @@
-+QA output created by 255
-+Silence is golden
+Original mode is more tricky, as it doesn't have level check at all.
+I don't have a good idea to implement full level check at original mode,
+so here I just introduced a basic check for tree level and reject it.
+
+Finally introduce a test case for this.
+
+Qu Wenruo (3):
+  btrfs-progs: check/lowmem: fix crash when METADATA_ITEM has invalid
+    level
+  btrfs: check/original: reject bad metadata backref with invalid level
+  btrfs-progs: tests/fsck: add test image with invalid metadata backref
+    level
+
+ check/main.c                                  |  19 ++++++++++++++++++
+ check/mode-lowmem.c                           |  12 ++++++++++-
+ .../053-bad-metadata-level/default.img.xz     | Bin 0 -> 2084 bytes
+ .../fsck-tests/053-bad-metadata-level/test.sh |  19 ++++++++++++++++++
+ 4 files changed, 49 insertions(+), 1 deletion(-)
+ create mode 100644 tests/fsck-tests/053-bad-metadata-level/default.img.xz
+ create mode 100755 tests/fsck-tests/053-bad-metadata-level/test.sh
+
 -- 
-2.33.1
+2.34.1
 
