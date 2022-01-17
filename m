@@ -2,298 +2,286 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD043490FF8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 18:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B874910BD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 20:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241956AbiAQR4p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jan 2022 12:56:45 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:59226 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235420AbiAQR4p (ORCPT
+        id S235587AbiAQTjh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jan 2022 14:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233695AbiAQTjg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jan 2022 12:56:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 17 Jan 2022 14:39:36 -0500
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F251FC061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jan 2022 11:39:35 -0800 (PST)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A174760F74
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jan 2022 17:56:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14C06C36AE7
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jan 2022 17:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642442204;
-        bh=1AoSFzT/S2DBUgbEb0eN7vmzzOjr3RQc1bW8Js2FyVs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GWwyTnot8FedQD+2yR77wBbAjFcdYPPEYuQJ1HVP9EawIGW2PRCi0x5DwAg65W8bS
-         nkTorQSM7ALtevIe9mKFkMNK6th83J4ZORzYGXjyFYlwrdI/c4mo4Q4GkkWN7kisDk
-         gxuvI5EKcuMyeHPT3u/h1bP1Z8hQ2r5EPaj0PKEWT3L1Td26ZAxH72J1DXbck5iPIw
-         E+kkTlBzEKrODm2QhrqUnal7UqcN4OAdJwK0u2iWau8OPC9aIPGwi+fsTToFS0X2JR
-         hUq8X8kT2jxTPL8f8LQ3IPLT8k6ul9gdQlnk2Ky9wr4GRR0057LP2f9BnePn6pTmzU
-         ZE8n3yFTcQklA==
-Received: by mail-qt1-f174.google.com with SMTP id h15so15546351qtx.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jan 2022 09:56:44 -0800 (PST)
-X-Gm-Message-State: AOAM5300FMUt5EsJMatsaEptp2XHadaM0Ac0NIMD6GilBezB126OIb4H
-        2qB9jKUyI6Q//1CxvZXHugqt0HYzZN9EYAIm2gk=
-X-Google-Smtp-Source: ABdhPJwXCpD4LrU4pU3kpK/mBY+fOz9FGDWSdy6CpN58XBPE/jRCbPZI8/lJid6iKXCxDyAbvyIspmAMwU/ov3iA3i0=
-X-Received: by 2002:a05:622a:356:: with SMTP id r22mr7791781qtw.51.1642442202896;
- Mon, 17 Jan 2022 09:56:42 -0800 (PST)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Jd2Kc6BYxzQk36;
+        Mon, 17 Jan 2022 20:39:32 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1642448368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GZhOPV/yXnR/nh4gagc3CK0dTwNWmRVrZDirIUe9mI4=;
+        b=ue/CwzZ5bfNK+RI4OolWJca+euzlaMChav/25hmAYbYpHnIiQWa91a3PRiYWJvWy2rs04P
+        +qPGIEd3VXoIfuHOhfQcFW8+I1dOAmbwjeOXVRJ++THyfLnrFvCRBpvfypFkMwPnt5xNWt
+        iTwENNRY2il5ULx8V0E7kDeRKZRq5MCTkcQsjSqiB2ZrwWz25WwIAWe1Yr6FKxWo+2ReNR
+        zuQ0+vGAXdafRPxK1HVv6jrixlE3eYhNXVSCOpLeSsBTe+y3rUFyb9E9tkfDhV2l4k0jee
+        5pK3T4lqbgh3Xx+TlAEenN6rucWd7WIF02tyJXptAXDTCY6ItysbyNtlXPM+RQ==
+Message-ID: <231bb827-de3e-570d-f5f5-e0698877d3f1@mailbox.org>
+Date:   Mon, 17 Jan 2022 20:39:18 +0100
 MIME-Version: 1.0
-References: <0a269612-e43f-da22-c5bc-b34b1b56ebe8@mailbox.org>
- <YeVc0r7lLtns0Bch@debian9.Home> <fa7b6afd-9646-898c-7a0e-1536fc2f94b9@mailbox.org>
- <YeWetp7/1q/4bU1O@debian9.Home> <254c8e30-6692-3f3c-59ea-e3456ca9a266@mailbox.org>
- <6c1b26b8-3af0-83e9-6260-33394ee8d883@mailbox.org>
-In-Reply-To: <6c1b26b8-3af0-83e9-6260-33394ee8d883@mailbox.org>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 17 Jan 2022 17:56:06 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5UhQCnsGd25Jd=x5rfhgPkzdDPpO_4iLdj73qSeFUzKg@mail.gmail.com>
-Message-ID: <CAL3q7H5UhQCnsGd25Jd=x5rfhgPkzdDPpO_4iLdj73qSeFUzKg@mail.gmail.com>
 Subject: Re: btrfs fi defrag hangs on small files, 100% CPU thread
-To:     Anthony Ruhier <aruhier@mailbox.org>
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <0a269612-e43f-da22-c5bc-b34b1b56ebe8@mailbox.org>
+ <YeVc0r7lLtns0Bch@debian9.Home>
+ <fa7b6afd-9646-898c-7a0e-1536fc2f94b9@mailbox.org>
+ <YeWetp7/1q/4bU1O@debian9.Home>
+ <254c8e30-6692-3f3c-59ea-e3456ca9a266@mailbox.org>
+ <6c1b26b8-3af0-83e9-6260-33394ee8d883@mailbox.org>
+ <CAL3q7H5UhQCnsGd25Jd=x5rfhgPkzdDPpO_4iLdj73qSeFUzKg@mail.gmail.com>
+From:   Anthony Ruhier <aruhier@mailbox.org>
+In-Reply-To: <CAL3q7H5UhQCnsGd25Jd=x5rfhgPkzdDPpO_4iLdj73qSeFUzKg@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------IGi0eTrA6RzLfECZJ7AF4REc"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 17, 2022 at 5:50 PM Anthony Ruhier <aruhier@mailbox.org> wrote:
->
-> Filipe,
->
-> Just a quick update after my previous email, your patch fixed the issue
-> for `btrfs fi defrag`.
-> Thanks a lot! I closed my bug on bugzilla.
->
-> I'll keep you in touch about the autodefrag.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------IGi0eTrA6RzLfECZJ7AF4REc
+Content-Type: multipart/mixed; boundary="------------N0JrNf3Bpn8FDsJaR7b4dEyr";
+ protected-headers="v1"
+From: Anthony Ruhier <aruhier@mailbox.org>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <231bb827-de3e-570d-f5f5-e0698877d3f1@mailbox.org>
+Subject: Re: btrfs fi defrag hangs on small files, 100% CPU thread
+References: <0a269612-e43f-da22-c5bc-b34b1b56ebe8@mailbox.org>
+ <YeVc0r7lLtns0Bch@debian9.Home>
+ <fa7b6afd-9646-898c-7a0e-1536fc2f94b9@mailbox.org>
+ <YeWetp7/1q/4bU1O@debian9.Home>
+ <254c8e30-6692-3f3c-59ea-e3456ca9a266@mailbox.org>
+ <6c1b26b8-3af0-83e9-6260-33394ee8d883@mailbox.org>
+ <CAL3q7H5UhQCnsGd25Jd=x5rfhgPkzdDPpO_4iLdj73qSeFUzKg@mail.gmail.com>
+In-Reply-To: <CAL3q7H5UhQCnsGd25Jd=x5rfhgPkzdDPpO_4iLdj73qSeFUzKg@mail.gmail.com>
 
-Please do.
-The 1 byte file case was very specific, so it's probably a different issue.
+--------------N0JrNf3Bpn8FDsJaR7b4dEyr
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Thanks for testing!
+SSBoYXZlIHNvbWUgZ29vZCBuZXdzIGFuZCBiYWQgbmV3czogdGhlIGJhZCBuZXdzIGlzIHRo
+YXQgaXQgZGlkbid0IGZpeCANCnRoZSBhdXRvZGVmcmFnIHByb2JsZW0gKEkgYXBwbGllZCB0
+aGUgMiBwYXRjaGVzKS4NCg0KVGhlIGdvb2QgbmV3cyBpcyB0aGF0IHdoZW4gSSBlbmFibGUg
+YXV0b2RlZnJhZywgSSBjYW4gcXVpY2tseSBzZWUgaWYgdGhlIA0KcHJvYmxlbSBpcyBzdGls
+bCB0aGVyZSBvciBub3QuDQpJdCdzIG5vdCBzdXBlciBvYnZpb3VzIGNvbXBhcmVkIHRvIHRo
+ZSBhbW91bnQgb2Ygd3JpdGVzIHRoYXQgaGFwcGVuZWQgDQpjb25zdGFudGx5IGp1c3QgYWZ0
+ZXIgbXkgdXBncmFkZSB0byBsaW51eCA1LjE2LCBiZWNhdXNlIHNpbmNlIHRoZW4gdGhlIA0K
+cHJvYmxlbSBtaXRpZ2F0ZWQgaXRzZWxmIGEgYml0LCBidXQgaXQncyBzdGlsbCBub3RpY2Vh
+YmxlLg0KDQpJZiBJIGNvbXBhcmUgdGhlIHdyaXRlIGF2ZXJhZ2UgKGluIHRvdGFsLCBJIGRv
+bid0IGhhdmUgaXQgcGVyIHByb2Nlc3MpIA0Kd2hlbiB0YWtpbmcgaWRsZSBwZXJpb2RzIG9u
+IHRoZSBzYW1lIG1hY2hpbmU6DQogwqDCoMKgIExpbnV4IDUuMTY6DQogwqDCoMKgwqDCoMKg
+wqAgd2l0aG91dCBhdXRvZGVmcmFnOiB+IDEwS2lCL3MNCiDCoMKgwqDCoMKgwqDCoCB3aXRo
+IGF1dG9kZWZyYWc6IGJldHdlZW4gMSBhbmQgMk1pQi9zLg0KDQogwqDCoMKgIExpbnV4IDUu
+MTU6DQogwqDCoMKgwqDCoMKgwqAgd2l0aCBhdXRvZGVmcmFnOn4gMTBLaUIvcyAoYXJvdW5k
+IHRoZSBzYW1lIGFzIHdpdGhvdXQgDQphdXRvZGVmcmFnIG9uIDUuMTYpDQoNCkZlZWwgZnJl
+ZSB0byBhc2sgbWUgYW55dGhpbmcgdG8gaGVscCB5b3VyIGRlYnVnZ2luZywganVzdCB0cnkg
+dG8gYmUgDQpxdWl0ZSBleHBsaWNpdCBhYm91dCB3aGF0IEkgc2hvdWxkIGRvLCBJJ20gbm90
+IGV4cGVyaW1lbnRlZCBpbiANCmZpbGVzeXN0ZW1zIGRlYnVnZ2luZy4NClRoYW5rcw0KDQpM
+ZSAxNy8wMS8yMDIyIMOgIDE4OjU2LCBGaWxpcGUgTWFuYW5hIGEgw6ljcml0wqA6DQo+IE9u
+IE1vbiwgSmFuIDE3LCAyMDIyIGF0IDU6NTAgUE0gQW50aG9ueSBSdWhpZXIgPGFydWhpZXJA
+bWFpbGJveC5vcmc+IHdyb3RlOg0KPj4gRmlsaXBlLA0KPj4NCj4+IEp1c3QgYSBxdWljayB1
+cGRhdGUgYWZ0ZXIgbXkgcHJldmlvdXMgZW1haWwsIHlvdXIgcGF0Y2ggZml4ZWQgdGhlIGlz
+c3VlDQo+PiBmb3IgYGJ0cmZzIGZpIGRlZnJhZ2AuDQo+PiBUaGFua3MgYSBsb3QhIEkgY2xv
+c2VkIG15IGJ1ZyBvbiBidWd6aWxsYS4NCj4+DQo+PiBJJ2xsIGtlZXAgeW91IGluIHRvdWNo
+IGFib3V0IHRoZSBhdXRvZGVmcmFnLg0KPiBQbGVhc2UgZG8uDQo+IFRoZSAxIGJ5dGUgZmls
+ZSBjYXNlIHdhcyB2ZXJ5IHNwZWNpZmljLCBzbyBpdCdzIHByb2JhYmx5IGEgZGlmZmVyZW50
+IGlzc3VlLg0KPg0KPiBUaGFua3MgZm9yIHRlc3RpbmchDQo+DQo+PiBMZSAxNy8wMS8yMDIy
+IMOgIDE4OjA0LCBBbnRob255IFJ1aGllciBhIMOpY3JpdCA6DQo+Pj4gSSdtIGdvaW5nIHRv
+IGFwcGx5IHlvdXIgcGF0Y2ggZm9yIHRoZSAxQiBmaWxlLCBhbmQgcXVpY2tseSBjb25maXJt
+IGlmDQo+Pj4gaXQgd29ya3MuDQo+Pj4gVGhhbmtzIGEgbG90IGZvciB5b3VyIHBhdGNoIQ0K
+Pj4+DQo+Pj4gQWJvdXQgdGhlIGF1dG9kZWZyYWcgaXNzdWUsIGl0J3MgZ29pbmcgdG8gYmUg
+dHJpY2tpZXIgdG8gY2hlY2sgdGhhdA0KPj4+IHlvdXIgcGF0Y2ggZml4ZXMgaXQsIGJlY2F1
+c2UgZm9yIHdoYXRldmVyIHJlYXNvbiB0aGUgcHJvYmxlbSBzZWVtcyB0bw0KPj4+IGhhdmUg
+cmVzb2x2ZWQgaXRzZWxmIChvciBhdCBsZWFzdCwgYnRyZnMtY2xlYW5lciBkb2VzIHdheSBs
+ZXNzIHdyaXRlcykNCj4+PiBhZnRlciBhIHBhcnRpYWwgYnRyZnMgYmFsYW5jZS4NCj4+PiBJ
+J2xsIHRyeSBhbmQgbG9vayB0aGUgYW1vdW50IG9mIHdyaXRlcyBhZnRlciBzZXZlcmFsIGhv
+dXJzLiBNYXliZSBmb3INCj4+PiB0aGlzIG9uZSwgc2VlIHdpdGggdGhlIGF1dGhvciBvZiB0
+aGUgb3RoZXIgYnVnLiBJZiB0aGV5IGNhbiBlYXNpbHkNCj4+PiByZXByb2R1Y2UgdGhlIGlz
+c3VlIHRoZW4gaXQncyBnb2luZyB0byBiZSBlYXNpZXIgdG8gY2hlY2suDQo+Pj4NCj4+PiBU
+aGFua3MsDQo+Pj4gQW50aG9ueQ0KPj4+DQo+Pj4gTGUgMTcvMDEvMjAyMiDDoCAxNzo1Miwg
+RmlsaXBlIE1hbmFuYSBhIMOpY3JpdCA6DQo+Pj4+IE9uIE1vbiwgSmFuIDE3LCAyMDIyIGF0
+IDAzOjI0OjAwUE0gKzAxMDAsIEFudGhvbnkgUnVoaWVyIHdyb3RlOg0KPj4+Pj4gVGhhbmtz
+IGZvciB0aGUgYW5zd2VyLg0KPj4+Pj4NCj4+Pj4+IEkgaGFkIHRoZSBleGFjdCBzYW1lIGlz
+c3VlIGFzIGluIHRoZSB0aHJlYWQgeW91J3ZlIGxpbmtlZCwgYW5kIGhhdmUNCj4+Pj4+IHNv
+bWUNCj4+Pj4+IG1vbml0b3JpbmcgYW5kIGdyYXBocyB0aGF0IHNob3dlZCB0aGF0IGJ0cmZz
+LWNsZWFuZXIgZGlkIGNvbnN0YW50DQo+Pj4+PiB3cml0ZXMNCj4+Pj4+IGR1cmluZyAxMiBo
+b3VycyBqdXN0IGFmdGVyIEkgdXBncmFkZWQgdG8gbGludXggNS4xNi4gV2VpcmRseSBlbm91
+Z2gsDQo+Pj4+PiB0aGUNCj4+Pj4+IGlzc3VlIGFsbW9zdCBkaXNhcHBlYXJlZCBhZnRlciBJ
+IGRpZCBhIGJ0cmZzIGJhbGFuY2UgYnkgZmlsdGVyaW5nIG9uDQo+Pj4+PiAxMCUNCj4+Pj4+
+IHVzYWdlIG9mIGRhdGEuDQo+Pj4+PiBCdXQgdGhhdCdzIHdoeSBJIGluaXRpYWxseSBkaXNh
+YmxlZCBhdXRvZGVmcmFnLCB3aGF0IGhhcyBsZWFkIHRvDQo+Pj4+PiBkaXNjb3ZlcmluZw0K
+Pj4+Pj4gdGhpcyBidWcgYXMgSSBzd2l0Y2hlZCB0byBtYW51YWwgZGVmcmFnbWVudGF0aW9u
+ICh3aGljaCwgaW4gdGhlIGVuZCwNCj4+Pj4+IG1ha2VzDQo+Pj4+PiBtb3JlIHNlbnNlIGFu
+eXdheSB3aXRoIG15IHNldHVwKS4NCj4+Pj4+DQo+Pj4+PiBJIHRyaWVkIHRoaXMgcGF0Y2gs
+IGJ1dCBzYWRseSBpdCBkb2Vzbid0IGhlbHAgZm9yIHRoZSBpbml0aWFsIGlzc3VlLiBJDQo+
+Pj4+PiBjYW5ub3Qgc2F5IGZvciB0aGUgYnVnIGluIHRoZSBvdGhlciB0aHJlYWQsIGFzIHRo
+ZSBwcm9ibGVtIHdpdGgNCj4+Pj4+IGJ0cmZzLWNsZWFuZXIgZGlzYXBwZWFyZWQgKEkgY2Fu
+IHN0aWxsIHNlZSBzb21lIHdyaXRlcyBmcm9tIGl0LCBidXQNCj4+Pj4+IGl0IHNvDQo+Pj4+
+PiByYXJlIHRoYXQgSSBjYW5ub3Qgc2F5IGlmIGl0J3Mgbm9ybWFsIG9yIG5vdCkuDQo+Pj4+
+IE9rLCByZWFkaW5nIGJldHRlciB5b3VyIGZpcnN0IG1haWwsIEkgc2VlIHRoZXJlJ3MgdGhl
+IGNhc2Ugb2YgdGhlIDEgYnl0ZQ0KPj4+PiBmaWxlLCB3aGljaCBpcyBwb3NzaWJseSBub3Qg
+dGhlIGNhdXNlIGZyb20gdGhlIGF1dG9kZWZyYWcgY2F1c2luZyB0aGUNCj4+Pj4gZXhjZXNz
+aXZlIElPIHByb2JsZW0uDQo+Pj4+DQo+Pj4+IEZvciB0aGUgMSBieXRlIGZpbGUgcHJvYmxl
+bSwgSSd2ZSBqdXN0IHNlbnQgYSBmaXg6DQo+Pj4+DQo+Pj4+IGh0dHBzOi8vcGF0Y2h3b3Jr
+Lmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1idHJmcy9wYXRjaC9iY2JmY2UwZmY3ZTIxYmJm
+ZWQyNDg0YjE0NTdlNTYwZWRmNzgwMjBkLjE2NDI0MzY4MDUuZ2l0LmZkbWFuYW5hQHN1c2Uu
+Y29tLw0KPj4+Pg0KPj4+Pg0KPj4+PiBJdCdzIGFjdHVhbGx5IHRyaXZpYWwgdG8gdHJpZ2dl
+ci4NCj4+Pj4NCj4+Pj4gQ2FuIHlvdSBjaGVjayBpZiBpdCBhbHNvIGZpeGVzIHlvdXIgcHJv
+YmxlbSB3aXRoIGF1dG9kZWZyYWc/DQo+Pj4+DQo+Pj4+IElmIG5vdCwgdGhlbiB0cnkgdGhl
+IGZvbGxvd2luZyAoYWZ0ZXIgYXBwbHlpbmcgdGhlIDEgZmlsZSBmaXgpOg0KPj4+Pg0KPj4+
+PiBodHRwczovL3Bhc3RlYmluLmNvbS9yYXcvRWJFZmsxdEYNCj4+Pj4NCj4+Pj4gZGlmZiAt
+LWdpdCBhL2ZzL2J0cmZzL2lvY3RsLmMgYi9mcy9idHJmcy9pb2N0bC5jDQo+Pj4+IGluZGV4
+IGE1YmQ2OTI2ZjdmZi4uZGI3OTVlMjI2Y2NhIDEwMDY0NA0KPj4+PiAtLS0gYS9mcy9idHJm
+cy9pb2N0bC5jDQo+Pj4+ICsrKyBiL2ZzL2J0cmZzL2lvY3RsLmMNCj4+Pj4gQEAgLTExOTEs
+NiArMTE5MSw3IEBAIHN0YXRpYyBpbnQgZGVmcmFnX2NvbGxlY3RfdGFyZ2V0cyhzdHJ1Y3QN
+Cj4+Pj4gYnRyZnNfaW5vZGUgKmlub2RlLA0KPj4+PiAgICAgICAgICAgICAgICAgICAgICB1
+NjQgbmV3ZXJfdGhhbiwgYm9vbCBkb19jb21wcmVzcywNCj4+Pj4gICAgICAgICAgICAgICAg
+ICAgICAgYm9vbCBsb2NrZWQsIHN0cnVjdCBsaXN0X2hlYWQgKnRhcmdldF9saXN0KQ0KPj4+
+PiAgICB7DQo+Pj4+ICsgICAgY29uc3QgdTMyIG1pbl90aHJlc2ggPSBleHRlbnRfdGhyZXNo
+IC8gMjsNCj4+Pj4gICAgICAgIHU2NCBjdXIgPSBzdGFydDsNCj4+Pj4gICAgICAgIGludCBy
+ZXQgPSAwOw0KPj4+PiAgICBAQCAtMTE5OCw2ICsxMTk5LDcgQEAgc3RhdGljIGludCBkZWZy
+YWdfY29sbGVjdF90YXJnZXRzKHN0cnVjdA0KPj4+PiBidHJmc19pbm9kZSAqaW5vZGUsDQo+
+Pj4+ICAgICAgICAgICAgc3RydWN0IGV4dGVudF9tYXAgKmVtOw0KPj4+PiAgICAgICAgICAg
+IHN0cnVjdCBkZWZyYWdfdGFyZ2V0X3JhbmdlICpuZXc7DQo+Pj4+ICAgICAgICAgICAgYm9v
+bCBuZXh0X21lcmdlYWJsZSA9IHRydWU7DQo+Pj4+ICsgICAgICAgIHU2NCByYW5nZV9zdGFy
+dDsNCj4+Pj4gICAgICAgICAgICB1NjQgcmFuZ2VfbGVuOw0KPj4+PiAgICAgICAgICAgICAg
+ZW0gPSBkZWZyYWdfbG9va3VwX2V4dGVudCgmaW5vZGUtPnZmc19pbm9kZSwgY3VyLCBsb2Nr
+ZWQpOw0KPj4+PiBAQCAtMTIxMyw2ICsxMjE1LDI0IEBAIHN0YXRpYyBpbnQgZGVmcmFnX2Nv
+bGxlY3RfdGFyZ2V0cyhzdHJ1Y3QNCj4+Pj4gYnRyZnNfaW5vZGUgKmlub2RlLA0KPj4+PiAg
+ICAgICAgICAgIGlmIChlbS0+Z2VuZXJhdGlvbiA8IG5ld2VyX3RoYW4pDQo+Pj4+ICAgICAg
+ICAgICAgICAgIGdvdG8gbmV4dDsNCj4+Pj4gICAgKyAgICAgICAgLyoNCj4+Pj4gKyAgICAg
+ICAgICogT3VyIHN0YXJ0IG9mZnNldCBtaWdodCBiZSBpbiB0aGUgbWlkZGxlIG9mIGFuIGV4
+aXN0aW5nDQo+Pj4+IGV4dGVudA0KPj4+PiArICAgICAgICAgKiBtYXAsIHNvIHRha2UgdGhh
+dCBpbnRvIGFjY291bnQuDQo+Pj4+ICsgICAgICAgICAqLw0KPj4+PiArICAgICAgICByYW5n
+ZV9sZW4gPSBlbS0+bGVuIC0gKGN1ciAtIGVtLT5zdGFydCk7DQo+Pj4+ICsNCj4+Pj4gKyAg
+ICAgICAgLyoNCj4+Pj4gKyAgICAgICAgICogSWYgdGhlcmUncyBhbHJlYWR5IGEgZ29vZCBy
+YW5nZSBmb3IgZGVsYWxsb2Mgd2l0aGluIHRoZQ0KPj4+PiByYW5nZQ0KPj4+PiArICAgICAg
+ICAgKiBjb3ZlcmVkIGJ5IHRoZSBleHRlbnQgbWFwLCBza2lwIGl0LCBvdGhlcndpc2Ugd2Ug
+Y2FuIGVuZCB1cA0KPj4+PiArICAgICAgICAgKiBkb2luZyBvbiB0aGUgc2FtZSBJTyByYW5n
+ZSBmb3IgYSBsb25nIHRpbWUgd2hlbiB1c2luZyBhdXRvDQo+Pj4+ICsgICAgICAgICAqIGRl
+ZnJhZy4NCj4+Pj4gKyAgICAgICAgICovDQo+Pj4+ICsgICAgICAgIHJhbmdlX3N0YXJ0ID0g
+Y3VyOw0KPj4+PiArICAgICAgICBpZiAoY291bnRfcmFuZ2VfYml0cygmaW5vZGUtPmlvX3Ry
+ZWUsICZyYW5nZV9zdGFydCwNCj4+Pj4gKyAgICAgICAgICAgICAgICAgICAgIHJhbmdlX3N0
+YXJ0ICsgcmFuZ2VfbGVuIC0gMSwgbWluX3RocmVzaCwNCj4+Pj4gKyAgICAgICAgICAgICAg
+ICAgICAgIEVYVEVOVF9ERUxBTExPQywgMSkgPj0gbWluX3RocmVzaCkNCj4+Pj4gKyAgICAg
+ICAgICAgIGdvdG8gbmV4dDsNCj4+Pj4gKw0KPj4+PiAgICAgICAgICAgIC8qDQo+Pj4+ICAg
+ICAgICAgICAgICogRm9yIGRvX2NvbXByZXNzIGNhc2UsIHdlIHdhbnQgdG8gY29tcHJlc3Mg
+YWxsIHZhbGlkIGZpbGUNCj4+Pj4gICAgICAgICAgICAgKiBleHRlbnRzLCB0aHVzIG5vIEBl
+eHRlbnRfdGhyZXNoIG9yIG1lcmdlYWJsZSBjaGVjay4NCj4+Pj4gQEAgLTEyMjAsOCArMTI0
+MCw4IEBAIHN0YXRpYyBpbnQgZGVmcmFnX2NvbGxlY3RfdGFyZ2V0cyhzdHJ1Y3QNCj4+Pj4g
+YnRyZnNfaW5vZGUgKmlub2RlLA0KPj4+PiAgICAgICAgICAgIGlmIChkb19jb21wcmVzcykN
+Cj4+Pj4gICAgICAgICAgICAgICAgZ290byBhZGQ7DQo+Pj4+ICAgIC0gICAgICAgIC8qIFNr
+aXAgdG9vIGxhcmdlIGV4dGVudCAqLw0KPj4+PiAtICAgICAgICBpZiAoZW0tPmxlbiA+PSBl
+eHRlbnRfdGhyZXNoKQ0KPj4+PiArICAgICAgICAvKiBTa2lwIGxhcmdlIGVub3VnaCByYW5n
+ZXMuICovDQo+Pj4+ICsgICAgICAgIGlmIChyYW5nZV9sZW4gPj0gZXh0ZW50X3RocmVzaCkN
+Cj4+Pj4gICAgICAgICAgICAgICAgZ290byBuZXh0Ow0KPj4+PiAgICAgICAgICAgICAgbmV4
+dF9tZXJnZWFibGUgPQ0KPj4+PiBkZWZyYWdfY2hlY2tfbmV4dF9leHRlbnQoJmlub2RlLT52
+ZnNfaW5vZGUsIGVtLA0KPj4+Pg0KPj4+Pg0KPj4+PiBUaGFua3MuDQo+Pj4+DQo+Pj4+DQo+
+Pj4+PiBUaGFua3MsDQo+Pj4+PiBBbnRob255DQo+Pj4+Pg0KPj4+Pj4gTGUgMTcvMDEvMjAy
+MiDDoCAxMzoxMCwgRmlsaXBlIE1hbmFuYSBhIMOpY3JpdCA6DQo+Pj4+Pj4gT24gU3VuLCBK
+YW4gMTYsIDIwMjIgYXQgMDg6MTU6MzdQTSArMDEwMCwgQW50aG9ueSBSdWhpZXIgd3JvdGU6
+DQo+Pj4+Pj4+IEhpLA0KPj4+Pj4+PiBTaW5jZSBJIHVwZ3JhZGVkIGZyb20gbGludXggNS4x
+NSB0byA1LjE2LCBgYnRyZnMgZmlsZXN5c3RlbSBkZWZyYWcNCj4+Pj4+Pj4gLXQxMjhLYA0K
+Pj4+Pj4+PiBoYW5ncyBvbiBzbWFsbCBmaWxlcyAofjEgYnl0ZSkgYW5kIHRyaWdnZXJzIHdo
+YXQgaXQgc2VlbXMgdG8gYmUgYQ0KPj4+Pj4+PiBsb29wIGluDQo+Pj4+Pj4+IHRoZSBrZXJu
+ZWwuIEl0IHJlc3VsdHMgaW4gb25lIENQVSB0aHJlYWQgcnVubmluZyBiZWluZyB1c2VkIGF0
+DQo+Pj4+Pj4+IDEwMCUuIEkNCj4+Pj4+Pj4gY2Fubm90IGtpbGwgdGhlIHByb2Nlc3MsIGFu
+ZCByZWJvb3RpbmcgaXMgYmxvY2tlZCBieSBidHJmcy4NCj4+Pj4+Pj4gSXQgaXMgYSBjb3B5
+IG9mIHRoZQ0KPj4+Pj4+PiBidWdodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19i
+dWcuY2dpP2lkPTIxNTQ5OA0KPj4+Pj4+Pg0KPj4+Pj4+PiBSZWJvb3RpbmcgdG8gbGludXgg
+NS4xNSBzaG93cyBubyBpc3N1ZS4gSSBoYXZlIG5vIGlzc3VlIHRvIHJ1biBhDQo+Pj4+Pj4+
+IGRlZnJhZyBvbg0KPj4+Pj4+PiBiaWdnZXIgZmlsZXMgKEkgZmlsdGVyIG91dCBmaWxlcyBz
+bWFsbGVyIHRoYW4gMy45S0IpLg0KPj4+Pj4+Pg0KPj4+Pj4+PiBJIGhhZCBhIGNvbnZlcnNh
+dGlvbiBvbiAjYnRyZnMgb24gSVJDLCBzbyBoZXJlJ3Mgd2hhdCB3ZSBkZWJ1Z2dlZDoNCj4+
+Pj4+Pj4NCj4+Pj4+Pj4gSSBjYW4gcmVwbGljYXRlIHRoZSBpc3N1ZSBieSBjb3B5aW5nIGEg
+ZmlsZSBpbXBhY3RlZCBieSB0aGlzIGJ1ZywNCj4+Pj4+Pj4gYnkgdXNpbmcNCj4+Pj4+Pj4g
+YGNwIC0tcmVmbGluaz1uZXZlcmAuIEkgYXR0YWNoZWQgb25lIG9mIHRoZSBpbXBhY3RlZCBm
+aWxlcyB0byB0aGlzDQo+Pj4+Pj4+IGJ1ZywNCj4+Pj4+Pj4gbmFtZWQgUkVBRE1FLm1kLg0K
+Pj4+Pj4+Pg0KPj4+Pj4+PiBTb21lb25lIHRvbGQgbWUgdGhhdCBpdCBjb3VsZCBiZSBhIGJ1
+ZyBkdWUgdG8gdGhlIGlubGluZSBleHRlbnQuDQo+Pj4+Pj4+IFNvIHdlIHRyaWVkDQo+Pj4+
+Pj4+IHRvIGNoZWNrIHRoYXQuDQo+Pj4+Pj4+DQo+Pj4+Pj4+IGZpbGVmcmFnIHNob3dzIHRo
+YXQgdGhlIGZpbGUgUmVhZG1lLm1kIGlzIDEgaW5saW5lIGV4dGVudC4gSSB0cmllZA0KPj4+
+Pj4+PiB0byBjcmVhdGUNCj4+Pj4+Pj4gYSBuZXcgZmlsZSB3aXRoIHJhbmRvbSB0ZXh0LCBv
+ZiAxOCBieXRlcyAoc2xpZ2h0bHkgYmlnZ2VyIHRoYW4gdGhlDQo+Pj4+Pj4+IG90aGVyDQo+
+Pj4+Pj4+IGZpbGUpLCB0aGF0IGlzIGFsc28gMSBpbmxpbmUgZXh0ZW50LiBUaGlzIGZpbGUg
+ZG9lc24ndCB0cmlnZ2VyIHRoZQ0KPj4+Pj4+PiBidWcgYW5kDQo+Pj4+Pj4+IGhhcyBubyBp
+c3N1ZSB0byBiZSBkZWZyYWdtZW50ZWQuDQo+Pj4+Pj4+DQo+Pj4+Pj4+IEkgdHJpZWQgdG8g
+bW91bnQgbXkgc3lzdGVtIHdpdGggYG1heF9pbmxpbmU9MGAsIGNyZWF0ZWQgYSBjb3B5IG9m
+DQo+Pj4+Pj4+IFJFQURNRS5tZC4NCj4+Pj4+Pj4gYGZpbGVmcmFnYCBzaG93cyBtZSB0aGF0
+IHRoZSBuZXcgZmlsZSBpcyBub3cgMSBleHRlbnQsIG5vdCBpbmxpbmUuDQo+Pj4+Pj4+IFRo
+aXMgbmV3DQo+Pj4+Pj4+IGZpbGUgYWxzbyB0cmlnZ2VycyB0aGUgYnVnLCBzbyBpdCBkb2Vz
+bid0IHNlZW0gdG8gYmUgZHVlIHRvIHRoZQ0KPj4+Pj4+PiBpbmxpbmUNCj4+Pj4+Pj4gZXh0
+ZW50Lg0KPj4+Pj4+Pg0KPj4+Pj4+PiBTb21lb25lIGFza2VkIG1lIHRvIHByb3ZpZGUgdGhl
+IG91dHB1dCBvZiBhIHBlcmYgdG9wIHdoZW4gdGhlDQo+Pj4+Pj4+IGRlZnJhZyBpcw0KPj4+
+Pj4+PiBzdHVjazoNCj4+Pj4+Pj4NCj4+Pj4+Pj4gICAgICAgIDI4LjcwJSAgW2tlcm5lbF0g
+ICAgICAgICAgW2tdIGdlbmVyaWNfYmluX3NlYXJjaA0KPj4+Pj4+PiAgICAgICAgMTQuOTAl
+ICBba2VybmVsXSAgICAgICAgICBba10gZnJlZV9leHRlbnRfYnVmZmVyDQo+Pj4+Pj4+ICAg
+ICAgICAxMy4xNyUgIFtrZXJuZWxdICAgICAgICAgIFtrXSBidHJmc19zZWFyY2hfc2xvdA0K
+Pj4+Pj4+PiAgICAgICAgMTIuNjMlICBba2VybmVsXSAgICAgICAgICBba10gYnRyZnNfcm9v
+dF9ub2RlDQo+Pj4+Pj4+ICAgICAgICAgOC4zMyUgIFtrZXJuZWxdICAgICAgICAgIFtrXSBi
+dHJmc19nZXRfNjQNCj4+Pj4+Pj4gICAgICAgICAzLjg4JSAgW2tlcm5lbF0gICAgICAgICAg
+W2tdIF9fZG93bl9yZWFkX2NvbW1vbi5sbHZtDQo+Pj4+Pj4+ICAgICAgICAgMy4wMCUgIFtr
+ZXJuZWxdICAgICAgICAgIFtrXSB1cF9yZWFkDQo+Pj4+Pj4+ICAgICAgICAgMi42MyUgIFtr
+ZXJuZWxdICAgICAgICAgIFtrXSByZWFkX2Jsb2NrX2Zvcl9zZWFyY2gNCj4+Pj4+Pj4gICAg
+ICAgICAyLjQwJSAgW2tlcm5lbF0gICAgICAgICAgW2tdIHJlYWRfZXh0ZW50X2J1ZmZlcg0K
+Pj4+Pj4+PiAgICAgICAgIDEuMzglICBba2VybmVsXSAgICAgICAgICBba10gbWVtc2V0X2Vy
+bXMNCj4+Pj4+Pj4gICAgICAgICAxLjExJSAgW2tlcm5lbF0gICAgICAgICAgW2tdIGZpbmRf
+ZXh0ZW50X2J1ZmZlcg0KPj4+Pj4+PiAgICAgICAgIDAuNjklICBba2VybmVsXSAgICAgICAg
+ICBba10ga21lbV9jYWNoZV9mcmVlDQo+Pj4+Pj4+ICAgICAgICAgMC42OSUgIFtrZXJuZWxd
+ICAgICAgICAgIFtrXSBtZW1jcHlfZXJtcw0KPj4+Pj4+PiAgICAgICAgIDAuNTclICBba2Vy
+bmVsXSAgICAgICAgICBba10ga21lbV9jYWNoZV9hbGxvYw0KPj4+Pj4+PiAgICAgICAgIDAu
+NDUlICBba2VybmVsXSAgICAgICAgICBba10gcmFkaXhfdHJlZV9sb29rdXANCj4+Pj4+Pj4N
+Cj4+Pj4+Pj4gSSBjYW4gcmVwcm9kdWNlIHRoZSBidWcgb24gMiBkaWZmZXJlbnQgbWFjaGlu
+ZXMsIHJ1bm5pbmcgMg0KPj4+Pj4+PiBkaWZmZXJlbnQgbGludXgNCj4+Pj4+Pj4gZGlzdHJp
+YnV0aW9ucyAoQXJjaCBhbmQgR2VudG9vKSB3aXRoIDIgZGlmZmVyZW50IGtlcm5lbCBjb25m
+aWdzLg0KPj4+Pj4+PiBUaGlzIGtlcm5lbCBpcyBjb21waWxlZCB3aXRoIGNsYW5nLCB0aGUg
+b3RoZXIgd2l0aCBHQ0MuDQo+Pj4+Pj4+DQo+Pj4+Pj4+IEtlcm5lbCB2ZXJzaW9uOiA1LjE2
+LjANCj4+Pj4+Pj4gTW91bnQgb3B0aW9uczoNCj4+Pj4+Pj4gICAgICAgIE1hY2hpbmUgMToN
+Cj4+Pj4+Pj4gcncsbm9hdGltZSxjb21wcmVzcy1mb3JjZT16c3RkOjIsc3NkLGRpc2NhcmQ9
+YXN5bmMsc3BhY2VfY2FjaGU9djIsYXV0b2RlZnJhZw0KPj4+Pj4+Pg0KPj4+Pj4+PiAgICAg
+ICAgTWFjaGluZSAyOg0KPj4+Pj4+PiBydyxub2F0aW1lLGNvbXByZXNzLWZvcmNlPXpzdGQ6
+Myxub3NzZCxzcGFjZV9jYWNoZT12Mg0KPj4+Pj4+Pg0KPj4+Pj4+PiBXaGVuIHRoZSBlcnJv
+ciBoYXBwZW5zLCBubyBtZXNzYWdlIGlzIHNob3duIGluIGRtZXNnLg0KPj4+Pj4+IFRoaXMg
+aXMgdmVyeSBsaWtlbHkgdGhlIHNhbWUgaXNzdWUgYXMgcmVwb3J0ZWQgYXQgdGhpcyB0aHJl
+YWQ6DQo+Pj4+Pj4NCj4+Pj4+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1idHJm
+cy9ZZVZhd0JCRTNyNmhWaGdzQGRlYmlhbjkuSG9tZS9ULyNtYTFjOGE5ODQ4YzliN2U0ZWRi
+NDcxZjdiZTE4NDU5OWQzOGUyODhiYg0KPj4+Pj4+DQo+Pj4+Pj4NCj4+Pj4+PiBBcmUgeW91
+IGFibGUgdG8gdGVzdCB0aGUgcGF0Y2ggcG9zdGVkIHRoZXJlPw0KPj4+Pj4+DQo+Pj4+Pj4g
+VGhhbmtzLg0KPj4+Pj4+DQo+Pj4+Pj4+IFRoYW5rcywNCj4+Pj4+Pj4gQW50aG9ueSBSdWhp
+ZXINCj4+Pj4+Pj4NCj4+Pj4NCj4+Pj4NCj4+Pj4NCg==
 
->
-> Le 17/01/2022 =C3=A0 18:04, Anthony Ruhier a =C3=A9crit :
-> > I'm going to apply your patch for the 1B file, and quickly confirm if
-> > it works.
-> > Thanks a lot for your patch!
-> >
-> > About the autodefrag issue, it's going to be trickier to check that
-> > your patch fixes it, because for whatever reason the problem seems to
-> > have resolved itself (or at least, btrfs-cleaner does way less writes)
-> > after a partial btrfs balance.
-> > I'll try and look the amount of writes after several hours. Maybe for
-> > this one, see with the author of the other bug. If they can easily
-> > reproduce the issue then it's going to be easier to check.
-> >
-> > Thanks,
-> > Anthony
-> >
-> > Le 17/01/2022 =C3=A0 17:52, Filipe Manana a =C3=A9crit :
-> >> On Mon, Jan 17, 2022 at 03:24:00PM +0100, Anthony Ruhier wrote:
-> >>> Thanks for the answer.
-> >>>
-> >>> I had the exact same issue as in the thread you've linked, and have
-> >>> some
-> >>> monitoring and graphs that showed that btrfs-cleaner did constant
-> >>> writes
-> >>> during 12 hours just after I upgraded to linux 5.16. Weirdly enough,
-> >>> the
-> >>> issue almost disappeared after I did a btrfs balance by filtering on
-> >>> 10%
-> >>> usage of data.
-> >>> But that's why I initially disabled autodefrag, what has lead to
-> >>> discovering
-> >>> this bug as I switched to manual defragmentation (which, in the end,
-> >>> makes
-> >>> more sense anyway with my setup).
-> >>>
-> >>> I tried this patch, but sadly it doesn't help for the initial issue. =
-I
-> >>> cannot say for the bug in the other thread, as the problem with
-> >>> btrfs-cleaner disappeared (I can still see some writes from it, but
-> >>> it so
-> >>> rare that I cannot say if it's normal or not).
-> >> Ok, reading better your first mail, I see there's the case of the 1 by=
-te
-> >> file, which is possibly not the cause from the autodefrag causing the
-> >> excessive IO problem.
-> >>
-> >> For the 1 byte file problem, I've just sent a fix:
-> >>
-> >> https://patchwork.kernel.org/project/linux-btrfs/patch/bcbfce0ff7e21bb=
-fed2484b1457e560edf78020d.1642436805.git.fdmanana@suse.com/
-> >>
-> >>
-> >> It's actually trivial to trigger.
-> >>
-> >> Can you check if it also fixes your problem with autodefrag?
-> >>
-> >> If not, then try the following (after applying the 1 file fix):
-> >>
-> >> https://pastebin.com/raw/EbEfk1tF
-> >>
-> >> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> >> index a5bd6926f7ff..db795e226cca 100644
-> >> --- a/fs/btrfs/ioctl.c
-> >> +++ b/fs/btrfs/ioctl.c
-> >> @@ -1191,6 +1191,7 @@ static int defrag_collect_targets(struct
-> >> btrfs_inode *inode,
-> >>                     u64 newer_than, bool do_compress,
-> >>                     bool locked, struct list_head *target_list)
-> >>   {
-> >> +    const u32 min_thresh =3D extent_thresh / 2;
-> >>       u64 cur =3D start;
-> >>       int ret =3D 0;
-> >>   @@ -1198,6 +1199,7 @@ static int defrag_collect_targets(struct
-> >> btrfs_inode *inode,
-> >>           struct extent_map *em;
-> >>           struct defrag_target_range *new;
-> >>           bool next_mergeable =3D true;
-> >> +        u64 range_start;
-> >>           u64 range_len;
-> >>             em =3D defrag_lookup_extent(&inode->vfs_inode, cur, locked=
-);
-> >> @@ -1213,6 +1215,24 @@ static int defrag_collect_targets(struct
-> >> btrfs_inode *inode,
-> >>           if (em->generation < newer_than)
-> >>               goto next;
-> >>   +        /*
-> >> +         * Our start offset might be in the middle of an existing
-> >> extent
-> >> +         * map, so take that into account.
-> >> +         */
-> >> +        range_len =3D em->len - (cur - em->start);
-> >> +
-> >> +        /*
-> >> +         * If there's already a good range for delalloc within the
-> >> range
-> >> +         * covered by the extent map, skip it, otherwise we can end u=
-p
-> >> +         * doing on the same IO range for a long time when using auto
-> >> +         * defrag.
-> >> +         */
-> >> +        range_start =3D cur;
-> >> +        if (count_range_bits(&inode->io_tree, &range_start,
-> >> +                     range_start + range_len - 1, min_thresh,
-> >> +                     EXTENT_DELALLOC, 1) >=3D min_thresh)
-> >> +            goto next;
-> >> +
-> >>           /*
-> >>            * For do_compress case, we want to compress all valid file
-> >>            * extents, thus no @extent_thresh or mergeable check.
-> >> @@ -1220,8 +1240,8 @@ static int defrag_collect_targets(struct
-> >> btrfs_inode *inode,
-> >>           if (do_compress)
-> >>               goto add;
-> >>   -        /* Skip too large extent */
-> >> -        if (em->len >=3D extent_thresh)
-> >> +        /* Skip large enough ranges. */
-> >> +        if (range_len >=3D extent_thresh)
-> >>               goto next;
-> >>             next_mergeable =3D
-> >> defrag_check_next_extent(&inode->vfs_inode, em,
-> >>
-> >>
-> >> Thanks.
-> >>
-> >>
-> >>> Thanks,
-> >>> Anthony
-> >>>
-> >>> Le 17/01/2022 =C3=A0 13:10, Filipe Manana a =C3=A9crit :
-> >>>> On Sun, Jan 16, 2022 at 08:15:37PM +0100, Anthony Ruhier wrote:
-> >>>>> Hi,
-> >>>>> Since I upgraded from linux 5.15 to 5.16, `btrfs filesystem defrag
-> >>>>> -t128K`
-> >>>>> hangs on small files (~1 byte) and triggers what it seems to be a
-> >>>>> loop in
-> >>>>> the kernel. It results in one CPU thread running being used at
-> >>>>> 100%. I
-> >>>>> cannot kill the process, and rebooting is blocked by btrfs.
-> >>>>> It is a copy of the
-> >>>>> bughttps://bugzilla.kernel.org/show_bug.cgi?id=3D215498
-> >>>>>
-> >>>>> Rebooting to linux 5.15 shows no issue. I have no issue to run a
-> >>>>> defrag on
-> >>>>> bigger files (I filter out files smaller than 3.9KB).
-> >>>>>
-> >>>>> I had a conversation on #btrfs on IRC, so here's what we debugged:
-> >>>>>
-> >>>>> I can replicate the issue by copying a file impacted by this bug,
-> >>>>> by using
-> >>>>> `cp --reflink=3Dnever`. I attached one of the impacted files to thi=
-s
-> >>>>> bug,
-> >>>>> named README.md.
-> >>>>>
-> >>>>> Someone told me that it could be a bug due to the inline extent.
-> >>>>> So we tried
-> >>>>> to check that.
-> >>>>>
-> >>>>> filefrag shows that the file Readme.md is 1 inline extent. I tried
-> >>>>> to create
-> >>>>> a new file with random text, of 18 bytes (slightly bigger than the
-> >>>>> other
-> >>>>> file), that is also 1 inline extent. This file doesn't trigger the
-> >>>>> bug and
-> >>>>> has no issue to be defragmented.
-> >>>>>
-> >>>>> I tried to mount my system with `max_inline=3D0`, created a copy of
-> >>>>> README.md.
-> >>>>> `filefrag` shows me that the new file is now 1 extent, not inline.
-> >>>>> This new
-> >>>>> file also triggers the bug, so it doesn't seem to be due to the
-> >>>>> inline
-> >>>>> extent.
-> >>>>>
-> >>>>> Someone asked me to provide the output of a perf top when the
-> >>>>> defrag is
-> >>>>> stuck:
-> >>>>>
-> >>>>>       28.70%  [kernel]          [k] generic_bin_search
-> >>>>>       14.90%  [kernel]          [k] free_extent_buffer
-> >>>>>       13.17%  [kernel]          [k] btrfs_search_slot
-> >>>>>       12.63%  [kernel]          [k] btrfs_root_node
-> >>>>>        8.33%  [kernel]          [k] btrfs_get_64
-> >>>>>        3.88%  [kernel]          [k] __down_read_common.llvm
-> >>>>>        3.00%  [kernel]          [k] up_read
-> >>>>>        2.63%  [kernel]          [k] read_block_for_search
-> >>>>>        2.40%  [kernel]          [k] read_extent_buffer
-> >>>>>        1.38%  [kernel]          [k] memset_erms
-> >>>>>        1.11%  [kernel]          [k] find_extent_buffer
-> >>>>>        0.69%  [kernel]          [k] kmem_cache_free
-> >>>>>        0.69%  [kernel]          [k] memcpy_erms
-> >>>>>        0.57%  [kernel]          [k] kmem_cache_alloc
-> >>>>>        0.45%  [kernel]          [k] radix_tree_lookup
-> >>>>>
-> >>>>> I can reproduce the bug on 2 different machines, running 2
-> >>>>> different linux
-> >>>>> distributions (Arch and Gentoo) with 2 different kernel configs.
-> >>>>> This kernel is compiled with clang, the other with GCC.
-> >>>>>
-> >>>>> Kernel version: 5.16.0
-> >>>>> Mount options:
-> >>>>>       Machine 1:
-> >>>>> rw,noatime,compress-force=3Dzstd:2,ssd,discard=3Dasync,space_cache=
-=3Dv2,autodefrag
-> >>>>>
-> >>>>>       Machine 2:
-> >>>>> rw,noatime,compress-force=3Dzstd:3,nossd,space_cache=3Dv2
-> >>>>>
-> >>>>> When the error happens, no message is shown in dmesg.
-> >>>> This is very likely the same issue as reported at this thread:
-> >>>>
-> >>>> https://lore.kernel.org/linux-btrfs/YeVawBBE3r6hVhgs@debian9.Home/T/=
-#ma1c8a9848c9b7e4edb471f7be184599d38e288bb
-> >>>>
-> >>>>
-> >>>> Are you able to test the patch posted there?
-> >>>>
-> >>>> Thanks.
-> >>>>
-> >>>>> Thanks,
-> >>>>> Anthony Ruhier
-> >>>>>
-> >>
-> >>
-> >>
-> >>
+--------------N0JrNf3Bpn8FDsJaR7b4dEyr--
+
+--------------IGi0eTrA6RzLfECZJ7AF4REc
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQTNQhfAcx4Jlo6lbanXMzk8hoTszwUCYeXF5gAKCRDXMzk8hoTs
+z6NhAP9mKnBqhx/Qp1tBi6MUllYeyvfzO5X1vQ5MKIzlegjzLwD+J5Zrfs5rmp5E
+HPKUYIT8qcny7tbi3uq+GScCpAkfPgg=
+=vJzn
+-----END PGP SIGNATURE-----
+
+--------------IGi0eTrA6RzLfECZJ7AF4REc--
