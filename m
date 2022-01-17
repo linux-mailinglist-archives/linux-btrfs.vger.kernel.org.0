@@ -2,142 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287E3490057
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 03:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB4D4901C5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 06:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbiAQCuF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 21:50:05 -0500
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:44344 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbiAQCuE (ORCPT
+        id S234441AbiAQF4Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jan 2022 00:56:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234293AbiAQF4X (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 21:50:04 -0500
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id 6527D1E00086;
-        Mon, 17 Jan 2022 04:50:03 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1642387803; bh=bsbG4lnT+zr08G/tRlKpwiSWnW0p1mjSDnvISc5myCE=;
-        h=References:From:To:Subject:Date:In-reply-to:Message-ID:
-         Content-Type:X-ESPOL:from:date;
-        b=aSTax7+kSt/doPkFU3MlDNAkXIuN1t044thfyqbdp8n22V76rcNbxLpUwxIlc73J3
-         FiTqLJpGovpP2kZSdEXGLwX3tyl+3Ucgbc4Ddfm3MArtS0Esh1mwvAuEVIdV6HyjV+
-         ApgJuNK7WanlIj4HnJ82CnmmIyu8Cw/wOsKjsYGQ=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 4BA961E0008B;
-        Mon, 17 Jan 2022 04:50:03 +0200 (EET)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id LMBy71Qz9tI4; Mon, 17 Jan 2022 04:50:01 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 864FA1E00086;
-        Mon, 17 Jan 2022 04:50:01 +0200 (EET)
-References: <20220117023850.40337-1-wqu@suse.com>
- <20220117023850.40337-3-wqu@suse.com>
-User-agent: mu4e 1.7.0; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Stickstoff <stickstoff@posteo.de>
-Subject: Re: [PATCH 2/3] btrfs: check/original: reject bad metadata backref
- with invalid level
-Date:   Mon, 17 Jan 2022 10:48:29 +0800
-In-reply-to: <20220117023850.40337-3-wqu@suse.com>
-Message-ID: <1r17vzxp.fsf@damenly.su>
+        Mon, 17 Jan 2022 00:56:23 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439E9C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 21:56:23 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id e3so50691580lfc.9
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jan 2022 21:56:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+4xwUmACYCLwM/R1CbL7XDDAC1gBxrmtrwbGvcObgoo=;
+        b=qPipXk25FEcV3bLvYXgyVdGvuvVvX8FVsPEwQ3QzjEMCH8SZ1yhBfv/FnEEGyzP8n+
+         Zd1Xztlp4XHuoIRs3zbxbWO0qNb8akW5mppV3z6wV9O0+cwokgAqmwoKqBN/89NlJ7ta
+         +24bFT626KHoE8kwEDbNk1eCT08xxxD9CWNx/tWWtYUkzCicWRWjf2K8JlYZr0nws0P4
+         qTmDzVmYuHqIQT+LL7+xJsBIlxXc3QPa5tZsDXlHZ7F4+e63pmgX7DUt/x3vYrRQ9bnH
+         b+NnJA4juCMC2yLmIMYbvWBBjvMR2LunBchXn7HPrjH7ydm8PGOd65jNwCQyfW6K86Rg
+         krkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+4xwUmACYCLwM/R1CbL7XDDAC1gBxrmtrwbGvcObgoo=;
+        b=LRESaIP1cQ4DWjs3sat5u97Lvg+wEHnr0vq1RoFfJicRhDnm1P8fjy9YfAkMk4znP0
+         lr+oYB6nmsYfQhge/yETad2zWfYac+YtO+L+JIOE32yoIa3namdKOVa6SuowRGJIuYzz
+         rxa7lp8PKGvunQroQfz/yVroTPr+fCHY40DAl118liSEQ7p76W8axdQiOeYiLVja3Ijd
+         rORisbzD9JzedArpnGrzSw3XhBTsK/LsOcbLzeiS60CHQaDjdIa62EliZzpJgvuUIvuc
+         FNJfAWCxTft3vSATzkCkigAwvkWuER0mxzOuNbbxi9Pzef0xRwwB3YLxCIDVsJe1m7Ca
+         Saow==
+X-Gm-Message-State: AOAM532n1BRX4Q96QJ+iv7ybouq8Dma2nQg3lXrWMvvhUr5BbPHZvnKp
+        /dNT9D9EiG8FpDtR6ad7GAZaeN8wEa8=
+X-Google-Smtp-Source: ABdhPJx62W5Nv2xU1QHhCacdfnX8ett5rvmpre7A7iFG5G0vTSqjMk1dXTdFmEn8lctIa5CHaMGJeg==
+X-Received: by 2002:a05:6512:12c9:: with SMTP id p9mr7188778lfg.97.1642398981665;
+        Sun, 16 Jan 2022 21:56:21 -0800 (PST)
+Received: from ?IPv6:2a00:1370:812d:2c5:9107:c503:6c4c:b8b5? ([2a00:1370:812d:2c5:9107:c503:6c4c:b8b5])
+        by smtp.gmail.com with ESMTPSA id z9sm1133276ljm.77.2022.01.16.21.56.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Jan 2022 21:56:21 -0800 (PST)
+Subject: Re: 'btrfs check' doesn't find errors in corrupted old btrfs (corrupt
+ leaf, invalid tree level)
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Stickstoff <stickstoff@posteo.de>, lists@colorremedies.com,
+        linux-btrfs@vger.kernel.org
+Cc:     quwenruo.btrfs@gmx.com
+References: <6ed4cd5a-7430-f326-4056-25ae7eb44416@posteo.de>
+ <CAJCQCtSO6HqkpzHWWovgaGY0C0QYoxzyL-HSsRxX-qYU2ZXPVA@mail.gmail.com>
+ <13d3ebcb-f261-35eb-0675-3cb199ad3643@posteo.de>
+ <f8de013a-9b1b-f471-4af0-dbb587264774@cobb.uk.net>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <8fc2fd54-0fec-a4f5-30f5-fdd68cd4e181@gmail.com>
+Date:   Mon, 17 Jan 2022 08:56:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: +dBm1NUOBlzQh1+nQ3rcDQU2qyxVL57ogYemsm5Un2eDUSOFfksTURS1g21yTGK6vjYX
+In-Reply-To: <f8de013a-9b1b-f471-4af0-dbb587264774@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 16.01.2022 13:25, Graham Cobb wrote:
+> 
+> On 16/01/2022 09:31, Stickstoff wrote:
+...
+> 
+>> Scrub did abort, and force the fs read-only, but didn't unmount it.
+>> Also, my backupscheme depends on btrfs-send and the IDs of snapshots.
+>> Migrating from the
+>> old corrupted fs to a fresh one with btrfs-send should keep all the IDs
+>> as they were,
+>> so my backupscheme would not see any difference when picking up with the
+>> new fs?
+> 
+> I don't think send/receive preserves subvolume IDs. I think it only
+> preserves "Received UUID". But I may be wrong.
+> 
 
-On Mon 17 Jan 2022 at 10:38, Qu Wenruo <wqu@suse.com> wrote:
+You are correct. btrfs receive creates new subvolume which gets next subvolume
+ID on target filesystem and own unique subvolume UUID. Neither of them have any
+relation to subvolume ID and UUID on source.
 
-> [BUG]
-> There is a bug report that kernel tree-checker rejected an 
-> invalid
-> metadata item:
->
->  corrupt leaf: block=934474399744 slot=68 extent 
->  bytenr=425173254144 len=16384 invalid tree level, have 33554432 
->  expect [0, 7]
->
-> But original mode btrfs-check reports nothing wrong.
-> (BTW, lowmem mode will just crash, and fixed in previous patch).
->
-> [CAUSE]
-> For original mode it doesn't really check tree level, thus 
-> didn't find
-> the problem.
->
-> [FIX]
-> I don't have a good idea to completely make original mode to 
-> verify the
-> level in backref and in the tree block (while lowmem does that).
->
-> But at least we can detect obviouly corrupted level just like 
-> kernel.
->
-> Now original mode will detect such problem:
->
->  ...
->  [2/7] checking extents
->  ERROR: tree block 30457856 has bad backref level, has 256 
->  expect [0, 7]
->  ref mismatch on [30457856 16384] extent item 0, found 1
->  tree backref 30457856 root 5 not found in extent tree
->  backpointer mismatch on [30457856 16384]
->  ERROR: errors found in extent allocation tree or chunk 
->  allocation
->  [3/7] checking free space tree
->  ...
->
-> Reported-by: Stickstoff <stickstoff@posteo.de>
-> Link: 
-> https://lore.kernel.org/linux-btrfs/6ed4cd5a-7430-f326-4056-25ae7eb44416@posteo.de/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  check/main.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->
-> diff --git a/check/main.c b/check/main.c
-> index 540130b8e223..2dea2acf5104 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -5447,6 +5447,25 @@ static int process_extent_item(struct 
-> btrfs_root *root,
->  	if (metadata)
->  		btrfs_check_subpage_eb_alignment(gfs_info, 
->  key.objectid, num_bytes);
->
-> +	ptr = (unsigned long)(ei + 1);
-> +	if (metadata) {
-> +		u64 level;
-> +
-> +		if (key.type == BTRFS_EXTENT_ITEM_KEY) {
-> +			struct btrfs_tree_block_info *info;
-> +
-> +			info = (struct btrfs_tree_block_info 
-> *)ptr;
-> +			level = btrfs_tree_block_level(eb, info);
-> +		} else {
-> +			level = key.offset;
-> +		}
-> +		if (level >= BTRFS_MAX_LEVEL) {
-> +			error(
-> +	"tree block %llu has bad backref level, has %llu expect 
-> [0, %u]",
-> +			      key.objectid, level, BTRFS_MAX_LEVEL 
-> - 1);
-> +			return -EIO;
->
--EUCLEAN is better?
-
-Reviewed-by: Su Yue <l@damenly.su>
---
-Su
-> +		}
-> +	}
->  	memset(&tmpl, 0, sizeof(tmpl));
->  	tmpl.start = key.objectid;
->  	tmpl.nr = num_bytes;
+Received UUID is set to source subvolume UUID unless source subvolume has 
+received UUID itself.
