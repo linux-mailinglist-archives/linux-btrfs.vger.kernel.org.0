@@ -2,139 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD79C48FF98
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 00:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7231348FFD2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jan 2022 01:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbiAPXGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jan 2022 18:06:07 -0500
-Received: from mout.gmx.net ([212.227.15.15]:43841 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbiAPXGH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jan 2022 18:06:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1642374364;
-        bh=/Uw+2zLCEY706HS/cVW0RnoGb7zKy+i8jgq622hVetg=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=SKfDnuXOyAQnOkfQ2W1dosEG3XqCDzDkgTxiGF/3s9dsjrTG6XJ9MTYCF5/OjGFw+
-         +A2p+rSg+AzjlEyhf8iDUcFQRQk7gSa4sPDAxNbMz3BY5hnelccdCZm4EWg0pGnynB
-         bLdnlZLnYbS17hfgjHqfDJRsNTrIgqBpR4Io8krU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MlNpH-1mSRfS3l09-00liO0; Mon, 17
- Jan 2022 00:06:04 +0100
-Message-ID: <9f606c83-6222-fb60-9ada-c6596650db99@gmx.com>
-Date:   Mon, 17 Jan 2022 07:06:00 +0800
+        id S236649AbiAQA5H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jan 2022 19:57:07 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:58141 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236646AbiAQA5G (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 16 Jan 2022 19:57:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1642381026; x=1673917026;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=W9uaJiom+9DVVRRSdntg/b/+yHB13yV0L0N0eumFGKs=;
+  b=FBZoHlCHwD0iNdJVRahzZfwAmq648LI+sL3lAfgKo08UYGXRvmVcDS4D
+   brAtIn9Y1XKsynCwUU+sRkjMjJdhNaAx2t4LgZ1NYL/ctrtAnndJIzBXY
+   dc9Qbwl2F3EVsMzd8WJHhu6odf2rOCZj2Xm5d0qT3Eh6fKiRLfL7ehj79
+   i7376H7t/2bLFIkPJsGkIXEkI1SvEBQCAWhZt73CiY9EU0O/X3VrGsRFl
+   uti0wXbb+KBZi8yJJV04IujFSvMzPA5a3Uf6W8685fpukhZ9wtcHiOFg3
+   oqlA77d/VhKwL3DsdssHHdlK8m1TzxbbCPzcCxyfoOGQmTk1PhrKQVsZ+
+   w==;
+X-IronPort-AV: E=Sophos;i="5.88,294,1635177600"; 
+   d="scan'208";a="302472793"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 17 Jan 2022 08:57:06 +0800
+IronPort-SDR: Dl0Y5EyBo36N2f8zwlciVKNZPGI9srpntOpLMqyMvQlyb3BP2bhGKoc2K8AGjZ6aV1+TdLKN5D
+ +lmmLopItqtoqjZvE4N/+5HmHOKnXJ8wr6aQJmwl9MbQwGL6VdPMMd2jYAhbWj6AyJp/4tzEwJ
+ p2pFiHXSlkooIgtejBUxq6aB752Iy03Fq7AVKyzHmmVQnM9vvAiV4ewc7fmts86WDoCnxuMiEg
+ ZFme4xcLwxwdFNXM61n+m1vqy6R55yX+pE2z4wz6m52+AuJd2VuYhRBXOnfYJfz4qHX3v1uE7f
+ er7Q+fHrUBb4KC6699v1V0kL
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2022 16:29:22 -0800
+IronPort-SDR: oxYTvc/6Z4kPhA2wRIzfw0c7yFW/WUrpzuxh1bgLt3oiL+gkqVp1DsAZs2Bb+ko0Qn+QkOCtef
+ m0R0mPct5G4MSoyCoBoW3C7Gsw9VEPW4whDLZDplgrMDhKg+9Jt5RmdqWYvCOeNLtPz6oG/oPP
+ 0cbGUmYfrI8kBx5ffKXUN9Jazq84p35JsuIFo6rvBI7NffVXswXZH7zhM3pZ7+EnB7azshQ8AG
+ oUvTej36fCYMzU6pIVSIMfRlDOgEHXXkDkk2AFgx5boKd6dHrIk6q/yMPGzGgf/lehz+FNU3Ky
+ qKM=
+WDCIronportException: Internal
+Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
+  by uls-op-cesaip02.wdc.com with ESMTP; 16 Jan 2022 16:57:06 -0800
+From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH] btrfs/255: add test for quota disable in parallel with balance
+Date:   Mon, 17 Jan 2022 09:57:05 +0900
+Message-Id: <20220117005705.956931-1-shinichiro.kawasaki@wdc.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: 'btrfs check' doesn't find errors in corrupted old btrfs (corrupt
- leaf, invalid tree level)
-Content-Language: en-US
-To:     Stickstoff <stickstoff@posteo.de>, lists@colorremedies.com,
-        linux-btrfs@vger.kernel.org
-References: <6ed4cd5a-7430-f326-4056-25ae7eb44416@posteo.de>
- <CAJCQCtSO6HqkpzHWWovgaGY0C0QYoxzyL-HSsRxX-qYU2ZXPVA@mail.gmail.com>
- <0aed5133-5768-f9c5-492f-3218fbc3bb46@gmx.com>
- <b949dfae-1ff2-1ff4-1f1f-0c778a5f2458@posteo.de>
- <089bc046-9936-3cb7-ea8c-b6ff563dce77@gmx.com>
- <c81eb4b8-f820-d819-612c-ba034e6594c5@gmx.com>
- <c906e9f3-395d-ad07-fb64-aa13be544699@posteo.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <c906e9f3-395d-ad07-fb64-aa13be544699@posteo.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1pLC6rZHUYfgKrOHhepkIqakex/4hIapwbcu2UinTBIC0LVEQIu
- mcx9epdeNqJng7tPHDJMxMboC9sgBNlhU3uUUux6n5O3wfsqntVAYtsPtF1E/uej3KZOThr
- jz+lG/MtNFZotTjTNCnUdneALT6TOg/dlWAtgWt31MT1TeaJRLI6HfmAEiQjoinduscBqrS
- k6s3GsnVpWOpRpD95x2XQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LevdsHuSWx4=:zgEr8HvkiQntRh0MlRc3oA
- 3mBvVcd+Wf3GcoZf3RR175RMe5MEW3juW25uRwPmJsfPyXhi7S1jdKUtUt695Ry6JwU09v0zk
- V/LPE5ItKrkmS3rtbbVSnIV61WgDjcIvL4LOf2eAT9O9mdGV1mc2lHapyMerBIER1YJbcKB05
- TytO+yGkWlOA4K7AbIPKfsDxiZ6mh+WSitdn30I+SV3Ajq2eCfk2HTV7UGDMy1hWXB5NE/Yvf
- uw1ufhmjSpDsw75nKZ6as/Qd6D5PUv9CXawYQXRnR7xZpdH+ZYbrflN23DElpTeIlvejml8ud
- dny3xkdevHZh1/KkX4wzJ0kBF2T4vF/XLoBctjdHhx1+I61ZJGDblPMiW/uMR4yToIoTlgIOV
- fbyXGipOrNxkJsH8KqcbWAZu+oBYzEP4MKfi+8XPRJgPJ8FcbKLR4a7wDzk6NJ6IcQVPKFWht
- L0tF/6t2Qyz6Lbpia3SK6fkllY9f4wamRguDChbYBoEGGantQRuk97yQm65Pz+Ro02p8T9BMD
- YEJYtHQZlBIsyrASZHCOPBUz9E75I/1jm4gmTpF+wOpiKLWu5ZQC98JqBz6XG0iqbQxXptxnn
- WFIG9r1jmsbKbD23wGv4CUalSTPckKmN8s+WodViNQ+y5DvARVNOsMD5HViSwbX2LprpdQpI5
- qf/fYXYfpT3lS0zeZT8SsinsdffE/8ZzC5yAfmHzEU1PLRC6rYlagF8F/qanbLrfkqOPjD97n
- bqfZB6O40Ap3AEJXULEoUjCEEpCbWJn25Lw8gu7lRRSWpO13Ss8c3lKfrhMfQAe9jSB9uLFrf
- YaRyR1OfT/xG2G8mD6DcZv6hwMWBKEshQbdB+HoTET8JSE0xj93d2CJVKVsXm+m9CQhVSZaG9
- QlvOpwevc6kiDOkpXGHVqKYvQRCp/8yxVNpqDk1qRPBl8Bp1X6d2sArWMCt1q0IYJztZBLnkV
- +ew5Mp/1tEzaIP9U4D5ZNx4xuJlynCNmssgKwc9SqzIzq4uUVwP1HtVHPKu31IUd4xfPQhqKD
- 68HdiR0dONvMChdgrZOgQxL1KYNbTIlF0cg52ZIo/yuiZLv15b2WGVpEXkg9cJoEneHmnXrzH
- /JO9CrVVQlJ82U=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Test quota disable during btrfs balance and confirm it does not cause
+kernel hang. This is a regression test for the problem reported to
+linux-btrfs list [1]. The hang was recreated using the test case and
+memory backed null_blk device with 5GB size as the scratch device.
 
+[1] https://lore.kernel.org/linux-btrfs/20220115053012.941761-1-shinichiro.kawasaki@wdc.com/
 
-On 2022/1/16 22:01, Stickstoff wrote:
->
-> On 1/16/22 1:49 PM, Qu Wenruo wrote:
-> [..]
->>
->> This is your special fix:
->> https://github.com/adam900710/btrfs-progs/tree/dirty_fix
->>
->> What you need is firstly setup your btrfs-progs compiling environment,
->> then compile btrfs-corrupt-block (make btrfs-corrupt-block).
->>
->> Then inside your compiled btrfs-progs directory
->>
->> # ./btrfs-corrupt-block -X <device>
->>
->> If it runs correctly, it should show something like:
->>
->> =C2=A0=C2=A0 reseted offending key
->>
->> If something wrong happened, it would not write the modified metadata
->> back to disk (using the same metadata CoW mechanism as kernel).
->>
->> Thanks,
->> Qu
->>
->
-> Thank you so much, Qu, for this tool!
->
-> I got it to compile and run after a quick refresh of git syntax :-)
-> (..and a slight hesitation to run a "corruptor" tool haha)
->
-> ./btrfs-corrupt-block -X /dev/mapper/123
-> extent buffer leak: start 934285934592 len 16384
-> extent buffer leak: start 934314885120 len 16384
+Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+---
+ tests/btrfs/255     | 42 ++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/255.out |  2 ++
+ 2 files changed, 44 insertions(+)
+ create mode 100755 tests/btrfs/255
+ create mode 100644 tests/btrfs/255.out
 
-Stupid me, I forgot to free the path.
+diff --git a/tests/btrfs/255 b/tests/btrfs/255
+new file mode 100755
+index 00000000..16b682ca
+--- /dev/null
++++ b/tests/btrfs/255
+@@ -0,0 +1,42 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2022 Western Digital Corporation or its affiliates.
++#
++# FS QA Test No. btrfs/255
++#
++# Confirm that disabling quota during balance does not hang
++#
++. ./common/preamble
++_begin_fstest auto qgroup
++
++# real QA test starts here
++_supported_fs btrfs
++_require_scratch
++
++_scratch_mkfs >> $seqres.full 2>&1
++_scratch_mount
++
++# Fill 40% of the device or 2GB
++fill_percent=40
++max_fillsize=$((2*1024*1024*1024))
++
++devsize=$(($(_get_device_size $SCRATCH_DEV) * 512))
++fillsize=$((devsize * fill_percent / 100))
++((fillsize > max_fillsize)) && fillsize=$max_fillsize
++
++fs=$((4096*1024))
++for ((i=0; i * fs < fillsize; i++)); do
++	dd if=/dev/zero of=$SCRATCH_MNT/file.$i bs=$fs count=1 \
++	   >> $seqres.full 2>&1
++done
++echo 3 > /proc/sys/vm/drop_caches
++
++# Run btrfs balance and quota enable/disable in parallel
++_run_btrfs_balance_start $SCRATCH_MNT >> $seqres.full &
++$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
++$BTRFS_UTIL_PROG quota disable $SCRATCH_MNT
++wait
++
++echo "Silence is golden"
++status=0
++exit
+diff --git a/tests/btrfs/255.out b/tests/btrfs/255.out
+new file mode 100644
+index 00000000..7eefb828
+--- /dev/null
++++ b/tests/btrfs/255.out
+@@ -0,0 +1,2 @@
++QA output created by 255
++Silence is golden
+-- 
+2.33.1
 
-But no big deal, btrfs-progs can handle it without problem.
-
-> extent buffer leak: start 934323601408 len 16384
-> reseted offending key
->
-> This seems to have done its magic then.
-> I unmounted, mounted, and am scrubbing the filesystem. It didn't abort
-> yet, so far so good!
-> If scrub goes through, I'll recreate the btrfs from scratch just to be
-> safe.
-
-No need if that's the only problem.
-
-Although the bitflip is not really the problem for the filesystem, but
-the memory hardware.
-
-So if you plan to use the same system, I'd strongly recommend to use
-newer kernel.
-
-Thanks,
-Qu
-
-> With removing one drive from raid, btrfs-send to a fresh btrfs,
-> then adding the other drive to form a raid-1 again.
->
-> I am really grateful for your help, Qu and all! This saved me a lot of
-> time and effort, and I learned some more internals on the way too.
-> Thank you!
->
-> Stickstoff
