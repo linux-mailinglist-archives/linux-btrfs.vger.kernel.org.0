@@ -2,113 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF794929AE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 16:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0444929D2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 16:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242714AbiARPbu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jan 2022 10:31:50 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:52672 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238270AbiARPbt (ORCPT
+        id S1345995AbiARPoL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jan 2022 10:44:11 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:50072 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345950AbiARPoI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jan 2022 10:31:49 -0500
+        Tue, 18 Jan 2022 10:44:08 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 762E5218E0;
-        Tue, 18 Jan 2022 15:31:48 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id A4F791F3C7;
+        Tue, 18 Jan 2022 15:44:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1642519908;
+        t=1642520647;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=t4zZIVzTHY1eS0K2yU19dYbSC5jS7rWHgQD+MWOU3JI=;
-        b=BO4RwgrQSDPBkccJEQ4Uwd6BB2r+z5Xy72BmmK5my3/+Ny8f3hlEkFWijmotyOZHc6nowN
-        7Dxv2PmWZ7xTvuXZaSZ9bn7JuHQaJ9d3ErcqDbXKuhxyesK3GQvuI7jAkEgoeoiEqOlfU7
-        caeVveCLFsPBGMSYGH7Adxb0h/73YRw=
+        bh=WJ8mslxkPx6xYrtG8RAMidbRCSdstGvUhp9HBz1P5F0=;
+        b=ZGsXV7ueBOiaNnbNslTYkDPuGXco3IBOYoQBBAhxrqs5TzqNUtjWyyroqsFQrt9X2aXrRK
+        ZflV/0ZdnkuglXgUPzCVq8xEcyoCCuYtKhfyjk4tHGSKs2t8aLrhezxR3+OJtTOn3XGlfO
+        pqMnpV2rzP8HCaaf6kbQv2uincH6vko=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1642519908;
+        s=susede2_ed25519; t=1642520647;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=t4zZIVzTHY1eS0K2yU19dYbSC5jS7rWHgQD+MWOU3JI=;
-        b=32yv9XSlOmUdbXBeO/CY6viGlaBKXo4BtMp+/9OKXUcqaZ4EMpM99zQHAFh2rq/pD54z+R
-        drKlN0oJAG3juPAA==
+        bh=WJ8mslxkPx6xYrtG8RAMidbRCSdstGvUhp9HBz1P5F0=;
+        b=jvXhTMbCpenzMQESEixPN0etbs7na5lklXnuRST65EN5mpQCwUmSYRUkMuG5oQaHq+47A7
+        nN0VJHah+Zs2L6Cg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 66EB5A3B84;
-        Tue, 18 Jan 2022 15:31:48 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 9E13CA3B94;
+        Tue, 18 Jan 2022 15:44:07 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B4CDCDA7A3; Tue, 18 Jan 2022 16:31:11 +0100 (CET)
-Date:   Tue, 18 Jan 2022 16:31:11 +0100
+        id F3C01DA7A3; Tue, 18 Jan 2022 16:43:30 +0100 (CET)
+Date:   Tue, 18 Jan 2022 16:43:30 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
-        dsterba@suse.com, nborisov@suse.com, l@damenly.su,
-        kreijack@libero.it
-Subject: Re: [PATCH v5 0/4] btrfs: match device by dev_t
-Message-ID: <20220118153111.GM14046@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org, nborisov@suse.com
+Subject: Re: [PATCH v2] btrfs: cleanup finding rotating device
+Message-ID: <20220118154330.GN14046@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, josef@toxicpanda.com, dsterba@suse.com,
-        nborisov@suse.com, l@damenly.su, kreijack@libero.it
-References: <cover.1641963296.git.anand.jain@oracle.com>
+        linux-btrfs@vger.kernel.org, nborisov@suse.com
+References: <1b19262076d9ae10d3ff81f73209249375ae25bc.1642048893.git.anand.jain@oracle.com>
+ <d56216c5f955862d31be7c9884222fa9b7a4ddbd.1642060052.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1641963296.git.anand.jain@oracle.com>
+In-Reply-To: <d56216c5f955862d31be7c9884222fa9b7a4ddbd.1642060052.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 01:05:58PM +0800, Anand Jain wrote:
-> v5: Patch 1/4 device_matched() to return bool; absorb errors in it to false.
->      Move if (!device->name) into device_matched().
->     Patch 2/4 fix the commit title and add a comment.
->     Patch 3/4 add more comment about btrfs_device::devt.
->     
-> v4: Return 1 for device matched in device_matched()
->     Use scnprintf() instead of sprintf() in device_matched()
->     Change log updated drop commit id
->     Use str[0] instead of strlen()
->     Change logic from !lookup_bdev() to lookup_bdev == 0
+On Thu, Jan 13, 2022 at 03:48:54PM +0800, Anand Jain wrote:
+> The pointer to struct request_queue is used only to get device type
+> rotating or the non-rotating. So use it directly.
 > 
-> v3: Added patch 3/4 saves and uses dev_t in btrfs_device and
->     thus patch 4/4 removes the function device_matched().
->     fstests btrfs passed with no new regressions.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2: Eliminate the if statement.
 > 
-> v2: Fix 
->      sparse: warning: incorrect type in argument 1 (different address spaces)
->      For using device->name->str
+>  fs/btrfs/volumes.c | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
 > 
->     Fix Josef suggestion to pass dev_t instead of device-path in the
->      patch 2/2.
-> 
-> --- original cover letter -----
-> Patch 1 is the actual bug fix and should go to stable 5.4 as well.
-> On 5.4 patch1 conflicts (outside of the changes in the patch),
-> so not yet marked for the stable.
-> 
-> Patch 2 simplifies calling lookup_bdev() in the device_matched()
-> by moving the same to the parent function two levels up.
-> 
-> Patch 2 is not merged with 1 because to keep the patch 1 changes local
-> to a function so that it can be easily backported to 5.4 and 5.10.
-> 
-> We should save the dev_t in struct btrfs_device with that may be
-> we could clean up a few more things, including fixing the below sparse
-> warning.
-> 
->   sparse: sparse: incorrect type in argument 1 (different address spaces)
-> 
-> For using without rcu:
-> 
->   error = lookup_bdev(device->name->str, &dev_old); 
-> 
-> 
-> Anand Jain (4):
->   btrfs: harden identification of the stale device
->   btrfs: redeclare btrfs_free_stale_devices arg1 to dev_t
->   btrfs: add device major-minor info in the struct btrfs_device
->   btrfs: use dev_t to match device in device_matched
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 70b085dff500..34d08c4f7b6c 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -601,7 +601,6 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  			struct btrfs_device *device, fmode_t flags,
+>  			void *holder)
+>  {
+> -	struct request_queue *q;
+>  	struct block_device *bdev;
+>  	struct btrfs_super_block *disk_super;
+>  	u64 devid;
+> @@ -643,9 +642,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  			set_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+>  	}
+>  
+> -	q = bdev_get_queue(bdev);
+> -	if (!blk_queue_nonrot(q))
+> -		fs_devices->rotating = true;
+> +	fs_devices->rotating = !blk_queue_nonrot(bdev_get_queue(bdev));
 
-V5 looks good to me, thanks. If there are still fixups needed, I'm not
-sure Nick has seen v5, I'll fold them to the patches in misc-next.
+This is an equivalent change, in the new code fs_devices->rotating will
+be always set according to the last device, while in the old code, any
+rotational device will set it to true and never back.
+
+>  
+>  	device->bdev = bdev;
+>  	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
+> @@ -2590,7 +2587,6 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans)
+>  int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path)
+>  {
+>  	struct btrfs_root *root = fs_info->dev_root;
+> -	struct request_queue *q;
+>  	struct btrfs_trans_handle *trans;
+>  	struct btrfs_device *device;
+>  	struct block_device *bdev;
+> @@ -2666,7 +2662,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>  		goto error_free_zone;
+>  	}
+>  
+> -	q = bdev_get_queue(bdev);
+>  	set_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+>  	device->generation = trans->transid;
+>  	device->io_width = fs_info->sectorsize;
+> @@ -2714,8 +2709,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>  
+>  	atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
+>  
+> -	if (!blk_queue_nonrot(q))
+> -		fs_devices->rotating = true;
+> +	fs_devices->rotating = !blk_queue_nonrot(bdev_get_queue(bdev));
+
+Same here.
+
+>  
+>  	orig_super_total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
+>  	btrfs_set_super_total_bytes(fs_info->super_copy,
+> -- 
+> 2.33.1
