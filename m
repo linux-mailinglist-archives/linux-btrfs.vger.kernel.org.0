@@ -2,147 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82283491FB7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 08:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858B5492116
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 09:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244571AbiARHTY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jan 2022 02:19:24 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:51020 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbiARHTY (ORCPT
+        id S1344103AbiARIXR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jan 2022 03:23:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238593AbiARIXR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jan 2022 02:19:24 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 94B30212C3;
-        Tue, 18 Jan 2022 07:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1642490362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=mwrMm9p0XKm29fkZlYtvb/i6y3gRyXzoJRGx3A3cGZo=;
-        b=fIzWN9k1lgiNdVnTrAir1QaSO4VQyM4CrKcZm9O9Adgdm9ShVNL1G7XqNXWfu4jlIe/cqY
-        fim0Pgo6tWN+s4P4gaQmsF4qoeVeXwg42hNpjXeye0RkNw1aqnARt0nn+RDJGGL0N/QkfX
-        Q2mJCGyLGEjzcRz+pQ/A2agYbgpTSpY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B87B51332F;
-        Tue, 18 Jan 2022 07:19:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KS9hIflp5mF5RQAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 18 Jan 2022 07:19:21 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Anthony Ruhier <aruhier@mailbox.org>
-Subject: [PATCH v2] btrfs: defrag: fix the wrong number of defragged sectors
-Date:   Tue, 18 Jan 2022 15:19:04 +0800
-Message-Id: <20220118071904.29991-1-wqu@suse.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 18 Jan 2022 03:23:17 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB4CC061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 00:23:16 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id p27so55802419lfa.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 00:23:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=q8lEiSvBJtD3iJZzHKUB3OW9KVYEhKjadOFJ1IzG7WU=;
+        b=oBjvOEp0AXVQgVcrUjGRJB+1DntldvDvbSQmXOka/i4FehrXbsLptQK64hNq0o1zsz
+         rmXniITLvCVwpCdWGg/j/SGlLbwVtMh4zpK1prH/9HfREV6clXX4jmPhx4YATFMfi7ds
+         P8x/HmahlqMIYxhY0a6Vif5uiLS9FZI4ahWXwSF21EoIowH9lYfqTqFBKam0N/RprC2I
+         tjT4SkpNe26CVZOlT6SXwxTm6Ze86rVTNVNJh6/QBtxC9Vw7jdgwJGeJvjUQ5MGi9Gaz
+         ReyoxVvN5+cNV+OjNCvu05saiUHqCeTYUvGJTZzcRG0sopzoBEX/MuCxBC+9re5I1xbj
+         wdSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=q8lEiSvBJtD3iJZzHKUB3OW9KVYEhKjadOFJ1IzG7WU=;
+        b=U3wXcdHIqHRPscFGjra0LZkNg6YewPY3tzxrPilJ1RR261g29B6UsDM3ecZMVOnhm6
+         h92B1kkmmggLuPWccHgIZixAZ4e0llf4V43WPP9kiaaWvwo3UNQfzL5PumxjO+mZnbzW
+         UErYHZyhpguri+YCIrrbQEq64/kTaH6pGc2xEP0Jzqfj7W60Df2CL3+v599MimdHTtlM
+         43jXC/DRA45PnJ51TlerU/nJTdVUy6+T6wHbra7TtpVIWr6ILRzqpazh+Q8iv9esZCHj
+         fevpFk5ESvK4195xbT5wTeF6liaujeCax/5luLpAjszDRe5UjsQly/7XFQi9S9u7LsE0
+         QYSQ==
+X-Gm-Message-State: AOAM532ZO+++8z9QUSXnS6xyO0TLD2ThZiVm+3uySVOJVVwR2iGlXtDf
+        ctX8ikWxqoB4I5s6AZoGGydDjhjFW2maUkEAfT0=
+X-Google-Smtp-Source: ABdhPJxP0DKXw79cYYrvOtbtoehGAaenR1ZB0weYlyQVgTnouQ0If42yo1kqx58atwBb53da10wpbfc8jT8XIDI5qgI=
+X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr20423883lfu.10.1642494194928;
+ Tue, 18 Jan 2022 00:23:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6512:2291:0:0:0:0 with HTTP; Tue, 18 Jan 2022 00:23:14
+ -0800 (PST)
+Reply-To: davidparkens@outlook.com
+From:   david <adernsonphilips@gmail.com>
+Date:   Tue, 18 Jan 2022 08:23:14 +0000
+Message-ID: <CAFB0dsW72zr0kinsuLNfEZVWeN4CJJLJrJqcmDT743UkG5H_HA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There are users using autodefrag mount option reporting obvious increase
-in IO:
-
-> If I compare the write average (in total, I don't have it per process)
-> when taking idle periods on the same machine:
->     Linux 5.16:
->         without autodefrag: ~ 10KiB/s
->         with autodefrag: between 1 and 2MiB/s.
->
->     Linux 5.15:
->         with autodefrag:~ 10KiB/s (around the same as without
-> autodefrag on 5.16)
-
-[CAUSE]
-When autodefrag mount option is enabled, btrfs_defrag_file() will be
-called with @max_sectors = BTRFS_DEFRAG_BATCH (1024) to limit how many
-sectors we can defrag in one try.
-
-And then use the number of sectors defragged to determine if we need to
-re-defrag.
-
-But commit b18c3ab2343d ("btrfs: defrag: introduce helper to defrag one
-cluster") uses wrong unit to increase @sectors_defragged, which should
-be in unit of sector, not byte.
-
-This means, if we have defragged any sector, then @sectors_defragged
-will be >= sectorsize (normally 4096), which is larger than
-BTRFS_DEFRAG_BATCH.
-
-This makes the @max_sectors check in defrag_one_cluster() to underflow,
-rendering the whole @max_sectors check useless.
-
-Thus causing way more IO for autodefrag mount options, as now there is
-no limit on how many sectors can really be defragged.
-
-[FIX]
-Fix the problems by:
-
-- Use sector as unit when increaseing @sectors_defragged
-
-- Include @sectors_defragged > @max_sectors case to break the loop
-
-- Add extra comment on the return value of btrfs_defrag_file()
-
-Reported-by: Anthony Ruhier <aruhier@mailbox.org>
-Fixes: b18c3ab2343d ("btrfs: defrag: introduce helper to defrag one cluster")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Update the commit message to include the root cause of extra IO
-
-- Keep @sectors_defragged update where it is
-  Since the over-reported @sectors_defragged is not the real reason,
-  keep the patch smaller.
----
- fs/btrfs/ioctl.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 6ad2bc2e5af3..2a77273d91fe 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1442,8 +1442,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 	list_for_each_entry(entry, &target_list, list) {
- 		u32 range_len = entry->len;
- 
--		/* Reached the limit */
--		if (max_sectors && max_sectors == *sectors_defragged)
-+		/* Reached or beyond the limit */
-+		if (max_sectors && *sectors_defragged >= max_sectors)
- 			break;
- 
- 		if (max_sectors)
-@@ -1465,7 +1465,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 				       extent_thresh, newer_than, do_compress);
- 		if (ret < 0)
- 			break;
--		*sectors_defragged += range_len;
-+		*sectors_defragged += range_len >>
-+				      inode->root->fs_info->sectorsize_bits;
- 	}
- out:
- 	list_for_each_entry_safe(entry, tmp, &target_list, list) {
-@@ -1484,6 +1485,9 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
-  * @newer_than:	   minimum transid to defrag
-  * @max_to_defrag: max number of sectors to be defragged, if 0, the whole inode
-  *		   will be defragged.
-+ *
-+ * Return <0 for error.
-+ * Return >=0 for the number of sectors defragged.
-  */
- int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 		      struct btrfs_ioctl_defrag_range_args *range,
 -- 
-2.34.1
 
+my name is David, i have urgent issue to share with you .
