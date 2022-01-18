@@ -2,142 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD35491F2C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 06:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82283491FB7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 08:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239823AbiARF5Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jan 2022 00:57:24 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:20729 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235645AbiARF5X (ORCPT
+        id S244571AbiARHTY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jan 2022 02:19:24 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:51020 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbiARHTY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jan 2022 00:57:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1642485443; x=1674021443;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=lFe1rKRuJ3zJN4xQhiSz6eCA+PrB7GkMfSaZIMgBOWE=;
-  b=TIcpJ0K/4emkUeW0dgQ/B3owpgeiaZreW0/29K03Uy0blZFmBwLKV+26
-   XNl2ChsGqRTg2NhH29KLcY+zxYEEjy/5fLM8sga/gIymlkNWXj5upEAIR
-   1pTa+tOgMjN0G6/ro2SEYE1ZYD77+2TLVvKJ3WqZ3mi+uHUnvr8bJvVp8
-   jvlbU1d18iZ3jkMPyesZvOnpZua7TejtoslCNaKT6bIKBodp/epUwGg/k
-   jSTZ5lci7z3c6xWZdakkLLLFBJU8eOloIoJb3rMsqNiYCjR7d/Vho0mlA
-   /WDyBMNLj+1Mw0twoikclHytsmbMQbn/ovY2Vx0g10ydxWsbPPhmqTnGI
-   A==;
-X-IronPort-AV: E=Sophos;i="5.88,296,1635177600"; 
-   d="scan'208";a="195505198"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Jan 2022 13:57:23 +0800
-IronPort-SDR: bD6X3d7zPDMQaK0lz75xcVQYWIHdbPytUzgtHVZHunDrTM91BUzb8Z/6GvWD1FmQQDYI4KHgtD
- RoVT1qjd7OkvvGPKsBW8GZbLpv/mW3YeX8A2N7ArJWu6gj3Oa1uRMK28h8khJrpBZoPp8KsP2z
- r63Ogw3IFaIQdIE/+kwvMBjPtICuxQfQuxGWqV00RA41yZIU/6L7qz6PB/91brWjGVVxwkgnZe
- +sYo3kqShnjO000xKE8eCSTbpAmp0IsAhfL0cgOFFZBtiDdClx6HmZ8nptQZVeXNCPjIacSWs6
- DSXfr7+aaR+cO4CQDk5fWyPm
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2022 21:30:55 -0800
-IronPort-SDR: G75JaiD6ADqsBSq0BooDzYpM4nEpY3KYBOD76DY1++NF+M9z8+UBAdwFDgGXBOBMusMyT3eyVA
- AroAMJmPEaoCR3E+SlV3jZxBmCgNB54A+zwyVoVl/tk+F2LOtT0mr/l9K0Brv5VB/94EMOIE+m
- U997fH49zq0BRHmDYW4ruRpg1z5liXpk77kipYnqx+HVmGZSeFzGcuTjn3fjKqX1iDkbUYEiYf
- g8r4cL4gBN1M62p17uMKU+J30tNzQr0CJQh7hW+t8aFnDC15BtvBjn0Evjh3+GSVmSeaaHY9bc
- hVI=
-WDCIronportException: Internal
-Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
-  by uls-op-cesaip01.wdc.com with ESMTP; 17 Jan 2022 21:57:22 -0800
-From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: [PATCH v2] btrfs/255: add test for quota disable in parallel with balance
-Date:   Tue, 18 Jan 2022 14:57:21 +0900
-Message-Id: <20220118055721.982596-1-shinichiro.kawasaki@wdc.com>
-X-Mailer: git-send-email 2.33.1
+        Tue, 18 Jan 2022 02:19:24 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 94B30212C3;
+        Tue, 18 Jan 2022 07:19:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1642490362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=mwrMm9p0XKm29fkZlYtvb/i6y3gRyXzoJRGx3A3cGZo=;
+        b=fIzWN9k1lgiNdVnTrAir1QaSO4VQyM4CrKcZm9O9Adgdm9ShVNL1G7XqNXWfu4jlIe/cqY
+        fim0Pgo6tWN+s4P4gaQmsF4qoeVeXwg42hNpjXeye0RkNw1aqnARt0nn+RDJGGL0N/QkfX
+        Q2mJCGyLGEjzcRz+pQ/A2agYbgpTSpY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B87B51332F;
+        Tue, 18 Jan 2022 07:19:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KS9hIflp5mF5RQAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 18 Jan 2022 07:19:21 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Anthony Ruhier <aruhier@mailbox.org>
+Subject: [PATCH v2] btrfs: defrag: fix the wrong number of defragged sectors
+Date:   Tue, 18 Jan 2022 15:19:04 +0800
+Message-Id: <20220118071904.29991-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test quota disable during btrfs balance and confirm it does not cause
-kernel hang. This is a regression test for the problem reported to
-linux-btrfs list [1]. The hang was recreated using the test case and
-memory backed null_blk device with 5GB size as the scratch device.
+[BUG]
+There are users using autodefrag mount option reporting obvious increase
+in IO:
 
-[1] https://lore.kernel.org/linux-btrfs/20220115053012.941761-1-shinichiro.kawasaki@wdc.com/
+> If I compare the write average (in total, I don't have it per process)
+> when taking idle periods on the same machine:
+>     Linux 5.16:
+>         without autodefrag: ~ 10KiB/s
+>         with autodefrag: between 1 and 2MiB/s.
+>
+>     Linux 5.15:
+>         with autodefrag:~ 10KiB/s (around the same as without
+> autodefrag on 5.16)
 
-Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+[CAUSE]
+When autodefrag mount option is enabled, btrfs_defrag_file() will be
+called with @max_sectors = BTRFS_DEFRAG_BATCH (1024) to limit how many
+sectors we can defrag in one try.
+
+And then use the number of sectors defragged to determine if we need to
+re-defrag.
+
+But commit b18c3ab2343d ("btrfs: defrag: introduce helper to defrag one
+cluster") uses wrong unit to increase @sectors_defragged, which should
+be in unit of sector, not byte.
+
+This means, if we have defragged any sector, then @sectors_defragged
+will be >= sectorsize (normally 4096), which is larger than
+BTRFS_DEFRAG_BATCH.
+
+This makes the @max_sectors check in defrag_one_cluster() to underflow,
+rendering the whole @max_sectors check useless.
+
+Thus causing way more IO for autodefrag mount options, as now there is
+no limit on how many sectors can really be defragged.
+
+[FIX]
+Fix the problems by:
+
+- Use sector as unit when increaseing @sectors_defragged
+
+- Include @sectors_defragged > @max_sectors case to break the loop
+
+- Add extra comment on the return value of btrfs_defrag_file()
+
+Reported-by: Anthony Ruhier <aruhier@mailbox.org>
+Fixes: b18c3ab2343d ("btrfs: defrag: introduce helper to defrag one cluster")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changes from v1:
-* Put more stress by repeating quota enable/disable and btrfs balance
-* Reflected other comments on the list
+Changelog:
+v2:
+- Update the commit message to include the root cause of extra IO
 
- tests/btrfs/255     | 45 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/255.out |  2 ++
- 2 files changed, 47 insertions(+)
- create mode 100755 tests/btrfs/255
- create mode 100644 tests/btrfs/255.out
+- Keep @sectors_defragged update where it is
+  Since the over-reported @sectors_defragged is not the real reason,
+  keep the patch smaller.
+---
+ fs/btrfs/ioctl.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/tests/btrfs/255 b/tests/btrfs/255
-new file mode 100755
-index 00000000..32f00f42
---- /dev/null
-+++ b/tests/btrfs/255
-@@ -0,0 +1,45 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 Western Digital Corporation or its affiliates.
-+#
-+# FS QA Test No. btrfs/255
-+#
-+# Confirm that disabling quota during balance does not hang
-+#
-+. ./common/preamble
-+_begin_fstest auto qgroup balance
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+_require_scratch
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Fill 40% of the device or 2GB
-+fill_percent=40
-+max_fillsize=$((2 * 1024 * 1024 * 1024))
-+
-+devsize=$(($(_get_device_size $SCRATCH_DEV) * 512))
-+fillsize=$((devsize * fill_percent / 100))
-+((fillsize > max_fillsize)) && fillsize=$max_fillsize
-+
-+fs=$((4096 * 1024))
-+for ((i = 0; i * fs < fillsize; i++)); do
-+	dd if=/dev/zero of=$SCRATCH_MNT/file.$i bs=$fs count=1 \
-+	   >> $seqres.full 2>&1
-+done
-+
-+# Run btrfs balance and quota enable/disable in parallel
-+_btrfs_stress_balance $SCRATCH_MNT >> $seqres.full &
-+balance_pid=$!
-+echo $balance_pid >> $seqres.full
-+for ((i = 0; i < 20; i++)); do
-+	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG quota disable $SCRATCH_MNT
-+done
-+kill $balance_pid &> /dev/null
-+
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/255.out b/tests/btrfs/255.out
-new file mode 100644
-index 00000000..7eefb828
---- /dev/null
-+++ b/tests/btrfs/255.out
-@@ -0,0 +1,2 @@
-+QA output created by 255
-+Silence is golden
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 6ad2bc2e5af3..2a77273d91fe 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1442,8 +1442,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
+ 	list_for_each_entry(entry, &target_list, list) {
+ 		u32 range_len = entry->len;
+ 
+-		/* Reached the limit */
+-		if (max_sectors && max_sectors == *sectors_defragged)
++		/* Reached or beyond the limit */
++		if (max_sectors && *sectors_defragged >= max_sectors)
+ 			break;
+ 
+ 		if (max_sectors)
+@@ -1465,7 +1465,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
+ 				       extent_thresh, newer_than, do_compress);
+ 		if (ret < 0)
+ 			break;
+-		*sectors_defragged += range_len;
++		*sectors_defragged += range_len >>
++				      inode->root->fs_info->sectorsize_bits;
+ 	}
+ out:
+ 	list_for_each_entry_safe(entry, tmp, &target_list, list) {
+@@ -1484,6 +1485,9 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
+  * @newer_than:	   minimum transid to defrag
+  * @max_to_defrag: max number of sectors to be defragged, if 0, the whole inode
+  *		   will be defragged.
++ *
++ * Return <0 for error.
++ * Return >=0 for the number of sectors defragged.
+  */
+ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 		      struct btrfs_ioctl_defrag_range_args *range,
 -- 
-2.33.1
+2.34.1
 
