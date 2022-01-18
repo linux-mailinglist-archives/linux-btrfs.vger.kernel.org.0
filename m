@@ -2,683 +2,356 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B73492549
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 12:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57E749275A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 14:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241127AbiARL6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jan 2022 06:58:16 -0500
-Received: from mout.gmx.net ([212.227.17.21]:38131 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237808AbiARL6P (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jan 2022 06:58:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1642507089;
-        bh=iNa2L8vcXrJsySphU6I1kvDAc31ywIbiZzwzyy8hWz8=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=Im4s72IG9GxAvEVitAjO1z0rx3hyLRTVM6ToF6KMVsVXDYMI0qwcdA3Boagt4lmJm
-         puqkUhs4BmuNpQvhmLFewODw+MUDUmSK+u9bCR0FD4bTlt23iei1y+uPBQOCNQkbsD
-         VSiXZE/HDwjpo9rHINscSo1iBnci2mZ2gHe7QKUk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJE6F-1muAqx14Pr-00KhpD; Tue, 18
- Jan 2022 12:58:09 +0100
-Message-ID: <b3c35945-6ec3-a086-d33e-c8596db12e18@gmx.com>
-Date:   Tue, 18 Jan 2022 19:58:04 +0800
+        id S239194AbiARNjo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jan 2022 08:39:44 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:45756 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242956AbiARNjk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Jan 2022 08:39:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F28A0B8169D
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 13:39:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19BDEC00446
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 13:39:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642513177;
+        bh=YQesutKgmqZwsXaf6T/aHjtMoNj1I28VAOX/FDtyv7o=;
+        h=From:To:Subject:Date:From;
+        b=AV8xGI9lrv3gpi6q263Yco4gWTfGPYQrn9iISQI117DV0OSPdtP2Jh7JNXVYjGeTS
+         nc5X0x2sqrUIeTDlvka/st2M8r5iNXZ7XVjcI8gu4MP7pBTn9vo17umdpuEHo5OqNC
+         giu/oGPid2zc/6D2lkY3Y0/9Ku3gSBlqRYrqVl4RMUh/r7cNsqOd2IrakMzUA+kPPO
+         igV0JZQ/uoq50zQcARs1xgrRo6kU6DAQbSRikohxPzyAO6c6DcZ8PJBOFmUnjw3uxH
+         1thQh5c2XxO/WnHIktzhVXbl6Dk7CUsE//HuIlGEhMZl1l7mvqWS8FVl37GvgUbpmd
+         nr8bB4PE2Vygw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: skip reserved bytes warning on unmount after log cleanup failure
+Date:   Tue, 18 Jan 2022 13:39:34 +0000
+Message-Id: <abff8bb38826f30e65d26c4cb5535fe599fdfdf1.1642512596.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: btrfs fi defrag hangs on small files, 100% CPU thread
-Content-Language: en-US
-To:     Anthony Ruhier <aruhier@mailbox.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@kernel.org>
-References: <0a269612-e43f-da22-c5bc-b34b1b56ebe8@mailbox.org>
- <YeVc0r7lLtns0Bch@debian9.Home>
- <fa7b6afd-9646-898c-7a0e-1536fc2f94b9@mailbox.org>
- <YeWetp7/1q/4bU1O@debian9.Home>
- <254c8e30-6692-3f3c-59ea-e3456ca9a266@mailbox.org>
- <6c1b26b8-3af0-83e9-6260-33394ee8d883@mailbox.org>
- <CAL3q7H5UhQCnsGd25Jd=x5rfhgPkzdDPpO_4iLdj73qSeFUzKg@mail.gmail.com>
- <231bb827-de3e-570d-f5f5-e0698877d3f1@mailbox.org>
- <3162e2e4-dd68-b0aa-a0d0-7ff6ce7cd5a0@gmx.com>
- <e811a5b7-1ffe-b062-5c53-b3da4c26d04d@gmx.com>
- <8ecb84e1-b8da-20f2-8730-8c1403ac7d00@mailbox.org>
- <2d4ed9ca-52a7-3a39-1a4f-995c6ed0d070@gmx.com>
- <8d08b05d-4632-2bbd-7021-f79ee0fc2796@mailbox.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <8d08b05d-4632-2bbd-7021-f79ee0fc2796@mailbox.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BngOxcYC8rYnJkV4LJ7c42LSKdunnCfP/bsOCISzRxFxSUDdg+u
- 8QPS1wNDSfNM88UHKRrVmF5tvZQ2lWZiieh+ng7/XcfJaNGBA1On5JcpILVqSwA+Haqul8r
- gXGpmTOFWdMIOA35gEfKSsm/aUD3FhMZVUXnm4e2xI/wHXpD74wYZ9Ck5XE5OokhehUjPK6
- gpcdcIfNgKhVTx+Ev9fEg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EGTUU7kPtGY=:qeSeXtxZOVczDAk6WDmICK
- XY3j/jRzgJWB7WpYmFIIyOKT5dsI/pKg0dyOshORauGCIBAhJoNgIhJuG1nVYcZS/HonPL+F3
- fv1xyooh6x0M7Keg/pVEcPkOS8xuOu8qi52yVfxbP8/16/csCa8BUwmhCGo7w69OQtFWSqgK5
- m7lLeEOGvy/q2T6KyYoD3MY8S1va7oqo2D2Dftv6N/5J1c9fehBIXLDR+K5ZvMmCYAm1PhKys
- dl6MSgwUDkpLhD5E7T1M0WHghS8r0ndvFnEoxHYntA5qwmA+FjOmpUEjPfyAO5ooLNzPQYd69
- C2Xpfdp2yWa3pfCfAD1AwXx4maBI/2xkStvI/76wrM/EtXqTEePKFafEVms2V84SOb94xN2uJ
- U637IqNnfAVt+wuxGhBmClNTaOQ7kuNOT4xB0w7sCGU+tH2GVDDjxNK5EAWb2ljYg7rXxdcJu
- swytZRNsr62zM6vozeMcKj/Qpq3bYrBH6XIA87rOgRYwIV6O3AtyyEaZtUFbtmraOrPJnPln0
- r5xoEG5PqRE+2mjCb21cuKd6ob619ruuCjVqa7Ci7NkhmiU4i6WrToow9/HjocLwkrSVySmPm
- fi3skicNB5vBasDnkL8FfVwLv6AfH3R9Ba+ndxAhrQLGs1qBjDzGXy5Y2EMXyzzt1RISUYnkx
- UBtU32PV9gJyZD5HwpaTjt3tS2+guFBbkAj2z3bwc0bj88YcsS5UJF9PPO8C2I26+BoeSN/eS
- EOd8rYYey+bSgT8+tyqGCWvruEui3dVY7qjhxrmmN7I0Sgb2XtzF4nVMNapyDpoi3HzGCvzxP
- xsIoFjc+xnPWuK55BZGTG2DE1n8hmZtvfvg/mBEqPgXgkKHpxPRh+kyCSAvM3fC8ulKIvZhBf
- znbxdYwP8v5G2nJe8Qy0rIIFsw8DgXAOJ+9IZRUoP6VeGCYQ72sGhQF2x9T/TS2B3kVfcTcTX
- qCeY+Irj3cSF+FLTQjHN5hIDwuqw3RO6rQUT5PQkFc/AXBHoxN+vOQaVR7MJwMjj/XVyN1MgA
- FyxlWmUBIHwkZTnKTOK+jYRjdcKoFK+nIgBrO96hwKXTaMFKPkW+7K0bisnbjJ6l/WXC3qXh1
- QCRdUL2pBQOS9g=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
+After the recent changes made by commit c2e39305299f01 ("btrfs: clear
+extent buffer uptodate when we fail to write it") and its followup fix,
+commit 651740a5024117 ("btrfs: check WRITE_ERR when trying to read an
+extent buffer"), we can now end up not cleaning up space reservations of
+log tree extent buffers after a transaction abort happens, as well as not
+cleaning up still dirty extent buffers.
 
-On 2022/1/18 18:57, Anthony Ruhier wrote:
-> Indeed, the problem took just a longer time to appear with your previous
-> patch. It wasn't from btrfs-cleaner itself, this time, but I had a lot
-> of writes.
-> I'm trying the last one and keep you in touch!
+This happens because if writeback for a log tree extent buffer failed,
+then we have cleared the bit EXTENT_BUFFER_UPTODATE from the extent buffer
+and we have also set the bit EXTENT_BUFFER_WRITE_ERR on it. Later on,
+when trying to free the log tree with free_log_tree(), which iterates
+over the tree, we can end up getting an -EIO error when trying to read
+a node or a leaf, since read_extent_buffer_pages() returns -EIO if an
+extent buffer does not have EXTENT_BUFFER_UPTODATE set and has the
+EXTENT_BUFFER_WRITE_ERR bit set. Getting that -EIO means that we return
+immediately as we can not iterate over the entire tree.
 
-And another autodefrag related problem exposed...
+In that case we never update the reserved space for an extent buffer in
+the respective block group and space_info object.
 
-Thankfully, the involved fixes are all small enough.
+When this happens we get the following traces when unmounting the fs:
 
-So would you please try the following patches? (The first one from
-Filipe is not touched, the 2nd one is mostly the same but with minor
-tweaks for commit message, the the final one is the new one):
+[174957.284509] BTRFS: error (device dm-0) in cleanup_transaction:1913: errno=-5 IO failure
+[174957.286497] BTRFS: error (device dm-0) in free_log_tree:3420: errno=-5 IO failure
+[174957.399379] ------------[ cut here ]------------
+[174957.402497] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:127 btrfs_put_block_group+0x77/0xb0 [btrfs]
+[174957.407523] Modules linked in: btrfs overlay dm_zero (...)
+[174957.424917] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
+[174957.426689] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[174957.428716] RIP: 0010:btrfs_put_block_group+0x77/0xb0 [btrfs]
+[174957.429717] Code: 21 48 8b bd (...)
+[174957.432867] RSP: 0018:ffffb70d41cffdd0 EFLAGS: 00010206
+[174957.433632] RAX: 0000000000000001 RBX: ffff8b09c3848000 RCX: ffff8b0758edd1c8
+[174957.434689] RDX: 0000000000000001 RSI: ffffffffc0b467e7 RDI: ffff8b0758edd000
+[174957.436068] RBP: ffff8b0758edd000 R08: 0000000000000000 R09: 0000000000000000
+[174957.437114] R10: 0000000000000246 R11: 0000000000000000 R12: ffff8b09c3848148
+[174957.438140] R13: ffff8b09c3848198 R14: ffff8b0758edd188 R15: dead000000000100
+[174957.439317] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
+[174957.440402] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[174957.441164] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
+[174957.442117] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[174957.443076] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[174957.443948] Call Trace:
+[174957.444264]  <TASK>
+[174957.444538]  btrfs_free_block_groups+0x255/0x3c0 [btrfs]
+[174957.445238]  close_ctree+0x301/0x357 [btrfs]
+[174957.445803]  ? call_rcu+0x16c/0x290
+[174957.446250]  generic_shutdown_super+0x74/0x120
+[174957.446832]  kill_anon_super+0x14/0x30
+[174957.447305]  btrfs_kill_super+0x12/0x20 [btrfs]
+[174957.447890]  deactivate_locked_super+0x31/0xa0
+[174957.448440]  cleanup_mnt+0x147/0x1c0
+[174957.448888]  task_work_run+0x5c/0xa0
+[174957.449336]  exit_to_user_mode_prepare+0x1e5/0x1f0
+[174957.449934]  syscall_exit_to_user_mode+0x16/0x40
+[174957.450512]  do_syscall_64+0x48/0xc0
+[174957.450980]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[174957.451605] RIP: 0033:0x7f328fdc4a97
+[174957.452059] Code: 03 0c 00 f7 (...)
+[174957.454320] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+[174957.455262] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
+[174957.456131] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
+[174957.457118] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
+[174957.458005] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
+[174957.459113] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
+[174957.460193]  </TASK>
+[174957.460534] irq event stamp: 0
+[174957.461003] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[174957.461947] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.463147] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.465116] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[174957.466323] ---[ end trace bc7ee0c490bce3af ]---
+[174957.467282] ------------[ cut here ]------------
+[174957.468184] WARNING: CPU: 2 PID: 3206883 at fs/btrfs/block-group.c:3976 btrfs_free_block_groups+0x330/0x3c0 [btrfs]
+[174957.470066] Modules linked in: btrfs overlay dm_zero (...)
+[174957.483137] CPU: 2 PID: 3206883 Comm: umount Tainted: G        W         5.16.0-rc5-btrfs-next-109 #1
+[174957.484691] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[174957.486853] RIP: 0010:btrfs_free_block_groups+0x330/0x3c0 [btrfs]
+[174957.488050] Code: 00 00 00 ad de (...)
+[174957.491479] RSP: 0018:ffffb70d41cffde0 EFLAGS: 00010206
+[174957.492520] RAX: ffff8b08d79310b0 RBX: ffff8b09c3848000 RCX: 0000000000000000
+[174957.493868] RDX: 0000000000000001 RSI: fffff443055ee600 RDI: ffffffffb1131846
+[174957.495183] RBP: ffff8b08d79310b0 R08: 0000000000000000 R09: 0000000000000000
+[174957.496580] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8b08d7931000
+[174957.498027] R13: ffff8b09c38492b0 R14: dead000000000122 R15: dead000000000100
+[174957.499438] FS:  00007f328fb82800(0000) GS:ffff8b0a2d200000(0000) knlGS:0000000000000000
+[174957.500990] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[174957.502117] CR2: 00007fff13563e98 CR3: 0000000404f4e005 CR4: 0000000000370ee0
+[174957.503513] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[174957.504864] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[174957.506167] Call Trace:
+[174957.506654]  <TASK>
+[174957.507047]  close_ctree+0x301/0x357 [btrfs]
+[174957.507867]  ? call_rcu+0x16c/0x290
+[174957.508567]  generic_shutdown_super+0x74/0x120
+[174957.509447]  kill_anon_super+0x14/0x30
+[174957.510194]  btrfs_kill_super+0x12/0x20 [btrfs]
+[174957.511123]  deactivate_locked_super+0x31/0xa0
+[174957.511976]  cleanup_mnt+0x147/0x1c0
+[174957.512610]  task_work_run+0x5c/0xa0
+[174957.513309]  exit_to_user_mode_prepare+0x1e5/0x1f0
+[174957.514231]  syscall_exit_to_user_mode+0x16/0x40
+[174957.515069]  do_syscall_64+0x48/0xc0
+[174957.515718]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[174957.516688] RIP: 0033:0x7f328fdc4a97
+[174957.517413] Code: 03 0c 00 f7 d8 (...)
+[174957.521052] RSP: 002b:00007fff13564ec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+[174957.522514] RAX: 0000000000000000 RBX: 00007f328feea264 RCX: 00007f328fdc4a97
+[174957.523950] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560b8ae51dd0
+[174957.525375] RBP: 0000560b8ae51ba0 R08: 0000000000000000 R09: 00007fff13563c40
+[174957.526763] R10: 00007f328fe49fc0 R11: 0000000000000246 R12: 0000000000000000
+[174957.528058] R13: 0000560b8ae51dd0 R14: 0000560b8ae51cb0 R15: 0000000000000000
+[174957.529404]  </TASK>
+[174957.529843] irq event stamp: 0
+[174957.530256] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[174957.531061] hardirqs last disabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.532075] softirqs last  enabled at (0): [<ffffffffb0e94214>] copy_process+0x934/0x2040
+[174957.533083] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[174957.533865] ---[ end trace bc7ee0c490bce3b0 ]---
+[174957.534452] BTRFS info (device dm-0): space_info 4 has 1070841856 free, is not full
+[174957.535404] BTRFS info (device dm-0): space_info total=1073741824, used=2785280, pinned=0, reserved=49152, may_use=0, readonly=65536 zone_unusable=0
+[174957.537029] BTRFS info (device dm-0): global_block_rsv: size 0 reserved 0
+[174957.537859] BTRFS info (device dm-0): trans_block_rsv: size 0 reserved 0
+[174957.538697] BTRFS info (device dm-0): chunk_block_rsv: size 0 reserved 0
+[174957.539552] BTRFS info (device dm-0): delayed_block_rsv: size 0 reserved 0
+[174957.540403] BTRFS info (device dm-0): delayed_refs_rsv: size 0 reserved 0
 
-https://patchwork.kernel.org/project/linux-btrfs/patch/bcbfce0ff7e21bbfed2=
-484b1457e560edf78020d.1642436805.git.fdmanana@suse.com/
+This also means that in case we have log tree extent buffers that are
+still dirty, we can end up not cleaning them up in case we find an
+extent buffer with EXTENT_BUFFER_WRITE_ERR set on it, as in that case
+we have no way for iterating over the rest of the tree.
 
-https://patchwork.kernel.org/project/linux-btrfs/patch/20220118071904.2999=
-1-1-wqu@suse.com/
+This issue is very often triggered with test cases generic/475 and
+generic/648 from fstests.
 
-https://lore.kernel.org/linux-btrfs/20220118115352.52126-1-wqu@suse.com/T/=
-#u
+The issue could almost be fixed by iterating over the io tree attached to
+each log root which keeps tracks of the range of allocated extent buffers,
+log_root->dirty_log_pages, however that does not work and has some
+incovenients:
 
-Thanks,
-Qu
+1) After we sync the log, we clear the range of the extent buffers from
+   the io tree, so we can't find them after writeback. We could keep the
+   ranges in the io tree, with a separate bit to signal they represent
+   extent buffers already written, but that means we need to hold into
+   more memory until the transaction commits.
 
->
-> Thanks
->
-> Le 18/01/2022 =C3=A0 03:22, Qu Wenruo a =C3=A9crit=C2=A0:
->>
->>
->> On 2022/1/18 09:58, Anthony Ruhier wrote:
->>> Hi Qu,
->>>
->>> No problem, thanks a lot for your patch! After a quick look on a 10min
->>> period, it looks like your patch fixed the issue. I've applied the 2
->>> patches from Filipe and yours.
->>> I'll let my NAS run over the night and watch the writes average on a
->>> longer period. I'll send an update in ~10 hours.
->>
->> I'm really sorry for all the problems.
->>
->> Currently I believe the root cause is I changed the return value of
->> btrfs_defrag_file(), which should return the number of sectors defragge=
-d.
->>
->> Even I renamed the variable to "sectors_defragged", I still return it i=
-n
->> bytes instead.
->>
->> (Furthermore it tends to report more bytes than really defragged).
->>
->> The diff I mentioned is not really to solve the problem, but to help us
->> to pin down the problem.
->> (The diff itself will make autodefrag to do a little less work, thus it
->> may not defrag as hard as previously)
->>
->> Thank you very much helping fixing the mess I caused.
->>
->>
->> BTW, if you have spare machines, mind to test the following two patches=
-?
->> (if everything works as expected, they should be the final fixes, thus
->> please test without other patches)
->>
->> https://patchwork.kernel.org/project/linux-btrfs/patch/20220118021544.1=
-8543-1-wqu@suse.com/
->>
->> https://patchwork.kernel.org/project/linux-btrfs/patch/bcbfce0ff7e21bbf=
-ed2484b1457e560edf78020d.1642436805.git.fdmanana@suse.com/
->>
->>
->> Thanks,
->> Qu
->>
->>
->>>
->>> Thanks a lot for your help,
->>> Anthony
->>>
->>> Le 18/01/2022 =C3=A0 00:32, Qu Wenruo a =C3=A9crit=C2=A0:
->>>>
->>>>
->>>> On 2022/1/18 07:15, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2022/1/18 03:39, Anthony Ruhier wrote:
->>>>>> I have some good news and bad news: the bad news is that it didn't
->>>>>> fix
->>>>>> the autodefrag problem (I applied the 2 patches).
->>>>>>
->>>>>> The good news is that when I enable autodefrag, I can quickly see i=
-f
->>>>>> the
->>>>>> problem is still there or not.
->>>>>> It's not super obvious compared to the amount of writes that happen=
-ed
->>>>>> constantly just after my upgrade to linux 5.16, because since then
->>>>>> the
->>>>>> problem mitigated itself a bit, but it's still noticeable.
->>>>>>
->>>>>> If I compare the write average (in total, I don't have it per
->>>>>> process)
->>>>>> when taking idle periods on the same machine:
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 Linux 5.16:
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 without autodefrag=
-: ~ 10KiB/s
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 with autodefrag: b=
-etween 1 and 2MiB/s.
->>>>>>
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 Linux 5.15:
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 with autodefrag:~ =
-10KiB/s (around the same as without
->>>>>> autodefrag on 5.16)
->>>>>>
->>>>>> Feel free to ask me anything to help your debugging, just try to be
->>>>>> quite explicit about what I should do, I'm not experimented in
->>>>>> filesystems debugging.
->>>>>
->>>>> Mind to test the following diff (along with previous two patches fro=
-m
->>>>> Filipe)?
->>>>>
->>>>> I screwed up, the refactor changed how the defraged bytes accounting=
-,
->>>>> which I didn't notice that autodefrag relies on that to requeue the
->>>>> inode.
->>>>>
->>>>> The refactor is originally to add support for subpage defrag, but it
->>>>> looks like I pushed the boundary too hard to change some behaviors.
->>>>
->>>> Sorry, previous diff has a memory leakage bug.
->>>>
->>>> The autodefrag code is more complex than I thought, it has extra logi=
-c
->>>> to handle defrag.
->>>>
->>>> Please try this one instead.
->>>>
->>>> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
->>>> index 11204dbbe053..096feecf2602 100644
->>>> --- a/fs/btrfs/file.c
->>>> +++ b/fs/btrfs/file.c
->>>> @@ -305,26 +305,7 @@ static int __btrfs_run_defrag_inode(struct
->>>> btrfs_fs_info *fs_info,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_defrag =3D btrfs_defra=
-g_file(inode, NULL, &range,
->>>> defrag->transid,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 BTRFS_DEFRAG_BATCH);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sb_end_write(fs_info->sb);
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * if we filled the whole =
-defrag batch, there
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * must be more work to do=
-.=C2=A0 Queue this defrag
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * again
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (num_defrag =3D=3D BTRFS_DEF=
-RAG_BATCH) {
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 defrag->last_offset =3D range.start;
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (defrag->last_offset =
-&& !defrag->cycled) {
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 /*
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 * we didn't fill our defrag batch, but
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 * we didn't start at zero.=C2=A0 Make sure we loo=
-p
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 * around to the start of the file.
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 defrag->last_offset =3D 0;
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 defrag->cycled =3D 1;
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kmem_cache_free(btrfs_inode_def=
-rag_cachep, defrag);
->>>>
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iput(inode);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>>>
->>>>>
->>>>>
->>>>> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
->>>>> index 11204dbbe053..c720260f9656 100644
->>>>> --- a/fs/btrfs/file.c
->>>>> +++ b/fs/btrfs/file.c
->>>>> @@ -312,7 +312,9 @@ static int __btrfs_run_defrag_inode(struct
->>>>> btrfs_fs_info *fs_info,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (num_defrag =3D=
-=3D BTRFS_DEFRAG_BATCH) {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 defrag->last_offset =3D range.start;
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 /*
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_requeue_inode_defrag(BTRFS_I(inode), =
-defrag);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 */
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (defrag->=
-last_offset && !defrag->cycled) {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * we didn't fill our defrag batch, bu=
-t
->>>>> @@ -321,7 +323,9 @@ static int __btrfs_run_defrag_inode(struct
->>>>> btrfs_fs_info *fs_info,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 defrag->last_offset =3D 0;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 defrag->cycled =3D 1;
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 /*
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_requeue_inode_defrag(BTRFS_I(inode), =
-defrag);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 */
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kmem_cache_free(btrfs_inode_defrag_cachep, =
-defrag);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>>
->>>>>
->>>>>
->>>>>> Thanks
->>>>>>
->>>>>> Le 17/01/2022 =C3=A0 18:56, Filipe Manana a =C3=A9crit=C2=A0:
->>>>>>> On Mon, Jan 17, 2022 at 5:50 PM Anthony Ruhier <aruhier@mailbox.or=
-g>
->>>>>>> wrote:
->>>>>>>> Filipe,
->>>>>>>>
->>>>>>>> Just a quick update after my previous email, your patch fixed the
->>>>>>>> issue
->>>>>>>> for `btrfs fi defrag`.
->>>>>>>> Thanks a lot! I closed my bug on bugzilla.
->>>>>>>>
->>>>>>>> I'll keep you in touch about the autodefrag.
->>>>>>> Please do.
->>>>>>> The 1 byte file case was very specific, so it's probably a differe=
-nt
->>>>>>> issue.
->>>>>>>
->>>>>>> Thanks for testing!
->>>>>>>
->>>>>>>> Le 17/01/2022 =C3=A0 18:04, Anthony Ruhier a =C3=A9crit :
->>>>>>>>> I'm going to apply your patch for the 1B file, and quickly
->>>>>>>>> confirm if
->>>>>>>>> it works.
->>>>>>>>> Thanks a lot for your patch!
->>>>>>>>>
->>>>>>>>> About the autodefrag issue, it's going to be trickier to check
->>>>>>>>> that
->>>>>>>>> your patch fixes it, because for whatever reason the problem
->>>>>>>>> seems to
->>>>>>>>> have resolved itself (or at least, btrfs-cleaner does way less
->>>>>>>>> writes)
->>>>>>>>> after a partial btrfs balance.
->>>>>>>>> I'll try and look the amount of writes after several hours. Mayb=
-e
->>>>>>>>> for
->>>>>>>>> this one, see with the author of the other bug. If they can easi=
-ly
->>>>>>>>> reproduce the issue then it's going to be easier to check.
->>>>>>>>>
->>>>>>>>> Thanks,
->>>>>>>>> Anthony
->>>>>>>>>
->>>>>>>>> Le 17/01/2022 =C3=A0 17:52, Filipe Manana a =C3=A9crit :
->>>>>>>>>> On Mon, Jan 17, 2022 at 03:24:00PM +0100, Anthony Ruhier wrote:
->>>>>>>>>>> Thanks for the answer.
->>>>>>>>>>>
->>>>>>>>>>> I had the exact same issue as in the thread you've linked, and
->>>>>>>>>>> have
->>>>>>>>>>> some
->>>>>>>>>>> monitoring and graphs that showed that btrfs-cleaner did
->>>>>>>>>>> constant
->>>>>>>>>>> writes
->>>>>>>>>>> during 12 hours just after I upgraded to linux 5.16. Weirdly
->>>>>>>>>>> enough,
->>>>>>>>>>> the
->>>>>>>>>>> issue almost disappeared after I did a btrfs balance by
->>>>>>>>>>> filtering on
->>>>>>>>>>> 10%
->>>>>>>>>>> usage of data.
->>>>>>>>>>> But that's why I initially disabled autodefrag, what has lead =
-to
->>>>>>>>>>> discovering
->>>>>>>>>>> this bug as I switched to manual defragmentation (which, in th=
-e
->>>>>>>>>>> end,
->>>>>>>>>>> makes
->>>>>>>>>>> more sense anyway with my setup).
->>>>>>>>>>>
->>>>>>>>>>> I tried this patch, but sadly it doesn't help for the initial
->>>>>>>>>>> issue. I
->>>>>>>>>>> cannot say for the bug in the other thread, as the problem wit=
-h
->>>>>>>>>>> btrfs-cleaner disappeared (I can still see some writes from it=
-,
->>>>>>>>>>> but
->>>>>>>>>>> it so
->>>>>>>>>>> rare that I cannot say if it's normal or not).
->>>>>>>>>> Ok, reading better your first mail, I see there's the case of
->>>>>>>>>> the 1
->>>>>>>>>> byte
->>>>>>>>>> file, which is possibly not the cause from the autodefrag
->>>>>>>>>> causing the
->>>>>>>>>> excessive IO problem.
->>>>>>>>>>
->>>>>>>>>> For the 1 byte file problem, I've just sent a fix:
->>>>>>>>>>
->>>>>>>>>> https://patchwork.kernel.org/project/linux-btrfs/patch/bcbfce0f=
-f7e21bbfed2484b1457e560edf78020d.1642436805.git.fdmanana@suse.com/
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> It's actually trivial to trigger.
->>>>>>>>>>
->>>>>>>>>> Can you check if it also fixes your problem with autodefrag?
->>>>>>>>>>
->>>>>>>>>> If not, then try the following (after applying the 1 file fix):
->>>>>>>>>>
->>>>>>>>>> https://pastebin.com/raw/EbEfk1tF
->>>>>>>>>>
->>>>>>>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>>>>>>>>> index a5bd6926f7ff..db795e226cca 100644
->>>>>>>>>> --- a/fs/btrfs/ioctl.c
->>>>>>>>>> +++ b/fs/btrfs/ioctl.c
->>>>>>>>>> @@ -1191,6 +1191,7 @@ static int defrag_collect_targets(struct
->>>>>>>>>> btrfs_inode *inode,
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 newer_than, =
-bool do_compress,
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool locked, str=
-uct list_head *target_list)
->>>>>>>>>> =C2=A0=C2=A0 {
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0 const u32 min_thresh =3D extent_thresh / 2;
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 cur =3D start;
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret =3D 0;
->>>>>>>>>> =C2=A0=C2=A0 @@ -1198,6 +1199,7 @@ static int defrag_collect_ta=
-rgets(struct
->>>>>>>>>> btrfs_inode *inode,
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ruct extent_map *em;
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ruct defrag_target_range *new;
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bo=
-ol next_mergeable =3D true;
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 range_start;
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u6=
-4 range_len;
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 em =3D defrag_lookup_extent(&inode->vfs_inode, cur,
->>>>>>>>>> locked);
->>>>>>>>>> @@ -1213,6 +1215,24 @@ static int defrag_collect_targets(struct
->>>>>>>>>> btrfs_inode *inode,
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if=
- (em->generation < newer_than)
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 goto next;
->>>>>>>>>> =C2=A0=C2=A0 +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Our start o=
-ffset might be in the middle of an
->>>>>>>>>> existing
->>>>>>>>>> extent
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * map, so tak=
-e that into account.
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 range_len =3D em->l=
-en - (cur - em->start);
->>>>>>>>>> +
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If there's =
-already a good range for delalloc
->>>>>>>>>> within the
->>>>>>>>>> range
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * covered by =
-the extent map, skip it, otherwise we can
->>>>>>>>>> end up
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * doing on th=
-e same IO range for a long time when using
->>>>>>>>>> auto
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * defrag.
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 range_start =3D cur=
-;
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (count_range_bit=
-s(&inode->io_tree, &range_start,
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 range_start +=
- range_len - 1, min_thresh,
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 EXTENT_DELALL=
-OC, 1) >=3D min_thresh)
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 goto next;
->>>>>>>>>> +
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 * For do_compress case, we want to compress all valid
->>>>>>>>>> file
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 * extents, thus no @extent_thresh or mergeable check.
->>>>>>>>>> @@ -1220,8 +1240,8 @@ static int defrag_collect_targets(struct
->>>>>>>>>> btrfs_inode *inode,
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if=
- (do_compress)
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 goto add;
->>>>>>>>>> =C2=A0=C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Ski=
-p too large extent */
->>>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (em->len >=3D ex=
-tent_thresh)
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Skip large enoug=
-h ranges. */
->>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (range_len >=3D =
-extent_thresh)
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 goto next;
->>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 next_mergeable =3D
->>>>>>>>>> defrag_check_next_extent(&inode->vfs_inode, em,
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> Thanks.
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>> Thanks,
->>>>>>>>>>> Anthony
->>>>>>>>>>>
->>>>>>>>>>> Le 17/01/2022 =C3=A0 13:10, Filipe Manana a =C3=A9crit :
->>>>>>>>>>>> On Sun, Jan 16, 2022 at 08:15:37PM +0100, Anthony Ruhier wrot=
-e:
->>>>>>>>>>>>> Hi,
->>>>>>>>>>>>> Since I upgraded from linux 5.15 to 5.16, `btrfs filesystem
->>>>>>>>>>>>> defrag
->>>>>>>>>>>>> -t128K`
->>>>>>>>>>>>> hangs on small files (~1 byte) and triggers what it seems to
->>>>>>>>>>>>> be a
->>>>>>>>>>>>> loop in
->>>>>>>>>>>>> the kernel. It results in one CPU thread running being used =
-at
->>>>>>>>>>>>> 100%. I
->>>>>>>>>>>>> cannot kill the process, and rebooting is blocked by btrfs.
->>>>>>>>>>>>> It is a copy of the
->>>>>>>>>>>>> bughttps://bugzilla.kernel.org/show_bug.cgi?id=3D215498
->>>>>>>>>>>>>
->>>>>>>>>>>>> Rebooting to linux 5.15 shows no issue. I have no issue to
->>>>>>>>>>>>> run a
->>>>>>>>>>>>> defrag on
->>>>>>>>>>>>> bigger files (I filter out files smaller than 3.9KB).
->>>>>>>>>>>>>
->>>>>>>>>>>>> I had a conversation on #btrfs on IRC, so here's what we
->>>>>>>>>>>>> debugged:
->>>>>>>>>>>>>
->>>>>>>>>>>>> I can replicate the issue by copying a file impacted by this
->>>>>>>>>>>>> bug,
->>>>>>>>>>>>> by using
->>>>>>>>>>>>> `cp --reflink=3Dnever`. I attached one of the impacted files=
- to
->>>>>>>>>>>>> this
->>>>>>>>>>>>> bug,
->>>>>>>>>>>>> named README.md.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Someone told me that it could be a bug due to the inline
->>>>>>>>>>>>> extent.
->>>>>>>>>>>>> So we tried
->>>>>>>>>>>>> to check that.
->>>>>>>>>>>>>
->>>>>>>>>>>>> filefrag shows that the file Readme.md is 1 inline extent. I
->>>>>>>>>>>>> tried
->>>>>>>>>>>>> to create
->>>>>>>>>>>>> a new file with random text, of 18 bytes (slightly bigger
->>>>>>>>>>>>> than the
->>>>>>>>>>>>> other
->>>>>>>>>>>>> file), that is also 1 inline extent. This file doesn't
->>>>>>>>>>>>> trigger the
->>>>>>>>>>>>> bug and
->>>>>>>>>>>>> has no issue to be defragmented.
->>>>>>>>>>>>>
->>>>>>>>>>>>> I tried to mount my system with `max_inline=3D0`, created a
->>>>>>>>>>>>> copy of
->>>>>>>>>>>>> README.md.
->>>>>>>>>>>>> `filefrag` shows me that the new file is now 1 extent, not
->>>>>>>>>>>>> inline.
->>>>>>>>>>>>> This new
->>>>>>>>>>>>> file also triggers the bug, so it doesn't seem to be due to
->>>>>>>>>>>>> the
->>>>>>>>>>>>> inline
->>>>>>>>>>>>> extent.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Someone asked me to provide the output of a perf top when th=
-e
->>>>>>>>>>>>> defrag is
->>>>>>>>>>>>> stuck:
->>>>>>>>>>>>>
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 28.70%=C2=A0 [kernel]=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] generic_bin_sea=
-rch
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 14.90%=C2=A0 [kernel]=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] free_extent_buf=
-fer
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 13.17%=C2=A0 [kernel]=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] btrfs_search_sl=
-ot
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 12.63%=C2=A0 [kernel]=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] btrfs_root_node
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.33%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] btrfs_get_64
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3.88%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] __down_read_=
-common.llvm
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3.00%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] up_read
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.63%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] read_block_f=
-or_search
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.40%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] read_extent_=
-buffer
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.38%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] memset_erms
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.11%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] find_extent_=
-buffer
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.69%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] kmem_cache_f=
-ree
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.69%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] memcpy_erms
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.57%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] kmem_cache_a=
-lloc
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.45%=C2=A0 [kern=
-el]=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [k] radix_tree_l=
-ookup
->>>>>>>>>>>>>
->>>>>>>>>>>>> I can reproduce the bug on 2 different machines, running 2
->>>>>>>>>>>>> different linux
->>>>>>>>>>>>> distributions (Arch and Gentoo) with 2 different kernel
->>>>>>>>>>>>> configs.
->>>>>>>>>>>>> This kernel is compiled with clang, the other with GCC.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Kernel version: 5.16.0
->>>>>>>>>>>>> Mount options:
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Machine 1:
->>>>>>>>>>>>> rw,noatime,compress-force=3Dzstd:2,ssd,discard=3Dasync,space=
-_cache=3Dv2,autodefrag
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Machine 2:
->>>>>>>>>>>>> rw,noatime,compress-force=3Dzstd:3,nossd,space_cache=3Dv2
->>>>>>>>>>>>>
->>>>>>>>>>>>> When the error happens, no message is shown in dmesg.
->>>>>>>>>>>> This is very likely the same issue as reported at this thread=
-:
->>>>>>>>>>>>
->>>>>>>>>>>> https://lore.kernel.org/linux-btrfs/YeVawBBE3r6hVhgs@debian9.=
-Home/T/#ma1c8a9848c9b7e4edb471f7be184599d38e288bb
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> Are you able to test the patch posted there?
->>>>>>>>>>>>
->>>>>>>>>>>> Thanks.
->>>>>>>>>>>>
->>>>>>>>>>>>> Thanks,
->>>>>>>>>>>>> Anthony Ruhier
->>>>>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
+   How much more memory is used depends a lot on whether we are able to
+   allocate contiguous extent buffers on disk (and how often) for a log
+   tree - if we are able to, then a single extent state record can
+   represent multiple extent buffers, otherwise we need multiple extent
+   state record structures to track each extent buffer.
+   In fact, my ealier approach did that:
+
+   https://lore.kernel.org/linux-btrfs/3aae7c6728257c7ce2279d6660ee2797e5e34bbd.1641300250.git.fdmanana@suse.com/
+
+   However that can cause a very significant negative impact on
+   performance, not only due to the extra memory usage but also because
+   we get a larger and deeper dirty_log_pages io tree.
+   We got a report that, on beefy machines at least, we can get such
+   performance drop with fsmark for example:
+
+   https://lore.kernel.org/linux-btrfs/20220117082426.GE32491@xsang-OptiPlex-9020/
+
+2) We would be doing it only to deal with an unexpected and exceptional
+   case, which is basically failure to read an extent buffer from disk
+   due to IO failures. On a healthy system we don't expect transaction
+   aborts to happen after all;
+
+3) Instead of relying on iterating the log tree or tracking the ranges
+   of extent buffers in the dirty_log_pages io tree, using the radix
+   tree that tracks extent buffers (fs_info->buffer_radix) to find all
+   log tree extent buffers is not reliable either, because after writeback
+   of an extent buffer it can be evicted from memory by the release page
+   callback of the btree inode (btree_releasepage()).
+
+Since there's no way to be able to properly cleanup a log tree without
+being able to read its extent buffers from disk and without using more
+memory to track the logical ranges of the allocated extent buffers do
+the following:
+
+1) When we fail to cleanup a log tree, setup a flag that indicates that
+   failure;
+
+2) Trigger writeback of all log tree extent buffers that are still dirty,
+   and wait for the writeback to complete. This is just to cleanup their
+   state, page states, page leaks, etc;
+
+3) When unmounting the fs, ignore if the number of bytes reserved in a
+   block group and in a space_info is not 0 if, and only if, we failed to
+   cleanup a log tree. Also ignore only for metadata block groups and the
+   metadata space_info object.
+
+This is far from a perfect solution, but it serves to silence test
+failures such as those from generic/475 and generic/648. However having
+a non-zero value for the reserved bytes counters on unmount after a
+transaction abort, is not such a terrible thing and it's completely
+harmless, it does not affect the filesystem integrity in any way.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/block-group.c | 26 ++++++++++++++++++++++++--
+ fs/btrfs/ctree.h       |  6 ++++++
+ fs/btrfs/tree-log.c    | 23 +++++++++++++++++++++++
+ 3 files changed, 53 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 1db24e6d6d90..ef725a3406b2 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -124,7 +124,16 @@ void btrfs_put_block_group(struct btrfs_block_group *cache)
+ {
+ 	if (refcount_dec_and_test(&cache->refs)) {
+ 		WARN_ON(cache->pinned > 0);
+-		WARN_ON(cache->reserved > 0);
++		/*
++		 * If there was a failure to cleanup a log tree, very likely due
++		 * to an IO failure on a writeback attempt of one or more of its
++		 * extent buffers, we could not do proper (and cheap) unaccounting
++		 * of their reserved space, so don't warn on reserved > 0 in that
++		 * case.
++		 */
++		if (!(cache->flags & BTRFS_BLOCK_GROUP_METADATA) ||
++		    !BTRFS_FS_LOG_CLEANUP_ERROR(cache->fs_info))
++			WARN_ON(cache->reserved > 0);
+ 
+ 		/*
+ 		 * A block_group shouldn't be on the discard_list anymore.
+@@ -3974,9 +3983,22 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+ 		 * important and indicates a real bug if this happens.
+ 		 */
+ 		if (WARN_ON(space_info->bytes_pinned > 0 ||
+-			    space_info->bytes_reserved > 0 ||
+ 			    space_info->bytes_may_use > 0))
+ 			btrfs_dump_space_info(info, space_info, 0, 0);
++
++		/*
++		 * If there was a failure to cleanup a log tree, very likely due
++		 * to an IO failure on a writeback attempt of one or more of its
++		 * extent buffers, we could not do proper (and cheap) unaccounting
++		 * of their reserved space, so don't warn on bytes_reserved > 0 in
++		 * that case.
++		 */
++		if (!(space_info->flags & BTRFS_BLOCK_GROUP_METADATA) ||
++		    !BTRFS_FS_LOG_CLEANUP_ERROR(info)) {
++			if (WARN_ON(space_info->bytes_reserved > 0))
++				btrfs_dump_space_info(info, space_info, 0, 0);
++		}
++
+ 		WARN_ON(space_info->reclaim_size > 0);
+ 		list_del(&space_info->list);
+ 		btrfs_sysfs_remove_space_info(space_info);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 459d00211181..fea9a0fd8894 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -145,6 +145,9 @@ enum {
+ 	BTRFS_FS_STATE_DUMMY_FS_INFO,
+ 
+ 	BTRFS_FS_STATE_NO_CSUMS,
++
++	/* Indicates there was an error cleaning up a log tree. */
++	BTRFS_FS_STATE_LOG_CLEANUP_ERROR,
+ };
+ 
+ #define BTRFS_BACKREF_REV_MAX		256
+@@ -3601,6 +3604,9 @@ do {								\
+ 
+ #define BTRFS_FS_ERROR(fs_info)	(unlikely(test_bit(BTRFS_FS_STATE_ERROR, \
+ 						   &(fs_info)->fs_state)))
++#define BTRFS_FS_LOG_CLEANUP_ERROR(fs_info) \
++	(unlikely(test_bit(BTRFS_FS_STATE_LOG_CLEANUP_ERROR, \
++			   &(fs_info)->fs_state)))
+ 
+ __printf(5, 6)
+ __cold
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index a54ee3a1d082..97ce445fd434 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3396,6 +3396,29 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
+ 	if (log->node) {
+ 		ret = walk_log_tree(trans, log, &wc);
+ 		if (ret) {
++			/*
++			 * We weren't able to traverse the entire log tree, the
++			 * typical scenario is getting an -EIO when reading an
++			 * extent buffer of the tree, due to a previous writeback
++			 * failure of it.
++			 */
++			set_bit(BTRFS_FS_STATE_LOG_CLEANUP_ERROR,
++				&log->fs_info->fs_state);
++
++			/*
++			 * Some extent buffers of the log tree may still be dirty
++			 * and not yet written back to storage, because we may
++			 * have updates to a log tree without syncing a log tree,
++			 * such as during rename and link operations. So flush
++			 * them out and wait for their writeback to complete, so
++			 * that we properly cleanup their state and pages.
++			 */
++			btrfs_write_marked_extents(log->fs_info,
++						   &log->dirty_log_pages,
++						   EXTENT_DIRTY | EXTENT_NEW);
++			btrfs_wait_tree_log_extents(log,
++						    EXTENT_DIRTY | EXTENT_NEW);
++
+ 			if (trans)
+ 				btrfs_abort_transaction(trans, ret);
+ 			else
+-- 
+2.33.0
+
