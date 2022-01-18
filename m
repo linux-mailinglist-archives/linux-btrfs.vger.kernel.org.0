@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858B5492116
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 09:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 630A94921D0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 10:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344103AbiARIXR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jan 2022 03:23:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
+        id S233351AbiARJDZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jan 2022 04:03:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238593AbiARIXR (ORCPT
+        with ESMTP id S233248AbiARJDR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jan 2022 03:23:17 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB4CC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 00:23:16 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id p27so55802419lfa.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 00:23:16 -0800 (PST)
+        Tue, 18 Jan 2022 04:03:17 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9A7C06173E
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 01:03:17 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id z22so53220868ybi.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 01:03:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=q8lEiSvBJtD3iJZzHKUB3OW9KVYEhKjadOFJ1IzG7WU=;
-        b=oBjvOEp0AXVQgVcrUjGRJB+1DntldvDvbSQmXOka/i4FehrXbsLptQK64hNq0o1zsz
-         rmXniITLvCVwpCdWGg/j/SGlLbwVtMh4zpK1prH/9HfREV6clXX4jmPhx4YATFMfi7ds
-         P8x/HmahlqMIYxhY0a6Vif5uiLS9FZI4ahWXwSF21EoIowH9lYfqTqFBKam0N/RprC2I
-         tjT4SkpNe26CVZOlT6SXwxTm6Ze86rVTNVNJh6/QBtxC9Vw7jdgwJGeJvjUQ5MGi9Gaz
-         ReyoxVvN5+cNV+OjNCvu05saiUHqCeTYUvGJTZzcRG0sopzoBEX/MuCxBC+9re5I1xbj
-         wdSw==
+        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
+        b=hj0GL8APiBpubKtDCzp3qEaSTLAKALjJma5ALqGeBNFva5mzNVwT7K/nZKTy9jBivk
+         JnVeaIfj7+PnxKN465Zmvw+0/TiU6aHpyfRN2aRkEtZPlhAqeU1p0oQ4tzMzicVjOr3i
+         gbqkrl5X1ARmnk5CQgz6Gtas/mBjkhRGvB8csRmfgfT5rIfgoDiled/vAtkevlujbnVz
+         k8Nyw9wdpEV1yxXD0rF37pWa/v/014xYeFdulFVDih3nPLXPXA3l6RzcvbO1ynDPMZUM
+         FjLoA50Pxu3xBbR5y/VnsGVdsvvUgXLsj1cszLKPZM852Quqen7GYIJUdocFvLa60Eln
+         t98Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
          :subject:to;
-        bh=q8lEiSvBJtD3iJZzHKUB3OW9KVYEhKjadOFJ1IzG7WU=;
-        b=U3wXcdHIqHRPscFGjra0LZkNg6YewPY3tzxrPilJ1RR261g29B6UsDM3ecZMVOnhm6
-         h92B1kkmmggLuPWccHgIZixAZ4e0llf4V43WPP9kiaaWvwo3UNQfzL5PumxjO+mZnbzW
-         UErYHZyhpguri+YCIrrbQEq64/kTaH6pGc2xEP0Jzqfj7W60Df2CL3+v599MimdHTtlM
-         43jXC/DRA45PnJ51TlerU/nJTdVUy6+T6wHbra7TtpVIWr6ILRzqpazh+Q8iv9esZCHj
-         fevpFk5ESvK4195xbT5wTeF6liaujeCax/5luLpAjszDRe5UjsQly/7XFQi9S9u7LsE0
-         QYSQ==
-X-Gm-Message-State: AOAM532ZO+++8z9QUSXnS6xyO0TLD2ThZiVm+3uySVOJVVwR2iGlXtDf
-        ctX8ikWxqoB4I5s6AZoGGydDjhjFW2maUkEAfT0=
-X-Google-Smtp-Source: ABdhPJxP0DKXw79cYYrvOtbtoehGAaenR1ZB0weYlyQVgTnouQ0If42yo1kqx58atwBb53da10wpbfc8jT8XIDI5qgI=
-X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr20423883lfu.10.1642494194928;
- Tue, 18 Jan 2022 00:23:14 -0800 (PST)
+        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
+        b=HBlDPffrfS1QL5YRaQ2t95hepCrz9EaVEUxrxg/x/c9VhrMVir6DekktFLuXHISdxj
+         h25Z/rD7gD3561pVSC3CyRzRCNeTBDNrQrvf1yPoj5SM2vpkEE3qUE3M/1dmpiUAYAxZ
+         OcAMoVpDU7tzUXvBdunMJJZE0bIHt48Wzp/dAdSiDrOLluDxgRV2d+jK61ngLjNMS+Ni
+         Cm4rU+bM4Z6vniKzNGGjxsTKS7RjpCG6Zr20/ea0A1YCfkxtxiU1EMIbnBxOS+GmYTAA
+         LyzXuPlysRiMwp4IoIbbvi4C7Tm/H4ujbxchXKFLUN/nSNo35Izby6zYNu2YBtfc2kHZ
+         Td/A==
+X-Gm-Message-State: AOAM531uthVFXbQAxyzVBOpdcI5E7mUgF5HyRcEQp7tQYFnD6gUX32aE
+        KQJN2fBQRt8E3U37edRwa//GLtfLx8ZddgZGM+A=
+X-Google-Smtp-Source: ABdhPJwaOt3KJ+0kEhvggvcLYRcfVBMrV37YktiQ8aFFuzFkY+GKjk4acHVXBfsAYhE797BagutW5d8GiAvauTrppbw=
+X-Received: by 2002:a5b:34b:: with SMTP id q11mr31483209ybp.652.1642496596406;
+ Tue, 18 Jan 2022 01:03:16 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6512:2291:0:0:0:0 with HTTP; Tue, 18 Jan 2022 00:23:14
+Received: by 2002:a05:7108:3655:0:0:0:0 with HTTP; Tue, 18 Jan 2022 01:03:15
  -0800 (PST)
-Reply-To: davidparkens@outlook.com
-From:   david <adernsonphilips@gmail.com>
-Date:   Tue, 18 Jan 2022 08:23:14 +0000
-Message-ID: <CAFB0dsW72zr0kinsuLNfEZVWeN4CJJLJrJqcmDT743UkG5H_HA@mail.gmail.com>
-Subject: 
+Reply-To: asil.ajwad@gmail.com
+From:   Asil Ajwad <graceyaogokamboule@gmail.com>
+Date:   Mon, 17 Jan 2022 21:03:15 -1200
+Message-ID: <CA+Yy_gCPDU1aVGxQ4KN15MzyTM5X7id3fn57k443NJ3XkhR=pg@mail.gmail.com>
+Subject: Greetings,
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -58,5 +58,21 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 -- 
+Greetings,
 
-my name is David, i have urgent issue to share with you .
+I am Mr.Asil Ajwad, I work with United Bank of Africa, can you use
+an ATM Visa Card to withdraw money at, ATM Cash Machine in your
+country, if yes I want to transfer abounded fund the sum of $10.5million
+US-Dollars, to you from my country, this is part of the money that was
+abounded by our late old client a politician who unfortunately lost
+his life and was forced out of power Du to greedy act, the bank will
+
+change the account details to your name, and apply for a Visa Card
+with your details, the Visa Card will be send to you, and you can be
+withdrawing money with it always, whatever any amount you withdraw
+daily, you will send 60% to me and you will take 40%, the Visa Card
+and the bank account will be on your name, I will be waiting for your
+response for more details, thanks to you a lot for giving me your time.
+
+regards,
+Mr.Asil Ajwad.
