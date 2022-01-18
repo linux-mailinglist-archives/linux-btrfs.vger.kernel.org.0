@@ -2,159 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BB749287C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 15:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5953F492880
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 15:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239099AbiAROde (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jan 2022 09:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245449AbiAROdU (ORCPT
+        id S239406AbiAROgt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jan 2022 09:36:49 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:49124 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235461AbiAROgt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jan 2022 09:33:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28C4C06173E
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 06:33:19 -0800 (PST)
+        Tue, 18 Jan 2022 09:36:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AAAA3B816CE
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 14:33:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6A64C00446;
-        Tue, 18 Jan 2022 14:33:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9FB660C4D
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jan 2022 14:36:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B04CC00446;
+        Tue, 18 Jan 2022 14:36:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642516397;
-        bh=vHTR3gy62Q/7LVp6JrlSPzmhlMkK0NanL7ShA27qjJ0=;
+        s=k20201202; t=1642516608;
+        bh=Gs3xxqDuS/AjLTLXE+BWGauaNUpdJaRVkKsKojK/g3s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PtSlTHKxGd3voDhADc0M6tJWkPob/CEP0Q28MdMb32/BvUufE3gakdDPxu8C1k8AA
-         7HmQ9CrBzJDtDeH+PuYTq/8ghBgM7l3Xna1K9xQjdmo+IcskS1oyf0VpBckK9LB4my
-         E51JNg3/TBY0+GaDJWmsQGVVfWx7LEOz9Yi/l2Q6ww3GLr1HizRMlhcf3ZksgbMN2r
-         AqtA1a1ZjRGzRwc4Bshu9oOXyhHKfaZ6fVP9ECv6Gd0417D/ycuKYp2loLW/vrvXzm
-         uZrv/gzjO7ftcHnL6BMqA+kuztaoqQFNMXF1DWCOAqdydh/9QPJULvcilVoUde/L7m
-         XBATh2nfYrEsg==
-Date:   Tue, 18 Jan 2022 14:33:14 +0000
+        b=ulmpEHtvOJE7aoqRF+aBtpFAQUD0BKNs/ngwxQeMnd5O/Jq53mgTYWczaZu8ALEMr
+         HPY8mgm69Q9LSkGgHrKyTsNT9q1+sxqj1yxeAE+6MvJuHswG/Z1algt4htTqmeUn8p
+         f+MqcF+HzOKjGaaKhKoRmh/YVG3x3l0CWVGCCToPXSPf4+DCXRKo31/M8nmeW7r0OK
+         aBbG4puxxTVoUmNZPnhBm5QIWDLYGXzTrwYWYZCcdghCaD7EqWPoLdX+gkgCEaUMeu
+         7PWvq6PWIp8awSvKpMv3qFB7qFk2NbXioz5FyaPOE5qo/0tCNAJmNozuCySRxuCNwj
+         N0WSeBzxaPXvQ==
+Date:   Tue, 18 Jan 2022 14:36:45 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Anthony Ruhier <aruhier@mailbox.org>
-Subject: Re: [PATCH v2] btrfs: defrag: fix the wrong number of defragged
- sectors
-Message-ID: <YebPqrBwFcqD3oUe@debian9.Home>
-References: <20220118071904.29991-1-wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: defrag: properly update range->start for
+ autodefrag
+Message-ID: <YebQfdMAcjULXCF4@debian9.Home>
+References: <20220118115352.52126-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220118071904.29991-1-wqu@suse.com>
+In-Reply-To: <20220118115352.52126-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 18, 2022 at 03:19:04PM +0800, Qu Wenruo wrote:
+On Tue, Jan 18, 2022 at 07:53:52PM +0800, Qu Wenruo wrote:
 > [BUG]
-> There are users using autodefrag mount option reporting obvious increase
-> in IO:
-> 
-> > If I compare the write average (in total, I don't have it per process)
-> > when taking idle periods on the same machine:
-> >     Linux 5.16:
-> >         without autodefrag: ~ 10KiB/s
-> >         with autodefrag: between 1 and 2MiB/s.
-> >
-> >     Linux 5.15:
-> >         with autodefrag:~ 10KiB/s (around the same as without
-> > autodefrag on 5.16)
+> After commit 7b508037d4ca ("btrfs: defrag: use defrag_one_cluster() to
+> implement btrfs_defrag_file()") autodefrag no longer properly re-defrag
+> the file from previously finished location.
 > 
 > [CAUSE]
-> When autodefrag mount option is enabled, btrfs_defrag_file() will be
-> called with @max_sectors = BTRFS_DEFRAG_BATCH (1024) to limit how many
-> sectors we can defrag in one try.
+> The recent refactor on defrag only focuses on defrag ioctl subpage
+> support, doesn't take auto defrag into consideration.
 > 
-> And then use the number of sectors defragged to determine if we need to
-> re-defrag.
+> There are two problems involved which prevents autodefrag to restart its
+> scan:
 > 
-> But commit b18c3ab2343d ("btrfs: defrag: introduce helper to defrag one
-> cluster") uses wrong unit to increase @sectors_defragged, which should
-> be in unit of sector, not byte.
+> - No range.start update
+>   Previously when one defrag target is found, range->start will be
+>   updated to indicate where next search should start from.
 > 
-> This means, if we have defragged any sector, then @sectors_defragged
-> will be >= sectorsize (normally 4096), which is larger than
-> BTRFS_DEFRAG_BATCH.
+>   But now btrfs_defrag_file() doesn't update it anymore, making all
+>   autodefrag to rescan from file offset 0.
 > 
-> This makes the @max_sectors check in defrag_one_cluster() to underflow,
-> rendering the whole @max_sectors check useless.
+>   This would also make autodefrag to mark the same range dirty again and
+>   again, causing extra IO.
 > 
-> Thus causing way more IO for autodefrag mount options, as now there is
-> no limit on how many sectors can really be defragged.
+> - No proper quick exit for defrag_one_cluster()
+>   Currently if we reached or exceed @max_sectors limit, we just exit
+>   defrag_one_cluster(), and let next defrag_one_cluster() call to do a
+>   quick exit.
+>   This makes @cur increase, thus no way to properly know which range is
+>   defragged and which range is skipped.
 > 
 > [FIX]
-> Fix the problems by:
+> The fix involves two modifications:
 > 
-> - Use sector as unit when increaseing @sectors_defragged
+> - Update range->start to next cluster start
+>   This is a little different from the old behavior.
+>   Previously range->start is updated to the next defrag target.
 > 
-> - Include @sectors_defragged > @max_sectors case to break the loop
+>   But in the end, the behavior should still be pretty much the same,
+>   as now we skip to next defrag target inside btrfs_defrag_file().
 > 
-> - Add extra comment on the return value of btrfs_defrag_file()
+>   Thus if auto-defrag determines to re-scan, then we still do the skip,
+>   just at a different timing.
 > 
-> Reported-by: Anthony Ruhier <aruhier@mailbox.org>
-> Fixes: b18c3ab2343d ("btrfs: defrag: introduce helper to defrag one cluster")
+> - Make defrag_one_cluster() to return >0 to indicate a quick exit
+>   So that btrfs_defrag_file() can also do a quick exit, without
+>   increasing @cur to the range end, and re-use @cur to update
+>   @range->start.
+> 
+> - Add comment for btrfs_defrag_file() to mention the range->start update
+>   Currently only autodefrag utilize this behavior, as defrag ioctl won't
+>   set @max_to_defrag parameter, thus unless interrupted it will always
+>   try to defrag the whole range.
+> 
+> Reported-by: Filipe Manana <fdmanana@suse.com>
+> Fixes: 7b508037d4ca ("btrfs: defrag: use defrag_one_cluster() to implement btrfs_defrag_file()")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
 Looks good, thanks.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Please, in the future also add a link to the thread reporting the issue.
-This makes it much easier to find more details, instead of grepping in
-a mailbox or lore for the reporter's name...
+As mentioned in the other patch, please add a Link tag to the user's report:
 
 Link: https://lore.kernel.org/linux-btrfs/0a269612-e43f-da22-c5bc-b34b1b56ebe8@mailbox.org/
 
 > ---
-> Changelog:
-> v2:
-> - Update the commit message to include the root cause of extra IO
-> 
-> - Keep @sectors_defragged update where it is
->   Since the over-reported @sectors_defragged is not the real reason,
->   keep the patch smaller.
-> ---
->  fs/btrfs/ioctl.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
+>  fs/btrfs/ioctl.c | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
 > 
 > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 6ad2bc2e5af3..2a77273d91fe 100644
+> index 2a77273d91fe..91ba2efe9792 100644
 > --- a/fs/btrfs/ioctl.c
 > +++ b/fs/btrfs/ioctl.c
-> @@ -1442,8 +1442,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
->  	list_for_each_entry(entry, &target_list, list) {
+> @@ -1443,8 +1443,10 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
 >  		u32 range_len = entry->len;
 >  
-> -		/* Reached the limit */
-> -		if (max_sectors && max_sectors == *sectors_defragged)
-> +		/* Reached or beyond the limit */
-> +		if (max_sectors && *sectors_defragged >= max_sectors)
+>  		/* Reached or beyond the limit */
+> -		if (max_sectors && *sectors_defragged >= max_sectors)
+> +		if (max_sectors && *sectors_defragged >= max_sectors) {
+> +			ret = 1;
 >  			break;
+> +		}
 >  
 >  		if (max_sectors)
-> @@ -1465,7 +1465,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
->  				       extent_thresh, newer_than, do_compress);
->  		if (ret < 0)
->  			break;
-> -		*sectors_defragged += range_len;
-> +		*sectors_defragged += range_len >>
-> +				      inode->root->fs_info->sectorsize_bits;
->  	}
->  out:
->  	list_for_each_entry_safe(entry, tmp, &target_list, list) {
-> @@ -1484,6 +1485,9 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
->   * @newer_than:	   minimum transid to defrag
->   * @max_to_defrag: max number of sectors to be defragged, if 0, the whole inode
+>  			range_len = min_t(u32, range_len,
+> @@ -1487,7 +1489,10 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
 >   *		   will be defragged.
-> + *
-> + * Return <0 for error.
-> + * Return >=0 for the number of sectors defragged.
+>   *
+>   * Return <0 for error.
+> - * Return >=0 for the number of sectors defragged.
+> + * Return >=0 for the number of sectors defragged, and range->start will be updated
+> + * to indicate the file offset where next defrag should be started at.
+> + * (Mostly for autodefrag, which sets @max_to_defrag thus we may exit early without
+> + *  defragging all the range).
 >   */
 >  int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
 >  		      struct btrfs_ioctl_defrag_range_args *range,
+> @@ -1575,10 +1580,19 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+>  		if (ret < 0)
+>  			break;
+>  		cur = cluster_end + 1;
+> +		if (ret > 0) {
+> +			ret = 0;
+> +			break;
+> +		}
+>  	}
+>  
+>  	if (ra_allocated)
+>  		kfree(ra);
+> +	/*
+> +	 * Update range.start for autodefrag, this will indicate where to start
+> +	 * in next run.
+> +	 */
+> +	range->start = cur;
+>  	if (sectors_defragged) {
+>  		/*
+>  		 * We have defragged some sectors, for compression case they
 > -- 
 > 2.34.1
 > 
