@@ -2,151 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09E84912C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 01:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3B74913BE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jan 2022 02:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237750AbiARAU2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jan 2022 19:20:28 -0500
-Received: from mout.gmx.net ([212.227.17.22]:49069 "EHLO mout.gmx.net"
+        id S236425AbiARBqC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jan 2022 20:46:02 -0500
+Received: from mout.gmx.net ([212.227.15.19]:49395 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244183AbiARATn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jan 2022 19:19:43 -0500
+        id S231349AbiARBqB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Jan 2022 20:46:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1642465177;
-        bh=cy34XK0LWlVkYGUmDRnP1NA1YT36o3KqjWmN21DtfCs=;
+        s=badeba3b8450; t=1642470356;
+        bh=HUtTTQUUDYUbZmBSr66fkmTby/hr7N3YWOA1PN+pltE=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=FESMD9/htEcYyqHmKKOvcC4CtKkDeAyxgIkNhipOgn1JwZc79vyMGC9dz+VOFZSbP
-         dG7XgHzh6pEPeuZYgz+f4Bdi3bEkqnislE2J/9bg7a/T+iNqE8y3WPkDlCHOvyAeE4
-         WshzIOiMISqOA3JSR9zelwT9Ap4c2ZNzh0dT0yLw=
+        b=YMubddqHm7ayvHqtLey0ZfrkfitXE7HUXxTM/7/COqheHMz6oTaIusgJ2E/wHY3NC
+         OwZTQMIaXTUR+nKHl8vqzFbkDHnJM8DKlzav+jhVfqSYDJl7vYttGEdMVJcevE+Fjz
+         9CDR+9bfpnZiYdkXeUrGwd40+r7vRpHWnWHAdBKc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2Dx8-1mAoPH0Cuk-013hGp; Tue, 18
- Jan 2022 01:19:37 +0100
-Message-ID: <62b979c7-c165-af31-366a-1430513cb6c9@gmx.com>
-Date:   Tue, 18 Jan 2022 08:19:33 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZktZ-1mmLnI0Kfv-00Wn7n; Tue, 18
+ Jan 2022 02:45:55 +0100
+Message-ID: <efe15874-fdd1-3d60-c01c-26450ba0dce5@gmx.com>
+Date:   Tue, 18 Jan 2022 09:45:52 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH] btrfs: fix too long loop when defragging a 1 byte file
+Subject: Re: [PATCH] btrfs: allow defrag to be interruptible
 Content-Language: en-US
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <bcbfce0ff7e21bbfed2484b1457e560edf78020d.1642436805.git.fdmanana@suse.com>
+References: <0b7b9259d4e0a874aedbabe74d3719a4aaace586.1642437610.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <bcbfce0ff7e21bbfed2484b1457e560edf78020d.1642436805.git.fdmanana@suse.com>
+In-Reply-To: <0b7b9259d4e0a874aedbabe74d3719a4aaace586.1642437610.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IKlPFb1DIy5v2Qe32+mSqmfhXPYv9tcnn6NEGVXsA8Dl7AMmJpe
- u8etF4YOaL0CFznhfn2F9gSdjXv9lWURXrcA3QilzQI0fPLVHZPOUvccM+RsGUvQDXi+yzU
- GGwPhEjgeu6Tj+Wh55mrQk6d76RlcarxJ/m6vDKESxwRAgT08lx9KygKumcbb6fDOugVudY
- AugdBaDuh06LcIxfI2/sA==
+X-Provags-ID: V03:K1:o19kmBouPcRVUWbWi5QRW3eDhnK5NvdhXfQYWtg8GG8NKYpxwsZ
+ nnSHrqJ56jIrHDf3wrr3z1mHLqkNqfq64PicbvwwrraQYL/tr9WXlpH1PHXLnZOkAUYneGS
+ YUtlF7W3PmNDxlGRKL2vCk8r0XSDkm5+hviAg0LT5bB3DWA1kcy9KMzyr0AIaPD9iLtclCI
+ V/uHC9yXY2Ahil5CVaSXg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iHTb6M6lLLw=:6vSyUOgmO6gyjRmjD0t92G
- y/PXYahY6SogY5XsmJL1F5++mDHflFDufbhJBD5r1zJtv4vjZgoYTMf1Le+at6j59FkSk8Fsi
- K7XDdpa9JKPvvr94uQDQCyqTKOQfE97Dpkx4zHkpiaH5OyFyFp6fXyn7R4mRhP+gquz7ixmjf
- fhga5stl6IlToX4idc7/Njx1KpzCodLmabWYV8l0hY8577LUYuOr57o3k4A+lYppw0mHNPck5
- X2EbohnAp9Cp7iSAaZ7/vKyN8RRsOMsjsHz213A8RvALiWQ9HdneyFLeDy4rY52v5pMg8smmN
- 2vBCIkNrZ05gm3MbzUkmRuIThPa3bX+1H8YzfBX0ZzqoXeSnjLTEkbScDl3muliotboW1scRv
- qZgYvPtzKKFW/X3x/qXA0x3ywrtSOMWc1IDnYT2w6ZZZ8F+63oRm/L/dWLNEV0QusYDzPDxlh
- ci+46rKNwD2lKyiRZQ8i0V8mFBdKbiVfeK3uZbNFpN7mN4CHFOTtvXnUbInNyPTG9TFGS2xcS
- NYN5ec09N88Fmqj80VASusjnKX5BytQs7JE4zfUiPryK960yU00yJNhvo48fTiAEqhu6sf4xM
- VLCe7guleRUZ0SzGJg2WxeVi3Hr1LpvuiAPazcQh4Amly75hAfuQu1YqN+Y13kEN5iYOwU32k
- HZdvSlO3YigGntefs38bYy9Ds4GrevGrFnWgFgyniGlCpWOT1YPkx+F5knsLZGVlM8EQKwY7D
- PbGSDCY8axRZC5lWD2DWajLQD0QXQJRDljiUJZY05Vg7+sndIHnN3RgHZQVXA3PO42gP0S6ZH
- 6tWgqO3Pscgce+cVZ3h6MTji8mYd4xHPk5VX0Q8l3CtiCSXN5TakraOf0iMmQAu3K7roTce91
- hRqhH9FTpvQIApeoLrwrmr0uMNgSyKWgA62Au1OX/sYxxRAPidDFW2+JkT62TFBfTmxDyocJj
- YFIVxjcqkZgpXhhrfM1ZYNDqGzqlsyvZ5hSdKUmIP+bPjfVHbtxWiXTHmJhfche4N8CZSgkvu
- RAtb0lzQPYBIaffkYbynmd6M48MCZuO5YtpNpWXOtfhfMUg9PHsMgIwqwchVrSYpb4axsZ2BA
- GT9JDYCPUwRpcg=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8lGDDYgedug=:LW0dYHdtiF5OGSeoSpBhlP
+ eucL0ZAcpZL+SQEqwuRNuYbWWBmPa6xBhfMTWZz938bNAM4tERTt0MJMgtN3Cw+ziJhGZ5A7W
+ rZX73EWHiYDO2CxrjwQp6/KpYge8dlokxLIt5uSbWxC2jVZpn0UxhTCK9eJWIinox+stvT2L7
+ c2p9cN1lyrPVLl2v6wDLvRZa2ikpolwE46c3vHZryxuGaPbRRI7lbs2FeFPzVGI1u++S2WgBp
+ y6E5TuLdka1CkKudXi69TzNlKsWIRAKa7G6BsrJE1/YSKiQ58HzgwRi6hfRzv2C49t83lTU90
+ OmAc89+/KOQ2DSOG8QbqjTofXZWdvy5zRj/Jod71cteqcas5RrW+AYVMaRvMEJQ4ei23Q9Cb4
+ hh7aVv4CJ+gj0Sf0w9Lerjrv+7FdaU46fbAGd7j6tC2rpKF3t7t016DfwkBxxksj10hRAK/ok
+ of7seBUpaLplN3Vz00O3CFobcqW2hCBlu52luw5U/mnErjYA/KtRs3h7Q3CzrAfgGNTDjAksp
+ lJ2dLyx5RkTXywhyN5Xpt/goP+av2iKwcUXNB2UwiNXL5AOb1BTRXEswLRbD/+uOq2CcVmQwI
+ xjJXYH989xZHrt4CVOpXPIQlBuVtoSi/gL7GmOUW5qmoTA3wc32UqrItOpye3jAIxzKz5h/G1
+ 4i8FZ7MRBiY9DlnwhxOqlRK0T1z+XXIa7yfHR9VZBI5VFWbBqnhvWADNkT+Un3G9qdJwLDZKz
+ lCmZ/0CWOdkkv+gB7zll7aPt54fVpnBoi5RQuSsgaeV9M0wIJg1X5RP/BSiMoMCRadabJrzoV
+ D1B+EejDKkHB69Jn9FiEPkVt2zN5qD9SUXcC40+uHgyiD9YOa2iJk1IH9x6jL9F6EEUbXhWsh
+ 4h/z3icdv/32Jtcn8c76oEOBQtpaptlPxc8RtGi+3TyIDoDNxGQpwCP4eEejrvzVkoh5AZx/v
+ aJ9QJBZRkvFxOGVEtd6iolOYY2bMUsJ7YH86I4LliwNyrPyyEt1h0EV77l7YVMTW2jCzcW+XU
+ u34F/j4lxwuDRyhrn2chq21Hbg5nvdYT2uTjkYPRgNWw9ipWff7hTYZ/d8fL2aulDBz+xTn0x
+ GKcKfae8UScjSg=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/1/18 00:28, fdmanana@kernel.org wrote:
+On 2022/1/18 00:41, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> When attempting to defrag a file with a single byte, we can end up in a
-> too long loop, which is nearly infinite because at btrfs_defrag_file()
-> we end up with the variable last_byte assigned with a value of
-> 18446744073709551615 (which is (u64)-1). The problem comes from the fact
-> we end up doing:
+> During defrag, at btrfs_defrag_file(), we have this loop that iterates
+> over a file range in steps no larger than 256K subranges. If the range
+> is too long, there's no way to interrupt it. So make the loop check in
+> each iteration if there's a fatal signal pending, and if there is, break
+> and return -EINTR to userspace.
 >
->      last_byte =3D round_up(last_byte, fs_info->sectorsize) - 1;
+> This is motivated by a recent bug on 5.16 where defragging a 1 byte file
+> resulted in iterating from file range 0 to (u64)-1, as hitting the bug
+> triggered a too long loop, basically requiring one to reboot the machine=
+.
 >
-> So if last_byte was assigned 0, which is i_size - 1, we underflow and
-> end up with the value 18446744073709551615.
->
-> This is trivial to reproduce and the following script triggers it:
->
->    $ cat test.sh
->    #!/bin/bash
->
->    DEV=3D/dev/sdj
->    MNT=3D/mnt/sdj
->
->    mkfs.btrfs -f $DEV
->    mount $DEV $MNT
->
->    echo -n "X" > $MNT/foobar
->
->    btrfs filesystem defragment $MNT/foobar
->
->    umount $MNT
->
-> So fix this by not decrementing last_byte by 1 before doing the sector
-> size round up. Also, to make it easier to follow, make the round up righ=
-t
-> after computing last_byte.
->
-> Fixes: 7b508037d4cac3 ("btrfs: defrag: use defrag_one_cluster() to imple=
-ment btrfs_defrag_file()")
-> Reported-by: Anthony Ruhier <aruhier@mailbox.org>
-> Link: https://lore.kernel.org/linux-btrfs/0a269612-e43f-da22-c5bc-b34b1b=
-56ebe8@mailbox.org/
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/ioctl.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 6ad2bc2e5af3..954dc8259b1b 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1546,6 +1546,11 @@ int btrfs_defrag_file(struct inode *inode, struct=
+ file_ra_state *ra,
+>   		/* The cluster size 256K should always be page aligned */
+>   		BUILD_BUG_ON(!IS_ALIGNED(CLUSTER_SIZE, PAGE_SIZE));
+>
+> +		if (fatal_signal_pending(current)) {
+> +			ret =3D -EINTR;
+> +			break;
+> +		}
+> +
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+We already have a inlined helper doing something similar:
+btrfs_defrag_cancelled().
+
+Although it checks more signals, not only the fatal ones.
+
+And this behavior is changed by commit 7b508037d4ca ("btrfs: defrag: use
+defrag_one_cluster() to implement btrfs_defrag_file()"), thus fixes tag
+may be helpful.
 
 Thanks,
 Qu
-> ---
->   fs/btrfs/ioctl.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index a5bd6926f7ff..6ad2bc2e5af3 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1518,12 +1518,16 @@ int btrfs_defrag_file(struct inode *inode, struc=
-t file_ra_state *ra,
->
->   	if (range->start + range->len > range->start) {
->   		/* Got a specific range */
-> -		last_byte =3D min(isize, range->start + range->len) - 1;
-> +		last_byte =3D min(isize, range->start + range->len);
->   	} else {
->   		/* Defrag until file end */
-> -		last_byte =3D isize - 1;
-> +		last_byte =3D isize;
->   	}
->
-> +	/* Align the range */
-> +	cur =3D round_down(range->start, fs_info->sectorsize);
-> +	last_byte =3D round_up(last_byte, fs_info->sectorsize) - 1;
-> +
->   	/*
->   	 * If we were not given a ra, allocate a readahead context. As
->   	 * readahead is just an optimization, defrag will work without it so
-> @@ -1536,10 +1540,6 @@ int btrfs_defrag_file(struct inode *inode, struct=
- file_ra_state *ra,
->   			file_ra_state_init(ra, inode->i_mapping);
->   	}
->
-> -	/* Align the range */
-> -	cur =3D round_down(range->start, fs_info->sectorsize);
-> -	last_byte =3D round_up(last_byte, fs_info->sectorsize) - 1;
-> -
->   	while (cur < last_byte) {
->   		u64 cluster_end;
->
+>   		/* We want the cluster end at page boundary when possible */
+>   		cluster_end =3D (((cur >> PAGE_SHIFT) +
+>   			       (SZ_256K >> PAGE_SHIFT)) << PAGE_SHIFT) - 1;
