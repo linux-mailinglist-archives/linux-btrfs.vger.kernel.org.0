@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E57494C64
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 12:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2007D494C61
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 12:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbiATLA1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jan 2022 06:00:27 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:46864 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbiATLAW (ORCPT
+        id S230079AbiATLAZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jan 2022 06:00:25 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:38808 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbiATLAV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jan 2022 06:00:22 -0500
+        Thu, 20 Jan 2022 06:00:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EE633B81D3D
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07ACCC340E2
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F5AF61515
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B2F9C340E8
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642676419;
-        bh=IkcIzOvY2O5on9Ztf/hCVrB9d2+bnscyLIVGXC6wRos=;
+        s=k20201202; t=1642676420;
+        bh=h3OVljvVuJRIO6QVUIJ8P71TlccbuXWEZgZVW2BJkBY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=udM4uwjlHxp4wZk8hwXODQlYX7nWQgfue8olDcUk++hg2SdKarC0pmvbFyWpfIfuH
-         BOKsV89hQx2bQWGUKJ6hcOuC/6a4sYzeM1s341CDfAtkiNdvHWAbJ66G2d9Vutu2WT
-         R+oBgHKyB8845JPHkSmcbFH8rAZmJzzhdZGn/sWYpKepRwnnCSH+F6d0RoKCZdwqsF
-         UaXSejTd81UUtNrxd/Ktlz7XgsyQ/nBORfG1TuYj5XH9EYDuzge9+0mzV/IwQC2RFE
-         52O762F2LMb9Ub8XYHk/UKmOl2tPfeiKUKgAsPTSgeBVgYVKYLwOA+JE78U89+HECm
-         jKNlTk5iPIZmg==
+        b=ASbyhvQXHBc2p5Oi/6P0OpJwSR0amv9xz6VdDBjTKahjmmK6N3+pm82EOi5txp7r/
+         JgVThhP19dVj8oipkiF+LOfL13Fnn595tvpGB1LQQkLHZzPk7flbVSiBexXKlz0UU6
+         zNFKKbDC1RHncNudC1ZZvdZpyHqROZU5TZot5D+1UmXN1VJFZZ8jQ8smFFcBLnFFA9
+         obbCBkNuJniMvlmgukY27+L1zBliTgfxcXNPGTlK8oTQo55pkTXP9q8Pbq5CEEx58q
+         LWeq6mgcqqBkGjvUFz+hFLNG0yqO6hmiUM2DXd2e2+RJHWXxZOZIhfOoKTIPQoD4Qc
+         KhQ4pWvAWsV9A==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/6] btrfs: avoid inode logging during rename and link when possible
-Date:   Thu, 20 Jan 2022 11:00:10 +0000
-Message-Id: <e4f702b102c093d3b67a36194fbe6c51a9e5a94c.1642676248.git.fdmanana@suse.com>
+Subject: [PATCH 6/6] btrfs: use single variable to track return value at btrfs_log_inode()
+Date:   Thu, 20 Jan 2022 11:00:11 +0000
+Message-Id: <35bfc17e94d10d179574a47550a4fdcfa4e4fe9a.1642676248.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1642676248.git.fdmanana@suse.com>
 References: <cover.1642676248.git.fdmanana@suse.com>
@@ -45,635 +45,168 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During a rename or link operation, we need to determine if an inode was
-previously logged or not, and if it was, do some update to the logged
-inode. We used to rely exclusively on the logged_trans field of struct
-btrfs_inode to determine that, but that was not reliable because the
-value of that field is not persisted in the inode item, so it's lost
-when an inode is evicted and loaded back again. That led to several
-issues in the past, such as not persisting deletions (such as the case
-fixed by commit 803f0f64d17769 ("Btrfs: fix fsync not persisting dentry
-deletions due to inode evictions")), or resulting in losing a file
-after an inode eviction followed by a rename (commit ecc64fab7d49c6
-("btrfs: fix lost inode on log replay after mix of fsync, rename and
-inode eviction")), besides other issues.
+At btrfs_log_inode(), we have two variables to track errors and the
+return value of the function, named 'ret' and 'err'. In some places we
+use 'ret' and if gets a non-zero value we assign its value to 'err'
+and then jump to the 'out' label, while in other places we use 'err'
+directly without 'ret' as an intermediary. This is inconsistent, error
+prone and not necessary. So change that to use only the 'ret' variable,
+making this consistent with most functions in btrfs.
 
-So the inode_logged() helper was introduced and used to determine if an
-inode was possibly logged before in the current transaction, with the
-caveat that it could return false positives, in the sense that even if an
-inode was not logged before in the current transaction, it could still
-return true, but never to return false in case the inode was logged.
-From a functional point of view that is fine, but from a performance
-perspective it can introduce significant latencies to rename and link
-operations, as they will end up doing inode logging even when it is not
-necessary.
-
-Recently on a 5.15 kernel, an openSUSE Tumbleweed user reported package
-installations and upgrades, with the zypper tool, were often taking a
-long time to complete. With strace it could be observed that zypper was
-spending about 99% of its time on rename operations, and then with
-further analysis we checked that directory logging was happening too
-frequently. Taking into account that installation/upgrade of some of the
-packages needed a few thousand file renames, the slowdown was very
-noticeable for the user.
-
-The issue was caused indirectly due to an excessive number of inode
-evictions on a 5.15 kernel, about 100x more compared to a 5.13, 5.14 or
-a 5.16-rc8 kernel. While triggering the inode evictions if something
-outside btrfs' control, btrfs could still behave better by eliminating
-the false positives from the inode_logged() helper.
-
-So change inode_logged() to actually eliminate such false positives caused
-by inode eviction and when an inode was never logged since the filesystem
-was mounted, as both cases relate to when the logges_trans field of struct
-btrfs_inode has a value of zero. When it can not determine if the inode
-was logged based only on the logged_trans value, lookup for the existence
-of the inode item in the log tree - if it's there then we known the inode
-was logged, if it's not there then it can not have been logged in the
-current transaction. Once we determine if the inode was logged, update
-the logged_trans value to avoid future calls to have to search in the log
-tree again.
-
-Alternatively, we could start storing logged_trans in the on disk inode
-item structure (struct btrfs_inode_item) in the unused space it still has,
-but that would be a bit odd because:
-
-1) We only care about logged_trans since the filesystem was mounted, we
-   don't care about its value from a previous mount. Having it persisted
-   in the inode item structure would not make the best use of the precious
-   unused space;
-
-2) In order to get logged_trans persisted before inode eviction, we would
-   have to update the delayed inode when we finish logging the inode and
-   update its logged_trans in struct btrfs_inode, which makes it a bit
-   cumbersome since we need to check if the delayed inode exists, if not
-   create it and populate it and deal with any errors (-ENOMEM mostly).
-
-This change is part of a patchset comprised of the following patches:
-
-  1/5 btrfs: add helper to delete a dir entry from a log tree
-  2/5 btrfs: pass the dentry to btrfs_log_new_name() instead of the inode
-  3/5 btrfs: avoid logging all directory changes during renames
-  4/5 btrfs: stop doing unnecessary log updates during a rename
-  5/5 btrfs: avoid inode logging during rename and link when possible
-
-The following test script mimics part of what the zypper tool does during
-package installations/upgrades. It does not triggers inode evictions, but
-it's similar because it triggers false positives from the inode_logged()
-helper, because the inodes have a logged_trans of 0, there's a log tree
-due to a fsync of an unrelated file and the directory inode has its
-last_trans field set to the current transaction:
-
-  $ cat test.sh
-
-  #!/bin/bash
-
-  DEV=/dev/nvme0n1
-  MNT=/mnt/nvme0n1
-
-  NUM_FILES=10000
-
-  mkfs.btrfs -f $DEV
-  mount $DEV $MNT
-
-  mkdir $MNT/testdir
-
-  for ((i = 1; i <= $NUM_FILES; i++)); do
-      echo -n > $MNT/testdir/file_$i
-  done
-
-  sync
-
-  # Now do some change to an unrelated file and fsync it.
-  # This is just to create a log tree to make sure that inode_logged()
-  # does not return false when called against "testdir".
-  xfs_io -f -c "pwrite 0 4K" -c "fsync" $MNT/foo
-
-  # Do some change to testdir. This is to make sure inode_logged()
-  # will return true when called against "testdir", because its
-  # logged_trans is 0, it was changed in the current transaction
-  # and there's a log tree.
-  echo -n > $MNT/testdir/file_$((NUM_FILES + 1))
-
-  echo "Renaming $NUM_FILES files..."
-  start=$(date +%s%N)
-  for ((i = 1; i <= $NUM_FILES; i++)); do
-      mv $MNT/testdir/file_$i $MNT/testdir/file_$i-RPMDELETE
-  done
-  end=$(date +%s%N)
-
-  dur=$(( (end - start) / 1000000 ))
-  echo "Renames took $dur milliseconds"
-
-  umount $MNT
-
-Testing this change on a box using a non-debug kernel (Debian's default
-kernel config) gave the following results:
-
-NUM_FILES=10000, before patchset:                   27837 ms
-NUM_FILES=10000, after patches 1/5 to 4/5 applied:   9236 ms (-66.8%)
-NUM_FILES=10000, after whole patchset applied:       8902 ms (-68.0%)
-
-NUM_FILES=5000, before patchset:                     9127 ms
-NUM_FILES=5000, after patches 1/5 to 4/5 applied:    4640 ms (-49.2%)
-NUM_FILES=5000, after whole patchset applied:        4441 ms (-51.3%)
-
-NUM_FILES=2000, before patchset:                     2528 ms
-NUM_FILES=2000, after patches 1/5 to 4/5 applied:    1983 ms (-21.6%)
-NUM_FILES=2000, after whole patchset applied:        1747 ms (-30.9%)
-
-NUM_FILES=1000, before patchset:                     1085 ms
-NUM_FILES=1000, after patches 1/5 to 4/5 applied:     893 ms (-17.7%)
-NUM_FILES=1000, after whole patchset applied:         867 ms (-20.1%)
-
-Running dbench on the same physical machine with the following script:
-
-  $ cat run-dbench.sh
-  #!/bin/bash
-
-  NUM_JOBS=$(nproc --all)
-
-  DEV=/dev/nvme0n1
-  MNT=/mnt/nvme0n1
-  MOUNT_OPTIONS="-o ssd"
-  MKFS_OPTIONS="-O no-holes -R free-space-tree"
-
-  echo "performance" | \
-      tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  dbench -D $MNT -t 120 $NUM_JOBS
-
-  umount $MNT
-
-Before patchset:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    3761352     0.032   143.843
- Close        2762770     0.002     2.273
- Rename        159304     0.291    67.037
- Unlink        759784     0.207   143.998
- Deltree           72     4.028    15.977
- Mkdir             36     0.003     0.006
- Qpathinfo    3409780     0.013     9.678
- Qfileinfo     596772     0.001     0.878
- Qfsinfo       625189     0.003     1.245
- Sfileinfo     306443     0.006     1.840
- Find         1318106     0.063    19.798
- WriteX       1871137     0.021     8.532
- ReadX        5897325     0.003     3.567
- LockX          12252     0.003     0.258
- UnlockX        12252     0.002     0.100
- Flush         263666     3.327   155.632
-
-Throughput 980.047 MB/sec  12 clients  12 procs  max_latency=155.636 ms
-
-After whole patchset applied:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    4195584     0.033   107.742
- Close        3081932     0.002     1.935
- Rename        177641     0.218    14.905
- Unlink        847333     0.166   107.822
- Deltree          118     5.315    15.247
- Mkdir             59     0.004     0.048
- Qpathinfo    3802612     0.014    10.302
- Qfileinfo     666748     0.001     1.034
- Qfsinfo       697329     0.003     0.944
- Sfileinfo     341712     0.006     2.099
- Find         1470365     0.065     9.359
- WriteX       2093921     0.021     8.087
- ReadX        6576234     0.003     3.407
- LockX          13660     0.003     0.308
- UnlockX        13660     0.002     0.114
- Flush         294090     2.906   115.539
-
-Throughput 1093.11 MB/sec  12 clients  12 procs  max_latency=115.544 ms
-
-+11.5% throughput    -25.8% max latency   rename max latency -77.8%
-
-Link: https://bugzilla.opensuse.org/show_bug.cgi?id=1193549
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 245 ++++++++++++++++++++++++++++++++------------
- fs/btrfs/tree-log.h |   3 +
- 2 files changed, 183 insertions(+), 65 deletions(-)
+ fs/btrfs/tree-log.c | 52 +++++++++++++++++++--------------------------
+ 1 file changed, 22 insertions(+), 30 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index bf529c6cb3ff..6f9829188948 100644
+index 6f9829188948..8f7163fe3ebe 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -3459,35 +3459,121 @@ int btrfs_free_log_root_tree(struct btrfs_trans_handle *trans,
- }
- 
- /*
-- * Check if an inode was logged in the current transaction. This may often
-- * return some false positives, because logged_trans is an in memory only field,
-- * not persisted anywhere. This is meant to be used in contexts where a false
-- * positive has no functional consequences.
-+ * Check if an inode was logged in the current transaction. This correctly deals
-+ * with the case where the inode was logged but has a logged_trans of 0, which
-+ * happens if the inode is evicted and loaded again, as logged_trans is an in
-+ * memory only field (not persisted).
-+ *
-+ * Returns 1 if the inode was logged before in the transaction, 0 if it was not,
-+ * and < 0 on error.
-  */
--static bool inode_logged(struct btrfs_trans_handle *trans,
--			 struct btrfs_inode *inode)
-+static int inode_logged(struct btrfs_trans_handle *trans,
-+			struct btrfs_inode *inode,
-+			struct btrfs_path *path_in)
- {
-+	struct btrfs_path *path = path_in;
-+	struct btrfs_key key;
-+	int ret;
-+
- 	if (inode->logged_trans == trans->transid)
--		return true;
-+		return 1;
- 
--	if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &inode->root->state))
--		return false;
-+	/*
-+	 * If logged_trans is not 0, then we know the inode logged was not logged
-+	 * in this transaction, so we can return false right away.
-+	 */
-+	if (inode->logged_trans > 0)
-+		return 0;
-+
-+	/*
-+	 * If no log tree was created for this root in this transaction, then
-+	 * the inode can not have been logged in this transaction. In that case
-+	 * set logged_trans to anything greater than 0 and less than the current
-+	 * transaction's ID, to avoid the search below in a future call in case
-+	 * a log tree gets created after this.
-+	 */
-+	if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &inode->root->state)) {
-+		inode->logged_trans = trans->transid - 1;
-+		return 0;
-+	}
-+
-+	/*
-+	 * We have a log tree and the inode's logged_trans is 0. We can't tell
-+	 * for sure if the inode was logged before in this transaction by looking
-+	 * only at logged_trans. We could be pessimistic and assume it was, but
-+	 * that can lead to unnecessarily logging an inode during rename and link
-+	 * operations, and then further updating the log in followup rename and
-+	 * link operations, specially if it's a directory, which adds latency
-+	 * visible to applications doing a series of rename or link operations.
-+	 *
-+	 * A logged_trans of 0 here can mean several things:
-+	 *
-+	 * 1) The inode was never logged since the filesystem was mounted, and may
-+	 *    or may have not been evicted and loaded again;
-+	 *
-+	 * 2) The inode was logged in a previous transaction, then evicted and
-+	 *    then loaded again;
-+	 *
-+	 * 3) The inode was logged in the current transaction, then evicted and
-+	 *    then loaded again.
-+	 *
-+	 * For cases 1) and 2) we don't want to return true, but we need to detect
-+	 * case 3) and return true. So we do a search in the log root for the inode
-+	 * item.
-+	 */
-+	key.objectid = btrfs_ino(inode);
-+	key.type = BTRFS_INODE_ITEM_KEY;
-+	key.offset = 0;
-+
-+	if (!path) {
-+		path = btrfs_alloc_path();
-+		if (!path)
-+			return -ENOMEM;
-+	}
-+
-+	ret = btrfs_search_slot(NULL, inode->root->log_root, &key, path, 0, 0);
-+
-+	if (path_in)
-+		btrfs_release_path(path);
-+	else
-+		btrfs_free_path(path);
- 
- 	/*
--	 * The inode's logged_trans is always 0 when we load it (because it is
--	 * not persisted in the inode item or elsewhere). So if it is 0, the
--	 * inode was last modified in the current transaction then the inode may
--	 * have been logged before in the current transaction, then evicted and
--	 * loaded again in the current transaction - or may have never been logged
--	 * in the current transaction, but since we can not be sure, we have to
--	 * assume it was, otherwise our callers can leave an inconsistent log.
-+	 * Logging an inode always results in logging its inode item. So if we
-+	 * did not find the item we know the inode was not logged for sure.
- 	 */
--	if (inode->logged_trans == 0 &&
--	    inode->last_trans == trans->transid &&
--	    !test_bit(BTRFS_FS_LOG_RECOVERING, &trans->fs_info->flags))
--		return true;
-+	if (ret < 0) {
-+		return ret;
-+	} else if (ret > 0) {
-+		/*
-+		 * Set logged_trans to a value greater than 0 and less then the
-+		 * current transaction to avoid doing the search in future calls.
-+		 */
-+		inode->logged_trans = trans->transid - 1;
-+		return 0;
-+	}
-+
-+	/*
-+	 * The inode was previously logged and then evicted, set logged_trans to
-+	 * the current transacion's ID, to avoid future tree searches as long as
-+	 * the inode is not evicted again.
-+	 */
-+	inode->logged_trans = trans->transid;
-+
-+	/*
-+	 * If it's a directory, then we must set last_dir_index_offset to the
-+	 * maximum possible value, so that the next attempt to log the inode does
-+	 * not skip checking if dir index keys found in modified subvolume tree
-+	 * leaves have been logged before, otherwise it would result in attempts
-+	 * to insert duplicate dir index keys in the log tree. This must be done
-+	 * because last_dir_index_offset is an in-memory only field, not persisted
-+	 * in the inode item or any other on-disk structure, so its value is lost
-+	 * once the inode is evicted.
-+	 */
-+	if (S_ISDIR(inode->vfs_inode.i_mode))
-+		inode->last_dir_index_offset = (u64)-1;
- 
--	return false;
-+	return 1;
- }
- 
- /*
-@@ -3552,8 +3638,13 @@ void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
- 	struct btrfs_path *path;
- 	int ret;
- 
--	if (!inode_logged(trans, dir))
-+	ret = inode_logged(trans, dir, NULL);
-+	if (ret == 0)
-+		return;
-+	else if (ret < 0) {
-+		btrfs_set_log_full_commit(trans);
- 		return;
-+	}
- 
- 	ret = join_running_log_trans(root);
- 	if (ret)
-@@ -3587,8 +3678,13 @@ void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
- 	u64 index;
- 	int ret;
- 
--	if (!inode_logged(trans, inode))
-+	ret = inode_logged(trans, inode, NULL);
-+	if (ret == 0)
- 		return;
-+	else if (ret < 0) {
-+		btrfs_set_log_full_commit(trans);
-+		return;
-+	}
- 
- 	ret = join_running_log_trans(root);
- 	if (ret)
-@@ -3720,7 +3816,6 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 	struct extent_buffer *src = path->nodes[0];
- 	const int nritems = btrfs_header_nritems(src);
- 	const u64 ino = btrfs_ino(inode);
--	const bool inode_logged_before = inode_logged(trans, inode);
- 	bool last_found = false;
- 	int batch_start = 0;
- 	int batch_size = 0;
-@@ -3796,14 +3891,16 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 				ctx->log_new_dentries = true;
- 		}
- 
--		if (!inode_logged_before)
-+		if (!ctx->logged_before)
- 			goto add_to_batch;
- 
- 		/*
- 		 * If we were logged before and have logged dir items, we can skip
- 		 * checking if any item with a key offset larger than the last one
- 		 * we logged is in the log tree, saving time and avoiding adding
--		 * contention on the log tree.
-+		 * contention on the log tree. We can only rely on the value of
-+		 * last_dir_index_offset when we know for sure that the inode was
-+		 * previously logged in the current transaction.
- 		 */
- 		if (key.offset > inode->last_dir_index_offset)
- 			goto add_to_batch;
-@@ -4046,21 +4143,6 @@ static noinline int log_directory_changes(struct btrfs_trans_handle *trans,
- 	u64 max_key;
- 	int ret;
- 
--	/*
--	 * If this is the first time we are being logged in the current
--	 * transaction, or we were logged before but the inode was evicted and
--	 * reloaded later, in which case its logged_trans is 0, reset the value
--	 * of the last logged key offset. Note that we don't use the helper
--	 * function inode_logged() here - that is because the function returns
--	 * true after an inode eviction, assuming the worst case as it can not
--	 * know for sure if the inode was logged before. So we can not skip key
--	 * searches in the case the inode was evicted, because it may not have
--	 * been logged in this transaction and may have been logged in a past
--	 * transaction, so we need to reset the last dir index offset to (u64)-1.
--	 */
--	if (inode->logged_trans != trans->transid)
--		inode->last_dir_index_offset = (u64)-1;
--
- 	min_key = BTRFS_DIR_START_INDEX;
- 	max_key = 0;
- 	ctx->last_dir_item_offset = inode->last_dir_index_offset;
-@@ -4097,9 +4179,6 @@ static int drop_inode_items(struct btrfs_trans_handle *trans,
- 	struct btrfs_key found_key;
- 	int start_slot;
- 
--	if (!inode_logged(trans, inode))
--		return 0;
--
- 	key.objectid = btrfs_ino(inode);
- 	key.type = max_key_type;
- 	key.offset = (u64)-1;
-@@ -4597,7 +4676,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 	 * are small, with a root at level 2 or 3 at most, due to their short
- 	 * life span.
- 	 */
--	if (inode_logged(trans, inode)) {
-+	if (ctx->logged_before) {
- 		drop_args.path = path;
- 		drop_args.start = em->start;
- 		drop_args.end = em->start + em->len;
-@@ -5594,6 +5673,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 	bool xattrs_logged = false;
- 	bool recursive_logging = false;
- 	bool inode_item_dropped = true;
-+	const bool orig_logged_before = ctx->logged_before;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -5643,6 +5723,18 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 		mutex_lock(&inode->log_mutex);
- 	}
- 
-+	/*
-+	 * Before logging the inode item, cache the value returned by
-+	 * inode_logged(), because after that we have the need to figure out if
-+	 * the inode was previously logged in this transaction.
-+	 */
-+	ret = inode_logged(trans, inode, path);
-+	if (ret < 0) {
-+		err = ret;
-+		goto out;
-+	}
-+	ctx->logged_before = (ret == 1);
-+
- 	/*
- 	 * This is for cases where logging a directory could result in losing a
- 	 * a file after replaying the log. For example, if we move a file from a
-@@ -5668,9 +5760,11 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 		clear_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags);
- 		if (inode_only == LOG_INODE_EXISTS)
- 			max_key_type = BTRFS_XATTR_ITEM_KEY;
--		ret = drop_inode_items(trans, log, path, inode, max_key_type);
-+		if (ctx->logged_before)
-+			ret = drop_inode_items(trans, log, path, inode,
-+					       max_key_type);
- 	} else {
--		if (inode_only == LOG_INODE_EXISTS && inode_logged(trans, inode)) {
-+		if (inode_only == LOG_INODE_EXISTS && ctx->logged_before) {
- 			/*
- 			 * Make sure the new inode item we write to the log has
- 			 * the same isize as the current one (if it exists).
-@@ -5692,14 +5786,15 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 			     &inode->runtime_flags)) {
- 			if (inode_only == LOG_INODE_EXISTS) {
- 				max_key.type = BTRFS_XATTR_ITEM_KEY;
--				ret = drop_inode_items(trans, log, path, inode,
--						       max_key.type);
-+				if (ctx->logged_before)
-+					ret = drop_inode_items(trans, log, path,
-+							       inode, max_key.type);
- 			} else {
- 				clear_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
- 					  &inode->runtime_flags);
- 				clear_bit(BTRFS_INODE_COPY_EVERYTHING,
- 					  &inode->runtime_flags);
--				if (inode_logged(trans, inode))
-+				if (ctx->logged_before)
- 					ret = truncate_inode_items(trans, log,
- 								   inode, 0, 0);
- 			}
-@@ -5709,8 +5804,9 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 			if (inode_only == LOG_INODE_ALL)
- 				fast_search = true;
- 			max_key.type = BTRFS_XATTR_ITEM_KEY;
--			ret = drop_inode_items(trans, log, path, inode,
--					       max_key.type);
-+			if (ctx->logged_before)
-+				ret = drop_inode_items(trans, log, path, inode,
-+						       max_key.type);
- 		} else {
- 			if (inode_only == LOG_INODE_ALL)
- 				fast_search = true;
-@@ -5830,6 +5926,10 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- out:
- 	btrfs_free_path(path);
- 	btrfs_free_path(dst_path);
-+
-+	if (recursive_logging)
-+		ctx->logged_before = orig_logged_before;
-+
- 	return err;
- }
- 
-@@ -6774,7 +6874,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_log_ctx ctx;
- 	bool log_pinned = false;
+@@ -5663,8 +5663,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	struct btrfs_key min_key;
+ 	struct btrfs_key max_key;
+ 	struct btrfs_root *log = inode->root->log_root;
+-	int err = 0;
 -	int ret = 0;
 +	int ret;
- 
- 	/*
- 	 * this will force the logging code to walk the dentry chain
-@@ -6787,9 +6887,24 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 	 * if this inode hasn't been logged and directory we're renaming it
- 	 * from hasn't been logged, we don't need to log it
+ 	bool fast_search = false;
+ 	u64 ino = btrfs_ino(inode);
+ 	struct extent_map_tree *em_tree = &inode->extent_tree;
+@@ -5707,8 +5706,8 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	 * and figure out which index ranges have to be logged.
  	 */
--	if (!inode_logged(trans, inode) &&
--	    (!old_dir || !inode_logged(trans, old_dir)))
--		return;
-+	ret = inode_logged(trans, inode, NULL);
-+	if (ret < 0) {
-+		goto out;
-+	} else if (ret == 0) {
-+		if (!old_dir)
-+			return;
-+		/*
-+		 * If the inode was not logged and we are doing a rename (old_dir is not
-+		 * NULL), check if old_dir was logged - if it was not we can return and
-+		 * do nothing.
-+		 */
-+		ret = inode_logged(trans, old_dir, NULL);
-+		if (ret < 0)
-+			goto out;
-+		else if (ret == 0)
-+			return;
-+	}
+ 	if (S_ISDIR(inode->vfs_inode.i_mode)) {
+-		err = btrfs_commit_inode_delayed_items(trans, inode);
+-		if (err)
++		ret = btrfs_commit_inode_delayed_items(trans, inode);
++		if (ret)
+ 			goto out;
+ 	}
+ 
+@@ -5729,11 +5728,10 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	 * the inode was previously logged in this transaction.
+ 	 */
+ 	ret = inode_logged(trans, inode, path);
+-	if (ret < 0) {
+-		err = ret;
++	if (ret < 0)
+ 		goto out;
+-	}
+ 	ctx->logged_before = (ret == 1);
 +	ret = 0;
  
  	/*
- 	 * If we are doing a rename (old_dir is not NULL) from a directory that
-@@ -6849,15 +6964,15 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 	 */
- 	btrfs_log_inode_parent(trans, inode, parent, LOG_INODE_EXISTS, &ctx);
- out:
--	if (log_pinned) {
--		/*
--		 * If an error happened mark the log for a full commit because
--		 * it's not consistent and up to date. Do it before unpinning the
--		 * log, to avoid any races with someone else trying to commit it.
--		 */
--		if (ret < 0)
--			btrfs_set_log_full_commit(trans);
-+	/*
-+	 * If an error happened mark the log for a full commit because it's not
-+	 * consistent and up to date or we couldn't find out if one of the
-+	 * inodes was logged before in this transaction. Do it before unpinning
-+	 * the log, to avoid any races with someone else trying to commit it.
-+	 */
-+	if (ret < 0)
-+		btrfs_set_log_full_commit(trans);
-+	if (log_pinned)
- 		btrfs_end_log_trans(root);
+ 	 * This is for cases where logging a directory could result in losing a
+@@ -5746,7 +5744,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	    inode_only == LOG_INODE_ALL &&
+ 	    inode->last_unlink_trans >= trans->transid) {
+ 		btrfs_set_log_full_commit(trans);
+-		err = 1;
++		ret = 1;
+ 		goto out_unlock;
+ 	}
+ 
+@@ -5778,8 +5776,8 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 			 * (zeroes), as if an expanding truncate happened,
+ 			 * instead of getting a file of 4Kb only.
+ 			 */
+-			err = logged_inode_size(log, inode, path, &logged_isize);
+-			if (err)
++			ret = logged_inode_size(log, inode, path, &logged_isize);
++			if (ret)
+ 				goto out_unlock;
+ 		}
+ 		if (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
+@@ -5815,37 +5813,35 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 		}
+ 
+ 	}
+-	if (ret) {
+-		err = ret;
++	if (ret)
+ 		goto out_unlock;
 -	}
+ 
+-	err = copy_inode_items_to_log(trans, inode, &min_key, &max_key,
++	ret = copy_inode_items_to_log(trans, inode, &min_key, &max_key,
+ 				      path, dst_path, logged_isize,
+ 				      recursive_logging, inode_only, ctx,
+ 				      &need_log_inode_item);
+-	if (err)
++	if (ret)
+ 		goto out_unlock;
+ 
+ 	btrfs_release_path(path);
+ 	btrfs_release_path(dst_path);
+-	err = btrfs_log_all_xattrs(trans, inode, path, dst_path);
+-	if (err)
++	ret = btrfs_log_all_xattrs(trans, inode, path, dst_path);
++	if (ret)
+ 		goto out_unlock;
+ 	xattrs_logged = true;
+ 	if (max_key.type >= BTRFS_EXTENT_DATA_KEY && !fast_search) {
+ 		btrfs_release_path(path);
+ 		btrfs_release_path(dst_path);
+-		err = btrfs_log_holes(trans, inode, path);
+-		if (err)
++		ret = btrfs_log_holes(trans, inode, path);
++		if (ret)
+ 			goto out_unlock;
+ 	}
+ log_extents:
+ 	btrfs_release_path(path);
+ 	btrfs_release_path(dst_path);
+ 	if (need_log_inode_item) {
+-		err = log_inode_item(trans, log, dst_path, inode, inode_item_dropped);
+-		if (err)
++		ret = log_inode_item(trans, log, dst_path, inode, inode_item_dropped);
++		if (ret)
+ 			goto out_unlock;
+ 		/*
+ 		 * If we are doing a fast fsync and the inode was logged before
+@@ -5856,18 +5852,16 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 		 * BTRFS_INODE_COPY_EVERYTHING set.
+ 		 */
+ 		if (!xattrs_logged && inode->logged_trans < trans->transid) {
+-			err = btrfs_log_all_xattrs(trans, inode, path, dst_path);
+-			if (err)
++			ret = btrfs_log_all_xattrs(trans, inode, path, dst_path);
++			if (ret)
+ 				goto out_unlock;
+ 			btrfs_release_path(path);
+ 		}
+ 	}
+ 	if (fast_search) {
+ 		ret = btrfs_log_changed_extents(trans, inode, dst_path, ctx);
+-		if (ret) {
+-			err = ret;
++		if (ret)
+ 			goto out_unlock;
+-		}
+ 	} else if (inode_only == LOG_INODE_ALL) {
+ 		struct extent_map *em, *n;
+ 
+@@ -5879,10 +5873,8 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 
+ 	if (inode_only == LOG_INODE_ALL && S_ISDIR(inode->vfs_inode.i_mode)) {
+ 		ret = log_directory_changes(trans, inode, path, dst_path, ctx);
+-		if (ret) {
+-			err = ret;
++		if (ret)
+ 			goto out_unlock;
+-		}
+ 	}
+ 
+ 	spin_lock(&inode->lock);
+@@ -5930,7 +5922,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	if (recursive_logging)
+ 		ctx->logged_before = orig_logged_before;
+ 
+-	return err;
++	return ret;
  }
  
-diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-index f1acb7fa944c..1620f8170629 100644
---- a/fs/btrfs/tree-log.h
-+++ b/fs/btrfs/tree-log.h
-@@ -17,6 +17,8 @@ struct btrfs_log_ctx {
- 	int log_transid;
- 	bool log_new_dentries;
- 	bool logging_new_name;
-+	/* Indicate if the inode being logged was logged before. */
-+	bool logged_before;
- 	/* Tracks the last logged dir item/index key offset. */
- 	u64 last_dir_item_offset;
- 	struct inode *inode;
-@@ -32,6 +34,7 @@ static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
- 	ctx->log_transid = 0;
- 	ctx->log_new_dentries = false;
- 	ctx->logging_new_name = false;
-+	ctx->logged_before = false;
- 	ctx->inode = inode;
- 	INIT_LIST_HEAD(&ctx->list);
- 	INIT_LIST_HEAD(&ctx->ordered_extents);
+ /*
 -- 
 2.33.0
 
