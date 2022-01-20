@@ -2,264 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB6D494FC7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 15:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A54049501D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 15:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240672AbiATOEY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jan 2022 09:04:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235542AbiATOEX (ORCPT
+        id S1347338AbiATO2P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jan 2022 09:28:15 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:56714 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347071AbiATO2C (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jan 2022 09:04:23 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BE7C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 06:04:23 -0800 (PST)
-Received: from ip4d173d02.dynamic.kabel-deutschland.de ([77.23.61.2] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1nAY32-0002hk-5h; Thu, 20 Jan 2022 15:04:20 +0100
-Message-ID: <bc677ef0-ea1c-5f8f-f225-4d3f4f3d3459@leemhuis.info>
-Date:   Thu, 20 Jan 2022 15:04:19 +0100
+        Thu, 20 Jan 2022 09:28:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3824D61781
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 14:28:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25136C340E0
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 14:27:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642688879;
+        bh=hRcC0tcLINeJo6WGwNHrDJbVrERG+6xjXxYZ91dPodo=;
+        h=From:To:Subject:Date:From;
+        b=FF50tbYHlVeoRa8jVBvh7lRGrtDZ0f6wtr9F4UKMHF79B10PSV8dgWzED8ry4HWIR
+         CoDvqIO0jgdaFk1gDt6BCT3+1ehfR0xQb0+yCy/5TDeBd2RToyo3E5t7kRAuw1ogkP
+         tyKdgfeeQWncc7J4ixZNwL4pHTAHrx02YCkaHiruBZaN+uqyazZOfOsminQMpSWAha
+         bbq6d/goq78usB6orQT/YyDUKVWqNXIceV6eNzjz5m5/UcN/CNmL9bVRBNdj5ojuqQ
+         7/cRQrnOugyx55luO/x4firkACilxpMNRcXQM1tHURdancUruiD3V7XJtj5YtuoEsM
+         cyYiCNprcXKxg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix deadlock when reserving space during defrag
+Date:   Thu, 20 Jan 2022 14:27:56 +0000
+Message-Id: <5cb3ce140c84b0283be685bae8a5d75d5d19af08.1642688018.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1
-Content-Language: en-BS
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20211210183456.GP17148@hungrycats.org>
- <25f4d4fd-1727-1c9f-118a-150d9c263c93@suse.com>
- <YbfTYFQVGCU0Whce@hungrycats.org>
- <fc395aed-2cbd-f6e5-d167-632c14a07188@suse.com>
- <Ybj1jVYu3MrUzVTD@hungrycats.org>
- <c6125582-a1dc-1114-8211-48437dbf4976@suse.com>
- <YbrPkZVC/MazdQdc@hungrycats.org>
- <ab295d78-d250-fe8f-33a5-09cc90d5e406@suse.com>
- <Ybu4tuzqpaiast5H@localhost.localdomain> <Ybz4JI+Kl2J7Py3z@hungrycats.org>
- <YdiG6xYbY0tZ21j9@hungrycats.org>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <YdiG6xYbY0tZ21j9@hungrycats.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1642687463;31b6b311;
-X-HE-SMSGID: 1nAY32-0002hk-5h
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, this is your Linux kernel regression tracker speaking.
+From: Filipe Manana <fdmanana@suse.com>
 
-On 07.01.22 19:31, Zygo Blaxell wrote:
-> On Fri, Dec 17, 2021 at 03:50:44PM -0500, Zygo Blaxell wrote:
->> On Thu, Dec 16, 2021 at 05:07:50PM -0500, Josef Bacik wrote:
->>> On Thu, Dec 16, 2021 at 11:29:06PM +0200, Nikolay Borisov wrote:
->>>> On 16.12.21 г. 7:33, Zygo Blaxell wrote:
->>>>> Again we have "3 locks held" but no list of locks.  WTF is 10883 doing?
->>>>> Well, first of all it's using 100% CPU in the kernel.  Some samples of
->>>>> kernel stacks:
->>>>>
->>>>> 	# cat /proc/*/task/10883/stack
->>>>> 	[<0>] down_read_nested+0x32/0x140
->>>>> 	[<0>] __btrfs_tree_read_lock+0x2d/0x110
->>>>> 	[<0>] btrfs_tree_read_lock+0x10/0x20
->>>>> 	[<0>] btrfs_search_old_slot+0x627/0x8a0
->>>>> 	[<0>] btrfs_next_old_leaf+0xcb/0x340
->>>>> 	[<0>] find_parent_nodes+0xcd7/0x1c40
->>>>> 	[<0>] btrfs_find_all_leafs+0x63/0xb0
->>>>> 	[<0>] iterate_extent_inodes+0xc8/0x270
->>>>> 	[<0>] iterate_inodes_from_logical+0x9f/0xe0
->>>>
->>>> That's the real culprit, in this case we are not searching the commit
->>>> root hence we've attached to the transaction. So we are doing backref
->>>> resolution which either:
->>>>
->>>> a) Hits some pathological case and loops for very long time, backref
->>>> resolution is known to take a lot of time.
->>>>
->>>> b) We hit a bug in backref resolution and loop forever which again
->>>> results in the transaction being kept open.
->>>>
->>>> Now I wonder why you were able to bisect this to the seemingly unrelated
->>>> commit in the vfs code.
->>>>
->>>> Josef any ideas how to proceed further to debug why backref resolution
->>>> takes a long time and if it's just an infinite loop?
->>>>
->>>
->>> It's probably an infinite loop, I'd just start with something like this
->>>
->>> bpftrace -e 'tracepoint:btrfs:btrfs_prelim_ref_insert { printf("bytenr is %llu", args->bytenr); }'
->>>
->>> and see if it's spitting out the same shit over and over again.  If it is can I
->>> get a btrfs inspect-internal dump-tree -e on the device along with the bytenr
->>> it's hung up on so I can figure out wtf it's tripping over?
->>
->> That bpftrace command doesn't output anything after the hang.  Before the
->> hang, it's thousands and thousands of values changing as bees moves around
->> the filesystem.
-> 
-> I left my VM running tests for a few weeks and got some more information.
-> Or at least more data, I'm not feeling particularly informed by it.  :-P
-> 
-> 1.  It's not a regression.  5.10 has the same symptoms, but about 100x
-> less often (once a week under these test conditions, compared to once
-> every 90 minutes or so on 5.11-rc1).
+When defragging we can end up collecting a range for defrag that has
+already pages under delalloc (dirty), as long as the respective extent
+map for their range is not mapped to a hole, a prealloc extent or
+the extent map is from an old generation.
 
-Well, I'd still call it a regression, as it's now happening way more
-often and thus will likely hit more users. It's thus a bit like a
-problem that leads to higher energy consumption: things still work, but
-worse than before -- nevertheless it's considered a regression. Anway:
+Most of the time that is harmless from a functional perspective at
+least, however it can result in a deadlock:
 
-What's the status here? Are you still investigating the issue? Are any
-developers looking out for the root cause?
+1) At defrag_collect_targets() we find an extent map that meets all
+   requirements but there's delalloc for the range it covers, and we add
+   its range to list of ranges to defrag;
 
-Ciao, Thorsten
+2) The defrag_collect_targets() function is called at defrag_one_range(),
+   after it locked a range that overlaps the range of the extent map;
 
-P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
-on my table. I can only look briefly into most of them. Unfortunately
-therefore I sometimes will get things wrong or miss something important.
-I hope that's not the case here; if you think it is, don't hesitate to
-tell me about it in a public reply, that's in everyone's interest.
+3) At defrag_one_range(), while the range is still locked, we call
+   defrag_one_locked_target() for the range associated to the extent
+   map we collected at step 1);
 
-BTW, I have no personal interest in this issue, which is tracked using
-regzbot, my Linux kernel regression tracking bot
-(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
-this mail to get things rolling again and hence don't need to be CC on
-all further activities wrt to this regression.
+4) Then finally at defrag_one_locked_target() we do a call to
+   btrfs_delalloc_reserve_space(), which will reserve data and metadata
+   space. If the space reservations can not be satisfied right away, the
+   flusher might be kicked in and start flushing delalloc and wait for
+   the respective ordered extents to complete. If this happens we will
+   deadlock, because both flushing delalloc and finishing an ordered
+   extent, requires locking the range in the inode's io tree, which was
+   already locked at defrag_collect_targets().
 
-#regzbot poke
+So fix this by skipping extent maps for which there's already delalloc.
 
-> 2.  Bisection doesn't work, because there are patches that are repeatably
-> good and bad mixed together, so the bisect algorithm (even with stochastic
-> enhancement) repeatably picks the wrong commits and converges with
-> high confidence on nonsense.  Instead of bisecting, I picked commits
-> semi-randomly from 5.11-rc1's patch set, and got these results:
-> 
->    124  3a160a933111 btrfs: drop never met disk total bytes check in verify_one_dev_extent
-> 	1x hang, 2x slower
->    125  bacce86ae8a7 btrfs: drop unused argument step from btrfs_free_extra_devids
-> 	1x pass (fast)
->    126  2766ff61762c btrfs: update the number of bytes used by an inode atomically
-> 	1x hang (<20 minutes)
->    127  7f458a3873ae btrfs: fix race when defragmenting leads to unnecessary IO
-> 	1x hang, runs 3x slower
->    128  5893dfb98f25 btrfs: refactor btrfs_drop_extents() to make it easier to extend
-> 	2x hang (<20 minutes)
->    129  e114c545bb69 btrfs: set the lockdep class for extent buffers on creation
-> 	2x pass (but runs 2x slower, both times)
->    130  3fbaf25817f7 btrfs: pass the owner_root and level to alloc_extent_buffer
-> 	1x pass
->    131  5d81230baa90 btrfs: pass the root owner and level around for readahead
-> 	1x pass
->    132  1b7ec85ef490 btrfs: pass root owner to read_tree_block
-> 	1x pass
->    133  182c79fcb857 btrfs: use btrfs_read_node_slot in btrfs_qgroup_trace_subtree
->    134  3acfbd6a990c btrfs: use btrfs_read_node_slot in qgroup_trace_new_subtree_blocks
-> 	1x hang
->    135  6b2cb7cb959a btrfs: use btrfs_read_node_slot in qgroup_trace_extent_swap
->    136  c990ada2a0bb btrfs: use btrfs_read_node_slot in walk_down_tree
-> 	1x hang
->    137  6b3426be27de btrfs: use btrfs_read_node_slot in replace_path
-> 	1x hang, 1x pass
->    138  c975253682e0 btrfs: use btrfs_read_node_slot in do_relocation
-> 	1x hang
->    139  8ef385bbf099 btrfs: use btrfs_read_node_slot in walk_down_reloc_tree
-> 	1x hang, 1x pass
->    140  206983b72a36 btrfs: use btrfs_read_node_slot in btrfs_realloc_node
-> 	1x pass
->    141  bfb484d922a3 btrfs: cleanup extent buffer readahead
-> 	1x pass
->    142  416e3445ef80 btrfs: remove lockdep classes for the fs tree
->    143  3e48d8d2540d btrfs: discard: reschedule work after sysfs param update
->    144  df903e5d294f btrfs: don't miss async discards after scheduled work override
->    145  6e88f116bd4c btrfs: discard: store async discard delay as ns not as jiffies
-> 	2x hang
->    146  e50404a8a699 btrfs: discard: speed up async discard up to iops_limit
-> 
->    [snip]
-> 
->    155  0d01e247a06b btrfs: assert page mapping lock in attach_extent_buffer_page
-> 	1x hang, 1x pass
->    156  bbb86a371791 btrfs: protect fs_info->caching_block_groups by block_group_cache_lock
-> 	1x hang
->    157  e747853cae3a btrfs: load free space cache asynchronously
-> 	1x pass
->    158  4d7240f0abda btrfs: load the free space cache inode extents from commit root
-> 	1x hang
->    159  cd79909bc7cd btrfs: load free space cache into a temporary ctl
-> 	2x pass
->    160  66b53bae46c8 btrfs: cleanup btrfs_discard_update_discardable usage
-> 	2x hang, 1x pass
->    161  2ca08c56e813 btrfs: explicitly protect ->last_byte_to_unpin in unpin_extent_range
-> 	2x pass
->    162  27d56e62e474 btrfs: update last_byte_to_unpin in switch_commit_roots
-> 	2x pass
->    163  9076dbd5ee83 btrfs: do not shorten unpin len for caching block groups
->    164  dc5161648693 btrfs: reorder extent buffer members for better packing
-> 	2x pass
->    165  b9729ce014f6 btrfs: locking: rip out path->leave_spinning
->    166  ac5887c8e013 btrfs: locking: remove all the blocking helpers
->    167  2ae0c2d80d25 btrfs: scrub: remove local copy of csum_size from context
->    168  419b791ce760 btrfs: check integrity: remove local copy of csum_size
-> 	1x hang, 1x pass
->    169  713cebfb9891 btrfs: remove unnecessary local variables for checksum size
->    170  223486c27b36 btrfs: switch cached fs_info::csum_size from u16 to u32
->    171  55fc29bed8dd btrfs: use cached value of fs_info::csum_size everywhere
->    172  fe5ecbe818de btrfs: precalculate checksums per leaf once
->    173  22b6331d9617 btrfs: store precalculated csum_size in fs_info
->    174  265fdfa6ce0a btrfs: replace s_blocksize_bits with fs_info::sectorsize_bits
->    175  098e63082b9b btrfs: replace div_u64 by shift in free_space_bitmap_size
-> 	2x pass
->    176  ab108d992b12 btrfs: use precalculated sectorsize_bits from fs_info
-> 
->    [snip]
-> 
->    200  5e8b9ef30392 btrfs: move pos increment and pagecache extension to btrfs_buffered_write
-> 	1x pass
->    201  4e4cabece9f9 btrfs: split btrfs_direct_IO to read and write
-> 
->    [snip]
-> 
->    215  d70bf7484f72 btrfs: unify the ro checking for mount options
-> 	1x pass
->    216  a6889caf6ec6 btrfs: do not start readahead for csum tree when scrubbing non-data block groups
->    217  a57ad681f12e btrfs: assert we are holding the reada_lock when releasing a readahead zone
->    218  aa8c1a41a1e6 btrfs: set EXTENT_NORESERVE bits side btrfs_dirty_pages()
->    219  13f0dd8f7861 btrfs: use round_down while calculating start position in btrfs_dirty_pages()
->    220  949b32732eab btrfs: use iosize while reading compressed pages
->    221  eefa45f59379 btrfs: calculate num_pages, reserve_bytes once in btrfs_buffered_write
->    222  fb8a7e941b1b btrfs: calculate more accurate remaining time to sleep in transaction_kthread
-> 	1x pass
-> 
-> There is some repeatability in these results--some commits have a much
-> lower failure rate than others--but I don't see a reason why the bad
-> commits are bad or the good commits are good.  There are some commits with
-> locking and concurrency implications, but they're as likely to produce
-> good as bad results in test.  Sometimes there's a consistent change in
-> test result after a commit that only rearranges function arguments on
-> the stack.
-> 
-> Maybe what we're looking at is a subtle race that is popping up due
-> to unrelated changes in the kernel, and disappearing just as often,
-> and 5.11-rc1 in particular did something innocent that aggravates
-> it somehow, so all later kernels hit the problem more often than
-> 5.10 did.
-> 
-> 3.  Somewhere around "7f458a3873ae btrfs: fix race when defragmenting
-> leads to unnecessary IO" bees starts running about 3x slower than on
-> earlier kernels.  bees is a nightmare of nondeterministically racing
-> worker threads, so I'm not sure how important this observation is,
-> but it keeps showing up in the data.
-> 
-> 4.  I had one machine on 5.10.84 (not a test VM) with a shell process
-> that got stuck spinning 100% CPU in the kernel on sys_write.  bees was
-> also running, but its threads were all stuck waiting for the shell to
-> release the transaction.  Other crashes on 5.10.8x kernels look more
-> like the one in this thread, with a logical_ino spinning.
-> 
->>> If it's not looping there, it may be looping higher up, but I don't see where it
->>> would be doing that.  Lets start here and work our way up if we need to.
->>> Thanks,
+Fixes: eb793cf857828d ("btrfs: defrag: introduce helper to collect target file extents")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ioctl.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 550d8f2dfa37..0082e9a60bfc 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1211,6 +1211,35 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 		if (em->generation < newer_than)
+ 			goto next;
+ 
++		/*
++		 * Our start offset might be in the middle of an existing extent
++		 * map, so take that into account.
++		 */
++		range_len = em->len - (cur - em->start);
++		/*
++		 * If this range of the extent map is already flagged for delalloc,
++		 * skipt it, because:
++		 *
++		 * 1) We could deadlock later, when trying to reserve space for
++		 *    delalloc, because in case we can't immediately reserve space
++		 *    the flusher can start delalloc and wait for the respective
++		 *    ordered extents to complete. The deadlock would happen
++		 *    because we do the space reservation while holding the range
++		 *    locked, and starting writeback, or finishing an ordered
++		 *    extent, requires locking the range;
++		 *
++		 * 2) If there's delalloc there, it means there's dirty pages for
++		 *    which writeback has not started yet (we clean the delalloc
++		 *    flag when starting writeback and after creating an ordered
++		 *    extent). If we mark pages in an adjacent range for defrag,
++		 *    then we will have a larger contiguous range for delalloc,
++		 *    very likely resulting in a larger extent after writeback is
++		 *    triggered (except in a case of free space fragmentation).
++		 */
++		if (test_range_bit(&inode->io_tree, cur, cur + range_len - 1,
++				   EXTENT_DELALLOC, 0, NULL))
++			goto next;
++
+ 		/*
+ 		 * For do_compress case, we want to compress all valid file
+ 		 * extents, thus no @extent_thresh or mergeable check.
+@@ -1219,7 +1248,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 			goto add;
+ 
+ 		/* Skip too large extent */
+-		if (em->len >= extent_thresh)
++		if (range_len >= extent_thresh)
+ 			goto next;
+ 
+ 		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
+-- 
+2.33.0
 
