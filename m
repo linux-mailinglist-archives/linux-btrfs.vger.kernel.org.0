@@ -2,89 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41644952E7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 18:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DE54952EE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 18:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377245AbiATRJy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jan 2022 12:09:54 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:38748 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377237AbiATRJd (ORCPT
+        id S1347589AbiATRL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jan 2022 12:11:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346412AbiATRL7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jan 2022 12:09:33 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EA8661F3C0;
-        Thu, 20 Jan 2022 17:09:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1642698571;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RpVwFnp+XptEzmtoe8g+erYbPXD0NtKn5AnKRTZedMo=;
-        b=JZaVu+HrkZuH09p4f8Wn8uti4hW+3s7EtGtZ8RTmFQ2AWaDS704acuH4nzh6mKmK4P5nbA
-        VFMvIoQX7rFE+e8VXqzIFHafxA8Iajk7prp3VL/Frx/pgBQB7Xg5bcxChlgnOA0dtqeVc4
-        vaCW/P6VnkMaMCnQ7STF4iyY9cNKQxQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1642698571;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RpVwFnp+XptEzmtoe8g+erYbPXD0NtKn5AnKRTZedMo=;
-        b=WS4ly6MIhJIJ4vjMq83xR3fdpggjgSAXQv2zGreYy6LZnXSkpgryXizQ9KI4KldJnabXkH
-        ZG7F8aqH9eFoaMCg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E1652A3B8F;
-        Thu, 20 Jan 2022 17:09:31 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CD1F3DA7A3; Thu, 20 Jan 2022 18:08:53 +0100 (CET)
-Date:   Thu, 20 Jan 2022 18:08:53 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, nborisov@suse.com
-Subject: Re: [PATCH v2] btrfs: cleanup finding rotating device
-Message-ID: <20220120170853.GW14046@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, nborisov@suse.com
-References: <1b19262076d9ae10d3ff81f73209249375ae25bc.1642048893.git.anand.jain@oracle.com>
- <d56216c5f955862d31be7c9884222fa9b7a4ddbd.1642060052.git.anand.jain@oracle.com>
- <20220118154330.GN14046@twin.jikos.cz>
- <56f7ab3d-e0da-0bff-2d85-847c89aea3b8@oracle.com>
+        Thu, 20 Jan 2022 12:11:59 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F540C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 09:11:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 16820B81D9A
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 17:11:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A779C340E0
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 17:11:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642698716;
+        bh=pOxC22RrtDkOZcx3wkioN8HAEaO7cXKoNRqohFMSQKI=;
+        h=From:To:Subject:Date:From;
+        b=aKAxmevBM1xpXWegjh1ycfFA8/Hebrf1zkOYXnGCI6mzstP1xZBsvqRYMfrcWa9ft
+         c41ofC9TvSPXen7lTeZcxB0O2DwBp28ThfprdOKaV1YAu3h0n9cyOLpKoMCmuIHYQm
+         9/2vLpXkDw5VE6yWSXId65GX7S+BTSfKm1lNG5Trjtlu5fsXoqalD1r4gV/lv3MEQt
+         61ofUlUAYIlhY4WXqUT3N5I8nytxetYjWCW0SpeeTuj94plT44iErmbIp3aNbNad4n
+         UjLKZ9/BjKYi6Y0waR/0mwH/I3zhDmXyxH2kdRJLg4THz4SNOzpuPb010n65BCpK7o
+         SpinXNGXDAosg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add back missing dirty page rate limiting to defrag
+Date:   Thu, 20 Jan 2022 17:11:52 +0000
+Message-Id: <3fe2f747e0a9319064d59d051dc3f993fc41b172.1642698605.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56f7ab3d-e0da-0bff-2d85-847c89aea3b8@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 03:43:42PM +0800, Anand Jain wrote:
-> On 18/01/2022 23:43, David Sterba wrote:
-> > On Thu, Jan 13, 2022 at 03:48:54PM +0800, Anand Jain wrote:
-> >> -	q = bdev_get_queue(bdev);
-> >> -	if (!blk_queue_nonrot(q))
-> >> -		fs_devices->rotating = true;
-> >> +	fs_devices->rotating = !blk_queue_nonrot(bdev_get_queue(bdev));
-> > 
-> > This is an equivalent change, in the new code fs_devices->rotating will
-> > be always set according to the last device, while in the old code, any
-> > rotational device will set it to true and never back.
-> 
-> Oh. The previous status gets overwritten based on the current device
-> non-rot check. This is not good. My bad. However, V1 is ok could you
-> pls consider that?
+From: Filipe Manana <fdmanana@suse.com>
 
-Yes, v1 applied to misc-next, thanks.
+A defrag operation can dirty a lot of pages, specially if operating on
+the entire file or a large file range. Any task dirtying pages should
+periodically call balance_dirty_pages_ratelimited(), as stated in that
+function's comments, otherwise they can leave too many dirty pages in
+the system. This is what we did before the refactoring in 5.16, and
+it should have remained, just like in the buffered write path and
+relocation. So restore that behaviour.
 
-> Also, there is a bug in the original code - If we have at least one
-> rotating device (HDD) we won't enable SSD benefit. However, if that
-> HDD is deleted later on, we won't still enable the SSD status. This
-> bug can be fixed easily on top of the patch
-> 
->   '[PATCH 1/2] btrfs: keep device type in the struct btrfs_device'
-> 
->   I will wait for some comments before fixing this.
+Fixes: 7b508037d4cac3 ("btrfs: defrag: use defrag_one_cluster() to implement btrfs_defrag_file()")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ioctl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Right, I think that mixed HDD/SSD devices were not considered and
-keeping the status should be fixed.
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 0082e9a60bfc..bfe5ed65e92b 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1577,6 +1577,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 	}
+ 
+ 	while (cur < last_byte) {
++		const unsigned long prev_sectors_defragged = sectors_defragged;
+ 		u64 cluster_end;
+ 
+ 		/* The cluster size 256K should always be page aligned */
+@@ -1608,6 +1609,10 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 				cluster_end + 1 - cur, extent_thresh,
+ 				newer_than, do_compress,
+ 				&sectors_defragged, max_to_defrag);
++
++		if (sectors_defragged > prev_sectors_defragged)
++			balance_dirty_pages_ratelimited(inode->i_mapping);
++
+ 		btrfs_inode_unlock(inode, 0);
+ 		if (ret < 0)
+ 			break;
+-- 
+2.33.0
+
