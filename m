@@ -2,38 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F204494C60
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 12:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFF0494C62
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 12:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbiATLAX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jan 2022 06:00:23 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:46816 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbiATLAU (ORCPT
+        id S230108AbiATLA0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jan 2022 06:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230057AbiATLAV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jan 2022 06:00:20 -0500
+        Thu, 20 Jan 2022 06:00:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38876C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 03:00:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BBB35B81D37
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1707AC340E0
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:16 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CD6A6B81D39
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FFD8C340E5
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:00:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642676417;
-        bh=nR7USJ5VvOAS7fVqBNJWmPKvTaOWRJetLX1l5viCblM=;
+        s=k20201202; t=1642676418;
+        bh=JPP/o3oewcK0XsVLhEhLAxivRCqv/hX0fZFZCkFerNM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=F//j4wx/dU57QVbqmAs9bDKaKylF0STz0Aw1QQibWEzcGaVii+pmPDpJ7UTc76fph
-         daL/sRn1C16Bm1CoJJaXa4uYKTZDJtu2V9idLAO0520pgiHEDgkr6D3i3tmtHCllfc
-         1iFrKKMVeQKnVXbmtR2xdvcA9/FLoT42Ck9l+2KJ2hDPhVo2GjaSXwdP+CjX1/0VQB
-         5CEGMv8l8XPQDEkamvx+LyduxQ4AbxGdA5m578faLS2qgJvdb8JiTUk5iHvax+tSiX
-         LdtKUUCbZx1RrGKHI1xYRclwnDglSrBRpP/GH9EradZJGt8rpCLdkHRm+ZWwX36XH2
-         D/u4IDznwN4uA==
+        b=QhlgHUUdskhmaOQwL7rLiLKeUbtwywhJrlnpFiz1+UZ/xhc9HmU5l6xHglVNuII35
+         KTI2BBh0+mhI0WEJzJs+vfLV0qjrv19tNkgCUQk5vBumpMEaezMpEym5b7YMQu95RW
+         jt2huzAINYo+uR0PvC668YYzAmwFCgtQ3d9K7IoAEsV2UBJJlwvOHrST54yN2T44Ui
+         jLoz5c26zLW6RGfRQblhy3g+lITZ5yfF8s45c0yNYCkWaAMCZRRMtMr5Hm4AGulFQi
+         bmIWg+lGX3UWjghkdVaNmk4i1tXogLNxinJA40JjcopP8KKhUsi9DGXeyZ8N5nIuxm
+         PamHIK0WRZQQg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/6] btrfs: avoid logging all directory changes during renames
-Date:   Thu, 20 Jan 2022 11:00:08 +0000
-Message-Id: <285785ef66283fb6b00fe69112dc1240a2aa1e19.1642676248.git.fdmanana@suse.com>
+Subject: [PATCH 4/6] btrfs: stop doing unnecessary log updates during a rename
+Date:   Thu, 20 Jan 2022 11:00:09 +0000
+Message-Id: <9da2666e21f4a55834c422c8d00f4592e9eed741.1642676248.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1642676248.git.fdmanana@suse.com>
 References: <cover.1642676248.git.fdmanana@suse.com>
@@ -45,46 +48,52 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When doing a rename of a file, if the file or its old parent directory
-were logged before, we log the new name of the file and then make sure
-we log the old parent directory, to ensure that after a log replay the
-old name of the file is deleted and the new name added.
+During a rename, we call __btrfs_unlink_inode(), which will call
+btrfs_del_inode_ref_in_log() and btrfs_del_dir_entries_in_log(), in order
+to remove an inode reference and a directory entry from the log. These
+are necessary when __btrfs_unlink_inode() is called from the unlink path,
+but not necessary when it's called from a rename context, because:
 
-The logging of the old parent directory can take some time, because it
-will scan all leaves modified in the current transaction, check which
-directries entries were already logged, copy the ones that were not
-logged before, etc. In this rename context all we need to do is make
-sure that the old name of the file is deleted on log replay, so instead
-of triggering a directory log operation, we can just delete the old
-directory entry from the log if it's there, or in case it isn't there,
-just log a range item to signal log replay that the old name must be
-deleted. So change btrfs_log_new_name() to do that.
+1) For the btrfs_del_inode_ref_in_log() call, it's pointless to delete the
+   inode reference related to the old name, because later in the rename
+   path we call btrfs_log_new_name(), which will drop all inode references
+   from the log and copy all inode references from the subvolume tree to
+   the log tree. So we are doing one unnecessary btree operation which
+   adds additional latency and lock contention in case there are other
+   tasks accessing the log tree;
 
-This scenario is actually not uncommon to trigger, and recently on a
-5.15 kernel, an openSUSE Tumbleweed user reported package installations
-and upgrades, with the zypper tool, were often taking a long time to
-complete, much more than usual. With strace it could be observed that
-zypper was spending over 99% of its time on rename operations, and then
-with further analysis we checked that directory logging was happening
-too frequently and causing high latencies for the rename operations.
-Taking into account that installation/upgrade of some of these packages
-needed about a few thousand file renames, the slowdown was very noticeable
-for the user.
+2) For the btrfs_del_dir_entries_in_log() call, we are now doing the
+   equivalent at btrfs_log_new_name() since the previous patch in the
+   series, that has the subject "btrfs: avoid logging all directory
+   changes during renames". In fact, having __btrfs_unlink_inode() call
+   this function not only adds additional latency and lock contention due
+   to the extra btree operation, but also can make btrfs_log_new_name()
+   unnecessarily log a range item to track the deletion of the old name,
+   since it has no way to known that the directory entry related to the
+   old name was previously logged and already deleted by
+   __btrfs_unlink_inode() through its call to
+   btrfs_del_dir_entries_in_log().
 
-The issue was caused indirectly due to an excessive number of inode
-evictions on a 5.15 kernel, about 100x more compared to a 5.13, 5.14
-or a 5.16-rc8 kernel. After an inode eviction we can't tell for sure,
-in an efficient way, if an inode was previously logged in the current
-transaction, so we are pessimistic and assume it was, because in case
-it was we need to update the logged inode. More details on that in one
-of the patches in the same series (subject "btrfs: avoid inode logging
-during rename and link when possible"). Either way, in case the parent
-directory was logged before, we currently do more work then necessary
-during a rename, and this change minimizes that amount of work.
+So skip those calls at __btrfs_unlink_inode() when we are doing a rename.
+Skipping them also allows us now to reduce the duration of time we are
+pinning a log transaction during renames, which is always beneficial as
+it's not delaying so much other tasks trying to sync the log tree, in
+particular we end up not holding the log transaction pinned while adding
+the new name (adding inode ref, directory entry, etc).
 
-The following script mimics part of what a package installation/upgrade
-with zypper does, which is basically renaming a lot of files, in some
-directory under /usr, to a name with a suffix of "-RPMDELETE":
+This change is part of a patchset comprised of the following patches:
+
+  1/5 btrfs: add helper to delete a dir entry from a log tree
+  2/5 btrfs: pass the dentry to btrfs_log_new_name() instead of the inode
+  3/5 btrfs: avoid logging all directory changes during renames
+  4/5 btrfs: stop doing unnecessary log updates during a rename
+  5/5 btrfs: avoid inode logging during rename and link when possible
+
+Just like the previous patch in the series, "btrfs: avoid logging all
+directory changes during renames", the following script mimics part of
+what a package installation/upgrade with zypper does, which is basically
+renaming a lot of files, in some directory under /usr, to a name with a
+suffix of "-RPMDELETE":
 
   $ cat test.sh
   #!/bin/bash
@@ -121,248 +130,314 @@ directory under /usr, to a name with a suffix of "-RPMDELETE":
 
   umount $MNT
 
-Testing this change on box using a non-debug kernel (Debian's default
+Testing this change on box a using a non-debug kernel (Debian's default
 kernel config) gave the following results:
 
-NUM_FILES=10000, before this patch: 27399 ms
-NUM_FILES=10000, after this patch:   9093 ms (-66.8%)
+NUM_FILES=10000, before patchset:                   27399 ms
+NUM_FILES=10000, after patches 1/5 to 3/5 applied:   9093 ms (-66.8%)
+NUM_FILES=10000, after patches 1/5 to 4/5 applied:   9016 ms (-67.1%)
 
-NUM_FILES=5000, before this patch:   9241 ms
-NUM_FILES=5000, after this patch:    4642 ms (-49.8%)
+NUM_FILES=5000, before patchset:                     9241 ms
+NUM_FILES=5000, after patches 1/5 to 3/5 applied:    4642 ms (-49.8%)
+NUM_FILES=5000, after patches 1/5 to 4/5 applied:    4553 ms (-50.7%)
 
-NUM_FILES=2000, before this patch:   2550 ms
-NUM_FILES=2000, after this patch:    1788 ms (-29.9%)
+NUM_FILES=2000, before patchset:                     2550 ms
+NUM_FILES=2000, after patches 1/5 to 3/5 applied:    1788 ms (-29.9%)
+NUM_FILES=2000, after patches 1/5 to 4/5 applied:    1767 ms (-30.7%)
 
-NUM_FILES=1000, before this patch:   1088 ms
-NUM_FILES=1000, after this patch:     905 ms (-16.9%)
+NUM_FILES=1000, before patchset:                     1088 ms
+NUM_FILES=1000, after patches 1/5 to 3/5 applied:     905 ms (-16.9%)
+NUM_FILES=1000, after patches 1/5 to 4/5 applied:     883 ms (-18.8%)
+
+The next patch in the series (5/5), also contains dbench results after
+applying to whole patchset.
 
 Link: https://bugzilla.opensuse.org/show_bug.cgi?id=1193549
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c    | 33 +++++++++++++++++++--------
- fs/btrfs/tree-log.c | 55 +++++++++++++++++++++++++++++++++------------
- fs/btrfs/tree-log.h |  2 +-
- 3 files changed, 66 insertions(+), 24 deletions(-)
+ fs/btrfs/inode.c    | 140 ++++++++++----------------------------------
+ fs/btrfs/tree-log.c |  34 ++++++++---
+ 2 files changed, 59 insertions(+), 115 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 023041579a79..7d30b7b9a521 100644
+index 7d30b7b9a521..4f51ab6e7cc0 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -66,6 +66,11 @@ struct btrfs_dio_data {
- 	struct extent_changeset *data_reserved;
- };
- 
-+struct btrfs_rename_ctx {
-+	/* Output field. Stores the index number of the old directory entry. */
-+	u64 index;
-+};
-+
- static const struct inode_operations btrfs_dir_inode_operations;
- static const struct inode_operations btrfs_symlink_inode_operations;
- static const struct inode_operations btrfs_special_inode_operations;
-@@ -4062,7 +4067,8 @@ int btrfs_update_inode_fallback(struct btrfs_trans_handle *trans,
- static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
- 				struct btrfs_inode *dir,
- 				struct btrfs_inode *inode,
--				const char *name, int name_len)
-+				const char *name, int name_len,
-+				struct btrfs_rename_ctx *rename_ctx)
- {
- 	struct btrfs_root *root = dir->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-@@ -4118,6 +4124,9 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+@@ -4133,9 +4133,18 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
  		goto err;
  	}
- skip_backref:
-+	if (rename_ctx)
-+		rename_ctx->index = index;
-+
- 	ret = btrfs_delete_delayed_dir_index(trans, dir, index);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
-@@ -4158,7 +4167,7 @@ int btrfs_unlink_inode(struct btrfs_trans_handle *trans,
- 		       const char *name, int name_len)
- {
- 	int ret;
--	ret = __btrfs_unlink_inode(trans, dir, inode, name, name_len);
-+	ret = __btrfs_unlink_inode(trans, dir, inode, name, name_len, NULL);
- 	if (!ret) {
- 		drop_nlink(&inode->vfs_inode);
- 		ret = btrfs_update_inode(trans, inode->root, inode);
-@@ -6531,7 +6540,7 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 				goto fail;
- 		}
- 		d_instantiate(dentry, inode);
--		btrfs_log_new_name(trans, old_dentry, NULL, parent);
-+		btrfs_log_new_name(trans, old_dentry, NULL, 0, parent);
- 	}
  
- fail:
-@@ -8996,6 +9005,8 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 	struct inode *new_inode = new_dentry->d_inode;
- 	struct inode *old_inode = old_dentry->d_inode;
- 	struct timespec64 ctime = current_time(old_inode);
-+	struct btrfs_rename_ctx old_rename_ctx;
-+	struct btrfs_rename_ctx new_rename_ctx;
- 	u64 old_ino = btrfs_ino(BTRFS_I(old_inode));
- 	u64 new_ino = btrfs_ino(BTRFS_I(new_inode));
- 	u64 old_idx = 0;
-@@ -9136,7 +9147,8 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		ret = __btrfs_unlink_inode(trans, BTRFS_I(old_dir),
- 					   BTRFS_I(old_dentry->d_inode),
- 					   old_dentry->d_name.name,
--					   old_dentry->d_name.len);
-+					   old_dentry->d_name.len,
-+					   &old_rename_ctx);
- 		if (!ret)
- 			ret = btrfs_update_inode(trans, root, BTRFS_I(old_inode));
- 	}
-@@ -9152,7 +9164,8 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		ret = __btrfs_unlink_inode(trans, BTRFS_I(new_dir),
- 					   BTRFS_I(new_dentry->d_inode),
- 					   new_dentry->d_name.name,
--					   new_dentry->d_name.len);
-+					   new_dentry->d_name.len,
-+					   &new_rename_ctx);
- 		if (!ret)
- 			ret = btrfs_update_inode(trans, dest, BTRFS_I(new_inode));
- 	}
-@@ -9184,13 +9197,13 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+-	btrfs_del_inode_ref_in_log(trans, root, name, name_len, inode,
+-				   dir_ino);
+-	btrfs_del_dir_entries_in_log(trans, root, name, name_len, dir, index);
++	/*
++	 * If we are in a rename context, we don't need to update anything in the
++	 * log. That will be done later during the rename by btrfs_log_new_name().
++	 * Besides that, doing it here would only cause extra unncessary btree
++	 * operations on the log tree, increasing latency for applications.
++	 */
++	if (!rename_ctx) {
++		btrfs_del_inode_ref_in_log(trans, root, name, name_len, inode,
++					   dir_ino);
++		btrfs_del_dir_entries_in_log(trans, root, name, name_len, dir,
++					     index);
++	}
  
- 	if (root_log_pinned) {
- 		btrfs_log_new_name(trans, old_dentry, BTRFS_I(old_dir),
--				   new_dentry->d_parent);
-+				   old_rename_ctx.index, new_dentry->d_parent);
- 		btrfs_end_log_trans(root);
- 		root_log_pinned = false;
- 	}
- 	if (dest_log_pinned) {
- 		btrfs_log_new_name(trans, new_dentry, BTRFS_I(new_dir),
--				   old_dentry->d_parent);
-+				   new_rename_ctx.index, old_dentry->d_parent);
- 		btrfs_end_log_trans(dest);
- 		dest_log_pinned = false;
- 	}
-@@ -9296,6 +9309,7 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
- 	struct btrfs_root *dest = BTRFS_I(new_dir)->root;
- 	struct inode *new_inode = d_inode(new_dentry);
- 	struct inode *old_inode = d_inode(old_dentry);
-+	struct btrfs_rename_ctx rename_ctx;
- 	u64 index = 0;
+ 	/*
+ 	 * If we have a pending delayed iput we could end up with the final iput
+@@ -9013,8 +9022,6 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 	u64 new_idx = 0;
  	int ret;
  	int ret2;
-@@ -9427,7 +9441,8 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
+-	bool root_log_pinned = false;
+-	bool dest_log_pinned = false;
+ 	bool need_abort = false;
+ 
+ 	/*
+@@ -9117,29 +9124,6 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 				BTRFS_I(new_inode), 1);
+ 	}
+ 
+-	/*
+-	 * Now pin the logs of the roots. We do it to ensure that no other task
+-	 * can sync the logs while we are in progress with the rename, because
+-	 * that could result in an inconsistency in case any of the inodes that
+-	 * are part of this rename operation were logged before.
+-	 *
+-	 * We pin the logs even if at this precise moment none of the inodes was
+-	 * logged before. This is because right after we checked for that, some
+-	 * other task fsyncing some other inode not involved with this rename
+-	 * operation could log that one of our inodes exists.
+-	 *
+-	 * We don't need to pin the logs before the above calls to
+-	 * btrfs_insert_inode_ref(), since those don't ever need to change a log.
+-	 */
+-	if (old_ino != BTRFS_FIRST_FREE_OBJECTID) {
+-		btrfs_pin_log_trans(root);
+-		root_log_pinned = true;
+-	}
+-	if (new_ino != BTRFS_FIRST_FREE_OBJECTID) {
+-		btrfs_pin_log_trans(dest);
+-		dest_log_pinned = true;
+-	}
+-
+ 	/* src is a subvolume */
+ 	if (old_ino == BTRFS_FIRST_FREE_OBJECTID) {
+ 		ret = btrfs_unlink_subvol(trans, old_dir, old_dentry);
+@@ -9195,46 +9179,31 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 	if (new_inode->i_nlink == 1)
+ 		BTRFS_I(new_inode)->dir_index = new_idx;
+ 
+-	if (root_log_pinned) {
++	/*
++	 * Now pin the logs of the roots. We do it to ensure that no other task
++	 * can sync the logs while we are in progress with the rename, because
++	 * that could result in an inconsistency in case any of the inodes that
++	 * are part of this rename operation were logged before.
++	 */
++	if (old_ino != BTRFS_FIRST_FREE_OBJECTID)
++		btrfs_pin_log_trans(root);
++	if (new_ino != BTRFS_FIRST_FREE_OBJECTID)
++		btrfs_pin_log_trans(dest);
++
++	/* Do the log updates for all inodes. */
++	if (old_ino != BTRFS_FIRST_FREE_OBJECTID)
+ 		btrfs_log_new_name(trans, old_dentry, BTRFS_I(old_dir),
+ 				   old_rename_ctx.index, new_dentry->d_parent);
+-		btrfs_end_log_trans(root);
+-		root_log_pinned = false;
+-	}
+-	if (dest_log_pinned) {
++	if (new_ino != BTRFS_FIRST_FREE_OBJECTID)
+ 		btrfs_log_new_name(trans, new_dentry, BTRFS_I(new_dir),
+ 				   new_rename_ctx.index, old_dentry->d_parent);
++
++	/* Now unpin the logs. */
++	if (old_ino != BTRFS_FIRST_FREE_OBJECTID)
++		btrfs_end_log_trans(root);
++	if (new_ino != BTRFS_FIRST_FREE_OBJECTID)
+ 		btrfs_end_log_trans(dest);
+-		dest_log_pinned = false;
+-	}
+ out_fail:
+-	/*
+-	 * If we have pinned a log and an error happened, we unpin tasks
+-	 * trying to sync the log and force them to fallback to a transaction
+-	 * commit if the log currently contains any of the inodes involved in
+-	 * this rename operation (to ensure we do not persist a log with an
+-	 * inconsistent state for any of these inodes or leading to any
+-	 * inconsistencies when replayed). If the transaction was aborted, the
+-	 * abortion reason is propagated to userspace when attempting to commit
+-	 * the transaction. If the log does not contain any of these inodes, we
+-	 * allow the tasks to sync it.
+-	 */
+-	if (ret && (root_log_pinned || dest_log_pinned)) {
+-		if (btrfs_inode_in_log(BTRFS_I(old_dir), fs_info->generation) ||
+-		    btrfs_inode_in_log(BTRFS_I(new_dir), fs_info->generation) ||
+-		    btrfs_inode_in_log(BTRFS_I(old_inode), fs_info->generation) ||
+-		    btrfs_inode_in_log(BTRFS_I(new_inode), fs_info->generation))
+-			btrfs_set_log_full_commit(trans);
+-
+-		if (root_log_pinned) {
+-			btrfs_end_log_trans(root);
+-			root_log_pinned = false;
+-		}
+-		if (dest_log_pinned) {
+-			btrfs_end_log_trans(dest);
+-			dest_log_pinned = false;
+-		}
+-	}
+ 	ret2 = btrfs_end_transaction(trans);
+ 	ret = ret ? ret : ret2;
+ out_notrans:
+@@ -9314,7 +9283,6 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
+ 	int ret;
+ 	int ret2;
+ 	u64 old_ino = btrfs_ino(BTRFS_I(old_inode));
+-	bool log_pinned = false;
+ 
+ 	if (btrfs_ino(BTRFS_I(new_dir)) == BTRFS_EMPTY_SUBVOL_DIR_OBJECTID)
+ 		return -EPERM;
+@@ -9419,25 +9387,6 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
+ 	if (unlikely(old_ino == BTRFS_FIRST_FREE_OBJECTID)) {
+ 		ret = btrfs_unlink_subvol(trans, old_dir, old_dentry);
+ 	} else {
+-		/*
+-		 * Now pin the log. We do it to ensure that no other task can
+-		 * sync the log while we are in progress with the rename, as
+-		 * that could result in an inconsistency in case any of the
+-		 * inodes that are part of this rename operation were logged
+-		 * before.
+-		 *
+-		 * We pin the log even if at this precise moment none of the
+-		 * inodes was logged before. This is because right after we
+-		 * checked for that, some other task fsyncing some other inode
+-		 * not involved with this rename operation could log that one of
+-		 * our inodes exists.
+-		 *
+-		 * We don't need to pin the logs before the above call to
+-		 * btrfs_insert_inode_ref(), since that does not need to change
+-		 * a log.
+-		 */
+-		btrfs_pin_log_trans(root);
+-		log_pinned = true;
  		ret = __btrfs_unlink_inode(trans, BTRFS_I(old_dir),
  					BTRFS_I(d_inode(old_dentry)),
  					old_dentry->d_name.name,
--					old_dentry->d_name.len);
-+					old_dentry->d_name.len,
-+					&rename_ctx);
- 		if (!ret)
- 			ret = btrfs_update_inode(trans, root, BTRFS_I(old_inode));
- 	}
-@@ -9471,7 +9486,7 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
+@@ -9484,12 +9433,9 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
+ 	if (old_inode->i_nlink == 1)
+ 		BTRFS_I(old_inode)->dir_index = index;
  
- 	if (log_pinned) {
+-	if (log_pinned) {
++	if (old_ino != BTRFS_FIRST_FREE_OBJECTID)
  		btrfs_log_new_name(trans, old_dentry, BTRFS_I(old_dir),
--				   new_dentry->d_parent);
-+				   rename_ctx.index, new_dentry->d_parent);
- 		btrfs_end_log_trans(root);
- 		log_pinned = false;
+ 				   rename_ctx.index, new_dentry->d_parent);
+-		btrfs_end_log_trans(root);
+-		log_pinned = false;
+-	}
+ 
+ 	if (flags & RENAME_WHITEOUT) {
+ 		ret = btrfs_whiteout_for_rename(trans, root, mnt_userns,
+@@ -9501,28 +9447,6 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
+ 		}
  	}
+ out_fail:
+-	/*
+-	 * If we have pinned the log and an error happened, we unpin tasks
+-	 * trying to sync the log and force them to fallback to a transaction
+-	 * commit if the log currently contains any of the inodes involved in
+-	 * this rename operation (to ensure we do not persist a log with an
+-	 * inconsistent state for any of these inodes or leading to any
+-	 * inconsistencies when replayed). If the transaction was aborted, the
+-	 * abortion reason is propagated to userspace when attempting to commit
+-	 * the transaction. If the log does not contain any of these inodes, we
+-	 * allow the tasks to sync it.
+-	 */
+-	if (ret && log_pinned) {
+-		if (btrfs_inode_in_log(BTRFS_I(old_dir), fs_info->generation) ||
+-		    btrfs_inode_in_log(BTRFS_I(new_dir), fs_info->generation) ||
+-		    btrfs_inode_in_log(BTRFS_I(old_inode), fs_info->generation) ||
+-		    (new_inode &&
+-		     btrfs_inode_in_log(BTRFS_I(new_inode), fs_info->generation)))
+-			btrfs_set_log_full_commit(trans);
+-
+-		btrfs_end_log_trans(root);
+-		log_pinned = false;
+-	}
+ 	ret2 = btrfs_end_transaction(trans);
+ 	ret = ret ? ret : ret2;
+ out_notrans:
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index e253fa22ddba..9784a906f369 100644
+index 9784a906f369..bf529c6cb3ff 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -6757,6 +6757,9 @@ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
-  *                      parent directory.
-  * @old_dir:            The inode of the previous parent directory for the case
-  *                      of a rename. For a link operation, it must be NULL.
-+ * @old_dir_index:      The index number associated with the old name, meaningful
-+ *                      only for rename operations (when @old_dir is not NULL).
-+ *                      Ignored for link operations.
-  * @parent:             The dentry associated to the directory under which the
-  *                      new name is located.
-  *
-@@ -6765,7 +6768,7 @@ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
-  */
- void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 			struct dentry *old_dentry, struct btrfs_inode *old_dir,
--			struct dentry *parent)
-+			u64 old_dir_index, struct dentry *parent)
+@@ -6771,7 +6771,10 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 			u64 old_dir_index, struct dentry *parent)
  {
  	struct btrfs_inode *inode = BTRFS_I(d_inode(old_dentry));
++	struct btrfs_root *root = inode->root;
  	struct btrfs_log_ctx ctx;
-@@ -6787,20 +6790,44 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
++	bool log_pinned = false;
++	int ret = 0;
  
  	/*
- 	 * If we are doing a rename (old_dir is not NULL) from a directory that
--	 * was previously logged, make sure the next log attempt on the directory
--	 * is not skipped and logs the inode again. This is because the log may
--	 * not currently be authoritative for a range including the old
--	 * BTRFS_DIR_INDEX_KEY key, so we want to make sure after a log replay we
--	 * do not end up with both the new and old dentries around (in case the
--	 * inode is a directory we would have a directory with two hard links and
--	 * 2 inode references for different parents). The next log attempt of
--	 * old_dir will happen at btrfs_log_all_parents(), called through
--	 * btrfs_log_inode_parent() below, because we have previously set
--	 * inode->last_unlink_trans to the current transaction ID, either here or
--	 * at btrfs_record_unlink_dir() in case the inode is a directory.
-+	 * was previously logged, make sure that on log replay we get the old
-+	 * dir entry deleted. This is needed because we will also log the new
-+	 * name of the renamed inode, so we need to make sure that after log
-+	 * replay we don't end up with both the new and old dir entries existing.
- 	 */
--	if (old_dir)
--		old_dir->logged_trans = 0;
-+	if (old_dir && old_dir->logged_trans == trans->transid) {
-+		struct btrfs_root *log = old_dir->root->log_root;
-+		struct btrfs_path *path;
-+		int ret;
+ 	 * this will force the logging code to walk the dentry chain
+@@ -6798,14 +6801,22 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 	if (old_dir && old_dir->logged_trans == trans->transid) {
+ 		struct btrfs_root *log = old_dir->root->log_root;
+ 		struct btrfs_path *path;
+-		int ret;
+ 
+ 		ASSERT(old_dir_index >= BTRFS_DIR_START_INDEX);
+ 
++		/*
++		 * We have two inodes to update in the log, the old directory and
++		 * the inode that got renamed, so we must pin the log to prevent
++		 * anyone from syncing the log until we have updated both inodes
++		 * in the log.
++		 */
++		log_pinned = true;
++		btrfs_pin_log_trans(root);
 +
-+		ASSERT(old_dir_index >= BTRFS_DIR_START_INDEX);
-+
-+		path = btrfs_alloc_path();
-+		if (!path) {
-+			btrfs_set_log_full_commit(trans);
-+			return;
-+		}
-+
-+		ret = del_logged_dentry(trans, log, path, btrfs_ino(old_dir),
-+					old_dentry->d_name.name,
-+					old_dentry->d_name.len, old_dir_index);
-+		if (ret > 0) {
-+			/*
-+			 * The dentry does not exist in the log, so record its
-+			 * deletion.
-+			 */
-+			btrfs_release_path(path);
-+			ret = insert_dir_log_key(trans, log, path,
-+						 btrfs_ino(old_dir),
-+						 old_dir_index, old_dir_index);
-+		}
-+
-+		btrfs_free_path(path);
-+		if (ret < 0) {
-+			btrfs_set_log_full_commit(trans);
-+			return;
-+		}
-+	}
+ 		path = btrfs_alloc_path();
+ 		if (!path) {
+-			btrfs_set_log_full_commit(trans);
+-			return;
++			ret = -ENOMEM;
++			goto out;
+ 		}
+ 
+ 		ret = del_logged_dentry(trans, log, path, btrfs_ino(old_dir),
+@@ -6823,10 +6834,8 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 		}
+ 
+ 		btrfs_free_path(path);
+-		if (ret < 0) {
+-			btrfs_set_log_full_commit(trans);
+-			return;
+-		}
++		if (ret < 0)
++			goto out;
+ 	}
  
  	btrfs_init_log_ctx(&ctx, &inode->vfs_inode);
- 	ctx.logging_new_name = true;
-diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-index e69411f308ed..f1acb7fa944c 100644
---- a/fs/btrfs/tree-log.h
-+++ b/fs/btrfs/tree-log.h
-@@ -87,6 +87,6 @@ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
- 				   struct btrfs_inode *dir);
- void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 			struct dentry *old_dentry, struct btrfs_inode *old_dir,
--			struct dentry *parent);
-+			u64 old_dir_index, struct dentry *parent);
+@@ -6839,5 +6848,16 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 	 * inconsistent state after a rename operation.
+ 	 */
+ 	btrfs_log_inode_parent(trans, inode, parent, LOG_INODE_EXISTS, &ctx);
++out:
++	if (log_pinned) {
++		/*
++		 * If an error happened mark the log for a full commit because
++		 * it's not consistent and up to date. Do it before unpinning the
++		 * log, to avoid any races with someone else trying to commit it.
++		 */
++		if (ret < 0)
++			btrfs_set_log_full_commit(trans);
++		btrfs_end_log_trans(root);
++	}
+ }
  
- #endif
 -- 
 2.33.0
 
