@@ -2,363 +2,261 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78699494D3D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 12:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF82494D50
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jan 2022 12:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbiATLlj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jan 2022 06:41:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        id S231965AbiATLpS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jan 2022 06:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbiATLlh (ORCPT
+        with ESMTP id S231245AbiATLpS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jan 2022 06:41:37 -0500
+        Thu, 20 Jan 2022 06:45:18 -0500
 Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF75FC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 03:41:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4286C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 03:45:17 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 1355BCE205C
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:41:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E26F4C340E0;
-        Thu, 20 Jan 2022 11:41:32 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 2A2BDCE2058
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:45:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F965C340E0
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 11:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642678893;
-        bh=dC1mqnbN5goR7YuQNh1tUA6foPk4aWXynJVo8+LwhNY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NSn3W5CyOCozyNURCf7IyryhOK2RzcnbcMQW5qWgB5GTCbU9O+5/HBdhDwSBZ6Bqj
-         hFEZyf6+MnhbhXcUl9/LKFqz5SpZCdGmWSu8DDq60C/HI3SNJ1LBde2DMVEU43p3Ty
-         +WBwn+mXSYqiAVlUZa1hJPcrjoDOMpmzl4UOW+LIZYyAzwQg9YsKa+P3YCQaOW/oW8
-         0cL7uAQINJCyYVMSVWrBLuHq1w1U3a/lfJDkvzIj7x0wT33LtHqWpPLQks6aP3Z7lx
-         YDvftPnHtoKJvQQFnF5ZjQPemYBpQsyYVFHmtx/if9NEYVNB5Ob5iFpa0sA70Ddlu+
-         amYuNB4kzhQUw==
-Date:   Thu, 20 Jan 2022 11:41:30 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: Re: [PATCH v3] btrfs: fix deadlock between quota disable and qgroup
- rescan worker
-Message-ID: <YelKakjBE5vyIGp4@debian9.Home>
-References: <20220120110916.72810-1-shinichiro.kawasaki@wdc.com>
+        s=k20201202; t=1642679114;
+        bh=WYGzmHUMSLTR3GUQ14DUrRQvpfctuMxH2L9bpuiuiw0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YOIF450htGGPdOWVSrcqiw4JOmM31X75xEFNrTZEhwdByWPETzggI7fP4M1fOHo86
+         PD/BaMgBLba/yBd+TB3rkLGl5IaG1bZRESqp7xhN2daIrWMihpiVQHoaPBAtYGtYpS
+         44GREvbcKmp+YZhsxI+j+7w6S+EfTbD9Uf6+dYoS1UbzsignWwPK7coc9JEcPlUkYo
+         iNXVA8/fZYecQuyDxw2wTh2STDwmJlWlYKie9/S5m0V0kDwRUwbCeAPLj7PNayF7gv
+         d79WJK5fe501j33XliEBL7tpmntlnKPPKP7gQsJ+7NqanT4oFQDY8t7Wi5HSf8ERvn
+         bgIx5XApy2ksw==
+Received: by mail-qv1-f43.google.com with SMTP id a7so6179713qvl.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jan 2022 03:45:14 -0800 (PST)
+X-Gm-Message-State: AOAM533IU3bELVexirvM3T6LMAGyPOxMo/J6+D7aaDxUQ45APjEKnhqv
+        fezXjHMnJiE47kE5/sduTD7A7fdmVOPhfBFj4yw=
+X-Google-Smtp-Source: ABdhPJzos7m58f9CrmV1cIlL2Qb0FByhcm49VHZz7xQ1ESjWDMSUrHFNYPxuGK2Umc9qG4FoQ4uTh4Sqk77ARNdWHwM=
+X-Received: by 2002:a05:6214:252e:: with SMTP id gg14mr5493482qvb.89.1642679113357;
+ Thu, 20 Jan 2022 03:45:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220120110916.72810-1-shinichiro.kawasaki@wdc.com>
+References: <CAEwRaO4y3PPPUdwYjNDoB9m9CLzfd3DFFk2iK1X6OyyEWG5-mg@mail.gmail.com>
+ <YeVawBBE3r6hVhgs@debian9.Home> <YeWgdQ2ZvceLTIej@debian9.Home>
+ <CAEwRaO5JcuHkuKs_hx9SJQ6jDr79TSorEPVEkt7BPRLfK2Rp-g@mail.gmail.com>
+ <CAEwRaO7LpG+KBYRgB4MGx9td5PO6JvFWpKbyKsHDB=7LKMmAJg@mail.gmail.com>
+ <CAL3q7H7UvBzw998MW1wxxBo+EPCePVikNdG-rT1Zs0Guo71beQ@mail.gmail.com> <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
+In-Reply-To: <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 20 Jan 2022 11:44:37 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
+Message-ID: <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
+Subject: Re: Massive I/O usage from btrfs-cleaner after upgrading to 5.16
+To:     =?UTF-8?Q?Fran=C3=A7ois=2DXavier_Thomas?= <fx.thomas@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, Qu Wenruo <wqu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 08:09:16PM +0900, Shin'ichiro Kawasaki wrote:
-> Quota disable ioctl starts a transaction before waiting for the qgroup
-> rescan worker completes. However, this wait can be infinite and results
-> in deadlock because of circular dependency among the quota disable
-> ioctl, the qgroup rescan worker and the other task with transaction such
-> as block group relocation task.
-> 
-> The deadlock happens with the steps following:
-> 
-> 1) Task A calls ioctl to disable quota. It starts a transaction and
->    waits for qgroup rescan worker completes.
-> 2) Task B such as block group relocation task starts a transaction and
->    joins to the transaction that task A started. Then task B commits to
->    the transaction. In this commit, task B waits for a commit by task A.
-> 3) Task C as the qgroup rescan worker starts its job and starts a
->    transaction. In this transaction start, task C waits for completion
->    of the transaction that task A started and task B committed.
-> 
-> This deadlock was found with fstests test case btrfs/115 and a zoned
-> null_blk device. The test case enables and disables quota, and the
-> block group reclaim was triggered during the quota disable by chance.
-> The deadlock was also observed by running quota enable and disable in
-> parallel with 'btrfs balance' command on regular null_blk devices.
-> 
-> An example report of the deadlock:
-> 
-> [  372.469894] INFO: task kworker/u16:6:103 blocked for more than 122 seconds.
-> [  372.479944]       Not tainted 5.16.0-rc8 #7
-> [  372.485067] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  372.493898] task:kworker/u16:6   state:D stack:    0 pid:  103 ppid:     2 flags:0x00004000
-> [  372.503285] Workqueue: btrfs-qgroup-rescan btrfs_work_helper [btrfs]
-> [  372.510782] Call Trace:
-> [  372.514092]  <TASK>
-> [  372.521684]  __schedule+0xb56/0x4850
-> [  372.530104]  ? io_schedule_timeout+0x190/0x190
-> [  372.538842]  ? lockdep_hardirqs_on+0x7e/0x100
-> [  372.547092]  ? _raw_spin_unlock_irqrestore+0x3e/0x60
-> [  372.555591]  schedule+0xe0/0x270
-> [  372.561894]  btrfs_commit_transaction+0x18bb/0x2610 [btrfs]
-> [  372.570506]  ? btrfs_apply_pending_changes+0x50/0x50 [btrfs]
-> [  372.578875]  ? free_unref_page+0x3f2/0x650
-> [  372.585484]  ? finish_wait+0x270/0x270
-> [  372.591594]  ? release_extent_buffer+0x224/0x420 [btrfs]
-> [  372.599264]  btrfs_qgroup_rescan_worker+0xc13/0x10c0 [btrfs]
-> [  372.607157]  ? lock_release+0x3a9/0x6d0
-> [  372.613054]  ? btrfs_qgroup_account_extent+0xda0/0xda0 [btrfs]
-> [  372.620960]  ? do_raw_spin_lock+0x11e/0x250
-> [  372.627137]  ? rwlock_bug.part.0+0x90/0x90
-> [  372.633215]  ? lock_is_held_type+0xe4/0x140
-> [  372.639404]  btrfs_work_helper+0x1ae/0xa90 [btrfs]
-> [  372.646268]  process_one_work+0x7e9/0x1320
-> [  372.652321]  ? lock_release+0x6d0/0x6d0
-> [  372.658081]  ? pwq_dec_nr_in_flight+0x230/0x230
-> [  372.664513]  ? rwlock_bug.part.0+0x90/0x90
-> [  372.670529]  worker_thread+0x59e/0xf90
-> [  372.676172]  ? process_one_work+0x1320/0x1320
-> [  372.682440]  kthread+0x3b9/0x490
-> [  372.687550]  ? _raw_spin_unlock_irq+0x24/0x50
-> [  372.693811]  ? set_kthread_struct+0x100/0x100
-> [  372.700052]  ret_from_fork+0x22/0x30
-> [  372.705517]  </TASK>
-> [  372.709747] INFO: task btrfs-transacti:2347 blocked for more than 123 seconds.
-> [  372.729827]       Not tainted 5.16.0-rc8 #7
-> [  372.745907] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  372.767106] task:btrfs-transacti state:D stack:    0 pid: 2347 ppid:     2 flags:0x00004000
-> [  372.787776] Call Trace:
-> [  372.801652]  <TASK>
-> [  372.812961]  __schedule+0xb56/0x4850
-> [  372.830011]  ? io_schedule_timeout+0x190/0x190
-> [  372.852547]  ? lockdep_hardirqs_on+0x7e/0x100
-> [  372.871761]  ? _raw_spin_unlock_irqrestore+0x3e/0x60
-> [  372.886792]  schedule+0xe0/0x270
-> [  372.901685]  wait_current_trans+0x22c/0x310 [btrfs]
-> [  372.919743]  ? btrfs_put_transaction+0x3d0/0x3d0 [btrfs]
-> [  372.938923]  ? finish_wait+0x270/0x270
-> [  372.959085]  ? join_transaction+0xc75/0xe30 [btrfs]
-> [  372.977706]  start_transaction+0x938/0x10a0 [btrfs]
-> [  372.997168]  transaction_kthread+0x19d/0x3c0 [btrfs]
-> [  373.013021]  ? btrfs_cleanup_transaction.isra.0+0xfc0/0xfc0 [btrfs]
-> [  373.031678]  kthread+0x3b9/0x490
-> [  373.047420]  ? _raw_spin_unlock_irq+0x24/0x50
-> [  373.064645]  ? set_kthread_struct+0x100/0x100
-> [  373.078571]  ret_from_fork+0x22/0x30
-> [  373.091197]  </TASK>
-> [  373.105611] INFO: task btrfs:3145 blocked for more than 123 seconds.
-> [  373.114147]       Not tainted 5.16.0-rc8 #7
-> [  373.120401] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  373.130393] task:btrfs           state:D stack:    0 pid: 3145 ppid:  3141 flags:0x00004000
-> [  373.140998] Call Trace:
-> [  373.145501]  <TASK>
-> [  373.149654]  __schedule+0xb56/0x4850
-> [  373.155306]  ? io_schedule_timeout+0x190/0x190
-> [  373.161965]  ? lockdep_hardirqs_on+0x7e/0x100
-> [  373.168469]  ? _raw_spin_unlock_irqrestore+0x3e/0x60
-> [  373.175468]  schedule+0xe0/0x270
-> [  373.180814]  wait_for_commit+0x104/0x150 [btrfs]
-> [  373.187643]  ? test_and_set_bit+0x20/0x20 [btrfs]
-> [  373.194772]  ? kmem_cache_free+0x124/0x550
-> [  373.201191]  ? btrfs_put_transaction+0x69/0x3d0 [btrfs]
-> [  373.208738]  ? finish_wait+0x270/0x270
-> [  373.214704]  ? __btrfs_end_transaction+0x347/0x7b0 [btrfs]
-> [  373.222342]  btrfs_commit_transaction+0x44d/0x2610 [btrfs]
-> [  373.230233]  ? join_transaction+0x255/0xe30 [btrfs]
-> [  373.237334]  ? btrfs_record_root_in_trans+0x4d/0x170 [btrfs]
-> [  373.245251]  ? btrfs_apply_pending_changes+0x50/0x50 [btrfs]
-> [  373.253296]  relocate_block_group+0x105/0xc20 [btrfs]
-> [  373.260533]  ? mutex_lock_io_nested+0x1270/0x1270
-> [  373.267516]  ? btrfs_wait_nocow_writers+0x85/0x180 [btrfs]
-> [  373.275155]  ? merge_reloc_roots+0x710/0x710 [btrfs]
-> [  373.283602]  ? btrfs_wait_ordered_extents+0xd30/0xd30 [btrfs]
-> [  373.291934]  ? kmem_cache_free+0x124/0x550
-> [  373.298180]  btrfs_relocate_block_group+0x35c/0x930 [btrfs]
-> [  373.306047]  btrfs_relocate_chunk+0x85/0x210 [btrfs]
-> [  373.313229]  btrfs_balance+0x12f4/0x2d20 [btrfs]
-> [  373.320227]  ? lock_release+0x3a9/0x6d0
-> [  373.326206]  ? btrfs_relocate_chunk+0x210/0x210 [btrfs]
-> [  373.333591]  ? lock_is_held_type+0xe4/0x140
-> [  373.340031]  ? rcu_read_lock_sched_held+0x3f/0x70
-> [  373.346910]  btrfs_ioctl_balance+0x548/0x700 [btrfs]
-> [  373.354207]  btrfs_ioctl+0x7f2/0x71b0 [btrfs]
-> [  373.360774]  ? lockdep_hardirqs_on_prepare+0x410/0x410
-> [  373.367957]  ? lockdep_hardirqs_on_prepare+0x410/0x410
-> [  373.375327]  ? btrfs_ioctl_get_supported_features+0x20/0x20 [btrfs]
-> [  373.383841]  ? find_held_lock+0x2c/0x110
-> [  373.389993]  ? lock_release+0x3a9/0x6d0
-> [  373.395828]  ? mntput_no_expire+0xf7/0xad0
-> [  373.402083]  ? lock_is_held_type+0xe4/0x140
-> [  373.408249]  ? vfs_fileattr_set+0x9f0/0x9f0
-> [  373.414486]  ? selinux_file_ioctl+0x349/0x4e0
-> [  373.420938]  ? trace_raw_output_lock+0xb4/0xe0
-> [  373.427442]  ? selinux_inode_getsecctx+0x80/0x80
-> [  373.434224]  ? lockdep_hardirqs_on+0x7e/0x100
-> [  373.440660]  ? force_qs_rnp+0x2a0/0x6b0
-> [  373.446534]  ? lock_is_held_type+0x9b/0x140
-> [  373.452763]  ? __blkcg_punt_bio_submit+0x1b0/0x1b0
-> [  373.459732]  ? security_file_ioctl+0x50/0x90
-> [  373.466089]  __x64_sys_ioctl+0x127/0x190
-> [  373.472022]  do_syscall_64+0x3b/0x90
-> [  373.477513]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  373.484823] RIP: 0033:0x7f8f4af7e2bb
-> [  373.490493] RSP: 002b:00007ffcbf936178 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> [  373.500197] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f8f4af7e2bb
-> [  373.509451] RDX: 00007ffcbf936220 RSI: 00000000c4009420 RDI: 0000000000000003
-> [  373.518659] RBP: 00007ffcbf93774a R08: 0000000000000013 R09: 00007f8f4b02d4e0
-> [  373.527872] R10: 00007f8f4ae87740 R11: 0000000000000246 R12: 0000000000000001
-> [  373.537222] R13: 00007ffcbf936220 R14: 0000000000000000 R15: 0000000000000002
-> [  373.546506]  </TASK>
-> [  373.550878] INFO: task btrfs:3146 blocked for more than 123 seconds.
-> [  373.559383]       Not tainted 5.16.0-rc8 #7
-> [  373.565748] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  373.575748] task:btrfs           state:D stack:    0 pid: 3146 ppid:  2168 flags:0x00000000
-> [  373.586314] Call Trace:
-> [  373.590846]  <TASK>
-> [  373.595121]  __schedule+0xb56/0x4850
-> [  373.600901]  ? __lock_acquire+0x23db/0x5030
-> [  373.607176]  ? io_schedule_timeout+0x190/0x190
-> [  373.613954]  schedule+0xe0/0x270
-> [  373.619157]  schedule_timeout+0x168/0x220
-> [  373.625170]  ? usleep_range_state+0x150/0x150
-> [  373.631653]  ? mark_held_locks+0x9e/0xe0
-> [  373.637767]  ? do_raw_spin_lock+0x11e/0x250
-> [  373.643993]  ? lockdep_hardirqs_on_prepare+0x17b/0x410
-> [  373.651267]  ? _raw_spin_unlock_irq+0x24/0x50
-> [  373.657677]  ? lockdep_hardirqs_on+0x7e/0x100
-> [  373.664103]  wait_for_completion+0x163/0x250
-> [  373.670437]  ? bit_wait_timeout+0x160/0x160
-> [  373.676585]  btrfs_quota_disable+0x176/0x9a0 [btrfs]
-> [  373.683979]  ? btrfs_quota_enable+0x12f0/0x12f0 [btrfs]
-> [  373.691340]  ? down_write+0xd0/0x130
-> [  373.696880]  ? down_write_killable+0x150/0x150
-> [  373.703352]  btrfs_ioctl+0x3945/0x71b0 [btrfs]
-> [  373.710061]  ? find_held_lock+0x2c/0x110
-> [  373.716192]  ? lock_release+0x3a9/0x6d0
-> [  373.722047]  ? __handle_mm_fault+0x23cd/0x3050
-> [  373.728486]  ? btrfs_ioctl_get_supported_features+0x20/0x20 [btrfs]
-> [  373.737032]  ? set_pte+0x6a/0x90
-> [  373.742271]  ? do_raw_spin_unlock+0x55/0x1f0
-> [  373.748506]  ? lock_is_held_type+0xe4/0x140
-> [  373.754792]  ? vfs_fileattr_set+0x9f0/0x9f0
-> [  373.761083]  ? selinux_file_ioctl+0x349/0x4e0
-> [  373.767521]  ? selinux_inode_getsecctx+0x80/0x80
-> [  373.774247]  ? __up_read+0x182/0x6e0
-> [  373.780026]  ? count_memcg_events.constprop.0+0x46/0x60
-> [  373.787281]  ? up_write+0x460/0x460
-> [  373.792932]  ? security_file_ioctl+0x50/0x90
-> [  373.799232]  __x64_sys_ioctl+0x127/0x190
-> [  373.805237]  do_syscall_64+0x3b/0x90
-> [  373.810947]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  373.818102] RIP: 0033:0x7f1383ea02bb
-> [  373.823847] RSP: 002b:00007fffeb4d71f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000010
-> [  373.833641] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1383ea02bb
-> [  373.842961] RDX: 00007fffeb4d7210 RSI: 00000000c0109428 RDI: 0000000000000003
-> [  373.852179] RBP: 0000000000000003 R08: 0000000000000003 R09: 0000000000000078
-> [  373.861408] R10: 00007f1383daec78 R11: 0000000000000202 R12: 00007fffeb4d874a
-> [  373.870647] R13: 0000000000493099 R14: 0000000000000001 R15: 0000000000000000
-> [  373.879838]  </TASK>
-> [  373.884018]
->                Showing all locks held in the system:
-> [  373.894250] 3 locks held by kworker/4:1/58:
-> [  373.900356] 1 lock held by khungtaskd/63:
-> [  373.906333]  #0: ffffffff8945ff60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260
-> [  373.917307] 3 locks held by kworker/u16:6/103:
-> [  373.923938]  #0: ffff888127b4f138 ((wq_completion)btrfs-qgroup-rescan){+.+.}-{0:0}, at: process_one_work+0x712/0x1320
-> [  373.936555]  #1: ffff88810b817dd8 ((work_completion)(&work->normal_work)){+.+.}-{0:0}, at: process_one_work+0x73f/0x1320
-> [  373.951109]  #2: ffff888102dd4650 (sb_internal#2){.+.+}-{0:0}, at: btrfs_qgroup_rescan_worker+0x1f6/0x10c0 [btrfs]
-> [  373.964027] 2 locks held by less/1803:
-> [  373.969982]  #0: ffff88813ed56098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80
-> [  373.981295]  #1: ffffc90000b3b2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x9e2/0x1060
-> [  373.992969] 1 lock held by btrfs-transacti/2347:
-> [  373.999893]  #0: ffff88813d4887a8 (&fs_info->transaction_kthread_mutex){+.+.}-{3:3}, at: transaction_kthread+0xe3/0x3c0 [btrfs]
-> [  374.015872] 3 locks held by btrfs/3145:
-> [  374.022298]  #0: ffff888102dd4460 (sb_writers#18){.+.+}-{0:0}, at: btrfs_ioctl_balance+0xc3/0x700 [btrfs]
-> [  374.034456]  #1: ffff88813d48a0a0 (&fs_info->reclaim_bgs_lock){+.+.}-{3:3}, at: btrfs_balance+0xfe5/0x2d20 [btrfs]
-> [  374.047646]  #2: ffff88813d488838 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at: btrfs_relocate_block_group+0x354/0x930 [btrfs]
-> [  374.063295] 4 locks held by btrfs/3146:
-> [  374.069647]  #0: ffff888102dd4460 (sb_writers#18){.+.+}-{0:0}, at: btrfs_ioctl+0x38b1/0x71b0 [btrfs]
-> [  374.081601]  #1: ffff88813d488bb8 (&fs_info->subvol_sem){+.+.}-{3:3}, at: btrfs_ioctl+0x38fd/0x71b0 [btrfs]
-> [  374.094283]  #2: ffff888102dd4650 (sb_internal#2){.+.+}-{0:0}, at: btrfs_quota_disable+0xc8/0x9a0 [btrfs]
-> [  374.106885]  #3: ffff88813d489800 (&fs_info->qgroup_ioctl_lock){+.+.}-{3:3}, at: btrfs_quota_disable+0xd5/0x9a0 [btrfs]
-> 
-> [  374.126780] =============================================
-> 
-> To avoid the deadlock, wait for the qgroup rescan worker to complete
-> before starting the transaction for the quota disable ioctl. Clear
-> BTRFS_FS_QUOTA_ENABLE flag before the wait and the transaction to
-> request the worker to complete. On transaction start failure, set the
-> BTRFS_FS_QUOTA_ENABLE flag again. These BTRFS_FS_QUOTA_ENABLE flag
-> changes can be done safely since the function btrfs_quota_disable is not
-> called concurrently because of fs_info->subvol_sem.
-> 
-> Also check the BTRFS_FS_QUOTA_ENABLE flag in qgroup_rescan_init to avoid
-> another qgroup rescan worker to start after the previous qgroup worker
-> completed.
-> 
-> Suggested-by: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+On Thu, Jan 20, 2022 at 11:37 AM Fran=C3=A7ois-Xavier Thomas
+<fx.thomas@gmail.com> wrote:
+>
+> Hi Felipe,
+>
+> > So, try with these two more patches on top of that:
+>
+> Thanks, I did just that, see graph with annotations:
+> https://i.imgur.com/pu66nz0.png
+>
+> No visible improvement, average baseline I/O (for roughly similar
+> workloads, the server I'm testing it on is not very busy I/O-wise) is
+> still 3-4x higher in 5.16 than in 5.15 with autodefrag enabled.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+What if on top of those patches, you also add this one:
 
-Looks good now, thanks.
+https://pastebin.com/raw/EbEfk1tF
 
-> ---
-> Changes from v2:
-> * Added lockdep assert for fs_info->subvol_sem
-> * Removed bit test of BTRFS_FS_QUOTA_ENABLED
-> * Reflected other comments on the list
-> 
-> Changes from v1:
-> * Used BTRFS_FS_QUOTA_ENABLE flag instead of the new flag
-> 
->  fs/btrfs/qgroup.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 8928275823a1..3ff0f8735b10 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -1185,9 +1185,24 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
->  	struct btrfs_trans_handle *trans = NULL;
->  	int ret = 0;
->  
-> +	/*
-> +	 * We need to have subvol_sem write locked, to prevent races between
-> +	 * concurrent tasks trying to disable quotas, because we will unlock
-> +	 * and relock qgroup_ioctl_lock across BTRFS_FS_QUOTA_ENABLED changes.
-> +	 */
-> +	lockdep_assert_held_write(&fs_info->subvol_sem);
-> +
->  	mutex_lock(&fs_info->qgroup_ioctl_lock);
->  	if (!fs_info->quota_root)
->  		goto out;
-> +
-> +	/*
-> +	 * Request qgroup rescan worker to complete and wait for it. This wait
-> +	 * must be done before transaction start for quota disable since it may
-> +	 * deadlock with transaction by the qgroup rescan worker.
-> +	 */
-> +	clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
-> +	btrfs_qgroup_wait_for_completion(fs_info, false);
->  	mutex_unlock(&fs_info->qgroup_ioctl_lock);
->  
->  	/*
-> @@ -1205,14 +1220,13 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
->  	if (IS_ERR(trans)) {
->  		ret = PTR_ERR(trans);
->  		trans = NULL;
-> +		set_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
->  		goto out;
->  	}
->  
->  	if (!fs_info->quota_root)
->  		goto out;
->  
-> -	clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
-> -	btrfs_qgroup_wait_for_completion(fs_info, false);
->  	spin_lock(&fs_info->qgroup_lock);
->  	quota_root = fs_info->quota_root;
->  	fs_info->quota_root = NULL;
-> @@ -3383,6 +3397,9 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
->  			btrfs_warn(fs_info,
->  			"qgroup rescan init failed, qgroup is not enabled");
->  			ret = -EINVAL;
-> +		} else if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
-> +			/* quota disable is in progress */
-> +			ret = -EBUSY;
->  		}
->  
->  		if (ret) {
-> -- 
-> 2.33.1
-> 
+Can you see if it helps?
+
+>
+> The good news is that patch 2 did fix a large part of the issues 5.16.0 h=
+ad.
+> I also checked that disabling autodefrag immediately brings I/O rate
+> back to how it was in 5.15.
+
+At least that!
+Thanks.
+
+>
+> >> Some people reported that 5.16.1 improved the situation for them, so
+> > I don't see how that's possible, nothing was added to 5.16.1 that
+> > involves defrag.
+> > Might just be a coincidence.
+>
+> Yes, I found no evidence that official 5.16.1 is any better than the
+> rest on my side.
+>
+> Fran=C3=A7ois-Xavier
+>
+> On Wed, Jan 19, 2022 at 11:14 AM Filipe Manana <fdmanana@kernel.org> wrot=
+e:
+> >
+> > On Wed, Jan 19, 2022 at 9:44 AM Fran=C3=A7ois-Xavier Thomas
+> > <fx.thomas@gmail.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > More details on graph[0]:
+> > > - First patch (1-byte file) on 5.16.0 did not have a significant impa=
+ct.
+> > > - Both patches on 5.16.0 did reduce a large part of the I/O but still
+> > > have a high baseline I/O compared to 5.15
+> >
+> > So, try with these two more patches on top of that:
+> >
+> > https://patchwork.kernel.org/project/linux-btrfs/patch/20220118071904.2=
+9991-1-wqu@suse.com/
+> >
+> > https://patchwork.kernel.org/project/linux-btrfs/patch/20220118115352.5=
+2126-1-wqu@suse.com/
+> >
+> > >
+> > > Some people reported that 5.16.1 improved the situation for them, so
+> >
+> > I don't see how that's possible, nothing was added to 5.16.1 that
+> > involves defrag.
+> > Might just be a coincidence.
+> >
+> > Thanks.
+> >
+> > > I'm testing that. It's too early to tell but for now the baseline I/O
+> > > still seems to be high compared to 5.15. Will update with more result=
+s
+> > > tomorrow.
+> > >
+> > > Fran=C3=A7ois-Xavier
+> > >
+> > > [0] https://i.imgur.com/agzAKGc.png
+> > >
+> > > On Mon, Jan 17, 2022 at 10:37 PM Fran=C3=A7ois-Xavier Thomas
+> > > <fx.thomas@gmail.com> wrote:
+> > > >
+> > > > Hi Filipe,
+> > > >
+> > > > Thank you so much for the hints!
+> > > >
+> > > > I compiled 5.16 with the 1-byte file patch and have been running it
+> > > > for a couple of hours now. I/O seems to have been gradually increas=
+ing
+> > > > compared to 5.15, but I will wait for tomorrow to have a clearer vi=
+ew
+> > > > on the graphs, then I'll try the both patches.
+> > > >
+> > > > Fran=C3=A7ois-Xavier
+> > > >
+> > > > On Mon, Jan 17, 2022 at 5:59 PM Filipe Manana <fdmanana@kernel.org>=
+ wrote:
+> > > > >
+> > > > > On Mon, Jan 17, 2022 at 12:02:08PM +0000, Filipe Manana wrote:
+> > > > > > On Mon, Jan 17, 2022 at 11:06:42AM +0100, Fran=C3=A7ois-Xavier =
+Thomas wrote:
+> > > > > > > Hello all,
+> > > > > > >
+> > > > > > > Just in case someone is having the same issue: Btrfs (in the
+> > > > > > > btrfs-cleaner process) is taking a large amount of disk IO af=
+ter
+> > > > > > > upgrading to 5.16 on one of my volumes, and multiple other pe=
+ople seem
+> > > > > > > to be having the same issue, see discussion in [0].
+> > > > > > >
+> > > > > > > [1] is a close-up screenshot of disk I/O history (blue line i=
+s write
+> > > > > > > ops, going from a baseline of some 10 ops/s to around 1k ops/=
+s). I
+> > > > > > > downgraded from 5.16 to 5.15 in the middle, which immediately=
+ restored
+> > > > > > > previous performance.
+> > > > > > >
+> > > > > > > Common options between affected people are: ssd, autodefrag. =
+No error
+> > > > > > > in the logs, and no other issue aside from performance (the v=
+olume
+> > > > > > > works just fine for accessing data).
+> > > > > > >
+> > > > > > > One person reports that SMART stats show a massive amount of =
+blocks
+> > > > > > > being written; unfortunately I do not have historical data fo=
+r that so
+> > > > > > > I cannot confirm, but this sounds likely given what I see on =
+what
+> > > > > > > should be a relatively new SSD.
+> > > > > > >
+> > > > > > > Any idea of what it could be related to?
+> > > > > >
+> > > > > > There was a big refactor of the defrag code that landed in 5.16=
+.
+> > > > > >
+> > > > > > On a quick glance, when using autodefrag it seems we now can en=
+d up in an
+> > > > > > infinite loop by marking the same range for degrag (IO) over an=
+d over.
+> > > > > >
+> > > > > > Can you try the following patch? (also at https://pastebin.com/=
+raw/QR27Jv6n)
+> > > > >
+> > > > > Actually try this one instead:
+> > > > >
+> > > > > https://pastebin.com/raw/EbEfk1tF
+> > > > >
+> > > > > Also, there's a bug with defrag running into an (almost) infinite=
+ loop when
+> > > > > attempting to defrag a 1 byte file. Someone ran into this and I'v=
+e just sent
+> > > > > a fix for it:
+> > > > >
+> > > > > https://patchwork.kernel.org/project/linux-btrfs/patch/bcbfce0ff7=
+e21bbfed2484b1457e560edf78020d.1642436805.git.fdmanana@suse.com/
+> > > > >
+> > > > > Maybe that is what you are running into when using autodefrag.
+> > > > > Firt try that fix for the 1 byte file case, and if after that you=
+ still run
+> > > > > into problems, then try with the other patch above as well (both =
+patches
+> > > > > applied).
+> > > > >
+> > > > > Thanks.
+> > > > >
+> > > > >
+> > > > >
+> > > > > >
+> > > > > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > > > > > index a5bd6926f7ff..0a9f6125a566 100644
+> > > > > > --- a/fs/btrfs/ioctl.c
+> > > > > > +++ b/fs/btrfs/ioctl.c
+> > > > > > @@ -1213,6 +1213,13 @@ static int defrag_collect_targets(struct=
+ btrfs_inode *inode,
+> > > > > >                 if (em->generation < newer_than)
+> > > > > >                         goto next;
+> > > > > >
+> > > > > > +               /*
+> > > > > > +                * Skip extents already under IO, otherwise we =
+can end up in an
+> > > > > > +                * infinite loop when using auto defrag.
+> > > > > > +                */
+> > > > > > +               if (em->generation =3D=3D (u64)-1)
+> > > > > > +                       goto next;
+> > > > > > +
+> > > > > >                 /*
+> > > > > >                  * For do_compress case, we want to compress al=
+l valid file
+> > > > > >                  * extents, thus no @extent_thresh or mergeable=
+ check.
+> > > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > Fran=C3=A7ois-Xavier
+> > > > > > >
+> > > > > > > [0] https://www.reddit.com/r/btrfs/comments/s4nrzb/massive_pe=
+rformance_degradation_after_upgrading/
+> > > > > > > [1] https://imgur.com/oYhYat1
