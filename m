@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B422495D8C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 11:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3199F495D9F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 11:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379963AbiAUKQg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Jan 2022 05:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
+        id S1349967AbiAUKTl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Jan 2022 05:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379967AbiAUKQb (ORCPT
+        with ESMTP id S236933AbiAUKT3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Jan 2022 05:16:31 -0500
+        Fri, 21 Jan 2022 05:19:29 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D819FC061746
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:16:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB845C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:19:29 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7809A61A17
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:16:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFF85C340E3
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:16:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D3C661A21
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:19:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA75C340E1
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:19:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642760189;
-        bh=YZ8g+LVHoY7fymjdC7xQqgKtPjlirRqD+VCQ1BqCCUk=;
+        s=k20201202; t=1642760368;
+        bh=fvSU3osHe6PRWFs+pw2QxfRIBb6vthih4gNOkC9GAw8=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OfO6izpZOZIoYyoYS8I22UbAEtQbYxDdI7pLeYli40g0Pn/V56CRaS1IhN2qKW4Zt
-         nKds/kmKJY8IQOHocxJJ3xOBd7FzfeBhay6dcenGX3mKuklCM/nH9xlCFSOX5uwxEd
-         r8h8X/4InnnKgyQ3J2qaq+dcuTm8dODZI4VpC+UWEPC3jgWYI/otPDNXAbSOS296dL
-         LSJ97DQUiDXJZmsarPtuH6FVNdMdpo6PUwZV7soLPTV/KNHKZHIHXUokBDniw0ThgR
-         jUh64tFRf0TMwukpAuhEUvyfHGjxkhFu+PtcBO6q7volfsc+qrZNlh8bmx8nr4dxLA
-         jkrU/JftNOsCg==
-Received: by mail-qt1-f171.google.com with SMTP id h15so9533644qtx.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:16:29 -0800 (PST)
-X-Gm-Message-State: AOAM532cCuNWvDQIrjTV9tpIPZPqFJNAKgkGDSrbhEnDIWj1PIhZ5vzQ
-        /U0JJqbxQIAdaBbXbamdbiY8uvHLsvcvaaZSZMk=
-X-Google-Smtp-Source: ABdhPJwtEA8tPAVmPMyrzhVqLxNP6QK6efy3Bd+r3d5dMUfqmdySV9fZt7QYspL4C8pITa5L5vPsAzCnWcShbQA/qh8=
-X-Received: by 2002:ac8:58c4:: with SMTP id u4mr2544047qta.516.1642760188891;
- Fri, 21 Jan 2022 02:16:28 -0800 (PST)
+        b=ZDtlIy8yv8t8kYLrG1IKAxeI0N2dM7xTd9ntcFl0QScT4M07Z2mUt93fsXq156bPU
+         6SgVrNU/11Y4IEcfyvKyVZ97iDVGPwX6bGT/G/3lQr8yZHVtnAcBVDreWll8JHQCO0
+         cs6yU5kNMW6zdRGWmXcASLIe7XHbQ/eMiwA1b2/AlI9Gs6mkgozVPfCmtlQJkKZ8oc
+         tIqvee8VTWXP/YWI0p7ie6MEmW4d0HkaBY0cjNtKmWsCLWLtCBCQRyLZxxBwZlKZE3
+         fzOCv9lc6GTByENDD+V8zUqykHf70smIjhSA7a65GV3mtWnG3dRLfKbujOQeb7/oDn
+         Tk/IYUzNb8lNg==
+Received: by mail-qk1-f179.google.com with SMTP id s12so9359153qkg.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:19:28 -0800 (PST)
+X-Gm-Message-State: AOAM533kENx1QL1VB1YojiyOxJHEooBsNTi1J0DAsAbqK/Pj7XLoFxnD
+        CWTXw1UUyQWzUZds1sqP5zNCZmJ9e857kWrb6j0=
+X-Google-Smtp-Source: ABdhPJyx7VLijgh0k7aoAxGyMTt3DLjaVywNYe9Xmr89bjI5wqzfsZye8BXDsqc1hXfZO5nWtFjQ7OCJ/u94FnbFEZk=
+X-Received: by 2002:a37:6782:: with SMTP id b124mr2158883qkc.476.1642760367743;
+ Fri, 21 Jan 2022 02:19:27 -0800 (PST)
 MIME-Version: 1.0
-References: <5cb3ce140c84b0283be685bae8a5d75d5d19af08.1642688018.git.fdmanana@suse.com>
- <f0e65987-7673-0334-fd00-03d36b832722@gmx.com>
-In-Reply-To: <f0e65987-7673-0334-fd00-03d36b832722@gmx.com>
+References: <20aad8ccf0fbdecddd49216f25fa772754f77978.1642700395.git.fdmanana@suse.com>
+ <4dd733ed-73ac-9e41-f716-0e04161bbfc6@gmx.com>
+In-Reply-To: <4dd733ed-73ac-9e41-f716-0e04161bbfc6@gmx.com>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 21 Jan 2022 10:15:53 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4mw0V8ttrZBpB=twwNCVM=vBu+2UEf0zHzy+ObuxESVg@mail.gmail.com>
-Message-ID: <CAL3q7H4mw0V8ttrZBpB=twwNCVM=vBu+2UEf0zHzy+ObuxESVg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix deadlock when reserving space during defrag
+Date:   Fri, 21 Jan 2022 10:18:51 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6suP-Ssv_vy6O+d1mYCZ1Ltp5-9+NJqXeVHszhnABoqA@mail.gmail.com>
+Message-ID: <CAL3q7H6suP-Ssv_vy6O+d1mYCZ1Ltp5-9+NJqXeVHszhnABoqA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: update writeback index when starting defrag
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -55,120 +55,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 11:39 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+On Fri, Jan 21, 2022 at 12:03 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >
 >
 >
-> On 2022/1/20 22:27, fdmanana@kernel.org wrote:
+> On 2022/1/21 01:41, fdmanana@kernel.org wrote:
 > > From: Filipe Manana <fdmanana@suse.com>
 > >
-> > When defragging we can end up collecting a range for defrag that has
-> > already pages under delalloc (dirty), as long as the respective extent
-> > map for their range is not mapped to a hole, a prealloc extent or
-> > the extent map is from an old generation.
+> > When starting a defrag, we should update the writeback index of the
+> > inode's mapping in case it currently has a value beyond the start of the
+> > range we are defragging. This can help performance and often result in
+> > getting less extents after writeback - for e.g., if the current value
+> > of the writeback index sits somewhere in the middle of a range that
+> > gets dirty by the defrag, then after writeback we can get two smaller
+> > extents instead of a single, larger extent.
 > >
-> > Most of the time that is harmless from a functional perspective at
-> > least, however it can result in a deadlock:
+> > We used to have this before the refactoring in 5.16, but it was removed
+> > without any reason to do so. Orginally it was added in kernel 3.1, by
+> > commit 2a0f7f5769992b ("Btrfs: fix recursive auto-defrag"), in order to
+> > fix a loop with autodefrag resulting in dirtying and writing pages over
+> > and over, but some testing on current code did not show that happening,
+> > at least with the test described in that commit.
 > >
-> > 1) At defrag_collect_targets() we find an extent map that meets all
-> >     requirements but there's delalloc for the range it covers, and we add
-> >     its range to list of ranges to defrag;
-> >
-> > 2) The defrag_collect_targets() function is called at defrag_one_range(),
-> >     after it locked a range that overlaps the range of the extent map;
-> >
-> > 3) At defrag_one_range(), while the range is still locked, we call
-> >     defrag_one_locked_target() for the range associated to the extent
-> >     map we collected at step 1);
-> >
-> > 4) Then finally at defrag_one_locked_target() we do a call to
-> >     btrfs_delalloc_reserve_space(), which will reserve data and metadata
-> >     space. If the space reservations can not be satisfied right away, the
-> >     flusher might be kicked in and start flushing delalloc and wait for
-> >     the respective ordered extents to complete. If this happens we will
-> >     deadlock, because both flushing delalloc and finishing an ordered
-> >     extent, requires locking the range in the inode's io tree, which was
-> >     already locked at defrag_collect_targets().
+> > So add back the behaviour, as at the very least it is a nice to have
+> > optimization.
 >
-> That's the part I missed.
+> Writeback_index is always one mystery to me.
 >
-> >
-> > So fix this by skipping extent maps for which there's already delalloc.
-> >
-> > Fixes: eb793cf857828d ("btrfs: defrag: introduce helper to collect target file extents")
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> In fact just re-checking the writeback_index usage, I found the metadata
+> writeback is reading that value just like data writeback.
+> But we don't have any call sites to set writeback_index for btree inode.
 >
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
->
-> But I have some concern over one comment below.
->
-> > ---
-> >   fs/btrfs/ioctl.c | 31 ++++++++++++++++++++++++++++++-
-> >   1 file changed, 30 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > index 550d8f2dfa37..0082e9a60bfc 100644
-> > --- a/fs/btrfs/ioctl.c
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -1211,6 +1211,35 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
-> >               if (em->generation < newer_than)
-> >                       goto next;
-> >
-> > +             /*
-> > +              * Our start offset might be in the middle of an existing extent
-> > +              * map, so take that into account.
-> > +              */
-> > +             range_len = em->len - (cur - em->start);
-> > +             /*
-> > +              * If this range of the extent map is already flagged for delalloc,
-> > +              * skipt it, because:
-> > +              *
-> > +              * 1) We could deadlock later, when trying to reserve space for
-> > +              *    delalloc, because in case we can't immediately reserve space
-> > +              *    the flusher can start delalloc and wait for the respective
-> > +              *    ordered extents to complete. The deadlock would happen
-> > +              *    because we do the space reservation while holding the range
-> > +              *    locked, and starting writeback, or finishing an ordered
-> > +              *    extent, requires locking the range;
-> > +              *
-> > +              * 2) If there's delalloc there, it means there's dirty pages for
-> > +              *    which writeback has not started yet (we clean the delalloc
-> > +              *    flag when starting writeback and after creating an ordered
-> > +              *    extent). If we mark pages in an adjacent range for defrag,
-> > +              *    then we will have a larger contiguous range for delalloc,
-> > +              *    very likely resulting in a larger extent after writeback is
-> > +              *    triggered (except in a case of free space fragmentation).
->
-> If the page is already under writeback, won't we wait for it in
-> defrag_one_range() by defrag_prepare_one_page() and
-> wait_on_page_writeback()?
+> Is there any better doc for the proper behavior for writeback_index?
 
-Yes, we wait.
+I don't know... maybe somewhere in the generic writeback code there
+are comments.
 
-And? The comment is about ranges that are dirty but not under writeback yet.
-Once writeback starts, EXTENT_DELALLOC is removed from the range (an
-ordered extent created and a new extent map created).
-
->
-> Thus I think this case is not really possible here.
 >
 > Thanks,
 > Qu
 >
-> > +              */
-> > +             if (test_range_bit(&inode->io_tree, cur, cur + range_len - 1,
-> > +                                EXTENT_DELALLOC, 0, NULL))
-> > +                     goto next;
+> >
+> > Fixes: 7b508037d4cac3 ("btrfs: defrag: use defrag_one_cluster() to implement btrfs_defrag_file()")
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >   fs/btrfs/ioctl.c | 9 +++++++++
+> >   1 file changed, 9 insertions(+)
+> >
+> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > index bfe5ed65e92b..95d0e210f063 100644
+> > --- a/fs/btrfs/ioctl.c
+> > +++ b/fs/btrfs/ioctl.c
+> > @@ -1535,6 +1535,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+> >       int compress_type = BTRFS_COMPRESS_ZLIB;
+> >       int ret = 0;
+> >       u32 extent_thresh = range->extent_thresh;
+> > +     pgoff_t start_index;
+> >
+> >       if (isize == 0)
+> >               return 0;
+> > @@ -1576,6 +1577,14 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+> >                       file_ra_state_init(ra, inode->i_mapping);
+> >       }
+> >
+> > +     /*
+> > +      * Make writeback start from the beginning of the range, so that the
+> > +      * defrag range can be written sequentially.
+> > +      */
+> > +     start_index = cur >> PAGE_SHIFT;
+> > +     if (start_index < inode->i_mapping->writeback_index)
+> > +             inode->i_mapping->writeback_index = start_index;
 > > +
-> >               /*
-> >                * For do_compress case, we want to compress all valid file
-> >                * extents, thus no @extent_thresh or mergeable check.
-> > @@ -1219,7 +1248,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
-> >                       goto add;
-> >
-> >               /* Skip too large extent */
-> > -             if (em->len >= extent_thresh)
-> > +             if (range_len >= extent_thresh)
-> >                       goto next;
-> >
-> >               next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
+> >       while (cur < last_byte) {
+> >               const unsigned long prev_sectors_defragged = sectors_defragged;
+> >               u64 cluster_end;
