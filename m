@@ -2,76 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B225495DF0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 11:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A55F2495E83
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 12:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbiAUKtn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Jan 2022 05:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380041AbiAUKtn (ORCPT
+        id S1380206AbiAULms (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Jan 2022 06:42:48 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:17890 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350181AbiAULmo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Jan 2022 05:49:43 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E30C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:49:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id D3E76CE232E
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:49:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2143EC340E3
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:49:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642762177;
-        bh=KQxCN55wxlHZUQL/poZ7YDIGPS5NAYxSvSmh/RXfY0g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AqWE/thUf4IFdhg28RHBmvLNAk6D70X+qRWuzMbnTWk5g/wM7zQCNnxtXtM6Vz4KR
-         qpaBXhxItFiu4zB7UlrRdnL0aJZtBbIjs8cXj51XfGEx8dZhYvXywIF/Qm1nb/c83V
-         coivlqziI4Y0dtKAKTcnOJxR9tXb/EYxi7LvTIXBuONAMS+8lewuwawDKGEUt+EsWi
-         CsZuDWd/W5WY9N8A8gFbhuu1D6+mlHXDZ3jmUp1v5zXkKpYOvnHAfVRImmFz3uJKN4
-         IJBV/aACqwBOQdms3R4xVQ3m8nRvCIIf9kWJG6VzqTnSAmx9X0ldWn5aJ04cGooRDc
-         ISf/BX6y9lv0g==
-Received: by mail-qt1-f179.google.com with SMTP id x8so9457996qta.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:49:37 -0800 (PST)
-X-Gm-Message-State: AOAM5310jo+C9jmR8uF77yQHKVHJw/wLpWnoty66Rb/p71yGp2iIKauB
-        KeEE5w/4la41ksr7ow0D7ZQhXL4h0yKb2r4r4jo=
-X-Google-Smtp-Source: ABdhPJySd/UqoSk50K/Za7XHNr2sQ4hUWByJy5Jh6tTpk8OfzWgqyy55ubPL7dcN5GXgnHli9oy2y+oRg+PtatrPhUw=
-X-Received: by 2002:ac8:5e0a:: with SMTP id h10mr2630810qtx.522.1642762176209;
- Fri, 21 Jan 2022 02:49:36 -0800 (PST)
+        Fri, 21 Jan 2022 06:42:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V2RfJw4_1642765347;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0V2RfJw4_1642765347)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 21 Jan 2022 19:42:32 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] btrfs: scrub: Remove redundant initialization of increment
+Date:   Fri, 21 Jan 2022 19:42:24 +0800
+Message-Id: <20220121114224.92247-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-References: <CAEwRaO4y3PPPUdwYjNDoB9m9CLzfd3DFFk2iK1X6OyyEWG5-mg@mail.gmail.com>
- <YeVawBBE3r6hVhgs@debian9.Home> <YeWgdQ2ZvceLTIej@debian9.Home>
- <CAEwRaO5JcuHkuKs_hx9SJQ6jDr79TSorEPVEkt7BPRLfK2Rp-g@mail.gmail.com>
- <CAEwRaO7LpG+KBYRgB4MGx9td5PO6JvFWpKbyKsHDB=7LKMmAJg@mail.gmail.com>
- <CAL3q7H7UvBzw998MW1wxxBo+EPCePVikNdG-rT1Zs0Guo71beQ@mail.gmail.com>
- <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
- <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
- <CAEwRaO6CAjfH-qtt9D9NiH2hh4KFTSL-xCvdVZr+UXKe6k=jOA@mail.gmail.com>
- <CAL3q7H7xfcUk_DXEfdsnGX8dWLDsSAPeAugoeSw3tah476xCBQ@mail.gmail.com> <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com>
-In-Reply-To: <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 21 Jan 2022 10:49:00 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
-Message-ID: <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
-Subject: Re: Massive I/O usage from btrfs-cleaner after upgrading to 5.16
-To:     =?UTF-8?Q?Fran=C3=A7ois=2DXavier_Thomas?= <fx.thomas@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, Qu Wenruo <wqu@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 6:21 PM Fran=C3=A7ois-Xavier Thomas
-<fx.thomas@gmail.com> wrote:
->
-> > Ok, so new patches to try
->
-> Nice, thanks, I'll let you know how that goes tomorrow!
+increment is being initialized to map->stripe_len but this is never
+read as increment is overwritten later on. Remove the redundant
+initialization.
 
-You can also get more one on top of those 6:
+Cleans up the following clang-analyzer warning:
 
-https://pastebin.com/raw/p87HX6AF
+fs/btrfs/scrub.c:3193:6: warning: Value stored to 'increment' during its
+initialization is never read [clang-analyzer-deadcode.DeadStores].
 
-Thanks.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/btrfs/scrub.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 2e9a322773f2..38f5666eff14 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3209,7 +3209,6 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 	offset = 0;
+ 	nstripes = div64_u64(dev_extent_len, map->stripe_len);
+ 	mirror_num = 1;
+-	increment = map->stripe_len;
+ 	if (map->type & BTRFS_BLOCK_GROUP_RAID0) {
+ 		offset = map->stripe_len * stripe_index;
+ 		increment = map->stripe_len * map->num_stripes;
+-- 
+2.20.1.7.g153144c
+
