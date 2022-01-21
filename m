@@ -2,97 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AD44964CE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 19:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F056C4965CB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 20:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381871AbiAUSJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Jan 2022 13:09:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        id S229661AbiAUTjl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Jan 2022 14:39:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351938AbiAUSJr (ORCPT
+        with ESMTP id S229537AbiAUTjk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Jan 2022 13:09:47 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AEDC06173D
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:09:47 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id r204so7993085iod.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:09:47 -0800 (PST)
+        Fri, 21 Jan 2022 14:39:40 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE6EC06173B
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 11:39:40 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 133so8998374pgb.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 11:39:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ojUN0u5uVJ+Tz37BSBakEsN9ExsLdai8g+LsAJ0a/ow=;
-        b=Ti4k5X7bRSqQQeUQZ2GwD4dituzahM3ogTbsPAC9lonMN9LWnggdBgQ9iUyc+X7XTg
-         tkVF1EadKUAmhU86JtS02QhWD3vHLeeDHcqe5pAZAI1lLsnjJ+xVKjlQijJGMJ4B/ypl
-         f0NUy+ADSbM6EctrY19muANm3FAMTegWIiiMUfJPQsYGEg/zZGlh6O5/iDbWTez5hF2u
-         xK7aO3luiaoNb7w5t6IkBePUYGNTv+YhMqEiMYT2OpKYEV2xpmT2KPb0W1jh3Gyhrmo9
-         5WkSsK0sXOd/tL1OhOSMeTGF7ftMB94wU4MuoReDhupf8FTKB0f2WnCospMsY7nhMtnz
-         8Igw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/bu/3iyNydp+mveaftk6LGCY1tRUzSNVH6ZCi92XjbY=;
+        b=mjl2/nihZmXQ83VuPvH6p2tG1v1YTgLavE/NHWmVevP2y2tPQpakn5aCDNDC2TYCVk
+         RIgUcs6jsyccBDtdbEByS/VuiYGo0fVY8BLccL91WL411y42/trsG1cySK/FbwIKr4jH
+         GHkqkH5lN0K8KruRqY/Yb3sD4LDz9vPNXctaaVI/B1zDLLyoal+3Dwiz1/2pKiprmxYJ
+         iUx7BjCKFT108Kw0WnAzPU+LtX34wbai0ErKZayBhG6Hv47RE4OLWlaSY+iwSjp60rhA
+         Q/N7xPMAKH4LU3biTBaJshQJoKS9oNf+35Jb9PpCZmIR4Yj5EeVUath7Rwtd9SSNLtD7
+         aKRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=ojUN0u5uVJ+Tz37BSBakEsN9ExsLdai8g+LsAJ0a/ow=;
-        b=hAxRYBza5sCEjP4UAe8d85oKwEBVsv3QacQNfz+YP9rfP4iUtVKLI8BMwYIbVYOaEk
-         /oTTopmoxhVjbmrekU8+TMW6DxzW8T/PgkxNIRBCInkwZXjddcVeZpEcrSJi2rgIkAcp
-         ecdpIoHrsclLoD/voa93o2UIgwDtqFoWRXrCzGY9OptxNFEIhP2wgm80qCthRPEWtL5e
-         EeWAJLYrgsga2uvx7QlBDcTPUaIG/RMl5jcKnEQ5IFP6Lg646VRsdVXlWtgPAGNNpfFj
-         OUh3kUa52vKVikXhBEt2PlpdgXkql5heHcjknSIGARz+ZIXzJ5n93D9xOQ3O0w5OgLwm
-         N+Qw==
-X-Gm-Message-State: AOAM5316AlhKsxDHJscpjPgTi0VHbm7ezy0cdHzyEGC6p2R7OYWPcXcz
-        ljSP8wf9aQ5QQjrtyw1FJ6u03M7hCA9ydxXcJqY=
-X-Google-Smtp-Source: ABdhPJxvVTmG4SyYYsKWciL+bP45ruTU3M3IeVxRDRqBpkiqQgRlOEq+5gFBeWH57BieXhQHWm58KS9PUeE62KQ8zAA=
-X-Received: by 2002:a6b:591a:: with SMTP id n26mr2576015iob.101.1642788586239;
- Fri, 21 Jan 2022 10:09:46 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/bu/3iyNydp+mveaftk6LGCY1tRUzSNVH6ZCi92XjbY=;
+        b=F1BNjhsHdNUN/5OwzVu3efzI6F1Zt+mF3rANt124deRoD6W2BCVFEDSw64nqEl5Wcg
+         ia6kphQn/20SLvc6zcNIqre6KhuLutu6DTjx3rO0E97JwojFosn0+RwZDjoCAwPi93fq
+         0dYm3yndT6AnF8lCXALQyI5+Qla1Q9Cz/1Mf19GtEuLmAWJpnIYckIlPh/IR69YsM4sa
+         UIPlM/NhYwhdNZxnDc6Py17R7mxqJlmC6FQomVTjbKn8NSHVRxO4xg3aDhCNQXiVsmER
+         SsIXAflNuKZ9JHpXJI3KPUzgjftG1ZzFUZ+nZsYiYSPEh1xz+QvRtYAYIj42nZ/0D3Cr
+         sU9w==
+X-Gm-Message-State: AOAM533vQOYB5Gofs4iBOd9Rzw7LMYO5GYd0ymbajt71qFzFxKOEbt0+
+        9z5raN8NhFL7hKPMvg0iRzP66/elXJMoTZz7L//P9Lm6y7A=
+X-Google-Smtp-Source: ABdhPJwrRW+/W/LUd1+IKaUG8uiRt+Ki2aUpvy2se+QEp57xaMsvIGOFLo421sUNKoJWfnTMXuwMlo++t44TFK1sEmw=
+X-Received: by 2002:a63:9712:: with SMTP id n18mr3966538pge.594.1642793979853;
+ Fri, 21 Jan 2022 11:39:39 -0800 (PST)
 MIME-Version: 1.0
-Sender: klin.mlin122@gmail.com
-Received: by 2002:a05:6638:4126:0:0:0:0 with HTTP; Fri, 21 Jan 2022 10:09:45
- -0800 (PST)
-From:   Sophia Erick <sdltdkggl3455@gmail.com>
-Date:   Fri, 21 Jan 2022 19:09:45 +0100
-X-Google-Sender-Auth: l6n2EavflwDbNafivMcFychbgYo
-Message-ID: <CAMwUt-o1d2q8M+TKkxih26chm0wXnvQX2BAs6ZaT0dFkYbaddA@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
+References: <CAEwRaO4y3PPPUdwYjNDoB9m9CLzfd3DFFk2iK1X6OyyEWG5-mg@mail.gmail.com>
+ <YeVawBBE3r6hVhgs@debian9.Home> <YeWgdQ2ZvceLTIej@debian9.Home>
+ <CAEwRaO5JcuHkuKs_hx9SJQ6jDr79TSorEPVEkt7BPRLfK2Rp-g@mail.gmail.com>
+ <CAEwRaO7LpG+KBYRgB4MGx9td5PO6JvFWpKbyKsHDB=7LKMmAJg@mail.gmail.com>
+ <CAL3q7H7UvBzw998MW1wxxBo+EPCePVikNdG-rT1Zs0Guo71beQ@mail.gmail.com>
+ <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
+ <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
+ <CAEwRaO6CAjfH-qtt9D9NiH2hh4KFTSL-xCvdVZr+UXKe6k=jOA@mail.gmail.com>
+ <CAL3q7H7xfcUk_DXEfdsnGX8dWLDsSAPeAugoeSw3tah476xCBQ@mail.gmail.com>
+ <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com> <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
+In-Reply-To: <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
+From:   =?UTF-8?Q?Fran=C3=A7ois=2DXavier_Thomas?= <fx.thomas@gmail.com>
+Date:   Fri, 21 Jan 2022 20:39:27 +0100
+Message-ID: <CAEwRaO7cA3bbYMSCoYQ2gqaeJBSes5EBok5Oon-YOm7EQ8JOhw@mail.gmail.com>
+Subject: Re: Massive I/O usage from btrfs-cleaner after upgrading to 5.16
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, Qu Wenruo <wqu@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-May the peace of God be with you ,
+Thanks, will add that to the list and test. FYI the 6 patches didn't
+seem to have much additional effect today compared to my previous
+stack of 4.
 
-   This letter might be a surprise to you, But I believe that you will
-be honest to fulfill my final wish. I bring peace and love to you. It
-is by the grace of god, I had no choice than to do what is lawful and
-right in the sight of God for eternal life and in the sight of man for
-witness of god=E2=80=99s mercy and glory upon my life. My dear, I sent this
-mail praying it will find you in a good condition, since I myself am
-in a very critical health condition in which I sleep every night
-without knowing if I may be alive to see the next day. I am Mrs.Sophia
-Erick, a widow suffering from a long time illness. I have some funds I
-inherited from my late husband, the sum of ($11,000,000.00, Eleven
-Million Dollars) my Doctor told me recently that I have serious
-sickness which is a cancer problem. What disturbs me most is my stroke
-sickness. Having known my condition, I decided to donate this fund to
-a good person that will utilize it the way I am going to instruct
-herein. I need a very honest and God fearing person who can claim this
-money and use it for Charity works, for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of god
-and the effort that the house of god is maintained.
-
- I do not want a situation where this money will be used in an ungodly
-manner. That's why I'm taking this decision. I'm not afraid of death,
-so I know where I'm going. I accept this decision because I do not
-have any child who will inherit this money after I die. Please I want
-your sincere and urgent answer to know if you will be able to execute
-this project, and I will give you more information on how the fund
-will be transferred to your bank account. May the grace, peace, love
-and the truth in the Word of god be with you and all those that you
-love and  care for.
-
-I am waiting for your reply.
-May God Bless you,
-Mrs. Sophia Erick.
+On Fri, Jan 21, 2022 at 11:49 AM Filipe Manana <fdmanana@kernel.org> wrote:
+>
+> On Thu, Jan 20, 2022 at 6:21 PM Fran=C3=A7ois-Xavier Thomas
+> <fx.thomas@gmail.com> wrote:
+> >
+> > > Ok, so new patches to try
+> >
+> > Nice, thanks, I'll let you know how that goes tomorrow!
+>
+> You can also get more one on top of those 6:
+>
+> https://pastebin.com/raw/p87HX6AF
+>
+> Thanks.
