@@ -2,130 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3199F495D9F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 11:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B225495DF0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 11:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349967AbiAUKTl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Jan 2022 05:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
+        id S234791AbiAUKtn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Jan 2022 05:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236933AbiAUKT3 (ORCPT
+        with ESMTP id S1380041AbiAUKtn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Jan 2022 05:19:29 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB845C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:19:29 -0800 (PST)
+        Fri, 21 Jan 2022 05:49:43 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E30C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:49:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D3C661A21
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:19:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA75C340E1
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:19:28 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id D3E76CE232E
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:49:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2143EC340E3
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 10:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642760368;
-        bh=fvSU3osHe6PRWFs+pw2QxfRIBb6vthih4gNOkC9GAw8=;
+        s=k20201202; t=1642762177;
+        bh=KQxCN55wxlHZUQL/poZ7YDIGPS5NAYxSvSmh/RXfY0g=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZDtlIy8yv8t8kYLrG1IKAxeI0N2dM7xTd9ntcFl0QScT4M07Z2mUt93fsXq156bPU
-         6SgVrNU/11Y4IEcfyvKyVZ97iDVGPwX6bGT/G/3lQr8yZHVtnAcBVDreWll8JHQCO0
-         cs6yU5kNMW6zdRGWmXcASLIe7XHbQ/eMiwA1b2/AlI9Gs6mkgozVPfCmtlQJkKZ8oc
-         tIqvee8VTWXP/YWI0p7ie6MEmW4d0HkaBY0cjNtKmWsCLWLtCBCQRyLZxxBwZlKZE3
-         fzOCv9lc6GTByENDD+V8zUqykHf70smIjhSA7a65GV3mtWnG3dRLfKbujOQeb7/oDn
-         Tk/IYUzNb8lNg==
-Received: by mail-qk1-f179.google.com with SMTP id s12so9359153qkg.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:19:28 -0800 (PST)
-X-Gm-Message-State: AOAM533kENx1QL1VB1YojiyOxJHEooBsNTi1J0DAsAbqK/Pj7XLoFxnD
-        CWTXw1UUyQWzUZds1sqP5zNCZmJ9e857kWrb6j0=
-X-Google-Smtp-Source: ABdhPJyx7VLijgh0k7aoAxGyMTt3DLjaVywNYe9Xmr89bjI5wqzfsZye8BXDsqc1hXfZO5nWtFjQ7OCJ/u94FnbFEZk=
-X-Received: by 2002:a37:6782:: with SMTP id b124mr2158883qkc.476.1642760367743;
- Fri, 21 Jan 2022 02:19:27 -0800 (PST)
+        b=AqWE/thUf4IFdhg28RHBmvLNAk6D70X+qRWuzMbnTWk5g/wM7zQCNnxtXtM6Vz4KR
+         qpaBXhxItFiu4zB7UlrRdnL0aJZtBbIjs8cXj51XfGEx8dZhYvXywIF/Qm1nb/c83V
+         coivlqziI4Y0dtKAKTcnOJxR9tXb/EYxi7LvTIXBuONAMS+8lewuwawDKGEUt+EsWi
+         CsZuDWd/W5WY9N8A8gFbhuu1D6+mlHXDZ3jmUp1v5zXkKpYOvnHAfVRImmFz3uJKN4
+         IJBV/aACqwBOQdms3R4xVQ3m8nRvCIIf9kWJG6VzqTnSAmx9X0ldWn5aJ04cGooRDc
+         ISf/BX6y9lv0g==
+Received: by mail-qt1-f179.google.com with SMTP id x8so9457996qta.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jan 2022 02:49:37 -0800 (PST)
+X-Gm-Message-State: AOAM5310jo+C9jmR8uF77yQHKVHJw/wLpWnoty66Rb/p71yGp2iIKauB
+        KeEE5w/4la41ksr7ow0D7ZQhXL4h0yKb2r4r4jo=
+X-Google-Smtp-Source: ABdhPJySd/UqoSk50K/Za7XHNr2sQ4hUWByJy5Jh6tTpk8OfzWgqyy55ubPL7dcN5GXgnHli9oy2y+oRg+PtatrPhUw=
+X-Received: by 2002:ac8:5e0a:: with SMTP id h10mr2630810qtx.522.1642762176209;
+ Fri, 21 Jan 2022 02:49:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20aad8ccf0fbdecddd49216f25fa772754f77978.1642700395.git.fdmanana@suse.com>
- <4dd733ed-73ac-9e41-f716-0e04161bbfc6@gmx.com>
-In-Reply-To: <4dd733ed-73ac-9e41-f716-0e04161bbfc6@gmx.com>
+References: <CAEwRaO4y3PPPUdwYjNDoB9m9CLzfd3DFFk2iK1X6OyyEWG5-mg@mail.gmail.com>
+ <YeVawBBE3r6hVhgs@debian9.Home> <YeWgdQ2ZvceLTIej@debian9.Home>
+ <CAEwRaO5JcuHkuKs_hx9SJQ6jDr79TSorEPVEkt7BPRLfK2Rp-g@mail.gmail.com>
+ <CAEwRaO7LpG+KBYRgB4MGx9td5PO6JvFWpKbyKsHDB=7LKMmAJg@mail.gmail.com>
+ <CAL3q7H7UvBzw998MW1wxxBo+EPCePVikNdG-rT1Zs0Guo71beQ@mail.gmail.com>
+ <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
+ <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
+ <CAEwRaO6CAjfH-qtt9D9NiH2hh4KFTSL-xCvdVZr+UXKe6k=jOA@mail.gmail.com>
+ <CAL3q7H7xfcUk_DXEfdsnGX8dWLDsSAPeAugoeSw3tah476xCBQ@mail.gmail.com> <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com>
+In-Reply-To: <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 21 Jan 2022 10:18:51 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6suP-Ssv_vy6O+d1mYCZ1Ltp5-9+NJqXeVHszhnABoqA@mail.gmail.com>
-Message-ID: <CAL3q7H6suP-Ssv_vy6O+d1mYCZ1Ltp5-9+NJqXeVHszhnABoqA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: update writeback index when starting defrag
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Date:   Fri, 21 Jan 2022 10:49:00 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
+Message-ID: <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
+Subject: Re: Massive I/O usage from btrfs-cleaner after upgrading to 5.16
+To:     =?UTF-8?Q?Fran=C3=A7ois=2DXavier_Thomas?= <fx.thomas@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, Qu Wenruo <wqu@suse.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 12:03 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+On Thu, Jan 20, 2022 at 6:21 PM Fran=C3=A7ois-Xavier Thomas
+<fx.thomas@gmail.com> wrote:
 >
+> > Ok, so new patches to try
 >
->
-> On 2022/1/21 01:41, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > When starting a defrag, we should update the writeback index of the
-> > inode's mapping in case it currently has a value beyond the start of the
-> > range we are defragging. This can help performance and often result in
-> > getting less extents after writeback - for e.g., if the current value
-> > of the writeback index sits somewhere in the middle of a range that
-> > gets dirty by the defrag, then after writeback we can get two smaller
-> > extents instead of a single, larger extent.
-> >
-> > We used to have this before the refactoring in 5.16, but it was removed
-> > without any reason to do so. Orginally it was added in kernel 3.1, by
-> > commit 2a0f7f5769992b ("Btrfs: fix recursive auto-defrag"), in order to
-> > fix a loop with autodefrag resulting in dirtying and writing pages over
-> > and over, but some testing on current code did not show that happening,
-> > at least with the test described in that commit.
-> >
-> > So add back the behaviour, as at the very least it is a nice to have
-> > optimization.
->
-> Writeback_index is always one mystery to me.
->
-> In fact just re-checking the writeback_index usage, I found the metadata
-> writeback is reading that value just like data writeback.
-> But we don't have any call sites to set writeback_index for btree inode.
->
-> Is there any better doc for the proper behavior for writeback_index?
+> Nice, thanks, I'll let you know how that goes tomorrow!
 
-I don't know... maybe somewhere in the generic writeback code there
-are comments.
+You can also get more one on top of those 6:
 
->
-> Thanks,
-> Qu
->
-> >
-> > Fixes: 7b508037d4cac3 ("btrfs: defrag: use defrag_one_cluster() to implement btrfs_defrag_file()")
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >   fs/btrfs/ioctl.c | 9 +++++++++
-> >   1 file changed, 9 insertions(+)
-> >
-> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > index bfe5ed65e92b..95d0e210f063 100644
-> > --- a/fs/btrfs/ioctl.c
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -1535,6 +1535,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
-> >       int compress_type = BTRFS_COMPRESS_ZLIB;
-> >       int ret = 0;
-> >       u32 extent_thresh = range->extent_thresh;
-> > +     pgoff_t start_index;
-> >
-> >       if (isize == 0)
-> >               return 0;
-> > @@ -1576,6 +1577,14 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
-> >                       file_ra_state_init(ra, inode->i_mapping);
-> >       }
-> >
-> > +     /*
-> > +      * Make writeback start from the beginning of the range, so that the
-> > +      * defrag range can be written sequentially.
-> > +      */
-> > +     start_index = cur >> PAGE_SHIFT;
-> > +     if (start_index < inode->i_mapping->writeback_index)
-> > +             inode->i_mapping->writeback_index = start_index;
-> > +
-> >       while (cur < last_byte) {
-> >               const unsigned long prev_sectors_defragged = sectors_defragged;
-> >               u64 cluster_end;
+https://pastebin.com/raw/p87HX6AF
+
+Thanks.
