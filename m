@@ -2,133 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC2549572E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 01:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9D2495733
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jan 2022 01:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378311AbiAUADw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jan 2022 19:03:52 -0500
-Received: from mout.gmx.net ([212.227.17.20]:44825 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378263AbiAUADv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jan 2022 19:03:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1642723425;
-        bh=lvE54ENVtSCXpnSItfSlZTLr2oXdV4b1gZye0/+wEF8=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=GufjWN+gbebGyHwGyUmP6Hm6FjDGdU2aTD4o1tL5M0t7QOH81FW3nELXFPAzv7Iqk
-         RoiBYYFGOpUssPug1SZRBHX4TQY3XQIHvyOcGoYcNB2wQP1kv3NiumL7Kcf/BL40+V
-         5ZhG6dskgDvvBrjMIR5C2gus/jFdUeGQyvDvJZxU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQvD5-1mynQc0oIp-00O1VY; Fri, 21
- Jan 2022 01:03:45 +0100
-Message-ID: <4dd733ed-73ac-9e41-f716-0e04161bbfc6@gmx.com>
-Date:   Fri, 21 Jan 2022 08:03:42 +0800
+        id S1378324AbiAUAHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jan 2022 19:07:46 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:45030 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1378263AbiAUAHq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Jan 2022 19:07:46 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 35F2217A69D; Thu, 20 Jan 2022 19:07:45 -0500 (EST)
+Date:   Thu, 20 Jan 2022 19:07:45 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     dsterba@suse.cz, Remi Gauvin <remi@georgianit.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Case for "datacow-forced" option
+Message-ID: <Yen5URN7kiynhgK6@hungrycats.org>
+References: <42e747ca-faf1-ed7c-9823-4ab333c07104@georgianit.com>
+ <20220111160112.GP14046@twin.jikos.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] btrfs: update writeback index when starting defrag
-Content-Language: en-US
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20aad8ccf0fbdecddd49216f25fa772754f77978.1642700395.git.fdmanana@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20aad8ccf0fbdecddd49216f25fa772754f77978.1642700395.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MEWbfdFOBJY1HYO0dZHhGNb9VspE/SntNt4ceJpcXlY0U1r5YxO
- tar0yZ9iru4airxZwreEzg06YVa/nIfC5go694PsxhgZl1/vBiUEGQc7VohxYOE6lhyYCp9
- HxHjmHv+eV3hogRxUjRoZAO0Ok/FswhuDAXXZvfYVHfQF8Si6+cD9goVp7zan8jwleUhevV
- PmUPw55tZRXp/qNQ/vdxQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:28qkxZI39P4=:i6LRPg5LNzPdTxkNRx9AFp
- ZhaSG+5cyQi0NaWPKDqKnK5fGnKQqqoCVR/VxuPYEKNc+/VGNC9fbTADhS0gegqQ/Zxo16O2O
- Yh9YLFQ+tF57iUzB72xwF0YoY5d1cFU01k1rq8PLerz5+9bmBrIleRSjQjmEygpY0D10xTmxz
- uzvvRT+90HwXapfhynrY6vZJ/NafuoMRz3EsK5KOGU/4pCrv+TLMtk7ucPW1uweINRlrOGnFp
- MrLNd4jlqZOflYxMnTWNgmGqKwy/8wqHSuLfJQlWjEKVe2eAJQY5bBKWVrk3pWH1G80mgCORX
- 6c1JBkzvKVJsfu/hhFnA6joX4NtsaMo3NbjKWEAU3r96z/pQiF20X0a/A1hieDwYa1SSkg+ZE
- PzHvHW1Vh3SKnsu7Y/DyTzW8ILGGkNFVOztCwno7d+H3BDTc3EGFcNHX41LtrbXqop6N198gj
- rUDLaNK3bh5Yniabg6cV9gCKhLu2tmdlCp7bTxYq0Cw09pGtC76Bxbzz6KJfRMP9k+Oj9bkz2
- 8EavPmaNKIFfo5OJI7iZ+we9wYw88HRHJPuLk+YuORkNgJ11p4SmmASt9EyfiO825lNyWq5At
- yesq8iBe99yjonJU+tSXoL9LTl9AaZQsOVK6hvFjAuUzywBjUKTejvt/GROFq2P9czmTEKqmO
- 9VnEGcxlBz4Ibt0vFswJcw1ppHKQ20zDPR0RzR9bF63fwxrPUXEiuqFXWdyG0f6dZGxUZ3VNQ
- Pr69kkkxbQhIr3e4uyEq5w9scp3gFto8QEALbkTIz2UvbVyYaQeHABV5BI0w1McU7V1yaGzlL
- xqwEFp0ZLfw354nKqpX/Vrp0T03kVDk9nNHs5VpBIRWVBKNmlP+tYju5HKQrpcQOau4+sTIjq
- 0RfEvajdejwqZ5asZe+fNnomQaZ59+0mF2giBKLTv74tMTk0RhI0DrYRzphwyJPoH2G9yn27K
- sra5Ywcj0Pt7hha5emnW1WCT/qImFkw8YzEUClWmsZBUDbIrg/hLpK2YNkMDnaoECI/jnFaQm
- v6D+g6roBp95q5qbft35NjuV8LiJ4Gdx3B1uFt0CPkFaDESgO8LIuWQRTQk7BLDTccE3lDiR3
- 73zl4zLr21GZI4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220111160112.GP14046@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jan 11, 2022 at 05:01:12PM +0100, David Sterba wrote:
+> On Fri, Jan 07, 2022 at 08:30:46PM -0500, Remi Gauvin wrote:
+> > I notice some software is silently creating files with +C attribute
+> > without user input.  (Systemd journals, libvert qcow files, etc.)... I
+> > can appreciate the goal of a performance boost, but I can only see this
+> > as disaster for users of btrfs RAID, which will lead to inconsistent
+> > mirrors on unclean shutdown, (and no way to fix, other than full balance.)
+> > 
+> > I think a datacow-forced option would be a good idea to prevent
+> > accidental creation of critical files with nocow attribute.
+> 
+> Settings like that start some kind of "policy wars" and list of
+> exceptions, ie. who decides what the filesystem is allowed to do. A
+> mount option like you suggest would never allow to create a nocow file,
+> but having some scratch nocow files with better performance would be
+> nice to have. A global forced option would prevent accidental nocow
+> files while you as user would consider them important.
+> 
+> I'd rather see that fixed or made configurable on the side of
+> applications, the filesystem is really just providing features and
+> options and limits the policies and forced options to the users.
+> 
+> IIRC the systemd journals got +C because the write pattern is 'append'
+> that over time creates highly fragmented files. For VM images it's a
+> performance optimization at the cost of no checksums. Both performance
+> vs reliability trade off, that somebody made on behalf of users. But not
+> to satisfaction to all, wich I understand but don't agree that the
+> filesystem should be the level where this gets resolved.
 
+Policy controls that were previously handled in lower storage layers
+are becoming btrfs's responsibility as it replaces those layers.
+datasums and RAID were first, but encryption and integrity are coming.
 
-On 2022/1/21 01:41, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> When starting a defrag, we should update the writeback index of the
-> inode's mapping in case it currently has a value beyond the start of the
-> range we are defragging. This can help performance and often result in
-> getting less extents after writeback - for e.g., if the current value
-> of the writeback index sits somewhere in the middle of a range that
-> gets dirty by the defrag, then after writeback we can get two smaller
-> extents instead of a single, larger extent.
->
-> We used to have this before the refactoring in 5.16, but it was removed
-> without any reason to do so. Orginally it was added in kernel 3.1, by
-> commit 2a0f7f5769992b ("Btrfs: fix recursive auto-defrag"), in order to
-> fix a loop with autodefrag resulting in dirtying and writing pages over
-> and over, but some testing on current code did not show that happening,
-> at least with the test described in that commit.
->
-> So add back the behaviour, as at the very least it is a nice to have
-> optimization.
+In other words, btrfs already started the policy war by invading the
+territory of legacy policy regimes and establishing its own new and
+different policy regime.  Now that the policy war has started, we'd like
+proper tools to fight and win.
 
-Writeback_index is always one mystery to me.
+e.g. if we put ext4 on a dm-integrity device, applications don't get to
+disable data integrity on individual files--every file on the filesystem
+gets block-level integrity.  Similar things happen with encryption and
+mirroring: every file on the filesystem is encrypted and every file gets
+mirrored, because the whole filesystem is stored in something encrypted
+or mirrored, and no second option is available from the filesystem.
 
-In fact just re-checking the writeback_index usage, I found the metadata
-writeback is reading that value just like data writeback.
-But we don't have any call sites to set writeback_index for btree inode.
+If we want to have a mix of different policies, we can create a bunch
+of ext4 filesystems with different policies set on the backing devices
+and mount them all at the appropriate points.  It can be set up so that
+unprivileged users can only create files on the encrypted filesystems
+to prevent data leaks, only a privileged user can change those rules,
+and even for privileged users rule changes are a little non-trivial
+(e.g. new filesystems have to be created and mounted to implement a new
+policy option combination).
 
-Is there any better doc for the proper behavior for writeback_index?
+It's awesome that btrfs _can_ enable or disable data integrity selectively
+at the individual inode level without special privileges, but it's not a
+novel capability, only a novel policy.  Unlike other Linux filesystem +
+storage stack setups, btrfs allows a user to enable and disable storage
+policy controls without permission and with reckless abandon.
 
-Thanks,
-Qu
+If btrfs is to replace the other layers, then it needs to reimplement
+the control knobs (or explicit _lack_ of control knobs) of the things
+it's replacing, or functionality is lost compared to the legacy systems.
+In some cases failure to verify, encrypt, or mirror data can result in
+catastrophic failures, and having controls available to unprivileged
+users that disable these features at inode level would be a bug.
 
->
-> Fixes: 7b508037d4cac3 ("btrfs: defrag: use defrag_one_cluster() to imple=
-ment btrfs_defrag_file()")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/ioctl.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index bfe5ed65e92b..95d0e210f063 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1535,6 +1535,7 @@ int btrfs_defrag_file(struct inode *inode, struct =
-file_ra_state *ra,
->   	int compress_type =3D BTRFS_COMPRESS_ZLIB;
->   	int ret =3D 0;
->   	u32 extent_thresh =3D range->extent_thresh;
-> +	pgoff_t start_index;
->
->   	if (isize =3D=3D 0)
->   		return 0;
-> @@ -1576,6 +1577,14 @@ int btrfs_defrag_file(struct inode *inode, struct=
- file_ra_state *ra,
->   			file_ra_state_init(ra, inode->i_mapping);
->   	}
->
-> +	/*
-> +	 * Make writeback start from the beginning of the range, so that the
-> +	 * defrag range can be written sequentially.
-> +	 */
-> +	start_index =3D cur >> PAGE_SHIFT;
-> +	if (start_index < inode->i_mapping->writeback_index)
-> +		inode->i_mapping->writeback_index =3D start_index;
-> +
->   	while (cur < last_byte) {
->   		const unsigned long prev_sectors_defragged =3D sectors_defragged;
->   		u64 cluster_end;
+It's much nicer to say "we don't ever allow nodatasum files on our
+filesystems because our hosting providers have terrible taste in SSD
+models" and be done with the issue forever.  The alternative is to play
+whack-a-mole every day when some new app gets installed or upgraded,
+it doesn't follow policy rules, and upstream won't fix it.
+
+We'd have apps explode during completely normal disk failure events
+because the app turned off datacow (and with it datasum and self-heal)
+and a bad sector or two silently destroys the files.  It became enough
+of a problem that I now patch the kernel to silently clear bits from
+application requests to set forbidden attributes, removing the need to
+frequently audit the filesystems for new files with these attributes.
+
+> If fragmentation is problem, eventual runs of the defrag ioctl on the
+> files can make the problem bearable.
