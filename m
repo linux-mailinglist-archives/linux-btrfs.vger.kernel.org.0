@@ -2,60 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B976496CF0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Jan 2022 17:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D3A496D44
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Jan 2022 19:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbiAVQhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 22 Jan 2022 11:37:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
+        id S231812AbiAVSVJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 22 Jan 2022 13:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbiAVQhl (ORCPT
+        with ESMTP id S231531AbiAVSVI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 22 Jan 2022 11:37:41 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AF3C06173B
-        for <linux-btrfs@vger.kernel.org>; Sat, 22 Jan 2022 08:37:41 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id x193so18426306oix.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 22 Jan 2022 08:37:41 -0800 (PST)
+        Sat, 22 Jan 2022 13:21:08 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC9DC06173B
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Jan 2022 10:21:08 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id i8so11040650pgt.13
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Jan 2022 10:21:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nQfnDsNAwBhiTzvcCVWAW+CtmC1+ndx2xo4KA92H/eA=;
-        b=FvvaYX0yI+1nNRK82m/cKKxsjXIOZg5TIdEuT0c3WZQgwjEr8wJXvKsKGzfz/x+mFY
-         vlo1Gg6UVSfWWMSRtUUORBcC3jjIpC9H7hyJEwPvaVXcS2TCMd2DQzh0KUGg7GfpbEnQ
-         ZXoibdt9IDHcaK3Z3PKcJe0ec9IENr8V0nGg04daXgsOZFebABZifC7q12OVLVayz3Hh
-         +WrbNH76OaW4yRVii9DdrhthJOGvF023dWpttcR+2Kg4TjG5eHEAvOLLE0MALY6k3NV1
-         vn3CapGkkDtclXV2TlLOmnYr2ITkZhOeGAiQadeXfJHuXUtq3BA4T99pkH5TpImRG5Cg
-         iQfw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LTkYoQuTiypETWTrbQ/dFwycrgwsW+MM4EvhuxglxJ8=;
+        b=boGTkwI7uOpRKPl3/YAjA7Dczm2UHGuvpJ3PGDNqwf0QD3iIywDUp6HARwN2/RF09h
+         C4Iqk82PYVyx3eWsFHg//uSCvC0BVNmmuFW+F8oNMCGrC26dQCfN70VHZd8Bg/IMOKg/
+         6xRP2GyoSVK1AB/HlIyBn8rRVJmGoPNG34KY0A1OxMtnqqrb3wTaNvbmaQPQV7yGlFDR
+         s2yaBrlwUypok6RzI5t6CPr3j7yBmTVNGU9Jq1yNpftgizmEoV2OvEt+BsRkejT8k4Nx
+         QkItPamqYdAGHCROV6xS05yD/1gJ9xG9HP1s3+RftdPF98eccbI2+qnol66BNMEK507C
+         HeQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nQfnDsNAwBhiTzvcCVWAW+CtmC1+ndx2xo4KA92H/eA=;
-        b=LRrt0OVJRx+I26ZnaeicKPeiBw9teGeyb37MANQd5ROokam+t1CkLADAtioUl5Brt+
-         jw2pyUqzd5ZXrYY69Twov5ZsDWn1JDjr+pv99df1R2pL+f7PimgTgX0q5+zhyY4kEm5T
-         GORwXigmucOkXUXDpYgIwLdAT/TEfTNhB3uLniGXzJnMsJbi9dQy1ZohMXvMBejxFtrs
-         cJjMmh9UvczNaOYSfXemoEjBhsugYewqJTJ4wRXjBnpbq4ytsRrTUPFEih3x6f6qES6e
-         wcIAnCr1t3E+J+HlWsfAWorfQj1VloACzicchaR1AjvZrYpxQMZpaq6TfHVgllwcmDyJ
-         WRxw==
-X-Gm-Message-State: AOAM53390gK8gAWv6GeLlWaMfh6A+WKOCO1rQNFfqkF5rKVkhIpeNiPf
-        Pv8R339Sa6WZxQtDVjqYrVTT3o9dMhAJSQGXdmQ=
-X-Google-Smtp-Source: ABdhPJw59Z4k2PCVizXE3hFZP5KcPKaD7vudDe8hwv4zR0fXX88M3fS5nU493DoRElAzhPl8n+3Q8vvsqupJT8IyA9M=
-X-Received: by 2002:aca:ab0f:: with SMTP id u15mr39468oie.115.1642869460764;
- Sat, 22 Jan 2022 08:37:40 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LTkYoQuTiypETWTrbQ/dFwycrgwsW+MM4EvhuxglxJ8=;
+        b=OLEH4kFSHrZPaZStxCyJrcHRW4xsiQzWm9Bj+WY0ve6eb2PmtNYA8OoNV+4w+nZ0IP
+         S58Q+bs/t66SFZ5cgmZO9ZFxzRWLy8Xu1lSaQPMuxnD9sCFBF35zzgkm3/0u+QUgvTqp
+         Wym6VsKxczmrfSVlJzjkFAlNo2ce47y2Tu9GGW5bwZrKcppJcgBx/kmVdelxbWwpKENW
+         J95jzrCnyqShzsugeH2OrIyLyj2JCYVfOBRBhyYYUTsGjz5ijLbxCICHHTCY0A01NRUy
+         /DxfDCW+LMpxaMsyzSMQCFEf0q5CGxFEv3asA6DKvWF1ZS86x/yo/rcVxOVI6Pdb+xRz
+         VNFA==
+X-Gm-Message-State: AOAM530koVIHaFMkjG3ilmvWbm3JnABCbBmI+uTmjDRF7ZdCYCQgM4An
+        UdgOwdBy5ZUiFXtVT6Svq50XaFsgKZDKU1K1CNJ7oC1knGDx9A==
+X-Google-Smtp-Source: ABdhPJyhN/jhMZ7Sp0pITWvenWU61dtqwLoEhR3Y2Opj5FOh0V8sS6C8S2fnaMQ2n3DHmz6QeEtRHlLNrQi+YT/CoLY=
+X-Received: by 2002:a63:9712:: with SMTP id n18mr6687147pge.594.1642875667312;
+ Sat, 22 Jan 2022 10:21:07 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:ac9:56d7:0:0:0:0:0 with HTTP; Sat, 22 Jan 2022 08:37:40
- -0800 (PST)
-Reply-To: nelsonbile450@gmail.com
-From:   Nelson Bile <addamss.petter19@gmail.com>
-Date:   Sat, 22 Jan 2022 17:37:40 +0100
-Message-ID: <CA+gU1v2x7zoTEgKfD9iURqvpWmkL4xCvzEMFtZWmfA3e=kyojw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <CAEwRaO4y3PPPUdwYjNDoB9m9CLzfd3DFFk2iK1X6OyyEWG5-mg@mail.gmail.com>
+ <YeVawBBE3r6hVhgs@debian9.Home> <YeWgdQ2ZvceLTIej@debian9.Home>
+ <CAEwRaO5JcuHkuKs_hx9SJQ6jDr79TSorEPVEkt7BPRLfK2Rp-g@mail.gmail.com>
+ <CAEwRaO7LpG+KBYRgB4MGx9td5PO6JvFWpKbyKsHDB=7LKMmAJg@mail.gmail.com>
+ <CAL3q7H7UvBzw998MW1wxxBo+EPCePVikNdG-rT1Zs0Guo71beQ@mail.gmail.com>
+ <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
+ <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
+ <CAEwRaO6CAjfH-qtt9D9NiH2hh4KFTSL-xCvdVZr+UXKe6k=jOA@mail.gmail.com>
+ <CAL3q7H7xfcUk_DXEfdsnGX8dWLDsSAPeAugoeSw3tah476xCBQ@mail.gmail.com>
+ <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com>
+ <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
+ <CAEwRaO7cA3bbYMSCoYQ2gqaeJBSes5EBok5Oon-YOm7EQ8JOhw@mail.gmail.com> <7802ff58-d08b-76d4-fcc7-c5d15d798b3b@gmx.com>
+In-Reply-To: <7802ff58-d08b-76d4-fcc7-c5d15d798b3b@gmx.com>
+From:   =?UTF-8?Q?Fran=C3=A7ois=2DXavier_Thomas?= <fx.thomas@gmail.com>
+Date:   Sat, 22 Jan 2022 19:20:55 +0100
+Message-ID: <CAEwRaO58oCzY4GjU3gCSru3Gq02GvGSdkg5hPwCKMwYcZ+cM2Q@mail.gmail.com>
+Subject: Re: Massive I/O usage from btrfs-cleaner after upgrading to 5.16
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <wqu@suse.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings I sent you an email a few days ago. Did you receive my
-message? urgent response please
+> https://pastebin.com/raw/p87HX6AF
+
+The 7th patch doesn't seem to be having a noticeable improvement so far.
+
+> So even with more fixes, we may just end up with more IO for autodefrag,
+> purely because old code is not defragging as hard.
+
+That's unfortunate, but thanks for having looked into it, at least
+there's a known reason for the IO increase.
+
+Fran=C3=A7ois-Xavier
