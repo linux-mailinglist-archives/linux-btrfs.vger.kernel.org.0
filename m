@@ -2,272 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D73B497E5D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 12:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1363497F28
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 13:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238065AbiAXL5k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jan 2022 06:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
+        id S238305AbiAXMTu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jan 2022 07:19:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238032AbiAXL5k (ORCPT
+        with ESMTP id S241071AbiAXMTp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jan 2022 06:57:40 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6EFC06173B
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jan 2022 03:57:39 -0800 (PST)
+        Mon, 24 Jan 2022 07:19:45 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0506C06173B
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jan 2022 04:19:44 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9094560C7C
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jan 2022 11:57:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69C4DC340E1;
-        Mon, 24 Jan 2022 11:57:37 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 881AEB80EFD
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jan 2022 12:19:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3A7DC340E1;
+        Mon, 24 Jan 2022 12:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643025458;
-        bh=FQkBGuV8j6zBoMhmikJYfHsiCFVKkwM8NNt8/oh8kos=;
+        s=k20201202; t=1643026782;
+        bh=dpXX+DPohZYWZTfWASPtBjYKa4pMTzDX1oLiGjf3Kqg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J/EJ/pphg3nfAR9vOLjp6lWO2JyzS7sU84T7KqX6xGH7LMyOEgtzqP/VZAjZJJ4GM
-         Q/QxBnMFjzC+MqDcPgui+JoNVykXN4aaEDNuLB5ix/Lf8ihkc0/z23Yv2terxQu8lL
-         Hd7Zxk9XXstC+B0Kfh4ARnQ1o5F8bzg9LNy3YUflJpW3MFWVK/ts/fj+H8cIm02bLd
-         RPaGp+XZu5SKcQLnEm7hqkTnLclz64lTs+FmLQpwkCl9mJxrCeMRapTRTD6VSI9zhA
-         dbxvqZyCs5SQVEaXlAZt7V8UbVX894hPmPHhdVbc9UMgS8R/QIx2rHb6lgUNsjUp/Z
-         vD88dfoRY6aEg==
-Date:   Mon, 24 Jan 2022 11:57:35 +0000
+        b=opKLyD01YD5orsab+zFjBfvrvO9HBd/Zt0jHVLJxhm6Ehzu+i+TwSadoa8bIdjBBY
+         HT4KHeKocXHKdJQHbhKVPxTBzYRKSKGsz4uTResUgHMOqdZWJWwI7MwqAGCjV21hu+
+         k6VtHhBrTJc8wZOx1OPlAvkc6/mqwS9fS1aFoYkWrSI+hxESbS4M6gsAYtBvWhHAnU
+         qMw+Ko7ibPEbYnnaAIWuI8hRnQTb40B21JdPK4Ln6rKKfGUmSAmsjWl7BJihE2xzP7
+         Btblh/ChncB+yYfEr/9e0OlvF7Blr8oFon+SJFFQUDw6aDQbPbMzyaT9crkoio5BQq
+         shf4XVS85DXLA==
+Date:   Mon, 24 Jan 2022 12:19:39 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH RFC] btrfs: defrag: abort the whole cluster if there is
- any hole in the range
-Message-ID: <Ye6UL/UD3yZDcub0@debian9.Home>
-References: <20220124063419.40114-1-wqu@suse.com>
- <Ye6J6a7vG1tj49XM@debian9.Home>
- <58c6952b-9cfc-bb64-1e4b-4bb18f774d2d@gmx.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: defrag: don't try to merge regular extents with
+ preallocated extents
+Message-ID: <Ye6ZW0z1FQXlRlPU@debian9.Home>
+References: <20220123045242.25247-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <58c6952b-9cfc-bb64-1e4b-4bb18f774d2d@gmx.com>
+In-Reply-To: <20220123045242.25247-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 24, 2022 at 07:32:32PM +0800, Qu Wenruo wrote:
+On Sun, Jan 23, 2022 at 12:52:42PM +0800, Qu Wenruo wrote:
+> [BUG]
+> With older kernels (before v5.16), btrfs will defrag preallocated extents.
+> While with newer kernels (v5.16 and newer) btrfs will not defrag
+> preallocated extents, but it will defrag the extent just before the
+> preallocated extent, even it's just a single sector.
 > 
+> This can be exposed by the following small script:
 > 
-> On 2022/1/24 19:13, Filipe Manana wrote:
-> > On Mon, Jan 24, 2022 at 02:34:19PM +0800, Qu Wenruo wrote:
-> > > [BUG]
-> > > There are several reports that autodefrag is causing more IO in v5.16,
-> > > caused by the recent refactor of defrag (mostly to support subpage
-> > > defrag).
-> > > 
-> > > With the recent debug helpers, I also locally reproduced it using
-> > > the following script:
-> > > 
-> > > 	mount $dev $mnt -o autodefrag
-> > > 
-> > > 	start_trace
-> > > 	$fsstress -w -n 2000 -p 1 -d $mnt -s 1642319517
-> > > 	sync
-> > > 	btrfs ins dump-tree -t 256 $dev > /tmp/dump_tree
-> > > 	echo "=== autodefrag ==="
-> > > 	grep . -IR /sys/fs/btrfs/$uuid/debug/io_accounting
-> > > 	echo 0 > /sys/fs/btrfs/$uuid/debug/cleaner_trigger
-> > > 	sleep 3
-> > > 	sync
-> > > 	echo "======"
-> > > 	grep . -IR /sys/fs/btrfs/$uuid/debug/io_accounting
-> > > 	umount $mnt
-> > > 	end_trace
-> > > 
-> > > Btrfs indeeds causes more IO for autodefrag, with all the fixes
-> > > submitted, it still causes 18% of total IO to autodefrag.
-> > > 
-> > > [CAUSE]
-> > > There is a hidden bug in the original defrag code in
-> > > cluster_pages_for_defrag():
-> > > 
-> > >          while (search_start < page_end) {
-> > >                  struct extent_map *em;
-> > > 
-> > >                  em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, search_start,
-> > >                                        page_end - search_start);
-> > >                  if (IS_ERR(em)) {
-> > >                          ret = PTR_ERR(em);
-> > >                          goto out_unlock_range;
-> > >                  }
-> > >                  if (em->block_start >= EXTENT_MAP_LAST_BYTE) {
-> > >                          free_extent_map(em);
-> > >                          /* Ok, 0 means we did not defrag anything */
-> > >                          ret = 0;
-> > >                          goto out_unlock_range;
-> > >                  }
-> > >                  search_start = extent_map_end(em);
-> > >                  free_extent_map(em);
-> > > 	}
-> > > 
-> > > @search_start is the defrag range start, and @page_end is the defrag
-> > > range end (exclusive).
-> > > This while() loop is called before marking the pages for defrag.
-> > > 
-> > > The Ok comment is the root case.
-> > > 
-> > > With my test seed, root 256 inode 287 is the most obvious example, there
-> > > is a cluster of file extents starting at file offset 118784, and they
-> > > are completely sane to be merged:
-> > > 
-> > >          item 59 key (287 EXTENT_DATA 118784) itemoff 6211 itemsize 53
-> > >                  generation 85 type 1 (regular)
-> > >                  extent data disk byte 339034112 nr 8192
-> > >                  extent data offset 0 nr 8192 ram 8192
-> > >          item 60 key (287 EXTENT_DATA 126976) itemoff 6158 itemsize 53
-> > >                  generation 85 type 1 (regular)
-> > >                  extent data disk byte 299954176 nr 4096
-> > >                  extent data offset 0 nr 4096 ram 4096
-> > >          item 61 key (287 EXTENT_DATA 131072) itemoff 6105 itemsize 53
-> > >                  generation 85 type 1 (regular)
-> > >                  extent data disk byte 339042304 nr 4096
-> > >                  extent data offset 0 nr 4096 ram 4096
-> > >          item 62 key (287 EXTENT_DATA 135168) itemoff 6052 itemsize 53
-> > >                  generation 85 type 1 (regular)
-> > >                  extent data disk byte 303423488 nr 4096
-> > >                  extent data offset 0 nr 4096 ram 4096
-> > >          item 63 key (287 EXTENT_DATA 139264) itemoff 5999 itemsize 53
-> > >                  generation 85 type 1 (regular)
-> > >                  extent data disk byte 339046400 nr 106496
-> > >                  extent data offset 0 nr 106496 ram 106496
-> > > 
-> > > Then comes a hole at offset 245760, and the file is way larger than
-> > > 245760.
-> > > 
-> > > The old kernel will call cluster_pages_for_defrag() with start == 118784
-> > > and len == 256K.
-> > > 
-> > > Then into the mentioned while loop, finding the hole at 245760 and
-> > > rejecting the whole 256K cluster.
-> > > 
-> > > This also means, the old behavior will only defrag the whole cluster,
-> > > which is normally in 256K size (can be smaller at file end though).
-> > > 
-> > > [?FIX?]
-> > > I'm not convinced the old behavior is correct.
-> > > 
-> > > But since my refactor introduced a behavior change, and end users are
-> > > already complaining, then it's a regression, we should revert to the old
-> > > behavior by rejecting the cluster if there is anything preventing the
-> > > whole cluster to be defragged.
-> > > 
-> > > However the refactored code can not completely emulate the behavior, as
-> > > now cluster is split only by bytenr, no more extents skip will affect
-> > > the cluster split.
-> > > 
-> > > This results a more strict condition for full-cluster-only defrag.
-> > > 
-> > > As a result, for the mentioned fsstress seed, it only caused around 1%
-> > > for autodefrag IO, compared to 8.5% of older kernel.
-> > > 
-> > > Cc: Filipe Manana <fdmanana@suse.com>
-> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > > ---
-> > > Reason for RFC:
-> > > 
-> > > I'm not sure what is the correct behavior.
-> > > 
-> > > The whole cluster rejection is introduced by commit 7f458a3873ae ("btrfs: fix
-> > > race when defragmenting leads to unnecessary IO"), which is fine for old
-> > > kernels.
-> > > 
-> > > But the refactored code provides a way to still do the defrag, without
-> > > defragging holes. (But still has its own regressions)
-> > > 
-> > > If the refactored defrag (with regression fixed) and commit 7f458a3873ae
-> > > are submitted to the mail list at the same time, I guess it's no doubt we
-> > > would choose the refactored code, as it won't cause extra IO for
-> > > holes, while can still defrag as hard as possible.
-> > > 
-> > > But since v5.11 which has commit 7f458a3873ae, the autodefrag IO is
-> > > already reduced, I'm not sure if it's OK to increase the IO back to the old
-> > > level.
-> > 
-> > There's a misunderstanding of what that commit did, it was to fix a race that
-> > resulted in marking ranges with holes for delalloc - the end result being that
-> > we lost holes and ended up allocating extents full of zeroes.
+> 	mkfs.btrfs -f $dev > /dev/null
 > 
-> That part of not defragging holes is completely sane, and I have no
-> problem with that.
+> 	mount $dev $mnt
+> 	xfs_io -f -c "pwrite 0 4k" -c sync -c "falloc 4k 16K" $mnt/file
+> 	xfs_io -c "fiemap -v" $mnt/file
+> 	btrfs fi defrag $mnt/file
+> 	sync
+> 	xfs_io -c "fiemap -v" $mnt/file
 > 
-> > 
-> > The whole decision to skip in case there's a hole was already done by the
-> > old function should_defrag_range(), which was called without having the inode
-> > and the range locked. This left a time window between the call to
-> > should_defrag_range() and the cluster_pages_for_defrag(), where if a hole was
-> > punched after the call to the first function, we would dirty the hole and end
-> > up replacing it with an extent full of zeroes. If the hole was punched before
-> > should_defrag_range(), then defrag would do nothing.
-> > 
-> > I believe the changelog of that commit is clear enough about the race it
-> > fixes. It did not add a new policy to skip holes, it was already there at
-> > should_defrag_range() (which does not exists anymore after the refactoring).
+> The output looks like this on older kernels:
 > 
-> Nope.
+> /mnt/btrfs/file:
+>  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>    0: [0..7]:          26624..26631         8   0x0
+>    1: [8..39]:         26632..26663        32 0x801
+> /mnt/btrfs/file:
+>  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>    0: [0..39]:         26664..26703        40   0x1
 > 
-> The should_defrag_range() only checks the first extent it hits.
+> Which defrags the single sector along with the preallocated extent, and
+> replace them with an regular extent into a new location (caused by data
+> COW).
+> This wastes most of the data IO just for the preallocated range.
+> 
+> On the other hand, v5.16 is slightly better:
+> 
+> /mnt/btrfs/file:
+>  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>    0: [0..7]:          26624..26631         8   0x0
+>    1: [8..39]:         26632..26663        32 0x801
+> /mnt/btrfs/file:
+>  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>    0: [0..7]:          26664..26671         8   0x0
+>    1: [8..39]:         26632..26663        32 0x801
+> 
+> The preallocated range is not defragged, but the sector before it still
+> gets defragged, which has no need for it.
+> 
+> [CAUSE]
+> One of the function reused by the old and new behavior is
+> defrag_check_next_extent(), it will determine if we should defrag
+> current extent by checking the next one.
+> 
+> It only checks if the next extent is a hole or inlined, but it doesn't
+> check if it's preallocated.
+> 
+> On the other hand, out of the function, both old and new kernel will
+> reject preallocated extents.
+> 
+> Such inconsistent behavior causes above behavior.
+> 
+> [FIX]
+> - Also check if next extent is preallocated
+>   If so, don't defrag current extent
+> 
+> - Add comments on each case we don't defrag
+> 
+> This will reduce the IO caused by defrag ioctl and autodefrag.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/ioctl.c | 29 +++++++++++++++++++++++------
+>  1 file changed, 23 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 91ba2efe9792..dfa81b377e89 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1049,23 +1049,40 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
+>  	return em;
+>  }
+>  
+> +/*
+> + * Return if current extent @em is a good candidate for defrag.
+> + *
+> + * This is done by checking against the next extent after @em.
+> + */
+>  static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+>  				     bool locked)
+>  {
+>  	struct extent_map *next;
+> -	bool ret = true;
+> +	bool ret = false;
+>  
+>  	/* this is the last extent */
+>  	if (em->start + em->len >= i_size_read(inode))
+> -		return false;
+> +		return ret;
+>  
+>  	next = defrag_lookup_extent(inode, em->start + em->len, locked);
+> +	/* No next extent or a hole, no way to merge */
+>  	if (!next || next->block_start >= EXTENT_MAP_LAST_BYTE)
+> -		ret = false;
+> -	else if ((em->block_start + em->block_len == next->block_start) &&
+> -		 (em->block_len > SZ_128K && next->block_len > SZ_128K))
+> -		ret = false;
+> +		goto out;
+>  
+> +	/* Next extent is preallocated, no sense to defrag current extent */
+> +	if (test_bit(EXTENT_FLAG_PREALLOC, &next->flags))
+> +		goto out;
+> +
+> +	/*
+> +	 * Next extent are not only mergable but also adjacent in their
 
-Once should_defrag_range() finds the first extent is a hole, it adjust the
-*skip parameter to the end of the extent's range. Then the main defrag loop
-continues and does not call cluster_pages_for_defrag() for that range.
+are not -> is not
+mergable -> mergeable
+their -> its
 
-So no, the race fix did change the logic regarding holes.
+> +	 * logical address, normally an excellent candicate, but if they
 
+candicate -> candidate
+
+> +	 * are already large enough, then no need to defrag current extent.
+> +	 */
+
+It still sounds a bit odd to me, maybe:
+
+Next extent is mergeable and its logical address is contiguous with this
+extent, so normally an excellent candidate, but if this extent or the next
+one is already large enough, then we don't need to defrag. We use SZ_128K
+because in case of enabled compression, extents can never be larger than
+that.
+
+Adding this comment is unrelated to this fix about prealloc extents, but I'm
+fine with it.
+
+Other than that it looks fine.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> +	if ((em->block_start + em->block_len == next->block_start) &&
+> +	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
+> +		goto out;
+> +	ret = true;
+> +out:
+>  	free_extent_map(next);
+>  	return ret;
+>  }
+> -- 
+> 2.34.1
 > 
-> Check the tree dump I pasted in the commit message, the first extent at
-> file offset 118784 is completely fine to defrag.
-> (in fact all the five extents are completely fine to defrag)
-> 
-> Then should_defrag_range() return true, but later since @newer_than is
-> set, we will try to defrag the range [118784, 118784 + 256K).
-> 
-> Thus that's why your added code is in fact affecting the behavior of
-> cluster defragging, not just the race fix.
-> 
-> Maybe there is some other code modification caused this, but since my
-> debug points exactly to the code you added, and I can't find any related
-> change after 2018 in main loop of btrfs_defrag_file().
-> 
-> Thanks,
-> Qu
-> > 
-> > Thanks.
-> > 
-> > > ---
-> > >   fs/btrfs/ioctl.c | 11 +++++++++++
-> > >   1 file changed, 11 insertions(+)
-> > > 
-> > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > > index dfa81b377e89..17d5e35a42fe 100644
-> > > --- a/fs/btrfs/ioctl.c
-> > > +++ b/fs/btrfs/ioctl.c
-> > > @@ -1456,6 +1456,17 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
-> > >   	if (ret < 0)
-> > >   		goto out;
-> > > 
-> > > +	if (list_empty(&target_list))
-> > > +		goto out;
-> > > +	entry = list_entry(target_list.next, struct defrag_target_range, list);
-> > 
-> > Use list_first_entry().
-> > 
-> > > +
-> > > +	/*
-> > > +	 * To emulate the old kernel behavior, if the cluster has any hole or
-> > > +	 * other things to prevent defrag, then abort the whole cluster.
-> > > +	 */
-> > > +	if (entry->len != len)
-> > > +		goto out;
-> > > +
-> > >   	list_for_each_entry(entry, &target_list, list) {
-> > >   		u32 range_len = entry->len;
-> > > 
-> > > --
-> > > 2.34.1
-> > > 
