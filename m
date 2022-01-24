@@ -2,82 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6384985F4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 18:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CADA498D1C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 20:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244186AbiAXRK0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jan 2022 12:10:26 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:46884 "EHLO
+        id S1348136AbiAXT17 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jan 2022 14:27:59 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:57404 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241472AbiAXRK0 (ORCPT
+        with ESMTP id S1351066AbiAXTZy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jan 2022 12:10:26 -0500
+        Mon, 24 Jan 2022 14:25:54 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0454121999;
-        Mon, 24 Jan 2022 17:10:25 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2E1C52190B;
+        Mon, 24 Jan 2022 19:25:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1643044225;
+        t=1643052353;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XP1bg1bNzxZRAtvRNxwbE1AQAGkc0lwDw0LiypECgJg=;
-        b=YMjCgDv5xwwEJkHguBLadWAj1hihAMbaJ6h48pG/wNVg89YZmDoby1YjLmcuOtKJAKV8qD
-        k1V07+Mh7wx6HE9r8SaqCjyHi7YiLT4+EJDTepS6gJAK+wAzDSxphYNur+uR2KL4orxc9U
-        DLLSPHAs3y2U8dGtg8K+GNsHFTpnrqM=
+        bh=91UgOFkBJpd4JSRQfxG76rgq8lfiIgjrMGoPimE9940=;
+        b=sDpQnYdgVAw+m/rijFMWSdPMTkau40niPVPBVxeg9SIruk3DEdvKzo4XdavC3z6yY4dp3/
+        taksCK6Z3+MOvb3pFrU1TM7JYHygFpQsvS5vbW4vLTO80G9tx6mg1JN1zpIuqwIft1+ICa
+        c+UNd6qK4DQpO3lxwPTGWYjAH/Iy+bc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1643044225;
+        s=susede2_ed25519; t=1643052353;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XP1bg1bNzxZRAtvRNxwbE1AQAGkc0lwDw0LiypECgJg=;
-        b=T8iYsEoZyh0rrYpj8I5s77EWp7ilTjn3gdDiRrUQk5kzrfeW5+/w9z08Mm3c5maCVPI7k8
-        P7MkOytnHgftghCA==
+        bh=91UgOFkBJpd4JSRQfxG76rgq8lfiIgjrMGoPimE9940=;
+        b=DUrKXYZ/kmdNf5sHez0ahwnkSyq7b9+tq9XdhUdxozAKIXZw14vlrc0rs8hrFwpwmU7gyD
+        mcBoMmTfEGOuSVAA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id EF378A3B81;
-        Mon, 24 Jan 2022 17:10:24 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 23E15A3B87;
+        Mon, 24 Jan 2022 19:25:53 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1D81DDA7A3; Mon, 24 Jan 2022 18:09:45 +0100 (CET)
-Date:   Mon, 24 Jan 2022 18:09:44 +0100
+        id C737EDA7A3; Mon, 24 Jan 2022 20:25:12 +0100 (CET)
+Date:   Mon, 24 Jan 2022 20:25:12 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: update writeback index when starting defrag
-Message-ID: <20220124170944.GB14046@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: fix use-after-free after failure to create a
+ snapshot
+Message-ID: <20220124192512.GC14046@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
         linux-btrfs@vger.kernel.org
-References: <20aad8ccf0fbdecddd49216f25fa772754f77978.1642700395.git.fdmanana@suse.com>
+References: <3ebda64ca2a8b55f924fbf2b9e850ff99e65938b.1642779802.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20aad8ccf0fbdecddd49216f25fa772754f77978.1642700395.git.fdmanana@suse.com>
+In-Reply-To: <3ebda64ca2a8b55f924fbf2b9e850ff99e65938b.1642779802.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 05:41:17PM +0000, fdmanana@kernel.org wrote:
+On Fri, Jan 21, 2022 at 03:44:39PM +0000, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> When starting a defrag, we should update the writeback index of the
-> inode's mapping in case it currently has a value beyond the start of the
-> range we are defragging. This can help performance and often result in
-> getting less extents after writeback - for e.g., if the current value
-> of the writeback index sits somewhere in the middle of a range that
-> gets dirty by the defrag, then after writeback we can get two smaller
-> extents instead of a single, larger extent.
+> At ioctl.c:create_snapshot(), we allocate a pending snapshot structure and
+> then attach it to the transaction's list of pending snapshots. After that
+> we call btrfs_commit_transaction(), and if that returns an error we jump
+> to 'fail' label, where we kfree() the pending snapshot structure. This can
+> result in a later use-after-free of the pending snapshot:
 > 
-> We used to have this before the refactoring in 5.16, but it was removed
-> without any reason to do so. Orginally it was added in kernel 3.1, by
-> commit 2a0f7f5769992b ("Btrfs: fix recursive auto-defrag"), in order to
-> fix a loop with autodefrag resulting in dirtying and writing pages over
-> and over, but some testing on current code did not show that happening,
-> at least with the test described in that commit.
+> 1) We allocated the pending snapshot and added it to the transaction's
+>    list of pending snapshots;
 > 
-> So add back the behaviour, as at the very least it is a nice to have
-> optimization.
+> 2) We call btrfs_commit_transaction(), and it fails either at the first
+>    call to btrfs_run_delayed_refs() or btrfs_start_dirty_block_groups().
+>    In both cases, we don't abort the transaction and we release our
+>    transaction handle. We jump to the 'fail' label and free the pending
+>    snapshot structure. We return with the pending snapshot still in the
+>    transaction's list;
 > 
-> Fixes: 7b508037d4cac3 ("btrfs: defrag: use defrag_one_cluster() to implement btrfs_defrag_file()")
+> 3) Another task commits the transaction. This time there's no error at
+>    all, and then during the transaction commit it accesses a pointer
+>    to the pending snapshot structure that the snapshot creation task
+>    has already freed, resulting in a user-after-free.
+> 
+> This issue could actually be detected by smatch, which produced the
+> following warning:
+> 
+>   fs/btrfs/ioctl.c:843 create_snapshot() warn: '&pending_snapshot->list' not removed from list
+> 
+> So fix this by not having the snapshot creation ioctl directly add the
+> pending snapshot to the transaction's list. Instead add the pending
+> snapshot to the transaction handle, and then at btrfs_commit_transaction()
+> we add the snapshot to the list only when we can guarantee that any error
+> returned after that point will result in a transaction abort, in which
+> case the ioctl code can safely free the pending snapshot and no one can
+> access it anymore.
+> 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Added to misc-next, thank.
+Added to misc-next, thanks.
