@@ -2,150 +2,230 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACBD497913
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 08:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7555D497DA7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 12:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235799AbiAXHAj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jan 2022 02:00:39 -0500
-Received: from mout.gmx.net ([212.227.15.18]:42481 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235642AbiAXHAi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jan 2022 02:00:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643007629;
-        bh=evXx6Tid8UahLeTyy5aGjdZzMwNYQm+dDxMLUSv6cCo=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=fz3JGfykd/syAorkylVrPd8xtCF/0p0tGm05/AoD+vb5cGQmH849sFgTV0F+0wkz0
-         b4cTEoU2A179DzHd0XYtS5pnQ3BcNJR9s8RJujp4lZwunJhBb8EXujmC99okVGu4NT
-         tHUINbevspc9Hm47r97G+5zP0/OswDPK4fesSw0U=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvbFs-1mJVV42RtO-00sgfh; Mon, 24
- Jan 2022 08:00:29 +0100
-Message-ID: <c88c1438-ebcf-a652-1940-4daa4ee53be9@gmx.com>
-Date:   Mon, 24 Jan 2022 15:00:24 +0800
+        id S237240AbiAXLNv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jan 2022 06:13:51 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:44242 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232330AbiAXLNv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Jan 2022 06:13:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0DC5DB80EF2
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jan 2022 11:13:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 392E2C340E1;
+        Mon, 24 Jan 2022 11:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643022828;
+        bh=zpVjKXPL8Olm0yVwGIK/LLn5HuNqWimNH1fgoqvanek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mzUHCF68nbsKm4HeYGUe0XBxuurhGPtPoFeeRp/PiWJyuikWcoowedLQ+Lhb1BzWc
+         eh5u23es1Hnai9Q02k+9e4d+fM5uZphUCiv0WraTZalopBiH32hRkrGGJq8CH27UFq
+         p/asrUR0HBzMNS45nF81i1a7cYEb35WG6XtBZkidLxtpfsPEwInMdbzwuRwWCUD9T1
+         it43hmPoCKphL/37fg1oG9Gw18/fdBMM6LCmjGwk05foY/a+954xeDpvzel5Kz+g/3
+         6XSi2pecy/mQMedK4vWCUwYphXN3ZlwQRmoxms+1BBXCilV+ILM8Cw27t4d8aYVpJV
+         lMUD4SvZA3gHQ==
+Date:   Mon, 24 Jan 2022 11:13:45 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH RFC] btrfs: defrag: abort the whole cluster if there is
+ any hole in the range
+Message-ID: <Ye6J6a7vG1tj49XM@debian9.Home>
+References: <20220124063419.40114-1-wqu@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To:     =?UTF-8?Q?Fran=c3=a7ois-Xavier_Thomas?= <fx.thomas@gmail.com>
-Cc:     Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <wqu@suse.com>
-References: <CAEwRaO4y3PPPUdwYjNDoB9m9CLzfd3DFFk2iK1X6OyyEWG5-mg@mail.gmail.com>
- <YeVawBBE3r6hVhgs@debian9.Home> <YeWgdQ2ZvceLTIej@debian9.Home>
- <CAEwRaO5JcuHkuKs_hx9SJQ6jDr79TSorEPVEkt7BPRLfK2Rp-g@mail.gmail.com>
- <CAEwRaO7LpG+KBYRgB4MGx9td5PO6JvFWpKbyKsHDB=7LKMmAJg@mail.gmail.com>
- <CAL3q7H7UvBzw998MW1wxxBo+EPCePVikNdG-rT1Zs0Guo71beQ@mail.gmail.com>
- <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
- <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
- <CAEwRaO6CAjfH-qtt9D9NiH2hh4KFTSL-xCvdVZr+UXKe6k=jOA@mail.gmail.com>
- <CAL3q7H7xfcUk_DXEfdsnGX8dWLDsSAPeAugoeSw3tah476xCBQ@mail.gmail.com>
- <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com>
- <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
- <CAEwRaO7cA3bbYMSCoYQ2gqaeJBSes5EBok5Oon-YOm7EQ8JOhw@mail.gmail.com>
- <7802ff58-d08b-76d4-fcc7-c5d15d798b3b@gmx.com>
- <CAEwRaO58oCzY4GjU3gCSru3Gq02GvGSdkg5hPwCKMwYcZ+cM2Q@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Massive I/O usage from btrfs-cleaner after upgrading to 5.16
-In-Reply-To: <CAEwRaO58oCzY4GjU3gCSru3Gq02GvGSdkg5hPwCKMwYcZ+cM2Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:szH85lgt73NI4jEhpoP5VBAcel5VqQDf2xxmXaxaXX24K7HXp3k
- 3mNeyHsagfB0nzQ/y7istTPBuUlRtl6FLdzZH2GbuWN85WS2XtQa0DeikozLpJqTA9UhdJJ
- liNi24g3gVW1cZi3TxZoaBDg41hHk9s68Hx4lFU2dcYu9BIb9bbHnwBavBQi3vGKij5TVl8
- G6Z37Hs3k+pwxeGB3+8rQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BhlaQpRadqQ=:M/PujuQGLqT26Os8ipYBeb
- 2/MQpAL1yk9MmhIwfJCxGPuC6PvyGIrlucsVov6iO9SZU+DVLtwJ5/eIZxm8Svq5VtIC/9KwN
- AsfqOA0tFq+VTLjlKf/nGNJdbNutDGtsTmaguPg8NrhgDwL9whfLr3+hrm/LSZlrYydZmrKr1
- kJlSuvIfID+4c9hamv5wtfjMk+5caiUB017QOFjucs9tQaDWSxu6iuY94dFZdHBMwdRovR4sk
- /6Qe2shfUX12PcVIfTKzNur6gXBDtUvusAh9bCcd/AUeWgx8cA2rcclcIGh7LRSmGwbi/AEz9
- 7KPtZqB3eu95OFGZe9rC1FldswLxa4eHcLEdzPJBD9SS2smuIqlOcVY/xHDTVlsCQB8t35Fz4
- Po2omDM5pT7Oq578X1L2MYKQRUaTX7mYddnuZ31jQ5dsyF77RZYVKNJF0m56VOMbAruS9gIjX
- D8M8FJQT4QDu1fC3tiTubdlJmbDkhcwuTHyLiAICwTJ1IvMi6Rq8zFGW8dOV9AC5PRLfhyvam
- nM6+ODs7g3h8qKiH/AAQIJ5tgKhygfUDNX8K4VFEPjPt6ZamB9zL3X09wep4Wz78MrXnunBeI
- 25arH7UspqvCj2fQoynmjjpXnFiJUpFWqjyXww0mTPZhd8YUEu2uTIyj0+rbHcoNqkZku0J1g
- PuzxC2CL+1BO2tPjCg61B5zmoDEv59sEt0IKYZ7/3iFLWKfAuFiUH0oOIGHwb95bGsUc+tuzn
- SjeFHkPgJ5BSEcP7Mc9LarDHL6Aeb7NAQfh/fk0AgiE2Om+tWd8BKJyYL3N8F5k4pWFqkA7eP
- 3Wr+vRryEiRUSl0jhw2dh830PSzujlYCSPjOJX72MAWr8fqDlUxqwLQTshUxNsrWD2aiNszDU
- FV9F18sqf/RswGfAuyVs43cUUTYrtoU0XWDfM4K+OurievTA3Ba9jxUpTp55wlgM3PHAP9MN+
- siu+P3ANF7kKs8J7t8OjD51XFiUC6qfLY06W5P1JJdxKqsUqsmeOcF9LQazzayR4bxU4TNJeL
- 8XcEoAj4t2XesJg9+ouM9qs5+gACiyKXPgDT1RdA6VoWRjXFcwwIXVU3fy/PIs4vflED9haOF
- /ki/7sjZriZSLQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220124063419.40114-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Jan 24, 2022 at 02:34:19PM +0800, Qu Wenruo wrote:
+> [BUG]
+> There are several reports that autodefrag is causing more IO in v5.16,
+> caused by the recent refactor of defrag (mostly to support subpage
+> defrag).
+> 
+> With the recent debug helpers, I also locally reproduced it using
+> the following script:
+> 
+> 	mount $dev $mnt -o autodefrag
+> 
+> 	start_trace
+> 	$fsstress -w -n 2000 -p 1 -d $mnt -s 1642319517
+> 	sync
+> 	btrfs ins dump-tree -t 256 $dev > /tmp/dump_tree
+> 	echo "=== autodefrag ==="
+> 	grep . -IR /sys/fs/btrfs/$uuid/debug/io_accounting
+> 	echo 0 > /sys/fs/btrfs/$uuid/debug/cleaner_trigger
+> 	sleep 3
+> 	sync
+> 	echo "======"
+> 	grep . -IR /sys/fs/btrfs/$uuid/debug/io_accounting
+> 	umount $mnt
+> 	end_trace
+> 
+> Btrfs indeeds causes more IO for autodefrag, with all the fixes
+> submitted, it still causes 18% of total IO to autodefrag.
+> 
+> [CAUSE]
+> There is a hidden bug in the original defrag code in
+> cluster_pages_for_defrag():
+> 
+>         while (search_start < page_end) {
+>                 struct extent_map *em;
+> 
+>                 em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, search_start,
+>                                       page_end - search_start);
+>                 if (IS_ERR(em)) {
+>                         ret = PTR_ERR(em);
+>                         goto out_unlock_range;
+>                 }
+>                 if (em->block_start >= EXTENT_MAP_LAST_BYTE) {
+>                         free_extent_map(em);
+>                         /* Ok, 0 means we did not defrag anything */
+>                         ret = 0;
+>                         goto out_unlock_range;
+>                 }
+>                 search_start = extent_map_end(em);
+>                 free_extent_map(em);
+> 	}
+> 
+> @search_start is the defrag range start, and @page_end is the defrag
+> range end (exclusive).
+> This while() loop is called before marking the pages for defrag.
+> 
+> The Ok comment is the root case.
+> 
+> With my test seed, root 256 inode 287 is the most obvious example, there
+> is a cluster of file extents starting at file offset 118784, and they
+> are completely sane to be merged:
+> 
+>         item 59 key (287 EXTENT_DATA 118784) itemoff 6211 itemsize 53
+>                 generation 85 type 1 (regular)
+>                 extent data disk byte 339034112 nr 8192
+>                 extent data offset 0 nr 8192 ram 8192
+>         item 60 key (287 EXTENT_DATA 126976) itemoff 6158 itemsize 53
+>                 generation 85 type 1 (regular)
+>                 extent data disk byte 299954176 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>         item 61 key (287 EXTENT_DATA 131072) itemoff 6105 itemsize 53
+>                 generation 85 type 1 (regular)
+>                 extent data disk byte 339042304 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>         item 62 key (287 EXTENT_DATA 135168) itemoff 6052 itemsize 53
+>                 generation 85 type 1 (regular)
+>                 extent data disk byte 303423488 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>         item 63 key (287 EXTENT_DATA 139264) itemoff 5999 itemsize 53
+>                 generation 85 type 1 (regular)
+>                 extent data disk byte 339046400 nr 106496
+>                 extent data offset 0 nr 106496 ram 106496
+> 
+> Then comes a hole at offset 245760, and the file is way larger than
+> 245760.
+> 
+> The old kernel will call cluster_pages_for_defrag() with start == 118784
+> and len == 256K.
+> 
+> Then into the mentioned while loop, finding the hole at 245760 and
+> rejecting the whole 256K cluster.
+> 
+> This also means, the old behavior will only defrag the whole cluster,
+> which is normally in 256K size (can be smaller at file end though).
+> 
+> [?FIX?]
+> I'm not convinced the old behavior is correct.
+> 
+> But since my refactor introduced a behavior change, and end users are
+> already complaining, then it's a regression, we should revert to the old
+> behavior by rejecting the cluster if there is anything preventing the
+> whole cluster to be defragged.
+> 
+> However the refactored code can not completely emulate the behavior, as
+> now cluster is split only by bytenr, no more extents skip will affect
+> the cluster split.
+> 
+> This results a more strict condition for full-cluster-only defrag.
+> 
+> As a result, for the mentioned fsstress seed, it only caused around 1%
+> for autodefrag IO, compared to 8.5% of older kernel.
+> 
+> Cc: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Reason for RFC:
+> 
+> I'm not sure what is the correct behavior.
+> 
+> The whole cluster rejection is introduced by commit 7f458a3873ae ("btrfs: fix
+> race when defragmenting leads to unnecessary IO"), which is fine for old
+> kernels.
+> 
+> But the refactored code provides a way to still do the defrag, without
+> defragging holes. (But still has its own regressions)
+> 
+> If the refactored defrag (with regression fixed) and commit 7f458a3873ae
+> are submitted to the mail list at the same time, I guess it's no doubt we
+> would choose the refactored code, as it won't cause extra IO for
+> holes, while can still defrag as hard as possible.
+> 
+> But since v5.11 which has commit 7f458a3873ae, the autodefrag IO is
+> already reduced, I'm not sure if it's OK to increase the IO back to the old
+> level.
 
+There's a misunderstanding of what that commit did, it was to fix a race that
+resulted in marking ranges with holes for delalloc - the end result being that
+we lost holes and ended up allocating extents full of zeroes.
 
-On 2022/1/23 02:20, Fran=C3=A7ois-Xavier Thomas wrote:
->> https://pastebin.com/raw/p87HX6AF
->
-> The 7th patch doesn't seem to be having a noticeable improvement so far.
+The whole decision to skip in case there's a hole was already done by the
+old function should_defrag_range(), which was called without having the inode
+and the range locked. This left a time window between the call to
+should_defrag_range() and the cluster_pages_for_defrag(), where if a hole was
+punched after the call to the first function, we would dirty the hole and end
+up replacing it with an extent full of zeroes. If the hole was punched before
+should_defrag_range(), then defrag would do nothing.
 
-Mind to test the latest two patches, which still needs the first 6 patches=
-:
+I believe the changelog of that commit is clear enough about the race it
+fixes. It did not add a new policy to skip holes, it was already there at
+should_defrag_range() (which does not exists anymore after the refactoring).
 
-https://patchwork.kernel.org/project/linux-btrfs/patch/20220123045242.2524=
-7-1-wqu@suse.com/
+Thanks.
 
-https://patchwork.kernel.org/project/linux-btrfs/patch/20220124063419.4011=
-4-1-wqu@suse.com/
+> ---
+>  fs/btrfs/ioctl.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index dfa81b377e89..17d5e35a42fe 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1456,6 +1456,17 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
+>  	if (ret < 0)
+>  		goto out;
+>  
+> +	if (list_empty(&target_list))
+> +		goto out;
+> +	entry = list_entry(target_list.next, struct defrag_target_range, list);
 
-The last one would greatly reduce IO, almost disable autodefrag, as it
-will only defrag a full 256K aligned, no hole/preallocated range.
+Use list_first_entry().
 
->
->> So even with more fixes, we may just end up with more IO for autodefrag=
-,
->> purely because old code is not defragging as hard.
->
-> That's unfortunate, but thanks for having looked into it, at least
-> there's a known reason for the IO increase.
-
-And just mentioned in that long commit message of the last RFC patch,
-the defrag behavior in fact changed in v5.11 first, which reduced the IO
-(if the up-to-256K cluster has any hole in it, the cluster will be
-rejected).
-
-While the even older (v5.10-) behavior will try to defrag holes, which
-is even less acceptable.
-
-My guess is, sorting by IO caused by autodefrag, the whole picture would
-look like this:
-
-v5.10 > v5.16 vanilla > v5.16 + 7 patches > v5.11~v5.15 > v5.16 + 8 patche=
-s
-
-v5.10 should be the worst, it has the most amount of IO, but wastes them
-for holes/preallocated a lot.
-
-v5.11~v5.15 reduced IO by rejecting a lot of valid cases, but still has
-a small bug related to preallocated extents.
-But overall, the rejected defrags causes less IO.
-
-v5.16 vanilla is slightly better than v5.10, it skips holes properly,
-but doesn't handle preallocated range just like v5.10, along with extra
-bugs.
-
-v5.16 + 7 patches, it should be the most balanced one (a little more
-towards defrag though).
-It can skip all hole/preallocated ranges properly, while still try its
-best to defrag small extents.
-
-v5.16 + 8 patches, the worst efficiency for defrag, thus the least
-amount of IO.
-
-
- From the beginning, defrag code is not that well documented, thus
-causing such "hidden" behavior.
-
-I hope with the pain felt in v5.16, we can catch up on the testing
-coverage and more defined/documented defrag behavior.
-
-Thanks,
-Qu
-
->
-> Fran=C3=A7ois-Xavier
+> +
+> +	/*
+> +	 * To emulate the old kernel behavior, if the cluster has any hole or
+> +	 * other things to prevent defrag, then abort the whole cluster.
+> +	 */
+> +	if (entry->len != len)
+> +		goto out;
+> +
+>  	list_for_each_entry(entry, &target_list, list) {
+>  		u32 range_len = entry->len;
+>  
+> -- 
+> 2.34.1
+> 
