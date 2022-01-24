@@ -2,83 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90268498216
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 15:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809EC4983BB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 16:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238094AbiAXO0j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jan 2022 09:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238103AbiAXO0i (ORCPT
+        id S233972AbiAXPpG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jan 2022 10:45:06 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:37872 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231203AbiAXPpF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jan 2022 09:26:38 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B81C061747
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jan 2022 06:26:38 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id u130so11845816pfc.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jan 2022 06:26:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=mJCRKkjCob9Fmdw08Os+BXHHRpJKOelFsPCnwD4wdWE=;
-        b=O1ZQ/vSyaGUnLWQlmomluPrfanNEViqhNX8NLCWg9AbmEZgJkQCaQDMkdd0VQHPF0M
-         tiTeCIqRABkL7PMu2QH7Y4mE9UHMBSZSiu6Oh1PqJuw6nt55n7UN4iaQIU1J1tbL9ord
-         SduRsZ5fCLFkr0c84VYF3GV9xB41R3UZtl6MjHAN4ORY06jsrSsGXTlfmEVpr2HIJO5A
-         19fdoEYhpHTW5TsW2/+InVw9HbeKiEqQb68QvBs+7rp38lh0JuL/i7ZAMnbEowE1Qg9u
-         5ulB7L3yZuhkh7UgmaE2hkMOwqSTi4g9aLsYsJIdD4x1FW+vMv3oQty1mplJApwYzQCx
-         H2fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=mJCRKkjCob9Fmdw08Os+BXHHRpJKOelFsPCnwD4wdWE=;
-        b=brIzFmPT69kkf7UfScn7umxwLRx5gVDhhbfH5SA6THBywgVCRelPzGUU35PmqT/n2E
-         6dnAXLsIQ5bVlyNiHrEUyDC3pVLimb9DgQRAYlXj1z/Ny3VyR4vlYc89BpWsVjmV8lCk
-         ByE6AEOfSBBCD/VW/ctlVmwOB5wQZ33Xr20bY6mQSNoWPY/+ZEhthMTRU+9ouXJT62bY
-         DZmkpmW4d0YGUXl0MOz7lM4xa6GDwAjFi9glZzGQVMOx/ZIZybtC3TQ2d7JlFVtCe+AT
-         dJE48ygB3lwTdadJtBGz4rpXwixJC4BcPzCLtGTQ93r3r+CjVgXFI+YXu03Ipe3TZ6eF
-         ycAA==
-X-Gm-Message-State: AOAM530HeRQXZoWSl8s8WDzO2XxIZPh+nuVfIGtD/1PT5f1Pu5wnBBY+
-        3TzmGIgO/ZDVwD7ICDdaZgySsYswaOVV2LVf6rQ=
-X-Google-Smtp-Source: ABdhPJyMtw/1AHAD7vxQlJ8JIvQIXKoTVtMbDJEq9SHpvoD2wVmpnP6h719OB5YLgDjku/scZPT7sK5uPbk5SsOBZKQ=
-X-Received: by 2002:aa7:914a:0:b0:4c6:c181:5251 with SMTP id
- 10-20020aa7914a000000b004c6c1815251mr14447039pfi.41.1643034398020; Mon, 24
- Jan 2022 06:26:38 -0800 (PST)
+        Mon, 24 Jan 2022 10:45:05 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C66DD218ED;
+        Mon, 24 Jan 2022 15:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1643039104;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W63PHqmSZpJFIwNzYmTn0bme7WdT8iSMgPfYJ8Hda70=;
+        b=y38OI8t6nNvHogS2/iS/hbU2W6x44CjOrYUpnC8X+qNKetE2sADw/x0Up8LohI5UtkOhcM
+        8rVsfD7F0gOdrRvBHSPAXFTnzA+ADzgX0NyKkNNXr3xwzDWPZeesNhlbsemL/qS7bTfpVQ
+        BXz2oTO2tLpj/rVwL6VwyPVyuKx1IbI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1643039104;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W63PHqmSZpJFIwNzYmTn0bme7WdT8iSMgPfYJ8Hda70=;
+        b=qfOPJXsBZSM8hFHiWA8KE9drrQ+TbVmYZnQMwcqXAt+01Di996tuTS6qw9cJb9Kc/541Oy
+        0JHIMG1uW2q0rdDA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id BC5E0A3B83;
+        Mon, 24 Jan 2022 15:45:04 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D54ACDA7A3; Mon, 24 Jan 2022 16:44:24 +0100 (CET)
+Date:   Mon, 24 Jan 2022 16:44:24 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Su Yue <l@damenly.su>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] Simple two patches for tree checker
+Message-ID: <20220124154424.GX14046@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Su Yue <l@damenly.su>,
+        linux-btrfs@vger.kernel.org
+References: <20220121093335.1840306-1-l@damenly.su>
 MIME-Version: 1.0
-Received: by 2002:a17:90b:17c8:0:0:0:0 with HTTP; Mon, 24 Jan 2022 06:26:37
- -0800 (PST)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishag89@gmail.com>
-Date:   Mon, 24 Jan 2022 06:26:37 -0800
-Message-ID: <CAF-3XQSiUkPNE2Unby_X0U5kmnw1VETFvOoN+NVHg1BP20yEZg@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220121093335.1840306-1-l@damenly.su>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend,
+On Fri, Jan 21, 2022 at 05:33:33PM +0800, Su Yue wrote:
+> Two commits for enhancing tree checker to reject the img from
+> https://bugzilla.kernel.org/show_bug.cgi?id=215299.
+> 
+> Su Yue (2):
+>   btrfs: tree-checker: check item_size for inode_item
+>   btrfs: tree-checker: check item_size for dev_item
 
-I came across your e-mail contact prior a private search while in need
-of your assistance. My name is Aisha Gaddafi a single
-
-Mother and a Widow with three Children. I am the only biological
-Daughter of late Libyan President (Late Colonel Muammar
-
-Gaddafi).
-
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a
-
-trusted investment Manager/Partner because of my current refugee
-status, however, I am interested in you for investment
-
-project assistance in your country, may be from there, we can build
-business relationship in the nearest future.
-
-I am willing to negotiate investment/business profit sharing ratio
-with you base on the future investment earning profits.
-If you are willing to handle this project on my behalf kindly reply
-Best Regards
-Mrs Aisha Gaddafi
+Nice, added to misc-next, thanks. I'll update and close the bug.
