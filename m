@@ -2,93 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17D54976EB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 02:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB8C4976ED
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jan 2022 02:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240735AbiAXBsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Jan 2022 20:48:15 -0500
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:34808 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238668AbiAXBsO (ORCPT
+        id S240699AbiAXBuS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Jan 2022 20:50:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238668AbiAXBuR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Jan 2022 20:48:14 -0500
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id 277651E00049;
-        Mon, 24 Jan 2022 03:48:13 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1642988893; bh=J7Id9iPM6i/IA+c7UmULozHJu3JcPpC9aOMgQOPpeEM=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-         Content-Type:X-ESPOL:from:date:to:cc;
-        b=grvRd4IrxaFYheoyv8mwSrem7Za0K+0aD4X5o0sqsZDjCP04hDVgm5anUonRzFO0T
-         6evwDfC3Dqx1lmHni0sTO2pRvRnWS0unaiqyCohB77+1XIaW2uIgdQaMKUKirxmuwT
-         0vqZpdK+BUoqzHVAz6KSFnT0cR3refd7kzn2jFEw=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 1E7271E0003F;
-        Mon, 24 Jan 2022 03:48:13 +0200 (EET)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id hHKzu1xJAwyw; Mon, 24 Jan 2022 03:48:12 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id B45D01E00033;
-        Mon, 24 Jan 2022 03:48:12 +0200 (EET)
-References: <CAKDzk=-HZardsLFH5c9HYre73NYNszUJqpfsh0YJnnaQToB3BA@mail.gmail.com>
- <1828959.tdWV9SEqCh@arch>
-User-agent: mu4e 1.7.0; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Diego Calleja <diegocg@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, Andrei Bacs <andrei.bacs@gmail.com>,
-        cpu808694@gmail.com, Cristiano Giuffrida <c.giuffrida@vu.nl>,
-        "Bos, H.J." <h.j.bos@vu.nl>, Kaveh Razavi <kaveh@ethz.ch>,
-        "Bacs, A." <a.bacs@vu.nl>
-Subject: Re: inline deduplication security issues
-Date:   Mon, 24 Jan 2022 09:38:48 +0800
-In-reply-to: <1828959.tdWV9SEqCh@arch>
-Message-ID: <1r0xx5tj.fsf@damenly.su>
+        Sun, 23 Jan 2022 20:50:17 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA6CC06173B
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Jan 2022 17:50:17 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id m1so46333580ybo.5
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Jan 2022 17:50:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eIn8IOT1Oof/bXKckR2WeAVXI0TeYvSPnZpXcMqKPp0=;
+        b=k2MrkqP/hjjpZA496SDHqbNwWn0Vz3dm6/k+Us2Xt9VdRXJ+kcC+E+qqzx+O/3r1f8
+         f15vYQSJdWTD9CEAzmnAxKwWPoyZuG55J4E69+yz9jmgnzPec/jt5UCXL2rThqPA+a8k
+         NObRBYq5A7ocFvh7LF0iJm4SzLcSnzK7BV7y0Rq/49F1TadfZXNIoVSDAd67RFoD11Uh
+         +35Q23Xvt6oOu3R9xulqYIGJdunnSiDoc9vvwbVZAFoMqpZwfWz75ILXreyJXKocqRRY
+         cYbQ/uCZc3ffWW7JJ2ON6/T3GIsVUxMrWxVNPtFGepkadhWiwGj7rsXfKidHqFz43GPn
+         02mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eIn8IOT1Oof/bXKckR2WeAVXI0TeYvSPnZpXcMqKPp0=;
+        b=WMHpcpXyCW9j00gl4NJJpKqT/mYaBZTrmAwwLt4iWq/sjtU1nM9rNT1aLrrP6DizP6
+         IIEWhV72iFg6W2XGZaryRcpx6leziVSYXYEBVEvZeYYTw63A2GlwStKDut6cbDbtA+mc
+         eyh3UEhVuvsCgv7DA/cbIviAR/YZR9GhNLGckqxdK6iJ3YJrMT8fM/90DfEOCf73jBnx
+         R/HlBsh9duRks/9xFdiLQX6/amv3OttHpHD73Gn9LC+WKgvENFE4gb2pxrD3YfN+7ECe
+         r1AOQQ0+CSfvQD8rGADUQpSC0HaVn+mJx7TJm5wLt0cC+jX018CoRtADdOUML6qam1wz
+         vFsg==
+X-Gm-Message-State: AOAM531DyWUGZtTKKePcVfVINc6Xpm0As8ATMojakl+40Lvaj1xrZ8fa
+        ofp8NOx9UKhvrgX9xmpqPKK/YiLmcCKYPMjgCzB9DQ==
+X-Google-Smtp-Source: ABdhPJzGM97pTxJOIUm7sKCluXMV8phUDYmkXzCsTNjvHvHNc7CqqdqteI8U3kdWrQFkRZNOQsuf+AnWjDvFvcRlASU=
+X-Received: by 2002:a25:cf53:: with SMTP id f80mr20025277ybg.400.1642989016526;
+ Sun, 23 Jan 2022 17:50:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: OK
-X-ESPOL: 885mlYpNBD+giECgR3rABwYzs0g6UeX5iJS3qn1F/g/3MCiEf0oFUxGzm3AFM3H44X8X
+References: <CAJCQCtQFpM8SLZf54zx1AAp0D1+FKC3MSitQ7pbT144+4jEWCQ@mail.gmail.com>
+In-Reply-To: <CAJCQCtQFpM8SLZf54zx1AAp0D1+FKC3MSitQ7pbT144+4jEWCQ@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 23 Jan 2022 18:50:00 -0700
+Message-ID: <CAJCQCtQJsersXAxPqLLL3+k-SG9srWXqt2p_S37MmTUCBjQ4CA@mail.gmail.com>
+Subject: Re: btrfs-debugfs in master produces a syntax error 'maxu32'
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sun, Jan 23, 2022 at 6:18 PM Chris Murphy <lists@colorremedies.com> wrote:
+>
+> Running into this today
+> https://github.com/kdave/btrfs-progs/issues/440
+>
+> But btrfs-debugfs hasn't changed in 2 years so I'm not sure why...
+> python3-3.10.2-1.fc35.x86_64
 
-On Sun 23 Jan 2022 at 20:18, Diego Calleja <diegocg@gmail.com>=20
-wrote:
+Sorry, discovered this is a copy paste related bug. (Not user error though!)
 
-> El s=C3=A1bado, 22 de enero de 2022 19:42:47 (CET) Andrei Bacs=20
-> escribi=C3=B3:
->> We have found security issues with inline deduplication in=20
->> storage
->> systems, using ZFS and Btrfs and running examples. See the=20
->> attached
->> paper for details.
->
-> (Not actually a btrfs developer here)
->
-> I am confused, Btrfs does not support inline deduplication. The=20
-> inline
-> deduplication implementation used in that paper is pretty old=20
-> and as far as I
-> know it's not maintained (people seem to be happy with out of=20
-> band
-> deduplication).
->
-> You might want to contact the developer on the inline=20
-> implementation: https://
-> lore.kernel.org/linux-btrfs/20181106064122.6154-1-lufq.fnst@cn.fujitsu.co=
-m/
->
-AFAK, Fujitsu has no more plans about btrfs.
-So there is no follow-up version of the inline deduplication=20
-feature.
 
---
-Su
-
-> Also, this is a public mailing list, so there is no point in=20
-> waiting until
-> 23rd of February 2022 to make things public.
->
-> Kind regards.
+-- 
+Chris Murphy
