@@ -2,114 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E738649BF86
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 00:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4062849BFB3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 00:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234784AbiAYX3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jan 2022 18:29:37 -0500
-Received: from mout.gmx.net ([212.227.17.20]:53167 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234780AbiAYX3g (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jan 2022 18:29:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643153369;
-        bh=AUq1IcR0HBrC2X36s1GtCc+auNv60VQqrXMTMnbTORY=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=jznmwCYrClSgpfUf5plvyGfICAWfTke5iMfmYS08MGoBQELKMZfnDKt3h1iEAcWfy
-         Ap8JrrE/fDo3rx9ADpfLhJ/j50QyajUlet2XLA/L2Zvxk8R0DPPFNEdmCNx3hl7c1y
-         fnpA9wUTDaRArhfu/aTcSIm3c2TjHpI7OmHuqp7k=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbRfl-1mfeL32t7B-00bpSG; Wed, 26
- Jan 2022 00:29:29 +0100
-Message-ID: <9e8e325e-2a3b-0a6d-7df0-56ff0f526325@gmx.com>
-Date:   Wed, 26 Jan 2022 07:29:25 +0800
+        id S234964AbiAYXqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jan 2022 18:46:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234965AbiAYXqR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Jan 2022 18:46:17 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526DAC06161C
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jan 2022 15:46:17 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id ka4so34424217ejc.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jan 2022 15:46:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=nJbbcwBBkbzpUfnkfZBLgl8IFNcpVhFpEqN/1T5R5gg=;
+        b=mLLlnmSAaPw4hUUq8k8qFkIltcx7v813kWri+9/xkTAtIHEgnk7gU8mMbkYyfS75XD
+         nAfNkm4nbcnGQLQJH8H9PCD9vg5OTS/EKrFjfpiykAdmwymi3ajDIKpd1CDHM14hFhN9
+         +W7/H7Q4ccBWDhDlMajqYzaX7Yr+TRusDv8li9ra8F02CXdGWeGPsAIKQwtklpx2iVDC
+         HFqxT9OHLu52nIDFJSSllKnXwLUEYBtBDHU4ZwDs9Uw09lxjSeYweGo497n+vv0EXdnY
+         Sjt5rwKvWgUAy0Uj2gG4MmaJMqkfqS91ITpAUiLWmJ+/1sYpEIJqTdqqPJ1PZpgInHdo
+         Ijxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=nJbbcwBBkbzpUfnkfZBLgl8IFNcpVhFpEqN/1T5R5gg=;
+        b=TVb8SOi+uVM4Nxq8n450d537Z4GV1K4Ypm5oWmziG2E8ydAQYfPxnY/02l1afrVmjL
+         c3dThL5H/9XKCetVzO5kowyKdt66LIkMGeKJ+bDeuwCrM8ZpWMkOJnvGxvSYcX5IwmBL
+         7w0f++vylpYv2YR5ytD8MN90s5NJOM24njSRmXEnhovKw9hBqohOsMNzIOl4JRVlG0kV
+         FSxWkauhg1VMZoG4yA/8mlFHFTff7AlfJZ0Ydhp1XFTyLBUn0kKoi4ZXl5DrZmvChgq9
+         DlXxqH6ppY0KNMvwKyg8dSw7Rob1rurd5BwJ2uTTw5SqLKZ0+AyYnDhsYTiFhS1mSixf
+         FU4A==
+X-Gm-Message-State: AOAM5302K8j/IK04DhplvOPjQqhR2bPAfN/w7r7u7oL+gBhedgrBwfqj
+        XO/1sdFhR5F+ugeoPV0wC+u7yOejn+3vJoz0P4jhCPmp5MFKCA==
+X-Google-Smtp-Source: ABdhPJxeUEsjjkxWfZr068OoljRM+puPKSTpxEAgcSOVdbX9NB1Ay9zRrh4YCC/etDimLjmaG6Ncjg2ciK4qHGaCHZY=
+X-Received: by 2002:a2e:93c9:: with SMTP id p9mr16593057ljh.63.1643153996729;
+ Tue, 25 Jan 2022 15:39:56 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: Massive I/O usage from btrfs-cleaner after upgrading to 5.16
-Content-Language: en-US
-To:     =?UTF-8?Q?Fran=c3=a7ois-Xavier_Thomas?= <fx.thomas@gmail.com>
-Cc:     Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <wqu@suse.com>
-References: <CAEwRaO4y3PPPUdwYjNDoB9m9CLzfd3DFFk2iK1X6OyyEWG5-mg@mail.gmail.com>
- <CAEwRaO7LpG+KBYRgB4MGx9td5PO6JvFWpKbyKsHDB=7LKMmAJg@mail.gmail.com>
- <CAL3q7H7UvBzw998MW1wxxBo+EPCePVikNdG-rT1Zs0Guo71beQ@mail.gmail.com>
- <CAEwRaO4PVvGOi86jvY7aBXMMgwMfP0tD3u8-8fxkgRD0wBjVQg@mail.gmail.com>
- <CAL3q7H5SGAYSFU43ceUAAowuR8RxQ6ZN_3ZyL+R-Gn07xs7w_Q@mail.gmail.com>
- <CAEwRaO6CAjfH-qtt9D9NiH2hh4KFTSL-xCvdVZr+UXKe6k=jOA@mail.gmail.com>
- <CAL3q7H7xfcUk_DXEfdsnGX8dWLDsSAPeAugoeSw3tah476xCBQ@mail.gmail.com>
- <CAEwRaO4Doi4Vk4+SU2GxE7JVV5YuqXXU_cw7DY9wQrMnr9umdA@mail.gmail.com>
- <CAL3q7H4ji1B7zn4=mP4=891XfokkVyOaaqW3dCmUH6uVGjgkjg@mail.gmail.com>
- <CAEwRaO7cA3bbYMSCoYQ2gqaeJBSes5EBok5Oon-YOm7EQ8JOhw@mail.gmail.com>
- <7802ff58-d08b-76d4-fcc7-c5d15d798b3b@gmx.com>
- <CAEwRaO58oCzY4GjU3gCSru3Gq02GvGSdkg5hPwCKMwYcZ+cM2Q@mail.gmail.com>
- <c88c1438-ebcf-a652-1940-4daa4ee53be9@gmx.com>
- <CAEwRaO6ogPZKU3pcKac2kMqpvwDRX4eCUnFj0_OxTndPF2Be_w@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAEwRaO6ogPZKU3pcKac2kMqpvwDRX4eCUnFj0_OxTndPF2Be_w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9Z9IA5sjFvYkCri5LGDKGY0A7PZEaEVPjQGzdNAe4dkxrFtw9hs
- 557K239hxXDTlhKXvFY81+nXWLmnhcIormtTrfJb/h8RXfzyuC5CoqEQhgG95WPaz5H8g5r
- QpjMyLa+fsbXHPdk2c5yK9Nr0KHM+ccBvFKI16sOSfUrGdbibdggmvPWy0gstr6kMXN/N1t
- BHcNhr0RtmyD99UUSOrxA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JHqqhMeAPMU=:c2njtjLZk1LzC4yGLclDlO
- 60YPxWUdu8uV6S5++Vm9GJ8Tb8bvdHV37NjuRPpSzdqJkhRc8k+5CY5+J7sIhY+xfJh0H/5wv
- TwciT7Ont+xmMmX/KfoSB09vQwmJnLUITXf7mgYqwaklyDG9SlpGLzV3SPlJ6SzSveyoiOOT+
- nkSNYl9o+nLIt+XDIdRi9Jx/K7UpTxuzN/hTDRz2wtsDBANULGBLcsX8Tjj782ZRFvo4VKkMD
- fSr6YYuQdHgr7sr3bH4YIK7KcDG9hNZtqxBrcHEQfRC6zlmuJnctAzFx07POs5W1RQxJHdz/u
- o/IabOb6z60fKyh8FWqBViUFLN6jhdKrwX05kwIv4n6KM6SNLYQgBxviwCZXmSwsV2dN5LrjF
- SbqBOFhZNHaoPzjUeoJpbEWaI/IsBpeqn1g3/HdlXzslk+e9efHsw6/9HyIRo0vJermUUVRUs
- jLqqYBnge+q15QqEDQj4F2ZjgxHyCHj1FiyguD89FBnwqe/NEVBmYOCdqEXen5M0XwOt+e6OI
- CsW0CH8Xq895Yq443C9R0xYgri1U8Sxyi6Iq+l29f1H90T4N6ivFQA/uRCBlHWpgo1ErngW10
- 99y2+oVB7nr1gM8b6vDxvDkg4uOpoL2li1C740Q/4xJoroJqtj2y9SJ1vvFjrptVqJRojmVgV
- rdgbT79z63RZDExDkTzBdo1ENzqu1SmJug7mGrB9wEEnqNrNDqlLHvTjqwU8XJLTG8iGqymDO
- IqjkZ+DClwnJyfMnUz5aDSXakQP55iAmhGS6NzNEJMG7Aw4GuM6CVl7u7ZETfMPv9z0+PGWeE
- stH8YxN1yxeeFqec09BYvO2hvfx8+QXADZWxOylkY5UMfJfqu5bnJM+ZSgbxGsX2XdZ1/VpOW
- BQLqfF/ByefvsjNO9LlC/5cG7BwSOuBY6eFaa0aJmyZrN4DOOilzBwToy5XDps1i+isYgQ5aU
- icw8n1QbDbD0wR7yagd6heyz4o+o/CLzSNul5XMG510AHBzOnin43fTXWIhfDfYmsJX6jcpFW
- l3cUy9jpauPtuzvFvMZdjdtYnIE5gso37aKLK74pr9MpR8ToW8CMP6KIKFqQynd6pjgPoOX5z
- PmlD4pJhr7kyFk=
+Received: by 2002:a05:6512:39c1:0:0:0:0 with HTTP; Tue, 25 Jan 2022 15:39:56
+ -0800 (PST)
+Reply-To: mr.adamakafando2015@gmail.com
+From:   Adama Kafando <icemanbrooks8@gmail.com>
+Date:   Tue, 25 Jan 2022 15:39:56 -0800
+Message-ID: <CACam9wLe+N=hw-i65VQ5w79wHeELTrk1xXsJBtO00QOdOYV5HQ@mail.gmail.com>
+Subject: VERY VERY URGENT.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Dear Friend,
 
+I Mr.Adama Kafando, With due respect, I have decided to contact you on a
+business transaction that will be beneficial to both of us.At the bank
+last account and  auditing evaluation, my staff came across an old
+account which was being maintained by a foreign client who we learned
+was among the deceased passengers of a motor accident on
+November.2010, the deceased was unable to run this account since his
+death. The Account has  remained dormant without the knowledge of his
+family since it was put in a  safe deposit account in the bank for
+future investment by the client.
 
-On 2022/1/26 04:00, Fran=C3=A7ois-Xavier Thomas wrote:
-> Hi,
->
->>> Mind to test the latest two patches, which still needs the first 6 pat=
-ches:
->>
->> Gotcha, I'll test the following stack tomorrow, omitting patch 7 from
->> Filipe (hopefully the filenames are descriptive enough):
->>
->> 1-btrfs-fix-too-long-loop-when-defragging-a-1-byte-file.patch
->> 2-v2-btrfs-defrag-fix-the-wrong-number-of-defragged-sectors.patch
->> 3-btrfs-defrag-properly-update-range--start-for-autodefrag.patch
->> 4-btrfs-fix-deadlock-when-reserving-space-during-defrag.patch
->> 5-btrfs-add-back-missing-dirty-page-rate-limiting-to-defrag.patch
->> 6-btrfs-update-writeback-index-when-starting-defrag.patch
->> 7-btrfs-defrag-don-t-try-to-merge-regular-extents-with-preallocated-ext=
-ents.patch
->> 8-RFC-btrfs-defrag-abort-the-whole-cluster-if-there-is-any-hole-in-the-=
-range.patch
->
-> After testing this one immediately reduces I/O to the 5.15 baseline of
-> a few 10s of ops/s,
-> so your hypothesis does seem correct.
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until I discovered that it cannot be claimed since our client
+isaforeign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be
+done.I decided to seek ways through which to transfer this money out
+of the bank and out of the country too.
 
-Awesome! This indeed proves the major IO is from more extensively defrag
-behavior.
+The total amount in the account is USD $18.6 million with my positions
+as staff of the bank,I am handicapped because I cannot operate foreign
+accounts and cannot lay a bonafide claim over this money. The client
+was a foreign  national and you will only be asked to act as his next
+of kin and I will supply you with all the necessary information and
+bank data to assist you in being able to transfer this money to any
+bank of your  choice where this money could be transferred into.The
+total sum will be shared as follows: 50% for me, 50% for you and
+expenses incidental occur  during the transfer will be incur by both
+of us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund  transfer to your account. Since I
+work in this bank that is why you should  be confident in the success
+of this transaction because you will be updated with information as
+and when desired.
 
-Looking forward for the v5.15 POC to get the final nail.
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of the
+transaction  which will be when this money is safe in your account.I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May God help you to help me to a restive retirement,Amen,And
+You have to  contact me through my private e-mail
+at(mr.adamakafando2015@gmail.com)Please for further information and inquiries
+feel free to contact me back immediately for more explanation and
+better understanding I want you to assure me your capability of
+handling this  project with trust by providing me your following
+information details such as:
 
-THanks,
-Qu
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:.....................
+(6)YOUR COUNTRY:.....................
 
->
-> Fran=C3=A7ois-Xavier
+Yours sincerely,
+Mr.Adama Kafando.
