@@ -2,174 +2,344 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088D449A755
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jan 2022 03:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 812D049A758
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jan 2022 03:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbiAYChW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jan 2022 21:37:22 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:26242 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2370899AbiAYAGd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jan 2022 19:06:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1643069188;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PHVImHyMGOUVDEXFzMi7uyS8DQjaNqxySgPxsJb/PK4=;
-        b=VWWIvXT387PrI80z6WFKIx0rXPzDCKdIvfUHPG+Z34Tf2bqbHUWcWUTIpqS2I58pOfGJok
-        vbcpJu69ctJCLLN0OwhlrVAU3LF6LHryGZn1eHmit8wPg6K3OqCUj+vh2ZdQrVwqXEBXI5
-        8geX+FJRZXqhFq7oNttGO64t4ZtJXkw=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2052.outbound.protection.outlook.com [104.47.13.52]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- de-mta-27-ettgblwJNUeNg2lzxnz1Nw-1; Tue, 25 Jan 2022 01:06:26 +0100
-X-MC-Unique: ettgblwJNUeNg2lzxnz1Nw-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OsUy3oWfkTNfN7rv1470kSqzNJf8GqQu4Fddxlv/kQvkgqmcy4OtmB7MwWL9e9z4IyzyfTOgY+vpQ4hTPf1AoBnvVtNrTzlMIi2R6lEbgWEqVVG6yOIjy5yGWn1j27LWdGztG6bRRp5GeVqP9NCnR2ISy73mxLMucJUKTt6d6yjaGU/MlKTOBU/ACHxu/ycHLOHx8dQvZmJeanKUp1gAtGQlEmp5/6cPLBX2GF0IW790fNujmmE5Z05rmLEbeXEXcmtb66IC83VA2NvXZ3x2BD68aLRjX4YN+eeN1F4iq4H/t3eRMv3iClJnvYxmQi08aDymofx66X2WZxvlACdSNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PHVImHyMGOUVDEXFzMi7uyS8DQjaNqxySgPxsJb/PK4=;
- b=BAtGPIWERSFlsPXt2Z7zWiSBJz9Pf65929gYurt9h1hQJYl2XX7evQwkN3LaoDd6AFdeI5kEKFNTHqJCtY/tdo7g28vjXf/Qci8RI5kplrw1JuGHu9xHQZI3uDqZZocHw/Z3o0w5GRuTWcGXz3CxL+YizB/BhDggePQXdGBACbPdaWoMW3CpLJly9bh5dpXQcFGNNQ8Xc2U846iqe6DSJgDBpUpZXp+EVV3gegEAK7S2+n17E/212/IC452vO4nvmdJgmr5Z7HQtzvMZL4vGCE93fexC67bgsvD1oh4vW/nauH3/U2TDGHUrdunwXB14yNzKTCzrwdSoe9hWEq+Shg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB9PR04MB9426.eurprd04.prod.outlook.com (2603:10a6:10:36a::14)
- by VI1PR04MB4655.eurprd04.prod.outlook.com (2603:10a6:803:72::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.17; Tue, 25 Jan
- 2022 00:06:23 +0000
-Received: from DB9PR04MB9426.eurprd04.prod.outlook.com
- ([fe80::18db:1eae:719e:ef4e]) by DB9PR04MB9426.eurprd04.prod.outlook.com
- ([fe80::18db:1eae:719e:ef4e%5]) with mapi id 15.20.4909.017; Tue, 25 Jan 2022
- 00:06:23 +0000
-Message-ID: <232987f4-b64f-913d-c3f1-fe4e2b3c4750@suse.com>
-Date:   Tue, 25 Jan 2022 08:06:13 +0800
+        id S233703AbiAYCh1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jan 2022 21:37:27 -0500
+Received: from mout.gmx.net ([212.227.15.19]:41475 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2372477AbiAYALn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Jan 2022 19:11:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1643069495;
+        bh=ZxMlhYcTUelaP35ijENP8ndNG5MFWQaVNOglT+iSfW0=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=CgBgQWEpLm+nKcPsae/dLvJvryeBBxdzuG99B2mNK+ROxrVXLddylGmTUm4x7YHuz
+         ccJjB4ubLh7wTVLW0oMOv6ogHauV1Cg+iewug3Nol1GSSGvNntUuI/Uzmu70VduYgp
+         zQhHcgLg/2YmiLSlTk90qE5de22gvOKzTCdq4noM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MK3W0-1mqeIz0Co2-00LYeE; Tue, 25
+ Jan 2022 01:11:35 +0100
+Message-ID: <430a1d5d-2376-a255-2109-fcfefc14905c@gmx.com>
+Date:   Tue, 25 Jan 2022 08:11:31 +0800
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH 0/4] btrfs: refactor scrub entrances for each profile
+Subject: Re: [PATCH RFC] btrfs: defrag: abort the whole cluster if there is
+ any hole in the range
 Content-Language: en-US
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20220107023430.28288-1-wqu@suse.com>
- <12e31a86-79b6-d806-f232-51e9bb0a7e07@suse.com>
- <20220124202411.GJ14046@twin.jikos.cz>
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <20220124202411.GJ14046@twin.jikos.cz>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+References: <20220124063419.40114-1-wqu@suse.com>
+ <Ye6J6a7vG1tj49XM@debian9.Home>
+ <58c6952b-9cfc-bb64-1e4b-4bb18f774d2d@gmx.com>
+ <Ye6UL/UD3yZDcub0@debian9.Home>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <Ye6UL/UD3yZDcub0@debian9.Home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR10CA0013.namprd10.prod.outlook.com
- (2603:10b6:a03:255::18) To DB9PR04MB9426.eurprd04.prod.outlook.com
- (2603:10a6:10:36a::14)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b10c7a84-2670-4a2d-3348-08d9df96858f
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4655:EE_
-X-Microsoft-Antispam-PRVS: <VI1PR04MB465534E2F36031F3FB3A5AC7D65F9@VI1PR04MB4655.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Tbo3By1WS2AjpcdnGLTWKN3psvQ6+AgegDWr+B4aAoi3X24kr3Y9tl2KJvYs0piMC6wO2HhUT2+5bbyXFmkuXXlLx8/FLTTaJhCUj4FuN/LowlMcjhXK5lTa87Ydl0YDKJJ9doS2fc4yecTAjqrFWxflOsOCXUYlny+GymTsgV6GvscHdwulegBKyvX8FQ+emE3Vm40Ix5qam4Wx87NAtJap2vrhzX97mH/xUHEDUQqs+sIXjgX04kvinyokPvWGbC8G/N+/uQ7UvownATWYDTQpKybA/BFghpy0ECkwaAyhuxKJ/GQYUsLKBixw20vnwGs7kjV/KWltlCK2JSe8mi5HR72PFP1mDMff1x+9M57kxRIkdSQEHia2rpWeCA/1zaXJUDXhLTA+WpJ/yfuAHGgd5yySFcXp4zqx/F6UydG+W6YosjBWft0AegR/QBIMURZPtnzIVT3MDgAgJhpxnfWRU7DDNYbcvVhLvzNJ3/FdD2qHWfccTu5j/sAceAS9Sa435S7uznAVajAOa6KkZAlBF4dDTBUap6ZpJuH7UA6Qs/RRY+tlK9kLRrjgtEgckgkb+taEaD0HH4hoo5FhR+hxKRojkdvZy0fZHQ6D+1jXQVRtPYSzQj1LRUeWwxgWr4Aq0TXheuwM0o80A9WuL4Yi+98ySo3W2awCKsUqlSVvD8E8isNTh4L8fBk2Z29D/j8vqFv+gJRBKtcSC+3NPRpLBmirwpaoBs7Sksweipg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(6506007)(38100700002)(6666004)(2616005)(53546011)(186003)(66946007)(31696002)(86362001)(31686004)(316002)(66556008)(2906002)(6512007)(508600001)(66476007)(8676002)(6486002)(8936002)(26005)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SkZ6dUt5UUxyeFZ3SXUvMG5OZ0NVMmRkWUI3cWZvOFMxNGFHQlpLNkM0dFF2?=
- =?utf-8?B?TjUzMm00cE1rNjJJTVNPaEh6Uis1aEFraFN2Nmo0YVI3Y3MvK0dYdkRFN2pq?=
- =?utf-8?B?aU1PQnBRR1dHdTNLWENTSDJ3TksybGs4dVk4MXRpSmVoMzNWRkUwWUVhazFu?=
- =?utf-8?B?dzZIZWRNV3ZMV0hZMGh4d0ZqeEI3Q3pHTkcvZnpNaFJVb0VJV2doVGhBOWhO?=
- =?utf-8?B?OWlVYWNNbnE4T2pIL3lHb29YV3dpVFY4NklWeGw1V0F1K3JYNTJFNElVdzlN?=
- =?utf-8?B?Mzl6Ynp6VllwUENyUmdoUTBJZjlmWVdVbHFBN2tVWklzSGJpT0F0Wnk4S2hj?=
- =?utf-8?B?Ry9LMkpYZWdRcHJGdkZ2THkzMkdVUlQwTko4QXA2dEpzaUFNWVVVd2U1TWIw?=
- =?utf-8?B?SEdGUEZNckExalgzR2J2alZXd3U3S0Qwdmo2YkxzSUFiRkxzT3kzQ0ErWGRD?=
- =?utf-8?B?NnlMRmVLTlRNV0o2Mm1XL20yWnBhcXh0dUVIU09Kek5VdnhUS3ZUREhXZmJ5?=
- =?utf-8?B?TXQ0aTFOMDFyUWxiRG5OYnkreWhiV2RnTGYwVjhQMkxGYzVIWFVyK0RaaHcz?=
- =?utf-8?B?VHJJUm16OEU3d01oNEpWdmNLN0t2N3o2VHhlWVFJa05CUEVUR0R0Q1k1ZHhm?=
- =?utf-8?B?MFRuWUxGYTJHR1dWRE41ZEl2S1pSdUdreWxQQk9BWmlkaUZyMTFMVVUwTXVN?=
- =?utf-8?B?TE9PaHM1RkNGZ2FvWk1mREErUU1IdTlqTWRKbE9vejVyVkcrU0VsbTdHMnY0?=
- =?utf-8?B?TzJtQkFLZ3FBQURxZTkzNHZpdWpJTVdkWGI2dkZ2U3R6dTZlVDl5LzZQejJU?=
- =?utf-8?B?TGwxaThvUk1WR25KSlJWQmZKaVB3VnAwMUtJQlgvaEJwSG1WSVJEWlAzUldY?=
- =?utf-8?B?bG43eTlGVXFoa3B5OEdyK1VPRVozUHV6UjNhK0xmSWF6TnVER0tXcW9FdmlK?=
- =?utf-8?B?TkhlR093c3o5UXdWL0FEV3FZclFMOTNWTDdpOVpQejBnWTNIa21IM3BET2NL?=
- =?utf-8?B?WVVMd2hLMTVwZjBDdk5DRzg3dnRVWDBRY1VYZEd2bXNPNkcyWlVhSno4WXdz?=
- =?utf-8?B?ckNHbnRub0VZcGRoUllIT1c4SWxzTmFjRDJVZWxxQUlJQm1MMG1ycFpxQUtr?=
- =?utf-8?B?aGc0SFJlNFJDR1NmeXEzL0tvS0xpbkVaOWs3NGFKTjZIY21EN0xOTGthdlRJ?=
- =?utf-8?B?QjRmN2pERStOQmZ6T2JzK1ZYT0FsRGdDRGdtdDhIY3lCZ3I3SVRNQ090Rk1N?=
- =?utf-8?B?WUNzS3lyZ1FPVjNKMUtjWGMyUlp0TTlSSW4vV0E2Q25obG5STzlNS0h0UHFR?=
- =?utf-8?B?RVdpTUNwaXE0QzRhY2VmcVZYOTJGemltelphNTRERXB1dWd4ZUFNSFRaZ2gw?=
- =?utf-8?B?ZE5BRjkwTlhYbTAraVc2Y1NwRlkwNVlLRXJ0YjlYNmlpbnZ6aE5EcTRGSDlE?=
- =?utf-8?B?L0g0WmQvRVFNTkE1Q09JNGlmRDFVeExCckxqU1VWb01wRkNjR2pIU2pMOS92?=
- =?utf-8?B?Vnp3RjVDcURIZGxWejdlbVIwak12UlQ5NHd3Y1hRSUZWblI2elR4dnBWc2hT?=
- =?utf-8?B?dnJRSlpmUHVib1pucEtjclk0OVVRd1RET1BRREh3UjNreFNWUGlVUXZSa2Ny?=
- =?utf-8?B?V21VNnU5VlowN0FBdlYva05tUWt3MU9KdFNad1poYU9rMkFIZ3k4K2RRTHlO?=
- =?utf-8?B?T3V4YUJlS2hxQjcwWklGUndDS216ZFZrMU92SXpZanN3UTVOaFJjb2tldGVF?=
- =?utf-8?B?QzRzRVVmVjIyaGdRRGo5SERkTUNSRDlWUzFOYjMzN0UzNUhkYTY1WGtkdlh1?=
- =?utf-8?B?blVPeFVGc3ZmV1ZGSzRuK21oVzMxWHNJVGJsNld3ZkJTbjBWLzRiZVJZMjV3?=
- =?utf-8?B?S1VuZzdjanJRQWhlOXZPYk1vVGxWK3RXNlVaUnRhSTdUOHk1QXpoVWY1c056?=
- =?utf-8?B?S0pZZlBhanViV1F3ZmxCNWU2SUFhWTd6MFNFeW1GOHhNejk5eWErd3BacmtT?=
- =?utf-8?B?UWRCNzdnVlNVdXpib0Y5ajVIVUpLOFdLbnBDRzNXa3QzQVpiU2RKaitBMEdv?=
- =?utf-8?B?MzBKMUZpdVl6ampXUDZjenFVMU1LUG5WdlJSUGdvSkFDQ1o1NkhGZkFjWnpK?=
- =?utf-8?Q?VF9w=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b10c7a84-2670-4a2d-3348-08d9df96858f
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9426.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2022 00:06:23.1459
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3/+feJt2a05dJYJP7uUBwcF5tpUWE6Ko3vpE05iVPx1QZRI15QY2qJIztPVw0/9W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4655
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Z1DP528XB+mlWY7VwrL0JCAUoWA8WdMt5VtMm43UhdkN/329hIO
+ mHApDYxDuByUBFkKc+nWBHxo0yqifRG64gSsCrhEyNRKyFoFoSc8TswPhGDQaccni202E24
+ +yhM/h5XlPDR2W09Fto9Y2qZeHqjGiYEAcNUVpP7ejUvDGz9B3ucYUuPeEmXnoCM4yzmU/l
+ TMcCjgjh8DimcbNDyFK5A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ksj7lHqQAB4=:n2WRj3wSwfLK4k1MFiZ968
+ IzRJHjHnv1B8BXAxZKt4h0xC9SBf5l7TS2c/3LkyAJU7zPnGwPUJMRPhvawh1otmZQVgFuohy
+ IH3FOpB3JQ+eFPu+CPPcAPFPnroPAlVfXL9SQXN/PkNrMH6P0ip+S4UNs5oIkEEx3Pe27hMYe
+ 9BGTLR4f1t4gvJMTkz4p+DNcwQIhQBo1lWvixAN2T0+NVxLAg4mTa5ZCn/akE8SPYjUXSGBfo
+ E4EsTmx7boNE06ynNFyFswbt53iwxRtRdlhO0yueE2+61Ke9XL2bQGMc7+JCCTW12kLYWWEUQ
+ KqDodHnXmoZT7kohZgpivBgxlAFIez3DRuO1VQ7WV8WjuXAXXSteBB6Tw99/n9u+iA6v32Oz6
+ bW2G8MvS+UtFbBXM9+Rx7bS3EoLM53cdGcvb+tjrOP+AuKAKZIlJtkiDoqoDA+iMenWsAqLlK
+ Y7KQ+2Le+R/fHP+cI50oaSxCeTLgVwEJWcqMlipZJvtMjMI0Irimi1+wp8GrfDxWQSQxcNx8T
+ MVkLu8itpY57Q3uf03V/pDX7FURGV/N6qejz4gAYQuwaD7hl/Xv1APzMZMhoJzV9QO74ew8Rw
+ UUjigf7J90bEWwIUQaxzI7ckjU1991tJv/LIvip0vK9szyDhBMhcXuQsRLr2jYMxHhkS1OQSj
+ B2NByH9XtxvOY6B2rMlygnSWDIdBwgfV7sf66LMPPSCyB8ANHImzZqZ6Dd8tETBF4wWiTPbdP
+ tVIVxArsdHd1v1lLbGNyGyqxgs2LrLeRhOPHkoMdQVqTb4x0vFM6Tj8hDevSIayx0Gvl5BjKO
+ dTCV+yzgXBFaXF41uWB7bVbJoMuIvP58kB9u86g/b/PV9sfxCJAfFrZtUl1yMBBO8zjHmnCPB
+ IWRh1mj/ADaJVWKaVhnlhl9yrFmTBmKroAHl+SKyeeKEuG7hoquKGJCaqDnPw7/xkCwcXJXj9
+ /kP4LzN1l09Co2DrPtMuLSluIlk08dBMc2anwYHEXDa0kAHVAgXh8wFsCkDYnLDUbM4jwHAEx
+ Wk0aMaK08P5kIPWdxxK6xpsup/L1uwTr8T0SKbHPTs4XeB1AIu7UNUWvUjC1Fa+1QI+0zKLLu
+ FX3g0s9ez5EbjA=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/1/25 04:24, David Sterba wrote:
-> On Wed, Jan 19, 2022 at 01:52:25PM +0800, Qu Wenruo wrote:
->> Hi David,
+On 2022/1/24 19:57, Filipe Manana wrote:
+> On Mon, Jan 24, 2022 at 07:32:32PM +0800, Qu Wenruo wrote:
 >>
->> Any plan to merge this patchset?
 >>
->> And if you need, I can merge all these refactors into one branch for you
->> to fetch.
+>> On 2022/1/24 19:13, Filipe Manana wrote:
+>>> On Mon, Jan 24, 2022 at 02:34:19PM +0800, Qu Wenruo wrote:
+>>>> [BUG]
+>>>> There are several reports that autodefrag is causing more IO in v5.16=
+,
+>>>> caused by the recent refactor of defrag (mostly to support subpage
+>>>> defrag).
+>>>>
+>>>> With the recent debug helpers, I also locally reproduced it using
+>>>> the following script:
+>>>>
+>>>> 	mount $dev $mnt -o autodefrag
+>>>>
+>>>> 	start_trace
+>>>> 	$fsstress -w -n 2000 -p 1 -d $mnt -s 1642319517
+>>>> 	sync
+>>>> 	btrfs ins dump-tree -t 256 $dev > /tmp/dump_tree
+>>>> 	echo "=3D=3D=3D autodefrag =3D=3D=3D"
+>>>> 	grep . -IR /sys/fs/btrfs/$uuid/debug/io_accounting
+>>>> 	echo 0 > /sys/fs/btrfs/$uuid/debug/cleaner_trigger
+>>>> 	sleep 3
+>>>> 	sync
+>>>> 	echo "=3D=3D=3D=3D=3D=3D"
+>>>> 	grep . -IR /sys/fs/btrfs/$uuid/debug/io_accounting
+>>>> 	umount $mnt
+>>>> 	end_trace
+>>>>
+>>>> Btrfs indeeds causes more IO for autodefrag, with all the fixes
+>>>> submitted, it still causes 18% of total IO to autodefrag.
+>>>>
+>>>> [CAUSE]
+>>>> There is a hidden bug in the original defrag code in
+>>>> cluster_pages_for_defrag():
+>>>>
+>>>>           while (search_start < page_end) {
+>>>>                   struct extent_map *em;
+>>>>
+>>>>                   em =3D btrfs_get_extent(BTRFS_I(inode), NULL, 0, se=
+arch_start,
+>>>>                                         page_end - search_start);
+>>>>                   if (IS_ERR(em)) {
+>>>>                           ret =3D PTR_ERR(em);
+>>>>                           goto out_unlock_range;
+>>>>                   }
+>>>>                   if (em->block_start >=3D EXTENT_MAP_LAST_BYTE) {
+>>>>                           free_extent_map(em);
+>>>>                           /* Ok, 0 means we did not defrag anything *=
+/
+>>>>                           ret =3D 0;
+>>>>                           goto out_unlock_range;
+>>>>                   }
+>>>>                   search_start =3D extent_map_end(em);
+>>>>                   free_extent_map(em);
+>>>> 	}
+>>>>
+>>>> @search_start is the defrag range start, and @page_end is the defrag
+>>>> range end (exclusive).
+>>>> This while() loop is called before marking the pages for defrag.
+>>>>
+>>>> The Ok comment is the root case.
+>>>>
+>>>> With my test seed, root 256 inode 287 is the most obvious example, th=
+ere
+>>>> is a cluster of file extents starting at file offset 118784, and they
+>>>> are completely sane to be merged:
+>>>>
+>>>>           item 59 key (287 EXTENT_DATA 118784) itemoff 6211 itemsize =
+53
+>>>>                   generation 85 type 1 (regular)
+>>>>                   extent data disk byte 339034112 nr 8192
+>>>>                   extent data offset 0 nr 8192 ram 8192
+>>>>           item 60 key (287 EXTENT_DATA 126976) itemoff 6158 itemsize =
+53
+>>>>                   generation 85 type 1 (regular)
+>>>>                   extent data disk byte 299954176 nr 4096
+>>>>                   extent data offset 0 nr 4096 ram 4096
+>>>>           item 61 key (287 EXTENT_DATA 131072) itemoff 6105 itemsize =
+53
+>>>>                   generation 85 type 1 (regular)
+>>>>                   extent data disk byte 339042304 nr 4096
+>>>>                   extent data offset 0 nr 4096 ram 4096
+>>>>           item 62 key (287 EXTENT_DATA 135168) itemoff 6052 itemsize =
+53
+>>>>                   generation 85 type 1 (regular)
+>>>>                   extent data disk byte 303423488 nr 4096
+>>>>                   extent data offset 0 nr 4096 ram 4096
+>>>>           item 63 key (287 EXTENT_DATA 139264) itemoff 5999 itemsize =
+53
+>>>>                   generation 85 type 1 (regular)
+>>>>                   extent data disk byte 339046400 nr 106496
+>>>>                   extent data offset 0 nr 106496 ram 106496
+>>>>
+>>>> Then comes a hole at offset 245760, and the file is way larger than
+>>>> 245760.
+>>>>
+>>>> The old kernel will call cluster_pages_for_defrag() with start =3D=3D=
+ 118784
+>>>> and len =3D=3D 256K.
+>>>>
+>>>> Then into the mentioned while loop, finding the hole at 245760 and
+>>>> rejecting the whole 256K cluster.
+>>>>
+>>>> This also means, the old behavior will only defrag the whole cluster,
+>>>> which is normally in 256K size (can be smaller at file end though).
+>>>>
+>>>> [?FIX?]
+>>>> I'm not convinced the old behavior is correct.
+>>>>
+>>>> But since my refactor introduced a behavior change, and end users are
+>>>> already complaining, then it's a regression, we should revert to the =
+old
+>>>> behavior by rejecting the cluster if there is anything preventing the
+>>>> whole cluster to be defragged.
+>>>>
+>>>> However the refactored code can not completely emulate the behavior, =
+as
+>>>> now cluster is split only by bytenr, no more extents skip will affect
+>>>> the cluster split.
+>>>>
+>>>> This results a more strict condition for full-cluster-only defrag.
+>>>>
+>>>> As a result, for the mentioned fsstress seed, it only caused around 1=
+%
+>>>> for autodefrag IO, compared to 8.5% of older kernel.
+>>>>
+>>>> Cc: Filipe Manana <fdmanana@suse.com>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>> Reason for RFC:
+>>>>
+>>>> I'm not sure what is the correct behavior.
+>>>>
+>>>> The whole cluster rejection is introduced by commit 7f458a3873ae ("bt=
+rfs: fix
+>>>> race when defragmenting leads to unnecessary IO"), which is fine for =
+old
+>>>> kernels.
+>>>>
+>>>> But the refactored code provides a way to still do the defrag, withou=
+t
+>>>> defragging holes. (But still has its own regressions)
+>>>>
+>>>> If the refactored defrag (with regression fixed) and commit 7f458a387=
+3ae
+>>>> are submitted to the mail list at the same time, I guess it's no doub=
+t we
+>>>> would choose the refactored code, as it won't cause extra IO for
+>>>> holes, while can still defrag as hard as possible.
+>>>>
+>>>> But since v5.11 which has commit 7f458a3873ae, the autodefrag IO is
+>>>> already reduced, I'm not sure if it's OK to increase the IO back to t=
+he old
+>>>> level.
+>>>
+>>> There's a misunderstanding of what that commit did, it was to fix a ra=
+ce that
+>>> resulted in marking ranges with holes for delalloc - the end result be=
+ing that
+>>> we lost holes and ended up allocating extents full of zeroes.
 >>
->> I know this sounds terrifying especially after the autodefrag "refactor"
->> disaster, but unlike autodefrag, scrub/replace has existing test case
->> coverage and this time it's really refactor, no behavior change (at
->> least no intentional one).
-> 
-> Well, exactly because of the same change pattern that was done in the
-> defrag code I'm hesistant to merge it, even if there is test coverage.
-> 
-> Nevertheless, I will put it to for-next.
+>> That part of not defragging holes is completely sane, and I have no
+>> problem with that.
+>>
+>>>
+>>> The whole decision to skip in case there's a hole was already done by =
+the
+>>> old function should_defrag_range(), which was called without having th=
+e inode
+>>> and the range locked. This left a time window between the call to
+>>> should_defrag_range() and the cluster_pages_for_defrag(), where if a h=
+ole was
+>>> punched after the call to the first function, we would dirty the hole =
+and end
+>>> up replacing it with an extent full of zeroes. If the hole was punched=
+ before
+>>> should_defrag_range(), then defrag would do nothing.
+>>>
+>>> I believe the changelog of that commit is clear enough about the race =
+it
+>>> fixes. It did not add a new policy to skip holes, it was already there=
+ at
+>>> should_defrag_range() (which does not exists anymore after the refacto=
+ring).
+>>
+>> Nope.
+>>
+>> The should_defrag_range() only checks the first extent it hits.
+>
+> Once should_defrag_range() finds the first extent is a hole, it adjust t=
+he
+> *skip parameter to the end of the extent's range. Then the main defrag l=
+oop
+> continues and does not call cluster_pages_for_defrag() for that range.
+>
+> So no, the race fix did change the logic regarding holes.
 
-Feel free to do more tests.
+As discussed, the point here is not one regular extent then a hole, but
+two or more regular extents which are good candidates for defrag, then a
+hole.
 
-And even this may sound like an excuse, the lack of defrag behavior 
-definition and test coverage is contributing a lot to the defrag mess.
+In that case, we can pass all the conditions of find_new_extents(),
+defrag_check_next_extent() and should_defrag_range().
 
-> 
->> I hope to get a stable base for the incoming scrub_page/scrub_bio
->> structure cleanup.
->>
->> As there is some plan to make scrub to use page::index for those
->> anonymous pages, so they don't need to rely on bi_private to get their
->> logical bytenr, and hopefully just one structure, scrub_range, to
->> replace the scrub_page/scrub_bio things.
-> 
-> I don't think there's any other potential use of the page::index member
-> so feel free to use it.
-> 
-Thanks to the advice from Nik, I'm going to use page::private instead, 
-which have some unexpected benefits, like allowing us to use just one 
-64K page if the 64K extent is not page aligned.
+And cause a defrag cluster of 256K (if the file is large enough), and
+then get rejected.
+
+
+I'll craft a POC patch to make the old code work without rejecting the
+whole cluster, nor defrag holes, and check how its IO changes.
 
 Thanks,
 Qu
 
+>
+>>
+>> Check the tree dump I pasted in the commit message, the first extent at
+>> file offset 118784 is completely fine to defrag.
+>> (in fact all the five extents are completely fine to defrag)
+>>
+>> Then should_defrag_range() return true, but later since @newer_than is
+>> set, we will try to defrag the range [118784, 118784 + 256K).
+>>
+>> Thus that's why your added code is in fact affecting the behavior of
+>> cluster defragging, not just the race fix.
+>>
+>> Maybe there is some other code modification caused this, but since my
+>> debug points exactly to the code you added, and I can't find any relate=
+d
+>> change after 2018 in main loop of btrfs_defrag_file().
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> Thanks.
+>>>
+>>>> ---
+>>>>    fs/btrfs/ioctl.c | 11 +++++++++++
+>>>>    1 file changed, 11 insertions(+)
+>>>>
+>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>>>> index dfa81b377e89..17d5e35a42fe 100644
+>>>> --- a/fs/btrfs/ioctl.c
+>>>> +++ b/fs/btrfs/ioctl.c
+>>>> @@ -1456,6 +1456,17 @@ static int defrag_one_cluster(struct btrfs_ino=
+de *inode,
+>>>>    	if (ret < 0)
+>>>>    		goto out;
+>>>>
+>>>> +	if (list_empty(&target_list))
+>>>> +		goto out;
+>>>> +	entry =3D list_entry(target_list.next, struct defrag_target_range, =
+list);
+>>>
+>>> Use list_first_entry().
+>>>
+>>>> +
+>>>> +	/*
+>>>> +	 * To emulate the old kernel behavior, if the cluster has any hole =
+or
+>>>> +	 * other things to prevent defrag, then abort the whole cluster.
+>>>> +	 */
+>>>> +	if (entry->len !=3D len)
+>>>> +		goto out;
+>>>> +
+>>>>    	list_for_each_entry(entry, &target_list, list) {
+>>>>    		u32 range_len =3D entry->len;
+>>>>
+>>>> --
+>>>> 2.34.1
+>>>>
