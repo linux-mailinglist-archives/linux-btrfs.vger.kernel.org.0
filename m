@@ -2,123 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E077A49CD38
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 16:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9582449CE8E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 16:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242411AbiAZPCa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jan 2022 10:02:30 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:34882 "EHLO
-        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242509AbiAZPCa (ORCPT
+        id S242875AbiAZPdh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jan 2022 10:33:37 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:41528 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235928AbiAZPdg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jan 2022 10:02:30 -0500
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 80AB0190BB6; Wed, 26 Jan 2022 10:02:29 -0500 (EST)
-Date:   Wed, 26 Jan 2022 10:02:29 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+        Wed, 26 Jan 2022 10:33:36 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 30EC1218D9;
+        Wed, 26 Jan 2022 15:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1643211215;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BZFu1dpXmMn5Ub9iIk6DuAfqUGNCwXvbBP/ZZMT0HHs=;
+        b=RSPZtgdrPpQWKzdX7/eLGzD4tgy/+4OeoCzb9h9+wrOd4nPb901oBfPa1L8+l9K7s0ESdb
+        atak7Js6c3GsWXsmhyH2TE7OE6kwRfkOwzOUEdcQIuSTSS/9z1WuPEAn0lNBNt0NTkIPzw
+        9sMNwzvtTAOVsTCGePhFMfMicZ/syC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1643211215;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BZFu1dpXmMn5Ub9iIk6DuAfqUGNCwXvbBP/ZZMT0HHs=;
+        b=WZK93ZRBAsseZCwtsaQR+9gldGqVHODA1JaIgI9Cgi4BICJhTmHeFzGXqbqbAmgsTWGjxq
+        7/dFVMVvlPIl6SCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1BE9FA3B84;
+        Wed, 26 Jan 2022 15:33:35 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2B82EDA7A9; Wed, 26 Jan 2022 16:32:53 +0100 (CET)
+Date:   Wed, 26 Jan 2022 16:32:53 +0100
+From:   David Sterba <dsterba@suse.cz>
 To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: 'btrfs replace' hangs at end of replacing a device (v5.10.82)
-Message-ID: <YfFihVM5U2TwOJHq@hungrycats.org>
-References: <20211129214647.GH17148@hungrycats.org>
- <cfceba98-f925-8a95-5b09-caec932efc42@suse.com>
- <eb5804bc-10d0-ab12-73c4-bcaa08b297e0@suse.com>
- <YdDB0PSBKa2GMAPV@hungrycats.org>
- <ac3a3216-2beb-3365-0430-38865faccc83@suse.com>
- <YdDf9xTbdRwgE9JS@hungrycats.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 09/11] btrfs: abstract out loading the tree root
+Message-ID: <20220126153253.GX14046@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1639600719.git.josef@toxicpanda.com>
+ <fc9f1e2aa167dfe0d1b9b806246eb55e098092c9.1639600719.git.josef@toxicpanda.com>
+ <64a4fbdc-0a06-1c65-cd3c-5874a3ba6d4d@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YdDf9xTbdRwgE9JS@hungrycats.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <64a4fbdc-0a06-1c65-cd3c-5874a3ba6d4d@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 01, 2022 at 06:12:55PM -0500, Zygo Blaxell wrote:
-> On Sat, Jan 01, 2022 at 11:07:24PM +0200, Nikolay Borisov wrote:
-> > >>> I have a working hypothesis what might be going wrong, however without a
-> > >>> crash dump to investigate I can't really confirm it. Basically I think
-> > >>> btrfs_rm_dev_replace_blocked is not seeing the decrement aka the store
-> > >>> to running bios count since it's using cond_wake_up_nomb. If I'm right
-> > >>> then the following should fix it:
-> > >>>
-> > >>> @@ -1122,7 +1123,8 @@ void btrfs_bio_counter_inc_noblocked(struct
-> > >>> btrfs_fs_info *fs_info)
-> > >>>  void btrfs_bio_counter_sub(struct btrfs_fs_info *fs_info, s64 amount)
-> > >>>  {
-> > >>>         percpu_counter_sub(&fs_info->dev_replace.bio_counter, amount);
-> > >>> -       cond_wake_up_nomb(&fs_info->dev_replace.replace_wait);
-> > >>> +       /* paired with the wait_event barrier in replace_blocked */
-> > >>> +       cond_wake_up(&fs_info->dev_replace.replace_wait);
-> > >>>  }
-> > >>
-> > >> Ping, any feedback on this patch?
-> > > 
-> > > I've had a VM running 37 replaces completed without hanging.  In the
-> > > 2 failing cases, I hit the KASAN bug[1] and the dedupe/logical_ino/bees
-> > > lockup bug[2].
+On Thu, Jan 13, 2022 at 11:20:43AM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 15.12.21 г. 22:40, Josef Bacik wrote:
+> > We're going to be adding more roots that need to be loaded from the
+> > super block, so abstract out the code to read the tree_root from the
+> > super block, and use this helper for the chunk root as well.  This will
+> > make it simpler to load the new trees in the future.
 > > 
-> > How does that compare vs without the patch? The KASAN thing looks like
-> > raid56-related so I'd discount it. The logical_ino lockup also isn't
-> > directly related to this patch.
-> 
-> I added the device replace loop to my existing regression test workload
-> (with a kernel that has KASAN enabled) and left it since the beginning
-> of December.  
-
-I changed the setup so that the filesystem started in degraded with one
-device missing.  With raid5 data and raid1 metadata and some active
-writers on the filesystem, the replace crashes with many different
-problems, all some manifestation of a use-after-free bug.  There are
-lockdep complaints about a thread taking the same lock twice, assorted
-list and tree corruptions, NULL derefs in the block IO code, and KASAN
-UAF complaints like the one I posted at [1].  With a mean uptime of 7
-minutes, the replace gets maybe 1% done between crashes.  It runs longer
-between crashes when replace is the only thing touching the filesystem.
-
-Previously my test was running replace with the replaced drive still
-online, and apparently that case almost never has problems.  That's going
-to be a different code path.  Kind of obvious, I should have noticed
-that difference much earlier.
-
-I'm not 100% sure if this is the same bug I found earlier, but it is
-an easily reproducible bug, so that's something.  Hell, I wouldn't
-be surprised if it also caused all the degraded raid5 read corruption
-problems too.
-
-> So it's testing for all the currently known and active
-> bugs at once (the ghost dirents bug, the logical_ino bug, and the dev
-> replace hang, as well as general regressions affecting our workload)
-> and counting how often each kind of failure event occurs.
-> 
-> The KASAN thing would probably disrupt bio counters during a replace?
-> It wouldn't explain replace hangs on RAID1, but maybe there are multiple
-> separate bugs here.  KASAN isn't enabled on our baremetal hosts where
-> the majority of device replace operations are running, so any previous
-> UAF bugs would have been invisible.  We are replacing drives in RAID1
-> and RAID5 profiles.
-> 
-> Note these test results are for 5.10.  On kernels starting with 5.11,
-> the logical_ino bug hits every few hours so replace never gets a chance
-> to finish running.  All the hangs do make it easier to test for ghost
-> dirents though.  We use every part of the buffalo.
-> 
-> > So without the patch you should have had
-> > some incident rate greater than 0 of the replace lock up ?
-> 
-> Under the same conditions without the patch, there would be between 10
-> and 30 replace hangs by now.
-> 
-> > > [1] https://lore.kernel.org/linux-btrfs/Ycqu1Wr8p3aJNcaf@hungrycats.org/
-> > > [2] https://lore.kernel.org/linux-btrfs/Ybz4JI+Kl2J7Py3z@hungrycats.org/
-> > > 
-> > >>> Can you apply it and see if it can reproduce, I don't know what's the
-> > >>> incident rate of this bug so you have to decide at what point it should
-> > >>> be fixed. In any case this patch can't have any negative functional
-> > >>> impact, it just makes the ordering slightly stronger to ensure the write
-> > >>> happens before possibly waking up someone on the queue.
-> > >>>
-> > >>>
-> > >>
-> > > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/btrfs/disk-io.c | 82 ++++++++++++++++++++++++++--------------------
+> >  1 file changed, 47 insertions(+), 35 deletions(-)
 > > 
+> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > index 5c598e124c25..ddc3b9fcbabc 100644
+> > --- a/fs/btrfs/disk-io.c
+> > +++ b/fs/btrfs/disk-io.c
+> > @@ -2934,6 +2934,46 @@ static int btrfs_validate_write_super(struct btrfs_fs_info *fs_info,
+> >  	return ret;
+> >  }
+> >  
+> > +static int load_super_root(struct btrfs_root *root, u64 bytenr, u64 gen,
+> > +			   int level)
+> 
+> nit: 'super' here sounds a bit off. Perhaps 'meta' (no pun intended!) or
+> 'main' or 'core' or simply 'load_root' ?
+
+Yeah as we have 'superblock' referred to as 'super', so this is
+confusing. I don't have suggestion for final name and will leave as it
+is. Looking to dictionary there are several terms we haven't used so
+far, like pivotal, crucial, essential, principal, cardinal, major, or
+maybe even central.
+
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	root->node = read_tree_block(root->fs_info, bytenr,
+> > +				     root->root_key.objectid, gen, level, NULL);
+> > +	if (IS_ERR(root->node)) {
+> > +		ret = PTR_ERR(root->node);
+> > +		root->node = NULL;
+> > +	} else if (!extent_buffer_uptodate(root->node)) {
+> > +		free_extent_buffer(root->node);
+> > +		root->node = NULL;
+> > +		ret = -EIO;
+> > +	}
+> > +
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	btrfs_set_root_node(&root->root_item, root->node);
+> > +	root->commit_root = btrfs_root_node(root);
+> > +	btrfs_set_root_refs(&root->root_item, 1);
+> > +	return ret;
+> > +}
+> > +
+> > +static int load_important_roots(struct btrfs_fs_info *fs_info)
+> 
+> nit: This name is somewhat colloquial and naming something important
+> doesn't really convey much useful information about what it is. So I'm
+> wondering what a more becoming name might look like. I was thinking of
+> load_main_roots - but I have a feeling it's not much better than
+> 'important' or load_core_roots but this introduces 'core' as a new
+> concept which we haven't had so far in the code.
+
+Same here, naming changes in the future expected.
