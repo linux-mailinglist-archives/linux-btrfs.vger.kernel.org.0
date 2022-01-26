@@ -2,72 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F58949CF0B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 16:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DFA49CF2D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 17:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbiAZP67 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jan 2022 10:58:59 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:42290 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbiAZP66 (ORCPT
+        id S238624AbiAZQGf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jan 2022 11:06:35 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:45166 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241962AbiAZQGX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jan 2022 10:58:58 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C6E0B1F3B0;
-        Wed, 26 Jan 2022 15:58:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643212737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 26 Jan 2022 11:06:23 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 25A8821123;
+        Wed, 26 Jan 2022 16:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1643213182;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KsxdYmsMi9SV+BO4UZFzZZxA25PXLcSKtG7Ub4Imuqs=;
-        b=rXk7pIoLHLt4X4zbcp/ASyI9nv1ENJzVVxt3A75OfvYjXfE6lXm9Bba6M2It60T8u+JFqb
-        hRxr5SSrPD3kghBgU5ZazXk3tSXbGfM1x0reA/o5ioCaAhlNMgjzwdtbOJRGDEW/aVOMFg
-        sIYlfPykkxUAVxQLHS216a5vPnj9VAk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 770D713E1A;
-        Wed, 26 Jan 2022 15:58:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 83TAGMFv8WFfMgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 26 Jan 2022 15:58:57 +0000
-Message-ID: <45fbafab-c7bb-9096-2fb5-c0f85c2927c1@suse.com>
-Date:   Wed, 26 Jan 2022 17:58:56 +0200
+        bh=6PHWugMf4RnYJOsmhtPQQTSjm6MHIBh4hgVbu2uU3H8=;
+        b=m832a3u+gj2jvfJPhUvE57ZYGmxTMzldQ35WsWH7W78KwDA+lmC+j69af3Y74ySm+f5vKf
+        3l8/IK9+wZknBjDCp10sXdzP9zDM9PDMMysrI2K/cEIu5GRRudsilm53T4+MVj6xJOI+L5
+        TWGhSq8FlQ2eOGP1R8tOPSyuVDVKrGI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1643213182;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6PHWugMf4RnYJOsmhtPQQTSjm6MHIBh4hgVbu2uU3H8=;
+        b=Ydki0P6x4gCp1H3ywwUKdxRsm0gS8NYzTbq+JYiJZF/GfBi/XHc0TyqGKzeOQgNAQO3O7c
+        35UFlFYK+173QsAA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id E89A5A3B93;
+        Wed, 26 Jan 2022 16:06:21 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 14CD2DA7A9; Wed, 26 Jan 2022 17:05:40 +0100 (CET)
+Date:   Wed, 26 Jan 2022 17:05:40 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] btrfs: implement metadata DUP for zoned mode
+Message-ID: <20220126160540.GB14046@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1643204608.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v2 10/11] btrfs: add code to support the block group root
-Content-Language: en-US
-To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1639600719.git.josef@toxicpanda.com>
- <6989c644d619aa6c829310bb9f508e12a36ea8af.1639600719.git.josef@toxicpanda.com>
- <37128edf-7bdd-0d36-3103-8e12805ed761@suse.com>
- <20220126153432.GY14046@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220126153432.GY14046@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1643204608.git.johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Jan 26, 2022 at 05:46:19AM -0800, Johannes Thumshirn wrote:
+> Btrfs' default block-group profile for metadata on rotating devices has been
+> DUP for a long time. Recently the default also changed for non-rotating
+> devices.
+> 
+> Technically, there is no reason why btrfs on zoned devices can't use DUP for
+> metadata as well. All I/O to metadata block-groups is serialized via the
+> zoned_meta_io_lock and written with regular REQ_OP_WRITE operations. Therefore
+> reordering due to REQ_OP_ZONE_APPEND cannot happen on metadata (as opposed to
+> data).
+> 
+> The first three patches lay the groundwork by making sure zoned btrfs can work
+> with more than one stripe and the last patch then implements DUP on metadata
+> block groups in zoned btrfs.
+> 
+> Changes to v1:
+> * if only one zone is active, activate the other one as well
+> 
+> Johannes Thumshirn (4):
+>   btrfs: zoned: make zone activation multi stripe capable
+>   btrfs: zoned: make zone finishing multi stripe capable
+>   btrfs: zoned: prepare for allowing DUP on zoned
+>   btrfs: zoned: allow DUP on meta-data block groups
 
-
-On 26.01.22 г. 17:34 ч., David Sterba wrote:
-> You mean that extent tree v2 is mainly for speeding up mount? AFAIK it's
-> only one of the improvements it brings. I'm not sure what you'd like to
-> see in the commit message but could update it eventually.
-
-No, I mean the block group root is speeding up the mount, extent v2 has 
-a lot more features like the gc, changed metadata blocks management etc.
-
-My point is that the block group root is not strictly required by extent 
-v2 just that it's convenient time to be added. I meant this could have 
-been made more explicit in the changelog.
+I'll add the patchset to a topic for-next branch, as it's in zoned code
+and should not break anything else. Thanks.
