@@ -2,83 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A43D49C403
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 08:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153C549C5A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 09:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbiAZHHw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jan 2022 02:07:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237572AbiAZHHp (ORCPT
+        id S238647AbiAZI7o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jan 2022 03:59:44 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:42046 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbiAZI7n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jan 2022 02:07:45 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4E1C061744
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jan 2022 23:07:44 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id i17so4378585pfq.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jan 2022 23:07:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=kzqLcwMXNPYKykjkG+NrQ8t0BTtuiWwC+Wlb+U4kWnM=;
-        b=XMp8A2Xxco7GN/AU5vRgAmxNxk0v1sAI4kLUqq+K1XeOCGPvbcTbIC9/pW5/RtlSnK
-         YoTIgEu0aQ99jrGlozhapMa125mSWTbw54EN6coGqhdut2fJOM/Gv7XE8pOJQaS0Iax0
-         2+65QH73240ljNDTzoKOlpTVnddqGVNlvUwDXZ4/RyQEKb/4NSIO0/iaEigixyznDTsV
-         xOgnHYLPmAHWU3FAmBlAgSMgQNCV3tAL/mw6ml+fu8gy+Qdo+XCMThwa/y5Mqw7OhCAY
-         MI57eag5dqdlw4I33TSjCtVfRhAxXoMbvcmj7HxFZoWugalQJpZlAyW7UVPfNdr4TICH
-         Bg8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=kzqLcwMXNPYKykjkG+NrQ8t0BTtuiWwC+Wlb+U4kWnM=;
-        b=JbFMX3BxyJW6G9QO9c37V/ohjDpy1L/dSzDsC52chWkm+jaPFCftYaqrh/JnDWEhxL
-         xJ0D9SoqYX3NQteQny4I37GLhVjeXy/9rqMKZYhBxp8tzqPshTZWaxk+a5c7cplCK75N
-         rKrMvSUU2K9AdVONkstf69CMWTAVtVv8dlr7zqU2bYalW8Q18hgWWi7l5qXKT2PpTQEm
-         cyi0H16z4my4dwN1QRAUliaV7F6pF2MsvCn6pCJN3sulGba4PPzUPDGpeaxoRRwawHb9
-         Lb60WZ/JwJRv6kYuXAHVkzzQ2r9drnB+pJxQMrIZX5v2azjAxlp28fAfEYRDT2eS2+0d
-         vfvQ==
-X-Gm-Message-State: AOAM532nF1e8yUTnfKFkOy+SlQ3171PTVTkyOt/r2oQuiwf5TP7Bvjh9
-        6kDPqAtIcNbc1KNNbmCXZgn9Sl8jPc9Hwg3aoXU=
-X-Google-Smtp-Source: ABdhPJwJxi5fm1+IiqDeOZum4FSyjet2i5IfwHuTWStQgv68X2ucMv7UspwF4WRDTh9AIwQgbsl9uEEYUdW6FczGHvw=
-X-Received: by 2002:a63:710c:: with SMTP id m12mr17925537pgc.334.1643180864014;
- Tue, 25 Jan 2022 23:07:44 -0800 (PST)
+        Wed, 26 Jan 2022 03:59:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1643187584; x=1674723584;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CLtNpb5t3XOROz7kwxmxqfsnZe+aHLTKijLXzbNQCns=;
+  b=XiqdeWnO3QchfMf7nl68B9zTeJFyN6qAPX5kregjh8y64U1qgPE+zWi+
+   5QoMulLfmzV3Wz6veRVcNRmJlCXtX4QY+pd8LtkefGqtqN674YjWOQNRV
+   G9QTgkGNU7GoPwCTDbmPc82CJ6XbtJYa7QzBIn6Hgb3oV6TpQ1siGTg7m
+   YbQ7T66GusHhyl8ccxV8DK+3KykppDY879RflQU52t5jONuRDftxyU56O
+   uJa2zyrwDOow0mc5Q4I1bTqccaGLgcHO55m3xWrLHqKqy6iKVx9zTS9dR
+   tRWE2zG8cK50jXesBguq6mRP242fWejNwvjtnNmUmYhaAQXUQtVebJvEL
+   g==;
+X-IronPort-AV: E=Sophos;i="5.88,317,1635177600"; 
+   d="scan'208";a="192406580"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2022 16:59:44 +0800
+IronPort-SDR: 4fgnGLj1xgsRsGyqI3Yy9Aeo19v3YI5kZXMbiNWjpMcrekNiNxafwDAvQhwZBc8CBY3lAbwVUU
+ 6cBliOt9Vpvt+d5aA595mVTHmNl/IoBmEPs+joLg4xdQ4hkCR0uEQ9QjWmWC29JOHBAsIkECMu
+ 2G9su3pVyvEmsksoUiHFCsWBV9Xua6Grjb+q8fwZf+DvjBgiyLQiMjP2XicNLqgUj7YcShRSZC
+ VypGtsjEocp1gtXaoMcuF0thvRLOR6DU6ULl4nNwKpHjn8fo0rpa2o6gtfeTFhR3yOX4uxwNj8
+ 2ILo+zmXxmpHpNgamZknDFcw
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2022 00:31:48 -0800
+IronPort-SDR: 1nyqVzBK4hxkJ+End4+oOn/K/UiBLiJg9HtnFnQX/jK71zNul46I3mzChEWo4pKUngHpZIqNdj
+ 3JoQHTyEPQLay6NM7MUOrCzLdP489kmsxteciP6g7cDHYdrHJvC3IvyQIGqYhMP4N+X3nBbg8V
+ HunIvSbXace5G5MWoD91YTjOE3GDZAWu1U7/bezO1wemKZK/OQOfg5bErian6j5iieEGKP8ixj
+ YIU/Ir3LPWJY26SENBUIFPBIoQeUzQrkc5L5582O416O4U/HL8ba/pkfiRq2nnVEBq7WWpCDAF
+ EQc=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
+  by uls-op-cesaip02.wdc.com with ESMTP; 26 Jan 2022 00:59:43 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/4] btrfs: implement metadata DUP for zoned mode
+Date:   Wed, 26 Jan 2022 00:59:29 -0800
+Message-Id: <cover.1643185812.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:cacb:0:0:0:0 with HTTP; Tue, 25 Jan 2022 23:07:43
- -0800 (PST)
-Reply-To: fulhammartins8@gmail.com
-From:   Fulham Martins <whoknowsladyjay@gmail.com>
-Date:   Wed, 26 Jan 2022 08:07:43 +0100
-Message-ID: <CAMhEkO6ym=vegO6nHJCkFqhogkT5ji0b1NdyN6ERwckZVNsDkQ@mail.gmail.com>
-Subject: INVESTMENT PARTNERSHIP
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Partner,
+Btrfs' default block-group profile for metadata on rotating devices has been
+DUP for a long time. Recently the default also changed for non-rotating
+devices.
 
-My Name is Mr. Fulham Martins. I am from the United Kingdom.
-It is my resolve to contact you for an investment plan in your
-country. It is no more a secret that investments are thriving fast in
-your country.
-Therefore, I want to invest in your country and want you to be my
-business partner.
-I am ready to invest in any sector such as Manufacturing, Agriculture,
-Real Estate, Hoteling, etc. or any other business that has good return
-on investment/profitable.
+Technically, there is no reason why btrfs on zoned devices can't use DUP for
+metadata as well. All I/O to metadata block-groups is serialized via the
+zoned_meta_io_lock and written with regular REQ_OP_WRITE operations. Therefore
+reordering due to REQ_OP_ZONE_APPEND cannot happen on metadata (as opposed to
+data).
 
-If you choose to be of assistance, I am ready to send the consignment
-box to your country regarding the investment
-partnership or do a direct bank transfer to your account based on
-whatever modalities the investment will entail.
-Like I mentioned earlier, I am presently based in the United Kingdom
-and would like to know whether you are ready to partner with me on
-this. Kindly indicate your interest to enable us to proceed.
-Thank you in anticipation as I look forward to reading your reply.
+The first three patches lay the groundwork by making sure zoned btrfs can work
+with more than one stripe and the last patch then implements DUP on metadata
+block groups in zoned btrfs.
 
+Johannes Thumshirn (4):
+  btrfs: zoned: make zone activation multi stripe capable
+  btrfs: zoned: make zone finishing multi stripe capable
+  btrfs: zoned: prepare for allowing DUP on zoned
+  btrfs: zoned: allow DUP on meta-data block groups
 
-Best regards.
+ fs/btrfs/zoned.c | 162 ++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 105 insertions(+), 57 deletions(-)
 
-Mr.Fulham Martins.
+-- 
+2.31.1
+
