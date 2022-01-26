@@ -2,117 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4062849BFB3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 00:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C1249C05F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 01:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbiAYXqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jan 2022 18:46:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234965AbiAYXqR (ORCPT
+        id S235469AbiAZA7L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jan 2022 19:59:11 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:51892 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234910AbiAZA7K (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jan 2022 18:46:17 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526DAC06161C
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jan 2022 15:46:17 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id ka4so34424217ejc.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jan 2022 15:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nJbbcwBBkbzpUfnkfZBLgl8IFNcpVhFpEqN/1T5R5gg=;
-        b=mLLlnmSAaPw4hUUq8k8qFkIltcx7v813kWri+9/xkTAtIHEgnk7gU8mMbkYyfS75XD
-         nAfNkm4nbcnGQLQJH8H9PCD9vg5OTS/EKrFjfpiykAdmwymi3ajDIKpd1CDHM14hFhN9
-         +W7/H7Q4ccBWDhDlMajqYzaX7Yr+TRusDv8li9ra8F02CXdGWeGPsAIKQwtklpx2iVDC
-         HFqxT9OHLu52nIDFJSSllKnXwLUEYBtBDHU4ZwDs9Uw09lxjSeYweGo497n+vv0EXdnY
-         Sjt5rwKvWgUAy0Uj2gG4MmaJMqkfqS91ITpAUiLWmJ+/1sYpEIJqTdqqPJ1PZpgInHdo
-         Ijxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nJbbcwBBkbzpUfnkfZBLgl8IFNcpVhFpEqN/1T5R5gg=;
-        b=TVb8SOi+uVM4Nxq8n450d537Z4GV1K4Ypm5oWmziG2E8ydAQYfPxnY/02l1afrVmjL
-         c3dThL5H/9XKCetVzO5kowyKdt66LIkMGeKJ+bDeuwCrM8ZpWMkOJnvGxvSYcX5IwmBL
-         7w0f++vylpYv2YR5ytD8MN90s5NJOM24njSRmXEnhovKw9hBqohOsMNzIOl4JRVlG0kV
-         FSxWkauhg1VMZoG4yA/8mlFHFTff7AlfJZ0Ydhp1XFTyLBUn0kKoi4ZXl5DrZmvChgq9
-         DlXxqH6ppY0KNMvwKyg8dSw7Rob1rurd5BwJ2uTTw5SqLKZ0+AyYnDhsYTiFhS1mSixf
-         FU4A==
-X-Gm-Message-State: AOAM5302K8j/IK04DhplvOPjQqhR2bPAfN/w7r7u7oL+gBhedgrBwfqj
-        XO/1sdFhR5F+ugeoPV0wC+u7yOejn+3vJoz0P4jhCPmp5MFKCA==
-X-Google-Smtp-Source: ABdhPJxeUEsjjkxWfZr068OoljRM+puPKSTpxEAgcSOVdbX9NB1Ay9zRrh4YCC/etDimLjmaG6Ncjg2ciK4qHGaCHZY=
-X-Received: by 2002:a2e:93c9:: with SMTP id p9mr16593057ljh.63.1643153996729;
- Tue, 25 Jan 2022 15:39:56 -0800 (PST)
+        Tue, 25 Jan 2022 19:59:10 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C2F621122
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1643158749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=vxuxrwFizSCtowF8HPPpCs6xQ5QeSd0VtpH6bXDH/eg=;
+        b=AXtRESNcamJosTIhlYFKPZLz1VDUcvsaD1S7YvQH36TkarE3PnMDFTiawWDqkGGBCutHrY
+        4S3Jeg8124Y6sQoL1VzAGDH+gbf4AKQa5yudpLuQ4bYjT0Dn+Qodf+EFfDDlXv4ovk8dmL
+        yWrp5iftmICAAqb9MHSZTxvrTScD+0E=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E338133F5
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id doEgCtyc8GH7BwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:08 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 1/3] btrfs: defrag: don't try to merge regular extents with preallocated extents
+Date:   Wed, 26 Jan 2022 08:58:48 +0800
+Message-Id: <20220126005850.14729-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Received: by 2002:a05:6512:39c1:0:0:0:0 with HTTP; Tue, 25 Jan 2022 15:39:56
- -0800 (PST)
-Reply-To: mr.adamakafando2015@gmail.com
-From:   Adama Kafando <icemanbrooks8@gmail.com>
-Date:   Tue, 25 Jan 2022 15:39:56 -0800
-Message-ID: <CACam9wLe+N=hw-i65VQ5w79wHeELTrk1xXsJBtO00QOdOYV5HQ@mail.gmail.com>
-Subject: VERY VERY URGENT.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend,
+[BUG]
+With older kernels (before v5.16), btrfs will defrag preallocated extents.
+While with newer kernels (v5.16 and newer) btrfs will not defrag
+preallocated extents, but it will defrag the extent just before the
+preallocated extent, even it's just a single sector.
 
-I Mr.Adama Kafando, With due respect, I have decided to contact you on a
-business transaction that will be beneficial to both of us.At the bank
-last account and  auditing evaluation, my staff came across an old
-account which was being maintained by a foreign client who we learned
-was among the deceased passengers of a motor accident on
-November.2010, the deceased was unable to run this account since his
-death. The Account has  remained dormant without the knowledge of his
-family since it was put in a  safe deposit account in the bank for
-future investment by the client.
+This can be exposed by the following small script:
 
-Since his demise, even the members of his family haven't applied for
-claims over this fund and it has been in the safe deposit account
-until I discovered that it cannot be claimed since our client
-isaforeign national and we are sure that he has no next of kin here to
-file claims over the money. As the director of the department, this
-discovery was brought to my office so as to decide what is to be
-done.I decided to seek ways through which to transfer this money out
-of the bank and out of the country too.
+	mkfs.btrfs -f $dev > /dev/null
 
-The total amount in the account is USD $18.6 million with my positions
-as staff of the bank,I am handicapped because I cannot operate foreign
-accounts and cannot lay a bonafide claim over this money. The client
-was a foreign  national and you will only be asked to act as his next
-of kin and I will supply you with all the necessary information and
-bank data to assist you in being able to transfer this money to any
-bank of your  choice where this money could be transferred into.The
-total sum will be shared as follows: 50% for me, 50% for you and
-expenses incidental occur  during the transfer will be incur by both
-of us. The transfer is risk free on both sides hence you are going to
-follow my instruction till the fund  transfer to your account. Since I
-work in this bank that is why you should  be confident in the success
-of this transaction because you will be updated with information as
-and when desired.
+	mount $dev $mnt
+	xfs_io -f -c "pwrite 0 4k" -c sync -c "falloc 4k 16K" $mnt/file
+	xfs_io -c "fiemap -v" $mnt/file
+	btrfs fi defrag $mnt/file
+	sync
+	xfs_io -c "fiemap -v" $mnt/file
 
-I will wish you to keep this transaction secret and confidential as I
-am hoping to retire with my share of this money at the end of the
-transaction  which will be when this money is safe in your account.I
-will then come over to your country for sharing according to the
-previously agreed percentages. You might even have to advise me on
-possibilities of investment in your country or elsewhere of our
-choice. May God help you to help me to a restive retirement,Amen,And
-You have to  contact me through my private e-mail
-at(mr.adamakafando2015@gmail.com)Please for further information and inquiries
-feel free to contact me back immediately for more explanation and
-better understanding I want you to assure me your capability of
-handling this  project with trust by providing me your following
-information details such as:
+The output looks like this on older kernels:
 
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:.....................
-(6)YOUR COUNTRY:.....................
+/mnt/btrfs/file:
+ EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+   0: [0..7]:          26624..26631         8   0x0
+   1: [8..39]:         26632..26663        32 0x801
+/mnt/btrfs/file:
+ EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+   0: [0..39]:         26664..26703        40   0x1
 
-Yours sincerely,
-Mr.Adama Kafando.
+Which defrags the single sector along with the preallocated extent, and
+replace them with an regular extent into a new location (caused by data
+COW).
+This wastes most of the data IO just for the preallocated range.
+
+On the other hand, v5.16 is slightly better:
+
+/mnt/btrfs/file:
+ EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+   0: [0..7]:          26624..26631         8   0x0
+   1: [8..39]:         26632..26663        32 0x801
+/mnt/btrfs/file:
+ EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+   0: [0..7]:          26664..26671         8   0x0
+   1: [8..39]:         26632..26663        32 0x801
+
+The preallocated range is not defragged, but the sector before it still
+gets defragged, which has no need for it.
+
+[CAUSE]
+One of the function reused by the old and new behavior is
+defrag_check_next_extent(), it will determine if we should defrag
+current extent by checking the next one.
+
+It only checks if the next extent is a hole or inlined, but it doesn't
+check if it's preallocated.
+
+On the other hand, out of the function, both old and new kernel will
+reject preallocated extents.
+
+Such inconsistent behavior causes above behavior.
+
+[FIX]
+- Also check if next extent is preallocated
+  If so, don't defrag current extent.
+
+- Add comments for each branch why we reject the extent
+
+This will reduce the IO caused by defrag ioctl and autodefrag.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Use @extent_thresh from caller to replace the harded coded threshold
+  Now caller has full control over the extent threshold value.
+
+- Remove the old ambiguous check based on physical address
+  The original check is too specific, only reject extents which are
+  physically adjacent, AND too large.
+  Since we have correct size check now, and the physically adjacent check
+  is not always a win.
+  So remove the old check completely.
+
+v3:
+- Split the @extent_thresh and physicall adjacent check into other
+  patches
+
+- Simplify the comment
+---
+ fs/btrfs/ioctl.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 91ba2efe9792..0d8bfc716e6b 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1053,19 +1053,25 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+ 				     bool locked)
+ {
+ 	struct extent_map *next;
+-	bool ret = true;
++	bool ret = false;
+ 
+ 	/* this is the last extent */
+ 	if (em->start + em->len >= i_size_read(inode))
+-		return false;
++		return ret;
+ 
+ 	next = defrag_lookup_extent(inode, em->start + em->len, locked);
++	/* No more em or hole */
+ 	if (!next || next->block_start >= EXTENT_MAP_LAST_BYTE)
+-		ret = false;
+-	else if ((em->block_start + em->block_len == next->block_start) &&
+-		 (em->block_len > SZ_128K && next->block_len > SZ_128K))
+-		ret = false;
+-
++		goto out;
++	/* Preallocated */
++	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
++		goto out;
++	/* Physically adjacent and large enough */
++	if ((em->block_start + em->block_len == next->block_start) &&
++	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
++		goto out;
++	ret = true;
++out:
+ 	free_extent_map(next);
+ 	return ret;
+ }
+-- 
+2.34.1
+
