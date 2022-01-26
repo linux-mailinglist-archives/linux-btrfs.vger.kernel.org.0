@@ -2,179 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C1249C05F
+	by mail.lfdr.de (Postfix) with ESMTP id F20EB49C060
 	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jan 2022 01:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbiAZA7L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jan 2022 19:59:11 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:51892 "EHLO
+        id S235465AbiAZA7M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jan 2022 19:59:12 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:51898 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234910AbiAZA7K (ORCPT
+        with ESMTP id S235463AbiAZA7L (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jan 2022 19:59:10 -0500
+        Tue, 25 Jan 2022 19:59:11 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C2F621122
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:09 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1EEE4212BF
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643158749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=vxuxrwFizSCtowF8HPPpCs6xQ5QeSd0VtpH6bXDH/eg=;
-        b=AXtRESNcamJosTIhlYFKPZLz1VDUcvsaD1S7YvQH36TkarE3PnMDFTiawWDqkGGBCutHrY
-        4S3Jeg8124Y6sQoL1VzAGDH+gbf4AKQa5yudpLuQ4bYjT0Dn+Qodf+EFfDDlXv4ovk8dmL
-        yWrp5iftmICAAqb9MHSZTxvrTScD+0E=
+        t=1643158750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Ifyv1QTiH2Zq9NR3agYP5g9yenhn5YlZ9Y5XogNio4=;
+        b=nIYVZdYGy9lxFmm0nDdmTJj8OZjS/cCyt9yD8S6x5Vjyd3xbWa3JVbQPXKcRy9hpngarut
+        Na5hDuczwQx1UPrf4UlHNAZCMmmm6tcHhatUJskp7LqNCmi/0ra83CCiK9DsP605CA2pGN
+        2VZr/orYgrLa1gJItf5sKfGP9h4Qibg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E338133F5
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71094133F5
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id doEgCtyc8GH7BwAAMHmgww
+        id qBfcDt2c8GH7BwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:08 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jan 2022 00:59:09 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 1/3] btrfs: defrag: don't try to merge regular extents with preallocated extents
-Date:   Wed, 26 Jan 2022 08:58:48 +0800
-Message-Id: <20220126005850.14729-1-wqu@suse.com>
+Subject: [PATCH 2/3] btrfs: defrag: use extent_thresh to replace the hardcoded size limit
+Date:   Wed, 26 Jan 2022 08:58:49 +0800
+Message-Id: <20220126005850.14729-2-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220126005850.14729-1-wqu@suse.com>
+References: <20220126005850.14729-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-With older kernels (before v5.16), btrfs will defrag preallocated extents.
-While with newer kernels (v5.16 and newer) btrfs will not defrag
-preallocated extents, but it will defrag the extent just before the
-preallocated extent, even it's just a single sector.
+In defrag_lookup_extent() we use hardcoded extent size threshold, SZ_128K,
+other than @extent_thresh in btrfs_defrag_file().
 
-This can be exposed by the following small script:
+This can lead to some inconsistent behavior, especially the default
+extent size threshold is 256K.
 
-	mkfs.btrfs -f $dev > /dev/null
+Fix this by passing @extent_thresh into defrag_check_next_extent() and
+use that value.
 
-	mount $dev $mnt
-	xfs_io -f -c "pwrite 0 4k" -c sync -c "falloc 4k 16K" $mnt/file
-	xfs_io -c "fiemap -v" $mnt/file
-	btrfs fi defrag $mnt/file
-	sync
-	xfs_io -c "fiemap -v" $mnt/file
-
-The output looks like this on older kernels:
-
-/mnt/btrfs/file:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..7]:          26624..26631         8   0x0
-   1: [8..39]:         26632..26663        32 0x801
-/mnt/btrfs/file:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..39]:         26664..26703        40   0x1
-
-Which defrags the single sector along with the preallocated extent, and
-replace them with an regular extent into a new location (caused by data
-COW).
-This wastes most of the data IO just for the preallocated range.
-
-On the other hand, v5.16 is slightly better:
-
-/mnt/btrfs/file:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..7]:          26624..26631         8   0x0
-   1: [8..39]:         26632..26663        32 0x801
-/mnt/btrfs/file:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..7]:          26664..26671         8   0x0
-   1: [8..39]:         26632..26663        32 0x801
-
-The preallocated range is not defragged, but the sector before it still
-gets defragged, which has no need for it.
-
-[CAUSE]
-One of the function reused by the old and new behavior is
-defrag_check_next_extent(), it will determine if we should defrag
-current extent by checking the next one.
-
-It only checks if the next extent is a hole or inlined, but it doesn't
-check if it's preallocated.
-
-On the other hand, out of the function, both old and new kernel will
-reject preallocated extents.
-
-Such inconsistent behavior causes above behavior.
-
-[FIX]
-- Also check if next extent is preallocated
-  If so, don't defrag current extent.
-
-- Add comments for each branch why we reject the extent
-
-This will reduce the IO caused by defrag ioctl and autodefrag.
+Also, since the extent_thresh check should be applied to all extents,
+not only physically adjacent extents, move the threshold check into a
+dedicate if ().
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v2:
-- Use @extent_thresh from caller to replace the harded coded threshold
-  Now caller has full control over the extent threshold value.
-
-- Remove the old ambiguous check based on physical address
-  The original check is too specific, only reject extents which are
-  physically adjacent, AND too large.
-  Since we have correct size check now, and the physically adjacent check
-  is not always a win.
-  So remove the old check completely.
-
-v3:
-- Split the @extent_thresh and physicall adjacent check into other
-  patches
-
-- Simplify the comment
----
- fs/btrfs/ioctl.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ fs/btrfs/ioctl.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 91ba2efe9792..0d8bfc716e6b 100644
+index 0d8bfc716e6b..2911df12fc48 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -1053,19 +1053,25 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
- 				     bool locked)
+@@ -1050,7 +1050,7 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
+ }
+ 
+ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+-				     bool locked)
++				     u32 extent_thresh, bool locked)
  {
  	struct extent_map *next;
--	bool ret = true;
-+	bool ret = false;
+ 	bool ret = false;
+@@ -1066,9 +1066,11 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+ 	/* Preallocated */
+ 	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
+ 		goto out;
+-	/* Physically adjacent and large enough */
+-	if ((em->block_start + em->block_len == next->block_start) &&
+-	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
++	/* Extent is already large enough */
++	if (next->len >= extent_thresh)
++		goto out;
++	/* Physically adjacent */
++	if ((em->block_start + em->block_len == next->block_start))
+ 		goto out;
+ 	ret = true;
+ out:
+@@ -1231,7 +1233,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 			goto next;
  
- 	/* this is the last extent */
- 	if (em->start + em->len >= i_size_read(inode))
--		return false;
-+		return ret;
+ 		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
+-							  locked);
++							  extent_thresh, locked);
+ 		if (!next_mergeable) {
+ 			struct defrag_target_range *last;
  
- 	next = defrag_lookup_extent(inode, em->start + em->len, locked);
-+	/* No more em or hole */
- 	if (!next || next->block_start >= EXTENT_MAP_LAST_BYTE)
--		ret = false;
--	else if ((em->block_start + em->block_len == next->block_start) &&
--		 (em->block_len > SZ_128K && next->block_len > SZ_128K))
--		ret = false;
--
-+		goto out;
-+	/* Preallocated */
-+	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
-+		goto out;
-+	/* Physically adjacent and large enough */
-+	if ((em->block_start + em->block_len == next->block_start) &&
-+	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
-+		goto out;
-+	ret = true;
-+out:
- 	free_extent_map(next);
- 	return ret;
- }
 -- 
 2.34.1
 
