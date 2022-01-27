@@ -2,201 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D89449EB6D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 20:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A07C49ECD8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 21:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343500AbiA0T5V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 14:57:21 -0500
-Received: from santino.mail.tiscali.it ([213.205.33.245]:54832 "EHLO
-        smtp.tiscali.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1343494AbiA0T5T (ORCPT
+        id S239845AbiA0Usm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 15:48:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235860AbiA0Usl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 14:57:19 -0500
-Received: from venice.bhome ([78.14.151.50])
-        by santino.mail.tiscali.it with 
-        id nvxE2600k15VSme01vxGrt; Thu, 27 Jan 2022 19:57:17 +0000
-X-Spam-Final-Verdict: clean
-X-Spam-State: 0
-X-Spam-Score: -100
-X-Spam-Verdict: clean
-x-auth-user: kreijack@tiscali.it
-From:   Goffredo Baroncelli <kreijack@tiscali.it>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH 3/3] Read/change the allocation_hint prop when unmounted
-Date:   Thu, 27 Jan 2022 20:57:09 +0100
-Message-Id: <1c6a98da2f8c4a7400f0a7e8862f697b9e8993a1.1643313144.git.kreijack@inwind.it>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1643313144.git.kreijack@inwind.it>
-References: <cover.1643313144.git.kreijack@inwind.it>
-Reply-To: Goffredo Baroncelli <kreijack@libero.it>
+        Thu, 27 Jan 2022 15:48:41 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6233FC061714
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 12:48:41 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id c6so12425355ybk.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 12:48:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OJ1XfRGn9U3hN+D7lqVinMglQrJVXdijXllgjG+lvpk=;
+        b=yUSGv8rhsTB6BXOQnYwiKzzMsN6UNdpVyThCEenkxt8hCwC1oIh0Qc8LjAIu07djsT
+         n05CPXqfUJE3sN7zaYSYKt+4e2GY3uN4M+WnIGDQsnxf7VW+7irMY4anvlfQm7C7ZV7K
+         da/I3M+WHT3G8LgkSp4BpiiqXOohS+cxnfJshCohsfHoecIdJQtqg3Ow1WzsBr3GXVUc
+         dKOeCqCgYk1E+Voo7m0y9oaamDsmnC82jvzb22uY0BVm53i1TfZuykaM9Pi8W5zS+cLJ
+         WCXEDkNFdBBQUVAvo/TyXvLopi+AA+WJxFYpL1F6p4TVvrUuZBzFhLm1LHxK7apSWda7
+         9nfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OJ1XfRGn9U3hN+D7lqVinMglQrJVXdijXllgjG+lvpk=;
+        b=FxnmJL5cHW7sXcWzXVRcNbx6RGngE9xtXKdcT+CJckLhW7zbm1U2+/uk9DN+E0QCjf
+         MWr1yuZyEx2NVuxXLv0QOceI391J/evOO5Ejn794D9CMN7wpJXAeUXRgxrOB8FUMx9Ar
+         Cx5oW8QyGmoe0/5jUjQLP5NdU0R7wgU5wyyPi7Uv1gudY9HH07BS9s+Ur05Q5lp4KDiO
+         ZclPBS6x5fzkMIg4BdLSIU9m5q8jE8bIKDKcbJEG6xIlJdha8Bd1+ElMZcVkRPcYNtaW
+         1naznxN30CyZWU0Lkz+yh3KsMky1MMXFxqmKMI3yN+7awG/LJzhqj6vYSsqRykY+RXsc
+         YcpQ==
+X-Gm-Message-State: AOAM532IZUkfe4+jd5f/2WKMYSETM23U/xQgbPkzGGPYLIzqlAtIejF/
+        ic2tN2uF6lFnAfttbe9KEjGBtV8P359J7ojrH/075bsO6Zn5lgFM
+X-Google-Smtp-Source: ABdhPJwW8SXn8wzvOdRwpV814TFrh4GJ9Nq6ROb+gTiBR8NK7LriP8JFHa330tXtONt70PBPZTUamY9FZGDZcA/WIsg=
+X-Received: by 2002:a25:9083:: with SMTP id t3mr7615534ybl.695.1643316520482;
+ Thu, 27 Jan 2022 12:48:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
-        t=1643313437; bh=bTqA0gtpaBglS1OlwgBE85MoyAQuaipEp1r/2GrGpu8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:Reply-To;
-        b=y4FfiXTNXYg+rdMxTNa742Q68xJqeO7csAEiClIsKwfdoLoeRR6AeErEyaPXCfGOA
-         VMy4zLe7dNTtDngoChA5dkO3cqXq88zRxAPvo63bvpI0h/3uwETc4ITcOgKq6pmxJm
-         2AyCAmW99ymKGPTm7z4GiSRQgUErKiNnwzqc9NGE=
+References: <9bdd0eb6-4a4f-e168-0fb0-77f4d753ec19@gmail.com>
+ <YfHCLhpkS+t8a8CG@zen> <4263e65e-f585-e7f6-b1aa-04885c0ed662@gmail.com> <YfHXFfHMeqx4MowJ@zen>
+In-Reply-To: <YfHXFfHMeqx4MowJ@zen>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 27 Jan 2022 13:48:24 -0700
+Message-ID: <CAJCQCtR5ngU8oF6apChzBgFgX1W-9CVcF9kjvgStbkcAq_TsHQ@mail.gmail.com>
+Subject: Re: No space left errors on shutdown with systemd-homed /home dir
+To:     Boris Burkov <boris@bur.io>
+Cc:     "Apostolos B." <barz621@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        systemd Mailing List <systemd-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Goffredo Baroncelli <kreijack@inwind.it>
+On Wed, Jan 26, 2022 at 4:19 PM Boris Burkov <boris@bur.io> wrote:
+>
+> On Thu, Jan 27, 2022 at 12:07:53AM +0200, Apostolos B. wrote:
+> >  This is what homectl inspect user reports:
+> >
+> >   Disk Size: 128.0G
+> >   Disk Usage: 3.8G (= 3.1%)
+> >   Disk Free: 124.0G (= 96.9%)
+> >
+> > and this is what btrfs usage reports:
+> >
+> > sudo btrfs filesystem usage /home/toliz
+> >
+> > Overall:
+> >     Device size:             127.98GiB
+> >     Device allocated:               4.02GiB
+> >     Device unallocated:     123.96GiB
+> >     Device missing:                 0.00B
+> >     Used:                           1.89GiB
+> >     Free (estimated):             124.10GiB    (min: 62.12GiB)
+> >     Free (statfs, df):             124.10GiB
+> >     Data ratio:                  1.00
+> >     Metadata ratio:                  2.00
+> >     Global reserve:               5.14MiB    (used: 0.00B)
+> >     Multiple profiles:                    no
+> >
+> > Data,single: Size:2.01GiB, Used:1.86GiB (92.73%)
+> >    /dev/mapper/home-toliz       2.01GiB
+> >
+> > Metadata,DUP: Size:1.00GiB, Used:12.47MiB (1.22%)
+> >    /dev/mapper/home-toliz       2.00GiB
+> >
+> > System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
+> >    /dev/mapper/home-toliz      16.00MiB
+> >
+> > Unallocated:
+> >    /dev/mapper/home-toliz     123.96GiB
+> >
+>
+> OK, there is plenty of unallocated space, thanks for confirming.
+>
+> Looking at the stack trace a bit more, the only thing that really sticks
+> out as suspicious to me is btrfs_shrink_device, I'm not sure who would
+> want to do that or why.
 
-This patch enable the changing of the allocation_hint even
-when the filesystem is unmounted.
+systemd-homed by default uses btrfs on LUKS on loop mount, with a
+backing file. On login, it grows the user home file system with some
+percentage (I think 80%) of the free space of the underlying file
+system. And on logout, it does both fstrim and shrinks the fs. I don't
+know why it does both, it seems adequate to do only fstrim on logout
+to return unused blocks to the underlying file system; and to do an fs
+resize on login to either grow or shrink the user home file system.
 
-Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
----
- cmds/property.c | 115 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 115 insertions(+)
+But also, we don't really have a great estimator of the minimum size a
+file system can be. `btrfs inspect-internal min-dev-size` is pretty
+broken right now.
+https://github.com/kdave/btrfs-progs/issues/271
 
-diff --git a/cmds/property.c b/cmds/property.c
-index a409f4e9..55de7e6b 100644
---- a/cmds/property.c
-+++ b/cmds/property.c
-@@ -28,6 +28,9 @@
- #include "cmds/commands.h"
- #include "cmds/props.h"
- #include "kernel-shared/ctree.h"
-+#include "kernel-shared/volumes.h"
-+#include "kernel-shared/disk-io.h"
-+#include "kernel-shared/transaction.h"
- #include "common/open-utils.h"
- #include "common/utils.h"
- #include "common/help.h"
-@@ -377,6 +380,115 @@ static struct ull_charp_pair_t {
- 	{0, NULL}
- };
- 
-+static int find_device(const char *object, struct btrfs_device **device_ret)
-+{
-+	struct btrfs_fs_devices *fs_devices;
-+	struct list_head *fs_uuids;
-+	struct stat sttarget, st;
-+
-+	if (stat(object, &sttarget) < 0)
-+		return -EACCES;
-+
-+	fs_uuids = btrfs_scanned_uuids();
-+
-+	list_for_each_entry(fs_devices, fs_uuids, list) {
-+		struct btrfs_device *device;
-+
-+		list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+
-+			if (stat(device->name, &st) < 0)
-+				return -EACCES;
-+
-+			if (st.st_rdev == sttarget.st_rdev) {
-+				*device_ret = device;
-+				return 0;
-+			}
-+		}
-+	}
-+
-+	return -ENODEV;
-+}
-+
-+static int prop_allocation_hint_unmounted(const char *object,
-+					  const char *name,
-+					  const char *val)
-+{
-+
-+	struct btrfs_device *device;
-+	int ret;
-+	struct btrfs_root *root = NULL;
-+
-+	root = open_ctree(object, btrfs_sb_offset(0), 0);
-+	if (!root)
-+		return -ENODEV;
-+
-+	ret = find_device(object, &device);
-+	if (ret)
-+		goto out;
-+
-+	if (!val) {
-+		int i;
-+		u64 v = device->flags & BTRFS_DEV_ALLOCATION_HINT_MASK;
-+
-+		for (i = 0 ; allocation_hint_description[i].descr ; i++)
-+			if (v == allocation_hint_description[i].value)
-+				break;
-+
-+		if (allocation_hint_description[i].descr)
-+			printf("allocation_hint=%s\n",
-+				allocation_hint_description[i].descr);
-+		else
-+			printf("allocation_hint=unknown:%llu\n", v);
-+		ret = 0;
-+	} else {
-+		struct btrfs_trans_handle *trans;
-+		int i;
-+		u64 v;
-+
-+		for (i = 0 ; allocation_hint_description[i].descr ; i++)
-+			if (!strcmp(val, allocation_hint_description[i].descr))
-+				break;
-+
-+		if (allocation_hint_description[i].descr) {
-+			v = allocation_hint_description[i].value;
-+		} else if (sscanf(val, "%llu", &v) != 1) {
-+			error("Invalid value '%s'\n", val);
-+			ret = -3;
-+			goto out;
-+		}
-+		if (v & ~BTRFS_DEV_ALLOCATION_HINT_MASK) {
-+			error("Invalid value '%s'\n", val);
-+			ret = -3;
-+			goto out;
-+		}
-+
-+		trans = btrfs_start_transaction(device->fs_info->chunk_root, 1);
-+		if (IS_ERR(trans)) {
-+			ret = PTR_ERR(trans);
-+			goto out;
-+		}
-+
-+		/* Manually update the device item in chunk tree */
-+		ret = btrfs_update_device(trans, device);
-+		if (ret < 0) {
-+			errno = -ret;
-+			goto out;
-+		}
-+
-+		/*
-+		 * Commit transaction not only to save the above change but also update
-+		 * the device item in super block.
-+		 */
-+		ret = btrfs_commit_transaction(trans, device->fs_info->chunk_root);
-+
-+		}
-+out:
-+	if (root)
-+		close_ctree(root);
-+	return ret;
-+
-+}
-+
- static int prop_allocation_hint(enum prop_object_type type,
- 				const char *object,
- 				const char *name,
-@@ -394,6 +506,9 @@ static int prop_allocation_hint(enum prop_object_type type,
- 	ret = btrfs_find_devid_uuid_by_dev(object, &devid,
- 		sysfs_file + sizeof(BTRFSYSFS) - 1);
- 
-+	if (ret == -ENODEV)
-+		return prop_allocation_hint_unmounted(object, name, val);
-+
- 	if (ret)
- 		goto out;
- 
+I'm not sure if systemd folks would use libbtrfsutil facility to
+determine the minimum device shrink size? But also even the kernel
+doesn't have a very good idea of how small a file system can be
+shrunk. Right now it basically has to just start trying, and does it
+one block group at a time.
+
+Adding systemd-devel@
+
+
 -- 
-2.34.1
-
+Chris Murphy
