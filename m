@@ -2,122 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA7849E23E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 13:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE5B49E5FB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 16:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241105AbiA0MWU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 07:22:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241081AbiA0MWS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 07:22:18 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA49DC061748
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 04:22:17 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id r65so8023312ybc.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 04:22:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=3hB9Pz6IWWJ5e7Q7LJO+f7Hvw0FPQfxvZX3pslGGprg=;
-        b=ntq5txrAiaRnnSYQlIbMFX9yyxuv2ySgZhUuXwgFl3VjEENE4TPnfiUcbKWy8UlCJH
-         Xv1qCObUn7HIRPtto8YmdaTIigsu2/dBkvzn5zBUCS5Rom0RnrUMLb3Hi/Y53yplNPRb
-         iSCil1KGMM17K5x1zt5/gEOx3o3O4a27dS+B20iOxYHrBaDQQYXZ2skDKGiYC8Yd5U+O
-         rtuO1yMa2eiiI4Fb9RQvskyNLOQwNSn5ioCb+pyLVAHGAUrqZZaeJxTEX4tyDRjirPMy
-         EYuyE+oBQnfwKwtfEK4+pjkM2bct8AFgQJ9DHU8VArEw375D/5uNj8pNWuqBx4OWldmg
-         l05A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=3hB9Pz6IWWJ5e7Q7LJO+f7Hvw0FPQfxvZX3pslGGprg=;
-        b=G6pg2ltzxbQ3xMYKkOO2beZMdslGcyWkiJP4Hfsu3txzDkRBmc6iu/mSN3FcrBatya
-         uiErm1BcSH4cqygnA3fQ9IvfEeiuqK4NpPg6Tl9OlXy4E0/Eat2s+WT6ABwtb8k4o7R9
-         ndqou55WmGHNytp02tCJ4CCLXOlP19JPKlftlYvbSoTJYsfd4WTFZhkyOyqCuTLf8eqg
-         YsCt0xhD6jTEO9XFVjZOj6eTp1CSJSh0bCOJTgRO9ajTP4eBM11G4cCb9PduyDVoMdty
-         gEtjiVC1UwIxA61XIMNroYF63/i+x1pMlcKEOft00GkIX3jj+JdzIvczqmKu+ONrS3QH
-         T32Q==
-X-Gm-Message-State: AOAM530jTf+nJE6XvHAkN1i2wee1brqLHAY2sNAN4C3LGszD3MzF//v7
-        MVfiWIfq/xHFZVUPtJLwEOc95yeBQoiBXs1/NqVBwQ==
-X-Google-Smtp-Source: ABdhPJzytcm5xEDIvl0zeaLFWxg0fZUVG5vboDDlEChIHTA93sE6aZZBgrDRfJIg+aN0+BwPBqgtjUxzA37MsECRi1k=
-X-Received: by 2002:a25:b13:: with SMTP id 19mr4857037ybl.684.1643286137004;
- Thu, 27 Jan 2022 04:22:17 -0800 (PST)
+        id S237317AbiA0PZe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 10:25:34 -0500
+Received: from mout.gmx.net ([212.227.15.18]:56791 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237296AbiA0PZd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Jan 2022 10:25:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1643297131;
+        bh=ipJlkB90IVkmTYJpgOz8xrZ1NinnsPlSN8fiBTibGMY=;
+        h=X-UI-Sender-Class:Date:To:From:Subject;
+        b=JWie7ZevCgh+zw8aWn1kAEWb/hL/u93zXeZTr04XjDtyfOEnE56SwizurdaB4qKkF
+         GAncUSOTDJ3bWbZG3pKII0rdGXbQ3yAmFzFc1WLnBbf1vTOGSaDK0coi9OYzY0oP20
+         JuebXOF08+UOHKAa/R2OT+Bh5G/qH+fs3giGSVQI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.1.212] ([86.8.113.40]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MIdiZ-1n1EY347oT-00EZx3 for
+ <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 16:25:31 +0100
+Message-ID: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
+Date:   Thu, 27 Jan 2022 15:25:30 +0000
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 27 Jan 2022 17:52:05 +0530
-Message-ID: <CA+G9fYtGGdxLwkV=VHdDP_d2C0oLd7=wUhF1wcYtndpp-y5BTA@mail.gmail.com>
-Subject: [next] i386: ERROR: modpost: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, lkft-triage@lists.linaro.org,
-        regressions@lists.linux.dev
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+To:     linux-btrfs@vger.kernel.org
+Content-Language: en-GB
+From:   piorunz <piorunz@gmx.com>
+Subject: fstab autodegrag with 5.10 & 5.15 kernels, Debian?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rwoZn9I3k5LTWhXnN3RUwi9pgUvnvIkXT92tn6TdgVYCTBxuTE6
+ Iijy4DTL2YqjXRFFrHDnBy33AqReemS9XXdqihqKbLEXtsz4upvAVG5OU+VRGVyiN/RL22n
+ ymuCZkXx/lnhL7HYlxFkEj4mMU84UEWbDcE0QgrCNZJ2tiXqxRSq/Y9gpq/bL/ZuO/AUGXl
+ F3GY7BGTw6IjMqntFhfDw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MeZmmRAtoYA=:c24SkCvpyvUriquueCjrRO
+ 4w3VjNSHQXXeSrvNLb3J5eu2gHx0IBf4gggAzPriup8U5p1jSW9QuMpvy0JglcayYLCFkONCO
+ ajPA5AJ1mrF7/qOUlnDhjyz6GWIQsKJ9PMi7d8OeNgDDJry8C89btNip8XXu3bAOT560AI6JC
+ +8vV7SRuN8k87BDoiHwSq/rai+WudvfSrb2NfTL86oNolLxqXGfDtS9tchx31tgTbQIuuOZiV
+ 9bpKEUlBMU+YHEWhidcOLF5+1qolc4YCDl9sJsciJ9w/FAouxOQg3WsNe6pPR1YEfvP8n4ssL
+ THlhmeoOCNGdjJ1sfVkXKn8Gm/hkBzwrO2sknPG0lFS/IdDgrGs7346kDE/ZdALgrzvW/e0LG
+ dZk48z9JjauQ/0a93RiM8VQu3AiJN4SHLESGTYFcUZTMW+qF7rI1gtGHx12FDi4rzrvlM0U2J
+ nekRhnraAcK02XJ+tT9l9tU6h4Kdch+fkBitu0YdOSg0FPWVClAme8XWUyN7//8zlPVL5CXam
+ XovlCp9AS2LIn7S0Lh48D3DIgHdh5t3avJ0mnmrrbZkzZ5/dV9DxeCUMAhqZL8KsGBJ63XYAi
+ IDOzVmTxpsObYL6dQ6jiZM3jY1o9VjjpZY8H6jkNtc9GKZCt07LgYcJkV5cpBh0HneBIKtRDZ
+ ykh+Huugol/nJXTi1DgJyYJy7H72TyBxNb1Sb25Lw6KYoXNKDuWrkBn/cKjTqsazqTzqiAOtw
+ F52M/wECdX+Jr38fW9iKZTnN6J21iVV3+Jv0Y3ULkAMNLZ6z2Yyky+PmrBzRzn+/B504u8JGX
+ aYKHxbImDkbGKWBhc34aP/tSr5cFEejfCNLbUFWUzJHgP28Bx/PMzuVdCs8vUWpeGfH4tYvNm
+ Wq/0WKXD+Z7OX/g5ozUUZtGrIe+Ep2BSP0kjGK36ifPMbWNyZEtWnVl9fIzVwA0b5mtJn2vz2
+ DCnMLsV+DGTDst4YzRVqzLZ/biHrR3UgZLoklxTbWH2ZXcLrWBTSN31WL8A0UwjDFfIbYTsHw
+ GwLuu6Pp1BPV9SH2v5Ti3LUU6JRr3U8THdVLra+9rXmChdwuZR3gh7XrWZ0Eeem0Mr6u1oD9V
+ Iz0nlD5pae3ZAE=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[ Please ignore this email if it is already reported ]
+Hi all,
 
-Regression detected while building modules Linux next-20220127 on arm and i386
-with kselftest (kselftest-merge) configs with gcc-11.
+Is it safe & recommended to run autodefrag mount option in fstab?
+I am considering two machines here, normal desktop which has Btrfs as
+/home, and server with VM and other databases also btrfs /home. Both
+Btrfs RAID10 types. Both are heavily fragmented. I never defragmented
+them, in fact. I run Debian 11 on server (kernel 5.10) and Debian
+Testing (kernel 5.15) on desktop.
 
-Build errors i386:
-------------------
-make --silent --keep-going --jobs=8
-  ARCH=i386 CROSS_COMPILE=i686-linux-gnu- 'CC=sccache
-i686-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+Running manual defrag on server machine, like:
+sudo btrfs filesystem defrag -v -t4G -r /home
+takes ages and can cause 120 second timeout kernel error in dmesg due to
+service timeouts. I prefer to autodefrag gradually, overtime, mount
+option seems to be good for that.
 
-ERROR: modpost: "__umoddi3" [fs/btrfs/btrfs.ko] undefined!
-make[2]: *** [/builds/linux/scripts/Makefile.modpost:134:
-modules-only.symvers] Error 1
-make[2]: *** Deleting file 'modules-only.symvers'
+My current fstab mounting:
 
-Build errors arm:
-------------------
-make --silent --keep-going --jobs=8
-  ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
-arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
+noatime,space_cache=3Dv2,compress-force=3Dzstd:3 0 2
 
-ERROR: modpost: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
-make[2]: *** [/builds/linux/scripts/Makefile.modpost:134:
-modules-only.symvers] Error 1
+Will autodefrag break COW files? Like I copy paste a file and I save
+space, but defrag with destroy this space saving?
+Also, will autodefrag compress files automatically, as mount option
+enforces (compress-force=3Dzstd:3)?
 
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Any suggestions welcome.
 
 
-meta data:
------------
-    git describe: next-20220127
-    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-    git_sha: 0eb96e2c58c03e79fc2ee833ba88bf9226986564
-    git_short_log: 0eb96e2c58c0 (\"Add linux-next specific files for 20220127\")
-    target_arch: arm / i386
-    toolchain: gcc-11
+=2D-
+With kindest regards, Piotr.
 
-Build log:
--------------
-https://builds.tuxbuild.com/24GSTOD7EpxnncxTZgHJzXw97t5/
-https://builds.tuxbuild.com/24A38knX5TuIfIPU54KLcUReDcN/
-
-
-steps to reproduce:
--------------------
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-tuxmake --runtime podman --target-arch i386 --toolchain gcc-11 \
- --kconfig https://builds.tuxbuild.com/24GSQgCAtqXT6UgGf37kLxUHlYX/config \
-   cpupower headers kernel kselftest kselftest-merge modules
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+=E2=A2=80=E2=A3=B4=E2=A0=BE=E2=A0=BB=E2=A2=B6=E2=A3=A6=E2=A0=80
+=E2=A3=BE=E2=A0=81=E2=A2=A0=E2=A0=92=E2=A0=80=E2=A3=BF=E2=A1=81 Debian - T=
+he universal operating system
+=E2=A2=BF=E2=A1=84=E2=A0=98=E2=A0=B7=E2=A0=9A=E2=A0=8B=E2=A0=80 https://ww=
+w.debian.org/
+=E2=A0=88=E2=A0=B3=E2=A3=84=E2=A0=80=E2=A0=80=E2=A0=80=E2=A0=80
