@@ -2,96 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE5B49E5FB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 16:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E4349E635
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 16:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237317AbiA0PZe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 10:25:34 -0500
-Received: from mout.gmx.net ([212.227.15.18]:56791 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237296AbiA0PZd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 10:25:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643297131;
-        bh=ipJlkB90IVkmTYJpgOz8xrZ1NinnsPlSN8fiBTibGMY=;
-        h=X-UI-Sender-Class:Date:To:From:Subject;
-        b=JWie7ZevCgh+zw8aWn1kAEWb/hL/u93zXeZTr04XjDtyfOEnE56SwizurdaB4qKkF
-         GAncUSOTDJ3bWbZG3pKII0rdGXbQ3yAmFzFc1WLnBbf1vTOGSaDK0coi9OYzY0oP20
-         JuebXOF08+UOHKAa/R2OT+Bh5G/qH+fs3giGSVQI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.1.212] ([86.8.113.40]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MIdiZ-1n1EY347oT-00EZx3 for
- <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 16:25:31 +0100
-Message-ID: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
-Date:   Thu, 27 Jan 2022 15:25:30 +0000
+        id S238971AbiA0PiR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 10:38:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41722 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236698AbiA0PiQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Jan 2022 10:38:16 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20RF0sTE008853;
+        Thu, 27 Jan 2022 15:38:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=OiY7xQGOtMDUc16rw3tnwTW8C+KCo4uC6glXgiOK3kY=;
+ b=aQHZYKJIC0VSomMeOnwbf5sepPGuPycJSVfGtBs2oOVx3EbJZgNZWmkU0a/fDugudcBf
+ yiIjitM7takkNA1ZHm6WLY+nP+2pD7VM8nAqGYa+a2e5cPRvL6uTbYLhnyWmJoMbfC5z
+ YHSI/ijQNqe/+UxURLaWCNHi4uBG3vCJAJLM7DL2hbt9Ch2+7/NjRjaasPLhyrL+9IaF
+ nFLabZDdrLZaMzAICAhA596+W5DTtW9K983SiGRnmQt2ZyWrNdTEaCe8dNZ8tNlavyf4
+ zmEQneZqP3O32Pl2mu6SHLPHBCBzGkCjRq45qDEL/kEDl0ccxFJCKt7CBpHpGXvZTgDZ Iw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3duvxxhvct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jan 2022 15:38:13 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20RFI8Ii029059;
+        Thu, 27 Jan 2022 15:38:10 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3dr9j9smsj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jan 2022 15:38:10 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20RFc8KF19136768
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Jan 2022 15:38:08 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 34EE9A405E;
+        Thu, 27 Jan 2022 15:38:08 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BBFABA4057;
+        Thu, 27 Jan 2022 15:38:07 +0000 (GMT)
+Received: from localhost (unknown [9.43.91.218])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 27 Jan 2022 15:38:07 +0000 (GMT)
+Date:   Thu, 27 Jan 2022 21:08:06 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add test case to verify that btrfs won't waste
+ IO/CPU to defrag compressed extents already at their max size
+Message-ID: <20220127153806.vufsbus447s2tdib@riteshh-domain>
+References: <20220127055306.30252-1-wqu@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-To:     linux-btrfs@vger.kernel.org
-Content-Language: en-GB
-From:   piorunz <piorunz@gmx.com>
-Subject: fstab autodegrag with 5.10 & 5.15 kernels, Debian?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rwoZn9I3k5LTWhXnN3RUwi9pgUvnvIkXT92tn6TdgVYCTBxuTE6
- Iijy4DTL2YqjXRFFrHDnBy33AqReemS9XXdqihqKbLEXtsz4upvAVG5OU+VRGVyiN/RL22n
- ymuCZkXx/lnhL7HYlxFkEj4mMU84UEWbDcE0QgrCNZJ2tiXqxRSq/Y9gpq/bL/ZuO/AUGXl
- F3GY7BGTw6IjMqntFhfDw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MeZmmRAtoYA=:c24SkCvpyvUriquueCjrRO
- 4w3VjNSHQXXeSrvNLb3J5eu2gHx0IBf4gggAzPriup8U5p1jSW9QuMpvy0JglcayYLCFkONCO
- ajPA5AJ1mrF7/qOUlnDhjyz6GWIQsKJ9PMi7d8OeNgDDJry8C89btNip8XXu3bAOT560AI6JC
- +8vV7SRuN8k87BDoiHwSq/rai+WudvfSrb2NfTL86oNolLxqXGfDtS9tchx31tgTbQIuuOZiV
- 9bpKEUlBMU+YHEWhidcOLF5+1qolc4YCDl9sJsciJ9w/FAouxOQg3WsNe6pPR1YEfvP8n4ssL
- THlhmeoOCNGdjJ1sfVkXKn8Gm/hkBzwrO2sknPG0lFS/IdDgrGs7346kDE/ZdALgrzvW/e0LG
- dZk48z9JjauQ/0a93RiM8VQu3AiJN4SHLESGTYFcUZTMW+qF7rI1gtGHx12FDi4rzrvlM0U2J
- nekRhnraAcK02XJ+tT9l9tU6h4Kdch+fkBitu0YdOSg0FPWVClAme8XWUyN7//8zlPVL5CXam
- XovlCp9AS2LIn7S0Lh48D3DIgHdh5t3avJ0mnmrrbZkzZ5/dV9DxeCUMAhqZL8KsGBJ63XYAi
- IDOzVmTxpsObYL6dQ6jiZM3jY1o9VjjpZY8H6jkNtc9GKZCt07LgYcJkV5cpBh0HneBIKtRDZ
- ykh+Huugol/nJXTi1DgJyYJy7H72TyBxNb1Sb25Lw6KYoXNKDuWrkBn/cKjTqsazqTzqiAOtw
- F52M/wECdX+Jr38fW9iKZTnN6J21iVV3+Jv0Y3ULkAMNLZ6z2Yyky+PmrBzRzn+/B504u8JGX
- aYKHxbImDkbGKWBhc34aP/tSr5cFEejfCNLbUFWUzJHgP28Bx/PMzuVdCs8vUWpeGfH4tYvNm
- Wq/0WKXD+Z7OX/g5ozUUZtGrIe+Ep2BSP0kjGK36ifPMbWNyZEtWnVl9fIzVwA0b5mtJn2vz2
- DCnMLsV+DGTDst4YzRVqzLZ/biHrR3UgZLoklxTbWH2ZXcLrWBTSN31WL8A0UwjDFfIbYTsHw
- GwLuu6Pp1BPV9SH2v5Ti3LUU6JRr3U8THdVLra+9rXmChdwuZR3gh7XrWZ0Eeem0Mr6u1oD9V
- Iz0nlD5pae3ZAE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220127055306.30252-1-wqu@suse.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fnhnSkZWl0tqm_LfeBh-n0fd0m40FpG1
+X-Proofpoint-ORIG-GUID: fnhnSkZWl0tqm_LfeBh-n0fd0m40FpG1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-27_03,2022-01-27_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 clxscore=1011 priorityscore=1501 phishscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201270094
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
+On 22/01/27 01:53PM, Qu Wenruo wrote:
+> There is a long existing bug in btrfs defrag code that it will always
+> try to defrag compressed extents, even they are already at max capacity.
+>
+> This will not reduce the number of extents, but only waste IO/CPU.
+>
+> The kernel fix is titled:
+>
+>   btrfs: defrag: don't defrag extents which is already at its max capacity
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/257     | 79 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/257.out |  2 ++
+>  2 files changed, 81 insertions(+)
+>  create mode 100755 tests/btrfs/257
+>  create mode 100644 tests/btrfs/257.out
+>
+> diff --git a/tests/btrfs/257 b/tests/btrfs/257
+> new file mode 100755
+> index 00000000..326687dc
+> --- /dev/null
+> +++ b/tests/btrfs/257
+> @@ -0,0 +1,79 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 257
+> +#
+> +# Make sure btrfs defrag ioctl won't defrag compressed extents which are already
+> +# at their max capacity.
 
-Is it safe & recommended to run autodefrag mount option in fstab?
-I am considering two machines here, normal desktop which has Btrfs as
-/home, and server with VM and other databases also btrfs /home. Both
-Btrfs RAID10 types. Both are heavily fragmented. I never defragmented
-them, in fact. I run Debian 11 on server (kernel 5.10) and Debian
-Testing (kernel 5.15) on desktop.
+Haven't really looked into this fstest. But it is a good practice to add the
+commit id and the title here for others to easily refer kernel commit.
 
-Running manual defrag on server machine, like:
-sudo btrfs filesystem defrag -v -t4G -r /home
-takes ages and can cause 120 second timeout kernel error in dmesg due to
-service timeouts. I prefer to autodefrag gradually, overtime, mount
-option seems to be good for that.
+-ritesh
 
-My current fstab mounting:
-
-noatime,space_cache=3Dv2,compress-force=3Dzstd:3 0 2
-
-Will autodefrag break COW files? Like I copy paste a file and I save
-space, but defrag with destroy this space saving?
-Also, will autodefrag compress files automatically, as mount option
-enforces (compress-force=3Dzstd:3)?
-
-Any suggestions welcome.
-
-
-=2D-
-With kindest regards, Piotr.
-
-=E2=A2=80=E2=A3=B4=E2=A0=BE=E2=A0=BB=E2=A2=B6=E2=A3=A6=E2=A0=80
-=E2=A3=BE=E2=A0=81=E2=A2=A0=E2=A0=92=E2=A0=80=E2=A3=BF=E2=A1=81 Debian - T=
-he universal operating system
-=E2=A2=BF=E2=A1=84=E2=A0=98=E2=A0=B7=E2=A0=9A=E2=A0=8B=E2=A0=80 https://ww=
-w.debian.org/
-=E2=A0=88=E2=A0=B3=E2=A3=84=E2=A0=80=E2=A0=80=E2=A0=80=E2=A0=80
