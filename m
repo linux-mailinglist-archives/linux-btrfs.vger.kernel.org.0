@@ -2,298 +2,1651 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954DA49EAE6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 20:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDEC49EAED
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 20:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239255AbiA0TNa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 14:13:30 -0500
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:50307 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231310AbiA0TN3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 14:13:29 -0500
-Received: from [192.168.1.27] ([78.14.151.50])
-        by smtp-34.iol.local with ESMTPA
-        id DAD1ntcHK4gIpDAD1nFnBV; Thu, 27 Jan 2022 20:13:27 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1643310807; bh=LfszWgB1Hbam+w83ZMP4r7n6K7KPPgv5bvKWLfOZwow=;
-        h=From;
-        b=f1b5SLzuF9TFP9jbtHqiyr1vedxrn8/D88xRutmrKC2PeYda1eBsAXI4H5O9ah9EG
-         HC0KuV0VUunRLFE/MNHULJUtF63bUsIHYVugxMCtjiWW2z+HBPPp3oZuoa1Gp19JIY
-         cvxVHfDRwJhBHhjmJGVMPjyaCpvo4PSgMKcJJpKTqBuxGy7gBQX+5Ocm+FlFmqZYQj
-         ZRgDHCD/8cu7L1FKcznmHc3LFyJjcmV+zEPSXdVEBRMJZ4NB5TRQr7sI07lDyZiiyX
-         8Q+jOBZWCN97+Rm2an97MmRr55Noa/huWxeSfdDlonpwaE7ln6t0Gy2veBnHXXJdn4
-         Vksa+zZ2Cy5mw==
-X-CNFS-Analysis: v=2.4 cv=d4QwdTvE c=1 sm=1 tr=0 ts=61f2eed7 cx=a_exe
- a=d4nNsk+SGr75ik5id+62uA==:117 a=d4nNsk+SGr75ik5id+62uA==:17
- a=IkcTkHD0fZMA:10 a=JPadHbUd32OiCit8lwYA:9 a=QEXdDO2ut3YA:10
-Message-ID: <a2208476-6488-1d3f-5d5d-425bd9da6d43@libero.it>
-Date:   Thu, 27 Jan 2022 20:13:26 +0100
+        id S245466AbiA0TO5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 14:14:57 -0500
+Received: from michael.mail.tiscali.it ([213.205.33.246]:57340 "EHLO
+        smtp.tiscali.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S245463AbiA0TO4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Jan 2022 14:14:56 -0500
+Received: from venice.bhome ([78.14.151.50])
+        by michael.mail.tiscali.it with 
+        id nvEr2601e15VSme01vEsf9; Thu, 27 Jan 2022 19:14:54 +0000
+X-Spam-Final-Verdict: clean
+X-Spam-State: 0
+X-Spam-Score: -100
+X-Spam-Verdict: clean
+x-auth-user: kreijack@tiscali.it
+From:   Goffredo Baroncelli <kreijack@tiscali.it>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
+        Goffredo Baroncelli <kreijack@tiscali.it>
+Subject: [PATCH][V10][Repost] Add tests for allocation_hint
+Date:   Thu, 27 Jan 2022 20:14:45 +0100
+Message-Id: <1f47c7fa7b1256ed33718bc646596d259b05f5a2.1643310829.git.kreijack@inwind.it>
+X-Mailer: git-send-email 2.34.1
+Reply-To: Goffredo Baroncelli <kreijack@libero.it>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Reply-To: kreijack@inwind.it
-Subject: Re: No space left errors on shutdown with systemd-homed /home dir
-Content-Language: en-US
-To:     "Apostolos B." <barz621@gmail.com>, Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org
-References: <9bdd0eb6-4a4f-e168-0fb0-77f4d753ec19@gmail.com>
- <YfHCLhpkS+t8a8CG@zen> <4263e65e-f585-e7f6-b1aa-04885c0ed662@gmail.com>
- <YfHXFfHMeqx4MowJ@zen> <75011941-2b38-f148-be37-a0ce8f1490fc@gmail.com>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <75011941-2b38-f148-be37-a0ce8f1490fc@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfIVjZFSnQqzelULF2wxGzRKG3gu2THjtArr4AUrjWY/wD9GJpnXbuzBfN53jWmXIP4skogCdbUgcYVJV69N2XxlrZctpo8Y9jry0Yf6TJpuBmghX3o0K
- mVqojNMQAMkjLMXUvJjcrTnuLDqgy7JyBYcJdVkl5z9P7Sxa2PdjcTjniGIwRSijR+X/mTjc/DkmH9KpBKSBIyY6YOLmUf5/gKCVWvQhAF0xRO+3WYtPi7h0
- JifHMG5bbqjyRqkrJl4iSg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
+        t=1643310894; bh=CaPe1fqkEwJqBdOuYTHExog3MR6pAg550RKIR2RWisc=;
+        h=From:To:Cc:Subject:Date:Reply-To;
+        b=mUi/aVSZW2sZRsnCp9w7qTu8Io+I/NKcFYLVis42HytOpeJvnQgu13YXWUBGNk8Gy
+         Xyj7rYOPmEXncz9WfbIFcXnxIevdRGAz1v+hfty1KIlTvAcaKgDBm6vCJ9vjAkKgSh
+         x4JK+JxIPUYG9FZDRE0EB3LdJqy7rG2sjC4RDadI=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 27/01/2022 00.29, Apostolos B. wrote:
-> I don't have a bpftrace setup and sadly i cant do much debugging on this machine.
-> 
-> However i am sure its systemd that is involved in it. The few lines before the crash read:
-> 
-> Ιαν 26 22:45:06 mainland systemd[1]: Stopped WPA supplicant.
-> Ιαν 26 22:45:06 mainland systemd-homework[14696]: Discovered used LUKS device /dev/mapper/home-toliz, and validated password.
-> Ιαν 26 22:45:07 mainland systemd-homework[14696]: Successfully re-activated LUKS device.
-> Ιαν 26 22:45:07 mainland systemd-homework[14696]: Discovered used loopback device /dev/loop0.
-> Ιαν 26 22:45:07 mainland systemd-homework[14696]: offset = 1048576, size = 137436856320, image = 137438953472
-> Ιαν 26 22:45:07 mainland systemd-homework[14696]: Ready to resize image size 128.0G → 1.8G, partition size 127.9G → 1.8G, file system size 127.9G → 1.7G.
-> Ιαν 26 22:45:07 mainland systemd-homework[14696]: Allocated additional 124.8G.
-> Ιαν 26 22:45:07 mainland kernel: BTRFS info (device dm-0): relocating block group 2177892352 flags data
-> Ιαν 26 22:45:07 mainland kernel: BTRFS info (device dm-0): relocating block group 1104150528 flags data
-> Ιαν 26 22:45:08 mainland systemd-homework[14696]: Failed to resize file system: Read-only file system
-> Ιαν 26 22:45:08 mainland kernel: BTRFS info (device dm-0): relocating block group 30408704 flags metadata|dup
+This is a repost of a patch to xfstest to test the allocation_hint mode
 
- From the homectl manpage
-[...]
---auto-resize-mode=
-     Configures whether to automatically grow and/or shrink the backing file system on login and logout.
-[...]
+---
+ common/btrfs        |  87 ++++++++++++++++++++++++
+ doc/group-names.txt |   1 +
+ tests/btrfs/255     | 120 +++++++++++++++++++++++++++++++++
+ tests/btrfs/255.out |   3 +
+ tests/btrfs/256     | 123 ++++++++++++++++++++++++++++++++++
+ tests/btrfs/256.out |   3 +
+ tests/btrfs/257     | 123 ++++++++++++++++++++++++++++++++++
+ tests/btrfs/257.out |   3 +
+ tests/btrfs/258     | 126 +++++++++++++++++++++++++++++++++++
+ tests/btrfs/258.out |   3 +
+ tests/btrfs/259     | 139 ++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/259.out |   5 ++
+ tests/btrfs/260     | 158 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/260.out |   3 +
+ tests/btrfs/261     | 144 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/261.out |   3 +
+ tests/btrfs/262     | 121 +++++++++++++++++++++++++++++++++
+ tests/btrfs/262.out |   3 +
+ tests/btrfs/263     | 123 ++++++++++++++++++++++++++++++++++
+ tests/btrfs/263.out |   3 +
+ tests/btrfs/264     | 121 +++++++++++++++++++++++++++++++++
+ tests/btrfs/264.out |   3 +
+ 22 files changed, 1418 insertions(+)
+ create mode 100755 tests/btrfs/255
+ create mode 100644 tests/btrfs/255.out
+ create mode 100755 tests/btrfs/256
+ create mode 100644 tests/btrfs/256.out
+ create mode 100755 tests/btrfs/257
+ create mode 100644 tests/btrfs/257.out
+ create mode 100755 tests/btrfs/258
+ create mode 100644 tests/btrfs/258.out
+ create mode 100755 tests/btrfs/259
+ create mode 100644 tests/btrfs/259.out
+ create mode 100755 tests/btrfs/260
+ create mode 100644 tests/btrfs/260.out
+ create mode 100755 tests/btrfs/261
+ create mode 100755 tests/btrfs/261.out
+ create mode 100755 tests/btrfs/262
+ create mode 100644 tests/btrfs/262.out
+ create mode 100755 tests/btrfs/263
+ create mode 100644 tests/btrfs/263.out
+ create mode 100755 tests/btrfs/264
+ create mode 100644 tests/btrfs/264.out
 
-So it seems that systemd is doing a shrinking at logout time, because it was configured to do it.
-
-Looking at the code, it seems that the systemd function get_smallest_fs_size() is calculating the
-minimum needed storage size; it does that computing
-
-	fstatfs(fd, &sfs)
-	needed = sfs.f_blocks - sfs.f_bfree;
-	needed *= sfs.f_bsize
-
-and adding a 'safety margin' of
-
-	needed += HOME_MIN_FREE;
-
-(where HOME_MIN_FREE is 16M)
-
-I think that this is a too simplistic way to compute the needing space for BTRFS.
-But a comment of a developer with a more deeper knowledge of this topic may
-showed that I am wrong.
-
-Anyway, it seems that the problem can be easily solved disabling the systemd auto
-shrink feature. Anyway I suggest to open a bug in systemd.
-
-What I am not sure if BTRFS should accept shrinking value that can't satisfy.
-My guess, is that it is not simple for BTRFS to calculate which is the
-minimum value. Looking to the btrfs btrfs_shrink_device() function, I don't see
-where it is a check for an impossible shrinking value.
-
-Now I see that Wang comment say more or less the same thing.
-
-BR
-G.Baroncelli
-
-> 
-> On 27/1/22 01:19, Boris Burkov wrote:
->> On Thu, Jan 27, 2022 at 12:07:53AM +0200, Apostolos B. wrote:
->>>   This is what homectl inspect user reports:
->>>
->>>    Disk Size: 128.0G
->>>    Disk Usage: 3.8G (= 3.1%)
->>>    Disk Free: 124.0G (= 96.9%)
->>>
->>> and this is what btrfs usage reports:
->>>
->>> sudo btrfs filesystem usage /home/toliz
->>>
->>> Overall:
->>>      Device size:             127.98GiB
->>>      Device allocated:               4.02GiB
->>>      Device unallocated:     123.96GiB
->>>      Device missing:                 0.00B
->>>      Used:                           1.89GiB
->>>      Free (estimated):             124.10GiB    (min: 62.12GiB)
->>>      Free (statfs, df):             124.10GiB
->>>      Data ratio:                  1.00
->>>      Metadata ratio:                  2.00
->>>      Global reserve:               5.14MiB    (used: 0.00B)
->>>      Multiple profiles:                    no
->>>
->>> Data,single: Size:2.01GiB, Used:1.86GiB (92.73%)
->>>     /dev/mapper/home-toliz       2.01GiB
->>>
->>> Metadata,DUP: Size:1.00GiB, Used:12.47MiB (1.22%)
->>>     /dev/mapper/home-toliz       2.00GiB
->>>
->>> System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
->>>     /dev/mapper/home-toliz      16.00MiB
->>>
->>> Unallocated:
->>>     /dev/mapper/home-toliz     123.96GiB
->>>
->> OK, there is plenty of unallocated space, thanks for confirming.
->>
->> Looking at the stack trace a bit more, the only thing that really sticks
->> out as suspicious to me is btrfs_shrink_device, I'm not sure who would
->> want to do that or why.
->>
->> It might be interesting to trace it and see if we can catch the
->> parameters/caller in the act. If you have bpftrace setup on your system,
->> could you try to setup something like:
->>
->> bpftrace -e 'kprobe:btrfs_shrink_device { printf("%s %llu %s\n", comm, arg1, kstack); }'
->>
->> to write to a file during shutdown?
->>
->>> On 26/1/22 23:50, Boris Burkov wrote:
->>>> On Tue, Jan 25, 2022 at 07:46:51PM +0200, Apostolos B. wrote:
->>>>> Hello.
->>>>>
->>>>> When i shut down my pc i get No space left errors -even though i have plenty
->>>>> of space in both / and home dirs- and this message on the journal:
->>>> How did you conclude you have plenty of space? df can be misleading with
->>>> btrfs, for example. Can you please post the output of
->>>> 'btrfs filesystem usage /home'
->>>>
->>>> Thanks,
->>>> Boris
->>>>
->>>>> Ιαν 25 14:34:31 mainland kernel: BTRFS info (device dm-0): relocating block
->>>>> group 2177892352 flags data
->>>>> Ιαν 25 14:34:31 mainland kernel: BTRFS info (device dm-0): relocating block
->>>>> group 1104150528 flags data
->>>>> Ιαν 25 14:34:32 mainland kernel: BTRFS info (device dm-0): relocating block
->>>>> group 30408704 flags metadata|dup
->>>>> Ιαν 25 14:34:32 mainland kernel: ------------[ cut here ]------------
->>>>> Ιαν 25 14:34:32 mainland kernel: BTRFS: Transaction aborted (error -28)
->>>>> Ιαν 25 14:34:32 mainland kernel: WARNING: CPU: 4 PID: 18307 at
->>>>> fs/btrfs/extent-tree.c:3066 __btrfs_free_extent+0x59c/0x950 [btrfs]
->>>>> Ιαν 25 14:34:32 mainland kernel: Modules linked in: uhid rfcomm
->>>>> snd_seq_dummy snd_hrtimer snd_seq snd_seq_device i2c_dev dm_crypt cbc
->>>>> encrypted_keys trusted asn1_e>
->>>>> Ιαν 25 14:34:32 mainland kernel:  snd_pcm_dmaengine kvm snd_hda_intel
->>>>> iTCO_wdt irqbypass snd_intel_dspcfg intel_pmc_bxt crct10dif_pclmul
->>>>> snd_intel_sdw_acpi hid_mul>
->>>>> Ιαν 25 14:34:32 mainland kernel:  int340x_thermal_zone tpm_tis tpm_tis_core
->>>>> wmi int3400_thermal tpm mac_hid rng_core acpi_thermal_rel acpi_tad acpi_pad
->>>>> ipmi_devint>
->>>>> Ιαν 25 14:34:32 mainland kernel: CPU: 4 PID: 18307 Comm: systemd-homewor
->>>>> Tainted: G        W         5.16.2-arch1-1 #1
->>>>> 86fbf2c313cc37a553d65deb81d98e9dcc2a3659
->>>>> Ιαν 25 14:34:32 mainland kernel: Hardware name: SAMSUNG ELECTRONICS CO.,
->>>>> LTD. 930XDB/931XDB/930XDY/NP930XDB-KF1IT, BIOS P03RFX.055.210415.SP
->>>>> 04/15/2021
->>>>> Ιαν 25 14:34:32 mainland kernel: RIP: 0010:__btrfs_free_extent+0x59c/0x950
->>>>> [btrfs]
->>>>> Ιαν 25 14:34:32 mainland kernel: Code: 24 14 ba 7e 0c 00 00 48 c7 c6 40 d4
->>>>> bc c0 4c 89 ef e8 44 25 0c 00 e9 99 fe ff ff 44 89 e6 48 c7 c7 a0 95 bd c0
->>>>> e8 24 6c 28 e>
->>>>> Ιαν 25 14:34:32 mainland kernel: RSP: 0018:ffffb1ab80f837a0 EFLAGS: 00010246
->>>>> Ιαν 25 14:34:32 mainland kernel: RAX: 0000000000000000 RBX: 0000000000000000
->>>>> RCX: 0000000000000000
->>>>> Ιαν 25 14:34:32 mainland kernel: RDX: 0000000000000000 RSI: 0000000000000000
->>>>> RDI: 0000000000000000
->>>>> Ιαν 25 14:34:32 mainland kernel: RBP: 0000000000d07000 R08: 0000000000000000
->>>>> R09: 0000000000000000
->>>>> Ιαν 25 14:34:32 mainland kernel: R10: 0000000000000000 R11: 0000000000000000
->>>>> R12: 00000000ffffffe4
->>>>> Ιαν 25 14:34:32 mainland kernel: R13: ffff982240648888 R14: ffff9823b62514d0
->>>>> R15: fffffffffffffff7
->>>>> Ιαν 25 14:34:32 mainland kernel: FS:  00007f336b49ea80(0000)
->>>>> GS:ffff9823c3700000(0000) knlGS:0000000000000000
->>>>> Ιαν 25 14:34:32 mainland kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
->>>>> 0000000080050033
->>>>> Ιαν 25 14:34:32 mainland kernel: CR2: 00007fa3c5637050 CR3: 000000010cfd0002
->>>>> CR4: 0000000000770ee0
->>>>> Ιαν 25 14:34:32 mainland kernel: PKRU: 55555554
->>>>> Ιαν 25 14:34:32 mainland kernel: Call Trace:
->>>>> Ιαν 25 14:34:32 mainland kernel:  <TASK>
->>>>> Ιαν 25 14:34:32 mainland kernel: __btrfs_run_delayed_refs+0x25c/0x10d0
->>>>> [btrfs c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel: btrfs_run_delayed_refs+0x73/0x200 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? __reserve_bytes+0x164/0x7d0 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel: btrfs_commit_transaction+0xf6/0xb20 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  relocate_block_group+0x6e/0x5a0 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel: btrfs_relocate_block_group+0x18b/0x340
->>>>> [btrfs c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  btrfs_relocate_chunk+0x27/0x100 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  btrfs_shrink_device+0x277/0x5a0 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  btrfs_ioctl_resize+0x449/0x470 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  btrfs_ioctl+0x1fa8/0x2fc0 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? btrfs_statfs+0x418/0x570 [btrfs
->>>>> c10068e329b0dae5c9bb0cca4f6f33712f172b3b]
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? _copy_to_user+0x1c/0x50
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? do_statfs_native+0xaf/0xe0
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? __seccomp_filter+0x39e/0x570
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? __x64_sys_ioctl+0x8b/0xd0
->>>>> Ιαν 25 14:34:32 mainland kernel:  __x64_sys_ioctl+0x8b/0xd0
->>>>> Ιαν 25 14:34:32 mainland kernel:  do_syscall_64+0x59/0x90
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? do_syscall_64+0x69/0x90
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? syscall_exit_to_user_mode+0x23/0x50
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? do_syscall_64+0x69/0x90
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? syscall_exit_to_user_mode+0x23/0x50
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? do_syscall_64+0x69/0x90
->>>>> Ιαν 25 14:34:32 mainland kernel:  ? exc_page_fault+0x72/0x180
->>>>> Ιαν 25 14:34:32 mainland kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>>> Ιαν 25 14:34:32 mainland kernel: RIP: 0033:0x7f336baa359b
->>>>> Ιαν 25 14:34:32 mainland kernel: Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff
->>>>> ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10
->>>>> 00 00 00 0f 0>
->>>>> Ιαν 25 14:34:32 mainland kernel: RSP: 002b:00007ffc945a04d8 EFLAGS: 00000246
->>>>> ORIG_RAX: 0000000000000010
->>>>> Ιαν 25 14:34:32 mainland kernel: RAX: ffffffffffffffda RBX: 0000000072184000
->>>>> RCX: 00007f336baa359b
->>>>> Ιαν 25 14:34:32 mainland kernel: RDX: 00007ffc945a0570 RSI: 0000000050009403
->>>>> RDI: 0000000000000004
->>>>> Ιαν 25 14:34:32 mainland kernel: RBP: 0000000000000004 R08: 0000000000000000
->>>>> R09: 00007ffc945a0370
->>>>> Ιαν 25 14:34:32 mainland kernel: R10: 0000000072184000 R11: 0000000000000246
->>>>> R12: 00007ffc945a0570
->>>>> Ιαν 25 14:34:32 mainland kernel: R13: 0000000000000000 R14: 000055c0fade8cc0
->>>>> R15: 00007ffc945a1920
->>>>> Ιαν 25 14:34:32 mainland kernel:  </TASK>
->>>>> Ιαν 25 14:34:32 mainland kernel: ---[ end trace 81d5963d986040ee ]---
->>>>> Ιαν 25 14:34:32 mainland kernel: BTRFS: error (device dm-0) in
->>>>> __btrfs_free_extent:3066: errno=-28 No space left
->>>>> Ιαν 25 14:34:32 mainland kernel: BTRFS info (device dm-0): forced readonly
->>>>> Ιαν 25 14:34:32 mainland kernel: BTRFS: error (device dm-0) in
->>>>> btrfs_run_delayed_refs:2149: errno=-28 No space left
->>>>>
->>>>> The dm-0 device is my /home directory and is set up using systemd-homed
->>>>>
->>>>> Kernel version: 5.16.2
->>>>>
->>>>> Systemd version: 250.3
->>>>>
->>>>> btrfs-progs version: 5.16
->>>>>
->>>>> It seems to cause no issues thus far but a solution would be good to have.
->>>>>
->>>>> Thanks in advance.
->>>>>
-
-
+diff --git a/common/btrfs b/common/btrfs
+index 4afe81eb..a4f1947a 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -480,3 +480,90 @@ _btrfs_no_v1_cache_opt()
+ 	fi
+ 	echo -n "-onospace_cache"
+ }
++
++# Test if a property is available
++_require_btrfs_property_get()
++{
++	local propname
++
++	[ $# -eq 1 ] || _fail "_require_btrfs_get_property: expected property name as param"
++
++	propname="$1"
++	$BTRFS_UTIL_PROG property get $SCRATCH_DEV "$propname" |
++		grep -q "ERROR: unknown property" &&
++		_notrun "Need btrfs property '$propname' support"
++}
++
++__dump_bg_data_info() {
++	local dir=$1
++	$BTRFS_UTIL_PROG fi us -b $dir | awk '
++		/^$/    { flag=0 }
++		        { if(flag) print $0 }
++		/^Data/ { flag=1 }
++	'
++}
++
++__dump_bg_metadata_info() {
++	local dir=$1
++	$BTRFS_UTIL_PROG fi us -b $dir | awk '
++		/^$/        { flag=0 }
++		            { if(flag) print $0 }
++		/^Metadata/ { flag=1 }
++	'
++}
++
++# check if a disk not contains data bg
++btrfs_check_data_bg_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_data_info $mnt)"
++	while [ -n "$1" ]; do
++		if ! echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should contain a DATA BG"
++		fi
++		shift
++	done
++}
++
++# check if a disk not contains data bg
++btrfs_check_data_bg_not_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_data_info $mnt)"
++	while [ -n "$1" ]; do
++		if echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should not contain a DATA BG"
++		fi
++		shift
++	done
++}
++
++# check if a disk contains metadata bg
++btrfs_check_metadata_bg_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_metadata_info $mnt)"
++	while [ -n "$1" ]; do
++		if ! echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should contain a METADATA BG"
++		fi
++		shift
++	done
++}
++
++# check if a disk not contains metadata bg
++btrfs_check_metadata_bg_not_in_disk() {
++	local mnt=$1
++	shift
++	local res="$(__dump_bg_metadata_info $mnt)"
++	while [ -n "$1" ]; do
++		if echo $res | egrep -q $1 ; then
++			[ -n "$DEBUG" ] && $BTRFS_UTIL_PROG fil us $SCRATCH_MNT
++			_fail "Disk '$1' should not contain a METADATA BG"
++		fi
++		shift
++	done
++}
+diff --git a/doc/group-names.txt b/doc/group-names.txt
+index e8e3477e..bbb83046 100644
+--- a/doc/group-names.txt
++++ b/doc/group-names.txt
+@@ -132,4 +132,5 @@ whiteout		overlayfs whiteout functionality
+ xino			overlayfs xino feature
+ zero			fallocate FALLOC_FL_ZERO_RANGE
+ zone			zoned (SMR) device support
++allocation_hint		allocation_hint property (BTRFS only)
+ ======================= =======================================================
+diff --git a/tests/btrfs/255 b/tests/btrfs/255
+new file mode 100755
+index 00000000..5efa961c
+--- /dev/null
++++ b/tests/btrfs/255
+@@ -0,0 +1,120 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 255
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file and check that the Data BG is in the correct disk
++#
++test_single_preferred_data() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x $(($MAXSIZE / 2)) )
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_preferred_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/255.out b/tests/btrfs/255.out
+new file mode 100644
+index 00000000..62800619
+--- /dev/null
++++ b/tests/btrfs/255.out
+@@ -0,0 +1,3 @@
++QA output created by 255
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/256 b/tests/btrfs/256
+new file mode 100755
+index 00000000..262b497b
+--- /dev/null
++++ b/tests/btrfs/256
+@@ -0,0 +1,123 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 256
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++UUID=292afefb-6e8c-4fb3-9d12-8c4ecb1f238c
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# mark some disks as DATA_PREFERRED and check that these are the only one used
++#
++test_raid1_preferred_data() {
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev  -U $UUID -draid1 -mraid1 $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2)  allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3)  allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x $(($MAXSIZE / 2)) )
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev2 $blkdev3
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0 $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_preferred_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/256.out b/tests/btrfs/256.out
+new file mode 100644
+index 00000000..85efa3dd
+--- /dev/null
++++ b/tests/btrfs/256.out
+@@ -0,0 +1,3 @@
++QA output created by 256
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/257 b/tests/btrfs/257
+new file mode 100755
+index 00000000..c349fb68
+--- /dev/null
++++ b/tests/btrfs/257
+@@ -0,0 +1,123 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 257
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file and check that the Data BG is in the correct disk
++#
++test_single_data_only() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file)
++
++	[ $size -gt $(($MAXSIZE * 2 * 2 / 3 )) ] && _fail "File too big: check mnt/"
++	[ $size -lt $(($MAXSIZE * 2 / 3 )) ] && _fail "File too small: check mnt/"
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_data_only
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/257.out b/tests/btrfs/257.out
+new file mode 100644
+index 00000000..0fc19614
+--- /dev/null
++++ b/tests/btrfs/257.out
+@@ -0,0 +1,3 @@
++QA output created by 257
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/258 b/tests/btrfs/258
+new file mode 100755
+index 00000000..dd5aa663
+--- /dev/null
++++ b/tests/btrfs/258
+@@ -0,0 +1,126 @@
++##! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 258
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++#	fill a filesystem with disks tagged METADATA/DATA ONLY and check that only the
++#	latter are used
++#
++test_raid1_data_only() {
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -draid1 -mraid1 $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0)  allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1)  allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2)  allocation_hint DATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3)  allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x )
++
++	[ $size -gt $(($MAXSIZE * 2 * 2 / 3 )) ] && _fail "File too big: check mnt/"
++	[ $size -lt $(($MAXSIZE * 2 / 3 )) ] && _fail "File too small: check mnt/"
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev2 $blkdev3
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0 $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_data_only
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/258.out b/tests/btrfs/258.out
+new file mode 100644
+index 00000000..36c5288a
+--- /dev/null
++++ b/tests/btrfs/258.out
+@@ -0,0 +1,3 @@
++QA output created by 258
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/259 b/tests/btrfs/259
+new file mode 100755
+index 00000000..a2f3ce18
+--- /dev/null
++++ b/tests/btrfs/259
+@@ -0,0 +1,139 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 259
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=2048
++	$WIPEFS_PROG -a $SCRATCH_DEV
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file , switch the METADATA_ONLY <-> DATA_ONLY disk and check
++# that the data-bg are stored in the data disk
++#
++test_single_data_bouncing() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x  $(($MAXSIZE * 2 / 4 )))
++
++	[ $size -gt $(($MAXSIZE * 2 / 3 )) ] && _fail "File too big: check mnt/"
++	[ $size -lt $(($MAXSIZE * 1 / 3 )) ] && _fail "File too small: check mnt/"
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev0
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_data_bouncing
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/259.out b/tests/btrfs/259.out
+new file mode 100644
+index 00000000..c3547c6a
+--- /dev/null
++++ b/tests/btrfs/259.out
+@@ -0,0 +1,5 @@
++QA output created by 259
++Done, had to relocate 3 out of 3 chunks
++Done, had to relocate 5 out of 5 chunks
++Done, had to relocate 5 out of 5 chunks
++Silence is golden
+diff --git a/tests/btrfs/260 b/tests/btrfs/260
+new file mode 100755
+index 00000000..949d7abc
+--- /dev/null
++++ b/tests/btrfs/260
+@@ -0,0 +1,158 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 260
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=2048
++	$WIPEFS_PROG -a $SCRATCH_DEV
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create files that consume the space avaiable on the disks, and check
++# that the order of allocation is maintained
++#
++test_single_progressive_fill_data() {
++
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -dsingle -msingle $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2) allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x  $(( $MAXSIZE / 3 )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev1 $blkdev2 $blkdev0
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill $blkdev3 then $blkdev2
++
++    size=$(create_file y  $(( $MAXSIZE )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev1 $blkdev0
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill $blkdev3 then $blkdev2, then $blkdev1
++
++    size=$(create_file z  $(( $MAXSIZE )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2 $blkdev1
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev0
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill the disk
++
++    size=$(create_file w  )
++
++	# when the disk is filled not balance is possible
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2 $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev0
++
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_progressive_fill_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/260.out b/tests/btrfs/260.out
+new file mode 100644
+index 00000000..1476ce8f
+--- /dev/null
++++ b/tests/btrfs/260.out
+@@ -0,0 +1,3 @@
++QA output created by 260
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/261 b/tests/btrfs/261
+new file mode 100755
+index 00000000..080f8b4d
+--- /dev/null
++++ b/tests/btrfs/261
+@@ -0,0 +1,144 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 261
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=5
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=2048
++	$WIPEFS_PROG -a $SCRATCH_DEV
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create files that consume the space avaiable on the disks, and check
++# that the order of allocation is maintained
++#
++test_raid1_progressive_fill_data() {
++
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	blkdev4=$(echo $disks | awk '{ print $5 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -dRAID1 -msingle $blkdev0 $blkdev1 $blkdev2 $blkdev3 $blkdev4
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2) allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3) allocation_hint DATA_ONLY
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev4) allocation_hint DATA_ONLY
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x  $(( $MAXSIZE / 5 )))
++
++	# fill $blkdev3 $blkdev4
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev4
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev1 $blkdev2 $blkdev0
++
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++	# fill $blkdev3 $blkdev4, then $blkdev1 and $blkdev2
++    size=$(create_file y  $(( $MAXSIZE )))
++
++	for i in 1 2 3; do
++		btrfs_check_data_bg_in_disk $SCRATCH_MNT  $blkdev3 $blkdev2 $blkdev4 $blkdev1
++		btrfs_check_data_bg_not_in_disk $SCRATCH_MNT  $blkdev0
++
++		$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT &>/dev/null
++	done
++
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_progressive_fill_data
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/261.out b/tests/btrfs/261.out
+new file mode 100755
+index 00000000..eadc8a4e
+--- /dev/null
++++ b/tests/btrfs/261.out
+@@ -0,0 +1,3 @@
++QA output created by 261
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/262 b/tests/btrfs/262
+new file mode 100755
+index 00000000..82d2b5a9
+--- /dev/null
++++ b/tests/btrfs/262
+@@ -0,0 +1,121 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 262
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((512*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_small_file() {
++	local fn=$SCRATCH_MNT/small-file-$1
++	local size=$2
++	dd if=/dev/zero of=$fn bs=$size oflag=direct count=1 &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# near fill all the metadata dedicated disk, and check that the data dedicated
++# is unused
++#
++test_single_preferred_metadata_slow() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	# create files that fit in the metadata node (i.e. size <= 2048 bytes)
++	# fill up to 7/10 of a disk
++	fnsize=2048
++	for i in $(seq $(( $MAXSIZE / $fnsize * 700 / 1000))); do
++		create_small_file $i $fnsize &>/dev/null
++	done
++
++	btrfs_check_metadata_bg_in_disk $SCRATCH_MNT $blkdev0
++	btrfs_check_metadata_bg_not_in_disk $SCRATCH_MNT $blkdev1
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_preferred_metadata_slow
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/262.out b/tests/btrfs/262.out
+new file mode 100644
+index 00000000..a23bf303
+--- /dev/null
++++ b/tests/btrfs/262.out
+@@ -0,0 +1,3 @@
++QA output created by 262
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/263 b/tests/btrfs/263
+new file mode 100755
+index 00000000..bb876620
+--- /dev/null
++++ b/tests/btrfs/263
+@@ -0,0 +1,123 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 263
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((512*1024*1024))
++NDEVS=4
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++disks=""
++nodes=""
++
++# Override the default cleanup function.
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_small_file() {
++	local fn=$SCRATCH_MNT/small-file-$1
++	local size=$2
++	dd if=/dev/zero of=$fn bs=$size oflag=direct count=1 &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# near fill all the metadata dedicated disks, and check that the data dedicated
++# are unused
++#
++test_raid1_preferred_metadata_slow() {
++	local blkdev0 blkdev1 blkdev2 blkdev3
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	blkdev2=$(echo $disks | awk '{ print $3 }')
++	blkdev3=$(echo $disks | awk '{ print $4 }')
++	$BTRFS_UTIL_PROG  dev scan -u
++	_mkfs_dev -draid1 -mraid1 $blkdev0 $blkdev1 $blkdev2 $blkdev3
++	_mount $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1)  allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev2)  allocation_hint DATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev3)  allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	# create files that fit in the metadata node (i.e. size <= 2048 bytes)
++	# fill up to 6/10 of a disk
++	fnsize=2048
++	for i in $(seq $(( $MAXSIZE / $fnsize * 600 / 1000))); do
++		create_small_file $i $fnsize &>/dev/null
++	done
++
++	btrfs_check_metadata_bg_in_disk $SCRATCH_MNT $blkdev0 $blkdev1
++	btrfs_check_metadata_bg_not_in_disk $SCRATCH_MNT $blkdev2 $blkdev3
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_raid1_preferred_metadata_slow
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/263.out b/tests/btrfs/263.out
+new file mode 100644
+index 00000000..f7fc66ec
+--- /dev/null
++++ b/tests/btrfs/263.out
+@@ -0,0 +1,3 @@
++QA output created by 263
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
+diff --git a/tests/btrfs/264 b/tests/btrfs/264
+new file mode 100755
+index 00000000..b00a35a7
+--- /dev/null
++++ b/tests/btrfs/264
+@@ -0,0 +1,121 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test No. 264
++#
++# Test the allocation_hint property of a btrfs filesystem
++#
++
++
++# size of the disk used; default 1GB
++MAXSIZE=$((1*1024*1024*1024))
++NDEVS=2
++DEBUG=
++
++. ./common/preamble
++_begin_fstest auto quick allocation_hint
++
++seq=`basename $0`
++seqres="${RESULT_DIR}/${seq}"
++
++# Override the default cleanup function.
++disks=""
++nodes=""
++
++_cleanup()
++{
++	umount $SCRATCH_MNT &>/dev/null || true
++	for disk in $disks; do
++		_dmsetup_remove $disk
++	done
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++_try_wipe_scratch_devs
++
++_require_btrfs_property_get "allocation_hint"
++
++# dont' use _require_scratch_size because it pretend that the filesystem is
++# scratch_dev is consistent
++devsize=`_get_device_size $SCRATCH_DEV`
++[ $devsize -lt $((($MAXSIZE * $NDEVS + 100*1024*1024) / 1024)) ] &&
++		_notrun "scratch dev too small"
++
++setup_dmdev()
++{
++	# create some small size disks
++
++	size_in_sector=$(($MAXSIZE / 512))
++
++	off=0
++	for i in $(seq $NDEVS); do
++		node=dev${seq}test${i}
++		disk="/dev/mapper/$node"
++		disks="$disks $disk"
++		nodes="$nodes $node"
++		table="0 $size_in_sector linear $SCRATCH_DEV $off"
++		_dmsetup_create $node --table "$table" || \
++			_fail "setup dm device failed"
++		off=$(($off + $size_in_sector))
++		$WIPEFS_PROG -a $disk &>/dev/null
++	done
++}
++
++create_file() {
++	local fn=$SCRATCH_MNT/giant-file-$1
++	local size
++	if [ -n "$2" ]; then
++		size=count=$(($2 / 16 / 1024 / 1024 ))
++	else
++		size=
++	fi
++	dd if=/dev/zero of=$fn bs=16M oflag=direct $size &>/dev/null
++	ls -l $fn | awk '{ print $5 }'
++}
++
++#
++# create a file and check that the Data BG is in the correct disk
++# force the compression flag
++#
++test_single_preferred_data_compression() {
++
++	local blkdev0 blkdev1
++	blkdev0=$(echo $disks | awk '{ print $1 }')
++	blkdev1=$(echo $disks | awk '{ print $2 }')
++	$BTRFS_UTIL_PROG dev scan -u
++	_mkfs_dev  -dsingle -msingle $blkdev0 $blkdev1
++	_mount -o compress $blkdev0 $SCRATCH_MNT
++
++	[ $(ls /sys/fs/btrfs/*/devinfo/*/allocation_hint | wc -l) -gt 0 ] ||
++		_notrun "Kernel with allocation_hint support required"
++
++	# use realpath because a link may confuse "btrfs prop get/set"
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev0) allocation_hint METADATA_PREFERRED
++	$BTRFS_UTIL_PROG prop set $(realpath $blkdev1) allocation_hint DATA_PREFERRED
++
++	$BTRFS_UTIL_PROG balance start --full-balance $SCRATCH_MNT
++
++	size=$(create_file x $(($MAXSIZE / 2)) )
++
++	btrfs_check_data_bg_in_disk $SCRATCH_MNT $blkdev1
++	btrfs_check_data_bg_not_in_disk $SCRATCH_MNT $blkdev0
++
++	umount $SCRATCH_MNT
++}
++
++setup_dmdev
++test_single_preferred_data_compression
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/264.out b/tests/btrfs/264.out
+new file mode 100644
+index 00000000..1611be72
+--- /dev/null
++++ b/tests/btrfs/264.out
+@@ -0,0 +1,3 @@
++QA output created by 264
++Done, had to relocate 3 out of 3 chunks
++Silence is golden
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.34.1
+
