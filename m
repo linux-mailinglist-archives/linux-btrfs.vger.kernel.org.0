@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D8B49DA00
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1C349DA01
 	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 06:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236128AbiA0FZE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 00:25:04 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:48366 "EHLO
+        id S236129AbiA0FZF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 00:25:05 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:48374 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236125AbiA0FZD (ORCPT
+        with ESMTP id S231364AbiA0FZE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 00:25:03 -0500
+        Thu, 27 Jan 2022 00:25:04 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7C648218F1;
-        Thu, 27 Jan 2022 05:25:02 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E97C4218F3
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 05:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643261102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1643261103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SIkzZtbSAZxoMvphFoEF8ySkYy8yA+knJGEfTdGDSic=;
-        b=QFF1brMT8CzMBFhKv+oai7URocIPxfIh14Qteuob5arBv7hGnzzJnbZ6JhOdSm4tkz7vsA
-        d8ojw3+17tU5S9khFEz0AQ+x5vIA8JJCrSSqHweD2jv4UWqDpkgk6i1GnS+kHPvLpN4nEQ
-        S1ROyIz8xCBr5URGwi+/5QKY5ov95aM=
+        bh=B5GuoGqxlCXfRwE+CAIppGfSYzrmW+C/UBFd4k34ul0=;
+        b=s9ILFSUWBoFlyt4y2ZHk53Jqr+CqP95c9j1301TbMf5OZe/E/vEsgE88krYuj+qY2P3/0u
+        +gZYFHv9MqhKHdq2Th0kTJJh0Bx7ndHUvDCkyn3DdjfOAl8G4A7U73xp8VHtOdd4B3syGi
+        qZHT71SxozsNIGTdAsOr+yaz/RsLONU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A24FA13F58;
-        Thu, 27 Jan 2022 05:25:01 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C57913F58
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 05:25:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id GAlBG60s8mFOXgAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 27 Jan 2022 05:25:01 +0000
+        id uBhqKa4s8mFOXgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 05:25:02 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 1/2] btrfs: defrag: don't defrag extents which is already at its max capacity
-Date:   Thu, 27 Jan 2022 13:24:42 +0800
-Message-Id: <9511adf7a32cb7200f62bc65741cd86dbf2a9365.1643260816.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: defrag: remove an ambiguous condition for rejection
+Date:   Thu, 27 Jan 2022 13:24:43 +0800
+Message-Id: <0a2fdf173e68967239e4162fe08c434502ba7ea1.1643260816.git.wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1643260816.git.wqu@suse.com>
 References: <cover.1643260816.git.wqu@suse.com>
@@ -52,108 +52,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-For compressed extents, defrag ioctl will always try to defrag any
-compressed extents, wasting not only IO but also CPU time to
-compress/decompress:
+From the very beginning of btrfs defrag, there is a check to reject
+extents which meet both conditions:
 
-   mkfs.btrfs -f $DEV
-   mount -o compress $DEV $MNT
-   xfs_io -f -c "pwrite -S 0xab 0 128K" $MNT/foobar
-   sync
-   xfs_io -f -c "pwrite -S 0xcd 128K 128K" $MNT/foobar
-   sync
-   echo "=== before ==="
-   xfs_io -c "fiemap -v" $MNT/foobar
-   btrfs filesystem defrag $MNT/foobar
-   sync
-   echo "=== after ==="
-   xfs_io -c "fiemap -v" $MNT/foobar
+- Physically adjacent
 
-Then it shows the 2 128K extents just get CoW for no extra benefit, with
-extra IO/CPU spent:
+  We may want to defrag physically adjacent extents to reduce the number
+  of extents or the size of subvolume tree.
 
-    === before ===
-    /mnt/btrfs/file1:
-     EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-       0: [0..255]:        26624..26879       256   0x8
-       1: [256..511]:      26632..26887       256   0x9
-    === after ===
-    /mnt/btrfs/file1:
-     EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-       0: [0..255]:        26640..26895       256   0x8
-       1: [256..511]:      26648..26903       256   0x9
+- Larger than 128K
 
-This affects not only v5.16 (after the defrag rework), but also v5.15
-(before the defrag rework).
+  This may be there for compressed extents, but unfortunately 128K is
+  exactly the max capacity for compressed extents.
+  And the check is > 128K, thus it never rejects compressed extents.
 
-[CAUSE]
-From the very beginning, btrfs defrag never checks if one extent is
-already at its max capacity (128K for compressed extents, 128M
-otherwise).
+  Furthermore, the compressed extent capacity bug is fixed by previous
+  patch, there is no reason for that check anymore.
 
-And the default extent size threshold is 256K, which is already beyond
-the compressed extent max size.
+The original check has a very small ranges to reject (the target extent
+size is > 128K, and default extent threshold is 256K), and for
+compressed extent it doesn't work at all.
 
-This means, by default btrfs defrag ioctl will mark all compressed
-extent which is not adjacent to a hole/preallocated range for defrag.
+So it's better just to remove the rejection, and allow us to defrag
+physically adjacent extents.
 
-[FIX]
-Introduce a helper to grab the maximum extent size, and then in
-defrag_collect_targets() and defrag_check_next_extent(), reject extents
-which are already at their max capacity.
-
-Reported-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ioctl.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ fs/btrfs/ioctl.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 137d3732af33..a03c31e1ff18 100644
+index a03c31e1ff18..af95e3b7aa72 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -1049,6 +1049,13 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
- 	return em;
- }
- 
-+static u32 get_extent_max_capacity(struct extent_map *em)
-+{
-+	if (test_bit(EXTENT_FLAG_COMPRESSED, &em->flags))
-+		return BTRFS_MAX_COMPRESSED;
-+	return BTRFS_MAX_EXTENT_SIZE;
-+}
-+
- static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
- 				     bool locked)
- {
-@@ -1065,6 +1072,12 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+@@ -1078,10 +1078,6 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+ 	 */
+ 	if (next->len >= get_extent_max_capacity(em))
  		goto out;
- 	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
- 		goto out;
-+	/*
-+	 * If the next extent is at its max capcity, defragging current extent
-+	 * makes no sense, as the total number of extents won't change.
-+	 */
-+	if (next->len >= get_extent_max_capacity(em))
-+		goto out;
- 	/* Physically adjacent and large enough */
- 	if ((em->block_start + em->block_len == next->block_start) &&
- 	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
-@@ -1229,6 +1242,13 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		if (em->len >= extent_thresh)
- 			goto next;
- 
-+		/*
-+		 * Skip extents already at its max capacity, this is mostly for
-+		 * compressed extents, which max cap is only 128K.
-+		 */
-+		if (em->len >= get_extent_max_capacity(em))
-+			goto next;
-+
- 		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
- 							  locked);
- 		if (!next_mergeable) {
+-	/* Physically adjacent and large enough */
+-	if ((em->block_start + em->block_len == next->block_start) &&
+-	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
+-		goto out;
+ 	ret = true;
+ out:
+ 	free_extent_map(next);
 -- 
 2.34.1
 
