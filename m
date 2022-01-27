@@ -2,71 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6E449DDF3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 10:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AB549DFBF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 11:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238557AbiA0J3N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 04:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238542AbiA0J3K (ORCPT
+        id S239468AbiA0KsV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 05:48:21 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:42134 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239536AbiA0KsU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 04:29:10 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C536C061714
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 01:29:10 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id m6so6709531ybc.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 01:29:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=g0jVR8Mj0udwIGjx1TQh8k0ZGOTqHlu3e7Vl4aiPwxQ=;
-        b=MXKKdeq5OuNiB8C+GJ3loyycJRrNxpBHhZTwlVUeunHnSpW6lZV+FZDX//Wp8YKo0K
-         /KofR+yNx7I3OGmXAcMsUyMWNpNcYlBA289zTSaDa/cO9B23fpgKy07qI2fP2jZQ1FfU
-         1GuAv7TmB8qr0oPhKI2dt98Zjm8McMgPvMJzlZf2kublXq5qYW+98b+9DHKHcIqZnTNN
-         K685aBpg+mWjY4vn7sWwKlKK+mvNl6m4hiUkYMht0rIDvsftZhyQZkmiKvjf8gQiSgTd
-         esAUQtj7uXxDlgMUrO2TmtCsNIZhpgDFcWfpazTXjUTr60n58pw6btEUnbtzMU1oxf83
-         7wPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=g0jVR8Mj0udwIGjx1TQh8k0ZGOTqHlu3e7Vl4aiPwxQ=;
-        b=VGX/MhKFtaPzObjIGeLCLsoEHVPMPkv0ccy4nXMClAGvQMJKvZmDmzmYlX3j5x5kiP
-         6xAjIH2PoDrfvzZNXoIbwZ+8frxbMQTNucGSgL71BN65s4X/o/VycFcTsH8cLCyhELir
-         2niCL9ZKF52CerM4yoO59M0jeTnEVOy58aNcBpLQcjar6b5QWqGIGvVbK4kH+gRvBnEW
-         9jWs9icspckatEcBp4y9PNH+62AOSJqHt94yMItDGcioclvSKHDpWLJVjQ+20B1VXUBp
-         hHDsHoWd1kom6e3Y4UDf/ZI0m9JjDM3XyBFa3lVYBVo0A4ZCKjAiGNe7tqsQPYjgLmz8
-         5wIA==
-X-Gm-Message-State: AOAM530Ovu9gGQDxabRPT+PSl5WTY0z2oz+px9Mm13F4sDuupia5p5j6
-        FW9tkLswda7CkuD86u1obu/qjNBsNa54GfhUNfs=
-X-Google-Smtp-Source: ABdhPJxzkEqcC0dI1JJByY0lgLGLTGDfDNJkJLuPTz2iiVdx/U+0g9BGuiKzsuS8nedolQwq6kU0zYUJVmfI2aaVDpQ=
-X-Received: by 2002:a25:3054:: with SMTP id w81mr4343163ybw.126.1643275749479;
- Thu, 27 Jan 2022 01:29:09 -0800 (PST)
+        Thu, 27 Jan 2022 05:48:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4244261593
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 10:48:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4068FC340EA;
+        Thu, 27 Jan 2022 10:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643280499;
+        bh=Wjjd80HgbHzdPstRPSZlEDGywZwdNAergLGxthA1vX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bPQSLWS6VG223eY6lAoboqHtXHj3KTX5XU7BlqkwFOA68i3eCXV2rqsUSjsOADiOf
+         VL1eId/WRlYH0jJ2G0XP+IqIafgOVgB03vPtZ6+UX0kUSUsfmdgNYNFW5iXj5qs4wa
+         37lQDnB6v3U0DjtBZhBBOIaRAlBEoT5E497281GvEdsgRAc08mWw0zufPXvINrkm1X
+         1Dcz8SCjIEF4VjcoOwHWYwqLla743axcLqQ7U38BbQVOZRp89bV326O7k02yFk5QZx
+         kuJgfnqKtEd6dNTTbU9Sz3vqC+zwQ+0My2bnhrCZ7i7qz9f7T4T/jsNcWfV1u4H36l
+         XzMPp4jvqzX7A==
+Date:   Thu, 27 Jan 2022 10:48:16 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 1/2] btrfs: defrag: don't defrag extents which is already
+ at its max capacity
+Message-ID: <YfJ4cMXCQoLXeOdF@debian9.Home>
+References: <cover.1643260816.git.wqu@suse.com>
+ <9511adf7a32cb7200f62bc65741cd86dbf2a9365.1643260816.git.wqu@suse.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7011:209:b0:202:59ee:c4de with HTTP; Thu, 27 Jan 2022
- 01:29:09 -0800 (PST)
-Reply-To: cathydampry@gmail.com
-From:   Cathy Dampry <valeriegrey67@gmail.com>
-Date:   Thu, 27 Jan 2022 10:29:09 +0100
-Message-ID: <CAM0sDc_9XZHWy-OpvcUdJjMR4g1SOkrpbAaDHb+KeCEB9Jvb7g@mail.gmail.com>
-Subject: CHARITY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9511adf7a32cb7200f62bc65741cd86dbf2a9365.1643260816.git.wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello.
+On Thu, Jan 27, 2022 at 01:24:42PM +0800, Qu Wenruo wrote:
+> [BUG]
+> For compressed extents, defrag ioctl will always try to defrag any
+> compressed extents, wasting not only IO but also CPU time to
+> compress/decompress:
+> 
+>    mkfs.btrfs -f $DEV
+>    mount -o compress $DEV $MNT
+>    xfs_io -f -c "pwrite -S 0xab 0 128K" $MNT/foobar
+>    sync
+>    xfs_io -f -c "pwrite -S 0xcd 128K 128K" $MNT/foobar
+>    sync
+>    echo "=== before ==="
+>    xfs_io -c "fiemap -v" $MNT/foobar
+>    btrfs filesystem defrag $MNT/foobar
+>    sync
+>    echo "=== after ==="
+>    xfs_io -c "fiemap -v" $MNT/foobar
+> 
+> Then it shows the 2 128K extents just get CoW for no extra benefit, with
+> extra IO/CPU spent:
+> 
+>     === before ===
+>     /mnt/btrfs/file1:
+>      EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>        0: [0..255]:        26624..26879       256   0x8
+>        1: [256..511]:      26632..26887       256   0x9
+>     === after ===
+>     /mnt/btrfs/file1:
+>      EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>        0: [0..255]:        26640..26895       256   0x8
+>        1: [256..511]:      26648..26903       256   0x9
+> 
+> This affects not only v5.16 (after the defrag rework), but also v5.15
+> (before the defrag rework).
+> 
+> [CAUSE]
+> From the very beginning, btrfs defrag never checks if one extent is
+> already at its max capacity (128K for compressed extents, 128M
+> otherwise).
+> 
+> And the default extent size threshold is 256K, which is already beyond
+> the compressed extent max size.
+> 
+> This means, by default btrfs defrag ioctl will mark all compressed
+> extent which is not adjacent to a hole/preallocated range for defrag.
+> 
+> [FIX]
+> Introduce a helper to grab the maximum extent size, and then in
+> defrag_collect_targets() and defrag_check_next_extent(), reject extents
+> which are already at their max capacity.
+> 
+> Reported-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/ioctl.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 137d3732af33..a03c31e1ff18 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1049,6 +1049,13 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
+>  	return em;
+>  }
+>  
+> +static u32 get_extent_max_capacity(struct extent_map *em)
 
-I am Cathy Dampry. I am a dying widow diagnosed with cancer. It's
-certain I don't have much time on my side and I have decided to donate
-all I have to charity;
-Total amount of USD $3,100,000. I need an honest and trust worthy
-individual or company to partner with my accountant and utilize this
-money in accordance with my wish and agreement.
-Your email came out victorious and trusted. I shall render all
-necessary help where needed.
-Contact me urgently if interested. Thank you.
+Could be made const.
 
-Mrs. Cathy Dampry.
+Minor thing apart, which can updated when the patch is picked,
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> +{
+> +	if (test_bit(EXTENT_FLAG_COMPRESSED, &em->flags))
+> +		return BTRFS_MAX_COMPRESSED;
+> +	return BTRFS_MAX_EXTENT_SIZE;
+> +}
+> +
+>  static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+>  				     bool locked)
+>  {
+> @@ -1065,6 +1072,12 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+>  		goto out;
+>  	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
+>  		goto out;
+> +	/*
+> +	 * If the next extent is at its max capcity, defragging current extent
+> +	 * makes no sense, as the total number of extents won't change.
+> +	 */
+> +	if (next->len >= get_extent_max_capacity(em))
+> +		goto out;
+>  	/* Physically adjacent and large enough */
+>  	if ((em->block_start + em->block_len == next->block_start) &&
+>  	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
+> @@ -1229,6 +1242,13 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+>  		if (em->len >= extent_thresh)
+>  			goto next;
+>  
+> +		/*
+> +		 * Skip extents already at its max capacity, this is mostly for
+> +		 * compressed extents, which max cap is only 128K.
+> +		 */
+> +		if (em->len >= get_extent_max_capacity(em))
+> +			goto next;
+> +
+>  		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
+>  							  locked);
+>  		if (!next_mergeable) {
+> -- 
+> 2.34.1
+> 
