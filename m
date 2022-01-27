@@ -2,214 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D9D49E16B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 12:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA7849E23E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 13:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240771AbiA0Loq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 06:44:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
+        id S241105AbiA0MWU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 07:22:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240769AbiA0Lom (ORCPT
+        with ESMTP id S241081AbiA0MWS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 06:44:42 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86890C06173B;
-        Thu, 27 Jan 2022 03:44:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 431C0B82217;
-        Thu, 27 Jan 2022 11:44:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71631C340EB;
-        Thu, 27 Jan 2022 11:44:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643283880;
-        bh=hQI3EfcCbGsSFqzdDu7D2ZyFkjeE8dMUkFGLZq0oJ94=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oXLKrQ9T6oL9CcOaM9sjjHNmiJ9XDxnWdm0R47whXMwFX5dC8Y8zwYCtjsv6WvbbB
-         vrKICe7bA/dPcsT+y7j1kDNmQS8r4wtirGjIIv5Bagz+cbChEN6kpEhVb1ZTwlFsyB
-         cwtfMnpLrYFiqfvEomJLLOrh9Fl59vq5sme+7sGK54CaFegz1BSrzPqYz/PCqTbbkX
-         RuhUPtvz92giA9xGZQMebGm+KVqvuq6Zg40/TVrvX6lCS+Q0NfLEp10/vUEjawf2CL
-         wXXol5HGkviz/74t2KgS/k+6MlHXQadSbDG6HOtQhkn0fN9PgDq7nGwNUhZJaNNtGO
-         s071VKySI3Ydw==
-Date:   Thu, 27 Jan 2022 11:44:37 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add test case to verify that btrfs won't waste
- IO/CPU to defrag compressed extents already at their max size
-Message-ID: <YfKFpcV2fGjlV2XX@debian9.Home>
-References: <20220127055306.30252-1-wqu@suse.com>
- <YfKECmpfxywWUGu/@debian9.Home>
+        Thu, 27 Jan 2022 07:22:18 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA49DC061748
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 04:22:17 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id r65so8023312ybc.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 04:22:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=3hB9Pz6IWWJ5e7Q7LJO+f7Hvw0FPQfxvZX3pslGGprg=;
+        b=ntq5txrAiaRnnSYQlIbMFX9yyxuv2ySgZhUuXwgFl3VjEENE4TPnfiUcbKWy8UlCJH
+         Xv1qCObUn7HIRPtto8YmdaTIigsu2/dBkvzn5zBUCS5Rom0RnrUMLb3Hi/Y53yplNPRb
+         iSCil1KGMM17K5x1zt5/gEOx3o3O4a27dS+B20iOxYHrBaDQQYXZ2skDKGiYC8Yd5U+O
+         rtuO1yMa2eiiI4Fb9RQvskyNLOQwNSn5ioCb+pyLVAHGAUrqZZaeJxTEX4tyDRjirPMy
+         EYuyE+oBQnfwKwtfEK4+pjkM2bct8AFgQJ9DHU8VArEw375D/5uNj8pNWuqBx4OWldmg
+         l05A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=3hB9Pz6IWWJ5e7Q7LJO+f7Hvw0FPQfxvZX3pslGGprg=;
+        b=G6pg2ltzxbQ3xMYKkOO2beZMdslGcyWkiJP4Hfsu3txzDkRBmc6iu/mSN3FcrBatya
+         uiErm1BcSH4cqygnA3fQ9IvfEeiuqK4NpPg6Tl9OlXy4E0/Eat2s+WT6ABwtb8k4o7R9
+         ndqou55WmGHNytp02tCJ4CCLXOlP19JPKlftlYvbSoTJYsfd4WTFZhkyOyqCuTLf8eqg
+         YsCt0xhD6jTEO9XFVjZOj6eTp1CSJSh0bCOJTgRO9ajTP4eBM11G4cCb9PduyDVoMdty
+         gEtjiVC1UwIxA61XIMNroYF63/i+x1pMlcKEOft00GkIX3jj+JdzIvczqmKu+ONrS3QH
+         T32Q==
+X-Gm-Message-State: AOAM530jTf+nJE6XvHAkN1i2wee1brqLHAY2sNAN4C3LGszD3MzF//v7
+        MVfiWIfq/xHFZVUPtJLwEOc95yeBQoiBXs1/NqVBwQ==
+X-Google-Smtp-Source: ABdhPJzytcm5xEDIvl0zeaLFWxg0fZUVG5vboDDlEChIHTA93sE6aZZBgrDRfJIg+aN0+BwPBqgtjUxzA37MsECRi1k=
+X-Received: by 2002:a25:b13:: with SMTP id 19mr4857037ybl.684.1643286137004;
+ Thu, 27 Jan 2022 04:22:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YfKECmpfxywWUGu/@debian9.Home>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 27 Jan 2022 17:52:05 +0530
+Message-ID: <CA+G9fYtGGdxLwkV=VHdDP_d2C0oLd7=wUhF1wcYtndpp-y5BTA@mail.gmail.com>
+Subject: [next] i386: ERROR: modpost: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, lkft-triage@lists.linaro.org,
+        regressions@lists.linux.dev
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 11:37:46AM +0000, Filipe Manana wrote:
-> On Thu, Jan 27, 2022 at 01:53:06PM +0800, Qu Wenruo wrote:
-> > There is a long existing bug in btrfs defrag code that it will always
-> > try to defrag compressed extents, even they are already at max capacity.
-> > 
-> > This will not reduce the number of extents, but only waste IO/CPU.
-> > 
-> > The kernel fix is titled:
-> > 
-> >   btrfs: defrag: don't defrag extents which is already at its max capacity
-> > 
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > ---
-> >  tests/btrfs/257     | 79 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/257.out |  2 ++
-> >  2 files changed, 81 insertions(+)
-> >  create mode 100755 tests/btrfs/257
-> >  create mode 100644 tests/btrfs/257.out
-> > 
-> > diff --git a/tests/btrfs/257 b/tests/btrfs/257
-> > new file mode 100755
-> > index 00000000..326687dc
-> > --- /dev/null
-> > +++ b/tests/btrfs/257
-> > @@ -0,0 +1,79 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FS QA Test 257
-> > +#
-> > +# Make sure btrfs defrag ioctl won't defrag compressed extents which are already
-> > +# at their max capacity.
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick defrag
-> 
-> Missing the 'compress' group.
-> 
-> > +
-> > +# Import common functions.
-> > +. ./common/filter
-> > +. ./common/btrfs
-> > +
-> > +# real QA test starts here
-> > +
-> > +# Modify as appropriate.
-> > +_supported_fs btrfs
-> > +_require_scratch
-> > +
-> > +# Needs 4K sectorsize, as larger sectorsize can change the file layout.
-> > +_require_btrfs_support_sectorsize 4096
-> 
-> Hum?
-> I don't understand why that's needed for this test.
-> The maximum size of a compressed extent is the same for all sector sizes.
-> 
-> > +
-> > +get_extent_disk_sector()
-> > +{
-> > +	local file=$1
-> > +	local offset=$2
-> > +
-> > +	$XFS_IO_PROG -c "fiemap $offset" "$file" | _filter_xfs_io_fiemap |\
-> > +		head -n1 | $AWK_PROG '{print $3}'
-> > +}
-> 
-> This is copy pasted from the previous test:
-> 
-> https://lore.kernel.org/linux-btrfs/20220127054543.28964-1-wqu@suse.com/T/#u
-> 
-> Could go somewhere into common/*, if there isn't already anything providing
-> the same functionality.
-> 
-> > +
-> > +_scratch_mkfs >> $seqres.full
-> > +
-> > +# Need datacow to show which range is defragged, and we're testing
-> > +# autodefrag with compression
-> > +_scratch_mount -o datacow,autodefrag,compress
-> 
-> The autodefrag is not needed. We are triggering a manual defrag below, and
-> that's all that's needed to trigger the issue.
+[ Please ignore this email if it is already reported ]
 
--o datacow is superfluous here, as compression forces COW.
+Regression detected while building modules Linux next-20220127 on arm and i386
+with kselftest (kselftest-merge) configs with gcc-11.
 
-Also, this got to be the longest commit subject I had ever seen :)
+Build errors i386:
+------------------
+make --silent --keep-going --jobs=8
+  ARCH=i386 CROSS_COMPILE=i686-linux-gnu- 'CC=sccache
+i686-linux-gnu-gcc' 'HOSTCC=sccache gcc'
 
-  >>> len("btrfs: add test case to verify that btrfs won't waste IO/CPU to defrag compressed extents already at their max size")
-  115
+ERROR: modpost: "__umoddi3" [fs/btrfs/btrfs.ko] undefined!
+make[2]: *** [/builds/linux/scripts/Makefile.modpost:134:
+modules-only.symvers] Error 1
+make[2]: *** Deleting file 'modules-only.symvers'
 
-Something shorter like "btrfs: test defrag with compressed extents" would be
-perfectly fine, further details can be left in the changelog and comments in
-the test case.
+Build errors arm:
+------------------
+make --silent --keep-going --jobs=8
+  ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
+arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
 
-> 
-> > +
-> > +# Btrfs uses 128K as compressed extent max size, so this would result
-> > +# exactly two extents, which are all at their max size
-> > +$XFS_IO_PROG -f -c "pwrite -S 0xee 0 128k" -c sync \
-> > +		-c "pwrite -S 0xff 128k 128k" -c sync \
-> > +		$SCRATCH_MNT/foobar >> $seqres.full
-> 
-> We don't need to do a sync after every write. If you write 256K at once,
-> it will result in 2 128K extents anyway. The comment and the way we are
-> calling xfs_io gives the wrong idea that user space can influence the max
-> extent size.
-> 
-> A more interesting test would be, say, to write 2M or 4M at once for
-> example, which will result in many 128K extents. It would also make the
-> test more robust in case the default defrag threshold changes one day
-> for some reason (e.g. btrfs-progs might decide to start calling the
-> ioctl with a higher threshold one day). And then just check that the
-> output of fiemap is the same before and after the defrag attempt, so
-> it's not even necessary to manually compare the sectors of each
-> extent and use get_extent_disk_sector().
-> 
-> Thanks.
-> 
-> > +
-> > +old_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
-> > +old_extent1=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
-> > +old_extent2=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 128k)
-> > +
-> > +echo "=== File extent layout before defrag ===" >> $seqres.full
-> > +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
-> > +
-> > +$BTRFS_UTIL_PROG filesystem defrag "$SCRATCH_MNT/foobar" >> $seqres.full
-> > +
-> > +new_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
-> > +new_extent1=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
-> > +new_extent2=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 128k)
-> > +
-> > +echo "=== File extent layout before defrag ===" >> $seqres.full
-> > +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
-> > +
-> > +if [ $new_csum != $old_csum ]; then
-> > +	echo "file content changed"
-> > +fi
-> > +
-> > +if [ $new_extent1 != $old_extent1 ]; then
-> > +	echo "the first extent get defragged"
-> > +fi
-> > +
-> > +if [ $new_extent2 != $old_extent2 ]; then
-> > +	echo "the second extent get defragged"
-> > +fi
-> > +
-> > +echo "Silence is golden"
-> > +
-> > +# success, all done
-> > +status=0
-> > +exit
-> > diff --git a/tests/btrfs/257.out b/tests/btrfs/257.out
-> > new file mode 100644
-> > index 00000000..cc3693f3
-> > --- /dev/null
-> > +++ b/tests/btrfs/257.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 257
-> > +Silence is golden
-> > -- 
-> > 2.34.1
-> > 
+ERROR: modpost: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
+make[2]: *** [/builds/linux/scripts/Makefile.modpost:134:
+modules-only.symvers] Error 1
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+meta data:
+-----------
+    git describe: next-20220127
+    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+    git_sha: 0eb96e2c58c03e79fc2ee833ba88bf9226986564
+    git_short_log: 0eb96e2c58c0 (\"Add linux-next specific files for 20220127\")
+    target_arch: arm / i386
+    toolchain: gcc-11
+
+Build log:
+-------------
+https://builds.tuxbuild.com/24GSTOD7EpxnncxTZgHJzXw97t5/
+https://builds.tuxbuild.com/24A38knX5TuIfIPU54KLcUReDcN/
+
+
+steps to reproduce:
+-------------------
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+tuxmake --runtime podman --target-arch i386 --toolchain gcc-11 \
+ --kconfig https://builds.tuxbuild.com/24GSQgCAtqXT6UgGf37kLxUHlYX/config \
+   cpupower headers kernel kselftest kselftest-merge modules
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
