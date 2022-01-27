@@ -2,162 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE6C49DA59
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 06:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA65049DC11
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 08:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbiA0Fx0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 00:53:26 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:48826 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbiA0Fx0 (ORCPT
+        id S237455AbiA0H7Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 02:59:16 -0500
+Received: from out20-27.mail.aliyun.com ([115.124.20.27]:41451 "EHLO
+        out20-27.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229724AbiA0H7Q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 00:53:26 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 15E251F45F;
-        Thu, 27 Jan 2022 05:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643262805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=rgODDGKh4vi6cYP8u2RG4U3WKnsoI5Chdh0mg9+5Dkg=;
-        b=KNhrH3uJwEpP7h0KreszVXr9iPww4YYlqyNKH65Xx2fNYnSjvifGC8iXIBRt9heTxwFlo4
-        bTWqzw4U4b+H0lOSTZWHuR7Njl+l3Qj2eJSdI3EI1+hR2sWP15Lny7F8caYyf3AURFCJpR
-        t+XLyXcMea8i7G3luOk/jSL1fDYpt9U=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 333BA13F5F;
-        Thu, 27 Jan 2022 05:53:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RKkLO1Mz8mFRZwAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 27 Jan 2022 05:53:23 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: add test case to verify that btrfs won't waste IO/CPU to defrag compressed extents already at their max size
-Date:   Thu, 27 Jan 2022 13:53:06 +0800
-Message-Id: <20220127055306.30252-1-wqu@suse.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 27 Jan 2022 02:59:16 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1982423|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.772561-0.00209992-0.22534;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Mj.NOBI_1643270354;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Mj.NOBI_1643270354)
+          by smtp.aliyun-inc.com(10.147.42.22);
+          Thu, 27 Jan 2022 15:59:14 +0800
+Date:   Thu, 27 Jan 2022 15:59:19 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     "Apostolos B." <barz621@gmail.com>
+Subject: Re: No space left errors on shutdown with systemd-homed /home dir
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org
+In-Reply-To: <75011941-2b38-f148-be37-a0ce8f1490fc@gmail.com>
+References: <YfHXFfHMeqx4MowJ@zen> <75011941-2b38-f148-be37-a0ce8f1490fc@gmail.com>
+Message-Id: <20220127155918.A4FD.409509F4@e16-tech.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 8bit
+X-Mailer: Becky! ver. 2.75.04 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a long existing bug in btrfs defrag code that it will always
-try to defrag compressed extents, even they are already at max capacity.
+Hi,
 
-This will not reduce the number of extents, but only waste IO/CPU.
+Why 'resize image size 128.0G ¡ú 1.8G'?
 
-The kernel fix is titled:
+This 'No space left errors ' happen when 'resize image size 128.0G ¡ú 1.8G'.
+and it will not happen when ''resize image size 128.0G ¡ú 2.0G'?
 
-  btrfs: defrag: don't defrag extents which is already at its max capacity
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/01/27
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/257     | 79 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/257.out |  2 ++
- 2 files changed, 81 insertions(+)
- create mode 100755 tests/btrfs/257
- create mode 100644 tests/btrfs/257.out
+> I don't have a bpftrace setup and sadly i cant do much debugging on this machine.
+> 
+> However i am sure its systemd that is involved in it. The few lines before the crash read:
+> 
+> ¦©¦Á¦Í 26 22:45:06 mainland systemd[1]: Stopped WPA supplicant.
+> ¦©¦Á¦Í 26 22:45:06 mainland systemd-homework[14696]: Discovered used LUKS device /dev/mapper/home-toliz, and validated password.
+> ¦©¦Á¦Í 26 22:45:07 mainland systemd-homework[14696]: Successfully re-activated LUKS device.
+> ¦©¦Á¦Í 26 22:45:07 mainland systemd-homework[14696]: Discovered used loopback device /dev/loop0.
+> ¦©¦Á¦Í 26 22:45:07 mainland systemd-homework[14696]: offset = 1048576, size = 137436856320, image = 137438953472
+> ¦©¦Á¦Í 26 22:45:07 mainland systemd-homework[14696]: Ready to resize image size 128.0G ¡ú 1.8G, partition size 127.9G ¡ú 1.8G, file system size 127.9G ¡ú 1.7G.
+> ¦©¦Á¦Í 26 22:45:07 mainland systemd-homework[14696]: Allocated additional 124.8G.
+> ¦©¦Á¦Í 26 22:45:07 mainland kernel: BTRFS info (device dm-0): relocating block group 2177892352 flags data
+> ¦©¦Á¦Í 26 22:45:07 mainland kernel: BTRFS info (device dm-0): relocating block group 1104150528 flags data
+> ¦©¦Á¦Í 26 22:45:08 mainland systemd-homework[14696]: Failed to resize file system: Read-only file system
+> ¦©¦Á¦Í 26 22:45:08 mainland kernel: BTRFS info (device dm-0): relocating block group 30408704 flags metadata|dup
+> 
+> On 27/1/22 01:19, Boris Burkov wrote:
+> > On Thu, Jan 27, 2022 at 12:07:53AM +0200, Apostolos B. wrote:
+> >>  ?This is what homectl inspect user reports:
+> >>
+> >>  ? Disk Size: 128.0G
+> >>  ? Disk Usage: 3.8G (= 3.1%)
+> >>  ? Disk Free: 124.0G (= 96.9%)
 
-diff --git a/tests/btrfs/257 b/tests/btrfs/257
-new file mode 100755
-index 00000000..326687dc
---- /dev/null
-+++ b/tests/btrfs/257
-@@ -0,0 +1,79 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 257
-+#
-+# Make sure btrfs defrag ioctl won't defrag compressed extents which are already
-+# at their max capacity.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick defrag
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/btrfs
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch
-+
-+# Needs 4K sectorsize, as larger sectorsize can change the file layout.
-+_require_btrfs_support_sectorsize 4096
-+
-+get_extent_disk_sector()
-+{
-+	local file=$1
-+	local offset=$2
-+
-+	$XFS_IO_PROG -c "fiemap $offset" "$file" | _filter_xfs_io_fiemap |\
-+		head -n1 | $AWK_PROG '{print $3}'
-+}
-+
-+_scratch_mkfs >> $seqres.full
-+
-+# Need datacow to show which range is defragged, and we're testing
-+# autodefrag with compression
-+_scratch_mount -o datacow,autodefrag,compress
-+
-+# Btrfs uses 128K as compressed extent max size, so this would result
-+# exactly two extents, which are all at their max size
-+$XFS_IO_PROG -f -c "pwrite -S 0xee 0 128k" -c sync \
-+		-c "pwrite -S 0xff 128k 128k" -c sync \
-+		$SCRATCH_MNT/foobar >> $seqres.full
-+
-+old_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
-+old_extent1=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
-+old_extent2=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 128k)
-+
-+echo "=== File extent layout before defrag ===" >> $seqres.full
-+$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
-+
-+$BTRFS_UTIL_PROG filesystem defrag "$SCRATCH_MNT/foobar" >> $seqres.full
-+
-+new_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
-+new_extent1=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
-+new_extent2=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 128k)
-+
-+echo "=== File extent layout before defrag ===" >> $seqres.full
-+$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
-+
-+if [ $new_csum != $old_csum ]; then
-+	echo "file content changed"
-+fi
-+
-+if [ $new_extent1 != $old_extent1 ]; then
-+	echo "the first extent get defragged"
-+fi
-+
-+if [ $new_extent2 != $old_extent2 ]; then
-+	echo "the second extent get defragged"
-+fi
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/257.out b/tests/btrfs/257.out
-new file mode 100644
-index 00000000..cc3693f3
---- /dev/null
-+++ b/tests/btrfs/257.out
-@@ -0,0 +1,2 @@
-+QA output created by 257
-+Silence is golden
--- 
-2.34.1
 
