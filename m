@@ -2,137 +2,304 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EBA49EE3C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 23:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BB649EEDB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 00:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240515AbiA0WpU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 17:45:20 -0500
-Received: from mout.gmx.net ([212.227.17.20]:48187 "EHLO mout.gmx.net"
+        id S237614AbiA0XdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 18:33:04 -0500
+Received: from mout.gmx.net ([212.227.17.20]:47633 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236300AbiA0WpU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 17:45:20 -0500
+        id S232474AbiA0XdE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Jan 2022 18:33:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643323517;
-        bh=k4GGCIwIIpkCK0rzkN6RCjtNIpD1sv2uniyOacGPD0Y=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=dfOENkR0i+TyDCtpX6rNbfqk6GDncKRuf5lTQLIr45SPjjiN/3Vm2oapQv4kltfGh
-         pNKceM3r0YTRSnDKbMQRc3lrjiFVddq9Zzhv9Q7QVrsaJMzLCAfqnm0MLYEqe9YFcr
-         wIX0reojVnKgNc0sw/BEhMQMoHCpw8wwd3XgToqs=
+        s=badeba3b8450; t=1643326377;
+        bh=c74OiCiccVKGTFcLug3+DEJgppnPIsPtvyou/Np4JYU=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=kswo83oWD+KycSBneJj6MFiTu/iTIWAKUp4m/usrR5PEmS7RCA2l+oMjY0Bxg+au1
+         prAfhrVAYRCnGhQ+TVpsjMzZjabYD1tlSomelTATqs79ROF5FDOaFQ+Cz2yTDQz2V2
+         6mivmBQAq8gj289AhBlNo2AHqyHvXyNJoqz31hgw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mzyuc-1mInhj0mwA-00x4RT; Thu, 27
- Jan 2022 23:45:17 +0100
-Message-ID: <b3179989-c5b4-ea36-e624-6826ac1abc09@gmx.com>
-Date:   Fri, 28 Jan 2022 06:45:14 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnJlc-1mWRFU2Alg-00jIdO; Fri, 28
+ Jan 2022 00:32:57 +0100
+Message-ID: <f76aed97-42a7-ae3e-c7e4-cdbbd2d001c8@gmx.com>
+Date:   Fri, 28 Jan 2022 07:32:53 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
+Subject: Re: [PATCH] btrfs: add test case to make sure autodefrag won't give
+ up the whole cluster when there is a hole in it
 Content-Language: en-US
-To:     piorunz <piorunz@gmx.com>, linux-btrfs@vger.kernel.org
-References: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
+To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20220127054543.28964-1-wqu@suse.com>
+ <YfKAr3AaFpzmY0LX@debian9.Home>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: fstab autodegrag with 5.10 & 5.15 kernels, Debian?
-In-Reply-To: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
+In-Reply-To: <YfKAr3AaFpzmY0LX@debian9.Home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gFT/30afBwO+DK5HCCqj0Tw/mAoPWdNiUvErXqL4fdPznuiMmsE
- +GmurKIHvmE7ESlUnINEjHvwGdS0nxm/4Dh0Ywpx45n0iol3iadpBLYuU98xdLN2bAJm1vR
- Y+UULpkIsfFUAC6BA3Ox1WNGjwyIFYpEMOTvQ9IFkUDlVvGQvD515EVuWl4AIoxmIo3AN17
- N1AFY8KzCOFz2iDhdkpSA==
+X-Provags-ID: V03:K1:MFajcCsBWJBIQ9WUOgoyITZ7l7Wpa1nfS9JtRqaqKnJGTqA/X2b
+ SisJ+EpEzQ5sdTAvEbQCThDLSFuxx2G/3qoD+9rumFyx5eioh6zFG0uXCmyeL3FDQ49DD1+
+ N9BQd4N8QlLq7CcjEV0n4znjNg+DCF9ZnAIWujIZXy7khXtWWltQ5Pj7/RLRmhizH65S6By
+ +pNYlLI2Uo30/UQ3Nkaaw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zc0pHlWf1o8=:yzVVNxqDS5W4AcOdnE6E3j
- STXnUpqezMsQmWH2qgZz/W6WayB6kA4MLRFYtrnky/QVyMIeG9/rrgAhGrOJJ0UmKVAYVWU1/
- kEno0GRXVyA997ZdWZNt+HSNIXurIPa4VPHjiWojkdGqDJ/SbtNnmQefSwnSpS4qbyxyFkvuv
- LsP+ljsyl3s80p7IHLEJ/+ltso5bpmx1DRaVffOmOA3ySiWJQ43qnNGl3pt7w4BZJMcEemE/m
- un6BnLKS1VJUxa1Rip5yNdL25ngddoQWcDBELdsCkr2QBDe4cIi6vJH2VIGdtA/l1KZ6D3vc/
- Frfc5qQrARkGjcrDShzvA1PRkfSffEDBhjBUK5YWa8OTB+AVqhWqCUUIyP4UEYAl/ZGzIji05
- KHgrtBRftjiz2pugEdQ3znSUYwBk6vcG2Y29EJUgGxgp++LqV3Dh6bqpgPZxLeRUCOFd8e4aA
- Xgzhs6vOl4JukYybQxFljS9R/I8fDIGr0NUSlW80VdTiPj7V+HYFTm5gnmDJm8nGyZh1/1aVE
- Sq3kKG5T4MYxtkoSFnS8vwTM1aPLqLnNbixAisOpe+8qFofhcCx/bLPDUHTJHHfTx9Lz0ATWN
- zdvLJGxVLguaFg/HJy5QROuhsgdTOTrltzZGFkvLXaK7NxGmY3HDMy/A4CARxoZxjdaQUbqhm
- PQOuqA8GCHZwSjCJFkOmXg7+cUJJCnQF0IVXhsOend91dh7aLG8FwLKY3AeoGRDilvmrTnYH4
- Fuvo0xhdtpuAvo1PqLAvz/ursZo6tZAPD7B3Z0M9MASdLj/OMDoVIGBbwfp+H3GgT+JhaYjWo
- 5DhZBa1zqq6zY2f+BZtRFtRbfSWacfdXgQQVZtn3H5ifques+sm1cyaD7MyuwFbJlGVb2N5lu
- 3w6cd59fc0tF9rncN9PKDqfSnLciuR6ox+LNBQ2XId9hnP8ZrIHJxS0TgF/mV0S0RGlKg/nb4
- bQZDVZh1WCoukTG+V+9DQzYzLiAReaDTY7oZ6od1xjXofPN17aLRZt9YgdWsKy1gkw6EvTsA+
- WzXQuMwoI6t8Ov3p54KzJ3LUrFoXYzdPFgN6B5X+XkgChXVNUJS4QNnI+h/3s7Ao4cIgP86mL
- BE02b3o8g3Fd6Y=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Hp3wY3mVnIo=:4KwLU/pX75Ir6ulmYWxtQM
+ nPvxscUB/rrYra+KF3jW5fUj/EAhQsweIKCi8DbNR4PaW1/LnmC3hLv9GcGwFsNCF8EP+KTHl
+ PjRI6XYqyFJ/ub20w5d43DgFL2KZCfzXZcWDFy4YOb8MxoAa2orKaSc6Zw2k/GSFcFhA9o6Az
+ okShw02h0wwAYTu5MRkveNLCs/ciKG8qtMpQDtkVasRj1GUbgBtfMJVd02qVtDCiiF4V08acl
+ wAZHqO77z57fx68+hMZ8zo8m0CuKeq6SJLgorZOUtc8t9QwQJUL5UKaYnaIOGILvUbfesZuqK
+ tb9r0bQiFa7FMRkB/mjZnUQ7NENJZOEMQOt34iI0F5qwBBKrSBE1Yg6CZrRF5BVaVFPbK3ozL
+ DG5RwQ2GSZdsCHcX5YErxqomvGjdKxQX9nvIAYIQn20UxnifyLbmGO3f9EC9p8rpzgZs/zwH9
+ 69q+vdSwpjo7dZMDtQft3B5lFf1GYJsJP513drclY9uY9rmalVvhN5vtqPK1HNDOvF92il/80
+ r29mBGbmIAoZMdYvsraCqv7DUaurfJRQJuLBHpc9M66YzGDIwIjemMlMOnVsm7qK2RtgLQmbB
+ 6zHNm4vzhrX56Xy8u/e9o6WGDGNDfviGS5Twy11UWVCj1/k44bTzfSuJr66LmgW1FzX0TT86F
+ haN7HF7K5X0VBrUarJsFZ3PMnB3nrr3X0t9KRm8dVU+UMCXir6IyWv5TV8WnHucH2/amzVigP
+ YwoaR53cOee6SJBmfPqcP/kaCmbskoMBR9ORMQG9Au5X0diGF+4RPgD99k3mVs2LLYGDwXSPQ
+ NldDuF7jxlrgP6xBLqOv2FC1GlkeKJPib+Ml1xK36k7TQ0n5g37rvyc7zJrSALhNSQbPHcXuf
+ uTBpXlJfysgtxAYzaFoXoaF3Zj9hB0nbAPgosSx5YqWI+0/w+Lh5EdQb1MDeQT4FJ4JnRl+F0
+ EH+1KW8allSpdxzBD05s3IYnUo5s87PBJbBKMH7LOnEZgx1y14ovJNRUUt3M8g3DtgjFUwcwf
+ bRun8N1TkwAMZPKxwX8TU0SjE+HyKb4CqJH/Vh+BLtanhS1f5kooCQHI+ytXSjLWpglyEaacc
+ FGIqpxuHcoKQTM=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/1/27 23:25, piorunz wrote:
-> Hi all,
+On 2022/1/27 19:23, Filipe Manana wrote:
+> On Thu, Jan 27, 2022 at 01:45:43PM +0800, Qu Wenruo wrote:
+>> In v5.11~v5.15 kernels, there is a regression in autodefrag that if a
+>> cluster (up to 256K in size) has even a single hole, the whole cluster
+>> will be rejected.
+>>
+>> This will greatly reduce the efficiency of autodefrag.
+>>
+>> The behavior is fixed in v5.16 by a full rework, although the rework
+>> itself has other problems, it at least solves this particular
+>> regression.
+>>
+>> Here we add a test case to reproduce the case, where we have a 128K
+>> cluster, the first half is fragmented extents which can be defragged.
+>> The second half is hole.
+>>
+>> Make sure autodefrag can defrag the 64K part.
+>>
+>> This test needs extra debug feature, which is titled:
+>>
+>>    [RFC] btrfs: sysfs: introduce <uuid>/debug/cleaner_trigger
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   common/btrfs        |  11 +++++
+>>   tests/btrfs/256     | 112 +++++++++++++++++++++++++++++++++++++++++++=
++
+>>   tests/btrfs/256.out |   2 +
+>>   3 files changed, 125 insertions(+)
+>>   create mode 100755 tests/btrfs/256
+>>   create mode 100644 tests/btrfs/256.out
+>>
+>> diff --git a/common/btrfs b/common/btrfs
+>> index 5de926dd..4e6842d9 100644
+>> --- a/common/btrfs
+>> +++ b/common/btrfs
+>> @@ -496,3 +496,14 @@ _require_btrfs_support_sectorsize()
+>>   	grep -wq $sectorsize /sys/fs/btrfs/features/supported_sectorsizes ||=
+ \
+>>   		_notrun "sectorsize $sectorsize is not supported"
+>>   }
+>> +
+>> +# Require trigger for cleaner kthread
+>> +_require_btrfs_debug_cleaner_trigger()
+>> +{
+>> +	local fsid
+>> +
+>> +	fsid=3D$($BTRFS_UTIL_PROG filesystem show $TEST_DIR | grep uuid: |\
+>> +	       $AWK_PROG '{print $NF}')
+>> +	test -f /sys/fs/btrfs/$fsid/debug/cleaner_trigger ||\
+>> +		_notrun "no cleaner kthread trigger"
+>> +}
+>> diff --git a/tests/btrfs/256 b/tests/btrfs/256
+>> new file mode 100755
+>> index 00000000..86e6739e
+>> --- /dev/null
+>> +++ b/tests/btrfs/256
+>> @@ -0,0 +1,112 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+>> +#
+>> +# FS QA Test 256
+>> +#
+>> +# Make sure btrfs auto defrag can properly defrag clusters which has h=
+ole
+>> +# in the middle
+>> +#
+>> +. ./common/preamble
+>> +_begin_fstest auto defrag quick
+>> +
+>> +. ./common/btrfs
+>> +. ./common/filter
+>> +
+>> +# real QA test starts here
+>> +
+>> +# Modify as appropriate.
+>> +_supported_fs generic
+>> +_require_scratch
+>> +
+>> +get_extent_disk_sector()
+>> +{
+>> +	local file=3D$1
+>> +	local offset=3D$2
+>> +
+>> +	$XFS_IO_PROG -c "fiemap $offset" "$file" | _filter_xfs_io_fiemap |\
+>> +		head -n1 | $AWK_PROG '{print $3}'
+>> +}
+>> +
+>> +# Needs 4K sectorsize, as larger sectorsize can change the file layout=
+.
+>> +_require_btrfs_support_sectorsize 4096
+>> +
+>> +# We need a way to trigger autodefrag
+>> +_require_btrfs_debug_cleaner_trigger
 >
-> Is it safe & recommended to run autodefrag mount option in fstab?
-> I am considering two machines here, normal desktop which has Btrfs as
-> /home, and server with VM and other databases also btrfs /home. Both
-> Btrfs RAID10 types. Both are heavily fragmented. I never defragmented
-> them, in fact. I run Debian 11 on server (kernel 5.10) and Debian
-> Testing (kernel 5.15) on desktop.
+> In order to trigger the cleaner, we don't need another special purpose
+> RFC debug patch.
+>
+> Just mount the fs with "-o commit=3D1", and then leave the "sleep 3" as =
+it
+> is. We do this in other tests that expect the cleaner thread to do
+> something. Every time the transaction kthread wakes up, it will wake up
+> the cleaner kthread, even if it doesn't have any transaction to commit.
 
-It's very embarrassing to admit, that defrag behavior in btrfs has some
-bugs, no only in the latest rework in v5.16, but also in older kernels.
+Right! That's way better than the RFC patch.
 
 >
-> Running manual defrag on server machine, like:
-> sudo btrfs filesystem defrag -v -t4G -r /home
-
--t4G is too large. The max extent size in btrfs is only 128M.
-
-Thus it means all extents will be re-written unconditionally.
-
-> takes ages and can cause 120 second timeout kernel error in dmesg due to
-> service timeouts. I prefer to autodefrag gradually, overtime, mount
-> option seems to be good for that.
-
-The 120s timeout is a bug we need to address. I checked the current code
-and v5.15 code, unfortunately it seems we didn't call cond_resched(),
-which causes the 120s timeout.
-
-Now let's talk about autodefrag.
-
-In v5.15 (and stable v5.10), there is a hidden bug in autodefrag only
-branch, that it will not defrag a lot of extents.
-
-Thus autodefrag may not help, while only manual defrag would do the best
-for now.
-
+>> +
+>> +_scratch_mkfs >> $seqres.full
+>> +
+>> +# Need datacow to show which range is defragged, and we're testing
+>> +# autodefrag
+>> +_scratch_mount -o datacow,autodefrag
+>> +
+>> +fsid=3D$($BTRFS_UTIL_PROG filesystem show $SCRATCH_MNT |grep uuid: |\
+>> +       $AWK_PROG '{print $NF}')
+>> +
+>> +# Create a layout where we have fragmented extents at [0, 64k) (sync w=
+rite in
+>> +# reserve order), then a hole at [64k, 128k)
+>> +$XFS_IO_PROG -f -c "pwrite 48k 16k" -c sync \
+>> +		-c "pwrite 32k 16k" -c sync \
+>> +		-c "pwrite 16k 16k" -c sync \
+>> +		-c "pwrite 0 16k" $SCRATCH_MNT/foobar >> $seqres.full
 >
-> My current fstab mounting:
+> Instead of adding a bunch of "-c sync", you can pass -s to xfs_io:
 >
-> noatime,space_cache=3Dv2,compress-force=3Dzstd:3 0 2
+> xfs_io -f -s -c "pwrite ..." -c "pwrite ..." ...
 >
-> Will autodefrag break COW files? Like I copy paste a file and I save
-> space, but defrag with destroy this space saving?
+> It does exactly the same.
+>
+>> +truncate -s 128k $SCRATCH_MNT/foobar
+>> +sync
+>> +
+>> +old_csum=3D$(_md5_checksum $SCRATCH_MNT/foobar)
+>> +echo "=3D=3D=3D File extent layout before autodefrag =3D=3D=3D" >> $se=
+qres.full
+>> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
+>> +echo "old md5=3D$old_csum" >> $seqres.full
+>> +
+>> +old_regular=3D$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
+>> +old_hole=3D$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 64k)
+>> +
+>> +# For hole only xfs_io fiemap, there will be no output at all.
+>
+> You can get around that by not using _filter_xfs_io_fiemap at
+> get_extent_disk_sector.
 
-As mentioned in the man page, defrag (no matter auto or not) will break
-reflink and snapshot, thus increase the space usage.
+Unfortunately I have tried and failed.
 
-> Also, will autodefrag compress files automatically, as mount option
-> enforces (compress-force=3Dzstd:3)?
+The problem is really xfs_io fiemap -v will just output nothing if there
+is only hole.
 
-If you're using compression, then the max extent size is only 128K.
-(Which is another cause of fragments)
+$ sudo xfs_io -c "fiemap -v" /mnt/btrfs/file2
+/mnt/btrfs/file2:
+  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+    0: [0..31]:         26688..26719        32   0x1
+    1: [32..63]:        hole                32
+$ sudo xfs_io -c "fiemap -v 16k" /mnt/btrfs/file2
+/mnt/btrfs/file2:
 
-Defrag can handle it, but you may want to modify the extent size even
-smaller for defrag subcommand.
+Maybe it would be something to fix in the future?
+
+Anyway, I'll integrate the special hole handling into the helper.
 
 Thanks,
 Qu
-
 >
-> Any suggestions welcome.
+>> +# Re-fill it to "hole" for later comparison
+>> +if [ ! -z $old_hole ]; then
+>> +	echo "hole not at 128k"
 >
+> 128K -> 64K
 >
-> --
-> With kindest regards, Piotr.
+>> +else
+>> +	old_hole=3D"hole"
+>> +fi
+>> +
+>> +# Now trigger autodefrag
+>> +echo 0 > /sys/fs/btrfs/$fsid/debug/cleaner_trigger
+>> +
+>> +# No good way to wait for autodefrag to finish yet
+>> +sleep 3
+>> +sync
+>> +
+>> +new_csum=3D$(_md5_checksum $SCRATCH_MNT/foobar)
+>> +new_regular=3D$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
+>> +new_hole=3D$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 64k)
+>> +
+>> +echo "=3D=3D=3D File extent layout after autodefrag =3D=3D=3D" >> $seq=
+res.full
+>> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
+>> +echo "new md5=3D$new_csum" >> $seqres.full
+>> +
+>> +if [ ! -z $new_hole ]; then
+>> +	echo "hole not at 128k"
 >
-> =E2=A2=80=E2=A3=B4=E2=A0=BE=E2=A0=BB=E2=A2=B6=E2=A3=A6=E2=A0=80
-> =E2=A3=BE=E2=A0=81=E2=A2=A0=E2=A0=92=E2=A0=80=E2=A3=BF=E2=A1=81 Debian -=
- The universal operating system
-> =E2=A2=BF=E2=A1=84=E2=A0=98=E2=A0=B7=E2=A0=9A=E2=A0=8B=E2=A0=80 https://=
-www.debian.org/
-> =E2=A0=88=E2=A0=B3=E2=A3=84=E2=A0=80=E2=A0=80=E2=A0=80=E2=A0=80
+> 64K
+>
+>> +else
+>> +	new_hole=3D"hole"
+>> +fi
+>> +
+>> +# In v5.11~v5.15 kernels, regular extents won't get defragged, and wou=
+ld trigger
+>> +# the following output
+>> +if [ $new_regular =3D=3D $old_regular ]; then
+>> +	echo "regular extents didn't get defragged"
+>> +fi
+>> +
+>> +# In v5.10 and earlier kernel, autodefrag may choose to defrag holes,
+>> +# which should be avoided.
+>> +if [ "$new_hole" !=3D "$old_hole" ]; then
+>> +	echo "hole extents got defragged"
+>> +fi
+>> +
+>> +# Defrag should not change file content
+>> +if [ "$new_csum" !=3D "$old_csum" ]; then
+>> +	echo "file content changed"
+>> +fi
+>> +
+>> +echo "Silence is golden"
+>> +# success, all done
+>> +status=3D0
+>> +exit
+>> diff --git a/tests/btrfs/256.out b/tests/btrfs/256.out
+>> new file mode 100644
+>> index 00000000..7ee8e2e5
+>> --- /dev/null
+>> +++ b/tests/btrfs/256.out
+>> @@ -0,0 +1,2 @@
+>> +QA output created by 256
+>> +Silence is golden
+>> --
+>> 2.34.1
+>>
