@@ -2,100 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1C349DA01
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 06:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17EE49DA53
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jan 2022 06:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236129AbiA0FZF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 00:25:05 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:48374 "EHLO
+        id S236317AbiA0FqD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 00:46:03 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:49078 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbiA0FZE (ORCPT
+        with ESMTP id S229551AbiA0FqD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 00:25:04 -0500
+        Thu, 27 Jan 2022 00:46:03 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E97C4218F3
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 05:25:03 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2AFF621102;
+        Thu, 27 Jan 2022 05:46:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643261103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B5GuoGqxlCXfRwE+CAIppGfSYzrmW+C/UBFd4k34ul0=;
-        b=s9ILFSUWBoFlyt4y2ZHk53Jqr+CqP95c9j1301TbMf5OZe/E/vEsgE88krYuj+qY2P3/0u
-        +gZYFHv9MqhKHdq2Th0kTJJh0Bx7ndHUvDCkyn3DdjfOAl8G4A7U73xp8VHtOdd4B3syGi
-        qZHT71SxozsNIGTdAsOr+yaz/RsLONU=
+        t=1643262362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=YRWsd/EwoOdW2gN6s5B6GbYp5CNJthV1ji/Ufa0rud8=;
+        b=MR6Q4aOQLIm4n1KqTebhqZsp2cOOM8Cd4UyyHr4aUV6ZjGdT8X6UrSkoE++j4vbJ7UsUqv
+        m5QNWWPS3BWXbJzoELylfHcnOZVUVxbCVrvVnbXx8LsDMp9mrytt6zW+h+TY7kYlrsX/0t
+        XNOMrU7V7xd1kMJ1wm6lI9GrxoWqCq8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C57913F58
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 05:25:02 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 431FE13F5F;
+        Thu, 27 Jan 2022 05:46:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id uBhqKa4s8mFOXgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jan 2022 05:25:02 +0000
+        id 1TZGA5kx8mEnZQAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 27 Jan 2022 05:46:01 +0000
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: defrag: remove an ambiguous condition for rejection
-Date:   Thu, 27 Jan 2022 13:24:43 +0800
-Message-Id: <0a2fdf173e68967239e4162fe08c434502ba7ea1.1643260816.git.wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add test case to make sure autodefrag won't give up the whole cluster when there is a hole in it
+Date:   Thu, 27 Jan 2022 13:45:43 +0800
+Message-Id: <20220127054543.28964-1-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1643260816.git.wqu@suse.com>
-References: <cover.1643260816.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From the very beginning of btrfs defrag, there is a check to reject
-extents which meet both conditions:
+In v5.11~v5.15 kernels, there is a regression in autodefrag that if a
+cluster (up to 256K in size) has even a single hole, the whole cluster
+will be rejected.
 
-- Physically adjacent
+This will greatly reduce the efficiency of autodefrag.
 
-  We may want to defrag physically adjacent extents to reduce the number
-  of extents or the size of subvolume tree.
+The behavior is fixed in v5.16 by a full rework, although the rework
+itself has other problems, it at least solves this particular
+regression.
 
-- Larger than 128K
+Here we add a test case to reproduce the case, where we have a 128K
+cluster, the first half is fragmented extents which can be defragged.
+The second half is hole.
 
-  This may be there for compressed extents, but unfortunately 128K is
-  exactly the max capacity for compressed extents.
-  And the check is > 128K, thus it never rejects compressed extents.
+Make sure autodefrag can defrag the 64K part.
 
-  Furthermore, the compressed extent capacity bug is fixed by previous
-  patch, there is no reason for that check anymore.
+This test needs extra debug feature, which is titled:
 
-The original check has a very small ranges to reject (the target extent
-size is > 128K, and default extent threshold is 256K), and for
-compressed extent it doesn't work at all.
-
-So it's better just to remove the rejection, and allow us to defrag
-physically adjacent extents.
+  [RFC] btrfs: sysfs: introduce <uuid>/debug/cleaner_trigger
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ioctl.c | 4 ----
- 1 file changed, 4 deletions(-)
+ common/btrfs        |  11 +++++
+ tests/btrfs/256     | 112 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/256.out |   2 +
+ 3 files changed, 125 insertions(+)
+ create mode 100755 tests/btrfs/256
+ create mode 100644 tests/btrfs/256.out
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a03c31e1ff18..af95e3b7aa72 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1078,10 +1078,6 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
- 	 */
- 	if (next->len >= get_extent_max_capacity(em))
- 		goto out;
--	/* Physically adjacent and large enough */
--	if ((em->block_start + em->block_len == next->block_start) &&
--	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
--		goto out;
- 	ret = true;
- out:
- 	free_extent_map(next);
+diff --git a/common/btrfs b/common/btrfs
+index 5de926dd..4e6842d9 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -496,3 +496,14 @@ _require_btrfs_support_sectorsize()
+ 	grep -wq $sectorsize /sys/fs/btrfs/features/supported_sectorsizes || \
+ 		_notrun "sectorsize $sectorsize is not supported"
+ }
++
++# Require trigger for cleaner kthread
++_require_btrfs_debug_cleaner_trigger()
++{
++	local fsid
++
++	fsid=$($BTRFS_UTIL_PROG filesystem show $TEST_DIR | grep uuid: |\
++	       $AWK_PROG '{print $NF}')
++	test -f /sys/fs/btrfs/$fsid/debug/cleaner_trigger ||\
++		_notrun "no cleaner kthread trigger"
++}
+diff --git a/tests/btrfs/256 b/tests/btrfs/256
+new file mode 100755
+index 00000000..86e6739e
+--- /dev/null
++++ b/tests/btrfs/256
+@@ -0,0 +1,112 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 256
++#
++# Make sure btrfs auto defrag can properly defrag clusters which has hole
++# in the middle
++#
++. ./common/preamble
++_begin_fstest auto defrag quick
++
++. ./common/btrfs
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_require_scratch
++
++get_extent_disk_sector()
++{
++	local file=$1
++	local offset=$2
++
++	$XFS_IO_PROG -c "fiemap $offset" "$file" | _filter_xfs_io_fiemap |\
++		head -n1 | $AWK_PROG '{print $3}'
++}
++
++# Needs 4K sectorsize, as larger sectorsize can change the file layout.
++_require_btrfs_support_sectorsize 4096
++
++# We need a way to trigger autodefrag
++_require_btrfs_debug_cleaner_trigger
++
++_scratch_mkfs >> $seqres.full
++
++# Need datacow to show which range is defragged, and we're testing
++# autodefrag
++_scratch_mount -o datacow,autodefrag
++
++fsid=$($BTRFS_UTIL_PROG filesystem show $SCRATCH_MNT |grep uuid: |\
++       $AWK_PROG '{print $NF}')
++
++# Create a layout where we have fragmented extents at [0, 64k) (sync write in
++# reserve order), then a hole at [64k, 128k)
++$XFS_IO_PROG -f -c "pwrite 48k 16k" -c sync \
++		-c "pwrite 32k 16k" -c sync \
++		-c "pwrite 16k 16k" -c sync \
++		-c "pwrite 0 16k" $SCRATCH_MNT/foobar >> $seqres.full
++truncate -s 128k $SCRATCH_MNT/foobar
++sync
++
++old_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
++echo "=== File extent layout before autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
++echo "old md5=$old_csum" >> $seqres.full
++
++old_regular=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
++old_hole=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 64k)
++
++# For hole only xfs_io fiemap, there will be no output at all.
++# Re-fill it to "hole" for later comparison
++if [ ! -z $old_hole ]; then
++	echo "hole not at 128k"
++else
++	old_hole="hole"
++fi
++
++# Now trigger autodefrag
++echo 0 > /sys/fs/btrfs/$fsid/debug/cleaner_trigger
++
++# No good way to wait for autodefrag to finish yet
++sleep 3
++sync
++
++new_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
++new_regular=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 0)
++new_hole=$(get_extent_disk_sector "$SCRATCH_MNT/foobar" 64k)
++
++echo "=== File extent layout after autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
++echo "new md5=$new_csum" >> $seqres.full
++
++if [ ! -z $new_hole ]; then
++	echo "hole not at 128k"
++else
++	new_hole="hole"
++fi
++
++# In v5.11~v5.15 kernels, regular extents won't get defragged, and would trigger
++# the following output
++if [ $new_regular == $old_regular ]; then
++	echo "regular extents didn't get defragged"
++fi
++
++# In v5.10 and earlier kernel, autodefrag may choose to defrag holes,
++# which should be avoided.
++if [ "$new_hole" != "$old_hole" ]; then
++	echo "hole extents got defragged"
++fi
++
++# Defrag should not change file content
++if [ "$new_csum" != "$old_csum" ]; then
++	echo "file content changed"
++fi
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/256.out b/tests/btrfs/256.out
+new file mode 100644
+index 00000000..7ee8e2e5
+--- /dev/null
++++ b/tests/btrfs/256.out
+@@ -0,0 +1,2 @@
++QA output created by 256
++Silence is golden
 -- 
 2.34.1
 
