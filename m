@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B97B49EFA3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 01:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9130949EFA6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 01:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344948AbiA1A2G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jan 2022 19:28:06 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:54128 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344985AbiA1A1W (ORCPT
+        id S1344970AbiA1A2L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jan 2022 19:28:11 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:47264 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344995AbiA1A1Y (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jan 2022 19:27:22 -0500
+        Thu, 27 Jan 2022 19:27:24 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4344D1F385;
-        Fri, 28 Jan 2022 00:27:21 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7B783212CA;
+        Fri, 28 Jan 2022 00:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643329641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1643329642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=10Ij3d7KYP62gCYiX+SIsQd2/6yMD/1U85EwuNMzEds=;
-        b=VEDr1glWq6afTqVVhUf1eQH52COyL3pHEuQu8DTCC3T8wNmjp8HuRDy1xaEzNWBJH/gczQ
-        ok5mRuSURBFaehFmRcXdLF4Q9dJMU7DZqyDbCH8f6upetDtE9rfNj8dBFxnmmDvkHxUOB4
-        lv5cv1B0WfPIB/hEamVKQqXL9YhYU7k=
+        bh=+/MsAhRjM9KOl/KjjYKjfeiOO3x3t2jI0t9NmYtqz94=;
+        b=Fur0Qd9PzdzeIfExhVP2nZ9l0EEVxkrlHZvlKB4zXayVZHcUV3PckO4eaE3kA/ntvIaT/i
+        wWY7btxjmv6Oe/DFVUhuhoH1CrWvEELsLgJduq4YlPXR0vyq2ebBim5bR+gOCOGd5gvyJd
+        7SRrjIoVRNim8YNN8EVY+OG4OJjNBqM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 67A0C139F7;
-        Fri, 28 Jan 2022 00:27:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A0CF4139F7;
+        Fri, 28 Jan 2022 00:27:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mBw0DWg482FQQAAAMHmgww
-        (envelope-from <wqu@suse.com>); Fri, 28 Jan 2022 00:27:20 +0000
+        id yBgJG2k482FQQAAAMHmgww
+        (envelope-from <wqu@suse.com>); Fri, 28 Jan 2022 00:27:21 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/3] btrfs: test autodefrag with regular and hole extents
-Date:   Fri, 28 Jan 2022 08:27:00 +0800
-Message-Id: <20220128002701.11971-2-wqu@suse.com>
+Subject: [PATCH 3/3] btrfs: test defrag with compressed extents
+Date:   Fri, 28 Jan 2022 08:27:01 +0800
+Message-Id: <20220128002701.11971-3-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220128002701.11971-1-wqu@suse.com>
 References: <20220128002701.11971-1-wqu@suse.com>
@@ -52,134 +52,105 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In v5.11~v5.15 kernels, there is a regression in autodefrag that if a
-cluster (up to 256K in size) has even a single hole, the whole cluster
-will be rejected.
+There is a long existing bug in btrfs defrag code that it will always
+try to defrag compressed extents, even they are already at max capacity.
 
-This will greatly reduce the efficiency of autodefrag.
+This will not reduce the number of extents, but only waste IO/CPU.
 
-The behavior is fixed in v5.16 by a full rework, although the rework
-itself has other problems, it at least solves the problem.
+The kernel fix is titled:
 
-Here we add a test case to reproduce the case, where we have a 128K
-cluster, the first half is fragmented extents which can be defragged.
-The second half is hole.
-
-Make sure autodefrag can defrag the 64K part.
+  btrfs: defrag: don't defrag extents which is already at its max capacity
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
 Changelog:
 v2:
-- Use the previously define _get_file_extent_sector() helper
-  This also removed some out-of-sync error messages
+- Use fiemap output to compare the difference
+  Now no need to use _get_file_extent_sector() helper at all.
 
-- Trigger autodefrag using commit=1 mount option
-  No need for special purpose patch any more.
+- Remove unnecessary mount options
 
-- Use xfs_io -s to skip several sync calls
+- Enlarge the write size to 16M
+  To be future proof
 
-- Shorten the subject of the commit
+- Shorten the subject
 ---
- tests/btrfs/256     | 80 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/256.out |  2 ++
- 2 files changed, 82 insertions(+)
- create mode 100755 tests/btrfs/256
- create mode 100644 tests/btrfs/256.out
+ tests/btrfs/257     | 57 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/257.out |  2 ++
+ 2 files changed, 59 insertions(+)
+ create mode 100755 tests/btrfs/257
+ create mode 100644 tests/btrfs/257.out
 
-diff --git a/tests/btrfs/256 b/tests/btrfs/256
+diff --git a/tests/btrfs/257 b/tests/btrfs/257
 new file mode 100755
-index 00000000..def83a15
+index 00000000..bacd0c23
 --- /dev/null
-+++ b/tests/btrfs/256
-@@ -0,0 +1,80 @@
++++ b/tests/btrfs/257
+@@ -0,0 +1,57 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
 +#
-+# FS QA Test 256
++# FS QA Test 257
 +#
-+# Make sure btrfs auto defrag can properly defrag clusters which has hole
-+# in the middle
++# Make sure btrfs defrag ioctl won't defrag compressed extents which are already
++# at their max capacity.
 +#
 +. ./common/preamble
-+_begin_fstest auto defrag quick
++_begin_fstest auto quick defrag
 +
-+. ./common/btrfs
++# Import common functions.
 +. ./common/filter
++. ./common/btrfs
 +
 +# real QA test starts here
 +
 +# Modify as appropriate.
-+_supported_fs generic
++_supported_fs btrfs
 +_require_scratch
-+
-+# Needs 4K sectorsize, as larger sectorsize can change the file layout.
-+_require_btrfs_support_sectorsize 4096
 +
 +_scratch_mkfs >> $seqres.full
 +
-+# Need datacow to show which range is defragged, and we're testing
-+# autodefrag
-+_scratch_mount -o datacow,autodefrag
++_scratch_mount -o compress
 +
-+# Create a layout where we have fragmented extents at [0, 64k) (sync write in
-+# reserve order), then a hole at [64k, 128k)
-+$XFS_IO_PROG -f -s -c "pwrite 48k 16k" -c "pwrite 32k 16k" \
-+		-c "pwrite 16k 16k" -c "pwrite 0 16k" \
-+		$SCRATCH_MNT/foobar >> $seqres.full
-+truncate -s 128k $SCRATCH_MNT/foobar
++# Btrfs uses 128K as max extent size for compressed extents, this would result
++# several compressed extents all at their max size
++$XFS_IO_PROG -f -c "pwrite -S 0xee 0 16m" -c sync \
++	$SCRATCH_MNT/foobar >> $seqres.full
 +
 +old_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
-+echo "=== File extent layout before autodefrag ===" >> $seqres.full
++
++echo "=== File extent layout before defrag ===" >> $seqres.full
 +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
-+echo "old md5=$old_csum" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" > $tmp.before
 +
-+old_regular=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
-+old_hole=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 64k)
-+
-+# Now trigger autodefrag, autodefrag is triggered in the cleaner thread,
-+# which will be woken up by commit thread
-+_scratch_remount commit=1
-+sleep 3
++$BTRFS_UTIL_PROG filesystem defrag "$SCRATCH_MNT/foobar" >> $seqres.full
 +sync
 +
 +new_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
-+new_regular=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
-+new_hole=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 64k)
 +
-+echo "=== File extent layout after autodefrag ===" >> $seqres.full
++echo "=== File extent layout before defrag ===" >> $seqres.full
 +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
-+echo "new md5=$new_csum" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" > $tmp.after
 +
-+# In v5.11~v5.15 kernels, regular extents won't get defragged, and would trigger
-+# the following output
-+if [ $new_regular == $old_regular ]; then
-+	echo "regular extents didn't get defragged"
-+fi
-+
-+# In v5.10 and earlier kernel, autodefrag may choose to defrag holes,
-+# which should be avoided.
-+if [ "$new_hole" != "$old_hole" ]; then
-+	echo "hole extents got defragged"
-+fi
-+
-+# Defrag should not change file content
-+if [ "$new_csum" != "$old_csum" ]; then
++if [ $new_csum != $old_csum ]; then
 +	echo "file content changed"
 +fi
 +
++diff -q $tmp.before $tmp.after || echo "compressed extents get defragged"
++
 +echo "Silence is golden"
++
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/256.out b/tests/btrfs/256.out
+diff --git a/tests/btrfs/257.out b/tests/btrfs/257.out
 new file mode 100644
-index 00000000..7ee8e2e5
+index 00000000..cc3693f3
 --- /dev/null
-+++ b/tests/btrfs/256.out
++++ b/tests/btrfs/257.out
 @@ -0,0 +1,2 @@
-+QA output created by 256
++QA output created by 257
 +Silence is golden
 -- 
 2.34.1
