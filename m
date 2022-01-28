@@ -2,204 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623E249F9B7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 13:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A8B49F9BB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 13:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348645AbiA1Mmf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jan 2022 07:42:35 -0500
-Received: from mout.gmx.net ([212.227.15.19]:53597 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348636AbiA1MmZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jan 2022 07:42:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643373742;
-        bh=xkgZvnK33345G1oB7xiW018Pl9Tpzl+InLWDZYTeEl8=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=DrzE7irKYBlR3IHZ/7ESlAc7TAnxaVE/LYIzQW4D+CzogJhohJ5ldylLj571+lJj/
-         88eygN4giKwvev7jFeHh7MBn12r9QE9DneUZh4p9nUXE7D4tD2s7UEIaqNr73Vn0ob
-         V9KK+BHsau+Cc+ni7BalPTQH6vDRsjNlN2+QSGxc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N9dwd-1mA1uq2MVh-015ZpX; Fri, 28
- Jan 2022 13:42:22 +0100
-Message-ID: <e2dee101-bcff-a269-e062-710438bded3d@gmx.com>
-Date:   Fri, 28 Jan 2022 20:42:18 +0800
+        id S235668AbiA1Moc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jan 2022 07:44:32 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:36954 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbiA1Moc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Jan 2022 07:44:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0A7ADB8258E
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 12:44:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B42D3C340E8
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 12:44:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643373869;
+        bh=AsSZ1r7tsI3ztzDTKthGViQ0rSVTyCVrk7sMeZ8Zd74=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o8/euecxuIbjylI6P7AcsfUwVdNq9cR4a4vmFG5C62h2UWaZ2PPV+TkrDv+TdE1Oi
+         uWiH2fwuszqG5fwLriYXivi2JjM5vV3a0HhabZncFCDn8utiEcj8rPwcIfsTinqhNu
+         /ERrc4UHyNppwB4jntdu+Cbd63q/HObXf4SIayUALSWy9MTWtUtNY4qgOTPa/QXMCc
+         CmZXRLC8rtkXsqV1ftEb1tmc/4OWNG0vcIBPMpvgsNTLLzbzJStwKFl8Mj952WtzC2
+         F/4eT2Snda8ZcE9MN1aMHeW8Q6nJPdsheB5skDJZMFy5DWqg3HRkwrTKxUlIzE5SzS
+         GJ5g8jj3YzC3w==
+Received: by mail-qt1-f177.google.com with SMTP id k14so4993901qtq.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 04:44:29 -0800 (PST)
+X-Gm-Message-State: AOAM533VNOsWMsGqm+13jrz1Lhax0BkAuPDAOp+M7CDBKk/t6nHrjnxw
+        x/AIyktz5MjOdO/RnBoWREhtyNiIc085gBgRtis=
+X-Google-Smtp-Source: ABdhPJwDJfRzdfbiptefYZsbRRlgSQaiLRs+Ovt9V7H12GxKj5i4JKZCZ5ZI2lGkHBZyyqs+ASwreQvFaOZSAdjlEHU=
+X-Received: by 2002:ac8:6605:: with SMTP id c5mr5900021qtp.522.1643373868742;
+ Fri, 28 Jan 2022 04:44:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To:     piorunz <piorunz@gmx.com>, Kai Krakow <hurikhan77+btrfs@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
- <CAMthOuOg8SVYrehoS4VS=Gj4paYyobmqX85bKzGxYcG-2oJBDA@mail.gmail.com>
- <cf0cd0df-7391-adf5-abbc-42dfd1f07129@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: fstab autodegrag with 5.10 & 5.15 kernels, Debian?
-In-Reply-To: <cf0cd0df-7391-adf5-abbc-42dfd1f07129@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:J/R/Gtds2+mB2QidgujYu5CgYfPPxCK8e5XubgOZTVAswu+/mWU
- P6QZh1AyTwL03z2v+qY4uYx66FMw7oemsbB1RBwr8oKM6n+pfAy+uAmwd/6vxblaALkqdaE
- +zKb260BFsBeGIHkbL+IyVIss06haMkpw3kptyPtVTdNuCfhlssk+gDvAxvzh/g1Npge49s
- z0wV/J1VngtIwdkBMH7Mg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Xa5jipAhHHQ=:lBuJXiZMZEomJ9yNvVOEy/
- O7f1bNY1hMT7iWo0t1s6wF9AOQiJMztP3qN2NZrI1gEJLtaQorHFvdI34fKnK/qZDcKhMwUmd
- iNiIy0X8XSB7OQpjjq5Qr4L1KvGoLGVPaodjdXVwmliS43HHyFUima8GqOoNxxdXdCYYDJxrE
- +e5OdxCKyKnakI19tGHM0iJxkOrxbw6L1Wxij6K48eRT/YuCMuuWHGLJ4aElz90LkoQ64UMYA
- h2La01psGV29JwwFz0gpKz+dsZcjAriOlfZWWEtwKazNPc8RjWMaUv2oJDfT5E5tSlDmxwjNR
- 2D/AA+23P9coF+DZQMfsmM2tK2vCpQaLMybXzdKkiDj0kYKvQ9QIz73o2OIA5RIq8nRoHTgu1
- nLmggvTglYbrpnWQgej9ktqdPHr1kccm2jJJI7rbYX/g0a1cM00KE/r2z7zZqMk/1Jlm8Z2vd
- wjVCYBzb7/phPPJSh9wMu65vu0DxgP7ZwhmaJ8eSfzTxc+nVuOKAtfFSYyODepWsSpUKvcO5h
- kvPEU4Ju2wEhj7/kXcNErUUBh0PN+D/OdNwk+cVcIEQgCUDeJGfz6cf8t9EQNbBSprYLAORlX
- Zqv8idc7kPuoCaa+xGymddqeRdc7y/SXhklP6QJGJdSv5W/RSf/vhXmE0Ii+aU1BPScvKYi4l
- jNHdsFhzbUCR78AECDDqS03eODVTEjUIDh9NKVt2gkwmNfQxJzja2GY2KzIX57EL5Sg7mV6Eq
- B0EPAHyQ0tm8cMF41oV/as3uP4z+baPqVzyizX2mPqC+yirIJTLiDS9m/OyZ/vWBBCVVUAqHJ
- 3qqki+QJYns3PhZaDSz+3WZnU7TW2IUGs1Cuv2XF1Twbf8eT+qsKXA9AVKAPnAzSQEgfnXVyx
- ypyL9AheOJP/r1d+e2LByNFR/T9x/NDhl0PDDcFuXa4xAs+ZLeCPN/0chq9Us732ecZqNhytN
- HjH3VcqsSLjse2U1vptYN/c3+CeXH4U8KqGFzUb7r0PhrxRjb1hohDI6mOypztt6EfsrkC6hz
- CZMnxbtnAPCoTFYSr7POly4U3BcBQdzYQz/fPdooZJWNMVz7J6Rir92NkKHmWaHFBteXt4fCv
- IYcsjGpbCx0fOw=
+References: <cover.1643354254.git.wqu@suse.com> <YfPe6EeJ3Tr0p0zq@debian9.Home>
+ <398c9f67-5b33-c107-cd38-500c102cd7a0@gmx.com>
+In-Reply-To: <398c9f67-5b33-c107-cd38-500c102cd7a0@gmx.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Fri, 28 Jan 2022 12:43:52 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4A5JQeTjN6yKevfvzd4ZUaDjbWnaX-uXFCYmEZzibOkw@mail.gmail.com>
+Message-ID: <CAL3q7H4A5JQeTjN6yKevfvzd4ZUaDjbWnaX-uXFCYmEZzibOkw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] btrfs: fixes for defrag_check_next_extent()
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/1/28 20:14, piorunz wrote:
-> Hi all,
->
-> Chris, Qu, Kai, thanks for all your replies. :)
->
-> As I mentioned, I never considered defragmenting before, so I am not
-> experienced in this matter, but now I decided to tackle this problem a
-> bit more seriously.
-> So yes, I run /home RAID10 on 4 HDDs and I don't want to change it at
-> this time. It's running quite fine. I'd love to run RAID 5 or 6 but I
-> know this functionality is not ready.
-> HDDs are 2TB each in my server, and 500GB each in desktop.
->
-> So, I see that solution I found while searching internet (defrag with
-> -t4G) is not suitable for compressed Btrfs.
-> Also, autodefrag will not work in my case. I use 5.10 and 5.15 kernels.
->
-> So, I should manually run:
-> sudo btrfs filesystem defrag -v -t128K -r /home
-> That will be more suitable, right?
-
-Yep, more suitable for your kernels.
-
-BTW, there is already patch submitted to address some problems with
-compressed extents.
-Like not to defrag compressed extents which are already at its max size.
-
-For now, your -t128k would emulate that.
-
->
-> I know performance can be improved for databases or VMs I run (6x
-> Windows running 24/7), but I don't want to complicate systems more than
-> they already are, so I will skip manual attr changes at this point, let
-> me try one thing at a time. :)
->
-> If manual defragging with -t128K is correct, I can run that regularly,
-> please let me know if that would be your consensus guys. Thank you.
-
-With -t 128k you may hit the 120s timeout problem less frequently.
-
-Although sometimes you may want to further reduce the value to something
-like 64K, to reduce the workload.
-
-I may craft a fix to add cond_resche() inside btrfs_defrag_file() so
-that can be backported to v5.15, to let the problem to be gone for good.
-
-Thanks,
-Qu
-
->
-> On 28/01/2022 11:55, Kai Krakow wrote:
->> Hi!
->>
->> Am Fr., 28. Jan. 2022 um 08:51 Uhr schrieb piorunz <piorunz@gmx.com>:
->>
->>> Is it safe & recommended to run autodefrag mount option in fstab?
->>
->> I've tried autodefrag a few times, and usually it caused btrfs to
->> explode under some loads (usually databases and VMs), ending in
->> invalid tree states, and after reboot the FS was unmountable. This may
->> have changed meanwhile (last time I tried was in the 5.10 series).
->> YMMV. Run and test your backups.
->>
->>
->>> I am considering two machines here, normal desktop which has Btrfs as
->>> /home, and server with VM and other databases also btrfs /home. Both
->>> Btrfs RAID10 types. Both are heavily fragmented. I never defragmented
->>> them, in fact. I run Debian 11 on server (kernel 5.10) and Debian
->>> Testing (kernel 5.15) on desktop.
->>
->> Database and VM workloads are not well suited for btrfs-cow. I'd
->> consider using `chattr +C` on the directories storing such data, then
->> backup the contents, purge the directory empty, and restore the
->> contents, thus properly recreating the files in nocow mode. This
->> allows the databases and VMs to write data in-place. You're losing
->> transactional guarantees and checksums but at least for databases,
->> this is probably better left to the database itself anyways. For VMs
->> it depends, usually the embedded VM filesystem running in the images
->> should detect errors properly. That said, qemu qcow2 works very well
->> for me even with cow but I disabled compression (`chattr +m`) for the
->> images directory ("+m" is supported by recent chattr versions).
->>
->>
->>> Running manual defrag on server machine, like:
->>> sudo btrfs filesystem defrag -v -t4G -r /home
->>> takes ages and can cause 120 second timeout kernel error in dmesg due =
-to
->>> service timeouts. I prefer to autodefrag gradually, overtime, mount
->>> option seems to be good for that.
->>
->> This is probably the worst scenario you can create: forcing
->> compression forces extents to be no bigger than 128k, which in turn
->> increases IO overhead, and encourages fragmentation a lot. Since you
->> are forcing compression, setting a target size of 4G probably does
->> nothing, your extents will end up with 128k size.
->>
->> I also found that depending on your workload, RAID10 may not be
->> beneficial at all because IO will always engage all spindles. In a
->> multi-process environment, a non-striping mode may be better (e.g.
->> RAID1). The high fragmentation would emphasize this bottleneck a lot.
->>
->>
->>> My current fstab mounting:
->>>
->>> noatime,space_cache=3Dv2,compress-force=3Dzstd:3 0 2
->>>
->>> Will autodefrag break COW files? Like I copy paste a file and I save
->>> space, but defrag with destroy this space saving?
->>
->> Yes, it will. You could run the bees daemon instead to recombine
->> duplicate extents. It usually gives better space savings than forcing
->> compression. Using forced compression is probably only useful for
->> archive storage, or when every single byte counts.
->>
->>
->>> Also, will autodefrag compress files automatically, as mount option
->>> enforces (compress-force=3Dzstd:3)?
->>
->> It should, but I never tried. Compression is usually only skipped for
->> very small extents (when it wouldn't save a block), or for inline
->> extents. If you run without forced compression, a heuristic is used
->> for whether compressing an extent.
->>
->>
->> Regards,
->> Kai
+On Fri, Jan 28, 2022 at 12:38 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >
 >
-> --
-> With kindest regards, Piotr.
 >
-> =E2=A2=80=E2=A3=B4=E2=A0=BE=E2=A0=BB=E2=A2=B6=E2=A3=A6=E2=A0=80
-> =E2=A3=BE=E2=A0=81=E2=A2=A0=E2=A0=92=E2=A0=80=E2=A3=BF=E2=A1=81 Debian -=
- The universal operating system
-> =E2=A2=BF=E2=A1=84=E2=A0=98=E2=A0=B7=E2=A0=9A=E2=A0=8B=E2=A0=80 https://=
-www.debian.org/
-> =E2=A0=88=E2=A0=B3=E2=A3=84=E2=A0=80=E2=A0=80=E2=A0=80=E2=A0=80
+> On 2022/1/28 20:17, Filipe Manana wrote:
+> > On Fri, Jan 28, 2022 at 03:21:19PM +0800, Qu Wenruo wrote:
+> >> That function is reused between older kernels (v5.15) and the refactored
+> >> defrag code (v5.16+).
+> >>
+> >> However that function has one long existing bugs affecting defrag to
+> >> handle preallocated range.
+> >>
+> >> And it can not handle compressed extent well neither.
+> >>
+> >> Finally there is an ambiguous check which doesn't make much sense by
+> >> itself, and can be related by enhanced extent capacity check.
+> >>
+> >> This series will fix all the 3 problem mentioned above.
+> >>
+> >> Changelog:
+> >> v2:
+> >> - Use @extent_thresh from caller to replace the harded coded threshold
+> >>    Now caller has full control over the extent threshold value.
+> >>
+> >> - Remove the old ambiguous check based on physical address
+> >>    The original check is too specific, only reject extents which are
+> >>    physically adjacent, AND too large.
+> >>    Since we have correct size check now, and the physically adjacent check
+> >>    is not always a win.
+> >>    So remove the old check completely.
+> >>
+> >> v3:
+> >> - Split the @extent_thresh and physicall adjacent check into other
+> >>    patches
+> >>
+> >> - Simplify the comment
+> >>
+> >> v4:
+> >> - Fix the @em usage which should be @next.
+> >>    As it will fail the submitted test case.
+> >>
+> >> Qu Wenruo (3):
+> >>    btrfs: defrag: don't try to merge regular extents with preallocated
+> >>      extents
+> >>    btrfs: defrag: don't defrag extents which is already at its max
+> >>      capacity
+> >>    btrfs: defrag: remove an ambiguous condition for rejection
+> >>
+> >>   fs/btrfs/ioctl.c | 35 ++++++++++++++++++++++++++++-------
+> >>   1 file changed, 28 insertions(+), 7 deletions(-)
+> >
+> > There's something screwed up in the series:
+> >
+> > $ b4 am cover.1643354254.git.wqu@suse.com
+> > Looking up https://lore.kernel.org/r/cover.1643354254.git.wqu%40suse.com
+> > Grabbing thread from lore.kernel.org/all/cover.1643354254.git.wqu%40suse.com/t.mbox.gz
+> > Analyzing 5 messages in the thread
+> > Checking attestation on all messages, may take a moment...
+> > ---
+> >    [PATCH v4 1/3] btrfs: defrag: don't try to merge regular extents with preallocated extents
+> >      + Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> >    [PATCH v4 2/3] btrfs: defrag: don't defrag extents which is already at its max capacity
+> >    [PATCH v4 3/3] btrfs: defrag: remove an ambiguous condition for rejection
+> >    ---
+> >    NOTE: install dkimpy for DKIM signature verification
+> > ---
+> > Total patches: 3
+> > ---
+> > Cover: ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.cover
+> >   Link: https://lore.kernel.org/r/cover.1643354254.git.wqu@suse.com
+> >   Base: not specified
+> >         git am ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.mbx
+> >
+> > $ git am ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.mbx
+> > Applying: btrfs: defrag: don't try to merge regular extents with preallocated extents
+> > Applying: btrfs: defrag: don't defrag extents which is already at its max capacity
+> > error: patch failed: fs/btrfs/ioctl.c:1229
+> > error: fs/btrfs/ioctl.c: patch does not apply
+> > Patch failed at 0002 btrfs: defrag: don't defrag extents which is already at its max capacity
+> > hint: Use 'git am --show-current-patch=diff' to see the failed patch
+> > When you have resolved this problem, run "git am --continue".
+> > If you prefer to skip this patch, run "git am --skip" instead.
+> > To restore the original branch and stop patching, run "git am --abort".
+> >
+> > Trying to manually pick patches 1 by 1 from patchwork, also results in the
+> > same failure when applying patch 2/3.
+>
+> My bad, I'm still using the old branch where I did all my test, it lacks
+> patches which are already in misc-next.
+>
+> The missing patch of my base is "btrfs: fix deadlock when reserving
+> space during defrag", that makes the new lines in
+> defrag_collect_targets() to have some differences.
+>
+> As in my base, it's
+>
+>         if (em->len >= extent_thresh)
+>
+> But now in misc-next, it's
+>
+>         if (range_len >= extent_thresh)
+>
+>
+> This also makes me wonder, should we compare range_len to extent_thresh
+> or em->len?
+
+In this case I think em->len is fine.
+Using range_len, which can be shorter for the first extent map in the
+range, could trigger defrag of an extent at the maximum possible size.
+
+Thanks.
+
+>
+> One workaround users in v5.15 may use is to pass "-t 128k" for btrfs fi
+> defrag, so extents at 128K will not be defragged.
+>
+> Won't the modified range_len check cause us to defrag extents which is
+> already 128K but the cluster boundary just ends inside the compressed
+> extent, and at the next cluster, we will choose to defrag part of the
+> extent.
+>
+> Thanks,
+> Qu
+>
+>
+>
+> >
+> > Not sure why it failed, but I was able to manually apply the diffs.
+> >
+> > Thanks.
+> >
+> >>
+> >> --
+> >> 2.34.1
+> >>
