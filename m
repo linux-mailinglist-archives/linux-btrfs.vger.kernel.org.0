@@ -2,101 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8741049F44A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 08:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD98B49F4FA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 09:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346754AbiA1HVp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jan 2022 02:21:45 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:39668 "EHLO
+        id S1347218AbiA1INS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jan 2022 03:13:18 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:42728 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235851AbiA1HVo (ORCPT
+        with ESMTP id S236744AbiA1INR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jan 2022 02:21:44 -0500
+        Fri, 28 Jan 2022 03:13:17 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 574331F385;
-        Fri, 28 Jan 2022 07:21:43 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F29361F3AD
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 08:13:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643354503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uZMFVBOtXnmLjxHnmz/WMlHY8Dk05C+pIdr3qwhAtNM=;
-        b=OpvVXoJUuUj0/PwyY0CZTONaTl6GDSp25dMTsdGe8rZ5BhD5I50UQkW0LH1wgVbuYEn39Q
-        BdtQU6hHAvTBkP6SptXkZg90eRhrZ182eJQlGeA24dtkrs0nbBOWMqrotwxOcej0vgsKv9
-        6YSHRVIs6cEwzWI61Zgcky9kaauaKAQ=
+        t=1643357596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=nVXE7xeExOmjS2e9D8d331pf285s60sv7bKy4OTU8Os=;
+        b=eLPGroCvezxcp/kggXiG3O4Zb8koLVlgtajUe3CZhkzfQmfLqCZddAnpW5EACEwPWKPce1
+        Bl+Z+VES8Ttk5vMuzUTyBtRojvLjq0mgLJuJ60Z2aztSJBKFyFD97cWadnxTY1yilY1rWl
+        l/ZyMASYq9tkN+gNFG3Lsa8kinOATe0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93D82139C4;
-        Fri, 28 Jan 2022 07:21:42 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 55805139C4
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 08:13:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CDVUGYaZ82HHQQAAMHmgww
-        (envelope-from <wqu@suse.com>); Fri, 28 Jan 2022 07:21:42 +0000
+        id kauACJyl82FjVQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 08:13:16 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v4 3/3] btrfs: defrag: remove an ambiguous condition for rejection
-Date:   Fri, 28 Jan 2022 15:21:22 +0800
-Message-Id: <83892067b499630da23737147e62ec3b5741e215.1643354254.git.wqu@suse.com>
+Subject: [PATCH 0/4] btrfs: defrag: don't waste CPU time on non-target extent
+Date:   Fri, 28 Jan 2022 16:12:54 +0800
+Message-Id: <cover.1643357469.git.wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1643354254.git.wqu@suse.com>
-References: <cover.1643354254.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From the very beginning of btrfs defrag, there is a check to reject
-extents which meet both conditions:
+In the rework of btrfs_defrag_file() one core idea is to defrag cluster
+by cluster, thus we can have a better layered code structure, just like
+what we have now:
 
-- Physically adjacent
+btrfs_defrag_file()
+|- defrag_one_cluster()
+   |- defrag_one_range()
+      |- defrag_one_locked_range()
 
-  We may want to defrag physically adjacent extents to reduce the number
-  of extents or the size of subvolume tree.
+But there is a catch, btrfs_defrag_file() just moves the cluster to the
+next cluster, never considering cases like the current extent is already
+too large, we can skip to its end directly.
 
-- Larger than 128K
+This increases CPU usage on very large but not fragmented files.
 
-  This may be there for compressed extents, but unfortunately 128K is
-  exactly the max capacity for compressed extents.
-  And the check is > 128K, thus it never rejects compressed extents.
+Fix the behavior in defrag_one_cluster() that, defrag_collect_targets()
+will reports where next search should start from.
 
-  Furthermore, the compressed extent capacity bug is fixed by previous
-  patch, there is no reason for that check anymore.
+If the current extent is not a target at all, then we can jump to the
+end of that non-target extent to save time.
 
-The original check has a very small ranges to reject (the target extent
-size is > 128K, and default extent threshold is 256K), and for
-compressed extent it doesn't work at all.
+To get the missing optimization, also introduce a new structure,
+btrfs_defrag_ctrl, so we don't need to pass things like @newer_than and
+@max_to_defrag around.
 
-So it's better just to remove the rejection, and allow us to defrag
-physically adjacent extents.
+This also remove weird behaviors like reusing range::start for next
+search location.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ioctl.c | 4 ----
- 1 file changed, 4 deletions(-)
+And since we need to convert old btrfs_ioctl_defrag_range_args to newer
+btrfs_defrag_ctrl, also do extra sanity check in the converting
+function.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 74237f31d166..3d3331dd0902 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1078,10 +1078,6 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
- 	 */
- 	if (next->len >= get_extent_max_capacity(em))
- 		goto out;
--	/* Physically adjacent and large enough */
--	if ((em->block_start + em->block_len == next->block_start) &&
--	    (em->block_len > SZ_128K && next->block_len > SZ_128K))
--		goto out;
- 	ret = true;
- out:
- 	free_extent_map(next);
+Such cleanup will also bring us closer to expose these extra policy
+parameters in future enhanced defrag ioctl interface.
+(Unfortunately, the reserved space of the existing defrag ioctl is not
+large enough to contain them all)
+
+Qu Wenruo (4):
+  btrfs: uapi: introduce BTRFS_DEFRAG_RANGE_MASK for later sanity check
+  btrfs: defrag: introduce btrfs_defrag_ctrl structure for later usage
+  btrfs: defrag: use btrfs_defrag_ctrl to replace
+    btrfs_ioctl_defrag_range_args for btrfs_defrag_file()
+  btrfs: defrag: allow defrag_one_cluster() to large extent which is not
+    a target
+
+ fs/btrfs/ctree.h           |  22 +++-
+ fs/btrfs/file.c            |  17 ++--
+ fs/btrfs/ioctl.c           | 199 ++++++++++++++++++++++---------------
+ include/uapi/linux/btrfs.h |   6 +-
+ 4 files changed, 152 insertions(+), 92 deletions(-)
+
 -- 
 2.34.1
 
