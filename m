@@ -2,133 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FB849F8D2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 12:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F7A49F8D6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 12:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbiA1L4G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jan 2022 06:56:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiA1L4F (ORCPT
+        id S236232AbiA1L53 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jan 2022 06:57:29 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:47158 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbiA1L53 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jan 2022 06:56:05 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DD1C061714
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 03:56:05 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id y84so7460513iof.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 03:56:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RKfvz4jNJ8mwGIIXXsmQmNZMkxdJWl9QaUiyu0zD53o=;
-        b=nIkIG0EZNE63XKKMKNQzc5duHXjw2n5WWG6PoPI902+MSPRfJih4QfnAizaF1pynfI
-         4Da02Ik1kzAjOYHktWHY6VtWhI0k/GoVmv28p8Sm79Y07ZH+H9Yr48ZaVzIP4zlOyaOy
-         DLFepcNDgDoUXIPXxKTcIgwuO5f3TP+7o+6P6kakOEekLoDZe+PnFZ8e+xNxDiZq3AU6
-         bpqiaOUFquPYtA55Tk1YdWE+5cV2cLWs1RpFdvwexsZQPG6fU0JCDls38RH3fq0tFd43
-         HkT2m/DXQD48UXBP/WA7nXL5NVmQbLabFT5I8rl1nPHGv5Wm8yF5MqdKtVQa5L+tmYxB
-         Rasw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RKfvz4jNJ8mwGIIXXsmQmNZMkxdJWl9QaUiyu0zD53o=;
-        b=a0cw4bX+wK1d+LwU99UYlFnLFR3pYthDBB9wNzqiLJ1MlqV/yAjB7adbkxY05I6OTQ
-         /aHUF2/iwphuktMIz13NtolhmxL373keZJDRIFw0ee0TXL/sdxFCjan0OV4kjKlgaPmj
-         OWbytSirwS49FyywmWo0NJ+gn9zu/d1VwPbuwrHufzpJP7kXpd9VKlKRiq84PGqeF87v
-         FUFocFnQx/AzXfDM/2uRWXplb3J+XZbm3cZawrxyMS88XP7Le7PRNKcTM6XJZ1EFEYgg
-         DK2ztEYpL/D5KrYcXzj0S3+DfeLS/yWHty1lcvLOVeRdWrfZu0WH3T49TZBUb0732/3Y
-         Zijw==
-X-Gm-Message-State: AOAM5324ulvGa63L6IX7qoxDX5mnHyydklddmp84LgIx5dWCMCX8nJFw
-        FVfWPXjdKjEJglav5+ODw0EQBW4wlwVPZiJZB8AK6Iek
-X-Google-Smtp-Source: ABdhPJxFfDMH8UfgKNDRUFuYJNMNp8bs59fZUHP5UpPrc8v6lnHoKlyTep4OyomCHBT6yxfqzJoPqvKmUnyJgWsjLO0=
-X-Received: by 2002:a02:7754:: with SMTP id g81mr4210140jac.153.1643370965096;
- Fri, 28 Jan 2022 03:56:05 -0800 (PST)
+        Fri, 28 Jan 2022 06:57:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0E075B8253E;
+        Fri, 28 Jan 2022 11:57:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D93EC340E0;
+        Fri, 28 Jan 2022 11:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643371046;
+        bh=SSXUZtyuGl/6lh6Qb44PlN5jgSHgebLB2U8ff++Q3Mw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BFn4FH6vFLoGqOPBwX3rlJu2wi8aXfEhJQcDsrj4lKLt7worV9d/3xsYILCxEP0WQ
+         EzONXrf3+sNUv/AZin+Y70ZbUEbzm2BeC3HksHbu3qoaahDj1u/1cZOWe+7zPTmhHB
+         F71R/geNB7MbzounO6UQSjnY4E75asUj+G8lnd9tWgUYMEC/rZA/a69DKRgYaShg5I
+         SS37UlYa31DV/fI1ZNt1R3Sca64/4wxfX8OFlQxlComz4Cr1rnJKCupbeftBL1NEve
+         T43WwkmhDNYZ0xj//RThFyfiJsBoAKxmIsNWLxVQtldtCW3dRFJ7xt+guCawajJVV/
+         Z1GGbE7m7yOTg==
+Date:   Fri, 28 Jan 2022 11:57:24 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] btrfs: test autodefrag with regular and hole
+ extents
+Message-ID: <YfPaJHzW4/KJoRAI@debian9.Home>
+References: <20220128002701.11971-1-wqu@suse.com>
+ <20220128002701.11971-2-wqu@suse.com>
 MIME-Version: 1.0
-References: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
-In-Reply-To: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
-From:   Kai Krakow <hurikhan77+btrfs@gmail.com>
-Date:   Fri, 28 Jan 2022 12:55:39 +0100
-Message-ID: <CAMthOuOg8SVYrehoS4VS=Gj4paYyobmqX85bKzGxYcG-2oJBDA@mail.gmail.com>
-Subject: Re: fstab autodegrag with 5.10 & 5.15 kernels, Debian?
-To:     piorunz <piorunz@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220128002701.11971-2-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi!
+On Fri, Jan 28, 2022 at 08:27:00AM +0800, Qu Wenruo wrote:
+> In v5.11~v5.15 kernels, there is a regression in autodefrag that if a
+> cluster (up to 256K in size) has even a single hole, the whole cluster
+> will be rejected.
+> 
+> This will greatly reduce the efficiency of autodefrag.
+> 
+> The behavior is fixed in v5.16 by a full rework, although the rework
+> itself has other problems, it at least solves the problem.
+> 
+> Here we add a test case to reproduce the case, where we have a 128K
+> cluster, the first half is fragmented extents which can be defragged.
+> The second half is hole.
+> 
+> Make sure autodefrag can defrag the 64K part.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Am Fr., 28. Jan. 2022 um 08:51 Uhr schrieb piorunz <piorunz@gmx.com>:
+Tried the test, and it succeeds here without the kernel fix applied.
+I've ran it 10 times, and it always passed without the kernel fix.
 
-> Is it safe & recommended to run autodefrag mount option in fstab?
+Thanks.
 
-I've tried autodefrag a few times, and usually it caused btrfs to
-explode under some loads (usually databases and VMs), ending in
-invalid tree states, and after reboot the FS was unmountable. This may
-have changed meanwhile (last time I tried was in the 5.10 series).
-YMMV. Run and test your backups.
-
-
-> I am considering two machines here, normal desktop which has Btrfs as
-> /home, and server with VM and other databases also btrfs /home. Both
-> Btrfs RAID10 types. Both are heavily fragmented. I never defragmented
-> them, in fact. I run Debian 11 on server (kernel 5.10) and Debian
-> Testing (kernel 5.15) on desktop.
-
-Database and VM workloads are not well suited for btrfs-cow. I'd
-consider using `chattr +C` on the directories storing such data, then
-backup the contents, purge the directory empty, and restore the
-contents, thus properly recreating the files in nocow mode. This
-allows the databases and VMs to write data in-place. You're losing
-transactional guarantees and checksums but at least for databases,
-this is probably better left to the database itself anyways. For VMs
-it depends, usually the embedded VM filesystem running in the images
-should detect errors properly. That said, qemu qcow2 works very well
-for me even with cow but I disabled compression (`chattr +m`) for the
-images directory ("+m" is supported by recent chattr versions).
-
-
-> Running manual defrag on server machine, like:
-> sudo btrfs filesystem defrag -v -t4G -r /home
-> takes ages and can cause 120 second timeout kernel error in dmesg due to
-> service timeouts. I prefer to autodefrag gradually, overtime, mount
-> option seems to be good for that.
-
-This is probably the worst scenario you can create: forcing
-compression forces extents to be no bigger than 128k, which in turn
-increases IO overhead, and encourages fragmentation a lot. Since you
-are forcing compression, setting a target size of 4G probably does
-nothing, your extents will end up with 128k size.
-
-I also found that depending on your workload, RAID10 may not be
-beneficial at all because IO will always engage all spindles. In a
-multi-process environment, a non-striping mode may be better (e.g.
-RAID1). The high fragmentation would emphasize this bottleneck a lot.
-
-
-> My current fstab mounting:
->
-> noatime,space_cache=v2,compress-force=zstd:3 0 2
->
-> Will autodefrag break COW files? Like I copy paste a file and I save
-> space, but defrag with destroy this space saving?
-
-Yes, it will. You could run the bees daemon instead to recombine
-duplicate extents. It usually gives better space savings than forcing
-compression. Using forced compression is probably only useful for
-archive storage, or when every single byte counts.
-
-
-> Also, will autodefrag compress files automatically, as mount option
-> enforces (compress-force=zstd:3)?
-
-It should, but I never tried. Compression is usually only skipped for
-very small extents (when it wouldn't save a block), or for inline
-extents. If you run without forced compression, a heuristic is used
-for whether compressing an extent.
-
-
-Regards,
-Kai
+> ---
+> Changelog:
+> v2:
+> - Use the previously define _get_file_extent_sector() helper
+>   This also removed some out-of-sync error messages
+> 
+> - Trigger autodefrag using commit=1 mount option
+>   No need for special purpose patch any more.
+> 
+> - Use xfs_io -s to skip several sync calls
+> 
+> - Shorten the subject of the commit
+> ---
+>  tests/btrfs/256     | 80 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/256.out |  2 ++
+>  2 files changed, 82 insertions(+)
+>  create mode 100755 tests/btrfs/256
+>  create mode 100644 tests/btrfs/256.out
+> 
+> diff --git a/tests/btrfs/256 b/tests/btrfs/256
+> new file mode 100755
+> index 00000000..def83a15
+> --- /dev/null
+> +++ b/tests/btrfs/256
+> @@ -0,0 +1,80 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 256
+> +#
+> +# Make sure btrfs auto defrag can properly defrag clusters which has hole
+> +# in the middle
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto defrag quick
+> +
+> +. ./common/btrfs
+> +. ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_require_scratch
+> +
+> +# Needs 4K sectorsize, as larger sectorsize can change the file layout.
+> +_require_btrfs_support_sectorsize 4096
+> +
+> +_scratch_mkfs >> $seqres.full
+> +
+> +# Need datacow to show which range is defragged, and we're testing
+> +# autodefrag
+> +_scratch_mount -o datacow,autodefrag
+> +
+> +# Create a layout where we have fragmented extents at [0, 64k) (sync write in
+> +# reserve order), then a hole at [64k, 128k)
+> +$XFS_IO_PROG -f -s -c "pwrite 48k 16k" -c "pwrite 32k 16k" \
+> +		-c "pwrite 16k 16k" -c "pwrite 0 16k" \
+> +		$SCRATCH_MNT/foobar >> $seqres.full
+> +truncate -s 128k $SCRATCH_MNT/foobar
+> +
+> +old_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
+> +echo "=== File extent layout before autodefrag ===" >> $seqres.full
+> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
+> +echo "old md5=$old_csum" >> $seqres.full
+> +
+> +old_regular=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
+> +old_hole=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 64k)
+> +
+> +# Now trigger autodefrag, autodefrag is triggered in the cleaner thread,
+> +# which will be woken up by commit thread
+> +_scratch_remount commit=1
+> +sleep 3
+> +sync
+> +
+> +new_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
+> +new_regular=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
+> +new_hole=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 64k)
+> +
+> +echo "=== File extent layout after autodefrag ===" >> $seqres.full
+> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
+> +echo "new md5=$new_csum" >> $seqres.full
+> +
+> +# In v5.11~v5.15 kernels, regular extents won't get defragged, and would trigger
+> +# the following output
+> +if [ $new_regular == $old_regular ]; then
+> +	echo "regular extents didn't get defragged"
+> +fi
+> +
+> +# In v5.10 and earlier kernel, autodefrag may choose to defrag holes,
+> +# which should be avoided.
+> +if [ "$new_hole" != "$old_hole" ]; then
+> +	echo "hole extents got defragged"
+> +fi
+> +
+> +# Defrag should not change file content
+> +if [ "$new_csum" != "$old_csum" ]; then
+> +	echo "file content changed"
+> +fi
+> +
+> +echo "Silence is golden"
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/256.out b/tests/btrfs/256.out
+> new file mode 100644
+> index 00000000..7ee8e2e5
+> --- /dev/null
+> +++ b/tests/btrfs/256.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 256
+> +Silence is golden
+> -- 
+> 2.34.1
+> 
