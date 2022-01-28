@@ -2,138 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8FF49F90B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 13:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3162749F944
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 13:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348374AbiA1MRu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jan 2022 07:17:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348333AbiA1MRu (ORCPT
+        id S1348465AbiA1MUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jan 2022 07:20:22 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:36578 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244625AbiA1MUV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jan 2022 07:17:50 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97E2C061714
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 04:17:49 -0800 (PST)
+        Fri, 28 Jan 2022 07:20:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0E33B824CA
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jan 2022 12:17:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB9AC340E0;
-        Fri, 28 Jan 2022 12:17:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C75F61AEC;
+        Fri, 28 Jan 2022 12:20:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECAF5C340E8;
+        Fri, 28 Jan 2022 12:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643372267;
-        bh=/u7/OIKET/+GYRoKIx+BffWw9g7CV2XR3OsvnKaXEWw=;
+        s=k20201202; t=1643372420;
+        bh=FtgPmB84ffDNMiZJY/FcEB++wC5fV+QDqDZ7DSsxcYQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R/JW0H7e8xoAFje4rEtKDDdJngLTrXL5Eq8Q8vFpx8CW24VsLm40r2b1YByisx2Tf
-         r/316KA1PQmOuf9YNJYzuROxCfwDjge/YWq6/bHXsDU+Pk+W25qUf2o9g2K84Ybs+T
-         j4tC34hsGq4m28+wMeEsSbseSnUtcvVoeq4rd4YD3AabwYVieaIlCs7RMJrag1OYWl
-         dyWag2LAD0Cy49JxQBvWkHkGcRV3FmWc1EN0fIQI90SVdnV4UIEXF2TrAijsJ2ddJx
-         oVbsQVE6vab+Ex4NapNeElzubYQA6wqZHo1flcUdmECYEupP4LEMT/chbXapW7b+Eq
-         MFn9JW7A9w1Pw==
-Date:   Fri, 28 Jan 2022 12:17:44 +0000
+        b=Rvly7XS2aatOvxJGvKhIF7BO6v1E9MYZMv1eeeAwYdbakRMsOxwTZwjIEwCnl3Yzr
+         157CVLdqB7ZibKXaVSrR1/Bwv8z9erDajrm8WnccHgiZpAkzDqUpMokot4vzEoecS4
+         1ztGSD6rWlXptAo/jQ1qw5nnKDoNdgpj6Qm/kwtU6oLfmuHPOf2QrAI4aLoUDs8MSP
+         H+KwqcuBEHqNdG1bHUv66xSpbsp+PDvWEEJy2rpH2sAMmmpjuN9Vr6ZC5gdZWDdYn6
+         Ye1/Tr+/fvXyQrRyT+iRpFwXa0ubd7d0vUVqzb0R5EvFLE6+cuheQo8W2egZ7BEVhr
+         je3ZFU5qBR2Ag==
+Date:   Fri, 28 Jan 2022 12:20:17 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] btrfs: fixes for defrag_check_next_extent()
-Message-ID: <YfPe6EeJ3Tr0p0zq@debian9.Home>
-References: <cover.1643354254.git.wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: test defrag with compressed extents
+Message-ID: <YfPfgaWLtKNJcVO3@debian9.Home>
+References: <20220128002701.11971-1-wqu@suse.com>
+ <20220128002701.11971-3-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1643354254.git.wqu@suse.com>
+In-Reply-To: <20220128002701.11971-3-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 03:21:19PM +0800, Qu Wenruo wrote:
-> That function is reused between older kernels (v5.15) and the refactored
-> defrag code (v5.16+).
+On Fri, Jan 28, 2022 at 08:27:01AM +0800, Qu Wenruo wrote:
+> There is a long existing bug in btrfs defrag code that it will always
+> try to defrag compressed extents, even they are already at max capacity.
 > 
-> However that function has one long existing bugs affecting defrag to
-> handle preallocated range.
+> This will not reduce the number of extents, but only waste IO/CPU.
 > 
-> And it can not handle compressed extent well neither.
+> The kernel fix is titled:
 > 
-> Finally there is an ambiguous check which doesn't make much sense by
-> itself, and can be related by enhanced extent capacity check.
+>   btrfs: defrag: don't defrag extents which is already at its max capacity
 > 
-> This series will fix all the 3 problem mentioned above.
-> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
 > Changelog:
 > v2:
-> - Use @extent_thresh from caller to replace the harded coded threshold
->   Now caller has full control over the extent threshold value.
+> - Use fiemap output to compare the difference
+>   Now no need to use _get_file_extent_sector() helper at all.
 > 
-> - Remove the old ambiguous check based on physical address
->   The original check is too specific, only reject extents which are
->   physically adjacent, AND too large.
->   Since we have correct size check now, and the physically adjacent check
->   is not always a win.
->   So remove the old check completely.
+> - Remove unnecessary mount options
 > 
-> v3:
-> - Split the @extent_thresh and physicall adjacent check into other
->   patches
+> - Enlarge the write size to 16M
+>   To be future proof
 > 
-> - Simplify the comment 
+> - Shorten the subject
+> ---
+>  tests/btrfs/257     | 57 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/257.out |  2 ++
+>  2 files changed, 59 insertions(+)
+>  create mode 100755 tests/btrfs/257
+>  create mode 100644 tests/btrfs/257.out
 > 
-> v4:
-> - Fix the @em usage which should be @next.
->   As it will fail the submitted test case.
-> 
-> Qu Wenruo (3):
->   btrfs: defrag: don't try to merge regular extents with preallocated
->     extents
->   btrfs: defrag: don't defrag extents which is already at its max
->     capacity
->   btrfs: defrag: remove an ambiguous condition for rejection
-> 
->  fs/btrfs/ioctl.c | 35 ++++++++++++++++++++++++++++-------
->  1 file changed, 28 insertions(+), 7 deletions(-)
+> diff --git a/tests/btrfs/257 b/tests/btrfs/257
+> new file mode 100755
+> index 00000000..bacd0c23
+> --- /dev/null
+> +++ b/tests/btrfs/257
+> @@ -0,0 +1,57 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 257
+> +#
+> +# Make sure btrfs defrag ioctl won't defrag compressed extents which are already
+> +# at their max capacity.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick defrag
 
-There's something screwed up in the series:
+Still missing the 'compress' group.
 
-$ b4 am cover.1643354254.git.wqu@suse.com
-Looking up https://lore.kernel.org/r/cover.1643354254.git.wqu%40suse.com
-Grabbing thread from lore.kernel.org/all/cover.1643354254.git.wqu%40suse.com/t.mbox.gz
-Analyzing 5 messages in the thread
-Checking attestation on all messages, may take a moment...
----
-  [PATCH v4 1/3] btrfs: defrag: don't try to merge regular extents with preallocated extents
-    + Reviewed-by: Filipe Manana <fdmanana@suse.com>
-  [PATCH v4 2/3] btrfs: defrag: don't defrag extents which is already at its max capacity
-  [PATCH v4 3/3] btrfs: defrag: remove an ambiguous condition for rejection
-  ---
-  NOTE: install dkimpy for DKIM signature verification
----
-Total patches: 3
----
-Cover: ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.cover
- Link: https://lore.kernel.org/r/cover.1643354254.git.wqu@suse.com
- Base: not specified
-       git am ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.mbx
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +. ./common/btrfs
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_scratch
+> +
+> +_scratch_mkfs >> $seqres.full
+> +
+> +_scratch_mount -o compress
+> +
+> +# Btrfs uses 128K as max extent size for compressed extents, this would result
+> +# several compressed extents all at their max size
+> +$XFS_IO_PROG -f -c "pwrite -S 0xee 0 16m" -c sync \
+> +	$SCRATCH_MNT/foobar >> $seqres.full
+> +
+> +old_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
+> +
+> +echo "=== File extent layout before defrag ===" >> $seqres.full
+> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
+> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" > $tmp.before
+> +
+> +$BTRFS_UTIL_PROG filesystem defrag "$SCRATCH_MNT/foobar" >> $seqres.full
+> +sync
+> +
+> +new_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
+> +
+> +echo "=== File extent layout before defrag ===" >> $seqres.full
+> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
+> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" > $tmp.after
+> +
+> +if [ $new_csum != $old_csum ]; then
+> +	echo "file content changed"
+> +fi
+> +
+> +diff -q $tmp.before $tmp.after || echo "compressed extents get defragged"
 
-$ git am ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.mbx
-Applying: btrfs: defrag: don't try to merge regular extents with preallocated extents
-Applying: btrfs: defrag: don't defrag extents which is already at its max capacity
-error: patch failed: fs/btrfs/ioctl.c:1229
-error: fs/btrfs/ioctl.c: patch does not apply
-Patch failed at 0002 btrfs: defrag: don't defrag extents which is already at its max capacity
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+get -> got
 
-Trying to manually pick patches 1 by 1 from patchwork, also results in the
-same failure when applying patch 2/3.
+Like patch 1/3, it can probably be fixed by Eryu when he picks it.
 
-Not sure why it failed, but I was able to manually apply the diffs.
+Minor things apart, it looks good, and it fails without the kernel patch
+and passes with it, as expected.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 Thanks.
 
-> 
+> +
+> +echo "Silence is golden"
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/257.out b/tests/btrfs/257.out
+> new file mode 100644
+> index 00000000..cc3693f3
+> --- /dev/null
+> +++ b/tests/btrfs/257.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 257
+> +Silence is golden
 > -- 
 > 2.34.1
 > 
