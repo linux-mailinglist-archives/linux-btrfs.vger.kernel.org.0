@@ -2,228 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EE649F9C2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 13:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F81249FA43
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jan 2022 14:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbiA1MqE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jan 2022 07:46:04 -0500
-Received: from mout.gmx.net ([212.227.15.18]:58595 "EHLO mout.gmx.net"
+        id S237978AbiA1NBD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jan 2022 08:01:03 -0500
+Received: from mout.gmx.net ([212.227.17.22]:49397 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348652AbiA1Mp7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jan 2022 07:45:59 -0500
+        id S237938AbiA1NBD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Jan 2022 08:01:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643373953;
-        bh=MSkcrtTDVNHv7lIub4uqRmrIACXHZbcH6R/gloUQO7c=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=hKyQhNRmBELVQ2vh5rTG0sE6Y4okipCodgk8bOgkKCfKy9YXUXctZKqoyACpjeslm
-         VrCUm6A08e3sSZdSpjPHlFImYLRc51jOAEDrdVZQNmLV4npTrUqG3eW+ES/py1/8C2
-         kqEwavsJx7lYqiYofO1dTkd36b6S2RWgJIGHTYRw=
+        s=badeba3b8450; t=1643374861;
+        bh=l9F6Ki7bV2fu9N3gDWqoe1cYKCzIIzZeGP8s+e9x/Ew=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=FKPq1XhftyxsYbwYypDECeQbPz7Xxgr2v1YsdEsPE5ZGg2kjvnkeVg20LEQiyioNY
+         vbwTTYyDM2MEGMz917zPikziIDUJAEOQhHGRYTxtIfNVpr4wPJO01pVK+AjLO+pNns
+         jpZcgwHjSFiQkHME9EoXMrXXjeGDs0yzBTLtHnAk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgNcz-1mcBsl36VT-00huvY; Fri, 28
- Jan 2022 13:45:53 +0100
-Message-ID: <9e1210d4-6648-ae8c-ac4b-053b1cab9797@gmx.com>
-Date:   Fri, 28 Jan 2022 20:45:49 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5QFB-1nEGDZ2flF-001PA9; Fri, 28
+ Jan 2022 14:01:01 +0100
+Message-ID: <1e7359dd-c021-0773-fb65-752fb7b6ac49@gmx.com>
+Date:   Fri, 28 Jan 2022 21:00:57 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH v4 0/3] btrfs: fixes for defrag_check_next_extent()
 Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <cover.1643354254.git.wqu@suse.com>
- <YfPe6EeJ3Tr0p0zq@debian9.Home>
- <398c9f67-5b33-c107-cd38-500c102cd7a0@gmx.com>
- <CAL3q7H4A5JQeTjN6yKevfvzd4ZUaDjbWnaX-uXFCYmEZzibOkw@mail.gmail.com>
+To:     Kai Krakow <hurikhan77+btrfs@gmail.com>, piorunz <piorunz@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <10e51417-2203-f0a4-2021-86c8511cc367@gmx.com>
+ <CAMthOuOg8SVYrehoS4VS=Gj4paYyobmqX85bKzGxYcG-2oJBDA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAL3q7H4A5JQeTjN6yKevfvzd4ZUaDjbWnaX-uXFCYmEZzibOkw@mail.gmail.com>
+Subject: Re: fstab autodegrag with 5.10 & 5.15 kernels, Debian?
+In-Reply-To: <CAMthOuOg8SVYrehoS4VS=Gj4paYyobmqX85bKzGxYcG-2oJBDA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6VddgZXnHGY56pYeAXUlUg4bktiTpGeBtAGEsg9IOyCdL0NQF/W
- wwURXqoEziLAPYtt9ys0UamO81310C6U5eK9l98tOytyWUBn0RTgnFQfC3ovxVS0cV9Rf5u
- idTmh+T/Q2xcDoN53WcuaFiiKl2H1rHDv4tbI02MksBYWDH2kR/4BB1H/Ry+HcLxF8abcHg
- h3o+gG2QA/YnSQrii+C5g==
+X-Provags-ID: V03:K1:xpw0/ui6S5E1NGWetSOxkLvO9IBJk9QRAOMn4QKCAXIUo9AxUlV
+ pUpy5LmfRl0mbSeut8HsrgBtBpCLE/XfZIg95PLbJ+8I5GzZ1B6xcixzKuauc+p2WciH2Qb
+ l7CN9C1qlnvrCMZOEdR9/iAxj6hJEiUhvXn0e68n1eNxnpI5s4slDqG2XGOFQl1Ezk2NR3Y
+ wghM1fsJuagjrVtExqokA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mJNBqQ2pCPA=:PQJ/spwtVYf6V8Imp9CbgM
- 9Z27Mus+ZKGr91GgjyAsibeGgiB42XAp8M80oWKZ639Ww0NqNkQ0NVTKlTy2TxjxhbQyyfCDg
- sT3WBGj4VF/SqXAIXtpld+6e0sB7Fp8PSQwe/EmvqgB7swlh54MyfDSI+golStOwopNHM08IZ
- a/fFmC2/OpB6pJQcr1SLGXpwg9TC8vYDfaz/uSkjPFQ6FjYoUY6v0Zabf8BCOT2I978/geula
- j3mJVPhq5vt0x4riSn+0+BvAcORYK1im/y47kXtd7KhLh5UwB5SaUfcB/zegfOV/IZ9PE3cOa
- mOGjRg+S0S9i+M8HrX+ItTcw4y1O1L5dVHt0YJ0uxmXOj0MD+nNuST4lXE3pABAeecczHcLR/
- mnrZi/JYQYpvWpEbcPckFF4I1iKG7ase0ersWAd+IPtg9ImtVIsQZbuXMg4Nz6FG01KaqHZZm
- NIrx/neWn5xxayj+xvNB3z+TnUoKyr9G8Y/GL0u0QyqOvOFJRhN0PNLXR3RS96MIszAzOBS5A
- 65CpkyzVO8Ae7OQ9Nq8jN0xaiSvIHJHJmD8OMDf3i2cl9qW+wiuKxB1UcqwkdtvM+gKa9B2Br
- yR4NjGRwvV4yI0QQJlKGXAo98yk6FLMRxBZgDpSACnI3FX/Zev8QrPsyi7l8BO/zMX2njy0CR
- l4KYRr8l9sgP5OreW0HiTxq6NDqD2y8X7jbAuL3nZLIW8MhmKU6EKD261RnwPfhOhNXzO416f
- 8vA79IOCkUaeYUXk5FVGpy+4OcRnccNJtWkKyWzlp4I/1etOwSXVk+c26d27Rp7oEPVfpkPV3
- kk5SOMNNpIBCHDDPxB182SrPik0n4iVc+4lxhB87t4j1cU9dLT2qYbnyk1fo+w8079evwgTgS
- 1gYTE5JHl8GTXJ0ENdg5DMckWo8TxYRnd1JAbHhc/D34rliJz/iFJ6dN+QLbcUb7fT14Wt9YN
- mAmJ+b+5PvRVJV2oSeEO1A3zijVKSToVhNGZ3fPODtOMrS7ss8MPqIC5/Rv60XuLCTq+LcIhl
- sVKUjRuDRMF+MjQF3JPDH3kAMqOh8K15q93W2a+38pTx41WgKeqFY3s+3eVbwnFT5cN89S7ep
- CQD3Bx0LSXXScQ=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qEEQn+bRskA=:N6JwC/nHwAoHjkcRP5hxTI
+ lywcc9CAStJzAHy+O9jHn3jtUPFjDZNAR5LDyX7se/xnsjzeg/gTg23s9qnmYhAxM/bs9ZcpX
+ 75yIbDhJNIXoBfUBh+zc9mzDv2LpcoGsMR+BzrwVMT+s9yovljiGjKPWMHFZ7kOXpik8g0SCd
+ PNSQX9dhDXahnMf47jqBnnYjPxBAIaHZ4az3GBHP0nRwnOfAAwd+01JAT4vfvMVtoMTga6PME
+ 4XBdbO/hsrELYTXhZZpE74uIiiuXOX6Opcmeols2mZ91mcPSzg/rMiKHLBmy3Ge8J7/3YlP/Y
+ l2kEmd9Z7GDQfStw7cK2hQYm7Baq8gGUcdo9nyVpHNM+gAN02Kyg8AfXRMv5GA5nTOiPg6vLR
+ 50aJSa9I9zKmplw4S4+SbqZclYyyVChfcc17O2yBPMu0ieJsEu4wmU5IyU7ni03barr24t84D
+ mTrwB7OGeBjusTBQVNDdN6gqpO3VBhksef+wDNbiZUbPIH+pIbsVocstlvahJrqS1/XtcXJ26
+ z+R+VydNQ4aWhi4OG1dMKlMB7FdPJyFYiP42upTEC90frlUbfz+T0bbysk0j6m68GbTxmhDQg
+ mDbt2LqRM07Djov4l8DTtmZlwaRAm1k7tpKvsiSa7CWVSNJRWUsZyOUP2xZGR10KL7f2OaiKY
+ +IlxZ/fX2/8LxeJJSE6/T/w49ZMLHjZVzeIonrNXcqGRtaEqlnNYy8Ff4uc6omFMPOAqb7MX4
+ ZU3+/N9RB6/XM1VM5Pgz8ujgTArb+XxOyYvgi2M0fr6ogs9a7KCEZgyraJwC6cxcQvwiGU31l
+ htJHXHdSH8x+mz+W9Uke0kIpr703RBShHJmZH1tlUjYWRwxGPZtDqoQxlJnTvpBFn0O+13C31
+ Qti5f6Xh2cktiP2a2N/jptisOsXJ1Zw7EPQu4vLYyP4sLgaIX3fSZPgz2xaJQHgfI3PF0kIYY
+ pHGeW/DxtrjLU3PTfLA3Rt8YnOLvauAX4Iqiy67JGrfciQW98AB9q2Kd0np0qWeu+Ekos6kdn
+ BLjzudB6IVhdNeqz7rqUQJgZ35vrXqJVvjMRczpJ0WRj+v5OTx4mYqjlLGqJhXNBEPnu5vjra
+ qdX2/wOkl9CzCI=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/1/28 20:43, Filipe Manana wrote:
-> On Fri, Jan 28, 2022 at 12:38 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
-e:
->>
->>
->>
->> On 2022/1/28 20:17, Filipe Manana wrote:
->>> On Fri, Jan 28, 2022 at 03:21:19PM +0800, Qu Wenruo wrote:
->>>> That function is reused between older kernels (v5.15) and the refacto=
-red
->>>> defrag code (v5.16+).
->>>>
->>>> However that function has one long existing bugs affecting defrag to
->>>> handle preallocated range.
->>>>
->>>> And it can not handle compressed extent well neither.
->>>>
->>>> Finally there is an ambiguous check which doesn't make much sense by
->>>> itself, and can be related by enhanced extent capacity check.
->>>>
->>>> This series will fix all the 3 problem mentioned above.
->>>>
->>>> Changelog:
->>>> v2:
->>>> - Use @extent_thresh from caller to replace the harded coded threshol=
-d
->>>>     Now caller has full control over the extent threshold value.
->>>>
->>>> - Remove the old ambiguous check based on physical address
->>>>     The original check is too specific, only reject extents which are
->>>>     physically adjacent, AND too large.
->>>>     Since we have correct size check now, and the physically adjacent=
- check
->>>>     is not always a win.
->>>>     So remove the old check completely.
->>>>
->>>> v3:
->>>> - Split the @extent_thresh and physicall adjacent check into other
->>>>     patches
->>>>
->>>> - Simplify the comment
->>>>
->>>> v4:
->>>> - Fix the @em usage which should be @next.
->>>>     As it will fail the submitted test case.
->>>>
->>>> Qu Wenruo (3):
->>>>     btrfs: defrag: don't try to merge regular extents with preallocat=
-ed
->>>>       extents
->>>>     btrfs: defrag: don't defrag extents which is already at its max
->>>>       capacity
->>>>     btrfs: defrag: remove an ambiguous condition for rejection
->>>>
->>>>    fs/btrfs/ioctl.c | 35 ++++++++++++++++++++++++++++-------
->>>>    1 file changed, 28 insertions(+), 7 deletions(-)
->>>
->>> There's something screwed up in the series:
->>>
->>> $ b4 am cover.1643354254.git.wqu@suse.com
->>> Looking up https://lore.kernel.org/r/cover.1643354254.git.wqu%40suse.c=
-om
->>> Grabbing thread from lore.kernel.org/all/cover.1643354254.git.wqu%40su=
-se.com/t.mbox.gz
->>> Analyzing 5 messages in the thread
->>> Checking attestation on all messages, may take a moment...
->>> ---
->>>     [PATCH v4 1/3] btrfs: defrag: don't try to merge regular extents w=
-ith preallocated extents
->>>       + Reviewed-by: Filipe Manana <fdmanana@suse.com>
->>>     [PATCH v4 2/3] btrfs: defrag: don't defrag extents which is alread=
-y at its max capacity
->>>     [PATCH v4 3/3] btrfs: defrag: remove an ambiguous condition for re=
-jection
->>>     ---
->>>     NOTE: install dkimpy for DKIM signature verification
->>> ---
->>> Total patches: 3
->>> ---
->>> Cover: ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.cove=
-r
->>>    Link: https://lore.kernel.org/r/cover.1643354254.git.wqu@suse.com
->>>    Base: not specified
->>>          git am ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_ex=
-tent.mbx
->>>
->>> $ git am ./v4_20220128_wqu_btrfs_fixes_for_defrag_check_next_extent.mb=
-x
->>> Applying: btrfs: defrag: don't try to merge regular extents with preal=
-located extents
->>> Applying: btrfs: defrag: don't defrag extents which is already at its =
-max capacity
->>> error: patch failed: fs/btrfs/ioctl.c:1229
->>> error: fs/btrfs/ioctl.c: patch does not apply
->>> Patch failed at 0002 btrfs: defrag: don't defrag extents which is alre=
-ady at its max capacity
->>> hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
->>> When you have resolved this problem, run "git am --continue".
->>> If you prefer to skip this patch, run "git am --skip" instead.
->>> To restore the original branch and stop patching, run "git am --abort"=
-.
->>>
->>> Trying to manually pick patches 1 by 1 from patchwork, also results in=
- the
->>> same failure when applying patch 2/3.
->>
->> My bad, I'm still using the old branch where I did all my test, it lack=
-s
->> patches which are already in misc-next.
->>
->> The missing patch of my base is "btrfs: fix deadlock when reserving
->> space during defrag", that makes the new lines in
->> defrag_collect_targets() to have some differences.
->>
->> As in my base, it's
->>
->>          if (em->len >=3D extent_thresh)
->>
->> But now in misc-next, it's
->>
->>          if (range_len >=3D extent_thresh)
->>
->>
->> This also makes me wonder, should we compare range_len to extent_thresh
->> or em->len?
+On 2022/1/28 19:55, Kai Krakow wrote:
+> Hi!
 >
-> In this case I think em->len is fine.
-> Using range_len, which can be shorter for the first extent map in the
-> range, could trigger defrag of an extent at the maximum possible size.
+> Am Fr., 28. Jan. 2022 um 08:51 Uhr schrieb piorunz <piorunz@gmx.com>:
+>
+>> Is it safe & recommended to run autodefrag mount option in fstab?
+>
+> I've tried autodefrag a few times, and usually it caused btrfs to
+> explode under some loads (usually databases and VMs), ending in
+> invalid tree states, and after reboot the FS was unmountable. This may
+> have changed meanwhile (last time I tried was in the 5.10 series).
+> YMMV. Run and test your backups.
 
-Then the patch can be applied without any problem too.
+Mind to share more details?
 
-Really a win-win case.
+"Run and test your backups" is always a good principle, but a shame to a
+fs developer.
+
+It's better to be sure the problems you hit is already fixed, especially
+we're already doing bug hunts in defrag code recently, don't let the
+chance escape.
 
 >
-> Thanks.
 >
+>> I am considering two machines here, normal desktop which has Btrfs as
+>> /home, and server with VM and other databases also btrfs /home. Both
+>> Btrfs RAID10 types. Both are heavily fragmented. I never defragmented
+>> them, in fact. I run Debian 11 on server (kernel 5.10) and Debian
+>> Testing (kernel 5.15) on desktop.
+>
+> Database and VM workloads are not well suited for btrfs-cow. I'd
+> consider using `chattr +C` on the directories storing such data, then
+> backup the contents, purge the directory empty, and restore the
+> contents, thus properly recreating the files in nocow mode. This
+> allows the databases and VMs to write data in-place. You're losing
+> transactional guarantees and checksums but at least for databases,
+> this is probably better left to the database itself anyways. For VMs
+> it depends, usually the embedded VM filesystem running in the images
+> should detect errors properly. That said, qemu qcow2 works very well
+> for me even with cow but I disabled compression (`chattr +m`) for the
+> images directory ("+m" is supported by recent chattr versions).
+
+This may be off-topic as it's not defrag related anymore, but I have
+some crazy ideas like forced full block range compression for such files.
+
+Like even if you just dirtied one byte of such file (which has something
+like forced_rewrite_block_size=3D16K), then the whole 16K aligned range
+will be re-dirtied, and forced to be written back (and forced to be
+compressed if it can).
+
+By this, the behavior is still CoW, thus it has csum/compression, and
+the extra IO overhead may be saved by compression.
+
+And the on-disk file extents will no longer have cases like CoWed in the
+middle of a larger extents, thus has some benefit of nodatacow.
+
+For now it's just one of my wild dreams, and not any benchmark/prototype
+to back my dream...
+
+Thanks,
+Qu
+>
+>
+>> Running manual defrag on server machine, like:
+>> sudo btrfs filesystem defrag -v -t4G -r /home
+>> takes ages and can cause 120 second timeout kernel error in dmesg due t=
+o
+>> service timeouts. I prefer to autodefrag gradually, overtime, mount
+>> option seems to be good for that.
+>
+> This is probably the worst scenario you can create: forcing
+> compression forces extents to be no bigger than 128k, which in turn
+> increases IO overhead, and encourages fragmentation a lot. Since you
+> are forcing compression, setting a target size of 4G probably does
+> nothing, your extents will end up with 128k size.
+>
+> I also found that depending on your workload, RAID10 may not be
+> beneficial at all because IO will always engage all spindles. In a
+> multi-process environment, a non-striping mode may be better (e.g.
+> RAID1). The high fragmentation would emphasize this bottleneck a lot.
+>
+>
+>> My current fstab mounting:
 >>
->> One workaround users in v5.15 may use is to pass "-t 128k" for btrfs fi
->> defrag, so extents at 128K will not be defragged.
+>> noatime,space_cache=3Dv2,compress-force=3Dzstd:3 0 2
 >>
->> Won't the modified range_len check cause us to defrag extents which is
->> already 128K but the cluster boundary just ends inside the compressed
->> extent, and at the next cluster, we will choose to defrag part of the
->> extent.
->>
->> Thanks,
->> Qu
->>
->>
->>
->>>
->>> Not sure why it failed, but I was able to manually apply the diffs.
->>>
->>> Thanks.
->>>
->>>>
->>>> --
->>>> 2.34.1
->>>>
+>> Will autodefrag break COW files? Like I copy paste a file and I save
+>> space, but defrag with destroy this space saving?
+>
+> Yes, it will. You could run the bees daemon instead to recombine
+> duplicate extents. It usually gives better space savings than forcing
+> compression. Using forced compression is probably only useful for
+> archive storage, or when every single byte counts.
+>
+>
+>> Also, will autodefrag compress files automatically, as mount option
+>> enforces (compress-force=3Dzstd:3)?
+>
+> It should, but I never tried. Compression is usually only skipped for
+> very small extents (when it wouldn't save a block), or for inline
+> extents. If you run without forced compression, a heuristic is used
+> for whether compressing an extent.
+>
+>
+> Regards,
+> Kai
