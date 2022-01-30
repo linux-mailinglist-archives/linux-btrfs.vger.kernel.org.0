@@ -2,108 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5025E4A3300
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 02:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523F94A33C0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 05:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353638AbiA3BU0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Jan 2022 20:20:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        id S1354174AbiA3E2T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Jan 2022 23:28:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbiA3BU0 (ORCPT
+        with ESMTP id S1354158AbiA3E2P (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Jan 2022 20:20:26 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC533C061714
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:20:25 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id k17so29722162ybk.6
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:20:25 -0800 (PST)
+        Sat, 29 Jan 2022 23:28:15 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217CCC061757
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 20:28:15 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id w81so8170590ybg.12
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 20:28:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=W5LenOWK+Asi/IRJktE/pV+nkUhUa2nycRViHzLQ+ic=;
-        b=Aq5693Yiu7s4IjZy6JR3Qw91dy+XB9rKFZfaOjmRZXvihZldcvdahGA6/mYM0WTnRT
-         MRp2px61vgDL283dbHGK3n3CvqskrUs0XVx/GyWzlqJza23Q17buwpfK4V02AtjpIFB1
-         qK3r2HSj5Cw9wX7/S90mjd4iz0B+QZiFZGLnr2R1dgcIJxwJAVdI6x8VWjuzZlMTBOLW
-         bdxCVQAZs1ZSU0aWFUs/Cuu1bxt2zILopoBFOEiODOqbKu0lEILlp+Huz4lk3FZ+Ikh9
-         kBh/OwEVFfoMINh7ZWvgdFEN3JYz/jiDBi12RV2mJgRHaKoyrelGTZNYyFl6vRAPl4Dl
-         62rQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
+        b=QI2firgHOSt+2ZiRAEUqBnRqfCndbuygIyUz1kdYlPzS6AXkdk+mfMubksdM+6U8hJ
+         A4UbXdfo0bhasYFmsw5ceBBj4ub2bgaEqkI+Cp5foQd/M11l9HiEax3hX9+hB29fNDF1
+         4XtAbOKK0Jrn48roHo8mUNvKaz7FG0Csy4DWdnw8Q+/oXs7GbWFZBjN+ifwhy6Rfe8k0
+         Pzhs5uXUX+5v6iQyGpPCJWV84GisQUz+5cfOraMc3PalgV6vYI9t2Z4JMkhIMshepKV2
+         BM+Zj3o1QTUTRt1Kxwo+5vz+cvvR7n44irHUjPq0LbDCW52O0lwQK7qPtMHxw7vn0Id9
+         5U2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=W5LenOWK+Asi/IRJktE/pV+nkUhUa2nycRViHzLQ+ic=;
-        b=ApW9X0kTbnbVMtuhDRWGyvg0Co85fj12jS3QjlhhcapVs+cISlMPVvckw+o/iNYDJB
-         MxpTVsxD/IYDNJriYadZHIf1FfI7GVaQu+OHgrucM8NALwa7xYgNCFnDXSnjU2D2WVrG
-         QbhxngCIguIPciCaidyrE9xbScvtch70e8MKYqWj0LFWa45v7cdfac2gOwASEeFwXAdH
-         Ic076gZp9G7UJ6pnzCkzuMExSv2kalgAdEQoNJKebY1dSG1xLaUiJSwg1uQFGtx0OPli
-         1X508qbtz9FfjCyichZWqkwHo1nJM05vlUWE8XqRAIUVY55yVVA0ZrJ43P9uUkMFAJG3
-         p9SQ==
-X-Gm-Message-State: AOAM532K884DhFq0U1+144jZcZQoXY4VGbHezyYZGBWu3Md0CsSOLTrd
-        dYF8/PqhVjsGQ6eV0yfJIPVlKlepbC+BZPWkL+c=
-X-Google-Smtp-Source: ABdhPJyqL5BiH5c7aZdo1tjaqQqGBEW0n7VpTd5gZsUH6IgJMX1sY2fwYACUSkTV9G9TFIks1+ndJbO51hT+9jv0MVc=
-X-Received: by 2002:a05:6902:4d2:: with SMTP id v18mr22134015ybs.257.1643505624996;
- Sat, 29 Jan 2022 17:20:24 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
+        b=sOKElzPBuY0NawN5c671Zheq/UrIhkpO8kDO8HD9CRY4oBKNT3pYypqWtVWhBfv18n
+         huCqheEfM0Fx6nzA4JEdzhl/NahHm69BoiaUWCsUoH0CdIHEoUWXXzlya4zO7H8gJ1ZG
+         74a8kSTA34fPzzg1XRevspDD6MmGJ690s1bsxTr+nI9KkGZQvhjuY/6VzafH7mjgGByO
+         l6Z1NXSogWNu646eXrT/+I0cxpRGhswrLqJOFpSvV135jYFyG13eZGF9btU78fB7/dh0
+         VqDIbdWGZyDmSHoLuFCTv1cYThOBjvuvDKELQ/IA4t+BkJ0rsiXCSvTE+FWhZ9d0QysW
+         hpIQ==
+X-Gm-Message-State: AOAM5306Y+apz64Dh3r/yFSvHskISsup89OA9XXzdkiq6jgDZMOlukTv
+        iQ3yidkFnqYBPU6oNJiFc/0uLM6KJHM7IhKZqqc=
+X-Google-Smtp-Source: ABdhPJz3bgso8viJFkNwiW8XigzdjL6JZBPDE3NfxKOCgEqvWjdU/qagorQKM5joSRLXylFmq9/zlHP85rUYuZ5fTGQ=
+X-Received: by 2002:a25:6d45:: with SMTP id i66mr23246397ybc.352.1643516893721;
+ Sat, 29 Jan 2022 20:28:13 -0800 (PST)
 MIME-Version: 1.0
-Sender: nmesomakalu01@gmail.com
-Received: by 2002:a05:7000:c091:0:0:0:0 with HTTP; Sat, 29 Jan 2022 17:20:24
- -0800 (PST)
-From:   Jackie James <jackiejames614@gmail.com>
-Date:   Sun, 30 Jan 2022 01:20:24 +0000
-X-Google-Sender-Auth: _pxmej8tbOSGVGxf5jPvGsijn6s
-Message-ID: <CAHMQAuOimXRUN0O-tihGJvLfgyV--t9Bq0KLXc+NZip0ruv-jQ@mail.gmail.com>
-Subject: Hello
+Received: by 2002:a05:7010:2312:b0:201:cd76:102e with HTTP; Sat, 29 Jan 2022
+ 20:28:13 -0800 (PST)
+Reply-To: mrs.bill.chantalone01@gmail.com
+From:   "Mrs.Bill.Chantal" <grassroot309@gmail.com>
+Date:   Sun, 30 Jan 2022 05:28:13 +0100
+Message-ID: <CAO3iUMDzg_ZovNWXtuQhU6sDXk7LsNwvNc2pOb7zvX7pPCdMAw@mail.gmail.com>
+Subject: Hello....
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Gooday my beloved,
+You have been compensated with the sum of 9.5 million dollars in this
+united nation the payment will be issue into atm visa  card and send
+to you from the santander bank we need your address and your
+Whatsapp number  + 1 6465853907  this my email.ID
+( mrs.bill.chantal.roland@gmail.com )  contact  me
 
- I sent this mail praying it will get to you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day. I bring peace and love to you. It is by the grace of God, I
-had no choice than to do what is lawful and right in the sight of God
-for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
-y
-and glory upon my life. I am Mrs.James Jackie.a widow,I am suffering
-from a long time brain tumor, It has defiled all forms of medical
-treatment, and right now I have about a few months to leave, according
-to medical experts.
+Thanks my
 
- The situation has gotten complicated recently with my inability to
-hear proper, am communicating with you with the help of the chief
-nurse herein the hospital, from all indication my conditions is really
-deteriorating and it is quite obvious that, according to my doctors
-they have advised me that I may not live too long, Because this
-illness has gotten to a very bad stage. I plead that you will not
-expose or betray this trust and confidence that I am about to repose
-on you for the mutual benefit of the orphans and the less privilege. I
-have some funds I inherited from my late husband, the sum of ($
-12,500,000.00 Dollars).Having known my condition, I decided to donate
-this fund to you believing that you will utilize it the way i am going
-to instruct herein.
-
- I need you to assist me and reclaim this money and use it for Charity
-works, for orphanages and gives justice and help to the poor, needy
-and widows says The Lord." Jeremiah 22:15-16.=E2=80=9C and also build schoo=
-ls
-for less privilege that will be named after my late husband if
-possible and to promote the word of God and the effort that the house
-of God is maintained. I do not want a situation where this money will
-be used in an ungodly manner. That's why I'm taking this decision. I'm
-not afraid of death, so I know where I'm going.
- I accept this decision because I do not have any child who will
-inherit this money after I die. Please I want your sincerely and
-urgent answer to know if you will be able to execute this project for
-the glory of God, and I will give you more information on how the fund
-will be transferred to your bank account. May the grace, peace, love
-and the truth in the Word of God be with you and all those that you
-love and care for.
-I'm waiting for your immediate reply.
-May God Bless you,
-Respectfully.
-Mrs.James Jackie
+mrs bill chantal
