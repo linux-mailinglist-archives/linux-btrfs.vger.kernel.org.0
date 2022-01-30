@@ -2,105 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3124A32FC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 02:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5025E4A3300
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 02:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353631AbiA3BJ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Jan 2022 20:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        id S1353638AbiA3BU0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Jan 2022 20:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbiA3BJ6 (ORCPT
+        with ESMTP id S230206AbiA3BU0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Jan 2022 20:09:58 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82970C061714
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:09:58 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id s61-20020a17090a69c300b001b4d0427ea2so14572952pjj.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:09:58 -0800 (PST)
+        Sat, 29 Jan 2022 20:20:26 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC533C061714
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:20:25 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id k17so29722162ybk.6
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:20:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
+        h=mime-version:sender:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=AwpTIDSEYkFYWmNT8FPsKsZY1G/J5A8A+NXudUgq050=;
-        b=ANxDZUgz6j+kiLyb8y7FU9tcP218tQ2CxjGYETXmMUjuEFinzinZAC+GB/erHP5Iwd
-         iqwpBuwY51aWw/NSX3g7zdKDdMr6L4cuIiTZAKKMla2pFtYHdcsM9QDHVUho1mj/2xqQ
-         HaJbdXIXjWFo3lpdGwtHdEnHOS77wXy+UYEixpgxMiugI/BA0fHo6qEfnWRxNwwmsjtu
-         u4VWkhZsWR4vEPtDGsZewnJKyMqsN2mjoWyOBcbiwAWxbM1aQ7z9ZY5QEPM+yd1Nxtf9
-         QjHhT+5rOMtkpwbQCfd4tbtqNN9Kv9xk09jfMQ0s3vAZ2EKkeLGRzc4dEefD28Xe6H7n
-         CmIg==
+        bh=W5LenOWK+Asi/IRJktE/pV+nkUhUa2nycRViHzLQ+ic=;
+        b=Aq5693Yiu7s4IjZy6JR3Qw91dy+XB9rKFZfaOjmRZXvihZldcvdahGA6/mYM0WTnRT
+         MRp2px61vgDL283dbHGK3n3CvqskrUs0XVx/GyWzlqJza23Q17buwpfK4V02AtjpIFB1
+         qK3r2HSj5Cw9wX7/S90mjd4iz0B+QZiFZGLnr2R1dgcIJxwJAVdI6x8VWjuzZlMTBOLW
+         bdxCVQAZs1ZSU0aWFUs/Cuu1bxt2zILopoBFOEiODOqbKu0lEILlp+Huz4lk3FZ+Ikh9
+         kBh/OwEVFfoMINh7ZWvgdFEN3JYz/jiDBi12RV2mJgRHaKoyrelGTZNYyFl6vRAPl4Dl
+         62rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AwpTIDSEYkFYWmNT8FPsKsZY1G/J5A8A+NXudUgq050=;
-        b=Ie4a0umLdctg02GSvizCxJ/RTbvXpWKBcyGnOA3W7jlXnzdjuQhA731wjQS7EWO2Rl
-         Rb2vcYXip2mRqDP6BTG2dteYBkal5WDHyxUwWIQJqlHP4gYnJNcl328ASguNTTGYkt0f
-         7C1vkXKEdxbr3RM3byfybd2nu0MiyKZHPCQhiZzFY038Z/BK1C8nNKER7LQcTZdHXiId
-         sXai7hbipAtPhCMdUo9Hig3PV4R71uT7lb1D47u9amuO47YGy8E7GyATE+ha3astRIiV
-         Ftj7HsA8DyeElDdVjB8K9DHfsKs+BPx5L8IG16cP8F8SbWNgMbDReQF1cLL8GnrWi+gM
-         dcwQ==
-X-Gm-Message-State: AOAM533f+n+gbO3UN5bAQ2fByJwSSccqB7Gub9jm/yY4yIYmy6q914ze
-        Oyt7g5KXffuY8Ojq/+qvTwz6KUFad3k=
-X-Google-Smtp-Source: ABdhPJxWMHJc5gg/1Lmskat0/8zO8o28HLGNIfgzd+hSuUZZr48qdY4VtJcmT4hX0nlxijLCaZGswg==
-X-Received: by 2002:a17:90b:3b52:: with SMTP id ot18mr15371038pjb.34.1643504997757;
-        Sat, 29 Jan 2022 17:09:57 -0800 (PST)
-Received: from ryzen.lan ([2601:648:8600:e74::8c6])
-        by smtp.gmail.com with ESMTPSA id 202sm25830943pga.72.2022.01.29.17.09.57
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jan 2022 17:09:57 -0800 (PST)
-From:   Rosen Penev <rosenp@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: fix 64-bit mips and powerpc types
-Date:   Sat, 29 Jan 2022 17:09:56 -0800
-Message-Id: <20220130010956.1459147-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=W5LenOWK+Asi/IRJktE/pV+nkUhUa2nycRViHzLQ+ic=;
+        b=ApW9X0kTbnbVMtuhDRWGyvg0Co85fj12jS3QjlhhcapVs+cISlMPVvckw+o/iNYDJB
+         MxpTVsxD/IYDNJriYadZHIf1FfI7GVaQu+OHgrucM8NALwa7xYgNCFnDXSnjU2D2WVrG
+         QbhxngCIguIPciCaidyrE9xbScvtch70e8MKYqWj0LFWa45v7cdfac2gOwASEeFwXAdH
+         Ic076gZp9G7UJ6pnzCkzuMExSv2kalgAdEQoNJKebY1dSG1xLaUiJSwg1uQFGtx0OPli
+         1X508qbtz9FfjCyichZWqkwHo1nJM05vlUWE8XqRAIUVY55yVVA0ZrJ43P9uUkMFAJG3
+         p9SQ==
+X-Gm-Message-State: AOAM532K884DhFq0U1+144jZcZQoXY4VGbHezyYZGBWu3Md0CsSOLTrd
+        dYF8/PqhVjsGQ6eV0yfJIPVlKlepbC+BZPWkL+c=
+X-Google-Smtp-Source: ABdhPJyqL5BiH5c7aZdo1tjaqQqGBEW0n7VpTd5gZsUH6IgJMX1sY2fwYACUSkTV9G9TFIks1+ndJbO51hT+9jv0MVc=
+X-Received: by 2002:a05:6902:4d2:: with SMTP id v18mr22134015ybs.257.1643505624996;
+ Sat, 29 Jan 2022 17:20:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: nmesomakalu01@gmail.com
+Received: by 2002:a05:7000:c091:0:0:0:0 with HTTP; Sat, 29 Jan 2022 17:20:24
+ -0800 (PST)
+From:   Jackie James <jackiejames614@gmail.com>
+Date:   Sun, 30 Jan 2022 01:20:24 +0000
+X-Google-Sender-Auth: _pxmej8tbOSGVGxf5jPvGsijn6s
+Message-ID: <CAHMQAuOimXRUN0O-tihGJvLfgyV--t9Bq0KLXc+NZip0ruv-jQ@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The kernel uses unsigned long specifically for ppc64 and mips64. This
-fixes that.
+Gooday my beloved,
 
-Removed asm/types.h include as it will get included properly later.
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs.James Jackie.a widow,I am suffering
+from a long time brain tumor, It has defiled all forms of medical
+treatment, and right now I have about a few months to leave, according
+to medical experts.
 
-Fixes -Wformat warnings.
+ The situation has gotten complicated recently with my inability to
+hear proper, am communicating with you with the help of the chief
+nurse herein the hospital, from all indication my conditions is really
+deteriorating and it is quite obvious that, according to my doctors
+they have advised me that I may not live too long, Because this
+illness has gotten to a very bad stage. I plead that you will not
+expose or betray this trust and confidence that I am about to repose
+on you for the mutual benefit of the orphans and the less privilege. I
+have some funds I inherited from my late husband, the sum of ($
+12,500,000.00 Dollars).Having known my condition, I decided to donate
+this fund to you believing that you will utilize it the way i am going
+to instruct herein.
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- cmds/receive-dump.c | 1 -
- kerncompat.h        | 4 ++++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/cmds/receive-dump.c b/cmds/receive-dump.c
-index 47a0a30e..00ad4fd1 100644
---- a/cmds/receive-dump.c
-+++ b/cmds/receive-dump.c
-@@ -31,7 +31,6 @@
- #include <stdlib.h>
- #include <time.h>
- #include <ctype.h>
--#include <asm/types.h>
- #include <uuid/uuid.h>
- #include "common/utils.h"
- #include "cmds/commands.h"
-diff --git a/kerncompat.h b/kerncompat.h
-index 6ca1526e..4b36b45a 100644
---- a/kerncompat.h
-+++ b/kerncompat.h
-@@ -19,6 +19,10 @@
- #ifndef __KERNCOMPAT_H__
- #define __KERNCOMPAT_H__
- 
-+#ifndef __SANE_USERSPACE_TYPES__
-+#define __SANE_USERSPACE_TYPES__	/* For PPC64, to get LL64 types */
-+#endif
-+
- #include <stdio.h>
- #include <stdlib.h>
- #include <errno.h>
--- 
-2.34.1
-
+ I need you to assist me and reclaim this money and use it for Charity
+works, for orphanages and gives justice and help to the poor, needy
+and widows says The Lord." Jeremiah 22:15-16.=E2=80=9C and also build schoo=
+ls
+for less privilege that will be named after my late husband if
+possible and to promote the word of God and the effort that the house
+of God is maintained. I do not want a situation where this money will
+be used in an ungodly manner. That's why I'm taking this decision. I'm
+not afraid of death, so I know where I'm going.
+ I accept this decision because I do not have any child who will
+inherit this money after I die. Please I want your sincerely and
+urgent answer to know if you will be able to execute this project for
+the glory of God, and I will give you more information on how the fund
+will be transferred to your bank account. May the grace, peace, love
+and the truth in the Word of God be with you and all those that you
+love and care for.
+I'm waiting for your immediate reply.
+May God Bless you,
+Respectfully.
+Mrs.James Jackie
