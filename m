@@ -2,67 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523F94A33C0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 05:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8506C4A34C2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 08:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354174AbiA3E2T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Jan 2022 23:28:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
+        id S1354272AbiA3HDu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Jan 2022 02:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354158AbiA3E2P (ORCPT
+        with ESMTP id S1354265AbiA3HDt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Jan 2022 23:28:15 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217CCC061757
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 20:28:15 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id w81so8170590ybg.12
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 20:28:15 -0800 (PST)
+        Sun, 30 Jan 2022 02:03:49 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB123C06173B
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 23:03:45 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id s13so32273305ejy.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 23:03:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=QI2firgHOSt+2ZiRAEUqBnRqfCndbuygIyUz1kdYlPzS6AXkdk+mfMubksdM+6U8hJ
-         A4UbXdfo0bhasYFmsw5ceBBj4ub2bgaEqkI+Cp5foQd/M11l9HiEax3hX9+hB29fNDF1
-         4XtAbOKK0Jrn48roHo8mUNvKaz7FG0Csy4DWdnw8Q+/oXs7GbWFZBjN+ifwhy6Rfe8k0
-         Pzhs5uXUX+5v6iQyGpPCJWV84GisQUz+5cfOraMc3PalgV6vYI9t2Z4JMkhIMshepKV2
-         BM+Zj3o1QTUTRt1Kxwo+5vz+cvvR7n44irHUjPq0LbDCW52O0lwQK7qPtMHxw7vn0Id9
-         5U2A==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=Blcn4/1fZwRWt2WeKwSyjSc89EgxDar6priCiL/iajE=;
+        b=nSWbSty0f+WbhduU3c7kEMc/dkb4SJMIGeFE4x8GXmUJ9/HyrmehIydktCXXTpd0L5
+         xlP8ofiaGAwcdxHhxGK705AAtHKluup2T5c+s8IxezP+Fxwc2xOtfKoDFyFxY94Nn1lc
+         KnXMhQQUAipY0JbtbtCY4I8z/oEUL4KrXdkxJUxfOiIqq0itlrxijyeN73PiefatG2zC
+         XCoE8oOasOfqTkGWTcY0DfwdbyHccJsUUBPBMfSaV9sXc/m+EeRRkHNMXcY6dFKIoWgj
+         /Hhxq7TxOx8tbb13kek8Tr6FTKJZuIZ6fCdXvwICkjenyY6kRyjob//2j7/0NSA3wGV4
+         XQfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=sOKElzPBuY0NawN5c671Zheq/UrIhkpO8kDO8HD9CRY4oBKNT3pYypqWtVWhBfv18n
-         huCqheEfM0Fx6nzA4JEdzhl/NahHm69BoiaUWCsUoH0CdIHEoUWXXzlya4zO7H8gJ1ZG
-         74a8kSTA34fPzzg1XRevspDD6MmGJ690s1bsxTr+nI9KkGZQvhjuY/6VzafH7mjgGByO
-         l6Z1NXSogWNu646eXrT/+I0cxpRGhswrLqJOFpSvV135jYFyG13eZGF9btU78fB7/dh0
-         VqDIbdWGZyDmSHoLuFCTv1cYThOBjvuvDKELQ/IA4t+BkJ0rsiXCSvTE+FWhZ9d0QysW
-         hpIQ==
-X-Gm-Message-State: AOAM5306Y+apz64Dh3r/yFSvHskISsup89OA9XXzdkiq6jgDZMOlukTv
-        iQ3yidkFnqYBPU6oNJiFc/0uLM6KJHM7IhKZqqc=
-X-Google-Smtp-Source: ABdhPJz3bgso8viJFkNwiW8XigzdjL6JZBPDE3NfxKOCgEqvWjdU/qagorQKM5joSRLXylFmq9/zlHP85rUYuZ5fTGQ=
-X-Received: by 2002:a25:6d45:: with SMTP id i66mr23246397ybc.352.1643516893721;
- Sat, 29 Jan 2022 20:28:13 -0800 (PST)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=Blcn4/1fZwRWt2WeKwSyjSc89EgxDar6priCiL/iajE=;
+        b=HG+Z1qpkO0ORz6zESqjlfxXaaMSNKnAOu4EzXbFrs8Vztur4gnP11NWxv1Ctcvz/qg
+         6TgqAbPDa6YXhxMlKmlmZOUraTmPeij9Z2ojhBVO8KX3X2PkO3rMgHoAs4JZiA4HTAbM
+         uxazZBKmhquEUS/DgFsQBn3ky3jYEtG8DTb9+2DOp2fXMLGEyryJ9Ckyq/j02Qn8ksuK
+         fCcAddbYXRLaWxPFoSa49UN+BQG7/iN53T4pDKxIPhDj+idwMkCAzfzMFiQJQM7w3JB5
+         untZzJYJc/XceYaLmY41+548Vpe1ingm8TZIgGJuQfehIA1wnZRXs0KU1Bt7opE9EO2p
+         st4g==
+X-Gm-Message-State: AOAM530OYWPWvYWAQ609dW3tujJqHVsnfDvZM+jvtgQ4nWfRbLbY92/G
+        WKbr0IvKfa1g3xLc8Y4fqrU4arphe6/PtmiB0po=
+X-Google-Smtp-Source: ABdhPJwOsDu/rN67+W8qW6ELE7Q0m5qec7OAmm9YDYCgUWdn3bONj6hb10rfoXoLvVKP0AY3C7oKT1YzD9rhI9CP1hE=
+X-Received: by 2002:a17:906:7949:: with SMTP id l9mr12893300ejo.296.1643526224417;
+ Sat, 29 Jan 2022 23:03:44 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:7010:2312:b0:201:cd76:102e with HTTP; Sat, 29 Jan 2022
- 20:28:13 -0800 (PST)
-Reply-To: mrs.bill.chantalone01@gmail.com
-From:   "Mrs.Bill.Chantal" <grassroot309@gmail.com>
-Date:   Sun, 30 Jan 2022 05:28:13 +0100
-Message-ID: <CAO3iUMDzg_ZovNWXtuQhU6sDXk7LsNwvNc2pOb7zvX7pPCdMAw@mail.gmail.com>
-Subject: Hello....
+Sender: kaboremarlaine689@gmail.com
+Received: by 2002:ab4:aaa7:0:0:0:0:0 with HTTP; Sat, 29 Jan 2022 23:03:44
+ -0800 (PST)
+From:   "Mr. Ibrahim Salif" <ibrahimsalif516@gmail.com>
+Date:   Sun, 30 Jan 2022 07:03:44 +0000
+X-Google-Sender-Auth: -e-5_vZ7rpg0v3zGJm6ELTj6w4I
+Message-ID: <CAJpnYxyamhOvC8QbSo==rtTckPW6aAZV1wD9wakDbAN7X5G17Q@mail.gmail.com>
+Subject: ATTENTION PLEASE
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-You have been compensated with the sum of 9.5 million dollars in this
-united nation the payment will be issue into atm visa  card and send
-to you from the santander bank we need your address and your
-Whatsapp number  + 1 6465853907  this my email.ID
-( mrs.bill.chantal.roland@gmail.com )  contact  me
+Dear friend,
 
-Thanks my
+My name is Mr. Ibrahim Salif, I am a staff working with the Bank of
+Africa here in Ouagadougou,Burkina Faso.
 
-mrs bill chantal
+I want you to help me in receiving the sum of Twenty Seven Million Two
+Hundred thousand Dollars ($27,200,000) into your Bank Account. This
+fund was deposited in the bank here by a foreign customer who died
+accidentally alongside with his entire family members many years ago.
+
+Nobody had asked for this fund till now please contact me through my
+private email address: (ibrahimsalif516@yahoo.com) for more details.
+
+Mr. Ibrahim Salif.
