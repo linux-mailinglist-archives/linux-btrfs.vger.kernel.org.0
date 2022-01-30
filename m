@@ -2,75 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAFF4A32F8
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 02:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3124A32FC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 02:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243706AbiA3BAE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Jan 2022 20:00:04 -0500
-Received: from smarthost2.cuci.nl ([212.125.129.134]:58322 "EHLO
-        smarthost2.cuci.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbiA3BAD (ORCPT
+        id S1353631AbiA3BJ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Jan 2022 20:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230206AbiA3BJ6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Jan 2022 20:00:03 -0500
-X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Sat, 29 Jan 2022 20:00:03 EST
-Received: from aristoteles.cuci.nl (aristoteles.cuci.nl [212.125.128.18])
-        by smarthost.cuci.nl (Postfix) with ESMTP id 4JmXjk6mscz4xNnx
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jan 2022 01:52:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cuci.nl; s=mail;
-        t=1643503978; bh=O67HbTB041DbrD405OnqCSmk/t6dm2DgLT0OTj1VGa4=;
-        l=2193; h=Date:From:To:Subject:From;
-        b=o1ixJuSt955R+ZW71w2P3wLwIsKTiuCKH7drLBGFPawCGcesCL7JVRCYgfF2kZNAh
-         kj4Et5bhsMxUeKCza3wd0g7VZj4c4OmD6Klee5FnXSCsK5pJZ5IK6c5wQhiL73PZFf
-         JegTYYoAejcdZGbL/qmGUOKHT0i5ZJOucD8DFEDQ=
-Received: by aristoteles.cuci.nl (Postfix, from userid 500)
-        id B75575461; Sun, 30 Jan 2022 01:52:58 +0100 (CET)
-Date:   Sun, 30 Jan 2022 01:52:58 +0100
-From:   "Stephen R. van den Berg" <srb@cuci.nl>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: RIP: 0010:__writeback_inodes_sb_nr+0x7e/0xb3
-Message-ID: <20220130005258.GA7465@cuci.nl>
+        Sat, 29 Jan 2022 20:09:58 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82970C061714
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:09:58 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id s61-20020a17090a69c300b001b4d0427ea2so14572952pjj.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jan 2022 17:09:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AwpTIDSEYkFYWmNT8FPsKsZY1G/J5A8A+NXudUgq050=;
+        b=ANxDZUgz6j+kiLyb8y7FU9tcP218tQ2CxjGYETXmMUjuEFinzinZAC+GB/erHP5Iwd
+         iqwpBuwY51aWw/NSX3g7zdKDdMr6L4cuIiTZAKKMla2pFtYHdcsM9QDHVUho1mj/2xqQ
+         HaJbdXIXjWFo3lpdGwtHdEnHOS77wXy+UYEixpgxMiugI/BA0fHo6qEfnWRxNwwmsjtu
+         u4VWkhZsWR4vEPtDGsZewnJKyMqsN2mjoWyOBcbiwAWxbM1aQ7z9ZY5QEPM+yd1Nxtf9
+         QjHhT+5rOMtkpwbQCfd4tbtqNN9Kv9xk09jfMQ0s3vAZ2EKkeLGRzc4dEefD28Xe6H7n
+         CmIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AwpTIDSEYkFYWmNT8FPsKsZY1G/J5A8A+NXudUgq050=;
+        b=Ie4a0umLdctg02GSvizCxJ/RTbvXpWKBcyGnOA3W7jlXnzdjuQhA731wjQS7EWO2Rl
+         Rb2vcYXip2mRqDP6BTG2dteYBkal5WDHyxUwWIQJqlHP4gYnJNcl328ASguNTTGYkt0f
+         7C1vkXKEdxbr3RM3byfybd2nu0MiyKZHPCQhiZzFY038Z/BK1C8nNKER7LQcTZdHXiId
+         sXai7hbipAtPhCMdUo9Hig3PV4R71uT7lb1D47u9amuO47YGy8E7GyATE+ha3astRIiV
+         Ftj7HsA8DyeElDdVjB8K9DHfsKs+BPx5L8IG16cP8F8SbWNgMbDReQF1cLL8GnrWi+gM
+         dcwQ==
+X-Gm-Message-State: AOAM533f+n+gbO3UN5bAQ2fByJwSSccqB7Gub9jm/yY4yIYmy6q914ze
+        Oyt7g5KXffuY8Ojq/+qvTwz6KUFad3k=
+X-Google-Smtp-Source: ABdhPJxWMHJc5gg/1Lmskat0/8zO8o28HLGNIfgzd+hSuUZZr48qdY4VtJcmT4hX0nlxijLCaZGswg==
+X-Received: by 2002:a17:90b:3b52:: with SMTP id ot18mr15371038pjb.34.1643504997757;
+        Sat, 29 Jan 2022 17:09:57 -0800 (PST)
+Received: from ryzen.lan ([2601:648:8600:e74::8c6])
+        by smtp.gmail.com with ESMTPSA id 202sm25830943pga.72.2022.01.29.17.09.57
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Jan 2022 17:09:57 -0800 (PST)
+From:   Rosen Penev <rosenp@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: fix 64-bit mips and powerpc types
+Date:   Sat, 29 Jan 2022 17:09:56 -0800
+Message-Id: <20220130010956.1459147-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Linux kernel 5.16.3
+The kernel uses unsigned long specifically for ppc64 and mips64. This
+fixes that.
 
-This is an NFS server storing on BTRFS.
-What does the error mean?
+Removed asm/types.h include as it will get included properly later.
 
-[  499.260653] NFS: SECINFO: security flavor 390003 is not supported
-[  499.270404] NFS: SECINFO: security flavor 390004 is not supported
-[  499.280127] NFS: SECINFO: security flavor 390005 is not supported
-[  947.470439] ------------[ cut here ]------------
-[  947.473890] WARNING: CPU: 5 PID: 930 at fs/fs-writeback.c:2610 __writeback_inodes_sb_nr+0x7e/0xb3
-[  947.481623] Modules linked in: nfsd nls_cp437 cifs asn1_decoder cifs_arc4 fscache cifs_md4 ipmi_ssif
-[  947.489571] CPU: 5 PID: 930 Comm: btrfs-transacti Not tainted 95.16.3-srb-asrock-00001-g36437ad63879 #186
-[  947.497969] RIP: 0010:__writeback_inodes_sb_nr+0x7e/0xb3
-[  947.502097] Code: 24 10 4c 89 44 24 18 c6 44 24 24 01 44 89 54 24 28 48 89 64 24 40 49 8b 41 58 74 28 48 85 c0 74 23 49 8b 40 70 48 85 c0 75 02 <0f> 0b 4c 89 cf 48 8d 74 24 10 0f b6 d2 e8 8b fd ff ff 48 89 e7 e8
-[  947.519760] RSP: 0018:ffffc90000777e10 EFLAGS: 00010246
-[  947.523818] RAX: 0000000000000000 RBX: 0000000000963300 RCX: 0000000000000000
-[  947.529765] RDX: 0000000000000000 RSI: 000000000000fa51 RDI: ffffc90000777e50
-[  947.535740] RBP: ffff888101628a90 R08: ffff888100955800 R09: ffff888100956000
-[  947.541701] R10: 0000000000000002 R11: 0000000000000001 R12: ffff888100963488
-[  947.547645] R13: ffff888100963000 R14: ffff888112fb7200 R15: ffff888100963460
-[  947.553621] FS:  0000000000000000(0000) GS:ffff88841fd40000(0000) knlGS:0000000000000000
-[  947.560537] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  947.565122] CR2: 0000000008be50c4 CR3: 000000000220c000 CR4: 00000000001006e0
-[  947.571072] Call Trace:
-[  947.572354]  <TASK>
-[  947.573266]  btrfs_commit_transaction+0x1f1/0x998
-[  947.576785]  ? start_transaction+0x3ab/0x44e
-[  947.579867]  ? schedule_timeout+0x8a/0xdd
-[  947.582716]  transaction_kthread+0xe9/0x156
-[  947.585721]  ? btrfs_cleanup_transaction.isra.0+0x407/0x407
-[  947.590104]  kthread+0x131/0x139
-[  947.592168]  ? set_kthread_struct+0x32/0x32
-[  947.595174]  ret_from_fork+0x22/0x30
-[  947.597561]  </TASK>
-[  947.598553] ---[ end trace 644721052755541c ]---
+Fixes -Wformat warnings.
+
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ cmds/receive-dump.c | 1 -
+ kerncompat.h        | 4 ++++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/cmds/receive-dump.c b/cmds/receive-dump.c
+index 47a0a30e..00ad4fd1 100644
+--- a/cmds/receive-dump.c
++++ b/cmds/receive-dump.c
+@@ -31,7 +31,6 @@
+ #include <stdlib.h>
+ #include <time.h>
+ #include <ctype.h>
+-#include <asm/types.h>
+ #include <uuid/uuid.h>
+ #include "common/utils.h"
+ #include "cmds/commands.h"
+diff --git a/kerncompat.h b/kerncompat.h
+index 6ca1526e..4b36b45a 100644
+--- a/kerncompat.h
++++ b/kerncompat.h
+@@ -19,6 +19,10 @@
+ #ifndef __KERNCOMPAT_H__
+ #define __KERNCOMPAT_H__
+ 
++#ifndef __SANE_USERSPACE_TYPES__
++#define __SANE_USERSPACE_TYPES__	/* For PPC64, to get LL64 types */
++#endif
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <errno.h>
 -- 
-Stephen.
+2.34.1
+
