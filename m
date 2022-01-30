@@ -2,85 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF694A3664
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 13:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 750354A3670
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jan 2022 14:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354824AbiA3Mxg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Jan 2022 07:53:36 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:34856 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354822AbiA3Mxf (ORCPT
+        id S1347061AbiA3NGZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Jan 2022 08:06:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347045AbiA3NGZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Jan 2022 07:53:35 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1AB96210E7
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jan 2022 12:53:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643547214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=pMv2CFJ+jUk2lh8EZG0Q0I2+UNMqMpUZH2UUick9Rfo=;
-        b=IzsZQykqPgNylAb34DtfYKNMu5x4FMa0k4XJdwI7NdTYP8XQxqhVXl2I+lBJWCZYHgUcgF
-        vil3JNRVtpMOueuvxqTvdMpQN8YsAWYwr5ryi+/Ue7nfsRAay1K7nE21RBRHKasbW/LLIb
-        0KbNpcKc3Dn540jSBzju8KY2qlt7Pbs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D1871344B
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jan 2022 12:53:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9Ki8CE2K9mFcCwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jan 2022 12:53:33 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: don't hold CPU for too long when defragging a file
-Date:   Sun, 30 Jan 2022 20:53:15 +0800
-Message-Id: <c572e24e1556b87cadb20761edbc7e33bb93ad20.1643547144.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.0
+        Sun, 30 Jan 2022 08:06:25 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20E2C061714
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jan 2022 05:06:24 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id j2so33944206ejk.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jan 2022 05:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=/oU8BX76xYFIFzexV39JjLusLjcD5oT+Rb+lVejvCJc=;
+        b=fifq+KauDDavr+nfg2Y03ngGk69sKFgWSPEXTvUK8S234wHaoEytnTNTK3J7gRbl7+
+         2mJOBMlfAK/bsqA/aZk8tNY//+MA+43Tgo7ZVpIDFzbjAu5GvPpM1LqNQoxrZTg8ZS+M
+         UCwf9MOXahYGlct44roM/H8YiQkAkFHeweaE21wfYs510G0rQ3c7dx8pf4c99zJtUS9o
+         neq4ZgUbj7/IbOtti7eheKJRwg0rxshl2jAwtGS3DBINFCvJhzfIQjB6vcj8PaCnRifT
+         RIk0iSw89KoRwIbdylj+IoEQ/CdQHeAP5VCQwbhafefJKVN8vHIBwCUZ+MvBxIOViY7Q
+         n/qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=/oU8BX76xYFIFzexV39JjLusLjcD5oT+Rb+lVejvCJc=;
+        b=mZJ5kelR0WuE7C1J76UtMscKDhGRi1g4TcSbleZ7FTwL0hIr1ciuL9T93Y0X13NnnT
+         bspPSocEH6p3isRCS5atngIsRazQdGY142mJiOy4qNazGNOa2nNyEbH8/WJ70Z9ODs5l
+         YjDdrrr/ws5dSOwVD4c10BCSeX3IhVsULqZ1Ks11sjzvJOoyPSU2L5BWaSgod+IjO8dn
+         w5ZFRNphsdKv5A52TBaR5qBlKSvlJkGnWYindSGisyL/hx5enpuKIKFNGWXwvzPzCDoy
+         OWKbFF7peXoqB1fesUQUKzakCEUBK5zvUj6dpY+NUkwJdPVwWWQ3z1CqmMQSkyRjR+S6
+         /tOw==
+X-Gm-Message-State: AOAM533JBOPc+M9/YufH+KrQWPwrkQUGKBad91uFNgd22XVdhzJ+YNcY
+        HoLeqxb3Agir353HNfXUjp28HiAAqMU0oa4+4II=
+X-Google-Smtp-Source: ABdhPJw4dD9A1+Qe9LWFFY/SvBnkuuXltcJbJdQL2PfQ24odBj2O8G0LdS6BbqqLB8oYh8vO9FJjZrt7MClRFFyazIs=
+X-Received: by 2002:a17:906:58d0:: with SMTP id e16mr13613132ejs.454.1643547983258;
+ Sun, 30 Jan 2022 05:06:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a50:e696:0:0:0:0:0 with HTTP; Sun, 30 Jan 2022 05:06:22
+ -0800 (PST)
+Reply-To: rd19750921@yahoo.com
+From:   =?UTF-8?B?UmFuaWEgRGllbmTDqXLDqQ==?= <fatgando01@gmail.com>
+Date:   Sun, 30 Jan 2022 14:06:22 +0100
+Message-ID: <CAFAqxBbvgQ3QevT-ZEZtWxeVNM_JCXH5U+JpFQEWFAFMnptKZw@mail.gmail.com>
+Subject: Business invitation
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a user report about "btrfs filesystem defrag" causing 120s
-timeout problem.
-
-For btrfs_defrag_file() it will iterate all file extents if called from
-defrag ioctl, thus it can take a long time.
-
-There is no reason not to release the CPU during such a long operation.
-
-Add cond_resched() after defragged one cluster.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-This is a long existing bug, and it should also be applied to older
-kernels.
-But at v5.16 we have a large rework on defrag (which caused quite some
-regression though), thus there will be a specific backport for kernels
-older than v5.16.
----
- fs/btrfs/ioctl.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 961c38660b55..bf90e809f3b2 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1695,6 +1695,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 			ret = 0;
- 			break;
- 		}
-+		cond_resched();
- 	}
- 
- 	if (ra_allocated)
--- 
-2.35.0
-
+Greetings from Burkina Faso,
+I seek your assistance for relocation and to engage in investment
+ventures in your country. Kindly reply me if your interest is shown.
+Thank you
+Miss Rania Diend=C3=A9r=C3=A9
