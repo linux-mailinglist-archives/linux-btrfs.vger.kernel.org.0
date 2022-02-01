@@ -2,125 +2,352 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E23C4A5D98
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Feb 2022 14:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243294A5DCD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Feb 2022 14:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238749AbiBANor (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Feb 2022 08:44:47 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:41416 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbiBANor (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Feb 2022 08:44:47 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 512A8210F9;
-        Tue,  1 Feb 2022 13:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1643723086;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XB3Bp1aJhgWWNLv6ltfplCtpkBV98eNeLAWHPrPu7V0=;
-        b=iw3WHKD4gPD5ih7KkiTtOnecrRTr1i2kbo1SYkBVc3q2wKQcg7JMyy/TlKt0GY+VRtJbcu
-        AYL/DWH7XBajIRflx69C6LMeSrEcn4xbPjTKCYeQrrikN4jl2eTnA8EGg0abeIzNDGdVeZ
-        OBcXdHYE2JoHkmPszb5OEqxJ4TzbW5w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1643723086;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XB3Bp1aJhgWWNLv6ltfplCtpkBV98eNeLAWHPrPu7V0=;
-        b=AKUW5/GiI8hT9dgjkkcMdq/zvlMeBeCCafr87hOh/ozFi96BW4RUrt5h/VrtEfthtemdZ8
-        SKe/9R7lKg89dZDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 48C78A3B81;
-        Tue,  1 Feb 2022 13:44:46 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 52380DA7A9; Tue,  1 Feb 2022 14:44:02 +0100 (CET)
-Date:   Tue, 1 Feb 2022 14:44:02 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Rosen Penev <rosenp@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: fix 64-bit mips and powerpc types
-Message-ID: <20220201134402.GM14046@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Rosen Penev <rosenp@gmail.com>, linux-btrfs@vger.kernel.org
-References: <20220130010956.1459147-1-rosenp@gmail.com>
- <20220131143930.GL14046@twin.jikos.cz>
- <CAKxU2N8jeMT_4kJrwLFng0WLYBo=kfYmrz0Hu1NpdWR-fOzVnA@mail.gmail.com>
- <a05a9bcf-d2a2-99a9-0e18-7313e74e29dc@gmx.com>
+        id S238961AbiBAN5r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Feb 2022 08:57:47 -0500
+Received: from mga01.intel.com ([192.55.52.88]:14055 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236698AbiBAN5r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Feb 2022 08:57:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643723867; x=1675259867;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=n8dNU9QfT47Coo1TOptcAxGo85aNJPIU7JDjqYAHwn0=;
+  b=PViXA0NsbAS0VmYWUaMQcIsIGULkbYv9QC6eyz3WTmh9A8YV3T1NdMAm
+   YjihuC+FF+3GXu9rqjpYvDjQJbxAky1Qs3Lkbez9xcrw65UNpYLVLSXLo
+   9J9N0NKUwqFoEG5kUdn6ekG02OeJNLA5k0tS7p4shnsQKUFIXBfD3ChkM
+   U71r4mF+xjjtD5kTYclex3pl/RWhjBAV5bhGyEbgvceIyZhaPGgaH2wbS
+   gYVEL87kaMjWWp9T23yp+yNVUjaAfUCulVhnKBHSBnpHeDzUxAht4yw8J
+   8cFNqDfHsAgN5AJTnj07c9IdFryiQV/hFKjvLhrbKIeRvEv57794jT4o+
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10244"; a="272170833"
+X-IronPort-AV: E=Sophos;i="5.88,334,1635231600"; 
+   d="scan'208";a="272170833"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2022 05:57:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,334,1635231600"; 
+   d="scan'208";a="523056602"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 01 Feb 2022 05:57:44 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nEtfE-000TLE-3X; Tue, 01 Feb 2022 13:57:44 +0000
+Date:   Tue, 1 Feb 2022 21:56:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sidong Yang <realwakka@gmail.com>, linux-btrfs@vger.kernel.org,
+        quwenruo.btrfs@gmx.com
+Cc:     kbuild-all@lists.01.org, Sidong Yang <realwakka@gmail.com>
+Subject: Re: [PATCH] btrfs: qgroup: replace modifing qgroup_flags to bitops
+Message-ID: <202202012137.VlmV1OLt-lkp@intel.com>
+References: <20220201125331.260482-1-realwakka@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a05a9bcf-d2a2-99a9-0e18-7313e74e29dc@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20220201125331.260482-1-realwakka@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 01, 2022 at 08:58:55PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2022/2/1 04:46, Rosen Penev wrote:
-> > On Mon, Jan 31, 2022 at 6:40 AM David Sterba <dsterba@suse.cz> wrote:
-> >>
-> >> On Sat, Jan 29, 2022 at 05:09:56PM -0800, Rosen Penev wrote:
-> >>> The kernel uses unsigned long specifically for ppc64 and mips64. This
-> >>> fixes that.
-> >>
-> >> What do you mean? Uses unsigned long for what?
-> > kernel's u64 is normally unsigned long long, but not for ppc64 and mips64.
-> >>
-> >>> Removed asm/types.h include as it will get included properly later.
-> >>>
-> >>> Fixes -Wformat warnings.
-> >>>
-> >>> Signed-off-by: Rosen Penev <rosenp@gmail.com>
-> >>> ---
-> >>>   cmds/receive-dump.c | 1 -
-> >>>   kerncompat.h        | 4 ++++
-> >>>   2 files changed, 4 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/cmds/receive-dump.c b/cmds/receive-dump.c
-> >>> index 47a0a30e..00ad4fd1 100644
-> >>> --- a/cmds/receive-dump.c
-> >>> +++ b/cmds/receive-dump.c
-> >>> @@ -31,7 +31,6 @@
-> >>>   #include <stdlib.h>
-> >>>   #include <time.h>
-> >>>   #include <ctype.h>
-> >>> -#include <asm/types.h>
-> >>>   #include <uuid/uuid.h>
-> >>>   #include "common/utils.h"
-> >>>   #include "cmds/commands.h"
-> >>> diff --git a/kerncompat.h b/kerncompat.h
-> >>> index 6ca1526e..4b36b45a 100644
-> >>> --- a/kerncompat.h
-> >>> +++ b/kerncompat.h
-> >>> @@ -19,6 +19,10 @@
-> >>>   #ifndef __KERNCOMPAT_H__
-> >>>   #define __KERNCOMPAT_H__
-> >>>
-> >>> +#ifndef __SANE_USERSPACE_TYPES__
-> >>> +#define __SANE_USERSPACE_TYPES__     /* For PPC64, to get LL64 types */
-> >>> +#endif
-> >>
-> >> Is there a cleaner way instead of defining magic macros?
-> > no. https://github.com/torvalds/linux/blob/master/arch/powerpc/include/uapi/asm/types.h#L18
-> 
-> Really?
-> 
-> I have the same issue in btrfs-fuse, but it can be easily solved without
-> using the magic macro.
-> 
-> See this issue:
-> 
-> https://github.com/adam900710/btrfs-fuse/issues/2
-> 
-> including <linux/types.h> seems to solve it for btrfs-fuse.
+Hi Sidong,
 
-Ok, so it's just the asm/types.h, once it's deleted it should all work
-with linux/types.h (included via kerncompat.h).
+Thank you for the patch! Perhaps something to improve:
 
-Rosen, could you please verify that this is sufficient (without the
-extra macro)?
+[auto build test WARNING on v5.17-rc2]
+[cannot apply to kdave/for-next next-20220131]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/0day-ci/linux/commits/Sidong-Yang/btrfs-qgroup-replace-modifing-qgroup_flags-to-bitops/20220201-205452
+base:    26291c54e111ff6ba87a164d85d4a4e134b7315c
+config: nds32-allyesconfig (https://download.01.org/0day-ci/archive/20220201/202202012137.VlmV1OLt-lkp@intel.com/config)
+compiler: nds32le-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/ba6f4f3d431a14034f4e4da2b8f342fe17ec78bf
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Sidong-Yang/btrfs-qgroup-replace-modifing-qgroup_flags-to-bitops/20220201-205452
+        git checkout ba6f4f3d431a14034f4e4da2b8f342fe17ec78bf
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nds32 SHELL=/bin/bash fs/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/nds32/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from fs/btrfs/qgroup.c:6:
+   include/asm-generic/bitops/instrumented-atomic.h:26:61: note: expected 'volatile long unsigned int *' but argument is of type 'u64 *' {aka 'long long unsigned int *'}
+      26 | static inline void set_bit(long nr, volatile unsigned long *addr)
+         |                                     ~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   fs/btrfs/qgroup.c:3318:60: error: passing argument 2 of 'clear_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    3318 |                 clear_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, &fs_info->qgroup_flags);
+         |                                                            ^~~~~~~~~~~~~~~~~~~~~~
+         |                                                            |
+         |                                                            u64 * {aka long long unsigned int *}
+   In file included from include/asm-generic/bitops/atomic.h:74,
+                    from include/asm-generic/bitops.h:33,
+                    from ./arch/nds32/include/generated/asm/bitops.h:1,
+                    from include/linux/bitops.h:33,
+                    from include/linux/log2.h:12,
+                    from include/asm-generic/div64.h:55,
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/nds32/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from fs/btrfs/qgroup.c:6:
+   include/asm-generic/bitops/instrumented-atomic.h:39:63: note: expected 'volatile long unsigned int *' but argument is of type 'u64 *' {aka 'long long unsigned int *'}
+      39 | static inline void clear_bit(long nr, volatile unsigned long *addr)
+         |                                       ~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   fs/btrfs/qgroup.c: In function 'qgroup_rescan_init':
+   fs/btrfs/qgroup.c:3358:64: error: passing argument 2 of 'arch_test_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    3358 |                 if (!test_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, &fs_info->qgroup_flags)) {
+         |                                                                ^~~~~~~~~~~~~~~~~~~~~~
+         |                                                                |
+         |                                                                u64 * {aka long long unsigned int *}
+   In file included from include/asm-generic/bitops.h:34,
+                    from ./arch/nds32/include/generated/asm/bitops.h:1,
+                    from include/linux/bitops.h:33,
+                    from include/linux/log2.h:12,
+                    from include/asm-generic/div64.h:55,
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/nds32/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from fs/btrfs/qgroup.c:6:
+   include/asm-generic/bitops/non-atomic.h:116:62: note: expected 'const volatile long unsigned int *' but argument is of type 'u64 *' {aka 'long long unsigned int *'}
+     116 | arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+         |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   fs/btrfs/qgroup.c:3362:67: error: passing argument 2 of 'arch_test_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    3362 |                 } else if (!test_bit(BTRFS_QGROUP_STATUS_FLAG_ON, &fs_info->qgroup_flags)) {
+         |                                                                   ^~~~~~~~~~~~~~~~~~~~~~
+         |                                                                   |
+         |                                                                   u64 * {aka long long unsigned int *}
+   In file included from include/asm-generic/bitops.h:34,
+                    from ./arch/nds32/include/generated/asm/bitops.h:1,
+                    from include/linux/bitops.h:33,
+                    from include/linux/log2.h:12,
+                    from include/asm-generic/div64.h:55,
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/nds32/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from fs/btrfs/qgroup.c:6:
+   include/asm-generic/bitops/non-atomic.h:116:62: note: expected 'const volatile long unsigned int *' but argument is of type 'u64 *' {aka 'long long unsigned int *'}
+     116 | arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+         |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+>> fs/btrfs/qgroup.c:3375:70: warning: passing argument 2 of 'arch_test_bit' makes pointer from integer without a cast [-Wint-conversion]
+    3375 |                 if (test_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, fs_info->qgroup_flags)) {
+         |                                                               ~~~~~~~^~~~~~~~~~~~~~
+         |                                                                      |
+         |                                                                      u64 {aka long long unsigned int}
+   In file included from include/asm-generic/bitops.h:34,
+                    from ./arch/nds32/include/generated/asm/bitops.h:1,
+                    from include/linux/bitops.h:33,
+                    from include/linux/log2.h:12,
+                    from include/asm-generic/div64.h:55,
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/nds32/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from fs/btrfs/qgroup.c:6:
+   include/asm-generic/bitops/non-atomic.h:116:62: note: expected 'const volatile long unsigned int *' but argument is of type 'u64' {aka 'long long unsigned int'}
+     116 | arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+         |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   fs/btrfs/qgroup.c:3379:67: error: passing argument 2 of 'arch_test_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    3379 |                 } else if (!test_bit(BTRFS_QGROUP_STATUS_FLAG_ON, &fs_info->qgroup_flags)) {
+         |                                                                   ^~~~~~~~~~~~~~~~~~~~~~
+         |                                                                   |
+         |                                                                   u64 * {aka long long unsigned int *}
+   In file included from include/asm-generic/bitops.h:34,
+                    from ./arch/nds32/include/generated/asm/bitops.h:1,
+                    from include/linux/bitops.h:33,
+                    from include/linux/log2.h:12,
+                    from include/asm-generic/div64.h:55,
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/nds32/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from fs/btrfs/qgroup.c:6:
+   include/asm-generic/bitops/non-atomic.h:116:62: note: expected 'const volatile long unsigned int *' but argument is of type 'u64 *' {aka 'long long unsigned int *'}
+     116 | arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+         |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   fs/btrfs/qgroup.c:3389:58: error: passing argument 2 of 'set_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    3389 |                 set_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, &fs_info->qgroup_flags);
+         |                                                          ^~~~~~~~~~~~~~~~~~~~~~
+         |                                                          |
+         |                                                          u64 * {aka long long unsigned int *}
+   In file included from include/asm-generic/bitops/atomic.h:74,
+                    from include/asm-generic/bitops.h:33,
+                    from ./arch/nds32/include/generated/asm/bitops.h:1,
+                    from include/linux/bitops.h:33,
+                    from include/linux/log2.h:12,
+                    from include/asm-generic/div64.h:55,
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/nds32/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from fs/btrfs/qgroup.c:6:
+   include/asm-generic/bitops/instrumented-atomic.h:26:61: note: expected 'volatile long unsigned int *' but argument is of type 'u64 *' {aka 'long long unsigned int *'}
+      26 | static inline void set_bit(long nr, volatile unsigned long *addr)
+         |                                     ~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   fs/btrfs/qgroup.c: In function 'btrfs_qgroup_rescan':
+   fs/btrfs/qgroup.c:3445:60: error: passing argument 2 of 'clear_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    3445 |                 clear_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, &fs_info->qgroup_flags);
+         |                                                            ^~~~~~~~~~~~~~~~~~~~~~
+         |                                                            |
+         |                                                            u64 * {aka long long unsigned int *}
+   In file included from include/asm-generic/bitops/atomic.h:74,
+                    from include/asm-generic/bitops.h:33,
+                    from ./arch/nds32/include/generated/asm/bitops.h:1,
+                    from include/linux/bitops.h:33,
+                    from include/linux/log2.h:12,
+                    from include/asm-generic/div64.h:55,
+                    from ./arch/nds32/include/generated/asm/div64.h:1,
+                    from include/linux/math.h:5,
+                    from include/linux/math64.h:6,
+                    from include/linux/time64.h:5,
+                    from include/linux/restart_block.h:10,
+                    from include/linux/thread_info.h:14,
+                    from include/asm-generic/preempt.h:5,
+
+
+vim +/arch_test_bit +3375 fs/btrfs/qgroup.c
+
+  3345	
+  3346	/*
+  3347	 * Checks that (a) no rescan is running and (b) quota is enabled. Allocates all
+  3348	 * memory required for the rescan context.
+  3349	 */
+  3350	static int
+  3351	qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
+  3352			   int init_flags)
+  3353	{
+  3354		int ret = 0;
+  3355	
+  3356		if (!init_flags) {
+  3357			/* we're resuming qgroup rescan at mount time */
+  3358			if (!test_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, &fs_info->qgroup_flags)) {
+  3359				btrfs_warn(fs_info,
+  3360				"qgroup rescan init failed, qgroup rescan is not queued");
+  3361				ret = -EINVAL;
+  3362			} else if (!test_bit(BTRFS_QGROUP_STATUS_FLAG_ON, &fs_info->qgroup_flags)) {
+  3363				btrfs_warn(fs_info,
+  3364				"qgroup rescan init failed, qgroup is not enabled");
+  3365				ret = -EINVAL;
+  3366			}
+  3367	
+  3368			if (ret)
+  3369				return ret;
+  3370		}
+  3371	
+  3372		mutex_lock(&fs_info->qgroup_rescan_lock);
+  3373	
+  3374		if (init_flags) {
+> 3375			if (test_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, fs_info->qgroup_flags)) {
+  3376				btrfs_warn(fs_info,
+  3377					   "qgroup rescan is already in progress");
+  3378				ret = -EINPROGRESS;
+  3379			} else if (!test_bit(BTRFS_QGROUP_STATUS_FLAG_ON, &fs_info->qgroup_flags)) {
+  3380				btrfs_warn(fs_info,
+  3381				"qgroup rescan init failed, qgroup is not enabled");
+  3382				ret = -EINVAL;
+  3383			}
+  3384	
+  3385			if (ret) {
+  3386				mutex_unlock(&fs_info->qgroup_rescan_lock);
+  3387				return ret;
+  3388			}
+  3389			set_bit(BTRFS_QGROUP_STATUS_FLAG_RESCAN, &fs_info->qgroup_flags);
+  3390		}
+  3391	
+  3392		memset(&fs_info->qgroup_rescan_progress, 0,
+  3393			sizeof(fs_info->qgroup_rescan_progress));
+  3394		fs_info->qgroup_rescan_progress.objectid = progress_objectid;
+  3395		init_completion(&fs_info->qgroup_rescan_completion);
+  3396		mutex_unlock(&fs_info->qgroup_rescan_lock);
+  3397	
+  3398		btrfs_init_work(&fs_info->qgroup_rescan_work,
+  3399				btrfs_qgroup_rescan_worker, NULL, NULL);
+  3400		return 0;
+  3401	}
+  3402	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
