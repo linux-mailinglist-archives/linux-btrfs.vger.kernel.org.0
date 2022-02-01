@@ -2,127 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EB04A55CD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Feb 2022 05:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C17F84A55E5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Feb 2022 05:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbiBAEGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Jan 2022 23:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbiBAEGH (ORCPT
+        id S233426AbiBAE0t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Jan 2022 23:26:49 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40354 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232890AbiBAE0s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Jan 2022 23:06:07 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B82C061714
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Jan 2022 20:06:06 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id s61-20020a17090a69c300b001b4d0427ea2so1339626pjj.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Jan 2022 20:06:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wJU/EdXVCEljX1AGBsWrbo9PtxgEpwfSAORltS1xb3U=;
-        b=c3VXTiLLOEou7zuDDgcNMeGg2Bqj4cTIh1JK7UsX3jEJka+I05r1dwfU9Mp7EpGSC6
-         C44an5zYCwf/qBOudFVJl0RR7dbVMvvzVHCLfOYBj+auVtU6Vf0ssoytGg6WcQWHaqrG
-         T1f+XfmEkXW2L6+qd23qvB40+2O0l50UQf75dc/goYqDDkLfm3C8m7j5wtw7OGqpZPa+
-         uy1MsluQt5u1gceo/Tom4C9sI/YkAPnXXQy6hb+qiGoa3pziTCmS8ruF63U4JE4dP4W2
-         esKId1sNKvrhSSvSOA1rCmP0ncp7WB2C+jnhxveMoEnfMUehTJWMUrvTfUtenpwogjPh
-         4SVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wJU/EdXVCEljX1AGBsWrbo9PtxgEpwfSAORltS1xb3U=;
-        b=GgLKbfcgjJpSHnOLXaw3AmoVxrtT5ASV5faR4JH3IkBTIAQgdsux0QpCQLg6xHeLpX
-         HCXn0YHFMrDTkcCWqDgOnW92eCBPcpiS9rESomLdTNkl3RlRy7+I8QL/udFruyeOp8FX
-         sjlelyo1bVXU9XqVP75gus7V1Vi5kZ1ubAqCWX5hrYRhX9xvKEfXIC4P7JoJXAWz6A6c
-         yf8Lxr5Bl6+jU2nVyTu3TPRCvSiwuFean+onlMnhYGmdwcy3Lh2I9+8jnWBymJGhbjr/
-         RNA09SjSGY5QI3eEMDjaY0hyhNHVYV3KnAm/5xoGmNk4Vt5j9mrCocAuDMSKBxDYlFRW
-         uPgA==
-X-Gm-Message-State: AOAM530yFS+UbT05ARWUpuUn//g9IqDFUyayLYMmd0/fSF7RnIz6389K
-        z7pCOPPMj9bGJHxsrU/ca9/icIPe1JhP1A==
-X-Google-Smtp-Source: ABdhPJzZ7rzhdMhDrtmdSWqh/K4h7S3wT01oGGMEUZMJbV1nVG7i26eAYcmEa6t1xT25SmqldbUECg==
-X-Received: by 2002:a17:90b:2516:: with SMTP id ns22mr172463pjb.242.1643688366269;
-        Mon, 31 Jan 2022 20:06:06 -0800 (PST)
-Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id d10sm17160484pfl.16.2022.01.31.20.06.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jan 2022 20:06:05 -0800 (PST)
-Date:   Tue, 1 Feb 2022 04:05:58 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: A question for kernel code in btrfs_run_qgroups()
-Message-ID: <20220201040558.GA25465@realwakka>
-References: <20220131154040.GA25010@realwakka>
- <f5d1c08b-b843-6d5d-341d-c19890872e04@gmx.com>
+        Mon, 31 Jan 2022 23:26:48 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id F0D911B3DB1; Mon, 31 Jan 2022 23:26:41 -0500 (EST)
+Date:   Mon, 31 Jan 2022 23:26:41 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     kreijack@inwind.it
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Boris Burkov <boris@bur.io>,
+        "Apostolos B." <barz621@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        systemd Mailing List <systemd-devel@lists.freedesktop.org>
+Subject: Re: No space left errors on shutdown with systemd-homed /home dir
+Message-ID: <Yfi2gVf5QOXkaM6+@hungrycats.org>
+References: <9bdd0eb6-4a4f-e168-0fb0-77f4d753ec19@gmail.com>
+ <YfHCLhpkS+t8a8CG@zen>
+ <4263e65e-f585-e7f6-b1aa-04885c0ed662@gmail.com>
+ <YfHXFfHMeqx4MowJ@zen>
+ <CAJCQCtR5ngU8oF6apChzBgFgX1W-9CVcF9kjvgStbkcAq_TsHQ@mail.gmail.com>
+ <042e75ab-ded2-009a-d9fc-95887c26d4d2@libero.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5d1c08b-b843-6d5d-341d-c19890872e04@gmx.com>
+In-Reply-To: <042e75ab-ded2-009a-d9fc-95887c26d4d2@libero.it>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 01, 2022 at 08:21:22AM +0800, Qu Wenruo wrote:
-
-Hi Qu,
-
-Thanks for answering
-
-> 
-> 
-> On 2022/1/31 23:40, Sidong Yang wrote:
-> > Hi, I'm reading btrfs code for contributing.
-> > I have a question about code in btrfs_run_qgroups().
+On Sat, Jan 29, 2022 at 10:53:00AM +0100, Goffredo Baroncelli wrote:
+> On 27/01/2022 21.48, Chris Murphy wrote:
+> > On Wed, Jan 26, 2022 at 4:19 PM Boris Burkov <boris@bur.io> wrote:
+> [...]
 > > 
-> > It seems that it updates dirty qgroups modified in transaction.
-> 
-> Yep.
-> 
-> > And it iterates dirty qgroups with locking and unlocking qgroup_lock for
-> > protecting dirty_qgroups list. According to code, It locks before enter
-> > the loop and pick a entry and unlock. At the end of loop, It locks again
-> > for next loop. And after loop, it set some flags and unlock.
+> > systemd-homed by default uses btrfs on LUKS on loop mount, with a
+> > backing file. On login, it grows the user home file system with some
+> > percentage (I think 80%) of the free space of the underlying file
+> > system. And on logout, it does both fstrim and shrinks the fs. I don't
+> > know why it does both, it seems adequate to do only fstrim on logout
+> > to return unused blocks to the underlying file system; and to do an fs
+> > resize on login to either grow or shrink the user home file system.
 > > 
-> > I wonder that it should be locked with setting STATUS_FLAG_ON? if not,
-> > is there unnecessary locking in last loop?
+> > But also, we don't really have a great estimator of the minimum size a
+> > file system can be. `btrfs inspect-internal min-dev-size` is pretty
+> > broken right now.
+> > https://github.com/kdave/btrfs-progs/issues/271
 > 
-> From a quick look, it indeed looks like we don't need to hole
-> qgroup_lock to modify qgroup_flags.
-> In fact, just lines below, we update qgroup_flags without any lock for
-> INCONSISTENT bit.
-
-Apparently it is, but I don't know surely that it really don't need to
-hold lock while modifying qgroup_flags.
-It has FLAG_ON that it indicates that quota turned on. I think it should
-be modified carefully. Or it can be protected by other locks like
-qgroup_lock or ioctl_lock?
-
+> I tried the test case, but was unable to get a wrong value. However
+> I think that this is due to the fact that btrfs improved the bg reclaiming.
+> 
+> However tweaking the test case, I was able to trigger the problem (I
+> reduced the filesize from 1GB to 256MB, so when some files are
+> removed a BG is empty filled)
 > 
 > 
-> Unfortunately we indeed have inconsistent locking for qgroups_flags.
-
-I agree. there is a lot of codes that modify qgroup_flags without lock
-or with lock.
-
 > 
-> So it's completely possible that we may not need to do modify the
-> qgroup_flags under qgroup_lock.
+> > 
+> > I'm not sure if systemd folks would use libbtrfsutil facility to
+> > determine the minimum device shrink size? But also even the kernel
+> > doesn't have a very good idea of how small a file system can be
+> > shrunk. Right now it basically has to just start trying, and does it
+> > one block group at a time.
 > 
-> In fact there are tons of call sites that we don't hold locks for
-> qgroups_flags update.
+> I think that for the systemd uses cases (singled device FS), a simpler
+> approach would be:
 > 
-> So if you're interested in contributing to btrfs, starting from sorting
-> the qgroup_lock usage would be a excellent start.
-
-Yeah, I really interested in this. but I don't know good way to handle
-this problem. is it really good way to remove the code holding lock
-while modifying flags?
-
-Thanks,
-Sidong
-
+>     fstatfs(fd, &sfs)
+>     needed = sfs.f_blocks - sfs.f_bavail;
+>     needed *= sfs.f_bsize
 > 
-> Thanks,
-> Qu
+>     needed = roundup_64(needed, 3*(1024*1024*1024))
+> 
+> Comparing the original systemd-homed code, I made the following changes
+> - 1) f_bfree is replaced by f_bavail (which seem to be more consistent to the disk usage; to me it seems to consider also the metadata chunk allocation)
+> - 2) the needing value is rounded up of 3GB in order to consider a further 1 data chunk and 2 metadata chunk (DUP))
+> 
+> Comments ?
+
+This is closer to the right answer but not quite there yet.  A summary
+of the issues:
+
+ * Discard (called by systemd-homed in the form of trim) locks a block
+ group (makes it read-only and removes it from available space) while
+ it runs.
+
+ * Relocation (balance or filesystem resize) locks a block group while
+ it runs.
+
+ * Scrub in the worst case locks one block group per disk (but we may
+ never run scrub on a systemd-homed filesystem, so ignore this for now).
+
+ * Large (>50GB) filesystems have larger block groups than smaller
+ filesystems.  Resizing from >50GB to <50GB can require rewriting the
+ _entire_ filesystem to make a sensible number of smaller block groups
+ (high enough to be able to lock all the above block groups and still
+ have enough free space to run a transaction without them).
+
+ * System chunks aren't the same size as other chunks, which will create
+ unusable free space holes between block groups, and (after lots of
+ balancing/resizing runs) possibly create a lot of unusable free space
+ that existing extents cannot be relocated into without temporarily
+ increasing the size of the filesystem.
+
+ * Resize is a fairly dumb algorithm as algorithms go.  It works in one
+ pass, in a fixed order, and it can't fragment an extent or a block group.
+ The minimum size of a filesystem depends not just on how much data there
+ is, but how capable the resize algorithm is at arranging the data into
+ the space given all the overlapping constraints btrfs has on allocation.
+ Resize makes several size-speed tradeoffs in favor of speed (or at least
+ not in favor of size).
+
+ * The minimum filesystem size to store the data is different from
+ the minimum filesystem size to run specific btrfs data modification
+ operations.  Some metadata operations can require significant amounts
+ of space to complete.  If the filesystem is resized too small with
+ exactly the right amount of free space, it may become impossible to
+ perform metadata-intensive operations like orphan inode cleanup or
+ snapshot deletion on the next mount.  It's not possible to predict
+ these additional space requirements without doing equivalent work to
+ performing the operations and measuring the space required.  This means
+ that in order to compute the minimum filesystem size, we need to be
+ able to predict (or strongly control) the future of the filesystem,
+ at least long enough to grow the filesystem back to its service size.
+
+These combine to make it especially challenging to resize a nearly empty
+filesystem from 128GB to smaller than somewhere around 8GB (1GB data +
+1GB locked by discard + 1GB locked by relocation + 1GB metadata * 2 for
+dup + 2GB trapped free dev_extent space from earlier resize operations).
+That could be reduced to about 6GB with single metadata, but that's a
+significant resiliency trade-off if the host filesystem doesn't implement
+data integrity and self-healing.
+
+It might be doable in multiple resize passes--one to resize the filesystem
+to <50GB so that all the data can be moved into smaller block groups,
+then again to resize it to the next block group size.  In the worst
+case this copies all of the data in the filesystem multiple times, so
+it would be faster for systemd-homed to mkfs a new filesystem at the
+target size (which would have smaller block groups from the beginning)
+and simply copy the data with 'cp -a' to the new filesystem instead of
+resizing the old one.
+
+Resizing a filesystem with 1GB of data on it from over 50GB to 16GB is
+probably reliable.  8GB is less likely to succeed, and I wouldn't expect
+any smaller number to work reliably except on very simple test cases.
+
+It does suck that the kernel handles resizing below the minimum size of
+the filesystem so badly; however, even if it rejected the resize request
+cleanly with an error, it's not necessarily a good idea to attempt it.
+Pushing the lower limits of what is possible in resize to save a handful
+of GB is asking for trouble.  It's far better to overestimate generously
+than to underestimate the minimum size.
+
+> > 
+> > Adding systemd-devel@
+> > 
+> > 
+> 
+> 
+> -- 
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
