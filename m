@@ -2,113 +2,405 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC884A5EEF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Feb 2022 16:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9A94A5FC8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Feb 2022 16:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239738AbiBAPDv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Feb 2022 10:03:51 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:49984 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239671AbiBAPDu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Feb 2022 10:03:50 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2173C1F37C;
-        Tue,  1 Feb 2022 15:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1643727830;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fXdT0UryavYdRVbfBplciZI3/DfX21vWqjTM29rGsIY=;
-        b=l63n9L8zxSOxefLa2ghGKxLufeUdqPSR+z5cfhbhHqza6IBZUnb8gQS0oDUmLWyiK6wgC6
-        EBcJnFCO9QCf+f8aKawSqvRwvsly+4vlOv6qvD80h7lT8x8a5ps7jwC+R8qmclUl1CB6PV
-        24/hNx7PwoGAg6Je+V39fQzZkFTo0js=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1643727830;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fXdT0UryavYdRVbfBplciZI3/DfX21vWqjTM29rGsIY=;
-        b=VkNqQ6rPSPplHpQ/gnIsqq7eaJObQLb/6ULoXulojG44vW9V3TqdMtMdhPTc3FGrn/9sly
-        GOvfUq/RiHXhiIDQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 1ADE5A3B8C;
-        Tue,  1 Feb 2022 15:03:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 21078DA7A9; Tue,  1 Feb 2022 16:03:05 +0100 (CET)
-Date:   Tue, 1 Feb 2022 16:03:05 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v4 2/3] btrfs: defrag: don't defrag extents which is
- already at its max capacity
-Message-ID: <20220201150305.GQ14046@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <cover.1643354254.git.wqu@suse.com>
- <6da08401ba111e490c45c64fba3f9f60538d0fb8.1643354254.git.wqu@suse.com>
+        id S233605AbiBAPNo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Feb 2022 10:13:44 -0500
+Received: from mout.gmx.net ([212.227.15.19]:54837 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbiBAPNm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Feb 2022 10:13:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1643728414;
+        bh=phGuZcRdwdYZmc208RwhOjaymSGNFIZzGMt8siI6xBY=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=haBNpol5vkEfDfHQNMa1J0oaxWwSu0jPcD/9/vkLL2Cp7QWYrwe0iOF62UfroPS0P
+         9ahd3mWvHDwIt9xN3eny8oHyxRX9oGQMaHaMEBCOTDh9gUluS5LbH5CYJcP5SUNAX/
+         TzO0SZP4BH/eVX65BwUOc4EcoIGFd/xyDpwXxFec=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.1.181] ([86.8.113.40]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N2DxE-1mErJL3ngM-013ear; Tue, 01
+ Feb 2022 16:13:34 +0100
+Content-Type: multipart/mixed; boundary="------------3jlfuPScDv7HKEnB9Mo1y120"
+Message-ID: <970e0c2d-b36c-45bc-3b1f-cb1b9dbdc861@gmx.com>
+Date:   Tue, 1 Feb 2022 15:13:33 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6da08401ba111e490c45c64fba3f9f60538d0fb8.1643354254.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: [PATCH] btrfs: don't hold CPU for too long when defragging a file
+Content-Language: en-GB
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <c572e24e1556b87cadb20761edbc7e33bb93ad20.1643547144.git.wqu@suse.com>
+ <20220201145304.GP14046@twin.jikos.cz>
+From:   piorunz <piorunz@gmx.com>
+In-Reply-To: <20220201145304.GP14046@twin.jikos.cz>
+X-Provags-ID: V03:K1:WCHIOFNvMf3fvaOonlfoPjhLg3qaiZL6OOcG5eWltxMqD5eGvzy
+ +aGczO5cdFQWW853ZsUJ8Xypi2j7AwU7T/YMIJf8vGpwAx18o6ZJ6v0FmxOPL5HBqW4z+YY
+ E5I5sfpTYIxDph2Owzdswe5d33GXWwoD7iViWI5TF3bZVc2Ds1ACkFUCg4l6eXC30EIVEPt
+ jOgZMx6oh2RoD7UlbrVyw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fGUE8Zx6/7U=:5DK66FGYoN46hMmG5C4qcl
+ sQJcV6y8MRcsh0OJ9AUI1Kxz0kzFrYAIVTA9jlCo34z1ozXbPBkadv4q7cAOOBJhO5KL6fzY7
+ P9NJtT7s7A5kXBhP1UiD0fMRywcmODHDO8FTHRWaElnHwxqbZ6ITHjtLLtIjo1TU/ONdS4pAq
+ +Q0uWDSjrwv5uUFkiljfLyHyAaq6iDskq+DO8aA3O3GdT9ZzWvaUkSXvuDlL1itpWufYiE4jC
+ KEUodY9XU+VxkPGf6qTAhH1hyQ9csVZm8CcUllAVIquithCfNzDOGbDekArq42A+8Bs39aF9Q
+ oOac8M4IWvTG8UJNCE260p6N8dAGW3ZJXcLwjENustIth3ZRWD9xkvzNApjnRUpkq+QYywahC
+ +zqF2KTN1IbCZHBmMoxpjHm74GqzVwiK1dKjiaa/SpzVSXrUNa/fvtCAt+gf69Aa7klctw2bT
+ uh6agsdXeyvLY9ijYAwHGr+bi+Xru32WyOIfiQ7bGBexTJrLBfD04P2ENKXm35MQ56DvkWDv1
+ UQ09Pvc44yUrJYFz2U1hPp2bF6rgVW0avrJ2ccUAFL+co0VfPOzD8Lvce576wKtwM5Y8r7xln
+ 7SBy8xGdJrMaTtr0RbpjStD8w3bRCb9wqXgvfPz8GA4QUyIX2ESC6sckrT0keWnHVOYbe+UFV
+ zF7O3WdqhW6haRsd8ZCJfeFaXN0oJGH6XmMrLSH0Ol6PzkN3g6ZTxDitCw2zijrl0h8iCH4E/
+ 7EEWloW0gRanoHvOp3vEsisdAbcG46bpi9FxETqE218k/ehWkNdvB9wOOpeYo2KYtNcb7/S9S
+ e0XVRLxDb2Fe927QROh1QnppCN+qO1/CJQ/l8NLTSjiya2TWJ3xRGf0RGVEnfGLlSBywQ385q
+ jeGgaRL3x5IR6G426zfZMZn86pjPbCLAouh4C5sUdMbWnDDGJjAUhawOEEA1I6xKcDw/ihawM
+ q9dyjO/vJvk311WY9BZMP7LiHIVhdSXcWqIGLB0wz14D5ptWEn4kdbYnRmS0zbBUjd3+ITSCs
+ ceSR4Pl3L+Oa78iqHrsLS0WlBVMSLrdlRXWadYoCRQwWHGco08ktGqb64LxkvWCtByA/a8E9T
+ biejDt6xsbcnng=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 03:21:21PM +0800, Qu Wenruo wrote:
-> [BUG]
-> For compressed extents, defrag ioctl will always try to defrag any
-> compressed extents, wasting not only IO but also CPU time to
-> compress/decompress:
-> 
->    mkfs.btrfs -f $DEV
->    mount -o compress $DEV $MNT
->    xfs_io -f -c "pwrite -S 0xab 0 128K" $MNT/foobar
->    sync
->    xfs_io -f -c "pwrite -S 0xcd 128K 128K" $MNT/foobar
->    sync
->    echo "=== before ==="
->    xfs_io -c "fiemap -v" $MNT/foobar
->    btrfs filesystem defrag $MNT/foobar
->    sync
->    echo "=== after ==="
->    xfs_io -c "fiemap -v" $MNT/foobar
-> 
-> Then it shows the 2 128K extents just get CoW for no extra benefit, with
-> extra IO/CPU spent:
-> 
->     === before ===
->     /mnt/btrfs/file1:
->      EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->        0: [0..255]:        26624..26879       256   0x8
->        1: [256..511]:      26632..26887       256   0x9
->     === after ===
->     /mnt/btrfs/file1:
->      EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->        0: [0..255]:        26640..26895       256   0x8
->        1: [256..511]:      26648..26903       256   0x9
-> 
-> This affects not only v5.16 (after the defrag rework), but also v5.15
-> (before the defrag rework).
-> 
-> [CAUSE]
-> >From the very beginning, btrfs defrag never checks if one extent is
-> already at its max capacity (128K for compressed extents, 128M
-> otherwise).
-> 
-> And the default extent size threshold is 256K, which is already beyond
-> the compressed extent max size.
-> 
-> This means, by default btrfs defrag ioctl will mark all compressed
-> extent which is not adjacent to a hole/preallocated range for defrag.
+This is a multi-part message in MIME format.
+--------------3jlfuPScDv7HKEnB9Mo1y120
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Is this wrong for all cases though? With your change compressed extents
-would never get defragmented, while the defragmentation ioctl allows to
-change the compression algorithm, so that's a loss of functionality.
+On 01/02/2022 14:53, David Sterba wrote:
+> On Sun, Jan 30, 2022 at 08:53:15PM +0800, Qu Wenruo wrote:
+>> There is a user report about "btrfs filesystem defrag" causing 120s
+>> timeout problem.
+>
+> Do you have link of the report please?
 
-And I think we can't do that even conditionally if the algorithm is
-different, because what if we want to recompress a file with higher
-level of the same algorithm? As the level not stored anywhere the defrag
-ioctl can't decide which extents to skip to save work.
+That would be most likely my topic here on this group. I had
+conversation with Qu while discussing the topic and he commented 120s
+kernel timeouts while defragging.
+
+Topic is here on this group: "fstab autodegrag with 5.10 & 5.15 kernels,
+Debian?" (typo is hilarious haha)
+
+Link:
+https://lore.kernel.org/linux-btrfs/94244e1a-7ccd-6f68-9052-5c01876b3939@g=
+mx.com/T/#t
+
+This is filesystem in question:
+$ sudo btrfs filesystem usage /home
+Overall:
+     Device size:                   7.03TiB
+     Device allocated:              3.93TiB
+     Device unallocated:            3.10TiB
+     Device missing:                  0.00B
+     Used:                          3.90TiB
+     Free (estimated):              1.56TiB      (min: 1.56TiB)
+     Free (statfs, df):             1.56TiB
+     Data ratio:                       2.00
+     Metadata ratio:                   2.00
+     Global reserve:              512.00MiB      (used: 0.00B)
+     Multiple profiles:                  no
+
+Data,RAID10: Size:1.96TiB, Used:1.94TiB (99.46%)
+    /dev/sdd3    1001.00GiB
+    /dev/sde3    1001.00GiB
+    /dev/sda4    1001.00GiB
+    /dev/sdf4    1001.00GiB
+
+Metadata,RAID10: Size:9.00GiB, Used:3.73GiB (41.50%)
+    /dev/sdd3       4.50GiB
+    /dev/sde3       4.50GiB
+    /dev/sda4       4.50GiB
+    /dev/sdf4       4.50GiB
+
+System,RAID10: Size:64.00MiB, Used:240.00KiB (0.37%)
+    /dev/sdd3      32.00MiB
+    /dev/sde3      32.00MiB
+    /dev/sda4      32.00MiB
+    /dev/sdf4      32.00MiB
+
+Unallocated:
+    /dev/sdd3     793.48GiB
+    /dev/sde3     793.48GiB
+    /dev/sda4     793.48GiB
+    /dev/sdf4     793.48GiB
+
+
+Btrfs RAID10, consists of 4x 2TB spinners.
+Mount options are:
+/home           btrfs   noatime,space_cache=3Dv2,compress-force=3Dzstd:3 0=
+ 2
+
+I never had any timeouts for last 2 years on this server, performance is
+very good for amount of load I have on them. I only experienced timeouts
+once I decided to defrag.
+
+Snippet from sudo journalctl --utc -k -b -1 has been attached.
+Please notice how different tasks and pids are being timeouted while
+defrag took entire filesystem for itself, depriving everything else from
+accessing. Errors continued after that but I just cut this for you so
+you have the idea. Ideally, defrag should not take entire I/O for
+itself, but filesystem should continue to work as usual. Like SMART Long
+background test. It does not prevent use of the drive. That's how I feel
+defrag should work.
+
+I will be happy to provide more details if required.
+
+=2D-
+With kindest regards, Piotr.
+
+=E2=A2=80=E2=A3=B4=E2=A0=BE=E2=A0=BB=E2=A2=B6=E2=A3=A6=E2=A0=80
+=E2=A3=BE=E2=A0=81=E2=A2=A0=E2=A0=92=E2=A0=80=E2=A3=BF=E2=A1=81 Debian - T=
+he universal operating system
+=E2=A2=BF=E2=A1=84=E2=A0=98=E2=A0=B7=E2=A0=9A=E2=A0=8B=E2=A0=80 https://ww=
+w.debian.org/
+=E2=A0=88=E2=A0=B3=E2=A3=84=E2=A0=80=E2=A0=80=E2=A0=80=E2=A0=80
+
+--------------3jlfuPScDv7HKEnB9Mo1y120
+Content-Type: text/x-log; charset=UTF-8; name="journal.log"
+Content-Disposition: attachment; filename="journal.log"
+Content-Transfer-Encoding: base64
+
+SmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBJTkZPOiB0YXNrIGJ0cmZz
+LXRyYW5zYWN0aToxMzkwIGJsb2NrZWQgZm9yIG1vcmUgdGhhbiAxMjAgc2Vjb25kcy4KSmFu
+IDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgICAgICBOb3QgdGFpbnRlZCA1
+LjEwLjAtMTEtYW1kNjQgIzEgRGViaWFuIDUuMTAuOTItMQpKYW4gMjUgMjM6MjI6NDggdHRi
+aXQubWluZS5ieiBrZXJuZWw6ICJlY2hvIDAgPiAvcHJvYy9zeXMva2VybmVsL2h1bmdfdGFz
+a190aW1lb3V0X3NlY3MiIGRpc2FibGVzIHRoaXMgbWVzc2FnZS4KSmFuIDI1IDIzOjIyOjQ4
+IHR0Yml0Lm1pbmUuYnoga2VybmVsOiB0YXNrOmJ0cmZzLXRyYW5zYWN0aSBzdGF0ZTpEIHN0
+YWNrOiAgICAwIHBpZDogMTM5MCBwcGlkOiAgICAgMiBmbGFnczoweDAwMDA0MDAwCkphbiAy
+NSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogQ2FsbCBUcmFjZToKSmFuIDI1IDIz
+OjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgX19zY2hlZHVsZSsweDI4Mi8weDg3MApK
+YW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBzY2hlZHVsZSsweDQ2LzB4
+YjAKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgd2FpdF9mb3JfY29t
+bWl0KzB4NTgvMHg4MCBbYnRyZnNdCkphbiAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtl
+cm5lbDogID8gYWRkX3dhaXRfcXVldWVfZXhjbHVzaXZlKzB4NzAvMHg3MApKYW4gMjUgMjM6
+MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBidHJmc19jb21taXRfdHJhbnNhY3Rpb24r
+MHg5MDcvMHhiNDAgW2J0cmZzXQpKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJu
+ZWw6ICA/IHN0YXJ0X3RyYW5zYWN0aW9uKzB4ZDIvMHg1ODAgW2J0cmZzXQpKYW4gMjUgMjM6
+MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICA/IHVzbGVlcF9yYW5nZSsweDgwLzB4ODAK
+SmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgdHJhbnNhY3Rpb25fa3Ro
+cmVhZCsweDE0Yy8weDE3MCBbYnRyZnNdCkphbiAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6
+IGtlcm5lbDogID8gYnRyZnNfY2xlYW51cF90cmFuc2FjdGlvbi5pc3JhLjArMHg1OTAvMHg1
+OTAgW2J0cmZzXQpKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBrdGhy
+ZWFkKzB4MTFiLzB4MTQwCkphbiAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDog
+ID8gX19rdGhyZWFkX2JpbmRfbWFzaysweDYwLzB4NjAKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0
+Lm1pbmUuYnoga2VybmVsOiAgcmV0X2Zyb21fZm9yaysweDIyLzB4MzAKSmFuIDI1IDIzOjIy
+OjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBJTkZPOiB0YXNrIFN0cmVhbVR+bnMgIzc0Mzoy
+MzI4NzAxIGJsb2NrZWQgZm9yIG1vcmUgdGhhbiAxMjAgc2Vjb25kcy4KSmFuIDI1IDIzOjIy
+OjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgICAgICBOb3QgdGFpbnRlZCA1LjEwLjAtMTEt
+YW1kNjQgIzEgRGViaWFuIDUuMTAuOTItMQpKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5i
+eiBrZXJuZWw6ICJlY2hvIDAgPiAvcHJvYy9zeXMva2VybmVsL2h1bmdfdGFza190aW1lb3V0
+X3NlY3MiIGRpc2FibGVzIHRoaXMgbWVzc2FnZS4KSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1p
+bmUuYnoga2VybmVsOiB0YXNrOlN0cmVhbVR+bnMgIzc0MyBzdGF0ZTpEIHN0YWNrOiAgICAw
+IHBpZDoyMzI4NzAxIHBwaWQ6ICAgICAxIGZsYWdzOjB4MDAwMDQwMDAKSmFuIDI1IDIzOjIy
+OjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBDYWxsIFRyYWNlOgpKYW4gMjUgMjM6MjI6NDgg
+dHRiaXQubWluZS5ieiBrZXJuZWw6ICBfX3NjaGVkdWxlKzB4MjgyLzB4ODcwCkphbiAyNSAy
+MzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIHNjaGVkdWxlKzB4NDYvMHhiMApKYW4g
+MjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICB3YWl0X2Zvcl9jb21taXQrMHg1
+OC8weDgwIFtidHJmc10KSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAg
+PyBhZGRfd2FpdF9xdWV1ZV9leGNsdXNpdmUrMHg3MC8weDcwCkphbiAyNSAyMzoyMjo0OCB0
+dGJpdC5taW5lLmJ6IGtlcm5lbDogIGJ0cmZzX2NvbW1pdF90cmFuc2FjdGlvbisweDkwNy8w
+eGI0MCBbYnRyZnNdCkphbiAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogID8g
+X2NvbmRfcmVzY2hlZCsweDE2LzB4NDAKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnog
+a2VybmVsOiAgPyBkcHV0KzB4Y2EvMHgyZjAKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUu
+Ynoga2VybmVsOiAgYnRyZnNfc3luY19maWxlKzB4Mzk5LzB4NTAwIFtidHJmc10KSmFuIDI1
+IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgX194NjRfc3lzX2ZzeW5jKzB4MzQv
+MHg2MApKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBkb19zeXNjYWxs
+XzY0KzB4MzMvMHg4MApKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBl
+bnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5CkphbiAyNSAyMzoyMjo0
+OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUklQOiAwMDMzOjB4N2ZiM2I0YmNjNWViCkphbiAy
+NSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUlNQOiAwMDJiOjAwMDA3ZmIzOTEx
+OGE5MDAgRUZMQUdTOiAwMDAwMDI5MyBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDA0YQpKYW4g
+MjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6IFJBWDogZmZmZmZmZmZmZmZmZmZk
+YSBSQlg6IDAwMDA3ZmIzNmFhODAyODAgUkNYOiAwMDAwN2ZiM2I0YmNjNWViCkphbiAyNSAy
+MzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUkRYOiAwMDAwN2ZiM2I0YmQ2MzYwIFJT
+STogMDAwMDAwMDAwMDAwMDAwMSBSREk6IDAwMDAwMDAwMDAwMDAwNTcKSmFuIDI1IDIzOjIy
+OjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBSQlA6IDAwMDAwMDAwMDAwMDA5NmUgUjA4OiAw
+MDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDdmYjM2YWQ1NTFjMApKYW4gMjUgMjM6MjI6NDgg
+dHRiaXQubWluZS5ieiBrZXJuZWw6IFIxMDogMDAwMDAwMDAwMDAwMDA0MCBSMTE6IDAwMDAw
+MDAwMDAwMDAyOTMgUjEyOiAwMDAwN2ZiM2IwOGUyN2E5CkphbiAyNSAyMzoyMjo0OCB0dGJp
+dC5taW5lLmJ6IGtlcm5lbDogUjEzOiAwMDAwMDAwMDAwMDAwMTBiIFIxNDogMDAwMDdmYjM2
+YWViMTdjMCBSMTU6IDAwMDA3ZmIzNmFhZmIzZDAKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1p
+bmUuYnoga2VybmVsOiBJTkZPOiB0YXNrIG1vbmVyb2Q6MjIxMTgwNCBibG9ja2VkIGZvciBt
+b3JlIHRoYW4gMTIwIHNlY29uZHMuCkphbiAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtl
+cm5lbDogICAgICAgTm90IHRhaW50ZWQgNS4xMC4wLTExLWFtZDY0ICMxIERlYmlhbiA1LjEw
+LjkyLTEKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAiZWNobyAwID4g
+L3Byb2Mvc3lzL2tlcm5lbC9odW5nX3Rhc2tfdGltZW91dF9zZWNzIiBkaXNhYmxlcyB0aGlz
+IG1lc3NhZ2UuCkphbiAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogdGFzazpt
+b25lcm9kICAgICAgICAgc3RhdGU6RCBzdGFjazogICAgMCBwaWQ6MjIxMTgwNCBwcGlkOjIy
+MTE3ODYgZmxhZ3M6MHgwMDAwNDAwMApKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBr
+ZXJuZWw6IENhbGwgVHJhY2U6CkphbiAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5l
+bDogIF9fc2NoZWR1bGUrMHgyODIvMHg4NzAKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUu
+Ynoga2VybmVsOiAgc2NoZWR1bGUrMHg0Ni8weGIwCkphbiAyNSAyMzoyMjo0OCB0dGJpdC5t
+aW5lLmJ6IGtlcm5lbDogIHdhaXRfZm9yX2NvbW1pdCsweDU4LzB4ODAgW2J0cmZzXQpKYW4g
+MjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICA/IGFkZF93YWl0X3F1ZXVlX2V4
+Y2x1c2l2ZSsweDcwLzB4NzAKSmFuIDI1IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVs
+OiAgYnRyZnNfY29tbWl0X3RyYW5zYWN0aW9uKzB4OTA3LzB4YjQwIFtidHJmc10KSmFuIDI1
+IDIzOjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgPyBidHJmc193YWl0X29yZGVyZWRf
+cmFuZ2UrMHgxOTAvMHgyMTAgW2J0cmZzXQpKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5i
+eiBrZXJuZWw6ICBidHJmc19zeW5jX2ZpbGUrMHgzOTkvMHg1MDAgW2J0cmZzXQpKYW4gMjUg
+MjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBfX3g2NF9zeXNfZmRhdGFzeW5jKzB4
+NDcvMHg4MApKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBkb19zeXNj
+YWxsXzY0KzB4MzMvMHg4MApKYW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6
+ICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5CkphbiAyNSAyMzoy
+Mjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUklQOiAwMDMzOjB4N2YxNzE3YjgwYjdiCkph
+biAyNSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUlNQOiAwMDJiOjAwMDA3ZWY0
+ZTdmZmNkOTAgRUZMQUdTOiAwMDAwMDI5MyBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDA0YgpK
+YW4gMjUgMjM6MjI6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6IFJBWDogZmZmZmZmZmZmZmZm
+ZmZkYSBSQlg6IDAwMDAwMDAwMDAwMDAwMDAgUkNYOiAwMDAwN2YxNzE3YjgwYjdiCkphbiAy
+NSAyMzoyMjo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUkRYOiAwMDAwMDAwMDAxZTk0NjE3
+IFJTSTogMDAwMDAwMDAwMDAwMDAwMCBSREk6IDAwMDAwMDAwMDAwMDAwMDUKSmFuIDI1IDIz
+OjIyOjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBSQlA6IDAwMDA3ZWY0ZDRkYmY5ZDggUjA4
+OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDdlZjRkODUwNGE2MApKYW4gMjUgMjM6MjI6
+NDggdHRiaXQubWluZS5ieiBrZXJuZWw6IFIxMDogMDAwMDAwMWU5MWUzYTAwMCBSMTE6IDAw
+MDAwMDAwMDAwMDAyOTMgUjEyOiAwMDAwN2VmNGU3ZmZjZTMwCkphbiAyNSAyMzoyMjo0OCB0
+dGJpdC5taW5lLmJ6IGtlcm5lbDogUjEzOiAwMDAwMDAwMDAwMDAwMWEwIFIxNDogMDAwMDU2
+MWFjMTI2ZDlkMCBSMTU6IDAwMDA1NjFhYzEyNmYxZTAKSmFuIDI2IDAxOjQ3OjQ4IHR0Yml0
+Lm1pbmUuYnoga2VybmVsOiBJTkZPOiB0YXNrIGJ0cmZzLXRyYW5zYWN0aToxMzkwIGJsb2Nr
+ZWQgZm9yIG1vcmUgdGhhbiAxMjAgc2Vjb25kcy4KSmFuIDI2IDAxOjQ3OjQ4IHR0Yml0Lm1p
+bmUuYnoga2VybmVsOiAgICAgICBOb3QgdGFpbnRlZCA1LjEwLjAtMTEtYW1kNjQgIzEgRGVi
+aWFuIDUuMTAuOTItMQpKYW4gMjYgMDE6NDc6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICJl
+Y2hvIDAgPiAvcHJvYy9zeXMva2VybmVsL2h1bmdfdGFza190aW1lb3V0X3NlY3MiIGRpc2Fi
+bGVzIHRoaXMgbWVzc2FnZS4KSmFuIDI2IDAxOjQ3OjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVs
+OiB0YXNrOmJ0cmZzLXRyYW5zYWN0aSBzdGF0ZTpEIHN0YWNrOiAgICAwIHBpZDogMTM5MCBw
+cGlkOiAgICAgMiBmbGFnczoweDAwMDA0MDAwCkphbiAyNiAwMTo0Nzo0OCB0dGJpdC5taW5l
+LmJ6IGtlcm5lbDogQ2FsbCBUcmFjZToKSmFuIDI2IDAxOjQ3OjQ4IHR0Yml0Lm1pbmUuYnog
+a2VybmVsOiAgX19zY2hlZHVsZSsweDI4Mi8weDg3MApKYW4gMjYgMDE6NDc6NDggdHRiaXQu
+bWluZS5ieiBrZXJuZWw6ICBzY2hlZHVsZSsweDQ2LzB4YjAKSmFuIDI2IDAxOjQ3OjQ4IHR0
+Yml0Lm1pbmUuYnoga2VybmVsOiAgd2FpdF9mb3JfY29tbWl0KzB4NTgvMHg4MCBbYnRyZnNd
+CkphbiAyNiAwMTo0Nzo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogID8gYWRkX3dhaXRfcXVl
+dWVfZXhjbHVzaXZlKzB4NzAvMHg3MApKYW4gMjYgMDE6NDc6NDggdHRiaXQubWluZS5ieiBr
+ZXJuZWw6ICBidHJmc19jb21taXRfdHJhbnNhY3Rpb24rMHg5MDcvMHhiNDAgW2J0cmZzXQpK
+YW4gMjYgMDE6NDc6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICA/IHN0YXJ0X3RyYW5zYWN0
+aW9uKzB4ZDIvMHg1ODAgW2J0cmZzXQpKYW4gMjYgMDE6NDc6NDggdHRiaXQubWluZS5ieiBr
+ZXJuZWw6ICA/IHVzbGVlcF9yYW5nZSsweDgwLzB4ODAKSmFuIDI2IDAxOjQ3OjQ4IHR0Yml0
+Lm1pbmUuYnoga2VybmVsOiAgdHJhbnNhY3Rpb25fa3RocmVhZCsweDE0Yy8weDE3MCBbYnRy
+ZnNdCkphbiAyNiAwMTo0Nzo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogID8gYnRyZnNfY2xl
+YW51cF90cmFuc2FjdGlvbi5pc3JhLjArMHg1OTAvMHg1OTAgW2J0cmZzXQpKYW4gMjYgMDE6
+NDc6NDggdHRiaXQubWluZS5ieiBrZXJuZWw6ICBrdGhyZWFkKzB4MTFiLzB4MTQwCkphbiAy
+NiAwMTo0Nzo0OCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogID8gX19rdGhyZWFkX2JpbmRfbWFz
+aysweDYwLzB4NjAKSmFuIDI2IDAxOjQ3OjQ4IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgcmV0
+X2Zyb21fZm9yaysweDIyLzB4MzAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2Vy
+bmVsOiBJTkZPOiB0YXNrIHdvcmtlcjoyMzcxMTQwIGJsb2NrZWQgZm9yIG1vcmUgdGhhbiAx
+MjAgc2Vjb25kcy4KSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgICAg
+ICBOb3QgdGFpbnRlZCA1LjEwLjAtMTEtYW1kNjQgIzEgRGViaWFuIDUuMTAuOTItMQpKYW4g
+MjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICJlY2hvIDAgPiAvcHJvYy9zeXMv
+a2VybmVsL2h1bmdfdGFza190aW1lb3V0X3NlY3MiIGRpc2FibGVzIHRoaXMgbWVzc2FnZS4K
+SmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiB0YXNrOndvcmtlciAgICAg
+ICAgICBzdGF0ZTpEIHN0YWNrOiAgICAwIHBpZDoyMzcxMTQwIHBwaWQ6ICAgICAxIGZsYWdz
+OjB4MDAwMDAzMjAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBDYWxs
+IFRyYWNlOgpKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICBfX3NjaGVk
+dWxlKzB4MjgyLzB4ODcwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDog
+IHNjaGVkdWxlKzB4NDYvMHhiMApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJu
+ZWw6ICByd3NlbV9kb3duX3dyaXRlX3Nsb3dwYXRoKzB4MjQyLzB4NGMwCkphbiAyNiAwODo1
+NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogID8gX19hYV9sYWJlbF9uZXh0X25vdF9pbl9z
+ZXQrMHg1OC8weGIwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIGJ0
+cmZzX2ZpbGVfd3JpdGVfaXRlcisweDcyLzB4NjUwIFtidHJmc10KSmFuIDI2IDA4OjU0OjQ0
+IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgPyBpb3ZlY19mcm9tX3VzZXIrMHg5ZS8weDE3MApK
+YW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICBkb19pdGVyX3JlYWR2X3dy
+aXRldisweDE1Mi8weDFiMApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6
+ICBkb19pdGVyX3dyaXRlKzB4N2MvMHgxYjAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUu
+Ynoga2VybmVsOiAgdmZzX3dyaXRldisweGE0LzB4MTQwCkphbiAyNiAwODo1NDo0NCB0dGJp
+dC5taW5lLmJ6IGtlcm5lbDogID8gX19zZWNjb21wX2ZpbHRlcisweDdmLzB4NjgwCkphbiAy
+NiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogID8gX2NvcHlfZnJvbV91c2VyKzB4
+MjgvMHg2MApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICA/IF9fZmdl
+dF9maWxlcysweDk3LzB4YzAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVs
+OiAgX194NjRfc3lzX3B3cml0ZXYrMHhhZC8weGYwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5t
+aW5lLmJ6IGtlcm5lbDogIGRvX3N5c2NhbGxfNjQrMHgzMy8weDgwCkphbiAyNiAwODo1NDo0
+NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFt
+ZSsweDQ0LzB4YTkKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBSSVA6
+IDAwMzM6MHg3ZjFhMzg1ZDJmNDAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2Vy
+bmVsOiBSU1A6IDAwMmI6MDAwMDdmMTk3YzlkZDVhMCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdf
+UkFYOiAwMDAwMDAwMDAwMDAwMTI4CkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtl
+cm5lbDogUkFYOiBmZmZmZmZmZmZmZmZmZmRhIFJCWDogMDAwMDdmMTkyODVmNjU3MCBSQ1g6
+IDAwMDA3ZjFhMzg1ZDJmNDAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVs
+OiBSRFg6IDAwMDAwMDAwMDAwMDAwMjIgUlNJOiAwMDAwN2YxOWUwMDQxOTMwIFJESTogMDAw
+MDAwMDAwMDAwMDAxNgpKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IFJC
+UDogMDAwMDU2NDkwNDIyYzZiMCBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAw
+MDAwMDAwMDAwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUjEwOiAw
+MDAwMDAwZDY5NjEwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6IDAwMDA1NjQ5MDM4
+NmY0OTIKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBSMTM6IDAwMDA1
+NjQ5MDQyMmM3MTggUjE0OiAwMDAwN2YxOWUwMDQxYjYwIFIxNTogMDAwMDdmMTk4NDAwMGI5
+MApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IElORk86IHRhc2sgd29y
+a2VyOjIzNzExNDEgYmxvY2tlZCBmb3IgbW9yZSB0aGFuIDEyMCBzZWNvbmRzLgpKYW4gMjYg
+MDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICAgICAgIE5vdCB0YWludGVkIDUuMTAu
+MC0xMS1hbWQ2NCAjMSBEZWJpYW4gNS4xMC45Mi0xCkphbiAyNiAwODo1NDo0NCB0dGJpdC5t
+aW5lLmJ6IGtlcm5lbDogImVjaG8gMCA+IC9wcm9jL3N5cy9rZXJuZWwvaHVuZ190YXNrX3Rp
+bWVvdXRfc2VjcyIgZGlzYWJsZXMgdGhpcyBtZXNzYWdlLgpKYW4gMjYgMDg6NTQ6NDQgdHRi
+aXQubWluZS5ieiBrZXJuZWw6IHRhc2s6d29ya2VyICAgICAgICAgIHN0YXRlOkQgc3RhY2s6
+ICAgIDAgcGlkOjIzNzExNDEgcHBpZDogICAgIDEgZmxhZ3M6MHgwMDAwMDMyMApKYW4gMjYg
+MDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IENhbGwgVHJhY2U6CkphbiAyNiAwODo1
+NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIF9fc2NoZWR1bGUrMHgyODIvMHg4NzAKSmFu
+IDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgc2NoZWR1bGUrMHg0Ni8weGIw
+CkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIHJ3c2VtX2Rvd25fd3Jp
+dGVfc2xvd3BhdGgrMHgyNDIvMHg0YzAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnog
+a2VybmVsOiAgPyBfX2FhX2xhYmVsX25leHRfbm90X2luX3NldCsweDU4LzB4YjAKSmFuIDI2
+IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgYnRyZnNfZmlsZV93cml0ZV9pdGVy
+KzB4NzIvMHg2NTAgW2J0cmZzXQpKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJu
+ZWw6ICA/IGlvdmVjX2Zyb21fdXNlcisweDllLzB4MTcwCkphbiAyNiAwODo1NDo0NCB0dGJp
+dC5taW5lLmJ6IGtlcm5lbDogIGRvX2l0ZXJfcmVhZHZfd3JpdGV2KzB4MTUyLzB4MWIwCkph
+biAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIGRvX2l0ZXJfd3JpdGUrMHg3
+Yy8weDFiMApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICB2ZnNfd3Jp
+dGV2KzB4YTQvMHgxNDAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAg
+PyBfX3NlY2NvbXBfZmlsdGVyKzB4N2YvMHg2ODAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1p
+bmUuYnoga2VybmVsOiAgPyBfY29weV9mcm9tX3VzZXIrMHgyOC8weDYwCkphbiAyNiAwODo1
+NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogID8gX19mZ2V0X2ZpbGVzKzB4OTcvMHhjMApK
+YW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICBfX3g2NF9zeXNfcHdyaXRl
+disweGFkLzB4ZjAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgZG9f
+c3lzY2FsbF82NCsweDMzLzB4ODAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2Vy
+bmVsOiAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDQvMHhhOQpKYW4gMjYg
+MDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IFJJUDogMDAzMzoweDdmMWEzODVkMmY0
+MApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IFJTUDogMDAyYjowMDAw
+N2YxOTllZmZjNWEwIEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IDAwMDAwMDAwMDAwMDAx
+MjgKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBSQVg6IGZmZmZmZmZm
+ZmZmZmZmZGEgUkJYOiAwMDAwN2YxOWQ0OWQ0NTcwIFJDWDogMDAwMDdmMWEzODVkMmY0MApK
+YW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IFJEWDogMDAwMDAwMDAwMDAw
+MDAyMiBSU0k6IDAwMDA3ZjE5ZTAxMzJjZTAgUkRJOiAwMDAwMDAwMDAwMDAwMDE2CkphbiAy
+NiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUkJQOiAwMDAwNTY0OTA0MjJjNmIw
+IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IDAwMDAwMDAwMDAwMDAwMDAKSmFuIDI2IDA4
+OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiBSMTA6IDAwMDAwMDBkNjk2NDAwMDAgUjEx
+OiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDU2NDkwMzg2ZjQ5MgpKYW4gMjYgMDg6NTQ6
+NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IFIxMzogMDAwMDU2NDkwNDIyYzcxOCBSMTQ6IDAw
+MDA3ZjE5ZTAxMzJmMTAgUjE1OiAwMDAwN2YxOTUwMDAwYjkwCkphbiAyNiAwODo1NDo0NCB0
+dGJpdC5taW5lLmJ6IGtlcm5lbDogSU5GTzogdGFzayB3b3JrZXI6MjM3MTE0MiBibG9ja2Vk
+IGZvciBtb3JlIHRoYW4gMTIwIHNlY29uZHMuCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5l
+LmJ6IGtlcm5lbDogICAgICAgTm90IHRhaW50ZWQgNS4xMC4wLTExLWFtZDY0ICMxIERlYmlh
+biA1LjEwLjkyLTEKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAiZWNo
+byAwID4gL3Byb2Mvc3lzL2tlcm5lbC9odW5nX3Rhc2tfdGltZW91dF9zZWNzIiBkaXNhYmxl
+cyB0aGlzIG1lc3NhZ2UuCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDog
+dGFzazp3b3JrZXIgICAgICAgICAgc3RhdGU6RCBzdGFjazogICAgMCBwaWQ6MjM3MTE0MiBw
+cGlkOiAgICAgMSBmbGFnczoweDAwMDAwMzIwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5l
+LmJ6IGtlcm5lbDogQ2FsbCBUcmFjZToKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnog
+a2VybmVsOiAgX19zY2hlZHVsZSsweDI4Mi8weDg3MApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQu
+bWluZS5ieiBrZXJuZWw6ICA/IHJ3c2VtX3NwaW5fb25fb3duZXIrMHg3NC8weGQwCkphbiAy
+NiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIHNjaGVkdWxlKzB4NDYvMHhiMApK
+YW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICByd3NlbV9kb3duX3dyaXRl
+X3Nsb3dwYXRoKzB4MjQyLzB4NGMwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtl
+cm5lbDogID8gX19hYV9sYWJlbF9uZXh0X25vdF9pbl9zZXQrMHg1OC8weGIwCkphbiAyNiAw
+ODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIGJ0cmZzX2ZpbGVfd3JpdGVfaXRlcisw
+eDcyLzB4NjUwIFtidHJmc10KSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVs
+OiAgZG9faXRlcl9yZWFkdl93cml0ZXYrMHgxNTIvMHgxYjAKSmFuIDI2IDA4OjU0OjQ0IHR0
+Yml0Lm1pbmUuYnoga2VybmVsOiAgZG9faXRlcl93cml0ZSsweDdjLzB4MWIwCkphbiAyNiAw
+ODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogIHZmc193cml0ZXYrMHhhNC8weDE0MApK
+YW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICA/IF9jb3B5X2Zyb21fdXNl
+cisweDI4LzB4NjAKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVsOiAgPyBf
+X2ZnZXRfZmlsZXMrMHg5Ny8weGMwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtl
+cm5lbDogIF9feDY0X3N5c19wd3JpdGV2KzB4YWQvMHhmMApKYW4gMjYgMDg6NTQ6NDQgdHRi
+aXQubWluZS5ieiBrZXJuZWw6ICBkb19zeXNjYWxsXzY0KzB4MzMvMHg4MApKYW4gMjYgMDg6
+NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6ICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3
+ZnJhbWUrMHg0NC8weGE5CkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDog
+UklQOiAwMDMzOjB4N2YxYTM4NWQyZjQwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6
+IGtlcm5lbDogUlNQOiAwMDJiOjAwMDA3ZjE5Yjc3ZmQ1YTAgRUZMQUdTOiAwMDAwMDI0NiBP
+UklHX1JBWDogMDAwMDAwMDAwMDAwMDEyOApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5i
+eiBrZXJuZWw6IFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDA3ZjE5YjRhZWRiOTAg
+UkNYOiAwMDAwN2YxYTM4NWQyZjQwCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtl
+cm5lbDogUkRYOiAwMDAwMDAwMDAwMDAwMDA0IFJTSTogMDAwMDdmMTllMDAwMzEyMCBSREk6
+IDAwMDAwMDAwMDAwMDAwMTYKSmFuIDI2IDA4OjU0OjQ0IHR0Yml0Lm1pbmUuYnoga2VybmVs
+OiBSQlA6IDAwMDA1NjQ5MDQyMmM2YjAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAw
+MDAwMDAwMDAwMDAwMApKYW4gMjYgMDg6NTQ6NDQgdHRiaXQubWluZS5ieiBrZXJuZWw6IFIx
+MDogMDAwMDAwMGQ2OTQ4MDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwNTY0
+OTAzODZmNDkyCkphbiAyNiAwODo1NDo0NCB0dGJpdC5taW5lLmJ6IGtlcm5lbDogUjEzOiAw
+MDAwNTY0OTA0MjJjNzE4IFIxNDogMDAwMDdmMTllMDA0MmIwMCBSMTU6IDAwMDA1NjQ5MDQ0
+Y2I0MzAK
+
+--------------3jlfuPScDv7HKEnB9Mo1y120--
