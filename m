@@ -2,315 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E9F4A7492
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Feb 2022 16:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537254A74D6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Feb 2022 16:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbiBBP0R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Feb 2022 10:26:17 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:44742 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbiBBP0Q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Feb 2022 10:26:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 70A1F60E44
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Feb 2022 15:26:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C81C004E1
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Feb 2022 15:26:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643815575;
-        bh=k+NT3KNm2vmdszYtNwkFEcn21iZAT2lDyCQAWzQivcQ=;
-        h=From:To:Subject:Date:From;
-        b=gIdHV370KKQzcWymZkfRyK6AXSJ2FaF0KUYTrvQLjdJZObB+sSF+MGJ3AUPqitNef
-         a1lvpQyIQ1aKqqw6OGkLtISRY/dCpoXJe2SWF6CRb8TLtEKuhEOj0Rn9pU3JUHpntf
-         Hp/pn4RgoJjs5gBTa/i7vCJjj76+F6Wo371lX/LEApftGI8Ve7nhlBF+CveLgER4mI
-         LgW/Xpe+/drf4xNMWOCNIKjXKVxcDwMDeECk1/GXG6D27Z+sEiajEZ+WBYFKLIUrts
-         +qvSuJWGtVXfY1yePYCyqm+aoPmbODgPJqU1aWxd+fU2d8Hss8JcGEP/Q6muExi7Sd
-         Q5JUwer6OguCg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: get rid of warning on transaction commit when using flushoncommit
-Date:   Wed,  2 Feb 2022 15:26:09 +0000
-Message-Id: <f47e0cbbad232ab8962161622f71d8093bcc5108.1643814527.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S1345542AbiBBPmq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Feb 2022 10:42:46 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:48276 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbiBBPmp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Feb 2022 10:42:45 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BBFB51F397;
+        Wed,  2 Feb 2022 15:42:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1643816564;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NDuwD0BEd9DbRlsE0HpE8l/M5E+o6xPfWdxLvfj3lEI=;
+        b=g735szYdqGTjRsrl9hn0iddHxNhVH/eOGULoqsS0wAOcgujwWkil9iYvLQ7ozfwoks+CjT
+        VjPlWKsOEVfyfT/OTLChFeCGISyCv9gbo9x5N6GXWnGMY1clep2xuZRk4yz8uiJc8kSzbs
+        Loe6P4Yg7kgGopRWhxMR+t18NPsiKdc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1643816564;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NDuwD0BEd9DbRlsE0HpE8l/M5E+o6xPfWdxLvfj3lEI=;
+        b=wlIOs4EJst3vcs7e4sl1m+0IPUDuz1yaGcVur9T5DBLMG9EqMAKlhyS6AarN4wPnBfrsq9
+        15A6SZtDl+pVCtCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id B3495A3B8C;
+        Wed,  2 Feb 2022 15:42:44 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 357B7DA781; Wed,  2 Feb 2022 16:42:00 +0100 (CET)
+Date:   Wed, 2 Feb 2022 16:42:00 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     piorunz <piorunz@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: don't hold CPU for too long when defragging a file
+Message-ID: <20220202154200.GA14046@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, piorunz <piorunz@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <c572e24e1556b87cadb20761edbc7e33bb93ad20.1643547144.git.wqu@suse.com>
+ <20220201145304.GP14046@twin.jikos.cz>
+ <970e0c2d-b36c-45bc-3b1f-cb1b9dbdc861@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <970e0c2d-b36c-45bc-3b1f-cb1b9dbdc861@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Feb 01, 2022 at 03:13:33PM +0000, piorunz wrote:
+> On 01/02/2022 14:53, David Sterba wrote:
+> > On Sun, Jan 30, 2022 at 08:53:15PM +0800, Qu Wenruo wrote:
+> >> There is a user report about "btrfs filesystem defrag" causing 120s
+> >> timeout problem.
+> >
+> > Do you have link of the report please?
+> 
+> That would be most likely my topic here on this group. I had
+> conversation with Qu while discussing the topic and he commented 120s
+> kernel timeouts while defragging.
+> 
+> Topic is here on this group: "fstab autodegrag with 5.10 & 5.15 kernels,
+> Debian?" (typo is hilarious haha)
+> 
+> Link:
+> https://lore.kernel.org/linux-btrfs/94244e1a-7ccd-6f68-9052-5c01876b3939@gmx.com/T/#t
+> 
+> This is filesystem in question:
+> $ sudo btrfs filesystem usage /home
+> Overall:
+>      Device size:                   7.03TiB
+>      Device allocated:              3.93TiB
+>      Device unallocated:            3.10TiB
+>      Device missing:                  0.00B
+>      Used:                          3.90TiB
+>      Free (estimated):              1.56TiB      (min: 1.56TiB)
+>      Free (statfs, df):             1.56TiB
+>      Data ratio:                       2.00
+>      Metadata ratio:                   2.00
+>      Global reserve:              512.00MiB      (used: 0.00B)
+>      Multiple profiles:                  no
+> 
+> Data,RAID10: Size:1.96TiB, Used:1.94TiB (99.46%)
+>     /dev/sdd3    1001.00GiB
+>     /dev/sde3    1001.00GiB
+>     /dev/sda4    1001.00GiB
+>     /dev/sdf4    1001.00GiB
+> 
+> Metadata,RAID10: Size:9.00GiB, Used:3.73GiB (41.50%)
+>     /dev/sdd3       4.50GiB
+>     /dev/sde3       4.50GiB
+>     /dev/sda4       4.50GiB
+>     /dev/sdf4       4.50GiB
+> 
+> System,RAID10: Size:64.00MiB, Used:240.00KiB (0.37%)
+>     /dev/sdd3      32.00MiB
+>     /dev/sde3      32.00MiB
+>     /dev/sda4      32.00MiB
+>     /dev/sdf4      32.00MiB
+> 
+> Unallocated:
+>     /dev/sdd3     793.48GiB
+>     /dev/sde3     793.48GiB
+>     /dev/sda4     793.48GiB
+>     /dev/sdf4     793.48GiB
+> 
+> 
+> Btrfs RAID10, consists of 4x 2TB spinners.
+> Mount options are:
+> /home           btrfs   noatime,space_cache=v2,compress-force=zstd:3 0 2
+> 
+> I never had any timeouts for last 2 years on this server, performance is
+> very good for amount of load I have on them. I only experienced timeouts
+> once I decided to defrag.
+> 
+> Snippet from sudo journalctl --utc -k -b -1 has been attached.
+> Please notice how different tasks and pids are being timeouted while
+> defrag took entire filesystem for itself, depriving everything else from
+> accessing. Errors continued after that but I just cut this for you so
+> you have the idea. Ideally, defrag should not take entire I/O for
+> itself, but filesystem should continue to work as usual. Like SMART Long
+> background test. It does not prevent use of the drive. That's how I feel
+> defrag should work.
+> 
+> I will be happy to provide more details if required.
 
-When using the flushoncommit mount option, during almost every transaction
-commit we trigger a warning from __writeback_inodes_sb_nr():
-
-  $ cat fs/fs-writeback.c:
-  (...)
-  static void __writeback_inodes_sb_nr(struct super_block *sb, ...
-  {
-        (...)
-        WARN_ON(!rwsem_is_locked(&sb->s_umount));
-        (...)
-  }
-  (...)
-
-The trace produced in dmesg looks like the following:
-
-[  947.470439] ------------[ cut here ]------------
-[  947.473890] WARNING: CPU: 5 PID: 930 at fs/fs-writeback.c:2610 __writeback_inodes_sb_nr+0x7e/0xb3
-[  947.481623] Modules linked in: nfsd nls_cp437 cifs asn1_decoder cifs_arc4 fscache cifs_md4 ipmi_ssif
-[  947.489571] CPU: 5 PID: 930 Comm: btrfs-transacti Not tainted 95.16.3-srb-asrock-00001-g36437ad63879 #186
-[  947.497969] RIP: 0010:__writeback_inodes_sb_nr+0x7e/0xb3
-[  947.502097] Code: 24 10 4c 89 44 24 18 c6 (...)
-[  947.519760] RSP: 0018:ffffc90000777e10 EFLAGS: 00010246
-[  947.523818] RAX: 0000000000000000 RBX: 0000000000963300 RCX: 0000000000000000
-[  947.529765] RDX: 0000000000000000 RSI: 000000000000fa51 RDI: ffffc90000777e50
-[  947.535740] RBP: ffff888101628a90 R08: ffff888100955800 R09: ffff888100956000
-[  947.541701] R10: 0000000000000002 R11: 0000000000000001 R12: ffff888100963488
-[  947.547645] R13: ffff888100963000 R14: ffff888112fb7200 R15: ffff888100963460
-[  947.553621] FS:  0000000000000000(0000) GS:ffff88841fd40000(0000) knlGS:0000000000000000
-[  947.560537] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  947.565122] CR2: 0000000008be50c4 CR3: 000000000220c000 CR4: 00000000001006e0
-[  947.571072] Call Trace:
-[  947.572354]  <TASK>
-[  947.573266]  btrfs_commit_transaction+0x1f1/0x998
-[  947.576785]  ? start_transaction+0x3ab/0x44e
-[  947.579867]  ? schedule_timeout+0x8a/0xdd
-[  947.582716]  transaction_kthread+0xe9/0x156
-[  947.585721]  ? btrfs_cleanup_transaction.isra.0+0x407/0x407
-[  947.590104]  kthread+0x131/0x139
-[  947.592168]  ? set_kthread_struct+0x32/0x32
-[  947.595174]  ret_from_fork+0x22/0x30
-[  947.597561]  </TASK>
-[  947.598553] ---[ end trace 644721052755541c ]---
-
-This is because we started using writeback_inodes_sb() to flush delalloc
-when comitting a transaction (when using -o flushoncommit), in order to
-avoid deadlocks with filesystem freeze operations. This change was made
-by commit ce8ea7cc6eb313 ("btrfs: don't call btrfs_start_delalloc_roots
-in flushoncommit"). After that change we started producing that warning,
-and every now and then a user reports this since the warning happens too
-often, it spams dmesg/syslog, and a user is unsure if this reflects any
-problem that might compromise the filesystem's reliability.
-
-We can not just lock the sb->s_umount semaphore before calling
-writeback_inodes_sb(), because that would at least deadlock with
-filesystem freezing, since at fs/super.c:freeze_super() sync_filesystem()
-is called while we are holding that semaphore in write mode, and that can
-trigger a transaction commit, resulting in a deadlock. It would also
-trigger the same type of deadlock in the unmount path. Possibly, it could
-also introduce some other locking dependencies that lockdep would report.
-
-To fix this call try_to_writeback_inodes_sb() instead of
-writeback_inodes_sb(), because that will try to read lock sb->s_umount
-and then will only call writeback_inodes_sb() if it was able to lock it.
-This is fine because the cases where it can't read lock sb->s_umount
-are during a filesystem unmount or during a filesystem freeze - in those
-cases sb->s_umount is write locked and sync_filesystem() is called, which
-calls writeback_inodes_sb(). In other words, in all cases where we can't
-take a read lock on sb->s_umount, writeback is already being triggered
-elsewhere.
-
-An alternative would be to call btrfs_start_delalloc_roots() with a
-number of pages different from LONG_MAX, for example matching the number
-of delalloc bytes we currently have, in which case we would end up
-starting all delalloc with filemap_fdatawrite_wbc() and not with an
-async flush via filemap_flush() - that is only possible after the rather
-recent commit e076ab2a2ca70a ("btrfs: shrink delalloc pages instead of
-full inodes"). However that creates a whole new can of worms due to new
-lock dependencies, which lockdep complains, like for example:
-
-[ 8948.247280] ======================================================
-[ 8948.247823] WARNING: possible circular locking dependency detected
-[ 8948.248353] 5.17.0-rc1-btrfs-next-111 #1 Not tainted
-[ 8948.248786] ------------------------------------------------------
-[ 8948.249320] kworker/u16:18/933570 is trying to acquire lock:
-[ 8948.249812] ffff9b3de1591690 (sb_internal#2){.+.+}-{0:0}, at: find_free_extent+0x141e/0x1590 [btrfs]
-[ 8948.250638]
-               but task is already holding lock:
-[ 8948.251140] ffff9b3e09c717d8 (&root->delalloc_mutex){+.+.}-{3:3}, at: start_delalloc_inodes+0x78/0x400 [btrfs]
-[ 8948.252018]
-               which lock already depends on the new lock.
-
-[ 8948.252710]
-               the existing dependency chain (in reverse order) is:
-[ 8948.253343]
-               -> #2 (&root->delalloc_mutex){+.+.}-{3:3}:
-[ 8948.253950]        __mutex_lock+0x90/0x900
-[ 8948.254354]        start_delalloc_inodes+0x78/0x400 [btrfs]
-[ 8948.254859]        btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
-[ 8948.255408]        btrfs_commit_transaction+0x32f/0xc00 [btrfs]
-[ 8948.255942]        btrfs_mksubvol+0x380/0x570 [btrfs]
-[ 8948.256406]        btrfs_mksnapshot+0x81/0xb0 [btrfs]
-[ 8948.256870]        __btrfs_ioctl_snap_create+0x17f/0x190 [btrfs]
-[ 8948.257413]        btrfs_ioctl_snap_create_v2+0xbb/0x140 [btrfs]
-[ 8948.257961]        btrfs_ioctl+0x1196/0x3630 [btrfs]
-[ 8948.258418]        __x64_sys_ioctl+0x83/0xb0
-[ 8948.258793]        do_syscall_64+0x3b/0xc0
-[ 8948.259146]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 8948.259709]
-               -> #1 (&fs_info->delalloc_root_mutex){+.+.}-{3:3}:
-[ 8948.260330]        __mutex_lock+0x90/0x900
-[ 8948.260692]        btrfs_start_delalloc_roots+0x97/0x2a0 [btrfs]
-[ 8948.261234]        btrfs_commit_transaction+0x32f/0xc00 [btrfs]
-[ 8948.261766]        btrfs_set_free_space_cache_v1_active+0x38/0x60 [btrfs]
-[ 8948.262379]        btrfs_start_pre_rw_mount+0x119/0x180 [btrfs]
-[ 8948.262909]        open_ctree+0x1511/0x171e [btrfs]
-[ 8948.263359]        btrfs_mount_root.cold+0x12/0xde [btrfs]
-[ 8948.263863]        legacy_get_tree+0x30/0x50
-[ 8948.264242]        vfs_get_tree+0x28/0xc0
-[ 8948.264594]        vfs_kern_mount.part.0+0x71/0xb0
-[ 8948.265017]        btrfs_mount+0x11d/0x3a0 [btrfs]
-[ 8948.265462]        legacy_get_tree+0x30/0x50
-[ 8948.265851]        vfs_get_tree+0x28/0xc0
-[ 8948.266203]        path_mount+0x2d4/0xbe0
-[ 8948.266554]        __x64_sys_mount+0x103/0x140
-[ 8948.266940]        do_syscall_64+0x3b/0xc0
-[ 8948.267300]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 8948.267790]
-               -> #0 (sb_internal#2){.+.+}-{0:0}:
-[ 8948.268322]        __lock_acquire+0x12e8/0x2260
-[ 8948.268733]        lock_acquire+0xd7/0x310
-[ 8948.269092]        start_transaction+0x44c/0x6e0 [btrfs]
-[ 8948.269591]        find_free_extent+0x141e/0x1590 [btrfs]
-[ 8948.270087]        btrfs_reserve_extent+0x14b/0x280 [btrfs]
-[ 8948.270588]        cow_file_range+0x17e/0x490 [btrfs]
-[ 8948.271051]        btrfs_run_delalloc_range+0x345/0x7a0 [btrfs]
-[ 8948.271586]        writepage_delalloc+0xb5/0x170 [btrfs]
-[ 8948.272071]        __extent_writepage+0x156/0x3c0 [btrfs]
-[ 8948.272579]        extent_write_cache_pages+0x263/0x460 [btrfs]
-[ 8948.273113]        extent_writepages+0x76/0x130 [btrfs]
-[ 8948.273573]        do_writepages+0xd2/0x1c0
-[ 8948.273942]        filemap_fdatawrite_wbc+0x68/0x90
-[ 8948.274371]        start_delalloc_inodes+0x17f/0x400 [btrfs]
-[ 8948.274876]        btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
-[ 8948.275417]        flush_space+0x1f2/0x630 [btrfs]
-[ 8948.275863]        btrfs_async_reclaim_data_space+0x108/0x1b0 [btrfs]
-[ 8948.276438]        process_one_work+0x252/0x5a0
-[ 8948.276829]        worker_thread+0x55/0x3b0
-[ 8948.277189]        kthread+0xf2/0x120
-[ 8948.277506]        ret_from_fork+0x22/0x30
-[ 8948.277868]
-               other info that might help us debug this:
-
-[ 8948.278548] Chain exists of:
-                 sb_internal#2 --> &fs_info->delalloc_root_mutex --> &root->delalloc_mutex
-
-[ 8948.279601]  Possible unsafe locking scenario:
-
-[ 8948.280102]        CPU0                    CPU1
-[ 8948.280508]        ----                    ----
-[ 8948.280915]   lock(&root->delalloc_mutex);
-[ 8948.281271]                                lock(&fs_info->delalloc_root_mutex);
-[ 8948.281915]                                lock(&root->delalloc_mutex);
-[ 8948.282487]   lock(sb_internal#2);
-[ 8948.282800]
-                *** DEADLOCK ***
-
-[ 8948.283333] 4 locks held by kworker/u16:18/933570:
-[ 8948.283750]  #0: ffff9b3dc00a9d48 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1d2/0x5a0
-[ 8948.284609]  #1: ffffa90349dafe70 ((work_completion)(&fs_info->async_data_reclaim_work)){+.+.}-{0:0}, at: process_one_work+0x1d2/0x5a0
-[ 8948.285637]  #2: ffff9b3e14db5040 (&fs_info->delalloc_root_mutex){+.+.}-{3:3}, at: btrfs_start_delalloc_roots+0x97/0x2a0 [btrfs]
-[ 8948.286674]  #3: ffff9b3e09c717d8 (&root->delalloc_mutex){+.+.}-{3:3}, at: start_delalloc_inodes+0x78/0x400 [btrfs]
-[ 8948.287596]
-              stack backtrace:
-[ 8948.287975] CPU: 3 PID: 933570 Comm: kworker/u16:18 Not tainted 5.17.0-rc1-btrfs-next-111 #1
-[ 8948.288677] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[ 8948.289649] Workqueue: events_unbound btrfs_async_reclaim_data_space [btrfs]
-[ 8948.290298] Call Trace:
-[ 8948.290517]  <TASK>
-[ 8948.290700]  dump_stack_lvl+0x59/0x73
-[ 8948.291026]  check_noncircular+0xf3/0x110
-[ 8948.291375]  ? start_transaction+0x228/0x6e0 [btrfs]
-[ 8948.291826]  __lock_acquire+0x12e8/0x2260
-[ 8948.292241]  lock_acquire+0xd7/0x310
-[ 8948.292714]  ? find_free_extent+0x141e/0x1590 [btrfs]
-[ 8948.293241]  ? lock_is_held_type+0xea/0x140
-[ 8948.293601]  start_transaction+0x44c/0x6e0 [btrfs]
-[ 8948.294055]  ? find_free_extent+0x141e/0x1590 [btrfs]
-[ 8948.294518]  find_free_extent+0x141e/0x1590 [btrfs]
-[ 8948.294957]  ? _raw_spin_unlock+0x29/0x40
-[ 8948.295312]  ? btrfs_get_alloc_profile+0x124/0x290 [btrfs]
-[ 8948.295813]  btrfs_reserve_extent+0x14b/0x280 [btrfs]
-[ 8948.296270]  cow_file_range+0x17e/0x490 [btrfs]
-[ 8948.296691]  btrfs_run_delalloc_range+0x345/0x7a0 [btrfs]
-[ 8948.297175]  ? find_lock_delalloc_range+0x247/0x270 [btrfs]
-[ 8948.297678]  writepage_delalloc+0xb5/0x170 [btrfs]
-[ 8948.298123]  __extent_writepage+0x156/0x3c0 [btrfs]
-[ 8948.298570]  extent_write_cache_pages+0x263/0x460 [btrfs]
-[ 8948.299061]  extent_writepages+0x76/0x130 [btrfs]
-[ 8948.299495]  do_writepages+0xd2/0x1c0
-[ 8948.299817]  ? sched_clock_cpu+0xd/0x110
-[ 8948.300160]  ? lock_release+0x155/0x4a0
-[ 8948.300494]  filemap_fdatawrite_wbc+0x68/0x90
-[ 8948.300874]  ? do_raw_spin_unlock+0x4b/0xa0
-[ 8948.301243]  start_delalloc_inodes+0x17f/0x400 [btrfs]
-[ 8948.301706]  ? lock_release+0x155/0x4a0
-[ 8948.302055]  btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
-[ 8948.302564]  flush_space+0x1f2/0x630 [btrfs]
-[ 8948.302970]  btrfs_async_reclaim_data_space+0x108/0x1b0 [btrfs]
-[ 8948.303510]  process_one_work+0x252/0x5a0
-[ 8948.303860]  ? process_one_work+0x5a0/0x5a0
-[ 8948.304221]  worker_thread+0x55/0x3b0
-[ 8948.304543]  ? process_one_work+0x5a0/0x5a0
-[ 8948.304904]  kthread+0xf2/0x120
-[ 8948.305184]  ? kthread_complete_and_exit+0x20/0x20
-[ 8948.305598]  ret_from_fork+0x22/0x30
-[ 8948.305921]  </TASK>
-
-It all comes from the fact that btrfs_start_delalloc_roots() takes the
-delalloc_root_mutex, in the transaction commit path we are holding a
-read lock on one of the superblock's freeze semaphores (via
-sb_start_intwrite()), the async reclaim task can also do a call to
-btrfs_start_delalloc_roots(), which ends up triggering writeback with
-calls to filemap_fdatawrite_wbc(), resulting in extent allocation which
-in turn can call btrfs_start_transaction(), which will result in taking
-the freeze semaphore via sb_start_intwrite(), forming a nasty dependency
-on all those locks which can be taken in different orders by different
-code paths.
-
-So just adopt the simple approach of calling try_to_writeback_inodes_sb()
-at btrfs_start_delalloc_flush().
-
-Reported-by: Stephen R. van den Berg <srb@cuci.nl>
-Link: https://lore.kernel.org/linux-btrfs/20220130005258.GA7465@cuci.nl/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/transaction.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 6db634ebae17..c6e550fa4d55 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1989,16 +1989,24 @@ static void btrfs_cleanup_pending_block_groups(struct btrfs_trans_handle *trans)
- static inline int btrfs_start_delalloc_flush(struct btrfs_fs_info *fs_info)
- {
- 	/*
--	 * We use writeback_inodes_sb here because if we used
-+	 * We use try_to_writeback_inodes_sb() here because if we used
- 	 * btrfs_start_delalloc_roots we would deadlock with fs freeze.
- 	 * Currently are holding the fs freeze lock, if we do an async flush
- 	 * we'll do btrfs_join_transaction() and deadlock because we need to
- 	 * wait for the fs freeze lock.  Using the direct flushing we benefit
- 	 * from already being in a transaction and our join_transaction doesn't
- 	 * have to re-take the fs freeze lock.
-+	 *
-+	 * Note that try_to_writeback_inodes_sb() will only trigger writeback
-+	 * if it can read lock sb->s_umount. It will always be able to lock it,
-+	 * except when the filesystem is being unmounted or being frozen, but in
-+	 * those cases sync_filesystem() is called, which results in calling
-+	 * writeback_inodes_sb() while holding a write lock on sb->s_umount.
-+	 * Note that we don't call writeback_inodes_sb() directly, because it
-+	 * will emit a warning if sb->s_umount is not locked.
- 	 */
- 	if (btrfs_test_opt(fs_info, FLUSHONCOMMIT))
--		writeback_inodes_sb(fs_info->sb, WB_REASON_SYNC);
-+		try_to_writeback_inodes_sb(fs_info->sb, WB_REASON_SYNC);
- 	return 0;
- }
- 
--- 
-2.33.0
-
+Thanks, not necessary. I missed the original discussion and there were
+several defrag bugs floating around so this is for my reference and to
+save it in the patch too.
