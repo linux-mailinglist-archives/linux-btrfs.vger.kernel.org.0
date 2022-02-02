@@ -2,184 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9824A6943
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Feb 2022 01:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE8B4A6947
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Feb 2022 01:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbiBBAbK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Feb 2022 19:31:10 -0500
-Received: from mout.gmx.net ([212.227.17.20]:50427 "EHLO mout.gmx.net"
+        id S243403AbiBBAf4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Feb 2022 19:35:56 -0500
+Received: from mout.gmx.net ([212.227.15.15]:42075 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243361AbiBBAbJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 1 Feb 2022 19:31:09 -0500
+        id S243361AbiBBAf4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Feb 2022 19:35:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643761867;
-        bh=HYvmmq2SsixcA8tIXwpuG9PkBB1svtzode8jywLwCkk=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=ZjDtNhQJPWACLNjNpnzTYRfKv4eJcaTFRmoCHba/kVKF7Xem0mr2VNLJRohEI25vY
-         +9N9cl9xRhApEmcEfX+20DSOD2G7EBDZ8ElsTIkVSCLosr9XUqxmQyEth5+sYSwRr9
-         Ek3+8tOzeMPA5eM4bhFScTg39zY7Vq449x+0PSTQ=
+        s=badeba3b8450; t=1643762149;
+        bh=eimSaf8b7y85V8YX1T++PRvoinr24iSZfdA1tJOTB5A=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=VwFefC++LVjsdBDYUrIq7hEe+UgEY6LmLbobM4XrkeBL4kWORrGLIj06gtP/eTUFi
+         A8S8BSmUGral0YRhNTlb863EN2LNL8WSIS84Xum68rbHqEaQzNtfvLvKPEMx7u6fNj
+         i4z8SH21LpecEFkwtljxzkbc4VPTMypFBS9CJokw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHG8m-1n1sHS1c6i-00DGAX; Wed, 02
- Feb 2022 01:31:07 +0100
-Message-ID: <2d9decd4-7442-efb2-3bd5-df00705f02ff@gmx.com>
-Date:   Wed, 2 Feb 2022 08:31:03 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mi2Nv-1mb1qX1KYD-00e3Lo; Wed, 02
+ Feb 2022 01:35:49 +0100
+Message-ID: <e67bb761-c4bf-b929-0bee-650f425248ac@gmx.com>
+Date:   Wed, 2 Feb 2022 08:35:44 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.1
+Subject: Re: [POC for v5.15 0/2] btrfs: defrag: what if v5.15 is doing proper
+ defrag
 Content-Language: en-US
-To:     Rosen Penev <rosenp@gmail.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
-References: <20220130010956.1459147-1-rosenp@gmail.com>
- <20220131143930.GL14046@twin.jikos.cz>
- <CAKxU2N8jeMT_4kJrwLFng0WLYBo=kfYmrz0Hu1NpdWR-fOzVnA@mail.gmail.com>
- <a05a9bcf-d2a2-99a9-0e18-7313e74e29dc@gmx.com>
- <20220201134402.GM14046@twin.jikos.cz>
- <CAKxU2N8YVZOrPTEi0tL2dAKRgpLuSs+F8rqqvwHcw1Bbzurh5w@mail.gmail.com>
+To:     =?UTF-8?Q?Fran=c3=a7ois-Xavier_Thomas?= <fx.thomas@gmail.com>
+Cc:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20220125065057.35863-1-wqu@suse.com>
+ <Ye/S15/clpSOG3y6@debian9.Home>
+ <791ca198-d4d0-91b3-ed9b-63cc19c78437@gmx.com>
+ <92236445-440d-b1c0-bd76-b8001facd334@gmx.com>
+ <CAEwRaO6xT_utSgyHuRhEK+C6Y8uvLABJw5FS=TitsMVxODo1OQ@mail.gmail.com>
+ <CAEwRaO6qcxr7ArAhkL-s=yRyNxmupFSVZL_w5ffHXagPQbiAgg@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs-progs: fix 64-bit mips and powerpc types
-In-Reply-To: <CAKxU2N8YVZOrPTEi0tL2dAKRgpLuSs+F8rqqvwHcw1Bbzurh5w@mail.gmail.com>
+In-Reply-To: <CAEwRaO6qcxr7ArAhkL-s=yRyNxmupFSVZL_w5ffHXagPQbiAgg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:axG0zz05suuoLwCJqgvFszsAbVNKbbr9q70LSGYufnG8VSJLdoM
- O2jqMvIoE+c+uRnBB9m4Lg2ytVdIe3u4V6iNLlQc1aYlhqGaP1Xa3TQ+veDesUmY1y408JD
- V8FmbpwKwekUtFzLX2ORLgxbPsePZnHVYeqYF0SKeCr8DX9HtPMZvPC3t1tXyMnX4BTbUUr
- zUsj0qI4t6X+lHHvxPLyA==
+X-Provags-ID: V03:K1:vTnvD0pCmNbM9VsB8FdRzd9gkirTyJypjKtqJIKd6QnQUN2y9Uy
+ guf0fDh2MTFWOT2GkhJosFv7ouZPbb1nRAJSW3y3fR7pteZpXATtuiJnEWoCaUYxcSGIPwE
+ 8JdjYgonMqa0E982fmzcqbMV+xZVzOe93VjqqjNO1eBXu9wsho5fMInkEMJW0B0zerIgYjr
+ yDvye92pj4fW6Loyi8Bdg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:b9SkNXj6drc=:2NREDLnca5o0wMN97Kaal2
- xGTdVpCB+ftX9YiGp0ZIuEcRQ068QgwL1X8ZAJEmUA40X41qVjW3CjDawSFGzBx+phVm8F1fd
- Ov5lbFuSmxfoF4Af7wqzc2ORcmhvziFybxr3mv+tsqRvjPe4e4CAasNfJIXadawdUQOfW0Y1B
- MWFizXkbceHVXePG8agTuV5suUPDbejZjRL7y+5jm9Iq7pqTuk8JtnkTvHJfRv0+nZVU9WZ4i
- 3SaPfObPXRnIfnnuUY8P7XRDNcatjwmVXRA9PBhIDDpEWP3mggZu9+ddhEm3wNpScoPAJtWXr
- ISvGZFM8Gv1g+M3GGwTYODrYH6fwL1VRgaKeaTYCFTWKmOqyesHGgh6VDND9N/+Hywsz8IuB8
- zVHfTBELDsjqBhCsvBcblEUEe+jV13o38gRUY5vqs4GEqaTdgZAMHXZToZd/XpYWbmCfjs1Lr
- a3dMghrVC9ihyeDXvGgZnXcm40DfSgCyQZmtizHmjJd4ovT8UexAyJ3kOEnFbtra4pfg0Hd25
- q2w+QSW5A+noEBmEVXfdVFFXWE5hNDpKbMnSSHNfrJsRJhl8aKJsRlwqRRg2AHh5tVv/56jaf
- 1A3ZVHrzN5aH7vJFRPDIK9lttVF/A20poea/z/c1VZe/tErov+O2jltB56AanJnzUMkb0bpCN
- 2LX9Xcbjb2bFnxX45CaCYblNhq6G5Fnnm0MWgtKnzP9qaX7TG60ayRXPtkqIOeBVFTR4zgCN1
- OCreJEwbaT9k/TJU2MmQCLqqnqXQmN4+1Ctu6T86KzXxRw+d0JIiqSYAWpIAWfinS0LOLyY8q
- 4Pv/69aYDcQocTHKq9DkcGbw6ahRgvEZYLocPOPQ0TI1TOLTyEM7W6AYaSdCXIRMqDByVibWt
- 0C8PC/TLTr/aQGwd8bHq46BWRIfqIGUSyLu9qC8KikI6DDfaORhnl5xuwruRsL4nz7qivOKIV
- 5xU9nFAIzMUu3KZ/nm4VLEVkrTCTfOzP7X5WUgkNDboKpRr6t9OAbiVJ5I1DQWeAtPkP0HnPw
- DQeXidU/Dy7c8jRuvQ1g5AFWcjlZti/bAQi119SGtNvtdaHLig9/I68btLF7o+qA1slwECeoc
- Vt/H7LRL3xhOPo=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4OAd6C969oA=:LnwlraMfvwCKq82mA5mrnI
+ yV/r8yhnOrx51Qkg5puXIFHdIlZ9p5rj2QJffbINlLdK0mZnsO9BJde/1b3WOHoOyys2N0dXh
+ wjySJl7pQ22UMF6w96mwsV7zp95/KhI+Ks0FbczEKbCwnqLK7LM9mFPdqgJ+H6t3T5VwxyfuN
+ bYZ0TZieRSmnrCmVMHYXLYoqLu+NxkLSCGcE1SnZ6m/8X2pfFsBdZmkDgYZAK6imZcy0ShUIo
+ upV6z5O6LpYfxz1J0O7AnRKqtZxtEDX0wgtFy21LLsE0jF/GkBC8MKG3KL+svHIlA8I83ntUR
+ tonNTsybqoA0KfOAUW6K5ubYz7ySfAlc7y0/WJUn2qN/k8HWhwzvfovbimlB6v47Mxz2iHklh
+ Mb6xW6L/ntCDsVHdhxzEB/ehultPwS0vQ3FzBh/ljdnzDa3EqIL7/hhYjeitUyfkjknKU4bta
+ VoKLyphx/irsI/lxIUc3ZPSUBnf8TuvZzqhLJDl2xmwXkA8QKnVn9UwvYjj0RHuES0b40VF1F
+ d71BX6QwDNUgJfAOTKlzbq+mP24nDLwfRGCqvmORiSToH1vGLbYAiwkBhmTlkB+X0qncURoCu
+ 4E/vdWjW30e4wsbSzMhqeCMup/HkQIFO5/kH/Xa8LJ8zeM2VVLKUL6Tb9XJ+sEBm+nUsxtAz8
+ V9q53BTivyYrrQNbigvJ02G3mfX8MgdJB8RsemdrL7qTDtkVOwFpQia+ZonS/BjrA64t2RTUs
+ yxxbnhwnyTH4+SO8PsL5U9kWgGjPRi0iKy9yovsBMAL49ZLRcnoe4Y4vO8SE6goQE6EuG+EAW
+ AELV/7CA1HS9iR6roXyKRTxM0ocd+YA0KzRWXKKUx3ejHxZK76uD7hYtp/x+UZ31kt//HNruY
+ sev6K0DOBD2fL5FsnlTKSjbl4Bgyc658DzUK3pe7iAkTKvhdMgSjpgMHBXJf4U1xpFaKaWp9U
+ l6kagB31mIgKx90jROUXjaXKgVuQ96vz94emW1gDvGVBsq9IKLZVHPYSxsWh8CIQhhJhXaVNJ
+ GLTPRrTDyjNc1V0y95QzLBJcED+nDavBkFgbvWFdpo5+OyC8gV+3WS3rltzRUJ6fdpKBp1QPY
+ YNlOzmpjN6AwAs/Abrdw87TvAiSFbwdF/P8qogOz///f3Swu/XqrTLe0HplPcnWpWv09jRB9m
+ lsOKClpo68wUtYohTktiXWKyCb
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/2/2 08:11, Rosen Penev wrote:
-> On Tue, Feb 1, 2022 at 5:44 AM David Sterba <dsterba@suse.cz> wrote:
+On 2022/2/2 05:18, Fran=C3=A7ois-Xavier Thomas wrote:
+>> Sure, I'll take the last 5.15 I used (5.15.13) as a base + the 2
+>> patches from this thread, is that good?
+>>     1-btrfs-dont-defrag-preallocated-extents.patch
+>>     2-defrag-limit-cluster-size-to-first-hole.patch
 >>
->> On Tue, Feb 01, 2022 at 08:58:55PM +0800, Qu Wenruo wrote:
->>>
->>>
->>> On 2022/2/1 04:46, Rosen Penev wrote:
->>>> On Mon, Jan 31, 2022 at 6:40 AM David Sterba <dsterba@suse.cz> wrote:
->>>>>
->>>>> On Sat, Jan 29, 2022 at 05:09:56PM -0800, Rosen Penev wrote:
->>>>>> The kernel uses unsigned long specifically for ppc64 and mips64. Th=
-is
->>>>>> fixes that.
->>>>>
->>>>> What do you mean? Uses unsigned long for what?
->>>> kernel's u64 is normally unsigned long long, but not for ppc64 and mi=
-ps64.
->>>>>
->>>>>> Removed asm/types.h include as it will get included properly later.
->>>>>>
->>>>>> Fixes -Wformat warnings.
->>>>>>
->>>>>> Signed-off-by: Rosen Penev <rosenp@gmail.com>
->>>>>> ---
->>>>>>    cmds/receive-dump.c | 1 -
->>>>>>    kerncompat.h        | 4 ++++
->>>>>>    2 files changed, 4 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/cmds/receive-dump.c b/cmds/receive-dump.c
->>>>>> index 47a0a30e..00ad4fd1 100644
->>>>>> --- a/cmds/receive-dump.c
->>>>>> +++ b/cmds/receive-dump.c
->>>>>> @@ -31,7 +31,6 @@
->>>>>>    #include <stdlib.h>
->>>>>>    #include <time.h>
->>>>>>    #include <ctype.h>
->>>>>> -#include <asm/types.h>
->>>>>>    #include <uuid/uuid.h>
->>>>>>    #include "common/utils.h"
->>>>>>    #include "cmds/commands.h"
->>>>>> diff --git a/kerncompat.h b/kerncompat.h
->>>>>> index 6ca1526e..4b36b45a 100644
->>>>>> --- a/kerncompat.h
->>>>>> +++ b/kerncompat.h
->>>>>> @@ -19,6 +19,10 @@
->>>>>>    #ifndef __KERNCOMPAT_H__
->>>>>>    #define __KERNCOMPAT_H__
->>>>>>
->>>>>> +#ifndef __SANE_USERSPACE_TYPES__
->>>>>> +#define __SANE_USERSPACE_TYPES__     /* For PPC64, to get LL64 typ=
-es */
->>>>>> +#endif
->>>>>
->>>>> Is there a cleaner way instead of defining magic macros?
->>>> no. https://github.com/torvalds/linux/blob/master/arch/powerpc/includ=
-e/uapi/asm/types.h#L18
->>>
->>> Really?
->>>
->>> I have the same issue in btrfs-fuse, but it can be easily solved witho=
-ut
->>> using the magic macro.
->>>
->>> See this issue:
->>>
->>> https://github.com/adam900710/btrfs-fuse/issues/2
->>>
->>> including <linux/types.h> seems to solve it for btrfs-fuse.
->>
->> Ok, so it's just the asm/types.h, once it's deleted it should all work
->> with linux/types.h (included via kerncompat.h).
-> Qu is referring to a different issue. I am referring to bad printf forma=
-ts.
-
-Weird, as the report includes format '%llu' warning for printf formats.
-
->>
->> Rosen, could you please verify that this is sufficient (without the
->> extra macro)?
-> It is not.
+>> Will post results tomorrow when it finishes compiling.
 >
-> Also note that this is specific to ppc64 and mips64. and alpha
-> (whatever that is).
+> Tomorrow ended up taking a week, as it happens, sorry for that. No
+> significant difference compared to before:
+> https://i.imgur.com/BNoxixL.png
 >
-> a git grep of the linux tree for that macro shows that it's used in tool=
-s/
+> I'm not sure what we can infer from this, if I understood correctly
+> this should have shown similar amounts of I/O to 5.16 with all the
+> previous fixes, right?
 
-OK, after checking the latest build log from Fedora36 ppc64le, it indeed
-still shows the warning:
+OK, things are getting more complex now.
 
-https://kojipkgs.fedoraproject.org//packages/btrfs-fuse/0/6.20211113git863=
-5fbc.fc36/data/logs/ppc64le/build.log
+Unless your workload includes quite some preallocated range, it's
+definitely not what I expected.
 
-
-Although from what I see, that magic is more common set for packaging,
-not directly into the source code:
-
-https://chromium.googlesource.com/chromium/src.git/+/7d38bae3ef691d5091b6d=
-4d7973a9b4d2cd85eb2/build/config/compiler/BUILD.gn#988
-
-Where chromium choose to add that magic only for mips64
-
-Or this:
-
-https://github.com/LLNL/lustre/blob/2.12.7-llnl/lustre.spec.in#L343
-
-Which is only defined during packaging, not in the source code.
-
-
-We can put this into our Makefile, and only for affected archtectures then=
-.
+As a final struggle, mind to test the small diff (without any previous
+diff) against v5.15?
 
 Thanks,
 Qu
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index cc61813213d8..bcc075ea56c9 100644
+=2D-- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1528,8 +1528,6 @@ int btrfs_defrag_file(struct inode *inode, struct
+file *file,
+                         cluster =3D (PAGE_ALIGN(defrag_end) >>
+                                    PAGE_SHIFT) - i;
+                         cluster =3D min(cluster, max_cluster);
+-               } else {
+-                       cluster =3D max_cluster;
+                 }
+
+                 if (i + cluster > ra_index) {
+
+
+>
+> I pasted the full diff I used at the end of this mail, since
+> `defrag_lookup_extent` changed signature between 5.15 and 5.16 I had
+> to do a couple of minor changes to get it to compile on 5.15.13.
+> Hopefully that was what you initially intended on testing.
+>
+> Thanks,
+> Fran=C3=A7ois-Xavier
+>
+> ----
+>
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index cc61813213d8..07eb7417b6e7 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1119,19 +1119,23 @@ static struct extent_map
+> *defrag_lookup_extent(struct inode *inode, u64 start)
+>   static bool defrag_check_next_extent(struct inode *inode, struct
+> extent_map *em)
+>   {
+>       struct extent_map *next;
+> -    bool ret =3D true;
+> +    bool ret =3D false;
+>
+>       /* this is the last extent */
+>       if (em->start + em->len >=3D i_size_read(inode))
+> -        return false;
+> +        return ret;
+>
+>       next =3D defrag_lookup_extent(inode, em->start + em->len);
+>       if (!next || next->block_start >=3D EXTENT_MAP_LAST_BYTE)
+> -        ret =3D false;
+> -    else if ((em->block_start + em->block_len =3D=3D next->block_start)=
+ &&
+> -         (em->block_len > SZ_128K && next->block_len > SZ_128K))
+> -        ret =3D false;
+> +        goto out;
+> +    if (test_bit(EXTENT_FLAG_COMPRESSED, &next->flags))
+> +        goto out;
+> +    if ((em->block_start + em->block_len =3D=3D next->block_start) &&
+> +     (em->block_len > SZ_128K && next->block_len > SZ_128K))
+> +        goto out;
+>
+> +    ret =3D true;
+> +out:
+>       free_extent_map(next);
+>       return ret;
+>   }
+> @@ -1403,6 +1407,30 @@ static int cluster_pages_for_defrag(struct inode =
+*inode,
+>
+>   }
+>
+> +static u64 get_cluster_size(struct inode *inode, u64 start, u64 len)
+> +{
+> +    u64 cur =3D start;
+> +    u64 cluster_len =3D 0;
+> +    while (cur < start + len) {
+> +        struct extent_map *em;
+> +
+> +        em =3D defrag_lookup_extent(inode, cur);
+> +        if (!em)
+> +            break;
+> +        /*
+> +         * Here we don't do comprehensive checks, we just
+> +         * find the first hole/preallocated.
+> +         */
+> +        if (em->block_start >=3D EXTENT_MAP_LAST_BYTE ||
+> +            test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
+> +            break;
+> +        cluster_len +=3D min(em->start + em->len - cur, start + len - c=
+ur);
+> +        cur =3D min(em->start + em->len, start + len);
+> +    }
+> +    return cluster_len;
+> +}
+> +
+> +
+>   int btrfs_defrag_file(struct inode *inode, struct file *file,
+>                 struct btrfs_ioctl_defrag_range_args *range,
+>                 u64 newer_than, unsigned long max_to_defrag)
+> @@ -1531,6 +1559,13 @@ int btrfs_defrag_file(struct inode *inode,
+> struct file *file,
+>           } else {
+>               cluster =3D max_cluster;
+>           }
+> +        cluster =3D min_t(unsigned long,
+> +                get_cluster_size(inode, i << PAGE_SHIFT,
+> +                         cluster << PAGE_SHIFT)
+> +                    >> PAGE_SHIFT,
+> +                    cluster);
+> +        if (cluster =3D=3D 0)
+> +            goto next;
+>
+>           if (i + cluster > ra_index) {
+>               ra_index =3D max(i, ra_index);
+> @@ -1557,6 +1592,7 @@ int btrfs_defrag_file(struct inode *inode,
+> struct file *file,
+>           balance_dirty_pages_ratelimited(inode->i_mapping);
+>           btrfs_inode_unlock(inode, 0);
+>
+> +next:
+>           if (newer_than) {
+>               if (newer_off =3D=3D (u64)-1)
+>                   break;
