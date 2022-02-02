@@ -2,180 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4AC4A66E6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Feb 2022 22:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4523B4A68E1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Feb 2022 01:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbiBAVSS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Feb 2022 16:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbiBAVSR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Feb 2022 16:18:17 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733D7C061714
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Feb 2022 13:18:17 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id u130so17016527pfc.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Feb 2022 13:18:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BXFWt0OO+pKW1VkO+hKNaIxgycAsUYwV5fx1Mi9+DPY=;
-        b=dJT++MY3KsPmvlnjbTC3XJxAoCaLOEaxBK9a9YAIV1mcoTs65k5KVcisKE0XdFB0i+
-         dG7ZgzOClfGwL5B8jF4746jXoDYGb3sOwBKn0kbvVFBys0BaemnWGc6PVMlWyqZjAoMk
-         ASiGzevzXX5GBRKWr2spI7tNsp7HyMTsi4FmlbaV5UlmTHlWR853UknFPyj5H9Ot12HC
-         iuwQGqFlVxmGwM4qz0GIpqVNve+senXuUm7JzaQiwHhbw62f0ZmqkvfRyNP4bQkKFODc
-         latzheaHahjeFCzcYOqtca9EidqHpi8JMZGTB078DQmUN2YxH3suu8TTCrnQbsg9WwkM
-         t6sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BXFWt0OO+pKW1VkO+hKNaIxgycAsUYwV5fx1Mi9+DPY=;
-        b=37EuChF1u+pBOHeFgGmL7aDVkQt8MoHo8J/7dcaoYLfndxB+CQDxb14SV6BtyKS04I
-         RcxX4GPM7avLFfgitWFB5y9Ekm0jtVvMjQWfmzo33oSm00cNKy32S75CbuIDhnyvOUP6
-         Yh2DkpfhBc0oExib5q5vtTLgLVqhs+vf9sOJKG2eJxJ817mexQYvIN1rxppCEnrICm40
-         mCOf12YhhChlkzj2qEDeO3R1pByP1tSDQaJ6ewAQ1D4g5c7qZE6R7J2V5dEbMe5jjWWY
-         5lU1aqwCRPpf5lPQecSQYROYuyubo6SuGUdbpPfzWVkMLdYMFtb+fXmxyUIrGZXEcwNX
-         2Ypw==
-X-Gm-Message-State: AOAM530ivkQ9gCVrCtzjiZJJm76Pw7gtVRqblgLryfsVcxKgxzYhLQwY
-        NLA3/+9PSGWCBGCRLLiWuWpiXhenVMIsRKnNKxDt20mgrfnOcQ==
-X-Google-Smtp-Source: ABdhPJxr+rnUdNYey8lFmOw2XhKSlaiEy9sGOaMrN6qxh3tX0gLTid51bMRjU3Qcj9ETdy4YDMKeEl4YeCBPdwx3nm0=
-X-Received: by 2002:a05:6a00:10c6:: with SMTP id d6mr27069964pfu.42.1643750296921;
- Tue, 01 Feb 2022 13:18:16 -0800 (PST)
+        id S243047AbiBBAAw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Feb 2022 19:00:52 -0500
+Received: from mout.gmx.net ([212.227.15.18]:54809 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230081AbiBBAAv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Feb 2022 19:00:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1643760049;
+        bh=NhP6PG9OqVj4irQ4qvdhW3gwBZoVT6c8gPTefMcl3hc=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=DlCgbONqGPYNqra7lBrFdNYKT7hJRLae4tiAwAHFSGtj9m08ti9brXp5/xM8AxutW
+         AUjgNU76FBDYKkactA7tgcsbBA8BVB3qm2OGZrR/+IEjktZadk/IeJiFOz/iBylb23
+         8SdHU8+AXeZT60UXS0cb0MUv5KP7+mOUNDysOp1w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MG9kM-1n0nSG24DM-00GWPd; Wed, 02
+ Feb 2022 01:00:49 +0100
+Message-ID: <7076a72f-62d8-0f4a-6a2c-3885b62c76c4@gmx.com>
+Date:   Wed, 2 Feb 2022 08:00:45 +0800
 MIME-Version: 1.0
-References: <20220125065057.35863-1-wqu@suse.com> <Ye/S15/clpSOG3y6@debian9.Home>
- <791ca198-d4d0-91b3-ed9b-63cc19c78437@gmx.com> <92236445-440d-b1c0-bd76-b8001facd334@gmx.com>
- <CAEwRaO6xT_utSgyHuRhEK+C6Y8uvLABJw5FS=TitsMVxODo1OQ@mail.gmail.com>
-In-Reply-To: <CAEwRaO6xT_utSgyHuRhEK+C6Y8uvLABJw5FS=TitsMVxODo1OQ@mail.gmail.com>
-From:   =?UTF-8?Q?Fran=C3=A7ois=2DXavier_Thomas?= <fx.thomas@gmail.com>
-Date:   Tue, 1 Feb 2022 22:18:05 +0100
-Message-ID: <CAEwRaO6qcxr7ArAhkL-s=yRyNxmupFSVZL_w5ffHXagPQbiAgg@mail.gmail.com>
-Subject: Re: [POC for v5.15 0/2] btrfs: defrag: what if v5.15 is doing proper defrag
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: [PATCH] btrfs: don't hold CPU for too long when defragging a file
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <c572e24e1556b87cadb20761edbc7e33bb93ad20.1643547144.git.wqu@suse.com>
+ <20220201145304.GP14046@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220201145304.GP14046@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SCRqwiBvtwsBIgK1it+HChqMK0LjYQ9x+o7hgNuIFPKb6Jmb/W8
+ cRC+1/foYSp28X63O1MdWU1sDxM+Pp9Pv/8FU83sGVG6KG/Z6kSIfCb6YE7pmA+OJq3yQop
+ hmdqWeIMUimJhXYXfJ6OZKzXuUawQhqdJ+Ji0HooY7SQdb2eqJpZEa+J7rEHP3sabSwaGp7
+ /7m0TT124SU0r95CYXQAw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tcFgHtllxmw=:LtpZAGM6HZomm+wkjlAGRf
+ PS1pK6fkMVZeVBeGywp4gPIPWwAdT/GaiX+Oj+BzLa1VJ2JGe1w3HOonQOT8hNIPAaRsepGVf
+ RO1eg+bqHNqfybPvExuKwOzwVZe+C/PxjgJH+im7XbFM5H936RjR5Cw1zqZBaGMdYr0jShWfQ
+ iiuNWzB2VwVvQuT0pVFql2TWZ6B11OYR4nRllgfmfzimK78Yh3lRvfR2oXsZJyMnt5OI4xDke
+ sLTmLvpBjdsxh3+AWucOV4DFtjxDaeOiEYzJNlTDtg/QZqUiKbRlFxLh2CYR9SIzSLZLVgSeP
+ Q27KXT/pLuNALR2ifch/BjX79K3+dA21NoYQL6iu0E/Urz2AKBS/CDHmC/oSoOmpcJFSVs7nB
+ jXriqsFl3pGzGCvXkcZ45J5bB5joP95y4kvi5MFBQ6KVM5LTpShfMuL7cBdbAKd1P+W94jGIK
+ izoNyTtiSCYmhgPvvYfLPoaplimxdizqhvgk4zICFn6uEz49Q4sbLc20HBw4Iuo43tMwEz7i8
+ 3DQYiZrleO/lHbehx6jRvDiNPrLmcLu88hbioIV+7txKBJcPSLBgH3CQVOJ/H5jh0dZLkz3ie
+ FBNLJkvJ6+OgKzOUF302idVNaGq23G2NtgJwHi0w74PKMBF4IflEUhXc6b473FQ+ZiDmDLMP0
+ g+YkQyN2vIS2LZ3irqBrWyE4JR7eNruyjebxD5WI3xoeffXeQAhjxaS0lXhWLyMGWwrCGiPWT
+ yq8vqRKiFBosURf4+Z7MCFwjhvtnD5Yi1qUZUuZQ/Z2aEXS6Ql1IqtbIkFM4uKJCAK4hoMzVH
+ 26GHIormWuxgiEPsr56dQxoBCPXsQEZhclZwGCZ8HK3ArW3fL2s9E4hcP/VMjIfcz686drhZD
+ kJEOwEE3g1+peVk2kGuA4GyDulXp5foGJMvuB0tSzpM1ijtpuhVaN/VrpcTI7GqNpdraEDEcQ
+ +OPrwSIY5aXCWGB+QUAGqiYI9v+cTA85ufgFcwoyTqOHm7ayf/HdXuHiRlWurp33yrRzN21qH
+ xMSMRxSF4rEWNlm/ubngsVOuWoW1Wwflqcs1/ImMO4xDN9wi9UE8577iw03V2XSZKwwXAvk2w
+ u7KlyqHJy67p9A=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> Sure, I'll take the last 5.15 I used (5.15.13) as a base + the 2
-> patches from this thread, is that good?
->    1-btrfs-dont-defrag-preallocated-extents.patch
->    2-defrag-limit-cluster-size-to-first-hole.patch
+
+
+On 2022/2/1 22:53, David Sterba wrote:
+> On Sun, Jan 30, 2022 at 08:53:15PM +0800, Qu Wenruo wrote:
+>> There is a user report about "btrfs filesystem defrag" causing 120s
+>> timeout problem.
 >
-> Will post results tomorrow when it finishes compiling.
+> Do you have link of the report please?
 
-Tomorrow ended up taking a week, as it happens, sorry for that. No
-significant difference compared to before:
-https://i.imgur.com/BNoxixL.png
+Here it is, not really a formal one, but just mentjioned in a thread:
 
-I'm not sure what we can infer from this, if I understood correctly
-this should have shown similar amounts of I/O to 5.16 with all the
-previous fixes, right?
-
-I pasted the full diff I used at the end of this mail, since
-`defrag_lookup_extent` changed signature between 5.15 and 5.16 I had
-to do a couple of minor changes to get it to compile on 5.15.13.
-Hopefully that was what you initially intended on testing.
+https://lore.kernel.org/linux-btrfs/10e51417-2203-f0a4-2021-86c8511cc367@g=
+mx.com/
 
 Thanks,
-Fran=C3=A7ois-Xavier
-
-----
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index cc61813213d8..07eb7417b6e7 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1119,19 +1119,23 @@ static struct extent_map
-*defrag_lookup_extent(struct inode *inode, u64 start)
- static bool defrag_check_next_extent(struct inode *inode, struct
-extent_map *em)
- {
-     struct extent_map *next;
--    bool ret =3D true;
-+    bool ret =3D false;
-
-     /* this is the last extent */
-     if (em->start + em->len >=3D i_size_read(inode))
--        return false;
-+        return ret;
-
-     next =3D defrag_lookup_extent(inode, em->start + em->len);
-     if (!next || next->block_start >=3D EXTENT_MAP_LAST_BYTE)
--        ret =3D false;
--    else if ((em->block_start + em->block_len =3D=3D next->block_start) &&
--         (em->block_len > SZ_128K && next->block_len > SZ_128K))
--        ret =3D false;
-+        goto out;
-+    if (test_bit(EXTENT_FLAG_COMPRESSED, &next->flags))
-+        goto out;
-+    if ((em->block_start + em->block_len =3D=3D next->block_start) &&
-+     (em->block_len > SZ_128K && next->block_len > SZ_128K))
-+        goto out;
-
-+    ret =3D true;
-+out:
-     free_extent_map(next);
-     return ret;
- }
-@@ -1403,6 +1407,30 @@ static int cluster_pages_for_defrag(struct inode *in=
-ode,
-
- }
-
-+static u64 get_cluster_size(struct inode *inode, u64 start, u64 len)
-+{
-+    u64 cur =3D start;
-+    u64 cluster_len =3D 0;
-+    while (cur < start + len) {
-+        struct extent_map *em;
-+
-+        em =3D defrag_lookup_extent(inode, cur);
-+        if (!em)
-+            break;
-+        /*
-+         * Here we don't do comprehensive checks, we just
-+         * find the first hole/preallocated.
-+         */
-+        if (em->block_start >=3D EXTENT_MAP_LAST_BYTE ||
-+            test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
-+            break;
-+        cluster_len +=3D min(em->start + em->len - cur, start + len - cur)=
-;
-+        cur =3D min(em->start + em->len, start + len);
-+    }
-+    return cluster_len;
-+}
-+
-+
- int btrfs_defrag_file(struct inode *inode, struct file *file,
-               struct btrfs_ioctl_defrag_range_args *range,
-               u64 newer_than, unsigned long max_to_defrag)
-@@ -1531,6 +1559,13 @@ int btrfs_defrag_file(struct inode *inode,
-struct file *file,
-         } else {
-             cluster =3D max_cluster;
-         }
-+        cluster =3D min_t(unsigned long,
-+                get_cluster_size(inode, i << PAGE_SHIFT,
-+                         cluster << PAGE_SHIFT)
-+                    >> PAGE_SHIFT,
-+                    cluster);
-+        if (cluster =3D=3D 0)
-+            goto next;
-
-         if (i + cluster > ra_index) {
-             ra_index =3D max(i, ra_index);
-@@ -1557,6 +1592,7 @@ int btrfs_defrag_file(struct inode *inode,
-struct file *file,
-         balance_dirty_pages_ratelimited(inode->i_mapping);
-         btrfs_inode_unlock(inode, 0);
-
-+next:
-         if (newer_than) {
-             if (newer_off =3D=3D (u64)-1)
-                 break;
+Qu
