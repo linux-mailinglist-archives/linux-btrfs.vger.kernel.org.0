@@ -2,37 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 946934A87BF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Feb 2022 16:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E53D4A87C0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Feb 2022 16:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351892AbiBCPgx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Feb 2022 10:36:53 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:35722 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351890AbiBCPgv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Feb 2022 10:36:51 -0500
+        id S1351898AbiBCPgy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Feb 2022 10:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351895AbiBCPgx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Feb 2022 10:36:53 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CBBC061714
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Feb 2022 07:36:53 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D2A9160DE8
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6CF06B8347D
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Feb 2022 15:36:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3913C340E4
         for <linux-btrfs@vger.kernel.org>; Thu,  3 Feb 2022 15:36:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFB41C340ED
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Feb 2022 15:36:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643902610;
-        bh=TMBp1hqIkubCUYyKnipUa/3z43SXMUDZuTBjSUEd35M=;
+        s=k20201202; t=1643902611;
+        bh=ndrOC7y0VIiUHGV+9MDS4811jq1UvQ97gdWkI2fwcPM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ocNGw1iM3oyD06cx7AgCsGzB7zbWwqFIw9tn9nTiOcGswYwQi26LhGWBYTWVrp60r
-         zSwTKeChkKVMb3uMI1RItNZje6F1gXYkBhScD164HT7qvA02JjAQiZOcUEc20zK5vw
-         LWNrc0LQTS/Onip4iKrNba4kSvfcm6gjhVKWOspZAIYE510wjmPNk50+9MIcfmeyBb
-         txh4+X368CjSglCYlsTzymxw7sN4yIoP1BsOfEF93uag8XUsVxvexTMy4Htn78uho6
-         nyzin7DnksH5dO06W74X14JoEoE8bcQyWlviS7zi6stg8pSmXalgCvJJJeZzAMbzG7
-         kk8OSOg0pOI8A==
+        b=uWfaqp8NCoE3aUT3rZF03KwUupJZ9GrN9fYRjXSY9gHLW7seIqXtoG8xjWQdh86Y+
+         nPTxU+AClt84wlEPFXVrzgRuKW378MZK+2XbKz+U1U7md5uXWYoO7WSYxGcf/nSNYz
+         NGYCHs6a/tOYsusmNFvlp07esT308VHZjQgE883QMCLMM9o1QhRT02hs+poNfLmkFU
+         +fjRs5vezfcwNLo5eAn/OG8AfgR0yIPgtEkT6hcc5wCXLCcv5sZGtDfFFMQ4SJ1hiq
+         yuhflD1WUgupvgZ68HZP8nG1bTALFedaRVHF/S8Q6ZYalW08+bF24ahIvEv6u0n0dB
+         DCxUS139xi5BA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/4] btrfs: fix lost error return value when reading a data page
-Date:   Thu,  3 Feb 2022 15:36:43 +0000
-Message-Id: <6454d2f2bc3446c5b2310cf5b0aa2479bd8f267a.1643902108.git.fdmanana@suse.com>
+Subject: [PATCH 3/4] btrfs: remove no longer used counter when reading data page
+Date:   Thu,  3 Feb 2022 15:36:44 +0000
+Message-Id: <4e9e29d0e2ee9fd1301b3b6d149db23eb13156bc.1643902108.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1643902108.git.fdmanana@suse.com>
 References: <cover.1643902108.git.fdmanana@suse.com>
@@ -44,51 +47,39 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_do_readpage(), if we get an error when trying to lookup for an
-extent map, we end up marking the page with the error bit, clearing
-the uptodate bit on it, and doing everything else that should be done.
-However we return success (0) to the caller, when we should return the
-error encoded in the extent map pointer. So fix that by returning the
-error encoded in the pointer.
+After commit 92082d40976ed0 ("btrfs: integrate page status update for
+data read path into begin/end_page_read"), the 'nr' counter at
+btrfs_do_readpage() is no longer used, we increment it but we never
+read from it. So just remove it.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_io.c | 1 +
- fs/btrfs/inode.c     | 9 +++++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8c09038e3f0f..e713355c0e15 100644
+index e713355c0e15..5f7f902076f3 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3611,6 +3611,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		if (IS_ERR(em)) {
- 			unlock_extent(tree, cur, end);
- 			end_page_read(page, false, cur, end + 1 - cur);
-+			ret = PTR_ERR(em);
- 			break;
- 		}
- 		extent_offset = cur - em->start;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0e04624e557d..9f2c9e93eafe 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8095,8 +8095,13 @@ int btrfs_readpage(struct file *file, struct page *page)
- 	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
- 
- 	ret = btrfs_do_readpage(page, NULL, &bio_ctrl, 0, NULL);
--	if (bio_ctrl.bio)
--		ret = submit_one_bio(bio_ctrl.bio, 0, bio_ctrl.bio_flags);
-+	if (bio_ctrl.bio) {
-+		int ret2;
-+
-+		ret2 = submit_one_bio(bio_ctrl.bio, 0, bio_ctrl.bio_flags);
-+		if (ret == 0)
-+			ret = ret2;
-+	}
- 	return ret;
- }
- 
+@@ -3563,7 +3563,6 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 	u64 cur_end;
+ 	struct extent_map *em;
+ 	int ret = 0;
+-	int nr = 0;
+ 	size_t pg_offset = 0;
+ 	size_t iosize;
+ 	size_t blocksize = inode->i_sb->s_blocksize;
+@@ -3722,9 +3721,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 					 end_bio_extent_readpage, 0,
+ 					 this_bio_flag,
+ 					 force_bio_submit);
+-		if (!ret) {
+-			nr++;
+-		} else {
++		if (ret) {
+ 			unlock_extent(tree, cur, cur + iosize - 1);
+ 			end_page_read(page, false, cur, iosize);
+ 			goto out;
 -- 
 2.33.0
 
