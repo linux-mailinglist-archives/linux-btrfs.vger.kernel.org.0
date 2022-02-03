@@ -2,87 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9208E4A7AA1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Feb 2022 22:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1DA4A7DBE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Feb 2022 03:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347714AbiBBVup (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Feb 2022 16:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
+        id S1346389AbiBCCRD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Feb 2022 21:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiBBVuo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Feb 2022 16:50:44 -0500
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488DC061714;
-        Wed,  2 Feb 2022 13:50:44 -0800 (PST)
-Received: by mail-ua1-x932.google.com with SMTP id u76so1774727uau.3;
-        Wed, 02 Feb 2022 13:50:44 -0800 (PST)
+        with ESMTP id S237308AbiBCCRC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Feb 2022 21:17:02 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46C8C06173B
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Feb 2022 18:17:02 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id 4so1815384oil.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Feb 2022 18:17:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ig4LWCuwtDBy+V/6OWWfEZL0sxJpRVJolebrZo8kkkg=;
-        b=al6Y4nEGOP+r/VkRFgTfNO9SFIhYI84YlDo94LWAwGulCZTkVwgGDgfxTfI/yDYuSI
-         MXuCJgACyOuS8p3+DfN8HJAXERGIJXs/ugI+/sg7EKTqtUp/NHRyIHoAoojoowXws1HJ
-         HaYGkgN/F4gaCj6BaWyhPnS60YML8zsIKS9cw0vN5z7Ho7fo3CUsKZa+OgVXBmPJxj6L
-         JQlfIjvGAIGyhB938eamo5/Ijp/cdL59axyq9T3cSk5ufbZ6RNM+Az0z8DCMiY7t+pDf
-         Xkb+I1WYIj3lOe/AG2em/JXr83LRFjPcF6ZQAVEf84veS9cz47Fe/c+qgvJPhj9FX29M
-         biCg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=an4OUklU1nkbaneD74UCJ1LWVu18nnEY1P9uR4GuoNo=;
+        b=XmUPRqIv8ge8MGgJ3sjGImGuHaj3nVrR0aR/emqIDu4P++sjp15L1gvyhFBBkoUpeF
+         VFlotffXBWrwhs86jL+Smko6YZ0I0NJpfuuxqkDj4DsznsKuY0UuzoBjVP4h4kPRfen9
+         hSqtsYBOv1XOYxYMjHfA0ht1Xf5/SMxEbG+vv/am8Mrdagew2v58/4MwBYsjmOiDGFG4
+         oclmHgy20maeMf4vSxkEt1wMSRfio7vRv6gk7ZquoALbpnUBTYtZBN47N+jXRtcZMiCK
+         l4VsBJOS3naL4T7Fs41arGVQFTJJcOem5JPKe4tra2XZFzhKyGyelWKc0GoqQB7l+C0Q
+         PwGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ig4LWCuwtDBy+V/6OWWfEZL0sxJpRVJolebrZo8kkkg=;
-        b=41wrOMOBnwSWpPV9Th7V7JNaVghkHTT6SChLkTIOotPQMiEkWt+9ckdneetVQLIfOw
-         iYyTwo4xJpjgh6ehsXaLWb1B0ATfixspvqeaFf5MfoVW1qNk32NClSY/7dbjECWuFzTB
-         lP0dAnEaxNJKEmJED6+DUcRlYGf2+aMzW4+kwaBUemkx7RK0/p33WkajR731eDXxVGII
-         2WJKPVtWUEgq9RVpt/lqReaqoGLaigQ1ZWfwJh7s+Bd1GT1P7quCY8I2idSwwjvfCx92
-         hhqi/0Qm+7vuCY3gEdZEDthxqhuxIbLcwyA2AtSKGy+KrOxfKIjuc+JLWxZFVvky+O+3
-         Mqog==
-X-Gm-Message-State: AOAM530IIdV4yBiWcwvo/fZRJU6M8qcSpC6FfDj20WeutqxwP320SSfK
-        CmuGic/dh156uiAqgd12aV0GklmcAEbiJsj7saYX9FZc5JMFlE4lfPU=
-X-Google-Smtp-Source: ABdhPJwYkUCndjFkZvxZQzAs0H2wdlk30CR3os9kZR/g6J5vR5SfB/G1hs7wS9BryBZkh8xzk/HnRCJIl8bIih3X1Gs=
-X-Received: by 2002:a67:c907:: with SMTP id w7mr12613827vsk.60.1643838643524;
- Wed, 02 Feb 2022 13:50:43 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=an4OUklU1nkbaneD74UCJ1LWVu18nnEY1P9uR4GuoNo=;
+        b=ISR21LLhitPGTojJTOc6nMdYsXwlnoyuiqRV/EZZzdRayQcTOQq71KZipv9fUMBX9d
+         HCh8SZuibia45KJ9n29YcqGu7C42EpGpXtUf3TC5sYR6xrQtP+PFMBdap90B1yWHntZO
+         Ra9LenzXi+50Df5pCM8kfJC9VzT12WpQkerQBNUtIOMMu2Uvf1dwbm+59TBeuTGzxqnH
+         2yu9+XmAj4155Sb5ez1vkBwmmtKmxIiiiKHzhroHfW2JX6Ea6HZ0rczeB4eHBpjn8/t4
+         gGW0U+HdbnGAV4Q+BAL50m2gS5Wroa6ygFeusSEp/oZdCmWnDYbJVmg9P+LmFwqLQWEZ
+         3aXg==
+X-Gm-Message-State: AOAM531PkI1AfiUOqyk+6WrFgHhnWs9rxkPuWOuleKpE271OgYRgbKm5
+        Qfb8El1L5oX8xakD5Cni8Dyr0o2Mzb87sHxc0y4=
+X-Google-Smtp-Source: ABdhPJytLHpFA8YGHj5LAkS6jr+GOmlq3/HsRJb0Gq1UEnWK5PRkeJHB+otiWns4f5yV2AMVqgXOiZtmXTZXuAOeFbc=
+X-Received: by 2002:a05:6808:56d:: with SMTP id j13mr6036081oig.153.1643854621906;
+ Wed, 02 Feb 2022 18:17:01 -0800 (PST)
 MIME-Version: 1.0
-References: <CAOE4rSwfTEaJ_O9Bv1CkLRnLWYoZ7NSS=5pzuQz4mUBE-PXQ5A@mail.gmail.com>
- <YfrX1BVIlIwiVYzs@casper.infradead.org>
-In-Reply-To: <YfrX1BVIlIwiVYzs@casper.infradead.org>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Wed, 2 Feb 2022 23:50:32 +0200
-Message-ID: <CAOE4rSz1OTRYQPa4PUrQ-=cwSM3iVY977Uz_d77E2j-kH0G3rA@mail.gmail.com>
-Subject: Re: How to debug stuck read?
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     BTRFS <linux-btrfs@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
+Received: by 2002:a4a:ae04:0:0:0:0:0 with HTTP; Wed, 2 Feb 2022 18:17:01 -0800 (PST)
+Reply-To: mmd475644@gmail.com
+From:   "Mr. Ali Moses" <alimoses07@gmail.com>
+Date:   Wed, 2 Feb 2022 18:17:01 -0800
+Message-ID: <CADWzZe4ZVKuJV8er9i-Cz6v=5oUSC7qZdBXj323MruoE7OCc5Q@mail.gmail.com>
+Subject: Good Day,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tre=C5=A1d., 2022. g. 2. febr., plkst. 21:13 =E2=80=94 lietot=C4=81js Matth=
-ew Wilcox
-(<willy@infradead.org>) rakst=C4=ABja:
->
-> On Wed, Feb 02, 2022 at 07:15:14PM +0200, D=C4=81vis Mos=C4=81ns wrote:
-> > I have a corrupted file on BTRFS which has CoW disabled thus no
-> > checksum. Trying to read this file causes the process to get stuck
-> > forever. It doesn't return EIO.
-> >
-> > How can I find out why it gets stuck?
->
-> > $ cat /proc/3449/stack | ./scripts/decode_stacktrace.sh vmlinux
-> > folio_wait_bit_common (mm/filemap.c:1314)
-> > filemap_get_pages (mm/filemap.c:2622)
-> > filemap_read (mm/filemap.c:2676)
-> > new_sync_read (fs/read_write.c:401 (discriminator 1))
->
-> folio_wait_bit_common() is where it waits for the page to be unlocked.
-> Probably the problem is that btrfs isn't unlocking the page on
-> seeing the error, so you don't get the -EIO returned?
+-- 
+Good Day,
+I'm Mr. Ali Moses, how are you doing hope you are in good health, the
+Board director try to reach you on phone several times Meanwhile, your
+number was not connecting. before he ask me to send you an email to
+hear from you if you are fine. hoping to hear from you soonest.
 
+Thanks
+Mr. Ali Moses
 
-Yeah, but how to find where that happens.
-Anyway by pure luck I found memcpy that wrote outside of allocated
-memory and fixing that solved this issue but I still don't know how to
-debug this properly.
+Sincerely
+Dr. Irene Lam
