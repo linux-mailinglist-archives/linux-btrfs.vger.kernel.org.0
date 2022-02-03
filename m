@@ -2,101 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A934A8899
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Feb 2022 17:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C441D4A88BB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Feb 2022 17:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345034AbiBCQbN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Feb 2022 11:31:13 -0500
-Received: from use.bitfolk.com ([85.119.80.223]:35539 "EHLO mail.bitfolk.com"
+        id S1352289AbiBCQk6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Feb 2022 11:40:58 -0500
+Received: from mail.xsoli.com ([170.39.196.115]:48976 "EHLO xweb105.xsoli.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232725AbiBCQbN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Feb 2022 11:31:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bitfolk.com
-        ; s=alpha; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender
-        :Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=W00kaXPnZ+kI1ZLeZElRWAWQr7Xp5zZUTRAx+2MZQMo=; b=Ln6OrEvFsHTG8Ce5eKzKJjqFKP
-        A/vdYkTnXogyxHhUFIfWmMdUlx9ScVuOpCr+wZsNvBUmhEq/zUHneXAhjRA1Fl9SzIFVG/vuL8DA0
-        vvgW+TDraK/7abPTCJGF5bAKbuUMIsw2eyD/Lv33bfEi/w1Vd7AQt973fQisBgtR9uHfaDosNmCKv
-        Fh4GT4QzbNcC5Dn9kkg8Q9hXqrPIvpIOf4LJ1iNeci1VTM/Bj89UukqfIT4aQx/48HdQ0Qs0H0xT7
-        AcDvZm5t8KSkTs1iy842tzMJxRcUkgMus2N2TyB/Zqg2WC4siFUVk0pVV1hWrBxF2GGNLcH80WXLI
-        iMCNNR8g==;
-Received: from andy by mail.bitfolk.com with local (Exim 4.89)
-        (envelope-from <andy@strugglers.net>)
-        id 1nFf0m-0003CX-SS
-        for linux-btrfs@vger.kernel.org; Thu, 03 Feb 2022 16:31:08 +0000
-Date:   Thu, 3 Feb 2022 16:31:08 +0000
-From:   Andy Smith <andy@strugglers.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: "Too many links (31)" issue
-Message-ID: <20220203163108.ipdv3yxbe7eb6vc4@bitfolk.com>
+        id S1352290AbiBCQkw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Feb 2022 11:40:52 -0500
+Received: from [10.72.103.152] (bras-base-blolpq2201w-grc-22-76-68-192-161.dsl.bell.ca [76.68.192.161])
+        (Authenticated sender: sylvainf.xsoli)
+        by xweb105.xsoli.com (Postfix) with ESMTPSA id 9E669C01C5
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Feb 2022 11:40:51 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xsoli.com; s=2017;
+        t=1643906451; bh=MnT87NDcY1ft6zOf1XoS8HvTYneLOPJ1adCeIZGF45k=;
+        h=Date:From:Subject:To:From;
+        b=jnuk0UgJVbmx0hbxv4Jwyz2UgaeRBU0uh8m3GjIXd9+K/b5noZIvB5DP1koU3gbnz
+         NMPRwUMUm5PnMiUi3SSgm8zjwFVQjWzl9XNeF3Li4Ui3z/GKydhReTJ3JoJlFhpcX9
+         1yhlWk1wJyHDqFdqBvHH7+skA6tkeE+I54BMhbLuK/Qb778Tkm3HMHP29MNR9siXJ4
+         ii9J7K5Gnrghd0aNn+Xr2PpA3KFCSLU1wA/fAgnOQ6oFk5OImLC25RvkR7/Ep3SyYH
+         Dd4Ijkn04uYFw2NRyMku5NEXqrjJmPUkCe2JywwavtYuMJOlTD/hatt4uJkONvR96r
+         imWSdgUB2x0Cg==
+Message-ID: <abc613d0-b71b-6e16-34ca-f5f8adb4b6ce@xsoli.com>
+Date:   Thu, 3 Feb 2022 11:40:51 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-OpenPGP: id=BF15490B; url=http://strugglers.net/~andy/pubkey.asc
-X-URL:  http://strugglers.net/wiki/User:Andy
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: andy@strugglers.net
-X-SA-Exim-Scanned: No (on mail.bitfolk.com); SAEximRunCond expanded to false
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Content-Language: en-US
+From:   Sylvain Falardeau <sylvainf@xsoli.com>
+Subject: ENOSPC during balance with filesystem switching read-only (system
+ info)
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hi again,
 
-I have a host with an xfs filesystem on it, with about 25 million
-files. It contains an rsnapshot backup that has been aggressively
-deduplicated by means of hardlinks and there's probably only about 7
-million unique files on there.
+I just realized I did not add the system information:
 
-I'm trying to rsync it to a different host into a btrfs filesystem,
-but part way through the rsync I get a "Too many links (31)" error:
+Ubuntu 20.04
 
-rsync: [generator] link "/data/backup/rsnapshot/daily.0/chacha/var/lib/dpkg/info/.apt-utils.postrm.0" => daily.0/backup1/var/lib/dpkg/info/libpango1.0-0.postrm failed: Too many links (31)
-Hlink node data for 219191 already has path=daily.0/backup1/var/lib/dpkg/info/libpango1.0-0.postrm (daily.0/chacha/var/lib/dpkg/info/apt-utils.postrm)
-rsync error: errors with program diagnostics (code 13) at hlink.c(539) [generator=3.2.3]
+uname -a
 
-I searched around on this topic and found hits from 10 years ago
-about maximum hardlinks per directory and being dependent upon
-length of file path. Is that still relevant today?
+Linux jbak100 5.13.0-28-generic #31~20.04.1-Ubuntu SMP Wed Jan 19 
+14:08:10 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 
-This particular file does indeed have a huge number of hardlinks:
+(It was booted in version 5.4 from Ubuntu when I got the error and I 
+tried using linux-image-generic-hwe-20.04 which correspond to 5.13.0-28 
+above to see if it fixed the issue).
 
-$ stat daily.0/chacha/var/lib/dpkg/info/apt-utils.postrm
-  File: daily.0/chacha/var/lib/dpkg/info/apt-utils.postrm
-  Size: 132             Blocks: 8          IO Block: 4096   regular file
-Device: fd05h/64773d    Inode: 1342355538  Links: 7565
-Access: (0755/-rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
-Access: 2022-02-03 04:51:29.978915067 +0000
-Modify: 2011-03-01 21:59:29.000000000 +0000
-Change: 2022-01-01 17:35:06.598921506 +0000
- Birth: -
-$ sudo find . -mount -samefile daily.0/chacha/var/lib/dpkg/info/apt-utils.postrm | wc -l
-7565
+btrfs --version
+btrfs-progs v5.4.1
 
-I guess it is some sort of template file that is littered all over
-Debian systems.
 
-Is there anything I can do to get this working?
+Label: none  uuid: c56123f0-7b5f-46b2-b53a-60f2657e9bf1
+         Total devices 6 FS bytes used 17.70TiB
+         devid    2 size 7.28TiB used 7.23TiB path /dev/sdd1
+         devid    3 size 7.28TiB used 7.28TiB path /dev/sde1
+         devid    4 size 7.28TiB used 7.28TiB path /dev/sdf1
+         devid    5 size 7.26TiB used 7.26TiB path /dev/sdb3
+         devid    6 size 7.24TiB used 5.62TiB path /dev/sda4
+         devid    7 size 14.55TiB used 793.51GiB path /dev/sdc1
 
-The receiving host with the btrfs filesystem is Debian 11
-(bullseye), stock Debian kernel 5.10.0-11-amd64. The btrfs
-filesystem is mounted with options:
+btrfs fi df /srv/backups/
+Data, RAID10: total=1.04TiB, used=1.04TiB
+Data, RAID1: total=16.49TiB, used=16.49TiB
+System, RAID1: total=32.00MiB, used=3.59MiB
+Metadata, RAID10: total=80.00MiB, used=57.50MiB
+Metadata, RAID1: total=195.00GiB, used=182.21GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
 
-/dev/mapper/backupenc on /data/backup type btrfs (rw,noatime,compress=zstd:15,space_cache,subvolid=5,subvol=/)
+The dmesg portion was included in my original message.
 
-As an aside, when the file is as small as 132 bytes is there
-actually any advantage in hardlinking copies of it together rather
-than just having multiple copies of it? Is there some minimum
-file size where it's just not worth it?
+One interesting detail is devid 5 with `btrfs fi show` indicate a size 
+of 7.26TiB but in `btrfs fi usage` is shows 7.26TiB unallocated. Is it 
+normal?
 
-(Yes I am aware of offline deuplication which works in XFS as well,
-it's just that where the files are known to be entirely identical
-I've found that simply hardlinking them together was faster and
-easier.)
+Thank you.
 
-Cheers,
-Andy
+-- 
+Sylvain Falardeau
