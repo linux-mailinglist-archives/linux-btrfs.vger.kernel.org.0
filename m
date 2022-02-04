@@ -2,207 +2,270 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF31F4AA43F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 00:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA994AA49D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 00:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358955AbiBDXXi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Feb 2022 18:23:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343646AbiBDXXh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Feb 2022 18:23:37 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9910DFC07E6
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Feb 2022 15:23:35 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id s16so6214357pgs.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 04 Feb 2022 15:23:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HVA3d7uHlEVn4xfPSytSgBdjEdpLWpdPXhmh6J1SAZ4=;
-        b=JeL6PI0Nb7/W713KaVKdZdVJC+V1nKgFL28LdtQHvWt1h7mJY4l0t6d5unrsGyDf25
-         uG69o+4LHsLTBxRoUvy9gFKY32SjGFbKLxQNGC0JX6398aOupyyWknYAuG1jtWt/ZINC
-         ++d64nR1Ae/o78rVSzCxQVXc+UDDc4HPROC8coxUBjBBBljjrrHTo67TzKeVhBHwd+vb
-         4gBDFOgzwHUGZ0pqqgx7ETppXxkOeAgOeqOU0OK1tkIyG28vSCPmjveHwvsTwJPQsVgq
-         5xuMeDczV6GbGoO52V/6rG02AFFh1ITRGiBRDy5gY7zoZs7m4VxNWTdP7E0bIFm1aDg4
-         ySag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HVA3d7uHlEVn4xfPSytSgBdjEdpLWpdPXhmh6J1SAZ4=;
-        b=AD10QgNHtyfypwyhOsBlqdWqK0m3b6cgY/pqGTkv/vJonqG3hmSWJrjtGbdatU9Zgj
-         WJM03OzVcCDRxD+50TxjyvEs1AtKXT5TxPGd++H/NM4+7KI5DAV3YSY7/7sqQepKaSkL
-         j21xfZqm86K1Cdcc9KbkFgqV1oCwJCg3iNjHukUj8wNLEn3wVvL8v0uasiFd544OLtER
-         zXFFgiis7bfAl3mCsCPvCSVRNmlbOxBGjTG95hjk0+AQ9kgGdz60xwkP6aLQd+T+/ann
-         +Rqcf0m4t8awjPOVzACjpgmKxqBDXsWLFPL6wAjxPXkpfXecozTKqAsB9ksyv8S4s8jy
-         sWIw==
-X-Gm-Message-State: AOAM533FZjvuPom77gS9rpHSb77R1dLCZED6gDN3na5pmLJKuWd92jYt
-        YwYckujOxF36al7YnAijbQGuWQ==
-X-Google-Smtp-Source: ABdhPJwM3kUujnIjQGvHoIpStnopJanocpGnfjTY8QoZ5OYP8pDdbBLsjLxebKaTC1GUnofltz0sOg==
-X-Received: by 2002:a05:6a00:23ce:: with SMTP id g14mr5335241pfc.78.1644017015179;
-        Fri, 04 Feb 2022 15:23:35 -0800 (PST)
-Received: from relinquished.localdomain ([2601:602:8b80:8e0::7d1e])
-        by smtp.gmail.com with ESMTPSA id f22sm3798882pfj.206.2022.02.04.15.23.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Feb 2022 15:23:34 -0800 (PST)
-Date:   Fri, 4 Feb 2022 15:23:34 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: get rid of warning on transaction commit when
- using flushoncommit
-Message-ID: <Yf21dlU3a7DHryuK@relinquished.localdomain>
-References: <f47e0cbbad232ab8962161622f71d8093bcc5108.1643814527.git.fdmanana@suse.com>
- <YfxxgCEHLsHr+Cgi@relinquished.localdomain>
- <Yf0KGz7jhgD+KfwJ@debian9.Home>
+        id S244418AbiBDXvh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Feb 2022 18:51:37 -0500
+Received: from mout.gmx.net ([212.227.17.21]:41273 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233874AbiBDXvf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:51:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1644018694;
+        bh=fqL5JYYWnwF8FAXlgwR1Nn33jKUfjJR+tv8aFrvWiIg=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=jTQ6/v6SjXBFlu2LQ2s0HkAKpsqbwj2OvHW5ZvBCnooHEFCJQGkH6/vgoAhEOdwng
+         hPzVXEk9K2KnrW6LbCa+4xPFT5jmfIh56bP2+K19jBvCG9oIHkhMJ5LOUYhcOkpk2+
+         bj5VJraBmGpENN3QqHMzVVtds19JsHC83Mx0HPQg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QS8-1nBiWD1Juy-004QVF; Sat, 05
+ Feb 2022 00:51:34 +0100
+Message-ID: <3f0c7ad3-176d-82a5-1399-ec7984335dd2@gmx.com>
+Date:   Sat, 5 Feb 2022 07:51:29 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yf0KGz7jhgD+KfwJ@debian9.Home>
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: Still seeing high autodefrag IO with kernel 5.16.5
+Content-Language: en-US
+To:     Benjamin Xiao <ben.r.xiao@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <KTVQ6R.R75CGDI04ULO2@gmail.com>
+ <9409dc0c-e99d-cc61-757e-727bd54c6ffd@gmx.com>
+ <88b6fe3e-8317-8070-cb27-0aee4dc72cfb@gmx.com>
+ <5AJR6R.7DWSX2SE14RN3@gmail.com>
+ <2d78b264-5a12-c7ba-21c4-26a56ef54101@gmx.com>
+ <MKJS6R.H0H9NI558A0Q2@gmail.com> <O1PS6R.R1VLYNSP0TUR@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <O1PS6R.R1VLYNSP0TUR@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lPZCANnBE7M/B3ZL7pCNa5BQ70hyOiFaJmp4IIj8ff6EPss2wUz
+ TOnT+UmaRcZ1iqBvJ8lNqbcVSPeVKMwg+4NKW7X+RtB/auq77Z+KTGpaM8skWyUmt2yTYhu
+ 61qDAURz4bplrTk2sWCWN7YwRqhAzBbtyOg3oCUwu2pV706eE2eC/e5Ueyq5QkQxr5DTpzb
+ AZiPCGnyrjW5TUTSDa77g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vulqAZWZew0=:kbprKY1CfXCmDKF8rnQGHD
+ 0jurFNDUhem4f++gp6/wnW6EeVu/o0fx6pokfvV0n3nbg5gLdXN1BxfGPFFVDDVHuTT2rTHLA
+ swSfzK+zjPQOobrihjBrLpgav+jy7C/8vC+G0a+88X5NcfbYWyedUT9ZfoZukGeRKTIvpPcfP
+ JSsDsYaAJuGA5s+gFPwwseffGo+p9BlAOPnpntRC6UxnP7bLeTRt1IdXPfa/sCNxBBPANdG6f
+ Q65Cqvi5suv1D2pD0FGqJQ4/coBWIb3/b6LUBP3TP2SNv+TYvg/k3r6d4zLNBXwPOluH0Y/yU
+ 2KZbfurQXCdy4nb8/qT1j5V1Be7Emqc4vv6yNuNPXHB0kwmhEeUILKKIXKiQjFSLmoZWRVa/H
+ NlQVvMyYslPvyStxHdmrs5av4otTqJTe2yIg8PCc9tZA2UNQN+/3zsMuOr7xJGYU7ymJJ9uw6
+ Zu6Wj4iehgGK2ODlCyVKTi7wjxuqBIT3+U7Wx2D5cLrK3CjFAcE8RkGcX9uv+VuaivJEVC+mf
+ m+YkFO2Cm7Uhg4rAVKzLPO7sEocY61Apbaj+GZszwuvzLh5sOuy/dtRLgqaWLVu/VbnpHbWtI
+ q+kPxbHLdWFoYmZUbzlswf38UoswNGWfL85l0f5QQKbNM0W1yYRFMHsqtwP7cQHDDM8uifYx5
+ tHQbxLtg746RFJBTN6KiVFrCnu1Ag3aciCfnyKiM0G6QKNLA1+y+djyLkWLTCN7iaRw2LNJGL
+ W2ne07WLli9MFgNKAgeSpQ9rLB9cUYnVh78N+p3DeogN/N1mwt5KbSNpXu5WBkxKBvbprZ0Sc
+ nb9fwp6w+BdtYOMqugxkK0v/Nbz38QpJwFaEVvtQQcgrZO5ubFEIVd9rKd23MLKOrJS7n4lye
+ dyFpSZnYSDo8gWUE8k5pVLdWPkOCylVCLVTvCFn4mgc8MteYQjWlbZNRutak2zptpOU+y3TpH
+ YVGDOzrKCWrcyrE3FxLgNlgqPMST2sEgMzBZoc+X03qrvPSMYh/1kAo0jEMlkf55XqoBnHj8b
+ m4QvrUfvltTAWRw9D8jc/CKYTsSDCOonxntUg2K/imx5/iBGrIggn7bF8ThZN5p+J9c5KDE9V
+ GITZRucvVAUgi4=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 04, 2022 at 11:12:27AM +0000, Filipe Manana wrote:
-> On Thu, Feb 03, 2022 at 04:21:20PM -0800, Omar Sandoval wrote:
-> > On Wed, Feb 02, 2022 at 03:26:09PM +0000, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > > 
-> > > When using the flushoncommit mount option, during almost every transaction
-> > > commit we trigger a warning from __writeback_inodes_sb_nr():
-> > > 
-> > >   $ cat fs/fs-writeback.c:
-> > >   (...)
-> > >   static void __writeback_inodes_sb_nr(struct super_block *sb, ...
-> > >   {
-> > >         (...)
-> > >         WARN_ON(!rwsem_is_locked(&sb->s_umount));
-> > >         (...)
-> > >   }
-> > >   (...)
-> > > 
-> > > The trace produced in dmesg looks like the following:
-> > > 
-> > > [  947.470439] ------------[ cut here ]------------
-> > > [  947.473890] WARNING: CPU: 5 PID: 930 at fs/fs-writeback.c:2610 __writeback_inodes_sb_nr+0x7e/0xb3
-> > > [  947.481623] Modules linked in: nfsd nls_cp437 cifs asn1_decoder cifs_arc4 fscache cifs_md4 ipmi_ssif
-> > > [  947.489571] CPU: 5 PID: 930 Comm: btrfs-transacti Not tainted 95.16.3-srb-asrock-00001-g36437ad63879 #186
-> > > [  947.497969] RIP: 0010:__writeback_inodes_sb_nr+0x7e/0xb3
-> > > [  947.502097] Code: 24 10 4c 89 44 24 18 c6 (...)
-> > > [  947.519760] RSP: 0018:ffffc90000777e10 EFLAGS: 00010246
-> > > [  947.523818] RAX: 0000000000000000 RBX: 0000000000963300 RCX: 0000000000000000
-> > > [  947.529765] RDX: 0000000000000000 RSI: 000000000000fa51 RDI: ffffc90000777e50
-> > > [  947.535740] RBP: ffff888101628a90 R08: ffff888100955800 R09: ffff888100956000
-> > > [  947.541701] R10: 0000000000000002 R11: 0000000000000001 R12: ffff888100963488
-> > > [  947.547645] R13: ffff888100963000 R14: ffff888112fb7200 R15: ffff888100963460
-> > > [  947.553621] FS:  0000000000000000(0000) GS:ffff88841fd40000(0000) knlGS:0000000000000000
-> > > [  947.560537] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [  947.565122] CR2: 0000000008be50c4 CR3: 000000000220c000 CR4: 00000000001006e0
-> > > [  947.571072] Call Trace:
-> > > [  947.572354]  <TASK>
-> > > [  947.573266]  btrfs_commit_transaction+0x1f1/0x998
-> > > [  947.576785]  ? start_transaction+0x3ab/0x44e
-> > > [  947.579867]  ? schedule_timeout+0x8a/0xdd
-> > > [  947.582716]  transaction_kthread+0xe9/0x156
-> > > [  947.585721]  ? btrfs_cleanup_transaction.isra.0+0x407/0x407
-> > > [  947.590104]  kthread+0x131/0x139
-> > > [  947.592168]  ? set_kthread_struct+0x32/0x32
-> > > [  947.595174]  ret_from_fork+0x22/0x30
-> > > [  947.597561]  </TASK>
-> > > [  947.598553] ---[ end trace 644721052755541c ]---
-> > > 
-> > > This is because we started using writeback_inodes_sb() to flush delalloc
-> > > when comitting a transaction (when using -o flushoncommit), in order to
-> > > avoid deadlocks with filesystem freeze operations. This change was made
-> > > by commit ce8ea7cc6eb313 ("btrfs: don't call btrfs_start_delalloc_roots
-> > > in flushoncommit"). After that change we started producing that warning,
-> > > and every now and then a user reports this since the warning happens too
-> > > often, it spams dmesg/syslog, and a user is unsure if this reflects any
-> > > problem that might compromise the filesystem's reliability.
-> > > 
-> > > We can not just lock the sb->s_umount semaphore before calling
-> > > writeback_inodes_sb(), because that would at least deadlock with
-> > > filesystem freezing, since at fs/super.c:freeze_super() sync_filesystem()
-> > > is called while we are holding that semaphore in write mode, and that can
-> > > trigger a transaction commit, resulting in a deadlock. It would also
-> > > trigger the same type of deadlock in the unmount path. Possibly, it could
-> > > also introduce some other locking dependencies that lockdep would report.
-> > > 
-> > > To fix this call try_to_writeback_inodes_sb() instead of
-> > > writeback_inodes_sb(), because that will try to read lock sb->s_umount
-> > > and then will only call writeback_inodes_sb() if it was able to lock it.
-> > > This is fine because the cases where it can't read lock sb->s_umount
-> > > are during a filesystem unmount or during a filesystem freeze - in those
-> > > cases sb->s_umount is write locked and sync_filesystem() is called, which
-> > > calls writeback_inodes_sb(). In other words, in all cases where we can't
-> > > take a read lock on sb->s_umount, writeback is already being triggered
-> > > elsewhere.
-> > 
-> > I looked for other places that down_write(&sb->s_umount), and I found
-> > sget() -> grab_super(). grab_super() (briefly) write locks s_umount and
-> > doesn't appear to flush anything. So in theory, if I were to mount an
-> > already mounted filesystem at the exact time we tried to writeback the
-> > inodes, we could skip the writeback?
-> 
-> Right, I noticed that. It's a very tiny time window for those cases, plus
-> it needs to happen precisely when we are starting a transaction commit.
-> 
-> I wouldn't worry about it, because flushoncommit never really gave absolute
-> guarantees that everything is flushed, it was always a best effort approach.
-> 
-> With ce8ea7cc6eb3139f4c730d647325e69354159b0f we started using
-> writeback_inodes_sb() which does not guarantee if writeback is started.
-> Looking at its kernel doc, it explicitly warns about it:
-> 
-> /**
->  * writeback_inodes_sb	-	writeback dirty inodes from given super_block
->  * @sb: the superblock
->  * @reason: reason why some writeback work was initiated
->  *
->  * Start writeback on some inodes on this super_block. No guarantees are made
->  * on how many (if any) will be written, and this function does not wait
->  * for IO completion of submitted IO.
->  */
-> 
-> Even before that commit, when we used btrfs_start_delalloc_roots(), we still
-> had no guarantees that writeback would be started, as filemap_flush() also
-> gives no guarantees. From its kernel doc:
-> 
-> /**
->  * filemap_flush - mostly a non-blocking flush
->  * @mapping:	target address_space
->  *
->  * This is a mostly non-blocking flush.  Not suitable for data-integrity
->  * purposes - I/O may not be started against all dirty pages.
->  *
->  * Return: %0 on success, negative error code otherwise.
->  */
-> 
-> So I don't think we will be any worse than before.
-> 
-> > 
-> > Maybe I'm missing something. Even if not, this seems super unlikely and
-> > probably better than the warning anyways...
-> 
-> Yes. Right now flushoncommit can be considered somewhat unusable due to
-> spamming dmesg/syslog with the warning and stackstrace. IIRC even Zygo
-> had to patch his kernel to remove the warning at __writeback_inodes_sb().
-> 
-> The change to writeback_inodes_sb() is a clear example of a patch that
-> was not tested at all. The warning at __writeback_inodes_sb() exists
-> since 2010, and ce8ea7cc6eb3139f4c730d647325e69354159b0f is from 2017.
-> Running any test from fstests would trigger the warning several times
-> at least.
-> 
-> Thanks.
 
-That all makes sense, thanks. You can add
 
-Reviewed-by: Omar Sandoval <osandov@fb.com>
+On 2022/2/5 03:34, Benjamin Xiao wrote:
+> There's definitely still an issue even with the patches. I ended up
+> disabling autodefrag again and rebooting my computer after btrfs-cleaner
+> wrote about 300-ish GB to my SSD.
+>
+> The patch does help things out a bit compared to before where it was a
+> constant non-stop stream of IO, but 300GB worth of extra writes for 33GB
+> of actual data doesn't seem normal.
+
+Have you tried v5.15.x with that diff?
+
+Thanks,
+Qu
+
+>
+> Ben
+>
+> On Fri, Feb 4 2022 at 09:36:22 AM -0800, Benjamin Xiao
+> <ben.r.xiao@gmail.com> wrote:
+>> Okay, I just tested right now with my custom 5.16.5 kernel with your 3
+>> patches applied. Redownloading the same game, I noticed that there was
+>> significantly less IO load during the download, which is great. It
+>> looked kinda bursty instead, with periods of no load, and then periods
+>> of load ranging in the 150-200MB/s range.
+>>
+>> After the download, I am no longer getting that constant 90-150MB/s
+>> disk write from btrfs-cleaner, but I am seeing periodic bursts of it
+>> every 10 seconds or so. These bursts last for around 3 seconds and
+>> load is anywhere from 50-300MB/s.
+>>
+>> Is this normal? Does autodefrag only defrag newly written data, or
+>> does it sometimes go back and run defrag on data written previously? I
+>> am gonna let it run for a bit to see if it eventually subsides.
+>>
+>> Ben
+>>
+>> On Fri, Feb 4 2022 at 02:20:44 PM +0800, Qu Wenruo
+>> <quwenruo.btrfs@gmx.com> wrote:
+>>>
+>>>
+>>> On 2022/2/4 12:32, Benjamin Xiao wrote:
+>>>> Okay, I just compiled a custom Arch kernel with your patches applied.
+>>>> Will test soon. Besides enabling autodefrag and redownloading a game
+>>>> from Steam, what other sorts of tests should I do?
+>>>
+>>> As long as your workload can trigger the problem reliably, nothing
+>>> =7Felse.
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>>>
+>>>> Ben
+>>>>
+>>>> On Fri, Feb 4 2022 at 09:54:19 AM +0800, Qu Wenruo
+>>>> <quwenruo.btrfs@gmx.com> wrote:
+>>>>>
+>>>>>
+>>>>> On 2022/2/4 09:17, Qu Wenruo wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2022/2/4 04:05, Benjamin Xiao wrote:
+>>>>>>> Hello all,
+>>>>>>>
+>>>>>>> Even after the defrag patches that landed in 5.16.5, I
+>>>>>>> am still =7F=7F=7F=7F=7Fseeing
+>>>>>>> lots of cpu usage and disk writes to my SSD when
+>>>>>>> autodefrag is =7F=7F=7F=7F=7Fenabled.
+>>>>>>> I kinda expected slightly more IO during writes
+>>>>>>> compared to 5.15, =7F=7F=7F=7F=7Fbut
+>>>>>>> what I am actually seeing is massive amounts of
+>>>>>>> btrfs-cleaner i/o =7F=7F=7F=7F=7Feven
+>>>>>>> when no programs are actively writing to the disk.
+>>>>>>>
+>>>>>>> I can reproduce it quite reliably on my 2TB Btrfs Steam library
+>>>>>>> partition. In my case, I was downloading Strange
+>>>>>>> Brigade, which =7F=7F=7F=7F=7Fis a
+>>>>>>> roughly 25GB download and 33.65GB on disk. Somewhere during the
+>>>>>>> download, iostat will start reporting disk writes
+>>>>>>> around 300 =7F=7F=7F=7F=7FMB/s, even
+>>>>>>> though Steam itself reports disk usage of 40-45MB/s.
+>>>>>>> After the =7F=7F=7F=7F=7Fdownload
+>>>>>>> finishes and nothing else is being written to disk, I
+>>>>>>> still see =7F=7F=7F=7F=7Faround
+>>>>>>> 90-150MB/s worth of disk writes. Checking in iotop, I
+>>>>>>> can see =7F=7F=7F=7F=7Fbtrfs
+>>>>>>> cleaner and other btrfs processes writing a lot of data.
+>>>>>>>
+>>>>>>> I left it running for a while to see if it was just some
+>>>>>>> =7F=7F=7F=7F=7Fmaintenance
+>>>>>>> tasks that Btrfs needed to do, but it just kept going. I tried to
+>>>>>>> reboot, but it actually prevented me from properly
+>>>>>>> rebooting. =7F=7F=7F=7F=7FAfter
+>>>>>>> systemd timed out, my system finally shutdown.
+>>>>>>>
+>>>>>>> Here are my mount options:
+>>>>>>> rw,relatime,compress-force=3Dzstd:2,ssd,autodefrag,space_cache=3Dv=
+2,subvolid=3D5,subvol=3D/
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>
+>>>>>> Compression, I guess that's the reason.
+>>>>>>
+>>>>>> =C2=A0From the very beginning, btrfs defrag doesn't handle
+>>>>>> compressed =7F=7F=7F=7Fextent
+>>>>>> well.
+>>>>>>
+>>>>>> Even if a compressed extent is already at its maximum
+>>>>>> capacity, =7F=7F=7F=7Fbtrfs
+>>>>>> will still try to defrag it.
+>>>>>>
+>>>>>> I believe the behavior is masked by other problems in older
+>>>>>> =7F=7F=7F=7Fkernels thus
+>>>>>> not that obvious.
+>>>>>>
+>>>>>> But after rework of defrag in v5.16, this behavior is more exposed.
+>>>>>
+>>>>> And if possible, please try this diff on v5.15.x, and see if
+>>>>> v5.15 =7F=7F=7Fis
+>>>>> really doing less IO than v5.16.x.
+>>>>>
+>>>>> The diff will solve a problem in the old code, where autodefrag is
+>>>>> almost not working.
+>>>>>
+>>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>>>>> index cc61813213d8..f6f2468d4883 100644
+>>>>> --- a/fs/btrfs/ioctl.c
+>>>>> +++ b/fs/btrfs/ioctl.c
+>>>>> @@ -1524,13 +1524,8 @@ int btrfs_defrag_file(struct inode
+>>>>> *inode, =7F=7F=7Fstruct
+>>>>> file *file,
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c=
+ontinue;
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 if (!newer_than) {
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
+ =3D (PAGE_ALIGN(defrag_end) >>
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PAGE_SHIFT) -=
+ i;
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
+ =3D min(cluster, max_cluster);
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 } else {
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
+ =3D max_cluster;
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 }
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 cluster =3D (PAGE_ALIGN(defrag_end) >>
+>>>>> PAGE_SHIFT) - =7F=7F=7Fi;
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 cluster =3D min(cluster, max_cluster);
+>>>>>
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 if (i + cluster > ra_index) {
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
+a_index =3D max(i, ra_index);
+>>>>>
+>>>>>>
+>>>>>> There are patches to address the compression related
+>>>>>> problem, but =7F=7F=7F=7Fnot
+>>>>>> yet merged:
+>>>>>>
+>>>>>> https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D609=
+387
+>>>>>>
+>>>>>> Mind to test them to see if that's the case?
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Qu
+>>>>>>>
+>>>>>>>
+>>>>>>> I've disabled autodefrag again for now to save my SSD,
+>>>>>>> but just =7F=7F=7F=7F=7Fwanted
+>>>>>>> to say that there is still an issue. Have the defrag
+>>>>>>> issues been =7F=7F=7F=7F=7Ffully
+>>>>>>> fixed or are there more patches incoming despite what Reddit and
+>>>>>>> Phoronix say? XD
+>>>>>>>
+>>>>>>> Thanks!
+>>>>>>> Ben
+>>>>>>>
+>>>>>>>
+>>>>
+>>>>
+>>
+>>
+>
+>
