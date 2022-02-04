@@ -2,103 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4374A9ED2
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Feb 2022 19:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBEE4A9EE2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Feb 2022 19:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377485AbiBDSRz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Feb 2022 13:17:55 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:41090 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243150AbiBDSRy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Feb 2022 13:17:54 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BDDCB210F6;
-        Fri,  4 Feb 2022 18:17:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1643998673;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iZOq8TE33T6VrO/SleVZQK7AyqucFmvRN7LQZchE6oo=;
-        b=V2OBRau47M8Tsq0+Yj9uo+u6XwoffFy7JRnFKO3MHPCSbDynTcawsJL2rbenaH8dRRC/uk
-        3bs+/W4en3shMHIFeJdrJsAZ0NflDkbgD9GbNU9vASAx4z85e+bAqyVmlTU+1oH/aMQwFZ
-        P3dEfl+MZV1ZU2aHwPM3/vxhjByJti4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1643998673;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iZOq8TE33T6VrO/SleVZQK7AyqucFmvRN7LQZchE6oo=;
-        b=GKMTr4hoNz+frmh312IuT4wZaTsQ0BBJs9xZ3A3jOfAkAxW0zejSs9KO4dJa0pD8OSM87z
-        NHU2hgGaqEtYSEDQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id B1BFDA3B84;
-        Fri,  4 Feb 2022 18:17:53 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 17D23DA781; Fri,  4 Feb 2022 19:17:08 +0100 (CET)
-Date:   Fri, 4 Feb 2022 19:17:07 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/4] btrfs: defrag: use btrfs_defrag_ctrl to replace
- btrfs_ioctl_defrag_range_args for btrfs_defrag_file()
-Message-ID: <20220204181707.GI14046@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1643357469.git.wqu@suse.com>
- <34c2aa1e7c5e196420d68de1f67b8973d49e284b.1643357469.git.wqu@suse.com>
- <YfwOJ0UT5t64BhVG@debian9.Home>
- <64316118-4f91-a277-d28a-24f74f2e6056@gmx.com>
- <20220204175742.GG14046@twin.jikos.cz>
- <20220204180031.GH14046@twin.jikos.cz>
+        id S1377507AbiBDSWK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Feb 2022 13:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351887AbiBDSWK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Feb 2022 13:22:10 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9A6C061714
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Feb 2022 10:22:09 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id y3so1018459ejf.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Feb 2022 10:22:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IgAZJVrE/JPNB+PhIz66Ly7FjU4cFDkmy51eoaPrqkI=;
+        b=d9A02hJJ36scnGKvs7jqHHYemSQQwa55qR3iKOuuCeed+XlFTcadYvRp3LE/TWmlf1
+         9XCxVSUkRsj5CglaXYO2u7hFqTWKk30fiEmBpiuou62FPdOzdH4VDQK3e/u5MuzfFYuN
+         G/xpeT5nXr5YX5yXbj8HdRo7TZYsr7lin+ZKNoRo6L/MkgRKfbTZhV6uGgGmc4BcAYrV
+         dxJzRQlKNu0sRhk6uv24Mlt+mue/UyXO7afaBUZZn2sHJPuLz4aWZYdU4/W0kG28+Z7n
+         mEb3Y9Ga/ez2gbccv7jUI3yCVkN5Rd3Khq1chyAIiWhcEGbdVTct3I2CeMIUJRgjHQZF
+         2tEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IgAZJVrE/JPNB+PhIz66Ly7FjU4cFDkmy51eoaPrqkI=;
+        b=DCRKaYTNWsklkUcTW4JEol5lmn/ubthMuzNPF0elvja98giyOgttxc/ulrBbA0QdQl
+         ikbwNDzhFY7cH73dsse6YnMy0Ueki+z+XI7QdjmR9oHZR8cAijTStZWGvpMv3YN3D/In
+         v8O5heUJSg+6dACOyS3TXNiHtOlezzQtsE859umw0rlgBCTQa3RxCegTrOPPKiVthA7F
+         SLCabw+gN1NlAqr3f9YrpaZGxOnn7v5MVRO+F5pGPkY14GuECYcI6jIda+2Zt2095uYw
+         xkJOjpy/kxQkATfbTbOk9/SDHzHmQaIk8bfv8UKAJJLvWqNSQSrs/fgPM0zqm2/IrleE
+         Siyg==
+X-Gm-Message-State: AOAM531T0Jx03lNUt7RE5dPlAgPUadVBJjp9Ukyh6AHFlIZRjuI4xjY7
+        ftpS5NuUzjk4ntb0QZqQcYQ4f5xr+OWURw==
+X-Google-Smtp-Source: ABdhPJwWz/7SLpPMDAwdqHfN5HtkmIAW1oxzCsRViywMUvU1GLABwmtUyWQSBloxiL81XU8ViuUg3Q==
+X-Received: by 2002:a17:906:4fd6:: with SMTP id i22mr146514ejw.502.1643998928072;
+        Fri, 04 Feb 2022 10:22:08 -0800 (PST)
+Received: from slackdom.home ([151.53.183.194])
+        by smtp.gmail.com with ESMTPSA id s1sm1148560edt.49.2022.02.04.10.22.07
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Feb 2022 10:22:07 -0800 (PST)
+From:   Domenico Panella <pandom79@gmail.com>
+To:     BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Btrfs boot message
+Date:   Fri, 04 Feb 2022 19:22:06 +0100
+Message-ID: <4507791.vXUDI8C0e8@slackdom.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220204180031.GH14046@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 04, 2022 at 07:00:31PM +0100, David Sterba wrote:
-> On Fri, Feb 04, 2022 at 06:57:42PM +0100, David Sterba wrote:
-> > On Fri, Feb 04, 2022 at 08:30:01AM +0800, Qu Wenruo wrote:
-> > > On 2022/2/4 01:17, Filipe Manana wrote:
-> > > > On Fri, Jan 28, 2022 at 04:12:57PM +0800, Qu Wenruo wrote:
-> > > >> --- a/fs/btrfs/file.c
-> > > >> +++ b/fs/btrfs/file.c
-> > > >> @@ -277,8 +277,7 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
-> > > >>   {
-> > > >>   	struct btrfs_root *inode_root;
-> > > >>   	struct inode *inode;
-> > > >> -	struct btrfs_ioctl_defrag_range_args range;
-> > > >> -	int num_defrag;
-> > > >> +	struct btrfs_defrag_ctrl ctrl = {};
-> > > >
-> > > > Most of the code base uses { 0 } for this type of initialization.
-> > > > IIRC some compiler versions complained about {} and preferred the
-> > > > version with 0.
-> > > 
-> > > Exactly what I preferred, but David mentioned that kernel is moving
-> > > torwards {} thus I that's what I go.
-> > > 
-> > > > I think we should try to be consistent. Personally I find the 0 version
-> > > > more clear. Though this might be bike shedding territory.
-> > 
-> > The preferred style is {} because { 0 } does not consistently initialize
-> > the structures on all compilers. I can't find the mail/commit and
-> > reasoning, if there's a pointer as the first member, then it gets
-> > initialized (the 0 matches) but the rest of the structure is not
-> > initialized.
-> 
-> I thought we've had all the { 0 } converted to {} but no so I get the
-> consistency agrument.
+Hi,
 
-https://lore.kernel.org/all/20210910225207.3272766-1-keescook@chromium.org/
+I get the following message when the machine boots up :
 
-A tree-wide change but it did not get pulled in the end. The problematic
-compiler was gcc 4.9 but the current minimum requirement is 5.1 so I
-wonder how much relevant it is.
+"mknod: /dev/btrfs-control file exists"
+
+How could I remove it?
+
+Regards
+
+
