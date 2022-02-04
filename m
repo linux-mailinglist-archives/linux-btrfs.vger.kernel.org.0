@@ -2,93 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B26754A9D86
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Feb 2022 18:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 446774A9D87
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Feb 2022 18:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376831AbiBDRQj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Feb 2022 12:16:39 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:38484 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbiBDRQi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Feb 2022 12:16:38 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9C395210F6
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Feb 2022 17:16:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643994997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=JZ0x7IMb27yXaf9BspdmUAWqblRPfDicL2Z+sM8iikI=;
-        b=KK21sG9pKBV2fCxHZHdpXLWA+AmH4PiZ1qILHew8htaAaROyTPBHpKGLuxwUig9Bs7Y4Y1
-        IbYPMtuHFX+ZzAiz+QTxh5pyael20N+BahowQdL14XL53J00TPgXb1Bwq+E4FBrkDmzgxN
-        jK+Nk3EOGgk5aZ5ZQuYCopsYdL68VFU=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 95AEFA3B81
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Feb 2022 17:16:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EE6FEDA781; Fri,  4 Feb 2022 18:15:51 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs release 5.16.1
-Date:   Fri,  4 Feb 2022 18:15:51 +0100
-Message-Id: <20220204171551.25122-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1376832AbiBDRQq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 4 Feb 2022 12:16:46 -0500
+Received: from mout.kundenserver.de ([217.72.192.73]:38779 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234482AbiBDRQq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Feb 2022 12:16:46 -0500
+Received: from [192.168.177.41] ([94.31.101.241]) by mrelayeu.kundenserver.de
+ (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis) id
+ 1MqJVd-1mU43L2mrj-00nNYE; Fri, 04 Feb 2022 18:16:44 +0100
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Qu Wenruo" <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re[2]: root 5 inode xy errors 200, dir isize wrong and root 5 inode xx errors
+ 1, no inode item
+Date:   Fri, 04 Feb 2022 17:16:44 +0000
+Message-Id: <em76f707e8-935b-4885-90a2-63b93fa5f7d6@envy>
+In-Reply-To: <b29bcb81-883d-f024-d1a1-fe685e228d4b@gmx.com>
+References: <em7a21a1a2-4ce2-46d5-aaf1-09e334b754d8@envy>
+ <b29bcb81-883d-f024-d1a1-fe685e228d4b@gmx.com>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/8.2.1659.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:OtLtBTV9MVQFdTaesft3jvx3O7/PpGdBO5LniSn2o68dSA76WWs
+ LFbdNfBaYIIPl44H5I862AmbXhiCIp6dwKMVtQT7VidwYFPpp8FiU4maHWy+2Qn5U0y9buy
+ QUdLaJdNK1DgUkMQ9OVl1ijh1lDKV/9uPNlC9S8WV3KUewdZ6oW597moGsbQoUGF1tmdPKQ
+ WDl6ZAlacNLYEecj9aqyA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HzAnDKQ8NBQ=:P0tUfo58cm2fdSxhAYbcMa
+ iXv4wdkmAdh/c7JqJxlHSv9pqVtPOT8UogJCvjJYg8Y6CmLkO8n1k9hdVLoDdGK/RlhRX9JAk
+ +NW1pZjS5oKsfrAfbN1cNbp8IEEUjY2TrPCiXLR3AxWipk5T3Mda9hNkm4g+yssckBuIApUIw
+ WKGD+gX/iVrc1bWFv8nUhKT+nX0dV1Rsn0d0eFO+fta7pvFyeg+0HnMf/tAL1qxFL6UWNvNtW
+ sA3dUhCuiN3H8VxR5YQ5Jh0sCSHl5NTvmT+b4lD387Us3QfFP4MsI5a++JAbGmdBA34IM+paX
+ eupNAm5hb/gUQQwsPKrm9BGJXZa3j77r5H1tOJDTxztrs4FRQ2brDNelwIi7P/Y6F8wJU3KoF
+ T18IqH3VGKzOpHsy1lhGa5vMC2de7R1gNfgCYycfNPe8VwXK1IYOQKr3uQBzDUmPqXynO3OLf
+ J0srIPxUZ6w1F2JnawQS5lHk2SchQ82rfryiQrkTlRdLMDUyAZPb1A7eO/320Wm8hMGXSoPos
+ tCgu3Mdx1nmldDdeJKdKptJAozqn3Kh8SlNa2bwJE8FAnXq1QHtvl3rgz+K/aozDgZRKGZJDe
+ ClUhCmdo0/jS0c3tocz08r7/DRWX+oyS9ueIt1r2jrPgZvnYzITEUVuxTeP4wbLHdBZDX/RO8
+ 34p/9C8HxpXP2Bg2T8xSlRiS43rPBvsFWaSPTJeur0awiRBqR9UgEzhvAhCJlTc9gnYzzNsEI
+ KXQ+b9Xk1qpmstoH
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hello Qu,
 
-btrfs-progs version 5.16.1 have been released. This is a bugfix release.
+thanks for your reply.
+In dmesg, I see nothing wrong. No unusual messages from btrfs.
+>>So I ran btrfs scrub without errors and then btrfs check with these errors:
+>>[1/7] checking root items
+>>[2/7] checking extents
+>>[3/7] checking free space cache
+>>[4/7] checking fs roots
+>>root 5 inode 79886 errors 200, dir isize wrong
+>
+>This is pretty easy to fix, --repair can handle.
 
-Changelog:
+But what about the rest?
 
-* mkfs: support DUP on metadata on zoned devices
-* subvol delete: drop warning for root when search ioctl fails
-* check:
-  * fix --init-csum-tree to not create checksums for extents that are not
-    supposed to have them
-  * add check for metadata item levels
-* add udev rule for zoned devices as they require mq-deadline
-* build: fix redefinition of ALIGN on mixed old/new kernel/userspace (5.11)
-* other:
-  * typo fixes
-  * new tests
-  * CI targets updated
+>
+>But I guess it's mostly due to the offending dir items.
+>
+>>root 5 inode 59544488 errors 1, no inode item
+>>          unresolved ref dir 79886 index 199 namelen 11 name global.stat
+>
+>No inode item is a weird one, it means the inode 59544488 doesn't have
+>its inode item at all.
+>
+>
+>>filetype 1 errors 5, no dir item, no inode ref
+>>root 5 inode 59544493 errors 1, no inode item
+>
+>On the other hand, there are some other dir refs which doesn't have dir
+>item.
+>
+>From the inode numbers, it doesn't look like an obvious bitflip:
+>
+>59544488 = 0x38c93a8
+>59544493 = 0x38c93ad
+>59544494 = 0x38c93ae
+>59544495 = 0x38c93af
+But three are directly following each other (93,94,95)
+>And, mind to run "btrfs check --mode=lowmem --readonly" to get a better
+>user readable output?
 
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+It is running for 3.5h now. Is that normal? Without lowmem and readonly, 
+it was done within minutes.
+The Partition is a SSD with 80GB. That should be fast...
 
-Shortlog:
+Best regards,
+Hendrik
 
-Adam Borowski (2):
-      btrfs-progs: fix a bunch of typos
-      btrfs-progs: subvol delete: hide a warning on an unprivileged delete
 
-David Sterba (7):
-      btrfs-progs: kerncompat: add local definition for alignment macros
-      btrfs-progs: ci: add run scripts for more targets
-      btrfs-progs: ci: add Leap 15.4 for testing
-      btrfs-progs: ci: add helpers to update base images
-      btrfs-progs: subvol delete: more fine grained check when looking for default subvol
-      btrfs-progs: update CHANGES for 5.16.1
-      Btrfs progs v5.16.1
+>
+>
+>Thanks,
+>Qu
+>
+>>          unresolved ref dir 79886 index 200 namelen 10 name global.tmp
+>>filetype 1 errors 5, no dir item, no inode ref
+>>          unresolved ref dir 79886 index 203 namelen 11 name global.stat
+>>filetype 1 errors 5, no dir item, no inode ref
+>>root 5 inode 59544494 errors 1, no inode item
+>>          unresolved ref dir 79886 index 202 namelen 9 name db_0.stat
+>>filetype 1 errors 5, no dir item, no inode ref
+>>root 5 inode 59544495 errors 1, no inode item
+>>          unresolved ref dir 79886 index 204 namelen 10 name global.tmp
+>>filetype 1 errors 5, no dir item, no inode ref
+>>ERROR: errors found in fs roots
+>>found 62813446144 bytes used, error(s) found
+>>total csum bytes: 43669376
+>>total tree bytes: 665501696
+>>total fs tree bytes: 329498624
+>>total extent tree bytes: 240975872
+>>btree space waste bytes: 119919077
+>>file data blocks allocated: 4766364479488
+>>   referenced 60131446784
+>>
+>>How do I fix these?
+>>I am runing linux 5.13.9 (about to update to 5.16.5).
+>>
+>>Best regards,
+>>Hendrik
+>>
 
-Johannes Thumshirn (3):
-      btrfs-progs: add udev rule to use mq-deadline on zoned btrfs
-      btrfs-progs: use profile_supported in mkfs as well
-      btrfs-progs: zoned support DUP on metadata block groups
-
-Qu Wenruo (8):
-      btrfs-progs: backref: properly queue indirect refs
-      btrfs-progs: check: move csum tree population into mode-common.[ch]
-      btrfs-progs: check: don't calculate csum for preallocated file extents
-      btrfs-progs: check: handle csum generation properly for --init-csum-tree --init-extent-tree
-      btrfs-progs: tests: add test case for init-csum-tree
-      btrfs-progs: check: lowmem: fix crash when METADATA_ITEM has invalid level
-      btrfs-progs: check: orig: reject bad metadata backref with invalid level
-      btrfs-progs: tests/fsck: add test image with invalid metadata backref level
-
-Su Yue (1):
-      btrfs-progs: make generic_err print physical address of extent buffer
