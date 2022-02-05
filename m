@@ -2,270 +2,299 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA994AA49D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 00:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443704AA4E7
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 01:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244418AbiBDXvh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Feb 2022 18:51:37 -0500
-Received: from mout.gmx.net ([212.227.17.21]:41273 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233874AbiBDXvf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:51:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644018694;
-        bh=fqL5JYYWnwF8FAXlgwR1Nn33jKUfjJR+tv8aFrvWiIg=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=jTQ6/v6SjXBFlu2LQ2s0HkAKpsqbwj2OvHW5ZvBCnooHEFCJQGkH6/vgoAhEOdwng
-         hPzVXEk9K2KnrW6LbCa+4xPFT5jmfIh56bP2+K19jBvCG9oIHkhMJ5LOUYhcOkpk2+
-         bj5VJraBmGpENN3QqHMzVVtds19JsHC83Mx0HPQg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QS8-1nBiWD1Juy-004QVF; Sat, 05
- Feb 2022 00:51:34 +0100
-Message-ID: <3f0c7ad3-176d-82a5-1399-ec7984335dd2@gmx.com>
-Date:   Sat, 5 Feb 2022 07:51:29 +0800
-MIME-Version: 1.0
+        id S1378358AbiBEAKT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Feb 2022 19:10:19 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:33950 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1378698AbiBEAKO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Feb 2022 19:10:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1644019813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XZjZ6cv3DPk1deO9D+tdpm2vfVxn6Ht94VFgU8XxzUw=;
+        b=ZPE2GQMsuVnaUku1zutQW3l5MiMj+CD4LlYi+19VUKaxhOiWjT4m3hnaN44lY3QpbxYz08
+        cDrAeGUY5dPBfRdFwAFTnfUxJtKPA4R+8BZWHF0MKtGywzrPjIqihdD7kKWvwEXhpOTpn0
+        /GnVCVH31X95oOGkW42mL57JLLx7ndA=
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04lp2053.outbound.protection.outlook.com [104.47.13.53]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ de-mta-33-p-hVFmosNB6AqPQsQLEgYQ-1; Sat, 05 Feb 2022 01:10:12 +0100
+X-MC-Unique: p-hVFmosNB6AqPQsQLEgYQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nyi3HWZGEO2Pz9Yk20wc85ObXSE6QFYSpgyNJcBQxnVGc9Za4BO5ZcgxgElFN1cOvXn8LvirxDzl6NnuKffQZKLW+cbARZqrQ9uoDK74fm9dOYX+Mhf2NkP+C/M/MJS/nB33eBAg3SbarxfYVecVM62pjeXkCC3qZ91p4uHTSPkTtFv0JX2CEdwZOQ+kLU+r37qkIbN/0j24Wdfo1cEr4mlDqgZDzbzceskeS8pAZemIv2unPIGDKYw0dbvR1/F7OYSPIwba2rjvfkWaB5x25IVx0NkCP3V7gq8J2kTJ6FKiW6R7rDwCkPWLKW77idtS9DdYIGu64y+hCkClV2NTHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XZjZ6cv3DPk1deO9D+tdpm2vfVxn6Ht94VFgU8XxzUw=;
+ b=oNWx4cPv2QWbTDltEkWUV279f05opXmIMNwhOYccz7NxyZxzLSRPmqkkO5VI2LWg+bDb1VNe+3H0i84mCNSE7MBJD/mZwoYwmQp0b8+EZuOQa5jPMTfgfxPHw3ErFQDsGw9ZzfPDIfwtZLM1nLNiXRbuIzXFQaOryjCdp45dxRvUPmqLnTv3VKgMerG+75bFEB2Oz2FqxnnXvk1TdknBJdyhm1BqhdKU7pbAtw4fes2nfhaGudXViVLexoerSM9RcpGlE//58qw20EeL9rG3bG62IcmItPaL9Ehrxvsy/YJK5cnl3LgnKKp1GJhCsd1JPvOUhaGaKm3v8I2XcOp+uQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB9PR04MB9426.eurprd04.prod.outlook.com (2603:10a6:10:36a::14)
+ by VI1PR04MB6032.eurprd04.prod.outlook.com (2603:10a6:803:fc::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.17; Sat, 5 Feb
+ 2022 00:10:10 +0000
+Received: from DB9PR04MB9426.eurprd04.prod.outlook.com
+ ([fe80::18db:1eae:719e:ef4e]) by DB9PR04MB9426.eurprd04.prod.outlook.com
+ ([fe80::18db:1eae:719e:ef4e%7]) with mapi id 15.20.4951.012; Sat, 5 Feb 2022
+ 00:10:10 +0000
+Message-ID: <8f42d9a1-e005-9b45-c4f8-c14cbfdaa9f0@suse.com>
+Date:   Sat, 5 Feb 2022 08:10:01 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.1
-Subject: Re: Still seeing high autodefrag IO with kernel 5.16.5
 Content-Language: en-US
-To:     Benjamin Xiao <ben.r.xiao@gmail.com>
+To:     Filipe Manana <fdmanana@kernel.org>
 Cc:     linux-btrfs@vger.kernel.org
-References: <KTVQ6R.R75CGDI04ULO2@gmail.com>
- <9409dc0c-e99d-cc61-757e-727bd54c6ffd@gmx.com>
- <88b6fe3e-8317-8070-cb27-0aee4dc72cfb@gmx.com>
- <5AJR6R.7DWSX2SE14RN3@gmail.com>
- <2d78b264-5a12-c7ba-21c4-26a56ef54101@gmx.com>
- <MKJS6R.H0H9NI558A0Q2@gmail.com> <O1PS6R.R1VLYNSP0TUR@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <O1PS6R.R1VLYNSP0TUR@gmail.com>
+References: <cover.1643961719.git.wqu@suse.com>
+ <Yf1gVUTezMEviTPU@debian9.Home>
+From:   Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH v2 0/5] btrfs: defrag: don't waste CPU time on non-target
+ extent
+In-Reply-To: <Yf1gVUTezMEviTPU@debian9.Home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lPZCANnBE7M/B3ZL7pCNa5BQ70hyOiFaJmp4IIj8ff6EPss2wUz
- TOnT+UmaRcZ1iqBvJ8lNqbcVSPeVKMwg+4NKW7X+RtB/auq77Z+KTGpaM8skWyUmt2yTYhu
- 61qDAURz4bplrTk2sWCWN7YwRqhAzBbtyOg3oCUwu2pV706eE2eC/e5Ueyq5QkQxr5DTpzb
- AZiPCGnyrjW5TUTSDa77g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vulqAZWZew0=:kbprKY1CfXCmDKF8rnQGHD
- 0jurFNDUhem4f++gp6/wnW6EeVu/o0fx6pokfvV0n3nbg5gLdXN1BxfGPFFVDDVHuTT2rTHLA
- swSfzK+zjPQOobrihjBrLpgav+jy7C/8vC+G0a+88X5NcfbYWyedUT9ZfoZukGeRKTIvpPcfP
- JSsDsYaAJuGA5s+gFPwwseffGo+p9BlAOPnpntRC6UxnP7bLeTRt1IdXPfa/sCNxBBPANdG6f
- Q65Cqvi5suv1D2pD0FGqJQ4/coBWIb3/b6LUBP3TP2SNv+TYvg/k3r6d4zLNBXwPOluH0Y/yU
- 2KZbfurQXCdy4nb8/qT1j5V1Be7Emqc4vv6yNuNPXHB0kwmhEeUILKKIXKiQjFSLmoZWRVa/H
- NlQVvMyYslPvyStxHdmrs5av4otTqJTe2yIg8PCc9tZA2UNQN+/3zsMuOr7xJGYU7ymJJ9uw6
- Zu6Wj4iehgGK2ODlCyVKTi7wjxuqBIT3+U7Wx2D5cLrK3CjFAcE8RkGcX9uv+VuaivJEVC+mf
- m+YkFO2Cm7Uhg4rAVKzLPO7sEocY61Apbaj+GZszwuvzLh5sOuy/dtRLgqaWLVu/VbnpHbWtI
- q+kPxbHLdWFoYmZUbzlswf38UoswNGWfL85l0f5QQKbNM0W1yYRFMHsqtwP7cQHDDM8uifYx5
- tHQbxLtg746RFJBTN6KiVFrCnu1Ag3aciCfnyKiM0G6QKNLA1+y+djyLkWLTCN7iaRw2LNJGL
- W2ne07WLli9MFgNKAgeSpQ9rLB9cUYnVh78N+p3DeogN/N1mwt5KbSNpXu5WBkxKBvbprZ0Sc
- nb9fwp6w+BdtYOMqugxkK0v/Nbz38QpJwFaEVvtQQcgrZO5ubFEIVd9rKd23MLKOrJS7n4lye
- dyFpSZnYSDo8gWUE8k5pVLdWPkOCylVCLVTvCFn4mgc8MteYQjWlbZNRutak2zptpOU+y3TpH
- YVGDOzrKCWrcyrE3FxLgNlgqPMST2sEgMzBZoc+X03qrvPSMYh/1kAo0jEMlkf55XqoBnHj8b
- m4QvrUfvltTAWRw9D8jc/CKYTsSDCOonxntUg2K/imx5/iBGrIggn7bF8ThZN5p+J9c5KDE9V
- GITZRucvVAUgi4=
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR05CA0078.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::19) To DB9PR04MB9426.eurprd04.prod.outlook.com
+ (2603:10a6:10:36a::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c47c03ca-2660-41d0-1062-08d9e83bdf99
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6032:EE_
+X-Microsoft-Antispam-PRVS: <VI1PR04MB60325852D32CD9C1BA99AF70D62A9@VI1PR04MB6032.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eF+jVqjFThY9nOb41T3C/7DCf5h615suzvLGT11mQFwFTaFtMHtrnhyd6h/pCWfjXagpebWGcZXMA7C7IRVeLCbtJDjAxql0dsohiOpXL2It3OXJRwqp0AbwZFcyUpEk8XJjtBemmzpg/V6qK3x3KFWZVfCR7NlatM3To7PNqJzkQZhnalsBuOZbS73N1jflo21fPWokslomBu5vSLW2avnrC0mKZkEEYP382xFQ+ftSoGvgpYCC40HypmqCSEuoGn8tZJixDNakZ3w1vzwAq+XVaBiSScf83VUEPl1P3nF4i8Y3M6JYT0UjWPBD4ubZRp8K2Sfr41Z1ncEchTZA/0aIu/6ZeBPKviMpLZIOi0A8frg6EwctLKz5A3OYmpBuPxzKPB8GfcOAODWTqnludPNHQUXm4ZlMrUX2bMrD8yWoMVX3BDMewzX85eAoiO//h0udHRlPTz43MA6Fgv6I9XmM1S4rGoV/QjS/TTbdTGPxFk2DKTimqYO1vgYP5l9ROphj/HmlpFvQtDTEF1tMhqArICAXCpgPcbzuzxq0v7IcntFbx36tgsWIm4jc7QVGdrGMNnshQBPR0s+5HBpg91DuLCZYtLBUZ/733w7xXL0RpfI9R94v4ZJdxZzkpSjiaap4klhl/chBAlO7LcTaEshm7OuMwrYhOIt15PplZy5ggvlBokm3iNB9uC2oC5+WnK1hxjGaDu2aSyoOvkO3TnuvcCXpwLNq2zFWlYVva3KArbZ9W2iHT4DUluwVQMWJATmu13j+LHTC8AD1Mj85kFcTf9yC7JTV/Mhi/g6XBgPp8tLc0mvy5ygWXmoIq35/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(53546011)(26005)(5660300002)(186003)(6506007)(508600001)(31686004)(36756003)(966005)(38100700002)(4326008)(6486002)(6666004)(8936002)(66476007)(66556008)(8676002)(66946007)(86362001)(31696002)(6512007)(2616005)(2906002)(83380400001)(6916009)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TUJSV0ZIL2UrckJtTFlkVlJXNHNqWGRUTTBTMXo3MWd4WHp6NmhXOVRqcC9p?=
+ =?utf-8?B?UCtWTTBGY2lpdWphQTRENmtUaW1OTW1tcitNR05lR2c1Qkk3dm5CT3hSVVN6?=
+ =?utf-8?B?VWpId1diM2hnQmhXSkM3Ty9CRFNyWWREaXBjd0pzaERRWnZWVS8zRDQ4YjVa?=
+ =?utf-8?B?Zko3eFVmZSsrL1J4NS9iNFcyVnIxeU1SZEQ1ZERuTEJ3THMveVcvR3JaR2FL?=
+ =?utf-8?B?SDFLdk9qK2NnWkR2ZTBDMHFGMGRnQ1dwZDh3c2lZa3ZENitWano1SFYvcTlL?=
+ =?utf-8?B?RmU4eERBMmEzQW1ZSnUyODNJdEF4a3krdTc3UW9aN0VSQ2wrZVhDQWF1Wlph?=
+ =?utf-8?B?V3BEenpxVmx4Qm5TUnMvVEZxaFhkZUVPZXF0Wnh1bEdxUGt5SFkyZ0lIa1dZ?=
+ =?utf-8?B?WG12WkV5OEgrZGhOd2hUeXBJQ3VMeTU5Z0RtdHVwM0gvRVJaSzlEeUhlNVRv?=
+ =?utf-8?B?eHdnV1gxb2xVVmh6QUlzbnM3elVVdnpVN0lBVis4emdyd3NtakZWM1J0U1RJ?=
+ =?utf-8?B?b2hzMlNPR0dTaTl0cmx3QnJtNXFtUndVV3JnT2ZOcXg1d3dQNDB5TjduaVNn?=
+ =?utf-8?B?NmNVVnZkaUR5dm1CSzBZYytsbllhT0hhR1RES2JvRDRGVC84T2dwMTRLb2Ry?=
+ =?utf-8?B?aUZzenUreGtrOGNEcmdGVTY4UE14RWthZ1NhWWNHRmlHVzE2akFrUDhwQXI4?=
+ =?utf-8?B?SGo1UVhTU1FteUp5aW15aU1DcjF6SXlaVmZSWmw2cEVZOVkxelpLaFhHS2Fs?=
+ =?utf-8?B?ZmNLeTRaOUlPOEdsb1ZEN2cyeUxIUmNzS1MxZWtNVVgvRUxnN3ROa3NhaitU?=
+ =?utf-8?B?OGpCRE9zYXc2bWJ5dnkzZGlWaTh5OFpvT21welFBOVhZZStCWmJlOWlzTnp3?=
+ =?utf-8?B?WncyNjZjck0wZXlkYzhUd3VxOG1JMjNyNFlBYytQTStmc083dlZEcmNhQlhx?=
+ =?utf-8?B?R0FEbjIyd1krYUt1Y2RMTXZQdEhlMTlveEdEOUJrMjBrSzBpZXcwT1BMVEl3?=
+ =?utf-8?B?VjROL3BmdnY2YkNFOWJoR1RLTFI4N3BQK3RTcmg3KzRoMGM2Q25ZQU9PbWk1?=
+ =?utf-8?B?MlhBTjFjMHRzKzFndTZ3bzFDMnlDQmFpQXNtUlUzdmMvOFZRekYzWDhTWFNt?=
+ =?utf-8?B?azNyazFFRmZ1NDVqYXdWQlEyYS84Vmh5dW50SUEvc0hlNVV5cXNFejl5bmxH?=
+ =?utf-8?B?cEZDbVpHN1JsV2dwQXllcmFHM0dhTUZldXZNOWhFZVJQb050N0cyRTlYRDhD?=
+ =?utf-8?B?M0p3NEh6Vm5UOHhKTEJkMWRIZEZtcDV3RE1vV2VVK3B0Z0s3eXlWU3ErTzU5?=
+ =?utf-8?B?ZDhEOVdVa09SYlNFejFLaXgyU1JnMXRRMHZOcWJXVUM5MHFlRGNJZTErNjhZ?=
+ =?utf-8?B?L0pUVFhJMGlXbkNOeWlDL3J4MW9qWHg0SjQ2KzIrczUvbitrS3gxL1MxK0Mw?=
+ =?utf-8?B?RHhJZlJSeFNmUTMrUFVScCtrdEtsRExyTlRLTkpaU2VGQkIxZURXM01IcHcy?=
+ =?utf-8?B?VFFxQVNrOEJlOU5mZWZaR0VVUUpna0JhQVZwRjZvaEF1SHhrazF6NUdxUTJx?=
+ =?utf-8?B?VTlDanBHSjhjd1MzYmVBUUd6UmFQM3VOREVuVXpUdTRIYmh6RUlCTUVHNkxj?=
+ =?utf-8?B?Q2pGTmNneE00bklhbk85MkhWWFBFeUdzZFUweUdpaTZWL2tqRFB5RkEwT1NX?=
+ =?utf-8?B?ckZJcVJYdWNEQU1kRWVKTHJhUm5PbGZOeWlRSGgzNWc4b0dQNTJ2bEJET2Fq?=
+ =?utf-8?B?aFFCSDdHZndYakk5UGVHbVNPdU1maEV6ZmF0VU9wbG1UVXIxeVRLUmVIV2ho?=
+ =?utf-8?B?NHlleFpzdHFsNGVDK0RxNjlYQlpqK3llWjFtNHROZnRCclNDK2ZkdDhZenZq?=
+ =?utf-8?B?MDNkNmlad0RKclBxWEJvMm5ZNmtkYU9LbjA1Njl2VVJ2TkhRd0NLTk9aUnhm?=
+ =?utf-8?B?TXZwQVFFRXhuZDJEbDlWYnVQLy92N2NPNmk1cWZyeVBwTTBaQVp4NnlEZlVM?=
+ =?utf-8?B?djZ2M0lzVzJuVnZ1TDFNbnd2MnVIeHNwblZUbWZWbU9WRkp6NWpKUC93OGps?=
+ =?utf-8?B?TWZPcU9OSUtoU2c3Vy8xVTN1Yk5nakZhS0UwRXNsN0tOb1l3MzFTTFoxbDFJ?=
+ =?utf-8?Q?3xnc=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c47c03ca-2660-41d0-1062-08d9e83bdf99
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9426.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2022 00:10:10.2794
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t6HtRUQn5ZRf6dwx8ru3LbZuezVhA1Dn2liB5IWDDaU4A+hQ69yX9uP+gd/xbN4u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6032
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/2/5 03:34, Benjamin Xiao wrote:
-> There's definitely still an issue even with the patches. I ended up
-> disabling autodefrag again and rebooting my computer after btrfs-cleaner
-> wrote about 300-ish GB to my SSD.
->
-> The patch does help things out a bit compared to before where it was a
-> constant non-stop stream of IO, but 300GB worth of extra writes for 33GB
-> of actual data doesn't seem normal.
+On 2022/2/5 01:20, Filipe Manana wrote:
+> On Fri, Feb 04, 2022 at 04:11:54PM +0800, Qu Wenruo wrote:
+>> In the rework of btrfs_defrag_file() one core idea is to defrag cluster
+>> by cluster, thus we can have a better layered code structure, just like
+>> what we have now:
+>>
+>> btrfs_defrag_file()
+>> |- defrag_one_cluster()
+>>     |- defrag_one_range()
+>>        |- defrag_one_locked_range()
+>>
+>> But there is a catch, btrfs_defrag_file() just moves the cluster to the
+>> next cluster, never considering cases like the current extent is already
+>> too large, we can skip to its end directly.
+>>
+>> This increases CPU usage on very large but not fragmented files.
+>>
+>> Fix the behavior in defrag_one_cluster() that, defrag_collect_targets()
+>> will reports where next search should start from.
+>>
+>> If the current extent is not a target at all, then we can jump to the
+>> end of that non-target extent to save time.
+>>
+>> To get the missing optimization, also introduce a new structure,
+>> btrfs_defrag_ctrl, so we don't need to pass things like @newer_than and
+>> @max_to_defrag around.
+>>
+>> This also remove weird behaviors like reusing range::start for next
+>> search location.
+>>
+>> And since we need to convert old btrfs_ioctl_defrag_range_args to newer
+>> btrfs_defrag_ctrl, also do extra sanity check in the converting
+>> function.
+>>
+>> Such cleanup will also bring us closer to expose these extra policy
+>> parameters in future enhanced defrag ioctl interface.
+>> (Unfortunately, the reserved space of the existing defrag ioctl is not
+>> large enough to contain them all)
+>>
+>> Changelog:
+>> v2:
+>> - Rebased to lastest misc-next
+>>    Just one small conflict with static_assert() update.
+>>    And this time only those patches are rebased to misc-next, thus it may
+>>    cause conflicts with fixes for defrag_check_next_extent() in the
+>>    future.
+>>
+>> - Several grammar fixes
+>>
+>> - Report accurate btrfs_defrag_ctrl::sectors_defragged
+>>    This is inspired by a comment from Filipe that the skip check
+>>    should be done in the defrag_collect_targets() call inside
+>>    defrag_one_range().
+>>
+>>    This results a new patch in v2.
+>>
+>> - Change the timing of btrfs_defrag_ctrl::last_scanned update
+>>    Now it's updated inside defrag_one_range(), which will give
+>>    us an accurate view, unlike the previous call site in
+>>    defrag_one_cluster().
+>>
+>> - Don't change the timing of extent threshold.
+>>
+>> - Rename @last_target to @last_is_target in defrag_collect_targets()
+>>
+>>
+>> Qu Wenruo (5):
+>>    btrfs: uapi: introduce BTRFS_DEFRAG_RANGE_MASK for later sanity check
+>>    btrfs: defrag: introduce btrfs_defrag_ctrl structure for later usage
+>>    btrfs: defrag: use btrfs_defrag_ctrl to replace
+>>      btrfs_ioctl_defrag_range_args for btrfs_defrag_file()
+>>    btrfs: defrag: make btrfs_defrag_file() to report accurate number of
+>>      defragged sectors
+>>    btrfs: defrag: allow defrag_one_cluster() to large extent which is not
+> 
+> The subject of this last patch sounds odd. I think you miss the word "skip"
+> before "large" - "... to skip large extent ...".
+> 
+> Looks fine, I left some minor comments on individual patches.
+> Thinks that can be eiher fixed when cherry picked, or just in case you
+> need to send another version for some other reason.
+> 
+> So:
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> Thanks.
+> 
+> So something unrelated to this patchset, but to the overall refactoring
+> that happened in 5.16, and that I though about recently:
+> 
+> We no longer use btrfs_search_forward() to do the first pass to find
+> extents for defrag. I pointed out before all its advantages (skipping
+> large file ranges, avoiding loading extent maps and pinning them into
+> memory for too long periods or even until the fs is unmounted for
+> some cases, etc).
+> 
+> That should not cause extra IO for the defrag itself, only maybe indirectly
+> in case extra memory pressure starts triggering reclaim, due to extent maps
+> staying in memory and not being able to be removed, for the cases where
+> there are no pages in the page cache for the range they cover - in that case
+> they stay around since they are only released by btrfs_releasepage() or when
+> evicting the inode. So if a file is kept open for long periods and IO is
+> never done for ranges of some extent maps, that can happen.
+> 
+> By getting the extent maps in the first pass, it also can result in extra
+> read IO of leaves and nodes of the subvolume's btree.
+> 
+> This was all discussed before, either on another thread or on slack, so just
+> summarizing.
 
-Have you tried v5.15.x with that diff?
+Yep, we're on the same page for that.
+
+> 
+> The other thing that is related, but I only through about yesterday:
+> 
+> Extent maps get merged. When they are merged, their generation field is set
+> to the maximum value between the extent maps, see try_merge_map(). That means
+> the checks for an extent map's generation, done at defrag_collect_targets(),
+> can now consider extents from past generations for defrag, where before, that
+> could not happen.
+
+Oh! That's indeed a completely valid reason for the extra data write IO!
+
+Although there is still something concerning me, as the same report you 
+mentioned later is using compression.
+
+I guess there is either some preallocation for the workload, thus it 
+mostly kills the compression for inodes with PREALLOC flag.
+
+Anyway, your analyse looks very solid to me, and adds extra priority to 
+add back the original behavior.
 
 Thanks,
 Qu
 
->
-> Ben
->
-> On Fri, Feb 4 2022 at 09:36:22 AM -0800, Benjamin Xiao
-> <ben.r.xiao@gmail.com> wrote:
->> Okay, I just tested right now with my custom 5.16.5 kernel with your 3
->> patches applied. Redownloading the same game, I noticed that there was
->> significantly less IO load during the download, which is great. It
->> looked kinda bursty instead, with periods of no load, and then periods
->> of load ranging in the 150-200MB/s range.
+> 
+> I.e. an extent map can represent 2 or more file extent items, and all can have
+> different generations. This can cause a lot of surprises, and potentially
+> resulting in more IO being done. Before the refactoring, when btrfs_search_forward()
+> was used, we could still consider extents for defrag from past generations, but
+> that happened only when we find leaves that have both new and old file extent
+> items. For the leaves from past generations, we skipped them and never considered
+> any of the extents their file extent items refer to. So, it could happen before
+> but to a much smaller scale/extent.
+> 
+> Just a through, since there's now a new thread with someone reporting excessive
+> IO with autodefrag even on 5.16.5 [1]. In the reported scenario there's a very
+> large file involved (33.65G), so possibly a huge amount of extents, and the effects
+> of extent map merging causing extra work.
+> 
+> [1] https://lore.kernel.org/linux-btrfs/KTVQ6R.R75CGDI04ULO2@gmail.com/
+> 
+> 
+>>      a target
 >>
->> After the download, I am no longer getting that constant 90-150MB/s
->> disk write from btrfs-cleaner, but I am seeing periodic bursts of it
->> every 10 seconds or so. These bursts last for around 3 seconds and
->> load is anywhere from 50-300MB/s.
+>>   fs/btrfs/ctree.h           |  22 +++-
+>>   fs/btrfs/file.c            |  17 ++-
+>>   fs/btrfs/ioctl.c           | 224 ++++++++++++++++++++++---------------
+>>   include/uapi/linux/btrfs.h |   6 +-
+>>   4 files changed, 168 insertions(+), 101 deletions(-)
 >>
->> Is this normal? Does autodefrag only defrag newly written data, or
->> does it sometimes go back and run defrag on data written previously? I
->> am gonna let it run for a bit to see if it eventually subsides.
+>> -- 
+>> 2.35.0
 >>
->> Ben
->>
->> On Fri, Feb 4 2022 at 02:20:44 PM +0800, Qu Wenruo
->> <quwenruo.btrfs@gmx.com> wrote:
->>>
->>>
->>> On 2022/2/4 12:32, Benjamin Xiao wrote:
->>>> Okay, I just compiled a custom Arch kernel with your patches applied.
->>>> Will test soon. Besides enabling autodefrag and redownloading a game
->>>> from Steam, what other sorts of tests should I do?
->>>
->>> As long as your workload can trigger the problem reliably, nothing
->>> =7Felse.
->>>
->>> Thanks,
->>> Qu
->>>
->>>>
->>>> Ben
->>>>
->>>> On Fri, Feb 4 2022 at 09:54:19 AM +0800, Qu Wenruo
->>>> <quwenruo.btrfs@gmx.com> wrote:
->>>>>
->>>>>
->>>>> On 2022/2/4 09:17, Qu Wenruo wrote:
->>>>>>
->>>>>>
->>>>>> On 2022/2/4 04:05, Benjamin Xiao wrote:
->>>>>>> Hello all,
->>>>>>>
->>>>>>> Even after the defrag patches that landed in 5.16.5, I
->>>>>>> am still =7F=7F=7F=7F=7Fseeing
->>>>>>> lots of cpu usage and disk writes to my SSD when
->>>>>>> autodefrag is =7F=7F=7F=7F=7Fenabled.
->>>>>>> I kinda expected slightly more IO during writes
->>>>>>> compared to 5.15, =7F=7F=7F=7F=7Fbut
->>>>>>> what I am actually seeing is massive amounts of
->>>>>>> btrfs-cleaner i/o =7F=7F=7F=7F=7Feven
->>>>>>> when no programs are actively writing to the disk.
->>>>>>>
->>>>>>> I can reproduce it quite reliably on my 2TB Btrfs Steam library
->>>>>>> partition. In my case, I was downloading Strange
->>>>>>> Brigade, which =7F=7F=7F=7F=7Fis a
->>>>>>> roughly 25GB download and 33.65GB on disk. Somewhere during the
->>>>>>> download, iostat will start reporting disk writes
->>>>>>> around 300 =7F=7F=7F=7F=7FMB/s, even
->>>>>>> though Steam itself reports disk usage of 40-45MB/s.
->>>>>>> After the =7F=7F=7F=7F=7Fdownload
->>>>>>> finishes and nothing else is being written to disk, I
->>>>>>> still see =7F=7F=7F=7F=7Faround
->>>>>>> 90-150MB/s worth of disk writes. Checking in iotop, I
->>>>>>> can see =7F=7F=7F=7F=7Fbtrfs
->>>>>>> cleaner and other btrfs processes writing a lot of data.
->>>>>>>
->>>>>>> I left it running for a while to see if it was just some
->>>>>>> =7F=7F=7F=7F=7Fmaintenance
->>>>>>> tasks that Btrfs needed to do, but it just kept going. I tried to
->>>>>>> reboot, but it actually prevented me from properly
->>>>>>> rebooting. =7F=7F=7F=7F=7FAfter
->>>>>>> systemd timed out, my system finally shutdown.
->>>>>>>
->>>>>>> Here are my mount options:
->>>>>>> rw,relatime,compress-force=3Dzstd:2,ssd,autodefrag,space_cache=3Dv=
-2,subvolid=3D5,subvol=3D/
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>
->>>>>> Compression, I guess that's the reason.
->>>>>>
->>>>>> =C2=A0From the very beginning, btrfs defrag doesn't handle
->>>>>> compressed =7F=7F=7F=7Fextent
->>>>>> well.
->>>>>>
->>>>>> Even if a compressed extent is already at its maximum
->>>>>> capacity, =7F=7F=7F=7Fbtrfs
->>>>>> will still try to defrag it.
->>>>>>
->>>>>> I believe the behavior is masked by other problems in older
->>>>>> =7F=7F=7F=7Fkernels thus
->>>>>> not that obvious.
->>>>>>
->>>>>> But after rework of defrag in v5.16, this behavior is more exposed.
->>>>>
->>>>> And if possible, please try this diff on v5.15.x, and see if
->>>>> v5.15 =7F=7F=7Fis
->>>>> really doing less IO than v5.16.x.
->>>>>
->>>>> The diff will solve a problem in the old code, where autodefrag is
->>>>> almost not working.
->>>>>
->>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>>>> index cc61813213d8..f6f2468d4883 100644
->>>>> --- a/fs/btrfs/ioctl.c
->>>>> +++ b/fs/btrfs/ioctl.c
->>>>> @@ -1524,13 +1524,8 @@ int btrfs_defrag_file(struct inode
->>>>> *inode, =7F=7F=7Fstruct
->>>>> file *file,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c=
-ontinue;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>>
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (!newer_than) {
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
- =3D (PAGE_ALIGN(defrag_end) >>
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PAGE_SHIFT) -=
- i;
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
- =3D min(cluster, max_cluster);
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 } else {
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
- =3D max_cluster;
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 }
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 cluster =3D (PAGE_ALIGN(defrag_end) >>
->>>>> PAGE_SHIFT) - =7F=7F=7Fi;
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 cluster =3D min(cluster, max_cluster);
->>>>>
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 if (i + cluster > ra_index) {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
-a_index =3D max(i, ra_index);
->>>>>
->>>>>>
->>>>>> There are patches to address the compression related
->>>>>> problem, but =7F=7F=7F=7Fnot
->>>>>> yet merged:
->>>>>>
->>>>>> https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D609=
-387
->>>>>>
->>>>>> Mind to test them to see if that's the case?
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>>
->>>>>>>
->>>>>>> I've disabled autodefrag again for now to save my SSD,
->>>>>>> but just =7F=7F=7F=7F=7Fwanted
->>>>>>> to say that there is still an issue. Have the defrag
->>>>>>> issues been =7F=7F=7F=7F=7Ffully
->>>>>>> fixed or are there more patches incoming despite what Reddit and
->>>>>>> Phoronix say? XD
->>>>>>>
->>>>>>> Thanks!
->>>>>>> Ben
->>>>>>>
->>>>>>>
->>>>
->>>>
->>
->>
->
->
+> 
+
