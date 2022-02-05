@@ -2,62 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C9D4AA556
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 02:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF354AA558
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 02:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378874AbiBEBf7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Feb 2022 20:35:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58070 "EHLO
+        id S1378814AbiBEBhA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Feb 2022 20:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbiBEBf7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Feb 2022 20:35:59 -0500
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8439CC061346;
-        Fri,  4 Feb 2022 17:35:56 -0800 (PST)
-Received: by mail-ua1-x932.google.com with SMTP id b37so13675964uad.12;
-        Fri, 04 Feb 2022 17:35:56 -0800 (PST)
+        with ESMTP id S230309AbiBEBg7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Feb 2022 20:36:59 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FC7C061346;
+        Fri,  4 Feb 2022 17:36:57 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id z4so1078927lfg.5;
+        Fri, 04 Feb 2022 17:36:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=tZR3UiQjuZ3E4E4YIGJytgfZZs1q2BPvs+JB9ytaoRw=;
-        b=DN0ma292xvwZ0EUXamExIIa9xpKjA0BuY2oJhNZ4840bg2atTKmlHOkoh3Nf1Y70n+
-         NjDXPwPQP2D/1DqpGJTdhaREWFtVL/q+cC5IrJq1uHX8Yb0CLSSNmwngsBXFBmyEVgb3
-         UbRJ7EV2Cy2zifYK6mTPZPash4IXDEsHCgq5tmHhk9QnVOtVsdM80K8PqH2WKsStsc6J
-         wBqSR2Wtp+LXoGXQunCVAcavHYSh0nKtcBowgUSMwaVbxf7B4cQiJRk4gMqpYDS/Lnuz
-         PlQF3V/pOKoJuTTsEMeI+3ncTKnun/sbml+XetFCtPfgwPb44cnmC4I3d57lksm6tDUx
-         BRmw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2+tbWAJq4dM6q/DqX2lwh/khP1tb+54dO8mMyWJJF/o=;
+        b=CNJyN4/mjQe5DVMMvvEiDqNhV8765CoichdUs4/9gbBZYmgrsO0pSmsp25dTWz8WNj
+         56YlV/R+3HoM/HCSuxSXtRSZUK8k6ixkj58yY73n2X51hxqQ+9ET4gHexpK1qa7aTZA0
+         fy/xpdhesdgl1AtFR+Q5lb07kcxO2h5+457gTj3nkaWEvIP4L3+FVDEm9t/dE/Rg4vNX
+         xHqTYfP/Qd4BOAkein1l7Qfns7NfPZqN5JdGfWg/RaSWffkikhoPatuxao7OF3Rhqf3i
+         jbhUNbVTcLGn/xkhG7fcNslABS/y+NmnPMabvmlI7KK6hZy4/o95KriuFSS45VMLgd33
+         R3nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=tZR3UiQjuZ3E4E4YIGJytgfZZs1q2BPvs+JB9ytaoRw=;
-        b=VDrN8O86hkaXhzd/b7NIrl8z1TL8E+EnWCokbDXu1lZAt8kiDsuaOCaq639vQpnAO9
-         LsCIWtyYF+mCs8lsn4T8qXbIgq6ezuEL24hJv6/ZVqIjdbLLYVNrZaeHaTp3XPZAQgNg
-         KUMMvSWE6JV6Bf7jLanWW8ug3m1aZb9oVQL0+UKiblNPpvdR/cRYU0WN5x/2mQ2H+5oP
-         iGvlJSdfgJ1Z1PjgkWCTt62rKZzkuMQudtRcN3h8n5GQrjukZppnEI0LY/llZ2mykrOP
-         dhxTzYQhYqD39RGjIlEGMvsDHFBv/9OSujGgA39aHK/ezFRG/cAPNylG7d4+a4fs8jbe
-         NY5Q==
-X-Gm-Message-State: AOAM531aIR1nA6ALPDQeiGv5xo1VOaXtLvbcP4a+2D68RGL6TX5kqcNN
-        k4nacJ5ew0k/cMqwjnEKzRdV0Ox5SI1K1e0ye0w=
-X-Google-Smtp-Source: ABdhPJyKCb8zMQ7Q7Q/EDZecwGYGAwHbZhz6M0cjEYvNJaP/6PD5vXx5uHfGrZI2rLby3Be5CPI9HcbMatC4WMkeCGM=
-X-Received: by 2002:a67:f3d9:: with SMTP id j25mr1919842vsn.84.1644024955422;
- Fri, 04 Feb 2022 17:35:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2+tbWAJq4dM6q/DqX2lwh/khP1tb+54dO8mMyWJJF/o=;
+        b=BUzFFOcHONXMyyPLd9INq9eRVBs5GPwkbaQKMhO9xHnxRe5d8Jwot8/v0TvYzAO+6z
+         /6x0B9NW9cCFjrCP6pfzcUGUpZUmOuzvUUggkG3GowNea+Co3yy0Z4fwIT8VZe1lySll
+         gr/FzHP+tseKnroCnMesCeMuJF1sL4ReVfct7aqphi2sU5F99GNT3HwlTawA0VWpxaHC
+         3AJPnFLvUX7Av4uUa3cycUZd4WSaAUnXpDUmJ2Hir7RdcCAuJ2LJDS1j8fmFfhXPr4LT
+         eq+fXWWVDvMEwGSRnwtJfyINaj7l2m7xnG3DC7LliCixRBvRBgpiZv3u6cF0SAjUFG/J
+         LQ1w==
+X-Gm-Message-State: AOAM532ijE8yCrmNvFHvaEz0Z35YcaS2Ky0I7C5xorCfmI0RBjo5KdJd
+        Nib3AHqYfKI+XoUvEkBbQLhiMhFg0OPBqjqyOJk=
+X-Google-Smtp-Source: ABdhPJyXbTQ55b5WctfvOjGMz9Cyh8tOXRAXhz2rW7CxUqyZQOu/JWwANTNZo2AZxbrTjCLB6Vg2/Q==
+X-Received: by 2002:a05:6512:3d0f:: with SMTP id d15mr1173884lfv.77.1644025015266;
+        Fri, 04 Feb 2022 17:36:55 -0800 (PST)
+Received: from ArchRescue.. ([81.198.232.185])
+        by smtp.gmail.com with ESMTPSA id f11sm525662lfg.132.2022.02.04.17.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Feb 2022 17:36:54 -0800 (PST)
+From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+Subject: [PATCH v2] btrfs: send: in case of IO error log it
+Date:   Sat,  5 Feb 2022 03:36:07 +0200
+Message-Id: <20220205013606.532212-1-davispuh@gmail.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220202201437.7718-1-davispuh@gmail.com>
+References: <20220202201437.7718-1-davispuh@gmail.com>
 MIME-Version: 1.0
-References: <20220202201437.7718-1-davispuh@gmail.com> <20220204162821.GD14046@twin.jikos.cz>
-In-Reply-To: <20220204162821.GD14046@twin.jikos.cz>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Sat, 5 Feb 2022 03:35:44 +0200
-Message-ID: <CAOE4rSwu9Ond3qO2ADA=HPo5bRPq2BgBvJF6=J8efhzL73rrqg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: send: in case of IO error log inode
-To:     David Sterba <dsterba@suse.cz>,
-        =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
-        BTRFS <linux-btrfs@vger.kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,40 +71,28 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-piektd., 2022. g. 4. febr., plkst. 18:29 =E2=80=94 lietot=C4=81js David Ste=
-rba
-(<dsterba@suse.cz>) rakst=C4=ABja:
->
-> On Wed, Feb 02, 2022 at 10:14:37PM +0200, D=C4=81vis Mos=C4=81ns wrote:
-> > Currently if we get IO error while doing send then we abort without
-> > logging information about which file caused issue.
-> > So log inode to help with debugging.
->
-> The Signed-off-by tag is missing.
->
+Currently if we get IO error while doing send then we abort without
+logging information about which file caused issue.
+So log it to help with debugging.
 
-Yeah I forgot.
+Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
+---
+ fs/btrfs/send.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> > ---
-> >  fs/btrfs/send.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > index d8ccb62aa7d2..945d9c01d902 100644
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -5000,6 +5000,7 @@ static int put_file_data(struct send_ctx *sctx, u=
-64 offset, u32 len)
-> >                       if (!PageUptodate(page)) {
-> >                               unlock_page(page);
-> >                               put_page(page);
-> > +                             btrfs_err(fs_info, "received IO error for=
- inode=3D%llu", sctx->cur_ino);
->
-> A message here makes sense. I'd make it more explicit that it's for send
-> (the word "received" is kind of confusing), the inode number is not
-> unique identifier so the root id should be also printed, it's available
-> from the sctx->send_root and maybe also the file offset (taken from the
-> associated page by page_offset()).
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index d8ccb62aa7d2..a1fd449a5ecc 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -5000,6 +5000,8 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ 			if (!PageUptodate(page)) {
+ 				unlock_page(page);
+ 				put_page(page);
++				btrfs_err(fs_info, "send: IO error at offset=%llu for inode=%llu root=%llu",
++					page_offset(page), sctx->cur_ino, sctx->send_root->root_key.objectid);
+ 				ret = -EIO;
+ 				break;
+ 			}
+-- 
+2.35.1
 
-Thanks! Will submit v2
