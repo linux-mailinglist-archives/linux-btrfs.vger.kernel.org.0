@@ -2,244 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DB94AA791
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 09:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0174AA7C1
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 09:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbiBEIRe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 5 Feb 2022 03:17:34 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:37771 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbiBEIRe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Feb 2022 03:17:34 -0500
-Received: from [192.168.177.41] ([94.31.101.241]) by mrelayeu.kundenserver.de
- (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M9Ib1-1nATMa3ocp-006RP0; Sat, 05 Feb 2022 09:17:32 +0100
-From:   "Hendrik Friedel" <hendrik@friedels.name>
-To:     "Qu Wenruo" <wqu@suse.com>, "Qu Wenruo" <quwenruo.btrfs@gmx.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re[2]: root 5 inode xy errors 200, dir isize wrong and root 5 inode xx errors
- 1, no inode item
-Date:   Sat, 05 Feb 2022 08:17:31 +0000
-Message-Id: <ema04b2580-8e25-435c-9fd5-763bfb3e58cd@envy>
-In-Reply-To: <a48e1e53-1c48-ae01-6646-f5d7872af8be@suse.com>
-References: <em7a21a1a2-4ce2-46d5-aaf1-09e334b754d8@envy>
- <b29bcb81-883d-f024-d1a1-fe685e228d4b@gmx.com>
- <em596e7e6e-2b32-4c1e-b568-736fa23fd402@envy>
- <a48e1e53-1c48-ae01-6646-f5d7872af8be@suse.com>
-Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
-User-Agent: eM_Client/8.2.1659.0
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:IZdTlMUp1YFRVXJyeT+qNR3AtaGtA+hf1YdUkjXezY6A+nChkpM
- W6TdXYaoCQ6AWMM+IUOpFZvdsbVzIjhmbrtblv05rFWGlClMZQQ/foUHEeox2Rp3yfQ/O1A
- /nGmKA0TLePkbCawXqzIa67zBCeCJZj1yS/p3uxGVMoeIwKQaRv2oJZE3cMve3+LGLTV9an
- yqWKPLEoL6bgC7tJqrDQw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZOv3Mzrp0CI=:gRkmNbuLuG5pVrn2NeKpnN
- +JQnNALtNA67Gr/rU9HD1C8ssenkCEIkrsnlncolX5pVOsdvO+3UQx5hyoopM8b7e4By9MIRO
- jVzxtuzjH7ZPmnSiMkgalnHdhH8KPjMyUDJP4LPauc71bTs0BVT9Xk3YHiTywZongUBYQ44EZ
- seUfp55Sw9qBCGVlHSSIaA1j1B27yR0Vuks0WOtwY1tfBosrDm93WexjnKEiZbKfnKEBd3srK
- R77HNBUTMZMp23xj6JABu/9NwEu+j/lg8DIqWgqYfv0PshvaVN5/6K3Lh+gIS6ueiv8FTj/rD
- tkiN2j9OwHdkB2DOrD3lQeNYzOtqxODHpJu6CWDDb9AisDR+BKPp19oJFp5CyC1IyizLHmh/q
- j5XJlzLH6AqNfHxfgQ/a3eukF4P/yJWaepXlXFDnyeD6h2Ybwx4P9d8Nu3yffkzK035hOD+7j
- 8bixqe44btxI1awwhypi6ZXWbXFiP5C5TiPX6RyMMJzRJJzT5HVifNhV6TM0O8nNZRTBrNwob
- mkrIOfoLvfCPtcCddD8FXoNs22vd0UWP+J9IZvjqk1Ru/xH+11lO/kIZ3nKTWuXaxQzI2LiGf
- B0S6JBYa0bQ5tc4zVY/rHps97ptM4cPhsd3HGDL8JmI7jn1C5EuIhMoNDDJugbvt0rzsi7mMM
- mSQyCJIU1IxqROECbMXlAigPkPwXrG2PpPEbvl3QlN4Fht+DjFj8os61JpwcVeDO+aVl4DGew
- A8YPQkOS/CBabvZK
+        id S1354901AbiBEI4H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Feb 2022 03:56:07 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:45040 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232461AbiBEI4H (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Feb 2022 03:56:07 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E315E210EC
+        for <linux-btrfs@vger.kernel.org>; Sat,  5 Feb 2022 08:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1644051365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=r4FDenFZgXn7izhYT17WCCrS13RPik09gTHulmJoikY=;
+        b=uY0eaX0oWe+mci0dLFpIFtAu4U2O84v/1SxpqDxoXO9LOBzX2d/pCOwbWlVDN1PA1Qcrha
+        EzT2izU/rBpcuGE757xyFBs/tOCUlADKAJyYSNvzj95zQ7Ht5zpeVaMf2xpCIVOwM7brtj
+        V/5JQ80NHoQm9kjHdwMm8IuTJbeE94U=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41E0E13B24
+        for <linux-btrfs@vger.kernel.org>; Sat,  5 Feb 2022 08:56:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TyEaA6U7/mHSdQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sat, 05 Feb 2022 08:56:05 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: populate extent_map::generation when reading from disk
+Date:   Sat,  5 Feb 2022 16:55:47 +0800
+Message-Id: <817e735ee9c225268f17bee906c871b1fd965c4f.1644051267.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Qu,
+[WEIRD BEHAVIOR]
 
-thanks for your reply.
+When btrfs_get_extent() tries to get some file extent from disk, it
+never populates extent_map::generation , leaving the value to be 0.
 
->>I guess it is not normal, that it btrfs check is now running since hours... iotop is showing no disk read going on.
->
->OK, new bugs in lowmem mode.
-Well, I let it run over night, and at last it finished. It was super 
-slow though. Must have been more than 5h.
+On the other hand, for extent map generated by IO, it will get its
+generation properly set at finish_ordered_io()
 
-btrfs check --mode=lowmem --readonly /dev/sdd2
-Opening filesystem to check...
-Checking filesystem on /dev/sdd2
-UUID: c217331c-cf0c-49ae-86c7-48a67d1c346b
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space cache
-[4/7] checking fs roots
-ERROR: root 5 INODE_ITEM[59544488] index 199 name global.stat filetype 1 
-missing
-ERROR: root 5 INODE_ITEM[59544493] index 200 name global.tmp filetype 1 
-missing
-ERROR: root 5 INODE_ITEM[59544494] index 202 name db_0.stat filetype 1 
-missing
-ERROR: root 5 INODE_ITEM[59544493] index 203 name global.stat filetype 1 
-missing
-ERROR: root 5 INODE_ITEM[59544495] index 204 name global.tmp filetype 1 
-missing
-ERROR: root 5 DIR INODE [79886] size 0 not equal to 51
-ERROR: errors found in fs roots
-found 62801883136 bytes used, error(s) found
-total csum bytes: 43658820
-total tree bytes: 664485888
-total fs tree bytes: 329400320
-total extent tree bytes: 240205824
-btree space waste bytes: 119009827
-file data blocks allocated: 4766311215104
-referenced 60116828160
+ finish_ordered_io()
+ |- unpin_extent_cache(gen = trans->transid)
+    |- em->generation = gen;
 
->You can safely kill it, as it's really read-only.
->
->
->For the errors reported, they can all be handled by --repair, but please keep in mind that, those offending files may be deleted or moved to 'lost+found' directory in root 5.
->
+[REGRESSION?]
+I have no idea when such behavior is introduced, but at least in v5.15
+this incorrect behavior is already there.
 
-I did and it seemed to work:
-btrfs check --repair  /dev/sdd2
-enabling repair mode
-Opening filesystem to check...
-Checking filesystem on /dev/sdd2
-UUID: c217331c-cf0c-49ae-86c7-48a67d1c346b
-[1/7] checking root items
-Fixed 0 roots.
-[2/7] checking extents
-No device size related problem found
-[3/7] checking free space cache
-cache and super generation don't match, space cache will be invalidated
-[4/7] checking fs roots
-Deleting bad dir index [79886,96,199] root 5
-Deleting bad dir index [79886,96,200] root 5
-Deleting bad dir index [79886,96,203] root 5
-Deleting bad dir index [79886,96,202] root 5
-Deleting bad dir index [79886,96,204] root 5
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 62801883136 bytes used, no error found
-total csum bytes: 43658820
-total tree bytes: 664485888
-total fs tree bytes: 329400320
-total extent tree bytes: 240205824
-btree space waste bytes: 119009827
-file data blocks allocated: 4766311215104
-  referenced 60116828160
-root@homeserver:/home/henfri# btrfs check --readonly  /dev/sdd2
-Opening filesystem to check...
-Checking filesystem on /dev/sdd2
-UUID: c217331c-cf0c-49ae-86c7-48a67d1c346b
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space cache
-cache and super generation don't match, space cache will be invalidated
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 62801899520 bytes used, no error found
-total csum bytes: 43658820
-total tree bytes: 664502272
-total fs tree bytes: 329400320
-total extent tree bytes: 240222208
-btree space waste bytes: 119026345
-file data blocks allocated: 4766311215104
-  referenced 60116828160
+[AFFECT]
+Not really sure if there is any behavior really get affected.
 
-Best regards,
-Hendrik
+Sure there are locations like extent map merging, but there is no value
+smaller than 0 for u64, thus it won't really cause a difference.
 
+For autodefrag, although it's checking em->generation to determine if we
+need to defrag a range, but that @new_than value is always from IO, thus
+all those extent maps with 0 generation will just be skipped, and that's
+the expected behavior anyway.
 
->
->Thanks,
->Qu
->>
->>Best regards,
->>Hendrik
->>
->>------ Originalnachricht ------
->>Von: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>An: "Hendrik Friedel" <hendrik@friedels.name>; linux-btrfs@vger.kernel.org
->>Gesendet: 04.02.2022 14:47:45
->>Betreff: Re: root 5 inode xy errors 200, dir isize wrong and root 5 inode xx errors 1, no inode item
->>
->>>
->>>
->>>On 2022/2/4 21:30, Hendrik Friedel wrote:
->>>>Hello,
->>>>
->>>>I found some files for which ls -l gave me odd output (??????) instead
->>>>of mtime etc.
->>>
->>>And have you checked your dmesg to see anything wrong?
->>>
->>>My guess is, tree-checker reports something wrong.
->>>
->>>>
->>>>So I ran btrfs scrub without errors and then btrfs check with these errors:
->>>>[1/7] checking root items
->>>>[2/7] checking extents
->>>>[3/7] checking free space cache
->>>>[4/7] checking fs roots
->>>>root 5 inode 79886 errors 200, dir isize wrong
->>>
->>>This is pretty easy to fix, --repair can handle.
->>>
->>>But I guess it's mostly due to the offending dir items.
->>>
->>>>root 5 inode 59544488 errors 1, no inode item
->>>>          unresolved ref dir 79886 index 199 namelen 11 name global.stat
->>>
->>>No inode item is a weird one, it means the inode 59544488 doesn't have
->>>its inode item at all.
->>>
->>>
->>>>filetype 1 errors 5, no dir item, no inode ref
->>>>root 5 inode 59544493 errors 1, no inode item
->>>
->>>On the other hand, there are some other dir refs which doesn't have dir
->>>item.
->>>
->>>From the inode numbers, it doesn't look like an obvious bitflip:
->>>
->>>59544488 = 0x38c93a8
->>>59544493 = 0x38c93ad
->>>59544494 = 0x38c93ae
->>>59544495 = 0x38c93af
->>>
->>>And, mind to run "btrfs check --mode=lowmem --readonly" to get a better
->>>user readable output?
->>>
->>>Thanks,
->>>Qu
->>>
->>>>          unresolved ref dir 79886 index 200 namelen 10 name global.tmp
->>>>filetype 1 errors 5, no dir item, no inode ref
->>>>          unresolved ref dir 79886 index 203 namelen 11 name global.stat
->>>>filetype 1 errors 5, no dir item, no inode ref
->>>>root 5 inode 59544494 errors 1, no inode item
->>>>          unresolved ref dir 79886 index 202 namelen 9 name db_0.stat
->>>>filetype 1 errors 5, no dir item, no inode ref
->>>>root 5 inode 59544495 errors 1, no inode item
->>>>          unresolved ref dir 79886 index 204 namelen 10 name global.tmp
->>>>filetype 1 errors 5, no dir item, no inode ref
->>>>ERROR: errors found in fs roots
->>>>found 62813446144 bytes used, error(s) found
->>>>total csum bytes: 43669376
->>>>total tree bytes: 665501696
->>>>total fs tree bytes: 329498624
->>>>total extent tree bytes: 240975872
->>>>btree space waste bytes: 119919077
->>>>file data blocks allocated: 4766364479488
->>>>   referenced 60131446784
->>>>
->>>>How do I fix these?
->>>>I am runing linux 5.13.9 (about to update to 5.16.5).
->>>>
->>>>Best regards,
->>>>Hendrik
->>>>
->>
->
+For manual defrag, @newer_than is 0, and our check is to skip generation
+smaller than @newer_than, thus it still makes no difference.
+
+[FIX]
+To make things less weird, let us populate extent_map::generation in
+btrfs_extent_item_to_extent_map().
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/file-item.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 90c5c38836ab..9a3de652ada8 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -1211,6 +1211,7 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+ 	extent_start = key.offset;
+ 	extent_end = btrfs_file_extent_end(path);
+ 	em->ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
++	em->generation = btrfs_file_extent_generation(leaf, fi);
+ 	if (type == BTRFS_FILE_EXTENT_REG ||
+ 	    type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		em->start = extent_start;
+-- 
+2.35.0
 
