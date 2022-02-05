@@ -2,258 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 116E14AA6F8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 06:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463D34AA78E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Feb 2022 09:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242161AbiBEFsz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 5 Feb 2022 00:48:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        id S234831AbiBEIP0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Feb 2022 03:15:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241659AbiBEFsy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Feb 2022 00:48:54 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404B2C061347
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Feb 2022 21:48:53 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 811831F390;
-        Sat,  5 Feb 2022 05:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1644039690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kKSs5ue4OrmKb/pWsVaginGD/JxpwBnd1YF+6sz5VzA=;
-        b=hRHHvPV6EzQcFkZExakCN/dkrb41MMyC5oLB5U8xDCPP7LjamajH/N4ykiQwtvuh7T2l2f
-        QTk0IxBBo1FgguXSQE2/ZrMDmenYylcu/FJwiuUXYcQrjw9i3zI+0T6yV626RKil7ZxSVd
-        t2zuowX9Ly3zPhyNcrTakBfvYWqz6NQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A515E13A6D;
-        Sat,  5 Feb 2022 05:41:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qAD6GwkO/mFCQAAAMHmgww
-        (envelope-from <wqu@suse.com>); Sat, 05 Feb 2022 05:41:29 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v3 5/5] btrfs: defrag: allow defrag_one_cluster() to skip large extent which is not a target
-Date:   Sat,  5 Feb 2022 13:41:06 +0800
-Message-Id: <7119d6a8457dd589f6b2523fa2a0945e3fe6bc99.1644039495.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <cover.1644039494.git.wqu@suse.com>
-References: <cover.1644039494.git.wqu@suse.com>
+        with ESMTP id S231174AbiBEIP0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Feb 2022 03:15:26 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8368CC061346
+        for <linux-btrfs@vger.kernel.org>; Sat,  5 Feb 2022 00:15:25 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id v13-20020a17090ac90d00b001b87bc106bdso1264698pjt.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 05 Feb 2022 00:15:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=z+e/nd+MXvvQtR241hngZOgNYHtWM5LpYTkQwNamgbQ=;
+        b=JSiRF0i7IMs+HepyVpQM7ocTjorA1LyslK5W1ea9UeRdRTEWnISkisWKb5aXPcHDD/
+         8yyUHgDUnIoXNiJ1g2dUNuS5lj3hi0iWbS8rkedqNaMtJoGXVPmqgBLKJSHMZOlb4/fM
+         oUHY+lWtxvY0fy6m570gry9QhHNDsrfeT2wimz7y5XalG2ZKxMLoFscCuxaqwsO2ZJfy
+         yFE1JD6An66iaw4wSIrszH2FJRK8/OGapcqiee0d7R5DQtp1ue86xXgocjn+aWievJmS
+         /T4x0Mksc6XauCiji13DluWTVi8WZq6BX7sQA2hnBg9Z1djHMzCJHqYw8GejHiep49P3
+         UjVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=z+e/nd+MXvvQtR241hngZOgNYHtWM5LpYTkQwNamgbQ=;
+        b=aFqltGN/uibhJ3MqHH6Ghb+w077tmLJ1rHY28pIsb2EUUyteiCwnvlyfvFb/NARBZQ
+         T1+pEmkXEcHbfFRjOfcipoCrnIwIPSG2rbCOO2IgfINTu56riWCm8m/M9ZpQ3fqHxfvo
+         6haUEEyBmuehFOIJDObMzgDPdUEkKtky2Dg2AvBG2ST4rYHzCOf1k8oVeCqRZPJiKZF7
+         NrBzzIhqN3qQgdnezOIb5YFGNIROkrBgGtYy+0M8rMjoEfax7IoXUc56HefKnBPQ3oDZ
+         2ETB9nGmTs/qpDtSnbNVyGlK8RSBYepS5mt+DSLK5wlkYZKOiBZsZVdTmlDQ3LX06s+X
+         9VWg==
+X-Gm-Message-State: AOAM5318OW7hAciGQe3otH3RbtIYZLbzKWWoIrNeMuobDBSjMeBjs2Z7
+        nXygRxxeU9mmHi2pYxASV/z4VNgVJCMTQwlr4Iw=
+X-Google-Smtp-Source: ABdhPJxQB+B2q+Sp8uRamsz4K++oRcQ013vngZqUT1ySPOAk10SSZZLritjoaXfdAd+IOlD+A7hHSsPFRUZbTzywINE=
+X-Received: by 2002:a17:90b:1c8c:: with SMTP id oo12mr3139716pjb.216.1644048925015;
+ Sat, 05 Feb 2022 00:15:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a05:6a20:3d95:b0:70:6a76:eb46 with HTTP; Sat, 5 Feb 2022
+ 00:15:24 -0800 (PST)
+Reply-To: info@ubaatmoffice.com
+From:   richard mike <rmike3876@gmail.com>
+Date:   Sat, 5 Feb 2022 16:15:24 +0800
+Message-ID: <CAMODwNyYe2sVsBT0Vad6ZwjQbCBwEECSdLLfr-48CR5K8EanFg@mail.gmail.com>
+Subject: =?UTF-8?B?zrPOtc65zrEgz4POsc+C?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=4.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the rework of btrfs_defrag_file(), we always call
-defrag_one_cluster() and increase the offset by cluster size, which is
-only 256K.
-
-But there are cases where we have a large extent (e.g. 128M) which
-doesn't need to be defragged at all.
-
-Before the refactor, we can directly skip the range, but now we have to
-scan that extent map again and again until the cluster moves after the
-non-target extent.
-
-Fix the problem by allow defrag_one_cluster() to increase
-btrfs_defrag_ctrl::last_scanned to the end of an extent, if and only if
-the last extent of the cluster is not a target.
-
-The test script looks like this:
-
-	mkfs.btrfs -f $dev > /dev/null
-
-	mount $dev $mnt
-
-	# As btrfs ioctl uses 32M as extent_threshold
-	xfs_io -f -c "pwrite 0 64M" $mnt/file1
-	sync
-	# Some fragemented range to defrag
-	xfs_io -s -c "pwrite 65548k 4k" \
-		  -c "pwrite 65544k 4k" \
-		  -c "pwrite 65540k 4k" \
-		  -c "pwrite 65536k 4k" \
-		  $mnt/file1
-	sync
-
-	echo "=== before ==="
-	xfs_io -c "fiemap -v" $mnt/file1
-	echo "=== after ==="
-	btrfs fi defrag $mnt/file1
-	sync
-	xfs_io -c "fiemap -v" $mnt/file1
-	umount $mnt
-
-With extra ftrace put into defrag_one_cluster(), before the patch it
-would result tons of loops:
-
-(As defrag_one_cluster() is inlined, the function name is its caller)
-
-  btrfs-126062  [005] .....  4682.816026: btrfs_defrag_file: r/i=5/257 start=0 len=262144
-  btrfs-126062  [005] .....  4682.816027: btrfs_defrag_file: r/i=5/257 start=262144 len=262144
-  btrfs-126062  [005] .....  4682.816028: btrfs_defrag_file: r/i=5/257 start=524288 len=262144
-  btrfs-126062  [005] .....  4682.816028: btrfs_defrag_file: r/i=5/257 start=786432 len=262144
-  btrfs-126062  [005] .....  4682.816028: btrfs_defrag_file: r/i=5/257 start=1048576 len=262144
-  ...
-  btrfs-126062  [005] .....  4682.816043: btrfs_defrag_file: r/i=5/257 start=67108864 len=262144
-
-But with this patch there will be just one loop, then directly to the
-end of the extent:
-
-  btrfs-130471  [014] .....  5434.029558: defrag_one_cluster: r/i=5/257 start=0 len=262144
-  btrfs-130471  [014] .....  5434.029559: defrag_one_cluster: r/i=5/257 start=67108864 len=16384
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ioctl.c | 40 ++++++++++++++++++++++++++++++++++------
- 1 file changed, 34 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index fb991a8f3929..ec68be312ff7 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1185,10 +1185,11 @@ struct defrag_target_range {
-  */
- static int defrag_collect_targets(struct btrfs_inode *inode,
- 				  const struct btrfs_defrag_ctrl *ctrl,
--				  u64 start, u32 len, bool locked,
--				  struct list_head *target_list)
-+				  u64 start, u32 len, u64 *last_scanned_ret,
-+				  bool locked, struct list_head *target_list)
- {
- 	bool do_compress = ctrl->flags & BTRFS_DEFRAG_RANGE_COMPRESS;
-+	bool last_is_target = false;
- 	u64 cur = start;
- 	int ret = 0;
- 
-@@ -1198,6 +1199,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		bool next_mergeable = true;
- 		u64 range_len;
- 
-+		last_is_target = false;
- 		em = defrag_lookup_extent(&inode->vfs_inode, cur, locked);
- 		if (!em)
- 			break;
-@@ -1269,6 +1271,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		}
- 
- add:
-+		last_is_target = true;
- 		range_len = min(extent_map_end(em), start + len) - cur;
- 		/*
- 		 * This one is a good target, check if it can be merged into
-@@ -1312,6 +1315,17 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 			kfree(entry);
- 		}
- 	}
-+	if (!ret && last_scanned_ret) {
-+		/*
-+		 * If the last extent is not a target, the caller can skip to
-+		 * the end of that extent.
-+		 * Otherwise, we can only go the end of the spcified range.
-+		 */
-+		if (!last_is_target)
-+			*last_scanned_ret = cur;
-+		else
-+			*last_scanned_ret = start + len;
-+	}
- 	return ret;
- }
- 
-@@ -1382,6 +1396,7 @@ static int defrag_one_range(struct btrfs_inode *inode,
- 	const u32 sectorsize = inode->root->fs_info->sectorsize;
- 	u64 last_index = (start + len - 1) >> PAGE_SHIFT;
- 	u64 start_index = start >> PAGE_SHIFT;
-+	u64 last_scanned;
- 	unsigned int nr_pages = last_index - start_index + 1;
- 	int ret = 0;
- 	int i;
-@@ -1416,8 +1431,8 @@ static int defrag_one_range(struct btrfs_inode *inode,
- 	 * And this time we have extent locked already, pass @locked = true
- 	 * so that we won't relock the extent range and cause deadlock.
- 	 */
--	ret = defrag_collect_targets(inode, ctrl, start, len, true,
--				     &target_list);
-+	ret = defrag_collect_targets(inode, ctrl, start, len, &last_scanned,
-+				     true, &target_list);
- 	if (ret < 0)
- 		goto unlock_extent;
- 
-@@ -1434,6 +1449,8 @@ static int defrag_one_range(struct btrfs_inode *inode,
- 		list_del_init(&entry->list);
- 		kfree(entry);
- 	}
-+	if (!ret)
-+		ctrl->last_scanned = last_scanned;
- unlock_extent:
- 	unlock_extent_cached(&inode->io_tree, start_index << PAGE_SHIFT,
- 			     (last_index << PAGE_SHIFT) + PAGE_SIZE - 1,
-@@ -1461,13 +1478,14 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 			      struct btrfs_defrag_ctrl *ctrl, u32 len)
- {
- 	const u32 sectorsize = inode->root->fs_info->sectorsize;
-+	const u64 orig_start = ctrl->last_scanned;
- 	struct defrag_target_range *entry;
- 	struct defrag_target_range *tmp;
- 	LIST_HEAD(target_list);
- 	int ret;
- 
- 	ret = defrag_collect_targets(inode, ctrl, ctrl->last_scanned, len,
--				     false, &target_list);
-+				     NULL, false, &target_list);
- 	if (ret < 0)
- 		goto out;
- 
-@@ -1486,6 +1504,15 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 					  (ctrl->max_sectors_to_defrag -
- 					   ctrl->sectors_defragged) * sectorsize);
- 
-+		/*
-+		 * If defrag_one_range() has updated ctrl::last_scanned,
-+		 * our range may already be invalid (e.g. hole punched).
-+		 * Skip if our range is before ctrl::last_scanned, as there is
-+		 * no need to defrag the range anymore.
-+		 */
-+		if (entry->start + range_len <= ctrl->last_scanned)
-+			continue;
-+
- 		if (ra)
- 			page_cache_sync_readahead(inode->vfs_inode.i_mapping,
- 				ra, NULL, entry->start >> PAGE_SHIFT,
-@@ -1500,6 +1527,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 		list_del_init(&entry->list);
- 		kfree(entry);
- 	}
-+	if (ret >= 0)
-+		ctrl->last_scanned = max(ctrl->last_scanned, orig_start + len);
- 	return ret;
- }
- 
-@@ -1645,7 +1674,6 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 		btrfs_inode_unlock(inode, 0);
- 		if (ret < 0)
- 			break;
--		ctrl->last_scanned = cluster_end + 1;
- 		if (ret > 0) {
- 			ret = 0;
- 			break;
--- 
-2.35.0
-
+zrPOtc65zrEgz4POsc+CDQrOlc+AzrnOus6/zrnOvc+Jzr3Ov8+NzrzOtSDOvM6xzrbOryDPg86x
+z4Igz4PPh861z4TOuc66zqwgzrzOtSDPhM6xIM66zrXPhs6szrvOsc65zqwgz4POsc+CIM6zzrnO
+sSDOsc+Azr/Ots63zrzOr8+Jz4POtyDPjc+Izr/Phc+CDQooMS41MDAuMDAwLDAwIFVTRCkgzpXO
+us6xz4TOv868zrzPjc+BzrnOvyDOoM61zr3PhM6xzrrPjM+DzrnOsSDOp865zrvOuc6szrTOtc+C
+IM60zr/Ou86sz4HOuc6xIM6XzqDOkSwgz4TOsQ0Kzr/PgM6/zq/OsSDOus6xz4TOsc+Ezq3OuM63
+zrrOsc69IM+Dz4TOvyDOs8+BzrHPhs61zq/OvyDOvM6xz4IgzrHPgM+MIM+EzrfOvSBFY293YXMs
+IM61zr3Pg8+JzrzOsc+Ez4nOvM6tzr3OtyDPg8+Ezr8NCs6UzrnOtc64zr3Orc+CIM6dzr/OvM65
+z4POvM6xz4TOuc66z4wgzqTOsc68zrXOr86/ICjOlM6dzqQpLiDPhM6xIM6yz4HOsc6yzrXOr86x
+IM6xz4DOv862zrfOvM6vz4nPg863z4IsIM6pz4IgzrXOug0Kz4TOv8+Nz4TOv8+FLCDOtc6vzrzO
+sc+Dz4TOtSDPg8+EzrfOvSDOtc+Fz4fOrM+BzrnPg8+EzrcgzrjOrc+Dzrcgzr3OsSDPg86xz4Ig
+zrXOvc63zrzOtc+Bz47Pg86/z4XOvM61IM+Mz4TOuSDOrc+Hzr/Phc69DQrOs86vzr3Otc65IM+B
+z4XOuM68zq/Pg861zrnPgiDOs865zrEgz4TOt869IM+Az4HOsc6zzrzOsc+Ezr/PgM6/zq/Ot8+D
+zrcgz4TOt8+CIM+AzrvOt8+Bz4nOvM6uz4Igz4POsc+CIM+Ezr8gz4PPhc69z4TOv868z4zPhM61
+z4HOvw0KzrTPhc69zrHPhM+MIM66zrHOuSDPg8+EzrfOvSDPgM+Bzr/Pg8+AzqzOuM61zrnOrCDO
+vM6xz4IgzrPOuc6xIM60zrnOsc+GzqzOvc61zrnOsS4NCs6Vz4DOuc66zr/Ouc69z4nOvc6uz4PP
+hM61IM68zrUgz4TOv869IM69zq3OvyDOtM65zrXPhc64z43Ovc6/zr3PhM6xIM+Dz43OvM6yzr/P
+hc67zr8gz4TOt8+CIFVCQSDOui4gS2VubmVkeSBVem9rYQ0KzrPOuc6xIM69zrEgzrTOuc61zrrO
+tM65zrrOrs+DzrXPhM61IM+Ezr8gzrrOtc+GzqzOu86xzrnPjCDPg86xz4IgzrzOtSDPhM65z4Ig
+zrHOus+MzrvOv8+FzrjOtc+CIM+AzrvOt8+Bzr/Phs6/z4HOr861z4IuDQoNCiDOqc+Dz4TPjM+D
+zr8sIM6zzrnOsSDOvc6xIM6xz4DOv8+Gz43Os861z4TOtSDPg8+GzqzOu868zrHPhM6xIM+AzrvO
+t8+Bz4nOvM6uz4IsIM+Dz4XOvc65z4PPhM6/z43OvM61IM69zrEgz4XPgM6/zrLOrM67zrXPhM61
+DQrPhM65z4IgzrHPgM6xz4HOsc6vz4TOt8+EzrXPgiDPgM67zrfPgc6/z4bOv8+Bzq/Otc+CIM+M
+z4DPic+CIM+Fz4DOv860zrXOuc66zr3Pjc61z4TOsc65IM+AzrHPgc6xzrrOrM+Ez4kuDQoNCs6k
+zr8gzr/Ovc6/zrzOsc+EzrXPgM+Ozr3Phc68zr8gz4POv8+FOiBfX19fX19fX19fX19fX18/DQrO
+lyDPh8+Oz4HOsSDPg86/z4U6IF9fX19fX19fX19fXz8NCs6XIM60zrnOtc+NzrjPhc69z4POtyDP
+g86/z4U6IF9fX19fX19fX19fX19fX18/DQrOlc+AzqzOs86zzrXOu868zrE6IF9fX19fX19fX19f
+X187DQrOpM63zrvOtc+Gz4nOvc65zrrPjCDOvc6/z43OvM61z4HOvzogX19fX19fX19fX19fXz8N
+Cs6kzr8gz4bPjc67zr8gz4POsc+COiBfX19fX19fX19fX19fOw0KDQrOo8+EzrXOr867z4TOtSDP
+hM6xIM+Dz4TOv865z4fOtc6vzrEgz4POsc+CIM+Dz4TOv869IM+DzrrOt869zr/OuM6tz4TOtyDO
+ui4gS2VubmVkeSBVem9rYQ0KzpTOuc61z43OuM+Fzr3Pg863IM63zrvOtc66z4TPgc6/zr3Ouc66
+zr/PjSDPhM6xz4fPhc60z4HOv868zrXOr86/z4UgzrXPgM65zrrOv865zr3Pic69zq/Osc+COiAo
+aW5mb0B1YmFhdG1vZmZpY2UuY29tKQ0KDQrOtc+AzrnOus6/zrnOvc+Jzr3Ors+Dz4TOtSDOvM61
+IM+Ezr/OvSDOui4gS2VubmVkeSBVem9rYSDPhM6/IM+Dz4XOvc+Ezr/OvM+Mz4TOtc+Bzr8gzrTP
+hc69zrHPhM+MIM6zzrnOsSDOvc6xDQrOsc+Azr/Phs+NzrPOtc+EzrUgz4DOtc+BzrnPhM+Ezq3P
+giDOus6xzrjPhc+Dz4TOtc+Bzq7Pg861zrnPgi4NCg0Kz4DOuc+Dz4TOrCDPg86/z4UNCs6UzrnO
+sc+HzrXOr8+BzrnPg863DQo=
