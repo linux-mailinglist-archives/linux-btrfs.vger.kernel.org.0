@@ -2,58 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995344AB251
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Feb 2022 22:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2954A4AB2CD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Feb 2022 00:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237217AbiBFVWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Feb 2022 16:22:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        id S242733AbiBFXWK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Feb 2022 18:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbiBFVWe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Feb 2022 16:22:34 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7335C06173B;
-        Sun,  6 Feb 2022 13:22:32 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id m10so15130229oie.2;
-        Sun, 06 Feb 2022 13:22:32 -0800 (PST)
+        with ESMTP id S241365AbiBFXWK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Feb 2022 18:22:10 -0500
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09E1C06173B;
+        Sun,  6 Feb 2022 15:22:06 -0800 (PST)
+Received: by mail-vk1-xa2e.google.com with SMTP id o15so6908630vki.2;
+        Sun, 06 Feb 2022 15:22:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=pX8nlKBp44Uuhg9EXUmG+LyN9UR0HWbq6erV5cZ3MCw=;
-        b=Z5DlpI7zw7u9xhBLe2a+f+1fSs8WOCd8B0d2KFkGeKOvOw+cPzUePf1hy/DcbUEwb4
-         OUmgG7Fx8WxEKFluROeNi00sPbboSqtbg9ZdbEQRKXhKWsQVFRKCir/lNdYmofd+cS3p
-         SzJYQOs6mYbm2K1v1aM9LpJ2cwiXVS8AP9yXGITgmY1H5LEhS1pWNmG2J3RVNtm1jFmw
-         vVBH5GYPmod/iQwFY7V0OPt6sSpvPRNqLJ7vXZJoiId2anbLi7zoqYG79FBOPu6bsfN6
-         uEuqcL2tJTusYAICleA3B8EsSaRh6UN1UCjlOxICzUx0FofwoCW9loDScawPLHSNNl13
-         RbUg==
+        bh=wtQhWRukk8Wpp5yxiX70FWMA1ONW4KzaDWRD7a/WsqY=;
+        b=A0QUuSW8b9cjuOgm47aFCdUrAUMhovJehvDRNNB/D/Y+gPfvJvlLeY6J6UAUVPvMun
+         akdVzUAZmIP9BrAQg/79XR35udHIho0mRWQUQM7elimczZTkB2Z8DNNlPTisVJih50xC
+         BfcmFyVJuV6cBUPcLrNLoIgNtc2uvW3rIPYCda2QJqvz24FK5cet7sL1lfD7TgRI/1uv
+         mao9SyzNxgSYu+jjH/O4y/whaj08GG4yDAqyzKhn5BjAEZPf6Ukqo4vrdpxUHY6nxN29
+         Pk5ruXVuQFiJ7vHsR/ldFVGMZpVvxbKcvPATwaSN50VtmylE8hUB4A4wCqQggcuQiF04
+         9F8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pX8nlKBp44Uuhg9EXUmG+LyN9UR0HWbq6erV5cZ3MCw=;
-        b=1isTVrayO5Z5UrMFT8qsKFUcbbvOLEHJirY/4u0gONyXg8dJVuxpqjubvIF2GlZnuy
-         jtVMWWUnibBhbIIUZT83ugg59OicEwKPTjzGG2DBFyiRADAuO7MNIWmRrYp4ZRujC0YU
-         Crw+9HwJ2Sj9QbMOWcVuxMX1Vd1o0V814WyWdqtuPOBMZbU8b6XVOQNM2k2WfP/9/gp+
-         x22x9OAgWXVEDXpBmmDuQ+swbNY5cTBqEV5mDw4Sj+/l9QDEO+/DnZyBVtkLfrXEjCyK
-         P1r3q4Uov+TwDDD/AmN+u2eYFq6pOcqVk4/209/26ZYRPr+Ptga+y50YaOwtA6wD0pF8
-         Zfmg==
-X-Gm-Message-State: AOAM5303IIUlh9558S6m7hBQDSHUFoXv6xR4wpe4Wbbz8NheARmLy2AP
-        pxIQKu0+DtlB2Sa3gMBh/JTauzmsin66zygwW1zWThARbb4=
-X-Google-Smtp-Source: ABdhPJyAUixt1ceMP81WcHVJryCF7r+NYUnhb68azyCQLn0ozUdZazlr5LdFrF6Nl2ghrD/Qt/d0cYobR5iFb1Ity94=
-X-Received: by 2002:a05:6808:191a:: with SMTP id bf26mr6057093oib.111.1644182552251;
- Sun, 06 Feb 2022 13:22:32 -0800 (PST)
+        bh=wtQhWRukk8Wpp5yxiX70FWMA1ONW4KzaDWRD7a/WsqY=;
+        b=rVf5Q5BRZzYO4HwVpQkHOJpq059HrXJZZX+pY5ixQ4sUhJNmTvNxwh2DTiHU99Fq8/
+         QVnzeHxfnFxyahIi4FA1pgd3xCtgK2p+O6N0iYH10ovyI3RTJFG77KGsYfZCUOIMpfZS
+         aMAZBo1RKa8hPFBO0baSP85ZglxPqPoU9YWojikfC2xitYtQ7zOJdCMOp9mnxYzJNgpP
+         lpHqxKEGokEYHA128wNSSf+rgqbzw60DLDq5GMnJCcjxom1DKvHedGtewZvwO+1o3TnL
+         flWg3X4DsOnCW6a7bwNqCdmp2uAalf4m7Fb9JUNksRa3wMXh1E/Wa2Sr5Ux9LUUVSe4i
+         VCQQ==
+X-Gm-Message-State: AOAM531IVM7cUvl7fKKoJC2QbJMCT+2Qwiz5sOQ0HH7mc+gOzhcg6AwP
+        WYe0zlUyrKm6J7AgKZwTp8oMtdctyD/s4sPStPotQQ6vLLmV/g==
+X-Google-Smtp-Source: ABdhPJzV5rhh3k03ePB/c8oIQZU6dG1WdiwRzWJisegxne9dIx5hvJaLg8JuP4SJUSC+AoLHrVLctiHg/AZGuV44qps=
+X-Received: by 2002:a05:6122:91b:: with SMTP id j27mr4257514vka.32.1644189724840;
+ Sun, 06 Feb 2022 15:22:04 -0800 (PST)
 MIME-Version: 1.0
 References: <CAOE4rSwfTEaJ_O9Bv1CkLRnLWYoZ7NSS=5pzuQz4mUBE-PXQ5A@mail.gmail.com>
  <YfrX1BVIlIwiVYzs@casper.infradead.org> <CAOE4rSz1OTRYQPa4PUrQ-=cwSM3iVY977Uz_d77E2j-kH0G3rA@mail.gmail.com>
- <CAPj211uKvndvR40Vjh9WAf4wRbaV5MSnmUsvDAEAKv3Q+2tDkA@mail.gmail.com> <Yf/DiefrNOkib5mm@casper.infradead.org>
-In-Reply-To: <Yf/DiefrNOkib5mm@casper.infradead.org>
-From:   FMDF <fmdefrancesco@gmail.com>
-Date:   Sun, 6 Feb 2022 22:22:16 +0100
-Message-ID: <CAPj211uFgCyri=RKnOJs2cV7-9FRFjOPLti8Jo0ODZeHEPgGAw@mail.gmail.com>
+ <CAPj211uKvndvR40Vjh9WAf4wRbaV5MSnmUsvDAEAKv3Q+2tDkA@mail.gmail.com>
+ <Yf/DiefrNOkib5mm@casper.infradead.org> <CAPj211uFgCyri=RKnOJs2cV7-9FRFjOPLti8Jo0ODZeHEPgGAw@mail.gmail.com>
+In-Reply-To: <CAPj211uFgCyri=RKnOJs2cV7-9FRFjOPLti8Jo0ODZeHEPgGAw@mail.gmail.com>
+From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Date:   Mon, 7 Feb 2022 01:21:53 +0200
+Message-ID: <CAOE4rSzJtDwDpb6PDN-E1i=b5p6jePu7wnKKgwr8dnwextaxUw@mail.gmail.com>
 Subject: Re: How to debug stuck read?
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
+To:     FMDF <fmdefrancesco@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
         linux-fsdevel@vger.kernel.org, BTRFS <linux-btrfs@vger.kernel.org>,
         kernelnewbies <kernelnewbies@kernelnewbies.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -68,92 +69,127 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Feb 6, 2022 at 1:48 PM Matthew Wilcox <willy@infradead.org> wrote:
+sv=C4=93td., 2022. g. 6. febr., plkst. 13:01 =E2=80=94 lietot=C4=81js FMDF
+(<fmdefrancesco@gmail.com>) rakst=C4=ABja:
+[...]
+> There is no special recipe for debugging "this properly" :)
 >
-> On Sun, Feb 06, 2022 at 12:01:02PM +0100, FMDF wrote:
-> > On Wed, Feb 2, 2022 at 10:50 PM D=C4=81vis Mos=C4=81ns <davispuh@gmail.=
-com> wrote:
-> > >
-> > > tre=C5=A1d., 2022. g. 2. febr., plkst. 21:13 =E2=80=94 lietot=C4=81js=
- Matthew Wilcox
-> > > (<willy@infradead.org>) rakst=C4=ABja:
-> > > >
-> > > > On Wed, Feb 02, 2022 at 07:15:14PM +0200, D=C4=81vis Mos=C4=81ns wr=
-ote:
-> > > > > I have a corrupted file on BTRFS which has CoW disabled thus no
-> > > > > checksum. Trying to read this file causes the process to get stuc=
-k
-> > > > > forever. It doesn't return EIO.
-> > > > >
-> > > > > How can I find out why it gets stuck?
-> > > >
-> > > > > $ cat /proc/3449/stack | ./scripts/decode_stacktrace.sh vmlinux
-> > > > > folio_wait_bit_common (mm/filemap.c:1314)
-> > > > > filemap_get_pages (mm/filemap.c:2622)
-> > > > > filemap_read (mm/filemap.c:2676)
-> > > > > new_sync_read (fs/read_write.c:401 (discriminator 1))
-> > > >
-> > > > folio_wait_bit_common() is where it waits for the page to be unlock=
-ed.
-> > > > Probably the problem is that btrfs isn't unlocking the page on
-> > > > seeing the error, so you don't get the -EIO returned?
-> > >
-> > >
-> > > Yeah, but how to find where that happens.
-> > > Anyway by pure luck I found memcpy that wrote outside of allocated
-> > > memory and fixing that solved this issue but I still don't know how t=
-o
-> > > debug this properly.
-> > >
-> > There is no special recipe for debugging "this properly" :)
+> You wrote that "by pure luck" you found a memcpy() that wrote beyond the
+> limit of allocated memory. I suppose that you found that faulty memcpy()
+> somewhere in one of the function listed in the stack trace.
+>
+> That's the right approach! You read the calls chain and find out where so=
+mething
+> looks wrong and then fix it. This is why stack traces are so helpful.
+>
+> It was not "pure luck". I think that you did what developers usually do a=
+fter
+> decoding a stack trace. If not, how did you find that faulty memcpy() bur=
+ied
+> somewhere in 40 millions lines of code?
+>
+> it seems that you've found the right way to figure out the problems in co=
+de
+> that (probably) you had not ever worked on or read before you hit that bu=
+g.
+>
+
+I think there should be a way to see which locks (and by who/where)
+have been taken for a long time. In this case it would be just this
+one as no one should take a lock for 10+ mins and such. Here we have
+several complications that make figuring this out difficult. Firstly
+you can get crash only once per boot. Killing process and reading file
+again you won't get any crash at all but process will always get
+stuck. Not even dropping caches changes anything. That's why I
+couldn't figure out what is the issue because I tried repeating it
+several times and never got any new crash in dmesg. Secondly even if
+you see some crash in dmesg, your process didn't crash and it's not
+clear if it is related to your issue - how to link kernel side crash
+with your stuck process. Finally the way how this bug is it was
+possible for it to not cause any crash but I'm guessing process
+probably wouldn't have stuck then.
+
+> Have you sent a patch to the LKML? If not, please do it.
+>
+Yeah I did, see patch titled: "[PATCH 2/2] btrfs: prevent copying too
+big compressed lzo segment"
+
+
+
+sv=C4=93td., 2022. g. 6. febr., plkst. 23:22 =E2=80=94 lietot=C4=81js FMDF
+(<fmdefrancesco@gmail.com>) rakst=C4=ABja:
+>
+> On Sun, Feb 6, 2022 at 1:48 PM Matthew Wilcox <willy@infradead.org> wrote=
+:
 > >
-> > You wrote that "by pure luck" you found a memcpy() that wrote beyond th=
-e
-> > limit of allocated memory. I suppose that you found that faulty memcpy(=
-)
-> > somewhere in one of the function listed in the stack trace.
->
-> I very much doubt that.  The code flow here is:
->
-> userspace calls read() -> VFS -> btrfs -> block layer -> return to btrfs
-> -> return to VFS, wait for read to complete.  So by the time anyone's
-> looking at the stack trace, all you can see is the part of the call
-> chain in the VFS.  There's no way to see where we went in btrfs, nor
-> in the block layer.  We also can't see from the stack trace what
-> happened with the interrupt which _should have_ cleared the lock bit
-> and didn't.
->
-OK, I agree. This appears to be is one of those special cases where the mer=
-e
-reading of a stack trace cannot help much... :(
-
-My argument is about a general approach to debugging some unknown code
-by just reading the calls chain. Many times I've been able to find out what=
- was
-wrong with code I had never seen before by just following the chain of call=
+> > On Sun, Feb 06, 2022 at 12:01:02PM +0100, FMDF wrote:
+[...]
+> >
+> > I very much doubt that.  The code flow here is:
+> >
+> > userspace calls read() -> VFS -> btrfs -> block layer -> return to btrf=
 s
-in subsystems that I know nothing of (e.g., a bug in "tty" that was reporte=
-d by
-Syzbot).
+> > -> return to VFS, wait for read to complete.  So by the time anyone's
+> > looking at the stack trace, all you can see is the part of the call
+> > chain in the VFS.  There's no way to see where we went in btrfs, nor
+> > in the block layer.  We also can't see from the stack trace what
+> > happened with the interrupt which _should have_ cleared the lock bit
+> > and didn't.
+> >
+> OK, I agree. This appears to be is one of those special cases where the m=
+ere
+> reading of a stack trace cannot help much... :(
+>
+> My argument is about a general approach to debugging some unknown code
+> by just reading the calls chain. Many times I've been able to find out wh=
+at was
+> wrong with code I had never seen before by just following the chain of ca=
+lls
+> in subsystems that I know nothing of (e.g., a bug in "tty" that was repor=
+ted by
+> Syzbot).
+>
+> In this special case, if the developer doesn't know that "the interrupt [=
+which]
+> _should have_ cleared the lock bit and didn't." there is nothing that one=
+ can
+> deduce from a stack trace.
+>
+> Here one need to know how things work, well beyond the functions that are
+> listed in the trace. So, probably, if one needs a "recipe" for those case=
+s, the
+> recipe is just know the subsystem(s) at hand and know how the kernel mana=
+ges
+> interrupts.
+>
 
-In this special case, if the developer doesn't know that "the interrupt [wh=
-ich]
-_should have_ cleared the lock bit and didn't." there is nothing that one c=
-an
-deduce from a stack trace.
+Yeah, that's why I'm saying it was by luck :P The way how I fixed this
+was pretty much accidental byproduct. Basically for this issue all I
+saw in dmesg was "invalid lzo header". By looking at that part of code
+I didn't see anything suspicious and also issue happened after this so
+it wasn't culprit (but did hint it could be something related to
+this). Anyway at this point I gave up on it, but I saw that I have one
+crash in dmesg so I thought I'll fix that. I didn't thought it's
+related to this issue, but once I fixed that this also was solved.
 
-Here one need to know how things work, well beyond the functions that are
-listed in the trace. So, probably, if one needs a "recipe" for those cases,=
- the
-recipe is just know the subsystem(s) at hand and know how the kernel manage=
-s
-interrupts.
+> Actually I haven't deepened this issue but, by reading what Matthew write=
+s,
+> I doubt that a faulty memcpy() can be the culprit... Davis, are you reall=
+y sure
+> that you've fixed that bug?
+>
 
-Actually I haven't deepened this issue but, by reading what Matthew writes,
-I doubt that a faulty memcpy() can be the culprit... Davis, are you really =
-sure
-that you've fixed that bug?
+Yep, fully sure and tested :P I'm able to reproduce stuck process with
+100% reliability. After applying my patch it returns EIO as expected
+and doesn't get stuck.
+If you look at copy_compressed_segment (in fs/btrfs/lzo.c) you'll see
+  kaddr =3D kmap(cur_page);
+  memcpy(dest + *cur_in - orig_in,
+                 kaddr + offset_in_page(*cur_in), copy_len);
+  kunmap(cur_page);
 
-Regards,
-
-Fabio
+My guess is that kmap(cur_page) locks that page, then memcpy crashes
+so that page never gets unmapped causing anyone that tries to map it
+to wait forever. Hence this can be reproduced only once per boot. If I
+knew how to find kernel thread that is running this we could check
+it's stack and it should be stuck here on kmap.
