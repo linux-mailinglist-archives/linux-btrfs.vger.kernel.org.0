@@ -2,143 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3A04AAEFB
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Feb 2022 12:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEDD4AAF2A
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Feb 2022 13:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbiBFL0a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Feb 2022 06:26:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
+        id S235605AbiBFM0A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Feb 2022 07:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233668AbiBFL03 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Feb 2022 06:26:29 -0500
-X-Greylist: delayed 441 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Feb 2022 03:26:26 PST
-Received: from pio-pvt-msa1.bahnhof.se (pio-pvt-msa1.bahnhof.se [79.136.2.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0D2C06173B
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Feb 2022 03:26:25 -0800 (PST)
+        with ESMTP id S229647AbiBFM0A (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Feb 2022 07:26:00 -0500
+X-Greylist: delayed 363 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Feb 2022 04:25:57 PST
+Received: from eu-shark2.inbox.eu (eu-shark2.inbox.eu [195.216.236.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8BBC043182
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Feb 2022 04:25:57 -0800 (PST)
+Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
+        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id 831D41E0008A;
+        Sun,  6 Feb 2022 14:19:50 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1644149990; bh=0aUV2R5M49c4drLpXN7D0e8DoghY3a+YbbzoTDrRsSs=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+         Content-Type:X-ESPOL:from:date:to:cc;
+        b=Q0bj/BLqCRxzdishMweHOCqY2s/i91ys/XSOAYpnfQOwDg0TXEr1O5SgQMvftgAw+
+         6syq67yMSvGlSUH7Ly4S6Qh5LRzlW1VRRKg9hPk9CNdd8VAuzN72PhFQBcVipT+UjZ
+         vuoPud/8tml5ZNXsb4euxkSTsgjN/uq4utfBQmZo=
 Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 3E2263F6B5;
-        Sun,  6 Feb 2022 12:19:01 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.911
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id u4AqhxfOFFGF; Sun,  6 Feb 2022 12:18:59 +0100 (CET)
-Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id D68BF3F5EB;
-        Sun,  6 Feb 2022 12:18:59 +0100 (CET)
-Received: from [192.168.0.20] (port=62014)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1nGfZS-0000Y4-9K; Sun, 06 Feb 2022 12:18:59 +0100
-Message-ID: <2fa6e081-cccd-d3aa-456c-f31911a42bdd@tnonline.net>
-Date:   Sun, 6 Feb 2022 12:18:58 +0100
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 768561E00093;
+        Sun,  6 Feb 2022 14:19:50 +0200 (EET)
+Received: from eu-shark2.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id YriyvBu5vsKB; Sun,  6 Feb 2022 14:19:50 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id E2B461E0008A;
+        Sun,  6 Feb 2022 14:19:49 +0200 (EET)
+References: <20220205203028.4F35.409509F4@e16-tech.com>
+ <27f44938-e58b-8566-0359-ef0260bd9b84@gmx.com>
+ <20220205224936.478B.409509F4@e16-tech.com>
+User-agent: mu4e 1.7.0; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: tree-checker: check item_size for dev_item
+Date:   Sun, 06 Feb 2022 20:12:20 +0800
+In-reply-to: <20220205224936.478B.409509F4@e16-tech.com>
+Message-ID: <5ypsw5k3.fsf@damenly.su>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: Re: btrfs RAID1 upgrade
-Content-Language: en-GB
-To:     =?UTF-8?Q?Max_Splieth=c3=b6ver?= <max@spliethoever.de>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <bfd8a745-3480-70c8-155a-3ee7f5200647@spliethoever.de>
-From:   Forza <forza@tnonline.net>
-In-Reply-To: <bfd8a745-3480-70c8-155a-3ee7f5200647@spliethoever.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6N1ml5Y3ejOlil2/Qn/cGwczrjRLXOn5iJm3kEIZgAiJPFTkYip5XRGxnW10RX+5ujkX
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-On 2022-02-06 11:23, Max Spliethöver wrote:
-> Hey everyone.
-> As the available space on my BTRFS RAID1 setup with 2x 4TB drives gets a bit low (a little over 10% left), I plan to upgrade my setup. The current idea is to add a single 8TB drive to the RAID1. The RAID is not used as system drive, but is merely mounted as storage. According to [1], I could simply add the new drive to get 8TB of raw file storage in total, with the data and metadata ratio remaining at 2.0.
+On Sat 05 Feb 2022 at 22:49, Wang Yugui <wangyugui@e16-tech.com> 
+wrote:
 
-Do you mean you want to end up with 1x4TB and 1x8TB? This will only give 
-you 4TB usable space in a RAID1 configuration. If you want to add this 
-8TB drive as a third drive, then you will have 8TB of usable space in a 
-RAID1 configuration.
+> Hi,
+>
+>> >>>> A btrfs filesystem failed to boot with this patch.
+>> >>>>
+>> >>>> corrupt leaf: root=3 block=1081344 slot=0 devid=1 invalid 
+>> >>>> item
+>> >>>> size: has 0 expect 98
+>> >>>>
+>> >>>> Any way to fix it online?
+>> >>>
+>> >>> This btrfs filesystem is created by centos 7.9 installer 
+>> >>> (btrfs
+>> >>> 4.9?)
+>> >>> about 1 years ago.  and then mainly writen by kernel
+>> >>> 5.4/5.10/5.15.
+>> >>>
+>> >> Yes, btrfs-progs v4.9 and v3.10 based kernel.
+>> >> I created a btrfs and it looks fine.
+>> >> Could please provide output of
+>> >> btrfs inspect-internal dump-tree $device -t 3
+>> >> ?
+>> >> You can trim it if the content is too long only leaf 1081344 
+>> >> is needed.
+>> >
+>> > Hi,
+>> >
+>> > # btrfs filesystem show /
+>> > Label: 'OS_T640'  uuid: 73dcce98-8f6b-4ec8-bfac-fa7c7c87409d
+>> >          Total devices 10 FS bytes used 5.53TiB
+>> >          devid    1 size 799.00GiB used 332.01GiB path 
+>> >          /dev/sda2
+>> >          devid    2 size 1.75TiB used 741.00GiB path 
+>> >          /dev/sdg1
+>> >          devid    3 size 1.75TiB used 745.00GiB path 
+>> >          /dev/sdj1
+>> >          devid    4 size 1.75TiB used 740.00GiB path 
+>> >          /dev/sdi1
+>> >          devid    5 size 1.75TiB used 745.00GiB path 
+>> >          /dev/sdd1
+>> >          devid    6 size 1.75TiB used 480.00GiB path 
+>> >          /dev/sde1
+>> >          devid    7 size 1.75TiB used 480.00GiB path 
+>> >          /dev/sdh1
+>> >          devid    8 size 1.75TiB used 479.00GiB path 
+>> >          /dev/sdc1
+>> >          devid    9 size 1.75TiB used 480.00GiB path 
+>> >          /dev/sdb1
+>> >          devid   10 size 1.75TiB used 479.00GiB path 
+>> >          /dev/sdf1
+>> >
+>> > #btrfs inspect-internal dump-tree /dev/sda2 -t 3 > 3.txt
+>> >
+>> > and then 3.txt is zipped as  this attachment file(3.zip)
+>>
+>> Full dmesg of the boot failure please.
+>>
+>> The dump-tree shows the device item is completely sane, it has 
+>> size 98,
+>> not the value (0) reported from tree-checker.
+>>
+>> Thus I don't know why tree-checker is reporting this problem.
+>>
+>
+> This (attachment file boot.dmesg.txt.zip ) is the full dmesg 
+> output
+>
+As Qu suggested to me, would you plase provide output after
+apply of the following diff? (It may crash the kernel if there is 
+*real*
+one invalid dev_item).
 
-> 
-> Before I do so, I would like to know whether there are any problems with such a three-drive setup or I misunderstood something, and it isn't actually possible to extend the RAID1 in this way.
-> 
-> Also, I would love to get some feedback on the series of steps I plan to execute to extend the RAID with the 8TB drive:
-> 
-> 
-> 1. Stop all applications depending on the storage.
-> 2. Unmount storage device.
-> 3. Mount storage device degraded at `/btrfsmount`.
->       ```
->       $ mount -o degraded /dev/sdX /btrfsmount
->       ```
-> 4. Add the new drive to the raid.
->       ```
->       $ btrfs device add -f /dev/sdY /btrfsmount
->       ```
-> 5. Run a full balance to fully balance the data including the new device.
->       ```shell
->       $ btrfs balance start --full-balance /btrfsmount
->       ```
-> 6. Unmount the raid and remount it in non-degraded mode.
-> 
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 9fd145f1c4bc..5fb981b4b42a 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -25,6 +25,7 @@
+ #include "volumes.h"
+ #include "misc.h"
+ #include "btrfs_inode.h"
++#include "print-tree.h"
 
-Assuming you want to add the drive as a third drive, there is no need to 
-unmount the existing mount points, or mount degraded. It can all be done 
-live, while your services are running.
+ /*
+  * Error message should follow the following format:
+@@ -977,6 +978,7 @@ static int check_dev_item(struct extent_buffer 
+*leaf,
+        if (unlikely(item_size != sizeof(*ditem))) {
+                dev_item_err(leaf, slot, "invalid item size: has 
+                %u expect %zu",
+                             item_size, sizeof(*ditem));
++               btrfs_print_leaf(leaf);
+                return -EUCLEAN;
+        }
 
-Simply do:
-$ btrfs device add /dev/sdY1 /mnt/btrfs
-$ btrfs balance start -dusage=100 /mnt/btrfs
 
-There is no need to balance metadata.
-
-> 
-> Lastly, if there are any other "best practices" one should follow when doing such an extension (apart from backups, of course), please let me know.
-> 
-> In case it helps, below is the btrfs filesystem usage output:
-> $ btrfs filesystem usage /btrfsmount
-> Overall:
->       Device size:                   7.28TiB
->       Device allocated:              6.43TiB
->       Device unallocated:          871.98GiB
->       Device missing:                  0.00B
->       Used:                          6.41TiB
->       Free (estimated):            442.47GiB      (min: 442.47GiB)
->       Free (statfs, df):           442.47GiB
->       Data ratio:                       2.00
->       Metadata ratio:                   2.00
->       Global reserve:              512.00MiB      (used: 0.00B)
->       Multiple profiles:                  no
-> 
-> Data,RAID1: Size:3.21TiB, Used:3.20TiB (99.80%)
->      /dev/sdd1       3.21TiB
->      /dev/sde1       3.21TiB
-> 
-> Metadata,RAID1: Size:5.00GiB, Used:4.31GiB (86.19%)
->      /dev/sdd1       5.00GiB
->      /dev/sde1       5.00GiB
-> 
-> System,RAID1: Size:32.00MiB, Used:480.00KiB (1.46%)
->      /dev/sdd1      32.00MiB
->      /dev/sde1      32.00MiB
-> 
-> Unallocated:
->      /dev/sdd1     435.99GiB
->      /dev/sde1     435.99GiB
-> 
-> 
-> 
-> Thank you very much in advance. :)
-> 
-> 
-> -Max
-> 
-> 
-> [1]: https://carfax.org.uk/btrfs-usage/
-> 
+--
+Su
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2022/02/05
+>
+> [2. application/x-zip-compressed; boot.dmesg.txt.zip]...
