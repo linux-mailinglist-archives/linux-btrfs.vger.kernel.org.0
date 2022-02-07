@@ -2,255 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4883A4AB314
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Feb 2022 02:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1401C4AB316
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Feb 2022 02:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243629AbiBGBVr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Feb 2022 20:21:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54502 "EHLO
+        id S243648AbiBGBWU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Feb 2022 20:22:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbiBGBVq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Feb 2022 20:21:46 -0500
-X-Greylist: delayed 309 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Feb 2022 17:21:44 PST
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F5EC061348
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Feb 2022 17:21:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644196903;
-        bh=nInV3f8qUtBS7Jrf+xbOKGCtqwcKigegKRt2q0UmCXQ=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=e86ddBNifI/HmDkKdDdnILh0bjfgSWMMOy7AaqCkXaBOq518Vw5mLbeTXLAkw9q78
-         uXBpiXYLJDVgKSYeXyJUEcYeMSWfsrTxL6gyKx1w8u5LmcgwV3n/PHi6RQVs5fJeoZ
-         zGMgEb1YtpfgYgGpH0SkK9u5rTpXsqSFoj3SKdyw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYeMj-1nmNie1YOZ-00Viio; Mon, 07
- Feb 2022 02:16:32 +0100
-Content-Type: multipart/mixed; boundary="------------VOw32L8jZBf20jMeA3Gd0JeJ"
-Message-ID: <43e00a03-c853-56cf-9cf6-dfb4f1d4694c@gmx.com>
-Date:   Mon, 7 Feb 2022 09:16:27 +0800
+        with ESMTP id S230225AbiBGBWT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Feb 2022 20:22:19 -0500
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936ACC06173B;
+        Sun,  6 Feb 2022 17:22:18 -0800 (PST)
+Received: by mail-ua1-x929.google.com with SMTP id w21so20344341uan.7;
+        Sun, 06 Feb 2022 17:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jHTnR5GobKzUMKBNLltF74ItkF07WMZsWwxMYQZjeIc=;
+        b=m/yyUgslxPpRsFcbvaxYgQnhBsoJgqsBtOGyCqlcuVlLtLpXpwNKLWVkimQfwDbgNN
+         G3VzNQWFI/TpMvwUuKE+Q1xPNi7DTxW3FqA6dbw/VrvNe0P+NUq2kmGbaDm0MRaeH3gr
+         aOodhTcyVMF9g3QzbxCasR159dB3pKupio1SaJxiFMmE8OAaYdw4lrxSv85F7axlnACX
+         4/rN3LB4axQIfi6edpSvovQKHbG7vBk8FZU6NDexVQAeoeuDeKcHQQmvd9l740gDZwHE
+         2OdWxQG/5FQikVjyKLGe/Jzej95vgz54z6G/2c2ll5Z34kl1YWWb4Keh0nZRzdP+WPE/
+         e4qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jHTnR5GobKzUMKBNLltF74ItkF07WMZsWwxMYQZjeIc=;
+        b=AQtkiRzk8Nei9JakikDUTW8QDL9G1ME7RGPCHTIdmaUlUs12fxI+mXmZ6ZGGywINUA
+         uC3FZIDvpSXsLHfQhm8RyhjbWdT7HokKEuFXKJVaQf+kkVxLODRHv0cV9eDNt9K097wf
+         lfqBiczBirvzLE5FczjYexl6gkUVI8axWbehfXCXSluKsmFRKgMA9QG5o5d0BYqUHPZp
+         KTH/xmYIVMD5f42NvtelE+i26LRq1MNisnDiSs9i71wl3iEPS32rRsA0i1IJXhgD9tj4
+         oO5/GXJ5prlWAuIFKFrxGJmG/O9DELwZgl3/2c135aUXaAxufdLJQyPFUeB9JhxOjnu4
+         o9MQ==
+X-Gm-Message-State: AOAM53082CCMTZnJ+qDHRrKI3hAlckwzI0PVfTnJsQL7keveMwhHyqZH
+        keZAxykF/YPs1UkoZ1wkyiOA0bYQd4j/8BXRAct+hd8ps/AYI8vr
+X-Google-Smtp-Source: ABdhPJyqlv+pMNDZdv4z0FLnRXOeve02sbLMzOFljLZjcO9Ruce3F3q/7N6VIiUmgBTpWLlP34wTlkOHmar3+ncOA0Y=
+X-Received: by 2002:a67:c907:: with SMTP id w7mr3792074vsk.60.1644196937107;
+ Sun, 06 Feb 2022 17:22:17 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Content-Language: en-US
-To:     Jean-Denis Girard <jd.girard@sysnux.pf>,
-        linux-btrfs@vger.kernel.org
-References: <KTVQ6R.R75CGDI04ULO2@gmail.com>
- <9409dc0c-e99d-cc61-757e-727bd54c6ffd@gmx.com>
- <88b6fe3e-8317-8070-cb27-0aee4dc72cfb@gmx.com>
- <SL2P216MB11112B447FB0400149D320C1AC2B9@SL2P216MB1111.KORP216.PROD.OUTLOOK.COM>
- <61ad0e42-b38a-6b5f-2944-8c78e1508f4a@gmx.com> <stp1bs$l94$1@ciao.gmane.io>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Still seeing high autodefrag IO with kernel 5.16.5
-In-Reply-To: <stp1bs$l94$1@ciao.gmane.io>
-X-Provags-ID: V03:K1:wh4UFAt1ASciLHeXblvj5/6haZZdlmQSETB0OL7on1JnGplfxbG
- vgyH0+nOb2s6UxILVzufRFzi2cbDhcnZ29UUNAJ6Jb3PLlLNNevKHpLkQJ5tufxG5Z8u9bf
- 72ux++/pgGfz1zRRYia57gyinA1wP6HySekq6kFueismMc2z+pgkYJEzQUjcoGI0ujAaIOv
- o8IoxaB/Cc14nil++jN8g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QMha8PXbVj4=:9wU2ZnGKMQillJxWk0efUL
- qDLjmBMKIqsefGcnIWFm1CYzYmcpSwnsFOiOLfRrPD4M3amyjBFSE/OUC6AJcklPxowO4cg7r
- FSpcjkzgvuhEpO/JWbhr93xgP/kgTvsjz6GD5FE1bkxcUpvLh5wCdAVCZlOBZf8TSzlKsQRba
- 5Xpp/5NyB+fnVJdhvBIphIyfpTqdEOLTkMP5fSoBAE8B3MWHqgWGmgc2usmuUsHV/XzKdrnwy
- DK7xKUxk/3437YskWoGJ2c1TkTkm+eYw09XFYzJUnYFDRDhi2eRD8tnhHrdY9BOYx0huiN8C3
- F/IIQqtVDSzcf01xIYzqHU5Iyl0ICi2GaU45sXmbtEAzHot+yB1xSAxgXbZuxfWG1W/GxNLsz
- 0/s1xeIMqtpBlwRA1m6cvOZYCvgvbb2obBZz/T0XSzDg16SJ9ZE2nheqqUvUboOqs1y2sDbVr
- +Pbuq1D48LGLGAnYQlgZVgmuUVnpE5/+om5O6Vh50giwYmQBUBzEOMmms0MsMgLhpbyicCoFg
- fuXW6rgQhq3XKKIeViqXzRV1OjSVw2/qpw5j0TZ/HQ5Mo9Id0Qzo7gQgjYXzKWeR0TiDLHR7I
- 3RYQah9pKB+Jn8VX7kisPOYdsHgJYQBZZLMUU3m7wAiy5EzgvmZ3RNDEXk9iOoJzda9hnZKT0
- BTa+RwH+kmQ4C+peTiXBJSjv83Fb4Ibx56ZGuJqJOcTUyuRdO1SFmpIUThhCrAPbClKaHRa+E
- rK5EiaJhmVb9BhFYeBQ+7XBbd0JU8PDcXSZIo/jMGTT6UVaXB3Id1HoQPXWZsRo3cfbYwZ7Q8
- 1JY6tXGZqIsrh1VhLpNh4qhrwVsOjayJJ+T3lnYNBCmZb/azAV4p9AM3je7uGo8+VJn0AqrV7
- GZfnOq2FEBGVTbtzz1Zjn7h6Cf4voUu+E/0YxT+v/DqUEsBYSCoC4S8GCFS4Tq64tSple2OdS
- ftRHc5ByQEFlucy4/7Ez3PIINXCMsPmc6aNnSNovfkCkUMP8Tb98OrueKd9fLFjvfEC1ODki+
- C6XTRWsDKzQWwES6nES5DhOQzJd1ABeoDhTltD/IyslLevvoAILgUqCg0YlZFoyHfoYQcwpgd
- 86eYDDUjR0OUis=
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAOE4rSwfTEaJ_O9Bv1CkLRnLWYoZ7NSS=5pzuQz4mUBE-PXQ5A@mail.gmail.com>
+ <YfrX1BVIlIwiVYzs@casper.infradead.org> <CAOE4rSz1OTRYQPa4PUrQ-=cwSM3iVY977Uz_d77E2j-kH0G3rA@mail.gmail.com>
+ <CAPj211uKvndvR40Vjh9WAf4wRbaV5MSnmUsvDAEAKv3Q+2tDkA@mail.gmail.com>
+ <Yf/DiefrNOkib5mm@casper.infradead.org> <CAPj211uFgCyri=RKnOJs2cV7-9FRFjOPLti8Jo0ODZeHEPgGAw@mail.gmail.com>
+ <CAOE4rSzJtDwDpb6PDN-E1i=b5p6jePu7wnKKgwr8dnwextaxUw@mail.gmail.com>
+ <YgBegj4a/0/PkRlc@casper.infradead.org> <CAOE4rSxV-BbpwNYe7cfY8Ag_mWY930yG3pubqASKHjsKXAp6TA@mail.gmail.com>
+ <YgBwet7Av2qkaMaJ@casper.infradead.org>
+In-Reply-To: <YgBwet7Av2qkaMaJ@casper.infradead.org>
+From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Date:   Mon, 7 Feb 2022 03:22:06 +0200
+Message-ID: <CAOE4rSy81hycALngZgCRj9vMR5rLU0Fq1F-g_N72bqvkVmpMsg@mail.gmail.com>
+Subject: Re: How to debug stuck read?
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     FMDF <fmdefrancesco@gmail.com>, linux-fsdevel@vger.kernel.org,
+        BTRFS <linux-btrfs@vger.kernel.org>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------VOw32L8jZBf20jMeA3Gd0JeJ
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2022/2/7 01:43, Jean-Denis Girard wrote:
-> Hi list,
+pirmd., 2022. g. 7. febr., plkst. 03:06 =E2=80=94 lietot=C4=81js Matthew Wi=
+lcox
+(<willy@infradead.org>) rakst=C4=ABja:
+[...]
 >
-> I'm also experiencing high IO with autodefrag on 5.16.6 patched
-> with: -
-> https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D609387,
+> I can't think of a way to solve that.  We can't know whether a dying task
+> "was going to" unlock a page.  So we have a locked page in the page cache
+> that nobody will ever unlock.  We can't remove it, because we don't know
+> that task died.  We can't start I/O on it again, because it looks like
+> I/O is already in progress.
 >
->
-- https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D611509,
-> - btrfs-defrag-bring-back-the-old-file-extent-search-behavior.diff.
+> I think the only answer is "Don't ignore stack dumps in dmesg".
 
-OK, btrfs_search_forward() doesn't help in this case I guess.
+So looks like this is the conclusion of current state.
 
->
-> After about 24 hours uptime, btrfs-cleaner is most of the time at 90
-> % CPU usage
->
-> %CPU  %MEM     TIME+ COMMAND 77,6   0,0  29:03.25 btrfs-cleaner 19,1
-> 0,0   3:40.22 kworker/u24:8-btrfs-endio-write 19,1   0,0   1:50.46
-> kworker/u24:27-btrfs-endio-write 18,4   0,0   4:14.82
-> kworker/u24:7-btrfs-endio-write 17,4   0,0   4:08.08
-> kworker/u24:10-events_unbound 17,4   0,0   4:23.41
-> kworker/u24:9-btrfs-delalloc 15,8   0,0   3:41.21
-> kworker/u24:3-btrfs-endio-write 15,1   0,0   2:12.61
-> kworker/u24:26-blkcg_punt_bio 14,8   0,0   3:40.13
-> kworker/u24:18-btrfs-delalloc 12,8   0,0   3:55.70
-> kworker/u24:20-btrfs-delalloc 12,5   0,0   4:01.79
-> kworker/u24:1-btrfs-delalloc 12,2   0,0   4:04.63
-> kworker/u24:22-btrfs-endio-write 11,5   0,0   1:11.90
-> kworker/u24:11-btrfs-endio-write 11,2   0,0   1:25.96
-> kworker/u24:0-blkcg_punt_bio 10,2   0,0   4:24.17
-> kworker/u24:24+events_unbound ...
->
-> Load average is 5,56, 6,88, 6,71 while just writing that mail.
->
-> And iostat shows:
->
-> avg-cpu:  %user   %nice %system %iowait  %steal   %idle 1,5%    0,0%
-> 26,8%    6,3%    0,0%   65,4%
->
-> tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn
-> kB_dscd Device 33893,50         0,0k       172,2M        57,8M
-> 0,0k       1,7G 577,7M nvme0n1 169,40         0,0k         1,2M
-> 0,0k       0,0k      12,5M 0,0k sda 178,90         0,0k         1,3M
-> 0,0k       0,0k      12,5M 0,0k sdb
->
-> I hope that helps.
-
-And what are the mount options?
-
- From the CPU usage, it looks like there are some infinite loop, but I
-can't find out why by a quick glance.
-
-And since there is no extra read, it looks like it's doing defrag again
-and again on the same inode and range.
-
-
-Mind to apply attached `debug.diff`?
-
-Then you still need to provide `/sys/kernel/debug/tracing/trace`, which
-can be very large and full of added debug info.
-(This means this can slow down your system)
-
-The example of my local test would result something like this in above
-trace file:
-
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 11/11   #P:16
-#
-#                                _-----=3D> irqs-off/BH-disabled
-#                               / _----=3D> need-resched
-#                              | / _---=3D> hardirq/softirq
-#                              || / _--=3D> preempt-depth
-#                              ||| / _-=3D> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-    btrfs-cleaner-1770    [014] .....   961.534329: btrfs_defrag_file:
-entry r/i=3D5/257 start=3D0 len=3D131072 newer=3D7 thres=3D262144
-    btrfs-cleaner-1770    [014] .....   961.534333:
-defrag_collect_targets: add target r/i=3D5/257 start=3D0 len=3D16384 em=3D=
-0
-len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534335:
-defrag_collect_targets: add target r/i=3D5/257 start=3D16384 len=3D16384
-em=3D16384 len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534336:
-defrag_collect_targets: add target r/i=3D5/257 start=3D32768 len=3D16384
-em=3D32768 len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534337:
-defrag_collect_targets: add target r/i=3D5/257 start=3D49152 len=3D16384
-em=3D49152 len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534564:
-defrag_collect_targets: add target r/i=3D5/257 start=3D0 len=3D16384 em=3D=
-0
-len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534567:
-defrag_collect_targets: add target r/i=3D5/257 start=3D16384 len=3D16384
-em=3D16384 len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534568:
-defrag_collect_targets: add target r/i=3D5/257 start=3D32768 len=3D16384
-em=3D32768 len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534569:
-defrag_collect_targets: add target r/i=3D5/257 start=3D49152 len=3D16384
-em=3D49152 len=3D16384 gen=3D7 newer=3D7
-    btrfs-cleaner-1770    [014] .....   961.534580: btrfs_defrag_file:
-defrag target r/i=3D5/257 start=3D0 len=3D65536
-    btrfs-cleaner-1770    [014] .....   961.534681:
-btrfs_run_defrag_inodes: defrag finish r/i=3D5/257 ret=3D0 defragged=3D16
-last_scanned=3D131072 last_off=3D0 cycled=3D0
-
-Thanks,
-Qu
-
-
->
->
-> Thanks,
-
---------------VOw32L8jZBf20jMeA3Gd0JeJ
-Content-Type: text/x-patch; charset=UTF-8; name="debug.diff"
-Content-Disposition: attachment; filename="debug.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2ZpbGUuYyBiL2ZzL2J0cmZzL2ZpbGUuYwppbmRleCBm
-NWRlOGFiOTc4N2UuLmJlMmUyMGQxNjNlZiAxMDA2NDQKLS0tIGEvZnMvYnRyZnMvZmlsZS5j
-CisrKyBiL2ZzL2J0cmZzL2ZpbGUuYwpAQCAtMzA0LDYgKzMwNCwxMSBAQCBzdGF0aWMgaW50
-IF9fYnRyZnNfcnVuX2RlZnJhZ19pbm9kZShzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5m
-bywKIAlzYl9zdGFydF93cml0ZShmc19pbmZvLT5zYik7CiAJcmV0ID0gYnRyZnNfZGVmcmFn
-X2ZpbGUoaW5vZGUsIE5VTEwsICZjdHJsKTsKIAlzYl9lbmRfd3JpdGUoZnNfaW5mby0+c2Ip
-OworCXRyYWNlX3ByaW50aygiZGVmcmFnIGZpbmlzaCByL2k9JWxsZC8lbGx1IHJldD0lZCBk
-ZWZyYWdnZWQ9JWxsdSBsYXN0X3NjYW5uZWQ9JWxsdSBsYXN0X29mZj0lbGx1IGN5Y2xlZD0l
-ZFxuIiwKKwkJICAgICBCVFJGU19JKGlub2RlKS0+cm9vdC0+cm9vdF9rZXkub2JqZWN0aWQs
-CisJCSAgICAgYnRyZnNfaW5vKEJUUkZTX0koaW5vZGUpKSwgcmV0LCBjdHJsLnNlY3RvcnNf
-ZGVmcmFnZ2VkLAorCQkgICAgIGN0cmwubGFzdF9zY2FubmVkLAorCQkgICAgIGRlZnJhZy0+
-bGFzdF9vZmZzZXQsIGRlZnJhZy0+Y3ljbGVkKTsKIAkvKgogCSAqIGlmIHdlIGZpbGxlZCB0
-aGUgd2hvbGUgZGVmcmFnIGJhdGNoLCB0aGVyZQogCSAqIG11c3QgYmUgbW9yZSB3b3JrIHRv
-IGRvLiAgUXVldWUgdGhpcyBkZWZyYWcKZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2lvY3RsLmMg
-Yi9mcy9idHJmcy9pb2N0bC5jCmluZGV4IDEzM2UzZTJlMmU3OS4uYTA1MDFjODg5MjJiIDEw
-MDY0NAotLS0gYS9mcy9idHJmcy9pb2N0bC5jCisrKyBiL2ZzL2J0cmZzL2lvY3RsLmMKQEAg
-LTE0MjAsNiArMTQyMCwxMSBAQCBzdGF0aWMgaW50IGRlZnJhZ19jb2xsZWN0X3RhcmdldHMo
-c3RydWN0IGJ0cmZzX2lub2RlICppbm9kZSwKIGFkZDoKIAkJbGFzdF9pc190YXJnZXQgPSB0
-cnVlOwogCQlyYW5nZV9sZW4gPSBtaW4oZXh0ZW50X21hcF9lbmQoZW0pLCBzdGFydCArIGxl
-bikgLSBjdXI7CisKKwkJdHJhY2VfcHJpbnRrKCJhZGQgdGFyZ2V0IHIvaT0lbGxkLyVsbHUg
-c3RhcnQ9JWxsdSBsZW49JWxsdSBlbT0lbGx1IGxlbj0lbGx1IGdlbj0lbGxkIG5ld2VyPSVs
-bHVcbiIsCisJCQlpbm9kZS0+cm9vdC0+cm9vdF9rZXkub2JqZWN0aWQsCisJCQlidHJmc19p
-bm8oaW5vZGUpLCBjdXIsIHJhbmdlX2xlbiwgZW0tPnN0YXJ0LCBlbS0+bGVuLAorCQkJZW0t
-PmdlbmVyYXRpb24sIGN0cmwtPm5ld2VyX3RoYW4pOwogCQkvKgogCQkgKiBUaGlzIG9uZSBp
-cyBhIGdvb2QgdGFyZ2V0LCBjaGVjayBpZiBpdCBjYW4gYmUgbWVyZ2VkIGludG8KIAkJICog
-bGFzdCByYW5nZSBvZiB0aGUgdGFyZ2V0IGxpc3QuCkBAIC0xNTIwLDYgKzE1MjUsOSBAQCBz
-dGF0aWMgaW50IGRlZnJhZ19vbmVfbG9ja2VkX3RhcmdldChzdHJ1Y3QgYnRyZnNfaW5vZGUg
-Kmlub2RlLAogCQkJIEVYVEVOVF9ERUZSQUcsIDAsIDAsIGNhY2hlZF9zdGF0ZSk7CiAJc2V0
-X2V4dGVudF9kZWZyYWcoJmlub2RlLT5pb190cmVlLCBzdGFydCwgc3RhcnQgKyBsZW4gLSAx
-LCBjYWNoZWRfc3RhdGUpOwogCisJdHJhY2VfcHJpbnRrKCJkZWZyYWcgdGFyZ2V0IHIvaT0l
-bGxkLyVsbHUgc3RhcnQ9JWxsdSBsZW49JWxsdVxuIiwKKwkJCWlub2RlLT5yb290LT5yb290
-X2tleS5vYmplY3RpZCwKKwkJCWJ0cmZzX2lubyhpbm9kZSksIHN0YXJ0LCBsZW4pOwogCS8q
-IFVwZGF0ZSB0aGUgcGFnZSBzdGF0dXMgKi8KIAlmb3IgKGkgPSBzdGFydF9pbmRleCAtIGZp
-cnN0X2luZGV4OyBpIDw9IGxhc3RfaW5kZXggLSBmaXJzdF9pbmRleDsgaSsrKSB7CiAJCUNs
-ZWFyUGFnZUNoZWNrZWQocGFnZXNbaV0pOwpAQCAtMTc4Niw2ICsxNzk0LDEyIEBAIGludCBi
-dHJmc19kZWZyYWdfZmlsZShzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmlsZV9yYV9z
-dGF0ZSAqcmEsCiAJaWYgKHN0YXJ0X2luZGV4IDwgaW5vZGUtPmlfbWFwcGluZy0+d3JpdGVi
-YWNrX2luZGV4KQogCQlpbm9kZS0+aV9tYXBwaW5nLT53cml0ZWJhY2tfaW5kZXggPSBzdGFy
-dF9pbmRleDsKIAorCXRyYWNlX3ByaW50aygiZW50cnkgci9pPSVsbGQvJWxsdSBzdGFydD0l
-bGx1IGxlbj0lbGx1IG5ld2VyPSVsbHUgdGhyZXM9JXVcbiIsCisJCUJUUkZTX0koaW5vZGUp
-LT5yb290LT5yb290X2tleS5vYmplY3RpZCwKKwkJYnRyZnNfaW5vKEJUUkZTX0koaW5vZGUp
-KSwKKwkJY3RybC0+bGFzdF9zY2FubmVkLCBsYXN0X2J5dGUgKyAxIC0gY3RybC0+bGFzdF9z
-Y2FubmVkLAorCQljdHJsLT5uZXdlcl90aGFuLCBjdHJsLT5leHRlbnRfdGhyZXNoKTsKKwog
-CXdoaWxlIChjdHJsLT5sYXN0X3NjYW5uZWQgPCBsYXN0X2J5dGUpIHsKIAkJY29uc3QgdW5z
-aWduZWQgbG9uZyBwcmV2X3NlY3RvcnNfZGVmcmFnZ2VkID0gY3RybC0+c2VjdG9yc19kZWZy
-YWdnZWQ7CiAJCXU2NCBjbHVzdGVyX2VuZDsK
-
---------------VOw32L8jZBf20jMeA3Gd0JeJ--
+> We can't remove it, because we don't know that task died.
+This seems pretty bad, maybe if there was build time option that
+enables logging (eg. PID and lock time) for locked pages it could help
+with debugging this and maybe allow even to force unlock. But then
+again since there should be stack dump and I guess this is very rare
+case of happening maybe it's not worth it.
