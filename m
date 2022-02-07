@@ -2,75 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FD14AB3DB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Feb 2022 07:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CDF4AB5C7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Feb 2022 08:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbiBGFuu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Feb 2022 00:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
+        id S232742AbiBGHPo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Feb 2022 02:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232744AbiBGFX1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Feb 2022 00:23:27 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A361EC043181
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Feb 2022 21:23:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644211399;
-        bh=2kUCvwE5+OOuxwnK+Sq8u1Sxdoc8OnB8xva56oHEw9U=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=R7rQ/TzSYhURtH+sMc0QbG9XwO+Hj+mQgpEODzAHDxylEvwO7OsJnkYV9gnb6GniZ
-         kHSwWeRRmBs4mwp6xiwqJvifdUKzEp9Z0Ob7jln+uvfYH+uPDKozs5Tb2pd0CI+aNo
-         PfAfxow6DXajpLyK72jPgUsuS+h0m3f8OHR3ev+s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MVvL5-1nikM60OCT-00Rr3N; Mon, 07
- Feb 2022 06:23:19 +0100
-Message-ID: <28799781-fc73-7e18-843e-56a35d74209f@gmx.com>
-Date:   Mon, 7 Feb 2022 13:23:16 +0800
+        with ESMTP id S238346AbiBGG4q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Feb 2022 01:56:46 -0500
+X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Feb 2022 22:56:45 PST
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43774C043181;
+        Sun,  6 Feb 2022 22:56:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1644217004; x=1675753004;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=i499PSgK1wGpdERKxIqW9U6J6nKA+RZnj0LglIyJ4e8=;
+  b=aJ3mniad3wULk8CObYXYJA1MYT7Xvj2YY3U4ARdqc2BO0LQqAsy06n38
+   qi4L08AoJv0f3bWBze1EZpMN8rAF1y0yW2efxWoD6VqVQnM4cpo6lzFdk
+   QE9r+QkvcdWvJKxoG0dgClJc4xIR8FWETr/QaQxCERuFdLF22ifs27u/n
+   U1kpW7MN82zXLQFsaI+DR/dzH7gnMtBNcy/9nXJGlq+8nxFjIB1H3ziCA
+   2bNetL3qaUr7nP+7AM8wiR4xUulvp2JmIOoPtfjVqyh3YEwpL31Sp5vuq
+   oecALBzGCmaisX07c2Um2dLTBmSnc2eipgvE0P0wOEZ9vgzaQHUJSQUVt
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.88,349,1635177600"; 
+   d="scan'208";a="192305055"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2022 14:55:42 +0800
+IronPort-SDR: HYZBC/bnxUzpw2ytP/ahNr67xP8fX4cEOD4pWf8SBqotPsAPiHEitFuPgC8a1+IyTKoiZOXLWA
+ 88CDg2udSsPA+rC4UBiWX3nUQzl+7WnQJtk28TIL8BFM2uleZNd20LzoImbZ6tOlWDVfGpHGuz
+ zCcLkxZT7wrRbfu5VcDCco4OjOxmOW0hO/YfJVmULZed/+/2sHcztlehOgSg6v+rPmqXkK39AB
+ AILafvTXdPuun4s62fwCqCF1iyxUW9cvnKJF+juRVpcVZzFj3AwhS3QzSTdEI9rVaDGuWznvhQ
+ LCnvd1kOlRVTVeVrjBT/QvHx
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2022 22:28:44 -0800
+IronPort-SDR: iPexuFmbMmmdkk3GO+0cfGVz3A6AhYnt+hrUJ9SuVpFNo6vogp9R0/ecWhm0G3hXwpGyz0NeNG
+ WDf04YEKX04jxY+NJZYRRHOEwBaCNSL9hhPLu7sdLKERDp12OI8eBCewrqf32vItNABS1l51mE
+ HvkBKQbTBGbQnK+zwhWVg1fMkQ20vkspouY4RtLyIKwxfeSLXLjgZhbPQCKocD2eFhX/LVwjAD
+ 1i0FU3fAQSm181qrzK92p66NJ4VGKVV80aMyB8flVSYISM6StrwMHCRb2Ph5e9MzccX3yjAw3b
+ BbM=
+WDCIronportException: Internal
+Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
+  by uls-op-cesaip01.wdc.com with ESMTP; 06 Feb 2022 22:55:42 -0800
+From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH 0/7] fstests: fix _scratch_mkfs_sized failure handling
+Date:   Mon,  7 Feb 2022 15:55:34 +0900
+Message-Id: <20220207065541.232685-1-shinichiro.kawasaki@wdc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: Re: Still seeing high autodefrag IO with kernel 5.16.5
-Content-Language: en-US
-To:     Rylee Randall <ibrokemypie@outlook.com>,
-        Benjamin Xiao <ben.r.xiao@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <KTVQ6R.R75CGDI04ULO2@gmail.com>
- <9409dc0c-e99d-cc61-757e-727bd54c6ffd@gmx.com>
- <88b6fe3e-8317-8070-cb27-0aee4dc72cfb@gmx.com>
- <SL2P216MB11112B447FB0400149D320C1AC2B9@SL2P216MB1111.KORP216.PROD.OUTLOOK.COM>
- <61ad0e42-b38a-6b5f-2944-8c78e1508f4a@gmx.com>
- <edb0fb57-7505-e552-cffc-b03a825c77e7@gmx.com>
- <SL2P216MB1111994F81CE0006D495511DAC2C9@SL2P216MB1111.KORP216.PROD.OUTLOOK.COM>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <SL2P216MB1111994F81CE0006D495511DAC2C9@SL2P216MB1111.KORP216.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cwNg6ULAJa4/L4F1OgGZ3nvS5vzd99avb3edCI3e10SBtwvUHFL
- GxjEucgFVgtFYlA/J1Cjs5XV2yXYz8+PvFtzB9aeq3pFGrtRElYwxDRB3DO2BJiZ3drhxdG
- 3bhjryXJ9OO2ywHcGvT3Q67yBwg1BlDmtNih/Zwho/kBDGBQNi7UMP5NMjKupfFwbH22RwK
- S9jl0mzZj7kdgMRzbvRXQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HlrNVrRKTcY=:mT/mlrNEWfwOxSNWPSSAWH
- LmF4c5Rq/JJutVkErlQJuoflFIhqwkzuAhmqObHXBUhKfFcD8Lu4Fr7KX6SydVaWH98IsHp1p
- G8l8Zz0KtoekunTXEXj2dE4UK7ZiB7NWqivLiEyfUEeBpeZyFItBdNrOoRhgn/GXveZdA12WJ
- aqt3zD6VBOdwcvsTpR45Qhluj4bD5krKTqA6DKkUIIfpdpTg/weNxfW3pYNEuZYl8CRXAiOnx
- 1yj6aQsI1xbLZGVTkPlHm3XmsGs2CqnvTeIEpeekdKa8smxLMoyJnf6ZtMV4ln6xZ5E+8I/yW
- JodsTiHntOLi6LKAFPJpNMsCD4kz/86vXVNAyPKy37uKzWuH9NRQfPmRIIS6CnHPCfghEtWrX
- eI5qllm3RS0NZjxxlWj9B2X4PcaEyb5zYKlGaF2F9NCS0j7dxgmSn3IFuBaTZcwXs3JMJVOwj
- IouHbrHk3VKX/+TBbfcrPulKmCfm22dn7oAGNff8W07wVEO9bdPH+EQXDmGUjjnRvp710DZbd
- LWdbU3Cta2y55jgzP0Mo3VjgZ21TaL1SqwlLoKARnFKYd/+z3pttQ+E86yd48v/xccoOzea2Y
- LrixC1IQXw9rVUhgqiGL/Y6wTIIFi7B7JFevnr2MS0CPngUCN+8KC5S/un9JKd3vBu8bRjHph
- h8ZiANmr103M1B0Hk31poIgCmQfqtVMXgmcO3lMFXQlcHa5q2DiYiW0eCWxEuEBezzMChDbku
- Uzm4tJY2dqu8lRck2pw0n0sKdTZsO1RvuDgcztXfywvNx+pif400enWr6VsWyC3fjdWv7+bfF
- 7HinCZKDhDwEs/WocdYRvnO7IOle/5+DfvBdfCtjr+bhmAVsD9rcvk+RqhdbCJOx+tNktxu4S
- 130n4qp2FcH1OboMwDKpTJ+VR8em6ij1bYi7wJnf67OtTz3d1RaBJtIbxz08UtWZqX+NQl60S
- JjJpV6DQOjN5EAqBuriczwqA9jymvRXGqQ58m+mtTJ38+ZrY/okcT+tiGjk6yk5Q7+Jqp4xSv
- ehhbdIW7FvkJDbrmRdnhsDQ/yHFFhlXsIlTB8Qde23ypGzSVR9BL7Vg8EUrXjPGm4NTkWbuHj
- I2FIFIrQvQ2noATttTmW2fmxgIsDQw1DOxOXXf18TGreDsGf2SjpdWHys7b0jsltSAhvnX+kV
- B44IyD6GJ+nZONiCujSv1H8fwZ
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,230 +70,120 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Let me repost again adding CC to ext4 and xfs lists, since the series includes
+changes unique to those filesystems. Sorry for repeating same posts to fstests
+list and btrfs list. Reviews and comments will be appreciated.
 
 
-On 2022/2/7 12:29, Rylee Randall wrote:
-> I built a kernel from that branch and tried everything I could think of
-> to try to reproduce the issue, but no matter what I tried btrfs-cleaner
-> would only show up on iotop briefly every now and then, io did not hang
-> and disk performance was as expected.
->
->
-> I think the branch resolves the issue, or at least prevents me from
-> being able to reproduce.
+When generic/204 is run for btrfs-zoned filesystem on zoned block devices with
+GB size order, it takes very long time to complete. The test case creates 115MiB
+filesystem on the scratch device and fills files in it within decent run time.
+However, with btrfs-zoned condition, the test case creates filesystem as large
+as the device size and it takes very long time to fill it all. Three causes were
+identified for the long run time, and this series addresses them.
 
-Just in case, you can still use that diff, it will only populate ftrace
-event log buffer, which is much faster than dmesg log buffer.
+The first cause is mixed mode option that _scratch_mkfs_sized helper function
+adds to mkfs.btrfs. This option was added for both regular btrfs and
+zoned-btrfs. However, zoned-btrfs does not support mixed mode. The mkfs with
+mixed mode fails and results in _scratch_mkfs_sized failure. The mixed mode
+shall not be specified for btrfs-zoned filesystem.
 
-And since you haven't seen huge IO/CPU usage, the extra debug message
-shouldn't cause any observable performance drop.
+The second cause is no check of return code from _scratch_mkfs_sized. The test
+case generic/204 calls both _scratch_mkfs and _scratch_mkfs_sized, and does not
+check return code from them. If _scratch_mkfs succeeds and _scratch_mkfs_sized
+fails, the scratch device still has valid filesystem created by _scratch_mkfs.
+Following test workload can be executed without failure, but the filesystem
+does not have the size specified for _scratch_mkfs_sized. The return code of
+_scratch_mkfs_sized shall be checked to catch the mkfs failure.
 
-And in case you observed huge CPU usage from btrfs-cleaner under
-whatever load, you can direct grab the trace file, and no need to
-rebuild a kernel module (and may fail to reproduce in next try).
+The third cause is unnecessary call of the _scratch_mkfs helper function in the
+test case generic/204. This helper function is called together with _filter_mkfs
+helper function to obtain block size of the test target filesystem. However, the
+_filter_mkfs function works only for xfs, and does nothing for other filesystems
+including btrfs. Such preparation unique to xfs shall be done only for xfs.
 
-Thanks,
-Qu
+In this series, the first patch addresses the first cause. Following three
+patches address the second cause. They cover not only generic/204 but also
+other test cases which have the same problem. The last three patches address the
+third problem. Two of them are preparation patches to clarify that the function
+_filter_mkfs is xfs unique. And the last patch modifies generic/204 so that xfs
+unique test preparation are run only for xfs.
 
->
-> On 7/2/22 14:05, Qu Wenruo wrote:
->>
->>
->> On 2022/2/6 17:26, Qu Wenruo wrote:
->>>
->>>
->>> On 2022/2/6 15:51, Rylee Randall wrote:
->>>> I am experiencing the same issue on 5.16.7, near the end of a large
->>>> steam game download btrfs-cleaner sits at the top of iotop, and shut
->>>> downs take about ten minutes because of various btrfs hangs.
->>>>
->>>> I compiled 5.15.21 with the mentioned patch and tried to recreate the
->>>> issue and so far have been unable to. I seem to get far faster an dmo=
-re
->>>> consistent write speeds from steam, and rather than btrfs-cleaner bei=
-ng
->>>> the main source of io usage it is steam. btrfs-cleaner is far down th=
-e
->>>> list along with various other btrfs- tasks.
->>>
->>> Thanks for the report, this indeed looks like the bug in v5.15 that it
->>> doesn't defrag a lot of extents is not the root cause.
->>>
->>> Mind to re-check with the following branch?
->>>
->>> https://apac01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
-ithub.com%2Fadam900710%2Flinux%2Ftree%2Fautodefrag_fixes&amp;data=3D04%7C0=
-1%7C%7C4ca72e2e2774416246b208d9e9e6c2d8%7C84df9e7fe9f640afb435aaaaaaaaaaaa=
-%7C1%7C0%7C637797999607143470%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAi=
-LCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=3DLQyHFTmN=
-G%2FKIQzPT6gt%2BZugspRGTHISPFtwi7zRdqhQ%3D&amp;reserved=3D0
->>>
->>>
->>> It has one extra patch to emulate the older behavior of not using
->>> btrfs_get_em(), which can cause quite some problem for autodefrag.
->>
->>
->> And if anyone is still experiencing the problem even with that branch,
->> there is a diff to do the ultimate debug (thus can slow down the system=
-).
->>
->> After applying this diff upon that branch, every auto defrag try will
->> have several lines added to `/sys/kernel/debug/tracing/trace`.
->> (Which can be pretty large).
->>
->> And that trace file would greatly help us to locate which extent is
->> defragged again and again.
->>
->> Thanks,
->> Qu
->>>
->>> Thanks,
->>> Qu
->>>
->>>>
->>>> On 4/2/22 12:54, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2022/2/4 09:17, Qu Wenruo wrote:
->>>>>>
->>>>>>
->>>>>> On 2022/2/4 04:05, Benjamin Xiao wrote:
->>>>>>> Hello all,
->>>>>>>
->>>>>>> Even after the defrag patches that landed in 5.16.5, I am still
->>>>>>> seeing
->>>>>>> lots of cpu usage and disk writes to my SSD when autodefrag is
->>>>>>> enabled.
->>>>>>> I kinda expected slightly more IO during writes compared to 5.15,
->>>>>>> but
->>>>>>> what I am actually seeing is massive amounts of btrfs-cleaner i/o
->>>>>>> even
->>>>>>> when no programs are actively writing to the disk.
->>>>>>>
->>>>>>> I can reproduce it quite reliably on my 2TB Btrfs Steam library
->>>>>>> partition. In my case, I was downloading Strange Brigade, which is=
- a
->>>>>>> roughly 25GB download and 33.65GB on disk. Somewhere during the
->>>>>>> download, iostat will start reporting disk writes around 300 MB/s,
->>>>>>> even
->>>>>>> though Steam itself reports disk usage of 40-45MB/s. After the
->>>>>>> download
->>>>>>> finishes and nothing else is being written to disk, I still see
->>>>>>> around
->>>>>>> 90-150MB/s worth of disk writes. Checking in iotop, I can see btrf=
-s
->>>>>>> cleaner and other btrfs processes writing a lot of data.
->>>>>>>
->>>>>>> I left it running for a while to see if it was just some maintenan=
-ce
->>>>>>> tasks that Btrfs needed to do, but it just kept going. I tried to
->>>>>>> reboot, but it actually prevented me from properly rebooting. Afte=
-r
->>>>>>> systemd timed out, my system finally shutdown.
->>>>>>>
->>>>>>> Here are my mount options:
->>>>>>> rw,relatime,compress-force=3Dzstd:2,ssd,autodefrag,space_cache=3Dv=
-2,subvolid=3D5,subvol=3D/
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>
->>>>>> Compression, I guess that's the reason.
->>>>>>
->>>>>> =C2=A0From the very beginning, btrfs defrag doesn't handle compress=
-ed
->>>>>> extent
->>>>>> well.
->>>>>>
->>>>>> Even if a compressed extent is already at its maximum capacity, btr=
-fs
->>>>>> will still try to defrag it.
->>>>>>
->>>>>> I believe the behavior is masked by other problems in older kernels
->>>>>> thus
->>>>>> not that obvious.
->>>>>>
->>>>>> But after rework of defrag in v5.16, this behavior is more exposed.
->>>>>
->>>>> And if possible, please try this diff on v5.15.x, and see if v5.15 i=
-s
->>>>> really doing less IO than v5.16.x.
->>>>>
->>>>> The diff will solve a problem in the old code, where autodefrag is
->>>>> almost not working.
->>>>>
->>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>>>> index cc61813213d8..f6f2468d4883 100644
->>>>> --- a/fs/btrfs/ioctl.c
->>>>> +++ b/fs/btrfs/ioctl.c
->>>>> @@ -1524,13 +1524,8 @@ int btrfs_defrag_file(struct inode *inode,
->>>>> struct
->>>>> file *file,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c=
-ontinue;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>>
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (!newer_than) {
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
- =3D (PAGE_ALIGN(defrag_end) >>
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PAGE_SHIFT) -=
- i;
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
- =3D min(cluster, max_cluster);
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 } else {
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cluster=
- =3D max_cluster;
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 }
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 cluster =3D (PAGE_ALIGN(defrag_end) >> PAGE_SHIFT) - i;
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 cluster =3D min(cluster, max_cluster);
->>>>>
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 if (i + cluster > ra_index) {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
-a_index =3D max(i, ra_index);
->>>>>
->>>>>>
->>>>>> There are patches to address the compression related problem, but n=
-ot
->>>>>> yet merged:
->>>>>>
->>>>>> https://apac01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%=
-2Fpatchwork.kernel.org%2Fproject%2Flinux-btrfs%2Flist%2F%3Fseries%3D609387=
-&amp;data=3D04%7C01%7C%7C4ca72e2e2774416246b208d9e9e6c2d8%7C84df9e7fe9f640=
-afb435aaaaaaaaaaaa%7C1%7C0%7C637797999607143470%7CUnknown%7CTWFpbGZsb3d8ey=
-JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&am=
-p;sdata=3DFfyqNM8d%2BTXZXq3jE4d5M1OdO9hPeTIk5Ly6yaWWeuM%3D&amp;reserved=3D=
-0
->>>>>>
->>>>>>
->>>>>> Mind to test them to see if that's the case?
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>>
->>>>>>>
->>>>>>> I've disabled autodefrag again for now to save my SSD, but just
->>>>>>> wanted
->>>>>>> to say that there is still an issue. Have the defrag issues been
->>>>>>> fully
->>>>>>> fixed or are there more patches incoming despite what Reddit and
->>>>>>> Phoronix say? XD
->>>>>>>
->>>>>>> Thanks!
->>>>>>> Ben
->>>>>>>
->>>>>>>
+Shin'ichiro Kawasaki (7):
+  common/rc: fix btrfs mixed mode usage in _scratch_mkfs_sized
+  generic/{171,172,173,174,204}: check _scratch_mkfs_sized return code
+  ext4/021: check _scratch_mkfs_sized return code
+  xfs/015: check _scratch_mkfs_sized return code
+  common: rename _filter_mkfs to _xfs_filter_mkfs
+  common: move _xfs_filter_mkfs from common/filter to common/xfs
+  generic/204: do xfs unique preparation only for xfs
+
+ common/attr       |  2 +-
+ common/filter     | 53 -----------------------------------------------
+ common/rc         |  8 +++----
+ common/xfs        | 45 +++++++++++++++++++++++++++++++++++++++-
+ tests/ext4/021    |  2 +-
+ tests/generic/171 |  2 +-
+ tests/generic/172 |  2 +-
+ tests/generic/173 |  2 +-
+ tests/generic/174 |  2 +-
+ tests/generic/204 | 26 ++++++++++++++---------
+ tests/xfs/004     |  2 +-
+ tests/xfs/007     |  2 +-
+ tests/xfs/010     |  2 +-
+ tests/xfs/013     |  2 +-
+ tests/xfs/015     |  4 ++--
+ tests/xfs/016     |  2 +-
+ tests/xfs/029     |  2 +-
+ tests/xfs/030     |  2 +-
+ tests/xfs/031     |  6 +++---
+ tests/xfs/033     |  4 ++--
+ tests/xfs/041     |  2 +-
+ tests/xfs/044     |  2 +-
+ tests/xfs/050     |  2 +-
+ tests/xfs/052     |  2 +-
+ tests/xfs/058     |  2 +-
+ tests/xfs/067     |  2 +-
+ tests/xfs/070     |  2 +-
+ tests/xfs/071     |  2 +-
+ tests/xfs/073     |  2 +-
+ tests/xfs/076     |  2 +-
+ tests/xfs/078     |  2 +-
+ tests/xfs/092     |  2 +-
+ tests/xfs/104     |  6 +++---
+ tests/xfs/108     |  2 +-
+ tests/xfs/109     |  2 +-
+ tests/xfs/110     |  2 +-
+ tests/xfs/111     |  2 +-
+ tests/xfs/144     |  2 +-
+ tests/xfs/153     |  2 +-
+ tests/xfs/163     |  4 ++--
+ tests/xfs/168     |  6 +++---
+ tests/xfs/176     |  2 +-
+ tests/xfs/178     |  2 +-
+ tests/xfs/186     |  2 +-
+ tests/xfs/189     |  2 +-
+ tests/xfs/250     |  2 +-
+ tests/xfs/259     |  2 +-
+ tests/xfs/276     |  2 +-
+ tests/xfs/279     |  2 +-
+ tests/xfs/288     |  2 +-
+ tests/xfs/292     |  4 ++--
+ tests/xfs/299     |  4 ++--
+ tests/xfs/335     |  2 +-
+ tests/xfs/336     |  2 +-
+ tests/xfs/337     |  2 +-
+ tests/xfs/341     |  2 +-
+ tests/xfs/342     |  2 +-
+ tests/xfs/443     |  2 +-
+ tests/xfs/448     |  2 +-
+ tests/xfs/490     |  2 +-
+ tests/xfs/502     |  2 +-
+ tests/xfs/513     |  2 +-
+ tests/xfs/530     |  2 +-
+ tests/xfs/533     |  2 +-
+ 64 files changed, 135 insertions(+), 139 deletions(-)
+
+-- 
+2.34.1
+
