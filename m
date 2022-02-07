@@ -2,134 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8384AB5BA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Feb 2022 08:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502654AB8F0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Feb 2022 11:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbiBGHPq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Feb 2022 02:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        id S231481AbiBGKne (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Feb 2022 05:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238631AbiBGG45 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Feb 2022 01:56:57 -0500
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBA0C043184;
-        Sun,  6 Feb 2022 22:56:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1644217015; x=1675753015;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=78Zs28KpKxQ8bPUPZ5jK1PRmnWo6oej03te2uWqoGL8=;
-  b=LvJJWJD1fiCvDKTxHbtlVXSoTOLhD9SQgFNpO7+NMRUwRjxVq4DidYtX
-   jKBOsI8plwoNyNrg4MLxPr8IZgzI+8ow4UKlGsBD26vciiqpp48oO4WL6
-   kClafmIZAlEK++btL8P94XHEW9g6dAtIjbBUshLd3bQPtwhLywMPSyfPf
-   M4cwZ8HUcWOafGStVFr78oJv28dH8fEroHCbgcdP4lKr9x5qehII/o9ov
-   m82XHTNnEhjGzAdT6RCw5kQAARW36SyGB9LhAfp1N3E2lUQXfacnBaUIE
-   zK2kLmGSMVOq5JqtfhC3vnWbNrbcFlTEJZMNDz6+VYNMLrhy6+ZjHkJn2
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.88,349,1635177600"; 
-   d="scan'208";a="192305071"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2022 14:55:51 +0800
-IronPort-SDR: EMJgNkMWnFfkl8IJ5MjTea6OkFCwZjeZTatf/gXYHTpkC9JCNzxI4Ha6HvoqCtZ4xswEKbqj23
- gOkPz2nrGws7WoeU84Ba5ndNmcRQqxez8XGl38Q3wMbaCcbhvK7U7kgUPGXvfVQT3OU8zVGkvO
- Re8BSBoABIx7Em0DZKffm+AlAYPibJS4mEvXLkfGHeCGsc4ImWz9nihNxL3NPVNsyw/2tsavNG
- X1dy/r/qsBmay03a6U62wNrOpVl7Z/gc+Xc7fKnPgPoPMlSGxEkFC9my4To9AtZp0xqY5yTJr1
- GiBn0nosIprTflDJEDTmFNId
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2022 22:28:53 -0800
-IronPort-SDR: GMWIEtGmlMxmFLTe4Rb5AN6uU0cHMtnWRJhC+waZTS9hy7Au4NwNulNQZKvFrvlN26Xo4IMdDy
- MfstK1BTqaJG3JE0Eu8p5GKbtah5dU+1qYVVwMLFrITB+N+ppNtF/diabefS9ifyGhcv8wKFy2
- kWd7KpVTJFwYJX4ZSmHIPN4nQF/VAeh6VvJtM1lCoMgCOGfqp77sq1Npd81CHy5mbf7ZL2pQEo
- HPOHRLUN1bRh9lA+pJ/jQdFRBUYrK4NUM8jW33EdxY6zfw3+rgV2ZNqY6mMX6sKyH4EDURkSQ6
- gyA=
-WDCIronportException: Internal
-Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
-  by uls-op-cesaip01.wdc.com with ESMTP; 06 Feb 2022 22:55:52 -0800
-From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: [PATCH 7/7] generic/204: do xfs unique preparation only for xfs
-Date:   Mon,  7 Feb 2022 15:55:41 +0900
-Message-Id: <20220207065541.232685-8-shinichiro.kawasaki@wdc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220207065541.232685-1-shinichiro.kawasaki@wdc.com>
-References: <20220207065541.232685-1-shinichiro.kawasaki@wdc.com>
+        with ESMTP id S236283AbiBGKfe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Feb 2022 05:35:34 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1C5C043181
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Feb 2022 02:35:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id B0D8ECE0FC0
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Feb 2022 10:35:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77120C004E1;
+        Mon,  7 Feb 2022 10:35:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644230130;
+        bh=GWO6dSxhs43xCyYQMRFJtdVxZjow2ztbnHtTmVOk6GM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=be2hAUWDX5B6vOwJK+NRDm6XZqvdhgq5+AqS+GJIvWWWCaBhuGWkT9U3NEs3EGaS0
+         bwyBlYnQByjh3AfPPtyxtLyM297jc6O8TqDkJ6Gckf1uE22rY7JDr3dUWh/nOdpYZe
+         3eTBywQVfd0yVOahI5TgdkKAtVEezprLeNc6au5dykRKZ3O3WJRtcVmUmy2qk5qqPi
+         OzvvtxKz0N3Idi+A6185BhxxVcHvCKaGA8nwmal9bGILdx1hdyWDSuFj98IFjscODD
+         mja/e2yMxVmSGWKlLpFWjqMpSmLBqA3BiziEhiu38NwaMPn6EoSFgAi31RjzQEgsV9
+         p7s/Enq5c843A==
+Date:   Mon, 7 Feb 2022 10:35:26 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: defrag: don't try to defrag extent which is going
+ to be written back
+Message-ID: <YgD17pDNz8b165yN@debian9.Home>
+References: <9df1dce96466f4314190cc4120f19d5b7d0fe5ed.1644210926.git.wqu@suse.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <9df1dce96466f4314190cc4120f19d5b7d0fe5ed.1644210926.git.wqu@suse.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The test case generic/204 formats the scratch device to get block size
-as a part of preparation. However, this preparation is required only for
-xfs. To simplify preparation for other filesystems, do the preparation
-only for xfs.
+On Mon, Feb 07, 2022 at 01:17:15PM +0800, Qu Wenruo wrote:
+> In defrag_collect_targets() if we hit an extent map which is created by
+> create_io_em(), it will be considered as target as its generation is
+> (u64)-1, thus will pass the generation check.
+> 
+> Furthermore since all delalloc functions will clear EXTENT_DELALLOC,
 
-Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
----
- tests/generic/204 | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+What are delalloc functions?
+This should say that once we start writeback (we run delalloc), we allocate
+an extent, create an extent map point to that extent, with a generation of
+(u64)-1, created the ordered extent and then clear the DELALLOC bit from the
+range in the inode's io tree.
 
-diff --git a/tests/generic/204 b/tests/generic/204
-index 40d524d1..ea267760 100755
---- a/tests/generic/204
-+++ b/tests/generic/204
-@@ -16,17 +16,18 @@ _cleanup()
- 	sync
- }
- 
--# Import common functions.
--. ./common/filter
--
- # real QA test starts here
- _supported_fs generic
- 
- _require_scratch
- 
--# get the block size first
--_scratch_mkfs 2> /dev/null | _xfs_filter_mkfs 2> $tmp.mkfs > /dev/null
--. $tmp.mkfs
-+dbsize=4096
-+isize=256
-+if [ $FSTYP = "xfs" ]; then
-+	# get the block size first
-+	_scratch_mkfs 2> /dev/null | _xfs_filter_mkfs 2> $tmp.mkfs > /dev/null
-+	. $tmp.mkfs
-+fi
- 
- # For xfs, we need to handle the different default log sizes that different
- # versions of mkfs create. All should be valid with a 16MB log, so use that.
-@@ -37,11 +38,15 @@ _scratch_mkfs 2> /dev/null | _xfs_filter_mkfs 2> $tmp.mkfs > /dev/null
- SIZE=`expr 115 \* 1024 \* 1024`
- _scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw \
- 	|| _fail "mkfs failed"
--cat $tmp.mkfs.raw | _xfs_filter_mkfs 2> $tmp.mkfs > /dev/null
-+
-+if [ $FSTYP = "xfs" ]; then
-+	cat $tmp.mkfs.raw | _xfs_filter_mkfs 2> $tmp.mkfs > /dev/null
-+	# Source $tmp.mkfs to get geometry
-+	. $tmp.mkfs
-+fi
-+
- _scratch_mount
- 
--# Source $tmp.mkfs to get geometry
--. $tmp.mkfs
- 
- # fix the reserve block pool to a known size so that the enospc calculations
- # work out correctly. Space usages is based 22500 files and 1024 reserved blocks
--- 
-2.34.1
+> such extent map will also pass the EXTENT_DELALLOC check.
+> 
+> Defragging such extent will make no sense, in fact this will cause extra
+> IO as we will just re-dirty the range and submit it for writeback again,
+> causing wasted IO.
 
+defrag_prepare_one_page() will wait for the ordered extent to complete,
+and after the wait, the extent map's generation is updated from (u64)-1 to
+something else.
+
+So the second pass of defrag_collect_targets() will see a generation that
+is not (u64)-1.
+
+> 
+> Unfortunately this behavior seems to exist in older kernels too (v5.15
+> and older), but I don't have a solid test case to prove it nor test the
+> patched behavior.
+
+This is exactly the first patch I sent François when the first report
+of unusable autodefrag popped up:
+
+https://lore.kernel.org/linux-btrfs/YeVawBBE3r6hVhgs@debian9.Home/T/#ma1c8a9848c9b7e4edb471f7be184599d38e288bb
+
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/ioctl.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 133e3e2e2e79..0ba98e1d9329 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1353,6 +1353,10 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+>  		if (em->generation < ctrl->newer_than)
+>  			goto next;
+>  
+> +		/* This em is goging to be written back, no need to defrag */
+
+goging -> going
+
+Saying that it is under writeback is more correct.
+By saying is "going to be", it gives the idea that writeback may have not started yet,
+but an extent map with a generation of (u64)-1 is created when writeback starts.
+
+
+> +		if (em->generation == (u64)-1)
+> +			goto next;
+> +
+>  		/*
+>  		 * Our start offset might be in the middle of an existing extent
+>  		 * map, so take that into account.
+> -- 
+> 2.35.0
+> 
