@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F1F4AD1CF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 07:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B344AD1FF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 08:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245030AbiBHGyO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 01:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
+        id S1347967AbiBHHOg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 02:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239879AbiBHGyN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 01:54:13 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63635C0401EF
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Feb 2022 22:54:12 -0800 (PST)
+        with ESMTP id S1347951AbiBHHOd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 02:14:33 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A706C0401EF;
+        Mon,  7 Feb 2022 23:14:32 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 16F4221100
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 06:54:11 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 15DB41F37C;
+        Tue,  8 Feb 2022 07:14:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1644303251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1644304471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=6N+kuQCB9Rs/72JKGerWLqzGz07W3ctoH2RgtSBvkXc=;
-        b=LqIGNcArMjWzRULgxAOy+hZkArDQmSH86tzM5rjNSYo/AkbcQ3bA9o5HXm76Xvbj6Tvx23
-        /lx/vYyet1f/XvNpp+ORCxHPKWuPOfYtu3+4QS/TV4uZaE+jQmCzGjZ9wxazQJskd6E4qa
-        QlTMmwQHpAXNol1Z9XOZN6O6NNR4ezI=
+        bh=UpUyOCgCV9RMkwpOiIB8/DceVNHkGWBLbrsvzZgBKqs=;
+        b=fb5AEXUXalkSeJ62RvuUh2U5eyelyjBUcTpivuEFjqoZbp62RsKfq5YW4VfWcxyoVpYJK6
+        HvHltsGiMUT2amjA2kA/2y4D2xPxhVh0V6wSmowVsaIaLAxBUmEAompIFFehHDv5oB0DGo
+        V29IPifKgdH8AZZzGiV2qGtr+hvZbCE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 620F313310
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 06:54:10 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2330B13483;
+        Tue,  8 Feb 2022 07:14:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id QQA/CpITAmLFGgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Feb 2022 06:54:10 +0000
+        id nB24NlUYAmIjIQAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 08 Feb 2022 07:14:29 +0000
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: defrag: don't try to defrag extents which are under writeback
-Date:   Tue,  8 Feb 2022 14:54:05 +0800
-Message-Id: <72af431773a417658d8737f3acb39c1652f7e821.1644303096.git.wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add test case to make sure autodefrag works even the extent maps are read from disk
+Date:   Tue,  8 Feb 2022 15:14:27 +0800
+Message-Id: <20220208071427.19171-1-wqu@suse.com>
 X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -56,56 +56,118 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Once we start writeback (have called btrfs_run_delalloc_range()), we
-allocate an extent, create an extent map point to that extent, with a
-generation of (u64)-1, created the ordered extent and then clear the
-DELALLOC bit from the range in the inode's io tree.
+There is a long existing problem that extent_map::generation is not
+populated (thus always 0) if its read from disk.
 
-Such extent map can pass the first call of defrag_collect_targets(), as
-its generation is (u64)-1, meets any possible minimal geneartion check.
-And the range will not have DELALLOC bit, also passing the DELALLOC bit
-check.
+This can prevent btrfs autodefrag from working as it relies on
+extent_map::generation.
+If it's always 0, then autodefrag will not consider the range as a
+defrag target.
 
-It will only be re-checked in the second call of
-defrag_collect_targets(), which will wait for writeback.
+The test case itself will verify the behavior by:
 
-But at that stage we have already spent our time waiting for some IO we
-may or may not want to defrag.
+- Create a fragmented file
+  By writing backwards with OSYNC
+  This will also queue the file for autodefrag.
 
-Let's reject such extents early so we won't waste our time.
+- Drop all cache
+  Including the extent map cache, meaning later read will
+  all get extent map by reading from on-disk file extent items.
+
+- Trigger autodefrag and verify the file layout
+  If defrag works, the new file layout should differ from the original
+  one.
+
+The kernel fix is titled:
+
+  btrfs: populate extent_map::generation when reading from disk
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-- Update the subject, commit message and comment.
-  To replace the confusing phrase "be going to be written back" with
-  "under writeback".
+ tests/btrfs/259     | 64 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/259.out |  2 ++
+ 2 files changed, 66 insertions(+)
+ create mode 100755 tests/btrfs/259
+ create mode 100644 tests/btrfs/259.out
 
-- Update the commit message to indicate it's not always going to be marked
-  for defrag 
-  The second defrag_collect_targets() call will determine its destiny.
-
-- Update the commit message to show why we want to skip it early
-  To save some time waiting for IO.
----
- fs/btrfs/ioctl.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 3a5ada561298..f08005b41deb 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1383,6 +1383,10 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		if (em->generation < ctrl->newer_than)
- 			goto next;
- 
-+		/* This em is goging to be written back, no need to defrag */
-+		if (em->generation == (u64)-1)
-+			goto next;
+diff --git a/tests/btrfs/259 b/tests/btrfs/259
+new file mode 100755
+index 00000000..577e4ce4
+--- /dev/null
++++ b/tests/btrfs/259
+@@ -0,0 +1,64 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 259
++#
++# Make sure autodefrag can still defrag the file even their extent maps are
++# read from disk
++#
++. ./common/preamble
++_begin_fstest auto quick defrag
 +
- 		/*
- 		 * Our start offset might be in the middle of an existing extent
- 		 * map, so take that into account.
++# Override the default cleanup function.
++# _cleanup()
++# {
++# 	cd /
++# 	rm -r -f $tmp.*
++# }
++
++# Import common functions.
++# . ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch
++
++# Need 4K sectorsize, as the autodefrag threshold is only 64K,
++# thus 64K sectorsize will not work.
++_require_btrfs_support_sectorsize 4096
++_scratch_mkfs -s 4k >> $seqres.full
++_scratch_mount -o datacow,autodefrag
++
++# Create fragmented write
++$XFS_IO_PROG -f -s -c "pwrite 24k 8k" -c "pwrite 16k 8k" \
++		-c "pwrite 8k 8k" -c "pwrite 0 8k" \
++		"$SCRATCH_MNT/foobar" >> $seqres.full
++sync
++
++echo "=== Before autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $tmp.before
++cat $tmp.before >> $seqres.full
++
++# Drop the cache (including extent map cache per-inode)
++echo 3 > /proc/sys/vm/drop_caches
++
++# Now trigger autodefrag
++_scratch_remount commit=1
++sleep 3
++sync
++
++echo "=== After autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $tmp.after
++cat $tmp.after >> $seqres.full
++
++# The layout should differ if autodefrag is working
++diff $tmp.before $tmp.after > /dev/null && echo "autodefrag didn't defrag the file"
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/259.out b/tests/btrfs/259.out
+new file mode 100644
+index 00000000..bfbd2dea
+--- /dev/null
++++ b/tests/btrfs/259.out
+@@ -0,0 +1,2 @@
++QA output created by 259
++Silence is golden
 -- 
-2.35.0
+2.34.1
 
