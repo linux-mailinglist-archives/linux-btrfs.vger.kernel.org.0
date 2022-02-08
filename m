@@ -2,78 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A44A4AE117
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 19:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 958A74AE153
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 19:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385167AbiBHSmd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 13:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        id S1385280AbiBHSqW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 13:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385169AbiBHSm1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 13:42:27 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357C0C06157B;
-        Tue,  8 Feb 2022 10:42:26 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id a11-20020a17090a740b00b001b8b506c42fso2884740pjg.0;
-        Tue, 08 Feb 2022 10:42:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BAFCLl44fuoxxYIbM7z13GRiD2jvm+2v6+Mst7t4c6A=;
-        b=BR0bLF6l0VyVosnd3r23R+nnmNHQOzJjnTJP4b1DFMSAnxYr/f0XSkrRmPozt/cnsS
-         PT+x7cZh507gC/oRmrXsz8pbFFBn60Y5z4WPkbA6BX6LcCSiivZDWtGInLLlD3RIVszs
-         /WwL9btwpc4N2tsFnk3jpOwMmdq7ztkBTAJ+2K3unppP4FcZkyINRG6QwW8+Z9oc+uox
-         veQePbEt6ZZg2SNNkwoSpwNv8sISw91I7UdZwFd2L8Mfa8MBsDwv1R/cjy77ZZQgO6pD
-         IgMRHEwaJqII6CA+sNvsykcHcObHxQc/vw7bY0cVBFoCC0GVGDl/kM3bf3J/Xs0Lcuyc
-         lsqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=BAFCLl44fuoxxYIbM7z13GRiD2jvm+2v6+Mst7t4c6A=;
-        b=K+D/uCLX8kkzWaTyVhBC5MhP/Bu47+gMLMUmCmCfaJSWGbQdsVDL2rOIni0+ypms04
-         2e9N+unYBdWvyRzwUxByylrYwI9NEJ1ndfMxL2MydfZs1cJ9H7sJm1P68XJXW1RUBxah
-         bKOuCMODrilAw6dmcWS8JJOvaDtnyH8mJW7R76A+fVWJ9YdaFTRcRGouLN95ETDXHF0o
-         MCoilH5oBgFB44F6uKzs45py6fbmm+DY9ntMTNDsoXg7+Z6Dd8/RQk4EpMy08EO6Y6NC
-         muygCmBGlTdGCJSBxEQBcVIsveFHz5HdJvGfUTGL/Uv5jcuYzedijEqr915mz6ar/RM1
-         KIdQ==
-X-Gm-Message-State: AOAM533JDF9bDhJB6G7xe0oIDJ+0H/GePuQhtSVJufS20I4QrfQjLxM6
-        Vmrw9KgsgglVQLVx4BRXJLE=
-X-Google-Smtp-Source: ABdhPJzr/qYoYdcJ+93z4PimG/A6Ax5bD+A5VU9smm/HkouB79uvdewlBom8blFAcKvjJSRLH4cogw==
-X-Received: by 2002:a17:903:24e:: with SMTP id j14mr1810437plh.10.1644345745682;
-        Tue, 08 Feb 2022 10:42:25 -0800 (PST)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:c6f0:347f:e607:176:4358])
-        by smtp.gmail.com with ESMTPSA id l14sm3517027pjf.1.2022.02.08.10.42.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Feb 2022 10:42:25 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paul.mckenney@linaro.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Radoslaw Burny <rburny@google.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/12] btrfs: change lockdep class size check using ks->names
-Date:   Tue,  8 Feb 2022 10:42:02 -0800
-Message-Id: <20220208184208.79303-7-namhyung@kernel.org>
-X-Mailer: git-send-email 2.35.0.263.gb82422642f-goog
-In-Reply-To: <20220208184208.79303-1-namhyung@kernel.org>
-References: <20220208184208.79303-1-namhyung@kernel.org>
+        with ESMTP id S1385214AbiBHSqV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 13:46:21 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DE2C06174F
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 10:46:21 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E4F291F387;
+        Tue,  8 Feb 2022 18:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1644345979;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/oRJj9Pf+QFwOBRiArUtiDJ2iO5R/e/rkOLgpmXHZPs=;
+        b=WzzSzahK37xhy6VRljKQd7Y3g7w09MYee7oeEeo35OjFXRLhDkplJz4xVi74rJi+55vc6k
+        lqKsY4seuuJkRgL+yRl7BeyhuuGJGrutoxFMdvfFn+o5bPnQyj8cELg8yGre8YFl/fS5sj
+        lfh2JJJxasaKMPU88kBInuk28NfyjPw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1644345979;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/oRJj9Pf+QFwOBRiArUtiDJ2iO5R/e/rkOLgpmXHZPs=;
+        b=Xu7A+IQFd0XgJgY39cEK11275ePEH/wRCMONZg3Z5a3vPxIbzn0Gp78yBwJNHE3rqh+Wvl
+        8uKb37sDrPqLLcAg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id DE78CA3B84;
+        Tue,  8 Feb 2022 18:46:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7AD46DAB3F; Tue,  8 Feb 2022 19:42:39 +0100 (CET)
+Date:   Tue, 8 Feb 2022 19:42:39 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: populate extent_map::generation when reading
+ from disk
+Message-ID: <20220208184239.GE12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <f5c2cc5d57a7edc120b0e743aa5d82298595ae24.1644298193.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5c2cc5d57a7edc120b0e743aa5d82298595ae24.1644298193.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,36 +65,98 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With upcoming lock tracepoints config, it'd allow some lockdep
-annotation code without enabling CONFIG_LOCKDEP actually.  In that
-config, size of the struct lock_class_key would be 0.
+On Tue, Feb 08, 2022 at 01:31:19PM +0800, Qu Wenruo wrote:
+> [WEIRD BEHAVIOR]
+> 
+> When btrfs_get_extent() tries to get some file extent from disk, it
+> never populates extent_map::generation , leaving the value to be 0.
+> 
+> On the other hand, for extent map generated by IO, it will get its
+> generation properly set at finish_ordered_io()
+> 
+>  finish_ordered_io()
+>  |- unpin_extent_cache(gen = trans->transid)
+>     |- em->generation = gen;
+> 
+> [CAUSE]
+> Since extent_map::generation is mostly used by fsync code, and for fsync
+> they only care about modified extents, which all have their em::generation > 0.
+> 
+> Thus it's fine to not populate em read from disk for fsync.
+> 
+> [CORNER CASE]
+> However autodefrag also relies on em::geneartion to determine if one extent
+> needs to be defragged.
+> 
+> This unpopulated extent_map::geneartion can prevent the following autodefrag
+> case from working:
+> 
+> 	mkfs.btrfs -f $dev
+> 	mount $dev $mnt -o autodefrag
+> 
+> 	# initial write to queue the inode for autodefrag
+> 	xfs_io -f -c "pwrite 0 4k" $mnt/file
+> 	sync
+> 
+> 	# Real fragmented write
+> 	xfs_io -f -s -c "pwrite -b 4096 0 32k" $mnt/file
+> 	sync
+> 	echo "=== before autodefrag ==="
+> 	xfs_io -c "fiemap -v" $mnt/file
+> 
+> 	# Drop cache to force em to be read from disk
+> 	echo 3 > /proc/sys/vm/drop_caches
+> 	mount -o remount,commit=1 $mnt
+> 	sleep 3
+> 	sync
+> 
+> 	echo "=== After autodefrag ==="
+> 	xfs_io -c "fiemap -v" $mnt/file
+> 	umount $mnt
+> 
+> The result looks like this:
+> 
+>   === before autodefrag ===
+>   /mnt/btrfs/file:
+>    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>      0: [0..15]:         26672..26687        16   0x0
+>      1: [16..31]:        26656..26671        16   0x0
+>      2: [32..47]:        26640..26655        16   0x0
+>      3: [48..63]:        26624..26639        16   0x1
+>   === After autodefrag ===
+>   /mnt/btrfs/file:
+>    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>      0: [0..15]:         26672..26687        16   0x0
+>      1: [16..31]:        26656..26671        16   0x0
+>      2: [32..47]:        26640..26655        16   0x0
+>      3: [48..63]:        26624..26639        16   0x1
+> 
+> This fragmented 32K will not be defragged by autodefrag.
+> 
+> [FIX]
+> To make things less weird, just populate extent_map::generation when
+> reading file extents from disk.
+> 
+> This would make above fragmented extents to be properly defragged:
+> 
+>   == before autodefrag ===
+>   /mnt/btrfs/file:
+>    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>      0: [0..15]:         26672..26687        16   0x0
+>      1: [16..31]:        26656..26671        16   0x0
+>      2: [32..47]:        26640..26655        16   0x0
+>      3: [48..63]:        26624..26639        16   0x1
+>   === After autodefrag ===
+>   /mnt/btrfs/file:
+>    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>      0: [0..63]:         26688..26751        64   0x1
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Update the commit message to include a reproducer
+>   Although this is not what we want (to reduce autodefrag IO),
+>   the behavior still worthy fixing anyway.
 
-But it'd cause divide-by-zero in btrfs_set_buffer_lockdep_class() due
-to ARRAY_SIZE macro.  Let's change it to use ks->names[] instead.  It
-should have the same size as with ks->keys[].
-
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- fs/btrfs/disk-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 87a5addbedf6..be41e35bee92 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -190,7 +190,7 @@ void btrfs_set_buffer_lockdep_class(u64 objectid, struct extent_buffer *eb,
- {
- 	struct btrfs_lockdep_keyset *ks;
- 
--	BUG_ON(level >= ARRAY_SIZE(ks->keys));
-+	BUG_ON(level >= ARRAY_SIZE(ks->names));
- 
- 	/* find the matching keyset, id 0 is the default entry */
- 	for (ks = btrfs_lockdep_keysets; ks->id; ks++)
--- 
-2.35.0.263.gb82422642f-goog
-
+With the typos fixed, added to misc-next, thanks.
