@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E02EB4AE3A0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 23:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D01874AE4F9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 23:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386903AbiBHWVp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 17:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
+        id S229531AbiBHWxM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 17:53:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387251AbiBHWNG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 17:13:06 -0500
+        with ESMTP id S234624AbiBHWw5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 17:52:57 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC99DC0612B8
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 14:13:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F66C03FEDF
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 14:45:11 -0800 (PST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7C26A210E7;
-        Tue,  8 Feb 2022 22:13:04 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id C68B1210F1;
+        Tue,  8 Feb 2022 22:45:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1644358384;
+        t=1644360309;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=n2wcMO/ZY2l/2I7QE8OIXWK+fsig3OuMkLJ5MyN/El0=;
-        b=sJ0vV9DTU9OqtQdAXeaC7E7YPlJFatZ3n3vXsTFIg8wrVAeEJmlA9NbkFa2SEyt5zSyfM4
-        2losqh5Q04tJt0N0WaL2iLy6eE5H/kWduqdl4YE5C19nWVL5lVsQAouPua/c1SbCddIWI2
-        5iWCo4H73vqpLed7zTTfOoOsrSSRPVQ=
+        bh=/m8LXE+iopO8umn3BTXuYvBl1BzP3pxXcrnRiCFFPNY=;
+        b=gWNqZe6URzYxZZ5W0Oa1YHdDXWqnMnTv68lnTHoxuLSHqaRSi2jASM+x+12wqrNswNjhrD
+        uZD8O+2WGph0Xmjs6aMuVk9voDiDh/Vm0anOnASKmXG+MjGL5+VA53NysUY/m5Jca2eKXx
+        3B1n7IINvNEt5U1lDkOhuhQCtES48nU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1644358384;
+        s=susede2_ed25519; t=1644360309;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=n2wcMO/ZY2l/2I7QE8OIXWK+fsig3OuMkLJ5MyN/El0=;
-        b=Kw+ZXTfvyPrSFLFrl+bQ0cneTe36jRELeZU3FZ0zlW6stLXQfkEilS5urtA9KAJNU0JpPt
-        d840q2bvg58fo8CQ==
+        bh=/m8LXE+iopO8umn3BTXuYvBl1BzP3pxXcrnRiCFFPNY=;
+        b=S1mYaTWC3Clb+l8zllu+0Xs7IOYw60WRsVi0Th/qdygAuXHvOpHes2DWgw0w+tSpY7Da46
+        bcXjQU0tKxoczYDQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 7278CA3B85;
-        Tue,  8 Feb 2022 22:13:04 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id BE764A3B83;
+        Tue,  8 Feb 2022 22:45:09 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 01BB8DAB3F; Tue,  8 Feb 2022 23:09:23 +0100 (CET)
-Date:   Tue, 8 Feb 2022 23:09:23 +0100
+        id 45882DAB3F; Tue,  8 Feb 2022 23:41:29 +0100 (CET)
+Date:   Tue, 8 Feb 2022 23:41:29 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] btrfs: defrag: don't waste CPU time on non-target
- extent
-Message-ID: <20220208220923.GH12643@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: get rid of warning on transaction commit when
+ using flushoncommit
+Message-ID: <20220208224129.GI12643@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
         linux-btrfs@vger.kernel.org
-References: <cover.1644039494.git.wqu@suse.com>
+References: <f47e0cbbad232ab8962161622f71d8093bcc5108.1643814527.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1644039494.git.wqu@suse.com>
+In-Reply-To: <f47e0cbbad232ab8962161622f71d8093bcc5108.1643814527.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -65,32 +65,243 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 05, 2022 at 01:41:01PM +0800, Qu Wenruo wrote:
-> In the rework of btrfs_defrag_file() one core idea is to defrag cluster
-> by cluster, thus we can have a better layered code structure, just like
-> what we have now:
+On Wed, Feb 02, 2022 at 03:26:09PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> btrfs_defrag_file()
-> |- defrag_one_cluster()
->    |- defrag_one_range()
->       |- defrag_one_locked_range()
+> When using the flushoncommit mount option, during almost every transaction
+> commit we trigger a warning from __writeback_inodes_sb_nr():
 > 
-> But there is a catch, btrfs_defrag_file() just moves the cluster to the
-> next cluster, never considering cases like the current extent is already
-> too large, we can skip to its end directly.
+>   $ cat fs/fs-writeback.c:
+>   (...)
+>   static void __writeback_inodes_sb_nr(struct super_block *sb, ...
+>   {
+>         (...)
+>         WARN_ON(!rwsem_is_locked(&sb->s_umount));
+>         (...)
+>   }
+>   (...)
 > 
-> This increases CPU usage on very large but not fragmented files.
+> The trace produced in dmesg looks like the following:
 > 
-> Fix the behavior in defrag_one_cluster() that, defrag_collect_targets()
-> will reports where next search should start from.
+> [  947.470439] ------------[ cut here ]------------
+> [  947.473890] WARNING: CPU: 5 PID: 930 at fs/fs-writeback.c:2610 __writeback_inodes_sb_nr+0x7e/0xb3
+> [  947.481623] Modules linked in: nfsd nls_cp437 cifs asn1_decoder cifs_arc4 fscache cifs_md4 ipmi_ssif
+> [  947.489571] CPU: 5 PID: 930 Comm: btrfs-transacti Not tainted 95.16.3-srb-asrock-00001-g36437ad63879 #186
+> [  947.497969] RIP: 0010:__writeback_inodes_sb_nr+0x7e/0xb3
+> [  947.502097] Code: 24 10 4c 89 44 24 18 c6 (...)
+> [  947.519760] RSP: 0018:ffffc90000777e10 EFLAGS: 00010246
+> [  947.523818] RAX: 0000000000000000 RBX: 0000000000963300 RCX: 0000000000000000
+> [  947.529765] RDX: 0000000000000000 RSI: 000000000000fa51 RDI: ffffc90000777e50
+> [  947.535740] RBP: ffff888101628a90 R08: ffff888100955800 R09: ffff888100956000
+> [  947.541701] R10: 0000000000000002 R11: 0000000000000001 R12: ffff888100963488
+> [  947.547645] R13: ffff888100963000 R14: ffff888112fb7200 R15: ffff888100963460
+> [  947.553621] FS:  0000000000000000(0000) GS:ffff88841fd40000(0000) knlGS:0000000000000000
+> [  947.560537] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  947.565122] CR2: 0000000008be50c4 CR3: 000000000220c000 CR4: 00000000001006e0
+> [  947.571072] Call Trace:
+> [  947.572354]  <TASK>
+> [  947.573266]  btrfs_commit_transaction+0x1f1/0x998
+> [  947.576785]  ? start_transaction+0x3ab/0x44e
+> [  947.579867]  ? schedule_timeout+0x8a/0xdd
+> [  947.582716]  transaction_kthread+0xe9/0x156
+> [  947.585721]  ? btrfs_cleanup_transaction.isra.0+0x407/0x407
+> [  947.590104]  kthread+0x131/0x139
+> [  947.592168]  ? set_kthread_struct+0x32/0x32
+> [  947.595174]  ret_from_fork+0x22/0x30
+> [  947.597561]  </TASK>
+> [  947.598553] ---[ end trace 644721052755541c ]---
 > 
-> If the current extent is not a target at all, then we can jump to the
-> end of that non-target extent to save time.
+> This is because we started using writeback_inodes_sb() to flush delalloc
+> when comitting a transaction (when using -o flushoncommit), in order to
+> avoid deadlocks with filesystem freeze operations. This change was made
+> by commit ce8ea7cc6eb313 ("btrfs: don't call btrfs_start_delalloc_roots
+> in flushoncommit"). After that change we started producing that warning,
+> and every now and then a user reports this since the warning happens too
+> often, it spams dmesg/syslog, and a user is unsure if this reflects any
+> problem that might compromise the filesystem's reliability.
 > 
-> To get the missing optimization, also introduce a new structure,
-> btrfs_defrag_ctrl, so we don't need to pass things like @newer_than and
-> @max_to_defrag around.
+> We can not just lock the sb->s_umount semaphore before calling
+> writeback_inodes_sb(), because that would at least deadlock with
+> filesystem freezing, since at fs/super.c:freeze_super() sync_filesystem()
+> is called while we are holding that semaphore in write mode, and that can
+> trigger a transaction commit, resulting in a deadlock. It would also
+> trigger the same type of deadlock in the unmount path. Possibly, it could
+> also introduce some other locking dependencies that lockdep would report.
+> 
+> To fix this call try_to_writeback_inodes_sb() instead of
+> writeback_inodes_sb(), because that will try to read lock sb->s_umount
+> and then will only call writeback_inodes_sb() if it was able to lock it.
+> This is fine because the cases where it can't read lock sb->s_umount
+> are during a filesystem unmount or during a filesystem freeze - in those
+> cases sb->s_umount is write locked and sync_filesystem() is called, which
+> calls writeback_inodes_sb(). In other words, in all cases where we can't
+> take a read lock on sb->s_umount, writeback is already being triggered
+> elsewhere.
+> 
+> An alternative would be to call btrfs_start_delalloc_roots() with a
+> number of pages different from LONG_MAX, for example matching the number
+> of delalloc bytes we currently have, in which case we would end up
+> starting all delalloc with filemap_fdatawrite_wbc() and not with an
+> async flush via filemap_flush() - that is only possible after the rather
+> recent commit e076ab2a2ca70a ("btrfs: shrink delalloc pages instead of
+> full inodes"). However that creates a whole new can of worms due to new
+> lock dependencies, which lockdep complains, like for example:
+> 
+> [ 8948.247280] ======================================================
+> [ 8948.247823] WARNING: possible circular locking dependency detected
+> [ 8948.248353] 5.17.0-rc1-btrfs-next-111 #1 Not tainted
+> [ 8948.248786] ------------------------------------------------------
+> [ 8948.249320] kworker/u16:18/933570 is trying to acquire lock:
+> [ 8948.249812] ffff9b3de1591690 (sb_internal#2){.+.+}-{0:0}, at: find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.250638]
+>                but task is already holding lock:
+> [ 8948.251140] ffff9b3e09c717d8 (&root->delalloc_mutex){+.+.}-{3:3}, at: start_delalloc_inodes+0x78/0x400 [btrfs]
+> [ 8948.252018]
+>                which lock already depends on the new lock.
+> 
+> [ 8948.252710]
+>                the existing dependency chain (in reverse order) is:
+> [ 8948.253343]
+>                -> #2 (&root->delalloc_mutex){+.+.}-{3:3}:
+> [ 8948.253950]        __mutex_lock+0x90/0x900
+> [ 8948.254354]        start_delalloc_inodes+0x78/0x400 [btrfs]
+> [ 8948.254859]        btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
+> [ 8948.255408]        btrfs_commit_transaction+0x32f/0xc00 [btrfs]
+> [ 8948.255942]        btrfs_mksubvol+0x380/0x570 [btrfs]
+> [ 8948.256406]        btrfs_mksnapshot+0x81/0xb0 [btrfs]
+> [ 8948.256870]        __btrfs_ioctl_snap_create+0x17f/0x190 [btrfs]
+> [ 8948.257413]        btrfs_ioctl_snap_create_v2+0xbb/0x140 [btrfs]
+> [ 8948.257961]        btrfs_ioctl+0x1196/0x3630 [btrfs]
+> [ 8948.258418]        __x64_sys_ioctl+0x83/0xb0
+> [ 8948.258793]        do_syscall_64+0x3b/0xc0
+> [ 8948.259146]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 8948.259709]
+>                -> #1 (&fs_info->delalloc_root_mutex){+.+.}-{3:3}:
+> [ 8948.260330]        __mutex_lock+0x90/0x900
+> [ 8948.260692]        btrfs_start_delalloc_roots+0x97/0x2a0 [btrfs]
+> [ 8948.261234]        btrfs_commit_transaction+0x32f/0xc00 [btrfs]
+> [ 8948.261766]        btrfs_set_free_space_cache_v1_active+0x38/0x60 [btrfs]
+> [ 8948.262379]        btrfs_start_pre_rw_mount+0x119/0x180 [btrfs]
+> [ 8948.262909]        open_ctree+0x1511/0x171e [btrfs]
+> [ 8948.263359]        btrfs_mount_root.cold+0x12/0xde [btrfs]
+> [ 8948.263863]        legacy_get_tree+0x30/0x50
+> [ 8948.264242]        vfs_get_tree+0x28/0xc0
+> [ 8948.264594]        vfs_kern_mount.part.0+0x71/0xb0
+> [ 8948.265017]        btrfs_mount+0x11d/0x3a0 [btrfs]
+> [ 8948.265462]        legacy_get_tree+0x30/0x50
+> [ 8948.265851]        vfs_get_tree+0x28/0xc0
+> [ 8948.266203]        path_mount+0x2d4/0xbe0
+> [ 8948.266554]        __x64_sys_mount+0x103/0x140
+> [ 8948.266940]        do_syscall_64+0x3b/0xc0
+> [ 8948.267300]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 8948.267790]
+>                -> #0 (sb_internal#2){.+.+}-{0:0}:
+> [ 8948.268322]        __lock_acquire+0x12e8/0x2260
+> [ 8948.268733]        lock_acquire+0xd7/0x310
+> [ 8948.269092]        start_transaction+0x44c/0x6e0 [btrfs]
+> [ 8948.269591]        find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.270087]        btrfs_reserve_extent+0x14b/0x280 [btrfs]
+> [ 8948.270588]        cow_file_range+0x17e/0x490 [btrfs]
+> [ 8948.271051]        btrfs_run_delalloc_range+0x345/0x7a0 [btrfs]
+> [ 8948.271586]        writepage_delalloc+0xb5/0x170 [btrfs]
+> [ 8948.272071]        __extent_writepage+0x156/0x3c0 [btrfs]
+> [ 8948.272579]        extent_write_cache_pages+0x263/0x460 [btrfs]
+> [ 8948.273113]        extent_writepages+0x76/0x130 [btrfs]
+> [ 8948.273573]        do_writepages+0xd2/0x1c0
+> [ 8948.273942]        filemap_fdatawrite_wbc+0x68/0x90
+> [ 8948.274371]        start_delalloc_inodes+0x17f/0x400 [btrfs]
+> [ 8948.274876]        btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
+> [ 8948.275417]        flush_space+0x1f2/0x630 [btrfs]
+> [ 8948.275863]        btrfs_async_reclaim_data_space+0x108/0x1b0 [btrfs]
+> [ 8948.276438]        process_one_work+0x252/0x5a0
+> [ 8948.276829]        worker_thread+0x55/0x3b0
+> [ 8948.277189]        kthread+0xf2/0x120
+> [ 8948.277506]        ret_from_fork+0x22/0x30
+> [ 8948.277868]
+>                other info that might help us debug this:
+> 
+> [ 8948.278548] Chain exists of:
+>                  sb_internal#2 --> &fs_info->delalloc_root_mutex --> &root->delalloc_mutex
+> 
+> [ 8948.279601]  Possible unsafe locking scenario:
+> 
+> [ 8948.280102]        CPU0                    CPU1
+> [ 8948.280508]        ----                    ----
+> [ 8948.280915]   lock(&root->delalloc_mutex);
+> [ 8948.281271]                                lock(&fs_info->delalloc_root_mutex);
+> [ 8948.281915]                                lock(&root->delalloc_mutex);
+> [ 8948.282487]   lock(sb_internal#2);
+> [ 8948.282800]
+>                 *** DEADLOCK ***
+> 
+> [ 8948.283333] 4 locks held by kworker/u16:18/933570:
+> [ 8948.283750]  #0: ffff9b3dc00a9d48 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1d2/0x5a0
+> [ 8948.284609]  #1: ffffa90349dafe70 ((work_completion)(&fs_info->async_data_reclaim_work)){+.+.}-{0:0}, at: process_one_work+0x1d2/0x5a0
+> [ 8948.285637]  #2: ffff9b3e14db5040 (&fs_info->delalloc_root_mutex){+.+.}-{3:3}, at: btrfs_start_delalloc_roots+0x97/0x2a0 [btrfs]
+> [ 8948.286674]  #3: ffff9b3e09c717d8 (&root->delalloc_mutex){+.+.}-{3:3}, at: start_delalloc_inodes+0x78/0x400 [btrfs]
+> [ 8948.287596]
+>               stack backtrace:
+> [ 8948.287975] CPU: 3 PID: 933570 Comm: kworker/u16:18 Not tainted 5.17.0-rc1-btrfs-next-111 #1
+> [ 8948.288677] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [ 8948.289649] Workqueue: events_unbound btrfs_async_reclaim_data_space [btrfs]
+> [ 8948.290298] Call Trace:
+> [ 8948.290517]  <TASK>
+> [ 8948.290700]  dump_stack_lvl+0x59/0x73
+> [ 8948.291026]  check_noncircular+0xf3/0x110
+> [ 8948.291375]  ? start_transaction+0x228/0x6e0 [btrfs]
+> [ 8948.291826]  __lock_acquire+0x12e8/0x2260
+> [ 8948.292241]  lock_acquire+0xd7/0x310
+> [ 8948.292714]  ? find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.293241]  ? lock_is_held_type+0xea/0x140
+> [ 8948.293601]  start_transaction+0x44c/0x6e0 [btrfs]
+> [ 8948.294055]  ? find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.294518]  find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.294957]  ? _raw_spin_unlock+0x29/0x40
+> [ 8948.295312]  ? btrfs_get_alloc_profile+0x124/0x290 [btrfs]
+> [ 8948.295813]  btrfs_reserve_extent+0x14b/0x280 [btrfs]
+> [ 8948.296270]  cow_file_range+0x17e/0x490 [btrfs]
+> [ 8948.296691]  btrfs_run_delalloc_range+0x345/0x7a0 [btrfs]
+> [ 8948.297175]  ? find_lock_delalloc_range+0x247/0x270 [btrfs]
+> [ 8948.297678]  writepage_delalloc+0xb5/0x170 [btrfs]
+> [ 8948.298123]  __extent_writepage+0x156/0x3c0 [btrfs]
+> [ 8948.298570]  extent_write_cache_pages+0x263/0x460 [btrfs]
+> [ 8948.299061]  extent_writepages+0x76/0x130 [btrfs]
+> [ 8948.299495]  do_writepages+0xd2/0x1c0
+> [ 8948.299817]  ? sched_clock_cpu+0xd/0x110
+> [ 8948.300160]  ? lock_release+0x155/0x4a0
+> [ 8948.300494]  filemap_fdatawrite_wbc+0x68/0x90
+> [ 8948.300874]  ? do_raw_spin_unlock+0x4b/0xa0
+> [ 8948.301243]  start_delalloc_inodes+0x17f/0x400 [btrfs]
+> [ 8948.301706]  ? lock_release+0x155/0x4a0
+> [ 8948.302055]  btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
+> [ 8948.302564]  flush_space+0x1f2/0x630 [btrfs]
+> [ 8948.302970]  btrfs_async_reclaim_data_space+0x108/0x1b0 [btrfs]
+> [ 8948.303510]  process_one_work+0x252/0x5a0
+> [ 8948.303860]  ? process_one_work+0x5a0/0x5a0
+> [ 8948.304221]  worker_thread+0x55/0x3b0
+> [ 8948.304543]  ? process_one_work+0x5a0/0x5a0
+> [ 8948.304904]  kthread+0xf2/0x120
+> [ 8948.305184]  ? kthread_complete_and_exit+0x20/0x20
+> [ 8948.305598]  ret_from_fork+0x22/0x30
+> [ 8948.305921]  </TASK>
+> 
+> It all comes from the fact that btrfs_start_delalloc_roots() takes the
+> delalloc_root_mutex, in the transaction commit path we are holding a
+> read lock on one of the superblock's freeze semaphores (via
+> sb_start_intwrite()), the async reclaim task can also do a call to
+> btrfs_start_delalloc_roots(), which ends up triggering writeback with
+> calls to filemap_fdatawrite_wbc(), resulting in extent allocation which
+> in turn can call btrfs_start_transaction(), which will result in taking
+> the freeze semaphore via sb_start_intwrite(), forming a nasty dependency
+> on all those locks which can be taken in different orders by different
+> code paths.
+> 
+> So just adopt the simple approach of calling try_to_writeback_inodes_sb()
+> at btrfs_start_delalloc_flush().
+> 
+> Reported-by: Stephen R. van den Berg <srb@cuci.nl>
+> Link: https://lore.kernel.org/linux-btrfs/20220130005258.GA7465@cuci.nl/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Is this patchset supposed to be in 5.16 as fix for some defrag problem?
-If yes, the patch switching to the control structure should be avoided
-and done as a post cleanup as some other patches depend on it.
+Added to misc-next, thanks. There have been several reports of the
+warning so I've added more links I found and dropped to reported-by tag.
