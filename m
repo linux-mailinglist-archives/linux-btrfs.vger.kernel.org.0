@@ -2,58 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 958A74AE153
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 19:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB294AE1E2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 20:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385280AbiBHSqW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 13:46:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
+        id S1385817AbiBHTGt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 14:06:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385214AbiBHSqV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 13:46:21 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DE2C06174F
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 10:46:21 -0800 (PST)
+        with ESMTP id S1352581AbiBHTGs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 14:06:48 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19A4C0613CB;
+        Tue,  8 Feb 2022 11:06:47 -0800 (PST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E4F291F387;
-        Tue,  8 Feb 2022 18:46:19 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 85DA8210F5;
+        Tue,  8 Feb 2022 19:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1644345979;
+        t=1644347206;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/oRJj9Pf+QFwOBRiArUtiDJ2iO5R/e/rkOLgpmXHZPs=;
-        b=WzzSzahK37xhy6VRljKQd7Y3g7w09MYee7oeEeo35OjFXRLhDkplJz4xVi74rJi+55vc6k
-        lqKsY4seuuJkRgL+yRl7BeyhuuGJGrutoxFMdvfFn+o5bPnQyj8cELg8yGre8YFl/fS5sj
-        lfh2JJJxasaKMPU88kBInuk28NfyjPw=
+        bh=uuczzsLerYxf5+rv4LqJaLUqY8prQZza42JsJ9r52vw=;
+        b=aSx5mvQqEJxFgLpdX14GPITrKNOUKdehmtwf/lK4cXBI0v8TKIXlJLz1Yw8LPPGqez/MZU
+        5iZYaEVxHsz7fcZUJDAW0vZZDqWcRzlUjZPi6C7aaFUACoI4w87g5buWuE6AxhAS8sQoUS
+        Zt9U1CaviNefBLTvd5gjvwlv1mUS7CQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1644345979;
+        s=susede2_ed25519; t=1644347206;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/oRJj9Pf+QFwOBRiArUtiDJ2iO5R/e/rkOLgpmXHZPs=;
-        b=Xu7A+IQFd0XgJgY39cEK11275ePEH/wRCMONZg3Z5a3vPxIbzn0Gp78yBwJNHE3rqh+Wvl
-        8uKb37sDrPqLLcAg==
+        bh=uuczzsLerYxf5+rv4LqJaLUqY8prQZza42JsJ9r52vw=;
+        b=KaSdzSjTi4kfq97LsEmnuANFm+twdm3rbN8Wt0Ll0wZfFJtOQJetofYIJG9PuIAyFHy49E
+        V0GY3kgOtU5CyaAA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DE78CA3B84;
-        Tue,  8 Feb 2022 18:46:19 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 08A0CA3B88;
+        Tue,  8 Feb 2022 19:06:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7AD46DAB3F; Tue,  8 Feb 2022 19:42:39 +0100 (CET)
-Date:   Tue, 8 Feb 2022 19:42:39 +0100
+        id 8528EDAB3F; Tue,  8 Feb 2022 20:03:01 +0100 (CET)
+Date:   Tue, 8 Feb 2022 20:03:01 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: populate extent_map::generation when reading
- from disk
-Message-ID: <20220208184239.GE12643@twin.jikos.cz>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paul.mckenney@linaro.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 06/12] btrfs: change lockdep class size check using
+ ks->names
+Message-ID: <20220208190301.GF12643@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paul.mckenney@linaro.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <f5c2cc5d57a7edc120b0e743aa5d82298595ae24.1644298193.git.wqu@suse.com>
+References: <20220208184208.79303-1-namhyung@kernel.org>
+ <20220208184208.79303-7-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5c2cc5d57a7edc120b0e743aa5d82298595ae24.1644298193.git.wqu@suse.com>
+In-Reply-To: <20220208184208.79303-7-namhyung@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -65,98 +89,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 08, 2022 at 01:31:19PM +0800, Qu Wenruo wrote:
-> [WEIRD BEHAVIOR]
+On Tue, Feb 08, 2022 at 10:42:02AM -0800, Namhyung Kim wrote:
+> With upcoming lock tracepoints config, it'd allow some lockdep
+> annotation code without enabling CONFIG_LOCKDEP actually.  In that
+> config, size of the struct lock_class_key would be 0.
 > 
-> When btrfs_get_extent() tries to get some file extent from disk, it
-> never populates extent_map::generation , leaving the value to be 0.
+> But it'd cause divide-by-zero in btrfs_set_buffer_lockdep_class() due
+> to ARRAY_SIZE macro.  Let's change it to use ks->names[] instead.  It
+> should have the same size as with ks->keys[].
 > 
-> On the other hand, for extent map generated by IO, it will get its
-> generation properly set at finish_ordered_io()
-> 
->  finish_ordered_io()
->  |- unpin_extent_cache(gen = trans->transid)
->     |- em->generation = gen;
-> 
-> [CAUSE]
-> Since extent_map::generation is mostly used by fsync code, and for fsync
-> they only care about modified extents, which all have their em::generation > 0.
-> 
-> Thus it's fine to not populate em read from disk for fsync.
-> 
-> [CORNER CASE]
-> However autodefrag also relies on em::geneartion to determine if one extent
-> needs to be defragged.
-> 
-> This unpopulated extent_map::geneartion can prevent the following autodefrag
-> case from working:
-> 
-> 	mkfs.btrfs -f $dev
-> 	mount $dev $mnt -o autodefrag
-> 
-> 	# initial write to queue the inode for autodefrag
-> 	xfs_io -f -c "pwrite 0 4k" $mnt/file
-> 	sync
-> 
-> 	# Real fragmented write
-> 	xfs_io -f -s -c "pwrite -b 4096 0 32k" $mnt/file
-> 	sync
-> 	echo "=== before autodefrag ==="
-> 	xfs_io -c "fiemap -v" $mnt/file
-> 
-> 	# Drop cache to force em to be read from disk
-> 	echo 3 > /proc/sys/vm/drop_caches
-> 	mount -o remount,commit=1 $mnt
-> 	sleep 3
-> 	sync
-> 
-> 	echo "=== After autodefrag ==="
-> 	xfs_io -c "fiemap -v" $mnt/file
-> 	umount $mnt
-> 
-> The result looks like this:
-> 
->   === before autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..15]:         26672..26687        16   0x0
->      1: [16..31]:        26656..26671        16   0x0
->      2: [32..47]:        26640..26655        16   0x0
->      3: [48..63]:        26624..26639        16   0x1
->   === After autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..15]:         26672..26687        16   0x0
->      1: [16..31]:        26656..26671        16   0x0
->      2: [32..47]:        26640..26655        16   0x0
->      3: [48..63]:        26624..26639        16   0x1
-> 
-> This fragmented 32K will not be defragged by autodefrag.
-> 
-> [FIX]
-> To make things less weird, just populate extent_map::generation when
-> reading file extents from disk.
-> 
-> This would make above fragmented extents to be properly defragged:
-> 
->   == before autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..15]:         26672..26687        16   0x0
->      1: [16..31]:        26656..26671        16   0x0
->      2: [32..47]:        26640..26655        16   0x0
->      3: [48..63]:        26624..26639        16   0x1
->   === After autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..63]:         26688..26751        64   0x1
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Update the commit message to include a reproducer
->   Although this is not what we want (to reduce autodefrag IO),
->   the behavior still worthy fixing anyway.
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-With the typos fixed, added to misc-next, thanks.
+Acked-by: David Sterba <dsterba@suse.com>
