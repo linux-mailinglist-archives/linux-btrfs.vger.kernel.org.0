@@ -2,137 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 841604AE35A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 23:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02EB4AE3A0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 23:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387224AbiBHWVx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 17:21:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
+        id S1386903AbiBHWVp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 17:21:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386405AbiBHU1C (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 15:27:02 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B99C0613CB
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 12:27:01 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id b35so14735180qkp.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Feb 2022 12:27:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WfD6fEYNCWAcGnrl7G6RugpHXHB+ojSvh2FjWGokIdA=;
-        b=bNg9DVdeCKvWHDsDvHJ0OM6NVlbcHOuNlxpSEfgnDfA5kfg097HofGFNNicT38JLeO
-         FDcZ/i2Qzn3EFfYVEYiduVcrUNhDZBYeMKojamw0SuYznfZEqZi4opij2Yx9rW5irDe3
-         v8n8WijB6MTwjnWN8Q0KEW1f4sW+rQXLfgcYC1kAuGd8Hzozn/v3Tpfdd5BzPJdovm2n
-         UbUEr84TkBqW08fZKkETTsWwev0oM9zXSHxqU2WVxMtrc3RGwawiz9KH6B9pmUsceZaE
-         FmLCXhDJ/6quoPK/pr8h8IbnL9BUmKFsckahFwgwtZyvGg0HsTHp9tJfPfHBWDv1xzs9
-         HPgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WfD6fEYNCWAcGnrl7G6RugpHXHB+ojSvh2FjWGokIdA=;
-        b=c6rmPurgrE6RnGhIlxRKaB5k+sIDfTDXkiWpCsZ+jvbNt9NiLpcajKApWpddQKik4v
-         EqaLckQ89XNnBSmi0VMYa0QdVgSrrn7tmqEBSt/T38tAmGbnk0MYPgpU/5a0suEF9FK4
-         GK2ricK/PxLk1+iUyQZFmMC9T5e3k3rK4GaqWF88v9F7Iwq7Jn6NJX/FFnvzwdq4zBmG
-         bAII2Dj5juE4I+Z4fsoDuRfbE1xNjzrD4anECY4HcNt4CfEIh6P5WfZ/KQtuxK7IS8GT
-         dXVQuMKeBw96Wx7eDtWZePKsSMKB7FZWsO16AoG+J/xbZsS9x7Wgg8vsaaFdaHuYbSf+
-         YQlg==
-X-Gm-Message-State: AOAM530Osk025yymdRd7IQroYXXoWDxjBPbsv7UqXrolNLsZd0j4+lkg
-        mDoPv4eN941na/C+bp+wZDE82likVZOV9aRz
-X-Google-Smtp-Source: ABdhPJzQlfZeNgliTi5eOWWlAdQyE0Gl+5fH7ZPZT0Klyx7fdiu2PDNUBu5SZwseWRZSQ/kMVpsLig==
-X-Received: by 2002:a37:e117:: with SMTP id c23mr3751015qkm.138.1644352020157;
-        Tue, 08 Feb 2022 12:27:00 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j15sm6308353qkp.88.2022.02.08.12.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Feb 2022 12:26:59 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs-progs: check: fix check_global_roots_uptodate
-Date:   Tue,  8 Feb 2022 15:26:58 -0500
-Message-Id: <b7bc0aeae661b1aa87f6e8eb331334c756ecb33e.1644351986.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+        with ESMTP id S1387251AbiBHWNG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 17:13:06 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC99DC0612B8
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 14:13:05 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7C26A210E7;
+        Tue,  8 Feb 2022 22:13:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1644358384;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n2wcMO/ZY2l/2I7QE8OIXWK+fsig3OuMkLJ5MyN/El0=;
+        b=sJ0vV9DTU9OqtQdAXeaC7E7YPlJFatZ3n3vXsTFIg8wrVAeEJmlA9NbkFa2SEyt5zSyfM4
+        2losqh5Q04tJt0N0WaL2iLy6eE5H/kWduqdl4YE5C19nWVL5lVsQAouPua/c1SbCddIWI2
+        5iWCo4H73vqpLed7zTTfOoOsrSSRPVQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1644358384;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n2wcMO/ZY2l/2I7QE8OIXWK+fsig3OuMkLJ5MyN/El0=;
+        b=Kw+ZXTfvyPrSFLFrl+bQ0cneTe36jRELeZU3FZ0zlW6stLXQfkEilS5urtA9KAJNU0JpPt
+        d840q2bvg58fo8CQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7278CA3B85;
+        Tue,  8 Feb 2022 22:13:04 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 01BB8DAB3F; Tue,  8 Feb 2022 23:09:23 +0100 (CET)
+Date:   Tue, 8 Feb 2022 23:09:23 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] btrfs: defrag: don't waste CPU time on non-target
+ extent
+Message-ID: <20220208220923.GH12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1644039494.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1644039494.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While running make test on other patches I noticed we are now
-segfaulting on the fuzz tests.  This is because when I converted us to a
-rb tree for the global roots we lost the ability to catch that there's
-no extent root at all.  Before we'd populate a dummy
-fs_info->extent_root with a not uptodate node, but now you simply don't
-get an extent root in the rb_tree.  Fix the check_global_roots_uptodate
-helper to count how many roots we find and make sure it matches the
-number we expect.  If it doesn't then we can return -EIO.
+On Sat, Feb 05, 2022 at 01:41:01PM +0800, Qu Wenruo wrote:
+> In the rework of btrfs_defrag_file() one core idea is to defrag cluster
+> by cluster, thus we can have a better layered code structure, just like
+> what we have now:
+> 
+> btrfs_defrag_file()
+> |- defrag_one_cluster()
+>    |- defrag_one_range()
+>       |- defrag_one_locked_range()
+> 
+> But there is a catch, btrfs_defrag_file() just moves the cluster to the
+> next cluster, never considering cases like the current extent is already
+> too large, we can skip to its end directly.
+> 
+> This increases CPU usage on very large but not fragmented files.
+> 
+> Fix the behavior in defrag_one_cluster() that, defrag_collect_targets()
+> will reports where next search should start from.
+> 
+> If the current extent is not a target at all, then we can jump to the
+> end of that non-target extent to save time.
+> 
+> To get the missing optimization, also introduce a new structure,
+> btrfs_defrag_ctrl, so we don't need to pass things like @newer_than and
+> @max_to_defrag around.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-Dave, sorry this should be applied as well to fix the other fuzz related tests
-that will segfault.
-
- check/main.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
-
-diff --git a/check/main.c b/check/main.c
-index 8ccba447..fa8218c5 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -10207,6 +10207,8 @@ static int check_global_roots_uptodate(void)
- {
- 	struct btrfs_root *root;
- 	struct rb_node *n;
-+	int found_csum = 0, found_extent = 0, found_fst = 0;
-+	int ret = 0;
- 
- 	for (n = rb_first(&gfs_info->global_roots_tree); n; n = rb_next(n)) {
- 		root = rb_entry(n, struct btrfs_root, rb_node);
-@@ -10215,9 +10217,37 @@ static int check_global_roots_uptodate(void)
- 			      root->root_key.objectid, root->root_key.offset);
- 			return -EIO;
- 		}
-+		switch(root->root_key.objectid) {
-+		case BTRFS_EXTENT_TREE_OBJECTID:
-+			found_extent++;
-+			break;
-+		case BTRFS_CSUM_TREE_OBJECTID:
-+			found_csum++;
-+			break;
-+		case BTRFS_FREE_SPACE_TREE_OBJECTID:
-+			found_fst++;
-+			break;
-+		default:
-+			break;
-+		}
- 	}
- 
--	return 0;
-+	if (found_extent != gfs_info->num_global_roots) {
-+		error("found %d extent roots, expected %llu\n", found_extent,
-+		      gfs_info->num_global_roots);
-+		ret = -EIO;
-+	}
-+	if (found_csum != gfs_info->num_global_roots) {
-+		error("found %d csum roots, expected %llu\n", found_csum,
-+		      gfs_info->num_global_roots);
-+		ret = -EIO;
-+	}
-+	if (found_fst != gfs_info->num_global_roots) {
-+		error("found %d free space roots, expected %llu\n", found_fst,
-+		      gfs_info->num_global_roots);
-+		ret = -EIO;
-+	}
-+	return ret;
- }
- 
- static const char * const cmd_check_usage[] = {
--- 
-2.26.3
-
+Is this patchset supposed to be in 5.16 as fix for some defrag problem?
+If yes, the patch switching to the control structure should be avoided
+and done as a post cleanup as some other patches depend on it.
