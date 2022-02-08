@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3274ADE77
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 17:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9444ADE80
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 17:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244419AbiBHQjv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 11:39:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S1383468AbiBHQnY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 11:43:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232725AbiBHQju (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 11:39:50 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9D1C061576
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 08:39:49 -0800 (PST)
+        with ESMTP id S232725AbiBHQnX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 11:43:23 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DABC061576
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 08:43:22 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DF3C616C5
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 16:39:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4D1DC004E1;
-        Tue,  8 Feb 2022 16:39:47 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id EE1DFCE1AFC
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 16:43:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA2C9C340EC;
+        Tue,  8 Feb 2022 16:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644338388;
-        bh=yn77t9Z9Vz1B8wv4KJXJDZhkV91IBWUIyBQlH+zUuBs=;
+        s=k20201202; t=1644338597;
+        bh=rZ+O7kiHy5Gmb0/U9yv2K72fgvwdAPt/Q16Ee66fhTQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WSM9wZy4Nf1tltf7YVvbp1PhSV9/rHPEK+sB8nYR3k8xMRYksc+j9Oap1dPYtJoUR
-         kf2kyM5Y97P15z9EtIdxFn0qC2qjmTKVm1opBseE1axtdCPKvQNZZqiLslFIVouYPh
-         vPPqiMk2iAR6Gz9nd+vbzDarmhBzsEHIIRxA4s7+cpuxwRqvl5o2zPwncZyt2M8JZs
-         XuZB6WPWULZHyrSGosl2ONH5CFWZXRuTdEhtnnzji5W2dKg2UeXLHSBsbv3PfuBUum
-         AdRWr+HqALUbxNXih9C1DbTgbObOMXaJ4huOYhFPpALM2PQy4rEHF9q4tT5HeibhDb
-         zj1gvgSv7IzvA==
-Date:   Tue, 8 Feb 2022 16:39:45 +0000
+        b=AHUvgGAv64pYXHUTrJV7JHBqwtUNs33nkdABpe0ny0jT38QaM/3fAB4yvSUTks3IG
+         1HvRznEzT9/11XkAQNnOA7j210qRfEMiWjnSinUhNhhriKHbSt9dIT2iXDLEYkVWId
+         Yr+EUWBK1b9oVug6CzaJ5joHV9mcsqgtTlvpW8EQ7Mii9SL74CQmPb4mw/B8VasLy4
+         5L2D/bIt+j88zHlk5+Os1i1yiRNz95IVEgvDk4BmzgxdIP7F+lGTjdDzQrwZgplRbS
+         geZDv0MYqrV11kzZQNXuz1sVxxAW4krdB2s05Egtq1ULaF7t6KrDrMLtESqdcYIuWQ
+         StFRBpMrcPGhw==
+Date:   Tue, 8 Feb 2022 16:43:14 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: populate extent_map::generation when reading
- from disk
-Message-ID: <YgKc0ax5LWnu/SM7@debian9.Home>
-References: <f5c2cc5d57a7edc120b0e743aa5d82298595ae24.1644298193.git.wqu@suse.com>
+Subject: Re: [PATCH v2] btrfs: defrag: don't try to defrag extents which are
+ under writeback
+Message-ID: <YgKdokMLGVHrsmmk@debian9.Home>
+References: <72af431773a417658d8737f3acb39c1652f7e821.1644303096.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5c2cc5d57a7edc120b0e743aa5d82298595ae24.1644298193.git.wqu@suse.com>
+In-Reply-To: <72af431773a417658d8737f3acb39c1652f7e821.1644303096.git.wqu@suse.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,129 +53,68 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 08, 2022 at 01:31:19PM +0800, Qu Wenruo wrote:
-> [WEIRD BEHAVIOR]
+On Tue, Feb 08, 2022 at 02:54:05PM +0800, Qu Wenruo wrote:
+> Once we start writeback (have called btrfs_run_delalloc_range()), we
+> allocate an extent, create an extent map point to that extent, with a
+> generation of (u64)-1, created the ordered extent and then clear the
+> DELALLOC bit from the range in the inode's io tree.
 > 
-> When btrfs_get_extent() tries to get some file extent from disk, it
-> never populates extent_map::generation , leaving the value to be 0.
-> 
-> On the other hand, for extent map generated by IO, it will get its
-> generation properly set at finish_ordered_io()
-> 
->  finish_ordered_io()
->  |- unpin_extent_cache(gen = trans->transid)
->     |- em->generation = gen;
-> 
-> [CAUSE]
-> Since extent_map::generation is mostly used by fsync code, and for fsync
-> they only care about modified extents, which all have their em::generation > 0.
-> 
-> Thus it's fine to not populate em read from disk for fsync.
-> 
-> [CORNER CASE]
-> However autodefrag also relies on em::geneartion to determine if one extent
-> needs to be defragged.
+> Such extent map can pass the first call of defrag_collect_targets(), as
+> its generation is (u64)-1, meets any possible minimal geneartion check.
 
-em::geneartion -> em::generation
+Same as in the other patch, geneartion -> generation.
 
+> And the range will not have DELALLOC bit, also passing the DELALLOC bit
+> check.
 > 
-> This unpopulated extent_map::geneartion can prevent the following autodefrag
-> case from working:
-
-Same here.
-
+> It will only be re-checked in the second call of
+> defrag_collect_targets(), which will wait for writeback.
 > 
-> 	mkfs.btrfs -f $dev
-> 	mount $dev $mnt -o autodefrag
+> But at that stage we have already spent our time waiting for some IO we
+> may or may not want to defrag.
 > 
-> 	# initial write to queue the inode for autodefrag
-> 	xfs_io -f -c "pwrite 0 4k" $mnt/file
-> 	sync
-> 
-> 	# Real fragmented write
-> 	xfs_io -f -s -c "pwrite -b 4096 0 32k" $mnt/file
-> 	sync
-> 	echo "=== before autodefrag ==="
-> 	xfs_io -c "fiemap -v" $mnt/file
-> 
-> 	# Drop cache to force em to be read from disk
-> 	echo 3 > /proc/sys/vm/drop_caches
-> 	mount -o remount,commit=1 $mnt
-> 	sleep 3
-> 	sync
-> 
-> 	echo "=== After autodefrag ==="
-> 	xfs_io -c "fiemap -v" $mnt/file
-> 	umount $mnt
-> 
-> The result looks like this:
-> 
->   === before autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..15]:         26672..26687        16   0x0
->      1: [16..31]:        26656..26671        16   0x0
->      2: [32..47]:        26640..26655        16   0x0
->      3: [48..63]:        26624..26639        16   0x1
->   === After autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..15]:         26672..26687        16   0x0
->      1: [16..31]:        26656..26671        16   0x0
->      2: [32..47]:        26640..26655        16   0x0
->      3: [48..63]:        26624..26639        16   0x1
-> 
-> This fragmented 32K will not be defragged by autodefrag.
-> 
-> [FIX]
-> To make things less weird, just populate extent_map::generation when
-> reading file extents from disk.
-> 
-> This would make above fragmented extents to be properly defragged:
-> 
->   == before autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..15]:         26672..26687        16   0x0
->      1: [16..31]:        26656..26671        16   0x0
->      2: [32..47]:        26640..26655        16   0x0
->      3: [48..63]:        26624..26639        16   0x1
->   === After autodefrag ===
->   /mnt/btrfs/file:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..63]:         26688..26751        64   0x1
+> Let's reject such extents early so we won't waste our time.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> - Update the subject, commit message and comment.
+>   To replace the confusing phrase "be going to be written back" with
+>   "under writeback".
+> 
+> - Update the commit message to indicate it's not always going to be marked
+>   for defrag 
+>   The second defrag_collect_targets() call will determine its destiny.
+> 
+> - Update the commit message to show why we want to skip it early
+>   To save some time waiting for IO.
+> ---
+>  fs/btrfs/ioctl.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 3a5ada561298..f08005b41deb 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1383,6 +1383,10 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+>  		if (em->generation < ctrl->newer_than)
+>  			goto next;
+>  
+> +		/* This em is goging to be written back, no need to defrag */
 
-I don't want to make you send yet another version because only of
-a typo in the changelog, so:
+Still as in v1, should be "This em is under writeback...".
+
+With that fixed:
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks.
 
-> ---
-> Changelog:
-> v2:
-> - Update the commit message to include a reproducer
->   Although this is not what we want (to reduce autodefrag IO),
->   the behavior still worthy fixing anyway.
-> ---
->  fs/btrfs/file-item.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index 90c5c38836ab..9a3de652ada8 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -1211,6 +1211,7 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
->  	extent_start = key.offset;
->  	extent_end = btrfs_file_extent_end(path);
->  	em->ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
-> +	em->generation = btrfs_file_extent_generation(leaf, fi);
->  	if (type == BTRFS_FILE_EXTENT_REG ||
->  	    type == BTRFS_FILE_EXTENT_PREALLOC) {
->  		em->start = extent_start;
+> +		if (em->generation == (u64)-1)
+> +			goto next;
+> +
+>  		/*
+>  		 * Our start offset might be in the middle of an existing extent
+>  		 * map, so take that into account.
 > -- 
 > 2.35.0
 > 
