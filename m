@@ -2,66 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4F54ACECA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 03:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A58B4AD10A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Feb 2022 06:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345666AbiBHCUo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Feb 2022 21:20:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55720 "EHLO
+        id S1347477AbiBHFdW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 00:33:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345872AbiBHCUn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Feb 2022 21:20:43 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A883C061A73;
-        Mon,  7 Feb 2022 18:20:43 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S234730AbiBHFbZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 00:31:25 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10DAC0401DC
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Feb 2022 21:31:23 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AB68D61467;
-        Tue,  8 Feb 2022 02:20:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8A8EC004E1;
-        Tue,  8 Feb 2022 02:20:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644286842;
-        bh=NLFi2rCztlPLPqtBpWQu8LGPB4klLypkVFQ9xBaOwio=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G1PiBpjnJlU2Ep18UvcZeArW0L8aEnVz92ExEzTDs7uFsXN1so9+OSnRJjeuVfjY7
-         fyRHRjWXMaZa5OSseCISDHVc8t0/g482wwxXI0oObNuRsif/oKDgwa6eCf7iw3pnwn
-         zy1YGltzVNzSrFulGYykKSeJ3crfzNsOR3XtDKPwiZygqvsahmn+5jAny3zH7QsCAw
-         6HaGZjoa7DWE2OMxTItYq8QaizYyrtOr7C9spxyNubTF4BRb7wz6UoftzoJU9JxC8e
-         tzMcpTgJ5LYvdF7h7jpVyEPDKZrx6ZG5u0SJAzYekTAiMWZy9uvS3anfqC6iPatqBU
-         Qyuj5wYYY8ZKA==
-Date:   Mon, 7 Feb 2022 18:20:40 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Boris Burkov <boris@bur.io>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 0/4] tests for btrfs fsverity
-Message-ID: <YgHTeMETyYlatbuM@sol.localdomain>
-References: <cover.1631558495.git.boris@bur.io>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9C834210FF
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 05:31:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1644298282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=351ffGRH2Vb5RnMpKhA4CgluGt9FwyBGkadcVHKidyA=;
+        b=C25VsD+YLYlDLYfExW6j+W069goq6WkFjbL8R57qPZaW1BjpaWRe678Sh3ivwW4s8eCk02
+        5ksLEpvN/rlJMRvIDfv1qhVx1KprzilZHCSKRr792XhOIlHMUQYIqxeo9BbzmK/HpudODc
+        94py/WmWRvsNR7TVe2/dgCLBIfZqAHU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F207A13483
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 05:31:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yrBMLikAAmKLAQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Feb 2022 05:31:21 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: populate extent_map::generation when reading from disk
+Date:   Tue,  8 Feb 2022 13:31:19 +0800
+Message-Id: <f5c2cc5d57a7edc120b0e743aa5d82298595ae24.1644298193.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1631558495.git.boris@bur.io>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:44:33AM -0700, Boris Burkov wrote:
-> This patchset provides tests for fsverity support in btrfs.
-> 
-> It includes modifications for generic tests to pass with btrfs as well
-> as new tests.
-> 
+[WEIRD BEHAVIOR]
 
-Hi Boris, there's been no activity on this patchset in a while.  Are you
-planning to keep working on it?  I'd like to see it finished so that I can start
-including btrfs in the fs-verity testing I do.
+When btrfs_get_extent() tries to get some file extent from disk, it
+never populates extent_map::generation , leaving the value to be 0.
 
-- Eric
+On the other hand, for extent map generated by IO, it will get its
+generation properly set at finish_ordered_io()
+
+ finish_ordered_io()
+ |- unpin_extent_cache(gen = trans->transid)
+    |- em->generation = gen;
+
+[CAUSE]
+Since extent_map::generation is mostly used by fsync code, and for fsync
+they only care about modified extents, which all have their em::generation > 0.
+
+Thus it's fine to not populate em read from disk for fsync.
+
+[CORNER CASE]
+However autodefrag also relies on em::geneartion to determine if one extent
+needs to be defragged.
+
+This unpopulated extent_map::geneartion can prevent the following autodefrag
+case from working:
+
+	mkfs.btrfs -f $dev
+	mount $dev $mnt -o autodefrag
+
+	# initial write to queue the inode for autodefrag
+	xfs_io -f -c "pwrite 0 4k" $mnt/file
+	sync
+
+	# Real fragmented write
+	xfs_io -f -s -c "pwrite -b 4096 0 32k" $mnt/file
+	sync
+	echo "=== before autodefrag ==="
+	xfs_io -c "fiemap -v" $mnt/file
+
+	# Drop cache to force em to be read from disk
+	echo 3 > /proc/sys/vm/drop_caches
+	mount -o remount,commit=1 $mnt
+	sleep 3
+	sync
+
+	echo "=== After autodefrag ==="
+	xfs_io -c "fiemap -v" $mnt/file
+	umount $mnt
+
+The result looks like this:
+
+  === before autodefrag ===
+  /mnt/btrfs/file:
+   EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+     0: [0..15]:         26672..26687        16   0x0
+     1: [16..31]:        26656..26671        16   0x0
+     2: [32..47]:        26640..26655        16   0x0
+     3: [48..63]:        26624..26639        16   0x1
+  === After autodefrag ===
+  /mnt/btrfs/file:
+   EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+     0: [0..15]:         26672..26687        16   0x0
+     1: [16..31]:        26656..26671        16   0x0
+     2: [32..47]:        26640..26655        16   0x0
+     3: [48..63]:        26624..26639        16   0x1
+
+This fragmented 32K will not be defragged by autodefrag.
+
+[FIX]
+To make things less weird, just populate extent_map::generation when
+reading file extents from disk.
+
+This would make above fragmented extents to be properly defragged:
+
+  == before autodefrag ===
+  /mnt/btrfs/file:
+   EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+     0: [0..15]:         26672..26687        16   0x0
+     1: [16..31]:        26656..26671        16   0x0
+     2: [32..47]:        26640..26655        16   0x0
+     3: [48..63]:        26624..26639        16   0x1
+  === After autodefrag ===
+  /mnt/btrfs/file:
+   EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+     0: [0..63]:         26688..26751        64   0x1
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Update the commit message to include a reproducer
+  Although this is not what we want (to reduce autodefrag IO),
+  the behavior still worthy fixing anyway.
+---
+ fs/btrfs/file-item.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 90c5c38836ab..9a3de652ada8 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -1211,6 +1211,7 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+ 	extent_start = key.offset;
+ 	extent_end = btrfs_file_extent_end(path);
+ 	em->ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
++	em->generation = btrfs_file_extent_generation(leaf, fi);
+ 	if (type == BTRFS_FILE_EXTENT_REG ||
+ 	    type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		em->start = extent_start;
+-- 
+2.35.0
+
