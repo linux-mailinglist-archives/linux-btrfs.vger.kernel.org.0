@@ -2,56 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F194AFF3F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 22:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FA24AFF5A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 22:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbiBIVfP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Feb 2022 16:35:15 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:43470 "EHLO
+        id S233703AbiBIVmP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Feb 2022 16:42:15 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:53242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233431AbiBIVfO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 16:35:14 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E105C09CE58
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 13:35:17 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id o19so9747432ybc.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Feb 2022 13:35:17 -0800 (PST)
+        with ESMTP id S233627AbiBIVmO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 16:42:14 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B6EC0DE7EB
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 13:42:16 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id y6so9934330ybc.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Feb 2022 13:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=/qRC7lYOA/4IknRghS92OD/ZBQWLIUwptmn+E38SjXY=;
-        b=HoChxVoNqjLTGHKYNEsRcRTOt2YrBD96nAmpFXTUp3xoBwTMo7uSr94xNN4p6k63uE
-         gSyV6MLdW+BYN3h0Z6qVScisgJ0kohUfC0wl7MjKKrdkSLPRZ4/yuaRWpZEzKNHFXWwM
-         50VfsMTqqCHIAkkkDXG4kpsM3HyYXK0uZebWds88VQsHBnU6W/eyA6udCazZM1gISQ6y
-         PlUGz+raRTFDHJRBvTjbWModdzd/2EHKX6fGj1nlKqsm1aXibp35eY51nQepODnekhyq
-         4qde4g3Cv6e6Pt1CVjllp78f1bOicgi//8fx35k2qvtt/D/F9hMgv1fsoXQqwxfavjlO
-         RTrQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UBbgDzeKJ+eKFlIghxvjCXbbo22+zDmtwjSXUMymGkA=;
+        b=qDzCT5Fwjd7Qji168tBWZR38zcFAWnjrGzKSxoYLoG7FOa73qNwO0+YaFWaZmosVAv
+         A5P94/8fihBFdZn+E+/i+H6SE7vrxnPu5B851GZyNxEq12G4A0IvYDExefzrVY0GQk1E
+         AEXwTrX2FRspbkUvo2RIzFnvupFMhge6G2QudcUWTMOvzeQy3rean07W0vfnVABdOQ/H
+         Elb8OL02kyfoX35qIhxYQ03BJMDnUZ7X8RMu+dQ1QYChsLhXxWz01Mh9gVMvkgBIBUXr
+         XvzpZiKmbs3rjubXfYBgPV2PM5/yMUDd/wkslZgpBec7PamM7CmsF4FEBKlo0abBgUWw
+         XtAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=/qRC7lYOA/4IknRghS92OD/ZBQWLIUwptmn+E38SjXY=;
-        b=xEfh/tU9kZrRawPybjxqWBJMGtFDCmcSVUjcEOb7Qjay2mnSVYHr3UFrzl/2DwbmT3
-         QW2MAXJOMYJVWqLh1bG9Bf9ZqVPSW5iK94c/GXUPQd/Fwa73ZBJ9svd/TPQXapiYcglX
-         T9W07tUVDpqXbs4v2NhzNUzjCllpA9hunuES1TjsNOR08OrBzv26xSvaiRxfptD5SLGx
-         86ywVq5RSGDLIfHaEozKxsz81ZA3Vm0z33hpY+NbV705pqZz+xBkIBfssr37a0U8p1GF
-         jXhw9wttkWMG6dEhouFeg9AbhWBlflyjeIopTH+1Z/HBFIeZyndWMBsQaLQCKV4J0jw8
-         ECMw==
-X-Gm-Message-State: AOAM532+K6ooSo7PcxgH1ZnYJSZInV5bSYA81Vhx4vb8jDu+A8ApVMs0
-        aieaqZxNZ3ipW8ZvwhWWEjTaEyYnmysiTvhp2oenaw==
-X-Google-Smtp-Source: ABdhPJzjeURTISj3wF+sIFSTKwBCYPWUk76yFPqfTpjrNSGy6QdC8cc5i775RSiBvArmx06548vV3mj2VxjCOCh++84=
-X-Received: by 2002:a25:4802:: with SMTP id v2mr4261606yba.524.1644442515885;
- Wed, 09 Feb 2022 13:35:15 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UBbgDzeKJ+eKFlIghxvjCXbbo22+zDmtwjSXUMymGkA=;
+        b=N6gXhxqd+06O8vrXkNekKtS7GtGTpLKk9or3x9G2Q9Efv6vSMzoeL9UwqCctNZ5E3K
+         TDzsKhSEFYi7JuHwYIHFne0iC4Xaxq5BATm4jbz+ni1ogPZV6VO1bWY7ne1KUj706dGa
+         5UP0ui5hyx8sWatG9L1ocBrTPLHE4GGIZ4WPM7mMglGRHxROgQO4DN+fzLS0oB1izNN4
+         YUEsdD08scE9pjRR3MhrTPYLCMmIqr7JSu8k8JCDCHAZN7QP3STwOkWNwPL2kyCcX8wn
+         OEV5TOYIoW3pi62ArYXnXPmI1itCb6sTPjgMQNkAkdGrldUHWQ9WmMwQP4Ve3mhKM6ot
+         zJpg==
+X-Gm-Message-State: AOAM532r/9uVPBGI/f58GCpA8jaLlBcqFAI15ggu8MfPWSNj3adJWXGA
+        Es6xw6sUq9lNDS0gKm7YYJylNjDoIRJC7lDLR973rjLPS4mzGQ==
+X-Google-Smtp-Source: ABdhPJxlfr+irjqVBfWog618bl/fGfjfD8ya2dVVaMAXDTRviXiPyra2iDHjn1kA2Bpvr0AwxkenT+XOpYDDIabv4lo=
+X-Received: by 2002:a25:e0c7:: with SMTP id x190mr3896307ybg.642.1644442935932;
+ Wed, 09 Feb 2022 13:42:15 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com>
-In-Reply-To: <CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com>
+References: <bd60df7210fdf3ed1dae48a8cb9908a5@vybihal.cz>
+In-Reply-To: <bd60df7210fdf3ed1dae48a8cb9908a5@vybihal.cz>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 9 Feb 2022 14:35:00 -0700
-Message-ID: <CAJCQCtQHZKm_mxNTaGWYD8VebMkGeX_12Ugz3f5c0BEiBROZvQ@mail.gmail.com>
-Subject: Re: MySQL corruption on BTRFS
-To:     Tymoteusz Dolega <tymoteuszdolega@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Wed, 9 Feb 2022 14:42:00 -0700
+Message-ID: <CAJCQCtRs0YgBbzF5qUAqpFZra7wbEjMzeu6zZUo4zNNPxA+YcA@mail.gmail.com>
+Subject: Re: failed to repair damaged filesystem, aborting | kernel BUG at fs/btrfs/extent-tree.c:4955!
+To:     =?UTF-8?Q?Josef_Vyb=C3=ADhal?= <josef@vybihal.cz>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -61,64 +63,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 8, 2022 at 1:07 AM Tymoteusz Dolega
-<tymoteuszdolega@gmail.com> wrote:
+On Fri, Feb 4, 2022 at 6:53 AM Josef Vyb=C3=ADhal <josef@vybihal.cz> wrote:
 >
-> Hello,
-> I maybe encountered a bug. I'm using NixOS, and after enabling MySQL with:
+> Hello, btrfs failed me big time today. I am using archlinux, linux 5.16.
+> My laptop started strangely lagging. I discovered, all of the sudden,
+> btrfs was mounted ro. I rebooted and then the system acted very weird. I
+> have discovered it was because ANY write operation just hangs
+> indefinitely. For example 'touch test' just hangs. removing snapshot
+> hangs. I should probably mention btrfs is inside of luks.
+> I have cloned the disk and booted ubuntu live from USB and started
+> poking around the clone.
 >
-> services.mysql = {
->       enable = true;
->       package = pkgs.mariadb;
->  };
->
-> it cannot even start, and fails with "code=killed, status=6/ABRT". The
-> problem that MySQL reports in journal is about file corruption. I
-> attached all logs at the bottom of this mail.
-> I tried changing database location to different BTRFS SSD, cleanly
-> formatted, and problem persists. After changing database location to
-> EXT4 partition, everything works perfectly. I tried newer MySQL
-> version (from nix-unstable), but still errors show up. Current version
-> is 10.6.5-MariaDB. I tried deleting DB folder to force it to make it
-> again. Scrub is clean, check (--readonly) is clean. I have only 1
-> mount option: "noatime". "mount" reports:
-> (rw,noatime,ssd,space_cache,subvolid=5,subvol=/).
->
-> uname -a
-> Linux desktop-nixos 5.16.4 #1-NixOS SMP PREEMPT Sat Jan 29 09:59:25
-> UTC 2022 x86_64 GNU/Linux
->
-> btrfs --version
-> btrfs-progs v5.14.1
->
-> sudo btrfs fi show
-> Label: 'nixos'  uuid: 67b6e734-cd1e-41e3-ab7a-63660e540014
->         Total devices 1 FS bytes used 95.05GiB
->         devid    1 size 249.00GiB used 98.03GiB path /dev/nvme0n1p5
->
-> Label: 'cruc'  uuid: cc51fa3c-57db-42b6-a890-ff5cd7b18f47
->         Total devices 1 FS bytes used 125.16MiB
->         devid    1 size 931.51GiB used 2.02GiB path /dev/sdb1
->
-> btrfs fi df /mnt/cruc
-> Data, single: total=1.01GiB, used=124.84MiB
-> System, single: total=4.00MiB, used=16.00KiB
-> Metadata, single: total=1.01GiB, used=304.00KiB
-> GlobalReserve, single: total=3.25MiB, used=0.00B
->
-> dmesg.log  - https://www.dropbox.com/s/ou52m2hdjzmjy6b/dmesg.log?dl=0
-> but there is not much there besides you can see I cleanly formatted the drive
-> mysql - https://www.dropbox.com/s/jjthkfu0anh8n2o/mysql.log?dl=0
-> log with info about corruption
-> (links hosted on dropbox, you can see them without logging in)
-> I will be happy to answer any needed questions.
+> I uploaded dmesg and whole result of btrfs check here:
+> https://up.jvi.cz/0X.txt
 
-Does this happen just on starting up mariadb for the first time? I'm
-wondering how to go about reproducing it on Fedora where I have
-mariadb 10.6.5, kernel 5.17-rc3. All I'm doing is systemctl start
-mariadb, and it starts up OK. Other than the kernel I'm wondering
-what's different about them.
+Attached dmesg is 5.13 kernel. Are you using autodefrag mount option
+with this file system? If so, I suggest disabling it with 5.16 series
+until some bugs get fixed up.
 
 
--- 
+> Is there something I can do to fix it? Whom to send the image with
+> metadata? It has 3+ GB.
+
+I'd say if you can reproduce with current stable or mainline kernel,
+it's worth going to the trouble. Most of the development work is
+predicated on the most recent kernels, either the problem is already
+fixed in a newer kernel, or if it's still a bug then it needs to be
+fixed in a current kernel before it would get backported. While you
+can run into new bugs (like autodefrag issues in 5.16 series), most
+everyone on the list and in #btrfs will know about the current issues,
+whereas older issues in older kernels, it's a coin toss if someone
+remembers or has time to look it up.
+
+
+>
+> Or should I start reinstalling and recovering from backup?
+
+That's surely the fastest option.
+
+
+--=20
 Chris Murphy
