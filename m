@@ -2,109 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071284AF595
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 16:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 278184AF5AF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 16:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbiBIPm0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Feb 2022 10:42:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        id S235162AbiBIPqY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Feb 2022 10:46:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234746AbiBIPmZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 10:42:25 -0500
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D5DC0613CA
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 07:42:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1644421347; x=1675957347;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Bnp+OYoN4Ldbqq1PGct3hiFAjvME22Z3lnMNx7DFNas=;
-  b=Fhps7ZEBolNK0aE5RCwWybbsp5P8w8RCgNU15zrrLuFpfwh39ZVqyYUq
-   F0UJLEvVBpHbBwGOO6LBU054tAoeah2/Y7tvLiN317Cggb3g6kXz+ohyO
-   cret5cgx90JdlPKNdQO334pb9wCop3LgudMrDPJ4C8gTEpOB5rw9gnJSa
-   hBpQjm8QX9M8G9FSbV8bmAFsTPZoP3cS7mgxsftgPusQpvaRfkaKwuv8i
-   c6ici5kLxwgHpPAaveHsngJ4I5d412rNS4cINKie5XSseXxLRqOIYHEB/
-   MGGynr6jwRI/35iJvj88pSlUQXDorfdxa/gV0VonFonXAPk5yGFdf9TdY
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.88,356,1635177600"; 
-   d="scan'208";a="197334818"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Feb 2022 23:42:27 +0800
-IronPort-SDR: axV/SOmuhuTJMSu/vtabQaoKI1M8sr7HNyTIMggQ9qqr6RVwUtQVCLrGGxSzZjgEcYo0AUhS+h
- VO7UNyE4M6jYoARjubU/JLHfgtznVYtoqmGY/QG5n11NyKxChdMgK1bBhNVnidWkUDQ7ZDEhOB
- aS1OjOyH6/eo2Tq45LxI4v7OI+s0L6dtS8HxLlpBp+6EgqWgu0U1cA/GhmNDkWJZNRZsT+VXlw
- B1kojTRW/rC2c9M3dOJqoTBKFzuC70yMQChP3cfngFd4z+0m3J+wN9Q7M1la1qjV+/V5GN4HPU
- 9h1+0D4cuQ3REtVbmUxQ8CWj
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2022 07:14:16 -0800
-IronPort-SDR: dBqvdmzloRgxjwSQQJrd2qtxAsd5ZzyHiJVudNWK7Xd2NUFgSG1KflQy9ov8rRcoKIEWdUOWaj
- 9ZZgrYAlU2kLkBeUmdt+PDr6Mn8hYeEIAGR7+k/M/Jk/dhRduPhfYeNWqlSQXNId1KnROWj3hY
- RmsWHSX0EYVS4xPcpYdcC45xCJEBbmhkE2vKjLb89GDnO4MkYnieNrotklOURnoEHbL0NnABPs
- RyiTKlnGPCs9OE3oH1xa8CE24NPUKNQan/DnwQDlgJ2Zf+5MlLzgta5hrWcCIsiI8GUY0rPzny
- ulg=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 09 Feb 2022 07:42:27 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: pass in block-group type to zoned_profile_supported
-Date:   Wed,  9 Feb 2022 07:42:18 -0800
-Message-Id: <20220209154218.181569-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S232680AbiBIPqW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 10:46:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F5CC0613C9
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 07:46:25 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 402A1B81FB8
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 15:46:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59747C340E7;
+        Wed,  9 Feb 2022 15:46:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644421582;
+        bh=snw+/988eaozqCTw1FTyOtemixAavulUcdFeY/Nu08c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tYEBcCGuYmxegl/OgmCTU7yT92iHnEIALmrfb2g31CrA5CPsQc/M0/GGllzkzHzjT
+         +mGhj4pjSTVEPoIP2fYqEKdurjqP59Q+LdNnax8yRyD9GwS+bMwc9kN1/ehOL+WAWA
+         7MVzDFtP3+Snz4ptHWlBj2rhu1gKQeOwVp56+xtJDweQXUGS+H3+QQvYUAXvYxa0VS
+         JoZeV+/MvcjRrvhB3RHP6nD1c61yEBSVlPbpdcabwW9+GP+ICMhzxeZmOGoNxumvzz
+         hu0dqlgUzOu0MzXCLtmYchTbGcZ7CpxoYLOLRmDMRNbVcDMy49Z/n7q8XxS2vUzxLJ
+         8WYFkHD8iFGMg==
+Date:   Wed, 9 Feb 2022 15:46:20 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] btrfs: defrag: don't use merged extent map for
+ their generation check
+Message-ID: <YgPhzFA3230j2mlf@debian9.Home>
+References: <cover.1644301903.git.wqu@suse.com>
+ <fe880742bbee1e1c219c7b468300724a3336107d.1644301903.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe880742bbee1e1c219c7b468300724a3336107d.1644301903.git.wqu@suse.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Pass BTRFS_BLOCK_GROUP_DATA and BTRFS_BLOCK_GROUP_METADATA to
-zoned_profile_supported(), so we can actually distinguish if it is a data
-or a meta-data block group.
+On Tue, Feb 08, 2022 at 02:36:31PM +0800, Qu Wenruo wrote:
+> For extent maps, if they are not compressed extents and are adjacent by
+> logical addresses and file offsets, they can be merged into one larger
+> extent map.
+> 
+> Such merged extent map will have the higher generation of all the
+> original ones.
+> 
+> This behavior won't affect fsync code, as only extents read from disks
+> can be merged.
 
-Fixes: 8f914d518a46 ("btrfs-progs: zoned support DUP on metadata block groups")
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- kernel-shared/zoned.h | 2 +-
- mkfs/main.c           | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+That is not true. An extent created by a write can be merged after a
+fsync runs and logs the extent. So yes, extent maps created by writes
+can be merged, but only after an fsync.
 
-diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
-index ebd6dc34c619..db7567d02742 100644
---- a/kernel-shared/zoned.h
-+++ b/kernel-shared/zoned.h
-@@ -118,7 +118,7 @@ static inline bool btrfs_dev_is_empty_zone(struct btrfs_device *device, u64 pos)
- 	return zinfo->zones[zno].cond == BLK_ZONE_COND_EMPTY;
- }
- 
--bool zoned_profile_supported(u64 flags);
-+bool zoned_profile_supported(u64 map_type);
- int btrfs_reset_dev_zone(int fd, struct blk_zone *zone);
- u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
- 				 u64 hole_end, u64 num_bytes);
-diff --git a/mkfs/main.c b/mkfs/main.c
-index e6c4eb1f9b93..f9e8be748c5a 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1349,8 +1349,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	if (ret)
- 		goto error;
- 
--	if (zoned && (!zoned_profile_supported(metadata_profile) ||
--		      !zoned_profile_supported(data_profile))) {
-+	if (zoned && (!zoned_profile_supported(BTRFS_BLOCK_GROUP_METADATA | metadata_profile) ||
-+		      !zoned_profile_supported(BTRFS_BLOCK_GROUP_DATA | data_profile))) {
- 		error("zoned mode does not yet support RAID/DUP profiles, please specify '-d single -m single' manually");
- 		goto error;
- 	}
--- 
-2.34.1
+> 
+> But this brings a problem for autodefrag, as it relies on accurate
+> extent_map::generation to determine if one extent should be defragged.
+> 
+> For merged extent maps, their higher generation can mark some older
+> extents to be defragged while the original extent map doesn't meet the
+> minimal generation threshold.
+> 
+> Thus this will cause extra IO.
+> 
+> So solve the problem, here we introduce a new flag, EXTENT_FLAG_MERGED, to
+> indicate if the extent map is merged from one or more ems.
+> 
+> And for autodefrag, if we find a merged extent map, and its generation
+> meets the generation requirement, we just don't use this one, and go
+> back to defrag_get_extent() to read em from disk.
 
+Instead of saying from disk, I would say from the subvolume btree. That
+may or may not require reading a leaf, and any nodes in the path from the
+root to the leaf, from disk.
+
+> 
+> This could cause more read IO, but should result less defrag data write,
+> so in the long run it should be a win for autodefrag.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_map.c |  2 ++
+>  fs/btrfs/extent_map.h |  8 ++++++++
+>  fs/btrfs/ioctl.c      | 14 ++++++++++++++
+>  3 files changed, 24 insertions(+)
+> 
+> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+> index 5a36add21305..c28ceddefae4 100644
+> --- a/fs/btrfs/extent_map.c
+> +++ b/fs/btrfs/extent_map.c
+> @@ -261,6 +261,7 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+>  			em->mod_len = (em->mod_len + em->mod_start) - merge->mod_start;
+>  			em->mod_start = merge->mod_start;
+>  			em->generation = max(em->generation, merge->generation);
+> +			set_bit(EXTENT_FLAG_MERGED, &em->flags);
+>  
+>  			rb_erase_cached(&merge->rb_node, &tree->map);
+>  			RB_CLEAR_NODE(&merge->rb_node);
+> @@ -278,6 +279,7 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+>  		RB_CLEAR_NODE(&merge->rb_node);
+>  		em->mod_len = (merge->mod_start + merge->mod_len) - em->mod_start;
+>  		em->generation = max(em->generation, merge->generation);
+> +		set_bit(EXTENT_FLAG_MERGED, &em->flags);
+>  		free_extent_map(merge);
+>  	}
+>  }
+> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+> index 8e217337dff9..d2fa32ffe304 100644
+> --- a/fs/btrfs/extent_map.h
+> +++ b/fs/btrfs/extent_map.h
+> @@ -25,6 +25,8 @@ enum {
+>  	EXTENT_FLAG_FILLING,
+>  	/* filesystem extent mapping type */
+>  	EXTENT_FLAG_FS_MAPPING,
+> +	/* This em is merged from two or more physically adjacent ems */
+> +	EXTENT_FLAG_MERGED,
+>  };
+>  
+>  struct extent_map {
+> @@ -40,6 +42,12 @@ struct extent_map {
+>  	u64 ram_bytes;
+>  	u64 block_start;
+>  	u64 block_len;
+> +
+> +	/*
+> +	 * Generation of the extent map, for merged em it's the highest
+> +	 * generation of all merged ems.
+> +	 * For non-merged extents, it's from btrfs_file_extent_item::generation.
+
+Missing the (u64)-1 special case, a temporary value set when writeback starts
+and changed when the ordered extent completes.
+
+> +	 */
+>  	u64 generation;
+>  	unsigned long flags;
+>  	/* Used for chunk mappings, flag EXTENT_FLAG_FS_MAPPING must be set */
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index fb4c25e5ff5f..3a5ada561298 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1169,6 +1169,20 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
+>  	em = lookup_extent_mapping(em_tree, start, sectorsize);
+>  	read_unlock(&em_tree->lock);
+>  
+> +	/*
+> +	 * We can get a merged extent, in that case, we need to re-search
+> +	 * tree to get the original em for defrag.
+> +	 *
+> +	 * If @newer_than is 0 or em::geneartion < newer_than, we can trust
+
+em::geneartion -> em::generation
+
+> +	 * this em, as either we don't care about the geneartion, or the
+
+geneartion, -> generation
+
+The rest looks fine.
+Thanks.
+
+> +	 * merged extent map will be rejected anyway.
+> +	 */
+> +	if (em && test_bit(EXTENT_FLAG_MERGED, &em->flags) &&
+> +	    newer_than && em->generation >= newer_than) {
+> +		free_extent_map(em);
+> +		em = NULL;
+> +	}
+> +
+>  	if (!em) {
+>  		struct extent_state *cached = NULL;
+>  		u64 end = start + sectorsize - 1;
+> -- 
+> 2.35.0
+> 
