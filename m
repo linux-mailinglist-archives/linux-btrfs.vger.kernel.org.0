@@ -2,114 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C61E4AE5CF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 01:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790DF4AE61D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 01:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239429AbiBIARf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 19:17:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        id S240122AbiBIAf5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 19:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbiBIARe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 19:17:34 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D558C061576
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 16:17:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644365850;
-        bh=bClZc0dg5wng+fsB6TdWiik2pGDzF+W0/LVpHLnhX2k=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=KibSDF052J61pftvjYO4mNh++OH3J+AIoeydSic+CrAoHxzSvakK1IBV3zJe1mCpG
-         AxHu4KewUxn8L9OasHenO1qc2ppPVwKblK/tddOe8gxAswkgC8Oj0dUTRHlgucogTy
-         I2P1VzV1eCiIunPINvnq0pJ7MunTMkPp629EA25I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MVvLB-1nivGe3lun-00Rtaw; Wed, 09
- Feb 2022 01:17:30 +0100
-Message-ID: <b50e1856-f03e-8570-6283-54e5f673a040@gmx.com>
-Date:   Wed, 9 Feb 2022 08:17:27 +0800
+        with ESMTP id S240164AbiBIAfw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 19:35:52 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A793DC06157B;
+        Tue,  8 Feb 2022 16:35:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 69C87B8175F;
+        Wed,  9 Feb 2022 00:35:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D701C004E1;
+        Wed,  9 Feb 2022 00:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644366949;
+        bh=SINN8rvGIdWaD570mnD1Dd9uhTxoVudJ59to5rkpYww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m+NMD5X/+nPUTxTAHv/VqupB5mmHiUU2Owh5ztqO8Zr/7WGaEPDwBwfwT36astLLe
+         qEjrMQW6gCtUDwZFNo6nbM4WwstfbZEPHe28xmTFQbQaOcGfDN8v2azP2LZO82wXNf
+         xvGWIxrZ32NNLBvIxV3sL5L+0dY3pdCwpOnZ5ixj4YvBzzxOggb35SgpJ4WZgAuGUU
+         B7YM38guhBeK4DbPgql7Th4Y1GcnQhEr0dPm3+i/JQ1+oLt03aztDf1YWSikw0TMCf
+         MjtASBYZzvxjO+MiYTgqyz55b/o9JMgCu5LcjFSr6TlPJw3PxyP5XxjvJiInW0tP96
+         cyyp6UCGYpEQA==
+Date:   Tue, 8 Feb 2022 16:35:48 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: Re: [PATCH 2/7] generic/{171,172,173,174,204}: check
+ _scratch_mkfs_sized return code
+Message-ID: <20220209003548.GC8288@magnolia>
+References: <20220207065541.232685-1-shinichiro.kawasaki@wdc.com>
+ <20220207065541.232685-3-shinichiro.kawasaki@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: Re: [PATCH v3 0/5] btrfs: defrag: don't waste CPU time on non-target
- extent
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1644039494.git.wqu@suse.com>
- <20220208220923.GH12643@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220208220923.GH12643@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Vm1vJWcS08WmKORNw6AQOxCgqimcs+JAahLJjHT3MqDb6mM0C7t
- BC1D2TMPBsOPToHBPaSTjc8FFQwAXvxzM3gVj9JKmKo+EOqDZpC+L7ieim74Wx4KrH+iAql
- zmOg3GfPU54tta4VibR6xfxqJoeho2rLlW14wF0TBotNUqGQyePERvyclcN5N1gCiXX92Dt
- Zv9G33zMamLMfRJ9APCzA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CQ51NNDF4rs=:CC/O15haaTM1/2HwkkjDL6
- 1P3NUfH0DaW7Ic1N88X6W/tAO8Q6MYS5l+acDk7nwQ2Y3OJ7p4VPsNvr84OOP+R8oI8Zpjb0S
- 6ataWOrb7ViHaZn3kTb98WUtt6cXJiEkcjuaguFADKF7oyb7CgHiR4t3BIG351ySm6SSjMQK8
- ERZ0Rq4H/6nqPC3Plhibn7Y3WA5yHhYZTriSM8bnH/9fGiig4UM9qgIcO3mPn5Y3083INt0lv
- VJCr7cyyH3GJZ/4RzuqmOWCx8dKB7djC0MDEXD2ugsJp/xZgq48aTiIXnu3r9hOVHpqY/D7Pa
- d1SwSPfDeDd01sDG/PVnX2KpMwCyRCmPJpzMYIchT/JUxNI6qMs6iJf0fjuu4y4avQDTI/Yde
- I0ow7m01ontMJm0IUs3P9L2fXr7OHDjEKsl28DlOEYm5TnmKntqiA/PFNUfHLoz8MyUApqVWM
- 25qzLNrNl5rVqEXxRiw0eMIx72GQTFetbO01gV6TxCRyC5ynfB9cUDjtro1G+yejszFZLXrjd
- LIxybj3FeKsf1uiwQmqVq7L04CLgKpJfU9Mj1cxlZGg8JGIu5kK5K9n/UBB0f2DKyTooroBvQ
- cNAU5ZQHOaV36BV3dMbqPQBOg58RLEoCiDmm1eKaUhWtHm+E56VfhIRznu5kv25wDD14U5CVC
- lDA21x0ZW2CGaPlRU7Bk9BfLaqowoV7BGOL4PbRYkGv8mIj3gK+baR7z0cs7IF56IUu6uE+fX
- ABFedbB0JaPArtmKZlq2lD55g5b6qV58csx8vQ618mBLUgdJxDC03dmcbWqX5dHGBlkeIUIdP
- 2xec/hOQtjgCX7dgVB9OmuQywiK1rqsgKNHGNHSMHs29bZ5QfYq6Izg8L/ILuEHeeHr697or+
- JUk+kIlpUvoII9/bpsKXLeL6sWc8is7OfwSoN0+00DEZtlupevUKhhiUlK2WvKvP/anWDYlLY
- 7hOzhB2pU1rSkpGwfu8cEYGVb320BKixyq0BhSh4AxQ1d1uMRwCoPLNYNp0ZwamtUfd6SBpA1
- FU/CqSHj67YGZT5Ows1LXTIXrL4BEG/ifUTqJBaVevUp5JUDNADTNcMWrTwkoEnTUcpT/I0iC
- GbgTE0x0ZrRBoY=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220207065541.232685-3-shinichiro.kawasaki@wdc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Feb 07, 2022 at 03:55:36PM +0900, Shin'ichiro Kawasaki wrote:
+> The test cases generic/{171,172,173,174,204} call _scratch_mkfs before
+> _scratch_mkfs_sized, and they do not check return code of
+> _scratch_mkfs_sized. Even if _scratch_mkfs_sized failed, _scratch_mount
+> after it cannot detect the sized mkfs failure because _scratch_mkfs
+> already created a file system on the device. This results in unexpected
+> test condition of the test cases.
+> 
+> To avoid the unexpected test condition, check return code of
+> _scratch_mkfs_sized in the test cases.
+> 
+> Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 
+Hm.  I wonder, are there other tests that employ this _scratch_mkfs ->
+scratch_mkfs_sized sequence and need patching?
 
-On 2022/2/9 06:09, David Sterba wrote:
-> On Sat, Feb 05, 2022 at 01:41:01PM +0800, Qu Wenruo wrote:
->> In the rework of btrfs_defrag_file() one core idea is to defrag cluster
->> by cluster, thus we can have a better layered code structure, just like
->> what we have now:
->>
->> btrfs_defrag_file()
->> |- defrag_one_cluster()
->>     |- defrag_one_range()
->>        |- defrag_one_locked_range()
->>
->> But there is a catch, btrfs_defrag_file() just moves the cluster to the
->> next cluster, never considering cases like the current extent is alread=
-y
->> too large, we can skip to its end directly.
->>
->> This increases CPU usage on very large but not fragmented files.
->>
->> Fix the behavior in defrag_one_cluster() that, defrag_collect_targets()
->> will reports where next search should start from.
->>
->> If the current extent is not a target at all, then we can jump to the
->> end of that non-target extent to save time.
->>
->> To get the missing optimization, also introduce a new structure,
->> btrfs_defrag_ctrl, so we don't need to pass things like @newer_than and
->> @max_to_defrag around.
->
-> Is this patchset supposed to be in 5.16 as fix for some defrag problem?
-> If yes, the patch switching to the control structure should be avoided
-> and done as a post cleanup as some other patches depend on it.
+$ git grep -l _scratch_mkfs_sized | while read f; do grep -q
+'_scratch_mkfs[[:space:]]' $f && echo $f; done
+common/encrypt
+common/rc
+tests/ext4/021
+tests/generic/171
+tests/generic/172
+tests/generic/173
+tests/generic/174
+tests/generic/204
+tests/generic/520
+tests/generic/525
+tests/xfs/015
 
-I can backport it manually to v5.16 without the ctrl refactor.
+generic/520 is a false positive, and you patched the rest.  OK, good.
 
-The problem of the current situation is not really ideal, thus I put the
-refactor first.
+I wonder if the maintainer will ask for the _scratch_mkfs_sized in the
+failure output, but as far as I'm concerned:
 
-Thanks,
-Qu
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  tests/generic/171 | 2 +-
+>  tests/generic/172 | 2 +-
+>  tests/generic/173 | 2 +-
+>  tests/generic/174 | 2 +-
+>  tests/generic/204 | 3 ++-
+>  5 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tests/generic/171 b/tests/generic/171
+> index fb2a6f14..f823a454 100755
+> --- a/tests/generic/171
+> +++ b/tests/generic/171
+> @@ -42,7 +42,7 @@ sz_bytes=$((nr_blks * 8 * blksz))
+>  if [ $sz_bytes -lt $((32 * 1048576)) ]; then
+>  	sz_bytes=$((32 * 1048576))
+>  fi
+> -_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/172 b/tests/generic/172
+> index ab5122fa..383824b9 100755
+> --- a/tests/generic/172
+> +++ b/tests/generic/172
+> @@ -40,7 +40,7 @@ umount $SCRATCH_MNT
+>  
+>  file_size=$((768 * 1024 * 1024))
+>  fs_size=$((1024 * 1024 * 1024))
+> -_scratch_mkfs_sized $fs_size >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $fs_size >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/173 b/tests/generic/173
+> index 0eb313e2..e1493278 100755
+> --- a/tests/generic/173
+> +++ b/tests/generic/173
+> @@ -42,7 +42,7 @@ sz_bytes=$((nr_blks * 8 * blksz))
+>  if [ $sz_bytes -lt $((32 * 1048576)) ]; then
+>  	sz_bytes=$((32 * 1048576))
+>  fi
+> -_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/174 b/tests/generic/174
+> index 1505453e..c7a177b8 100755
+> --- a/tests/generic/174
+> +++ b/tests/generic/174
+> @@ -43,7 +43,7 @@ sz_bytes=$((nr_blks * 8 * blksz))
+>  if [ $sz_bytes -lt $((32 * 1048576)) ]; then
+>  	sz_bytes=$((32 * 1048576))
+>  fi
+> -_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1
+> +_scratch_mkfs_sized $sz_bytes >> $seqres.full 2>&1 || _fail "mkfs failed"
+>  _scratch_mount >> $seqres.full 2>&1
+>  rm -rf $testdir
+>  mkdir $testdir
+> diff --git a/tests/generic/204 b/tests/generic/204
+> index a3dabb71..b5deb443 100755
+> --- a/tests/generic/204
+> +++ b/tests/generic/204
+> @@ -35,7 +35,8 @@ _scratch_mkfs 2> /dev/null | _filter_mkfs 2> $tmp.mkfs > /dev/null
+>  [ $FSTYP = "xfs" ] && MKFS_OPTIONS="$MKFS_OPTIONS -l size=16m -i maxpct=50"
+>  
+>  SIZE=`expr 115 \* 1024 \* 1024`
+> -_scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw
+> +_scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw \
+> +	|| _fail "mkfs failed"
+>  cat $tmp.mkfs.raw | _filter_mkfs 2> $tmp.mkfs > /dev/null
+>  _scratch_mount
+>  
+> -- 
+> 2.34.1
+> 
