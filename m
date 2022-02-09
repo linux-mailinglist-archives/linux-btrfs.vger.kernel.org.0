@@ -2,109 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0964AFE19
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 21:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8714AFEE4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 22:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbiBIURx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Feb 2022 15:17:53 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:37264 "EHLO
+        id S232809AbiBIVEK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Feb 2022 16:04:10 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:54574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230429AbiBIURw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 15:17:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44216E032A86
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 12:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644437869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KHy+FrMszZUXNvq7VkE1Sw+oLSzIRN5aM5gdNpzgAuE=;
-        b=QWpkt8Rx7zxPIlCq7TT5uu/V7eU0lUUgZFYhIbk5ieJAUEqQocehCIuitrDtqlzK/rLp7y
-        r8/mlmr+NJuVpH9UJIYCwM/b30fq+pXepIjPamun8g20HiI3G7GPNUWAK693qOyZUGDW9O
-        Xe64LEpQXJj7QIB+5ZBDrvctGV07reQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-62-9Cqsjq2nPzOSvqBNqWFcoA-1; Wed, 09 Feb 2022 15:17:44 -0500
-X-MC-Unique: 9Cqsjq2nPzOSvqBNqWFcoA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E37D4814243;
-        Wed,  9 Feb 2022 20:17:41 +0000 (UTC)
-Received: from [10.22.9.207] (unknown [10.22.9.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12EB55D6D5;
-        Wed,  9 Feb 2022 20:17:38 +0000 (UTC)
-Message-ID: <f8b7760f-16a2-6ada-de88-9e21a7e8fef9@redhat.com>
-Date:   Wed, 9 Feb 2022 15:17:38 -0500
+        with ESMTP id S232769AbiBIVEJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 16:04:09 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6CEC033255
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 13:04:11 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id y129so9668067ybe.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Feb 2022 13:04:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tdi62GSkxUrAtmOmpQlE0lAGL99BmNDqPsZdqWU8TTM=;
+        b=C8WecqHugBuP9UvePOHJxmVr7DM85aghJJldVJxuGKL26lY6yYEj/CPjslUmKh3Oe2
+         hJr/3FzJ4Yi31sy2JH4+Z5YEwIbcqQr1CHTAkBjSzCC179iaPJVIUm6tgjTHAjNV3K9F
+         oIGT4Iv3gnqrZt+LLSlEbIuls9rcGms11RZPKKkyipxU0tXrw2csvQXuLQGK0OXlK8f3
+         zDtNoaGzNKXqZsOWEbigOoOW6w3JqWNB/yThyyyTfER8kxQRUSSVL0i4pM1HhVX+IqZM
+         RhBOtmpnRpjXZ4+7NsJwMu7o1hukfoRL/DiPWu8XDfc5vvsFcwdIgUArRFy8H5AFqgwG
+         ocLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tdi62GSkxUrAtmOmpQlE0lAGL99BmNDqPsZdqWU8TTM=;
+        b=Ev3UTWVOOXOAIWzfzkpQ3XvmZ2X1vutZC66Sj3HjFjVI55r5RynMblK9aqMPfECcna
+         i7SpgrWbrVSE2zUQn/N2UQT+2mn0gFUYY33TQ1TFZalPNn8q+saSWEVhQe1SvITj5ZMN
+         /RaQDdL0ndjPQXMTOWQPAEVI/KGwEuqDVIpZBzgDc/mjKxJ4KoM0piLY8kboN/J0rMC7
+         4Y6cz+eeVzPJYIwPF3AnFt5EAOlh7tf2BmE0raEqZMoT6Cp7+YAhPEaBkMi1W+VY2dBd
+         eIahsauanilFYI/ngfBnVudF0/rsWiPmJ1O4lGPvdmmTC6z3RJG8gbLVBCIMeJzJuWfW
+         E9HA==
+X-Gm-Message-State: AOAM530/dMB7uJhZEYnKBwAyr1xpnY5IBNJcyBemVuF2DnrCk7hqGNNR
+        4PSvPNh+KAMbtzn6a5M43tbauoei17HDWaIeunYOaDaFIjJ4y0aO
+X-Google-Smtp-Source: ABdhPJwOBNMrEW2mtv9dUcZtgP8wtea//jbffy2uglclzmZj/5dbDB5ImWbU0xYxuEmEbiVb/dCVx23zGWwpugVFpJk=
+X-Received: by 2002:a81:2ed6:: with SMTP id u205mr4229480ywu.23.1644440650453;
+ Wed, 09 Feb 2022 13:04:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
-Content-Language: en-US
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        paulmck <paulmck@kernel.org>
-References: <20220208184208.79303-1-namhyung@kernel.org>
- <20220209090908.GK23216@worktop.programming.kicks-ass.net>
- <24fe6a08-5931-8e8d-8d77-459388c4654e@redhat.com>
- <919214156.50301.1644431371345.JavaMail.zimbra@efficios.com>
- <69e5f778-8715-4acf-c027-58b6ec4a9e77@redhat.com>
- <CAM9d7ci=N2NVj57k=W0ebqBzfW+ThBqYSrx-CZbgwGcbOSrEGA@mail.gmail.com>
- <718973621.50447.1644434890744.JavaMail.zimbra@efficios.com>
- <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <776a73dbf91d4518a36b465ac9ac2d5a@hemeria-group.com>
+In-Reply-To: <776a73dbf91d4518a36b465ac9ac2d5a@hemeria-group.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 9 Feb 2022 14:03:54 -0700
+Message-ID: <CAJCQCtQB8HkHDV8jYJUMroaGsMOfCNf3TH_7mO2qz_Oqw-zPMQ@mail.gmail.com>
+Subject: Re: Root level mismatch after sudden shutdown
+To:     BERGUE Kevin <kevin.bergue-externe@hemeria-group.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Feb 9, 2022 at 5:10 AM BERGUE Kevin
+<kevin.bergue-externe@hemeria-group.com> wrote:
+>
+> Hello everyone.
+>
+>
+> After a sudden shutdown my btrfs partition seems to be corrupted. After a=
+ few hours of reading documentation and trying various repair methods I fou=
+nd an error message I can't find anywhere so I'm sending it your way hoping=
+ you can at least explain what the issue is. The disk was running with linu=
+x 5.16.5 at the moment of the crash, my recovery environnement is a linux 5=
+.15.16 machine with btrfs-progs v5.16.
+>
+>
+> To retrace my steps a bit:
+>
+> - I tried to mount my partition normally:
+> # mount /dev/mapper/SSD-Root /mnt/broken/
+> mount: /mnt/broken: wrong fs type, bad option, bad superblock on /dev/map=
+per/SSD-Root, missing codepage or helper program, or other error.
+>
+> - I then looked at the relevant logs from dmesg:
+> # dmesg
+> [ 2118.381387] BTRFS info (device dm-1): flagging fs with big metadata fe=
+ature
+> [ 2118.381394] BTRFS info (device dm-1): disk space caching is enabled
+> [ 2118.381395] BTRFS info (device dm-1): has skinny extents
+> [ 2118.384626] BTRFS error (device dm-1): parent transid verify failed on=
+ 1869491683328 wanted 526959 found 526999
+> [ 2118.384900] BTRFS error (device dm-1): parent transid verify failed on=
+ 1869491683328 wanted 526959 found 526999
+> [ 2118.384905] BTRFS warning (device dm-1): failed to read root (objectid=
+=3D4): -5
+> [ 2118.385304] BTRFS error (device dm-1): open_ctree failed
+>
+> - After some reading about the "parent transid verify failed" errors I tr=
+ied to mount the volume with the usebackuproot flag:
+> # mount -t btrfs -o ro,rescue=3Dusebackuproot /dev/mapper/SSD-Root /mnt/b=
+roken/
+> mount: /mnt/broken: wrong fs type, bad option, bad superblock on /dev/map=
+per/SSD-Root, missing codepage or helper program, or other error.
+> And the dmesg content:
+> [ 2442.117867] BTRFS info (device dm-1): flagging fs with big metadata fe=
+ature
+> [ 2442.117871] BTRFS info (device dm-1): trying to use backup root at mou=
+nt time
+> [ 2442.117872] BTRFS info (device dm-1): disk space caching is enabled
+> [ 2442.117873] BTRFS info (device dm-1): has skinny extents
+> [ 2442.123056] BTRFS error (device dm-1): parent transid verify failed on=
+ 1869491683328 wanted 526959 found 526999
+> [ 2442.123344] BTRFS error (device dm-1): parent transid verify failed on=
+ 1869491683328 wanted 526959 found 526999
+> [ 2442.123348] BTRFS warning (device dm-1): failed to read root (objectid=
+=3D4): -5
+> [ 2442.124743] BTRFS error (device dm-1): parent transid verify failed on=
+ 1869491683328 wanted 526959 found 526999
+> [ 2442.124939] BTRFS error (device dm-1): parent transid verify failed on=
+ 1869491683328 wanted 526959 found 526999
+> [ 2442.124942] BTRFS warning (device dm-1): failed to read root (objectid=
+=3D4): -5
+> [ 2442.125196] BTRFS critical (device dm-1): corrupt leaf: block=3D186986=
+3370752 slot=3D97 extent bytenr=3D920192651264 len=3D4096 invalid generatio=
+n, have 527002 expect (0, 527001]
+> [ 2442.125201] BTRFS error (device dm-1): block=3D1869863370752 read time=
+ tree block corruption detected
+> [ 2442.125500] BTRFS critical (device dm-1): corrupt leaf: block=3D186986=
+3370752 slot=3D97 extent bytenr=3D920192651264 len=3D4096 invalid generatio=
+n, have 527002 expect (0, 527001]
+> [ 2442.125502] BTRFS error (device dm-1): block=3D1869863370752 read time=
+ tree block corruption detected
+> [ 2442.125508] BTRFS warning (device dm-1): couldn't read tree root
+> [ 2442.125806] BTRFS critical (device dm-1): corrupt leaf: block=3D186986=
+6401792 slot=3D117 extent bytenr=3D906206486528 len=3D4096 invalid generati=
+on, have 527003 expect (0, 527002]
+> [ 2442.125808] BTRFS error (device dm-1): block=3D1869866401792 read time=
+ tree block corruption detected
+> [ 2442.126174] BTRFS critical (device dm-1): corrupt leaf: block=3D186986=
+6401792 slot=3D117 extent bytenr=3D906206486528 len=3D4096 invalid generati=
+on, have 527003 expect (0, 527002]
+> [ 2442.126175] BTRFS error (device dm-1): block=3D1869866401792 read time=
+ tree block corruption detected
+> [ 2442.126184] BTRFS warning (device dm-1): couldn't read tree root
+> [ 2442.126599] BTRFS error (device dm-1): open_ctree failed
 
-On 2/9/22 14:45, Namhyung Kim wrote:
-> On Wed, Feb 9, 2022 at 11:28 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->> ----- On Feb 9, 2022, at 2:22 PM, Namhyung Kim namhyung@kernel.org wrote:
->>> I'm also concerning dynamic allocated locks in a data structure.
->>> If we keep the info in a hash table, we should delete it when the
->>> lock is gone.  I'm not sure we have a good place to hook it up all.
->> I was wondering about this use case as well. Can we make it mandatory to
->> declare the lock "class" (including the name) statically, even though the
->> lock per-se is allocated dynamically ? Then the initialization of the lock
->> embedded within the data structure would simply refer to the lock class
->> definition.
-> Isn't it still the same if we have static lock classes that the entry needs
-> to be deleted from the hash table when it frees the data structure?
-> I'm more concerned about free than alloc as there seems to be no
-> API to track that in a place.
+What do you get for uname -a? What are the mount options? In
+particular I'm wondering if this drive is subject to discards, which
+currently will render usebackuproots useless. And how old is the file
+system?
 
-We may have to invent some new APIs to do that. For example, 
-spin_lock_exit() can be the counterpart of spin_lock_init() and so on. 
-Of course, existing kernel code have to be modified to designate the 
-point after which a lock is no longer being used or is freed.
+If ro,rescue=3Dusebackuproot doesn't work, it's not likely repairable,
+but might still be something btrfs restore can scrape *if* you haven't
+tried any repairs first. Repairs write changes to disk and can make
+things worse and harder to recover. You pretty much have to go
+straight to the scrape data off the drive step before the repair step
+because it is lower risk and more reliable.
 
-Cheers,
-Longman
+The central problem is some lower layer mishandled write order, most
+likely by dropping flush/FUA, i.e. confirming to btrfs that flush/FUA
+command succeeded when in fact critical  metadata has not yet made it
+to persistent media. And there is no way for Btrfs to know this until
+it's too late.
 
+
+
+>
+> - I then tried a check:
+> # btrfs check /dev/mapper/SSD-Root
+> Opening filesystem to check...
+> parent transid verify failed on 1869491683328 wanted 526959 found 526999
+> parent transid verify failed on 1869491683328 wanted 526959 found 526999
+> parent transid verify failed on 1869491683328 wanted 526959 found 526999
+> Ignoring transid failure
+> ERROR: root [4 0] level 0 does not match 1
+
+What do you get for
+
+btrfs rescue super -v $dev
+btrfs insp dump-s -f $dev
+btrfs insp dump-t -b 1869491683328 $dev
+btrfs insp dump-t -b 1869863370752 $dev
+btrfs insp dump-t -b 1869866401792 $dev
+
+
+
+>
+> Couldn't setup device tree
+> ERROR: cannot open file system
+>
+>
+> I think the "root [4 0] level 0 does not match 1" error is the real cupri=
+t but I can't seem to find any info on this message anywhere. I tried a bun=
+ch of other commands including:
+> - btrfs rescue zero-log
+> - btrfs rescue chunk-recover
+> - btrfs check --repair
+> - btrfs rescue super-recover
+> - btrfs check --repair with the tree root found by btrfs-find-root
+> - btrfs check --repair --init-csum-tree --init-extent-tree
+> - btrfs restore
+>
+> I'm aware I probably executed some commands that don't make a lot of sens=
+e in my context but all of them failed with either the "root [4 0] level 0 =
+does not match 1" message or a more generic "could not open ctree" or equiv=
+alent.
+
+--repair, but especially --init-extent-tree can make it next to
+impossible for 'btrfs restore' command to work. It's not obvious that
+trying to fix btrfs, can make it harder for the scrape tool to work.
+
+
+
+--=20
+Chris Murphy
