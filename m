@@ -2,105 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FA24AFF5A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 22:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5E14B0046
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 23:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233703AbiBIVmP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Feb 2022 16:42:15 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:53242 "EHLO
+        id S236005AbiBIWba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Feb 2022 17:31:30 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:40074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbiBIVmO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 16:42:14 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B6EC0DE7EB
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 13:42:16 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id y6so9934330ybc.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Feb 2022 13:42:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UBbgDzeKJ+eKFlIghxvjCXbbo22+zDmtwjSXUMymGkA=;
-        b=qDzCT5Fwjd7Qji168tBWZR38zcFAWnjrGzKSxoYLoG7FOa73qNwO0+YaFWaZmosVAv
-         A5P94/8fihBFdZn+E+/i+H6SE7vrxnPu5B851GZyNxEq12G4A0IvYDExefzrVY0GQk1E
-         AEXwTrX2FRspbkUvo2RIzFnvupFMhge6G2QudcUWTMOvzeQy3rean07W0vfnVABdOQ/H
-         Elb8OL02kyfoX35qIhxYQ03BJMDnUZ7X8RMu+dQ1QYChsLhXxWz01Mh9gVMvkgBIBUXr
-         XvzpZiKmbs3rjubXfYBgPV2PM5/yMUDd/wkslZgpBec7PamM7CmsF4FEBKlo0abBgUWw
-         XtAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UBbgDzeKJ+eKFlIghxvjCXbbo22+zDmtwjSXUMymGkA=;
-        b=N6gXhxqd+06O8vrXkNekKtS7GtGTpLKk9or3x9G2Q9Efv6vSMzoeL9UwqCctNZ5E3K
-         TDzsKhSEFYi7JuHwYIHFne0iC4Xaxq5BATm4jbz+ni1ogPZV6VO1bWY7ne1KUj706dGa
-         5UP0ui5hyx8sWatG9L1ocBrTPLHE4GGIZ4WPM7mMglGRHxROgQO4DN+fzLS0oB1izNN4
-         YUEsdD08scE9pjRR3MhrTPYLCMmIqr7JSu8k8JCDCHAZN7QP3STwOkWNwPL2kyCcX8wn
-         OEV5TOYIoW3pi62ArYXnXPmI1itCb6sTPjgMQNkAkdGrldUHWQ9WmMwQP4Ve3mhKM6ot
-         zJpg==
-X-Gm-Message-State: AOAM532r/9uVPBGI/f58GCpA8jaLlBcqFAI15ggu8MfPWSNj3adJWXGA
-        Es6xw6sUq9lNDS0gKm7YYJylNjDoIRJC7lDLR973rjLPS4mzGQ==
-X-Google-Smtp-Source: ABdhPJxlfr+irjqVBfWog618bl/fGfjfD8ya2dVVaMAXDTRviXiPyra2iDHjn1kA2Bpvr0AwxkenT+XOpYDDIabv4lo=
-X-Received: by 2002:a25:e0c7:: with SMTP id x190mr3896307ybg.642.1644442935932;
- Wed, 09 Feb 2022 13:42:15 -0800 (PST)
+        with ESMTP id S235944AbiBIWbY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 17:31:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4CBE018E69;
+        Wed,  9 Feb 2022 14:31:26 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E5E3461C9A;
+        Wed,  9 Feb 2022 22:31:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49778C340EB;
+        Wed,  9 Feb 2022 22:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644445885;
+        bh=bR4sxUvE7t7/jpuP5YfFYF8Jl/pDn3BISpVtXoqsgls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HOMKSFwEU1krwHCm9g/ZmZ+B3M5POlN1cGehoE/AXmcb842yXuchumtanaMAoT8vR
+         CFz1jES8lcBRJm8RXhm7vIFKPfi3Gan9SsrVIktgzGnVjvHIfGEjqM2vvkrKcJH9Y/
+         6EvFxh99sh6HS3za91w0C8wbWRHdJ8Z2tlmo16NE4uN5ZX13fq6N9diGv5cXBEli5R
+         YF0u0VdhiVU+/Kl2iwam5Yv3kHdO4HO3ArnQ5mLldbezGv+B+ZYffOFOyeK73H7ZtY
+         dutGeVUpJPDe09I1Zwb4oDO+JmYkLk/g4i0PW1SLKgRxfZnJuwJy6rL32bcVsDbBUl
+         DdlS3C7MauxcA==
+Date:   Wed, 9 Feb 2022 14:31:24 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: Re: [PATCH v2 2/6] generic/204: remove unnecessary _scratch_mkfs call
+Message-ID: <20220209223124.GE8313@magnolia>
+References: <20220209123305.253038-1-shinichiro.kawasaki@wdc.com>
+ <20220209123305.253038-3-shinichiro.kawasaki@wdc.com>
 MIME-Version: 1.0
-References: <bd60df7210fdf3ed1dae48a8cb9908a5@vybihal.cz>
-In-Reply-To: <bd60df7210fdf3ed1dae48a8cb9908a5@vybihal.cz>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 9 Feb 2022 14:42:00 -0700
-Message-ID: <CAJCQCtRs0YgBbzF5qUAqpFZra7wbEjMzeu6zZUo4zNNPxA+YcA@mail.gmail.com>
-Subject: Re: failed to repair damaged filesystem, aborting | kernel BUG at fs/btrfs/extent-tree.c:4955!
-To:     =?UTF-8?Q?Josef_Vyb=C3=ADhal?= <josef@vybihal.cz>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220209123305.253038-3-shinichiro.kawasaki@wdc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 4, 2022 at 6:53 AM Josef Vyb=C3=ADhal <josef@vybihal.cz> wrote:
->
-> Hello, btrfs failed me big time today. I am using archlinux, linux 5.16.
-> My laptop started strangely lagging. I discovered, all of the sudden,
-> btrfs was mounted ro. I rebooted and then the system acted very weird. I
-> have discovered it was because ANY write operation just hangs
-> indefinitely. For example 'touch test' just hangs. removing snapshot
-> hangs. I should probably mention btrfs is inside of luks.
-> I have cloned the disk and booted ubuntu live from USB and started
-> poking around the clone.
->
-> I uploaded dmesg and whole result of btrfs check here:
-> https://up.jvi.cz/0X.txt
+On Wed, Feb 09, 2022 at 09:33:01PM +0900, Shin'ichiro Kawasaki wrote:
+> The test case generic/204 calls _scratch_mkfs to get data block size and
+> i-node size of the filesystem and obtained data block size is passed to
+> the following _scratch_mfks_sized call as an option. However, the
+> _scratch_mkfs call is unnecessary since the sizes can be obtained by
+> _scratch_mkfs_sized call without the data block size option.
+> 
+> Also the _scratch_mkfs call is harmful when the _scratch_mkfs succeeds
+> and the _scratch_mkfs_sized fails. In this case, the _scratch_mkfs
+> leaves valid working filesystem on scratch device then following mount
+> and IO operations can not detect the failure of _scratch_mkfs_sized.
+> This results in the test case run with unexpected test condition.
+> 
+> Hence, remove the _scratch_mkfs call and the data block size option for
+> _scratch_mkfs_sized call.
+> 
+> Suggested-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 
-Attached dmesg is 5.13 kernel. Are you using autodefrag mount option
-with this file system? If so, I suggest disabling it with 5.16 series
-until some bugs get fixed up.
+Looks ok, assuming you've verified that fstests with FSTYP=xfs doesn't
+regress...
 
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-> Is there something I can do to fix it? Whom to send the image with
-> metadata? It has 3+ GB.
+--D
 
-I'd say if you can reproduce with current stable or mainline kernel,
-it's worth going to the trouble. Most of the development work is
-predicated on the most recent kernels, either the problem is already
-fixed in a newer kernel, or if it's still a bug then it needs to be
-fixed in a current kernel before it would get backported. While you
-can run into new bugs (like autodefrag issues in 5.16 series), most
-everyone on the list and in #btrfs will know about the current issues,
-whereas older issues in older kernels, it's a coin toss if someone
-remembers or has time to look it up.
-
-
->
-> Or should I start reinstalling and recovering from backup?
-
-That's surely the fastest option.
-
-
---=20
-Chris Murphy
+> ---
+>  tests/generic/204 | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/tests/generic/204 b/tests/generic/204
+> index a3dabb71..a33a090f 100755
+> --- a/tests/generic/204
+> +++ b/tests/generic/204
+> @@ -24,10 +24,6 @@ _supported_fs generic
+>  
+>  _require_scratch
+>  
+> -# get the block size first
+> -_scratch_mkfs 2> /dev/null | _filter_mkfs 2> $tmp.mkfs > /dev/null
+> -. $tmp.mkfs
+> -
+>  # For xfs, we need to handle the different default log sizes that different
+>  # versions of mkfs create. All should be valid with a 16MB log, so use that.
+>  # And v4/512 v5/1k xfs don't have enough free inodes, set imaxpct=50 at mkfs
+> @@ -35,7 +31,7 @@ _scratch_mkfs 2> /dev/null | _filter_mkfs 2> $tmp.mkfs > /dev/null
+>  [ $FSTYP = "xfs" ] && MKFS_OPTIONS="$MKFS_OPTIONS -l size=16m -i maxpct=50"
+>  
+>  SIZE=`expr 115 \* 1024 \* 1024`
+> -_scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw
+> +_scratch_mkfs_sized $SIZE 2> /dev/null > $tmp.mkfs.raw
+>  cat $tmp.mkfs.raw | _filter_mkfs 2> $tmp.mkfs > /dev/null
+>  _scratch_mount
+>  
+> -- 
+> 2.34.1
+> 
