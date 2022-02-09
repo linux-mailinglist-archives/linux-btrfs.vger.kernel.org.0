@@ -2,96 +2,260 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EC74AE61A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 01:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F014AE62B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Feb 2022 01:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240198AbiBIAgJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Feb 2022 19:36:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
+        id S240497AbiBIAmA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Feb 2022 19:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240154AbiBIAgI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 19:36:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AA4C061576;
-        Tue,  8 Feb 2022 16:36:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CF796B81DBE;
-        Wed,  9 Feb 2022 00:36:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A82C004E1;
-        Wed,  9 Feb 2022 00:36:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644366964;
-        bh=26PhyK/CDleh+MGaZCkEtqr5m9hzAqHCQxOZcgZkTP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NogF3sfzZypnV4xvZ5e7gyCnTatVZawX4RnVMYD0beS+5g1dNICMbTWxdRAgiLtSq
-         lz9T4Hcjlonht3jCCKoJYNuMz9NsWDHTOBAlyK92n5QSQp8Ds3vhr3TcUg348fKv3Y
-         TQ3qow285LuHHuXbfSbMr7Ws2WR4F6qtNsr8BNMOlpxyuHnzndyX+tqgrP90nM+KLN
-         jQyXCymJtaCJO2fncC0+BHREpxT1YOAA+S2Ei9lOfSoej7bPLbVsd+2dGjgVYInXmE
-         7iC20o1EoFeEHg8A11BiLcmhd/HqsHuRnH2U6rIiINPqgTjMYpoKFP5bEc2P0PVjPE
-         nb1xF48jiH9HQ==
-Date:   Tue, 8 Feb 2022 16:36:04 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: Re: [PATCH 4/7] xfs/015: check _scratch_mkfs_sized return code
-Message-ID: <20220209003604.GD8288@magnolia>
-References: <20220207065541.232685-1-shinichiro.kawasaki@wdc.com>
- <20220207065541.232685-5-shinichiro.kawasaki@wdc.com>
+        with ESMTP id S235164AbiBIAl7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Feb 2022 19:41:59 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A781FC061576
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Feb 2022 16:41:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1644367311;
+        bh=8e0sSgfU4olKvxZJTrTLhCnSJNxAqq7MvxQWtO/rMFI=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Fypp5THZYIweK4Hop8G3pjvT41ED1lcfPB7av5VBBJQj7c1qnV1Ad2yLbm2LsEnVW
+         HnX4IBZi7Qo1RlG+E+bt4tjkP37wl2ygwofQbb8i6PPwKl9fMK6wtILTR6Vw5L+/1W
+         PG/G6ELIyDQHyf8gohmYEyHOkaXYUopfN+RLLkfI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmDEg-1nzlVe29po-00iD2c; Wed, 09
+ Feb 2022 01:41:51 +0100
+Message-ID: <61fe4b6e-5a23-7f74-4ce3-50af385617cd@gmx.com>
+Date:   Wed, 9 Feb 2022 08:41:47 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220207065541.232685-5-shinichiro.kawasaki@wdc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: [PATCH] btrfs: populate extent_map::generation when reading from
+ disk
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <817e735ee9c225268f17bee906c871b1fd965c4f.1644051267.git.wqu@suse.com>
+ <YgD58netqCmMLlPG@debian9.Home>
+ <e15a84e9-6e22-7a64-0ee2-67b9c4b51e1c@gmx.com>
+ <YgKbnWu77WJlHDa1@debian9.Home>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <YgKbnWu77WJlHDa1@debian9.Home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:AFA62c3LkCuvfKcOs5N8by7BOhcIsQB3v6X5gcJUo7O4atU6r4H
+ UgyYCXHLQpcLOafefKQhQHUZwwOMZUcOWYSclrcTtgFIRJjZFMBBUAr99E6ABJ8YbgDsUbz
+ mQ1XhPzjqCXmKHRtUmHgJakA29hkepLP/rIMCfWTwEs0Nqkv0KLV8SI8NYIyNe4g/6LadEB
+ /O3YSdt3O6U00RuHjilsw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VCpG/3I+1T8=:yWEERFRdXhG73/s6P0kru+
+ THIIlvQ0khLMkMNI4ZEPOBeDEA8fts9+xjwY1yRrMbf4q6mUC4q8yw2JM7LE4AHXAomoxCmQu
+ 7r5saNct651Y0bJF/ZcHjd5mkio40/CVVWQPsn9k6bcBQXMHzdrgHKI+OTmLzpZmfzTMnblQf
+ O2bPVnhdE0bdsRDg8NRT2K7xjTCk5ye5x/6MFUlCn5+oE2sFZ92i8gk4vxL3AG3b8PdQR7SRS
+ +JMQ1oPGzyC0WjYeeiq/dF2JMISSGSz3lD2lP/KbzxOgkaC5R0eMt8mhpwO022ozRqC46IGUq
+ lANf1pZdr+Q06/3NbJwmWOTWV2SufhsNDd7StYHSPmHTibElhfMcmo0aGIIKRjhXSxHwe5fcS
+ 4QfnYbteWSZtJWiptKZpN5F8PJmftSCEpU26+ciyF2gVG1VjDvreNynYQXDElzc3NU0CHo1mC
+ cccC1McH3OrYlEjkpPBRcBYuYeHATCeVs5ZbJFNiQ5qJLzXAqVUrVgi4zVZ279DEPEzqV5E96
+ IY/z0mtRv4WcYT+4aGm1NeXR72EjppMThxth/0Pj3fA1qM5kwfzhFV7KdlbdteTs0OCvZbk5r
+ ggR2qQdnEDydt6Vp7Zhf1PbYzwy7gTuq4YIIuF7MjUO+AX82sf4xcAsWHoqPi7BvFKWR0VJIS
+ AItOvxBrfyl1NbrWosdALXeP636LeF6x+iAkGPqVD39nAJJqrd+bsHf1xzzXhz+BpX8Sn9cow
+ /fcJR1FCXzAzHe/8+mE9sPw7Me8cJjzPbuUSDCidNTagjGhCxtK90LW2wtu5RH8NBEt/LLvDQ
+ j4q55a1+e/INNwtktPhIKw4EtEgVZpqHlhYvtl1Rv9vsGg52Ji7ibx0yPugelnS6kU4Wg9X4W
+ gy2kaESPkRv+OWmYqKQjLB8IPJKvy96nojNTeZ5EYXmtivcwe8yaAXUdt80F1mZ8Fx+gWXhou
+ CIfQwGyBt7U1SVVfm4lN8TR1LoyOlOBhqDwS/QTZVqo7U+WWAx2KXcRXil4VlGEcws8FGv9LA
+ smxmAeRQPdxX5a6mCg1bina04eHjEeEhdHKLTmBaqcFoDhSTKSSoMBqpKgC5TBALstUJQyGCJ
+ OxPnzrKm9r4aW4=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 07, 2022 at 03:55:38PM +0900, Shin'ichiro Kawasaki wrote:
-> The test cases xfs/015 calls _scratch_mkfs before _scratch_mkfs_sized,
-> and does not check return code of _scratch_mkfs_sized. Even if
-> _scratch_mkfs_sized failed, _scratch_mount after it cannot detect the
-> sized mkfs failure because _scratch_mkfs already created a file system
-> on the device. This results in unexpected test condition.
-> 
-> To avoid the unexpected test condition, check return code of
-> _scratch_mkfs_sized.
-> 
-> Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
-> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 
-Looks good,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
---D
+On 2022/2/9 00:34, Filipe Manana wrote:
+> On Mon, Feb 07, 2022 at 07:39:06PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2022/2/7 18:52, Filipe Manana wrote:
+>>> On Sat, Feb 05, 2022 at 04:55:47PM +0800, Qu Wenruo wrote:
+>>>> [WEIRD BEHAVIOR]
+>>>>
+>>>> When btrfs_get_extent() tries to get some file extent from disk, it
+>>>> never populates extent_map::generation , leaving the value to be 0.
+>>>>
+>>>> On the other hand, for extent map generated by IO, it will get its
+>>>> generation properly set at finish_ordered_io()
+>>>>
+>>>>    finish_ordered_io()
+>>>>    |- unpin_extent_cache(gen =3D trans->transid)
+>>>>       |- em->generation =3D gen;
+>>>>
+>>>> [REGRESSION?]
+>>>> I have no idea when such behavior is introduced, but at least in v5.1=
+5
+>>>> this incorrect behavior is already there.
+>>>
+>>> The extent map generation is basically only used by the fsync code, bu=
+t
+>>> as it deals only with modified extents, it always sees non-zero genera=
+tion.
+>>>
+>>>>
+>>>> [AFFECT]
+>>>> Not really sure if there is any behavior really get affected.
+>>>
+>>> affect -> effect
+>>>
+>>> No, I don't think it affects anything.
+>>>
+>>>>
+>>>> Sure there are locations like extent map merging, but there is no val=
+ue
+>>>> smaller than 0 for u64, thus it won't really cause a difference.
+>>>>
+>>>> For autodefrag, although it's checking em->generation to determine if=
+ we
+>>>> need to defrag a range, but that @new_than value is always from IO, t=
+hus
+>>>
+>>> This is confusing.
+>>> You mean the minimum generation threshold for autodefrag. Referring to
+>>> a function parameter (and it's named "newer_than") out of context, is
+>>> hard to follow.
+>>>
+>>>
+>>>> all those extent maps with 0 generation will just be skipped, and tha=
+t's
+>>>> the expected behavior anyway.
+>>>>
+>>>> For manual defrag, @newer_than is 0, and our check is to skip generat=
+ion
+>>>> smaller than @newer_than, thus it still makes no difference.
+>>>
+>>> Same here, saying the minimum generation threshold for defrag is more
+>>> informative than referring to the name of a function parameter. A func=
+tion
+>>> that is not even touched by the patch makes it hard to understand.
+>>>
+>>>>
+>>>> [FIX]
+>>>> To make things less weird, let us populate extent_map::generation in
+>>>> btrfs_extent_item_to_extent_map().
+>>>
+>>> Looks good.
+>>> Though I don't think this fixes anything.
+>>
+>> I'm considering the following extreme corner case, which this patch may
+>> make a difference (although to cause extra IO)
+>>
+>> E.g.
+>> Root 5, last_trans =3D 500.
+>>
+>> In transaction 510, we write back some data for inode A of root 5, the
+>> extent is at file offset 0 len 32K, triggering autodefrag to create an
+>> inode_defrag structure with transid 500 (from root 5 last_trans).
+>>
+>> Then we do some fragmented writeback following inode A file offset 32K,
+>> they all happen before cleaner get triggered.
+>>
+>> Before cleaner get triggered, fd for inode A is closed, and all cache i=
+s
+>> dropped, including the extent map cache.
+>>
+>> Then autodefrag get triggered, it tries to get the extent map for offse=
+t
+>> 0, and got an em, with generation 0.
+>>
+>> Since 0 (unpopulated em::generation) < 500 (inode_defrag::transid), the
+>> extent doesn't need to be defragged.
+>>
+>> But in fact, these new extents at file offset 0 and onward all have
+>> generation newer than 510, and can be defragged.
+>>
+>>
+>> Although this is opposite what we're chasing, it will cause more IO,
+>> instead of less...
+>
+> Right, when I said it didn't fix anything, it was in regards to 5.15 and
+> previous kernels, since the only code that checks for generations in
+> extent maps is the fsync code. But the extent maps it looks at are alway=
+s
+> in the list of modified extents, so their generation is never 0.
+>
+> Another quick look, and I can't find anything else relying on the genera=
+tion
+> of extent maps that could break a 0 value.
+>
+> Yes, this is the opposite of the problems being reported regarding exces=
+sive
+> IO. With the new defrag code from 5.16 this will often cause even more I=
+O.
+>
+> Looks fine to me, but I think right now the priority should be to find o=
+ut
+> why is so much more IO being triggered.
 
-> ---
->  tests/xfs/015 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tests/xfs/015 b/tests/xfs/015
-> index 86fa6336..2bb7b8d5 100755
-> --- a/tests/xfs/015
-> +++ b/tests/xfs/015
-> @@ -43,7 +43,7 @@ _scratch_mount
->  _require_fs_space $SCRATCH_MNT 131072
->  _scratch_unmount
->  
-> -_scratch_mkfs_sized $((32 * 1024 * 1024)) > $tmp.mkfs.raw
-> +_scratch_mkfs_sized $((32 * 1024 * 1024)) > $tmp.mkfs.raw || _fail "mkfs failed"
->  cat $tmp.mkfs.raw | _filter_mkfs >$seqres.full 2>$tmp.mkfs
->  # get original data blocks number and agcount
->  . $tmp.mkfs
-> -- 
-> 2.34.1
-> 
+Yes, that's still my top list goal.
+
+But unfortunately I don't yet have any good reproducer for this problem.
+
+So for now I can only rely on kind reporters to test with ftrace patches
+to show every range we choose to defrag...
+
+Thanks,
+Qu
+
+>
+> I still think the change log should be phrased differently, specially pa=
+rts
+> like "Not really sure if there is any behavior really get affected.", as
+> that doesn't sound very good.
+>
+> Once that's updated:
+>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>
+> Thanks.
+>
+>
+>>
+>> Thanks,
+>> Qu
+>>
+>>
+>>
+>>> As I pointed out in the other
+>>> thread, the extent map generation is basically only I used by fsync, w=
+hich
+>>> doesn't use extent maps that are not the in the list of modified exten=
+ts
+>>> (and those always have a generation > 0).
+>>>
+>>> Thnaks.
+>>>
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>>    fs/btrfs/file-item.c | 1 +
+>>>>    1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+>>>> index 90c5c38836ab..9a3de652ada8 100644
+>>>> --- a/fs/btrfs/file-item.c
+>>>> +++ b/fs/btrfs/file-item.c
+>>>> @@ -1211,6 +1211,7 @@ void btrfs_extent_item_to_extent_map(struct btr=
+fs_inode *inode,
+>>>>    	extent_start =3D key.offset;
+>>>>    	extent_end =3D btrfs_file_extent_end(path);
+>>>>    	em->ram_bytes =3D btrfs_file_extent_ram_bytes(leaf, fi);
+>>>> +	em->generation =3D btrfs_file_extent_generation(leaf, fi);
+>>>>    	if (type =3D=3D BTRFS_FILE_EXTENT_REG ||
+>>>>    	    type =3D=3D BTRFS_FILE_EXTENT_PREALLOC) {
+>>>>    		em->start =3D extent_start;
+>>>> --
+>>>> 2.35.0
+>>>>
