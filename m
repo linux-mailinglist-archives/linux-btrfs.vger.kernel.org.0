@@ -2,174 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FCE4B0E17
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 14:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAE64B0F1D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 14:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241947AbiBJNFH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 08:05:07 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42424 "EHLO
+        id S239927AbiBJNrW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 08:47:22 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233456AbiBJNFC (ORCPT
+        with ESMTP id S242398AbiBJNrV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 08:05:02 -0500
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Feb 2022 05:05:03 PST
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A6BC49;
-        Thu, 10 Feb 2022 05:05:03 -0800 (PST)
+        Thu, 10 Feb 2022 08:47:21 -0500
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C5CF34
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 05:47:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1644498303; x=1676034303;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=AEYbXH0OPgxYf5670XPlUnFqTnkWlTZaqiscCxZSii4=;
-  b=BHz0WNh9sv0az56GlqSzKXVHi0v3Iv7PQXJN3jQZDBnU0IHEGr6He5Ko
-   P3dwTtGqaA58aAbNE7I8UH0t8It18tgUinFyC9JBB39P2IB77HEKbY0lh
-   nQdMhGjKiVtTMCAe91lLAHjt8FkDLASNX+0fxiAR3Xwomu6GyMY0jepOL
-   KS499kqKjg+wgimpsQIocpT7O012HoxhPia6SQfDvCxQcXTlyp/dXbPzg
-   sbRc6FIsfIIqKSsZDbgP7MGz5w1Dmix1DH8rOXu+5vozQgk3l9DL/L4nm
-   V7cVEmQvghqseuvMcolhvkjyqa5VG2X3a8rBmE5pMML5h6acqgu1B/V3/
-   w==;
+  t=1644500840; x=1676036840;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rWBoxZLcoCTAaOBaTFF0jfU++Pi/MwOSb7iKBNhqz1w=;
+  b=OSE9LsB/oDVTmuEhLm8z40g6WH2g5AdegLFCFoJyyE6T7TJl/z9acoar
+   lYJ9kfDM1huFldlJgK8VyIGB9JbGrYlJWOMI+UXEkbl75G+TzSWR8orYs
+   HI/pDmGpWuSqpkbk2uPbVWeQHdt7OAYyEfzUN3qvOtz0p9LQ7NL/lL+VR
+   swJeZopvQpV8PvrROOvq0tabMqpGDqoO0iIvvkCUd1sSIuMUA4lFgP5S1
+   krYEsFsIXMBzaNhwkwKwQPQmb2LvOVm/aeytcD0COEASpdY0+DslEPi04
+   XdIG72CVXR2ot1Yr2EGi6uUmW0ieBGzxQP70vHFMq3KwVjA5ZJcXFF9ix
+   Q==;
 X-IronPort-AV: E=Sophos;i="5.88,358,1635177600"; 
-   d="scan'208";a="193579544"
-Received: from mail-dm3nam07lp2044.outbound.protection.outlook.com (HELO NAM02-DM3-obe.outbound.protection.outlook.com) ([104.47.56.44])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2022 21:04:00 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k1Xb1ZkzP35AXsqy1ptCikpwHd6WMV1kYgL3M6Wp4Smt2g+3WglAn2i+esw3kQ1pxQu2b0TgBTz2Avtzh2hEKAq8wqqWgT7y34aNzcTuuJdzK9MHdiG9bGZCeNowORLjp14TtHq6DTSbNWDHuKWE6RV7xYGc+wYH8cQPrGaMBkLHKphXvZ51d7PmnO3TXsy0OF+o73LRfKYVGWz3eQLOuBtPXaajV+aTqTMIAQgsUSS/qOnW4XvOODXkG0XuaVNrjDTRNGDGfb8Fyhg1Uwa8xyynTPQeVGGZLhzQvGlfxzPhuBMUG8nYwpYuPPRZL4+5nMXdJ1GlFVhOafCgNZW5jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fJx0kITWkVOltRdEjLsT/rE1mkijTxVaUKCyqFTxkgg=;
- b=d7RU2DzannpX+WAkMTTh2MID28BtriBhd/7Riet2b8lltYz9G4Qx23WtR1DSA1E71+pSKSziCpRqeGNkkAQ5231+1QglavbSe3uHXHQ5WlX815hs/BmYsbt3apnKw1FJRaFdl4FSWnpYe4ASBdr9yWGM6yPOBX3KD0HAhALD8d0KI8B659Kug3EikxAlYlEJNOWMHe5e4vPasO7v6XbqeDMBYpGTjkcJIfSiDjOEarC8m9LecMulqntZyNZE9b8iHb7QhaxqA8K4nIZpWOw5pilTf1a4QKKZxxos9Y/HeVZxQ9NocOfccNWfZKPbIKJdCPMuIq/y86GCsnLhpP577w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fJx0kITWkVOltRdEjLsT/rE1mkijTxVaUKCyqFTxkgg=;
- b=BaMJAuPCHDg2TQ6XmjmGboYcH3B6qzBAXgy8rW3bwbiGOh1+uD4gUHvYSAB5cQRmQbw/qkk6A2BJm9dXS8trnfM7c68W35tnuc/bvzuw0eubeno2dLnXMX15KYb80n7kP+W1VUsostovI6PIOD37f1IFI8JzhRbjqDbKftvrhuw=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BL0PR04MB4818.namprd04.prod.outlook.com (2603:10b6:208:42::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.11; Thu, 10 Feb
- 2022 13:03:57 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8d9e:d733:bca6:bc0f]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8d9e:d733:bca6:bc0f%4]) with mapi id 15.20.4951.019; Thu, 10 Feb 2022
- 13:03:57 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v2 0/2] btrfs: zoned: mark relocation as writing
-Thread-Topic: [PATCH v2 0/2] btrfs: zoned: mark relocation as writing
-Thread-Index: AQHYHkNcg+VbPtFIgU6msc8f2UHFLA==
-Date:   Thu, 10 Feb 2022 13:03:57 +0000
-Message-ID: <PH0PR04MB741614EC7F5E78A39ED9360D9B2F9@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <cover.1644469146.git.naohiro.aota@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1913ab39-44b9-4962-5b7d-08d9ec95ccc4
-x-ms-traffictypediagnostic: BL0PR04MB4818:EE_
-x-microsoft-antispam-prvs: <BL0PR04MB4818B762DC7C21B6995026CA9B2F9@BL0PR04MB4818.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lTxKuIgtadJq3EdnQqXMGVqXK7hucdpQJVH+QedGTRZjej3cLcVG8rQxS/a52Dm8k4gB+VPex8EjeXjb6JTa2ldmVla6EwoGeVkPFN7bxCm90WyuidOfvBYSkDOlPPlzwLysQjJuWExavxIg9b2tGCWZ8yfR0RhxmZPRxUbZtL4DeDD4gIegFaPddxb8TQEv/B7fAciCDpROuJJqgHvzuz5tgXYl8CsAKP8W9zVzCLHjbeWiLUcwBe6zo8i+VkhFWqXXV5scuOt6PUu2Q37c/17UEvalRA63pzrxs4Xj12UwDlr7WVZVC92Tz/DyAXdMJURfAbUT9iuodeOvNRRdDSIPHR1kZPY6fUQkRlefLvpXP1S4ePBViPa4taYeIE4BiXkfClq3YCTs8JSIdvhFCkrhLsZ3Eo3GqVtO4mmi8TjwtzlJClq8+HR38WPr4kAE+flD0fRlfVSEwWSA08m6bLEk62825DaKR/Iqc024IG2fD11SLDChGecca1praLgyD71/zkhRoZRE+49adXgE7/DQNTQVikrm1h6u5zsHGQT90ZTcbMTWvfvx0yYQ5kZJ16APwvthxNC9QVAjuuPt+/eiaCcfDZLzOhYp+iRlu4tjaha7+fhki03xDyE5+98QEuJy8QnSDzGhK8GpRaA18VFF0dJ5ZdI5SEdsPjbQXRWXu641SkWUyk1/S1rUKwqYgluDmzvVknVRbKwDnnphwg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66446008)(38070700005)(82960400001)(4326008)(66946007)(66556008)(64756008)(66476007)(186003)(53546011)(38100700002)(71200400001)(6506007)(8676002)(54906003)(110136005)(2906002)(316002)(33656002)(83380400001)(55016003)(91956017)(8936002)(76116006)(7696005)(52536014)(5660300002)(508600001)(122000001)(9686003)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TRYtXCAwUBSVVqiP1Iz5k/6E9X11lJacnRVmb5RhIUlc4Fd7zy8oQD3nUh+S?=
- =?us-ascii?Q?WPr6pOpAu9ytIMoYYiEkUVwACQsi6eb/sYGCNM3n6HXaTMQsDP8AsV2CPl7I?=
- =?us-ascii?Q?J676sevyioUxifwfrxQfuhLzYJGSELlEIZTTwUqwiKuOa4q6VwJuwT5tYmOo?=
- =?us-ascii?Q?vNdtNuTUvXFzunuxTkhDbnYbUP7BhZMx1IX4Ng2r8VSzpTyMtEEGkwPBPemA?=
- =?us-ascii?Q?v7C6DnrOtrAu343UYWsUx7xgAJCDYqyVt5J5KyHqf2qjdWQ3X9DkhwM/Jfur?=
- =?us-ascii?Q?KMkdOtDuoHin6esLH0I/9VGjnlW+mj8QXYhVbLz77Ez2k9yA5/1S/mchy6u3?=
- =?us-ascii?Q?v6PvSJpqR1Vgv0nK1tY+8UgrTMvTmlgWZic3mWOQ/OZU3SFDRYFIGY/wA1N7?=
- =?us-ascii?Q?S0eyqEskkPcnX+B5+U3NYIuaSd6nLy4Cjnhm18KhgNxS31CwFMxHGdoD6T9Q?=
- =?us-ascii?Q?XXWP7BYUjA6xwMucndYZF3s5xZas11ilLXaQFb1EAP8T8fbnDaz0tf7GEqrh?=
- =?us-ascii?Q?6gvrEMSuEkBSBjjt4ScwiG9vj2sd3y/530Quz62Sthpx3MSHvB2VlAlacmlK?=
- =?us-ascii?Q?EW/Mw6l/PWsDMUV1wzi0FmeRWa5etYL770TpLSZhdJ9l5pqiwaBY/WvITKNy?=
- =?us-ascii?Q?2tSIa6Jz2XzL6wkl4iggjiHqnGAVNpzNBiqESL2iZTaEkFNNg3dGAbWef8tZ?=
- =?us-ascii?Q?0kngmwT6Qca+w3Sra4OK5WfB+4jV85UZ75lm+Vq4bUZAaGWHAiCZxW1uKABd?=
- =?us-ascii?Q?qRW6JcTs+Vvt9CC7BHNW9CCPYan5vv9227JstfWwi7st1M01VkXFXo8a4S3J?=
- =?us-ascii?Q?hjLGUV2qzxDY4xe/Kd4Wvj+nwH43mlR6Iao1zhfw9ezpoOjYvbGUN4UOcYZ/?=
- =?us-ascii?Q?BE4rfNpNeQfXNeA7gpLNY5RjesZ3b+2VngHUw/awnC4Rkw3U+/UDM+jKTwyH?=
- =?us-ascii?Q?MC6vCLP/vg9vkUzT5tKcGbV9scrvOUKg/ELC7/UvPXj5A/WU1zfTUPwc+m4o?=
- =?us-ascii?Q?bW7nt7hFpiwWGnOEWX3X7RgPEDEs3uVxxgYzG9/iyRxbn8IzjpaFibEfkFDx?=
- =?us-ascii?Q?m01+KaeSjjQhtTDA7pypAr9Z9Qv435EQmw679lNNxyzRhL9KG2FmGS50JM4L?=
- =?us-ascii?Q?98hBysuJCIqK/cEbpKNEAeBckx4GOCNyhkUN4xIbCco7IYwp5yYplwr4oox9?=
- =?us-ascii?Q?iGqWQy+BDlN55vgQoajtUGqB4Z+coBE8OT3YaLy03cuvUNNNO12ire2NK73A?=
- =?us-ascii?Q?tLT3qd9PQ02FZbZTMjfNPIBEwVMD9XbtpnoGGm8Lzt3zVj0sIiAcQC2u3Ojg?=
- =?us-ascii?Q?9idhBszBmzgHsTOfF5om06Z8FY/vDkSwhCymnsZoLbQv3gJxwe7NwQaz833i?=
- =?us-ascii?Q?Qzk0A8dxy94BYkat8ZNpd1Lqrb9O2VharYhcGzsvtKsszS+8GzMKXsRq35ER?=
- =?us-ascii?Q?s8klvGb2Hl+VF7hM6BtTVt8hPZPboyzANcAPD350w+Qcdnux0TreG7Zv18I6?=
- =?us-ascii?Q?EDX/+8pFKMSnXmpS9ei/toVT9g3I5Pz4gq3og2iQDfTR62TGCf8b/59a9P5F?=
- =?us-ascii?Q?Nq//4zwo3tRBiBKOQWJwlIYIPfdzz5+12OksJhh+p7mGhayr+u9Qwy8D8F1g?=
- =?us-ascii?Q?F1Ldytv5vVvARdoRj8plpgidkymzttbz4EuTxKg0aMuRSu7I6igwv854zPEh?=
- =?us-ascii?Q?rK+xDrhYA9Op9x7ws35Yuvqn4/FsRhM+hizFoIWiWRgD0j7gRkBEksEkUVBj?=
- =?us-ascii?Q?3z0hN7Rq6CKFAp6wWQ16mzKnujd8DHI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="192599364"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2022 21:47:19 +0800
+IronPort-SDR: mn3LvuYzcql3lhnc8eJJRjlvx0/XMd2ar1tuw8xjxI+qWKSkNaBkbzukP981iRCiRSNk3KM/xd
+ HcLedeNdikxM2ncHtbzrl+76iVBDOXFeQ+IEINoeX5i0Ji7E6h1awtveo9ihe+Ha8ekbxuQiqf
+ Z7GfoIQNU3SVEfWaFGNF6RqLWSFd/7Xf7WahoCIiyO5KEY+BaX+n1wqc8Fd/LySzFiYkQEhUVF
+ TE7BcyFweiIpOkctSOxSUOuVn9HCVtvMWXPkMwdCHr1zFyJjSjVFtQsiwAy5hxWYondihkuOXM
+ 9JTPO8c3CfgvxVl+Qjd0+6RP
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2022 05:19:08 -0800
+IronPort-SDR: GQ7r0XhJ61CqgG8aog/6A/w92Us0oU1pe34wPGp94e1T9OYb6HO1OuLELBlkLSLjGeGNVTRulT
+ MKCMFeeCkqvDJqL6v7F3TLCP2ujvf/cAaMExexy0wTvJad6Op4xptWFK7dGO9JMge3rYbsVNd0
+ yMEpwziEBqqTF3+dnzf1ENQIUQI5yiD+09iyV6qijoWbLTJy4YCGQiS/j9OsunRQ4cekuTJUOI
+ UqtXdanLdc2g6lkSJfUuO1ZcN3mCFXgYEyOfGRXMkidJFZIZhVJL3VD9J7qIZaYlIYMoxdD97L
+ gLA=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
+  by uls-op-cesaip02.wdc.com with ESMTP; 10 Feb 2022 05:47:21 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        =?UTF-8?q?Javier=20Gonz=C3=A1lez?= <javier.gonz@samsung.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: zoned: introduce a minimal zone size and reject mount
+Date:   Thu, 10 Feb 2022 05:47:05 -0800
+Message-Id: <3824ae6295104af815c8357525eaa896e836eb1c.1644500637.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1913ab39-44b9-4962-5b7d-08d9ec95ccc4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 13:03:57.8245
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CSNoD89dTVmcQWeRGLRtEeea2F3y15B1iOteMfZWFFTqeB7f51hK+46NdBwcQHskORuWxV3T7Eb56plafHN06tUfztCEjjBlCbqomAj8ee0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR04MB4818
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/02/2022 06:59, Naohiro Aota wrote:=0A=
-> There is a hung_task issue with running generic/068 on an SMR=0A=
-> device. The hang occurs while a process is trying to thaw the=0A=
-> filesystem. The process is trying to take sb->s_umount to thaw the=0A=
-> FS. The lock is held by fsstress, which calls btrfs_sync_fs() and is=0A=
-> waiting for an ordered extent to finish. However, as the FS is frozen,=0A=
-> the ordered extent never finish.=0A=
-> =0A=
-> Having an ordered extent while the FS is frozen is the root cause of=0A=
-> the hang. The ordered extent is initiated from btrfs_relocate_chunk()=0A=
-> which is called from btrfs_reclaim_bgs_work().=0A=
-> =0A=
-> The first patch is a preparation patch to add asserting functions to=0A=
-> check if sb_start_{write,pagefault,intwrite} is called.=0A=
-> =0A=
-> The second patch adds sb_{start,end}_write and the assert function at=0A=
-> proper places.=0A=
-> =0A=
-> Changelog:=0A=
-> v2:=0A=
->   - Implement asserting functions not to directly touch the internal=0A=
->     implementation=0A=
-> =0A=
-> Naohiro Aota (2):=0A=
->   fs: add asserting functions for sb_start_{write,pagefault,intwrite}=0A=
->   btrfs: zoned: mark relocation as writing=0A=
-> =0A=
->  fs/btrfs/block-group.c |  8 +++++++-=0A=
->  fs/btrfs/volumes.c     |  6 ++++++=0A=
->  include/linux/fs.h     | 20 ++++++++++++++++++++=0A=
->  3 files changed, 33 insertions(+), 1 deletion(-)=0A=
-> =0A=
-=0A=
-For the series:=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+When creating a filesystem on a zoned block device with a zone size of
+32MB or 16MB successive mounting of this filesystem fails with the
+following error message:
+ host:/ # mount /dev/nullb0 /mnt/
+  BTRFS info (device nullb0): flagging fs with big metadata feature
+  BTRFS info (device nullb0): using free space tree
+  BTRFS info (device nullb0): has skinny extents
+  BTRFS info (device nullb0): host-managed zoned block device /dev/nullb0, 400 zones of 33554432 bytes
+  BTRFS info (device nullb0): zoned mode enabled with zone size 33554432
+  BTRFS error (device nullb0): zoned: block group 67108864 must not contain super block
+  BTRFS error (device nullb0): failed to read block groups: -117
+  BTRFS error (device nullb0): open_ctree failed
+ mount: /mnt: wrong fs type, bad option, bad superblock on /dev/nullb0, missing codepage or helper program, or other error.
+
+This happens because mkfs.btrfs places the system block-group exactly at
+the location where regular btrfs would have it's 1st super block mirror.
+In case of a 16MiB filesystem, mkfs.btrfs will place the 1st metadata
+block-group at this location.
+
+As the smallest zone size on the market today is 64MiB and we're expecting
+zone sizes to be more in the 256MiB - 4GiB region, refuse to mount a
+filesystem with a zone size of 32MiB or smaller.
+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/zoned.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+@ Javier, I've CCed you because I've heared rumors that you guys have ZNS
+dddrives with a zone size of 64MB. So I'd like to hear your toughts on the
+patch as well, so I'm not breaking existing devices supported by Linux.
+
+
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index b7b5fac1c779..3cf9217f6fcf 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -51,11 +51,13 @@
+ #define BTRFS_MIN_ACTIVE_ZONES		(BTRFS_SUPER_MIRROR_MAX + 5)
+ 
+ /*
+- * Maximum supported zone size. Currently, SMR disks have a zone size of
+- * 256MiB, and we are expecting ZNS drives to be in the 1-4GiB range. We do not
+- * expect the zone size to become larger than 8GiB in the near future.
++ * Minimum / maximum supported zone size. Currently, SMR disks have a zone
++ * size of 256MiB, and we are expecting ZNS drives to be in the 1-4GiB range.
++ * We do not expect the zone size to become larger than 8GiB or smaller than
++ * 64MiB in the near future.
+  */
+ #define BTRFS_MAX_ZONE_SIZE		SZ_8G
++#define BTRFS_MIN_ZONE_SIZE		SZ_64M
+ 
+ #define SUPER_INFO_SECTORS	((u64)BTRFS_SUPER_INFO_SIZE >> SECTOR_SHIFT)
+ 
+@@ -402,6 +404,13 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
+ 				 zone_info->zone_size, BTRFS_MAX_ZONE_SIZE);
+ 		ret = -EINVAL;
+ 		goto out;
++	} else if (zone_info->zone_size < BTRFS_MIN_ZONE_SIZE) {
++		btrfs_err_in_rcu(fs_info,
++		"zoned: %s: zone size %llu smaller than supported minimum %u",
++				 rcu_str_deref(device->name),
++				 zone_info->zone_size, BTRFS_MIN_ZONE_SIZE);
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 
+ 	nr_sectors = bdev_nr_sectors(bdev);
+-- 
+2.34.1
+
