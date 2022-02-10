@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9943E4B1206
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 16:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD47D4B120C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 16:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243745AbiBJPsG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 10:48:06 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39742 "EHLO
+        id S243747AbiBJPtU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 10:49:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233962AbiBJPsF (ORCPT
+        with ESMTP id S233962AbiBJPtT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 10:48:05 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E45387
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 07:48:05 -0800 (PST)
+        Thu, 10 Feb 2022 10:49:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432F9B72
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 07:49:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 70FF361CA4
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 15:48:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12EA9C004E1;
-        Thu, 10 Feb 2022 15:48:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D29FF60C73
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 15:49:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5042C004E1;
+        Thu, 10 Feb 2022 15:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644508084;
-        bh=W8U6QCuNTMJGlGnWMJP1AMP1RbVm5+M+d/+D42nXPGs=;
+        s=k20201202; t=1644508159;
+        bh=b7Xgsb7BHdyldtROLny0lLDNpcroQ5/pR5yYJCp7FaA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t/YXhGbvfY+fpmNKMEjEtnkvVhsbPKJuBiU8SD8mOMYMHI1muw47cWGCisynYjCH/
-         SBT+Pq6LABFaQ2g8mwylV6Ahn5HeM7T0AK6NeOxhpbTw/sPTe05koUg0n0Hhei1zfd
-         4r1L/F9SPymYdDSeBo6YRyDEebVnVa9e2puPheaFs9jMx9bC2z3+GxWiBok8/AwFl6
-         BhwKFWKHES46HfATZD242yMPCC4vzKWgpZUaeP/P/dUHhTqFkBN4YmMzoTFlZQZtg/
-         EFZRufG6PEvnzvYK+yMHa+c9sQZBwouPEYZcVBE8bPjmSke0TCI+X3A+A3LGYb7rjN
-         3lVcCoNJnlzVg==
-Date:   Thu, 10 Feb 2022 15:48:01 +0000
+        b=YaltLHNKHhygiehynu6Rs16WunAphgt9GzJVkkQ+JHMGn2J96PubPVPW8MDL1AbU6
+         kOQIvSaP6h3OkBK5fRLBCaJvxNMMh+XIJVU5BsgwBRD6E1IHySN3gmfWQRQFELDAUJ
+         GSlGwhglOWfL8zhPvUPSzyaUebGnp38fX+IPs+AJ4fkw+/1ztIuMrC701Z91DUZKPP
+         f9JMpDaFgPQh+B7QY046elVz2vXuq8r9QUOWO8/gM1RT8pB0GqCYRs6xRE8/WZV4vo
+         HpkNlObscB+Cj5vuY0hhNxw5DlLW3XU/0N8sk9brViRMhI1BmXqNm3iALcjcSw68tT
+         GGUAty2GAOt9Q==
+Date:   Thu, 10 Feb 2022 15:49:16 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC 3/3] btrfs: make autodefrag to defrag small writes
- without rescanning the whole file
-Message-ID: <YgUzsYTCz48nB/XT@debian9.Home>
-References: <cover.1644398069.git.wqu@suse.com>
- <fc9f897e0859cccf90c33a7a609dc0a2e96ce3c1.1644398069.git.wqu@suse.com>
- <YgP8UocVo/yMT2Pj@debian9.Home>
- <32c44e26-9bd1-f75f-92df-3f7fbf44f8a0@gmx.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] btrfs: defrag: don't use merged extent map for
+ their generation check
+Message-ID: <YgUz/N4PowPusbZJ@debian9.Home>
+References: <cover.1644301903.git.wqu@suse.com>
+ <fe880742bbee1e1c219c7b468300724a3336107d.1644301903.git.wqu@suse.com>
+ <YgPhzFA3230j2mlf@debian9.Home>
+ <6b0f23dd-1808-609c-3f97-17f58a4f4688@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <32c44e26-9bd1-f75f-92df-3f7fbf44f8a0@gmx.com>
+In-Reply-To: <6b0f23dd-1808-609c-3f97-17f58a4f4688@suse.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,657 +57,168 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 08:31:00AM +0800, Qu Wenruo wrote:
+On Thu, Feb 10, 2022 at 08:40:22AM +0800, Qu Wenruo wrote:
 > 
 > 
-> On 2022/2/10 01:39, Filipe Manana wrote:
-> > On Wed, Feb 09, 2022 at 05:23:14PM +0800, Qu Wenruo wrote:
-> > > Previously autodefrag works by scanning the whole file with a minimal
-> > > generation threshold.
+> On 2022/2/9 23:46, Filipe Manana wrote:
+> > On Tue, Feb 08, 2022 at 02:36:31PM +0800, Qu Wenruo wrote:
+> > > For extent maps, if they are not compressed extents and are adjacent by
+> > > logical addresses and file offsets, they can be merged into one larger
+> > > extent map.
 > > > 
-> > > Although we have various optimization to skip ranges which don't meet
-> > > the generation requirement, it can still waste some time on scanning the
-> > > whole file, especially if the inode got an almost full overwrite.
+> > > Such merged extent map will have the higher generation of all the
+> > > original ones.
 > > > 
-> > > To optimize the autodefrag even further, here we use
-> > > inode_defrag::targets extent io tree to do accurate defrag targets
-> > > search.
-> > > 
-> > > Now we re-use EXTENT_DIRTY flag to mark the small writes, and only
-> > > defrag those ranges.
-> > > 
-> > > This rework brings the following behavior change:
-> > > 
-> > > - Only small write ranges will be defragged
-> > >    Previously if there are new writes after the small writes, but it's
-> > >    not reaching the extent size threshold, it will be defragged.
-> > > 
-> > >    This is because we have a gap between autodefrag extent size threshold
-> > >    and inode_should_defrag() extent size threshold.
-> > >    (uncompressed 64K / compressed 16K vs 256K)
-> > > 
-> > >    Now we won't need to bother the gap, and can only defrag the small
-> > >    writes.
-> > > 
-> > > - Enlarged critical section for fs_info::defrag_inodes_lock
-> > >    The critical section will include extent io tree update, thus
-> > >    it will be larger, and fs_info::defrag_inodes_lock will be upgraded
-> > >    to mutex to handle the possible sleep.
-> > > 
-> > >    This would slightly increase the overhead for autodefrag, but I don't
-> > >    have a benchmark for it.
-> > > 
-> > > - Extra memory usage for autodefrag
-> > >    Now we need to keep an extent io tree for each target inode.
-> > > 
-> > > - No inode re-queue if there are large sectors to defrag
-> > >    Previously if we have defragged 1024 sectors, we will re-queue the
-> > >    inode, and mostly pick another inode to defrag in next run.
-> > > 
-> > >    Now we will defrag the inode until we finished it.
-> > >    The context switch will be triggered by the cond_resche() in
-> > >    btrfs_defrag_file() thus it won't hold CPU for too long.
+> > > This behavior won't affect fsync code, as only extents read from disks
+> > > can be merged.
 > > 
-> > So there's a huge difference in this last aspect.
-> > 
-> > Before, if we defrag one range, we requeue the inode for autodefrag - but
-> > we only run the defrag on the next time the cleaner kthread runs. Instead
-> > of defragging multiple ranges of the file in the same run, we move to the
-> > next inode at btrfs_run_defrag_inodes().
+> > That is not true. An extent created by a write can be merged after a
+> > fsync runs and logs the extent. So yes, extent maps created by writes
+> > can be merged, but only after an fsync.
 > 
-> Unfortunately, that's not the case, the restart-from-0 behavior is same
-> for btrfs_run_defrag_inodes().
+> Or, if there is no fsync(), the em will never be mergeable, unless evicted
+> and re-read.
 > 
-> In btrfs_pick_defrag_inode() it doesn't really strictly follows the
-> root/ino requirement, it can choose to use the next inode_defrag.
+> In setup_extent_mapping() if @modified is true, we call
+> "list_move(&em->list, &tree->modified_extents)".
 > 
-> Furthermore, btrfs_run_defrag_inodes() will reset the search root/ino if
-> it doesn't find anything, thus search from the start again.
+> So it means such em will not be merged, as try_merge_map() needs the
+> em::list to be empty.
+> 
+> Then check when em::list is deleted, there are two paths to remove em::list:
+> 
+> - remove_extent_mapping()
+> 
+> - btrfs_log_inode()/btrfs_log_changed_extents()
+> 
+> This explains why under my test cases which only use sync(), those extent
+> maps never get merged, unless removed and read from tree again.
+> 
+> I'm wondering now if this is expected behavior?
 
-Ok, I see now that btrfs_run_defrag_inodes() will do that because of this:
+Yes, it's expected.
 
-		if (!defrag) {
-			if (root_objectid || first_ino) {
-				root_objectid = 0;
-				first_ino = 0;
-				continue;
-			} else {
-				break;
-			}
-		}
-
-> 
-> This makes btrfs_run_defrag_inodes() to exhaust all the inode_defrag, no
-> difference than the solution I'm doing.
-
-Ok, it seems so.
-
-> 
-> In fact, I even considered to refactor btrfs_run_defrag_inodes() to be
-> more explicit on it's just exhausting the rb tree.
-> 
-> The tricks is just hiding the true nature.
-> 
-> > 
-> > With this change, it will defrag all ranges in the same cleaner run. If there
-> > are writes being done to the file all the time, the cleaner will spend a lot of
-> > time defragging ranges for the same file in the same run. That delays other
-> > important work the cleaner does - running delayed iputs, removing empty
-> > block groups, deleting snapshots/subvolumes, etc.
-> 
-> That is the same behavior, before or after my patchset.
-> 
-> The only way to break the loop in btrfs_run_defrag_inodes() are:
-> 
-> - Remount
-> 
-> - Disable autodefrag
-> 
-> - Exhaust all inode defrags
-> 
-> That root/ino is just tricking readers to believe it's making a
-> difference, while it's not.
-> 
-> > 
-> > That can have a huge impact system wide.
-> > 
-> > How have you tested this?
-> > 
-> > Some user workload like the one reported here:
-> > 
-> > https://lore.kernel.org/linux-btrfs/KTVQ6R.R75CGDI04ULO2@gmail.com/
-> > 
-> > Would be a good test. Downloading from Steam is probably not something
-> > we can do, as it probably requires some paid scrubscription.
-> 
-> Nope, it's the same behavior without my patches.
-> So that's why I'm suspecting this is the cause of the extra CPU usage.
-
-Ok, but this type of changes needs to be tested with reasonably realistic
-or close enough scenarios. Downloading one or more large torrents is likely
-close enough to the Steam download use case.
-
-> 
-> > 
-> > But something that may be close enough is downloading several large
-> > torrent files and see how it behaves. Things like downloading several
-> > DVD iso images of Linux distros from torrents, in a way that the sum of
-> > the file sizes is much larger then the total RAM of the system. That should
-> > cause a good amount of work that is "real world", and then try later mixing
-> > that with snapshot/subvolume deletions as well and see if it breaks badly
-> > or causes a huge performance problem.
-> > 
-> > Some more comments inline below.
-> > 
-> > > 
-> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > > ---
-> > >   fs/btrfs/ctree.h   |   4 +-
-> > >   fs/btrfs/disk-io.c |   2 +-
-> > >   fs/btrfs/file.c    | 209 ++++++++++++++++++++++++---------------------
-> > >   fs/btrfs/inode.c   |   2 +-
-> > >   4 files changed, 116 insertions(+), 101 deletions(-)
-> > > 
-> > > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > > index a5cf845cbe88..9228e8d39516 100644
-> > > --- a/fs/btrfs/ctree.h
-> > > +++ b/fs/btrfs/ctree.h
-> > > @@ -897,7 +897,7 @@ struct btrfs_fs_info {
-> > >   	struct btrfs_free_cluster meta_alloc_cluster;
-> > > 
-> > >   	/* auto defrag inodes go here */
-> > > -	spinlock_t defrag_inodes_lock;
-> > > +	struct mutex defrag_inodes_lock;
-> > >   	struct rb_root defrag_inodes;
-> > >   	atomic_t defrag_running;
-> > > 
-> > > @@ -3356,7 +3356,7 @@ void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
-> > >   /* file.c */
-> > >   int __init btrfs_auto_defrag_init(void);
-> > >   void __cold btrfs_auto_defrag_exit(void);
-> > > -int btrfs_add_inode_defrag(struct btrfs_inode *inode);
-> > > +int btrfs_add_inode_defrag(struct btrfs_inode *inode, u64 start, u64 len);
-> > >   int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info);
-> > >   void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info);
-> > >   int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync);
-> > > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> > > index b6a81c39d5f4..87782d1120e7 100644
-> > > --- a/fs/btrfs/disk-io.c
-> > > +++ b/fs/btrfs/disk-io.c
-> > > @@ -3126,7 +3126,6 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
-> > >   	spin_lock_init(&fs_info->trans_lock);
-> > >   	spin_lock_init(&fs_info->fs_roots_radix_lock);
-> > >   	spin_lock_init(&fs_info->delayed_iput_lock);
-> > > -	spin_lock_init(&fs_info->defrag_inodes_lock);
-> > >   	spin_lock_init(&fs_info->super_lock);
-> > >   	spin_lock_init(&fs_info->buffer_lock);
-> > >   	spin_lock_init(&fs_info->unused_bgs_lock);
-> > > @@ -3140,6 +3139,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
-> > >   	mutex_init(&fs_info->reloc_mutex);
-> > >   	mutex_init(&fs_info->delalloc_root_mutex);
-> > >   	mutex_init(&fs_info->zoned_meta_io_lock);
-> > > +	mutex_init(&fs_info->defrag_inodes_lock);
-> > >   	seqlock_init(&fs_info->profiles_lock);
-> > > 
-> > >   	INIT_LIST_HEAD(&fs_info->dirty_cowonly_roots);
-> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > > index 2d49336b0321..da6e29a6f387 100644
-> > > --- a/fs/btrfs/file.c
-> > > +++ b/fs/btrfs/file.c
-> > > @@ -34,7 +34,7 @@
-> > >   static struct kmem_cache *btrfs_inode_defrag_cachep;
-> > > 
-> > >   /* Reuse DIRTY flag for autodefrag */
-> > > -#define EXTENT_FLAG_AUTODEFRAG	EXTENT_FLAG_DIRTY
-> > > +#define EXTENT_FLAG_AUTODEFRAG	EXTENT_DIRTY
-> > > 
-> > >   /*
-> > >    * when auto defrag is enabled we
-> > > @@ -119,7 +119,6 @@ static int __btrfs_add_inode_defrag(struct btrfs_inode *inode,
-> > >   			return -EEXIST;
-> > >   		}
-> > >   	}
-> > > -	set_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags);
-> > >   	rb_link_node(&defrag->rb_node, parent, p);
-> > >   	rb_insert_color(&defrag->rb_node, &fs_info->defrag_inodes);
-> > >   	return 0;
-> > > @@ -136,81 +135,80 @@ static inline int __need_auto_defrag(struct btrfs_fs_info *fs_info)
-> > >   	return 1;
-> > >   }
-> > > 
-> > > +static struct inode_defrag *find_inode_defrag(struct btrfs_fs_info *fs_info,
-> > > +					      u64 root, u64 ino)
-> > > +{
-> > > +
-> > > +	struct inode_defrag *entry = NULL;
-> > > +	struct inode_defrag tmp;
-> > > +	struct rb_node *p;
-> > > +	struct rb_node *parent = NULL;
-> > 
-> > Neither entry nor parent need to be initialized.
-> > 
-> > > +	int ret;
-> > > +
-> > > +	tmp.ino = ino;
-> > > +	tmp.root = root;
-> > > +
-> > > +	p = fs_info->defrag_inodes.rb_node;
-> > > +	while (p) {
-> > > +		parent = p;
-> > > +		entry = rb_entry(parent, struct inode_defrag, rb_node);
-> > > +
-> > > +		ret = __compare_inode_defrag(&tmp, entry);
-> > > +		if (ret < 0)
-> > > +			p = parent->rb_left;
-> > > +		else if (ret > 0)
-> > > +			p = parent->rb_right;
-> > > +		else
-> > > +			return entry;
-> > > +	}
-> > 
-> > It's pointless to have "parent" and "p", one of them is enough.
-> > 
-> > > +	return NULL;
-> > > +}
-> > > +
-> > >   /*
-> > >    * insert a defrag record for this inode if auto defrag is
-> > >    * enabled
-> > >    */
-> > > -int btrfs_add_inode_defrag(struct btrfs_inode *inode)
-> > > +int btrfs_add_inode_defrag(struct btrfs_inode *inode, u64 start, u64 len)
-> > >   {
-> > >   	struct btrfs_root *root = inode->root;
-> > >   	struct btrfs_fs_info *fs_info = root->fs_info;
-> > > -	struct inode_defrag *defrag;
-> > > +	struct inode_defrag *prealloc;
-> > > +	struct inode_defrag *found;
-> > > +	bool release = true;
-> > >   	int ret;
-> > > 
-> > >   	if (!__need_auto_defrag(fs_info))
-> > >   		return 0;
-> > > 
-> > > -	if (test_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags))
-> > > -		return 0;
-> > > -
-> > > -	defrag = kmem_cache_zalloc(btrfs_inode_defrag_cachep, GFP_NOFS);
-> > > -	if (!defrag)
-> > > +	prealloc = kmem_cache_zalloc(btrfs_inode_defrag_cachep, GFP_NOFS);
-> > > +	if (!prealloc)
-> > >   		return -ENOMEM;
-> > 
-> > So now everytime this is called, it will allocate memory, even if the the
-> > inode is already marked for defrag.
-> 
-> Well, since now the defrag_inodes_lock is upgraded to mutex, we can
-> afford to allocate memory only when needed.
-> 
-> I can change the behavior.
-> 
-> > 
-> > Given that this function is called when running delalloc, this can cause
-> > a lot of extra memory allocations. They come from a dedicated slab, but it
-> > still might have a non-negligible impact.
-> 
-> But please be aware that, the original code is going to allocate memory
-> if the inode has being evicted, thus its runtime flags is not reliable.
-> 
-> The runtime flags check is an optimization, but not a reliable one.
-
-Yes. But there are many cases where the inode has not been evicted after
-it was added to the defrag list and before the cleaner picks it up. It's
-a very common case - not evicted either because there's an open file
-descriptor for a long period (common with databases, etc), not enough memory
-pressure, etc.
-
-> 
-> > 
-> > > 
-> > > -	defrag->ino = btrfs_ino(inode);
-> > > -	defrag->transid = inode->root->last_trans;
-> > > -	defrag->root = root->root_key.objectid;
-> > > -	extent_io_tree_init(fs_info, &defrag->targets, IO_TREE_AUTODEFRAG, NULL);
-> > > -
-> > > -	spin_lock(&fs_info->defrag_inodes_lock);
-> > > -	if (!test_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags)) {
-> > > -		/*
-> > > -		 * If we set IN_DEFRAG flag and evict the inode from memory,
-> > > -		 * and then re-read this inode, this new inode doesn't have
-> > > -		 * IN_DEFRAG flag. At the case, we may find the existed defrag.
-> > > -		 */
-> > > -		ret = __btrfs_add_inode_defrag(inode, defrag);
-> > > -		if (ret) {
-> > > -			extent_io_tree_release(&defrag->targets);
-> > > -			kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
-> > > -		}
-> > > -	} else {
-> > > -		extent_io_tree_release(&defrag->targets);
-> > > -		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
-> > > +	set_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags);
-> > > +	prealloc->ino = btrfs_ino(inode);
-> > > +	prealloc->transid = inode->root->last_trans;
-> > > +	prealloc->root = root->root_key.objectid;
-> > > +	extent_io_tree_init(fs_info, &prealloc->targets, IO_TREE_AUTODEFRAG, NULL);
-> > > +
-> > > +	mutex_lock(&fs_info->defrag_inodes_lock);
-> > > +	found = find_inode_defrag(fs_info, prealloc->root, prealloc->ino);
-> > > +	if (!found) {
-> > > +		ret = __btrfs_add_inode_defrag(inode, prealloc);
-> > > +		/* Since we didn't find one previously, the insert must success */
-> > > +		ASSERT(!ret);
-> > > +		found = prealloc;
-> > > +		release = false;
-> > > +	}
-> > > +	set_extent_bits(&found->targets, start, start + len - 1,
-> > > +			EXTENT_FLAG_AUTODEFRAG);
-> > 
-> > So this can end using a lot of memory and resulting in a deep rbtree.
-> > It's not uncommon to have very large files with random IO happening very
-> > frequently, each one would result in allocating one extent state record
-> > for the tree.
-> 
-> This is one of my concern, and I totally understand this.
-> 
-> However there are some factors to possibly reduce the memory overhead:
-> 
-> - If the random writes are mergable
->   Then the extent states will be merged into a larger one.
-
-Sure, but that does not happen for random writes on large files.
-
-Let me give you a recent example of an io tree getting big and causing
-a report of a significant performance drop:
-
-https://lore.kernel.org/linux-btrfs/3aae7c6728257c7ce2279d6660ee2797e5e34bbd.1641300250.git.fdmanana@suse.com/
-
-And performance regression was reported shortly after:
-
-https://lore.kernel.org/linux-btrfs/20220117082426.GE32491@xsang-OptiPlex-9020/
-
-That was just to track metadata extents of log trees until a transaction commits.
-Before they were cleared once a log tree is synced, but I changed it to keep the
-ranges in the io tree until the transaction commits.
-
-That can make a huge difference, because even with plenty of available metadata
-free space and unallocated space, non-contiguous metadata extents got allocated,
-and they ended up not being merged in the io tree.
-
-With autodefrag and workloads that keep doing frequent random writes to a file,
-the situation will not be better.
-
-> 
-> - If the randome writes are happening on the same range
->   No change in the number of extent states.
-
-You are too optimistic expecting those cases will be the most common.
-
-> 
-> - Much smaller extent threshold
->   Now the real extent threshold is from inode_should_defrag(), which
->   exposes 64K for uncompressed write while 16K for compressed writes.
-> 
-> In fact, for the mentioned case of steam download, I doubt if it would
-> even trigger autodefrag, as it's mostly sequential write.
-
-Have you actually tried it to verify that?
-
-It can use a mechanism similar to torrents, or other protocols, which
-is not always sequential.
-
-As I read it, it seems it barely had any performance testing.
-
-> 
-> Maybe for the decompression part it can cause some random writes, but
-> according to my daily usage, the IO is pretty high, indicating it's
-> mostly sequential write, thus should not really trigger autodefrag.
-> 
-> In fact, I believe a lot of autodefrag for Steam is false triggering,
-> thus my purposed patchset is exactly to address it.
-> 
-> > 
-> > Multiply this by N active files in a system, and it can quickly have a
-> > huge impact on used memory.
-> > 
-> > Also, if a memory allocation triggers reclaim, it will slow down and
-> > increase the amount of time other tasks wait for the mutex. As the rbtree
-> > that the io tree uses gets larger and larger, it also increases more and
-> > more the critical section's duration.
-> > 
-> > This means writeback for other inodes is now waiting for a longer period,
-> > as well as the cleaner kthread, which runs autodefrag. Blocking the cleaner
-> > for longer means we are delaying other important work - running delayed
-> > iputs, deleting snapshots/subvolumes, removing empty block groups, and
-> > whatever else the cleaner kthread does besides running autodefrag.
-> > 
-> > So it can have a very high impact on the system overall.
-> > 
-> > > +	mutex_unlock(&fs_info->defrag_inodes_lock);
-> > > +	if (release) {
-> > > +		extent_io_tree_release(&prealloc->targets);
-> > > +		kmem_cache_free(btrfs_inode_defrag_cachep, prealloc);
-> > >   	}
-> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
-> > >   	return 0;
-> > >   }
-> > > 
-> > > -/*
-> > > - * Requeue the defrag object. If there is a defrag object that points to
-> > > - * the same inode in the tree, we will merge them together (by
-> > > - * __btrfs_add_inode_defrag()) and free the one that we want to requeue.
-> > > - */
-> > > -static void btrfs_requeue_inode_defrag(struct btrfs_inode *inode,
-> > > -				       struct inode_defrag *defrag)
-> > > -{
-> > > -	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> > > -	int ret;
-> > > -
-> > > -	if (!__need_auto_defrag(fs_info))
-> > > -		goto out;
-> > > -
-> > > -	/*
-> > > -	 * Here we don't check the IN_DEFRAG flag, because we need merge
-> > > -	 * them together.
-> > > -	 */
-> > > -	spin_lock(&fs_info->defrag_inodes_lock);
-> > > -	ret = __btrfs_add_inode_defrag(inode, defrag);
-> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
-> > > -	if (ret)
-> > > -		goto out;
-> > > -	return;
-> > > -out:
-> > > -	extent_io_tree_release(&defrag->targets);
-> > > -	kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
-> > > -}
-> > > -
-> > >   /*
-> > >    * pick the defragable inode that we want, if it doesn't exist, we will get
-> > >    * the next one.
-> > > @@ -227,7 +225,7 @@ btrfs_pick_defrag_inode(struct btrfs_fs_info *fs_info, u64 root, u64 ino)
-> > >   	tmp.ino = ino;
-> > >   	tmp.root = root;
-> > > 
-> > > -	spin_lock(&fs_info->defrag_inodes_lock);
-> > > +	mutex_lock(&fs_info->defrag_inodes_lock);
-> > >   	p = fs_info->defrag_inodes.rb_node;
-> > >   	while (p) {
-> > >   		parent = p;
-> > > @@ -252,7 +250,7 @@ btrfs_pick_defrag_inode(struct btrfs_fs_info *fs_info, u64 root, u64 ino)
-> > >   out:
-> > >   	if (entry)
-> > >   		rb_erase(parent, &fs_info->defrag_inodes);
-> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
-> > > +	mutex_unlock(&fs_info->defrag_inodes_lock);
-> > >   	return entry;
-> > >   }
-> > > 
-> > > @@ -261,7 +259,7 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info)
-> > >   	struct inode_defrag *defrag;
-> > >   	struct rb_node *node;
-> > > 
-> > > -	spin_lock(&fs_info->defrag_inodes_lock);
-> > > +	mutex_lock(&fs_info->defrag_inodes_lock);
-> > >   	node = rb_first(&fs_info->defrag_inodes);
-> > >   	while (node) {
-> > >   		rb_erase(node, &fs_info->defrag_inodes);
-> > > @@ -269,21 +267,59 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info)
-> > >   		extent_io_tree_release(&defrag->targets);
-> > >   		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
-> > > 
-> > > -		cond_resched_lock(&fs_info->defrag_inodes_lock);
-> > > -
-> > >   		node = rb_first(&fs_info->defrag_inodes);
-> > >   	}
-> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
-> > > +	mutex_unlock(&fs_info->defrag_inodes_lock);
-> > >   }
-> > > 
-> > >   #define BTRFS_DEFRAG_BATCH	1024
-> > > +static int defrag_one_range(struct btrfs_inode *inode, u64 start, u64 len,
-> > > +			    u64 newer_than)
-> > > +{
-> > > +	const struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> > > +	u64 cur = start;
-> > > +	int ret = 0;
-> > > +
-> > > +	while (cur < start + len) {
-> > > +		struct btrfs_defrag_ctrl ctrl = { 0 };
-> > > +
-> > > +		ctrl.start = cur;
-> > > +		ctrl.len = start + len - cur;
-> > > +		ctrl.newer_than = newer_than;
-> > > +		ctrl.extent_thresh = SZ_256K;
-> > > +		ctrl.max_sectors_to_defrag = BTRFS_DEFRAG_BATCH;
-> > > +
-> > > +		sb_start_write(fs_info->sb);
-> > > +		ret = btrfs_defrag_file(&inode->vfs_inode, NULL, &ctrl);
-> > > +		sb_end_write(fs_info->sb);
-> > > +
-> > > +		/* The range is beyond isize, we can safely exit */
-> > > +		if (ret == -EINVAL) {
-> > 
-> > This is a bit odd. I understand this is because the io tree requires ranges
-> > to be sector aligned, so this should trigger only for inodes with an i_size that
-> > is not sector size aligned.
-> > 
-> > Assuming every -EINVAL is because of that, makes it a bit fragile.
-> > 
-> > setting ctrl.len to min(i_size_read(inode) - start, start + len - cur) and
-> > then treating all errors the same way, makes it more bullet proof. >
-> > > +			ret = 0;
-> > > +			break;
-> > > +		}
-> > > +		if (ret < 0)
-> > > +			break;
-> > > +
-> > > +		/*
-> > > +		 * Even we didn't defrag anything, the last_scanned should have
-> > > +		 * been increased.
-> > > +		 */
-> > > +		ASSERT(ctrl.last_scanned > cur);
-> > > +		cur = ctrl.last_scanned;
-> > > +	}
-> > > +	return ret;
-> > > +}
-> > > 
-> > >   static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
-> > >   				    struct inode_defrag *defrag)
-> > >   {
-> > >   	struct btrfs_root *inode_root;
-> > >   	struct inode *inode;
-> > > -	struct btrfs_defrag_ctrl ctrl = {};
-> > > +	struct extent_state *cached = NULL;
-> > > +	u64 cur = 0;
-> > > +	u64 found_start;
-> > > +	u64 found_end;
-> > >   	int ret;
-> > > 
-> > >   	/* get the inode */
-> > > @@ -300,40 +336,19 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
-> > >   		goto cleanup;
-> > >   	}
-> > > 
-> > > -	/* do a chunk of defrag */
-> > > -	clear_bit(BTRFS_INODE_IN_DEFRAG, &BTRFS_I(inode)->runtime_flags);
-> > > -	ctrl.len = (u64)-1;
-> > > -	ctrl.start = defrag->last_offset;
-> > > -	ctrl.newer_than = defrag->transid;
-> > > -	ctrl.max_sectors_to_defrag = BTRFS_DEFRAG_BATCH;
-> > > -
-> > > -	sb_start_write(fs_info->sb);
-> > > -	ret = btrfs_defrag_file(inode, NULL, &ctrl);
-> > > -	sb_end_write(fs_info->sb);
-> > > -	/*
-> > > -	 * if we filled the whole defrag batch, there
-> > > -	 * must be more work to do.  Queue this defrag
-> > > -	 * again
-> > > -	 */
-> > > -	if (ctrl.sectors_defragged == BTRFS_DEFRAG_BATCH) {
-> > > -		defrag->last_offset = ctrl.last_scanned;
-> > > -		btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
-> > > -	} else if (defrag->last_offset && !defrag->cycled) {
-> > > -		/*
-> > > -		 * we didn't fill our defrag batch, but
-> > > -		 * we didn't start at zero.  Make sure we loop
-> > > -		 * around to the start of the file.
-> > > -		 */
-> > > -		defrag->last_offset = 0;
-> > > -		defrag->cycled = 1;
-> > > -		btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
-> > > -	} else {
-> > > -		extent_io_tree_release(&defrag->targets);
-> > > -		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
-> > > +	while (!find_first_extent_bit(&defrag->targets,
-> > > +				cur, &found_start, &found_end,
-> > > +				EXTENT_FLAG_AUTODEFRAG, &cached)) {
-> > > +		clear_extent_bit(&defrag->targets, found_start,
-> > > +				 found_end, EXTENT_FLAG_AUTODEFRAG, 0, 0, &cached);
-> > > +		ret = defrag_one_range(BTRFS_I(inode), found_start,
-> > > +				found_end + 1 - found_start, defrag->transid);
-> > > +		if (ret < 0)
-> > > +			break;
-> > 
-> > Not sure why it makes more sense to break instead of continuing.
-> > Just because there was a failure for one range, it does not mean
-> > the next ranges will fail as well.
-> 
-> IMHO if we failed to defrag one range, there are two possible reasons:
-> 
-> - We reached isize, and any later defrag is not needed
-> 
-> - We got a fatal error like -ENOMEM
->   I doubt if we can even continue.
-> 
-> I can make the first case more correct and explicit, but you're right,
-> it's better to continue defragging.
+Thanks.
 > 
 > Thanks,
 > Qu
 > 
 > > 
+> > > 
+> > > But this brings a problem for autodefrag, as it relies on accurate
+> > > extent_map::generation to determine if one extent should be defragged.
+> > > 
+> > > For merged extent maps, their higher generation can mark some older
+> > > extents to be defragged while the original extent map doesn't meet the
+> > > minimal generation threshold.
+> > > 
+> > > Thus this will cause extra IO.
+> > > 
+> > > So solve the problem, here we introduce a new flag, EXTENT_FLAG_MERGED, to
+> > > indicate if the extent map is merged from one or more ems.
+> > > 
+> > > And for autodefrag, if we find a merged extent map, and its generation
+> > > meets the generation requirement, we just don't use this one, and go
+> > > back to defrag_get_extent() to read em from disk.
+> > 
+> > Instead of saying from disk, I would say from the subvolume btree. That
+> > may or may not require reading a leaf, and any nodes in the path from the
+> > root to the leaf, from disk.
+> > 
+> > > 
+> > > This could cause more read IO, but should result less defrag data write,
+> > > so in the long run it should be a win for autodefrag.
+> > > 
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > ---
+> > >   fs/btrfs/extent_map.c |  2 ++
+> > >   fs/btrfs/extent_map.h |  8 ++++++++
+> > >   fs/btrfs/ioctl.c      | 14 ++++++++++++++
+> > >   3 files changed, 24 insertions(+)
+> > > 
+> > > diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+> > > index 5a36add21305..c28ceddefae4 100644
+> > > --- a/fs/btrfs/extent_map.c
+> > > +++ b/fs/btrfs/extent_map.c
+> > > @@ -261,6 +261,7 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+> > >   			em->mod_len = (em->mod_len + em->mod_start) - merge->mod_start;
+> > >   			em->mod_start = merge->mod_start;
+> > >   			em->generation = max(em->generation, merge->generation);
+> > > +			set_bit(EXTENT_FLAG_MERGED, &em->flags);
+> > >   			rb_erase_cached(&merge->rb_node, &tree->map);
+> > >   			RB_CLEAR_NODE(&merge->rb_node);
+> > > @@ -278,6 +279,7 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+> > >   		RB_CLEAR_NODE(&merge->rb_node);
+> > >   		em->mod_len = (merge->mod_start + merge->mod_len) - em->mod_start;
+> > >   		em->generation = max(em->generation, merge->generation);
+> > > +		set_bit(EXTENT_FLAG_MERGED, &em->flags);
+> > >   		free_extent_map(merge);
+> > >   	}
+> > >   }
+> > > diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+> > > index 8e217337dff9..d2fa32ffe304 100644
+> > > --- a/fs/btrfs/extent_map.h
+> > > +++ b/fs/btrfs/extent_map.h
+> > > @@ -25,6 +25,8 @@ enum {
+> > >   	EXTENT_FLAG_FILLING,
+> > >   	/* filesystem extent mapping type */
+> > >   	EXTENT_FLAG_FS_MAPPING,
+> > > +	/* This em is merged from two or more physically adjacent ems */
+> > > +	EXTENT_FLAG_MERGED,
+> > >   };
+> > >   struct extent_map {
+> > > @@ -40,6 +42,12 @@ struct extent_map {
+> > >   	u64 ram_bytes;
+> > >   	u64 block_start;
+> > >   	u64 block_len;
+> > > +
+> > > +	/*
+> > > +	 * Generation of the extent map, for merged em it's the highest
+> > > +	 * generation of all merged ems.
+> > > +	 * For non-merged extents, it's from btrfs_file_extent_item::generation.
+> > 
+> > Missing the (u64)-1 special case, a temporary value set when writeback starts
+> > and changed when the ordered extent completes.
+> > 
+> > > +	 */
+> > >   	u64 generation;
+> > >   	unsigned long flags;
+> > >   	/* Used for chunk mappings, flag EXTENT_FLAG_FS_MAPPING must be set */
+> > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > > index fb4c25e5ff5f..3a5ada561298 100644
+> > > --- a/fs/btrfs/ioctl.c
+> > > +++ b/fs/btrfs/ioctl.c
+> > > @@ -1169,6 +1169,20 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
+> > >   	em = lookup_extent_mapping(em_tree, start, sectorsize);
+> > >   	read_unlock(&em_tree->lock);
+> > > +	/*
+> > > +	 * We can get a merged extent, in that case, we need to re-search
+> > > +	 * tree to get the original em for defrag.
+> > > +	 *
+> > > +	 * If @newer_than is 0 or em::geneartion < newer_than, we can trust
+> > 
+> > em::geneartion -> em::generation
+> > 
+> > > +	 * this em, as either we don't care about the geneartion, or the
+> > 
+> > geneartion, -> generation
+> > 
+> > The rest looks fine.
 > > Thanks.
 > > 
-> > > +		cur = found_end + 1;
-> > >   	}
-> > > 
-> > >   	iput(inode);
-> > > -	return 0;
-> > >   cleanup:
-> > >   	extent_io_tree_release(&defrag->targets);
-> > >   	kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
-> > > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > > index 2049f3ea992d..622e017500bc 100644
-> > > --- a/fs/btrfs/inode.c
-> > > +++ b/fs/btrfs/inode.c
-> > > @@ -570,7 +570,7 @@ static inline void inode_should_defrag(struct btrfs_inode *inode,
-> > >   	/* If this is a small write inside eof, kick off a defrag */
-> > >   	if (num_bytes < small_write &&
-> > >   	    (start > 0 || end + 1 < inode->disk_i_size))
-> > > -		btrfs_add_inode_defrag(inode);
-> > > +		btrfs_add_inode_defrag(inode, start, num_bytes);
-> > >   }
-> > > 
-> > >   /*
-> > > --
+> > > +	 * merged extent map will be rejected anyway.
+> > > +	 */
+> > > +	if (em && test_bit(EXTENT_FLAG_MERGED, &em->flags) &&
+> > > +	    newer_than && em->generation >= newer_than) {
+> > > +		free_extent_map(em);
+> > > +		em = NULL;
+> > > +	}
+> > > +
+> > >   	if (!em) {
+> > >   		struct extent_state *cached = NULL;
+> > >   		u64 end = start + sectorsize - 1;
+> > > -- 
 > > > 2.35.0
 > > > 
+> > 
+> 
