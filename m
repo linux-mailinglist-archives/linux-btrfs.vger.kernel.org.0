@@ -2,180 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFC74B169B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 20:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3F84B16C3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 21:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239376AbiBJTzT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 14:55:19 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53058 "EHLO
+        id S244319AbiBJULC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 15:11:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:32882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237591AbiBJTzS (ORCPT
+        with ESMTP id S238091AbiBJULB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 14:55:18 -0500
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2F5FC5
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 11:55:17 -0800 (PST)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 1D98F9BC8E; Thu, 10 Feb 2022 19:55:15 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1644522915;
-        bh=TscPwRMZbtooAB9SKGv6b38BiFERDq6tJFMRJ0rrB9w=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=Msu8Ld8aCM3m6AxnmGSimMhTdYSXZpO/qkbWAdKC2t+ilczpUnGio1CGq+Bd/mEUh
-         BEXorgfzCbcCZeQ0nrtF8ExnO3f/8PbWENTNzwp90pd65XeEEqiYgNaaxXPJhsURF2
-         EFzkRIu1tHIeP+53GkJ354uXumpYSEIpn3BVFHKDPWuQa8Pu+vex6U+QRU6ONYaO3Z
-         iDau7EOxZvY+DabBxkrvdiF40bULc8n0kkHIGOro9744Sqgq4+pf2eCr/Y3Nn24cyx
-         SVyzMG6HfSjnzyxvxHTwFGhzH8X5Cym28QD0O/FqCi+Syl4or6gusHMNoiBZHEcMFb
-         3inYTwr0LQEBg==
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        Thu, 10 Feb 2022 15:11:01 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DE42735;
+        Thu, 10 Feb 2022 12:11:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3F912B8272A;
+        Thu, 10 Feb 2022 20:11:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAAD1C004E1;
+        Thu, 10 Feb 2022 20:10:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644523858;
+        bh=iLVxmxOrhgeAZwTkFuG1YJotZgqgklwTkad+usc+SbM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=o56gSkY6KjsTqaNLucwpbwSfiS6lwFJGp+betDu9X8aq4l5khh7ZxFWlsuOatT/SU
+         kOGdUu/H0ffGyVffjwXC/ybeD43ppXkNTvDupxItbHL7c25YO9JTjYo5liSOPlcZC2
+         S1l9sx6T5hVnihTP/6rf8lhrpqqKkZFEIUwl5KM59cYjlYCu/0Yr+pjZ3xGxIECloB
+         CApZ1rDMi8muJMOR27g2MNZAWOGq2UPWWAP3ejtxogM0Zp3M0cGAvHvgqTg5t4J52t
+         BAlD+tYaAE1gb9pplHq+kCcw19EB/b00N+HnvtaBqE+Exhnq3oBWfkbhFmD3qaQRE5
+         TDTWUZVxVnWFA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9B70E5C0439; Thu, 10 Feb 2022 12:10:58 -0800 (PST)
+Date:   Thu, 10 Feb 2022 12:10:58 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
+        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>
+Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
+ lockdep/lock_stat (v1)
+Message-ID: <20220210201058.GP4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220208184208.79303-1-namhyung@kernel.org>
+ <20220209090908.GK23216@worktop.programming.kicks-ass.net>
+ <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
+ <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
+ <20220210191404.GM4285@paulmck-ThinkPad-P17-Gen-1>
+ <52de2e14-33d9-bdda-4b37-3e72ae9954c7@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52de2e14-33d9-bdda-4b37-3e72ae9954c7@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 157AA9B89E;
-        Thu, 10 Feb 2022 19:54:13 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1644522853;
-        bh=TscPwRMZbtooAB9SKGv6b38BiFERDq6tJFMRJ0rrB9w=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=O3ECeqZBjcwUpv0WuGsGKfr8F9SxO0DngLqmwMTB27cYkv2jeG4EdDJ7Ma6YhUUJn
-         FHl8YpvWM0OKCPM64/xcE6/3dPYAFZkfbqsr2SVPsTND6mzDafotVuYjxqqq0LQFdd
-         cyNOi8+pt1zfY95Oclz16PPskKS836+qBfsOxvsUvCLkwMIS6GwoeT8P9RiUDjyiHC
-         Es7OLeKBxVZa9gyOEK5iUqK2Fuiq8pVWeHH3RhvEedcASWS6cmX2FyJq+8L9cRYZZG
-         3l6js5TiHAFKtcWqg7Krd6Zhe42DNIzhNTVcA8+vlRjiNyeFsA3z+BL+OzJCjd9bBh
-         u5tHhC6AkShZA==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id C7C5911EF67;
-        Thu, 10 Feb 2022 19:54:12 +0000 (GMT)
-Message-ID: <2db10c6d-513a-3b73-c694-0ef112baa389@cobb.uk.net>
-Date:   Thu, 10 Feb 2022 19:54:12 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Re: [PATCH] Fix read-only superblock in case of subvol RO remount
-Content-Language: en-US
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     dhowells@redhat.com, fvogt@suse.com
-References: <20220210165142.7zfgotun5qdtx4rq@fiona>
-In-Reply-To: <20220210165142.7zfgotun5qdtx4rq@fiona>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/02/2022 16:51, Goldwyn Rodrigues wrote:
-> If a read-write root mount is remounted as read-only, the subvolume
-> is also set to read-only.
-
-Errrr... Isn't that exactly what I want?
-
-If I have a btrfs filesystem with hundreds of subvols, some of which may
-be mounted into various places in my filesystem, I would expect that if
-I remount the main mountpoint as RO, that all the subvols become RO as
-well. I actually don't mind if the behaviour went further and remounting
-ANY of the mount points as RO would make them all RO.
-
-My mental model is that mounting a subvol somewhere is rather like a
-bind mount. And a bind mount goes RO if the underlying fs goes RO -
-doesn't it?
-
-Or am I just confused about what this patch is discussing?
-
-Graham
-
+On Thu, Feb 10, 2022 at 02:27:11PM -0500, Waiman Long wrote:
+> On 2/10/22 14:14, Paul E. McKenney wrote:
+> > On Thu, Feb 10, 2022 at 10:13:53AM +0100, Peter Zijlstra wrote:
+> > > On Wed, Feb 09, 2022 at 04:32:58PM -0800, Namhyung Kim wrote:
+> > > > On Wed, Feb 9, 2022 at 1:09 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > > > On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
+> > > > > 
+> > > > > > Eventually I'm mostly interested in the contended locks only and I
+> > > > > > want to reduce the overhead in the fast path.  By moving that, it'd be
+> > > > > > easy to track contended locks with timing by using two tracepoints.
+> > > > > So why not put in two new tracepoints and call it a day?
+> > > > > 
+> > > > > Why muck about with all that lockdep stuff just to preserve the name
+> > > > > (and in the process continue to blow up data structures etc..). This
+> > > > > leaves distros in a bind, will they enable this config and provide
+> > > > > tracepoints while bloating the data structures and destroying things
+> > > > > like lockref (which relies on sizeof(spinlock_t)), or not provide this
+> > > > > at all.
+> > > > If it's only lockref, is it possible to change it to use arch_spinlock_t
+> > > > so that it can remain in 4 bytes?  It'd be really nice if we can keep
+> > > > spin lock size, but it'd be easier to carry the name with it for
+> > > > analysis IMHO.
+> > > It's just vile and disgusting to blow up the lock size for convenience
+> > > like this.
+> > > 
+> > > And no, there's more of that around. A lot of effort has been spend to
+> > > make sure spinlocks are 32bit and we're not going to give that up for
+> > > something as daft as this.
+> > > 
+> > > Just think harder on the analysis side. Like said; I'm thinking the
+> > > caller IP should be good enough most of the time.
+> > 
+> > Another option is to keep any additional storage in a separate data
+> > structure keyed off of lock address, lockdep class, or whatever.
+> > 
+> > Whether or not this is a -good- option, well, who knows?  ;-)
 > 
-> Use a rw_mounts counter to check the number of read-write mounts, and change
-> superblock to read-only only in case there are no read-write subvol mounts.
-> 
-> Since sb->s_flags can change while calling legacy_reconfigure(), use
-> sb->s_flags instead of fc->sb_flags to re-evaluate sb->s_flags in
-> reconfigure_super().
-> 
-> Test case:
-> dd if=/dev/zero of=btrfsfs seek=240 count=0 bs=1M
-> mkfs.btrfs btrfsfs
-> mount btrfsfs /mnt
-> btrfs subvol create /mnt/sv
-> mount -o remount,ro /mnt
-> mount -osubvol=/sv btrfsfs /mnt/sv
-> findmnt # /mnt is RO, /mnt/sv RW
-> mount -o remount,ro /mnt
-> findmnt # /mnt is RO, /mnt/sv RO as well
-> umount /mnt{/sv,}
-> rm btrfsfs
-> 
-> Reported-by: Fabian Vogt <fvogt@suse.com>
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index a2991971c6b5..2bb6869f15af 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -1060,6 +1060,9 @@ struct btrfs_fs_info {
->  	spinlock_t zone_active_bgs_lock;
->  	struct list_head zone_active_bgs;
->  
-> +	/* Count of subvol mounts read-write */
-> +	int rw_mounts;
-> +
->  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->  	spinlock_t ref_verify_lock;
->  	struct rb_root block_tree;
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 33cfc9e27451..32941e11e551 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -1835,6 +1835,11 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
->  	/* mount_subvol() will free subvol_name and mnt_root */
->  	root = mount_subvol(subvol_name, subvol_objectid, mnt_root);
->  
-> +	if (!IS_ERR(root) && !(flags & SB_RDONLY)) {
-> +		struct btrfs_fs_info *fs_info = btrfs_sb(mnt_root->mnt_sb);
-> +		fs_info->rw_mounts++;
-> +	}
-> +
->  out:
->  	return root;
->  }
-> @@ -1958,6 +1963,9 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
->  		goto out;
->  
->  	if (*flags & SB_RDONLY) {
-> +
-> +		if (--fs_info->rw_mounts > 0)
-> +			goto out;
->  		/*
->  		 * this also happens on 'umount -rf' or on shutdown, when
->  		 * the filesystem is busy.
-> @@ -2057,6 +2065,8 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
->  		if (ret)
->  			goto restore;
->  
-> +		fs_info->rw_mounts++;
-> +
->  		btrfs_clear_sb_rdonly(sb);
->  
->  		set_bit(BTRFS_FS_OPEN, &fs_info->flags);
-> diff --git a/fs/super.c b/fs/super.c
-> index f1d4a193602d..fd528f76f14b 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -913,7 +913,8 @@ int reconfigure_super(struct fs_context *fc)
->  	}
->  
->  	WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
-> -				 (fc->sb_flags & fc->sb_flags_mask)));
-> +				 (sb->s_flags & fc->sb_flags_mask)));
-> +
->  	/* Needs to be ordered wrt mnt_is_readonly() */
->  	smp_wmb();
->  	sb->s_readonly_remount = 0;
-> 
+> I have suggested that too. Unfortunately, I was replying to an email with
+> your wrong email address. So you might not have received it.
 
+Plus I was too lazy to go look at lore.  ;-)
+
+For whatever it is worth, we did something similar in DYNIX/ptx, whose
+spinlocks were limited to a single byte.  But it does have its drawbacks.
+
+							Thanx, Paul
