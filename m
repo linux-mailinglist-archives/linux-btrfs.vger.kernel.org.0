@@ -2,70 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C23F54B0290
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 02:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C174B02E2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 03:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbiBJB4D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Feb 2022 20:56:03 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:60114 "EHLO
+        id S233019AbiBJCAx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Feb 2022 21:00:53 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233215AbiBJBzn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 20:55:43 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DD528CFA
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 17:36:11 -0800 (PST)
+        with ESMTP id S233945AbiBJB7v (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Feb 2022 20:59:51 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A19270D9
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Feb 2022 17:33:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644456970;
-        bh=KuTPr7q6sCjohXNrKDw46mbo9i0c4ooS8dTrvqNyXm4=;
+        s=badeba3b8450; t=1644456829;
+        bh=2IIUSZT8n0fe8kX9jrhCkPwru6F7FOaoCDpmUCgnVHk=;
         h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=H2WwZ76zrjZd6u6X21LMe1lqeuaARsxPjJpkGvgFk3JoSbKQRvtn0H2B0iG02myE1
-         q9SdyYIvycYyrp8GlJ6xkajMsLy7ugj50POpecTDlNgG3jwrglQNA/vDvHhUbDyHTo
-         V9lJzxIN7Vt1mwaHp3khYey0+NDBjgAfqzry+s3g=
+        b=Zhm/44ON70XAZ5NO1T+PXilX0sKTPCXeWCBEnDBjAQQJFqzvzx6x9JqjlMae9UQRY
+         4ISpHBJfAYKBVEZedBxPtdG67jO2OAFXhWP0LvKwl3NFp601WdhuPk/ZlesLUC93lm
+         REQVoe3etJweQhSyyJTh+J4bhhdOD4JC3ugl0n74=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbkC-1nabZt18g8-00KzYW; Thu, 10
- Feb 2022 01:54:49 +0100
-Message-ID: <672bb775-8771-3b29-5099-a631548cfae8@gmx.com>
-Date:   Thu, 10 Feb 2022 08:54:46 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpUUw-1o5aM40UkW-00pvwz; Thu, 10
+ Feb 2022 02:33:48 +0100
+Message-ID: <51b5c958-1df6-e95e-d394-c95a0863ea0f@gmx.com>
+Date:   Thu, 10 Feb 2022 09:33:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.1
 Content-Language: en-US
-To:     Chris Murphy <lists@colorremedies.com>,
-        Tymoteusz Dolega <tymoteuszdolega@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com>
- <CAJCQCtQHZKm_mxNTaGWYD8VebMkGeX_12Ugz3f5c0BEiBROZvQ@mail.gmail.com>
+To:     BERGUE Kevin <kevin.bergue-externe@hemeria-group.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <776a73dbf91d4518a36b465ac9ac2d5a@hemeria-group.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: MySQL corruption on BTRFS
-In-Reply-To: <CAJCQCtQHZKm_mxNTaGWYD8VebMkGeX_12Ugz3f5c0BEiBROZvQ@mail.gmail.com>
+Subject: Re: Root level mismatch after sudden shutdown
+In-Reply-To: <776a73dbf91d4518a36b465ac9ac2d5a@hemeria-group.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lkPaW0t0byNKozbfvN1bveZGqfHPT76OMFtR3HVXVJzv/vfoX1/
- NYQrxx5cbZL8eeU15ux4TpwopbMTkWyuq8ejav742pFYriqaDJzkCNcmWT3Uqx9auHSkAl7
- TuX7Vy/XJ4FsSjMQvj54Cc2/nmLTkzF0FkhYPF6qq+Y7RhYS9yTpYzNrLa7blAdDrpDZ7RO
- 4DLf81iBMD95lb55Stvzw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TLaojV/u+cA=:7BjNknvgJ1jFaZ1yIIoErt
- 8hNmkNCU6J4lraWhKsxdtqdOtYOG1rBJx7w88OlSjMfeDTdv918pOZ/GwD4HBC8Zbv2ChNmtG
- Q1WRk8kM7Lwc3rjH4G+mRsk2aMMxdFL/ECby8w2ZWbl1d6bzZBqIoKlWgpPkOPzKIlWlAqn2I
- xAap8S5QLw3K714cVRBrM0S6+9luHvMU8D5Zdi2W7E49yoMYta3gQx9n+027nQLocckRYoUjP
- jXRlRG8loqtUpaJ+vdHV+G9f5FQPndFYpA/PtYyX7dguOuK+26CZ8t6XXFd0KNogHJv2qYzt0
- kLvkZVIodcHW35pYh5NHqimaSbcLv8MwTF7Ll5/E8wAIkG09ouJH481RZLez+9RGLCwaYKrTP
- tyx36NazUbuW5hxM9inBuNY6syN0AINenNUccnuUFRraW4LaHIvFWgUT95nZHHBxdd4CWclHn
- jmkgDRegLHtV3oGWARNvl54P//3Op4GDfAYzWBHYZ1AGrwRk0d1rDdljYVbrnIm3yTl4PcW4A
- 0rgCJp+WZwjdc7OW9d8Ydsy0KPiqL8k8+a2W8G7wqia++es3z3UN8oWDZAchk8IgMVnCEXFYK
- RucDqN/QzSnhk11+g0OUzXY95nwV6wYUA67rzp1MKCQly6vwrae19BHw9wCJyD4aVvWMl9j2d
- lEF7tUGZdcgGovd1Zmar4TYLa4NLzbmzzWFfmQv9P8Rh5AwXVh62qbg6tytsEuaEZxd/jVKx4
- ZL0k+Bl4EeEFw38BdbMsyJTFyY22o4zWY0en4yb+FYHjwSrTwgesgkxOy9rN6LZrZnd69Z71d
- yRxkDXGlWmm7EkCKEuJCtIcyOiVtHNySaTz4BIstZ8offansrvKcx2mtb/QPM1JGcfdBGhOMV
- fdeO2UAzDCv60gKzd8MVS9iarNPr6BZfV4LFUngsAsRjQBAjbBxmQO8rqkKjKrOPTMr4NPPU1
- i9/9L2MfgZEm6xqRIHID9/8lLRWKXy2RuGjBSQdmVfVJuYP8xX7+7KfqMhY/1C0In+Uw0JfI7
- myFxh64Q9H2JL4oV8IvxCrIfQr3+xdabnC4ACz+aVLIh4rek/OxIfBXnyRUIaIOA8nvGBNTHW
- 10tpvtthLjdpBg=
+X-Provags-ID: V03:K1:/MD11W+tjGGAz11DgvIlZzcrDRe1o5UfPOL4PDcO+bvY70qkUvP
+ Zts2w6WFBMN+F6OL9949e2bdXTopWJ3trZXy7JNkcUW0qSnU00N2p1Lhp0j8z7sigmChWST
+ 7k1/p0NajMxCUnzXqf5SkrHcsmQilNg5kBGNpa9fQo0RGWtrlv9ccB9YSKtn6V09PN4qRAs
+ e2sh8Jtj5nR7BPsmoBAmA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:scp7S/5rMjA=:6bYjsCcnrClAjtyoxEoyda
+ qhHDPeCMwGgVAhmJid1Kz2vT6BfwlCORIebICm+ZZJ9FmbTOuLewBQkb8uJEiwI22TFWHaIJe
+ AuWTVQ+iI2TkShDj/uqOYnfILSEiCwtQvUslFMdQr33LFIvdgFeVHRjaG8wzMWni3iz/ekggA
+ QWks/ROXMl6XP9rVDSz57xPAqvYOPRkOWvieD+7J1uArcaKrUM3Q60RhkVdGxBtGbPyR916ox
+ 9HCd1U4fnjmH+tkg0LVuKVRw1ttSOn45AaXKPIRCuVq4AbXxBjhBZABXXn8e3Eql2kO3UgWg6
+ F81Fb2dpQGwcz7gbNWswLgCtwDgnzPkWyvC0FzocIGRcudIR1gXhYTzJpqsl0s/iv0tmrW/e/
+ n9zEAyV57/09Vi7rsmogse4WQHJ/9zX6vQb5gJaAg3+QbT/Uitn9/4PYi8m0sQTOMUG3QOjd9
+ OaLQftCsWFTuETt1at6e3DINO3srcy8XTVb3OyxbWwavNfs/BH+wq+qy9pkDhi9s5SypNxCHk
+ zPefZSQK3sWboxVoZxNzcKYDuBDlIgbPzQu41Qe5kcrRuXzavxgNRefG/YJY9f1nLLSuT1q0+
+ G8iPBZmM1yrSEMNtC5q5F/62xgkVx0rba//OkUSREXsUyhAiGUmpIS1d5u3ESnUIJ/8buH3OQ
+ 0sjiHaWccLnsUQgajQuzEQu1hqD4jeg18VJAfYix1DGvZtV4PcvytmIRuJ1bZ+mM8Ltv0OYPg
+ H95HRxWDNHyfAcxOUnagWxL02u9Qpg64UoI9I3j+yrJSdej3YB1EDnUfsE6hs84oJvuvDHdNr
+ 5el7nfnrhqSKK5YAZSo9jQih0GLOnQ427jzDKgsdWsruOfSEUqCezOyoNBfGRASHrFV/nv6IM
+ rdSGoyn+XCts7AG3cTtkQnkhPSxcvDGn2/iVTXseTd0Efk/xqK8FwLc2bDFXlQcE/wuCLNfDp
+ M2m2Ya9BEztsFryPuHl4UeZ+ktrVDW1v3n7hsAXwK0N+lcJW0eGq+O/UK0NDly4GfbxGDMSjt
+ fsUsUEo8EXGlOcrME8Xv4/3lUcHgwA62IFD6tzLSKro6H5Xm7ZaCOHIoydMJQPDPDDJm/wGAh
+ LQbLzUuISRIxxk=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,89 +72,153 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/2/10 05:35, Chris Murphy wrote:
-> On Tue, Feb 8, 2022 at 1:07 AM Tymoteusz Dolega
-> <tymoteuszdolega@gmail.com> wrote:
->>
->> Hello,
->> I maybe encountered a bug. I'm using NixOS, and after enabling MySQL wi=
-th:
->>
->> services.mysql =3D {
->>        enable =3D true;
->>        package =3D pkgs.mariadb;
->>   };
->>
->> it cannot even start, and fails with "code=3Dkilled, status=3D6/ABRT". =
-The
->> problem that MySQL reports in journal is about file corruption. I
->> attached all logs at the bottom of this mail.
->> I tried changing database location to different BTRFS SSD, cleanly
->> formatted, and problem persists. After changing database location to
->> EXT4 partition, everything works perfectly. I tried newer MySQL
->> version (from nix-unstable), but still errors show up. Current version
->> is 10.6.5-MariaDB. I tried deleting DB folder to force it to make it
->> again. Scrub is clean, check (--readonly) is clean. I have only 1
->> mount option: "noatime". "mount" reports:
->> (rw,noatime,ssd,space_cache,subvolid=3D5,subvol=3D/).
+On 2022/2/9 18:53, BERGUE Kevin wrote:
+> Hello everyone.
+>
+>
+> After a sudden shutdown my btrfs partition seems to be corrupted. After =
+a few hours of reading documentation and trying various repair methods I f=
+ound an error message I can't find anywhere so I'm sending it your way hop=
+ing you can at least explain what the issue is. The disk was running with =
+linux 5.16.5 at the moment of the crash, my recovery environnement is a li=
+nux 5.15.16 machine with btrfs-progs v5.16.
+>
+>
+> To retrace my steps a bit:
+>
+> - I tried to mount my partition normally:
+> # mount /dev/mapper/SSD-Root /mnt/broken/
+> mount: /mnt/broken: wrong fs type, bad option, bad superblock on /dev/ma=
+pper/SSD-Root, missing codepage or helper program, or other error.
+>
+> - I then looked at the relevant logs from dmesg:
+> # dmesg
+> [ 2118.381387] BTRFS info (device dm-1): flagging fs with big metadata f=
+eature
+> [ 2118.381394] BTRFS info (device dm-1): disk space caching is enabled
+> [ 2118.381395] BTRFS info (device dm-1): has skinny extents
+> [ 2118.384626] BTRFS error (device dm-1): parent transid verify failed o=
+n 1869491683328 wanted 526959 found 526999
+> [ 2118.384900] BTRFS error (device dm-1): parent transid verify failed o=
+n 1869491683328 wanted 526959 found 526999
 
-I'm thinking if mariadb is setting NOCOW for its database files.
+Transid mismatch, and it's newer tree blocks overwriting old tree blocks.
 
-If that's the case, and a power loss happens, btrfs can not ensure the
-atomicness of the file content.
-(this relies on data COW and checksum, while NOCOW disables them all).
+This means two possible situations:
 
->>
->> uname -a
->> Linux desktop-nixos 5.16.4 #1-NixOS SMP PREEMPT Sat Jan 29 09:59:25
->> UTC 2022 x86_64 GNU/Linux
->>
->> btrfs --version
->> btrfs-progs v5.14.1
->>
->> sudo btrfs fi show
->> Label: 'nixos'  uuid: 67b6e734-cd1e-41e3-ab7a-63660e540014
->>          Total devices 1 FS bytes used 95.05GiB
->>          devid    1 size 249.00GiB used 98.03GiB path /dev/nvme0n1p5
->>
->> Label: 'cruc'  uuid: cc51fa3c-57db-42b6-a890-ff5cd7b18f47
->>          Total devices 1 FS bytes used 125.16MiB
->>          devid    1 size 931.51GiB used 2.02GiB path /dev/sdb1
->>
->> btrfs fi df /mnt/cruc
->> Data, single: total=3D1.01GiB, used=3D124.84MiB
->> System, single: total=3D4.00MiB, used=3D16.00KiB
->> Metadata, single: total=3D1.01GiB, used=3D304.00KiB
->> GlobalReserve, single: total=3D3.25MiB, used=3D0.00B
->>
->> dmesg.log  - https://www.dropbox.com/s/ou52m2hdjzmjy6b/dmesg.log?dl=3D0
->> but there is not much there besides you can see I cleanly formatted the=
- drive
->> mysql - https://www.dropbox.com/s/jjthkfu0anh8n2o/mysql.log?dl=3D0
->> log with info about corruption
->> (links hosted on dropbox, you can see them without logging in)
->> I will be happy to answer any needed questions.
+- The SSD is lying about its flush/fua opeartions
+   This means, the SSD firmware doesn't really write all its data back to
+   its NAND when it reports flush/fua operations are finished.
+   This mostly means the SSD is not reliable for any filesystems.
 
-Mind to locate the file "ibdata1" and provides the following output of it?
+   Although traditional journal based filesystems may have a better
+   chance to survive.
 
-  # lsattr ./ibdata1
+- Some corrupted v1 cache makes btrfs to break its CoW checks
+   This can only happen for v1 space cache, and is pretty tricky to
+   happen, as v1 cache has its own checksum.
 
-If it shows something like this:
+   And now v2 cache is the default for newly created btrfs.
 
-  ---------------C------ /mnt/btrfs/file
+- Corrupted extent tree screwing up metadata CoW
+   Normally it would cause transaction abort in the first place though.
 
-It means it's a NOCOW file, and btrfs doesn't guarantee the correctness
-of its content after power loss.
-This is the same behavior of other filesystems, and it's on the database
-itself to utilize things like write ahead log to ensure the correctness.
+- Complex storage stack added extra points to cause FLUSH/FUA problem
+   If you're using things like LVM/LUKS/Bcache, it's more complex and
+   any stack in the middle can cause FLUSH/FUA problem if there is some
+   bugs.
+
+Mind to share the following info?
+
+- Storage stack
+   From hardware disk to the top level btrfs, all things like LVM/LUKS
+   /Bcache would help us to understand the situation.
+
+- SSD model
+   To see if it's some known one to have FLUSH/FUA problems.
 
 Thanks,
 Qu
+
+
+> [ 2118.384905] BTRFS warning (device dm-1): failed to read root (objecti=
+d=3D4): -5
+> [ 2118.385304] BTRFS error (device dm-1): open_ctree failed
 >
-> Does this happen just on starting up mariadb for the first time? I'm
-> wondering how to go about reproducing it on Fedora where I have
-> mariadb 10.6.5, kernel 5.17-rc3. All I'm doing is systemctl start
-> mariadb, and it starts up OK. Other than the kernel I'm wondering
-> what's different about them.
+> - After some reading about the "parent transid verify failed" errors I t=
+ried to mount the volume with the usebackuproot flag:
+> # mount -t btrfs -o ro,rescue=3Dusebackuproot /dev/mapper/SSD-Root /mnt/=
+broken/
+> mount: /mnt/broken: wrong fs type, bad option, bad superblock on /dev/ma=
+pper/SSD-Root, missing codepage or helper program, or other error.
+> And the dmesg content:
+> [ 2442.117867] BTRFS info (device dm-1): flagging fs with big metadata f=
+eature
+> [ 2442.117871] BTRFS info (device dm-1): trying to use backup root at mo=
+unt time
+> [ 2442.117872] BTRFS info (device dm-1): disk space caching is enabled
+> [ 2442.117873] BTRFS info (device dm-1): has skinny extents
+> [ 2442.123056] BTRFS error (device dm-1): parent transid verify failed o=
+n 1869491683328 wanted 526959 found 526999
+> [ 2442.123344] BTRFS error (device dm-1): parent transid verify failed o=
+n 1869491683328 wanted 526959 found 526999
+> [ 2442.123348] BTRFS warning (device dm-1): failed to read root (objecti=
+d=3D4): -5
+> [ 2442.124743] BTRFS error (device dm-1): parent transid verify failed o=
+n 1869491683328 wanted 526959 found 526999
+> [ 2442.124939] BTRFS error (device dm-1): parent transid verify failed o=
+n 1869491683328 wanted 526959 found 526999
+> [ 2442.124942] BTRFS warning (device dm-1): failed to read root (objecti=
+d=3D4): -5
+> [ 2442.125196] BTRFS critical (device dm-1): corrupt leaf: block=3D18698=
+63370752 slot=3D97 extent bytenr=3D920192651264 len=3D4096 invalid generat=
+ion, have 527002 expect (0, 527001]
+> [ 2442.125201] BTRFS error (device dm-1): block=3D1869863370752 read tim=
+e tree block corruption detected
+> [ 2442.125500] BTRFS critical (device dm-1): corrupt leaf: block=3D18698=
+63370752 slot=3D97 extent bytenr=3D920192651264 len=3D4096 invalid generat=
+ion, have 527002 expect (0, 527001]
+> [ 2442.125502] BTRFS error (device dm-1): block=3D1869863370752 read tim=
+e tree block corruption detected
+> [ 2442.125508] BTRFS warning (device dm-1): couldn't read tree root
+> [ 2442.125806] BTRFS critical (device dm-1): corrupt leaf: block=3D18698=
+66401792 slot=3D117 extent bytenr=3D906206486528 len=3D4096 invalid genera=
+tion, have 527003 expect (0, 527002]
+> [ 2442.125808] BTRFS error (device dm-1): block=3D1869866401792 read tim=
+e tree block corruption detected
+> [ 2442.126174] BTRFS critical (device dm-1): corrupt leaf: block=3D18698=
+66401792 slot=3D117 extent bytenr=3D906206486528 len=3D4096 invalid genera=
+tion, have 527003 expect (0, 527002]
+> [ 2442.126175] BTRFS error (device dm-1): block=3D1869866401792 read tim=
+e tree block corruption detected
+> [ 2442.126184] BTRFS warning (device dm-1): couldn't read tree root
+> [ 2442.126599] BTRFS error (device dm-1): open_ctree failed
+>
+> - I then tried a check:
+> # btrfs check /dev/mapper/SSD-Root
+> Opening filesystem to check...
+> parent transid verify failed on 1869491683328 wanted 526959 found 526999
+> parent transid verify failed on 1869491683328 wanted 526959 found 526999
+> parent transid verify failed on 1869491683328 wanted 526959 found 526999
+> Ignoring transid failure
+> ERROR: root [4 0] level 0 does not match 1
+>
+> Couldn't setup device tree
+> ERROR: cannot open file system
 >
 >
+> I think the "root [4 0] level 0 does not match 1" error is the real cupr=
+it but I can't seem to find any info on this message anywhere. I tried a b=
+unch of other commands including:
+> - btrfs rescue zero-log
+> - btrfs rescue chunk-recover
+> - btrfs check --repair
+> - btrfs rescue super-recover
+> - btrfs check --repair with the tree root found by btrfs-find-root
+> - btrfs check --repair --init-csum-tree --init-extent-tree
+> - btrfs restore
+>
+> I'm aware I probably executed some commands that don't make a lot of sen=
+se in my context but all of them failed with either the "root [4 0] level =
+0 does not match 1" message or a more generic "could not open ctree" or eq=
+uivalent.
