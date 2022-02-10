@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA5B4B18B4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 23:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B44E4B18BA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 23:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345040AbiBJWoh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1343987AbiBJWoh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 10 Feb 2022 17:44:37 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33890 "EHLO
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345191AbiBJWof (ORCPT
+        with ESMTP id S1345197AbiBJWof (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Thu, 10 Feb 2022 17:44:35 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DC05F78
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 14:44:31 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id j24so6483457qkk.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 14:44:31 -0800 (PST)
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341AD5F7C
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 14:44:33 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id fh9so6669447qvb.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 14:44:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=WfGtmUcSTVRYIz9KWMLPvX51lEAkGUBahW7DzB+DJ7Y=;
-        b=pUT5lJIl2LnmxtdkrThEntatT+Xqm0itcHQP8cKVqKTzeDSikGzTTMN0JR1haCpP+h
-         Rvf41dGo3HeUJw1WNyeagNfXUzEhHZ8kZ6eHIhmKa7mfIR9llZpOm04LR6ZN5xvQ/AZN
-         MDd8kBPDRoJhp48P2c7pekC+CIm+Jesr7osUIRW1XugCr2Uj3aQuzWSxPdmiHKw0iNpO
-         KQmGQzqx+5cdF/sWeHvNM4oh8s4AsV4RS+0rdkxFviq5eXdYn9mL0aGL1QhwKBvi9OWj
-         9rH44YLWthzJWGbf8b8wZRHRTL6MTcJbpgymV/bFQFRluGIBIYak61jwFNqRU3lCbVBY
-         betg==
+        bh=Cl8wfPpxQ/ysohn0n9bzVL1r2SjPino5fnfjtpI+8jM=;
+        b=kh4uOEpfK0uF+fpghWRsihsxorwIpVLNqiOTHBvSDmvA2sWwZZR/ix5RNIMS9ANUq5
+         c8j8NGyHhrWAKGhLkCuBGjyZl1bSTZOKS5LLDevCqsBGKkFi2E02Yvbux1ziXgVCoorn
+         SvfF9zwVzitRXBfQV9bzN8WW8QfFZDG5JSlPbK4WkrC4WKjt+LPHxm895qO9O6GsPgWN
+         ri0BlpmJMTrwFPebbh6WaV+iP+6R4a+mwCqpWIr/Zgad9711RKb7AVF1+ybaDaRVlup3
+         EraGkhIjdWUdvXZNZgbL44QPpHp7JTTv34DKL4RPunQwqk27lBYqEtFr74vzPCTBRN4a
+         4hOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WfGtmUcSTVRYIz9KWMLPvX51lEAkGUBahW7DzB+DJ7Y=;
-        b=PRlvvAJW/sliuvNd/oASv+blqv3whZscbCdIA7YKxWYsvrlVj0gCEmzvimvEJqdLp3
-         IBJjzkKhpM2NmzPCabCxV63coOe7rWUsjZmrFybhyDUCgEdBnAcAOvuASEJpDNgsIIxP
-         Ua6tnIKpPX6+pK2XOFGG03F+HCtJFqrc3ei6vDx/un7j8DxALykKw2UeZWpDmtvKkFPg
-         ZRiFPI6d3FE6poeM6zec6fvNHbkcRFp52ijUxXC4mGwDQS6UiEXtaUj3L46R7cA30mDK
-         Zuv7B21acJL6WaIrFzShvKh7+Hp+7VJK6q/Kp1TSDGDVhyvK/p75LTBflZD6HXJjp+tB
-         L+MA==
-X-Gm-Message-State: AOAM531Uzo+mR+NOMeny2ZkId4YQL0dJpRVFuLqwy8Abty15+4Sfp/Zq
-        JqspIwxSIq/lWXSthXXa4P6azAipW8yLpo69
-X-Google-Smtp-Source: ABdhPJyKWnimLhsCV5O3m1TRQbUBbALTtJ1bG5Z2IzqzmdNyjfVp94mf6bhaBu98ex+kRRQDl/WFeA==
-X-Received: by 2002:a05:620a:4694:: with SMTP id bq20mr4982787qkb.116.1644533070728;
-        Thu, 10 Feb 2022 14:44:30 -0800 (PST)
+        bh=Cl8wfPpxQ/ysohn0n9bzVL1r2SjPino5fnfjtpI+8jM=;
+        b=fy3bX8+9jIc3OPJlHy7+W2kSS02Z/JB6WgVRF1NymYR8b8chvkKcOBzKPbmA9/80nS
+         Vb83gXqbtJRCkjTpH+IqO0ZayjihLYVahXP/qy7oBnfjKBA+KVnKOGz6LkNiNZ/YvJ7j
+         2eSLem+pIcY6AhY+XTsrJErfOGfmS1pzv6+sfnhmxsZV0NmWAXnoHhSloSOViTj56Nuw
+         aANdP1/fdpGAfpXjBVJc1TwoZ5KI+swAK4gXbk/YEuIusZk3MrmSW8Wb3GnNm6Yr0eig
+         l7qKhmWO9gS0TAvQXu/qra4NjuNuINUSBeT1To6ME7q1bftLCoLT/3rVN+L8qGH5Bw7Y
+         36iw==
+X-Gm-Message-State: AOAM533dFvnMhzDsorS6QAdRSeTrX9F/gWdZPK3tMz+++zxbznZ0WGnZ
+        5a7GeHnQ22ayy9ncrCNvZQUrv2hgWnCrKF25
+X-Google-Smtp-Source: ABdhPJyE7k/0XbsNZvblRz3M4FVT8PPeCdGypwsnEa5NxMoGLLJnQjktzVgOg896nzm33T+bqMtd+w==
+X-Received: by 2002:a05:6214:2a8a:: with SMTP id jr10mr6735197qvb.112.1644533072142;
+        Thu, 10 Feb 2022 14:44:32 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c20sm11826831qtb.58.2022.02.10.14.44.30
+        by smtp.gmail.com with ESMTPSA id w19sm7809449qkp.6.2022.02.10.14.44.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Feb 2022 14:44:30 -0800 (PST)
+        Thu, 10 Feb 2022 14:44:31 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/8] btrfs: handle csum lookup errors properly on reads
-Date:   Thu, 10 Feb 2022 17:44:20 -0500
-Message-Id: <9aa5cdf08820eeb53feb0457bc6994231a7ff9fd.1644532798.git.josef@toxicpanda.com>
+Subject: [PATCH 3/8] btrfs: check correct bio in finish_compressed_bio_read
+Date:   Thu, 10 Feb 2022 17:44:21 -0500
+Message-Id: <04d361b2ca1bdf0470e9fdbba00eecd801d18268.1644532798.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1644532798.git.josef@toxicpanda.com>
 References: <cover.1644532798.git.josef@toxicpanda.com>
@@ -67,75 +67,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently any error we get while trying to lookup csums during reads
-shows up as a missing csum, and then on the read completion side we spit
-out an error saying there was a csum mismatch and we increase the device
-corruption count.
-
-However we could have gotten an EIO from the lookup.  We could also be
-inside of a memory constrained container and gotten a ENOMEM while
-trying to do the read.  In either case we don't want to make this look
-like a file system corruption problem, we want to make it look like the
-actual error it is.  Capture any negative value, convert it to the
-appropriate blk_sts_t, free the csum array if we have one and bail.
+Commit c09abff87f90 ("btrfs: cloned bios must not be iterated by
+bio_for_each_segment_all") added ASSERT()'s to make sure we weren't
+calling bio_for_each_segment_all() on a RAID5/6 bio.  However it was
+checking the bio that the compression code passed in, not the
+cb->orig_bio that we actually iterate over, so adjust this ASSERT() to
+check the correct bio.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/file-item.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ fs/btrfs/compression.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index efb24cc0b083..e68be492109d 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -368,6 +368,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
-+	struct btrfs_bio *bbio = NULL;
- 	struct btrfs_path *path;
- 	const u32 sectorsize = fs_info->sectorsize;
- 	const u32 csum_size = fs_info->csum_size;
-@@ -377,6 +378,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst
- 	u8 *csum;
- 	const unsigned int nblocks = orig_len >> fs_info->sectorsize_bits;
- 	int count = 0;
-+	blk_status_t ret = BLK_STS_OK;
- 
- 	if ((BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM) ||
- 	    test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state))
-@@ -400,7 +402,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst
- 		return BLK_STS_RESOURCE;
- 
- 	if (!dst) {
--		struct btrfs_bio *bbio = btrfs_bio(bio);
-+		bbio = btrfs_bio(bio);
- 
- 		if (nblocks * csum_size > BTRFS_BIO_INLINE_CSUM_SIZE) {
- 			bbio->csum = kmalloc_array(nblocks, csum_size, GFP_NOFS);
-@@ -456,6 +458,13 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst
- 
- 		count = search_csum_tree(fs_info, path, cur_disk_bytenr,
- 					 search_len, csum_dst);
-+		if (count < 0) {
-+			ret = errno_to_blk_status(count);
-+			if (bbio)
-+				btrfs_bio_free_csum(bbio);
-+			break;
-+		}
-+
- 		if (count <= 0) {
- 			/*
- 			 * Either we hit a critical error or we didn't find
-@@ -491,7 +500,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst
- 	}
- 
- 	btrfs_free_path(path);
--	return BLK_STS_OK;
-+	return ret;
- }
- 
- int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 71e5b2e9a1ba..a9d458305a08 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -259,7 +259,7 @@ static void finish_compressed_bio_read(struct compressed_bio *cb, struct bio *bi
+ 		 * We have verified the checksum already, set page checked so
+ 		 * the end_io handlers know about it
+ 		 */
+-		ASSERT(!bio_flagged(bio, BIO_CLONED));
++		ASSERT(!bio_flagged(cb->orig_bio, BIO_CLONED));
+ 		bio_for_each_segment_all(bvec, cb->orig_bio, iter_all) {
+ 			u64 bvec_start = page_offset(bvec->bv_page) +
+ 					 bvec->bv_offset;
 -- 
 2.26.3
 
