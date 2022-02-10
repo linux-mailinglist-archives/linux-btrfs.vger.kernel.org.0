@@ -2,58 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 119B24B137A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 17:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2604B13A9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 17:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244694AbiBJQvq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 11:51:46 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35640 "EHLO
+        id S244558AbiBJQ4g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 11:56:36 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244375AbiBJQvp (ORCPT
+        with ESMTP id S244383AbiBJQ4f (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 11:51:45 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98309EE;
-        Thu, 10 Feb 2022 08:51:46 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4E1F121121;
-        Thu, 10 Feb 2022 16:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1644511905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=IYGYQc5+DmfMVKXLKY+jywQH8/yCGWAk5raliA2Ua8A=;
-        b=KdU4IMRUtt07PIUbUWCPUNaVK1Op56Cm2m+sVGPj4s2RqN9fN59yX88oW/JI+NVDvwIDM+
-        9x8C1YP2H6Cox1VVFF8GEbWcZI2mE7sMtFukj0VyVAA4KKEZpvPsUtBUMGUt9WZm7sWldL
-        JVYFdgFeZ5FYdUfPj2f7I0odwbzCIqw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1644511905;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=IYGYQc5+DmfMVKXLKY+jywQH8/yCGWAk5raliA2Ua8A=;
-        b=BE5lRfziXErod1Fbvr6Yj+HYsNUjAqWSrDW+HXBKOvqyyLwh0j50rZ1KRPXY4NoAcG9AtJ
-        mKNng34KDh1bhnBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D940513C14;
-        Thu, 10 Feb 2022 16:51:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BmoJKaBCBWL7PgAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Thu, 10 Feb 2022 16:51:44 +0000
-Date:   Thu, 10 Feb 2022 10:51:42 -0600
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     dhowells@redhat.com, fvogt@suse.com
-Subject: [PATCH] Fix read-only superblock in case of subvol RO remount
-Message-ID: <20220210165142.7zfgotun5qdtx4rq@fiona>
+        Thu, 10 Feb 2022 11:56:35 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF7397
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 08:56:36 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 262691F399;
+        Thu, 10 Feb 2022 16:56:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1644512195;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sJ3PrUa0vM8qRbm/9khCZ1QiJQtCm7oXqLCO/8g770o=;
+        b=rJNc9C+3hg6ha5sxRtZbnUgE7TNeOXlVkd4DzyLSN9gpfkHNcAIVBQ0WIqvWInPzz4GHFP
+        BKYgFdrcexMvfcr8237GhJ7T5mH0s7upZo6mOKKmCl1kCiqx0E1onWxTge4Fw72gLdHaIH
+        9ybI+Aqc+M/RU4ulTMlHYO4Ap4GRS7U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1644512195;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sJ3PrUa0vM8qRbm/9khCZ1QiJQtCm7oXqLCO/8g770o=;
+        b=ETFxgIaWl86rLbfqckvidqQa0kmNPmhJADRkHzbzomBfA6wqJeP5sIVZ9VzdPF3IXsKujx
+        1+qwZ/4CwlDcAQBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1DC78A3B89;
+        Thu, 10 Feb 2022 16:56:35 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id ABD76DA9BA; Thu, 10 Feb 2022 17:52:53 +0100 (CET)
+Date:   Thu, 10 Feb 2022 17:52:53 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] btrfs: defrag: don't waste CPU time on non-target
+ extent
+Message-ID: <20220210165253.GQ12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <cover.1644039494.git.wqu@suse.com>
+ <20220208220923.GH12643@twin.jikos.cz>
+ <b50e1856-f03e-8570-6283-54e5f673a040@gmx.com>
+ <20220209151921.GK12643@twin.jikos.cz>
+ <38abf10b-cca3-0c75-fb18-a90c658541a4@suse.com>
+ <20220210142652.GO12643@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20220210142652.GO12643@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -64,95 +71,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If a read-write root mount is remounted as read-only, the subvolume
-is also set to read-only.
+On Thu, Feb 10, 2022 at 03:26:52PM +0100, David Sterba wrote:
+> > Unfortunately, it looks like without this cleanup, all later patches 
+> > either needs extra parameters passing down the call chain, or have very 
+> > "creative" way to pass info around, and can causing more problem in the 
+> > long run.
+> > 
+> > I'm wondering if it's some policy in the stable tree preventing such 
+> > cleanup patches being merged or something else?
+> 
+> It's not a hard policy, I don't remember a patch rejected from stable
+> because it needed a prep work. The fix itself must be justified, and
+> minimal if possible and that's what I'm always trying to go for.
+> 
+> This patches has diffstat
+> 
+> 4 files changed, 163 insertions(+), 101 deletions(-)
+> 
+> and the preparatory patch itself
+> 
+> 3 files changed, 71 insertions(+), 93 deletions(-)
+> 
+> Patch 4 probably needs to add one parameter, and 5 is adding a new
+> one even though there's the ctrl structure. So I think it would not be
+> that intrusive with a few extra parameters compared to the whole ctrl
+> conversion.
 
-Use a rw_mounts counter to check the number of read-write mounts, and change
-superblock to read-only only in case there are no read-write subvol mounts.
-
-Since sb->s_flags can change while calling legacy_reconfigure(), use
-sb->s_flags instead of fc->sb_flags to re-evaluate sb->s_flags in
-reconfigure_super().
-
-Test case:
-dd if=/dev/zero of=btrfsfs seek=240 count=0 bs=1M
-mkfs.btrfs btrfsfs
-mount btrfsfs /mnt
-btrfs subvol create /mnt/sv
-mount -o remount,ro /mnt
-mount -osubvol=/sv btrfsfs /mnt/sv
-findmnt # /mnt is RO, /mnt/sv RW
-mount -o remount,ro /mnt
-findmnt # /mnt is RO, /mnt/sv RO as well
-umount /mnt{/sv,}
-rm btrfsfs
-
-Reported-by: Fabian Vogt <fvogt@suse.com>
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index a2991971c6b5..2bb6869f15af 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1060,6 +1060,9 @@ struct btrfs_fs_info {
- 	spinlock_t zone_active_bgs_lock;
- 	struct list_head zone_active_bgs;
- 
-+	/* Count of subvol mounts read-write */
-+	int rw_mounts;
-+
- #ifdef CONFIG_BTRFS_FS_REF_VERIFY
- 	spinlock_t ref_verify_lock;
- 	struct rb_root block_tree;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 33cfc9e27451..32941e11e551 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1835,6 +1835,11 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
- 	/* mount_subvol() will free subvol_name and mnt_root */
- 	root = mount_subvol(subvol_name, subvol_objectid, mnt_root);
- 
-+	if (!IS_ERR(root) && !(flags & SB_RDONLY)) {
-+		struct btrfs_fs_info *fs_info = btrfs_sb(mnt_root->mnt_sb);
-+		fs_info->rw_mounts++;
-+	}
-+
- out:
- 	return root;
- }
-@@ -1958,6 +1963,9 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 		goto out;
- 
- 	if (*flags & SB_RDONLY) {
-+
-+		if (--fs_info->rw_mounts > 0)
-+			goto out;
- 		/*
- 		 * this also happens on 'umount -rf' or on shutdown, when
- 		 * the filesystem is busy.
-@@ -2057,6 +2065,8 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 		if (ret)
- 			goto restore;
- 
-+		fs_info->rw_mounts++;
-+
- 		btrfs_clear_sb_rdonly(sb);
- 
- 		set_bit(BTRFS_FS_OPEN, &fs_info->flags);
-diff --git a/fs/super.c b/fs/super.c
-index f1d4a193602d..fd528f76f14b 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -913,7 +913,8 @@ int reconfigure_super(struct fs_context *fc)
- 	}
- 
- 	WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
--				 (fc->sb_flags & fc->sb_flags_mask)));
-+				 (sb->s_flags & fc->sb_flags_mask)));
-+
- 	/* Needs to be ordered wrt mnt_is_readonly() */
- 	smp_wmb();
- 	sb->s_readonly_remount = 0;
-
--- 
-Goldwyn
+I've tried to minimize that, basically it's just patch 5, passing around
+the last_scanned, but I'm not 100% sure, the ctrl structure makes it
+incomprehensible what else needs to be passed around or initialized.
+If we're fixing a not so great rewrite I'm very inclined to fix it by a
+series of minimal fixes, not another rewrite.
