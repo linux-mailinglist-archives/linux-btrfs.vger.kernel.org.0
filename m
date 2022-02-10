@@ -2,67 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1D64B0FCA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 15:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE3C4B1072
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 15:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242638AbiBJOIv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 09:08:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59790 "EHLO
+        id S242965AbiBJOaf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 09:30:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240931AbiBJOIu (ORCPT
+        with ESMTP id S242945AbiBJOaf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 09:08:50 -0500
+        Thu, 10 Feb 2022 09:30:35 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB05F5;
-        Thu, 10 Feb 2022 06:08:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E8EB80
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 06:30:35 -0800 (PST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 470541F391;
-        Thu, 10 Feb 2022 14:08:50 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7000D1F391;
+        Thu, 10 Feb 2022 14:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1644502130;
+        t=1644503434;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KKfbdMLq1uv0xXHacVm2GBmBm+0Pa3pnsnQQmDp1SRs=;
-        b=tCS8fnro2eBglLgWwNj/Bhf1jwTIerc+rDKFSgdLLXSlshGhKv5BIA2Zaw5ve3CTPry2PQ
-        EoLH2MS2up75IvH6Q37g+zjdq2s4+ao2X5Y78YoE+kf6jiLBDYWgSHDvWaDBDYwqyKwu3u
-        3yshXktz6z68q4ewKy9MmdzFElIq8bU=
+        bh=NYM2/h7cSRWffcEHkd2betiBL6rT67FROZMoE0EluKk=;
+        b=a1mulDJNKuEB3rEb6zuLBtselRLtYTNi/bkjJhAl727tlWcOpDK94QlssdXhfUC20ZxGHn
+        zeYc/966EK48zoJcdl8Z6LmgsTF2aIFROeV1RCxLXlXtsVOy4EZCHNCgRYOaiSaxF1WsZq
+        R1LdL13ILubtExbLaxHwTh2u+Nqc5C0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1644502130;
+        s=susede2_ed25519; t=1644503434;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KKfbdMLq1uv0xXHacVm2GBmBm+0Pa3pnsnQQmDp1SRs=;
-        b=IlyvGXydUeuFMwaAwUwYRSj0twVgFKnnVCaQABQQJizUUXKAXP3UHf80By6O7GN/VJEwOZ
-        f9NnQWdypK0IkjCg==
+        bh=NYM2/h7cSRWffcEHkd2betiBL6rT67FROZMoE0EluKk=;
+        b=W5AfANGOp6Lx6PQCWtGDEJ5zvUILn6hj/pNZrTFEfdmwKLvVRkw7C202r1DQgN77Y7mu+z
+        gEMzFKFmmkrKgqDA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 30644A3B87;
-        Thu, 10 Feb 2022 14:08:50 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 67831A3B87;
+        Thu, 10 Feb 2022 14:30:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CCCEADA9BA; Thu, 10 Feb 2022 15:05:08 +0100 (CET)
-Date:   Thu, 10 Feb 2022 15:05:08 +0100
+        id 1366ADA9BA; Thu, 10 Feb 2022 15:26:53 +0100 (CET)
+Date:   Thu, 10 Feb 2022 15:26:52 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     =?utf-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: prevent copying too big compressed lzo segment
-Message-ID: <20220210140508.GN12643@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] btrfs: defrag: don't waste CPU time on non-target
+ extent
+Message-ID: <20220210142652.GO12643@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        =?utf-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
-        linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-kernel@vger.kernel.org
-References: <20220202214455.15753-1-davispuh@gmail.com>
- <20220202214455.15753-2-davispuh@gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <cover.1644039494.git.wqu@suse.com>
+ <20220208220923.GH12643@twin.jikos.cz>
+ <b50e1856-f03e-8570-6283-54e5f673a040@gmx.com>
+ <20220209151921.GK12643@twin.jikos.cz>
+ <38abf10b-cca3-0c75-fb18-a90c658541a4@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220202214455.15753-2-davispuh@gmail.com>
+In-Reply-To: <38abf10b-cca3-0c75-fb18-a90c658541a4@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -74,50 +71,49 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 02, 2022 at 11:44:55PM +0200, Dāvis Mosāns wrote:
-> Compressed length can be corrupted to be a lot larger than memory
-> we have allocated for buffer.
-> This will cause memcpy in copy_compressed_segment to write outside
-> of allocated memory.
+On Thu, Feb 10, 2022 at 08:33:04AM +0800, Qu Wenruo wrote:
+> On 2022/2/9 23:19, David Sterba wrote:
+> > On Wed, Feb 09, 2022 at 08:17:27AM +0800, Qu Wenruo wrote:
+> >> On 2022/2/9 06:09, David Sterba wrote:
+> >>> On Sat, Feb 05, 2022 at 01:41:01PM +0800, Qu Wenruo wrote:
+> >>>> To get the missing optimization, also introduce a new structure,
+> >>>> btrfs_defrag_ctrl, so we don't need to pass things like @newer_than and
+> >>>> @max_to_defrag around.
+> >>>
+> >>> Is this patchset supposed to be in 5.16 as fix for some defrag problem?
+> >>> If yes, the patch switching to the control structure should be avoided
+> >>> and done as a post cleanup as some other patches depend on it.
+> >>
+> >> I can backport it manually to v5.16 without the ctrl refactor.
+> > 
+> > That's not great if we have to do two versions, and more fixes to defrag
+> > are still expected so a cleanup patch makes any backporting harder. That
+> > we can send a manually ported version to stable is there for cases when
+> > the changes are not possible. In this case the cleanup is not necessary,
+> > but I understand it makes the code cleaner. Given that we need to fix a
+> > released kernel it's the preference.
+> > 
+> Unfortunately, it looks like without this cleanup, all later patches 
+> either needs extra parameters passing down the call chain, or have very 
+> "creative" way to pass info around, and can causing more problem in the 
+> long run.
 > 
-> This mostly results in stuck read syscall but sometimes when using
-> btrfs send can get #GP
-> 
-> kernel: general protection fault, probably for non-canonical address 0x841551d5c1000: 0000 [#1] PREEMPT SMP NOPTI
-> kernel: CPU: 17 PID: 264 Comm: kworker/u256:7 Tainted: P           OE     5.17.0-rc2-1 #12
-> kernel: Workqueue: btrfs-endio btrfs_work_helper [btrfs]
-> kernel: RIP: 0010:lzo_decompress_bio (./include/linux/fortify-string.h:225 fs/btrfs/lzo.c:322 fs/btrfs/lzo.c:394) btrfs
-> Code starting with the faulting instruction
-> ===========================================
->    0:*  48 8b 06                mov    (%rsi),%rax              <-- trapping instruction
->    3:   48 8d 79 08             lea    0x8(%rcx),%rdi
->    7:   48 83 e7 f8             and    $0xfffffffffffffff8,%rdi
->    b:   48 89 01                mov    %rax,(%rcx)
->    e:   44 89 f0                mov    %r14d,%eax
->   11:   48 8b 54 06 f8          mov    -0x8(%rsi,%rax,1),%rdx
-> kernel: RSP: 0018:ffffb110812efd50 EFLAGS: 00010212
-> kernel: RAX: 0000000000001000 RBX: 000000009ca264c8 RCX: ffff98996e6d8ff8
-> kernel: RDX: 0000000000000064 RSI: 000841551d5c1000 RDI: ffffffff9500435d
-> kernel: RBP: ffff989a3be856c0 R08: 0000000000000000 R09: 0000000000000000
-> kernel: R10: 0000000000000000 R11: 0000000000001000 R12: ffff98996e6d8000
-> kernel: R13: 0000000000000008 R14: 0000000000001000 R15: 000841551d5c1000
-> kernel: FS:  0000000000000000(0000) GS:ffff98a09d640000(0000) knlGS:0000000000000000
-> kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> kernel: CR2: 00001e9f984d9ea8 CR3: 000000014971a000 CR4: 00000000003506e0
-> kernel: Call Trace:
-> kernel:  <TASK>
-> kernel: end_compressed_bio_read (fs/btrfs/compression.c:104 fs/btrfs/compression.c:1363 fs/btrfs/compression.c:323) btrfs
-> kernel: end_workqueue_fn (fs/btrfs/disk-io.c:1923) btrfs
-> kernel: btrfs_work_helper (fs/btrfs/async-thread.c:326) btrfs
-> kernel: process_one_work (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:212 ./include/trace/events/workqueue.h:108 kernel/workqueue.c:2312)
-> kernel: worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2455)
-> kernel: ? process_one_work (kernel/workqueue.c:2397)
-> kernel: kthread (kernel/kthread.c:377)
-> kernel: ? kthread_complete_and_exit (kernel/kthread.c:332)
-> kernel: ret_from_fork (arch/x86/entry/entry_64.S:301)
-> kernel:  </TASK>
-> 
-> Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
+> I'm wondering if it's some policy in the stable tree preventing such 
+> cleanup patches being merged or something else?
 
-Thanks, added to misc-next. I've swapped the order of the patches so
-that it's easier to backport the fix.
+It's not a hard policy, I don't remember a patch rejected from stable
+because it needed a prep work. The fix itself must be justified, and
+minimal if possible and that's what I'm always trying to go for.
+
+This patches has diffstat
+
+4 files changed, 163 insertions(+), 101 deletions(-)
+
+and the preparatory patch itself
+
+3 files changed, 71 insertions(+), 93 deletions(-)
+
+Patch 4 probably needs to add one parameter, and 5 is adding a new
+one even though there's the ctrl structure. So I think it would not be
+that intrusive with a few extra parameters compared to the whole ctrl
+conversion.
