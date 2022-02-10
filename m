@@ -2,114 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4372C4B0994
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 10:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88294B0DDB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 13:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238708AbiBJJdn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 04:33:43 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54758 "EHLO
+        id S241809AbiBJMwL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 07:52:11 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232153AbiBJJdn (ORCPT
+        with ESMTP id S238007AbiBJMwL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 04:33:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5B2C64;
-        Thu, 10 Feb 2022 01:33:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I+KdT8Ft4gEDreuv2bs/lK/WKosbMae+Gs2ZDIi52r8=; b=v5x6DP/o1WOVzInYWj+OWguYjf
-        eLQpr7RM3CnxAAk3jaO2rcVftZ1e+5phpKIodTkLSxDXOwSvcTLi4qk5/ySJRc/hI1ychJkAen1z0
-        Zp9OoP3OirWBCpXqLYBpe9/Sj5681YQ0jr1jxFHLaRwcMpikdJabxjYU5JWHBXZkz9o4nzeVsrg6P
-        3kcm8y3Q7W1+pNSL5ou9mrCzcTeYQh59B1RYKiy79tD66DAHw03/JjWeZzPf9H4ShJonEVXh+vnnk
-        BnDNFiE1x/ux56JFcpXclclJQt/Xhc668p+s+htSe08/XCrlKbLPn7mqxLMMMLhiQWq2+o3CtuCxk
-        YxstcdEw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nI5p4-009J34-3j; Thu, 10 Feb 2022 09:33:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CBA9A3002DB;
-        Thu, 10 Feb 2022 10:33:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B6A72201D84A1; Thu, 10 Feb 2022 10:33:03 +0100 (CET)
-Date:   Thu, 10 Feb 2022 10:33:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
-        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        paulmck <paulmck@kernel.org>
-Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
- lockdep/lock_stat (v1)
-Message-ID: <YgTbz55YtOQbnA3m@hirez.programming.kicks-ass.net>
-References: <20220208184208.79303-1-namhyung@kernel.org>
- <20220209090908.GK23216@worktop.programming.kicks-ass.net>
- <24fe6a08-5931-8e8d-8d77-459388c4654e@redhat.com>
- <919214156.50301.1644431371345.JavaMail.zimbra@efficios.com>
- <69e5f778-8715-4acf-c027-58b6ec4a9e77@redhat.com>
- <CAM9d7ci=N2NVj57k=W0ebqBzfW+ThBqYSrx-CZbgwGcbOSrEGA@mail.gmail.com>
- <718973621.50447.1644434890744.JavaMail.zimbra@efficios.com>
- <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
- <f8b7760f-16a2-6ada-de88-9e21a7e8fef9@redhat.com>
+        Thu, 10 Feb 2022 07:52:11 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC372643
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 04:52:12 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id v13-20020a17090ac90d00b001b87bc106bdso8380550pjt.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 04:52:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LYyHqOkQanW/Z5Ov2fLtE06VCdFh/0uxfwJQsAXyy58=;
+        b=X63odVjaQDGTXYtSjgV7XDTkbv3hacDWGGtjH5foJRmVqr/m3Owv3mfiKEfjr2FRMP
+         7uMZhmtu/IoYcnb2RVTxGQA+ttv87h4atx9tb1yCtFzuCx43QFQGu2GhfKYQN8IHMhz8
+         qKox5DAFGuzEVt1nu8phRH5rqnCeaJf/HxwYuCXysp1fmK1eG0zRl90sITAipZ6FS1X2
+         +7fUsWa7KNXB4B8uUT75YC0QmflhBBV2x9CM6kYY89aQmGtcUMJPgQ5829/zFG3ThljA
+         9JgyMxgo/noilI6oE91J1Wf8Y5wqlASR7geJE0ETpNj/q8Udh7GchNG6X0OoN25ibkW6
+         99og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LYyHqOkQanW/Z5Ov2fLtE06VCdFh/0uxfwJQsAXyy58=;
+        b=bX3QejHqdr6YMQuImyGJfEzC+yfpDkND695L7XvtFizboMSar/xuQU4EMxZQNEbOnH
+         G0qcpgB2UdwkjYATZ+Ls6XZmUzjbEelzN6NnbFEow/K8TOWHuiFC6cst0hsnxl/8Rc8q
+         CmeuUCQ3CJYnmxQq0Uhq5ba5jc3/PtxSiFbeOWE19cBnawzKflo2sfnEOknyiv0Q+3XV
+         G7/JRZf6pqIhw+2Z1ZLVORzSZp9nEpwwEa2iPOW9f5JVDLWw9nVWx/EI3wln9OAf2WeV
+         LMKBbb+8M2+161c+99hV8so+dsZROgc94gwmCGVKfju5MCPiZmiNNP/rFdyIrvdkIEj8
+         KBHQ==
+X-Gm-Message-State: AOAM531OSU8FovidES0XETMrWrznjrXtV6i549+qowk6evOJx41gHLt+
+        pWmTqTK+Up7RIEPNT4xwu4b0q1Ag19U=
+X-Google-Smtp-Source: ABdhPJxXhOKa6PpSpYHdA16oVpjEyceZvxNlTCjY1DnyRizJDMEsb127WQ2GFyeFbyBtxc+dJKcbvw==
+X-Received: by 2002:a17:90b:314a:: with SMTP id ip10mr2126254pjb.72.1644497531948;
+        Thu, 10 Feb 2022 04:52:11 -0800 (PST)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id z1sm23407906pfh.137.2022.02.10.04.52.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Feb 2022 04:52:11 -0800 (PST)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH] btrfs: qgroup: Remove an oudated comment
+Date:   Thu, 10 Feb 2022 12:52:04 +0000
+Message-Id: <20220210125204.962999-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8b7760f-16a2-6ada-de88-9e21a7e8fef9@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 03:17:38PM -0500, Waiman Long wrote:
-> 
-> On 2/9/22 14:45, Namhyung Kim wrote:
-> > On Wed, Feb 9, 2022 at 11:28 AM Mathieu Desnoyers
-> > <mathieu.desnoyers@efficios.com> wrote:
-> > > ----- On Feb 9, 2022, at 2:22 PM, Namhyung Kim namhyung@kernel.org wrote:
-> > > > I'm also concerning dynamic allocated locks in a data structure.
-> > > > If we keep the info in a hash table, we should delete it when the
-> > > > lock is gone.  I'm not sure we have a good place to hook it up all.
-> > > I was wondering about this use case as well. Can we make it mandatory to
-> > > declare the lock "class" (including the name) statically, even though the
-> > > lock per-se is allocated dynamically ? Then the initialization of the lock
-> > > embedded within the data structure would simply refer to the lock class
-> > > definition.
-> > Isn't it still the same if we have static lock classes that the entry needs
-> > to be deleted from the hash table when it frees the data structure?
-> > I'm more concerned about free than alloc as there seems to be no
-> > API to track that in a place.
-> 
-> We may have to invent some new APIs to do that. For example,
-> spin_lock_exit() can be the counterpart of spin_lock_init() and so on. Of
-> course, existing kernel code have to be modified to designate the point
-> after which a lock is no longer being used or is freed.
+It seems that btrfs_qgroup_inherit() works on subvolume creation and it
+copies limits when BTRFS_QGROUP_INHERIT_SET_LIMITS flags on.
 
-The canonical name is _destroy(). We even have mutex_destroy() except
-it's usage isn't mandatory.
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+ fs/btrfs/qgroup.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-The easy way out is doing as lockdep does and hook into the memory
-allocators and check every free'd hunk of memory for a lock. It does
-hoever mean your data structure of choice needs to be able to answer: do
-I have an entry in @range. Which mostly disqualifies a hash-table.
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 8928275823a1..bfd45d52b1f5 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -30,7 +30,6 @@
+  *  - reorganize keys
+  *  - compressed
+  *  - sync
+- *  - copy also limits on subvol creation
+  *  - limit
+  *  - caches for ulists
+  *  - performance benchmarks
+-- 
+2.25.1
 
-Still, I really don't think you need any of this, it's just bloat. A
-very limited stack unwind for one of the two tracepoints should allow
-you to find the offending lock just fine.
