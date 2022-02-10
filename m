@@ -2,194 +2,712 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156CD4B1137
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 16:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9943E4B1206
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Feb 2022 16:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243417AbiBJPFp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 10:05:45 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46316 "EHLO
+        id S243745AbiBJPsG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 10:48:06 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243402AbiBJPFm (ORCPT
+        with ESMTP id S233962AbiBJPsF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 10:05:42 -0500
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Feb 2022 07:05:43 PST
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA93DB1
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 07:05:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1644505543; x=1676041543;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=29pj2FiAR6uhUpLu0ocjnzG6JYqJRvOJS0q4gyEUBg4=;
-  b=mwhZXVcQsiiaVbrRmPhkNRUNlWq0ZV1O/Xbz7Rv80bRS7USG/qX/RKL+
-   WLiR4o717b2mOCRSsC0JWH17QXTQT8qp03N/UlOqUyja9/9SJm1SZA37O
-   bJXfPjpkeDMevcY9QOxYUNb5k0rXvj8mxFzuI7yTiqTghxaeYkTQwm9Yn
-   D06MCreoy1b37zdEwcJS5PWChVvxAJKrG/6MLCeRqBUFjrHFaxQBq6FjG
-   bXShUWePr8lhStEGwlydFJ4flvC7TuLtgdj29Uku6+jEmcmBx40FFeNWF
-   5Gs3ZP/RmMNxJIKl17JgNeB9or4+s8rJPEchQwQ7zWJOjB+61YKYGOgok
-   w==;
-X-IronPort-AV: E=Sophos;i="5.88,359,1635177600"; 
-   d="scan'208";a="296707675"
-Received: from mail-mw2nam12lp2040.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.40])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2022 23:04:39 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JDGaYHfUZXNxcYhHrVhcBVSY2+Urooqc7Ofr0cvmYusr6H94JO8gwjIweJmc8mRZbGAzk//hZLC+Uda4DtbEklbhPhQtG1Gtr03lK9vilNvdysk6xu94YKvqxzj0HtDTBmfL2WNzFvvR0orME3ygo3XaxADl7+0+jInZn/zbz/Qz6VNVMvHI/xpi2crRURzFOnsy2zkaUdDieMV2FFUceIwPScm9W+Q09Prn3YD10swPNB/mVtIekuhH9g5WgKV/FaT4JLz7tNZU4vxzm02sig727J5D/QPqZIDbCAdJfou6cpj1XkWUvYhDULrfPk2d/Ue4pXMqFiocGqZOpYJLHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M60HSDH1Ax1e0os2Z/AVM0kNT6BZcFSJ8C8ctpwr0GE=;
- b=De4lX1zaRPlhlUj3VhCI+uy+5ao71480etE/lY2D8GaiHf76X08au0/R77VY/mnfunrxA8ZQfUrGDZ3fAhrhttn6FsOTaUN1QU4/iM/6Dx9rHz1H+8VlbZCsm54qncJizNvm+ya81UHCjWFDmXeXBQBCvr7gKbdnq9DBti6K7pfjQRK6F2+byE2ceh1dqfeDIiv/+ZjpW+s68xWAXHlG37dek9Ql2Fgx0ehxNjdGz2FODOZ1NqFDGOYTHhczoHEWc6fMaYuAia2NpxqovBT5qZcf1c6O+FC+Uy3Vlng6ZOA9wG1TyhVTI4rxUNOGttzmfXDzmT7EaOdkO5CjWCWH3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M60HSDH1Ax1e0os2Z/AVM0kNT6BZcFSJ8C8ctpwr0GE=;
- b=GpkwHUHhSC4UaxZ687FKy3P2f2VQxoiDspiTAapPXCZ3S+519XVlqGhH7tAAXLGwLB70B2av7sD7pX2e1v4CrUkg8zvrByRY/2pmTNakPdFkueWPeGSKMF57DF3j5BCmevxUSdN0WEyoK2q2p7LYhKTsCMp6Gow68k9SnRO3sII=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by SN6PR04MB4399.namprd04.prod.outlook.com (2603:10b6:805:30::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.18; Thu, 10 Feb
- 2022 15:04:38 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8d9e:d733:bca6:bc0f]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8d9e:d733:bca6:bc0f%4]) with mapi id 15.20.4951.019; Thu, 10 Feb 2022
- 15:04:38 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     David Sterba <dsterba@suse.com>,
-        =?iso-8859-1?Q?Javier_Gonz=E1lez?= <javier.gonz@samsung.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: zoned: introduce a minimal zone size and reject
- mount
-Thread-Topic: [PATCH] btrfs: zoned: introduce a minimal zone size and reject
- mount
-Thread-Index: AQHYHoS9wuTpQL11r0e2OLqP8hOETg==
-Date:   Thu, 10 Feb 2022 15:04:38 +0000
-Message-ID: <PH0PR04MB7416939A286AA364E5A91CD19B2F9@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <3824ae6295104af815c8357525eaa896e836eb1c.1644500637.git.johannes.thumshirn@wdc.com>
- <20220210143258.GP12643@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7b82c7b3-37fa-4e84-5732-08d9eca6a857
-x-ms-traffictypediagnostic: SN6PR04MB4399:EE_
-x-microsoft-antispam-prvs: <SN6PR04MB4399BBC0A4AC86A0E46105099B2F9@SN6PR04MB4399.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q1zeOOgvumj53VjoPt6DbAKeq35BOgzhYGrieZJbZw7p6MO4wZTKLt8epW71jXj/r+GrZnRsLFNnQELzu7Dy0YP5R+LXKgUct4NNi0REjHY/3hyQZ+ZK+fjDtQTMne6wtqnysKHj4FTTsuxQBLufYgN2gBfjo0dHYgwws1x/BB6h8X3mqGFwxVjfiis2c5RL5XGo7kY2M4y67cQjiOK2gn6sadQxeWseOBTEYoYaK+8LRKe8iVWSWDChsxIjnPSCQWEHVKyPn6zQ5rBAtw5nd/cttG5vn8wQcSYy/4OspnpPunrw02tksEojmtRS+/VyHTFKJU0Jl/nNVPJgn+2ReY/74VSTkuAGkVhKtTc7IW42tPOuOCIU6rYgsrPIu+n7jx77J+S0D513455sh9FbfLcWfkEVwbgYUzjc+UT6jXsTiIr59nms4V8o8MZzfwCFwQRWOUeAUJVdf27l2bk/MzeydtJrqD7DDoQcsR5ilvKWEzjogfodySTc5mERWERdBxxxEK/1UgH334gtGTx2a/xJ0c7+4PPF8Px3Dl6/0StjdUeJ9W6tR0SACFUn9zMthtRSqmSStKrwLCdm6/9tOFPO/P2Wht7LlWlmX7GObZglxin33WsYc0Jt10x7GmcEzJJTl1JfOYRoqDHTxI6FNyLvz2DmT50TK3CUFb0/4nnC2VhsUnZHmTHQQx/zHexYTpZUJfXr2Q3tRMFm3Yhczw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(86362001)(316002)(54906003)(6916009)(71200400001)(186003)(508600001)(83380400001)(9686003)(7696005)(6506007)(53546011)(52536014)(66556008)(8936002)(38100700002)(122000001)(4326008)(82960400001)(38070700005)(76116006)(91956017)(33656002)(55016003)(66476007)(66946007)(5660300002)(2906002)(64756008)(8676002)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?gDpcYIQUOp/FcYS61kQo4FusTvC1ClFmCB073qSfWQ+1XRXgxbSc81/tYh?=
- =?iso-8859-1?Q?6GpuLJNkqbDvccVCOlRk0sq/fATT6jpfhuNUHW/Z8iKXD4uh7NtDKbIBMr?=
- =?iso-8859-1?Q?Yjuqmrdvx4OT/s2sq6JCRYShYhqso0OptfY9lk7Pjrsh4AxHBCjAJHFacP?=
- =?iso-8859-1?Q?1AF4tjn0lrg4xAUw7Su75N5IFgnLZ21bRw8eQ0UsuQG8coEvZXNPv9tQrj?=
- =?iso-8859-1?Q?aazmMZQBwyLkcLRQRRGKu/Ie3HUn3EV9Wd+VKX+xJyXBgJ/pTUe++hkapy?=
- =?iso-8859-1?Q?ZJQ1VQzkwFVfl6lNxk6w3dvh0o+Wv/DeXV4E728QLpLl9lgMvAro4Zn/1B?=
- =?iso-8859-1?Q?+mh+IW+OiCF0DBrt7wjwfmaEfh5YZYKNuSUTSQAvkgzopN38ZKxSJWMS6D?=
- =?iso-8859-1?Q?PadOO5Mxx90CLYlEwJt5CAtFnEEjYQ9Szzb/xfphujBR+iqUxrU3d5YU4i?=
- =?iso-8859-1?Q?XzaVbbSL4KaAqvZx5VbN3pIU32nEVfqkmzFNzn2SlDp8pLQDzmlXfWlMic?=
- =?iso-8859-1?Q?B1Qlxof2bmFd/TQ4zaN8XnX4FI5L3CKXW/Jj4mqZfUE62dmqqYXIFRKuG9?=
- =?iso-8859-1?Q?IElv0UDbeTpeM9BUA9okPDzhPcXi+68ZW6mrCAtR0x3fwDlkNbQbqeZQkP?=
- =?iso-8859-1?Q?+b53w+DgZ1CAA27pjUX8GL5cyARQ5t7cPXdoAj6N/UJxioswalQbygY8XM?=
- =?iso-8859-1?Q?2caNZejuGhyVsHP0wkuGhWCWO7Kejd6//EFH87m87b7ixl7Avu6L+Kgcaa?=
- =?iso-8859-1?Q?gxuD59J5RaWS2MJ65fnjxsW2g9KUeDlfTvHGdXsr2H7nhUiav9VpOocZ3h?=
- =?iso-8859-1?Q?xr4wA4naQfqmLwnVktWocCjdflGu6QFjQxCkYCuvQOI+YJsUwlGxSvBEPJ?=
- =?iso-8859-1?Q?CHwQvUMjEei31SryuiABPcI7EipFkZglZjA41bgroQQMM64JDI/FI7eN0j?=
- =?iso-8859-1?Q?uDaHipmEuT1ylw5SkOYDXTEdcnflCADujhrlcGB3B1zCrtHz82FHkzPdw7?=
- =?iso-8859-1?Q?Y1d94pMHmBUki3pbxQrPTzwanQOYo99n+6n7xxW/lAhDOqOcGkMval+fcG?=
- =?iso-8859-1?Q?T7t/td95UkuMGLiF8ohTRyOiGw8xeJdhojqBuv9FGyJHUZfPx30bWeDT32?=
- =?iso-8859-1?Q?uVtcKJkRFTbw69x9Fpym/J+WFv4avWwHxrcSFQzAr9Fj9LzIGGTP8FEU7m?=
- =?iso-8859-1?Q?FAN9cTIDYQNxYnX8i5qDrfCzrM+07gJWCRaH1BfboJpTZ10CURzZiFZUld?=
- =?iso-8859-1?Q?Gb/8SKiZR9de2Mg5iQcMEjOIWDKxFjppqjZqmpl5hz8XRFgvAi5FSQg44Y?=
- =?iso-8859-1?Q?Im0SnmRgoKWB415MRg7k4dTbAlQ+/X9yujWpb+TAW9+WQOQilW53M/MNjh?=
- =?iso-8859-1?Q?bHYMsNxzQ/BLTmC1Wq6tN67cCoHjnp/FDjC0Fnf/BaQb8MojcySxcGnjCq?=
- =?iso-8859-1?Q?lF3W1b4oJ/Rlt+K7x++LGecm5orzDwL7hdDMJAEbvojDKDCDYDD54zoOPQ?=
- =?iso-8859-1?Q?cGDf8uy0dc39dx1DSWDN2eUOOekEBfonGzxEDkwzO5UTmPlAABhQ6uUUJY?=
- =?iso-8859-1?Q?4cDe7bwXc4RUat/vPLLnez451Uc5FDHN4u+y8brnsFqTiYnlXrdbE1Ggb/?=
- =?iso-8859-1?Q?laMctuyXV9ai7ozmlclpicomsTqbG0NjVNCu7Kv5ErVAfvgcyowXHJc4kw?=
- =?iso-8859-1?Q?v39XfQEmrrhgijN8RYHREOZLQNMZRSJJLhs7PCv3YwP7PvAlId3lWpM+f0?=
- =?iso-8859-1?Q?iMf/jQvTLLHt2Y4Gc+pfPz+xp6HNihShdahPsuLsfvYLixixoL3dbWI6vE?=
- =?iso-8859-1?Q?wgGBOrabx+1YhUHcde3y7kwWPMZJRt8=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 10 Feb 2022 10:48:05 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E45387
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 07:48:05 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 70FF361CA4
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 15:48:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12EA9C004E1;
+        Thu, 10 Feb 2022 15:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644508084;
+        bh=W8U6QCuNTMJGlGnWMJP1AMP1RbVm5+M+d/+D42nXPGs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t/YXhGbvfY+fpmNKMEjEtnkvVhsbPKJuBiU8SD8mOMYMHI1muw47cWGCisynYjCH/
+         SBT+Pq6LABFaQ2g8mwylV6Ahn5HeM7T0AK6NeOxhpbTw/sPTe05koUg0n0Hhei1zfd
+         4r1L/F9SPymYdDSeBo6YRyDEebVnVa9e2puPheaFs9jMx9bC2z3+GxWiBok8/AwFl6
+         BhwKFWKHES46HfATZD242yMPCC4vzKWgpZUaeP/P/dUHhTqFkBN4YmMzoTFlZQZtg/
+         EFZRufG6PEvnzvYK+yMHa+c9sQZBwouPEYZcVBE8bPjmSke0TCI+X3A+A3LGYb7rjN
+         3lVcCoNJnlzVg==
+Date:   Thu, 10 Feb 2022 15:48:01 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC 3/3] btrfs: make autodefrag to defrag small writes
+ without rescanning the whole file
+Message-ID: <YgUzsYTCz48nB/XT@debian9.Home>
+References: <cover.1644398069.git.wqu@suse.com>
+ <fc9f897e0859cccf90c33a7a609dc0a2e96ce3c1.1644398069.git.wqu@suse.com>
+ <YgP8UocVo/yMT2Pj@debian9.Home>
+ <32c44e26-9bd1-f75f-92df-3f7fbf44f8a0@gmx.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b82c7b3-37fa-4e84-5732-08d9eca6a857
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 15:04:38.0926
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WlFOWSObleq+ghpErLBGM4c8kBZKMTyKar0MEyS3flwUWYUs6eTmDLDs55VSEQxhWOW2PEpeOtH981C/rbVZgXJ5e33fCnb3gZikEHv3rhc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4399
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32c44e26-9bd1-f75f-92df-3f7fbf44f8a0@gmx.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/02/2022 15:36, David Sterba wrote:=0A=
-> On Thu, Feb 10, 2022 at 05:47:05AM -0800, Johannes Thumshirn wrote:=0A=
->> When creating a filesystem on a zoned block device with a zone size of=
-=0A=
->> 32MB or 16MB successive mounting of this filesystem fails with the=0A=
->> following error message:=0A=
->>  host:/ # mount /dev/nullb0 /mnt/=0A=
->>   BTRFS info (device nullb0): flagging fs with big metadata feature=0A=
->>   BTRFS info (device nullb0): using free space tree=0A=
->>   BTRFS info (device nullb0): has skinny extents=0A=
->>   BTRFS info (device nullb0): host-managed zoned block device /dev/nullb=
-0, 400 zones of 33554432 bytes=0A=
->>   BTRFS info (device nullb0): zoned mode enabled with zone size 33554432=
-=0A=
->>   BTRFS error (device nullb0): zoned: block group 67108864 must not cont=
-ain super block=0A=
->>   BTRFS error (device nullb0): failed to read block groups: -117=0A=
->>   BTRFS error (device nullb0): open_ctree failed=0A=
->>  mount: /mnt: wrong fs type, bad option, bad superblock on /dev/nullb0, =
-missing codepage or helper program, or other error.=0A=
->>=0A=
->> This happens because mkfs.btrfs places the system block-group exactly at=
-=0A=
->> the location where regular btrfs would have it's 1st super block mirror.=
-=0A=
->> In case of a 16MiB filesystem, mkfs.btrfs will place the 1st metadata=0A=
->> block-group at this location.=0A=
->>=0A=
->> As the smallest zone size on the market today is 64MiB and we're expecti=
-ng=0A=
->> zone sizes to be more in the 256MiB - 4GiB region, refuse to mount a=0A=
->> filesystem with a zone size of 32MiB or smaller.=0A=
-> =0A=
-> Nooooo, I've been using 4MiB zones for testing, it's an excellent setup=
-=0A=
-> to trigger all sorts of bugs. The 64MiB zone size is problematic for the=
-=0A=
-> reason you say but I think it's an outlier, so maybe add it as an=0A=
-> exception.=0A=
-> =0A=
-=0A=
-Yeah 32M (and probably 16M but that needs more zoned special casing) can be=
-=0A=
-fixed with mkfs and then with 8M zones all sorts of strange problems start =
-to=0A=
-occur.=0A=
-=0A=
-I do have a patch for 32M, but I didn't want to go down the rabbit hole for=
-=0A=
-only simulated hardware.=0A=
+On Thu, Feb 10, 2022 at 08:31:00AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2022/2/10 01:39, Filipe Manana wrote:
+> > On Wed, Feb 09, 2022 at 05:23:14PM +0800, Qu Wenruo wrote:
+> > > Previously autodefrag works by scanning the whole file with a minimal
+> > > generation threshold.
+> > > 
+> > > Although we have various optimization to skip ranges which don't meet
+> > > the generation requirement, it can still waste some time on scanning the
+> > > whole file, especially if the inode got an almost full overwrite.
+> > > 
+> > > To optimize the autodefrag even further, here we use
+> > > inode_defrag::targets extent io tree to do accurate defrag targets
+> > > search.
+> > > 
+> > > Now we re-use EXTENT_DIRTY flag to mark the small writes, and only
+> > > defrag those ranges.
+> > > 
+> > > This rework brings the following behavior change:
+> > > 
+> > > - Only small write ranges will be defragged
+> > >    Previously if there are new writes after the small writes, but it's
+> > >    not reaching the extent size threshold, it will be defragged.
+> > > 
+> > >    This is because we have a gap between autodefrag extent size threshold
+> > >    and inode_should_defrag() extent size threshold.
+> > >    (uncompressed 64K / compressed 16K vs 256K)
+> > > 
+> > >    Now we won't need to bother the gap, and can only defrag the small
+> > >    writes.
+> > > 
+> > > - Enlarged critical section for fs_info::defrag_inodes_lock
+> > >    The critical section will include extent io tree update, thus
+> > >    it will be larger, and fs_info::defrag_inodes_lock will be upgraded
+> > >    to mutex to handle the possible sleep.
+> > > 
+> > >    This would slightly increase the overhead for autodefrag, but I don't
+> > >    have a benchmark for it.
+> > > 
+> > > - Extra memory usage for autodefrag
+> > >    Now we need to keep an extent io tree for each target inode.
+> > > 
+> > > - No inode re-queue if there are large sectors to defrag
+> > >    Previously if we have defragged 1024 sectors, we will re-queue the
+> > >    inode, and mostly pick another inode to defrag in next run.
+> > > 
+> > >    Now we will defrag the inode until we finished it.
+> > >    The context switch will be triggered by the cond_resche() in
+> > >    btrfs_defrag_file() thus it won't hold CPU for too long.
+> > 
+> > So there's a huge difference in this last aspect.
+> > 
+> > Before, if we defrag one range, we requeue the inode for autodefrag - but
+> > we only run the defrag on the next time the cleaner kthread runs. Instead
+> > of defragging multiple ranges of the file in the same run, we move to the
+> > next inode at btrfs_run_defrag_inodes().
+> 
+> Unfortunately, that's not the case, the restart-from-0 behavior is same
+> for btrfs_run_defrag_inodes().
+> 
+> In btrfs_pick_defrag_inode() it doesn't really strictly follows the
+> root/ino requirement, it can choose to use the next inode_defrag.
+> 
+> Furthermore, btrfs_run_defrag_inodes() will reset the search root/ino if
+> it doesn't find anything, thus search from the start again.
+
+Ok, I see now that btrfs_run_defrag_inodes() will do that because of this:
+
+		if (!defrag) {
+			if (root_objectid || first_ino) {
+				root_objectid = 0;
+				first_ino = 0;
+				continue;
+			} else {
+				break;
+			}
+		}
+
+> 
+> This makes btrfs_run_defrag_inodes() to exhaust all the inode_defrag, no
+> difference than the solution I'm doing.
+
+Ok, it seems so.
+
+> 
+> In fact, I even considered to refactor btrfs_run_defrag_inodes() to be
+> more explicit on it's just exhausting the rb tree.
+> 
+> The tricks is just hiding the true nature.
+> 
+> > 
+> > With this change, it will defrag all ranges in the same cleaner run. If there
+> > are writes being done to the file all the time, the cleaner will spend a lot of
+> > time defragging ranges for the same file in the same run. That delays other
+> > important work the cleaner does - running delayed iputs, removing empty
+> > block groups, deleting snapshots/subvolumes, etc.
+> 
+> That is the same behavior, before or after my patchset.
+> 
+> The only way to break the loop in btrfs_run_defrag_inodes() are:
+> 
+> - Remount
+> 
+> - Disable autodefrag
+> 
+> - Exhaust all inode defrags
+> 
+> That root/ino is just tricking readers to believe it's making a
+> difference, while it's not.
+> 
+> > 
+> > That can have a huge impact system wide.
+> > 
+> > How have you tested this?
+> > 
+> > Some user workload like the one reported here:
+> > 
+> > https://lore.kernel.org/linux-btrfs/KTVQ6R.R75CGDI04ULO2@gmail.com/
+> > 
+> > Would be a good test. Downloading from Steam is probably not something
+> > we can do, as it probably requires some paid scrubscription.
+> 
+> Nope, it's the same behavior without my patches.
+> So that's why I'm suspecting this is the cause of the extra CPU usage.
+
+Ok, but this type of changes needs to be tested with reasonably realistic
+or close enough scenarios. Downloading one or more large torrents is likely
+close enough to the Steam download use case.
+
+> 
+> > 
+> > But something that may be close enough is downloading several large
+> > torrent files and see how it behaves. Things like downloading several
+> > DVD iso images of Linux distros from torrents, in a way that the sum of
+> > the file sizes is much larger then the total RAM of the system. That should
+> > cause a good amount of work that is "real world", and then try later mixing
+> > that with snapshot/subvolume deletions as well and see if it breaks badly
+> > or causes a huge performance problem.
+> > 
+> > Some more comments inline below.
+> > 
+> > > 
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > ---
+> > >   fs/btrfs/ctree.h   |   4 +-
+> > >   fs/btrfs/disk-io.c |   2 +-
+> > >   fs/btrfs/file.c    | 209 ++++++++++++++++++++++++---------------------
+> > >   fs/btrfs/inode.c   |   2 +-
+> > >   4 files changed, 116 insertions(+), 101 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > > index a5cf845cbe88..9228e8d39516 100644
+> > > --- a/fs/btrfs/ctree.h
+> > > +++ b/fs/btrfs/ctree.h
+> > > @@ -897,7 +897,7 @@ struct btrfs_fs_info {
+> > >   	struct btrfs_free_cluster meta_alloc_cluster;
+> > > 
+> > >   	/* auto defrag inodes go here */
+> > > -	spinlock_t defrag_inodes_lock;
+> > > +	struct mutex defrag_inodes_lock;
+> > >   	struct rb_root defrag_inodes;
+> > >   	atomic_t defrag_running;
+> > > 
+> > > @@ -3356,7 +3356,7 @@ void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
+> > >   /* file.c */
+> > >   int __init btrfs_auto_defrag_init(void);
+> > >   void __cold btrfs_auto_defrag_exit(void);
+> > > -int btrfs_add_inode_defrag(struct btrfs_inode *inode);
+> > > +int btrfs_add_inode_defrag(struct btrfs_inode *inode, u64 start, u64 len);
+> > >   int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info);
+> > >   void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info);
+> > >   int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync);
+> > > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > > index b6a81c39d5f4..87782d1120e7 100644
+> > > --- a/fs/btrfs/disk-io.c
+> > > +++ b/fs/btrfs/disk-io.c
+> > > @@ -3126,7 +3126,6 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+> > >   	spin_lock_init(&fs_info->trans_lock);
+> > >   	spin_lock_init(&fs_info->fs_roots_radix_lock);
+> > >   	spin_lock_init(&fs_info->delayed_iput_lock);
+> > > -	spin_lock_init(&fs_info->defrag_inodes_lock);
+> > >   	spin_lock_init(&fs_info->super_lock);
+> > >   	spin_lock_init(&fs_info->buffer_lock);
+> > >   	spin_lock_init(&fs_info->unused_bgs_lock);
+> > > @@ -3140,6 +3139,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+> > >   	mutex_init(&fs_info->reloc_mutex);
+> > >   	mutex_init(&fs_info->delalloc_root_mutex);
+> > >   	mutex_init(&fs_info->zoned_meta_io_lock);
+> > > +	mutex_init(&fs_info->defrag_inodes_lock);
+> > >   	seqlock_init(&fs_info->profiles_lock);
+> > > 
+> > >   	INIT_LIST_HEAD(&fs_info->dirty_cowonly_roots);
+> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > > index 2d49336b0321..da6e29a6f387 100644
+> > > --- a/fs/btrfs/file.c
+> > > +++ b/fs/btrfs/file.c
+> > > @@ -34,7 +34,7 @@
+> > >   static struct kmem_cache *btrfs_inode_defrag_cachep;
+> > > 
+> > >   /* Reuse DIRTY flag for autodefrag */
+> > > -#define EXTENT_FLAG_AUTODEFRAG	EXTENT_FLAG_DIRTY
+> > > +#define EXTENT_FLAG_AUTODEFRAG	EXTENT_DIRTY
+> > > 
+> > >   /*
+> > >    * when auto defrag is enabled we
+> > > @@ -119,7 +119,6 @@ static int __btrfs_add_inode_defrag(struct btrfs_inode *inode,
+> > >   			return -EEXIST;
+> > >   		}
+> > >   	}
+> > > -	set_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags);
+> > >   	rb_link_node(&defrag->rb_node, parent, p);
+> > >   	rb_insert_color(&defrag->rb_node, &fs_info->defrag_inodes);
+> > >   	return 0;
+> > > @@ -136,81 +135,80 @@ static inline int __need_auto_defrag(struct btrfs_fs_info *fs_info)
+> > >   	return 1;
+> > >   }
+> > > 
+> > > +static struct inode_defrag *find_inode_defrag(struct btrfs_fs_info *fs_info,
+> > > +					      u64 root, u64 ino)
+> > > +{
+> > > +
+> > > +	struct inode_defrag *entry = NULL;
+> > > +	struct inode_defrag tmp;
+> > > +	struct rb_node *p;
+> > > +	struct rb_node *parent = NULL;
+> > 
+> > Neither entry nor parent need to be initialized.
+> > 
+> > > +	int ret;
+> > > +
+> > > +	tmp.ino = ino;
+> > > +	tmp.root = root;
+> > > +
+> > > +	p = fs_info->defrag_inodes.rb_node;
+> > > +	while (p) {
+> > > +		parent = p;
+> > > +		entry = rb_entry(parent, struct inode_defrag, rb_node);
+> > > +
+> > > +		ret = __compare_inode_defrag(&tmp, entry);
+> > > +		if (ret < 0)
+> > > +			p = parent->rb_left;
+> > > +		else if (ret > 0)
+> > > +			p = parent->rb_right;
+> > > +		else
+> > > +			return entry;
+> > > +	}
+> > 
+> > It's pointless to have "parent" and "p", one of them is enough.
+> > 
+> > > +	return NULL;
+> > > +}
+> > > +
+> > >   /*
+> > >    * insert a defrag record for this inode if auto defrag is
+> > >    * enabled
+> > >    */
+> > > -int btrfs_add_inode_defrag(struct btrfs_inode *inode)
+> > > +int btrfs_add_inode_defrag(struct btrfs_inode *inode, u64 start, u64 len)
+> > >   {
+> > >   	struct btrfs_root *root = inode->root;
+> > >   	struct btrfs_fs_info *fs_info = root->fs_info;
+> > > -	struct inode_defrag *defrag;
+> > > +	struct inode_defrag *prealloc;
+> > > +	struct inode_defrag *found;
+> > > +	bool release = true;
+> > >   	int ret;
+> > > 
+> > >   	if (!__need_auto_defrag(fs_info))
+> > >   		return 0;
+> > > 
+> > > -	if (test_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags))
+> > > -		return 0;
+> > > -
+> > > -	defrag = kmem_cache_zalloc(btrfs_inode_defrag_cachep, GFP_NOFS);
+> > > -	if (!defrag)
+> > > +	prealloc = kmem_cache_zalloc(btrfs_inode_defrag_cachep, GFP_NOFS);
+> > > +	if (!prealloc)
+> > >   		return -ENOMEM;
+> > 
+> > So now everytime this is called, it will allocate memory, even if the the
+> > inode is already marked for defrag.
+> 
+> Well, since now the defrag_inodes_lock is upgraded to mutex, we can
+> afford to allocate memory only when needed.
+> 
+> I can change the behavior.
+> 
+> > 
+> > Given that this function is called when running delalloc, this can cause
+> > a lot of extra memory allocations. They come from a dedicated slab, but it
+> > still might have a non-negligible impact.
+> 
+> But please be aware that, the original code is going to allocate memory
+> if the inode has being evicted, thus its runtime flags is not reliable.
+> 
+> The runtime flags check is an optimization, but not a reliable one.
+
+Yes. But there are many cases where the inode has not been evicted after
+it was added to the defrag list and before the cleaner picks it up. It's
+a very common case - not evicted either because there's an open file
+descriptor for a long period (common with databases, etc), not enough memory
+pressure, etc.
+
+> 
+> > 
+> > > 
+> > > -	defrag->ino = btrfs_ino(inode);
+> > > -	defrag->transid = inode->root->last_trans;
+> > > -	defrag->root = root->root_key.objectid;
+> > > -	extent_io_tree_init(fs_info, &defrag->targets, IO_TREE_AUTODEFRAG, NULL);
+> > > -
+> > > -	spin_lock(&fs_info->defrag_inodes_lock);
+> > > -	if (!test_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags)) {
+> > > -		/*
+> > > -		 * If we set IN_DEFRAG flag and evict the inode from memory,
+> > > -		 * and then re-read this inode, this new inode doesn't have
+> > > -		 * IN_DEFRAG flag. At the case, we may find the existed defrag.
+> > > -		 */
+> > > -		ret = __btrfs_add_inode_defrag(inode, defrag);
+> > > -		if (ret) {
+> > > -			extent_io_tree_release(&defrag->targets);
+> > > -			kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+> > > -		}
+> > > -	} else {
+> > > -		extent_io_tree_release(&defrag->targets);
+> > > -		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+> > > +	set_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags);
+> > > +	prealloc->ino = btrfs_ino(inode);
+> > > +	prealloc->transid = inode->root->last_trans;
+> > > +	prealloc->root = root->root_key.objectid;
+> > > +	extent_io_tree_init(fs_info, &prealloc->targets, IO_TREE_AUTODEFRAG, NULL);
+> > > +
+> > > +	mutex_lock(&fs_info->defrag_inodes_lock);
+> > > +	found = find_inode_defrag(fs_info, prealloc->root, prealloc->ino);
+> > > +	if (!found) {
+> > > +		ret = __btrfs_add_inode_defrag(inode, prealloc);
+> > > +		/* Since we didn't find one previously, the insert must success */
+> > > +		ASSERT(!ret);
+> > > +		found = prealloc;
+> > > +		release = false;
+> > > +	}
+> > > +	set_extent_bits(&found->targets, start, start + len - 1,
+> > > +			EXTENT_FLAG_AUTODEFRAG);
+> > 
+> > So this can end using a lot of memory and resulting in a deep rbtree.
+> > It's not uncommon to have very large files with random IO happening very
+> > frequently, each one would result in allocating one extent state record
+> > for the tree.
+> 
+> This is one of my concern, and I totally understand this.
+> 
+> However there are some factors to possibly reduce the memory overhead:
+> 
+> - If the random writes are mergable
+>   Then the extent states will be merged into a larger one.
+
+Sure, but that does not happen for random writes on large files.
+
+Let me give you a recent example of an io tree getting big and causing
+a report of a significant performance drop:
+
+https://lore.kernel.org/linux-btrfs/3aae7c6728257c7ce2279d6660ee2797e5e34bbd.1641300250.git.fdmanana@suse.com/
+
+And performance regression was reported shortly after:
+
+https://lore.kernel.org/linux-btrfs/20220117082426.GE32491@xsang-OptiPlex-9020/
+
+That was just to track metadata extents of log trees until a transaction commits.
+Before they were cleared once a log tree is synced, but I changed it to keep the
+ranges in the io tree until the transaction commits.
+
+That can make a huge difference, because even with plenty of available metadata
+free space and unallocated space, non-contiguous metadata extents got allocated,
+and they ended up not being merged in the io tree.
+
+With autodefrag and workloads that keep doing frequent random writes to a file,
+the situation will not be better.
+
+> 
+> - If the randome writes are happening on the same range
+>   No change in the number of extent states.
+
+You are too optimistic expecting those cases will be the most common.
+
+> 
+> - Much smaller extent threshold
+>   Now the real extent threshold is from inode_should_defrag(), which
+>   exposes 64K for uncompressed write while 16K for compressed writes.
+> 
+> In fact, for the mentioned case of steam download, I doubt if it would
+> even trigger autodefrag, as it's mostly sequential write.
+
+Have you actually tried it to verify that?
+
+It can use a mechanism similar to torrents, or other protocols, which
+is not always sequential.
+
+As I read it, it seems it barely had any performance testing.
+
+> 
+> Maybe for the decompression part it can cause some random writes, but
+> according to my daily usage, the IO is pretty high, indicating it's
+> mostly sequential write, thus should not really trigger autodefrag.
+> 
+> In fact, I believe a lot of autodefrag for Steam is false triggering,
+> thus my purposed patchset is exactly to address it.
+> 
+> > 
+> > Multiply this by N active files in a system, and it can quickly have a
+> > huge impact on used memory.
+> > 
+> > Also, if a memory allocation triggers reclaim, it will slow down and
+> > increase the amount of time other tasks wait for the mutex. As the rbtree
+> > that the io tree uses gets larger and larger, it also increases more and
+> > more the critical section's duration.
+> > 
+> > This means writeback for other inodes is now waiting for a longer period,
+> > as well as the cleaner kthread, which runs autodefrag. Blocking the cleaner
+> > for longer means we are delaying other important work - running delayed
+> > iputs, deleting snapshots/subvolumes, removing empty block groups, and
+> > whatever else the cleaner kthread does besides running autodefrag.
+> > 
+> > So it can have a very high impact on the system overall.
+> > 
+> > > +	mutex_unlock(&fs_info->defrag_inodes_lock);
+> > > +	if (release) {
+> > > +		extent_io_tree_release(&prealloc->targets);
+> > > +		kmem_cache_free(btrfs_inode_defrag_cachep, prealloc);
+> > >   	}
+> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
+> > >   	return 0;
+> > >   }
+> > > 
+> > > -/*
+> > > - * Requeue the defrag object. If there is a defrag object that points to
+> > > - * the same inode in the tree, we will merge them together (by
+> > > - * __btrfs_add_inode_defrag()) and free the one that we want to requeue.
+> > > - */
+> > > -static void btrfs_requeue_inode_defrag(struct btrfs_inode *inode,
+> > > -				       struct inode_defrag *defrag)
+> > > -{
+> > > -	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> > > -	int ret;
+> > > -
+> > > -	if (!__need_auto_defrag(fs_info))
+> > > -		goto out;
+> > > -
+> > > -	/*
+> > > -	 * Here we don't check the IN_DEFRAG flag, because we need merge
+> > > -	 * them together.
+> > > -	 */
+> > > -	spin_lock(&fs_info->defrag_inodes_lock);
+> > > -	ret = __btrfs_add_inode_defrag(inode, defrag);
+> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
+> > > -	if (ret)
+> > > -		goto out;
+> > > -	return;
+> > > -out:
+> > > -	extent_io_tree_release(&defrag->targets);
+> > > -	kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+> > > -}
+> > > -
+> > >   /*
+> > >    * pick the defragable inode that we want, if it doesn't exist, we will get
+> > >    * the next one.
+> > > @@ -227,7 +225,7 @@ btrfs_pick_defrag_inode(struct btrfs_fs_info *fs_info, u64 root, u64 ino)
+> > >   	tmp.ino = ino;
+> > >   	tmp.root = root;
+> > > 
+> > > -	spin_lock(&fs_info->defrag_inodes_lock);
+> > > +	mutex_lock(&fs_info->defrag_inodes_lock);
+> > >   	p = fs_info->defrag_inodes.rb_node;
+> > >   	while (p) {
+> > >   		parent = p;
+> > > @@ -252,7 +250,7 @@ btrfs_pick_defrag_inode(struct btrfs_fs_info *fs_info, u64 root, u64 ino)
+> > >   out:
+> > >   	if (entry)
+> > >   		rb_erase(parent, &fs_info->defrag_inodes);
+> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
+> > > +	mutex_unlock(&fs_info->defrag_inodes_lock);
+> > >   	return entry;
+> > >   }
+> > > 
+> > > @@ -261,7 +259,7 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info)
+> > >   	struct inode_defrag *defrag;
+> > >   	struct rb_node *node;
+> > > 
+> > > -	spin_lock(&fs_info->defrag_inodes_lock);
+> > > +	mutex_lock(&fs_info->defrag_inodes_lock);
+> > >   	node = rb_first(&fs_info->defrag_inodes);
+> > >   	while (node) {
+> > >   		rb_erase(node, &fs_info->defrag_inodes);
+> > > @@ -269,21 +267,59 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info)
+> > >   		extent_io_tree_release(&defrag->targets);
+> > >   		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+> > > 
+> > > -		cond_resched_lock(&fs_info->defrag_inodes_lock);
+> > > -
+> > >   		node = rb_first(&fs_info->defrag_inodes);
+> > >   	}
+> > > -	spin_unlock(&fs_info->defrag_inodes_lock);
+> > > +	mutex_unlock(&fs_info->defrag_inodes_lock);
+> > >   }
+> > > 
+> > >   #define BTRFS_DEFRAG_BATCH	1024
+> > > +static int defrag_one_range(struct btrfs_inode *inode, u64 start, u64 len,
+> > > +			    u64 newer_than)
+> > > +{
+> > > +	const struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> > > +	u64 cur = start;
+> > > +	int ret = 0;
+> > > +
+> > > +	while (cur < start + len) {
+> > > +		struct btrfs_defrag_ctrl ctrl = { 0 };
+> > > +
+> > > +		ctrl.start = cur;
+> > > +		ctrl.len = start + len - cur;
+> > > +		ctrl.newer_than = newer_than;
+> > > +		ctrl.extent_thresh = SZ_256K;
+> > > +		ctrl.max_sectors_to_defrag = BTRFS_DEFRAG_BATCH;
+> > > +
+> > > +		sb_start_write(fs_info->sb);
+> > > +		ret = btrfs_defrag_file(&inode->vfs_inode, NULL, &ctrl);
+> > > +		sb_end_write(fs_info->sb);
+> > > +
+> > > +		/* The range is beyond isize, we can safely exit */
+> > > +		if (ret == -EINVAL) {
+> > 
+> > This is a bit odd. I understand this is because the io tree requires ranges
+> > to be sector aligned, so this should trigger only for inodes with an i_size that
+> > is not sector size aligned.
+> > 
+> > Assuming every -EINVAL is because of that, makes it a bit fragile.
+> > 
+> > setting ctrl.len to min(i_size_read(inode) - start, start + len - cur) and
+> > then treating all errors the same way, makes it more bullet proof. >
+> > > +			ret = 0;
+> > > +			break;
+> > > +		}
+> > > +		if (ret < 0)
+> > > +			break;
+> > > +
+> > > +		/*
+> > > +		 * Even we didn't defrag anything, the last_scanned should have
+> > > +		 * been increased.
+> > > +		 */
+> > > +		ASSERT(ctrl.last_scanned > cur);
+> > > +		cur = ctrl.last_scanned;
+> > > +	}
+> > > +	return ret;
+> > > +}
+> > > 
+> > >   static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
+> > >   				    struct inode_defrag *defrag)
+> > >   {
+> > >   	struct btrfs_root *inode_root;
+> > >   	struct inode *inode;
+> > > -	struct btrfs_defrag_ctrl ctrl = {};
+> > > +	struct extent_state *cached = NULL;
+> > > +	u64 cur = 0;
+> > > +	u64 found_start;
+> > > +	u64 found_end;
+> > >   	int ret;
+> > > 
+> > >   	/* get the inode */
+> > > @@ -300,40 +336,19 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
+> > >   		goto cleanup;
+> > >   	}
+> > > 
+> > > -	/* do a chunk of defrag */
+> > > -	clear_bit(BTRFS_INODE_IN_DEFRAG, &BTRFS_I(inode)->runtime_flags);
+> > > -	ctrl.len = (u64)-1;
+> > > -	ctrl.start = defrag->last_offset;
+> > > -	ctrl.newer_than = defrag->transid;
+> > > -	ctrl.max_sectors_to_defrag = BTRFS_DEFRAG_BATCH;
+> > > -
+> > > -	sb_start_write(fs_info->sb);
+> > > -	ret = btrfs_defrag_file(inode, NULL, &ctrl);
+> > > -	sb_end_write(fs_info->sb);
+> > > -	/*
+> > > -	 * if we filled the whole defrag batch, there
+> > > -	 * must be more work to do.  Queue this defrag
+> > > -	 * again
+> > > -	 */
+> > > -	if (ctrl.sectors_defragged == BTRFS_DEFRAG_BATCH) {
+> > > -		defrag->last_offset = ctrl.last_scanned;
+> > > -		btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
+> > > -	} else if (defrag->last_offset && !defrag->cycled) {
+> > > -		/*
+> > > -		 * we didn't fill our defrag batch, but
+> > > -		 * we didn't start at zero.  Make sure we loop
+> > > -		 * around to the start of the file.
+> > > -		 */
+> > > -		defrag->last_offset = 0;
+> > > -		defrag->cycled = 1;
+> > > -		btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
+> > > -	} else {
+> > > -		extent_io_tree_release(&defrag->targets);
+> > > -		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+> > > +	while (!find_first_extent_bit(&defrag->targets,
+> > > +				cur, &found_start, &found_end,
+> > > +				EXTENT_FLAG_AUTODEFRAG, &cached)) {
+> > > +		clear_extent_bit(&defrag->targets, found_start,
+> > > +				 found_end, EXTENT_FLAG_AUTODEFRAG, 0, 0, &cached);
+> > > +		ret = defrag_one_range(BTRFS_I(inode), found_start,
+> > > +				found_end + 1 - found_start, defrag->transid);
+> > > +		if (ret < 0)
+> > > +			break;
+> > 
+> > Not sure why it makes more sense to break instead of continuing.
+> > Just because there was a failure for one range, it does not mean
+> > the next ranges will fail as well.
+> 
+> IMHO if we failed to defrag one range, there are two possible reasons:
+> 
+> - We reached isize, and any later defrag is not needed
+> 
+> - We got a fatal error like -ENOMEM
+>   I doubt if we can even continue.
+> 
+> I can make the first case more correct and explicit, but you're right,
+> it's better to continue defragging.
+> 
+> Thanks,
+> Qu
+> 
+> > 
+> > Thanks.
+> > 
+> > > +		cur = found_end + 1;
+> > >   	}
+> > > 
+> > >   	iput(inode);
+> > > -	return 0;
+> > >   cleanup:
+> > >   	extent_io_tree_release(&defrag->targets);
+> > >   	kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+> > > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > > index 2049f3ea992d..622e017500bc 100644
+> > > --- a/fs/btrfs/inode.c
+> > > +++ b/fs/btrfs/inode.c
+> > > @@ -570,7 +570,7 @@ static inline void inode_should_defrag(struct btrfs_inode *inode,
+> > >   	/* If this is a small write inside eof, kick off a defrag */
+> > >   	if (num_bytes < small_write &&
+> > >   	    (start > 0 || end + 1 < inode->disk_i_size))
+> > > -		btrfs_add_inode_defrag(inode);
+> > > +		btrfs_add_inode_defrag(inode, start, num_bytes);
+> > >   }
+> > > 
+> > >   /*
+> > > --
+> > > 2.35.0
+> > > 
