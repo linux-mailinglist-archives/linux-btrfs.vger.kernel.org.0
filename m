@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFEC4B243D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 12:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CF44B24CB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 12:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348526AbiBKLYI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Feb 2022 06:24:08 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44894 "EHLO
+        id S243639AbiBKLw2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Feb 2022 06:52:28 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbiBKLYH (ORCPT
+        with ESMTP id S234362AbiBKLw1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Feb 2022 06:24:07 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864B1E5D
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 03:24:06 -0800 (PST)
+        Fri, 11 Feb 2022 06:52:27 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0BAF4F;
+        Fri, 11 Feb 2022 03:52:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8EECDB829B6
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 11:24:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E28ADC340E9;
-        Fri, 11 Feb 2022 11:24:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 277DA619D7;
+        Fri, 11 Feb 2022 11:52:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0037C340E9;
+        Fri, 11 Feb 2022 11:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644578642;
-        bh=n5xUeMiiZT0UFfWxr/HlIawZ/kFJiBV3dFtnb4J1m4U=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=LbSpePwkt1l4Yg+7zeInyJu2w14V65stuv2IK7zBKv4M2hzgRUP/Nx6Q0MQ+/C+59
-         VV/hiNaHt/huAtxIvHGjuMhceFweESbm/2GDqQYBSYQQtWi+HqCtF9VNYEh5HIZluL
-         6OrBD6kWNxfYSkhRxNI+MhEFL5cGHeM83Hk8k9F7Xi6NL5QAr8sj261k5m+A0IAoaB
-         UCReRwPdfyBC/HnRscE1wLroY5EaWKWPj700UMDIddkawumLMOMKGE4ne8kj+J34j1
-         KquBLBCzSU0rSVq8cZ32wtAZQXEw2pn6sJK4LLiPfY0cGy55KwNEypv2/M7LiePBVz
-         a0tFepaQ29vig==
-Date:   Fri, 11 Feb 2022 11:23:58 +0000
+        s=k20201202; t=1644580345;
+        bh=4zwyeQJidQ3BI796AmgpN4fFK6wFuAjitDXQc6T6ZiI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JKDDQIQ9xx1N+QMdza4vDZIWZr6yqMkZmBg50skUoGp3fnijrYlMzF/eLcNX89+3j
+         EG+fiUIGFCnA39uQotBRSJjvmPPkxZ382dkRgPi8uKmZibQ8sfYoddk3tx5bV51VHp
+         xP+nQ4cqiiWeToQYMtRmQrvLRPMEgktWMLKs22YQct0IgJjrNHHo/KLZizeDYYja4e
+         E1nXhhld+ojEcq1yzLAaeJbRaFYASeJ6MN3v35VFEQzFR38ke7LhkXPblyOh+luZWB
+         UrUU/nJ1c24jwe65NBjdCCQ8pXyPnkc8q8ZDUeg1QVeHZHtGC1hn//X5+Mi33GK2Ym
+         23/cEYkJtewMw==
+Date:   Fri, 11 Feb 2022 11:52:22 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/5] btrfs: fail transaction when a setget bounds check
- failure is detected
-Message-ID: <YgZHTm2k3/ulqPTO@debian9.Home>
-References: <cover.1643904960.git.dsterba@suse.com>
- <617931b8ee53e8fcde1560eb86758024ca753f42.1643904960.git.dsterba@suse.com>
- <Yf0OLxcQ5mxiwWM5@debian9.Home>
- <20220210175017.GT12643@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: add test case to make sure autodefrag works even
+ the extent maps are read from disk
+Message-ID: <YgZN9up8fuOt894m@debian9.Home>
+References: <20220208071427.19171-1-wqu@suse.com>
+ <CAL3q7H5TSOMDpgP0FNbP_TqOgY_zjgsthjAo6iDnZS+g2FJk8w@mail.gmail.com>
+ <08a1e4df-27b2-23e4-ec1d-1ba1c4fe7e2a@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220210175017.GT12643@twin.jikos.cz>
+In-Reply-To: <08a1e4df-27b2-23e4-ec1d-1ba1c4fe7e2a@gmx.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,116 +57,192 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 06:50:17PM +0100, David Sterba wrote:
-> On Fri, Feb 04, 2022 at 11:29:51AM +0000, Filipe Manana wrote:
-> > On Thu, Feb 03, 2022 at 06:26:31PM +0100, David Sterba wrote:
-> > > As the setget check only sets the bit, we need to use it in the
-> > > transaction:
+On Fri, Feb 11, 2022 at 08:01:24AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2022/2/11 00:37, Filipe Manana wrote:
+> > On Tue, Feb 8, 2022 at 12:00 PM Qu Wenruo <wqu@suse.com> wrote:
 > > > 
-> > > - when attempting to start a new one, fail with EROFS as if would be
-> > >   aborted in another way already
+> > > There is a long existing problem that extent_map::generation is not
+> > > populated (thus always 0) if its read from disk.
 > > > 
-> > > - in should_end_transaction
+> > > This can prevent btrfs autodefrag from working as it relies on
+> > > extent_map::generation.
+> > > If it's always 0, then autodefrag will not consider the range as a
+> > > defrag target.
 > > > 
-> > > - when transaction is about to end, insert an explicit abort
+> > > The test case itself will verify the behavior by:
 > > > 
-> > > Signed-off-by: David Sterba <dsterba@suse.com>
+> > > - Create a fragmented file
+> > >    By writing backwards with OSYNC
+> > >    This will also queue the file for autodefrag.
+> > > 
+> > > - Drop all cache
+> > >    Including the extent map cache, meaning later read will
+> > >    all get extent map by reading from on-disk file extent items.
+> > > 
+> > > - Trigger autodefrag and verify the file layout
+> > >    If defrag works, the new file layout should differ from the original
+> > >    one.
+> > > 
+> > > The kernel fix is titled:
+> > > 
+> > >    btrfs: populate extent_map::generation when reading from disk
+> > > 
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > > > ---
-> > >  fs/btrfs/transaction.c | 11 +++++++++++
-> > >  1 file changed, 11 insertions(+)
+> > >   tests/btrfs/259     | 64 +++++++++++++++++++++++++++++++++++++++++++++
+> > >   tests/btrfs/259.out |  2 ++
+> > >   2 files changed, 66 insertions(+)
+> > >   create mode 100755 tests/btrfs/259
+> > >   create mode 100644 tests/btrfs/259.out
 > > > 
-> > > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> > > index 6db634ebae17..f48194df6c33 100644
-> > > --- a/fs/btrfs/transaction.c
-> > > +++ b/fs/btrfs/transaction.c
-> > > @@ -591,6 +591,9 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
-> > >  	if (BTRFS_FS_ERROR(fs_info))
-> > >  		return ERR_PTR(-EROFS);
-> > >  
-> > > +	if (test_bit(BTRFS_FS_SETGET_COMPLAINS, &fs_info->flags))
-> > > +		return ERR_PTR(-EROFS);
+> > > diff --git a/tests/btrfs/259 b/tests/btrfs/259
+> > > new file mode 100755
+> > > index 00000000..577e4ce4
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/259
+> > > @@ -0,0 +1,64 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 259
+> > > +#
+> > > +# Make sure autodefrag can still defrag the file even their extent maps are
+> > > +# read from disk
+> > > +#
+> > > +. ./common/preamble
+> > > +_begin_fstest auto quick defrag
 > > > +
-> > >  	if (current->journal_info) {
-> > >  		WARN_ON(type & TRANS_EXTWRITERS);
-> > >  		h = current->journal_info;
-> > > @@ -924,6 +927,9 @@ static bool should_end_transaction(struct btrfs_trans_handle *trans)
-> > >  {
-> > >  	struct btrfs_fs_info *fs_info = trans->fs_info;
-> > >  
-> > > +	if (test_bit(BTRFS_FS_SETGET_COMPLAINS, &fs_info->flags))
-> > > +		return true;
+> > > +# Override the default cleanup function.
+> > > +# _cleanup()
+> > > +# {
+> > > +#      cd /
+> > > +#      rm -r -f $tmp.*
+> > > +# }
 > > > +
-> > >  	if (btrfs_check_space_for_delayed_refs(fs_info))
-> > >  		return true;
-> > >  
-> > > @@ -969,6 +975,11 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
-> > >  	struct btrfs_transaction *cur_trans = trans->transaction;
-> > >  	int err = 0;
-> > >  
-> > > +	/* If a serious error was detected abort the transaction early */
-> > > +	if (!TRANS_ABORTED(trans) &&
-> > > +	    test_bit(BTRFS_FS_SETGET_COMPLAINS, &info->flags))
-> > > +		btrfs_abort_transaction(trans, -EIO);
+> > > +# Import common functions.
+> > > +# . ./common/filter
+> > > +
+> > > +# real QA test starts here
+> > > +
+> > > +# Modify as appropriate.
+> > > +_supported_fs btrfs
+> > > +_require_scratch
+> > > +
+> > > +# Need 4K sectorsize, as the autodefrag threshold is only 64K,
+> > > +# thus 64K sectorsize will not work.
+> > > +_require_btrfs_support_sectorsize 4096
 > > 
-> > Instead of sprinkling the test for BTRFS_FS_SETGET_COMPLAINS in all
-> > these places, it seems to me it could be included in BTRFS_FS_ERROR().
-> 
-> Yeah that's a good idea.
-> 
-> > And then having check_setget_bounds() call btrfs_handle_fs_error().
-> 
-> btrfs_handle_fs_error is a bit heavyweight for all the potential cases
-> where the eb member check could happen.
-> 
-> > That would remove the need for all this code. Wouldn't it?
+> > Missing a:
+> > 
+> > _require_xfs_io_command fiemap
+> > 
+> > > +_scratch_mkfs -s 4k >> $seqres.full
+> > > +_scratch_mount -o datacow,autodefrag
+> > > +
+> > > +# Create fragmented write
+> > > +$XFS_IO_PROG -f -s -c "pwrite 24k 8k" -c "pwrite 16k 8k" \
+> > > +               -c "pwrite 8k 8k" -c "pwrite 0 8k" \
+> > > +               "$SCRATCH_MNT/foobar" >> $seqres.full
+> > > +sync
+> > 
+> > A comment on why this sync is needed would be good to have.
+> > It may be confusing to the reader since we were doing synchronous writes before.
 > > 
 > > > +
-> > >  	if (refcount_read(&trans->use_count) > 1) {
-> > >  		refcount_dec(&trans->use_count);
-> > >  		trans->block_rsv = trans->orig_rsv;
+> > > +echo "=== Before autodefrag ===" >> $seqres.full
+> > > +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $tmp.before
+> > > +cat $tmp.before >> $seqres.full
+> > > +
+> > > +# Drop the cache (including extent map cache per-inode)
+> > > +echo 3 > /proc/sys/vm/drop_caches
+> > > +
+> > > +# Now trigger autodefrag
 > > 
-> > This misses one important case:
+> > A bit more explanation would be useful.
 > > 
-> >   task starts/joins/attaches a transaction
+> > Set the commit interval to 1 second, so that 1 second after the
+> > remount the transaction kthread runs
+> > and wakes up the cleaner kthread, which in turn will run autodefrag.
 > > 
-> >   fails one of the bounds check when accessing some extent buffer
+> > > +_scratch_remount commit=1
+> > > +sleep 3
+> > > +sync
 > > 
-> >   calls btrfs_commit_transaction()
-> > 
-> > The transaction ends up committed.
-> > 
-> > So a check and abort in the commit path, right before writing the super blocks,
-> > should be in place.
-> > 
-> > With the above suggestions for check_setget_bounds() and BTRFS_FS_ERROR(),
-> > this case would be handled automatically like the others, so no need for
-> > sprinkling the checks and aborts in several places.
+> > This sync is useless, so it should go away.
 > 
-> Agreed with the BTRFS_FS_ERROR part, I'm not sure about calling the
-> btrfs_handle_fs_error. The function was introduced before the
-> transaction abort mechanism, which builds on top of it, but there are
-> still calls to btrfs_handle_fs_error that seem to substitute abort.
-> Conversions like ba51e2a11e38 ("btrfs: change handle_fs_error in
-> recover_log_trees to aborts") need to happen, there are still like 30 of
-> them.
+> Autodefrag doesn't write data back at all.
+> It just mark the target range dirty and wait for later writeback.
+> 
+> Thus sync is still needed AFAIK.
 
-Well, btrfs_handle_fs_error() is handy when we don't have access to a
-transaction and we need to prevent a future transaction from starting.
+Well, something weird is going on then.
 
-Another alternative, instead of adding that new bit, simply doing something
-like the following at check_setget_bounds():
+Removing the sync, makes the test still fail on an unpatched kernel,
+and on a patched kernel, it still succeeds.
 
-    if (current->journal_info)
-        btrfs_abort_transaction(current->journal_info, -EUCLEAN);
+Looking at the .full file, the results are correct:
 
-For a task doing reads only, and that nevers joins/starts a transaction,
-in case it calls a getter that does an out of bounds access, there's no
-way to return an error back to user space anyway.
+=== Before autodefrag ===
+/home/fdmanana/btrfs-tests/scratch_1/foobar:
+ EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+   0: [0..15]:         26672..26687        16   0x0
+   1: [16..31]:        26656..26671        16   0x0
+   2: [32..47]:        26640..26655        16   0x0
+   3: [48..63]:        26624..26639        16   0x1
+=== After autodefrag ===
+/home/fdmanana/btrfs-tests/scratch_1/foobar:
+ EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+   0: [0..63]:         26688..26751        64   0x1
 
-There's always the case a task may do such a bad get and later join/start
-a transaction and call a setter with a value computed on top of a bad
-value returned by the bad getter.
+So why this worked seems to be because:
 
-I still think btrfs_handle_fs_error() is the best to use here. It fits
-perfectly for this scenario, without neither the need to add a new bit
-nor to sprinkle more logic into transaction.c
+- After doing the writes to the file, a delayed iput on the inode
+  did a wakeup on the cleaner kthread;
+
+- The cleaner kthread ran defrag;
+
+- btrfs_remount() calls sync_filesystem(), flushing all delalloc.
+
+So, yes, it's better to leave the 'sync', as there's no way to
+guarantee the cleaner ran defrag before remount.
+
+Perhaps a comment about that sync would be useful as well.
+
+Thanks.
+
+> 
+> Thanks,
+> Qu
+> 
+> > 
+> > Otherwise, it looks good and the test works as expected.
+> > 
+> > Thanks for doing it.
+> > 
+> > > +
+> > > +echo "=== After autodefrag ===" >> $seqres.full
+> > > +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $tmp.after
+> > > +cat $tmp.after >> $seqres.full
+> > > +
+> > > +# The layout should differ if autodefrag is working
+> > > +diff $tmp.before $tmp.after > /dev/null && echo "autodefrag didn't defrag the file"
+> > > +
+> > > +echo "Silence is golden"
+> > > +
+> > > +# success, all done
+> > > +status=0
+> > > +exit
+> > > diff --git a/tests/btrfs/259.out b/tests/btrfs/259.out
+> > > new file mode 100644
+> > > index 00000000..bfbd2dea
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/259.out
+> > > @@ -0,0 +1,2 @@
+> > > +QA output created by 259
+> > > +Silence is golden
+> > > --
+> > > 2.34.1
+> > > 
