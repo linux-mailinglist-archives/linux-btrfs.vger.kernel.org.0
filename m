@@ -2,68 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E554B19FA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 01:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EC94B1A32
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 01:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344855AbiBKABg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Feb 2022 19:01:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59274 "EHLO
+        id S239896AbiBKAMH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Feb 2022 19:12:07 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239080AbiBKABf (ORCPT
+        with ESMTP id S1346184AbiBKAMG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Feb 2022 19:01:35 -0500
+        Thu, 10 Feb 2022 19:12:06 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DB1B43;
-        Thu, 10 Feb 2022 16:01:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3EA272E
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 16:12:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644537688;
-        bh=1ZaSPozF/u4TPSaAiNx3hDVYi5BV778Qf8GxH25H734=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=kpMpoIqKis6lY0+c1APfvVCiEKWGTrDoYdbBy7LClcneecbF9CmuHRRuABfi6oF/W
-         lNDqGYMel42lSOzlqJhrYTUUtd0RwzjG6B+A6MzD02SEOzP3Xsx8wdWC8UF+eYSwsv
-         ciImLzxykczVlDhH17QAUwmn3rrOxaXOy2sqnOuc=
+        s=badeba3b8450; t=1644538324;
+        bh=4RJTWN4nkQ64o1djGBP1s/HsFfVJxsv9otsLrAimUhw=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=DZDP7ecjWWSa2tJcVpW5WRbA80pKB7DAZXRonDBbXxztCY46iJ6OdPIFr4LLGVRKu
+         WceUX/sNYeOSE65PSuBjiSD7gSOCAvbb1hIM+v0JFn3uhkAxW9V/mbus0bTqpGuzRK
+         fL1FcsRJaIz6SBDM3D72Yg0zdF2Yk0lwDMeEUoHs=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MK3Rm-1nbdBB2wAA-00LWiz; Fri, 11
- Feb 2022 01:01:28 +0100
-Message-ID: <08a1e4df-27b2-23e4-ec1d-1ba1c4fe7e2a@gmx.com>
-Date:   Fri, 11 Feb 2022 08:01:24 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnJlc-1nz2l53GUu-00jIZH; Fri, 11
+ Feb 2022 01:12:04 +0100
+Message-ID: <ecd46a18-1655-ec22-957b-de659af01bee@gmx.com>
+Date:   Fri, 11 Feb 2022 08:12:01 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.1
-Subject: Re: [PATCH] btrfs: add test case to make sure autodefrag works even
- the extent maps are read from disk
+Subject: Re: Used space twice as actually consumed
 Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20220208071427.19171-1-wqu@suse.com>
- <CAL3q7H5TSOMDpgP0FNbP_TqOgY_zjgsthjAo6iDnZS+g2FJk8w@mail.gmail.com>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <9f936d59-d782-1f48-bbb7-dd1c8dae2615@gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAL3q7H5TSOMDpgP0FNbP_TqOgY_zjgsthjAo6iDnZS+g2FJk8w@mail.gmail.com>
+In-Reply-To: <9f936d59-d782-1f48-bbb7-dd1c8dae2615@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TovMw0JsUXVcS+Y9HWx2ZM2q3CtajxVryw/3O6VsFQUo/mRIboD
- j/sg10PAaxQ7oyEmbePTogmShRzt+sGY2Oqb8aZmviXKZS6XId375n+k79uBTnYYIwfADjt
- 07i00TS9JLW9FRCMtXQ2rftE3+6sh8XSTrA8kr5xumXdULUnXy6rc4z2wz3vv4S/787AwHb
- oj2A9aPaaqc3sp0eQCwVg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CARlJV3LNQA=:ZHvoUcFvOotImjhX29Mp6n
- 71/3cXOx7vZzqkeN5KBY3xJtnQmNED3r9IwZnFF06LvAL+y6g/osImHGVF88oElaGIPiOD9rs
- yD4/YD9TgaPjCa1b0Myrf1mPv4vr8zf2WT+de6eedo5+DoR5RuTlcnDRJJXaCY2i5eKus8Viu
- PxOlWTveHm7fysEa6aiydhyWnDanjrm6Ir/xGwhtZ/52+DcILn2xAFcK/M8kR8GMJRZvaSraW
- a1nFAJSJOUiYPH+O8ELQKuvEkV72XzzqzVnQ+KnKoHgMvH4AxcTqyowfQtR3KtWXFwtf7KOZU
- J0FHuhFwqUs7ctmPqbfTE+cpRwBFyKM4q/Xeo07vjQE8cp4ELeUGtnUGmtWykhyPsBx6Yams/
- PKvnJQUBZs4a19+PZKP0cT/XfEVJUp00nd7uFxuKMBrX3mxpQT3nZ2KSYU0QPNYaD4ej/21D0
- 0jR+36PP04j/N9rgBoEFpvGlruAx3HoxEImW9fCF9S6l1WS1HljFe/agvm+hQ3mdknfpkikVd
- 39NpJ1QnytfjIjot1gN/zNKFbP+2YtH5sK7F3yREhSRVWNIV0RvGkOEIwrlOHC7cPk31OVkrR
- JHcGKNMX18kRFij/8sy4fdLVhOnDqO5wD3/vMWM14AVBL3ATmnOgLBxuhO/jMh1eeqzW8G632
- dddPKkyFwPYCFnFRtDBKkpgViNB1ClbYUUFjBH01kOmuOiTyI/v2a0oQHHxDSfYnAZKCoyVHY
- GXma9C4ghw6TBxVal2wCTeAJ74empzpe2Dp3XpwhmS0lEeNZgcBE9t/hDyvj04AiYGoVOLjeR
- jVYFoOVv8C0XWi2J4IyqAzvX9i+JhRX05cwDzFyNe9KNtddUAV1ATJKH0aJEaU9WKXxZsjYxy
- b0KUaFIt2WDpyC7HekjomvpQGTnC38fZYQ3hbAma3teSRK/SXiqs6GhadE/QnYzv63yr3uqg6
- 475eT4jbmWrURwqGbFUJ6KpE3vs2yGd/MNGxJ1/2dmm8uzm9Mxwo+IGrJMyhC/P597DMxpTyr
- mF+k6Na8Wacp/hx1w0w57XgN39ygsGUeCZtEwpwl8x3TjLHAlp8y5BGSuDqDStpBdXs1WpDK+
- vGTfLsIcglR/A0=
+X-Provags-ID: V03:K1:VZkCDbUy/AEJkBj62w9CpU6HTzE4FZeyfu8nlz3mP7hxpTlnHSg
+ HnmzuqyXfSgxlaLifoxaMwhnB8dvUFF9ffo1O3OagPfy2gW1XMCbBC6W+9B0mGsP7LO13D0
+ B3LsjPwFPRCG31/mBmt64DOyf/yh+F/Eestzr7G2d4FMkKO+3YYJl4QhBHaF5NcmiCqTphn
+ kefof5pOors2zuyWrQLDA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RSABYquIdOM=:1rIRhIFkwLkarOX4w5iyZv
+ cCtn7MkzHHBymm3AjzxgJYSsqh7neNLgU9KRQTaprDBoGeSdi5OkzmduAUmFuV5vCqPjQO4l/
+ Kz8uaLQ5lHPtAFIupG3v3a8xcfc0ttZX8K/CDtQlZCcg4dqKt3qMn5kClOP03HLAFkomw0BVJ
+ nsSihYDZj9S13/MUd5dNTCPuGEZoqe1aRFixeSqjvc2l/2YpQfug3p65Fp2lAKM26mI1vjmPS
+ yg3vlN2SOM4SWUCkM6ULrg35BG4uyL9TplmLIl/UD0FRgai2WShmHkerRLuqaKm79ztVZ3Ig2
+ f04VPahpbyiPVPE0aL4rFWI7a2Z6HmL9NEmBgKKoS3C8JZaZvsKpMMYGUns7+NV9nHkRMCBu6
+ BlvgfrZjz/eIKaxu2yYwqchhXMUpddETyX1Y7mB4znlHLr1GYkdHUuNWo7xr7ie5KHTkxUL4N
+ FGkqKmsSUej5c02mYHp1W0+IR2cLBSf43wdfULPIx01P2trErU8I8dPAas8W6nvoC3rYnM7OI
+ 6cVckbwrfJnOXZrkTRjBLCX2hqinEkNISfxQo4QrAwO8v6hl5qrb3gr4fkQvPXiEBwcRw8AQf
+ 9ha82xp+DShqsoEYRGKHJcBIXskAftLjmtf4zm8XrSzk/DgxF0EULgFd4iyNgipvTdSCiTKPH
+ c6xPblM/3zLIwMLXsuFC6mQ/Bytm9pDbvs1kiWtk+2fSvJtXvqonNPp7Jux6hyuKNm1ntOR4H
+ ohbUr7Y83uWgemFKSjxhtsLHroRbv7NqHsVU2fFdPZd+E+aLRyzoTIvZ631GLlUbpdAqDrRgW
+ ArlZI+020KtdBD3Sl7Xnshn4hFVWqmQaEREzFbVcmo3iB/ztNGTF991tRETELMeJeRCyBs8eW
+ dkbWTbmpRQ7NaXPRZKvAgbRr5I1GGdWxaF9AjsGEzQrkb8yfvdRJoBRstHxDEUo0vE9wknLPY
+ XKaYOHQsuxw/SQjpwaije2DtbnVd2o9HOMGy8kSM+UEEkReWvy1cjvgzGk6yz5vM2W/V5gGAM
+ 5KFlPMHftXBFB1SUJl3VNCA0VF66R0e6YrJmJ3rie+Qyg7E5IG4deGga494i4Z0S+r0xsiqcE
+ kEcEZND91NCJXA=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,157 +73,196 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/2/11 00:37, Filipe Manana wrote:
-> On Tue, Feb 8, 2022 at 12:00 PM Qu Wenruo <wqu@suse.com> wrote:
->>
->> There is a long existing problem that extent_map::generation is not
->> populated (thus always 0) if its read from disk.
->>
->> This can prevent btrfs autodefrag from working as it relies on
->> extent_map::generation.
->> If it's always 0, then autodefrag will not consider the range as a
->> defrag target.
->>
->> The test case itself will verify the behavior by:
->>
->> - Create a fragmented file
->>    By writing backwards with OSYNC
->>    This will also queue the file for autodefrag.
->>
->> - Drop all cache
->>    Including the extent map cache, meaning later read will
->>    all get extent map by reading from on-disk file extent items.
->>
->> - Trigger autodefrag and verify the file layout
->>    If defrag works, the new file layout should differ from the original
->>    one.
->>
->> The kernel fix is titled:
->>
->>    btrfs: populate extent_map::generation when reading from disk
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   tests/btrfs/259     | 64 ++++++++++++++++++++++++++++++++++++++++++++=
-+
->>   tests/btrfs/259.out |  2 ++
->>   2 files changed, 66 insertions(+)
->>   create mode 100755 tests/btrfs/259
->>   create mode 100644 tests/btrfs/259.out
->>
->> diff --git a/tests/btrfs/259 b/tests/btrfs/259
->> new file mode 100755
->> index 00000000..577e4ce4
->> --- /dev/null
->> +++ b/tests/btrfs/259
->> @@ -0,0 +1,64 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
->> +#
->> +# FS QA Test 259
->> +#
->> +# Make sure autodefrag can still defrag the file even their extent map=
-s are
->> +# read from disk
->> +#
->> +. ./common/preamble
->> +_begin_fstest auto quick defrag
->> +
->> +# Override the default cleanup function.
->> +# _cleanup()
->> +# {
->> +#      cd /
->> +#      rm -r -f $tmp.*
->> +# }
->> +
->> +# Import common functions.
->> +# . ./common/filter
->> +
->> +# real QA test starts here
->> +
->> +# Modify as appropriate.
->> +_supported_fs btrfs
->> +_require_scratch
->> +
->> +# Need 4K sectorsize, as the autodefrag threshold is only 64K,
->> +# thus 64K sectorsize will not work.
->> +_require_btrfs_support_sectorsize 4096
+On 2022/2/11 02:54, Andrei Borzenkov wrote:
+> I am at a loss.
 >
-> Missing a:
+> bor@tw:~> uname -a
 >
-> _require_xfs_io_command fiemap
+> Linux tw 5.16.4-1-default #1 SMP PREEMPT Sat Jan 29 12:57:02 UTC 2022 (b=
+146677) x86_64 x86_64 x86_64 GNU/Linux
 >
->> +_scratch_mkfs -s 4k >> $seqres.full
->> +_scratch_mount -o datacow,autodefrag
->> +
->> +# Create fragmented write
->> +$XFS_IO_PROG -f -s -c "pwrite 24k 8k" -c "pwrite 16k 8k" \
->> +               -c "pwrite 8k 8k" -c "pwrite 0 8k" \
->> +               "$SCRATCH_MNT/foobar" >> $seqres.full
->> +sync
 >
-> A comment on why this sync is needed would be good to have.
-> It may be confusing to the reader since we were doing synchronous writes=
- before.
+> opnSUSE Tumbleweed.
 >
->> +
->> +echo "=3D=3D=3D Before autodefrag =3D=3D=3D" >> $seqres.full
->> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $tmp.before
->> +cat $tmp.before >> $seqres.full
->> +
->> +# Drop the cache (including extent map cache per-inode)
->> +echo 3 > /proc/sys/vm/drop_caches
->> +
->> +# Now trigger autodefrag
 >
-> A bit more explanation would be useful.
+> bor@tw:~> sudo btrfs fi us -T /
 >
-> Set the commit interval to 1 second, so that 1 second after the
-> remount the transaction kthread runs
-> and wakes up the cleaner kthread, which in turn will run autodefrag.
+> [sudo] password for root:
 >
->> +_scratch_remount commit=3D1
->> +sleep 3
->> +sync
+> Overall:
 >
-> This sync is useless, so it should go away.
+>      Device size:		  38.91GiB
+>
+>      Device allocated:		  38.91GiB
+>
+>      Device unallocated:		   1.00MiB
+>
+>      Device missing:		     0.00B
+>
+>      Used:			  23.91GiB
+>
+>      Free (estimated):		  13.14GiB	(min: 13.14GiB)
+>
+>      Free (statfs, df):		  13.14GiB
+>
+>      Data ratio:			      1.00
+>
+>      Metadata ratio:		      2.00
+>
+>      Global reserve:		  85.95MiB	(used: 0.00B)
+>
+>      Multiple profiles:		        no
+>
+>
+>
+>               Data     Metadata  System
+>
+> Id Path      single   DUP       DUP      Unallocated
+>
+> -- --------- -------- --------- -------- -----------
+>
+>   1 /dev/vda2 35.34GiB   3.51GiB 64.00MiB     1.00MiB
+>
+> -- --------- -------- --------- -------- -----------
+>
+>     Total     35.34GiB   1.75GiB 32.00MiB     1.00MiB
+>
+>     Used      22.19GiB 877.94MiB 16.00KiB
+>
+> bor@tw:~>
+>
+>
+> Well, that's wrong for all I can tell.
+>
+> bor@tw:~> sudo btrfs qgroup show /
+>
+> qgroupid         rfer         excl
+>
+> --------         ----         ----
+>
+> 0/5          16.00KiB     16.00KiB
+>
+> 0/257        16.00KiB     16.00KiB
+>
+> 0/258        16.00KiB     16.00KiB
+>
+> 0/259         9.04GiB      8.92GiB
+>
+> 0/260         2.69MiB      2.69MiB
+>
+> 0/261        16.00KiB     16.00KiB
+>
+> 0/262       708.24MiB    708.24MiB
+>
+> 0/263        16.00KiB     16.00KiB
+>
+> 0/264        16.00KiB     16.00KiB
+>
+> 0/265        16.00KiB     16.00KiB
+>
+> 0/266        16.00KiB     16.00KiB
+>
+> 0/1411        2.12GiB      1.91GiB
+>
+> bor@tw:~>
+>
+>
+> So it is about 11GiB in all subvolumes. Still btrfs claims 22GiB are use=
+d.
+>
+> There are no snapshots (currently). There is single root subvolume which
+> is 259. All snapshots have been removed.
+>
+> bor@tw:~> sudo btrfs sub li -u /
+>
+> ID 257 gen 96090 top level 5 uuid 257f04e8-e972-1a42-956f-1252b88713a4 p=
+ath @
+>
+> ID 258 gen 120221 top level 257 uuid 2b9cfacf-5c3d-924e-90e6-8f01818df65=
+9 path @/.snapshots
+>
+> ID 259 gen 120339 top level 258 uuid 52afd41d-c722-4e48-b020-5b95a2d6fd8=
+4 path @/.snapshots/1/snapshot
+>
+> ID 260 gen 120221 top level 257 uuid 40812ba2-102c-ae42-bf07-2b51e531d92=
+3 path @/boot/grub2/i386-pc
+>
+> ID 261 gen 120221 top level 257 uuid 9105e591-b3d9-a84a-93e9-6902fd78897=
+b path @/boot/grub2/x86_64-efi
+>
+> ID 262 gen 120339 top level 257 uuid be0f25f1-8505-7a4d-87bf-29bcb06ce55=
+c path @/home
+>
+> ID 263 gen 120186 top level 257 uuid e95e8fd5-5bc0-e94a-bc56-c355357479d=
+c path @/opt
+>
+> ID 264 gen 120221 top level 257 uuid 4b0f5496-dc32-9d43-a36c-333b18b9370=
+c path @/srv
+>
+> ID 265 gen 120331 top level 257 uuid d658c9bd-dbe2-e842-9e31-c943119b725=
+f path @/tmp
+>
+> ID 266 gen 120221 top level 257 uuid 71717a12-5b0c-8240-9ef4-907586ed935=
+c path @/usr/local
+>
+> ID 1411 gen 120340 top level 257 uuid f5f4dae5-fdbc-9141-8fba-83e95b9ea1=
+32 path @/var
+>
+> bor@tw:~>
+>
+>
+>
+>
+>
+>
+> Any idea what's going on and where to look? I seem to have strange roots
+> that are not visible as subvolumes, like
+>
+>          item 71 key (1329 ROOT_ITEM 81748) itemoff 7377 itemsize 439
+>
+>                  generation 81749 root_dirid 256 bytenr 70449102848 byte=
+_limit 0 bytes_used 313655296
+>
+>                  last_snapshot 81748 flags 0x1000000000001(RDONLY) refs =
+0
+>
+>                  drop_progress key (9414435 INODE_ITEM 0) drop_level 1
 
-Autodefrag doesn't write data back at all.
-It just mark the target range dirty and wait for later writeback.
+This subvolume is still being dropped, thus it still takes up some space.
 
-Thus sync is still needed AFAIK.
+I believe There are similar subvolumes waiting to be dropped, thus they
+may be the reason they are taking up the extra space.
 
-Thanks,
+>
+>                  level 2 generation_v2 81749
+>
+>                  uuid 2c5e44c6-cb4d-1b4f-a3f0-df1ee3509f47
+>
+>                  parent_uuid 52afd41d-c722-4e48-b020-5b95a2d6fd84
+>
+>                  received_uuid 00000000-0000-0000-0000-000000000000
+>
+>                  ctransid 81748 otransid 81748 stransid 0 rtransid 0
+>
+>                  ctime 1614326844.216735782 (2021-02-26 11:07:24)
+>
+>                  otime 1614326844.284742808 (2021-02-26 11:07:24)
+>
+>                  stime 0.0 (1970-01-01 03:00:00)
+>
+>                  rtime 0.0 (1970-01-01 03:00:00)
+>
+>
+> This apparently was once snapshot of root subvolume (52afd41d-c722-4e48-=
+b020-5b95a2d6fd84).
+> There are more of them.
+>
+> Any chance those "invisible" trees continue to consume space? How can I =
+remove them?
+
+They are being dropped in the background.
+You can wait for them to be completely dropped by using command "btrfs
+subvolume sync".
+
+THanks,
 Qu
-
->
-> Otherwise, it looks good and the test works as expected.
->
-> Thanks for doing it.
->
->> +
->> +echo "=3D=3D=3D After autodefrag =3D=3D=3D" >> $seqres.full
->> +$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $tmp.after
->> +cat $tmp.after >> $seqres.full
->> +
->> +# The layout should differ if autodefrag is working
->> +diff $tmp.before $tmp.after > /dev/null && echo "autodefrag didn't def=
-rag the file"
->> +
->> +echo "Silence is golden"
->> +
->> +# success, all done
->> +status=3D0
->> +exit
->> diff --git a/tests/btrfs/259.out b/tests/btrfs/259.out
->> new file mode 100644
->> index 00000000..bfbd2dea
->> --- /dev/null
->> +++ b/tests/btrfs/259.out
->> @@ -0,0 +1,2 @@
->> +QA output created by 259
->> +Silence is golden
->> --
->> 2.34.1
->>
