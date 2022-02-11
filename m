@@ -2,67 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5AE4B2773
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 14:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623144B2786
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 15:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350682AbiBKNyL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Feb 2022 08:54:11 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35448 "EHLO
+        id S237725AbiBKOJ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Feb 2022 09:09:26 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350681AbiBKNyL (ORCPT
+        with ESMTP id S229661AbiBKOJY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Feb 2022 08:54:11 -0500
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B2B198
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 05:54:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1644587648; x=1676123648;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4pThJivJ6bqqgnB4rt2+93D4IOLMtdSVsyJKY4m1jXw=;
-  b=Nv50AsV3dWilRE37M2EVOteaeL4RJIIafrLjov/iMtUvlWV7DfC7RiFQ
-   NtjrMQ0YlC3t9PBzo88CRITSAL52oB7k4sQ2xMZ988Qp0GAEwrnjwbiNO
-   vZmJ4KuPgInWJAx05VctsfVY7eIqNtE8yPoEAMZvuo4TpEvCr+RUOtRqq
-   9pYT0KP3TBODhWCAM++XKM3/CPQ9R5o1KZ6XUPKO54hm1lHr6FaOtXya2
-   P1afQ81yLdc0ir70t5laBXeJ5JMuiiaRKNiK2dti+wGMQmY4tYwS8vydD
-   ImOFlcb+st88SiZ3bg9eZAh++Eq3m1is1FClb327eyVSxDVDiF09Gdnjr
-   w==;
-X-IronPort-AV: E=Sophos;i="5.88,361,1635177600"; 
-   d="scan'208";a="197518052"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2022 21:54:08 +0800
-IronPort-SDR: pJwX38rmRnqirb21XJxk22DW/xOPR62/vn+jMoK5apjoTzY27aW+QvSC0IGvwJPe5MLWaUEZe0
- lJoP4jvbdQ9ma5LYqjRSrW8HBm7bUPexADWBmKrGoIH3NKorZnCeLk0YSwPbJpyp6o2g/oFDK2
- 6z4IkOzS/rh7t9uMzWSRjYdzjsWr7kcjOL7SaIsSo/YW6fyRMVJII2NyqyHT6+IC7TBhIGNEAG
- Fc2R/Vam+Fzi5s4ubpO+nOA7tADQg/lN4MEslkhw/VlZMwHsAFT6CQJqbKvThVYlbC6awJoDzM
- jUukWg3xyqiRt2pP+/Vac+1T
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2022 05:25:55 -0800
-IronPort-SDR: 7bRznoD9OvvffPBLNf6N4ZRX7WN1eoGMIIvzeVDlYkqF+WQt76XqLhc6j81DiZfPiXdrW0tvrb
- TLXmc12EyA9hW3zzHKDERFqMMvPlVS6crqkz1lW2zTS46At0UlU942+yz2DZSkGumbcnsMCNkf
- xouoKFfMbraMTbfUnxdRB6mZUlKmzZ5UEUQSEGs6fYVnVbI28KJW5TT9oU6b3VS1QNXfNexQgy
- JGxgXI/hbrR79RoKxKHIGbaP/9WZcWx+hXhTWtsgedfdW1g6JVsehpGojIkF5A7Ls+HSU+C/71
- srM=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 11 Feb 2022 05:54:10 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH RFC] btrfs: zoned: make auto-reclaim less aggressive
-Date:   Fri, 11 Feb 2022 05:54:02 -0800
-Message-Id: <6e2f241b0f43111efd6fe42d736a90275bb985a9.1644587521.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 11 Feb 2022 09:09:24 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FC6C43
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 06:09:23 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9AD421F3AA
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1644588561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=kTwuofy03J7i1xxodw+t4+mBDLZFokrVFGQcsfHQR1M=;
+        b=GmlzMK2BEEXdz6td4KzVkzWyS6qsYoBDQqhoTq4ywcEQdAXUUo87o5vOxq8ff9c8RBvYua
+        kL80I1BNrl1fAxqs61JX/P24P8Q5Pig3L5euI9/SxxLQarCr2qyvw5OrMFyLHwuxY6klde
+        QYB29bOvHQTJHO6dNFqyKcz/2v/qRyk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1644588561;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=kTwuofy03J7i1xxodw+t4+mBDLZFokrVFGQcsfHQR1M=;
+        b=SiIgbSgV93IyievgBQr1INxDzmEwIOPlIDvZ61bqHbmYN61466EoWARNJApM9g23NF34eP
+        rOmHxkdyV3mcDrCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1303B13C7E
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:09:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id t4UrMRBuBmJ/JQAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:09:20 +0000
+Date:   Fri, 11 Feb 2022 08:09:18 -0600
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: Fix subvol turns RO if root is remounted RO
+Message-ID: <20220211140918.c6wpmh3pgzjuytve@fiona>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,109 +64,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The current auto-reclaim algorithm starts reclaiming all block-group's
-with a zone_unusable value above a configured threshold. This is causing a
-lot of reclaim IO even if there would be enough free zones on the device.
+If a read-write root mount is remounted as read-only, the subvolume
+is also set to read-only.
 
-Instead of only accounting a block-group's zone_unusable value, also take
-the number of empty zones into account.
+Use a rw_mounts counter to check the number of read-write mounts, and change
+superblock to read-only only in case there are no read-write subvol mounts.
+Disable SB_RDONLY in flags passed so superblock does not change
+read-only.
 
-Cc: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
----
+Test case:
+DEV=/dev/vdb
+mkfs.btrfs -f $DEV
+mount $DEV /mnt
+btrfs subvol create /mnt/sv
+mount -o remount,ro /mnt
+mount -o subvol=/sv $DEV /mnt/sv
+findmnt # /mnt is RO, /mnt/sv RW
+mount -o remount,ro /mnt
+findmnt # /mnt is RO, /mnt/sv RO as well
+umount /mnt{/sv,}
 
-RFC because I'm a bit unsure about the user interface. Should we use the
-same value / sysfs file for both the number of non-empty zones and the
-number of zone_unusable bytes per block_group or add another knob to fine
-tune?
 
- fs/btrfs/block-group.c |  3 +++
- fs/btrfs/zoned.c       | 29 +++++++++++++++++++++++++++++
- fs/btrfs/zoned.h       |  6 ++++++
- 3 files changed, 38 insertions(+)
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 3113f6d7f335..c0f38f486deb 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1522,6 +1522,9 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
- 		return;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index a2991971c6b5..2bb6869f15af 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1060,6 +1060,9 @@ struct btrfs_fs_info {
+ 	spinlock_t zone_active_bgs_lock;
+ 	struct list_head zone_active_bgs;
  
-+	if (!btrfs_zoned_should_reclaim(fs_info))
-+		return;
++	/* Count of subvol mounts read-write */
++	int rw_mounts;
 +
- 	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE))
- 		return;
+ #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+ 	spinlock_t ref_verify_lock;
+ 	struct rb_root block_tree;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 33cfc9e27451..2072759d5f22 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1835,6 +1835,11 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
+ 	/* mount_subvol() will free subvol_name and mnt_root */
+ 	root = mount_subvol(subvol_name, subvol_objectid, mnt_root);
  
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index b7b5fac1c779..47204f38f02e 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -15,6 +15,7 @@
- #include "transaction.h"
- #include "dev-replace.h"
- #include "space-info.h"
-+#include "misc.h"
- 
- /* Maximum number of zones to report per blkdev_report_zones() call */
- #define BTRFS_REPORT_NR_ZONES   4096
-@@ -2082,3 +2083,31 @@ void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info)
- 	}
- 	mutex_unlock(&fs_devices->device_list_mutex);
- }
-+
-+bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	struct btrfs_device *device;
-+	u64 nr_free = 0;
-+	u64 nr_zones = 0;
-+	u64 factor;
-+
-+	if (!btrfs_is_zoned(fs_info))
-+		return false;
-+
-+	if (!fs_info->bg_reclaim_threshold)
-+		return false;
-+
-+	mutex_lock(&fs_devices->device_list_mutex);
-+	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+		struct btrfs_zoned_device_info *zone_info = device->zone_info;
-+
-+		nr_zones += zone_info->nr_zones;
-+		nr_free += bitmap_weight(zone_info->empty_zones,
-+					 zone_info->nr_zones);
++	if (!IS_ERR(root) && !(flags & SB_RDONLY)) {
++		struct btrfs_fs_info *fs_info = btrfs_sb(mnt_root->mnt_sb);
++		fs_info->rw_mounts++;
 +	}
-+	mutex_unlock(&fs_devices->device_list_mutex);
 +
-+	factor = div_factor_fine(nr_free, nr_zones);
-+	return factor >= fs_info->bg_reclaim_threshold;
-+}
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index cbf016a7bb5d..d0d0e5c02606 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -78,6 +78,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
- 			     u64 length);
- void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg);
- void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info);
-+bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info);
- #else /* CONFIG_BLK_DEV_ZONED */
- static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
- 				     struct blk_zone *zone)
-@@ -236,6 +237,11 @@ static inline void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info,
- static inline void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg) { }
+ out:
+ 	return root;
+ }
+@@ -1958,6 +1963,11 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 		goto out;
  
- static inline void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info) { }
+ 	if (*flags & SB_RDONLY) {
 +
-+static inline bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
-+{
-+	return false;
-+}
- #endif
++		if (--fs_info->rw_mounts > 0) {
++			*flags &= ~SB_RDONLY;
++			goto out;
++		}
+ 		/*
+ 		 * this also happens on 'umount -rf' or on shutdown, when
+ 		 * the filesystem is busy.
+@@ -2057,6 +2067,8 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 		if (ret)
+ 			goto restore;
  
- static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
++		fs_info->rw_mounts++;
++
+ 		btrfs_clear_sb_rdonly(sb);
+ 
+ 		set_bit(BTRFS_FS_OPEN, &fs_info->flags);
+
 -- 
-2.34.1
+Goldwyn
