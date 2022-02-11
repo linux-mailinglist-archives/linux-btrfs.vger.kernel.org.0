@@ -2,169 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA20E4B1EAD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 07:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92274B2000
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 09:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345696AbiBKGqh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Feb 2022 01:46:37 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40262 "EHLO
+        id S1346299AbiBKITa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Feb 2022 03:19:30 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345608AbiBKGqg (ORCPT
+        with ESMTP id S237756AbiBKIT3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Feb 2022 01:46:36 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E1F10B7
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Feb 2022 22:46:35 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7FFCE1F3AA
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 06:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1644561994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C4auCZ0A56KryoOiJySvL5PSjzfjqZ7CmQa0bxz8rrE=;
-        b=LIb6jNkA7rNHpSqT41rzK7ycbj996CB3AyFmIiu1jLMhNYkG8p+eGgyMp/gOnRukSPXkaA
-        mSTORZit2LUffzRLIWj9sNmDKWp3uBF6SB27mH26msrvnQfkmDYcfFZXy5G17UhuA4V8OI
-        0JoPZEkjRZ3tBONbdOHUapIvXkGaZKM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D502013345
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 06:46:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YER/J0kGBmJSUgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 06:46:33 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 2/2] btrfs: defrag: don't use merged extent map for their generation check
-Date:   Fri, 11 Feb 2022 14:46:13 +0800
-Message-Id: <b786c2bc23b03b5e907ad4ae9cc7162546607522.1644561774.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <cover.1644561774.git.wqu@suse.com>
-References: <cover.1644561774.git.wqu@suse.com>
+        Fri, 11 Feb 2022 03:19:29 -0500
+Received: from pio-pvt-msa3.bahnhof.se (pio-pvt-msa3.bahnhof.se [79.136.2.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D81E3F
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 00:19:27 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id E43E43F4FE;
+        Fri, 11 Feb 2022 09:19:25 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -1.911
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from pio-pvt-msa3.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa3.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2gMzboL5ZEGx; Fri, 11 Feb 2022 09:19:24 +0100 (CET)
+Received: by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id B109A3F46E;
+        Fri, 11 Feb 2022 09:19:24 +0100 (CET)
+Received: from [192.168.0.134] (port=43462)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1nIR9K-000C2j-UP; Fri, 11 Feb 2022 09:19:24 +0100
+Message-ID: <7449749b-079f-3d62-dc64-a429c6ef35cb@tnonline.net>
+Date:   Fri, 11 Feb 2022 09:19:19 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: MySQL corruption on BTRFS
+Content-Language: en-US
+To:     Tymoteusz Dolega <tymoteuszdolega@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com>
+From:   Forza <forza@tnonline.net>
+In-Reply-To: <CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For extent maps, if they are not compressed extents and are adjacent by
-logical addresses and file offsets, they can be merged into one larger
-extent map.
+Hi,
 
-Such merged extent map will have the higher generation of all the
-original ones.
+On 2/8/22 09:07, Tymoteusz Dolega wrote:
+> Hello,
+> I maybe encountered a bug. I'm using NixOS, and after enabling MySQL with:
+> 
+> services.mysql = {
+>        enable = true;
+>        package = pkgs.mariadb;
+>   };
+> 
+> it cannot even start, and fails with "code=killed, status=6/ABRT". The
+> problem that MySQL reports in journal is about file corruption. I
+> attached all logs at the bottom of this mail.
+> I tried changing database location to different BTRFS SSD, cleanly
+> formatted, and problem persists. After changing database location to
+> EXT4 partition, everything works perfectly. I tried newer MySQL
+> version (from nix-unstable), but still errors show up. Current version
+> is 10.6.5-MariaDB. I tried deleting DB folder to force it to make it
+> again. Scrub is clean, check (--readonly) is clean. I have only 1
+> mount option: "noatime". "mount" reports:
+> (rw,noatime,ssd,space_cache,subvolid=5,subvol=/).
+> 
+> uname -a
+> Linux desktop-nixos 5.16.4 #1-NixOS SMP PREEMPT Sat Jan 29 09:59:25
+> UTC 2022 x86_64 GNU/Linux
+> 
+> btrfs --version
+> btrfs-progs v5.14.1
+> 
+> sudo btrfs fi show
+> Label: 'nixos'  uuid: 67b6e734-cd1e-41e3-ab7a-63660e540014
+>          Total devices 1 FS bytes used 95.05GiB
+>          devid    1 size 249.00GiB used 98.03GiB path /dev/nvme0n1p5
+> 
+> Label: 'cruc'  uuid: cc51fa3c-57db-42b6-a890-ff5cd7b18f47
+>          Total devices 1 FS bytes used 125.16MiB
+>          devid    1 size 931.51GiB used 2.02GiB path /dev/sdb1
+> 
+> btrfs fi df /mnt/cruc
+> Data, single: total=1.01GiB, used=124.84MiB
+> System, single: total=4.00MiB, used=16.00KiB
+> Metadata, single: total=1.01GiB, used=304.00KiB
+> GlobalReserve, single: total=3.25MiB, used=0.00B
+> 
+> dmesg.log  - https://www.dropbox.com/s/ou52m2hdjzmjy6b/dmesg.log?dl=0
+> but there is not much there besides you can see I cleanly formatted the drive
+> mysql - https://www.dropbox.com/s/jjthkfu0anh8n2o/mysql.log?dl=0
+> log with info about corruption
+> (links hosted on dropbox, you can see them without logging in)
+> I will be happy to answer any needed questions.
 
-But this brings a problem for autodefrag, as it relies on accurate
-extent_map::generation to determine if one extent should be defragged.
 
-For merged extent maps, their higher generation can mark some older
-extents to be defragged while the original extent map doesn't meet the
-minimal generation threshold.
+Do you use 'nodatacow' attribute on the mysql files? You can check this 
+with 'lsattr /var/lib/mysql/'. If you did, and had a power loss, the 
+file could be corrupted. However, a scrub could not detect this because 
+nodatacow also means no csums.
 
-Thus this will cause extra IO.
+Out of experience I have had issues with "innodb_fast_shutdown" on 
+mariadb. With this enabled, mariadb would sometimes take too long to 
+shut down and was killed during reboots, which in turn caused 
+corruptions in InnoDB.
 
-So solve the problem, here we introduce a new flag, EXTENT_FLAG_MERGED, to
-indicate if the extent map is merged from one or more ems.
+I have set the following innodb options and have not had any more 
+issues. This has been tested on many crashes and forces shut downs.
 
-And for autodefrag, if we find a merged extent map, and its generation
-meets the generation requirement, we just don't use this one, and go
-back to defrag_get_extent() to read extent maps from subvolume trees.
+innodb_fast_shutdown = 0
+innodb_flush_method  = O_DSYNC
+innodb-doublewrite   = 0 # Not needed on COW filesystems. Should be 
+enabled on on 'nodatacow' files.
 
-This could cause more read IO, but should result less defrag data write,
-so in the long run it should be a win for autodefrag.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_map.c |  2 ++
- fs/btrfs/extent_map.h |  8 ++++++++
- fs/btrfs/ioctl.c      | 14 ++++++++++++++
- 3 files changed, 24 insertions(+)
-
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index ba43303cb081..6fee14ce2e6b 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -261,6 +261,7 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
- 			em->mod_len = (em->mod_len + em->mod_start) - merge->mod_start;
- 			em->mod_start = merge->mod_start;
- 			em->generation = max(em->generation, merge->generation);
-+			set_bit(EXTENT_FLAG_MERGED, &em->flags);
- 
- 			rb_erase_cached(&merge->rb_node, &tree->map);
- 			RB_CLEAR_NODE(&merge->rb_node);
-@@ -278,6 +279,7 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
- 		RB_CLEAR_NODE(&merge->rb_node);
- 		em->mod_len = (merge->mod_start + merge->mod_len) - em->mod_start;
- 		em->generation = max(em->generation, merge->generation);
-+		set_bit(EXTENT_FLAG_MERGED, &em->flags);
- 		free_extent_map(merge);
- 	}
- }
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index 8e217337dff9..d2fa32ffe304 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -25,6 +25,8 @@ enum {
- 	EXTENT_FLAG_FILLING,
- 	/* filesystem extent mapping type */
- 	EXTENT_FLAG_FS_MAPPING,
-+	/* This em is merged from two or more physically adjacent ems */
-+	EXTENT_FLAG_MERGED,
- };
- 
- struct extent_map {
-@@ -40,6 +42,12 @@ struct extent_map {
- 	u64 ram_bytes;
- 	u64 block_start;
- 	u64 block_len;
-+
-+	/*
-+	 * Generation of the extent map, for merged em it's the highest
-+	 * generation of all merged ems.
-+	 * For non-merged extents, it's from btrfs_file_extent_item::generation.
-+	 */
- 	u64 generation;
- 	unsigned long flags;
- 	/* Used for chunk mappings, flag EXTENT_FLAG_FS_MAPPING must be set */
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 0e983b782968..c04175ad1b07 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1179,6 +1179,20 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
- 	em = lookup_extent_mapping(em_tree, start, sectorsize);
- 	read_unlock(&em_tree->lock);
- 
-+	/*
-+	 * We can get a merged extent, in that case, we need to re-search
-+	 * tree to get the original em for defrag.
-+	 *
-+	 * If @newer_than is 0 or em::generation < newer_than, we can trust
-+	 * this em, as either we don't care about the generation , or the
-+	 * merged extent map will be rejected anyway.
-+	 */
-+	if (em && test_bit(EXTENT_FLAG_MERGED, &em->flags) &&
-+	    newer_than && em->generation >= newer_than) {
-+		free_extent_map(em);
-+		em = NULL;
-+	}
-+
- 	if (!em) {
- 		struct extent_state *cached = NULL;
- 		u64 end = start + sectorsize - 1;
--- 
-2.35.0
-
+~ Forza
