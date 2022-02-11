@@ -2,179 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CC54B2C11
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 18:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB6F4B2CB3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 19:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352331AbiBKRug (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Feb 2022 12:50:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42242 "EHLO
+        id S236054AbiBKSUq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Feb 2022 13:20:46 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352333AbiBKRuf (ORCPT
+        with ESMTP id S230377AbiBKSUq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Feb 2022 12:50:35 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49509CCC
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 09:50:33 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id j14so13537317lja.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 09:50:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=R05HdrHwjd2wpdde4e5JI/WDixjyA+u2rHn+Iy4rgW0=;
-        b=LEeKTLUNMYmzR1mcuCRJc6iWhCA7TvAmofZyCU6CEbdoZxUiNrK64wPXkVN8ags41n
-         G2wB3eFxlXfBvTUrZBeA7fLa/r76QWFsVWPvFI4LMM0yQRf92wz80UnuQDBl8snBc3FA
-         B7Wd6T+on7zewO+78O1FhSkKKxunRga0Om5/c1uo7bIuwiS0rlllxea2oJBbPu0F9uM6
-         ub4JmbXXj4HjWUErj7r8Exf0MqyfTVcWIx1pO+qx1xLzQP2ZVdYEeDs+ui8Sl5Dfswmo
-         gRKoVElxNdwUplznwUPh00WGE39vBkdcehPQ3STgOXg/6pKfJGLPzt+t0xt2/1pIZ+yU
-         Vllw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=R05HdrHwjd2wpdde4e5JI/WDixjyA+u2rHn+Iy4rgW0=;
-        b=BKbM1ROt0e43MmUHs5ZNo1qYyET631lKIwW3WkGvW9jgcSQk/aNXpVnqgtzRMvznnd
-         PENxecVGb2a9uXLO9M0PHASK128CthcXHiZyuH0G7x3P7m/keu9d2wvA98Y7cGz19aKV
-         2Hr3aD+ucFTVngG6YqieULTDhdN4UnfLNQE67vRywEEgSb8gMrnuGwARsHZPQF4/Luj4
-         jItFNQAvPmhfcBioMHUGBpDzmc6BrDph5kZ/mIINKlJkGpFMmuvdFUSnDY6lTv9RkMBZ
-         xAm+OxnE4gOzlqJ3Qky0XlL7ScFG9j+U2yCeal4RHCXMn0pxsm4NWkffmZBlp/1n0Ly/
-         +rGg==
-X-Gm-Message-State: AOAM531Xp18xe2ZhfUzHKF5OH/FuZ7p+jbA0eSlfpMggEOgU+46imtj8
-        HKfPvvsK1h9JhfLC+zK/o70=
-X-Google-Smtp-Source: ABdhPJzNPsXt4GrSn4il/FMw36WFSXoQh/09QdKoVyFQxPcMj00+0kmkfQOufo2SeDTzZq4OtSG4LQ==
-X-Received: by 2002:a2e:96c6:: with SMTP id d6mr1636329ljj.215.1644601831493;
-        Fri, 11 Feb 2022 09:50:31 -0800 (PST)
-Received: from ?IPV6:2a00:1370:812d:59de:2181:1f23:e38:739a? ([2a00:1370:812d:59de:2181:1f23:e38:739a])
-        by smtp.gmail.com with ESMTPSA id a5sm1211391lfl.179.2022.02.11.09.50.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Feb 2022 09:50:31 -0800 (PST)
-Message-ID: <84ab21a7-877a-390c-0792-f7059fdb0e91@gmail.com>
-Date:   Fri, 11 Feb 2022 20:50:29 +0300
+        Fri, 11 Feb 2022 13:20:46 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D091C13A
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 10:20:44 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8D96B21138;
+        Fri, 11 Feb 2022 18:20:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1644603643;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pd+aovPvdK4U3gqLki/2e4CcyN9rWD+qIItUer81GoQ=;
+        b=yCQdGLj7dwiGtBWU88KBUAp17qcNRehzhFZ8sg9BHB8aUk8XEPD9QD8YYqrgAgXoNkCttN
+        +tlm6AIY7cWPYu2b3Ua+hOlNem/5OxSQnpS3u8cWAmHZfXyuxFrt7UxgtPDH1IwVckYtM3
+        xXuMW4mR6xpW0kQwq2UTaLJxxpGmWHc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1644603643;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pd+aovPvdK4U3gqLki/2e4CcyN9rWD+qIItUer81GoQ=;
+        b=/l0xCWB1eGSWDKI+OxvHGmRn+6NmwlBhgIRv7412tSQhtb1i1wLduTMoYnchKvzrGRZEWn
+        DqLS1gsxoKkwl6Cw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 82DBBA3B83;
+        Fri, 11 Feb 2022 18:20:43 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7DBB6DA823; Fri, 11 Feb 2022 19:17:01 +0100 (CET)
+Date:   Fri, 11 Feb 2022 19:17:01 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v13 08/17] btrfs: add definitions + documentation for
+ encoded I/O ioctls
+Message-ID: <20220211181701.GC12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1644519257.git.osandov@fb.com>
+ <b12e9cf224a1737ddb3090cc50e1e0f317cb8b65.1644519257.git.osandov@fb.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: Used space twice as actually consumed
-Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <9f936d59-d782-1f48-bbb7-dd1c8dae2615@gmail.com>
- <ecd46a18-1655-ec22-957b-de659af01bee@gmx.com>
- <65e916e1-61b4-0770-f570-8fd73c27fe03@gmail.com>
- <3a654f5d-e210-5c3e-4bcf-f0eae626cde2@gmx.com>
- <c75599fa-3b4e-5a5a-c695-75c99b315a06@gmail.com>
- <dbe39a73-9366-9f95-a3af-3dea7f1dd1ae@gmx.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <dbe39a73-9366-9f95-a3af-3dea7f1dd1ae@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b12e9cf224a1737ddb3090cc50e1e0f317cb8b65.1644519257.git.osandov@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11.02.2022 08:31, Qu Wenruo wrote:
+On Thu, Feb 10, 2022 at 11:09:58AM -0800, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
+> In order to allow sending and receiving compressed data without
+> decompressing it, we need an interface to write pre-compressed data
+> directly to the filesystem and the matching interface to read compressed
+> data without decompressing it. This adds the definitions for ioctls to
+> do that and detailed explanations of how to use them.
 > 
-> On 2022/2/11 13:02, Andrei Borzenkov wrote:
->> On 11.02.2022 07:48, Qu Wenruo wrote:
->> ...
->>>>>>
->>>>>> This apparently was once snapshot of root subvolume (52afd41d-c722-4e48-b020-5b95a2d6fd84).
->>>>>> There are more of them.
->>>>>>
->>>>>> Any chance those "invisible" trees continue to consume space? How can I remove them?
->>>>>
->>>>> They are being dropped in the background.
->>>>> You can wait for them to be completely dropped by using command "btrfs
->>>>> subvolume sync".
->>>>>
->>>>
->>>>
->>>> It returns immediately without waiting for anything
->>>>
->>>> bor@tw:~> sudo btrfs subvolume sync /
->>>>
->>>> bor@tw:~>
->>>>
->>>>
->>>> Also
->>>>
->>>> bor@tw:~/python-btrfs> sudo ./bin/btrfs-orphan-cleaner-progress /
->>>>
->>>> 0 orphans left to clean
->>>>
->>>>
->>>>
->>>> btrfs check does not show any issues.
->>>
->>> There used to be a bug that some root doesn't get properly cleaned up.
->>>
->>> To be sure, please provide the following dump:
->>>
->>> # btrfs ins dump-tree -t root <device>
->>>
->>> Thanks,
->>> Qu
->>
->>
->> btrfs-progs v5.16
->>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  include/uapi/linux/btrfs.h | 132 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 132 insertions(+)
 > 
-> There are two "ghost" subvolumes still there:
-> 
-> 	item 72 key (1331 ROOT_ITEM 82831) itemoff 6938 itemsize 439
-> 		generation 87340 root_dirid 256 bytenr 8514846720 byte_limit 0
-> bytes_used 313589760
-> 		last_snapshot 82969 flags 0x1000000000001(RDONLY) refs 0
-> 		drop_progress key (0 UNKNOWN.0 0) drop_level 0
-> 		level 2 generation_v2 87340
-> 		uuid f2a928cf-d243-774b-b2bb-4e80e3d37bdf
-> 		parent_uuid 52afd41d-c722-4e48-b020-5b95a2d6fd84
-> 		received_uuid 00000000-0000-0000-0000-000000000000
-> 		ctransid 82830 otransid 82831 stransid 0 rtransid 0
-> 		ctime 1614330605.649484116 (2021-02-26 09:10:05)
-> 		otime 1614330616.574128143 (2021-02-26 09:10:16)
-> 		stime 0.0 (1970-01-01 00:00:00)
-> 		rtime 0.0 (1970-01-01 00:00:00)
-> 
-> 
-> 	item 73 key (1332 ROOT_ITEM 82904) itemoff 6499 itemsize 439
-> 		generation 87340 root_dirid 256 bytenr 8515452928 byte_limit 0
-> bytes_used 313589760
-> 		last_snapshot 82969 flags 0x1000000000001(RDONLY) refs 0
-> 		drop_progress key (0 UNKNOWN.0 0) drop_level 0
-> 		level 2 generation_v2 87340
-> 		uuid b9125452-fb5d-e14d-a79e-2a967b992ea1
-> 		parent_uuid 52afd41d-c722-4e48-b020-5b95a2d6fd84
-> 		received_uuid 00000000-0000-0000-0000-000000000000
-> 		ctransid 82904 otransid 82904 stransid 0 rtransid 0
-> 		ctime 1614539496.823057032 (2021-02-28 19:11:36)
-> 		otime 1614539499.212006544 (2021-02-28 19:11:39)
-> 		stime 0.0 (1970-01-01 00:00:00)
-> 		rtime 0.0 (1970-01-01 00:00:00)
-> 
-> Their timestamp should give an hint on which kernel is affected.
-> 
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index 1cb1a3860f1d..1a96645243e0 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -869,6 +869,134 @@ struct btrfs_ioctl_get_subvol_rootref_args {
+>  		__u8 align[7];
+>  };
+>  
+> +/*
+> + * Data and metadata for an encoded read or write.
+> + *
+> + * Encoded I/O bypasses any encoding automatically done by the filesystem (e.g.,
+> + * compression). This can be used to read the compressed contents of a file or
+> + * write pre-compressed data directly to a file.
+> + *
+> + * BTRFS_IOC_ENCODED_READ and BTRFS_IOC_ENCODED_WRITE are essentially
+> + * preadv/pwritev with additional metadata about how the data is encoded and the
+> + * size of the unencoded data.
+> + *
+> + * BTRFS_IOC_ENCODED_READ fills the given iovecs with the encoded data, fills
+> + * the metadata fields, and returns the size of the encoded data. It reads one
+> + * extent per call. It can also read data which is not encoded.
+> + *
+> + * BTRFS_IOC_ENCODED_WRITE uses the metadata fields, writes the encoded data
+> + * from the iovecs, and returns the size of the encoded data. Note that the
+> + * encoded data is not validated when it is written; if it is not valid (e.g.,
+> + * it cannot be decompressed), then a subsequent read may return an error.
+> + *
+> + * Since the filesystem page cache contains decoded data, encoded I/O bypasses
+> + * the page cache. Encoded I/O requires CAP_SYS_ADMIN.
+> + */
+> +struct btrfs_ioctl_encoded_io_args {
+> +	/* Input parameters for both reads and writes. */
+> +
+> +	/*
+> +	 * iovecs containing encoded data.
+> +	 *
+> +	 * For reads, if the size of the encoded data is larger than the sum of
+> +	 * iov[n].iov_len for 0 <= n < iovcnt, then the ioctl fails with
+> +	 * ENOBUFS.
+> +	 *
+> +	 * For writes, the size of the encoded data is the sum of iov[n].iov_len
+> +	 * for 0 <= n < iovcnt. This must be less than 128 KiB (this limit may
+> +	 * increase in the future). This must also be less than or equal to
+> +	 * unencoded_len.
+> +	 */
+> +	const struct iovec __user *iov;
+> +	/* Number of iovecs. */
+> +	unsigned long iovcnt;
+> +	/*
+> +	 * Offset in file.
+> +	 *
+> +	 * For writes, must be aligned to the sector size of the filesystem.
+> +	 */
+> +	__s64 offset;
+> +	/* Currently must be zero. */
+> +	__u64 flags;
+> +
+> +	/*
+> +	 * For reads, the following members are output parameters that will
+> +	 * contain the returned metadata for the encoded data.
+> +	 * For writes, the following members must be set to the metadata for the
+> +	 * encoded data.
+> +	 */
+> +
+> +	/*
+> +	 * Length of the data in the file.
+> +	 *
+> +	 * Must be less than or equal to unencoded_len - unencoded_offset. For
+> +	 * writes, must be aligned to the sector size of the filesystem unless
+> +	 * the data ends at or beyond the current end of the file.
+> +	 */
+> +	__u64 len;
+> +	/*
+> +	 * Length of the unencoded (i.e., decrypted and decompressed) data.
+> +	 *
+> +	 * For writes, must be no more than 128 KiB (this limit may increase in
+> +	 * the future). If the unencoded data is actually longer than
+> +	 * unencoded_len, then it is truncated; if it is shorter, then it is
+> +	 * extended with zeroes.
+> +	 */
+> +	__u64 unencoded_len;
+> +	/*
+> +	 * Offset from the first byte of the unencoded data to the first byte of
+> +	 * logical data in the file.
+> +	 *
+> +	 * Must be less than unencoded_len.
+> +	 */
+> +	__u64 unencoded_offset;
+> +	/*
+> +	 * BTRFS_ENCODED_IO_COMPRESSION_* type.
+> +	 *
+> +	 * For writes, must not be BTRFS_ENCODED_IO_COMPRESSION_NONE.
+> +	 */
+> +	__u32 compression;
+> +	/* Currently always BTRFS_ENCODED_IO_ENCRYPTION_NONE. */
+> +	__u32 encryption;
+> +	/*
+> +	 * Reserved for future expansion.
+> +	 *
+> +	 * For reads, always returned as zero. Users should check for non-zero
+> +	 * bytes. If there are any, then the kernel has a newer version of this
+> +	 * structure with additional information that the user definition is
+> +	 * missing.
+> +	 *
+> +	 * For writes, must be zeroed.
+> +	 */
+> +	__u8 reserved[32];
 
-This was likely 5.10.16 at this point.
-
-> I remember I submitted some patches for btrfs-progs to detect such
-> problem and even kernel patches to remove such ghost subvolumes.
-> 
-> But none of them seems get merged yet.
-> 
-> You can try the following patchset.
-> 
-> https://patchwork.kernel.org/project/linux-btrfs/cover/20210625071322.221780-1-wqu@suse.com/
-> 
-> Then btrfs-check should be able to report such problem and --repair
-> should be able to fix it.
-> 
-
-This worked (and freed 11GiB). Thank you!
+This is 32 bytes, so 4 x u64, that's not bad but for future expanstion
+I'd rather add more than less. Now the structure size is 96 bytes, so if
+it's 128 bytes then it's a power of two and we'd get 64 reserved bytes.
