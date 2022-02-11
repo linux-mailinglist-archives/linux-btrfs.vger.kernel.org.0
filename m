@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C22914B3111
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 23:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82044B3117
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 23:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbiBKWy1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Feb 2022 17:54:27 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42876 "EHLO
+        id S235436AbiBKW4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Feb 2022 17:56:17 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiBKWy1 (ORCPT
+        with ESMTP id S229484AbiBKW4Q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Feb 2022 17:54:27 -0500
+        Fri, 11 Feb 2022 17:56:16 -0500
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE3DC63
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:54:24 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 473185C0120;
-        Fri, 11 Feb 2022 17:54:24 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8ADBC63
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:56:14 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2B9F45C012B;
+        Fri, 11 Feb 2022 17:56:14 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 11 Feb 2022 17:54:24 -0500
+  by compute5.internal (MEProxy); Fri, 11 Feb 2022 17:56:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
         :content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; bh=3lV7RC3LktyGDjXXBXYYldaBV0fume72jWZDZG
-        /Bjpo=; b=x+ivgoFjqOrk0uT7ePGZHh6coeJ5hKXn2UuhVF+qBmO+vpU/mGZ4k1
-        Imq5H+xso1uqlSWpr8r1CUZ3lmgPtY4QTjtYjRiu5fOhr+Jrx08eNyth7JpAJLgx
-        0vBxuJpEraX6sA8jv+dBO7moHdZycAbVIWKB8xXox8HsdFnnkidMBTvNEkrZ2TBF
-        beUUH1ZFoYtRQwfhsbWTsrNKkyiT0tK4SWuMLq6ZaL+CFWKWHD0YOkquj5bXmHEI
-        6eku2ph8yJ7zFmZwD5J+66qda/YJQtMYTRYOYQcw+6AJQC64i7lA0mNMgkRpMLww
-        NQFvYFQiy9xno/0VoqMdTfQQqkR+KWGA==
+        :subject:to:to; s=fm3; bh=5q8aspfP/8BDmZBcwoM/MV+0QorO4sAfH3hHx1
+        pwmXM=; b=IAbU5EBNrZ8lIJ/+QLYRBLNiyW2GscLYbHe2bdS9igs3/2zNDEN8Nl
+        GQ7hM5Vp2a/6kXVVf3fQpmXTvFrpRK3aD3QN46lHj4WjpEX8g6b7IFu50d4tKhGK
+        dXgdy4+WDGdx5PuHJ9TBMIq1cHEegUioHftHX1RrZMs6s+FJC8m2zxwDbpwRmUqe
+        KAAWWDPZV2rIterWIh8rHpBn9h41AD7FmPYJmmSXSVcCYmT9s3g4G9MGfKDFNXtG
+        liCVjytNBvRwrToeq+MWMkqSLOH4svWc8e/emowSEDzeG8KBY5xDAzOABztQ8Ewe
+        9fsr+WQ93eCtuoeu2L/wITnccj2D6FDA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3lV7RC3LktyGDjXXB
-        XYYldaBV0fume72jWZDZG/Bjpo=; b=hwLYO2cn4SyRAFP8ikXeYlnIxtF6K9m1Y
-        r5PPZkZgS/XpzQW1sxGqQW8We8DLQQ8WyY/6k38FqgdsjYpS6YukF/TenUmH/FxX
-        igjlAlYZ0JZJZdvvsk1hIn+sVxulF1bj4jw+aw81JDNMTRSkgMbORUQwYsOMLDDr
-        xxXMVbLY6fWKBwVB4BH7vvgD5gERaQvwUq9ITIxrO1p9339isy9iEb0DxkMR8O4n
-        Ohu0qm5s8LZmTjfpsajDYlwLu2ij3ygONRAoyn6/9T67I4gzUofMTCn8w2NEauTJ
-        TFNV5PzVysapbZseZ1P2A2mEU4hHIh0xZEO0t1gE50uq/jft8UaHw==
-X-ME-Sender: <xms:IOkGYutBFOBkPrbKPLDhIdsByL2WFyQ779OVfvTYqzPwEM8QNYfnwA>
-    <xme:IOkGYjdPc3Jt9sARfvKkJugoo0jF9AalJGVLTjZvyyFNbn-ss6TK_y8MdPvrTUL0S
-    -_Oy4AfM6SSqqBIrGg>
-X-ME-Received: <xmr:IOkGYpx8WAQLHARyE5msUkTw8yFjQKmTH2mThzJOR7n5d-cOWZGmxAj-sGS6maXYUdssWtkjjt8UqBUL3vzkiLtNu18XAA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrieeggddtgecutefuodetggdotefrodftvf
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=5q8aspfP/8BDmZBcw
+        oM/MV+0QorO4sAfH3hHx1pwmXM=; b=nqtIAYmSXmPIMYVSMMBqvNXRKMg+NGbqT
+        hbk/ZrAMg+yRHwa06kaTxb+GuW5TSsry2/9zvozifUWhpGKrNKJ1MUGJYQTqR5FL
+        uIp0SPE+mBqK9wp9C07DBW8XRfoDNQm1RQn05wrfTfInIwo+WUbbkgTifW1BZN2u
+        JZRbCKIaauFRFTWE/3HTaSOaN0Lo35tKLxZ3MtRbmrwnKAqSNgpix90RZcmqXbMI
+        UdgauEXc9/Yf4PwZ0gUNb7orJgJo6WEYSzCx93oSS+dNBFtHWFZaV0bEuc6ptfI6
+        Jq2Rxyn3vAuRcNCe1KxpQNTL2q5g7q8pPYD1YlFeZ+4z8kEIvdSkQ==
+X-ME-Sender: <xms:jukGYvE3PFI5iGWidUtimRQ83LrsQ8hW-TvaPoIpL4vGyOihhpbhSw>
+    <xme:jukGYsVzCPZXdWaw6632GdlHEuKHLPbUBHlJomEn06QQfNeALws9qBmMOrIzw1kU-
+    uZGv23W0dabw1Sh9L0>
+X-ME-Received: <xmr:jukGYhKhmOAdTwGS4_vSCUEtnF8HQRDp5R7O7NuXb_BketgdUUWa8hwSVG0p0i9KK6KG5wgfDe2jFF5Q2RuPygoFjxNHeg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrieeggddtfecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
@@ -53,25 +53,25 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrieeggddtgecutefuodetggdote
     evleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucevlhhu
     shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
     hrrdhioh
-X-ME-Proxy: <xmx:IOkGYpOiVMaJhhBi45HCpzuX8UWsUtiswkwqBl_sJkcgzPZWM2mATw>
-    <xmx:IOkGYu8O4RE-NCqJLyi5jOoLb2JzlYLe0_C-DjtfdyDPYrh_sbI8bQ>
-    <xmx:IOkGYhWyeFfB4oBdaohqE7gwQiDhLT7Xbo4jIQmTPB8u3NKHHQY_dA>
-    <xmx:IOkGYklNeAntuUONSYMXMEu3wD1MsMM3Z81meNpvz-oVoxWtoyxpZg>
+X-ME-Proxy: <xmx:jukGYtEsLh8NitZ0-gdTYBTOGvTz0vzYeGd_IPzRYwyGtkEShDE83Q>
+    <xmx:jukGYlWf3I3dFZTfXgD3CLikhPnjUcMa50jCv26XNwqknkuJ8sPq1A>
+    <xmx:jukGYoPRWLeADVmtNUHtVDBUDOYrC-1rnGI1kbIgRshA0JjKnzUbxg>
+    <xmx:jukGYkehVRcIUr3VP2cKfaUPIBSFEMeiGF-eby-Xet5qyKzrRhB2nA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Feb 2022 17:54:23 -0500 (EST)
-Date:   Fri, 11 Feb 2022 14:54:22 -0800
+ 11 Feb 2022 17:56:13 -0500 (EST)
+Date:   Fri, 11 Feb 2022 14:56:12 -0800
 From:   Boris Burkov <boris@bur.io>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 6/8] btrfs: do not double complete bio on errors during
- compressed reads
-Message-ID: <YgbpHjBvf49gtEbC@zen>
+Subject: Re: [PATCH 7/8] btrfs: do not try to repair bio that has no mirror
+ set
+Message-ID: <YgbpjLm1MBTD7lah@zen>
 References: <cover.1644532798.git.josef@toxicpanda.com>
- <800ebbe66b4998ec1ac7122cc201c4404d737f18.1644532798.git.josef@toxicpanda.com>
+ <531eb09d460d686e75e96f0ebafde78c670d84fe.1644532798.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <800ebbe66b4998ec1ac7122cc201c4404d737f18.1644532798.git.josef@toxicpanda.com>
+In-Reply-To: <531eb09d460d686e75e96f0ebafde78c670d84fe.1644532798.git.josef@toxicpanda.com>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
@@ -82,110 +82,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 05:44:24PM -0500, Josef Bacik wrote:
-> I hit some weird panics while fixing up the error handling from
-> btrfs_lookup_bio_sums().  Turns out the compression path will complete
-> the bio we use if we set up any of the compression bios and then return
-> an error, and then btrfs_submit_data_bio() will also call bio_endio() on
-> the bio.
-> 
-> Fix this by making btrfs_submit_compressed_read() responsible for
-> calling bio_endio() on the bio if there are any errors.  Currently it
-> was only doing it if we created the compression bios, otherwise it was
-> depending on btrfs_submit_data_bio() to do the right thing.  This
-> creates the above problem, so fix up btrfs_submit_compressed_read() to
-> always call bio_endio() in case of an error, and then simply return from
-> btrfs_submit_data_bio() if we had to call
-> btrfs_submit_compressed_read().
+On Thu, Feb 10, 2022 at 05:44:25PM -0500, Josef Bacik wrote:
+> If we fail to submit a bio for whatever reason, we may not have setup a
+> mirror_num for that bio.  This means we shouldn't try to do the repair
+> workflow, if we do we'll hit an BUG_ON(!failrec->this_mirror) in
+> clean_io_failure.  Instead simply skip the repair workflow if we have no
+> mirror set, and add an assert to btrfs_check_repairable() to make it
+> easier to catch what is happening in the future.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: Boris Burkov <boris@bur.io>
 > ---
->  fs/btrfs/compression.c | 14 +++++++++-----
->  fs/btrfs/inode.c       | 12 ++++++++----
->  2 files changed, 17 insertions(+), 9 deletions(-)
+>  fs/btrfs/extent_io.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index ee1c6f870a03..9551658ac3a1 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -808,7 +808,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  	u64 em_len;
->  	u64 em_start;
->  	struct extent_map *em;
-> -	blk_status_t ret = BLK_STS_RESOURCE;
-> +	blk_status_t ret;
->  	int faili = 0;
->  	u8 *sums;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index bda7fa8cf540..29ffb2814e5c 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2610,6 +2610,7 @@ static bool btrfs_check_repairable(struct inode *inode,
+>  	 * a good copy of the failed sector and if we succeed, we have setup
+>  	 * everything for repair_io_failure to do the rest for us.
+>  	 */
+> +	ASSERT(failed_mirror);
+>  	failrec->failed_mirror = failed_mirror;
+>  	failrec->this_mirror++;
+>  	if (failrec->this_mirror == failed_mirror)
+> @@ -3067,6 +3068,14 @@ static void end_bio_extent_readpage(struct bio *bio)
+>  			goto readpage_ok;
 >  
-> @@ -821,9 +821,12 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  	read_lock(&em_tree->lock);
->  	em = lookup_extent_mapping(em_tree, file_offset, fs_info->sectorsize);
->  	read_unlock(&em_tree->lock);
-> -	if (!em)
-> -		return BLK_STS_IOERR;
-> +	if (!em) {
-> +		ret = BLK_STS_IOERR;
-> +		goto out;
-> +	}
->  
-> +	ret = BLK_STS_RESOURCE;
-
-I think the error handling logic with all the special exit paths makes
-it worthwhile to set ret at each individual 'goto failX'.
-
->  	ASSERT(em->compress_type != BTRFS_COMPRESS_NONE);
->  	compressed_len = em->block_len;
->  	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
-> @@ -858,7 +861,6 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  		cb->compressed_pages[pg_index] = alloc_page(GFP_NOFS);
->  		if (!cb->compressed_pages[pg_index]) {
->  			faili = pg_index - 1;
-> -			ret = BLK_STS_RESOURCE;
->  			goto fail2;
->  		}
->  	}
-> @@ -938,7 +940,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  			comp_bio = NULL;
->  		}
->  	}
-> -	return 0;
-> +	return BLK_STS_OK;
->  
->  fail2:
->  	while (faili >= 0) {
-> @@ -951,6 +953,8 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  	kfree(cb);
->  out:
->  	free_extent_map(em);
-> +	bio->bi_status = ret;
-> +	bio_endio(bio);
->  	return ret;
->  finish_cb:
->  	if (comp_bio) {
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 24099fe9e120..69fa71186e72 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2542,10 +2542,14 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
->  			goto out;
->  
->  		if (bio_flags & EXTENT_BIO_COMPRESSED) {
-> -			ret = btrfs_submit_compressed_read(inode, bio,
-> -							   mirror_num,
-> -							   bio_flags);
-> -			goto out;
+>  		if (is_data_inode(inode)) {
 > +			/*
-> +			 * btrfs_submit_compressed_read will handle completing
-> +			 * the bio if there were any errors, so just return
-> +			 * here.
+> +			 * If we failed to submit the IO at all we'll have a
+> +			 * mirror_num == 0, in which case we need to just mark
+> +			 * the page with an error and unlock it and carry on.
 > +			 */
-> +			return btrfs_submit_compressed_read(inode, bio,
-> +							    mirror_num,
-> +							    bio_flags);
->  		} else {
+> +			if (mirror == 0)
+> +				goto readpage_ok;
+> +
 >  			/*
->  			 * Lookup bio sums does extra checks around whether we
+>  			 * btrfs_submit_read_repair() will handle all the good
+>  			 * and bad sectors, we just continue to the next bvec.
 > -- 
 > 2.26.3
 > 
