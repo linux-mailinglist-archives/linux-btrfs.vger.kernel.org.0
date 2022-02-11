@@ -2,143 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 623144B2786
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 15:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B884B2A36
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 17:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237725AbiBKOJ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Feb 2022 09:09:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46268 "EHLO
+        id S1345212AbiBKQYo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Feb 2022 11:24:44 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbiBKOJY (ORCPT
+        with ESMTP id S1351470AbiBKQYn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Feb 2022 09:09:24 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FC6C43
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 06:09:23 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9AD421F3AA
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1644588561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=kTwuofy03J7i1xxodw+t4+mBDLZFokrVFGQcsfHQR1M=;
-        b=GmlzMK2BEEXdz6td4KzVkzWyS6qsYoBDQqhoTq4ywcEQdAXUUo87o5vOxq8ff9c8RBvYua
-        kL80I1BNrl1fAxqs61JX/P24P8Q5Pig3L5euI9/SxxLQarCr2qyvw5OrMFyLHwuxY6klde
-        QYB29bOvHQTJHO6dNFqyKcz/2v/qRyk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1644588561;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=kTwuofy03J7i1xxodw+t4+mBDLZFokrVFGQcsfHQR1M=;
-        b=SiIgbSgV93IyievgBQr1INxDzmEwIOPlIDvZ61bqHbmYN61466EoWARNJApM9g23NF34eP
-        rOmHxkdyV3mcDrCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1303B13C7E
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:09:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id t4UrMRBuBmJ/JQAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 14:09:20 +0000
-Date:   Fri, 11 Feb 2022 08:09:18 -0600
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: Fix subvol turns RO if root is remounted RO
-Message-ID: <20220211140918.c6wpmh3pgzjuytve@fiona>
+        Fri, 11 Feb 2022 11:24:43 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7A03B9
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 08:24:42 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id p14so9530396qtx.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 08:24:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7UM7vnTScxCF714/XhlXbhQa7h5H99Izud/9wtVMouU=;
+        b=sbdTDbaF/Tw2oaXtT/2K5kEunY2Kbq5iVkOvlpW1Du4JDzlPdJbgLRxO29ng2VNco+
+         VIfZQhDXjbw0pMVTIdAM7zpGOvcJW2v77acDMhMLcKRCLx1oYwmBcWDmTFxJo8p00cp4
+         q3OB1uDDlvTZeV602iJsded0wzbTsDT6wwrPl93B370KukPpIirF/VpoPHhLNJlA39Id
+         y50W7e3UTvOzUc4h+vXd/RH40AMcW5ZwO9YEEb2dD1q6ZS+B/yltgVqgMGOrDnCObaGM
+         Hkjk+LtEaUPG4TBIgfcMngIfzr21CB3wONTk6xhqV95G+22+HzR7hY00TWPLldhE2nOU
+         pUMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7UM7vnTScxCF714/XhlXbhQa7h5H99Izud/9wtVMouU=;
+        b=HGFKjbBj07mmnj5myiesxuGkw8K/zkF0baBv1qNDVZ64P/cZFy7rP0M1Xlf9jrmAW3
+         rm3owzuLA9iGi0uxe1G50TVJK2IPEFJe0X+E/ojubs6l58lkmQFrWBuDQqobjp59FPzJ
+         Z94UIvJR0OTOgpQZmLuZT7pr0CN83kVB/PTMsxgQN7vxELQkCWriyUdJKVW1KFzyCFDJ
+         JsD2fr8CSdUpUw8Ly1quNmWUqvhLn8FvB+EmsNTKkVJrGHp0yQXlT+sww8FLI3R2biFY
+         r68hBzKEMTcARq+HBS/yqjUCm4/55IpN4fKhrqYoHqLjHDKlobPHCebzcg7I/btLI/R3
+         b0+A==
+X-Gm-Message-State: AOAM530zPj3IPkj+a2oo7J1q5xErc/C0s0pDCotTV1Gsq3Ihs1Y0swd8
+        MZNpxkpdTzPYBMckJ0lNj2+h/uoa58K1rguT
+X-Google-Smtp-Source: ABdhPJyrHhFBsM1N+gtFBBBGWUw38mpdy2wLPAQG37jdA5Q0fGNSNXSzzKo26wBRLyqCJdYqUtFG+w==
+X-Received: by 2002:ac8:57cc:: with SMTP id w12mr1700794qta.155.1644596681124;
+        Fri, 11 Feb 2022 08:24:41 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id i4sm12461768qkn.13.2022.02.11.08.24.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Feb 2022 08:24:40 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/2] Fix another !PageUptodate related warning
+Date:   Fri, 11 Feb 2022 11:24:37 -0500
+Message-Id: <cover.1644596294.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If a read-write root mount is remounted as read-only, the subvolume
-is also set to read-only.
+We hit a warning in generic/281 in our overnight testing.  This is the same
+error that I thought I fixed with c2e39305299f01 ("btrfs: clear extent buffer
+uptodate when we fail to write it"), however all I did was make the race window
+much smaller.
 
-Use a rw_mounts counter to check the number of read-write mounts, and change
-superblock to read-only only in case there are no read-write subvol mounts.
-Disable SB_RDONLY in flags passed so superblock does not change
-read-only.
+The race is relatively simple
+
+Task 1					Task 2
+switch_commit_roots()
+					btrfs_search_slot(path->search_commit_root)
+btrfs_write_and_wait_transaction()
+					start processing path->nodes[0]
+write failure
+end_bio_extent_buffer_writepage
+	ClearPageUptodate()
+					try to read from the extent buffer
+						trigger warning
+
+There's no real way to stop this without adding some heavy handed locking in
+here to make sure we don't invalidate an extent buffer while we're reading it.
+And we can't really add more locking because this particular path uses
+->skip_locking, so we'd have to be very intentional about what we're wanting to
+do.
+
+To fix this we need two things.  First is to be consistent with how we use
+PageError.  Everybody uses it for writes, and in fact that's how we use it with
+the exception of one error path on the extent buffer read.  So first fix that so
+we don't ever have PageError without a write error.
+
+Secondly change assert_eb_page_uptodate() to only WARN_ON if !Uptodate &&
+!Error, so we get a warning if we didn't properly read an extent buffer, but not
+if we failed to write the buffer out.  With this I'm now able to run 100 runs of
+generic/281 without warnings, whereas before it reproduced in around 10 runs.
+Thanks,
+
+Josef
 
 
-Test case:
-DEV=/dev/vdb
-mkfs.btrfs -f $DEV
-mount $DEV /mnt
-btrfs subvol create /mnt/sv
-mount -o remount,ro /mnt
-mount -o subvol=/sv $DEV /mnt/sv
-findmnt # /mnt is RO, /mnt/sv RW
-mount -o remount,ro /mnt
-findmnt # /mnt is RO, /mnt/sv RO as well
-umount /mnt{/sv,}
+Josef Bacik (2):
+  btrfs: do not SetPageError on a read error for extent buffers
+  btrfs: do not WARN_ON() if we have PageError set
 
-
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index a2991971c6b5..2bb6869f15af 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1060,6 +1060,9 @@ struct btrfs_fs_info {
- 	spinlock_t zone_active_bgs_lock;
- 	struct list_head zone_active_bgs;
- 
-+	/* Count of subvol mounts read-write */
-+	int rw_mounts;
-+
- #ifdef CONFIG_BTRFS_FS_REF_VERIFY
- 	spinlock_t ref_verify_lock;
- 	struct rb_root block_tree;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 33cfc9e27451..2072759d5f22 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1835,6 +1835,11 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
- 	/* mount_subvol() will free subvol_name and mnt_root */
- 	root = mount_subvol(subvol_name, subvol_objectid, mnt_root);
- 
-+	if (!IS_ERR(root) && !(flags & SB_RDONLY)) {
-+		struct btrfs_fs_info *fs_info = btrfs_sb(mnt_root->mnt_sb);
-+		fs_info->rw_mounts++;
-+	}
-+
- out:
- 	return root;
- }
-@@ -1958,6 +1963,11 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 		goto out;
- 
- 	if (*flags & SB_RDONLY) {
-+
-+		if (--fs_info->rw_mounts > 0) {
-+			*flags &= ~SB_RDONLY;
-+			goto out;
-+		}
- 		/*
- 		 * this also happens on 'umount -rf' or on shutdown, when
- 		 * the filesystem is busy.
-@@ -2057,6 +2067,8 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 		if (ret)
- 			goto restore;
- 
-+		fs_info->rw_mounts++;
-+
- 		btrfs_clear_sb_rdonly(sb);
- 
- 		set_bit(BTRFS_FS_OPEN, &fs_info->flags);
+ fs/btrfs/extent_io.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 -- 
-Goldwyn
+2.26.3
+
