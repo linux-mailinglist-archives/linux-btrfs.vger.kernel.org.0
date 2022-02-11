@@ -2,107 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 505934B2274
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 10:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F874B238A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Feb 2022 11:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346669AbiBKJvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Feb 2022 04:51:53 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34612 "EHLO
+        id S1349274AbiBKKkc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Feb 2022 05:40:32 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbiBKJvx (ORCPT
+        with ESMTP id S1349279AbiBKKkZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Feb 2022 04:51:53 -0500
-X-Greylist: delayed 387 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Feb 2022 01:51:52 PST
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 765B4E51
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Feb 2022 01:51:52 -0800 (PST)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 3A6F736758B;
-        Fri, 11 Feb 2022 10:45:22 +0100 (CET)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: It's broke, Jim. BTRFS mounted read only after corruption errors on Samsung 980 Pro
-Date:   Fri, 11 Feb 2022 10:45:18 +0100
-Message-ID: <32904791.jyT166o8Jf@ananda>
-In-Reply-To: <20210904233842.GD27656@hungrycats.org>
-References: <9070016.RUGz74dYir@ananda> <10160891.dnzDEemO5X@ananda> <20210904233842.GD27656@hungrycats.org>
+        Fri, 11 Feb 2022 05:40:25 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0921117E;
+        Fri, 11 Feb 2022 02:39:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OF/IgiH+v6IN/Pzp4IQTqAUh7fLzy/AMqRrw5uRs6QM=; b=LbJP76jKebDs3mjRSiss+VrY7f
+        dyaOfWlffhDUHwB5AhCZaYYvYgwPKcloLfHaKYcpTn89ucITWQacDwWZdCUpXsJ1W4aPGDu1CoKWg
+        Rfzrrf4xgw1gmNI7TdQWjDRc8mKeLyhdnOKMRPCY5pRyEN3Wib9vTBUNOwdD95nCv5VqFC6/0V7FQ
+        Haq8I+dR+Ow1pT7b6qWtQv5lKaUKPND5wFWM1sqdcOOios9N3Wn/zaVMAzaStBFXvrfKDhY+htVJN
+        9uOg2NJnn422jyJBwlc67KqBfJSE0Vw19ZHFnLq5WuwjQtRMOFXBa8cNi2XxrR2RAgKJ34Y8iRUb+
+        Lw5VTLVQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nITKd-00AJv5-4D; Fri, 11 Feb 2022 10:39:15 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 12A749853C7; Fri, 11 Feb 2022 11:39:14 +0100 (CET)
+Date:   Fri, 11 Feb 2022 11:39:13 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
+        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
+ lockdep/lock_stat (v1)
+Message-ID: <20220211103913.GR23216@worktop.programming.kicks-ass.net>
+References: <20220208184208.79303-1-namhyung@kernel.org>
+ <20220209090908.GK23216@worktop.programming.kicks-ass.net>
+ <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
+ <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
+ <CAM9d7cgPFLjQyopX04MwG6Leq6DwDJF2q6BxOL_Nw6J2LEZF4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cgPFLjQyopX04MwG6Leq6DwDJF2q6BxOL_Nw6J2LEZF4g@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Zygo Blaxell - 05.09.21, 01:38:42 CET:
-> Also, regardless of kernel implementation, the hibernation procedure
-> is extremely _invasive_.  It necessarily transports every process and
-> significant chunks of kernel state to disk and back to memory, and has
-> opportunities to corrupt data in transit or at rest.
+On Thu, Feb 10, 2022 at 09:55:27PM -0800, Namhyung Kim wrote:
 
-Well, my hope was that hibernation would be a solved problem. At least 
-on ThinkPad T14 AMD Gen 1 it isn't. At least not with the kernel I had 
-in use back then.
+> So you are ok with adding two new tracepoints, even if they are
+> similar to what we already have in lockdep/lock_stat, right?
 
-I did not dare to test again, nowadays running 5.17-rc3. Cause if the 
-price for a while test is corruption of BTRFS, I do not really look 
-forward to it.
-
-The only laptop where hibernation really works without any issues I 
-currently have is a ThinkPad T520 (Intel Sandybridge). It also works on 
-X260 and T560. However there starting with kernel 5.16 it does not 
-automatically switch off after writing the hibernation image. With 5.15 
-and prior it switched off except after the initial boot. It switched off 
-automatically on the second hibernation cycle.
-
-> > > Start a memory tester running (e.g. 'memtester' or '7z b 9999
-> > > -md=xxM' where xx is large enough to allocate most of the free
-> > > RAM), do hibernation and resume, and see if the memory tester
-> > > reports failure after resume.
-> > 
-> > I may still do this. However I already run the UEFI Lenovo
-> > Diagnostic
-> > tool and had it do a memory test. It appears to be fine. I did the
-> > quick test but then also ran a good part, but not all of a several
-> > hour long test. No issues.
-> 
-> The environment might be different for a stand-alone memory tester
-> compared to one that can run on Linux alongside a production workload.
-> e.g. if a bus component is failing due to heat stress, that failure
-> might not be triggered in the standalone case where the failing bus
-> componenet is inactive, but will be triggered under a full system
-> load where the failing component is active.  Similarly bugs in the
-> Linux kernel itself, or interactions between kernel and firmware,
-> will not be visible with a standalone test.
-> 
-> On the other hand, if the problem _is_ a RAM component failure, a
-> standalone test will verify it's that and nothing else.
-
-What I can say so far:
-
-If I avoid hibernation, then all is fine. Starting with kernel 5.16 the 
-Windows based deeper standby that usually worked with 5.15 and prior 
-does not reliably work anymore, so I switched the BIOS back to using the 
-one for Linux again.
-
-Really would love to use hibernation again, but so it is.
-
-At least I am pretty confident it is no BTRFS issue, cause I had no 
-corruption issue again after avoiding hibernation. And hibernation with 
-BTRFS works just fine on T520.
-
-Best,
--- 
-Martin
-
-
+Yeah, I don't think adding tracepoints to the slowpaths of the various
+locks should be a problem.
