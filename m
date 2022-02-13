@@ -2,168 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED254B379B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Feb 2022 20:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC2A4B38D0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Feb 2022 02:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbiBLTSG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Feb 2022 14:18:06 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49462 "EHLO
+        id S232795AbiBMBe3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Feb 2022 20:34:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbiBLTSF (ORCPT
+        with ESMTP id S232686AbiBMBe2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Feb 2022 14:18:05 -0500
-X-Greylist: delayed 429 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 12 Feb 2022 11:18:01 PST
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783F7606C4;
-        Sat, 12 Feb 2022 11:18:01 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id E8C5280382;
-        Sat, 12 Feb 2022 14:10:51 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1644693052; bh=txZS8eXu8kt+0fauTv33PdZYC897WdlzL1mtCypvBWI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LtNiPXqy/7xFiJe4+PEeaVZL1S1V2Alsu9Q4eheH57UWChPSvxGqEmTr8EA3hhwe4
-         uAHOAKv9Iq0v7ZF9T/qYq4tBIJ6qKakL2yEZmGCuMgdKNgcsUwq328ZeY23NljbqO8
-         B2/ha+6sflm0AP5TKDS+cY0wi+/TDaDOdr9n2UKscQaNmz1jaXFj1zHgK4Ng/BasEz
-         ZBjgMJwZMlvORiT3qhN2ZcZLjUczKpIY/45cDqZS1uJBLl3iYQb7BXHx1gbpQrnAmG
-         qmEXe9a4fYKv6SUE/TGfOZwfy2hA7I9tdtraYdKMcBcIpTh31ohkvk6HIT5o/xHdjN
-         Lq6U7yEcKpsAg==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH] btrfs: add fs state details to error messages.
-Date:   Sat, 12 Feb 2022 14:10:42 -0500
-Message-Id: <20220212191042.94954-1-sweettea-kernel@dorminy.me>
+        Sat, 12 Feb 2022 20:34:28 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D532E60063
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Feb 2022 17:34:23 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id p15so30282973ejc.7
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Feb 2022 17:34:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=Prmmfg2rEV4uJgRWjd+vofDxNghZEzQF4wrdv02e8Pg=;
+        b=i99j2UD5nmVTSKNOTxYKjy5l9Q6/Dj1a+lQG8hIGr2tnBzEdWv/8UIqAxxg1Sogg9u
+         4alcegOFhg12rUJn9g4aqUDWKOYVb3T1OqzUj+DONDzw/OImTkaKpVkKpXXfCSq3iKP0
+         xaInTTOzmTT7VOBE6YD8RrAmMqciYM/2KUQHnwx9s4DBjrOK1g442R9qbDmJw7huspHe
+         I5sRyURSoxnKqXcbltyTvWu19Ld3BkQTyCstExsmuy2qRF8hBoJlAFxPqZZAyOpW5xFk
+         1ppyUyU9L5YvkA7KLXYdL0ayAGTiKqiVzT3llS5r+yBwBGepsptC1T1ZuCWXKfoSpqZ1
+         ighQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=Prmmfg2rEV4uJgRWjd+vofDxNghZEzQF4wrdv02e8Pg=;
+        b=QFDOI29SeKQnSOP/YiqeWvyM5WQuAY+vg/GIJPxocc8J5I6cy9Qq8eleYUWj0cyUhD
+         qZaXZzmNo5BJZq/4alTLWuGBZLazhPdqhLgBR0IL8QcXw0nCNnEdsiVw0yyXmmLCdtOI
+         4gTCusAaEWzT4hpoDziVq8dOzyd37VVyR51bojJ0GmtsZsUtH3GvFXafe0xy791n2Lwu
+         t9IOTWQkt6DxeAN8x8JUw/mpwAR7qnRrzhrRmUz+/rY5wlMeR04vX4aCg6G5ZUBMIiFH
+         XcoDs95xPYRQqtLSw/Om18gcbaeSOUzh6jmYwp5nwxaCe/8VH9Tl9DvSu14eorJb1lI2
+         2AGg==
+X-Gm-Message-State: AOAM530dAdcqfP0VnSkER968uY0yZGUyiBfO+TqERPW1oTEq8Gv00i3C
+        Ue6H7smgG/pNLxycAyRcy7J/KsKznsCqV9+vv9g=
+X-Google-Smtp-Source: ABdhPJymwV7mmieLgHEVmruErYvNjQeFYwU12B6BZ9FICm519mT8aG/PeoLHNBa9OxrjxD4coJEnjrRhORevgD85KBY=
+X-Received: by 2002:a17:907:3ea9:: with SMTP id hs41mr6628607ejc.727.1644716062430;
+ Sat, 12 Feb 2022 17:34:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Sender: julianterry39@gmail.com
+Received: by 2002:ab4:9c83:0:0:0:0:0 with HTTP; Sat, 12 Feb 2022 17:34:21
+ -0800 (PST)
+From:   "Mrs. Latifa Rassim Mohamad" <rassimlatifa400@gmail.com>
+Date:   Sat, 12 Feb 2022 17:34:21 -0800
+X-Google-Sender-Auth: G_a4JcIGjUH7ONcd5Ax-TJV2nKY
+Message-ID: <CA+Kqa7cNWE2+q1ZUjxqsFdESk-fRE+z4furGdxXqAkTBK2Ecuw@mail.gmail.com>
+Subject: CONFIRM YOUR EMAIL....
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When a filesystem goes read-only due to an error, multiple errors tend
-to be reported, some of which are knock-on failures. Logging some
-fs_states, if any, in btrfs_handle_fs_error() and btrfs_printk()
-helps distinguish the first error from subsequent messages which may
-only exist due to an error state.
-
-Under the new format, most initial errors will look like:
-`BTRFS: error (device loop0) in ...`
-while subsequent errors will begin with:
-`error (device loop0: state E) in ...`
-
-An initial transaction abort error will look like
-`error (device loop0: state X) in ...`
-and subsequent messages will contain
-`(device loop0: state EX) in ...`
-
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/btrfs/super.c | 49 +++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 40 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 33cfc9e27451..d0e81eb48eac 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -66,6 +66,31 @@ static struct file_system_type btrfs_root_fs_type;
- 
- static int btrfs_remount(struct super_block *sb, int *flags, char *data);
- 
-+#define STATE_STRING_PREFACE ": state "
-+#define MAX_STATE_CHARS 2
-+
-+static void btrfs_state_to_string(const struct btrfs_fs_info *info, char *buf)
-+{
-+	unsigned long state = info->fs_state;
-+	char *curr = buf;
-+
-+	memcpy(curr, STATE_STRING_PREFACE, sizeof(STATE_STRING_PREFACE));
-+	curr += sizeof(STATE_STRING_PREFACE) - 1;
-+
-+	/* If more states are reported, update MAX_STATE_CHARS also */
-+	if (test_and_clear_bit(BTRFS_FS_STATE_ERROR, &state))
-+		*curr++ = 'E';
-+
-+	if (test_and_clear_bit(BTRFS_FS_STATE_TRANS_ABORTED, &state))
-+		*curr++ = 'X';
-+
-+	/* If no states were printed, reset the buffer */
-+	if (state == info->fs_state)
-+		curr = buf;
-+
-+	*curr++ = '\0';
-+}
-+
- /*
-  * Generally the error codes correspond to their respective errors, but there
-  * are a few special cases.
-@@ -128,6 +153,7 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function
- {
- 	struct super_block *sb = fs_info->sb;
- #ifdef CONFIG_PRINTK
-+	char statestr[sizeof(STATE_STRING_PREFACE) + MAX_STATE_CHARS];
- 	const char *errstr;
- #endif
- 
-@@ -136,10 +162,11 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function
- 	 * under SB_RDONLY, then it is safe here.
- 	 */
- 	if (errno == -EROFS && sb_rdonly(sb))
--  		return;
-+		return;
- 
- #ifdef CONFIG_PRINTK
- 	errstr = btrfs_decode_error(errno);
-+	btrfs_state_to_string(fs_info, statestr);
- 	if (fmt) {
- 		struct va_format vaf;
- 		va_list args;
-@@ -148,12 +175,12 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function
- 		vaf.fmt = fmt;
- 		vaf.va = &args;
- 
--		pr_crit("BTRFS: error (device %s) in %s:%d: errno=%d %s (%pV)\n",
--			sb->s_id, function, line, errno, errstr, &vaf);
-+		pr_crit("BTRFS: error (device %s%s) in %s:%d: errno=%d %s (%pV)\n",
-+			sb->s_id, statestr, function, line, errno, errstr, &vaf);
- 		va_end(args);
- 	} else {
--		pr_crit("BTRFS: error (device %s) in %s:%d: errno=%d %s\n",
--			sb->s_id, function, line, errno, errstr);
-+		pr_crit("BTRFS: error (device %s%s) in %s:%d: errno=%d %s\n",
-+			sb->s_id, statestr, function, line, errno, errstr);
- 	}
- #endif
- 
-@@ -240,11 +267,15 @@ void __cold btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, .
- 	vaf.va = &args;
- 
- 	if (__ratelimit(ratelimit)) {
--		if (fs_info)
--			printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
--				fs_info->sb->s_id, &vaf);
--		else
-+		if (fs_info) {
-+			char statestr[sizeof(STATE_STRING_PREFACE) + MAX_STATE_CHARS];
-+
-+			btrfs_state_to_string(fs_info, statestr);
-+			printk("%sBTRFS %s (device %s%s): %pV\n", lvl, type,
-+				fs_info->sb->s_id, statestr, &vaf);
-+		} else {
- 			printk("%sBTRFS %s: %pV\n", lvl, type, &vaf);
-+		}
- 	}
- 
- 	va_end(args);
--- 
-2.30.2
-
+Good Morning from here this Morning and how are you doing today? My
+name is Mrs. Latifa Rassim Mohamad from Saudi Arabia, I have something
+very important and serious i will like to discuss with you privately,
+so i hope this is your private email?
