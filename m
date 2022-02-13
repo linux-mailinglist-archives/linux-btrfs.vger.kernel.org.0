@@ -2,71 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC2A4B38D0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Feb 2022 02:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3664B3A00
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Feb 2022 08:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbiBMBe3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Feb 2022 20:34:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41998 "EHLO
+        id S234062AbiBMHnA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Feb 2022 02:43:00 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232686AbiBMBe2 (ORCPT
+        with ESMTP id S229989AbiBMHm6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Feb 2022 20:34:28 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D532E60063
-        for <linux-btrfs@vger.kernel.org>; Sat, 12 Feb 2022 17:34:23 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id p15so30282973ejc.7
-        for <linux-btrfs@vger.kernel.org>; Sat, 12 Feb 2022 17:34:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=Prmmfg2rEV4uJgRWjd+vofDxNghZEzQF4wrdv02e8Pg=;
-        b=i99j2UD5nmVTSKNOTxYKjy5l9Q6/Dj1a+lQG8hIGr2tnBzEdWv/8UIqAxxg1Sogg9u
-         4alcegOFhg12rUJn9g4aqUDWKOYVb3T1OqzUj+DONDzw/OImTkaKpVkKpXXfCSq3iKP0
-         xaInTTOzmTT7VOBE6YD8RrAmMqciYM/2KUQHnwx9s4DBjrOK1g442R9qbDmJw7huspHe
-         I5sRyURSoxnKqXcbltyTvWu19Ld3BkQTyCstExsmuy2qRF8hBoJlAFxPqZZAyOpW5xFk
-         1ppyUyU9L5YvkA7KLXYdL0ayAGTiKqiVzT3llS5r+yBwBGepsptC1T1ZuCWXKfoSpqZ1
-         ighQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=Prmmfg2rEV4uJgRWjd+vofDxNghZEzQF4wrdv02e8Pg=;
-        b=QFDOI29SeKQnSOP/YiqeWvyM5WQuAY+vg/GIJPxocc8J5I6cy9Qq8eleYUWj0cyUhD
-         qZaXZzmNo5BJZq/4alTLWuGBZLazhPdqhLgBR0IL8QcXw0nCNnEdsiVw0yyXmmLCdtOI
-         4gTCusAaEWzT4hpoDziVq8dOzyd37VVyR51bojJ0GmtsZsUtH3GvFXafe0xy791n2Lwu
-         t9IOTWQkt6DxeAN8x8JUw/mpwAR7qnRrzhrRmUz+/rY5wlMeR04vX4aCg6G5ZUBMIiFH
-         XcoDs95xPYRQqtLSw/Om18gcbaeSOUzh6jmYwp5nwxaCe/8VH9Tl9DvSu14eorJb1lI2
-         2AGg==
-X-Gm-Message-State: AOAM530dAdcqfP0VnSkER968uY0yZGUyiBfO+TqERPW1oTEq8Gv00i3C
-        Ue6H7smgG/pNLxycAyRcy7J/KsKznsCqV9+vv9g=
-X-Google-Smtp-Source: ABdhPJymwV7mmieLgHEVmruErYvNjQeFYwU12B6BZ9FICm519mT8aG/PeoLHNBa9OxrjxD4coJEnjrRhORevgD85KBY=
-X-Received: by 2002:a17:907:3ea9:: with SMTP id hs41mr6628607ejc.727.1644716062430;
- Sat, 12 Feb 2022 17:34:22 -0800 (PST)
+        Sun, 13 Feb 2022 02:42:58 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B844733B
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Feb 2022 23:42:53 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E820E1F37F
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Feb 2022 07:42:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1644738171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=IIB7Tfm9wawbCicYYHtNDmp+mKkbXvulD5AoRqXqS9E=;
+        b=NnJiRQh22+/FlmLEN8kg1U5l608LpLFvm8KeAqiXKDyHH3oNPI+z8FSNudiAXA7NgpkXy1
+        aC9SFWTaYLK1WPgkze00vVLZZRIpIIwURHjlbg0uFsSoGX4EBxvDNaEQ2ddJRfoC4An/v0
+        BiQAiJ5ay+hUG9hOuQWqkysz/4/p2m4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 306261331A
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Feb 2022 07:42:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Hv/iOXq2CGI+dAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Feb 2022 07:42:50 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/4] btrfs: make autodefrag to defrag and only defrag small write ranges
+Date:   Sun, 13 Feb 2022 15:42:29 +0800
+Message-Id: <cover.1644737297.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-Sender: julianterry39@gmail.com
-Received: by 2002:ab4:9c83:0:0:0:0:0 with HTTP; Sat, 12 Feb 2022 17:34:21
- -0800 (PST)
-From:   "Mrs. Latifa Rassim Mohamad" <rassimlatifa400@gmail.com>
-Date:   Sat, 12 Feb 2022 17:34:21 -0800
-X-Google-Sender-Auth: G_a4JcIGjUH7ONcd5Ax-TJV2nKY
-Message-ID: <CA+Kqa7cNWE2+q1ZUjxqsFdESk-fRE+z4furGdxXqAkTBK2Ecuw@mail.gmail.com>
-Subject: CONFIRM YOUR EMAIL....
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Good Morning from here this Morning and how are you doing today? My
-name is Mrs. Latifa Rassim Mohamad from Saudi Arabia, I have something
-very important and serious i will like to discuss with you privately,
-so i hope this is your private email?
+When a small write reaches disk, btrfs will mark the inode for
+autodefrag, and record the transid of the inode for autodefrag.
+
+Then autodefrag uses the transid to only scan newer file extents.
+
+However this transid based scanning scheme has a hole, the small write
+size threshold triggering autodefrag is not the same extent size
+threshold for autodefrag.
+
+For the following write sequence on an non-compressed inode:
+
+ pwrite 0 4k
+ sync
+ pwrite 4k 128k
+ sync
+ pwrite 132k 128k 
+ sync.
+
+The first 4K is indeed a small write (<64K), but the later two 128K ones
+are definite not (>64K).
+
+Hoever autodefrag will try to defrag all three writes, as the
+extent_threshold used for autodefrag is fixed 256K.
+
+This extra scanning on extents which didn't trigger autodefrag can cause
+extra IO.
+
+This patchset will try to address the problem by:
+
+- Remove the inode_defrag re-queue behavior
+  Now we just scan one file til its end (while keep the
+  max_sectors_to_defrag limit, and frequently check the root refs, and
+  remount situation to exit).
+
+  This also saves several bytes from inode_defrag structure.
+
+  This is done in the 3rd patch.
+
+- Save @small_write value into inode_defrag and use it as autodefrag
+  extent threshold
+  Now there is no gap for autodefrag and small_write.
+
+  This is done in the 4th patch.
+
+The remaining patches are:
+
+- Removing one dead parameter
+
+- Add extra trace events for autodefrag
+  So end users will no longer need to re-compile kernel modules, and
+  use trace events to provide debug info on the autodefrag/defrag ioctl.
+
+Unfortunately I don't have a good benchmark setup for the patchset yet,
+but unlike previous RFC version, this one brings very little extra
+resource usage, and is just changing the extent_threshold for
+autodefrag.
+
+Changelog:
+RFC->v1:
+- Add ftrace events for defrag
+
+- Add a new patch to change how we run defrag inodes
+  Instead of saving previous location and re-queue, just run it in one
+  run.
+  Previously btrfs_run_defrag_inodse() will always exhaust the existing
+  inode_defrag anyway, the change should not bring much difference.
+
+- Change autodefrag extent_thresh to close the gap, other than using
+  another extent io tree
+  Now it uses less resource, keep the critical section small, while
+  can almost reach the same objective.
+
+Qu Wenruo (4):
+  btrfs: remove unused parameter for btrfs_add_inode_defrag()
+  btrfs: add trace events for defrag
+  btrfs: autodefrag: only scan one inode once
+  btrfs: close the gap between inode_should_defrag() and autodefrag
+    extent size threshold
+
+ fs/btrfs/ctree.h             |   3 +-
+ fs/btrfs/file.c              | 165 +++++++++++++++--------------------
+ fs/btrfs/inode.c             |   4 +-
+ fs/btrfs/ioctl.c             |   4 +
+ include/trace/events/btrfs.h | 127 +++++++++++++++++++++++++++
+ 5 files changed, 206 insertions(+), 97 deletions(-)
+
+-- 
+2.35.0
+
