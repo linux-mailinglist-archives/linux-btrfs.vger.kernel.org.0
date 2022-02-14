@@ -2,69 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0494B560D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Feb 2022 17:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2904B5737
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Feb 2022 17:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356314AbiBNQXV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Feb 2022 11:23:21 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35064 "EHLO
+        id S1356739AbiBNQmQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Feb 2022 11:42:16 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356313AbiBNQXS (ORCPT
+        with ESMTP id S243156AbiBNQmD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Feb 2022 11:23:18 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066D560AA5
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Feb 2022 08:23:10 -0800 (PST)
+        Mon, 14 Feb 2022 11:42:03 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D980F652DD
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Feb 2022 08:39:42 -0800 (PST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A98CC210F4;
-        Mon, 14 Feb 2022 16:23:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8C1F91F38A;
+        Mon, 14 Feb 2022 16:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1644855789;
+        t=1644856781;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mw8ih5v3JBH0jiK19wmyysBHVH3c74a753/M7sc+D10=;
-        b=TdHJ9KPflMGdFIatwOZwu9dhtNeeoab/P9IM5rImRGMGjfOh/g4rG/SRnW3keFzy+3VCj/
-        Gca09E0v2UT/a0RUaN+rsoDnSFdbx75cTYuJUbEKzJp2SHpjTqutNtuJQt9MEEouw2Di9T
-        EP/4NCrwHp5NANgPdSg5kqc8an7X0F8=
+        bh=woBY7ImxMJbznyWJXROuJL9AckI+8tEAYyk9TJDvL30=;
+        b=NjO/+iSJCS/rfdRQkZWYal/s1HherwKZWXzRpwFbL8aIIUOmk41mTTT4u0H+ewWIVW8G8A
+        j7ZWE2VVF7UXeKNJSV+1Vpx4e1M2YpzQ+zz1n6gZ5F4k2JvpujPhM5TiB2TyG788eDsArM
+        1iOyU8uMbToz0z8L7PqynM0ha0UynVg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1644855789;
+        s=susede2_ed25519; t=1644856781;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mw8ih5v3JBH0jiK19wmyysBHVH3c74a753/M7sc+D10=;
-        b=G5ezImoVZ4l+BsMJjMVSqfhEtycUbfn18RLF1LJRlyRtPhMsxceaM72JG480h6sfzu8a7e
-        WLh8dp/nqkVcArDA==
+        bh=woBY7ImxMJbznyWJXROuJL9AckI+8tEAYyk9TJDvL30=;
+        b=IJsDrBz66v2k/dcp6lS7toEwoDrvrU6wJJMHbk/Wlwbny5FeqFxjf8AtIFPwa0D2vD2uBe
+        hRBkLHlBokseC+Cw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id A173DA3B84;
-        Mon, 14 Feb 2022 16:23:09 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 812AEA3B84;
+        Mon, 14 Feb 2022 16:39:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1D5A0DA832; Mon, 14 Feb 2022 17:19:26 +0100 (CET)
-Date:   Mon, 14 Feb 2022 17:19:26 +0100
+        id F363ADA832; Mon, 14 Feb 2022 17:35:57 +0100 (CET)
+Date:   Mon, 14 Feb 2022 17:35:57 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/4] btrfs: defrag: use btrfs_defrag_ctrl to replace
- btrfs_ioctl_defrag_range_args for btrfs_defrag_file()
-Message-ID: <20220214161925.GE12643@twin.jikos.cz>
+Cc:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC 3/3] btrfs: make autodefrag to defrag small writes
+ without rescanning the whole file
+Message-ID: <20220214163557.GF12643@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
         Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <cover.1643357469.git.wqu@suse.com>
- <34c2aa1e7c5e196420d68de1f67b8973d49e284b.1643357469.git.wqu@suse.com>
- <YfwOJ0UT5t64BhVG@debian9.Home>
- <64316118-4f91-a277-d28a-24f74f2e6056@gmx.com>
- <20220204175742.GG14046@twin.jikos.cz>
- <20220204180031.GH14046@twin.jikos.cz>
- <20220204181707.GI14046@twin.jikos.cz>
- <20220208170044.GD12643@twin.jikos.cz>
- <9292fc4a-9c6e-8e28-8203-f70118e9ee20@gmx.com>
+References: <cover.1644398069.git.wqu@suse.com>
+ <fc9f897e0859cccf90c33a7a609dc0a2e96ce3c1.1644398069.git.wqu@suse.com>
+ <YgP8UocVo/yMT2Pj@debian9.Home>
+ <32c44e26-9bd1-f75f-92df-3f7fbf44f8a0@gmx.com>
+ <YgUzsYTCz48nB/XT@debian9.Home>
+ <23693916-8269-0357-3a20-5e281cf53ff8@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9292fc4a-9c6e-8e28-8203-f70118e9ee20@gmx.com>
+In-Reply-To: <23693916-8269-0357-3a20-5e281cf53ff8@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -76,24 +73,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 08:15:42AM +0800, Qu Wenruo wrote:
-> On 2022/2/9 01:00, David Sterba wrote:
-> >>>
-> >>> I thought we've had all the { 0 } converted to {} but no so I get the
-> >>> consistency agrument.
-> >>
-> >> https://lore.kernel.org/all/20210910225207.3272766-1-keescook@chromium.org/
-> >>
-> >> A tree-wide change but it did not get pulled in the end. The problematic
-> >> compiler was gcc 4.9 but the current minimum requirement is 5.1 so I
-> >> wonder how much relevant it is.
-> >
-> > I've asked Kees, seems that the conversion is not necessary. Thus, I'd
-> > stay with { 0 } that we have now as it's the most used initializer.
-> >
-> > No need to resend patches just if there's {}, I'll fix it up anywhere I
-> > see it.
+On Fri, Feb 11, 2022 at 08:24:13AM +0800, Qu Wenruo wrote:
+> > As I read it, it seems it barely had any performance testing.
 > 
-> So the preferred style reverts back to "= { 0 };", right?
+> OK, I'll try to find a way to replicate the IO of torrents downloading.
+> To get a reproducible result, some kind of replay with proper timing is
+> needed, any advice on such tool?
 
-Yes
+A file generated by torrent-like write pattern can be achieved eg. by
+the following fio script:
+
+[torrent]
+filename=torrent-test
+rw=randwrite
+size=4g
+ioengine=sync
+
+and you can tune the block sizes or other parameters. The result of this
+script is a file totally fragmented so it's the worst case, running a
+defrag on that takes a long time too.
