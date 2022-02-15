@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B564B75E9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Feb 2022 21:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DDB4B75DB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Feb 2022 21:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236304AbiBORMq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Feb 2022 12:12:46 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38852 "EHLO
+        id S241056AbiBORMu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Feb 2022 12:12:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbiBORMp (ORCPT
+        with ESMTP id S229945AbiBORMt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Feb 2022 12:12:45 -0500
+        Tue, 15 Feb 2022 12:12:49 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C06119F3C
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 09:12:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382A1119F3C
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 09:12:39 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A824D21114
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 17:12:32 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E916F21114
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 17:12:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1644945152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1644945157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=AjJ+ec4i09xJZ8HoF77Co5VidRFRigVA0PIwKkvrvx0=;
-        b=Ba9I4OA2vvMzd7nqnOKJEn0oFx2ssr09U82FRVBk93JtsEuDHdLUfbJbacz4vRuP279wtU
-        3RxAve99PxOoMBAifJtq1fBMtsuZrO9m1Yjfxn/bD7fQptccXv0abmvX6rc/sT8psi5bMz
-        M+ZYPtXnVzoSh6UUOd7E7yF7gwiTKeU=
+        bh=cARkHiWhJdOI8P3W7ncZYBto4k8u5MBLPm99/P2fp+Q=;
+        b=FY7cyW1EJ60P38EN0xJhqC+un/R/QsJt+nLCCi9aTEhVtpTJpc94FLGCfJi1utXK/X3FZO
+        ujkAOMm/AxLysWSFfK7WC3B6jETfVlPuo4Ysr6iBLN+23DEKBTQtm2AWug/p5D64jCf9/H
+        FnYV61xHTCZtRUMAiHLqFm/lrKy5qtw=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9023613CA5
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 17:12:32 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D128B13CA5
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 17:12:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SGVeIgDfC2JdAwAAMHmgww
+        id ONyGMgXfC2JdAwAAMHmgww
         (envelope-from <ailiop@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 17:12:32 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 17:12:37 +0000
 From:   Anthony Iliopoulos <ailiop@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: add zoned_profile_supported function stub
-Date:   Tue, 15 Feb 2022 18:12:12 +0100
-Message-Id: <20220215171213.5173-1-ailiop@suse.com>
+Subject: [PATCH] btrfs-progs: enable default zlib compression in btrfs-image
+Date:   Tue, 15 Feb 2022 18:12:13 +0100
+Message-Id: <20220215171213.5173-2-ailiop@suse.com>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,32 +57,56 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The zoned_profile_supported function is only defined if BTRFS_ZONED is
-defined, and thus compilation breaks when progs are configured without
-zoned block device support. Add the stub function so that progs can be
-compiled without zoned support.
+The btrfs-image utility supports zlib compression natively, but it is
+disabled by default. Enable it at the zlib-defined default compression
+level (6).
 
 Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
 ---
- kernel-shared/zoned.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/btrfs-image.asciidoc | 2 +-
+ Documentation/btrfs-image.rst      | 2 +-
+ image/main.c                       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
-index ebd6dc34c619..dedc02b5c506 100644
---- a/kernel-shared/zoned.h
-+++ b/kernel-shared/zoned.h
-@@ -140,6 +140,11 @@ int btrfs_wipe_temporary_sb(struct btrfs_fs_devices *fs_devices);
- #define sbwrite(fd, buf, offset) \
- 	pwrite64(fd, buf, BTRFS_SUPER_INFO_SIZE, offset)
+diff --git a/Documentation/btrfs-image.asciidoc b/Documentation/btrfs-image.asciidoc
+index 382651712bef..fa3647a5bc05 100644
+--- a/Documentation/btrfs-image.asciidoc
++++ b/Documentation/btrfs-image.asciidoc
+@@ -30,7 +30,7 @@ restored by running tree log reply if possible. To restore without
+ changing number of stripes in chunk tree check -o option.
  
-+static inline bool zoned_profile_supported(u64 flags)
-+{
-+	return false;
-+}
-+
- static inline int btrfs_reset_dev_zone(int fd, struct blk_zone *zone)
- {
- 	return 0;
+ -c <value>::
+-Compression level (0 ~ 9).
++Compression level (0 ~ 9). Defaults to zlib level 6.
+ 
+ -t <value>::
+ Number of threads (1 ~ 32) to be used to process the image dump or restore.
+diff --git a/Documentation/btrfs-image.rst b/Documentation/btrfs-image.rst
+index a7b200c1e7f9..67f4e7d49618 100644
+--- a/Documentation/btrfs-image.rst
++++ b/Documentation/btrfs-image.rst
+@@ -27,7 +27,7 @@ OPTIONS
+         changing number of stripes in chunk tree check *-o* option.
+ 
+ -c <value>
+-        Compression level (0 ~ 9).
++        Compression level (0 ~ 9). Defaults to zlib level 6.
+ 
+ -t <value>
+         Number of threads (1 ~ 32) to be used to process the image dump or restore.
+diff --git a/image/main.c b/image/main.c
+index 3125163d1bfc..cbdf619d0b8c 100644
+--- a/image/main.c
++++ b/image/main.c
+@@ -3050,7 +3050,7 @@ int BOX_MAIN(image)(int argc, char *argv[])
+ 	char *source;
+ 	char *target;
+ 	u64 num_threads = 0;
+-	u64 compress_level = 0;
++	u64 compress_level = 6;
+ 	int create = 1;
+ 	int old_restore = 0;
+ 	int walk_trees = 0;
 -- 
 2.35.1
 
