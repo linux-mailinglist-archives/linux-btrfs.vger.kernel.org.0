@@ -2,319 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A654B778B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Feb 2022 21:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7DD4B77A6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Feb 2022 21:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240016AbiBOSu0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Feb 2022 13:50:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45186 "EHLO
+        id S240068AbiBOT2p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Feb 2022 14:28:45 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbiBOSuZ (ORCPT
+        with ESMTP id S240574AbiBOT2m (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Feb 2022 13:50:25 -0500
-X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Feb 2022 10:50:13 PST
-Received: from libero.it (smtp-31-wd.italiaonline.it [213.209.13.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8FE74850
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 10:50:13 -0800 (PST)
-Received: from [192.168.1.27] ([78.12.10.146])
-        by smtp-31.iol.local with ESMTPA
-        id K2stnA5Blo7JOK2stnhVgQ; Tue, 15 Feb 2022 19:49:10 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1644950950; bh=ijr5FaaBNEVMkYlb4oyAmf7H0toAZOacEsvX4HC4rjA=;
-        h=From;
-        b=mHgEDcdU6I9UVZXD+c4YR9NH5IEamOwEJS7xpdr8n+w9+SEDKcBX21FBZ0kYexWdS
-         s4f3jpwDIIVS/VoGQX0FbW38yfnJmuimv1wHvFjH+5Ld1lzEY0u7squdSJl8b5geNJ
-         Dc2HbfbtSp1VGhV6YccWbTLQesohtekgK57+qX2cm0jm2aZJRXxyIL/1wQV8ib+FeH
-         rTMR1rwijLxxjyD0NC5Lob1V8zOvDg4S7ZG6NAo/G9p+Qeu7FF32vEMyn8pX7ibf8g
-         nbcyGWsBi3fNEnurXHdgMNuyDs0gE7h87bTS3IP429zOtWrUY8GjaWmjRMDSzr+917
-         Cl4UhlHkGrRPQ==
-X-CNFS-Analysis: v=2.4 cv=O+T8ADxW c=1 sm=1 tr=0 ts=620bf5a6 cx=a_exe
- a=2C5VI3o5eQqsNyEplIs8Sg==:117 a=2C5VI3o5eQqsNyEplIs8Sg==:17
- a=IkcTkHD0fZMA:10 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=kT-NTsFwAAAA:8
- a=jAT4BqFDZ1dKBA5hYBsA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=TLwuWKmryFjkTYsgBL5T:22
-Message-ID: <7e5e75ed-86b4-a629-09c9-29202f93b4b6@inwind.it>
-Date:   Tue, 15 Feb 2022 19:49:07 +0100
+        Tue, 15 Feb 2022 14:28:42 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC02AFF43
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 11:28:32 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id v63so32148823ybv.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 11:28:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=vIF0HCtULT8/Hj4oEOKhM3wVM2dbK4vAQWbMA06NHEs=;
+        b=cGw+0zAzYgdSEm8/jB83LaKWv2AwaI9npCvBn4MaEElLoPyHt0PDJ4AHY75GS+NGuI
+         53jTQC2JiE9oCHDxkj9F/ReD8kzh6NdwPsYBuW6kk0ivAQOSMedx0s30A0QJwjK6kIUe
+         E1O471jP16O6KSy0GZfoJQG9/FsRi1NOwGg2NQW7R501kpSaOt20r6L3+VjRkD+yIQtA
+         OmLbz+Dsv1nZ2lvWTrqnNoh3vBHRv35MLYZ5+q1n5Q7lzqUfqwwirQoTPv3TeB3SL5vf
+         KFeGPk2oss44JMF0YBWtdwNd/DgSHmPyl/wslh9JEdbMXZy2qz22DKyBzT2U1MVUdxlV
+         ES9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=vIF0HCtULT8/Hj4oEOKhM3wVM2dbK4vAQWbMA06NHEs=;
+        b=ABbqLIcPCkxRIlnp8Y7m2QWi0H6O+1yTAVc41iwLskbSFOrLkOxpXOo6nu/MKenDcG
+         aHZ5w8ao9wFXjHx3KUDa7QZCgryHzHdcWqVs3Ee0qQMpLz5TzfnkMSbhNhlM4AZQi1vO
+         XUTGNDmGGFSAYik7iONGkb5ZIaXUtCbGTRmPWHVRL58eMwyIMN3iAKfzvWbL1wu1UEYz
+         drfbi9z+5pG8dnLfn1UF24OFf4VJ/kjOGntdHnOHqVGRBGkqdSKdtW3PXoT5DKlxmNd4
+         0HOR18BjoYu5luqktRy8+lTLLF8QKDAuydvNdOAkaLiUBsgkK2CbnuMMBp1GwjkjbVgd
+         0D+g==
+X-Gm-Message-State: AOAM533v2PrPiVCNUGyyv3nj9uqOno4+Ef3+UZwWQoRBbbgMlcx4bJt8
+        snWFto9G0E0qHaELGTLSh47WRDvVFz/twn4aBE0=
+X-Google-Smtp-Source: ABdhPJwdyBbVwsfuEgoHheXtlOWCBCs3P3JJthH38ZXUBWV63WN7yxplFjdgjCqpSFETWgRKoqvRik3Vnh3qYt//S5g=
+X-Received: by 2002:a81:ae07:: with SMTP id m7mr368993ywh.269.1644953311381;
+ Tue, 15 Feb 2022 11:28:31 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 0/7][V11] btrfs: allocation_hint
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1643228177.git.kreijack@inwind.it>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <cover.1643228177.git.kreijack@inwind.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDHsoPaYHbB9kPzqkls63ifn0+/TdCzU+9b+Qt66PoxOHfUOr9DcllMuMuvYrhWEXESAjqrDQ6jIAuVsAn87ibSP/wDE6oNsABoJ2KvMNRA3k02mwvqb
- Uyl/B6FwXZ1fDqfTweUX9rTTjjICZ10DZF8MeHSZJgZCwxh+7afu6baR8nWd+/IS6cHgDqiNE4f/+myxC0/IpjvccTtZarTsFc0+q8+04LGzX13WGJczaysp
- 6JISHcNZkKMAck4IgmIm2/Et7rVnlaqQ25/KQyE9cEzvsX2PKGsr2VBP5Q0NL+cCzgBOB5E9V3+CAkMxeNxGGtttcFlMMWDQdjRbcmdJKnzNMJ0xonoszgLn
- W+90qKsUOTByLQgPObLTTzcynAoS5g==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Sender: iqbalfarrukh60@gmail.com
+Received: by 2002:a05:6918:718a:b0:a1:351c:4bc2 with HTTP; Tue, 15 Feb 2022
+ 11:28:31 -0800 (PST)
+From:   "Mr.Sal kavar" <salkavar2@gmail.com>
+Date:   Tue, 15 Feb 2022 20:28:31 +0100
+X-Google-Sender-Auth: lrDGu2X-wn5cLGvUJg6bYOL0nWs
+Message-ID: <CAL3Nt6hBYeCzeBjV_uiR=YHsj41oyHQXEOuv0QDjC9wHw=Oi+w@mail.gmail.com>
+Subject: Yours Faithful,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,MONEY_FRAUD_8,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b41 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [salkavar2[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [iqbalfarrukh60[at]gmail.com]
+        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  1.6 MONEY_FRAUD_8 Lots of money and very many fraud phrases
+        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Josef,
+I assume you and your family are in good health. I am the foreign
+operations Manager
 
-gentle ping...
+This being a wide world in which it can be difficult to make new
+acquaintances and because it is virtually impossible to know who is
+trustworthy and who can be believed, i have decided to repose
+confidence in you after much fasting and prayer. It is only because of
+this that I have decided to confide in you and to share with you this
+confidential business.
 
-few months ago you showed some interest in this patches set. Few of the cc-ed person use this patch set.
+overdue and unclaimed sum of $15.5m, (Fifteen Million Five Hundred
+Thousand Dollars Only) when the account holder suddenly passed on, he
+left no beneficiary who would be entitled to the receipt of this fund.
+For this reason, I have found it expedient to transfer this fund to a
+trustworthy individual with capacity to act as foreign business
+partner.
 
-I know that David showed some interest in the Anand approach (i.e. no knobs, but an automatic behavior looking at the speed of the devices).
+Thus i humbly request your assistance to claim this fund. Upon the
+transfer of this fund in your account, you will take 45% as your share
+from the total fund, 10% will be shared to Charity Organizations in
+both country and 45% will be for me.
 
-At the time when I tried this approach in the first attempts, I got the complain that the kernel may not know the performance differences of the disk (HDD vs SSD vs NVME vs ZONED disk...).
-
-Comments ?
-
-BR
-Goffredo
-
-
-On 26/01/2022 21.32, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
-> 
-> Hi all,
-> 
-> This patches set was born after some discussion between me, Zygo and Josef.
-> Some details can be found in https://github.com/btrfs/btrfs-todo/issues/19.
-> 
-> Some further information about a real use case can be found in
-> https://lore.kernel.org/linux-btrfs/20210116002533.GE31381@hungrycats.org/
-> 
-> Recently Shafeeq told me that he is interested too, due to the performance gain.
-> 
-> In V8, revision I switched away from an ioctl API in favor of a sysfs API (
-> see patch #2 and #3).
-> 
-> In V9, I renamed the sysfs interface from devinfo/type to devinfo/allocation_hint.
-> Moreover I renamed dev_info->type to dev_info->flags.
-> 
-> In V10, I renamed the tag 'PREFERRED' from PREFERRED_X to X_PREFERRED; I added
-> another devinfo property, called major_minor. For now it is unused;
-> the plan is to use this in btrfs-progs to go from the block device to the filesystem.
-> First client will be "btrfs prop get/set allocation_hint", but I see others possible
-> clients.
-> Finally I made some cleanup, and remove the mount option 'allocation_hint'
-> 
-> In V11 I added a new 'feature' file /sys/fs/btrfs/features/allocation_hint
-> to help the detection of the allocation_hint feature.
-> 
-> The idea behind this patches set, is to dedicate some disks (the fastest one)
-> to the metadata chunk. My initial idea was a "soft" hint. However Zygo
-> asked an option for a "strong" hint (== mandatory). The result is that
-> each disk can be "tagged" by one of the following flags:
-> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
-> - BTRFS_DEV_ALLOCATION_METADATA_PREFERRED
-> - BTRFS_DEV_ALLOCATION_DATA_PREFERRED
-> - BTRFS_DEV_ALLOCATION_DATA_ONLY
-> 
-> When the chunk allocator search a disks to allocate a chunk, scans the disks
-> in an order decided by these tags. For metadata, the order is:
-> *_METADATA_ONLY
-> *_METADATA_PREFERRED
-> *_DATA_PREFERRED
-> 
-> The *_DATA_ONLY are not eligible from metadata chunk allocation.
-> 
-> For the data chunk, the order is reversed, and the *_METADATA_ONLY are
-> excluded.
-> 
-> The exact sort logic is to sort first for the "tag", and then for the space
-> available. If there is no space available, the next "tag" disks set are
-> selected.
-> 
-> To set these tags, a new property called "allocation_hint" was created.
-> There is a dedicated btrfs-prog patches set [[PATCH V11] btrfs-progs:
-> allocation_hint disk property].
-> 
-> $ sudo mount /dev/loop0 /mnt/test-btrfs/
-> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
-> devid=1, path=/dev/loop0: allocation_hint=METADATA_PREFERRED
-> devid=2, path=/dev/loop1: allocation_hint=METADATA_PREFERRED
-> devid=3, path=/dev/loop2: allocation_hint=DATA_PREFERRED
-> devid=4, path=/dev/loop3: allocation_hint=DATA_PREFERRED
-> devid=5, path=/dev/loop4: allocation_hint=DATA_PREFERRED
-> devid=6, path=/dev/loop5: allocation_hint=DATA_ONLY
-> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
-> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
-> 
-> $ sudo ./btrfs fi us /mnt/test-btrfs/
-> Overall:
->      Device size:           2.75GiB
->      Device allocated:           1.34GiB
->      Device unallocated:           1.41GiB
->      Device missing:             0.00B
->      Used:             400.89MiB
->      Free (estimated):           1.04GiB    (min: 1.04GiB)
->      Data ratio:                  2.00
->      Metadata ratio:              1.00
->      Global reserve:           3.25MiB    (used: 0.00B)
->      Multiple profiles:                no
-> 
-> Data,RAID1: Size:542.00MiB, Used:200.25MiB (36.95%)
->     /dev/loop0     288.00MiB
->     /dev/loop1     288.00MiB
->     /dev/loop2     127.00MiB
->     /dev/loop3     127.00MiB
->     /dev/loop4     127.00MiB
->     /dev/loop5     127.00MiB
-> 
-> Metadata,single: Size:256.00MiB, Used:384.00KiB (0.15%)
->     /dev/loop1     256.00MiB
-> 
-> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
->     /dev/loop0      32.00MiB
-> 
-> Unallocated:
->     /dev/loop0     704.00MiB
->     /dev/loop1     480.00MiB
->     /dev/loop2       1.00MiB
->     /dev/loop3       1.00MiB
->     /dev/loop4       1.00MiB
->     /dev/loop5       1.00MiB
->     /dev/loop6     128.00MiB
->     /dev/loop7     128.00MiB
-> 
-> # change the tag of some disks
-> 
-> $ sudo ./btrfs prop set /dev/loop0 allocation_hint DATA_ONLY
-> $ sudo ./btrfs prop set /dev/loop1 allocation_hint DATA_ONLY
-> $ sudo ./btrfs prop set /dev/loop5 allocation_hint METADATA_ONLY
-> 
-> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
-> devid=1, path=/dev/loop0: allocation_hint=DATA_ONLY
-> devid=2, path=/dev/loop1: allocation_hint=DATA_ONLY
-> devid=3, path=/dev/loop2: allocation_hint=DATA_PREFERRED
-> devid=4, path=/dev/loop3: allocation_hint=DATA_PREFERRED
-> devid=5, path=/dev/loop4: allocation_hint=DATA_PREFERRED
-> devid=6, path=/dev/loop5: allocation_hint=METADATA_ONLY
-> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
-> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
-> 
-> $ sudo btrfs bal start --full-balance /mnt/test-btrfs/
-> $ sudo ./btrfs fi us /mnt/test-btrfs/
-> Overall:
->      Device size:           2.75GiB
->      Device allocated:         735.00MiB
->      Device unallocated:           2.03GiB
->      Device missing:             0.00B
->      Used:             400.72MiB
->      Free (estimated):           1.10GiB    (min: 1.10GiB)
->      Data ratio:                  2.00
->      Metadata ratio:              1.00
->      Global reserve:           3.25MiB    (used: 0.00B)
->      Multiple profiles:                no
-> 
-> Data,RAID1: Size:288.00MiB, Used:200.19MiB (69.51%)
->     /dev/loop0     288.00MiB
->     /dev/loop1     288.00MiB
-> 
-> Metadata,single: Size:127.00MiB, Used:336.00KiB (0.26%)
->     /dev/loop5     127.00MiB
-> 
-> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
->     /dev/loop7      32.00MiB
-> 
-> Unallocated:
->     /dev/loop0     736.00MiB
->     /dev/loop1     736.00MiB
->     /dev/loop2     128.00MiB
->     /dev/loop3     128.00MiB
->     /dev/loop4     128.00MiB
->     /dev/loop5       1.00MiB
->     /dev/loop6     128.00MiB
->     /dev/loop7      96.00MiB
-> 
-> 
-> #As you can see all the metadata were placed on the disk loop5/loop7 even if
-> #the most empty one are loop0 and loop1.
-> 
-> 
-> 
-> Furher works:
-> - the tool which show the space available should consider the tagging (eg
->    the disks tagged by _METADATA_ONLY should be excluded from the data
->    availability)
-> - allow btrfs-prog to change the allocation_hint even when the filesystem
->    is not mounted.
-> 
-> In following emails, there will be the btrfs-progs patches set and the xfstest
-> suite patches set.
-> 
-> 
-> Comments are welcome
-> BR
-> G.Baroncelli
-> 
-> Revision:
-> V11:
-> - added the property /sys/fs/btrfs/features/allocation_hint
-> 
-> V10:
-> - renamed two disk tags/constants:
->          - *_METADATA_PREFERRED -> *_METADATA_PREFERRED
->          - *_DATA_PREFERRED -> *_DATA_EFERRED
-> - add /sys/fs/btrfs/$UUID/devinfo/$DEVID/major_minor
-> - revise some commit description
-> - refactored the code of gather_device_info(): one portion of this code
->    is moved in a separate function called sort_and_reduce_device_info()
->    for clarity.
-> - removed the 'allocation_hint' mount option
-> 
-> V9:
-> - rename dev_item->type to dev_item->flags
-> - rename /sys/fs/btrfs/$UUID/devinfo/type -> allocation_hint
-> 
-> V8:
-> - drop the ioctl API, instead use a sysfs one
-> 
-> V7:
-> - make more room in the struct btrfs_ioctl_dev_properties up to 1K
-> - leave in btrfs_tree.h only the costants
-> - removed the mount option (sic)
-> - correct an 'use before check' in the while loop (signaled
->    by Zygo)
-> - add a 2nd sort to be sure that the device_info array is in the
->    expected order
-> 
-> V6:
-> - add further values to the hints: add the possibility to
->    exclude a disk for a chunk type
-> 
-> 
-> 
-> Goffredo Baroncelli (7):
->    btrfs: add flags to give an hint to the chunk allocator
->    btrfs: export the device allocation_hint property in sysfs
->    btrfs: change the device allocation_hint property via sysfs
->    btrfs: add allocation_hint mode
->    btrfs: rename dev_item->type to dev_item->flags
->    btrfs: add major and minor to sysfs
->    Add /sys/fs/btrfs/features/allocation_hint
-> 
->   fs/btrfs/ctree.h                |   4 +-
->   fs/btrfs/disk-io.c              |   2 +-
->   fs/btrfs/sysfs.c                | 105 +++++++++++++++++++++++++++
->   fs/btrfs/volumes.c              | 121 ++++++++++++++++++++++++++++++--
->   fs/btrfs/volumes.h              |   7 +-
->   include/uapi/linux/btrfs_tree.h |  20 +++++-
->   6 files changed, 245 insertions(+), 14 deletions(-)
-> 
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Yours Faithful,
+Mr.Sal Kavar.
