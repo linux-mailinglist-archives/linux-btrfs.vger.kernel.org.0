@@ -2,165 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A207C4B5ECA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Feb 2022 01:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5830A4B5ED7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Feb 2022 01:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbiBOAHa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Feb 2022 19:07:30 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37036 "EHLO
+        id S231330AbiBOAKP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Feb 2022 19:10:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232210AbiBOAH3 (ORCPT
+        with ESMTP id S229517AbiBOAKO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Feb 2022 19:07:29 -0500
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8903F97BAA
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Feb 2022 16:07:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1644883640; x=1676419640;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=no1vTKpzUgCwKxOTRf2OpHRqjB4QlJaghxZ9PHaSUIc=;
-  b=DZk7WIVsrTPtQOSaAWM764eY7DdAPDUl5OEMXzYpdrpn6nUhRSUayxBA
-   /t8R48cCwMXohNfQXuLIFVX+kmhVgvgrPHdeLDufMRMPvrogBX3zdoBBq
-   41EebuBjskCtrbryT5BSlheBD+Cx9plgqmyM2GTHTyKZNDna9udjh3y7f
-   JAXbppgWmP8VcuTIi4RsXWiOd+1gVp9kPL65hYFb/q//pRvcgVGoODUbD
-   Yb1MD6Wc5hxOPXjDhmDCIj6Ow9p3qEviNu142BAeYvTlLTmi3KQw09eIk
-   7tmPn7X1cr35BodvTEq9j5wFVjdd4/znc4qFTBumRdSyeDr6uQ4kds6f3
-   w==;
-X-IronPort-AV: E=Sophos;i="5.88,368,1635177600"; 
-   d="scan'208";a="297009705"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2022 08:07:18 +0800
-IronPort-SDR: iQRVZDQ9HFrRqbTCvuwGzufqgoRCdMkA4yg5G6QPc5fsivoZsiNbhlNrB/BwhkdoJm7QGn93it
- p3mEhJ5SgFgQyPA5ibgv8U6qUWjLJxIf549wIicvenga2/OkcN4XoMnphCLSmVIJCbxgWutlFO
- GDCT+sg5SE+YWbcOVGOMufElyf5ER0WtEvUXo0VddpS2TOJ6ampXiuIoZBkFnbBho8z4irDwg2
- AZImMCluiIHYkoM50FZnfYJa478q15U7/yaZNKAaow+dFB4Dk7FVECIexXc2uLZeCxq8PjSMSB
- uT1L6LyVjK2qeLV1QQxIJ5op
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2022 15:38:59 -0800
-IronPort-SDR: 9NAENd53ySpT2GgraAOTPxC4lKK6eA+qGNBwMCbEho8SZWZdeCamGDkcFh8+ETX592ZEQJ6Eri
- 6oDNzwBB2c5V9oqr09Dpd3DK4qB1v9bzmJwRUFao5yY+hISBEeSUG4chUTt6KONZ0FD/8hoJMR
- LuZUqHcxh8LfxhikMxTTRILAn9QmmLpxhuRYxg54yrLnhyqbX5dtpxxriOHvEi6rRR92uf/XTU
- 2UgocD81d5eod22t9cZ+jBmrTX2oUZsR0UR5q+DncEM+dnKdo7mTHM/u0zTqIlZMWQdReKXZ9+
- F68=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2022 16:07:18 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4JyLxd71tSz1SVp2
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Feb 2022 16:07:17 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1644883637; x=1647475638; bh=no1vTKpzUgCwKxOTRf2OpHRqjB4QlJaghxZ
-        9PHaSUIc=; b=k3CXZgKpRZEtWRHs1pIKLyD/9luafP6XxEzFJXkYGRwm8brySSG
-        11JAiynNIzbowVgMusFwVj2RB/xfmdEymqtYsmZzQVvb7Jwv1WasOnQig3uTnSOB
-        0t2EFTFL+5zxil/JSbBKTG8WfX8t5wkTDTFgf1kgcUCWuxdirlq/QX7Bv9VD7ohS
-        r0UKzCJL0WjNmRSOD4DQD3FRHvh2NHb6CABabqPAwn5P173S9laOmBi8LotgPu3p
-        bCyFdhPcbtfkDEZwCL8t5sa9u+2oyO0ap30zWIhUXPZ1kmAj2fNWJLwCwrr/gQ1q
-        V2rOWx/iY1OVwiTvpEcMUihO28/49BKGRew==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 03Ev7CSn9ee1 for <linux-btrfs@vger.kernel.org>;
-        Mon, 14 Feb 2022 16:07:17 -0800 (PST)
-Received: from [10.225.163.73] (unknown [10.225.163.73])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4JyLxc1NGBz1Rwrw;
-        Mon, 14 Feb 2022 16:07:15 -0800 (PST)
-Message-ID: <c2366bd1-6478-554c-14c0-36c58928aa83@opensource.wdc.com>
-Date:   Tue, 15 Feb 2022 09:07:14 +0900
+        Mon, 14 Feb 2022 19:10:14 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BE9AB450;
+        Mon, 14 Feb 2022 16:10:04 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1A7495C01D6;
+        Mon, 14 Feb 2022 19:10:01 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 14 Feb 2022 19:10:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; bh=cHzUZrMqkoXOYn28/jbP8mE5rbfh5W6/uFfsX5hJOwQ=; b=CRxS+
+        zjLshFGpn2/TB/Ue+G8SiyFUxBuyTXSUGiwMt1PMgB49FnKEgfl980XBdepqis5M
+        oVy+vAiJvaibHABpSwctaMaN6ef9AGkjCef6fxH10PZvEtWXFWVQg1nhPyzJ0YnE
+        b5duD9EkDVT2gXAHLtnJz/e73anfYlCnDMylnUx+r4LNxhJ4PzmOeQHkWb/l9zc3
+        iz5/sy5yaMUXqGPV1UyHgsLQH2Y6M7rknSBfpsgWKtli99eNaXULWmQ2G2gp94z1
+        eLuqdUF+FcWUO7vLeaTL/G+RrLFti9qYV9fEWtoGPgE06aK4KdaZ0LSDQ1cdsxfx
+        uddtO7r1289JuxdSg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm2; bh=cHzUZrMqkoXOYn28/jbP8mE5rbfh5
+        W6/uFfsX5hJOwQ=; b=lmJQ6Wi77Iq5z1nAi5pIt94Ox1IMKE38H+Cc8bCmsPNRe
+        dDCcPzJDc5+BnfvTIspRrH+7ftzg2sk9vSbzXhfPX3PWIhA8FWoyyZsOje5WgtgK
+        towlbOR+jfwD3Fc1k288/B6RmE1s92CXn/VBp5kwHC0OGMX/QDra+Z8Kdwo7/tkQ
+        bno+FapW0DpESDkW633Vt6O2VN1Bdqx3fmit1yHZZE80+8gIEVArcCWBJ4l0m/Ej
+        ip4scJAEyMu7zhm1CJh+Dt33Qnwlyxdy9pL0fXjl8ivdRYfLFAxeEKZWZctmhwhS
+        0YtWTUSV4q8erGtVnS7xBfJAuzQYuk1PDfBwyf+qw==
+X-ME-Sender: <xms:WO8KYgpE_it44s25fZMHCgq8Eu87lQAFJIGmWM0qB09AMU9gggGfSw>
+    <xme:WO8KYmoQktl9dVH9-xEMchcRLbvtvgCvvbf_Zm00yMbLSna0naCRBSuHBXuMcCZZW
+    uNHNeWzuFX04SKeFgI>
+X-ME-Received: <xmr:WO8KYlORCOPEqyE1QlQD0_3sCiCNqinUf3a3dnSM8vvh5a7UIlJU59X48Of9x-FWzfDiIVtKaJEcorH0WqQa88Q3io1T3Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrjeefgddulecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheq
+    necuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekuddute
+    efkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:WO8KYn7enZThA0nz2sn7ILGYPQqwGAAPdwrDPyB_LdeiZHBcFQaaoA>
+    <xmx:WO8KYv6ziLk5CvxTdMQ4KZikS_BIognfX9LBLifGM_diYyADV_I5qw>
+    <xmx:WO8KYnhz-YOUizoZ0Uo4eO1cPoe88KCTTFFCr7DTGU6NLxhgt0f10w>
+    <xmx:We8KYvEC61RHJTJ202Syn4NWs8H7fuBkoP2MWdDrBTfszUElUwjRdw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 14 Feb 2022 19:10:00 -0500 (EST)
+From:   Boris Burkov <boris@bur.io>
+To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v6 0/4] tests for btrfs fsverity
+Date:   Mon, 14 Feb 2022 16:09:54 -0800
+Message-Id: <cover.1644883592.git.boris@bur.io>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v2 1/2] fs: add asserting functions for
- sb_start_{write,pagefault,intwrite}
-Content-Language: en-US
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        johannes.thumshirn@wdc.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk
-References: <cover.1644469146.git.naohiro.aota@wdc.com>
- <40cbbef14229eaa34df0cdc576f02a1bd4ba6809.1644469146.git.naohiro.aota@wdc.com>
- <20220214213531.GA2872883@dread.disaster.area>
- <159d58f4-2585-7edf-7849-1a21b8b326f9@opensource.wdc.com>
- <20220215000515.GC2872883@dread.disaster.area>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <20220215000515.GC2872883@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/15/22 09:05, Dave Chinner wrote:
-> On Tue, Feb 15, 2022 at 07:49:27AM +0900, Damien Le Moal wrote:
->> On 2/15/22 06:35, Dave Chinner wrote:
->>> On Thu, Feb 10, 2022 at 02:59:04PM +0900, Naohiro Aota wrote:
->>>> Add an assert function sb_assert_write_started() to check if
->>>> sb_start_write() is properly called. It is used in the next commit.
->>>>
->>>> Also, add the assert functions for sb_start_pagefault() and
->>>> sb_start_intwrite().
->>>>
->>>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>>> ---
->>>>  include/linux/fs.h | 20 ++++++++++++++++++++
->>>>  1 file changed, 20 insertions(+)
->>>>
->>>> diff --git a/include/linux/fs.h b/include/linux/fs.h
->>>> index bbf812ce89a8..5d5dc9a276d9 100644
->>>> --- a/include/linux/fs.h
->>>> +++ b/include/linux/fs.h
->>>> @@ -1820,6 +1820,11 @@ static inline bool __sb_start_write_trylock(struct super_block *sb, int level)
->>>>  #define __sb_writers_release(sb, lev)	\
->>>>  	percpu_rwsem_release(&(sb)->s_writers.rw_sem[(lev)-1], 1, _THIS_IP_)
->>>>  
->>>> +static inline void __sb_assert_write_started(struct super_block *sb, int level)
->>>> +{
->>>> +	lockdep_assert_held_read(sb->s_writers.rw_sem + level - 1);
->>>> +}
->>>> +
->>>
->>> So this isn't an assert, it's a WARN_ON(). Asserts stop execution
->>> (i.e. kill the task) rather than just issue a warning, so let's not
->>> name a function that issues a warning "assert"...
->>>
->>> Hence I'd much rather see this implemented as:
->>>
->>> static inline bool __sb_write_held(struct super_block *sb, int level)
->>> {
->>> 	return lockdep_is_held_type(sb->s_writers.rw_sem + level - 1, 1);
->>> }
->>
->> Since this would be true when called in between __sb_start_write() and
->> __sb_end_write(), what about calling it __sb_write_started() ? That
->> disconnects from the fact that the implementation uses a sem.
-> 
-> Makes no difference to me; I initially was going to suggest
-> *_inprogress() but that seemed a bit verbose. We don't need to
-> bikeshed this to death - all I want is it to be a check that can be
-> used for generic purposes rather than being an explicit assert.
+This patchset provides tests for fsverity support in btrfs.
 
-agree.
+It includes modifications for generic tests to pass with btrfs as well
+as new tests.
 
-> 
-> Cheers,
-> 
-> Dave.
+--
+v6:
+- refactor "requires" for verity corruption tests so that other verity
+  tests can run on btrfs even without the corruption command available.
+  Also, explictly require xfs_io fiemap for all corruption tests.
+- simplify and clarify "non-trivial EFBIG" calculation and documentation
+  per suggestions by Eric Biggers.
+- remove unnecessary adjustment to max file size in the new EFBIG test;
+  the bug it worked around has been fixed.
+v5:
+- more idiomatic requires structure for making efbig test generic
+- make efbig test use truncate instead of pwrite for making a big file
+- improve documentation for efbig test approximation
+- fix underscores vs dashes in btrfs_requires_corrupt_block
+- improvements in missing/redundant requires invocations
+- move orphan test image file to $TEST_DIR
+- make orphan test replay/snapshot device size depend on log device
+  instead of hard-coding it.
+- rebase (signicant: no more "groups" file; use preamble)
+v4:
+- mark local variables
+- get rid of redundant mounts and syncs
+- use '_' in function names correctly
+- add a test for the EFBIG case
+- reduce usage of requires_btrfs_corrupt_block
+- handle variable input when corrupting merkle tree
+v3: rebase onto xfstests master branch
+v2: pass generic tests, add logwrites test
 
+
+Boris Burkov (4):
+  btrfs: test btrfs specific fsverity corruption
+  generic/574: corrupt btrfs merkle tree data
+  btrfs: test verity orphans with dmlogwrites
+  generic: test fs-verity EFBIG scenarios
+
+ common/btrfs          |   5 ++
+ common/config         |   1 +
+ common/verity         |  43 +++++++++++
+ tests/btrfs/290       | 166 ++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/290.out   |  25 +++++++
+ tests/btrfs/291       | 161 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/291.out   |   2 +
+ tests/generic/574     |   1 +
+ tests/generic/690     |  66 +++++++++++++++++
+ tests/generic/690.out |   7 ++
+ 10 files changed, 477 insertions(+)
+ create mode 100755 tests/btrfs/290
+ create mode 100644 tests/btrfs/290.out
+ create mode 100755 tests/btrfs/291
+ create mode 100644 tests/btrfs/291.out
+ create mode 100755 tests/generic/690
+ create mode 100644 tests/generic/690.out
 
 -- 
-Damien Le Moal
-Western Digital Research
+2.34.0
+
