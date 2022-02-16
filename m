@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2A54B90FE
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6174B90FC
 	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Feb 2022 20:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbiBPTHO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Feb 2022 14:07:14 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55526 "EHLO
+        id S235959AbiBPTHP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Feb 2022 14:07:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235959AbiBPTHN (ORCPT
+        with ESMTP id S237527AbiBPTHO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Feb 2022 14:07:13 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFAE1C119
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 11:07:00 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id d7so3771111qvk.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 11:07:00 -0800 (PST)
+        Wed, 16 Feb 2022 14:07:14 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A161EAD6
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 11:07:01 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id d3so3756686qvb.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 11:07:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=msz1I9DM/YlgYXXhJzqF2jxk9iS+ZjZjP6il6A/utD4=;
-        b=6YXplzQ23dWdLF67JINkRQ5uUHLM84t3bPav5NNJuFN5wzkEZuP8lFx5p5TCEv8/cu
-         Zo2t7tCgCLW0BPxF3jl6DZxTgVh7Gm3CdnRzh2RB4S+FHQIZj+JAran5hJcnWJXxVZY9
-         FMk5Hi8UyYg8qQ6FjEAWdQkHrC1S/8X2pBFQ48foW76FyX/U2/tYtxYYQAEIQd/VGJPs
-         E8/07Y/FwJ7ke7QLiuStEvJCIisaLujU+QKuwPFSr9yftToiX16d2kkVMtLz+yaQLDgq
-         Z+n03EKUF+HRh7Mb8DfjPK7o45kX7gkwOdtNl/a2Wxhn9ZgKliv6ZWGEU8G5PclbrcXL
-         twXA==
+        bh=b2Z26vMkOIUtkHckS6T8vkyhhAXjwrMHu7aJruaJmN4=;
+        b=gI2/7rj94nfa6CjftJ9ypDI4Qi/JxXbDokr4vGdEdpDKSbp16SiEkN38YtFZaC59H/
+         mg1D9h2YZ1SUeVuok4fpfFDSes9VFe8+36OJ0/aC1AP2qGLdQ204E0EvKgFKn28BmZqF
+         ESVHWvrFNxpYkkgX3Kzt2nvbJw8n0ZO500NbatFiNVL0dMPM8UL9wo54zBqwrKkZqVhe
+         jB6/kQgNxRwwyUhkLA5hYaxWbSnTQicQEaLwcy5EXa+R0PIm77AIeQ6d0m3X9j2MJRfz
+         YHAhd3/v9o7hnzaUAyogfv1NKCQJkPmF5ydsYNPnOpLok0gkhrmfwqfvnCXDTR2hnivQ
+         vesQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=msz1I9DM/YlgYXXhJzqF2jxk9iS+ZjZjP6il6A/utD4=;
-        b=WBmlhu+rwDI+/zxdxbc47868xxagyaaI0jLK2v9K6/FOqjUO3RfaoUBoo0zWkmgsdF
-         P4zlaYAeFWISmZ9iNXhHQ3aPEJ4WVT9hjIAbe6CM9GHN5ogyPeTFY2rP+kQ/L+HMi9ki
-         J3KLSbUXOSLBD5kxSMI86KCF25Ig+uiJG8XHfmPm4uTnt/rlMDhdNwUivyFAitW/bHf6
-         SakxjcDbHHXRhgCUD6y1c3rtfbS75qbNFF1LrD/cH51NZYwRsjnc1jqnDrKQe+GFzYoj
-         4E8QsfvQGjW8ItcUag5UHPNzrFSGj5CBwlDNlYPMAnD+m+QAmWxkzVz3BPYg+r0pjMD4
-         0L8Q==
-X-Gm-Message-State: AOAM532bZLTTCJQrcbMpWmH9mzvMIZ/9tFbOvt22inq+vdro2iXZlbXO
-        cxEr193yFXBGHptO/NE1DEN6vJK3H12cmwWs
-X-Google-Smtp-Source: ABdhPJz/xVFd1PY+xyzZvkIgLOXEVtT9zPMoEKq2N5QkwALSIqW5RelFjPZfPfuW+Zflwx7WdhZ6/Q==
-X-Received: by 2002:a05:6214:1442:b0:42d:757:b902 with SMTP id b2-20020a056214144200b0042d0757b902mr2927448qvy.54.1645038418922;
-        Wed, 16 Feb 2022 11:06:58 -0800 (PST)
+        bh=b2Z26vMkOIUtkHckS6T8vkyhhAXjwrMHu7aJruaJmN4=;
+        b=5ZmF6HdJA/1od5LXFXqjRvGlOxl2wu+8WpZT5T0lhXw5ETi1CNwTtrcFTzv5rNIC7o
+         ge4n/R4sYi5YCsNCp8Lgdqn/2JcJhC+TwXMwXRM/25YUIH9PxE2+LiWPmhJbOnuj5LV3
+         268mL52OMlmzXr67a73asNfeDoY5iA6v6yKw8iibreggYfg244TV01r88240TXXvbYPN
+         6KZmJwIC3r9XzD0qnKlxM9Pnonxf96VrteOtAJ+VxV4Q9MZkuNbvhaStyYLidksgMjko
+         +/M5O2VqDwdGOFrPmX8JQgpso0la9fA1zmFnaj8Vr08OvhqXaXcy970Klz0I9jNB44Xv
+         MJjg==
+X-Gm-Message-State: AOAM531XSjN0QltEOH4apB8mO39kaFIcPGdhifdjRm84hY+23ZipWow+
+        wdxB0vGNbPaG38OMH4i3OKlYb4wxjhyhh4of
+X-Google-Smtp-Source: ABdhPJyIN8bx2333ojUCc3ps+uQgNYcxmLirUAAkDhzF/WD8wYW4nRcf4/RCsVGluz4Dbir9K/yYHg==
+X-Received: by 2002:a05:6214:16f:b0:42d:7bff:ffb9 with SMTP id y15-20020a056214016f00b0042d7bffffb9mr3026486qvs.128.1645038420364;
+        Wed, 16 Feb 2022 11:07:00 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x13sm20129376qko.114.2022.02.16.11.06.58
+        by smtp.gmail.com with ESMTPSA id d15sm15472478qtx.30.2022.02.16.11.06.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Feb 2022 11:06:58 -0800 (PST)
+        Wed, 16 Feb 2022 11:07:00 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/3] btrfs: clean deleted snapshots on mount
-Date:   Wed, 16 Feb 2022 14:06:53 -0500
-Message-Id: <12c9eec886e4544b71389770a069c90fac0401b9.1645038250.git.josef@toxicpanda.com>
+Subject: [PATCH 2/3] btrfs: use btrfs_fs_info for deleting snapshots and cleaner
+Date:   Wed, 16 Feb 2022 14:06:54 -0500
+Message-Id: <0908d58bce2ecb380ea1ff4d0268ff8066f2dc13.1645038250.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1645038250.git.josef@toxicpanda.com>
 References: <cover.1645038250.git.josef@toxicpanda.com>
@@ -67,93 +67,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We hit a bug with a recovering relocation on mount for one of our file
-systems in production.  I reproduced this locally by injecting errors
-into snapshot delete with balance running at the same time.  This
-presented as an error while looking up an extent item
-
-------------[ cut here ]------------
-WARNING: CPU: 5 PID: 1501 at fs/btrfs/extent-tree.c:866 lookup_inline_extent_backref+0x647/0x680
-CPU: 5 PID: 1501 Comm: btrfs-balance Not tainted 5.16.0-rc8+ #8
-RIP: 0010:lookup_inline_extent_backref+0x647/0x680
-RSP: 0018:ffffae0a023ab960 EFLAGS: 00010202
-RAX: 0000000000000001 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 000000000000000c RDI: 0000000000000000
-RBP: ffff943fd2a39b60 R08: 0000000000000000 R09: 0000000000000001
-R10: 0001434088152de0 R11: 0000000000000000 R12: 0000000001d05000
-R13: ffff943fd2a39b60 R14: ffff943fdb96f2a0 R15: ffff9442fc923000
-FS:  0000000000000000(0000) GS:ffff944e9eb40000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1157b1fca8 CR3: 000000010f092000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- insert_inline_extent_backref+0x46/0xd0
- __btrfs_inc_extent_ref.isra.0+0x5f/0x200
- ? btrfs_merge_delayed_refs+0x164/0x190
- __btrfs_run_delayed_refs+0x561/0xfa0
- ? btrfs_search_slot+0x7b4/0xb30
- ? btrfs_update_root+0x1a9/0x2c0
- btrfs_run_delayed_refs+0x73/0x1f0
- ? btrfs_update_root+0x1a9/0x2c0
- btrfs_commit_transaction+0x50/0xa50
- ? btrfs_update_reloc_root+0x122/0x220
- prepare_to_merge+0x29f/0x320
- relocate_block_group+0x2b8/0x550
- btrfs_relocate_block_group+0x1a6/0x350
- btrfs_relocate_chunk+0x27/0xe0
- btrfs_balance+0x777/0xe60
- balance_kthread+0x35/0x50
- ? btrfs_balance+0xe60/0xe60
- kthread+0x16b/0x190
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x22/0x30
- </TASK>
----[ end trace 7ebc95131709d2b0 ]---
-
-Normally snapshot deletion and relocation are excluded from running at
-the same time by the fs_info->cleaner_mutex.  However if we had a
-pending balance waiting to get the ->cleaner_mutex, and a snapshot
-deletion was running, and then the box crashed, we would come up in a
-state where we have a half deleted snapshot.
-
-Again, in the normal case the snapshot deletion needs to complete before
-relocation can start, but in this case relocation could very well start
-before the snapshot deletion completes, as we simply add the root to the
-dead roots list and wait for the next time the cleaner runs to clean up
-the snapshot.
-
-Fix this by simply cleaning all of the deleted snapshots at mount time,
-before we start messing with relocation.
+We're passing a root around here, but we only really need the fs_info,
+so fix up btrfs_clean_one_deleted_snapshot() to take an fs_info instead,
+and then fix up all the callers appropriately.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ fs/btrfs/disk-io.c     | 9 ++++-----
+ fs/btrfs/transaction.c | 4 ++--
+ fs/btrfs/transaction.h | 2 +-
+ 3 files changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b6a81c39d5f4..ae8c201070f2 100644
+index ae8c201070f2..4303b996ad2f 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3380,6 +3380,19 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
- 	up_read(&fs_info->cleanup_work_sem);
+@@ -1947,8 +1947,7 @@ static void end_workqueue_fn(struct btrfs_work *work)
  
- 	mutex_lock(&fs_info->cleaner_mutex);
-+	/*
-+	 * If there are any DEAD_TREE's we must recover them here, otherwise we
-+	 * could re-start relocation and attempt to relocate blocks that are
-+	 * within a half-deleted snapshot.  Under normal operations we can't run
-+	 * relocation and snapshot delete at the same time, however if we had a
-+	 * snapshot deletion happening prior to this mount there's no way to
-+	 * guarantee that the deletion will start before we re-start (or a user
-+	 * starts) the relocation.  So do the cleanup here in order to prevent
-+	 * problems.
-+	 */
-+	while (btrfs_clean_one_deleted_snapshot(fs_info->tree_root))
-+		cond_resched();
-+
+ static int cleaner_kthread(void *arg)
+ {
+-	struct btrfs_root *root = arg;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_fs_info *fs_info = (struct btrfs_fs_info *)arg;
+ 	int again;
+ 
+ 	while (1) {
+@@ -1981,7 +1980,7 @@ static int cleaner_kthread(void *arg)
+ 
+ 		btrfs_run_delayed_iputs(fs_info);
+ 
+-		again = btrfs_clean_one_deleted_snapshot(root);
++		again = btrfs_clean_one_deleted_snapshot(fs_info);
+ 		mutex_unlock(&fs_info->cleaner_mutex);
+ 
+ 		/*
+@@ -3390,7 +3389,7 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
+ 	 * starts) the relocation.  So do the cleanup here in order to prevent
+ 	 * problems.
+ 	 */
+-	while (btrfs_clean_one_deleted_snapshot(fs_info->tree_root))
++	while (btrfs_clean_one_deleted_snapshot(fs_info))
+ 		cond_resched();
+ 
  	ret = btrfs_recover_relocation(fs_info->tree_root);
- 	mutex_unlock(&fs_info->cleaner_mutex);
- 	if (ret < 0) {
+@@ -3819,7 +3818,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_sysfs;
+ 	}
+ 
+-	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, tree_root,
++	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, fs_info,
+ 					       "btrfs-cleaner");
+ 	if (IS_ERR(fs_info->cleaner_kthread))
+ 		goto fail_sysfs;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index c6e550fa4d55..b467570ae58b 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2444,10 +2444,10 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+  * because btrfs_commit_super will poke cleaner thread and it will process it a
+  * few seconds later.
+  */
+-int btrfs_clean_one_deleted_snapshot(struct btrfs_root *root)
++int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info)
+ {
++	struct btrfs_root *root;
+ 	int ret;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 
+ 	spin_lock(&fs_info->trans_lock);
+ 	if (list_empty(&fs_info->dead_roots)) {
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 9402d8d94484..399efc674f24 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -216,7 +216,7 @@ int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid);
+ 
+ void btrfs_add_dead_root(struct btrfs_root *root);
+ int btrfs_defrag_root(struct btrfs_root *root);
+-int btrfs_clean_one_deleted_snapshot(struct btrfs_root *root);
++int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info);
+ int btrfs_commit_transaction(struct btrfs_trans_handle *trans);
+ void btrfs_commit_transaction_async(struct btrfs_trans_handle *trans);
+ int btrfs_end_transaction_throttle(struct btrfs_trans_handle *trans);
 -- 
 2.26.3
 
