@@ -2,108 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BB34B8537
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Feb 2022 11:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187BE4B85FD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Feb 2022 11:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbiBPKGZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Feb 2022 05:06:25 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:40830 "EHLO
+        id S230074AbiBPKiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Feb 2022 05:38:09 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbiBPKGY (ORCPT
+        with ESMTP id S229619AbiBPKiF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Feb 2022 05:06:24 -0500
-Received: from localhost (ip5886566d.dynamic.kabel-deutschland.de [88.134.86.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 27A932B73F8;
-        Wed, 16 Feb 2022 02:05:55 -0800 (PST)
-Received: by localhost (Postfix, from userid 0)
-        id 17AA1AD3E; Wed, 16 Feb 2022 11:05:52 +0100 (CET)
-From:   Gabriel Niebler <gniebler@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Gabriel Niebler <gniebler@suse.com>
-Subject: [PATCH] fstests: fix btrfs/255 to fail on deadlock
-Date:   Wed, 16 Feb 2022 11:05:35 +0100
-Message-Id: <20220216100535.4231-1-gniebler@suse.com>
+        Wed, 16 Feb 2022 05:38:05 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC60165C21
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 02:37:53 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 981121F37D
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 10:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1645007872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=x34m4n5XzUcvzjgERo8+7039LCqRyyYBj7CtJ/Qnzyo=;
+        b=cyCH7Gud3NFcKCaxCso/hCaPwb+9Hsh1gqGj4+sgvRAs3P2/dp7EndaI7SYWDoPZHW1fQ3
+        mdqXH/EUM1vRY9DKxbI3hxCzuspgC3/IGLgstrA3gUUOyz/JBX4D1vRlafkn7tpzMOL1yH
+        qBD925whmGgJZ5WL4BfIhNx/SsFald4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E2DD513A95
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 10:37:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Nt+RKf/TDGLYFQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Feb 2022 10:37:51 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: cmds/prop: don't change fattr string to "" if it's "none" or "no"
+Date:   Wed, 16 Feb 2022 18:37:34 +0800
+Message-Id: <ebaa6a2cae0296d00ea8fd3ee771a0c563e6a4f3.1645007807.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: Yes, score=6.7 required=5.0 tests=BAYES_00,FSL_HELO_NON_FQDN_1,
-        HEADER_FROM_DIFFERENT_DOMAINS,HELO_LOCALHOST,KHOP_HELO_FCRDNS,
-        PDS_RDNS_DYNAMIC_FP,RCVD_IN_PBL,RCVD_IN_SORBS_DUL,RDNS_DYNAMIC,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Report: *  3.3 RCVD_IN_PBL RBL: Received via a relay in Spamhaus PBL
-        *      [88.134.86.109 listed in zen.spamhaus.org]
-        *  0.0 RCVD_IN_SORBS_DUL RBL: SORBS: sent directly from dynamic IP
-        *      address
-        *      [88.134.86.109 listed in dnsbl.sorbs.net]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  3.8 HELO_LOCALHOST No description available.
-        *  0.0 FSL_HELO_NON_FQDN_1 No description available.
-        *  0.2 HEADER_FROM_DIFFERENT_DOMAINS From and EnvelopeFrom 2nd level
-        *      mail domains are different
-        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  1.0 RDNS_DYNAMIC Delivered to internal network by host with
-        *      dynamic-looking rDNS
-        *  0.0 PDS_RDNS_DYNAMIC_FP RDNS_DYNAMIC with FP steps
-        *  0.2 KHOP_HELO_FCRDNS Relay HELO differs from its IP's reverse DNS
-X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In its current implementation, the test btrfs/255 would hang forever
-on any kernel w/o patch "btrfs: fix deadlock between quota disable
-and qgroup rescan worker", rather than failing, as it should.
-Fix this by introducing generous timeouts.
+Since kernel commit 548c8c6f55b ("btrfs: props: change how empty value is
+interpreted"), "" for btrfs.compression fattr has its own meaning (no
+special compression setting, fallback to default values).
 
-Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+And the new "" meaning is different from NOCOMPRESSION, so the change
+needs corresponding btrfs-progs change to separate the behaviors.
+
+This patch will remove the special handling for "none"/"no", so that we
+can properly set "none"/"no" for btrfs.compression fattr, other than
+always falling back to "".
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/btrfs/255 | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ cmds/property.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/tests/btrfs/255 b/tests/btrfs/255
-index 7e70944a..4c779458 100755
---- a/tests/btrfs/255
-+++ b/tests/btrfs/255
-@@ -14,6 +14,7 @@ _begin_fstest auto qgroup balance
+diff --git a/cmds/property.c b/cmds/property.c
+index b3ccc0ff69b0..bfe118285abb 100644
+--- a/cmds/property.c
++++ b/cmds/property.c
+@@ -189,13 +189,11 @@ static int prop_compression(enum prop_object_type type,
+ 	memcpy(xattr_name + XATTR_BTRFS_PREFIX_LEN, name, strlen(name));
+ 	xattr_name[XATTR_BTRFS_PREFIX_LEN + strlen(name)] = '\0';
  
- # real QA test starts here
- _supported_fs btrfs
-+_require_command "$TIMEOUT_PROG" timeout
- _require_scratch
- 
- _scratch_mkfs >> $seqres.full 2>&1
-@@ -37,15 +38,23 @@ done
- _btrfs_stress_balance $SCRATCH_MNT >> $seqres.full &
- balance_pid=$!
- echo $balance_pid >> $seqres.full
-+timeout=$((30 * 60))
- for ((i = 0; i < 20; i++)); do
--	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
--	$BTRFS_UTIL_PROG quota disable $SCRATCH_MNT
-+	$TIMEOUT_PROG -s KILL ${timeout}s $BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
-+	[ $? -eq 0 ] || _fail "quota enable timed out"
-+	$TIMEOUT_PROG -s KILL ${timeout}s $BTRFS_UTIL_PROG quota disable $SCRATCH_MNT
-+	[ $? -eq 0 ] || _fail "quota disable timed out"
- done
- kill $balance_pid &> /dev/null
--wait
+-	if (value) {
+-		if (strcmp(value, "no") == 0 || strcmp(value, "none") == 0)
+-			value = "";
++	if (value)
+ 		sret = fsetxattr(fd, xattr_name, value, strlen(value), 0);
+-	} else {
++	else
+ 		sret = fgetxattr(fd, xattr_name, NULL, 0);
+-	}
 +
- # wait for the balance operation to finish
-+elapsed=0
- while ps aux | grep "balance start" | grep -qv grep; do
-+	if [ $elapsed -gt $timeout ]; then
-+		_fail "balance not finished after $timeout seconds"
-+	fi
- 	sleep 1
-+	elapsed=$(( ++elapsed ))
- done
- 
- echo "Silence is golden"
+ 	if (sret < 0) {
+ 		ret = -errno;
+ 		if (ret != -ENOATTR)
 -- 
 2.35.1
 
