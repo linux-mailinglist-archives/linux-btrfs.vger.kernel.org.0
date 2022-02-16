@@ -2,425 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E5A4B7BD8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Feb 2022 01:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F28C4B7E32
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Feb 2022 04:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242069AbiBPAXb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Feb 2022 19:23:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41010 "EHLO
+        id S244047AbiBPDCm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Feb 2022 22:02:42 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232793AbiBPAXa (ORCPT
+        with ESMTP id S237717AbiBPDCl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Feb 2022 19:23:30 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A091F70DB
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Feb 2022 16:23:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644970982;
-        bh=EO/Mzu74BcaQ9g0ZBgVEYvTXYGQrd2MIwJPein9VVlQ=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=Nnet8d6Skv9Bsn819sTSQyiZRua172mklGhZS4mhXUjSCjlOSs+Wa/ejpaenObE5o
-         nKSR2skWPqi3QO+NIDXi6NgXhcDz+A4iZxILmnzatsOlYrIwzAFTLKs5QD1uYNFqxh
-         OcMi+2FH2s/MdIY+tXykTLzpcLPcgyk9+ELr++o4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5G9n-1oJ0RE21Sf-011B5l; Wed, 16
- Feb 2022 01:23:02 +0100
-Message-ID: <c43c5945-3c3a-0dee-a998-9e76c3eb0289@gmx.com>
-Date:   Wed, 16 Feb 2022 08:22:55 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
+        Tue, 15 Feb 2022 22:02:41 -0500
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A66673EC;
+        Tue, 15 Feb 2022 19:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1644980548; x=1676516548;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=VbOYpltPVpjPkcoE+BfKqMZI+SCQaGnbtAoCPS9QrZo=;
+  b=PnUA2B2e4mLxudyv0ji80UJWHWWfOb+zgDg3I+kS95/v7KJCEOZK71FU
+   TurRfxWWnsXnsUlaVYEthrbdZr0nyOKjhWP6FXOKzeROSGCCx1DMEVnNW
+   x1Lhp1OLzaH6yT3ECqSRIj3UoiWVa9SB23L8rssnkAlSbr5XjVp32Gpo/
+   TSu7P/EaJ0s9mUkoabGktVUsHWoK93DU/FrOFZIUOYfEnDJf0nBoYQNpE
+   fXD8nUKW6uNZULLTLWurCH02NsdGA3VECb5HvdsvVZuAAfz/oqp3OH0WO
+   CCQajBeeT2rPI5Z9NAvlaEq8wroPERkjHFiLu7tws/D696wM+/XRasCHR
+   g==;
+X-IronPort-AV: E=Sophos;i="5.88,371,1635177600"; 
+   d="scan'208";a="304961742"
+Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Feb 2022 11:02:27 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WNpQjukN3P/rkChLweDW9Ks53kQyipUBKQS3eT15bQM6Xn5nzjoECGdydCGUdoFN3ir8hfcJ0ISlztZyctv5JV84/Ob5uACiMXO9rlN3JRAIkPjVHnHUSf/rosKfyLklSMVk9IWfqDsTQR7+SsTzfkMADyxZFdGHfzB2IEwDLJxFXFEoAuBxCchYw1vCAk4tF8CQoja+0WDSvY9CuLyIPe8iHUaiFA7uT0tBF79CavseWbG9AloF5wUXvBXEbXCc9BGjpIhUTSrlwmWvLlIVHR/7kTXGP38q4y6H6XbF3zs0aAmH6z9Ho8KP8QkhP5iFRZDdTiHkYEyw2yiW8fJ3JQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+C2EOC3pO1jEAycol+UZsm4XIGC9d+Lm5Dw3gx89gpM=;
+ b=U/MwNLziLnMm22fKYITllvQdw+9g8ChScQmF58tJXx7/FWDfwq/nVLow2UJjHuXJT8VmD1nfRZudLuzkNq12nlQ9tshrvBSdpZYiCemaUbNnB4KTENuu8lr6+O8sTrg7DsfH4hH/w7cEFIrt7d8MAK/SCObtQJgrpEG6HJpexjovi7HKf4MoVSBIcg7QkF0AodhuwlPpaTQFrgKFwoBmAvqkZnCK6SdYKG35NBRXhejQyBPGMIvm4M/VM7NjN+niqkmAtT/O6RF+ZRhduw3F9EtEpHpxPpyXAOM7NZjuEo60EQoqUlriD6X3IZjIH151Y/CeqImkO33GSSaEXI8Oig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+C2EOC3pO1jEAycol+UZsm4XIGC9d+Lm5Dw3gx89gpM=;
+ b=SK5R6UEIZanTLBa/avzzl9iBPl0c2FvFjtOrc86wHNacDs6zMt3PVhtoNeTk3rgvLlEoiWdYHe7d0mncsEAdR+OMwNMQCz29AQuoGDpeTaXk7u4MqpvoQuPUVelUVA1LDeoxUATZzHbkHSvnx0yOAZRQ7b6x3/ZS+VFMuvg+Q74=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by SN6PR04MB4927.namprd04.prod.outlook.com (2603:10b6:805:93::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.14; Wed, 16 Feb
+ 2022 03:02:25 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::d179:1a80:af1d:e8ee]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::d179:1a80:af1d:e8ee%6]) with mapi id 15.20.4975.019; Wed, 16 Feb 2022
+ 03:02:24 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Dave Chinner <david@fromorbit.com>
+CC:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v2 1/2] fs: add asserting functions for
+ sb_start_{write,pagefault,intwrite}
+Thread-Topic: [PATCH v2 1/2] fs: add asserting functions for
+ sb_start_{write,pagefault,intwrite}
+Thread-Index: AQHYHkNcgseIo69yC0yvO1qLR1/smqyTmQ6AgAAUqICAABUtgIABw9OA
+Date:   Wed, 16 Feb 2022 03:02:24 +0000
+Message-ID: <20220216030223.7it5t2qgfjf3gdcy@naota-xeon>
+References: <cover.1644469146.git.naohiro.aota@wdc.com>
+ <40cbbef14229eaa34df0cdc576f02a1bd4ba6809.1644469146.git.naohiro.aota@wdc.com>
+ <20220214213531.GA2872883@dread.disaster.area>
+ <159d58f4-2585-7edf-7849-1a21b8b326f9@opensource.wdc.com>
+ <20220215000515.GC2872883@dread.disaster.area>
+In-Reply-To: <20220215000515.GC2872883@dread.disaster.area>
+Accept-Language: ja-JP, en-US
 Content-Language: en-US
-To:     kreijack@inwind.it, Josef Bacik <josef@toxicpanda.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1643228177.git.kreijack@inwind.it>
- <7e5e75ed-86b4-a629-09c9-29202f93b4b6@inwind.it>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 0/7][V11] btrfs: allocation_hint
-In-Reply-To: <7e5e75ed-86b4-a629-09c9-29202f93b4b6@inwind.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 819fdd31-5d40-4484-9866-08d9f0f8c22a
+x-ms-traffictypediagnostic: SN6PR04MB4927:EE_
+x-microsoft-antispam-prvs: <SN6PR04MB49274F15589795E7D47F42FA8C359@SN6PR04MB4927.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: USsnVvilOMgHGP/9hzwXNzTNEOBzU+dGwhWnKkZqmvTWna6o/M5wqAh5kPzyqH0mZ63e4xolKA5Jh7jb6mRiPTxLSL3/5if24H+TtfEy6+ALtsk9hGRCwbh0uNHCHLd6j0B7DOQ0SHob927KFLfDa7iUNyyCSWcOUjgNFNrwHzLZ7jUfwe71ad65DoKQ6onzvmWLSqtsnZFLaQ4ZuPa3lSvy/Zx4Q8Vk2mCoBTqc042hbhBnb8PiGErzCjblaCcFrxtogE8ewnwQ3+WwfOVf3C3zlwsfB7hrUngI7paK/WiyZLtQvZ/GbfRkt4xoeSMVGczL+jBck+k51iteKbw2wL+SJbxW/aMAfFv3+8xuYDNwDquKRyyZfP2yCHHd0w4Ttq51z21QyFPVH+ixV+whm6bUeDCflXKSVz5qN0gou0TCjATF4TBWcXFB9GeZ/wwRChPfyMWY3XJnKI7qFxfKUkQZkVj6krVTq0TmCeCK5Lx53Q2MFdGFXIYwFuo6OWUoiJ9rznzBjwWl8YTQ1qclpdU1m3+RE0qdezbMKufH0Gral1MZLz0uKIMtozeAmDgP2HpPTGSvjVBN83e75obsILzkDArVb1icm9MgSaWUr40by4B2KGVQRdq0PS44dCYDqvguaLw49eXwBA1tKHmymQA1DEEWblSP7eYD8Bl8N3y9hV71RYAidnDQ322Ftpy/SZgvXjaFBTyXpLcX8E6r5A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(8676002)(9686003)(6512007)(8936002)(5660300002)(4326008)(71200400001)(6486002)(53546011)(54906003)(508600001)(38070700005)(91956017)(26005)(64756008)(186003)(66556008)(6506007)(6916009)(122000001)(33716001)(1076003)(83380400001)(2906002)(82960400001)(66476007)(66946007)(38100700002)(66446008)(86362001)(76116006)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TYUQeThMbi4ZAYYJbY46VYKqtB0SQLRHj877oMDcU0ABK5weWssqdukKViFr?=
+ =?us-ascii?Q?NHEhJzp2+jYi+rwsA98ZhOYRaa8AILRZzVeV23pcCyavfXOQ3isCR/dUfS/C?=
+ =?us-ascii?Q?1hjLCVtan5Lskir4t2UMxGD9idW8Kb1LFtPdIhzxV5RdDQi6uX7czEBCw0lD?=
+ =?us-ascii?Q?13NO7hUYcFS/jhH4NuKQFijxYOSQYDraxww+DPoL2UwaBiJOPBhakz8aOCFR?=
+ =?us-ascii?Q?MXruTmXenxO4IwzNBUbFM66/+eC3JJRXddf/DwbzPSHw3zpsDp/lplHYa35k?=
+ =?us-ascii?Q?5pgdb1iCnaTUrKStYIh3+QBTqRb+Z8ruXrgcdKmCgzH5CVtF7Ht7lI/BX+FZ?=
+ =?us-ascii?Q?2Ft51Y18u6K/+cy4zpC05b+EEgt/HmCoP0BB5i4zwKLxxrDnYvoeFCMXK4ma?=
+ =?us-ascii?Q?7bhPNB5lEg+HmhRCJnLCqfwngIVZeBc1z6AhlaRiueI2/9kB9e88hlCM/NJI?=
+ =?us-ascii?Q?7lJnB6SgdrgE+N0lGNdSp8avtgvkr2skNX49zwwDtHziZiVk0sZLJ1xChBHC?=
+ =?us-ascii?Q?jQtveDj0a8Sl0zlZXCASg5RYqINNvtRMT0/lkRot1oEhVUnCelip3ZwywnCS?=
+ =?us-ascii?Q?ImgEVaClUjFV0nls27GOLaSrjRrYIa9Sm1Blbf22xR876CW7xiJBtUpIxu5L?=
+ =?us-ascii?Q?WhrjKU2Qk/f9rszVP9Ofd4yW1t0PCzFq4/CALEfaQ97+QZch4zhmZhRGdTO9?=
+ =?us-ascii?Q?KP4DNyFde0C1KL3Un9s7UIRMvAPdiWBO0z8Ottaemfvmya6SYo4vPeCNC4gQ?=
+ =?us-ascii?Q?pUtKLOBC5fRKKu6OI6woaVcvtnK/g7aRxk6g+RZsxRe58tzJeC9NYJHb5nyF?=
+ =?us-ascii?Q?a338XF0vXM4neljY0rX8m48P0ZrCObLdEQgkrICDg0uCHxdvGNLq862ny6wJ?=
+ =?us-ascii?Q?LOlQ9ZBXE4V5I6SNuNWDAlzWNOn/l7uim3oBOxfcHByH8gYiACZ9Q7U4xcHD?=
+ =?us-ascii?Q?TwTgsrUxxGiklwWGOfK5GVQTrSqc/nhX35R8BkF3WUxViTOkgBSenBUj/VnX?=
+ =?us-ascii?Q?lyIUslS4aLns2C1nJw/BbO14vZm3LjxG27cZ62YkGwUwWtJ94RahifjDHfOf?=
+ =?us-ascii?Q?u8J7gH9uIVLr+13QvffcKoefhJUV+AjAaizw3cX+5/ZksDL8pb5U/KVETi5A?=
+ =?us-ascii?Q?CaSaMHOPemyN5gW1mlwtGWpjqAZJ7EK9W1S59TPbxcHmfsuB/sPWk9MKp+EK?=
+ =?us-ascii?Q?8W2eKopNrl64My6HJqhJlkQkxTKYwHT2cgrzfoaN5BerekdfXPGpNXHmKRSy?=
+ =?us-ascii?Q?p7HCsBe+wll7xSOPsIhupIqBPI3MHKJI9crIstzJsbaooDC6uCD0QeoyvAtf?=
+ =?us-ascii?Q?l1lE0I0n2vfv+pJymQAdoeZcc651Nk8OIeiJ3IyuO6VE6P88LzZdTDiBDmBZ?=
+ =?us-ascii?Q?oV3l6dhqdjjGerXNqISf4CPX0sGXBJBhncPFp+vVPoTV4F6pYs8LmrvU07tu?=
+ =?us-ascii?Q?9Hm8YYxaK037ZfBFQ1g6ev81vO9P/jZxGBx5Z6Jv+AErI4XQSLvJhMqhS4NO?=
+ =?us-ascii?Q?f3ApMMsYJv8R7f7yFlcqF8g/JWGGojyjOWPdlHwvSKGvj75JVy8JyomdFNCl?=
+ =?us-ascii?Q?DEHBRPD4LlP73j8ua4rxX52pDo6XWDeQYk6k/DyIYcUmfd7Qm7bDK3WdUoBU?=
+ =?us-ascii?Q?pNPDjGZ+iJDWmCznAmP5oKs=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <846C1045F0C33649B61C3EA287B4D7D3@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fLkQoYkbc18svfpAj06KZ5jSYEfViNmKjrJ4/XwzQtvY4Zo1n6z
- JtCUE6dPlPtAFjUSpmrtYFoy8h837JjfOCGmpme98shbafhyB1Blf/UMjqPtgmKrtwQDJKh
- YHwGg1G3IxeaKwfg02lS47A65oNeqwFNqG7S/VcTOHGgJmyycr/EEyybVlGX8RvMVRZkTJM
- wH2zZWqnpcZnAJwPv2a2g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UOsPWuVRaN0=:plQyFG/B6/MQ/kvgc8Iu2m
- 67ycyyGWEAHa1QsQTClAKdrLuqJeoq6RIfMpkp0ikOBNuEJL4xePVaAlyliiY03X76/uMIJo3
- IX4jcJnT9Ns9aExZKCzbLFvO34VpmaRemPw5PBSIP7DrOOD9kSmLgr67kTBR6Lytvx2M+9XqK
- w8KI4rcBIKg2WUklXlEgDT/byKN1ITfp5TRGMqQicgGGY1HVYnJyC5syOe/I2KphCXg3btX8k
- z/DLZTyAy1gpnXRkqrO4/9Bcer8xizta7OLtUfMy/Ly0ITIuAmfKJwU6CHO6TDXJPXJQUuCHT
- T8vsouf7WQVBI5l2BiZsG+kW3puARdqaDZNayAbkYs/H03tCMm/V/7nAepWqnJ/RVRj/J37n6
- pgpnw8LmD54cXmQnPGAl61oE5AbG0XmjjrutDKTPyXSLM/YZKOVuxvLTdzny44gvSECWzGkYg
- SxblBZUkxKB7rI1G5tRPp/8Bud4FyZDbc9SwuiCb1/HARO0mlMenqr7B/I2yJoywtvxzJXqBM
- 7ysYVQTIYsKQ1GChy2zR72PiIwoonvRjgog6KiyPYm0lyV2r1YzyoEgGPgF7s47SAViodtFnG
- 5ou7VZX2Gd+RXDZCdhTvyxNdPN2/jIqNe82k2YrEAllnlALg0Q7sSkJJNtfTemeDC5FqyqhY1
- 9WESeC7AYeUtiGhkRwmKgJYgQ+1Kepr9+vgRTPtRkeYHqfjYxFp1TqF05CIZKl6NHYKP5Z3zC
- q0itIz2ukSkL6ut0bliLc20CezFa+6hSQU0bKsex9jmvg2wQOwxi/Ufh0mLc+1iVzsWqqwXl1
- uvZF2joz8E63hUyNhEzOsFk7qWsE0UUU1/ukeOaB6td4nEwPVZ4MIwv+hRoyT6frRQSWE4J3B
- h9EIw4zHYxkDU7Z5Jo64bEDH/0/E0sqd7c656AR2D3oHTXZXHD7so5BLcU8YGJh+KG+tkJsF5
- luzhNzo2dQdi5POW7WRrW0gh13jzQFefaMjpuPpbchKbffa7vFcMQTX3mgy1GYOnzNUSJtKq+
- b84ktW/nNnU7hAJZ3XAHWkpGfcXUZsGJwGugQKjpxu6fjJO1UBcG767OgcneNinsvqNNiPJrd
- 2PBdiTxetLrQqw=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 819fdd31-5d40-4484-9866-08d9f0f8c22a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2022 03:02:24.8513
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tI/bkZL8riPAXtUsGfliBoD5CzXflS9voxGHXcJBVLTu3dLJ2lY5/pa6+yzMzJwK8bpSCPGJ12IBC658xR/Hmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4927
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Feb 15, 2022 at 11:05:15AM +1100, Dave Chinner wrote:
+> On Tue, Feb 15, 2022 at 07:49:27AM +0900, Damien Le Moal wrote:
+> > On 2/15/22 06:35, Dave Chinner wrote:
+> > > On Thu, Feb 10, 2022 at 02:59:04PM +0900, Naohiro Aota wrote:
+> > >> Add an assert function sb_assert_write_started() to check if
+> > >> sb_start_write() is properly called. It is used in the next commit.
+> > >>
+> > >> Also, add the assert functions for sb_start_pagefault() and
+> > >> sb_start_intwrite().
+> > >>
+> > >> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > >> ---
+> > >>  include/linux/fs.h | 20 ++++++++++++++++++++
+> > >>  1 file changed, 20 insertions(+)
+> > >>
+> > >> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > >> index bbf812ce89a8..5d5dc9a276d9 100644
+> > >> --- a/include/linux/fs.h
+> > >> +++ b/include/linux/fs.h
+> > >> @@ -1820,6 +1820,11 @@ static inline bool __sb_start_write_trylock(s=
+truct super_block *sb, int level)
+> > >>  #define __sb_writers_release(sb, lev)	\
+> > >>  	percpu_rwsem_release(&(sb)->s_writers.rw_sem[(lev)-1], 1, _THIS_IP=
+_)
+> > >> =20
+> > >> +static inline void __sb_assert_write_started(struct super_block *sb=
+, int level)
+> > >> +{
+> > >> +	lockdep_assert_held_read(sb->s_writers.rw_sem + level - 1);
+> > >> +}
+> > >> +
+> > >=20
+> > > So this isn't an assert, it's a WARN_ON(). Asserts stop execution
+> > > (i.e. kill the task) rather than just issue a warning, so let's not
+> > > name a function that issues a warning "assert"...
+> > >=20
+> > > Hence I'd much rather see this implemented as:
+> > >=20
+> > > static inline bool __sb_write_held(struct super_block *sb, int level)
+> > > {
+> > > 	return lockdep_is_held_type(sb->s_writers.rw_sem + level - 1, 1);
+> > > }
+> >=20
+> > Since this would be true when called in between __sb_start_write() and
+> > __sb_end_write(), what about calling it __sb_write_started() ? That
+> > disconnects from the fact that the implementation uses a sem.
+>=20
+> Makes no difference to me; I initially was going to suggest
+> *_inprogress() but that seemed a bit verbose. We don't need to
+> bikeshed this to death - all I want is it to be a check that can be
+> used for generic purposes rather than being an explicit assert.
 
+Agree. I'd like to use __sb_write_started() as it is conforming to
+other functions.
 
-On 2022/2/16 02:49, Goffredo Baroncelli wrote:
-> Hi Josef,
->
-> gentle ping...
->
-> few months ago you showed some interest in this patches set. Few of the
-> cc-ed person use this patch set.
->
-> I know that David showed some interest in the Anand approach (i.e. no
-> knobs, but an automatic behavior looking at the speed of the devices).
->
-> At the time when I tried this approach in the first attempts, I got the
-> complain that the kernel may not know the performance differences of the
-> disk (HDD vs SSD vs NVME vs ZONED disk...).
-
-Sorry I didn't check the patches in details.
-
-But I'm a little concerned about how to accurately determine the
-performance of a device.
-
-If doing it automatically, there must be some (commonly very short) time
-spent to do the test.
-
-In the very short time, I doubt we can even accurately got a full
-picture of a device (from sequential read/write speed to IOPS values)
-
-For spinning disks, the sequential read/write speed even change based on
-their LBA address (as their physical location inside the plate can
-change their linear velocity, since the angular velocity is fixed).
-
-And even for SSD, IOPS can var dramatically due to cache/controller
-difference.
-
-
-For a proper performance aware setup, I guess the only correct way to
-fetch performance characteristics is from the (advanced) user.
-
-Or we may need to spent at least tens of minutes to do proper tests to
-get the result.
-
-For regular end users, the difference between SSD and HDD is huge enough
-and simply preferring SSD for metadata is good enough.
-
-But for more complex setup, like btrfs over LUKS over LVM (even crosses
-several physical devices), I doubt if it's even possible to fetch the
-correct performance characteristics automatically.
-
-Thanks,
-Qu
->
-> Comments ?
->
-> BR
-> Goffredo
->
->
-> On 26/01/2022 21.32, Goffredo Baroncelli wrote:
->> From: Goffredo Baroncelli <kreijack@inwind.it>
->>
->> Hi all,
->>
->> This patches set was born after some discussion between me, Zygo and
->> Josef.
->> Some details can be found in
->> https://github.com/btrfs/btrfs-todo/issues/19.
->>
->> Some further information about a real use case can be found in
->> https://lore.kernel.org/linux-btrfs/20210116002533.GE31381@hungrycats.o=
-rg/
->>
->>
->> Recently Shafeeq told me that he is interested too, due to the
->> performance gain.
->>
->> In V8, revision I switched away from an ioctl API in favor of a sysfs
->> API (
->> see patch #2 and #3).
->>
->> In V9, I renamed the sysfs interface from devinfo/type to
->> devinfo/allocation_hint.
->> Moreover I renamed dev_info->type to dev_info->flags.
->>
->> In V10, I renamed the tag 'PREFERRED' from PREFERRED_X to X_PREFERRED;
->> I added
->> another devinfo property, called major_minor. For now it is unused;
->> the plan is to use this in btrfs-progs to go from the block device to
->> the filesystem.
->> First client will be "btrfs prop get/set allocation_hint", but I see
->> others possible
->> clients.
->> Finally I made some cleanup, and remove the mount option
->> 'allocation_hint'
->>
->> In V11 I added a new 'feature' file
->> /sys/fs/btrfs/features/allocation_hint
->> to help the detection of the allocation_hint feature.
->>
->> The idea behind this patches set, is to dedicate some disks (the
->> fastest one)
->> to the metadata chunk. My initial idea was a "soft" hint. However Zygo
->> asked an option for a "strong" hint (=3D=3D mandatory). The result is t=
-hat
->> each disk can be "tagged" by one of the following flags:
->> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
->> - BTRFS_DEV_ALLOCATION_METADATA_PREFERRED
->> - BTRFS_DEV_ALLOCATION_DATA_PREFERRED
->> - BTRFS_DEV_ALLOCATION_DATA_ONLY
->>
->> When the chunk allocator search a disks to allocate a chunk, scans the
->> disks
->> in an order decided by these tags. For metadata, the order is:
->> *_METADATA_ONLY
->> *_METADATA_PREFERRED
->> *_DATA_PREFERRED
->>
->> The *_DATA_ONLY are not eligible from metadata chunk allocation.
->>
->> For the data chunk, the order is reversed, and the *_METADATA_ONLY are
->> excluded.
->>
->> The exact sort logic is to sort first for the "tag", and then for the
->> space
->> available. If there is no space available, the next "tag" disks set are
->> selected.
->>
->> To set these tags, a new property called "allocation_hint" was created.
->> There is a dedicated btrfs-prog patches set [[PATCH V11] btrfs-progs:
->> allocation_hint disk property].
->>
->> $ sudo mount /dev/loop0 /mnt/test-btrfs/
->> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i
->> allocation_hint; done
->> devid=3D1, path=3D/dev/loop0: allocation_hint=3DMETADATA_PREFERRED
->> devid=3D2, path=3D/dev/loop1: allocation_hint=3DMETADATA_PREFERRED
->> devid=3D3, path=3D/dev/loop2: allocation_hint=3DDATA_PREFERRED
->> devid=3D4, path=3D/dev/loop3: allocation_hint=3DDATA_PREFERRED
->> devid=3D5, path=3D/dev/loop4: allocation_hint=3DDATA_PREFERRED
->> devid=3D6, path=3D/dev/loop5: allocation_hint=3DDATA_ONLY
->> devid=3D7, path=3D/dev/loop6: allocation_hint=3DMETADATA_ONLY
->> devid=3D8, path=3D/dev/loop7: allocation_hint=3DMETADATA_ONLY
->>
->> $ sudo ./btrfs fi us /mnt/test-btrfs/
->> Overall:
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.75GiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.34GiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.41GiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
->> =C2=A0=C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 400.89MiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.04GiB=C2=A0=C2=A0=C2=A0 (min: 1.04GiB)
->> =C2=A0=C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
->> =C2=A0=C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00
->> =C2=A0=C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3.25MiB=C2=A0=C2=A0=C2=A0 (used: 0.00B)
->> =C2=A0=C2=A0=C2=A0=C2=A0 Multiple profiles:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
->>
->> Data,RAID1: Size:542.00MiB, Used:200.25MiB (36.95%)
->> =C2=A0=C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0 288.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop1=C2=A0=C2=A0=C2=A0=C2=A0 288.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop2=C2=A0=C2=A0=C2=A0=C2=A0 127.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop3=C2=A0=C2=A0=C2=A0=C2=A0 127.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop4=C2=A0=C2=A0=C2=A0=C2=A0 127.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop5=C2=A0=C2=A0=C2=A0=C2=A0 127.00MiB
->>
->> Metadata,single: Size:256.00MiB, Used:384.00KiB (0.15%)
->> =C2=A0=C2=A0=C2=A0 /dev/loop1=C2=A0=C2=A0=C2=A0=C2=A0 256.00MiB
->>
->> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
->> =C2=A0=C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
->>
->> Unallocated:
->> =C2=A0=C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0 704.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop1=C2=A0=C2=A0=C2=A0=C2=A0 480.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00M=
-iB
->> =C2=A0=C2=A0=C2=A0 /dev/loop3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00M=
-iB
->> =C2=A0=C2=A0=C2=A0 /dev/loop4=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00M=
-iB
->> =C2=A0=C2=A0=C2=A0 /dev/loop5=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00M=
-iB
->> =C2=A0=C2=A0=C2=A0 /dev/loop6=C2=A0=C2=A0=C2=A0=C2=A0 128.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop7=C2=A0=C2=A0=C2=A0=C2=A0 128.00MiB
->>
->> # change the tag of some disks
->>
->> $ sudo ./btrfs prop set /dev/loop0 allocation_hint DATA_ONLY
->> $ sudo ./btrfs prop set /dev/loop1 allocation_hint DATA_ONLY
->> $ sudo ./btrfs prop set /dev/loop5 allocation_hint METADATA_ONLY
->>
->> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i
->> allocation_hint; done
->> devid=3D1, path=3D/dev/loop0: allocation_hint=3DDATA_ONLY
->> devid=3D2, path=3D/dev/loop1: allocation_hint=3DDATA_ONLY
->> devid=3D3, path=3D/dev/loop2: allocation_hint=3DDATA_PREFERRED
->> devid=3D4, path=3D/dev/loop3: allocation_hint=3DDATA_PREFERRED
->> devid=3D5, path=3D/dev/loop4: allocation_hint=3DDATA_PREFERRED
->> devid=3D6, path=3D/dev/loop5: allocation_hint=3DMETADATA_ONLY
->> devid=3D7, path=3D/dev/loop6: allocation_hint=3DMETADATA_ONLY
->> devid=3D8, path=3D/dev/loop7: allocation_hint=3DMETADATA_ONLY
->>
->> $ sudo btrfs bal start --full-balance /mnt/test-btrfs/
->> $ sudo ./btrfs fi us /mnt/test-btrfs/
->> Overall:
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.75GiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 735.00MiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.03GiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
->> =C2=A0=C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 400.72MiB
->> =C2=A0=C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.10GiB=C2=A0=C2=A0=C2=A0 (min: 1.10GiB)
->> =C2=A0=C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
->> =C2=A0=C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00
->> =C2=A0=C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3.25MiB=C2=A0=C2=A0=C2=A0 (used: 0.00B)
->> =C2=A0=C2=A0=C2=A0=C2=A0 Multiple profiles:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
->>
->> Data,RAID1: Size:288.00MiB, Used:200.19MiB (69.51%)
->> =C2=A0=C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0 288.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop1=C2=A0=C2=A0=C2=A0=C2=A0 288.00MiB
->>
->> Metadata,single: Size:127.00MiB, Used:336.00KiB (0.26%)
->> =C2=A0=C2=A0=C2=A0 /dev/loop5=C2=A0=C2=A0=C2=A0=C2=A0 127.00MiB
->>
->> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
->> =C2=A0=C2=A0=C2=A0 /dev/loop7=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
->>
->> Unallocated:
->> =C2=A0=C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0 736.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop1=C2=A0=C2=A0=C2=A0=C2=A0 736.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop2=C2=A0=C2=A0=C2=A0=C2=A0 128.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop3=C2=A0=C2=A0=C2=A0=C2=A0 128.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop4=C2=A0=C2=A0=C2=A0=C2=A0 128.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop5=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00M=
-iB
->> =C2=A0=C2=A0=C2=A0 /dev/loop6=C2=A0=C2=A0=C2=A0=C2=A0 128.00MiB
->> =C2=A0=C2=A0=C2=A0 /dev/loop7=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 96.00MiB
->>
->>
->> #As you can see all the metadata were placed on the disk loop5/loop7
->> even if
->> #the most empty one are loop0 and loop1.
->>
->>
->>
->> Furher works:
->> - the tool which show the space available should consider the tagging (=
-eg
->> =C2=A0=C2=A0 the disks tagged by _METADATA_ONLY should be excluded from=
- the data
->> =C2=A0=C2=A0 availability)
->> - allow btrfs-prog to change the allocation_hint even when the filesyst=
-em
->> =C2=A0=C2=A0 is not mounted.
->>
->> In following emails, there will be the btrfs-progs patches set and the
->> xfstest
->> suite patches set.
->>
->>
->> Comments are welcome
->> BR
->> G.Baroncelli
->>
->> Revision:
->> V11:
->> - added the property /sys/fs/btrfs/features/allocation_hint
->>
->> V10:
->> - renamed two disk tags/constants:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - *_METADATA_PREFERRED=
- -> *_METADATA_PREFERRED
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - *_DATA_PREFERRED -> =
-*_DATA_EFERRED
->> - add /sys/fs/btrfs/$UUID/devinfo/$DEVID/major_minor
->> - revise some commit description
->> - refactored the code of gather_device_info(): one portion of this code
->> =C2=A0=C2=A0 is moved in a separate function called sort_and_reduce_dev=
-ice_info()
->> =C2=A0=C2=A0 for clarity.
->> - removed the 'allocation_hint' mount option
->>
->> V9:
->> - rename dev_item->type to dev_item->flags
->> - rename /sys/fs/btrfs/$UUID/devinfo/type -> allocation_hint
->>
->> V8:
->> - drop the ioctl API, instead use a sysfs one
->>
->> V7:
->> - make more room in the struct btrfs_ioctl_dev_properties up to 1K
->> - leave in btrfs_tree.h only the costants
->> - removed the mount option (sic)
->> - correct an 'use before check' in the while loop (signaled
->> =C2=A0=C2=A0 by Zygo)
->> - add a 2nd sort to be sure that the device_info array is in the
->> =C2=A0=C2=A0 expected order
->>
->> V6:
->> - add further values to the hints: add the possibility to
->> =C2=A0=C2=A0 exclude a disk for a chunk type
->>
->>
->>
->> Goffredo Baroncelli (7):
->> =C2=A0=C2=A0 btrfs: add flags to give an hint to the chunk allocator
->> =C2=A0=C2=A0 btrfs: export the device allocation_hint property in sysfs
->> =C2=A0=C2=A0 btrfs: change the device allocation_hint property via sysf=
-s
->> =C2=A0=C2=A0 btrfs: add allocation_hint mode
->> =C2=A0=C2=A0 btrfs: rename dev_item->type to dev_item->flags
->> =C2=A0=C2=A0 btrfs: add major and minor to sysfs
->> =C2=A0=C2=A0 Add /sys/fs/btrfs/features/allocation_hint
->>
->> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 4 +-
->> =C2=A0 fs/btrfs/disk-io.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +-
->> =C2=A0 fs/btrfs/sysfs.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 105 +++++++++++++++++++++++++=
-++
->> =C2=A0 fs/btrfs/volumes.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 121 ++++++++++++++++++++++++++++++--
->> =C2=A0 fs/btrfs/volumes.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 7 +-
->> =C2=A0 include/uapi/linux/btrfs_tree.h |=C2=A0 20 +++++-
->> =C2=A0 6 files changed, 245 insertions(+), 14 deletions(-)
->>
->
->
+> Cheers,
+>=20
+> Dave.
+> --=20
+> Dave Chinner
+> david@fromorbit.com=
