@@ -2,44 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C4F4B9FD6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 13:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D1B4B9FE7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 13:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240306AbiBQMMf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Feb 2022 07:12:35 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48626 "EHLO
+        id S240321AbiBQMOz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Feb 2022 07:14:55 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240303AbiBQMMe (ORCPT
+        with ESMTP id S240319AbiBQMOv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Feb 2022 07:12:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1EBDED2
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 04:12:20 -0800 (PST)
+        Thu, 17 Feb 2022 07:14:51 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00BF2A415C;
+        Thu, 17 Feb 2022 04:14:36 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 72AA6B82178
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 12:12:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A075BC340EF
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 12:12:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D4E361841;
+        Thu, 17 Feb 2022 12:14:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17125C340EF;
+        Thu, 17 Feb 2022 12:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645099938;
-        bh=fD1jMEx21uXRTyLn54djMnu5b+wxAoT6QR39OWqkNxY=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=W5ZOxYb6OugtHweJPFbsNMRj9HasyHWT7HNEuF9KsQ583o0B5xXuZrrIaFJX3uMIj
-         kDwn1FKGzmPJss+YTFEBMemmAI4H4eU5YaJCKJJKIh2i7UsN7dehiY53W0pxbNdYbP
-         1ba/9ANqdWXSyDastGx7NrxsyBYGH/ZZTPCxufyxAQO8tRS6/ylv2MUI5bJIZzxqwM
-         pVnAZQ8xIn5Wj0a7sA+64GcRvvtFmtYbqgGbodiPiVHi7WP+zElPI1o+QLrFE2Ievj
-         OYlx7X9EEab6bGJaUgQZ2l68JCcdiPNLn+yWojImjEx3txjWn8UAXp3q2KBlMJBKIA
-         UydUO63xXIwmg==
+        s=k20201202; t=1645100076;
+        bh=UI/c2nBsz4de9WVyPBOeW45FXWa8u0QnnhBKRJ3Ry3Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ENdKX19gEspXpPzQK545EneyG0NPrymOdBZxH+og1H/ccIsNgVEgntub4s1n5N5P/
+         IAWd2RNjk4Z2WFC4reL4k5wEALo7SuwHXFXQq0SSsZRhR7fThko4p2mvcGXoh+uT4S
+         3Xt58l/zDu96ZzndXFLDacYyGetJjYGW4jBFwz1LEWqXud1HLbDVPOl1n5odmylS4r
+         4jtOhwDPIzemchZPVvpbCEhl2zpH5rE6i9FQtxAHtrLK0N8HGtrnKGE24lvxWmbjja
+         /9hYbwveQ1Nq/H9gfc5JfOW0kLSyM5GbKWbv3F2sYHEtALD+S7W/53UPnJ5IRFH31D
+         p+76Qh8SVspyA==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/7] btrfs: deal with unexpected extent type during reflinking
-Date:   Thu, 17 Feb 2022 12:12:08 +0000
-Message-Id: <c449b8e21d90c495d9b6411b09744c7c3738725e.1645098951.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1645098951.git.fdmanana@suse.com>
-References: <cover.1645098951.git.fdmanana@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: test log replay after fsync of file with prealloc extents beyond eof
+Date:   Thu, 17 Feb 2022 12:14:21 +0000
+Message-Id: <abbc821350c8ef515e0a0317b5cbd64e3c5b81ab.1645099449.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,54 +53,124 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Smatch complains about a possible dereference of a pointer that was not
-initialized:
+Test that after a full fsync of a file with preallocated extents beyond
+the file's size, if a power failure happens, the preallocated extents
+still exist after we mount the filesystem.
 
-    CC [M]  fs/btrfs/reflink.o
-    CHECK   fs/btrfs/reflink.c
-  fs/btrfs/reflink.c:533 btrfs_clone() error: potentially dereferencing uninitialized 'trans'.
+This test currently fails and there is a patch for btrfs that fixes this
+issue and has the following subject:
 
-This is because we are not dealing with the case where the type of a file
-extent has an unexpected value (not regular, not prealloc and not inline),
-in which case the transaction handle pointer is not initialized.
-
-Such unexpected type should be impossible, except in case of some memory
-corruption caused either by bad hardware or some software bug causing
-something like a buffer overrun.
-
-So ASSERT that if the extent type is neither regular nor prealloc, then
-it must be inline. Bail out with -EUCLEAN and a warning in case it is
-not. This silences smatch.
+  "btrfs: fix lost prealloc extents beyond eof after full fsync"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/reflink.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tests/btrfs/261     | 79 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/261.out | 10 ++++++
+ 2 files changed, 89 insertions(+)
+ create mode 100755 tests/btrfs/261
+ create mode 100644 tests/btrfs/261.out
 
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index 07e19e069c84..03d60db0c5a3 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -494,7 +494,8 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 					&clone_info, &trans);
- 			if (ret)
- 				goto out;
--		} else if (type == BTRFS_FILE_EXTENT_INLINE) {
-+		} else {
-+			ASSERT(type == BTRFS_FILE_EXTENT_INLINE);
- 			/*
- 			 * Inline extents always have to start at file offset 0
- 			 * and can never be bigger then the sector size. We can
-@@ -505,7 +506,8 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 			 */
- 			ASSERT(key.offset == 0);
- 			ASSERT(datal <= fs_info->sectorsize);
--			if (WARN_ON(key.offset != 0) ||
-+			if (WARN_ON(type != BTRFS_FILE_EXTENT_INLINE) ||
-+			    WARN_ON(key.offset != 0) ||
- 			    WARN_ON(datal > fs_info->sectorsize)) {
- 				ret = -EUCLEAN;
- 				goto out;
+diff --git a/tests/btrfs/261 b/tests/btrfs/261
+new file mode 100755
+index 00000000..8275e6a5
+--- /dev/null
++++ b/tests/btrfs/261
+@@ -0,0 +1,79 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
++#
++# FS QA Test 261
++#
++# Test that after a full fsync of a file with preallocated extents beyond the
++# file's size, if a power failure happens, the preallocated extents still exist
++# after we mount the filesystem.
++#
++. ./common/preamble
++_begin_fstest auto quick log prealloc
++
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -r -f $tmp.*
++}
++
++. ./common/rc
++. ./common/filter
++. ./common/dmflakey
++. ./common/punch
++
++# real QA test starts here
++
++_supported_fs btrfs
++_require_scratch
++_require_dm_target flakey
++_require_xfs_io_command "falloc" "-k"
++_require_xfs_io_command "fiemap"
++_require_odirect
++
++rm -f $seqres.full
++
++_scratch_mkfs >>$seqres.full 2>&1
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++# Create our test file with many file extent items, so that they span several
++# leaves of metadata, even if the node/page size is 64K. We use direct IO and
++# not fsync/O_SYNC because it's both faster and it avoids clearing the full sync
++# flag from the inode - we want the fsync below to trigger the slow full sync
++# code path.
++$XFS_IO_PROG -f -d -c "pwrite -b 4K 0 16M" $SCRATCH_MNT/foo | _filter_xfs_io
++
++# Now add two preallocated extents to our file without extending the file's size.
++# One right at i_size, and another further beyond, leaving a gap between the two
++# prealloc extents.
++$XFS_IO_PROG -c "falloc -k 16M 1M" $SCRATCH_MNT/foo
++$XFS_IO_PROG -c "falloc -k 20M 1M" $SCRATCH_MNT/foo
++
++# Make sure everything is durably persisted and the transaction is committed.
++# This makes all created extents to have a generation lower than the generation
++# of the transaction used by the next write and fsync.
++sync
++
++# Now overwrite only the first extent, which will result in modifying only the
++# first leaf of metadata for our inode. Then fsync it. This fsync will use the
++# slow code path (inode full sync bit is set) because it's the first fsync since
++# the inode was created/loaded.
++$XFS_IO_PROG -c "pwrite 0 4K" -c "fsync" $SCRATCH_MNT/foo | _filter_xfs_io
++
++# Simulate a power failure and then mount again the filesystem to replay the log
++# tree.
++_flakey_drop_and_remount
++
++# After the power failure we expect that the preallocated extents, beyond the
++# inode's i_size, still exist.
++echo "List of extents after power failure:"
++$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/foo | _filter_fiemap
++
++_unmount_flakey
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/261.out b/tests/btrfs/261.out
+new file mode 100644
+index 00000000..e9cfe1e8
+--- /dev/null
++++ b/tests/btrfs/261.out
+@@ -0,0 +1,10 @@
++QA output created by 261
++wrote 16777216/16777216 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 4096/4096 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++List of extents after power failure:
++0: [0..32767]: data
++1: [32768..34815]: unwritten
++2: [34816..40959]: hole
++3: [40960..43007]: unwritten
 -- 
 2.33.0
 
