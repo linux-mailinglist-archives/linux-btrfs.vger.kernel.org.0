@@ -2,123 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD394BA952
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 20:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABA54BAA03
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 20:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245048AbiBQTLO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Feb 2022 14:11:14 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50410 "EHLO
+        id S238780AbiBQTmP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Feb 2022 14:42:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245046AbiBQTLN (ORCPT
+        with ESMTP id S234831AbiBQTmO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Feb 2022 14:11:13 -0500
-X-Greylist: delayed 411 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Feb 2022 11:10:58 PST
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D3C2B254;
-        Thu, 17 Feb 2022 11:10:58 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 15F865C0064;
-        Thu, 17 Feb 2022 14:04:07 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 17 Feb 2022 14:04:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; bh=QFf+1UQuhFiD6o/OV3ZI0/VGRxHqSMiTS6VAmB
-        d+ZNY=; b=rBNlw98TXZPXc6ttrVjSrTs79JEaU5wGOPD3zssNUtQFnfYw55U2ox
-        b9ZRGqLTuQbD+DchsFTCZ3HVdQT6wZV0qIDcveOIO7VhPnowN3po5MMRzkWEJ/6u
-        tFlv4n2cstgKadsDfw5rXVGgE97VEU8ciXwxo/vgm4QPDZ3+RLggIQA1d00ebWtO
-        DLwhqgLk0N22z19Vtjw+yxFXEdhU1VCxUN6z99NEC6d/MhtNCTQW8EWs3mtL3im0
-        bhkUEfqBxilCSGbJBnR/HuwOKv8y+aP2yyQZn7AO8p/tb5Xo3INyoLPq2Cuk8AL9
-        YUIIzvGZtXnN0kWIsJRttk0Hs4S4fW1w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=QFf+1UQuhFiD6o/OV
-        3ZI0/VGRxHqSMiTS6VAmBd+ZNY=; b=hUa4OM+V0redQSuX06Lq/X78CIvjGgNv/
-        Z2rpI1YslyP+aF0TBmk32gobsMmOPONGkwvuB+9S96Hl72TqDztNSvBlZzpMZ021
-        d50KpC7GuzrJCS+dh5oa8TbNbkrRaprFlCkDZq+7Jbw1vIFN1Do9Dc/wvHRJ6EIA
-        f3ajq0TTCJ2FgbyMBo3Yyk9NpkE5xCFoEOym4iRGxwWRBbBWylCBuMnw2fAROGCX
-        DxEjL2/4EAiFNu/Y/8oIt84R6CZF5UYHuIKQTa7QntCaX17hU9xrJZ3CKwsOYDi+
-        pryy0+ZjWNlpi6E2B43V/5EbeboVlVQft0GXWNCl474vXOQITSIFA==
-X-ME-Sender: <xms:JpwOYlmTQFjqM2tRMmep2T6EI3Xsehw0ollekkqzXm0yOz9aKWVFQg>
-    <xme:JpwOYg3P4uM7LYzL9G7_ggvVbVTmRNPy6TQ_qYkAKfPmrDDTKsXfkfTv17_ZegT_W
-    ojoP71JSGleOQ>
-X-ME-Received: <xmr:JpwOYrou9OquFRKjVJ1ze1pDwmM3YwIEMCaWoekdvFncpKXy9oC-U2o9QWCazI9dE1NNbYHKeSVogvMFhLXdRtSsTvdRzLGe>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrjeekgdduudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
-    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:JpwOYlltThDR4CHoNg8PdlNVfOmew-KRvcI0nyQE-9_fJhDXcNpCZw>
-    <xmx:JpwOYj1J8p9FzodEc24jcRMHM568QwPTiHTYUMUdoCQ7JWRZKgcKkA>
-    <xmx:JpwOYkuZGLMsKZLBb2_4xNW2_7oNmnQ01xtH2ncqBKrcAVKcBttw_w>
-    <xmx:J5wOYtqATbl5u0_mXpjp-OwFU30OE7qzst5TeKfRURJhlH5TvPOYlA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Feb 2022 14:04:06 -0500 (EST)
-Date:   Thu, 17 Feb 2022 20:03:56 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
+        Thu, 17 Feb 2022 14:42:14 -0500
+Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F210193F4;
+        Thu, 17 Feb 2022 11:41:58 -0800 (PST)
+Received: from tux.applied-asynchrony.com (p5b07e69a.dip0.t-ipconnect.de [91.7.230.154])
+        by mail.itouring.de (Postfix) with ESMTPSA id 3B5AD11DD47;
+        Thu, 17 Feb 2022 20:41:52 +0100 (CET)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id C767DF01601;
+        Thu, 17 Feb 2022 20:41:51 +0100 (CET)
+Subject: Re: [PATCH for v5.15 1/2] btrfs: don't hold CPU for too long when
+ defragging a file
+To:     Greg KH <gregkh@linuxfoundation.org>, Qu Wenruo <wqu@suse.com>
 Cc:     stable@vger.kernel.org, linux-btrfs@vger.kernel.org,
         David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH for-5.15.y] btrfs: zoned: cache reported zone during mount
-Message-ID: <Yg6cHEP44PIGFva7@kroah.com>
-References: <20220217045056.1299721-1-naohiro.aota@wdc.com>
+References: <cover.1644994950.git.wqu@suse.com>
+ <67dd6f0e69c59a8554d7a2977939f94221af00c1.1644994950.git.wqu@suse.com>
+ <Yg6bcq2stNcvDLOv@kroah.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <60159313-2228-77e1-3748-97891a8e8f2e@applied-asynchrony.com>
+Date:   Thu, 17 Feb 2022 20:41:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220217045056.1299721-1-naohiro.aota@wdc.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Yg6bcq2stNcvDLOv@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 01:50:56PM +0900, Naohiro Aota wrote:
-> commit 16beac87e95e2fb278b552397c8260637f8a63f7 upstream.
+On 2022-02-17 20:01, Greg KH wrote:
+> On Wed, Feb 16, 2022 at 03:09:07PM +0800, Qu Wenruo wrote:
+>> commit 2d192fc4c1abeb0d04d1c8cd54405ff4a0b0255b upstream.
 > 
-> When mounting a device, we are reporting the zones twice: once for
-> checking the zone attributes in btrfs_get_dev_zone_info and once for
-> loading block groups' zone info in
-> btrfs_load_block_group_zone_info(). With a lot of block groups, that
-> leads to a lot of REPORT ZONE commands and slows down the mount
-> process.
-> 
-> This patch introduces a zone info cache in struct
-> btrfs_zoned_device_info. The cache is populated while in
-> btrfs_get_dev_zone_info() and used for
-> btrfs_load_block_group_zone_info() to reduce the number of REPORT ZONE
-> commands. The zone cache is then released after loading the block
-> groups, as it will not be much effective during the run time.
-> 
-> Benchmark: Mount an HDD with 57,007 block groups
-> Before patch: 171.368 seconds
-> After patch: 64.064 seconds
-> 
-> While it still takes a minute due to the slowness of loading all the
-> block groups, the patch reduces the mount time by 1/3.
-> 
-> Link: https://lore.kernel.org/linux-btrfs/CAHQ7scUiLtcTqZOMMY5kbWUBOhGRwKo6J6wYPT5WY+C=cD49nQ@mail.gmail.com/
-> Fixes: 5b316468983d ("btrfs: get zone information of zoned block devices")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/dev-replace.c |  2 +-
->  fs/btrfs/disk-io.c     |  2 +
->  fs/btrfs/volumes.c     |  2 +-
->  fs/btrfs/zoned.c       | 85 ++++++++++++++++++++++++++++++++++++++----
->  fs/btrfs/zoned.h       |  8 +++-
->  5 files changed, 87 insertions(+), 12 deletions(-)
+> This commit is already in 5.15.22.
 
-Now queued up, thanks.
+It most certainly is not, since it applies cleanly in 5.15.24.
+The correct upstream commit of this patch is ea0eba69a2a8125229b1b6011644598039bc53aa
 
-greg k-h
+cheers,
+Holger
+
+>>
+>> There is a user report about "btrfs filesystem defrag" causing 120s
+>> timeout problem.
+>>
+>> For btrfs_defrag_file() it will iterate all file extents if called from
+>> defrag ioctl, thus it can take a long time.
+>>
+>> There is no reason not to release the CPU during such a long operation.
+>>
+>> Add cond_resched() after defragged one cluster.
+>>
+>> CC: stable@vger.kernel.org # 5.15
+>> Link: https://lore.kernel.org/linux-btrfs/10e51417-2203-f0a4-2021-86c8511cc367@gmx.com
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Reviewed-by: David Sterba <dsterba@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>> ---
+>>   fs/btrfs/ioctl.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>> index 6a863b3f6de0..38a1b68c7851 100644
+>> --- a/fs/btrfs/ioctl.c
+>> +++ b/fs/btrfs/ioctl.c
+>> @@ -1581,6 +1581,7 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+>>   				last_len = 0;
+>>   			}
+>>   		}
+>> +		cond_resched();
+>>   	}
+>>   
+>>   	ret = defrag_count;
+>> -- 
+>> 2.35.1
+>>
+> 
+> The original commit looks nothing like this commit at all.  Are you sure
+> you got this correct?
+> 
+> confused,
+> 
+> greg k-h
+> 
+
