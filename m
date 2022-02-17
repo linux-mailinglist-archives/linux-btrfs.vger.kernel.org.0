@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66ED54B9C77
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 10:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 367F44B9D9B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 11:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238848AbiBQJuL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Feb 2022 04:50:11 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36656 "EHLO
+        id S239341AbiBQKwA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Feb 2022 05:52:00 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238859AbiBQJuJ (ORCPT
+        with ESMTP id S239353AbiBQKv6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Feb 2022 04:50:09 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD9B17AAF
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 01:49:54 -0800 (PST)
+        Thu, 17 Feb 2022 05:51:58 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7C215A1C
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 02:51:44 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 058A41F37D;
-        Thu, 17 Feb 2022 09:49:53 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1621721119
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 10:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1645091393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1645095103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ceVlN5m+F9/sKWN2jBr6FVgbDQYWirPQwGHle1zmEVc=;
-        b=MRVZf9esNK4Ex3Zdm9hGvf4d5zObE3Z1QOt4Bn3Kcng1zlahbt9qMr2TN42hkHgtWVb87A
-        ZqaWwQTyO3X34phXeRda76wuk4hq1ljLEZN/rGSfijWvhdYgcruzK9VzEPOuRDZCIxE1bw
-        PeWozHj9YnuaH0wGBOQs9V5sc+3dFdY=
+        bh=zIO34dgqcEMSOjJDIPZgPvKB11iCzMLmGp7FzOkaImk=;
+        b=Ro7SqwYlhGKEYDST3IgR7Cr5Wzol1FA4gWRmkqxHh6rZGhmmLmQYLYmRVRKX6I1LwoTS76
+        9hKiEKiWvTn3myV64KYMmeTui0dc19GAeLi5b5H9RlfMJX+mzWb4qwaiRgmP3R7lKBV0xx
+        ZfeTcB60QW3JGCo1XGwyFuytf3jVDJ4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16EA213BBF;
-        Thu, 17 Feb 2022 09:49:51 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 54A7713DD8
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 10:51:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id NwuPMz8aDmI8LQAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 17 Feb 2022 09:49:51 +0000
+        id UPNDBr4oDmKESwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 10:51:42 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Su Yue <l@damenly.su>
-Subject: [PATCH v2] btrfs: remove an ASSERT() which can cause false alert
-Date:   Thu, 17 Feb 2022 17:49:34 +0800
-Message-Id: <f0d4a789788e8e63041dc6d91408f40234daa329.1645091180.git.wqu@suse.com>
+Subject: [PATCH v2 0/7] btrfs: refactor scrub entrances for each profile
+Date:   Thu, 17 Feb 2022 18:51:17 +0800
+Message-Id: <cover.1645094762.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,107 +57,122 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Su reported that with his VM running on an M1 mac, it has a high chance
-to trigger the following ASSERT() with scrub and balance test cases:
+The branch is based on several recent submitted small cleanups, thus
+it's better to fetch the branch from github:
 
-		ASSERT(cache->start == chunk_offset);
-		ret = scrub_chunk(sctx, cache, scrub_dev, found_key.offset,
-				  dev_extent_len);
+https://github.com/adam900710/linux/tree/refactor_scrub
 
-[CAUSE]
-The ASSERT() is making sure that the block group cache (@cache) and the
-chunk offset from the device extent match.
+[CRAP-BUT-IT-WORKS(TM)]
 
-But the truth is, block group caches and dev extent items are deleted at
-different timing.
+Scrub is one of the area we seldom touch because:
 
-For block group caches and items, after btrfs_remove_block_group() they
-will be marked deleted, but the device extent and the chunk item is
-still in dev tree and chunk tree respectively.
+- It's a mess
+  Just check scrub_stripe() function.
+  It's a function scrubbing a stripe for *all* profiles.
 
-The device extents and chunk items are only deleted in
-btrfs_remove_chunk(), which happens either a btrfs_delete_unused_bgs()
-or btrfs_relocate_chunk().
+  It's near 400 lines for a single complex function, with double while()
+  loop and several different jumps inside the loop.
 
-This timing difference leaves a window where we can have a mismatch
-between block group cache and device extent tree, and triggering the
-ASSERT().
+  Not to mention the lack of comments for various structures.
 
-[FIX]
+  This should and will never happen under our current code standard.
 
-- Remove the ASSERT()
+- It just works
+  I have hit more than 10 bugs during development, and I just want to
+  give up the refactor, as even the code is crap, it works, passing the
+  existing scrub/replace group.
+  While no matter how small code change I'm doing, it always fails to pass
+  the same tests.
 
-- Add a quick exit if our found bg doesn't match @chunk_offset
+[REFACTOR-IDEA]
 
-- Add a comment on the existing checks in scrub_chunk()
-  This is the ultimate safenet, as it will iterate through all the stripes
-  of the found chunk.
-  And only scrub the stripe if it matches both device and physical
-  offset.
+The core idea here, is to get rid of one-fit-all solution for
+scrub_stripe().
 
-  So even by some how we got a dev extent which is no longer owned
-  by the target chunk, we will just skip this chunk completely, without
-  any consequence.
+Instead, we explicitly separate the scrub into 3 groups (the idea is
+from my btrfs-fuse project):
 
-Reported-by: Su Yue <l@damenly.su>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
+- Simple-mirror based profiles
+  This includes SINGLE/DUP/RAID1/RAID1C* profiles.
+  They have no stripe, and their repair is purely mirror based.
+
+- Simple-stripe based profiles
+  This includes RAID0/RAID10 profiles.
+  They are just simple stripe (without P/Q nor rotation), with extra
+  mirrors to support their repair.
+
+- RAID56
+  The most complex profiles, they have extra P/Q, and have rotation.
+
+[REFACTOR-IMPLEMENTATION]
+
+So we have 3 entrances for all those supported profiles:
+
+- scrub_simple_mirror()
+  For SINGLE/DUP/RAID1/RAID1C* profiles.
+  Just go through each extent and scrub the extent.
+
+- scrub_simple_stripe()
+  For RAID0/RAID10 profiles.
+  Instead we go each data stripe first, then inside each data stripe, we
+  can call scrub_simple_mirror(), since after stripe split, RAID0 is
+  just SINGLE and RAID10 is just RAID1.
+
+- scrub_stripe() untouched for RAID56
+  RAID56 still has all the complex things to do, but they can still be
+  split into two types (already done by the original code)
+
+  * data stripes
+    They are no different in the verification part, RAID56 is just
+    SINGLE if we ignore the repair path.
+    It's only in repair path that our path divides.
+
+    So we can reuse scrub_simple_mirror() again.
+
+  * P/Q stripes
+    They already have a dedicated function handling the case.
+
+With all these refactors, although we have several more functions, we
+get rid of:
+
+- A double while () loop
+- Several jumps inside the double loop
+- Complex calculation to try to fit all profiles
+
+And we get:
+
+- Better comments
+- More dedicated functions
+- A better basis for further refactors
+
+[FUTURE CLEANUPS]
+
+- Refactor scrub_pages/scrub_parity/... structures
+
 Changelog:
 v2:
-- Add a new quick exit with extra comments
+- Rebased to latest misc-next
 
-- Add a new comment in the existing safenet in scrub_chunk()
----
- fs/btrfs/scrub.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+- Fix several uninitialized variables in the 2nd and 3rd patch
+  This is because @physical, @physical_end and @offset are also used for
+  zoned device sync.
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 11089568b287..1c3ed4720ddd 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3578,6 +3578,14 @@ static noinline_for_stack int scrub_chunk(struct scrub_ctx *sctx,
- 		goto out;
- 
- 	map = em->map_lookup;
-+
-+	/*
-+	 * Due to the delayed modification of device tree, this chunk
-+	 * may not own this dev extent.
-+	 *
-+	 * So we need to iterate through all stripes, and only scrub
-+	 * the stripe which matches both device and physical offset.
-+	 */
- 	for (i = 0; i < map->num_stripes; ++i) {
- 		if (map->stripes[i].dev->bdev == scrub_dev->bdev &&
- 		    map->stripes[i].physical == dev_offset) {
-@@ -3699,6 +3707,18 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 		if (!cache)
- 			goto skip;
- 
-+		/*
-+		 * Since dev extents modification is delayed, it's possible
-+		 * we got a bg which doesn't really own this dev extent.
-+		 *
-+		 * Here just do a quick skip, scrub_chunk() has a more
-+		 * comprehensive check in it.
-+		 */
-+		if (cache->start != chunk_offset) {
-+			btrfs_put_block_group(cache);
-+			goto skip;
-+		}
-+
- 		if (sctx->is_dev_replace && btrfs_is_zoned(fs_info)) {
- 			spin_lock(&cache->lock);
- 			if (!cache->to_copy) {
-@@ -3822,7 +3842,6 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 		dev_replace->item_needs_writeback = 1;
- 		up_write(&dev_replace->rwsem);
- 
--		ASSERT(cache->start == chunk_offset);
- 		ret = scrub_chunk(sctx, cache, scrub_dev, found_key.offset,
- 				  dev_extent_len);
- 
+  Initial those values early to fix the problem.
+
+Qu Wenruo (7):
+  btrfs: introduce a helper to locate an extent item
+  btrfs: introduce dedicated helper to scrub simple-mirror based range
+  btrfs: introduce dedicated helper to scrub simple-stripe based range
+  btrfs: use scrub_simple_mirror() to handle RAID56 data stripe scrub
+  btrfs: refactor scrub_raid56_parity()
+  btrfs: use find_first_extent_item() to replace the open-coded extent
+    item search
+  btrfs: move scrub_remap_extent() call into scrub_extent() with more
+    comments
+
+ fs/btrfs/scrub.c | 1039 +++++++++++++++++++++++++---------------------
+ 1 file changed, 560 insertions(+), 479 deletions(-)
+
 -- 
 2.35.1
 
