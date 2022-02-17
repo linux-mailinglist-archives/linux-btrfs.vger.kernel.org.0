@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9144B9FDF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 13:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F644B9FD4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Feb 2022 13:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240283AbiBQMM2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Feb 2022 07:12:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47878 "EHLO
+        id S240299AbiBQMMc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Feb 2022 07:12:32 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbiBQMM1 (ORCPT
+        with ESMTP id S240286AbiBQMMb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Feb 2022 07:12:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDE0DED2
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 04:12:13 -0800 (PST)
+        Thu, 17 Feb 2022 07:12:31 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315B5DED2
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 04:12:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE1F8617CB
+        by ams.source.kernel.org (Postfix) with ESMTPS id A63C6B820E3
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 12:12:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D067BC340EC
         for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 12:12:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9A13C340E9
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Feb 2022 12:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645099932;
-        bh=ltaoPO8xfCIYJBYylTclGIwVHQ/pD7IscoVPXjjvLlc=;
+        s=k20201202; t=1645099933;
+        bh=RdhISgJ+GkZY27JRHfz76pJthZhcrH+7hzfUsFid1u8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=c67VyWL9ClxIKiGSKcrmKlORdbnQExbKPQ3BmNCYHWC78urIqYCdcFMEJT2jSn8Q+
-         3e9hYpymcTm/PypHo5WyNSM7KPcvviaQjiM1LNZPNdjXNH9ENezOR3GshQjq7wyQ+j
-         CJLz3+f31ClOT3jr+AqcZejunrzwMjgkrgXfxkj01Bs9HdkIOA9UwdGBXdNIs3lotM
-         /LsveiBdPe+fd3ldSdpVgfC0heQjfO/H+bpKWgaKA/2AxlYzb1UrBal8d2COlxmUgr
-         4Xi4b/5wja1SXcnyqIGqmTpuvIS0CpZ9UgAp8wEdn+aw+ohwIyu0U8ZBqGHiNvhwpv
-         h5whNxVzORkWg==
+        b=RH7XYPzEH5UBY1NA2Em/W2tIAvL0nouqwmoneLRqPRxhbdY3URSpD9svRQn8FhAH4
+         9CnmHRn9fB07UU0Kro5g6E85EkY6//xrPFvc2Grj+q+5keExzRI+oz32FNqAsJ7la9
+         JGola7pW2cXE7+9PL9aWLHxq6yJemWAcuNkDniYGEmeFEeAXeqEA+cWHyZFjl8PprD
+         sPspSDbhauzHPfgjGWvxhBRX6jdmkmjeWFYAjYp8jsB10T1rvFHiOSEOxM/U8bIP5g
+         yuOQWrK0uXAcenHpqbBOFCJOua4JTmm4h3W3XqVjuR9LABKWeHoKhRkf+mUKzFVfPG
+         TlIeuREnuCkOw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/7] btrfs: fix lost prealloc extents beyond eof after full fsync
-Date:   Thu, 17 Feb 2022 12:12:02 +0000
-Message-Id: <0b6139a324f2cd5b470d58c45617fc29ab893f12.1645098951.git.fdmanana@suse.com>
+Subject: [PATCH 2/7] btrfs: stop copying old file extents when doing a full fsync
+Date:   Thu, 17 Feb 2022 12:12:03 +0000
+Message-Id: <1914b57016f8fccc432988329c87dae2c6df66cb.1645098951.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1645098951.git.fdmanana@suse.com>
 References: <cover.1645098951.git.fdmanana@suse.com>
@@ -54,172 +54,443 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When doing a full fsync, if we have prealloc extents beyond (or at) eof,
-and the leaves that contain them were not modified in the current
-transaction, we end up not logging them. This results in losing those
-extents when we replay the log after a power failure, since the inode is
-truncated to the current value of the logged i_size.
+When logging an inode in full sync mode, we go over every leaf that was
+modified in the current transaction and has items associated to our inode,
+and then copy all those items into the log tree. This includes copying
+file extent items that were created and added to the inode in past
+transactions, which is useless and only makes use more leaf space in the
+log tree.
 
-Just like for the fast fsync path, we need to always log all prealloc
-extents starting at or beyond i_size. The fast fsync case was fixed in
-commit 471d557afed155 ("Btrfs: fix loss of prealloc extents past i_size
-after fsync log replay") but it missed the full fsync path. The problem
-exists since the very early days, when the log tree was added by
-commit e02119d5a7b439 ("Btrfs: Add a write ahead tree log to optimize
-synchronous operations").
+It's common to have a file with many file extent items spanning many
+leaves where only a few file extent items are new and need to be logged,
+and in such case we log all the file extent items we find in the modified
+leaves.
 
-Example reproducer:
+So change the full sync behaviour to skip over file extent items that are
+not needed. Those are the ones that match the following criteria:
 
-  $ mkfs.btrfs -f /dev/sdc
-  $ mount /dev/sdc /mnt
+1) Have a generation older than the current transaction and the inode
+   was not a target of a reflink operation, as that can copy file extent
+   items from a past generation from some other inode into our inode, so
+   we have to log them;
 
-  # Create our test file with many file extent items, so that they span
-  # several leaves of metadata, even if the node/page size is 64K. Use
-  # direct IO and not fsync/O_SYNC because it's both faster and it avoids
-  # clearing the full sync flag from the inode - we want the fsync below
-  # to trigger the slow full sync code path.
-  $ xfs_io -f -d -c "pwrite -b 4K 0 16M" /mnt/foo
+2) Start at an offset within i_size - we must log anything at or beyond
+   i_size, otherwise we would lose prealloc extents after log replay.
 
-  # Now add two preallocated extents to our file without extending the
-  # file's size. One right at i_size, and another further beyond, leaving
-  # a gap between the two prealloc extents.
-  $ xfs_io -c "falloc -k 16M 1M" /mnt/foo
-  $ xfs_io -c "falloc -k 20M 1M" /mnt/foo
+The following script exercises a scenario where this happens, and it's
+somehow close enough to what happened often on a SQL Server workload which
+I had to debug sometime ago to fix an issue where a pattern of writes to
+prealloc extents and fsync resulted in fsync failing with -EIO (that was
+commit ea7036de0d36c4 ("btrfs: fix fsync failure and transaction abort
+after writes to prealloc extents")). In that particular case, we had large
+files that had random writes and were often truncated, which made the
+next fsync be a full sync.
 
-  # Make sure everything is durably persisted and the transaction is
-  # committed. This makes all created extents to have a generation lower
-  # than the generation of the transaction used by the next write and
-  # fsync.
+  $ cat test.sh
+  #!/bin/bash
+
+  DEV=/dev/sdi
+  MNT=/mnt/sdi
+
+  MKFS_OPTIONS="-O no-holes -R free-space-tree"
+  MOUNT_OPTIONS="-o ssd"
+
+  FILE_SIZE=$((1 * 1024 * 1024 * 1024)) # 1G
+  # FILE_SIZE=$((2 * 1024 * 1024 * 1024)) # 2G
+  # FILE_SIZE=$((512 * 1024 * 1024)) # 512M
+
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV
+  mount $MOUNT_OPTIONS $DEV $MNT
+
+  # Create a file with many extents. Use direct IO to make it faster
+  # to create the file - using buffered IO we would have to fsync
+  # after each write (terribly slow).
+  echo "Creating file with $((FILE_SIZE / 4096)) extents of 4K each..."
+  xfs_io -f -d -c "pwrite -b 4K 0 $FILE_SIZE" $MNT/foobar
+
+  # Commit the transaction, so every extent after this is from an
+  # old generation.
   sync
 
-  # Now overwrite only the first extent, which will result in modifying
-  # only the first leaf of metadata for our inode. Then fsync it. This
-  # fsync will use the slow code path (inode full sync bit is set) because
-  # it's the first fsync since the inode was created/loaded.
-  $ xfs_io -c "pwrite 0 4K" -c "fsync" /mnt/foo
+  # Now rewrite only a few extents, which are all far spread apart from
+  # each other (e.g. 1G / 32M = 32 extents).
+  # After this only a few extents have a new generation, while all other
+  # ones have an old generation.
+  echo "Rewriting $((FILE_SIZE / (32 * 1024 * 1024))) extents..."
+  for ((i = 0; i < $FILE_SIZE; i += $((32 * 1024 * 1024)))); do
+      xfs_io -c "pwrite $i 4K" $MNT/foobar >/dev/null
+  done
 
-  # Extent list before power failure.
-  $ xfs_io -c "fiemap -v" /mnt/foo
-  /mnt/foo:
-   EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-     0: [0..7]:          2178048..2178055     8   0x0
-     1: [8..16383]:      26632..43007     16376   0x0
-     2: [16384..32767]:  2156544..2172927 16384   0x0
-     3: [32768..34815]:  2172928..2174975  2048 0x800
-     4: [34816..40959]:  hole              6144
-     5: [40960..43007]:  2174976..2177023  2048 0x801
+  # Fsync, the inode logged in full sync mode since it was never fsynced
+  # before.
+  echo "Fsyncing file..."
+  xfs_io -c "fsync" $MNT/foobar
 
-  <power fail>
+  umount $MNT
 
-  # Mount fs again, trigger log replay.
-  $ mount /dev/sdc /mnt
+And the following bpftrace program was running when executing the test
+script:
 
-  # Extent list after power failure and log replay.
-  $ xfs_io -c "fiemap -v" /mnt/foo
-  /mnt/foo:
-   EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-     0: [0..7]:          2178048..2178055     8   0x0
-     1: [8..16383]:      26632..43007     16376   0x0
-     2: [16384..32767]:  2156544..2172927 16384   0x1
+  $ cat bpf-script.sh
+  #!/usr/bin/bpftrace
 
-  # The prealloc extents at file offsets 16M and 20M are missing.
+  k:btrfs_log_inode
+  {
+      @start_log_inode[tid] = nsecs;
+  }
 
-So fix this by calling btrfs_log_prealloc_extents() when we are doing a
-full fsync, so that we always log all prealloc extents beyond eof.
+  kr:btrfs_log_inode
+  /@start_log_inode[tid]/
+  {
+      @log_inode_dur[tid] = (nsecs - @start_log_inode[tid]) / 1000;
+      delete(@start_log_inode[tid]);
+  }
 
-A test case for fstests will follow soon.
+  k:btrfs_sync_log
+  {
+      @start_sync_log[tid] = nsecs;
+  }
 
-CC: stable@vger.kernel.org # 4.19+
+  kr:btrfs_sync_log
+  /@start_sync_log[tid]/
+  {
+      $sync_log_dur = (nsecs - @start_sync_log[tid]) / 1000;
+      printf("btrfs_log_inode() took %llu us\n", @log_inode_dur[tid]);
+      printf("btrfs_sync_log()  took %llu us\n", $sync_log_dur);
+      delete(@start_sync_log[tid]);
+      delete(@log_inode_dur[tid]);
+      exit();
+  }
+
+With 512M test file, before this patch:
+
+  btrfs_log_inode() took 15218 us
+  btrfs_sync_log()  took 1328 us
+
+  Log tree has 17 leaves and 1 node, its total size is 294912 bytes.
+
+With 512M test file, after this patch:
+
+  btrfs_log_inode() took 14760 us
+  btrfs_sync_log()  took 588 us
+
+  Log tree has a single leaf, its total size is 16K.
+
+With 1G test file, before this patch:
+
+  btrfs_log_inode() took 27301 us
+  btrfs_sync_log()  took 1767 us
+
+  Log tree has 33 leaves and 1 node, its total size is 557056 bytes.
+
+With 1G test file, after this patch:
+
+  btrfs_log_inode() took 26166 us
+  btrfs_sync_log()  took 593 us
+
+  Log tree has a single leaf, its total size is 16K
+
+With 2G test file, before this patch:
+
+  btrfs_log_inode() took 50892 us
+  btrfs_sync_log()  took 3127 us
+
+  Log tree has 65 leaves and 1 node, its total size is 1081344 bytes.
+
+With 2G test file, after this patch:
+
+  btrfs_log_inode() took 50126 us
+  btrfs_sync_log()  took 586 us
+
+  Log tree has a single leaf, its total size is 16K.
+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 43 +++++++++++++++++++++++++++++++------------
- 1 file changed, 31 insertions(+), 12 deletions(-)
+ fs/btrfs/reflink.c  |  23 +++--
+ fs/btrfs/tree-log.c | 198 ++++++++++++++++++++++++++++++--------------
+ 2 files changed, 148 insertions(+), 73 deletions(-)
 
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index a3930da4eb3f..c083ded71ef7 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -518,17 +518,22 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
+ 		btrfs_release_path(path);
+ 
+ 		/*
+-		 * If this is a new extent update the last_reflink_trans of both
+-		 * inodes. This is used by fsync to make sure it does not log
+-		 * multiple checksum items with overlapping ranges. For older
+-		 * extents we don't need to do it since inode logging skips the
+-		 * checksums for older extents. Also ignore holes and inline
+-		 * extents because they don't have checksums in the csum tree.
++		 * Whenever we share an extent we update the last_reflink_trans
++		 * of each inode to the current transaction. This is needed to
++		 * make sure fsync does not log multiple checksum items with
++		 * overlapping ranges (because some extent items might refer
++		 * only to sections of the original extent). For the destination
++		 * inode we do this regardless of the generation of the extents
++		 * or even if they are inline extents or explicit holes, to make
++		 * sure a full fsync does not skip them. For the source inode,
++		 * we only need to update last_reflink_trans in case it's a new
++		 * extent that is not a hole or an inline extent, to deal with
++		 * the checksums problem on fsync.
+ 		 */
+-		if (extent_gen == trans->transid && disko > 0) {
++		if (extent_gen == trans->transid && disko > 0)
+ 			BTRFS_I(src)->last_reflink_trans = trans->transid;
+-			BTRFS_I(inode)->last_reflink_trans = trans->transid;
+-		}
++
++		BTRFS_I(inode)->last_reflink_trans = trans->transid;
+ 
+ 		last_dest_end = ALIGN(new_key.offset + datal,
+ 				      fs_info->sectorsize);
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index a483337e8f41..71a5a961fef7 100644
+index 71a5a961fef7..602aa10c9d88 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -4732,7 +4732,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 
- /*
-  * Log all prealloc extents beyond the inode's i_size to make sure we do not
-- * lose them after doing a fast fsync and replaying the log. We scan the
-+ * lose them after doing a full/fast fsync and replaying the log. We scan the
-  * subvolume's root instead of iterating the inode's extent map tree because
-  * otherwise we can log incorrect extent items based on extent map conversion.
-  * That can happen due to the fact that extent maps are merged when they
-@@ -5510,6 +5510,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 				   struct btrfs_log_ctx *ctx,
- 				   bool *need_log_inode_item)
+@@ -4400,21 +4400,19 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 			       int start_slot, int nr, int inode_only,
+ 			       u64 logged_isize)
  {
+-	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	unsigned long src_offset;
+-	unsigned long dst_offset;
+ 	struct btrfs_root *log = inode->root->log_root;
+ 	struct btrfs_file_extent_item *extent;
+-	struct btrfs_inode_item *inode_item;
+ 	struct extent_buffer *src = src_path->nodes[0];
+-	int ret;
++	int ret = 0;
+ 	struct btrfs_key *ins_keys;
+ 	u32 *ins_sizes;
+ 	struct btrfs_item_batch batch;
+ 	char *ins_data;
+ 	int i;
++	int dst_index;
+ 	struct list_head ordered_sums;
+-	int skip_csum = inode->flags & BTRFS_INODE_NODATASUM;
++	const bool skip_csum = (inode->flags & BTRFS_INODE_NODATASUM);
 +	const u64 i_size = i_size_read(&inode->vfs_inode);
- 	struct btrfs_root *root = inode->root;
- 	int ins_start_slot = 0;
- 	int ins_nr = 0;
-@@ -5530,13 +5531,21 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 		if (min_key->type > max_key->type)
- 			break;
  
--		if (min_key->type == BTRFS_INODE_ITEM_KEY)
-+		if (min_key->type == BTRFS_INODE_ITEM_KEY) {
- 			*need_log_inode_item = false;
--
--		if ((min_key->type == BTRFS_INODE_REF_KEY ||
--		     min_key->type == BTRFS_INODE_EXTREF_KEY) &&
--		    inode->generation == trans->transid &&
--		    !recursive_logging) {
-+		} else if (min_key->type == BTRFS_EXTENT_DATA_KEY &&
-+			   min_key->offset >= i_size) {
-+			/*
-+			 * Extents at and beyond eof are logged with
-+			 * btrfs_log_prealloc_extents().
-+			 * Only regular files have BTRFS_EXTENT_DATA_KEY keys,
-+			 * and no keys greater than that, so bail out.
-+			 */
-+			break;
-+		} else if ((min_key->type == BTRFS_INODE_REF_KEY ||
-+			    min_key->type == BTRFS_INODE_EXTREF_KEY) &&
-+			   inode->generation == trans->transid &&
-+			   !recursive_logging) {
- 			u64 other_ino = 0;
- 			u64 other_parent = 0;
+ 	INIT_LIST_HEAD(&ordered_sums);
  
-@@ -5567,10 +5576,8 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 				btrfs_release_path(path);
- 				goto next_key;
- 			}
--		}
--
--		/* Skip xattrs, we log them later with btrfs_log_all_xattrs() */
--		if (min_key->type == BTRFS_XATTR_ITEM_KEY) {
-+		} else if (min_key->type == BTRFS_XATTR_ITEM_KEY) {
-+			/* Skip xattrs, logged later with btrfs_log_all_xattrs() */
- 			if (ins_nr == 0)
- 				goto next_slot;
- 			ret = copy_items(trans, inode, dst_path, path,
-@@ -5623,9 +5630,21 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 			break;
- 		}
- 	}
--	if (ins_nr)
-+	if (ins_nr) {
- 		ret = copy_items(trans, inode, dst_path, path, ins_start_slot,
- 				 ins_nr, inode_only, logged_isize);
-+		if (ret)
-+			return ret;
-+	}
+@@ -4428,28 +4426,140 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 	batch.keys = ins_keys;
+ 	batch.data_sizes = ins_sizes;
+ 	batch.total_data_size = 0;
+-	batch.nr = nr;
++	batch.nr = 0;
+ 
++	dst_index = 0;
+ 	for (i = 0; i < nr; i++) {
+-		ins_sizes[i] = btrfs_item_size(src, i + start_slot);
+-		batch.total_data_size += ins_sizes[i];
+-		btrfs_item_key_to_cpu(src, ins_keys + i, i + start_slot);
++		const int src_slot = start_slot + i;
++		struct btrfs_root *csum_root;
++		u64 disk_bytenr;
++		u64 disk_num_bytes;
++		u64 extent_offset;
++		u64 extent_num_bytes;
++		bool is_old_extent;
 +
-+	if (inode_only == LOG_INODE_ALL && S_ISREG(inode->vfs_inode.i_mode)) {
++		btrfs_item_key_to_cpu(src, &ins_keys[dst_index], src_slot);
++
++		if (ins_keys[dst_index].type != BTRFS_EXTENT_DATA_KEY)
++			goto add_to_batch;
++
++		extent = btrfs_item_ptr(src, src_slot,
++					struct btrfs_file_extent_item);
++
++		is_old_extent = (btrfs_file_extent_generation(src, extent) <
++				 trans->transid);
++
 +		/*
-+		 * Release the path because otherwise we might attempt to double
-+		 * lock the same leaf with btrfs_log_prealloc_extents() below.
++		 * Don't copy extents from past generations. That would make us
++		 * log a lot more metadata for common cases like doing only a
++		 * few random writes into a file and then fsync it for the first
++		 * time or after the full sync flag is set on the inode. We can
++		 * get leaves full of extent items, most of which are from past
++		 * generations, so we can skip them - as long as the inode has
++		 * not been the target of a reflink operation in this transaction,
++		 * as in that case it might have had file extent items with old
++		 * generations copied into it. We also must always log prealloc
++		 * extents that start at or beyond eof, otherwise we would lose
++		 * them on log replay.
 +		 */
-+		btrfs_release_path(path);
-+		ret = btrfs_log_prealloc_extents(trans, inode, dst_path);
-+	}
++		if (is_old_extent &&
++		    ins_keys[dst_index].offset < i_size &&
++		    inode->last_reflink_trans < trans->transid)
++			continue;
++
++		if (skip_csum)
++			goto add_to_batch;
++
++		/* Only regular extents have checksums. */
++		if (btrfs_file_extent_type(src, extent) != BTRFS_FILE_EXTENT_REG)
++			goto add_to_batch;
++
++		/*
++		 * If it's an extent created in a past transaction, then its
++		 * checksums are already accessible from the committed csum tree,
++		 * no need to log them.
++		 */
++		if (is_old_extent)
++			goto add_to_batch;
++
++		disk_bytenr = btrfs_file_extent_disk_bytenr(src, extent);
++		/* If it's an explicit hole, there are no checksums. */
++		if (disk_bytenr == 0)
++			goto add_to_batch;
++
++		disk_num_bytes = btrfs_file_extent_disk_num_bytes(src, extent);
++
++		if (btrfs_file_extent_compression(src, extent)) {
++			extent_offset = 0;
++			extent_num_bytes = disk_num_bytes;
++		} else {
++			extent_offset = btrfs_file_extent_offset(src, extent);
++			extent_num_bytes = btrfs_file_extent_num_bytes(src, extent);
++		}
++
++		csum_root = btrfs_csum_root(trans->fs_info, disk_bytenr);
++		disk_bytenr += extent_offset;
++		ret = btrfs_lookup_csums_range(csum_root, disk_bytenr,
++					       disk_bytenr + extent_num_bytes - 1,
++					       &ordered_sums, 0);
++		if (ret)
++			goto out;
++
++add_to_batch:
++		ins_sizes[dst_index] = btrfs_item_size(src, src_slot);
++		batch.total_data_size += ins_sizes[dst_index];
++		batch.nr++;
++		dst_index++;
+ 	}
++
++	/*
++	 * We have a leaf full of old extent items that don't need to be logged,
++	 * so we don't need to do anything.
++	 */
++	if (batch.nr == 0)
++		goto out;
++
+ 	ret = btrfs_insert_empty_items(trans, log, dst_path, &batch);
+-	if (ret) {
+-		kfree(ins_data);
+-		return ret;
+-	}
++	if (ret)
++		goto out;
  
- 	return ret;
- }
+-	for (i = 0; i < nr; i++, dst_path->slots[0]++) {
+-		dst_offset = btrfs_item_ptr_offset(dst_path->nodes[0],
+-						   dst_path->slots[0]);
++	dst_index = 0;
++	for (i = 0; i < nr; i++) {
++		const int src_slot = start_slot + i;
++		const int dst_slot = dst_path->slots[0] + dst_index;
++		struct btrfs_key key;
++		unsigned long src_offset;
++		unsigned long dst_offset;
+ 
+-		src_offset = btrfs_item_ptr_offset(src, start_slot + i);
++		/*
++		 * We're done, all the remaining items in the source leaf
++		 * correspond to old file extent items.
++		 */
++		if (dst_index >= batch.nr)
++			break;
+ 
+-		if (ins_keys[i].type == BTRFS_INODE_ITEM_KEY) {
+-			inode_item = btrfs_item_ptr(dst_path->nodes[0],
+-						    dst_path->slots[0],
++		btrfs_item_key_to_cpu(src, &key, src_slot);
++
++		if (key.type != BTRFS_EXTENT_DATA_KEY)
++			goto copy_item;
++
++		extent = btrfs_item_ptr(src, src_slot,
++					struct btrfs_file_extent_item);
++
++		/* See the comment in the previous loop, same logic. */
++		if (btrfs_file_extent_generation(src, extent) < trans->transid &&
++		    key.offset < i_size &&
++		    inode->last_reflink_trans < trans->transid)
++			continue;
++
++copy_item:
++		dst_offset = btrfs_item_ptr_offset(dst_path->nodes[0], dst_slot);
++		src_offset = btrfs_item_ptr_offset(src, src_slot);
++
++		if (key.type == BTRFS_INODE_ITEM_KEY) {
++			struct btrfs_inode_item *inode_item;
++
++			inode_item = btrfs_item_ptr(dst_path->nodes[0], dst_slot,
+ 						    struct btrfs_inode_item);
+ 			fill_inode_item(trans, dst_path->nodes[0], inode_item,
+ 					&inode->vfs_inode,
+@@ -4457,55 +4567,15 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 					logged_isize);
+ 		} else {
+ 			copy_extent_buffer(dst_path->nodes[0], src, dst_offset,
+-					   src_offset, ins_sizes[i]);
++					   src_offset, ins_sizes[dst_index]);
+ 		}
+ 
+-		/* take a reference on file data extents so that truncates
+-		 * or deletes of this inode don't have to relog the inode
+-		 * again
+-		 */
+-		if (ins_keys[i].type == BTRFS_EXTENT_DATA_KEY &&
+-		    !skip_csum) {
+-			int found_type;
+-			extent = btrfs_item_ptr(src, start_slot + i,
+-						struct btrfs_file_extent_item);
+-
+-			if (btrfs_file_extent_generation(src, extent) < trans->transid)
+-				continue;
+-
+-			found_type = btrfs_file_extent_type(src, extent);
+-			if (found_type == BTRFS_FILE_EXTENT_REG) {
+-				struct btrfs_root *csum_root;
+-				u64 ds, dl, cs, cl;
+-				ds = btrfs_file_extent_disk_bytenr(src,
+-								extent);
+-				/* ds == 0 is a hole */
+-				if (ds == 0)
+-					continue;
+-
+-				dl = btrfs_file_extent_disk_num_bytes(src,
+-								extent);
+-				cs = btrfs_file_extent_offset(src, extent);
+-				cl = btrfs_file_extent_num_bytes(src,
+-								extent);
+-				if (btrfs_file_extent_compression(src,
+-								  extent)) {
+-					cs = 0;
+-					cl = dl;
+-				}
+-
+-				csum_root = btrfs_csum_root(fs_info, ds);
+-				ret = btrfs_lookup_csums_range(csum_root,
+-						ds + cs, ds + cs + cl - 1,
+-						&ordered_sums, 0);
+-				if (ret)
+-					break;
+-			}
+-		}
++		dst_index++;
+ 	}
+ 
+ 	btrfs_mark_buffer_dirty(dst_path->nodes[0]);
+ 	btrfs_release_path(dst_path);
++out:
+ 	kfree(ins_data);
+ 
+ 	/*
 -- 
 2.33.0
 
