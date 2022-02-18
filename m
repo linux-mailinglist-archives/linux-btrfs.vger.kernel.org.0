@@ -2,59 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97A24BBBC5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 16:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FD84BBBCA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 16:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235355AbiBRPDz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Feb 2022 10:03:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51524 "EHLO
+        id S235866AbiBRPD4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Feb 2022 10:03:56 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbiBRPDy (ORCPT
+        with ESMTP id S235188AbiBRPDy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 18 Feb 2022 10:03:54 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5395529720E
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 07:03:36 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id o5so15245218qvm.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 07:03:36 -0800 (PST)
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D562B2FEE
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 07:03:37 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id g24so8247604qkl.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 07:03:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bqyYr1SNUHXS2VgPKdKLZWUk41qb+3D4P7lPlIcVrHc=;
-        b=yUJCaCV+tygye99TJbO18BeIdckXXhEwu+HnPQTuu5vpOHhNgyqQF00LNzrcCMrb3d
-         KBxkDvpTp62MvBZnYSGkUrE5Z1CFFQ8jmXF7qb+cm2OSS76myNPtUr1kcAVTd8WLUFgN
-         5d6QSozk3V+O39h1HzmDFulsmSHTmG7TOQn20nC60J0IjMS9OMBtJNDQYY9uv9EaxL9O
-         6769X0RwHgBI9XdXnnaCxw3FUg3IxtcoScg+PjMNEJKmOMJr86+U3FyVwBHayOktf5CC
-         1EXQ+Nyn3+Jsn5aZF9NB0VNlRBVmm0EMqZQjUY/xfvWWx8Gr6B7wyIhDnTrr+06FSZJU
-         s8Aw==
+        bh=SIlpy/ig3sAvgrd+KjI0DD2pnY3K7jXpvB9GCmDBNY0=;
+        b=XrDyCwMYbSXBQ/CXW81kM4oo9wGU7Cb8EgapBV9nRzwFc+h161OsaKlaC/SUUmwZQ6
+         dCP5HJoKRhh+D0HbjZRrdosixzJPhZBO2Uz/z9LVTgVij8mAwPiuc2yUkcv/ar1xMJj7
+         NbQC/+/ZyCCy5R6qOSjKGXySVorktErdW4cN5VqCDzsDXOVc7hWbBAHxRx3yLKASzj93
+         tGAjv1B24yJVvXK6eLsdY4op3mXPLhbl00ai5LW+l8pQt/hboBlsjy12FB7LuR+UsPQe
+         v6le2jLtZAIGOosvuizPNQnn4JTtdIdUawDm+3r6FUXh79nRlleoSAeMYcHkod96q5do
+         au8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bqyYr1SNUHXS2VgPKdKLZWUk41qb+3D4P7lPlIcVrHc=;
-        b=u/xSnOH5gZU2ssI9G7KwBqgKTHmfdmF/RbmA4k5dUy7xYu0l0cnObV2YK+knRiQqsp
-         G+XRtXCv6Zk3UOzlFzxeL25XFDWbRnGfJCkxCM64a/EHrHUWUGMohrQ+WwhLIwY4RLjA
-         LTF6cXOyM6dLE/pXIiZ5VFjF4TybXWUyBGpnAom/xtQ261ORfQVzaD+OcdGLXds/WKXz
-         JXEQ4p4s2rxX//5BzGHu0NkJOXTMVtY0I0lxYMMsv5UgLvAQQkc1NFVpTdPWEyH/tTsm
-         9pba0uB5Yv3nOQKaqJhwv2JuhHQP6ZyVLa8uWzMSIKres4GteN+7W5jvbFMvOiF+dBFi
-         7EkA==
-X-Gm-Message-State: AOAM5319OpdoU71tIF8uiaGQF2tWPovsta5yJFWwSHp4ZzSeM3jaQkiq
-        jKj7GNKOsufHD/qTIKnZj9FiNtTTCQGjtnyF
-X-Google-Smtp-Source: ABdhPJwnhD0nUwzgMDvEdfsVpZMfeI4L5r4z++OnXtERWJXSNmUuyZ+ksA/NyFD5mAzsvhv/vx2fqg==
-X-Received: by 2002:a05:6214:21ac:b0:42c:2844:aa93 with SMTP id t12-20020a05621421ac00b0042c2844aa93mr6006048qvc.130.1645196615127;
-        Fri, 18 Feb 2022 07:03:35 -0800 (PST)
+        bh=SIlpy/ig3sAvgrd+KjI0DD2pnY3K7jXpvB9GCmDBNY0=;
+        b=Gr+uEVBc1azt7xT7rIQbPpi8pmBnrGAWS4GeZ9sYoobeISn/Y5K9MEvMkV18qPmVnK
+         DZC17weevNNfT7/FjMQG+1ZCG74oOPkxgbXaRkbHi18ARxHWYnMFLXSWBecZUxbwrhMv
+         ksGuBW4dv1TCVCzz8yFcRhB/RBUwE2RW3IqUzpW3QhP04+lr6rhQh3ILI+1kGpMFVMvN
+         rm1X+QyFLYkYooN0h2MfJQ4PsYfAV4O29PUfgaXHqrHaZQ7Mfc7M3hZ2v5tvx2ljCnca
+         T60Gwz7CUGilSaNJOgZ92oqPHNfVWdkSUiY+/CBRbFgMglI9L+vmB6p1LEjGlxmiPWZg
+         EGDw==
+X-Gm-Message-State: AOAM531a7peoC8sAatjQ/EbyhEgzupj8pXMCCK/6cytfn8OHBL4krxvr
+        FbZ1lZ3u9sWI8fKWO1tXDKs181fKuXKPsUpb
+X-Google-Smtp-Source: ABdhPJwsNKQBDrCFK5m52Kao5OxdnujFeFNDVYYQCyCHtK8jDNwKFJXB4HmYYIRmS/jK7v3GiwWTxA==
+X-Received: by 2002:a37:ae05:0:b0:60d:274b:520c with SMTP id x5-20020a37ae05000000b0060d274b520cmr4845110qke.777.1645196616597;
+        Fri, 18 Feb 2022 07:03:36 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id e3sm2435786qto.25.2022.02.18.07.03.34
+        by smtp.gmail.com with ESMTPSA id q12sm25824464qtx.51.2022.02.18.07.03.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 07:03:34 -0800 (PST)
+        Fri, 18 Feb 2022 07:03:36 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Boris Burkov <boris@bur.io>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 3/8] btrfs: check correct bio in finish_compressed_bio_read
-Date:   Fri, 18 Feb 2022 10:03:24 -0500
-Message-Id: <32b987984840f676ea3e71194f7a7d81f02903e7.1645196493.git.josef@toxicpanda.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 4/8] btrfs: remove the bio argument from finish_compressed_bio_read
+Date:   Fri, 18 Feb 2022 10:03:25 -0500
+Message-Id: <c8772b7e9fabc7a63f941a1885a6622583488620.1645196493.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1645196493.git.josef@toxicpanda.com>
 References: <cover.1645196493.git.josef@toxicpanda.com>
@@ -69,33 +68,56 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit c09abff87f90 ("btrfs: cloned bios must not be iterated by
-bio_for_each_segment_all") added ASSERT()'s to make sure we weren't
-calling bio_for_each_segment_all() on a RAID5/6 bio.  However it was
-checking the bio that the compression code passed in, not the
-cb->orig_bio that we actually iterate over, so adjust this ASSERT() to
-check the correct bio.
+This bio is usually one of the compressed bio's, and we don't actually
+need it in this function, so remove the argument and stop passing it
+around.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/compression.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/compression.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 71e5b2e9a1ba..a9d458305a08 100644
+index a9d458305a08..0112fba345d4 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -259,7 +259,7 @@ static void finish_compressed_bio_read(struct compressed_bio *cb, struct bio *bi
+@@ -234,7 +234,7 @@ static bool dec_and_test_compressed_bio(struct compressed_bio *cb, struct bio *b
+ 	return last_io;
+ }
+ 
+-static void finish_compressed_bio_read(struct compressed_bio *cb, struct bio *bio)
++static void finish_compressed_bio_read(struct compressed_bio *cb)
+ {
+ 	unsigned int index;
+ 	struct page *page;
+@@ -253,8 +253,6 @@ static void finish_compressed_bio_read(struct compressed_bio *cb, struct bio *bi
+ 		struct bio_vec *bvec;
+ 		struct bvec_iter_all iter_all;
+ 
+-		ASSERT(bio);
+-		ASSERT(!bio->bi_status);
+ 		/*
  		 * We have verified the checksum already, set page checked so
  		 * the end_io handlers know about it
- 		 */
--		ASSERT(!bio_flagged(bio, BIO_CLONED));
-+		ASSERT(!bio_flagged(cb->orig_bio, BIO_CLONED));
- 		bio_for_each_segment_all(bvec, cb->orig_bio, iter_all) {
- 			u64 bvec_start = page_offset(bvec->bv_page) +
- 					 bvec->bv_offset;
+@@ -325,7 +323,7 @@ static void end_compressed_bio_read(struct bio *bio)
+ csum_failed:
+ 	if (ret)
+ 		cb->errors = 1;
+-	finish_compressed_bio_read(cb, bio);
++	finish_compressed_bio_read(cb);
+ out:
+ 	bio_put(bio);
+ }
+@@ -970,7 +968,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	 */
+ 	ASSERT(refcount_read(&cb->pending_sectors));
+ 	/* Now we are the only one referring @cb, can finish it safely. */
+-	finish_compressed_bio_read(cb, NULL);
++	finish_compressed_bio_read(cb);
+ 	return ret;
+ }
+ 
 -- 
 2.26.3
 
