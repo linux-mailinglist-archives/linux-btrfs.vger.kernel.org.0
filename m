@@ -2,142 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B434BB1D8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 07:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F358F4BB34D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 08:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbiBRGNs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Feb 2022 01:13:48 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36688 "EHLO
+        id S232046AbiBRHcQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Feb 2022 02:32:16 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbiBRGNq (ORCPT
+        with ESMTP id S231221AbiBRHcP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Feb 2022 01:13:46 -0500
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB35F26106;
-        Thu, 17 Feb 2022 22:13:30 -0800 (PST)
+        Fri, 18 Feb 2022 02:32:15 -0500
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4C5286B6C;
+        Thu, 17 Feb 2022 23:31:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1645164810; x=1676700810;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=jsb7fA3ZNxSjmealNBPRNrZ7Ni72Fsa7FjrPqRF4Wi/bnWuFWuddfabS
-   xUTZ9T/s9BcIwDRoCMww89t7wv9CTMqihtPprbj4sRmZFED9377ZTVDX3
-   G/ztnpgYhlrWhe9rakN5/Zg94qgZiNNPaE3TWN1SJYgBPRPQuNZAqGqPN
-   DV5j4XayMgETEGLvArNn5UjplexkAycWjS6/s1+L5g+OId9Wv5lc6UnKU
-   LCxG07LP9h8jSbQltgOnBHi1qF1R76HDtL5OR4PpqKgMWebCtWc146qkW
-   e4/KkKJn8XrYrjgX6dSS9J0bUjNQEw6oFO+3ZLanSmM8GzCpGb61xC/sS
-   g==;
-X-IronPort-AV: E=Sophos;i="5.88,377,1635177600"; 
-   d="scan'208";a="192191276"
-Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Feb 2022 14:13:29 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ewq5AnO+z7AUGZpP3EfjMimsTfK9dujOWexGLmf1aZOoy81Er4EPUKaxWuSKTygpv5zLvhutjBX+Fw3DUioZw8nNsn4+kv+K5WctkxfamOu40hpvqB4d7VsT5JYUXupXCPcUMb0SyghEVOw22W++pZRNE1uQCGc4Xlq2D4TKu/6mwTzjCVv2Pw+pr+8Wmwc0KRsG1O6CLdrEcTM8Tp92dxxyb73dNAr8NAYejleXynF2/w1Y9CdQ7GkmjZUtAqtWJtfJnpw+GnP28oA+6JeOjpJVp2epKqwwNkXtX388c1MbOss39dQ0B+sdiEY2jhib+Z7dYKcpUVWY9nQtQ3OrUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=UFkLaNJW5HDTZtbEVE/QEJw2akwDx/+AMHVTlDbW92qkR+kZZ67DwsW8WDK3sVLbrO7xhVnrCFPJ6T5qiewmoeO6oe1w3Iy3WEzNS/CqrZct1Xq2Dsf1gh5D0n/dh9CNVBL+GpKxXP9B4hBYyhNHFjIQK0ugD77O2nnhMbOYLAKlHojc9jPs27u9EVyTDEMdZnKqz4Ja0LEooa8PmNctyclwRIRYYo0R29IBODQ0McLe859DLBO6UdkGD328i3GBW92U0WfIg2QFd8Nn/XEtsUZI8kMPXsxvfy2m+Dg0L7kbv2CHTFL+n6WMZtCAfsC8vSYopN49urhzmMrulQN+3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=EmJioFvUjLHcbCPT1F2FyQLVzFF/YkqUVmE1At+uFQjwcdU3eY/F58Ka4AgCF0zdxNsbhXqio5tsWGBqqh5dkuHX2Os39aMHiOKLIGLsXx0iGEQgABDKbWArx6Vbwhf7VZmPCgFKrTzjlrdZiaffnpr/+WGlrfDMaS5HX73iuHs=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BN7PR04MB3860.namprd04.prod.outlook.com (2603:10b6:406:bd::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.15; Fri, 18 Feb
- 2022 06:13:28 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::e8b1:ea93:ffce:60f6]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::e8b1:ea93:ffce:60f6%4]) with mapi id 15.20.4995.016; Fri, 18 Feb 2022
- 06:13:28 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "david@fromorbit.com" <david@fromorbit.com>
-Subject: Re: [PATCH v3 2/2] btrfs: zoned: mark relocation as writing
-Thread-Topic: [PATCH v3 2/2] btrfs: zoned: mark relocation as writing
-Thread-Index: AQHYJH4HkkB30IeIdUWNcRGB5G+lGA==
-Date:   Fri, 18 Feb 2022 06:13:28 +0000
-Message-ID: <PH0PR04MB7416F34B00E8B7FC8718F5179B379@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <cover.1645157220.git.naohiro.aota@wdc.com>
- <01fa2ddededefc7f03ca4d6df2cccfdbf550aa26.1645157220.git.naohiro.aota@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d93d9802-1ed0-4853-88a3-08d9f2a5c791
-x-ms-traffictypediagnostic: BN7PR04MB3860:EE_
-x-microsoft-antispam-prvs: <BN7PR04MB3860E8560FD8933AB9F58E5A9B379@BN7PR04MB3860.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: z8fauBCKdCvhvQTMD6gIsN8x7/L00HqRIL3fbP2Owuoth/C+4ryJ85WBmT1w+tFfIWpeSA6Tojaeua7VCgxQi71cLGd5SS70C0G4zqNz+oiJ+21q7xb86qR8ZyjRSLXZGBa4uMfoFX8hl5r/kHjZ2uDoLH52bfTyAtih2P7HvxwmchBo5HH/7xbGLmmvcSB5gXQuVjg08R2X78B1HfBSpiXMW4VLYKsCEDxKWIL5HE/L6IsGONVdu0xggmpbe/b78U78t9MlryvB+rh+qUrJgQksqnlddCmRAZPDgOX+fGA0fC3OychQp81Y6nJ3W6JB+PKc2cWbMk7cW958/4IlRLD8+kQ+k7Lpd3eBtcmjcM9jPr6AYaICdi8ANRBuwlfthomeewkRchLi4yT3dkTckDDUtzqMQfuty6lvV5X2KpYAj8PUPbeUZuC3+h7oT2QVqNhujYln++DG1H10awiRTwYYu9Y7oaQDjoSo4Wgg+IphFaMn4tqcvRnyM52MdY3DT4jiU8esxWobCXG6TX8ga29Xra/ObWO1WJnk6Ts/8QArH2gcXT8+uVx2k39KJcpIMqf5ZizzR5cehvhrSVlXRCWg2yGYnSCc69886Z1QtyPFG+X27rk68qyI97hEQGkX91JSwOrnvYzuQESx3U4hYVNf+JNBY3jXgalcPHjUN67DqyOxKv+FNyb5qsPtNPAwi6ohenOSXyJUkRgCpUvMKA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(76116006)(66476007)(8936002)(91956017)(2906002)(64756008)(66446008)(4326008)(86362001)(8676002)(19618925003)(66556008)(38100700002)(52536014)(66946007)(122000001)(82960400001)(5660300002)(38070700005)(54906003)(186003)(7696005)(9686003)(71200400001)(508600001)(4270600006)(55016003)(6506007)(316002)(110136005)(558084003)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Xg9W/WZQIvNUeNugr0Y9IaklQeKZA4TMr5okooYd92nc9hf4m6tOuDXHwj97?=
- =?us-ascii?Q?bhZdYwGgRfdKt1/R1unBnTG9XTB65KO1SAYIGUNpvlnpUwY5x/TLZU9E9ARi?=
- =?us-ascii?Q?oBbFQedDP2Nuz4mWbIxhPHvmRr9N9PDCEXL+ZUM6Vfdtghi2l3MMndiHuq2W?=
- =?us-ascii?Q?HlPU7mT1WVea5SYKyP4tCOw9+AfSlmkBn08cZLWC5EtMhICAjeNhDiJAvegX?=
- =?us-ascii?Q?GCCev0B2zJa9NfpnhAiePnyBRcwCF3e7TuMx131hXsJ1PQX9Xr+HTm5vX72H?=
- =?us-ascii?Q?/zuaWJWfI1k8rG931YIxoneHE+Og8ei5rc+Q51zBLT7LuPuWMGJAKkq/tTXL?=
- =?us-ascii?Q?U33FJtzYb8D79oHY6wPI/4TNxoU2T+tGwVPXCbZ+YIt6seHNgpznMchU0H6o?=
- =?us-ascii?Q?VRvqvyhjg0+At+KvkuAoA0lV7ZMwrja1Smtqy5NYj6tHsRj8G7BxQ60cmHFU?=
- =?us-ascii?Q?sya1c9ATpCmp2i1hacjssSgOWskHBTjumoFPino9GHiEfHH9zT8RgV4HaoLD?=
- =?us-ascii?Q?yqMb30vTcz9DhiysCz//ik54CLD/WbHJ7wLaLXUwiyZcMQL2AFBACCBhiZEp?=
- =?us-ascii?Q?NKVuegCu5DFr8ChGwW4JcpLVoL/c5x/4seS0qqAgHDaVw/GEW3sXil6zZ8VL?=
- =?us-ascii?Q?Wsii5BXlnplTsE02g6XAOUrqGWTBa5CDf7yrWQCh+VvkOM97GYj6hQ4M/FQY?=
- =?us-ascii?Q?TMBmNDplD9v041bnqWhsygXNmjJ83TIwwyMrVJoqT65TVqL5IGNvNqCkOhGf?=
- =?us-ascii?Q?1xk7QmkSSqdzQ8fXq9bQVpS5ajAJiBK4Jh2rFtI+F1Fryimg8z+TQYqBEodY?=
- =?us-ascii?Q?DsuAcNxX8qMlaBBhxsRVvy+HUx7+yFVwA1yO9nBAII1Dh4h/V75I7WP2Kr+N?=
- =?us-ascii?Q?7R1+Gwf9hcjYFau0G2PBm9ecyctctK5CeS9T/UjlYhEDAoQ52PnA1Wqwp0d+?=
- =?us-ascii?Q?TeemTZjhCDkPQSE7QUAz2NBRWyYGkPUpK+HQ78cqhOXGmx1+zdAcVy+3Qd6I?=
- =?us-ascii?Q?c9qPMLS2vP1s3iM+ENhNEH0Ux4iuJxdQhouqsMBMixtrG9QMhsXAGIVwWzj6?=
- =?us-ascii?Q?pOFG68auvrUd7ZSj+AwZgc1eU8I9wZEILjgMKznuL+eleoprpHfMI1Bg2r9M?=
- =?us-ascii?Q?QtOG0Q9XhfvXUJuAoU3QdIE1ZuUhlbF3ViC3ReEgIICAasZSuLqyG0Gp7MzB?=
- =?us-ascii?Q?YyV8cmGK82sL+5KfO/7vwIUCNCiW2GOMNFS0ve4yMhPVehV7nYStlu/3Wt3s?=
- =?us-ascii?Q?0Fpf2GGElMnE+eydx1t52gy8SeulK859LV5epMup0+dVLbhqtv2+jP82EWL0?=
- =?us-ascii?Q?5VUCLE+8Mn75GoCX36o5eUlh5Ckk/1i/OIVlzUqFq5/uxRi39dc0LjBHCWz5?=
- =?us-ascii?Q?ckaAFBf9LTkapx3Bwdb7RCRJbP6AlKS9GdOqsJaw3xC//btgViuq9Ktpf6+N?=
- =?us-ascii?Q?Yr6QID8sTQoSM9n+04iYEta8pRKGgyTm0Yu9qEN5Kia7IDBxnteDqNJ/a0lK?=
- =?us-ascii?Q?nFRyQX70lpaLV3baWdCkdrPCINTx0geOgTffqV4VRj/64Xh1M8DxJjd8Qipf?=
- =?us-ascii?Q?pF1/DfJHZPCU014r3lvSNoorXAFRAFy26e2DMW0nUEcQGX6063/2iCIf6X2L?=
- =?us-ascii?Q?hS/loE/ivGyLQ6ywG87CjFSkmQU55QJiJn/sLagL5Tn46yt7Ux/1/RYTiJ6W?=
- =?us-ascii?Q?HZ5uRzOecE2d8XQCG65p8H1hVD1r9rq7tni2rBcGNZtA/lY4X45XrIUjnKae?=
- =?us-ascii?Q?CWGasuHPlSq6P8HKl9W3xNRyRmb/Lic=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+  t=1645169518; x=1676705518;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=L5qG7WSQJfsABVKF3+2PBPN2helzTLq3M2i7k7vgfWA=;
+  b=rZiAQHUfx2223wz50O96oHt+7qkdQobjD7UmOa7ZWfefLod9MffuoIAX
+   a7w/C6QVgPs1uWlrM1vuMInINgzglpG1Zipp+7/ijwC0ftTYCfBLxnmRB
+   J6rhpBKu/s9j2DYVnqpA7kL2V8hFR4bTe5Nggp7JKFRFrAOxzMfI3YSeZ
+   NT7h0+DegW8n781yAqyrWGoTg3qOKwj23yl8SsQ6eTURIx35/5cFzs1QL
+   havrNReBVb3jsHyZ4HoGgIzX/i/ONnC0Xbp4gZaqB+xDbET9qC2Njq3Dw
+   VpyMIQhzjU8EV0jU9TTds+9FQJrLBl74ABLwum23H/QHO6jUtUtVCjuud
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.88,378,1635177600"; 
+   d="scan'208";a="193264885"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Feb 2022 15:31:58 +0800
+IronPort-SDR: NGyccFi4NHIARxFYA0FM69RXdBpv8+WoIyeUAgQvmbyG7aaYgQDqpitAuaDFjrQVWvZg4GdnY+
+ ybc3SNYrxJqSMnXnF5qOoJDXzGMNd5A91e0UbpoK4RGtBgCKpK+UJgK7OOvqnVILULHOWGnHcd
+ 75WTi8IRPXF8rUMNVS+B5jztELA9LwhMeqELcHGY6BARko+yhKqd5vU6mo1uNeYVhAgQmZ7nYD
+ YWHwzVzi5rFdbAjMkxTB8Pxs8f1r7yek70xj++MmVJSV2ft0QJsHtMVAoSfE78NWFoy4fGIjj9
+ zBJyMAUzT56FbX9RI1kZW1Ty
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 23:04:43 -0800
+IronPort-SDR: 8e9tHaoanCXVmLbFSUTIO4CQtR8DYahbvHrJndF2e7wOfGUDV7BP92r8iIJjcGiZI+3nK2BOxH
+ /Tkke6Iz6OMQJ+SqvP0uB0krxF0PAJidGmyLPlfb8A3hU0M1Z8e8r1p+39hNMeaMc87+wzp5Kz
+ nclqpdW2E4wup7bkVSXHYybuhO4UVq2vfKURraRWPJ9AmLGJoB1yazFwPFl3WHZvphquO4v7l0
+ 8No4FwLRgXonRKNTv2IeLAXb6Ap/8hgX+4ZeKpuZzLmxC61z+vkhh0OqKj/C6CUQyAi4fp7PMr
+ 4ds=
+WDCIronportException: Internal
+Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.52.173])
+  by uls-op-cesaip02.wdc.com with ESMTP; 17 Feb 2022 23:31:58 -0800
+From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH v3 0/6] fstests: fix _scratch_mkfs_sized failure handling
+Date:   Fri, 18 Feb 2022 16:31:50 +0900
+Message-Id: <20220218073156.2179803-1-shinichiro.kawasaki@wdc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d93d9802-1ed0-4853-88a3-08d9f2a5c791
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2022 06:13:28.0115
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hskv0MD1g4WCRAjJzSEj9BL5qoZLHGJuw8GJwoqnPlguTA7VtzFtPmCbhWnbMY28g8um7pph2cljhJ9LXcxiwN61dazcpJC7MlSV9zor8RE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR04MB3860
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+When generic/204 is run for btrfs-zoned filesystem on zoned block devices with
+GB size order, it takes very long time to complete. The test case creates 115MiB
+filesystem on the scratch device and fills files in it within decent run time.
+However, with btrfs-zoned condition, the test case creates filesystem as large
+as the device size and it takes very long time to fill it all. Three causes were
+identified for the long run time, and this series addresses them.
+
+The first cause is mixed mode option that _scratch_mkfs_sized helper function
+adds to mkfs.btrfs. This option was added for both regular btrfs and
+zoned-btrfs. However, zoned-btrfs does not support mixed mode. The mkfs with
+mixed mode fails and results in _scratch_mkfs_sized failure. The mixed mode
+shall not be specified for btrfs-zoned filesystem.
+
+The second cause is unnecessary call of the _scratch_mkfs helper function in the
+test case generic/204. This helper function is called to obtain data block size
+and i-node size. However, these numbers can be obtained from _scratch_mkfs_sized
+call. The _scratch_mkfs function call shall be removed.
+
+The third cause is no check of return code from _scratch_mkfs_sized. The test
+case generic/204 calls both _scratch_mkfs and _scratch_mkfs_sized, and does not
+check return code from them. If _scratch_mkfs succeeds and _scratch_mkfs_sized
+fails, the scratch device still has valid filesystem created by _scratch_mkfs.
+Following test workload can be executed without failure, but the filesystem
+does not have the size specified for _scratch_mkfs_sized. The return code of
+_scratch_mkfs_sized shall be checked to catch the mkfs failure. This problem
+exists not only in generic/204, but also in other test cases which call both
+_scratch_mkfs and _scratch_mkfs_sized.
+
+In this series, the first patch addresses the first cause, and the second patch
+addresses the second cause. These two patches fix the test case generic/204.
+Following three patches address the third cause, and fix other test cases than
+generic/204.
+
+The last patch is an additional clean up of the helper function _filter_mkfs.
+During this fix work, it was misunderstood that this function were xfs unique.
+To clarify it can be extended to other filesystems, factor out xfs unique part.
+
+Changes from v2:
+* Added Reviewed-by tags
+
+Changes from v1:
+* Added 2nd patch which removes _scratch_mkfs call from generic/204
+* Added 6th patch which factors out xfs unique part from _filter_mkfs
+* Dropped 3 patches which had renamed _filter_mkfs to _xfs_filter_mkfs
+* Dropped generic/204 hunk from the 3rd patch
+
+Shin'ichiro Kawasaki (6):
+  common/rc: fix btrfs mixed mode usage in _scratch_mkfs_sized
+  generic/204: remove unnecessary _scratch_mkfs call
+  generic/{171,172,173,174}: check _scratch_mkfs_sized return code
+  ext4/021: check _scratch_mkfs_sized return code
+  xfs/015: check _scratch_mkfs_sized return code
+  common: factor out xfs unique part from _filter_mkfs
+
+ common/filter     | 40 +---------------------------------------
+ common/rc         |  8 ++++----
+ common/xfs        | 41 +++++++++++++++++++++++++++++++++++++++++
+ tests/ext4/021    |  2 +-
+ tests/generic/171 |  2 +-
+ tests/generic/172 |  2 +-
+ tests/generic/173 |  2 +-
+ tests/generic/174 |  2 +-
+ tests/generic/204 |  6 +-----
+ tests/xfs/015     |  2 +-
+ 10 files changed, 53 insertions(+), 54 deletions(-)
+
+-- 
+2.34.1
+
