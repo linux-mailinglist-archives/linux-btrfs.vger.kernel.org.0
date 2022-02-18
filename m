@@ -2,58 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA144BBAC7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 15:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949C64BBACA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 15:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbiBROik (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Feb 2022 09:38:40 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47822 "EHLO
+        id S236136AbiBROil (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Feb 2022 09:38:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236120AbiBROih (ORCPT
+        with ESMTP id S236130AbiBROij (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Feb 2022 09:38:37 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBFD294FCE
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 06:38:20 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id d3so15044972qvb.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 06:38:20 -0800 (PST)
+        Fri, 18 Feb 2022 09:38:39 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D62294FDB
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 06:38:22 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id e22so15067401qvf.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 06:38:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=FWCkjw7D27bCfSTIiFeagjvfDVKxrTv9MJxc0vm1jsM=;
-        b=D90adCxuLbVfIUEWG865euPyRy4h3u8EPawkrA7WSpH7sJvB+1SiKjq0MmuTzDDkc3
-         OTVoxExuxwilRqAxqb7faxzwWiM4kLlKUCzb1bYFA12aY7R5oVC/+4dJ5aSIIBkWX4n0
-         sLgpri/zhHYlcfsNsaiwv1KyJVAFiCsq7yFdQkPyUGKI8Uk/jroYbS3j5YoRAmhKsVCe
-         AC3Ru/RBSvPSPMQdH8iWsC8RdCo59aXTKEMA2vAFfnlmARPxUDFoDKauOMXzxfZ9sEaw
-         DoJ3Td52rXnLOmjrk9wiT4w3clYSqMLTxaR+OMowmrR5ckTh33ADtYpHpsaI30IQkzhz
-         5lHQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ct/taknL5OSPLapfp68CqWQFOWxZjIbqi5eZb8JBksY=;
+        b=rEEsREUjjBiua+MKZr4a2qjeGSa+MGF99nn/POZzg4DsxtgMINSozobhN0R3+8MZDk
+         nlkpyn5x9YYaKXhIxYPCQvyqYZAsr4ButnuFk3/HyaTWeG9mvZTNa18fu9RLKMXB4qU6
+         sz7+h8fnLyBNOxe4ouHQeKtWb6lUYccP7rLvhoN6nVNq7b5F6QzuVUSRnjrC8xTBIvhx
+         z9Ww7gTfMzkx82zRRbhqbxCdRaVXscbQuNao5uexONemvobDBA+j+Q+utcBw58vUiRK+
+         RqEp9FceL831AKdfQgIZBpBye9KjMJxu7b3DT3+Mg9MB8IdWzIp8zYa2oUGyEHlDIT8R
+         LDNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FWCkjw7D27bCfSTIiFeagjvfDVKxrTv9MJxc0vm1jsM=;
-        b=d+HLunsA4Qzwlb8R5yfjfHiX9SKknlRTVePSk7RQccsB2K7tw0hKE4eynfGfXXMcrK
-         du60PxPYy/r8v91a7CZ2o+OVP77Z6oRxoxfD2+xrGbPO9QueNtOKl/E93+ze0/KFZtSK
-         zhbw5YKaxXQ+iMxsjOQQfqDC5o2y0uhJZF9mLHdYPKEn0Hub8mjKPO1r6PUVz3SaI0yk
-         yhX1QyDVnol97ZC5I7r0jbY3vimTJDuLs5wQEQoehmhMi95cOy1F4ScrCqh48fz/KjzT
-         f4h7HLI+f/SLBljTrd8ZEWeaZ+iDPq5OVZSPAHhDsu4k0EDfxafNqz8RUPb8VPhAem84
-         Sssg==
-X-Gm-Message-State: AOAM530W7WA8cEbFqz9JP9YIaGRa1J2KYPzE/sWnL4onq1NVk1Z5/wL6
-        cnMJ/DZRqgcYCljIM1lbKHGS9A==
-X-Google-Smtp-Source: ABdhPJzO545f/nTUQZe430KO3tBGZNfRTO6XTw//+8ZWLerSqiQ37E7M2006rAZwltluz+Nblg5fnA==
-X-Received: by 2002:a05:6214:27eb:b0:42c:4b77:d62 with SMTP id jt11-20020a05621427eb00b0042c4b770d62mr5787101qvb.55.1645195099691;
-        Fri, 18 Feb 2022 06:38:19 -0800 (PST)
+        bh=ct/taknL5OSPLapfp68CqWQFOWxZjIbqi5eZb8JBksY=;
+        b=4da7l92Pz+hQwyf1OAvtW3KyhZjRwSrI3t3VSy7jThPtTwpZoZ5RehWC2q+OG5goCP
+         ZxWsVdJi4uOYiKSQ9KcTL1w900UBnOe6fzkWtGEHGhhZGmFHE/WDIQX2PDjLZy1Jwoxy
+         wG4taOZLHnh7KRPjwB8K17kOqPMuWQjrK9vh1byyT0NA9/fT2uwPcj1wnnO7w9WZticu
+         8u8N/VfXRo6kPx+KdY4+koCf0ItoT+vttM4FPVAAJNwDk/SbdhqtCUUFOrUnOhs4c2Ay
+         2EKqD3VBsbXZOcdfp5G7jAV6EIH4E8LKsSmXqnNJ45nm+gUW/MF7K0mOpJa3GleTD/Ct
+         ErdA==
+X-Gm-Message-State: AOAM533BF5jETygFJIwkp/jEK1fqyLy20rs5dqdmERv5Z8raR5+0l9WE
+        0fezniMJ5O4vURA/w77AsIZ8+Q==
+X-Google-Smtp-Source: ABdhPJyKZyTfSEa0vIzZ5O5IWNjOfKXn6L1s55DZaVz4whOQ5ew2pRooBom75osvbsbiK/FbHaPC8A==
+X-Received: by 2002:a05:622a:102:b0:2dc:ea0f:a12c with SMTP id u2-20020a05622a010200b002dcea0fa12cmr6886023qtw.17.1645195101457;
+        Fri, 18 Feb 2022 06:38:21 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n19sm15062955qtk.66.2022.02.18.06.38.18
+        by smtp.gmail.com with ESMTPSA id k4sm24554384qta.6.2022.02.18.06.38.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 06:38:19 -0800 (PST)
+        Fri, 18 Feb 2022 06:38:20 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     viro@ZenIV.linux.org.uk, linux-fsdevel@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 1/2] btrfs: remove the cross file system checks from remap
-Date:   Fri, 18 Feb 2022 09:38:13 -0500
-Message-Id: <ac03eaa51bac7c30ee4b116777ac9eb57573a280.1645194730.git.josef@toxicpanda.com>
+Cc:     "Darrick J . Wong" <djwong@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH v2 2/2] fs: allow cross-vfsmount reflink/dedupe
+Date:   Fri, 18 Feb 2022 09:38:14 -0500
+Message-Id: <9cf49345f432f3541c480f62900d7e36a90a61a3.1645194730.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1645194730.git.josef@toxicpanda.com>
 References: <cover.1645194730.git.josef@toxicpanda.com>
@@ -68,31 +71,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The sb check is already done in do_clone_file_range, and the mnt check
-(which will hopefully go away in a subsequent patch) is done in
-ioctl_file_clone().  Remove the check in our code and put an ASSERT() to
-make sure it doesn't change underneath us.
+Currently we disallow reflink and dedupe if the two files aren't on the
+same vfsmount.  However we really only need to disallow it if they're
+not on the same super block.  It is very common for btrfs to have a main
+subvolume that is mounted and then different subvolumes mounted at
+different locations.  It's allowed to reflink between these volumes, but
+the vfsmount check disallows this.  Instead fix dedupe to check for the
+same superblock, and simply remove the vfsmount check for reflink as it
+already does the superblock check.
 
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/reflink.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/ioctl.c       | 4 ----
+ fs/remap_range.c | 7 +------
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index a3930da4eb3f..6fed103f1000 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -772,9 +772,7 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
- 		if (btrfs_root_readonly(root_out))
- 			return -EROFS;
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 1ed097e94af2..090bf47606ab 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -236,9 +236,6 @@ static long ioctl_file_clone(struct file *dst_file, unsigned long srcfd,
  
--		if (file_in->f_path.mnt != file_out->f_path.mnt ||
--		    inode_in->i_sb != inode_out->i_sb)
--			return -EXDEV;
-+		ASSERT(inode_in->i_sb == inode_out->i_sb);
- 	}
+ 	if (!src_file.file)
+ 		return -EBADF;
+-	ret = -EXDEV;
+-	if (src_file.file->f_path.mnt != dst_file->f_path.mnt)
+-		goto fdput;
+ 	cloned = vfs_clone_file_range(src_file.file, off, dst_file, destoff,
+ 				      olen, 0);
+ 	if (cloned < 0)
+@@ -247,7 +244,6 @@ static long ioctl_file_clone(struct file *dst_file, unsigned long srcfd,
+ 		ret = -EINVAL;
+ 	else
+ 		ret = 0;
+-fdput:
+ 	fdput(src_file);
+ 	return ret;
+ }
+diff --git a/fs/remap_range.c b/fs/remap_range.c
+index 231159682907..bc5fb006dc79 100644
+--- a/fs/remap_range.c
++++ b/fs/remap_range.c
+@@ -362,11 +362,6 @@ loff_t do_clone_file_range(struct file *file_in, loff_t pos_in,
  
- 	/* Don't make the dst file partly checksummed */
+ 	WARN_ON_ONCE(remap_flags & REMAP_FILE_DEDUP);
+ 
+-	/*
+-	 * FICLONE/FICLONERANGE ioctls enforce that src and dest files are on
+-	 * the same mount. Practically, they only need to be on the same file
+-	 * system.
+-	 */
+ 	if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+ 		return -EXDEV;
+ 
+@@ -458,7 +453,7 @@ loff_t vfs_dedupe_file_range_one(struct file *src_file, loff_t src_pos,
+ 		goto out_drop_write;
+ 
+ 	ret = -EXDEV;
+-	if (src_file->f_path.mnt != dst_file->f_path.mnt)
++	if (file_inode(src_file)->i_sb != file_inode(dst_file)->i_sb)
+ 		goto out_drop_write;
+ 
+ 	ret = -EISDIR;
 -- 
 2.26.3
 
