@@ -2,137 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E36A4BB6FE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 11:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21134BB782
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 12:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbiBRKhR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Feb 2022 05:37:17 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50120 "EHLO
+        id S234261AbiBRLBF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Feb 2022 06:01:05 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbiBRKhQ (ORCPT
+        with ESMTP id S232812AbiBRLBD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Feb 2022 05:37:16 -0500
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EA2636A;
-        Fri, 18 Feb 2022 02:36:59 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 94CA758034C;
-        Fri, 18 Feb 2022 05:36:57 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 18 Feb 2022 05:36:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; bh=2M482WJpspdP0M9aq+xDp/jCcE8RYRfd8264dt
-        8riP0=; b=pigrYCz/nRvqvfe3fn19OseG2VmEVoVNogADzCWeFbHJqntvb9npCN
-        Q2juAq5pDEkV+W2wyIE6fWSwISWwbB44m808ZnExf8LPwGaFFRQqU9xXdPEJqxuV
-        +xZZKM7SsGUo1TyyWV0Np+Z7oq+FKExfu65Fc6uOBNz+h7s63Ye0HrSL1u5abnRi
-        IGss5nnvD85rWMCHJtTgu3QyStCrkR8VBBGH6Ske+1dks3PIeekkQOM2QMLwxWdh
-        h4QsAA4jEE49U/CnBe0nxCEX3xSEAGk8A/OL7JARVtpjlWKFbce81tzc2ftWxp4g
-        maogHgZj4KJF1RyPAtMF9s47SqcRjvCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=2M482WJpspdP0M9aq
-        +xDp/jCcE8RYRfd8264dt8riP0=; b=W0/nDAEyRIqKnn+7YBCSBL+ZXoeoATo7h
-        sBNlDhh9KHGE+k0rQK+HQqhWKIUk9kLs9cJTznqnsLRD/NNtbCgdQuR2TJ1tvo32
-        jkNMtjnQw/pWWVWRoirccy6adtRhajb6pBrhw9p5Hmw8eW3+QZt+u0fTmtrOvYMh
-        8vDoRkk2lE0CFzlrDbUQGPvc08hbRXAsbQcOxcT1XadIsZYrFozeRPFAfZFWF0CS
-        qY05qXRBJIEPvCUV+BuxRTZ++0KJMZkaGdmE4z8w08et9BW33QVz8y+FBpaD3LrJ
-        W1O/vu0yWBEKlas4JEibZr5PnVgcVG1jwZktq2zZhUk4UnyC2EJcg==
-X-ME-Sender: <xms:yXYPYvw_79xaQ7rDh3VIqHE71u3E7mRt7vx2IQPIHZGWB9yA_PV1FA>
-    <xme:yXYPYnTCoNFV_DAxPNjzayacJEhBaTR6wzBliNqGDpCtlYMcNIeadLIsBr0pLpKKi
-    8WLhh7AYMNZ2Q>
-X-ME-Received: <xmr:yXYPYpVbd4I1R7O9FSXCHf0Eu1C9149bR2uKY0pAYJV1OUPA8ULtuCgaLaow9vrGcwhrov0CiYhLEzvcUB4T_Tm2laiYNxJj>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrkedtgdduiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:yXYPYphIWbHTxQjunp15iTygx62D3INsbUT7uL-XAnRrceBl4IsGbw>
-    <xmx:yXYPYhA9oLLODIdQFs37gAqSNCTQ5UkfBY9FJy-oPkD13f4EGhtgSA>
-    <xmx:yXYPYiL8vLAdomspPXXOgAe2ZUlP5h3Ekemau84jPazqxsq-vSwnvg>
-    <xmx:yXYPYpbuPee_aQnaNDj5SosxVM50PdH0JxnJryNvfN6Ufjjh8tJmiQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Feb 2022 05:36:56 -0500 (EST)
-Date:   Fri, 18 Feb 2022 11:36:46 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Su Yue <l@damenly.su>, David Sterba <dsterba@suse.com>,
-        clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 16/27] btrfs: tree-checker: check item_size
- for dev_item
-Message-ID: <Yg92voqmS9jz/rI+@kroah.com>
-References: <20220209184103.47635-1-sashal@kernel.org>
- <20220209184103.47635-16-sashal@kernel.org>
+        Fri, 18 Feb 2022 06:01:03 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280AD1ED631;
+        Fri, 18 Feb 2022 03:00:47 -0800 (PST)
+Received: from ip4d144895.dynamic.kabel-deutschland.de ([77.20.72.149] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1nL10E-0002pT-IO; Fri, 18 Feb 2022 12:00:42 +0100
+Message-ID: <f0ebbdfd-d14c-b497-07fb-54eb8d71ff38@leemhuis.info>
+Date:   Fri, 18 Feb 2022 12:00:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220209184103.47635-16-sashal@kernel.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [REGRESSION] 5-10% increase in IO latencies with nohz balance
+ patch
+Content-Language: en-BS
+To:     Roman Gushchin <guro@fb.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, peterz@infradead.org,
+        vincent.guittot@linaro.org, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        clm@fb.com
+References: <878rx6bia5.mognet@arm.com> <87wnklaoa8.mognet@arm.com>
+ <YappSLDS2EvRJmr9@localhost.localdomain> <87lf0y9i8x.mognet@arm.com>
+ <87v8zx8zia.mognet@arm.com> <YbJWBGaGAW/MenOn@localhost.localdomain>
+ <99452126-661e-9a0c-6b51-d345ed0f76ee@leemhuis.info>
+ <87tuf07hdk.mognet@arm.com> <YdMhQRq1K8tW+S05@localhost.localdomain>
+ <87k0f37fl6.mognet@arm.com> <YeBZ7qNjPsonEYZz@carbon.dhcp.thefacebook.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <YeBZ7qNjPsonEYZz@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1645182047;beeb04d5;
+X-HE-SMSGID: 1nL10E-0002pT-IO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 01:40:52PM -0500, Sasha Levin wrote:
-> From: Su Yue <l@damenly.su>
-> 
-> [ Upstream commit ea1d1ca4025ac6c075709f549f9aa036b5b6597d ]
-> 
-> Check item size before accessing the device item to avoid out of bound
-> access, similar to inode_item check.
-> 
-> Signed-off-by: Su Yue <l@damenly.su>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  fs/btrfs/tree-checker.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index d4a3a56726aa8..4a5ee516845f7 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -947,6 +947,7 @@ static int check_dev_item(struct extent_buffer *leaf,
->  			  struct btrfs_key *key, int slot)
->  {
->  	struct btrfs_dev_item *ditem;
-> +	const u32 item_size = btrfs_item_size(leaf, slot);
->  
->  	if (key->objectid != BTRFS_DEV_ITEMS_OBJECTID) {
->  		dev_item_err(leaf, slot,
-> @@ -954,6 +955,13 @@ static int check_dev_item(struct extent_buffer *leaf,
->  			     key->objectid, BTRFS_DEV_ITEMS_OBJECTID);
->  		return -EUCLEAN;
->  	}
-> +
-> +	if (unlikely(item_size != sizeof(*ditem))) {
-> +		dev_item_err(leaf, slot, "invalid item size: has %u expect %zu",
-> +			     item_size, sizeof(*ditem));
-> +		return -EUCLEAN;
-> +	}
-> +
->  	ditem = btrfs_item_ptr(leaf, slot, struct btrfs_dev_item);
->  	if (btrfs_device_id(leaf, ditem) != key->offset) {
->  		dev_item_err(leaf, slot,
-> -- 
-> 2.34.1
-> 
+Hi, this is your Linux kernel regression tracker speaking. Top-posting
+for once, to make this easy accessible to everyone.
 
-This adds a build warning, showing that the backport is not correct, so
-I'll go drop this :(
+FWIW, this is a gentle reminder that I'm still tracking this regression.
+Afaics nothing happened in the last few weeks.
 
-thanks,
+If the discussion continued somewhere else, please let me know; you can
+do this directly or simply tell my regression tracking bot yourself by
+sending a reply to this mail with a paragraph containing a regzbot
+command like "#regzbot monitor
+https://lore.kernel.org/r/some_msgi@example.com/"
 
-greg k-h
+If you think there are valid reasons to drop this regressions from the
+tracking, let me know; you can do this directly or simply tell my
+regression tracking bot yourself by sending a reply to this mail with a
+paragraph containing a regzbot command like "#regzbot invalid: Some
+explanation" (without the quotes).
+
+Anyway: I'm putting it on back burner now to reduce the noise, as this
+afaics is less important than other regressions:
+
+#regzbot backburner: Culprit is hard to track down
+#regzbot poke
+
+You likely get two more mails like this after the next two merge
+windows, then I'll drop it if I don't here anything back.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+P.S.: As the Linux kernel's regression tracker I'm getting a lot of
+reports on my table. I can only look briefly into most of them and lack
+knowledge about most of the areas they concern. I thus unfortunately
+will sometimes get things wrong or miss something important. I hope
+that's not the case here; if you think it is, don't hesitate to tell me
+in a public reply, it's in everyone's interest to set the public record
+straight.
+
+
+On 13.01.22 17:57, Roman Gushchin wrote:
+> On Thu, Jan 13, 2022 at 04:41:57PM +0000, Valentin Schneider wrote:
+>> On 03/01/22 11:16, Josef Bacik wrote:
+>>> On Wed, Dec 22, 2021 at 04:07:35PM +0000, Valentin Schneider wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> On 22/12/21 13:42, Thorsten Leemhuis wrote:
+>>>>> What's the status here? Just wondering, because there hasn't been any
+>>>>> activity in this thread since 11 days and the festive season is upon us.
+>>>>>
+>>>>> Was the discussion moved elsewhere? Or is this still a mystery? And if
+>>>>> it is: how bad is it, does it need to be fixed before Linus releases 5.16?
+>>>>>
+>>>>
+>>>> I got to the end of bisect #3 yesterday, the incriminated commit doesn't
+>>>> seem to make much sense but I've just re-tested it and there is a clear
+>>>> regression between that commit and its parent (unlike bisect #1 and #2):
+>>>>
+>>>> 2127d22509aec3a83dffb2a3c736df7ba747a7ce mm, slub: fix two bugs in slab_debug_trace_open()
+>>>> write_clat_ns_p99     195395.92     199638.20      4797.01    2.17%
+>>>> write_iops             17305.79      17188.24       250.66   -0.68%
+>>>>
+>>>> write_clat_ns_p99     195543.84     199996.70      5122.88    2.28%
+>>>> write_iops             17300.61      17241.86       251.56   -0.34%
+>>>>
+>>>> write_clat_ns_p99     195543.84     200724.48      5122.88    2.65%
+>>>> write_iops             17300.61      17246.63       251.56   -0.31%
+>>>>
+>>>> write_clat_ns_p99     195543.84     200445.41      5122.88    2.51%
+>>>> write_iops             17300.61      17215.47       251.56   -0.49%
+>>>>
+>>>> 6d2aec9e123bb9c49cb5c7fc654f25f81e688e8c mm/mempolicy: do not allow illegal MPOL_F_NUMA_BALANCING | MPOL_LOCAL in mbind() 
+>>>> write_clat_ns_p99     195395.92     197942.30      4797.01    1.30%
+>>>> write_iops             17305.79      17246.56       250.66   -0.34%
+>>>>
+>>>> write_clat_ns_p99     195543.84     196183.92      5122.88    0.33%
+>>>> write_iops             17300.61      17310.33       251.56    0.06%
+>>>>
+>>>> write_clat_ns_p99     195543.84     196990.71      5122.88    0.74%
+>>>> write_iops             17300.61      17346.32       251.56    0.26%
+>>>>
+>>>> write_clat_ns_p99     195543.84     196362.24      5122.88    0.42%
+>>>> write_iops             17300.61      17315.71       251.56    0.09%
+>>>>
+>>>> It's pure debug stuff and AFAICT is a correct fix...
+>>>> @Josef, could you test that on your side?
+>>>
+>>> Sorry, holidays and all that.  I see 0 difference between the two commits, and
+>>> no regression from baseline.  It'll take me a few days to recover from the
+>>> holidays, but I'll put some more effort into actively debugging wtf is going on
+>>> here on my side since we're all having trouble pinning down what's going
+>>> on.
+>>
+>> Humph, that's unfortunate... I just came back from my holidays, so I'll be
+>> untangling my inbox for the next few days. Do keep us posted!
+> 
+> I'm trying to bisect it independently and make sense of it too, thanks to Josef
+> for providing me a test setup. From the very first data I've got yesterday,
+> the only thing I can say the data is very noisy and I'm not totally convinced
+> that the regression is coming from the patch which was blamed initially.
+> 
+> I hope to make more progress today/tomorrow, will keep you updated.
+> 
+> Thanks!
+> 
