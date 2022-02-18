@@ -2,82 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2737E4BB9CB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 14:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22A54BB9D6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Feb 2022 14:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbiBRNEh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Feb 2022 08:04:37 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41010 "EHLO
+        id S235630AbiBRNKf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Feb 2022 08:10:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232256AbiBRNEg (ORCPT
+        with ESMTP id S232732AbiBRNKe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Feb 2022 08:04:36 -0500
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D242B4618;
-        Fri, 18 Feb 2022 05:04:19 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id F278D580226;
-        Fri, 18 Feb 2022 08:04:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 18 Feb 2022 08:04:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; bh=pxpqD2+sLe6m/z/BcNmFIUMN1NaFzbA2gxa6Sn
-        G8FAE=; b=YkFltgs/c6JzKnjmgH8tHs+8cIg9owcvVpqyEagiIVRJ9bSEj1WQQ4
-        ToRrhcr4eSxTfN8YK279owt59FbvtFqd0r16BgV4FNPxcNVotRdE8NKhbPv/hd79
-        2Z4KaSShethSnnJhtocSPa3wJe+Kqgtsa0Ajokvu+RWPiHml0VG+lQJ9xB0RupSA
-        rDP40DVjUlvbXmSCYbqgpU5Us4Y/zNWFhlAZO9lg+qZkS8z00wZ4uCx4nAKWqm0+
-        jjyuWpxAwVLSxbJN6Q3yP1vrKkZa+bIrHADBD6azZA9KlxmcrBgTLK1ODPkLphE/
-        sl2ApynvQXp1tKkmPEqf12n1m1XdN6pA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=pxpqD2+sLe6m/z/Bc
-        NmFIUMN1NaFzbA2gxa6SnG8FAE=; b=WbwYTPkqk0SGSvuwi4hwM4TZzpgA3XNd7
-        wv27aKMOCVhvX9gnFwPVEne69GFZFbI3HtbGh7QKwNTG6UFQsQsrAgj60RDgn9wl
-        OQA8HpsOn+L4ORcoKjLZFXiFpzWTHW41QvEmuqQM6gqzjpZSy9b/za37y1h3+e9+
-        ZQ1/LxBUVUvW/Dixu/oap0jKWkMhHZAGI+BgU3DcZ6Gm7Oe6YZOdJjlTUwWjW+sW
-        8UWpVUHmOWaYxyrmI1st9346rijZkQFD/9yXdN7ptt1ud9CbYO6D6KOKRTtyejyt
-        Ks7ZzFLzq4c4hjpXwD7FGUvVxr/CrjKExXyDDcXmaepz8SEgTkTGg==
-X-ME-Sender: <xms:UZkPYktVLygxxXeO3qfwmn_ksqtSTVg48CPJLwdtQT9xFlUjWx_5LQ>
-    <xme:UZkPYhfP4pUaK0LhAQ-50255ESPE5GUXn2qlGumdhTZ5-8z3iZALJapsRlW6C99y1
-    PP5huOxzD7rIA>
-X-ME-Received: <xmr:UZkPYvwuNWocT16q2ezjMBMp1anqIk_Scs07YgdFzSPWET5ZZgsqh0u9IMJSywyepx_oOYKSP8kUIPEOizstVsVIg6geq7t0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrkedtgdeghecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:UZkPYnPVDh6GLp2R8Sn2csqEhtGXq5cw9PmtlzNM7yUvY0QQ-PlE2Q>
-    <xmx:UZkPYk_4XdxzbSs83w8Y41rugLb5f_eEh71kjNxLK7aljvhDKd06-Q>
-    <xmx:UZkPYvVP1CwpPaQ2XpVAVfExnOvSUhwxRdwlLxVgqAsDqLY76of18A>
-    <xmx:UZkPYoUoiNB3WBcARV4FjZi9NGc92yFyyRDafFIlIheOzoL0bbaomw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Feb 2022 08:04:16 -0500 (EST)
-Date:   Fri, 18 Feb 2022 14:04:15 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Su Yue <l@damenly.su>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 16/27] btrfs: tree-checker: check item_size
- for dev_item
-Message-ID: <Yg+ZT4b8J+MRU2nG@kroah.com>
-References: <20220209184103.47635-1-sashal@kernel.org>
- <20220209184103.47635-16-sashal@kernel.org>
- <Yg92voqmS9jz/rI+@kroah.com>
- <1r00qtxj.fsf@damenly.su>
+        Fri, 18 Feb 2022 08:10:34 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE163253BDE;
+        Fri, 18 Feb 2022 05:10:15 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7BBD11F37F;
+        Fri, 18 Feb 2022 13:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1645189814;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1JlFxuUX2jYEpN7LRjICgbNOHYKr0FMLJ/vNPXX2b/U=;
+        b=z4fVxXPuw0f6uc2eukxJR1Wew1zDHTNY7X7eEEgRuhUWUxeDZQ98fZptur359cHZrl6dl4
+        d8ZpONw5LmnWScpGPPyEgkBsnMtzhjdrnH3b87+E3cxFTRAQ+byIyP3NOu9EjaA+Ito5rY
+        cKKT2ZL+S30ol5XDgeUxkv8BETyBbR0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1645189814;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1JlFxuUX2jYEpN7LRjICgbNOHYKr0FMLJ/vNPXX2b/U=;
+        b=cnjSx/5Gzt/joRIUQbkLAXJ2pgOS+AwnCVFi+95JtZugVJgSwsvNsXAYiyOm4cOkiubrIC
+        9448VWjM0cAyZPCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6896EA3B83;
+        Fri, 18 Feb 2022 13:10:14 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CD392DA829; Fri, 18 Feb 2022 14:06:28 +0100 (CET)
+Date:   Fri, 18 Feb 2022 14:06:28 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] btrfs: Fix non-kernel-doc comment
+Message-ID: <20220218130628.GS12643@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+References: <20220218101345.125518-1-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1r00qtxj.fsf@damenly.su>
+In-Reply-To: <20220218101345.125518-1-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,100 +69,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 07:25:20PM +0800, Su Yue wrote:
+On Fri, Feb 18, 2022 at 06:13:45PM +0800, Jiapeng Chong wrote:
+> Fixes the following W=1 kernel build warning:
 > 
-> On Fri 18 Feb 2022 at 11:36, Greg KH <greg@kroah.com> wrote:
+> fs/btrfs/ioctl.c:1789: warning: This comment starts with '/**', but
+> isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Entry point to file defragmentation.
 > 
-> > On Wed, Feb 09, 2022 at 01:40:52PM -0500, Sasha Levin wrote:
-> > > From: Su Yue <l@damenly.su>
-> > > 
-> > > [ Upstream commit ea1d1ca4025ac6c075709f549f9aa036b5b6597d ]
-> > > 
-> > > Check item size before accessing the device item to avoid out of
-> > > bound
-> > > access, similar to inode_item check.
-> > > 
-> > > Signed-off-by: Su Yue <l@damenly.su>
-> > > Reviewed-by: David Sterba <dsterba@suse.com>
-> > > Signed-off-by: David Sterba <dsterba@suse.com>
-> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > ---
-> > >  fs/btrfs/tree-checker.c | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > > 
-> > > diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> > > index d4a3a56726aa8..4a5ee516845f7 100644
-> > > --- a/fs/btrfs/tree-checker.c
-> > > +++ b/fs/btrfs/tree-checker.c
-> > > @@ -947,6 +947,7 @@ static int check_dev_item(struct extent_buffer
-> > > *leaf,
-> > >  			  struct btrfs_key *key, int slot)
-> > >  {
-> > >  	struct btrfs_dev_item *ditem;
-> > > +	const u32 item_size = btrfs_item_size(leaf, slot);
-> > > 
-> > >  	if (key->objectid != BTRFS_DEV_ITEMS_OBJECTID) {
-> > >  		dev_item_err(leaf, slot,
-> > > @@ -954,6 +955,13 @@ static int check_dev_item(struct extent_buffer
-> > > *leaf,
-> > >  			     key->objectid,  BTRFS_DEV_ITEMS_OBJECTID);
-> > >  		return -EUCLEAN;
-> > >  	}
-> > > +
-> > > +	if (unlikely(item_size != sizeof(*ditem))) {
-> > > +		dev_item_err(leaf, slot, "invalid item size: has %u expect %zu",
-> > > +			     item_size, sizeof(*ditem));
-> > > +		return -EUCLEAN;
-> > > +	}
-> > > +
-> > >  	ditem = btrfs_item_ptr(leaf, slot, struct btrfs_dev_item);
-> > >  	if (btrfs_device_id(leaf, ditem) != key->offset) {
-> > >  		dev_item_err(leaf, slot,
-> > > --
-> > > 2.34.1
-> > > 
-> > 
-> > This adds a build warning, showing that the backport is not correct, so
-> > I'll go drop this :(
-> > 
-> And the warning is
-> ========================================================================
-> arch/x86/kernel/head_64.o: warning: objtool: .text+0x5: unreachable
-> instruction
-> fs/btrfs/tree-checker.c: In function \342\200\230check_dev_item\342\200\231:
-> fs/btrfs/tree-checker.c:950:53: warning: passing argument 2 of
-> \342\200\230btrfs_item_size\342\200\231 makes pointer from integer without a
-> cast [-Wint-conversion]
->  950 |         const u32 item_size = btrfs_item_size(leaf, slot);
->      |                                                     ^~~~
->      |                                                     |
->      |                                                     int
-> In file included from fs/btrfs/tree-checker.c:21:
-> fs/btrfs/ctree.h:1474:48: note: expected \342\200\230const struct btrfs_item
-> *\342\200\231 but argument is of type \342\200\230int\342\200\231
-> 1474 |                                    const type *s) \
->      |                                    ~~~~~~~~~~~~^
-> fs/btrfs/ctree.h:1833:1: note: in expansion of macro
-> \342\200\230BTRFS_SETGET_FUNCS\342\200\231
-> 1833 | BTRFS_SETGET_FUNCS(item_size, struct btrfs_item, size, 32);
->      | ^~~~~~~~~~~~~~~~~~
-> ========================================================================
+> fs/btrfs/extent_map.c:390: warning: This comment starts with '/**', but
+> isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Add new extent map to the extent tree.
 > 
-> The upstream patchset[1] merged in 5.17-rc1, changed second parameter
-> of btrfs_item_size() from btrfs_item * to int directly.
-> So yes, the backport is wrong.
+> fs/btrfs/block-group.c:1743: warning: This comment starts with '/**',
+> but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
+>  * Map a physical disk address to a list of logical addresses.
 > 
-> I'm not familiar with stable backport progress. Should I file a patch
-> using btrfs_item *? Or just drop it?
+> fs/btrfs/extent_io.c:4923: warning: This comment starts with '/**', but
+> isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Walk the list of dirty pages of the given address space and write all
+>  * of them.
+> 
+> fs/btrfs/file-item.c:625: warning: This comment starts with '/**', but
+> isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Calculate checksums of the data contained inside a bio.
+> 
+> fs/btrfs/inode.c:3430: warning: This comment starts with '/**', but
+> isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Wait for flushing all delayed iputs
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  fs/btrfs/block-group.c | 2 +-
+>  fs/btrfs/extent_io.c   | 2 +-
+>  fs/btrfs/extent_map.c  | 2 +-
+>  fs/btrfs/file-item.c   | 2 +-
+>  fs/btrfs/inode.c       | 2 +-
+>  fs/btrfs/ioctl.c       | 2 +-
+>  6 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index c22d287e020b..884002e510ec 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1739,7 +1739,7 @@ static void set_avail_alloc_bits(struct btrfs_fs_info *fs_info, u64 flags)
+>  	write_sequnlock(&fs_info->profiles_lock);
+>  }
+>  
+> -/**
+> +/*
+>   * Map a physical disk address to a list of logical addresses
+>   *
+>   * @fs_info:       the filesystem
 
-If you think this needs to be in the stable tree, yes please backport it
-and send it to us.
-
-> The patch is related to  0c982944af27d131d3b74242f3528169f66950ad but
-> I wonder why the 0c98294 is not selected automatically.
-
-No idea, if you think that is needed to, please send it to us.
-
-thanks,
-
-greg k-h
+We'd actually like the kdoc script to check the argument list.
