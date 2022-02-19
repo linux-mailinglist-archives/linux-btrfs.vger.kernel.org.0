@@ -2,54 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B954BC530
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Feb 2022 04:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6ED4BC707
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Feb 2022 10:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239803AbiBSDOx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Feb 2022 22:14:53 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35116 "EHLO
+        id S241664AbiBSJBx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Feb 2022 04:01:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235991AbiBSDOv (ORCPT
+        with ESMTP id S232624AbiBSJBw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Feb 2022 22:14:51 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2D550471
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 19:14:33 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id gi6so569490pjb.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 19:14:33 -0800 (PST)
+        Sat, 19 Feb 2022 04:01:52 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0283C25F
+        for <linux-btrfs@vger.kernel.org>; Sat, 19 Feb 2022 01:01:33 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id s16so9849133pgs.13
+        for <linux-btrfs@vger.kernel.org>; Sat, 19 Feb 2022 01:01:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=jIEW3GEt2R7+faVgElOQ+eB8QHchlLoAIZOgRqlmF+w=;
-        b=nFxNrxgKsn3u5c5QVCNIaTit3piqJv5yqsTv0yumKaMosUhPxt3AuODyVA+VFwqQ/Z
-         vSjmdfhDmI4YRXR0WvgZkqs8IAKO/E1EE+baV+QfCyIvrNssVlrzgfeRv+JUV9yruRlI
-         ZG8uxyPnNUDcNv8M7Nc+lcgCsjgNw2undK8zTiYIGbKuUuQ0LdLbtsvge88u0Qhe5F3V
-         sWXBoGYzzuqSVKjfsN3uWt8SsqhmFoQWLiMvMbgo6At4jrqCu5KohFEir8SeY95rRnKl
-         GYK7unL2ghpkAfPf3R44MDtLN4X7CvkCF5pXGU4RE5wCKK3er/pnSybZk/Ocy7CV3beq
-         grEg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CxAqFgU6N+8zriBmgSNVCi2Tl/+seHJZodrv8Pm6Q2U=;
+        b=qF7JPmIfwzRxt2Mw8zFw7/ezjN1sMFIFORtsa3FW//7cFa4R88ZYQ5iFmLr5ElGHaI
+         FZ8QxUqCIqF89vzacvBMNnJ8miD2ZROBcgIZfgLigrGBrb3U/kt/4HF43ekwmhZpniGH
+         Q8Mw+0n/Jxj26tFgNy67W7pXjP7j7IDk0LR8xVAeT1fQHhs5FXxdtrTXnd9Ub6QEl88f
+         mk67jBRMomWJAXQMaC01pQL3YFk7R1LnhIKBoqTQNKOYZQw4QEry6ebrQ7NB80c3/f7C
+         EQIbbJAC736qhIw8GtBlv6uR7SKV4R/R/On/XGEqOA3uc3fpGs0e2D1mIIB3q2B/DE7t
+         6ydg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=jIEW3GEt2R7+faVgElOQ+eB8QHchlLoAIZOgRqlmF+w=;
-        b=iwowhpgLtkeOupL4PgwauelLsje8ZFi/DAY0hlsTwngaMMPCJbD9t6K0W8izauKnRf
-         Zz+de8XrG/Vxnp1AHB6VEowrLOuY1m2OB4kElDNyehlVO1RWvYMJbFdDrhYlbsN/eJJ1
-         pGn2QnaWiflO6JEk2AK9UAStzYOs5aBWkbMCJyuhpetdsGD71CRTXMK2lWtRjSYBj+Ba
-         F0Mny6rKwcgPxc1BaHP67wRtEnu+Ua6O5e4x6Jvevo+xYpjSjsP7TGetU/XdL+HOKvx6
-         vGvhx3XRrudNTuUi/0iIi7YfmGxTyoe4ug85EvPXIENQtUnAXCw9/oqcI8qIUcVxsQuR
-         A/7Q==
-X-Gm-Message-State: AOAM533zaUfzvuEq6TLlLZ3hq4C8Y42SvIrJEgbzMA5I1CD27OkxB0+J
-        iZ8dUtu4bRT74Qb38vUpJgWm6TYNTwg9KifkLktq+W4i
-X-Google-Smtp-Source: ABdhPJzicPzCbpsMfB0Z64Vvor7keYqAkoqKPTMLRC2IFK6pqbbnTqKQaM+4I54nzmvUmEh8lG+UE5R9HO//fNZSNys=
-X-Received: by 2002:a17:90a:c981:b0:1b8:b14b:6913 with SMTP id
- w1-20020a17090ac98100b001b8b14b6913mr11275849pjt.131.1645240472696; Fri, 18
- Feb 2022 19:14:32 -0800 (PST)
-MIME-Version: 1.0
-From:   ov 2k <ov2k.github@gmail.com>
-Date:   Fri, 18 Feb 2022 22:14:20 -0500
-Message-ID: <CADwZqEvZQmwnY7e5LcUmgQ7EMmMx1XV-znnQMJG3D_fKtpDcdw@mail.gmail.com>
-Subject: FIDEDUPERANGE and compression
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CxAqFgU6N+8zriBmgSNVCi2Tl/+seHJZodrv8Pm6Q2U=;
+        b=VLiAasugzL5BU2cspLVsTI+G0VZVa920hRTQlCOtyVUG88SoSSbQ38mRBgvX2syCzf
+         5rEt3Seo0D0bgomACmtLQrPplke/SZ71FZu3lIullVxIFyjNCO80KTf6vcnwPPIViy26
+         +wKxzlu2o98OxI60y4PZPJGbHuMAjfUWDp2xJWQWmG2xW5AIamh3ksRmJ38Ixq7i4DjD
+         85yozaTcWyoUFAmXOBTmnJTKbhTEfTzwIYjIza5cuLJQK86owNCx/InRZpk+6OEBTrLT
+         1yLxgHACz50ilcxsPjTEurayFjcBrbjVYRE4RUydrF01+QLBN0Vn4THgmn5DCslaPGLD
+         zlRA==
+X-Gm-Message-State: AOAM532fRoTU6fzZrikTRMOBSbut+bKiwbSybHcU/6bp/kM/G4qSM4B4
+        n1NGz3a4RsrCbAc7YngzwSt05H9YxCo=
+X-Google-Smtp-Source: ABdhPJx+r+lo0Jwsu1Rerg7RrzyL4yI3biCNoXkGWgGSiNficteB2BTM5hkwGcMHkI46Jrr4N2K1kQ==
+X-Received: by 2002:a63:451e:0:b0:373:6a1d:2ad9 with SMTP id s30-20020a63451e000000b003736a1d2ad9mr9434157pga.114.1645261292070;
+        Sat, 19 Feb 2022 01:01:32 -0800 (PST)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id z27sm12786026pgk.78.2022.02.19.01.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Feb 2022 01:01:31 -0800 (PST)
+From:   Sidong Yang <realwakka@gmail.com>
 To:     linux-btrfs@vger.kernel.org
-Content-Type: multipart/mixed; boundary="000000000000f20aee05d8566541"
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH] btrfs-progs: cmds: subvolume: add -p option on creating subvol
+Date:   Sat, 19 Feb 2022 09:01:23 +0000
+Message-Id: <20220219090123.51185-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -60,46 +67,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---000000000000f20aee05d8566541
-Content-Type: text/plain; charset="UTF-8"
+This patch resolves github issue #429. This patch adds an option that
+create parent directories when it creates subvolumes on nonexisting
+parents. This option tokenizes dstdir and checks each paths whether
+it's existing directory and make directory for creating subvolume.
 
-FIDEDUPERANGE does not seem to behave as expected with compressible
-data on a btrfs volume with compression enabled, at least with small
-adjacent FIDEDUPERANGE requests.  I've attached a basic test case.  It
-writes two short identical files and calls FIDEDUPERANGE three times,
-on the thirds of the file, in order.  filefrag -v reports that the
-destination file has three extents that each reference the first third
-of the source file.
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+ cmds/subvolume.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-To be clear, the data in the destination file remains correct.
-However, the second and third FIDEDUPERANGE calls do not seem to cause
-the destination file to reference the expected source extents.  I'm
-not actually certain whether this is a bug in FIDEDUPERANGE or
-FS_IOC_FIEMAP or something deeper within btrfs itself.
+diff --git a/cmds/subvolume.c b/cmds/subvolume.c
+index fbf56566..1070c74a 100644
+--- a/cmds/subvolume.c
++++ b/cmds/subvolume.c
+@@ -88,6 +88,7 @@ static const char * const cmd_subvol_create_usage[] = {
+ 	"",
+ 	"-i <qgroupid>  add the newly created subvolume to a qgroup. This",
+ 	"               option can be given multiple times.",
++	"-p             make any missing parent directories for each argument",
+ 	HELPINFO_INSERT_GLOBALS,
+ 	HELPINFO_INSERT_QUIET,
+ 	NULL
+@@ -105,10 +106,11 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
+ 	char	*dst;
+ 	struct btrfs_qgroup_inherit *inherit = NULL;
+ 	DIR	*dirstream = NULL;
++	bool create_parents = false;
+ 
+ 	optind = 0;
+ 	while (1) {
+-		int c = getopt(argc, argv, "c:i:");
++		int c = getopt(argc, argv, "c:i:p");
+ 		if (c < 0)
+ 			break;
+ 
+@@ -127,6 +129,9 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
+ 				goto out;
+ 			}
+ 			break;
++		case 'p':
++			create_parents = true;
++			break;
+ 		default:
+ 			usage_unknown_option(cmd, argv);
+ 		}
+@@ -167,6 +172,30 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
+ 		goto out;
+ 	}
+ 
++	if (create_parents) {
++		char p[PATH_MAX];
++		char dstdir_real[PATH_MAX];
++		char *token;
++
++		realpath(dstdir, dstdir_real);
++		token = strtok(dstdir_real, "/");
++		while(token) {
++			strcat(p, "/");
++			strcat(p, token);
++			res = path_is_dir(p);
++			if (res == -ENOENT) {
++				if (mkdir(p, 0755)) {
++					error("failed to make dir: %s", p);
++					goto out;
++				}
++			} else if (res <= 0) {
++				error("failed to check dir: %s", p);				
++				goto out;
++			}
++			token = strtok(NULL, "/");
++		}
++	}
++
+ 	fddst = btrfs_open_dir(dstdir, &dirstream, 1);
+ 	if (fddst < 0)
+ 		goto out;
+-- 
+2.25.1
 
---000000000000f20aee05d8566541
-Content-Type: text/x-c-code; charset="US-ASCII"; name="test.c"
-Content-Disposition: attachment; filename="test.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kzt9mrsa0>
-X-Attachment-Id: f_kzt9mrsa0
-
-I2luY2x1ZGUgPGxpbnV4L2ZzLmg+CiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8c3RkbGli
-Lmg+CiNpbmNsdWRlIDxzeXMvaW9jdGwuaD4KI2luY2x1ZGUgPHN5cy9zdGF0dmZzLmg+CiNpbmNs
-dWRlIDx1bmlzdGQuaD4KCmludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikgewoJRklMRSAq
-c3JjOwoJRklMRSAqZGVzdDsKCXN0cnVjdCBzdGF0dmZzIHZmc3N0YXRzOwoJdW5zaWduZWQgbG9u
-ZyBic2l6ZTsKCXNpemVfdCBzaXplOwoJc3RydWN0IGZpbGVfZGVkdXBlX3JhbmdlICpmZHI7CgoJ
-c3JjID0gZm9wZW4oInNyYyIsICJ3KyIpOwoJZGVzdCA9IGZvcGVuKCJkZXN0IiwgIncrIik7CgoJ
-ZnN0YXR2ZnMoZmlsZW5vKHNyYyksICZ2ZnNzdGF0cyk7Cglic2l6ZSA9IHZmc3N0YXRzLmZfYnNp
-emU7Cglmb3Ioc2l6ZV90IGkgPSAwOyBpIDwgYnNpemUgKiAyOyBpKyspIHsKCQlmcHJpbnRmKHNy
-YywgIiVzIiwgImZvbyIpOwoJCWZwcmludGYoZGVzdCwgIiVzIiwgImZvbyIpOwoJfQoKCWZmbHVz
-aChzcmMpOwoJZnN5bmMoZmlsZW5vKHNyYykpOwoJZmZsdXNoKGRlc3QpOwoJZnN5bmMoZmlsZW5v
-KGRlc3QpKTsKCglzaXplID0gc2l6ZW9mIChzdHJ1Y3QgZmlsZV9kZWR1cGVfcmFuZ2UpOwoJc2l6
-ZSArPSBzaXplb2YgKHN0cnVjdCBmaWxlX2RlZHVwZV9yYW5nZV9pbmZvKTsKCWZkciA9IGNhbGxv
-YygxLCBzaXplKTsKCWZkci0+c3JjX2xlbmd0aCA9IDIgKiBic2l6ZTsKCWZkci0+ZGVzdF9jb3Vu
-dCA9IDE7CglmZHItPmluZm9bMF0uZGVzdF9mZCA9IGZpbGVubyhkZXN0KTsKCglmb3Ioc2l6ZV90
-IGkgPSAwOyBpIDwgMzsgaSsrKSB7CgkJaW9jdGwoZmlsZW5vKHNyYyksIEZJREVEVVBFUkFOR0Us
-IGZkcik7CgkJZmRyLT5zcmNfb2Zmc2V0ICs9IDIgKiBic2l6ZTsKCQlmZHItPmluZm9bMF0uZGVz
-dF9vZmZzZXQgKz0gMiAqIGJzaXplOwoJfQoKCWZmbHVzaChkZXN0KTsKCWZzeW5jKGZpbGVubyhk
-ZXN0KSk7CgoJcmV0dXJuIDA7Cn0K
---000000000000f20aee05d8566541--
