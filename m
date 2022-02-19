@@ -2,69 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659C44BC37B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Feb 2022 01:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B954BC530
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Feb 2022 04:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240407AbiBSAem (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Feb 2022 19:34:42 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57470 "EHLO
+        id S239803AbiBSDOx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Feb 2022 22:14:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236378AbiBSAel (ORCPT
+        with ESMTP id S235991AbiBSDOv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Feb 2022 19:34:41 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5050D177E76
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 16:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1645230859;
-        bh=AgKtw8bQlj5GMsj3iFnZljrW1Ck/vY3u175DAvxl3xc=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=ijUnT9OvO9RwCX2e/IlaRPg5rl+8yTLdvrms1i0MFYdy8LX+76o6AY/WUicUa2FbZ
-         a5dSJyI60bF0UwSl1iqA7ncrj4dkHwj/RX3yUmZ/WcBcymBNCckda1gLg/n7AURjlM
-         5Db4X6ev9hNhzDtKvT2c7SabJwydxsonRUveyB1Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MwQXH-1oDbNH1dHJ-00sLds; Sat, 19
- Feb 2022 01:34:19 +0100
-Message-ID: <8616b8f4-1c62-eb3c-d497-aa826b6c1f78@gmx.com>
-Date:   Sat, 19 Feb 2022 08:34:07 +0800
+        Fri, 18 Feb 2022 22:14:51 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2D550471
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 19:14:33 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id gi6so569490pjb.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Feb 2022 19:14:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jIEW3GEt2R7+faVgElOQ+eB8QHchlLoAIZOgRqlmF+w=;
+        b=nFxNrxgKsn3u5c5QVCNIaTit3piqJv5yqsTv0yumKaMosUhPxt3AuODyVA+VFwqQ/Z
+         vSjmdfhDmI4YRXR0WvgZkqs8IAKO/E1EE+baV+QfCyIvrNssVlrzgfeRv+JUV9yruRlI
+         ZG8uxyPnNUDcNv8M7Nc+lcgCsjgNw2undK8zTiYIGbKuUuQ0LdLbtsvge88u0Qhe5F3V
+         sWXBoGYzzuqSVKjfsN3uWt8SsqhmFoQWLiMvMbgo6At4jrqCu5KohFEir8SeY95rRnKl
+         GYK7unL2ghpkAfPf3R44MDtLN4X7CvkCF5pXGU4RE5wCKK3er/pnSybZk/Ocy7CV3beq
+         grEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=jIEW3GEt2R7+faVgElOQ+eB8QHchlLoAIZOgRqlmF+w=;
+        b=iwowhpgLtkeOupL4PgwauelLsje8ZFi/DAY0hlsTwngaMMPCJbD9t6K0W8izauKnRf
+         Zz+de8XrG/Vxnp1AHB6VEowrLOuY1m2OB4kElDNyehlVO1RWvYMJbFdDrhYlbsN/eJJ1
+         pGn2QnaWiflO6JEk2AK9UAStzYOs5aBWkbMCJyuhpetdsGD71CRTXMK2lWtRjSYBj+Ba
+         F0Mny6rKwcgPxc1BaHP67wRtEnu+Ua6O5e4x6Jvevo+xYpjSjsP7TGetU/XdL+HOKvx6
+         vGvhx3XRrudNTuUi/0iIi7YfmGxTyoe4ug85EvPXIENQtUnAXCw9/oqcI8qIUcVxsQuR
+         A/7Q==
+X-Gm-Message-State: AOAM533zaUfzvuEq6TLlLZ3hq4C8Y42SvIrJEgbzMA5I1CD27OkxB0+J
+        iZ8dUtu4bRT74Qb38vUpJgWm6TYNTwg9KifkLktq+W4i
+X-Google-Smtp-Source: ABdhPJzicPzCbpsMfB0Z64Vvor7keYqAkoqKPTMLRC2IFK6pqbbnTqKQaM+4I54nzmvUmEh8lG+UE5R9HO//fNZSNys=
+X-Received: by 2002:a17:90a:c981:b0:1b8:b14b:6913 with SMTP id
+ w1-20020a17090ac98100b001b8b14b6913mr11275849pjt.131.1645240472696; Fri, 18
+ Feb 2022 19:14:32 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] btrfs: subpage: fix a wrong check on subpage->writers
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <486801f8e45849c882c2531fe72b6a120429be07.1645150277.git.wqu@suse.com>
- <20220218165721.GD12643@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220218165721.GD12643@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:J21JJ/qLse60YsvjDdMyaJnd3zOIxkHmUwhRM7elkHVx2aVkhsk
- q7SpAszIqh4yO30XLQURCR7amhK8WqzBUFF9BSD2JQHQsrbum5qYSZ/33PW5LGwHrs0188U
- 2eHer3LSWKNS8i44Ta0UZhclNPDu9Pnm09gTKld4Oey+n3S5ZmB/QkOlGxwiQ1SqATz0ZYa
- Iorzy8UlfX4uBaneGx0SA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/puK2CPhKHA=:BsMW+tl06ogkeLZhG+B9KB
- 4ev7DZQ7QJv7u6GNnacLCV3MauGI00c4eTRb0vEVeETyrAbNFQxApTj4KoVSyVTG4dRIWgZns
- 9WJ7sjEGdbizEsXYnb3G7Vr6pd36ZYBx1X5xFHfFRWB5X4Pts75skqXQQZHqR3Jc9Dcf+GbBQ
- mr78Ezu/4AeYQEPpBhdaHs5FKdmolmyRGfxAAOqipCQWnYIxc/NJN2L+EHOmYNFwLAWSrL97E
- QHjo1oUdf20LT1m0HQQydoDQs2CVOD1XdXPLuw1Y8jeHs/3szPy84rho/RHDkfsHsFPw2wW+d
- SvMCQL61Kbv6H9oN+Cm75BszQjg5Zl1xdjkv+X4HoF8ZGIT07e4oGjATZP0ULX/zos6Ls1w2I
- X9FZiHmtUHBhB3u1Tsmy/PdbYRMLEYF+DyTWdZiH+WV6kZ7A9aCY3dZcH+kOXFxCiagPunipQ
- R6fcD7/sazMvhA5PQM7qt8L2W5k1cShpskUJpLYRcR43I96yxBpZyyoNMDY2e3GQcj64IsmLP
- CIqMxPKntJk83I7vWQ0gnByAcAdbTlTde2vG052uxwoRqOHRJLipXala64iLmOBR3gXMkQZPI
- v/R8g5kT9MOI2Q5jJ8Tq5UndPA3CVmMiXgUNAqS3SMiLQMz55xhKbAm5Q+irjsWofYUaUF0uw
- Co8GXPvYWQgaJe+/O6nVPVYI61EOygge/xyuYHi1DNgmw40VNUB+hP2r3GTAINGJUqpaWplHX
- cOE2pw2xnqbgtVpPUMivLnA5871pRAFaTTap5Wjrp4nrTuKJnuFT8fstX85Etwfmpfblps2RP
- k8rahsHWRe1bLv6Bd5HB8Zpwym7BDVVPjQkcfMtZr4apf0LMLBK17xQAW4+npuIH9+UVsrLbj
- XqRZbas1h6Mh4ZBAmAmYEOTqs4n9UcUdn7yPenFyvaQkUHYRTMA4AqD/uDwS4Ata8iaWyrteP
- sDqAkzWrFWTOlRElCQEIPibbycvjmvJCx/I3adRxYiFcb9ikc1HjYFBk10nGiY8ap+TFcuGBl
- v4v2lEqoCWHVXFPEyGQnkDhO0pwv2GNz/0WShJOH2iuJQfuIUSB5KSJnPMZcBRLnvVRSHwYWc
- nnBgE0e6WB7w+Y=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+From:   ov 2k <ov2k.github@gmail.com>
+Date:   Fri, 18 Feb 2022 22:14:20 -0500
+Message-ID: <CADwZqEvZQmwnY7e5LcUmgQ7EMmMx1XV-znnQMJG3D_fKtpDcdw@mail.gmail.com>
+Subject: FIDEDUPERANGE and compression
+To:     linux-btrfs@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000f20aee05d8566541"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,66 +60,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+--000000000000f20aee05d8566541
+Content-Type: text/plain; charset="UTF-8"
 
+FIDEDUPERANGE does not seem to behave as expected with compressible
+data on a btrfs volume with compression enabled, at least with small
+adjacent FIDEDUPERANGE requests.  I've attached a basic test case.  It
+writes two short identical files and calls FIDEDUPERANGE three times,
+on the thirds of the file, in order.  filefrag -v reports that the
+destination file has three extents that each reference the first third
+of the source file.
 
-On 2022/2/19 00:57, David Sterba wrote:
-> On Fri, Feb 18, 2022 at 10:13:00AM +0800, Qu Wenruo wrote:
->> [BUG]
->> When looping btrfs/074 with 64K page size and 4K sectorsize, there is a=
- low
->> chance (1/50~1/100) to crash with the following ASSERT() triggered in
->> btrfs_subpage_start_writer():
->>
->> 	ret =3D atomic_add_return(nbits, &subpage->writers);
->> 	ASSERT(ret =3D=3D nbits); <<< This one <<<
->>
->> [CAUSE]
->> With more debugging output on the parameters of
->> btrfs_subpage_start_writer(), it shows a very concerning error:
->>
->>    ret=3D29 nbits=3D13 start=3D393216 len=3D53248
->>
->> For @nbits it's correct, but @ret which is the returned value from
->> atomic_add_return(), it's not only larger than nbits, but also larger
->> than max sectors per page value (for 64K page size and 4K sector size,
->> it's 16).
->>
->> This indicates that some call sites are not properly decreasing the val=
-ue.
->>
->> And that's exactly the case, in btrfs_page_unlock_writer(), due to the
->> fact that we can have page locked either by lock_page() or
->> process_one_page(), we have to check if the subpage has any writer.
->>
->> If no writers, it's locked by lock_page() and we only need to unlock it=
-.
->>
->> But unfortunately the check for the writers are completely opposite:
->>
->> 	if (atomic_read(&subpage->writers))
->> 		/* No writers, locked by plain lock_page() */
->> 		return unlock_page(page);
->>
->> We directly unlock the page if it has writers, which is the completely
->> opposite what we want.
->>
->> Thankfully the affected call site is only limited to
->> extent_write_locked_range(), so it's mostly affecting compressed write.
->>
->> [FIX]
->> Just fix the wrong check condition to fix the bug.
->>
->> Fixes: e55a0de18572 ("btrfs: rework page locking in __extent_writepage(=
-)")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> Added to msic-next. Do we want this for stable? I think not as the
-> subpage support is not complete.
+To be clear, the data in the destination file remains correct.
+However, the second and third FIDEDUPERANGE calls do not seem to cause
+the destination file to reference the expected source extents.  I'm
+not actually certain whether this is a bug in FIDEDUPERANGE or
+FS_IOC_FIEMAP or something deeper within btrfs itself.
 
-We want. The subpage support is already working except RAID56.
+--000000000000f20aee05d8566541
+Content-Type: text/x-c-code; charset="US-ASCII"; name="test.c"
+Content-Disposition: attachment; filename="test.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kzt9mrsa0>
+X-Attachment-Id: f_kzt9mrsa0
 
-And this fix is needed for cases where compressed write falls back to
-regular cow write.
-
-Thanks,
-Qu
+I2luY2x1ZGUgPGxpbnV4L2ZzLmg+CiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8c3RkbGli
+Lmg+CiNpbmNsdWRlIDxzeXMvaW9jdGwuaD4KI2luY2x1ZGUgPHN5cy9zdGF0dmZzLmg+CiNpbmNs
+dWRlIDx1bmlzdGQuaD4KCmludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikgewoJRklMRSAq
+c3JjOwoJRklMRSAqZGVzdDsKCXN0cnVjdCBzdGF0dmZzIHZmc3N0YXRzOwoJdW5zaWduZWQgbG9u
+ZyBic2l6ZTsKCXNpemVfdCBzaXplOwoJc3RydWN0IGZpbGVfZGVkdXBlX3JhbmdlICpmZHI7CgoJ
+c3JjID0gZm9wZW4oInNyYyIsICJ3KyIpOwoJZGVzdCA9IGZvcGVuKCJkZXN0IiwgIncrIik7CgoJ
+ZnN0YXR2ZnMoZmlsZW5vKHNyYyksICZ2ZnNzdGF0cyk7Cglic2l6ZSA9IHZmc3N0YXRzLmZfYnNp
+emU7Cglmb3Ioc2l6ZV90IGkgPSAwOyBpIDwgYnNpemUgKiAyOyBpKyspIHsKCQlmcHJpbnRmKHNy
+YywgIiVzIiwgImZvbyIpOwoJCWZwcmludGYoZGVzdCwgIiVzIiwgImZvbyIpOwoJfQoKCWZmbHVz
+aChzcmMpOwoJZnN5bmMoZmlsZW5vKHNyYykpOwoJZmZsdXNoKGRlc3QpOwoJZnN5bmMoZmlsZW5v
+KGRlc3QpKTsKCglzaXplID0gc2l6ZW9mIChzdHJ1Y3QgZmlsZV9kZWR1cGVfcmFuZ2UpOwoJc2l6
+ZSArPSBzaXplb2YgKHN0cnVjdCBmaWxlX2RlZHVwZV9yYW5nZV9pbmZvKTsKCWZkciA9IGNhbGxv
+YygxLCBzaXplKTsKCWZkci0+c3JjX2xlbmd0aCA9IDIgKiBic2l6ZTsKCWZkci0+ZGVzdF9jb3Vu
+dCA9IDE7CglmZHItPmluZm9bMF0uZGVzdF9mZCA9IGZpbGVubyhkZXN0KTsKCglmb3Ioc2l6ZV90
+IGkgPSAwOyBpIDwgMzsgaSsrKSB7CgkJaW9jdGwoZmlsZW5vKHNyYyksIEZJREVEVVBFUkFOR0Us
+IGZkcik7CgkJZmRyLT5zcmNfb2Zmc2V0ICs9IDIgKiBic2l6ZTsKCQlmZHItPmluZm9bMF0uZGVz
+dF9vZmZzZXQgKz0gMiAqIGJzaXplOwoJfQoKCWZmbHVzaChkZXN0KTsKCWZzeW5jKGZpbGVubyhk
+ZXN0KSk7CgoJcmV0dXJuIDA7Cn0K
+--000000000000f20aee05d8566541--
