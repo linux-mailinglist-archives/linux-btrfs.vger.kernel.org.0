@@ -2,66 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E654BCBD4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Feb 2022 04:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0352C4BCD8F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Feb 2022 11:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbiBTDNb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Feb 2022 22:13:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37314 "EHLO
+        id S237422AbiBTJll (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Feb 2022 04:41:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbiBTDNa (ORCPT
+        with ESMTP id S232377AbiBTJll (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Feb 2022 22:13:30 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46F3369C8
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Feb 2022 19:13:09 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id g1so5687874pfv.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Feb 2022 19:13:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A7lIpf9QEP2LE74i1e4EkiT1u6SI3D1RMx1XMbhcF3M=;
-        b=T4+h6JTQbhymhLAZgCKMQQjAw8+a6EFWxdRoLTy6Ie+7uqypBoaJLOsqG4VFa571Sq
-         P20YrYaLiNswWutMmqN069cKeEy2KepAGMMeIvyya9tjp/A6MZyWL3Ob+ugRqZhwCDVd
-         V31CGGX5Kv5yK7p8Dt9TtPpGr+Q1JY46LWoZvMpnNwVaFSTll9GbsGAmG0WCX4Ji3B/l
-         Ur//1iJc5BB9jq0vAAPA9Ckp8q2OOzpebWEaEG7LorRASVr6F6jLRADCpSGH/5oT27HV
-         dqGQk5lBQDy6fd46FdkE44LMpGi8uLfpQB5PiIoyIDJ41ttopQ/Gr0x8Oaq4ag75XNIK
-         yGFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A7lIpf9QEP2LE74i1e4EkiT1u6SI3D1RMx1XMbhcF3M=;
-        b=3JWsAsAIlT850i/bvVxXSqiHZq5khkkPazwboyzcYWvLNa/2BPfYGA02826CUxmStv
-         x4XXpdI5MgyZ4tcG0I/vcSxHsIvgLpJCmbfgOfekmM2cEhAF61309LjS/wDu2F/LF/zl
-         Bapg4UiMcFUZ5SH6LhxGkYvZgt81DZKsrb0kQ1bdjrmy8x8glRyV8upl0POlfEoHOClo
-         kukVqw4EulPZ60ckAkbgdfngJZBdnNWguDkrbi4xQ58c2oqAcwdqxEXaNf9TRtdSS6AT
-         nTsi55AQtC5BV6FoSX7qoa54dBa0U6AYO1Dyf5UHFjUwFpEwAAui3oJHgzTXOyVIBtLO
-         gHIg==
-X-Gm-Message-State: AOAM532UibieeHdHosQbN+/bTspfaHhWeWX01hmaLxLE8/WwpKeVwNYa
-        xujWVRqEb85jxYSN9xs61Gg=
-X-Google-Smtp-Source: ABdhPJzeaZIfjKVaDYmNioE2wbT9v5R6gVtOJqOBcVKKbpV0RrY+WLXiC17XSoRdazJBGNtyTV5kQg==
-X-Received: by 2002:a63:cf52:0:b0:36c:8e67:45c9 with SMTP id b18-20020a63cf52000000b0036c8e6745c9mr11570878pgj.542.1645326789091;
-        Sat, 19 Feb 2022 19:13:09 -0800 (PST)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id q93-20020a17090a4fe600b001b9ba2a1dc3sm3299037pjh.25.2022.02.19.19.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Feb 2022 19:13:08 -0800 (PST)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Graham Cobb <g.btrfs@cobb.uk.net>,
-        Goffredo Baroncelli <kreijack@libero.it>,
+        Sun, 20 Feb 2022 04:41:41 -0500
+Received: from out20-38.mail.aliyun.com (out20-38.mail.aliyun.com [115.124.20.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12B550450
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Feb 2022 01:41:19 -0800 (PST)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04500159|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.182539-0.00565583-0.811805;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Msiap.i_1645350076;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Msiap.i_1645350076)
+          by smtp.aliyun-inc.com(10.147.42.135);
+          Sun, 20 Feb 2022 17:41:16 +0800
+Date:   Sun, 20 Feb 2022 17:41:17 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Forza <forza@tnonline.net>
+Subject: Re: MySQL corruption on BTRFS
+Cc:     Tymoteusz Dolega <tymoteuszdolega@gmail.com>,
         linux-btrfs@vger.kernel.org
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH v3] btrfs-progs: cmds: subvolume: add -p option on creating subvol
-Date:   Sun, 20 Feb 2022 03:12:54 +0000
-Message-Id: <20220220031254.58297-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+In-Reply-To: <7449749b-079f-3d62-dc64-a429c6ef35cb@tnonline.net>
+References: <CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com> <7449749b-079f-3d62-dc64-a429c6ef35cb@tnonline.net>
+Message-Id: <20220220174116.6461.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,120 +41,75 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch resolves github issue #429. This patch adds an option that
-create parent directories when it creates subvolumes on nonexisting
-parents. This option tokenizes dstdir and checks each paths whether
-it's existing directory and make directory for creating subvolume.
+Hi,
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
-v2: fixed the case using realpath() that path nonexists, added
-description on docs.
-v3: added longopt, used strncpy_null than strcpy, use perm 0777
----
- Documentation/btrfs-subvolume.rst |  5 +++-
- cmds/subvolume.c                  | 41 ++++++++++++++++++++++++++++++-
- 2 files changed, 44 insertions(+), 2 deletions(-)
+> On 2/8/22 09:07, Tymoteusz Dolega wrote:
+> > Hello,
+> > I maybe encountered a bug. I'm using NixOS, and after enabling MySQL with:
+> >
+> > services.mysql = {
+> >        enable = true;
+> >        package = pkgs.mariadb;
+> >   };
+> >
+> > it cannot even start, and fails with "code=killed, status=6/ABRT". The
+> > problem that MySQL reports in journal is about file corruption. I
+> > attached all logs at the bottom of this mail.
+> > I tried changing database location to different BTRFS SSD, cleanly
+> > formatted, and problem persists. After changing database location to
+> > EXT4 partition, everything works perfectly. I tried newer MySQL
+> > version (from nix-unstable), but still errors show up. Current version
+> > is 10.6.5-MariaDB. I tried deleting DB folder to force it to make it
+> > again. Scrub is clean, check (--readonly) is clean. I have only 1
+> > mount option: "noatime". "mount" reports:
+> > (rw,noatime,ssd,space_cache,subvolid=5,subvol=/).
+> >
+> > uname -a
+> > Linux desktop-nixos 5.16.4 #1-NixOS SMP PREEMPT Sat Jan 29 09:59:25
+> > UTC 2022 x86_64 GNU/Linux
+> >
+> > btrfs --version
+> > btrfs-progs v5.14.1
+> >
+> > sudo btrfs fi show
+> > Label: 'nixos'  uuid: 67b6e734-cd1e-41e3-ab7a-63660e540014
+> >          Total devices 1 FS bytes used 95.05GiB
+> >          devid    1 size 249.00GiB used 98.03GiB path /dev/nvme0n1p5
+> >
+> > Label: 'cruc'  uuid: cc51fa3c-57db-42b6-a890-ff5cd7b18f47
+> >          Total devices 1 FS bytes used 125.16MiB
+> >          devid    1 size 931.51GiB used 2.02GiB path /dev/sdb1
+> >
+> > btrfs fi df /mnt/cruc
+> > Data, single: total=1.01GiB, used=124.84MiB
+> > System, single: total=4.00MiB, used=16.00KiB
+> > Metadata, single: total=1.01GiB, used=304.00KiB
+> > GlobalReserve, single: total=3.25MiB, used=0.00B
+> >
+> > dmesg.log  - https://www.dropbox.com/s/ou52m2hdjzmjy6b/dmesg.log?dl=0
+> > but there is not much there besides you can see I cleanly formatted the drive
+> > mysql - https://www.dropbox.com/s/jjthkfu0anh8n2o/mysql.log?dl=0
+> > log with info about corruption
+> > (links hosted on dropbox, you can see them without logging in)
+> > I will be happy to answer any needed questions.
+> 
+> 
+> Do you use 'nodatacow' attribute on the mysql files? You can check this with 'lsattr /var/lib/mysql/'. If you did, and had a power loss, the file could be corrupted. However, a scrub could not detect this because nodatacow also means no csums.
+> 
+> Out of experience I have had issues with "innodb_fast_shutdown" on mariadb. With this enabled, mariadb would sometimes take too long to shut down and was killed during reboots, which in turn caused corruptions in InnoDB.
+> 
+> I have set the following innodb options and have not had any more issues. This has been tested on many crashes and forces shut downs.
+> 
+> innodb_fast_shutdown = 0
+> innodb_flush_method  = O_DSYNC
+> innodb-doublewrite   = 0 # Not needed on COW filesystems. Should be enabled on on 'nodatacow' files.
 
-diff --git a/Documentation/btrfs-subvolume.rst b/Documentation/btrfs-subvolume.rst
-index 4591d4bb..2c138154 100644
---- a/Documentation/btrfs-subvolume.rst
-+++ b/Documentation/btrfs-subvolume.rst
-@@ -49,7 +49,7 @@ do not affect the files in the original subvolume.
- SUBCOMMAND
- -----------
- 
--create [-i <qgroupid>] [<dest>/]<name>
-+create [options] [<dest>/]<name>
-         Create a subvolume *name* in *dest*.
- 
-         If *dest* is not given, subvolume *name* will be created in the current
-@@ -61,6 +61,9 @@ create [-i <qgroupid>] [<dest>/]<name>
-                 Add the newly created subvolume to a qgroup. This option can be given multiple
-                 times.
- 
-+        -p|--parents
-+                Make any missing parent directories for each argument.
-+
- delete [options] [<subvolume> [<subvolume>...]], delete -i|--subvolid <subvolid> <path>
-         Delete the subvolume(s) from the filesystem.
- 
-diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-index fbf56566..9c13839e 100644
---- a/cmds/subvolume.c
-+++ b/cmds/subvolume.c
-@@ -88,6 +88,7 @@ static const char * const cmd_subvol_create_usage[] = {
- 	"",
- 	"-i <qgroupid>  add the newly created subvolume to a qgroup. This",
- 	"               option can be given multiple times.",
-+	"-p|--parents   make any missing parent directories for each argument.",
- 	HELPINFO_INSERT_GLOBALS,
- 	HELPINFO_INSERT_QUIET,
- 	NULL
-@@ -105,10 +106,18 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
- 	char	*dst;
- 	struct btrfs_qgroup_inherit *inherit = NULL;
- 	DIR	*dirstream = NULL;
-+	bool create_parents = false;
- 
- 	optind = 0;
- 	while (1) {
--		int c = getopt(argc, argv, "c:i:");
-+		int c;
-+		static const struct option long_options[] = {
-+			{NULL, required_argument, NULL, 'i'},
-+			{"parents", no_argument, NULL, 'p'},
-+			{NULL, 0, NULL, 0}
-+		};
-+
-+		c = getopt_long(argc, argv, "i:p", long_options, NULL);
- 		if (c < 0)
- 			break;
- 
-@@ -127,6 +136,9 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
- 				goto out;
- 			}
- 			break;
-+		case 'p':
-+			create_parents = true;
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
-@@ -167,6 +179,33 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
- 		goto out;
- 	}
- 
-+	if (create_parents) {
-+		char p[PATH_MAX] = {0};
-+		char dstdir_dup[PATH_MAX];
-+		char *token;
-+
-+		strncpy_null(dstdir_dup, dstdir);
-+		if (dstdir_dup[0] == '/')
-+			strcat(p, "/");
-+
-+		token = strtok(dstdir_dup, "/");
-+		while(token) {
-+			strcat(p, token);
-+			res = path_is_dir(p);
-+			if (res == -ENOENT) {
-+				if (mkdir(p, 0777)) {
-+					error("failed to make dir: %s", p);
-+					goto out;
-+				}
-+			} else if (res <= 0) {
-+				error("failed to check dir: %s", p);				
-+				goto out;
-+			}
-+			strcat(p, "/");
-+			token = strtok(NULL, "/");
-+		}
-+	}
-+
- 	fddst = btrfs_open_dir(dstdir, &dirstream, 1);
- 	if (fddst < 0)
- 		goto out;
--- 
-2.25.1
+Is innodb-doublewrite related to CoW feature or checksum feature?
+
+For XFS with checksum but without CoW, ' innodb-doublewrite   = 0' is
+recommanded too?
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/02/20
 
