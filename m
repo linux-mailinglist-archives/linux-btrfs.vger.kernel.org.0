@@ -2,116 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E56C84BECDD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 22:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0634BED3B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 23:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235084AbiBUWAM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Feb 2022 17:00:12 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:32828 "EHLO
+        id S235559AbiBUWbs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Feb 2022 17:31:48 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbiBUWAL (ORCPT
+        with ESMTP id S230030AbiBUWbs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Feb 2022 17:00:11 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDEB22BE2;
-        Mon, 21 Feb 2022 13:59:47 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 12A701F394;
-        Mon, 21 Feb 2022 21:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1645480786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=amkKzkJIzKNate+BxqSEOR/ytWm/qtbc3ZtFRsmXvBM=;
-        b=ewbLWa07/OWM66IgZRicpm+p2kQSmHWSjBx7karBkmzsU+Am9Luj52I81aK1VcCcKpG32U
-        7Kte65o7tKx3lwtmEtBhfLp/I754vnHVTpUidbU+VehJwQiiR7ivpHn3oYqKSKyQt4M56r
-        lnDj7pdx6RLhot+T27GJQqjzneXL59s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1645480786;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=amkKzkJIzKNate+BxqSEOR/ytWm/qtbc3ZtFRsmXvBM=;
-        b=usMGoFll1fN7Jr8ihiuzN2Oyjbu3A2BOIGQk9PcT0THkbOsGhKeeSZDikNFJsuzviRbtq4
-        Aa0N9GleGZknZUCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2812613BA5;
-        Mon, 21 Feb 2022 21:59:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id v/pjNU8LFGISZwAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 21 Feb 2022 21:59:43 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 21 Feb 2022 17:31:48 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566E7240AF
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 14:31:24 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id gf13-20020a17090ac7cd00b001bbfb9d760eso480316pjb.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 14:31:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=gc2BxJNHs4AehMGMdzImYsncC61UZH9Br3hXky2F8eY=;
+        b=fzX079dZUwKyXirzaU4lWVYIy3/Rnxj3MPKfoKP9X4Esv7WVOh33lrGmCaEPfCKHt3
+         kIicA9dDO5keMBXo0o5e1QpJFTSalahRySXq7njm32SkXAWRN+ftVHuWq3KMl7UwjZsH
+         hVzK+jnhwG6h7DnXTX2AXoDeT8r5TYItY3tPqzw9KFlgQKvZi67LtzIihuL39mdVChPR
+         TQNPcdGQPrZaI8C6xYhUHoqJ6f1bj6+1hXexebPnf5N3LI4FbUk5iwflhgQAoz3JgHyT
+         LTW0crz3rAjj8jwnhsA6YXP4keemltuZHAaW+vbhiOBhkq+aAzFYSvKtEiqPls+aSEDX
+         J1Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=gc2BxJNHs4AehMGMdzImYsncC61UZH9Br3hXky2F8eY=;
+        b=1kS0kDy7Q6N45EmLN4OL7FOxQ3C1BA7o/XBE70e8MvVgAI9DVpIJdh/gKJJhX17ngH
+         dtvmbReCWIQvIW0YOpClspJdi8lPgSeeQ3BqAzFxo/VPA2eHn6hAd3Rh/z36FqEDjoIh
+         KEsI7Cf1Wdi58WDKbycu6pDXn8ekWGUd298X3uEmK/GXFhHx9A4rqqSELL8FCXaGxYAz
+         FXU7qmI86vVj1m4biaPw0pioEk2f30t0N/6DOoFEYUNZgtGd/XuYaRutcb3DsGLd0MIv
+         NZS19o1oxEd8EWisvRvKSPxe4KZSJDIiFNNQzXkwogMN62QxcrnuIwbA8C6BsELfr8tQ
+         gojg==
+X-Gm-Message-State: AOAM5300hsRqSFiGbNrOroV0NRg3n++NwOtx5YPw2z3wNFQMU9epnGhZ
+        TOvAIgxn3b01PohiL/QbkNGG8NMNemjNY617W3/plizU
+X-Google-Smtp-Source: ABdhPJwNZARBUrqJO8qBdPU9Np5yiEnoQTMqLmz0WFTeQ2OxhtOy8fmTVEih8FH494g87IqFp9LdcigS/5KhzlIbge8=
+X-Received: by 2002:a17:902:a713:b0:14d:8f49:84cd with SMTP id
+ w19-20020a170902a71300b0014d8f4984cdmr20452909plq.145.1645482683610; Mon, 21
+ Feb 2022 14:31:23 -0800 (PST)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Wang Yugui" <wangyugui@e16-tech.com>
-Cc:     "Josef Bacik" <josef@toxicpanda.com>, viro@ZenIV.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] fs: allow cross-vfsmount reflink/dedupe
-In-reply-to: <20220217145422.C7EC.409509F4@e16-tech.com>
-References: <20220217125253.0F07.409509F4@e16-tech.com>,
- <164507395131.10228.17031212675231968127@noble.neil.brown.name>,
- <20220217145422.C7EC.409509F4@e16-tech.com>
-Date:   Tue, 22 Feb 2022 08:59:41 +1100
-Message-id: <164548078112.17923.854375583220948734@noble.neil.brown.name>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CADwZqEvZQmwnY7e5LcUmgQ7EMmMx1XV-znnQMJG3D_fKtpDcdw@mail.gmail.com>
+ <YhMzKeX3FvJPvtmR@hungrycats.org>
+In-Reply-To: <YhMzKeX3FvJPvtmR@hungrycats.org>
+From:   ov2k <ov2k.github@gmail.com>
+Date:   Mon, 21 Feb 2022 17:31:13 -0500
+Message-ID: <CADwZqEts39gdoLKCN2t18UByo_WnLmoRPCbja61wVwSt3wvuhQ@mail.gmail.com>
+Subject: Re: FIDEDUPERANGE and compression
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 17 Feb 2022, Wang Yugui wrote:
-> Hi,
->=20
-> > On Thu, 17 Feb 2022, Wang Yugui wrote:
-> > > Hi,
-> > > Cc: NeilBrown
-> > >=20
-> > > btrfs cross-vfsmount reflink works well now with these 2 patches.
-> > >=20
-> > > [PATCH] fs: allow cross-vfsmount reflink/dedupe
-> > > [PATCH] btrfs: remove the cross file system checks from remap
-> > >=20
-> > > But nfs over btrfs still fail to do cross-vfsmount reflink.
-> > > need some patch for nfs too?
-> >=20
-> > NFS doesn't support reflinks at all, does it?
->=20
-> NFS support reflinks now.
->=20
-> # df -h /ssd
-> Filesystem              Type  Size  Used Avail Use% Mounted on
-> T640:/ssd               nfs4   17T  5.5T   12T  34% /ssd
-> # /bin/cp --reflink=3Dalways /ssd/1.txt /ssd/2.txt
-> # uname -a
-> Linux T7610 5.15.24-3.el7.x86_64 #1 SMP Thu Feb 17 12:13:25 CST 2022 x86_64=
- x86_64 x86_64 GNU/Linux
->=20
+It looks like btrfs coalesces adjacent uncompressed extents.  I'm not
+sure whether this is done by FIDEDUPERANGE or FS_IOC_FIEMAP.  I think
+the problem is that adjacent decompressed ranges (defined by #3 and
+#4) within the same compressed block are not coalesced in a similar
+manner.  Is there a particular reason why this isn't done, or is this
+simply a case of nobody having done it?
 
-So it does ..... ahhh, the CLONE command in NFSv4.2.....
-This is used by the .remap_file_range file operation.  That operation
-only gets called when the "from" and "to" files have the same
-superblock.
-btrfs has an ....  interesting concept of filesystem identity.  While
-different "subvols" have the same superblock locally, when they are
-exported over NFS they appear to be different filesystems and so have
-different superblocks.  This is in part because btrfs cannot create
-properly unique inode numbers across the whole filesystem.
-Until btrfs sorts itself out, it will not be able to work with NFS
-properly.
-
-NeilBrown
+On Mon, Feb 21, 2022 at 1:37 AM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
+>
+> On Fri, Feb 18, 2022 at 10:14:20PM -0500, ov 2k wrote:
+> > FIDEDUPERANGE does not seem to behave as expected with compressible
+> > data on a btrfs volume with compression enabled, at least with small
+> > adjacent FIDEDUPERANGE requests.  I've attached a basic test case.  It
+> > writes two short identical files and calls FIDEDUPERANGE three times,
+> > on the thirds of the file, in order.  filefrag -v reports that the
+> > destination file has three extents that each reference the first third
+> > of the source file.
+> >
+> > To be clear, the data in the destination file remains correct.
+> > However, the second and third FIDEDUPERANGE calls do not seem to cause
+> > the destination file to reference the expected source extents.  I'm
+> > not actually certain whether this is a bug in FIDEDUPERANGE or
+> > FS_IOC_FIEMAP or something deeper within btrfs itself.
+>
+> FIEMAP's output cannot correctly represent btrfs compressed data.
+> In some cases you may be able to identify logical blocks as belonging
+> to the same underlying compressed extent, but not with enough precision
+> to infer data content of the blocks.
+>
+> The physical location of a compressed byte is a two-dimensional
+> quantity--one to identify the physical compressed extent, one to identify
+> the byte's offset within the decompressed data.  The length is similarly
+> two-dimensional, one for the physical size and one for the logical size.
+> Since compressed bytes are a different size unit than uncompressed bytes,
+> we can't add a compressed offset or length to a physical position and
+> get a number that isn't garbage, so we can't fill in distinct values
+> for physical location of compressed data blocks that make numerical sense.
+>
+> Try 'btrfs-search-metadata file' (from the python-btrfs package) for
+> an accurate description of what's going on with the extent references.
+> It uses TREE_SEARCH_V2 and the underlying btrfs file extent reference
+> structure, which has the fields that FIEMAP is missing.
+>
+> Underneath, the compressed extent is an immutable contiguous region of
+> storage, identified by the bytenr (virtual address) of the first byte
+> of the storage.  Each reference to the extent in the file refers to a
+> contiguous range of the extent's logical blocks (after decompression).
+> The fields are, in no particular order:
+>
+>         1. the logical offset within the file (seek offset) where
+>         the referenced data appears in the file
+>
+>         2. the extent bytenr (extent identifier for reference counting
+>         and backref search, first physical byte of the extent)
+>
+>         3. the logical length of the referenced data (the portion
+>         of the compressed data referenced at this offset in the file)
+>
+>         4. the logical offset within the extent where the referenced
+>         data begins (after decompressing the extent, where to start
+>         reading the data in memory)
+>
+>         5. the physical (compressed) length of the complete extent data
+>         (how many bytes are used in physical storage)
+>
+>         6. the logical (decompressed) length of the complete extent data
+>         (how much RAM is required to decompress the extent)
+>
+> Only the first three of these fields are available via FIEMAP.  FIEMAP
+> provides only one length field, so it can't handle compressed extents
+> which have two distinct lengths.  FIEMAP provides only one integer for
+> physical position, so it can't handle references to blocks that are
+> not the first block in a compressed extent.
+>
+> TREE_SEARCH_V2 provides all six fields, so you can get accurate logical or
+> physical extent boundary information as needed.
+>
+> In simple write() cases, the offset fields are zero, so FIEMAP appears to
+> work at first:
+>
+>         1. seek offset is some number, FIEMAP returns that number
+>
+>         2. extent bytenr is the FIEMAP physical start of extent
+>
+>         3. logical length of the referenced data (#3) is the same as
+>         the logical decompressed length (#6).  FIEMAP gives #3.
+>         This value will change if the extent is partially overwritten
+>         in the file.
+>
+>         4. logical offset within the extent is 0, since the extent
+>         was created for exactly this file data reference
+>
+>         5. physical length of the compressed extent isn't reported in
+>         FIEMAP.  Tools like 'filefrag -v' which try to compute extent
+>         boundary adjacency won't work--they will use the length in #3
+>         when they should use field #2 + #5 to compute physical extent
+>         end boundaries.
+>
+>         6. logical length of the compressed extent is the same as #3.
+>         This value never changes until the extent is destroyed.
+>
+> In the test case, FIEMAP reports the same number at #2 for all extents
+> since the same physical extent is referenced, but the referenced data
+> location is actually a function of fields #2 and #4.  The second and
+> third extents have non-zero offsets for #4, and the length at #3 becomes
+> different from the length at #6, making any computed values based on
+> these fields nonsense.
