@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AD04BE872
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 19:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686B34BE1CF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 18:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356287AbiBULX3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Feb 2022 06:23:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54576 "EHLO
+        id S1358067AbiBUMib (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Feb 2022 07:38:31 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356292AbiBULXG (ORCPT
+        with ESMTP id S1348408AbiBUMia (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Feb 2022 06:23:06 -0500
+        Mon, 21 Feb 2022 07:38:30 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E37D109
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 03:15:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CBFF10
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 04:38:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D8A9A6118B
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 11:15:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA241C340E9;
-        Mon, 21 Feb 2022 11:15:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 400DB61313
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 12:38:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 213F1C340E9;
+        Mon, 21 Feb 2022 12:38:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645442143;
-        bh=6GagsCTAhHtCjZ1GYeW91LNF4CputQFbLPYW7zE5tsI=;
+        s=k20201202; t=1645447085;
+        bh=q/g/S7UlhTe7rDfL5UnJUXeiGsCmUtY6D6vNPuK4ctw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ASMC7n/gVIK3wiWh4jksuY0BqnWFvakeN907ujE4dKp4f6fC+kGKVCvWurpFixU9T
-         4DDZFctdQ08pPcLYtpZb/Jryq/AFCLp5edSxbZfmuRhUMGV15ODTqLodlGUHaVjqs1
-         J4nBxVFHtzaXXEnfOeA5wRqrnqWKO/0F23xKrZpRrY9C4zkEwgbWzDpvLj/AQ5UE3L
-         vnzTeItHUrDg5re9McE5BTunvrc7tHztxK//RXGd+N4jw4Xx1X8ILkB6RhVToYJbsu
-         ato3xsiuWOrQRjMZgzDsmsDVPABW//7Z26/fxmeqUofVCNj4aMOCUUcYtznV5xVeMn
-         NwYiu8ZnCFDdg==
-Date:   Mon, 21 Feb 2022 11:15:39 +0000
+        b=jA0H2G2rXSIICCCU8PP6qps1FQ3pBaVyt3hUxFEEPCTEAp61T/Mumv+XXF3piumSR
+         9yuAdHa1xgqThVlnkzChwqAuzClrUkNKxqDA7XMNqKqdbrhP3ETb4A6rlUiVrAyW3e
+         eNgwL0zzkj+jBic+2hqfn8tTEtdgepQUsBqWMbewnvJm7GSy0uExzBHp3YCGrI8W7l
+         sopMsuHoikt33QJ1feyr94Rrcy8z6chk7TCgKOQhblVx8UzalBE6WPm1yEwe/AFcJN
+         AtnwqT39x+SwVS+7D750y2ceU5To6ujLjHh+jcn5W25m6qBygkesO0w3jS7cucQv6A
+         0KSmgomIv+v3w==
+Date:   Mon, 21 Feb 2022 12:38:02 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: fix relocation crash due to premature return from
- btrfs_commit_transaction()
-Message-ID: <YhN0WyMgRd8m/NsH@debian9.Home>
-References: <4ebf450a931e83b1d305d07fcc6db104b85c2627.1645139641.git.osandov@fb.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 1/3] btrfs: do not start relocation until in progress
+ drops are done
+Message-ID: <YhOHqtAM/JbfTKdo@debian9.Home>
+References: <cover.1645214059.git.josef@toxicpanda.com>
+ <78d6f8e496b367fc520549ab00465cbd704ea22f.1645214059.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4ebf450a931e83b1d305d07fcc6db104b85c2627.1645139641.git.osandov@fb.com>
+In-Reply-To: <78d6f8e496b367fc520549ab00465cbd704ea22f.1645214059.git.josef@toxicpanda.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -55,220 +55,285 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 03:14:43PM -0800, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On Fri, Feb 18, 2022 at 02:56:10PM -0500, Josef Bacik wrote:
+> We hit a bug with a recovering relocation on mount for one of our file
+> systems in production.  I reproduced this locally by injecting errors
+> into snapshot delete with balance running at the same time.  This
+> presented as an error while looking up an extent item
 > 
-> We are seeing crashes similar to the following trace:
+> ------------[ cut here ]------------
+> WARNING: CPU: 5 PID: 1501 at fs/btrfs/extent-tree.c:866 lookup_inline_extent_backref+0x647/0x680
+> CPU: 5 PID: 1501 Comm: btrfs-balance Not tainted 5.16.0-rc8+ #8
+> RIP: 0010:lookup_inline_extent_backref+0x647/0x680
+> RSP: 0018:ffffae0a023ab960 EFLAGS: 00010202
+> RAX: 0000000000000001 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 000000000000000c RDI: 0000000000000000
+> RBP: ffff943fd2a39b60 R08: 0000000000000000 R09: 0000000000000001
+> R10: 0001434088152de0 R11: 0000000000000000 R12: 0000000001d05000
+> R13: ffff943fd2a39b60 R14: ffff943fdb96f2a0 R15: ffff9442fc923000
+> FS:  0000000000000000(0000) GS:ffff944e9eb40000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f1157b1fca8 CR3: 000000010f092000 CR4: 0000000000350ee0
+> Call Trace:
+>  <TASK>
+>  insert_inline_extent_backref+0x46/0xd0
+>  __btrfs_inc_extent_ref.isra.0+0x5f/0x200
+>  ? btrfs_merge_delayed_refs+0x164/0x190
+>  __btrfs_run_delayed_refs+0x561/0xfa0
+>  ? btrfs_search_slot+0x7b4/0xb30
+>  ? btrfs_update_root+0x1a9/0x2c0
+>  btrfs_run_delayed_refs+0x73/0x1f0
+>  ? btrfs_update_root+0x1a9/0x2c0
+>  btrfs_commit_transaction+0x50/0xa50
+>  ? btrfs_update_reloc_root+0x122/0x220
+>  prepare_to_merge+0x29f/0x320
+>  relocate_block_group+0x2b8/0x550
+>  btrfs_relocate_block_group+0x1a6/0x350
+>  btrfs_relocate_chunk+0x27/0xe0
+>  btrfs_balance+0x777/0xe60
+>  balance_kthread+0x35/0x50
+>  ? btrfs_balance+0xe60/0xe60
+>  kthread+0x16b/0x190
+>  ? set_kthread_struct+0x40/0x40
+>  ret_from_fork+0x22/0x30
+>  </TASK>
+> ---[ end trace 7ebc95131709d2b0 ]---
 > 
-> [   38.968587] ------------[ cut here ]------------
-> [   38.969182] WARNING: CPU: 20 PID: 2105 at fs/btrfs/relocation.c:4070 btrfs_relocate_block_group+0x2dc/0x340 [btrfs]
-> [   38.970984] Modules linked in: btrfs blake2b_generic xor pata_acpi ata_piix libata raid6_pq scsi_mod libcrc32c virtio_net virtio_rng net_failover rng_core failover scsi_common
-> [   38.973556] CPU: 20 PID: 2105 Comm: btrfs Not tainted 5.17.0-rc4 #54
-> [   38.974580] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> [   38.976539] RIP: 0010:btrfs_relocate_block_group+0x2dc/0x340 [btrfs]
-> [   38.977489] Code: fe ff ff ff e9 f0 fd ff ff 0f 0b e9 f1 fe ff ff 4c 89 e7 41 bd f4 ff ff ff e8 50 0e 03 00 e9 d6 fd ff ff 0f 0b e9 45 ff ff ff <0f> 0b e9 33 ff ff ff 48 8b 45 10 48 83 ca ff 31 f6 48 8b 78 30 e8
-> [   38.980336] RSP: 0000:ffffb0dd42e03c20 EFLAGS: 00010206
-> [   38.981218] RAX: ffff96cfc4ede800 RBX: ffff96cfc3ce0000 RCX: 000000000002ca14
-> [   38.982560] RDX: 0000000000000000 RSI: 4cfd109a0bcb5d7f RDI: ffff96cfc3ce0360
-> [   38.983619] RBP: ffff96cfc309c000 R08: 0000000000000000 R09: 0000000000000000
-> [   38.984678] R10: ffff96cec0000001 R11: ffffe84c80000000 R12: ffff96cfc4ede800
-> [   38.985735] R13: 0000000000000000 R14: 0000000000000000 R15: ffff96cfc3ce0360
-> [   38.987146] FS:  00007f11c15218c0(0000) GS:ffff96d6dfb00000(0000) knlGS:0000000000000000
-> [   38.988662] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   38.989398] CR2: 00007ffc922c8e60 CR3: 00000001147a6001 CR4: 0000000000370ee0
-> [   38.990279] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   38.991219] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   38.992528] Call Trace:
-> [   38.992854]  <TASK>
-> [   38.993148]  btrfs_relocate_chunk+0x27/0xe0 [btrfs]
-> [   38.993941]  btrfs_balance+0x78e/0xea0 [btrfs]
-> [   38.994801]  ? vsnprintf+0x33c/0x520
-> [   38.995368]  ? __kmalloc_track_caller+0x351/0x440
-> [   38.996198]  btrfs_ioctl_balance+0x2b9/0x3a0 [btrfs]
-> [   38.997084]  btrfs_ioctl+0x11b0/0x2da0 [btrfs]
-> [   38.997867]  ? mod_objcg_state+0xee/0x340
-> [   38.998552]  ? seq_release+0x24/0x30
-> [   38.999184]  ? proc_nr_files+0x30/0x30
-> [   38.999654]  ? call_rcu+0xc8/0x2f0
-> [   39.000228]  ? __x64_sys_ioctl+0x84/0xc0
-> [   39.000872]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
-> [   39.001973]  __x64_sys_ioctl+0x84/0xc0
-> [   39.002566]  do_syscall_64+0x3a/0x80
-> [   39.003011]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   39.003735] RIP: 0033:0x7f11c166959b
-> [   39.004302] Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a5 a8 0c 00 f7 d8 64 89 01 48
-> [   39.007324] RSP: 002b:00007fff2543e998 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> [   39.008521] RAX: ffffffffffffffda RBX: 00007f11c1521698 RCX: 00007f11c166959b
-> [   39.009833] RDX: 00007fff2543ea40 RSI: 00000000c4009420 RDI: 0000000000000003
-> [   39.011270] RBP: 0000000000000003 R08: 0000000000000013 R09: 00007f11c16f94e0
-> [   39.012581] R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff25440df3
-> [   39.014046] R13: 0000000000000000 R14: 00007fff2543ea40 R15: 0000000000000001
-> [   39.015040]  </TASK>
-> [   39.015418] ---[ end trace 0000000000000000 ]---
-> [   43.131559] ------------[ cut here ]------------
-> [   43.132234] kernel BUG at fs/btrfs/extent-tree.c:2717!
-> [   43.133031] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> [   43.133702] CPU: 1 PID: 1839 Comm: btrfs Tainted: G        W         5.17.0-rc4 #54
-> [   43.134863] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> [   43.136426] RIP: 0010:unpin_extent_range+0x37a/0x4f0 [btrfs]
-> [   43.137255] Code: fd ff ff 4d 8d b5 08 01 00 00 4c 89 f7 e8 de f2 49 ef 66 41 83 bd 0c 01 00 00 00 74 0f 4c 89 f7 e8 2b f3 49 ef e9 ed fe ff ff <0f> 0b 49 8b 85 f8 00 00 00 4d 8b 9d f0 00 00 00 49 29 c3 49 39 db
-> [   43.139913] RSP: 0000:ffffb0dd4216bc70 EFLAGS: 00010246
-> [   43.140629] RAX: 0000000000000000 RBX: ffff96cfc34490f8 RCX: 0000000000000001
-> [   43.141604] RDX: 0000000080000001 RSI: 0000000051d00000 RDI: 00000000ffffffff
-> [   43.142645] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff96cfd07dca50
-> [   43.143669] R10: ffff96cfc46e8a00 R11: fffffffffffec000 R12: 0000000041d00000
-> [   43.144657] R13: ffff96cfc3ce0000 R14: ffffb0dd4216bd08 R15: 0000000000000000
-> [   43.145686] FS:  00007f7657dd68c0(0000) GS:ffff96d6df640000(0000) knlGS:0000000000000000
-> [   43.146808] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   43.147584] CR2: 00007f7fe81bf5b0 CR3: 00000001093ee004 CR4: 0000000000370ee0
-> [   43.148589] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   43.149581] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   43.150559] Call Trace:
-> [   43.150904]  <TASK>
-> [   43.151253]  btrfs_finish_extent_commit+0x88/0x290 [btrfs]
-> [   43.152127]  btrfs_commit_transaction+0x74f/0xaa0 [btrfs]
-> [   43.152932]  ? btrfs_attach_transaction_barrier+0x1e/0x50 [btrfs]
-> [   43.153786]  btrfs_ioctl+0x1edc/0x2da0 [btrfs]
-> [   43.154475]  ? __check_object_size+0x150/0x170
-> [   43.155170]  ? preempt_count_add+0x49/0xa0
-> [   43.155753]  ? __x64_sys_ioctl+0x84/0xc0
-> [   43.156437]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
-> [   43.157456]  __x64_sys_ioctl+0x84/0xc0
-> [   43.157980]  do_syscall_64+0x3a/0x80
-> [   43.158543]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   43.159231] RIP: 0033:0x7f7657f1e59b
-> [   43.159653] Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a5 a8 0c 00 f7 d8 64 89 01 48
-> [   43.161819] RSP: 002b:00007ffda5cd1658 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> [   43.162702] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f7657f1e59b
-> [   43.163526] RDX: 0000000000000000 RSI: 0000000000009408 RDI: 0000000000000003
-> [   43.164358] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-> [   43.165208] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> [   43.166029] R13: 00005621b91c3232 R14: 00005621b91ba580 R15: 00007ffda5cd1800
-> [   43.166863]  </TASK>
-> [   43.167125] Modules linked in: btrfs blake2b_generic xor pata_acpi ata_piix libata raid6_pq scsi_mod libcrc32c virtio_net virtio_rng net_failover rng_core failover scsi_common
-> [   43.169552] ---[ end trace 0000000000000000 ]---
-> [   43.171226] RIP: 0010:unpin_extent_range+0x37a/0x4f0 [btrfs]
-> [   43.172356] Code: fd ff ff 4d 8d b5 08 01 00 00 4c 89 f7 e8 de f2 49 ef 66 41 83 bd 0c 01 00 00 00 74 0f 4c 89 f7 e8 2b f3 49 ef e9 ed fe ff ff <0f> 0b 49 8b 85 f8 00 00 00 4d 8b 9d f0 00 00 00 49 29 c3 49 39 db
-> [   43.174767] RSP: 0000:ffffb0dd4216bc70 EFLAGS: 00010246
-> [   43.175600] RAX: 0000000000000000 RBX: ffff96cfc34490f8 RCX: 0000000000000001
-> [   43.176468] RDX: 0000000080000001 RSI: 0000000051d00000 RDI: 00000000ffffffff
-> [   43.177357] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff96cfd07dca50
-> [   43.178271] R10: ffff96cfc46e8a00 R11: fffffffffffec000 R12: 0000000041d00000
-> [   43.179178] R13: ffff96cfc3ce0000 R14: ffffb0dd4216bd08 R15: 0000000000000000
-> [   43.180071] FS:  00007f7657dd68c0(0000) GS:ffff96d6df800000(0000) knlGS:0000000000000000
-> [   43.181073] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   43.181808] CR2: 00007fe09905f010 CR3: 00000001093ee004 CR4: 0000000000370ee0
-> [   43.182706] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   43.183591] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Normally snapshot deletion and relocation are excluded from running at
+> the same time by the fs_info->cleaner_mutex.  However if we had a
+> pending balance waiting to get the ->cleaner_mutex, and a snapshot
+> deletion was running, and then the box crashed, we would come up in a
+> state where we have a half deleted snapshot.
 > 
-> We first hit the WARN_ON(rc->block_group->pinned > 0) in
-> btrfs_relocate_block_group() and then the BUG_ON(!cache) in
-> unpin_extent_range(). This tells us that we are exiting relocation and
-> removing the block group with bytes still pinned for that block group.
-> This is supposed to be impossible: the last thing relocate_block_group()
-> does is commit the transaction to get rid of pinned extents.
+> Again, in the normal case the snapshot deletion needs to complete before
+> relocation can start, but in this case relocation could very well start
+> before the snapshot deletion completes, as we simply add the root to the
+> dead roots list and wait for the next time the cleaner runs to clean up
+> the snapshot.
 > 
-> Commit d0c2f4fa555e ("btrfs: make concurrent fsyncs wait less when
-> waiting for a transaction commit") introduced an optimization so that
-> commits from fsync don't have to wait for the previous commit to unpin
-> extents. This was only intended to affect fsync, but it inadvertently
-> made it possible for any commit to skip waiting for the previous commit
-> to unpin. This is because if a call to btrfs_commit_transaction() finds
-> that another thread is already committing the transaction, it waits for
-> the other thread to complete the commit and then returns. If that other
-> thread was in fsync, then it completes the commit without completing the
-> previous commit. This makes the following sequence of events possible:
+> Fix this by setting a bit on the fs_info if we have any DEAD_ROOT's that
+> had a pending drop_progress key.  If they do then we know we were in the
+> middle of the drop operation and set a flag on the fs_info.  Then
+> balance can wait until this flag is cleared to start up again.
 > 
-> Thread 1____________________|Thread 2 (fsync)_____________________|Thread 3 (balance)___________________
-> btrfs_commit_transaction(N) |                                     |
->   btrfs_run_delayed_refs    |                                     |
->     pin extents             |                                     |
->   ...                       |                                     |
->   state = UNBLOCKED         |btrfs_sync_file                      |
->                             |  btrfs_start_transaction(N + 1)     |relocate_block_group
->                             |                                     |  btrfs_join_transaction(N + 1)
->                             |  btrfs_commit_transaction(N + 1)    |
->   ...                       |  trans->state = COMMIT_START        |
->                             |                                     |  btrfs_commit_transaction(N + 1)
->                             |                                     |    wait_for_commit(N + 1, COMPLETED)
->                             |  wait_for_commit(N, SUPER_COMMITTED)|
->   state = SUPER_COMMITTED   |  ...                                |
->   btrfs_finish_extent_commit|                                     |
->     unpin_extent_range()    |  trans->state = COMPLETED           |
->                             |                                     |    return
->                             |                                     |
->     ...                     |                                     |Thread 1 isn't done, so pinned > 0
->                             |                                     |and we WARN
->                             |                                     |
->                             |                                     |btrfs_remove_block_group
->     unpin_extent_range()    |                                     |
->       Thread 3 removed the  |                                     |
->       block group, so we BUG|                                     |
+> If there are DEAD_ROOT's that don't have a drop_progress set then we're
+> safe to start balance right away as we'll be properly protected by the
+> cleaner_mutex.
 > 
-> There are other sequences involving SUPER_COMMITTED transactions that
-> can cause a similar outcome.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/ctree.h       | 13 +++++++++++++
+>  fs/btrfs/disk-io.c     | 10 ++++++++++
+>  fs/btrfs/extent-tree.c |  7 +++++++
+>  fs/btrfs/relocation.c  | 14 ++++++++++++++
+>  fs/btrfs/root-tree.c   | 18 ++++++++++++++++++
+>  fs/btrfs/transaction.c | 33 ++++++++++++++++++++++++++++++++-
+>  fs/btrfs/transaction.h |  1 +
+>  7 files changed, 95 insertions(+), 1 deletion(-)
 > 
-> We could fix this by making relocation explicitly wait for unpinning,
-> but there may be other cases that need it. Josef mentioned ENOSPC
-> flushing and the free space cache inode as other potential victims.
-> Rather than playing whack-a-mole, this fix is conservative and makes all
-> commits not in fsync wait for all previous transactions, which is what
-> the optimization intended.
-> 
-> Fixes: d0c2f4fa555e ("btrfs: make concurrent fsyncs wait less when waiting for a transaction commit")
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index f870d893d13b..1e238748dc73 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -629,6 +629,9 @@ enum {
+>  	/* Indicate that we want the transaction kthread to commit right now. */
+>  	BTRFS_FS_COMMIT_TRANS,
+>  
+> +	/* Indicate we have half completed snapshot deletions pending. */
+> +	BTRFS_FS_UNFINISHED_DROPS,
+> +
+>  #if BITS_PER_LONG == 32
+>  	/* Indicate if we have error/warn message printed on 32bit systems */
+>  	BTRFS_FS_32BIT_ERROR,
+> @@ -1136,8 +1139,18 @@ enum {
+>  	BTRFS_ROOT_QGROUP_FLUSHING,
+>  	/* We started the orphan cleanup for this root. */
+>  	BTRFS_ROOT_ORPHAN_CLEANUP,
+> +	/* This root has a drop operation that was started previously. */
+> +	BTRFS_ROOT_UNFINISHED_DROP,
+>  };
+>  
+> +static inline void btrfs_wake_unfinished_drop(struct btrfs_fs_info *fs_info)
+> +{
+> +	clear_bit(BTRFS_FS_UNFINISHED_DROPS, &fs_info->flags);
+> +	/* Needs to be here so the clear_bit is seen by the sleeper. */
+> +	smp_mb__after_atomic();
+> +	wake_up_bit(&fs_info->flags, BTRFS_FS_UNFINISHED_DROPS);
+> +}
 
-Looks good, thanks!
+clear_and_wake_up_bit() does exactly that, we could use it instead.
+
+Otherwise it looks good, thanks.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-> ---
->  fs/btrfs/transaction.c | 32 +++++++++++++++++++++++++++++++-
->  1 file changed, 31 insertions(+), 1 deletion(-)
-> 
+> +
+>  /*
+>   * Record swapped tree blocks of a subvolume tree for delayed subtree trace
+>   * code. For detail check comment in fs/btrfs/qgroup.c.
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index b6a81c39d5f4..ed62e81c0b66 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3891,6 +3891,10 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  
+>  	set_bit(BTRFS_FS_OPEN, &fs_info->flags);
+>  
+> +	/* Kick the cleaner thread so it'll start deleting snapshots. */
+> +	if (test_bit(BTRFS_FS_UNFINISHED_DROPS, &fs_info->flags))
+> +		wake_up_process(fs_info->cleaner_kthread);
+> +
+>  clear_oneshot:
+>  	btrfs_clear_oneshot_options(fs_info);
+>  	return 0;
+> @@ -4616,6 +4620,12 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+>  	 */
+>  	kthread_park(fs_info->cleaner_kthread);
+>  
+> +	/*
+> +	 * If we had UNFINISHED_DROPS we could still be processing them, so
+> +	 * clear that bit and wake up relocation so it can stop.
+> +	 */
+> +	btrfs_wake_unfinished_drop(fs_info);
+> +
+>  	/* wait for the qgroup rescan worker to stop */
+>  	btrfs_qgroup_wait_for_completion(fs_info, false);
+>  
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 99e550b83794..e94b8f168a85 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -5837,6 +5837,13 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  	kfree(wc);
+>  	btrfs_free_path(path);
+>  out:
+> +	/*
+> +	 * We were an unfinished drop root, check to see if there are any
+> +	 * pending, and if not clear and wake up any waiters.
+> +	 */
+> +	if (!err && test_bit(BTRFS_ROOT_UNFINISHED_DROP, &root->state))
+> +		btrfs_maybe_wake_unfinished_drop(fs_info);
+> +
+>  	/*
+>  	 * So if we need to stop dropping the snapshot for whatever reason we
+>  	 * need to make sure to add it back to the dead root list so that we
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index f5465197996d..f528c5283f25 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -3960,6 +3960,20 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
+>  	int rw = 0;
+>  	int err = 0;
+>  
+> +	/*
+> +	 * This only gets set if we had a half-deleted snapshot on mount.  We
+> +	 * cannot allow relocation to start while we're still trying to clean up
+> +	 * these pending deletions.
+> +	 */
+> +	ret = wait_on_bit(&fs_info->flags, BTRFS_FS_UNFINISHED_DROPS,
+> +			  TASK_INTERRUPTIBLE);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* We may have been woken up by close_ctree, so bail if we're closing. */
+> +	if (btrfs_fs_closing(fs_info))
+> +		return -EINTR;
+> +
+>  	bg = btrfs_lookup_block_group(fs_info, group_start);
+>  	if (!bg)
+>  		return -ENOENT;
+> diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+> index 3d68d2dcd83e..36770bf42d1a 100644
+> --- a/fs/btrfs/root-tree.c
+> +++ b/fs/btrfs/root-tree.c
+> @@ -278,6 +278,24 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
+>  
+>  		WARN_ON(!test_bit(BTRFS_ROOT_ORPHAN_ITEM_INSERTED, &root->state));
+>  		if (btrfs_root_refs(&root->root_item) == 0) {
+> +			struct btrfs_key drop_key;
+> +
+> +			btrfs_disk_key_to_cpu(&drop_key,
+> +					      &root->root_item.drop_progress);
+> +			/*
+> +			 * If we have a non-zero drop_progress then we know we
+> +			 * made it partly through deleting this snapshot, and
+> +			 * thus we need to make sure we block any balance from
+> +			 * happening until this snapshot is completely dropped.
+> +			 */
+> +			if (drop_key.objectid != 0 || drop_key.type != 0 ||
+> +			    drop_key.offset != 0) {
+> +				set_bit(BTRFS_FS_UNFINISHED_DROPS,
+> +					&fs_info->flags);
+> +				set_bit(BTRFS_ROOT_UNFINISHED_DROP,
+> +					&root->state);
+> +			}
+> +
+>  			set_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
+>  			btrfs_add_dead_root(root);
+>  		}
 > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index c6e550fa4d55..9f6bb22403c3 100644
+> index c6e550fa4d55..dfceee28a149 100644
 > --- a/fs/btrfs/transaction.c
 > +++ b/fs/btrfs/transaction.c
-> @@ -854,7 +854,37 @@ btrfs_attach_transaction_barrier(struct btrfs_root *root)
->  static noinline void wait_for_commit(struct btrfs_transaction *commit,
->  				     const enum btrfs_trans_state min_state)
->  {
-> -	wait_event(commit->commit_wait, commit->state >= min_state);
-> +	struct btrfs_fs_info *fs_info = commit->fs_info;
-> +	u64 transid = commit->transid;
-> +	bool put = false;
-> +
-> +	while (1) {
-> +		wait_event(commit->commit_wait, commit->state >= min_state);
-> +		if (put)
-> +			btrfs_put_transaction(commit);
-> +
-> +		if (min_state < TRANS_STATE_COMPLETED)
-> +			break;
-> +
-> +		/*
-> +		 * A transaction isn't really completed until all of the
-> +		 * previous transactions are completed, but with fsync we can
-> +		 * end up with SUPER_COMMITTED transactions before a COMPLETED
-> +		 * transaction. Wait for those.
-> +		 */
-> +
-> +		spin_lock(&fs_info->trans_lock);
-> +		commit = list_first_entry_or_null(&fs_info->trans_list,
-> +						  struct btrfs_transaction,
-> +						  list);
-> +		if (!commit || commit->transid > transid) {
-> +			spin_unlock(&fs_info->trans_lock);
-> +			break;
-> +		}
-> +		refcount_inc(&commit->use_count);
-> +		put = true;
-> +		spin_unlock(&fs_info->trans_lock);
-> +	}
+> @@ -1319,6 +1319,32 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
+>  	return 0;
 >  }
 >  
->  int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid)
+> +/*
+> + * If we had a pending drop we need to see if there are any others left in our
+> + * dead roots list, and if not clear our bit and wake any waiters.
+> + */
+> +void btrfs_maybe_wake_unfinished_drop(struct btrfs_fs_info *fs_info)
+> +{
+> +	/*
+> +	 * We put the drop in progress roots at the front of the list, so if the
+> +	 * first entry doesn't have UNFINISHED_DROP set we can wake everybody
+> +	 * up.
+> +	 */
+> +	spin_lock(&fs_info->trans_lock);
+> +	if (!list_empty(&fs_info->dead_roots)) {
+> +		struct btrfs_root *root = list_first_entry(&fs_info->dead_roots,
+> +							   struct btrfs_root,
+> +							   root_list);
+> +		if (test_bit(BTRFS_ROOT_UNFINISHED_DROP, &root->state)) {
+> +			spin_unlock(&fs_info->trans_lock);
+> +			return;
+> +		}
+> +	}
+> +	spin_unlock(&fs_info->trans_lock);
+> +
+> +	btrfs_wake_unfinished_drop(fs_info);
+> +}
+> +
+>  /*
+>   * dead roots are old snapshots that need to be deleted.  This allocates
+>   * a dirty root struct and adds it into the list of dead roots that need to
+> @@ -1331,7 +1357,12 @@ void btrfs_add_dead_root(struct btrfs_root *root)
+>  	spin_lock(&fs_info->trans_lock);
+>  	if (list_empty(&root->root_list)) {
+>  		btrfs_grab_root(root);
+> -		list_add_tail(&root->root_list, &fs_info->dead_roots);
+> +
+> +		/* We want to process the partially complete drops first. */
+> +		if (test_bit(BTRFS_ROOT_UNFINISHED_DROP, &root->state))
+> +			list_add(&root->root_list, &fs_info->dead_roots);
+> +		else
+> +			list_add_tail(&root->root_list, &fs_info->dead_roots);
+>  	}
+>  	spin_unlock(&fs_info->trans_lock);
+>  }
+> diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+> index 9402d8d94484..ba8a9826eb37 100644
+> --- a/fs/btrfs/transaction.h
+> +++ b/fs/btrfs/transaction.h
+> @@ -216,6 +216,7 @@ int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid);
+>  
+>  void btrfs_add_dead_root(struct btrfs_root *root);
+>  int btrfs_defrag_root(struct btrfs_root *root);
+> +void btrfs_maybe_wake_unfinished_drop(struct btrfs_fs_info *fs_info);
+>  int btrfs_clean_one_deleted_snapshot(struct btrfs_root *root);
+>  int btrfs_commit_transaction(struct btrfs_trans_handle *trans);
+>  void btrfs_commit_transaction_async(struct btrfs_trans_handle *trans);
 > -- 
-> 2.35.1
+> 2.26.3
 > 
