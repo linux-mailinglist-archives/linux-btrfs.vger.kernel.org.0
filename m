@@ -2,208 +2,273 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D344BDBFD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 18:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AD04BE872
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 19:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356056AbiBULUE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Feb 2022 06:20:04 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54066 "EHLO
+        id S1356287AbiBULX3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Feb 2022 06:23:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355730AbiBULTT (ORCPT
+        with ESMTP id S1356292AbiBULXG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Feb 2022 06:19:19 -0500
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1049ECD3;
-        Mon, 21 Feb 2022 03:02:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1645441379; x=1676977379;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=K07BQinyK4h4kN5Wy7nU7zszHDmJGhsxeQdujuYSmgs=;
-  b=cERxjiLPD3XjV92Mp0BokvZdJZqf/ntSuelyCu19NGB8SwQqZcdcXQ+k
-   cEucTUydCzK8paT/lw/YikSVb2uEXsj1vhUPkzTV5GputBB/U6gPtSgW6
-   RF3ZF91dZEx3qEskLBSwRD8Kcs/Gu8W6fpOGCg+LYLfnNA3/gWVfgnByK
-   19WwHHWrDQcjl/0gZuvndDzQq0jdWqDS7gOhrFwO8tz2o2t+rO9K7wK1D
-   7tCmuG/1CDoq2mAVxiLqq7WGnNe0Hny7eHxkISwxlfjRrVa0v9gbSfT++
-   3OlilCB7vA7XgZEdRpMK/vr5tX+cVzTgTdoYIty5PG/3HtRvk3zrwj5zt
-   A==;
-X-IronPort-AV: E=Sophos;i="5.88,385,1635177600"; 
-   d="scan'208";a="305417467"
-Received: from mail-dm6nam10lp2105.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.105])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Feb 2022 19:02:58 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m2XChqyAelr+M18S+MGxNDGOiK1gQmjOeLQ7pEitZ04WZ7hBULNM0Gajef9Sz6AJ/O6MsyB9TT8niDjcDe03MP3X41+wwQDtcbbqtHKTrlVeLMmYjegVk8pI0/29yDp/Rwd2t3WsTgXoQIQnp8rj4+F7O2TNx4wlfJ9hmxz1SGt3l+H0nC+5aA1ZMxwvBXhpKe+wciZttDXp1hAIJaQMHVgXVsJaRb8WthCKH1YTHWOujNqOt9l2wc8lm80Ncs4DA7jBmL9Z2rS49ix2CeC3kCYc0VnL9dRjvCQRLtQe788LChlYKIdWgUmQZb4Qp+LGjvbr+GN5F8fJvKft9YliLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z49nIhtKrq/zeLYPdtiE3+niV9qZeOxJIALWT08fq70=;
- b=BzRJKNF0lcXmEEVz8iMYlWCcp3uXA+6aykVOLSwooPDQpbGcY2IIYHhS46UdWRMAq8nG0ZfylcMwaW0ldopCqg7XfdTxbfDpsJvZvPnxGtKOXdYQYoHG5plOdcHGYwCI0M0dA50Ci5VScl+yLIvtpaMcpD/IChFuDp0OBlHEBO2vt9gLzY05YNSkJBiIsiluvfMhrUJDBoLnJ1m9EiZ2VLcH/K4OwCUcQGTHXcVapX5OqIeaS9BGhpyz+vv9Ze0tukolM5ZnFRcwWyS4d9Q9sHGIqVRn47ZQ19HK2EcY9RRUCFpsP6O9tVdPNEXweBuIyrdQ3Y81bxd4nJa6MidUQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z49nIhtKrq/zeLYPdtiE3+niV9qZeOxJIALWT08fq70=;
- b=KWJH9zmCKJRKE6937+EMaY4hik1cBD3YqJJJO8xdr1bkNW/Iu1/+azDzSpON4PaI9MVHalzakk26GBLKE7AmM6O7BMspkYwqaobE6CAxPO+ZIy+cwtlKoj8uGCTq926UvwKNaYgRUcgqrN/p9AzOjOk1Upc0iskL7r8dbR8J/8E=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- BN3PR04MB2354.namprd04.prod.outlook.com (2603:10b6:400:1::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4995.17; Mon, 21 Feb 2022 11:02:55 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b13a:2b9b:b0a2:d17]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b13a:2b9b:b0a2:d17%5]) with mapi id 15.20.4995.027; Mon, 21 Feb 2022
- 11:02:55 +0000
-From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-CC:     Eryu Guan <guan@eryu.me>,
-        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: Re: [PATCH v3 1/6] common/rc: fix btrfs mixed mode usage in
- _scratch_mkfs_sized
-Thread-Topic: [PATCH v3 1/6] common/rc: fix btrfs mixed mode usage in
- _scratch_mkfs_sized
-Thread-Index: AQHYJJmku29ruJf1Uk6KIJBch9qCEaycrX+AgADrSQCAAEMrAA==
-Date:   Mon, 21 Feb 2022 11:02:55 +0000
-Message-ID: <20220221110254.y2yb7xdlf22ahh7k@shindev>
-References: <20220218073156.2179803-1-shinichiro.kawasaki@wdc.com>
- <20220218073156.2179803-2-shinichiro.kawasaki@wdc.com>
- <YhJzp/dnfixk/nMn@desktop> <20220221070229.2hs45fqk7fbfbgpk@naota-xeon>
-In-Reply-To: <20220221070229.2hs45fqk7fbfbgpk@naota-xeon>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0b54bfb6-9731-48ef-ade7-08d9f529b667
-x-ms-traffictypediagnostic: BN3PR04MB2354:EE_
-x-microsoft-antispam-prvs: <BN3PR04MB2354D0FF9BE6444600287B6DED3A9@BN3PR04MB2354.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TJOSRq9O+VCgLxa2njSgpjMYi/zsvw5oMIkeNJ9EsHarR0RFBlQqhKWXbsS9WaRO2j6N1Z8EKh0WsvQ9PwhR3/YQTg04sMDZhJbs5P+5WU4Hz8AAOrUTXdrOP70wfps2JBWEgzujLEW50FI0DzAJlJPLKdAV17X+gbWR3riEnrNuLIoydCkY6Dwv8XWV6spnuT75x7nIbIzf3aYUOmps44+KOxr27BwTwNe0F2+VebOY8MLk5YSknnJee3nVISWN/VUEZBZYFnT2yhVFrnVeHNoBzk/8qgOiX02WBd0j428Zlvf6NQqREMVVO86iwWLzYbL2zwOmKS9oi2X1Gxvfu25daCS4BoiD/LcTb1woWaS543DnwN3JFFiLdRqXNYVuAJf9ejgnC6c1iOxpg9uPtBp6ROz5F/h2u3w6T0Lq/A+aI8Q9C8xC6FqQVrcInQ1y7yq8ZNUsa6v8qvpDEC4Z1YEWGguH2xtL1qCBXLgpRiRPj9aEHInapsMpmN6sfTq+ZnhVtqoWB6iy/G1yihMkqyOWaMg4KQQroGcnJGJo3Xec3k6nUM2pnrGTleMe1Z4HhLH2SHcMM+WKMKcaYm9S9cJ5n9EaRDHYW6b+SamVSxQ1GBMz5TgnkUugfG+sYBtFaskdhT3/LitziEm1qJsn/L7D/sm+Isa007nPZBTU4ADV5FqHIPuEbAdnuMLJRFo5YGvx6X2cRaNFA7IyozBxXG6mlReSzG54mGEOBY7KM53Ldv3U3tgaBsDixkI4cOYaGSfOgOlaRtFj4vGO995EGA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(66476007)(6506007)(2906002)(66556008)(82960400001)(66446008)(4326008)(44832011)(6512007)(9686003)(66946007)(1076003)(86362001)(26005)(186003)(122000001)(71200400001)(8676002)(6486002)(966005)(508600001)(38100700002)(5660300002)(8936002)(64756008)(6636002)(83380400001)(91956017)(6862004)(33716001)(38070700005)(316002)(76116006)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UEPS2sCL2ZqoLZU910zDjjliw8GNabw3JoAXaBtCt7TMdUq6zx1TMT2v7iBi?=
- =?us-ascii?Q?MNIx05wqM0UNYFHEEiOo2DfqjLhV5MMCnRvm/t0FzcahN2IK5BQE0N0otJPU?=
- =?us-ascii?Q?dOdWg+VmjQfTyUrrbR0gld09WaBoZ6G6g+P9XjoJYRIS+PHTzusf8KWc53Qj?=
- =?us-ascii?Q?iKAoCr8Jj6c2zOKsEqqVoYmo8KMKoWg8wLZIgoxDsvwyi0UbBKbMR9kurK8F?=
- =?us-ascii?Q?gzYNbxb1+9QHskHZZQ1a9sxN3mQCYxXVQ+Ef8zHynpCRGGczkPiHwcK6XkTM?=
- =?us-ascii?Q?o5Zc1t0Nm4aKR6Ki5Z5UoLgPVjCo7cD/UPbDn6wC8LPTu4WF5j0SKR2leYhR?=
- =?us-ascii?Q?uGkvn1c8/PUF9t6Y1QLTO6zrnWYiZcTb2P1HonYdZwqOYjUjdil/eu8AHfr3?=
- =?us-ascii?Q?DZOPO7WUvMpWGSWVyC7m1+Vk3y5mEV+bI4xucnjsnm4FS4kcEDId+JU1/XtD?=
- =?us-ascii?Q?q1C8hNzNIhhWz8oNP3LzakDyOiFO/Hg9ngoe/BLWg7hMhIJa0pot6+M98s8h?=
- =?us-ascii?Q?pI5PhBNI3DnrkYQq1b0jQR1bjSN/PDCFwD2ea9wkFsvKbaUKkBvL37n08ywk?=
- =?us-ascii?Q?7V7kOMztPTLYeyQX5wgQ4gCF/xB8RYalgKVkxcJcE23WNEC3Yt88HI4/p5a2?=
- =?us-ascii?Q?ay3x0sHeXpHrPb5V+C7iNcwGZOWK5bIAUpZub2qAyhh5V1O2N7m1nsMcNJ57?=
- =?us-ascii?Q?ipDz9S+U6Nr0OWDiadNlbIvBiW3g4CUhqoQFmRnxlYz4BKPWTLM/I6keQTP3?=
- =?us-ascii?Q?5Om9oflsk9dvrYBvx0ZL99ntOOHN+QcxwXLHrmwiwq63OzqEtE1kN9iKnS5W?=
- =?us-ascii?Q?xGBHnt02h9bKoPtMeUNZIFgTHPkCN4MRsuuI6wcltpMI6VjreN0XYT/jU59u?=
- =?us-ascii?Q?gSDOE76ozIvoJ3tVBUYSwMAKCbsSo2RiDzAiIRJabNpxDd1G2AYG4yQDZtHE?=
- =?us-ascii?Q?npOcCwgw8wXe+9tDL8QQbF2HmpeOk1TutM02+9CZmQnNNKeCbdUHSTzrtNgb?=
- =?us-ascii?Q?vukTEYs6Dhg+uWr7pglaCVRGoybwAX6rbGnkDVnnkjoICWbVZaUziY9RdOaA?=
- =?us-ascii?Q?YybWSLnQU7QQnQkyS9uLQE0gKMvQNjNpLepQdbiSfeNN1OqZgkWv/UwvzGrI?=
- =?us-ascii?Q?dtQs+6B0h4omEA+adu4NpZ7tL17LQY5rq5QcnGbbuO9E8UgD0fYLy/q9BGJP?=
- =?us-ascii?Q?+KV98dgMlukT0FWSVzSx4r66olNfyewrxD8kcJjnzE1e36gsWaqkalW9FR8y?=
- =?us-ascii?Q?wepjnpIxwRIdcK9KhVBhPjGq3VbYpt7100+B3v+y8s9I15WbWKCSGIW2DQUn?=
- =?us-ascii?Q?qWQ3xGf9GnyEzaLIRpfxLt7EPQOXYdqIcC9xbKQFhMCwIwYSB+B0id+vMeOV?=
- =?us-ascii?Q?cvSLBX0C5ptG42nU78oShXka78W1BlR9MfMQVD4H0+lW9JmJ4c3QX/BAuk2f?=
- =?us-ascii?Q?BX4CyY3zWcdF2eeoFvF8m0SZQBRHDfAuMZ/F32Eze/gIFicic5S4JoQpJpXl?=
- =?us-ascii?Q?0V2eZjguLhtW6PtZ81seuoW4Usxs327aUoHOrARWBJM5rhRSgumxtsMpJ4E1?=
- =?us-ascii?Q?8U7ys25Z/zOKJUZm5NQlY2bW0fqLLyswIlesnnUq/6dbd8sVo9RWPSMAwjM/?=
- =?us-ascii?Q?Z368rZsVIo4FVg08w+0upsti2j7EGGxnnz5driruwN+bjjl5IK8T4UdCSrta?=
- =?us-ascii?Q?IfYtpj7asQT+dMNcRvkryXQkV0s=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <FB7B9428D9250048B8B372F51265DDE0@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Mon, 21 Feb 2022 06:23:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E37D109
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 03:15:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8A9A6118B
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 11:15:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA241C340E9;
+        Mon, 21 Feb 2022 11:15:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645442143;
+        bh=6GagsCTAhHtCjZ1GYeW91LNF4CputQFbLPYW7zE5tsI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ASMC7n/gVIK3wiWh4jksuY0BqnWFvakeN907ujE4dKp4f6fC+kGKVCvWurpFixU9T
+         4DDZFctdQ08pPcLYtpZb/Jryq/AFCLp5edSxbZfmuRhUMGV15ODTqLodlGUHaVjqs1
+         J4nBxVFHtzaXXEnfOeA5wRqrnqWKO/0F23xKrZpRrY9C4zkEwgbWzDpvLj/AQ5UE3L
+         vnzTeItHUrDg5re9McE5BTunvrc7tHztxK//RXGd+N4jw4Xx1X8ILkB6RhVToYJbsu
+         ato3xsiuWOrQRjMZgzDsmsDVPABW//7Z26/fxmeqUofVCNj4aMOCUUcYtznV5xVeMn
+         NwYiu8ZnCFDdg==
+Date:   Mon, 21 Feb 2022 11:15:39 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: fix relocation crash due to premature return from
+ btrfs_commit_transaction()
+Message-ID: <YhN0WyMgRd8m/NsH@debian9.Home>
+References: <4ebf450a931e83b1d305d07fcc6db104b85c2627.1645139641.git.osandov@fb.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b54bfb6-9731-48ef-ade7-08d9f529b667
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2022 11:02:55.1097
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q8mKjyAOna3plLaCyDI+MPwp0NX4R1n9eZ9xwqcGCeCknedEqj3Mni0x+lDcpRJwbW4eye2G8Rb8yvkDc0Cnqa5+pPNsR5OpFnP/xp0OSHE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN3PR04MB2354
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ebf450a931e83b1d305d07fcc6db104b85c2627.1645139641.git.osandov@fb.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Feb 21, 2022 / 07:02, Naohiro Aota wrote:
-> On Mon, Feb 21, 2022 at 01:00:23AM +0800, Eryu Guan wrote:
-> > On Fri, Feb 18, 2022 at 04:31:51PM +0900, Shin'ichiro Kawasaki wrote:
-> > > The helper function _scratch_mkfs_sized needs a couple of improvement=
-s
-> > > for btrfs. At first, the function adds --mixed option to mkfs.btrfs w=
-hen
-> > > the filesystem size is smaller then 256MiB, but this threshold is no
-> > > longer correct and it should be 109MiB. Secondly, the --mixed option
-> >=20
-> > I'm wondering if this 256M -> 109M change was made just recently or was
-> > made on old kernel.
->=20
-> The check is imposed from the userland tool btrfs-progs. The value is
-> calculated from a code in 31d228a2eb98 ("btrfs-progs: mkfs: Enhance
-> minimal device size calculation to fix mkfs failure on small file"),
-> which is released around v4.14.
->=20
-> But, after rechecking the code, the size part of the patch looks
-> invalid to me. My bad.
->=20
-> https://github.com/kdave/btrfs-progs/blob/master/mkfs/common.c#L651
->=20
-> As said in 50c1905c2795 ("btrfs: _scratch_mkfs_sized fix min size
-> without mixed option"), we need to consider every possible profile to
-> decide the minimal value.
->=20
-> That gives me:
->=20
-> - reserved +=3D BTRFS_BLOCK_RESERVED_1M_FOR_SUPER +
-> 	    BTRFS_MKFS_SYSTEM_GROUP_SIZE + SZ_8M * 2;
->   --> reserved =3D 1M + 4M + 8M * 2 =3D 21M
->=20
-> - meta_size =3D SZ_8M + SZ_32M;
-> - meta_size *=3D 2;
-> - reserved +=3D meta_size;
->   --> reserved =3D 21M + (8M + 32M) * 2 =3D 101M
->=20
-> - data_size =3D 64M;
-> - data_size *=3D 2;
-> - reserved +=3D data_size;
->   --> reserved =3D 101M + 64M * 2 =3D 229M
->=20
-> We can also confirm the calculation with a zero size file:
->=20
->    $ mkfs.btrfs -f -d DUP -m DUP btrfs.img
->    btrfs-progs v5.16=20
->    See http://btrfs.wiki.kernel.org for more information.
->   =20
->    ERROR: 'btrfs.img' is too small to make a usable filesystem
->    ERROR: minimum size for each btrfs device is 240123904
->=20
-> So, the original 256MB is roughly correct.
+On Thu, Feb 17, 2022 at 03:14:43PM -0800, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> We are seeing crashes similar to the following trace:
+> 
+> [   38.968587] ------------[ cut here ]------------
+> [   38.969182] WARNING: CPU: 20 PID: 2105 at fs/btrfs/relocation.c:4070 btrfs_relocate_block_group+0x2dc/0x340 [btrfs]
+> [   38.970984] Modules linked in: btrfs blake2b_generic xor pata_acpi ata_piix libata raid6_pq scsi_mod libcrc32c virtio_net virtio_rng net_failover rng_core failover scsi_common
+> [   38.973556] CPU: 20 PID: 2105 Comm: btrfs Not tainted 5.17.0-rc4 #54
+> [   38.974580] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [   38.976539] RIP: 0010:btrfs_relocate_block_group+0x2dc/0x340 [btrfs]
+> [   38.977489] Code: fe ff ff ff e9 f0 fd ff ff 0f 0b e9 f1 fe ff ff 4c 89 e7 41 bd f4 ff ff ff e8 50 0e 03 00 e9 d6 fd ff ff 0f 0b e9 45 ff ff ff <0f> 0b e9 33 ff ff ff 48 8b 45 10 48 83 ca ff 31 f6 48 8b 78 30 e8
+> [   38.980336] RSP: 0000:ffffb0dd42e03c20 EFLAGS: 00010206
+> [   38.981218] RAX: ffff96cfc4ede800 RBX: ffff96cfc3ce0000 RCX: 000000000002ca14
+> [   38.982560] RDX: 0000000000000000 RSI: 4cfd109a0bcb5d7f RDI: ffff96cfc3ce0360
+> [   38.983619] RBP: ffff96cfc309c000 R08: 0000000000000000 R09: 0000000000000000
+> [   38.984678] R10: ffff96cec0000001 R11: ffffe84c80000000 R12: ffff96cfc4ede800
+> [   38.985735] R13: 0000000000000000 R14: 0000000000000000 R15: ffff96cfc3ce0360
+> [   38.987146] FS:  00007f11c15218c0(0000) GS:ffff96d6dfb00000(0000) knlGS:0000000000000000
+> [   38.988662] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   38.989398] CR2: 00007ffc922c8e60 CR3: 00000001147a6001 CR4: 0000000000370ee0
+> [   38.990279] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   38.991219] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   38.992528] Call Trace:
+> [   38.992854]  <TASK>
+> [   38.993148]  btrfs_relocate_chunk+0x27/0xe0 [btrfs]
+> [   38.993941]  btrfs_balance+0x78e/0xea0 [btrfs]
+> [   38.994801]  ? vsnprintf+0x33c/0x520
+> [   38.995368]  ? __kmalloc_track_caller+0x351/0x440
+> [   38.996198]  btrfs_ioctl_balance+0x2b9/0x3a0 [btrfs]
+> [   38.997084]  btrfs_ioctl+0x11b0/0x2da0 [btrfs]
+> [   38.997867]  ? mod_objcg_state+0xee/0x340
+> [   38.998552]  ? seq_release+0x24/0x30
+> [   38.999184]  ? proc_nr_files+0x30/0x30
+> [   38.999654]  ? call_rcu+0xc8/0x2f0
+> [   39.000228]  ? __x64_sys_ioctl+0x84/0xc0
+> [   39.000872]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
+> [   39.001973]  __x64_sys_ioctl+0x84/0xc0
+> [   39.002566]  do_syscall_64+0x3a/0x80
+> [   39.003011]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   39.003735] RIP: 0033:0x7f11c166959b
+> [   39.004302] Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a5 a8 0c 00 f7 d8 64 89 01 48
+> [   39.007324] RSP: 002b:00007fff2543e998 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> [   39.008521] RAX: ffffffffffffffda RBX: 00007f11c1521698 RCX: 00007f11c166959b
+> [   39.009833] RDX: 00007fff2543ea40 RSI: 00000000c4009420 RDI: 0000000000000003
+> [   39.011270] RBP: 0000000000000003 R08: 0000000000000013 R09: 00007f11c16f94e0
+> [   39.012581] R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff25440df3
+> [   39.014046] R13: 0000000000000000 R14: 00007fff2543ea40 R15: 0000000000000001
+> [   39.015040]  </TASK>
+> [   39.015418] ---[ end trace 0000000000000000 ]---
+> [   43.131559] ------------[ cut here ]------------
+> [   43.132234] kernel BUG at fs/btrfs/extent-tree.c:2717!
+> [   43.133031] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+> [   43.133702] CPU: 1 PID: 1839 Comm: btrfs Tainted: G        W         5.17.0-rc4 #54
+> [   43.134863] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [   43.136426] RIP: 0010:unpin_extent_range+0x37a/0x4f0 [btrfs]
+> [   43.137255] Code: fd ff ff 4d 8d b5 08 01 00 00 4c 89 f7 e8 de f2 49 ef 66 41 83 bd 0c 01 00 00 00 74 0f 4c 89 f7 e8 2b f3 49 ef e9 ed fe ff ff <0f> 0b 49 8b 85 f8 00 00 00 4d 8b 9d f0 00 00 00 49 29 c3 49 39 db
+> [   43.139913] RSP: 0000:ffffb0dd4216bc70 EFLAGS: 00010246
+> [   43.140629] RAX: 0000000000000000 RBX: ffff96cfc34490f8 RCX: 0000000000000001
+> [   43.141604] RDX: 0000000080000001 RSI: 0000000051d00000 RDI: 00000000ffffffff
+> [   43.142645] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff96cfd07dca50
+> [   43.143669] R10: ffff96cfc46e8a00 R11: fffffffffffec000 R12: 0000000041d00000
+> [   43.144657] R13: ffff96cfc3ce0000 R14: ffffb0dd4216bd08 R15: 0000000000000000
+> [   43.145686] FS:  00007f7657dd68c0(0000) GS:ffff96d6df640000(0000) knlGS:0000000000000000
+> [   43.146808] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   43.147584] CR2: 00007f7fe81bf5b0 CR3: 00000001093ee004 CR4: 0000000000370ee0
+> [   43.148589] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   43.149581] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   43.150559] Call Trace:
+> [   43.150904]  <TASK>
+> [   43.151253]  btrfs_finish_extent_commit+0x88/0x290 [btrfs]
+> [   43.152127]  btrfs_commit_transaction+0x74f/0xaa0 [btrfs]
+> [   43.152932]  ? btrfs_attach_transaction_barrier+0x1e/0x50 [btrfs]
+> [   43.153786]  btrfs_ioctl+0x1edc/0x2da0 [btrfs]
+> [   43.154475]  ? __check_object_size+0x150/0x170
+> [   43.155170]  ? preempt_count_add+0x49/0xa0
+> [   43.155753]  ? __x64_sys_ioctl+0x84/0xc0
+> [   43.156437]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
+> [   43.157456]  __x64_sys_ioctl+0x84/0xc0
+> [   43.157980]  do_syscall_64+0x3a/0x80
+> [   43.158543]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   43.159231] RIP: 0033:0x7f7657f1e59b
+> [   43.159653] Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a5 a8 0c 00 f7 d8 64 89 01 48
+> [   43.161819] RSP: 002b:00007ffda5cd1658 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> [   43.162702] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f7657f1e59b
+> [   43.163526] RDX: 0000000000000000 RSI: 0000000000009408 RDI: 0000000000000003
+> [   43.164358] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+> [   43.165208] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> [   43.166029] R13: 00005621b91c3232 R14: 00005621b91ba580 R15: 00007ffda5cd1800
+> [   43.166863]  </TASK>
+> [   43.167125] Modules linked in: btrfs blake2b_generic xor pata_acpi ata_piix libata raid6_pq scsi_mod libcrc32c virtio_net virtio_rng net_failover rng_core failover scsi_common
+> [   43.169552] ---[ end trace 0000000000000000 ]---
+> [   43.171226] RIP: 0010:unpin_extent_range+0x37a/0x4f0 [btrfs]
+> [   43.172356] Code: fd ff ff 4d 8d b5 08 01 00 00 4c 89 f7 e8 de f2 49 ef 66 41 83 bd 0c 01 00 00 00 74 0f 4c 89 f7 e8 2b f3 49 ef e9 ed fe ff ff <0f> 0b 49 8b 85 f8 00 00 00 4d 8b 9d f0 00 00 00 49 29 c3 49 39 db
+> [   43.174767] RSP: 0000:ffffb0dd4216bc70 EFLAGS: 00010246
+> [   43.175600] RAX: 0000000000000000 RBX: ffff96cfc34490f8 RCX: 0000000000000001
+> [   43.176468] RDX: 0000000080000001 RSI: 0000000051d00000 RDI: 00000000ffffffff
+> [   43.177357] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff96cfd07dca50
+> [   43.178271] R10: ffff96cfc46e8a00 R11: fffffffffffec000 R12: 0000000041d00000
+> [   43.179178] R13: ffff96cfc3ce0000 R14: ffffb0dd4216bd08 R15: 0000000000000000
+> [   43.180071] FS:  00007f7657dd68c0(0000) GS:ffff96d6df800000(0000) knlGS:0000000000000000
+> [   43.181073] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   43.181808] CR2: 00007fe09905f010 CR3: 00000001093ee004 CR4: 0000000000370ee0
+> [   43.182706] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   43.183591] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> We first hit the WARN_ON(rc->block_group->pinned > 0) in
+> btrfs_relocate_block_group() and then the BUG_ON(!cache) in
+> unpin_extent_range(). This tells us that we are exiting relocation and
+> removing the block group with bytes still pinned for that block group.
+> This is supposed to be impossible: the last thing relocate_block_group()
+> does is commit the transaction to get rid of pinned extents.
+> 
+> Commit d0c2f4fa555e ("btrfs: make concurrent fsyncs wait less when
+> waiting for a transaction commit") introduced an optimization so that
+> commits from fsync don't have to wait for the previous commit to unpin
+> extents. This was only intended to affect fsync, but it inadvertently
+> made it possible for any commit to skip waiting for the previous commit
+> to unpin. This is because if a call to btrfs_commit_transaction() finds
+> that another thread is already committing the transaction, it waits for
+> the other thread to complete the commit and then returns. If that other
+> thread was in fsync, then it completes the commit without completing the
+> previous commit. This makes the following sequence of events possible:
+> 
+> Thread 1____________________|Thread 2 (fsync)_____________________|Thread 3 (balance)___________________
+> btrfs_commit_transaction(N) |                                     |
+>   btrfs_run_delayed_refs    |                                     |
+>     pin extents             |                                     |
+>   ...                       |                                     |
+>   state = UNBLOCKED         |btrfs_sync_file                      |
+>                             |  btrfs_start_transaction(N + 1)     |relocate_block_group
+>                             |                                     |  btrfs_join_transaction(N + 1)
+>                             |  btrfs_commit_transaction(N + 1)    |
+>   ...                       |  trans->state = COMMIT_START        |
+>                             |                                     |  btrfs_commit_transaction(N + 1)
+>                             |                                     |    wait_for_commit(N + 1, COMPLETED)
+>                             |  wait_for_commit(N, SUPER_COMMITTED)|
+>   state = SUPER_COMMITTED   |  ...                                |
+>   btrfs_finish_extent_commit|                                     |
+>     unpin_extent_range()    |  trans->state = COMPLETED           |
+>                             |                                     |    return
+>                             |                                     |
+>     ...                     |                                     |Thread 1 isn't done, so pinned > 0
+>                             |                                     |and we WARN
+>                             |                                     |
+>                             |                                     |btrfs_remove_block_group
+>     unpin_extent_range()    |                                     |
+>       Thread 3 removed the  |                                     |
+>       block group, so we BUG|                                     |
+> 
+> There are other sequences involving SUPER_COMMITTED transactions that
+> can cause a similar outcome.
+> 
+> We could fix this by making relocation explicitly wait for unpinning,
+> but there may be other cases that need it. Josef mentioned ENOSPC
+> flushing and the free space cache inode as other potential victims.
+> Rather than playing whack-a-mole, this fix is conservative and makes all
+> commits not in fsync wait for all previous transactions, which is what
+> the optimization intended.
+> 
+> Fixes: d0c2f4fa555e ("btrfs: make concurrent fsyncs wait less when waiting for a transaction commit")
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-Naohiro, thank you for checking the detail. I agree that we should keep the
-number 256MB. I will drop that part and repost the patch.
+Looks good, thanks!
 
---=20
-Best Regards,
-Shin'ichiro Kawasaki=
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+> ---
+>  fs/btrfs/transaction.c | 32 +++++++++++++++++++++++++++++++-
+>  1 file changed, 31 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index c6e550fa4d55..9f6bb22403c3 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -854,7 +854,37 @@ btrfs_attach_transaction_barrier(struct btrfs_root *root)
+>  static noinline void wait_for_commit(struct btrfs_transaction *commit,
+>  				     const enum btrfs_trans_state min_state)
+>  {
+> -	wait_event(commit->commit_wait, commit->state >= min_state);
+> +	struct btrfs_fs_info *fs_info = commit->fs_info;
+> +	u64 transid = commit->transid;
+> +	bool put = false;
+> +
+> +	while (1) {
+> +		wait_event(commit->commit_wait, commit->state >= min_state);
+> +		if (put)
+> +			btrfs_put_transaction(commit);
+> +
+> +		if (min_state < TRANS_STATE_COMPLETED)
+> +			break;
+> +
+> +		/*
+> +		 * A transaction isn't really completed until all of the
+> +		 * previous transactions are completed, but with fsync we can
+> +		 * end up with SUPER_COMMITTED transactions before a COMPLETED
+> +		 * transaction. Wait for those.
+> +		 */
+> +
+> +		spin_lock(&fs_info->trans_lock);
+> +		commit = list_first_entry_or_null(&fs_info->trans_list,
+> +						  struct btrfs_transaction,
+> +						  list);
+> +		if (!commit || commit->transid > transid) {
+> +			spin_unlock(&fs_info->trans_lock);
+> +			break;
+> +		}
+> +		refcount_inc(&commit->use_count);
+> +		put = true;
+> +		spin_unlock(&fs_info->trans_lock);
+> +	}
+>  }
+>  
+>  int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid)
+> -- 
+> 2.35.1
+> 
