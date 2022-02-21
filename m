@@ -2,160 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530BC4BECD0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 22:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E56C84BECDD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 22:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235060AbiBUVxk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Feb 2022 16:53:40 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58850 "EHLO
+        id S235084AbiBUWAM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Feb 2022 17:00:12 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235038AbiBUVxj (ORCPT
+        with ESMTP id S235079AbiBUWAL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Feb 2022 16:53:39 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6F222BD3
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 13:53:15 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id h15so15162251edv.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Feb 2022 13:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mariadb.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=vKerE769IxjYegW3awSWRx2E6jCGcT96j3I8KNC2R9o=;
-        b=O/ohzwBgMXBM/At5571AH4q+py4M085Z8S8RHWYnxndMaor5dSVRo+moaxG84qSAbR
-         3ICgkFub/s2s1i5/iC2JHZ1TcukKPk9htrRWUVny/EPqMIuR5/WsL+c7tVXuejSyLtA4
-         Q4sXgd66notLyPWUPZwzwRBkvyaKecKgQEIZpdOnaOnAksQVHOWDxsMo3rBsM1v9+Mm7
-         5QNwl/brmRzUcR6fgHB/S64tmG9IC7neBetnolO766vxy8JQU/tn44fjFQKJwFlv1jn4
-         0+qU7oeJUSpZTzU7dS1kb2cNG7RqY94g2VVzpU0SCNSdoXtP0jzqpQewQbaeLuzAx7Cz
-         SNdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=vKerE769IxjYegW3awSWRx2E6jCGcT96j3I8KNC2R9o=;
-        b=j7QmEbZc3GEGb5wjD4YWxob8mngmkQH2pHNzOCWkQaayaahm4KSQlj41WJkITr0TfF
-         QhG1/vcduqLbgID+HeuJMAfQAxtbzF6MCt/Dr3eWbe+z6zqlmnmQWkHFl3KvqaEDi50S
-         /wRGK8l2Ddo2WgupHolCuVU1YJdxnmMvf5y0dTmxN4jp2A9bD8s0lknw1blhP6HGLNUl
-         6Rw0RXs2koz7vJiA+kufehPw2woVafo7AbW586QDMUQQCck74G7HcuY+Kvfx0tPErLm5
-         +x17HaeWGA4ULMkAC1V4Y5iYVBqGIB8Aqos7b4/dT0e0n12U2p8gj74/xC0i/QPrMTkr
-         vjGQ==
-X-Gm-Message-State: AOAM530fAI94Tdn/DvlebgWMqAsARw+TgqD2kfVtebyhbEf874iBW/C/
-        rtOxC/YOyZHCGxi3syRRTqlQbu5e2B38YX21v3s+UlxPXJE=
-X-Google-Smtp-Source: ABdhPJwkCuaOTmHrDFjup995/3ci2fJnGhYDa3tnmW3LpGfa/IzZaO7q8QKySe9JPEeg/0+Y0/LdtR0oUthIjkhwHVQ=
-X-Received: by 2002:a50:ef10:0:b0:410:b95b:a89b with SMTP id
- m16-20020a50ef10000000b00410b95ba89bmr23684183eds.146.1645480393611; Mon, 21
- Feb 2022 13:53:13 -0800 (PST)
-MIME-Version: 1.0
-References: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
-In-Reply-To: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
-From:   Daniel Black <daniel@mariadb.org>
-Date:   Tue, 22 Feb 2022 08:53:02 +1100
-Message-ID: <CABVffEO3DZTtTNdjkwTegxNPTHbeM-PBeKk5B_dFXdsTvL2wFg@mail.gmail.com>
-Subject: Fwd: btrfs / io-uring corrupting reads
-To:     io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 21 Feb 2022 17:00:11 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDEB22BE2;
+        Mon, 21 Feb 2022 13:59:47 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 12A701F394;
+        Mon, 21 Feb 2022 21:59:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1645480786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=amkKzkJIzKNate+BxqSEOR/ytWm/qtbc3ZtFRsmXvBM=;
+        b=ewbLWa07/OWM66IgZRicpm+p2kQSmHWSjBx7karBkmzsU+Am9Luj52I81aK1VcCcKpG32U
+        7Kte65o7tKx3lwtmEtBhfLp/I754vnHVTpUidbU+VehJwQiiR7ivpHn3oYqKSKyQt4M56r
+        lnDj7pdx6RLhot+T27GJQqjzneXL59s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1645480786;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=amkKzkJIzKNate+BxqSEOR/ytWm/qtbc3ZtFRsmXvBM=;
+        b=usMGoFll1fN7Jr8ihiuzN2Oyjbu3A2BOIGQk9PcT0THkbOsGhKeeSZDikNFJsuzviRbtq4
+        Aa0N9GleGZknZUCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2812613BA5;
+        Mon, 21 Feb 2022 21:59:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id v/pjNU8LFGISZwAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 21 Feb 2022 21:59:43 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Wang Yugui" <wangyugui@e16-tech.com>
+Cc:     "Josef Bacik" <josef@toxicpanda.com>, viro@ZenIV.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] fs: allow cross-vfsmount reflink/dedupe
+In-reply-to: <20220217145422.C7EC.409509F4@e16-tech.com>
+References: <20220217125253.0F07.409509F4@e16-tech.com>,
+ <164507395131.10228.17031212675231968127@noble.neil.brown.name>,
+ <20220217145422.C7EC.409509F4@e16-tech.com>
+Date:   Tue, 22 Feb 2022 08:59:41 +1100
+Message-id: <164548078112.17923.854375583220948734@noble.neil.brown.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Per references at the bottom btfs + iouring manage to corrupt the
-reading of a file.
+On Thu, 17 Feb 2022, Wang Yugui wrote:
+> Hi,
+>=20
+> > On Thu, 17 Feb 2022, Wang Yugui wrote:
+> > > Hi,
+> > > Cc: NeilBrown
+> > >=20
+> > > btrfs cross-vfsmount reflink works well now with these 2 patches.
+> > >=20
+> > > [PATCH] fs: allow cross-vfsmount reflink/dedupe
+> > > [PATCH] btrfs: remove the cross file system checks from remap
+> > >=20
+> > > But nfs over btrfs still fail to do cross-vfsmount reflink.
+> > > need some patch for nfs too?
+> >=20
+> > NFS doesn't support reflinks at all, does it?
+>=20
+> NFS support reflinks now.
+>=20
+> # df -h /ssd
+> Filesystem              Type  Size  Used Avail Use% Mounted on
+> T640:/ssd               nfs4   17T  5.5T   12T  34% /ssd
+> # /bin/cp --reflink=3Dalways /ssd/1.txt /ssd/2.txt
+> # uname -a
+> Linux T7610 5.15.24-3.el7.x86_64 #1 SMP Thu Feb 17 12:13:25 CST 2022 x86_64=
+ x86_64 x86_64 GNU/Linux
+>=20
 
-Using podman here however docker or another container runtime will
-probably work. As will any MariaDB-10.6 on a distro with a native
-liburing userspace. Apologies for the older and bloated container
-image.
+So it does ..... ahhh, the CLONE command in NFSv4.2.....
+This is used by the .remap_file_range file operation.  That operation
+only gets called when the "from" and "to" files have the same
+superblock.
+btrfs has an ....  interesting concept of filesystem identity.  While
+different "subvols" have the same superblock locally, when they are
+exported over NFS they appear to be different filesystems and so have
+different superblocks.  This is in part because btrfs cannot create
+properly unique inode numbers across the whole filesystem.
+Until btrfs sorts itself out, it will not be able to work with NFS
+properly.
 
-Reproduction of bug:
-
-using a btrfs:
-
-$ dd if=3D/dev/zero  of=3D../btrfs.blk bs=3D1M count=3D2K
-$ sudo losetup --direct-io=3Don  -f ../btrfs.blk
-$ sudo mkfs.btrfs /dev/loop6
-$ sudo mount /dev/loop/6 /mnt/btrfstest
-$ sudo mkdir /mnt/btrfstest/noaio
-$ sudo chown dan: /mnt/btrfstest/noaio
-
-Initialize database on directory:
-
-$ podman run --name mdbinit --rm -v
-/mnt/btrfstest/noaio/:/var/lib/mysql:Z -e
-MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=3D1
-quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
---innodb_use_native_aio=3D0
-
-$ podman kill mdbinit
-
-Switch to using uring to read:
-
-$ podman run --rm -v /mnt/btrfstest/noaio/:/var/lib/mysql:Z -e
-MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=3D1
-quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
---innodb_use_native_aio=3D1
-
-Failure observed on startup:
-
-2022-02-21 14:43:31 0 [ERROR] InnoDB: Database page corruption on disk
-or a failed read of file './ibdata1' page [page id: space=3D0, page
-number=3D9]. You may have to recover from a backup.
-
-2022-02-21 14:43:31 0 [Note] InnoDB: Page dump in ascii and hex (16384 byte=
-s):
-
- len 16384; hex 00000000000000092022-02-21 14:43:31 0 [ERROR] InnoDB:
-Database page corruption on disk or a failed read of file './ibdata1'
-page [page id: space=3D0, page number=3D243]. You may have to recover from
-a backup.
-
-ffffffffffffff2022-02-21 14:43:31 0 [Note] InnoDB: Page dump in ascii
-and hex (16384 bytes):
-
- len 16384; hex
-00000000000000f3ffffff0000000000009c2045bf00ffffff0000000000ffffff000000000=
-000000201710009000000000155000200060007000000000000000900000000000000000000=
-00000500000000000000020572000000000000000204b208010000030085690000006e66696=
-d756d000908a0d3000300000803000073757072656d756d000000000013080000100500a000=
-000000000000000000000000000b5359535f464f524549474e18080000180500c0000000000=
-000000c5359ffffff535f464fff0000524549474e5f434f4c531308ffffff0000200500ff00=
-00db000000000000000d5359535f56495254550000000000000056414c00000000000020080=
-000280501030000ffffffff0000ffffffff0000000000000000000e6d7973000000716c2f69=
-6e6e6f64625f7461626c655f7300ffffffff0000ffffffff0000000000746174732000ffff0=
-80000300501ffff0000ffffffff000005d6692b000000000000000f6d7973716c2f696e6e6f=
-64625f696e6465785fd2007374617473220800003805015500000000000000106d7973716c2=
-f7472616e73616374696f6e5f72656769737472791c0800004005000000f4ffffff74000000=
-000000ffffff00116d79ffffffffffffffffffffffffffffffffffff73716c2f67fffffffff=
-fffffffff7469645f736c6176655fffffffffffffffffff706f7300ffffffffffffff2022-0=
-2-21
-14:43:31 0 [ERROR] InnoDB: Database page corruption on disk or a
-failed read of file './mysql/innodb_table_stats.ibd' page [page id:
-space=3D1, page number=3D0]. You may have to recover from a backup.
-
-002022-02-21 14:43:31 0 [Note] InnoDB: Page dump in ascii and hex (16384 by=
-tes):
-
-Without --innodb_use_native_aio=3D0 as a container argument this starts
-without error.
-
-$ sudo losetup --direct-io=3Doff  -f btrfs.blk also exhibits the failure
-
-Observed failures in:
-* 5.17.0-0.rc4.96.fc36.x86_64
-* 5.16.8 (on nixos)
-* 5.15.6
-
-No observed failure:
-* 5.15.14-200.fc35.x86_64
-* 5.10
-
-references:
-* https://jira.mariadb.org/browse/MDEV-27900
-* https://github.com/NixOS/nixpkgs/issues/160516
-* https://jira.mariadb.org/browse/MDEV-27449
+NeilBrown
