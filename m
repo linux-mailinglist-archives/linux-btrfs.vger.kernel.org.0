@@ -2,122 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8200B4BD2D6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 01:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4284BD53C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Feb 2022 06:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244947AbiBUAQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Feb 2022 19:16:47 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46006 "EHLO
+        id S1344113AbiBUFQd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Feb 2022 00:16:33 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245348AbiBUAQq (ORCPT
+        with ESMTP id S238168AbiBUFQc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Feb 2022 19:16:46 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8178E4476C;
-        Sun, 20 Feb 2022 16:16:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1645402560;
-        bh=u55hKlChXTEXIJuV+e0xiIjiT2nKtCrwDTUv/GZniC8=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=SC+12ipn9rbHMsrVsmYy3Un09pxQVpkeoSYVL7Fp76hgJ8ynyDYZDTEOwe8xxl3W1
-         iCr0qqG1r3UuIJkMV49Fc6EfibX2It0gNibwDTnDaW6FDOckJNJi2SJEFvWLMmMm4r
-         YZY1P/nbxYR/sm74d4/3jwSyLE1j7ub86SJqAGiA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Msq2E-1oEioR24W8-00tBUZ; Mon, 21
- Feb 2022 01:16:00 +0100
-Message-ID: <0a2e57ad-2973-ea01-ceda-3262cde1f5aa@gmx.com>
-Date:   Mon, 21 Feb 2022 08:15:52 +0800
+        Mon, 21 Feb 2022 00:16:32 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422B8517F7
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Feb 2022 21:16:09 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id vz16so30206745ejb.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Feb 2022 21:16:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mariadb.org; s=google;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=vKerE769IxjYegW3awSWRx2E6jCGcT96j3I8KNC2R9o=;
+        b=XWjD1jxi4AyS0Bll9MkMBcUTendCwawZAqMT8xqTzU/JMLyftoPZQItRgsdziPB9vX
+         R4QZh4nv1offHGPN3d+obXeaw6oAU8asb2S3Wi5I+GgKQhzLDH3//TdKUfbcs+oK2prs
+         G0EKCCoBm4RRiUwWAhoP+fSldv//aL4g9IEKMNDoQ8KpSLCm+I712iPWbHUb7SUNmF5m
+         OhL2t+ssMhhYWZbB/ndfuAkU6h0JV4FvW59ZsRpGTGj0S+kTI311qem+wl/vuNWi+cc5
+         V0j4etYfzGtSB6BT3/eNLxbp74XWNBlI+1Q6lOBG7UfXF3NpeHyW4GGzC/+0VVnT2lqS
+         WrkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=vKerE769IxjYegW3awSWRx2E6jCGcT96j3I8KNC2R9o=;
+        b=XLOTnVlWYp5DgjoTMJySYw3cDcU+NbO9RSmJadp3Fqi/4L398sP9ooPXltfdsF7Abx
+         e8HXATnIzyGH55zjHpaO8STE+Zy9P36Hua//lU26JrcLeDJIYYavB/k5EKEQRVIIqi11
+         5mtfShWqClW/H6/56pm4gIXJyPg7exqvPXwPBnltCiiWtqbyJKAiwp0Rj/Qnynz9srCk
+         WS17qfGaZEZ/Ry85x/bgLDdfCKWrFkj95ao91PZ8qGoAWpH3hzVS6shRw498NLqSZpj1
+         bzpJElPnP7A4sFJ8Q0spG0acZre9UWKPYc79WzjJIfeexeYO79t15fZoZN8pjyluUBAw
+         J26w==
+X-Gm-Message-State: AOAM533zSJ4jtxd2dtZ1IjByMZsxO/qA7ch+iYzTflIgnwqoixVVyuPJ
+        ecTQ3wg+Il4hLYcLJl77ZpNrPZmLryK5YluqefzE3QzkJgj6PQ==
+X-Google-Smtp-Source: ABdhPJyMsDhsCRnw/B8rh3DPehnFGK0TMdgP4OPuxB/urBwl0StTp3sbO2kwTlDn3Of7m120AXXV4iSp9nFKVzDj4gs=
+X-Received: by 2002:a17:906:1ec3:b0:6cf:d118:59e2 with SMTP id
+ m3-20020a1709061ec300b006cfd11859e2mr14442814ejj.767.1645420567866; Sun, 20
+ Feb 2022 21:16:07 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH] btrfs: Initialize ret to 0 in scrub_simple_mirror()
-Content-Language: en-US
-To:     Souptick Joarder <jrdr.linux@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, nathan@kernel.org,
-        ndesaulniers@google.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>
-References: <20220220144606.5695-1-jrdr.linux@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220220144606.5695-1-jrdr.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Daniel Black <daniel@mariadb.org>
+Date:   Mon, 21 Feb 2022 16:15:57 +1100
+Message-ID: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
+Subject: btrfs / io-uring corrupting reads
+To:     io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:C8JAjspcmErs2qvGcN+rf+gs5pzGazDeRknGb4nSBztbmyzskiA
- m9rvdxjYIuSlPwQKNsJs1CwrpBoPxYQ/puNKMgElBHkhgjzY//jcZtbFn7w+HX377mox0yY
- 8ksMF6XX0qOIuy7Un30A/N+W7hwryUj0Bkya3FCNQuPjoNLn8Hry02cTy+19fs8f/UnaeFG
- iyqjwOaM/nUeUHDRhEE8Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yHT8ct1YwXg=:4qNAuuwGPL0dLqTUBv6r62
- zj5vSKm4vU4+6oz1vjcziodlfbEPOa0pj9GfCrG9SS3JMaiwIhYjSbPr9nCXZZuojMOxWMQFQ
- 7RtidxnLHDRq+JsCooYST+0Inw154w8Km/qCwm/Z0d8OV6on0YCDmuk9FLJlFdQBhoCGg/TfA
- FIlIDGSyqfnZgO1AlrbK1KSLNHZoTD4VJhwiHXmzsBPBYWXLK5XqKXwzAzPKwj6UvqGg+Zvli
- Uvnf0b7sxgbybCb0VLbjvlSqYg+UxA/h3z1zcAi40yo+ywuxDWgt8FI9pNKYdZLOHYIjDi4vu
- QKTVAWA+rdoErEMn9NDwKK8kfJ8wBqhFC+VL8AZUlH5r2afOLE5kiuBp200ONqKP+Q1vCRr2t
- UtfIqgkIs6X3V45EwoiZoHdXGiEC9lKr39EJWn1ekWDtD8OkvujklKpvnfVb3HPudNH2+gW+R
- +9mEP2wbKPyfdu0YN+IHxu6OAxhCPoaFkaBI6OZJmTsXctGIetf0q83mTcyNPV0hv/3WswbcA
- UY+6UTD327ePsxsSknt8FjWaddkcRuvYVXhsJEHLfnN1KxApInZc21ZMzGKnw5lXBcHjsnKpD
- mRrGk0Hl5hTuTP/IH0/lXrbWO0lJ48nHkeJ+5GQl451Pk2g5SwVNSizwecbELyA+0BrZ9OlRf
- c44lgZ9cQyxV1trcDOYlBWpzC1XGBgdp7LT+VWxJm0FY8eSHuN+Qvl8lsI9FDI4FkxeIQcXDS
- rthFP3zPRbZNn942ZiAkBOcnBEe0tajPq6GINlKy839j/TkGdwdhsxp5i/zHyY0HeOEfZBKiY
- dQ8GiaCYMRNthEnz/lSxZAiqjUL215EpJZ03RWdjAS1pecJyqnYSy+1Du42qPhQcJQd9SGR/X
- YsTWykG99zSWMcxtDQFb5rVnLOK/Zr1Y0ibPg4KgXmWsU/za1R6xIVf25D0Uurc+fiEqc6Nqt
- UJcW7p6fDiXeXNHETw/uh6tF2i1+khedwzMa4Tzu92FU25n2KVI9ra8nEBuymO9bovJmypWnY
- 91Kw0Tj5y8nw0oEXi7baNMjpIFxS7l8bHzfBDY49/bsQE3ZgLLDayrujOchaDdVA4hqBWNCqn
- 2DbeNLW8aA/Orw=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Per references at the bottom btfs + iouring manage to corrupt the
+reading of a file.
 
+Using podman here however docker or another container runtime will
+probably work. As will any MariaDB-10.6 on a distro with a native
+liburing userspace. Apologies for the older and bloated container
+image.
 
-On 2022/2/20 22:46, Souptick Joarder wrote:
-> From: "Souptick Joarder (HPE)" <jrdr.linux@gmail.com>
->
-> Kernel test robot reported below warning ->
-> fs/btrfs/scrub.c:3439:2: warning: Undefined or garbage value
-> returned to caller [clang-analyzer-core.uninitialized.UndefReturn]
->
-> Initialize ret to 0.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder (HPE) <jrdr.linux@gmail.com>
+Reproduction of bug:
 
-Although the patch is not yet merged, but I have to say, it's a false aler=
-t.
+using a btrfs:
 
-Firstly, the while loop will always get at least one run.
+$ dd if=3D/dev/zero  of=3D../btrfs.blk bs=3D1M count=3D2K
+$ sudo losetup --direct-io=3Don  -f ../btrfs.blk
+$ sudo mkfs.btrfs /dev/loop6
+$ sudo mount /dev/loop/6 /mnt/btrfstest
+$ sudo mkdir /mnt/btrfstest/noaio
+$ sudo chown dan: /mnt/btrfstest/noaio
 
-Secondly, in that loop, we either set ret to some error value and break,
-or after at least one find_first_extent_item() and scrub_extent() call,
-we increase cur_logical and reached the limit of the while loop and exit.
+Initialize database on directory:
 
-So there is no possible routine to leave @ret uninitialized and returned
-to caller.
+$ podman run --name mdbinit --rm -v
+/mnt/btrfstest/noaio/:/var/lib/mysql:Z -e
+MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=3D1
+quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
+--innodb_use_native_aio=3D0
 
-Thanks,
-Qu
+$ podman kill mdbinit
 
-> ---
->   fs/btrfs/scrub.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 4baa8e43d585..5ca7e5ffbc96 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -3325,7 +3325,7 @@ static int scrub_simple_mirror(struct scrub_ctx *s=
-ctx,
->   	const u32 max_length =3D SZ_64K;
->   	struct btrfs_path path =3D {};
->   	u64 cur_logical =3D logical_start;
-> -	int ret;
-> +	int ret =3D 0;
->
->   	/* The range must be inside the bg */
->   	ASSERT(logical_start >=3D bg->start &&
+Switch to using uring to read:
+
+$ podman run --rm -v /mnt/btrfstest/noaio/:/var/lib/mysql:Z -e
+MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=3D1
+quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
+--innodb_use_native_aio=3D1
+
+Failure observed on startup:
+
+2022-02-21 14:43:31 0 [ERROR] InnoDB: Database page corruption on disk
+or a failed read of file './ibdata1' page [page id: space=3D0, page
+number=3D9]. You may have to recover from a backup.
+
+2022-02-21 14:43:31 0 [Note] InnoDB: Page dump in ascii and hex (16384 byte=
+s):
+
+ len 16384; hex 00000000000000092022-02-21 14:43:31 0 [ERROR] InnoDB:
+Database page corruption on disk or a failed read of file './ibdata1'
+page [page id: space=3D0, page number=3D243]. You may have to recover from
+a backup.
+
+ffffffffffffff2022-02-21 14:43:31 0 [Note] InnoDB: Page dump in ascii
+and hex (16384 bytes):
+
+ len 16384; hex
+00000000000000f3ffffff0000000000009c2045bf00ffffff0000000000ffffff000000000=
+000000201710009000000000155000200060007000000000000000900000000000000000000=
+00000500000000000000020572000000000000000204b208010000030085690000006e66696=
+d756d000908a0d3000300000803000073757072656d756d000000000013080000100500a000=
+000000000000000000000000000b5359535f464f524549474e18080000180500c0000000000=
+000000c5359ffffff535f464fff0000524549474e5f434f4c531308ffffff0000200500ff00=
+00db000000000000000d5359535f56495254550000000000000056414c00000000000020080=
+000280501030000ffffffff0000ffffffff0000000000000000000e6d7973000000716c2f69=
+6e6e6f64625f7461626c655f7300ffffffff0000ffffffff0000000000746174732000ffff0=
+80000300501ffff0000ffffffff000005d6692b000000000000000f6d7973716c2f696e6e6f=
+64625f696e6465785fd2007374617473220800003805015500000000000000106d7973716c2=
+f7472616e73616374696f6e5f72656769737472791c0800004005000000f4ffffff74000000=
+000000ffffff00116d79ffffffffffffffffffffffffffffffffffff73716c2f67fffffffff=
+fffffffff7469645f736c6176655fffffffffffffffffff706f7300ffffffffffffff2022-0=
+2-21
+14:43:31 0 [ERROR] InnoDB: Database page corruption on disk or a
+failed read of file './mysql/innodb_table_stats.ibd' page [page id:
+space=3D1, page number=3D0]. You may have to recover from a backup.
+
+002022-02-21 14:43:31 0 [Note] InnoDB: Page dump in ascii and hex (16384 by=
+tes):
+
+Without --innodb_use_native_aio=3D0 as a container argument this starts
+without error.
+
+$ sudo losetup --direct-io=3Doff  -f btrfs.blk also exhibits the failure
+
+Observed failures in:
+* 5.17.0-0.rc4.96.fc36.x86_64
+* 5.16.8 (on nixos)
+* 5.15.6
+
+No observed failure:
+* 5.15.14-200.fc35.x86_64
+* 5.10
+
+references:
+* https://jira.mariadb.org/browse/MDEV-27900
+* https://github.com/NixOS/nixpkgs/issues/160516
+* https://jira.mariadb.org/browse/MDEV-27449
