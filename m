@@ -2,58 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6747A4C047D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6074C047F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236029AbiBVWXM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Feb 2022 17:23:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
+        id S236031AbiBVWXN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Feb 2022 17:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbiBVWXL (ORCPT
+        with ESMTP id S236020AbiBVWXM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Feb 2022 17:23:11 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08FF6A052
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:44 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id g24so1862263qkl.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:44 -0800 (PST)
+        Tue, 22 Feb 2022 17:23:12 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481056A053
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:46 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id j11so3645445qvy.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=njlbxYX0L+wdgUt1m5ZveAdm0rXbgIyt4YFncpSVbag=;
-        b=IXKBrpaYVDCzE2KO7rz1LjCh4WWE9ExE67udBUO5ZwcfgWghMA/gqL0luTbKgXm13h
-         cimVmZUgOJSuhqHsFuCxfX3yTE7IWJTUCY98S6bzidAU6eVphmRILYcKo9/amf1DxOhj
-         HxozlqB+2HdBUG7Jw7eZE1VXmzF+oLmfCIr4r7PU2qnU8sy8HJKpNAnyCgV6NaRjfw9R
-         YJv2vv58wv0MiUjMXZsEwCbvfkYS9l3N0u/iHm/FsuIckbtK8hVzH6lbQyaE/h6NIaQi
-         hyPCJLtY094OdZhdv9NYY4uLAuPeWF8FrHIL1PSv3NUkBQXpqp+oRvufYCJxwSuVPvUB
-         /8Ug==
+        bh=fDoa7wYFkdWRI3HBjncU8tIUs/ZSJ6olZrfU3RVf3Ig=;
+        b=wXsyhR8+xEBjtkKap3gfGfHxrTOFARtLg9e6aYkWHNyeN3SZv6HG+DXxx8NzqHMIko
+         aXt5RvTbjXNbh8xe1rP4aUnqBXmCN/El2hZwzDdMX7MVTxAwKC3ctPFFNJQRECCUXbSa
+         jTPU1F/pOxNnP4Z0CR+ZwZ/8t94/7owz/D5yPJdQr37Z+wBs8zia279p5vY1UJ9VJP71
+         tZOS+GJFll5tDA6Sbu9Szk4T99mJ8NCDIOn1hzCEg2qPXhQUHSvmgTwrM/x0wAqVyGOs
+         YHvjXsHdxTpqj6hboKJ2Gqn3P09fdR4sEuWqbsJ/rgHWtWrmgAyuSZeX7TaTUVi+2yHq
+         W5OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=njlbxYX0L+wdgUt1m5ZveAdm0rXbgIyt4YFncpSVbag=;
-        b=4RM5H+5MNXq/lbyw/lRf2WXezUnKzURnWeJ3ppROUQBJkai0WrYzMR6W0b/d3yhitF
-         hWn8d+V3G1OqMu+eywD650R0QjRTNnDFc8K9HCH5CGq3Mz51x0yfD7vf7iF70gEKOI3Q
-         0OcRE58x3IL8EyBxnj0J14jSYRy1vrAZ+OCGxhat1u1ZlLUKHosIJdA9jWi5cFPkatkx
-         CwNqCEWpV/lxHYTYu6SELDYI4rno1QyFLyp+omZkZ1uqDAE7mViC+tpf6Z977fNClS1h
-         U6t4qk8uo2oW1ueGr3f9Swc3ebyZJWnu6HzK91nIjlPthU5PP6NaDS8G0X4jPxZ2Pyit
-         bNOg==
-X-Gm-Message-State: AOAM533A6tXoYpWFAEN4jqWJc3bHcXDLbokNEWnbUYlAZrn7RYuVijTj
-        iRY/5H4693VrwTf/B3ykQP2GjjvwQSjx1Y0C
-X-Google-Smtp-Source: ABdhPJwg9jWmYAnWPpoYw2ggQpTi40l1rpHT9epn5fOPzqNDfjNdp7DdNsPMAu//wnt8G/IfVTfoow==
-X-Received: by 2002:ae9:ef09:0:b0:506:aadb:1f1b with SMTP id d9-20020ae9ef09000000b00506aadb1f1bmr17000958qkg.609.1645568563800;
-        Tue, 22 Feb 2022 14:22:43 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fDoa7wYFkdWRI3HBjncU8tIUs/ZSJ6olZrfU3RVf3Ig=;
+        b=kHwXB7PW8Drew3u0/m87uPNJCeQuCKvgOXpdylUH3JwaWrpj5Mjcg2HCh6VVz6Go7a
+         OO12gFCRxesuGQ2lgrl+hVvNLvjfrUbDov6RxPgWmtNVkICWH9mGQ6lASW14ZoTIiHtc
+         61XeXl9EwUWX1ZDzjy/xk0vfso8SO/eDnWiPIEvh0/xzIwG5y17wNziD9j5RIACNlyrj
+         LZdssjIjmqRx2W2JaoiAXlMiqw3mYkPQVzeN18UECdJx365XEI49VWA7GG8ACzm+474z
+         XEaJoLqOeOk/csGSXiTcE8wr7yZ5DZDwK9Za+Ek2aj1p6ZqgzK+8JLgSBsJsQnuaSC6F
+         1kyQ==
+X-Gm-Message-State: AOAM532waaY2HU9ToAGApVMfmwkeFkR7quq/vR0f8J0j+2aM2j/z5x+i
+        Vwm+WbEoUItrx7peb7l876mNPnq+AjJHSZOH
+X-Google-Smtp-Source: ABdhPJxeDiNwt86+Zw/aPjjzIxBC4qxVxBsaGIkXFks/4qDrdAKnDev7KIhbt8OomxZNqBFZW2gxGw==
+X-Received: by 2002:a05:6214:21ed:b0:42c:11d1:70cd with SMTP id p13-20020a05621421ed00b0042c11d170cdmr20965448qvj.115.1645568565069;
+        Tue, 22 Feb 2022 14:22:45 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p5sm571267qkg.76.2022.02.22.14.22.43
+        by smtp.gmail.com with ESMTPSA id c14sm709104qtc.31.2022.02.22.14.22.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 14:22:43 -0800 (PST)
+        Tue, 22 Feb 2022 14:22:44 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/7] btrfs-progs: various regression fixes
-Date:   Tue, 22 Feb 2022 17:22:35 -0500
-Message-Id: <cover.1645567860.git.josef@toxicpanda.com>
+Subject: [PATCH 1/7] btrfs-progs: check: fix check_global_roots_uptodate
+Date:   Tue, 22 Feb 2022 17:22:36 -0500
+Message-Id: <d62401f4e8b5294e589cd8be1ecac0082ccac56b.1645567860.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1645567860.git.josef@toxicpanda.com>
+References: <cover.1645567860.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,33 +67,74 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+While running make test on other patches I noticed we are now
+segfaulting on the fuzz tests.  This is because when I converted us to a
+rb tree for the global roots we lost the ability to catch that there's
+no extent root at all.  Before we'd populate a dummy
+fs_info->extent_root with a not uptodate node, but now you simply don't
+get an extent root in the rb_tree.  Fix the check_global_roots_uptodate
+helper to count how many roots we find and make sure it matches the
+number we expect.  If it doesn't then we can return -EIO.
 
-In trying to test my new extent tree v2 patches I noticed I had regressed a few
-of these tests with my previous prep patches.  I'm not entirely sure how I
-missed this before as I generally run the tests, but there are some clear things
-that need fixing.  I've based these patches on the devel branch, with them in
-place everything passes as it should.  Thanks,
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ check/main.c | 34 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 33 insertions(+), 1 deletion(-)
 
-Josef
-
-Josef Bacik (7):
-  btrfs-progs: check: fix check_global_roots_uptodate
-  btrfs-progs: fuzz-tests: use --force for --init-csum-tree
-  btrfs-progs: repair: bail if we find an unaligned extent
-  btrfs-progs: properly populate missing trees
-  btrfs-progs: don't check skip_csum_check if there's no fs_info
-  btrfs-progs: do not try to load the free space tree if it's not
-    enabled
-  btrfs-progs: inspect-tree-stats: initialize the key properly
-
- check/main.c                                  | 34 +++++++++++++-
- cmds/inspect-tree-stats.c                     |  2 +-
- common/repair.c                               | 17 +++++--
- kernel-shared/disk-io.c                       | 47 ++++++++++++++++++-
- .../003-multi-check-unmounted/test.sh         |  2 +-
- 5 files changed, 94 insertions(+), 8 deletions(-)
-
+diff --git a/check/main.c b/check/main.c
+index 8ccba447..abe208df 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -10207,6 +10207,8 @@ static int check_global_roots_uptodate(void)
+ {
+ 	struct btrfs_root *root;
+ 	struct rb_node *n;
++	int found_csum = 0, found_extent = 0, found_fst = 0;
++	int ret = 0;
+ 
+ 	for (n = rb_first(&gfs_info->global_roots_tree); n; n = rb_next(n)) {
+ 		root = rb_entry(n, struct btrfs_root, rb_node);
+@@ -10215,9 +10217,39 @@ static int check_global_roots_uptodate(void)
+ 			      root->root_key.objectid, root->root_key.offset);
+ 			return -EIO;
+ 		}
++		switch(root->root_key.objectid) {
++		case BTRFS_EXTENT_TREE_OBJECTID:
++			found_extent++;
++			break;
++		case BTRFS_CSUM_TREE_OBJECTID:
++			found_csum++;
++			break;
++		case BTRFS_FREE_SPACE_TREE_OBJECTID:
++			found_fst++;
++			break;
++		default:
++			break;
++		}
+ 	}
+ 
+-	return 0;
++	if (found_extent != gfs_info->nr_global_roots) {
++		error("found %d extent roots, expected %llu\n", found_extent,
++		      gfs_info->nr_global_roots);
++		ret = -EIO;
++	}
++	if (found_csum != gfs_info->nr_global_roots) {
++		error("found %d csum roots, expected %llu\n", found_csum,
++		      gfs_info->nr_global_roots);
++		ret = -EIO;
++	}
++	if (!btrfs_fs_compat_ro(gfs_info, FREE_SPACE_TREE))
++		return ret;
++	if (found_fst != gfs_info->nr_global_roots) {
++		error("found %d free space roots, expected %llu\n", found_fst,
++		      gfs_info->nr_global_roots);
++		ret = -EIO;
++	}
++	return ret;
+ }
+ 
+ static const char * const cmd_check_usage[] = {
 -- 
 2.26.3
 
