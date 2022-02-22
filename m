@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCBE4C0492
+	by mail.lfdr.de (Postfix) with ESMTP id 373044C0490
 	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236051AbiBVW1E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S236053AbiBVW1E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Tue, 22 Feb 2022 17:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235962AbiBVW1D (ORCPT
+        with ESMTP id S236049AbiBVW1D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 22 Feb 2022 17:27:03 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838DD6D95D
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:35 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id ba20so3611567qvb.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:35 -0800 (PST)
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76B99F6F9
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:36 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id g24so1878747qkl.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=3w66zh4vJIilxFZzefRnO4t8Hf8wUfSh1IA1bWAEFwk=;
-        b=H18V5jumjIdQK1VozGMFBMec0iG1NmGCm/S35dOjRzkp3oK5H5Jj50xECX0Qa+c6Mb
-         5oGMag9PxhJuykMSpubk7lTXL1nw4fjoEuJlnfBANsfnc6JA6iJ9cFIa3Gb5Hp2r57/w
-         HcFONqF9kzRMddHIFDWBsmFHn/nOV1KnRKsy2wuqeYZd2RJeb3G/85ghP1WXbK5w8nS7
-         96CuZuuOYt7WJiutqOduJI7/e0B+Dons8KRqz5RTJJNeUAjS7UnJIpMtQroAxilEcU5W
-         31T/pPSDIlckgBUxyGwFDb73hhxp5ONp8rYECiV24OXFahF72C/PXejQFPI9RH83bKUQ
-         49Nw==
+        bh=0YKRtHH8N6yEXI9lrqTPwiddnLCX/xQgxf7Mq763d74=;
+        b=BbI8eQo4IqV8iQqF3c/f5F+Seq23+3Os7oGWiNWUUJm6ki3MSY2psUSBLptjTX9yMG
+         4xM4GrOGtK86O0qEZRDF8i/IgEFX4b80NSSYD/Pm71Zvx/cr30DzuctXTrSaZ8kDX9ap
+         mopI3Bv6KHoTrhOZU9UxkzpLNVVWLpx3dR10iRAAOFSl5Tn030G4SdLuG9BN7fmze+1b
+         Tn1J+YylMeqtynCETvLpnP47Omy1B+y/OL4qpPXEqclTDbXj9C5v9CL6VD2AHOKrR1LU
+         BRJjh5JzQ+ePPalNnKQUM7Ub8E9y7LV/AGTJi1b9HXls3eRzKK8gQ75GHgPW4fwn29qk
+         jE6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3w66zh4vJIilxFZzefRnO4t8Hf8wUfSh1IA1bWAEFwk=;
-        b=BYiIK0UMFUv0jlEf1SDG1bh7q281H6OBv+ABrXBJE/rTfFzQxKTH2idZGMdjuEsq9J
-         lXxLhKFWnUMBxQLWNtCh0NGEswd85SVYkHM4+mqkPpDknW8LkS0wx24UaK7S+SdJb7+u
-         KcFdybgIiaPb4AKeyaUHttIAmvo+i+d+nvLEw2idRbRLJAcuATjSpX2+syGOLOYAYiaA
-         JyabMT5HbRkIwy1jZpsUdw85rJkyDE8l8O91uPVbwYWCCHXqK1EXLjw0ZWb0fuCfMML/
-         oa+6TjUnoV4F0nAco5HQ9NBP8jWxqPl+3gV8ZbIhjePKllPSsydb6tas7DVBsMiFCh2S
-         VMeQ==
-X-Gm-Message-State: AOAM533yaFjk18BON+Qmj3mb4I6Vhr5cIK80ST7J/pJ5W6saLfE22Fj3
-        BmC2NPJ02ZoaP7nhBWD6frgzu0hMBJTNeulT
-X-Google-Smtp-Source: ABdhPJxOtcrUjc/0FnI/NRlvfF+tIL0iHi4JQxPlgwUdrxoLkn2EuisN57v4jBAGvCwNDC79+xO3fw==
-X-Received: by 2002:a05:6214:62e:b0:42c:4194:6ab4 with SMTP id a14-20020a056214062e00b0042c41946ab4mr20971617qvx.69.1645568794280;
-        Tue, 22 Feb 2022 14:26:34 -0800 (PST)
+        bh=0YKRtHH8N6yEXI9lrqTPwiddnLCX/xQgxf7Mq763d74=;
+        b=X6wb9AKZE2xUU+z1ofLUw6v8/4eqOv53zgvF9bEhSV6ARlNCTCSuMKOJXIzr/T4LEt
+         4oS5Pdj5iWuW8Ka5gn53JaGxg/CdrgemqX1vwT/zN8kItw9Z3SuBVQNBai7w+QTaP7Sx
+         g8hv/hx8vor48bmc7zOyLDt3xcJIjyIFD5ON78zYlS5seBhLtRjF99sZU+fbqbcal/PN
+         2NHz0XWyS2sYeTxki5zbPeIe3UB398be/GNbszksnEmx1W9blc0or/+UHP+a1hjdfoKG
+         GZC17PIwf80AMENzm6sgjVx7NSybcaT8Nb6unwXVWdx90bzCVRprB9hv3VPAfWcxIAI1
+         m7Gg==
+X-Gm-Message-State: AOAM531B/s7L88tSAdSa8PVg66yDU/Z91UziydIM2hZITKdvAx9MgvjM
+        qpOT4bes4e5OKksOGNOlcW8KjISUcopz0WCw
+X-Google-Smtp-Source: ABdhPJwUbMoLqyvvOogps81Opm+yLDyQFv60bZUtGnjbw4Vjy9vyE0rrvysEuoqJrX1Y/pIyUBkZdw==
+X-Received: by 2002:a05:620a:4626:b0:63f:2610:a08e with SMTP id br38-20020a05620a462600b0063f2610a08emr12161189qkb.591.1645568795654;
+        Tue, 22 Feb 2022 14:26:35 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g11sm754589qtg.49.2022.02.22.14.26.33
+        by smtp.gmail.com with ESMTPSA id p16sm744081qtx.55.2022.02.22.14.26.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 14:26:33 -0800 (PST)
+        Tue, 22 Feb 2022 14:26:35 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 07/13] btrfs-progs: add btrfs_set_item_*_nr() helpers
-Date:   Tue, 22 Feb 2022 17:26:17 -0500
-Message-Id: <c5790f3ac9c2b6121423ec68f5494776f5914cce.1645568701.git.josef@toxicpanda.com>
+Subject: [PATCH 08/13] btrfs-progs: change btrfs_file_extent_inline_item_len to take a slot
+Date:   Tue, 22 Feb 2022 17:26:18 -0500
+Message-Id: <7e947492d34fcde5e316e4e03ca39d6d1ea65da1.1645568701.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1645568701.git.josef@toxicpanda.com>
 References: <cover.1645568701.git.josef@toxicpanda.com>
@@ -67,577 +67,238 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have a lot of the following patterns
-
-	item = btrfs_item_nr(nr);
-	btrfs_set_item_*(eb, item, val);
-
-	btrfs_set_item_*(eb, btrfs_item_nr(nr), val);
-
-in a lot of places in our code.  Instead add _nr variations of these
-helpers and convert all of the users to this new helper.
+This matches how the kernel does it, simply pass in the slot and fix up
+btrfs_file_extent_inline_item_len to use the btrfs_item_nr() helper and
+the correct define.  Fixup all the callers to use the slot now instead
+of passing in the btrfs_item.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- btrfs-corrupt-block.c |  5 ++-
- check/main.c          | 14 +++------
- convert/common.c      | 25 ++++++++-------
- image/main.c          |  7 ++---
- kernel-shared/ctree.c | 72 ++++++++++++++-----------------------------
- kernel-shared/ctree.h | 12 ++++++++
- mkfs/common.c         | 41 +++++++++++-------------
- 7 files changed, 74 insertions(+), 102 deletions(-)
+ check/main.c               | 11 ++++-------
+ check/mode-lowmem.c        |  7 ++-----
+ cmds/inspect-tree-stats.c  |  3 +--
+ cmds/restore.c             |  5 ++---
+ image/main.c               |  4 +---
+ kernel-shared/ctree.h      |  6 ++----
+ kernel-shared/print-tree.c |  7 ++-----
+ 7 files changed, 14 insertions(+), 29 deletions(-)
 
-diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
-index 866c863e..57a4e271 100644
---- a/btrfs-corrupt-block.c
-+++ b/btrfs-corrupt-block.c
-@@ -838,7 +838,7 @@ static void shift_items(struct btrfs_root *root, struct extent_buffer *eb)
- 	for (i = nritems - 1; i >= slot; i--) {
- 		u32 offset = btrfs_item_offset_nr(eb, i);
- 		offset -= shift_space;
--		btrfs_set_item_offset(eb, btrfs_item_nr(i), offset);
-+		btrfs_set_item_offset_nr(eb, i, offset);
- 	}
- }
- 
-@@ -980,8 +980,7 @@ static int corrupt_btrfs_item(struct btrfs_root *root, struct btrfs_key *key,
- 	case BTRFS_ITEM_OFFSET:
- 		orig = btrfs_item_offset_nr(path->nodes[0], path->slots[0]);
- 		bogus = generate_u32(orig);
--		btrfs_set_item_offset(path->nodes[0],
--				      btrfs_item_nr(path->slots[0]), bogus);
-+		btrfs_set_item_offset_nr(path->nodes[0], path->slots[0], bogus);
- 		break;
- 	default:
- 		ret = -EINVAL;
 diff --git a/check/main.c b/check/main.c
-index 76eb8d54..0bc42de7 100644
+index 0bc42de7..fb0ef8cb 100644
 --- a/check/main.c
 +++ b/check/main.c
-@@ -4213,13 +4213,10 @@ static int swap_values(struct btrfs_root *root, struct btrfs_path *path,
- 			btrfs_fixup_low_keys(path, &key, btrfs_header_level(buf) + 1);
+@@ -1604,20 +1604,18 @@ static int process_file_extent(struct btrfs_root *root,
+ 	compression = btrfs_file_extent_compression(eb, fi);
+ 
+ 	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+-		struct btrfs_item *item = btrfs_item_nr(slot);
+-
+ 		num_bytes = btrfs_file_extent_ram_bytes(eb, fi);
+ 		if (num_bytes == 0)
+ 			rec->errors |= I_ERR_BAD_FILE_EXTENT;
+ 		if (compression) {
+-			if (btrfs_file_extent_inline_item_len(eb, item) >
++			if (btrfs_file_extent_inline_item_len(eb, slot) >
+ 			    max_inline_size ||
+ 			    num_bytes > gfs_info->sectorsize)
+ 				rec->errors |= I_ERR_FILE_EXTENT_TOO_LARGE;
+ 		} else {
+ 			if (num_bytes > max_inline_size)
+ 				rec->errors |= I_ERR_FILE_EXTENT_TOO_LARGE;
+-			if (btrfs_file_extent_inline_item_len(eb, item) !=
++			if (btrfs_file_extent_inline_item_len(eb, slot) !=
+ 			    num_bytes)
+ 				rec->errors |= I_ERR_INLINE_RAM_BYTES_WRONG;
  		}
- 	} else {
--		struct btrfs_item *item1, *item2;
- 		struct btrfs_key k1, k2;
- 		char *item1_data, *item2_data;
- 		u32 item1_offset, item2_offset, item1_size, item2_size;
+@@ -2625,7 +2623,6 @@ static int repair_inline_ram_bytes(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_key key;
+ 	struct btrfs_file_extent_item *fi;
+-	struct btrfs_item *i;
+ 	u64 on_disk_item_len;
+ 	int ret;
  
--		item1 = btrfs_item_nr(slot);
--		item2 = btrfs_item_nr(slot + 1);
- 		btrfs_item_key_to_cpu(buf, &k1, slot);
- 		btrfs_item_key_to_cpu(buf, &k2, slot + 1);
- 		item1_offset = btrfs_item_offset_nr(buf, slot);
-@@ -4244,10 +4241,10 @@ static int swap_values(struct btrfs_root *root, struct btrfs_path *path,
- 		free(item1_data);
- 		free(item2_data);
+@@ -2639,8 +2636,8 @@ static int repair_inline_ram_bytes(struct btrfs_trans_handle *trans,
+ 	if (ret < 0)
+ 		goto out;
  
--		btrfs_set_item_offset(buf, item1, item2_offset);
--		btrfs_set_item_offset(buf, item2, item1_offset);
--		btrfs_set_item_size(buf, item1, item2_size);
--		btrfs_set_item_size(buf, item2, item1_size);
-+		btrfs_set_item_offset_nr(buf, slot, item2_offset);
-+		btrfs_set_item_offset_nr(buf, slot + 1, item1_offset);
-+		btrfs_set_item_size_nr(buf, slot, item2_size);
-+		btrfs_set_item_size_nr(buf, slot + 1, item1_size);
+-	i = btrfs_item_nr(path->slots[0]);
+-	on_disk_item_len = btrfs_file_extent_inline_item_len(path->nodes[0], i);
++	on_disk_item_len = btrfs_file_extent_inline_item_len(path->nodes[0],
++							     path->slots[0]);
+ 	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
+ 			    struct btrfs_file_extent_item);
+ 	btrfs_set_file_extent_ram_bytes(path->nodes[0], fi, on_disk_item_len);
+diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+index 0cdf24cd..729c453a 100644
+--- a/check/mode-lowmem.c
++++ b/check/mode-lowmem.c
+@@ -1877,7 +1877,6 @@ static int repair_inline_ram_bytes(struct btrfs_root *root,
+ 	struct btrfs_trans_handle *trans;
+ 	struct btrfs_key key;
+ 	struct btrfs_file_extent_item *fi;
+-	struct btrfs_item *item;
+ 	u32 on_disk_data_len;
+ 	int ret;
+ 	int recover_ret;
+@@ -1899,9 +1898,8 @@ static int repair_inline_ram_bytes(struct btrfs_root *root,
+ 	if (ret < 0)
+ 		goto recover;
  
- 		path->slots[0] = slot;
- 		btrfs_set_item_key_unsafe(root, path, &k2);
-@@ -4371,8 +4368,7 @@ again:
- 				      btrfs_leaf_data(buf) + offset + shift,
- 				      btrfs_leaf_data(buf) + offset,
- 				      btrfs_item_size_nr(buf, i));
--		btrfs_set_item_offset(buf, btrfs_item_nr(i),
--				      offset + shift);
-+		btrfs_set_item_offset_nr(buf, i, offset + shift);
- 		btrfs_mark_buffer_dirty(buf);
+-	item = btrfs_item_nr(path->slots[0]);
+ 	on_disk_data_len = btrfs_file_extent_inline_item_len(path->nodes[0],
+-			item);
++							     path->slots[0]);
+ 
+ 	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
+ 			    struct btrfs_file_extent_item);
+@@ -1943,7 +1941,6 @@ static int check_file_extent_inline(struct btrfs_root *root,
+ 	u32 max_inline_extent_size = min_t(u32, gfs_info->sectorsize - 1,
+ 				BTRFS_MAX_INLINE_DATA_SIZE(gfs_info));
+ 	struct extent_buffer *node = path->nodes[0];
+-	struct btrfs_item *e = btrfs_item_nr(path->slots[0]);
+ 	struct btrfs_file_extent_item *fi;
+ 	struct btrfs_key fkey;
+ 	u64 extent_num_bytes;
+@@ -1953,7 +1950,7 @@ static int check_file_extent_inline(struct btrfs_root *root,
+ 	int err = 0;
+ 
+ 	fi = btrfs_item_ptr(node, path->slots[0], struct btrfs_file_extent_item);
+-	item_inline_len = btrfs_file_extent_inline_item_len(node, e);
++	item_inline_len = btrfs_file_extent_inline_item_len(node, path->slots[0]);
+ 	extent_num_bytes = btrfs_file_extent_ram_bytes(node, fi);
+ 	compressed = btrfs_file_extent_compression(node, fi);
+ 	btrfs_item_key_to_cpu(node, &fkey, path->slots[0]);
+diff --git a/cmds/inspect-tree-stats.c b/cmds/inspect-tree-stats.c
+index eeb57810..0731675c 100644
+--- a/cmds/inspect-tree-stats.c
++++ b/cmds/inspect-tree-stats.c
+@@ -121,8 +121,7 @@ static int walk_leaf(struct btrfs_root *root, struct btrfs_path *path,
+ 		fi = btrfs_item_ptr(b, i, struct btrfs_file_extent_item);
+ 		if (btrfs_file_extent_type(b, fi) == BTRFS_FILE_EXTENT_INLINE)
+ 			stat->total_inline +=
+-				btrfs_file_extent_inline_item_len(b,
+-							btrfs_item_nr(i));
++				btrfs_file_extent_inline_item_len(b, i);
  	}
  
-diff --git a/convert/common.c b/convert/common.c
-index 356c2b4c..38112084 100644
---- a/convert/common.c
-+++ b/convert/common.c
-@@ -204,8 +204,8 @@ static void insert_temp_root_item(struct extent_buffer *buf,
- 	btrfs_set_disk_key_offset(&disk_key, 0);
+ 	return 0;
+diff --git a/cmds/restore.c b/cmds/restore.c
+index 48300ae5..bc88af70 100644
+--- a/cmds/restore.c
++++ b/cmds/restore.c
+@@ -302,7 +302,7 @@ static int copy_one_inline(struct btrfs_root *root, int fd,
+ 			    struct btrfs_file_extent_item);
+ 	ptr = btrfs_file_extent_inline_start(fi);
+ 	len = btrfs_file_extent_ram_bytes(leaf, fi);
+-	inline_item_len = btrfs_file_extent_inline_item_len(leaf, btrfs_item_nr(path->slots[0]));
++	inline_item_len = btrfs_file_extent_inline_item_len(leaf, path->slots[0]);
+ 	read_extent_buffer(leaf, buf, ptr, inline_item_len);
  
- 	btrfs_set_item_key(buf, &disk_key, *slot);
--	btrfs_set_item_offset(buf, btrfs_item_nr(*slot), *itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(*slot), sizeof(root_item));
-+	btrfs_set_item_offset_nr(buf, *slot, *itemoff);
-+	btrfs_set_item_size_nr(buf, *slot, sizeof(root_item));
- 	write_extent_buffer(buf, &root_item,
- 			    btrfs_item_ptr_offset(buf, *slot),
- 			    sizeof(root_item));
-@@ -311,8 +311,8 @@ static int insert_temp_dev_item(int fd, struct extent_buffer *buf,
- 	btrfs_set_disk_key_objectid(&disk_key, BTRFS_DEV_ITEMS_OBJECTID);
- 	btrfs_set_disk_key_offset(&disk_key, 1);
- 	btrfs_set_item_key(buf, &disk_key, *slot);
--	btrfs_set_item_offset(buf, btrfs_item_nr(*slot), *itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(*slot), sizeof(*dev_item));
-+	btrfs_set_item_offset_nr(buf, *slot, *itemoff);
-+	btrfs_set_item_size_nr(buf, *slot, sizeof(*dev_item));
+ 	compress = btrfs_file_extent_compression(leaf, fi);
+@@ -834,8 +834,7 @@ static int copy_symlink(struct btrfs_root *root, struct btrfs_key *key,
+ 	extent_item = btrfs_item_ptr(leaf, path.slots[0],
+ 			struct btrfs_file_extent_item);
  
- 	dev_item = btrfs_item_ptr(buf, *slot, struct btrfs_dev_item);
- 	/* Generate device uuid */
-@@ -369,9 +369,8 @@ static int insert_temp_chunk_item(int fd, struct extent_buffer *buf,
- 	btrfs_set_disk_key_objectid(&disk_key, BTRFS_FIRST_CHUNK_TREE_OBJECTID);
- 	btrfs_set_disk_key_offset(&disk_key, start);
- 	btrfs_set_item_key(buf, &disk_key, *slot);
--	btrfs_set_item_offset(buf, btrfs_item_nr(*slot), *itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(*slot),
--			    btrfs_chunk_item_size(1));
-+	btrfs_set_item_offset_nr(buf, *slot, *itemoff);
-+	btrfs_set_item_size_nr(buf, *slot, btrfs_chunk_item_size(1));
- 
- 	chunk = btrfs_item_ptr(buf, *slot, struct btrfs_chunk);
- 	btrfs_set_chunk_length(buf, chunk, len);
-@@ -472,8 +471,8 @@ static void insert_temp_dev_extent(struct extent_buffer *buf,
- 	btrfs_set_disk_key_objectid(&disk_key, 1);
- 	btrfs_set_disk_key_offset(&disk_key, start);
- 	btrfs_set_item_key(buf, &disk_key, *slot);
--	btrfs_set_item_offset(buf, btrfs_item_nr(*slot), *itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(*slot), sizeof(*dev_extent));
-+	btrfs_set_item_offset_nr(buf, *slot, *itemoff);
-+	btrfs_set_item_size_nr(buf, *slot, sizeof(*dev_extent));
- 
- 	dev_extent = btrfs_item_ptr(buf, *slot, struct btrfs_dev_extent);
- 	btrfs_set_dev_extent_chunk_objectid(buf, dev_extent,
-@@ -604,8 +603,8 @@ static int insert_temp_extent_item(int fd, struct extent_buffer *buf,
- 	btrfs_set_disk_key_objectid(&disk_key, bytenr);
- 
- 	btrfs_set_item_key(buf, &disk_key, *slot);
--	btrfs_set_item_offset(buf, btrfs_item_nr(*slot), *itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(*slot), itemsize);
-+	btrfs_set_item_offset_nr(buf, *slot, *itemoff);
-+	btrfs_set_item_size_nr(buf, *slot, itemsize);
- 
- 	ei = btrfs_item_ptr(buf, *slot, struct btrfs_extent_item);
- 	btrfs_set_extent_refs(buf, ei, 1);
-@@ -670,8 +669,8 @@ static void insert_temp_block_group(struct extent_buffer *buf,
- 	btrfs_set_disk_key_objectid(&disk_key, bytenr);
- 	btrfs_set_disk_key_offset(&disk_key, len);
- 	btrfs_set_item_key(buf, &disk_key, *slot);
--	btrfs_set_item_offset(buf, btrfs_item_nr(*slot), *itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(*slot), sizeof(bgi));
-+	btrfs_set_item_offset_nr(buf, *slot, *itemoff);
-+	btrfs_set_item_size_nr(buf, *slot, sizeof(bgi));
- 
- 	btrfs_set_stack_block_group_flags(&bgi, flag);
- 	btrfs_set_stack_block_group_used(&bgi, used);
+-	len = btrfs_file_extent_inline_item_len(leaf,
+-			btrfs_item_nr(path.slots[0]));
++	len = btrfs_file_extent_inline_item_len(leaf, path.slots[0]);
+ 	if (len >= PATH_MAX) {
+ 		error("symlink '%s' target length %d is longer than PATH_MAX",
+ 				fs_name, len);
 diff --git a/image/main.c b/image/main.c
-index e953d981..09f60e63 100644
+index 09f60e63..5d67d282 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -1218,7 +1218,6 @@ static struct extent_buffer *alloc_dummy_eb(u64 bytenr, u32 size)
- 
- static void truncate_item(struct extent_buffer *eb, int slot, u32 new_size)
+@@ -302,7 +302,6 @@ static void zero_items(struct metadump_struct *md, u8 *dst,
+ 		       struct extent_buffer *src)
  {
+ 	struct btrfs_file_extent_item *fi;
 -	struct btrfs_item *item;
- 	u32 nritems;
- 	u32 old_size;
- 	u32 old_data_start;
-@@ -1238,16 +1237,14 @@ static void truncate_item(struct extent_buffer *eb, int slot, u32 new_size)
- 
- 	for (i = slot; i < nritems; i++) {
- 		u32 ioff;
--		item = btrfs_item_nr(i);
- 		ioff = btrfs_item_offset_nr(eb, i);
--		btrfs_set_item_offset(eb, item, ioff + size_diff);
-+		btrfs_set_item_offset_nr(eb, i, ioff + size_diff);
- 	}
- 
- 	memmove_extent_buffer(eb, btrfs_leaf_data(eb) + data_end + size_diff,
- 			      btrfs_leaf_data(eb) + data_end,
- 			      old_data_start + new_size - data_end);
--	item = btrfs_item_nr(slot);
--	btrfs_set_item_size(eb, item, new_size);
-+	btrfs_set_item_size_nr(eb, slot, new_size);
- }
- 
- static int fixup_chunk_tree_block(struct mdrestore_struct *mdres,
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index fc661aeb..81a438c8 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -1982,7 +1982,6 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
- 	int free_space;
- 	int push_space = 0;
- 	int push_items = 0;
--	struct btrfs_item *item;
- 	u32 left_nritems;
- 	u32 nr;
- 	u32 right_nritems;
-@@ -2036,16 +2035,14 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
- 
- 	i = left_nritems - 1;
- 	while (i >= nr) {
--		item = btrfs_item_nr(i);
--
- 		if (path->slots[0] == i)
--			push_space += data_size + sizeof(*item);
-+			push_space += data_size + sizeof(struct btrfs_item);
- 
- 		this_item_size = btrfs_item_size_nr(left, i);
--		if (this_item_size + sizeof(*item) + push_space > free_space)
-+		if (this_item_size + sizeof(struct btrfs_item) + push_space > free_space)
- 			break;
- 		push_items++;
--		push_space += this_item_size + sizeof(*item);
-+		push_space += this_item_size + sizeof(struct btrfs_item);
- 		if (i == 0)
- 			break;
- 		i--;
-@@ -2091,9 +2088,8 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
- 	btrfs_set_header_nritems(right, right_nritems);
- 	push_space = BTRFS_LEAF_DATA_SIZE(root->fs_info);
- 	for (i = 0; i < right_nritems; i++) {
--		item = btrfs_item_nr(i);
- 		push_space -= btrfs_item_size_nr(right, i);
--		btrfs_set_item_offset(right, item, push_space);
-+		btrfs_set_item_offset_nr(right, i, push_space);
- 	}
- 
- 	left_nritems -= push_items;
-@@ -2135,7 +2131,6 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
- 	int free_space;
- 	int push_space = 0;
- 	int push_items = 0;
--	struct btrfs_item *item;
- 	u32 old_left_nritems;
- 	u32 right_nritems;
- 	u32 nr;
-@@ -2182,17 +2177,15 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
- 		nr = right_nritems - 1;
- 
- 	for (i = 0; i < nr; i++) {
--		item = btrfs_item_nr(i);
--
- 		if (path->slots[0] == i)
--			push_space += data_size + sizeof(*item);
-+			push_space += data_size + sizeof(struct btrfs_item);
- 
- 		this_item_size = btrfs_item_size_nr(right, i);
--		if (this_item_size + sizeof(*item) + push_space > free_space)
-+		if (this_item_size + sizeof(struct btrfs_item) + push_space > free_space)
- 			break;
- 
- 		push_items++;
--		push_space += this_item_size + sizeof(*item);
-+		push_space += this_item_size + sizeof(struct btrfs_item);
- 	}
- 
- 	if (push_items == 0) {
-@@ -2223,9 +2216,8 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
- 	for (i = old_left_nritems; i < old_left_nritems + push_items; i++) {
- 		u32 ioff;
- 
--		item = btrfs_item_nr(i);
- 		ioff = btrfs_item_offset_nr(left, i);
--		btrfs_set_item_offset(left, item,
-+		btrfs_set_item_offset_nr(left, i,
- 		      ioff - (BTRFS_LEAF_DATA_SIZE(root->fs_info) -
- 			      old_left_item_size));
- 	}
-@@ -2255,9 +2247,8 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
- 	btrfs_set_header_nritems(right, right_nritems);
- 	push_space = BTRFS_LEAF_DATA_SIZE(root->fs_info);
- 	for (i = 0; i < right_nritems; i++) {
--		item = btrfs_item_nr(i);
- 		push_space = push_space - btrfs_item_size_nr(right, i);
--		btrfs_set_item_offset(right, item, push_space);
-+		btrfs_set_item_offset_nr(right, i, push_space);
- 	}
- 
- 	btrfs_mark_buffer_dirty(left);
-@@ -2318,9 +2309,8 @@ static noinline int copy_for_split(struct btrfs_trans_handle *trans,
- 		      btrfs_item_end_nr(l, mid);
+ 	struct btrfs_key key;
+ 	u32 nritems = btrfs_header_nritems(src);
+ 	size_t size;
+@@ -310,7 +309,6 @@ static void zero_items(struct metadump_struct *md, u8 *dst,
+ 	int i, extent_type;
  
  	for (i = 0; i < nritems; i++) {
--		struct btrfs_item *item = btrfs_item_nr(i);
- 		u32 ioff = btrfs_item_offset_nr(right, i);
--		btrfs_set_item_offset(right, item, ioff + rt_data_off);
-+		btrfs_set_item_offset_nr(right, i, ioff + rt_data_off);
- 	}
- 
- 	btrfs_set_header_nritems(l, mid);
-@@ -2537,8 +2527,6 @@ int btrfs_split_item(struct btrfs_trans_handle *trans,
- 	u32 item_size;
- 	struct extent_buffer *leaf;
- 	struct btrfs_key orig_key;
--	struct btrfs_item *item;
--	struct btrfs_item *new_item;
- 	int ret = 0;
- 	int slot;
- 	u32 nritems;
-@@ -2573,7 +2561,6 @@ int btrfs_split_item(struct btrfs_trans_handle *trans,
- 	leaf = path->nodes[0];
- 
- split:
--	item = btrfs_item_nr(path->slots[0]);
- 	orig_offset = btrfs_item_offset_nr(leaf, path->slots[0]);
- 	item_size = btrfs_item_size_nr(leaf, path->slots[0]);
- 
-@@ -2598,14 +2585,12 @@ split:
- 	btrfs_cpu_key_to_disk(&disk_key, new_key);
- 	btrfs_set_item_key(leaf, &disk_key, slot);
- 
--	new_item = btrfs_item_nr(slot);
--
--	btrfs_set_item_offset(leaf, new_item, orig_offset);
--	btrfs_set_item_size(leaf, new_item, item_size - split_offset);
-+	btrfs_set_item_offset_nr(leaf, slot, orig_offset);
-+	btrfs_set_item_size_nr(leaf, slot, item_size - split_offset);
- 
--	btrfs_set_item_offset(leaf, item,
--			      orig_offset + item_size - split_offset);
--	btrfs_set_item_size(leaf, item, split_offset);
-+	btrfs_set_item_offset_nr(leaf, path->slots[0],
-+				 orig_offset + item_size - split_offset);
-+	btrfs_set_item_size_nr(leaf, path->slots[0], split_offset);
- 
- 	btrfs_set_header_nritems(leaf, nritems + 1);
- 
-@@ -2634,7 +2619,6 @@ int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
- 	int ret = 0;
- 	int slot;
- 	struct extent_buffer *leaf;
--	struct btrfs_item *item;
- 	u32 nritems;
- 	unsigned int data_end;
- 	unsigned int old_data_start;
-@@ -2665,9 +2649,8 @@ int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
- 	/* first correct the data pointers */
- 	for (i = slot; i < nritems; i++) {
- 		u32 ioff;
 -		item = btrfs_item_nr(i);
- 		ioff = btrfs_item_offset_nr(leaf, i);
--		btrfs_set_item_offset(leaf, item, ioff + size_diff);
-+		btrfs_set_item_offset_nr(leaf, i, ioff + size_diff);
+ 		btrfs_item_key_to_cpu(src, &key, i);
+ 		if (key.type == BTRFS_CSUM_ITEM_KEY) {
+ 			size = btrfs_item_size_nr(src, i);
+@@ -334,7 +332,7 @@ static void zero_items(struct metadump_struct *md, u8 *dst,
+ 			continue;
+ 
+ 		ptr = btrfs_file_extent_inline_start(fi);
+-		size = btrfs_file_extent_inline_item_len(src, item);
++		size = btrfs_file_extent_inline_item_len(src, i);
+ 		memset(dst + ptr, 0, size);
  	}
- 
- 	/* shift the data */
-@@ -2711,8 +2694,7 @@ int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
- 			btrfs_fixup_low_keys(path, &disk_key, 1);
- 	}
- 
--	item = btrfs_item_nr(slot);
--	btrfs_set_item_size(leaf, item, new_size);
-+	btrfs_set_item_size_nr(leaf, slot, new_size);
- 	btrfs_mark_buffer_dirty(leaf);
- 
- 	ret = 0;
-@@ -2729,7 +2711,6 @@ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
- 	int ret = 0;
- 	int slot;
- 	struct extent_buffer *leaf;
--	struct btrfs_item *item;
- 	u32 nritems;
- 	unsigned int data_end;
- 	unsigned int old_data;
-@@ -2761,9 +2742,8 @@ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
- 	/* first correct the data pointers */
- 	for (i = slot; i < nritems; i++) {
- 		u32 ioff;
--		item = btrfs_item_nr(i);
- 		ioff = btrfs_item_offset_nr(leaf, i);
--		btrfs_set_item_offset(leaf, item, ioff - data_size);
-+		btrfs_set_item_offset_nr(leaf, i, ioff - data_size);
- 	}
- 
- 	/* shift the data */
-@@ -2773,8 +2753,7 @@ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
- 
- 	data_end = old_data;
- 	old_size = btrfs_item_size_nr(leaf, slot);
--	item = btrfs_item_nr(slot);
--	btrfs_set_item_size(leaf, item, old_size + data_size);
-+	btrfs_set_item_size_nr(leaf, slot, old_size + data_size);
- 	btrfs_mark_buffer_dirty(leaf);
- 
- 	ret = 0;
-@@ -2796,7 +2775,6 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
- 			    int nr)
- {
- 	struct extent_buffer *leaf;
--	struct btrfs_item *item;
- 	int ret = 0;
- 	int slot;
- 	int i;
-@@ -2853,9 +2831,8 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
- 		for (i = slot; i < nritems; i++) {
- 			u32 ioff;
- 
--			item = btrfs_item_nr(i);
- 			ioff = btrfs_item_offset_nr(leaf, i);
--			btrfs_set_item_offset(leaf, item, ioff - total_data);
-+			btrfs_set_item_offset_nr(leaf, i, ioff - total_data);
- 		}
- 
- 		/* shift the items */
-@@ -2874,10 +2851,9 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
- 	for (i = 0; i < nr; i++) {
- 		btrfs_cpu_key_to_disk(&disk_key, cpu_key + i);
- 		btrfs_set_item_key(leaf, &disk_key, slot + i);
--		item = btrfs_item_nr(slot + i);
--		btrfs_set_item_offset(leaf, item, data_end - data_size[i]);
-+		btrfs_set_item_offset_nr(leaf, slot + i, data_end - data_size[i]);
- 		data_end -= data_size[i];
--		btrfs_set_item_size(leaf, item, data_size[i]);
-+		btrfs_set_item_size_nr(leaf, slot + i, data_size[i]);
- 	}
- 	btrfs_set_header_nritems(leaf, nritems + nr);
- 	btrfs_mark_buffer_dirty(leaf);
-@@ -3001,7 +2977,6 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		    struct btrfs_path *path, int slot, int nr)
- {
- 	struct extent_buffer *leaf;
--	struct btrfs_item *item;
- 	int last_off;
- 	int dsize = 0;
- 	int ret = 0;
-@@ -3028,9 +3003,8 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		for (i = slot + nr; i < nritems; i++) {
- 			u32 ioff;
- 
--			item = btrfs_item_nr(i);
- 			ioff = btrfs_item_offset_nr(leaf, i);
--			btrfs_set_item_offset(leaf, item, ioff + dsize);
-+			btrfs_set_item_offset_nr(leaf, i, ioff + dsize);
- 		}
- 
- 		memmove_extent_buffer(leaf, btrfs_item_nr_offset(slot),
+ }
 diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index d9677bce..cda05481 100644
+index cda05481..7fb66049 100644
 --- a/kernel-shared/ctree.h
 +++ b/kernel-shared/ctree.h
-@@ -2005,6 +2005,18 @@ static inline u32 btrfs_item_end_nr(struct extent_buffer *eb, int nr)
- 	return btrfs_item_end(eb, btrfs_item_nr(nr));
+@@ -2564,11 +2564,9 @@ static inline u64 btrfs_dev_stats_value(const struct extent_buffer *eb,
+  * the compressed size
+  */
+ static inline u32 btrfs_file_extent_inline_item_len(struct extent_buffer *eb,
+-						    struct btrfs_item *e)
++						    int nr)
+ {
+-       unsigned long offset;
+-       offset = offsetof(struct btrfs_file_extent_item, disk_bytenr);
+-       return btrfs_item_size(eb, e) - offset;
++	return btrfs_item_size_nr(eb, nr) - BTRFS_FILE_EXTENT_INLINE_DATA_START;
  }
  
-+static inline void btrfs_set_item_size_nr(struct extent_buffer *eb, int nr,
-+					  u32 size)
-+{
-+	btrfs_set_item_size(eb, btrfs_item_nr(nr), size);
-+}
-+
-+static inline void btrfs_set_item_offset_nr(struct extent_buffer *eb, int nr,
-+					    u32 offset)
-+{
-+	btrfs_set_item_offset(eb, btrfs_item_nr(nr), offset);
-+}
-+
- static inline u32 btrfs_item_offset_nr(const struct extent_buffer *eb, int nr)
+ /* struct btrfs_ioctl_search_header */
+diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+index 6e601779..aff2ebc4 100644
+--- a/kernel-shared/print-tree.c
++++ b/kernel-shared/print-tree.c
+@@ -365,7 +365,6 @@ static const char* file_extent_type_to_str(u8 type)
+ }
+ 
+ static void print_file_extent_item(struct extent_buffer *eb,
+-				   struct btrfs_item *item,
+ 				   int slot,
+ 				   struct btrfs_file_extent_item *fi)
  {
- 	return btrfs_item_offset(eb, btrfs_item_nr(nr));
-diff --git a/mkfs/common.c b/mkfs/common.c
-index f3e689cb..0ea0d114 100644
---- a/mkfs/common.c
-+++ b/mkfs/common.c
-@@ -104,9 +104,8 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
- 		btrfs_set_disk_key_objectid(&disk_key,
- 			reference_root_table[blk]);
- 		btrfs_set_item_key(buf, &disk_key, nritems);
--		btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
--		btrfs_set_item_size(buf, btrfs_item_nr(nritems),
--				sizeof(root_item));
-+		btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+		btrfs_set_item_size_nr(buf, nritems, sizeof(root_item));
- 		if (blk == MKFS_FS_TREE) {
- 			time_t now = time(NULL);
+@@ -381,7 +380,7 @@ static void print_file_extent_item(struct extent_buffer *eb,
  
-@@ -160,8 +159,8 @@ static int create_free_space_tree(int fd, struct btrfs_mkfs_config *cfg,
- 	btrfs_set_disk_key_offset(&disk_key, group_size);
- 	btrfs_set_disk_key_type(&disk_key, BTRFS_FREE_SPACE_INFO_KEY);
- 	btrfs_set_item_key(buf, &disk_key, nritems);
--	btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(nritems), sizeof(*info));
-+	btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+	btrfs_set_item_size_nr(buf, nritems, sizeof(*info));
+ 	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+ 		printf("\t\tinline extent data size %u ram_bytes %llu compression %hhu (%s)\n",
+-				btrfs_file_extent_inline_item_len(eb, item),
++				btrfs_file_extent_inline_item_len(eb, slot),
+ 				btrfs_file_extent_ram_bytes(eb, fi),
+ 				btrfs_file_extent_compression(eb, fi),
+ 				compress_str);
+@@ -1286,7 +1285,6 @@ static void print_header_info(struct extent_buffer *eb, unsigned int mode)
  
- 	info = btrfs_item_ptr(buf, nritems, struct btrfs_free_space_info);
- 	btrfs_set_free_space_extent_count(buf, info, 1);
-@@ -172,8 +171,8 @@ static int create_free_space_tree(int fd, struct btrfs_mkfs_config *cfg,
- 	btrfs_set_disk_key_offset(&disk_key, group_start + group_size - free_start);
- 	btrfs_set_disk_key_type(&disk_key, BTRFS_FREE_SPACE_EXTENT_KEY);
- 	btrfs_set_item_key(buf, &disk_key, nritems);
--	btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(nritems), 0);
-+	btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+	btrfs_set_item_size_nr(buf, nritems, 0);
- 
- 	nritems++;
- 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_FREE_SPACE_TREE]);
-@@ -341,8 +340,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 			btrfs_set_disk_key_offset(&disk_key, system_group_size);
- 			btrfs_set_disk_key_type(&disk_key, BTRFS_BLOCK_GROUP_ITEM_KEY);
- 			btrfs_set_item_key(buf, &disk_key, nritems);
--			btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
--			btrfs_set_item_size(buf, btrfs_item_nr(nritems), sizeof(*bg_item));
-+			btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+			btrfs_set_item_size_nr(buf, nritems, sizeof(*bg_item));
- 
- 			bg_item = btrfs_item_ptr(buf, nritems,
- 						 struct btrfs_block_group_item);
-@@ -387,10 +386,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 			btrfs_set_disk_key_offset(&disk_key, cfg->nodesize);
+ void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
+ {
+-	struct btrfs_item *item;
+ 	struct btrfs_disk_key disk_key;
+ 	u32 leaf_data_size = BTRFS_LEAF_DATA_SIZE(eb->fs_info);
+ 	u32 i;
+@@ -1319,7 +1317,6 @@ void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
+ 			error("skip remaining slots");
+ 			break;
  		}
- 		btrfs_set_item_key(buf, &disk_key, nritems);
--		btrfs_set_item_offset(buf, btrfs_item_nr(nritems),
--				      itemoff);
--		btrfs_set_item_size(buf, btrfs_item_nr(nritems),
--				    item_size);
-+		btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+		btrfs_set_item_size_nr(buf, nritems, item_size);
- 		extent_item = btrfs_item_ptr(buf, nritems,
- 					     struct btrfs_extent_item);
- 		btrfs_set_extent_refs(buf, extent_item, 1);
-@@ -405,9 +402,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 		btrfs_set_disk_key_offset(&disk_key, ref_root);
- 		btrfs_set_disk_key_type(&disk_key, BTRFS_TREE_BLOCK_REF_KEY);
- 		btrfs_set_item_key(buf, &disk_key, nritems);
--		btrfs_set_item_offset(buf, btrfs_item_nr(nritems),
--				      itemoff);
--		btrfs_set_item_size(buf, btrfs_item_nr(nritems), 0);
-+		btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+		btrfs_set_item_size_nr(buf, nritems, 0);
- 		nritems++;
- 	}
- 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_EXTENT_TREE]);
-@@ -434,8 +430,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 	btrfs_set_disk_key_offset(&disk_key, 1);
- 	btrfs_set_disk_key_type(&disk_key, BTRFS_DEV_ITEM_KEY);
- 	btrfs_set_item_key(buf, &disk_key, nritems);
--	btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(nritems), item_size);
-+	btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+	btrfs_set_item_size_nr(buf, nritems, item_size);
- 
- 	dev_item = btrfs_item_ptr(buf, nritems, struct btrfs_dev_item);
- 	btrfs_set_device_id(buf, dev_item, 1);
-@@ -465,8 +461,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 	btrfs_set_disk_key_offset(&disk_key, system_group_offset);
- 	btrfs_set_disk_key_type(&disk_key, BTRFS_CHUNK_ITEM_KEY);
- 	btrfs_set_item_key(buf, &disk_key, nritems);
--	btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(nritems), item_size);
-+	btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+	btrfs_set_item_size_nr(buf, nritems, item_size);
- 
- 	chunk = btrfs_item_ptr(buf, nritems, struct btrfs_chunk);
- 	btrfs_set_chunk_length(buf, chunk, system_group_size);
-@@ -521,9 +517,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 	btrfs_set_disk_key_offset(&disk_key, system_group_offset);
- 	btrfs_set_disk_key_type(&disk_key, BTRFS_DEV_EXTENT_KEY);
- 	btrfs_set_item_key(buf, &disk_key, nritems);
--	btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
--	btrfs_set_item_size(buf, btrfs_item_nr(nritems),
--			    sizeof(struct btrfs_dev_extent));
-+	btrfs_set_item_offset_nr(buf, nritems, itemoff);
-+	btrfs_set_item_size_nr(buf, nritems, sizeof(struct btrfs_dev_extent));
- 	dev_extent = btrfs_item_ptr(buf, nritems, struct btrfs_dev_extent);
- 	btrfs_set_dev_extent_chunk_tree(buf, dev_extent,
- 					BTRFS_CHUNK_TREE_OBJECTID);
+-		item = btrfs_item_nr(i);
+ 		item_size = btrfs_item_size_nr(eb, i);
+ 		/* Untyped extraction of slot from btrfs_item_ptr */
+ 		ptr = btrfs_item_ptr(eb, i, void*);
+@@ -1402,7 +1399,7 @@ void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
+ 			print_extent_csum(eb, item_size, offset, ptr, print_csum_items);
+ 			break;
+ 		case BTRFS_EXTENT_DATA_KEY:
+-			print_file_extent_item(eb, item, i, ptr);
++			print_file_extent_item(eb, i, ptr);
+ 			break;
+ 		case BTRFS_BLOCK_GROUP_ITEM_KEY:
+ 			print_block_group_item(eb, ptr);
 -- 
 2.26.3
 
