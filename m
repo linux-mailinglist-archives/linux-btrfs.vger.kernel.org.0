@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 008B94C0498
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 147B74C0495
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236025AbiBVW06 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Feb 2022 17:26:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        id S236046AbiBVW07 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Feb 2022 17:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235962AbiBVW05 (ORCPT
+        with ESMTP id S235962AbiBVW06 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Feb 2022 17:26:57 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97D4B23
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:30 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id v5so1870931qkj.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:30 -0800 (PST)
+        Tue, 22 Feb 2022 17:26:58 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149B6B23
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:32 -0800 (PST)
+Received: by mail-qv1-xf35.google.com with SMTP id a1so3503085qvl.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:26:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=ihXMTpnzi1FSNblBDeAIrCHeYX++xu+aaMtFvJzpH34=;
-        b=jMyJia3/t7d9mHFix3c92wWoJP2DuVMvaMkkEDlRYxcVo/DuwVlJ340yeF3Zfv1mHr
-         vSuc6b3elt9lHBpi29q08p1PoZc4BG2OxcOW5FygY0eTnfZjXORLfZ27ThQ5fLsQlrib
-         htSLey5R4VGK83SzS8r/HyVImZMRUMuDiWHTJUcxTzky2HKF7OF5jmtwtAJjIHx2jAqj
-         uTgN59TlbINlpuD2Kp5IoVq51k8l10SjLGfLUn8tQUZJBbcxRxKsPWIcvN/YKcvNS55B
-         jSrH3nn75OSEGX2vVfvdZQ4WKsKaidot7WDc1v2LdqBE5whpXFntrgLaZvAvj/3GZi0W
-         YBkg==
+        bh=5ncJGUm3CmUqE60m4mWQV2B5JlQzXDzME+OHPly9r7M=;
+        b=SCFDxA8YQkDPErnmk11heDk5i6S6AkNfiMX3bu/dG5xHF7b+gLW2Fog8S+0Nk13d1C
+         ZKB/XD6F3F7snxo9XOa3xEh/46tmfm1W+I5+qLfaSgJuSFcyuO4FTyDQ8foy8xzg+/lc
+         ZUUjo2zhkwf92z77BsxD9lZut85d56JQNzcnAQTld1rUBmV/SXMb2wuEEoqZzIVkOG6p
+         fTmNFvyOuq3QpBNkBSLzxTy5pmbTLOn/yZdEHktYWVGC2Kjy5v1MHO6xXQt6UEzlkBG3
+         LviHUs6lh8NP+uql12iDqV5jjrLeMQyp3R0x5ALQlg1jT0Xe5o2I7JyQ8js6Y5YEgcCz
+         3wzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ihXMTpnzi1FSNblBDeAIrCHeYX++xu+aaMtFvJzpH34=;
-        b=NKJ04kqWTNYH9LR+KG7YJOTO4A2K6T3TWqw2sJR9DTK/FHms3p8GGFZaHu/DPXVKwU
-         5A2OK27jzM/N5DIgtuB+DYcD8tBKXwtJiB4+U2vGCiCU3V+CEUT4TCZH0xrYHi6Hm9ts
-         /iJosWf3sQ8ODj8W5YNtVkW8vH6mbnv07wN5eQNIBHIisgjbtmcHt0uo9ItOhiwEbk9R
-         10RLlbWLDygDkeKdpYfee+d0K84ZSvDAjoNdjERroZG3RIGNsObUnkCMue1HlN44UWU7
-         pBCr/Nn4KLaILg676H9AMF1D7Ff3ibv9M35rURTMz4R8RmeCNZI3NGTuP1S4jdLgEpg+
-         dFHw==
-X-Gm-Message-State: AOAM533+/GSNvZdxvdwUOZGIyeHiJgYBomU2QgjZ2WzAl8oR4JV3sQ4K
-        QZ93cbq+Mf3/LWJo1a4TIxLV0QI49jkelPIk
-X-Google-Smtp-Source: ABdhPJyvy+k6cYoyMJQ5WwOkOKon8ghZ30uY70YIRkDjGGsTiowkntRbGmSYU4o0v1RR8KVoKAykcA==
-X-Received: by 2002:ae9:e40e:0:b0:62c:ec14:9277 with SMTP id q14-20020ae9e40e000000b0062cec149277mr13283891qkc.432.1645568789777;
-        Tue, 22 Feb 2022 14:26:29 -0800 (PST)
+        bh=5ncJGUm3CmUqE60m4mWQV2B5JlQzXDzME+OHPly9r7M=;
+        b=p+qAWIyfK4ftMo6rv6aGL0lV9ZjPGvS4lYBX8VGfDJ5tBCdsoHvGxH6qWdOX6ydyxo
+         XqnON01poXcXKiRmEm1WzjlQKrO8YC0swkr2Z1yOVxcRlRWYxUIatawjOSt+g90mCUbC
+         R3cpemPS+vduiBrq/KXDy6rC7W464IsWKnJbp+BQCeka+7ulDGS1T4onS72NTIVKSZK1
+         E7eLfDhn/qE5JOvB/AMoOMrbJhPYhBHOsu/4puVw4FORDJRKYSBhzkfRwRVzuB+HjUbs
+         Q9TFBIlVRvbjRbojcxrk6ldnWlXktC+VDFBWrpIQIeEWpZtf35mxmW8zXGcwOi3k/9/W
+         2TmQ==
+X-Gm-Message-State: AOAM532fhzLqel0A/aOEbQqoqaPUHkOO+N+sf8y/3nIeKcPUpZ9bOtUE
+        /YPdwAFR1YSrfyvUi0R1qiIa/Z42+x7aG6Vn
+X-Google-Smtp-Source: ABdhPJyWOpmGk7dlNFZenmj/htWW3GVGonXjLVRb0Nzcm4LGk/Eeg0E/XwIr1j0fUXlrlSkGBR6laQ==
+X-Received: by 2002:ad4:53c5:0:b0:42d:7bb4:a8e8 with SMTP id k5-20020ad453c5000000b0042d7bb4a8e8mr20860599qvv.8.1645568791044;
+        Tue, 22 Feb 2022 14:26:31 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z3sm556790qkl.13.2022.02.22.14.26.29
+        by smtp.gmail.com with ESMTPSA id x12sm752419qtw.9.2022.02.22.14.26.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 14:26:29 -0800 (PST)
+        Tue, 22 Feb 2022 14:26:30 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 04/13] btrfs-progs: convert: use cfg->leaf_data_size
-Date:   Tue, 22 Feb 2022 17:26:14 -0500
-Message-Id: <c0abc5a5a87e6e8f22d225185a0fd23cafe0325e.1645568701.git.josef@toxicpanda.com>
+Subject: [PATCH 05/13] btrfs-progs: reduce usage of __BTRFS_LEAF_DATA_SIZE
+Date:   Tue, 22 Feb 2022 17:26:15 -0500
+Message-Id: <dc71da10bbb0a0cfd5cb3da856e69014e362dfa0.1645568701.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1645568701.git.josef@toxicpanda.com>
 References: <cover.1645568701.git.josef@toxicpanda.com>
@@ -67,68 +67,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The mkfs_config can hold the BTRFS_LEAF_DATA_SIZE, so calculate this at
-config creation time and then use that value throughout convert instead
-of calling __BTRFS_LEAF_DATA_SIZE.
+This helper only takes the nodesize, but in the future it'll take a bool
+to indicate if we're extent tree v2.  The remaining users are all where
+we only have extent_buffer, but we should always have a valid
+eb->fs_info in these cases, so add BUG_ON()'s for the !eb->fs_info case
+and then convert these callers to use BTRFS_LEAF_DATA_SIZE which takes
+the fs_info.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- convert/common.c | 8 ++++----
- convert/main.c   | 1 +
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ kernel-shared/ctree.c      | 5 +++--
+ kernel-shared/ctree.h      | 5 +++--
+ kernel-shared/print-tree.c | 2 +-
+ mkfs/common.c              | 2 +-
+ 4 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/convert/common.c b/convert/common.c
-index 00a7e553..356c2b4c 100644
---- a/convert/common.c
-+++ b/convert/common.c
-@@ -238,7 +238,7 @@ static int setup_temp_root_tree(int fd, struct btrfs_mkfs_config *cfg,
- 				u64 dev_bytenr, u64 fs_bytenr, u64 csum_bytenr)
- {
- 	struct extent_buffer *buf = NULL;
--	u32 itemoff = __BTRFS_LEAF_DATA_SIZE(cfg->nodesize);
-+	u32 itemoff = cfg->leaf_data_size;
- 	int slot = 0;
+diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
+index 950923d0..10b22b2c 100644
+--- a/kernel-shared/ctree.c
++++ b/kernel-shared/ctree.c
+@@ -1949,8 +1949,9 @@ int btrfs_leaf_free_space(struct extent_buffer *leaf)
+ 	u32 leaf_data_size;
  	int ret;
  
-@@ -419,7 +419,7 @@ static int setup_temp_chunk_tree(int fd, struct btrfs_mkfs_config *cfg,
- 				 u64 chunk_bytenr)
+-	BUG_ON(leaf->fs_info && leaf->fs_info->nodesize != leaf->len);
+-	leaf_data_size = __BTRFS_LEAF_DATA_SIZE(leaf->len);
++	BUG_ON(!leaf->fs_info);
++	BUG_ON(leaf->fs_info->nodesize != leaf->len);
++	leaf_data_size = BTRFS_LEAF_DATA_SIZE(leaf->fs_info);
+ 	ret = leaf_data_size - leaf_space_used(leaf, 0 ,nritems);
+ 	if (ret < 0) {
+ 		printk("leaf free space ret %d, leaf data size %u, used %d nritems %d\n",
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 31169f33..d9677bce 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -1328,8 +1328,9 @@ static inline u32 BTRFS_NODEPTRS_PER_BLOCK(const struct btrfs_fs_info *info)
+ 
+ static inline u32 BTRFS_NODEPTRS_PER_EXTENT_BUFFER(const struct extent_buffer *eb)
  {
- 	struct extent_buffer *buf = NULL;
--	u32 itemoff = __BTRFS_LEAF_DATA_SIZE(cfg->nodesize);
-+	u32 itemoff = cfg->leaf_data_size;
- 	int slot = 0;
- 	int ret;
+-	BUG_ON(eb->fs_info && eb->fs_info->nodesize != eb->len);
+-	return __BTRFS_LEAF_DATA_SIZE(eb->len) / sizeof(struct btrfs_key_ptr);
++	BUG_ON(!eb->fs_info);
++	BUG_ON(eb->fs_info->nodesize != eb->len);
++	return BTRFS_LEAF_DATA_SIZE(eb->fs_info) / sizeof(struct btrfs_key_ptr);
+ }
  
-@@ -490,7 +490,7 @@ static int setup_temp_dev_tree(int fd, struct btrfs_mkfs_config *cfg,
- 			       u64 dev_bytenr)
+ #define BTRFS_FILE_EXTENT_INLINE_DATA_START		\
+diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+index bd75ae51..7308599f 100644
+--- a/kernel-shared/print-tree.c
++++ b/kernel-shared/print-tree.c
+@@ -1288,7 +1288,7 @@ void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
  {
- 	struct extent_buffer *buf = NULL;
--	u32 itemoff = __BTRFS_LEAF_DATA_SIZE(cfg->nodesize);
-+	u32 itemoff = cfg->leaf_data_size;
- 	int slot = 0;
- 	int ret;
+ 	struct btrfs_item *item;
+ 	struct btrfs_disk_key disk_key;
+-	u32 leaf_data_size = __BTRFS_LEAF_DATA_SIZE(eb->len);
++	u32 leaf_data_size = BTRFS_LEAF_DATA_SIZE(eb->fs_info);
+ 	u32 i;
+ 	u32 nr;
+ 	const bool print_csum_items = (mode & BTRFS_PRINT_TREE_CSUM_ITEMS);
+diff --git a/mkfs/common.c b/mkfs/common.c
+index aee4b9fb..f3e689cb 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -326,7 +326,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	memset(buf->data + sizeof(struct btrfs_header), 0,
+ 		cfg->nodesize - sizeof(struct btrfs_header));
+ 	nritems = 0;
+-	itemoff = __BTRFS_LEAF_DATA_SIZE(cfg->nodesize);
++	itemoff = cfg->leaf_data_size;
+ 	for (i = 0; i < blocks_nr; i++) {
+ 		blk = blocks[i];
  
-@@ -688,7 +688,7 @@ static int setup_temp_extent_tree(int fd, struct btrfs_mkfs_config *cfg,
- 				  u64 fs_bytenr, u64 csum_bytenr)
- {
- 	struct extent_buffer *buf = NULL;
--	u32 itemoff = __BTRFS_LEAF_DATA_SIZE(cfg->nodesize);
-+	u32 itemoff = cfg->leaf_data_size;
- 	int slot = 0;
- 	int ret;
- 
-diff --git a/convert/main.c b/convert/main.c
-index 333d5be1..b72d1e51 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -1228,6 +1228,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
- 	mkfs_cfg.sectorsize = blocksize;
- 	mkfs_cfg.stripesize = blocksize;
- 	mkfs_cfg.features = features;
-+	mkfs_cfg.leaf_data_size = __BTRFS_LEAF_DATA_SIZE(nodesize);
- 
- 	printf("Create initial btrfs filesystem\n");
- 	ret = make_convert_btrfs(fd, &mkfs_cfg, &cctx);
 -- 
 2.26.3
 
