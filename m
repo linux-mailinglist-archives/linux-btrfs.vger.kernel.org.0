@@ -2,72 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4041E4BF749
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 12:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8244BF75F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 12:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbiBVLe3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Feb 2022 06:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
+        id S231748AbiBVLkq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Feb 2022 06:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbiBVLe2 (ORCPT
+        with ESMTP id S231736AbiBVLkp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Feb 2022 06:34:28 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC0D134DD6
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 03:34:02 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id w16-20020a056830281000b005ad480e8dd5so7870254otu.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 03:34:02 -0800 (PST)
+        Tue, 22 Feb 2022 06:40:45 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40A9136EE7
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 03:40:20 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id az26-20020a05600c601a00b0037c078db59cso1572829wmb.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 03:40:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=vTR/8Rp3ZPOCxUywjE3qAbiASt8/c0tKigqqky7YLrE=;
-        b=ltrbfvCT6+lXaDlug3nX3FRgl/xApFV1D7BsUuQSRpCbaAexboDwPXt0iHqapfLfkE
-         Wy2UEWzQaeYEEcCQe9Ri54hCyvGNUKOYCRvpu6bhCGd1HkRKrPwz+HaCID97fP/S6sy5
-         FGDLfnWLxdSCv82Lt81oKUoeoWvEQhnraHnpwKE3VAn9IJ6R5l0yhkMutPes2Y7d62qq
-         eelnkR2o8VQqGcslxCkK84OLn17p9fh04rKdwVnJouEfHB8dfU6wd0/LLHPqY8ELQ/KG
-         ug57E2P4p2ORUY6bRASeBBUj6hqdNYcOLBjU6txyNu8gNW4gyC3vuTD2Y3xijYcRXemI
-         Ii5A==
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=zncUP4k0qWTkrruw/2Qwtl328+sz3ixjRaMsIKFNcuk=;
+        b=Z4zCVhXxZ1HZMkqOGwjU5egUexg0MyVddItCmOwd+6enmyf/Odtled2hI1fXhE3Cjj
+         k06bEOLAD0WOZ0G4rD/Rg2rwvOTsRZ0lfbSSSBYETnm9uVKsd0t8eB/wxizt9eyG8xSC
+         Sa+ycOdg1QhJixAUy0KFXQkZsbKuYUJhFrt9KlZIYATVsWdEPe6KOY8aLMkjs4HU14DQ
+         1sWvhXYE/MRarvsLL8ZuWGNymjHqb2jUdQULF5kbCc3IF+aOPgzllhuETcwV4N4av8/a
+         EEjucXx6RLraG0GXMZza7+pjqY5/HfUjLUU3Wkctzi1wMXVfQr8SiFystFjkTu+N1djl
+         t3NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=vTR/8Rp3ZPOCxUywjE3qAbiASt8/c0tKigqqky7YLrE=;
-        b=R2Divjw6uxyz3hBBvf6+FpoLLNg3o/wBzoP3epkWhNgxF+futvH8dVeKJx9UfF7DSK
-         EU2L60ULFPug0ZxZmTm+PIcYLE/FG38tBSpJuOQDvuwuTYNI1BFcyBBra1JvzoIW/kQP
-         psEH8aEI1I6IiswbZQThuSslVSY6+SIjAc7JyEsmpUCyRlFewJTeR6/sfDbFZTQxtpPw
-         s46s9lHtwwN5vyi8P4KlDl7pPPfUC7aRY6xsQEyc2Mm3t0vdYVuM1t4CdblLrwjq0nlc
-         tdbwI7hTrr/AXGJjjLdAl9jph2i1uXbRYUhbtGLsuVoOXcK0UBYiCyhZVki2v2Pdd8oC
-         k7yg==
-X-Gm-Message-State: AOAM532cDtQSLAAFnLd4jwAgGEY+fYdiizBNyoXBTlUWR8e+pWw1ovDp
-        V74sg42h84TSvvWxNW/cIXsN9uQheByMcMb/KPA=
-X-Google-Smtp-Source: ABdhPJzLZZyvYqpaPzoRuAqTNcqYfTpFrzw/aTzBdT0SF/L4MdtrYtEF77pAkMHyG4xsxcYwEXlmrZbawu0k6Ot/PFY=
-X-Received: by 2002:a9d:28e:0:b0:5ab:e889:2560 with SMTP id
- 14-20020a9d028e000000b005abe8892560mr8200768otl.119.1645529641529; Tue, 22
- Feb 2022 03:34:01 -0800 (PST)
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=zncUP4k0qWTkrruw/2Qwtl328+sz3ixjRaMsIKFNcuk=;
+        b=c6nWHW2VNBUzkVnewt8427xonLpWG1CA9uOP8Va5/lfphT1s0Dcc3VYrH/8lGDhM7V
+         mIrzU5gxjYgssldp3CnOzlBcpa6QLEk/jfzXWDjvSxJcywjYpHePwLonKk/sqEhbRfOk
+         8+dHm+cyQBBwAJa1yJ0JXTxnYVwJG+6uKWmfd0pnQvovECmt60pcBwLT/iiuXR9ces/D
+         O8UZQV3rfFY+D5LEfVtKfCNeMR8TQLd5Wj4ejdqKSdiaAUnD+ZTmCN75qEhDnZjou+fV
+         VkKuFB5qMeRbHPxAvC1zEYcGtQaIrroRELQhqso7TrBNpRoj/iJ6pk8BK3kuHwCZn2jW
+         v6PA==
+X-Gm-Message-State: AOAM531JG1ju4mK4aVHfqSnmGTPqknlQPNRqP/MhTFAxSonTL7dxDCE1
+        dkG+vfAGpGy0qntyAd6Rdjo=
+X-Google-Smtp-Source: ABdhPJwN4CCv0Kn2r2NjW48h4yRuvyfrolrjYS17m1RpFM/FEQ0ujPhvhSK8khd16rP7LC+kCB1UNg==
+X-Received: by 2002:a7b:c3d6:0:b0:380:e3af:7f72 with SMTP id t22-20020a7bc3d6000000b00380e3af7f72mr341725wmj.163.1645530019385;
+        Tue, 22 Feb 2022 03:40:19 -0800 (PST)
+Received: from MACBOOKPROF612.localdomain ([102.165.192.234])
+        by smtp.gmail.com with ESMTPSA id q13sm53921017wrd.78.2022.02.22.03.40.14
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Tue, 22 Feb 2022 03:40:19 -0800 (PST)
+Message-ID: <6214cba3.1c69fb81.67cad.1eab@mx.google.com>
+From:   Scott Godfrey <markmillercom322@gmail.com>
+X-Google-Original-From: Scott Godfrey
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Received: by 2002:a8a:481:0:0:0:0:0 with HTTP; Tue, 22 Feb 2022 03:34:00 -0800 (PST)
-Reply-To: donaldcurtis3000@gmail.com
-From:   Donald Curtis <alexandrinekengbo@gmail.com>
-Date:   Tue, 22 Feb 2022 12:34:00 +0100
-Message-ID: <CAH9ijYnaTxX0zUu=-Rx_Eni1x2p-sYvqh0PM8pLuWeNdoCRMHg@mail.gmail.com>
-Subject: Donald
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: CONGRATULATION!!!!
+To:     Recipients <Scott@vger.kernel.org>
+Date:   Tue, 22 Feb 2022 13:40:14 +0200
+Reply-To: scottgodfrey.net@gmail.com
+X-Antivirus: AVG (VPS 220222-0, 2/22/2022), Outbound message
+X-Antivirus-Status: Clean
+X-Spam-Status: No, score=4.6 required=5.0 tests=ADVANCE_FEE_2_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FRAUD_3,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,TO_MALFORMED,T_SCC_BODY_TEXT_LINE,
+        XFER_LOTSA_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-HI,
-Good day.
-Kindly confirm to me if this is your correct email Address and get
-back to me for our interest.
-Sincerely,
-Donald
+My Name is Scott Godfrey. I wish to inform you that The sum of $2,500,000(M=
+illion)has been donated to you.I
+won a fortune of $699.8 Million in the Million Dollars Power-Ball Jackpot L=
+ottery,2021.And I am
+donating part of it to five lucky people and five Charity
+organization. Your email came out victorious. Please contact via email: sco=
+ttgodfrey.net@gmail.com. For more information about your claims. Thanks.
+
+
+-- 
+This email has been checked for viruses by AVG.
+https://www.avg.com
+
