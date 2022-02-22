@@ -2,205 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 462E34C0340
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 21:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6747A4C047D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234192AbiBVUqr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Feb 2022 15:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60048 "EHLO
+        id S236029AbiBVWXM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Feb 2022 17:23:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbiBVUqr (ORCPT
+        with ESMTP id S230097AbiBVWXL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Feb 2022 15:46:47 -0500
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EEEA2F09;
-        Tue, 22 Feb 2022 12:46:19 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 1FD08805FB;
-        Tue, 22 Feb 2022 15:46:18 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1645562779; bh=exGi9sfLEpUdeDCaCpnxyACq8VLY6wHANq4eBPZRm2A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=g6rkG2WZYpJJqbTRLCoVPwDStFmTw+ZWy6aHR0WCwHtvTRrFsBKGuxamTQSE0tLOn
-         Nq64Snr129PRK/TJBuiumQZqS6sx+AQePU5MpoeR4uq/ViTwn7v8q1vDezOTjtczTo
-         ZZqUOczwoy8oBEtebeQig5XhMFRapZ4Sj/dtK/iXHorQbFQWp/MPnWMM3rc3jFok5+
-         ZzIuiSGmgMcVo2m9o45ZvvcHv9IL0THRCq8LmnhceZ4ZUa29eSCHbW3QbQX1050/D5
-         f0ymfS77sRmAgw+QaQReo9Hx+zRv8KbDxXu6xwc6l1JGE3FitepTt1n3P+QjgqVEQf
-         KOdeAHmrtjrug==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3] btrfs: add fs state details to error messages.
-Date:   Tue, 22 Feb 2022 15:42:28 -0500
-Message-Id: <8a2a73ab4b48a4e73d24cf7f10cc0fe245d50a84.1645562216.git.sweettea-kernel@dorminy.me>
+        Tue, 22 Feb 2022 17:23:11 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08FF6A052
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:44 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id g24so1862263qkl.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=njlbxYX0L+wdgUt1m5ZveAdm0rXbgIyt4YFncpSVbag=;
+        b=IXKBrpaYVDCzE2KO7rz1LjCh4WWE9ExE67udBUO5ZwcfgWghMA/gqL0luTbKgXm13h
+         cimVmZUgOJSuhqHsFuCxfX3yTE7IWJTUCY98S6bzidAU6eVphmRILYcKo9/amf1DxOhj
+         HxozlqB+2HdBUG7Jw7eZE1VXmzF+oLmfCIr4r7PU2qnU8sy8HJKpNAnyCgV6NaRjfw9R
+         YJv2vv58wv0MiUjMXZsEwCbvfkYS9l3N0u/iHm/FsuIckbtK8hVzH6lbQyaE/h6NIaQi
+         hyPCJLtY094OdZhdv9NYY4uLAuPeWF8FrHIL1PSv3NUkBQXpqp+oRvufYCJxwSuVPvUB
+         /8Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=njlbxYX0L+wdgUt1m5ZveAdm0rXbgIyt4YFncpSVbag=;
+        b=4RM5H+5MNXq/lbyw/lRf2WXezUnKzURnWeJ3ppROUQBJkai0WrYzMR6W0b/d3yhitF
+         hWn8d+V3G1OqMu+eywD650R0QjRTNnDFc8K9HCH5CGq3Mz51x0yfD7vf7iF70gEKOI3Q
+         0OcRE58x3IL8EyBxnj0J14jSYRy1vrAZ+OCGxhat1u1ZlLUKHosIJdA9jWi5cFPkatkx
+         CwNqCEWpV/lxHYTYu6SELDYI4rno1QyFLyp+omZkZ1uqDAE7mViC+tpf6Z977fNClS1h
+         U6t4qk8uo2oW1ueGr3f9Swc3ebyZJWnu6HzK91nIjlPthU5PP6NaDS8G0X4jPxZ2Pyit
+         bNOg==
+X-Gm-Message-State: AOAM533A6tXoYpWFAEN4jqWJc3bHcXDLbokNEWnbUYlAZrn7RYuVijTj
+        iRY/5H4693VrwTf/B3ykQP2GjjvwQSjx1Y0C
+X-Google-Smtp-Source: ABdhPJwg9jWmYAnWPpoYw2ggQpTi40l1rpHT9epn5fOPzqNDfjNdp7DdNsPMAu//wnt8G/IfVTfoow==
+X-Received: by 2002:ae9:ef09:0:b0:506:aadb:1f1b with SMTP id d9-20020ae9ef09000000b00506aadb1f1bmr17000958qkg.609.1645568563800;
+        Tue, 22 Feb 2022 14:22:43 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id p5sm571267qkg.76.2022.02.22.14.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Feb 2022 14:22:43 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/7] btrfs-progs: various regression fixes
+Date:   Tue, 22 Feb 2022 17:22:35 -0500
+Message-Id: <cover.1645567860.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When a filesystem goes read-only due to an error, multiple errors tend
-to be reported, some of which are knock-on failures. Logging fs_states,
-in btrfs_handle_fs_error() and btrfs_printk() helps distinguish the
-first error from subsequent messages which may only exist due to an
-error state.
+Hello,
 
-Under the new format, most initial errors will look like:
-`BTRFS: error (device loop0) in ...`
-while subsequent errors will begin with:
-`error (device loop0: state E) in ...`
+In trying to test my new extent tree v2 patches I noticed I had regressed a few
+of these tests with my previous prep patches.  I'm not entirely sure how I
+missed this before as I generally run the tests, but there are some clear things
+that need fixing.  I've based these patches on the devel branch, with them in
+place everything passes as it should.  Thanks,
 
-An initial transaction abort error will look like
-`error (device loop0: state A) in ...`
-and subsequent messages will contain
-`(device loop0: state EA) in ...`
+Josef
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
-v3:
-  - Reworked btrfs_state_to_string to use an array mapping all states
-    to various error chars, or nothing, explicitly. Added error logging
-    for more states, as requested.
-  - Consolidated buffer length definition
+Josef Bacik (7):
+  btrfs-progs: check: fix check_global_roots_uptodate
+  btrfs-progs: fuzz-tests: use --force for --init-csum-tree
+  btrfs-progs: repair: bail if we find an unaligned extent
+  btrfs-progs: properly populate missing trees
+  btrfs-progs: don't check skip_csum_check if there's no fs_info
+  btrfs-progs: do not try to load the free space tree if it's not
+    enabled
+  btrfs-progs: inspect-tree-stats: initialize the key properly
 
-v2: 
-  - Changed btrfs_state_to_string() for clarity
-  - Removed superfluous whitespace change
-  - https://lore.kernel.org/linux-btrfs/084c136c6bb2d20ca0e91af7ded48306d52bb910.1645210326.git.sweettea-kernel@dorminy.me/
+ check/main.c                                  | 34 +++++++++++++-
+ cmds/inspect-tree-stats.c                     |  2 +-
+ common/repair.c                               | 17 +++++--
+ kernel-shared/disk-io.c                       | 47 ++++++++++++++++++-
+ .../003-multi-check-unmounted/test.sh         |  2 +-
+ 5 files changed, 94 insertions(+), 8 deletions(-)
 
-v1:
-  - https://lore.kernel.org/linux-btrfs/20220212191042.94954-1-sweettea-kernel@dorminy.me/
-
- fs/btrfs/ctree.h |  2 ++
- fs/btrfs/super.c | 62 +++++++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 56 insertions(+), 8 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 8992e0096163..3db337cd015a 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -148,6 +148,8 @@ enum {
- 
- 	/* Indicates there was an error cleaning up a log tree. */
- 	BTRFS_FS_STATE_LOG_CLEANUP_ERROR,
-+
-+	BTRFS_FS_STATE_COUNT,
- };
- 
- #define BTRFS_BACKREF_REV_MAX		256
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 4d947ba32da9..3fab9e46e80c 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -66,6 +66,46 @@ static struct file_system_type btrfs_root_fs_type;
- 
- static int btrfs_remount(struct super_block *sb, int *flags, char *data);
- 
-+#define STATE_STRING_PREFACE ": state "
-+#define STATE_STRING_BUF_LEN \
-+	(sizeof(STATE_STRING_PREFACE) + BTRFS_FS_STATE_COUNT)
-+
-+/* Characters to print to indicate error conditions. RO is not an error. */
-+static const char * const fs_state_strings[] = {
-+	[BTRFS_FS_STATE_ERROR]			= "E",
-+	[BTRFS_FS_STATE_REMOUNTING]		= "M",
-+	[BTRFS_FS_STATE_RO]			= NULL,
-+	[BTRFS_FS_STATE_TRANS_ABORTED]		= "A",
-+	[BTRFS_FS_STATE_DEV_REPLACING]		= "P",
-+	[BTRFS_FS_STATE_DUMMY_FS_INFO]		= NULL,
-+	[BTRFS_FS_STATE_NO_CSUMS]		= NULL,
-+	[BTRFS_FS_STATE_LOG_CLEANUP_ERROR]	= "L",
-+};
-+
-+static void btrfs_state_to_string(const struct btrfs_fs_info *info, char *buf)
-+{
-+	unsigned int bit;
-+	unsigned int states_printed = 0;
-+	char *curr = buf;
-+
-+	memcpy(curr, STATE_STRING_PREFACE, sizeof(STATE_STRING_PREFACE));
-+	curr += sizeof(STATE_STRING_PREFACE) - 1;
-+
-+	for_each_set_bit(bit, &info->fs_state, sizeof(info->fs_state)) {
-+		WARN_ON_ONCE(bit >= BTRFS_FS_STATE_COUNT);
-+		if ((bit < BTRFS_FS_STATE_COUNT) && (fs_state_strings[bit] != NULL)) {
-+			*curr++ = fs_state_strings[bit][0];
-+			states_printed++;
-+		}
-+	}
-+
-+	/* If no states were printed, reset the buffer */
-+	if (!states_printed)
-+		curr = buf;
-+
-+	*curr++ = '\0';
-+}
-+
- /*
-  * Generally the error codes correspond to their respective errors, but there
-  * are a few special cases.
-@@ -128,6 +168,7 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function
- {
- 	struct super_block *sb = fs_info->sb;
- #ifdef CONFIG_PRINTK
-+	char statestr[STATE_STRING_BUF_LEN];
- 	const char *errstr;
- #endif
- 
-@@ -140,6 +181,7 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function
- 
- #ifdef CONFIG_PRINTK
- 	errstr = btrfs_decode_error(errno);
-+	btrfs_state_to_string(fs_info, statestr);
- 	if (fmt) {
- 		struct va_format vaf;
- 		va_list args;
-@@ -148,12 +190,12 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function
- 		vaf.fmt = fmt;
- 		vaf.va = &args;
- 
--		pr_crit("BTRFS: error (device %s) in %s:%d: errno=%d %s (%pV)\n",
--			sb->s_id, function, line, errno, errstr, &vaf);
-+		pr_crit("BTRFS: error (device %s%s) in %s:%d: errno=%d %s (%pV)\n",
-+			sb->s_id, statestr, function, line, errno, errstr, &vaf);
- 		va_end(args);
- 	} else {
--		pr_crit("BTRFS: error (device %s) in %s:%d: errno=%d %s\n",
--			sb->s_id, function, line, errno, errstr);
-+		pr_crit("BTRFS: error (device %s%s) in %s:%d: errno=%d %s\n",
-+			sb->s_id, statestr, function, line, errno, errstr);
- 	}
- #endif
- 
-@@ -240,11 +282,15 @@ void __cold btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, .
- 	vaf.va = &args;
- 
- 	if (__ratelimit(ratelimit)) {
--		if (fs_info)
--			printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
--				fs_info->sb->s_id, &vaf);
--		else
-+		if (fs_info) {
-+			char statestr[STATE_STRING_BUF_LEN];
-+
-+			btrfs_state_to_string(fs_info, statestr);
-+			printk("%sBTRFS %s (device %s%s): %pV\n", lvl, type,
-+				fs_info->sb->s_id, statestr, &vaf);
-+		} else {
- 			printk("%sBTRFS %s: %pV\n", lvl, type, &vaf);
-+		}
- 	}
- 
- 	va_end(args);
 -- 
-2.35.1
+2.26.3
 
