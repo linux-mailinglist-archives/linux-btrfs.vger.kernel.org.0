@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30374C0481
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA3C4C0482
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 23:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbiBVWXS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Feb 2022 17:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
+        id S236042AbiBVWXT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Feb 2022 17:23:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236037AbiBVWXR (ORCPT
+        with ESMTP id S236041AbiBVWXS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Feb 2022 17:23:17 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BEF6A053
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:51 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id x3so3485110qvd.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:51 -0800 (PST)
+        Tue, 22 Feb 2022 17:23:18 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30916A052
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:52 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id a19so3482200qvm.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 14:22:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=6BZ+XXWGNqSveaOKvZEzymkDdFbbFwhSqrpr7+8yraI=;
-        b=WrZVs49vjMNFYpWiJ0Ju7B0HDw46e2WL00qhtbNsiZ8qKXGC7l0EvYuSmbcKdUlAM0
-         sSCTmXoeNn+fpH945ojn3Xdkq7aevGoxxsrdeksxcE3H+J3BZJRAPhKF13GdKDvZGVEo
-         NC+CdeJQ6Lcf8X9cXvvCuR3ggoAYg8Cwx6qc0mNdMlq3LzEFhus81f42HpWFQ1rNH/j4
-         F+/qm/rJiVsVy8+CPebFzaMa0cBNHsRtw0sGQQQd84INylTZVA/d2nYSZPieU7Y8M0q2
-         o0qbD57aZK4o1eY8xvyKXJOiDDQYE8UcKDklemqm9No8rLywFyoNfgNvMi/uIysRi5nY
-         bHng==
+        bh=W+rvRUtZVNz1v5bV9gKWlKDCVW1gXcVkluaKc2htTpQ=;
+        b=jdG/riD5YBzQv6dTjwv9Q3OCUngT4U5MOu1gqcTlIX6eUR5YyiasIFt+tC4Z6nnXff
+         YnlMT52B29oXa7wOwyC01M/J2Pv9xkdf/wRyNL8zE2D3s8lk7ow7CwuM1Kyf5ft5QIsC
+         iSVT/o+WhXjJxkC2h2y/Zm/2uf4Vr24CmGVjPTxiMPig5DHmDIC41scLWo7XlFcn6T3u
+         qop7PYV4eCNGXOIbCXSSLkxwdo6kI3Dl5cORbH+4bPOmRwZbbl5TPOLZ6vHZ6HTHbn/u
+         f3x2qM/UGPKxS3/s3bnIObco5/nlcHTp9+ljegeFm/R8c2rhcSI/om9h7FMeXsBIiK+E
+         NIIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6BZ+XXWGNqSveaOKvZEzymkDdFbbFwhSqrpr7+8yraI=;
-        b=31orPOAakBJAV+Wg+T9m5AIIOY5ErHytSXYxTNB9DLVa8S7e0Co5Ef0W3zGMDZdmV1
-         X99RJdKMY8UxSFxMijMiahhX0RyZI3hnQhLgJbrl+eL1FuMihZv7RQMPXwqUG1ZWJ7Ea
-         p3zJf8E+um7laDc86swyCbELIW/2tUR9U47JbflX8OgNHiOkYa9eJbp4JxUj7R3yvoGj
-         TsB7nofwNY9LEOV9saU5ULMtGBdJR7KhPxEQInyI78gXLzC8fNj0L6P70GCqAUNs9QMp
-         SiYa3gY3VcGE2Y2Q/OymxLSt3U9G5RaSSLWm0Slxbq2ZVgGZ6RMYwoGNSkuAjMxoZNuI
-         CkJg==
-X-Gm-Message-State: AOAM532/xBWycSzeUEFHN8UV0CawWJrnlg/sJ0HJxiocDojXj1/LWYnp
-        pVN3VGLrrsaSEqsZ6cLbyPSPWQUa3AOiJIyg
-X-Google-Smtp-Source: ABdhPJzQL2j6O7R6/AnnCvDOCPbgwuHJroTtZ5zmAUpBAoTa/kP/yv6EOia6R7YOSu9sGVV05v6e4Q==
-X-Received: by 2002:a05:6214:e85:b0:42d:f76c:d229 with SMTP id hf5-20020a0562140e8500b0042df76cd229mr21032319qvb.68.1645568570196;
-        Tue, 22 Feb 2022 14:22:50 -0800 (PST)
+        bh=W+rvRUtZVNz1v5bV9gKWlKDCVW1gXcVkluaKc2htTpQ=;
+        b=QQQMowp4ANS2hKp+1QSu3KX0UBEm9Qteea/KQuorwn+Tj2ou+XmKRKQ90RDn71sL1E
+         aNXK97vCwexEansN+Yn2Pcxf2QxpzqDBTyUCkK8/3Vk/1Fyuwut19v5uNXnNhfxbnlG6
+         BeXYRDmFV0Zi9uf+nph1h8vRkxTvzV24/lFbGVf8X9Hnfg+Ms7WZEesTwmZF63PVMaBZ
+         T072rK2arn5SLMbHFw6J35ttfTQpLevY/A4eNHpH3y2vPO+ev0oYKEUzhVVAjByEU67N
+         4caGpsoe5lGQnCjJ0981MIjes10+hP1TW/Um7vBDBoo562KOrhheBfyNoseQE1AjOfTZ
+         BVPw==
+X-Gm-Message-State: AOAM533jrx3tNGEjoCHJIHmNtM7wPzXilBRCwmBmXyg7dxyzyXDohXJL
+        5CWktvGaOIO+R2mFE/hXkSH72ulMyB1HHR6+
+X-Google-Smtp-Source: ABdhPJx1zMSeI7B/+CYIg1oaNqYqQPldOMsyfE/Ot8Gu/9r5GR1fpZdcUrd34A9AlDF02QdeKzs3Ng==
+X-Received: by 2002:ac8:5756:0:b0:2de:1ce6:bef7 with SMTP id 22-20020ac85756000000b002de1ce6bef7mr11251005qtx.461.1645568571476;
+        Tue, 22 Feb 2022 14:22:51 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id s5sm630946qtn.35.2022.02.22.14.22.49
+        by smtp.gmail.com with ESMTPSA id h123sm504357qke.18.2022.02.22.14.22.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 14:22:49 -0800 (PST)
+        Tue, 22 Feb 2022 14:22:51 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 5/7] btrfs-progs: don't check skip_csum_check if there's no fs_info
-Date:   Tue, 22 Feb 2022 17:22:40 -0500
-Message-Id: <1a0bbdbc600efc9bf09d89170e15f8047480474b.1645567860.git.josef@toxicpanda.com>
+Subject: [PATCH 6/7] btrfs-progs: do not try to load the free space tree if it's not enabled
+Date:   Tue, 22 Feb 2022 17:22:41 -0500
+Message-Id: <8bbb4ad9ae314e7f3eb03d7b4d6b6e75d957a8e5.1645567860.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1645567860.git.josef@toxicpanda.com>
 References: <cover.1645567860.git.josef@toxicpanda.com>
@@ -67,28 +67,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The chunk recover code passes in a buffer it allocates with metadata but
-no fs_info, causing fuzz-test 008 to segfault.  Fix this test to only
-check the flag if we have buf->fs_info set.
+We were previously getting away with this because the
+load_global_roots() treated ENOENT like everything was a-ok.  However
+that was a bug and fixing that bug uncovered a problem where we were
+unconditionally trying to load the free space tree.  Fix that by
+skipping the load if we do not have the compat bit set.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/disk-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel-shared/disk-io.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 1cd965aa..637e8b00 100644
+index 637e8b00..f83ba884 100644
 --- a/kernel-shared/disk-io.c
 +++ b/kernel-shared/disk-io.c
-@@ -174,7 +174,7 @@ static int __csum_tree_block_size(struct extent_buffer *buf, u16 csum_size,
- 			result, len);
- 
- 	if (verify) {
--		if (buf->fs_info->skip_csum_check) {
-+		if (buf->fs_info && buf->fs_info->skip_csum_check) {
- 			/* printf("skip csum check for block %llu\n", buf->start); */
- 		} else if (memcmp_extent_buffer(buf, result, 0, csum_size)) {
- 			if (!silent) {
+@@ -1192,6 +1192,8 @@ static int load_global_roots(struct btrfs_fs_info *fs_info, unsigned flags)
+ 					 "csum");
+ 	if (ret)
+ 		goto out;
++	if (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
++		goto out;
+ 	ret = load_global_roots_objectid(fs_info, path,
+ 					 BTRFS_FREE_SPACE_TREE_OBJECTID, flags,
+ 					 "free space");
 -- 
 2.26.3
 
