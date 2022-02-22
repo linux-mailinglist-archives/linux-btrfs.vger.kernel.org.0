@@ -2,139 +2,234 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEE54BF868
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 13:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 046B64C0039
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Feb 2022 18:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbiBVMz6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Feb 2022 07:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        id S234382AbiBVRgU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Feb 2022 12:36:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232040AbiBVMz5 (ORCPT
+        with ESMTP id S231901AbiBVRgT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Feb 2022 07:55:57 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48B7128DEF;
-        Tue, 22 Feb 2022 04:55:31 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5AA44B818FA;
-        Tue, 22 Feb 2022 12:55:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 004F7C340E8;
-        Tue, 22 Feb 2022 12:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645534529;
-        bh=qB6D13taUv08S3fe71dFG+0qc2B8oJzJkanitzPuHvI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gbPPBjwhej/DCjjE7Wun9lJ1fhplJLNS422cRb0FvIZOOoyPFT5dyJEXpj21uzZY2
-         FBoQVGVVVk2H685g5B37U/Q77yOgoEJ1fupCINkvoGwH4Z7aqi+209OggpOB9H8hTo
-         v4YEMomEAqDkhuLljcnGRDYZS06if0mgJiXlS2fvAkSxWm9Fi4Yscj2d9FnHl2P+oD
-         RszDeqggMNlH5Q7tMSnHKCvBkUZOQaofPB6vfVKfvHcIYw8OlGt4eR5uO4BPjhps0+
-         5DXd0hyAprrGFZzouLQvFQPeQYu16kVaWLmeTmSuYo4PI3hoJ0xvSntf2ec3oTN8g/
-         wUJiRo7zkhepQ==
-Received: by mail-qv1-f50.google.com with SMTP id 8so5416084qvf.2;
-        Tue, 22 Feb 2022 04:55:28 -0800 (PST)
-X-Gm-Message-State: AOAM531xE5GcuoYco0+UC5ScBYSdUrg1tqKP5vNMP9vyC/LVa/KcSX8D
-        ka9IKRtDka78jykfgGCkVtkOeZnqtLaIiC91gl0=
-X-Google-Smtp-Source: ABdhPJyU/O6sPf7hQsJUxeTEq02dqsIXxONUaRB6sBe9eyhAPHwJmSL/RRlgBBD8f7L7th80EBjShusweRPpddC/dpo=
-X-Received: by 2002:a05:622a:198c:b0:2de:707:b1d9 with SMTP id
- u12-20020a05622a198c00b002de0707b1d9mr9926879qtc.233.1645534528041; Tue, 22
- Feb 2022 04:55:28 -0800 (PST)
+        Tue, 22 Feb 2022 12:36:19 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2140416FDD2
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Feb 2022 09:35:53 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E39981F3A0;
+        Tue, 22 Feb 2022 17:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1645551350;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2h47yweATcOAA27gf9Xo6Tal8PNHpXJQOwBza/CPgXw=;
+        b=v0My88vzl3r3swiLsU8c79dkMTUv4fVRHOA51QfBAvs4dqgeSNCeUBqu8oCZnmJdWZtWG7
+        cmdHBvm+AIhL23ImMOoth+tCBwBdzLCQ64JY83d7pcCTLP7esAUZYbREKk4USckmzbY9TO
+        +2/eRn4npAWsXK2941Qr7H9YY3WYW7c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1645551350;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2h47yweATcOAA27gf9Xo6Tal8PNHpXJQOwBza/CPgXw=;
+        b=0Tp+BrdF9nXtsaWg+hSbpHZxf7LuxplV0Rc+U80dQV57ZnCknwlk2G46fPxNkFYc/ot4+E
+        yi9wi2oGifdf0zCQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id DD4F2A3B81;
+        Tue, 22 Feb 2022 17:35:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0891CDA823; Tue, 22 Feb 2022 18:32:02 +0100 (CET)
+Date:   Tue, 22 Feb 2022 18:32:02 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/4] btrfs: autodefrag: only scan one inode once
+Message-ID: <20220222173202.GL12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1644737297.git.wqu@suse.com>
+ <7e33c57855a9d323be8f70123d365429a8463d7b.1644737297.git.wqu@suse.com>
 MIME-Version: 1.0
-References: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
- <CABVffEO3DZTtTNdjkwTegxNPTHbeM-PBeKk5B_dFXdsTvL2wFg@mail.gmail.com>
- <YhTMBFrZeEvROh0C@debian9.Home> <CABVffENr6xfB=ujMhMEVywbuzo8kYTSVzym1ctCbZOPipVCpHg@mail.gmail.com>
- <CAL3q7H5mSV69ambZy_uCnTMOW7U0n_fU1DtVNA-FYwDdHVrp9w@mail.gmail.com>
-In-Reply-To: <CAL3q7H5mSV69ambZy_uCnTMOW7U0n_fU1DtVNA-FYwDdHVrp9w@mail.gmail.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 22 Feb 2022 12:54:52 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
-Message-ID: <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
-Subject: Re: Fwd: btrfs / io-uring corrupting reads
-To:     Daniel Black <daniel@mariadb.org>
-Cc:     io-uring@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e33c57855a9d323be8f70123d365429a8463d7b.1644737297.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 12:46 PM Filipe Manana <fdmanana@kernel.org> wrote:
->
-> On Tue, Feb 22, 2022 at 12:22 PM Daniel Black <daniel@mariadb.org> wrote:
-> >
-> > On Tue, Feb 22, 2022 at 10:42 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> >
-> > > I gave it a try, but it fails setting up io_uring:
-> > >
-> > > 2022-02-22 11:27:13 0 [Note] mysqld: O_TMPFILE is not supported on /tmp (disabling future attempts)
-> > > 2022-02-22 11:27:13 0 [Warning] mysqld: io_uring_queue_init() failed with errno 1
-> > > 2022-02-22 11:27:13 0 [Warning] InnoDB: liburing disabled: falling back to innodb_use_native_aio=OFF
-> > > 2022-02-22 11:27:13 0 [Note] InnoDB: Initializing buffer pool, total size = 134217728, chunk size = 134217728
-> > > 2022-02-22 11:27:13 0 [Note] InnoDB: Completed initialization of buffer pool
-> > >
-> > > So that's why it doesn't fail here, as it fallbacks to no aio mode.
-> >
-> > error 1 is EPERM. Seems it needs --privileged on the container startup
-> > as a podman argument (before the image name). Sorry I missed that
-> >
-> > > Any idea why it's failing to setup io_uring?
-> > >
-> > > I have the liburing2 and liburing-dev packages installed on debian, and
-> > > tried with a 5.17-rc4 kernel.
-> >
-> > Taking https://packages.debian.org/bookworm/mariadb-server-core-10.6 package:
-> >
-> > mariadb-install-db --no-defaults --datadir=/empty/btrfs/path
-> > --innodb-use-native-aio=0
-> >
-> > mariadbd --no-defaults --datadir=/empty/btrfs/path --innodb-use-native-aio=1
-> >
-> > should achieve the same thing.
->
-> Sorry, I have no experience with mariadb and podman. How am I supposed
-> to run that?
-> Is that supposed to run inside the container, on the host? Do I need
-> to change the podman command lines?
->
-> What I did before was:
->
-> DEV=/dev/sdh
-> MNT=/mnt/sdh
->
-> mkfs.btrfs -f $DEV
-> mount $DEV $MNT
->
-> mkdir $MNT/noaio
-> chown fdmanana: $MNT/noaio
->
-> podman run --name mdbinit --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
-> MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
-> quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
-> --innodb_use_native_aio=0
->
->
-> Then in another shell:
->
-> podman kill --all
->
-> podman run --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
-> MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
-> quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
-> --innodb_use_native_aio=1
->
->
-> What should I change or add in there?
+On Sun, Feb 13, 2022 at 03:42:32PM +0800, Qu Wenruo wrote:
+> Although we have btrfs_requeue_inode_defrag(), for autodefrag we are
+> still just exhausting all inode_defrag items in the tree.
+> 
+> This means, it doesn't make much difference to requeue an inode_defrag,
+> other than scan the inode from the beginning till its end.
+> 
+> This patch will change the beahvior by always scan from offset 0 of an
+> inode, and till the end of the inode.
+> 
+> By this we get the following benefit:
+> 
+> - Straight-forward code
+> 
+> - No more re-queue related check
+> 
+> - Less members in inode_defrag
+> 
+> We still keep the same btrfs_get_fs_root() and btrfs_iget() check for
+> each loop, and added extra should_auto_defrag() check per-loop.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Ok, just passing  --privileged to both podman commands triggered the
-bug as in your report.
-I'll see if I can figure out what's causing the read corruption.
+Below is a version of the patch without the control structure and with a
+manual while (true) loop so there's not that much code moved and it's
+clear what's being added. I haven't tested it yet, but this is what I'd
+like to get merged and then forwarded to stable so we can finally get
+over this.
 
+ fs/btrfs/file.c | 84 +++++++++++++------------------------------------
+ 1 file changed, 22 insertions(+), 62 deletions(-)
 
->
-> Thanks.
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 62c4edd5e2f9..1efc378e4bbe 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -49,12 +49,6 @@ struct inode_defrag {
+ 
+ 	/* root objectid */
+ 	u64 root;
+-
+-	/* last offset we were able to defrag */
+-	u64 last_offset;
+-
+-	/* if we've wrapped around back to zero once already */
+-	int cycled;
+ };
+ 
+ static int __compare_inode_defrag(struct inode_defrag *defrag1,
+@@ -107,8 +101,6 @@ static int __btrfs_add_inode_defrag(struct btrfs_inode *inode,
+ 			 */
+ 			if (defrag->transid < entry->transid)
+ 				entry->transid = defrag->transid;
+-			if (defrag->last_offset > entry->last_offset)
+-				entry->last_offset = defrag->last_offset;
+ 			return -EEXIST;
+ 		}
+ 	}
+@@ -178,34 +170,6 @@ int btrfs_add_inode_defrag(struct btrfs_trans_handle *trans,
+ 	return 0;
+ }
+ 
+-/*
+- * Requeue the defrag object. If there is a defrag object that points to
+- * the same inode in the tree, we will merge them together (by
+- * __btrfs_add_inode_defrag()) and free the one that we want to requeue.
+- */
+-static void btrfs_requeue_inode_defrag(struct btrfs_inode *inode,
+-				       struct inode_defrag *defrag)
+-{
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	int ret;
+-
+-	if (!__need_auto_defrag(fs_info))
+-		goto out;
+-
+-	/*
+-	 * Here we don't check the IN_DEFRAG flag, because we need merge
+-	 * them together.
+-	 */
+-	spin_lock(&fs_info->defrag_inodes_lock);
+-	ret = __btrfs_add_inode_defrag(inode, defrag);
+-	spin_unlock(&fs_info->defrag_inodes_lock);
+-	if (ret)
+-		goto out;
+-	return;
+-out:
+-	kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+-}
+-
+ /*
+  * pick the defragable inode that we want, if it doesn't exist, we will get
+  * the next one.
+@@ -278,8 +242,14 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
+ 	struct btrfs_root *inode_root;
+ 	struct inode *inode;
+ 	struct btrfs_ioctl_defrag_range_args range;
+-	int num_defrag;
+-	int ret;
++	int ret = 0;
++	u64 cur = 0;
++
++again:
++	if (test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state))
++		goto cleanup;
++	if (!__need_auto_defrag(fs_info))
++		goto cleanup;
+ 
+ 	/* get the inode */
+ 	inode_root = btrfs_get_fs_root(fs_info, defrag->root, true);
+@@ -295,39 +265,29 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
+ 		goto cleanup;
+ 	}
+ 
++	if (cur >= i_size_read(inode)) {
++		iput(inode);
++		break;
++	}
++
+ 	/* do a chunk of defrag */
+ 	clear_bit(BTRFS_INODE_IN_DEFRAG, &BTRFS_I(inode)->runtime_flags);
+ 	memset(&range, 0, sizeof(range));
+ 	range.len = (u64)-1;
+-	range.start = defrag->last_offset;
++	range.start = cur;
+ 
+ 	sb_start_write(fs_info->sb);
+-	num_defrag = btrfs_defrag_file(inode, NULL, &range, defrag->transid,
++	ret = btrfs_defrag_file(inode, NULL, &range, defrag->transid,
+ 				       BTRFS_DEFRAG_BATCH);
+ 	sb_end_write(fs_info->sb);
+-	/*
+-	 * if we filled the whole defrag batch, there
+-	 * must be more work to do.  Queue this defrag
+-	 * again
+-	 */
+-	if (num_defrag == BTRFS_DEFRAG_BATCH) {
+-		defrag->last_offset = range.start;
+-		btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
+-	} else if (defrag->last_offset && !defrag->cycled) {
+-		/*
+-		 * we didn't fill our defrag batch, but
+-		 * we didn't start at zero.  Make sure we loop
+-		 * around to the start of the file.
+-		 */
+-		defrag->last_offset = 0;
+-		defrag->cycled = 1;
+-		btrfs_requeue_inode_defrag(BTRFS_I(inode), defrag);
+-	} else {
+-		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+-	}
+-
+ 	iput(inode);
+-	return 0;
++
++	if (ret < 0)
++		goto cleanup;
++
++	cur = max(cur + fs_info->sectorsize, range.start);
++	goto again;
++
+ cleanup:
+ 	kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+ 	return ret;
+-- 
+2.34.1
+
