@@ -2,103 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A70C4C0EC7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Feb 2022 10:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951364C0F93
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Feb 2022 10:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239183AbiBWJCd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Feb 2022 04:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S239404AbiBWJwT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Feb 2022 04:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239165AbiBWJCb (ORCPT
+        with ESMTP id S231612AbiBWJwS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Feb 2022 04:02:31 -0500
-Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66C735DED
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 01:02:01 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 03530405D9
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 10:02:00 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.909
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zeLUjV_ub1WT for <linux-btrfs@vger.kernel.org>;
-        Wed, 23 Feb 2022 10:01:59 +0100 (CET)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 0BF06405CD
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 10:01:59 +0100 (CET)
-Received: from [192.168.0.134] (port=32990)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1nMnXB-000Ilb-PE
-        for linux-btrfs@vger.kernel.org; Wed, 23 Feb 2022 10:01:58 +0100
-Message-ID: <c574966a-4b9e-0a50-cb47-e6f904f95eaf@tnonline.net>
-Date:   Wed, 23 Feb 2022 10:01:58 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
+        Wed, 23 Feb 2022 04:52:18 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B94F403F1
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 01:51:51 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id b8so2119081pjb.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 01:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f94aTP2Y9u4OY+NAmf8Jf2CNbYFwWcAJbOK6IQJwOlc=;
+        b=J5JTkMeRTIm5bBzI6IHa2jGO5uNCOasA048nW+x/VnUhyro8+GC+Q/F/Tfq0MqmjDw
+         stY4S+uMAotOGDkReX+k/EuROXjkD6GbXpDS7z/9lYg0A/nr+HPJLcL7LnRj38rCVwWJ
+         jT/UyoOijSvEhmpr3FzXYxztmOH5zuoqQ93lYWtz2jUbhqQNefv2NIy/uTAxGVBuHDNl
+         6IF0/mbW77DB5/qSKoOruozOt+g2wRy7Z3pHBFAGxnog0IuTAf9T5N5pa7vwmwZT3W1g
+         ab1wohnRia2a/MC3QgpQQS5SSi5ROorRI3PnNNARzVe5Ant/m/3RlpSoR4ehXL+xmmeH
+         49VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f94aTP2Y9u4OY+NAmf8Jf2CNbYFwWcAJbOK6IQJwOlc=;
+        b=Z24+3WzNU1xsI945TN3DAYfPTvKgz8k/wALbxX4wIhwV/OfAb4trr7VW+wdJ7sLGXi
+         3NjetpH5tqIo0afR/TB/5vRmjGWb5swEBGOz2Q5ON1wf6hHEHrpWRi9mdirj/pauGCEp
+         3vjZt0qSIzTbZJVRjjHOU3O4/sGg+MMtf2vCrbUSJuF7qZzmOs5K8n3ry2d/DBjxDwyJ
+         hqWipN6P/RDXWx+cFEwUxDUsQdubVtHym8uYKWS+kegtFZHLhukoMT37RwbfARsbnU2n
+         FXRzn9rcg1VlRkqGJyGt3ce+oIjCt0XkguigotMj/zWb3Qx6SfpoAHuwZjRMGMknr3fC
+         /Lng==
+X-Gm-Message-State: AOAM532LbF/fLRg0jCUt3O0M0N90/k/qGevCOn84h1/OFy9mbrS5gRWi
+        63MC0DApVMCB0czsjox6r05a3EPefwE=
+X-Google-Smtp-Source: ABdhPJwmKGkIGC1FpDhpQzXrpJLAKIh51wBKgPabKRgObpuVX4NnzqpWrZgOwYRHHNvqghFCvsnaIA==
+X-Received: by 2002:a17:90a:4bca:b0:1bc:21e:3c90 with SMTP id u10-20020a17090a4bca00b001bc021e3c90mr8369234pjl.106.1645609910421;
+        Wed, 23 Feb 2022 01:51:50 -0800 (PST)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id x2sm2370875pje.24.2022.02.23.01.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Feb 2022 01:51:50 -0800 (PST)
+From:   Sidong Yang <realwakka@gmail.com>
 To:     linux-btrfs@vger.kernel.org
-Content-Language: en-US
-From:   Forza <forza@tnonline.net>
-Subject: Crash/BUG on during device delete
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [RFC PATCH] btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
+Date:   Wed, 23 Feb 2022 09:51:13 +0000
+Message-Id: <20220223095112.10880-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Subject:
-Crash/BUG on during device delete
-From:
-Forza <forza@tnonline.net>
-Date:
-2/23/22, 09:59
-To:
-linux-btrfs@vger.kernel.org
+The patch e804861bd4e6 by Kawasaki resolves deadlock between quota
+disable and qgroup rescan worker. but also there is a deadlock case like
+it. It's about enabling or disabling quota and creating or removing
+qgroup. It can be reproduced in simple script below.
 
-Hi!
+for i in {1..100}
+do
+    btrfs quota enable /mnt &
+    btrfs qgroup create 1/0 /mnt &
+    btrfs qgroup destroy 1/0 /mnt &
+    btrfs quota disable /mnt &
+done
 
-I am running a test system and experienced a hard lockup with the 
-following message:
+This script simply enables quota and creates/destroies qgroup and disables
+qgroup 100 times. Enabling quota starts rescan worker and it commits
+transaction and wait in wait_for_commit(). transaction_kthread would
+wakup for the commit and try to attach trasaction but there would be
+another current transaction. The transaction was from another command
+that destroy qgroup. but destroying qgroup could be blocked by
+qgroup_ioctl_lock which locked by the thread disabling quota.
 
-[53869.712800] BTRFS critical: panic in extent_io_tree_panic:689: 
-locking error: extent tree was modified by another thread while locked 
-(errno=-17 Object already exists)
-[53869.712825] kernel BUG at fs/btrfs/extent_io.c:689!
+An example report of the deadlock:
 
-Kernel: 5.15.16-0-lts #1-Alpine SMP
-CPU: Xeon(R) E-2126G
-MB: SuperMicro X11SCL-F, 64GB ECC RAM
-Broadcom 9500-8i HBA SAS controller
+[  363.661448] INFO: task kworker/u16:4:295 blocked for more than 120 seconds.
+[  363.661582]       Not tainted 5.17.0-rc4+ #16
+[  363.661659] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  363.661744] task:kworker/u16:4   state:D stack:    0 pid:  295 ppid:     2 flags:0x00004000
+[  363.661762] Workqueue: btrfs-qgroup-rescan btrfs_work_helper [btrfs]
+[  363.661936] Call Trace:
+[  363.661949]  <TASK>
+[  363.661958]  __schedule+0x2e5/0xbb0
+[  363.662002]  ? btrfs_free_path+0x27/0x30 [btrfs]
+[  363.662094]  ? mutex_lock+0x13/0x40
+[  363.662106]  schedule+0x58/0xd0
+[  363.662116]  btrfs_commit_transaction+0x2dc/0xb40 [btrfs]
+[  363.662250]  ? wait_woken+0x60/0x60
+[  363.662271]  btrfs_qgroup_rescan_worker+0x3cb/0x600 [btrfs]
+[  363.662419]  btrfs_work_helper+0xc8/0x330 [btrfs]
+[  363.662551]  process_one_work+0x21a/0x3f0
+[  363.662588]  worker_thread+0x4a/0x3b0
+[  363.662600]  ? process_one_work+0x3f0/0x3f0
+[  363.662609]  kthread+0xfd/0x130
+[  363.662618]  ? kthread_complete_and_exit+0x20/0x20
+[  363.662628]  ret_from_fork+0x1f/0x30
+[  363.662659]  </TASK>
+[  363.662691] INFO: task btrfs-transacti:1158 blocked for more than 120 seconds.
+[  363.662765]       Not tainted 5.17.0-rc4+ #16
+[  363.662809] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  363.662880] task:btrfs-transacti state:D stack:    0 pid: 1158 ppid:     2 flags:0x00004000
+[  363.662889] Call Trace:
+[  363.662892]  <TASK>
+[  363.662896]  __schedule+0x2e5/0xbb0
+[  363.662906]  ? _raw_spin_lock_irqsave+0x2a/0x60
+[  363.662925]  schedule+0x58/0xd0
+[  363.662942]  wait_current_trans+0xd2/0x130 [btrfs]
+[  363.663046]  ? wait_woken+0x60/0x60
+[  363.663055]  start_transaction+0x33c/0x600 [btrfs]
+[  363.663159]  btrfs_attach_transaction+0x1d/0x20 [btrfs]
+[  363.663268]  transaction_kthread+0xb5/0x1b0 [btrfs]
+[  363.663368]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+[  363.663465]  kthread+0xfd/0x130
+[  363.663475]  ? kthread_complete_and_exit+0x20/0x20
+[  363.663484]  ret_from_fork+0x1f/0x30
+[  363.663498]  </TASK>
+[  363.663503] INFO: task btrfs:81196 blocked for more than 120 seconds.
+[  363.663568]       Not tainted 5.17.0-rc4+ #16
+[  363.663612] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  363.663693] task:btrfs           state:D stack:    0 pid:81196 ppid:     1 flags:0x00000000
+[  363.663702] Call Trace:
+[  363.663705]  <TASK>
+[  363.663709]  __schedule+0x2e5/0xbb0
+[  363.663721]  schedule+0x58/0xd0
+[  363.663729]  rwsem_down_write_slowpath+0x310/0x5b0
+[  363.663748]  ? __check_object_size+0x130/0x150
+[  363.663770]  down_write+0x41/0x50
+[  363.663780]  btrfs_ioctl+0x20e6/0x2f40 [btrfs]
+[  363.663918]  ? debug_smp_processor_id+0x17/0x20
+[  363.663932]  ? fpregs_assert_state_consistent+0x23/0x50
+[  363.663963]  __x64_sys_ioctl+0x8e/0xc0
+[  363.663981]  ? __x64_sys_ioctl+0x8e/0xc0
+[  363.663990]  do_syscall_64+0x38/0xc0
+[  363.663998]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  363.664006] RIP: 0033:0x7f1082add50b
+[  363.664014] RSP: 002b:00007fffbfd1ba98 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+[  363.664022] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1082add50b
+[  363.664028] RDX: 00007fffbfd1bab0 RSI: 00000000c0109428 RDI: 0000000000000003
+[  363.664032] RBP: 0000000000000003 R08: 000055e4263142a0 R09: 000000000000007c
+[  363.664036] R10: 00007f1082bb1be0 R11: 0000000000000206 R12: 00007fffbfd1c723
+[  363.664040] R13: 0000000000000001 R14: 000055e42615408d R15: 00007fffbfd1bc68
+[  363.664049]  </TASK>
+[  363.664053] INFO: task btrfs:81197 blocked for more than 120 seconds.
+[  363.664117]       Not tainted 5.17.0-rc4+ #16
+[  363.664160] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  363.664231] task:btrfs           state:D stack:    0 pid:81197 ppid:     1 flags:0x00000000
+[  363.664239] Call Trace:
+[  363.664241]  <TASK>
+[  363.664245]  __schedule+0x2e5/0xbb0
+[  363.664257]  schedule+0x58/0xd0
+[  363.664265]  rwsem_down_write_slowpath+0x310/0x5b0
+[  363.664274]  ? __check_object_size+0x130/0x150
+[  363.664282]  down_write+0x41/0x50
+[  363.664292]  btrfs_ioctl+0x20e6/0x2f40 [btrfs]
+[  363.664430]  ? debug_smp_processor_id+0x17/0x20
+[  363.664442]  ? fpregs_assert_state_consistent+0x23/0x50
+[  363.664453]  __x64_sys_ioctl+0x8e/0xc0
+[  363.664462]  ? __x64_sys_ioctl+0x8e/0xc0
+[  363.664470]  do_syscall_64+0x38/0xc0
+[  363.664478]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  363.664484] RIP: 0033:0x7ff1752ac50b
+[  363.664489] RSP: 002b:00007ffc0cb56eb8 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+[  363.664495] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff1752ac50b
+[  363.664500] RDX: 00007ffc0cb56ed0 RSI: 00000000c0109428 RDI: 0000000000000003
+[  363.664503] RBP: 0000000000000003 R08: 000055d0dcf182a0 R09: 000000000000007c
+[  363.664507] R10: 00007ff175380be0 R11: 0000000000000206 R12: 00007ffc0cb58723
+[  363.664520] R13: 0000000000000001 R14: 000055d0db04708d R15: 00007ffc0cb57088
+[  363.664528]  </TASK>
+[  363.664532] INFO: task btrfs:81204 blocked for more than 120 seconds.
+[  363.664596]       Not tainted 5.17.0-rc4+ #16
+[  363.664639] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  363.664710] task:btrfs           state:D stack:    0 pid:81204 ppid:     1 flags:0x00004000
+[  363.664717] Call Trace:
+[  363.664720]  <TASK>
+[  363.664723]  __schedule+0x2e5/0xbb0
+[  363.664735]  schedule+0x58/0xd0
+[  363.664743]  schedule_timeout+0x1f3/0x290
+[  363.664754]  ? __mutex_lock.isra.0+0x8f/0x4c0
+[  363.664765]  wait_for_completion+0x8b/0xf0
+[  363.664776]  btrfs_qgroup_wait_for_completion+0x62/0x70 [btrfs]
+[  363.664995]  btrfs_quota_disable+0x51/0x320 [btrfs]
+[  363.665136]  btrfs_ioctl+0x2106/0x2f40 [btrfs]
+[  363.665385]  ? debug_smp_processor_id+0x17/0x20
+[  363.665402]  ? fpregs_assert_state_consistent+0x23/0x50
+[  363.665417]  __x64_sys_ioctl+0x8e/0xc0
+[  363.665428]  ? __x64_sys_ioctl+0x8e/0xc0
+[  363.665439]  do_syscall_64+0x38/0xc0
+[  363.665450]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  363.665459] RIP: 0033:0x7f9d7462050b
+[  363.665466] RSP: 002b:00007ffc1de68558 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+[  363.665475] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f9d7462050b
+[  363.665480] RDX: 00007ffc1de68570 RSI: 00000000c0109428 RDI: 0000000000000003
+[  363.665486] RBP: 0000000000000003 R08: 00005629e953b2a0 R09: 000000000000007c
+[  363.665492] R10: 00007f9d746f4be0 R11: 0000000000000206 R12: 00007ffc1de69723
+[  363.665498] R13: 0000000000000001 R14: 00005629e8e5708d R15: 00007ffc1de68728
+[  363.665510]  </TASK>
 
+To resolve this issue, The thread disabling quota should unlock
+qgroup_ioctl_lock before waiting rescan completion. This patch moves
+btrfs_qgroup_wait_for_completion() after qgroup_ioctl_lock().
 
-I had 5 SSDs in a RAID1 filesystem and wanted to delete 3 of them.
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+Hi, I found some deadlock bug with testing a simple script.
+With this patch, it seems that it resolves it. but I don't know much about how
+transaction works. and I'm afraid that it has other side effects.
+---
+ fs/btrfs/qgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-# btrfs device delete /dev/sdf /dev/sdd /dev/sdd /mnt/nas_ssd
-
-When about 6GB was left on the last device I got a kernel BUG message 
-with stack trace. Unfortunately the message was not saved to syslog - 
-anything trying to access the system disk froze, even though the "btrfs 
-device delete" operation was not performed on the root filesystem. I 
-managed to get some screenshots of the trace.
-
-I performed a hard reset and the system booted normally. A scrub showed 
-no errors and a new "btrfs device delete /dev/sde /mnt/nas_ssd/" 
-finished without errors.
-
-Attached images (wasn't able to send them to the list):
-https://paste.tnonline.net/files/ISD0z6LNqw5D_Screenshot2022-02-23083359.png
-https://paste.tnonline.net/files/DR2pgh8bVHCZ_iKVM_capture.jpg
-
-I can do some further tests if needed. otherwise I need to deploy this 
-system in about a week.
-
-Thanks.
-
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 2c0dd6b8a80c..85e5b3572dda 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1219,8 +1219,8 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 	 * deadlock with transaction by the qgroup rescan worker.
+ 	 */
+ 	clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
+-	btrfs_qgroup_wait_for_completion(fs_info, false);
+ 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
++	btrfs_qgroup_wait_for_completion(fs_info, false);
+ 
+ 	/*
+ 	 * 1 For the root item
+-- 
+2.25.1
 
