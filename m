@@ -2,63 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B6C4C16C1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Feb 2022 16:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F704C17DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Feb 2022 16:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242029AbiBWP2X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Feb 2022 10:28:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
+        id S242504AbiBWP5V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Feb 2022 10:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbiBWP2W (ORCPT
+        with ESMTP id S242509AbiBWP5U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Feb 2022 10:28:22 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27256593BC;
-        Wed, 23 Feb 2022 07:27:55 -0800 (PST)
+        Wed, 23 Feb 2022 10:57:20 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB0A522D2
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 07:56:51 -0800 (PST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D097A21637;
-        Wed, 23 Feb 2022 15:27:53 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id EC30C1F37D;
+        Wed, 23 Feb 2022 15:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1645630073;
+        t=1645631809;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3FUhPQarNWrhGr4m2gNeysZcuzjEBU8QonfmZqFkhwg=;
-        b=Gwx4JXhqNYI+8pCgbWW5r6+eUYyL9vqm2RRPkC7EMCHlmj5rplJGjMI0Z3oomsH96JlZMX
-        Ftjo93oJcMmZN9WVx9ZREiwTpwMPJRrrA33JknO94BqsEJi90rdvITSZUWd2LewXxsOkgq
-        GYqQMTQ0GTEaYRoizFVFlAzZ02xdSsk=
+        bh=uJl2QUKd0J/CNcPXdb6tl7U8xAOrlcKDkTXBUgRGHiA=;
+        b=soD1SNULMg5V6761C9W67lP7pQpRKf1NdGPEVCNj8s4KoF+nL5eKbMM/ftf0u11ILbc0GL
+        l110ZrTemElDtusrYYIXwkGRv/CFgfH4PmKET6aH0qy8rylVxjt+ySVRBmXCP9DNH+we7Z
+        jVKJbF0MHlPiJRVsTjmNldhRz46oRUc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1645630073;
+        s=susede2_ed25519; t=1645631809;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3FUhPQarNWrhGr4m2gNeysZcuzjEBU8QonfmZqFkhwg=;
-        b=2/L9RvuUBNywcU0Y+N+TaZUkAOiL2ZjWGKn7MAHm5CUmDDnO0r8sO45ce62PSJMojqBeZ1
-        5TbJbuQcQy65DoAA==
+        bh=uJl2QUKd0J/CNcPXdb6tl7U8xAOrlcKDkTXBUgRGHiA=;
+        b=ujhbrPOVQ20HuKWhGYrz2P1Fk7/tiwFTMauA1RHKZC/7+aRfZyn55cCTkZGIk1vhCBLibh
+        VaCALc84+mA69iDQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C4741A3B87;
-        Wed, 23 Feb 2022 15:27:53 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E3310A3B88;
+        Wed, 23 Feb 2022 15:56:49 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 45407DA7F7; Wed, 23 Feb 2022 16:24:05 +0100 (CET)
-Date:   Wed, 23 Feb 2022 16:24:05 +0100
+        id 83142DA7F7; Wed, 23 Feb 2022 16:53:01 +0100 (CET)
+Date:   Wed, 23 Feb 2022 16:53:01 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v3] btrfs: add fs state details to error messages.
-Message-ID: <20220223152405.GO12643@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/4] btrfs: autodefrag: only scan one inode once
+Message-ID: <20220223155301.GP12643@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <8a2a73ab4b48a4e73d24cf7f10cc0fe245d50a84.1645562216.git.sweettea-kernel@dorminy.me>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1644737297.git.wqu@suse.com>
+ <7e33c57855a9d323be8f70123d365429a8463d7b.1644737297.git.wqu@suse.com>
+ <20220222173202.GL12643@twin.jikos.cz>
+ <64987622-6786-6a67-ffac-65dc92ea90d0@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a2a73ab4b48a4e73d24cf7f10cc0fe245d50a84.1645562216.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <64987622-6786-6a67-ffac-65dc92ea90d0@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -70,33 +69,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 03:42:28PM -0500, Sweet Tea Dorminy wrote:
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -66,6 +66,46 @@ static struct file_system_type btrfs_root_fs_type;
->  
->  static int btrfs_remount(struct super_block *sb, int *flags, char *data);
->  
-> +#define STATE_STRING_PREFACE ": state "
-> +#define STATE_STRING_BUF_LEN \
-> +	(sizeof(STATE_STRING_PREFACE) + BTRFS_FS_STATE_COUNT)
-> +
-> +/* Characters to print to indicate error conditions. RO is not an error. */
-> +static const char * const fs_state_strings[] = {
-> +	[BTRFS_FS_STATE_ERROR]			= "E",
-> +	[BTRFS_FS_STATE_REMOUNTING]		= "M",
-> +	[BTRFS_FS_STATE_RO]			= NULL,
-> +	[BTRFS_FS_STATE_TRANS_ABORTED]		= "A",
-> +	[BTRFS_FS_STATE_DEV_REPLACING]		= "P",
-> +	[BTRFS_FS_STATE_DUMMY_FS_INFO]		= NULL,
-> +	[BTRFS_FS_STATE_NO_CSUMS]		= NULL,
-> +	[BTRFS_FS_STATE_LOG_CLEANUP_ERROR]	= "L",
+On Wed, Feb 23, 2022 at 07:42:05AM +0800, Qu Wenruo wrote:
+> On 2022/2/23 01:32, David Sterba wrote:
+> > On Sun, Feb 13, 2022 at 03:42:32PM +0800, Qu Wenruo wrote:
+> > @@ -295,39 +265,29 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
+> >   		goto cleanup;
+> >   	}
+> >
+> > +	if (cur >= i_size_read(inode)) {
+> > +		iput(inode);
+> > +		break;
+> 
+> Would this even compile?
+> Break without a while loop?
 
-Yeah that's the idea with the table, but I think you don't need to use
-strings, it should be sufficient to use chars, and 0 works for the empty
-ones.  The way you did it consumes more memory and has indirection with
-the pointers to the actual single letter strings.
+That was a typo, s/break/goto cleanup/.
 
-I'm not sure if we want the non-error states like remounting or
-replacing, but actually why not, even if it's a transient state it's
-another piece of information that could be useful eventually.
+> To me, the open-coded while loop using goto is even worse.
+> I don't think just saving one indent is worthy.
+
+Well for backport purposes the fix should be minimal and not necessarily
+pretty. Indenting code produces a diff that replaces one blob with
+another blob, with additional changes and increases line count, which is
+one of the criteria for stable acceptance.
+
+> Where can I find the final version to do more testing/review?
+
+Now pushed to branch fix/autodefrag-io in my git repos, I've only
+updated changelogs.
