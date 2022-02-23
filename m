@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA244C07E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Feb 2022 03:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2381B4C0838
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Feb 2022 03:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236857AbiBWC3O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Feb 2022 21:29:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
+        id S237077AbiBWCba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Feb 2022 21:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236853AbiBWC3J (ORCPT
+        with ESMTP id S236975AbiBWCbJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Feb 2022 21:29:09 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4B2457A5;
-        Tue, 22 Feb 2022 18:28:41 -0800 (PST)
+        Tue, 22 Feb 2022 21:31:09 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F0E46660;
+        Tue, 22 Feb 2022 18:29:49 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D17161518;
-        Wed, 23 Feb 2022 02:28:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C78ECC340E8;
-        Wed, 23 Feb 2022 02:28:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 92D1361516;
+        Wed, 23 Feb 2022 02:29:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15EE4C340E8;
+        Wed, 23 Feb 2022 02:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645583320;
-        bh=+py2/YkglTXEKa0T51ANTzQbG+KNxe2UNnISO+IdftA=;
+        s=k20201202; t=1645583386;
+        bh=ogsP3s5MeLbN7aR6oo7GJS1vGcKrwQu0DklK25U2cWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ouLel1J58555NH84EIXFDVGCqrbHazrs24x1TK7B8f/P0S86qWo3p/nhPzSU3BZcf
-         IAmuzGagTXXtMLnLhlG6AcCJ9NQXqB/h/7UCz9JwhbODv5ZT7adNbDbVUOm3GsN1eX
-         2F7wFDPhSan5x9ZVYfxhogB2QitVrgIGcvds54sYsaLhNImgjV6ZE5pk/oK4nwE7kX
-         SKYPB2J9gNC7euoC6QAt6w9U/1Z4JDFZMw/4EyvKYOYrd+ay2xv+ICu/TXYukLXweC
-         uYFPcAJJOmON7D7q9ubw+R4P4DzVm6qzqtxa7CbvqCztV8K4Y8t2hCtXxbJvE0C62q
-         Q1JMtj11UHSbQ==
+        b=BQoRnyqDuI+78Lm5dW2Qul7c0UBbr6QJZr8I56wRMaWSzF1mfsvuryelXWwk9UXUS
+         1LzTsjZcwOMpywVeFKkwCzNG1VknbJ1ggbPZEL/d/Wvbg5Oaf/BGuNrJ0zF60Tabl0
+         LppIx3J22GKFH4LjYNW1czxVxJm7dsfyMxKUQBC5XZKhsHznf9nlJ/HvECYTDl2J06
+         Qz/YpBdbVV8DpJRXugKrJjOkWnZjAVcd0jImMZaBR8mJsQ2sZps40eugSLXDKyiwLk
+         kOrCwNji0LB4RGKSoipLujIn+zVsWtRWgNZkb+E4g8mTkAxh64pCxQfyOaH82riI1r
+         YnDRgIDwvBMaA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, Omar Sandoval <osandov@fb.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 10/30] btrfs: get rid of warning on transaction commit when using flushoncommit
-Date:   Tue, 22 Feb 2022 21:27:59 -0500
-Message-Id: <20220223022820.240649-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 08/28] btrfs: get rid of warning on transaction commit when using flushoncommit
+Date:   Tue, 22 Feb 2022 21:29:09 -0500
+Message-Id: <20220223022929.241127-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220223022820.240649-1-sashal@kernel.org>
-References: <20220223022820.240649-1-sashal@kernel.org>
+In-Reply-To: <20220223022929.241127-1-sashal@kernel.org>
+References: <20220223022929.241127-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -306,10 +306,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 27b93a6c41bb4..90aab24165b5f 100644
+index f1ae5a5b79c68..e3e9c58ea66fa 100644
 --- a/fs/btrfs/transaction.c
 +++ b/fs/btrfs/transaction.c
-@@ -2013,16 +2013,24 @@ static void btrfs_cleanup_pending_block_groups(struct btrfs_trans_handle *trans)
+@@ -2014,16 +2014,24 @@ static void btrfs_cleanup_pending_block_groups(struct btrfs_trans_handle *trans)
  static inline int btrfs_start_delalloc_flush(struct btrfs_fs_info *fs_info)
  {
  	/*
