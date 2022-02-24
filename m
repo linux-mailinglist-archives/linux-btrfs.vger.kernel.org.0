@@ -2,53 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E344C2BB0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 13:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01474C2C5F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 14:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234373AbiBXM3a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Feb 2022 07:29:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
+        id S234608AbiBXNBA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Feb 2022 08:01:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234379AbiBXM3Z (ORCPT
+        with ESMTP id S234604AbiBXNAz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Feb 2022 07:29:25 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8447E26A38A
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 04:28:55 -0800 (PST)
+        Thu, 24 Feb 2022 08:00:55 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C4E70CEA;
+        Thu, 24 Feb 2022 05:00:26 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 415431F44A
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:54 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C265A212B8;
+        Thu, 24 Feb 2022 13:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1645705734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dZSSFtcbrGBVNIcpYSN6FIBNxhpTs22gzVGtEDNuaGI=;
-        b=hziNHRb8geiPNfc2jIlwTkyVYGjufTwJQOWI+ihP+n001d9uDF1xme3ud70nukY0pUudF5
-        ChoqwSOqxPaCiUJucRkqSSS0zpcCL1wgUbRm/LkT43A+YbklliTrUGpemmX5V4GswoUmbQ
-        i+Q33X1c73V2vVyPdLmNfPzhSFu+IxQ=
+        t=1645707624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lBA++mc5SF8Y4WETgFfwwoyPxRe4iWtGpGa+kNNMrdI=;
+        b=KqCwjp9wg1zgebekpi276u5JP7m/DTVYTK4jUP5oJV5OjZ6kjoDcWMV7V1ftLJDudxfcPm
+        +ZNKBdPIm4AdWE5itGMBdtXMMCrdtQJtZKQoe/XaxfowI7O2ahoXD8zaCd6ZcjIw16sjev
+        9HKPY82c/1xh1DplJYcgBEIKA0ByMaM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8798713AD9
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:53 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C812313AD9;
+        Thu, 24 Feb 2022 13:00:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CDZjEwV6F2LhAgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:53 +0000
+        id 8j9yImeBF2ITFgAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 24 Feb 2022 13:00:23 +0000
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/7] btrfs: add trace events for defrag
-Date:   Thu, 24 Feb 2022 20:28:41 +0800
-Message-Id: <bf2635d213e0c85251c4cd0391d8fbf274d7d637.1645705266.git.wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add test case to make sure autodefrag obeys small write extent threshold
+Date:   Thu, 24 Feb 2022 21:00:20 +0800
+Message-Id: <20220224130020.64199-1-wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1645705266.git.wqu@suse.com>
-References: <cover.1645705266.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -61,225 +57,155 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch will introduce the following trace events:
+Btrfs autodefrag used to only use default defrag extent size threshold,
+which is not the same as the threshold to trigger autodefrag.
+(The autodefrag triggering threshold is 64K for uncompressed write and
+16K for compressed write, while the default defrag extent threshold is
+256K).
 
-- trace_defrag_add_target()
-- trace_defrag_one_locked_range()
-- trace_defrag_file_start()
-- trace_defrag_file_end()
+This can lead to unexpected high IO.
 
-Under most cases, all of them are needed to debug policy related defrag
-bugs.
+This behavior is fixed by the upcoming patch, titled "btrfs: reduce
+extent threshold for autodefrag".
 
-The example output would look like this: (with TASK, CPU, TIMESTAMP and
-UUID skipped)
+This patch will add test case to verify the behavior by:
 
- defrag_file_start: <UUID>: root=5 ino=257 start=0 len=131072 extent_thresh=262144 newer_than=7 flags=0x0 compress=0 max_sectors_to_defrag=1024
- defrag_add_target: <UUID>: root=5 ino=257 target_start=0 target_len=4096 found em=0 len=4096 generation=7
- defrag_add_target: <UUID>: root=5 ino=257 target_start=4096 target_len=4096 found em=4096 len=4096 generation=7
-...
- defrag_add_target: <UUID>: root=5 ino=257 target_start=57344 target_len=4096 found em=57344 len=4096 generation=7
- defrag_add_target: <UUID>: root=5 ino=257 target_start=61440 target_len=4096 found em=61440 len=4096 generation=7
- defrag_add_target: <UUID>: root=5 ino=257 target_start=0 target_len=4096 found em=0 len=4096 generation=7
- defrag_add_target: <UUID>: root=5 ino=257 target_start=4096 target_len=4096 found em=4096 len=4096 generation=7
-...
- defrag_add_target: <UUID>: root=5 ino=257 target_start=57344 target_len=4096 found em=57344 len=4096 generation=7
- defrag_add_target: <UUID>: root=5 ino=257 target_start=61440 target_len=4096 found em=61440 len=4096 generation=7
- defrag_one_locked_range: <UUID>: root=5 ino=257 start=0 len=65536
- defrag_file_end: <UUID>: root=5 ino=257 sectors_defragged=16 last_scanned=131072 ret=0
+- Creating a file with mixed extent size.
+  File offset 0 ~ 64K will be filled with two 32K extents, which should
+  be defragged.
+  While file offset 64K ~ 196K will be filled with two 64K extent,
+  which should not be defragged.
 
-Although the defrag_add_target() part is lengthy, it shows some details
-of the extent map we get.
-With the extra info from defrag_file_start(), we can check if the target
-em is correct for our defrag policy.
+- Trigger autodefrag
+
+- Check if extent at offset 0 and offset 64K get defragged.
+
+- Verify the checksum
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ioctl.c             |   4 ++
- include/trace/events/btrfs.h | 127 +++++++++++++++++++++++++++++++++++
- 2 files changed, 131 insertions(+)
+ tests/btrfs/262     | 102 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/262.out |   2 +
+ 2 files changed, 104 insertions(+)
+ create mode 100755 tests/btrfs/262
+ create mode 100644 tests/btrfs/262.out
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 1f0bf6181013..0d79dc28a9d4 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1486,6 +1486,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- add:
- 		last_is_target = true;
- 		range_len = min(extent_map_end(em), start + len) - cur;
-+		trace_defrag_add_target(inode, em, cur, range_len);
- 		/*
- 		 * This one is a good target, check if it can be merged into
- 		 * last range of the target list.
-@@ -1581,6 +1582,7 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
- 	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, start, len);
- 	if (ret < 0)
- 		return ret;
-+	trace_defrag_one_locked_range(inode, start, (u32)len);
- 	clear_extent_bit(&inode->io_tree, start, start + len - 1,
- 			 EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
- 			 EXTENT_DEFRAG, 0, 0, cached_state);
-@@ -1818,6 +1820,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 	cur = round_down(ctrl->start, fs_info->sectorsize);
- 	ctrl->last_scanned = cur;
- 	last_byte = round_up(last_byte, fs_info->sectorsize) - 1;
-+	trace_defrag_file_start(BTRFS_I(inode), ctrl, cur, last_byte + 1 - cur);
- 
- 	/*
- 	 * If we were not given a ra, allocate a readahead context. As
-@@ -1905,6 +1908,7 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 		BTRFS_I(inode)->defrag_compress = BTRFS_COMPRESS_NONE;
- 		btrfs_inode_unlock(inode, 0);
- 	}
-+	trace_defrag_file_end(BTRFS_I(inode), ctrl, ret);
- 	return ret;
- }
- 
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index f068ff30d654..f46b9858154d 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -30,6 +30,7 @@ struct btrfs_qgroup;
- struct extent_io_tree;
- struct prelim_ref;
- struct btrfs_space_info;
-+struct btrfs_defrag_ctrl;
- 
- #define show_ref_type(type)						\
- 	__print_symbolic(type,						\
-@@ -2264,6 +2265,132 @@ DEFINE_EVENT(btrfs__space_info_update, update_bytes_pinned,
- 	TP_ARGS(fs_info, sinfo, old, diff)
- );
- 
-+TRACE_EVENT(defrag_one_locked_range,
+diff --git a/tests/btrfs/262 b/tests/btrfs/262
+new file mode 100755
+index 00000000..5317576c
+--- /dev/null
++++ b/tests/btrfs/262
+@@ -0,0 +1,102 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 262
++#
++# Make sure btrfs autodefrag only defrag writes smaller than 64KiB
++# (which is considered as small writes)
++# This behavior will be introduced to v5.17 and backported to v5.16
++#
++# While older kernels (v5.15 and older) will not obey the threshold
++# but always use default threshold (256K) instead.
++#
++. ./common/preamble
++_begin_fstest defrag quick
 +
-+	TP_PROTO(const struct btrfs_inode *inode, u64 start, u32 len),
++# Override the default cleanup function.
++# _cleanup()
++# {
++# 	cd /
++# 	rm -r -f $tmp.*
++# }
 +
-+	TP_ARGS(inode, start, len),
++# Import common functions.
++. ./common/filter
 +
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	root		)
-+		__field(	u64,	ino		)
-+		__field(	u64,	start		)
-+		__field(	u32,	len		)
-+	),
++# real QA test starts here
 +
-+	TP_fast_assign_btrfs(inode->root->fs_info,
-+		__entry->root	= inode->root->root_key.objectid;
-+		__entry->ino	= btrfs_ino(inode);
-+		__entry->start	= start;
-+		__entry->len	= len;
-+	),
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch
++_require_xfs_io_command "fiemap" "ranged"
 +
-+	TP_printk_btrfs("root=%llu ino=%llu start=%llu len=%u",
-+		__entry->root, __entry->ino, __entry->start, __entry->len)
-+);
++# Needs 4K sectorsize, for larger sectorsize like 64K, no write will be
++# considered as small writes then.
++_require_btrfs_support_sectorsize 4096
 +
-+TRACE_EVENT(defrag_add_target,
++_scratch_mkfs -s 4k >> $seqres.full 2>&1
 +
-+	TP_PROTO(const struct btrfs_inode *inode, const struct extent_map *em,
-+		 u64 start, u32 len),
++# Need datacow to make the defragged extents to have different bytenr
++_scratch_mount -o datacow,autodefrag
 +
-+	TP_ARGS(inode, em, start, len),
++# Create the following file layout
++# 0       32K     64K     96K     128K     160K      192K
++# | Ext 1 | Ext 2 |     Ext 3     |       Ext 4      |
++#
++# Ext 1 and Ext 2 will be defragged as they are smaller than the 64K threshold
++# But Ext 3 and Ext 4 should not be defragged.
++$XFS_IO_PROG -f -s -c "pwrite -b 32K 0 64k" -c "pwrite -b 64K 64K 128K" \
++	"$SCRATCH_MNT/foobar" >> $seqres.full
 +
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	root		)
-+		__field(	u64,	ino		)
-+		__field(	u64,	target_start	)
-+		__field(	u32,	target_len	)
-+		__field(	u64,	em_generation	)
-+		__field(	u64,	em_start	)
-+		__field(	u64,	em_len		)
-+	),
++# Get the logical bytenr of Ext 1 and Ext 3
++old_ext1=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
++old_ext3=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 65536)
 +
-+	TP_fast_assign_btrfs(inode->root->fs_info,
-+		__entry->root		= inode->root->root_key.objectid;
-+		__entry->ino		= btrfs_ino(inode);
-+		__entry->target_start	= start;
-+		__entry->target_len	= len;
-+		__entry->em_generation	= em->generation;
-+		__entry->em_start	= em->start;
-+		__entry->em_len		= em->len;
-+	),
++old_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
++echo "=== File extent layout before autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
++echo "old md5=$old_csum" >> $seqres.full
 +
-+	TP_printk_btrfs("root=%llu ino=%llu target_start=%llu target_len=%u "
-+		"found em=%llu len=%llu generation=%llu",
-+		__entry->root, __entry->ino, __entry->target_start,
-+		__entry->target_len, __entry->em_start, __entry->em_len,
-+		__entry->em_generation)
-+);
++# Now trigger autodefrag, autodefrag is triggered in the cleaner thread,
++# which will be woken up by commit thread
++_scratch_remount commit=1
++sleep 3
 +
-+TRACE_EVENT(defrag_file_start,
++# At remount time we may already trigger autodefrag, but if it didn't get
++# triggered, that sleep 3 will trigger autodefrag, and only mark the
++# target range dirty. We need to write back those ranges to reflect the
++# extent logical bytenr change.
++sync
 +
-+	TP_PROTO(const struct btrfs_inode *inode,
-+		 const struct btrfs_defrag_ctrl *ctrl, u64 start, u64 len),
 +
-+	TP_ARGS(inode, ctrl, start, len),
++new_csum=$(_md5_checksum $SCRATCH_MNT/foobar)
++new_ext1=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
++new_ext3=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 65536)
 +
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	root			)
-+		__field(	u64,	ino			)
-+		__field(	u64,	start			)
-+		__field(	u64,	len			)
-+		__field(	u64,	newer_than		)
-+		__field(	u64,	max_sectors_to_defrag	)
-+		__field(	u32,	extent_thresh		)
-+		__field(	u8,	flags			)
-+		__field(	u8,	compress		)
-+	),
++echo "=== File extent layout after autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
++echo "new md5=$new_csum" >> $seqres.full
 +
-+	TP_fast_assign_btrfs(inode->root->fs_info,
-+		__entry->root		= inode->root->root_key.objectid;
-+		__entry->ino		= btrfs_ino(inode);
-+		__entry->start		= start;
-+		__entry->len		= len;
-+		__entry->extent_thresh	= ctrl->extent_thresh;
-+		__entry->newer_than	= ctrl->newer_than;
-+		__entry->max_sectors_to_defrag = ctrl->max_sectors_to_defrag;
-+		__entry->flags		= ctrl->flags;
-+		__entry->compress	= ctrl->compress;
-+	),
++# Ext 1 should be defragged on all kernels
++if [ "$new_ext1" == "$old_ext1" ]; then
++	echo "The extent at offset 0 didn't get defragged"
++fi
 +
-+	TP_printk_btrfs("root=%llu ino=%llu start=%llu len=%llu "
-+		"extent_thresh=%u newer_than=%llu flags=0x%x compress=%u "
-+		"max_sectors_to_defrag=%llu",
-+		__entry->root, __entry->ino, __entry->start, __entry->len,
-+		__entry->extent_thresh, __entry->newer_than, __entry->flags,
-+		__entry->compress, __entry->max_sectors_to_defrag)
-+);
++# Ext 3 should not be defragged on v5.17 and backported v5.16.
++# But older kernels (v5.15 and older) will not respect the small write
++# extent size threshold, and defrag them.
++if [ "$new_ext3" != "$old_ext3" ]; then
++	echo "The extent at offset 64K get defragged"
++fi
 +
-+TRACE_EVENT(defrag_file_end,
++# Defrag should not change file content
++if [ "$new_csum" != "$old_csum" ]; then
++	echo "file content changed"
++fi
 +
-+	TP_PROTO(const struct btrfs_inode *inode,
-+		 const struct btrfs_defrag_ctrl *ctrl, int ret),
++echo "Silence is golden"
 +
-+	TP_ARGS(inode, ctrl, ret),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	root			)
-+		__field(	u64,	ino			)
-+		__field(	u64,	sectors_defragged	)
-+		__field(	u64,	last_scanned		)
-+		__field(	int,	ret			)
-+	),
-+
-+	TP_fast_assign_btrfs(inode->root->fs_info,
-+		__entry->root		= inode->root->root_key.objectid;
-+		__entry->ino		= btrfs_ino(inode);
-+		__entry->sectors_defragged = ctrl->sectors_defragged;
-+		__entry->last_scanned	= ctrl->last_scanned;
-+		__entry->ret		= ret;
-+	),
-+
-+	TP_printk_btrfs("root=%llu ino=%llu sectors_defragged=%llu "
-+		"last_scanned=%llu ret=%d",
-+		__entry->root, __entry->ino, __entry->sectors_defragged,
-+		__entry->last_scanned, __entry->ret)
-+);
-+
- #endif /* _TRACE_BTRFS_H */
- 
- /* This part must be outside protection */
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/262.out b/tests/btrfs/262.out
+new file mode 100644
+index 00000000..404badc3
+--- /dev/null
++++ b/tests/btrfs/262.out
+@@ -0,0 +1,2 @@
++QA output created by 262
++Silence is golden
 -- 
-2.35.1
+2.34.1
 
