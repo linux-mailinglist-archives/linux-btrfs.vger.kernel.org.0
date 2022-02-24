@@ -2,339 +2,258 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367874C20AE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 01:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782E94C21A1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 03:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbiBXAee (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Feb 2022 19:34:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        id S230020AbiBXCQf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Feb 2022 21:16:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbiBXAec (ORCPT
+        with ESMTP id S229985AbiBXCQe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Feb 2022 19:34:32 -0500
-Received: from de-smtp-delivery-102.mimecast.com (de-smtp-delivery-102.mimecast.com [194.104.111.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338DC97B92
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 16:34:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1645662840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qP/QoNYqqrNZ2YbWOgx3MbB8shTv5puB653UdOAIf/8=;
-        b=U02FQfrjveBuFsD03spXw9iry4yeIAJ44PIswgcgDDdu/rOfI+vKAWxS0rhMhsnZiIAfDv
-        slFtHpgHRq1MyWh2mLE/xPBuSvnQ6QJxvMmia+C3Bhqjsfyn2YJNwuZH8bv+BIXpKZW5tZ
-        CnlqOm97UA7NydSCwVhvMbh8wRWhOXM=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2104.outbound.protection.outlook.com [104.47.17.104]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- de-mta-12-yfMWgUlBPlqolQb7mBiUVQ-2; Thu, 24 Feb 2022 01:33:59 +0100
-X-MC-Unique: yfMWgUlBPlqolQb7mBiUVQ-2
+        Wed, 23 Feb 2022 21:16:34 -0500
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F47606F6;
+        Wed, 23 Feb 2022 18:16:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1645668961; x=1677204961;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=jtYY0i9in8mLLjXLcZb4sMiMb3nt8QP0fnxJ/P/A3GQ=;
+  b=a4wzFzo6VJIVSKrXTN450CN2zDTJ7HEIWyzF3mV0BPF2RDWcTQ7GMKdn
+   L+PIvNJVyDgpGQmLFiHw5/utY6odnOzHLiFrn1o80YKR2ad5LA95BMt0f
+   TfjrJCjCuK30/2uX3p7feMfoZIlE22lRJh7BhNEWTPzKydC8A+yunViui
+   xotCp9Qgi8c0k17Zf0U8haF1/sLuKrpQfz2rgUDiuGz2UF82Jhty7GHqT
+   hUJBEa6J9+EmYMcphINYKnSoGwCqdV+V0VCsrucs1gLuSMJNTGcFy7+vX
+   cGVTgja1UdgE/VG06s7PcAlmpE8kTkXFNvpg4w6Usg4dusp/mUV4FGkuR
+   g==;
+X-IronPort-AV: E=Sophos;i="5.88,392,1635177600"; 
+   d="scan'208";a="305715801"
+Received: from mail-sn1anam02lp2045.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.45])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Feb 2022 10:16:00 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DC/E+sTql5suc4DRdxoxCVmUI0Exf2ryM3Zj2C1mV0pkaD4yThGRb9BKgOY6e1CFbOPKlM7yK5/+Bc3dNU7pk6H4inZyS1PfQ7y9sA5EBoRirMPHiiC3+HSqZfDSeByrlOTRjIQ0uZt1aP0NpNYhnrovF70TnVrG5KRq9rbaEJZaFcfSXs3xO5h4V8D92V8vFuud12DGNhwt4uPDUa5i9q7E8U44xULTEPnsLPVBNJzY0PD7jazoSqAYiQX7/wSCewdzJtErH/sVyhFZW2g2LJLjm8JIgEP4DfZI2q1Hi1biACAP9FQ53lP4diL1hxzcRTKEhrMJ96mFGBupw7TbPQ==
+ b=lGSxY/eLS5pgLCLlHaJJYQa1EbAriwk/90FeLb2QJp+2cliFw3JbFlflhVWM09JjlizTJJlvkQct04m/PJb+1CuDeU1S17N6PYSrOkk2CqtHmnqlfznsmsvmOKVGpTVtcwIBB7XjTkc6iP/BH5TFzJldvkiYlzfYz+fngMh6g7VPX0Yh9DF8a/D+aaKUnFIhzqgW6fVyciliKAYtJo6Q72W+HpGRaP4kgwQK4dScYDT+TqojeluK3nwjnEwTkhO+yKfv2BG5zwa67Z8bQmwBTfXovZHG2eO9hzALNJeEex02IP2rLI9pTt8UUAQvYzJ15GdxDNYiu1CdguwRUft8cA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yiVC8qpJo0h2NEKDXpAWmXilAufjl/5IwFbxr0JFicE=;
- b=X1z2ghgi3eyby5g7cqVzVspNoswkn8UWVN1098GeBAkRjabh+W1Py9qz4MTUtvh1cckig/85nKavGHih8SzlTjpz5LfTaOI/BJ+I2ST/SywCYl3V/Y1RjhXRAlidUwm/GgMqp9yFjrUxXR6KvWr6iQVCu2AUw5MNYjvtAF8QocyynXzh2B7lWwqEZLT9AILkP3oVavriOOS6dXk3o7JXeFPFJGDhSYSwqXFPuDnT/XqQQ2PpLls2EeNsd6wfuziGqwBn7OFSHUKyz7rV7dWbvnbsFHCyJeQR/Hh/UtdtcoWZgDT5mZDRJWs79UffucbI3wIwVNl47/AZDdANabbcPA==
+ bh=/VF2CrenxRkF05sd3kyF1msPbitVlvJPJKPEGeVuvSE=;
+ b=MeSAk9EX57h2koZpO9/F+PI4nJd7CoZy4cDFJA6YbGY2vsGx36lMu4ICm67gm4xhF6gM8dfk/5dGL5Va17g2lF+9rJZ8cLllaA4ZMhfWei8kHsZBvWiY4l/MKSQCMrzYvF8vylCZAtmr3U0Sk2agNjrVqC7orZrtSk3KAZXC3eD++mGf2ctcwMFRhVLDteT6m6YWsX6Vw8GYDqlvsxK3CCsa1W+YX5AmcvrWU6ioUz34+Fah/wfwnGSeq/ZV5hs4DvO82+wzsUOGcYRlyUYRhKtoXCqXd2/Zeab/OGvB0/c1iSz4k+/MLa+BSVSrIFuMx0OQegRapkNIJGoLHcLnCQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB9PR04MB9426.eurprd04.prod.outlook.com (2603:10a6:10:36a::14)
- by AM6PR0402MB3462.eurprd04.prod.outlook.com (2603:10a6:209:6::31) with
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/VF2CrenxRkF05sd3kyF1msPbitVlvJPJKPEGeVuvSE=;
+ b=zwi7dRyd+jjw+SXqeB1q4ckOsgNKdaZzovwwmJpqhnxna0S8uwSy88oeebbBe/SwyKC/bVPjFN7ypKM1MyT2f0WOgqglPgxYboISeh8GTJGEIY6bxTn1D4/WCU0SBKCq2CGuGyygLBLEwYFV0n1OePmxM+KDvQdsXjxdI+Te1Vg=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by BYAPR04MB5960.namprd04.prod.outlook.com (2603:10b6:a03:ed::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.22; Thu, 24 Feb
- 2022 00:33:56 +0000
-Received: from DB9PR04MB9426.eurprd04.prod.outlook.com
- ([fe80::fde1:fffd:bbe0:492]) by DB9PR04MB9426.eurprd04.prod.outlook.com
- ([fe80::fde1:fffd:bbe0:492%4]) with mapi id 15.20.4995.027; Thu, 24 Feb 2022
- 00:33:56 +0000
-Message-ID: <173dc4fc-21fa-1534-9e6e-d1ff4c1b7564@suse.com>
-Date:   Thu, 24 Feb 2022 08:33:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: Crash/BUG on during device delete
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.21; Thu, 24 Feb
+ 2022 02:15:58 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::d179:1a80:af1d:e8ee]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::d179:1a80:af1d:e8ee%8]) with mapi id 15.20.5017.022; Thu, 24 Feb 2022
+ 02:15:58 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "david@fromorbit.com" <david@fromorbit.com>
+Subject: Re: [PATCH v3 2/2] btrfs: zoned: mark relocation as writing
+Thread-Topic: [PATCH v3 2/2] btrfs: zoned: mark relocation as writing
+Thread-Index: AQHYJH4Hg8zszeTopEC3wqDurB05xqyg9/KAgAEH/QA=
+Date:   Thu, 24 Feb 2022 02:15:58 +0000
+Message-ID: <20220224021558.eubg4agqnkkodkd6@naota-xeon>
+References: <cover.1645157220.git.naohiro.aota@wdc.com>
+ <01fa2ddededefc7f03ca4d6df2cccfdbf550aa26.1645157220.git.naohiro.aota@wdc.com>
+ <20220223103107.GM12643@twin.jikos.cz>
+In-Reply-To: <20220223103107.GM12643@twin.jikos.cz>
+Accept-Language: ja-JP, en-US
 Content-Language: en-US
-To:     Forza <forza@tnonline.net>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-References: <c574966a-4b9e-0a50-cb47-e6f904f95eaf@tnonline.net>
- <4e094239-c987-8b1a-bc56-b4252481fbaa@gmx.com>
- <feada357-9340-0ec3-4899-91b7351d17ad@tnonline.net>
- <3c25d70c-43fe-cf38-33f8-05e35ceb03f0@suse.com>
- <b964eb55-537f-dab4-e8a0-1326d5ee2c67@tnonline.net>
- <90be0040-74f9-29fa-4552-57f45dbf0a86@suse.com>
- <5a8a1ecf-d8ef-7db3-7a97-3f9f29b57bb1@tnonline.net>
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <5a8a1ecf-d8ef-7db3-7a97-3f9f29b57bb1@tnonline.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: edf3ea0f-940a-4c76-9f38-08d9f73b98ca
+x-ms-traffictypediagnostic: BYAPR04MB5960:EE_
+x-microsoft-antispam-prvs: <BYAPR04MB596007F3FE4D7989796C07D68C3D9@BYAPR04MB5960.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dBhJ7wwTw+kT9zHoDEkLOfdFR3vcrD4mVdWHj6ULGScrX5+DGu0ISOBGop7Kikj2NAWRIocKh7FxUmrxpMzWS/goPxEqeYC5cHTkQtlflfnb28Ufw6vPDkeOfB6c3uCEcOhP/53VHognqwPnoBm6xRS5PbWv3UzOMMPO2v281ay/52EcSAvW0Dl2Od7MhK4FU6WVB1OWW92+POGwWErLOjllIFV4FVnu6ec3ekNfD9tD7IpfNXY5fi2i3p4aVyPRW185Snm5ZE8fJ2C9821+cEid7ssBPG0H09t3g5I13ZfcgzoffwOkv+lRKeq+t0UVJ3keO4EvG1wmiNJY1RcRcG5mAKg4u6YKUq2afV+tdRgXGYCfAX2fjlJC69L1oRZkiDseIgc/NNIVO/VB6VprNXhamOGYQpaVoGQSKUzLkIBjV/PbrLI8/WrTarWQH84+DEF14sP9WUQnQ2OFDR+BpxRO1+SozsL33DoUwxnjIuJiJfeLPCE9dMXV1EpHqUAaW/lO8W5LlfgBUL6Qsuf+LBSvxWPcJvBqGoPPAgYP9lCrq+CBnZJzNwPQe663Hh8nK04rw/+28OG8+M4dXxdqKoGBaljNtWNBAStjNuIxsPk+Ap3a5TEa+HejysZEY/iaSkKBmUZh46J2UMOdEggz9tCCvvZ8sU7LUr9a78ihcmbyWKymZq1UUvphi+41fEoqCiAhrW2aq05/LMP7ToEz6w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(26005)(1076003)(9686003)(186003)(38070700005)(2906002)(82960400001)(122000001)(6512007)(33716001)(83380400001)(91956017)(45080400002)(6506007)(5660300002)(508600001)(86362001)(66946007)(6486002)(66556008)(316002)(71200400001)(66446008)(66476007)(8676002)(64756008)(76116006)(110136005)(8936002)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4c9mTWftBFa+jbJUXyyGUIrKt0aSReh0pHJUmljr5kUk7/l1eO97doRSDsub?=
+ =?us-ascii?Q?+cVBss0maeS/2a/IXGxBh71QeaNC8A1UgkeLKjo2uvkGy4HxLih7qlPb1Qqw?=
+ =?us-ascii?Q?b4fe1hn7d57foXdWZQnPruYn/PsX9D0loOUuk27keMtOPUIs5NadFQW40n+M?=
+ =?us-ascii?Q?Nd7ccAdyO9aTniYkJSoFPJWqRFDtyAQ81GUtkSIfRI8btsW/3BICux1a9gMs?=
+ =?us-ascii?Q?bKuju68iOK0S5dy4o8tsx9WhmT2nxz0+ec1c6JMsBZAUJZ9ziFIuKksLScMy?=
+ =?us-ascii?Q?xlrP9y1q6uC/aawUjehyJMi0vRnLQlycWGuVh8fGVXOH+rstnUbU2wjte1RQ?=
+ =?us-ascii?Q?pV7wc4cFTN7A36ep/G2TOiy24YV2omCqaJ+rx5Sjjme+bqAyGuUJb7uUNJm+?=
+ =?us-ascii?Q?vB1eJVJ7W9hPI9YXLbjdiuoOTaRz8Ls+RVoEHzIoCijmUKnIrJaxFiqQUeY/?=
+ =?us-ascii?Q?8x58tWhldCT5WqbVn/o5fbCv+OAw+E4nEpcBFncu9F3r+B/dMd2KYUE2OFvq?=
+ =?us-ascii?Q?+/gyGogmVUHM5aWB+N039X310CPxxAuSTGQsPK/HtVP2BzgeJ77+nq2yoHE9?=
+ =?us-ascii?Q?LPMDi5yVfzz6ZHO2tHSWrsHOZNfwgTzLeKSpCI+gjiL/viw1fQ5cHppSQ0hm?=
+ =?us-ascii?Q?KCi/WNK3KhtHGFoe8AIa6eoenwHbCKbet+5CAiiak+vf6R2eJKloHX4ExCD8?=
+ =?us-ascii?Q?SROP1fA+aaP9ym/6yG5xPLqLGaoM5nPCE8KJV/tbk8cR4HNDWtO4wjinzENe?=
+ =?us-ascii?Q?gvuL/ct+sGBKgEwqHcZ2DaB1048vkmcuzw7fRS36DQV9bC+YHtjhcY2kxgK0?=
+ =?us-ascii?Q?vFpG3G7IG8K+l1mF2qrGgLDbMlhLF4BQpZvXkujWRhIXIitt1qyia6fxo3RI?=
+ =?us-ascii?Q?mzT2ydY30VW+yMkDL2QsGvhB9q+SpTLYVvMIBwT+8gw+hHSijJYctV/45V7y?=
+ =?us-ascii?Q?KTJEuMIaq56qOUBfLQms3hgdq7zd421cOEw9nHVo1MwQFEUNGIgN8F7Np9JA?=
+ =?us-ascii?Q?QCypxYk1vKKscKXQb2EwKEjQCzJ4E1s2N1nXq6GRTugveuVNDac8AV2VBrmN?=
+ =?us-ascii?Q?/Iwl4Rg/aXFovDM5mzDQu17CEHKFTa4W98u0GHL+mK6wOwVBb+1YoD178lRX?=
+ =?us-ascii?Q?HuYFTdsB9+nRxOqHiIdA7Q2PjSfiQJyvuXBs9AaSZ4jH04FFpe4KkdFsKeDf?=
+ =?us-ascii?Q?kVVPM1zTiBcCAya0NbAOTfqtiKpBQcHhtSF1yfdc2Ze5x+S1RG84CCrTjqVo?=
+ =?us-ascii?Q?YIozMxjhZIVSyXKgdKZPZJpylFq6nM9nVDwl9WhYWcNjPR/S983ZBtLiiJit?=
+ =?us-ascii?Q?pqjaoLL24JTwNtKXT1fh7RVrxJHxp66cm38JFjENqDI1JJdh2d1ohHMHuvY+?=
+ =?us-ascii?Q?36RM72tv//dUlEjXaNE5snwGtT+b+FkqcrOTILwGicz2EkS18A3lHYn/EOxs?=
+ =?us-ascii?Q?776OnEl881tc4k+G2o7rejaJZn8sLIi7WjirXKlj0Z/52R8Rst09P5/aorg+?=
+ =?us-ascii?Q?5yqYP3ZMwSaF+9lgcGrPSo53r69Ikm+/Cwkg3ysv/+09rZ291mwDHkGS00FP?=
+ =?us-ascii?Q?Q3cUCElder4GfaKfXuOHQvtSF7V0LfMFhrrjEI5HQAneaukLmxUzLk34H5xA?=
+ =?us-ascii?Q?6BDUVoBNWX6vOyvF8iFMT4U=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1C10A6F25FA53C4B8882553B8F87A217@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: SJ0PR03CA0008.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::13) To DB9PR04MB9426.eurprd04.prod.outlook.com
- (2603:10a6:10:36a::14)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91827fa5-2658-4000-0dc8-08d9f72d5773
-X-MS-TrafficTypeDiagnostic: AM6PR0402MB3462:EE_
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-Microsoft-Antispam-PRVS: <AM6PR0402MB34626D7407942D4251FB5E41D63D9@AM6PR0402MB3462.eurprd04.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WQg3GQfyiLIEZhGdeV8MW0qKcb/pAeND3V7E3berhopjwBkGbFr4HODnixJkMSFUDspMb7LdlyhcjrCOQ3Wjav6rFqia4gsZ8CNQxIYjZRq8PSd7CQ7M3+VQsjf5A5qQmkHVUgjlDHzro9T5dOOOW/q6tycbbI4HH5Im1LiwP8HUU3AwdE4/T5RWEEvI8rOz72/Vntl9KtMZkaFU4tSbxQPmjw1H+esl9gKxxSs2//D2GraRvsF3MMbHUNEHvg/FjIG0LLkwPQ6teaoYlL8oYqEk0fB/7KcWttRDW6OKqIlGkzwffD63YzxAJzV7bktDSHxksIsLXaMcwIYzQiUFrfPvfsyrq/IsGSxcOnQ2UQkzlBs+AINj483Ndx3OifCqHJ1sYO7KV+KCDbcK4Mp64GIYmZugPm4QDrYCs89trbQQiSyp4QJ+pZiIT3yNyWPbqS1uqfpeLrmUC04TWiomxo5pUOO5dDbqSmJnmjUproDkYiXlNRd6l1YBZ7JO0xm0wHPlm+LQADdah1wHpqI7j9v30q76t0dVQGU9EaHQIPyjulSdETHG3nSBbMFDgb1oEITbXetZkAgOXXZjSGngL2Of5UBYty/sGuTIg+BZKIlNUClkProAUPAaJQ4YW7mp/FdpRrPFsGGuZ7MhMBRB1lyCDLn0N1O+xCpL2eT+FqSw6Y1BYEv5XLLOSgkgiJTJbIc/qSxQNCtq+JMyNX4ACYhvoXuaijtqNHwhgkSA7ds=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(66476007)(2616005)(66556008)(26005)(8676002)(66946007)(186003)(6512007)(53546011)(6486002)(966005)(508600001)(2906002)(6506007)(38100700002)(36756003)(31686004)(31696002)(86362001)(316002)(6636002)(5660300002)(6666004)(83380400001)(110136005)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KXofkWEBV2sOzj+tfJ3QArvwRqlJNPlirsCSdZGel3/7Q6w/15ak3kH4JfXj?=
- =?us-ascii?Q?taSaqGZ7FVDAluyqCQ/HkchXDGDILdeBIEqeZJo1F8V1ySNkAem22IMwol+E?=
- =?us-ascii?Q?3jw5H7A82JsWWX8goV2AnYZyaR6FItyl+YIwueABMiYJj1fu8l/0o1hJPtVy?=
- =?us-ascii?Q?xLWL7EIRowigUjv2elIlgNDUw8aVMlWH1SM9ZQxk1Vm2ld6/0HVKg0m5iaLA?=
- =?us-ascii?Q?W/HZa6PxqmDaq0soC/nZhKmdf2KPwcNTPQy86xOS6/hyY6akIlBZS9K3yKfh?=
- =?us-ascii?Q?uRh+hAu9RQ03dEH8UlSA6VPY0Ob29i3EBDzH7HOgqyqQpz0V2+2igkIHH9wG?=
- =?us-ascii?Q?yPQfcSE2zghwCFZkgNsQ8WfT3k6d+9hnzBYYyRdoHFrWCNw5HeO7EiVCOASJ?=
- =?us-ascii?Q?H70NA9uKQUlfzL0PtOPUdkK+OBEJd+VKMsI7Vplo1Rx7GjZIh4O8UAsNneeW?=
- =?us-ascii?Q?T2FCyGpov3AK1EvbBI2bnDCnNvIuA/MVHoTQG68Bo8ujY5AlAJnykUEQqZ10?=
- =?us-ascii?Q?LdufPKNdp3so50JhQYfkmlKk7Q6uAkwaOfZHcM5wpWWWbwHYk/lmVKNcVip4?=
- =?us-ascii?Q?vsDSamqi3rhpNXqWbNdYRp6Q8riQA12+mmojHw2M49RAchdvlue/e+Orix9q?=
- =?us-ascii?Q?AcMcbtIw8M91I6A+oISCPf6VWCTd9PI3LeyUbva9Abi6zVsklYP3GjyZ/4yH?=
- =?us-ascii?Q?CpJC8HQT6fuzuME5puB4IWDEczoMoV+A24BTmHjXkX1Uc50Zk9jW/uHXA7MW?=
- =?us-ascii?Q?eO1iJ2ktbZAU/v5Np7P5YsuOdu30GdGAeXAminM0gl2aCZfTZX0+hzBuiySO?=
- =?us-ascii?Q?U90j4qKm+Kn4euCPERCH1ABGGnse7acTt87wnv0f4InUCfUHRZWF9AD6daAX?=
- =?us-ascii?Q?/l8YpwlVBasiS1wqtVfjbqkI38JEOCpqOYaT/WyfKZF8G32igRqqMMhPLIOT?=
- =?us-ascii?Q?1joCjWgWNJjZUEv58QNbfkXUbqBOSuXfKVICNVVlEUpcHQuvs67r88S3FxGg?=
- =?us-ascii?Q?JyZtHE/hnUKYBM2Ob248nBo3QXWpllEFG88+4FrCsWJHP9toS0qMPngXGtql?=
- =?us-ascii?Q?JVKgAiRuq+pnUoD7yfcqZxNQervHhWsQXScvmIFmPezoryg5DzbMcbiIYByH?=
- =?us-ascii?Q?i1YvIKqkYrl9kNvPs9BDxdG3excznhpwFxPTYNiUUA4TF9JpSRHniYTwBmhp?=
- =?us-ascii?Q?iAEV+F/TzYO+cBEdQ9RZLIEcsU7/uMLrguOr5Xbg9KDvl3wHgCrkwjZZocK6?=
- =?us-ascii?Q?OyW2Sbqm6ts6OnsRA6RIQBJikyvRpH6o/HTVr11GVv2lFxcuINX9LzC2EAjk?=
- =?us-ascii?Q?MOd9ih96Q5SAfgJICPAdvnQWWWmeFPaadrzt2KcfUCetw9CzipaZdKjh/seI?=
- =?us-ascii?Q?+Iae7l2W7+KgACclgiNRe1xan+ANgvR0Kkd89sch04nGandvBSIa7M3NzIkc?=
- =?us-ascii?Q?LoabgQPqKJYNXNMRlpmi1a0i/PC4jMb0Kxaba7qLXX2adYSiAP+V3GUWAWpH?=
- =?us-ascii?Q?AkaMtG4wy7ZEdUCwT3nvhbabHQ6d+d4O991nIa/iLVc5RqI6po9syYH74pUH?=
- =?us-ascii?Q?KhZYJaSRLucmhi215nQ=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91827fa5-2658-4000-0dc8-08d9f72d5773
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9426.eurprd04.prod.outlook.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2022 00:33:56.4726
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: edf3ea0f-940a-4c76-9f38-08d9f73b98ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2022 02:15:58.6919
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mU1cyzpK9I8Xknhxc/eKvFEVTHHdFzfKZU1BF5miJM7JiYKdPwAdxUaYQYcEPhkJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3462
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9D6f4MD68sBVvNnLjSypIb9BxUM98SKqgf8aAEyYUG7Jpdd5rZYVI8xDlAFT57w0AWMhYrtFuSjnQV2hFIC8sQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5960
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/2/23 22:55, Forza wrote:
+On Wed, Feb 23, 2022 at 11:31:07AM +0100, David Sterba wrote:
+> On Fri, Feb 18, 2022 at 01:14:19PM +0900, Naohiro Aota wrote:
+> > --- a/fs/btrfs/volumes.c
+> > +++ b/fs/btrfs/volumes.c
+> > @@ -3240,6 +3240,9 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs=
+_info, u64 chunk_offset)
+> >  	u64 length;
+> >  	int ret;
+> > =20
+> > +	/* Assert we called sb_start_write(), not to race with FS freezing */
+> > +	ASSERT(sb_write_started(fs_info->sb));
 >=20
+> I see this assertion to fail, it's not on all testing VMs, but has
+> happened a few times already so it's probably some race:
 >=20
-> On 2/23/22 13:28, Qu Wenruo wrote:
->>
->>
->> On 2022/2/23 20:17, Forza wrote:
->>>
->>>
->>> On 2/23/22 12:10, Qu Wenruo wrote:
->>>>
->>>>
->>>> On 2022/2/23 18:30, Forza wrote:
->>>>>
->>>>>
->>>>> On 2/23/22 11:06, Qu Wenruo wrote:
->>>>>>
->>>>>>
->>>>>> On 2022/2/23 17:01, Forza wrote:
->>>>>>> Subject:
->>>>>>> Crash/BUG on during device delete
->>>>>>> From:
->>>>>>> Forza <forza@tnonline.net>
->>>>>>> Date:
->>>>>>> 2/23/22, 09:59
->>>>>>> To:
->>>>>>> linux-btrfs@vger.kernel.org
->>>>>>>
->>>>>>> Hi!
->>>>>>>
->>>>>>> I am running a test system and experienced a hard lockup with the
->>>>>>> following message:
->>>>>>>
->>>>>>> [53869.712800] BTRFS critical: panic in extent_io_tree_panic:689:
->>>>>>> locking error: extent tree was modified by another thread while=20
->>>>>>> locked
->>>>>>> (errno=3D-17 Object already exists)
->>>>>>> [53869.712825] kernel BUG at fs/btrfs/extent_io.c:689!
->>>>>>>
->>>>>>> Kernel: 5.15.16-0-lts #1-Alpine SMP
->>>>>>> CPU: Xeon(R) E-2126G
->>>>>>> MB: SuperMicro X11SCL-F, 64GB ECC RAM
->>>>>>> Broadcom 9500-8i HBA SAS controller
->>>>>>>
->>>>>>>
->>>>>>> I had 5 SSDs in a RAID1 filesystem and wanted to delete 3 of them.
->>>>>>>
->>>>>>> # btrfs device delete /dev/sdf /dev/sdd /dev/sdd /mnt/nas_ssd
->>>>>>>
->>>>>>> When about 6GB was left on the last device I got a kernel BUG=20
->>>>>>> message
->>>>>>> with stack trace. Unfortunately the message was not saved to=20
->>>>>>> syslog -
->>>>>>> anything trying to access the system disk froze, even though the=20
->>>>>>> "btrfs
->>>>>>> device delete" operation was not performed on the root filesystem. =
-I
->>>>>>> managed to get some screenshots of the trace.
->>>>>>>
->>>>>>> I performed a hard reset and the system booted normally. A scrub=20
->>>>>>> showed
->>>>>>> no errors and a new "btrfs device delete /dev/sde /mnt/nas_ssd/"
->>>>>>> finished without errors.
->>>>>>>
->>>>>>> Attached images (wasn't able to send them to the list):
->>>>>>> https://paste.tnonline.net/files/ISD0z6LNqw5D_Screenshot2022-02-230=
-83359.png=20
->>>>>>>
->>>>>>
->>>>>> =C2=A0From the stack, it looks like related to chunk discard optimiz=
-ation?
->>>>>>
->>>>>> Can you provide the code line number of btrfs_alloc_chunk+0x570 and
->>>>>> add_extent_mapping+0x1c6?
->>>>>>
->>>>>> Better with the code context.
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>
->>>>> Hi Qu,
->>>>>
->>>>> I could only make the two screenshots as the system was frozen and=20
->>>>> logs were not saved to disk =3D(
->>>>
->>>> No, I mean using linux/script/faddr2line to resolve the code line=20
->>>> number so we can have an idea on whether it's chunk discard=20
->>>> optimization or something else.
->>>
->>> I setup the Alpine dev environment but unfortunately I don't think I=20
->>> am getting an expected result:
->>>
->>> alpine-devhost [~/aports/main/linux-lts/src]$=20
->>> ./linux-5.15/scripts/faddr2line build-lts.x86_64/vmlinux=20
->>> btrfs_alloc_chunk+0x570
->>> no match for btrfs_alloc_chunk+0x570
->>>
->>> alpine-devhost [~/aports/main/linux-lts/src]$=20
->>> ./linux-5.15/scripts/faddr2line build-lts.x86_64/vmlinux=20
->>> add_extent_mapping+0x1c6
->>> no match for add_extent_mapping+0x1c6
->>>
->>> alpine-devhost [~/aports/main/linux-lts/src]$=20
->>> ./linux-5.15/scripts/faddr2line build-lts.x86_64/fs/btrfs/btrfs.ko=20
->>> add_extent_mapping+0x1c6
->>> add_extent_mapping+0x1c6/0x2b0:
->>> add_extent_mapping at ??:?
->>>
->>> alpine-devhost [~/aports/main/linux-lts/src]$=20
->>> ./linux-5.15/scripts/faddr2line build-lts.x86_64/fs/btrfs/btrfs.ko=20
->>> btrfs_alloc_chunk+0x570
->>> btrfs_alloc_chunk+0x570/0x9a0:
->>> btrfs_alloc_chunk at ??:?
->>>
->>> (I did also run on the hosts actual unzipped /boot/vmmlinuz-lts and=20
->>> btrfs.ko.gz)
->>
->> OK, this means the kernel and modules are stripped, without debuginfo.
->>
->> Is there any debuginfo package provided from your distro?
->>
->> And since you mentioned in your report that, the fs passed scrub and=20
->> device remove works fine later on, I guess you can not reproduce the=20
->> bug anymore?
->>
->=20
-> I got the Alpine kernel sources and added CONFIG_DEBUG_INFO=3Dy. Now I ge=
-t=20
-> the following output. I hope it is relevant.
->=20
-> alpine-devhost [~/aports/main/linux-lts/src/linux-5.15]$=20
-> scripts/faddr2line fs/btrfs/btrfs.ko btrfs_alloc_chunk+0x570
-> btrfs_alloc_chunk+0x570/0x9a0:
-> create_chunk at=20
-> /home/forza/aports/main/linux-lts/src/linux-5.15/fs/btrfs/volumes.c:5341
-> (inlined by) btrfs_alloc_chunk at=20
-> /home/forza/aports/main/linux-lts/src/linux-5.15/fs/btrfs/volumes.c:5434
->=20
-> alpine-devhost [~/aports/main/linux-lts/src/linux-5.15]$=20
-> scripts/faddr2line fs/btrfs/btrfs.ko add_extent_mapping+0x1c6
-> add_extent_mapping+0x1c6/0x2b0:
-> extent_map_device_set_bits at=20
+> [ 2927.013859] BTRFS warning (device vdc): devid 1 uuid 4335c7a6-652c-438=
+9-8ea9-270c00fa9880 is missing
+> [ 2927.017693] BTRFS warning (device vdc): devid 1 uuid 4335c7a6-652c-438=
+9-8ea9-270c00fa9880 is missing
+> [ 2927.022921] BTRFS info (device vdc): bdev /dev/vdd errs: wr 0, rd 0, f=
+lush 0, corrupt 6000, gen 0
+> [ 2927.031780] BTRFS info (device vdc): checking UUID tree
+> [ 2927.045348] BTRFS: error (device vdc: state X) in __btrfs_free_extent:=
+3199: errno=3D-5 IO failure
+> [ 2927.049729] BTRFS info (device vdc: state EX): forced readonly
+> [ 2927.051787] BTRFS: error (device vdc: state EX) in btrfs_run_delayed_r=
+efs:2159: errno=3D-5 IO failure
+> [ 2927.058758] BTRFS info (device vdc: state EX): balance: resume -dusage=
+=3D90 -musage=3D90 -susage=3D90
+> [ 2927.062457] assertion failed: sb_write_started(fs_info->sb), in fs/btr=
+fs/volumes.c:3244
+> [ 2927.066121] ------------[ cut here ]------------
+> [ 2927.067682] kernel BUG at fs/btrfs/ctree.h:3552!
+> [ 2927.069214] invalid opcode: 0000 [#1] PREEMPT SMP
+> [ 2927.070926] CPU: 2 PID: 22817 Comm: btrfs-balance Not tainted 5.17.0-r=
+c5-default+ #1632
+> [ 2927.075299] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
+S rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+> [ 2927.080897] RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
+> [ 2927.092652] RSP: 0018:ffffaed9c610fdc0 EFLAGS: 00010246
+> [ 2927.095227] RAX: 000000000000004b RBX: ffffa13a873db000 RCX: 000000000=
+0000000
+> [ 2927.096898] RDX: 0000000000000000 RSI: 0000000000000003 RDI: 00000000f=
+fffffff
+> [ 2927.100514] RBP: ffffa13a55324000 R08: 0000000000000003 R09: 000000000=
+0000001
+> [ 2927.102518] R10: 0000000000000000 R11: 0000000000000001 R12: ffffa13a6=
+922f098
+> [ 2927.104330] R13: 000000008cfa0000 R14: ffffa13a553262a0 R15: ffffa13a8=
+73db000
+> [ 2927.106025] FS:  0000000000000000(0000) GS:ffffa13abda00000(0000) knlG=
+S:0000000000000000
+> [ 2927.108652] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2927.110568] CR2: 000055fdf2a94fd0 CR3: 000000005d012005 CR4: 000000000=
+0170ea0
+> [ 2927.112167] Call Trace:
+> [ 2927.112801]  <TASK>
+> [ 2927.113212]  btrfs_relocate_chunk.cold+0x42/0x67 [btrfs]
+> [ 2927.114328]  __btrfs_balance+0x2ea/0x490 [btrfs]
+> [ 2927.114871] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 131072 csum 0x7e797e3e expected csum 0x8941f998 mirror 2
+> [ 2927.115469]  btrfs_balance+0x4ed/0x7e0 [btrfs]
+> [ 2927.118802] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 139264 csum 0x27df6522 expected csum 0x8941f998 mirror 2
+> [ 2927.119691]  ? btrfs_balance+0x7e0/0x7e0 [btrfs]
+> [ 2927.123158] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 143360 csum 0x9f144c35 expected csum 0x8941f998 mirror 2
+> [ 2927.123965]  balance_kthread+0x37/0x50 [btrfs]
 
-OK, this is indeed chunk discard optimization causing the problem.
+It looks like this occurs when the balance is resumed. We also need
+sb_{start,end}_write around btrfs_balance() in balance_kthred().
 
-@nik, any idea on this problem?
+I guess we can cause a hang if we resume the balance and freeze the FS
+at the same time.
 
-Thanks,
-Qu
-
-> /home/forza/aports/main/linux-lts/src/linux-5.15/fs/btrfs/extent_map.c:36=
-2
-> (inlined by) add_extent_mapping at=20
-> /home/forza/aports/main/linux-lts/src/linux-5.15/fs/btrfs/extent_map.c:41=
-3
-> (inlined by) add_extent_mapping at=20
-> /home/forza/aports/main/linux-lts/src/linux-5.15/fs/btrfs/extent_map.c:40=
-0
-
-
-
-
->=20
-> Thanks for having patience!
->=20
-> Forza
->=20
->> Thanks,
->> Qu
->>
->>>
->>> Thanks.
->>>
->>>
->>>>
->>>> Thanks,
->>>> Qu
->>>>>
->>>>> *=20
->>>>> https://paste.tnonline.net/files/ISD0z6LNqw5D_Screenshot2022-02-23083=
-359.png=20
->>>>>
->>>>> * https://paste.tnonline.net/files/DR2pgh8bVHCZ_iKVM_capture.jpg
->>>>>
->>>>> Thanks.
->>>>>
->>>>>>>
->>>>>>> https://paste.tnonline.net/files/DR2pgh8bVHCZ_iKVM_capture.jpg
->>>>>>>
->>>>>>> I can do some further tests if needed. otherwise I need to deploy=20
->>>>>>> this
->>>>>>> system in about a week.
->>>>>>>
->>>>>>> Thanks.
->>>>>>>
->>>>>>>
->>>>>
->>>>
->>>
->>
->=20
-
+> [ 2927.127299] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 147456 csum 0x1027ab9a expected csum 0x8941f998 mirror 2
+> [ 2927.128016]  kthread+0xea/0x110
+> [ 2927.128023]  ? kthread_complete_and_exit+0x20/0x20
+> [ 2927.128027]  ret_from_fork+0x1f/0x30
+> [ 2927.128031]  </TASK>
+> [ 2927.128032] Modules linked in:
+> [ 2927.131390] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 155648 csum 0x428b86d5 expected csum 0x8941f998 mirror 2
+> [ 2927.131400] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 163840 csum 0x8fff7df2 expected csum 0x8941f998 mirror 2
+> [ 2927.131401] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 159744 csum 0x9893a835 expected csum 0x8941f998 mirror 2
+> [ 2927.131416] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 180224 csum 0x83d83877 expected csum 0x8941f998 mirror 2
+> [ 2927.131832] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 524288 csum 0x1a0c8fd4 expected csum 0x8941f998 mirror 2
+> [ 2927.132128] BTRFS warning (device vdc: state EX): csum failed root 5 i=
+no 258 off 540672 csum 0xcaaf83cc expected csum 0x8941f998 mirror 2
+> [ 2927.133105]  dm_flakey dm_mod btrfs blake2b_generic libcrc32c crc32c_i=
+ntel xor lzo_compress lzo_decompress raid6_pq zstd_decompress zstd_compress=
+ xxhash loop
+> [ 2927.144290] ---[ end trace 0000000000000000 ]---
+> [ 2927.145080] RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
+> [ 2927.147738] RSP: 0018:ffffaed9c610fdc0 EFLAGS: 00010246
+> [ 2927.148220] RAX: 000000000000004b RBX: ffffa13a873db000 RCX: 000000000=
+0000000
+> [ 2927.149126] RDX: 0000000000000000 RSI: 0000000000000003 RDI: 00000000f=
+fffffff
+> [ 2927.150057] RBP: ffffa13a55324000 R08: 0000000000000003 R09: 000000000=
+0000001
+> [ 2927.150676] R10: 0000000000000000 R11: 0000000000000001 R12: ffffa13a6=
+922f098
+> [ 2927.151297] R13: 000000008cfa0000 R14: ffffa13a553262a0 R15: ffffa13a8=
+73db000
+> [ 2927.152529] FS:  0000000000000000(0000) GS:ffffa13abda00000(0000) knlG=
+S:0000000000000000
+> [ 2927.153646] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2927.154280] CR2: 000055fdf2a94fd0 CR3: 000000005d012005 CR4: 000000000=
+0170ea0=
