@@ -2,90 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3EF4C361B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 20:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7384C3690
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 21:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbiBXTs3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Feb 2022 14:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
+        id S234228AbiBXUJm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Feb 2022 15:09:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbiBXTs1 (ORCPT
+        with ESMTP id S232032AbiBXUJl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Feb 2022 14:48:27 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EEE1B01A7
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 11:47:57 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D02A01F44D;
-        Thu, 24 Feb 2022 19:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1645732075;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UAIQvN+lJ5KcZMeNnSzCHpI0GAhQuR83aooJ8irjWp0=;
-        b=pyQHyfI58M1gogSF6YJgPoEbrOL/1GAa1PghiGwXIz99vadd23VuAsAk2wNbwr7h5ZHhVb
-        B9S9VKTZ2ZCNP5b128JrEOMN7puwKMUuxTs75K23VYK8WYOERwDXtFuGO797l+dAp5Py4v
-        gRtFVyNzTtB2tiA+XO93XB5xEwTH3Gs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1645732075;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UAIQvN+lJ5KcZMeNnSzCHpI0GAhQuR83aooJ8irjWp0=;
-        b=lYpO5iU6LBneJAtblgFlDlC6N14Sup7NU+LQm1ibtQlPLbRQ3vIsBmnNNLiN9VxK8UCrzu
-        Id3fim2ZzlkmtBDg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C8BFAA3B83;
-        Thu, 24 Feb 2022 19:47:55 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DFBE0DA818; Thu, 24 Feb 2022 20:44:06 +0100 (CET)
-Date:   Thu, 24 Feb 2022 20:44:06 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/4] btrfs: autodefrag: only scan one inode once
-Message-ID: <20220224194406.GD12643@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1644737297.git.wqu@suse.com>
- <7e33c57855a9d323be8f70123d365429a8463d7b.1644737297.git.wqu@suse.com>
- <20220222173202.GL12643@twin.jikos.cz>
- <64987622-6786-6a67-ffac-65dc92ea90d0@gmx.com>
- <20220223155301.GP12643@twin.jikos.cz>
- <64e0cb5e-c5f0-a18b-1aa2-3aced6bb307c@gmx.com>
- <d760d854-b3d4-6118-9b8d-5b1e775333e7@gmx.com>
- <00ad978f-195a-9f47-043a-befb0bca0faa@gmx.com>
+        Thu, 24 Feb 2022 15:09:41 -0500
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A5925A33C;
+        Thu, 24 Feb 2022 12:09:10 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 41C6680054;
+        Thu, 24 Feb 2022 15:09:09 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1645733349; bh=5IgLcIBl4ewGZXN7xM8bD2gcQkHoEkdSW6EarFjjkAo=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=kZIXYAzMGFUiWndbXVy703UHFFLKdgKxNyj+qKi5tt8fvye4qLJbZDZjVPqh0xxVY
+         MStcQK7LPPaxjpDaufHqu1hJaTENREUNwtYL5FyPeY9LjT7iBQX8zu8J5++nhWzorV
+         El4EP34llbag3tqUAktdhy2J9vo67jIbx58pcUPx9ldNdIrfIlJa6pudFvrbwfSPKK
+         SXA1Niv3bd6bDQrh7pMxCYGShppxKHJtL3JjkV60FDvRjT6uGc4yp2IhPjkQlRNPpS
+         N8VOKGP5lnszRg7TRqWOrI0yNgjiPqDF83Ju+zClCyzv3R65Ro0r+t79r9luAlcBZh
+         qPKHLyBsKf31Q==
+Message-ID: <20f14d85-6a07-e66d-4711-c16c6930c2a3@dorminy.me>
+Date:   Thu, 24 Feb 2022 15:09:08 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00ad978f-195a-9f47-043a-befb0bca0faa@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH v4] btrfs: add fs state details to error messages.
+Content-Language: en-US
+To:     dsterba@suse.cz, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+References: <a059920460fe13f773fd9a2e870ceb9a8e3a105a.1645644489.git.sweettea-kernel@dorminy.me>
+ <20220224132210.GS12643@twin.jikos.cz>
+ <284ccc08-8de7-9188-19d8-20f4eda56cb4@dorminy.me>
+ <20220224184231.GZ12643@twin.jikos.cz>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <20220224184231.GZ12643@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 24, 2022 at 08:18:53PM +0800, Qu Wenruo wrote:
-> > OK, during my rebasing, I found a bug in the rebased version of "btrfs:
-> > reduce extent threshold for autodefrag".
-> >
-> > It doesn't really pass defrag->extent_thresh into btrfs_defrag_file(),
-> > thus it's not working at all.
+>> All the other interactions with info->fs_state are test/set/clear_bit,
+>> which treat the argument as volatile and are therefore safe to do from
+>> multiple threads. Without the READ_ONCE (reading it as a volatile),
+>> the compiler or cpu could turn the reads of info->fs_state in
+>> for_each_set_bit() into writes of random stuff into info->fs_state,
+>> potentially clearing the state bits or filling them with garbage.
+> I'm not sure I'm missing something, but I find the above hard to
+> believe. Concurrent access to a variable from multiple threads may not
+> produce consistent results, but random writes should not happen when
+> we're just reading.
 
-That would explain why I did not see any difference between two fio runs
-in the amount of IO.
+Maybe I've been reading too many articles about the things compilers are 
+technically allowed to do. But as per the following link, the C standard 
+does permit compilers inventing writes except to atomics and volatiles: 
+https://lwn.net/Articles/793253/#Invented%20Stores
 
-> This is the fixed version of that patch, based on your branch:
-> 
-> https://github.com/adam900710/linux/commit/5759b9f0006d205019d2ba9220b52c58054f3758
+>
+>> Even if this is right, it'd be rare, but it would be exceeding weird
+>> for a message to be logged listing an error and then future messages
+>> be logged without any such state, or with a random collection of
+>> garbage states.
+> How would that happen? The volatile keyword is only a compiler hint not
+> to do optimizations on the variable, what actually happens on the CPU
+> level depends if the instruction is locked or not, so different threads
+> may read different bits.
+> You seem to imply that once a variable is not used with volatile
+> semantics, even just for read, the result could lead to random writes
+> because it's otherwise undefined.
 
-Thanks, I've added the missing line in __btrfs_run_defrag_inode and
-updated the patches in misc-next and misc-5.17.
+Pretty much; once a variable is read without READ_ONCE, it's unsafe to 
+write a new value on another thread that depends on the old value. 
+Imagine a compiler which invents stores; then if you are both reading 
+and setting a variable 'a' on different threads, the following could happen:
+
+thread 1 (reads)       thread 2 (modifies)
+
+reads a into tmp
+
+stores junk into a
+
+                                 reads junk from a
+
+stores tmp into a
+
+                                 writes junk | 2 to a
+
+
+Now a contains junk indefinitely.
+
+
+But if it's too theoretical, I'm happy to drop it and amend my paranoia 
+level.
+
+
+(Thanks for fixing the !CONFIG_PRINTK warning that btrfs_state_to_string 
+was unused; sorry I missed it.)
+
+
+Sweet Tea
+
