@@ -2,119 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E20994C21B5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 03:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41844C2444
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 07:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbiBXCWA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Feb 2022 21:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        id S231422AbiBXHAD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Feb 2022 02:00:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbiBXCV7 (ORCPT
+        with ESMTP id S229933AbiBXHAC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Feb 2022 21:21:59 -0500
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E09637A80;
-        Wed, 23 Feb 2022 18:21:30 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-17-0.pa.vic.optusnet.com.au [49.186.17.0])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4D17953293A;
-        Thu, 24 Feb 2022 13:21:29 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1nN3l2-00Fgsu-7u; Thu, 24 Feb 2022 13:21:28 +1100
-Date:   Thu, 24 Feb 2022 13:21:28 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: test log replay after fsync of file with prealloc
- extents beyond eof
-Message-ID: <20220224022128.GK3061737@dread.disaster.area>
-References: <abbc821350c8ef515e0a0317b5cbd64e3c5b81ab.1645099449.git.fdmanana@suse.com>
- <20220222234432.GF3061737@dread.disaster.area>
- <CAL3q7H41wY_GWStRUxuOWwPcgqX9zx-WZxEySaRAUrMtcE666w@mail.gmail.com>
+        Thu, 24 Feb 2022 02:00:02 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132F71E3765
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Feb 2022 22:59:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1645685969;
+        bh=XAnKpXU/ZBQkaP5mAWBb8HYgUk87DpOWzN9puAXWWb4=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=GRqZBU4TcGw8wz6e80ahCubQkYRokWdKMApfGiBXTwnrKQwN6pbWHQN09podGyDT+
+         PWAl0Mo/7kwpaRDwVFOQlWVeNqnvTk9MMKcJJtJPdoWxj3WtQFj+ZForwhKaL2eDCz
+         Ky4sMv6xpjrNJD1rhdW32mu49/r4oVQMAXIJiHY4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M9nxn-1nHMvt0hpF-005qD0; Thu, 24
+ Feb 2022 07:59:29 +0100
+Message-ID: <64e0cb5e-c5f0-a18b-1aa2-3aced6bb307c@gmx.com>
+Date:   Thu, 24 Feb 2022 14:59:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H41wY_GWStRUxuOWwPcgqX9zx-WZxEySaRAUrMtcE666w@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=6216ebaa
-        a=+dVDrTVfsjPpH/ci3UuFng==:117 a=+dVDrTVfsjPpH/ci3UuFng==:17
-        a=kj9zAlcOel0A:10 a=oGFeUVbbRNcA:10 a=7-415B0cAAAA:8 a=VwQbUJbxAAAA:8
-        a=iox4zFpeAAAA:8 a=XrNU82xa2msIkV6VhdkA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22 a=AjGcO6oz07-iQ99wixmX:22
-        a=WzC6qhA0u3u7Ye7llzcV:22
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1644737297.git.wqu@suse.com>
+ <7e33c57855a9d323be8f70123d365429a8463d7b.1644737297.git.wqu@suse.com>
+ <20220222173202.GL12643@twin.jikos.cz>
+ <64987622-6786-6a67-ffac-65dc92ea90d0@gmx.com>
+ <20220223155301.GP12643@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH 3/4] btrfs: autodefrag: only scan one inode once
+In-Reply-To: <20220223155301.GP12643@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/lnW57LkJEfvzL8/AHx0fRYFbi7gg0Yx/B4Zcx7v4EK79ZkgwOl
+ auxsvXFnIhNlgUMLuR4WnyxAtHJokBewAQKOrcVGEecZfGJBT3hb7SLZR+3O5YuTzP93aZb
+ i5sAMJJ94VX8EnUQY4rGSVYmqBocdgNrRQ4dc5d22tbYddQ7ArkrhHFl/QTP9NTVHzJzmmk
+ Xecyc9ku4HgtOarVszsfQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+xPFJ/L6cAE=:GoOmZElXT84YXliJFzElet
+ wsqc3GUnnSnrIGjwOCSwOdSCM0LqDaHFQJgbmEdTCZVh8mpYja5U1hte8uWLVRsjQepCFdQbo
+ qAH+wHwg8OxiG76iLQAxYNg3OruM3NbGxyHYNvfmNF90crGd9a4Kzh6NpvA2hA+7oNN9GvwRn
+ +Fz8lyG+2r1/KY/YN+z+rMGxKLewb1KAWNEa3o4Drqm69D7PmH86k7onK4CuA+d0klDPhoomq
+ xj/DjMzc30zrFtjHlZstAjbWtUvbM8LFnaqBY1hwLBvpR8bRDAPnR0nOWoxpkKIF24i2MjADf
+ /eDqVFfrUcvomM1k2fLIPFCygFrPjR7n2Xqo4IWywMD2na/DcivwcnVNiPaFzPZ9497t1uJlk
+ kAMTUtourqe5rJ9nHSqYftYBwl9CrmApsQumLdqJxFHOdQOtBRsbg2S/2AB1EZ9gY98Qg9gki
+ vfmUDCpSlKfF9s6Tv0RS4J34bmOpAHCWphx5Fbb+OZ/J9z4zrtC3JUEjJmF/SVHE85sNzprgn
+ V03kvl3xETNO9tBTnTCXW87EfZReSK10hulcKO0fwQZi8qhax/fe/mO0oMxLlP4a4DvbdSu8N
+ QSholOEYMtt4X6nY43iGQ49QLhMv3yndR3/Kdc5rmNeS3V+7k5GvBCjEwSHccNhXW4XIWZwcq
+ bdRZiYw76zyfevXvJMXeU5zfEG4chga24GzEVRy03KIA4qY3sk+5ypnFu1Negvt6zmOP5N33k
+ rdMKwT8kjEpBiaUlnxpAxWZ3YixF48sf+51wCWd0FZTQ8SbErSVL66QXvLmp/qnfz6URugnNF
+ 6NLBwGlIJ3o36JPR1FxUWckOa4LOHEL+Wrr6X76H0PPO9X1mgDM7phwkB4Xk/TVpJlrwYLVX4
+ lBFD34OhlUSlrFJW1DCd63CEQ4dwTCPMWHXJ6CBaE8xcF+KI0/ab9F2/haj02cc2prDhyD1vY
+ 0OyMM6hdUQBqaL7ZriIdK8j37rD3FnfAF8FfFezIP+eLaJsda+ECSxzr5mFmkydBnBJrEyQaG
+ 3MeKJkj2j9Gt0Tn7vi5fEL+bNPb/nwE2bKBHt3B9bs2Ev8gH3o5te21axNO1jQ2pY4bpneIzM
+ nd2o0TZQa/6j94=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 12:12:10PM +0000, Filipe Manana wrote:
-> On Tue, Feb 22, 2022 at 11:44 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Thu, Feb 17, 2022 at 12:14:21PM +0000, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > Test that after a full fsync of a file with preallocated extents beyond
-> > > the file's size, if a power failure happens, the preallocated extents
-> > > still exist after we mount the filesystem.
-> > >
-> > > This test currently fails and there is a patch for btrfs that fixes this
-> > > issue and has the following subject:
-> > >
-> > >   "btrfs: fix lost prealloc extents beyond eof after full fsync"
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >  tests/btrfs/261     | 79 +++++++++++++++++++++++++++++++++++++++++++++
-> > >  tests/btrfs/261.out | 10 ++++++
-> >
-> > What is btrfs specific about this test?
-> 
-> The comments that explain the steps are very btrfs specific.
-> Without them it would be hard to understand why the test uses that
-> specific file size, block size, mention of the btrfs inode's full sync
-> bit, etc.
 
-But the behaviour and layout should end up being the same for all
-filesystems, right?
 
-We have plenty of generic tests that are designed with a
-specific configuration on a specific filesystem to reproduce a bug
-seen on that filesystem, but as long as all filesystems should be
-expected to behave the same way, it's a generic test.
+On 2022/2/23 23:53, David Sterba wrote:
+> On Wed, Feb 23, 2022 at 07:42:05AM +0800, Qu Wenruo wrote:
+>> On 2022/2/23 01:32, David Sterba wrote:
+>>> On Sun, Feb 13, 2022 at 03:42:32PM +0800, Qu Wenruo wrote:
+>>> @@ -295,39 +265,29 @@ static int __btrfs_run_defrag_inode(struct btrfs=
+_fs_info *fs_info,
+>>>    		goto cleanup;
+>>>    	}
+>>>
+>>> +	if (cur >=3D i_size_read(inode)) {
+>>> +		iput(inode);
+>>> +		break;
+>>
+>> Would this even compile?
+>> Break without a while loop?
+>
+> That was a typo, s/break/goto cleanup/.
+>
+>> To me, the open-coded while loop using goto is even worse.
+>> I don't think just saving one indent is worthy.
+>
+> Well for backport purposes the fix should be minimal and not necessarily
+> pretty. Indenting code produces a diff that replaces one blob with
+> another blob, with additional changes and increases line count, which is
+> one of the criteria for stable acceptance.
+>
+>> Where can I find the final version to do more testing/review?
+>
+> Now pushed to branch fix/autodefrag-io in my git repos, I've only
+> updated changelogs.
 
-AFAICT, the behaviour described and exercised by the test should be
-the same for all filesystems that support preallocation beyond EOF.
-Hence it isn't btrfs specific behaviour being exercised, just a
-reproducing a bug where btrfs deviates from the correct behaviour
-that should be consistent across all filesystems.
+Checked the code, it looks fine to me, just one small question related
+to the ret < 0 case.
 
-> Some years ago, when you maintained fstests, you complained once about
-> this type of "too btrfs specific" comments on generic tests.
+Unlike the refactored version, which can return < 0 even if we defragged
+some sectors. (Since we have different members to record those info)
 
-I can change my mind if I want. Besides, I'm looking at this new
-test purely on it's own merits so past discussions aren't really
-relevant. Maybe you didn't understand the context under which I was
-considering a patch to be "too fs specific" rather than generic.
+If we have defragged any sector in btrfs_defrag_file(), but some other
+problems happened later, we will get a return value > 0 in this version.
 
-There's a big difference between "only btrfs will behave this way"
-and "all filesystems should get the same result, but btrfs sometimes
-fails to get that results in this specific case".  The former should
-be a btrfs-only test, the latter should be a generic test.
+It's a not a big deal, as we will skip to the last scanned position
+anyway, and we even have the safenet to increase @cur even if
+range.start doesn't get increased.
 
-Which class this test falls into is exactly what I'm asking here -
-should all filesystems get the same result, or is successful
-result encoded in the golden output behaviour that only btrfs will
-ever produce?
+For backport it's completely fine.
 
-Cheers,
+Just want to make sure for the proper version, what's is the expected
+behavior.
+Exit as soon as any error hit, or continue defrag as much as possible?
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+And I'll rebase my btrfs_defrag_ctrl patchset upon your fixes.
+
+Thanks,
+Qu
