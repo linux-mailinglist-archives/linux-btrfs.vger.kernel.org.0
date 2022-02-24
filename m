@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C282C4C2BBA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 13:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A39B4C2BB5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Feb 2022 13:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbiBXM3c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Feb 2022 07:29:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        id S234369AbiBXM31 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Feb 2022 07:29:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbiBXM3Y (ORCPT
+        with ESMTP id S234282AbiBXM3Z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Feb 2022 07:29:24 -0500
+        Thu, 24 Feb 2022 07:29:25 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA08B26836C
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 04:28:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1754B269A83
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 04:28:49 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A4F27212B9
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:46 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C8F402113D
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1645705726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1645705727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HeOppck5l0IV5Ij+JFDRe5f+tReMihAq4XoFcZqbXv8=;
-        b=pHx295sx2VV5xWty8QTkXmsW0oro896gdKpDTS+lv+QiKQeHT42/oDqrlP+Wtq2engO3TZ
-        rXrkMPvH//A84ErFiolVOcBfNSp49p7SORuGe+PyentNEdTiVy5fKzHBhXXT0x6VdGr/+L
-        azaUnYRqhSvaTU9UOqVh6tiguANglB8=
+        bh=+kR2Nj1jB4nbc1U4UvK8kRw/XHxgrb5YBlnpZtkG/3o=;
+        b=Lv6PPeVsdQrfMj4spiftszfwi3I5JHxNTcdEo3Ovq+6eSiBIGokcSTWvy7pUAbnTKYmB/b
+        lSka7DcsPkEaSY5KGOhHf89vCGLIOTcnpTGuHJQvez8xYW5Ed6Ttav8kxkzNt4tF5jW6IW
+        HinHKwKiN53PiKwOeNufqR8prJNUwTs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EAABC13AD9
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:45 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1BC5E13AD9
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2PtaK/15F2LhAgAAMHmgww
+        id cM/HNP55F2LhAgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:45 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Feb 2022 12:28:46 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/7] btrfs: remove unused parameter for btrfs_add_inode_defrag()
-Date:   Thu, 24 Feb 2022 20:28:35 +0800
-Message-Id: <61861f9dbd64f31796a22a1de617600a869fdf09.1645705266.git.wqu@suse.com>
+Subject: [PATCH 2/7] btrfs: refactor __btrfs_run_defrag_inode()
+Date:   Thu, 24 Feb 2022 20:28:36 +0800
+Message-Id: <254935398057591304da107b5e5d9967976b1265.1645705266.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1645705266.git.wqu@suse.com>
 References: <cover.1645705266.git.wqu@suse.com>
@@ -61,73 +61,139 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since commit 543eabd5e192 ("Btrfs: don't auto defrag a file when doing
-directIO"), there is no more caller passing a transaction handler to
-btrfs_add_inode_defrag().
+This refactor involves:
 
-So the @trans parameter of btrfs_add_inode_defrag() is unnecessary and
-we can just remove it.
+- Use while () loop to replace open-coded loop
+
+- Add extra comments on btrfs_get_fs_root()/btrfs_iget() calls
+
+- Add extra comment on the meaning of range.start
+
+- Move @root, @inode and @range into the loop
+
+- Initial @range to 0 at its declaration
+  So we don't need to reset it to zero.
+
+There is one behavior change:
+
+- Now we check @cur against @isize from last iteration.
+  And the initial dummy @isize is set to (u64)-1 so we can always
+  initial the loop.
+
+  This slightly enlarge the race window where isize can be changed.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ctree.h | 3 +--
- fs/btrfs/file.c  | 8 ++------
- fs/btrfs/inode.c | 2 +-
- 3 files changed, 4 insertions(+), 9 deletions(-)
+ fs/btrfs/file.c | 85 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 45 insertions(+), 40 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 5e02bf13fd1b..c72790c3bd41 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3345,8 +3345,7 @@ void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
- /* file.c */
- int __init btrfs_auto_defrag_init(void);
- void __cold btrfs_auto_defrag_exit(void);
--int btrfs_add_inode_defrag(struct btrfs_trans_handle *trans,
--			   struct btrfs_inode *inode, u32 extent_thresh);
-+int btrfs_add_inode_defrag(struct btrfs_inode *inode, u32 extent_thresh);
- int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info);
- void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info);
- int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync);
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 9f455c96c974..7d096c3f9127 100644
+index 7d096c3f9127..5b11a8c72114 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -136,8 +136,7 @@ static inline int __need_auto_defrag(struct btrfs_fs_info *fs_info)
-  * insert a defrag record for this inode if auto defrag is
-  * enabled
-  */
--int btrfs_add_inode_defrag(struct btrfs_trans_handle *trans,
--			   struct btrfs_inode *inode, u32 extent_thresh)
-+int btrfs_add_inode_defrag(struct btrfs_inode *inode, u32 extent_thresh)
+@@ -247,57 +247,62 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info)
+ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
+ 				    struct inode_defrag *defrag)
  {
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-@@ -151,10 +150,7 @@ int btrfs_add_inode_defrag(struct btrfs_trans_handle *trans,
- 	if (test_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags))
- 		return 0;
+-	struct btrfs_root *inode_root;
+-	struct inode *inode;
+-	struct btrfs_ioctl_defrag_range_args range;
+ 	int ret = 0;
++	/* Initially we don't have the inode, use -1 as dummy isize */
++	u64 isize = (u64)-1;
+ 	u64 cur = 0;
  
--	if (trans)
--		transid = trans->transid;
--	else
--		transid = inode->root->last_trans;
-+	transid = inode->root->last_trans;
+-again:
+-	if (test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state))
+-		goto cleanup;
+-	if (!__need_auto_defrag(fs_info))
+-		goto cleanup;
++	while (cur < isize) {
++		struct btrfs_ioctl_defrag_range_args range = { 0 };
++		struct btrfs_root *inode_root;
++		struct inode *inode;
  
- 	defrag = kmem_cache_zalloc(btrfs_inode_defrag_cachep, GFP_NOFS);
- 	if (!defrag)
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b2b26d786fde..24125d5860be 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -560,7 +560,7 @@ static inline void inode_should_defrag(struct btrfs_inode *inode,
- 	/* If this is a small write inside eof, kick off a defrag */
- 	if (num_bytes < small_write &&
- 	    (start > 0 || end + 1 < inode->disk_i_size))
--		btrfs_add_inode_defrag(NULL, inode, small_write);
-+		btrfs_add_inode_defrag(inode, small_write);
+-	/* get the inode */
+-	inode_root = btrfs_get_fs_root(fs_info, defrag->root, true);
+-	if (IS_ERR(inode_root)) {
+-		ret = PTR_ERR(inode_root);
+-		goto cleanup;
+-	}
++		if (test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state))
++			break;
++		if (!__need_auto_defrag(fs_info))
++			break;
+ 
+-	inode = btrfs_iget(fs_info->sb, defrag->ino, inode_root);
+-	btrfs_put_root(inode_root);
+-	if (IS_ERR(inode)) {
+-		ret = PTR_ERR(inode);
+-		goto cleanup;
+-	}
++		/* Check if the root is still there and grab it */
++		inode_root = btrfs_get_fs_root(fs_info, defrag->root, true);
++		if (IS_ERR(inode_root)) {
++			ret = PTR_ERR(inode_root);
++			break;
++		}
+ 
+-	if (cur >= i_size_read(inode)) {
+-		iput(inode);
+-		goto cleanup;
+-	}
++		/* Check if the inode is still there and grab it */
++		inode = btrfs_iget(fs_info->sb, defrag->ino, inode_root);
++		btrfs_put_root(inode_root);
++		if (IS_ERR(inode)) {
++			ret = PTR_ERR(inode);
++			break;
++		}
+ 
+-	/* do a chunk of defrag */
+-	clear_bit(BTRFS_INODE_IN_DEFRAG, &BTRFS_I(inode)->runtime_flags);
+-	memset(&range, 0, sizeof(range));
+-	range.len = (u64)-1;
+-	range.start = cur;
+-	range.extent_thresh = defrag->extent_thresh;
++		isize = i_size_read(inode);
+ 
+-	sb_start_write(fs_info->sb);
+-	ret = btrfs_defrag_file(inode, NULL, &range, defrag->transid,
+-				       BTRFS_DEFRAG_BATCH);
+-	sb_end_write(fs_info->sb);
+-	iput(inode);
++		/* do a chunk of defrag */
++		clear_bit(BTRFS_INODE_IN_DEFRAG, &BTRFS_I(inode)->runtime_flags);
++		range.len = (u64)-1;
++		range.start = cur;
++		range.extent_thresh = defrag->extent_thresh;
+ 
+-	if (ret < 0)
+-		goto cleanup;
++		sb_start_write(fs_info->sb);
++		ret = btrfs_defrag_file(inode, NULL, &range, defrag->transid,
++				       BTRFS_DEFRAG_BATCH);
++		sb_end_write(fs_info->sb);
++		iput(inode);
+ 
+-	cur = max(cur + fs_info->sectorsize, range.start);
+-	goto again;
++		if (ret < 0)
++			break;
+ 
+-cleanup:
++		/*
++		 * Range.start is the last scanned bytenr.
++		 *
++		 * And just in case the last scanned bytenr doesn't get
++		 * increased at all, at least start from the next sector
++		 * of current bytenr.
++		 */
++		cur = max(cur + fs_info->sectorsize, range.start);
++	}
+ 	kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+ 	return ret;
  }
- 
- /*
 -- 
 2.35.1
 
