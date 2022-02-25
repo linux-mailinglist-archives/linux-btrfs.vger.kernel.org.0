@@ -2,146 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3CF4C45F4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Feb 2022 14:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965584C46A8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Feb 2022 14:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238312AbiBYNVh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Feb 2022 08:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S241086AbiBYNhP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Feb 2022 08:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236282AbiBYNVg (ORCPT
+        with ESMTP id S234548AbiBYNhO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Feb 2022 08:21:36 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BC81FED84
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 05:21:04 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 93341212B9
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 13:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1645795263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/MvNGVWn/fqPmfDt6G2RV7SA7btU5aJCsXBxXyvMvV8=;
-        b=bMaDvh0g4EeLaIUl7bhnRQK4jPVmqhogRnbijv5M5S7VG2tAdmbw0ER7CQA7DmeKQ32Qqo
-        GRmXqlUUXA6W18/zL4B9+P1zKbevK35lNAMcwOqGXrRw0sS6I09sIyFAq6rZ+x8oNfDZFG
-        qniQrTvgfca+NEkX4UpGcuTw0BO/GLU=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 8D1BBA3B8A
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 13:21:03 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3B80ADA818; Fri, 25 Feb 2022 14:17:14 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: remove redundant check in up check_setget_bounds
-Date:   Fri, 25 Feb 2022 14:17:14 +0100
-Message-Id: <ea59f1a0b66e214ec12864931711b764605fbacb.1645794094.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 25 Feb 2022 08:37:14 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41579DF4F
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 05:36:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1645796196;
+        bh=uJcv0MUo/q0cYjkq2QhHUAoVtGas51qzrwunBjGcTH0=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=f/SDeBJ1A54bWZSr4fkT5VdMQpskE7M+soLB5O5Wnf4P+j3BYEUU92RbL1NBrfw5l
+         dYP5qs0YxAyZmPU88je2jThsGWdXIzl8qWP24CvwKQiRutCXYhJS9QM0Xa5VbX5a6c
+         BcTlpe0ev0j6YmchmJXWUopEHUHGn7fEA0iuuuTQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N79yQ-1oHUmF2i9k-017WeY; Fri, 25
+ Feb 2022 14:36:36 +0100
+Message-ID: <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
+Date:   Fri, 25 Feb 2022 21:36:32 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <88176dfc-2500-1e9c-bac0-5e293b2c0b5c@suse.com>
+ <20220225114729.GE12643@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Seed device is broken, again.
+In-Reply-To: <20220225114729.GE12643@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oGvRu7FPn4dSpOWatyH0s+USUmmAxtWLjmPE81sL8POyfDPWgtq
+ 13tB/XsSDP57iiI2lqSi+pXz0eANStkTm4OfQoZn9GZ74tdTlUniNwS/ZSVQ2d4+BGO6OhX
+ ZVi6rkHJyBQ0SUzrPdi+duEnKQy+NjpapYk01taSxYNK80d7vLZRUmBJ3pYt5S0GZgXbInC
+ GIFvJcshfntZsAbL64AkQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1rrZ7FMrM9k=:IAntEacGN2/jPp+LLoC+8m
+ c/WVX9AQQ9io/is3MhhyeXpDnJ2TAIGZV2V/w70ySUBfMiThQvsteX+WaX/k6UfaBBJLdQcFY
+ WmzOkzq4SitvEfL8JVhSeg5achpujfrhHje3dHgtbItSVFNaEg9YaX7T18j42cTJM+xB/RO/8
+ hYmq91Sj4vYCQJISCWnXlBYsfBDU13LqI1bLeLc3uzb9JQhzvgyqr5b5VySbqHT3lSc1/2XCe
+ B2Rbv7H95PWMjKOSSvnJ+qH9f63OfIQmMRVJJVx8983prQOsK7PUyXgO5lVcGpDfn7CrVLveT
+ pKc4DdGp1CaHGy5KhYB5Jl6bqsWUHOo/BxhZbScxdKQC3RhD7wS/vMpKbuJ4DiXRTUvdVWqtX
+ 9h7dC+yLjxg0GB/7hydx7GtWiFuNFpDklUOWTY9PCk7Xo8jQ9aBjuy2R9rJKp/AQmxuy6cQXP
+ nKJXCYJqTWWG9krZy1sZ+QhxSv4slyPaLrIi4K+0d4TqvKuzRrRDUeUTGOPWPR2pViCnVgFz1
+ GY06GvKeGvatm3b/NBx8h1aTUb5dIG7F2JOxnhMTdjpgd1L0FiXzfMt7NzWQv0pz9+6/sEb9i
+ Nd7boADY0JFVUHq5ZilkBRT66F7ilXcPf4KUQJDHDZ+yddvqcBUKTvfTJuOi6hlIs85n81fYx
+ MYJUiwfogEXRU+HVMZcKHXjHaiZkRZzop8jzFrAdPvr+6VGKLkpp7q2/DZzQBaxradZss2RBv
+ i2E6TOCbWeEjLafWlrNSC30IGouSQJ09r83/l+K8qraL75/70wywVU3xln5cMFMIJDrF9qUSM
+ ZzR1NmemmiYU0jNmO9bowUzVdM2EJ6Mp1LUKCt5sPiaMmJ5oScrNkgjhW29U+wAkPUdelCvTW
+ nWu4AJtBSl1v5W3Ou3Oe5/zmf4TBQZBZl1Zzm9sa0833iG4oUh1KhV27aUcFrv31Eofi0Dw8g
+ HnFY5SE9TnZa4Hrx/bzeor8TpVzGuyTOfca6XRIDPQmLsQXfZ0ANLVBJu0uWm1VPZ0GP9w+Ke
+ d2UsU04UKO+wami/7HefhGCS3/HacOMjUjAm/RlXmDUmEuXCKWLExsyEeDh0e3XFGEHR2zrs1
+ KOVdq8SegN+KqQ=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are two separate checks in the bounds checker, the first one being
-a special case of the second. As this function is performance critical
-due to checking access to any eb member, reducing the size can slightly
-improve performance.
 
-On a release build on x86_64 the helper is completely inlined so the
-function call overhead is also gone.
 
-There was a report of 5% performance drop on metadata heavy workload,
-that disappeared after disabling asserts. The most significant part of
-that is the bounds checker.
+On 2022/2/25 19:47, David Sterba wrote:
+> On Fri, Feb 25, 2022 at 06:08:20PM +0800, Qu Wenruo wrote:
+>> Hi,
+>>
+>> The very basic seed device usage is broken again:
+>>
+>> 	mkfs.btrfs -f $dev1 > /dev/null
+>> 	btrfstune -S 1 $dev1
+>> 	mount $dev1 $mnt
+>> 	btrfs dev add $dev2 $mnt
+>> 	umount $mnt
+>>
+>>
+>> I'm not sure how many guys are really using seed device.
+>>
+>> But I see a lot of weird operations, like calling a definite write
+>> operation (device add) on a RO mounted fs.
+>
+> That's how the seeding device works, in what way would you want to do
+> the ro->rw change?
 
-https://lore.kernel.org/linux-btrfs/20200724164147.39925-1-josef@toxicpanda.com/
+In progs-only, so that in kernel we can make dev add ioctl as a real RW
+operation, not adding an exception for dev add.
 
-After the analysis, the optimized code removes the worst overhead which
-is the function call and the performance was restored.
+>
+>> Can we make at least the seed sprouting part into btrfs-progs instead?
+>
+> How? What do you mean? This is an in kernel operation that is done on a
+> mounted filesystem, progs can't do that.
 
-https://lore.kernel.org/linux-btrfs/20200730110943.GE3703@twin.jikos.cz/
+Why not?
 
-1. baseline, asserts on, setget check on
+Progs has the same ability to read-write the fs, I see no reason why we
+shouldn't do it in user space.
 
-run time:		46s
-run time with perf:	48s
+We're just adding a device, update related trees (which will only be
+written to the new device). I see no special reason why it can't be done
+in user space.
 
-2. asserts on, comment out setget check
+Furthermore, the ability to add device in user space can be a good
+safenet for some ENOSPC space.
 
-run time:		44s
-run time with perf:	47s
+>
+>> And can seed device even support the upcoming extent-tree-v2?
+>
+> I should, it operates on the device level.
+>
+>> Personally speaking I prefer to mark seed device deprecated completely.
+>
+> If we did that with every feature some developer does not like we'd have
+> nothing left you know. Seeding is a documented usecase, as long as it
+> works it's fine to have it available.
 
-So this is confirms the 5% difference
+A documented usecase doesn't mean it can't be deprecated.
 
-3. asserts on, optimized seget check
+Furthermore, a documented use case doesn't validate the use case itself.
 
-run time:		44s
-run time with perf:	47s
+So, please tell me when did you use seed device last time?
+Or anyone in the mail list, please tell me some real world usecase for
+seed devices.
 
-The optimizations are reducing the number of ifs to 1 and inlining the
-hot path. Low-level stuff, gets the performance back. Patch below.
+I did remember some planned use case like a way to use seed device as a
+VM/container template, but no, it doesn't get much attention.
 
-4. asserts off, no setget check
 
-run time:		44s
-run time with perf:	45s
+I'm not asking for deprecate the feature just because I don't like it.
 
-This verifies that asserts other than the setget check have negligible
-impact on performance and it's not harmful to keep them on.
+This feature is asking for too many exceptions, from the extra
+fs_devices hack (we have in fact two fs_devices, one for rw devices, one
+for seed only), to the dev add ioctl.
 
-Analysis where the performance is lost:
+But the little benefit is not really worthy for the cost.
 
-* check_setget_bounds is short function, but it's still a function call,
-  changing the flow of instructions and given how many times it's
-  called the overhead adds up
+Thanks,
+Qu
 
-* there are two conditions, one to check if the range is
-  completely outside (member_offset > eb->len) or partially inside
-  (member_offset + size > eb->len)
-
-CC: stable@vger.kernel.org # 5.10+
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
-
-v2:
-
-- patch picked from the series in
-  https://lore.kernel.org/linux-btrfs/cover.1643904960.git.dsterba@suse.com/
-- changelog updated with numbers and analysis
-
- fs/btrfs/struct-funcs.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
-index f429256f56db..12455b2b41de 100644
---- a/fs/btrfs/struct-funcs.c
-+++ b/fs/btrfs/struct-funcs.c
-@@ -12,15 +12,10 @@ static bool check_setget_bounds(const struct extent_buffer *eb,
- {
- 	const unsigned long member_offset = (unsigned long)ptr + off;
- 
--	if (member_offset > eb->len) {
-+	if (unlikely(member_offset + size > eb->len)) {
- 		btrfs_warn(eb->fs_info,
--	"bad eb member start: ptr 0x%lx start %llu member offset %lu size %d",
--			(unsigned long)ptr, eb->start, member_offset, size);
--		return false;
--	}
--	if (member_offset + size > eb->len) {
--		btrfs_warn(eb->fs_info,
--	"bad eb member end: ptr 0x%lx start %llu member offset %lu size %d",
-+		"bad eb member %s: ptr 0x%lx start %llu member offset %lu size %d",
-+			(member_offset > eb->len ? "start" : "end"),
- 			(unsigned long)ptr, eb->start, member_offset, size);
- 		return false;
- 	}
--- 
-2.34.1
-
+>
+>> The call trace:
+>>
+>>    assertion failed: sb_write_started(fs_info->sb), in
+>> fs/btrfs/volumes.c:3244
+>
+> Yeah the asserts now appear and we need to fix the write annotations
+> first. I've moved the patches out of misc-next again, it's now only in
+> for-next so it does not block testing.
+>
