@@ -2,162 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CCC4C4E80
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Feb 2022 20:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BCE4C4F44
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Feb 2022 21:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbiBYTTA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Feb 2022 14:19:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        id S235769AbiBYUIF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Feb 2022 15:08:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233961AbiBYTS7 (ORCPT
+        with ESMTP id S229989AbiBYUIE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Feb 2022 14:18:59 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7A016BCD9
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 11:18:25 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id h17-20020a17090acf1100b001bc68ecce4aso9250512pju.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 11:18:25 -0800 (PST)
+        Fri, 25 Feb 2022 15:08:04 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3539A3981F
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 12:07:31 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id x15so6064249wrg.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Feb 2022 12:07:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KSy+A52r6TCG/x6ppDUu4sYkZBpMADhMt8FGFOTz0VI=;
-        b=rTanreT9WZ4mKPzqsDCOZkcAxgd36wRbZ2CffV1lWsn+jFKT2DQsTo3Tk8m8uN9Guu
-         Z9g0ThVqN+mNLVytxATs3XHGk1lLBbsaLLAcu6qQeqvK94UeTu/IHatokSDUm1i+dEUQ
-         6Ycng30QC52nPQRi8CEkLeEkRk3AFbjh09GoeQ/Pjia4RcN/NtBh6LM87vStMoDOPFaS
-         muvftwE8PCv+sLDMJ7tdN+z90P0tcMLioow+ZJME6L862sQJQXIwCUpyy+6VnTiwtVyE
-         JiUet29P3+eyje7hjQZo1gW6GmiQpIIZE+3gW4ReZ7Xw0H2Dh+elesYPN0y8Y/1bgHYX
-         O22A==
+        d=gmail.com; s=20210112;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=05dGa4MbTCy/WXdqLtbI7pzY1vM0ArO1qiihvnFVgHc=;
+        b=NwTmMacSXOXkOkSZ1Uapi2r/4Wiy9sWkLwPgnQALLukq5o5uH0jE7d7IglcfHZyWl7
+         VrB9a+TK/q4xDeSDsOKfsNjwsQEsZWNdUBTZSwMtrtEaLdOZ46WXnAXXPF/0bAN/ny23
+         Eb9gpDqr7Z2E1aWcGFIr8t2I2uAocRzH/1z/e049CKPbLhwdk/wW5U9ukeFqUainazBr
+         oaCYXbBqcEmZR4RIxL+/wRHe9qt/8R7GQIHVBfVLEh7PcnkAfIqHJ5yUi0RHHSqSEbNM
+         8uiz5K/D/8JQTibk1JR0G2hq93lo/Km3BWRHPIECll8FO5Q4ehDU0OU8LhGVG14CGRMk
+         /4bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KSy+A52r6TCG/x6ppDUu4sYkZBpMADhMt8FGFOTz0VI=;
-        b=7BMhugb/FBemFc28fWLqBK+5ktPSn6kV+644cYhTC1gi3Lyarqd2H0twa4fl5YiNTJ
-         0qLzlRIHQGEpp+xaeI7WTdc4R/MhmYK/QMRsOyjPb2+2VXTOOKTQ/NVfbKyH/UPCPGbE
-         xfhPFLF6UHywqrXTm1v2Ut4E9wCOqPTHMxdi3y5nR2OdD0rw5f0QxeBk4IZymCMK0Ayg
-         FGdz7Lb7MJI1FC/NT+P4qcTnJZJ+BTTYhRkzT4fsaJI2rxyXLevVBXYhfwVb+wHXDNng
-         oEUraXHaXwepLdlyp0y7I/ECuNkjv+mrdQyBguXRrTb27LdfazfKxUtT8EohO7wM3AWk
-         VVrQ==
-X-Gm-Message-State: AOAM532HaS3a3PD2+wyGSSUaC9tri1N7prQcdV2AydyRT8/VnzQ2ssiT
-        qz9OAaUwlADJIxq371F7MiEmfn1ztedkmQ==
-X-Google-Smtp-Source: ABdhPJxHjRdmY5ulWp7yw0uzy4JJCq+aXn4zdjdsiZEAwm/flmZzFTcHFuqS0JuIQkcD9cxDwjayjA==
-X-Received: by 2002:a17:90a:5b06:b0:1b8:b705:470b with SMTP id o6-20020a17090a5b0600b001b8b705470bmr4545046pji.168.1645816705174;
-        Fri, 25 Feb 2022 11:18:25 -0800 (PST)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:750d])
-        by smtp.gmail.com with ESMTPSA id q22-20020a056a00085600b004f397d1f3b5sm4324816pfk.171.2022.02.25.11.18.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Feb 2022 11:18:24 -0800 (PST)
-Date:   Fri, 25 Feb 2022 11:18:23 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Seed device is broken, again.
-Message-ID: <YhkrfyzmCgOGG+5n@relinquished.localdomain>
-References: <88176dfc-2500-1e9c-bac0-5e293b2c0b5c@suse.com>
- <20220225114729.GE12643@twin.jikos.cz>
- <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=05dGa4MbTCy/WXdqLtbI7pzY1vM0ArO1qiihvnFVgHc=;
+        b=XZYHSiG3LcBSrqfDwaw8elgNhlj+OD4CjF6qvCpcIGUOF4MlPTQl9Uw3xRBh/xXLBB
+         t3/2ZSHmgehfWtydfSLJJdQGuwO/wYt8Am9GDt22+ZFUAE9OuQ9P5neStzUF0hpQL1HE
+         Q/GFe0GQ/VFTxzU99VVvaO/yC1P9Q+NNl34ZYzVJKrYUc4E4qjIYMuHsHVQcvXh7Bh1h
+         hGVwErXr1YQlc5m5zrsL+ZamXEVPxaMevXfj5u9IitGjMybh3nwnr5ITwqxX6P7fv9Iy
+         ZOrHfT50++iqDTC7Rp9C8rEsMkZeYceCS4XGnLF1mMg3niZjaCgGxesxpszwtV9L+A+F
+         7H/A==
+X-Gm-Message-State: AOAM530LjkgUnGFId8tyUErsJbW9i5xkp0pdY0X4jSfVgsUyRbB2z9Yd
+        KF14K18dUH3tlaizAuEXdrM=
+X-Google-Smtp-Source: ABdhPJzqkPXkuoOSE6A9Ov9qTUqzcWFPh0pK4+Y87wTxZi/UerECwyDs5DRCHdb3Bd5W0BPKEtvxgA==
+X-Received: by 2002:a05:6000:1847:b0:1e6:2783:b3e6 with SMTP id c7-20020a056000184700b001e62783b3e6mr7253080wri.163.1645819649853;
+        Fri, 25 Feb 2022 12:07:29 -0800 (PST)
+Received: from [192.168.8.101] ([197.211.53.19])
+        by smtp.gmail.com with ESMTPSA id f8-20020a05600c4e8800b00380ee4a78fdsm4354252wmq.4.2022.02.25.12.07.25
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Fri, 25 Feb 2022 12:07:29 -0800 (PST)
+Message-ID: <62193701.1c69fb81.e5a36.0056@mx.google.com>
+From:   Roy Cockrum Donation <eseloanscompany@gmail.com>
+X-Google-Original-From: Roy Cockrum Donation
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Re:Hi
+To:     Recipients <Roy@vger.kernel.org>
+Date:   Fri, 25 Feb 2022 21:10:59 +0100
+Reply-To: roycockrum550@gmail.com
+X-Antivirus: AVG (VPS 220225-0, 2/25/2022), Outbound message
+X-Antivirus-Status: Clean
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,
+        SPF_HELO_NONE,SPF_PASS,TO_MALFORMED,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 25, 2022 at 09:36:32PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2022/2/25 19:47, David Sterba wrote:
-> > On Fri, Feb 25, 2022 at 06:08:20PM +0800, Qu Wenruo wrote:
-> > > Hi,
-> > > 
-> > > The very basic seed device usage is broken again:
-> > > 
-> > > 	mkfs.btrfs -f $dev1 > /dev/null
-> > > 	btrfstune -S 1 $dev1
-> > > 	mount $dev1 $mnt
-> > > 	btrfs dev add $dev2 $mnt
-> > > 	umount $mnt
-> > > 
-> > > 
-> > > I'm not sure how many guys are really using seed device.
-> > > 
-> > > But I see a lot of weird operations, like calling a definite write
-> > > operation (device add) on a RO mounted fs.
-> > 
-> > That's how the seeding device works, in what way would you want to do
-> > the ro->rw change?
-> 
-> In progs-only, so that in kernel we can make dev add ioctl as a real RW
-> operation, not adding an exception for dev add.
-> 
-> > 
-> > > Can we make at least the seed sprouting part into btrfs-progs instead?
-> > 
-> > How? What do you mean? This is an in kernel operation that is done on a
-> > mounted filesystem, progs can't do that.
-> 
-> Why not?
-> 
-> Progs has the same ability to read-write the fs, I see no reason why we
-> shouldn't do it in user space.
-> 
-> We're just adding a device, update related trees (which will only be
-> written to the new device). I see no special reason why it can't be done
-> in user space.
-> 
-> Furthermore, the ability to add device in user space can be a good
-> safenet for some ENOSPC space.
-> 
-> > 
-> > > And can seed device even support the upcoming extent-tree-v2?
-> > 
-> > I should, it operates on the device level.
-> > 
-> > > Personally speaking I prefer to mark seed device deprecated completely.
-> > 
-> > If we did that with every feature some developer does not like we'd have
-> > nothing left you know. Seeding is a documented usecase, as long as it
-> > works it's fine to have it available.
-> 
-> A documented usecase doesn't mean it can't be deprecated.
-> 
-> Furthermore, a documented use case doesn't validate the use case itself.
-> 
-> So, please tell me when did you use seed device last time?
-> Or anyone in the mail list, please tell me some real world usecase for
-> seed devices.
-> 
-> I did remember some planned use case like a way to use seed device as a
-> VM/container template, but no, it doesn't get much attention.
-> 
-> 
-> I'm not asking for deprecate the feature just because I don't like it.
-> 
-> This feature is asking for too many exceptions, from the extra
-> fs_devices hack (we have in fact two fs_devices, one for rw devices, one
-> for seed only), to the dev add ioctl.
-> 
-> But the little benefit is not really worthy for the cost.
+Am Roy, You have been nominated to receive $450,000.00 sent in your name.re=
+ply for more details
 
-We use seed devices in production. The use case is for servers where we
-don't want to persist any sensitive data. The seed device contains a
-basic boot environment, then we sprout it with a dm-crypt device and
-throw away the encryption key. This ensures that nothing sensitive can
-ever be recovered. We previously did this with overlayfs, but seed
-devices ended up working better for reasons I don't remember.
+-- 
+This email has been checked for viruses by AVG.
+https://www.avg.com
 
-Davide Cavalca also told me that "Fedora is also interested in
-leveraging seed devices down the road. e.g. doing seed/sprout for cloud
-provisioning, and using seed devices for OEM factory recovery on
-laptops."
-
-There are definitely hacks we need to fix for seed devices, but there
-are valid use cases and we can't just deprecate it.
