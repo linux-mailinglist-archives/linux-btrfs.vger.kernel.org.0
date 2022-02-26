@@ -2,62 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0441A4C56BA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Feb 2022 16:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499104C56BF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Feb 2022 17:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbiBZP4P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Feb 2022 10:56:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41710 "EHLO
+        id S232244AbiBZQEQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Feb 2022 11:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbiBZP4O (ORCPT
+        with ESMTP id S231523AbiBZQEO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Feb 2022 10:56:14 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3A113DE09
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Feb 2022 07:55:39 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id z22so11429817edd.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Feb 2022 07:55:39 -0800 (PST)
+        Sat, 26 Feb 2022 11:04:14 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26184B3E4D
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Feb 2022 08:03:40 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id c9so7292473pll.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Feb 2022 08:03:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZaEZkDxQsc83BRQ7DzVYV42z+cUfE+SXy0zsQ0kODdI=;
-        b=Wse2CeFNk5M5PS4DQY0TkKyzJnlPeIUzmYrnFaCOZFVwO7T//4LIGEGJ8Df0wn28tB
-         rzf4qkOK9WfcVY+ngYBs1qUs0yGJVfB5cHMhEviQTepMAnPsf4bXB27S8EbnHbOnGq/U
-         jWasSWDEe6iBjqdhIjauhVqPQXEMHPJUQsQw8Vv0hqpOlGD+9luFknHFCEY++YFE0U7i
-         Kc3bqpdqyMkPek0OFs1vXUK+mOIOPXeyxvIMQHX85vTyP0OYOOLwa3jLVZdFSK3+ombQ
-         ooB+FxYxoMinIaLMnLuNi2T4ZOSRGCnZs5toNI+hEPxTQrOUZLDXbmqfEjFLz7z3dqET
-         5RbQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QIEhPB83qYc8Eyj33boB2cVATa+lgYef4lJiclxhrP4=;
+        b=iVdLkU0cBUTRQ53o1ASNq3aonFSeMRa9aDiDcrcf4HIHuwAtkkx+VDLCUFLSwCzDt+
+         ZywrTKbV2xK7OXCnRPYFGquJ6+ih4bpDPFnmNkN/mbXLuYrscm6ifr4ul/b65pHXfoMh
+         MZfoEfKi+p3xlDvYR+hVcHg3062SD59aUCgTUPteBZ6dQUZ1onTbSzFiBDIWl0bdQPEO
+         iZ1gOU24btQYmhFgExWHsRxKB+Xu6nQcAWqfWaazQ2foUcdnScAXliUL1LcYmNFWTRrB
+         1Dl7hbRV8oGzt/0dEtveoRnYa8YPvid1xTMfknOsmZf1O1WIg/7ySOnZigU6GqV1LgRK
+         eNgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZaEZkDxQsc83BRQ7DzVYV42z+cUfE+SXy0zsQ0kODdI=;
-        b=skMjX/KkGW+ZRvHmhCCMll8SdPsR0HGKrgPKA61PCq97PUVlyVFaQ++qq1pL85GsZ/
-         q47rsGM5UQjDaDXbuc4fxFpjtOsQKAkEdcmA80SXpo/MK7OAXTJVAInQSdleRnqpZNfx
-         zfzPLnjGi2cBQjOuoHDMnOoMmGmOGVQbvp8F+pAd3qAdDdjEXnc6FYzWBdm8xSGb59Uv
-         OsKJlJ7lFC1ciLA/uJtEuIDivYOyO89VWSvaEQr+NVelyOMXb6rYcmt23h17rKOUiDqu
-         pAoqTpenzJHdJzy4AHmU3A8f0T88MaC7pVCZij2qmqexqUIWfe+Cndw8dvus8V9CoO6L
-         rd0w==
-X-Gm-Message-State: AOAM533i7X1bCIQHh2FZWaFnMdqGWXZvBgzfM+t+83tpfnTyg3vSKT/T
-        6ZlsQC/wiKXiC7yT75hzbAlyt9Uz01+EeaWL4xM=
-X-Google-Smtp-Source: ABdhPJy/rtIqo0mYqpEHD/3Ak+rzoKqY9jJYdd5IM9b+cgRDHEEOCO70mRytfHLMrvAg+ZAmqHkls+VB3TlSgTQhPjw=
-X-Received: by 2002:a05:6402:270b:b0:410:d71d:3f06 with SMTP id
- y11-20020a056402270b00b00410d71d3f06mr11569143edd.10.1645890937541; Sat, 26
- Feb 2022 07:55:37 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QIEhPB83qYc8Eyj33boB2cVATa+lgYef4lJiclxhrP4=;
+        b=SutC4fuanEBvv5pfYISDOvxBJPRf0naIVVrv6Uhp3tNO60lG/tiKySNqwdohOBbBYb
+         TczJIrllBJ98EeyxWucYXLFuDvp+WF+GJYx41BGVOLrjSEi38DhitcfvjwuF+mB0woGp
+         1oGEAU//yeZD9mkY0dtuC3eJc4ZfIeqGy1DJ2RtTmrnI7f+bAH+urv/uFSqAMVatNtoY
+         eez4QC61ucN5wpYJbz38Zt2kfqy40inVHKg9sIMNTvpaedlxygx7idCXf+TF8k1XNH7G
+         bqOyKW6nwoG1hRxM5aFOQ9KX6enQuxBHlLO7uMqDr2wfJqGgC8T6frtAG0blCjXf3Vcf
+         B/gw==
+X-Gm-Message-State: AOAM5325Iije0+tvLG3DClkv4Su5wOglW32Cg1FTzezQ1J3YyfjQlHxq
+        zv/bZTwBIPNVOCSSpkAU2/c=
+X-Google-Smtp-Source: ABdhPJyM+0jx2H9cBwr/UPHtIctk7VXoIkUt02CC0TZKmuPNprqu7ueLE3DNsSBeyHm9Jn5g3smz/w==
+X-Received: by 2002:a17:90a:4383:b0:1bc:f9da:f339 with SMTP id r3-20020a17090a438300b001bcf9daf339mr7169892pjg.160.1645891419575;
+        Sat, 26 Feb 2022 08:03:39 -0800 (PST)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id k4-20020a17090a910400b001bd171c7fd4sm2139915pjo.25.2022.02.26.08.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Feb 2022 08:03:38 -0800 (PST)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Filipe Manana <fdmanana@kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     Sidong Yang <realwakka@gmail.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v3] btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
+Date:   Sat, 26 Feb 2022 16:03:30 +0000
+Message-Id: <20220226160330.19122-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CA+8xDSpvdm_U0QLBAnrH=zqDq_cWCOH5TiV46CKmp3igr44okQ@mail.gmail.com>
- <7a8d1bb6-ac56-4c4e-98de-0d9c540052be@gmx.com>
-In-Reply-To: <7a8d1bb6-ac56-4c4e-98de-0d9c540052be@gmx.com>
-From:   =?UTF-8?Q?Luca_B=C3=A9la_Palkovics?= 
-        <luca.bela.palkovics@gmail.com>
-Date:   Sat, 26 Feb 2022 16:55:26 +0100
-Message-ID: <CA+8xDSq=gs=7wjNAiE1u80KYxmXt1e_HLhwZfGPvwHRKGgZ0mg@mail.gmail.com>
-Subject: Re: Can't mount btrfs, super_num_devices mismatch with num_devices..
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,159 +71,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am Fr., 25. Feb. 2022 um 10:45 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gmx.co=
-m>:
->
->
->
-> On 2022/2/25 16:50, Luca B=C3=A9la Palkovics wrote:
-> > Hi,
-> >
-> > when I try to mount btrfs (RAID1 mode)
-> > I get the following error:
-> >
-> > BTRFS error (device sdd3): super_num_devices 3 mismatch with
-> > num_devices 2 found here
->
-> By somehow the chunk tree has the device removed but not the superblock.
->
-> > BTRFS error (device sdd3): failed to read chunk tree: -22
-> > BTRFS error (device sdd3): open_ctree failed
-> >
-> > Mounting with -o degraded gives the same error..
-> >
-> > I would be grateful for any advice on how to fix this probleme.
-> >
-> > How got to this state:
-> >
-> > device 2 was "missing"
-> > btrfs replace didn't work... (mismatch with fs_devices total_rw_bytes)
-> >
-> > so I did (in initramfs):
-> >
-> > # mount -o degraded /dev/sdd3 /mnt
-> > # btrfs device add /dev/sdf3 /mnt
-> > # btrfs device remove 2 /mnt
-> > # CTRL + ALT + DEL (reboot)
-> >
-> > Here some infos
-> >
-> > # uname -a
-> > Linux ? 5.13.19-4-pve #1 SMP PVE 5.13.19-9 (Mon, 07 Feb 2022 11:01:14
-> > +0100) x86_64 GNU/Linux
-> >
-> > # btrfs --version
-> > btrfs-progs v5.10.1
-> >
-> > # btrfs filesystem show
-> > Label: none  uuid: e3c0acd3-1411-44e9-be74-110d3937cd18
-> > Total devices 3 FS bytes used 138.27GiB
-> >      devid    1 size 850.00GiB used 141.07GiB path /dev/sdd3
-> >      devid    3 size 850.00GiB used 139.03GiB path /dev/sdf3
-> >      *** Some devices missing
-> >
-> > The " *** Some devices missing" is devid 2 .. btrfs device remove
-> > didn't work correctly??
-> > Should I have "umount"ed before "CTRL + ALT + DEL"?
-> >
-> > # btrfs check /dev/sdd3
-> > Opening filesystem to check...
-> > Checking filesystem on /dev/sdd3
-> > UUID: e3c0acd3-1411-44e9-be74-110d3937cd18
-> > [1/7] checking root items
-> > [2/7] checking extents
-> > [3/7] checking free space cache
-> > [4/7] checking fs roots
-> > [5/7] checking only csums items (without verifying data)
-> > [6/7] checking root refs
-> > [7/7] checking quota groups skipped (not enabled on this FS)
-> > found 148463915008 bytes used, no error found
-> > total csum bytes: 144303168
-> > total tree bytes: 549797888
-> > total fs tree bytes: 210288640
-> > total extent tree bytes: 178585600
-> > btree space waste bytes: 129766772
-> > file data blocks allocated: 546983469056
-> >   referenced 133358051328
->
-> Fs is completely fine.
->
-> So it's just to change the device number of that super block.
+The commit e804861bd4e6 ("btrfs: fix deadlock between quota disable and
+qgroup rescan worker") by Kawasaki resolves deadlock between quota
+disable and qgroup rescan worker. but also there is a deadlock case like
+it. It's about enabling or disabling quota and creating or removing
+qgroup. It can be reproduced in simple script below.
 
-I overwrote the num_devices of the superblock and recalculated the CRC.
-Mounting the fs works now. "btrfs scrub" had no errors.
+for i in {1..100}
+do
+    btrfs quota enable /mnt &
+    btrfs qgroup create 1/0 /mnt &
+    btrfs qgroup destroy 1/0 /mnt &
+    btrfs quota disable /mnt &
+done
 
-(Here is the script if somebody needs it..
-https://gist.github.com/KoKuToru/e540af02e48952bdd39413b7034b83db)
+Here's why the deadlock happens:
 
-> Will craft a patch to re-calculate the device number of the super block
-> for btrfs-check --repair.
->
-> Thanks,
-> Qu
->
-> >
-> > # btrfs rescue super-recover -v /dev/sdd3
-> > All Devices:
-> >      Device: id =3D 3, name =3D /dev/sdf3
-> >      Device: id =3D 1, name =3D /dev/sdd3
-> >
-> > Before Recovering:
-> >      [All good supers]:
-> >          device name =3D /dev/sdf3
-> >          superblock bytenr =3D 65536
-> >
-> >          device name =3D /dev/sdf3
-> >          superblock bytenr =3D 67108864
-> >
-> >          device name =3D /dev/sdf3
-> >          superblock bytenr =3D 274877906944
-> >
-> >          device name =3D /dev/sdd3
-> >          superblock bytenr =3D 65536
-> >
-> >          device name =3D /dev/sdd3
-> >          superblock bytenr =3D 67108864
-> >
-> >          device name =3D /dev/sdd3
-> >          superblock bytenr =3D 274877906944
-> >
-> >      [All bad supers]:
-> >
-> > All supers are valid, no need to recover
-> >
-> > # btrfs-find-root /dev/sdd3
-> > Superblock thinks the generation is 30491
-> > Superblock thinks the level is 1
-> > Found tree root at 371244793856 gen 30491 level 1
-> > Well block 371244433408(gen: 30490 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371243958272(gen: 30489 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371243597824(gen: 30488 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371243270144(gen: 30487 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371242909696(gen: 30486 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371242631168(gen: 30485 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371242074112(gen: 30484 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371241648128(gen: 30483 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371241287680(gen: 30482 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371061211136(gen: 30481 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 371059965952(gen: 30480 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 370507628544(gen: 30479 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 370504892416(gen: 30478 level: 0) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> > Well block 220147482624(gen: 29108 level: 1) seems good, but
-> > generation/level doesn't match, want gen: 30491 level: 1
-> >
-> > best regards,
-> > Luca B=C3=A9la Palkovics
+1) The quota rescan task is running.
+
+2) Task A calls btrfs_quota_disable(), locks the qgroup_ioctl_lock
+   mutex, and then calls btrfs_qgroup_wait_for_completion(), to wait for
+   the quota rescan task to complete.
+
+3) Task B calls btrfs_remove_qgroup() and it blocks when trying to lock
+   the qgroup_ioctl_lock mutex, because it's being held by task A. At that
+   To  resolve this issue, The thread disabling quota should unlock
+   int task B is holding a transaction handle for the current transaction.
+
+4) The quota rescan task calls btrfs_commit_transaction(). This results
+   in it waiting for all other tasks to release their handles on the
+   transaction, but task B is blocked on the qgroup_ioctl_lock mutex
+   while holding a handle on the transaction, and that mutex is being held
+   by task A, which is waiting for the quota rescan task to complete,
+   resulting in a deadlock between these 3 tasks.
+
+To resolve this issue, The thread disabling quota should unlock
+qgroup_ioctl_lock before waiting rescan completion. This patch moves
+btrfs_qgroup_wait_for_completion() after qgroup_ioctl_lock().
+
+Fixes: e804861bd4e6 ("btrfs: fix deadlock between quota disable and
+qgroup rescan worker")
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+v3: fix comments, typos, changelog.
+v2: add comments, move locking before clear_bit.
+---
+ fs/btrfs/qgroup.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 2c0dd6b8a80c..1866b1f0da01 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1213,6 +1213,14 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 	if (!fs_info->quota_root)
+ 		goto out;
+ 
++	/*
++	 * Unlock the qgroup_ioctl_lock mutex before waiting for the rescan worker to
++	 * complete. Otherwise we can deadlock because btrfs_remove_qgroup() needs
++	 * to lock that mutex while holding a transaction handle and the rescan
++	 * worker needs to commit a transaction.
++	 */
++	mutex_unlock(&fs_info->qgroup_ioctl_lock);
++
+ 	/*
+ 	 * Request qgroup rescan worker to complete and wait for it. This wait
+ 	 * must be done before transaction start for quota disable since it may
+@@ -1220,7 +1228,6 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 	 */
+ 	clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
+ 	btrfs_qgroup_wait_for_completion(fs_info, false);
+-	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+ 
+ 	/*
+ 	 * 1 For the root item
+-- 
+2.25.1
+
