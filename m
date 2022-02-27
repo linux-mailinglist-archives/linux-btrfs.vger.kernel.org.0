@@ -2,111 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECDE4C5FF1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 00:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF51A4C5FF6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 00:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbiB0Xwc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Feb 2022 18:52:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        id S231840AbiB0X4u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 27 Feb 2022 18:56:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbiB0Xwc (ORCPT
+        with ESMTP id S229486AbiB0X4t (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Feb 2022 18:52:32 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A4A49FB9
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Feb 2022 15:51:54 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 61D511F892;
-        Sun, 27 Feb 2022 23:51:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646005913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+gucloSnbB9fysLAIstUBeEXRnCbE0SbyF8eGIFVIJc=;
-        b=HiH6UWLwBEky5rj5LTfiknZPSQ5uMa2HxZ2HQa9M0ZqPBkTpUYU5xj2AWxNND0HZBq1GSa
-        42pAbpi0qvVm5vaV+yfzpF5bvueY8nV6ECN8Sz81Bn/oykMzODCHdSKnuHjw9+Cue4Zdt2
-        CHV9K1ceWdxEzPUZvikBk+To+9mwnNs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E65013480;
-        Sun, 27 Feb 2022 23:51:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2NIGDZgOHGLlKwAAMHmgww
-        (envelope-from <wqu@suse.com>); Sun, 27 Feb 2022 23:51:52 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     =?UTF-8?q?Luca=20B=C3=A9la=20Palkovics?= 
-        <luca.bela.palkovics@gmail.com>
-Subject: [PATCH] btrfs: repair super block num_devices automatically
-Date:   Mon, 28 Feb 2022 07:51:34 +0800
-Message-Id: <ad2279d1be9457b5b0a7dc883f7733666abb1ef8.1646005849.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
+        Sun, 27 Feb 2022 18:56:49 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4B156426
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Feb 2022 15:56:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1646006168;
+        bh=JU7+8NXc7EPuUu3r38CG53M6BgPQEmRPWZ9JM+2kv58=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=i1k7JI2taW6pioJZRJWl07LY0H+ck10lRgBuu/8TPmtc2GXT2QvpLuOKVAGLzgg2t
+         pLJTgSwJ85ESztsS6hSIDdXNGTe6rvtVceGRy3SQ+6RJwio8or1jAugosJaZvyO/B6
+         hxOHrBYumHfAuutxH7XbQuAG43ikkdg31Cf5kqa8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDhhX-1nX1aC0kxb-00AmoD; Mon, 28
+ Feb 2022 00:56:07 +0100
+Message-ID: <f4525052-8938-42f9-543d-c333200353dd@gmx.com>
+Date:   Mon, 28 Feb 2022 07:56:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: Seed device is broken, again.
+Content-Language: en-US
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <88176dfc-2500-1e9c-bac0-5e293b2c0b5c@suse.com>
+ <20220225114729.GE12643@twin.jikos.cz>
+ <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
+ <YhkrfyzmCgOGG+5n@relinquished.localdomain>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <YhkrfyzmCgOGG+5n@relinquished.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ujnwgF9qpMKCz3tSn7OSmrkutJSZ9l8sXfkWaN+cNSY6Og1feKw
+ N+slQ0T1zapJo+u+C+uSoK43N265d3jdoWTeN3MqGxSyGWVKiMbcvDdqCZ71gqFUeV3jv82
+ QQVqUQXHFBZDsHy7+/h5a6rZzDPNKfXSYaoNVpf2WZthLdj8YYVApbQKg9ZhZAamDszGuC/
+ R0TbO4ZFzFRmn++PaSEpw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HSZnjaHoOVE=:BFVDt0YvD4fu+t7i2QoMXq
+ CMWvuRqwRUAKZkdVyPr43W+HVFpgK5XRcSC1eBcGFkzbsj2d+3+warcabR1Nd5lozwHhW2yGN
+ Cn44TipV9cZ1tSsVrv470/9HJ5UwS+9aC/9ndLqahyDzLcFAmxOMisPEple7LNSSyV1hOwWfv
+ gZqQ9/3yOt1DBnQHe8bKftYLK/zEumdqWOT4xp6c7TYHB3qg3Z/ECQzOTEWEMOjmUGHuG4EWr
+ 2BNqX90vLKk22FBGcB4ISp09C2mcNha2Ar3gAFogafMlz7gR66nyAlVX5w0TxcDOx92A9VNhp
+ 6cDVmQgnZtQP4/cStsL7EAKHoxv333ZKE5B7c+HkWZ8tAnl01ox+EH4jmEK2KQFv9VzS/RDGA
+ 6Ptum9Ev8469oEa11dF7HzVRQ1x+DQjUD+UWu5aoD9UDMLvUPcNwazkm0i8bQTAzbB8dYIzUG
+ jdGLpAjB0YBKiHkMoewLzCrY/BNzPtBJ2goBE0qIZIkeYzu82aLwjRVzZ3S+KPoR2zQdt2mEg
+ tgbdrjq9+KeyFfofdtW7amNY/tqhbtShGOBTQPZKx9tRwxYpJw3y+m+P+kWIiPxybEL/lW2jz
+ oVMZQhkeKh0yFIFq+TdX4ArDblwvMKP1FRO8jIZBqlLo3MLlVEq+9EJz60KY1o32Q92nBlU0B
+ zZjeWjPZ7A/wwfN9P04xD2eaZ2Qzsu3ulzZdJ4PBnKFyQnfI06Kdhs/q+MzAtklHyRiheaHpJ
+ RVus6VfeyMZBOT/LHnCihfPkaPvBbR/u4s5BEDQ4pgA2QTRp26PXpuYnHriykJOh1fKGsmdvC
+ xd2FnVJy1StLsUuZb+eIxw2hHkCuzAOCR55RI/oV5qWry0taQOuVkkrT2KYFTUMTC5tyFdhs6
+ sWxjD/noPoQJQKOWuWCggWSFwAJC8G0dFBQeYwyCfDunK+TjqKxZhGOQzeihBI/LM2y6s6C0Q
+ xSCWJXYrX0dS8t8xdqxIBgqHlt+kRlagINbgPKNCpsIzde03BCEgMowHWBLfG1+NWbn6KZhEo
+ WlgRiRC9Y8u9F0PtRCPnZXmhYEvGj4qXxxLKE6V5R1PhPavxS7XgttQyrQ08yGtjEd6D9BdTe
+ HqKgJ82UaJEkiQ=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a report that a btrfs has a bad super block num devices.
 
-This makes btrfs to reject the fs completely.
 
-[CAUSE]
-It's pretty straightforward, if super_num_devices doesn't match the
-deviecs we found in chunk tree, there must be some wrong with the fs
-thus we can reject the fs.
+On 2022/2/26 03:18, Omar Sandoval wrote:
+> On Fri, Feb 25, 2022 at 09:36:32PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2022/2/25 19:47, David Sterba wrote:
+>>> On Fri, Feb 25, 2022 at 06:08:20PM +0800, Qu Wenruo wrote:
+>>>> Hi,
+>>>>
+>>>> The very basic seed device usage is broken again:
+>>>>
+>>>> 	mkfs.btrfs -f $dev1 > /dev/null
+>>>> 	btrfstune -S 1 $dev1
+>>>> 	mount $dev1 $mnt
+>>>> 	btrfs dev add $dev2 $mnt
+>>>> 	umount $mnt
+>>>>
+>>>>
+>>>> I'm not sure how many guys are really using seed device.
+>>>>
+>>>> But I see a lot of weird operations, like calling a definite write
+>>>> operation (device add) on a RO mounted fs.
+>>>
+>>> That's how the seeding device works, in what way would you want to do
+>>> the ro->rw change?
+>>
+>> In progs-only, so that in kernel we can make dev add ioctl as a real RW
+>> operation, not adding an exception for dev add.
+>>
+>>>
+>>>> Can we make at least the seed sprouting part into btrfs-progs instead=
+?
+>>>
+>>> How? What do you mean? This is an in kernel operation that is done on =
+a
+>>> mounted filesystem, progs can't do that.
+>>
+>> Why not?
+>>
+>> Progs has the same ability to read-write the fs, I see no reason why we
+>> shouldn't do it in user space.
+>>
+>> We're just adding a device, update related trees (which will only be
+>> written to the new device). I see no special reason why it can't be don=
+e
+>> in user space.
+>>
+>> Furthermore, the ability to add device in user space can be a good
+>> safenet for some ENOSPC space.
+>>
+>>>
+>>>> And can seed device even support the upcoming extent-tree-v2?
+>>>
+>>> I should, it operates on the device level.
+>>>
+>>>> Personally speaking I prefer to mark seed device deprecated completel=
+y.
+>>>
+>>> If we did that with every feature some developer does not like we'd ha=
+ve
+>>> nothing left you know. Seeding is a documented usecase, as long as it
+>>> works it's fine to have it available.
+>>
+>> A documented usecase doesn't mean it can't be deprecated.
+>>
+>> Furthermore, a documented use case doesn't validate the use case itself=
+.
+>>
+>> So, please tell me when did you use seed device last time?
+>> Or anyone in the mail list, please tell me some real world usecase for
+>> seed devices.
+>>
+>> I did remember some planned use case like a way to use seed device as a
+>> VM/container template, but no, it doesn't get much attention.
+>>
+>>
+>> I'm not asking for deprecate the feature just because I don't like it.
+>>
+>> This feature is asking for too many exceptions, from the extra
+>> fs_devices hack (we have in fact two fs_devices, one for rw devices, on=
+e
+>> for seed only), to the dev add ioctl.
+>>
+>> But the little benefit is not really worthy for the cost.
+>
+> We use seed devices in production. The use case is for servers where we
+> don't want to persist any sensitive data. The seed device contains a
+> basic boot environment, then we sprout it with a dm-crypt device and
+> throw away the encryption key. This ensures that nothing sensitive can
+> ever be recovered. We previously did this with overlayfs, but seed
+> devices ended up working better for reasons I don't remember.
+>
+> Davide Cavalca also told me that "Fedora is also interested in
+> leveraging seed devices down the road. e.g. doing seed/sprout for cloud
+> provisioning, and using seed devices for OEM factory recovery on
+> laptops."
+>
+> There are definitely hacks we need to fix for seed devices, but there
+> are valid use cases and we can't just deprecate it.
 
-But on the other hand, super_num_devices is not determinant counter,
-especially when we already have a correct counter after iterating the
-chunk tree.
+OK, then it looks we need to keep the feature.
 
-[FIX]
-Make the super_num_devices check less strict, converting it from a hard
-error to a warning, and reset the value to a correct one for the current
-or next transaction commitment.
+Then would you mind to share your preference between things like:
 
-Reported-by: Luca Béla Palkovics <luca.bela.palkovics@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CA+8xDSpvdm_U0QLBAnrH=zqDq_cWCOH5TiV46CKmp3igr44okQ@mail.gmail.com/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/volumes.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+a) The current way
+    mkfs + btrfstune + mount + dev add
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 74c8024d8f96..d0ba3ff21920 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7682,12 +7682,12 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 	 * do another round of validation checks.
- 	 */
- 	if (total_dev != fs_info->fs_devices->total_devices) {
--		btrfs_err(fs_info,
--	   "super_num_devices %llu mismatch with num_devices %llu found here",
-+		btrfs_warn(fs_info,
-+	   "super_num_devices %llu mismatch with num_devices %llu found here, will be repaired on next transaction commitment",
- 			  btrfs_super_num_devices(fs_info->super_copy),
- 			  total_dev);
--		ret = -EINVAL;
--		goto error;
-+		fs_info->fs_devices->total_devices = total_dev;
-+		btrfs_set_super_num_devices(fs_info->super_copy, total_dev);
- 	}
- 	if (btrfs_super_total_bytes(fs_info->super_copy) <
- 	    fs_info->fs_devices->total_rw_bytes) {
--- 
-2.35.1
+b) All user space way
+    mkfs /dev/seed
+    btrfstune -S 1 /dev/seed
+    mkfs -S /dev/seed /dev/new
+    (using seed device as seed, and sprout to the new device)
 
+With method b, at least we can make dev add ioctl to be completely RW in
+the long run.
+
+Thanks,
+Qu
