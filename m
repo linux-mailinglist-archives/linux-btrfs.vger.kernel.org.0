@@ -2,151 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 499104C56BF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Feb 2022 17:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C284C5A14
+	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Feb 2022 09:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbiBZQEQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Feb 2022 11:04:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        id S230160AbiB0Iaw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 27 Feb 2022 03:30:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231523AbiBZQEO (ORCPT
+        with ESMTP id S229769AbiB0Iav (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Feb 2022 11:04:14 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26184B3E4D
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Feb 2022 08:03:40 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id c9so7292473pll.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Feb 2022 08:03:40 -0800 (PST)
+        Sun, 27 Feb 2022 03:30:51 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5974131C
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Feb 2022 00:30:14 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id x15so10787654wrg.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Feb 2022 00:30:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QIEhPB83qYc8Eyj33boB2cVATa+lgYef4lJiclxhrP4=;
-        b=iVdLkU0cBUTRQ53o1ASNq3aonFSeMRa9aDiDcrcf4HIHuwAtkkx+VDLCUFLSwCzDt+
-         ZywrTKbV2xK7OXCnRPYFGquJ6+ih4bpDPFnmNkN/mbXLuYrscm6ifr4ul/b65pHXfoMh
-         MZfoEfKi+p3xlDvYR+hVcHg3062SD59aUCgTUPteBZ6dQUZ1onTbSzFiBDIWl0bdQPEO
-         iZ1gOU24btQYmhFgExWHsRxKB+Xu6nQcAWqfWaazQ2foUcdnScAXliUL1LcYmNFWTRrB
-         1Dl7hbRV8oGzt/0dEtveoRnYa8YPvid1xTMfknOsmZf1O1WIg/7ySOnZigU6GqV1LgRK
-         eNgA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=GZ0pKN6J296etXXH/eImj5nw/RrhVRmViLzun8Bacws=;
+        b=CBM/A5uqfNJ4qt2drQ8Srea7vlQmymYMo3bivq2x8i9gvoAMQgTG5l8Xta2v3lcEhD
+         hxy0/+Yn1ef2YFR94KpexyeV50oUID8RHiF9+dHpb/Iit+0LLUTt8UCz6qpbg8rRC76G
+         ps6Dw9rTmEXIZkPU7f4r6jR6GB1DpTC2+7qC3IYgJq3tSik0YtI7eA1g2Qv7zIRckfly
+         qT5CdFrTGm4rdoJZwQJdJ3lmn9ria5GlQiLOjdIOAN9rBlEkLctp7KLJMqQJn4z2KRQ5
+         SPNsZQF0ShXcThFyfn6LkTXjTH6v6MFJ0DYkOUFeSTIALgOl0KPvEiIlziOtHaGoJ8nP
+         VaBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QIEhPB83qYc8Eyj33boB2cVATa+lgYef4lJiclxhrP4=;
-        b=SutC4fuanEBvv5pfYISDOvxBJPRf0naIVVrv6Uhp3tNO60lG/tiKySNqwdohOBbBYb
-         TczJIrllBJ98EeyxWucYXLFuDvp+WF+GJYx41BGVOLrjSEi38DhitcfvjwuF+mB0woGp
-         1oGEAU//yeZD9mkY0dtuC3eJc4ZfIeqGy1DJ2RtTmrnI7f+bAH+urv/uFSqAMVatNtoY
-         eez4QC61ucN5wpYJbz38Zt2kfqy40inVHKg9sIMNTvpaedlxygx7idCXf+TF8k1XNH7G
-         bqOyKW6nwoG1hRxM5aFOQ9KX6enQuxBHlLO7uMqDr2wfJqGgC8T6frtAG0blCjXf3Vcf
-         B/gw==
-X-Gm-Message-State: AOAM5325Iije0+tvLG3DClkv4Su5wOglW32Cg1FTzezQ1J3YyfjQlHxq
-        zv/bZTwBIPNVOCSSpkAU2/c=
-X-Google-Smtp-Source: ABdhPJyM+0jx2H9cBwr/UPHtIctk7VXoIkUt02CC0TZKmuPNprqu7ueLE3DNsSBeyHm9Jn5g3smz/w==
-X-Received: by 2002:a17:90a:4383:b0:1bc:f9da:f339 with SMTP id r3-20020a17090a438300b001bcf9daf339mr7169892pjg.160.1645891419575;
-        Sat, 26 Feb 2022 08:03:39 -0800 (PST)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id k4-20020a17090a910400b001bd171c7fd4sm2139915pjo.25.2022.02.26.08.03.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Feb 2022 08:03:38 -0800 (PST)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Filipe Manana <fdmanana@kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     Sidong Yang <realwakka@gmail.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v3] btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
-Date:   Sat, 26 Feb 2022 16:03:30 +0000
-Message-Id: <20220226160330.19122-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=GZ0pKN6J296etXXH/eImj5nw/RrhVRmViLzun8Bacws=;
+        b=K7NO8P4ROAQQtVrQMocJsDsVIne/hhfL/6zb9t+XMrQtAOE/ymVyedmZh5e5kElWnq
+         aDRu70LJuNE1cSdTohUpFikfhT+i7Ml/yNTTRiSyk/oX1LVivISY8Eol7EJircwPMDXx
+         ZCSqFSboG/6rrJM8/DMP21+SNgepX7IURmV4tCYSM1FklfuSZB13lkfo92uXG+mC811l
+         wTKngoJbNl0WG3oTU1u4nNa99eakkYBYHeZYrTf48wPPkxSrIpmMzUJRFmNori4mRhjV
+         qszY1a56MI5mos+kAPJd7yTH3iGewBcjnBt8LEUIKT0RJKiH98EIdHtfwaaept/7SoVQ
+         Nbhw==
+X-Gm-Message-State: AOAM532ClHp8BF7aB/pdSUdbowLRNH1IG5MoIGfvesfuHVQhoCJiG4na
+        m3bOynnKW/ItSVRxPqpgKigM3gOIuHduSvXs6Ec=
+X-Google-Smtp-Source: ABdhPJwP1xvR7CRjRpykS/t7ad1hyIvwuFXv5xQtkloBtJbvw3CfJ36ywri+EY9zs4hamvcd7sf57EpGxokHcp6avVw=
+X-Received: by 2002:a5d:5747:0:b0:1ed:b776:d402 with SMTP id
+ q7-20020a5d5747000000b001edb776d402mr12365755wrw.714.1645950613159; Sun, 27
+ Feb 2022 00:30:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a5d:6d84:0:0:0:0:0 with HTTP; Sun, 27 Feb 2022 00:30:12
+ -0800 (PST)
+Reply-To: lindaahmed804@gmail.com
+From:   "Mrs. Linda Ahmed" <anthonyhillary39@gmail.com>
+Date:   Sun, 27 Feb 2022 08:30:12 +0000
+Message-ID: <CAO1AKQG1cPpqvNjiAvZG042_koR8s15c6Q83-DXD87Tw+k4hyw@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        FROM_FMBLA_NEWDOM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The commit e804861bd4e6 ("btrfs: fix deadlock between quota disable and
-qgroup rescan worker") by Kawasaki resolves deadlock between quota
-disable and qgroup rescan worker. but also there is a deadlock case like
-it. It's about enabling or disabling quota and creating or removing
-qgroup. It can be reproduced in simple script below.
-
-for i in {1..100}
-do
-    btrfs quota enable /mnt &
-    btrfs qgroup create 1/0 /mnt &
-    btrfs qgroup destroy 1/0 /mnt &
-    btrfs quota disable /mnt &
-done
-
-Here's why the deadlock happens:
-
-1) The quota rescan task is running.
-
-2) Task A calls btrfs_quota_disable(), locks the qgroup_ioctl_lock
-   mutex, and then calls btrfs_qgroup_wait_for_completion(), to wait for
-   the quota rescan task to complete.
-
-3) Task B calls btrfs_remove_qgroup() and it blocks when trying to lock
-   the qgroup_ioctl_lock mutex, because it's being held by task A. At that
-   To  resolve this issue, The thread disabling quota should unlock
-   int task B is holding a transaction handle for the current transaction.
-
-4) The quota rescan task calls btrfs_commit_transaction(). This results
-   in it waiting for all other tasks to release their handles on the
-   transaction, but task B is blocked on the qgroup_ioctl_lock mutex
-   while holding a handle on the transaction, and that mutex is being held
-   by task A, which is waiting for the quota rescan task to complete,
-   resulting in a deadlock between these 3 tasks.
-
-To resolve this issue, The thread disabling quota should unlock
-qgroup_ioctl_lock before waiting rescan completion. This patch moves
-btrfs_qgroup_wait_for_completion() after qgroup_ioctl_lock().
-
-Fixes: e804861bd4e6 ("btrfs: fix deadlock between quota disable and
-qgroup rescan worker")
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
-v3: fix comments, typos, changelog.
-v2: add comments, move locking before clear_bit.
----
- fs/btrfs/qgroup.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 2c0dd6b8a80c..1866b1f0da01 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1213,6 +1213,14 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	if (!fs_info->quota_root)
- 		goto out;
- 
-+	/*
-+	 * Unlock the qgroup_ioctl_lock mutex before waiting for the rescan worker to
-+	 * complete. Otherwise we can deadlock because btrfs_remove_qgroup() needs
-+	 * to lock that mutex while holding a transaction handle and the rescan
-+	 * worker needs to commit a transaction.
-+	 */
-+	mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+
- 	/*
- 	 * Request qgroup rescan worker to complete and wait for it. This wait
- 	 * must be done before transaction start for quota disable since it may
-@@ -1220,7 +1228,6 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	 */
- 	clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
- 	btrfs_qgroup_wait_for_completion(fs_info, false);
--	mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 
- 	/*
- 	 * 1 For the root item
--- 
-2.25.1
-
+Please with due respect I want to talk to you is very important
