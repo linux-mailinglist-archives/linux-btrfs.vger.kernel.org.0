@@ -2,102 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F4E4C6475
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 09:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74934C6518
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 09:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbiB1IMh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 03:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
+        id S234103AbiB1Iy6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 03:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbiB1IMg (ORCPT
+        with ESMTP id S229634AbiB1Iy5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 03:12:36 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA7F692B9;
-        Mon, 28 Feb 2022 00:11:58 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D8239B80D85;
-        Mon, 28 Feb 2022 08:11:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7019AC36AE5;
-        Mon, 28 Feb 2022 08:11:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646035915;
-        bh=zMDLEB8toWf2EIp4Gbj5PSCBFzWdzLn4mVbcpqFSMxs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G5/HKt1YcKrybKD+1q8UgQW8r6UniPBg+HgJCRHDiawTCCJy2G9uMVmVMIrAH+MIY
-         uUZuQAmqf+UgQqG4LSwOUKjuA8mlT2hPXWXAetE6/wffM3OsZ6cQuw+SmzDdC9fizY
-         tnKAD3prEcX2CmRCAP5e0Sp4+MmIaoIy7bEgoECFMmrlcDv1M29iegogMcMJXx4EzC
-         Ww6E2vE2Ei6Ccl+33CFLA3ixlnEAH6a8FHRWu+p6u8hOq0ib6UliPV2J7DZbNT/orL
-         Z5vh8VINzIAjIFdahYuMGIJkpIkpdyHyDhOYN0mcWcjSY+6pRXFj43dgIYPqjgmCqP
-         vBf0o1GuFv9eA==
-Received: by mail-wm1-f48.google.com with SMTP id v2-20020a7bcb42000000b0037b9d960079so5259530wmj.0;
-        Mon, 28 Feb 2022 00:11:55 -0800 (PST)
-X-Gm-Message-State: AOAM531vIwOqzB7n19giBDQ2Mka5Xl1OBa0v+8AFaIgUS11TY9Kc5faf
-        ZgUtx62VXAQzxHr12XG1VP+JoKC13ooidjHVDj0=
-X-Google-Smtp-Source: ABdhPJx0yttNosgz0Dhhih9aIMEkkBewvoulgcXNOZok4rXBWTX7Xo99SrIvGnmvPy9Xsi9me/xpLhkH8sj6MYMy+yQ=
-X-Received: by 2002:a05:600c:4802:b0:381:3b27:89b7 with SMTP id
- i2-20020a05600c480200b003813b2789b7mr11349875wmo.173.1646035913752; Mon, 28
- Feb 2022 00:11:53 -0800 (PST)
+        Mon, 28 Feb 2022 03:54:57 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F69F1D311
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 00:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1646038451;
+        bh=CPGkx+6JE4zZxFeFChJh6bOn/5TNODzGDxumsmVmPaw=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=g2byL/h+HvsdeGi2IaiyhA8gEjzPUEineyWY0tgJnYR7uviNEt4Jr/N8mWgw/RhTm
+         pZsFIBBmuXY4Y5p48tbGtyAvi3ZQw2ZoQ1TModWtvo/8YOEE016hopYRUJLKtpwJ+y
+         oZwTqP/UxcFcTdhyQ+Fbq1iLqxL9gNgWedNcN5VI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MAONd-1nW3lw04Cp-00BvMG; Mon, 28
+ Feb 2022 09:54:11 +0100
+Message-ID: <a6923955-00f9-d739-c70a-3beace0b85e1@gmx.com>
+Date:   Mon, 28 Feb 2022 16:54:07 +0800
 MIME-Version: 1.0
-References: <20220227215408.3180023-1-arnd@kernel.org> <YhwT2Gw8vsQHPxAB@quad.stoffel.home>
-In-Reply-To: <YhwT2Gw8vsQHPxAB@quad.stoffel.home>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 28 Feb 2022 09:11:37 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1A8Y3F93FzbWum9U=_Mc8zR9T5p=tTkQK90ARan41EbA@mail.gmail.com>
-Message-ID: <CAK8P3a1A8Y3F93FzbWum9U=_Mc8zR9T5p=tTkQK90ARan41EbA@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: remove -std=gnu89 from compiler arguments
-To:     john@quad.stoffel.home
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
-        Jonathan Corbet <corbet@lwn.net>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>, Hu Haowen <src.res@email.cn>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH v2] btrfs: repair super block num_devices automatically
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     =?UTF-8?Q?Luca_B=c3=a9la_Palkovics?= 
+        <luca.bela.palkovics@gmail.com>
+References: <732d0a86c3624bc96df3cca05512edac40efc75d.1646031785.git.wqu@suse.com>
+ <ebdb0e67-0e9e-4ca6-1d2e-4dd2a7a7c103@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <ebdb0e67-0e9e-4ca6-1d2e-4dd2a7a7c103@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Fxlvvv4uGUWOOrb9nQnWISZhXeSlSHrT9/KHkH9EK63dwSHJR53
+ wbveZS7ZUrQyfKSAw7ZpjYv2JShNKJmTHBO5Tpj+b/IQYjlKBwfUlNo/uBj6JeT7JlTvx4/
+ W36FRljJL7ME0WwT07wzlSgNktiUDEwuJK/Pf8crKlEVrhBAS4eiSrPw2n4WVrlpP3J6FRx
+ EKkpb+pFk0aeBCgij6uSQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eP/0s/H2V7U=:d4vUjOjdWvp6T9hBwYQKzp
+ 9voJqTX/zrXE8m+aCeCJMKQLlqFWtvmwcOCDsE5YKKjYyh4LPzw5JyoyqJ8Kx3uVzBmxaERZG
+ d4m0/g/JhgBRaZFthzpdIBDj9tQmxsZF1+kqcPAIdrF4VWD6dTxrwfz9Grtp4DBF16xmE80Ph
+ 8ljIZZg6qG9pFpbH6/SP/GCZbSEJUg2xxB18aF1vn2ChEjjHvsf58LcJ3fdTq4RWDvVhlgKsB
+ SlxT5W98Ow7AHK04PPZATd5CnozruZugA5MG7Ov0pkt5QrCsL4YrjDAcjsaz80Coxfc/48RbY
+ IZFU1aEFRWwkz1Upo5x0njtaRcoIcXkEWarHEnR6MZImr8jlmFUCZqwVOG1kAT2+bi8vm5Bc5
+ fw0qg+oxTh2Ipv23XS9i7S4ykX04jX+zIi+cs9fHoRjP6mCOxCln0SxLWgBQ8bxyIhtJ4Uj1s
+ 1VfMvXunCEp50bbAN1vBkoOOuTdGzA2LNGE0l/mkeOzXntecpoMiiKlRfPusubwDsD0MlEWbX
+ u1mFADFx3QqPkVukhuY034P9G7ygOin1o2qjpY1JlYxMZN/moatIiPaTkTniiioijbgSM7FM8
+ Uwu6J8EfVVmvaIUbf0yAJID1GyXP2dS1TfqE95EYPaFnj6Rd27u5jVa2mTbSEjmZADPAoyQ9Q
+ lsKnm6xpKmoLqZsqF9UltLZpM5VVSevsuNUuT5oo33QBSyapI/p7hd9JooTpxJmy4P3DwxRGn
+ mqtjbpp80LYZ3uiuhQSdkk3IUfi5t0n8lcfvZzNIw769SbF2IwFUWPpVfWGybT0AQndDctPt9
+ tCT7mInaJMW0jMM25W0Fg7vZXrKi2j8l5OjWIngs6M1bwYtS03aafUQqVlWRTC5KXKvDjCrYO
+ JC2B1Ta7rcKW8qC5TnUiK6DHZ/NavxVodhzcSr9LFE7kmthm/leHQKNR+QjfO81D1GgML+xVS
+ AYCoHJHYq9l7NNbkrEuhc/o08XQBF4XhFjcUbeM1+g9TnnTw7z5sNZ3X7cID8c7la/lFP66wz
+ wotZpknZdjEwbnZ3DABi63hmu0Y/A3K6NP/gP5oPBfeH6p1Fm8UCQvl/zsPzSrmG5t9ZHRZmY
+ IDRhhDyIbSVWnI=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 1:14 AM John Stoffel <john@quad.stoffel.home> wrote:
+
+
+On 2022/2/28 16:00, Anand Jain wrote:
+> On 28/02/2022 15:05, Qu Wenruo wrote:
+>> [BUG]
+>> There is a report that a btrfs has a bad super block num devices.
+>>
+>> This makes btrfs to reject the fs completely.
+>>
+>> =C2=A0=C2=A0 BTRFS error (device sdd3): super_num_devices 3 mismatch wi=
+th
+>> num_devices 2 found here
+>> =C2=A0=C2=A0 BTRFS error (device sdd3): failed to read chunk tree: -22
+>> =C2=A0=C2=A0 BTRFS error (device sdd3): open_ctree failed
+>>
+>> [CAUSE]
+>> During btrfs device removal, chunk tree and super block num devs are
+>> updated in two different transactions:
+>>
+>> =C2=A0=C2=A0 btrfs_rm_device()
+>> =C2=A0=C2=A0 |- btrfs_rm_dev_item(device)
+>> =C2=A0=C2=A0 |=C2=A0 |- trans =3D btrfs_start_transaction()
+>> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 Now we got transaction X
+>> =C2=A0=C2=A0 |=C2=A0 |
+>> =C2=A0=C2=A0 |=C2=A0 |- btrfs_del_item()
+>> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 Now device item is removed from chunk tree
+>> =C2=A0=C2=A0 |=C2=A0 |
+>> =C2=A0=C2=A0 |=C2=A0 |- btrfs_commit_transaction()
+>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 Transaction X got committed, sup=
+er num devs untouched,
+>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 but device item removed from chu=
+nk tree.
+>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 (AKA, super num devs is already =
+incorrect)
+>> =C2=A0=C2=A0 |
+>> =C2=A0=C2=A0 |- cur_devices->num_devices--;
+>> =C2=A0=C2=A0 |- cur_devices->total_devices--;
+>> =C2=A0=C2=A0 |- btrfs_set_super_num_devices()
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 All those operations are not in transact=
+ion X, thus it will
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 only be written back to disk in next tra=
+nsaction.
+>>
+>> So after the transaction X in btrfs_rm_dev_item() committed, but before
+>> transaction X+1 (which can be minutes away), a power loss happen, then
+>> we got the super num mismatch.
+>>
 >
-> On Sun, Feb 27, 2022 at 10:52:43PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > During a patch discussion, Linus brought up the option of changing
-> > the C standard version from gnu89 to gnu99, which allows using variable
-> > declaration inside of a for() loop. While the C99, C11 and later standards
-> > introduce many other features, most of these are already available in
-> > gnu89 as GNU extensions as well.
-> >
-> > An earlier attempt to do this when gcc-5 started defaulting to
-> > -std=gnu11 failed because at the time that caused warnings about
-> > designated initializers with older compilers. Now that gcc-5.1 is the
-> > minimum compiler version used for building kernels, that is no longer a
-> > concern. Similarly, the behavior of 'inline' functions changes between
-> > gnu89 and gnu89, but this was taken care of by defining 'inline' to
+> The cause part is much better now. So why not also update the super
+> num_devices in the same transaction?
+
+A lot of other things like total_rw_bytes.
+
+Not to mention, even we got a fix, it will be another patch.
+
+Since the handling of such mismatch is needed to handle older kernels
+anyway.
+
 >
-> Typo here?  Second one should be gnu99 right?
+>
+>> [FIX]
+>> Make the super_num_devices check less strict, converting it from a hard
+>> error to a warning, and reset the value to a correct one for the curren=
+t
+>> or next transaction commitment.
+>
+> So that we can leave the part where we identify and report num_devices
+> miss-match as it is.
 
+I didn't get your point.
+What do you want to get from this patch?
 
-Fixed, thanks!
+Isn't this already the behavior of this patch?
 
-        Arnd
+>
+> Thanks, Anand
+>
+>
+>> Reported-by: Luca B=C3=A9la Palkovics <luca.bela.palkovics@gmail.com>
+>> Link:
+>> https://lore.kernel.org/linux-btrfs/CA+8xDSpvdm_U0QLBAnrH=3DzqDq_cWCOH5=
+TiV46CKmp3igr44okQ@mail.gmail.com/
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> Changelog:
+>> v2:
+>> - Add a proper reason on why this mismatch can happen
+>> =C2=A0=C2=A0 No code change.
+>> ---
+>> =C2=A0 fs/btrfs/volumes.c | 8 ++++----
+>> =C2=A0 1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 74c8024d8f96..d0ba3ff21920 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -7682,12 +7682,12 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info
+>> *fs_info)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * do another round of validation c=
+hecks.
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (total_dev !=3D fs_info->fs_devices->=
+total_devices) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "super_num_devices %llu mismatch =
+with num_devices %llu found
+>> here",
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_warn(fs_info,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "super_num_devices %llu mismatch =
+with num_devices %llu found
+>> here, will be repaired on next transaction commitment",
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 btrfs_super_num_devices(fs_info->super_copy),
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 total_dev);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -EINVAL;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto error;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_info->fs_devices->total_=
+devices =3D total_dev;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_set_super_num_devices=
+(fs_info->super_copy, total_dev);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_super_total_bytes(fs_info->sup=
+er_copy) <
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_info->fs_devi=
+ces->total_rw_bytes) {
+>
