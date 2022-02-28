@@ -2,122 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BABB4C7838
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 19:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4324C7846
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 19:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240768AbiB1Snl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 13:43:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
+        id S236291AbiB1Sp4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 13:45:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241387AbiB1Snd (ORCPT
+        with ESMTP id S234851AbiB1Sph (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 13:43:33 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E89C34B9C
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 10:41:08 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id u7so18646446ljk.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 10:41:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B+acwbp8IAqy4EQhdzrRR6UrvnBSYJWdfAOCkLBEf6s=;
-        b=LvJ51tK8OGXmUdrq1FTGfGhAU7kyWg6aDacet+/T6m1xcdm96SFLNin6cqkfGY+rbg
-         A+4gdF9QL3th8X1CIPS6F2KrwGpjUcAkZFh2wMRAAEhyIS9gK5hzhXTjv7RRLGY5VhDN
-         /ORnVKar4p0KNDioI7O/8vsyY3PJ0BwGF0c/w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B+acwbp8IAqy4EQhdzrRR6UrvnBSYJWdfAOCkLBEf6s=;
-        b=naf+iDoIaZJMSQbjvlWrKs0Itv24fKxn8lVxWSwg/9MXZ7e8XAWQrg0aZqzfDjzir+
-         HX2I/kiOIEx63kYRoVGmN58+ZBUvwwHwOSw19maCN4pwZTS8RBUnfa9YbBLnWnPWHiQd
-         BuVAYzn3WG1KPj6Dznqz+pJmDA4JJY58g3ZSujvqivMbTXbj0z8GBKzfPUBOg19piygd
-         Su4y6GLT2zgmOXhOzxGBsZnpmg+EEDNxIc7yrVuWbaDAtSHx35PH6rs3M9+KjF08P1Zf
-         TCx0ETuN6uyqNkep9SFwkIiOjdubvX418thGqcl2ch+IzaA0mbMObmgWDHbF19ZHcDJa
-         ed0Q==
-X-Gm-Message-State: AOAM533YRtFbBNUeMeA6sEe3/OoF+365+HGGWeZKS0obit5HrKzEsZBc
-        UVod8a+uRz9T2ymxLoTEuUQaI5XHpolo4Bmnv/c=
-X-Google-Smtp-Source: ABdhPJwVleJfQRV5SRQpeWN0nC/4Z+SeokhqVD8AdjrMDzrIDlxHml/jwCL11SlLsO8j0M+YsKPgcA==
-X-Received: by 2002:a2e:3c0b:0:b0:239:6106:8d28 with SMTP id j11-20020a2e3c0b000000b0023961068d28mr15983998lja.416.1646073666247;
-        Mon, 28 Feb 2022 10:41:06 -0800 (PST)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id y22-20020a197516000000b0044315947eefsm1081814lfe.186.2022.02.28.10.41.05
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Feb 2022 10:41:05 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id p20so18745420ljo.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 10:41:05 -0800 (PST)
-X-Received: by 2002:ac2:4c8c:0:b0:445:6c26:3cff with SMTP id
- d12-20020ac24c8c000000b004456c263cffmr13670491lfl.435.1646073655129; Mon, 28
- Feb 2022 10:40:55 -0800 (PST)
+        Mon, 28 Feb 2022 13:45:37 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C476929A
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 10:44:43 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7E3811F3A3;
+        Mon, 28 Feb 2022 18:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1646073882;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QH+eSFejQIi+Q8BZrIrE208S32lL3sf3H6EvD8kAmWQ=;
+        b=mZMRHSgvBGYpRsqDVM/fRAbpa1ziRMkHwMNf88jwllXavPFzNxaHxfb8Iw6R36QWwZMfRk
+        E+ttAEzqLpnxYqiXu9OJsJTErKWihnYLI2hK/dggtR7fNm8c4BAIJCMusiBdG4ns9GZ08P
+        SwUjeVLSCeGdtMDi1w7+wZTPlf4jfE8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1646073882;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QH+eSFejQIi+Q8BZrIrE208S32lL3sf3H6EvD8kAmWQ=;
+        b=lwYGW1yV6gtm/h3rUJMIE84opwKt6Ga6eZ+Pf7ZUp73yM9QV1Y24kxemCWB5Bbb+oimSpm
+        8izGmUnSD8dSSzCQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 627D4A3B83;
+        Mon, 28 Feb 2022 18:44:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1CEB9DA823; Mon, 28 Feb 2022 19:40:50 +0100 (CET)
+Date:   Mon, 28 Feb 2022 19:40:50 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        dsterba@suse.cz,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+Subject: Re: Seed device is broken, again.
+Message-ID: <20220228184050.GJ12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+References: <88176dfc-2500-1e9c-bac0-5e293b2c0b5c@suse.com>
+ <20220225114729.GE12643@twin.jikos.cz>
+ <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
+ <YhkrfyzmCgOGG+5n@relinquished.localdomain>
+ <f4525052-8938-42f9-543d-c333200353dd@gmx.com>
+ <43aea7a1-7b4b-8285-020b-7747a29dc9a6@oracle.com>
+ <00f162f7-774c-b7d4-9d1f-e04cc89b2aee@gmx.com>
+ <508772bc-237a-552b-5b63-80827a5b268a@oracle.com>
+ <4661c891-b15e-3a8f-6b98-f298e104262e@gmx.com>
 MIME-Version: 1.0
-References: <20220228103142.3301082-1-arnd@kernel.org> <YhyxML05rjJ/57Vk@FVFF77S0Q05N>
- <CAK8P3a0CTmtUq+Uba2S3D7wjSstew2M+LfzZoOcKdKK9cfXO9A@mail.gmail.com>
-In-Reply-To: <CAK8P3a0CTmtUq+Uba2S3D7wjSstew2M+LfzZoOcKdKK9cfXO9A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Feb 2022 10:40:38 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjU+DCbFG4nd3Wne-KbQ1n5=BHynv3xEmRYTaayBj-EfQ@mail.gmail.com>
-Message-ID: <CAHk-=wjU+DCbFG4nd3Wne-KbQ1n5=BHynv3xEmRYTaayBj-EfQ@mail.gmail.com>
-Subject: Re: [PATCH] [v2] Kbuild: move to -std=gnu11
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
-        Jonathan Corbet <corbet@lwn.net>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>, Hu Haowen <src.res@email.cn>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4661c891-b15e-3a8f-6b98-f298e104262e@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 3:37 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> I think the KBUILD_USERCFLAGS portion and the modpost.c fix for it
-> make sense regardless of the -std=gnu11 change
+On Mon, Feb 28, 2022 at 11:27:16AM +0800, Qu Wenruo wrote:
+> > Ah. That's fine, IMO. It is a matter of understanding the nature of the
+> > seed device. No?
+> > The RO mount used to turn into an RW mount after the device-add a long
+> > ago. It got changed without a trace.
+> 
+> Think twice about this, have you every seen another fs allowing a RO
+> mount to be converted to RW without even remounting?
 
-I do think they make sense, but I want to note again that people doing
-cross builds obviously use different tools for user builds than for
-the kernel. In fact, even not cross-building, we've had situations
-where the "kbuild" compiler is different from the host compiler,
-because people have upgraded one but not the other (upgrading the
-kernel build environment is actually much easier than upgrading the
-host build environment, because you don't need all the random
-libraries etc, and you can literally _just_ build your own gcc and
-binutils)
+There's no other filesystem with a remotely close feature so we can't
+follow an established pattern.
 
-And we have *not* necessarily required that the host tools match the
-kernel tools.
+The ro->rw transition can be done from inside the filesystem too and
+btrfs sort of does that in btrfs_mount, calling kern_mount.
 
-So I could well imagine that there are people who build their kernels,
-but their host build environment might be old enough that -std=gnu11
-is problematic for that part.
+> Still think this doesn't provide any surprise to end users?
 
-And note how any change to  KBUILD_USERCFLAGS is reflected in KBUILD_HOSTCFLAGS.
+The RO status means the filesystem does not support any write operations
+from the user perspective that go through VFS. Adding the device in the
+seed mode modifies the filesystem structures, ie. changes the block
+device, but does not change the VFS status regarding writability.  The
+read-write remount is mandatory to actually make use of the writable
+device. This is documented and I don't find it confusing from the end
+user perspective.
 
-So I would suggest that the KBUILD_USERCFLAGS part of the patch (and
-the modpost.c change that goes with it) be done as a separate commit.
-Because we might end up reverting that part.
+If you're concerned that there's a write to the block device then yes,
+it's a bug that the mnt_set_write should be done just before we start
+any change operation.
 
-Hmm?
-
-           Linus
+There was a discussion some time ago if the log replay should happen on
+a read-only mount, or any potential repair action that could happen
+regardless of the ro/rw mount status. The conclusion was that it could
+happen, and guaranteeing no writes to the block device should be done
+externally eg. by blockdev --setro. But I think we opted not to do any
+writes anyway for btrfs.
