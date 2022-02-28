@@ -2,108 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C794C7B42
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 22:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107364C7B52
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 22:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbiB1VCb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 16:02:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        id S230029AbiB1VEn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 16:04:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbiB1VCX (ORCPT
+        with ESMTP id S230017AbiB1VEi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 16:02:23 -0500
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8D5DB489
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 13:01:41 -0800 (PST)
-Received: from [192.168.1.27] ([78.12.27.75])
-        by smtp-18.iol.local with ESMTPA
-        id On9EnXFWojPTCOn9EnJyda; Mon, 28 Feb 2022 22:01:39 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1646082099; bh=qsqDYF20lhrP5svtfqSs/z7ORMd0h0tSgQ7J1czEZrY=;
-        h=From;
-        b=Ep6yVgZS65iH8AOdPx2XRJnFGtkqZrhvLUCgy8v1vxFia5X2LDA5YHYjXPs7idvQk
-         JzQ9/wUWa1eLOxvKmelSreElO1RtlGV7MaKFKFLeIxjWuuInYT3zWR/zo2GRjIbm8M
-         oqhYABPN7qnA0lcBPYoru3ccIaAJpWd0x9nQHvwYsBJLj7anX6Ho6KcARYxmsk5Dn9
-         pr6K/6WD9yFyZS0P/3MBkzQodKYXyj3uBoCmMz8K9s2cpX0GIKyyW4pYRxWkk4uzKq
-         9gig3ncO0LRQ+gI29Ic81z4PByRIel3EENcxkAHnjW8nYiy66aPnxSObUokNAhA3WN
-         /04JgzM1THM9g==
-X-CNFS-Analysis: v=2.4 cv=DvGTREz+ c=1 sm=1 tr=0 ts=621d3833 cx=a_exe
- a=aCiYQ2Po16U8px2wfyNKfg==:117 a=aCiYQ2Po16U8px2wfyNKfg==:17
- a=IkcTkHD0fZMA:10 a=7c-nXvJwevJccmOILLUA:9 a=QEXdDO2ut3YA:10
-Message-ID: <c7fc88cd-a1e5-eb74-d89d-e0a79404f6bf@libero.it>
-Date:   Mon, 28 Feb 2022 22:01:35 +0100
+        Mon, 28 Feb 2022 16:04:38 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AB259A4E
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 13:03:58 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id 29so19128440ljv.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 13:03:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iiqNCFc6U32ONzTNhKfvxI6B2p9x39AVrXt2rLta2M8=;
+        b=W1quCfVq9oQhkjVMSeWaW2Z55DxdyDGbetnmG15rPiQ3v4OpkSJBRZVXEMnaa2odqg
+         QOxU/DybvDsA1JnfyM0Ii4qw3F6xR+UbY0dAPPGiPqs4IHrP1aOpkQPW6UBPfhHTs8Tm
+         PR7CBwZgGDqGkw8bM51JgA90FDhHoPP/FDNizSDpxNc9PDO+WtRrOnLiA4YcU9jxsmrw
+         z0maaOELQKiR1hC/GWCjcXmHCEwCPjiDrVGmn41QSQ89BJlDlTrXtLJTHpab0xmVnH4M
+         sZrukyP266PjsJuciZ6D4hmibJchflD3xDwtX05kLpAsnblhXyGN7U6wiOr/bpk5iv1a
+         EfsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iiqNCFc6U32ONzTNhKfvxI6B2p9x39AVrXt2rLta2M8=;
+        b=OZbIQpJwL+4tC1spE2WWcfhRESc31ANjDClS7vKOBodH6LEaMZ6kIkcigt2KXjwTBF
+         IK6f88fSI1ItfAgURryasWZtbVxIbGG/fBnPP3Fs8vVeYw4eK8P5T2E6Z2HC/JiMs63l
+         e/Q/m5SgD6aaRLTOWI7QHfaFF5nrx93qvNGnvbqnyhlhXy0fH7GmeHTXDxkMrQ4koSUY
+         tDf9V2jnb+tvHqXEFYM3I7ua3Gsgs6sm01sI1gkmXd1PSaXqdavhY0MqWdDRwCo4mU0C
+         X9pX0jc8DZcPWDhczq1kOaivR4H9NXaLTrOyuPAQ5PH7+INfcsYwG6guirqxahj1Q0Oe
+         UZ8w==
+X-Gm-Message-State: AOAM532qjE0Y10M5BBrezS46sDQm/2OTS38/hViWwo45MY9IE857JbyA
+        xTfA82QrNz5kjXJdsZj/EIjaEu9mtsrWRT2E/taHew==
+X-Google-Smtp-Source: ABdhPJzGFFfCBCn90UYvglywOrc8nxTF2i5r3/1lhRKGwuSQ5VMkWLmIJa+L1faEtfi148WU9C5GVQ0oji3KdUudozI=
+X-Received: by 2002:a2e:bf24:0:b0:246:801e:39d3 with SMTP id
+ c36-20020a2ebf24000000b00246801e39d3mr8506477ljr.472.1646082236647; Mon, 28
+ Feb 2022 13:03:56 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 0/7][V11] btrfs: allocation_hint
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-References: <cover.1643228177.git.kreijack@inwind.it>
- <Yh0AnKF1jFKVfa/I@localhost.localdomain>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <Yh0AnKF1jFKVfa/I@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCWErf1JCGkEAcT0CCVTBmTH23T31nqrtjNWmftCT1C07K7doboYvr8HA4PSc6zsMcETvSHX0rNDf57q6hAH/J24IIRVO1onbBZsaYqxPl+tp8Knt+yq
- S1LdgNq/YY04ujhgk+asLWiIvOHhEw5ngq2tSfGXKvcB2oXyw64/UGxM7uuA74jCaVfexC2m9DWZ+N1BIBgN3x3wGFALtt4EcukDxiqxChrBulZTtZ0c1F1t
- uag8B0/Ti+GhiFn2/NP3nGvKkucqI8zDY8e/BshEW2z+ldJoDWdfAzsQ38EzekG3qBy16xFv9m+3jp5d+cI5cUFyLWBPGTMQ+tEfhrQhvvFkY3vkGC/6PTVV
- fe+Kz+UOTP4j9yLGAX79X+uMZKb5DaBI/0ZhoEcCQ2bC6OwG4VZBMHa2L/t5zn2jgXik4IsJ
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20220228103142.3301082-1-arnd@kernel.org>
+In-Reply-To: <20220228103142.3301082-1-arnd@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 28 Feb 2022 13:03:45 -0800
+Message-ID: <CAKwvOdkLUx1td+qgUYy3w2ojtBG-mJTzpJg3BV8Xv56YHTxHCw@mail.gmail.com>
+Subject: Re: [PATCH] [v2] Kbuild: move to -std=gnu11
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
+        Jonathan Corbet <corbet@lwn.net>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Alex Shi <alexs@kernel.org>, Hu Haowen <src.res@email.cn>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-18.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Josef,
+On Mon, Feb 28, 2022 at 2:32 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> During a patch discussion, Linus brought up the option of changing
+> the C standard version from gnu89 to gnu99, which allows using variable
+> declaration inside of a for() loop. While the C99, C11 and later standards
+> introduce many other features, most of these are already available in
+> gnu89 as GNU extensions as well.
+>
+> An earlier attempt to do this when gcc-5 started defaulting to
+> -std=gnu11 failed because at the time that caused warnings about
+> designated initializers with older compilers. Now that gcc-5.1 is the
+> minimum compiler version used for building kernels, that is no longer a
+> concern. Similarly, the behavior of 'inline' functions changes between
 
-On 28/02/2022 18.04, Josef Bacik wrote:
-> On Wed, Jan 26, 2022 at 09:32:07PM +0100, Goffredo Baroncelli wrote:
->> From: Goffredo Baroncelli <kreijack@inwind.it>
->>
->> Hi all,
->>
-[...
+More precisely, the semantics of "extern inline" functions changed
+between ISO C90 and ISO C99.
 
->> In V11 I added a new 'feature' file /sys/fs/btrfs/features/allocation_hint
->> to help the detection of the allocation_hint feature.
->>
-> 
-> Sorry Goffredo I dropped the ball on this, lets try and get this shit nailed
-> down and done so we can get it merged.  The code overall looks good, I just have
-> two things I want changed
-> 
-> 1. The sysfs file should use a string, not a magic number.  Think how
->     /sys/block/<dev>/queue/scheduler works.  You echo "metadata_only" >
->     allocation_hint, you cat allocation_hint and it says "none" or
->     "metadata_only".  If you want to be fancy you can do exactly like
->     queue/scheduler and show the list of options with [] around the selected
->     option.
+That's the only concern I have, which I doubt is an issue. The kernel
+is already covered by the function attribute as you note.
 
-Ok.
-> 
-> 2. I hate the major_minor thing, can you do similar to what we do for devices/
->     and symlink the correct device sysfs directory under devid?
-> 
-Ok, do you have any suggestion for the name ? what about bdev ?
+Just to have some measure:
+$ git grep -rn "extern inline" | wc -l
+116
 
-> Other than that the code is perfect.  I think these two changes make it solid
-> enough to merge.  Thanks,
-> 
-> Josef
+Most of those are in arch/alpha/ which is curious; I wonder if those
+were intentional.
 
+(I do worry about Makefiles that completely reset KBUILD_CFLAGS
+though; the function attributes still take precedence).
+
+> gnu89 and gnu11, but this was taken care of by defining 'inline' to
+> include __attribute__((gnu_inline)) in order to allow building with
+> clang a while ago.
+>
+> One minor issue that remains is an added gcc warning for shifts of
+> negative integers when building with -Werror, which happens with the
+> 'make W=1' option, as well as for three drivers in the kernel that always
+> enable -Werror, but it was only observed with the i915 driver so far.
+> To be on the safe side, add -Wno-shift-negative-value to any -Wextra
+> in a Makefile.
+>
+> Nathan Chancellor reported an additional -Wdeclaration-after-statement
+> warning that appears in a system header on arm, this still needs a
+> workaround.
+
+Ack; I think we can just fix this in clang.
+
+>
+> The differences between gnu99, gnu11, gnu1x and gnu17 are fairly
+> minimal and mainly impact warnings at the -Wpedantic level that the
+> kernel never enables. Between these, gnu11 is the newest version
+> that is supported by all supported compiler versions, though it is
+> only the default on gcc-5, while all other supported versions of
+> gcc or clang default to gnu1x/gnu17.
+
+I agree. With the fixup to s/Werror/Wextra.
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+>
+> Link: https://lore.kernel.org/lkml/CAHk-=wiyCH7xeHcmiFJ-YgXUy2Jaj7pnkdKpcovt8fYbVFW3TA@mail.gmail.com/
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1603
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: llvm@lists.linux.dev
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Thanks,
+~Nick Desaulniers
