@@ -2,54 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8E54C7235
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 18:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFFD74C77FC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 19:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237911AbiB1RIt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 12:08:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        id S240031AbiB1SjE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 13:39:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235657AbiB1RIs (ORCPT
+        with ESMTP id S240711AbiB1Si1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 12:08:48 -0500
-X-Greylist: delayed 240 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Feb 2022 09:08:06 PST
-Received: from conssluserg-04.nifty.com (conssluserg-04.nifty.com [210.131.2.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A758533E12;
-        Mon, 28 Feb 2022 09:08:05 -0800 (PST)
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 21SH7qjg001599;
-        Tue, 1 Mar 2022 02:07:52 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 21SH7qjg001599
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1646068072;
-        bh=98mZh3DSkLLdEUaUpwDchiQq5D3wILeXQhtbg+uZ5C0=;
+        Mon, 28 Feb 2022 13:38:27 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87ECB403D2;
+        Mon, 28 Feb 2022 10:25:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 238B0614DE;
+        Mon, 28 Feb 2022 18:25:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FD1C34103;
+        Mon, 28 Feb 2022 18:25:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646072712;
+        bh=W7p79vSB6J1+jxnozFyNib9GmWcAolUohfmSDG//bFo=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D7+3GydIml5G5ULFdTIEOoeqAwyMiUllHF3GnHTuWW10nvZHqUydYyT+Jh/PjJc0C
-         9dGdscCwyV7M2qIK+TzlPN1lAgIFyW+LG8jTroxw3JcjB6xKD7AirJYq0hUGTm8FH0
-         G+ADSE21IaerZgVAUzhrazbpc1LG5nCdoDPIyOH+HiPFxvUV/fpB4XJyJl5QpYMKTS
-         4ZTfUYOn5AT4FiPGSuUklu/G/I3NUW/sdn3Ghx5EQK34yrsnKdstPivvN6BQ2Vg4IY
-         ckEBCcFgDL3VltZ5/Wnp4REwrg9Mbqj+hvGqQh0dDV6gu6iHvDuGU/mp/Vm9sD7zLJ
-         M5BfVt3YSVuhQ==
-X-Nifty-SrcIP: [209.85.215.171]
-Received: by mail-pg1-f171.google.com with SMTP id bc27so3199726pgb.4;
-        Mon, 28 Feb 2022 09:07:52 -0800 (PST)
-X-Gm-Message-State: AOAM533ZQQRv9BZdlSf1H6fD9183Jw+blY7bLetooRw1g+AKcoSk6sxc
-        xqUAdO8d0vJTNfQ7K1s2koHl/S6hFhx4aqW5jdo=
-X-Google-Smtp-Source: ABdhPJyLr4NM5Xb8MWbTJd6oMf6oOtnn2XpS61KrD/xyflT+Su6ouIqvNpJKrYGOOASYu0nk5xFAElbhZTOY0HMSDmM=
-X-Received: by 2002:a63:e758:0:b0:378:8511:cfe7 with SMTP id
- j24-20020a63e758000000b003788511cfe7mr7050358pgk.126.1646068071650; Mon, 28
- Feb 2022 09:07:51 -0800 (PST)
+        b=bW1ZFMo50q0kPFmsangI6ntG68WPn+8ztd5psh0iHHbmPXGd2Do9g5exX/orPNmoF
+         TbileAdECwDuGZ3+humcDGlnOjlNYxeI3qAjbFLAsFhTc2LHic+YIf2ERa75osRNhn
+         Kqq71bFPRaIovWhnQvFqOiR1ebj4qUhN855gks3wvS+rvdXKdGJUNfOOen3tcmT4S7
+         zpLTE7SvQlwyFubmoSBvPJGw1f5VxlcwUT5kGQbM5VRWy3yFRzf9kbennsbklNWQnr
+         VImWf5/+PDhsYj8Ik1QLewhHGzp4RLahjjkzTll08wtY5vt0rMq16dXAFWp3Qw6QCA
+         7XcyjSwBnCISg==
+Received: by mail-wr1-f52.google.com with SMTP id x15so16815769wrg.8;
+        Mon, 28 Feb 2022 10:25:12 -0800 (PST)
+X-Gm-Message-State: AOAM533q1QV2TFZAYL7lfjx745a6mZg9ITyWxPfglJbLui3J7j+DJS6v
+        TgRBG6SrT7r7vfUmSEs2ngUI9+Q7XvTeE/2quzk=
+X-Google-Smtp-Source: ABdhPJz4fZLcu78yhCIhmUlg8wcyJThC/WAQ6UaeDqjOpOcx7YS8Qt8gbRJs54Y1simdrFMDrQr0lGIp9e5ElXVyTL0=
+X-Received: by 2002:adf:edc3:0:b0:1ec:5f11:5415 with SMTP id
+ v3-20020adfedc3000000b001ec5f115415mr14857770wro.317.1646072710661; Mon, 28
+ Feb 2022 10:25:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20220228103142.3301082-1-arnd@kernel.org> <YhyxML05rjJ/57Vk@FVFF77S0Q05N>
-In-Reply-To: <YhyxML05rjJ/57Vk@FVFF77S0Q05N>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 1 Mar 2022 02:07:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATbX3TfETQTAr=e5kQLMDSXSn_KetDKTAaeZSq9k_70Uw@mail.gmail.com>
-Message-ID: <CAK7LNATbX3TfETQTAr=e5kQLMDSXSn_KetDKTAaeZSq9k_70Uw@mail.gmail.com>
+References: <20220228103142.3301082-1-arnd@kernel.org> <CAK7LNATVs-yRX4PnURkLv3fz3gAnuzG2GxZ2gdvmJX2g+0P-_w@mail.gmail.com>
+In-Reply-To: <CAK7LNATVs-yRX4PnURkLv3fz3gAnuzG2GxZ2gdvmJX2g+0P-_w@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 28 Feb 2022 19:24:54 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2To9St5=v6EHtJ-LBEp4-NOThPmO+qYeAfnxQPm2_Keg@mail.gmail.com>
+Message-ID: <CAK8P3a2To9St5=v6EHtJ-LBEp4-NOThPmO+qYeAfnxQPm2_Keg@mail.gmail.com>
 Subject: Re: [PATCH] [v2] Kbuild: move to -std=gnu11
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         llvm@lists.linux.dev, Jonathan Corbet <corbet@lwn.net>,
@@ -64,24 +65,22 @@ Cc:     Arnd Bergmann <arnd@kernel.org>,
         intel-gfx <intel-gfx@lists.freedesktop.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
         greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-btrfs@vger.kernel.org, Marco Elver <elver@google.com>
+        linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 8:25 PM Mark Rutland <mark.rutland@arm.com> wrote:
+On Mon, Feb 28, 2022 at 6:02 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> Hi Arnd,
->
-> This is great!
->
-> On Mon, Feb 28, 2022 at 11:27:43AM +0100, Arnd Bergmann wrote:
+> On Mon, Feb 28, 2022 at 7:32 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
 > > From: Arnd Bergmann <arnd@arndb.de>
 > >
 > > During a patch discussion, Linus brought up the option of changing
@@ -101,39 +100,23 @@ On Mon, Feb 28, 2022 at 8:25 PM Mark Rutland <mark.rutland@arm.com> wrote:
 > >
 > > One minor issue that remains is an added gcc warning for shifts of
 > > negative integers when building with -Werror, which happens with the
-> > 'make W=1' option, as well as for three drivers in the kernel that always
-> > enable -Werror, but it was only observed with the i915 driver so far.
-> > To be on the safe side, add -Wno-shift-negative-value to any -Wextra
-> > in a Makefile.
-> >
-> > Nathan Chancellor reported an additional -Wdeclaration-after-statement
-> > warning that appears in a system header on arm, this still needs a
-> > workaround.
 >
-> FWIW, I had a go at moving to c99 a few weeks ago (to be able to use
-> for-loop-declarations in some concurrency primitives), and when I tried, I also
-> saw declaration-after-statement warnings when building modpost.c, which is easy
-> enough to fix:
+> Is this a typo?
 >
->   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=treewide/gnu99&id=505775bd6fd0bc1883f3271f826963066bbdc194
+>    building with -Werror, ...
+> ->
+>    building with -Wextra, ...
 >
 
+I'm being slow today, Jani actually pointed out the same thing and I
+misunderstood him. Fixed it now, thanks!
 
-I do not understand this statement:
+> Acked-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+>
+> Please let me know if you want me to pick up this.
 
-"Usually such warnings are implciitly enabled as part of `-std=gnu89`,
- and in preparation for changing the standard used, this patch explciitly
-enales the warnings with `-Wdeclaration-after-statement`, which takes
-effect regardless of which version of the C standard is in use."
+Yes, that would be great. I'll send a v3 with the updated changelog,
+but will drop most of the Cc list as there are no functional changes.
 
-
-
-modpost is already built with -std=gnu89.
-
-If  Wdeclaration-after-statement is implied by gnu89,
-why did nobody notice this before?
-
-
--- 
-Best Regards
-Masahiro Yamada
+        Arnd
