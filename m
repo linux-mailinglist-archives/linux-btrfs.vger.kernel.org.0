@@ -2,165 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DDF4C7D84
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 23:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6E34C7DD9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 23:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbiB1WjQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 17:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
+        id S231628AbiB1Wys (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 17:54:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbiB1WjO (ORCPT
+        with ESMTP id S231611AbiB1Wyp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 17:39:14 -0500
-Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 823654A906;
-        Mon, 28 Feb 2022 14:38:34 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-17-0.pa.vic.optusnet.com.au [49.186.17.0])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 9453F10E0F6C;
-        Tue,  1 Mar 2022 09:38:31 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1nOof0-0000NZ-C4; Tue, 01 Mar 2022 09:38:30 +1100
-Date:   Tue, 1 Mar 2022 09:38:30 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     fdmanana@kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, djwong@kernel.org, hch@infradead.org,
-        cluster-devel@redhat.com, agruenba@redhat.com,
-        josef@toxicpanda.com, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] iomap: fix incomplete async dio reads when using
- IOMAP_DIO_PARTIAL
-Message-ID: <20220228223830.GR59715@dread.disaster.area>
-References: <1f34c8435fed21e9583492661ceb20d642a75699.1646058596.git.fdmanana@suse.com>
+        Mon, 28 Feb 2022 17:54:45 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F243D15A20;
+        Mon, 28 Feb 2022 14:54:03 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a8so27854704ejc.8;
+        Mon, 28 Feb 2022 14:54:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GsxpUBdbWqhwvtlxJIKUlO0M2+Pr5nAVEC771c3QJ/k=;
+        b=qchEkZ+1MqfOevkqUl4bSWLuZ7qjRLt9ku6OqIaZEEvQ1Qk7/DLqfnsHlKbEjJ10us
+         LBhkjSIMZFSgCJvtojYCJpCHh8YzxsTVbhucBhA3VsJ7C2TAf3Lwqgr+BzzmjPD/0yBs
+         UPo3BEBR0JiOfO+4v6eAy2FQqGoH8T+gF8QsSywoL7HNpkTyUPBGPPXBrUD9j3OCBk+l
+         a5MnWFXFk1Dh2LVWDtF8lL7/kc1gLTmo5cRoTBoQVJ4CG+tmbr2WsDPYw2OiPBTnmV0t
+         /g37eAyk1nRwEr1HkAsix34OpgNgU2BJczZO3qlGo0gA8biAcALfGZ0VoP8EEnvquJUA
+         Nsjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GsxpUBdbWqhwvtlxJIKUlO0M2+Pr5nAVEC771c3QJ/k=;
+        b=5dLqgCPEbvaoyZBCbFSH2f0YwVrW5APitT35avcmRtd1cN3ad7pLsnSceia6NZgS+l
+         czASbRKUYb0NeYIs87BDoLdhgocXwel/2U15IWEgvlg6RR6SnkrstLu3p54WD2FthRKu
+         V7g6/FliUmqLXDjzTyfZJ+emOkLFiTSb/2jyXDstkJ66EMC8O/RrY7OhtkEDaVlcf3im
+         ln2CY7ZoWPK18BpFZbnFf3jS4i+om+a4LNQwVDVPCLLrwX3TEpabqP0S9Rk78aVXjVM1
+         nRZydnR9kfOw5lMBBt7gks/Hs6cC4lBjS55TOqoxO6FXWQ3bmgxp6JyFaOrhR1glU//N
+         e3Tg==
+X-Gm-Message-State: AOAM5329SM5X//iobKfIrm/ep+0jrLhgHTcWKUGksnOVsumCLL0W+PaG
+        NVJC6xeJysa4tELCUwMXeD4R/FwZfMpedA==
+X-Google-Smtp-Source: ABdhPJyur+cHELdmew+tmID4EL9f/bRsLWeA8a6eqRSDwNoW6BmeK9qZpctr7JW7zqp7OBQXQFCesA==
+X-Received: by 2002:a17:906:814f:b0:6a8:49fa:a3f5 with SMTP id z15-20020a170906814f00b006a849faa3f5mr7020486ejw.421.1646088842504;
+        Mon, 28 Feb 2022 14:54:02 -0800 (PST)
+Received: from nlaptop.localdomain (ptr-dtfv0poj8u7zblqwbt6.18120a2.ip6.access.telenet.be. [2a02:1811:cc83:eef0:f2b6:6987:9238:41ca])
+        by smtp.gmail.com with ESMTPSA id o14-20020a170906774e00b006d5b915f27dsm4736885ejn.169.2022.02.28.14.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Feb 2022 14:53:22 -0800 (PST)
+From:   Niels Dossche <dossche.niels@gmail.com>
+To:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Niels Dossche <dossche.niels@gmail.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: add lockdep_assert_held to need_preemptive_reclaim
+Date:   Mon, 28 Feb 2022 23:52:16 +0100
+Message-Id: <20220228225215.16552-1-dossche.niels@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f34c8435fed21e9583492661ceb20d642a75699.1646058596.git.fdmanana@suse.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=621d4ee8
-        a=+dVDrTVfsjPpH/ci3UuFng==:117 a=+dVDrTVfsjPpH/ci3UuFng==:17
-        a=kj9zAlcOel0A:10 a=o8Y5sQTvuykA:10 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
-        a=7-415B0cAAAA:8 a=snENK0uE5OOyzlFrYM4A:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=WzC6qhA0u3u7Ye7llzcV:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 02:32:03PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Some users recently reported that MariaDB was getting a read corruption
-> when using io_uring on top of btrfs. This started to happen in 5.16,
-> after commit 51bd9563b6783d ("btrfs: fix deadlock due to page faults
-> during direct IO reads and writes"). That changed btrfs to use the new
-> iomap flag IOMAP_DIO_PARTIAL and to disable page faults before calling
-> iomap_dio_rw(). This was necessary to fix deadlocks when the iovector
-> corresponds to a memory mapped file region. That type of scenario is
-> exercised by test case generic/647 from fstests, and it also affected
-> gfs2, which, besides btrfs, is the only user of IOMAP_DIO_PARTIAL.
-> 
-> For this MariaDB scenario, we attempt to read 16K from file offset X
-> using IOCB_NOWAIT and io_uring. In that range we have 4 extents, each
-> with a size of 4K, and what happens is the following:
-> 
-> 1) btrfs_direct_read() disables page faults and calls iomap_dio_rw();
-> 
-> 2) iomap creates a struct iomap_dio object, its reference count is
->    initialized to 1 and its ->size field is initialized to 0;
-> 
-> 3) iomap calls btrfs_iomap_begin() with file offset X, which finds the
+In a previous patch I extended the locking for member accesses of
+space_info. It was then suggested to also add a lockdep assertion for
+space_info->lock to need_preemptive_reclaim.
 
-You mean btrfs_dio_iomap_begin()?
+Suggested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+---
+ fs/btrfs/space-info.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
->    first 4K extent, and setups an iomap for this extent consisting of
->    a single page;
-
-So we have IOCB_NOWAIT, which means btrfs_dio_iomap_begin() is being
-passed IOMAP_NOWAIT and so knows it is being asked
-to map an extent for an IO that is on a non-blocking path.
-
-btrfs_dio_iomap_begin() doesn't appear to support NOWAIT semantics
-at all - it will block doing writeback IO, memory allocation, extent
-locking, transaction reservations, extent allocation, etc....
-
-That, to me, looks like the root cause of the problem here -
-btrfs_dio_iomap_begin() is not guaranteeing non-blocking atomic IO
-semantics for IOCB_NOWAIT IO.
-
-In the case above, given that the extent lookup only found a 4kB
-extent, we know that it doesn't span the entire requested IO range.
-We also known that we cannot tell if we'll block on subsequent
-mappings of the IO range, and hence no guarantee can be given that
-IOCB_NOWAIT IO will not block when it is too late to back out with a
--EAGAIN error.
-
-Hence this whole set of problems could be avoided if
-btrfs_dio_iomap_begin() returns -EAGAIN if it can't map the entire
-IO into a single extent without blocking when IOMAP_NOWAIT is set?
-That's exactly what XFS does in xfs_direct_iomap_write_begin():
-
-        /*
-         * NOWAIT and OVERWRITE I/O needs to span the entire requested I/O with
-         * a single map so that we avoid partial IO failures due to the rest of
-         * the I/O range not covered by this map triggering an EAGAIN condition
-         * when it is subsequently mapped and aborting the I/O.
-         */
-        if (flags & (IOMAP_NOWAIT | IOMAP_OVERWRITE_ONLY)) {
-                error = -EAGAIN;
-                if (!imap_spans_range(&imap, offset_fsb, end_fsb))
-                        goto out_unlock;
-        }
-
-Basically, I'm thinking that IOMAP_NOWAIT and IOMAP_DIO_PARTIAL
-should be exclusive functionality - if you are doing IOMAP_NOWAIT
-then the entire IO must succeed without blocking, and if it doesn't
-then we return -EAGAIN and the caller retries without IOCB_NOWAIT
-set and so then we run with IOMAP_DIO_PARTIAL semantics in a thread
-that can actually block....
-
-.....
-
-> 11) At iomap_dio_complete() we adjust the iocb->ki_pos from X to X + 4K
->     and return 4K (the amount of io done) to iomap_dio_complete_work();
-> 
-> 12) iomap_dio_complete_work() calls the iocb completion callback,
->     iocb->ki_complete() with a second argument value of 4K (total io
->     done) and the iocb with the adjust ki_pos of X + 4K. This results
->     in completing the read request for io_uring, leaving it with a
->     result of 4K bytes read, and only the first page of the buffer
->     filled in, while the remaining 3 pages, corresponding to the other
->     3 extents, were not filled;
-> 
-> 13) For the application, the result is unexpected because if we ask
->     to read N bytes, it expects to get N bytes read as long as those
->     N bytes don't cross the EOF (i_size).
-
-Yeah, that's exactly the sort of problem we were having with XFS
-with partial DIO completions due to needing multiple iomap iteration
-loops to complete a single IO. Hence IOMAP_NOWAIT now triggers the
-above range check and aborts before we start...
-
-> 
-> So fix this by making __iomap_dio_rw() assign true to the boolean variable
-> 'wait_for_completion' when we have IOMAP_DIO_PARTIAL set, we did some
-> progress for a read and we have not crossed the EOF boundary. Do this even
-> if the read has IOCB_NOWAIT set, as it's the only way to avoid providing
-> an unexpected result to an application.
-
-That's highly specific and ultimately will be fragile, IMO. I'd much
-prefer that *_iomap_begin_write() implementations simply follow
-IOMAP_NOWAIT requirements to ensure that any DIO that needs multiple
-mappings if punted to a context that can block...
-
-Cheers,
-
-Dave.
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 294242c194d8..5464bd168d5b 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -734,9 +734,13 @@ static bool need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
+ {
+ 	u64 global_rsv_size = fs_info->global_block_rsv.reserved;
+ 	u64 ordered, delalloc;
+-	u64 thresh = div_factor_fine(space_info->total_bytes, 90);
++	u64 thresh;
+ 	u64 used;
+ 
++	lockdep_assert_held(&space_info->lock);
++
++	thresh = div_factor_fine(space_info->total_bytes, 90);
++
+ 	/* If we're just plain full then async reclaim just slows us down. */
+ 	if ((space_info->bytes_used + space_info->bytes_reserved +
+ 	     global_rsv_size) >= thresh)
 -- 
-Dave Chinner
-david@fromorbit.com
+2.35.1
+
