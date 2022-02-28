@@ -2,81 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1139B4C7B2E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 22:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C794C7B42
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Feb 2022 22:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiB1U7D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 15:59:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
+        id S229998AbiB1VCb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 16:02:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbiB1U7B (ORCPT
+        with ESMTP id S229795AbiB1VCX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 15:59:01 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CBE24F22;
-        Mon, 28 Feb 2022 12:58:22 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EFAA0210FA;
-        Mon, 28 Feb 2022 20:58:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1646081900;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FteZVt9c1MVKPFOCakOdo0gY5PZ/CDEv9TeOnEDnzOQ=;
-        b=0BqAyGXLksG7ZI4n7LCThq80eQYwPHuiKuf2eNujA9MT4hKQEc2ClhvKbeK3xznWMQ3LeU
-        YYsmOWUHWR+dD7izAeLHqe9F5eOwIb8CvvAGJsrneYclPV2sJcfgDSmqKlIVEr7c9iODLW
-        VmzvC1wohnHxF2TRGETCuShJ/UYxSLk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1646081900;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FteZVt9c1MVKPFOCakOdo0gY5PZ/CDEv9TeOnEDnzOQ=;
-        b=3PIPU2vjGWQiJMKrLRdGGaNPg3DvWGNCDbE44h8dAAJpRVg5dtVQD12lOUOeY/5I0GqslI
-        xRZH6czIHsz+ITDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D9CACA3B81;
-        Mon, 28 Feb 2022 20:58:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C1FE8DA823; Mon, 28 Feb 2022 21:54:29 +0100 (CET)
-Date:   Mon, 28 Feb 2022 21:54:29 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Niels Dossche <dossche.niels@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        Niels Dossche <niels.dossche@ugent.be>
-Subject: Re: [PATCH] btrfs: extend locking to all space_info members accesses
-Message-ID: <20220228205429.GL12643@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Niels Dossche <dossche.niels@gmail.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        Niels Dossche <niels.dossche@ugent.be>
-References: <20220225212028.75021-1-niels.dossche@ugent.be>
+        Mon, 28 Feb 2022 16:02:23 -0500
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8D5DB489
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 13:01:41 -0800 (PST)
+Received: from [192.168.1.27] ([78.12.27.75])
+        by smtp-18.iol.local with ESMTPA
+        id On9EnXFWojPTCOn9EnJyda; Mon, 28 Feb 2022 22:01:39 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1646082099; bh=qsqDYF20lhrP5svtfqSs/z7ORMd0h0tSgQ7J1czEZrY=;
+        h=From;
+        b=Ep6yVgZS65iH8AOdPx2XRJnFGtkqZrhvLUCgy8v1vxFia5X2LDA5YHYjXPs7idvQk
+         JzQ9/wUWa1eLOxvKmelSreElO1RtlGV7MaKFKFLeIxjWuuInYT3zWR/zo2GRjIbm8M
+         oqhYABPN7qnA0lcBPYoru3ccIaAJpWd0x9nQHvwYsBJLj7anX6Ho6KcARYxmsk5Dn9
+         pr6K/6WD9yFyZS0P/3MBkzQodKYXyj3uBoCmMz8K9s2cpX0GIKyyW4pYRxWkk4uzKq
+         9gig3ncO0LRQ+gI29Ic81z4PByRIel3EENcxkAHnjW8nYiy66aPnxSObUokNAhA3WN
+         /04JgzM1THM9g==
+X-CNFS-Analysis: v=2.4 cv=DvGTREz+ c=1 sm=1 tr=0 ts=621d3833 cx=a_exe
+ a=aCiYQ2Po16U8px2wfyNKfg==:117 a=aCiYQ2Po16U8px2wfyNKfg==:17
+ a=IkcTkHD0fZMA:10 a=7c-nXvJwevJccmOILLUA:9 a=QEXdDO2ut3YA:10
+Message-ID: <c7fc88cd-a1e5-eb74-d89d-e0a79404f6bf@libero.it>
+Date:   Mon, 28 Feb 2022 22:01:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220225212028.75021-1-niels.dossche@ugent.be>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH 0/7][V11] btrfs: allocation_hint
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+References: <cover.1643228177.git.kreijack@inwind.it>
+ <Yh0AnKF1jFKVfa/I@localhost.localdomain>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <Yh0AnKF1jFKVfa/I@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCWErf1JCGkEAcT0CCVTBmTH23T31nqrtjNWmftCT1C07K7doboYvr8HA4PSc6zsMcETvSHX0rNDf57q6hAH/J24IIRVO1onbBZsaYqxPl+tp8Knt+yq
+ S1LdgNq/YY04ujhgk+asLWiIvOHhEw5ngq2tSfGXKvcB2oXyw64/UGxM7uuA74jCaVfexC2m9DWZ+N1BIBgN3x3wGFALtt4EcukDxiqxChrBulZTtZ0c1F1t
+ uag8B0/Ti+GhiFn2/NP3nGvKkucqI8zDY8e/BshEW2z+ldJoDWdfAzsQ38EzekG3qBy16xFv9m+3jp5d+cI5cUFyLWBPGTMQ+tEfhrQhvvFkY3vkGC/6PTVV
+ fe+Kz+UOTP4j9yLGAX79X+uMZKb5DaBI/0ZhoEcCQ2bC6OwG4VZBMHa2L/t5zn2jgXik4IsJ
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 25, 2022 at 10:20:28PM +0100, Niels Dossche wrote:
-> bytes_pinned is always accessed under space_info->lock, except in
-> btrfs_preempt_reclaim_metadata_space, however the other members are
-> accessed under that lock. The reserved member of the rsv's are also
-> partially accessed under a lock and partially not. Move all these
-> accesses into the same lock to ensure consistency.
-> 
-> Signed-off-by: Niels Dossche <niels.dossche@ugent.be>
-> Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+Hi Josef,
 
-Added to misc-next, thanks.
+On 28/02/2022 18.04, Josef Bacik wrote:
+> On Wed, Jan 26, 2022 at 09:32:07PM +0100, Goffredo Baroncelli wrote:
+>> From: Goffredo Baroncelli <kreijack@inwind.it>
+>>
+>> Hi all,
+>>
+[...
+
+>> In V11 I added a new 'feature' file /sys/fs/btrfs/features/allocation_hint
+>> to help the detection of the allocation_hint feature.
+>>
+> 
+> Sorry Goffredo I dropped the ball on this, lets try and get this shit nailed
+> down and done so we can get it merged.  The code overall looks good, I just have
+> two things I want changed
+> 
+> 1. The sysfs file should use a string, not a magic number.  Think how
+>     /sys/block/<dev>/queue/scheduler works.  You echo "metadata_only" >
+>     allocation_hint, you cat allocation_hint and it says "none" or
+>     "metadata_only".  If you want to be fancy you can do exactly like
+>     queue/scheduler and show the list of options with [] around the selected
+>     option.
+
+Ok.
+> 
+> 2. I hate the major_minor thing, can you do similar to what we do for devices/
+>     and symlink the correct device sysfs directory under devid?
+> 
+Ok, do you have any suggestion for the name ? what about bdev ?
+
+> Other than that the code is perfect.  I think these two changes make it solid
+> enough to merge.  Thanks,
+> 
+> Josef
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
