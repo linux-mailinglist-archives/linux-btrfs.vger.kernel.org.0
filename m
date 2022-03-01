@@ -2,95 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A694C97E7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Mar 2022 22:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B514C97ED
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Mar 2022 22:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234263AbiCAVtv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Mar 2022 16:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
+        id S236143AbiCAVwx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Mar 2022 16:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbiCAVtv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Mar 2022 16:49:51 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B01F29C80
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Mar 2022 13:49:09 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 13F541F37E;
-        Tue,  1 Mar 2022 21:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1646171348;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6brHGR9ikIFR3v2YtYIVm8zFSl/Q+jpQ/XPFHZd+xxU=;
-        b=K7YhU30UQJvMqtVXrxzYFZslVWmwYDJLJru4fAJm2qIJJJpHNLcA2kykdI6Fyiz4ZczJKn
-        ISxdmeJoksXfSnWamtNqEQ0fukSJTdDL6DtMAEPb0owxoR3W3Vjh1+gTHqkwkOZpHy0iZE
-        uwY9TzbKOzp9yFeoRGEXH6Ui0BRPBDo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1646171348;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6brHGR9ikIFR3v2YtYIVm8zFSl/Q+jpQ/XPFHZd+xxU=;
-        b=oQv74QXHEpdZCpPcT7JfgGb05zTUrlJE1Kgz94D5/OQSdMg37VJnKDtYo2Smfwv4sr0TJ+
-        RtjjL0Q1fuJzb9AA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 0D5A7A3B81;
-        Tue,  1 Mar 2022 21:49:08 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7B588DA80E; Tue,  1 Mar 2022 22:45:16 +0100 (CET)
-Date:   Tue, 1 Mar 2022 22:45:16 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: add parent-child ownership check
-Message-ID: <20220301214516.GS12643@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1645515599.git.wqu@suse.com>
+        with ESMTP id S230285AbiCAVws (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Mar 2022 16:52:48 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C474B88B37
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Mar 2022 13:52:05 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a8so34238012ejc.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Mar 2022 13:52:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mariadb.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i6Yp2lR+BpwAyJfH9Aw/L0Iar9s0NkRJeOkJoTWGXkA=;
+        b=Efhmp5nxumcx6cbUAab+E/zCp09YRNR05gs7oZo2e438QXfzSvX6V8oM1DyVolJ6jn
+         3/AsLmumBY3gKoTejgBNuRye05L/+h149AkRi0GbtVl76hoWPvubBlzyxFNOQbH3hjSM
+         iF7JEyqPlNVD5lS7UezB9Pih829gXHSqT+sK5YdQ9zmiAqiHbSVieE03gaUaCBuymBQC
+         OxQnXSQRJkCnJM11Zg0ZV8mAUuJFOOdzlDtIQZdXGQElRXQ18TM7JrcDzOrQUscHlN2d
+         ijQQiX+ukMHTRQClWd+NmvG/Cr/A9MR8i78434cfU31OmUhNwZEtU2KvZOONJNxT/YkL
+         7Lug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i6Yp2lR+BpwAyJfH9Aw/L0Iar9s0NkRJeOkJoTWGXkA=;
+        b=xo1ZlW+4DFdbVUnNnOIdtedXM2TjrGtb4TkfBIbPVcFbOCj49ui10tgs3KjcTS7cXZ
+         DOJIiu57F4KPpFiO6VNMzHzk5IPua1VkgLrSyayzduzA5+g3tG6QQ0w4GyGj4YggD/Xr
+         7qBKCaPKPDfWjzkcuGlqzSHwPtMn4Krx4waGJe6L4UgZ1bbzP7I77eVKFbidS6RcNrn6
+         GjwyeMnvK3Niym7V9irA7j3hU1Xce8/ZVaJvYAyeshuTq+68NnKes9ayb0+WACNaps1T
+         4M7wAFVd8/cDKRlEJ+CRhfsalMuJ/KOpn8EaycleAWPekHkn+BaJHeYE31ki7+Zy+hxk
+         Zhtw==
+X-Gm-Message-State: AOAM531ogXoS+UBVXVwtKVvm3ZB5x1FTHAi2+F6I5z99Scc94VZx8qC7
+        x9pkYKm0BC87V8PpMl4ZwuufKv8CGUz0qX+/sw5Ey9OQuEA+UA==
+X-Google-Smtp-Source: ABdhPJxLDGRSYtAJlyeGdiSUWmTbpf401vQ1U+kE736PaDarkzMPKOOvLF8ygmNe8k3yzB7YDO2vWho8YVJTeUBMp7k=
+X-Received: by 2002:a17:906:37cf:b0:6ce:6321:5ecb with SMTP id
+ o15-20020a17090637cf00b006ce63215ecbmr20897106ejc.385.1646171524297; Tue, 01
+ Mar 2022 13:52:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1645515599.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
+ <CABVffEO3DZTtTNdjkwTegxNPTHbeM-PBeKk5B_dFXdsTvL2wFg@mail.gmail.com>
+ <YhTMBFrZeEvROh0C@debian9.Home> <CABVffENr6xfB=ujMhMEVywbuzo8kYTSVzym1ctCbZOPipVCpHg@mail.gmail.com>
+ <CAL3q7H5mSV69ambZy_uCnTMOW7U0n_fU1DtVNA-FYwDdHVrp9w@mail.gmail.com> <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
+From:   Daniel Black <daniel@mariadb.org>
+Date:   Wed, 2 Mar 2022 08:51:53 +1100
+Message-ID: <CABVffEOWjSg+8pqzALuLt6mMviA0y7XRwsdJyv9_DodWKQFpqQ@mail.gmail.com>
+Subject: Re: Fwd: btrfs / io-uring corrupting reads
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     io-uring@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 03:41:18PM +0800, Qu Wenruo wrote:
-> Tree-checker doesn't really check owner except for empty leaf.
-> 
-> This allows parent-child ownership mismatch to sneak in.
-> 
-> Enhance the checks again tree block owner by:
-> 
-> - Add owner check when reading child tree blocks
-> 
-> - Make sure the tree root owner matches the root key
-> 
-> Unfortunately the check still has some cases missing, mostly for
-> 
-> - Log/reloc trees
->   Need full root key to check, which is not really possible for
->   some backref call sites.
-> 
-> 
-> The first 2 patches are just cleanup to unify the error handling
-> patterns, there are some "creative" way checking the errors, which is
-> not really reader friendly.
-> 
-> The last patch is doing the real work.
-> 
-> Qu Wenruo (3):
->   btrfs: unify the error handling pattern for read_tree_block()
->   btrfs: unify the error handling of btrfs_read_buffer()
->   btrfs: check extent buffer owner against the owner rootid
+Filipe,
 
-Added to misc-next, thanks.
+DId you find anything? This is starting to be noticed by our mutual users.
+
+https://jira.mariadb.org/browse/MDEV-27900
+https://mariadb.zulipchat.com/#narrow/stream/118759-general/topic/Corrupt.20database.20page.20when.20updating.20from.2010.2E5
+
+On Tue, Feb 22, 2022 at 11:55 PM Filipe Manana <fdmanana@kernel.org> wrote:
+>
+> On Tue, Feb 22, 2022 at 12:46 PM Filipe Manana <fdmanana@kernel.org> wrote:
+> >
+> > On Tue, Feb 22, 2022 at 12:22 PM Daniel Black <daniel@mariadb.org> wrote:
+> > >
+> > > On Tue, Feb 22, 2022 at 10:42 PM Filipe Manana <fdmanana@kernel.org> wrote:
+> > >
+> > > > I gave it a try, but it fails setting up io_uring:
+> > > >
+> > > > 2022-02-22 11:27:13 0 [Note] mysqld: O_TMPFILE is not supported on /tmp (disabling future attempts)
+> > > > 2022-02-22 11:27:13 0 [Warning] mysqld: io_uring_queue_init() failed with errno 1
+> > > > 2022-02-22 11:27:13 0 [Warning] InnoDB: liburing disabled: falling back to innodb_use_native_aio=OFF
+> > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Initializing buffer pool, total size = 134217728, chunk size = 134217728
+> > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Completed initialization of buffer pool
+> > > >
+> > > > So that's why it doesn't fail here, as it fallbacks to no aio mode.
+> > >
+> > > error 1 is EPERM. Seems it needs --privileged on the container startup
+> > > as a podman argument (before the image name). Sorry I missed that
+> > >
+> > > > Any idea why it's failing to setup io_uring?
+> > > >
+> > > > I have the liburing2 and liburing-dev packages installed on debian, and
+> > > > tried with a 5.17-rc4 kernel.
+> > >
+> > > Taking https://packages.debian.org/bookworm/mariadb-server-core-10.6 package:
+> > >
+> > > mariadb-install-db --no-defaults --datadir=/empty/btrfs/path
+> > > --innodb-use-native-aio=0
+> > >
+> > > mariadbd --no-defaults --datadir=/empty/btrfs/path --innodb-use-native-aio=1
+> > >
+> > > should achieve the same thing.
+> >
+> > Sorry, I have no experience with mariadb and podman. How am I supposed
+> > to run that?
+> > Is that supposed to run inside the container, on the host? Do I need
+> > to change the podman command lines?
+> >
+> > What I did before was:
+> >
+> > DEV=/dev/sdh
+> > MNT=/mnt/sdh
+> >
+> > mkfs.btrfs -f $DEV
+> > mount $DEV $MNT
+> >
+> > mkdir $MNT/noaio
+> > chown fdmanana: $MNT/noaio
+> >
+> > podman run --name mdbinit --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
+> > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
+> > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
+> > --innodb_use_native_aio=0
+> >
+> >
+> > Then in another shell:
+> >
+> > podman kill --all
+> >
+> > podman run --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
+> > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
+> > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
+> > --innodb_use_native_aio=1
+> >
+> >
+> > What should I change or add in there?
+>
+> Ok, just passing  --privileged to both podman commands triggered the
+> bug as in your report.
+> I'll see if I can figure out what's causing the read corruption.
+>
+>
+> >
+> > Thanks.
