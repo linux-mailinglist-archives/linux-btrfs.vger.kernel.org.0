@@ -2,137 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C8E4C8085
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Mar 2022 02:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B225C4C8094
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Mar 2022 02:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbiCABuj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 20:50:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
+        id S232043AbiCAB4H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 20:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbiCABue (ORCPT
+        with ESMTP id S231644AbiCAB4G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 20:50:34 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D115DA7C
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 17:49:46 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id t13so12442743lfd.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 17:49:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=omAkmfjrU7R8vJQ3SUw3ervwoHHifwO93LattnVy2jk=;
-        b=41m2h6V9PsnnJK+zOu1pRkEcyKhbZrG5WR5f6mjzTIjaqoZh/2o/LTSwmftA+eMOev
-         8OqPaWzQ4KtMVedFwaQtBbKViesPcglG9JLGSnKDdoaWWtnVXwwieu2inbFUKHCKyzF4
-         N40HuLNZjBzeZuDSBSM9QnYLsi/jjXGrQyHIgHwGtUBMPVR6+DjjRqPCmka56LsaGjiy
-         BnPD68WcSe/fPm2NDPLGIsijLe3KJB6SuXb6yXurFG6tDyf2W/PdG/rKZ6zGZ+W2Qe7Q
-         MzNK2pT9/rgqB+iRo8RBjK53p/mhJvPj3u72ChmGRfKCnvHIaVf5zEArt3z2H3uh2XsC
-         G6VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=omAkmfjrU7R8vJQ3SUw3ervwoHHifwO93LattnVy2jk=;
-        b=5qireB/+H/TF10qiW4hmGt195DsJslNlZngtDhbcwxhaGd4LXtZXEWz0jYXPVsWgFg
-         LV5SvVXSB3SYuWUTizcTbdCVFnsKSkS1iZXSfEnHGnj9+nAAw770j96UvTwlIUraqQ5+
-         vRpyVeYzvURELGLpNRVCdMSgiTxAMO9UJv3pG90G5QeI55r+2l8oa6wHQUn1RBU0MwG9
-         0dvP6CgYxYBpb2Bfpst7+EIm0Z63jfyYimHsY758b6aGDcd4FDICyalb0kI049OCvTzX
-         SVvuh98E3bdQpPz8EQjcUAOM7QMu12rf5ciVOIEOKvLtpv17Leji15KhT5iggamdS86m
-         XZFw==
-X-Gm-Message-State: AOAM530N7BbWhRtDq4m7uKj8m182EBlHnFXBVBJtfjHDa1u/FMDctSmL
-        iv8+zT2TDll+FDOZPYcLslYveckU7ue2qw6yAyRjUgewKqZVpJT2
-X-Google-Smtp-Source: ABdhPJyPx+toLspAYHi/HPgSpniNLQepGVbh232KOkK9RsjNsEgOR8iQLg2nvZdgB7ZVajrEqHr6XcdeLv6EetDwA+U=
-X-Received: by 2002:a05:6512:2294:b0:442:7e24:9628 with SMTP id
- f20-20020a056512229400b004427e249628mr13945549lfu.357.1646099384879; Mon, 28
- Feb 2022 17:49:44 -0800 (PST)
+        Mon, 28 Feb 2022 20:56:06 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3872E5C;
+        Mon, 28 Feb 2022 17:55:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646099723; x=1677635723;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=QCgaYV3BElPL2ZrwLtvXSdO0Vu/pOnA41/FcfPv3cew=;
+  b=NT8clk2Zz/SEL4ee5Jkcvxavn8ExEApNGP2sfCRR0NiO/5PTICLEOvII
+   Gc4LhYXkK/z+rusPanMkCkcx6j7yjLw7gSV1bbWpZpMqPOCh8OOJetGcU
+   +7W3hEVz9V0yKHh3MVXbAZz/RFI45DP0hL2dNgYZ+rcx35VGcYORyLeYv
+   PRmjU2Av623KcX8y0+XlNfa7cwf0nu4+YyeMrp8KNITTy1UnOTYoIB/Y7
+   uX1X+uoAQKyHTwnZFqjcbNACvl/4AQ+cM9J3E2dxBtWP3KAOrOaReMbax
+   oGdH0lHn3NS5+iZEAGMmaRbNPPympjdQlg2DExGFnFFHDd7mv563gNg0M
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10272"; a="240444521"
+X-IronPort-AV: E=Sophos;i="5.90,144,1643702400"; 
+   d="scan'208";a="240444521"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2022 17:55:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,144,1643702400"; 
+   d="scan'208";a="629849961"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Feb 2022 17:55:22 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Mon, 28 Feb 2022 17:55:21 -0800
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Mon, 28 Feb 2022 17:55:21 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21 via Frontend Transport; Mon, 28 Feb 2022 17:55:21 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.20; Mon, 28 Feb 2022 17:55:21 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H/KJxLtbv7eaVpehDQREQkAud1KW+BJF6i9Qf7yHw8QAxDTq5fRG2MPtyshBP/EhbSO1D8vm+KedX9yYk2LVybzocYsDjXg1zCBt4ryJtZ5xL6ax9CcLj6Kqs4pOpO2CtrQ0CbthG1ZtlDTWy0xDPwiUG2Sgl4VcJ6IURsUG3t2+YNoa7R+1YSHk89ZXaBLYvtcK+DImluvEkIF3HcKE/KqAYgB2bhm0dHZh0J2DOst2suzvu8+pSx8w+jXaCp5vMH3UDA9nXepm5vKgDUjibNAGCbpsSOTsVpCUcLiiSXQGflID+4UzJICKBPV5Hkvlz38aJntDsvpWjHCNhVDV7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=e1RIIExXLOmy2s/9ioXPQL6nO84DM7OGNQgkOaWuoSw=;
+ b=IQC9uG32YVdkWGNFKGn8b5dTDSYKDBAOTFZiMoCefzml9KZxoZ8UhfQmnhD8TeyHsIVXeSfzYTAj12VmwfRNqTnWwHxtoeqpK1x1OmxOJzdMlh2png06lEx+QQBgQfCtxPMFFISI5nbrL4qpv0kwGPD3ZULNTRkwolDEg5HABxF4CliEzfa3tuj7mW83rWLyTAWF+ahgfugJQOGwnjLDg8tIv1g1ELY0S6yc6dJ9WxUObpIr0Xa0Y2GeFrdR7b3bOxE3oAEE2wDVaFeEfbVh749JVZyVG2AvWA/5Ih08hb4HaeCi/C2lK2Zf+oqzMWa/sV20HmEJQQ1h4Ciz5BYppA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ0PR11MB5598.namprd11.prod.outlook.com (2603:10b6:a03:304::12)
+ by SA2PR11MB4876.namprd11.prod.outlook.com (2603:10b6:806:119::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.24; Tue, 1 Mar
+ 2022 01:55:14 +0000
+Received: from SJ0PR11MB5598.namprd11.prod.outlook.com
+ ([fe80::c4a2:d11d:cb7b:dc8d]) by SJ0PR11MB5598.namprd11.prod.outlook.com
+ ([fe80::c4a2:d11d:cb7b:dc8d%9]) with mapi id 15.20.5017.027; Tue, 1 Mar 2022
+ 01:55:14 +0000
+Message-ID: <1ebaefbc-ef9e-3060-3572-5ee560b7c4de@intel.com>
+Date:   Tue, 1 Mar 2022 09:55:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.6.1
+Subject: Re: [PATCH] btrfs: Initialize ret to 0 in scrub_simple_mirror()
+Content-Language: en-US
+From:   Yujie Liu <yujie.liu@intel.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+CC:     Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, <dsterba@suse.com>,
+        <nathan@kernel.org>, "Nick Desaulniers" <ndesaulniers@google.com>,
+        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <llvm@lists.linux.dev>, kernel test robot <lkp@intel.com>
+References: <20220220144606.5695-1-jrdr.linux@gmail.com>
+ <0a2e57ad-2973-ea01-ceda-3262cde1f5aa@gmx.com>
+ <CAFqt6zZsv+bMwbdqrcOMCZE08O_q7DGa0ejVAbokLybsSch5fw@mail.gmail.com>
+ <a1d126df-a5ee-d47d-bfaa-95b3b221e41a@suse.com>
+ <b2536c4b-bf0f-a2ff-58cf-ef7d17acaf48@intel.com>
+ <CAFqt6zbCootaOTU3hGXZ0cBcMHoiNtXynzzG8oGw8R6fO4muhg@mail.gmail.com>
+ <e94b337b-38ea-8705-4dd7-c09ac6b98ec0@intel.com>
+In-Reply-To: <e94b337b-38ea-8705-4dd7-c09ac6b98ec0@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: HKAPR04CA0014.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::24) To SJ0PR11MB5598.namprd11.prod.outlook.com
+ (2603:10b6:a03:304::12)
 MIME-Version: 1.0
-References: <88176dfc-2500-1e9c-bac0-5e293b2c0b5c@suse.com>
- <20220225114729.GE12643@twin.jikos.cz> <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
- <YhkrfyzmCgOGG+5n@relinquished.localdomain> <f4525052-8938-42f9-543d-c333200353dd@gmx.com>
- <43aea7a1-7b4b-8285-020b-7747a29dc9a6@oracle.com> <00f162f7-774c-b7d4-9d1f-e04cc89b2aee@gmx.com>
- <508772bc-237a-552b-5b63-80827a5b268a@oracle.com> <4661c891-b15e-3a8f-6b98-f298e104262e@gmx.com>
- <20220228184050.GJ12643@twin.jikos.cz> <7feddd5a-856c-a525-a05c-fd682574aa49@gmx.com>
-In-Reply-To: <7feddd5a-856c-a525-a05c-fd682574aa49@gmx.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 28 Feb 2022 18:49:28 -0700
-Message-ID: <CAJCQCtRNFo4McC12z59+hxAuvfU6yk6GPCUtd=VtJ+rxaUZz1w@mail.gmail.com>
-Subject: Re: Seed device is broken, again.
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     David Sterba <dsterba@suse.cz>, Anand Jain <anand.jain@oracle.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e462a0f5-0154-48de-1af0-08d9fb2686b9
+X-MS-TrafficTypeDiagnostic: SA2PR11MB4876:EE_
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-Microsoft-Antispam-PRVS: <SA2PR11MB487658BB0B3AE4FA0D617BD5FB029@SA2PR11MB4876.namprd11.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /fyhmbGaXeyCmZ8VwZIgktw3NNod5isV5ldC0AxHGqNmPv+wtpVqsO4eQIMEv4eyClx6NSxr/pYM94D7JlVC2FFHeFlQZD8DtM/zlluO9bxEigIlayUtKX4cpInsopE3nbFBGGzyD+rHS25pB8JkKyVzCmCWxGSbQCWWbPvc9OdOOLEnwN1nEV7HD1eEpGdIWdLY6UOWfBInfIBM9NFawlg6YH3kc48qPDoi621W/NfcqI2K4EB6sPX+XPXe84GvZduem8DnWTjjom5F6SeAOpIDlcGc+hSCC2K0+8LGl7SoHlZEiUHwF1SdyAnEYYXj6sxu5s6HAUDNp/8YTMnXA6qJEfsMFvetWppcKQo4Bz9RiPO3QvNRA2itP0QSyDOKS4hPd1hGBaftKiyid/XSsRdQ8zRnhxtaOOvada866qLXdiSfZOF23VtL3JQ52IbPImMEGOTxXRrj4qsxK5dS2s8F+uGHmcVhA/N7Qkk471dn6nGEZjHkCs/cVm2SQqr23X+gur1xlqMl13w4dlK3ePcJxKl/0qMxAgFXwTm8sNoWaT5K3VbTN3Iza0gXgU8SUkxpiwE6tLfj8cxgcYnY7DRrzYOumjD7KLDU6dju7VG45OddHYDPsACz/IW/Uvc5v4ZzHaqmoCtuh0MYJDpY/gt9oZHAKsoTKIkbgwGQd8AiAAdwQauXKbYSiH95ImVHvu0EzBsmLlqllkXmbnbMyoIF81XfZGZvdtQ+EgR2AKsiB/IxUAt4kM7YeQvMB7oQMr6K7PvDF8cZhPD4yhiMt4hyUcA2VP6ZCDlRtniOYNDIvvR86d/UQZ7NbQ+kIdN+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5598.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8936002)(2906002)(7416002)(5660300002)(4744005)(44832011)(82960400001)(86362001)(31696002)(66556008)(38100700002)(6666004)(6506007)(508600001)(8676002)(4326008)(2616005)(6512007)(53546011)(66476007)(316002)(66946007)(31686004)(6486002)(966005)(6916009)(54906003)(83380400001)(107886003)(26005)(186003)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TURYT1h1a2NBU2IzZ1RlRVRkbkJueFFiY2tDbjBzQS9rMGJQZ0xWcHZBOTFR?=
+ =?utf-8?B?dkhOaTVJdFVOdWk5emJyK1dyb1Z3dCtxME5Wc0h1NHpxdFkyRnoraHRPb1Qy?=
+ =?utf-8?B?Wm5EQ1BjdHJGYzFlNW8xdUw0NllGNVJnQUlSWHVTNlRMTXpyc3lvcHJoS0Vn?=
+ =?utf-8?B?Y0xaSjB4czQ5cUJ3SCtUSTNncFU2cDM4bjNtY1hDUG1sZTFHYUp3RkpNYllh?=
+ =?utf-8?B?OURZRkllekV3eFBlOUpabXVsWU5kL0VsMXlYMkU3RXJ3bkdOQnNFNkJYMTR0?=
+ =?utf-8?B?ZDY0OGNCaEpCbGFkR3hrbzBabW0yb2lvdk9WT0NyQUxTdHdEK2NnOEpScExz?=
+ =?utf-8?B?YjNGaTkzQmFHajg5UGJCM3NkOVpRWDZSd3UrdWlpa0QxNUdQVWdOSHlYRDk1?=
+ =?utf-8?B?TXljUjR6aElteGhPUFBSWUx5K1pjNHM5KzRyWjk2cjI3Ry96RGkyVFZzVk1h?=
+ =?utf-8?B?YXUrM3FLVmYzK3RJTEJkeEVLMzBBN1poK2czY3ZXdE1ibmlZZmdXU0k2YUt0?=
+ =?utf-8?B?SkZodVMvRGlYeDByOXFmVUpScStYN2ltNnZTeVB3azh3Sk5Jdk5HbzRwaDNE?=
+ =?utf-8?B?bHBHeG4xaDVtZ054SzRqa0xFU1EwNTdZMjUyVXNPRmRJTWc2M3FnRWcxazZ6?=
+ =?utf-8?B?WkEzd1NRNk1lT3M1S253QWMzWkVoTHRncEIrNnJtNnhndCs5Q1drY0VEck9L?=
+ =?utf-8?B?OFl5K3VUN2MyL3hnZzY5SmtXb08wWldwUEZWbForSnRDQkpqY1JuSzA2Z25p?=
+ =?utf-8?B?Qk95TDBOZk1tWW5QdGU5QXlGYzFsa0J2ek4rc0tFa3dCZGxvSWsvWTlSMUlH?=
+ =?utf-8?B?ZDVGcWdWYWpPOG13dUs4V2ZFWWlWNkc3RENyYWpCYjBMT2ZzZWZOV0o2Y3pW?=
+ =?utf-8?B?VUJiRG9Jc3VLcXhiU1Z3TEZJNTl1aFFVZnlaM2JhWUowa1IxT0tGL1dkeW1m?=
+ =?utf-8?B?NjRQSXh6bUozaEE3RkhkQnJVZDlwLytKWkJrU0NPMDBpMnNnUGJoVTRFS2Fx?=
+ =?utf-8?B?bzY0bVlJN1FHNFVwTzZvb0ZwWFYyem9XNkljb21teXIzSHpZT1lrekplT2dr?=
+ =?utf-8?B?dzdFTVJITEluWFMyNGJFdlIxc3hkMDJwMDJvbDFUMitGdHRNc1JjSzlmQlpM?=
+ =?utf-8?B?aTYyTUlXTWJyUlpQWEVkeHVJSjlVNzJTOTB3NkdqVFVJOXIxSHFCWHpzZHgv?=
+ =?utf-8?B?RFFZVzViZXg0bmZrVldHV3hKMU9xVXkvelpGUFM2NkxoaDB6MjVEMTlPelVH?=
+ =?utf-8?B?MUlPMXJtUmZhUmsxeHVFc3VjLy9CMUd0bm9wY1RvUENQSjNBaEpzeHJTU3Jn?=
+ =?utf-8?B?MFNIZ1huR1o3NDh3ckMwTXlhNFR6bDJiMVhzYm1pdXorTEhZL2JETVh2cHNh?=
+ =?utf-8?B?VUpHZjBjN2lPOWFQYnBOZnZwK1czci9UM1MrWU9QWHBZMlN4alpkcXovQk9o?=
+ =?utf-8?B?dTc4dTNSajdQSTQ5a0ZuazRXUWVzdFc5L0pRUWZPYjZVQTdDam80SXpibDM1?=
+ =?utf-8?B?QmJMR1RwU1RRcXRWakg3SHpSTS9HOE1oYUNJN250T0MyU2JlR29tYkxUb0lw?=
+ =?utf-8?B?Y1A1N25QR2luRThRMGo5WE9yZkhHMDJIdExzeHQ5MVZVdmJGMWpQczY1b0pJ?=
+ =?utf-8?B?bWF4TzhxZElheW00R2k5enFHQlRZMTNyMERuSCsxMlVJNU9XV0Y5NHI5NFcx?=
+ =?utf-8?B?WW9EMEJZZU1MMkxuaWUxWjRCNmFkcmFkUDVDemZrTjZXMWtDT28waDNaOGJQ?=
+ =?utf-8?B?VG56R21pdnBXQTJFV2YvbVE0ZkNtZU1CcW50a2JlMFhxMXhxWHg4RmpyWCtx?=
+ =?utf-8?B?d0JQRGp1NE5Ra1RTWGM1citSZWo3ZWtwWHpTQnNaZlpIWEFZcXBtZlNYNTll?=
+ =?utf-8?B?RFY5OFlQTVlTYmkyQ0dhZVNUVTZESWhSNnkrejFod1pSNE9pYm82am1qRTU5?=
+ =?utf-8?B?RUdmVDRvOXpBeFNONUFnaFZEaklZcDVUUTBRckF1ZFM3amJIb2NURjZmY3pT?=
+ =?utf-8?B?Wm0venZTRWVQSCs3RzFQUklFSUhPdjlCQXRrM2NGZVRaN0l0WWUwUXBHbkhs?=
+ =?utf-8?B?amxpbGxVb2ZvRW5HVjFXWlFFWHcvRkYwRVd3OWhycWRmREhNcWpFQThVT21U?=
+ =?utf-8?B?bGlMMWdvRjlGTXhpdndGRGxYeDVTMlFKdjBRSTcrcGQwVWh3KzRnekViRWox?=
+ =?utf-8?Q?7Mmz6Zrq6kXDxmBgodlERdw=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e462a0f5-0154-48de-1af0-08d9fb2686b9
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5598.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2022 01:55:14.1147
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +EaUtmXFgU6u/WiyfLhy2Im6NSYxQLipo9I2TxmM+QICmd0NRRA226+7KA3s2cz6aTB7B8SguIcx7RdZmfpEEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4876
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 5:13 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2022/3/1 02:40, David Sterba wrote:
-> > On Mon, Feb 28, 2022 at 11:27:16AM +0800, Qu Wenruo wrote:
-> >>> Ah. That's fine, IMO. It is a matter of understanding the nature of the
-> >>> seed device. No?
-> >>> The RO mount used to turn into an RW mount after the device-add a long
-> >>> ago. It got changed without a trace.
-> >>
-> >> Think twice about this, have you every seen another fs allowing a RO
-> >> mount to be converted to RW without even remounting?
-> >
-> > There's no other filesystem with a remotely close feature so we can't
-> > follow an established pattern.
-> >
-> > The ro->rw transition can be done from inside the filesystem too and
-> > btrfs sort of does that in btrfs_mount, calling kern_mount.
-> >
-> >> Still think this doesn't provide any surprise to end users?
-> >
-> > The RO status means the filesystem does not support any write operations
-> > from the user perspective that go through VFS. Adding the device in the
-> > seed mode modifies the filesystem structures, ie. changes the block
-> > device, but does not change the VFS status regarding writability.  The
-> > read-write remount is mandatory to actually make use of the writable
-> > device. This is documented and I don't find it confusing from the end
-> > user perspective.
-> >
-> > If you're concerned that there's a write to the block device then yes,
-> > it's a bug that the mnt_set_write should be done just before we start
-> > any change operation.
->
-> I'm not concerned with that at all.
->
-> >
-> > There was a discussion some time ago if the log replay should happen on
-> > a read-only mount, or any potential repair action that could happen
-> > regardless of the ro/rw mount status. The conclusion was that it could
-> > happen, and guaranteeing no writes to the block device should be done
-> > externally eg. by blockdev --setro. But I think we opted not to do any
-> > writes anyway for btrfs.
->
-> My main concern is still there, we change RO to RW without any remount.
+Hi Souptick,
 
-Well, it hasn't been changed to rw yet - `btrfs dev add` is only btrfs
-kernel code writing to it, user space still can't write until the user
-`mount -o remount,rw` and now you can write to the sprout or remove
-the seed to replicate it.
+On 2/25/2022 18:02, Yujie Liu wrote:
+> Hi Souptick,
+> 
+> On 2/25/2022 13:16, Souptick Joarder wrote:
+>> On Thu, Feb 24, 2022 at 3:18 PM Yujie Liu <yujie.liu@intel.com> wrote:
+>>>
+>>> Souptick, could you help to provide the original report by link or attachment?
+>>
+>> https://marc.info/?l=linux-mm&m=164487037605771&w=2
+>>
+> 
+> this link is a notification mail of build status, but not a formal report,
+> so there may be many false alerts in this mail, please ignore them.
+> 
 
-> It's weird from the beginning, but we just accept that.
+Sorry, previous info was not accurate, here are some updates:
 
-It's unexpected but I think the story is still consistent.
+In a build notification mail(such as above link https://marc.info/?l=linux-mm&m=164487037605771&w=2),
+there is a hint line like:
 
-> If we have chance to rethink this, would we still take the same path?
-> Other than making seed device into user space tool like mkfs?
+   possible Error/Warning in current branch (please contact us if interested):
 
-I do not mind revising this so that device add sprout is only
-supported in user space.
+the errors/warnings in this section are not fully verified like the ones generated
+by static analysis tools.
 
+We will make this line clearer to mention that they could be false positives.
 
--- 
-Chris Murphy
+Thanks,
+Yujie
