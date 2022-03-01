@@ -2,205 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0714C7F15
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Mar 2022 01:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB6B4C806D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Mar 2022 02:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbiCAAUF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Feb 2022 19:20:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
+        id S229603AbiCABps (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Feb 2022 20:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbiCAAUF (ORCPT
+        with ESMTP id S231876AbiCABpq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Feb 2022 19:20:05 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3172523BFA
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 16:19:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646093956;
-        bh=4J7kjDOhv+y9GF3GmHIvc0t1/d/qoZliboyJGujAzuM=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=HzUc5Qa3aEw9+PS9T5vbNlVjmLn7ntt8TbtmsnVaey2jYkcC2nkG0WrEEJoAWdsb6
-         w7llzjqkXmHGqfbaraPBzW0bh938MEtRzOPK/vFcYlhIsW+BmHBFNO/Q3qYX+EtZYB
-         jC4p1eGAUr/eVEysfDE9d4Xtk6Xp/c0w4HrjyisE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N63RQ-1oHtk31tCy-016RZw; Tue, 01
- Mar 2022 01:19:16 +0100
-Message-ID: <d408c15d-60e2-0701-f1f1-e35087539ab3@gmx.com>
-Date:   Tue, 1 Mar 2022 08:19:12 +0800
+        Mon, 28 Feb 2022 20:45:46 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14121B45
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 17:45:06 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id f37so24384118lfv.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Feb 2022 17:45:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kodOlkpnY/cQi4rkoNOKxDYhR6tBFMlz0MzRrzzynrA=;
+        b=FnnXxGvrAGNLzax4Ndakyj5mTurkJ66hb3fdIGP9ZDsq1ichX59O8J1XJuP/r79zZ3
+         adJt2ie87ci1fzt4mrzR0kGIBr/3vSTwbEK9v+jGn1PIKVn6lUXWSEHxUUuGLozRHMAw
+         rsSug29MvqU2hJrj+LSjJoFr/mlqNM/lHZ0f3VYeid0canzgYDgRiUfye2d0HJqkSa9x
+         2Vkz9hy3Il5TfxPhMl7E7jiiO1ZjkeZfh5Bn0WfL7M/j3nKB8zbQmWu2S5co+Sd4IN08
+         k7hi6EyXmcVOwlfy6ELQKSdGE/ba+diVw2Wsu29fyXS+ilvG4jHPyClj8uAysA54Q8R+
+         9aDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kodOlkpnY/cQi4rkoNOKxDYhR6tBFMlz0MzRrzzynrA=;
+        b=dhBLBc8vq6JIOVfe2dW7qac4bJ2Ed49mTpo8VXoSIRnvqrTxYA3kNuQQ2eG8EuLwD6
+         LQPGfpp4tEAN2Tv6ia1RavRi+mkaB3gYm8ekMMfJPPSKvI5x1SPhBOhNLnt4sEbQaXi+
+         nZB/2qRS9AaHZgl3DL2h9VnxYupeeiLtzrlmW3keGDFD/M3LwFs5fZa0bcJDG/gelXcy
+         jj3qX2FBApiLj40hf9L169IzvomrbUHeLy6YWzeNccO9wXxyGVTCbZv0tpZfmtUKu9t9
+         ksjQcFbzBfmnXF6wjSsbW4IVUzFpFAHmo2Gs7al9Pzni+np+Xw8gjR4IKATXpPSl021A
+         Mb5A==
+X-Gm-Message-State: AOAM531t0rAUoiQ0mz9wRiu7FhFYyi6m3VFxu67rCWMAPCg8u9oRsQhU
+        an80sMPruc+4D6HSATT5+Eap72ZkzxAeT+xLfrKRCdW0p1jKyNgHoHs=
+X-Google-Smtp-Source: ABdhPJzTwoMZNp/pMJucfFC/5I3eVfNca1erHU82Fm2XkYEuq43TJJ2+DiJs9mequdC/2lICViY4zRFvXDhNaDVB4wM=
+X-Received: by 2002:a19:f80e:0:b0:443:7eba:1b89 with SMTP id
+ a14-20020a19f80e000000b004437eba1b89mr14500000lff.446.1646099104249; Mon, 28
+ Feb 2022 17:45:04 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Content-Language: en-US
-To:     Christoph Anton Mitterer <calestyo@scientia.org>,
-        linux-btrfs@vger.kernel.org
-References: <2dfcbc130c55cc6fd067b93752e90bd2b079baca.camel@scientia.org>
- <5eb2e0c2-307b-0361-2b64-631254cf936c@gmx.com>
- <f7270877b2f8503291d5517f22068a2f3829c959.camel@scientia.org>
- <ff871fa3-901f-1c30-c579-2546299482da@gmx.com>
- <22f7f0a5c02599c42748c82b990153bf49263512.camel@scientia.org>
- <edefb747-0033-717d-5383-f8c2f22efc8f@gmx.com>
- <74ccc4a0bbd181dd547c06b32be2b071612aeb85.camel@scientia.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: BTRFS error (device dm-0): parent transid verify failed on
- 1382301696 wanted 262166 found 22
-In-Reply-To: <74ccc4a0bbd181dd547c06b32be2b071612aeb85.camel@scientia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6FLPXvLkEoefxkhvnwkKyG/iwIVGyNqIlZEMTFquxpTvmBbQQuo
- f7gZ4Iq02+4uO15GU1B4NJnYlEjnQ2NcfKKcKwK0fMOFIRpKh1RXGrvXkB06+PO2KMKhJF8
- KV5XE7vgLKDUYZ0cQJPT5nik0G92LPtdJh3kwh51za0DoU6syeyb/gJ1T2Re8aQRXBpu0Hu
- tNk/FHlKeqnPRinxNHb+w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5uEC631Qjhg=:TtjH4/j0KNKMu7QiB44UIO
- VpRC8NNTA/Wnvn1lKQsQHXrypMNmz6sVSRAAFBD9LOUDOLeyKAQy8GclrkyN7k3Uczsw3QIEF
- ubefrO1JBgPNQlnek31KdkNj1allV5D49RI6zZ51tD3pJTZOSp5lUuKJFToteUhwoEerOhfdZ
- 67yyT6OSIAQq3Lrg4YQC0OViUQvdQ8ywpDhXmhwXKZDW90l6tucW7I8Z1EHO9Cglr0o3o3j2I
- aQwOlmgBYAC2v9jjnKsq6oi2atIyho/k8dY0m6xuDbZ9krWm8IrOGMV+tl52Z14U5CnZu/3uG
- IV6SVC5OzreIOiyMYCk5NxQ2b7EGq7yQFEhZH/FKAANvQpN9EbcaK8p0T3xXYOVWXxYRQgwd9
- SKFY1SoVXCuzbZ0LQuuDLmgqG3YjIMToUeelwb9gUgZ6AFfiKM5b+2/7xlS6lpK6vfShENMy8
- 9MrsFGBBMvYxl92Oz9MbND+Bq8gpefNh7jQd0FUeXaGMQD+WngDslvT8zw4A6iVbuiizoXEvT
- Fr57nRvhVYM0mDNZUJU+x8RE6/JawDs0DZxfgChRdRQ/LmCd+ca46SPz6zV8spi3UhDt3Et4O
- WXcWsvCeOlxChoJYbnnt6aAC7nJWIt7YWt1N8e+6f+WfyBZUkh1i3dfdWfng5QuYWX/ya1FTs
- PJPbk43xhBL7RJys6Ismvx7x7GpgG1e8di8cYcgUqbcWmr1ITQVSo6zGdknFnBmyISyD5kSW3
- QUhbWiWRziAi4Stywgrf2TXCUx0HlPmSx1tAnp8jZLtUfrJcuvzpjPnZxT3yufVBldB9QNAUy
- FxROxbEfJrcacOsl/RlUkXvu/jG8WllkC2Tysd38mn+SsFmY3YBJJxXJVD5lT411RzdJYhpX9
- aj1KTd1vL8/+wKDiMGjqnViWG7nA40GkW1liwj3ffcUFWiWRmx+gkxlzVWM0QGpHD2ulYSyXF
- tLUKYbR4k2M7EXORaFGv4tjOEF7K/axl5hYt/tBv+c1rWNflkYN7CHwBTorFoJM993pdNSdTH
- gpp8wyxttkBPt0s2IWT97gD7ya7bZHaSi0WQxSwwlAUoJAHvKW2sH1dmKApfEVk2W5hAxndkE
- fSFmkuTXU+WY/M=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <88176dfc-2500-1e9c-bac0-5e293b2c0b5c@suse.com>
+ <20220225114729.GE12643@twin.jikos.cz> <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
+ <YhkrfyzmCgOGG+5n@relinquished.localdomain> <f4525052-8938-42f9-543d-c333200353dd@gmx.com>
+ <43aea7a1-7b4b-8285-020b-7747a29dc9a6@oracle.com> <00f162f7-774c-b7d4-9d1f-e04cc89b2aee@gmx.com>
+In-Reply-To: <00f162f7-774c-b7d4-9d1f-e04cc89b2aee@gmx.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 28 Feb 2022 18:44:47 -0700
+Message-ID: <CAJCQCtSHCn7Pit7TgLJUTmMg9Tb87DdajDGDvM_bw=bsb8h_jg@mail.gmail.com>
+Subject: Re: Seed device is broken, again.
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sun, Feb 27, 2022 at 7:35 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+> >> With method b, at least we can make dev add ioctl to be completely RW in
+> >> the long run.
+> >
+> >   Could you please add more clarity here? Very confusing.
+>
+> Isn't it an awful thing that device add ioctl can even be executed on a
+> RO mounted fs?
+
+I think it's more idiosyncratic than awful. It is definitely
+confusing. But I think the explanation is that the ro mount is a VFS
+option, not a Btrfs option. It only indicates we cannot write from
+user space to this file system while it's ro. Btrfs still can,
+including playing the tree log (and I assume it updates trees on disk,
+even if ro but without notreelog.
+
+There's a wide assortment of confusion in the `mount` command's
+results. You just have to depend on rote memorization to know what
+things are VFS or file system specific. Maybe it'd be nice if the
+output were clearer but ...
+
+/dev/nvme0n1p5 on /home type btrfs
+(rw,noatime,seclabel,compress=zstd:1,ssd,space_cache=v2,subvolid=271,subvol=/home)
+
+Is seclabel VFS? Or yet a third domain? Anyway, for example:
+
+/dev/nvme0n1p5 on /home type btrfs
+(VFS:rw,noatime,seclabel)(btrfs:compress=zstd:1,ssd,space_cache=v2,subvolid=271,subvol=/home)
 
 
-On 2022/2/28 23:24, Christoph Anton Mitterer wrote:
-> On Mon, 2022-02-28 at 14:48 +0800, Qu Wenruo wrote:
->> Btrfs handles checksum differently for metadata (tree block) and
->> data.
->>
->> For metadata, its header has 32 bytes reserved for checksum, and
->> that's
->> where the csum of metadata is.
->> Aka, inlined checksum.
->
-> Ah, I see.
->
->
->> For the best case, it's just a leave got this corruption.
->> In that case, if you're using SHA256 and 16K nodesize, you get at
->> most
->> 2MiB range which can not be read.
->> (Again, on disk data can still be fine)
->
-> It would be interesting to see how much is actually affected,...
-> shouldn't it be possible to run something like dd_rescue on it? I mean
-> I'd probably get thousands of csum errors, but in the end it should
-> show me how much of the file is gone.
-
-As said, no real file is damaged.
-It's just we can get csum.
-
-So go rescue=3Didatacsums, and verify the content if you have backup.
-
->>
->> Depends on the generation. If your current generation (can be checked
->> with btrfs ins dump-super) is close to the number 262166, then it's
->> possible it's rewritten recently.
->
->
-> Hmm, I assume it's just "main" generation field?
-
-Yep.
-
->
-> Then the number would be *pretty* much off. Which makes the whole thing
-> IMO quite strange... as said, the file was written around 2019,... and
-> it had been sent/received at least once.
->
-> So would expect that the corruption or bit-flip would need to have
-> happened at some point after it was first sent/received?
-
-I guess the corrupted csum tree block happen at that time.
-
-And fortunately that range doesn't get much utilized thus later
-read/write won't get interrupted by that corrupted tree block.
-
-...
->
->
-> On Mon, 2022-02-28 at 14:54 +0800, Qu Wenruo wrote:>
->> It may not be a single file, but a lot of files.
->
-> Shouldn't I be able to find out simply by copying away each file (like
-> what I did during yesterday's backup)?
-
-Yep, that's possible.
-
-> Or something like tar -cf /dev/null /
->
-> Every file that tar cannot read should give an error, and I'd see which
-> are affected?
-
-That's also a way.
-
->
->
->> As csum tree only stores two things, logical bytenr, and its csum.
->>
->> So we need some work to find out:
->>
->> 1) Which logical bytenr range is in that csum tree block
->>
->> 2) Which files owns the logical bytenr range.
->
-> Is this possible already with standard tools?
-
-We have tools for 2), "btrfs ins logical-resolve" to search for all the
-files owning a logical bytenr range.
-
-But we don't have to tool for 1), maybe you can use "btrfs ins dump-tree
--b <bytenr>" to check the content of that corrupted tree.
->
->
->
->> No common operations can help.
->>
->> But I can craft you a special fix to manually reset the generation of
->> that offending csum tree block, as a last resort method.
->
-> I guess, if you'd say that the above way would work to find out which
-> file was affected, and if it was only that one (which is not
-> precious)... than I could simply copy all data off to some external
-> disk, an just re-create the fs.
->
->
-> If I'd delete the affected file(s) would btrfs simply clear the broken
-> csum block?
-
-Nope. That generation mismatch would prevent btrfs to do any
-modification including CoW the tree block to a new location.
-
-Thanks,
-Qu
-
->
->
->> We have a way, since v5.11, we have a new mount option,
->> rescue=3Didatacsums, which can do exactly that, completely ignore data
->> csums.
->
-> Ah :-)
->
->
-> Thanks,
-> Chris.
->
->
-> PS: I'll start the memtest now, and report back once I have some news.
+-- 
+Chris Murphy
