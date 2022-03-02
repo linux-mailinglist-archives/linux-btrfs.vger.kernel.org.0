@@ -2,44 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6774CA2E8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 12:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44AC4CA3A5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 12:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239413AbiCBLNQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 06:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
+        id S236474AbiCBL3F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 06:29:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbiCBLNN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 06:13:13 -0500
+        with ESMTP id S233839AbiCBL3D (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 06:29:03 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75400F45;
-        Wed,  2 Mar 2022 03:12:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2DD3ED35;
+        Wed,  2 Mar 2022 03:28:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 815D961778;
-        Wed,  2 Mar 2022 11:12:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15B2CC004E1;
-        Wed,  2 Mar 2022 11:12:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9D4B61804;
+        Wed,  2 Mar 2022 11:28:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB75CC004E1;
+        Wed,  2 Mar 2022 11:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646219547;
-        bh=skhphHZ0bF9qW6dVL/iqfew+kSqJHgCS/eY+3ZwZplM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Nkb/LptGY/Bo1EhuKzJ8jwkO6VzXutiAI3790owl81nVrHtCLOxDhybZmztTde4i+
-         aHDNpIwlCGjn549ZSJccYDcEiS1XjctFI284cNAq1+wJ530zlPkK/t9hIuP0YwwnOW
-         o5A10dj5k4/F9Bp1wSBSF8LVTscSvY6CCrG+bX/+6LKdOmenwqgGZMadgZ5e/nDEFG
-         hGrici8BoyRJmqlBIahqu36W8NTZhuo1gzWPM4cUvzulXtviovIXxNNMHQL4SV1eiL
-         zVvEuyZN1jaNhwobslsCRCvxProxhJvOl0g0lDTGVDs+LgPldrfX+lD8R+qT+nx60q
-         5Du9T9BqSbEDg==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic: add a test for reading multiple extents with io_uring
-Date:   Wed,  2 Mar 2022 11:12:19 +0000
-Message-Id: <2f4b119ea888a91aabbe8026ced165ab0fe38139.1646219188.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.33.0
+        s=k20201202; t=1646220499;
+        bh=NNW4l+jluOy6hGNsds61IYRiSLBNoFZnVB4BY5EzUeE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fJrIu5HiHUVuYb1YtJcldJe13nkso3YpgyfAL7is/pavjDfZJ7bTd3A8pRUeqMcN4
+         BpqXtZaWFhShjX+U3caPGbOw6QlpZbMizPZQwU+fZ9hiJx94y9E65Li0IGhWYhpM4L
+         uJlzE55FQwGV6WnfgFlnXsyBmYgp8kxDXHkAJuGq24/23ev0r6rZowonCaV7hc8Jhz
+         wckbfc5fV2oNMcD8omZM4ebCCgaPoR69RQeeJ1jxSVsI1pCfDbynUJ/8KaoodVfDIJ
+         1NwILteumnfROBqmcq3QtSVDr2Zk5+GLpsmZgPcvaBwzXIeXY8jI2cnrktJl1HHIaY
+         PNyRKbeaEvtqA==
+Date:   Wed, 2 Mar 2022 11:28:16 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Daniel Black <daniel@mariadb.org>
+Cc:     io-uring@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Fwd: btrfs / io-uring corrupting reads
+Message-ID: <Yh9U0PSU+gfWGqU+@debian9.Home>
+References: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
+ <CABVffEO3DZTtTNdjkwTegxNPTHbeM-PBeKk5B_dFXdsTvL2wFg@mail.gmail.com>
+ <YhTMBFrZeEvROh0C@debian9.Home>
+ <CABVffENr6xfB=ujMhMEVywbuzo8kYTSVzym1ctCbZOPipVCpHg@mail.gmail.com>
+ <CAL3q7H5mSV69ambZy_uCnTMOW7U0n_fU1DtVNA-FYwDdHVrp9w@mail.gmail.com>
+ <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
+ <CABVffEOWjSg+8pqzALuLt6mMviA0y7XRwsdJyv9_DodWKQFpqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABVffEOWjSg+8pqzALuLt6mMviA0y7XRwsdJyv9_DodWKQFpqQ@mail.gmail.com>
 X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -50,254 +58,113 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Mar 02, 2022 at 08:51:53AM +1100, Daniel Black wrote:
+> Filipe,
+> 
+> DId you find anything? This is starting to be noticed by our mutual users.
 
-Test doing a read, with io_uring, over a file range that includes multiple
-extents. The read operation triggers page faults when accessing all pages
-of the read buffer except for the pages corresponding to the first extent.
-We want to check that the operation results in reading all the extents and
-that it returns the correct data.
+Yes, I've sent a patch to address it:
 
-This is motivated by an issue found with MariaDB when using io_uring and
-running on btrfs. There's a patch for btrfs to address the issue and it
-has the following subject:
+https://lore.kernel.org/linux-btrfs/39c96b5608ed99b7d666d4d159f8d135e86b9606.1646219178.git.fdmanana@suse.com/T/#u
 
- "btrfs: fallback to blocking mode when doing async dio over multiple extents"
+The details are in the changelog.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- .gitignore             |   1 +
- src/uring_read_fault.c | 150 +++++++++++++++++++++++++++++++++++++++++
- tests/generic/676      |  41 +++++++++++
- tests/generic/676.out  |   2 +
- 4 files changed, 194 insertions(+)
- create mode 100644 src/uring_read_fault.c
- create mode 100755 tests/generic/676
- create mode 100644 tests/generic/676.out
+Basically, MariaDB is getting a short read - it asks to read 16K of data
+but it only gets the first 4K of data (or the first 8K or 12K). It treats
+such partial read as a corruption, but in fact it could check that it's a
+short read and then try to read the remaining data.
 
-diff --git a/.gitignore b/.gitignore
-index ba0c572b..a5309d52 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -168,6 +168,7 @@ tags
- /src/truncfile
- /src/unwritten_mmap
- /src/unwritten_sync
-+/src/uring_read_fault
- /src/usemem
- /src/writemod
- /src/writev_on_pagefault
-diff --git a/src/uring_read_fault.c b/src/uring_read_fault.c
-new file mode 100644
-index 00000000..9fb86c47
---- /dev/null
-+++ b/src/uring_read_fault.c
-@@ -0,0 +1,150 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
-+ */
-+
-+/*
-+ * Create a file with 4 extents, each with a size matching the page size.
-+ * Then allocate a buffer to read all extents with io_uring, using O_DIRECT and
-+ * IOCB_NOWAIT. Before doing the read with io_uring, access the first page of
-+ * the read buffer to fault it in, so that during the read we only trigger page
-+ * faults when accessing the other pages (mapping to 2nd, 3rd and 4th extents).
-+ */
-+
-+/* Get the O_DIRECT definition. */
-+#ifndef _GNU_SOURCE
-+#define _GNU_SOURCE
-+#endif
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <liburing.h>
-+
-+int main(int argc, char *argv[])
-+{
-+	struct io_uring ring;
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
-+	struct iovec iovec;
-+	int fd;
-+	long pagesize;
-+	void *write_buf;
-+	void *read_buf;
-+	ssize_t ret;
-+	int i;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Use: %s <file path>\n", argv[0]);
-+		return 1;
-+	}
-+
-+	fd = open(argv[1], O_CREAT | O_TRUNC | O_WRONLY | O_DIRECT, 0666);
-+	if (fd == -1) {
-+		fprintf(stderr, "Failed to create file %s: %s (errno %d)\n",
-+			argv[1], strerror(errno), errno);
-+		return 1;
-+	}
-+
-+	pagesize = sysconf(_SC_PAGE_SIZE);
-+	if (pagesize == -1) {
-+		fprintf(stderr, "Failed to get page size: %s (errno %d)\n",
-+			strerror(errno), errno);
-+		return 1;
-+	}
-+
-+	ret = posix_memalign(&write_buf, pagesize, 4 * pagesize);
-+	if (ret) {
-+		fprintf(stderr, "Failed to allocate write buffer\n");
-+		return 1;
-+	}
-+
-+	memset(write_buf, 0xab, pagesize);
-+	memset(write_buf + pagesize, 0xcd, pagesize);
-+	memset(write_buf + 2 * pagesize, 0xef, pagesize);
-+	memset(write_buf + 3 * pagesize, 0x73, pagesize);
-+
-+	/* Create the 4 extents, each with a size matching page size. */
-+	for (i = 0; i < 4; i++) {
-+		ret = pwrite(fd, write_buf + i * pagesize, pagesize,
-+			     i * pagesize);
-+		if (ret != pagesize) {
-+			fprintf(stderr,
-+				"Write failure, ret = %ld errno %d (%s)\n",
-+				ret, errno, strerror(errno));
-+			return 1;
-+		}
-+		ret = fsync(fd);
-+		if (ret != 0) {
-+			fprintf(stderr, "Fsync failure: %s (errno %d)\n",
-+				strerror(errno), errno);
-+			return 1;
-+		}
-+	}
-+
-+	close(fd);
-+	fd = open(argv[1], O_RDONLY | O_DIRECT);
-+	if (fd == -1) {
-+		fprintf(stderr,
-+			"Failed to open file %s: %s (errno %d)",
-+			argv[1], strerror(errno), errno);
-+		return 1;
-+	}
-+
-+	ret = posix_memalign(&read_buf, pagesize, 4 * pagesize);
-+	if (ret) {
-+		fprintf(stderr, "Failed to allocate read buffer\n");
-+		return 1;
-+	}
-+
-+	/*
-+	 * Fault in only the first page of the read buffer.
-+	 * We want to trigger a page fault for the 2nd page of the read buffer
-+	 * during the read operation with io_uring (O_DIRECT and IOCB_NOWAIT).
-+	 */
-+	memset(read_buf, 0, 1);
-+
-+	ret = io_uring_queue_init(1, &ring, 0);
-+	if (ret != 0) {
-+		fprintf(stderr, "Failed to creating io_uring queue\n");
-+		return 1;
-+	}
-+
-+	sqe = io_uring_get_sqe(&ring);
-+	if (!sqe) {
-+		fprintf(stderr, "Failed to get io_uring sqe\n");
-+		return 1;
-+	}
-+
-+	iovec.iov_base = read_buf;
-+	iovec.iov_len = 4 * pagesize;
-+	io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
-+
-+	ret = io_uring_submit_and_wait(&ring, 1);
-+	if (ret != 1) {
-+		fprintf(stderr, "Failed at io_uring_submit_and_wait()\n");
-+		return 1;
-+	}
-+
-+	ret = io_uring_wait_cqe(&ring, &cqe);
-+	if (ret < 0) {
-+		fprintf(stderr, "Failed at io_uring_wait_cqe()\n");
-+		return 1;
-+	}
-+
-+	if (cqe->res != (4 * pagesize))
-+		fprintf(stderr, "Unexpected cqe->res, got %d expected %ld\n",
-+			cqe->res, 4 * pagesize);
-+
-+	if (memcmp(read_buf, write_buf, 4 * pagesize) != 0)
-+		fprintf(stderr,
-+			"Unexpected mismatch between read and write buffers\n");
-+
-+	io_uring_cqe_seen(&ring, cqe);
-+	io_uring_queue_exit(&ring);
-+
-+	return 0;
-+}
-diff --git a/tests/generic/676 b/tests/generic/676
-new file mode 100755
-index 00000000..0472c9c2
---- /dev/null
-+++ b/tests/generic/676
-@@ -0,0 +1,41 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 676
-+#
-+# Test doing a read, with io_uring, over a file range that includes multiple
-+# extents. The read operation triggers page faults when accessing all pages of
-+# the read buffer except for the pages corresponding to the first extent.
-+# Then verify that the operation results in reading all the extents and returns
-+# the correct data.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick io_uring
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+	rm -f $TEST_DIR/uring_read_fault.tmp
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# real QA test starts here
-+
-+_supported_fs generic
-+_require_test
-+_require_odirect
-+_require_io_uring
-+_require_test_program uring_read_fault
-+
-+$here/src/uring_read_fault $TEST_DIR/uring_read_fault.tmp
-+
-+echo "Silence is golden"
-+
-+status=$?
-+exit
-diff --git a/tests/generic/676.out b/tests/generic/676.out
-new file mode 100644
-index 00000000..d305660f
---- /dev/null
-+++ b/tests/generic/676.out
-@@ -0,0 +1,2 @@
-+QA output created by 676
-+Silence is golden
--- 
-2.33.0
+I understand it's an unexpected result, since it knows its read requests
+don't cross the EOF boundary and knows exactly the length and file offsets
+of its pages/blocks, so it expects a read requesting 16K of data to return
+exactly 16K of data, and no less than that. I've worked in the database
+industry before, and the same assumptions existed on the engines I worked on.
+Either way it was a behaviour change in btrfs and it can, and should be,
+addressed in btrfs.
 
+And yes, before your report, there was at least another on the btrfs mailing
+list from someone getting MariaDB corruptions on btrfs only. However yours had
+a useful reproducer that made it easier to dig into.
+
+Thanks.
+
+> 
+> https://jira.mariadb.org/browse/MDEV-27900
+> https://mariadb.zulipchat.com/#narrow/stream/118759-general/topic/Corrupt.20database.20page.20when.20updating.20from.2010.2E5
+> 
+> On Tue, Feb 22, 2022 at 11:55 PM Filipe Manana <fdmanana@kernel.org> wrote:
+> >
+> > On Tue, Feb 22, 2022 at 12:46 PM Filipe Manana <fdmanana@kernel.org> wrote:
+> > >
+> > > On Tue, Feb 22, 2022 at 12:22 PM Daniel Black <daniel@mariadb.org> wrote:
+> > > >
+> > > > On Tue, Feb 22, 2022 at 10:42 PM Filipe Manana <fdmanana@kernel.org> wrote:
+> > > >
+> > > > > I gave it a try, but it fails setting up io_uring:
+> > > > >
+> > > > > 2022-02-22 11:27:13 0 [Note] mysqld: O_TMPFILE is not supported on /tmp (disabling future attempts)
+> > > > > 2022-02-22 11:27:13 0 [Warning] mysqld: io_uring_queue_init() failed with errno 1
+> > > > > 2022-02-22 11:27:13 0 [Warning] InnoDB: liburing disabled: falling back to innodb_use_native_aio=OFF
+> > > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Initializing buffer pool, total size = 134217728, chunk size = 134217728
+> > > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Completed initialization of buffer pool
+> > > > >
+> > > > > So that's why it doesn't fail here, as it fallbacks to no aio mode.
+> > > >
+> > > > error 1 is EPERM. Seems it needs --privileged on the container startup
+> > > > as a podman argument (before the image name). Sorry I missed that
+> > > >
+> > > > > Any idea why it's failing to setup io_uring?
+> > > > >
+> > > > > I have the liburing2 and liburing-dev packages installed on debian, and
+> > > > > tried with a 5.17-rc4 kernel.
+> > > >
+> > > > Taking https://packages.debian.org/bookworm/mariadb-server-core-10.6 package:
+> > > >
+> > > > mariadb-install-db --no-defaults --datadir=/empty/btrfs/path
+> > > > --innodb-use-native-aio=0
+> > > >
+> > > > mariadbd --no-defaults --datadir=/empty/btrfs/path --innodb-use-native-aio=1
+> > > >
+> > > > should achieve the same thing.
+> > >
+> > > Sorry, I have no experience with mariadb and podman. How am I supposed
+> > > to run that?
+> > > Is that supposed to run inside the container, on the host? Do I need
+> > > to change the podman command lines?
+> > >
+> > > What I did before was:
+> > >
+> > > DEV=/dev/sdh
+> > > MNT=/mnt/sdh
+> > >
+> > > mkfs.btrfs -f $DEV
+> > > mount $DEV $MNT
+> > >
+> > > mkdir $MNT/noaio
+> > > chown fdmanana: $MNT/noaio
+> > >
+> > > podman run --name mdbinit --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
+> > > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
+> > > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
+> > > --innodb_use_native_aio=0
+> > >
+> > >
+> > > Then in another shell:
+> > >
+> > > podman kill --all
+> > >
+> > > podman run --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
+> > > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
+> > > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
+> > > --innodb_use_native_aio=1
+> > >
+> > >
+> > > What should I change or add in there?
+> >
+> > Ok, just passing  --privileged to both podman commands triggered the
+> > bug as in your report.
+> > I'll see if I can figure out what's causing the read corruption.
+> >
+> >
+> > >
+> > > Thanks.
