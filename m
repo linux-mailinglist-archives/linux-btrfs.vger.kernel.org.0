@@ -2,52 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A44AC4CA3A5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 12:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDFD4CA3D1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 12:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236474AbiCBL3F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 06:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
+        id S239068AbiCBLfD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 06:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233839AbiCBL3D (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 06:29:03 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2DD3ED35;
-        Wed,  2 Mar 2022 03:28:20 -0800 (PST)
+        with ESMTP id S229744AbiCBLfC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 06:35:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C57D9027C;
+        Wed,  2 Mar 2022 03:34:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9D4B61804;
-        Wed,  2 Mar 2022 11:28:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB75CC004E1;
-        Wed,  2 Mar 2022 11:28:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ED398617F4;
+        Wed,  2 Mar 2022 11:34:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C88FC004E1;
+        Wed,  2 Mar 2022 11:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646220499;
-        bh=NNW4l+jluOy6hGNsds61IYRiSLBNoFZnVB4BY5EzUeE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fJrIu5HiHUVuYb1YtJcldJe13nkso3YpgyfAL7is/pavjDfZJ7bTd3A8pRUeqMcN4
-         BpqXtZaWFhShjX+U3caPGbOw6QlpZbMizPZQwU+fZ9hiJx94y9E65Li0IGhWYhpM4L
-         uJlzE55FQwGV6WnfgFlnXsyBmYgp8kxDXHkAJuGq24/23ev0r6rZowonCaV7hc8Jhz
-         wckbfc5fV2oNMcD8omZM4ebCCgaPoR69RQeeJ1jxSVsI1pCfDbynUJ/8KaoodVfDIJ
-         1NwILteumnfROBqmcq3QtSVDr2Zk5+GLpsmZgPcvaBwzXIeXY8jI2cnrktJl1HHIaY
-         PNyRKbeaEvtqA==
-Date:   Wed, 2 Mar 2022 11:28:16 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Daniel Black <daniel@mariadb.org>
-Cc:     io-uring@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Fwd: btrfs / io-uring corrupting reads
-Message-ID: <Yh9U0PSU+gfWGqU+@debian9.Home>
-References: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
- <CABVffEO3DZTtTNdjkwTegxNPTHbeM-PBeKk5B_dFXdsTvL2wFg@mail.gmail.com>
- <YhTMBFrZeEvROh0C@debian9.Home>
- <CABVffENr6xfB=ujMhMEVywbuzo8kYTSVzym1ctCbZOPipVCpHg@mail.gmail.com>
- <CAL3q7H5mSV69ambZy_uCnTMOW7U0n_fU1DtVNA-FYwDdHVrp9w@mail.gmail.com>
- <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
- <CABVffEOWjSg+8pqzALuLt6mMviA0y7XRwsdJyv9_DodWKQFpqQ@mail.gmail.com>
+        s=k20201202; t=1646220858;
+        bh=EUbAbOtbKbHb53s+BZeDl0ZucskqRbpaz8tEIyg8WGY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VFgfn7kjiyGmPFTrOYc+0UMvyI3vcMjW4m9alGwMer8RwdckJnAUQInKbvWaD1RXv
+         IO329MsuDrH3FV3641ojryruKA0DNRK9gTrvmlnZmV33qRZuOhUuul6ErGL9zdAdkV
+         5gFnGWBx3AP3uE5qXxd4CyM+XP7xpzycoZ7WFB3OSSS6+IzE3ReXiipLsgSf9+Shbh
+         tfxUekOczTtyH9xD6Z/k9yOvKLxSnjpg5uBQd4VxHShOxKbG+KdEa5jWv0HsUKjrRV
+         Iet5C4wYsL1EFCM0wlviGypMaIDGYE4PA6chJcuVAS2r2q4wDjmzXAUv+LCaQPIByP
+         zANE/uZ2qCHmg==
+Received: by mail-qt1-f177.google.com with SMTP id f18so1306816qtb.3;
+        Wed, 02 Mar 2022 03:34:18 -0800 (PST)
+X-Gm-Message-State: AOAM532sEm8mJRinHjlrhgrDBAUb93LazqK5NFgxJonpNj3egXOuLs+0
+        UqeBE/zdo3NhNxrsrNSyA7tedoWFRCtLBtRaMQA=
+X-Google-Smtp-Source: ABdhPJzoSFphQumTK4OAYtEDTEQGn6c6w8jiIuSeSfZuDDiETrr+UEzJ0vkTa506qOU6HmmbWnt/26+ousx0vnQIuX0=
+X-Received: by 2002:a05:622a:110:b0:2dd:461a:6126 with SMTP id
+ u16-20020a05622a011000b002dd461a6126mr23718961qtw.379.1646220857301; Wed, 02
+ Mar 2022 03:34:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABVffEOWjSg+8pqzALuLt6mMviA0y7XRwsdJyv9_DodWKQFpqQ@mail.gmail.com>
+References: <abbc821350c8ef515e0a0317b5cbd64e3c5b81ab.1645099449.git.fdmanana@suse.com>
+ <20220222234432.GF3061737@dread.disaster.area> <CAL3q7H41wY_GWStRUxuOWwPcgqX9zx-WZxEySaRAUrMtcE666w@mail.gmail.com>
+ <20220224022128.GK3061737@dread.disaster.area>
+In-Reply-To: <20220224022128.GK3061737@dread.disaster.area>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 2 Mar 2022 11:33:41 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7=4g3W7J4=9=rN2FodWr387+9eSzvUYyLVnz3tRv0CFw@mail.gmail.com>
+Message-ID: <CAL3q7H7=4g3W7J4=9=rN2FodWr387+9eSzvUYyLVnz3tRv0CFw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: test log replay after fsync of file with prealloc
+ extents beyond eof
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,113 +65,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 02, 2022 at 08:51:53AM +1100, Daniel Black wrote:
-> Filipe,
-> 
-> DId you find anything? This is starting to be noticed by our mutual users.
+On Thu, Feb 24, 2022 at 2:21 AM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Wed, Feb 23, 2022 at 12:12:10PM +0000, Filipe Manana wrote:
+> > On Tue, Feb 22, 2022 at 11:44 PM Dave Chinner <david@fromorbit.com> wrote:
+> > >
+> > > On Thu, Feb 17, 2022 at 12:14:21PM +0000, fdmanana@kernel.org wrote:
+> > > > From: Filipe Manana <fdmanana@suse.com>
+> > > >
+> > > > Test that after a full fsync of a file with preallocated extents beyond
+> > > > the file's size, if a power failure happens, the preallocated extents
+> > > > still exist after we mount the filesystem.
+> > > >
+> > > > This test currently fails and there is a patch for btrfs that fixes this
+> > > > issue and has the following subject:
+> > > >
+> > > >   "btrfs: fix lost prealloc extents beyond eof after full fsync"
+> > > >
+> > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > > ---
+> > > >  tests/btrfs/261     | 79 +++++++++++++++++++++++++++++++++++++++++++++
+> > > >  tests/btrfs/261.out | 10 ++++++
+> > >
+> > > What is btrfs specific about this test?
+> >
+> > The comments that explain the steps are very btrfs specific.
+> > Without them it would be hard to understand why the test uses that
+> > specific file size, block size, mention of the btrfs inode's full sync
+> > bit, etc.
+>
+> But the behaviour and layout should end up being the same for all
+> filesystems, right?
 
-Yes, I've sent a patch to address it:
+Right.
 
-https://lore.kernel.org/linux-btrfs/39c96b5608ed99b7d666d4d159f8d135e86b9606.1646219178.git.fdmanana@suse.com/T/#u
+>
+> We have plenty of generic tests that are designed with a
+> specific configuration on a specific filesystem to reproduce a bug
+> seen on that filesystem, but as long as all filesystems should be
+> expected to behave the same way, it's a generic test.
+>
+> AFAICT, the behaviour described and exercised by the test should be
+> the same for all filesystems that support preallocation beyond EOF.
+> Hence it isn't btrfs specific behaviour being exercised, just a
+> reproducing a bug where btrfs deviates from the correct behaviour
+> that should be consistent across all filesystems.
+>
+> > Some years ago, when you maintained fstests, you complained once about
+> > this type of "too btrfs specific" comments on generic tests.
+>
+> I can change my mind if I want. Besides, I'm looking at this new
+> test purely on it's own merits so past discussions aren't really
+> relevant. Maybe you didn't understand the context under which I was
+> considering a patch to be "too fs specific" rather than generic.
+>
+> There's a big difference between "only btrfs will behave this way"
+> and "all filesystems should get the same result, but btrfs sometimes
+> fails to get that results in this specific case".  The former should
+> be a btrfs-only test, the latter should be a generic test.
+>
+> Which class this test falls into is exactly what I'm asking here -
+> should all filesystems get the same result, or is successful
+> result encoded in the golden output behaviour that only btrfs will
+> ever produce?
 
-The details are in the changelog.
+As far as I know, all filesystems supporting fallocate should behave
+the same way.
 
-Basically, MariaDB is getting a short read - it asks to read 16K of data
-but it only gets the first 4K of data (or the first 8K or 12K). It treats
-such partial read as a corruption, but in fact it could check that it's a
-short read and then try to read the remaining data.
-
-I understand it's an unexpected result, since it knows its read requests
-don't cross the EOF boundary and knows exactly the length and file offsets
-of its pages/blocks, so it expects a read requesting 16K of data to return
-exactly 16K of data, and no less than that. I've worked in the database
-industry before, and the same assumptions existed on the engines I worked on.
-Either way it was a behaviour change in btrfs and it can, and should be,
-addressed in btrfs.
-
-And yes, before your report, there was at least another on the btrfs mailing
-list from someone getting MariaDB corruptions on btrfs only. However yours had
-a useful reproducer that made it easier to dig into.
+Ok, I can move into the generic group.
 
 Thanks.
 
-> 
-> https://jira.mariadb.org/browse/MDEV-27900
-> https://mariadb.zulipchat.com/#narrow/stream/118759-general/topic/Corrupt.20database.20page.20when.20updating.20from.2010.2E5
-> 
-> On Tue, Feb 22, 2022 at 11:55 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> >
-> > On Tue, Feb 22, 2022 at 12:46 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> > >
-> > > On Tue, Feb 22, 2022 at 12:22 PM Daniel Black <daniel@mariadb.org> wrote:
-> > > >
-> > > > On Tue, Feb 22, 2022 at 10:42 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> > > >
-> > > > > I gave it a try, but it fails setting up io_uring:
-> > > > >
-> > > > > 2022-02-22 11:27:13 0 [Note] mysqld: O_TMPFILE is not supported on /tmp (disabling future attempts)
-> > > > > 2022-02-22 11:27:13 0 [Warning] mysqld: io_uring_queue_init() failed with errno 1
-> > > > > 2022-02-22 11:27:13 0 [Warning] InnoDB: liburing disabled: falling back to innodb_use_native_aio=OFF
-> > > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Initializing buffer pool, total size = 134217728, chunk size = 134217728
-> > > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Completed initialization of buffer pool
-> > > > >
-> > > > > So that's why it doesn't fail here, as it fallbacks to no aio mode.
-> > > >
-> > > > error 1 is EPERM. Seems it needs --privileged on the container startup
-> > > > as a podman argument (before the image name). Sorry I missed that
-> > > >
-> > > > > Any idea why it's failing to setup io_uring?
-> > > > >
-> > > > > I have the liburing2 and liburing-dev packages installed on debian, and
-> > > > > tried with a 5.17-rc4 kernel.
-> > > >
-> > > > Taking https://packages.debian.org/bookworm/mariadb-server-core-10.6 package:
-> > > >
-> > > > mariadb-install-db --no-defaults --datadir=/empty/btrfs/path
-> > > > --innodb-use-native-aio=0
-> > > >
-> > > > mariadbd --no-defaults --datadir=/empty/btrfs/path --innodb-use-native-aio=1
-> > > >
-> > > > should achieve the same thing.
-> > >
-> > > Sorry, I have no experience with mariadb and podman. How am I supposed
-> > > to run that?
-> > > Is that supposed to run inside the container, on the host? Do I need
-> > > to change the podman command lines?
-> > >
-> > > What I did before was:
-> > >
-> > > DEV=/dev/sdh
-> > > MNT=/mnt/sdh
-> > >
-> > > mkfs.btrfs -f $DEV
-> > > mount $DEV $MNT
-> > >
-> > > mkdir $MNT/noaio
-> > > chown fdmanana: $MNT/noaio
-> > >
-> > > podman run --name mdbinit --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
-> > > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
-> > > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
-> > > --innodb_use_native_aio=0
-> > >
-> > >
-> > > Then in another shell:
-> > >
-> > > podman kill --all
-> > >
-> > > podman run --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
-> > > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
-> > > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
-> > > --innodb_use_native_aio=1
-> > >
-> > >
-> > > What should I change or add in there?
-> >
-> > Ok, just passing  --privileged to both podman commands triggered the
-> > bug as in your report.
-> > I'll see if I can figure out what's causing the read corruption.
-> >
-> >
-> > >
-> > > Thanks.
+>
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
