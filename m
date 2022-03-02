@@ -2,145 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1424C9A47
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 02:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E094C9A7F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 02:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbiCBBL2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Mar 2022 20:11:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
+        id S238918AbiCBBjY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 1 Mar 2022 20:39:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbiCBBL1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Mar 2022 20:11:27 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E7692D3A
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Mar 2022 17:10:45 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0DD01218E4;
-        Wed,  2 Mar 2022 01:10:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646183444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Jsb9R88fbWh5gpHWK/hV+eGA79h13cSiBX19l9MmulM=;
-        b=S1Jz2AmZWbOZkuGK7OenIyMRlls5ARQzvKfRl3/W3oUWDsIje5mYATrpHyXZwf6bSpaf2w
-        5f49wrZhBpQCAOqk4EOgErhk8sQpPWTOjyFy+rvDIiGg20ng1KU4HHvpsu/rP02psCzlbW
-        yII2wpYbeqIb3uPU6UTIm4VXb2IYwyU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5584013519;
-        Wed,  2 Mar 2022 01:10:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id M6TSAxLEHmIcTAAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 02 Mar 2022 01:10:42 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Christoph Anton Mitterer <calestyo@scientia.org>
-Subject: [PATCH] btrfs: verify the tranisd of the to-be-written dirty extent buffer
-Date:   Wed,  2 Mar 2022 09:10:21 +0800
-Message-Id: <1f011e6358e042e5ae1501e88377267a2a95c09d.1646183319.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S230148AbiCBBjU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Mar 2022 20:39:20 -0500
+Received: from beige.elm.relay.mailchannels.net (beige.elm.relay.mailchannels.net [23.83.212.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D4E59A51
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Mar 2022 17:38:37 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 5BE14800D02;
+        Wed,  2 Mar 2022 01:38:36 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 64252800E21;
+        Wed,  2 Mar 2022 01:38:35 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1646185115; a=rsa-sha256;
+        cv=none;
+        b=izuDKGaWkxtMyzdR7mWzmdmYMXDEhwJsj2nJ86Y5LifD6n1J126579T9y3QeokMdjmsQwB
+        1hf4snFRPkGcnwfA1Th5OKEm+h/rilLAWdk/R6oiwbUSFhs2mb9U5po5uifxQdZ+XHeSsC
+        lq4LKJygr0BDHjjj7eIzEhQu3KRdVhMC7RZaavkDIc8Opd0lLV6RGN5KAkgApuPZwMCjbv
+        vGd8qUEH9TegdYwYBZpQylcje29mAJhvVyH32515UXc/ndzaS3rJ2ALM86wvvs+hWc9O+B
+        KAT9T85hTui4kSmQ6GS2Wt9s5KyAu8M/za+EPt0vCQomgvJxCFw8mYUzSjkMRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1646185115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NhoLpNUNNfz5L6eprvFcS7q4wr1jC8fu5bgGXGbSzyU=;
+        b=hFfZ/WlFxkFQa6DybMYzo3+CbjetsqGmiVZd6+m5AkA9xP3cHIqiIhGrbm7u+PoPMdnjU4
+        nY4ka9GnV+lrmhXSWnugjyvcO8llSsZvMn+D2zacu6Kxy+gZ+z5z1zb3PI/W16D+N49vgQ
+        v3OA/PmZfFCnMPGe+ldB2nOuFirWr1n80lo3mELwv7a69ZyczFQr99n82z00Z3C0y/ZfNz
+        +MRYEGK0K4ejouCGPv/aV/U1AHIlbqUe9OZbR1gbGq42SR+IfwKbItL+fjRhyq//GVV3JY
+        nFEl/ZmDUeiVxfC+gna+Cr88h+aowvG098dU8R8Izmk0t3xeQ7dsa/6/CHQ1Ew==
+ARC-Authentication-Results: i=1;
+        rspamd-56df6fd94d-z6hcc;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.115.218.60 (trex/6.5.3);
+        Wed, 02 Mar 2022 01:38:36 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Exultant-Turn: 3015621f7c35fa15_1646185116156_688167471
+X-MC-Loop-Signature: 1646185116156:2216318965
+X-MC-Ingress-Time: 1646185116156
+Received: from ppp-88-217-35-91.dynamic.mnet-online.de ([88.217.35.91]:55150 helo=PSS.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <calestyo@scientia.org>)
+        id 1nPDwj-0001PO-LB; Wed, 02 Mar 2022 01:38:33 +0000
+Message-ID: <9d4f9c353ffe8a5b0fec426df7bf056904ddf712.camel@scientia.org>
+Subject: Re: BTRFS error (device dm-0): parent transid verify failed on
+ 1382301696 wanted 262166 found 22
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Date:   Wed, 02 Mar 2022 02:38:27 +0100
+In-Reply-To: <66d31354-a6d1-01a0-3674-c4976bd7d557@suse.com>
+References: <2dfcbc130c55cc6fd067b93752e90bd2b079baca.camel@scientia.org>
+         <5eb2e0c2-307b-0361-2b64-631254cf936c@gmx.com>
+         <f7270877b2f8503291d5517f22068a2f3829c959.camel@scientia.org>
+         <ff871fa3-901f-1c30-c579-2546299482da@gmx.com>
+         <22f7f0a5c02599c42748c82b990153bf49263512.camel@scientia.org>
+         <edefb747-0033-717d-5383-f8c2f22efc8f@gmx.com>
+         <74ccc4a0bbd181dd547c06b32be2b071612aeb85.camel@scientia.org>
+         <d408c15d-60e2-0701-f1f1-e35087539ab3@gmx.com>
+         <9049B0C3-5A30-4824-BCED-61AA9AC128E5@scientia.org>
+         <66d31354-a6d1-01a0-3674-c4976bd7d557@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.43.2-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OutGoing-Spam-Status: No, score=-0.5
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a bug report that a bitflip in the transid part of an extent
-buffer makes btrfs to reject certain tree blocks:
+On Tue, 2022-03-01 at 10:30 +0800, Qu Wenruo wrote:
+> In that case we should do a tree search and locate that tree block.
 
-  BTRFS error (device dm-0): parent transid verify failed on 1382301696 wanted 262166 found 22
+... and ...
 
-[CAUSE]
-Note the failed transid check, hex(262166) = 0x40016, while
-hex(22) = 0x16.
+> Anyway, I need more investigate to be sure on how this happened
+> without 
+> triggering scrub, and find a way to make btrfs a more robust
+> memtester :)
 
-It's an obvious bitflip.
+... still anything needed to do from my side here? Or is that something
+you just meant for your todo list? Cause then I'd recreate the fs in
+the next days.
 
-Furthermore, the reporter also confirmed the bitflip is from the
-hardware, so it's a real hardware caused bitflip, and such problem can
-not be detected by the existing tree-checker framework.
 
-As tree-checker can only verify the content inside one tree block, while
-generation of a tree block can only be verified against its parent.
+btw: I tried:
+# btrfs inspect-internal logical-resolve -P 1382301696 /
+ERROR: logical ino ioctl: No such file or directory
 
-So such problem remain undetected.
+but that fails.
 
-[FIX]
-Although tree-checker can not verify it at write-time, we still have a
-quick (but not the most accurate) way to catch such obvious corruption.
 
-Function csum_one_extent_buffer() is called before we submit metadata
-write.
-
-Thus it means, all the extent buffer passed in should be dirty tree
-blocks, and should be newer than last committed transaction.
-
-Using that we can catch the above bitflip.
-
-Although it's not a perfect solution, as if the corrupted generation is
-higher than the correct value, we have no way to catch it at all.
-
-Reported-by: Christoph Anton Mitterer <calestyo@scientia.org>
-Link: https://lore.kernel.org/linux-btrfs/2dfcbc130c55cc6fd067b93752e90bd2b079baca.camel@scientia.org/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b6a81c39d5f4..a89aa523413b 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -441,17 +441,31 @@ static int csum_one_extent_buffer(struct extent_buffer *eb)
- 	else
- 		ret = btrfs_check_leaf_full(eb);
- 
--	if (ret < 0) {
--		btrfs_print_tree(eb, 0);
-+	if (ret < 0)
-+		goto error;
-+
-+	/*
-+	 * Also check the generation, the eb reached here must be newer than
-+	 * last committed. Or something seriously wrong happened.
-+	 */
-+	if (btrfs_header_generation(eb) <= fs_info->last_trans_committed) {
-+		ret = -EUCLEAN;
- 		btrfs_err(fs_info,
--			"block=%llu write time tree block corruption detected",
--			eb->start);
--		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
--		return ret;
-+			"block=%llu bad generation, have %llu expect > %llu",
-+			  eb->start, btrfs_header_generation(eb),
-+			  fs_info->last_trans_committed);
-+		goto error;
- 	}
- 	write_extent_buffer(eb, result, 0, fs_info->csum_size);
- 
- 	return 0;
-+error:
-+	btrfs_print_tree(eb, 0);
-+	btrfs_err(fs_info,
-+		"block=%llu write time tree block corruption detected",
-+		eb->start);
-+	WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-+	return ret;
- }
- 
- /* Checksum all dirty extent buffers in one bio_vec */
--- 
-2.35.1
-
+Cheers,
+Chris
