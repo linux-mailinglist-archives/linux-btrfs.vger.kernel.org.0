@@ -2,205 +2,249 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 783F44CA476
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 13:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 549B24CA574
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 14:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241682AbiCBMK7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 07:10:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        id S233603AbiCBNEb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 08:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241678AbiCBMK5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 07:10:57 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F29DA9A69;
-        Wed,  2 Mar 2022 04:10:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4BB38B81FAD;
-        Wed,  2 Mar 2022 12:10:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 980D9C340F1;
-        Wed,  2 Mar 2022 12:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646223011;
-        bh=QLsOJeODj+q8W7S4HcQFcV5280qXF1sZAOj6kcgqeHs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rQBV0i9BejuzcrxIkxKIPEbU7O9tpBm0Ps7d7I5RpMvB2nAX/zgXkPGTIaklzLGBo
-         5AuT0kpNrxDebIRlUH/fnjrR5DoCbVr6MAY04kk89efYjLRP64r8f5JicOhS/70lVB
-         pLgMKcAB5RVenes1Xcfhdl2HoTi4O+kx+BO8nw+AT8EvK5G8af5gfkDMg6Yf1YIOQK
-         5QbG89TsEgJLab0r7tVaDzhcMKrt7Ip5tA571cD/lArr9hHmK0FdYlD5HpxmoghJJQ
-         irBMfsgDLv/2wxnEiM6QWsdt/7Ch26ajbFj4XmypFRQMC2rJGjnUDp506Im41bMGGe
-         nJ13YMQLUubvw==
-Date:   Wed, 2 Mar 2022 12:10:08 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "dsterba@suse.cz" <dsterba@suse.cz>
-Subject: Re: [PATCH] btrfs: add test for enable/disable quota and
- create/destroy qgroup repeatedly
-Message-ID: <Yh9eoC1FwfNK5kXn@debian9.Home>
-References: <20220301151930.1315-1-realwakka@gmail.com>
+        with ESMTP id S234065AbiCBNEa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 08:04:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64094C2483
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 05:03:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646226225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h4jUwD5CmiGcFMIQc1HZrTQmpgea2cy6d4c1OFQ/588=;
+        b=Ry4CNonGVJh2pXRxTVcz33P6O/aFyf0nz3yPx9gRQx77jtPOjC2EV0qQdQXP89AQI4STFx
+        7ltP5xeBDPXilqPH5g0Udb3HsQbXdqvFwfre0owcb26eANKBx+Au45sUngBfqksapoPhCf
+        lHFtRllglm2ciuj6+2mXFS5TkiviuqQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-486-daqsZZPTPFeJQZRBLIGGig-1; Wed, 02 Mar 2022 08:03:43 -0500
+X-MC-Unique: daqsZZPTPFeJQZRBLIGGig-1
+Received: by mail-wm1-f71.google.com with SMTP id t2-20020a7bc3c2000000b003528fe59cb9so798140wmj.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Mar 2022 05:03:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h4jUwD5CmiGcFMIQc1HZrTQmpgea2cy6d4c1OFQ/588=;
+        b=BGegjRbk2s/7TmKaqIXdZMgylGQnnAgu2o8mYDRFn1p4pUDWep2n7bQVD7a5E9O4sI
+         50o10qQrUDLxxfBGUJWet/JvQteoAJt1HNahYZ040iDn+K/8q9oO+tgCKhEe9uKej75N
+         CHESv21C64D9bxu2yts7WXGYF9zuGw4FdhXInRodnaQZbgvEDtwbvygEn8rUUUqt4BOW
+         kmlWe+BRIWLaVnZNCkwKS1fL4c3jpuHrZDc++JCFwA8LmtinsX7nr8H3/b5S4Sj4KH6Y
+         6mjYH0amwFhqDEsf8wUoNyM4Im0Yng5Eh9FKtmkTD69xc7J5UYq0t2sLe5Zj2a75oPJ7
+         yCdw==
+X-Gm-Message-State: AOAM533CQkmJFYk7gueEVQbZkwRyDOQPIeKI7vQWpGlxvW66ysB4fnvg
+        5KRZE2Qg52oP9+m1UBfkoZxUS+OUhvgCGHhdGV0NZmbTq1RmMpt9dvTElrqkTup980SUv1SdqHy
+        8Kud+no0/KKeuWmRzk7eITozJZxayIdIpw6zmm/w=
+X-Received: by 2002:a5d:67ca:0:b0:1ed:d1e4:bce2 with SMTP id n10-20020a5d67ca000000b001edd1e4bce2mr22717390wrw.493.1646226220748;
+        Wed, 02 Mar 2022 05:03:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz+XpscBL2wfHTCik1tahwWVcz07rxvA/g/MFJrdyIBGmujyMJrPuE1lOaVi7g2ksDDmpxvaW5sb3t7HnD1jk8=
+X-Received: by 2002:a5d:67ca:0:b0:1ed:d1e4:bce2 with SMTP id
+ n10-20020a5d67ca000000b001edd1e4bce2mr22717362wrw.493.1646226220444; Wed, 02
+ Mar 2022 05:03:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220301151930.1315-1-realwakka@gmail.com>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1f34c8435fed21e9583492661ceb20d642a75699.1646058596.git.fdmanana@suse.com>
+ <20220228223830.GR59715@dread.disaster.area> <Yh9EHfl3sYJHeo3T@debian9.Home>
+In-Reply-To: <Yh9EHfl3sYJHeo3T@debian9.Home>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Wed, 2 Mar 2022 14:03:28 +0100
+Message-ID: <CAHc6FU7jBeUEAaB0BupypG1zdxf4shF5T56cHZCD_xXi-jeB+Q@mail.gmail.com>
+Subject: Re: [PATCH] iomap: fix incomplete async dio reads when using IOMAP_DIO_PARTIAL
+To:     Filipe Manana <fdmanana@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Michael Kerrisk <mtk@man7.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 01, 2022 at 03:19:30PM +0000, Sidong Yang wrote:
-> Test enabling/disable quota and creating/destroying qgroup repeatedly
-> in asynchronous and confirm it does not cause kernel hang. This is a
+On Wed, Mar 2, 2022 at 11:17 AM Filipe Manana <fdmanana@kernel.org> wrote:
+> On Tue, Mar 01, 2022 at 09:38:30AM +1100, Dave Chinner wrote:
+> > On Mon, Feb 28, 2022 at 02:32:03PM +0000, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > Some users recently reported that MariaDB was getting a read corruption
+> > > when using io_uring on top of btrfs. This started to happen in 5.16,
+> > > after commit 51bd9563b6783d ("btrfs: fix deadlock due to page faults
+> > > during direct IO reads and writes"). That changed btrfs to use the new
+> > > iomap flag IOMAP_DIO_PARTIAL and to disable page faults before calling
+> > > iomap_dio_rw(). This was necessary to fix deadlocks when the iovector
+> > > corresponds to a memory mapped file region. That type of scenario is
+> > > exercised by test case generic/647 from fstests, and it also affected
+> > > gfs2, which, besides btrfs, is the only user of IOMAP_DIO_PARTIAL.
+> > >
+> > > For this MariaDB scenario, we attempt to read 16K from file offset X
+> > > using IOCB_NOWAIT and io_uring. In that range we have 4 extents, each
+> > > with a size of 4K, and what happens is the following:
+> > >
+> > > 1) btrfs_direct_read() disables page faults and calls iomap_dio_rw();
+> > >
+> > > 2) iomap creates a struct iomap_dio object, its reference count is
+> > >    initialized to 1 and its ->size field is initialized to 0;
+> > >
+> > > 3) iomap calls btrfs_iomap_begin() with file offset X, which finds the
+> >
+> > You mean btrfs_dio_iomap_begin()?
+>
+> Yes, correct.
+>
+> >
+> > >    first 4K extent, and setups an iomap for this extent consisting of
+> > >    a single page;
+> >
+> > So we have IOCB_NOWAIT, which means btrfs_dio_iomap_begin() is being
+> > passed IOMAP_NOWAIT and so knows it is being asked
+> > to map an extent for an IO that is on a non-blocking path.
+> >
+> > btrfs_dio_iomap_begin() doesn't appear to support NOWAIT semantics
+> > at all - it will block doing writeback IO, memory allocation, extent
+> > locking, transaction reservations, extent allocation, etc....
+>
+> We do have some checks for NOWAIT before getting into btrfs_dio_iomap_begin(),
+> but they are only for the write path, and they are incomplete. Some are a bit
+> tricky to deal with, but yes, there's several cases that are either missing
+> or need to be improved.
+>
+> >
+> > That, to me, looks like the root cause of the problem here -
+> > btrfs_dio_iomap_begin() is not guaranteeing non-blocking atomic IO
+> > semantics for IOCB_NOWAIT IO.
+> >
+> > In the case above, given that the extent lookup only found a 4kB
+> > extent, we know that it doesn't span the entire requested IO range.
+> > We also known that we cannot tell if we'll block on subsequent
+> > mappings of the IO range, and hence no guarantee can be given that
+> > IOCB_NOWAIT IO will not block when it is too late to back out with a
+> > -EAGAIN error.
+> >
+> > Hence this whole set of problems could be avoided if
+> > btrfs_dio_iomap_begin() returns -EAGAIN if it can't map the entire
+> > IO into a single extent without blocking when IOMAP_NOWAIT is set?
+> > That's exactly what XFS does in xfs_direct_iomap_write_begin():
+> >
+> >         /*
+> >          * NOWAIT and OVERWRITE I/O needs to span the entire requested I/O with
+> >          * a single map so that we avoid partial IO failures due to the rest of
+> >          * the I/O range not covered by this map triggering an EAGAIN condition
+> >          * when it is subsequently mapped and aborting the I/O.
+> >          */
+> >         if (flags & (IOMAP_NOWAIT | IOMAP_OVERWRITE_ONLY)) {
+> >                 error = -EAGAIN;
+> >                 if (!imap_spans_range(&imap, offset_fsb, end_fsb))
+> >                         goto out_unlock;
+> >         }
+> >
+> > Basically, I'm thinking that IOMAP_NOWAIT and IOMAP_DIO_PARTIAL
+> > should be exclusive functionality - if you are doing IOMAP_NOWAIT
+> > then the entire IO must succeed without blocking, and if it doesn't
+> > then we return -EAGAIN and the caller retries without IOCB_NOWAIT
+> > set and so then we run with IOMAP_DIO_PARTIAL semantics in a thread
+> > that can actually block....
+>
+> Indeed, I had not considered that, that is simple and effective, plus
+> it can be done exclusively in btrfs code, no need to change iomap.
 
-in asynchronous -> in parallel
+This will work for btrfs, but short buffered reads can still occur on
+gfs2 due to the following conflicting requirements:
 
-> regression test for the problem reported to linux-btrfs list [1].
+* On the one hand, buffered reads and writes are expected to be atomic
+with respect to each other [*].
 
-It's worth mentioning the deadlock only happens starting with kernel 5.17-rc3.
+* On the other hand, to prevent deadlocks, we must allow the
+cluster-wide inode lock to be stolen while faulting in pages. That's
+the lock that provides the atomicity, however.
 
-> 
-> The hang was recreated using the test case and fixed by kernel patch
-> titled
-> 
->   btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
-> 
-> [1] https://lore.kernel.org/linux-btrfs/20220228014340.21309-1-realwakka@gmail.com/
-> 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+Direct I/O isn't affected because it doesn't have this atomicity requirement.
 
-In addition to Shinichiro's comments...
+A non-solution to this dilemma is to lock the entire buffer into
+memory: those buffers can be extremely large, so we would eventually
+run out of memory.
 
-> ---
->  tests/btrfs/262     | 54 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/262.out |  2 ++
->  2 files changed, 56 insertions(+)
->  create mode 100755 tests/btrfs/262
->  create mode 100644 tests/btrfs/262.out
-> 
-> diff --git a/tests/btrfs/262 b/tests/btrfs/262
-> new file mode 100755
-> index 00000000..9be380f9
-> --- /dev/null
-> +++ b/tests/btrfs/262
-> @@ -0,0 +1,54 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2022 YOUR NAME HERE.  All Rights Reserved.
-> +#
-> +# FS QA Test 262
-> +#
-> +# Test the deadlock between qgroup and quota commands
+So we return short reads instead. This only happens rarely, which
+doesn't make debugging any easier. It also doesn't help that the
+read(2) and write(2) manual pages don't document that short reads as
+well as writes must be expected. (The atomicity requirement [*] also
+isn't actually documented there.)
 
-The test description should be a lot more clear.
+[*] https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_09_07
 
-"the deadlock" is vague a gives the wrong idea we only ever had a single
-deadlock related to qgroups. "qgroup and quota commands" is confusing,
-and "qgroup" and "quota" are pretty much synonyms, and it should mention
-which commands.
+> >
+> > .....
+> >
+> > > 11) At iomap_dio_complete() we adjust the iocb->ki_pos from X to X + 4K
+> > >     and return 4K (the amount of io done) to iomap_dio_complete_work();
+> > >
+> > > 12) iomap_dio_complete_work() calls the iocb completion callback,
+> > >     iocb->ki_complete() with a second argument value of 4K (total io
+> > >     done) and the iocb with the adjust ki_pos of X + 4K. This results
+> > >     in completing the read request for io_uring, leaving it with a
+> > >     result of 4K bytes read, and only the first page of the buffer
+> > >     filled in, while the remaining 3 pages, corresponding to the other
+> > >     3 extents, were not filled;
+> > >
+> > > 13) For the application, the result is unexpected because if we ask
+> > >     to read N bytes, it expects to get N bytes read as long as those
+> > >     N bytes don't cross the EOF (i_size).
+> >
+> > Yeah, that's exactly the sort of problem we were having with XFS
+> > with partial DIO completions due to needing multiple iomap iteration
+> > loops to complete a single IO. Hence IOMAP_NOWAIT now triggers the
+> > above range check and aborts before we start...
+>
+> Interesting.
 
-Plus what we want to test is that we can run some qgroup operations in
-parallel without triggering a deadlock, crash, etc.
+Dave, this seems to affect all users of iomap_dio_rw in the same way,
+so would it make sense to move this check there?
 
-Perhaps something like:
+Thanks,
+Andreas
 
-"""
-Test that running qgroup enable, create, destroy and disable commands in
-parallel does not result in a deadlock, a crash or any filesystem
-inconsistency.
-"""
+> > > So fix this by making __iomap_dio_rw() assign true to the boolean variable
+> > > 'wait_for_completion' when we have IOMAP_DIO_PARTIAL set, we did some
+> > > progress for a read and we have not crossed the EOF boundary. Do this even
+> > > if the read has IOCB_NOWAIT set, as it's the only way to avoid providing
+> > > an unexpected result to an application.
+> >
+> > That's highly specific and ultimately will be fragile, IMO. I'd much
+> > prefer that *_iomap_begin_write() implementations simply follow
+> > IOMAP_NOWAIT requirements to ensure that any DIO that needs multiple
+> > mappings if punted to a context that can block...
+>
+> Yes, agreed.
+>
+> Thanks for your feedback Dave, it provided a really good insight into this
+> problem (and others).
+>
+> >
+> > Cheers,
+> >
+> > Dave.
+> > --
+> > Dave Chinner
+> > david@fromorbit.com
+>
 
-
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto qgroup
-
-Can also be added to the "quick" group. It takes 1 second in my slowest vm.
-
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +
-> +_require_scratch
-> +
-> +# Run command that enable/disable quota and create/destroy qgroup asynchronously
-
-With the more clear test description above, this can go away.
-
-> +qgroup_deadlock_test()
-> +{
-> +	_scratch_mkfs > /dev/null 2>&1
-> +	_scratch_mount
-> +	echo "=== qgroup deadlock test ===" >> $seqres.full
-
-There's no point in echoing this message to the .full file, it provides no
-value at all, as testing that is all that this testcase does.
-
-> +
-> +	pids=()
-> +	for ((i = 0; i < 200; i++)); do
-> +		$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT 2>> $seqres.full &
-> +		pids+=($!)
-> +		$BTRFS_UTIL_PROG qgroup create 1/0 $SCRATCH_MNT 2>> $seqres.full &
-> +		pids+=($!)
-> +		$BTRFS_UTIL_PROG qgroup destroy 1/0 $SCRATCH_MNT 2>> $seqres.full &
-> +		pids+=($!)
-> +		$BTRFS_UTIL_PROG quota disable $SCRATCH_MNT 2>> $seqres.full &
-> +		pids+=($!)		
-> +	done
-> +
-> +	for pid in "${pids[@]}"; do
-> +		wait $pid
-> +	done
-
-As pointed before by Shinichiro, a simple 'wait' here is enough, no need to
-keep track of the PIDs.
-
-> +
-> +	_scratch_unmount
-> +	_check_scratch_fs
-
-Not needed, the fstests framework automatically runs 'btrfs check' when a test
-finishes. Doing this explicitly is only necessary when we need to do several
-mount/unmount operations and want to check the fs is fine after each unmount
-and before the next mount.
-
-> +}
-> +
-> +qgroup_deadlock_test
-
-There's no point in putting all the test code in a function, as the function
-is only called once.
-
-Otherwise it looks good, and the test works as advertised, it triggers a
-deadlock on 5.17-rc3+ kernel and passes on a patched kernel.
-
-Thanks for converting the reproducer into a test case.
-
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/262.out b/tests/btrfs/262.out
-> new file mode 100644
-> index 00000000..404badc3
-> --- /dev/null
-> +++ b/tests/btrfs/262.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 262
-> +Silence is golden
-> -- 
-> 2.25.1
-> 
