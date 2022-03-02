@@ -2,48 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4D74CAAC5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 17:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C094CAAC6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 17:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243525AbiCBQuw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 11:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
+        id S243527AbiCBQvI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 11:51:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243527AbiCBQuv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 11:50:51 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCEDCF382
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 08:50:07 -0800 (PST)
+        with ESMTP id S243530AbiCBQvH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 11:51:07 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB20CCA739
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 08:50:23 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 90FF91F37E;
-        Wed,  2 Mar 2022 16:50:06 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7B939218B0;
+        Wed,  2 Mar 2022 16:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646239806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Cyxic+7R8ouNPfGJ2HaOmV2Bvbq4Wfx1Onnf7rnNfd0=;
-        b=VuS2/I6bLsNOb7asHwghnPAwzLe8W1uHm5wszXHmbYZGC9/6U2aNcFxmIlkajEcoIgu0wE
-        KZnDhL7WvkV1/aX/OYTu2883bhuFyc3ZZov9f2HK6TFde4Odzo57phac4+/cFO+nrwrB0i
-        gL7XpXXeDIRN11aaq6r8txV+9RGx+7s=
+        t=1646239822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=crDsiwbz6UoOwR51+Te8QxRNZkcRQe9R/X4QVK6hghE=;
+        b=epEi/pSJF9DoUyu9P50QUaY9EgHWeUPOsDe7rRBeF2R/KAdk0hYsHwjiv4Rze8qhKxADGv
+        mzaxM8kCWxYWJaVw7H+s7eQ3rOGIAjyqibzMVSwTPktZMaxhITsqxHomuc2KGaxMRS6Fzw
+        G1es4KPEQ1nG/GpihYtFJUy/vrbhpGs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6778E13A93;
-        Wed,  2 Mar 2022 16:50:06 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B78C13A93;
+        Wed,  2 Mar 2022 16:50:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id sVkGFz6gH2LdOwAAMHmgww
-        (envelope-from <gniebler@suse.com>); Wed, 02 Mar 2022 16:50:06 +0000
+        id yHBmEE6gH2LdOwAAMHmgww
+        (envelope-from <gniebler@suse.com>); Wed, 02 Mar 2022 16:50:22 +0000
 From:   Gabriel Niebler <gniebler@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, Gabriel Niebler <gniebler@suse.com>
-Subject: [PATCH v3 0/14] btrfs: Introduce macro to iterate over slots
-Date:   Wed,  2 Mar 2022 17:48:15 +0100
-Message-Id: <20220302164829.17524-1-gniebler@suse.com>
+Cc:     dsterba@suse.com, Gabriel Niebler <gniebler@suse.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH v3 01/14] btrfs: Introduce btrfs_for_each_slot iterator macro
+Date:   Wed,  2 Mar 2022 17:48:16 +0100
+Message-Id: <20220302164829.17524-2-gniebler@suse.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220302164829.17524-1-gniebler@suse.com>
+References: <20220302164829.17524-1-gniebler@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,57 +76,92 @@ macro, similar to the existing for_each_X macros found elsewhere in the kernel.
 This also makes the code easier to understand for newcomers by putting a name
 to the encapsulated functionality.
 
-This patchset survived a complete fstest run.
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+---
+ fs/btrfs/ctree.c | 33 +++++++++++++++++++++++++++++++++
+ fs/btrfs/ctree.h | 24 ++++++++++++++++++++++++
+ 2 files changed, 57 insertions(+)
 
-Changes from v2:
- * Rename btrfs_valid_slot to btrfs_get_next_valid_item (Nikolay)
- * Fix comment formatting (David)
- * Remove redundant parentheses and indentation in loop condition (David)
- * Remove redundant iter_ret var and reuse ret instead (Nikolay)
- * Make termination condition more consistent in btrfs_unlink_all_paths
-   (Nikolay)
- * Improved patch organisation by splitting into one patch per function (David)
- * Improve doc comment for btrfs_get_next_valid_item (Gabriel)
- * Remove `out` label and assoc. gotos from id_create_dir (Gabriel)
- * Initialise `ret` in process_all_refs and process_all_new_xattrs (Gabriel)
- * Remove unneeded btrfs_item_key_to_cpu call from loop body in
-   btrfs_read_chunk_tree (Gabriel)
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index a7db3f6f1b7b..d735bd472616 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -2277,6 +2277,39 @@ int btrfs_search_backwards(struct btrfs_root *root, struct btrfs_key *key,
+ 	return ret;
+ }
+ 
++/* Search for a valid slot for the given path.
++ *
++ * @root: The root node of the tree.
++ * @key: Will contain a valid item if found.
++ * @path: The starting point to validate the slot.
++ *
++ * Return 0 if the item is valid, 1 if not found and < 0 if error.
++ */
++int btrfs_get_next_valid_item(struct btrfs_root *root, struct btrfs_key *key,
++			      struct btrfs_path *path)
++{
++	while (1) {
++		int ret;
++		const int slot = path->slots[0];
++		const struct extent_buffer *leaf = path->nodes[0];
++		/* this is where we start walking through the path */
++		if (slot >= btrfs_header_nritems(leaf)) {
++			/*
++			 * if we've reached the last slot in this leaf we need
++			 * to go to the next leaf and reset the path
++			 */
++			ret = btrfs_next_leaf(root, path);
++			if (ret)
++				return ret;
++			continue;
++		}
++		/* store the found, valid item in key */
++		btrfs_item_key_to_cpu(leaf, key, slot);
++		break;
++	}
++	return 0;
++}
++
+ /*
+  * adjust the pointers going up the tree, starting at level
+  * making sure the right key of each node is points to 'key'.
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 947f04789389..98091334b749 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2976,6 +2976,30 @@ int btrfs_next_old_leaf(struct btrfs_root *root, struct btrfs_path *path,
+ int btrfs_search_backwards(struct btrfs_root *root, struct btrfs_key *key,
+ 			   struct btrfs_path *path);
+ 
++int btrfs_get_next_valid_item(struct btrfs_root *root, struct btrfs_key *key,
++			      struct btrfs_path *path);
++
++/* Search in @root for a given @key, and store the slot found in @found_key.
++ *
++ * @root: The root node of the tree.
++ * @key: The key we are looking for.
++ * @found_key: Will hold the found item.
++ * @path: Holds the current slot/leaf.
++ * @iter_ret: Contains the value returned from btrfs_search_slot or
++ *            btrfs_get_next_valid_item, whichever was executed last.
++ *
++ * The iter_ret is an output variable that will contain the return value of
++ * btrfs_search_slot, if it encountered an error, or the value returned from
++ * btrfs_get_next_valid_item, otherwise. That return value can be 0, if a valid
++ * slot was found, 1 if there were no more leaves, and <0 if there was an error.
++ */
++#define btrfs_for_each_slot(root, key, found_key, path, iter_ret)		\
++	for (iter_ret = btrfs_search_slot(NULL, root, key, path, 0, 0);		\
++		iter_ret >= 0 &&						\
++		(iter_ret = btrfs_get_next_valid_item(root, found_key, path)) == 0; \
++		path->slots[0]++						  \
++	)
++
+ static inline int btrfs_next_old_item(struct btrfs_root *root,
+ 				      struct btrfs_path *p, u64 time_seq)
+ {
+-- 
+2.35.1
 
-Changes from v1:
- * Separate xattr changes from the macro introducing code (Johannes)
-
-Changes from RFC:
- * Add documentation to btrfs_for_each_slot macro and btrfs_valid_slot function
-   (David)
- * Add documentation about the ret variable used as a macro argument (David)
- * Match function argument from prototype and implementation (David)
- * Changed ({ }) block to only () in btrfs_for_each_slot macro (David)
- * Add more patches to show the code being reduced by using this approach
-   (Nikolay)
-
-Marcos Paulo de Souza (14):
-  btrfs: Introduce btrfs_for_each_slot iterator macro
-  btrfs: Use btrfs_for_each_slot in find_first_block_group
-  btrfs: Use btrfs_for_each_slot in mark_block_group_to_copy
-  btrfs: Use btrfs_for_each_slot in btrfs_search_dir_index_item
-  btrfs: Use btrfs_for_each_slot in btrfs_real_readdir
-  btrfs: Use btrfs_for_each_slot in did_create_dir
-  btrfs: Use btrfs_for_each_slot in can_rmdir
-  btrfs: Use btrfs_for_each_slot in is_ancestor
-  btrfs: Use btrfs_for_each_slot in process_all_refs
-  btrfs: Use btrfs_for_each_slot in process_all_new_xattrs
-  btrfs: Use btrfs_for_each_slot in process_all_extents
-  btrfs: Use btrfs_for_each_slot in btrfs_unlink_all_paths
-  btrfs: Use btrfs_for_each_slot in btrfs_read_chunk_tree
-  btrfs: Use btrfs_for_each_slot in btrfs_listxattr
-
- fs/btrfs/block-group.c |  26 +-----
- fs/btrfs/ctree.c       |  33 +++++++
- fs/btrfs/ctree.h       |  24 ++++++
- fs/btrfs/dev-replace.c |  41 ++-------
- fs/btrfs/dir-item.c    |  31 ++-----
- fs/btrfs/inode.c       |  35 +++-----
- fs/btrfs/send.c        | 229 ++++++++++++++-----------------------------------
- fs/btrfs/volumes.c     |  26 ++----
- fs/btrfs/xattr.c       |  41 +++------
- 9 files changed, 168 insertions(+), 318 deletions(-)
