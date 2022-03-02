@@ -2,66 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6B74CA635
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 14:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA9A4CA643
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 14:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242317AbiCBNoK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 08:44:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
+        id S239367AbiCBNrz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 08:47:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236210AbiCBNoJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 08:44:09 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EFF2DD6A;
-        Wed,  2 Mar 2022 05:43:25 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 132so1666234pga.5;
-        Wed, 02 Mar 2022 05:43:25 -0800 (PST)
+        with ESMTP id S242351AbiCBNrx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 08:47:53 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66A55C373;
+        Wed,  2 Mar 2022 05:47:09 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id q11so1575271pln.11;
+        Wed, 02 Mar 2022 05:47:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gfhyI8flMOCCCDy4we3a3ZQhGakr/xaZpa4FrJIjjNA=;
-        b=ApCW4f8gx6HXU3KHUiC38X78tl6/6DGhVX3tYAFyjj1TWL0MSLnFoi/Cb3/Cq2K5Zk
-         Rpb2Q1LOrU9UEThsBOktdlJHtuKZFTZ/Rh4ZQKt8pGX5R/6THRZt0FVQJ+zr2wTLq6gF
-         AczDvmrUwqgNHot/RseoGffQzZw3KqQa64Y20+Gthb5YmKh3mB67+dnHlYcvZ26ubMDl
-         c1E5p+Suv9cYPYILQHoqAaUCR9Y2waH77hN22seGSiMvdhbpNOgjPcgJl8uM3rxpjuNj
-         1MqFc3t9RV13CyLMjnMI06xALeBTBa3Ej6r691xyYzrBNlomC4sw9sJcQsxPPUW0n+YI
-         z31w==
+        bh=ghcaWJvo4JoKJIENCblXGhxIXc0BBZcnYPvuqKbVrMA=;
+        b=lXFINKMJtNazsjIJUmWRs+Kh3zaFKODW8vrjY6noZRi1i7QUaYka+dklE0Sf3exOa/
+         SZxbYVI9yIPLLsRvUzhh7NoG+qdEgaxa7u3QmZLG4plfLsH92ADLjRJcP1GdB714IX/v
+         4JI+X4ACMVUgoNZ1lOPlZu4S2l3QxSF5lOqHJtdQCDeLVycyL9DDckAl6xgOmFaWiFa7
+         qauZR2FZ/bJRhR1pa3BLXOhyepHyZcE0VW8VyzEPs6j84iebA/yO8dPk+QnLKvq5Bl6Z
+         D/0bldptz631p6iM/f60t+5J9i16veyL6LpXBCKYemU8ZOAA6lOE0w4CkS8tS6rTBb8n
+         TAfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gfhyI8flMOCCCDy4we3a3ZQhGakr/xaZpa4FrJIjjNA=;
-        b=A3h+m19++sXMqryaKIekfETiIih7LlyY16bbilf2kXliJ5frz/2BGKC/zf+9tKiYY0
-         wkTITbEnXCz/idGzwMsMgSKoBjPE6zibUGhJSJq5HM4BkJ9itkxRHdWBgINmk6xPG4oR
-         ZlyqKcplar4LheV4+FoBOLJc8IDarMn2TS+7kHPJldfdMDtWwZsvDcYWXOuRbOXx3G0A
-         3IRFV4cm5Ef+DCq2Hlv6SlWxryvNmQO0RAKDH4LRFcWwwPDevsEpTBKoGo8yb/yYqT1w
-         wFGLO3Vpk1YJ//ge3a9TSDcQr0x0oJUwsYxMektz+tUker1nWE5Da/pWrYkoU0D3qoKC
-         5vWg==
-X-Gm-Message-State: AOAM533HXzBA07pshbtk2HdeXvoBatFB6jMpQpXqtd+Bbdfh5zpVCMdG
-        wHfPXJwKpM0K0YnpLXBk8II=
-X-Google-Smtp-Source: ABdhPJyzH0SEnQwOB0HTS9g76OoP40m1/YdH27r740Itc33RAF3gtUF9EUkHqYcxoqRa9dvwDxntvg==
-X-Received: by 2002:a65:6751:0:b0:363:43a5:c7e3 with SMTP id c17-20020a656751000000b0036343a5c7e3mr25644579pgu.46.1646228605244;
-        Wed, 02 Mar 2022 05:43:25 -0800 (PST)
+        bh=ghcaWJvo4JoKJIENCblXGhxIXc0BBZcnYPvuqKbVrMA=;
+        b=0DApHV/+pV3IX54kkI8EwJsypozvEyMnXh8lcHvBA5r+hM2Iaj40zeVQ2R1nr4XvSb
+         STtBxwAiMGqS03qHwMggDnacaQl0ALXvW4goo3X0gNjhCufzep9J1ARqFaABZ0I/hwfz
+         Z2/1O0iUPl67nHQm3DUd8Gl+H2I4PkBcHkmbOVH4lIw5Z5Lw8w/gR7WlkdYTxSbEhEi9
+         3JvcwYU+40EvECiQzrL+HvxlVrht4ql0L4jlP07se6+k8VA7A9dQH/cP+lZpG7vgKQX7
+         uhN+M7OVlRIkM9uxOjc1zyNKGWkDRJD/zBClNxQGsqUdbGvDD58mqM3vygOaTcBVfou7
+         HLPA==
+X-Gm-Message-State: AOAM532Kc398zoBZEvx1qIPndylj+W5ldMMzsNvqJQ0OaGPIt3N7vR9W
+        e5R0s71qDJ3rj65IrEX39ZXyvwqgsLsyng==
+X-Google-Smtp-Source: ABdhPJxFOtyN/1C1S2Z2Kt5616vGO7aZ0kkXc2MMA1ZTJ9qfaaBc1fPzDIzqsQg6/fcOUbg5eyi9Sw==
+X-Received: by 2002:a17:902:f682:b0:151:a262:ad4a with SMTP id l2-20020a170902f68200b00151a262ad4amr449833plg.84.1646228829360;
+        Wed, 02 Mar 2022 05:47:09 -0800 (PST)
 Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id q9-20020a056a00150900b004f4735396fesm6867234pfu.191.2022.03.02.05.43.23
+        by smtp.gmail.com with ESMTPSA id n22-20020a056a0007d600b004f3ba7c23e2sm21209937pfu.37.2022.03.02.05.47.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 05:43:24 -0800 (PST)
-Date:   Wed, 2 Mar 2022 13:43:16 +0000
+        Wed, 02 Mar 2022 05:47:08 -0800 (PST)
+Date:   Wed, 2 Mar 2022 13:47:04 +0000
 From:   Sidong Yang <realwakka@gmail.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+        Filipe Manana <fdmanana@kernel.org>,
         "dsterba@suse.cz" <dsterba@suse.cz>
 Subject: Re: [PATCH] btrfs: add test for enable/disable quota and
  create/destroy qgroup repeatedly
-Message-ID: <20220302134316.GA2682@realwakka>
+Message-ID: <20220302134704.GB2682@realwakka>
 References: <20220301151930.1315-1-realwakka@gmail.com>
- <Yh9eoC1FwfNK5kXn@debian9.Home>
+ <20220302044334.ojz2crbcc6eapvex@shindev>
+ <20220302062659.GA1852@realwakka>
+ <20220302082447.qetrvidwqlqkungi@shindev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yh9eoC1FwfNK5kXn@debian9.Home>
+In-Reply-To: <20220302082447.qetrvidwqlqkungi@shindev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,181 +75,74 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 02, 2022 at 12:10:08PM +0000, Filipe Manana wrote:
-
-Hi, Filipe!
-Thanks for review.
-> On Tue, Mar 01, 2022 at 03:19:30PM +0000, Sidong Yang wrote:
-> > Test enabling/disable quota and creating/destroying qgroup repeatedly
-> > in asynchronous and confirm it does not cause kernel hang. This is a
-> 
-> in asynchronous -> in parallel
-
-Sure, Thanks!
-> 
-> > regression test for the problem reported to linux-btrfs list [1].
-> 
-> It's worth mentioning the deadlock only happens starting with kernel 5.17-rc3.
-
-It only happens in 5.17-rc3 version? I didn't know about it. I'll add
-mention about this.
-> 
+On Wed, Mar 02, 2022 at 08:24:48AM +0000, Shinichiro Kawasaki wrote:
+> On Mar 02, 2022 / 06:26, Sidong Yang wrote:
+> > On Wed, Mar 02, 2022 at 04:43:35AM +0000, Shinichiro Kawasaki wrote:
 > > 
-> > The hang was recreated using the test case and fixed by kernel patch
-> > titled
+> > Hi, Shinichiro.
 > > 
-> >   btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
+> > Thanks for reply!
 > > 
-> > [1] https://lore.kernel.org/linux-btrfs/20220228014340.21309-1-realwakka@gmail.com/
+> > > Hi Sidong,
+> > > 
+> > > I tried this patch and observed that it recreates the hang and confirms the fix.
+> > > Thanks. Here's my comments for improvements.
+> > > 
+> > > On Mar 01, 2022 / 15:19, Sidong Yang wrote:
+> > > > Test enabling/disable quota and creating/destroying qgroup repeatedly
+> > > 
+> > > nit: gerund (...ing) and base form are mixed. Base form would be the better to
+> > > be same as the code comment.
 > > 
-> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> > Yeah, 'disable' should be disabling.
+> > > 
+> > > > in asynchronous and confirm it does not cause kernel hang. This is a
+> > > > regression test for the problem reported to linux-btrfs list [1].
+> > > > 
+> > > > The hang was recreated using the test case and fixed by kernel patch
+> > > > titled
+> > > > 
+> > > >   btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
+> > > > 
+> > > > [1] https://lore.kernel.org/linux-btrfs/20220228014340.21309-1-realwakka@gmail.com/
+> > > > 
+> > > > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> > > > ---
 > 
-> In addition to Shinichiro's comments...
+> (snip)
 > 
-> > ---
-> >  tests/btrfs/262     | 54 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/262.out |  2 ++
-> >  2 files changed, 56 insertions(+)
-> >  create mode 100755 tests/btrfs/262
-> >  create mode 100644 tests/btrfs/262.out
+> > > > +	done
+> > > > +
+> > > > +	for pid in "${pids[@]}"; do
+> > > > +		wait $pid
+> > > > +	done
+> > > 
+> > > I think simple "wait" command does what the for loop does.
 > > 
-> > diff --git a/tests/btrfs/262 b/tests/btrfs/262
-> > new file mode 100755
-> > index 00000000..9be380f9
-> > --- /dev/null
-> > +++ b/tests/btrfs/262
-> > @@ -0,0 +1,54 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2022 YOUR NAME HERE.  All Rights Reserved.
-> > +#
-> > +# FS QA Test 262
-> > +#
-> > +# Test the deadlock between qgroup and quota commands
+> > I didn't know that "wait" command with no parameter waits all background
+> > processes to finish. So it seems that we don't need pids it can be
+> > deleted. Thanks.
+> > 
+> > Actually I've been agony about this. Does it needs timeout? When I tried
+> > to command like this "timeout 10s wait", This command couldn't be
+> > executed becase "wait" command is not binary. How can I insert timeout?
 > 
-> The test description should be a lot more clear.
+> I think recent discussion on the list is a good reference [1]. A patch was
+> posted to add timeout to btrfs/255.
 > 
-> "the deadlock" is vague a gives the wrong idea we only ever had a single
-> deadlock related to qgroups. "qgroup and quota commands" is confusing,
-> and "qgroup" and "quota" are pretty much synonyms, and it should mention
-> which commands.
+> More importantly, it was discussed that such timeout of user space program will
+> not help. Eryu pointed out that once "the kernel already deadlocked, and
+> filesystem and/or device can't be used by next test either". IMHO, your new case
+> will not require timeout either with same reasoning.
 > 
-> Plus what we want to test is that we can run some qgroup operations in
-> parallel without triggering a deadlock, crash, etc.
+> [1] https://lore.kernel.org/fstests/20220223171126.GQ12643@twin.jikos.cz/T/#me349d62ff367a0a6a28076bdd5b89263fc8109c0
 > 
-> Perhaps something like:
-> 
-> """
-> Test that running qgroup enable, create, destroy and disable commands in
-> parallel does not result in a deadlock, a crash or any filesystem
-> inconsistency.
-> """
-> 
-Yeah, It was not clear. I found that this test is not only for checking
-deadlock. But it checks that test runs without any problem.
-
-> 
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto qgroup
-> 
-> Can also be added to the "quick" group. It takes 1 second in my slowest vm.
-
-Okay, Thanks!
-> 
-> > +
-> > +# Import common functions.
-> > +. ./common/filter
-> > +
-> > +# real QA test starts here
-> > +
-> > +# Modify as appropriate.
-> > +_supported_fs btrfs
-> > +
-> > +_require_scratch
-> > +
-> > +# Run command that enable/disable quota and create/destroy qgroup asynchronously
-> 
-> With the more clear test description above, this can go away.
-
-Sure!
-> 
-> > +qgroup_deadlock_test()
-> > +{
-> > +	_scratch_mkfs > /dev/null 2>&1
-> > +	_scratch_mount
-> > +	echo "=== qgroup deadlock test ===" >> $seqres.full
-> 
-> There's no point in echoing this message to the .full file, it provides no
-> value at all, as testing that is all that this testcase does.
-
-I agree. This is pointless because it's simple test.
-> 
-> > +
-> > +	pids=()
-> > +	for ((i = 0; i < 200; i++)); do
-> > +		$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT 2>> $seqres.full &
-> > +		pids+=($!)
-> > +		$BTRFS_UTIL_PROG qgroup create 1/0 $SCRATCH_MNT 2>> $seqres.full &
-> > +		pids+=($!)
-> > +		$BTRFS_UTIL_PROG qgroup destroy 1/0 $SCRATCH_MNT 2>> $seqres.full &
-> > +		pids+=($!)
-> > +		$BTRFS_UTIL_PROG quota disable $SCRATCH_MNT 2>> $seqres.full &
-> > +		pids+=($!)		
-> > +	done
-> > +
-> > +	for pid in "${pids[@]}"; do
-> > +		wait $pid
-> > +	done
-> 
-> As pointed before by Shinichiro, a simple 'wait' here is enough, no need to
-> keep track of the PIDs.
-
-Yeah, I don't have to go hard way.
-> 
-> > +
-> > +	_scratch_unmount
-> > +	_check_scratch_fs
-> 
-> Not needed, the fstests framework automatically runs 'btrfs check' when a test
-> finishes. Doing this explicitly is only necessary when we need to do several
-> mount/unmount operations and want to check the fs is fine after each unmount
-> and before the next mount.
-> 
-
-I didn't know about that. I don't need to check manually.
-> > +}
-> > +
-> > +qgroup_deadlock_test
-> 
-> There's no point in putting all the test code in a function, as the function
-> is only called once.
-
-Of course!
-> 
-> Otherwise it looks good, and the test works as advertised, it triggers a
-> deadlock on 5.17-rc3+ kernel and passes on a patched kernel.
-> 
-> Thanks for converting the reproducer into a test case.
-> 
-
-Thanks for detailed review. I'll back soon with v2.
+Thanks for a good example. I understand that there is no help in
+userspace for the kernel deadlocked. In this case, Just "wait" is
+enough.
 
 Thanks,
 Sidong
-> > +
-> > +# success, all done
-> > +echo "Silence is golden"
-> > +status=0
-> > +exit
-> > diff --git a/tests/btrfs/262.out b/tests/btrfs/262.out
-> > new file mode 100644
-> > index 00000000..404badc3
-> > --- /dev/null
-> > +++ b/tests/btrfs/262.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 262
-> > +Silence is golden
-> > -- 
-> > 2.25.1
-> > 
+> -- 
+> Best Regards,
+> Shin'ichiro Kawasaki
