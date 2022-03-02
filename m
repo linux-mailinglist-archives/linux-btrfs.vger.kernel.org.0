@@ -2,151 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B514C97ED
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Mar 2022 22:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBADA4C999A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 01:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbiCAVwx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Mar 2022 16:52:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
+        id S238716AbiCBABl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Mar 2022 19:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbiCAVws (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Mar 2022 16:52:48 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C474B88B37
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Mar 2022 13:52:05 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a8so34238012ejc.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Mar 2022 13:52:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mariadb.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i6Yp2lR+BpwAyJfH9Aw/L0Iar9s0NkRJeOkJoTWGXkA=;
-        b=Efhmp5nxumcx6cbUAab+E/zCp09YRNR05gs7oZo2e438QXfzSvX6V8oM1DyVolJ6jn
-         3/AsLmumBY3gKoTejgBNuRye05L/+h149AkRi0GbtVl76hoWPvubBlzyxFNOQbH3hjSM
-         iF7JEyqPlNVD5lS7UezB9Pih829gXHSqT+sK5YdQ9zmiAqiHbSVieE03gaUaCBuymBQC
-         OxQnXSQRJkCnJM11Zg0ZV8mAUuJFOOdzlDtIQZdXGQElRXQ18TM7JrcDzOrQUscHlN2d
-         ijQQiX+ukMHTRQClWd+NmvG/Cr/A9MR8i78434cfU31OmUhNwZEtU2KvZOONJNxT/YkL
-         7Lug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i6Yp2lR+BpwAyJfH9Aw/L0Iar9s0NkRJeOkJoTWGXkA=;
-        b=xo1ZlW+4DFdbVUnNnOIdtedXM2TjrGtb4TkfBIbPVcFbOCj49ui10tgs3KjcTS7cXZ
-         DOJIiu57F4KPpFiO6VNMzHzk5IPua1VkgLrSyayzduzA5+g3tG6QQ0w4GyGj4YggD/Xr
-         7qBKCaPKPDfWjzkcuGlqzSHwPtMn4Krx4waGJe6L4UgZ1bbzP7I77eVKFbidS6RcNrn6
-         GjwyeMnvK3Niym7V9irA7j3hU1Xce8/ZVaJvYAyeshuTq+68NnKes9ayb0+WACNaps1T
-         4M7wAFVd8/cDKRlEJ+CRhfsalMuJ/KOpn8EaycleAWPekHkn+BaJHeYE31ki7+Zy+hxk
-         Zhtw==
-X-Gm-Message-State: AOAM531ogXoS+UBVXVwtKVvm3ZB5x1FTHAi2+F6I5z99Scc94VZx8qC7
-        x9pkYKm0BC87V8PpMl4ZwuufKv8CGUz0qX+/sw5Ey9OQuEA+UA==
-X-Google-Smtp-Source: ABdhPJxLDGRSYtAJlyeGdiSUWmTbpf401vQ1U+kE736PaDarkzMPKOOvLF8ygmNe8k3yzB7YDO2vWho8YVJTeUBMp7k=
-X-Received: by 2002:a17:906:37cf:b0:6ce:6321:5ecb with SMTP id
- o15-20020a17090637cf00b006ce63215ecbmr20897106ejc.385.1646171524297; Tue, 01
- Mar 2022 13:52:04 -0800 (PST)
+        with ESMTP id S238717AbiCBABj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Mar 2022 19:01:39 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925E18EB46
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Mar 2022 16:00:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1646179247;
+        bh=ocClqD5ZNZG6pqIYNX0bS1w+RwbO01YSeY1JEuQlIPU=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=MtuBDCGpvYiFCRJzDDwQJuJzAjTP4adNeAVUqeaxBp+5J2OF+edpQqSbF7SGoiRK1
+         eEi4CpfOHj+sYQA2fITDjfNxLH5VYYApLPSsOeCbopqyu3Oc7Ey/PlBs4D2C5DuTKe
+         t0IhJCiPRCjyEzc/QViYNEbgxYL8hp8wIUCQPaEA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYNNo-1nkfBE3Y02-00VRVd; Wed, 02
+ Mar 2022 01:00:47 +0100
+Message-ID: <2cfc789e-2cdc-0b63-ed65-997e0084f534@gmx.com>
+Date:   Wed, 2 Mar 2022 08:00:42 +0800
 MIME-Version: 1.0
-References: <CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com>
- <CABVffEO3DZTtTNdjkwTegxNPTHbeM-PBeKk5B_dFXdsTvL2wFg@mail.gmail.com>
- <YhTMBFrZeEvROh0C@debian9.Home> <CABVffENr6xfB=ujMhMEVywbuzo8kYTSVzym1ctCbZOPipVCpHg@mail.gmail.com>
- <CAL3q7H5mSV69ambZy_uCnTMOW7U0n_fU1DtVNA-FYwDdHVrp9w@mail.gmail.com> <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H4gwg+9ACTZV-BF_kr6QQ6-AFFtufezo2KYrVORC81QhQ@mail.gmail.com>
-From:   Daniel Black <daniel@mariadb.org>
-Date:   Wed, 2 Mar 2022 08:51:53 +1100
-Message-ID: <CABVffEOWjSg+8pqzALuLt6mMviA0y7XRwsdJyv9_DodWKQFpqQ@mail.gmail.com>
-Subject: Re: Fwd: btrfs / io-uring corrupting reads
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     io-uring@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: Seed device is broken, again.
+Content-Language: en-US
+To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+References: <20220225114729.GE12643@twin.jikos.cz>
+ <56a6fe34-7556-c6c3-68da-f3ada22bd5ba@gmx.com>
+ <YhkrfyzmCgOGG+5n@relinquished.localdomain>
+ <f4525052-8938-42f9-543d-c333200353dd@gmx.com>
+ <43aea7a1-7b4b-8285-020b-7747a29dc9a6@oracle.com>
+ <00f162f7-774c-b7d4-9d1f-e04cc89b2aee@gmx.com>
+ <508772bc-237a-552b-5b63-80827a5b268a@oracle.com>
+ <4661c891-b15e-3a8f-6b98-f298e104262e@gmx.com>
+ <20220228184050.GJ12643@twin.jikos.cz>
+ <7feddd5a-856c-a525-a05c-fd682574aa49@gmx.com>
+ <20220301170930.GR12643@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220301170930.GR12643@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:R1KqrCF+rJNcfMJ4OZPCw9F5n3k9AkgcRP0WC2dQasceWM/4qwE
+ vNdbKq69Vldg26GKWo0HNWdq7pMbxPqrfUGQ6fhh1+HmN8LqtH3JXefCjVTOd06i4804WNw
+ ysk9B458DF0STXtUwHtEmgUwvPNk2Uqi3MHqD4o22thyr75cMUWNXVRj2qC0ZvwP/asokyw
+ VyN96JeMife8G5t7DjuWg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yFstsIlCLfs=:mYq6ObyjmUFrloTpoTsZr9
+ 5cd7dwMDUC1KLrTN5BuN9ydIynop5yi6nH7HdAs2Pm2UNleNHjpOD/xBpF2G6lQnDWOzzsBXe
+ SmASfVUEplYzdQyIIt/rJwVxWafxKvn1RT7aB9gshZwOA7GLqC9uLZE+XonHsk/Qidu04NQoT
+ dUko5xa7CkK76QkVdUhgYYIxLD0AN+QwBoXFhPVmQv4hz6DSDwuRM3+hFLZMSqPgoA3/0BblK
+ NFJgo0TAsgtLK0Ej4YNXox5cSw1kKXvQ0qr1pqza3vXF60HKDM2nZhAy862RnN36Zwl9yBZCD
+ gL5+qi+UH9cLQqHvlwSlFSTDTEsdKlk3Wa7PMNJkg/IEAmFFPzzIOIL90K9RM1e6hwkxfzNd8
+ OaMvQTjpsBIJ8TNdnXVXC1bXEkKtFFx0D1sZwAsX+R6d8C3u20I+kUehu4OsptwU5wbXUhvt7
+ lJtShb6qIcMYsORqoVx0m3WxIo3mqO00bs+ymiQ7JafVXnq03RIb4zD16aNmjQRs3YI1lv2ny
+ Un8JzHO3vVFSWARylPOiYCF4+nRFev8o56jh0PtMoAYSRsNxIjJKOyM6D7TwholyidkuhPGSt
+ PWXKoeDC1lXVBuWykg5xte0pfMTk6yLzeTJvjeYXFF6cqZDYyqIELnGU6lBo87kMYqm9rSS8b
+ 8BtnUHJ2UPjDyVTpuL1HkW8yE2R/5bmrmTPGyQgQKT7l4JqlCrnBiE2bj7Q+dPkk7zCFHkcLU
+ l5hmV4hX0GH44ZTqrCe63YOMjmZkFWV8cyWXKXL9jeWqsiZO5DnaqtGTIUeHfjzoJEBxAbuE7
+ K5apbMjaysbjJp/Uvq7G0XKZVfUKDEixFVXOntruAffFbJU4Y7i8uEeIw+EluivNShf869s0p
+ B2o1SgFBLQsXlwE+XmnBuW3+fjH3JV+vSY+yw4LUNWmsqd33FXFXjZFaPiH8cTwxx//FTg8Gi
+ mBv0wHIB/AgJPd7r9paJVYlUmMCm2hKuhKoVpfXnDtC7FMf/zzkcevxCSasgO/x4B+jaXhNJz
+ IWJF1Lmh3UqnEoPKs4Ao33jmahunmmisqA4OS+kpH8qR6oXnjsm6QhwtfbrPQcTu+4i3HegIQ
+ ICGAJhTuZcOJBo=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Filipe,
 
-DId you find anything? This is starting to be noticed by our mutual users.
 
-https://jira.mariadb.org/browse/MDEV-27900
-https://mariadb.zulipchat.com/#narrow/stream/118759-general/topic/Corrupt.20database.20page.20when.20updating.20from.2010.2E5
+On 2022/3/2 01:09, David Sterba wrote:
+> On Tue, Mar 01, 2022 at 08:13:28AM +0800, Qu Wenruo wrote:
+>>
+>>>
+>>> There was a discussion some time ago if the log replay should happen o=
+n
+>>> a read-only mount, or any potential repair action that could happen
+>>> regardless of the ro/rw mount status. The conclusion was that it could
+>>> happen, and guaranteeing no writes to the block device should be done
+>>> externally eg. by blockdev --setro. But I think we opted not to do any
+>>> writes anyway for btrfs.
+>>
+>> My main concern is still there, we change RO to RW without any remount.
+>
+> We also do emergency remount from RO to RW, so I take it as that
+> changing the status is partiall in the hands of filesystem, not
+> violating APIs and such.
+>
+>> It's weird from the beginning, but we just accept that.
+>>
+>> If we have chance to rethink this, would we still take the same path?
+>> Other than making seed device into user space tool like mkfs?
+>
+> I'm not sure it would work the same way as now, the seeding device can
+> be mounted several times in parallel as the UUID is generated at each
+> mount, then added the writeable device, then thrown away. Any detour
+> through userspace make it more complicated, but I haven't thought that
+> through. We could add it no top of the on-line seeding as another
+> usecase but if current users are fine with how it works now I don't
+> think we need to spend time on implementing it.
 
-On Tue, Feb 22, 2022 at 11:55 PM Filipe Manana <fdmanana@kernel.org> wrote:
->
-> On Tue, Feb 22, 2022 at 12:46 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> >
-> > On Tue, Feb 22, 2022 at 12:22 PM Daniel Black <daniel@mariadb.org> wrote:
-> > >
-> > > On Tue, Feb 22, 2022 at 10:42 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> > >
-> > > > I gave it a try, but it fails setting up io_uring:
-> > > >
-> > > > 2022-02-22 11:27:13 0 [Note] mysqld: O_TMPFILE is not supported on /tmp (disabling future attempts)
-> > > > 2022-02-22 11:27:13 0 [Warning] mysqld: io_uring_queue_init() failed with errno 1
-> > > > 2022-02-22 11:27:13 0 [Warning] InnoDB: liburing disabled: falling back to innodb_use_native_aio=OFF
-> > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Initializing buffer pool, total size = 134217728, chunk size = 134217728
-> > > > 2022-02-22 11:27:13 0 [Note] InnoDB: Completed initialization of buffer pool
-> > > >
-> > > > So that's why it doesn't fail here, as it fallbacks to no aio mode.
-> > >
-> > > error 1 is EPERM. Seems it needs --privileged on the container startup
-> > > as a podman argument (before the image name). Sorry I missed that
-> > >
-> > > > Any idea why it's failing to setup io_uring?
-> > > >
-> > > > I have the liburing2 and liburing-dev packages installed on debian, and
-> > > > tried with a 5.17-rc4 kernel.
-> > >
-> > > Taking https://packages.debian.org/bookworm/mariadb-server-core-10.6 package:
-> > >
-> > > mariadb-install-db --no-defaults --datadir=/empty/btrfs/path
-> > > --innodb-use-native-aio=0
-> > >
-> > > mariadbd --no-defaults --datadir=/empty/btrfs/path --innodb-use-native-aio=1
-> > >
-> > > should achieve the same thing.
-> >
-> > Sorry, I have no experience with mariadb and podman. How am I supposed
-> > to run that?
-> > Is that supposed to run inside the container, on the host? Do I need
-> > to change the podman command lines?
-> >
-> > What I did before was:
-> >
-> > DEV=/dev/sdh
-> > MNT=/mnt/sdh
-> >
-> > mkfs.btrfs -f $DEV
-> > mount $DEV $MNT
-> >
-> > mkdir $MNT/noaio
-> > chown fdmanana: $MNT/noaio
-> >
-> > podman run --name mdbinit --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
-> > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
-> > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
-> > --innodb_use_native_aio=0
-> >
-> >
-> > Then in another shell:
-> >
-> > podman kill --all
-> >
-> > podman run --rm -v $MNT/noaio/:/var/lib/mysql:Z -e
-> > MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
-> > quay.io/danielgblack/mariadb-test:10.6-impish-sysbench
-> > --innodb_use_native_aio=1
-> >
-> >
-> > What should I change or add in there?
->
-> Ok, just passing  --privileged to both podman commands triggered the
-> bug as in your report.
-> I'll see if I can figure out what's causing the read corruption.
->
->
-> >
-> > Thanks.
+Then let me try that.
+
+At least to me, using seed device to create a new RW fs really looks
+like a perfect match to mkfs.btrfs.
+
+We already have things like mkfs.btrfs -R to populate the fs.
+Using seed device would be more suitable to me.
+
+Thanks,
+Qu
