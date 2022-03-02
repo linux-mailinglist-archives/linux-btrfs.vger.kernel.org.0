@@ -2,346 +2,548 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F304A4CB139
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 22:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D964CB258
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 23:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244945AbiCBV0M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 16:26:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
+        id S230046AbiCBWcv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 17:32:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236363AbiCBV0L (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 16:26:11 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EA9BDE6E
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 13:25:27 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id x3so2578055qvd.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Mar 2022 13:25:27 -0800 (PST)
+        with ESMTP id S229480AbiCBWcu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 17:32:50 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF16BEAC88;
+        Wed,  2 Mar 2022 14:32:04 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id w4so2599794ilj.5;
+        Wed, 02 Mar 2022 14:32:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eISF9nDqs3qbzeKlyXXXAHaARKdcDHvFYNdlTLofLnk=;
-        b=3fmyefxkBvIk9bZfxeX6/SbdCUKz/sXZZmBJ2Zsul29zkmcDt1wSsbGBXg37EGwHVp
-         zLgVzg2FcR1U/bGWRmHO8sVv0A4ZTxkAdObvoUB/ysPZEeb0hbMtg2WYlFkLxxDsenu3
-         Foi5z3XcnDQ9CHBRdRQ0qXL6Xrb3YYlrOSS6rpOavP4mDCprpDi1kL7w+3uPD4KzyHOJ
-         pVTy91ExT9w93VuKTZQrjsezg6XvKq/QSR6bY5GfD+rZ1uzv1z/GW4pYfqI5eP7cFWgD
-         1kYoweAAUJvVyHJEaSob11iTFktrq3y/Bmr/qt8n3/3cKTpXVc8yZYSkXaCk4IQHWhCR
-         2bwQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nmJejdWvMlfHV0/TEcjlNUxgoZEYpyxPpXEarJQTR8c=;
+        b=M4zqRjbii6ZJXHvok5ZgpDwvtZRJ1+ocPW/4kdz36YjohGpHrKcHRr92b1KlGogPHR
+         T0L5i4RppfGPYTxUWJGkMmtxNE4XKyGnFRU3c5fdV2edcXV77wzfR4gFk1WM+KvGCuAe
+         ahux6K7tSZIjY0w2k0kK7MKo1t38YogJjIVYKRoeuSlVhEJp6Dsp9/tzkujFaMyC3AQE
+         MF1m/CXt5QdRGR/bLdoJiDKjlJkJGeQB80W3McvLQu/Sn92UapZaTJgReVOSshSwF7FN
+         /7EiKb8vAqlk6Sx5o9/wmzEDT5rWFAzt1qms4w1n2ZacINeE7K2TCKfsJiy/Cmzguj7b
+         c53Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eISF9nDqs3qbzeKlyXXXAHaARKdcDHvFYNdlTLofLnk=;
-        b=jLKJPCLLYKMdVjoJ0nuXQ/CaV3cV78ZrY7oGQ9wyknsqRpNT1WEiAwdRTxj3RE2GQW
-         ty2JpPihzDlc9UIKkkNYKiRbDej7Y57zKhqfhsa+dTmYrFdN/qCTkmaTfGkBX+d1hiB8
-         anHcOY1UT3jz0VYOXkL6G44mKEVAcEqxFh62kJ3fF+xc2sWh0pi4s9kL9xNXBxRZxvvo
-         LF9+KJNoixfOzZMLoR5vuSZRPPKG19rzxxQg4gK1w+LtHyHoH1/ePsvoqxH0tYVzRBbp
-         FkntOwGcR3wHXjHlU95MAdj/bJvM/1A/u6W9COfInXtzP44jjIDX2ijU5ySUydYKQD2p
-         7zyA==
-X-Gm-Message-State: AOAM530nzH5icFdCn3tH5URehCeccSLqYWwX8tsB6e5tkCNDK8tFlojW
-        eF5qTyLApgUKDwN1pREqKXTeT5br6qGCssJN
-X-Google-Smtp-Source: ABdhPJzp39SiJ0oiSfwFpJfgbm6VckSivMwdF3cJzxOK4IawqfDTujazqNqiyaLJjBm6WZw5NSLxng==
-X-Received: by 2002:ad4:41cc:0:b0:432:849c:7ff9 with SMTP id a12-20020ad441cc000000b00432849c7ff9mr22312080qvq.127.1646256326385;
-        Wed, 02 Mar 2022 13:25:26 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n7-20020a37bd07000000b0064934ed3004sm91289qkf.132.2022.03.02.13.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 13:25:26 -0800 (PST)
-Date:   Wed, 2 Mar 2022 16:25:24 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: fallback to blocking mode when doing async dio
- over multiple extents
-Message-ID: <Yh/gxDreUFQayHaa@localhost.localdomain>
-References: <39c96b5608ed99b7d666d4d159f8d135e86b9606.1646219178.git.fdmanana@suse.com>
- <7b0dc4db2bc0feed18d341191c815c3a31dee63b.1646221649.git.fdmanana@suse.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nmJejdWvMlfHV0/TEcjlNUxgoZEYpyxPpXEarJQTR8c=;
+        b=Gx20NWXVSuXPWF9sknaI80LpCi0P2yw4BVEsdQ8NePCeo3TULqnkPpTreZP7pltp3u
+         n8RwWq5u4yYa7CK0uuJRZWWFTswKUHsHZTA2LN5F5HyYkL/MzYiSMTQxA17GKd5Io9sg
+         qTqmRuvpO2Ah0tY2rpTP9O7HFZJw0gafp1no5xaEwTbaeeIXSpDHc9oBTFpSZl55eCav
+         5uDwXZNZGKogjxDKa4kfxaibEnrO1UPLXRe7taSAk+1nT3nkaFAaUSDlUHVrqBOADkuM
+         idmS56rKYjJWK4RkDw0U+/cEC5ny5YR0kf5rTjAr26oryvuaaGQqE/vgTyI4GBEk8CTz
+         WFZw==
+X-Gm-Message-State: AOAM530MSNr8A89K2nGZNcEVX4OhibmLkV4XFJoxDbV10SG6MkVN9H9S
+        UUIBYFVTm9UjHuMyOy+OHTiWho0L3ucBRtC7hzU=
+X-Google-Smtp-Source: ABdhPJzse1i1KrMX1q/rQsFU5IBYGGNZuGuPEjBSa1R+ak2jnk/vT5faNfc+TqxmFq5gjPHK/N+VODQgOosflug8Ckg=
+X-Received: by 2002:a05:6e02:1ba5:b0:2c2:b1a8:efcf with SMTP id
+ n5-20020a056e021ba500b002c2b1a8efcfmr24840432ili.20.1646260323947; Wed, 02
+ Mar 2022 14:32:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7b0dc4db2bc0feed18d341191c815c3a31dee63b.1646221649.git.fdmanana@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20211109013058.22224-1-nickrterrell@gmail.com>
+ <CA+icZUX0t1TzLm_XFEG50pZi_u901TcXP4CZspk6VRUw26vYNQ@mail.gmail.com> <EBEC67C0-1CB9-4B24-A114-42F52071F04B@fb.com>
+In-Reply-To: <EBEC67C0-1CB9-4B24-A114-42F52071F04B@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 2 Mar 2022 23:31:27 +0100
+Message-ID: <CA+icZUXsjZyajW=pusRxhMYcLm3MgMZg_aHpkc_QFbHAeLzoVg@mail.gmail.com>
+Subject: Re: [GIT PULL] zstd changes for v5.16
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     Nick Terrell <nickrterrell@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "squashfs-devel@lists.sourceforge.net" 
+        <squashfs-devel@lists.sourceforge.net>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        David Sterba <dsterba@suse.cz>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Felix Handte <felixh@fb.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Paul Jones <paul@pauljones.id.au>,
+        Tom Seewald <tseewald@gmail.com>,
+        Jean-Denis Girard <jd.girard@sysnux.pf>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 02, 2022 at 11:48:39AM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Some users recently reported that MariaDB was getting a read corruption
-> when using io_uring on top of btrfs. This started to happen in 5.16,
-> after commit 51bd9563b6783d ("btrfs: fix deadlock due to page faults
-> during direct IO reads and writes"). That changed btrfs to use the new
-> iomap flag IOMAP_DIO_PARTIAL and to disable page faults before calling
-> iomap_dio_rw(). This was necessary to fix deadlocks when the iovector
-> corresponds to a memory mapped file region. That type of scenario is
-> exercised by test case generic/647 from fstests.
-> 
-> For this MariaDB scenario, we attempt to read 16K from file offset X
-> using IOCB_NOWAIT and io_uring. In that range we have 4 extents, each
-> with a size of 4K, and what happens is the following:
-> 
-> 1) btrfs_direct_read() disables page faults and calls iomap_dio_rw();
-> 
-> 2) iomap creates a struct iomap_dio object, its reference count is
->    initialized to 1 and its ->size field is initialized to 0;
-> 
-> 3) iomap calls btrfs_dio_iomap_begin() with file offset X, which finds
->    the first 4K extent, and setups an iomap for this extent consisting
->    of a single page;
-> 
-> 4) At iomap_dio_bio_iter(), we are able to access the first page of the
->    buffer (struct iov_iter) with bio_iov_iter_get_pages() without
->    triggering a page fault;
-> 
-> 5) iomap submits a bio for this 4K extent
->    (iomap_dio_submit_bio() -> btrfs_submit_direct()) and increments
->    the refcount on the struct iomap_dio object to 2; The ->size field
->    of the struct iomap_dio object is incremented to 4K;
-> 
-> 6) iomap calls btrfs_iomap_begin() again, this time with a file
->    offset of X + 4K. There we setup an iomap for the next extent
->    that also has a size of 4K;
-> 
-> 7) Then at iomap_dio_bio_iter() we call bio_iov_iter_get_pages(),
->    which tries to access the next page (2nd page) of the buffer.
->    This triggers a page fault and returns -EFAULT;
-> 
-> 8) At __iomap_dio_rw() we see the -EFAULT, but we reset the error
->    to 0 because we passed the flag IOMAP_DIO_PARTIAL to iomap and
->    the struct iomap_dio object has a ->size value of 4K (we submitted
->    a bio for an extent already). The 'wait_for_completion' variable
->    is not set to true, because our iocb has IOCB_NOWAIT set;
-> 
-> 9) At the bottom of __iomap_dio_rw(), we decrement the reference count
->    of the struct iomap_dio object from 2 to 1. Because we were not
->    the only ones holding a reference on it and 'wait_for_completion' is
->    set to false, -EIOCBQUEUED is returned to btrfs_direct_read(), which
->    just returns it up the callchain, up to io_uring;
-> 
-> 10) The bio submitted for the first extent (step 5) completes and its
->     bio endio function, iomap_dio_bio_end_io(), decrements the last
->     reference on the struct iomap_dio object, resulting in calling
->     iomap_dio_complete_work() -> iomap_dio_complete().
-> 
-> 11) At iomap_dio_complete() we adjust the iocb->ki_pos from X to X + 4K
->     and return 4K (the amount of io done) to iomap_dio_complete_work();
-> 
-> 12) iomap_dio_complete_work() calls the iocb completion callback,
->     iocb->ki_complete() with a second argument value of 4K (total io
->     done) and the iocb with the adjust ki_pos of X + 4K. This results
->     in completing the read request for io_uring, leaving it with a
->     result of 4K bytes read, and only the first page of the buffer
->     filled in, while the remaining 3 pages, corresponding to the other
->     3 extents, were not filled;
-> 
-> 13) For the application, the result is unexpected because if we ask
->     to read N bytes, it expects to get N bytes read as long as those
->     N bytes don't cross the EOF (i_size).
-> 
-> MariaDB reports this as an error, as it's not expecting a short read,
-> since it knows it's asking for read operations fully within the i_size
-> boundary. This is typical in many applications, but it may also be
-> questionable if they should react to such short reads by issuing more
-> read calls to get the remaining data. Nevertheless, the short read
-> happened due to a change in btrfs regarding how it deals with page
-> faults while in the middle of a read operation, and there's no reason
-> why btrfs can't have the previous behaviour of returning the whole data
-> that was requested by the application.
-> 
-> The problem can also be triggered with the following simple program:
-> 
->   /* Get O_DIRECT */
->   #ifndef _GNU_SOURCE
->   #define _GNU_SOURCE
->   #endif
-> 
->   #include <stdio.h>
->   #include <stdlib.h>
->   #include <unistd.h>
->   #include <fcntl.h>
->   #include <errno.h>
->   #include <string.h>
->   #include <liburing.h>
-> 
->   int main(int argc, char *argv[])
->   {
->       char *foo_path;
->       struct io_uring ring;
->       struct io_uring_sqe *sqe;
->       struct io_uring_cqe *cqe;
->       struct iovec iovec;
->       int fd;
->       long pagesize;
->       void *write_buf;
->       void *read_buf;
->       ssize_t ret;
->       int i;
-> 
->       if (argc != 2) {
->           fprintf(stderr, "Use: %s <directory>\n", argv[0]);
->           return 1;
->       }
-> 
->       foo_path = malloc(strlen(argv[1]) + 5);
->       if (!foo_path) {
->           fprintf(stderr, "Failed to allocate memory for file path\n");
->           return 1;
->       }
->       strcpy(foo_path, argv[1]);
->       strcat(foo_path, "/foo");
-> 
->       /*
->        * Create file foo with 2 extents, each with a size matching
->        * the page size. Then allocate a buffer to read both extents
->        * with io_uring, using O_DIRECT and IOCB_NOWAIT. Before doing
->        * the read with io_uring, access the first page of the buffer
->        * to fault it in, so that during the read we only trigger a
->        * page fault when accessing the second page of the buffer.
->        */
->        fd = open(foo_path, O_CREAT | O_TRUNC | O_WRONLY |
->                 O_DIRECT, 0666);
->        if (fd == -1) {
->            fprintf(stderr,
->                    "Failed to create file 'foo': %s (errno %d)",
->                    strerror(errno), errno);
->            return 1;
->        }
-> 
->        pagesize = sysconf(_SC_PAGE_SIZE);
->        ret = posix_memalign(&write_buf, pagesize, 2 * pagesize);
->        if (ret) {
->            fprintf(stderr, "Failed to allocate write buffer\n");
->            return 1;
->        }
-> 
->        memset(write_buf, 0xab, pagesize);
->        memset(write_buf + pagesize, 0xcd, pagesize);
-> 
->        /* Create 2 extents, each with a size matching page size. */
->        for (i = 0; i < 2; i++) {
->            ret = pwrite(fd, write_buf + i * pagesize, pagesize,
->                         i * pagesize);
->            if (ret != pagesize) {
->                fprintf(stderr,
->                      "Failed to write to file, ret = %ld errno %d (%s)\n",
->                       ret, errno, strerror(errno));
->                return 1;
->            }
->            ret = fsync(fd);
->            if (ret != 0) {
->                fprintf(stderr, "Failed to fsync file\n");
->                return 1;
->            }
->        }
-> 
->        close(fd);
->        fd = open(foo_path, O_RDONLY | O_DIRECT);
->        if (fd == -1) {
->            fprintf(stderr,
->                    "Failed to open file 'foo': %s (errno %d)",
->                    strerror(errno), errno);
->            return 1;
->        }
-> 
->        ret = posix_memalign(&read_buf, pagesize, 2 * pagesize);
->        if (ret) {
->            fprintf(stderr, "Failed to allocate read buffer\n");
->            return 1;
->        }
-> 
->        /*
->         * Fault in only the first page of the read buffer.
->         * We want to trigger a page fault for the 2nd page of the
->         * read buffer during the read operation with io_uring
->         * (O_DIRECT and IOCB_NOWAIT).
->         */
->        memset(read_buf, 0, 1);
-> 
->        ret = io_uring_queue_init(1, &ring, 0);
->        if (ret != 0) {
->            fprintf(stderr, "Failed to create io_uring queue\n");
->            return 1;
->        }
-> 
->        sqe = io_uring_get_sqe(&ring);
->        if (!sqe) {
->            fprintf(stderr, "Failed to get io_uring sqe\n");
->            return 1;
->        }
-> 
->        iovec.iov_base = read_buf;
->        iovec.iov_len = 2 * pagesize;
->        io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
-> 
->        ret = io_uring_submit_and_wait(&ring, 1);
->        if (ret != 1) {
->            fprintf(stderr,
->                    "Failed at io_uring_submit_and_wait()\n");
->            return 1;
->        }
-> 
->        ret = io_uring_wait_cqe(&ring, &cqe);
->        if (ret < 0) {
->            fprintf(stderr, "Failed at io_uring_wait_cqe()\n");
->            return 1;
->        }
-> 
->        printf("io_uring read result for file foo:\n\n");
->        printf("  cqe->res == %d (expected %d)\n", cqe->res, 2 * pagesize);
->        printf("  memcmp(read_buf, write_buf) == %d (expected 0)\n",
->               memcmp(read_buf, write_buf, 2 * pagesize));
-> 
->        io_uring_cqe_seen(&ring, cqe);
->        io_uring_queue_exit(&ring);
-> 
->        return 0;
->   }
-> 
-> When running it on an unpatched kernel:
-> 
->   $ gcc io_uring_test.c -luring
->   $ mkfs.btrfs -f /dev/sda
->   $ mount /dev/sda /mnt/sda
->   $ ./a.out /mnt/sda
->   io_uring read result for file foo:
-> 
->     cqe->res == 4096 (expected 8192)
->     memcmp(read_buf, write_buf) == -205 (expected 0)
-> 
-> After this patch, the read always returns 8192 bytes, with the buffer
-> filled with the correct data. Although that reproducer always triggers
-> the bug in my test vms, it's possible that it will not be so reliable
-> on other environments, as that can happen if the bio for the first
-> extent completes and decrements the reference on the struct iomap_dio
-> object before we do the atomic_dec_and_test() on the reference at
-> __iomap_dio_rw().
-> 
-> Fix this in btrfs by having btrfs_dio_iomap_begin() return -EAGAIN
-> whenever we try to satisfy a non blocking IO request (IOMAP_NOWAIT flag
-> set) over a range that spans multiple extents (or a mix of extents and
-> holes). This avoids returning success to the caller when we only did
-> partial IO, which is not optimal for writes and for reads it's actually
-> incorrect, as the caller doesn't expect to get less bytes read than it has
-> requested (unless EOF is crossed), as previously mentioned. This is also
-> the type of behaviour that xfs follows (xfs_direct_write_iomap_begin()),
-> even though it doesn't use IOMAP_DIO_PARTIAL.
-> 
-> A test case for fstests will follow soon.
-> 
-> Link: https://lore.kernel.org/linux-btrfs/CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com/
-> Link: https://lore.kernel.org/linux-btrfs/CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com/
-> CC: stable@vger.kernel.org # 5.16+
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Tue, Mar 1, 2022 at 8:10 PM Nick Terrell <terrelln@fb.com> wrote:
+>
+>
+>
+> > On Feb 20, 2022, at 1:45 AM, Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Tue, Nov 9, 2021 at 2:24 AM Nick Terrell <nickrterrell@gmail.com> wrote:
+> >>
+> >> From: Nick Terrell <terrelln@fb.com>
+> >>
+> >> Hi Linus,
+> >>
+> >> I am sending you a pull request to add myself as the maintainer of zstd and
+> >> update the zstd version in the kernel, which is now 4 years out of date,
+> >> to the latest zstd release. This includes bug fixes, much more extensive fuzzing,
+> >> and performance improvements. And generates the kernel zstd automatically
+> >> from upstream zstd, so it is easier to keep the zstd verison up to date, and we
+> >> don't fall so far out of date again.
+> >>
+> >> Thanks,
+> >> Nick Terrell
+> >>
+> >> The following changes since commit d2f38a3c6507b2520101f9a3807ed98f1bdc545a:
+> >>
+> >>  Merge tag 'backlight-next-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight (2021-11-08 12:21:28 -0800)
+> >>
+> >> are available in the Git repository at:
+> >>
+> >>  git@github.com:terrelln/linux.git tags/zstd-for-linus-v5.16
+> >>
+> >> for you to fetch changes up to 0a8ea235837cc39f27c45689930aa97ae91d5953:
+> >>
+> >>  lib: zstd: Add cast to silence clang's -Wbitwise-instead-of-logical (2021-11-08 16:55:38 -0800)
+> >>
+> >> ----------------------------------------------------------------
+> >> Update to zstd-1.4.10
+> >>
+> >
+> > Hi Nick,
+> >
+> > where is the official ZSTD version 1.4.10 (see below links)?
+> > Can you clarify on this, please?
+>
+> The upstream tag v1.4.10 [0] is what is imported into the kernel.
+>
+> > v1.4.19 seems to be faster than v1.4.18 in some benchmarks.
+> > The background of question is I wanted to request a new zstd version
+> > for Debian (currently v1.4.18).
+>
+> There is no v1.4.18 or v1.4.19, I believe you meant v1.4.8 and v1.4.9.
+>
 
-This was a doozy of a problem, great job Filipe,
+Hehe, yes.
+Mixed that up with kernel release versions, maybe.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> The latest zstd versions is v1.5.2. We do expect speed improvements
+> in v1.5.2. However, we don't manage the zstd package in any package
+> manager, Debian included. So we don't have control over the version
+> of zstd in Debian.
+>
 
-Thanks,
+Just read about the speed improvements (even post v1.4.8).
 
-Josef
+I wanted to request a version bump to 1.4.10 via Debian's reportbug tool.
+There is nothing you shall do for me.
+Bumping from existing 1.4.8+dfsg-3 to the lasted v1.4x like 1.4.10
+might be reasonable and easier to request.
+But I can ask for zstd v1.5.2 in another release branach like
+Debian/experimental.
+
+About DFSG see:
+
+https://wiki.debian.org/DFSGLicenses
+
+> > My second question:
+> > As your changes where accepted for upcoming Linux v5.17...
+> > Do you plan Git branches for...
+> > Linux v5.16 (is [6] up2date with changes in v5.17?)...
+> > ...or even Linux v5.15 LTS?
+>
+> These changes landed in v5.16. I'm not planning on backporting
+> these changes to any older kernel version myself.
+>
+
+Right - backporting to v5.15 was my real question as this is LTS.
+
+> But, I am hoping to update to the latest zstd in either v5.18 or
+> v5.19. I'm a bit busy currently, but I just got a tentative volunteer
+> to update the kernel to v1.5.2, and more importantly test the
+> update.
+>
+
+Nice plans.
+Keep me in CC.
+
+Just for the records: v1.4.10 was tagged 8 days ago.
+
+- Sedat -
+
+[1] https://github.com/facebook/zstd/tags
+[2] https://github.com/facebook/zstd/releases/tag/v1.4.10
+
+> Best,
+> Nick Terrell
+>
+> [0] https://github.com/facebook/zstd/tree/v1.4.10
+>
+> > Thanks.
+> >
+> > Regards,
+> > - Sedat -
+> >
+> > [1] https://github.com/facebook/zstd/releases
+> > [2] https://github.com/facebook/zstd/tags
+> > [3] https://github.com/facebook/zstd/releases/tag/v1.4.9
+> > [4] https://packages.debian.org/zstd
+> > [5] https://github.com/terrelln/linux/branches
+> > [6] https://github.com/terrelln/linux/commits/zstd-1.4.10
+> >
+> >> This PR includes 5 commits that update the zstd library version:
+> >>
+> >> 1. Adds a new kernel-style wrapper around zstd. This wrapper API
+> >>   is functionally equivalent to the subset of the current zstd API that is
+> >>   currently used. The wrapper API changes to be kernel style so that the symbols
+> >>   don't collide with zstd's symbols. The update to zstd-1.4.10 maintains the same
+> >>   API and preserves the semantics, so that none of the callers need to be
+> >>   updated. All callers are updated in the commit, because there are zero
+> >>   functional changes.
+> >> 2. Adds an indirection for `lib/decompress_unzstd.c` so it
+> >>   doesn't depend on the layout of `lib/zstd/` to include every source file.
+> >>   This allows the next patch to be automatically generated.
+> >> 3. Imports the zstd-1.4.10 source code. This commit is automatically generated
+> >>   from upstream zstd (https://github.com/facebook/zstd).
+> >> 4. Adds me (terrelln@fb.com) as the maintainer of `lib/zstd`.
+> >> 5. Fixes a newly added build warning for clang.
+> >>
+> >> The discussion around this patchset has been pretty long, so I've included a
+> >> FAQ-style summary of the history of the patchset, and why we are taking this
+> >> approach.
+> >>
+> >> Why do we need to update?
+> >> -------------------------
+> >>
+> >> The zstd version in the kernel is based off of zstd-1.3.1, which is was released
+> >> August 20, 2017. Since then zstd has seen many bug fixes and performance
+> >> improvements. And, importantly, upstream zstd is continuously fuzzed by OSS-Fuzz,
+> >> and bug fixes aren't backported to older versions. So the only way to sanely get
+> >> these fixes is to keep up to date with upstream zstd. There are no known security
+> >> issues that affect the kernel, but we need to be able to update in case there
+> >> are. And while there are no known security issues, there are relevant bug fixes.
+> >> For example the problem with large kernel decompression has been fixed upstream
+> >> for over 2 years https://lkml.org/lkml/2020/9/29/27.
+> >>
+> >> Additionally the performance improvements for kernel use cases are significant.
+> >> Measured for x86_64 on my Intel i9-9900k @ 3.6 GHz:
+> >>
+> >> - BtrFS zstd compression at levels 1 and 3 is 5% faster
+> >> - BtrFS zstd decompression+read is 15% faster
+> >> - SquashFS zstd decompression+read is 15% faster
+> >> - F2FS zstd compression+write at level 3 is 8% faster
+> >> - F2FS zstd decompression+read is 20% faster
+> >> - ZRAM decompression+read is 30% faster
+> >> - Kernel zstd decompression is 35% faster
+> >> - Initramfs zstd decompression+build is 5% faster
+> >>
+> >> On top of this, there are significant performance improvements coming down the
+> >> line in the next zstd release, and the new automated update patch generation
+> >> will allow us to pull them easily.
+> >>
+> >> How is the update patch generated?
+> >> ----------------------------------
+> >>
+> >> The first two patches are preparation for updating the zstd version. Then the
+> >> 3rd patch in the series imports upstream zstd into the kernel. This patch is
+> >> automatically generated from upstream. A script makes the necessary changes and
+> >> imports it into the kernel. The changes are:
+> >>
+> >> - Replace all libc dependencies with kernel replacements and rewrite includes.
+> >> - Remove unncessary portability macros like: #if defined(_MSC_VER).
+> >> - Use the kernel xxhash instead of bundling it.
+> >>
+> >> This automation gets tested every commit by upstream's continuous integration.
+> >> When we cut a new zstd release, we will submit a patch to the kernel to update
+> >> the zstd version in the kernel.
+> >>
+> >> The automated process makes it easy to keep the kernel version of zstd up to
+> >> date. The current zstd in the kernel shares the guts of the code, but has a lot
+> >> of API and minor changes to work in the kernel. This is because at the time
+> >> upstream zstd was not ready to be used in the kernel envrionment as-is. But,
+> >> since then upstream zstd has evolved to support being used in the kernel as-is.
+> >>
+> >> Why are we updating in one big patch?
+> >> -------------------------------------
+> >>
+> >> The 3rd patch in the series is very large. This is because it is restructuring
+> >> the code, so it both deletes the existing zstd, and re-adds the new structure.
+> >> Future updates will be directly proportional to the changes in upstream zstd
+> >> since the last import. They will admittidly be large, as zstd is an actively
+> >> developed project, and has hundreds of commits between every release. However,
+> >> there is no other great alternative.
+> >>
+> >> One option ruled out is to replay every upstream zstd commit. This is not feasible
+> >> for several reasons:
+> >> - There are over 3500 upstream commits since the zstd version in the kernel.
+> >> - The automation to automatically generate the kernel update was only added recently,
+> >>  so older commits cannot easily be imported.
+> >> - Not every upstream zstd commit builds.
+> >> - Only zstd releases are "supported", and individual commits may have bugs that were
+> >>  fixed before a release.
+> >>
+> >> Another option to reduce the patch size would be to first reorganize to the new
+> >> file structure, and then apply the patch. However, the current kernel zstd is formatted
+> >> with clang-format to be more "kernel-like". But, the new method imports zstd as-is,
+> >> without additional formatting, to allow for closer correlation with upstream, and
+> >> easier debugging. So the patch wouldn't be any smaller.
+> >>
+> >> It also doesn't make sense to import upstream zstd commit by commit going
+> >> forward. Upstream zstd doesn't support production use cases running of the
+> >> development branch. We have a lot of post-commit fuzzing that catches many bugs,
+> >> so indiviudal commits may be buggy, but fixed before a release. So going forward,
+> >> I intend to import every (important) zstd release into the Kernel.
+> >>
+> >> So, while it isn't ideal, updating in one big patch is the only patch I see forward.
+> >>
+> >> Who is responsible for this code?
+> >> ---------------------------------
+> >>
+> >> I am. This patchset adds me as the maintainer for zstd. Previously, there was no tree
+> >> for zstd patches. Because of that, there were several patches that either got ignored,
+> >> or took a long time to merge, since it wasn't clear which tree should pick them up.
+> >> I'm officially stepping up as maintainer, and setting up my tree as the path through
+> >> which zstd patches get merged. I'll make sure that patches to the kernel zstd get
+> >> ported upstream, so they aren't erased when the next version update happens.
+> >>
+> >> How is this code tested?
+> >> ------------------------
+> >>
+> >> I tested every caller of zstd on x86_64 (BtrFS, ZRAM, SquashFS, F2FS, Kernel,
+> >> InitRAMFS). I also tested Kernel & InitRAMFS on i386 and aarch64. I checked both
+> >> performance and correctness.
+> >>
+> >> Also, thanks to many people in the community who have tested these patches locally.
+> >> If you have tested the patches, please reply with a Tested-By so I can collect them
+> >> for the PR I will send to Linus.
+> >>
+> >> Lastly, this code will bake in linux-next before being merged into v5.16.
+> >>
+> >> Why update to zstd-1.4.10 when zstd-1.5.0 has been released?
+> >> ------------------------------------------------------------
+> >>
+> >> This patchset has been outstanding since 2020, and zstd-1.4.10 was the latest
+> >> release when it was created. Since the update patch is automatically generated
+> >> from upstream, I could generate it from zstd-1.5.0. However, there were some
+> >> large stack usage regressions in zstd-1.5.0, and are only fixed in the latest
+> >> development branch. And the latest development branch contains some new code that
+> >> needs to bake in the fuzzer before I would feel comfortable releasing to the
+> >> kernel.
+> >>
+> >> Once this patchset has been merged, and we've released zstd-1.5.1, we can update
+> >> the kernel to zstd-1.5.1, and exercise the update process.
+> >>
+> >> You may notice that zstd-1.4.10 doesn't exist upstream. This release is an
+> >> artifical release based off of zstd-1.4.9, with some fixes for the kernel
+> >> backported from the development branch. I will tag the zstd-1.4.10 release after
+> >> this patchset is merged, so the Linux Kernel is running a known version of zstd
+> >> that can be debugged upstream.
+> >>
+> >> Why was a wrapper API added?
+> >> ----------------------------
+> >>
+> >> The first versions of this patchset migrated the kernel to the upstream zstd
+> >> API. It first added a shim API that supported the new upstream API with the old
+> >> code, then updated callers to use the new shim API, then transitioned to the
+> >> new code and deleted the shim API. However, Cristoph Hellwig suggested that we
+> >> transition to a kernel style API, and hide zstd's upstream API behind that.
+> >> This is because zstd's upstream API is supports many other use cases, and does
+> >> not follow the kernel style guide, while the kernel API is focused on the
+> >> kernel's use cases, and follows the kernel style guide.
+> >>
+> >> Where is the previous discussion?
+> >> ---------------------------------
+> >>
+> >> Links for the discussions of the previous versions of the patch set.
+> >> The largest changes in the design of the patchset are driven by the discussions
+> >> in V11, V5, and V1. Sorry for the mix of links, I couldn't find most of the the
+> >> threads on lkml.org.
+> >>
+> >> V12: https://www.spinics.net/lists/linux-crypto/msg58189.html
+> >> V11: https://lore.kernel.org/linux-btrfs/20210430013157.747152-1-nickrterrell@gmail.com/
+> >> V10: https://lore.kernel.org/lkml/20210426234621.870684-2-nickrterrell@gmail.com/
+> >> V9: https://lore.kernel.org/linux-btrfs/20210330225112.496213-1-nickrterrell@gmail.com/
+> >> V8: https://lore.kernel.org/linux-f2fs-devel/20210326191859.1542272-1-nickrterrell@gmail.com/
+> >> V7: https://lkml.org/lkml/2020/12/3/1195
+> >> V6: https://lkml.org/lkml/2020/12/2/1245
+> >> V5: https://lore.kernel.org/linux-btrfs/20200916034307.2092020-1-nickrterrell@gmail.com/
+> >> V4: https://www.spinics.net/lists/linux-btrfs/msg105783.html
+> >> V3: https://lkml.org/lkml/2020/9/23/1074
+> >> V2: https://www.spinics.net/lists/linux-btrfs/msg105505.html
+> >> V1: https://lore.kernel.org/linux-btrfs/20200916034307.2092020-1-nickrterrell@gmail.com/
+> >>
+> >> Signed-off-by: Nick Terrell <terrelln@fb.com>
+> >> Tested By: Paul Jones <paul@pauljones.id.au>
+> >> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+> >> Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM/Clang v13.0.0 on x86-64
+> >> Tested-by: Jean-Denis Girard <jd.girard@sysnux.pf>
+> >>
+> >> ----------------------------------------------------------------
+> >> Nathan Chancellor (1):
+> >>      lib: zstd: Add cast to silence clang's -Wbitwise-instead-of-logical
+> >>
+> >> Nick Terrell (4):
+> >>      lib: zstd: Add kernel-specific API
+> >>      lib: zstd: Add decompress_sources.h for decompress_unzstd
+> >>      lib: zstd: Upgrade to latest upstream zstd version 1.4.10
+> >>      MAINTAINERS: Add maintainer entry for zstd
+> >>
+> >> MAINTAINERS                                    |   12 +
+> >> crypto/zstd.c                                  |   28 +-
+> >> fs/btrfs/zstd.c                                |   68 +-
+> >> fs/f2fs/compress.c                             |   56 +-
+> >> fs/f2fs/super.c                                |    2 +-
+> >> fs/pstore/platform.c                           |    2 +-
+> >> fs/squashfs/zstd_wrapper.c                     |   16 +-
+> >> include/linux/zstd.h                           | 1252 ++----
+> >> include/linux/zstd_errors.h                    |   77 +
+> >> include/linux/zstd_lib.h                       | 2432 +++++++++++
+> >> lib/decompress_unzstd.c                        |   48 +-
+> >> lib/zstd/Makefile                              |   46 +-
+> >> lib/zstd/bitstream.h                           |  380 --
+> >> lib/zstd/common/bitstream.h                    |  437 ++
+> >> lib/zstd/common/compiler.h                     |  170 +
+> >> lib/zstd/common/cpu.h                          |  194 +
+> >> lib/zstd/common/debug.c                        |   24 +
+> >> lib/zstd/common/debug.h                        |  101 +
+> >> lib/zstd/common/entropy_common.c               |  357 ++
+> >> lib/zstd/common/error_private.c                |   56 +
+> >> lib/zstd/common/error_private.h                |   66 +
+> >> lib/zstd/common/fse.h                          |  710 ++++
+> >> lib/zstd/common/fse_decompress.c               |  390 ++
+> >> lib/zstd/common/huf.h                          |  356 ++
+> >> lib/zstd/common/mem.h                          |  259 ++
+> >> lib/zstd/common/zstd_common.c                  |   83 +
+> >> lib/zstd/common/zstd_deps.h                    |  125 +
+> >> lib/zstd/common/zstd_internal.h                |  450 +++
+> >> lib/zstd/compress.c                            | 3485 ----------------
+> >> lib/zstd/compress/fse_compress.c               |  625 +++
+> >> lib/zstd/compress/hist.c                       |  165 +
+> >> lib/zstd/compress/hist.h                       |   75 +
+> >> lib/zstd/compress/huf_compress.c               |  905 +++++
+> >> lib/zstd/compress/zstd_compress.c              | 5109 ++++++++++++++++++++++++
+> >> lib/zstd/compress/zstd_compress_internal.h     | 1188 ++++++
+> >> lib/zstd/compress/zstd_compress_literals.c     |  158 +
+> >> lib/zstd/compress/zstd_compress_literals.h     |   29 +
+> >> lib/zstd/compress/zstd_compress_sequences.c    |  439 ++
+> >> lib/zstd/compress/zstd_compress_sequences.h    |   54 +
+> >> lib/zstd/compress/zstd_compress_superblock.c   |  850 ++++
+> >> lib/zstd/compress/zstd_compress_superblock.h   |   32 +
+> >> lib/zstd/compress/zstd_cwksp.h                 |  482 +++
+> >> lib/zstd/compress/zstd_double_fast.c           |  519 +++
+> >> lib/zstd/compress/zstd_double_fast.h           |   32 +
+> >> lib/zstd/compress/zstd_fast.c                  |  496 +++
+> >> lib/zstd/compress/zstd_fast.h                  |   31 +
+> >> lib/zstd/compress/zstd_lazy.c                  | 1414 +++++++
+> >> lib/zstd/compress/zstd_lazy.h                  |   81 +
+> >> lib/zstd/compress/zstd_ldm.c                   |  686 ++++
+> >> lib/zstd/compress/zstd_ldm.h                   |  110 +
+> >> lib/zstd/compress/zstd_ldm_geartab.h           |  103 +
+> >> lib/zstd/compress/zstd_opt.c                   | 1346 +++++++
+> >> lib/zstd/compress/zstd_opt.h                   |   50 +
+> >> lib/zstd/decompress.c                          | 2531 ------------
+> >> lib/zstd/decompress/huf_decompress.c           | 1206 ++++++
+> >> lib/zstd/decompress/zstd_ddict.c               |  241 ++
+> >> lib/zstd/decompress/zstd_ddict.h               |   44 +
+> >> lib/zstd/decompress/zstd_decompress.c          | 2085 ++++++++++
+> >> lib/zstd/decompress/zstd_decompress_block.c    | 1540 +++++++
+> >> lib/zstd/decompress/zstd_decompress_block.h    |   62 +
+> >> lib/zstd/decompress/zstd_decompress_internal.h |  202 +
+> >> lib/zstd/decompress_sources.h                  |   28 +
+> >> lib/zstd/entropy_common.c                      |  243 --
+> >> lib/zstd/error_private.h                       |   53 -
+> >> lib/zstd/fse.h                                 |  575 ---
+> >> lib/zstd/fse_compress.c                        |  795 ----
+> >> lib/zstd/fse_decompress.c                      |  325 --
+> >> lib/zstd/huf.h                                 |  212 -
+> >> lib/zstd/huf_compress.c                        |  773 ----
+> >> lib/zstd/huf_decompress.c                      |  960 -----
+> >> lib/zstd/mem.h                                 |  151 -
+> >> lib/zstd/zstd_common.c                         |   75 -
+> >> lib/zstd/zstd_compress_module.c                |  160 +
+> >> lib/zstd/zstd_decompress_module.c              |  105 +
+> >> lib/zstd/zstd_internal.h                       |  273 --
+> >> lib/zstd/zstd_opt.h                            | 1014 -----
+> >> 76 files changed, 27373 insertions(+), 12941 deletions(-)
+> >> create mode 100644 include/linux/zstd_errors.h
+> >> create mode 100644 include/linux/zstd_lib.h
+> >> delete mode 100644 lib/zstd/bitstream.h
+> >> create mode 100644 lib/zstd/common/bitstream.h
+> >> create mode 100644 lib/zstd/common/compiler.h
+> >> create mode 100644 lib/zstd/common/cpu.h
+> >> create mode 100644 lib/zstd/common/debug.c
+> >> create mode 100644 lib/zstd/common/debug.h
+> >> create mode 100644 lib/zstd/common/entropy_common.c
+> >> create mode 100644 lib/zstd/common/error_private.c
+> >> create mode 100644 lib/zstd/common/error_private.h
+> >> create mode 100644 lib/zstd/common/fse.h
+> >> create mode 100644 lib/zstd/common/fse_decompress.c
+> >> create mode 100644 lib/zstd/common/huf.h
+> >> create mode 100644 lib/zstd/common/mem.h
+> >> create mode 100644 lib/zstd/common/zstd_common.c
+> >> create mode 100644 lib/zstd/common/zstd_deps.h
+> >> create mode 100644 lib/zstd/common/zstd_internal.h
+> >> delete mode 100644 lib/zstd/compress.c
+> >> create mode 100644 lib/zstd/compress/fse_compress.c
+> >> create mode 100644 lib/zstd/compress/hist.c
+> >> create mode 100644 lib/zstd/compress/hist.h
+> >> create mode 100644 lib/zstd/compress/huf_compress.c
+> >> create mode 100644 lib/zstd/compress/zstd_compress.c
+> >> create mode 100644 lib/zstd/compress/zstd_compress_internal.h
+> >> create mode 100644 lib/zstd/compress/zstd_compress_literals.c
+> >> create mode 100644 lib/zstd/compress/zstd_compress_literals.h
+> >> create mode 100644 lib/zstd/compress/zstd_compress_sequences.c
+> >> create mode 100644 lib/zstd/compress/zstd_compress_sequences.h
+> >> create mode 100644 lib/zstd/compress/zstd_compress_superblock.c
+> >> create mode 100644 lib/zstd/compress/zstd_compress_superblock.h
+> >> create mode 100644 lib/zstd/compress/zstd_cwksp.h
+> >> create mode 100644 lib/zstd/compress/zstd_double_fast.c
+> >> create mode 100644 lib/zstd/compress/zstd_double_fast.h
+> >> create mode 100644 lib/zstd/compress/zstd_fast.c
+> >> create mode 100644 lib/zstd/compress/zstd_fast.h
+> >> create mode 100644 lib/zstd/compress/zstd_lazy.c
+> >> create mode 100644 lib/zstd/compress/zstd_lazy.h
+> >> create mode 100644 lib/zstd/compress/zstd_ldm.c
+> >> create mode 100644 lib/zstd/compress/zstd_ldm.h
+> >> create mode 100644 lib/zstd/compress/zstd_ldm_geartab.h
+> >> create mode 100644 lib/zstd/compress/zstd_opt.c
+> >> create mode 100644 lib/zstd/compress/zstd_opt.h
+> >> delete mode 100644 lib/zstd/decompress.c
+> >> create mode 100644 lib/zstd/decompress/huf_decompress.c
+> >> create mode 100644 lib/zstd/decompress/zstd_ddict.c
+> >> create mode 100644 lib/zstd/decompress/zstd_ddict.h
+> >> create mode 100644 lib/zstd/decompress/zstd_decompress.c
+> >> create mode 100644 lib/zstd/decompress/zstd_decompress_block.c
+> >> create mode 100644 lib/zstd/decompress/zstd_decompress_block.h
+> >> create mode 100644 lib/zstd/decompress/zstd_decompress_internal.h
+> >> create mode 100644 lib/zstd/decompress_sources.h
+> >> delete mode 100644 lib/zstd/entropy_common.c
+> >> delete mode 100644 lib/zstd/error_private.h
+> >> delete mode 100644 lib/zstd/fse.h
+> >> delete mode 100644 lib/zstd/fse_compress.c
+> >> delete mode 100644 lib/zstd/fse_decompress.c
+> >> delete mode 100644 lib/zstd/huf.h
+> >> delete mode 100644 lib/zstd/huf_compress.c
+> >> delete mode 100644 lib/zstd/huf_decompress.c
+> >> delete mode 100644 lib/zstd/mem.h
+> >> delete mode 100644 lib/zstd/zstd_common.c
+> >> create mode 100644 lib/zstd/zstd_compress_module.c
+> >> create mode 100644 lib/zstd/zstd_decompress_module.c
+> >> delete mode 100644 lib/zstd/zstd_internal.h
+> >> delete mode 100644 lib/zstd/zstd_opt.h
+>
