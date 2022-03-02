@@ -2,45 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B204CA41C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 12:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783F44CA476
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 13:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240887AbiCBLt2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 06:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S241682AbiCBMK7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 07:10:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234246AbiCBLt1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 06:49:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9253A2C131
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 03:48:43 -0800 (PST)
+        with ESMTP id S241678AbiCBMK5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 07:10:57 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F29DA9A69;
+        Wed,  2 Mar 2022 04:10:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 18F2561864
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 11:48:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3AA7C004E1
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 11:48:41 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4BB38B81FAD;
+        Wed,  2 Mar 2022 12:10:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 980D9C340F1;
+        Wed,  2 Mar 2022 12:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646221722;
-        bh=mhLIeuBitHDcbMRL/wGdrg1U5PXrCmhXqo9sOLimmgQ=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Ws9Ch5Oz2NmZz3fEn4Hd0cRqYSIBsvDxy+YfKjPnVE86mYz2OcTLzh48V4xrt5vJ1
-         h1GMWYE5aeYiI+ylH0Psfrg5P1Jzq1ixTom4aSqRlqnDKIm0ExPPVvgW3MU21QTkWl
-         vdNpcvj+oc1M/r9cFiYJXe/GSZfauVJBdd3rEi6XRPlUSZZSrVKyQu/IOl/PhWVlij
-         mMMXXax98CnJtcLRwy+fPwunaU8LEHKLGBbLaYbz16nE2A0aZLA0qxVOXY/23qbLdL
-         SRysP2vweoyRP42k8U7EHAIVKTywqDs5JJCj3rF2zzUHKu7QS0PuPpWr7W9OKtSLtn
-         +DyFy5VQ6QWnQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: fallback to blocking mode when doing async dio over multiple extents
-Date:   Wed,  2 Mar 2022 11:48:39 +0000
-Message-Id: <7b0dc4db2bc0feed18d341191c815c3a31dee63b.1646221649.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <39c96b5608ed99b7d666d4d159f8d135e86b9606.1646219178.git.fdmanana@suse.com>
-References: <39c96b5608ed99b7d666d4d159f8d135e86b9606.1646219178.git.fdmanana@suse.com>
+        s=k20201202; t=1646223011;
+        bh=QLsOJeODj+q8W7S4HcQFcV5280qXF1sZAOj6kcgqeHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rQBV0i9BejuzcrxIkxKIPEbU7O9tpBm0Ps7d7I5RpMvB2nAX/zgXkPGTIaklzLGBo
+         5AuT0kpNrxDebIRlUH/fnjrR5DoCbVr6MAY04kk89efYjLRP64r8f5JicOhS/70lVB
+         pLgMKcAB5RVenes1Xcfhdl2HoTi4O+kx+BO8nw+AT8EvK5G8af5gfkDMg6Yf1YIOQK
+         5QbG89TsEgJLab0r7tVaDzhcMKrt7Ip5tA571cD/lArr9hHmK0FdYlD5HpxmoghJJQ
+         irBMfsgDLv/2wxnEiM6QWsdt/7Ch26ajbFj4XmypFRQMC2rJGjnUDp506Im41bMGGe
+         nJ13YMQLUubvw==
+Date:   Wed, 2 Mar 2022 12:10:08 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>
+Subject: Re: [PATCH] btrfs: add test for enable/disable quota and
+ create/destroy qgroup repeatedly
+Message-ID: <Yh9eoC1FwfNK5kXn@debian9.Home>
+References: <20220301151930.1315-1-realwakka@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220301151930.1315-1-realwakka@gmail.com>
 X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -51,319 +55,152 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Mar 01, 2022 at 03:19:30PM +0000, Sidong Yang wrote:
+> Test enabling/disable quota and creating/destroying qgroup repeatedly
+> in asynchronous and confirm it does not cause kernel hang. This is a
 
-Some users recently reported that MariaDB was getting a read corruption
-when using io_uring on top of btrfs. This started to happen in 5.16,
-after commit 51bd9563b6783d ("btrfs: fix deadlock due to page faults
-during direct IO reads and writes"). That changed btrfs to use the new
-iomap flag IOMAP_DIO_PARTIAL and to disable page faults before calling
-iomap_dio_rw(). This was necessary to fix deadlocks when the iovector
-corresponds to a memory mapped file region. That type of scenario is
-exercised by test case generic/647 from fstests.
+in asynchronous -> in parallel
 
-For this MariaDB scenario, we attempt to read 16K from file offset X
-using IOCB_NOWAIT and io_uring. In that range we have 4 extents, each
-with a size of 4K, and what happens is the following:
+> regression test for the problem reported to linux-btrfs list [1].
 
-1) btrfs_direct_read() disables page faults and calls iomap_dio_rw();
+It's worth mentioning the deadlock only happens starting with kernel 5.17-rc3.
 
-2) iomap creates a struct iomap_dio object, its reference count is
-   initialized to 1 and its ->size field is initialized to 0;
+> 
+> The hang was recreated using the test case and fixed by kernel patch
+> titled
+> 
+>   btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
+> 
+> [1] https://lore.kernel.org/linux-btrfs/20220228014340.21309-1-realwakka@gmail.com/
+> 
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
 
-3) iomap calls btrfs_dio_iomap_begin() with file offset X, which finds
-   the first 4K extent, and setups an iomap for this extent consisting
-   of a single page;
+In addition to Shinichiro's comments...
 
-4) At iomap_dio_bio_iter(), we are able to access the first page of the
-   buffer (struct iov_iter) with bio_iov_iter_get_pages() without
-   triggering a page fault;
+> ---
+>  tests/btrfs/262     | 54 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/262.out |  2 ++
+>  2 files changed, 56 insertions(+)
+>  create mode 100755 tests/btrfs/262
+>  create mode 100644 tests/btrfs/262.out
+> 
+> diff --git a/tests/btrfs/262 b/tests/btrfs/262
+> new file mode 100755
+> index 00000000..9be380f9
+> --- /dev/null
+> +++ b/tests/btrfs/262
+> @@ -0,0 +1,54 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2022 YOUR NAME HERE.  All Rights Reserved.
+> +#
+> +# FS QA Test 262
+> +#
+> +# Test the deadlock between qgroup and quota commands
 
-5) iomap submits a bio for this 4K extent
-   (iomap_dio_submit_bio() -> btrfs_submit_direct()) and increments
-   the refcount on the struct iomap_dio object to 2; The ->size field
-   of the struct iomap_dio object is incremented to 4K;
+The test description should be a lot more clear.
 
-6) iomap calls btrfs_iomap_begin() again, this time with a file
-   offset of X + 4K. There we setup an iomap for the next extent
-   that also has a size of 4K;
+"the deadlock" is vague a gives the wrong idea we only ever had a single
+deadlock related to qgroups. "qgroup and quota commands" is confusing,
+and "qgroup" and "quota" are pretty much synonyms, and it should mention
+which commands.
 
-7) Then at iomap_dio_bio_iter() we call bio_iov_iter_get_pages(),
-   which tries to access the next page (2nd page) of the buffer.
-   This triggers a page fault and returns -EFAULT;
+Plus what we want to test is that we can run some qgroup operations in
+parallel without triggering a deadlock, crash, etc.
 
-8) At __iomap_dio_rw() we see the -EFAULT, but we reset the error
-   to 0 because we passed the flag IOMAP_DIO_PARTIAL to iomap and
-   the struct iomap_dio object has a ->size value of 4K (we submitted
-   a bio for an extent already). The 'wait_for_completion' variable
-   is not set to true, because our iocb has IOCB_NOWAIT set;
+Perhaps something like:
 
-9) At the bottom of __iomap_dio_rw(), we decrement the reference count
-   of the struct iomap_dio object from 2 to 1. Because we were not
-   the only ones holding a reference on it and 'wait_for_completion' is
-   set to false, -EIOCBQUEUED is returned to btrfs_direct_read(), which
-   just returns it up the callchain, up to io_uring;
+"""
+Test that running qgroup enable, create, destroy and disable commands in
+parallel does not result in a deadlock, a crash or any filesystem
+inconsistency.
+"""
 
-10) The bio submitted for the first extent (step 5) completes and its
-    bio endio function, iomap_dio_bio_end_io(), decrements the last
-    reference on the struct iomap_dio object, resulting in calling
-    iomap_dio_complete_work() -> iomap_dio_complete().
 
-11) At iomap_dio_complete() we adjust the iocb->ki_pos from X to X + 4K
-    and return 4K (the amount of io done) to iomap_dio_complete_work();
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto qgroup
 
-12) iomap_dio_complete_work() calls the iocb completion callback,
-    iocb->ki_complete() with a second argument value of 4K (total io
-    done) and the iocb with the adjust ki_pos of X + 4K. This results
-    in completing the read request for io_uring, leaving it with a
-    result of 4K bytes read, and only the first page of the buffer
-    filled in, while the remaining 3 pages, corresponding to the other
-    3 extents, were not filled;
+Can also be added to the "quick" group. It takes 1 second in my slowest vm.
 
-13) For the application, the result is unexpected because if we ask
-    to read N bytes, it expects to get N bytes read as long as those
-    N bytes don't cross the EOF (i_size).
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +
+> +_require_scratch
+> +
+> +# Run command that enable/disable quota and create/destroy qgroup asynchronously
 
-MariaDB reports this as an error, as it's not expecting a short read,
-since it knows it's asking for read operations fully within the i_size
-boundary. This is typical in many applications, but it may also be
-questionable if they should react to such short reads by issuing more
-read calls to get the remaining data. Nevertheless, the short read
-happened due to a change in btrfs regarding how it deals with page
-faults while in the middle of a read operation, and there's no reason
-why btrfs can't have the previous behaviour of returning the whole data
-that was requested by the application.
+With the more clear test description above, this can go away.
 
-The problem can also be triggered with the following simple program:
+> +qgroup_deadlock_test()
+> +{
+> +	_scratch_mkfs > /dev/null 2>&1
+> +	_scratch_mount
+> +	echo "=== qgroup deadlock test ===" >> $seqres.full
 
-  /* Get O_DIRECT */
-  #ifndef _GNU_SOURCE
-  #define _GNU_SOURCE
-  #endif
+There's no point in echoing this message to the .full file, it provides no
+value at all, as testing that is all that this testcase does.
 
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-  #include <fcntl.h>
-  #include <errno.h>
-  #include <string.h>
-  #include <liburing.h>
+> +
+> +	pids=()
+> +	for ((i = 0; i < 200; i++)); do
+> +		$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT 2>> $seqres.full &
+> +		pids+=($!)
+> +		$BTRFS_UTIL_PROG qgroup create 1/0 $SCRATCH_MNT 2>> $seqres.full &
+> +		pids+=($!)
+> +		$BTRFS_UTIL_PROG qgroup destroy 1/0 $SCRATCH_MNT 2>> $seqres.full &
+> +		pids+=($!)
+> +		$BTRFS_UTIL_PROG quota disable $SCRATCH_MNT 2>> $seqres.full &
+> +		pids+=($!)		
+> +	done
+> +
+> +	for pid in "${pids[@]}"; do
+> +		wait $pid
+> +	done
 
-  int main(int argc, char *argv[])
-  {
-      char *foo_path;
-      struct io_uring ring;
-      struct io_uring_sqe *sqe;
-      struct io_uring_cqe *cqe;
-      struct iovec iovec;
-      int fd;
-      long pagesize;
-      void *write_buf;
-      void *read_buf;
-      ssize_t ret;
-      int i;
+As pointed before by Shinichiro, a simple 'wait' here is enough, no need to
+keep track of the PIDs.
 
-      if (argc != 2) {
-          fprintf(stderr, "Use: %s <directory>\n", argv[0]);
-          return 1;
-      }
+> +
+> +	_scratch_unmount
+> +	_check_scratch_fs
 
-      foo_path = malloc(strlen(argv[1]) + 5);
-      if (!foo_path) {
-          fprintf(stderr, "Failed to allocate memory for file path\n");
-          return 1;
-      }
-      strcpy(foo_path, argv[1]);
-      strcat(foo_path, "/foo");
+Not needed, the fstests framework automatically runs 'btrfs check' when a test
+finishes. Doing this explicitly is only necessary when we need to do several
+mount/unmount operations and want to check the fs is fine after each unmount
+and before the next mount.
 
-      /*
-       * Create file foo with 2 extents, each with a size matching
-       * the page size. Then allocate a buffer to read both extents
-       * with io_uring, using O_DIRECT and IOCB_NOWAIT. Before doing
-       * the read with io_uring, access the first page of the buffer
-       * to fault it in, so that during the read we only trigger a
-       * page fault when accessing the second page of the buffer.
-       */
-       fd = open(foo_path, O_CREAT | O_TRUNC | O_WRONLY |
-                O_DIRECT, 0666);
-       if (fd == -1) {
-           fprintf(stderr,
-                   "Failed to create file 'foo': %s (errno %d)",
-                   strerror(errno), errno);
-           return 1;
-       }
+> +}
+> +
+> +qgroup_deadlock_test
 
-       pagesize = sysconf(_SC_PAGE_SIZE);
-       ret = posix_memalign(&write_buf, pagesize, 2 * pagesize);
-       if (ret) {
-           fprintf(stderr, "Failed to allocate write buffer\n");
-           return 1;
-       }
+There's no point in putting all the test code in a function, as the function
+is only called once.
 
-       memset(write_buf, 0xab, pagesize);
-       memset(write_buf + pagesize, 0xcd, pagesize);
+Otherwise it looks good, and the test works as advertised, it triggers a
+deadlock on 5.17-rc3+ kernel and passes on a patched kernel.
 
-       /* Create 2 extents, each with a size matching page size. */
-       for (i = 0; i < 2; i++) {
-           ret = pwrite(fd, write_buf + i * pagesize, pagesize,
-                        i * pagesize);
-           if (ret != pagesize) {
-               fprintf(stderr,
-                     "Failed to write to file, ret = %ld errno %d (%s)\n",
-                      ret, errno, strerror(errno));
-               return 1;
-           }
-           ret = fsync(fd);
-           if (ret != 0) {
-               fprintf(stderr, "Failed to fsync file\n");
-               return 1;
-           }
-       }
+Thanks for converting the reproducer into a test case.
 
-       close(fd);
-       fd = open(foo_path, O_RDONLY | O_DIRECT);
-       if (fd == -1) {
-           fprintf(stderr,
-                   "Failed to open file 'foo': %s (errno %d)",
-                   strerror(errno), errno);
-           return 1;
-       }
-
-       ret = posix_memalign(&read_buf, pagesize, 2 * pagesize);
-       if (ret) {
-           fprintf(stderr, "Failed to allocate read buffer\n");
-           return 1;
-       }
-
-       /*
-        * Fault in only the first page of the read buffer.
-        * We want to trigger a page fault for the 2nd page of the
-        * read buffer during the read operation with io_uring
-        * (O_DIRECT and IOCB_NOWAIT).
-        */
-       memset(read_buf, 0, 1);
-
-       ret = io_uring_queue_init(1, &ring, 0);
-       if (ret != 0) {
-           fprintf(stderr, "Failed to create io_uring queue\n");
-           return 1;
-       }
-
-       sqe = io_uring_get_sqe(&ring);
-       if (!sqe) {
-           fprintf(stderr, "Failed to get io_uring sqe\n");
-           return 1;
-       }
-
-       iovec.iov_base = read_buf;
-       iovec.iov_len = 2 * pagesize;
-       io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
-
-       ret = io_uring_submit_and_wait(&ring, 1);
-       if (ret != 1) {
-           fprintf(stderr,
-                   "Failed at io_uring_submit_and_wait()\n");
-           return 1;
-       }
-
-       ret = io_uring_wait_cqe(&ring, &cqe);
-       if (ret < 0) {
-           fprintf(stderr, "Failed at io_uring_wait_cqe()\n");
-           return 1;
-       }
-
-       printf("io_uring read result for file foo:\n\n");
-       printf("  cqe->res == %d (expected %d)\n", cqe->res, 2 * pagesize);
-       printf("  memcmp(read_buf, write_buf) == %d (expected 0)\n",
-              memcmp(read_buf, write_buf, 2 * pagesize));
-
-       io_uring_cqe_seen(&ring, cqe);
-       io_uring_queue_exit(&ring);
-
-       return 0;
-  }
-
-When running it on an unpatched kernel:
-
-  $ gcc io_uring_test.c -luring
-  $ mkfs.btrfs -f /dev/sda
-  $ mount /dev/sda /mnt/sda
-  $ ./a.out /mnt/sda
-  io_uring read result for file foo:
-
-    cqe->res == 4096 (expected 8192)
-    memcmp(read_buf, write_buf) == -205 (expected 0)
-
-After this patch, the read always returns 8192 bytes, with the buffer
-filled with the correct data. Although that reproducer always triggers
-the bug in my test vms, it's possible that it will not be so reliable
-on other environments, as that can happen if the bio for the first
-extent completes and decrements the reference on the struct iomap_dio
-object before we do the atomic_dec_and_test() on the reference at
-__iomap_dio_rw().
-
-Fix this in btrfs by having btrfs_dio_iomap_begin() return -EAGAIN
-whenever we try to satisfy a non blocking IO request (IOMAP_NOWAIT flag
-set) over a range that spans multiple extents (or a mix of extents and
-holes). This avoids returning success to the caller when we only did
-partial IO, which is not optimal for writes and for reads it's actually
-incorrect, as the caller doesn't expect to get less bytes read than it has
-requested (unless EOF is crossed), as previously mentioned. This is also
-the type of behaviour that xfs follows (xfs_direct_write_iomap_begin()),
-even though it doesn't use IOMAP_DIO_PARTIAL.
-
-A test case for fstests will follow soon.
-
-Link: https://lore.kernel.org/linux-btrfs/CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com/
-Link: https://lore.kernel.org/linux-btrfs/CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com/
-CC: stable@vger.kernel.org # 5.16+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-V2: Add missing free_extent_map() call.
-
- fs/btrfs/inode.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index fe1597e74791..aebbe5ac41ff 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7613,6 +7613,34 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 	}
- 
- 	len = min(len, em->len - (start - em->start));
-+
-+	/*
-+	 * If we have a NOWAIT request and the range contains multiple extents
-+	 * (or a mix of extents and holes), then we return -EAGAIN to make the
-+	 * caller fallback to a context where it can do a blocking (without
-+	 * NOWAIT) request. This way we avoid doing partial IO and returning
-+	 * success to the caller, which is not optimal for writes and for reads
-+	 * it can result in unexpected behaviour for an application.
-+	 *
-+	 * When doing a read, because we use IOMAP_DIO_PARTIAL when calling
-+	 * iomap_dio_rw(), we can end up returning less data then what the caller
-+	 * asked for, resulting in an unexpected, and incorrect, short read.
-+	 * That is, the caller asked to read N bytes and we return less than that,
-+	 * which is wrong unless we are crossing EOF. This happens if we get a
-+	 * page fault error when trying to fault in pages for the buffer that is
-+	 * associated to the struct iov_iter passed to iomap_dio_rw(), and we
-+	 * have previously submitted bios for other extents in the range, in
-+	 * which case iomap_dio_rw() may return us EIOCBQUEUED if not all of
-+	 * those bios have completed by the time we get the page fault error,
-+	 * which we return back to our caller - we should only return EIOCBQUEUED
-+	 * after we have submitted bios for all the extents in the range.
-+	 */
-+	if ((flags & IOMAP_NOWAIT) && len < length) {
-+		free_extent_map(em);
-+		ret = -EAGAIN;
-+		goto unlock_err;
-+	}
-+
- 	if (write) {
- 		ret = btrfs_get_blocks_direct_write(&em, inode, dio_data,
- 						    start, len);
--- 
-2.33.0
-
+> +
+> +# success, all done
+> +echo "Silence is golden"
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/262.out b/tests/btrfs/262.out
+> new file mode 100644
+> index 00000000..404badc3
+> --- /dev/null
+> +++ b/tests/btrfs/262.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 262
+> +Silence is golden
+> -- 
+> 2.25.1
+> 
