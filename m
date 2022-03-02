@@ -2,59 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDFD4CA3D1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 12:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B204CA41C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Mar 2022 12:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbiCBLfD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 06:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
+        id S240887AbiCBLt2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 06:49:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbiCBLfC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 06:35:02 -0500
+        with ESMTP id S234246AbiCBLt1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 06:49:27 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C57D9027C;
-        Wed,  2 Mar 2022 03:34:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9253A2C131
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 03:48:43 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ED398617F4;
-        Wed,  2 Mar 2022 11:34:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C88FC004E1;
-        Wed,  2 Mar 2022 11:34:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 18F2561864
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 11:48:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3AA7C004E1
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Mar 2022 11:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646220858;
-        bh=EUbAbOtbKbHb53s+BZeDl0ZucskqRbpaz8tEIyg8WGY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VFgfn7kjiyGmPFTrOYc+0UMvyI3vcMjW4m9alGwMer8RwdckJnAUQInKbvWaD1RXv
-         IO329MsuDrH3FV3641ojryruKA0DNRK9gTrvmlnZmV33qRZuOhUuul6ErGL9zdAdkV
-         5gFnGWBx3AP3uE5qXxd4CyM+XP7xpzycoZ7WFB3OSSS6+IzE3ReXiipLsgSf9+Shbh
-         tfxUekOczTtyH9xD6Z/k9yOvKLxSnjpg5uBQd4VxHShOxKbG+KdEa5jWv0HsUKjrRV
-         Iet5C4wYsL1EFCM0wlviGypMaIDGYE4PA6chJcuVAS2r2q4wDjmzXAUv+LCaQPIByP
-         zANE/uZ2qCHmg==
-Received: by mail-qt1-f177.google.com with SMTP id f18so1306816qtb.3;
-        Wed, 02 Mar 2022 03:34:18 -0800 (PST)
-X-Gm-Message-State: AOAM532sEm8mJRinHjlrhgrDBAUb93LazqK5NFgxJonpNj3egXOuLs+0
-        UqeBE/zdo3NhNxrsrNSyA7tedoWFRCtLBtRaMQA=
-X-Google-Smtp-Source: ABdhPJzoSFphQumTK4OAYtEDTEQGn6c6w8jiIuSeSfZuDDiETrr+UEzJ0vkTa506qOU6HmmbWnt/26+ousx0vnQIuX0=
-X-Received: by 2002:a05:622a:110:b0:2dd:461a:6126 with SMTP id
- u16-20020a05622a011000b002dd461a6126mr23718961qtw.379.1646220857301; Wed, 02
- Mar 2022 03:34:17 -0800 (PST)
+        s=k20201202; t=1646221722;
+        bh=mhLIeuBitHDcbMRL/wGdrg1U5PXrCmhXqo9sOLimmgQ=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=Ws9Ch5Oz2NmZz3fEn4Hd0cRqYSIBsvDxy+YfKjPnVE86mYz2OcTLzh48V4xrt5vJ1
+         h1GMWYE5aeYiI+ylH0Psfrg5P1Jzq1ixTom4aSqRlqnDKIm0ExPPVvgW3MU21QTkWl
+         vdNpcvj+oc1M/r9cFiYJXe/GSZfauVJBdd3rEi6XRPlUSZZSrVKyQu/IOl/PhWVlij
+         mMMXXax98CnJtcLRwy+fPwunaU8LEHKLGBbLaYbz16nE2A0aZLA0qxVOXY/23qbLdL
+         SRysP2vweoyRP42k8U7EHAIVKTywqDs5JJCj3rF2zzUHKu7QS0PuPpWr7W9OKtSLtn
+         +DyFy5VQ6QWnQ==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: fallback to blocking mode when doing async dio over multiple extents
+Date:   Wed,  2 Mar 2022 11:48:39 +0000
+Message-Id: <7b0dc4db2bc0feed18d341191c815c3a31dee63b.1646221649.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <39c96b5608ed99b7d666d4d159f8d135e86b9606.1646219178.git.fdmanana@suse.com>
+References: <39c96b5608ed99b7d666d4d159f8d135e86b9606.1646219178.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <abbc821350c8ef515e0a0317b5cbd64e3c5b81ab.1645099449.git.fdmanana@suse.com>
- <20220222234432.GF3061737@dread.disaster.area> <CAL3q7H41wY_GWStRUxuOWwPcgqX9zx-WZxEySaRAUrMtcE666w@mail.gmail.com>
- <20220224022128.GK3061737@dread.disaster.area>
-In-Reply-To: <20220224022128.GK3061737@dread.disaster.area>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 2 Mar 2022 11:33:41 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7=4g3W7J4=9=rN2FodWr387+9eSzvUYyLVnz3tRv0CFw@mail.gmail.com>
-Message-ID: <CAL3q7H7=4g3W7J4=9=rN2FodWr387+9eSzvUYyLVnz3tRv0CFw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: test log replay after fsync of file with prealloc
- extents beyond eof
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,81 +51,319 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 24, 2022 at 2:21 AM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Wed, Feb 23, 2022 at 12:12:10PM +0000, Filipe Manana wrote:
-> > On Tue, Feb 22, 2022 at 11:44 PM Dave Chinner <david@fromorbit.com> wrote:
-> > >
-> > > On Thu, Feb 17, 2022 at 12:14:21PM +0000, fdmanana@kernel.org wrote:
-> > > > From: Filipe Manana <fdmanana@suse.com>
-> > > >
-> > > > Test that after a full fsync of a file with preallocated extents beyond
-> > > > the file's size, if a power failure happens, the preallocated extents
-> > > > still exist after we mount the filesystem.
-> > > >
-> > > > This test currently fails and there is a patch for btrfs that fixes this
-> > > > issue and has the following subject:
-> > > >
-> > > >   "btrfs: fix lost prealloc extents beyond eof after full fsync"
-> > > >
-> > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > > ---
-> > > >  tests/btrfs/261     | 79 +++++++++++++++++++++++++++++++++++++++++++++
-> > > >  tests/btrfs/261.out | 10 ++++++
-> > >
-> > > What is btrfs specific about this test?
-> >
-> > The comments that explain the steps are very btrfs specific.
-> > Without them it would be hard to understand why the test uses that
-> > specific file size, block size, mention of the btrfs inode's full sync
-> > bit, etc.
->
-> But the behaviour and layout should end up being the same for all
-> filesystems, right?
+From: Filipe Manana <fdmanana@suse.com>
 
-Right.
+Some users recently reported that MariaDB was getting a read corruption
+when using io_uring on top of btrfs. This started to happen in 5.16,
+after commit 51bd9563b6783d ("btrfs: fix deadlock due to page faults
+during direct IO reads and writes"). That changed btrfs to use the new
+iomap flag IOMAP_DIO_PARTIAL and to disable page faults before calling
+iomap_dio_rw(). This was necessary to fix deadlocks when the iovector
+corresponds to a memory mapped file region. That type of scenario is
+exercised by test case generic/647 from fstests.
 
->
-> We have plenty of generic tests that are designed with a
-> specific configuration on a specific filesystem to reproduce a bug
-> seen on that filesystem, but as long as all filesystems should be
-> expected to behave the same way, it's a generic test.
->
-> AFAICT, the behaviour described and exercised by the test should be
-> the same for all filesystems that support preallocation beyond EOF.
-> Hence it isn't btrfs specific behaviour being exercised, just a
-> reproducing a bug where btrfs deviates from the correct behaviour
-> that should be consistent across all filesystems.
->
-> > Some years ago, when you maintained fstests, you complained once about
-> > this type of "too btrfs specific" comments on generic tests.
->
-> I can change my mind if I want. Besides, I'm looking at this new
-> test purely on it's own merits so past discussions aren't really
-> relevant. Maybe you didn't understand the context under which I was
-> considering a patch to be "too fs specific" rather than generic.
->
-> There's a big difference between "only btrfs will behave this way"
-> and "all filesystems should get the same result, but btrfs sometimes
-> fails to get that results in this specific case".  The former should
-> be a btrfs-only test, the latter should be a generic test.
->
-> Which class this test falls into is exactly what I'm asking here -
-> should all filesystems get the same result, or is successful
-> result encoded in the golden output behaviour that only btrfs will
-> ever produce?
+For this MariaDB scenario, we attempt to read 16K from file offset X
+using IOCB_NOWAIT and io_uring. In that range we have 4 extents, each
+with a size of 4K, and what happens is the following:
 
-As far as I know, all filesystems supporting fallocate should behave
-the same way.
+1) btrfs_direct_read() disables page faults and calls iomap_dio_rw();
 
-Ok, I can move into the generic group.
+2) iomap creates a struct iomap_dio object, its reference count is
+   initialized to 1 and its ->size field is initialized to 0;
 
-Thanks.
+3) iomap calls btrfs_dio_iomap_begin() with file offset X, which finds
+   the first 4K extent, and setups an iomap for this extent consisting
+   of a single page;
 
->
-> Cheers,
->
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
+4) At iomap_dio_bio_iter(), we are able to access the first page of the
+   buffer (struct iov_iter) with bio_iov_iter_get_pages() without
+   triggering a page fault;
+
+5) iomap submits a bio for this 4K extent
+   (iomap_dio_submit_bio() -> btrfs_submit_direct()) and increments
+   the refcount on the struct iomap_dio object to 2; The ->size field
+   of the struct iomap_dio object is incremented to 4K;
+
+6) iomap calls btrfs_iomap_begin() again, this time with a file
+   offset of X + 4K. There we setup an iomap for the next extent
+   that also has a size of 4K;
+
+7) Then at iomap_dio_bio_iter() we call bio_iov_iter_get_pages(),
+   which tries to access the next page (2nd page) of the buffer.
+   This triggers a page fault and returns -EFAULT;
+
+8) At __iomap_dio_rw() we see the -EFAULT, but we reset the error
+   to 0 because we passed the flag IOMAP_DIO_PARTIAL to iomap and
+   the struct iomap_dio object has a ->size value of 4K (we submitted
+   a bio for an extent already). The 'wait_for_completion' variable
+   is not set to true, because our iocb has IOCB_NOWAIT set;
+
+9) At the bottom of __iomap_dio_rw(), we decrement the reference count
+   of the struct iomap_dio object from 2 to 1. Because we were not
+   the only ones holding a reference on it and 'wait_for_completion' is
+   set to false, -EIOCBQUEUED is returned to btrfs_direct_read(), which
+   just returns it up the callchain, up to io_uring;
+
+10) The bio submitted for the first extent (step 5) completes and its
+    bio endio function, iomap_dio_bio_end_io(), decrements the last
+    reference on the struct iomap_dio object, resulting in calling
+    iomap_dio_complete_work() -> iomap_dio_complete().
+
+11) At iomap_dio_complete() we adjust the iocb->ki_pos from X to X + 4K
+    and return 4K (the amount of io done) to iomap_dio_complete_work();
+
+12) iomap_dio_complete_work() calls the iocb completion callback,
+    iocb->ki_complete() with a second argument value of 4K (total io
+    done) and the iocb with the adjust ki_pos of X + 4K. This results
+    in completing the read request for io_uring, leaving it with a
+    result of 4K bytes read, and only the first page of the buffer
+    filled in, while the remaining 3 pages, corresponding to the other
+    3 extents, were not filled;
+
+13) For the application, the result is unexpected because if we ask
+    to read N bytes, it expects to get N bytes read as long as those
+    N bytes don't cross the EOF (i_size).
+
+MariaDB reports this as an error, as it's not expecting a short read,
+since it knows it's asking for read operations fully within the i_size
+boundary. This is typical in many applications, but it may also be
+questionable if they should react to such short reads by issuing more
+read calls to get the remaining data. Nevertheless, the short read
+happened due to a change in btrfs regarding how it deals with page
+faults while in the middle of a read operation, and there's no reason
+why btrfs can't have the previous behaviour of returning the whole data
+that was requested by the application.
+
+The problem can also be triggered with the following simple program:
+
+  /* Get O_DIRECT */
+  #ifndef _GNU_SOURCE
+  #define _GNU_SOURCE
+  #endif
+
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <unistd.h>
+  #include <fcntl.h>
+  #include <errno.h>
+  #include <string.h>
+  #include <liburing.h>
+
+  int main(int argc, char *argv[])
+  {
+      char *foo_path;
+      struct io_uring ring;
+      struct io_uring_sqe *sqe;
+      struct io_uring_cqe *cqe;
+      struct iovec iovec;
+      int fd;
+      long pagesize;
+      void *write_buf;
+      void *read_buf;
+      ssize_t ret;
+      int i;
+
+      if (argc != 2) {
+          fprintf(stderr, "Use: %s <directory>\n", argv[0]);
+          return 1;
+      }
+
+      foo_path = malloc(strlen(argv[1]) + 5);
+      if (!foo_path) {
+          fprintf(stderr, "Failed to allocate memory for file path\n");
+          return 1;
+      }
+      strcpy(foo_path, argv[1]);
+      strcat(foo_path, "/foo");
+
+      /*
+       * Create file foo with 2 extents, each with a size matching
+       * the page size. Then allocate a buffer to read both extents
+       * with io_uring, using O_DIRECT and IOCB_NOWAIT. Before doing
+       * the read with io_uring, access the first page of the buffer
+       * to fault it in, so that during the read we only trigger a
+       * page fault when accessing the second page of the buffer.
+       */
+       fd = open(foo_path, O_CREAT | O_TRUNC | O_WRONLY |
+                O_DIRECT, 0666);
+       if (fd == -1) {
+           fprintf(stderr,
+                   "Failed to create file 'foo': %s (errno %d)",
+                   strerror(errno), errno);
+           return 1;
+       }
+
+       pagesize = sysconf(_SC_PAGE_SIZE);
+       ret = posix_memalign(&write_buf, pagesize, 2 * pagesize);
+       if (ret) {
+           fprintf(stderr, "Failed to allocate write buffer\n");
+           return 1;
+       }
+
+       memset(write_buf, 0xab, pagesize);
+       memset(write_buf + pagesize, 0xcd, pagesize);
+
+       /* Create 2 extents, each with a size matching page size. */
+       for (i = 0; i < 2; i++) {
+           ret = pwrite(fd, write_buf + i * pagesize, pagesize,
+                        i * pagesize);
+           if (ret != pagesize) {
+               fprintf(stderr,
+                     "Failed to write to file, ret = %ld errno %d (%s)\n",
+                      ret, errno, strerror(errno));
+               return 1;
+           }
+           ret = fsync(fd);
+           if (ret != 0) {
+               fprintf(stderr, "Failed to fsync file\n");
+               return 1;
+           }
+       }
+
+       close(fd);
+       fd = open(foo_path, O_RDONLY | O_DIRECT);
+       if (fd == -1) {
+           fprintf(stderr,
+                   "Failed to open file 'foo': %s (errno %d)",
+                   strerror(errno), errno);
+           return 1;
+       }
+
+       ret = posix_memalign(&read_buf, pagesize, 2 * pagesize);
+       if (ret) {
+           fprintf(stderr, "Failed to allocate read buffer\n");
+           return 1;
+       }
+
+       /*
+        * Fault in only the first page of the read buffer.
+        * We want to trigger a page fault for the 2nd page of the
+        * read buffer during the read operation with io_uring
+        * (O_DIRECT and IOCB_NOWAIT).
+        */
+       memset(read_buf, 0, 1);
+
+       ret = io_uring_queue_init(1, &ring, 0);
+       if (ret != 0) {
+           fprintf(stderr, "Failed to create io_uring queue\n");
+           return 1;
+       }
+
+       sqe = io_uring_get_sqe(&ring);
+       if (!sqe) {
+           fprintf(stderr, "Failed to get io_uring sqe\n");
+           return 1;
+       }
+
+       iovec.iov_base = read_buf;
+       iovec.iov_len = 2 * pagesize;
+       io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
+
+       ret = io_uring_submit_and_wait(&ring, 1);
+       if (ret != 1) {
+           fprintf(stderr,
+                   "Failed at io_uring_submit_and_wait()\n");
+           return 1;
+       }
+
+       ret = io_uring_wait_cqe(&ring, &cqe);
+       if (ret < 0) {
+           fprintf(stderr, "Failed at io_uring_wait_cqe()\n");
+           return 1;
+       }
+
+       printf("io_uring read result for file foo:\n\n");
+       printf("  cqe->res == %d (expected %d)\n", cqe->res, 2 * pagesize);
+       printf("  memcmp(read_buf, write_buf) == %d (expected 0)\n",
+              memcmp(read_buf, write_buf, 2 * pagesize));
+
+       io_uring_cqe_seen(&ring, cqe);
+       io_uring_queue_exit(&ring);
+
+       return 0;
+  }
+
+When running it on an unpatched kernel:
+
+  $ gcc io_uring_test.c -luring
+  $ mkfs.btrfs -f /dev/sda
+  $ mount /dev/sda /mnt/sda
+  $ ./a.out /mnt/sda
+  io_uring read result for file foo:
+
+    cqe->res == 4096 (expected 8192)
+    memcmp(read_buf, write_buf) == -205 (expected 0)
+
+After this patch, the read always returns 8192 bytes, with the buffer
+filled with the correct data. Although that reproducer always triggers
+the bug in my test vms, it's possible that it will not be so reliable
+on other environments, as that can happen if the bio for the first
+extent completes and decrements the reference on the struct iomap_dio
+object before we do the atomic_dec_and_test() on the reference at
+__iomap_dio_rw().
+
+Fix this in btrfs by having btrfs_dio_iomap_begin() return -EAGAIN
+whenever we try to satisfy a non blocking IO request (IOMAP_NOWAIT flag
+set) over a range that spans multiple extents (or a mix of extents and
+holes). This avoids returning success to the caller when we only did
+partial IO, which is not optimal for writes and for reads it's actually
+incorrect, as the caller doesn't expect to get less bytes read than it has
+requested (unless EOF is crossed), as previously mentioned. This is also
+the type of behaviour that xfs follows (xfs_direct_write_iomap_begin()),
+even though it doesn't use IOMAP_DIO_PARTIAL.
+
+A test case for fstests will follow soon.
+
+Link: https://lore.kernel.org/linux-btrfs/CABVffEM0eEWho+206m470rtM0d9J8ue85TtR-A_oVTuGLWFicA@mail.gmail.com/
+Link: https://lore.kernel.org/linux-btrfs/CAHF2GV6U32gmqSjLe=XKgfcZAmLCiH26cJ2OnHGp5x=VAH4OHQ@mail.gmail.com/
+CC: stable@vger.kernel.org # 5.16+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+V2: Add missing free_extent_map() call.
+
+ fs/btrfs/inode.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index fe1597e74791..aebbe5ac41ff 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7613,6 +7613,34 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
+ 	}
+ 
+ 	len = min(len, em->len - (start - em->start));
++
++	/*
++	 * If we have a NOWAIT request and the range contains multiple extents
++	 * (or a mix of extents and holes), then we return -EAGAIN to make the
++	 * caller fallback to a context where it can do a blocking (without
++	 * NOWAIT) request. This way we avoid doing partial IO and returning
++	 * success to the caller, which is not optimal for writes and for reads
++	 * it can result in unexpected behaviour for an application.
++	 *
++	 * When doing a read, because we use IOMAP_DIO_PARTIAL when calling
++	 * iomap_dio_rw(), we can end up returning less data then what the caller
++	 * asked for, resulting in an unexpected, and incorrect, short read.
++	 * That is, the caller asked to read N bytes and we return less than that,
++	 * which is wrong unless we are crossing EOF. This happens if we get a
++	 * page fault error when trying to fault in pages for the buffer that is
++	 * associated to the struct iov_iter passed to iomap_dio_rw(), and we
++	 * have previously submitted bios for other extents in the range, in
++	 * which case iomap_dio_rw() may return us EIOCBQUEUED if not all of
++	 * those bios have completed by the time we get the page fault error,
++	 * which we return back to our caller - we should only return EIOCBQUEUED
++	 * after we have submitted bios for all the extents in the range.
++	 */
++	if ((flags & IOMAP_NOWAIT) && len < length) {
++		free_extent_map(em);
++		ret = -EAGAIN;
++		goto unlock_err;
++	}
++
+ 	if (write) {
+ 		ret = btrfs_get_blocks_direct_write(&em, inode, dio_data,
+ 						    start, len);
+-- 
+2.33.0
+
