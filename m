@@ -2,121 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9022F4CB303
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Mar 2022 00:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E094CB34D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Mar 2022 01:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbiCBXuA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Mar 2022 18:50:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        id S230338AbiCCA0v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Mar 2022 19:26:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbiCBXt7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 18:49:59 -0500
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CDD217924D;
-        Wed,  2 Mar 2022 15:49:13 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-17-0.pa.vic.optusnet.com.au [49.186.17.0])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 5C23C5355EA;
-        Thu,  3 Mar 2022 10:12:08 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1nPY8c-000nz7-NA; Thu, 03 Mar 2022 10:12:06 +1100
-Date:   Thu, 3 Mar 2022 10:12:06 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Filipe Manana <fdmanana@kernel.org>,
-        Michael Kerrisk <mtk@man7.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] iomap: fix incomplete async dio reads when using
- IOMAP_DIO_PARTIAL
-Message-ID: <20220302231206.GV59715@dread.disaster.area>
-References: <1f34c8435fed21e9583492661ceb20d642a75699.1646058596.git.fdmanana@suse.com>
- <20220228223830.GR59715@dread.disaster.area>
- <Yh9EHfl3sYJHeo3T@debian9.Home>
- <CAHc6FU7jBeUEAaB0BupypG1zdxf4shF5T56cHZCD_xXi-jeB+Q@mail.gmail.com>
+        with ESMTP id S230272AbiCCA0u (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Mar 2022 19:26:50 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BA336332;
+        Wed,  2 Mar 2022 16:26:01 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 19so1919510wmy.3;
+        Wed, 02 Mar 2022 16:26:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=VxEI28Cr8e8ubiVWpGpP4SGRn6ThHLfZQxCY6FGiDCA=;
+        b=EgEch7eZSVOT6K8hou9M6EVOgL7Rvbo46ANeV9zWqm1PBXqRZyYLQpDi/6/uWTFw0b
+         iudUjyXDpmEopqP4RL/MRcFcjsVqAkqh9O8XwOndrScwp0hK5u2b0kPp7/2/Ta8FCD8r
+         yPWtfeLCJYm0H9Y0FYCSRigPgVyP7k66yk65y9KXQ/us8OMiskpEdxf00zOXfi+y1Lw1
+         Xu5zImxJGiBNvBmXw5lQKxQFGAuouoLLtZTtlJLwzAnnnUm3gJBkFmopl6db/7ISTiE7
+         Zzdpnwm8uOhQIjcDGP6HrMZ5N6ENFF/Xx9p4JpI6GC7F/f7LE7W8YAgumv+JYWOGqsAW
+         mkvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=VxEI28Cr8e8ubiVWpGpP4SGRn6ThHLfZQxCY6FGiDCA=;
+        b=CCc/e72bE6m0zKHOvrrVILgluK70ZrG68SpOUsqG14q0LfxGguM5UFRYkxrae8WMbU
+         Rp9RgjpkHlPpGeZ1sFm016v+VuGqixN1/ZGfLTVmNndHKu3tI8Jjl2fe6abOXcT7Uxob
+         pE/fF5zDeOgtDd3IYgwDQRpeF3lMQN4DYBJLDb7C9/Y57tna57unH07ntL6TIUCjLGLo
+         W6ul29b29rVAXDCobfFm4jn2av14j6ltncHHAQ4LiCGFKB5YxeFaeYQtjX6A7px4wcLq
+         V021Jxt8MVOQWxlhZJTgVckLLBifKM4dQAtYSVzIAf8nkzNwPeb/3v0NHb0MT7MqKgug
+         LgjA==
+X-Gm-Message-State: AOAM532d/1QH/GZ+mYoyWqYeqXhwdGEPm2OUCsFI68OM76auzrcB8ZlS
+        bOu+r1qxHpSy0JGs9FrfqGY=
+X-Google-Smtp-Source: ABdhPJyadMyaUuqCozzi2dxx9A7gPkdq7R3q5AcQUuRl7z1gMCAaqQE4EiOebR4qQTSF7XSBZr5VDQ==
+X-Received: by 2002:a05:600c:2994:b0:387:3615:7b3a with SMTP id r20-20020a05600c299400b0038736157b3amr1280473wmd.142.1646267159755;
+        Wed, 02 Mar 2022 16:25:59 -0800 (PST)
+Received: from ?IPV6:2a02:1811:cc83:eef0:7bf1:a0f8:a9aa:ac98? (ptr-dtfv0pmq82wc9dcpm6w.18120a2.ip6.access.telenet.be. [2a02:1811:cc83:eef0:7bf1:a0f8:a9aa:ac98])
+        by smtp.gmail.com with ESMTPSA id j34-20020a05600c1c2200b00381672f89d1sm8749308wms.39.2022.03.02.16.25.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Mar 2022 16:25:59 -0800 (PST)
+Message-ID: <5eb61b82-6ed2-9386-b288-f57369de5adb@gmail.com>
+Date:   Thu, 3 Mar 2022 01:25:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU7jBeUEAaB0BupypG1zdxf4shF5T56cHZCD_xXi-jeB+Q@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=621ff9ca
-        a=+dVDrTVfsjPpH/ci3UuFng==:117 a=+dVDrTVfsjPpH/ci3UuFng==:17
-        a=kj9zAlcOel0A:10 a=o8Y5sQTvuykA:10 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
-        a=7-415B0cAAAA:8 a=kOgEMRnqgivgxslKRJ4A:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=WzC6qhA0u3u7Ye7llzcV:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH] btrfs: add lockdep_assert_held to need_preemptive_reclaim
+Content-Language: en-US
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20220228225215.16552-1-dossche.niels@gmail.com>
+ <20220302193042.GV12643@twin.jikos.cz>
+From:   Niels Dossche <dossche.niels@gmail.com>
+In-Reply-To: <20220302193042.GV12643@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 02, 2022 at 02:03:28PM +0100, Andreas Gruenbacher wrote:
-> On Wed, Mar 2, 2022 at 11:17 AM Filipe Manana <fdmanana@kernel.org> wrote:
-> > On Tue, Mar 01, 2022 at 09:38:30AM +1100, Dave Chinner wrote:
-> > > On Mon, Feb 28, 2022 at 02:32:03PM +0000, fdmanana@kernel.org wrote:
-> > > > From: Filipe Manana <fdmanana@suse.com>
-> > > .....
-> > >
-> > > > 11) At iomap_dio_complete() we adjust the iocb->ki_pos from X to X + 4K
-> > > >     and return 4K (the amount of io done) to iomap_dio_complete_work();
-> > > >
-> > > > 12) iomap_dio_complete_work() calls the iocb completion callback,
-> > > >     iocb->ki_complete() with a second argument value of 4K (total io
-> > > >     done) and the iocb with the adjust ki_pos of X + 4K. This results
-> > > >     in completing the read request for io_uring, leaving it with a
-> > > >     result of 4K bytes read, and only the first page of the buffer
-> > > >     filled in, while the remaining 3 pages, corresponding to the other
-> > > >     3 extents, were not filled;
-> > > >
-> > > > 13) For the application, the result is unexpected because if we ask
-> > > >     to read N bytes, it expects to get N bytes read as long as those
-> > > >     N bytes don't cross the EOF (i_size).
-> > >
-> > > Yeah, that's exactly the sort of problem we were having with XFS
-> > > with partial DIO completions due to needing multiple iomap iteration
-> > > loops to complete a single IO. Hence IOMAP_NOWAIT now triggers the
-> > > above range check and aborts before we start...
-> >
-> > Interesting.
+On 02/03/2022 20:30, David Sterba wrote:
+> On Mon, Feb 28, 2022 at 11:52:16PM +0100, Niels Dossche wrote:
+>> In a previous patch I extended the locking for member accesses of
+>> space_info.
 > 
-> Dave, this seems to affect all users of iomap_dio_rw in the same way,
-> so would it make sense to move this check there?
+> A reference to another patch would be by a subject or a specific commit
+> id (not applicable in this case) or you can write it without any
+> reference if the change is standalone. The changelog should describe the
+> reason for the change, user visible effects, what can go wrong etc.
+> 
 
-Perhaps, but I'm not sure it makes sense because filesystems need to
-abort ->iomap_begin with -EAGAIN in IOMAP_NOWAIT contexts before
-they make any changes.
+I will make sure to do that in the future. Thanks.
 
-Hence detecting short extents in the generic code becomes ...
-difficult because we might now need to undo changes that have been
-made in ->iomap_begin. e.g. if the filesystem allocates space and
-the iomap core says "not long enough" because IOMAP_NOWAIT is set,
-then we may have to punch out that allocation in ->iomap_end beforei
-returning -EAGAIN.
+>> It was then suggested to also add a lockdep assertion for
+>> space_info->lock to need_preemptive_reclaim.
+>>
+>> Suggested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>> Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+>> ---
+>>  fs/btrfs/space-info.c | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>> index 294242c194d8..5464bd168d5b 100644
+>> --- a/fs/btrfs/space-info.c
+>> +++ b/fs/btrfs/space-info.c
+>> @@ -734,9 +734,13 @@ static bool need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
+>>  {
+>>  	u64 global_rsv_size = fs_info->global_block_rsv.reserved;
+>>  	u64 ordered, delalloc;
+>> -	u64 thresh = div_factor_fine(space_info->total_bytes, 90);
+>> +	u64 thresh;
+>>  	u64 used;
+>>  
+>> +	lockdep_assert_held(&space_info->lock);
+>> +
+>> +	thresh = div_factor_fine(space_info->total_bytes, 90);
+> 
+> I'm not sure this is necessary, as this is not locking where the
+> initialization would have to be inside. The lockdep assertion is just a
+> warning, so it does not matter where the intialization is done, I'd
+> prefer to keep it as is.
 
-That means filesystems like XFS may now need to supply a ->iomap_end
-function to undo stuff the core decides it shouldn't have done,
-instead of the filesystem ensuring it never does the operation it in
-the first place...
-
-IOWs, the correct behaviour here is for the filesystem ->iomap_begin
-method to see that it needs to allocate and return -EAGAIN if
-IOMAP_NOWAIT is set, not do the allocation and hope it that it ends
-up being long enough to cover the entire IO we have to do.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+I understand. Thank you for your feedback. I will send a v2 shortly.
