@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AF04CC9EC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Mar 2022 00:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4284D4CC9F3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Mar 2022 00:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236280AbiCCXUK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Mar 2022 18:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
+        id S236611AbiCCXUP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Mar 2022 18:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235641AbiCCXUJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Mar 2022 18:20:09 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0D03A1AA
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Mar 2022 15:19:23 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id ay5so6178473plb.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Mar 2022 15:19:23 -0800 (PST)
+        with ESMTP id S236187AbiCCXUK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Mar 2022 18:20:10 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290DA3B285
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Mar 2022 15:19:24 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id e6so6004417pgn.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Mar 2022 15:19:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pcxJqW3xQG5uNguk36DKjVBeVd3Q8mLAF97DK5rZGSc=;
-        b=Z0i4+ZXEm228gR0Mh8tLw8Ce5PwilHjpf28RnZTnFPdUg3cq6qdO4BKonJZzGbG9Lf
-         eH9bX9NkiA18pOsGXkk6/rLl3o2UiCzJmyo00G+tFXzykLirhyirITdNu2TmZMJJvwZU
-         d3qqZOqx6SdY8yW8/vEgL/xpu+3TDGiLUMRk+XWRvYmEcHzWa2/rpCbhete8zgN1+qxP
-         +oWBU7wc/k4fFUYnFH+/X1FuvfimGegAdIX8v0/ujVkzHlj2rAwb4P2YAsNo3fTrwOvL
-         2S2TSplfjbMyxChxIt3hY1AkS4LaX80pPJX4q6nf3IdI6hXOUjSlBaOFAZ21GTDE1bjB
-         nNPQ==
+        bh=yZMRcA/nkkrjVGlPpNGs4B0U5XQyrY4BMsA0jv2oD0E=;
+        b=BNZ9eaOO7c9FQqMFUv/9wFxXD9GlD0tCDhM4ywlOLHt0zY+5lITa1TYhZLKjSKqga8
+         6RIG7hOg5wgEPZqaMPjp2En+gRIArPyDcOfJyYKm0D08mxqs/SyoN5T0hIsYSzHFnFT2
+         pul5bjRpb/6XHtwDMdvskQAqbZiZS/rUt4ynIC9Mt0bQfhCXT64HVrAFKgaX6fIen9lm
+         YJAnvvRh3WNkokpDr/iKG8NvtesxGgokYwUx3vtEorPKLGmuSJWrBQi6iDB8YN5gT3J+
+         mJ8K56LH1eJJSRyFw0SoiwP1z8MWnG3hd1cqvIYdUqgdPkosRBuesmmAlnZc/bYALZp8
+         dsMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pcxJqW3xQG5uNguk36DKjVBeVd3Q8mLAF97DK5rZGSc=;
-        b=xYC+GFJ6/zIpKJW4uHAYIx0nbvL17hDH+ukOGzDVyoKSb0yXwmeOc/vXBsSiRajHzg
-         46d1xAoTZuj4WvhFFFAx9OTgJXSczZibWwwOnJCSz+XbRbHIpi1FCPIrnq9D3yMAjpjM
-         ihloF0cZOmcUiZqNxIaPsdmmWQHvlHiIUk+XNSjjcXfbPS774kdXxjR+7V9WTop9oJEW
-         Tf4uaOywWxrhd2iv9XxE9RArr9IIZ+7ehJpgBjrj1j8GFpRwnG20gqJBOHFDLplgs9rt
-         2m1xoRLbdrX5bIzObFCa7/fV08Gzjb9EUQ6582t+0qAa8kWEAydcEIoKMNYZ7ZVvSdoF
-         oyog==
-X-Gm-Message-State: AOAM530H6S+AsGfwskhOiVFJe90KSkHk9IJSXOfKs5B6ohd+p5U/Hf24
-        AyQMx1mReN15X5BVirwEfTn2Ls7JXgK6fQ==
-X-Google-Smtp-Source: ABdhPJzBp5lTxJYXNHkeqfSznNUX8EfP5iSQQVGrIpJcSDsHRS88QztGHujRvBr4GIqtxsPj5JT4gw==
-X-Received: by 2002:a17:903:1c3:b0:151:a54b:95f4 with SMTP id e3-20020a17090301c300b00151a54b95f4mr7601353plh.10.1646349562506;
-        Thu, 03 Mar 2022 15:19:22 -0800 (PST)
+        bh=yZMRcA/nkkrjVGlPpNGs4B0U5XQyrY4BMsA0jv2oD0E=;
+        b=UrQcK16Q06XtEL/aEErFxYaPmHa0aBpuPnJyawjyo7dHDNnFYFf3ETh557cn5dFEwy
+         vmrLdcUoFWTPH2mB3QqwRPr+oVoZeUKzpcoBK4STer+/IwdZ2EzRcdrGxz53iRAU06iI
+         uaLsh6jYCIi+PmzbpxUDA6D19dNHHjM+ZwB5Xx7ELs5+rWXsnudH2U/zjlyFgIsagcbm
+         Bh/fcd5q0pnhmgz2/YQ6fTC82v6PDHqdhT3l718RCaPhy9pP+QqSL0vcLxzAOhvtCsgX
+         i42E9VXxUkWEAHdnWjEt7A9qAF8wif43WROgTzTAHppONInH0AOAfIRoqxALn+El1jV8
+         o01g==
+X-Gm-Message-State: AOAM530Ha9g0xIPKBjnTaFk3sLsI2gzRLzzyuHjh+ANTcP0puTORy46h
+        ra70BGbTkL0i9NJSyBFvHvCd/ZW7qP5JWg==
+X-Google-Smtp-Source: ABdhPJxfF97yFD0RMFjwwNZZmUMi5/SMJFDobAxoOFDwyXgWZ8PBU1b6nUQF80CfBZyWocn/bcdm2Q==
+X-Received: by 2002:a05:6a00:15cd:b0:4f6:6895:739b with SMTP id o13-20020a056a0015cd00b004f66895739bmr6319045pfu.60.1646349563346;
+        Thu, 03 Mar 2022 15:19:23 -0800 (PST)
 Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:76ce])
-        by smtp.gmail.com with ESMTPSA id x7-20020a17090a1f8700b001bf1db72189sm1103507pja.23.2022.03.03.15.19.21
+        by smtp.gmail.com with ESMTPSA id x7-20020a17090a1f8700b001bf1db72189sm1103507pja.23.2022.03.03.15.19.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Mar 2022 15:19:22 -0800 (PST)
+        Thu, 03 Mar 2022 15:19:23 -0800 (PST)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com
-Subject: [PATCH 02/12] btrfs: reserve correct number of items for rename
-Date:   Thu,  3 Mar 2022 15:18:52 -0800
-Message-Id: <e5e3cbaf959136a44ad87b00bca366e6e072e8e0.1646348486.git.osandov@fb.com>
+Subject: [PATCH 03/12] btrfs: get rid of btrfs_add_nondir()
+Date:   Thu,  3 Mar 2022 15:18:53 -0800
+Message-Id: <1d1af5e40beeb1d9e67c3b78b8f97537e0c4cdc0.1646348486.git.osandov@fb.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1646348486.git.osandov@fb.com>
 References: <cover.1646348486.git.osandov@fb.com>
@@ -69,133 +69,98 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Omar Sandoval <osandov@fb.com>
 
-btrfs_rename() and btrfs_rename_exchange() don't account for enough
-items. Replace the incorrect explanations with a specific breakdown of
-the number of items and account them accurately.
-
-Note that this glosses over RENAME_WHITEOUT because the next commit is
-going to rework that, too.
+This is a trivial wrapper around btrfs_add_link(). The only thing it
+does other than moving arguments around is translating a > 0 return
+value to -EEXIST. As far as I can tell, btrfs_add_link() won't return >
+0 (and if it did, the existing callsites in, e.g., btrfs_mkdir() would
+be broken). The check itself dates back to commit 2c90e5d65842 ("Btrfs:
+still corruption hunting"), so it's probably left over from debugging.
+Let's just get rid of btrfs_add_nondir().
 
 Signed-off-by: Omar Sandoval <osandov@fb.com>
 ---
- fs/btrfs/inode.c | 86 +++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 67 insertions(+), 19 deletions(-)
+ fs/btrfs/inode.c | 33 +++++++++++----------------------
+ 1 file changed, 11 insertions(+), 22 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2fb8aa36a9ac..be51630160f5 100644
+index be51630160f5..9c838bdd51cc 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -9058,6 +9058,7 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+@@ -6355,18 +6355,6 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
+ 
+-static int btrfs_add_nondir(struct btrfs_trans_handle *trans,
+-			    struct btrfs_inode *dir, struct dentry *dentry,
+-			    struct btrfs_inode *inode, int backref, u64 index)
+-{
+-	int err = btrfs_add_link(trans, dir, inode,
+-				 dentry->d_name.name, dentry->d_name.len,
+-				 backref, index);
+-	if (err > 0)
+-		err = -EEXIST;
+-	return err;
+-}
+-
+ static int btrfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+ 		       struct dentry *dentry, umode_t mode, dev_t rdev)
  {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(old_dir->i_sb);
- 	struct btrfs_trans_handle *trans;
-+	unsigned int trans_num_items;
- 	struct btrfs_root *root = BTRFS_I(old_dir)->root;
- 	struct btrfs_root *dest = BTRFS_I(new_dir)->root;
- 	struct inode *new_inode = new_dentry->d_inode;
-@@ -9089,14 +9090,37 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		down_read(&fs_info->subvol_sem);
+@@ -6413,8 +6401,8 @@ static int btrfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (err)
+ 		goto out_unlock;
  
- 	/*
--	 * We want to reserve the absolute worst case amount of items.  So if
--	 * both inodes are subvols and we need to unlink them then that would
--	 * require 4 item modifications, but if they are both normal inodes it
--	 * would require 5 item modifications, so we'll assume their normal
--	 * inodes.  So 5 * 2 is 10, plus 2 for the new links, so 12 total items
--	 * should cover the worst case number of items we'll modify.
-+	 * For each inode:
-+	 * 1 to remove old dir item
-+	 * 1 to remove old dir index
-+	 * 1 to add new dir item
-+	 * 1 to add new dir index
-+	 * 1 to update parent inode
-+	 *
-+	 * If the parents are the same, we only need to account for one
- 	 */
--	trans = btrfs_start_transaction(root, 12);
-+	trans_num_items = old_dir == new_dir ? 9 : 10;
-+	if (old_ino == BTRFS_FIRST_FREE_OBJECTID) {
-+		/*
-+		 * 1 to remove old root ref
-+		 * 1 to remove old root backref
-+		 * 1 to add new root ref
-+		 * 1 to add new root backref
-+		 */
-+		trans_num_items += 4;
-+	} else {
-+		/*
-+		 * 1 to update inode item
-+		 * 1 to remove old inode ref
-+		 * 1 to add new inode ref
-+		 */
-+		trans_num_items += 3;
-+	}
-+	if (new_ino == BTRFS_FIRST_FREE_OBJECTID)
-+		trans_num_items += 4;
-+	else
-+		trans_num_items += 3;
-+	trans = btrfs_start_transaction(root, trans_num_items);
- 	if (IS_ERR(trans)) {
- 		ret = PTR_ERR(trans);
- 		goto out_notrans;
-@@ -9375,21 +9399,45 @@ static int btrfs_rename(struct user_namespace *mnt_userns,
- 	if (new_inode && S_ISREG(old_inode->i_mode) && new_inode->i_size)
- 		filemap_flush(old_inode->i_mapping);
+-	err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry, BTRFS_I(inode),
+-			0, index);
++	err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
++			     dentry->d_name.name, dentry->d_name.len, 0, index);
+ 	if (err)
+ 		goto out_unlock;
  
--	/* close the racy window with snapshot create/destroy ioctl */
--	if (old_ino == BTRFS_FIRST_FREE_OBJECTID)
-+	if (old_ino == BTRFS_FIRST_FREE_OBJECTID) {
-+		/* close the racy window with snapshot create/destroy ioctl */
- 		down_read(&fs_info->subvol_sem);
-+		/*
-+		 * 1 to remove old root ref
-+		 * 1 to remove old root backref
-+		 * 1 to add new root ref
-+		 * 1 to add new root backref
-+		 */
-+		trans_num_items = 4;
-+	} else {
-+		/*
-+		 * 1 to update inode
-+		 * 1 to remove old inode ref
-+		 * 1 to add new inode ref
-+		 */
-+		trans_num_items = 3;
-+	}
- 	/*
--	 * We want to reserve the absolute worst case amount of items.  So if
--	 * both inodes are subvols and we need to unlink them then that would
--	 * require 4 item modifications, but if they are both normal inodes it
--	 * would require 5 item modifications, so we'll assume they are normal
--	 * inodes.  So 5 * 2 is 10, plus 1 for the new link, so 11 total items
--	 * should cover the worst case number of items we'll modify.
--	 * If our rename has the whiteout flag, we need more 5 units for the
--	 * new inode (1 inode item, 1 inode ref, 2 dir items and 1 xattr item
--	 * when selinux is enabled).
-+	 * 1 to remove old dir item
-+	 * 1 to remove old dir index
-+	 * 1 to update old parent inode
-+	 * 1 to add new dir item
-+	 * 1 to add new dir index
-+	 * 1 to update new parent inode (if it's not the same as the old parent)
+@@ -6481,8 +6469,8 @@ static int btrfs_create(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (err)
+ 		goto out_unlock;
+ 
+-	err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry, BTRFS_I(inode),
+-			0, index);
++	err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
++			     dentry->d_name.name, dentry->d_name.len, 0, index);
+ 	if (err)
+ 		goto out_unlock;
+ 
+@@ -6541,8 +6529,8 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
+ 	ihold(inode);
+ 	set_bit(BTRFS_INODE_COPY_EVERYTHING, &BTRFS_I(inode)->runtime_flags);
+ 
+-	err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry, BTRFS_I(inode),
+-			1, index);
++	err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
++			     dentry->d_name.name, dentry->d_name.len, 1, index);
+ 
+ 	if (err) {
+ 		drop_inode = 1;
+@@ -9324,8 +9312,8 @@ static int btrfs_whiteout_for_rename(struct btrfs_trans_handle *trans,
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = btrfs_add_nondir(trans, BTRFS_I(dir), dentry,
+-				BTRFS_I(inode), 0, index);
++	ret = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
++			     dentry->d_name.name, dentry->d_name.len, 0, index);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -9863,8 +9851,9 @@ static int btrfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	 * elsewhere above.
  	 */
--	trans_num_items = 11;
-+	trans_num_items += 6;
-+	if (new_dir != old_dir)
-+		trans_num_items++;
-+	if (new_inode) {
-+		/*
-+		 * 1 to update inode
-+		 * 1 to remove inode ref
-+		 * 1 to remove dir item
-+		 * 1 to remove dir index
-+		 * 1 to possibly add orphan item
-+		 */
-+		trans_num_items += 5;
-+	}
- 	if (flags & RENAME_WHITEOUT)
- 		trans_num_items += 5;
- 	trans = btrfs_start_transaction(root, trans_num_items);
+ 	if (!err)
+-		err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry,
+-				BTRFS_I(inode), 0, index);
++		err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
++				     dentry->d_name.name, dentry->d_name.len, 0,
++				     index);
+ 	if (err)
+ 		goto out_unlock;
+ 
 -- 
 2.35.1
 
