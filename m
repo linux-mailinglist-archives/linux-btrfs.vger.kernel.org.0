@@ -2,111 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0194CC58C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Mar 2022 20:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E774CC9ED
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Mar 2022 00:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235830AbiCCTBy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Mar 2022 14:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        id S229786AbiCCXUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Mar 2022 18:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235825AbiCCTBx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Mar 2022 14:01:53 -0500
-Received: from libero.it (smtp-17.italiaonline.it [213.209.10.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBD819F47E
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Mar 2022 11:01:06 -0800 (PST)
-Received: from [192.168.1.27] ([78.12.27.75])
-        by smtp-17.iol.local with ESMTPA
-        id PqhAnbGvgPSXePqhAnUfPB; Thu, 03 Mar 2022 20:01:03 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1646334063; bh=KKIMmm8TehG9eKxETyrF6NtJuIONTPz6zwQ2ucLON5I=;
-        h=From;
-        b=rJZk7Q0dnPn0wkdxM4RuYQNlJ1n3ZbntF0qwLB1YI2hrLPE++uAWwTV3fXw3ShC7k
-         iZv+uQgUVotGeUZmrxkfZiXJpOPL3bV16pV3xWt9ZyLT/kjZckfXonPbsiPUAkDZy8
-         VPH1JxOLo77fGn8hsK3aCs87DLLVr+ALWhfu+yYCsOGTki/it32P9RzvUlq1oYH39D
-         XjcYkxTYFlupUQO5JT6k2FO8CR7azNXYomca9l7AkU18p+cf4Iv/9znnPX7MhtWmCU
-         Twm5dLUvfktdUK9L2PuJ6PR7EzD2MTQ/7LbrxqGxWm8Ib9yI/iOVnoUe+s13rtu4da
-         KYmxGQjQwJq+g==
-X-CNFS-Analysis: v=2.4 cv=SMyH6MjH c=1 sm=1 tr=0 ts=6221106f cx=a_exe
- a=aCiYQ2Po16U8px2wfyNKfg==:117 a=aCiYQ2Po16U8px2wfyNKfg==:17
- a=IkcTkHD0fZMA:10 a=QpcPEjOwQhA3vf25GIUA:9 a=QEXdDO2ut3YA:10
-Message-ID: <d9d6f8a6-044c-648a-c677-d4258fc70154@inwind.it>
-Date:   Thu, 3 Mar 2022 20:01:00 +0100
+        with ESMTP id S235641AbiCCXUH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Mar 2022 18:20:07 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B923B285
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Mar 2022 15:19:21 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id t187so1725261pgb.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Mar 2022 15:19:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y4awC6VjgeW0OkclubdMPbX6MrFmGQ92JYHxAx/YGpE=;
+        b=UmsHMJjpDJWDBKTqe2DxAFR6vUVR8j7K+UQWXseF0dKInYDPPKCKpqH31EheE9w6Ug
+         ppsV08vdDKMGT7SWXaKGM+SylgCzlV8PhIM1akOz9tXCX6lmI2pITFMcrpDi51fzNpt2
+         Vm1BslKDPjMgq4SFuTx2r0trWdHZkTxc1lgDJlIU2B2SXxnZlJeouZvdT3Mqd2y4uouM
+         knrobiK3EOf+HdkxxJKgR++mx+bUhN7U+yvNnm6FAvVfZT4B4aHzYcCkHy8tZ/1IzjEQ
+         dkLoKfDULieXlfC2SAwBRma8DJ6mpUGzktk/PO8yae3YweRpJNMuSSN6J6veidXEQaOa
+         ylTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y4awC6VjgeW0OkclubdMPbX6MrFmGQ92JYHxAx/YGpE=;
+        b=qhgkcSmybRm6ewAXj9G5DgJO2akFJWu0ERaVy2FwxNTmoa+X+/2NCFFDOEBiJyDYrt
+         dCIMwhiQ7F7shF/4o1xfcZCUwSlwfZlf/J11+ed+wCXEg5u2RiU5FLWQ35xNjMHtIn7q
+         If0JFEVT0za+fU/0kS6kQeSkX356GtZnYDav9Hz0Jz4DklOFbJkocb2hy7ejK5Mykdp3
+         WLArojXOpiEgpo5r6+WWEjuyDoB62T1Uq5ZhgC9tEHiQBQRO/aMH3Bv8AuC02UqJ4eri
+         u2/a+0lb/u8j6jnwrphUB24QZ4Kmf/s6ppRHG1DfGKtKVct71HHLUvoRlYfUB2+xo8ex
+         mQUw==
+X-Gm-Message-State: AOAM531S/0Z01yjwJO6E35XUvY45OtN8eUUlFvGPedSyMuij/4q42JaN
+        VJqu777GsyauQE8qFg5tjwhF9Zu9W4iCeA==
+X-Google-Smtp-Source: ABdhPJzD5QLG23HoKXcnuG798p6rey1qaqSY64tfujrMDsz0BVOCafisiQ0p6yexZw3sYso6mkOA8w==
+X-Received: by 2002:a65:6943:0:b0:376:333b:1025 with SMTP id w3-20020a656943000000b00376333b1025mr29428587pgq.164.1646349560225;
+        Thu, 03 Mar 2022 15:19:20 -0800 (PST)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:76ce])
+        by smtp.gmail.com with ESMTPSA id x7-20020a17090a1f8700b001bf1db72189sm1103507pja.23.2022.03.03.15.19.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Mar 2022 15:19:19 -0800 (PST)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+Subject: [PATCH 00/12] btrfs: inode creation cleanups and fixes
+Date:   Thu,  3 Mar 2022 15:18:50 -0800
+Message-Id: <cover.1646348486.git.osandov@fb.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 0/7][V11] btrfs: allocation_hint
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>
-References: <cover.1643228177.git.kreijack@inwind.it>
- <Yh0AnKF1jFKVfa/I@localhost.localdomain>
- <c7fc88cd-a1e5-eb74-d89d-e0a79404f6bf@libero.it>
- <Yh42nDUquZIqVMC0@localhost.localdomain>
- <e8d1a33a-a75a-1a25-b788-a2da5019e6c4@inwind.it>
- <Yh6Tit2dKcLt7xJP@localhost.localdomain>
- <90407af0-57bb-9808-7663-6feb56fa7b20@inwind.it>
- <Yh/gWL983TFzcObT@localhost.localdomain>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <Yh/gWL983TFzcObT@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfC0eRXaEUtKwCkm3bbCszyF8TRdMppUXcamdSi+NtYmb8eV+4wB60uZmKdae7f90TrI7bR+k+sWRmd5ZC/28LgiAudkhCv3vcwb8OAsHKTke4La7rBHf
- snvgiBIQc4A9d0UqmRGue0EBrDNSWjz31o8ACgzMf/C8vCLaebqT5cj/B4EpsvgsISYL9F7pcM8ehVrPtzeGEh5URVcWygmZl5MltkvFPmnUa8GdiyysgkKQ
- 8zgBHucKLdpNP+wUblEmVtdABFwaK5bt3UA6RCM4dPBuPNaQaSM5Z28pQ32L66OmWerhy6wjM2xNiBh1fNCt+dhsgRoa19AGMd2mlOMp0PQ0m5cQIWmEHZZW
- zTnjcHX9rrytyyP/nQJsoSSkqBj7Ag==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 02/03/2022 22.23, Josef Bacik wrote:
-> On Wed, Mar 02, 2022 at 08:30:22PM +0100, Goffredo Baroncelli wrote:
-[...]
->>
->> For simple filesystem (e.g. 1 disk), it is trivial (and not useful); for more complex
->> one (2, 3 disks) it is easy to make mistake.
->>
->> btrfs-progs relies on major_minor; it is possible to used the BTRFS_IOC_DEV_INFO
->> but it requires CAP_ADMIN....
->>
-> 
-> Well this just made me go look at the code and realize you don't require
-> CAP_ADMIN for the sysfs knob, which we're going to need.  So using
-> BTRFS_IOC_DEV_INFO shouldn't be a problem.  Thanks,
+From: Omar Sandoval <osandov@fb.com>
 
-I am not sure to be understood completely your answer, so I recap what I am doing:
-- replace the "int" interface in favor of a "string" interface (not "echo 123 > allocaton_hint"
-   but "echo DATA_ONLY > allocaton_hint") [DONE]
-- remove the "kernel" patch related to "major_minor" [DONE]
-- update the btrfs-progs patch to use BTRFS_IOC_DEV_INFO instead of <devid>/major_minor [WIP]
+This series contains several cleanups and fixes for our inode creation
+codepaths. The main motivation for this is preparation for fscrypt
+support (in particular, setting up the fscrypt context at inode creation
+time). But, it also reduces a lot of code duplication and fixes some
+minor bugs, so it's worth getting in ahead of time.
 
+Patch 12 is the main change, which unifies and simplifies all of our
+inode creation codepaths. Patches 1-11 are small cleanups that I was
+able to peel off of the big patch.
 
-This will have the following consequences:
-- any user is still capable to read <devid>/allocaton_hint
-- only root is able to use "btrfs prop get allocaton_hint <devname>" (before any user)
-- only root is able to update <devid>/allocaton_hint
-- only root is able to use "btrfs prop set allocation_hint <devname>"
+Thanks!
 
-The 2nd point may be relaxed allowing to use BTRFS_IOC_DEV_INFO even to not root user (
-I don't think that there is any sensitive data exported by BTRFS_IOC_DEV_INFO); but this will
-be done as separate patch.
+Omar Sandoval (12):
+  btrfs: reserve correct number of items for unlink and rmdir
+  btrfs: reserve correct number of items for rename
+  btrfs: get rid of btrfs_add_nondir()
+  btrfs: remove unnecessary btrfs_i_size_write(0) calls
+  btrfs: remove unnecessary inode_set_bytes(0) call
+  btrfs: remove unnecessary set_nlink() in btrfs_create_subvol_root()
+  btrfs: remove unused mnt_userns parameter from __btrfs_set_acl
+  btrfs: remove redundant name and name_len parameters to create_subvol
+  btrfs: don't pass parent objectid to btrfs_new_inode() explicitly
+  btrfs: move btrfs_get_free_objectid() call into btrfs_new_inode()
+  btrfs: set inode flags earlier in btrfs_new_inode()
+  btrfs: rework inode creation to fix several issues
 
-> 
-> Josef
-BR
-G.Baroncelli
+ fs/btrfs/acl.c   |  39 +-
+ fs/btrfs/ctree.h |  39 +-
+ fs/btrfs/inode.c | 944 +++++++++++++++++++++++------------------------
+ fs/btrfs/ioctl.c | 175 ++++-----
+ fs/btrfs/props.c |  40 +-
+ fs/btrfs/props.h |   4 -
+ 6 files changed, 581 insertions(+), 660 deletions(-)
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.35.1
+
