@@ -2,318 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DECC54CE0C7
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Mar 2022 00:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88624CE0FF
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Mar 2022 00:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbiCDXNG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Mar 2022 18:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
+        id S229624AbiCDXeN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Mar 2022 18:34:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiCDXMy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Mar 2022 18:12:54 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC37927C537
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Mar 2022 15:12:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646435519;
-        bh=dz7ftsBtUMydlPH7zE0hakpDqSnKoP2rtWYQSlAX3QI=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=HGlsVHUrw19VHQxVf5Q8DUwjfsOTZPXoXAcxOQKKVOPTiiYYWeJObq3xlnAe9ommK
-         HkQ8GohZKa7dIOc0MGPXZLvzGVrfoLZ0kEJ/7nlIdO37F5TNYQt15Zje9m+vuiJ6KY
-         FYLDnQAg0+NuNkfh6FPmBevfE5KrzLn/W5hasrss=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQv8n-1nn9I006wp-00O2sD; Sat, 05
- Mar 2022 00:11:59 +0100
-Message-ID: <068c1331-e7b1-dce2-2cda-a8d2df4603ce@gmx.com>
-Date:   Sat, 5 Mar 2022 07:11:55 +0800
+        with ESMTP id S229449AbiCDXeN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Mar 2022 18:34:13 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29F5172E67
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Mar 2022 15:33:22 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id m41so4391331vkf.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Mar 2022 15:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jankanis-nl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ULkEF2tvXeYt0+pjThBOJ/8HUh+scxd4RpSHd6NwPNw=;
+        b=Py/ycF9Q4IzWzM4fPuDWtbIVbqC3f3WDMytDdBYrHA6aXwh1oEbLUe5MhmIaW0LuP3
+         y6KgyhtpJDnp+iI9B6w2HILGpgr/i7PYnSelzj0wZ8l6CHdhdtNWaVOr48CGGdFru+rC
+         dMrsMDLW2utWH4UKcjZT2J3jd1qvwbF/q7TqocOnsKE+1S1Lol0hLkhv6B3Zo37iOzr0
+         ANcESWzfHKHxffvPlgt0pnZbS+unGdfgcD4uqqPXQ3crVobgRRW8OEAcp14Cbc7RlMQP
+         qkiBE8UkVvIWAIqDZy9mKZreuio5TEDy1JUJ04hXoD02XmSvXsBuwV83mK9ogscDSBsz
+         HO2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ULkEF2tvXeYt0+pjThBOJ/8HUh+scxd4RpSHd6NwPNw=;
+        b=Dpwypxk6xLw3tYgKDNn/rECNYsH3Jl1pUbaDQ5wz3kwcXIEN1PsohuFZ2GrNMuaGNK
+         jv5uWAN5EH3pJQZYHy5CGi3IIzb6ggUTjsbljyhdmDXoowR72kwVWU05GGTT5Q8zrgF4
+         vhh9s7ducYAIHeTjxMbO4b4AFgcXqrbeOXaxQLp4T4tx41DohpARx61huHf9vU5HSAO6
+         Q+kWnytX8+YcXOAs188cdGAnR8hPemaFREZxpFPrgHfWWdo6TNoayXEXjtNnSQex/qjB
+         U7dQXiK2MI/QaZbUO4lwUmbK3cUu057TvlXfqY/MjnL1dWmytJNeCg8DLMLD5qIE6oiH
+         ft6w==
+X-Gm-Message-State: AOAM532Hz+UqY9iBoYfFAznH6Teh3WraF5ZguYfjOh+BGfjF1dGlhnIF
+        OGhQg61F1q2/bafUEDbL3mspEx0DxHxJ+rwt
+X-Google-Smtp-Source: ABdhPJxxx7G+0/4l/8WmITTczxJzlPplcae91VFJXFgdAvCdiYU3OJRDb05bJnx1iE8gJdmzGB2uTw==
+X-Received: by 2002:a05:6122:c6e:b0:330:cc8a:47bf with SMTP id i46-20020a0561220c6e00b00330cc8a47bfmr503452vkr.13.1646436801895;
+        Fri, 04 Mar 2022 15:33:21 -0800 (PST)
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
+        by smtp.gmail.com with ESMTPSA id x32-20020ab048a3000000b00342b5e4ab73sm980345uac.7.2022.03.04.15.33.21
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Mar 2022 15:33:21 -0800 (PST)
+Received: by mail-vs1-f46.google.com with SMTP id u124so3752612vsb.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Mar 2022 15:33:21 -0800 (PST)
+X-Received: by 2002:a05:6102:c54:b0:320:7af9:607c with SMTP id
+ y20-20020a0561020c5400b003207af9607cmr485849vss.87.1646436800944; Fri, 04 Mar
+ 2022 15:33:20 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH 3/3] btrfs: check extent buffer owner against the owner
- rootid
-Content-Language: en-US
-To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <cover.1645515599.git.wqu@suse.com>
- <1040e11d4075c8e61158126c5ddc2ee803a86143.1645515599.git.wqu@suse.com>
- <CAL3q7H5CsrCN61zUY1-Vf5aEb6uJu9u2MdNSZtP1aEmyYi1TQA@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAL3q7H5CsrCN61zUY1-Vf5aEb6uJu9u2MdNSZtP1aEmyYi1TQA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:M3naNvFP8TXsfsSuBDYSXxGZ2PHL4tkbcZ1YU6rrWQfH9YsRUdx
- ZDLzNKPEZOCXE1MPUnifsCsYia9MfRpQdGg1vP01G8DC1KZwegjezBveeT4Cj08wyLuGiKB
- BOlHtg+blMKNL5LOAmcbP3C3Pcb16vAl425iRbVxq1fEKozpiPXVz+6j4yXO6AfLnIkEY1A
- wXZXOxFfghvEd/OzkevPQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hpwB9ROYenY=:wZ38TvZ3SHRZGKRZg9jO2I
- yYgSrxRpJUpzoP4yG/I8M8zZjO1gTO9k0Ta6PsFuWZDdIk9NgfTREPvAehKouMJLYibmeTIYk
- 5nIIe0DXs3DG0e+Kh5WahzuzFtLcvAZHB5s8l3T8cI+4gxnIvwFDYRwxWvn73jkVVic88J8/l
- 7lmbcTgfFhdB/+28rk+sY9ekIH6PzjoaQTDit/c/y/Bvtp4b4Cj+XAc7usUSKaOfe7TPk2sGO
- gRBdpKkXKX+efNCHrWZleJkJgYZsLJpHyDzb0rr6dK3JDPDHhnAHEDmZyUXs3XwTCC/IUFdSS
- mH0U3BE7kLMQCBjeYG5steNgXzv+kpRJ0P1ua9n0Ra5TM2nl4+/V2JOCwokZ/7c2lYO38ZvZe
- 9ugrxmvw68fz1b9dYjusJwO/znmBRs5R0EVB1ClxMinOfdVi8HAnvTUh8rEPJxkR1MuOqecqw
- /PSdpMypRa4m7sUeEPTYUTEOda6+TffWjpJP5PWZU7xN3II6WAaADvXMxfqQd1D0SpX4CH8Q8
- Iz1vqhge1k2mA9xGo+7yPTb2piJ3TjdLveXiSjAKTB2iqKnBNcZfq3WPN+w8HNE1CKNNaAPsV
- lDmOmNBI6Lsrx3Dit7K6SQGTBCe/HcIshTJh8NQfRQuvt3GAXW71DpPl5Kdi9VUK6QLWxgnlo
- R+l4C/RhtrJQiy6R/A+omYu9zrG0asYe0rUvTlowHLPEM/Mo+1vxow6GHdKyolBr82pxjIb+8
- 5LZ7J6V4wCcFTqYN3TJ0QkXn56S2VybyvYxTrrWzE7tuZjNzDmkQmfGQDiMCzxWJtVG5srWh6
- 3hNBWXTj4gjEYClDhM80lUWFW+FoBnmfwTpt2tGQz2/OHeqvOFYCBDTgfa7HkRMppgMytf6pe
- AjzX6taoI9AnJhfOntZ7bsPWs01ZZUYZygGylkVD38kWMYG4juvq2TNPdMO2jUbnFuylesHnU
- 7UqUVbm0MmQHROUdPqgqZooxj+4XPvVSHhusH2RfFyExyRGldb39uEx3A7d1y3p/rVZCt1ftn
- BnYH2Sag9ZKeyJMIAqyUcNI2j/U7YT6fkRroqKXOEMVuYAbOJkbHom+WSxpzg8h/pdWjqnZU9
- c03p0XcRDiuRl8=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Jan Kanis <jan.code@jankanis.nl>
+Date:   Sat, 5 Mar 2022 00:33:07 +0100
+X-Gmail-Original-Message-ID: <CAAzDdeysSbH-j-9rBGs3HBv2vyETbVyNoCjfDOKrka1OAkn1_g@mail.gmail.com>
+Message-ID: <CAAzDdeysSbH-j-9rBGs3HBv2vyETbVyNoCjfDOKrka1OAkn1_g@mail.gmail.com>
+Subject: Is this error fixable or do I need to rebuild the drive?
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
+I have a btrfs filesystem with two disks in raid 1. Each btrfs device
+sits on top of a LUKS encrypted volume, which consists of a raw drive
+partition on a SMR hard disk, though I don't think that's relevant.
 
-On 2022/3/5 00:25, Filipe Manana wrote:
-> On Tue, Feb 22, 2022 at 7:42 AM Qu Wenruo <wqu@suse.com> wrote:
->>
->> Btrfs doesn't really check whether the tree block really respects the
->> root owner.
->>
->> This means, if a tree block referred by a parent in extent tree, but ha=
-s
->> owner of 5, btrfs can still continue reading the tree block, as long as
->> it doesn't trigger other sanity checks.
->>
->> Normally this is fine, but combined with the empty tree check in
->> check_leaf(), if we hit an empty extent tree, but the root node has
->> csum tree owner, we can let such extent buffer to sneak in.
->>
->> Shrink the hole by:
->>
->> - Do extra eb owner check at tree read time
->>
->> - Make sure the root owner extent buffer exactly match the root id.
->>
->> Unfortunately we can't yet completely patch the hole, there are several
->> call sites can't pass all info we need:
->>
->> - For reloc/log trees
->>    Their owner is key::offset, not key::objectid.
->>    We need the full root key to do that accurate check.
->>
->>    For now, we just skip the ownership check for those trees.
->>
->> - For add_data_references() of relocation
->>    That call site doesn't have any parent/ownership info, as all the
->>    bytenrs are all from btrfs_find_all_leafs().
->>
->>    Thankfully, btrfs_find_all_leafs() still do the ownership check,
->>    and even for the read_tree_block() caller inside
->>    add_data_references(), we know that all tree blocks there are
->>    subvolume tree blocks.
->>    Just manually convert root_owner 0 to FS_TREE to continue the check.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/ctree.c        |  6 +++++
->>   fs/btrfs/disk-io.c      | 21 +++++++++++++++
->>   fs/btrfs/tree-checker.c | 57 ++++++++++++++++++++++++++++++++++++++++=
-+
->>   fs/btrfs/tree-checker.h |  1 +
->>   4 files changed, 85 insertions(+)
->>
->> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
->> index 0eecf98d0abb..d904fe0973bd 100644
->> --- a/fs/btrfs/ctree.c
->> +++ b/fs/btrfs/ctree.c
->> @@ -16,6 +16,7 @@
->>   #include "volumes.h"
->>   #include "qgroup.h"
->>   #include "tree-mod-log.h"
->> +#include "tree-checker.h"
->>
->>   static int split_node(struct btrfs_trans_handle *trans, struct btrfs_=
-root
->>                        *root, struct btrfs_path *path, int level);
->> @@ -1443,6 +1444,11 @@ read_block_for_search(struct btrfs_root *root, s=
-truct btrfs_path *p,
->>                          btrfs_release_path(p);
->>                          return -EIO;
->>                  }
->> +               if (btrfs_check_eb_owner(tmp, root->root_key.objectid))=
- {
->> +                       free_extent_buffer(tmp);
->> +                       btrfs_release_path(p);
->> +                       return -EUCLEAN;
->> +               }
->>                  *eb_ret =3D tmp;
->>                  return 0;
->>          }
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index 8165ee3ae8a5..018a230efca5 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -1109,6 +1109,10 @@ struct extent_buffer *read_tree_block(struct btr=
-fs_fs_info *fs_info, u64 bytenr,
->>                  free_extent_buffer_stale(buf);
->>                  return ERR_PTR(ret);
->>          }
->> +       if (btrfs_check_eb_owner(buf, owner_root)) {
->> +               free_extent_buffer_stale(buf);
->> +               return ERR_PTR(-EUCLEAN);
->> +       }
->>          return buf;
->>
->>   }
->> @@ -1548,6 +1552,23 @@ static struct btrfs_root *read_tree_root_path(st=
-ruct btrfs_root *tree_root,
->>                  ret =3D -EIO;
->>                  goto fail;
->>          }
->> +
->> +       /*
->> +        * For real fs, and not log/reloc trees, root owner must
->> +        * match its root node owner
->> +        */
->> +       if (!test_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &fs_info->fs_state)=
- &&
->> +           root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID &&
->> +           root->root_key.objectid !=3D BTRFS_TREE_RELOC_OBJECTID &&
->> +           root->root_key.objectid !=3D btrfs_header_owner(root->node)=
-) {
->> +               btrfs_crit(fs_info,
->> +"root=3D%llu block=3D%llu, tree root owner mismatch, have %llu expect =
-%llu",
->> +                          root->root_key.objectid, root->node->start,
->> +                          btrfs_header_owner(root->node),
->> +                          root->root_key.objectid);
->> +               ret =3D -EUCLEAN;
->> +               goto fail;
->> +       }
->>          root->commit_root =3D btrfs_root_node(root);
->>          return root;
->>   fail:
->> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
->> index 2c1072923590..f50bde52f466 100644
->> --- a/fs/btrfs/tree-checker.c
->> +++ b/fs/btrfs/tree-checker.c
->> @@ -1855,3 +1855,60 @@ int btrfs_check_node(struct extent_buffer *node)
->>          return ret;
->>   }
->>   ALLOW_ERROR_INJECTION(btrfs_check_node, ERRNO);
->> +
->> +int btrfs_check_eb_owner(struct extent_buffer *eb, u64 root_owner)
->> +{
->> +       bool is_subvol =3D is_fstree(root_owner);
->> +       const u64 eb_owner =3D btrfs_header_owner(eb);
->> +
->> +       /*
->> +        * Skip dummy fs, as selftest doesn't bother to create unique e=
-bs for
->> +        * each dummy root.
->> +        */
->> +       if (test_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &eb->fs_info->fs_sta=
-te))
->> +               return 0;
->> +
->> +       /*
->> +        * Those trees uses key.offset as their owner, our callers don'=
-t
->> +        * have the extra capacity to pass key.offset here.
->> +        * So we just skip those trees.
->> +        */
->> +       if (root_owner =3D=3D BTRFS_TREE_LOG_OBJECTID ||
->> +           root_owner =3D=3D BTRFS_TREE_RELOC_OBJECTID)
->> +               return 0;
->> +
->> +       /*
->> +        * This happens for add_data_references() of balance, at that c=
-all site
->> +        * we don't have owner info.
->> +        * But we know all tree blocks there are subvolume tree blocks.
->> +        */
->> +       if (root_owner =3D=3D 0)
->> +               is_subvol =3D true;
->> +
->> +       if (!is_subvol) {
->> +               /* For non-subvolume trees, the eb owner should match r=
-oot owner */
->> +               if (root_owner !=3D eb_owner) {
->> +                       btrfs_crit(eb->fs_info,
->> +"corrupted %s, root=3D%llu block=3D%llu owner mismatch, have %llu expe=
-ct %llu",
->> +                               btrfs_header_level(eb) =3D=3D 0 ? "leaf=
-" : "node",
->> +                               root_owner, btrfs_header_bytenr(eb), eb=
-_owner,
->> +                               root_owner);
->> +                       return -EUCLEAN;
->> +               }
->> +               return 0;
->> +       }
->> +
->> +       /*
->> +        * For subvolume trees, owner can mismatch, but they should all=
- belong
->> +        * to subvolume trees.
->> +        */
->> +       if (is_subvol !=3D is_fstree(eb_owner)) {
->> +               btrfs_crit(eb->fs_info,
->> +"corrupted %s, root=3D%llu block=3D%llu owner mismatch, have %llu expe=
-ct [%llu, %llu]",
->> +                       btrfs_header_level(eb) =3D=3D 0 ? "leaf" : "nod=
-e",
->> +                       root_owner, btrfs_header_bytenr(eb), eb_owner,
->> +                       BTRFS_FIRST_FREE_OBJECTID, BTRFS_LAST_FREE_OBJE=
-CTID);
->> +               return -EUCLEAN;
->
-> This causes a failure when using free space cache v1 and doing balance:
+One of the drives failed, the sata link appears to have died, if I'm
+interpreting the system logs right. As it's a raid 1 the system kept
+running and I didn't notice the dead drive until some time later,
+during which I kept using the filesystem.
+Something wasn't behaving right, so I decided to reboot. After the
+reboot the btrfs filesystem didn't come up and one of the drives was
+dead. I was able to mount from the remaining device with
+degraded/read-only, all data seemed to be there.
+I took out the dead drive and put it into another system for
+examination. After some fiddling the drive came up again, so it wasn't
+permanently dead after all. I was able to mount it degraded/read-only.
+It looked good except for missing the latest changes I made to some
+files I was working with, so it was a bit out of date. A btrfs scrub
+showed no corruptions.
+I put the drive back in the original system, thinking that btrfs would
+either refuse to mount it or fix it from the other copy. The
+filesystem automatically mounted rw without a 'degraded' option, and
+the filesystem could be used again. The logs showed some "parent
+transid verify failed" errors, which I assumed would be corrected from
+the other copy. Attempting to mount only the drive that had failed
+with degraded/read-only now no longer worked.
 
-Oh, no wonder why my default fstests run passed.
+It's now some days later, the filesystem is still working, but I'm
+also still getting "parent transid verify failed" errors in the logs,
+and "read error corrected". So by now I'm thinking that btrfs
+apparently does not fix this error by itself. What's happening here,
+and why isn't btrfs fixing it, it has two copies of everything?
+What's the best way to fix it manually? Rebalance the data? scrub it?
+delete, wipe and re-add the device that failed so the mirror can be
+rebuilt?
 
->
-> BTRFS critical (device sdb): corrupted leaf, root=3D0 block=3D12320768
-> owner mismatch, have 1 expect [256, 18446744073709551360]
->
-> It's triggered from add_data_references() (relocation), for root tree
-> leaves that contain data extents for v1 space caches.
-> In that case the header owner is 1 (root tree), root_owner is 0, so
-> is_subvol is set to true, and is_fstree(1) returns false, triggering
-> the false corruption error here.
-
-Right, the root_owner 0 is from relocation call site which doesn't have
-the owner info, and since it's for data, we default to is_subvol =3D true,
-and caused the problem.
-
-It's much harder to distinguish data used by v1 cache in that context.
-
-So please drop the patch for now.
-
-Thanks for the report,
-Qu
-
->
-> Thanks.
->
->> +       }
->> +       return 0;
->> +}
->> diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
->> index 32fecc9dc1dd..c48719485687 100644
->> --- a/fs/btrfs/tree-checker.h
->> +++ b/fs/btrfs/tree-checker.h
->> @@ -25,5 +25,6 @@ int btrfs_check_node(struct extent_buffer *node);
->>
->>   int btrfs_check_chunk_valid(struct extent_buffer *leaf,
->>                              struct btrfs_chunk *chunk, u64 logical);
->> +int btrfs_check_eb_owner(struct extent_buffer *eb, u64 root_owner);
->>
->>   #endif
->> --
->> 2.35.1
->>
->
->
+best,
+Jan
