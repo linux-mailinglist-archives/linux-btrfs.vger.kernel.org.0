@@ -2,169 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3734CCC3F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Mar 2022 04:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2F24CCD5B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Mar 2022 06:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbiCDDYh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Mar 2022 22:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S235046AbiCDFlB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Mar 2022 00:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbiCDDYg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Mar 2022 22:24:36 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E5015695E;
-        Thu,  3 Mar 2022 19:23:49 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2240ivIS013852;
-        Fri, 4 Mar 2022 03:23:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=avQQJ1BZA+nTe6OBN63QdRiSbCQVf5zhg395wL00ARQ=;
- b=uvw5MXMWsiGVOwNj5+zwPJYfwZMUirqmKg+YKgjVu+h9FA36ctxGm+V9hSy90yWLb2gg
- AmAdjHdn96rnmYA074aJBbEEV6od5tiRDXPVIu1a2XvAmoPInVjaiGc8cKSALFRIjoBc
- TAckp/kmFrjJIs8Uu4h6ShpHf98SKuaeuZNLNF7unzKaS5fAR/riRk2DmsPNfmPf8oOw
- EwuYHE6S3/5VNEIhiEpAYe0oOrazhoywLSn6+dVvJnMy/AhoPwK4HX6IpAm69bppi8Cu
- P7YuDL7+AbFfkOk/8CbLCc60erA9MzJMFlnLg8g+2aQooD7ho3rztLwAkc3dKnngvkJG Tg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ek4hv8n5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Mar 2022 03:23:41 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 2243FRqb053135;
-        Fri, 4 Mar 2022 03:23:40 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
-        by userp3020.oracle.com with ESMTP id 3ek4jg10j9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Mar 2022 03:23:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G/W7hzBiyf5KxvWIB+H4DhP4oT4QWTTR7DlaGhUGuHzfuF7XptqRzLmws3AHto3OMO0lrSGMa8D5z2lRwlyRqOMsESCNcoao+O7g18hGw4Ut0BpY0O+gNGy1LngJ1IFK2IbQtYFR2e9Vq2TWkp+01Ds1r8rGHBZPIjhx0WNqZPLEWyVsuQj3ydodZ1HZHaKWTuETI6+Tx9/dchBbxQ+zwolcOM+hb8CGXRKFWKIYwXaC9C1LpSmc9c1lrIBItcwsUwuw+vTxDZnfNtGlSJy0tB9blhwUtfvya/89AAXZ51+m29tf+Kq+/QQQSLBK3E5yVbzEFElmr9cL218SexOK5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=avQQJ1BZA+nTe6OBN63QdRiSbCQVf5zhg395wL00ARQ=;
- b=kLBZ2eLqBoHYTs6l6NH590e19NlxxqgIJ19PDOL3uD03IXMiDEOGIZlb100KLenSStZBIIhVFU7WunYeSGwF9BmEEfj72/65TuZRRfXz+3BO/RoLBQf4Sc8qHRh5r/4yeRZlDjZX+PVNdnqijVtm1R1/dhsG98/da05ZkUW/nWzzWiie4nQIGPR1NdR+nYWv8PvsF84wnQdN/Nl1UJyxVhbSMt+v5X4qtOP7BJgnGwt1feelTR1sYwPD3fu0SYG/wdSuyhay1kSRPGsXCncvLm8g1HHGn4LjCylYAo6JLz92V8T3pByJNrJXv+7qJQo+DL8UE03q0T1OU5fTrfcTig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=avQQJ1BZA+nTe6OBN63QdRiSbCQVf5zhg395wL00ARQ=;
- b=oe3OpuPkrGH0DtPkSWFrbHSO1GuRvnFgyWcNt5iiVksAkIucn0GCt/zWnuGXQq/c7obVceNJ8NLKv/MFCMgtmBbmlI1a6dz1Rf+uSce9Uychrcn8SEiAQmhk5vOKUOmN+yYDtHAwdUER6128d2IacIFvTgZWKxIeKmlF6ZRjlhc=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by BN7PR10MB2563.namprd10.prod.outlook.com (2603:10b6:406:c3::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Fri, 4 Mar
- 2022 03:23:37 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::d469:7ab:8ae2:1e6f]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::d469:7ab:8ae2:1e6f%6]) with mapi id 15.20.5038.015; Fri, 4 Mar 2022
- 03:23:37 +0000
-Message-ID: <52f97b9f-804b-3d06-9f59-28607a622d13@oracle.com>
-Date:   Fri, 4 Mar 2022 11:23:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [syzbot] KASAN: use-after-free Read in btrfs_scan_one_device (2)
-Content-Language: en-US
-To:     syzbot <syzbot+82650a4e0ed38f218363@syzkaller.appspotmail.com>,
-        dsterba@suse.com, hdanton@sina.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000bece8f05d95afc28@google.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <000000000000bece8f05d95afc28@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0204.apcprd04.prod.outlook.com
- (2603:1096:4:187::16) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        with ESMTP id S232385AbiCDFlA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Mar 2022 00:41:00 -0500
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3017151C43
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Mar 2022 21:40:12 -0800 (PST)
+Received: by mail-il1-f200.google.com with SMTP id m3-20020a056e02158300b002b6e3d1f97cso4865954ilu.19
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Mar 2022 21:40:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=jyPn5kXEJqHnfMjwujNltAg3yZ6XHKIa+M0KGtElG/c=;
+        b=zNVCak5fENpNFrbgRDVgFTWlj56nrkMe5gb8Jr/Cp6L2G7Z7JG450O4Dild3Ip5I6E
+         o+rGMuXtq0hi07F/FYv4Wj98pTvBgAgaUWS+6TiM95g1onuGVorSx2wz2YujnYcB4pPD
+         OSrzTpqs5zfUjX09Gmz+X3+hpsmayCZ5LdwlIsxIx51+o1uVj255zASdAnXIzBrujy+b
+         3Y1UJB57w4Fi+vMEGft+/Ffr9XFI74g2FsHlE1hZVDmZLUVNxY/gD1ZsaK23WWHJHgDH
+         nSUyUiwq0zu3wc8W1hRd/e+MnkD9OvODtFUyv6ocIMRL5Ay9ACuqCg0y2MDX+HR3kekp
+         DNjw==
+X-Gm-Message-State: AOAM533GnWTTVSaoouhez7akbj/mFFV5j35bcjZLArB4ZBeNmEsKetTn
+        7nz/PRDm7rD50H/fSwlGEOx/0MtlnAF7b9FVbxQ5Zdj1aDeX
+X-Google-Smtp-Source: ABdhPJxt6GBzL8AEslBxqB6huDaofgg7OjeITtQV6VwjO3kEGXQic6a3e0oB9GF1e4Ll1Zg453Eq8eu7IMpuskLHLtH+oXGUEuQd
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8c11a4bc-4f2a-45d4-5367-08d9fd8e5ede
-X-MS-TrafficTypeDiagnostic: BN7PR10MB2563:EE_
-X-Microsoft-Antispam-PRVS: <BN7PR10MB2563F24A446A96578BC8E758E5059@BN7PR10MB2563.namprd10.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: O6totZ0QnckhQuH3332v9Hu6xFXJXbLEVROP8qAOZn6M10d9j0faS/XGGcYvEa7a6zz2Prrk6dITnnVFthYruLNpSy5XRuQrz3WCuK7/mhqFT4IBU8qSfvD6g0HdJQ41j3KPdl9kZhcF68wKlSm1b7xOrAtkXFtBK7T0fX68w6cB8YWQcEj4AtP5F6HbNMgBHbDbMdwIuprXpY/C98yChtBnp4T6esLF5PCvLza5DxUKX23cvtNbF2srYIc/38bPRWqy1Y2k5U/0qKcBmN6GAlRlteKorfvVXh9JKSvjbzvVisCVbFbgpFV4HdlrUCc/BudCgtbGH0Q9fxsXdiOH+6NpicX2Km6iDqZfbrSEp/F26yZxO6P98fCAqGty8784W2+r6QP80M1BlQMJ0IIv2lrU6hNoRes5NQgeWCvrnp6t8WnMECdr7Hq5658q8PzJKOcTWG78UwsKmKKvf5kaXRFa9UH96xBHSrdHMVAy9Qkudba8i0CiNoLlJ44Tw8zddTzfYKMW31T9YjgC8wKYQoDcNE8Z/EAxAF9EXJngBfdOUBjA0wi7Ft7CXt/G4Igh8uMK0CmbyJo7i/UjuBDKaMzc0xWvzc2PlX7krujaBHYuv9siMUA69npjVgsbQQyvGss+Z0T9kfFjffF0fXF6uOYRb4ILMFQRv3IdNDzv4THX+FfGXGdPH/C5N8aO51knbJw2w8ngLfTt3wc0TaTc6n3vlNp8FW5fWcX+AXkcH1QARKmoxd9k9hh22kHr3fHo0kwwnmneBFsITDTCn/TNG1aJla3D0jJdTJXcEFQ68zoCh3rSsovZL/PZog5tm6E1wa0caaVBfHo/fABNLETFKy4SeDfmQixFrZi7FOHsH0HIz5V/sEPNvqlxZMKhfS3U
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(2906002)(31696002)(8676002)(6666004)(38100700002)(6512007)(316002)(86362001)(6506007)(66946007)(66556008)(66476007)(4744005)(966005)(6486002)(5660300002)(508600001)(8936002)(26005)(186003)(36756003)(31686004)(2616005)(44832011)(99710200001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUtMSzVkZ0QzUFpyei9xekRKT2hMK1k0RitJTndPVEVOeWVHdDdRRUFpc2M0?=
- =?utf-8?B?bWJ4YmlqQVVjMjZ4TmdLb242MllYbE4yVU4vZ3Y1cCtkaXRSWEJURkRQSWxB?=
- =?utf-8?B?VVQ0UHpldUVYdDVtckJLb3pYMDVmNVR1dG9SWlUyNmc4TVA3QVQ0ajdpQlpx?=
- =?utf-8?B?cWpDS3d2WmJVRldZMlh2WFhjYk9UamF5ZTJMRkNkMTVzZWppNzEwanl6dFZS?=
- =?utf-8?B?Z0xVbUE5S21XeUE0OStueWVKdGova1BxSDJabUVEdjRJSzBGS1hnZDdBVnNu?=
- =?utf-8?B?cmtiQzVUNXhTR3pwbmxRdE1pd25BSFF2aVJLSkpUNy9jQTBoNTRaMzRUVnBi?=
- =?utf-8?B?a3oxdmQyWFpsbWhIblNWUGhZUVlCVEhRRGZWSUoxczJCOEZXN29wUkMwUzhu?=
- =?utf-8?B?VWVaTmhiSUJZRWorclVSVjlZQkhUcFp4OUxRTWZtZEdCVXE4ZjZMQmdRUFRT?=
- =?utf-8?B?U1JwQm05UzVjd202U1VFZ1hZQko1WDBNWGo3Zkt4TG9Rb1pWNTNBTDVqYTBS?=
- =?utf-8?B?RG9qdEJkR2prZ0o3QTF2ckhWUGkzZEdCcHhRYnB0N3pJYnE5VFNJMkc5NHdj?=
- =?utf-8?B?OG12Sy9mbUdHNjdNdVBnRjJ0czllS3V3MmQ2LzBDUnozNEZLTkFEZXNIM1NH?=
- =?utf-8?B?MDBmUHptSXQwNm42ODY1cGc0VG1NR1cwVkJUelV2NEplenYvUzlTMmFiRDdU?=
- =?utf-8?B?TG0vM1IycE1LMWhlanBlUGVJd0RZRnhBcEJuNkV4ZDhMTHVTazlhYXFzRFhn?=
- =?utf-8?B?enNjRlNlL3oveE5qODNuSXFGZVFpLzZBMExRYlA4cXpKREZEVWJtbkpNUjNS?=
- =?utf-8?B?MG5mZkp5bGNLdDIxYUZYV2lVcWl0VkZlUld1Ym5UQlY3UW9uWDhkMUVSbVg5?=
- =?utf-8?B?UGdzcGR4eWtwY0tsaklpamhtR3RwZFRnWVUrLzZ0ZExTckZ0S1VCV1FrOTRS?=
- =?utf-8?B?ZXZnSkhFVStkbTZqdHRjNlJGdkVtV01IWWIvckpaakVTc1dMbnV3M2diM1JL?=
- =?utf-8?B?cC9zSStvdjEvR2ZIZk5iQk5mQThTblg5NFdLNFlQbUEzMGgvUnFxSGJXNnk0?=
- =?utf-8?B?SDFXS1JJU2c1MkNFQXhZcHEwMUxyeVVudXBaWGhOVjlhZjIrbUVqZUo0MjZy?=
- =?utf-8?B?eGI0bjl0Nm9PWS9yUkVsK0VCWVE0U0o3Ulp6Vy9QR09aeUg5cWRld2tpL2Ri?=
- =?utf-8?B?cjQzdzhLNU9IS2JURGtZM3EzMmxPYU44cVZuV3NtZ01Sa3pnS0UwT2JsSGFp?=
- =?utf-8?B?MGpDaWVnWkc3MFBwOCtzdVpOOGtNb1ZZc0ppVThhRFdCU2pWeDMxYlZhdmFZ?=
- =?utf-8?B?OVkxUmpVUEtwUlBCWFA3WEhOb3BwNEtZU3pGV0xhc2JZTWF3WFJGRXhSTW01?=
- =?utf-8?B?dEZrYWhUSWRuMjluV2tnTEFTWE5JbElMMEtMQ3NvNStYWWprTG9HMEdEQVcv?=
- =?utf-8?B?cS9Iayt3SlNWMHloSGVtbFdtYWMxeldTKzlUZzJTbmo1UFI5MXZGWW1yUEFj?=
- =?utf-8?B?TjVyR3h3Ni8wUEJYN3lYMTM1bWowVDE2NjM4U3RLTkZ0dW9tZDJRUWpjcHdw?=
- =?utf-8?B?ZUFqVUdCNEp2Ny83a0Nic0RWSHprZ1hZR05ocWR1S2pJUHNjaE1nR21MTi9m?=
- =?utf-8?B?Zys4Y1AxK1pYdEpQenNOTFZjZXdyRjFxVWR4RXRTUmE5d3g5SndPS2lNeG5E?=
- =?utf-8?B?dGtRbXB6RDI4U2pFV2RaWGhlZmFTRi8xbCtQZjNhK1NEY2E4R0RpM1N1NHNp?=
- =?utf-8?B?SGU4OG1rdUtRVDY1UFBqZXAxRm40RnZnbElPNHhPdTZLS0NWcWR5QUEyLzNT?=
- =?utf-8?B?dHhZdlVLT213bDVvaGNJL2hyV21LeEk3SXJwRVVjMlh0NCtSR1VrdWZpaHBk?=
- =?utf-8?B?aC9EN05obFhDUGFGQlNJSlNLeWxKSHlLOUQ0MHFqbnNlS3VmWXJacEcyamRj?=
- =?utf-8?B?dFRaNHpEaTVYOVFESHl3OGc0amNuYnVKSWV6Y0VPajREYzA0UWM1a1RheDFZ?=
- =?utf-8?B?S0w0MnVMZFVaYmc4RFBRdE1CTUFiUStMZC80MDI2NzlTd1hZY09lM2ZRY2ps?=
- =?utf-8?B?Yy9lQlIrT0pQNjhFUTJnL2dNeEtQWU53SzNmcHdNTmUzZFN6WXplM09XTXcv?=
- =?utf-8?B?MGxDVm1yUjRvQkRncVF2eXljWkxnRVo5dEVNQ0lrdmtEQ3BseU9jUG52RVIz?=
- =?utf-8?Q?t0/LPWlqSDMLTNIvzDD/ILo=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c11a4bc-4f2a-45d4-5367-08d9fd8e5ede
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2022 03:23:37.2821
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MhonpKqeSz1AW/msiMk9cdFt9d5vQhYqH+kkrsOmMoxT1ngmbn/XEpRbJGylLUjsbBDuT7jBJCcnuYV9ihOJhA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR10MB2563
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10275 signatures=686983
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- adultscore=0 spamscore=0 phishscore=0 suspectscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203040013
-X-Proofpoint-GUID: e1w2phpbxLmX9pNg7GVqLq6U9D2yqVbd
-X-Proofpoint-ORIG-GUID: e1w2phpbxLmX9pNg7GVqLq6U9D2yqVbd
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:844d:0:b0:317:397b:1765 with SMTP id
+ l13-20020a02844d000000b00317397b1765mr19618297jah.67.1646372412368; Thu, 03
+ Mar 2022 21:40:12 -0800 (PST)
+Date:   Thu, 03 Mar 2022 21:40:12 -0800
+In-Reply-To: <20220304052236.2562-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ceac2e05d95df26a@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in btrfs_scan_one_device (2)
+From:   syzbot <syzbot+82650a4e0ed38f218363@syzkaller.appspotmail.com>
+To:     anand.jain@oracle.com, dsterba@suse.com, hdanton@sina.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
-::
-> Tested on:
-> 
-> commit:         2293be58 Merge tag 'trace-v5.17-rc4' of git://git.kern..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/
-::
-> patch:          https://syzkaller.appspot.com/x/patch.diff?x=133011f1700000
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in btrfs_iget
+
+general protection fault, probably for non-canonical address 0xdffffc000000003e: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000001f0-0x00000000000001f7]
+CPU: 0 PID: 3975 Comm: syz-executor324 Not tainted 5.17.0-rc5-syzkaller-00306-g2293be58d6a1-dirty #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:btrfs_inode_hash fs/btrfs/btrfs_inode.h:258 [inline]
+RIP: 0010:btrfs_iget_locked fs/btrfs/inode.c:5503 [inline]
+RIP: 0010:btrfs_iget_path fs/btrfs/inode.c:5525 [inline]
+RIP: 0010:btrfs_iget+0x7a/0x210 fs/btrfs/inode.c:5554
+Code: f3 65 48 8b 04 25 28 00 00 00 48 89 44 24 58 31 c0 e8 3a 5f 33 fe 49 8d be f7 01 00 00 48 89 f8 48 89 fe 48 c1 e8 03 83 e6 07 <42> 0f b6 14 20 49 8d 86 fe 01 00 00 48 89 c1 48 c1 e9 03 42 0f b6
+RSP: 0018:ffffc900029ef940 EFLAGS: 00010202
+
+RAX: 000000000000003e RBX: 1ffff9200053df28 RCX: 0000000000000000
+RDX: ffff88801c40e2c0 RSI: 0000000000000007 RDI: 00000000000001f7
+RBP: ffff888023dce000 R08: 0000000000000000 R09: ffffc900029ef6f7
+R10: ffffffff8912a851 R11: 0000000000000001 R12: dffffc0000000000
+R13: 0000000000000100 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007fec6fcc0700(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563567f04618 CR3: 0000000026c41000 CR4: 0000000000150ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_fill_super fs/btrfs/super.c:1364 [inline]
+ btrfs_mount_root.cold+0x93/0x1a2 fs/btrfs/super.c:1726
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:610
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1497
+ fc_mount fs/namespace.c:1030 [inline]
+ vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1060
+ vfs_kern_mount+0x3c/0x60 fs/namespace.c:1047
+ btrfs_mount+0x234/0xa60 fs/btrfs/super.c:1788
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:610
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1497
+ do_new_mount fs/namespace.c:3024 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3354
+ do_mount fs/namespace.c:3367 [inline]
+ __do_sys_mount fs/namespace.c:3575 [inline]
+ __se_sys_mount fs/namespace.c:3552 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3552
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fec6fd142a9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fec6fcc02f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fec6fd993e0 RCX: 00007fec6fd142a9
+RDX: 0000000020000140 RSI: 0000000020000100 RDI: 0000000020000080
+RBP: 0030656c69662f2e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000246 R12: 00007fec6fd65478
+R13: 00007fec6fd651f0 R14: 00007fec6fd650a8 R15: 00007fec6fd993e8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_inode_hash fs/btrfs/btrfs_inode.h:258 [inline]
+RIP: 0010:btrfs_iget_locked fs/btrfs/inode.c:5503 [inline]
+RIP: 0010:btrfs_iget_path fs/btrfs/inode.c:5525 [inline]
+RIP: 0010:btrfs_iget+0x7a/0x210 fs/btrfs/inode.c:5554
+Code: f3 65 48 8b 04 25 28 00 00 00 48 89 44 24 58 31 c0 e8 3a 5f 33 fe 49 8d be f7 01 00 00 48 89 f8 48 89 fe 48 c1 e8 03 83 e6 07 <42> 0f b6 14 20 49 8d 86 fe 01 00 00 48 89 c1 48 c1 e9 03 42 0f b6
+RSP: 0018:ffffc900029ef940 EFLAGS: 00010202
+RAX: 000000000000003e RBX: 1ffff9200053df28 RCX: 0000000000000000
+RDX: ffff88801c40e2c0 RSI: 0000000000000007 RDI: 00000000000001f7
+RBP: ffff888023dce000 R08: 0000000000000000 R09: ffffc900029ef6f7
+R10: ffffffff8912a851 R11: 0000000000000001 R12: dffffc0000000000
+R13: 0000000000000100 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007fec6fcc0700(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563567f04618 CR3: 0000000026c41000 CR4: 0000000000150ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	f3 65 48 8b 04 25 28 	repz mov %gs:0x28,%rax
+   7:	00 00 00
+   a:	48 89 44 24 58       	mov    %rax,0x58(%rsp)
+   f:	31 c0                	xor    %eax,%eax
+  11:	e8 3a 5f 33 fe       	callq  0xfe335f50
+  16:	49 8d be f7 01 00 00 	lea    0x1f7(%r14),%rdi
+  1d:	48 89 f8             	mov    %rdi,%rax
+  20:	48 89 fe             	mov    %rdi,%rsi
+  23:	48 c1 e8 03          	shr    $0x3,%rax
+  27:	83 e6 07             	and    $0x7,%esi
+* 2a:	42 0f b6 14 20       	movzbl (%rax,%r12,1),%edx <-- trapping instruction
+  2f:	49 8d 86 fe 01 00 00 	lea    0x1fe(%r14),%rax
+  36:	48 89 c1             	mov    %rax,%rcx
+  39:	48 c1 e9 03          	shr    $0x3,%rcx
+  3d:	42                   	rex.X
+  3e:	0f                   	.byte 0xf
+  3f:	b6                   	.byte 0xb6
 
 
-There is no commit id in the patch. The patch diff doesn't match any
-changes in the current misc-next?
+Tested on:
 
-Thanks, Anand
+commit:         2293be58 Merge tag 'trace-v5.17-rc4' of git://git.kern..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/
+console output: https://syzkaller.appspot.com/x/log.txt?x=112736d6700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5f28851401b410e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=82650a4e0ed38f218363
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11de2ad6700000
+
