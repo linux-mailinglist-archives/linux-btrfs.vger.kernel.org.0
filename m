@@ -2,179 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0876A4CE436
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Mar 2022 11:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED9B4CE437
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Mar 2022 11:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbiCEKed (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 5 Mar 2022 05:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41406 "EHLO
+        id S231365AbiCEKgu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Mar 2022 05:36:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbiCEKec (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Mar 2022 05:34:32 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492401E1139
-        for <linux-btrfs@vger.kernel.org>; Sat,  5 Mar 2022 02:33:41 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id g20so11691012vsb.9
-        for <linux-btrfs@vger.kernel.org>; Sat, 05 Mar 2022 02:33:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jankanis-nl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ws7et/iyfSc9NwEjC/Tx2zWZgRnXbk6wYL8vfkLBroc=;
-        b=OnuijJu37aJYQvtuxwQoHGUquEf6wiXsFip1Hv139KdQlEoQ4Vbk8PQ8+0ZqIor7qY
-         E9mQLSEvf8PdUk/OMZWgmhLwGLKJnzDPOT6ul7evIVmhKxLBbKHCmfvKSgl02A2vNxzS
-         BdwNykffXgvnxA8IyiKTkDJUsjKsR9jawCQJEKKaIKfPCrvXGuqc4WG3bEy0qi7pFHTV
-         9P066cFTPL/rIeCovMawi+JeE4ehmKgsbmWW4+pNEB/VuuTZQf3DempKNGJT/+rOh5zx
-         9z6g+ocAIaq3+SRfWRzomYrM5gNyB+R+93HCYIK585fE9FHFay4wIrISmJdtSnUPr7N2
-         E7zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ws7et/iyfSc9NwEjC/Tx2zWZgRnXbk6wYL8vfkLBroc=;
-        b=iAL70vUCr1Rr9Zux0jO58cfJryQGSCX8CoXLg5BENbGkj70XMPYGAupviPCvHHs9TJ
-         KAu78S3VmAVs1ytffdMXupIL4W460L4JIVGEEo9rNhRFlyGD43D3RihEn6TFU9J5wC6n
-         ZKzac4cZxym22DwJrdxNAezhP5J7+DiBfGKBEPdJAXi6zyESKh3GI4rPZjah+1evNURZ
-         ozLudLSct4cc96O5eu2YAdMja4/jTQYvZt+zPB9dx/2C5MmwjT2rAzpgbHd9xq0jkIlN
-         G1hAc+B2pLFtNV+a8yAOCn1bcbUg1cz+QGxuqyr/0ndsPniRjnGI6eqg/EpDqgtvpzPe
-         KcMA==
-X-Gm-Message-State: AOAM533h1P0QQF0IeGSKH1mr60EGGmfqSzzkbu55pfkpgKMOjZGAr1mG
-        iM+7bpRqbz9c8NztE6k5z/yHzgYs7Eq2ZSVx
-X-Google-Smtp-Source: ABdhPJzdZq3mM9xK73hYnwn6SzDvoIJy8g1NH2kQlHdQvLnvlCcqGRdoDcOGTyZPpZfLjYlsYbHf0A==
-X-Received: by 2002:a05:6102:3714:b0:320:5ff6:1e81 with SMTP id s20-20020a056102371400b003205ff61e81mr1035285vst.0.1646476420326;
-        Sat, 05 Mar 2022 02:33:40 -0800 (PST)
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
-        by smtp.gmail.com with ESMTPSA id o124-20020a1fa582000000b0032908b5b846sm1080352vke.26.2022.03.05.02.33.39
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Mar 2022 02:33:39 -0800 (PST)
-Received: by mail-vs1-f49.google.com with SMTP id 127so139841vsd.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 05 Mar 2022 02:33:39 -0800 (PST)
-X-Received: by 2002:a05:6102:956:b0:31b:1b52:ed9f with SMTP id
- a22-20020a056102095600b0031b1b52ed9fmr1130563vsi.28.1646476419399; Sat, 05
- Mar 2022 02:33:39 -0800 (PST)
+        with ESMTP id S229878AbiCEKgt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Mar 2022 05:36:49 -0500
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2079.outbound.protection.outlook.com [40.92.99.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3485214F9C
+        for <linux-btrfs@vger.kernel.org>; Sat,  5 Mar 2022 02:35:59 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cKHruHXcyeqe6BrkC4jVKDQysWIsqwj3xI9moUlRTjoMYN3gUmrS+QiJ495sGBDyLre864WdPQ4VwsveZDMLxHK7cbv/fHXDE6tO7i6P/CdOEY0z3h8GB0f4U4KyphrvczEtUdyNZXobmcJCwVzmRIaUrLLHTePyg05/Rcpk77QWlzg9dlg6YHveQBxIxI2hSNULRCL8o3fB+fQHKZHZXfXhVCMK/sGfHvELgjeDCrOALlXXdjjrXiS9XNtdK08YcpOZZOoOwiNPprKnZwpb+OxmNy/stTEN4Vqbw8l9lMWoBbXPqPWoVT6TQN8hWjWB7hrYfYK9/qsq+lhLf5sarg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H+dkYjdpGWLbi/UXqMcV2HTeHcPEFa61ZgtMOy19wZc=;
+ b=jYlARBR6x8E9P1tFSXYZ+oLns910+YzMyZeyZFajqFeUSUvcRzIPBib64UqVrwOlvzkNL/TLc8kPkDGNVutXAbNpxwPdECWIoNInWlNTStXGuzi9evyPsmxTY218KZYEf8PSwunOcbPkGyWyf+HLUfe4TZ5twYp6ipJt84IIApOJ/6KlQuBShc6ZuSrSbkCuEIyU7TgGJDQ/TI9yEhaQA7eJUn/yEA/dzi+ClXxNIUx1QYwhCUl/toHS9YTQ4amT2LBzLJv6JBbyKBXC1uLPkEjEaysyEESKlNCSN+E1+s7nVdIFY0Oabb502CmzfLquh/jCJZkxoxCrDVa1KK+Eug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H+dkYjdpGWLbi/UXqMcV2HTeHcPEFa61ZgtMOy19wZc=;
+ b=bYUgjGILsiOErB/ouaoLhHCC4PKdcMML8N3sn1mV5wKPW2nQYv3x8gs9Rk9tzy160FdMXConT+n3zD7JUdDxXDY86L6BfKsZyupuxuAD1JVrocNP2nW6AKwVU0uRfBVGv3PmIuY8WaQk3mto0dSLf5q+EhRo5znXBzZYDkGYfKvJzOLBOngxNdK/OdSjr382j0SN6zSb/2fkQHXnHcM8ev7r/d8wFlslnkoJJb9moCoPWEehxsdvl/3sTLXhMWkZvaFiJ43/12E/YOnxdX0CyVjcHieufKlp6jbq+t6gDTJYZmu4u0nsFphdqk1Yt8cu0rpatPbzdGsbCEPhdTXZ1w==
+Received: from TYAPR01MB6060.jpnprd01.prod.outlook.com (2603:1096:402:34::8)
+ by TYAPR01MB3263.jpnprd01.prod.outlook.com (2603:1096:404:8c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Sat, 5 Mar
+ 2022 10:35:57 +0000
+Received: from TYAPR01MB6060.jpnprd01.prod.outlook.com
+ ([fe80::397f:84f5:f1e8:3388]) by TYAPR01MB6060.jpnprd01.prod.outlook.com
+ ([fe80::397f:84f5:f1e8:3388%7]) with mapi id 15.20.5038.019; Sat, 5 Mar 2022
+ 10:35:57 +0000
+From:   matriz windowsboy111 <wboy111@outlook.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Help on free space cache issue
+Thread-Topic: Help on free space cache issue
+Thread-Index: AQHYMGT7X2eIeUnOQE6TtEbaPteJn6ywk5mAgAADzuw=
+Date:   Sat, 5 Mar 2022 10:35:57 +0000
+Message-ID: <TYAPR01MB60603D900251F5CCC974761DEE069@TYAPR01MB6060.jpnprd01.prod.outlook.com>
+References: <TYAPR01MB6060F10E43889BABC65A3E7FEE069@TYAPR01MB6060.jpnprd01.prod.outlook.com>
+ <c76ec07b-4e4b-180c-612f-5a9cceb3f30d@gmx.com>
+In-Reply-To: <c76ec07b-4e4b-180c-612f-5a9cceb3f30d@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: 60b4555c-1875-450d-a9e6-05278ffc7eff
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [bJ/9G/rWJyGPphHuGxDh/9fsPyRLUiad]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 678d1c33-6435-452d-a727-08d9fe93ef09
+x-ms-traffictypediagnostic: TYAPR01MB3263:EE_
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oLyAJgHHTIS0b/Sv78ddPLAcqnLjEF367dF4lrzzcuyv+W1ktiYQ/eNhPs2RoLaWq5hxjMbraZriAoQpFu6fokLSYrNe7QK3TvKm3JrCQdQ/NdieOnjYKDIvuBzLLFzlW0eWsY4uw7IBHysODGDQx3jhzbwinJ1uwxJYQaqBg/1asDOq7oH3IGfoZxBfYgDjimdWhKcf9KaJ+1GacA6IHYDkKQXkTVpfcT3q+dxeRx8yOvUtB2ibuIyqhCqH10zwzE/QLe4fbdUd2fpuQmKc9nLr6i+3y292NWF61F9x09U5jXo5TJNfKol3NaxawOzzyHn8kfZdeJ0v3kFCvC+2by0XsEm70Wk17IlFVEs/tekQfqy5szh2oagdo4C3SuWoqSziZcaystsnr/r3A+41E1Y3/MxcfrhYkf4K+nORQCzHjx7MLoJwagk+39KuxgsWlhZBfOQSGZ3Ei1e4nabQ2gogqpLqztXrjk9bal6UiWqKQHJ7CZw8QvRV9Vn+KLepurH/9Z/imPBdBXIyK65w/QRvhS7EkZP+z2YrVrOpcN8myPkAisCwMKc8E/iFrz4VFH1YLXl1NOD6l5Q8LTtrgw==
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: eQv3YRaMgmaoyCk7wv+bmtO1w9S7bnSVtvCGS8qpgd9G0/g+iEeWDltcbA4YOfY8ub2yLrhD7cq7UR0RD3wEN4cZ89fYEfP5W8zZu8L1kdRILczfDEab1f+KGpKyMhuXWFwEo2vM3nGnQU5DpLMzzeL71fIeGlnKiQYUaZ2hC3gqFVLCBdj6QasW7Cwk2vGrFbxzZgiXr1JSksR0vIeKrgmppYbu/H6r+ZCIzeWqtjQV4R4W84r4bv9jB9E7LBv7XyXhYGWvX84R+xx298YxB9dpnp+KF8fb+U0m/8RuRmBRLHhH2pzZw/J6eAX2cqFtr7Vpg+v4D8oqPoSggXfBM9Z2T9sxx/yoi1CnCc4d+mV2tGf5ZqxLry5LLzJA3y4TnfuUlw7uSKfWn5mbW2Zn6p4V5ROI7i6+XrVU82e7Ki2+MxbFXk55d35l6NUNNyn1qGI3hNnEfnwHQtB6z0A5VU6rnwY9S3zFfo0XmuNmRGjMCKfVcmGtJi7F7AI6ZE8VE2uMdUrzg02GZWx09jZFwDQ3ERPe4dMzmm/47TMu89W7sB8NHt9QeGN7F4Fe89ygXbdWPhpkQ0UI7PGGNrOdXHDCZ2GMVWzynwQC3c5NkB99OxMnbV6ARa3IQtcAlcvJ0Ukp8zBIYe4hSdBOyZxcOWo2clMrvO4uVLhBQ//TYVVjsbvx7fvBFManqQeE+9xRI5BuvIji8oDDOxXlaSA6FeL+bSHQg2/3/CVMNi7vsrFbWWxBasLeVI8RNOFd941FQ+uItyjvYy/JNCFcHel3vBVwNGV/F6bQOdCKsXFwMHoTKhBapzMOm97b4hCMbrKtSqQ4Wz+A3N3jMr4jkVdISJqgdDEkpiS4LFvcsYpsKdlwTwlq7Tt22y8ABGAiqx6vzljfsrS6z3mgpKjwq5/n14a199cs4s2cn03pSLyOB4KVYEc3wMyxFqI49k8Unykz
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CAAzDdeysSbH-j-9rBGs3HBv2vyETbVyNoCjfDOKrka1OAkn1_g@mail.gmail.com>
- <2e9ee21e-65aa-9fb5-1d1c-1d6dea93eb12@gmx.com> <d3ad10fc-0e4a-a8b3-28d7-bc1957bf03ca@georgianit.com>
- <7c16b26a-e477-d6fd-d3bb-2ed7d086b1f0@gmx.com>
-In-Reply-To: <7c16b26a-e477-d6fd-d3bb-2ed7d086b1f0@gmx.com>
-From:   Jan Kanis <jan.code@jankanis.nl>
-Date:   Sat, 5 Mar 2022 11:33:28 +0100
-X-Gmail-Original-Message-ID: <CAAzDdeyLz42V1tVJE1YK5jX2OpLG4Ghw4XYO0-pEcSR0yrkwGg@mail.gmail.com>
-Message-ID: <CAAzDdeyLz42V1tVJE1YK5jX2OpLG4Ghw4XYO0-pEcSR0yrkwGg@mail.gmail.com>
-Subject: Re: Is this error fixable or do I need to rebuild the drive?
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Remi Gauvin <remi@georgianit.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYAPR01MB6060.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 678d1c33-6435-452d-a727-08d9fe93ef09
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2022 10:35:57.2890
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3263
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I wrote about 40 GB of data to the filesystem before noticing that one
-device had failed, but that data is now no longer needed so I don't
-care a lot if I might have a corrupted block in there. The filesystem
-is used mainly for backups and storage of large files, there's no
-operating system automatically updating things on that drive, so I'm
-quite sure of what changes are on there.
-
-What surprises me is that I'm getting checksum failures at all now. I
-scrubbed both devices independently when I had taken one of them out
-of the system, and both passed without errors. The checksum failures
-only started happening when I added the out of date device back into
-the array. Does btrfs assume that both devices are in sync in such a
-case, and thus that a checksum from device 1 is also valid for the
-equivalent block on device 2?
-
-The statistics:
-The chance of one block matching its checksum by chance is 2**-32. 40
-GB is 1 million blocks. The chance of not having any spurious checksum
-matches is then (1-2**-32)**1e6, which is 0.999767. That's not as high
-as I was expecting but still a very good chance.
-
-> not to mention your data may not be that random.
-I think there are many cases where the data is pretty random, which is
-when it is compressed. The data on this drive is largely media files
-or other compressed files, which are pretty random. The only case I
-can think of where you would have large amounts of uncompressed data
-on your disk is if you're running a database on it.
-
-I'll see what happens with a scrub.
-
-Thanks for the help, Jan
-
-
-On Sat, 5 Mar 2022 at 07:47, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2022/3/5 11:11, Remi Gauvin wrote:
-> > On 2022-03-04 6:39 p.m., Qu Wenruo wrote:
-> >
-> >>   So by now I'm thinking that btrfs
-> >>> apparently does not fix this error by itself. What's happening here,
-> >>> and why isn't btrfs fixing it, it has two copies of everything?
-> >>> What's the best way to fix it manually? Rebalance the data? scrub it?
-> >>
-> >> Scrub it would be the correct thing to do.
-> >>
-> >
-> > Correct me if I'm wrong, the statistical math is a little above my head.
-> >
-> > Since the failed drive was disconnected for some time while the
-> > filesystem was read write, there is potentially hundreds of thousands of
-> > sectors with incorrect data.
->
-> Mostly correct.
->
-> >  That will not only make scrub slow, but
-> > due to CRC collision, has a 'significant' chance of leaving some data on
-> > the failed drive corrupt.
->
-> I doubt, 2^32 is not a small number, not to mention your data may not be
->   that random.
->
-> Thus I'm not that concerned about hash conflicts.
->
-> >
-> > If I understand this correctly, the safest way to fix this filesystem
-> > without unnecessary chance of corrupt data is to do a dev replace of the
-> > failed drive to a hot spare with the -r switch, so it is only reading
-> > from the drive with the most consistent data.  This strategy requires a
-> > 3rd drive, at least temporarily.
->
-> That also would be a solution.
->
-> And better, you don't need to bother a third device, just wipe the
-> out-of-data device, and replace missing device with that new one.
->
-> But please note that, if your good device has any data corruption, there
-> is no chance to recover that data using the out-of-date device.
->
-> Thus I prefer a scrub, as it still has a chance (maybe low) to recover.
->
-> But if you have already scrub the good device, mounted degradely without
-> the bad one, and no corruption reported, then you are fine to go ahead
-> with replace.
->
-> Thanks,
-> Qu
->
-> >
-> > So, if /dev/sda1 is the drive that was always good, and /dev/sdb1 is the
-> > drive that had taken a vacation....
-> >
-> > And /dev/sdc1 is a new hot spare
-> >
-> > btrfs replace start -r /dev/sdb1 /dev/sdc1
-> >
-> > (On some kernel versions you might have to reboot for the replace
-> > operation to finish.  But once /dev/sdb1 is completely removed, if you
-> > wanted to use it again, you could
-> >
-> > btrfs replace start /dev/sdc1 /dev/sdb1
-> >
+I ran the check once more, and it is indeed left with the orphan inode prob=
+lem you have mentioned. I appreciate your help.=0A=
+=0A=
+Thanks,=0A=
+wboy=0A=
+=0A=
+________________________________________=0A=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>=0A=
+Sent: Saturday, March 5, 2022 6:17 PM=0A=
+To: matriz windowsboy111; linux-btrfs@vger.kernel.org=0A=
+Subject: Re: Help on free space cache issue=0A=
+=0A=
+=0A=
+=0A=
+On 2022/3/5 16:02, matriz windowsboy111 wrote:=0A=
+> # uname -a=0A=
+> Linux hostname_here 5.16.12-zen1-1-zen #1 ZEN SMP PREEMPT Wed, 02 Mar 202=
+2 12:22:53 +0000 x86_64 GNU/Linux=0A=
+> # btrfs --version=0A=
+> btrfs-progs v5.16.2=0A=
+> # btrfs fi show=0A=
+> Label: none  uuid: 794b6ad2-78a3-4814-9ed2-e605ad66d2cc=0A=
+>          Total devices 2 FS bytes used 56.03GiB=0A=
+>          devid    1 size 105.08GiB used 105.01GiB path /dev/sdb3=0A=
+>          devid    2 size 8.00GiB used 7.00GiB path /dev/sdb2=0A=
+>=0A=
+> Label: 'DATA'  uuid: 496b5da8-b16b-4241-88b3-9140272585bf=0A=
+>          Total devices 1 FS bytes used 333.60GiB=0A=
+>          devid    1 size 931.51GiB used 604.02GiB path /dev/sda2=0A=
+>=0A=
+> # mount /dev/sda2 DATA -o ro=0A=
+> # btrfs fi df DATA=0A=
+> Data, single: total=3D592.00GiB, used=3D333.00GiB=0A=
+> System, DUP: total=3D8.00MiB, used=3D96.00KiB=0A=
+> Metadata, DUP: total=3D6.00GiB, used=3D618.05MiB=0A=
+> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B=0A=
+>=0A=
+> ---=0A=
+> Basically I found this at first:=0A=
+>=0A=
+> # ls -alh=0A=
+> ls: cannot access '3F32BF73FBCEFC1F243A53C9C5643F7B17C8436D': No such fil=
+e or directory=0A=
+> total 0=0A=
+> drwxrwxrwx 1 root root 80 May 29  2021 .=0A=
+> drwx------ 1 root root 14 May 29  2021 ..=0A=
+> -????????? ? ?    ?     ?            ? 3F32BF73FBCEFC1F243A53C9C5643F7B17=
+C8436D=0A=
+>=0A=
+> This file basically... doesn't exist. `rm -rf` doesn't work, while `touch=
+` says "file exists" and then creates a copy:=0A=
+>=0A=
+> # touch 3F32BF73FBCEFC1F243A53C9C5643F7B17C8436D -a=0A=
+> touch: cannot touch '3F32BF73FBCEFC1F243A53C9C5643F7B17C8436D': File exis=
+ts=0A=
+> # ls -alh=0A=
+> ls: cannot access '3F32BF73FBCEFC1F243A53C9C5643F7B17C8436D': No such fil=
+e or directory=0A=
+> ls: cannot access '3F32BF73FBCEFC1F243A53C9C5643F7B17C8436D': No such fil=
+e or directory=0A=
+> total 0=0A=
+> drwxrwxrwx 1 root root 80 May 29  2021 .=0A=
+> drwx------ 1 root root 14 May 29  2021 ..=0A=
+> -????????? ? ?    ?     ?            ? 3F32BF73FBCEFC1F243A53C9C5643F7B17=
+C8436D=0A=
+> -????????? ? ?    ?     ?            ? 3F32BF73FBCEFC1F243A53C9C5643F7B17=
+C8436D=0A=
+>=0A=
+> I decided to ran a repair (before_repair.png) (after_repair.png) and I am=
+ kind of regretting what I did.=0A=
+> Anyway, I appreciate any help provided.=0A=
+=0A=
+In fact repair did a lot of (pretty good) work to fix your problems.=0A=
+=0A=
+The initial problems are all fixed, only free space cache (can be easily=0A=
+rebuilt) and one inode has missing orphan item.=0A=
+=0A=
+You can easily remove the v1 cache by:=0A=
+=0A=
+  # btrfs check --clear-space-cache v1 /dev/sda2=0A=
+=0A=
+For the orphan inode problem, IIRC it will be addressed in later releases.=
+=0A=
+For now, it won't cause any problem, except wasting some space (that=0A=
+inode won't be release, thus only taking space, but can not be accessed)=0A=
+=0A=
+Thanks,=0A=
+Qu=0A=
