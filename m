@@ -2,47 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 614B74CEA5C
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Mar 2022 10:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AF84CEA80
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Mar 2022 11:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbiCFJmn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Mar 2022 04:42:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
+        id S232733AbiCFKcF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Mar 2022 05:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiCFJml (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 04:42:41 -0500
-Received: from mail02.aqueos.net (mail02.aqueos.net [94.125.164.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46139443F1
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 01:41:49 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail02.aqueos.net (Postfix) with ESMTP id 3F78A682D5A;
-        Sun,  6 Mar 2022 10:41:47 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail02.aqueos.net
-Received: from mail02.aqueos.net ([127.0.0.1])
-        by localhost (mail02.aqueos.net [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id oB6TBbTzD6YC; Sun,  6 Mar 2022 10:41:46 +0100 (CET)
-Received: from [10.10.10.10] (adsl1.aqueos.com [51.68.231.211])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail02.aqueos.net (Postfix) with ESMTPSA id 8B5AA682D4E;
-        Sun,  6 Mar 2022 10:41:46 +0100 (CET)
-Message-ID: <58d38b6f-db67-e167-31c6-c74ea5f12e91@aqueos.com>
-Date:   Sun, 6 Mar 2022 10:41:45 +0100
+        with ESMTP id S230004AbiCFKcE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 05:32:04 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE812E08B
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 02:31:11 -0800 (PST)
+Received: from [77.20.72.149] (helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1nQoAM-0004kB-PO; Sun, 06 Mar 2022 11:31:06 +0100
+Message-ID: <ecb5cd7c-d261-c75b-3b66-4b7e0bc228ab@leemhuis.info>
+Date:   Sun, 6 Mar 2022 11:31:05 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: how to not loose all production when one disk fail in a raid1
- btrfs pool
-Content-Language: fr
-To:     Forza <forza@tnonline.net>, linux-btrfs@vger.kernel.org
-References: <c58f6d6d-fb95-5a6b-7028-4640ab5d1fee@aqueos.com>
- <02cf4d4c-fcba-12dc-6636-da0d42bdb42d@tnonline.net>
-From:   Ghislain Adnet <gadnet@aqueos.com>
-Organization: AQUEOS
-In-Reply-To: <02cf4d4c-fcba-12dc-6636-da0d42bdb42d@tnonline.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1
+Content-Language: en-US
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <YbfTYFQVGCU0Whce@hungrycats.org>
+ <fc395aed-2cbd-f6e5-d167-632c14a07188@suse.com>
+ <Ybj1jVYu3MrUzVTD@hungrycats.org>
+ <c6125582-a1dc-1114-8211-48437dbf4976@suse.com>
+ <YbrPkZVC/MazdQdc@hungrycats.org>
+ <ab295d78-d250-fe8f-33a5-09cc90d5e406@suse.com>
+ <Ybu4tuzqpaiast5H@localhost.localdomain> <Ybz4JI+Kl2J7Py3z@hungrycats.org>
+ <YdiG6xYbY0tZ21j9@hungrycats.org>
+ <bc677ef0-ea1c-5f8f-f225-4d3f4f3d3459@leemhuis.info>
+ <Yen+CTCm+wbdJnJk@hungrycats.org>
+ <7ccf001b-b249-7d6c-fa86-f25d2b5e55a5@leemhuis.info>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <7ccf001b-b249-7d6c-fa86-f25d2b5e55a5@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1646562671;0c74bc82;
+X-HE-SMSGID: 1nQoAM-0004kB-PO
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -52,107 +56,222 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-hi !
+[Adding Chris and David to the list of recipients]
 
+Hi, this is your Linux kernel regression tracker again.
+
+@Btrfs-Maintainers: is anyone addressing this regression that got
+bisected many weeks ago? It from here looks like things are stuck: Libor
+asked for a status update 24 days ago, I did the same 15 days ago, but
+neither of us got a answer. Is there some good reason for this? Or did
+the discussion continue somewhere else?
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+P.S.: As the Linux kernel's regression tracker I'm getting a lot of
+reports on my table. I can only look briefly into most of them and lack
+knowledge about most of the areas they concern. I thus unfortunately
+will sometimes get things wrong or miss something important. I hope
+that's not the case here; if you think it is, don't hesitate to tell me
+in a public reply, it's in everyone's interest to set the public record
+straight.
+
+#regzbot poke
+
+On 18.02.22 15:46, Thorsten Leemhuis wrote:
+> Hi, this is your Linux kernel regression tracker speaking. Top-posting
+> for once, to make this easy accessible to everyone.
 > 
-> I do not believe that this is how it should work. Btrfs RAID1 should survive a complete device failure as well as data corruption on one device.
+> What's up here? Can anyone (Zygo? Josef?) please provide a status
+> update? Yes, it took quite a while till this regression got found, but
+> nevertheless this looks to take awfully long to get resolved for a
+> regression was bisected weeks ago.
 > 
-> Can you explain a little more about what happened when the SSD failed?
-
-
-the /dev/sdb ssd disk failed in the nigth and disapeared instantly. Next morning the computer was crashed. I have lots of
-
-
-BTRFS error (device sda4): bdev /dev/sdb4 errs: wr 25186451, rd 5822, flush 3878537, corrupt 0, gen 0
-BTRFS error (device sda4): error writing primary super block to device 2
-BTRFS warning (device sda4): lost page write due to IO error on /dev/sdb4 (-5)
-
-but it seems i got the order wrong , the disk failed near 23h and the server crashed later in the early morning. So the raid was working for a part of the night then.
-
-
-
-> One possible explanation for a failure is that you had mixed block groups. This means that you had some SINGLE block groups in addition to RAID1 block groups. If those are on the failed SSD, the filesystem would turn RO on a device failure.
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 > 
-> Mixed block groups can happen for many reasons. You need to check your current setup with `btrfs filesystem usage /mnt/`
-
-the situation after the disk replacement is below, unfortunatly i dont have the one before the sdb breakdown
-
-Overall:
-     Device size:		 796.16GiB
-     Device allocated:		  22.06GiB
-     Device unallocated:		 774.10GiB
-     Device missing:		     0.00B
-     Used:			  19.38GiB
-     Free (estimated):		 387.40GiB	(min: 387.40GiB)
-     Data ratio:			      2.00
-     Metadata ratio:		      2.00
-     Global reserve:		  25.00MiB	(used: 0.00B)
-
-Data,RAID1: Size:10.00GiB, Used:9.65GiB (96.48%)
-    /dev/sda4	  10.00GiB
-    /dev/sdb4	  10.00GiB
-
-Metadata,RAID1: Size:1.00GiB, Used:43.48MiB (4.25%)
-    /dev/sda4	   1.00GiB
-    /dev/sdb4	   1.00GiB
-
-System,RAID1: Size:32.00MiB, Used:16.00KiB (0.05%)
-    /dev/sda4	  32.00MiB
-    /dev/sdb4	  32.00MiB
-
-Unallocated:
-    /dev/sda4	 387.05GiB
-    /dev/sdb4	 387.05GiB
-
-----------------------
-Overall:
-     Device size:		 796.16GiB
-     Device allocated:		  22.06GiB
-     Device unallocated:		 774.10GiB
-     Device missing:		     0.00B
-     Used:			  19.38GiB
-     Free (estimated):		 387.40GiB	(min: 387.40GiB)
-     Data ratio:			      2.00
-     Metadata ratio:		      2.00
-     Global reserve:		  25.00MiB	(used: 0.00B)
-
-              Data     Metadata System
-Id Path      RAID1    RAID1    RAID1    Unallocated
--- --------- -------- -------- -------- -----------
-  1 /dev/sda4 10.00GiB  1.00GiB 32.00MiB   402.98GiB
-  2 /dev/sdb4 10.00GiB  1.00GiB 32.00MiB   402.98GiB
--- --------- -------- -------- -------- -----------
-    Total     10.00GiB  1.00GiB 32.00MiB   805.97GiB
-    Used       9.65GiB 43.48MiB 16.00KiB
-
-
-you think that before the disk was with some part on single disk and when this part was hit the system crashed ?
-
-
+> P.S.: As the Linux kernel's regression tracker I'm getting a lot of
+> reports on my table. I can only look briefly into most of them and lack
+> knowledge about most of the areas they concern. I thus unfortunately
+> will sometimes get things wrong or miss something important. I hope
+> that's not the case here; if you think it is, don't hesitate to tell me
+> in a public reply, it's in everyone's interest to set the public record
+> straight.
 > 
-> Running in degraded mode is not recommended. It can also lead to mixed block groups as I mentioned above.
-
-ok that's what i saw on various post on the net. thanks !
 > 
+> On 21.01.22 01:27, Zygo Blaxell wrote:
+>> On Thu, Jan 20, 2022 at 03:04:19PM +0100, Thorsten Leemhuis wrote:
+>>> Hi, this is your Linux kernel regression tracker speaking.
+>>>
+>>> On 07.01.22 19:31, Zygo Blaxell wrote:
+>>>> On Fri, Dec 17, 2021 at 03:50:44PM -0500, Zygo Blaxell wrote:
+>>>> I left my VM running tests for a few weeks and got some more information.
+>>>> Or at least more data, I'm not feeling particularly informed by it.  :-P
+>>>>
+>>>> 1.  It's not a regression.  5.10 has the same symptoms, but about 100x
+>>>> less often (once a week under these test conditions, compared to once
+>>>> every 90 minutes or so on 5.11-rc1).
+>>>
+>>> Well, I'd still call it a regression, as it's now happening way more
+>>> often and thus will likely hit more users. It's thus a bit like a
+>>> problem that leads to higher energy consumption: things still work, but
+>>> worse than before -- nevertheless it's considered a regression. Anway:
+>>>
+>>> What's the status here? Are you still investigating the issue? Are any
+>>> developers looking out for the root cause?
 >>
->>    Is there a way to make Btrfs function like all other raid system or is it a special case   ?
+>> I think Josef's plan (start inside the logical_ino ioctl with bpftrace
+>> and work upwards to see where the looping is getting stuck) is a good plan,
+>> but due to conflicting priorities I haven't found the time to act on it.
 >>
-> 
-> Can you elaborate a little on what you mean here?
-> 
+>> I can take experimental patches and throw them at my repro setup if
+>> anyone would like to supply some.
 >>
->> https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices#Replacing_failed_devices
->>
+>>> Ciao, Thorsten
+>>>
+>>> P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
+>>> on my table. I can only look briefly into most of them. Unfortunately
+>>> therefore I sometimes will get things wrong or miss something important.
+>>> I hope that's not the case here; if you think it is, don't hesitate to
+>>> tell me about it in a public reply, that's in everyone's interest.
+>>>
+>>> BTW, I have no personal interest in this issue, which is tracked using
+>>> regzbot, my Linux kernel regression tracking bot
+>>> (https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
+>>> this mail to get things rolling again and hence don't need to be CC on
+>>> all further activities wrt to this regression.
+>>>
+>>> #regzbot poke
+>>>
+>>>> 2.  Bisection doesn't work, because there are patches that are repeatably
+>>>> good and bad mixed together, so the bisect algorithm (even with stochastic
+>>>> enhancement) repeatably picks the wrong commits and converges with
+>>>> high confidence on nonsense.  Instead of bisecting, I picked commits
+>>>> semi-randomly from 5.11-rc1's patch set, and got these results:
+>>>>
+>>>>    124  3a160a933111 btrfs: drop never met disk total bytes check in verify_one_dev_extent
+>>>> 	1x hang, 2x slower
+>>>>    125  bacce86ae8a7 btrfs: drop unused argument step from btrfs_free_extra_devids
+>>>> 	1x pass (fast)
+>>>>    126  2766ff61762c btrfs: update the number of bytes used by an inode atomically
+>>>> 	1x hang (<20 minutes)
+>>>>    127  7f458a3873ae btrfs: fix race when defragmenting leads to unnecessary IO
+>>>> 	1x hang, runs 3x slower
+>>>>    128  5893dfb98f25 btrfs: refactor btrfs_drop_extents() to make it easier to extend
+>>>> 	2x hang (<20 minutes)
+>>>>    129  e114c545bb69 btrfs: set the lockdep class for extent buffers on creation
+>>>> 	2x pass (but runs 2x slower, both times)
+>>>>    130  3fbaf25817f7 btrfs: pass the owner_root and level to alloc_extent_buffer
+>>>> 	1x pass
+>>>>    131  5d81230baa90 btrfs: pass the root owner and level around for readahead
+>>>> 	1x pass
+>>>>    132  1b7ec85ef490 btrfs: pass root owner to read_tree_block
+>>>> 	1x pass
+>>>>    133  182c79fcb857 btrfs: use btrfs_read_node_slot in btrfs_qgroup_trace_subtree
+>>>>    134  3acfbd6a990c btrfs: use btrfs_read_node_slot in qgroup_trace_new_subtree_blocks
+>>>> 	1x hang
+>>>>    135  6b2cb7cb959a btrfs: use btrfs_read_node_slot in qgroup_trace_extent_swap
+>>>>    136  c990ada2a0bb btrfs: use btrfs_read_node_slot in walk_down_tree
+>>>> 	1x hang
+>>>>    137  6b3426be27de btrfs: use btrfs_read_node_slot in replace_path
+>>>> 	1x hang, 1x pass
+>>>>    138  c975253682e0 btrfs: use btrfs_read_node_slot in do_relocation
+>>>> 	1x hang
+>>>>    139  8ef385bbf099 btrfs: use btrfs_read_node_slot in walk_down_reloc_tree
+>>>> 	1x hang, 1x pass
+>>>>    140  206983b72a36 btrfs: use btrfs_read_node_slot in btrfs_realloc_node
+>>>> 	1x pass
+>>>>    141  bfb484d922a3 btrfs: cleanup extent buffer readahead
+>>>> 	1x pass
+>>>>    142  416e3445ef80 btrfs: remove lockdep classes for the fs tree
+>>>>    143  3e48d8d2540d btrfs: discard: reschedule work after sysfs param update
+>>>>    144  df903e5d294f btrfs: don't miss async discards after scheduled work override
+>>>>    145  6e88f116bd4c btrfs: discard: store async discard delay as ns not as jiffies
+>>>> 	2x hang
+>>>>    146  e50404a8a699 btrfs: discard: speed up async discard up to iops_limit
+>>>>
+>>>>    [snip]
+>>>>
+>>>>    155  0d01e247a06b btrfs: assert page mapping lock in attach_extent_buffer_page
+>>>> 	1x hang, 1x pass
+>>>>    156  bbb86a371791 btrfs: protect fs_info->caching_block_groups by block_group_cache_lock
+>>>> 	1x hang
+>>>>    157  e747853cae3a btrfs: load free space cache asynchronously
+>>>> 	1x pass
+>>>>    158  4d7240f0abda btrfs: load the free space cache inode extents from commit root
+>>>> 	1x hang
+>>>>    159  cd79909bc7cd btrfs: load free space cache into a temporary ctl
+>>>> 	2x pass
+>>>>    160  66b53bae46c8 btrfs: cleanup btrfs_discard_update_discardable usage
+>>>> 	2x hang, 1x pass
+>>>>    161  2ca08c56e813 btrfs: explicitly protect ->last_byte_to_unpin in unpin_extent_range
+>>>> 	2x pass
+>>>>    162  27d56e62e474 btrfs: update last_byte_to_unpin in switch_commit_roots
+>>>> 	2x pass
+>>>>    163  9076dbd5ee83 btrfs: do not shorten unpin len for caching block groups
+>>>>    164  dc5161648693 btrfs: reorder extent buffer members for better packing
+>>>> 	2x pass
+>>>>    165  b9729ce014f6 btrfs: locking: rip out path->leave_spinning
+>>>>    166  ac5887c8e013 btrfs: locking: remove all the blocking helpers
+>>>>    167  2ae0c2d80d25 btrfs: scrub: remove local copy of csum_size from context
+>>>>    168  419b791ce760 btrfs: check integrity: remove local copy of csum_size
+>>>> 	1x hang, 1x pass
+>>>>    169  713cebfb9891 btrfs: remove unnecessary local variables for checksum size
+>>>>    170  223486c27b36 btrfs: switch cached fs_info::csum_size from u16 to u32
+>>>>    171  55fc29bed8dd btrfs: use cached value of fs_info::csum_size everywhere
+>>>>    172  fe5ecbe818de btrfs: precalculate checksums per leaf once
+>>>>    173  22b6331d9617 btrfs: store precalculated csum_size in fs_info
+>>>>    174  265fdfa6ce0a btrfs: replace s_blocksize_bits with fs_info::sectorsize_bits
+>>>>    175  098e63082b9b btrfs: replace div_u64 by shift in free_space_bitmap_size
+>>>> 	2x pass
+>>>>    176  ab108d992b12 btrfs: use precalculated sectorsize_bits from fs_info
+>>>>
+>>>>    [snip]
+>>>>
+>>>>    200  5e8b9ef30392 btrfs: move pos increment and pagecache extension to btrfs_buffered_write
+>>>> 	1x pass
+>>>>    201  4e4cabece9f9 btrfs: split btrfs_direct_IO to read and write
+>>>>
+>>>>    [snip]
+>>>>
+>>>>    215  d70bf7484f72 btrfs: unify the ro checking for mount options
+>>>> 	1x pass
+>>>>    216  a6889caf6ec6 btrfs: do not start readahead for csum tree when scrubbing non-data block groups
+>>>>    217  a57ad681f12e btrfs: assert we are holding the reada_lock when releasing a readahead zone
+>>>>    218  aa8c1a41a1e6 btrfs: set EXTENT_NORESERVE bits side btrfs_dirty_pages()
+>>>>    219  13f0dd8f7861 btrfs: use round_down while calculating start position in btrfs_dirty_pages()
+>>>>    220  949b32732eab btrfs: use iosize while reading compressed pages
+>>>>    221  eefa45f59379 btrfs: calculate num_pages, reserve_bytes once in btrfs_buffered_write
+>>>>    222  fb8a7e941b1b btrfs: calculate more accurate remaining time to sleep in transaction_kthread
+>>>> 	1x pass
+>>>>
+>>>> There is some repeatability in these results--some commits have a much
+>>>> lower failure rate than others--but I don't see a reason why the bad
+>>>> commits are bad or the good commits are good.  There are some commits with
+>>>> locking and concurrency implications, but they're as likely to produce
+>>>> good as bad results in test.  Sometimes there's a consistent change in
+>>>> test result after a commit that only rearranges function arguments on
+>>>> the stack.
+>>>>
+>>>> Maybe what we're looking at is a subtle race that is popping up due
+>>>> to unrelated changes in the kernel, and disappearing just as often,
+>>>> and 5.11-rc1 in particular did something innocent that aggravates
+>>>> it somehow, so all later kernels hit the problem more often than
+>>>> 5.10 did.
+>>>>
+>>>> 3.  Somewhere around "7f458a3873ae btrfs: fix race when defragmenting
+>>>> leads to unnecessary IO" bees starts running about 3x slower than on
+>>>> earlier kernels.  bees is a nightmare of nondeterministically racing
+>>>> worker threads, so I'm not sure how important this observation is,
+>>>> but it keeps showing up in the data.
+>>>>
+>>>> 4.  I had one machine on 5.10.84 (not a test VM) with a shell process
+>>>> that got stuck spinning 100% CPU in the kernel on sys_write.  bees was
+>>>> also running, but its threads were all stuck waiting for the shell to
+>>>> release the transaction.  Other crashes on 5.10.8x kernels look more
+>>>> like the one in this thread, with a logical_ino spinning.
+>>>>
+>>>>>> If it's not looping there, it may be looping higher up, but I don't see where it
+>>>>>> would be doing that.  Lets start here and work our way up if we need to.
+>>>>>> Thanks,
+>>>
 > 
-> The Btrfs wiki does not mention that you should check the chunk allocation for SINGLE block groups after replacing a disk. This is important or you may not actually have full redundancy even after replacing a disk. I wrote about that over at https://wiki.tnonline.net/w/Btrfs/Replacing_a_disk#Restoring_redundancy_after_a_replaced_disk
-
-after that incident i did some googling and there was some articles that included information about raid would not work again until you mount system in degraded mode and with my experience in this incident  it seemed to me that the behavior was to fail and wait for replacement.
-also all the 'tutorial' i found speak about restarting things and mounting in degraded mode also.
-well seems there was somethign else in play here.
-
-Thanks for your help it made me realise i reverted some event in the logs in the urge to get back on foot.
-
--- 
-cordialement,
-Ghislain
-
