@@ -2,57 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 321864CEC2D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Mar 2022 17:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C254C4CEC3E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Mar 2022 17:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbiCFQBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Mar 2022 11:01:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        id S233821AbiCFQhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Mar 2022 11:37:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbiCFQBL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 11:01:11 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2880568F86
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 08:00:19 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id a6so12833789oid.9
-        for <linux-btrfs@vger.kernel.org>; Sun, 06 Mar 2022 08:00:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=+9yjqc4OLmZ1GMgS9C6/YVbBoEgRBxkcVvtF/Z3s480=;
-        b=Rerq8lqwwIjLlQ3ctf897M85VSvzylvoxIK0ut1fin7/pfbaW4sr1yPiL9NnucVIYG
-         0jffbNOZq6Fmg2qPngjs8GUkKsE9rEa3Hy5nssAU4upvej7lkQtLp2/PJbIwEIKb1lac
-         d+coGuBN2AGop4x/CXEhv/4e8cejX/ucc5lPxwCWLEtSo3WfzK95KZDfNX3q94mBB9Jc
-         RCEWsYpVT+9jMeBxNMRTzmG7OLXYmIwqnQEob3cCnqAm5YwfOSMgZMnJjWf6rh9W6gOr
-         3n1tmGwntl4XAZwKYWPWD1ZJvwX33Fhfsv5YrXjQJwkL6ifz3XByBJwsAR47IRwa6Xsk
-         FdFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=+9yjqc4OLmZ1GMgS9C6/YVbBoEgRBxkcVvtF/Z3s480=;
-        b=oHxbFHxa8RkQ5kKtCAztfOWPMhczJRfbbM/BYO0oKsxkiE/2X/cfKvOiWR+QJ+sT3L
-         yJh2wiaGnRd5/ek8SaI+HY9BcxBaEokhrUYh8wEBpiXcDWjrHYRqRrnQey7NaIaTmygr
-         yYtdOC0ppUGt+ci/XDrxe08wKew6wLBLHtOIMxayAfbtppZuSVpoRxrFwXHRZOfNz/oq
-         2rLAmlyj3ypQfpxOXlp+cvQPLUX/3+osvlGZf3ARUAJItu2pR9SW/vLseOHmKu0+pCU0
-         jg9QrfptYysEuLQvrnAwUbkn+SruQmy/1qdjFEnRkLueE1PSYdmeT9z4BkRv1bhtFpea
-         awHw==
-X-Gm-Message-State: AOAM533mnbcsPTk+IiLj1BPyJDIAcbXPlSSEtZOdFUU8yDp22/40XqwE
-        RM2kaweIV852NJ2Cu+opw/bQaKlK2PwvDhfIlTTVgaO5k9c=
-X-Google-Smtp-Source: ABdhPJwupQmQSZzSs9j360wIA/he+HijaIOTgm0v0QMnF88DHEdQrjDkytbi4IVUh5mtJxj7VMN5L4ISJOOaGH93XGQ=
-X-Received: by 2002:a05:6808:2227:b0:2d9:c3c1:37bb with SMTP id
- bd39-20020a056808222700b002d9c3c137bbmr1953737oib.80.1646582418330; Sun, 06
- Mar 2022 08:00:18 -0800 (PST)
+        with ESMTP id S230439AbiCFQhT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 11:37:19 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAE82654F;
+        Sun,  6 Mar 2022 08:36:26 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 312CB1F38E;
+        Sun,  6 Mar 2022 16:36:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1646584585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=y/OFp9JJppWMgaJ4C2eJKgXQ8oIgkJro1umFnsey9cs=;
+        b=n3hV1mEWP6oV9tNhk/zwFZMNJNwvg+uXHvtBHfm1/iglGqA22nfhyTqR6sdglHu0lVEGcc
+        Kv3uiEVcMdDPL/HeSC2NugPwAp1PpS+8iXrA6UPGKISJNz3tTepNSHNmyw2yxoNKFUHuSL
+        hSRmjOWVgVen5SXg9EJU9Uhgvr/TBco=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 2905EA3B81;
+        Sun,  6 Mar 2022 16:36:25 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 239A4DA823; Sun,  6 Mar 2022 17:32:31 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.17-rc7
+Date:   Sun,  6 Mar 2022 17:32:30 +0100
+Message-Id: <cover.1646581845.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Date:   Sun, 6 Mar 2022 16:59:42 +0100
-Message-ID: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
-Subject: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
- measurable benefit
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,71 +49,76 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I would like to report that btrfs in Linux kernel 5.16.12 mounted with
-the autodefrag option wrote 5TB in a single day to a 1TB SSD that is
-about 50% full.
+Hi,
 
-Defragmenting 0.5TB on a drive that is 50% full should write far less than 5TB.
+a few more fixes for various problems that have user visible effects or
+seem to be urgent. Please pull, thanks.
 
-Benefits to the fragmentation of the most written files over the
-course of the one day (sqlite database files) are nil. Please see the
-data below. Also note that the sqlite file is using up to 10 GB more
-than it should due to fragmentation.
+* fix corruption when combining DIO and non-blocking iouring over
+  multiple extents (seen on MariaDB)
 
-CPU utilization on an otherwise idle machine is approximately 600% all
-the time: btrfs-cleaner 100%, kworkers...btrfs 500%.
+* fix relocation crash due to premature return from commit
 
-I am not just asking you to fix this issue - I am asking you how is it
-possible for an algorithm that is significantly worse than O(N*log(N))
-to be merged into the Linux kernel in the first place!?
+* fix quota deadlock between rescan and qgroup removal
 
-Please try to avoid discussing no-CoW (chattr +C) in your response,
-because it is beside the point. Thanks.
+* fix item data bounds checks in tree-checker (found on a fuzzed image)
 
-----
+* fix fsync of prealloc extents after EOF
 
-A day before:
+* add missing run of delayed items after unlink during log replay
 
-$ smartctl -a /dev/nvme0n1 | grep Units
-Data Units Read:                    449,265,485 [230 TB]
-Data Units Written:                 406,386,721 [208 TB]
+* don't start relocation until snapshot drop is finished
 
-$ compsize file.sqlite
-Processed 1 file, 1757129 regular extents (2934077 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%       46G          46G          37G
-none       100%       46G          46G          37G
+* fix reversed condition for subpage writers locking
 
-----
+* fix warning on page error
 
-A day after:
+----------------------------------------------------------------
+The following changes since commit 558732df2122092259ab4ef85594bee11dbb9104:
 
-$ smartctl -a /dev/nvme0n1 | grep Units
-Data Units Read:                    473,211,419 [242 TB]
-Data Units Written:                 417,249,915 [213 TB]
+  btrfs: reduce extent threshold for autodefrag (2022-02-24 16:11:28 +0100)
 
-$ compsize file.sqlite
-Processed 1 file, 1834778 regular extents (3050838 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%       47G          47G          37G
-none       100%       47G          47G          37G
+are available in the Git repository at:
 
-$ filefrag file.sqlite
-(Ctrl-C after waiting more than 10 minutes, consuming 100% CPU)
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.17-rc6-tag
 
-----
+for you to fetch changes up to ca93e44bfb5fd7996b76f0f544999171f647f93b:
 
-Manual defragmentation decreased the file's size by 7 GB:
+  btrfs: fallback to blocking mode when doing async dio over multiple extents (2022-03-04 15:09:21 +0100)
 
-$ btrfs-defrag file.sqlite
-$ sync
-$ compsize file.sqlite
-Processed 6 files, 13074 regular extents (20260 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%       40G          40G          37G
-none       100%       40G          40G          37G
+----------------------------------------------------------------
+Filipe Manana (3):
+      btrfs: fix lost prealloc extents beyond eof after full fsync
+      btrfs: add missing run of delayed items after unlink during log replay
+      btrfs: fallback to blocking mode when doing async dio over multiple extents
 
-----
+Josef Bacik (2):
+      btrfs: do not WARN_ON() if we have PageError set
+      btrfs: do not start relocation until in progress drops are done
 
-Sincerely
-Jan
+Omar Sandoval (1):
+      btrfs: fix relocation crash due to premature return from btrfs_commit_transaction()
+
+Qu Wenruo (1):
+      btrfs: subpage: fix a wrong check on subpage->writers
+
+Sidong Yang (1):
+      btrfs: qgroup: fix deadlock between rescan worker and remove qgroup
+
+Su Yue (1):
+      btrfs: tree-checker: use u64 for item data end to avoid overflow
+
+ fs/btrfs/ctree.h        | 10 ++++++++
+ fs/btrfs/disk-io.c      | 10 ++++++++
+ fs/btrfs/extent-tree.c  | 10 ++++++++
+ fs/btrfs/extent_io.c    | 16 +++++++++---
+ fs/btrfs/inode.c        | 28 +++++++++++++++++++++
+ fs/btrfs/qgroup.c       |  9 ++++++-
+ fs/btrfs/relocation.c   | 13 ++++++++++
+ fs/btrfs/root-tree.c    | 15 ++++++++++++
+ fs/btrfs/subpage.c      |  2 +-
+ fs/btrfs/transaction.c  | 65 +++++++++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/transaction.h  |  1 +
+ fs/btrfs/tree-checker.c | 18 +++++++-------
+ fs/btrfs/tree-log.c     | 61 +++++++++++++++++++++++++++++++++++++---------
+ 13 files changed, 230 insertions(+), 28 deletions(-)
