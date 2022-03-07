@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 152814D0B37
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E843B4D0B3D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245593AbiCGWiR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:38:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
+        id S1343753AbiCGWiS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:38:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343867AbiCGWiI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:38:08 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6DB6158
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:37:13 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id t18so3716505qtw.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:37:13 -0800 (PST)
+        with ESMTP id S1343876AbiCGWiK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:38:10 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C636158
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:37:15 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id 85so5233230qkm.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:37:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=8xs3unOqTZ2OaFdfSYYysocG7EJUvUmZ2ukGM5xN5aU=;
-        b=2QmpzGgKL76SGEjUrsgcH9Htx7HdbTLSS/M2x4edVG+T6FuaGLTjAzp3ykCn0bzHAe
-         jERms425InBAZDlJ+zCfLtdYWBSwpyfYdlMdrAkgwntFSM82UKrBFdBEYdl5t8b9pB38
-         UF+deR1jAPvOEKSgSLpPhYKJwJTTfPVwNf9R1Ap5p6QeURZ32TGSCTvi8uw132iqnB3c
-         AokXRZEK4PCjVDuTF4toPMBj4MyoN1/H2u0GTj0uFhi+6KEkes7MGct85fPnihaM/jxF
-         WEobk6VYQe3l09W3FDdMG3ZobkPeUSQc01MramT3Bs1nklwPQqP7S7R2JUNsqdMpECHm
-         Bc9w==
+        bh=ajCLA11gT1QtAo1A+I7az8R9MpOAhtGJqs4HuqYpc/E=;
+        b=5hv9FD1Ce60tCYcF2Ytfoxa7PL9pwxDYc4KnzYubYJlmIfXW9MC4NJfrvnhOYt19yX
+         07is/vanpMznXqr80/B+jqwVEeptK2zcK7bhrA2Jj0VdmGYD/whj5toD3+6SDwA59eEf
+         wZJW2IRA/vaESHs7ylGumbxM7ragXaR4VS2n/H5PvGBsyIXKGiiyLqF7XfXIjp3b68io
+         krZVwDeSPlQXiRCTQRw3uzlb+Ne7PTCp8TfOjW8apksjpPoID22NBFrZucR6TMK4Q3WF
+         M4hfHBF53gtgR8BCHDsXjoEA2vYJm+63GgiFU0yPBeiHgTil+FyaOM2ixXHuqJTovscx
+         LBUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8xs3unOqTZ2OaFdfSYYysocG7EJUvUmZ2ukGM5xN5aU=;
-        b=0/oC565JsTfKgAS0znfH2jgWB643TIHrMPv6SFAr5bZyF4AfTn6ytk4nEOEUed7q4A
-         13JJDaa8yWpnn+vGBjBgav+ROh1ByorgPMmV8rHyKvaQHPYrOY3w/ZCmJJHHE2iCYjHW
-         GQRdR1A77VH8H7x6Ek0ZRJQY2ATE4fFvBgZYQTjsNIQpgpJ2AxA1MdlvypfKR10TpxeL
-         a0AuWG5qkOosxQfRVgnBP+gl8w8nV/fasi2okFd+OHkkvHajlvbTfvYHicHRzF63OuLk
-         otG9BlVeJfTnhg3842ZynjxqmzDbvdxW6YgNy8FmWqElQsGRQe04HFs9jOewInsW/GWy
-         ukVA==
-X-Gm-Message-State: AOAM530f8yLHIypKb9VdGLLryd2aEnk8xX8XFjyhJEr/9afxbAc69wRG
-        HeCH4r5NtL87zEdx9iJDFE6Chv8l/DwKdxYo
-X-Google-Smtp-Source: ABdhPJxBQNHwc3g/rn6YHX/ha1WeAdbG+9HqmMa1Qm1UNVesj8wGqP919lpbCtGrD8UOSaO3dJIsVg==
-X-Received: by 2002:a05:622a:648:b0:2df:f368:e12b with SMTP id a8-20020a05622a064800b002dff368e12bmr11299568qtb.226.1646692632670;
-        Mon, 07 Mar 2022 14:37:12 -0800 (PST)
+        bh=ajCLA11gT1QtAo1A+I7az8R9MpOAhtGJqs4HuqYpc/E=;
+        b=LaK8IEZNVDTgHB8zPM6aTHE2+SUptouTNIEPvg6DDFfMvNLYXoincLaLJojpMHaVlI
+         Ah7ABUVHW0w1TE21BrnQjBuujkaRvk4DJMrH4TgEgAmvvmvRYdlkPNIqaE5SmwyN9uxW
+         9yZmMpU2znKlP9iHbbmjLFtET2VuvjZ1i9/Npr2eTevYRTJksaGr0LmJkE013pjm5kaZ
+         ZfjZ9ycInR7lq7wMMmoYf8SriaXNKWxsHQe9p2EGzD7mSrts2fpTzUwqTTZ+4yQGVOEn
+         pBSAtEN31OuboAkifDFbxqpj7owWK3bxzYA5qU91EZR97nYlTMJ2eBKHRyrl5ELVxEZp
+         axMA==
+X-Gm-Message-State: AOAM530fwYK/SdqlgScOyfKYDBn8L7w2ajBw+HZYHwKuR5c5UqtLsAlR
+        ctvXGp+RzV2htTUbI/rMUN5T9qrDm8kw8AM0
+X-Google-Smtp-Source: ABdhPJywfYx+RCPnI7XrJixOODSSQQ4d+FCFqX4ueqzpB7Q2XVDJ6NK3bDGXZigWbP1irLirdZYP/Q==
+X-Received: by 2002:a05:620a:c55:b0:67b:3e7:b033 with SMTP id u21-20020a05620a0c5500b0067b03e7b033mr7222478qki.9.1646692634200;
+        Mon, 07 Mar 2022 14:37:14 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id e9-20020ac85989000000b002de2bfc8f94sm9205657qte.88.2022.03.07.14.37.12
+        by smtp.gmail.com with ESMTPSA id i20-20020ac85c14000000b002de4b6004a7sm9380801qti.27.2022.03.07.14.37.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:37:12 -0800 (PST)
+        Mon, 07 Mar 2022 14:37:13 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 07/11] btrfs: zero out temporary superblock buffer header
-Date:   Mon,  7 Mar 2022 17:36:57 -0500
-Message-Id: <5f0d31d6299aacfce2df98e338afee2c20dbdb51.1646692474.git.josef@toxicpanda.com>
+Subject: [PATCH 08/11] btrfs: add a debug range check for header_v2
+Date:   Mon,  7 Mar 2022 17:36:58 -0500
+Message-Id: <2d74a1a84f8b2ed6c3a6ba594fb75ceba54ede59.1646692474.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646692474.git.josef@toxicpanda.com>
 References: <cover.1646692474.git.josef@toxicpanda.com>
@@ -66,29 +66,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We use HEADER_FLAG_V2 to determine different offsets into the buffer, so
-we need to make sure that we clear the header of the temporary
-extent_buffer we allocate to read the super block in, otherwise we could
-have this flag set and do the wrong math for the different item helpers.
+There's a few places where we modify the extent buffer data that I
+missed in my initial conversion.  This check helped me catch the places
+I missed.  Simply check to see if the eb has FLAG_V2 set and then make
+sure we're not overlapping access with the header_v2.  This will go away
+in the future, but is handy while I'm working on the code.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/volumes.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/extent_io.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 1be7cb2f955f..fc2d3db8e539 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7403,6 +7403,8 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
- 	if (IS_ERR(sb))
- 		return PTR_ERR(sb);
- 	set_extent_buffer_uptodate(sb);
-+	memzero_extent_buffer(sb, 0, sizeof(struct btrfs_header));
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 31309aba3344..88dc53595192 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -6736,6 +6736,25 @@ static inline int check_eb_range(const struct extent_buffer *eb,
+ 	if (unlikely(check_add_overflow(start, len, &offset) || offset > eb->len))
+ 		return report_eb_range(eb, start, len);
+ 
++#ifdef CONFIG_BTRFS_DEBUG
++	/*
++	 * Catch places where we may have the wrong header math, this can go
++	 * away later.
++	 */
++	if (btrfs_header_flag(eb, BTRFS_HEADER_FLAG_V2)) {
++		if (start >= sizeof(struct btrfs_header_v2))
++			return false;
++		if (start == 0 && len == eb->len)
++			return false;
++		if (start + len > sizeof(struct btrfs_header_v2)) {
++			btrfs_warn(eb->fs_info,
++			   "access overlaps the header_v2 on eb %llu start %lu len %lu",
++			   eb->start, start, len);
++			return true;
++		}
++	}
++#endif
 +
- 	/*
- 	 * The sb extent buffer is artificial and just used to read the system array.
- 	 * set_extent_buffer_uptodate() call does not properly mark all it's
+ 	return false;
+ }
+ 
 -- 
 2.26.3
 
