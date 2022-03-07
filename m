@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484614D0AE6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A534D0AD5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245627AbiCGWSv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:18:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        id S243016AbiCGWSw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:18:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243016AbiCGWSu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:18:50 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C84B36152
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:17:55 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id v189so4307167qkd.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:17:54 -0800 (PST)
+        with ESMTP id S244771AbiCGWSv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:18:51 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53139403E1
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:17:56 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id r127so2280476qke.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:17:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=mE7h6t+tm2kmibFst366o91JrFPSGHuGEtXgpi3M0/I=;
-        b=MFu5p00/vO5pb+ca6wAyaJDg1PZcsgF/E3p7Qe5FIhsw13rzOHKced/UJGeBbY9pSG
-         k9hXpuE7sO3uaGXvXtu3fW+IByN48cRam41/cFz141FlfCDtPs7NASdPU5SkVS8o7IUL
-         sGgoKbVIVgB3RFMCcsH2TUJUVTEgOxsHUFPUuzZJFdNFhdMSjbb0anrarxoD3JfSKa7M
-         yO/4mPMcN+qnYMqyq99gugIedwHEtETwmSwiSTOz278McI+Yh9fyT1xnB2l6k1INkhwD
-         PqY0/BfrbNRj2pnGbD+EUHbtWqkIJNhWCEkw8nANdpS2M2p1CovmcavZ5tO9q330Yw54
-         2JgA==
+        bh=yC0y4G0klsx/QK0E2hnXoBQOCIXJqrM2tzAT+Oq2hgA=;
+        b=tCY8emB5QUYUpcaAj/4TR3Cy4FQMUYfRCbjul+19XvURPK9CALe+8qtnx/Tg/Lvr3g
+         9rfKldjeMIZU+OUVmm+v45hnE5+hAmhlo1qYPyUqew5t29dByVsG2vtW5eDeQ/ihUXj5
+         AYNvAk9hyBQ5qmtRQJUDhLiYZDCVd7fxJ07uh08s3v3SCD5JHnbulRe5SpChAOZNC/tC
+         e0rfuNQLRlR9OGk2MKSJLGAkuS9HAklUB2OVMuBlGNNrc6RIUsu889fdcKreOg2vSyY9
+         8FRXiH/MpU7FTr6sCrJbRVkywgfg6pwOcgy5PPP9+sccedhqU/I0k3Ux8iw3a3wKlDQl
+         pMmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mE7h6t+tm2kmibFst366o91JrFPSGHuGEtXgpi3M0/I=;
-        b=tmWivTJlw/BCr/4sYUBOo91mGejDbmENPQMMbGyD0HtHAdeqkVvedaqotf00WVy41x
-         GVYH8fKJf76zS6Pdz8f9636O/xk/QgalzZzsq22gDusctN14bQa5/N8Z36+YGMFORynk
-         PMkac2RkalQIAJI2AKF2EviKbiJe+7T3oqBDtUFdnrj3WSlA8vmqNjIDZ/u7DHdCaDGc
-         nd/aS8PHpVTliT/72v6Y3mKiKWMawwXy6rHw35u1PC2GTV8G6rQHVm/03/+HQAgB+jUQ
-         l9FMaah+I09knUBh4p5EmZLmUndeLF5bqV4oi/wFaM0j4j9Fx6i+Ahfz22xAO0XOI7Zy
-         fFyQ==
-X-Gm-Message-State: AOAM531Up2xVHeGJQKwAs/TE+tIJHfkfCyMwmnLgREV5PFFWF+PrzXiW
-        BaINzlIacjlDT4zZZ7IA55g15TEV/v/CVwIO
-X-Google-Smtp-Source: ABdhPJzi6JTCR8n0tIieEuVQZ3KVVRSTKSag5kroD6JAkOSGJk9NFKE3wheWOVVFVd1kRnVQzsdb1Q==
-X-Received: by 2002:a05:620a:12ba:b0:663:6779:beeb with SMTP id x26-20020a05620a12ba00b006636779beebmr8160345qki.227.1646691473815;
-        Mon, 07 Mar 2022 14:17:53 -0800 (PST)
+        bh=yC0y4G0klsx/QK0E2hnXoBQOCIXJqrM2tzAT+Oq2hgA=;
+        b=Yd/p3dZPwzCr58i1j+PNf+CxJubv0bFMnUDKwPve3GexbVv2xQI+Yhgf7hqs1S38gt
+         UtoSxakgutnaR99TAlwB7OWUvwWoTAj1/VNWALfesnGKEsdM/IvE0tK/f7bsBmXZNNky
+         +/7tgsm4Fd97imJc2X1zQ9BUCzcPceWNb73KNZbBtXsLIKYec4z1Goshdu1Ip7QpiVpg
+         aH++R+Za6PaNFFnpncitmUVuZISvpD6bBQghWpxS905B1JauSxXm7UE6rXdPSFmEEyyE
+         7e2d+coWf6VjDp/+a0qxdUF6/+EeLzf/D0SZC68sQPYcv/sNtE7gS3aRG/rsywPcGGIj
+         gI0w==
+X-Gm-Message-State: AOAM533mb24tiERRm6SNJ19E5iC5H9H9nN1bWK2nBCdBIFfp+L97tU9v
+        1cbmhgXUm6gJ5+H6YDS7xssrl674Xsp8nPi1
+X-Google-Smtp-Source: ABdhPJxBNTUj1kw+YLwpmrEAwcG/cA/35XTmoSEuSXpqno7GMnzbDoWkoFE4T5BW6DedAac3eBFi5A==
+X-Received: by 2002:a37:ba07:0:b0:47e:15a4:231a with SMTP id k7-20020a37ba07000000b0047e15a4231amr8421621qkf.472.1646691475184;
+        Mon, 07 Mar 2022 14:17:55 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p17-20020a37a611000000b0067b2b2c41fasm2055262qke.81.2022.03.07.14.17.53
+        by smtp.gmail.com with ESMTPSA id w7-20020a05620a148700b0067b1ee562edsm2134935qkj.100.2022.03.07.14.17.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:17:53 -0800 (PST)
+        Mon, 07 Mar 2022 14:17:54 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 02/15] btrfs-progs: use item/node helpers instead of offsetof in ctree.c
-Date:   Mon,  7 Mar 2022 17:17:36 -0500
-Message-Id: <4b80e8a3e4abf81e291bf37ed0c5af29d45661b4.1646691255.git.josef@toxicpanda.com>
+Subject: [PATCH 03/15] btrfs-progs: image: use the appropriate offset helpers
+Date:   Mon,  7 Mar 2022 17:17:37 -0500
+Message-Id: <3b5c0bc05855fbcd999f75019585d24c5f491efa.1646691255.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646691255.git.josef@toxicpanda.com>
 References: <cover.1646691255.git.josef@toxicpanda.com>
@@ -66,35 +66,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs_bin_search we use offsetof(struct btrfs_*, items/ptrs) to tell
-where to start searching for our keys.  Instead use the appropriate
-offset helpers to get this information.
+We are using the size of the ondisk structures to figure out where we
+need to zero out the buffers we're copying.  Fix this by using the
+appropriate helpers instead so that it's extent tree v2 compatible.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/ctree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ image/main.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 758a3882..8846836b 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -858,13 +858,13 @@ int btrfs_bin_search(struct extent_buffer *eb, const struct btrfs_key *key,
- {
- 	if (btrfs_header_level(eb) == 0)
- 		return generic_bin_search(eb,
--					  offsetof(struct btrfs_leaf, items),
-+					  btrfs_item_nr_offset(eb, 0),
- 					  sizeof(struct btrfs_item),
- 					  key, btrfs_header_nritems(eb),
- 					  slot);
- 	else
- 		return generic_bin_search(eb,
--					  offsetof(struct btrfs_node, ptrs),
-+					  btrfs_node_key_ptr_offset(eb, 0),
- 					  sizeof(struct btrfs_key_ptr),
- 					  key, btrfs_header_nritems(eb),
- 					  slot);
+diff --git a/image/main.c b/image/main.c
+index c6af0cc2..600fc360 100644
+--- a/image/main.c
++++ b/image/main.c
+@@ -355,7 +355,7 @@ static void copy_buffer(struct metadump_struct *md, u8 *dst,
+ 	nritems = btrfs_header_nritems(src);
+ 
+ 	if (nritems == 0) {
+-		size = sizeof(struct btrfs_header);
++		size = btrfs_leaf_data(src);
+ 		memset(dst + size, 0, src->len - size);
+ 	} else if (level == 0) {
+ 		size = btrfs_leaf_data(src) +
+@@ -364,8 +364,7 @@ static void copy_buffer(struct metadump_struct *md, u8 *dst,
+ 		memset(dst + btrfs_item_nr_offset(src, nritems), 0, size);
+ 		zero_items(md, dst, src);
+ 	} else {
+-		size = offsetof(struct btrfs_node, ptrs) +
+-			sizeof(struct btrfs_key_ptr) * nritems;
++		size = btrfs_node_key_ptr_offset(src, nritems);
+ 		memset(dst + size, 0, src->len - size);
+ 	}
+ 	csum_block(dst, src->len);
 -- 
 2.26.3
 
