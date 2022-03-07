@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C38774D0A7E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDC54D0A84
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245681AbiCGWF3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S245466AbiCGWFa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245738AbiCGWF0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:05:26 -0500
+        with ESMTP id S242472AbiCGWF1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:05:27 -0500
 Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4330B4475C
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:04:31 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id q4so13229857qki.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:04:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D7142EF0
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:04:32 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id d194so3608303qkg.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:04:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=3AcOH5zLlrirpAcpg8AlHL4acJt/P/tCfUu8R16Jvqk=;
-        b=fr4bwpllEIuucq2zvIQZd1TSFxK24jSy9bwxBrTxa+vvkYGSeOk39yeau9yBD6ia6n
-         lDGCTVveT+uBxI5D5IC1cbrveRPi0o6OPaQMuVOuW6KRyR6aGDWyBf6+F3QChPIC6NLy
-         rRi4gYZofd3+h0bei4EufnBN56xjJ0G4SFVNVRZeqUD9i6fWGzXpWtk0Lhe0FwY4wPGU
-         +SadVdAQapAXXo6g+mrISfkfd5xwOXjaxJEsdCOyZhufdeNTCea9VoYuJyBa5ppi0voL
-         DDG7JT/EDDP+W+sYH6B9uhxTaevCobRDqfhdfMdkkAXH4vVP48gpMc/0K3hWWlBrsf/5
-         szHw==
+        bh=VpYKRZKiTa0FLj/PMZXG6QFmlmKny8enBAOVfwxol3w=;
+        b=6zwNbUk+FT9SyQBMcdggLPl/AlmSK0Uu2xUN1dPD23MNecxHoR01XGWbj8Wkk05V2f
+         qquwgOMcT71GO5DlsCCyrpDqIw5D6alwr+LKyaPABAFUEH2Mx/p0ZYB0OOFY8fGde+AA
+         zXI2bD1U0O3U6qJdC5nw1Li6FtZHm8zveCERjQJnsuOCZ+vprqk7JvHj91/OURRiW4Xe
+         gq9kP+Rb789zBh/FNrmbpL+JET2ZSzqIjyV8Mwssx8dotMQWVDBS53p8mGqVFVNUdiZC
+         mR8lWPUbBzBb7Nt7wH58Z26dF9MQD5i+sxSdiOgemIbzMMLBJy3sRbJCOqsqmV2UncXq
+         4U3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3AcOH5zLlrirpAcpg8AlHL4acJt/P/tCfUu8R16Jvqk=;
-        b=0ebleeDUkQZ1hPi+LhM/J0yenwL8iEwCV4PGTpbpw2lVftEqaDHjQ3IZpYP0tKvTfb
-         cTNjThDBJmfEAKxrg1KmMIDfMxKd5MwTuqlhhoqYYwF6L7+OKv8jI2SkBd4tc2J9zp/F
-         TiFZUVUnTOODPTit1JMRKFuAuMnhustaV7E375UkTJhZiUpjHPBC/P9O/MK59YYGfrt4
-         xvOkf3RzZd1WaF/UI/hEE715mI87zDlAYNcsKkUgba3MDeVail9aGqFzuJo11NJjN+j6
-         gMW4lnrDvlf7q4VHX4pH/bp8cLtCVoqXEBZDuIpIesm73nc+v0HaFr7TonP2Wi4AumuB
-         plPg==
-X-Gm-Message-State: AOAM532hPf4rH7nrP1wJPmr6P5zQAO/0iE4D1ZsVCZV7EH2Q0uNE9X1+
-        +W90iUMROxQ5Nc3fFGtAT4rK1wwxi2AFcy4t
-X-Google-Smtp-Source: ABdhPJxxirYJj8UaehzxdfCgxGPK3+6wyCvnDLyrQusr6EWzFbnXSE/N7/TmMDuPHqgN8R8S55ZIWw==
-X-Received: by 2002:a05:620a:4725:b0:67a:ee5a:c830 with SMTP id bs37-20020a05620a472500b0067aee5ac830mr8149669qkb.717.1646690670063;
-        Mon, 07 Mar 2022 14:04:30 -0800 (PST)
+        bh=VpYKRZKiTa0FLj/PMZXG6QFmlmKny8enBAOVfwxol3w=;
+        b=Ryd7cW7onQ0D2kgsuvi9nDr7S10S5b/1MsBiSIwJZw5/4+6KOmcqtfR44ovEsAiyRx
+         74NiCGvn/57Npn653THk/t1HvcrJK5tMqs58dAzqP7s8Z8wGla8HlWdFnEaMLqzi+tB+
+         3vV7nCh69yY3QOQ3WtpyZ4urQGBUJCdfB8jHFcZhDu/6LOQuGFfKP2nFyXG/jb4j01AG
+         llCU1RSa9zGqHZhNH5+oBB1ek0+Tt7sqWjuZMZMw+aOT8XTqOXfeuZ1uwc+jqexNWAg/
+         1i4utt5br0WBScZ9p0O8VSNIyHm2AOH/bwE1bDASaOdBzBNZgfL588w+BdgUZdiajTiU
+         yfuQ==
+X-Gm-Message-State: AOAM532jWIHS6HbjYrxVVNK+xg2vfZ1xYGDpj2CqGJ4v8V8+cXXpn8DT
+        fF+hXmM5dwMII+yCV/pHYBTF/EPZyAUHZOXb
+X-Google-Smtp-Source: ABdhPJyRG4YSJn1L4SrioOghjmtRbAijHn6q4SB6I4+JMu7FsgihePIKmrTNFSNE5/H94OqA6mCY9g==
+X-Received: by 2002:a05:620a:450a:b0:67b:286:af6a with SMTP id t10-20020a05620a450a00b0067b0286af6amr7080969qkp.29.1646690671420;
+        Mon, 07 Mar 2022 14:04:31 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x6-20020ac86b46000000b002e02be9c0easm8936734qts.69.2022.03.07.14.04.29
+        by smtp.gmail.com with ESMTPSA id v14-20020a05622a014e00b002cf75f5b11esm9449565qtw.64.2022.03.07.14.04.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:04:29 -0800 (PST)
+        Mon, 07 Mar 2022 14:04:31 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 1/6] btrfs: read the nr_global_roots from the super block
-Date:   Mon,  7 Mar 2022 17:04:22 -0500
-Message-Id: <9ad0cd61f4bf4d4d31a9b780a658b3364cb1da87.1646690556.git.josef@toxicpanda.com>
+Subject: [PATCH v2 2/6] btrfs: don't do backref modification for metadata for extent tree v2
+Date:   Mon,  7 Mar 2022 17:04:23 -0500
+Message-Id: <ecb9f30aae0ea04e04ce529f484c68c836065f88.1646690556.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646690555.git.josef@toxicpanda.com>
 References: <cover.1646690555.git.josef@toxicpanda.com>
@@ -66,112 +66,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Originally I was deriving the number of global roots from the largest
-offset of the extent root we found in the tree_root.  However this could
-result in shenanigans with fuzzing, so instead store this in our
-super block as the source of truth, and then check the offset of the
-root items to make sure they're sane wrt our global root count.
+For extent tree v2 we will no longer track references for metadata in
+the extent tree.  Make changes at the alloc and free sides so the proper
+accounting is done but skip the extent tree modification parts.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h   |  6 +++++-
- fs/btrfs/disk-io.c | 23 ++++++++++++-----------
- 2 files changed, 17 insertions(+), 12 deletions(-)
+ fs/btrfs/extent-tree.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4db17bd05a21..aaa8451ef8be 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -277,6 +277,8 @@ struct btrfs_super_block {
- 	/* the UUID written into btree blocks */
- 	u8 metadata_uuid[BTRFS_FSID_SIZE];
- 
-+	__le64 nr_global_roots;
-+
- 	/* Extent tree v2 */
- 	__le64 block_group_root;
- 	__le64 block_group_root_generation;
-@@ -284,7 +286,7 @@ struct btrfs_super_block {
- 
- 	/* future expansion */
- 	u8 reserved8[7];
--	__le64 reserved[25];
-+	__le64 reserved[24];
- 	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
- 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
- 
-@@ -2513,6 +2515,8 @@ BTRFS_SETGET_STACK_FUNCS(super_block_group_root_generation,
- 			 block_group_root_generation, 64);
- BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level, struct btrfs_super_block,
- 			 block_group_root_level, 8);
-+BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
-+			 nr_global_roots, 64);
- 
- int btrfs_super_csum_size(const struct btrfs_super_block *s);
- const char *btrfs_super_csum_name(u16 csum_type);
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 09693ab4fde0..aeefc4e2e71a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2583,7 +2583,6 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
- {
- 	struct btrfs_fs_info *fs_info = tree_root->fs_info;
- 	struct btrfs_root *root;
--	u64 max_global_id = 0;
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index f477035a2ac2..309d8753bf41 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2955,7 +2955,6 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 	struct btrfs_extent_item *ei;
+ 	struct btrfs_extent_inline_ref *iref;
  	int ret;
- 	struct btrfs_key key = {
- 		.objectid = objectid,
-@@ -2617,14 +2616,15 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
- 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
- 		if (key.objectid != objectid)
- 			break;
--		btrfs_release_path(path);
- 
--		/*
--		 * Just worry about this for extent tree, it'll be the same for
--		 * everybody.
--		 */
--		if (objectid == BTRFS_EXTENT_TREE_OBJECTID)
--			max_global_id = max(max_global_id, key.offset);
-+		if (key.offset >= fs_info->nr_global_roots) {
-+			btrfs_err(fs_info, "invalid global root [%llu, %llu]\n",
-+				  key.objectid, key.offset);
-+			ret = -EUCLEAN;
-+			break;
-+		}
+-	int is_data;
+ 	int extent_slot = 0;
+ 	int found_extent = 0;
+ 	int num_to_del = 1;
+@@ -2964,6 +2963,11 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 	u64 bytenr = node->bytenr;
+ 	u64 num_bytes = node->num_bytes;
+ 	bool skinny_metadata = btrfs_fs_incompat(info, SKINNY_METADATA);
++	bool is_data = owner_objectid >= BTRFS_FIRST_FREE_OBJECTID;
 +
-+		btrfs_release_path(path);
++	if (btrfs_fs_incompat(info, EXTENT_TREE_V2) && !is_data)
++		return do_free_extent_accounting(trans, bytenr, num_bytes,
++						 is_data);
  
- 		found = true;
- 		root = read_tree_root_path(tree_root, path, &key);
-@@ -2643,9 +2643,6 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
- 	}
- 	btrfs_release_path(path);
+ 	extent_root = btrfs_extent_root(info, bytenr);
+ 	ASSERT(extent_root);
+@@ -2972,8 +2976,6 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 	if (!path)
+ 		return -ENOMEM;
  
--	if (objectid == BTRFS_EXTENT_TREE_OBJECTID)
--		fs_info->nr_global_roots = max_global_id + 1;
+-	is_data = owner_objectid >= BTRFS_FIRST_FREE_OBJECTID;
 -
- 	if (!found || ret) {
- 		if (objectid == BTRFS_CSUM_TREE_OBJECTID)
- 			set_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state);
-@@ -3242,6 +3239,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- 	fs_info->sectorsize = 4096;
- 	fs_info->sectorsize_bits = ilog2(4096);
- 	fs_info->stripesize = 4096;
-+	fs_info->nr_global_roots = 1;
- 
- 	spin_lock_init(&fs_info->swapfile_pins_lock);
- 	fs_info->swapfile_pins = RB_ROOT;
-@@ -3598,6 +3596,9 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
- 	fs_info->stripesize = stripesize;
+ 	if (!is_data && refs_to_drop != 1) {
+ 		btrfs_crit(info,
+ "invalid refs_to_drop, dropping more than 1 refs for tree block %llu refs_to_drop %u",
+@@ -4703,6 +4705,9 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+ 	u64 flags = extent_op->flags_to_set;
+ 	bool skinny_metadata = btrfs_fs_incompat(fs_info, SKINNY_METADATA);
  
 +	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
-+		fs_info->nr_global_roots = btrfs_super_nr_global_roots(disk_super);
++		goto out;
 +
- 	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
- 	if (ret) {
- 		err = ret;
+ 	ref = btrfs_delayed_node_to_tree_ref(node);
+ 
+ 	extent_key.objectid = node->bytenr;
+@@ -4756,7 +4761,7 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+ 
+ 	btrfs_mark_buffer_dirty(leaf);
+ 	btrfs_free_path(path);
+-
++out:
+ 	return alloc_reserved_extent(trans, node->bytenr, fs_info->nodesize);
+ }
+ 
 -- 
 2.26.3
 
