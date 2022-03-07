@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2B44D0ADB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748774D0AE4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343707AbiCGWTH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
+        id S1343727AbiCGWTI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:19:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343728AbiCGWTF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:19:05 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1547043EE3
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:18:10 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id eq14so7280091qvb.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:18:10 -0800 (PST)
+        with ESMTP id S1343732AbiCGWTG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:19:06 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D37B4831C
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:18:11 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id b12so13263696qvk.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:18:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=zO8D+uznSKQF47FFyXnBpKBdi6Wj0A7XLdYdPcd1D/s=;
-        b=RTu6cTMu9osN4e6VXnxcfzdAjrpJ7jDSAq4YnO68BNhMTQ2dzx30fvGxx2VMiAxpEZ
-         duB57BOiPB2WbDspe2Gnr3q5lFSgFBLKqmOuV8PkjSb5Q/nME7oMzZPm5mQMwyn89wt1
-         BVC7cSvnOrFjaMAXcVaLycPY15SJCR34+aHZJ44Aej4ksGTSANLVHK6W6D/WrSG+qr2L
-         qWQw99GLHZqmURhDp0QZ0Sv0ONrVBTa8MXQuX2uq7aEmBAyNcX3hwWtsbCX6AFH3NtGz
-         q5eMPYt9om/ZMhDnS2nYSSiQuBhdtCBGt6ZzYVuEByu8jg4Zoh0ftLYYvOi3z98chD66
-         vJ7Q==
+        bh=79Mp749A9qYx20cjtwc8vFDMYd4fGXSpEKSXlgmf0iA=;
+        b=79iPbDz1SjstgpHR1bTpT/tbkNAgl7v9tgOHr/lk/t3YudA1lHU7teccu7Q16zxXdd
+         YkIBsEnKLoOKpaalGcG4+h77HTMrwIusrzqKtprzxGcjBGfRzOYf3tnIBiVQSSLs7+dO
+         fS751fbH5dqfqPs7zRle8nhgCuppb+vRg6LuHaBQdzxcban6KtjaHs7uNMKlq5CUPxG0
+         AI2OerqkikPWmG7+PVmE5dyF9ZQuVBNgjn2iOU6F6A08YAXyfEmtNTsIYm8tUaZOxywu
+         /jfDaGlINvBlDrhLfo8U9kQcH1pZ8F04978WRAfOrp9DJYjMg6ix8E6SYhorM0sgRoxo
+         6ujw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zO8D+uznSKQF47FFyXnBpKBdi6Wj0A7XLdYdPcd1D/s=;
-        b=osnHKQmXC861Hn2LBtgJiUZ/Deqz0XjifXFVHGtUc9lVI0lLLK9jlB1qzIiRkVJ494
-         MIHCAVSZC7EEvd8mIQBYD0guHzrBKyII74wOdH0vwIQnGRvOfi1nQOzluUAktv+Fpz8L
-         2hGoejOhXDOfXx60L5ELUXyODmm+Bj5gVhkNqBEvDxKRI2TmnozxtWxViWB3M0lXo7+4
-         F5ftFDy1vQA9iVSdQdmsHdedsFRX8lIc9VlLczvFQN/glkFIzZwrVTxUhrQzBOUo5j03
-         NjuzFpLIC3IYKwFSxOuSsBRqa/8tmOVtY9MFR4Sucn+Up8K0J/70eALTyZaWQd9NihYz
-         tKAg==
-X-Gm-Message-State: AOAM533eB2ahpQ5Wur1bdcR2n31atUI/WTu41+LD0V6Gl8gEh7Y5Micl
-        eFw16ajlIChkM0dUrPEpcejA3LRQrNTc+zgn
-X-Google-Smtp-Source: ABdhPJwNuKO+LlSkqk60sM0plGJcfSEsH91KiTpEHvMM9Dc9hZ32UH1EIHvN0HEzAYiMGjoymClZ/Q==
-X-Received: by 2002:a05:6214:621:b0:432:5e0d:cb64 with SMTP id a1-20020a056214062100b004325e0dcb64mr10113949qvx.65.1646691488970;
-        Mon, 07 Mar 2022 14:18:08 -0800 (PST)
+        bh=79Mp749A9qYx20cjtwc8vFDMYd4fGXSpEKSXlgmf0iA=;
+        b=p4ywZLHtnSzJ44HOsqDGf+nBwKNcrbgk87Jr+k7qyQJS9a3niwL50rmrsBhiC0RZv2
+         p+muaLPAOmgupi2QBDYHRI+wnGVOR58mRY0wgJDyiPh4jULcfjLclUUewTCRXXvWfGdP
+         P+JIg06Sp9u2VTFQ6TTc7Nrl2DAvK1JILIqDPKM0rqNpAmStqsBfIeO3ucG+Wi185nbX
+         xzmcjxOQOsAvuDhIp3X3UKzHewyxgHKNMVe4fe02/0cH5e0nCMgsHHIyb2YVScoYtj9s
+         2YhSSgNZVnaRezPZdMx42XCx6sp25JPYuy+X4YtL6vmqFWHq0V/tylJARaGaYb0JLkk+
+         b9bw==
+X-Gm-Message-State: AOAM533ehUA620Z9ktyw7IJ18n3OaPetWbsw570g1lG86z70GtZrAR+Y
+        8S661k4a69UQIy7UH45vCN1/p7TKUvbuFVKA
+X-Google-Smtp-Source: ABdhPJxYPKBxiX8Gyb9jNA+J22dGUHH83Ww0Dahvzh0ijf9ZWh70GevemGTBR0+TOnwkFfpSx27R5Q==
+X-Received: by 2002:a05:6214:2a4a:b0:435:8e79:83a9 with SMTP id jf10-20020a0562142a4a00b004358e7983a9mr5380123qvb.43.1646691490271;
+        Mon, 07 Mar 2022 14:18:10 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05622a048c00b002de8f67b60dsm9656442qtx.58.2022.03.07.14.18.08
+        by smtp.gmail.com with ESMTPSA id w140-20020a376292000000b00648e88c1f05sm6965235qkb.67.2022.03.07.14.18.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:18:08 -0800 (PST)
+        Mon, 07 Mar 2022 14:18:09 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 13/15] btrfs-progs: add a snapshot_id to the btrfs_root_item
-Date:   Mon,  7 Mar 2022 17:17:47 -0500
-Message-Id: <bf5b0d8b7cafc303d2687c1aa0a44708a6d0f094.1646691255.git.josef@toxicpanda.com>
+Subject: [PATCH 14/15] btrfs-progs: inherit the root snapshot id in the buffer
+Date:   Mon,  7 Mar 2022 17:17:48 -0500
+Message-Id: <5dbb563209f4e6f8800b7f8b7d08a91673eb43a3.1646691255.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646691255.git.josef@toxicpanda.com>
 References: <cover.1646691255.git.josef@toxicpanda.com>
@@ -66,59 +66,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is going to be used to keep track of when a snapshot of this root
-was taken last.  Any time we are snapshotted we will increase this value
-and set the new extent buffers to this snapshot_id.
+Every extent buffer a root points to will inherit the current snapshot
+id of the root.  This will allow us to easily tie which extent buffers
+are shared with which roots.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/ctree.h   | 11 ++++++++++-
- kernel-shared/disk-io.c |  3 +++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ kernel-shared/extent-tree.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 8c4f6ed6..f5b32264 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -859,7 +859,14 @@ struct btrfs_root_item {
- 	 * this root.
- 	 */
- 	__le64 global_tree_id;
--        __le64 reserved[7]; /* for future */
-+
-+	/*
-+	 * Indicates the current snapshot id, every time we are snapshotted this
-+	 * is increased.
-+	 */
-+	__le64 snapshot_id;
-+
-+        __le64 reserved[6]; /* for future */
- } __attribute__ ((__packed__));
- 
- /*
-@@ -2262,6 +2269,8 @@ BTRFS_SETGET_STACK_FUNCS(root_stransid, struct btrfs_root_item,
- 			 stransid, 64);
- BTRFS_SETGET_STACK_FUNCS(root_rtransid, struct btrfs_root_item,
- 			 rtransid, 64);
-+BTRFS_SETGET_STACK_FUNCS(root_snapshot_id, struct btrfs_root_item,
-+			 snapshot_id, 64);
- 
- static inline struct btrfs_timespec* btrfs_root_ctime(
- 		struct btrfs_root_item *root_item)
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 078ab0fb..58831550 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -2480,6 +2480,9 @@ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
- 	memset(root->root_item.uuid, 0, BTRFS_UUID_SIZE);
- 	root->root_item.drop_level = 0;
- 
-+	/* This is safe to do on both versions since we used a reserved area. */
-+	btrfs_set_root_snapshot_id(&root->root_item, 0);
-+
- 	ret = btrfs_insert_root(trans, tree_root, &root->root_key,
- 				&root->root_item);
- 	if (ret)
+diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
+index 8f8617b3..e836c809 100644
+--- a/kernel-shared/extent-tree.c
++++ b/kernel-shared/extent-tree.c
+@@ -2590,7 +2590,8 @@ struct extent_buffer *btrfs_alloc_free_block(struct btrfs_trans_handle *trans,
+ 	trans->blocks_used++;
+ 	if (btrfs_fs_incompat(root->fs_info, EXTENT_TREE_V2)) {
+ 		memset_extent_buffer(buf, 0, 0, sizeof(struct btrfs_header_v2));
+-		btrfs_set_header_snapshot_id(buf, 0);
++		btrfs_set_header_snapshot_id(buf,
++				btrfs_root_snapshot_id(&root->root_item));
+ 		btrfs_set_header_flag(buf, BTRFS_HEADER_FLAG_V2);
+ 	} else {
+ 		memset_extent_buffer(buf, 0, 0, sizeof(struct btrfs_header));
 -- 
 2.26.3
 
