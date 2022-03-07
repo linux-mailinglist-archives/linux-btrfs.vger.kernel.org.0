@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7374D0AD9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 278D24D0AE0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343721AbiCGWTE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
+        id S1343719AbiCGWTH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343707AbiCGWTC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:19:02 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EAC41307
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:18:07 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id s15so14595465qtk.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:18:07 -0800 (PST)
+        with ESMTP id S1343717AbiCGWTD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:19:03 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B308443490
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:18:08 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id c4so14623754qtx.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:18:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=0jXv4MAhBCBwO6ojsljHmTk+DusoavBOE9LdRe0z6CQ=;
-        b=xsyDcFwQ0XqVvSlBvO/EA4igVlg0hgMGYcaayFT+ZxqZS567dobsZaehq0vuTBUbeu
-         iA9fCznP1fHQEI4GlrguwVnFZwYi1neUB2cFvMbkY30T39vTTiA2uJ+JLulDUZSM4cMy
-         MMyfAuQlosEDVjLVgjDj1ZMd2yeoNO7Ws7Qrq9488sZ7JBFLG5D8pUxrIcZLKujLH3z9
-         h4trQUZc+YZ9gc6zSHibNX3HKHMAnpzzzjoArb+EDxnTKB83MvxAitjy49i5ubdXK+LQ
-         7KLnViJscUxtAdME2BYoEsJ1+u1xFrj/Qt0IU4WEGtIPNByieDPZocHEqA46NZLL0QvT
-         tS5Q==
+        bh=Fq3v1uDRXmslSeN4x/NtnJDVEFQe+KrsnFTFY/SrX14=;
+        b=vCgNZ7v6LVaSAYDdjep4qZDQKlkSDV2ks7HE92fmixzK0bRzNlWW10GzbWdKWgiAPW
+         XQ1KGYiicVzPKZpeTB3nVK6LWeHnjcH7KnPtc47yzXgzxBoq8DFO/sfoHJRu8p5+chFL
+         qhNLE+3IgLlFtDP96lq66s7H3lqVKY8ljnB9TL04+ZwShqLxetc4gjnYRnUZfzVTMrDK
+         colypHNVT5IJx2Lwj3cnrXreAgSQbtVNBtRHtliAg+TmwBrXQSzgEjMjNewLnC7c1Kgc
+         EVtGvAchfw+1VnT+aTSDNJdgz9GjVLts6IytkET+1RdrN6gbbRrdlYBuGhC8Myu55Ey5
+         CxkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0jXv4MAhBCBwO6ojsljHmTk+DusoavBOE9LdRe0z6CQ=;
-        b=Kv+9XaSbrbMeDX4K0Kf0sTgb2W+ZBU6NT8BJVdLN3IHCGcPxK3DUnmW1rEI5q874YN
-         9auHg+gitIUgLb6ncoDaM8ZScGAcP/gxrMYbfjhWhm1oPyZwqqnnxV2D8y3zNzsqGzjf
-         7MDbQTMdvf6jH6kaUQzqRYxizAWHFqDCIHi+BLTyygAJn0MfYut90lPx5NoZnLSonPHD
-         piWe3Vlxkk3zf+ZQrosak18wjxr4UzgwNSIq1NyqQv2El/hhoBmuw2QNbdmECdGdBGa1
-         ZLWcrNMVj+vDgrkmsLBtZdCIAX7LBRZlQKE/i4mYh3X9EIitMnF0pIrjbpkKXIhI5tR5
-         4VZw==
-X-Gm-Message-State: AOAM533yoM8TSVz6OkJNugOCY8I1a0SYuX+pP7nQNqI/pFLMEzbx3bmi
-        KYKqbXMTEgUM/Deldy5mEerOVGH29JpgCtlW
-X-Google-Smtp-Source: ABdhPJzSKjCUTmXd7SLDfE514nmy7mQCKapu7+7SZSOBApVZkTgToPzJkuaCNTBzfcoGej8zlw81hA==
-X-Received: by 2002:ac8:7c4e:0:b0:2de:79c2:55c1 with SMTP id o14-20020ac87c4e000000b002de79c255c1mr11192323qtv.405.1646691486174;
-        Mon, 07 Mar 2022 14:18:06 -0800 (PST)
+        bh=Fq3v1uDRXmslSeN4x/NtnJDVEFQe+KrsnFTFY/SrX14=;
+        b=O6OrspziPNb7aRBuwqCxBGFo81mJuo8PuNxRyBwHTq2up2xZ7e0eGB7JlE9BwD1fNM
+         EVUvg4AhlZTwJT+L30iU0nOJE7SHjbgh6QyIBKKIhAsAROhIRLTwFzWy/3SB3nILDLLZ
+         UQU0bpYrp3N3DVaRWTCOzPdd18SQvGqhy1FgUzCFBmk7t/Mu6mxMunRh4xqTAUsz9/bp
+         EVuOfRdFgfjiZSW1Afa9nsh92fcH5Bvr/FSd1gEA08dNiME1hb18eEgKg+6nCkiquF9m
+         4ZG/ARrx/WxsPw0IxRKeBjQhrlVVWDv/ZtWRkCJyevQc2XbWkdU5JRorfJSgs6TlTqyd
+         eoKg==
+X-Gm-Message-State: AOAM5319OuBGhOSbYazW5evVVBvea0xBPR0uiDINEMkJ/ee3YsxIAclj
+        3rlEV49oIeZL7l9EqkS1PK7I/Ryt9o2dq1D0
+X-Google-Smtp-Source: ABdhPJxPVskSTUF5/cL9LnVPjn5MP2KQeADD17tVWfMVa6GQBS2VtVWjAimhGBuw8SuFvAz0fhZcVA==
+X-Received: by 2002:a05:622a:1a98:b0:2de:2c25:dcca with SMTP id s24-20020a05622a1a9800b002de2c25dccamr11130352qtc.121.1646691487519;
+        Mon, 07 Mar 2022 14:18:07 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x6-20020a376306000000b0067b32a8568esm1440190qkb.101.2022.03.07.14.18.05
+        by smtp.gmail.com with ESMTPSA id o133-20020a37a58b000000b0067b36d0a5dfsm1258091qke.57.2022.03.07.14.18.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:18:05 -0800 (PST)
+        Mon, 07 Mar 2022 14:18:07 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 11/15] btrfs-progs: add new roots to the dirty root list
-Date:   Mon,  7 Mar 2022 17:17:45 -0500
-Message-Id: <fb6d6a9051cfb8e98c28e08ad2c5956cfebffc7d.1646691255.git.josef@toxicpanda.com>
+Subject: [PATCH 12/15] btrfs-progs: delete the btrfs_create_root helper
+Date:   Mon,  7 Mar 2022 17:17:46 -0500
+Message-Id: <e44537ddaa769d95a5d91ff5469f2da2a8a2c32e.1646691255.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646691255.git.josef@toxicpanda.com>
 References: <cover.1646691255.git.josef@toxicpanda.com>
@@ -66,54 +66,165 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have a few places that create new roots and then add the root to the
-dirty list.  Since any root we create we need to make sure ends up on
-the tree_root we can simply add this step to btrfs_create_tree().
+The only user of this is mkfs to make the quota root, everybody else
+uses btrfs_create_tree().  Fix mkfs to use the btrfs_create_tree()
+helper and delete btrfs_create_root().
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/disk-io.c         | 2 ++
- kernel-shared/free-space-tree.c | 1 -
- mkfs/main.c                     | 1 -
- 3 files changed, 2 insertions(+), 2 deletions(-)
+ kernel-shared/ctree.c | 98 -------------------------------------------
+ kernel-shared/ctree.h |  2 -
+ mkfs/main.c           | 12 ++++--
+ 3 files changed, 9 insertions(+), 103 deletions(-)
 
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 3d99e7dd..078ab0fb 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -2485,6 +2485,8 @@ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
- 	if (ret)
- 		goto fail;
+diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
+index 6a578a41..c6ce82b0 100644
+--- a/kernel-shared/ctree.c
++++ b/kernel-shared/ctree.c
+@@ -198,104 +198,6 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
+ 	return 0;
+ }
  
-+	add_root_to_dirty_list(root);
-+
- 	return root;
- 
- fail:
-diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
-index 03eb0ed2..ec2f7915 100644
---- a/kernel-shared/free-space-tree.c
-+++ b/kernel-shared/free-space-tree.c
-@@ -1494,7 +1494,6 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
- 	ret = btrfs_global_root_insert(fs_info, free_space_root);
- 	if (ret)
- 		goto abort;
--	add_root_to_dirty_list(free_space_root);
- 
- 	do {
- 		block_group = btrfs_lookup_first_block_group(fs_info, start);
+-/*
+- * Create a new tree root, with root objectid set to @objectid.
+- *
+- * NOTE: Doesn't support tree with non-zero offset, like data reloc tree.
+- */
+-int btrfs_create_root(struct btrfs_trans_handle *trans,
+-		      struct btrfs_fs_info *fs_info, u64 objectid)
+-{
+-	struct extent_buffer *node;
+-	struct btrfs_root *new_root;
+-	struct btrfs_disk_key disk_key;
+-	struct btrfs_key location;
+-	struct btrfs_root_item root_item = { 0 };
+-	int ret;
+-
+-	new_root = malloc(sizeof(*new_root));
+-	if (!new_root)
+-		return -ENOMEM;
+-
+-	btrfs_setup_root(new_root, fs_info, objectid);
+-	if (!is_fstree(objectid))
+-		new_root->track_dirty = 1;
+-	add_root_to_dirty_list(new_root);
+-
+-	new_root->objectid = objectid;
+-	new_root->root_key.objectid = objectid;
+-	new_root->root_key.type = BTRFS_ROOT_ITEM_KEY;
+-	new_root->root_key.offset = 0;
+-
+-	node = btrfs_alloc_free_block(trans, new_root, fs_info->nodesize,
+-				      objectid, &disk_key, 0, 0, 0);
+-	if (IS_ERR(node)) {
+-		ret = PTR_ERR(node);
+-		error("failed to create root node for tree %llu: %d (%m)",
+-		      objectid, ret);
+-		return ret;
+-	}
+-	new_root->node = node;
+-
+-	ret = btrfs_inc_ref(trans, new_root, node, 0);
+-	if (ret < 0)
+-		goto free;
+-
+-	/*
+-	 * Special tree roots may need to modify pointers in @fs_info
+-	 * Only quota is supported yet.
+-	 */
+-	switch (objectid) {
+-	case BTRFS_QUOTA_TREE_OBJECTID:
+-		if (fs_info->quota_root) {
+-			error("quota root already exists");
+-			ret = -EEXIST;
+-			goto free;
+-		}
+-		fs_info->quota_root = new_root;
+-		fs_info->quota_enabled = 1;
+-		break;
+-	/*
+-	 * Essential trees can't be created by this function, yet.
+-	 * As we expect such skeleton exists, or a lot of functions like
+-	 * btrfs_alloc_free_block() doesn't work at all
+-	 */
+-	case BTRFS_ROOT_TREE_OBJECTID:
+-	case BTRFS_EXTENT_TREE_OBJECTID:
+-	case BTRFS_CHUNK_TREE_OBJECTID:
+-	case BTRFS_FS_TREE_OBJECTID:
+-		ret = -EEXIST;
+-		goto free;
+-	default:
+-		/* Subvolume trees don't need special handling */
+-		if (is_fstree(objectid))
+-			break;
+-		/* Other special trees are not supported yet */
+-		ret = -ENOTTY;
+-		goto free;
+-	}
+-	btrfs_mark_buffer_dirty(node);
+-	btrfs_set_root_bytenr(&root_item, btrfs_header_bytenr(node));
+-	btrfs_set_root_level(&root_item, 0);
+-	btrfs_set_root_generation(&root_item, trans->transid);
+-	btrfs_set_root_dirid(&root_item, 0);
+-	btrfs_set_root_refs(&root_item, 1);
+-	btrfs_set_root_used(&root_item, fs_info->nodesize);
+-	location.objectid = objectid;
+-	location.type = BTRFS_ROOT_ITEM_KEY;
+-	location.offset = 0;
+-
+-	ret = btrfs_insert_root(trans, fs_info->tree_root, &location, &root_item);
+-	if (ret < 0)
+-		goto free;
+-	return ret;
+-
+-free:
+-	free_extent_buffer(node);
+-	free(new_root);
+-	return ret;
+-}
+-
+ /*
+  * check if the tree block can be shared by multiple trees
+  */
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 26a1db9a..8c4f6ed6 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -2758,8 +2758,6 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
+ 		      struct btrfs_root *root,
+ 		      struct extent_buffer *buf,
+ 		      struct extent_buffer **cow_ret, u64 new_root_objectid);
+-int btrfs_create_root(struct btrfs_trans_handle *trans,
+-		      struct btrfs_fs_info *fs_info, u64 objectid);
+ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
+ 		u32 data_size);
+ int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end);
 diff --git a/mkfs/main.c b/mkfs/main.c
-index 995b0223..7bdbe64d 100644
+index 7bdbe64d..a2e6500e 100644
 --- a/mkfs/main.c
 +++ b/mkfs/main.c
-@@ -798,7 +798,6 @@ static int create_uuid_tree(struct btrfs_trans_handle *trans)
- 		goto out;
+@@ -918,12 +918,18 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
+ 		error("failed to start transaction: %d (%m)", ret);
+ 		return ret;
  	}
+-	ret = btrfs_create_root(trans, fs_info, BTRFS_QUOTA_TREE_OBJECTID);
+-	if (ret < 0) {
++
++	key.objectid = BTRFS_QUOTA_TREE_OBJECTID;
++	key.type = BTRFS_ROOT_ITEM_KEY;
++	key.offset = 0;
++
++	quota_root = btrfs_create_tree(trans, fs_info, &key);
++	if (IS_ERR(quota_root)) {
++		ret = PTR_ERR(quota_root);
+ 		error("failed to create quota root: %d (%m)", ret);
+ 		goto fail;
+ 	}
+-	quota_root = fs_info->quota_root;
++	fs_info->quota_root = quota_root;
  
--	add_root_to_dirty_list(root);
- 	fs_info->uuid_root = root;
- 	ret = btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
- 				  BTRFS_UUID_KEY_SUBVOL,
+ 	key.objectid = 0;
+ 	key.type = BTRFS_QGROUP_STATUS_KEY;
 -- 
 2.26.3
 
