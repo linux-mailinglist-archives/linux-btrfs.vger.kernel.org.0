@@ -2,59 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 493AA4D0B2D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8CF4D0B31
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343799AbiCGWev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S1343806AbiCGWiK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343796AbiCGWep (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:34:45 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476DA473BD
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:33:50 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id z66so13288988qke.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:33:50 -0800 (PST)
+        with ESMTP id S1343811AbiCGWh6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:37:58 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC0E52E0B
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:37:03 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id gm1so13279754qvb.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:37:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Y4iInL5FQNaa30XCeT0tTHXymZTDrydvlJrkTwbx8rw=;
-        b=lwwheomXk0y2YxYuEtjHenSuY7O2fKAm94+q/LXEmUtPru9dYxfirRlho0z4EtNm4f
-         FSSpZQUi2wudac4adcOLzoG34ga7jYg5O1ef2hZ85tQLm5LVBCkQua7Pb/WtG1hz+5Hf
-         IcS8N6prRNMSotzk3p0zev6ylviG3tYHAd09WliWa6S96ZFfu/CS74tlXoJ+wm742OlU
-         8veS4dk1Udv6vnybIn2a6b1fisW+Z+PyavPYiw5WJBjHMSz5XZ1lT3nBEJCTmcUjoMsL
-         trcexiiJO6bLinJ/wZJLb2Ti1Dps0hyjkzFhcnwA1uaI/hlZb7sgi8IwY2+HRkFT8+PN
-         bP3Q==
+        bh=xt6kYwSpq/Jy4ZmE2fFl/7wslKkhO6MnoFXo8RrGMbI=;
+        b=l+c25eGEuaZpX5M+xa5rTj1sHI0uqYf0XLae/dBtj7s6pYDAiiswmpVlhSPdjVsQiL
+         9t9b217taLp18cCrOXa5H/Xaw9eFjhEDBNl/ny3UPkPWPSi8NB2SLuch0RgK1nz6ypwS
+         Pl/a2uZZ1p8dZjDzqdLD2xLzjzAK4weBoCXr0+1pYisW3SeLA1A1Vh82l3LUXJEOi6Qz
+         fbILHng7WvifkPpu/R+Z4GA2JlcP3Wu6u4OqDZK+0tUyIouRuPS1gSYow6B2TSaumy59
+         Eeuqrvfc9ij4oIn6rmw/NGNGz59jYR3Ii35dRXq0gImGVlLMA/xKSOdwFafJ8E25288s
+         Yw9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y4iInL5FQNaa30XCeT0tTHXymZTDrydvlJrkTwbx8rw=;
-        b=6mWPawybtbscZ0iA7ayF6aoLlWbApH7xI0mtkjEkb5NB1Txc4b3+etTG42aiz+Tn8T
-         L+NiKwDmnOf+d5lHoMu0rZwGzIEcMViBBgvXuBVN8Vi41pKa1a8RhcFn6eLuWASoUSev
-         WGxff0WF/I0JoGzP2UYiiZTa/Ahu08qjAHTvUpX5al9bnKrDb4jLtieMvr87p4BVS5dR
-         AHwTK38FZ3wPeZ6/G+eTj+x32DMZE69D3daTzB9ZuqPnoRkxEO/MkKWKGEDkHXvb7mhV
-         zYEAzNs+5wEjl6uQj8G7Ea36IVzahkXMqo3B10/hAkviPpHCVxkRwL7oQZINorYyrTLn
-         JGpA==
-X-Gm-Message-State: AOAM532bJVIkjxOTYgjn+o869i3rC95tMd+By+d8dLFHO1HdeAIlmr4/
-        IR92fRSTeLrjpze0pFLTqP0qMgyrkuDovKBI
-X-Google-Smtp-Source: ABdhPJzhqR0FwgU4Lx2jnJ7qj4k4zl9wvjR56UEOCxyJzOr++j7JtcJofWUw0pCT2BmYECQs+vDl0A==
-X-Received: by 2002:a05:620a:1713:b0:67b:3b91:e91b with SMTP id az19-20020a05620a171300b0067b3b91e91bmr2883765qkb.534.1646692429196;
-        Mon, 07 Mar 2022 14:33:49 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xt6kYwSpq/Jy4ZmE2fFl/7wslKkhO6MnoFXo8RrGMbI=;
+        b=Ri3aW+3/qdYLQx12VYC7nBQK9iGwB7NXvXNwYckaLOGF8qzsV61MB937ti2A9fBsNI
+         yDieSVnTOCe0r0KYE5CNMWqll+ZxUYIa6NDiR1dccFr2TBk/oB5x8Det8aJrUBA+3Nur
+         R87oRrJpcSpm7M0aklBohFbhF8oaJwaMtyBKi4pmT5OKnwtM4iKF78SLMwcftW2VdPjy
+         2HUKSnsVvnvfMfZcSYlvyyVgsjJS0keHfHy1PJEtltn85VfypqUAz7ibWCCUfHz+jij8
+         pdHzAO0Msx7oUuJXUiT2yj/MitwH6DV2jqj14FY88ZZOmzr/aiEMC6hgmTlMGCJxEo0k
+         Y/lA==
+X-Gm-Message-State: AOAM531lbhcTejlkBRAcrcLb31LHWIH+ttJkAL1+kZidpIOtJCNkX9nx
+        U5usljshUeW073aTQIxucpxZwBHIj2QyYD+Y
+X-Google-Smtp-Source: ABdhPJxi0Nov3avErBdgIM5PWMVqAtDwHzWEyljPoPyqyZhZHrYKXA6aPYxOGeWd5jnta9uGo8lPOg==
+X-Received: by 2002:a05:6214:d6d:b0:435:22f0:ee7c with SMTP id 13-20020a0562140d6d00b0043522f0ee7cmr10138449qvs.38.1646692622627;
+        Mon, 07 Mar 2022 14:37:02 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id b128-20020a378086000000b0067c65e0897fsm527579qkd.59.2022.03.07.14.33.48
+        by smtp.gmail.com with ESMTPSA id 141-20020a370a93000000b0067b009288bdsm3380377qkk.87.2022.03.07.14.37.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:33:48 -0800 (PST)
+        Mon, 07 Mar 2022 14:37:02 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 12/12] btrfs: use _offset helpers instead of offsetof in generic_bin_search
-Date:   Mon,  7 Mar 2022 17:33:31 -0500
-Message-Id: <51de9fc987057bc50097fd217e8a3fa51068a49c.1646692306.git.josef@toxicpanda.com>
+Subject: [PATCH 00/11] btrfs: add snapshot_id to btrfs_header and root_item
+Date:   Mon,  7 Mar 2022 17:36:50 -0500
+Message-Id: <cover.1646692474.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1646692306.git.josef@toxicpanda.com>
-References: <cover.1646692306.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -66,31 +64,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The starting offset for the items/keys are going to be dependent on
-extent tree v2, use the helpers instead of offsetof directly.
+Hello,
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ctree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This is the next series of changes for extent tree v2.  This adds support for
+the snapshot_id to the btrfs_header and btrfs_root_item.  This will allow us to
+track shared blocks more simply without requiring a lot of reference updates.
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 1a6f24baf33b..6e8c02eec548 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -781,10 +781,10 @@ static noinline int generic_bin_search(struct extent_buffer *eb, int low,
- 	}
- 
- 	if (btrfs_header_level(eb) == 0) {
--		p = offsetof(struct btrfs_leaf, items);
-+		p = btrfs_item_nr_offset(eb, 0);
- 		item_size = sizeof(struct btrfs_item);
- 	} else {
--		p = offsetof(struct btrfs_node, ptrs);
-+		p = btrfs_node_key_ptr_offset(eb, 0);
- 		item_size = sizeof(struct btrfs_key_ptr);
- 	}
- 
+There are also a few extra patches tacked onto the end to add some more testing.
+Since we're changing the size of the btrfs_header I wanted to get as much
+coverage as possible on the different ways we modify leaves and nodes so I added
+another selftest and added support for running the selftests with extent tree v2
+set.
+
+Thanks,
+
+Josef
+
+Josef Bacik (11):
+  btrfs: take into account BTRFS_HEADER_FLAG_V2 in the item/node helpers
+  btrfs: add global_tree_id to btrfs_root_item
+  btrfs: add snapshot_id to the btrfs_root_item
+  btrfs: handle the new snapshot_id field properly
+  btrfs: add a sanity checker for the header flags
+  btrfs: zero dummy extent buffers
+  btrfs: zero out temporary superblock buffer header
+  btrfs: add a debug range check for header_v2
+  btrfs: selftests: add a test for delete_one_dir_name
+  btrfs: don't do the global_id thing if we are a DUMMY_FS_INFO
+  btrfs: selftests: run with EXTENT_TREE_V2 set as well
+
+ fs/btrfs/ctree.c                       |  13 +-
+ fs/btrfs/ctree.h                       |  14 +-
+ fs/btrfs/disk-io.c                     |   4 +
+ fs/btrfs/extent-tree.c                 |   7 +
+ fs/btrfs/extent_io.c                   |  22 +++
+ fs/btrfs/tests/btrfs-tests.c           |  77 +++++++----
+ fs/btrfs/tests/btrfs-tests.h           |  18 ++-
+ fs/btrfs/tests/extent-buffer-tests.c   | 181 ++++++++++++++++++++++++-
+ fs/btrfs/tests/extent-io-tests.c       |   9 +-
+ fs/btrfs/tests/extent-map-tests.c      |   2 +-
+ fs/btrfs/tests/free-space-tests.c      |   6 +-
+ fs/btrfs/tests/free-space-tree-tests.c |  21 +--
+ fs/btrfs/tests/inode-tests.c           |  25 ++--
+ fs/btrfs/tests/qgroup-tests.c          |   5 +-
+ fs/btrfs/tree-checker.c                |  27 ++++
+ fs/btrfs/volumes.c                     |   2 +
+ include/uapi/linux/btrfs_tree.h        |  12 +-
+ 17 files changed, 376 insertions(+), 69 deletions(-)
+
 -- 
 2.26.3
 
