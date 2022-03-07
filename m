@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6B54D0B2A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 320D64D0B2B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343792AbiCGWen (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1343789AbiCGWen (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 7 Mar 2022 17:34:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45206 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343786AbiCGWek (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:34:40 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B9046B12
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:33:45 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id v189so4339495qkd.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:33:44 -0800 (PST)
+        with ESMTP id S1343787AbiCGWel (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:34:41 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779014F458
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:33:46 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id b12so13292517qvk.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:33:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=O0Q3+UCBnpNMfXFsbHsY5I8VHg1IvXg65VHpCcQ/n4I=;
-        b=oSBCEkQWhgz4UALupjVuZlCl0kS3NzBtNTH6Oljmout9y0Tpyqdu0ThrjBK1q9bIRN
-         wZ+WWSH2QTVOraPWSnq+zVkt3KLjo/Fxg2ARomAFpeTLsUh4jI93toc+yLj0jDbTe1jJ
-         eJ7pfQ4OK7yjmssmJW8CSQmy9vnDGtSbGSoPVTWFUFAwVTwuaLjJaSaEz0Yh94HoIeBg
-         f0SLGw6dWogXli+pGxSwDIFIfRywfTlXrHb3iNckSOsQGk8V+UE6eNs+OPOFLwAL/YTu
-         hMwFp713P7zL5g3cGOrhHqH9Qof77/KGep7b1eRkQwrcju5h0m614xJIlQJSMkQvVajt
-         zYpg==
+        bh=uYfHwHKs4UbEj0NN4QTiyInYtBiXlPu7eS0eQhQvVkg=;
+        b=eCZz0+iqLkzs4IeR/6Rfzi5kyc08sovj08ISDx8Dkg3j5899uR/KgHF87jqhOlPjPN
+         sWmBuLVJZiG2DhGFPsFdMhMG/TcAB4MScUS1PaMIGgX93ec96H7fuNeLFRQhh1Hkj5YF
+         zGxfXM2qOWOPTuqU2as1L/Ex0t/BnFulwZirbgdqk8GdIoGPykl9Bb4/BHg2GJR/ZfcK
+         1w/bmJaZW0VIZesypEqFb2jop3ecK0UriF4BPXIV40dfofZS6swGIHSDuOFUjZMHCPuJ
+         DA804dZqA89yC4F4sUaNeEMVgkXf+Kl0Iz7HUvfLdRWb0xpDIGVIKtgqbDCozJBpHe7o
+         7HhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O0Q3+UCBnpNMfXFsbHsY5I8VHg1IvXg65VHpCcQ/n4I=;
-        b=yMWWxXg1+0hHyQS5IzphjsyJgEwOXIsdYw9P3oODMuRTdBOeibNXybjW1cOQc4h0rh
-         69+rOHTgQ3NXxoDBs/NoUWMslkOfvlAFJgVxSV1gOv91Am65L0nhkcJ6MW9gDb7ry8gd
-         qmNQH9Ogkt4AryNUp58RK74mHH5O8nbecpLA124qRzzf4hGwCoPSewwMYS+bwYD71YJx
-         9/yYfTAbzYKIWuLgywOHqcrHAXcQLz/H0f2upqCR7/SVTKOGcW85EXywTvedJhF+kXGv
-         55f31Q7VfiaZU80y9WdFc7+Ky/6rrOK8JLNYkscfYlhg+pHUJDR9BnjAIDstSvgucvR2
-         EZdA==
-X-Gm-Message-State: AOAM533d/rARzMVDLSxohpyMLvEjftarFXii9NbyQ2heZxuUGRP5aFZE
-        W8kyMCO/SlNzGohctxToBWpfqcRWVjoCKBWv
-X-Google-Smtp-Source: ABdhPJxAGrvKbSG7SnKN5b8SNV/dqvHlgEMsu7JBrSRdf/ovDwF4/kSeZcVdrPomfaKkmSXR8WCyJw==
-X-Received: by 2002:a37:5ac5:0:b0:662:e588:2687 with SMTP id o188-20020a375ac5000000b00662e5882687mr8452183qkb.228.1646692423878;
-        Mon, 07 Mar 2022 14:33:43 -0800 (PST)
+        bh=uYfHwHKs4UbEj0NN4QTiyInYtBiXlPu7eS0eQhQvVkg=;
+        b=Ov3egbjOJUomvR3DsKZEwZQfBlMXzofr4OLVzbEziTUfdF32acUlr8kOadz15zmgzO
+         bvkYPFF2fgK/wI15j9kXAq9X9HJRg6M8IgkhV+vGjHQ4R3XB+qXMeyVw9Gzkxi+XlY6D
+         z3GeWxUpLL7aPibRvfkjZkWGWGHVvP31s44ER12Y6FD0CpWBh/M7zIdmx8gd2QVGxpaO
+         UKCGmxYYIVClNuaTQY/WkgaQq7o875xbjxo2e57Em2AgLXQvi7YsWmeTA0d9PsYEqHvS
+         EFnG5cb82H58wW09CNOhOx71HpX06pxOY0mfRsGwK/Apf8IhJL4h8mqrvBP0Wc6AbCkz
+         YjHw==
+X-Gm-Message-State: AOAM5337h0/YinOcgzv8a4JHZ9jzRbO+g9DdA8HH31l55Iio+1V2seBn
+        REVN/+fLM/kM8Yiq05jVJYlQsrEa0jK764P7
+X-Google-Smtp-Source: ABdhPJx8iS51+OKFS2tIMFmAB785HWlO5yM5OkQ8tE+AyqNHmuanohuLF8ZUqtlbvvXXD8nydWhVig==
+X-Received: by 2002:a05:6214:27c4:b0:435:4c2b:be19 with SMTP id ge4-20020a05621427c400b004354c2bbe19mr10060387qvb.34.1646692425301;
+        Mon, 07 Mar 2022 14:33:45 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j20-20020a37a014000000b0067b3a0c7d89sm1177860qke.38.2022.03.07.14.33.43
+        by smtp.gmail.com with ESMTPSA id g202-20020a379dd3000000b0047d87ec72bbsm6882800qke.28.2022.03.07.14.33.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:33:43 -0800 (PST)
+        Mon, 07 Mar 2022 14:33:44 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 08/12] btrfs: move the header SETGET funcs
-Date:   Mon,  7 Mar 2022 17:33:27 -0500
-Message-Id: <a9ed943e9217f36073b2aeefcdedd444b61ab281.1646692306.git.josef@toxicpanda.com>
+Subject: [PATCH 09/12] btrfs: move the super SETGET funcs
+Date:   Mon,  7 Mar 2022 17:33:28 -0500
+Message-Id: <eb83cc79b901786fead16b64e908c35c6d9bba5c.1646692306.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646692306.git.josef@toxicpanda.com>
 References: <cover.1646692306.git.josef@toxicpanda.com>
@@ -66,142 +66,204 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These need to be above the item/key_ptr functions so we can read the
-header flags to determine which version of the header we have.
+Some of the helpers are going to need to check fs_incompat flags, so we
+need these helpers to be higher up in ctree.h.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h | 103 +++++++++++++++++++++++------------------------
- 1 file changed, 51 insertions(+), 52 deletions(-)
+ fs/btrfs/ctree.h | 158 +++++++++++++++++++++++------------------------
+ 1 file changed, 79 insertions(+), 79 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 7261c5c8f672..57b68115fa1e 100644
+index 57b68115fa1e..f20ce33e5c68 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -1718,6 +1718,57 @@ static inline void btrfs_set_##name(type *s, u##bits val)		\
- 	put_unaligned_le##bits(val, &s->member);			\
+@@ -1769,6 +1769,85 @@ static inline void btrfs_set_header_backref_rev(struct extent_buffer *eb,
+ 	btrfs_set_header_flags(eb, flags);
  }
  
-+/* struct btrfs_header */
-+BTRFS_SETGET_HEADER_FUNCS(header_bytenr, struct btrfs_header, bytenr, 64);
-+BTRFS_SETGET_HEADER_FUNCS(header_generation, struct btrfs_header,
-+			  generation, 64);
-+BTRFS_SETGET_HEADER_FUNCS(header_owner, struct btrfs_header, owner, 64);
-+BTRFS_SETGET_HEADER_FUNCS(header_nritems, struct btrfs_header, nritems, 32);
-+BTRFS_SETGET_HEADER_FUNCS(header_flags, struct btrfs_header, flags, 64);
-+BTRFS_SETGET_HEADER_FUNCS(header_level, struct btrfs_header, level, 8);
-+BTRFS_SETGET_HEADER_FUNCS(header_snapshot_id, struct btrfs_header_v2,
-+			  snapshot_id, 64);
-+BTRFS_SETGET_STACK_FUNCS(stack_header_generation, struct btrfs_header,
++/* struct btrfs_super_block */
++BTRFS_SETGET_STACK_FUNCS(super_bytenr, struct btrfs_super_block, bytenr, 64);
++BTRFS_SETGET_STACK_FUNCS(super_flags, struct btrfs_super_block, flags, 64);
++BTRFS_SETGET_STACK_FUNCS(super_generation, struct btrfs_super_block,
 +			 generation, 64);
-+BTRFS_SETGET_STACK_FUNCS(stack_header_owner, struct btrfs_header, owner, 64);
-+BTRFS_SETGET_STACK_FUNCS(stack_header_nritems, struct btrfs_header,
-+			 nritems, 32);
-+BTRFS_SETGET_STACK_FUNCS(stack_header_bytenr, struct btrfs_header, bytenr, 64);
-+BTRFS_SETGET_STACK_FUNCS(stack_header_snapshot_id, struct btrfs_header_v2,
-+			 snapshot_id, 64);
++BTRFS_SETGET_STACK_FUNCS(super_root, struct btrfs_super_block, root, 64);
++BTRFS_SETGET_STACK_FUNCS(super_sys_array_size,
++			 struct btrfs_super_block, sys_chunk_array_size, 32);
++BTRFS_SETGET_STACK_FUNCS(super_chunk_root_generation,
++			 struct btrfs_super_block, chunk_root_generation, 64);
++BTRFS_SETGET_STACK_FUNCS(super_root_level, struct btrfs_super_block,
++			 root_level, 8);
++BTRFS_SETGET_STACK_FUNCS(super_chunk_root, struct btrfs_super_block,
++			 chunk_root, 64);
++BTRFS_SETGET_STACK_FUNCS(super_chunk_root_level, struct btrfs_super_block,
++			 chunk_root_level, 8);
++BTRFS_SETGET_STACK_FUNCS(super_log_root, struct btrfs_super_block,
++			 log_root, 64);
++BTRFS_SETGET_STACK_FUNCS(super_log_root_transid, struct btrfs_super_block,
++			 log_root_transid, 64);
++BTRFS_SETGET_STACK_FUNCS(super_log_root_level, struct btrfs_super_block,
++			 log_root_level, 8);
++BTRFS_SETGET_STACK_FUNCS(super_total_bytes, struct btrfs_super_block,
++			 total_bytes, 64);
++BTRFS_SETGET_STACK_FUNCS(super_bytes_used, struct btrfs_super_block,
++			 bytes_used, 64);
++BTRFS_SETGET_STACK_FUNCS(super_sectorsize, struct btrfs_super_block,
++			 sectorsize, 32);
++BTRFS_SETGET_STACK_FUNCS(super_nodesize, struct btrfs_super_block,
++			 nodesize, 32);
++BTRFS_SETGET_STACK_FUNCS(super_stripesize, struct btrfs_super_block,
++			 stripesize, 32);
++BTRFS_SETGET_STACK_FUNCS(super_root_dir, struct btrfs_super_block,
++			 root_dir_objectid, 64);
++BTRFS_SETGET_STACK_FUNCS(super_num_devices, struct btrfs_super_block,
++			 num_devices, 64);
++BTRFS_SETGET_STACK_FUNCS(super_compat_flags, struct btrfs_super_block,
++			 compat_flags, 64);
++BTRFS_SETGET_STACK_FUNCS(super_compat_ro_flags, struct btrfs_super_block,
++			 compat_ro_flags, 64);
++BTRFS_SETGET_STACK_FUNCS(super_incompat_flags, struct btrfs_super_block,
++			 incompat_flags, 64);
++BTRFS_SETGET_STACK_FUNCS(super_csum_type, struct btrfs_super_block,
++			 csum_type, 16);
++BTRFS_SETGET_STACK_FUNCS(super_cache_generation, struct btrfs_super_block,
++			 cache_generation, 64);
++BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
++BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
++			 uuid_tree_generation, 64);
++BTRFS_SETGET_STACK_FUNCS(super_block_group_root, struct btrfs_super_block,
++			 block_group_root, 64);
++BTRFS_SETGET_STACK_FUNCS(super_block_group_root_generation,
++			 struct btrfs_super_block,
++			 block_group_root_generation, 64);
++BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level, struct btrfs_super_block,
++			 block_group_root_level, 8);
++BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
++			 nr_global_roots, 64);
 +
-+static inline int btrfs_header_flag(const struct extent_buffer *eb, u64 flag)
++#define btrfs_fs_incompat(fs_info, opt) \
++	__btrfs_fs_incompat((fs_info), BTRFS_FEATURE_INCOMPAT_##opt)
++
++static inline bool __btrfs_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag)
 +{
-+	return (btrfs_header_flags(eb) & flag) == flag;
++	struct btrfs_super_block *disk_super;
++	disk_super = fs_info->super_copy;
++	return !!(btrfs_super_incompat_flags(disk_super) & flag);
 +}
 +
-+static inline void btrfs_set_header_flag(struct extent_buffer *eb, u64 flag)
-+{
-+	u64 flags = btrfs_header_flags(eb);
-+	btrfs_set_header_flags(eb, flags | flag);
-+}
++#define btrfs_fs_compat_ro(fs_info, opt) \
++	__btrfs_fs_compat_ro((fs_info), BTRFS_FEATURE_COMPAT_RO_##opt)
 +
-+static inline void btrfs_clear_header_flag(struct extent_buffer *eb, u64 flag)
++static inline int __btrfs_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag)
 +{
-+	u64 flags = btrfs_header_flags(eb);
-+	btrfs_set_header_flags(eb, flags & ~flag);
-+}
-+
-+static inline int btrfs_header_backref_rev(const struct extent_buffer *eb)
-+{
-+	u64 flags = btrfs_header_flags(eb);
-+	return flags >> BTRFS_BACKREF_REV_SHIFT;
-+}
-+
-+static inline void btrfs_set_header_backref_rev(struct extent_buffer *eb,
-+						int rev)
-+{
-+	u64 flags = btrfs_header_flags(eb);
-+	flags &= ~BTRFS_BACKREF_REV_MASK;
-+	flags |= (u64)rev << BTRFS_BACKREF_REV_SHIFT;
-+	btrfs_set_header_flags(eb, flags);
++	struct btrfs_super_block *disk_super;
++	disk_super = fs_info->super_copy;
++	return !!(btrfs_super_compat_ro_flags(disk_super) & flag);
 +}
 +
  static inline u64 btrfs_device_total_bytes(const struct extent_buffer *eb,
  					   struct btrfs_dev_item *s)
  {
-@@ -1736,7 +1787,6 @@ static inline void btrfs_set_device_total_bytes(const struct extent_buffer *eb,
- 	btrfs_set_64(eb, s, offsetof(struct btrfs_dev_item, total_bytes), val);
+@@ -2489,65 +2568,6 @@ btrfs_cpu_balance_args_to_disk(struct btrfs_disk_balance_args *disk,
+ 	disk->stripes_max = cpu_to_le32(cpu->stripes_max);
  }
  
--
- BTRFS_SETGET_FUNCS(device_type, struct btrfs_dev_item, type, 64);
- BTRFS_SETGET_FUNCS(device_bytes_used, struct btrfs_dev_item, bytes_used, 64);
- BTRFS_SETGET_FUNCS(device_io_align, struct btrfs_dev_item, io_align, 32);
-@@ -2242,57 +2292,6 @@ static inline void btrfs_dir_item_key_to_cpu(const struct extent_buffer *eb,
- 
- #endif
- 
--/* struct btrfs_header */
--BTRFS_SETGET_HEADER_FUNCS(header_bytenr, struct btrfs_header, bytenr, 64);
--BTRFS_SETGET_HEADER_FUNCS(header_generation, struct btrfs_header,
--			  generation, 64);
--BTRFS_SETGET_HEADER_FUNCS(header_owner, struct btrfs_header, owner, 64);
--BTRFS_SETGET_HEADER_FUNCS(header_nritems, struct btrfs_header, nritems, 32);
--BTRFS_SETGET_HEADER_FUNCS(header_flags, struct btrfs_header, flags, 64);
--BTRFS_SETGET_HEADER_FUNCS(header_level, struct btrfs_header, level, 8);
--BTRFS_SETGET_HEADER_FUNCS(header_snapshot_id, struct btrfs_header_v2,
--			  snapshot_id, 64);
--BTRFS_SETGET_STACK_FUNCS(stack_header_generation, struct btrfs_header,
+-/* struct btrfs_super_block */
+-BTRFS_SETGET_STACK_FUNCS(super_bytenr, struct btrfs_super_block, bytenr, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_flags, struct btrfs_super_block, flags, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_generation, struct btrfs_super_block,
 -			 generation, 64);
--BTRFS_SETGET_STACK_FUNCS(stack_header_owner, struct btrfs_header, owner, 64);
--BTRFS_SETGET_STACK_FUNCS(stack_header_nritems, struct btrfs_header,
--			 nritems, 32);
--BTRFS_SETGET_STACK_FUNCS(stack_header_bytenr, struct btrfs_header, bytenr, 64);
--BTRFS_SETGET_STACK_FUNCS(stack_header_snapshot_id, struct btrfs_header_v2,
--			 snapshot_id, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_root, struct btrfs_super_block, root, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_sys_array_size,
+-			 struct btrfs_super_block, sys_chunk_array_size, 32);
+-BTRFS_SETGET_STACK_FUNCS(super_chunk_root_generation,
+-			 struct btrfs_super_block, chunk_root_generation, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_root_level, struct btrfs_super_block,
+-			 root_level, 8);
+-BTRFS_SETGET_STACK_FUNCS(super_chunk_root, struct btrfs_super_block,
+-			 chunk_root, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_chunk_root_level, struct btrfs_super_block,
+-			 chunk_root_level, 8);
+-BTRFS_SETGET_STACK_FUNCS(super_log_root, struct btrfs_super_block,
+-			 log_root, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_log_root_transid, struct btrfs_super_block,
+-			 log_root_transid, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_log_root_level, struct btrfs_super_block,
+-			 log_root_level, 8);
+-BTRFS_SETGET_STACK_FUNCS(super_total_bytes, struct btrfs_super_block,
+-			 total_bytes, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_bytes_used, struct btrfs_super_block,
+-			 bytes_used, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_sectorsize, struct btrfs_super_block,
+-			 sectorsize, 32);
+-BTRFS_SETGET_STACK_FUNCS(super_nodesize, struct btrfs_super_block,
+-			 nodesize, 32);
+-BTRFS_SETGET_STACK_FUNCS(super_stripesize, struct btrfs_super_block,
+-			 stripesize, 32);
+-BTRFS_SETGET_STACK_FUNCS(super_root_dir, struct btrfs_super_block,
+-			 root_dir_objectid, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_num_devices, struct btrfs_super_block,
+-			 num_devices, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_compat_flags, struct btrfs_super_block,
+-			 compat_flags, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_compat_ro_flags, struct btrfs_super_block,
+-			 compat_ro_flags, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_incompat_flags, struct btrfs_super_block,
+-			 incompat_flags, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_csum_type, struct btrfs_super_block,
+-			 csum_type, 16);
+-BTRFS_SETGET_STACK_FUNCS(super_cache_generation, struct btrfs_super_block,
+-			 cache_generation, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
+-			 uuid_tree_generation, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_block_group_root, struct btrfs_super_block,
+-			 block_group_root, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_block_group_root_generation,
+-			 struct btrfs_super_block,
+-			 block_group_root_generation, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level, struct btrfs_super_block,
+-			 block_group_root_level, 8);
+-BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
+-			 nr_global_roots, 64);
 -
--static inline int btrfs_header_flag(const struct extent_buffer *eb, u64 flag)
+ int btrfs_super_csum_size(const struct btrfs_super_block *s);
+ const char *btrfs_super_csum_name(u16 csum_type);
+ const char *btrfs_super_csum_driver(u16 csum_type);
+@@ -3773,16 +3793,6 @@ static inline void __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info,
+ 	}
+ }
+ 
+-#define btrfs_fs_incompat(fs_info, opt) \
+-	__btrfs_fs_incompat((fs_info), BTRFS_FEATURE_INCOMPAT_##opt)
+-
+-static inline bool __btrfs_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag)
 -{
--	return (btrfs_header_flags(eb) & flag) == flag;
+-	struct btrfs_super_block *disk_super;
+-	disk_super = fs_info->super_copy;
+-	return !!(btrfs_super_incompat_flags(disk_super) & flag);
 -}
 -
--static inline void btrfs_set_header_flag(struct extent_buffer *eb, u64 flag)
+ #define btrfs_set_fs_compat_ro(__fs_info, opt) \
+ 	__btrfs_set_fs_compat_ro((__fs_info), BTRFS_FEATURE_COMPAT_RO_##opt, \
+ 				 #opt)
+@@ -3835,16 +3845,6 @@ static inline void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info,
+ 	}
+ }
+ 
+-#define btrfs_fs_compat_ro(fs_info, opt) \
+-	__btrfs_fs_compat_ro((fs_info), BTRFS_FEATURE_COMPAT_RO_##opt)
+-
+-static inline int __btrfs_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag)
 -{
--	u64 flags = btrfs_header_flags(eb);
--	btrfs_set_header_flags(eb, flags | flag);
+-	struct btrfs_super_block *disk_super;
+-	disk_super = fs_info->super_copy;
+-	return !!(btrfs_super_compat_ro_flags(disk_super) & flag);
 -}
 -
--static inline void btrfs_clear_header_flag(struct extent_buffer *eb, u64 flag)
--{
--	u64 flags = btrfs_header_flags(eb);
--	btrfs_set_header_flags(eb, flags & ~flag);
--}
--
--static inline int btrfs_header_backref_rev(const struct extent_buffer *eb)
--{
--	u64 flags = btrfs_header_flags(eb);
--	return flags >> BTRFS_BACKREF_REV_SHIFT;
--}
--
--static inline void btrfs_set_header_backref_rev(struct extent_buffer *eb,
--						int rev)
--{
--	u64 flags = btrfs_header_flags(eb);
--	flags &= ~BTRFS_BACKREF_REV_MASK;
--	flags |= (u64)rev << BTRFS_BACKREF_REV_SHIFT;
--	btrfs_set_header_flags(eb, flags);
--}
--
- static inline int btrfs_is_leaf(const struct extent_buffer *eb)
- {
- 	return btrfs_header_level(eb) == 0;
+ /* acl.c */
+ #ifdef CONFIG_BTRFS_FS_POSIX_ACL
+ struct posix_acl *btrfs_get_acl(struct inode *inode, int type, bool rcu);
 -- 
 2.26.3
 
