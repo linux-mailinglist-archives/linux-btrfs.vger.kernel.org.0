@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFD64D0B26
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8FC4D0B24
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243156AbiCGWed (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S1343761AbiCGWeh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238384AbiCGWeb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:34:31 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA5A473BD
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:33:36 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id jo29so969338qvb.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:33:36 -0800 (PST)
+        with ESMTP id S239639AbiCGWed (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:34:33 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452432981A
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:33:38 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id q4so13291113qki.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:33:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=0DC51lpZxbZ7yw5Y+vIfK+FJGMZibwL+D3EiCfFFkKM=;
-        b=2TwnX2lR4UjZBqinj5JsOdMbyGzP9s36iok9fPgoqM8Q3aFE0fCEHbG45xxlTnGgVs
-         Acd+mkGVqLnrn7VkTdKnIcyDaAooRh25otA/l9nO8hOILwHXKwZq6xB7VutTtuvG6y9M
-         Wm8IW8MbVGm269xqCusRYwYKnF8Kb80iO5A3vtwrawxYWjhiGiIxxKLlgeVG44fXfrIK
-         BuPnci6ODdgm9URy/xs9zlnykqe5ucJsrjyNMrpT65B9keYR0v7X9aj0Z9zq9LGb5jCk
-         91U9qEgK62IHbxV/kH8c5frjtRdrvPxc4fEyBDVCQVA/IylD+Ldro9uxElLC1NdImxHB
-         uWjQ==
+        bh=kWGw9hAjv4QltzgS1Hl1A0Ie+q709aoGGLkEUwcwCt8=;
+        b=4mw3XbGfM2yOfxx4ViimqLSlKO9fhZF+b69pxtSewRuhwFbQKJaJNf0u7blFWNT8sL
+         H8UABCn9xAOp+a/nlNOnCSCCg5BoaOQyV8rnUnD88pr4YhmdNWXkC28Af6OT9LDdJ7UU
+         7j57Y4CqcxqvMc1AYG+bPKg9WxrgED3xzWX8letx/b2QqHE+9CAOjd1Uc4tOl6Yw1Sg/
+         k5QWl1OKs8L+J94jB7crio5imdHfVFovEm7hgwmYYM7wEiJoTy6VGO7a+zvIea8G8OwG
+         a9d6YIqyZaQKgpWGX2/Znzj9jiOlmTikKdzSPEXsjiJoDU8dT0mlUNRwmlh3DQ/toz+f
+         jA0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0DC51lpZxbZ7yw5Y+vIfK+FJGMZibwL+D3EiCfFFkKM=;
-        b=A+ujsjVOC8oi11ZbKXBY6njfBODTQBCJidkpjRl4IZxwdDU2Cw2SG4qaE7MDSvbAHY
-         ClKWYT3l86g6Y1g4h1RtamD+9kRERnq+PhpQ5YODHdY5izAIT6a/v1TVt6KlOC+6PNxU
-         8b8/WcL6EN7eYKfAZgzuiRzti5pgTVDdrQNbIb3GjMp7wyu8iuMHPrWv1R+erkz9pGui
-         Fp1liq9IJNxgE6RmfJo0Mzw+vFI92gq4Hz5RYQmo328YmZJjiNQTfMel8RgV9mw3TPXM
-         YjIqawPpa5VX5He6D/bROkZnmuifTdwH9jKptLCkljZ6w3JM5koN/nXMZ5q6gE1M0tb+
-         +g6A==
-X-Gm-Message-State: AOAM533fLDi+vI5M1ub0mdeTYz+DvqK9laJuxG7zSESqbmxw1QBZNAPn
-        a7ymnqBtKCmCS2tZ+go3fM5n8PKRciQRCc1X
-X-Google-Smtp-Source: ABdhPJxTtOzeY9BGyvbUOqMMWi+yZboJ63HaoHYTFpRExLEFHeR3VzBB3GNxuyJYDUhYUg6YHCNOJw==
-X-Received: by 2002:ad4:5bc6:0:b0:435:a8fa:2694 with SMTP id t6-20020ad45bc6000000b00435a8fa2694mr1142127qvt.13.1646692415748;
-        Mon, 07 Mar 2022 14:33:35 -0800 (PST)
+        bh=kWGw9hAjv4QltzgS1Hl1A0Ie+q709aoGGLkEUwcwCt8=;
+        b=JGNLR3wm+p1Ei2IXZEm9PUqhnH6iEJUwyMVN/5piwG9n1BgPYOx6uBMdx2Uo0obbiz
+         6YxtOwRxMUGgVwWN8XAFKqTGvyH6tMU1KHWl0RnaGLeadSHYENa00FznkRSD+jH/1dcZ
+         UR+V4kD+qIv026jpOicp8rVc71IrWoXCXucXapCnUHfvK6qoI3ao/UatupB+lUm0Txy7
+         T9kkj04pA+NZOoe+g4L145OkeaWv46WL8TvjKps/E/vfEcHSKxb2ffPiZExlIhlaM28/
+         8WQDfhDPhBh+B2r/weo+aKrMC4jXPmoPiZc7T4YzGg6YlsF9eQDU2d13vUupxk4DYa8q
+         /5ZA==
+X-Gm-Message-State: AOAM530YyJqUS8rgc9yezDAUO2QVoDwIq672wfEO91XNJLgnM81CQyoK
+        g1IwRP2YJe6KPL3lI++2/w83QJQhwVSaTuWh
+X-Google-Smtp-Source: ABdhPJzKDGvZ0eGHfqzOBSy4Yebjuho/R3dd8MGM8nGkbibMSr/OAPEUO3QS+F/CXysXv26KiLTUDg==
+X-Received: by 2002:a37:f510:0:b0:663:9d17:8c2e with SMTP id l16-20020a37f510000000b006639d178c2emr8273745qkk.397.1646692417054;
+        Mon, 07 Mar 2022 14:33:37 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id e18-20020a05620a12d200b0066393782c89sm6596991qkl.64.2022.03.07.14.33.35
+        by smtp.gmail.com with ESMTPSA id k125-20020a378883000000b006491db6dbb1sm6987747qkd.84.2022.03.07.14.33.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:33:35 -0800 (PST)
+        Mon, 07 Mar 2022 14:33:36 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 02/12] btrfs: add a btrfs_node_key_ptr helper, convert the users
-Date:   Mon,  7 Mar 2022 17:33:21 -0500
-Message-Id: <7c1a75affdac4955ed9430845e9dd7ae30aaff28.1646692306.git.josef@toxicpanda.com>
+Subject: [PATCH 03/12] btrfs: introduce *_leaf_data helpers
+Date:   Mon,  7 Mar 2022 17:33:22 -0500
+Message-Id: <2b26868e81099774fb63e93059d5fcd06f2077c5.1646692306.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646692306.git.josef@toxicpanda.com>
 References: <cover.1646692306.git.josef@toxicpanda.com>
@@ -66,100 +66,190 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All of the node helpers are getting the pointer offset and then casting
-to btrfs_key_ptr.  Instead do this with a helper similar to how we do it
-with items and change all the helpers to use the new helper.
+The item offsets are set not taking into account the
+BTRFS_LEAF_DATA_OFFSET, which is to say they ignore the size of the
+header.
+
+ie btrfs_item_offset(nr) is actually sizeof(struct btrfs_header) +
+btrfs_item_offset(nr) into the leaf.
+
+Because of this anywhere we do memmove/copy of the item data we have to
+add BTRFS_LEAF_DATA_OFFSET to the offsets we're using.  Which means we
+have the following pattern
+
+copy_extent_buffer(src, dst,
+		   BTRFS_LEAF_DATA_OFFSET + btrfs_item_offset(nr),
+		   BTRFS_LEAF_DATA_OFFSET + other_offset, size);
+
+in a lot of spaces.  Clean this up by adding two helpers that do the
+appropriate offset adjustment, and change all the users to simply pass
+in the item_offset offsets.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h | 48 +++++++++++++++++++-----------------------------
- 1 file changed, 19 insertions(+), 29 deletions(-)
+ fs/btrfs/ctree.c | 84 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 46 insertions(+), 38 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 819bd8631c4c..d5d52b907143 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1958,61 +1958,51 @@ BTRFS_SETGET_STACK_FUNCS(stack_key_blockptr, struct btrfs_key_ptr,
- BTRFS_SETGET_STACK_FUNCS(stack_key_generation, struct btrfs_key_ptr,
- 			 generation, 64);
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index eee0b7e3c68a..8a35db9d7319 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -43,6 +43,31 @@ static const struct btrfs_csums {
+ 				     .driver = "blake2b-256" },
+ };
  
--static inline u64 btrfs_node_blockptr(const struct extent_buffer *eb, int nr)
-+static inline unsigned long btrfs_node_key_ptr_offset(int nr)
- {
--	unsigned long ptr;
--	ptr = offsetof(struct btrfs_node, ptrs) +
-+	return offsetof(struct btrfs_node, ptrs) +
- 		sizeof(struct btrfs_key_ptr) * nr;
--	return btrfs_key_blockptr(eb, (struct btrfs_key_ptr *)ptr);
++/*
++ * These helpers take the btrfs_item_offset() values and adjust them based on
++ * the header size.  Do not use these with the value adjusted for the header,
++ * simply use the raw btrfs_item_offset() values.
++ */
++static inline void memmove_leaf_data(const struct extent_buffer *dst,
++				     unsigned long dst_offset,
++				     unsigned long src_offset,
++				     unsigned long len)
++{
++	dst_offset += BTRFS_LEAF_DATA_OFFSET;
++	src_offset += BTRFS_LEAF_DATA_OFFSET;
++	memmove_extent_buffer(dst, dst_offset, src_offset, len);
 +}
 +
-+static inline struct btrfs_key_ptr *btrfs_node_key_ptr(int nr)
++static inline void copy_leaf_data(const struct extent_buffer *dst,
++				  const struct extent_buffer *src,
++				  unsigned long dst_offset,
++				  unsigned long src_offset, unsigned long len)
 +{
-+	return (struct btrfs_key_ptr *)btrfs_node_key_ptr_offset(nr);
++	dst_offset += BTRFS_LEAF_DATA_OFFSET;
++	src_offset += BTRFS_LEAF_DATA_OFFSET;
++	copy_extent_buffer(dst, src, dst_offset, src_offset, len);
 +}
 +
-+static inline u64 btrfs_node_blockptr(const struct extent_buffer *eb, int nr)
-+{
-+	return btrfs_key_blockptr(eb, btrfs_node_key_ptr(nr));
- }
- 
- static inline void btrfs_set_node_blockptr(const struct extent_buffer *eb,
- 					   int nr, u64 val)
+ int btrfs_super_csum_size(const struct btrfs_super_block *s)
  {
--	unsigned long ptr;
--	ptr = offsetof(struct btrfs_node, ptrs) +
--		sizeof(struct btrfs_key_ptr) * nr;
--	btrfs_set_key_blockptr(eb, (struct btrfs_key_ptr *)ptr, val);
-+	btrfs_set_key_blockptr(eb, btrfs_node_key_ptr(nr), val);
- }
+ 	u16 t = btrfs_super_csum_type(s);
+@@ -2880,16 +2905,12 @@ static noinline int __push_leaf_right(struct btrfs_path *path,
  
- static inline u64 btrfs_node_ptr_generation(const struct extent_buffer *eb, int nr)
- {
--	unsigned long ptr;
--	ptr = offsetof(struct btrfs_node, ptrs) +
--		sizeof(struct btrfs_key_ptr) * nr;
--	return btrfs_key_generation(eb, (struct btrfs_key_ptr *)ptr);
-+	return btrfs_key_generation(eb, btrfs_node_key_ptr(nr));
- }
+ 	/* make room in the right data area */
+ 	data_end = leaf_data_end(right);
+-	memmove_extent_buffer(right,
+-			      BTRFS_LEAF_DATA_OFFSET + data_end - push_space,
+-			      BTRFS_LEAF_DATA_OFFSET + data_end,
+-			      BTRFS_LEAF_DATA_SIZE(fs_info) - data_end);
++	memmove_leaf_data(right, data_end - push_space, data_end,
++			  BTRFS_LEAF_DATA_SIZE(fs_info) - data_end);
  
- static inline void btrfs_set_node_ptr_generation(const struct extent_buffer *eb,
- 						 int nr, u64 val)
- {
--	unsigned long ptr;
--	ptr = offsetof(struct btrfs_node, ptrs) +
--		sizeof(struct btrfs_key_ptr) * nr;
--	btrfs_set_key_generation(eb, (struct btrfs_key_ptr *)ptr, val);
--}
--
--static inline unsigned long btrfs_node_key_ptr_offset(int nr)
--{
--	return offsetof(struct btrfs_node, ptrs) +
--		sizeof(struct btrfs_key_ptr) * nr;
-+	btrfs_set_key_generation(eb, btrfs_node_key_ptr(nr), val);
- }
+ 	/* copy from the left data area */
+-	copy_extent_buffer(right, left, BTRFS_LEAF_DATA_OFFSET +
+-		     BTRFS_LEAF_DATA_SIZE(fs_info) - push_space,
+-		     BTRFS_LEAF_DATA_OFFSET + leaf_data_end(left),
+-		     push_space);
++	copy_leaf_data(right, left, BTRFS_LEAF_DATA_SIZE(fs_info) - push_space,
++		       leaf_data_end(left), push_space);
  
- static inline void btrfs_node_key(const struct extent_buffer *eb,
- 				  struct btrfs_disk_key *disk_key, int nr)
- {
--	unsigned long ptr = btrfs_node_key_ptr_offset(nr);
--	read_eb_member(eb, (struct btrfs_key_ptr *)ptr, struct btrfs_key_ptr,
--		       key, disk_key);
-+	read_eb_member(eb, btrfs_node_key_ptr(nr), struct btrfs_key_ptr, key,
-+		       disk_key);
- }
+ 	memmove_extent_buffer(right, btrfs_item_nr_offset(push_items),
+ 			      btrfs_item_nr_offset(0),
+@@ -3098,11 +3119,8 @@ static noinline int __push_leaf_left(struct btrfs_path *path, int data_size,
+ 	push_space = BTRFS_LEAF_DATA_SIZE(fs_info) -
+ 		     btrfs_item_offset(right, push_items - 1);
  
- static inline void btrfs_set_node_key(const struct extent_buffer *eb,
- 				      struct btrfs_disk_key *disk_key, int nr)
- {
--	unsigned long ptr;
--	ptr = btrfs_node_key_ptr_offset(nr);
--	write_eb_member(eb, (struct btrfs_key_ptr *)ptr,
--		       struct btrfs_key_ptr, key, disk_key);
-+	write_eb_member(eb, btrfs_node_key_ptr(nr), struct btrfs_key_ptr, key,
-+			disk_key);
- }
+-	copy_extent_buffer(left, right, BTRFS_LEAF_DATA_OFFSET +
+-		     leaf_data_end(left) - push_space,
+-		     BTRFS_LEAF_DATA_OFFSET +
+-		     btrfs_item_offset(right, push_items - 1),
+-		     push_space);
++	copy_leaf_data(left, right, leaf_data_end(left) - push_space,
++		       btrfs_item_offset(right, push_items - 1), push_space);
+ 	old_left_nritems = btrfs_header_nritems(left);
+ 	BUG_ON(old_left_nritems <= 0);
  
- /* struct btrfs_item */
+@@ -3125,10 +3143,9 @@ static noinline int __push_leaf_left(struct btrfs_path *path, int data_size,
+ 	if (push_items < right_nritems) {
+ 		push_space = btrfs_item_offset(right, push_items - 1) -
+ 						  leaf_data_end(right);
+-		memmove_extent_buffer(right, BTRFS_LEAF_DATA_OFFSET +
+-				      BTRFS_LEAF_DATA_SIZE(fs_info) - push_space,
+-				      BTRFS_LEAF_DATA_OFFSET +
+-				      leaf_data_end(right), push_space);
++		memmove_leaf_data(right,
++				  BTRFS_LEAF_DATA_SIZE(fs_info) - push_space,
++				  leaf_data_end(right), push_space);
+ 
+ 		memmove_extent_buffer(right, btrfs_item_nr_offset(0),
+ 			      btrfs_item_nr_offset(push_items),
+@@ -3269,10 +3286,8 @@ static noinline void copy_for_split(struct btrfs_trans_handle *trans,
+ 			   btrfs_item_nr_offset(mid),
+ 			   nritems * sizeof(struct btrfs_item));
+ 
+-	copy_extent_buffer(right, l,
+-		     BTRFS_LEAF_DATA_OFFSET + BTRFS_LEAF_DATA_SIZE(fs_info) -
+-		     data_copy_size, BTRFS_LEAF_DATA_OFFSET +
+-		     leaf_data_end(l), data_copy_size);
++	copy_leaf_data(right, l, BTRFS_LEAF_DATA_SIZE(fs_info) - data_copy_size,
++		       leaf_data_end(l), data_copy_size);
+ 
+ 	rt_data_off = BTRFS_LEAF_DATA_SIZE(fs_info) - btrfs_item_data_end(l, mid);
+ 
+@@ -3755,9 +3770,8 @@ void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
+ 
+ 	/* shift the data */
+ 	if (from_end) {
+-		memmove_extent_buffer(leaf, BTRFS_LEAF_DATA_OFFSET +
+-			      data_end + size_diff, BTRFS_LEAF_DATA_OFFSET +
+-			      data_end, old_data_start + new_size - data_end);
++		memmove_leaf_data(leaf, data_end + size_diff, data_end,
++				  old_data_start + new_size - data_end);
+ 	} else {
+ 		struct btrfs_disk_key disk_key;
+ 		u64 offset;
+@@ -3782,9 +3796,8 @@ void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
+ 			}
+ 		}
+ 
+-		memmove_extent_buffer(leaf, BTRFS_LEAF_DATA_OFFSET +
+-			      data_end + size_diff, BTRFS_LEAF_DATA_OFFSET +
+-			      data_end, old_data_start - data_end);
++		memmove_leaf_data(leaf, data_end + size_diff, data_end,
++				  old_data_start - data_end);
+ 
+ 		offset = btrfs_disk_key_offset(&disk_key);
+ 		btrfs_set_disk_key_offset(&disk_key, offset + size_diff);
+@@ -3849,9 +3862,8 @@ void btrfs_extend_item(struct btrfs_path *path, u32 data_size)
+ 	}
+ 
+ 	/* shift the data */
+-	memmove_extent_buffer(leaf, BTRFS_LEAF_DATA_OFFSET +
+-		      data_end - data_size, BTRFS_LEAF_DATA_OFFSET +
+-		      data_end, old_data - data_end);
++	memmove_leaf_data(leaf, data_end - data_size, data_end,
++			  old_data - data_end);
+ 
+ 	data_end = old_data;
+ 	old_size = btrfs_item_size(leaf, slot);
+@@ -3939,10 +3951,8 @@ static void setup_items_for_insert(struct btrfs_root *root, struct btrfs_path *p
+ 			      (nritems - slot) * sizeof(struct btrfs_item));
+ 
+ 		/* shift the data */
+-		memmove_extent_buffer(leaf, BTRFS_LEAF_DATA_OFFSET +
+-				      data_end - batch->total_data_size,
+-				      BTRFS_LEAF_DATA_OFFSET + data_end,
+-				      old_data - data_end);
++		memmove_leaf_data(leaf, data_end - batch->total_data_size,
++				  data_end, old_data - data_end);
+ 		data_end = old_data;
+ 	}
+ 
+@@ -4177,10 +4187,8 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		for (i = 0; i < nr; i++)
+ 			dsize += btrfs_item_size(leaf, slot + i);
+ 
+-		memmove_extent_buffer(leaf, BTRFS_LEAF_DATA_OFFSET +
+-			      data_end + dsize,
+-			      BTRFS_LEAF_DATA_OFFSET + data_end,
+-			      last_off - data_end);
++		memmove_leaf_data(leaf, data_end + dsize, data_end,
++				  last_off - data_end);
+ 
+ 		btrfs_init_map_token(&token, leaf);
+ 		for (i = slot + nr; i < nritems; i++) {
 -- 
 2.26.3
 
