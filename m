@@ -2,146 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8964CEEFE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 01:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2394CEF06
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 01:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbiCGAna (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Mar 2022 19:43:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        id S233617AbiCGAtO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Mar 2022 19:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbiCGAn2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 19:43:28 -0500
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C6F106
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 16:42:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1646613755; x=1678149755;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=pzWCGpzehAXfzhqpe7MjwET5WOtGNDQmFo3lPrM4zak=;
-  b=PPiMprZ9aJUCiKtHJfWuyj0ILl+Yqd4IbfhWYgKsnZij+kbhTyyqpwRp
-   L6ENpM6/cAChXBHFYAmphOh9CnJV9rHFyAucjD4UvLh8SM9xEfm01cwEz
-   O6n/XTYO83E2ApwzGbLZtuEzcST/JyO8CCtoME4qsHz9ViRppD34H6yW0
-   dgyXtn5o/dSt0hBi73SYRNIjtMb/iKQ2vqVcG3nn6pueS+Pj+2whWKbzm
-   G8JtIxW86/EeznVgVHMZ6+MkvLvlUmKqByabWQYaM8lpz/wxotBNmZXon
-   o6fZLRvQRJlPhks6Ai3XdijgnmWJp7XZakwYM99/v1T50iNbFFN6WztsV
-   g==;
-X-IronPort-AV: E=Sophos;i="5.90,160,1643644800"; 
-   d="scan'208";a="195575130"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Mar 2022 08:42:34 +0800
-IronPort-SDR: nydjTV3X7cuQo9rOdHjaUCFHIwBTdySn0jQ9d6tIAHWjqHYtsKj7qCnIk3W1/LZoRaKfZ6WtEz
- wTltOocfKo4zI8mJ194WmYpM3+SZARYy3A7HaK0MSo0KZ9q4LuYjmqFrMKnQNjFMzNGnEm8vHa
- l6JLwlvLNhJIlcpcTQsv382bhReBczYVGhSNZqUb1tKpFuK/zFZviUfjhRiX6vracnDvHTUxxR
- B7zp6OKxFgrvYkJNd0jpCM6x0jtFmOP0aqIPfaVja1CnKBGUl3uXCV86IG4wxuBfdpHwTjz96f
- QmGrA6MI2Mw1U1GTc4veexXG
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2022 16:13:51 -0800
-IronPort-SDR: j5R6bPb0z1wpO2/276GW/joPt2Op33i/bgRn/ijghVx7LNkwnLMhV00z76zV9PBuf59HD6D8s4
- 4hxJRiInX6AlfGmS0UI4lSkU4dO+HKAnsCQ6VJIV6zNCHQcW+vs5NEbBDXO/e06jSP5EONnzg0
- /+xVskDeR5rMtxU/Tk+B9mtxT6Ia9FJAKIXFBp+5IyDgkD3lnb5mD3J8txXAZz9FL8OKbzkC4W
- iX7XDMHEiPzyvE1jjzRlQdfewEhvCwV144/NhC/QtwOGHQnM8995Q+6VLz3STv+0veL9WSE58+
- ypo=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2022 16:42:34 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4KBfn50JNQz1SHwl
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 16:42:33 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1646613752; x=1649205753; bh=pzWCGpzehAXfzhqpe7MjwET5WOtGNDQmFo3
-        lPrM4zak=; b=ZofAJ/FY5K1S383CzxENjeEBAmwhK46RckH4ZT/MURa3ihjQEfc
-        oMk6XQPjvMw887/BgubANN9m6HsIwQmMQpp0bV1Zm31yMTkjgucIEK9+eHKxO7VZ
-        qpsztF2vvIiZdYjXJZjCIRhkc6yoF+sb1BPuWJGvZKgsYwg2ILs5BRKr8JzgtHQG
-        QR6GfDuI59bYhzTt52zPUlScxSGcDDT4uivG+LjVovJUkgc6+XuuXDEx+PAwOLvb
-        CqWPKn+5xswe0MUUoEH1qHUEMxCRQ34wz1TbV8pf7fIUuxqOLTx7F9b5NkmoX5ak
-        eq9qKE486K8JDXGuZFdNDTMQcaB1aSeAx6w==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EvOIDEXD_ZfU for <linux-btrfs@vger.kernel.org>;
-        Sun,  6 Mar 2022 16:42:32 -0800 (PST)
-Received: from [10.225.163.91] (unknown [10.225.163.91])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4KBfn40fJlz1Rvlx;
-        Sun,  6 Mar 2022 16:42:31 -0800 (PST)
-Message-ID: <c3b39f81-f5e4-ff06-b1c0-98501d77d79a@opensource.wdc.com>
-Date:   Mon, 7 Mar 2022 09:42:31 +0900
+        with ESMTP id S230094AbiCGAtO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 19:49:14 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BD51AD9C
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 16:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1646614098;
+        bh=M5qFkzqz8KeSOvOq5RXu/HcLUjJ3HhStDrfr2IvAUsU=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=h3IZeaubdFW1XT0mE8o5YWtjTDoI/9Mm0NLC1XQg+o/oo3eNYlLuxD02z/kbNXW6m
+         xB0HULelLevCjpf+yPEfKuFU3bA8UPuOxjfjANKWMMkPoBCTTc+vzVk2zb9ppr2UEU
+         Z/hWoCcvX9Sj2rulBVkKXnAz0+NE1VybFI4nyMwI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJmKh-1nkULA2zYf-00K8mB; Mon, 07
+ Mar 2022 01:48:18 +0100
+Message-ID: <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com>
+Date:   Mon, 7 Mar 2022 08:48:15 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: Is this error fixable or do I need to rebuild the drive?
+ Thunderbird/91.6.1
 Content-Language: en-US
-To:     Jan Kanis <jan.code@jankanis.nl>, linux-btrfs@vger.kernel.org
-References: <CAAzDdeysSbH-j-9rBGs3HBv2vyETbVyNoCjfDOKrka1OAkn1_g@mail.gmail.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <CAAzDdeysSbH-j-9rBGs3HBv2vyETbVyNoCjfDOKrka1OAkn1_g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+In-Reply-To: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2OxEo8FmuJFvh6JtyfZq/1usKJb3sQiuPliI2hFgkwLQuwxq+hP
+ JWQNAaXIcDVp3weEBLp+bguCbW3xjVGl+xDcIg+S2GOM3HnKLBykPeA6+yl1ZTAPnTdXF6+
+ KP3kD7M3lgnFRaU5XDALZPtvmv302+1xu8/Fk2l1Eo1CD4rDHQP7wQx47Kn80VIN2D775ss
+ a15HV5nPdP8ekBK278ePg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BqYWiu4rViM=:R7HrlbxGoSff+AcG/ifQ31
+ jGTi9NEgyJT/lEsqm4NdVbRllUAYSTjmuKYba/CMCq4v/c7sxrHt3eDhol/r9mY4MK9E+7eOv
+ j4rVqVs+aHIhuIKW0+Lb36C2O153StIxhMuMxTvpDwu+bNXRKuyFxEdOoGyRCiJ7K9gNjKSC5
+ EjJxO0hhYwkysZWPiRouDHDGJVuiwOwIRJcI49KvlVwX3GKwYFo7sPKlTf1Tqx85LcYMz7oWw
+ QEt3nUGwpxl3oo/dTV6+4lW1j4NoItKWcRuISRpR3+MBEkpCF7Cdvo4alSoHfN49VrIGGR8RS
+ uQ0DT4T6PD6y9fHS2x4iiFHXR1e80BrY9vAg8eviCU7wxc4sn6BLshznXbA2GMXHvdcHWHRZr
+ mKTWY0IXsIH2ZPklKsDvmWfSI5AZqkZEPTZZZAfZt85HiaVy19qMl0LSS4FTqiTRoGJ6bhuXW
+ u9/4HlKdGArAvpfvIvt+BdEx3uCm1sYGl8yAVCBSwHPWN5fQcy3EGsvo5DcyBavBR2pXuBuX7
+ oMqqIqZt90/NDzWbKNMy44rdzHaQIWd54JCMTWVevan12k6D7E0+5j7vuff/dx4XLsrmkLANh
+ NUxu5qPcn72U0rayeqXsCbcE91xQS6y5yvL6zNJgZGeG2Q1ELrtVbDXUr3zdhUbBjgFAd//gd
+ DOTDOoTwUumBOdwfdB+CDT30fJn+66Mfue0Q7yyuBLl3TDMnGZGboRCza6KsyFjwEPehAIynd
+ 5alHAqmCLHummo2Og9gaDN5LhWVF0zgRcmNthGizEEOMSYbWQ6lsDynvjljPxMVEGVucuvPDN
+ S4vkFspLhV9e2ASbWNm7mmZNpU4niMagbVaKCTkMlX1bYpQiAhRC4ZrpGCRt/BcSLrXme+prv
+ qp+W3x1MfaTZLZd5umfsF5sR3s4GCJRzR73Ccr7owvr7l4J3JmbEj0zNNIVoUnpUvpHF/ELFn
+ 5ZMZ5isOGqcAapP3ekTRDpbr4CDhquvQYfC+HJQaGaN9g28R1bX8ISaAjQk0PlxSVkiO2uq/n
+ mpJ5TnkTC/lozR6OEc7rDI9YL/9R2XiFlBXTZjahur/EL+ZKg9k1hDshxU6OC+0DEm2hUoLPD
+ 9COnlb6KKvXX1c=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/5/22 08:33, Jan Kanis wrote:
-> Hi,
-> 
-> I have a btrfs filesystem with two disks in raid 1. Each btrfs device
-> sits on top of a LUKS encrypted volume, which consists of a raw drive
-> partition on a SMR hard disk, though I don't think that's relevant.
 
-Hu... SMR disks do not support partitions... And last time I checked,
-cryptsetup did not support LUKS formating of SMR drives (dm-crypt does
-support SMR, that is not the issue). Care to better explain your setup ?
 
-> 
-> One of the drives failed, the sata link appears to have died, if I'm
-> interpreting the system logs right. As it's a raid 1 the system kept
-> running and I didn't notice the dead drive until some time later,
-> during which I kept using the filesystem.
-> Something wasn't behaving right, so I decided to reboot. After the
-> reboot the btrfs filesystem didn't come up and one of the drives was
-> dead. I was able to mount from the remaining device with
-> degraded/read-only, all data seemed to be there.
-> I took out the dead drive and put it into another system for
-> examination. After some fiddling the drive came up again, so it wasn't
-> permanently dead after all. I was able to mount it degraded/read-only.
-> It looked good except for missing the latest changes I made to some
-> files I was working with, so it was a bit out of date. A btrfs scrub
-> showed no corruptions.
-> I put the drive back in the original system, thinking that btrfs would
-> either refuse to mount it or fix it from the other copy. The
-> filesystem automatically mounted rw without a 'degraded' option, and
-> the filesystem could be used again. The logs showed some "parent
-> transid verify failed" errors, which I assumed would be corrected from
-> the other copy. Attempting to mount only the drive that had failed
-> with degraded/read-only now no longer worked.
-> 
-> It's now some days later, the filesystem is still working, but I'm
-> also still getting "parent transid verify failed" errors in the logs,
-> and "read error corrected". So by now I'm thinking that btrfs
-> apparently does not fix this error by itself. What's happening here,
-> and why isn't btrfs fixing it, it has two copies of everything?
-> What's the best way to fix it manually? Rebalance the data? scrub it?
-> delete, wipe and re-add the device that failed so the mirror can be
-> rebuilt?
-> 
-> best,
+On 2022/3/6 23:59, Jan Ziak wrote:
+> I would like to report that btrfs in Linux kernel 5.16.12 mounted with
+> the autodefrag option wrote 5TB in a single day to a 1TB SSD that is
+> about 50% full.
+>
+> Defragmenting 0.5TB on a drive that is 50% full should write far less th=
+an 5TB.
+
+If using defrag ioctl, that's a good and solid expectation.
+
+>
+> Benefits to the fragmentation of the most written files over the
+> course of the one day (sqlite database files) are nil. Please see the
+> data below. Also note that the sqlite file is using up to 10 GB more
+> than it should due to fragmentation.
+
+Autodefrag will mark any file which got smaller writes (<64K) for scan.
+For smaller extents than 64K, they will be re-dirtied for writeback.
+
+So in theory, if the cleaner is triggered very frequently to do
+autodefrag, it can indeed easily amplify the writes.
+
+Are you using commit=3D mount option? Which would reduce the commit
+interval thus trigger autodefrag more frequently.
+
+>
+> CPU utilization on an otherwise idle machine is approximately 600% all
+> the time: btrfs-cleaner 100%, kworkers...btrfs 500%.
+
+The problem is why the CPU usage is at 100% for cleaner.
+
+Would you please apply this patch on your kernel?
+https://patchwork.kernel.org/project/linux-btrfs/patch/bf2635d213e0c85251c=
+4cd0391d8fbf274d7d637.1645705266.git.wqu@suse.com/
+
+Then enable the following trace events:
+
+  btrfs:defrag_one_locked_range
+  btrfs:defrag_add_target
+  btrfs:defrag_file_start
+  btrfs:defrag_file_end
+
+Those trace events would show why we're doing the same re-dirty again
+and again, and mostly why the CPU usage is so high.
+
+Thanks,
+Qu
+
+>
+> I am not just asking you to fix this issue - I am asking you how is it
+> possible for an algorithm that is significantly worse than O(N*log(N))
+> to be merged into the Linux kernel in the first place!?
+>
+> Please try to avoid discussing no-CoW (chattr +C) in your response,
+> because it is beside the point. Thanks.
+>
+> ----
+>
+> A day before:
+>
+> $ smartctl -a /dev/nvme0n1 | grep Units
+> Data Units Read:                    449,265,485 [230 TB]
+> Data Units Written:                 406,386,721 [208 TB]
+>
+> $ compsize file.sqlite
+> Processed 1 file, 1757129 regular extents (2934077 refs), 0 inline.
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL      100%       46G          46G          37G
+> none       100%       46G          46G          37G
+>
+> ----
+>
+> A day after:
+>
+> $ smartctl -a /dev/nvme0n1 | grep Units
+> Data Units Read:                    473,211,419 [242 TB]
+> Data Units Written:                 417,249,915 [213 TB]
+>
+> $ compsize file.sqlite
+> Processed 1 file, 1834778 regular extents (3050838 refs), 0 inline.
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL      100%       47G          47G          37G
+> none       100%       47G          47G          37G
+>
+> $ filefrag file.sqlite
+> (Ctrl-C after waiting more than 10 minutes, consuming 100% CPU)
+>
+> ----
+>
+> Manual defragmentation decreased the file's size by 7 GB:
+>
+> $ btrfs-defrag file.sqlite
+> $ sync
+> $ compsize file.sqlite
+> Processed 6 files, 13074 regular extents (20260 refs), 0 inline.
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL      100%       40G          40G          37G
+> none       100%       40G          40G          37G
+>
+> ----
+>
+> Sincerely
 > Jan
-
-
--- 
-Damien Le Moal
-Western Digital Research
