@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9B44D0AB6
+	by mail.lfdr.de (Postfix) with ESMTP id A7EC74D0AB7
 	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343651AbiCGWOd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
+        id S1343652AbiCGWOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:14:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343645AbiCGWOc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:14:32 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0F65577B
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:13:37 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id s15so14585974qtk.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:13:37 -0800 (PST)
+        with ESMTP id S244935AbiCGWOe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:14:34 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE7656405
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:13:39 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id a14so1687281qtx.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:13:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=+T/Sq7dklmBe/an9Co68+zQqVlEeSuZw0gmAdfw7Ud0=;
-        b=tYwpPBenavgZAqDKEaJq3KnOE3wObuskCumRRt5aBF0WC3vVWgECYkmvLTcE91JPSX
-         gfl7pGFh9kJAhyginG19Cdc/1gGG1yc8yEKmsaERz1sLegD9mGW1B3DFzb7x9rwAcHlH
-         WK8z49mbNGyMB84+fgGv1vPxBfnZ3yiVEYkzBECsnTk5T/SkgkloabAPFRJxfO81TUZA
-         n/4JRDeDIdQDLyqLFKzb0GUDyIz3Drgm6C7AROqqrJfQNHRfL7arhU1YgoP3Qm2aQfj0
-         8BiHAV0VP014bj14eG6k9boK+flLfWyoz+jz+9OR9KQGPG4iN0vodPgKlWvixczJ92pV
-         2zYw==
+        bh=rTQP5MTYR9uYmxziQv7fbj2wYYhvTPa7unazeeji48g=;
+        b=mewK8awPhMuKkjveZBmL5u+O2siaFYDVaZBc9K0f6Mlzb9UR5jph98L8KJnljSZLCv
+         iZDhvW/JaRU7YdeNGyVfeZEb3ammXVMvifVsZ0J/wOkfYqzuscDnKSRcMye1rLM6Y9ug
+         f56IBRm1fEC9anzHuJjY9OqaAR/3lSDdq3oFNityi92/747FjhmMnb8QUt9i+5/fi9qC
+         J/nQnaXdRMwMz05WxVV/52meOWuNYW9AmHwtvjMUYm4QZXAXsxeu77nChAS2439fP0DI
+         GySYBVZHL5Co17QOBHB3MxnWjk55YC6+OM6+wAdKqvBnvpdl6ecbhqEo0IiSHYbY6HJd
+         fr5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+T/Sq7dklmBe/an9Co68+zQqVlEeSuZw0gmAdfw7Ud0=;
-        b=hH9BYiTCLNQrNn7ec6KxGV+4syXIO1Fmwnc2qs4JGvF985aXkRrZZSTq/LjgCOLVE1
-         hh44HsOwqOJ2hWRbbhX64qWW/15pQ44speJcB1cL5rQ0m+ncyxgYE2vLiBBJ5qVGg0zu
-         iu7dM0lvw0KjNu/u5cMXI/MalFbayVpy20br4vOacxOr0MebEjdCEI49gRCq4fik+F1y
-         IIW1U/u8MB4NuB1xFHi7SpKdH3nP+VrGAVTY7+kq5nIM4XllvqrZ6EAl9cIIOiYwZTTc
-         1qt8W9SZeO9Fsvp0Uc5GS3RUCnxRHxywOLCNEGjeUvlw9hMnc3sAKqlkmWHI6UBgfuil
-         /cJg==
-X-Gm-Message-State: AOAM532WsugsYBzmg60H/m3XWl/pMhvKN7wO0AgRUsiReYePhk8Khn2M
-        Fv03DK2g2aMiRJbdpA6jnMWqyuQgZwT3Xnvl
-X-Google-Smtp-Source: ABdhPJxsHt7GuFZbDctFmlwLuagOv2qKFd7Ao7uwqEusKrxR3G7ECi+5Tg6MGC0KkestvCT2TsboJw==
-X-Received: by 2002:ac8:7f04:0:b0:2e0:6859:5131 with SMTP id f4-20020ac87f04000000b002e068595131mr4966344qtk.126.1646691216792;
-        Mon, 07 Mar 2022 14:13:36 -0800 (PST)
+        bh=rTQP5MTYR9uYmxziQv7fbj2wYYhvTPa7unazeeji48g=;
+        b=K5FwGdKgnULnEKhARFNCM6jQsvYYRNo5WR4W+HJ1Y51tkal0hxOkW8Z0yoopx3H240
+         wlnHlGAeCmJJ3Xz/+Kut9DpXC60Wt8hqVcMKXTlFzZIryT08rJhvGCwYWEBqeNtp44c8
+         d6McUk4kCoK9Vb387BoC2wBKwrN+q/wIsA45iFwhanacwLU86S7uzw02eD1zPVgHvkQ/
+         IYg31Cx6WlRP3xoiSvJ7K82WwpEJjfRjewI+C215p4/WUiCNs7sZaTjrWkvOKHE5dMfv
+         Ax4SexI/Rt4wnhJPubwBg4v6XpdPxKtbQ/FSvZOxuGsGE5GhrWrf2GQJJRfq7jubOVX6
+         wsRw==
+X-Gm-Message-State: AOAM531RP0SAi3gkeinZ1z78dQ44dEUafACoi/o/nhC7EZeehBca4XUC
+        NQIar7YAcdOVFwrHfwJNlYQ8Iad1yu5NDveO
+X-Google-Smtp-Source: ABdhPJy8Do9IllC8So4IwCoQNQlG6a+6QcfZOYqOBIIEyLWWYj+9BJKGi6PW84wXc0ba/K7xc9bRPw==
+X-Received: by 2002:ac8:5ad0:0:b0:2de:3cba:cefc with SMTP id d16-20020ac85ad0000000b002de3cbacefcmr11011132qtd.584.1646691218197;
+        Mon, 07 Mar 2022 14:13:38 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y11-20020a05622a004b00b002dea2052d7dsm9497102qtw.12.2022.03.07.14.13.36
+        by smtp.gmail.com with ESMTPSA id z1-20020a05622a028100b002e06cd1f623sm1230590qtw.9.2022.03.07.14.13.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:13:36 -0800 (PST)
+        Mon, 07 Mar 2022 14:13:37 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 10/15] btrfs-progs: cache the block group with the free space tree if possible
-Date:   Mon,  7 Mar 2022 17:13:15 -0500
-Message-Id: <0ac9066c7f43f109fe3d2b47f6d95fd1b8745b8a.1646691128.git.josef@toxicpanda.com>
+Subject: [PATCH v2 11/15] btrfs-progs: make btrfs_lookup_extent_info extent tree v2 aware
+Date:   Mon,  7 Mar 2022 17:13:16 -0500
+Message-Id: <ed03438df3c31ebabbe1c1f26c57bf79d150f425.1646691128.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646691128.git.josef@toxicpanda.com>
 References: <cover.1646691128.git.josef@toxicpanda.com>
@@ -66,87 +66,33 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We currently always cache the block group based on the extent tree in
-progs.  However with extent-tree-v2 we will not be able to do this, so
-we need to load the free space tree.  However the free space tree is
-tied into the normal free space cache, which progs doesn't use for
-allocation, instead it uses an extent_io_tree.
-
-Handle this by setting the range dirty in our extent_io_tree.  We still
-need to be able to load the free space tree into the normal free space
-cache stuff for fsck, so simply bail doing the normal free space cache
-adding if block_group->free_space_ctl is NULL, which will be the case
-unless we're checking it via check.
+We do not have flags or refs set on metadata in extent tree v2, make
+this helper return the proper things if it is set.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/extent-tree.c      | 14 ++++++++++++++
- kernel-shared/free-space-cache.c |  3 +++
- 2 files changed, 17 insertions(+)
+ kernel-shared/extent-tree.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 61c53ad2..8921dd07 100644
+index 8921dd07..933e8209 100644
 --- a/kernel-shared/extent-tree.c
 +++ b/kernel-shared/extent-tree.c
-@@ -102,6 +102,15 @@ static int cache_block_group(struct btrfs_root *root,
- 	if (block_group->cached)
- 		return 0;
+@@ -1309,6 +1309,14 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
+ 	u64 num_refs;
+ 	u64 extent_flags;
  
-+	if (btrfs_fs_compat_ro(root->fs_info, FREE_SPACE_TREE) &&
-+	    btrfs_fs_compat_ro(root->fs_info, FREE_SPACE_TREE_VALID)) {
-+		ret = load_free_space_tree(root->fs_info, block_group);
-+		if (!ret) {
-+			block_group->cached = 1;
-+			return 0;
-+		}
++	if (metadata && btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
++		if (flags)
++			*flags = 0;
++		if (refs)
++			*refs = 0;
++		return 0;
 +	}
 +
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
-@@ -3594,9 +3603,11 @@ int exclude_super_stripes(struct btrfs_fs_info *fs_info,
- u64 add_new_free_space(struct btrfs_block_group *block_group,
- 		       struct btrfs_fs_info *info, u64 start, u64 end)
- {
-+	struct extent_io_tree *free_space_cache;
- 	u64 extent_start, extent_end, size, total_added = 0;
- 	int ret;
- 
-+	free_space_cache = &info->free_space_cache;
- 	while (start < end) {
- 		ret = find_first_extent_bit(&info->pinned_extents, start,
- 					    &extent_start, &extent_end,
-@@ -3609,6 +3620,8 @@ u64 add_new_free_space(struct btrfs_block_group *block_group,
- 		} else if (extent_start > start && extent_start < end) {
- 			size = extent_start - start;
- 			total_added += size;
-+			set_extent_dirty(free_space_cache, start,
-+					 start + size - 1);
- 			ret = btrfs_add_free_space(block_group->free_space_ctl,
- 						   start, size);
- 			BUG_ON(ret); /* -ENOMEM or logic error */
-@@ -3621,6 +3634,7 @@ u64 add_new_free_space(struct btrfs_block_group *block_group,
- 	if (start < end) {
- 		size = end - start;
- 		total_added += size;
-+		set_extent_dirty(free_space_cache, start, start + size - 1);
- 		ret = btrfs_add_free_space(block_group->free_space_ctl, start,
- 					   size);
- 		BUG_ON(ret); /* -ENOMEM or logic error */
-diff --git a/kernel-shared/free-space-cache.c b/kernel-shared/free-space-cache.c
-index e74a61e4..11b7fa60 100644
---- a/kernel-shared/free-space-cache.c
-+++ b/kernel-shared/free-space-cache.c
-@@ -828,6 +828,9 @@ int btrfs_add_free_space(struct btrfs_free_space_ctl *ctl, u64 offset,
- 	struct btrfs_free_space *info;
- 	int ret = 0;
- 
-+	if (!ctl)
-+		return 0;
-+
- 	info = calloc(1, sizeof(*info));
- 	if (!info)
- 		return -ENOMEM;
+ 	if (metadata && !btrfs_fs_incompat(fs_info, SKINNY_METADATA)) {
+ 		offset = fs_info->nodesize;
+ 		metadata = 0;
 -- 
 2.26.3
 
