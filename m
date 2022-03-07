@@ -2,177 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D6E4D0829
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 21:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C014D0A7D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbiCGULn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 15:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S245453AbiCGWF2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:05:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231898AbiCGULm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 15:11:42 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A2F36146
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 12:10:47 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id k29-20020a05600c1c9d00b003817fdc0f00so129855wms.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 12:10:47 -0800 (PST)
+        with ESMTP id S242938AbiCGWFZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:05:25 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363AD4133C
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:04:30 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id d194so3608196qkg.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:04:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:message-id:subject:mime-version
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hKQtdi7rbDyl7YOJOq4gZvW3IzDE/uFyYAXvVKT16cs=;
-        b=gqbdVe0VKK0kHGLx8jMDfCtXkMJt5jVuFkWAeJTrU5AFhO3/ya6dLqwaeuPzFIq63I
-         K6fOEjIs0EzE4IxYHRnq5NUETdDMxEZ65Wds9tKcSV26jo9Ack35k3XD7B6nSnvc0lvs
-         wVM/wbtM6fX0fPEvK8BGwKuQ8AwyYdqYUVsxQCdPOchO1qucS1D9Pk2tONy3/IDHSh5e
-         CBSp/EZYUpZNJSVmbY1Zl0fmDNicdjJcwygpji8JYl2D/7+E2Fym7H0a4rV+9o7pSrqw
-         D5+ClASEi5myUCgceRJn9XvpIikIupRolIuiERrFjSKMxxodavOgE8NTrCZywkDHBxzr
-         15pw==
+        bh=OF+WLTuqCfnL826zNrfKieakV95GXP8cV0borUjuwj8=;
+        b=n2bOmIiyXGyqcrioTo9zkysWXtw8WDNVx//eFJQrWeJNcCOphoSj3gTNG5/AJ+rhry
+         me3N69oxexXL7h77l/LpuYsmH6tcu4YxPMxNPMinyVrFlSmrWEK4CoL8B9/4sA5nIwae
+         FeNaeNVA0LQL3jLkNsgOih82DLRPts0f82qKXNT8adldC6ZTuDYGGgTM4kz6WCDvtbqj
+         sGUufvU8s1F8z33XVR/BHI+wLrPWfbvNgH47fZH5aEbN/zB4uiMAGg3GpzsTtKufJ+Z/
+         b1o19FV7vi0mAMVze/Znrxxtin7E7IKRYhzDdj2/TyvOwMzn0kvp0TCf2YfanN500ND2
+         NPPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:message-id:subject:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hKQtdi7rbDyl7YOJOq4gZvW3IzDE/uFyYAXvVKT16cs=;
-        b=AjH+3nOXhaN2kIn2IrulShUSdnemBsJknUQZeAFNJB+kCZFqChC1TK6q6Ah3A58bZq
-         bWjHEjQHx3lLUyA9WYCZCVDMpObxs0uG2or7PMwXm7lanvUzR9mw0AiDfQdTkmC1z+h4
-         z6ZnC3nJPKuzvqhrIUgEnoZ3KQhy5FawBcZk/fqBZCEPZKblUbRS9ns3e+QfGTUycbta
-         v/A6GpJBmSdLSawpx455Q39JGoE8xgYgXMos9rL6wOue4v7Hi68JoeycjpHjUkN+mpFg
-         Woyj6o0BMhzBPf5LOJqrW2A25Q35bnmVOwFRKcuwNvYTJjS3xwKN0PskrKmeGj5dQ1OA
-         fMFg==
-X-Gm-Message-State: AOAM531GyaJmUwWQ+JvmOc0bK9EvuuJ6UsBqd/EmqfbEkwhOr5BW3o7m
-        rmrPey3KVlWtexRO7Atla0gc/P6eub0=
-X-Google-Smtp-Source: ABdhPJwuYpbMvC8OhBX0MZapc/J5U8BZLtNdyz9zAo2rTD5gfTPuwLpjI48aNceD9Lhx6lgrtmGarA==
-X-Received: by 2002:a1c:a9d1:0:b0:383:39cb:506 with SMTP id s200-20020a1ca9d1000000b0038339cb0506mr516500wme.71.1646683845921;
-        Mon, 07 Mar 2022 12:10:45 -0800 (PST)
-Received: from [127.0.0.1] (p4fd0b664.dip0.t-ipconnect.de. [79.208.182.100])
-        by smtp.gmail.com with ESMTPSA id g26-20020a05600c4c9a00b00389a48b68bdsm263913wmp.10.2022.03.07.12.10.45
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Mar 2022 12:10:45 -0800 (PST)
-Date:   Mon, 7 Mar 2022 20:10:45 +0000 (UTC)
-From:   Emil <broetchenrackete@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <1cb1e7d9-51d0-4c2e-8cd1-6b02d045bcad@gmail.com>
-Subject: Recover btrfs partition after accidental reformat
+        bh=OF+WLTuqCfnL826zNrfKieakV95GXP8cV0borUjuwj8=;
+        b=P404MfgfoESVxlBSPjN2HyXa8ta0ScXB3q5Iy529thLV3PHds9kmt5wZ5uAUQ2+nG3
+         OoucZhwnblhkVGLvM7EOvslBnel5hwy8ksq/tFS92oPrLoNP7Mw7EVX5hkXTiQhRoUcG
+         LcjUWoNvG5ilIkolkv7Ye+gkxAgVQ7gH/BwxlU0edJBsB84BZ13ql5yt3klIj6B1vQHV
+         1AdQ3dSO9wzMGGbsDkqtieiBh9V5IexLGgvnkp5LAVGCykM/slstGvned8BRdSiUgG9F
+         ApziHAytKhnRxmnxticByTCAhikHmaYbDSeFan5idsc55l/XJTZzH8phIbDWEM77JmMw
+         ieZg==
+X-Gm-Message-State: AOAM533V71+7e+e49po1BTO3AavZar9mny4r59aDYB/7gdmFgrcXzyau
+        n8e+CIhcrY2ePSwWXJURvGaL37Fx4UPGTcTl
+X-Google-Smtp-Source: ABdhPJyxusLBPD+qej4JayjLeG2GDmg0rUxPJJja42gVr37Oyc/AZ7eHVF9mj7i9p2wH7PuHtbskGg==
+X-Received: by 2002:ae9:e891:0:b0:47b:a53f:5f00 with SMTP id a139-20020ae9e891000000b0047ba53f5f00mr8014302qkg.693.1646690668632;
+        Mon, 07 Mar 2022 14:04:28 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id x23-20020a05620a14b700b00648eb7f4ce5sm6490817qkj.35.2022.03.07.14.04.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Mar 2022 14:04:28 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 0/6] btrfs: extent-tree-v2, gc and no meta ref counting
+Date:   Mon,  7 Mar 2022 17:04:21 -0500
+Message-Id: <cover.1646690555.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Correlation-ID: <1cb1e7d9-51d0-4c2e-8cd1-6b02d045bcad@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+v1->v2:
+- I decided to add the nr of expected global roots to the super block to make
+  checking more straightforward, so added a patch for reading that value.
+- I sent the prep patches/fixes in a different series and those were merged, so
+  dropped them from this series
 
-I did a boo boo and reformatted my btrfs partition with NTFS (used the wron=
-g /dev/sdX). It was a single drive with standard options (metadata dup, dat=
-a single) and it was the only partition of the drive.
+--- Original email ---
 
-I have not written any data to the ntfs partition.
+Hello,
 
-Is there any chance of data recovery? The only thing I found was a backup s=
-uperblock:
+This is the kernel side of the support for the GC trees and no longer tracking
+metadata reference counts.
 
-[bluemond@BlueQ ~]$ sudo btrfs insp dump-su -s 2 /dev/sdh1
-superblock: bytenr=3D274877906944, device=3D/dev/sdh1
----------------------------------------------------------
-csum_type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0 (crc32c)
-csum_size=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 4
-csum=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x69883d2a [match]
-bytenr=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 274877906944
-flags=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ( WRITTEN )
-magic=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _BHRfS_M [match]
-fsid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6dc337f5-2146-4aa5-a9c1-8faf1=
-e2994c5
-metadata_uuid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6=
-dc337f5-2146-4aa5-a9c1-8faf1e2994c5
-label
-generation=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 7004
-root=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 436338688
-sys_array_size=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 129
-chunk_root_generation=C2=A0=C2=A0 7002
-root_level=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 0
-chunk_root=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 22020096
-chunk_root_level=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-log_root=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 0
-log_root_transid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-log_root_level=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-total_bytes=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 2000397864960
-bytes_used=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 125869297664
-sectorsize=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 4096
-nodesize=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 16384
-leafsize (deprecated)=C2=A0=C2=A0 16384
-stripesize=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 4096
-root_dir=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 6
-num_devices=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 1
-compat_flags=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 0x0
-compat_ro_flags=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x3
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ( FREE_SPAC=
-E_TREE |
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- FREE_SPACE_TREE_VALID )
-incompat_flags=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x341
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ( MIXED_BAC=
-KREF |
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- EXTENDED_IREF |
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- SKINNY_METADATA |
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- NO_HOLES )
-cache_generation=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-uuid_tree_generation=C2=A0=C2=A0=C2=A0 7004
-dev_item.uuid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=
-c86cfd6-fc28-4f99-9b4a-6bd3546aa523
-dev_item.fsid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6=
-dc337f5-2146-4aa5-a9c1-8faf1e2994c5 [match]
-dev_item.type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-dev_item.total_bytes=C2=A0=C2=A0=C2=A0 2000397864960
-dev_item.bytes_used=C2=A0=C2=A0=C2=A0=C2=A0 131021668352
-dev_item.io_align=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096
-dev_item.io_width=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096
-dev_item.sector_size=C2=A0=C2=A0=C2=A0 4096
-dev_item.devid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1
-dev_item.dev_group=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-dev_item.seek_speed=C2=A0=C2=A0=C2=A0=C2=A0 0
-dev_item.bandwidth=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-dev_item.generation=C2=A0=C2=A0=C2=A0=C2=A0 0
+For the GC tree we're only implementing offloading the truncate to the GC tree
+for now.  As new support is added we'll add code for the garbage collection for
+each of the new operations.  Truncate was picked because it's simple enough to
+do, gets us a nice latency win on normal workloads, and is a quick way to
+validate that the GC tree is doing what it's supposed to.
 
+This also disables the reference counting of metadata blocks.  Snapshotting and
+everything reference counting related to metadata has been disabled, and will be
+turned back on as the code needed to support those operations is added back.
 
+This survives xfstests without blowing up.  Thanks,
 
-I tried using photorec, but the btrfs partition was pretty fresh and I had =
-a ntfs partition with lots of data before that so it finds all kinds of dat=
-a from the old ntfs partition.
+Josef
+
+Josef Bacik (6):
+  btrfs: read the nr_global_roots from the super block
+  btrfs: don't do backref modification for metadata for extent tree v2
+  btrfs: add definitions and read support for the garbage collection
+    tree
+  btrfs: add a btrfs_first_item helper
+  btrfs: turn evict_refill_and_join into a real helper
+  btrfs: add garbage collection tree support
+
+ fs/btrfs/Makefile               |   2 +-
+ fs/btrfs/ctree.c                |  23 ++++
+ fs/btrfs/ctree.h                |  19 ++-
+ fs/btrfs/disk-io.c              |  37 ++++--
+ fs/btrfs/extent-tree.c          |  13 +-
+ fs/btrfs/gc-tree.c              | 223 ++++++++++++++++++++++++++++++++
+ fs/btrfs/gc-tree.h              |  15 +++
+ fs/btrfs/inode.c                |  65 +++-------
+ fs/btrfs/print-tree.c           |   4 +
+ fs/btrfs/space-info.c           |   4 +-
+ fs/btrfs/transaction.c          |  52 ++++++++
+ fs/btrfs/transaction.h          |   2 +
+ include/uapi/linux/btrfs_tree.h |   6 +
+ 13 files changed, 394 insertions(+), 71 deletions(-)
+ create mode 100644 fs/btrfs/gc-tree.c
+ create mode 100644 fs/btrfs/gc-tree.h
+
+-- 
+2.26.3
+
