@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDC54D0A84
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2034D0A81
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245466AbiCGWFa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58322 "EHLO
+        id S245598AbiCGWFc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242472AbiCGWF1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:05:27 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D7142EF0
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:04:32 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id d194so3608303qkg.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:04:32 -0800 (PST)
+        with ESMTP id S245670AbiCGWF3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:05:29 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6DA43AE7
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:04:33 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id s15so14566368qtk.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:04:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=VpYKRZKiTa0FLj/PMZXG6QFmlmKny8enBAOVfwxol3w=;
-        b=6zwNbUk+FT9SyQBMcdggLPl/AlmSK0Uu2xUN1dPD23MNecxHoR01XGWbj8Wkk05V2f
-         qquwgOMcT71GO5DlsCCyrpDqIw5D6alwr+LKyaPABAFUEH2Mx/p0ZYB0OOFY8fGde+AA
-         zXI2bD1U0O3U6qJdC5nw1Li6FtZHm8zveCERjQJnsuOCZ+vprqk7JvHj91/OURRiW4Xe
-         gq9kP+Rb789zBh/FNrmbpL+JET2ZSzqIjyV8Mwssx8dotMQWVDBS53p8mGqVFVNUdiZC
-         mR8lWPUbBzBb7Nt7wH58Z26dF9MQD5i+sxSdiOgemIbzMMLBJy3sRbJCOqsqmV2UncXq
-         4U3Q==
+        bh=FFKDahwoxFbyRTXGbjnwo/JlK2TRKWmi8akyPMSsDUQ=;
+        b=R+wVAHg2bGRtOuS8m5rTpXYdO6j8irMCJSoJNiBKS2Ckou50gsscXDgrgLZrazK/e3
+         1RkGmguAPDJRmMS9CGUyLxxfIYc9wJ8uITA0KaXsbwl44fjCBvNaRIRFNWkDIxiL9DZe
+         ewW+lgMe7USpKJ8EIemmlJE1iAV1peJVeb4vlNWJp4aEpW+IZ21S5Phy7GBPKtq/ob/w
+         HFDB2pyrhj+DYOYQ4UgUGQlRyMZx7E/gfJRrY1b5dy1QBLbxLVd15mpeDPm3uZm92Fb4
+         HOf0ICRUit/uH5VNgH2PEiKMpbdZGk3sPk+D//gobHnSopgyoevjI42i01035cjl2e/3
+         3kWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VpYKRZKiTa0FLj/PMZXG6QFmlmKny8enBAOVfwxol3w=;
-        b=Ryd7cW7onQ0D2kgsuvi9nDr7S10S5b/1MsBiSIwJZw5/4+6KOmcqtfR44ovEsAiyRx
-         74NiCGvn/57Npn653THk/t1HvcrJK5tMqs58dAzqP7s8Z8wGla8HlWdFnEaMLqzi+tB+
-         3vV7nCh69yY3QOQ3WtpyZ4urQGBUJCdfB8jHFcZhDu/6LOQuGFfKP2nFyXG/jb4j01AG
-         llCU1RSa9zGqHZhNH5+oBB1ek0+Tt7sqWjuZMZMw+aOT8XTqOXfeuZ1uwc+jqexNWAg/
-         1i4utt5br0WBScZ9p0O8VSNIyHm2AOH/bwE1bDASaOdBzBNZgfL588w+BdgUZdiajTiU
-         yfuQ==
-X-Gm-Message-State: AOAM532jWIHS6HbjYrxVVNK+xg2vfZ1xYGDpj2CqGJ4v8V8+cXXpn8DT
-        fF+hXmM5dwMII+yCV/pHYBTF/EPZyAUHZOXb
-X-Google-Smtp-Source: ABdhPJyRG4YSJn1L4SrioOghjmtRbAijHn6q4SB6I4+JMu7FsgihePIKmrTNFSNE5/H94OqA6mCY9g==
-X-Received: by 2002:a05:620a:450a:b0:67b:286:af6a with SMTP id t10-20020a05620a450a00b0067b0286af6amr7080969qkp.29.1646690671420;
-        Mon, 07 Mar 2022 14:04:31 -0800 (PST)
+        bh=FFKDahwoxFbyRTXGbjnwo/JlK2TRKWmi8akyPMSsDUQ=;
+        b=UCWAxIqU4It+r+UN+Moq1KGkxMPoZcyvSA2XzA+aIJqcz8fLiw6U2TxQhljKw2EmU6
+         CemrxwIOjYiwFfE988bGcaipNBV1Vq1fUG47+msqoYH96VS2nThW4ogkC2XzQgLeheLn
+         7WmUsrKwKDfAWxhaEh3fDwVETxrCJ8/NSLqU5w5X9UGE/dPrYiWqpcU6nspzHXUu76Mw
+         Q77hm9pITd+S0hMAO9O5Ccz7LJGgufEpsKaj0uM+keoWbUr2X8N1jRlRGiK069nynRHw
+         dMHz3RhB5uQ3OyGvm0nvget4v0H13kQo4vw8d6MGrUNHJ7wnC3Fga0uG2dsm7cNKWs10
+         sGMw==
+X-Gm-Message-State: AOAM530FQl4DVcQ5e0knSC0Q/SwukDQhlhljJc1+EIoFPnpjCiZ2xxuA
+        UhLPzop8/6anc1/ICwn5OKRMeqS+wXF4Omer
+X-Google-Smtp-Source: ABdhPJwBBNFfbJvbn4bdI/TWbQpbew4Hrgo5w87QAq2tkzdkeBR06bM3Uu7xOpn3j9aRmLIIgZCJ/A==
+X-Received: by 2002:ac8:7fca:0:b0:2de:8f3d:89be with SMTP id b10-20020ac87fca000000b002de8f3d89bemr11377885qtk.34.1646690672734;
+        Mon, 07 Mar 2022 14:04:32 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v14-20020a05622a014e00b002cf75f5b11esm9449565qtw.64.2022.03.07.14.04.30
+        by smtp.gmail.com with ESMTPSA id i11-20020a379f0b000000b0067b1399f20esm2697184qke.44.2022.03.07.14.04.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:04:31 -0800 (PST)
+        Mon, 07 Mar 2022 14:04:32 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 2/6] btrfs: don't do backref modification for metadata for extent tree v2
-Date:   Mon,  7 Mar 2022 17:04:23 -0500
-Message-Id: <ecb9f30aae0ea04e04ce529f484c68c836065f88.1646690556.git.josef@toxicpanda.com>
+Subject: [PATCH v2 3/6] btrfs: add definitions and read support for the garbage collection tree
+Date:   Mon,  7 Mar 2022 17:04:24 -0500
+Message-Id: <ae0d5dee7b0c7d0b41994632ebf3f146ddb8555a.1646690556.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646690555.git.josef@toxicpanda.com>
 References: <cover.1646690555.git.josef@toxicpanda.com>
@@ -66,67 +66,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For extent tree v2 we will no longer track references for metadata in
-the extent tree.  Make changes at the alloc and free sides so the proper
-accounting is done but skip the extent tree modification parts.
+This adds the on disk definitions for the garbage collection tree and
+the code to load it on mount.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ fs/btrfs/disk-io.c              | 6 ++++++
+ fs/btrfs/print-tree.c           | 4 ++++
+ include/uapi/linux/btrfs_tree.h | 6 ++++++
+ 3 files changed, 16 insertions(+)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index f477035a2ac2..309d8753bf41 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2955,7 +2955,6 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 	struct btrfs_extent_item *ei;
- 	struct btrfs_extent_inline_ref *iref;
- 	int ret;
--	int is_data;
- 	int extent_slot = 0;
- 	int found_extent = 0;
- 	int num_to_del = 1;
-@@ -2964,6 +2963,11 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 	u64 bytenr = node->bytenr;
- 	u64 num_bytes = node->num_bytes;
- 	bool skinny_metadata = btrfs_fs_incompat(info, SKINNY_METADATA);
-+	bool is_data = owner_objectid >= BTRFS_FIRST_FREE_OBJECTID;
-+
-+	if (btrfs_fs_incompat(info, EXTENT_TREE_V2) && !is_data)
-+		return do_free_extent_accounting(trans, bytenr, num_bytes,
-+						 is_data);
- 
- 	extent_root = btrfs_extent_root(info, bytenr);
- 	ASSERT(extent_root);
-@@ -2972,8 +2976,6 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 	if (!path)
- 		return -ENOMEM;
- 
--	is_data = owner_objectid >= BTRFS_FIRST_FREE_OBJECTID;
--
- 	if (!is_data && refs_to_drop != 1) {
- 		btrfs_crit(info,
- "invalid refs_to_drop, dropping more than 1 refs for tree block %llu refs_to_drop %u",
-@@ -4703,6 +4705,9 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
- 	u64 flags = extent_op->flags_to_set;
- 	bool skinny_metadata = btrfs_fs_incompat(fs_info, SKINNY_METADATA);
- 
-+	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index aeefc4e2e71a..3546a3af9ad7 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2678,6 +2678,12 @@ static int load_global_roots(struct btrfs_root *tree_root)
+ 	ret = load_global_roots_objectid(tree_root, path,
+ 					 BTRFS_FREE_SPACE_TREE_OBJECTID,
+ 					 "free space");
++	if (ret)
 +		goto out;
-+
- 	ref = btrfs_delayed_node_to_tree_ref(node);
- 
- 	extent_key.objectid = node->bytenr;
-@@ -4756,7 +4761,7 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
- 
- 	btrfs_mark_buffer_dirty(leaf);
++	if (!btrfs_fs_incompat(tree_root->fs_info, EXTENT_TREE_V2))
++		goto out;
++	ret = load_global_roots_objectid(tree_root, path,
++					 BTRFS_GC_TREE_OBJECTID, "gc");
+ out:
  	btrfs_free_path(path);
--
-+out:
- 	return alloc_reserved_extent(trans, node->bytenr, fs_info->nodesize);
- }
+ 	return ret;
+diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+index dd8777872143..a0b0d5d68826 100644
+--- a/fs/btrfs/print-tree.c
++++ b/fs/btrfs/print-tree.c
+@@ -24,6 +24,7 @@ static const struct root_name_map root_map[] = {
+ 	{ BTRFS_UUID_TREE_OBJECTID,		"UUID_TREE"		},
+ 	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
+ 	{ BTRFS_BLOCK_GROUP_TREE_OBJECTID,	"BLOCK_GROUP_TREE"	},
++	{ BTRFS_GC_TREE_OBJECTID,		"GC_TREE"		},
+ 	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
+ };
  
+@@ -348,6 +349,9 @@ void btrfs_print_leaf(struct extent_buffer *l)
+ 			print_uuid_item(l, btrfs_item_ptr_offset(l, i),
+ 					btrfs_item_size(l, i));
+ 			break;
++		case BTRFS_GC_INODE_ITEM_KEY:
++			pr_info("\t\tgc inode item\n");
++			break;
+ 		}
+ 	}
+ }
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index b069752a8ecf..4a363289c90e 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -56,6 +56,9 @@
+ /* Holds the block group items for extent tree v2. */
+ #define BTRFS_BLOCK_GROUP_TREE_OBJECTID 11ULL
+ 
++/* holds the garbage collection itesm for extent tree v2. */
++#define BTRFS_GC_TREE_OBJECTID 12ULL
++
+ /* device stats in the device tree */
+ #define BTRFS_DEV_STATS_OBJECTID 0ULL
+ 
+@@ -147,6 +150,9 @@
+ #define BTRFS_ORPHAN_ITEM_KEY		48
+ /* reserve 2-15 close to the inode for later flexibility */
+ 
++/* The garbage collection items. */
++#define BTRFS_GC_INODE_ITEM_KEY		49
++
+ /*
+  * dir items are the name -> inode pointers in a directory.  There is one
+  * for every name in a directory.  BTRFS_DIR_LOG_ITEM_KEY is no longer used
 -- 
 2.26.3
 
