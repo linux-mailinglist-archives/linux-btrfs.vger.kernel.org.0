@@ -2,105 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941804CFC93
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 12:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77D64CFCB2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 12:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238354AbiCGLWa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 06:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
+        id S237436AbiCGLZR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 06:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238944AbiCGLWP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 06:22:15 -0500
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A224610F5
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 02:47:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1646650046; x=1678186046;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=vk0GZhtGBRJSzfj162tVREae07WencQ07QTx1GTOx3Y=;
-  b=kjXPOCm1f7poK+ZYf/YUlheI6o8+/Qr+8PMWdGT/oZQ610n94q9GygfN
-   n3xIkLyJeUJW+PUv814t0bRYcvIYC6EBKmsVraWs0pFHED+tnUXSbTF1C
-   CLoRAzCtlSI+x/ohVwlH+bZN3Ngbm4VFF3imgamfnObqCXhITALRehGVy
-   u+nZ4esKcKMGCAM3u44f8pL7r04J9J+w0ohDxkhB0iPECYGzw9P6jyWxR
-   tidfHzypbhzUo3LuJJdTC/Dh+yEPY4iBuDgOpBZ7PWm+2hw1Qso5W5ygt
-   ATbTwmqTlUgUcWyQpQg+G8rS9ODLT3r3ZCR/Bzi26e2sLO4uipbZ9qiqB
-   A==;
-X-IronPort-AV: E=Sophos;i="5.90,161,1643644800"; 
-   d="scan'208";a="195615433"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Mar 2022 18:47:24 +0800
-IronPort-SDR: 9cw2G+0CUrwtO7/06YQz1X7gqSKbFdJen+Ltxg8Gm8cSCxaZjKE3OxQjxHpm8OENKgSO61uDgZ
- Hepx4+SVcV2fsO/k32gAvoucHDFt1PfoFW/j2aOA36UdaO2Pb1HTOULWb70HNMPi+F3mOLPHRV
- i8WtfLszUU7r5ccY79xANXzb7hdKgE5IdLUnGkiGHXlKD2LZ90spPH0SY6xlwRBN59H3iesQZ+
- +uhR0SxkrtBJB8Q3fSO4ZZsZ7L0JPhFAAu2fFsrjN9m1Z+rSMakfr2NsRRfSS+WvxYaLsvfkoz
- VGp4h6KYbrG2WQ82iDM6j2yw
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2022 02:19:42 -0800
-IronPort-SDR: OmsSNRa5+ijisqkdex1DPuv4wc2Z0ES0Hx9a00cd1k7MK+dUBFi0S1uT997HZbHPl7nRMoz3GR
- gW65L69yDgYZGW42G1s0RyoYQkmTpTDPHMlRuhW8MC0MX+9ZBSaj9/sxpJ+OfH6oYY4JvCFeMR
- tSsHT1L1LjMIHZ15W01mVxHNxSp9rfXKJ6WNr2lUCjMhSwo+fSdmhMASHP3lzrCbnDtFnN6cXb
- lTQDhKfygOU9GYH0DblNmtYMi76M8fuYP2Q8i8qlokixjFG4F4Hkt/O3eLdPfTMZs9HlBO69vB
- Vhs=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 07 Mar 2022 02:47:23 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: zoned: remove left over ASSERT()
-Date:   Mon,  7 Mar 2022 02:47:18 -0800
-Message-Id: <afb9a5ffbb49458cd5b6fa0c9e1b9297f0050a6b.1646649873.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1646649873.git.johannes.thumshirn@wdc.com>
-References: <cover.1646649873.git.johannes.thumshirn@wdc.com>
+        with ESMTP id S241882AbiCGLYP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 06:24:15 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFE288790
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 02:51:27 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 48083210F3;
+        Mon,  7 Mar 2022 10:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1646650286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k8BvbbyovOZD9ZbjVcDh7gU+Inq0nRH08s40tLV4VxQ=;
+        b=iTNPNPko/LrzCwAm7/PJQJHwO9We220Cy76HDnrjUDldXupucNM63cwEcZGpVV68/zqjE0
+        ZkToQ4HauZNJxGfQ1+iip9KNOP6owO5oqt6XARILZ8qFZ35q/Adro3PYPK7EOzb5TLmrz0
+        NDz325am9jlWghC3rtMecZi0i7iKPqg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D82713AD8;
+        Mon,  7 Mar 2022 10:51:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3llbAK7jJWKsOAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 07 Mar 2022 10:51:26 +0000
+Message-ID: <843daedc-ffb7-658e-89ab-86c20d5db2f1@suse.com>
+Date:   Mon, 7 Mar 2022 12:51:25 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] btrfs: verify the tranisd of the to-be-written dirty
+ extent buffer
+Content-Language: en-US
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Christoph Anton Mitterer <calestyo@scientia.org>
+References: <1f011e6358e042e5ae1501e88377267a2a95c09d.1646183319.git.wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <1f011e6358e042e5ae1501e88377267a2a95c09d.1646183319.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With commit dcf5652291f6 ("btrfs: zoned: allow DUP on meta-data block
-groups") we started allowing DUP on meta-data block-groups, so the
-ASSERT()s in btrfs_can_activate_zone() and btrfs_zoned_get_device() are
-no longer valid and in fact even harmful.
 
-Fixes: dcf5652291f6 ("btrfs: zoned: allow DUP on meta-data block groups")
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/zoned.c | 4 ----
- 1 file changed, 4 deletions(-)
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index cf6341d45689..49446bb5a5d1 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1801,7 +1801,6 @@ struct btrfs_device *btrfs_zoned_get_device(struct btrfs_fs_info *fs_info,
- 
- 	map = em->map_lookup;
- 	/* We only support single profile for now */
--	ASSERT(map->num_stripes == 1);
- 	device = map->stripes[0].dev;
- 
- 	free_extent_map(em);
-@@ -1982,9 +1981,6 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
- 	if (!btrfs_is_zoned(fs_devices->fs_info))
- 		return true;
- 
--	/* Non-single profiles are not supported yet */
--	ASSERT((flags & BTRFS_BLOCK_GROUP_PROFILE_MASK) == 0);
--
- 	/* Check if there is a device with active zones left */
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
--- 
-2.35.1
+On 2.03.22 г. 3:10 ч., Qu Wenruo wrote:
+> [BUG]
+> There is a bug report that a bitflip in the transid part of an extent
+> buffer makes btrfs to reject certain tree blocks:
+> 
+>    BTRFS error (device dm-0): parent transid verify failed on 1382301696 wanted 262166 found 22
+> 
+> [CAUSE]
+> Note the failed transid check, hex(262166) = 0x40016, while
+> hex(22) = 0x16.
+> 
+> It's an obvious bitflip.
+> 
+> Furthermore, the reporter also confirmed the bitflip is from the
+> hardware, so it's a real hardware caused bitflip, and such problem can
+> not be detected by the existing tree-checker framework.
+> 
+> As tree-checker can only verify the content inside one tree block, while
+> generation of a tree block can only be verified against its parent.
+> 
+> So such problem remain undetected.
+> 
+> [FIX]
+> Although tree-checker can not verify it at write-time, we still have a
+> quick (but not the most accurate) way to catch such obvious corruption.
+> 
+> Function csum_one_extent_buffer() is called before we submit metadata
+> write.
+> 
+> Thus it means, all the extent buffer passed in should be dirty tree
+> blocks, and should be newer than last committed transaction.
+> 
+> Using that we can catch the above bitflip.
+> 
+> Although it's not a perfect solution, as if the corrupted generation is
+> higher than the correct value, we have no way to catch it at all.
+> 
+> Reported-by: Christoph Anton Mitterer <calestyo@scientia.org>
+> Link: https://lore.kernel.org/linux-btrfs/2dfcbc130c55cc6fd067b93752e90bd2b079baca.camel@scientia.org/
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/disk-io.c | 26 ++++++++++++++++++++------
+>   1 file changed, 20 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index b6a81c39d5f4..a89aa523413b 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -441,17 +441,31 @@ static int csum_one_extent_buffer(struct extent_buffer *eb)
+>   	else
+>   		ret = btrfs_check_leaf_full(eb);
+>   
+> -	if (ret < 0) {
+> -		btrfs_print_tree(eb, 0);
+> +	if (ret < 0)
+> +		goto error;
+> +
+> +	/*
+> +	 * Also check the generation, the eb reached here must be newer than
+> +	 * last committed. Or something seriously wrong happened.
+> +	 */
+> +	if (btrfs_header_generation(eb) <= fs_info->last_trans_committed) {
+> +		ret = -EUCLEAN;
+>   		btrfs_err(fs_info,
+> -			"block=%llu write time tree block corruption detected",
+> -			eb->start);
+> -		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> -		return ret;
+> +			"block=%llu bad generation, have %llu expect > %llu",
+> +			  eb->start, btrfs_header_generation(eb),
+> +			  fs_info->last_trans_committed);
+> +		goto error;
 
+nit: I'd rather have this check in btrfs_check_node/check_leaf functions 
+rather than having just this specific check in csum_one_extent_buffer. 
+The only thing which is missing AFAICS is the fact the check function 
+don't have a context whether we are checking for read or for write. It 
+might make sense to extend them to get a boolean param whether the 
+validation is for a write or not ?
+
+>   	}
+>   	write_extent_buffer(eb, result, 0, fs_info->csum_size);
+>   
+>   	return 0;
+> +error:
+> +	btrfs_print_tree(eb, 0);
+> +	btrfs_err(fs_info,
+> +		"block=%llu write time tree block corruption detected",
+> +		eb->start);
+> +	WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> +	return ret;
+>   }
+>   
+>   /* Checksum all dirty extent buffers in one bio_vec */
