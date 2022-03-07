@@ -2,218 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84624CFCD2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 12:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 798004CFCCF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 12:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237975AbiCGL33 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 06:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57242 "EHLO
+        id S239226AbiCGL3a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 06:29:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240230AbiCGL10 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 06:27:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199C83A3
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 03:05:27 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B1643B810AA
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 11:05:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4AB5C340E9;
-        Mon,  7 Mar 2022 11:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646651124;
-        bh=GUQXFeyhwlCOzqUgEtGAN4bsCDNeymFO7PlklaRgvQo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QrVdd7f83NHJHbU3LJMWwQQ0tDRDGNqDkfhYTnrbZ3iPfo4wEffjtCcY8tXfrUcpa
-         nkbhe9uOKQmJuTxRg5kEFfVF/rIp68Oi6j1dUQjTWC2oAGq51udACnyjKOLg8n/iCQ
-         I23eVIDdXi0dlBNm/Ez9scFfKVFpdx58dwcvIjYxBOqkO1rCbq2cJdMJPhY1O5ZPhH
-         yVDDGeVdRZoWbLo7f0akoXSANGZAV2uOGBjVCeGeAEbNfWI/D5hYljr+nAZjSQeZxE
-         O06Ylf/LDHB33rxNqFcSLjOsX5jMJEaUU9ylZ/P+nGTqkafgvp5aMEtp2FhpnK285P
-         icUKkZSsyCcGA==
-Date:   Mon, 7 Mar 2022 11:05:20 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: avoid full commit due to race when logging dentry
- deletion
-Message-ID: <YiXm8D28iFsRPVqd@debian9.Home>
-References: <78d0dffe5f48910e126886559d0c69194b32eab9.1646416779.git.fdmanana@suse.com>
- <YiPwAKbOEebtdc2i@hungrycats.org>
+        with ESMTP id S242476AbiCGL2S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 06:28:18 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA58B4CD64
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 03:08:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1646651325;
+        bh=loyVMWbUyFD8g4lIdGo4MOr6eYoY/BZP0tYIDnbqaZI=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=WxFR1TbDbDeB+6ZWuubrVcFeZIop9eDF6bve9Yd2SqEkHf/Re4fyhOsXKbIUrIUb0
+         dVFY2mBAk0ubg/RxQBrP3vnc7HM4DlGiJBtjXmvsS4L9I5WjMTsCf6tjj4pSz/Es4G
+         TUjWGGL7uu0nKq2z4GrNwKISFBNQUzBsMZ018+8o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mirng-1o3YJV0KPs-00eqaY; Mon, 07
+ Mar 2022 12:08:45 +0100
+Message-ID: <d1b153bc-7d76-805b-e666-6527e6250d03@gmx.com>
+Date:   Mon, 7 Mar 2022 19:08:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YiPwAKbOEebtdc2i@hungrycats.org>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH] btrfs: fix qgroup reserve overflow break the qgroup limit
+Content-Language: en-US
+To:     ethanlien <ethanlien@synology.com>, linux-btrfs@vger.kernel.org
+References: <20220307100004.24759-1-ethanlien@synology.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220307100004.24759-1-ethanlien@synology.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aGh6ZWo/ZbaUjv+YAjbIBwXgzcFiyGW0Zi2hX8fYTbjn3WeJi4H
+ jCRVNklqLoSTw18fWfs8cx/aog54grY1318PjRFOtKZG1g272oDmZs+gJNuCn8CPQWTEuCA
+ 8H57WsOdMtdpP+aeN+Y04VLfIVTXSEW7va4KC+6PX06jfnEa7cANBU5hJfUfKETz96RISJI
+ ssPvb9wExZzrCGzN+5xMg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vjBxZ6hPJxw=:FZb3hklALB/JhRB7tbjZIY
+ xSGnWlx3D6rZZF3vCNz7PIUS+A1lLkTJ4EowTbEX27vhntCSiPdsA2JdQjCngR4l0MtALbz2k
+ 1BP2diTGZXnWvmLaNsVobf6yu7exPVHkXcKgdylyllRfre5m7aTvAJVJ1X4Z+pNWMr8Ew3wFt
+ pLRhdLqOnLz9YMJSjgwa3Di+L1RhMrw+/oCEKQ6WWJ2Y/QHtLGcSFZh1Q6i4jeU9aIgRKqluq
+ RyfdPpmrcMOU664ZsG80BA6Utn4/qk+pIThyhHzyk2m1tJ+/UshtZVDdMv9XLvYsCvlpXw2UJ
+ GrxFR3VnSCgUYDXljvkY4v0hN2wFrTi7NOqtrHje3kXaFweLO70O2kPMgI2tgNDihjBQHnvKf
+ Ij18OOi13qJseMWwz4BgCNzwqBOxT7XW5I1Tqy3OLmzG88rBmk/PBduNNhsGxFKMP0Bc4o0q4
+ 2XmP2SxaZD6IF1k1zzEavGE4/U7EtUGHMqfQAC3Ul1B8SZlPngMfqwof7BWuSIUyDrkFsZqbT
+ p8k/AGo4TOhkoBBN2mnWM8TzK0IUWiDw9cI5QSZ3JjCi5Caoi1TWHRc269nH/CUtKUsas3JvR
+ NuP1AOF8KL3F5tZSCELfxdrg+FOkUe248OslfYDPlhXQZ5rOu3YvGnowfKDymTU+c1CEVF0tX
+ 9Oyv/Z7ViXyWYdbOD/mnwjtIGxF+hXi5HQXhQauTNicp14Ryv/+TsIqpI6vCsBrB6TGDCmNip
+ jfMRfJm3Oi0/ItbtmaKvRySBMggvzp66FsDs07vRN26+4c1lNQgiXg6szrCH4R05i7VQXAXnD
+ yX6IeePek2+E31s/EPsq9co4B0/dci4FwFn09ESG0Vl0AzeV/i+uopzaBcsZhYFWe++7ZMh75
+ rcoFGR4mrAq3WOftMZ8/CxyYHmuuWvMYWwJp4YdM84YBko8CJBnFYKL/nqZ3V9GrMnIH8syXU
+ +d64IgZn3Y8T59WAoA4CZlwIl+LvEgXch/7kcgFGUL3OhqZnUhyu/p4PnOuZj2a6XLzbqSV2n
+ yG8DGeygH5mDC4WgPjjE44dVh71xoo7qaX6nKSYLKvV4TrBydKJGy7lzqCmxOA553cxua9J6m
+ a0PBw2t4Z1KbLs=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Mar 05, 2022 at 06:19:28PM -0500, Zygo Blaxell wrote:
-> On Fri, Mar 04, 2022 at 06:10:57PM +0000, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > During a rename, when logging that a directory entry was deleted, we may
-> > race with another task that is logging the directory. Even though the
-> > directory is locked at the VFS level, its logging can be triggered when
-> > other task is logging some other inode that had, or still has, a dentry
-> > in the directory (because its last_unlink_trans matches the current
-> > transaction).
-> > 
-> > The chances are slim, and if the race happens, recording the deletion
-> > through insert_dir_log_key() can fail with -EEXIST and result in marking
-> > the log for a full transaction commit, which will make the next fsync
-> > fallback to a transaction commit. The opposite can also happen, we log the
-> > key before the other task attempts to insert the same key, in which case
-> > it fails with -EEXIST and fallsback to a transaction commit or trigger an
-> > assertion at process_dir_items_leaf() due to the unexpected -EEXIST error.
-> 
-> Nice!  I was just about to report this.  I had a test VM hit it a dozen
-> times running misc-next.
-> 
-> Does the stack trace look like this?
 
-Yes, that's it.
 
-Thanks.
+On 2022/3/7 18:00, ethanlien wrote:
+> We use extent_changeset->bytes_changed in qgroup_reserve_data() to recor=
+d
+> how many bytes we set for EXTENT_QGROUP_RESERVED state. Currently the
+> bytes_changed is set as "unsigned int", and it will overflow if we try t=
+o
+> fallocate a range larger than 4GiB. The result is we reserve less bytes
+> and eventually break the qgroup limit.
+>
+> The following example test script reproduces the problem:
+>
+>    $ cat qgroup-overflow.sh
+>    #!/bin/bash
+>
+>    DEV=3D/dev/sdj
+>    MNT=3D/mnt/sdj
+>
+>    mkfs.btrfs -f $DEV
+>    mount $DEV $MNT
+>
+>    # Set qgroup limit to 2GiB.
+>    btrfs quota enable $MNT
+>    btrfs qgroup limit 2G $MNT
+>
+>    # Try to fallocate a 3GiB file. This should fail.
+>    echo
+>    echo "Try to fallocate a 3GiB file..."
+>    fallocate -l 3G $MNT/3G.file
+>
+>    # Try to fallocate a 5GiB file.
+>    echo
+>    echo "Try to fallocate a 5GiB file..."
+>    fallocate -l 5G $MNT/5G.file
+>
+>    # See we break the qgroup limit.
+>    echo
+>    sync
+>    btrfs qgroup show -r $MNT
+>
+>    umount $MNT
+>
+> When running the test:
+>
+>    $ ./qgroup-overflow.sh
+>    (...)
+>
+>    Try to fallocate a 3GiB file...
+>    fallocate: fallocate failed: Disk quota exceeded
+>
+>    Try to fallocate a 5GiB file...
+>
+>    qgroupid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rfer=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 excl=C2=A0=C2=A0=C2=A0=C2=A0 ma=
+x_rfer
+>    --------=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ----=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ----=C2=A0=C2=A0=C2=A0=C2=A0 --=
+------
+>    0/5=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.00G=
+iB=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.00GiB=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.0=
+0GiB
+>
+> Since we have no control of how bytes_changed is used, it's better to
+> set it to u64.
+>
+> Signed-off-by: ethanlien <ethanlien@synology.com>
+> ---
+>   fs/btrfs/extent_io.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 0399cf8e3c32..151e9da5da2d 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -118,7 +118,7 @@ struct btrfs_bio_ctrl {
+>    */
+>   struct extent_changeset {
+>   	/* How many bytes are set/cleared in this operation */
+> -	unsigned int bytes_changed;
+> +	u64 bytes_changed;
 
-> 
-> 	[  324.007183][ T5981] assertion failed: ret != -EEXIST, in fs/btrfs/tree-log.c:3857
-> 	[  324.014960][ T5981] ------------[ cut here ]------------
-> 	[  324.020696][ T5981] kernel BUG at fs/btrfs/ctree.h:3553!
-> 	[  324.026478][ T5981] invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> 	[  324.032768][ T5981] CPU: 3 PID: 5981 Comm: repro-ghost-dir Not tainted 5.17.0-5d855cca4965-misc-next+ #154 0ccd294c521679ce6b41b39a0ab10e4adb946622
-> 	[  324.046174][ T5981] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-> 	[  324.064520][ T5981] RIP: 0010:assertfail.constprop.0+0x1c/0x1e
-> 	[  324.073000][ T5981] Code: b3 4c 89 ef e8 2e 28 ff ff e9 d4 22 df fe 55 89 f1 48 c7 c2 40 43 4e b3 48 89 fe 48 c7 c7 80 43 4e b3 48 89 e5 e8 ce 81 fd ff <0f> 0b e8 7c 14 9a fe be a7 0e 00 00 48 c7 c7 20 44 4e b3 e8 cc ff
-> 	[  324.092521][ T5981] RSP: 0018:ffffc90005c1f198 EFLAGS: 00010282
-> 	[  324.094666][ T5981] RAX: 000000000000003d RBX: 00000000000008e4 RCX: 0000000000000000
-> 	[  324.099245][ T5981] RDX: 0000000000000001 RSI: ffffffffb36038e0 RDI: fffff52000b83e26
-> 	[  324.104262][ T5981] RBP: ffffc90005c1f198 R08: 000000000000003d R09: ffff8881f7016507
-> 	[  324.109447][ T5981] R10: ffffed103ee02ca0 R11: 0000000000000001 R12: 00000000ffffffef
-> 	[  324.114318][ T5981] R13: ffff88812c4d17c8 R14: ffff8881da62e1f8 R15: ffffc90005c1f368
-> 	[  324.119009][ T5981] FS:  00007f82dd62a640(0000) GS:ffff8881f6e00000(0000) knlGS:0000000000000000
-> 	[  324.124619][ T5981] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> 	[  324.128796][ T5981] CR2: 000055a3e6285078 CR3: 0000000122b88005 CR4: 0000000000170ee0
-> 	[  324.133953][ T5981] Call Trace:
-> 	[  324.135883][ T5981]  <TASK>
-> 	[  324.137797][ T5981]  log_dir_items.cold+0x16/0x2c
-> 	[  324.140806][ T5981]  ? replay_one_extent+0xbe0/0xbe0
-> 	[  324.144779][ T5981]  ? __asan_loadN+0xf/0x20
-> 	[  324.147926][ T5981]  ? __kasan_check_read+0x11/0x20
-> 	[  324.151339][ T5981]  ? check_chain_key+0x1ee/0x2e0
-> 	[  324.154930][ T5981]  ? __this_cpu_preempt_check+0x13/0x20
-> 	[  324.158814][ T5981]  log_directory_changes+0xf9/0x170
-> 	[  324.162212][ T5981]  ? log_dir_items+0xba0/0xba0
-> 	[  324.165276][ T5981]  ? do_raw_write_unlock+0x7d/0xe0
-> 	[  324.168437][ T5981]  btrfs_log_inode+0x2345/0x26d0
-> 	[  324.171480][ T5981]  ? __asan_loadN+0xf/0x20
-> 	[  324.174221][ T5981]  ? log_directory_changes+0x170/0x170
-> 	[  324.177464][ T5981]  ? __this_cpu_preempt_check+0x13/0x20
-> 	[  324.180617][ T5981]  ? __this_cpu_preempt_check+0x13/0x20
-> 	[  324.183851][ T5981]  ? __might_resched+0x129/0x1c0
-> 	[  324.186715][ T5981]  ? __might_sleep+0x66/0xc0
-> 	[  324.189432][ T5981]  ? __kasan_check_read+0x11/0x20
-> 	[  324.192502][ T5981]  ? iget5_locked+0xbd/0x150
-> 	[  324.195165][ T5981]  ? acls_after_inode_item+0x290/0x290
-> 	[  324.199052][ T5981]  ? btrfs_iget+0xc7/0x150
-> 	[  324.202206][ T5981]  ? btrfs_orphan_cleanup+0x4a0/0x4a0
-> 	[  324.205589][ T5981]  ? free_extent_buffer+0x13/0x20
-> 	[  324.208814][ T5981]  btrfs_log_inode+0x268b/0x26d0
-> 	[  324.212339][ T5981]  ? log_directory_changes+0x170/0x170
-> 	[  324.215788][ T5981]  ? __this_cpu_preempt_check+0x13/0x20
-> 	[  324.219077][ T5981]  ? lock_downgrade+0x420/0x420
-> 	[  324.222273][ T5981]  ? __mutex_lock+0x540/0xdc0
-> 	[  324.225490][ T5981]  ? check_chain_key+0x1ee/0x2e0
-> 	[  324.228805][ T5981]  ? __kasan_check_write+0x14/0x20
-> 	[  324.232127][ T5981]  ? __mutex_unlock_slowpath+0x12a/0x430
-> 	[  324.235852][ T5981]  ? mutex_lock_io_nested+0xcd0/0xcd0
-> 	[  324.239247][ T5981]  ? wait_for_completion_io_timeout+0x20/0x20
-> 	[  324.243062][ T5981]  ? lock_downgrade+0x420/0x420
-> 	[  324.246695][ T5981]  ? lock_contended+0x770/0x770
-> 	[  324.250187][ T5981]  btrfs_log_inode_parent+0x523/0x17c0
-> 	[  324.253818][ T5981]  ? pvclock_clocksource_read+0xde/0x1a0
-> 	[  324.258191][ T5981]  ? __asan_loadN+0xf/0x20
-> 	[  324.261498][ T5981]  ? pvclock_clocksource_read+0xde/0x1a0
-> 	[  324.265875][ T5981]  ? btrfs_end_log_trans+0x70/0x70
-> 	[  324.270084][ T5981]  ? __this_cpu_preempt_check+0x13/0x20
-> 	[  324.274520][ T5981]  ? lock_downgrade+0x420/0x420
-> 	[  324.277936][ T5981]  ? do_raw_spin_unlock+0xad/0x110
-> 	[  324.281957][ T5981]  ? dget_parent+0xb7/0x300
-> 	[  324.285570][ T5981]  btrfs_log_dentry_safe+0x48/0x60
-> 	[  324.289434][ T5981]  btrfs_sync_file+0x629/0xa40
-> 	[  324.292954][ T5981]  ? start_ordered_ops.constprop.0+0x120/0x120
-> 	[  324.297919][ T5981]  ? __fget_files+0x167/0x230
-> 	[  324.301706][ T5981]  vfs_fsync_range+0x6d/0x110
-> 	[  324.304831][ T5981]  ? start_ordered_ops.constprop.0+0x120/0x120
-> 	[  324.309013][ T5981]  __x64_sys_fsync+0x45/0x70
-> 	[  324.311898][ T5981]  do_syscall_64+0x5c/0xc0
-> 	[  324.315064][ T5981]  ? lockdep_hardirqs_on+0xce/0x150
-> 	[  324.318504][ T5981]  ? syscall_exit_to_user_mode+0x3b/0x50
-> 	[  324.322046][ T5981]  ? do_syscall_64+0x69/0xc0
-> 	[  324.325180][ T5981]  ? sysvec_call_function_single+0x57/0xc0
-> 	[  324.329166][ T5981]  ? asm_sysvec_call_function_single+0xa/0x20
-> 	[  324.332977][ T5981]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 	[  324.336984][ T5981] RIP: 0033:0x7f82e137b6ab
-> 	[  324.339923][ T5981] Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 53 f7 ff ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 b1 f7 ff ff 8b 44
-> 	[  324.353145][ T5981] RSP: 002b:00007f82dd629950 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-> 	[  324.357209][ T5981] RAX: ffffffffffffffda RBX: 00007f82dd6299f0 RCX: 00007f82e137b6ab
-> 	[  324.363329][ T5981] RDX: 0000000000000002 RSI: 0000000000000000 RDI: 000000000000000c
-> 	[  324.369064][ T5981] RBP: 000000000000000c R08: 0000000000000000 R09: 0000000000000000
-> 	[  324.374926][ T5981] R10: 00000000000001ff R11: 0000000000000293 R12: 0000000000000001
-> 	[  324.380237][ T5981] R13: 000055be30453140 R14: 00007f82dd6299d0 R15: 000055be31bfe098
-> 	[  324.385736][ T5981]  </TASK>
-> 
-> > So make that code that records a dentry deletion to be inside a critical
-> > section delimited by the directory's log mutex.
-> > 
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> > 
-> > David, this can be optionally squashed into the following patch:
-> > 
-> >    "btrfs: avoid logging all directory changes during renames"
-> > 
-> > (misc-next only)
-> > 
-> >  fs/btrfs/tree-log.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > index 4f61b38bb186..571dae8ad65e 100644
-> > --- a/fs/btrfs/tree-log.c
-> > +++ b/fs/btrfs/tree-log.c
-> > @@ -7015,6 +7015,17 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
-> >  			goto out;
-> >  		}
-> >  
-> > +		/*
-> > +		 * Other concurrent task might be logging the old directory,
-> > +		 * as it can be triggered when logging other inode that had or
-> > +		 * still has a dentry in the old directory. So take the old
-> > +		 * directory's log_mutex to prevent getting an -EEXIST when
-> > +		 * logging a key to record the deletion, or having that other
-> > +		 * task logging the old directory get an -EEXIST if it attempts
-> > +		 * to log the same key after we just did it. In both cases that
-> > +		 * would result in falling back to a transaction commit.
-> > +		 */
-> > +		mutex_lock(&old_dir->log_mutex);
-> >  		ret = del_logged_dentry(trans, log, path, btrfs_ino(old_dir),
-> >  					old_dentry->d_name.name,
-> >  					old_dentry->d_name.len, old_dir_index);
-> > @@ -7028,6 +7039,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
-> >  						 btrfs_ino(old_dir),
-> >  						 old_dir_index, old_dir_index);
-> >  		}
-> > +		mutex_unlock(&old_dir->log_mutex);
-> >  
-> >  		btrfs_free_path(path);
-> >  		if (ret < 0)
-> > -- 
-> > 2.33.0
-> > 
+Oh, falloc...
+
+Unlike regular buffered/direct write, which we use one changeset for
+each ordered extent, which can never be larger than 256M.
+
+For fallocate, we use one changeset for the whole range, thus it no
+longer respects the 256M per extent limit, and caused the problem.
+
+Nice fix and reproducer.
+
+Feel free to submit the reproducer as a test case in xfstests.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
+>
+>   	/* Changed ranges */
+>   	struct ulist range_changed;
