@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2719B4D0B33
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1474D0B3E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243198AbiCGWiO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        id S238896AbiCGWiP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343847AbiCGWiF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:38:05 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17816158
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:37:10 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id o69so813426qke.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:37:10 -0800 (PST)
+        with ESMTP id S1343856AbiCGWiH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:38:07 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC9B6158
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:37:12 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id s15so14634246qtk.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:37:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=O6nM+yt4VAu/KqtWTpBDb2EQwscM0ETh1gHZ9IeYHQY=;
-        b=L8/3QvWigNu+6u8ZSS9b61hHgFWf4SWhDfsRJp33AQ+cNN2gjDL0aFiiB3qKhIN7/z
-         fXy4HyvUUl2qdoOZjfOpzP8HWxws4SBN8CGsIHodtwQ6Lle3K6GpE46lI9t/AosH/hb1
-         DlrwuLLLDv7Z5sZD7l9zcc+9+CqaNYuxRqya833z5n5Ev8NaauCORHZ1KIoSgKm4Dnj9
-         WqLh432VDNdpn0e5/twDE4VS3BCT+Hxrx5X0uXEuV1VoVk2Y0d/3P5qmeM7jkjaX5yIc
-         cR9g/xQsWDJDdn38e67U6EKkdh7EObJZdkRkShIsxuOoJ1sMDST3Uckmnoi8nn0+wAur
-         P8Qg==
+        bh=dUavWJ9DB03+tFTUYTrAfLjwAy/jVwmNcHrmN7ZRHfc=;
+        b=w+gctBJCOk442vzPEK+RE8f36lpMTpkG/3JbzwNbMzzekArsxTI6tFC/puR0GR3q7v
+         oDIP0njxHq0QsV4qvgm618a16jmBKCIOBIHdmEoVG895q3Pi2jL79E7IDE2Z67vN0ilF
+         9ABFZ8VAlpTQCHmboekkMb8HqgMaJ6qHgslpuM2tl48QN0rN7lfKB7gYMOykA/iTFdf5
+         3RFThTfFnXwul0H1WPSl3dwZkRBlaoCxvU0w7DAHlFGN5c7T82D6Xc4EwSmSS7TS0jvw
+         fvCtQDPZGxO+m2j0HQajVOaZh64KSABLJdMw4EnGL5a0FFluXnsgZ0TQaiTg6DEj+HEr
+         4/zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O6nM+yt4VAu/KqtWTpBDb2EQwscM0ETh1gHZ9IeYHQY=;
-        b=cus8ODZrd8rPkSq2xgNPwIf66NNxxKR80wmswLO++9cAr5ugJPP48umjAHFRv/6X/M
-         rg62+agbJCdZM4AEp7cb5Etg0BYLtseRlSK2rsiDhxLCixLKRqB4VgpwCsFYn1pcMeo1
-         kimrlEIZq+DIb+2dfWCoXa3y0bFcbx9y8/4HE238czT+4WVcUu5svfV4t3RH7bMy8Nyu
-         a17IpICDej2NJ8cMRooZ2Mjfjtl+NrZYsjiUbCUrUTexE7Qpa/PTR1lN/Y940ARb8D4v
-         kSVpDNFnPSGXz1Ht7T1SVee4nLFqkLaVnum8iZhhEBeq/0D0ymveFZhh+NK5VqBSQ3YT
-         GiXg==
-X-Gm-Message-State: AOAM531UwgaLk2X9GiRlojGB8dJm884hhaY2a9TF2yAChtecfbUVKx96
-        yqmlAT/pJeUnNrx6hV3Wzd3APmDLVK7qcH4b
-X-Google-Smtp-Source: ABdhPJzQYj2/vPXDTZFr9aSseb7LnDBdAtQc8yl3RQPyPgqn6Av4Kjwwd7EgxCZt0EnLtnom2U8fFA==
-X-Received: by 2002:a37:845:0:b0:47e:c3fb:b11c with SMTP id 66-20020a370845000000b0047ec3fbb11cmr8462781qki.92.1646692629789;
-        Mon, 07 Mar 2022 14:37:09 -0800 (PST)
+        bh=dUavWJ9DB03+tFTUYTrAfLjwAy/jVwmNcHrmN7ZRHfc=;
+        b=wXCExTp7A2JtEyhBenvrgDz9JWDgh6GpctI41ZToUrfRkuFcl9uUoAFl5wjSH1rTjS
+         HnzVt+PsYE23lRiBJr2/qpyq1rsHCNsrqPJY1Zf4RcF8eKc+wm8BnhLyoGQErca/qWS0
+         1/S8jWq7wAEcM3wU7YoEMY6hPJvu9nDXBhrDf8LcHKoQf+049BseoiW6mprJxCu8QSum
+         E37jD0PYsaJlAa/OCihYRc8zTMchiLTLIO+XQSz/ejQhq2cvuwjyhHf0KQGlYjZysiCz
+         RBUxQ9iSH4nuzkycYmsi+29NrELLmfKdortMhtFxAyzMxnMeyKsOdj3U0jGs7OrC1qYu
+         FShA==
+X-Gm-Message-State: AOAM5313HWGB+n/dibiGXIc/GdIvcZuaQVl7HvWtXcU8zxmWvFsgVlry
+        prsjxeWgZs7V5G6eaFUPJsujBu3RezpKFjfY
+X-Google-Smtp-Source: ABdhPJwIiyexP/nOorofdnrZDkv1xkMlKajG0Whb4qo/PSboUZWYz2+wL9FbQZK+Y3QXnKsGahUeLw==
+X-Received: by 2002:a05:622a:1893:b0:2dd:b1c5:db24 with SMTP id v19-20020a05622a189300b002ddb1c5db24mr11686946qtc.362.1646692631289;
+        Mon, 07 Mar 2022 14:37:11 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id r13-20020ac85c8d000000b002de72dbc987sm9575541qta.21.2022.03.07.14.37.09
+        by smtp.gmail.com with ESMTPSA id i11-20020a379f0b000000b0067b1399f20esm2733824qke.44.2022.03.07.14.37.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:37:09 -0800 (PST)
+        Mon, 07 Mar 2022 14:37:10 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 05/11] btrfs: add a sanity checker for the header flags
-Date:   Mon,  7 Mar 2022 17:36:55 -0500
-Message-Id: <97c4484a58168c521d1f3c8d66feb0ea76deef51.1646692474.git.josef@toxicpanda.com>
+Subject: [PATCH 06/11] btrfs: zero dummy extent buffers
+Date:   Mon,  7 Mar 2022 17:36:56 -0500
+Message-Id: <bd193c475fc99e6e14a12dc40938ed22609220d6.1646692474.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646692474.git.josef@toxicpanda.com>
 References: <cover.1646692474.git.josef@toxicpanda.com>
@@ -66,66 +66,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Make sure that we don't have HEADER_FLAG_V2 set on !V2 file systems, but
-we do have it set on V2 file systems.
+Our self tests allocate dummy extent buffers to test a variety of
+things, however these eb's are very lightly initialized.  This causes
+problems with the extent tree v2 stuff as we will read the header flags
+and could have the V2 flag set and thus do the wrong thing.  Fix this by
+zero'ing out the header of any dummy extent buffers we allocate.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/tree-checker.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ fs/btrfs/extent_io.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index f0aabda9fd94..41b7fbf67e97 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1578,6 +1578,27 @@ static int check_inode_ref(struct extent_buffer *leaf,
- 	return 0;
- }
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 951b2e0e0df1..31309aba3344 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -5960,6 +5960,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	set_extent_buffer_uptodate(eb);
+ 	btrfs_set_header_nritems(eb, 0);
+ 	set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
++	memzero_extent_buffer(eb, 0, sizeof(struct btrfs_header));
  
-+static int check_header_flags(struct extent_buffer *buf)
-+{
-+	struct btrfs_fs_info *fs_info = buf->fs_info;
-+
-+	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-+		if (unlikely(!btrfs_header_flag(buf, BTRFS_HEADER_FLAG_V2))) {
-+			generic_err(buf, 0,
-+				"no HEADER_FLAG_V2 set on a V2 file system");
-+			return -EUCLEAN;
-+		}
-+	} else {
-+		if (unlikely(btrfs_header_flag(buf, BTRFS_HEADER_FLAG_V2))) {
-+			generic_err(buf, 0,
-+				"have HEADER_FLAG_V2 set on a !V2 file system");
-+			return -EUCLEAN;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Common point to switch the item-specific validation.
-  */
-@@ -1644,6 +1665,9 @@ static int check_leaf(struct extent_buffer *leaf, bool check_item_data)
- 	u32 nritems = btrfs_header_nritems(leaf);
- 	int slot;
- 
-+	if (unlikely(check_header_flags(leaf)))
-+		return -EUCLEAN;
-+
- 	if (unlikely(btrfs_header_level(leaf) != 0)) {
- 		generic_err(leaf, 0,
- 			"invalid level for leaf, have %d expect 0",
-@@ -1807,6 +1831,9 @@ int btrfs_check_node(struct extent_buffer *node)
- 	u64 bytenr;
- 	int ret = 0;
- 
-+	if (unlikely(check_header_flags(node)))
-+		return -EUCLEAN;
-+
- 	if (unlikely(level <= 0 || level >= BTRFS_MAX_LEVEL)) {
- 		generic_err(node, 0,
- 			"invalid level for node, have %d expect [1, %d]",
+ 	return eb;
+ err:
 -- 
 2.26.3
 
