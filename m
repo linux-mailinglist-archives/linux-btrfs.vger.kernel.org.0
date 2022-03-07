@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABACF4D0B39
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AF74D0B40
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbiCGWiL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:38:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
+        id S239635AbiCGWiM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343818AbiCGWiA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:38:00 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263156158
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:37:05 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id p8so10295761qvg.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:37:05 -0800 (PST)
+        with ESMTP id S1343826AbiCGWiB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:38:01 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B256158
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:37:06 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id a14so1735393qtx.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:37:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=UpyFXUVM2OSnyGYkI2bHF05WShOGmOta/4CYEn0SD0k=;
-        b=HtEULqRFJKue6GBc3Ny6FHgLaso34T922wuLbNc53I7BRlWQrUJww4pig7gknLZiBf
-         YDcupAxmWmOaAadSzvKVD9hbllqQdNaSRxxuMheviEt6RwcN3fYaxkqCD5ruCyqdLO23
-         WF7sWerOYQw9V7N7Mj5Rx+VyjlTonIoS0IO9/AMLFEv6JFPFFwtsdjK2d6kQZl4X2non
-         7SnxJCY3vKSiS9JftZwjgCmdDjyAzdPLw+6gtmgI2IPUUgLMRugmzhZaHk1misA9ZicL
-         RYjyGnFMCqfneR8H/U8sQizlMZoZsY2YUDn/JVCMe8k/QlIoAbto7/ZBD8Z1rrHDSyrx
-         0+1A==
+        bh=Kp8haNt8W7FtV8s7XxnXs5TAFxLTzFbEVH7jBn3WtV8=;
+        b=6wb/CSruXFrhX3huC6yinjHXnYVbdk0bqvIg2Tb+em5IUwBvoHVFy45ZDQQ6M60+Sh
+         Hxiqd0o+/R/vUa6DRW4Ssje4qjgsVv1MYDrpRHux17zJUjNbis+Yj+Onzx2rkYU0VAEO
+         8SRbJgOIMZ1jPez2er5Vu6ZLG7ozg5O8i87j1pCer/hFk3B9U2B7O4eET7s1S2+Aeilx
+         Rk7Xcbo2PfQWVBLSTduwazKruaMkWNpKqoDYeeanIGUlnb/GBbFr2EN8elg4DJ96D0bZ
+         eCTfK9/8Bdmep6Bv7Euz2T3/x1xKJ0ci/DaLkYJnlYJI/j0kWeP9KOAROWjPLEsG71cL
+         IO6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UpyFXUVM2OSnyGYkI2bHF05WShOGmOta/4CYEn0SD0k=;
-        b=MYp4nlTINGScpWxWyXGUhjIDZYbHaW8dDSUEDgaFWO+KJX8GWSwIZ2cABTuD6ptxEy
-         oHsg/8aCQCsbc16m95VwMugojL2tFJw/g39PChnGsoBXQA2ptl0KfoFjGXbS5q+DFiO8
-         69wed9ueZs5eM11lEewfxugWh/4+VFvmeo/w+/712CFfMQ8U85hf87orBl7f0qvIChaN
-         l2MD5TRpHCbqeDCfUyQwq1N2ByIj8TuHYkRZTsLCUBuZOTjKJNsLQkxRh2R+04myjwvp
-         yu0/QRq2hAV4h86Lx7PSHGDIlCRh7YgPNrPFDtzYGRKL3Y2hBeocO3tPwrWny1KixSP3
-         TE9w==
-X-Gm-Message-State: AOAM530yXJ9rUoGzWnbjp2JilEgjO0EOkN+KVOZs3vOqUFZrTfpLVlze
-        uzzaIFpdGQ+uZxNoGYGHS/e8aGeAQgdaYnk3
-X-Google-Smtp-Source: ABdhPJwvn8kGP0qq5lLucJjf0G524d8HAAN/guc44xoZM/KrKCUHlVuVytK5k1mdOvvEgV+ErmcubQ==
-X-Received: by 2002:a05:6214:411c:b0:435:9368:130b with SMTP id kc28-20020a056214411c00b004359368130bmr4328851qvb.12.1646692623970;
-        Mon, 07 Mar 2022 14:37:03 -0800 (PST)
+        bh=Kp8haNt8W7FtV8s7XxnXs5TAFxLTzFbEVH7jBn3WtV8=;
+        b=jgn/DAnT7rq79Os+gGOOdXvEVjxIRokZzSuwx4XUDT/fhD9Cv+Dc8p961DBHiUHZKB
+         wlLLT+Q3nNK/JIcBjcAJuoljyos7kzKBBzCLP1WKMyhLgy+1fK25aIzAZY2SHqNwqlNf
+         T1HaPeoDPyJLDMto3fmU61UFJH5INX5a5Y51kWaAS7moewdS0Rjmt6mvDscVcN+W3bqZ
+         bYrNC9O1wv/E77wfwfpKKNq7DvCwQMOj8rr/u9aYZAwo9z3cM2gduxtmr2NqLR1RIahe
+         SzhSexWj4TPk4JrHVuczle+7NgS84LdlvK/7Il6+/yEFIysjSwUG2Ge8wFiZKLTYXeXF
+         KBEw==
+X-Gm-Message-State: AOAM533WVVAU41UqfKojmEh7CiItq8ehuaw2rCqVZQJ07mbMMfduUxyH
+        45k846nZfEfcqThFOocDUOEfAhItn0a0B0vJ
+X-Google-Smtp-Source: ABdhPJxhHtmKx9KCmwYEeJcukoVoer5NCIMz98R+sIY7nf9hKKuWa3fCu8c43TrDOe+r6eS1baOjTA==
+X-Received: by 2002:a05:622a:1055:b0:2de:3ea:f2ad with SMTP id f21-20020a05622a105500b002de03eaf2admr11158178qte.327.1646692625448;
+        Mon, 07 Mar 2022 14:37:05 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bm1-20020a05620a198100b0047bf910892bsm6701672qkb.65.2022.03.07.14.37.03
+        by smtp.gmail.com with ESMTPSA id x185-20020a3795c2000000b0060cb44d7eb9sm6822824qkd.11.2022.03.07.14.37.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:37:03 -0800 (PST)
+        Mon, 07 Mar 2022 14:37:05 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 01/11] btrfs: take into account BTRFS_HEADER_FLAG_V2 in the item/node helpers
-Date:   Mon,  7 Mar 2022 17:36:51 -0500
-Message-Id: <a356aff2558d8be0ad29fc31df6afecd2088bf64.1646692474.git.josef@toxicpanda.com>
+Subject: [PATCH 02/11] btrfs: add global_tree_id to btrfs_root_item
+Date:   Mon,  7 Mar 2022 17:36:52 -0500
+Message-Id: <4c2cd74a4cd9b3b8918741ad4fde28b0693fa232.1646692474.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646692474.git.josef@toxicpanda.com>
 References: <cover.1646692474.git.josef@toxicpanda.com>
@@ -66,54 +66,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The size of the header is slightly larger for _V2, so return the
-appropriate offset if the header has _V2 set.
+This is something Dave asked for in case we want to limit a subvolume to
+a set of global roots.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ fs/btrfs/ctree.h                | 2 ++
+ include/uapi/linux/btrfs_tree.h | 6 +++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index ec77871ad839..b1cc1d34944a 100644
+index b1cc1d34944a..222c5dda9079 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -2073,6 +2073,9 @@ BTRFS_SETGET_STACK_FUNCS(stack_key_generation, struct btrfs_key_ptr,
- static inline unsigned long btrfs_node_key_ptr_offset(const struct extent_buffer *eb,
- 						      int nr)
- {
-+	if (btrfs_header_flag(eb, BTRFS_HEADER_FLAG_V2))
-+		return offsetof(struct btrfs_node_v2, ptrs) +
-+			sizeof(struct btrfs_key_ptr) * nr;
- 	return offsetof(struct btrfs_node, ptrs) +
- 		sizeof(struct btrfs_key_ptr) * nr;
- }
-@@ -2128,6 +2131,9 @@ BTRFS_SETGET_STACK_FUNCS(stack_item_size, struct btrfs_item, size, 32);
- static inline unsigned long btrfs_item_nr_offset(const struct extent_buffer *eb,
- 						 int nr)
- {
-+	if (btrfs_header_flag(eb, BTRFS_HEADER_FLAG_V2))
-+		return offsetof(struct btrfs_leaf_v2, items) +
-+			sizeof(struct btrfs_item) * nr;
- 	return offsetof(struct btrfs_leaf, items) +
- 		sizeof(struct btrfs_item) * nr;
- }
-@@ -2187,12 +2193,14 @@ static inline void btrfs_set_item_key(struct extent_buffer *eb,
- static inline u32 BTRFS_LEAF_DATA_SIZE(const struct btrfs_fs_info *info)
- {
+@@ -2412,6 +2412,8 @@ BTRFS_SETGET_STACK_FUNCS(root_stransid, struct btrfs_root_item,
+ 			 stransid, 64);
+ BTRFS_SETGET_STACK_FUNCS(root_rtransid, struct btrfs_root_item,
+ 			 rtransid, 64);
++BTRFS_SETGET_STACK_FUNCS(root_global_tree_id, struct btrfs_root_item,
++			 global_tree_id, 64);
  
-+	if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
-+		return info->nodesize - sizeof(struct btrfs_header_v2);
- 	return info->nodesize - sizeof(struct btrfs_header);
- }
- 
- static inline unsigned long BTRFS_LEAF_DATA_OFFSET(const struct extent_buffer *leaf)
+ static inline bool btrfs_root_readonly(const struct btrfs_root *root)
  {
--	return offsetof(struct btrfs_leaf, items);
-+	return btrfs_item_nr_offset(leaf, 0);
- }
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index 92760ea4b448..cd62ca1950cb 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -682,7 +682,11 @@ struct btrfs_root_item {
+ 	struct btrfs_timespec otime;
+ 	struct btrfs_timespec stime;
+ 	struct btrfs_timespec rtime;
+-	__le64 reserved[8]; /* for future */
++
++	/* If we want to use a specific set of global roots for this root. */
++	__le64 global_tree_id;
++
++	__le64 reserved[7]; /* for future */
+ } __attribute__ ((__packed__));
  
- static inline u32 BTRFS_MAX_ITEM_SIZE(const struct btrfs_fs_info *info)
+ /*
 -- 
 2.26.3
 
