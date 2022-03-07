@@ -2,59 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1534D0AA6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC614D0AAD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343598AbiCGWMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
+        id S236689AbiCGWOV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbiCGWM2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:12:28 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5F48BF7F
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:11:34 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id bt3so14634239qtb.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:11:34 -0800 (PST)
+        with ESMTP id S234262AbiCGWOT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:14:19 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC7755480
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:13:23 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id 11so14568583qtt.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:13:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=h46j3rjvPE0fuROOG8cfROxMNnBp54E0Vj9iGpjB7q4=;
-        b=H78XcYPcMtDYofhyi89gOsA6A3NPiEF734BLIbYbhVINzdMHOoSZ0+ZII4GGac0/Yz
-         U++r4jcJOME6ymCez6KeXy/ESPV7NtbOQNLW0Vb2KzXAJTAZfFNCFv8eTgz7KqhDoSMO
-         1DuZ6PHv6waH+OQAzdrXiZ8HkfQ9AZNgwHEc1t6GKBGOhb7rH0T59QA024S/HnpN+5z7
-         WQ4qW72uRC9XxCLdSP22YmheHsxaNsMyK7FuAPFGyZdbkfLbov1blCy4ijlwduSc64+I
-         bWrnmp+sTwy4ouwE+7c1USyIYywKuRRiNF1DT1C9TB4VIYjTT/V93MJ+FIuP4QJGHyxr
-         wIfA==
+        bh=BXnqxy8etcUOEobcUWPGoYl1ogFFtI4pC94gxctopFM=;
+        b=7QdQebBKsv295BOoSNeHZHUEL9XVog/L7+ud9p5nVwVJu6V8dsevKsS0XZ3BY1tLJ6
+         fUHSgI1NkHjJ9pcI+ovn0iiU62ZMEyg/6rSETE8oIrTsHEFbhI7O2p5iOR8Nkar2Yl7S
+         zhUQglvh+QJ/Rjuc61B9BSjS2CHhpIkNQopTy0tHgmX6ONGn2gcP9mKVuTQCgjMl6Ax7
+         QvT2/EYRMWaqvU0O/nId50AMn+EaghLN1w2Am9BTRIC9KhquqarnYr/Ad3X0mZTLHXej
+         nIjP5I+Su7+QZjytaP5GAm+7kuPDZqzN3q/vvlmNAQiJ0j3l7PGDWbMHjOTwh0/T6W5s
+         wvUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h46j3rjvPE0fuROOG8cfROxMNnBp54E0Vj9iGpjB7q4=;
-        b=rb0fcQ3lHR/3w38kpSXJR/4dEDlZykfYqgerUQm+KDwhKxewxBRsSu1WBg5sskfDZb
-         o1Ynt27W/6hyyuLP6oL3siZdwhyfFkNK/cSIBn5nZhi558+xvrqL+YzlXq6PV3lDSS83
-         2OqCt92rY6lr/wRAFZQHiPNchg7SwG17OAlibzqWgODfwVkIk60ZIGvzecFi/bvcRLzA
-         Pk7JnEuDpT0kAjv1dKjijoSP0+yYuVtpgRx33MnCV0j6k0emEazkWLknKw1giph1JbY6
-         Lr4gyutzZM112HiMAwPrtxRbxUm0Hgsxc2Ze7riG7ftU6QyY+wXc0grLrxupkuIQ83Q2
-         IZnw==
-X-Gm-Message-State: AOAM5335dBv9WMLxOIiSmJJCG8U39pkQOSt/h+e3UMLqWnGfERWtTe/O
-        7BnROWq/SJxCJRiIsTrhD8rz0/l/E6Rct7Me
-X-Google-Smtp-Source: ABdhPJyTO79Yum0k2r1fbGH1Q79ypIgSHvrJkA09o8WL1v192YaLznntREmeeWod3GqMFAM8iI3CYA==
-X-Received: by 2002:a05:622a:49:b0:2de:4d52:5e76 with SMTP id y9-20020a05622a004900b002de4d525e76mr10923976qtw.633.1646691093010;
-        Mon, 07 Mar 2022 14:11:33 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BXnqxy8etcUOEobcUWPGoYl1ogFFtI4pC94gxctopFM=;
+        b=nsW7p5K0MYJkFgH+njjDQ10V9GM0zEPXXMuKzpEW8nt58Iu43/Wes6t6g37qv0KPOb
+         /IEl2zWrRpUEkHcavru2NetxdUDlrBT11eNh7xrl3BLDZQE44iKrWFUCS4Go3wG/66+3
+         RtB4RFO/IM1xadODdRN8wo6q5yr3vz8tAtaE/NrnFubgjUefk9pzg47uSdd8m0eTfVFE
+         kZtGtmsyByb/04ais/uBgunlMzsx0ynvfyv2Vms0Jv7QA0KQe0B5+FBagqTZY688gBER
+         6a3eJH/8LjSkMARNfSnNC7uN9MT9MScjcmDEpkpFrbrFwSbtCKSXG/yJ6nsyQ+7i150V
+         XSFQ==
+X-Gm-Message-State: AOAM530f+JR0T3wzP/C2Cr/7yF7bZxvga91mGOJIazYGE2syLpO2/Z1J
+        5MdeIo5KQXuOblUkDk+Wk303dLCJpEp5BX+e
+X-Google-Smtp-Source: ABdhPJysPlLbK2qnkDyh06yhx5gk1ZXDzTP43Z1a7HeKM+MeRS9lxeP3QSxyQexexKB8/mjnCE9JhA==
+X-Received: by 2002:ac8:5d49:0:b0:2df:f50f:f4eb with SMTP id g9-20020ac85d49000000b002dff50ff4ebmr11483656qtx.202.1646691202223;
+        Mon, 07 Mar 2022 14:13:22 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l6-20020ac87246000000b002dcec453e42sm8451921qtp.32.2022.03.07.14.11.32
+        by smtp.gmail.com with ESMTPSA id b13-20020ac85bcd000000b002e06856b04fsm2617533qtb.51.2022.03.07.14.13.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:11:32 -0800 (PST)
+        Mon, 07 Mar 2022 14:13:21 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v5 19/19] btrfs-progs: check: don't do the root item check for extent tree v2
-Date:   Mon,  7 Mar 2022 17:11:04 -0500
-Message-Id: <75119c04f067e16f5090f5636145f55dc689ba0a.1646690972.git.josef@toxicpanda.com>
+Subject: [PATCH v2 00/15] btrfs-progs: extent tree v2 gc tree and metadata ref changes
+Date:   Mon,  7 Mar 2022 17:13:05 -0500
+Message-Id: <cover.1646691128.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1646690972.git.josef@toxicpanda.com>
-References: <cover.1646690972.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -66,30 +64,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With the current set of changes we could probably do this check, but it
-would involve changing the code quite a bit, and in the future we're not
-going to track the metadata in the extent tree at all.  Since this check
-was for a very old kernel just skip it for extent tree v2.
+v1->v2:
+- rebased onto devel, depends on "[PATCH v5 00/19] btrfs-progs: extent tree v2
+  support, global roots"
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- check/main.c | 3 +++
- 1 file changed, 3 insertions(+)
+--- Original email ---
 
-diff --git a/check/main.c b/check/main.c
-index 45065989..6bedd648 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -9860,6 +9860,9 @@ static int repair_root_items(void)
- 	int bad_roots = 0;
- 	int need_trans = 0;
- 
-+	if (btrfs_fs_incompat(gfs_info, EXTENT_TREE_V2))
-+		return 0;
-+
- 	btrfs_init_path(&path);
- 
- 	ret = build_roots_info_cache();
+Hello,
+
+Here's the next set of btrfs-progs patches for the next set of extent tree v2
+features, no more metadata reference tracking and support for a garbge
+collection tree.
+
+1. No more metadata reference tracking.  For cowonly trees (global roots) we
+   never have more than one reference for a block, so the reference counting
+   adds a fair bit of overhead for these trees.  This is especially noticeable
+   with the extent tree, we have to update the extent tree to include references
+   for every block, including blocks in the extent tree, which generates more
+   modifications to the extent tree.  In practice there's a stable state so we
+   do not recursively use all the disk space describing the extent tree, however
+   it generates a certain amount of churn.
+
+   For FS tree's that can be shared we still want a way to know when we can free
+   blocks.  That will be accomplished by drop trees in a future patchset and
+   described more thoroughly there.
+
+2. Garbage collection tree.  Free'ing objects in btrfs is a more complicated
+   operation than in other file systems.  For truncate we can mete out the
+   removal of the inode items, but the cleaning up of checksums has to be done
+   in the transaction that the extent is freed.  For large files this can be
+   quite expensive and cause latencies because we have to hold the transaction
+   open for these operations.  Deferring this work to a GC tree will allow us to
+   better throttle these long running operations without causing latencies for
+   the rest of the system.
+
+   As alluded above, free'ing shared metadata extents via the drop trees will
+   be one of these longer running operations, having a GC tree in place will
+   allow us to do these heavier operations without requiring they be done in a
+   single transaction.
+
+These patches have been tested with the corresponding kernel patches and pass
+the xfstests that are able to be run.  Thanks,
+
+Josef
+
+Josef Bacik (15):
+  btrfs-progs: extract out free extent accounting handling
+  btrfs-progs: check: skip owner ref check for extent tree v2
+  btrfs-progs: check: skip extent backref for metadata in extent tree v2
+  btrfs-progs: check: calculate normal flags for extent tree v2 metadata
+  btrfs-progs: check: make metadata ref counting extent tree v2 aware
+  btrfs-progs: check: update block group used properly for extent tree
+    v2
+  btrfs-progs: do not insert extent items for metadata for extent tree
+    v2
+  btrfs-progs: do not remove metadata backrefs for extent tree v2
+  btrfs-progs: repair: traverse tree blocks for extent tree v2
+  btrfs-progs: cache the block group with the free space tree if
+    possible
+  btrfs-progs: make btrfs_lookup_extent_info extent tree v2 aware
+  btrfs-progs: mkfs: don't populate extent tree with extent tree v2
+  btrfs-progs: add on-disk items and read support for the gc tree
+  btrfs-progs: mkfs: create the gc tree at mkfs time
+  btrfs-progs: deal with GC items in check
+
+ check/main.c                     |  98 ++++++++++++++-
+ check/mode-original.h            |   1 +
+ common/repair.c                  |   6 +
+ kernel-shared/ctree.h            |   6 +
+ kernel-shared/disk-io.c          |  10 ++
+ kernel-shared/extent-tree.c      |  82 +++++++++----
+ kernel-shared/free-space-cache.c |   3 +
+ kernel-shared/print-tree.c       |   4 +
+ mkfs/common.c                    | 201 +++++++++++++++++--------------
+ mkfs/main.c                      |  13 +-
+ 10 files changed, 305 insertions(+), 119 deletions(-)
+
 -- 
 2.26.3
 
