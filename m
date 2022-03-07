@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3354D0A9C
+	by mail.lfdr.de (Postfix) with ESMTP id E86264D0A9D
 	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 23:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245741AbiCGWMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 17:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S245755AbiCGWMT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 17:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237315AbiCGWMR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:12:17 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8517C14F
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:11:22 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id b12so13250936qvk.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:11:22 -0800 (PST)
+        with ESMTP id S237315AbiCGWMT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 17:12:19 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC8D81896
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Mar 2022 14:11:24 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id t18so3663249qtw.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Mar 2022 14:11:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=mRmNZiVAWQGD1tPwurtto/oOanj+/iIrZoM7LI/sj2E=;
-        b=Sg35GjLFHDdMAr++BPKR/RnGHqgSTzupLN1EEwJ65UAjiyixPE0U4Db2NPfRiCBXMF
-         dY59yXd7GxnBsEno4qZZZe37xnpVrm3yW/9XrIbBTJJWoC9QDEaeGCqbnXTeXbPRCMQb
-         3FdKYF1GjCVXrmzp/ZqVYJUH6ip3yJTTQzfpuIgrcJucdVBfEH2kQ1bu47FqQ0bPOjfP
-         ImZD6Wcq5J9vQ/HQwBMw2LE1sbtBX+aRyAoJtBQDje3U+9yMul/zIWU64pk01lnT8if5
-         bSquqcnKEFkYLWclbyiFUXxSBQ+j0Kf2FQ6UmDg+xbasVEaQLhKp6+liWkme+9mAPi41
-         ju3g==
+        bh=rpchLNxZ2YFN8sNQVTPTBKLgINOHwrU5vgt1oTinbEA=;
+        b=SHSUY9i5OhvA0nkDbN/y3vbTchVKPG7TTchAaAQonViAbzBfjmrcCP9ORRoWi227xP
+         RexBH0Yi8Y4NwTUW8LGpDxmOFGK5Jn4P4VIr4np5GWWmyCy3oVZ0k3cuG9WZ3viYG0eS
+         aYNyhtwuiukzN59vtY1Uti945E4jgoD3O+FrkYKh5ZXu29nk91RgWEGhV6HpE1dGbLWa
+         fcPwOI5s3GuDu46Cdb56rDAh9A8QyD0x+fkuGkKQAu0yKk9Ig9P1Ub/zz0yOCDDh+pru
+         lFXcgmNK7sGMvlZR+oWHfJ5pr5hYQTXmh5wiofvulBhyaQYUlvytgdO8vnjwSPNGcZn1
+         J6GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mRmNZiVAWQGD1tPwurtto/oOanj+/iIrZoM7LI/sj2E=;
-        b=WuC038hD6MJZb3ST1xxmPQebVrmRxXXm0LFA7J455MMc+zR1qN9FKIY/TtNtUVd5Rw
-         OcV7Uv9GfGHohgnGKFygkaQt+hQAA7dtxJqtUu7AcPimvHUu2x4N7y9NomwUJgh+/58v
-         s155lWc/9S+A1JW6m+NbgdDBRWhDtkulo7+5dXse/KPSem57x0CSfnFRgOSTZkF7PPa7
-         0C7hnKOXtFrsu2H1Pd7W+hnhO6s9HFj5uLw4jAezrVI0aFJTwGr4B4KdksX5peQEbArM
-         BXHB5sS9qV3Qq4eRpBlXVSbBTqTLsJza8TnAA+YPYmtWM1jy3iKZdfZa6GLIYKhj13h1
-         YuBA==
-X-Gm-Message-State: AOAM530s45z47mLEK2Yh4fk99owLhaDhkXNRb8B4psaPFmidvAJOZGGF
-        50bgbEt4qO6MtdD1kmx7/kI9Kgx4Qcizf/ot
-X-Google-Smtp-Source: ABdhPJwj/OR6INCa9x5e97lb8+VDZPuPRXyuxidICnR7AfdHovEBtRLjARHOBsEorMERj1ODiVb6tQ==
-X-Received: by 2002:a05:6214:234b:b0:435:6bb4:d58a with SMTP id hu11-20020a056214234b00b004356bb4d58amr10221937qvb.47.1646691081654;
-        Mon, 07 Mar 2022 14:11:21 -0800 (PST)
+        bh=rpchLNxZ2YFN8sNQVTPTBKLgINOHwrU5vgt1oTinbEA=;
+        b=DaUagwfxKotxI9W7KJmy+kJQ5m+TGwQXqGlQfMZIxSvTYTbBWjhEN5NFcrWjgTHR3C
+         E2epqfN6FMZiUaN7Xi7JlnTy8zykgW1thpFzDOugaAe2LAdUy8IMs6UgpHFsGlkPqaXC
+         t7HhH729eteIqzjnRhCGBQzMIXumKqqNweAoC+nahJsLVCuHgBCpfhQeVWCoo6/ecIe2
+         uiYK2PM08jMrTl/ViiXy0SbbciHH1763QirvtF6wonzeRBJAYitamrlDgkDtXe8ZlPPN
+         9Ef/gJO2UQaraYacRxhJc9DT5FuBDKj421zf/hJEQwMwWVUlTOPp3J7haKP/x5oyDhIo
+         BnOA==
+X-Gm-Message-State: AOAM5308zcLdBD38gWxfWcNdz+mduPwdnH9v41UgHPvRcww/Ar33PmVp
+        HKRxX28oDZcuj/gbINAW5HFDTMXr9AffqjOi
+X-Google-Smtp-Source: ABdhPJyuNe2jv3F7QJHjB2E7D6HQAcOoCIpmliIQ7tyMtxq/XvB3tuUkHRDs53wcCF+Eb5HF0/TJxw==
+X-Received: by 2002:ac8:5812:0:b0:2dd:d9df:9742 with SMTP id g18-20020ac85812000000b002ddd9df9742mr11234190qtg.21.1646691083066;
+        Mon, 07 Mar 2022 14:11:23 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id i192-20020a379fc9000000b0067b314c0ff3sm1652256qke.43.2022.03.07.14.11.21
+        by smtp.gmail.com with ESMTPSA id w140-20020a376292000000b00648e88c1f05sm6958258qkb.67.2022.03.07.14.11.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 14:11:21 -0800 (PST)
+        Mon, 07 Mar 2022 14:11:22 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v5 11/19] btrfs-progs: check: handle the block group tree properly
-Date:   Mon,  7 Mar 2022 17:10:56 -0500
-Message-Id: <c6d511438b1a9ccab5c0ab73dd7620f05cdbd36d.1646690972.git.josef@toxicpanda.com>
+Subject: [PATCH v5 12/19] btrfs-progs: set the number of global roots in the super block
+Date:   Mon,  7 Mar 2022 17:10:57 -0500
+Message-Id: <1c28a05081455379be5d91ee760f9a03e4255e6a.1646690972.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1646690972.git.josef@toxicpanda.com>
 References: <cover.1646690972.git.josef@toxicpanda.com>
@@ -66,84 +66,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We need to make sure we process the block group root, and mark its
-blocks as used for the free space tree checking.
+In order to make sure the file system is consistent we need to record
+the number of global roots we should have in the super block.  We could
+infer this from the number of global roots we find, however this could
+lead to interesting fuzzing problems, so add a source of truth to the
+super block in order to make it easier to verify the file system is
+consistent.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/main.c    | 27 +++++++++++++++++----------
- common/repair.c |  3 +++
- 2 files changed, 20 insertions(+), 10 deletions(-)
+ kernel-shared/ctree.h   | 6 +++++-
+ kernel-shared/disk-io.c | 4 ++++
+ mkfs/common.c           | 1 +
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/check/main.c b/check/main.c
-index 5b700350..45065989 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -8947,6 +8947,18 @@ out:
- 	return ret;
- }
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index b12dbff1..90de7a65 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -463,13 +463,15 @@ struct btrfs_super_block {
  
-+static int load_super_root(struct list_head *head, struct btrfs_root *root)
-+{
-+	u8 level;
+ 	u8 metadata_uuid[BTRFS_FSID_SIZE];
+ 
++	__le64 nr_global_roots;
 +
-+	if (!root)
-+		return 0;
-+
-+	level = btrfs_header_level(root->node);
-+	return add_root_item_to_list(head, root->root_key.objectid,
-+				     root->node->start, 0, level, 0, NULL);
-+}
-+
- static int check_chunks_and_extents(void)
+ 	__le64 block_group_root;
+ 	__le64 block_group_root_generation;
+ 	u8 block_group_root_level;
+ 
+ 	/* future expansion */
+ 	u8 reserved8[7];
+-	__le64 reserved[25];
++	__le64 reserved[24];
+ 	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
+ 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
+ 	/* Padded to 4096 bytes */
+@@ -2372,6 +2374,8 @@ BTRFS_SETGET_STACK_FUNCS(super_block_group_root_generation,
+ 			 block_group_root_generation, 64);
+ BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level,
+ 			 struct btrfs_super_block, block_group_root_level, 8);
++BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
++			 nr_global_roots, 64);
+ 
+ static inline unsigned long btrfs_leaf_data(struct extent_buffer *l)
  {
- 	struct rb_root dev_cache;
-@@ -8965,9 +8977,7 @@ static int check_chunks_and_extents(void)
- 	int bits_nr;
- 	struct list_head dropping_trees;
- 	struct list_head normal_trees;
--	struct btrfs_root *root1;
- 	struct btrfs_root *root;
--	u8 level;
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index 3d1157ad..fcef6e97 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -1620,6 +1620,10 @@ static struct btrfs_fs_info *__open_ctree_fd(int fp, struct open_ctree_flags *oc
+ 	if (ret)
+ 		goto out_devices;
  
- 	root = gfs_info->fs_root;
- 	dev_cache = RB_ROOT;
-@@ -9000,16 +9010,13 @@ static int check_chunks_and_extents(void)
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
++		fs_info->nr_global_roots =
++			btrfs_super_nr_global_roots(fs_info->super_copy);
++
+ 	/*
+ 	 * fs_info->zone_size (and zoned) are not known before reading the
+ 	 * chunk tree, so it's 0 at this point. But, fs_info->zoned == 0
+diff --git a/mkfs/common.c b/mkfs/common.c
+index aa65543b..eac8c46c 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -355,6 +355,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 		btrfs_set_super_cache_generation(&super, 0);
  	}
- 
- again:
--	root1 = gfs_info->tree_root;
--	level = btrfs_header_level(root1->node);
--	ret = add_root_item_to_list(&normal_trees, root1->root_key.objectid,
--				    root1->node->start, 0, level, 0, NULL);
-+	ret = load_super_root(&normal_trees, gfs_info->tree_root);
-+	if (ret < 0)
-+		goto out;
-+	ret = load_super_root(&normal_trees, gfs_info->chunk_root);
- 	if (ret < 0)
- 		goto out;
--	root1 = gfs_info->chunk_root;
--	level = btrfs_header_level(root1->node);
--	ret = add_root_item_to_list(&normal_trees, root1->root_key.objectid,
--				    root1->node->start, 0, level, 0, NULL);
-+	ret = load_super_root(&normal_trees, gfs_info->block_group_root);
- 	if (ret < 0)
- 		goto out;
- 
-diff --git a/common/repair.c b/common/repair.c
-index a73949b0..37a6943f 100644
---- a/common/repair.c
-+++ b/common/repair.c
-@@ -149,6 +149,9 @@ int btrfs_mark_used_tree_blocks(struct btrfs_fs_info *fs_info,
- 	ret = traverse_tree_blocks(tree, fs_info->chunk_root->node, 0);
- 	if (!ret)
- 		ret = traverse_tree_blocks(tree, fs_info->tree_root->node, 1);
-+	if (!ret && fs_info->block_group_root)
-+		ret = traverse_tree_blocks(tree,
-+					   fs_info->block_group_root->node, 0);
- 	return ret;
- }
- 
+ 	if (extent_tree_v2) {
++		btrfs_set_super_nr_global_roots(&super, 1);
+ 		btrfs_set_super_block_group_root(&super,
+ 						 cfg->blocks[MKFS_BLOCK_GROUP_TREE]);
+ 		btrfs_set_super_block_group_root_generation(&super, 1);
 -- 
 2.26.3
 
