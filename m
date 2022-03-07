@@ -2,110 +2,319 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D214CF18A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 07:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD134CF1BF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 07:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235450AbiCGGGS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Mar 2022 01:06:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        id S234244AbiCGGS5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 01:18:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233203AbiCGGGR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 01:06:17 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFE75E140
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 22:05:23 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id x200so28819575ybe.6
-        for <linux-btrfs@vger.kernel.org>; Sun, 06 Mar 2022 22:05:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=7Im1JG6q3q15hqSa7NWQHVGGERLfnPf1iBbuaSTqgJQ=;
-        b=TQ0BwsYstfqOsn49zv+NzmJtUmHkotHjPr1nCjW7gKsUhf8LUkRHUE2KoeruZIS9zF
-         yV8BaseJkjREWWuJwQIA7RzGFa/lIRLSdFmSlP+TTz/i1/6QfmS28iUBYaSRwm8DR6Ic
-         /KudIiahdzxJaZ30UNRGyOH1W9+0D6V7dLO8Y/BpUiqbFa59UnO22f+graMEDVnbaGQk
-         yeRGlmVNNv9LHA017IGiqyhtrnFNp2L+A548+6+3XHBXB2fSkz4LszUFFXpJNVvEgof5
-         DBP3HcI9J4I9i0QhdeSDCzB7l9UytUe39Iib1ABlgRgtvNKVT/Gv6Pq3jxbs1mhCr/xP
-         qQDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=7Im1JG6q3q15hqSa7NWQHVGGERLfnPf1iBbuaSTqgJQ=;
-        b=DsLtXPnTpzvInyyw2PyRkiciCBX9QPitnrfORQcmlG06NST+d3vqgJpMGtGBaUiye0
-         m9mleafYY6PaCYDLr3ST6HdWzkshXPKwGp+SeiS5NUCOl/QBYGxgNUyLHWuAF3zvKW5N
-         0/INl4jWY3tCMxntB7fw9lUa5Uo9JOye3n8YsacuoVEhFBDyNmH5Mu/5dPf8t/sRARtY
-         e2KO4yc/GpeZ1FFJNVEZwK1dCbxHjgCw4uSo6et0OUTmFrH3Sj2fdSMRJnFVLPMjyP1p
-         YgmOjFD+w1koHi5491VQjqOGPReGYCnGppqk7neJnkmfxFZ5iK0xKgGk/uEbCV4oLzF5
-         Nd7A==
-X-Gm-Message-State: AOAM532oG2iksJjOObzzwAzNze2Qazro8ucjnWuqc/nDXctes21zhgQV
-        gfAzKc8P0pJ9quulVGOHZIHvusYOsfjfcWJpXFg=
-X-Google-Smtp-Source: ABdhPJwNN8VsxFBd3fGmY2V1Ba2dmEy7DwhqqwVafZ58ryrOJ/a9TzGG2y6VdYUNFnEHLhJ5/dAGDSdDFlOH18v/LMI=
-X-Received: by 2002:a25:d505:0:b0:627:f53a:ae02 with SMTP id
- r5-20020a25d505000000b00627f53aae02mr6941115ybe.256.1646633122048; Sun, 06
- Mar 2022 22:05:22 -0800 (PST)
+        with ESMTP id S231317AbiCGGS4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 01:18:56 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C0221810
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 22:18:01 -0800 (PST)
+Received: from ip4d144895.dynamic.kabel-deutschland.de ([77.20.72.149] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1nR6gv-0000CS-9F; Mon, 07 Mar 2022 07:17:57 +0100
+Message-ID: <00afd7f5-ffaf-659f-3d0c-9c12b97d6ef4@leemhuis.info>
+Date:   Mon, 7 Mar 2022 07:17:56 +0100
 MIME-Version: 1.0
-Received: by 2002:a05:6918:b986:b0:a4:b698:78d9 with HTTP; Sun, 6 Mar 2022
- 22:05:21 -0800 (PST)
-Reply-To: markwillima00@gmail.com
-From:   Mark <markpeterdavid@gmail.com>
-Date:   Sun, 6 Mar 2022 22:05:21 -0800
-Message-ID: <CAC_St29M9Q_eyjomu9grtQmnr044nc50oU73JgTFiQXB2E6bjw@mail.gmail.com>
-Subject: Re: Greetings!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:b2c listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [markwillima00[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [markpeterdavid[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: bisected: btrfs dedupe regression in v5.11-rc1
+Content-Language: en-US
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+References: <c6125582-a1dc-1114-8211-48437dbf4976@suse.com>
+ <YbrPkZVC/MazdQdc@hungrycats.org>
+ <ab295d78-d250-fe8f-33a5-09cc90d5e406@suse.com>
+ <Ybu4tuzqpaiast5H@localhost.localdomain> <Ybz4JI+Kl2J7Py3z@hungrycats.org>
+ <YdiG6xYbY0tZ21j9@hungrycats.org>
+ <bc677ef0-ea1c-5f8f-f225-4d3f4f3d3459@leemhuis.info>
+ <Yen+CTCm+wbdJnJk@hungrycats.org>
+ <7ccf001b-b249-7d6c-fa86-f25d2b5e55a5@leemhuis.info>
+ <ecb5cd7c-d261-c75b-3b66-4b7e0bc228ab@leemhuis.info>
+ <YiVFCO5KPGkdQAyA@hungrycats.org>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <YiVFCO5KPGkdQAyA@hungrycats.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1646633882;d78a8755;
+X-HE-SMSGID: 1nR6gv-0000CS-9F
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-Good day,
+On 07.03.22 00:34, Zygo Blaxell wrote:
+> On Sun, Mar 06, 2022 at 11:31:05AM +0100, Thorsten Leemhuis wrote:
+>> [Adding Chris and David to the list of recipients]
+>>
+>> Hi, this is your Linux kernel regression tracker again.
+>>
+>> @Btrfs-Maintainers: is anyone addressing this regression that got
+>> bisected many weeks ago? It from here looks like things are stuck: Libor
+>> asked for a status update 24 days ago, I did the same 15 days ago, but
+>> neither of us got a answer. Is there some good reason for this? Or did
+>> the discussion continue somewhere else?
+> 
+> TL;DR it's not a regression and the bisection is invalid.
 
-The HSBC Bank is a financial institution in United Kingdom. We
-promotes long-term,sustainable and broad-based economic growth in
-developing and emerging countries by providing financial support like
-loans and investment to large, small and
-medium-sized companies (SMEs) as well as fast-growing enterprises
-which in turn helps to create secure and permanent jobs and reduce
-poverty.
+#regzbot invalid: it's not a regression and the bisection is invalid
+according to the reporter
 
-If you need fund to promotes your business, project(Project Funding),
-Loan, planning, budgeting and expansion of your business(s) , do not
-hesitate to indicate your interest as we are here to serve you better
-by granting your request.
+>  I apologize for using the word "regression" too early.
 
+Np, that just didn't became clear to me from the discussion, but I can
+only skim those, as I get many reports on my table.
 
-Thank you
-Mr:Mark
+thx for clarifying and good luck in hunting this down!
+
+Ciao, Thorsten
+
+>  This is a pre-existing bug
+> that doesn't require special attention.
+>
+> After multiple bisection test runs and multiple brute-force linear tests
+> of every btrfs commit between 5.10 and 5.11, and similar event reports
+> observed in production fleet, I now believe the original bisection
+> results are an artifact of the git bisection algorithm and a bug with
+> unusual behavior.
+> 
+> Every commit in the range eventually locks up with the same symptoms.
+> Commits seem to randomly fall into the "minutes to reproduce" or "weeks
+> to reproduce" buckets, i.e. there's no single point in the commit history
+> where everything before the point is good and everything after the point
+> is bad.  The fact that bad commits are interleaved with good ones points
+> to an issue elsewhere, far away from the commit that bisect happened to
+> land on.
+> 
+> This bug is now at the top of my "reasons why btrfs crashes" list,
+> but that is because 1) every worse bug on that list has now been fixed
+> (including some other much more urgent regressions from the past few
+> kernel cycles) and 2) I'm pushing hard on specific parts of btrfs that
+> only a few people are using at the moment.  Most of the bugs I've hit
+> in btrfs turned out to be more than 5 years old at the time, and this
+> "new" bug could easily fall into that category.
+> 
+>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+>>
+>> P.S.: As the Linux kernel's regression tracker I'm getting a lot of
+>> reports on my table. I can only look briefly into most of them and lack
+>> knowledge about most of the areas they concern. I thus unfortunately
+>> will sometimes get things wrong or miss something important. I hope
+>> that's not the case here; if you think it is, don't hesitate to tell me
+>> in a public reply, it's in everyone's interest to set the public record
+>> straight.
+>>
+>> #regzbot poke
+>>
+>> On 18.02.22 15:46, Thorsten Leemhuis wrote:
+>>> Hi, this is your Linux kernel regression tracker speaking. Top-posting
+>>> for once, to make this easy accessible to everyone.
+>>>
+>>> What's up here? Can anyone (Zygo? Josef?) please provide a status
+>>> update? Yes, it took quite a while till this regression got found, but
+>>> nevertheless this looks to take awfully long to get resolved for a
+>>> regression was bisected weeks ago.
+>>>
+>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+>>>
+>>> P.S.: As the Linux kernel's regression tracker I'm getting a lot of
+>>> reports on my table. I can only look briefly into most of them and lack
+>>> knowledge about most of the areas they concern. I thus unfortunately
+>>> will sometimes get things wrong or miss something important. I hope
+>>> that's not the case here; if you think it is, don't hesitate to tell me
+>>> in a public reply, it's in everyone's interest to set the public record
+>>> straight.
+>>>
+>>>
+>>> On 21.01.22 01:27, Zygo Blaxell wrote:
+>>>> On Thu, Jan 20, 2022 at 03:04:19PM +0100, Thorsten Leemhuis wrote:
+>>>>> Hi, this is your Linux kernel regression tracker speaking.
+>>>>>
+>>>>> On 07.01.22 19:31, Zygo Blaxell wrote:
+>>>>>> On Fri, Dec 17, 2021 at 03:50:44PM -0500, Zygo Blaxell wrote:
+>>>>>> I left my VM running tests for a few weeks and got some more information.
+>>>>>> Or at least more data, I'm not feeling particularly informed by it.  :-P
+>>>>>>
+>>>>>> 1.  It's not a regression.  5.10 has the same symptoms, but about 100x
+>>>>>> less often (once a week under these test conditions, compared to once
+>>>>>> every 90 minutes or so on 5.11-rc1).
+>>>>>
+>>>>> Well, I'd still call it a regression, as it's now happening way more
+>>>>> often and thus will likely hit more users. It's thus a bit like a
+>>>>> problem that leads to higher energy consumption: things still work, but
+>>>>> worse than before -- nevertheless it's considered a regression. Anway:
+>>>>>
+>>>>> What's the status here? Are you still investigating the issue? Are any
+>>>>> developers looking out for the root cause?
+>>>>
+>>>> I think Josef's plan (start inside the logical_ino ioctl with bpftrace
+>>>> and work upwards to see where the looping is getting stuck) is a good plan,
+>>>> but due to conflicting priorities I haven't found the time to act on it.
+>>>>
+>>>> I can take experimental patches and throw them at my repro setup if
+>>>> anyone would like to supply some.
+>>>>
+>>>>> Ciao, Thorsten
+>>>>>
+>>>>> P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
+>>>>> on my table. I can only look briefly into most of them. Unfortunately
+>>>>> therefore I sometimes will get things wrong or miss something important.
+>>>>> I hope that's not the case here; if you think it is, don't hesitate to
+>>>>> tell me about it in a public reply, that's in everyone's interest.
+>>>>>
+>>>>> BTW, I have no personal interest in this issue, which is tracked using
+>>>>> regzbot, my Linux kernel regression tracking bot
+>>>>> (https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
+>>>>> this mail to get things rolling again and hence don't need to be CC on
+>>>>> all further activities wrt to this regression.
+>>>>>
+>>>>> #regzbot poke
+>>>>>
+>>>>>> 2.  Bisection doesn't work, because there are patches that are repeatably
+>>>>>> good and bad mixed together, so the bisect algorithm (even with stochastic
+>>>>>> enhancement) repeatably picks the wrong commits and converges with
+>>>>>> high confidence on nonsense.  Instead of bisecting, I picked commits
+>>>>>> semi-randomly from 5.11-rc1's patch set, and got these results:
+>>>>>>
+>>>>>>    124  3a160a933111 btrfs: drop never met disk total bytes check in verify_one_dev_extent
+>>>>>> 	1x hang, 2x slower
+>>>>>>    125  bacce86ae8a7 btrfs: drop unused argument step from btrfs_free_extra_devids
+>>>>>> 	1x pass (fast)
+>>>>>>    126  2766ff61762c btrfs: update the number of bytes used by an inode atomically
+>>>>>> 	1x hang (<20 minutes)
+>>>>>>    127  7f458a3873ae btrfs: fix race when defragmenting leads to unnecessary IO
+>>>>>> 	1x hang, runs 3x slower
+>>>>>>    128  5893dfb98f25 btrfs: refactor btrfs_drop_extents() to make it easier to extend
+>>>>>> 	2x hang (<20 minutes)
+>>>>>>    129  e114c545bb69 btrfs: set the lockdep class for extent buffers on creation
+>>>>>> 	2x pass (but runs 2x slower, both times)
+>>>>>>    130  3fbaf25817f7 btrfs: pass the owner_root and level to alloc_extent_buffer
+>>>>>> 	1x pass
+>>>>>>    131  5d81230baa90 btrfs: pass the root owner and level around for readahead
+>>>>>> 	1x pass
+>>>>>>    132  1b7ec85ef490 btrfs: pass root owner to read_tree_block
+>>>>>> 	1x pass
+>>>>>>    133  182c79fcb857 btrfs: use btrfs_read_node_slot in btrfs_qgroup_trace_subtree
+>>>>>>    134  3acfbd6a990c btrfs: use btrfs_read_node_slot in qgroup_trace_new_subtree_blocks
+>>>>>> 	1x hang
+>>>>>>    135  6b2cb7cb959a btrfs: use btrfs_read_node_slot in qgroup_trace_extent_swap
+>>>>>>    136  c990ada2a0bb btrfs: use btrfs_read_node_slot in walk_down_tree
+>>>>>> 	1x hang
+>>>>>>    137  6b3426be27de btrfs: use btrfs_read_node_slot in replace_path
+>>>>>> 	1x hang, 1x pass
+>>>>>>    138  c975253682e0 btrfs: use btrfs_read_node_slot in do_relocation
+>>>>>> 	1x hang
+>>>>>>    139  8ef385bbf099 btrfs: use btrfs_read_node_slot in walk_down_reloc_tree
+>>>>>> 	1x hang, 1x pass
+>>>>>>    140  206983b72a36 btrfs: use btrfs_read_node_slot in btrfs_realloc_node
+>>>>>> 	1x pass
+>>>>>>    141  bfb484d922a3 btrfs: cleanup extent buffer readahead
+>>>>>> 	1x pass
+>>>>>>    142  416e3445ef80 btrfs: remove lockdep classes for the fs tree
+>>>>>>    143  3e48d8d2540d btrfs: discard: reschedule work after sysfs param update
+>>>>>>    144  df903e5d294f btrfs: don't miss async discards after scheduled work override
+>>>>>>    145  6e88f116bd4c btrfs: discard: store async discard delay as ns not as jiffies
+>>>>>> 	2x hang
+>>>>>>    146  e50404a8a699 btrfs: discard: speed up async discard up to iops_limit
+>>>>>>
+>>>>>>    [snip]
+>>>>>>
+>>>>>>    155  0d01e247a06b btrfs: assert page mapping lock in attach_extent_buffer_page
+>>>>>> 	1x hang, 1x pass
+>>>>>>    156  bbb86a371791 btrfs: protect fs_info->caching_block_groups by block_group_cache_lock
+>>>>>> 	1x hang
+>>>>>>    157  e747853cae3a btrfs: load free space cache asynchronously
+>>>>>> 	1x pass
+>>>>>>    158  4d7240f0abda btrfs: load the free space cache inode extents from commit root
+>>>>>> 	1x hang
+>>>>>>    159  cd79909bc7cd btrfs: load free space cache into a temporary ctl
+>>>>>> 	2x pass
+>>>>>>    160  66b53bae46c8 btrfs: cleanup btrfs_discard_update_discardable usage
+>>>>>> 	2x hang, 1x pass
+>>>>>>    161  2ca08c56e813 btrfs: explicitly protect ->last_byte_to_unpin in unpin_extent_range
+>>>>>> 	2x pass
+>>>>>>    162  27d56e62e474 btrfs: update last_byte_to_unpin in switch_commit_roots
+>>>>>> 	2x pass
+>>>>>>    163  9076dbd5ee83 btrfs: do not shorten unpin len for caching block groups
+>>>>>>    164  dc5161648693 btrfs: reorder extent buffer members for better packing
+>>>>>> 	2x pass
+>>>>>>    165  b9729ce014f6 btrfs: locking: rip out path->leave_spinning
+>>>>>>    166  ac5887c8e013 btrfs: locking: remove all the blocking helpers
+>>>>>>    167  2ae0c2d80d25 btrfs: scrub: remove local copy of csum_size from context
+>>>>>>    168  419b791ce760 btrfs: check integrity: remove local copy of csum_size
+>>>>>> 	1x hang, 1x pass
+>>>>>>    169  713cebfb9891 btrfs: remove unnecessary local variables for checksum size
+>>>>>>    170  223486c27b36 btrfs: switch cached fs_info::csum_size from u16 to u32
+>>>>>>    171  55fc29bed8dd btrfs: use cached value of fs_info::csum_size everywhere
+>>>>>>    172  fe5ecbe818de btrfs: precalculate checksums per leaf once
+>>>>>>    173  22b6331d9617 btrfs: store precalculated csum_size in fs_info
+>>>>>>    174  265fdfa6ce0a btrfs: replace s_blocksize_bits with fs_info::sectorsize_bits
+>>>>>>    175  098e63082b9b btrfs: replace div_u64 by shift in free_space_bitmap_size
+>>>>>> 	2x pass
+>>>>>>    176  ab108d992b12 btrfs: use precalculated sectorsize_bits from fs_info
+>>>>>>
+>>>>>>    [snip]
+>>>>>>
+>>>>>>    200  5e8b9ef30392 btrfs: move pos increment and pagecache extension to btrfs_buffered_write
+>>>>>> 	1x pass
+>>>>>>    201  4e4cabece9f9 btrfs: split btrfs_direct_IO to read and write
+>>>>>>
+>>>>>>    [snip]
+>>>>>>
+>>>>>>    215  d70bf7484f72 btrfs: unify the ro checking for mount options
+>>>>>> 	1x pass
+>>>>>>    216  a6889caf6ec6 btrfs: do not start readahead for csum tree when scrubbing non-data block groups
+>>>>>>    217  a57ad681f12e btrfs: assert we are holding the reada_lock when releasing a readahead zone
+>>>>>>    218  aa8c1a41a1e6 btrfs: set EXTENT_NORESERVE bits side btrfs_dirty_pages()
+>>>>>>    219  13f0dd8f7861 btrfs: use round_down while calculating start position in btrfs_dirty_pages()
+>>>>>>    220  949b32732eab btrfs: use iosize while reading compressed pages
+>>>>>>    221  eefa45f59379 btrfs: calculate num_pages, reserve_bytes once in btrfs_buffered_write
+>>>>>>    222  fb8a7e941b1b btrfs: calculate more accurate remaining time to sleep in transaction_kthread
+>>>>>> 	1x pass
+>>>>>>
+>>>>>> There is some repeatability in these results--some commits have a much
+>>>>>> lower failure rate than others--but I don't see a reason why the bad
+>>>>>> commits are bad or the good commits are good.  There are some commits with
+>>>>>> locking and concurrency implications, but they're as likely to produce
+>>>>>> good as bad results in test.  Sometimes there's a consistent change in
+>>>>>> test result after a commit that only rearranges function arguments on
+>>>>>> the stack.
+>>>>>>
+>>>>>> Maybe what we're looking at is a subtle race that is popping up due
+>>>>>> to unrelated changes in the kernel, and disappearing just as often,
+>>>>>> and 5.11-rc1 in particular did something innocent that aggravates
+>>>>>> it somehow, so all later kernels hit the problem more often than
+>>>>>> 5.10 did.
+>>>>>>
+>>>>>> 3.  Somewhere around "7f458a3873ae btrfs: fix race when defragmenting
+>>>>>> leads to unnecessary IO" bees starts running about 3x slower than on
+>>>>>> earlier kernels.  bees is a nightmare of nondeterministically racing
+>>>>>> worker threads, so I'm not sure how important this observation is,
+>>>>>> but it keeps showing up in the data.
+>>>>>>
+>>>>>> 4.  I had one machine on 5.10.84 (not a test VM) with a shell process
+>>>>>> that got stuck spinning 100% CPU in the kernel on sys_write.  bees was
+>>>>>> also running, but its threads were all stuck waiting for the shell to
+>>>>>> release the transaction.  Other crashes on 5.10.8x kernels look more
+>>>>>> like the one in this thread, with a logical_ino spinning.
+>>>>>>
+>>>>>>>> If it's not looping there, it may be looping higher up, but I don't see where it
+>>>>>>>> would be doing that.  Lets start here and work our way up if we need to.
+>>>>>>>> Thanks,
+>>>>>
+>>>
+>>
+> 
+> 
