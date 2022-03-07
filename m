@@ -2,163 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163C14CEFAF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 03:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D214CF18A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 07:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbiCGCkP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Mar 2022 21:40:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S235450AbiCGGGS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Mar 2022 01:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234780AbiCGCkP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 21:40:15 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CD71DA4A
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 18:39:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646620758;
-        bh=iIgEFUxj9r9fhgsrt1Hcq50hyZKPHwm8zp4CXupcnlU=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=bmzdrRP/JmCXYUhrvDfIfKsuQ9MZ2JyEkqIRRzaHoGgdeQw8s/xt0HAogKCt7awzP
-         tJhWn4Fg0ALCtLfacx83iPEQ6e38iuskMJ4GKTpDDae/eiJqPUnEFNOqGjcW0eoihA
-         YmAJ4GDj3X4EqatCk+uMDa0A+U5NGTU1u4/rkQ8U=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MiaY9-1o3x7y4AEh-00fiC3; Mon, 07
- Mar 2022 03:39:18 +0100
-Message-ID: <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com>
-Date:   Mon, 7 Mar 2022 10:39:15 +0800
+        with ESMTP id S233203AbiCGGGR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Mar 2022 01:06:17 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFE75E140
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Mar 2022 22:05:23 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id x200so28819575ybe.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 06 Mar 2022 22:05:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=7Im1JG6q3q15hqSa7NWQHVGGERLfnPf1iBbuaSTqgJQ=;
+        b=TQ0BwsYstfqOsn49zv+NzmJtUmHkotHjPr1nCjW7gKsUhf8LUkRHUE2KoeruZIS9zF
+         yV8BaseJkjREWWuJwQIA7RzGFa/lIRLSdFmSlP+TTz/i1/6QfmS28iUBYaSRwm8DR6Ic
+         /KudIiahdzxJaZ30UNRGyOH1W9+0D6V7dLO8Y/BpUiqbFa59UnO22f+graMEDVnbaGQk
+         yeRGlmVNNv9LHA017IGiqyhtrnFNp2L+A548+6+3XHBXB2fSkz4LszUFFXpJNVvEgof5
+         DBP3HcI9J4I9i0QhdeSDCzB7l9UytUe39Iib1ABlgRgtvNKVT/Gv6Pq3jxbs1mhCr/xP
+         qQDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=7Im1JG6q3q15hqSa7NWQHVGGERLfnPf1iBbuaSTqgJQ=;
+        b=DsLtXPnTpzvInyyw2PyRkiciCBX9QPitnrfORQcmlG06NST+d3vqgJpMGtGBaUiye0
+         m9mleafYY6PaCYDLr3ST6HdWzkshXPKwGp+SeiS5NUCOl/QBYGxgNUyLHWuAF3zvKW5N
+         0/INl4jWY3tCMxntB7fw9lUa5Uo9JOye3n8YsacuoVEhFBDyNmH5Mu/5dPf8t/sRARtY
+         e2KO4yc/GpeZ1FFJNVEZwK1dCbxHjgCw4uSo6et0OUTmFrH3Sj2fdSMRJnFVLPMjyP1p
+         YgmOjFD+w1koHi5491VQjqOGPReGYCnGppqk7neJnkmfxFZ5iK0xKgGk/uEbCV4oLzF5
+         Nd7A==
+X-Gm-Message-State: AOAM532oG2iksJjOObzzwAzNze2Qazro8ucjnWuqc/nDXctes21zhgQV
+        gfAzKc8P0pJ9quulVGOHZIHvusYOsfjfcWJpXFg=
+X-Google-Smtp-Source: ABdhPJwNN8VsxFBd3fGmY2V1Ba2dmEy7DwhqqwVafZ58ryrOJ/a9TzGG2y6VdYUNFnEHLhJ5/dAGDSdDFlOH18v/LMI=
+X-Received: by 2002:a25:d505:0:b0:627:f53a:ae02 with SMTP id
+ r5-20020a25d505000000b00627f53aae02mr6941115ybe.256.1646633122048; Sun, 06
+ Mar 2022 22:05:22 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Content-Language: en-US
-To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
- <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com>
- <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
- measurable benefit
-In-Reply-To: <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:prndpclWy5QSW9lQzRrk26oq9BBpjW4sovhDpx+QP6UQi9pZlaH
- mpGSO/isVGx3I1NYk94xrctlVBqvpW+CZL3gjDQfnczKPrxYiy5gv2EP2Xmv5gEdj7CL2Dj
- KokcMXwSQbsvIdU5wDIr1SQy4sXZh0pcWRR6IcPSF0j2PfQWILf7V8QwbTVdrJXshJxB9BM
- QCbDOagN46HllSSaToDdA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dcJh7ErCUIE=:oQrcc8MyEnDBmsyxmRxU3L
- eIBzzbX4APOM7d5O0yDszgQfKPM3FmRZsxw62FPnFDD2flnxA5ifzr6rxha8X8VnqClW1qXiW
- Ov9rT3lRXy6ObvwtkYPp2DZxZWo7gEszHzqbN2GDllu/CIVn+s1D3Nt/pauiCiODv3GPHKry0
- VmNlRls8KgviKoLVwbjThEOEx0MA2Eg8KWOzZeLivDtgkVKeWoS2+NYvBbF+UNa/dlvaj2reo
- I5zOf3KNa2K4vjCI6MywlnMpM9KuDnFALv3kq9Hod7/QnXQvQU2XsuZaYc8Ljx+6lZGxKCx5a
- yG/odRnRm/wezFpSRqlddC80sxiZstzqNQn55CFTF55hcZp2Z8DXz8s1rJOo72Lcdp3uQwiaa
- xOvYW6RpVZuyhB9WqgoDcaVISgdHbf/WrotSGtwtGo1A2Y3Zmu2PFgpgFohvpJsydaMCfS8dZ
- VSQb59WlHJZBC3vic6MH8MjKAZtbZvuzYf4Jy6foBo1b8XjBYtA5oIKxrbCJa6oteo41R9GfO
- NYyzCELXGAfjEH9FTRABsmzM6gw8sJIuyvN8y+pa3if1U+wA8n/8w//IFMm0gijP9rcy6qdGD
- TXutprWGHN+GKZyBr0aFIHBSeNSYSLP5PaCgr3/w4EfXZXsvSdl7nNdaH764JCXONspM2WtPd
- gXUsiDWMmjnklByV39WQ/KdyXEbkDR5KOs1jwGVYrK5+pfyD3kqDODbAK+9GXhn8pYGP1pLC+
- b+jtw+uAQhn2FVqS+kntVrFJyZWXSfJVsJ7FUOLvpm8b5tdh5YjJzdEVVUCJwD3flpCdN3S46
- xrXcUqNvvPj4NihQFajQRz6XNcPzk02RtKn4leTjBrvEQza6Qs+mQo+BCCjCB20EGXCIPcJxN
- jChAhdEX+zkuvUpQWQpQoy421B8LPacIOmstyY3MCxmoxtUDd/05my/L4nLbjob2u3Ia4qmGT
- xPU259hWHYP5cXb6Nkf0KrSknFrNYDcghI4PeDLUGRVlR2vXqbpfPlkyROzLhLIHG92ikgilM
- DVGsH6xcNH+RudFa3WwdzWJJML30tnswyr1JV4srFYL5Ybg985Bw6tICwUZuQY375jBKb90jB
- yt5dVdXVnmeLHg=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6918:b986:b0:a4:b698:78d9 with HTTP; Sun, 6 Mar 2022
+ 22:05:21 -0800 (PST)
+Reply-To: markwillima00@gmail.com
+From:   Mark <markpeterdavid@gmail.com>
+Date:   Sun, 6 Mar 2022 22:05:21 -0800
+Message-ID: <CAC_St29M9Q_eyjomu9grtQmnr044nc50oU73JgTFiQXB2E6bjw@mail.gmail.com>
+Subject: Re: Greetings!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b2c listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [markwillima00[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [markpeterdavid[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+Good day,
+
+The HSBC Bank is a financial institution in United Kingdom. We
+promotes long-term,sustainable and broad-based economic growth in
+developing and emerging countries by providing financial support like
+loans and investment to large, small and
+medium-sized companies (SMEs) as well as fast-growing enterprises
+which in turn helps to create secure and permanent jobs and reduce
+poverty.
+
+If you need fund to promotes your business, project(Project Funding),
+Loan, planning, budgeting and expansion of your business(s) , do not
+hesitate to indicate your interest as we are here to serve you better
+by granting your request.
 
 
-On 2022/3/7 10:23, Jan Ziak wrote:
-> On Mon, Mar 7, 2022 at 1:48 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->> On 2022/3/6 23:59, Jan Ziak wrote:
->>> I would like to report that btrfs in Linux kernel 5.16.12 mounted with
->>> the autodefrag option wrote 5TB in a single day to a 1TB SSD that is
->>> about 50% full.
->>>
->>> Defragmenting 0.5TB on a drive that is 50% full should write far less =
-than 5TB.
->>
->> If using defrag ioctl, that's a good and solid expectation.
->>
->> Autodefrag will mark any file which got smaller writes (<64K) for scan.
->> For smaller extents than 64K, they will be re-dirtied for writeback.
->
-> The NVMe device has 512-byte sectors, but has another namespace with
-> 4K sectors. Will it help btrfs-autodefrag to reformat the drive to 4K
-> sectors? I expect that it won't help - I am asking just in case my
-> expectation is wrong.
-
-The minimal sector size of btrfs is 4K, so I don't believe it would
-cause any difference.
-
->
->> So in theory, if the cleaner is triggered very frequently to do
->> autodefrag, it can indeed easily amplify the writes.
->
-> According to usr/bin/glances, the sqlite app is writing less than 1 MB
-> per second to the NVMe device. btrfs's autodefrag write amplification
-> is from the 1 MB/s to approximately 200 MB/s.
-
-This is definitely something wrong.
-
-Autodefrag by default should only get triggered every 300s, thus even
-all new bytes are re-dirtied, it should only cause a less than 300M
-write burst every 300s, not a consistent write.
-
->
->> Are you using commit=3D mount option? Which would reduce the commit
->> interval thus trigger autodefrag more frequently.
->
-> I am not using commit=3D mount option.
->
->>> CPU utilization on an otherwise idle machine is approximately 600% all
->>> the time: btrfs-cleaner 100%, kworkers...btrfs 500%.
->>
->> The problem is why the CPU usage is at 100% for cleaner.
->>
->> Would you please apply this patch on your kernel?
->> https://patchwork.kernel.org/project/linux-btrfs/patch/bf2635d213e0c852=
-51c4cd0391d8fbf274d7d637.1645705266.git.wqu@suse.com/
->>
->> Then enable the following trace events...
->
-> I will try to apply the patch, collect the events and post the
-> results. First, I will wait for the sqlite file to gain about 1
-> million extents, which shouldn't take too long.
-
-Thank you very much for the future trace events log.
-
-That would be the determining data for us to solve it.
-
->
-> ----
->
-> BTW: "compsize file-with-million-extents" finishes in 0.2 seconds
-> (uses BTRFS_IOC_TREE_SEARCH_V2 ioctl), but "filefrag
-> file-with-million-extents" doesn't finish even after several minutes
-> of time (uses FS_IOC_FIEMAP ioctl - manages to perform only about 5
-> ioctl syscalls per second - and appears to be slowing down as the
-> value of the "fm_start" ioctl argument grows; e2fsprogs version
-> 1.46.5). It would be nice if filefrag was faster than just a few
-> ioctls per second.
-
-This is mostly a race with autodefrag.
-
-Both are using file extent map, thus if autodefrag is still trying to
-redirty the file again and again, it would definitely cause problems for
-anything also using file extent map.
-
-Thanks,
-Qu
->
-> ----
->
-> Sincerely
-> Jan
+Thank you
+Mr:Mark
