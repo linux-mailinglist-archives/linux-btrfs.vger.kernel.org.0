@@ -2,174 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BBB4CEEED
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 01:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324C34CEEFC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Mar 2022 01:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234238AbiCGAQw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Mar 2022 19:16:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
+        id S234541AbiCGAnH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Mar 2022 19:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbiCGAQv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 19:16:51 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8446050E36;
-        Sun,  6 Mar 2022 16:15:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646612150;
-        bh=+pec0/WewNJT9mGTJjFSdkotD4x7loRKWBwR+fZt/rU=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=AX+kPtRcGWaDyc0Tj4eSekGLL+1/hsN1uAky4af8+BnNpMcmgc3J7ODY+OGYGjy9J
-         /rKmb58EkFBU+5OkkS3S7RYyk268CuA1wxJwq3Hv6lM5GB5mN1LSJlqoZFz+dELTLI
-         YZmLbFm5cDXM272uQA3wq9rH4OqDlvHcoSNJwWdE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXp9i-1nfHir25lM-00YC1H; Mon, 07
- Mar 2022 01:15:50 +0100
-Message-ID: <d1a3f31f-2205-6dce-0f33-6611972e48cd@gmx.com>
-Date:   Mon, 7 Mar 2022 08:15:44 +0800
+        with ESMTP id S231548AbiCGAnH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Mar 2022 19:43:07 -0500
+Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475C028E02;
+        Sun,  6 Mar 2022 16:42:13 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V6NhnNp_1646613727;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0V6NhnNp_1646613727)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Mar 2022 08:42:10 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] btrfs: Fix non-kernel-doc comment
+Date:   Mon,  7 Mar 2022 08:42:04 +0800
+Message-Id: <20220307004204.25417-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH] btrfs: unlock the newly allocated extent buffer in
- btrfs_alloc_tree_block()
-Content-Language: en-US
-To:     Denis Efremov <denis.e.efremov@oracle.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Cc:     Hao Sun <sunhao.th@gmail.com>, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210914065759.38793-1-wqu@suse.com>
- <8fa2dbee-75a9-6194-05c6-3208e6be36dc@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <8fa2dbee-75a9-6194-05c6-3208e6be36dc@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ra3zRp0rvGWyaMAC/MRbCNFFXkbQob1Gsz2KJixPuiNLheTfHea
- ubtevvdgnDfyWyXdXY4aG/Ynw0HTBBBZap8mUQdGzzGVa5P+lVzkZfRMxTVtGBq7X9GuPzr
- c+kF1H9m4UKsJP0D9feWFGdYwdauIsBtyqXN7tQIB6AJ/JKsogusV+LY2cJl5v0a1rz59mr
- MoaNsmbNnyelgybXcfgtw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eXa6dWq99tQ=:6/IMvpfTCMawfOhRTZpnyc
- NhfJNeKbkza8gv6xtShx1UySOAxyKmhbauv2xUsduaGnlqVLXdDrt8eoMVfFBC5iQONYiKtCG
- +xmzFEK5qLWhS5TegZKM0liLL2+oQpwm1H1kL7jH3iUCgbhBz/krSoOF64cl2qzU2p8zKqW6c
- U3DHhurhOvQUsoV6ajfpWv6z7wlyas3rJvguTEQvTWCmBmqgJPt7yop6Xh6fNxTvlUKrmyIfd
- EEMTE5d6Zl0N1E6lK1Wo4WMKAzk2ZBkKHLwUPhlQBqhpeKyDLV+JgBfOWOmxaKM+pjNNpIBzN
- ju6MYg9KMd9cW5PyTzfY0vlYpB1rmuFLgvauNNjgmteBwWRSww61c1wpFbGd4LAjYIzk95oDY
- kMVolZAwrLPkIIs5S/WpX7fayuJ0SoP+evomwqfE6mZQ68YKt5f9IBWpz+doi3DQeqCSqi1PW
- 26QJU0JWY94Uw0R50u5UA4xDIrlc3NPWnkfTX4pVSxSYtNfBE677jZrZ1S2f1e5QSp+E52j7z
- VhlW70h6oRvGSUOBiSRo37DoId3hwNK7HpWiHWSDWnX8YjW7MrfP/IErQq7YVPuBLgfD3xy4X
- 3fssVO2oXUWyF9U92erNGtLPi29hmLaNYtjScm/Y34Ta5+j1AzRzDJ73gMmMcGZUOqVUgcE/n
- yz5W0Xm/HgShAEy2BT9v3Vsso4zMf1zYCLG/s1/zRwecJS/qmNXHqTEGyNax2XCq7RP6G499V
- t4zNTfwLmyQJ5rQVofDjAyWBp84vmLb6U1qN7D2ds/g9OPcWCo0ppawEabhSAyawXTLBvLMs3
- 7OOeY7B5Eb2sbPBgqGgVQ7YZQINJX7uKBLJYUi8siE2jN97ManHvmVi+waL2czacva6FPXG4K
- S2OIEZ+tegsX7ZTTNSgU2ktT+1Rk4TZ7wcKK+my4Q6jctMKATXThJePKjr/6CeDcAM299sAIR
- 9WlKmWRrtdEh7rkRQGzYtxb/dz/fzHygqAEMNXpq95qcf5fTsHhrqUgZtA1A2R49t4B3uaTJv
- qF5MA9Lof7njdUyTQScZiWK98FIB9mebHoou+8FeCLVk8rlOY0K/xWHgkzM2nJg8TAGhrt//b
- DfkywgTFIOcrm8=
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Clean up the following clang-w1 warning:
 
+fs/btrfs/space-info.c:1594: warning: This comment starts with '/**', but
+isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * Trye to reserve metadata bytes from the block_rsv's space.
 
-On 2022/3/7 00:36, Denis Efremov wrote:
-> Hi,
->
->
-> On 9/14/21 09:57, Qu Wenruo wrote:
->> [BUG]
-> ...
->>
->>    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
->>    WARNING: lock held when returning to user space!
->>    5.15.0-rc1 #16 Not tainted
->>    ------------------------------------------------
->>    syz-executor/7579 is leaving the kernel with locks still held!
->>    1 lock held by syz-executor/7579:
->>     #0: ffff888104b73da8 (btrfs-tree-01/1){+.+.}-{3:3}, at:
->>    __btrfs_tree_lock+0x2e/0x1a0 fs/btrfs/locking.c:112
->>
->> [CAUSE]
->> In btrfs_alloc_tree_block(), after btrfs_init_new_buffer(), the new
->> extent buffer @buf is locked, but if later operations like adding
->> delayed tree ref fails, we just free @buf without unlocking it,
->> resulting above warning.
->
-> This patch fixes CVE-2021-4149. Commit 19ea40dddf18
-> "btrfs: unlock newly allocated extent buffer after error" upstream.
-> The patch was backported to kernels 5.15, 5.10, 5.4 because it contains
-> "CC: stable@vger.kernel.org # 5.4+" in the commit message.
->
-> However, it looks to me like kernels 4.9, 4.14, 4.19 are also vulnerable=
-.
-> In v4.9 kernel there is btrfs_init_new_buffer() call:
-> btrfs_alloc_tree_block(...)
-> {
-> 	...
-> 	buf =3D btrfs_init_new_buffer(trans, root, ins.objectid, level);
-> 	...
-> out_free_buf:
->          free_extent_buffer(buf);
-> 	...
-> }
->
-> and btrfs_init_new_buffer() contains btrfs_tree_lock(buf) inside it.
->
-> The patch can be cherry-picked to v4.9 kernel without a conflict.
->
-> Probably, the error was introduced in the commit 67b7859e9bfa
-> "btrfs: handle ENOMEM in btrfs_alloc_tree_block" It's in the kernel
-> since v4.1
->
-> Can you confirm that kernels v4.9, 4.14, 4.19 are also vulnerable?
+fs/btrfs/space-info.c:1629: warning: This comment starts with '/**', but
+isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * Try to reserve data bytes for an allocation.
 
-Oh, thanks for catching this, I'm never good at taking care of older
-kernels.
+fs/btrfs/space-info.c:1468: warning: This comment starts with '/**', but
+isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * Try to reserve bytes from the block_rsv's space.
 
-But since those three are TLS kernels, they deserve the fix.
+fs/btrfs/space-info.c:1375: warning: This comment starts with '/**', but
+isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * Do the appropriate flushing and waiting for a ticket.
 
-And yes, in those three versions, they have btrfs_tree_lock() called in
-btrfs_init_new_buffer(), so they are also affected.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/btrfs/space-info.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-For the cause, your commit is completely correct.
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 9652dd042c20..37b3b6f107ee 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -1372,7 +1372,7 @@ static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
+ }
+ 
+ /**
+- * Do the appropriate flushing and waiting for a ticket
++ * handle_reserve_ticket - Do the appropriate flushing and waiting for a ticket
+  *
+  * @fs_info:    the filesystem
+  * @space_info: space info for the reservation
+@@ -1465,7 +1465,7 @@ static inline bool can_steal(enum btrfs_reserve_flush_enum flush)
+ }
+ 
+ /**
+- * Try to reserve bytes from the block_rsv's space
++ * __reserve_bytes - Try to reserve bytes from the block_rsv's space
+  *
+  * @fs_info:    the filesystem
+  * @space_info: space info we want to allocate from
+@@ -1591,7 +1591,8 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
+ }
+ 
+ /**
+- * Trye to reserve metadata bytes from the block_rsv's space
++ * btrfs_reserve_metadata_bytes - Trye to reserve metadata bytes from
++ * the block_rsv's space
+  *
+  * @fs_info:    the filesystem
+  * @block_rsv:  block_rsv we're allocating for
+@@ -1626,7 +1627,7 @@ int btrfs_reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+ }
+ 
+ /**
+- * Try to reserve data bytes for an allocation
++ * btrfs_reserve_data_bytes - Try to reserve data bytes for an allocation
+  *
+  * @fs_info: the filesystem
+  * @bytes:   number of bytes we need
+-- 
+2.20.1.7.g153144c
 
-So feel free to backport those patches to stable, with your new fixed-by
-tag.
-
-Thanks,
-Qu
->
-> Thanks,
-> Denis
->
->>
->> [FIX]
->> Unlock @buf in out_free_buf: tag.
->>
->> Reported-by: Hao Sun <sunhao.th@gmail.com>
->> Link: https://lore.kernel.org/linux-btrfs/CACkBjsZ9O6Zr0KK1yGn=3D1rQi6C=
-rh1yeCRdTSBxx9R99L4xdn-Q@mail.gmail.com/
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/extent-tree.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
->> index c88e7727a31a..8aa981ffe7b7 100644
->> --- a/fs/btrfs/extent-tree.c
->> +++ b/fs/btrfs/extent-tree.c
->> @@ -4898,6 +4898,7 @@ struct extent_buffer *btrfs_alloc_tree_block(stru=
-ct btrfs_trans_handle *trans,
->>   out_free_delayed:
->>   	btrfs_free_delayed_extent_op(extent_op);
->>   out_free_buf:
->> +	btrfs_tree_unlock(buf);
->>   	free_extent_buffer(buf);
->>   out_free_reserved:
->>   	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 0);
