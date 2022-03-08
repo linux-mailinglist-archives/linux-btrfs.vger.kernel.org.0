@@ -2,147 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CD84D23F9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Mar 2022 23:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39754D2428
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Mar 2022 23:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350591AbiCHWLK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 17:11:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
+        id S234886AbiCHWVk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 17:21:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346342AbiCHWLJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 17:11:09 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2042.outbound.protection.outlook.com [40.107.223.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA37856407;
-        Tue,  8 Mar 2022 14:10:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EcpQCjTllkWJHCoinflG9LwL4+S+5j5uYTg5DGXap/L26BJPRdekkefZB6H4E2LX+oHCVHWbEvVol7lBLt+XF2GvIIG+kq17xJ+i5jZJ3/bp7mBxXhuiJax1u9FjvDMnxhRkF/mLu6M3d01XhCB9fpVgUvZ1ik6DaZfgbA5XMCSbj/AyeQ/ie8QjdDG0RwtH96BU6AZ5OmIN7KPFSMzr20gRhlz0NqJxtAt0vqiK9cYVvmslEdJQBnE45W1Cc+Xr3aQxBWVFQOvImPSrkJ+ZVONb27px6TBm3qCsk0J5DYKaCfXFFrjZt9rVmbjoQFPBLe/M/mu1itUetNfzae8SkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Or5Vj+UGkYHVWsCrwW0FonkPtMM0lKwLp+AcU/RZgRc=;
- b=NPrxN5KdaZkak7YYet6xaq5htAUBkEp4Wz/7H7433agV/Wg4YZZ2EdqeZyHK7+eXNzdgTLBoFo871tr9zuIuYSLONtF9SE79Pxit9kHbIFBeVSI0YhiF+o+Yp3/hygCD2NNZfpLfG1PFg8/780biSAUMvFRcXiz98BAguzhBtKQlfnBeKyGALmvlP6l+yP+GXKncJXvmendLmj/eQVQhfCunHk4rOGM7aiZIiqjb5K4v69HxVK8N6n3WLvpeE0Rc3i78tgXycL638EjLGMkVP1hwlo2zRxUxP27eb9C7kNmjdF1W7VmL6iR7JiizN4w6FaO/yg7Ykvl7QAwkAV32JQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Or5Vj+UGkYHVWsCrwW0FonkPtMM0lKwLp+AcU/RZgRc=;
- b=H3LRpypb/BxDE+Uhb7io8yAizxGfDVUpZT3zyN65RbkwR5L45Nj/Qx3wOsedUYweoDkuV7wQNGQ35N9HoR6l6ELMiLH4IjP6jkyWx0GRODwileEhnwGDC0TVUdPgbh0oIbSHDyIgI+QcBfdDY/LJULFJPyogUeS0Z8mTZ3YmFDNAqS9VmRzEcSuTbOv4IVVzxIRcjK523dGm2sSBPtKcPp1AXU4fdf1RCpu5FWwwFHkpIDmq6JIYRtc6lh2dulEaXqznVsW3FOH2UfqYLpiIqBne6V10+XQ9UlXyok1Nzbrb0MKIIPMLkUF4VUKGJM8/OM5PdkJP4xFxoCMBjvBcjQ==
-Received: from MW2PR12MB4667.namprd12.prod.outlook.com (2603:10b6:302:12::28)
- by MW3PR12MB4459.namprd12.prod.outlook.com (2603:10b6:303:56::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Tue, 8 Mar
- 2022 22:10:08 +0000
-Received: from MW2PR12MB4667.namprd12.prod.outlook.com
- ([fe80::204b:bbcb:d388:64a2]) by MW2PR12MB4667.namprd12.prod.outlook.com
- ([fe80::204b:bbcb:d388:64a2%4]) with mapi id 15.20.5038.027; Tue, 8 Mar 2022
- 22:10:08 +0000
-From:   Chaitanya Kulkarni <chaitanyak@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-CC:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 5/5] pktcdvd: stop using bio_reset
-Thread-Topic: [PATCH 5/5] pktcdvd: stop using bio_reset
-Thread-Index: AQHYMrQYlKEyuRDbnkC2Ag8SGwunMay2DSIA
-Date:   Tue, 8 Mar 2022 22:10:08 +0000
-Message-ID: <80cfcb91-6458-abd6-9f6b-b1bd7d7b7450@nvidia.com>
-References: <20220308061551.737853-1-hch@lst.de>
- <20220308061551.737853-6-hch@lst.de>
-In-Reply-To: <20220308061551.737853-6-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f4223e0f-e720-4b76-d2e0-08da01506886
-x-ms-traffictypediagnostic: MW3PR12MB4459:EE_
-x-microsoft-antispam-prvs: <MW3PR12MB44590CA4E9DFE65B1B4A42AEA3099@MW3PR12MB4459.namprd12.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sp7MbifuXn0LBO6SsMMZmx8na1njCNLfNY7qWi09WW1YgNNW02UUFiPbvb+WEYf044Hjr014pWIb5HirXxUVbM9kc4JAQPJYQX7k0kiVaLXgiUSorHj7LwugzdxzugxtfNjfDGaHyaRFWiBpomtnCtszPmDXUPIAL16rX8tssIZzl0oxnmz75ojYVO3hBbJ+t8ml9OFnip8aTweMRaNzG1SP+rFh0zB+q8owv+IMlY+jcf+4hF+vP3VFAiGWR1EFR8ivHTLey7svZC/DzW1hhCn34Q7aO6Qgtqge+KqAtaXgeuKUBcKFaNH/RdkzC3HriEzunih5/SjqycJA5jE3i3I3U9c/cDG7ZaxWc2PJ2fjUsxY2r1uprywMDe50HHUG+NS9BgZdY0Iehizs/N9CV0k69ZDPKjQKfSc13cszxHeAYWZT2X1bHBGE1ekDzTVJV/2tdudY1N2UJxaw7om/LdoGfa8mihzKbsbuWnGvXy5BFMDamDuOVo9TAPZ+bdF72j+3JIGuPr5nLDqIynCQkH4h01h9NnZSxQa/QmZTUTfNgxIgcH5M2MDdpc9mvAlxbOUDQwrp3v36h5gnyLCFHEH73cXt3n1I6XS4uJ+NrYjooJJ04Vq45mI5NEOQBahmoWYt6FJYha1Urldq4xFfi3dMm+1dGsKjTJOp66gzn9sQgdnL10nrBQQ3aq55mTM9/BqzPfqVz/vxdIIelpVB/Aic6EDFieq0XvRXjrmqhJgCD4gkQpJXXL/EuJEbgPsDhuvtcaqRmbHNagVw7sU/Lu1alvrXEIdum9UELfqanl0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB4667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66556008)(4326008)(66946007)(8936002)(26005)(53546011)(8676002)(64756008)(66446008)(66476007)(54906003)(7416002)(186003)(5660300002)(36756003)(31686004)(110136005)(31696002)(2616005)(6486002)(122000001)(71200400001)(86362001)(2906002)(6512007)(6506007)(558084003)(76116006)(508600001)(38070700005)(316002)(38100700002)(91956017)(133343001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MFBBYjR4Z0hKUjdnYVZDQzY0VEMwNVgzT1UvUDViMzZoRjZ6bXExTituRU5a?=
- =?utf-8?B?SGZjbnphenkrRjI1SFNoMW12U1cwTmRFdlhURUIwbVFWYmplYlFUS2FVUE11?=
- =?utf-8?B?VVZQMGE4WW5rUGh2c1R1QmJtNllobVN6cmgvR3lIMWxweEIzRnlacnlqa09X?=
- =?utf-8?B?VThQK0plczVmYWlrY08yLzlLUUpjdXVQdGxKem11eEhoaVJ0YWlaejFxRzFH?=
- =?utf-8?B?Z0NybEZiRGdJR0JiNjFJNHVoa0ZEeTJPUG1LOEhiZ1JRcEFyeXh4UTBieXNx?=
- =?utf-8?B?ZFlRK2V4Y2JRT20rUUxHY1VZRExjanMrSEo3R1J0d0hqM1I4SzAyMVVuaUlB?=
- =?utf-8?B?N2ZHcUJkV3pjS1lDanNlVFk1WGczaFlqbHloNVhkY1FJclZVd0hhWEIyMzN4?=
- =?utf-8?B?c1h6aUJiOVVicHhWa3prTHdsSjRjeXZjaXVqWDJqcHFkOTVLZXNuUUdlZCsr?=
- =?utf-8?B?ZW5xczBGSzQ4eEZSUlFZbzA0Z04vZWJubG82SHZUaVlZcnBucldPQTBOK21x?=
- =?utf-8?B?MTNteXZrNmhmS1BVU2EvVjFQS0FyOFNQU0NJeitsYWdHeGl3Z0NSekZvcEhM?=
- =?utf-8?B?MlM5aVJpMURnS0pmeWwrcGZNYWxsT3hLbWUxNkNtYXpzWUhLSG9yYUIyUW1n?=
- =?utf-8?B?RzIvTDMzYVVTRHBkZWtOY1FoUGZ1eEQ4d2VwbTdQeC9GQ3pvYUU3L0J6NEIw?=
- =?utf-8?B?T2RqeTFwQzlGN2l0bllGQVhHU2NVdDRUcFpuV3BUKzQvUlBMakJ2eXowc04v?=
- =?utf-8?B?ZkNEQXZpcGtwZFFoRVFERHJRWWllSW1BYmRWNVBIOWFwZHJEandUYzhMY1Qw?=
- =?utf-8?B?c2hHa01zUmdsa2YwaHo0OUFONXltb0psYytjQ0MzTlcvcU9ENTRtNkRvVWhR?=
- =?utf-8?B?Y0dPaUxVY1JJQndSMnpXWWlrWDdDYSsvLzl0Y1FXMFRadTJxSzF2VHBsMFdF?=
- =?utf-8?B?SXVORHJYbis0S0RTOTNIcGlEUW45VFhoNzNmdktBTmVsOEhIZWM2WGhacW9n?=
- =?utf-8?B?cjZDM0dkWW9UaFdwQzZEY21JYW40dkRVbW5kWlplWUp4aWkyVUg5U1NnMmtJ?=
- =?utf-8?B?ME5YV3lMK09jWFZpZE1HWDFEOS91ZEpSczI0b0s3YTZ2Qk0ydzczUG43N0Nq?=
- =?utf-8?B?VVVzeGRDa2VtNFh5S1JCVFoyKzhqdTV6ajNVNGZaN0dpK2N3c2pqL2tvSDg1?=
- =?utf-8?B?VW5Lc0pRZXFFZElMMlpTOW9kbkRZMFVCbEt0NUFWbUcwK09pd2lBUncvOHJT?=
- =?utf-8?B?S2k3a2FqS3ZaRnNxT2phSG8razhYN2gwbnh3eFZIUzFiTTVqQXllS21QOXhh?=
- =?utf-8?B?M0ErbGl6bTJUR0VtQ2lvckZFdWptWWhpN3pHZ3ZxWkNnMVoxRThsTGFVUzZu?=
- =?utf-8?B?S04xK0lZT2RySHA2UmQ3dldET3FPMkVIWWVWUUxVZXM3Y2JnYWlRR2x0akVP?=
- =?utf-8?B?TFowdXp1SlRXdDl4YXBHZUFOaU5ENVlWOSs0aHZ6UFZnT1U3VURwMVhZLys2?=
- =?utf-8?B?MzRGU0RBRndJdytqRk5lRjhJMnNnK0pwU2ZpRW5jNVZJejVTR0ZwK1Q5NDU5?=
- =?utf-8?B?cjU2d05WS1h6YklNRklIQjdtNC9zZTdSYzREamlML3ZaeDYxOTdLS1hSVjVJ?=
- =?utf-8?B?OERYa1BybE9yK0RPMWYvZnJSU3ltK1QrRktuMDRESlF5NW1BWEJpdXZ6T1Rw?=
- =?utf-8?B?QTMwT0MvWlVlTE1ueGhPcEx5Ymh6Z2dKWmpJT0hLd1haSzErWUkwem0vQmN0?=
- =?utf-8?B?Ym5GbmFDLzhvN0IvcStzeWlUbEhpREx3YllCWlljWUpCM1pjR3lYM2lzZnls?=
- =?utf-8?B?dTIwYlhkM2cxd1ozMmd3S1VWdzc5aHVqbkxIcDhIRkNOV3cybzVJaTl0S0k2?=
- =?utf-8?B?SnJtdklWSno4ZkFqTi8vd0RRdVEzNEN3cTJwdFdFZ0ZnNUEzWEwwZTNQV3Ro?=
- =?utf-8?B?b0xpU2NyWktobldZdlZsblVkdC9ub3NRc08yQ1JkVm5Benltd0N3REJXNS9K?=
- =?utf-8?B?TnZnZk8wQ2FPODQrTzZtQ0JpMC9yTVNaS0lHZXRnYkFzWkhIUE5UNm1hM1ZF?=
- =?utf-8?B?eG9CdEtRSVZXRDduRkFzNVJXQldxZFpuYkdnbW9EZCtYTVoweEhWc3RQUDBh?=
- =?utf-8?B?TFU5d3V0MDFvTk5INzJRdWZwK1NSVG1mU29zdW1xQ1dtVHhxUkJkVXFwWkFF?=
- =?utf-8?B?bXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <16BAB11772054540B9496D6EF52D820B@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S236364AbiCHWVj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 17:21:39 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197DE25F0
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 14:20:42 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id qx21so897015ejb.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Mar 2022 14:20:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=UtUn7VagF2OP0vvodMhf55LihqE0PsE453f7RTB3MUQ=;
+        b=ElIWhvaegeq7atHzIfj2Kqt47u83EjAw0dUqFZKxxPy3hVX5EnPZKH/lgwEVznmo21
+         7ejLALUAtl79IAWw3QBMkS26eGn8dl28kcXumOLKat190/QmEo0oCU+bTtn32oaPRfMG
+         qLo49px9xRTobW5m+Guh+JpRsNOnPylKXH52Y+RFJtBL14Z+zec+6cD9m0Us/yHAgsBc
+         Q1veBpceczH9iFXmfXST5N5gjCMPdBQOWEVRyZk9/nZEFC3dqtAi09F9p6TSYlwZvujH
+         TxnXryFDI1a+6xj2olJaO7NE+EI+7aCd1BbdWp2vyoM9LDueTHvOOb+i46oBRk9j1CCJ
+         S5CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=UtUn7VagF2OP0vvodMhf55LihqE0PsE453f7RTB3MUQ=;
+        b=daQRWSD8kt2YP1ba7s57c9FEEIQq9Ol9C3BFohfbojmDKRzbGhO7C+o1obi2un97Fm
+         r2wQz2Z+AaQFjTdjaRn9EOQoh/tQXEZrOn0N7qVQtjpIJ5jx6J+gh3diOswXTZVKuNaA
+         Srd15aDztGjh4okNQw5uHx0G9pjk+QgiUWxebBQjnBSmbnfGzqt8jLEpshCuJK9snr0w
+         EZ47XWPApSK504M+mmJh+cPZ5tZqUzCQQ85MSVHqGMUwhH3Bq+hO27cm3K/31bCpylXh
+         cAtp9P7B89msWDDKiAYmzhIsNBeqSj0XzwN6L8m/iOvNUnK5lCgnDx9pn9uknGFLLAhB
+         1JEw==
+X-Gm-Message-State: AOAM530mWE7Ldio4IQe9mGcYm1FYXA6z+HPDBsuyvctD5NH5LspM65GW
+        4tMDNFwrX1otjZmXdJSUn+MS01fa4D0=
+X-Google-Smtp-Source: ABdhPJwn9i2+U3Y00BQ8GyALlhwjgCkF3phVxtGkkgtU3x1FD55SH1mNQGZoQwYy/T+UNyhX/vimuA==
+X-Received: by 2002:a17:906:c145:b0:6da:aaaf:770c with SMTP id dp5-20020a170906c14500b006daaaaf770cmr14867714ejc.504.1646778040460;
+        Tue, 08 Mar 2022 14:20:40 -0800 (PST)
+Received: from [127.0.0.1] (p4fd0bd82.dip0.t-ipconnect.de. [79.208.189.130])
+        by smtp.gmail.com with ESMTPSA id r11-20020a170906350b00b006dae77c09b3sm19765eja.154.2022.03.08.14.20.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Mar 2022 14:20:40 -0800 (PST)
+Date:   Tue, 8 Mar 2022 22:20:39 +0000 (UTC)
+From:   Emil <broetchenrackete@gmail.com>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <3a34f457-ed4e-4050-a24e-313af946d84d@gmail.com>
+In-Reply-To: <CAJCQCtTgVyWGXG6psu2d_4BuH+y0SBm3Zxqr44qzJB9Huh__0Q@mail.gmail.com>
+References: <1cb1e7d9-51d0-4c2e-8cd1-6b02d045bcad@gmail.com> <CAJCQCtTgVyWGXG6psu2d_4BuH+y0SBm3Zxqr44qzJB9Huh__0Q@mail.gmail.com>
+Subject: Re: Recover btrfs partition after accidental reformat
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB4667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4223e0f-e720-4b76-d2e0-08da01506886
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2022 22:10:08.7930
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JUZFs5fNpKB9gENcSJW2X9skMpBqv8bTMMQxfi4WPf5SnNn903a8PrhRF3Y2PYWo+ozfZxvDE68lIh3yzUMmqw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4459
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <3a34f457-ed4e-4050-a24e-313af946d84d@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMy83LzIyIDIyOjE1LCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToNCj4gSnVzdCBpbml0aWFs
-aXplIHRoZSBiaW9zIG9uLWRlbWFuZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBI
-ZWxsd2lnIDxoY2hAbHN0LmRlPg0KPiAtLS0NCj4NCg0KDQoNCkxvb2tzIGdvb2QuDQoNClJldmll
-d2VkLWJ5OiBDaGFpdGFueWEgS3Vsa2FybmkgPGtjaEBudmlkaWEuY29tPg0KDQoNCg==
+Thanks for the tip with the overlay. Unfortunately recovering superblocks i=
+sn't working:
+
+
+[bluemond@BlueQ btrfsoverlay]$ sudo btrfs rescue super -v /dev/mapper/sdh1
+All Devices:
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Device: id =3D 1, name =3D /dev/=
+mapper/sdh1
+
+Before Recovering:
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [All good supers]:
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 device name =3D /dev/mapper/sdh1
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 superblock bytenr =3D 274877906944
+
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [All bad supers]:
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 device name =3D /dev/mapper/sdh1
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 superblock bytenr =3D 65536
+
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 device name =3D /dev/mapper/sdh1
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 superblock bytenr =3D 67108864
+
+
+Make sure this is a btrfs disk otherwise the tool will destroy other fs, Ar=
+e you sure? [y/N]: y
+checksum verify failed on 22020096 wanted 0x00000000 found 0xb6bde3e4
+checksum verify failed on 22020096 wanted 0x00000000 found 0xb6bde3e4
+ERROR: cannot read chunk root
+Failed to recover bad superblocks
+
+[bluemond@BlueQ btrfsoverlay]$ uname -a
+Linux BlueQ 5.16.12-arch1-1 #1 SMP PREEMPT Wed, 02 Mar 2022 12:22:51 +0000 =
+x86_64 GNU/Linux
+
+[bluemond@BlueQ btrfsoverlay]$ btrfs version
+btrfs-progs v5.16.2
+
+For some reason I can't find anything btrfs related in dmesg...
+
+8 Mar 2022 00:29:30 Chris Murphy <lists@colorremedies.com>:
+
+> On Mon, Mar 7, 2022 at 1:10 PM Emil <broetchenrackete@gmail.com> wrote:
+>>=20
+>> Hi,
+>>=20
+>> I did a boo boo and reformatted my btrfs partition with NTFS (used the w=
+rong /dev/sdX). It was a single drive with standard options (metadata dup, =
+data single) and it was the only partition of the drive.
+>=20
+> You'll have damaged files most likely but there's some chance that
+> with DUP metadata the file system can self-repair its way out of this
+> mistake.
+>=20
+> You could check out
+> https://raid.wiki.kernel.org/index.php/Irreversible_mdadm_failure_recover=
+y#Simple_using_of_overlays
+> for guidance on how to use device-mapper to make the drive partition
+> read-only, and redirect any recovery attempts (writes) to a file so
+> that it's all reversible. Or take a chance and just apply the changes
+> to the partition directly... thought it could make things worse.
+>=20
+> My thought is to start out with wiping the NTFS signature only, and
+> making a backup of it (optional, sorta boilerplate but it sounds like
+> you don't care about this NTFS file system anyway since it was a
+> mistake).
+>=20
+> wipefs -b -t ntfs /dev/sdXY
+>=20
+> Next, check status of superblocks before repairing them:
+>=20
+> btrfs rescue super -v /dev/sdXY
+>=20
+> If there are damaged superblocks it should give you a choice to repair
+> them from a good superblock. You can do that. Next, try to mount it.
+> If you're on overlay, just mount it normally and see what happens. If
+> not, you might go more conservative with
+>=20
+> mount -o ro /dev/sdXY
+>=20
+> I'm actually not fully sure that this prevents all writes. i.e. if
+> there's DUP metadata, and btrfs finds corruption with one copy, pretty
+> sure it tries to write fixups from a good copy. The ro is a VFS mount
+> option, and enforces no writes from user space, but the kernel code
+> can still write. I think. So it's a small risk.
+>=20
+> I'd probably do this with a current stable or mainline kernel, i.e.
+> 5.15+. This also allows you the option to use combinations of the
+> rescue=3D mount options along with ro, in case too much metadata is
+> damaged for normal mount, you can sometimes skip over the broken
+> parts. If you're lucky, you might just end up with only some corrupt
+> files. This will definitely produce a *lot* of btrfs kernel messages,
+> you will get around 1/2 dozen at least per 4KiB block damaged.
+>=20
+> Good luck!
+>=20
+>=20
+> --=20
+> Chris Murphy
