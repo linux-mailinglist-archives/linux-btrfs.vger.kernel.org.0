@@ -2,172 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1995D4D255D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 02:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABA24D2527
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 02:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbiCIBOI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 20:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
+        id S230271AbiCIBIf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 20:08:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbiCIBNU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 20:13:20 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A038B9A
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 16:56:32 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 488B7210F9;
-        Tue,  8 Mar 2022 23:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646782722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ILM6Ao8q5/eS6VIlMyHIoCmk8xg7ez51+9IGdQueAnk=;
-        b=oAtRHpUoJJoZmsPmYZdIfHKrBlbB0vKPLe+GwRC29b/lNMkef/6yRrZ6hVS2ZQdvDdJq5a
-        mpAMD0bTvwdFtp8gGV7M5ZpGUlggojU07a3QhY7QZcvJctVQQWVAgYNLammJTFr96FQOTO
-        qU+sfptLcllTFMtwndAf53FnaE+8Vg8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6755613CFC;
-        Tue,  8 Mar 2022 23:38:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id odAGDAHpJ2KQXQAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 08 Mar 2022 23:38:41 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Subject: [PATCH] btrfs: don't let new writes to trigger autodefrag on the same inode
-Date:   Wed,  9 Mar 2022 07:38:23 +0800
-Message-Id: <318a1bcdabdd1218d631ddb1a6fe1b9ca3b6b529.1646782687.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S230114AbiCIBIW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 20:08:22 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA199E9E3
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 16:49:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1646786985;
+        bh=Ru3lG1znP5sqT839t0I+J9lBsJBR19ghgx9Ot7hJXYk=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=F7B6wNDntv+wRmbPp1MWhbhu0WxnvPFzTS9thZPF3JV5GvPKJLTfoEZfwJi9XROBY
+         IAv6J77kDTJv13+YqD6aFbexPhVES58mwOO6PRAMcpAmpMw9Fa3tqe1JQCTzAShnic
+         OLK9mEb+ceXiO6H9UskmffC+3AXLfA3O7EjzXA7Y=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXp5a-1nfwMt2Lwi-00Y6kQ; Wed, 09
+ Mar 2022 00:40:24 +0100
+Message-ID: <3f286144-d4c4-13f6-67d9-5928a94611af@gmx.com>
+Date:   Wed, 9 Mar 2022 07:40:20 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+Content-Language: en-US
+To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+ <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com>
+ <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
+ <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com>
+ <CAODFU0pEd+QTJqio6ff5nsA_c--iCLGm52t0z6YBgzJcWPxy9g@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAODFU0pEd+QTJqio6ff5nsA_c--iCLGm52t0z6YBgzJcWPxy9g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nrW0VRGB+nqO/3iuOqsGkZEcK3kVFEKYCAU3t9oNtgy8GGc5cWN
+ T9eHTCDw6nV4da3tGFQGLcp141ofwO8+cvPR+Wt9zk0wDcuMujKxUFRkF/rZtKqywYoy/DX
+ +9pvDCbaG0PAOkQq/DvMt2JL8NmUpLJFUGTiwkqMYOdGeyvTP+AWrXSi29xmnhde7jsYDGr
+ f8eW7uXtirhLcStix/Dwg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:i9VpwUqKjEU=:lTa7XexmPpJHpx8AYwwRhu
+ gedg8Cpcrro4mgjC4AuW1Z/J0EXUXntiEg+Y6q0b5KGE0IwgZCEhReeBryHNZt/FezD/qCkSz
+ AdiYclZminQgw7Rt9fVGjPUG1NCDe9obdejOFkLcr3haUG5tXmQKdB194RyzicpmWCggv6DPG
+ O72H9EehJ4H4wr5fFf0Qex4apR3C7+DUOEdsBvDcIClstAfgn3eG7hnm+fdatt852MlNb2XLC
+ 3tLeijqwVzYDxEOt0bT7k45vm7krpd19I2T1dGnPiqbUWFBQTwJwA480UvG2L7IT4PwKyt8BL
+ luVdDz5t+2qAakmmq/AtvRjCy6AsnARrRGoMigQSsJVdBYn96LwX4Z27qv2LnKkTzy+z/jUmE
+ XvrEWHDDtKgeLqomojRqz4n5FTPjbf1dW5Rh8Jzs/geWtm43L/qJjj1FXCKfZkDKCi0gwQLFJ
+ UFGr/mZ1z+8GTb9xfN/UtO4OSHDXSDXRhY/X6QV5l5kffFOZxolTgsOZpIlbXbCj4yw1HxZ/6
+ ut2q3o3kBt2k8/AfWoc4lObPaOPMQzRKXBoN0ZliGAmDab3r6YlCIxjclbI0P2hkS9hlL9n5Y
+ KdR/Udny84UEeW6rp3ryzubsHNIMJ06svJQtKzeMEvmutiiX7Nm7ni6IR1enJZkXjaR1rkMzY
+ n84dADBAUpWsNjddMvjg5ebcu8PmHquFmYjMgy3UN9Nro9sY78eILVe7ZldqM6m+gHqi2ZRsw
+ 1wr94oMdKsQmnlVuT9cpj55MucMRQat3U8KVS0Nff3b16HdutdgiePARkujpGe/i+u+kWtvRo
+ e6Op4kTDreXpBb/IknSBapg1pX+yv4HfCNkOqx1n0KSortj4lDxUkNvfD/Uzf/PBufXxloTC4
+ VmhQ9/DHUhc/ikuyG8DQTxDXA2ENrynyB91Ogi0I250HN5qHyykSs5aAyqebThFbwN85BUeYR
+ hNNHZUvDnNzlY64BXPYF0O7ZHiMBM15FIf5FuQ/VPX4KgG+IlLyYMlIFB7Kmr+g+irJTzLQww
+ GOYh0oZggcN9ArN/1rHMzk8kxkjqUqgAL7BeSepKhIfpLhhXIVZe/hocDzJAPq20oOOEnvCu7
+ U4WIiUSxR6w9yw=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Even with v5.16.12, there are still users reporting excessive IO caused
-by autodefrag.
 
-With extra trace events, it shows autodefrag is triggered for the same
-inode again and again, not respecting the default commit interval:
-(process name, CPU info, UUID are removed)
 
- 5093.162849: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421337 flags=0x0 compress=0 max_sectors_to_defrag=1024
- 5096.558521: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421338 flags=0x0 compress=0 max_sectors_to_defrag=1024
- 5098.222259: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421338 flags=0x0 compress=0 max_sectors_to_defrag=1024
- 5098.544354: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421339 flags=0x0 compress=0 max_sectors_to_defrag=1024
- 5099.551326: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421339 flags=0x0 compress=0 max_sectors_to_defrag=1024
- 5101.066516: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421340 flags=0x0 compress=0 max_sectors_to_defrag=1024
- 5101.410834: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421340 flags=0x0 compress=0 max_sectors_to_defrag=1024
- 5102.177464: defrag_file_start: root=259 ino=410492 start=0 len=599138304 extent_thresh=65536 newer_than=421340 flags=0x0 compress=0 max_sectors_to_defrag=1024
+On 2022/3/9 05:57, Jan Ziak wrote:
+> On Mon, Mar 7, 2022 at 3:39 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>> On 2022/3/7 10:23, Jan Ziak wrote:
+>>> BTW: "compsize file-with-million-extents" finishes in 0.2 seconds
+>>> (uses BTRFS_IOC_TREE_SEARCH_V2 ioctl), but "filefrag
+>>> file-with-million-extents" doesn't finish even after several minutes
+>>> of time (uses FS_IOC_FIEMAP ioctl - manages to perform only about 5
+>>> ioctl syscalls per second - and appears to be slowing down as the
+>>> value of the "fm_start" ioctl argument grows; e2fsprogs version
+>>> 1.46.5). It would be nice if filefrag was faster than just a few
+>>> ioctls per second.
+>>
+>> This is mostly a race with autodefrag.
+>>
+>> Both are using file extent map, thus if autodefrag is still trying to
+>> redirty the file again and again, it would definitely cause problems fo=
+r
+>> anything also using file extent map.
+>
+> It isn't caused by a race with autodefrag, but by something else.
+> Autodefrag was turned off when I was running "filefrag
+> file-with-million-extents".
+>
+> $ /usr/bin/time filefrag file-with-million-extents.sqlite
+> Ctrl+C Command terminated by signal 2
+> 0.000000 user, 4.327145 system, 0:04.331167 elapsed, 99% CPU
 
-[CAUSE]
-The offending file is a baloo database used by KDE, which is under
-consistent writeback since it monitor all the file updates.
+Too many file extents will slow down the full fiemap call.
 
-And since it's a database, a lot of small writes are triggered very
-frequently.
+If you use ranged fiemap, like:
 
-This means, we got a lot btrfs_add_inode_defrag() called, maybe even
-before the current autodefrag has finished.
+  xfs_io -c "fiemap -v 0 4k" <file>
 
-And consider btrfs_run_defrag_inodes() will exhaust all inode_defrag,
-this means after inode 410492 being defragged, it immediately get
-re-queued again.
+It should finish very quick.
 
-This caused autodefrag to scan the inode again and again, wasting tons
-of IO.
+BTW, I have send out a new autodefrag patch and CCed you.
+Mind to test that patch? (Better with trace events enabled)
 
-[FIX]
-Instead of exhausting fs_info->defrag_inodes in
-btrfs_run_defrag_inodes(), which can get new inode_defrag during current
-run, we just swap fs_info->defrag_inodes with a local rb_root.
+Thanks,
+Qu
 
-So btrfs_run_defrag_inodes() will only exhaust all inode_defrag, without
-being interrupted by new writes.
-
-Reported-by: Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Issue: 423
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/file.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 9f455c96c974..6f52b452e8b8 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -187,7 +187,7 @@ int btrfs_add_inode_defrag(struct btrfs_trans_handle *trans,
-  * the next one.
-  */
- static struct inode_defrag *
--btrfs_pick_defrag_inode(struct btrfs_fs_info *fs_info, u64 root, u64 ino)
-+btrfs_pick_defrag_inode(struct rb_root *defrag_inodes, u64 root, u64 ino)
- {
- 	struct inode_defrag *entry = NULL;
- 	struct inode_defrag tmp;
-@@ -198,8 +198,7 @@ btrfs_pick_defrag_inode(struct btrfs_fs_info *fs_info, u64 root, u64 ino)
- 	tmp.ino = ino;
- 	tmp.root = root;
- 
--	spin_lock(&fs_info->defrag_inodes_lock);
--	p = fs_info->defrag_inodes.rb_node;
-+	p = defrag_inodes->rb_node;
- 	while (p) {
- 		parent = p;
- 		entry = rb_entry(parent, struct inode_defrag, rb_node);
-@@ -222,8 +221,7 @@ btrfs_pick_defrag_inode(struct btrfs_fs_info *fs_info, u64 root, u64 ino)
- 	}
- out:
- 	if (entry)
--		rb_erase(parent, &fs_info->defrag_inodes);
--	spin_unlock(&fs_info->defrag_inodes_lock);
-+		rb_erase(parent, defrag_inodes);
- 	return entry;
- }
- 
-@@ -313,10 +311,20 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
- int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info)
- {
- 	struct inode_defrag *defrag;
-+	struct rb_root defrag_inodes;
- 	u64 first_ino = 0;
- 	u64 root_objectid = 0;
- 
- 	atomic_inc(&fs_info->defrag_running);
-+	spin_lock(&fs_info->defrag_inodes_lock);
-+	/*
-+	 * Swap the rb tree, so during autodefrag we won't run autodefrag
-+	 * on the same inode due to the new writes.
-+	 */
-+	defrag_inodes.rb_node = fs_info->defrag_inodes.rb_node;
-+	fs_info->defrag_inodes.rb_node = NULL;
-+	spin_unlock(&fs_info->defrag_inodes_lock);
-+
- 	while (1) {
- 		/* Pause the auto defragger. */
- 		if (test_bit(BTRFS_FS_STATE_REMOUNTING,
-@@ -327,7 +335,7 @@ int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info)
- 			break;
- 
- 		/* find an inode to defrag */
--		defrag = btrfs_pick_defrag_inode(fs_info, root_objectid,
-+		defrag = btrfs_pick_defrag_inode(&defrag_inodes, root_objectid,
- 						 first_ino);
- 		if (!defrag) {
- 			if (root_objectid || first_ino) {
--- 
-2.35.1
-
+>
+> Sincerely
+> Jan
