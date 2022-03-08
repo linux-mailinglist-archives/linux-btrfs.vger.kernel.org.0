@@ -2,141 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CAF4D1BBA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Mar 2022 16:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD04F4D1D18
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Mar 2022 17:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242617AbiCHPa5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 10:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        id S245315AbiCHQYr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 11:24:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239349AbiCHPa5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 10:30:57 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728984E399
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 07:30:00 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id bm39so15136004qkb.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Mar 2022 07:30:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GgCyc6YCROLJSoyI0HIShhTHa5s8Kb0k+a/Ryn9scoQ=;
-        b=tQ9F1/b5PBtgD4wRLsD8nQgJgumsdYUg9+tZ4LSJ5V964gKkJYaNR6z8mvLek0aWOn
-         51sVxahLev2fmrvlD5cviQ1dDG+okqotwJRfQf8oAuI05v1/SF8pnTOz9BYMzafZ7ywo
-         Bpi+quAlp902+ws1L9xQm1YHwDfGYGlgAh8EhobIE7pi7j6bHCdUgmK1iRkntf7+eE2G
-         9OL/nSKQzFS99rJWdUyRc+pFQPnI6BmPOVl9k8vsLiPonQKX1YK0HAyEYWbNb0qL+Cez
-         N+8nL2bX18VRrPJCVUKuSk4AnHWrZW9IN20pIKgjJ2x7mW4m5oE7+gAm+ofJLGHlx7tj
-         o0bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GgCyc6YCROLJSoyI0HIShhTHa5s8Kb0k+a/Ryn9scoQ=;
-        b=0041Eexhe16nG8CLZMTe3XHeRl6TiWOEYD4zgLdEkeUcFSF8TNzcaBwtOmWGbfvYsr
-         9EbXhfnbE8j3BK0ca+eEtFrZXtqWPuo+T7Hpjs8RKDR4qiFe5UQ9CpGQNMiwJenj8j+d
-         RkAAJ1qA/R2kT5oF16L1m5VCVFGV26DAnikex6/Q2AIZLHIf7AZCB2OUtkUYGxjKudvy
-         kFZ0KknMNe709VlerDfo2qJVHPNC6EF4uFYfX0LrU4+Oyt/k0R0bODW7Isu5x0n+iP+i
-         ah6fDHVAVBBwUgBjGi1xM5sKKTCP8KPG8jG5Jm8pkphxtDyDo6uZWbOFKGwtdwY79Qyx
-         aTEQ==
-X-Gm-Message-State: AOAM533YIps0wJw1EGitSRrYSHvm+yvT672KhVfx0S3cwHeO0hNi8yhD
-        maos7hfs3Z/WGjYZ23C+BNpQSHjzRHYaRWsS
-X-Google-Smtp-Source: ABdhPJxPtBo5QXzBzVTl+IXlRQSIszleVvSRIpjhzGuGlGamZl+G73BLeIbaLc9zjLnde2zisycgFw==
-X-Received: by 2002:a05:620a:709:b0:67d:15b0:3b87 with SMTP id 9-20020a05620a070900b0067d15b03b87mr2789030qkc.242.1646753399433;
-        Tue, 08 Mar 2022 07:29:59 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c16-20020a05622a059000b002dc93dc92d1sm10952918qtb.48.2022.03.08.07.29.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Mar 2022 07:29:58 -0800 (PST)
-Date:   Tue, 8 Mar 2022 10:29:57 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Gabriel Niebler <gniebler@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: Re: [PATCH v3 12/14] btrfs: Use btrfs_for_each_slot in
- btrfs_unlink_all_paths
-Message-ID: <Yid2deUv+q/XyQp1@localhost.localdomain>
-References: <20220302164829.17524-1-gniebler@suse.com>
- <20220302164829.17524-13-gniebler@suse.com>
+        with ESMTP id S240888AbiCHQYq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 11:24:46 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C366488A8
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 08:23:49 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 53D00210ED;
+        Tue,  8 Mar 2022 16:23:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1646756628;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iq/JIBpjt5kZOFzjpatMfhPvXH5rQiA1fR11etO4djg=;
+        b=2+3+rPfcLtKyJmtvoa4dcUgdfSMVSUFFXeIFfWO4sSuHo6py3KpkKA8R5oA48Md/GcEGP6
+        JvVEtVZ1POIeYnWVRMof24AAakAmvEG10TF3fmLcjd5FHVhtbL168PYukMrznuXjd2dq0/
+        M7ZK592yKLSd7pfxdPk3vbnF44M2icU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1646756628;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iq/JIBpjt5kZOFzjpatMfhPvXH5rQiA1fR11etO4djg=;
+        b=U8VgfFuRByXixh8/DDwQcVz6qF1MnLKhuuwd1qnCMKOa/Gv7uu4yHHsLwdxZkxmow3AnS9
+        4Ov1fsfw4cqABlDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 4B94AA3B8A;
+        Tue,  8 Mar 2022 16:23:48 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C2CFCDA823; Tue,  8 Mar 2022 17:19:51 +0100 (CET)
+Date:   Tue, 8 Mar 2022 17:19:51 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 12/19] btrfs-progs: set the number of global roots in
+ the super block
+Message-ID: <20220308161951.GN12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1646690972.git.josef@toxicpanda.com>
+ <1c28a05081455379be5d91ee760f9a03e4255e6a.1646690972.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220302164829.17524-13-gniebler@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1c28a05081455379be5d91ee760f9a03e4255e6a.1646690972.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 02, 2022 at 05:48:27PM +0100, Gabriel Niebler wrote:
-> This function can be simplified by refactoring to use the new iterator macro.
+On Mon, Mar 07, 2022 at 05:10:57PM -0500, Josef Bacik wrote:
+> In order to make sure the file system is consistent we need to record
+> the number of global roots we should have in the super block.  We could
+> infer this from the number of global roots we find, however this could
+> lead to interesting fuzzing problems, so add a source of truth to the
+> super block in order to make it easier to verify the file system is
+> consistent.
 > 
-> No functional changes.
-> 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/send.c | 36 +++++++++++++-----------------------
->  1 file changed, 13 insertions(+), 23 deletions(-)
+>  kernel-shared/ctree.h   | 6 +++++-
+>  kernel-shared/disk-io.c | 4 ++++
+>  mkfs/common.c           | 1 +
+>  3 files changed, 10 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index 7e40c73bb912..af3668279875 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -6119,8 +6119,11 @@ static int btrfs_unlink_all_paths(struct send_ctx *sctx)
->  {
->  	LIST_HEAD(deleted_refs);
->  	struct btrfs_path *path;
-> +	struct btrfs_root *root = sctx->parent_root;
->  	struct btrfs_key key;
-> +	struct btrfs_key found_key;
->  	struct parent_paths_ctx ctx;
-> +	int iter_ret = 0;
->  	int ret;
+> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+> index b12dbff1..90de7a65 100644
+> --- a/kernel-shared/ctree.h
+> +++ b/kernel-shared/ctree.h
+> @@ -463,13 +463,15 @@ struct btrfs_super_block {
 >  
->  	path = alloc_path_for_send();
-> @@ -6130,39 +6133,26 @@ static int btrfs_unlink_all_paths(struct send_ctx *sctx)
->  	key.objectid = sctx->cur_ino;
->  	key.type = BTRFS_INODE_REF_KEY;
->  	key.offset = 0;
-> -	ret = btrfs_search_slot(NULL, sctx->parent_root, &key, path, 0, 0);
-> -	if (ret < 0)
-> -		goto out;
+>  	u8 metadata_uuid[BTRFS_FSID_SIZE];
 >  
->  	ctx.refs = &deleted_refs;
->  	ctx.sctx = sctx;
->  
-> -	while (true) {
-> -		struct extent_buffer *eb = path->nodes[0];
-> -		int slot = path->slots[0];
-> -
-> -		if (slot >= btrfs_header_nritems(eb)) {
-> -			ret = btrfs_next_leaf(sctx->parent_root, path);
-> -			if (ret < 0)
-> -				goto out;
-> -			else if (ret > 0)
-> -				break;
-> -			continue;
-> -		}
-> -
-> -		btrfs_item_key_to_cpu(eb, &key, slot);
-> -		if (key.objectid != sctx->cur_ino)
-> +	btrfs_for_each_slot(root, &key, &found_key, path, iter_ret) {
-> +		if (found_key.objectid != key.objectid)
->  			break;
-> -		if (key.type != BTRFS_INODE_REF_KEY &&
-> -		    key.type != BTRFS_INODE_EXTREF_KEY)
-> +		if (found_key.type != key.type &&
-> +		    found_key.type != BTRFS_INODE_EXTREF_KEY)
->  			break;
->  
-> -		ret = iterate_inode_ref(sctx->parent_root, path, &key, 1,
-> +		ret = iterate_inode_ref(root, path, &key, 1,
->  					record_parent_ref, &ctx);
+> +	__le64 nr_global_roots;
+> +
 
-This patch is causing btrfs/168 to fail, this should be &found_key, not &key.
-Thanks,
+Shouldn't this be added after the last item?
 
-Josef
+>  	__le64 block_group_root;
+>  	__le64 block_group_root_generation;
+>  	u8 block_group_root_level;
+>  
+>  	/* future expansion */
+>  	u8 reserved8[7];
+> -	__le64 reserved[25];
+> +	__le64 reserved[24];
+>  	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
+>  	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
+>  	/* Padded to 4096 bytes */
