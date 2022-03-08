@@ -2,69 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABA24D2527
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 02:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D4B4D25B5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 02:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbiCIBIf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 20:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
+        id S230311AbiCIBOK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 20:14:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbiCIBIW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 20:08:22 -0500
+        with ESMTP id S231514AbiCIBNZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 20:13:25 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA199E9E3
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 16:49:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20E12253D
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 16:57:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646786985;
-        bh=Ru3lG1znP5sqT839t0I+J9lBsJBR19ghgx9Ot7hJXYk=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=F7B6wNDntv+wRmbPp1MWhbhu0WxnvPFzTS9thZPF3JV5GvPKJLTfoEZfwJi9XROBY
-         IAv6J77kDTJv13+YqD6aFbexPhVES58mwOO6PRAMcpAmpMw9Fa3tqe1JQCTzAShnic
-         OLK9mEb+ceXiO6H9UskmffC+3AXLfA3O7EjzXA7Y=
+        s=badeba3b8450; t=1646787421;
+        bh=wKhne6KKZJPtM/9UzbDG0DsPhxB3BKH850tAo2onK6g=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=ORIE6ftQyBhyW7fLvaJPAw+D5bSOY8mgfh8i0C3zfxancKjFNJQ6PJZ76qjsM/L4e
+         tXRw2HqMaLm32j1t9VH4JA5dMgP5tU3Eum8toDp3GQL1sSzTMqd+vt7giyjAA+Dq3i
+         S00LiQlwMmC4tzpGT8HaVD1UqkYq/rkiqehnReHc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXp5a-1nfwMt2Lwi-00Y6kQ; Wed, 09
- Mar 2022 00:40:24 +0100
-Message-ID: <3f286144-d4c4-13f6-67d9-5928a94611af@gmx.com>
-Date:   Wed, 9 Mar 2022 07:40:20 +0800
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N33Il-1oAJJD3BWP-013KwV; Wed, 09
+ Mar 2022 00:48:31 +0100
+Message-ID: <7a4962a0-b007-59a4-282e-8912b2425c5e@gmx.com>
+Date:   Wed, 9 Mar 2022 07:48:28 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.6.1
-Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
- measurable benefit
 Content-Language: en-US
-To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
- <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com>
- <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
- <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com>
- <CAODFU0pEd+QTJqio6ff5nsA_c--iCLGm52t0z6YBgzJcWPxy9g@mail.gmail.com>
+To:     bill gates <framingnoone@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CALPV6DsfOQHyQ2=+3pKF3ZfavL21fgthQS+=HStEfMQbhZU50g@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAODFU0pEd+QTJqio6ff5nsA_c--iCLGm52t0z6YBgzJcWPxy9g@mail.gmail.com>
+Subject: Re: Updated to new kernel, and btrfs suddenly refuses to mount home
+ directory fs.
+In-Reply-To: <CALPV6DsfOQHyQ2=+3pKF3ZfavL21fgthQS+=HStEfMQbhZU50g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nrW0VRGB+nqO/3iuOqsGkZEcK3kVFEKYCAU3t9oNtgy8GGc5cWN
- T9eHTCDw6nV4da3tGFQGLcp141ofwO8+cvPR+Wt9zk0wDcuMujKxUFRkF/rZtKqywYoy/DX
- +9pvDCbaG0PAOkQq/DvMt2JL8NmUpLJFUGTiwkqMYOdGeyvTP+AWrXSi29xmnhde7jsYDGr
- f8eW7uXtirhLcStix/Dwg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:i9VpwUqKjEU=:lTa7XexmPpJHpx8AYwwRhu
- gedg8Cpcrro4mgjC4AuW1Z/J0EXUXntiEg+Y6q0b5KGE0IwgZCEhReeBryHNZt/FezD/qCkSz
- AdiYclZminQgw7Rt9fVGjPUG1NCDe9obdejOFkLcr3haUG5tXmQKdB194RyzicpmWCggv6DPG
- O72H9EehJ4H4wr5fFf0Qex4apR3C7+DUOEdsBvDcIClstAfgn3eG7hnm+fdatt852MlNb2XLC
- 3tLeijqwVzYDxEOt0bT7k45vm7krpd19I2T1dGnPiqbUWFBQTwJwA480UvG2L7IT4PwKyt8BL
- luVdDz5t+2qAakmmq/AtvRjCy6AsnARrRGoMigQSsJVdBYn96LwX4Z27qv2LnKkTzy+z/jUmE
- XvrEWHDDtKgeLqomojRqz4n5FTPjbf1dW5Rh8Jzs/geWtm43L/qJjj1FXCKfZkDKCi0gwQLFJ
- UFGr/mZ1z+8GTb9xfN/UtO4OSHDXSDXRhY/X6QV5l5kffFOZxolTgsOZpIlbXbCj4yw1HxZ/6
- ut2q3o3kBt2k8/AfWoc4lObPaOPMQzRKXBoN0ZliGAmDab3r6YlCIxjclbI0P2hkS9hlL9n5Y
- KdR/Udny84UEeW6rp3ryzubsHNIMJ06svJQtKzeMEvmutiiX7Nm7ni6IR1enJZkXjaR1rkMzY
- n84dADBAUpWsNjddMvjg5ebcu8PmHquFmYjMgy3UN9Nro9sY78eILVe7ZldqM6m+gHqi2ZRsw
- 1wr94oMdKsQmnlVuT9cpj55MucMRQat3U8KVS0Nff3b16HdutdgiePARkujpGe/i+u+kWtvRo
- e6Op4kTDreXpBb/IknSBapg1pX+yv4HfCNkOqx1n0KSortj4lDxUkNvfD/Uzf/PBufXxloTC4
- VmhQ9/DHUhc/ikuyG8DQTxDXA2ENrynyB91Ogi0I250HN5qHyykSs5aAyqebThFbwN85BUeYR
- hNNHZUvDnNzlY64BXPYF0O7ZHiMBM15FIf5FuQ/VPX4KgG+IlLyYMlIFB7Kmr+g+irJTzLQww
- GOYh0oZggcN9ArN/1rHMzk8kxkjqUqgAL7BeSepKhIfpLhhXIVZe/hocDzJAPq20oOOEnvCu7
- U4WIiUSxR6w9yw=
+X-Provags-ID: V03:K1:J2YqXKMZcc76E3BuVop9WaIPCnwKQOylh5+4c49I7xoL84KxnnN
+ V3NC03znqzTkkxA5ARcnlVqVlfveCgyFXfeG5/gpFnAiMpCRVi/31Ft6ee8fFtvxibf2+Fm
+ gPChKslzs7c9Dh9bbr6biwL4jX+ZkptgyFNKBouVRq6bQRnt8slDMnG0PfuIQ4adfk9aldT
+ efIaGVu+XISe6BZO6Pz1A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Qz7vlbbB7xw=:iSjHLJ88NCkvMUjIPk75Kk
+ /SNkDMhKHKlaS4q+ZfbmoruTcefoIqXylIStdW3YivBe55JCsnBNTBtIrmdHLSjXSIzxSqbst
+ 0xTv2+4qivPxmqwKM8Uicukj9rnvB+2BsgaCCl36HlrNYt509dHMUKZAwOpSY/LwY/ycJ/Yc3
+ MwGSHyXTRMYhpqGbO612VcKHty6niq7AtKPClDIRCAvfWvAEZ8f+e5DRsrAuGcS8DbS9GZvvX
+ DE1sn+Ce0fntRrrFcVp4ntlRKmmQa5ogVO9s8qCISmajF8uFv8uTDATbEZwi8thUkVKYdIsu5
+ x+2jXgqbxpMgTQ17Gkywab1NS3M9JF1fkH2agDrYv5QhCQijaYjCuftRTK7CSVJ8uJLzSKOQ2
+ mNYOyKM+me9SKZdrgH+mcNgkln1gJpLyaKcHi+QXK9W+G/hT7dMmuOA5RKyWnY3QBNfqXMvVu
+ V7CdbgaJ9qeQpHNf2DjiY3J/856bPQtpRHE/8EpvUpjyaMeypohZ1cvfj1+cnzljrDqTvQBi+
+ Tw6u+bCM6SpA1HXNTce750h/6VY1vvBWmj8CaFlwqAVtXFMaghEjrm/0qJ3X8hX+8oNIHp8Qv
+ JCWrhuVhWDIm52hrmPdY58wk8RkNOjIMj8sXJodCJlWhRInrvU2Lk8Si+FCxOA8YYISHy2YqZ
+ ZwKWKdmDKXN8MYRMkrV/WOsDjVUIiJClXk/Rs9R9xe3aGdX6TbkmoAO/DHHCwuI6/NFTDrpOo
+ /k0GH1y2vCX9y1j8iFqyDDOdwKPBRrmSrMRgbZjEJM2C3ljUmAPOTxGm0k3k5Odlog2r6ChnI
+ k6/FDCHaF7UljUTtYN1B3jZnNdOIqFPBI+/VBjIhSXYxNnhyXig7TXQe3+RLAjSMviPLhWo6X
+ ZVm8VCax+Bjjs5xyi5m0mKQdm1Kjmiq9/KgnfmHt65odw+FBko26Dl1cW83oM1HADzGXN1oOe
+ uLsW4TFJBTdketBr0sS3JbKTPcC1+pnnmsTqNoLIA2AOG5epJp9n4L+SFptoZB7j1wlktXV2G
+ IlFnWV83KcEb5t8gl9X+uP67L+gTh823ZUOiDmZsuSXtfrrAuaOBJZt4uKBkbjR31J+EzgY8S
+ 9N489Nwb+UjHdE=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -77,47 +72,52 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/3/9 05:57, Jan Ziak wrote:
-> On Mon, Mar 7, 2022 at 3:39 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->> On 2022/3/7 10:23, Jan Ziak wrote:
->>> BTW: "compsize file-with-million-extents" finishes in 0.2 seconds
->>> (uses BTRFS_IOC_TREE_SEARCH_V2 ioctl), but "filefrag
->>> file-with-million-extents" doesn't finish even after several minutes
->>> of time (uses FS_IOC_FIEMAP ioctl - manages to perform only about 5
->>> ioctl syscalls per second - and appears to be slowing down as the
->>> value of the "fm_start" ioctl argument grows; e2fsprogs version
->>> 1.46.5). It would be nice if filefrag was faster than just a few
->>> ioctls per second.
->>
->> This is mostly a race with autodefrag.
->>
->> Both are using file extent map, thus if autodefrag is still trying to
->> redirty the file again and again, it would definitely cause problems fo=
-r
->> anything also using file extent map.
+On 2022/3/9 03:05, bill gates wrote:
+> So, I recently attempted to upgrade from Linux kernel 4.19.82 to
+> 5.15.23, and I'm getting a critical error in dmesg about a corrupt
+> leaf (and no mounting of /home allowed with the options I'm aware of)
 >
-> It isn't caused by a race with autodefrag, but by something else.
-> Autodefrag was turned off when I was running "filefrag
-> file-with-million-extents".
->
-> $ /usr/bin/time filefrag file-with-million-extents.sqlite
-> Ctrl+C Command terminated by signal 2
-> 0.000000 user, 4.327145 system, 0:04.331167 elapsed, 99% CPU
+> [ 396.218964] BTRFS critical (device sda2): corrupt leaf: root=3D1
+> block=3D10442806968320 sl
+> ot=3D8 ino=3D6, invalid location key objectid: has 1 expect 6 or [256,
+> 18446744073709551360]
+> or 18446744073709551604
 
-Too many file extents will slow down the full fiemap call.
+Please provide the following output:
 
-If you use ranged fiemap, like:
+# btrfs ins dump-tree -b 10442806968320 /dev/sda2
 
-  xfs_io -c "fiemap -v 0 4k" <file>
 
-It should finish very quick.
+The error message means, we got a DIR_ITEM in root tree.
 
-BTW, I have send out a new autodefrag patch and CCed you.
-Mind to test that patch? (Better with trace events enabled)
+Normally that is used to indicate what default subvolume is.
+Thus it's normally 6 or 5, or any valid subvolume id.
+
+But in your case, it's 1, thus tree-checker is rejecting your root tree.
+
+I didn't thought we could have 1 as default subvolume (as 1 is the root
+tree, which is not a subvolume).
+
+But it looks like we should update btrfs check to fix this case.
+
+Is the fs created using older btrfs-progs? I guess that may be the cause..=
+.
 
 Thanks,
 Qu
 
+
+> [ 396.218967] BTRFS error (device sda2): block=3D10442806968320 read
+> time tree block corru
+> ption detected
 >
-> Sincerely
-> Jan
+>
+> Interestingly. that 18446... number is a power of 2, looks like maybe
+> a bit flip? dmesg, uname, etc included in pastebin below. "btrfs
+> check" found no problems with fs on either kernel version. Would like
+> to figure out how to fix this, if possible.
+>
+> https://pastebin.com/0ESPU9Z6
+>
+> Thank you for any assistance,
+> -- Laurence Michaels.
