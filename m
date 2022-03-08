@@ -2,105 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DF84D1912
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Mar 2022 14:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F8A4D1920
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Mar 2022 14:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbiCHNXM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 08:23:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
+        id S1347008AbiCHN1Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 08:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233002AbiCHNXL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 08:23:11 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AC449691;
-        Tue,  8 Mar 2022 05:22:15 -0800 (PST)
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 228BQ0rg007740;
-        Tue, 8 Mar 2022 13:22:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=eO4h0TI+iWr46j4SVj3ufQz+54GScqE667mEsGEh9+Y=;
- b=oUu2C5xgrkqBRt3bneXLbsKVodtuTp3zql7tD/q9GGeZu9QvBjct1NggWmxQSl/AbF6W
- wSru3yrmp6WNQdIhbiHVLNJTFEaswEuDtTB3LGOBnNL2DG1FTQtF6G3Fn+gwgITt+uUu
- pN+Mchs6nDoie9zGXSbWsW+WFJ+8jQ5MxKaHws2IZqj6wdrwnYjyPyKzOZTFgVBlnwjk
- FFOK7BUlAw4nzSKHKEnjb5v1Z9CqcDQtgs8Algrq+nHi4SdS7KvLptmmNyqR3wP/R5j/
- YmlS8f5i/FQ+uaGsC59Ds5q2+rYw2KyqO97DzzVafF2nGFctU3YVTlI/EnU/pTl6tHPH +w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ep0hfh6eg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Mar 2022 13:22:11 +0000
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 228DHPOj015724;
-        Tue, 8 Mar 2022 13:22:10 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ep0hfh6e2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Mar 2022 13:22:10 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 228DHRRl019343;
-        Tue, 8 Mar 2022 13:22:08 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 3ekyg96g2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Mar 2022 13:22:08 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 228D9fhf39321948
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Mar 2022 13:09:41 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8FF3642041;
-        Tue,  8 Mar 2022 13:20:50 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E77BD42042;
-        Tue,  8 Mar 2022 13:20:49 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.70.239])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue,  8 Mar 2022 13:20:49 +0000 (GMT)
-Date:   Tue, 8 Mar 2022 14:20:47 +0100
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Subject: Re: Buffered I/O broken on s390x with page faults disabled (gfs2)
-Message-ID: <20220308142047.7a725518@thinkpad>
-In-Reply-To: <1bdb0184-696c-0f1a-3054-d88391c32e64@redhat.com>
-References: <CAHc6FU5nP+nziNGG0JAF1FUx-GV7kKFvM7aZuU_XD2_1v4vnvg@mail.gmail.com>
-        <CAHk-=wgmCuuJdf96WiT6WXzQQTEeSK=cgBy24J4U9V2AvK4KdQ@mail.gmail.com>
-        <bcafacea-7e67-405c-a969-e5a58a3c727e@redhat.com>
-        <2266e1a8-ac79-94a1-b6e2-47475e5986c5@redhat.com>
-        <81f2f76d-24ef-c23b-449e-0b8fdec506e1@redhat.com>
-        <1bdb0184-696c-0f1a-3054-d88391c32e64@redhat.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        with ESMTP id S1343672AbiCHN1X (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 08:27:23 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631EE41FA1
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 05:26:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646745987; x=1678281987;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=32avivksdeChqC6IS/cy7z0Z0H6XkO0PtHgEvGq/zGI=;
+  b=D8cnLeEGR0Rnp/prAoCDzHHUgh5hKK2+1YhiZrOJOEy39w3yzAU1lH7A
+   Keiv+4s7qzm6SmfJUk4Y2KUNLFhk8BAi7e7k3TkQen6v6gWUykJO6w1S9
+   DWip8rySlYwymMIHYLmXtB/KKA7ZW/MWwFVN8lK4Em+ty96yMnbpfOMRA
+   J33V3oWL/ht4uICbdC/7Q9FN4Uvf0CtwLmkIu0HGB/Y1hhoHZevRbfOzK
+   J4k3LdpRbhzDQwlO4FtOEaQcNa7Zey5UiyKmITgaNJUt2R0qXeL74tIhI
+   KyTm3j/6w4JtosJOtzld5Ha/tUNiFrVw4cH06j53N8VFEdQhpext5v4P2
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="235289791"
+X-IronPort-AV: E=Sophos;i="5.90,164,1643702400"; 
+   d="scan'208";a="235289791"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2022 05:26:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,164,1643702400"; 
+   d="scan'208";a="510095277"
+Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 08 Mar 2022 05:26:24 -0800
+Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nRZr5-0001S9-Ue; Tue, 08 Mar 2022 13:26:23 +0000
+Date:   Tue, 8 Mar 2022 21:25:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Goffredo Baroncelli <kreijack@tiscali.it>,
+        linux-btrfs@vger.kernel.org
+Cc:     kbuild-all@lists.01.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.cz>,
+        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
+        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+Subject: Re: [PATCH 2/5] btrfs: export the device allocation_hint property in
+ sysfs
+Message-ID: <202203082127.TtxMcqDK-lkp@intel.com>
+References: <aa62c61a0a9858d010d7d3ec67019332bd20d801.1646589622.git.kreijack@inwind.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bjXztZi9rjQpeJ9qVMe1cbBsMgt6zfXu
-X-Proofpoint-ORIG-GUID: W3zlxDiE9TlFw4xptdJc9LTAkRAOlFnC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-08_03,2022-03-04_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- impostorscore=0 spamscore=0 bulkscore=0 adultscore=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203080069
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa62c61a0a9858d010d7d3ec67019332bd20d801.1646589622.git.kreijack@inwind.it>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,101 +70,56 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 8 Mar 2022 13:24:19 +0100
-David Hildenbrand <david@redhat.com> wrote:
+Hi Goffredo,
 
-[...]
-> 
-> From 1e51e8a93894f87c0a4d0e908391e0628ae56afe Mon Sep 17 00:00:00 2001
-> From: David Hildenbrand <david@redhat.com>
-> Date: Tue, 8 Mar 2022 12:51:26 +0100
-> Subject: [PATCH] mm/gup: fix buffered I/O on s390x with pagefaults disabled
-> 
-> On s390x, we actually need a pte_mkyoung() / pte_mkdirty() instead of
-> going via the page and leaving the PTE unmodified. E.g., if we only
-> mark the page accessed via mark_page_accessed() when doing a FOLL_TOUCH,
-> we'll miss to clear the HW invalid bit in the pte and subsequent accesses
-> via the MMU would still require a pagefault.
-> 
-> Otherwise, buffered I/O will loop forever because it will keep stumling
-> over the set HW invalid bit, requiring a page fault.
-> 
-> Reported-by: Andreas Gruenbacher <agruenba@redhat.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/gup.c | 32 +++++++++++++++++++++++++-------
->  1 file changed, 25 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index a9d4d724aef7..de3311feb377 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -587,15 +587,33 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
->  		}
->  	}
->  	if (flags & FOLL_TOUCH) {
-> -		if ((flags & FOLL_WRITE) &&
-> -		    !pte_dirty(pte) && !PageDirty(page))
-> -			set_page_dirty(page);
->  		/*
-> -		 * pte_mkyoung() would be more correct here, but atomic care
-> -		 * is needed to avoid losing the dirty bit: it is easier to use
-> -		 * mark_page_accessed().
-> +		 * We have to be careful with updating the PTE on architectures
-> +		 * that have a HW dirty bit: while updating the PTE we might
-> +		 * lose that bit again and we'd need an atomic update: it is
-> +		 * easier to leave the PTE untouched for these architectures.
-> +		 *
-> +		 * s390x doesn't have a hw referenced / dirty bit and e.g., sets
-> +		 * the hw invalid bit in pte_mkold(), to catch further
-> +		 * references. We have to update the PTE here to e.g., clear the
-> +		 * invalid bit; otherwise, callers that rely on not requiring
-> +		 * an MMU fault once GUP(FOLL_TOUCH) succeeded will loop forever
-> +		 * because the page won't actually be accessible via the MMU.
->  		 */
-> -		mark_page_accessed(page);
-> +		if (IS_ENABLED(CONFIG_S390)) {
-> +			pte = pte_mkyoung(pte);
-> +			if (flags & FOLL_WRITE)
-> +				pte = pte_mkdirty(pte);
-> +			if (!pte_same(pte, *ptep)) {
-> +				set_pte_at(vma->vm_mm, address, ptep, pte);
-> +				update_mmu_cache(vma, address, ptep);
-> +			}
-> +		} else {
-> +			if ((flags & FOLL_WRITE) &&
-> +			    !pte_dirty(pte) && !PageDirty(page))
-> +				set_page_dirty(page);
-> +			mark_page_accessed(page);
-> +		}
->  	}
->  	if ((flags & FOLL_MLOCK) && (vma->vm_flags & VM_LOCKED)) {
->  		/* Do not mlock pte-mapped THP */
+Thank you for the patch! Perhaps something to improve:
 
-Thanks David, your analysis looks valid, at least it seems that you found
-a scenario where we would have HW invalid bit set due to pte_mkold() in
-ptep_clear_flush_young(), and still GUP would find and return that page, IIUC.
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on v5.17-rc7 next-20220308]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-I think pte handling should be similar to pmd handling in follow_trans_huge_pmd()
--> touch_pmd(), or cow_user_page() (see comment on software "accessed" bits),
-which is more or less what your patch does.
+url:    https://github.com/0day-ci/linux/commits/Goffredo-Baroncelli/btrfs-allocation_hint/20220307-145335
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: microblaze-randconfig-s032-20220307 (https://download.01.org/0day-ci/archive/20220308/202203082127.TtxMcqDK-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://github.com/0day-ci/linux/commit/641cd29d0792eb2e702b6c6a226fce5b4a655e20
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Goffredo-Baroncelli/btrfs-allocation_hint/20220307-145335
+        git checkout 641cd29d0792eb2e702b6c6a226fce5b4a655e20
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=microblaze SHELL=/bin/bash fs/btrfs/
 
-Some possible concerns:
-- set_page_dirty() would not be done any more for s390, is that intended and ok?
-- using set_pte_at() here seems a bit dangerous, as I'm not sure if this will
-  always only operate on invalid PTEs. Using it on active valid PTEs could
-  result in TLB issues because of missing flush. Also not sure about kvm impact.
-  Using ptep_set_access_flags() seems safer, again similar to touch_pmd() and
-  also cow_user_page().
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Looking at cow_user_page(), I also wonder if the arch_faults_on_old_pte()
-logic could be used here. I must admit that I did not really understand the
-"losing the dirty bit" part of the comment, but it seems that we might need
-to not only check for arch_faults_on_old_pte(), but also for something like
-"arch_faults_for_dirty_pte".
 
-Last but not least, IIUC, this issue should affect all archs that return
-true on arch_faults_on_old_pte(). After all, the basic problem seems to be
-that a pagefault is required for PTEs marked as old, in combination with
-GUP still returning a valid page. So maybe this should not be restricted
-to IS_ENABLED(CONFIG_S390).
+sparse warnings: (new ones prefixed by >>)
+>> fs/btrfs/sysfs.c:1583:3: sparse: sparse: symbol 'allocation_hint_name' was not declared. Should it be static?
+   fs/btrfs/sysfs.c:630:9: sparse: sparse: context imbalance in 'btrfs_show_u64' - different lock contexts for basic block
+
+vim +/allocation_hint_name +1583 fs/btrfs/sysfs.c
+
+  1578	
+  1579	
+  1580	struct allocation_hint_name_t {
+  1581		const char *name;
+  1582		const u64 value;
+> 1583	} allocation_hint_name[] = {
+  1584		{ "DATA_PREFERRED", BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED },
+  1585		{ "METADATA_PREFERRED", BTRFS_DEV_ALLOCATION_HINT_METADATA_PREFERRED },
+  1586		{ "DATA_ONLY", BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY },
+  1587		{ "METADATA_ONLY", BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY },
+  1588	};
+  1589	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
