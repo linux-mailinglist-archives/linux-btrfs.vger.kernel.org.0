@@ -2,143 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509EF4D3945
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 19:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B11754D3990
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 20:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbiCISx4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Mar 2022 13:53:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S237315AbiCITJ1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Mar 2022 14:09:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbiCISxz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 13:53:55 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE3A338
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 10:52:55 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 64B4B1F384;
-        Wed,  9 Mar 2022 18:52:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1646851974;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8imi6Lc5pld1OPYyRUvSlDkm1gDlsvsAj/bDIf+vyj4=;
-        b=y8im7wz3jWhaIbqd5fA2OJuDjE+bXkiB6m6fBy/F8XFCbKFuHGATubp+aMgBvO3ha+X0Rd
-        CKGHKKMHRmAxHZYyppMo1qvLwAI3XaYQ2Dr6wY9d8uh1bzEBTnwnGfOJsnMrbOeWytSl7O
-        PEZjR/O2jE5Nh0t73ifYDa6bVgv9tQI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1646851974;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8imi6Lc5pld1OPYyRUvSlDkm1gDlsvsAj/bDIf+vyj4=;
-        b=xCC3rIYSfdg5trJMb2Aga6GGjIwOpaVcXcLbf56R1i8xNcWVjYdOyyfxsAuEQiqXc3QK1Z
-        dJbF8ANtxMXsHWDg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 6188BA3B83;
-        Wed,  9 Mar 2022 18:52:54 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id ADF98DA7DE; Wed,  9 Mar 2022 19:48:58 +0100 (CET)
-Date:   Wed, 9 Mar 2022 19:48:58 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 00/19] btrfs-progs: extent tree v2 support, global
- roots
-Message-ID: <20220309184858.GA12643@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1646690972.git.josef@toxicpanda.com>
+        with ESMTP id S237312AbiCITJY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 14:09:24 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2EF133979
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 11:08:24 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id l12so4567923ljh.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 11:08:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XXR1y9mWPI79aJN86zN1Xw4k1kIrgJW/qF3J3mr8s/o=;
+        b=f2HKjN7pnq1Yx0IZQSDYsv3QQKsG+2d6SyKPs8kRV0DJINmCv0zY8YggZgmbRh8s9G
+         5W1TTtOlOHELiVloxzikMZjMiZj3rLso6o3JgLPBQDjrwKLUkGQeH0vZpt7UqvmOkcfZ
+         TYZh0tYA7JeXfR6IRR0cTQnv83g6YC9SeVOuE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XXR1y9mWPI79aJN86zN1Xw4k1kIrgJW/qF3J3mr8s/o=;
+        b=newP0xBzJHOyfAMbSh0u4JokW9BMuRxKzTRk8ycbdP3FfF2S/eTiVN0Ul+a0giiqEh
+         IIR7gyzgFMB17NE5vRN6YJIqFmCFvR6GvoEHggcSfBurE/no12ZmSDDDCW2FA2/U+lFH
+         4NGJYC1rox3mA8MQg7w5EMOkb1KpMXFrUeWCK3H3tJxkvd5hEag/LC2ITuiq0tKUF28H
+         BQOsPTYuBnrSvdRk2d8YqU3guiWwbzY0aDxh9S6cL0O50GPWNUM8grO7QDhNEayoyTTk
+         7QaIdzCx9iYf2hOyropmdn0IS1h3W7rMUwmmGHv6i0useocdgG3h0yqWmqzblq/c8uF6
+         1kjQ==
+X-Gm-Message-State: AOAM531JIPQICAjE26woQXnrI0KHtBsfjZxwm9iSwAQ+lx4Thf4yIbBV
+        B7MP4X5t58uD5TZkgyy68ef1SXAmnGQkGSR9eAs=
+X-Google-Smtp-Source: ABdhPJzNXi982Uu1tOsKxPHu1rmWthF8WN8yNv9P8G+w1veic26ixVtUHvcISlSq14IO7SdLc7EKqg==
+X-Received: by 2002:a2e:8603:0:b0:23a:6193:e2e2 with SMTP id a3-20020a2e8603000000b0023a6193e2e2mr612650lji.333.1646852902468;
+        Wed, 09 Mar 2022 11:08:22 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id bu39-20020a05651216a700b004484a8cf5f8sm531672lfb.302.2022.03.09.11.08.19
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Mar 2022 11:08:20 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id bt26so5509962lfb.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 11:08:19 -0800 (PST)
+X-Received: by 2002:ac2:41cf:0:b0:448:1eaa:296c with SMTP id
+ d15-20020ac241cf000000b004481eaa296cmr679738lfi.52.1646852899217; Wed, 09 Mar
+ 2022 11:08:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1646690972.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CAHc6FU5nP+nziNGG0JAF1FUx-GV7kKFvM7aZuU_XD2_1v4vnvg@mail.gmail.com>
+ <CAHk-=wgmCuuJdf96WiT6WXzQQTEeSK=cgBy24J4U9V2AvK4KdQ@mail.gmail.com>
+ <bcafacea-7e67-405c-a969-e5a58a3c727e@redhat.com> <CAHk-=wh1WJ-s9Gj15yFciq6TOd9OOsE7H=R7rRskdRP6npDktQ@mail.gmail.com>
+ <CAHk-=wjHsQywXgNe9D+MQCiMhpyB2Gs5M78CGCpTr9BSeP71bw@mail.gmail.com>
+ <CAHk-=wjs2Jf3LzqCPmfkXd=ULPyCrrGEF7rR6TYzz1RPF+qh3Q@mail.gmail.com>
+ <CAHk-=wi1jrn=sds1doASepf55-wiBEiQ_z6OatOojXj6Gtntyg@mail.gmail.com>
+ <CAHc6FU6L8c9UCJF_qcqY=USK_CqyKnpDSJvrAGput=62h0djDw@mail.gmail.com>
+ <CAHk-=whaoxuCPg4foD_4VBVr+LVgmW7qScjYFRppvHqnni0EMA@mail.gmail.com> <20220309184238.1583093-1-agruenba@redhat.com>
+In-Reply-To: <20220309184238.1583093-1-agruenba@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 9 Mar 2022 11:08:02 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgBOFg3brJbo-gcaPM+fxjzHwC4efhcM8tCKK3YUhYUug@mail.gmail.com>
+Message-ID: <CAHk-=wgBOFg3brJbo-gcaPM+fxjzHwC4efhcM8tCKK3YUhYUug@mail.gmail.com>
+Subject: Re: Buffered I/O broken on s390x with page faults disabled (gfs2)
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 07, 2022 at 05:10:45PM -0500, Josef Bacik wrote:
-> v4->v3:
-> - Rebase onto devel, depends on "btrfs-progs: cleanup btrfs_item* accessors".
-> - Dropped the various patches that have already been merged into -progs.
-> 
-> v3->v4:
-> - Rebase onto devel, depends on the v3 prep patches that were sent on December
->   1st which has the rest of the "don't access ->*_root" patches.
-> - I think I screwed up the versioning of this, but I lost the other submission,
->   so call this v3.
-> 
-> v1->v2:
-> - These depend on the v3 of the prep patches (it's marked as v2 because I'm
->   stupid, but the second v2 posting I sent.)
-> - I've moved the global root rb tree patches into this series to differentiate
->   them from the actual fixes in the prep series.
-> 
-> --- Original email ---
-> Hello,
-> 
-> These patches are the first chunk of the extent tree v2 format changes.  This
-> includes the separate block group root which will hold all of the block group
-> items.  This also includes the global root support, which is the work to allow
-> us to have multiple extent, csum, and free space trees in the same file system.
-> 
-> The goal of these two changes are straightforward.  For the block group root, on
-> very large file systems the block group items are very widely separated, which
-> means it takes a very long time to mount the file system on large, slow disks.
-> Putting the block group items in their own root will allow us to densely
-> populate the tree and dramatically increase mount times in these cases.
-> 
-> The global roots change is motivated by lock contention on the root nodes of
-> these global roots.  I've had to make many changes to how we run delayed refs to
-> speed up things like the transaction commit because of all the delayed refs
-> going into one tree and contending on the root node of the extent tree.  In the
-> same token you can have heavy lock contention on the csum roots when writing to
-> many files.  Allowing for multiple roots will let us spread the lock contention
-> load around.
-> 
-> I have disabled a few key features, namely balance and qgroups.  There will be
-> more to come as I make more and more invasive changes, and then they will slowly
-> be re-enabled as the work is added.  These are disabled to avoid a bunch of work
-> that would be thrown away by future changes.
-> 
-> These patches have passed xfstests without panicing, but clearly failing a lot
-> of tests because of the disabled features.  I've also run it through fsperf to
-> validate that there are no major performance regressions.
-> 
-> WARNING: there are many more format changes planned, this is just the first
-> batch.  If you want to test then please feel free, but know that the format is
-> still in flux.  Thanks,
-> 
-> Josef
-> 
-> Josef Bacik (19):
->   btrfs-progs: add support for loading the block group root
->   btrfs-progs: add print support for the block group tree
->   btrfs-progs: mkfs: use the btrfs_block_group_root helper
->   btrfs-progs: check-lowmem: use the btrfs_block_group_root helper
->   btrfs-progs: handle no bg item in extent tree for free space tree
->   btrfs-progs: mkfs: add support for the block group tree
->   btrfs-progs: check: add block group tree support
->   btrfs-progs: qgroup-verify: scan extents based on block groups
->   btrfs-progs: check: make free space tree validation extent tree v2
->     aware
->   btrfs-progs: check: add helper to reinit the root based on a key
->   btrfs-progs: check: handle the block group tree properly
->   btrfs-progs: set the number of global roots in the super block
->   btrfs-progs: handle the per-block group global root id
->   btrfs-progs: add a btrfs_delete_and_free_root helper
->   btrfs-progs: make btrfs_clear_free_space_tree extent tree v2 aware
->   btrfs-progs: make btrfs_create_tree take a key for the root key
->   btrfs-progs: mkfs: set chunk_item_objectid properly for extent tree v2
->   btrfs-progs: mkfs: create the global root's
->   btrfs-progs: check: don't do the root item check for extent tree v2
+On Wed, Mar 9, 2022 at 10:42 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+>
+> From what I took from the previous discussion, probing at a sub-page
+> granularity won't be necessary for bytewise copying: when the address
+> we're trying to access is poisoned, fault_in_*() will fail; when we get
+> a short result, that will take us to the poisoned address in the next
+> iteration.
 
-Added to devel, thanks.
+Sadly, that isn't actually the case.
+
+It's not the case for GUP (that page aligns things), and it's not the
+case for fault_in_writeable() itself (that also page aligns things).
+
+But more importantly, it's not actually the case for the *users*
+either. Not all of the users are byte-stream oriented, and I think it
+was btrfs that had a case of "copy a struct at the beginning of the
+stream". And if that copy failed, it wouldn't advance by as many bytes
+as it got - it would require that struct to be all fetched, and start
+from the beginning.
+
+So we do need to probe at least a minimum set of bytes. Probably a
+fairly small minimum, but still...
+
+
+> With a large enough buffer, a simple malloc() will return unmapped
+> pages, and reading into such a buffer will result in fault-in.  So page
+> faults during read() are actually pretty normal, and it's not the user's
+> fault.
+
+Agreed. But that wasn't the case here:
+
+> In my test case, the buffer was pre-initialized with memset() to avoid
+> those kinds of page faults, which meant that the page faults in
+> gfs2_file_read_iter() only started to happen when we were out of memory.
+> But that's not the common case.
+
+Exactly. I do not think this is a case that we should - or need to -
+optimize for.
+
+And doing too much pre-faulting is actually counter-productive.
+
+> * Get rid of max_size: it really makes no sense to second-guess what the
+>   caller needs.
+
+It's not about "what caller needs". It's literally about latency
+issues. If you can force a busy loop in kernel space by having one
+unmapped page and then do a 2GB read(), that's a *PROBLEM*.
+
+Now, we can try this thing, because I think we end up having other
+size limitations in the IO subsystem that means that the filesystem
+won't actually do that, but the moment I hear somebody talk about
+latencies, that max_size goes back.
+
+                Linus
