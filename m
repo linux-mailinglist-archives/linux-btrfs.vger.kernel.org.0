@@ -2,70 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282CB4D272E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 05:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB014D274C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 05:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbiCIDB2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 22:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
+        id S231656AbiCIDIO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 22:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbiCIDB1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 22:01:27 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7988413DE18
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 19:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646794826;
-        bh=IWEu7gmp3ZVmfj2FZjwQHIJtFrJACy4NwyhQmMd+xMg=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=Jg2Jlo6bI3WECK5y/XvydVClvyGju+2/xTdnEOeEBP3YNvyBZ4ExbiU/zMhI5+w7c
-         C4NVd9W5lwSqjN1gKQKz7Hm0YKypcOJ6IdsTtkpK3+jc4Uz9N/UltwlAbmB69Ri7q3
-         yXvtZjKCyikns1LDrHHlJa5lYa+GvDTNEijXVUVI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDQeU-1nKfpU0Quk-00AVUE; Wed, 09
- Mar 2022 04:00:26 +0100
-Message-ID: <ca8e7647-9996-d05d-1438-ff2b82c7038b@gmx.com>
-Date:   Wed, 9 Mar 2022 11:00:23 +0800
+        with ESMTP id S231633AbiCIDIN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 22:08:13 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0180214CC84;
+        Tue,  8 Mar 2022 19:07:14 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 228M8wUv028053;
+        Wed, 9 Mar 2022 03:06:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=JIRzif8ElQ11YkMCVQYex0i5TpPFXhokbAn+PgJE8CQ=;
+ b=chnFz2xDbGArfA2ox7fXcYIdbBtS/zW5gAYanJrKSeRllPCxWQb0h/wZnfEeUZ31MEMF
+ RuritKg1MAYxykUeN+GyE+yA8ePtRWf5dXkk+fxWS2WBSKvW1ALiWD9Q0+uopdkgkMdh
+ 1/gxnZW/2leqZ7BujWmg/x13uCH6bKpJ2Sf5CS58qW+zpSGaqrJpd3glqIHbnQ0Sj3VT
+ /I3f1n3kMjrWMmXn6z6RkgKRgSPFFUvckeruZ2KJXi36Fw7S2ueuoqKfNGhnN1GjXAhe
+ 1Um5z2VDJccLcuqSiL2WDkwZvP98RffAtRrmRxaR2vte6sl2gJMKLRUcQ9VpZx82Ogan NQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ekxn2gtfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Mar 2022 03:06:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 22935K3k167216;
+        Wed, 9 Mar 2022 03:06:57 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2046.outbound.protection.outlook.com [104.47.56.46])
+        by userp3020.oracle.com with ESMTP id 3envvm467u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Mar 2022 03:06:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T3oYL3S8HtIACTiwk34rkz5hFOrDXpFI7dXfQXFwNyocfuFvXstpKBEHUoxnJ8qc+t4BhG3Qw80F7EX3PyDul7S3w3hgK7rk1EAq0a+gX2Sais0/ZS7ZhJfrYr/a/ZkR/Yo3FOK60jZB6mil/VAzFWcf7KAE8eLVVFnSJHujohlw2RG9PzJJ2ZJJV0xfX5v1RnGNpr7zq9VrtmgkwZdJ+9WIH7lDApBnoAXIyNaEMbmhu/ALVOecE0mWKFvn7YEbrwzx8kn+C0rr7hFqORO1/LKryHXoLOT/FsJurPypTaMTleLbmhoP8nVMEVo0muBBA+N56iNoSMqVpTQlkq3K9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JIRzif8ElQ11YkMCVQYex0i5TpPFXhokbAn+PgJE8CQ=;
+ b=I7kTael1+w8I82BxrhqQwmPmNalnO3Q/RgL/9sX4iXlwiI3dOGrKZoEJKz8wXRfkTnLz5brakqLVGfI6NylQh99m8BjjYqTkxIrvVpWcRmmpMg3PglSUjNF5wETUDUHucCHZE6f/VRCUFVO6TRzM0r41jFHNgJoBrYc16UJVbvBMBR4aP0yjNsPUCMfrp41/5FTcs8AzfHEZv+zOFSTR43OSiG60GV9NaJ5EEtDOvmPnw6C2vdlJIdVmuH5HQ51x3IVj0tQ8UdTe02KWPLbxU/mwsz9aLPAiIDOzSxys9hwQkuBo0vzGxlSX/kWe8LslSUDvNzWfkU2wSVOvOL2/gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JIRzif8ElQ11YkMCVQYex0i5TpPFXhokbAn+PgJE8CQ=;
+ b=yOuB2qDB4rmbBPgmMnQYwUtQLbeoUsTHKuYsGGGTrIFvOKh17XeSeKQYN6ivGuwSlIWR+EVQQ0dwHh/MeAXVulmo50XQhK/NhBBqEx2b/7DOqKTS4Q+Qx39PR2YI1WqfjYVvvCvohc2h+P1iPuZ6QT49p/aLmyNbyUBN2Il83Xk=
+Received: from SA2PR10MB4763.namprd10.prod.outlook.com (2603:10b6:806:117::19)
+ by MWHPR10MB1854.namprd10.prod.outlook.com (2603:10b6:300:10b::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.15; Wed, 9 Mar
+ 2022 03:06:55 +0000
+Received: from SA2PR10MB4763.namprd10.prod.outlook.com
+ ([fe80::a045:e293:518:7604]) by SA2PR10MB4763.namprd10.prod.outlook.com
+ ([fe80::a045:e293:518:7604%3]) with mapi id 15.20.5038.026; Wed, 9 Mar 2022
+ 03:06:54 +0000
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-block@vger.kernel.org, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/5] block: turn bio_kmalloc into a simple kmalloc wrapper
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1pmmvltea.fsf@ca-mkp.ca.oracle.com>
+References: <20220308061551.737853-1-hch@lst.de>
+        <20220308061551.737853-5-hch@lst.de>
+Date:   Tue, 08 Mar 2022 22:06:52 -0500
+In-Reply-To: <20220308061551.737853-5-hch@lst.de> (Christoph Hellwig's message
+        of "Tue, 8 Mar 2022 07:15:50 +0100")
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR13CA0026.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::31) To SA2PR10MB4763.namprd10.prod.outlook.com
+ (2603:10b6:806:117::19)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: Updated to new kernel, and btrfs suddenly refuses to mount home
- directory fs.
-Content-Language: en-US
-To:     bill gates <framingnoone@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CALPV6DsfOQHyQ2=+3pKF3ZfavL21fgthQS+=HStEfMQbhZU50g@mail.gmail.com>
- <7a4962a0-b007-59a4-282e-8912b2425c5e@gmx.com>
- <CALPV6DtuY6KxFKF6WR2HDPzzVm8TbcGEXwTMiDAy6MdL+jC7jA@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CALPV6DtuY6KxFKF6WR2HDPzzVm8TbcGEXwTMiDAy6MdL+jC7jA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ADEO3zlJ8KZu4ZQDwaBjtZwipOswaZv4EetDJkm+lCYAL/stre6
- NGX/FZSh3vl8TdDuvs7Tjm+32eBmwO0nOsjJsbCWjUeUiR9kqVcu3M/Df9yUeqA87tqsM/T
- Ta8QusIw+0ub8uv3ZQH1QcbYxa138/mr8tMXKnGtjWBPtTZODkPyj+PaghA4+Ll7oBP2HGW
- Mkk3HMaXzejYynD5BUo+Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Jv6kLqUF8VI=:wtP55C9h0qPU4w+HxSD9pI
- 6AFR5xwlA2fAl/kIO9K8IFOCVJjYDRS9/tcZlNCNUdj3X5t9Wg1JK3/yhBlQZvgNH/XzRjz2d
- vsi/ZNKDtfS0c+jFy3rZb1w56qbq4+Zz9++qkOl/muXQ87FMoMQrj7GoxKgtBlDUsSL3McJkO
- VuLysgv03eVq3uf0aQ96HEyF+riIenNhybDT6DskzaSW27/ttNdZfsPea4qKny+gPcAA3wH3h
- BDYpzReTsrhQTmmWUyGyELxdVr65PKBZqEmTDieOx+sf/e7T17MZwsPCILyrI+kZaJPZXGMhS
- mL41muMSQcA/9Dt7Sg33OH/aFsTR7DvS8paa6lilG+29dopRCDRwTvbtFUpchPfHTY5ePL5Su
- u62fy5xv/ekf8aNf8CnPqsizYNZ+Voad6s7Ih9QpygmDA49cPvLBAJ+0jIgV27vArXjTDoR4y
- KdaRPEFNAbXeZBiSu0nuHIw/AsTbPaQ4pUmMhNYkpopqSx2Kiy28apbrI6Px/cEXcEydC8luc
- yUODbPYNBV9DLpzIiDf9GUYy9VxS1wdr77OXUdeGFOVQzIq0xRGV+dPjwO84pO0CJVhqAkVGS
- xlrZkR4sL6ypaNlGMrZVSZcJs3qWUtdsg4hkqi1KUWTVtgqzGDakur1DoCBxv14kHlGqomAQ2
- UK78ceJ9LPuoPLcofjMN3+96Lp7kSYoswlfp7pMuCHgirKeoDGUEFj/VhDVkpzeKhPr9ZjLk9
- VRRLdv2NQNxH67pP32dop4VeWrmcBsnsbCuXq2CueuaA3+pZBIYnZb6oKlXHHomI/u1fnTsSE
- aAD+EgTvNTL3z1SzmWJvM6nqFrjs4vzkx37iX+12wAz6yBI2lfpTwR3NN/LCBkNBSnrW8ZKvL
- +HcRWARU/rRoOmeFdGpy3gIW8Ys6ylFYRNrKyp9cnVLK2RrGkmjwmtRAq9XiTEFG49w6br4UF
- TnfHqrBhGSCzycWbWT/+0J/Hyxcp8EqJrIPadEkTogijsZSTA7OG7S4g/vbeiGpjNxwceqHwN
- 2EHY62GlCjLfEc+LvZXiRnm4zRB4d2eSQ/TI5iRCRf3z+kz+K54QTgRdIljrRQpJZ9H7cC3WM
- 1mukn6oP5LqRUc=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd6429d1-51cd-4084-7e42-08da0179dda2
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1854:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1854A9FFE5272217F0EF61FC8E0A9@MWHPR10MB1854.namprd10.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YyzsduugOE9lwovdee4nORz3NBkQN9+Fl/TnfzdZ8YooaoiYR2ashxDuzief7mTABmsMarRWi+EQC5YJYZ8Ia/KlI+V+aqRc3F6V01QSRI/3TXTUndpcCGkSOiQAsrtfcvcfPWz4Oqyr1EJFF+oSsOzmYhYI6o8BdEpiJlJkHLDp1gstb/3roC5lraFDGrWu7MRwZE/QacG0dhdq3+/YalBgjtj0ZCj3dkS57P9zmwlAnS/CzaYgpr1ExDWQwcmedOKHP25S5eXMLUod+QqGkKhoWvLm9GndQfJw5BcS5wDxPHR/utoefBXhVGc2McUpXaOI4ZTwQKMCciSFjDK/3swTJQ+gNeSzp29lr9S/gkstCjPs+/uk6Rx0la44ffxbAqMsga0Edo3jiDXKUoTufnaXdWxPwnEpJs3YXhI13wqLzQn3GCRoapyRhVWn4qtfBoEYOpBVUx7zo3A3PvMDaSeTmIDO6aWFqAxq52q2vTLwxD5jAzlgN5tz7yB8KJ/iih4VueJzRF7Y7zumbyD9VIRHr6WFiZta8Ted90uwXkL6AdJWCh5egQi4QQaBdhfVVBdib6nzq2N4kqoiyjODFom/sdToorz1NLD56jq1EBrIfN6LLdXiZfENi2L0jO/MoyUnGtRPqdDdQdTckG6QcvAFQCarbT6rVs2RHrXi5YjEm4d/BDkiiYahiYO2M6XkTXsETj5cgrH6rr1MJqSFTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4763.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6512007)(52116002)(6486002)(508600001)(6506007)(26005)(36916002)(186003)(38350700002)(86362001)(66476007)(8936002)(7416002)(5660300002)(4326008)(8676002)(66946007)(66556008)(2906002)(4744005)(6916009)(54906003)(316002)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cMh16E3nrKy496uc53H5fPmMCMq/eMFf/IFriDyvW90rKJ+3TJaVkrUkfKXl?=
+ =?us-ascii?Q?kMA1WynXvSYyQMGB22UibieaKx/uzBzbmwQQ5qTSJknUXrySl12NgU+EHpJh?=
+ =?us-ascii?Q?KGD7b6xd6L/tdSyVdZxMys5hLgeQI3JjmvZwi5ZvBQLjzzurNE0tQXKkGflK?=
+ =?us-ascii?Q?VqpU2wNJ3wMWucMqvV6UIwjQ9R6Hn2pFi7jbWnLVWPH761cMbHk5eSsQ5Oqt?=
+ =?us-ascii?Q?QsjZOKtvNd8MY42/i0WFbXDhjrjw+X8o0gC80nHfiB2oco7fnaO28psjkQf/?=
+ =?us-ascii?Q?qMu9WVckRfdo5WYjG47askq6BuOTQIES9pyQPyv9e+7/qSqhHoJWinV6ukD3?=
+ =?us-ascii?Q?AtAX2QiGgtb5iUFkbH1L5NBSI9+8H0vOfekiNzb+wrW7cGCyiehXc1RWK8WB?=
+ =?us-ascii?Q?4vG0R/03TwJyQpqpuMoZHwjrL3Vvk2KQ7ZBLH1r7IPK7KN/Mrp3lO8ljrnOi?=
+ =?us-ascii?Q?S54HPaL9ZTNzdzqq44CMy49ioxzy0ymDPqYCs+sHBq1KWEmaRwSNK2nqtrRh?=
+ =?us-ascii?Q?sbgGR0e5Dp9THdeKkFjv68UEp6PE6yJ9Nwjl1q8xaSh8NanO9+5+y7/F7yeI?=
+ =?us-ascii?Q?V0cScPCVLTmjrtHgTslBrF3V7c69nWDXTh8aYA84TBTBzVIOJlJ0u61500FH?=
+ =?us-ascii?Q?a3+GJkpBkOx13ZR4RRya68+x81HlGjFWVdHGhN9Qy3csbP2w3iw7ikt0EucG?=
+ =?us-ascii?Q?4QibLfriygrUj1QDT1zAc3S6tNJ/WrNxUefFPk57tRAdF7MjhaOecJU63ke/?=
+ =?us-ascii?Q?vCCQwUfbDNzdRZA2vFbw7Cak6HlHdEWPLItS+ATcUJG/seT+8Ps4ifkLirIj?=
+ =?us-ascii?Q?a10yR4H+MUi1qrdcJjHhzMTu2dMZ9FJNDLqdywihW8RNQEn/KxAA8URytJDf?=
+ =?us-ascii?Q?Lfg/nJcg56R/zSidN4C/pjO5kKcu5nL65bCjC9kN1a/+E1YtXYGMmxnJSXTi?=
+ =?us-ascii?Q?EZlyf7OmjpSdQFsRBxeii4fTPFyk1PgYlpCDZsJ5pThriquQe2MZ3W8Z1lf7?=
+ =?us-ascii?Q?UWJaYiiZ8E9m7pCG8UUMLcI4ObXa2yNsa/IJ/nhTTbNz7dgLBjRSsBwaS4Li?=
+ =?us-ascii?Q?X1TcfLkvFs9NMWWfGJmugW8r/DjmBmG3P44RJgwlxLsfaLLynxMySFld4/vL?=
+ =?us-ascii?Q?qAklbt61DJSU4l2y+2F6xv6FOzQ/kMZGodboHrptaKzIsZ15S6oA/PH3aoo6?=
+ =?us-ascii?Q?JdRGfIzLwulciSVi9bJW77ognB5aobpE9heaQuJRYczrNtMb+EL5hFA4YN/a?=
+ =?us-ascii?Q?u1wCBlXyRLSKebU79y+avJgr/Dr6UzBKHx0pVto5KNYuw1XIXOLpyxwhypng?=
+ =?us-ascii?Q?AwHOZ8cQxAeLiLy7q1wUGHC+D5ybJjr/eMiW0/w1EbEYDlT7xisYQQFLuXXS?=
+ =?us-ascii?Q?Yv/CQxCRToOt9LH7c0MA1B3p53QkLvlXESJxnBPaZkT3vN4/EKvAJAvolgBe?=
+ =?us-ascii?Q?ci4yKbBYUkIl4V2BgrblmT7/iwOiagg0Y/JXR+tM82WyDr7ui0SI/josxmKz?=
+ =?us-ascii?Q?alhQqjD3UtPn/sVEjNNX9jYEt6xw+jGoSbPvsRLfsGwqWJSGR0wu4FA//Enj?=
+ =?us-ascii?Q?Ko6Xm7vIwEcjrRWoWE3WbUaqRV8PpqQS26JXrNYI8mGKolwcbN4xKgvk0Pvu?=
+ =?us-ascii?Q?d12devFrlma1L4r6SUETsJAWSS+sYe4zXyE8Emg1GNhcsds+3sDbUb5+QnzW?=
+ =?us-ascii?Q?zORkSHPwqy2LsiSWOQANdEmJ4Fk=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd6429d1-51cd-4084-7e42-08da0179dda2
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4763.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2022 03:06:54.9149
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oJlGskmXSJKLaAty6IjqkKDMSXkCeyTjOpF7feTVmked8r+Fq6LIDHOcSUAzr1UWW0FbEFW55Y3rvsXdLtNqRrPvFF+6+vNuOTyydoqorrU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1854
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10280 signatures=690848
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 malwarescore=0 suspectscore=0 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2203090015
+X-Proofpoint-ORIG-GUID: VgWSyWj7774d-F8-GaJuGkifFUXVdhlv
+X-Proofpoint-GUID: VgWSyWj7774d-F8-GaJuGkifFUXVdhlv
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,204 +154,21 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+Christoph,
 
-On 2022/3/9 09:09, bill gates wrote:
-> This filesystem was most likely created in 2014 using the tools of
-> that time, at least that's the oldest file in my home directory. It
-> _might_ have been made in 2019, that's the date on the mount point.
+> Remove the magic autofree semantics and require the callers to explicitly
+> call bio_init to initialize the bio.
 >
-> There are 2 subvolumes on /dev/sda2, /home and /var.
->
-> My btrfs-progs version is 5.15.1.
->
-> Per your request:
-> # btrfs ins dump-tree -b 10442806968320 /dev/sda2
-> btrfs-progs v5.15.1
+> This allows bio_free to catch accidental bio_put calls on bio_init()ed
+> bios as well.
 
-Weird, the output doesn't match the dmesg.
+> -struct bio *bio_kmalloc(gfp_t gfp_mask, unsigned short nr_iovecs);
+> +struct bio *bio_kmalloc(unsigned short nr_vecs, gfp_t gfp_mask);
 
-This tree belongs to csum tree, not root tree.
+I understand why you did it but this parameter reversal is a bit
+scary. Hopefully gfp_t will cause any mistakes to be flagged.
 
-Thanks,
-Qu
-> leaf 10442806968320 items 34 free space 6225 generation 6834902 owner CS=
-UM_TREE
-> leaf 10442806968320 flags 0x1(WRITTEN) backref revision 1
-> fs uuid 83c6c9ca-b8fe-4d4c-aaa8-1729f90b0824
-> chunk uuid 9b77400b-f370-4f49-be82-9cb38c7f78a0
->         item 0 key (EXTENT_CSUM EXTENT_CSUM 9848629587968) itemoff
-> 16075 itemsize 208
->                 range start 9848629587968 end 9848629800960 length 21299=
-2
->         item 1 key (EXTENT_CSUM EXTENT_CSUM 9848630026240) itemoff
-> 15823 itemsize 252
->                 range start 9848630026240 end 9848630284288 length 25804=
-8
->         item 2 key (EXTENT_CSUM EXTENT_CSUM 9848630714368) itemoff
-> 15815 itemsize 8
->                 range start 9848630714368 end 9848630722560 length 8192
->         item 3 key (EXTENT_CSUM EXTENT_CSUM 9848630984704) itemoff
-> 14723 itemsize 1092
->                 range start 9848630984704 end 9848632102912 length 11182=
-08
->         item 4 key (EXTENT_CSUM EXTENT_CSUM 9848632160256) itemoff
-> 14703 itemsize 20
->                 range start 9848632160256 end 9848632180736 length 20480
->         item 5 key (EXTENT_CSUM EXTENT_CSUM 9848632180736) itemoff
-> 14279 itemsize 424
->                 range start 9848632180736 end 9848632614912 length 43417=
-6
->         item 6 key (EXTENT_CSUM EXTENT_CSUM 9848632942592) itemoff
-> 14067 itemsize 212
->                 range start 9848632942592 end 9848633159680 length 21708=
-8
->         item 7 key (EXTENT_CSUM EXTENT_CSUM 9848633286656) itemoff
-> 13815 itemsize 252
->                 range start 9848633286656 end 9848633544704 length 25804=
-8
->         item 8 key (EXTENT_CSUM EXTENT_CSUM 9848633548800) itemoff
-> 13579 itemsize 236
->                 range start 9848633548800 end 9848633790464 length 24166=
-4
->         item 9 key (EXTENT_CSUM EXTENT_CSUM 9848633810944) itemoff
-> 13527 itemsize 52
->                 range start 9848633810944 end 9848633864192 length 53248
->         item 10 key (EXTENT_CSUM EXTENT_CSUM 9848633950208) itemoff
-> 12671 itemsize 856
->                 range start 9848633950208 end 9848634826752 length 87654=
-4
->         item 11 key (EXTENT_CSUM EXTENT_CSUM 9848634826752) itemoff
-> 12659 itemsize 12
->                 range start 9848634826752 end 9848634839040 length 12288
->         item 12 key (EXTENT_CSUM EXTENT_CSUM 9848634970112) itemoff
-> 12643 itemsize 16
->                 range start 9848634970112 end 9848634986496 length 16384
->         item 13 key (EXTENT_CSUM EXTENT_CSUM 9848635056128) itemoff
-> 12583 itemsize 60
->                 range start 9848635056128 end 9848635117568 length 61440
->         item 14 key (EXTENT_CSUM EXTENT_CSUM 9848635117568) itemoff
-> 12151 itemsize 432
->                 range start 9848635117568 end 9848635559936 length 44236=
-8
->         item 15 key (EXTENT_CSUM EXTENT_CSUM 9848635592704) itemoff
-> 12135 itemsize 16
->                 range start 9848635592704 end 9848635609088 length 16384
->         item 16 key (EXTENT_CSUM EXTENT_CSUM 9848635703296) itemoff
-> 11791 itemsize 344
->                 range start 9848635703296 end 9848636055552 length 35225=
-6
->         item 17 key (EXTENT_CSUM EXTENT_CSUM 9848636108800) itemoff
-> 11719 itemsize 72
->                 range start 9848636108800 end 9848636182528 length 73728
->         item 18 key (EXTENT_CSUM EXTENT_CSUM 9848636669952) itemoff
-> 11691 itemsize 28
->                 range start 9848636669952 end 9848636698624 length 28672
->         item 19 key (EXTENT_CSUM EXTENT_CSUM 9848636698624) itemoff
-> 11371 itemsize 320
->                 range start 9848636698624 end 9848637026304 length 32768=
-0
->         item 20 key (EXTENT_CSUM EXTENT_CSUM 9848637026304) itemoff
-> 10979 itemsize 392
->                 range start 9848637026304 end 9848637427712 length 40140=
-8
->         item 21 key (EXTENT_CSUM EXTENT_CSUM 9848637468672) itemoff
-> 10131 itemsize 848
->                 range start 9848637468672 end 9848638337024 length 86835=
-2
->         item 22 key (EXTENT_CSUM EXTENT_CSUM 9848638631936) itemoff
-> 10079 itemsize 52
->                 range start 9848638631936 end 9848638685184 length 53248
->         item 23 key (EXTENT_CSUM EXTENT_CSUM 9848638685184) itemoff
-> 9791 itemsize 288
->                 range start 9848638685184 end 9848638980096 length 29491=
-2
->         item 24 key (EXTENT_CSUM EXTENT_CSUM 9848638980096) itemoff
-> 9787 itemsize 4
->                 range start 9848638980096 end 9848638984192 length 4096
->         item 25 key (EXTENT_CSUM EXTENT_CSUM 9848638984192) itemoff
-> 9735 itemsize 52
->                 range start 9848638984192 end 9848639037440 length 53248
->         item 26 key (EXTENT_CSUM EXTENT_CSUM 9848639045632) itemoff
-> 9111 itemsize 624
->                 range start 9848639045632 end 9848639684608 length 63897=
-6
->         item 27 key (EXTENT_CSUM EXTENT_CSUM 9848639684608) itemoff
-> 9091 itemsize 20
->                 range start 9848639684608 end 9848639705088 length 20480
->         item 28 key (EXTENT_CSUM EXTENT_CSUM 9848639967232) itemoff
-> 8003 itemsize 1088
->                 range start 9848639967232 end 9848641081344 length 11141=
-12
->         item 29 key (EXTENT_CSUM EXTENT_CSUM 9848641150976) itemoff
-> 7947 itemsize 56
->                 range start 9848641150976 end 9848641208320 length 57344
->         item 30 key (EXTENT_CSUM EXTENT_CSUM 9848641409024) itemoff
-> 7887 itemsize 60
->                 range start 9848641409024 end 9848641470464 length 61440
->         item 31 key (EXTENT_CSUM EXTENT_CSUM 9848641695744) itemoff
-> 7643 itemsize 244
->                 range start 9848641695744 end 9848641945600 length 24985=
-6
->         item 32 key (EXTENT_CSUM EXTENT_CSUM 9848642043904) itemoff
-> 7615 itemsize 28
->                 range start 9848642043904 end 9848642072576 length 28672
->         item 33 key (EXTENT_CSUM EXTENT_CSUM 9848642162688) itemoff
-> 7075 itemsize 540
->                 range start 9848642162688 end 9848642715648 length 55296=
-0
->
->
-> On Tue, Mar 8, 2022 at 5:48 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->>
->>
->> On 2022/3/9 03:05, bill gates wrote:
->>> So, I recently attempted to upgrade from Linux kernel 4.19.82 to
->>> 5.15.23, and I'm getting a critical error in dmesg about a corrupt
->>> leaf (and no mounting of /home allowed with the options I'm aware of)
->>>
->>> [ 396.218964] BTRFS critical (device sda2): corrupt leaf: root=3D1
->>> block=3D10442806968320 sl
->>> ot=3D8 ino=3D6, invalid location key objectid: has 1 expect 6 or [256,
->>> 18446744073709551360]
->>> or 18446744073709551604
->>
->> Please provide the following output:
->>
->> # btrfs ins dump-tree -b 10442806968320 /dev/sda2
->>
->>
->> The error message means, we got a DIR_ITEM in root tree.
->>
->> Normally that is used to indicate what default subvolume is.
->> Thus it's normally 6 or 5, or any valid subvolume id.
->>
->> But in your case, it's 1, thus tree-checker is rejecting your root tree=
-.
->>
->> I didn't thought we could have 1 as default subvolume (as 1 is the root
->> tree, which is not a subvolume).
->>
->> But it looks like we should update btrfs check to fix this case.
->>
->> Is the fs created using older btrfs-progs? I guess that may be the caus=
-e...
->>
->> Thanks,
->> Qu
->>
->>
->>> [ 396.218967] BTRFS error (device sda2): block=3D10442806968320 read
->>> time tree block corru
->>> ption detected
->>>
->>>
->>> Interestingly. that 18446... number is a power of 2, looks like maybe
->>> a bit flip? dmesg, uname, etc included in pastebin below. "btrfs
->>> check" found no problems with fs on either kernel version. Would like
->>> to figure out how to fix this, if possible.
->>>
->>> https://pastebin.com/0ESPU9Z6
->>>
->>> Thank you for any assistance,
->>> -- Laurence Michaels.
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
