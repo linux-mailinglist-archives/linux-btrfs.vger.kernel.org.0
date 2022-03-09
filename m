@@ -2,226 +2,276 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7DF4D272A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 05:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282CB4D272E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 05:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbiCIDAG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 22:00:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S231582AbiCIDB2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 22:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbiCIDAC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 22:00:02 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A161134DED
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 18:59:04 -0800 (PST)
+        with ESMTP id S231497AbiCIDB1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 22:01:27 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7988413DE18
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 19:00:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646794737;
-        bh=Vml6laohPGQPNAkwYgN9yGL26fzUP6Gwf0tdeqRY/iA=;
+        s=badeba3b8450; t=1646794826;
+        bh=IWEu7gmp3ZVmfj2FZjwQHIJtFrJACy4NwyhQmMd+xMg=;
         h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=IHxieO8oKARP55MIvQ+gEqL551ybJTvuzGHmqAnf4+Wor+ME38FCedHs2Xbxs2CAx
-         j6rDH66S4bIBVHeVlYtywSeO3Z3dOD+QgtFCD+qxOBlA5NPEAwZCe1zbelDCU0WL9N
-         Jk9gVtXpLuWJ6CSSPs7oJ2HYsBSxFppCTt+D5a9s=
+        b=Jg2Jlo6bI3WECK5y/XvydVClvyGju+2/xTdnEOeEBP3YNvyBZ4ExbiU/zMhI5+w7c
+         C4NVd9W5lwSqjN1gKQKz7Hm0YKypcOJ6IdsTtkpK3+jc4Uz9N/UltwlAbmB69Ri7q3
+         yXvtZjKCyikns1LDrHHlJa5lYa+GvDTNEijXVUVI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgvvT-1o4g3g0R0n-00hPso; Wed, 09
- Mar 2022 03:58:57 +0100
-Message-ID: <899996b3-7859-5f3b-28bd-865dd8413078@gmx.com>
-Date:   Wed, 9 Mar 2022 10:58:53 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDQeU-1nKfpU0Quk-00AVUE; Wed, 09
+ Mar 2022 04:00:26 +0100
+Message-ID: <ca8e7647-9996-d05d-1438-ff2b82c7038b@gmx.com>
+Date:   Wed, 9 Mar 2022 11:00:23 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.6.1
-Subject: Re: [PATCH] btrfs: make device item removal and super block num
- devices update happen in the same transaction
+Subject: Re: Updated to new kernel, and btrfs suddenly refuses to mount home
+ directory fs.
 Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     =?UTF-8?Q?Luca_B=c3=a9la_Palkovics?= 
-        <luca.bela.palkovics@gmail.com>
-References: <b86647c31a09ccc44447367865ecac8d5b358b7c.1646717720.git.wqu@suse.com>
- <760da013-f15b-805f-ceaa-c8be838eb9ff@oracle.com>
+To:     bill gates <framingnoone@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <CALPV6DsfOQHyQ2=+3pKF3ZfavL21fgthQS+=HStEfMQbhZU50g@mail.gmail.com>
+ <7a4962a0-b007-59a4-282e-8912b2425c5e@gmx.com>
+ <CALPV6DtuY6KxFKF6WR2HDPzzVm8TbcGEXwTMiDAy6MdL+jC7jA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <760da013-f15b-805f-ceaa-c8be838eb9ff@oracle.com>
+In-Reply-To: <CALPV6DtuY6KxFKF6WR2HDPzzVm8TbcGEXwTMiDAy6MdL+jC7jA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:I/ML20k0fIWP+L1PUbfd9/ERqkSwauwRpcG2KDNBKSBjvzCpynL
- 6bZcftFdoA63JZ2vb8uZiZtiBaJWEa/O7UqTj1a3/MHa108z92dQCSCSP+2vITp78V2WELc
- fB9QrnkVKlJjcwGf3+hk20i48vT0m+bmgbZSjXc0ra0VAeWZtuscIlCcIRy56njQspcnZOg
- iBHp4EVJsFYxC+iA0G9fA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:b1Yay/BoCdI=:M1GIS0YlgEyQ4nT2VqM3M7
- z0aJg9uiDMWNodO+WD39X3+A2CT4mXPMacSukiYHXt8kzY597q0OcC2eMC4XN/qAnS3Q+RXDV
- Slbosku5hoEWnfBbTAGEGvA3pOhgeTX48Lznvu5kLSi5bqTf4fjr8e45JMSY1MrrV/jzBu3g8
- L+YSPbb9NXI/U7VYjiVCFfJ8ROm5mWu+CehMWs2wTDYVTg0PTV2uc52rNvURwN9VDEdHLUMw5
- ic/rPSCVbhHv4hSl6X9SJVQyYe7V+6la4WJvGMNVJDNrTPMa6SYUbZl+Sj6MYRjkJw9euc1yw
- U1F+ofw0kJWyWDo6gaNy+gNuTbeZ0v2+v4Rta31TtroNy0zNPBsM8KetF3rkBTnz/N0tAT3Gb
- bmDK97sPft56UXLOCb3uYe54ZZVXy3NKaEHc2aN1nifF2TPHQlOQzQuSriMS8V1GJBG0xBe34
- 7fn28USEZWw/ueTzi0Bql4Xp194r3sgj4JLZy+1q2/N+Gqr3/EGu4qxtVF4b8eWdYjg6XZn1G
- rZZXwWD57Cc3LX7xtj38MaHrLRluwT35xhkV1FCV1nrYk2EO6pOkYeUbw/jW8T7F16BOPYUY6
- 1w2gLLsBE5ZWQ6xD2S6RvaamOsiJTGCbndi7wxlqdRy2Tkou97poR6J5Kl7VgB9GXQjiPFsW1
- TbpEVF3hFXBDGDjt/zygCUIRG/rr0tzwqoD300ycohKhFUNe8Lu3c5qZuN8JIsESMSIGpPDsL
- Gh/GiZX49/imD/hUsRNnzEqDQ1MeEQM8tMTF4xNbzjmZbmqf5t3oHT8OKXFrwZXpCncIQee/u
- 8gtEDlkO7GsnCrvbiBHnYVa9anampqo+u0tWpfmZyn2+ryJg+26tk+Jjwk/SKYHTRiOrB3X0o
- 28PVevk18zueSduG7cadrEgitWyYcH7iG+xIrBt9ZRh1CzPiq7A/BzEZwGmoB8NHdrT2LxzND
- vetigCLs8phZ7ijBsRFGYRSc82GeEMshQbwp+pprrYzm0Ux5RJP6lzO/0bCQWStetdEXuBa6+
- 57FIKgzqu9Ryt3PYqKtUZGyG+wa2nWNwKyoRkHTDVvRHla7lf5eAhyeC76akG9eHxL8JkMnOa
- CaZ8sF6VORnrSo=
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ADEO3zlJ8KZu4ZQDwaBjtZwipOswaZv4EetDJkm+lCYAL/stre6
+ NGX/FZSh3vl8TdDuvs7Tjm+32eBmwO0nOsjJsbCWjUeUiR9kqVcu3M/Df9yUeqA87tqsM/T
+ Ta8QusIw+0ub8uv3ZQH1QcbYxa138/mr8tMXKnGtjWBPtTZODkPyj+PaghA4+Ll7oBP2HGW
+ Mkk3HMaXzejYynD5BUo+Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Jv6kLqUF8VI=:wtP55C9h0qPU4w+HxSD9pI
+ 6AFR5xwlA2fAl/kIO9K8IFOCVJjYDRS9/tcZlNCNUdj3X5t9Wg1JK3/yhBlQZvgNH/XzRjz2d
+ vsi/ZNKDtfS0c+jFy3rZb1w56qbq4+Zz9++qkOl/muXQ87FMoMQrj7GoxKgtBlDUsSL3McJkO
+ VuLysgv03eVq3uf0aQ96HEyF+riIenNhybDT6DskzaSW27/ttNdZfsPea4qKny+gPcAA3wH3h
+ BDYpzReTsrhQTmmWUyGyELxdVr65PKBZqEmTDieOx+sf/e7T17MZwsPCILyrI+kZaJPZXGMhS
+ mL41muMSQcA/9Dt7Sg33OH/aFsTR7DvS8paa6lilG+29dopRCDRwTvbtFUpchPfHTY5ePL5Su
+ u62fy5xv/ekf8aNf8CnPqsizYNZ+Voad6s7Ih9QpygmDA49cPvLBAJ+0jIgV27vArXjTDoR4y
+ KdaRPEFNAbXeZBiSu0nuHIw/AsTbPaQ4pUmMhNYkpopqSx2Kiy28apbrI6Px/cEXcEydC8luc
+ yUODbPYNBV9DLpzIiDf9GUYy9VxS1wdr77OXUdeGFOVQzIq0xRGV+dPjwO84pO0CJVhqAkVGS
+ xlrZkR4sL6ypaNlGMrZVSZcJs3qWUtdsg4hkqi1KUWTVtgqzGDakur1DoCBxv14kHlGqomAQ2
+ UK78ceJ9LPuoPLcofjMN3+96Lp7kSYoswlfp7pMuCHgirKeoDGUEFj/VhDVkpzeKhPr9ZjLk9
+ VRRLdv2NQNxH67pP32dop4VeWrmcBsnsbCuXq2CueuaA3+pZBIYnZb6oKlXHHomI/u1fnTsSE
+ aAD+EgTvNTL3z1SzmWJvM6nqFrjs4vzkx37iX+12wAz6yBI2lfpTwR3NN/LCBkNBSnrW8ZKvL
+ +HcRWARU/rRoOmeFdGpy3gIW8Ys6ylFYRNrKyp9cnVLK2RrGkmjwmtRAq9XiTEFG49w6br4UF
+ TnfHqrBhGSCzycWbWT/+0J/Hyxcp8EqJrIPadEkTogijsZSTA7OG7S4g/vbeiGpjNxwceqHwN
+ 2EHY62GlCjLfEc+LvZXiRnm4zRB4d2eSQ/TI5iRCRf3z+kz+K54QTgRdIljrRQpJZ9H7cC3WM
+ 1mukn6oP5LqRUc=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjIvMy85IDEwOjEyLCBBbmFuZCBKYWluIHdyb3RlOg0KPiBPbiAwOC8wMy8yMDIy
-IDEzOjM2LCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBbQlVHXQ0KPj4gVGhlcmUgaXMgYSByZXBvcnQg
-dGhhdCBhIGJ0cmZzIGhhcyBhIGJhZCBzdXBlciBibG9jayBudW0gZGV2aWNlcy4NCj4+DQo+PiBU
-aGlzIG1ha2VzIGJ0cmZzIHRvIHJlamVjdCB0aGUgZnMgY29tcGxldGVseS4NCj4+DQo+PiDCoMKg
-IEJUUkZTIGVycm9yIChkZXZpY2Ugc2RkMyk6IHN1cGVyX251bV9kZXZpY2VzIDMgbWlzbWF0Y2gg
-d2l0aCANCj4+IG51bV9kZXZpY2VzIDIgZm91bmQgaGVyZQ0KPj4gwqDCoCBCVFJGUyBlcnJvciAo
-ZGV2aWNlIHNkZDMpOiBmYWlsZWQgdG8gcmVhZCBjaHVuayB0cmVlOiAtMjINCj4+IMKgwqAgQlRS
-RlMgZXJyb3IgKGRldmljZSBzZGQzKTogb3Blbl9jdHJlZSBmYWlsZWQNCj4+DQo+PiBbQ0FVU0Vd
-DQo+PiBEdXJpbmcgYnRyZnMgZGV2aWNlIHJlbW92YWwsIGNodW5rIHRyZWUgYW5kIHN1cGVyIGJs
-b2NrIG51bSBkZXZzIGFyZQ0KPj4gdXBkYXRlZCBpbiB0d28gZGlmZmVyZW50IHRyYW5zYWN0aW9u
-czoNCj4+DQo+PiDCoMKgIGJ0cmZzX3JtX2RldmljZSgpDQo+PiDCoMKgIHwtIGJ0cmZzX3JtX2Rl
-dl9pdGVtKGRldmljZSkNCj4+IMKgwqAgfMKgIHwtIHRyYW5zID0gYnRyZnNfc3RhcnRfdHJhbnNh
-Y3Rpb24oKQ0KPj4gwqDCoCB8wqAgfMKgIE5vdyB3ZSBnb3QgdHJhbnNhY3Rpb24gWA0KPj4gwqDC
-oCB8wqAgfA0KPj4gwqDCoCB8wqAgfC0gYnRyZnNfZGVsX2l0ZW0oKQ0KPj4gwqDCoCB8wqAgfMKg
-IE5vdyBkZXZpY2UgaXRlbSBpcyByZW1vdmVkIGZyb20gY2h1bmsgdHJlZQ0KPj4gwqDCoCB8wqAg
-fA0KPj4gwqDCoCB8wqAgfC0gYnRyZnNfY29tbWl0X3RyYW5zYWN0aW9uKCkNCj4+IMKgwqAgfMKg
-wqDCoMKgIFRyYW5zYWN0aW9uIFggZ290IGNvbW1pdHRlZCwgc3VwZXIgbnVtIGRldnMgdW50b3Vj
-aGVkLA0KPj4gwqDCoCB8wqDCoMKgwqAgYnV0IGRldmljZSBpdGVtIHJlbW92ZWQgZnJvbSBjaHVu
-ayB0cmVlLg0KPj4gwqDCoCB8wqDCoMKgwqAgKEFLQSwgc3VwZXIgbnVtIGRldnMgaXMgYWxyZWFk
-eSBpbmNvcnJlY3QpDQo+PiDCoMKgIHwNCj4+IMKgwqAgfC0gY3VyX2RldmljZXMtPm51bV9kZXZp
-Y2VzLS07DQo+PiDCoMKgIHwtIGN1cl9kZXZpY2VzLT50b3RhbF9kZXZpY2VzLS07DQo+PiDCoMKg
-IHwtIGJ0cmZzX3NldF9zdXBlcl9udW1fZGV2aWNlcygpDQo+PiDCoMKgwqDCoMKgIEFsbCB0aG9z
-ZSBvcGVyYXRpb25zIGFyZSBub3QgaW4gdHJhbnNhY3Rpb24gWCwgdGh1cyBpdCB3aWxsDQo+PiDC
-oMKgwqDCoMKgIG9ubHkgYmUgd3JpdHRlbiBiYWNrIHRvIGRpc2sgaW4gbmV4dCB0cmFuc2FjdGlv
-bi4NCj4+DQo+PiBTbyBhZnRlciB0aGUgdHJhbnNhY3Rpb24gWCBpbiBidHJmc19ybV9kZXZfaXRl
-bSgpIGNvbW1pdHRlZCwgYnV0IGJlZm9yZQ0KPj4gdHJhbnNhY3Rpb24gWCsxICh3aGljaCBjYW4g
-YmUgbWludXRlcyBhd2F5KSwgYSBwb3dlciBsb3NzIGhhcHBlbiwgdGhlbg0KPj4gd2UgZ290IHRo
-ZSBzdXBlciBudW0gbWlzbWF0Y2guDQo+Pg0KPj4gW0ZJWF0NCj4+IEluc3RlYWQgb2Ygc3RhcnRp
-bmcgYW5kIGNvbW1pdHRpbmcgYSB0cmFuc2FjdGlvbiBpbnNpZGUNCj4+IGJ0cmZzX3JtX2Rldl9p
-dGVtKCksIHN0YXJ0IGEgdHJhbnNhY3Rpb24gaW4gc2lkZSBidHJmc19ybV9kZXZpY2UoKSBhbmQN
-Cj4+IHBhc3MgaXQgdG8gYnRyZnNfcm1fZGV2X2l0ZW0oKS4NCj4+DQo+PiBBbmQgb25seSBjb21t
-aXQgdGhlIHRyYW5zYWN0aW9uIGFmdGVyIGV2ZXJ5dGhpbmcgaXMgZG9uZS4NCj4+IMKgPiBSZXBv
-cnRlZC1ieTogTHVjYSBCw6lsYSBQYWxrb3ZpY3MgPGx1Y2EuYmVsYS5wYWxrb3ZpY3NAZ21haWwu
-Y29tPg0KPj4gTGluazogDQo+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1idHJmcy9D
-QSs4eERTcHZkbV9VMFFMQkFuckg9enFEcV9jV0NPSDVUaVY0NkNLbXAzaWdyNDRva1FAbWFpbC5n
-bWFpbC5jb20vIA0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IFF1IFdlbnJ1byA8d3F1QHN1c2UuY29t
-Pg0KPj4gLS0tDQo+PiDCoCBmcy9idHJmcy92b2x1bWVzLmMgfCA2NSArKysrKysrKysrKysrKysr
-KysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMjgg
-aW5zZXJ0aW9ucygrKSwgMzcgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0
-cmZzL3ZvbHVtZXMuYyBiL2ZzL2J0cmZzL3ZvbHVtZXMuYw0KPj4gaW5kZXggNTdhNzU0YjMzZjEw
-Li42MTE1YzMwMmY0YWUgMTAwNjQ0DQo+PiAtLS0gYS9mcy9idHJmcy92b2x1bWVzLmMNCj4+ICsr
-KyBiL2ZzL2J0cmZzL3ZvbHVtZXMuYw0KPj4gQEAgLTE4OTYsMjMgKzE4OTYsMTggQEAgc3RhdGlj
-IHZvaWQgdXBkYXRlX2Rldl90aW1lKGNvbnN0IGNoYXIgDQo+PiAqZGV2aWNlX3BhdGgpDQo+PiDC
-oMKgwqDCoMKgIHBhdGhfcHV0KCZwYXRoKTsNCj4+IMKgIH0NCj4+IC1zdGF0aWMgaW50IGJ0cmZz
-X3JtX2Rldl9pdGVtKHN0cnVjdCBidHJmc19kZXZpY2UgKmRldmljZSkNCj4+ICtzdGF0aWMgaW50
-IGJ0cmZzX3JtX2Rldl9pdGVtKHN0cnVjdCBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zLA0KPj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBidHJmc19kZXZpY2UgKmRl
-dmljZSkNCj4+IMKgIHsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGJ0cmZzX3Jvb3QgKnJvb3QgPSBk
-ZXZpY2UtPmZzX2luZm8tPmNodW5rX3Jvb3Q7DQo+PiDCoMKgwqDCoMKgIGludCByZXQ7DQo+PiDC
-oMKgwqDCoMKgIHN0cnVjdCBidHJmc19wYXRoICpwYXRoOw0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3Qg
-YnRyZnNfa2V5IGtleTsNCj4+IC3CoMKgwqAgc3RydWN0IGJ0cmZzX3RyYW5zX2hhbmRsZSAqdHJh
-bnM7DQo+PiDCoMKgwqDCoMKgIHBhdGggPSBidHJmc19hbGxvY19wYXRoKCk7DQo+PiDCoMKgwqDC
-oMKgIGlmICghcGF0aCkNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVOT01FTTsNCj4+
-IC3CoMKgwqAgdHJhbnMgPSBidHJmc19zdGFydF90cmFuc2FjdGlvbihyb290LCAwKTsNCj4+IC3C
-oMKgwqAgaWYgKElTX0VSUih0cmFucykpIHsNCj4+IC3CoMKgwqDCoMKgwqDCoCBidHJmc19mcmVl
-X3BhdGgocGF0aCk7DQo+PiAtwqDCoMKgwqDCoMKgwqAgcmV0dXJuIFBUUl9FUlIodHJhbnMpOw0K
-Pj4gLcKgwqDCoCB9DQo+PiDCoMKgwqDCoMKgIGtleS5vYmplY3RpZCA9IEJUUkZTX0RFVl9JVEVN
-U19PQkpFQ1RJRDsNCj4+IMKgwqDCoMKgwqAga2V5LnR5cGUgPSBCVFJGU19ERVZfSVRFTV9LRVk7
-DQo+PiDCoMKgwqDCoMKgIGtleS5vZmZzZXQgPSBkZXZpY2UtPmRldmlkOw0KPj4gQEAgLTE5MjMs
-MjEgKzE5MTgsMTIgQEAgc3RhdGljIGludCBidHJmc19ybV9kZXZfaXRlbShzdHJ1Y3QgDQo+PiBi
-dHJmc19kZXZpY2UgKmRldmljZSkNCj4+IMKgwqDCoMKgwqAgaWYgKHJldCkgew0KPj4gwqDCoMKg
-wqDCoMKgwqDCoMKgIGlmIChyZXQgPiAwKQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-cmV0ID0gLUVOT0VOVDsNCj4+IC3CoMKgwqDCoMKgwqDCoCBidHJmc19hYm9ydF90cmFuc2FjdGlv
-bih0cmFucywgcmV0KTsNCj4+IC3CoMKgwqDCoMKgwqDCoCBidHJmc19lbmRfdHJhbnNhY3Rpb24o
-dHJhbnMpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPj4gwqDCoMKgwqDCoCB9
-DQo+PiDCoMKgwqDCoMKgIHJldCA9IGJ0cmZzX2RlbF9pdGVtKHRyYW5zLCByb290LCBwYXRoKTsN
-Cj4+IC3CoMKgwqAgaWYgKHJldCkgew0KPj4gLcKgwqDCoMKgwqDCoMKgIGJ0cmZzX2Fib3J0X3Ry
-YW5zYWN0aW9uKHRyYW5zLCByZXQpOw0KPj4gLcKgwqDCoMKgwqDCoMKgIGJ0cmZzX2VuZF90cmFu
-c2FjdGlvbih0cmFucyk7DQo+PiAtwqDCoMKgIH0NCj4+IC0NCj4+IMKgIG91dDoNCj4+IMKgwqDC
-oMKgwqAgYnRyZnNfZnJlZV9wYXRoKHBhdGgpOw0KPj4gLcKgwqDCoCBpZiAoIXJldCkNCj4+IC3C
-oMKgwqDCoMKgwqDCoCByZXQgPSBidHJmc19jb21taXRfdHJhbnNhY3Rpb24odHJhbnMpOw0KPj4g
-wqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0KPj4gwqAgfQ0KPj4gQEAgLTIwNzgsNiArMjA2NCw3IEBA
-IGludCBidHJmc19ybV9kZXZpY2Uoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8sDQo+PiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfZGV2X2xvb2t1cF9hcmdzICph
-cmdzLA0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IGJsb2NrX2RldmljZSAq
-KmJkZXYsIGZtb2RlX3QgKm1vZGUpDQo+PiDCoCB7DQo+PiArwqDCoMKgIHN0cnVjdCBidHJmc190
-cmFuc19oYW5kbGUgKnRyYW5zOw0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfZGV2aWNlICpk
-ZXZpY2U7DQo+PiDCoMKgwqDCoMKgIHN0cnVjdCBidHJmc19mc19kZXZpY2VzICpjdXJfZGV2aWNl
-czsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGJ0cmZzX2ZzX2RldmljZXMgKmZzX2RldmljZXMgPSBm
-c19pbmZvLT5mc19kZXZpY2VzOw0KPj4gQEAgLTIwOTgsNyArMjA4NSw3IEBAIGludCBidHJmc19y
-bV9kZXZpY2Uoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8sDQo+PiDCoMKgwqDCoMKgIHJl
-dCA9IGJ0cmZzX2NoZWNrX3JhaWRfbWluX2RldmljZXMoZnNfaW5mbywgbnVtX2RldmljZXMgLSAx
-KTsNCj4+IMKgwqDCoMKgwqAgaWYgKHJldCkNCj4+IC3CoMKgwqDCoMKgwqDCoCBnb3RvIG91dDsN
-Cj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0KPj4gwqDCoMKgwqDCoCBkZXZpY2UgPSBi
-dHJmc19maW5kX2RldmljZShmc19pbmZvLT5mc19kZXZpY2VzLCBhcmdzKTsNCj4+IMKgwqDCoMKg
-wqAgaWYgKCFkZXZpY2UpIHsNCj4+IEBAIC0yMTA2LDI3ICsyMDkzLDIyIEBAIGludCBidHJmc19y
-bV9kZXZpY2Uoc3RydWN0IGJ0cmZzX2ZzX2luZm8gDQo+PiAqZnNfaW5mbywNCj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHJldCA9IEJUUkZTX0VSUk9SX0RFVl9NSVNTSU5HX05PVF9GT1VO
-RDsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBlbHNlDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCByZXQgPSAtRU5PRU5UOw0KPj4gLcKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPj4gK8Kg
-wqDCoMKgwqDCoMKgIHJldHVybiByZXQ7DQo+PiDCoMKgwqDCoMKgIH0NCj4+IMKgwqDCoMKgwqAg
-aWYgKGJ0cmZzX3Bpbm5lZF9ieV9zd2FwZmlsZShmc19pbmZvLCBkZXZpY2UpKSB7DQo+PiDCoMKg
-wqDCoMKgwqDCoMKgwqAgYnRyZnNfd2Fybl9pbl9yY3UoZnNfaW5mbywNCj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgImNhbm5vdCByZW1vdmUgZGV2aWNlICVzIChkZXZpZCAlbGx1KSBkdWUgdG8g
-YWN0aXZlIA0KPj4gc3dhcGZpbGUiLA0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgcmN1X3N0cl9kZXJlZihkZXZpY2UtPm5hbWUpLCBkZXZpY2UtPmRldmlkKTsNCj4+
-IC3CoMKgwqDCoMKgwqDCoCByZXQgPSAtRVRYVEJTWTsNCj4+IC3CoMKgwqDCoMKgwqDCoCBnb3Rv
-IG91dDsNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVUWFRCU1k7DQo+PiDCoMKgwqDCoMKg
-IH0NCj4+IC3CoMKgwqAgaWYgKHRlc3RfYml0KEJUUkZTX0RFVl9TVEFURV9SRVBMQUNFX1RHVCwg
-JmRldmljZS0+ZGV2X3N0YXRlKSkgew0KPj4gLcKgwqDCoMKgwqDCoMKgIHJldCA9IEJUUkZTX0VS
-Uk9SX0RFVl9UR1RfUkVQTEFDRTsNCj4+IC3CoMKgwqDCoMKgwqDCoCBnb3RvIG91dDsNCj4+IC3C
-oMKgwqAgfQ0KPj4gK8KgwqDCoCBpZiAodGVzdF9iaXQoQlRSRlNfREVWX1NUQVRFX1JFUExBQ0Vf
-VEdULCAmZGV2aWNlLT5kZXZfc3RhdGUpKQ0KPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiBCVFJG
-U19FUlJPUl9ERVZfVEdUX1JFUExBQ0U7DQo+PiDCoMKgwqDCoMKgIGlmICh0ZXN0X2JpdChCVFJG
-U19ERVZfU1RBVEVfV1JJVEVBQkxFLCAmZGV2aWNlLT5kZXZfc3RhdGUpICYmDQo+PiAtwqDCoMKg
-wqDCoMKgwqAgZnNfaW5mby0+ZnNfZGV2aWNlcy0+cndfZGV2aWNlcyA9PSAxKSB7DQo+PiAtwqDC
-oMKgwqDCoMKgwqAgcmV0ID0gQlRSRlNfRVJST1JfREVWX09OTFlfV1JJVEFCTEU7DQo+PiAtwqDC
-oMKgwqDCoMKgwqAgZ290byBvdXQ7DQo+PiAtwqDCoMKgIH0NCj4+ICvCoMKgwqDCoMKgwqDCoCBm
-c19pbmZvLT5mc19kZXZpY2VzLT5yd19kZXZpY2VzID09IDEpDQo+PiArwqDCoMKgwqDCoMKgwqAg
-cmV0dXJuIEJUUkZTX0VSUk9SX0RFVl9PTkxZX1dSSVRBQkxFOw0KPj4gwqDCoMKgwqDCoCBpZiAo
-dGVzdF9iaXQoQlRSRlNfREVWX1NUQVRFX1dSSVRFQUJMRSwgJmRldmljZS0+ZGV2X3N0YXRlKSkg
-ew0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIG11dGV4X2xvY2soJmZzX2luZm8tPmNodW5rX211dGV4
-KTsNCj4+IEBAIC0yMTM5LDE0ICsyMTIxLDIyIEBAIGludCBidHJmc19ybV9kZXZpY2Uoc3RydWN0
-IGJ0cmZzX2ZzX2luZm8gDQo+PiAqZnNfaW5mbywNCj4+IMKgwqDCoMKgwqAgaWYgKHJldCkNCj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIGVycm9yX3VuZG87DQo+PiAtwqDCoMKgIC8qDQo+PiAt
-wqDCoMKgwqAgKiBUT0RPOiB0aGUgc3VwZXJibG9jayBzdGlsbCBpbmNsdWRlcyB0aGlzIGRldmlj
-ZSBpbiBpdHMgDQo+PiBudW1fZGV2aWNlcw0KPj4gLcKgwqDCoMKgICogY291bnRlciBhbHRob3Vn
-aCB3cml0ZV9hbGxfc3VwZXJzKCkgaXMgbm90IGxvY2tlZCBvdXQuIFRoaXMNCj4+IC3CoMKgwqDC
-oCAqIGNvdWxkIGdpdmUgYSBmaWxlc3lzdGVtIHN0YXRlIHdoaWNoIHJlcXVpcmVzIGEgZGVncmFk
-ZWQgbW91bnQuDQo+PiAtwqDCoMKgwqAgKi8NCj4+IC3CoMKgwqAgcmV0ID0gYnRyZnNfcm1fZGV2
-X2l0ZW0oZGV2aWNlKTsNCj4+IC3CoMKgwqAgaWYgKHJldCkNCj4+ICvCoMKgwqAgdHJhbnMgPSBi
-dHJmc19zdGFydF90cmFuc2FjdGlvbihmc19pbmZvLT5jaHVua19yb290LCAwKTsNCj4+ICvCoMKg
-wqAgaWYgKElTX0VSUih0cmFucykpIHsNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBQVFJfRVJS
-KHRyYW5zKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIGVycm9yX3VuZG87DQo+PiArwqDC
-oMKgIH0NCj4+ICsNCj4+ICvCoMKgwqAgcmV0ID0gYnRyZnNfcm1fZGV2X2l0ZW0odHJhbnMsIGRl
-dmljZSk7DQo+PiArwqDCoMKgIGlmIChyZXQpIHsNCj4+ICvCoMKgwqDCoMKgwqDCoCAvKiBBbnkg
-ZXJyb3IgaW4gZGV2IGl0ZW0gcmVtb3ZhbCBpcyBjcml0aWNhbCAqLw0KPj4gK8KgwqDCoMKgwqDC
-oMKgIGJ0cmZzX2NyaXQoZnNfaW5mbywNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICJmYWlsZWQgdG8gcmVtb3ZlIGRldmljZSBpdGVtIGZvciBkZXZpZCAlbGx1OiAlZCIsDQo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZpY2UtPmRldmlkLCByZXQpOw0KPj4gK8Kg
-wqDCoMKgwqDCoMKgIGJ0cmZzX2Fib3J0X3RyYW5zYWN0aW9uKHRyYW5zLCByZXQpOw0KPj4gK8Kg
-wqDCoMKgwqDCoMKgIGJ0cmZzX2VuZF90cmFuc2FjdGlvbih0cmFucyk7DQo+PiArwqDCoMKgwqDC
-oMKgwqAgcmV0dXJuIHJldDsNCj4gDQo+ICDCoE1pc3NlZCBlcnJvcl91bmRvIHBhcnQgb2YgdGhl
-IHVuZG8gaGVyZS4NCg0KTm9wZSwgdGhhdCdzIGV4YWN0bHkgZXhwZWN0ZWQuDQoNCldlIGFib3J0
-IHRyYW5zYWN0aW9uLCB0aHVzIG5vdGhpbmcgY29tbWl0dGVkLCBubyBuZWVkIHRvIHVuZG8uDQoN
-CkluIGZhY3QsIGFmdGVyIHRoZSBidHJmc19ybV9kZXZfaXRlbSgpIGNhbGwsIHRoZXJlIGlzIG5v
-IHJlYWwgd2F5IHRvIA0Kcm9sbGJhY2sgdGhlIGRlbGV0ZS4NCg0KVGhhbmtzLA0KUXUNCj4gDQo+
-IFRoYW5rcywgQW5hbmQNCj4gDQo+PiArwqDCoMKgIH0NCj4+IMKgwqDCoMKgwqAgY2xlYXJfYml0
-KEJUUkZTX0RFVl9TVEFURV9JTl9GU19NRVRBREFUQSwgJmRldmljZS0+ZGV2X3N0YXRlKTsNCj4+
-IMKgwqDCoMKgwqAgYnRyZnNfc2NydWJfY2FuY2VsX2RldihkZXZpY2UpOw0KPj4gQEAgLTIyMjks
-NyArMjIxOSw4IEBAIGludCBidHJmc19ybV9kZXZpY2Uoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZz
-X2luZm8sDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgZnJlZV9mc19kZXZpY2VzKGN1cl9kZXZpY2Vz
-KTsNCj4+IMKgwqDCoMKgwqAgfQ0KPj4gLW91dDoNCj4+ICvCoMKgwqAgcmV0ID0gYnRyZnNfY29t
-bWl0X3RyYW5zYWN0aW9uKHRyYW5zKTsNCj4+ICsNCj4+IMKgwqDCoMKgwqAgcmV0dXJuIHJldDsN
-Cj4+IMKgIGVycm9yX3VuZG86DQo+PiBAQCAtMjI0MCw3ICsyMjMxLDcgQEAgaW50IGJ0cmZzX3Jt
-X2RldmljZShzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbywNCj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoCBkZXZpY2UtPmZzX2RldmljZXMtPnJ3X2RldmljZXMrKzsNCj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoCBtdXRleF91bmxvY2soJmZzX2luZm8tPmNodW5rX211dGV4KTsNCj4+IMKgwqDCoMKgwqAg
-fQ0KPj4gLcKgwqDCoCBnb3RvIG91dDsNCj4+ICvCoMKgwqAgcmV0dXJuIHJldDsNCj4+IMKgIH0N
-Cj4+IMKgIHZvaWQgYnRyZnNfcm1fZGV2X3JlcGxhY2VfcmVtb3ZlX3NyY2RldihzdHJ1Y3QgYnRy
-ZnNfZGV2aWNlICpzcmNkZXYpDQo+IA0K
+
+
+On 2022/3/9 09:09, bill gates wrote:
+> This filesystem was most likely created in 2014 using the tools of
+> that time, at least that's the oldest file in my home directory. It
+> _might_ have been made in 2019, that's the date on the mount point.
+>
+> There are 2 subvolumes on /dev/sda2, /home and /var.
+>
+> My btrfs-progs version is 5.15.1.
+>
+> Per your request:
+> # btrfs ins dump-tree -b 10442806968320 /dev/sda2
+> btrfs-progs v5.15.1
+
+Weird, the output doesn't match the dmesg.
+
+This tree belongs to csum tree, not root tree.
+
+Thanks,
+Qu
+> leaf 10442806968320 items 34 free space 6225 generation 6834902 owner CS=
+UM_TREE
+> leaf 10442806968320 flags 0x1(WRITTEN) backref revision 1
+> fs uuid 83c6c9ca-b8fe-4d4c-aaa8-1729f90b0824
+> chunk uuid 9b77400b-f370-4f49-be82-9cb38c7f78a0
+>         item 0 key (EXTENT_CSUM EXTENT_CSUM 9848629587968) itemoff
+> 16075 itemsize 208
+>                 range start 9848629587968 end 9848629800960 length 21299=
+2
+>         item 1 key (EXTENT_CSUM EXTENT_CSUM 9848630026240) itemoff
+> 15823 itemsize 252
+>                 range start 9848630026240 end 9848630284288 length 25804=
+8
+>         item 2 key (EXTENT_CSUM EXTENT_CSUM 9848630714368) itemoff
+> 15815 itemsize 8
+>                 range start 9848630714368 end 9848630722560 length 8192
+>         item 3 key (EXTENT_CSUM EXTENT_CSUM 9848630984704) itemoff
+> 14723 itemsize 1092
+>                 range start 9848630984704 end 9848632102912 length 11182=
+08
+>         item 4 key (EXTENT_CSUM EXTENT_CSUM 9848632160256) itemoff
+> 14703 itemsize 20
+>                 range start 9848632160256 end 9848632180736 length 20480
+>         item 5 key (EXTENT_CSUM EXTENT_CSUM 9848632180736) itemoff
+> 14279 itemsize 424
+>                 range start 9848632180736 end 9848632614912 length 43417=
+6
+>         item 6 key (EXTENT_CSUM EXTENT_CSUM 9848632942592) itemoff
+> 14067 itemsize 212
+>                 range start 9848632942592 end 9848633159680 length 21708=
+8
+>         item 7 key (EXTENT_CSUM EXTENT_CSUM 9848633286656) itemoff
+> 13815 itemsize 252
+>                 range start 9848633286656 end 9848633544704 length 25804=
+8
+>         item 8 key (EXTENT_CSUM EXTENT_CSUM 9848633548800) itemoff
+> 13579 itemsize 236
+>                 range start 9848633548800 end 9848633790464 length 24166=
+4
+>         item 9 key (EXTENT_CSUM EXTENT_CSUM 9848633810944) itemoff
+> 13527 itemsize 52
+>                 range start 9848633810944 end 9848633864192 length 53248
+>         item 10 key (EXTENT_CSUM EXTENT_CSUM 9848633950208) itemoff
+> 12671 itemsize 856
+>                 range start 9848633950208 end 9848634826752 length 87654=
+4
+>         item 11 key (EXTENT_CSUM EXTENT_CSUM 9848634826752) itemoff
+> 12659 itemsize 12
+>                 range start 9848634826752 end 9848634839040 length 12288
+>         item 12 key (EXTENT_CSUM EXTENT_CSUM 9848634970112) itemoff
+> 12643 itemsize 16
+>                 range start 9848634970112 end 9848634986496 length 16384
+>         item 13 key (EXTENT_CSUM EXTENT_CSUM 9848635056128) itemoff
+> 12583 itemsize 60
+>                 range start 9848635056128 end 9848635117568 length 61440
+>         item 14 key (EXTENT_CSUM EXTENT_CSUM 9848635117568) itemoff
+> 12151 itemsize 432
+>                 range start 9848635117568 end 9848635559936 length 44236=
+8
+>         item 15 key (EXTENT_CSUM EXTENT_CSUM 9848635592704) itemoff
+> 12135 itemsize 16
+>                 range start 9848635592704 end 9848635609088 length 16384
+>         item 16 key (EXTENT_CSUM EXTENT_CSUM 9848635703296) itemoff
+> 11791 itemsize 344
+>                 range start 9848635703296 end 9848636055552 length 35225=
+6
+>         item 17 key (EXTENT_CSUM EXTENT_CSUM 9848636108800) itemoff
+> 11719 itemsize 72
+>                 range start 9848636108800 end 9848636182528 length 73728
+>         item 18 key (EXTENT_CSUM EXTENT_CSUM 9848636669952) itemoff
+> 11691 itemsize 28
+>                 range start 9848636669952 end 9848636698624 length 28672
+>         item 19 key (EXTENT_CSUM EXTENT_CSUM 9848636698624) itemoff
+> 11371 itemsize 320
+>                 range start 9848636698624 end 9848637026304 length 32768=
+0
+>         item 20 key (EXTENT_CSUM EXTENT_CSUM 9848637026304) itemoff
+> 10979 itemsize 392
+>                 range start 9848637026304 end 9848637427712 length 40140=
+8
+>         item 21 key (EXTENT_CSUM EXTENT_CSUM 9848637468672) itemoff
+> 10131 itemsize 848
+>                 range start 9848637468672 end 9848638337024 length 86835=
+2
+>         item 22 key (EXTENT_CSUM EXTENT_CSUM 9848638631936) itemoff
+> 10079 itemsize 52
+>                 range start 9848638631936 end 9848638685184 length 53248
+>         item 23 key (EXTENT_CSUM EXTENT_CSUM 9848638685184) itemoff
+> 9791 itemsize 288
+>                 range start 9848638685184 end 9848638980096 length 29491=
+2
+>         item 24 key (EXTENT_CSUM EXTENT_CSUM 9848638980096) itemoff
+> 9787 itemsize 4
+>                 range start 9848638980096 end 9848638984192 length 4096
+>         item 25 key (EXTENT_CSUM EXTENT_CSUM 9848638984192) itemoff
+> 9735 itemsize 52
+>                 range start 9848638984192 end 9848639037440 length 53248
+>         item 26 key (EXTENT_CSUM EXTENT_CSUM 9848639045632) itemoff
+> 9111 itemsize 624
+>                 range start 9848639045632 end 9848639684608 length 63897=
+6
+>         item 27 key (EXTENT_CSUM EXTENT_CSUM 9848639684608) itemoff
+> 9091 itemsize 20
+>                 range start 9848639684608 end 9848639705088 length 20480
+>         item 28 key (EXTENT_CSUM EXTENT_CSUM 9848639967232) itemoff
+> 8003 itemsize 1088
+>                 range start 9848639967232 end 9848641081344 length 11141=
+12
+>         item 29 key (EXTENT_CSUM EXTENT_CSUM 9848641150976) itemoff
+> 7947 itemsize 56
+>                 range start 9848641150976 end 9848641208320 length 57344
+>         item 30 key (EXTENT_CSUM EXTENT_CSUM 9848641409024) itemoff
+> 7887 itemsize 60
+>                 range start 9848641409024 end 9848641470464 length 61440
+>         item 31 key (EXTENT_CSUM EXTENT_CSUM 9848641695744) itemoff
+> 7643 itemsize 244
+>                 range start 9848641695744 end 9848641945600 length 24985=
+6
+>         item 32 key (EXTENT_CSUM EXTENT_CSUM 9848642043904) itemoff
+> 7615 itemsize 28
+>                 range start 9848642043904 end 9848642072576 length 28672
+>         item 33 key (EXTENT_CSUM EXTENT_CSUM 9848642162688) itemoff
+> 7075 itemsize 540
+>                 range start 9848642162688 end 9848642715648 length 55296=
+0
+>
+>
+> On Tue, Mar 8, 2022 at 5:48 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>
+>>
+>>
+>> On 2022/3/9 03:05, bill gates wrote:
+>>> So, I recently attempted to upgrade from Linux kernel 4.19.82 to
+>>> 5.15.23, and I'm getting a critical error in dmesg about a corrupt
+>>> leaf (and no mounting of /home allowed with the options I'm aware of)
+>>>
+>>> [ 396.218964] BTRFS critical (device sda2): corrupt leaf: root=3D1
+>>> block=3D10442806968320 sl
+>>> ot=3D8 ino=3D6, invalid location key objectid: has 1 expect 6 or [256,
+>>> 18446744073709551360]
+>>> or 18446744073709551604
+>>
+>> Please provide the following output:
+>>
+>> # btrfs ins dump-tree -b 10442806968320 /dev/sda2
+>>
+>>
+>> The error message means, we got a DIR_ITEM in root tree.
+>>
+>> Normally that is used to indicate what default subvolume is.
+>> Thus it's normally 6 or 5, or any valid subvolume id.
+>>
+>> But in your case, it's 1, thus tree-checker is rejecting your root tree=
+.
+>>
+>> I didn't thought we could have 1 as default subvolume (as 1 is the root
+>> tree, which is not a subvolume).
+>>
+>> But it looks like we should update btrfs check to fix this case.
+>>
+>> Is the fs created using older btrfs-progs? I guess that may be the caus=
+e...
+>>
+>> Thanks,
+>> Qu
+>>
+>>
+>>> [ 396.218967] BTRFS error (device sda2): block=3D10442806968320 read
+>>> time tree block corru
+>>> ption detected
+>>>
+>>>
+>>> Interestingly. that 18446... number is a power of 2, looks like maybe
+>>> a bit flip? dmesg, uname, etc included in pastebin below. "btrfs
+>>> check" found no problems with fs on either kernel version. Would like
+>>> to figure out how to fix this, if possible.
+>>>
+>>> https://pastebin.com/0ESPU9Z6
+>>>
+>>> Thank you for any assistance,
+>>> -- Laurence Michaels.
