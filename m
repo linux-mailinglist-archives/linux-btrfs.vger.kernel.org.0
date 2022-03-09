@@ -2,102 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F02D4D3C01
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 22:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BA84D3C23
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 22:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbiCIVXr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Mar 2022 16:23:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
+        id S236347AbiCIVhY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Mar 2022 16:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbiCIVXq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 16:23:46 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9013E6420
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 13:22:47 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id j5so3019981qvs.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 13:22:47 -0800 (PST)
+        with ESMTP id S235179AbiCIVhX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 16:37:23 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543FCF9FB8
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 13:36:24 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id x8-20020a9d6288000000b005b22c373759so2710226otk.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 13:36:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5BybgI3ufsI0ReTExyQ1WaZdrh94B7x8b54cBXkE0lk=;
-        b=5VDZjORF9lxcAbrPHMiuVfwnXEQE9nV78nrJDhhnhgX41Uryg4odTdAss0gF/vSkKk
-         LSLmd6X4dEQY0z074B6Dg3itYbQlt1YXvOFZNc+0ql4mgMHofkw3buJWdDn/mbmrjUxP
-         5eK44v/oV/0aoceR5OkW9attQWzezj0duZDArNIwD58+G09m1Oya8jehoTkAV3G7wgkp
-         GAwiEJVVOvr+zOIFT/MmyJneibd/yxf8bzaT8DEE92mPGEniVJna/P/+WFTMfY76CLae
-         OwhDCm2udhdo7xYPCP2D2kTno+/G5atAjSOumOz6/y598jH5rtXygsExhcNOKSkLcFAd
-         EVDQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lUFMmcI44RntAMqgdHXtLdOP485Pu3dqtAalp/qwyRk=;
+        b=giWchPzIYrvdwZy+RBnkeXTaTgn469JzCd7BKTm67BTkoUuQ8dQU6BomWmtLRE8g5A
+         71B03WCdE61gqsTg8A1PoJviDcfVB0LPw4u8NiTnH/K4FkUDfeANhJmQBf/p2Fvpv1hj
+         CURxgW+9UW7FRRTjhH9YTdX5mQ+tPQq7VRuxjw+bBHqWpksEPQZwD4vDDquVOJozVb6z
+         NI3AI9PaiHvkgHJj62ukDk6rgYINgk6aHxcdLbAj+1VTNgtP+AGytNyy664v0+ZnrCLJ
+         SMRPqgxJ18BbXTXpsi/q/+X+iE9Iy25MsRy550vaWTZeFpPWtKgdpBaw2v9pJb4r+k2G
+         kMBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5BybgI3ufsI0ReTExyQ1WaZdrh94B7x8b54cBXkE0lk=;
-        b=b03ec7dtetzpzysCEbvR0rfYDbU7jgUHm4jGv8VZ2iqyiBuhABBJOpgLFomJagKAIh
-         OxOLoRUW8RfHJiY7SnCwACe2O722Ar5HvCXdCL03VQgTwy45Jp8DF0+U2TZt8lBBIGBc
-         mVtrmgNzwxgzMBRLwuiT9zJPuN8C3qHcyvyo9YS6icPfohu0k5vfXin0Q2PaLNMyScEx
-         zQ5IgMFLT2liX9ejTHU2cTDJuT6fVrt229LXiTSeFBljYtd0SWXdY41Gawrf12yE+b4t
-         I+3fkkPX/dvKDvVtTTHee/O6YxUDUpwl/CKSm5NV1J8s48g7qZqtZ5CkHn0e3/L0tLHc
-         FUlQ==
-X-Gm-Message-State: AOAM53273RTXvrZB/ptO7oJt0ose+7VKT1iEIosQAngtOXEyq+X2jT5p
-        snfMMZwdbFD6NwUpD/C9vytBFVQvrsU+M5u3
-X-Google-Smtp-Source: ABdhPJwfkE7ywuTAwcLIIRKCtImmG1JJOnxawBiKojpW0mE1cC9Zf72FT1wBhd6y0AgBQThEKzwSfw==
-X-Received: by 2002:a05:6214:19ed:b0:42c:289b:860e with SMTP id q13-20020a05621419ed00b0042c289b860emr1448255qvc.73.1646860966588;
-        Wed, 09 Mar 2022 13:22:46 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m6-20020ae9e006000000b0067d3e75e2a6sm898589qkk.19.2022.03.09.13.22.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 13:22:46 -0800 (PST)
-Date:   Wed, 9 Mar 2022 16:22:45 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH v5 12/19] btrfs-progs: set the number of global roots in
- the super block
-Message-ID: <YikapaHhZ41AFcmj@localhost.localdomain>
-References: <cover.1646690972.git.josef@toxicpanda.com>
- <1c28a05081455379be5d91ee760f9a03e4255e6a.1646690972.git.josef@toxicpanda.com>
- <20220308161951.GN12643@twin.jikos.cz>
- <PH0PR04MB741601104CC2D56A2EF3C02C9B099@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20220309170553.GY12643@twin.jikos.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lUFMmcI44RntAMqgdHXtLdOP485Pu3dqtAalp/qwyRk=;
+        b=2yNxLHHmJlG1TMnLnX6JxeFxBZBOB9hH28XB4k1k4MMFczCCirjLfrZ5rNZbZpsndI
+         5yVCcYZ/6Za2rdIDSmVt5uu/Whtt3Y95x3u2hbTQNUQtOY//UygGBQop1D1Y+sfO0wyj
+         D5XfmfY5MIdZcJ76OPqqU9z9Q7eHgDx0ajw/CR+a/BwxPsLx/Efw7tLAXfarISbWnG4b
+         7KYTqnUAqOiK0kNXHBqtawCdIeub6VCAedOqT1v4x6cVz7KXEh/XrGLjlybjO0pQfc7l
+         tMd4yiVaxy9I9ipqUw4RP9DCjFFSwsZPUd1V3lBX9x1SNsKoRqxfvwsM6pYHfhzjzEZX
+         /TLw==
+X-Gm-Message-State: AOAM533SHZr7g16Sk1ZxHVCHy3/D6ZDjgbDKhDAZLf5c0V02jXQqk4B6
+        8y8Jj7CdA7CAG4eeKwNxSJouHttwzy3cV75fbQb6Xoa51is=
+X-Google-Smtp-Source: ABdhPJwelwo7Yqo3fkUF76nXM5e1g0d5WA69Hpw3kgC7LDPD4U/sGA8ppqtzhHjDGaPxL+Ob3U83ASc6UGn/CwCwDGs=
+X-Received: by 2002:a05:6830:4406:b0:5af:d53c:18f with SMTP id
+ q6-20020a056830440600b005afd53c018fmr963646otv.236.1646861783597; Wed, 09 Mar
+ 2022 13:36:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220309170553.GY12643@twin.jikos.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+ <87tuc9q1fc.fsf@vps.thesusis.net> <CAODFU0py06T4Eet+i0ZAY5Zrp5174eQJOCGh_03oZdDXO55TKw@mail.gmail.com>
+ <87tuc7gdzp.fsf@vps.thesusis.net>
+In-Reply-To: <87tuc7gdzp.fsf@vps.thesusis.net>
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Wed, 9 Mar 2022 22:35:47 +0100
+Message-ID: <CAODFU0oM02WDpOPXp1of177aEJ9=ux2QFrHZF=khhzAg+3N1dA@mail.gmail.com>
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+To:     Phillip Susi <phill@thesusis.net>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 09, 2022 at 06:05:53PM +0100, David Sterba wrote:
-> On Tue, Mar 08, 2022 at 04:41:44PM +0000, Johannes Thumshirn wrote:
-> > On 08/03/2022 17:23, David Sterba wrote: 
-> > >>  	u8 metadata_uuid[BTRFS_FSID_SIZE];
-> > >>  
-> > >> +	__le64 nr_global_roots;
-> > >> +
-> > > 
-> > > Shouldn't this be added after the last item?
-> > > 
-> > >>  	__le64 block_group_root;
-> > >>  	__le64 block_group_root_generation;
-> > >>  	u8 block_group_root_level;
-> > >>  
-> > >>  	/* future expansion */
-> > >>  	u8 reserved8[7];
-> > >> -	__le64 reserved[25];
-> > >> +	__le64 reserved[24];
-> > 
-> > Or at least inside one of these reserved fields.
-> 
-> OTOH, it's still experimental so we don't expect backward compatibility
-> yet so it should be ok to change for now.
+On Wed, Mar 9, 2022 at 7:47 PM Phillip Susi <phill@thesusis.net> wrote:
+> Jan Ziak <0xe2.0x9a.0x9b@gmail.com> writes:
+>
+> > I noticed this inaccurate wording in my email as well, but that was
+> > (unfortunately) after I already sent the email. I was hoping that
+> > after examining the compsize logs present in the email, readers would
+> > understand what the term "file size" means in this particular case.
+>
+> I don't understand.  You stated that the size decreased by 7 GB, and the
+> size figures that followed appeared to bear that out.
 
-I did it this way because it's all still experimental and it makes more sense
-for it to be before the new root stuff.  Thanks,
+The actual disk usage of a file in a copy-on-write filesystem can be
+much larger than sb.st_size obtained via fstat(fd, &sb) if, for
+example, a program performs many (millions) single-byte file changes
+using write(fd, buf, 1) to distinct/random offsets in the file.
 
-Josef
+Before running "btrfs fi de file.sqlite": the disk usage of the file
+was 47GB, 1834778 extents
+
+After running "btrfs fi de file.sqlite; sync": the disk usage of the
+file was 40GB, 13074 extents
+
+Sincerely
+Jan
