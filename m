@@ -2,74 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AF94D3D48
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 23:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11564D3D55
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 23:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238855AbiCIWpu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Mar 2022 17:45:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
+        id S234816AbiCIW5V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Mar 2022 17:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237260AbiCIWpt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 17:45:49 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F77BF9FBC
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 14:44:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646865887;
-        bh=AbGaZP+Rh2s4mV0Ihv8u6GXBQK52cq97CnaSPakZmOQ=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=J/j0wbYflkFox+x3k28SCqHI4Sk0M0Fqx0767/Gc7bxjxOTssO4SG7fP5Sy20RYs7
-         YnwuELqWLtYmGxHArPQEjYro26PdMFBsjMOfoCid6YT2TF3rwnBHcHNDCMKOalyLTq
-         WJkIUAgcQfcBR8eom7LtsTb2TaFmfZUT8+oLMMmg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N95iH-1oG2NF13Sh-0164RG; Wed, 09
- Mar 2022 23:44:46 +0100
-Message-ID: <cc8d21c6-6bda-f296-3f3a-09b10582fde3@gmx.com>
-Date:   Thu, 10 Mar 2022 06:44:43 +0800
+        with ESMTP id S230219AbiCIW5U (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 17:57:20 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57EFB10A4
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 14:56:20 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id j83so4204266oih.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 14:56:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LuKzglXRj86gIhDoFW32VdixIBUzyfO4xuq5z3ecYjI=;
+        b=PgG8TYEK5+ctQAQKalqomUbB2Vk8wwbcQEiBISepFWVpokcnEJpXymhuVPOHWPH84i
+         PLaDi2AZHx3iGwPB1mSZpV2v6M8uxlElpFcU+vcnzBRdwFO9iWsUOXN4W2nv4j47meNG
+         cZSOeLiN+7n1UNUBC1eeTotB5A8+5K1GPr+CgSeRfMaq0H93brRNSZSmGqjR2OyEEyem
+         qSRzNS8P0rCwaYkONY+d8qR/oC18kxdeS65vVeW+4+m0Jf+1Imsy26Z4uhw1/0skdjDN
+         Bb26N+1riT52+uPBzXh2Np0IYSLsYTmIEcsetX/nHQC/7D+qztXewuyAFnWmF04Yv+/M
+         2eUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LuKzglXRj86gIhDoFW32VdixIBUzyfO4xuq5z3ecYjI=;
+        b=UYOC17ZAvlVL8L/+r4t0PPLJM9K4L4Mdg9NUPupsa8tVMRQJiU59BM8HRCZopnKYlj
+         ZpZOOQF15muOsm3hWEWWgYe2QAYa8jFHYOpKgd/T3P18aEbJhgs6IIpsDtDET+PF8zvS
+         72JY2JJRREX3tsVLR1kqE57BXiNsSCdaxIS6jWrho+2mynwuM5GpLdPfCjNY/mbANZQn
+         FifrNQ2J/0qgw6GAzh2M4zrxm9iN6pdcDjs8OV6XXQbYqydFva7aEl6jfC2+29F6eEjq
+         mbFnA4140T2gf2Ri26M1s1f+lNEJYqDwPmWqK0yaNlrlmQVeJDgASmPYLFcvbYPOqhRk
+         YOzQ==
+X-Gm-Message-State: AOAM532Lq3sPoIhWM3R9hPQvz8beA7V9stSza4jkXzL7nRwKSpCCtvx5
+        NstuvkxJhgY45Spq4edqmefLSgUxiPocuX1vxu68G4sfbHs=
+X-Google-Smtp-Source: ABdhPJxhgkfwolerl4kbhYJp8cMffefKSE3+5ww/iFFknhG5amzr294zDKvpibI2a+BvQcJjtJO2RTHYCB03hpmKmgY=
+X-Received: by 2002:a05:6808:2117:b0:2da:5906:22c3 with SMTP id
+ r23-20020a056808211700b002da590622c3mr723168oiw.80.1646866580295; Wed, 09 Mar
+ 2022 14:56:20 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
+References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+ <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com> <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
+ <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com> <CAODFU0pEd+QTJqio6ff5nsA_c--iCLGm52t0z6YBgzJcWPxy9g@mail.gmail.com>
+ <3f286144-d4c4-13f6-67d9-5928a94611af@gmx.com> <CAODFU0r8QqbuHdH_vG21bPacuMM+dmzMbdSq23TPHxL=R1DbgQ@mail.gmail.com>
+ <cc8d21c6-6bda-f296-3f3a-09b10582fde3@gmx.com>
+In-Reply-To: <cc8d21c6-6bda-f296-3f3a-09b10582fde3@gmx.com>
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Wed, 9 Mar 2022 23:55:44 +0100
+Message-ID: <CAODFU0p3=xn9viSQsnhqt=c3AuD_tEzXpxJAuV-sDWN=udrOow@mail.gmail.com>
 Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
  measurable benefit
-Content-Language: en-US
-To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     linux-btrfs@vger.kernel.org
-References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
- <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com>
- <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
- <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com>
- <CAODFU0pEd+QTJqio6ff5nsA_c--iCLGm52t0z6YBgzJcWPxy9g@mail.gmail.com>
- <3f286144-d4c4-13f6-67d9-5928a94611af@gmx.com>
- <CAODFU0r8QqbuHdH_vG21bPacuMM+dmzMbdSq23TPHxL=R1DbgQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAODFU0r8QqbuHdH_vG21bPacuMM+dmzMbdSq23TPHxL=R1DbgQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZOXjCuQ3fX+sm41x3+9bMLQDREhGkOwbDMThbN0R1rfBCVTI7sK
- 1JQvekvAH+izSJHzvBGVB2XEum7QYSLDi2Tj17cmhSCyfdmlLsrkv8CO6R4kZSZQyJRo672
- aYhxbKqpaT4Wm2qj6wGUrpJPl7J7rDkDWWlb2QjTuY9yEJ98aqgd/+mtQ9YduTdYuzi6uQK
- KYnt/hZ3UKpLSEFvstFQA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:J7CR5oPpDVE=:WgRP+4su9NM2kZ5criHTAU
- fmRUIw95uapBERYQLE5dRDrFtVSW0nx0VX2qdDwuDsY31gRbEc92RMRW6dSm9sETW/W6ZzN/c
- X2D2tNVbKAENHt2ve4pJ9oIT+dpD/rN3aW5kEgSxNNEi8rodwVtS2Ro6U9cktOcmM+0pCB3Vh
- t3RRl8Mrmp24sXW5ApMz6wosQm2VlL1kB6lF/uF5o0qk/g8OU3cN+gEmfgMes0k9ldnY9Bkv4
- gkZOTm42pHiphCLTOy3ZcnjpcEfteUPNhZ0iqa7x1mcfAo4at/qLe+0XTLdGRz59hnO1bPwOM
- HBtbHjBwkS4PRfSqDxkmg+nGBci922ngNDGbJ3v/V+eal883auEK4sxiBa+EE5tE7tbxB7neY
- uyvJnOWwAoZonueu9m+94hjygMneoXUB9gqzPOxzIdDrRk6iAIppfAWazPm//MbNJrO5nCFlX
- fpuDy3AzF6Jc8nWqqQSxVvpBHKTqYtqDogEc/FqCiv+pCnJsCb5yuM5iwXWEOqTjez4mtBP5y
- Qqj7uztFcoLM64iIMZlrvsZs98Y5VaeCY+ZDI9zXsenIPmp0x7RyAVmbCFFKd842wamGx2Z31
- 0Js+WdHHz/cSJKJcruBvYUSzlJ6PbEiYqdmBK/ib6LIOboGVk1tA/9gaXDORsgWMDfWw7LOKi
- Ls4P7uHi8IcNXXHI4oAv/6zrLUcHC369vx8NngK8JdnGW1RJGfg5RH4C0CcWtYP8hBZRDM/r4
- pdG86Gl42taKA+aJ7vJqslH08Hx6wInBAJBL5zLiMABKFulYbzeOeDvQwUWtd8iZvSvHPRtFz
- +YUhWD9CyRG0gc1YMXtrHkfRvUmUU3m1pGfV5WVqTj5fYYFGU79pJKwm+Plx5EdNN1MB11R7P
- BKvqNtUYVoGW7F9ek6/nyfL8UXslaCfTn4A9bSMC0E5Nh/ytafgnxshTOnWwHkMZRhF2kCaaD
- Rwo7KKukTQq4ZS30NKTNsh9gwBFcECx2odROPjwi/h0N4Mwy714ZNpI3Ekj7/sYN3grSVPYk6
- 4F0BmUsHhjHQjrE+SfbyM68k8MJ8erzkpRYPSPrYRN1FEs8Ik0lSXt4cY+lEFAsj1MsOcf9yS
- sD4G/cGz5r1fjk=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,75 +69,11 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Mar 9, 2022 at 11:44 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > xfs_io -c "fiemap -v 0 40g"
+>
+> Well, I literally mean 4k, which is ensured to be one extent.
 
+The usefulness of such information would be 4k/40g = 1e-6 = 0.0001%.
 
-On 2022/3/10 06:22, Jan Ziak wrote:
-> On Wed, Mar 9, 2022 at 12:40 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
-:
->> On 2022/3/9 05:57, Jan Ziak wrote:
->>> On Mon, Mar 7, 2022 at 3:39 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
-e:
->>>> On 2022/3/7 10:23, Jan Ziak wrote:
->>>>> BTW: "compsize file-with-million-extents" finishes in 0.2 seconds
->>>>> (uses BTRFS_IOC_TREE_SEARCH_V2 ioctl), but "filefrag
->>>>> file-with-million-extents" doesn't finish even after several minutes
->>>>> of time (uses FS_IOC_FIEMAP ioctl - manages to perform only about 5
->>>>> ioctl syscalls per second - and appears to be slowing down as the
->>>>> value of the "fm_start" ioctl argument grows; e2fsprogs version
->>>>> 1.46.5). It would be nice if filefrag was faster than just a few
->>>>> ioctls per second.
->>>>
->>>> This is mostly a race with autodefrag.
->>>>
->>>> Both are using file extent map, thus if autodefrag is still trying to
->>>> redirty the file again and again, it would definitely cause problems =
-for
->>>> anything also using file extent map.
->>>
->>> It isn't caused by a race with autodefrag, but by something else.
->>> Autodefrag was turned off when I was running "filefrag
->>> file-with-million-extents".
->>>
->>> $ /usr/bin/time filefrag file-with-million-extents.sqlite
->>> Ctrl+C Command terminated by signal 2
->>> 0.000000 user, 4.327145 system, 0:04.331167 elapsed, 99% CPU
->>
->> Too many file extents will slow down the full fiemap call.
->>
->> If you use ranged fiemap, like:
->>
->>    xfs_io -c "fiemap -v 0 4k" <file>
->>
->> It should finish very quick.
->
-> Unfortunately, that doesn't seem to be the case (Linux 5.16.12).
->
-> xfs_io -c "fiemap -v 0 4g" completes and prints
-
-Well, I literally mean 4k, which is ensured to be one extent.
-
-Thanks,
-Qu
-
->
->    ....
->    16935: [8387168..8388791]: 22237781600..22237783223  1624   0x0
->
-> in 0.6 seconds.
->
-> But xfs_io -c "fiemap -v 0 40g" is significantly slower, does not
-> complete in a reasonable time, and makes it to 1000
->
->     ....
->    1000: [154576..154903]: 22232564688..22232565015   328   0x0
->     ....
->
-> in 6.5 seconds.
->
-> The NVMe device was mostly idle when running the above commands (reads
-> and writes per second were close to zero).
->
-> In summary: xfs_io -c "fiemap -v 0 4g" is approximately 185 times
-> faster than xfs_io -c "fiemap -v 0 40g".
->
-> -Jan
+-Jan
