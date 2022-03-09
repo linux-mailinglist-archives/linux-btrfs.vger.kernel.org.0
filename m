@@ -2,68 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D4B4D25B5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 02:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DAE4D25D1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Mar 2022 02:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbiCIBOK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Mar 2022 20:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        id S230229AbiCIBIb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Mar 2022 20:08:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbiCIBNZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 20:13:25 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20E12253D
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 16:57:02 -0800 (PST)
+        with ESMTP id S230028AbiCIBIQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Mar 2022 20:08:16 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552691451FD
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Mar 2022 16:49:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1646787421;
-        bh=wKhne6KKZJPtM/9UzbDG0DsPhxB3BKH850tAo2onK6g=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=ORIE6ftQyBhyW7fLvaJPAw+D5bSOY8mgfh8i0C3zfxancKjFNJQ6PJZ76qjsM/L4e
-         tXRw2HqMaLm32j1t9VH4JA5dMgP5tU3Eum8toDp3GQL1sSzTMqd+vt7giyjAA+Dq3i
-         S00LiQlwMmC4tzpGT8HaVD1UqkYq/rkiqehnReHc=
+        s=badeba3b8450; t=1646786978;
+        bh=p1omnjlbuLxaKdzsyQR7Rhnpj60VUzrNeVRuSLZQeeI=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=lbxBEm5ZEyl3/3iT/VsHB1z2IDnLnpCjLo/hWpzZZlxaJNQoTC0gRVTZL4IG5v9WW
+         TDAedRpYRNKA3NCf2UStSmrzmxpKJ+f8/iTbcgHrDWRGWo8sqhCAdj7uP1xCjd2Iyg
+         nWhYLfroMwNK/ftTZYWNSUqbFVSgBSmt3s8bZB0Q=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N33Il-1oAJJD3BWP-013KwV; Wed, 09
- Mar 2022 00:48:31 +0100
-Message-ID: <7a4962a0-b007-59a4-282e-8912b2425c5e@gmx.com>
-Date:   Wed, 9 Mar 2022 07:48:28 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuUnA-1oHmCy0z3K-00rats; Wed, 09
+ Mar 2022 01:06:55 +0100
+Message-ID: <fc451396-db2c-b7d5-0f10-15d77f1b38b1@gmx.com>
+Date:   Wed, 9 Mar 2022 08:06:51 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.6.1
+Subject: Re: A question for btrfs-progs code
 Content-Language: en-US
-To:     bill gates <framingnoone@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CALPV6DsfOQHyQ2=+3pKF3ZfavL21fgthQS+=HStEfMQbhZU50g@mail.gmail.com>
+To:     Sidong Yang <realwakka@gmail.com>, linux-btrfs@vger.kernel.org
+References: <20220308145539.GA19735@realwakka>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Updated to new kernel, and btrfs suddenly refuses to mount home
- directory fs.
-In-Reply-To: <CALPV6DsfOQHyQ2=+3pKF3ZfavL21fgthQS+=HStEfMQbhZU50g@mail.gmail.com>
+In-Reply-To: <20220308145539.GA19735@realwakka>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:J2YqXKMZcc76E3BuVop9WaIPCnwKQOylh5+4c49I7xoL84KxnnN
- V3NC03znqzTkkxA5ARcnlVqVlfveCgyFXfeG5/gpFnAiMpCRVi/31Ft6ee8fFtvxibf2+Fm
- gPChKslzs7c9Dh9bbr6biwL4jX+ZkptgyFNKBouVRq6bQRnt8slDMnG0PfuIQ4adfk9aldT
- efIaGVu+XISe6BZO6Pz1A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Qz7vlbbB7xw=:iSjHLJ88NCkvMUjIPk75Kk
- /SNkDMhKHKlaS4q+ZfbmoruTcefoIqXylIStdW3YivBe55JCsnBNTBtIrmdHLSjXSIzxSqbst
- 0xTv2+4qivPxmqwKM8Uicukj9rnvB+2BsgaCCl36HlrNYt509dHMUKZAwOpSY/LwY/ycJ/Yc3
- MwGSHyXTRMYhpqGbO612VcKHty6niq7AtKPClDIRCAvfWvAEZ8f+e5DRsrAuGcS8DbS9GZvvX
- DE1sn+Ce0fntRrrFcVp4ntlRKmmQa5ogVO9s8qCISmajF8uFv8uTDATbEZwi8thUkVKYdIsu5
- x+2jXgqbxpMgTQ17Gkywab1NS3M9JF1fkH2agDrYv5QhCQijaYjCuftRTK7CSVJ8uJLzSKOQ2
- mNYOyKM+me9SKZdrgH+mcNgkln1gJpLyaKcHi+QXK9W+G/hT7dMmuOA5RKyWnY3QBNfqXMvVu
- V7CdbgaJ9qeQpHNf2DjiY3J/856bPQtpRHE/8EpvUpjyaMeypohZ1cvfj1+cnzljrDqTvQBi+
- Tw6u+bCM6SpA1HXNTce750h/6VY1vvBWmj8CaFlwqAVtXFMaghEjrm/0qJ3X8hX+8oNIHp8Qv
- JCWrhuVhWDIm52hrmPdY58wk8RkNOjIMj8sXJodCJlWhRInrvU2Lk8Si+FCxOA8YYISHy2YqZ
- ZwKWKdmDKXN8MYRMkrV/WOsDjVUIiJClXk/Rs9R9xe3aGdX6TbkmoAO/DHHCwuI6/NFTDrpOo
- /k0GH1y2vCX9y1j8iFqyDDOdwKPBRrmSrMRgbZjEJM2C3ljUmAPOTxGm0k3k5Odlog2r6ChnI
- k6/FDCHaF7UljUTtYN1B3jZnNdOIqFPBI+/VBjIhSXYxNnhyXig7TXQe3+RLAjSMviPLhWo6X
- ZVm8VCax+Bjjs5xyi5m0mKQdm1Kjmiq9/KgnfmHt65odw+FBko26Dl1cW83oM1HADzGXN1oOe
- uLsW4TFJBTdketBr0sS3JbKTPcC1+pnnmsTqNoLIA2AOG5epJp9n4L+SFptoZB7j1wlktXV2G
- IlFnWV83KcEb5t8gl9X+uP67L+gTh823ZUOiDmZsuSXtfrrAuaOBJZt4uKBkbjR31J+EzgY8S
- 9N489Nwb+UjHdE=
+X-Provags-ID: V03:K1:g3khfFOZutTFBCHNOWD8JVfTiMnr8ySfcXrlz7VVBZegqgw3slu
+ D8+f4SYZy22OWA56UONhY7qpZNENYQkdDvunGlMSj7ijq5QJyo1pmKDZalDfd9aISXRA11+
+ jOhBt6Oj9y9XP8n9Lo1WreMDZ5AXN+xd/5+IbO4RdjC0ygLxuMnEdHYcinNwt6VSNpNOdGo
+ Y6cvKRR5Ztt4ZIgh3nspA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3Ci9sJHGt+8=:YUSfTtMAEyfa9ibnoJ4HnA
+ z1WLAxLUa28PKFCLcaQbuuFxBs7yaacyCip6Q5VDQuHImee0Zijwq6R1b2NMBAmdIcwXQ1NIN
+ vSzd2mpN6BCPggBdu/KaEslqKJLMC4qM9YVSPmZn5y6XiLwmUBBpccQUgpykKRG2VLsJp8qWz
+ nh/q2WfSHeEgQjcXjU8Jyvp9u8TU/D/Yx1HVp3cK1rLYYorFNfiJkXXb/2+lzVGpTVZQAbE8x
+ ggr6UStnYNrGzjSJM0ga0726w8kpUmF4whf3C6V/Q9IDRzxYbVtkdDTA56kIwv6gVMdUVcRCS
+ /Tnyda9zMN4nQYjdhyI8Okrm9KGt1Wra57b0UM3qYqI9RPDAXsIvOgvUtXFActT/N1Jl1oUMG
+ zHV4UPYNk5ozSz5IIsSFCMwxCMPqor7B1tjPjhgkjxGSe4Zfa1fGVOSTboYuyQ7dvRi+99X83
+ UkxcIoBImJ4+VnMVryzjkhAkdPVjkagtAPtdfY/9+Uf/3EA6s62x/UE2UASxjX7w2hQXj2gky
+ EXrt2aWKkHy9YfyhpRNdK+jtCh09mZCXbFpqW2Kz+Nm66+tltmsLF66wTy3U38MV3mqLFGyz1
+ ZjYimCj2rJJW9mmCgkaYpu5YKbO9kI7NY6xfaPAq+BsDchKbO9mOZLt2NLiuALWiilJtmOBIa
+ JFdlyYbw0mZ9HehtF5UjuJrtFAy8oHcbDnFr6x+QR2M3Kc4aj2kxa43WWDlJ7dPz5fF5olm1e
+ /qFRPWlpOoF1OAwtMmZGnM5o5tRwC5Ablc0di1gADHQCOI9yOzVcF9ru/uRkzHLHG743HCYvF
+ kqkwBIg94IckCyIjGgoCuqy27lB6LR+8UOcesCkJ/hp3zgEtv8tprYi2cMqyuPdBV2oAHsb12
+ BrzCUpGTB8tTIjWq3A9672geS7Zm1vPuEQ/fzxT81/Ovpx0GVtkZFayWS999Bbs471GujgRJC
+ eVGCd5k5aZy4+XD+ERQWZnjInzf5R3KGyeKl+CMjWGtaa4fGKsSZOugEIv2hKbFyl5texy73k
+ UGcmawvCxShWBi32wsNJea4rg3+rpPm2xWgx4mpnDu6naLd9qtbl5xYWf3+FRcX7VZVl9y+ya
+ smDUQrAN2dWziU=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,52 +71,24 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/3/9 03:05, bill gates wrote:
-> So, I recently attempted to upgrade from Linux kernel 4.19.82 to
-> 5.15.23, and I'm getting a critical error in dmesg about a corrupt
-> leaf (and no mounting of /home allowed with the options I'm aware of)
+On 2022/3/8 22:55, Sidong Yang wrote:
+> Hi I have a simple question for btrfs-progs.
+> In cmd/subvolume.c, It seems that create subvolume command has -c
+> option. According to code, it gets two qgroup ids and adds to
+> qgroup_inherit. But the command is not in manual. Same as creating
+> snapshot.
 >
-> [ 396.218964] BTRFS critical (device sda2): corrupt leaf: root=3D1
-> block=3D10442806968320 sl
-> ot=3D8 ino=3D6, invalid location key objectid: has 1 expect 6 or [256,
-> 18446744073709551360]
-> or 18446744073709551604
+> Is it deprecated option or internally used?
 
-Please provide the following output:
+That -c can easily screw up the qgroup numbers.
 
-# btrfs ins dump-tree -b 10442806968320 /dev/sda2
+So we don't want users to use them.
 
+I'm not sure if we should even provide that interface.
 
-The error message means, we got a DIR_ITEM in root tree.
+> If it should be deleted, It would be glad to do it.
 
-Normally that is used to indicate what default subvolume is.
-Thus it's normally 6 or 5, or any valid subvolume id.
-
-But in your case, it's 1, thus tree-checker is rejecting your root tree.
-
-I didn't thought we could have 1 as default subvolume (as 1 is the root
-tree, which is not a subvolume).
-
-But it looks like we should update btrfs check to fix this case.
-
-Is the fs created using older btrfs-progs? I guess that may be the cause..=
-.
+Feel free to do that, as I'm completely fine to remove it.
 
 Thanks,
 Qu
-
-
-> [ 396.218967] BTRFS error (device sda2): block=3D10442806968320 read
-> time tree block corru
-> ption detected
->
->
-> Interestingly. that 18446... number is a power of 2, looks like maybe
-> a bit flip? dmesg, uname, etc included in pastebin below. "btrfs
-> check" found no problems with fs on either kernel version. Would like
-> to figure out how to fix this, if possible.
->
-> https://pastebin.com/0ESPU9Z6
->
-> Thank you for any assistance,
-> -- Laurence Michaels.
