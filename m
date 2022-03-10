@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F884D3EC5
+	by mail.lfdr.de (Postfix) with ESMTP id 4D78D4D3EC3
 	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 02:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239139AbiCJBdB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Mar 2022 20:33:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        id S239141AbiCJBdD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Mar 2022 20:33:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239131AbiCJBdA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 20:33:00 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131861275C9
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 17:32:01 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id lj8-20020a17090b344800b001bfaa46bca3so3789731pjb.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 17:32:01 -0800 (PST)
+        with ESMTP id S239140AbiCJBdB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 20:33:01 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696971275C9
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 17:32:02 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id v4so3901286pjh.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 17:32:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nlU8PiGNC+3HWzzFMwOvGZ0FAEg0RRT/82Dht4cx72k=;
-        b=u9tV+g8sSJqgKzATm1x+JXTP004BFVYHecS8TxmS1kwcSNL7yhKAjt+zJPGx6nNeEx
-         Qd2i30AQO1kImW7xW9XC63DhFrIl+1Po2OxtXhzwXB0oOWJq0dOeS2U5Z8kca3Cz4B/9
-         yrg06V4gxgDXxpHtcm0gTtaXzliTpMUKoKrTXn3FGsU+8C0+kNJzgGNmZ49k6kswys8Z
-         hKFHpLG0zteIMP45B+Xxp38ugLLLABPfscKXVYbfRun20ydsylCDJmWJ7kgP1pnHUSAa
-         DqrHblj9F1qAZqmLIXwyCmFv399C31LouLd1NfKW/1ESf30DD9ql2HgSttsp7EzU67ia
-         euxQ==
+        bh=UAO9DI3ccYAZkKeASeStB5YXc4pmhDQ2ItZ8HxAquoE=;
+        b=CBqQRHNeC7rrOW5A2n9jjyGNLkOTRYb5BxQ1MzAl1d7HCohpe4roLbfGfnCxOnCcl1
+         eROPvZh1Vg1PEIwHFKQQrcob6F41DqLk0KeYmozPMui3fRW8W+DuND8GgzjGCl9LWvsk
+         PZeQm7U+bGi9zwNpsM586fGnG+xCLqdxeAUYplKJNgOls1YzOLdaYfoNuJGvFoNvl/ve
+         iWzvAUHNg/+PIJC/mz+yu0W7snJPdahWIvzckSsZo1ZE/k9pLMkTYmNc6duVelaYRkOd
+         N7Ch6kzSxd7XHLO1Aejq6VUMUJkCa8AiWHd+Tea9d63zAVB8X4GI5Lh0DVMiAmiZNYat
+         zXRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nlU8PiGNC+3HWzzFMwOvGZ0FAEg0RRT/82Dht4cx72k=;
-        b=KlzLYFACPbk0kNegsDVwtv7AwyaeGoFEb+2bN6m9ZUbvO900lJwjXAyWDj64b20gOf
-         Kw6P7AYpPaYTYZ5xRrlmCOVmJ4UwFwP3hilu8w8ymx+Q/Owp8nnJm12tbUwQdB9EH7L9
-         jL1Vv6XKVAwtm69jbz8l9wkcVHEZO6kLxTkLMSwsPRrD7dZPBEQcIfNQ5zStA06I/0Kt
-         6xyitb4RXBrFiRZtBWs60HZmAemfd1dOfJlJvlF3cvdgmVVKCGJXAvnzw7giWidMWz7F
-         EVAye9uF12vKXjrHqrwY56LxL3vzRvNFhnBL+BpgEXJTHlY4b1SkMaYeXLF9Hpi+W4FD
-         Kemw==
-X-Gm-Message-State: AOAM531hzuHTGwWdj/7idlBRfrfxPnPtV189yNf5b+pbLcBnLvdeJXM4
-        TwEFXL90kv6+94Azd0O6DfMreHT79huXqw==
-X-Google-Smtp-Source: ABdhPJyK7VekUXq6m6DY+RJMesw+B093EsJFOlqZ2VVkTSr+YyOUq/N0O6wKXCgZhCeIJs58u7ausg==
-X-Received: by 2002:a17:90a:694d:b0:1bf:37e3:7000 with SMTP id j13-20020a17090a694d00b001bf37e37000mr2381595pjm.242.1646875920188;
-        Wed, 09 Mar 2022 17:32:00 -0800 (PST)
+        bh=UAO9DI3ccYAZkKeASeStB5YXc4pmhDQ2ItZ8HxAquoE=;
+        b=ohuyUrDDs5cmQZyawXsaM5wdP+hBhESwPeb2FvxWX925gd1KFZj6mLdzq3a0s0XcZ1
+         EBvqfeoeT1+qdDlGlAs7KU78o+h1rlrfGS0jrvBB9UrqCor6VP38MCf213v9dcVBXwZ5
+         lvFKnUsev8D4ZcVGjRexx0pBnj8UAYe13Sbl4G8ahud2k8s0uUtoLtmdPSbd627lVu8j
+         N5nG0UvXygcrE8UggR0UQiza+tR5qDwbBMpDakjzf8VkAa6yGCt65hENDzqG/7ht9Ckj
+         TFm1JY7cWGWPaQzvY6nQKhuLzRY6lStYWNQL56rtMNSwyMLJ/WSeidrnyn7UeIi5C8JA
+         2H5w==
+X-Gm-Message-State: AOAM530EvzPuv+fRvKIkzs4FU/lx4Ftad4WNRy8at+DBr2+JtQCxdAJy
+        6osTufUmt+RWYMAA3r2BKU8NRWkAPYD1xQ==
+X-Google-Smtp-Source: ABdhPJyKqRb92ZbdrnE43bi0lO1Pys0PQfSHm0z3+Q5zDKu56Hgl5WQGVv1tg9JPNmLo3CnzNZyyWQ==
+X-Received: by 2002:a17:90a:4146:b0:1bf:2dc8:7407 with SMTP id m6-20020a17090a414600b001bf2dc87407mr2485588pjg.76.1646875921575;
+        Wed, 09 Mar 2022 17:32:01 -0800 (PST)
 Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:6f59])
-        by smtp.gmail.com with ESMTPSA id m11-20020a17090a3f8b00b001bc299e0aefsm7618627pjc.56.2022.03.09.17.31.59
+        by smtp.gmail.com with ESMTPSA id m11-20020a17090a3f8b00b001bc299e0aefsm7618627pjc.56.2022.03.09.17.32.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 17:31:59 -0800 (PST)
+        Wed, 09 Mar 2022 17:32:01 -0800 (PST)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com
-Subject: [PATCH v2 06/16] btrfs: remove unnecessary inode_set_bytes(0) call
-Date:   Wed,  9 Mar 2022 17:31:36 -0800
-Message-Id: <eae339731afcf87fab58778b3b6d26e1bf3531bd.1646875648.git.osandov@fb.com>
+Subject: [PATCH v2 07/16] btrfs: remove unnecessary set_nlink() in btrfs_create_subvol_root()
+Date:   Wed,  9 Mar 2022 17:31:37 -0800
+Message-Id: <730b3ec34d95183a96d28f96fca02bf35933fd95.1646875648.git.osandov@fb.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1646875648.git.osandov@fb.com>
 References: <cover.1646875648.git.osandov@fb.com>
@@ -69,9 +69,8 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Omar Sandoval <osandov@fb.com>
 
-new_inode() always returns an inode with i_blocks and i_bytes set to 0
-(via inode_init_always()). Remove the unnecessary call to
-inode_set_bytes() in btrfs_new_inode().
+btrfs_new_inode() already returns an inode with nlink set to 1 (via
+inode_init_always()). Get rid of the unnecessary set.
 
 Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Omar Sandoval <osandov@fb.com>
@@ -80,17 +79,17 @@ Signed-off-by: Omar Sandoval <osandov@fb.com>
  1 file changed, 1 deletion(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 244e8d6ed5e4..b7d54b0b2fb5 100644
+index b7d54b0b2fb5..a9dabe9e5500 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -6207,7 +6207,6 @@ static struct inode *btrfs_new_inode(struct btrfs_trans_handle *trans,
- 		goto fail_unlock;
+@@ -8784,7 +8784,6 @@ int btrfs_create_subvol_root(struct btrfs_trans_handle *trans,
+ 	inode->i_op = &btrfs_dir_inode_operations;
+ 	inode->i_fop = &btrfs_dir_file_operations;
  
- 	inode_init_owner(mnt_userns, inode, dir, mode);
--	inode_set_bytes(inode, 0);
+-	set_nlink(inode, 1);
+ 	unlock_new_inode(inode);
  
- 	inode->i_mtime = current_time(inode);
- 	inode->i_atime = inode->i_mtime;
+ 	err = btrfs_subvol_inherit_props(trans, new_root, parent_root);
 -- 
 2.35.1
 
