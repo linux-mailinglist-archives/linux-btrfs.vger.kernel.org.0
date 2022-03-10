@@ -2,74 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 609784D3E54
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 01:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF664D3E96
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 02:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbiCJApA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Mar 2022 19:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
+        id S239089AbiCJBMf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Mar 2022 20:12:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbiCJAo7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 19:44:59 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE726E56B
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 16:43:59 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a8so8695304ejc.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 16:43:58 -0800 (PST)
+        with ESMTP id S229907AbiCJBMe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 20:12:34 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB20D1216A7
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 17:11:34 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id w127so4443765oig.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 17:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=4SL1/qbkTptdsuZGoXAM80S4DBJva1Vt53CdfbCl4nw=;
-        b=W75NRnxSjysildMlohUaDZ4g26a8Gj/os6LIsbjez4HdNa4Mjl1lDzps6VzFtQasIi
-         lLwJY9zhyywPgtOXSnB7Df7D8JBUbPrFwKC3IApZB2tjXQkg3cFoBvxm3MqNr6NMRwvY
-         8CkvxwwwZcPHRnbpTodHwHGqXwBdEVWhuDqxq4awS/lkk8dE8rNdmcXiXAMdfvuHi35e
-         t7yvHCYsrisTKD62IVCPa2gJEXwkkxcn5qpmQaiCDDLrI2Xhfp2ljEJWZEC75s1CKCbo
-         FMHriNMUV8XBOgqGcCEatDZ7KAoaXFjLpjydUGwGBM3mc9G9Vat4NvQRwgXOHMPISqwR
-         kUmw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KREBG59omfMbxXzfo37uU2qOsjLw8zEgZF9qPbqUQXo=;
+        b=QulTXX57pID/aTRfGd0xSVcaew4SaMqHmy2F7m/Pc1yuuMFfeSpwNg/KXTRTV3m+n0
+         qNSBXDKUgx4VtkS1fIlmKv0ZQkVnfJ6tv4YQHd5CsaApbjiTdEw/EURsVgrcMmCtOemz
+         vJLsd4nZ0u/pNVKeFzO0qltI7sEeYC5jJBulObG/7+K67wb5kS0mygWp+9uYDjcn/DPN
+         HGu/BpI6E43Xa+ZD4f0iq0znE2GJsETGQ3A6idhAUt1uFqBBZQEJTDiEl40LAdzj15HB
+         z7YRZ9fivRkeNJfpb3T9D+B7Y3CTYiew2Oyrq5IOY1RscJGSJ0CuhLDi42IAJ1tfJ4y/
+         udAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=4SL1/qbkTptdsuZGoXAM80S4DBJva1Vt53CdfbCl4nw=;
-        b=Z4QIDDrw+XMQfm+xGLZEFOeNDpdUaztXw7NxwJm69f26KCDAvf0DFQ2ccVFtGF7D8T
-         +UhkiF31jB5pAdCT0HWes1NL7brnmfMSE8+uDSc9l8ewpYPqVPOnrPqn0MN5VYTNlhjH
-         x+Yj7Mbuydt8YVSfE8EufJGOgzAPcdb/myLg7jQYrMu1WNVwyJXmHib0WZeiDTh9pBKU
-         wK1U7HMW92TP4/eqTD/aQ1Lg88gE3kkmj70y7ujT9wYyqi5UeNZz24o/104JBBqwu2aW
-         i9xNKcFqZVmH3AQ2orNwR+RbYcUqS4U58/6ASgk0uGObaC15k+Fv1wa4z4k7yVLkguEE
-         n9SA==
-X-Gm-Message-State: AOAM531QYQGepzvNpHKz/sph4EHw+1xAn8FZrAZY+e8qGEXpoio6ifJS
-        HFv/5Qy38S7ClBogPfgPG4mxZIADOL4NpsPDUp8=
-X-Google-Smtp-Source: ABdhPJwtXIsWkBonjzAMoEQ0G4/gObCTRi4jHgbKH0iHizLiELutxwOBl/ACS8IfM4k9f2FuxJU0G/btkGFKEquyLso=
-X-Received: by 2002:a17:906:6a26:b0:6da:873c:b9a2 with SMTP id
- qw38-20020a1709066a2600b006da873cb9a2mr2162753ejc.727.1646873037647; Wed, 09
- Mar 2022 16:43:57 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KREBG59omfMbxXzfo37uU2qOsjLw8zEgZF9qPbqUQXo=;
+        b=qDHiUE0lPSVmehks0VKc9PDHOeiV2Aoj3lLnRD2LHTZVIpzuGsUZ02ywAelPxs0TmV
+         GKavN293/tiJZdbQasHfb1IC4aG+Yu9CbLYBRZS4YAZ6v3MCpbrHOojW0ot7XMbUFSRg
+         Y1aSPuIk6NnSimnIRGezRyLV2wSk234yb4ZSwCM1gNQ6VieqlbOFVUhM8FlFb2gyQRAk
+         0L88oEt8ZGbmImFRz9kWaax1VbwO7N4xxYTpD1gjyNdiS7kEEkAFtXG3bKdJ3/yciflL
+         KobGknUd8k5RpASa59Bex2XhRK6WTYwmtyYAUWtZMOVEtKEW+RBatq/iO0g3m9HIPyNq
+         kSow==
+X-Gm-Message-State: AOAM531HMPSsHECVq4SuLlSxnhRg92eGbZ1A0Inw9awP+EQt3xmPrNlY
+        8LH37BT4C/t0jyQc4qvGLvBQUQ06g9PXQWE+JaJH5UmjYJw=
+X-Google-Smtp-Source: ABdhPJxTfFumOJZMydXpKOQBZGI64zUYxGmr9ss724VXCRihlXu1s/EfSAmTz63k+OTnu2Qdrg5yKr03SF31MIWHpoo=
+X-Received: by 2002:a05:6808:14cf:b0:2d9:dcc6:8792 with SMTP id
+ f15-20020a05680814cf00b002d9dcc68792mr8031797oiw.219.1646874694236; Wed, 09
+ Mar 2022 17:11:34 -0800 (PST)
 MIME-Version: 1.0
-Sender: julianterry39@gmail.com
-Received: by 2002:a54:2346:0:0:0:0:0 with HTTP; Wed, 9 Mar 2022 16:43:57 -0800 (PST)
-From:   "Mrs. Latifa Rassim Mohamad" <rassimlatifa400@gmail.com>
-Date:   Wed, 9 Mar 2022 16:43:57 -0800
-X-Google-Sender-Auth: 9eU4rWPgLfAiFrCK6qtntnhTJ0c
-Message-ID: <CA+Kqa7dztzx0FKEV9bd_5S=KDZc0VvWretGFtjyoa_QQD0tagw@mail.gmail.com>
-Subject: Hello my beloved.
-To:     undisclosed-recipients:;
+References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+ <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com> <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
+ <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com> <3c668ffe-edb0-bbbb-cfe0-e307bad79b1a@gmx.com>
+In-Reply-To: <3c668ffe-edb0-bbbb-cfe0-e307bad79b1a@gmx.com>
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Thu, 10 Mar 2022 02:10:58 +0100
+Message-ID: <CAODFU0pcT73bXwkXOpjQMvG0tYO73mLdeG2i4foxr6kHorh1jQ@mail.gmail.com>
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.6 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HK_NAME_FM_MR_MRS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings dears,
+> Or use the attached diff which I manually backported for v5.16.12.
 
-Hello my dear Good evening from here this evening, how are you doing
-today? My name is Mrs.  Latifa Rassim Mohamad from Saudi Arabia, I
-have something very important and serious i will like to discuss with
-you privately, so i hope this is your private email?
+I applied the patch to 5.16.12. It takes about 35 minutes after "mount
+/ -o remount,autodefrag" for btrfs autodefrag to start writing about
+200 MB/s to the NVMe drive.
 
-Mrs. Latifa Rassim Mohamad.
+$ trace-cmd record -e btrfs:defrag_*
+
+The size of the resulting trace.dat file is 4 GB.
+
+Please send me some instructions describing how to extract data
+relevant to the btrfs-autodefrag issue from the trace.dat file. I
+suppose you don't want the whole trace.dat file. Compressed
+trace.dat.zstd has size 324 MB.
+
+-Jan
