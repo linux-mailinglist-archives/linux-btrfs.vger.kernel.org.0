@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 605E54D3EC0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 02:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6544D3EBE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 02:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238895AbiCJBc7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Mar 2022 20:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        id S239135AbiCJBdB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Mar 2022 20:33:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237301AbiCJBc6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 20:32:58 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033F2127562
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 17:31:59 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id b8so3875177pjb.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 17:31:58 -0800 (PST)
+        with ESMTP id S237301AbiCJBdA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Mar 2022 20:33:00 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C0C127562
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Mar 2022 17:32:00 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id gj15-20020a17090b108f00b001bef86c67c1so3867598pjb.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Mar 2022 17:32:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=l0MU99Yu1EcOnek3TeS7+SF+mqhOyT6POCtZbtX4L9A=;
-        b=RlKiAYrM7vx/7PWgbtlK08m8aHCSEEbl0oBgiZk7qkqAI99AkZIkHGMGwXYoOqywZI
-         9nYj6PReRjUXo00aamykIbnouaDTqLyTW0GdvUITZonJXPb3clHsu83nKxKHal3F/otL
-         gfB0AlGwG2uPB633/JLHOGwt2rhFM8wRHhqvbUh9ef8YIj5da2Po0RuDxza+yOuWq5Nq
-         RxojFgfjJeGP9OC/BrMlfkVWlJndYoHDWKXmqcIN4r1HYjRKP+2c3vfOqaI4Nss/YOc0
-         Q3s3lux7dJ2yHoxJQHEA8CHF1+AyoNaFr+hNfPjKj0+uyTZ9IbE1vu/i1ypB5IGRxkxa
-         LUKw==
+        bh=lkGU+fQLDepGxNyY48PCeZGfV2D6j0kdpBqJ1hGxlL0=;
+        b=aUTIkChkg1kB8+Wg8FssXl93i/H3qLBzUnX1RgGjto4PLWIzJnykO6lWVeBVayGvh2
+         +Y3CNMhEfrzEl7QP45et/YpnOaqI3GutUJqiIAIBLWrt0eALO68gbh5EGqdtgeb1gaMP
+         GJOrBYeUs0TOrRSUkqEUVHvmVXdTeHyV8+p266PcqpyCfLWo9FO+K/dGhC1KGwtykbnv
+         ajoVKkBGtv0wmO7cC1sdgtuQAg3slk3nVNvfbc08Qnkpv2AVjoU0tNuNfaIQOsaLunHs
+         fUgUbwpPopVPa4RqnDt+mMZqqpUZmY/iSp6LfQNBhwPGyjbP4N/b0NIqXUZjGJnXxHRK
+         auWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=l0MU99Yu1EcOnek3TeS7+SF+mqhOyT6POCtZbtX4L9A=;
-        b=R9F9o2fviHhs4ylEloIfFgYUJZJPxbTlSKx7EvLdW7BUaXUcIB5Kq4r7UGOX/N9UsA
-         p2rv/TtEhUq1Yr318Jc9WUO0w1cTkQ34aFacUy/ucgwVQLnLNPVC8q9DjleOM3PmgneQ
-         uV/+np/Zu97pyQHtLdxSkHvh2Nm4K2jwhfFTsaAUk2ci1QG5GWuXIW4XCd1/kSvZLZbo
-         Ds/nrnpOtu9qvVlVD7lEDFKXW/DYHl+gDQscUyQqFFjoXT2CX7OrVMNTvMx1HfPp+JB1
-         ZomlVYazHBkH11YfzHmV38ytiwTkh7GL/DS6XIUht3HTmePRRulZuqMbfuPig6xIO9yG
-         HuXg==
-X-Gm-Message-State: AOAM530lTGtbIwkFft8vO0EyWrSHuhxM6mnAajTE3v+TdjNe4m7TcKfP
-        nh0R+VNV3QpQqDRA4QLn+4yjsRDmtD/piw==
-X-Google-Smtp-Source: ABdhPJx1nevodj3K5SAaTybbNn1EtIUvrtVFHR5MWalFz62kuxgMLmQ6y/VM1BCzNbVME7J7ko61UQ==
-X-Received: by 2002:a17:90a:aa83:b0:1b9:7c62:61e5 with SMTP id l3-20020a17090aaa8300b001b97c6261e5mr2454271pjq.118.1646875918181;
-        Wed, 09 Mar 2022 17:31:58 -0800 (PST)
+        bh=lkGU+fQLDepGxNyY48PCeZGfV2D6j0kdpBqJ1hGxlL0=;
+        b=b3cS6CIrYpZe/yizyNoeJQ006u1IcPGuOUQ9AyvU6XzhI6CeVGTEwtyCIn9JJS2xTH
+         iwepF2buOqxX9M77VFKUGb5RHAYAADDGDS4HUuAObw0oGwmUf0oldtKBj7PnzllALrwz
+         TYf6J7vlPrldcoAV1AeY+gXsq9bTnKEt6TL9GcZe3Yu/1o+MGCd4Z75oPRjcvtei/K3X
+         sOwJ74lCPnedW+jAxiYa8m2uuKAe4xozTR/E43q9kfX0mtx368XR/2/ShNal//LZeFnA
+         i+9CqDdoT96PruVNbRDJ1yaIP/B8MoScsXUUqsOH0HYJfywvWF7t41VkmCfelqJnLXLi
+         wS4w==
+X-Gm-Message-State: AOAM531cDZSOcG91X+3hgDMcI8AbD27GE8LuidtgGgHIHwkRz72Hjqq5
+        +P9cWfhM5XWBpX427rYreAeGdIDFqQRMOw==
+X-Google-Smtp-Source: ABdhPJxx8rWpFlJrt+r64GVo2HlCSZ3Lfvb7+LMK6zhhG8lvGPhQXqv2hRUtFZLrqDWXj5yGrO8+Rg==
+X-Received: by 2002:a17:902:ef4c:b0:14f:7548:dae3 with SMTP id e12-20020a170902ef4c00b0014f7548dae3mr2638634plx.92.1646875919304;
+        Wed, 09 Mar 2022 17:31:59 -0800 (PST)
 Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:6f59])
-        by smtp.gmail.com with ESMTPSA id m11-20020a17090a3f8b00b001bc299e0aefsm7618627pjc.56.2022.03.09.17.31.57
+        by smtp.gmail.com with ESMTPSA id m11-20020a17090a3f8b00b001bc299e0aefsm7618627pjc.56.2022.03.09.17.31.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 17:31:57 -0800 (PST)
+        Wed, 09 Mar 2022 17:31:58 -0800 (PST)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com
-Subject: [PATCH v2 04/16] btrfs: get rid of btrfs_add_nondir()
-Date:   Wed,  9 Mar 2022 17:31:34 -0800
-Message-Id: <097edf27db0e152e71abb948417093c9d86b1806.1646875648.git.osandov@fb.com>
+Subject: [PATCH v2 05/16] btrfs: remove unnecessary btrfs_i_size_write(0) calls
+Date:   Wed,  9 Mar 2022 17:31:35 -0800
+Message-Id: <723552bc3d3a123224c2b0e65428dc4eff86187c.1646875648.git.osandov@fb.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1646875648.git.osandov@fb.com>
 References: <cover.1646875648.git.osandov@fb.com>
@@ -69,99 +69,37 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Omar Sandoval <osandov@fb.com>
 
-This is a trivial wrapper around btrfs_add_link(). The only thing it
-does other than moving arguments around is translating a > 0 return
-value to -EEXIST. As far as I can tell, btrfs_add_link() won't return >
-0 (and if it did, the existing callsites in, e.g., btrfs_mkdir() would
-be broken). The check itself dates back to commit 2c90e5d65842 ("Btrfs:
-still corruption hunting"), so it's probably left over from debugging.
-Let's just get rid of btrfs_add_nondir().
+btrfs_new_inode() always returns an inode with i_size and disk_i_size
+set to 0 (via inode_init_always() and btrfs_alloc_inode(),
+respectively). Remove the unnecessary calls to btrfs_i_size_write() in
+btrfs_mkdir() and btrfs_create_subvol_root().
 
 Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Omar Sandoval <osandov@fb.com>
 ---
- fs/btrfs/inode.c | 33 +++++++++++----------------------
- 1 file changed, 11 insertions(+), 22 deletions(-)
+ fs/btrfs/inode.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index be51630160f5..9c838bdd51cc 100644
+index 9c838bdd51cc..244e8d6ed5e4 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -6355,18 +6355,6 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
- 	return ret;
- }
- 
--static int btrfs_add_nondir(struct btrfs_trans_handle *trans,
--			    struct btrfs_inode *dir, struct dentry *dentry,
--			    struct btrfs_inode *inode, int backref, u64 index)
--{
--	int err = btrfs_add_link(trans, dir, inode,
--				 dentry->d_name.name, dentry->d_name.len,
--				 backref, index);
--	if (err > 0)
--		err = -EEXIST;
--	return err;
--}
--
- static int btrfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
- 		       struct dentry *dentry, umode_t mode, dev_t rdev)
- {
-@@ -6413,8 +6401,8 @@ static int btrfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+@@ -6606,7 +6606,6 @@ static int btrfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
  	if (err)
- 		goto out_unlock;
+ 		goto out_fail;
  
--	err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry, BTRFS_I(inode),
--			0, index);
-+	err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
-+			     dentry->d_name.name, dentry->d_name.len, 0, index);
+-	btrfs_i_size_write(BTRFS_I(inode), 0);
+ 	err = btrfs_update_inode(trans, root, BTRFS_I(inode));
  	if (err)
- 		goto out_unlock;
+ 		goto out_fail;
+@@ -8787,7 +8786,6 @@ int btrfs_create_subvol_root(struct btrfs_trans_handle *trans,
+ 	inode->i_fop = &btrfs_dir_file_operations;
  
-@@ -6481,8 +6469,8 @@ static int btrfs_create(struct user_namespace *mnt_userns, struct inode *dir,
- 	if (err)
- 		goto out_unlock;
+ 	set_nlink(inode, 1);
+-	btrfs_i_size_write(BTRFS_I(inode), 0);
+ 	unlock_new_inode(inode);
  
--	err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry, BTRFS_I(inode),
--			0, index);
-+	err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
-+			     dentry->d_name.name, dentry->d_name.len, 0, index);
- 	if (err)
- 		goto out_unlock;
- 
-@@ -6541,8 +6529,8 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 	ihold(inode);
- 	set_bit(BTRFS_INODE_COPY_EVERYTHING, &BTRFS_I(inode)->runtime_flags);
- 
--	err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry, BTRFS_I(inode),
--			1, index);
-+	err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
-+			     dentry->d_name.name, dentry->d_name.len, 1, index);
- 
- 	if (err) {
- 		drop_inode = 1;
-@@ -9324,8 +9312,8 @@ static int btrfs_whiteout_for_rename(struct btrfs_trans_handle *trans,
- 	if (ret)
- 		goto out;
- 
--	ret = btrfs_add_nondir(trans, BTRFS_I(dir), dentry,
--				BTRFS_I(inode), 0, index);
-+	ret = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
-+			     dentry->d_name.name, dentry->d_name.len, 0, index);
- 	if (ret)
- 		goto out;
- 
-@@ -9863,8 +9851,9 @@ static int btrfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- 	 * elsewhere above.
- 	 */
- 	if (!err)
--		err = btrfs_add_nondir(trans, BTRFS_I(dir), dentry,
--				BTRFS_I(inode), 0, index);
-+		err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
-+				     dentry->d_name.name, dentry->d_name.len, 0,
-+				     index);
- 	if (err)
- 		goto out_unlock;
- 
+ 	err = btrfs_subvol_inherit_props(trans, new_root, parent_root);
 -- 
 2.35.1
 
