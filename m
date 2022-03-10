@@ -2,49 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709634D4577
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 12:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4FA4D45BC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 12:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241538AbiCJLRV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Mar 2022 06:17:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
+        id S241615AbiCJLf4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Mar 2022 06:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbiCJLRQ (ORCPT
+        with ESMTP id S234690AbiCJLfz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Mar 2022 06:17:16 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FC3BE1EB
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 03:16:15 -0800 (PST)
+        Thu, 10 Mar 2022 06:35:55 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AAEF8BBD;
+        Thu, 10 Mar 2022 03:34:54 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 58B561F381;
-        Thu, 10 Mar 2022 11:16:14 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6FE91210E1;
+        Thu, 10 Mar 2022 11:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646910974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1646912093; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=5WUaBMxgScgrw3aDpNqAJTxD/zOsdQbbgHwOre55kIc=;
-        b=fKx6DOKvh/UMJtiT2qYp3873IEzRBIK96o8PHMFXx+CyPy3A3HXUeSCQAQH3xBPuIul6aK
-        hZp/EwngF/vQNf93NuylkcXiilSM29KC2UZNAb/72Gu8BVrtFyLCwrlxYM987B6DutSahB
-        fdEEBKXu5R7Ddsd/5iw4XwmNzp6xFh0=
+        bh=0Y/1Q1mX64VtaKQye+7h0nQluUSQQsodXT6hY01tbp0=;
+        b=u4tEFI3N9p6aNl6fYL3Rx5p/mFPGklAMmVTl/yW8ONYheqY2BMv80Pk9JxWGKP3imybAAJ
+        9Vj7KfkF47wFzPgmKSAaDK39q4EW+zJqqEfUFRC57kroeTRB328KlAfmEVi1p+OtEvwi9l
+        xjsivhO9e1+7xIwslmi0fBDQzmciUqg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D8B213FA3;
-        Thu, 10 Mar 2022 11:16:13 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 88DD413FA3;
+        Thu, 10 Mar 2022 11:34:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id nA5sC/3dKWItCAAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 10 Mar 2022 11:16:13 +0000
+        id qjlbFFziKWKbEAAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 10 Mar 2022 11:34:52 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] btrfs: scrub: fix uninitialized variables in scrub_raid56_data_stripe_for_parity()
-Date:   Thu, 10 Mar 2022 19:15:56 +0800
-Message-Id: <7d577c7d7683274c316dda4b8e3a8e2344e4be06.1646829087.git.wqu@suse.com>
+Cc:     stable@vger.kernel.org
+Subject: [PATCH] btrfs: don't trigger autodefrag if cleaner is woken up early
+Date:   Thu, 10 Mar 2022 19:34:35 +0800
+Message-Id: <d1ce90f37777987732b8ccf0edbfc961cd5c8873.1646912061.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -58,82 +57,98 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The variable @extent_start and @extent_end will not be initialized if
-find_first_extent_item() failed.
+[PROBLEM]
+Patch "btrfs: don't let new writes to trigger autodefrag on the same
+inode" now makes autodefrag really only to scan one inode once
+per autodefrag run.
 
-Fix this problem by:
+That patch works mostly fine, as the trace events show their intervals
+are almost 30s:
+(only showing the root 257 ino 329891 start 0)
 
-- Only define @extent_start and @extent_size inside the while() loop
+ 486.810041: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 506.407089: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 536.463320: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 539.721309: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 569.741417: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 594.832649: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 624.258214: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 654.856264: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 684.943029: defrag_file_start: root=257 ino=329891 start=0 len=754728960
+ 715.288662: defrag_file_start: root=257 ino=329891 start=0 len=754728960
 
-- Manually call scrub_parity_mark_sectors_error() for error branch
+But there are some outlawers, like 536s->539s, it's only 3s, not the 30s
+default commit interval.
 
-- Remove the scrub_parity_mark_sectors_error() out of the while() loop
+[CAUSE]
+There are several call sites which can wake up transaction kthread
+early, while transaction kthread itself can skip transaction if its
+timer doesn't reach commit interval, but cleaner is always woken up.
 
-Please fold this fix into patch "btrfs: use find_first_extent_item() to
-replace the open-coded extent item search"
+This means each time transaction ktreahd gets woken up, we also trigger
+autodefrag, even transaction kthread chooses to skip its work.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+This is not a good behavior for files under heavy write load, as we
+waste extra IO/CPU while the defragged extents can easily get fragmented
+again.
+
+[FIX]
+In btrfs_run_defrag_inodes(), we check if our current time is larger
+than last run + commit_interval.
+
+If not, skip this run and wait for next opportunity.
+
+This patch along with patch "btrfs: don't let new writes to trigger
+autodefrag on the same inode" are mostly for backport to v5.16.
+
+This is just to reduce the unnecessary IO/CPU caused by autodefrag, the
+final solution would be allowing users to change autodefrag scan
+interval and target extent size.
+
+Cc: stable@vger.kernel.org # 5.16+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ fs/btrfs/ctree.h |  1 +
+ fs/btrfs/file.c  | 11 +++++++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 13cfa39f83b9..eb793f72d13b 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3044,8 +3044,6 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, logical);
- 	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, logical);
--	u64 extent_start;
--	u64 extent_size;
- 	u64 cur_logical = logical;
- 	int ret;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index a8a3de10cead..44116a47307e 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -899,6 +899,7 @@ struct btrfs_fs_info {
  
-@@ -3057,6 +3055,8 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
- 		struct btrfs_io_context *bioc = NULL;
- 		struct btrfs_device *extent_dev;
- 		u64 mapped_length;
-+		u64 extent_start;
-+		u64 extent_size;
- 		u64 extent_flags;
- 		u64 extent_gen;
- 		u64 extent_physical;
-@@ -3118,8 +3118,11 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
- 		ret = btrfs_lookup_csums_range(csum_root, extent_start,
- 					       extent_start + extent_size - 1,
- 					       &sctx->csum_list, 1);
--		if (ret)
-+		if (ret) {
-+			scrub_parity_mark_sectors_error(sparity, extent_start,
-+							extent_size);
- 			break;
-+		}
+ 	/* auto defrag inodes go here */
+ 	spinlock_t defrag_inodes_lock;
++	u64 defrag_last_run_ksec;
+ 	struct rb_root defrag_inodes;
+ 	atomic_t defrag_running;
  
- 		ret = scrub_extent_for_parity(sparity, extent_start,
- 					      extent_size, extent_physical,
-@@ -3127,15 +3130,15 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
- 					      extent_gen, extent_mirror_num);
- 		scrub_free_csums(sctx);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index abba1871e86e..a852754f5601 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -312,9 +312,20 @@ int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info)
+ {
+ 	struct inode_defrag *defrag;
+ 	struct rb_root defrag_inodes;
++	u64 ksec = ktime_get_seconds();
+ 	u64 first_ino = 0;
+ 	u64 root_objectid = 0;
  
--		if (ret)
-+		if (ret) {
-+			scrub_parity_mark_sectors_error(sparity, extent_start,
-+							extent_size);
- 			break;
-+		}
- 
- 		cond_resched();
- 		cur_logical += extent_size;
- 	}
--	if (ret < 0)
--		scrub_parity_mark_sectors_error(sparity, extent_start,
--						extent_size);
- 	btrfs_release_path(path);
- 	return ret;
- }
++	/*
++	 * If cleaner get woken up early, skip this run to avoid frequent
++	 * re-dirty, which is not really useful for heavy writes.
++	 *
++	 * TODO: Make autodefrag to happen in its own thread.
++	 */
++	if (ksec - fs_info->defrag_last_run_ksec < fs_info->commit_interval)
++		return 0;
++	fs_info->defrag_last_run_ksec = ksec;
++
+ 	atomic_inc(&fs_info->defrag_running);
+ 	spin_lock(&fs_info->defrag_inodes_lock);
+ 	/*
 -- 
 2.35.1
 
