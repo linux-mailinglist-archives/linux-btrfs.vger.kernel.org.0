@@ -2,35 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1ED4D452D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 11:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709634D4577
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Mar 2022 12:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbiCJK6R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Mar 2022 05:58:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        id S241538AbiCJLRV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Mar 2022 06:17:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241525AbiCJK6M (ORCPT
+        with ESMTP id S232901AbiCJLRQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Mar 2022 05:58:12 -0500
-Received: from marozi.bezitopo.org (bezitopo.org [45.55.162.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8CA0E1409C3
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 02:57:11 -0800 (PST)
-Received: from puma (unknown [IPv6:2001:5b0:210b:8f48:de83:aa2:b660:8b1f])
-        by marozi.bezitopo.org (Postfix) with ESMTPA id 45D935FBE1
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 05:56:39 -0500 (EST)
-Received: from puma.localnet (localhost [127.0.0.1])
-        by puma (Postfix) with ESMTP id 9E66A481598
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 05:56:35 -0500 (EST)
-From:   Pierre Abbat <phma@bezitopo.org>
+        Thu, 10 Mar 2022 06:17:16 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FC3BE1EB
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 03:16:15 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 58B561F381;
+        Thu, 10 Mar 2022 11:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1646910974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=5WUaBMxgScgrw3aDpNqAJTxD/zOsdQbbgHwOre55kIc=;
+        b=fKx6DOKvh/UMJtiT2qYp3873IEzRBIK96o8PHMFXx+CyPy3A3HXUeSCQAQH3xBPuIul6aK
+        hZp/EwngF/vQNf93NuylkcXiilSM29KC2UZNAb/72Gu8BVrtFyLCwrlxYM987B6DutSahB
+        fdEEBKXu5R7Ddsd/5iw4XwmNzp6xFh0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D8B213FA3;
+        Thu, 10 Mar 2022 11:16:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nA5sC/3dKWItCAAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 10 Mar 2022 11:16:13 +0000
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: Computer stalled, apparently from filesystem corruption
-Date:   Thu, 10 Mar 2022 05:56:35 -0500
-Message-ID: <12976593.dW097sEU6C@puma>
+Cc:     kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] btrfs: scrub: fix uninitialized variables in scrub_raid56_data_stripe_for_parity()
+Date:   Thu, 10 Mar 2022 19:15:56 +0800
+Message-Id: <7d577c7d7683274c316dda4b8e3a8e2344e4be06.1646829087.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,162 +58,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Sending again, with less syslog. I wrote this on the 8th.
+The variable @extent_start and @extent_end will not be initialized if
+find_first_extent_item() failed.
 
-My computer was up for several months. On Saturday I came home from church and 
-found it unresponsive except that I could move the mouse cursor and make the 
-keyboard lights blink. I tried to shell in from another computer; I got a 
-connection, but not a login prompt. I rebooted it with the power button and 
-copied the syslog file that contains the incident. I saw "btrfs" several times 
-in the section of log.
+Fix this problem by:
 
-This morning, I was rsyncing some files and the same thing happened, except 
-that the screen was stuck in the middle of flipping through windows with alt-
-tab and I was able to switch to a console, log in as root, and reboot. Again I 
-found "btrfs" in syslog.
+- Only define @extent_start and @extent_size inside the while() loop
 
-Running dmesg produces too much information. Here is the rest of the info:
-root@puma:/home/phma# uname -a
-Linux puma 5.15.15-76051515-generic #202201160435~1642693824~20.04~97db1bb-
-Ubuntu SMP Fri Jan 21 14: x86_64 x86_64 x86_64 GNU/Linux
-root@puma:/home/phma# btrfs --version
-btrfs-progs v5.4.1 
-root@puma:/home/phma# btrfs fi show
-Label: none  uuid: d0137494-fe35-488f-b0da-fdbe075b8832
-        Total devices 1 FS bytes used 72.88GiB
-        devid    1 size 673.51GiB used 75.02GiB path /dev/mapper/concolor-big
+- Manually call scrub_parity_mark_sectors_error() for error branch
 
-Label: none  uuid: 174643ac-cb44-46a9-a5a4-5fb5e9a4e79f
-        Total devices 1 FS bytes used 48.84GiB
-        devid    1 size 100.00GiB used 57.02GiB path /dev/mapper/concolor-
-rootcopy
+- Remove the scrub_parity_mark_sectors_error() out of the while() loop
 
-Label: none  uuid: 155a20c7-2264-4923-b082-288a3c146384
-        Total devices 1 FS bytes used 101.49GiB
-        devid    1 size 158.00GiB used 134.02GiB path /dev/mapper/concolor-
-cougar
+Please fold this fix into patch "btrfs: use find_first_extent_item() to
+replace the open-coded extent item search"
 
-Label: none  uuid: 10c61748-efe7-4b9c-b1f7-041dc45d894b
-        Total devices 1 FS bytes used 39.38GiB
-        devid    1 size 127.98GiB used 53.04GiB path /dev/mapper/cougar-crypt
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/scrub.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-Label: none  uuid: 1f5a6f23-a7ef-46c6-92b1-84fc2f684931
-        Total devices 1 FS bytes used 92.58GiB
-        devid    1 size 158.00GiB used 131.00GiB path /dev/mapper/puma-cougar
-
-root@puma:/home/phma# btrfs fi df /big
-Data, single: total=74.01GiB, used=72.78GiB
-System, single: total=4.00MiB, used=16.00KiB
-Metadata, single: total=1.01GiB, used=101.59MiB
-GlobalReserve, single: total=92.41MiB, used=0.00B
-root@puma:/home/phma# btrfs fi df /rootcopy
-Data, single: total=55.01GiB, used=47.68GiB
-System, single: total=4.00MiB, used=16.00KiB
-Metadata, single: total=2.01GiB, used=1.16GiB
-GlobalReserve, single: total=113.17MiB, used=0.00B
-root@puma:/home/phma# btrfs fi df /home
-Data, single: total=132.01GiB, used=100.23GiB
-System, single: total=4.00MiB, used=16.00KiB
-Metadata, single: total=2.01GiB, used=1.26GiB
-GlobalReserve, single: total=321.31MiB, used=0.00B
-root@puma:/home/phma# btrfs fi df /crypt
-Data, single: total=52.01GiB, used=39.29GiB
-System, single: total=32.00MiB, used=16.00KiB
-Metadata, single: total=1.00GiB, used=91.14MiB
-GlobalReserve, single: total=45.91MiB, used=0.00B
-root@puma:/home/phma# btrfs fi df /olv
-Data, single: total=52.01GiB, used=39.29GiB
-System, single: total=32.00MiB, used=16.00KiB
-Metadata, single: total=1.00GiB, used=91.14MiB
-GlobalReserve, single: total=45.91MiB, used=0.00B
-root@puma:/home/phma# btrfs fi df /backup
-Data, single: total=52.01GiB, used=39.29GiB
-System, single: total=32.00MiB, used=16.00KiB
-Metadata, single: total=1.00GiB, used=91.14MiB
-GlobalReserve, single: total=45.91MiB, used=0.00B
-
-The kernel I was running on Saturday may be older.
-
-Here are some excerpts from syslog:
-Mar  5 08:31:52 puma kernel: [10359910.035946] INFO: task Indexed~ #56145:1182901 blocked for more than 120 seconds.
-Mar  5 08:31:52 puma kernel: [10359910.035948]       Tainted: P           OE     5.13.0-7614-generic #14~1631647151~20.04~930e87c-Ubuntu
-Mar  5 08:31:52 puma kernel: [10359910.035949] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-Mar  5 08:31:52 puma kernel: [10359910.035950] task:Indexed~ #56145 state:D stack:    0 pid:1182901 ppid:     1 flags:0x00000000
-Mar  5 08:31:52 puma kernel: [10359910.035953] Call Trace:
-Mar  5 08:31:52 puma kernel: [10359910.035954]  __schedule+0x2ee/0x900
-Mar  5 08:31:52 puma kernel: [10359910.035956]  ? try_to_unlazy+0x55/0x90
-Mar  5 08:31:52 puma kernel: [10359910.035959]  schedule+0x4f/0xc0
-Mar  5 08:31:52 puma kernel: [10359910.035964]  wait_current_trans+0xd6/0x140 [btrfs]
-Mar  5 08:31:52 puma kernel: [10359910.036043]  ? wait_woken+0x80/0x80
-Mar  5 08:31:52 puma kernel: [10359910.036047]  start_transaction+0x4bb/0x5a0 [btrfs]
-Mar  5 08:31:52 puma kernel: [10359910.036081]  btrfs_start_transaction_fallback_global_rsv+0x1b/0x20 [btrfs]
-Mar  5 08:31:52 puma kernel: [10359910.036113]  btrfs_unlink+0x30/0xe0 [btrfs]
-Mar  5 08:31:52 puma kernel: [10359910.036145]  vfs_unlink+0x114/0x200
-Mar  5 08:31:52 puma kernel: [10359910.036147]  do_unlinkat+0x1a2/0x2d0
-Mar  5 08:31:52 puma kernel: [10359910.036150]  __x64_sys_unlink+0x23/0x30
-Mar  5 08:31:52 puma kernel: [10359910.036153]  do_syscall_64+0x61/0xb0
-Mar  5 08:31:52 puma kernel: [10359910.036155]  ? do_syscall_64+0x6e/0xb0
-Mar  5 08:31:52 puma kernel: [10359910.036157]  ? do_syscall_64+0x6e/0xb0
-Mar  5 08:31:52 puma kernel: [10359910.036159]  ? do_syscall_64+0x6e/0xb0
-Mar  5 08:31:52 puma kernel: [10359910.036160]  ? do_syscall_64+0x6e/0xb0
-Mar  5 08:31:52 puma kernel: [10359910.036162]  ? do_syscall_64+0x6e/0xb0
-Mar  5 08:31:52 puma kernel: [10359910.036164]  ? asm_sysvec_apic_timer_interrupt+0xa/0x20
-Mar  5 08:31:52 puma kernel: [10359910.036166]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-Mar  5 08:31:52 puma kernel: [10359910.036167] RIP: 0033:0x7fc30923de3b
-Mar  5 08:31:52 puma kernel: [10359910.036169] RSP: 002b:00007fc2c2bbd4d8 EFLAGS: 00000202 ORIG_RAX: 0000000000000057
-Mar  5 08:31:52 puma kernel: [10359910.036170] RAX: ffffffffffffffda RBX: 00007fc274b75271 RCX: 00007fc30923de3b
-Mar  5 08:31:52 puma kernel: [10359910.036171] RDX: 0000000000000000 RSI: 00007fc274b75271 RDI: 00007fc274b75271
-Mar  5 08:31:52 puma kernel: [10359910.036173] RBP: 0000000000000000 R08: 0000000000000000 R09: 00007fc272f01748
-Mar  5 08:31:52 puma kernel: [10359910.036174] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fc274b75271
-Mar  5 08:31:52 puma kernel: [10359910.036175] R13: 00007fc2734b4400 R14: 0000000000000000 R15: 00007fc3085bd578
-
-Mar  8 04:36:29 puma kernel: [39151.885472] INFO: task tracker-store:53596 blocked for more than 120 seconds.
-Mar  8 04:36:29 puma kernel: [39151.885492]       Tainted: G           OE     5.15.15-76051515-generic #202201160435~1642693824~20.04~97db1bb-Ubuntu
-Mar  8 04:36:29 puma kernel: [39151.885494] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-Mar  8 04:36:29 puma kernel: [39151.885496] task:tracker-store   state:D stack:    0 pid:53596 ppid:  3662 flags:0x00000000
-Mar  8 04:36:29 puma kernel: [39151.885503] Call Trace:
-Mar  8 04:36:29 puma kernel: [39151.885508]  <TASK>
-Mar  8 04:36:29 puma kernel: [39151.885518]  __schedule+0x2cd/0x890
-Mar  8 04:36:29 puma kernel: [39151.885530]  ? __cond_resched+0x19/0x30
-Mar  8 04:36:29 puma kernel: [39151.885533]  schedule+0x4e/0xb0
-Mar  8 04:36:29 puma kernel: [39151.885539]  btrfs_sync_log+0x178/0xef0 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885704]  ? __raw_callee_save___native_queued_spin_unlock+0x15/0x23
-Mar  8 04:36:29 puma kernel: [39151.885717]  ? release_extent_buffer+0xbb/0xe0 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885753]  ? wait_woken+0x60/0x60
-Mar  8 04:36:29 puma kernel: [39151.885758]  ? btrfs_free_path+0x27/0x30 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885787]  ? dput+0x62/0x320
-Mar  8 04:36:29 puma kernel: [39151.885794]  ? log_all_new_ancestors+0x3bc/0x470 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885841]  ? btrfs_log_inode_parent+0x2db/0x890 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885872]  ? join_transaction+0x135/0x4c0 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885900]  ? start_transaction+0xd5/0x5b0 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885931]  ? dput+0x62/0x320
-Mar  8 04:36:29 puma kernel: [39151.885933]  btrfs_sync_file+0x33f/0x460 [btrfs]
-Mar  8 04:36:29 puma kernel: [39151.885961]  vfs_fsync_range+0x49/0x80
-Mar  8 04:36:29 puma kernel: [39151.885965]  do_fsync+0x3d/0x70
-Mar  8 04:36:29 puma kernel: [39151.885967]  __x64_sys_fsync+0x14/0x20
-Mar  8 04:36:29 puma kernel: [39151.885968]  do_syscall_64+0x5c/0xc0
-Mar  8 04:36:29 puma kernel: [39151.885971]  ? do_sys_openat2+0x1d3/0x320
-Mar  8 04:36:29 puma kernel: [39151.885975]  ? exit_to_user_mode_prepare+0x3d/0x1c0
-Mar  8 04:36:29 puma kernel: [39151.885980]  ? syscall_exit_to_user_mode+0x27/0x50
-Mar  8 04:36:29 puma kernel: [39151.885983]  ? __x64_sys_openat+0x20/0x30
-Mar  8 04:36:29 puma kernel: [39151.885986]  ? do_syscall_64+0x69/0xc0
-Mar  8 04:36:29 puma kernel: [39151.885987]  ? do_syscall_64+0x69/0xc0
-Mar  8 04:36:29 puma kernel: [39151.885988]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-Mar  8 04:36:29 puma kernel: [39151.885993] RIP: 0033:0x7f0eb970832b
-Mar  8 04:36:29 puma kernel: [39151.885995] RSP: 002b:00007ffde79e29b0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-Mar  8 04:36:29 puma kernel: [39151.885997] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f0eb970832b
-Mar  8 04:36:29 puma kernel: [39151.885999] RDX: 0000000000101441 RSI: 0000564c61177b50 RDI: 0000000000000008
-Mar  8 04:36:29 puma kernel: [39151.886000] RBP: 0000000000000008 R08: 0000000000000000 R09: 0000000000000001
-Mar  8 04:36:29 puma kernel: [39151.886001] R10: 00000000000001b0 R11: 0000000000000293 R12: 0000564c61176e50
-Mar  8 04:36:29 puma kernel: [39151.886002] R13: 00007ffde79e2a00 R14: 00007ffde79e2be4 R15: 0000000000000000
-Mar  8 04:36:29 puma kernel: [39151.886005]  </TASK>
-
-Please copy me, I'm not on the mailing list.
-
-Pierre
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 13cfa39f83b9..eb793f72d13b 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3044,8 +3044,6 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
+ 	struct btrfs_fs_info *fs_info = sctx->fs_info;
+ 	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, logical);
+ 	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, logical);
+-	u64 extent_start;
+-	u64 extent_size;
+ 	u64 cur_logical = logical;
+ 	int ret;
+ 
+@@ -3057,6 +3055,8 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
+ 		struct btrfs_io_context *bioc = NULL;
+ 		struct btrfs_device *extent_dev;
+ 		u64 mapped_length;
++		u64 extent_start;
++		u64 extent_size;
+ 		u64 extent_flags;
+ 		u64 extent_gen;
+ 		u64 extent_physical;
+@@ -3118,8 +3118,11 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
+ 		ret = btrfs_lookup_csums_range(csum_root, extent_start,
+ 					       extent_start + extent_size - 1,
+ 					       &sctx->csum_list, 1);
+-		if (ret)
++		if (ret) {
++			scrub_parity_mark_sectors_error(sparity, extent_start,
++							extent_size);
+ 			break;
++		}
+ 
+ 		ret = scrub_extent_for_parity(sparity, extent_start,
+ 					      extent_size, extent_physical,
+@@ -3127,15 +3130,15 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
+ 					      extent_gen, extent_mirror_num);
+ 		scrub_free_csums(sctx);
+ 
+-		if (ret)
++		if (ret) {
++			scrub_parity_mark_sectors_error(sparity, extent_start,
++							extent_size);
+ 			break;
++		}
+ 
+ 		cond_resched();
+ 		cur_logical += extent_size;
+ 	}
+-	if (ret < 0)
+-		scrub_parity_mark_sectors_error(sparity, extent_start,
+-						extent_size);
+ 	btrfs_release_path(path);
+ 	return ret;
+ }
 -- 
-The gostak pelled at the fostin lutt for darfs for her martle plave.
-The darfs had smibbed, the lutt was thale, and the pilter had nothing snave.
-
-
+2.35.1
 
