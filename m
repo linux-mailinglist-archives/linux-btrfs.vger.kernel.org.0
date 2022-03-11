@@ -2,98 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1744DE161
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Mar 2022 19:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1674DE522
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Mar 2022 03:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240210AbiCRSwd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Mar 2022 14:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        id S239121AbiCSCLj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 18 Mar 2022 22:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbiCRSwc (ORCPT
+        with ESMTP id S234956AbiCSCLi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Mar 2022 14:52:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCFE304AEB
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Mar 2022 11:51:11 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D5BFE210FD;
-        Fri, 18 Mar 2022 18:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1647629469;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vdbas/R1Q8KHMZ/3t9o1gglU36CevcdnZEu0FuxtszM=;
-        b=TcNOObn25qr2GntX3CY6AusXLEGeyx2fPEd1ud8TYvWvQOEypgqVlvG1vdp3gj/PtJGP0w
-        t2KBQdlCNWWEjF4VGXe9rUnQ5GMr6A+pj/4bZrXWaj9fLnZtnf1cCLfZFXFC+kSgiGplZX
-        R8A6t05uB+HXIDU5Yu6jGvJ1eky6yX8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1647629469;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vdbas/R1Q8KHMZ/3t9o1gglU36CevcdnZEu0FuxtszM=;
-        b=zuCYjWONezE4Zihaqeiq+JNHuRurO50IkjCGkSDTC/uqa2q6VRpZqDjiNjfb3NEqVZZTKW
-        eLTSQJsskALBO6Cg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id CC06DA3B83;
-        Fri, 18 Mar 2022 18:51:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 64513DA7E1; Fri, 18 Mar 2022 19:47:09 +0100 (CET)
-Date:   Fri, 18 Mar 2022 19:47:09 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Andrei Borzenkov <arvidjaar@gmail.com>
-Subject: Re: [PATCH] btrfs: check/qgroup: fix two error messages used in
- qgroup verification
-Message-ID: <20220318184709.GG12643@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Andrei Borzenkov <arvidjaar@gmail.com>
-References: <59b4af870c15cbd7e05d05d41312e5eb54632632.1647497564.git.wqu@suse.com>
+        Fri, 18 Mar 2022 22:11:38 -0400
+X-Greylist: delayed 141706 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Mar 2022 19:10:15 PDT
+Received: from mail.aps.go.ke (mail.aps.go.ke [41.76.170.160])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39624DFD4D
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Mar 2022 19:10:15 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.aps.go.ke (Postfix) with ESMTP id AF059C06B7D;
+        Mon, 14 Mar 2022 04:51:43 +0300 (EAT)
+Received: from mail.aps.go.ke ([127.0.0.1])
+        by localhost (mail.aps.go.ke [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 3a5O5ITcLIFL; Mon, 14 Mar 2022 04:51:43 +0300 (EAT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.aps.go.ke (Postfix) with ESMTP id 384F1C823E6;
+        Fri, 11 Mar 2022 22:31:41 +0300 (EAT)
+X-Virus-Scanned: amavisd-new at aps.go.ke
+Received: from mail.aps.go.ke ([127.0.0.1])
+        by localhost (mail.aps.go.ke [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qMB2NwB_vOdK; Fri, 11 Mar 2022 22:31:41 +0300 (EAT)
+Received: from [156.96.56.93] (unknown [156.96.56.93])
+        by mail.aps.go.ke (Postfix) with ESMTPSA id 40DE5A75F1C;
+        Fri, 11 Mar 2022 08:12:17 +0300 (EAT)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59b4af870c15cbd7e05d05d41312e5eb54632632.1647497564.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Shalom: $13M Project
+To:     Recipients <kshhmn@vms-south.vn>
+From:   "Ms. Ramona Caswell" <kshhmn@vms-south.vn>
+Date:   Thu, 10 Mar 2022 21:11:49 -0800
+Reply-To: cmsramona@gmail.com
+Message-Id: <20220311051217.40DE5A75F1C@mail.aps.go.ke>
+X-Spam-Status: Yes, score=6.3 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        MONEY_FROM_41,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,RCVD_IN_SBL,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_PERMERROR autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [156.96.56.93 listed in zen.spamhaus.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5004]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [41.76.170.160 listed in bl.score.senderscore.com]
+        *  0.0 RCVD_IN_MSPIKE_L4 RBL: Bad reputation (-4)
+        *      [41.76.170.160 listed in bl.mailspike.net]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 T_SPF_PERMERROR SPF: test of record failed (permerror)
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 RCVD_IN_MSPIKE_BL Mailspike blacklisted
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.0 MONEY_FROM_41 Lots of money from Africa
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+        *  0.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 02:12:50PM +0800, Qu Wenruo wrote:
-> [BUG]
-> There is a weird error message when running btrfs check on a specific
-> immage:
-> 
->  [7/7] checking quota groups
->  ERROR: out of memory
->  ERROR: Loading qgroups from disk: -2
->  ERROR: failed to check quota groups
-> 
-> [CAUSE]
-> The "Out of memory" one is in load_quota_info(), which is output in two
-> cases:
-> 
-> - No memory can be allocated for btrfs_qgroup_list
->   AKA, real -ENOMEM.
-> 
-> - No qgroup can be found for either the child or the parent qgroup
->   This returnes -ENOENT.
-> 
-> Obvious the image has hit -ENOENT case, but the error message is fixed
-> to ENOMEM case.
-> 
-> [FIX]
-> Fix it by using %m to output the real reason of failure.
-> 
-> Reported-by: Andrei Borzenkov <arvidjaar@gmail.com>
-> Link: https://forums.opensuse.org/showthread.php/567851-btrfs-fails-to-load-qgroups-from-disk-with-error-2-(out-of-memory)
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Shalom,
 
-Added to devel, thanks.
+I have a project of $13,609,000.00USD that I would love to partner with you. Kindly respond back to me and I will explain in details to you.
+
+Regards
+Ms. Ramona Caswell
+Chief Internal Auditor
+Banking Division.
