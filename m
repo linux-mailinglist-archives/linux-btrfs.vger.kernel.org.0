@@ -2,67 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D8A4D5C77
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 08:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFE04D5C78
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 08:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347217AbiCKHjx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 02:39:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
+        id S1347223AbiCKHkM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 02:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347173AbiCKHjr (ORCPT
+        with ESMTP id S1347225AbiCKHkM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 02:39:47 -0500
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B1755208;
-        Thu, 10 Mar 2022 23:38:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1646984323; x=1678520323;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4D1r2l1x0Nc7hKdRdIldPQPtNyBpfjRydgDwmsMl+Oo=;
-  b=csDjoVJqa/JimWxiiEwkrqWwvdnu5nH2ge6J6g3VMQpRDz7ES8aEmlPa
-   d4g6UgyI6D2YdlcjNTgJvC3ttimIy2akonwbuC1dcIWq1MoomqQ8FLcV/
-   NTqxRItaijMiuIMJcyNfFhFsmWz5KClDr/bYO+iYuSGpYKY+SZCMBvrLt
-   cPKrwyuTVOlWkRxpwwuUQfqbvUmkIJQJXaPGjcMbhC6vv4SiQJ1C2yIjp
-   ZZiyyQf9XrzGUlrlpALSEfHFVSELG2aqm0PkH0zoO5hBlTSdUYxNA4Smk
-   PCzEAPIQU4n8wOVYumdquy+/rWTLHQlZSEZ0DbD/U0czMCz1PZaJVgK9l
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.90,173,1643644800"; 
-   d="scan'208";a="199899098"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Mar 2022 15:38:43 +0800
-IronPort-SDR: TI/HTqmY2p2s10YMwb4hEZVlgAf3adTMxFVIrXfOUweJSZi629qrKvJeQ4uKXvj/lqtL86LcHf
- QnO0bQ/8bHiyRTDLZjzNoBg8SuVplELJa6nHhXQ3Rfa92QRX8+ePCmdWsE6NKMAhf8vK5qg1Ez
- /DyjSj3Qzeb8B8b/y9mlkUxd9ccCkt66nsZg5NOn2VFDRI8u57MgdNSNmaKhe2DQv2FfeVRxsi
- Ze1f2+M3z4cBF6qs8BxqlcU0beBsxfqFAssh8k3+8/qT0G/dhzKeEfN7jEDSkXdXPv7Q4DJbBo
- 3NcMi195jlC/PA6OBwJZt/JF
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2022 23:10:58 -0800
-IronPort-SDR: owNkfMOyxfjpTbPEnJp3MM/hvdGVjwzxTzvTBOF2bzvLuvOS3RiI5a3l6OBcFv2Y/Npen90Neo
- /NlMOf2Ph+fBq5qcwo7qfV0HOcqatke+O6H2Q39mD8G2TnoJ7lcsedLvO9bf2Xb8tNuuvpi5oG
- JUNzpRP2eUsoz3L/LAAN3a+TJ9wgJAuYO2Co9KUuarjowFj1etqvyEftUd2DQk3BB2cBriBB+X
- CiS+NTLYNxPY131QBTeQ2LvY3fvhoURXDNOhl3CTHIxKx4RLBvVorpS3iafMlxq6KEgUbqy1Pj
- bC0=
-WDCIronportException: Internal
-Received: from dyv5jr2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.50.231])
-  by uls-op-cesaip02.wdc.com with ESMTP; 10 Mar 2022 23:38:45 -0800
-From:   Naohiro Aota <naohiro.aota@wdc.com>
+        Fri, 11 Mar 2022 02:40:12 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8249256408
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 23:39:08 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 402271F38D
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1646984347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=KlbMWigG3taDVaCopgLoZiZWAna4pQMoDmtXmVdU3X4=;
+        b=Gzam8xKfurf7HGE8/11nx3rtLF3zoQoQ9YBeNjfwxFO2uL32m9fCKFaPmQM5+yXEb1Q4Bk
+        qpJEqoNjQLgBZbs7dBkkfvtBj0ShH1gSZCxnNh0r98sJ9LXsgfk8iQ9qhtm6qjVBpsdp/D
+        FSttw4K7MNUUo18Lr641hCKUyMsbrmI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 92FD613A82
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id aPh6F5r8KmKkJgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:06 +0000
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     johannes.thumshirn@wdc.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, david@fromorbit.com,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 4/4] btrfs: assert that relocation is protected with sb_start_write()
-Date:   Fri, 11 Mar 2022 16:38:05 +0900
-Message-Id: <697674ea626a3d04218b02dbb12e07bdd851d3f0.1646983176.git.naohiro.aota@wdc.com>
+Subject: [PATCH v4 0/9] btrfs: refactor scrub entrances for each profile
+Date:   Fri, 11 Mar 2022 15:38:40 +0800
+Message-Id: <cover.1646984153.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1646983176.git.naohiro.aota@wdc.com>
-References: <cover.1646983176.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,31 +57,161 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_relocate_chunk() initiates new ordered extents. They can cause a
-hang when a process is trying to thaw the filesystem.
+This patchset is cherry-picked from my github repo:
+https://github.com/adam900710/linux/tree/refactor_scrub
 
-We should have called sb_start_write(), so the filesystem is not being
-frozen. Add an ASSERT to check it is protected.
+[Changelog]
+v2:
+- Rebased to latest misc-next
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/volumes.c | 3 +++
- 1 file changed, 3 insertions(+)
+- Fix several uninitialized variables in the 2nd and 3rd patch
+  This is because @physical, @physical_end and @offset are also used for
+  zoned device sync.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 0d27d8d35c7a..b558fd293ffa 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3239,6 +3239,9 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
- 	u64 length;
- 	int ret;
- 
-+	/* Assert we called sb_start_write(), not to race with FS freezing */
-+	ASSERT(sb_write_started(fs_info->sb));
-+
- 	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
- 		btrfs_err(fs_info,
- 			  "relocate: not supported on extent tree v2 yet");
+  Initial those values early to fix the problem.
+
+v3:
+- Add two patches to better split cleanups from refactors
+  One to change the timing of initialization of @physical and
+  @physical_end
+
+  One to remove dead non-RAID56 branches after making scrub_stripe() to
+  work on RAID56 only.
+
+- Fix an unfinished comment in scrub_simple_mirror()
+
+v4:
+- Rebased after scrub renaming patchset
+  Only minor conflicts.
+
+- Fix uninitialized variable in patch 6 and 7
+  Now there should be no uninitialized even only patches 1~6 are
+  applied.
+
+[CRAP-BUT-IT-WORKS(TM)]
+
+Scrub is one of the area we seldom touch because:
+
+- It's a mess
+  Just check scrub_stripe() function.
+  It's a function scrubbing a stripe for *all* profiles.
+
+  It's near 400 lines for a single complex function, with double while()
+  loop and several different jumps inside the loop.
+
+  Not to mention the lack of comments for various structures.
+
+  This should and will never happen under our current code standard.
+
+- It just works
+  I have hit more than 10 bugs during development, and I just want to
+  give up the refactor, as even the code is crap, it works, passing the
+  existing scrub/replace group.
+  While no matter how small code change I'm doing, it always fails to pass
+  the same tests.
+
+[REFACTOR-IDEA]
+
+The core idea here, is to get rid of one-fit-all solution for
+scrub_stripe().
+
+Instead, we explicitly separate the scrub into 3 groups (the idea is
+from my btrfs-fuse project):
+
+- Simple-mirror based profiles
+  This includes SINGLE/DUP/RAID1/RAID1C* profiles.
+  They have no stripe, and their repair is purely mirror based.
+
+- Simple-stripe based profiles
+  This includes RAID0/RAID10 profiles.
+  They are just simple stripe (without P/Q nor rotation), with extra
+  mirrors to support their repair.
+
+- RAID56
+  The most complex profiles, they have extra P/Q, and have rotation.
+
+[REFACTOR-IMPLEMENTATION]
+
+So we have 3 entrances for all those supported profiles:
+
+- scrub_simple_mirror()
+  For SINGLE/DUP/RAID1/RAID1C* profiles.
+  Just go through each extent and scrub the extent.
+
+- scrub_simple_stripe()
+  For RAID0/RAID10 profiles.
+  Instead we go each data stripe first, then inside each data stripe, we
+  can call scrub_simple_mirror(), since after stripe split, RAID0 is
+  just SINGLE and RAID10 is just RAID1.
+
+- scrub_stripe() untouched for RAID56
+  RAID56 still has all the complex things to do, but they can still be
+  split into two types (already done by the original code)
+
+  * data stripes
+    They are no different in the verification part, RAID56 is just
+    SINGLE if we ignore the repair path.
+    It's only in repair path that our path divides.
+
+    So we can reuse scrub_simple_mirror() again.
+
+  * P/Q stripes
+    They already have a dedicated function handling the case.
+
+With all these refactors, although we have several more functions, we
+get rid of:
+
+- A double while () loop
+- Several jumps inside the double loop
+- Complex calculation to try to fit all profiles
+
+And we get:
+
+- Better comments
+- More dedicated functions
+- A better basis for further refactors
+
+[FUTURE CLEANUPS]
+- Refactor scrub_pages/scrub_parity/... structures
+- Further cleanup RAID56 codes
+
+Changelog:
+v2:
+- Rebased to latest misc-next
+
+- Fix several uninitialized variables in the 2nd and 3rd patch
+  This is because @physical, @physical_end and @offset are also used for
+  zoned device sync.
+
+  Initial those values early to fix the problem.
+
+v3:
+- Add two patches to better split cleanups from refactors
+  One to change the timing of initialization of @physical and
+  @physical_end
+
+  One to remove dead non-RAID56 branches after making scrub_stripe() to
+  work on RAID56 only.
+
+- Fix an unfinished comment in scrub_simple_mirror()
+
+Qu Wenruo (9):
+  btrfs: calculate @physical_end using @dev_extent_len directly in
+    scrub_stripe()
+  btrfs: introduce a helper to locate an extent item
+  btrfs: introduce dedicated helper to scrub simple-mirror based range
+  btrfs: introduce dedicated helper to scrub simple-stripe based range
+  btrfs: scrub: cleanup the non-RAID56 branches in scrub_stripe()
+  btrfs: use scrub_simple_mirror() to handle RAID56 data stripe scrub
+  btrfs: refactor scrub_raid56_parity()
+  btrfs: use find_first_extent_item() to replace the open-coded extent
+    item search
+  btrfs: move scrub_remap_extent() call into scrub_extent() with more
+    comments
+
+ fs/btrfs/scrub.c | 1037 +++++++++++++++++++++++++---------------------
+ 1 file changed, 559 insertions(+), 478 deletions(-)
+
 -- 
 2.35.1
 
