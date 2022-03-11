@@ -2,198 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 124414D60BC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 12:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63134D610E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 12:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348300AbiCKLgs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 06:36:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
+        id S1344855AbiCKL4b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 06:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348289AbiCKLgq (ORCPT
+        with ESMTP id S242969AbiCKL4a (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 06:36:46 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7421BFDE9
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 03:35:43 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D572461C2C
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 11:35:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0BFBC340F4
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 11:35:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646998542;
-        bh=/2/hXwzKtCycLRPOeoeGu+EQfIByq2oQG8lL7N+fZgk=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=AthWO6vHbm+B70AxHjbVigwe/So2qcV0DiBWl4rhGYDwnlxgNAmdQpgrN5p3/hob6
-         INJackNiQ3mSgg/TsoYdSSZECvxAHUUkOfHUqZyWzzNp8OHz4o83whyxj+uqvbiAUT
-         dcJMFCCJ3Nies89rg0+8pgjKZW5eyI3RCDAFnEj+OFMKHUKsl9tlN4awECd1UNBZtp
-         Bn7dI9JafskIbK65gipl9w/mUe1O9dkofTaq72iWqtaJEabH9mzJNhoaM81KvllPyH
-         yabnKhuV7AyMsYmOuKbXuxcCu2gfsf7zQ1pwHCvC5b3Ja6i6o70bx2HeiQGvWMrECC
-         nGIUPSDfDa+Iw==
-From:   fdmanana@kernel.org
+        Fri, 11 Mar 2022 06:56:30 -0500
+Received: from out20-99.mail.aliyun.com (out20-99.mail.aliyun.com [115.124.20.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7D110708B
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 03:55:25 -0800 (PST)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00302793-6.50674e-05-0.996907;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.N28XJiU_1646999723;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.N28XJiU_1646999723)
+          by smtp.aliyun-inc.com(33.37.71.62);
+          Fri, 11 Mar 2022 19:55:23 +0800
+Date:   Fri, 11 Mar 2022 19:55:27 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs: remove trivial wrapper btrfs_read_buffer()
-Date:   Fri, 11 Mar 2022 11:35:34 +0000
-Message-Id: <160fad9b4d845f6fb404f88df2fbc458ba5260fe.1646998177.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1646998177.git.fdmanana@suse.com>
-References: <cover.1646998177.git.fdmanana@suse.com>
+Subject: fstests btrfs/232 trigger 'btrfs check' error 'errors 400, nbytes wrong'
+Message-Id: <20220311195526.452D.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hi,
 
-The function btrfs_read_buffer() is useless, it just calls
-btree_read_extent_buffer_pages() with exactly the same arguments.
+fstests btrfs/232 trigger 'btrfs check' error 'errors 400, nbytes wrong'
 
-So remove it and rename btree_read_extent_buffer_pages() to
-btrfs_read_extent_buffer(), which is a shorter name, has the "btrfs_"
-prefix (since it's used outside disk-io.c) and the name is clear enough
-about what it does.
+btrfs version: misc-next based on 5.17-rc7
+frequency: not stable, but already 3 times
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.c    |  2 +-
- fs/btrfs/disk-io.c  | 16 ++++------------
- fs/btrfs/disk-io.h  |  4 ++--
- fs/btrfs/qgroup.c   |  2 +-
- fs/btrfs/tree-log.c |  9 +++++----
- 5 files changed, 13 insertions(+), 20 deletions(-)
+hardware: DELL PowerEdge T630, no  ECC error detected.
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 13d4833afcd3..a795e89de3f1 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1450,7 +1450,7 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
- 			btrfs_unlock_up_safe(p, level + 1);
- 
- 		/* now we're allowed to do a blocking uptodate check */
--		ret = btrfs_read_buffer(tmp, gen, parent_level - 1, &first_key);
-+		ret = btrfs_read_extent_buffer(tmp, gen, parent_level - 1, &first_key);
- 		if (ret) {
- 			free_extent_buffer(tmp);
- 			btrfs_release_path(p);
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 09693ab4fde0..d429a53704d0 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -374,9 +374,9 @@ int btrfs_verify_level_key(struct extent_buffer *eb, int level,
-  * @level:		expected level, mandatory check
-  * @first_key:		expected key of first slot, skip check if NULL
-  */
--static int btree_read_extent_buffer_pages(struct extent_buffer *eb,
--					  u64 parent_transid, int level,
--					  struct btrfs_key *first_key)
-+int btrfs_read_extent_buffer(struct extent_buffer *eb,
-+			     u64 parent_transid, int level,
-+			     struct btrfs_key *first_key)
- {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	struct extent_io_tree *io_tree;
-@@ -1117,8 +1117,7 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- 	if (IS_ERR(buf))
- 		return buf;
- 
--	ret = btree_read_extent_buffer_pages(buf, parent_transid,
--					     level, first_key);
-+	ret = btrfs_read_extent_buffer(buf, parent_transid, level, first_key);
- 	if (ret) {
- 		free_extent_buffer_stale(buf);
- 		return ERR_PTR(ret);
-@@ -4850,13 +4849,6 @@ void btrfs_btree_balance_dirty_nodelay(struct btrfs_fs_info *fs_info)
- 	__btrfs_btree_balance_dirty(fs_info, 0);
- }
- 
--int btrfs_read_buffer(struct extent_buffer *buf, u64 parent_transid, int level,
--		      struct btrfs_key *first_key)
--{
--	return btree_read_extent_buffer_pages(buf, parent_transid,
--					      level, first_key);
--}
--
- static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
- {
- 	/* cleanup FS via transaction */
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 2e10514ecda8..2a401592124d 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -120,8 +120,8 @@ void btrfs_put_root(struct btrfs_root *root);
- void btrfs_mark_buffer_dirty(struct extent_buffer *buf);
- int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
- 			  int atomic);
--int btrfs_read_buffer(struct extent_buffer *buf, u64 parent_transid, int level,
--		      struct btrfs_key *first_key);
-+int btrfs_read_extent_buffer(struct extent_buffer *buf, u64 parent_transid,
-+			     int level, struct btrfs_key *first_key);
- blk_status_t btrfs_bio_wq_end_io(struct btrfs_fs_info *info, struct bio *bio,
- 			enum btrfs_wq_endio_type metadata);
- blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 75e835cd4d91..db723c0026bd 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2290,7 +2290,7 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
- 		return 0;
- 
- 	if (!extent_buffer_uptodate(root_eb)) {
--		ret = btrfs_read_buffer(root_eb, root_gen, root_level, NULL);
-+		ret = btrfs_read_extent_buffer(root_eb, root_gen, root_level, NULL);
- 		if (ret)
- 			goto out;
- 	}
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 571dae8ad65e..338646a2cc4e 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -333,7 +333,7 @@ static int process_one_buffer(struct btrfs_root *log,
- 	 * pin down any logged extents, so we have to read the block.
- 	 */
- 	if (btrfs_fs_incompat(fs_info, MIXED_GROUPS)) {
--		ret = btrfs_read_buffer(eb, gen, level, NULL);
-+		ret = btrfs_read_extent_buffer(eb, gen, level, NULL);
- 		if (ret)
- 			return ret;
- 	}
-@@ -2575,7 +2575,7 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 	int i;
- 	int ret;
- 
--	ret = btrfs_read_buffer(eb, gen, level, NULL);
-+	ret = btrfs_read_extent_buffer(eb, gen, level, NULL);
- 	if (ret)
- 		return ret;
- 
-@@ -2786,7 +2786,7 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
- 
- 			path->slots[*level]++;
- 			if (wc->free) {
--				ret = btrfs_read_buffer(next, ptr_gen,
-+				ret = btrfs_read_extent_buffer(next, ptr_gen,
- 							*level - 1, &first_key);
- 				if (ret) {
- 					free_extent_buffer(next);
-@@ -2815,7 +2815,8 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
- 			free_extent_buffer(next);
- 			continue;
- 		}
--		ret = btrfs_read_buffer(next, ptr_gen, *level - 1, &first_key);
-+		ret = btrfs_read_extent_buffer(next, ptr_gen, *level - 1,
-+					       &first_key);
- 		if (ret) {
- 			free_extent_buffer(next);
- 			return ret;
--- 
-2.33.0
+the output(232.full) of fstests btrfs/232:
+wrote 943718400/943718400 bytes at offset 0
+900 MiB, 230400 ops; 0.4709 sec (1.866 GiB/sec and 489201.0565 ops/sec)
+quota rescan started
+_check_btrfs_filesystem: filesystem on /dev/sdc2 is inconsistent
+*** fsck.btrfs output ***
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+root 5 inode 955 errors 400, nbytes wrong
+ERROR: errors found in fs roots
+Opening filesystem to check...
+Checking filesystem on /dev/sdc2
+UUID: 0658fa0d-e714-44c9-9078-2a87c8e32107
+found 1447309312 bytes used, error(s) found
+total csum bytes: 1143484
+total tree bytes: 11714560
+total fs tree bytes: 9142272
+total extent tree bytes: 622592
+btree space waste bytes: 6093520
+file data blocks allocated: 2377723904
+ referenced 1539444736
+*** end fsck.btrfs output
+*** mount output ***
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+devtmpfs on /dev type devtmpfs (rw,nosuid,size=264080408k,nr_inodes=66020102,mode=755,inode64)
+securityfs on /sys/kernel/security type securityfs (rw,nosuid,nodev,noexec,relatime)
+tmpfs on /dev/shm type tmpfs (rw,nosuid,nodev,inode64)
+devpts on /dev/pts type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000)
+tmpfs on /run type tmpfs (rw,nosuid,nodev,mode=755,inode64)
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,mode=755,inode64)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+pstore on /sys/fs/pstore type pstore (rw,nosuid,nodev,noexec,relatime)
+efivarfs on /sys/firmware/efi/efivars type efivarfs (rw,nosuid,nodev,noexec,relatime)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
+cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,rdma)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
+cgroup on /sys/fs/cgroup/misc type cgroup (rw,nosuid,nodev,noexec,relatime,misc)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)
+configfs on /sys/kernel/config type configfs (rw,relatime)
+/dev/nvme0n1p4 on / type btrfs (rw,noatime,ssd,space_cache=v2,subvolid=257,subvol=/rhel77)
+rpc_pipefs on /var/lib/nfs/rpc_pipefs type rpc_pipefs (rw,relatime)
+hugetlbfs on /dev/hugepages type hugetlbfs (rw,relatime,pagesize=2M)
+mqueue on /dev/mqueue type mqueue (rw,relatime)
+systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=26,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=61124)
+debugfs on /sys/kernel/debug type debugfs (rw,relatime)
+nfsd on /proc/fs/nfsd type nfsd (rw,relatime)
+/dev/nvme0n1p4 on /nfs/ssd type btrfs (rw,noatime,ssd,space_cache=v2,subvolid=263,subvol=/ssd,x-systemd.mount-timeout=0)
+/dev/nvme0n1p1 on /boot/efi type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro,x-systemd.mount-timeout=0)
+tmpfs on /run/user/0 type tmpfs (rw,nosuid,nodev,relatime,size=52824052k,mode=700,inode64)
+T640:/ssd on /ssd type nfs4 (rw,relatime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,nconnect=8,max_connect=32,timeo=600,retrans=2,sec=sys,clientaddr=10.40.1.63,local_lock=none,addr=10.40.1.64)
+T640:/ssd/hpc-bio on /ssd/hpc-bio type nfs4 (rw,relatime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,nconnect=8,max_connect=32,timeo=600,retrans=2,sec=sys,clientaddr=10.40.1.63,local_lock=none,addr=10.40.1.64)
+T640:/ssd/bio-ref on /usr/bio-ref type nfs4 (rw,relatime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,nconnect=8,max_connect=32,timeo=600,retrans=2,sec=sys,clientaddr=10.40.1.63,local_lock=none,addr=10.40.1.64)
+*** end mount output
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/03/11
+
 
