@@ -2,54 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413064D637B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 15:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E6B4D64D2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 16:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349356AbiCKOeo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 09:34:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
+        id S244279AbiCKPnU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 10:43:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237268AbiCKOen (ORCPT
+        with ESMTP id S240607AbiCKPnT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 09:34:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F341C2F7E;
-        Fri, 11 Mar 2022 06:33:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 11 Mar 2022 10:43:19 -0500
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277A51C665A
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:42:16 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F155DB82A73;
-        Fri, 11 Mar 2022 14:33:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41FF1C340ED;
-        Fri, 11 Mar 2022 14:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647009217;
-        bh=XU8vvakF1HtioHO7n+bk6PC78L5B+0hUe4nIbxk1v9E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m1qDfCbDJYfkv475CU/kv6jWL0Mh8htXOFjtkhm2qTQFyZ1A9MnhX3HLAddTFfakT
-         heAAduzUEq0dZqfGtxZSBb077oX0Em5Ic9FJxwPeROZH3LcDzyoq5iD2ixnnU1Wd/G
-         jWyHGAx1sATikwlewDK3GRGXXk0Tw/IgSzW80H1wb+VAeFU1J9AiLDAjBWIh2/zBsj
-         BleKOeWN3OEeRx53YkNrQNuT4ClXpTLo0QwDl511tr59sRKCz+cK92vLEJ6IgSry79
-         mMG7iv7kq8DEVXzWn6UcMchdR9upEDjplCxHWSZZm0IANPCkN8mayz/rQ3k9iYHe1u
-         im5Yt84HknBNQ==
-Date:   Fri, 11 Mar 2022 14:33:34 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, johannes.thumshirn@wdc.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        david@fromorbit.com
-Subject: Re: [PATCH 4/4] btrfs: assert that relocation is protected with
- sb_start_write()
-Message-ID: <YitdvtFdsFSLHRYd@debian9.Home>
-References: <cover.1646983176.git.naohiro.aota@wdc.com>
- <697674ea626a3d04218b02dbb12e07bdd851d3f0.1646983176.git.naohiro.aota@wdc.com>
+        by box.fidei.email (Postfix) with ESMTPSA id E5F5E8060A;
+        Fri, 11 Mar 2022 10:42:14 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1647013335; bh=0ZNVwb61/V3nTg6kqUQrCCGOwmd4/3PNnWDVNo0FTVE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PLNA3eyC21wz/6AYlw4CILVvn/WMpVxCIczMd/8tyHc9OOQMzKQxaTPxFaPvunbJd
+         Uz4PnTIV2ORuHUqVkON6nzm6iOKdSapqCQjW1EzGjCto320nsgzJNIw/X62tVrshQ4
+         VRdONW7zxqp1JF52bSFVoi5ucA48S9RgxjAwdhMV0cAQbPldaii94pQBruxyNU1e+6
+         rAboXmL5QX5lLUVgZTlb10hHpCrcAzL1lY9+u+WYKmRuw5+rTjOMpYnBOmUT/AThQX
+         xN/GlNlm+krRCJLSszbkcI7AuFRJ2XQhliJ6sg4q7WE1pwJU9kfmvUILyCfA7SOetb
+         01G9RCgaGFPhA==
+Message-ID: <1f55ff0e-c89d-0216-2c2f-0e1d7aa2a089@dorminy.me>
+Date:   Fri, 11 Mar 2022 10:42:14 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <697674ea626a3d04218b02dbb12e07bdd851d3f0.1646983176.git.naohiro.aota@wdc.com>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Subject: Re: [PATCH v2 03/16] btrfs: fix anon_dev leak in create_subvol()
+Content-Language: en-US
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+References: <cover.1646875648.git.osandov@fb.com>
+ <ee5528d299d357f225a228c394830d88e6eda17c.1646875648.git.osandov@fb.com>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <ee5528d299d357f225a228c394830d88e6eda17c.1646875648.git.osandov@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,46 +51,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 04:38:05PM +0900, Naohiro Aota wrote:
-> btrfs_relocate_chunk() initiates new ordered extents. They can cause a
-> hang when a process is trying to thaw the filesystem.
-> 
-> We should have called sb_start_write(), so the filesystem is not being
-> frozen. Add an ASSERT to check it is protected.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> +out_anon_dev:
+>   	if (anon_dev)
+>   		free_anon_bdev(anon_dev);
 
-> ---
->  fs/btrfs/volumes.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 0d27d8d35c7a..b558fd293ffa 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -3239,6 +3239,9 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
->  	u64 length;
->  	int ret;
->  
-> +	/* Assert we called sb_start_write(), not to race with FS freezing */
-> +	ASSERT(sb_write_started(fs_info->sb));
+It looks to me as though the finer-grained cleanup means 
+free_anon_bdev() can always be called with no conditional; if the code 
+reaches this point in cleanup, anon_dev was populated by get_anon_bdev() 
+(which must have returned zero, indicating successfully populating 
+anon_dev).
 
-Does this pass the scenario of patch 1/4 (resuming balance on mount)?
 
-Because as commented in that patch, we have the sb_start_write() done
-in the mount task, and not by the task that actually runs balance - the
-balance kthread.
+Otherwise,
 
-Anyway, this change looks good, my concerns are only about patch 1/4.
+Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Thanks.
+and thanks.
 
-> +
->  	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
->  		btrfs_err(fs_info,
->  			  "relocate: not supported on extent tree v2 yet");
-> -- 
-> 2.35.1
-> 
