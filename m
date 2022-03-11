@@ -2,58 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719BC4D5C68
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 08:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3536E4D5C73
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 08:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239800AbiCKHfr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 02:35:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        id S1346576AbiCKHjo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 02:39:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347209AbiCKHfq (ORCPT
+        with ESMTP id S231806AbiCKHjn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 02:35:46 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80A31B71BD
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 23:34:43 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 789121F441
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:34:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646984082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1OM9wIeFmAGQreZClui88tSmReTbDTv5d98O7ZL1xCc=;
-        b=bcgwcPRtTyfpNuf2Wxi+QEJbqwD+Y47aNjtKZeM7Td1UgTgp+NZ1cYNN8GGsMajRkQMPZ8
-        oxUhBhN6P3+cxSRF+alAEsqjru4KLizA02+Hfc8BBAyGiYflegQRb0vHg1RZKK5qrWoBnw
-        0QPUGX2RBuWVvRLO8aKn1oR6WhDCo/w=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C605B13A82
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:34:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6N8tI5H7KmIrJQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:34:41 +0000
-From:   Qu Wenruo <wqu@suse.com>
+        Fri, 11 Mar 2022 02:39:43 -0500
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4329854192;
+        Thu, 10 Mar 2022 23:38:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1646984320; x=1678520320;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Z5u3LqlY1kSo9XnO/9zauzMLbkpz1taSA/Y/ODlZBf8=;
+  b=emJU+LimmC6HjprhDgtV8boCjVUjxoegCAr6fA2PKmuAhfN113OQxIld
+   1/5B69ZKP2xk4Ci3g9E7foVeUgyue4G6imY7Krc4pdLhjXqVdBKuhpnJW
+   K2uFkt/B0sd0+Rj5JlDWJVrVzRwPEqMmst5/1fAkLPWB3lE56TXE/+XF5
+   BdFjGReQFU3EsK0q3OnTdemwh2TaIDKkSD2+8WDxBc0jMnih9cho4sr2e
+   y7+ypFhLjB/Msg7fBvcnazlXlmvLrITc967lZ5I6U8gXmJUZUtFuqqh7y
+   OTgwkBTxG8y2xnOI+reRpt2AVytmh+kIVqcrY4wQUj7LXuSuRHVcY/iPg
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.90,173,1643644800"; 
+   d="scan'208";a="199899077"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Mar 2022 15:38:40 +0800
+IronPort-SDR: /h9MT0ky4KxrRa4PTm9nGthsoqGS3Tg23AU8OOpeQmqJZSoOGO12zQH2tzlE2XExYVbVtQEdoZ
+ u7cnSpaFWxaUjpzbr3uPWlxzOBM0l8hAEBwHSvaejfp0fMFyg5PHCdNDjA4HVkitbAykurrxLc
+ 5gL+57F1Ub0wn6FEhECY1XgY32sh0jOL+80kzrMo+P53HMhlHlQg+a5tSgtuIkSLEGRzKEy56J
+ NcZtSn05UEZa8vdQtcVALd1IC26Ti82ewiF/EyMLYh02bQFthNPA/vBKBtG2umodLZnJQH1sHS
+ j64I+m769giHgR7ytsDr3X41
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2022 23:10:53 -0800
+IronPort-SDR: rwr0mTT5O5W/t65w8nH0qc3B3PGCPM7uvp+WlItYWAWGjao63kQwkophwMLmanGYqa9SBuvoUQ
+ YgQcPDb+9sBv3+ZRcbmhp6x3avUDtvYkddN4ogxBfTjP77IKvGveLoOUWT4q6ZHzVchyP798rZ
+ HXd2rh6bFFiwlQkJxI8wYeFRo0sbDmGa4T8RU/23KAB7owYz/iw1vi+E9SZXtyFdKoe1hY9uGy
+ NzOQrqDmlNPvLA0NZY/9Cmqk/RvhIoV86l9bvLSReuXMGZYfV5RKnmjuCfgJezbVIeN9x5p1g7
+ yZM=
+WDCIronportException: Internal
+Received: from dyv5jr2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.50.231])
+  by uls-op-cesaip02.wdc.com with ESMTP; 10 Mar 2022 23:38:40 -0800
+From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: scrub: rename scrub_bio::pagev and related members
-Date:   Fri, 11 Mar 2022 15:34:20 +0800
-Message-Id: <bad6ead4b71770743510002b31aca122a6b4fa83.1646983771.git.wqu@suse.com>
+Cc:     johannes.thumshirn@wdc.com, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, david@fromorbit.com,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/4] protect relocation with sb_start_write
+Date:   Fri, 11 Mar 2022 16:38:01 +0900
+Message-Id: <cover.1646983176.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1646983771.git.wqu@suse.com>
-References: <cover.1646983771.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,266 +68,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since the subpage support for scrub, one page no longer always represents
-one sector, thus scrub_bio::pagev and scrub_bio::sector_count are no
-longer accurate.
+This series is a follow-up to the series below. The old series added
+an assertion to btrfs_relocate_chunk() to check if it is protected
+with sb_start_write(). However, it revealed another location we need
+to add sb_start_write() [1].
 
-Rename them to scrub_bio::sectorv and scrub_bio::sector_count
-respectively.
+https://lore.kernel.org/linux-btrfs/cover.1645157220.git.naohiro.aota@wdc.com/T/
 
-This also involves scrub_ctx::pages_per_bio and other macros involved.
+[1] https://lore.kernel.org/linux-btrfs/cover.1645157220.git.naohiro.aota@wdc.com/T/#e06eecc07ce1cd1e45bfd30a374bd2d15b4fd76d8
 
-Now the rename of pages involved in scrub should be finished.
+Patches 1 and 2 add sb_{start,end}_write() to the resumed async
+balancing and device addition.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/scrub.c | 76 ++++++++++++++++++++++++------------------------
- 1 file changed, 38 insertions(+), 38 deletions(-)
+Patches 3 and 4 add an ASSERT to catch a future error.
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index c9198c9af4c4..2316269cade0 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -45,7 +45,7 @@ struct scrub_ctx;
-  * operations. The first one configures an upper limit for the number
-  * of (dynamically allocated) pages that are added to a bio.
-  */
--#define SCRUB_PAGES_PER_BIO	32	/* 128KiB per bio for x86 */
-+#define SCRUB_SECTORS_PER_BIO	32	/* 128KiB per bio for x86 */
- #define SCRUB_BIOS_PER_SCTX	64	/* 8MiB per device in flight for x86 */
- 
- /*
-@@ -87,8 +87,8 @@ struct scrub_bio {
- 	blk_status_t		status;
- 	u64			logical;
- 	u64			physical;
--	struct scrub_sector	*pagev[SCRUB_PAGES_PER_BIO];
--	int			page_count;
-+	struct scrub_sector	*sectorv[SCRUB_SECTORS_PER_BIO];
-+	int			sector_count;
- 	int			next_free;
- 	struct btrfs_work	work;
- };
-@@ -158,7 +158,7 @@ struct scrub_ctx {
- 	struct list_head	csum_list;
- 	atomic_t		cancel_req;
- 	int			readonly;
--	int			pages_per_bio;
-+	int			sectors_per_bio;
- 
- 	/* State of IO submission throttling affecting the associated device */
- 	ktime_t			throttle_deadline;
-@@ -535,9 +535,9 @@ static noinline_for_stack void scrub_free_ctx(struct scrub_ctx *sctx)
- 	if (sctx->curr != -1) {
- 		struct scrub_bio *sbio = sctx->bios[sctx->curr];
- 
--		for (i = 0; i < sbio->page_count; i++) {
--			WARN_ON(!sbio->pagev[i]->page);
--			scrub_block_put(sbio->pagev[i]->sblock);
-+		for (i = 0; i < sbio->sector_count; i++) {
-+			WARN_ON(!sbio->sectorv[i]->page);
-+			scrub_block_put(sbio->sectorv[i]->sblock);
- 		}
- 		bio_put(sbio->bio);
- 	}
-@@ -572,7 +572,7 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
- 		goto nomem;
- 	refcount_set(&sctx->refs, 1);
- 	sctx->is_dev_replace = is_dev_replace;
--	sctx->pages_per_bio = SCRUB_PAGES_PER_BIO;
-+	sctx->sectors_per_bio = SCRUB_SECTORS_PER_BIO;
- 	sctx->curr = -1;
- 	sctx->fs_info = fs_info;
- 	INIT_LIST_HEAD(&sctx->csum_list);
-@@ -586,7 +586,7 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
- 
- 		sbio->index = i;
- 		sbio->sctx = sctx;
--		sbio->page_count = 0;
-+		sbio->sector_count = 0;
- 		btrfs_init_work(&sbio->work, scrub_bio_end_io_worker, NULL,
- 				NULL);
- 
-@@ -1650,10 +1650,10 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
- 			return -ENOMEM;
- 		}
- 		sctx->wr_curr_bio->sctx = sctx;
--		sctx->wr_curr_bio->page_count = 0;
-+		sctx->wr_curr_bio->sector_count = 0;
- 	}
- 	sbio = sctx->wr_curr_bio;
--	if (sbio->page_count == 0) {
-+	if (sbio->sector_count == 0) {
- 		struct bio *bio;
- 
- 		ret = fill_writer_pointer_gap(sctx,
-@@ -1668,7 +1668,7 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
- 		sbio->dev = sctx->wr_tgtdev;
- 		bio = sbio->bio;
- 		if (!bio) {
--			bio = btrfs_bio_alloc(sctx->pages_per_bio);
-+			bio = btrfs_bio_alloc(sctx->sectors_per_bio);
- 			sbio->bio = bio;
- 		}
- 
-@@ -1678,9 +1678,9 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
- 		bio->bi_iter.bi_sector = sbio->physical >> 9;
- 		bio->bi_opf = REQ_OP_WRITE;
- 		sbio->status = 0;
--	} else if (sbio->physical + sbio->page_count * sectorsize !=
-+	} else if (sbio->physical + sbio->sector_count * sectorsize !=
- 		   ssector->physical_for_dev_replace ||
--		   sbio->logical + sbio->page_count * sectorsize !=
-+		   sbio->logical + sbio->sector_count * sectorsize !=
- 		   ssector->logical) {
- 		scrub_wr_submit(sctx);
- 		goto again;
-@@ -1688,7 +1688,7 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
- 
- 	ret = bio_add_page(sbio->bio, ssector->page, sectorsize, 0);
- 	if (ret != sectorsize) {
--		if (sbio->page_count < 1) {
-+		if (sbio->sector_count < 1) {
- 			bio_put(sbio->bio);
- 			sbio->bio = NULL;
- 			mutex_unlock(&sctx->wr_lock);
-@@ -1698,10 +1698,10 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
- 		goto again;
- 	}
- 
--	sbio->pagev[sbio->page_count] = ssector;
-+	sbio->sectorv[sbio->sector_count] = ssector;
- 	scrub_sector_get(ssector);
--	sbio->page_count++;
--	if (sbio->page_count == sctx->pages_per_bio)
-+	sbio->sector_count++;
-+	if (sbio->sector_count == sctx->sectors_per_bio)
- 		scrub_wr_submit(sctx);
- 	mutex_unlock(&sctx->wr_lock);
- 
-@@ -1726,7 +1726,7 @@ static void scrub_wr_submit(struct scrub_ctx *sctx)
- 	btrfsic_submit_bio(sbio->bio);
- 
- 	if (btrfs_is_zoned(sctx->fs_info))
--		sctx->write_pointer = sbio->physical + sbio->page_count *
-+		sctx->write_pointer = sbio->physical + sbio->sector_count *
- 			sctx->fs_info->sectorsize;
- }
- 
-@@ -1748,21 +1748,21 @@ static void scrub_wr_bio_end_io_worker(struct btrfs_work *work)
- 	struct scrub_ctx *sctx = sbio->sctx;
- 	int i;
- 
--	ASSERT(sbio->page_count <= SCRUB_PAGES_PER_BIO);
-+	ASSERT(sbio->sector_count <= SCRUB_SECTORS_PER_BIO);
- 	if (sbio->status) {
- 		struct btrfs_dev_replace *dev_replace =
- 			&sbio->sctx->fs_info->dev_replace;
- 
--		for (i = 0; i < sbio->page_count; i++) {
--			struct scrub_sector *ssector = sbio->pagev[i];
-+		for (i = 0; i < sbio->sector_count; i++) {
-+			struct scrub_sector *ssector = sbio->sectorv[i];
- 
- 			ssector->io_error = 1;
- 			atomic64_inc(&dev_replace->num_write_errors);
- 		}
- 	}
- 
--	for (i = 0; i < sbio->page_count; i++)
--		scrub_sector_put(sbio->pagev[i]);
-+	for (i = 0; i < sbio->sector_count; i++)
-+		scrub_sector_put(sbio->sectorv[i]);
- 
- 	bio_put(sbio->bio);
- 	kfree(sbio);
-@@ -2078,7 +2078,7 @@ static int scrub_add_sector_to_rd_bio(struct scrub_ctx *sctx,
- 		if (sctx->curr != -1) {
- 			sctx->first_free = sctx->bios[sctx->curr]->next_free;
- 			sctx->bios[sctx->curr]->next_free = -1;
--			sctx->bios[sctx->curr]->page_count = 0;
-+			sctx->bios[sctx->curr]->sector_count = 0;
- 			spin_unlock(&sctx->list_lock);
- 		} else {
- 			spin_unlock(&sctx->list_lock);
-@@ -2086,7 +2086,7 @@ static int scrub_add_sector_to_rd_bio(struct scrub_ctx *sctx,
- 		}
- 	}
- 	sbio = sctx->bios[sctx->curr];
--	if (sbio->page_count == 0) {
-+	if (sbio->sector_count == 0) {
- 		struct bio *bio;
- 
- 		sbio->physical = ssector->physical;
-@@ -2094,7 +2094,7 @@ static int scrub_add_sector_to_rd_bio(struct scrub_ctx *sctx,
- 		sbio->dev = ssector->dev;
- 		bio = sbio->bio;
- 		if (!bio) {
--			bio = btrfs_bio_alloc(sctx->pages_per_bio);
-+			bio = btrfs_bio_alloc(sctx->sectors_per_bio);
- 			sbio->bio = bio;
- 		}
- 
-@@ -2104,19 +2104,19 @@ static int scrub_add_sector_to_rd_bio(struct scrub_ctx *sctx,
- 		bio->bi_iter.bi_sector = sbio->physical >> 9;
- 		bio->bi_opf = REQ_OP_READ;
- 		sbio->status = 0;
--	} else if (sbio->physical + sbio->page_count * sectorsize !=
-+	} else if (sbio->physical + sbio->sector_count * sectorsize !=
- 		   ssector->physical ||
--		   sbio->logical + sbio->page_count * sectorsize !=
-+		   sbio->logical + sbio->sector_count * sectorsize !=
- 		   ssector->logical ||
- 		   sbio->dev != ssector->dev) {
- 		scrub_submit(sctx);
- 		goto again;
- 	}
- 
--	sbio->pagev[sbio->page_count] = ssector;
-+	sbio->sectorv[sbio->sector_count] = ssector;
- 	ret = bio_add_page(sbio->bio, ssector->page, sectorsize, 0);
- 	if (ret != sectorsize) {
--		if (sbio->page_count < 1) {
-+		if (sbio->sector_count < 1) {
- 			bio_put(sbio->bio);
- 			sbio->bio = NULL;
- 			return -EIO;
-@@ -2127,8 +2127,8 @@ static int scrub_add_sector_to_rd_bio(struct scrub_ctx *sctx,
- 
- 	scrub_block_get(sblock); /* one for the page added to the bio */
- 	atomic_inc(&sblock->outstanding_sectors);
--	sbio->page_count++;
--	if (sbio->page_count == sctx->pages_per_bio)
-+	sbio->sector_count++;
-+	if (sbio->sector_count == sctx->sectors_per_bio)
- 		scrub_submit(sctx);
- 
- 	return 0;
-@@ -2362,10 +2362,10 @@ static void scrub_bio_end_io_worker(struct btrfs_work *work)
- 	struct scrub_ctx *sctx = sbio->sctx;
- 	int i;
- 
--	ASSERT(sbio->page_count <= SCRUB_PAGES_PER_BIO);
-+	ASSERT(sbio->sector_count <= SCRUB_SECTORS_PER_BIO);
- 	if (sbio->status) {
--		for (i = 0; i < sbio->page_count; i++) {
--			struct scrub_sector *ssector = sbio->pagev[i];
-+		for (i = 0; i < sbio->sector_count; i++) {
-+			struct scrub_sector *ssector = sbio->sectorv[i];
- 
- 			ssector->io_error = 1;
- 			ssector->sblock->no_io_error_seen = 0;
-@@ -2373,8 +2373,8 @@ static void scrub_bio_end_io_worker(struct btrfs_work *work)
- 	}
- 
- 	/* now complete the scrub_block items that have all pages completed */
--	for (i = 0; i < sbio->page_count; i++) {
--		struct scrub_sector *ssector = sbio->pagev[i];
-+	for (i = 0; i < sbio->sector_count; i++) {
-+		struct scrub_sector *ssector = sbio->sectorv[i];
- 		struct scrub_block *sblock = ssector->sblock;
- 
- 		if (atomic_dec_and_test(&sblock->outstanding_sectors))
+Note: I added Fixes tag as "5accdf82ba25 ("fs: Improve filesystem
+freezing handling")" considering that sb_start_write() is missing from
+the introduction of it. But, I'm not sure this commit is correct or
+not.
+
+Naohiro Aota (4):
+  btrfs: mark resumed async balance as writing
+  btrfs: mark device addition as sb_writing
+  fs: add check functions for sb_start_{write,pagefault,intwrite}
+  btrfs: assert that relocation is protected with sb_start_write()
+
+ fs/btrfs/ioctl.c   |  2 ++
+ fs/btrfs/volumes.c |  5 +++++
+ include/linux/fs.h | 20 ++++++++++++++++++++
+ 3 files changed, 27 insertions(+)
+
 -- 
 2.35.1
 
