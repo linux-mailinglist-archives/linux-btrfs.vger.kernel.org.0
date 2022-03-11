@@ -2,49 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFE04D5C78
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 08:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6E44D5C86
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 08:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347223AbiCKHkM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 02:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
+        id S1347225AbiCKHkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 02:40:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347225AbiCKHkM (ORCPT
+        with ESMTP id S1345147AbiCKHkM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 11 Mar 2022 02:40:12 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8249256408
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 23:39:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9613056418
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Mar 2022 23:39:09 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 402271F38D
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:07 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 486CD1F441
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646984347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=KlbMWigG3taDVaCopgLoZiZWAna4pQMoDmtXmVdU3X4=;
-        b=Gzam8xKfurf7HGE8/11nx3rtLF3zoQoQ9YBeNjfwxFO2uL32m9fCKFaPmQM5+yXEb1Q4Bk
-        qpJEqoNjQLgBZbs7dBkkfvtBj0ShH1gSZCxnNh0r98sJ9LXsgfk8iQ9qhtm6qjVBpsdp/D
-        FSttw4K7MNUUo18Lr641hCKUyMsbrmI=
+        t=1646984348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pPLEcMpZIxJaiA9S7hJv7oAN1bggj/gWDR2SGSPI+k4=;
+        b=oqu7rP6Ml+5G9ve3JfjPoIXJErlcA8qdXzDiRdIHOQoV1HI7+t1bdDtJTKxLptrQmijbB1
+        xgg0UsNCyhBDpSvqjGyBGxqZqW1NJ5x7DLkXtG4CKr84IZo/QS28cr67irAA0t5KAZ4TA0
+        j2YNqTS+OaoOlSqFsGiMcn2Zi3jcW1Q=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 92FD613A82
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:06 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E9D013A82
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aPh6F5r8KmKkJgAAMHmgww
+        id eP5aGpv8KmKkJgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:06 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 07:39:07 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 0/9] btrfs: refactor scrub entrances for each profile
-Date:   Fri, 11 Mar 2022 15:38:40 +0800
-Message-Id: <cover.1646984153.git.wqu@suse.com>
+Subject: [PATCH v4 1/9] btrfs: calculate @physical_end using @dev_extent_len directly in scrub_stripe()
+Date:   Fri, 11 Mar 2022 15:38:41 +0800
+Message-Id: <62725efd10680c9c92364021f985865294d3b009.1646984153.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1646984153.git.wqu@suse.com>
+References: <cover.1646984153.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -57,161 +61,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patchset is cherry-picked from my github repo:
-https://github.com/adam900710/linux/tree/refactor_scrub
+The variable @physical_end is the exclusive stripe end, currently it's
+calculated using @physical + @dev_extent_len / map->stripe_len *
+ map->stripe_len.
 
-[Changelog]
-v2:
-- Rebased to latest misc-next
+And since at allocation time we ensured dev_extent_len is stripe_len
+aligned, the result is the same as @physical + @dev_extent_len.
 
-- Fix several uninitialized variables in the 2nd and 3rd patch
-  This is because @physical, @physical_end and @offset are also used for
-  zoned device sync.
+So this patch will just assign @physical and @physical_end early,
+without using @nstripes.
 
-  Initial those values early to fix the problem.
+This is especially helpful for any possible out: label user, as now we
+only need to initialize @offset before going to out: label.
 
-v3:
-- Add two patches to better split cleanups from refactors
-  One to change the timing of initialization of @physical and
-  @physical_end
+Since we're here, also make @physical_end constant.
 
-  One to remove dead non-RAID56 branches after making scrub_stripe() to
-  work on RAID56 only.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/scrub.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-- Fix an unfinished comment in scrub_simple_mirror()
-
-v4:
-- Rebased after scrub renaming patchset
-  Only minor conflicts.
-
-- Fix uninitialized variable in patch 6 and 7
-  Now there should be no uninitialized even only patches 1~6 are
-  applied.
-
-[CRAP-BUT-IT-WORKS(TM)]
-
-Scrub is one of the area we seldom touch because:
-
-- It's a mess
-  Just check scrub_stripe() function.
-  It's a function scrubbing a stripe for *all* profiles.
-
-  It's near 400 lines for a single complex function, with double while()
-  loop and several different jumps inside the loop.
-
-  Not to mention the lack of comments for various structures.
-
-  This should and will never happen under our current code standard.
-
-- It just works
-  I have hit more than 10 bugs during development, and I just want to
-  give up the refactor, as even the code is crap, it works, passing the
-  existing scrub/replace group.
-  While no matter how small code change I'm doing, it always fails to pass
-  the same tests.
-
-[REFACTOR-IDEA]
-
-The core idea here, is to get rid of one-fit-all solution for
-scrub_stripe().
-
-Instead, we explicitly separate the scrub into 3 groups (the idea is
-from my btrfs-fuse project):
-
-- Simple-mirror based profiles
-  This includes SINGLE/DUP/RAID1/RAID1C* profiles.
-  They have no stripe, and their repair is purely mirror based.
-
-- Simple-stripe based profiles
-  This includes RAID0/RAID10 profiles.
-  They are just simple stripe (without P/Q nor rotation), with extra
-  mirrors to support their repair.
-
-- RAID56
-  The most complex profiles, they have extra P/Q, and have rotation.
-
-[REFACTOR-IMPLEMENTATION]
-
-So we have 3 entrances for all those supported profiles:
-
-- scrub_simple_mirror()
-  For SINGLE/DUP/RAID1/RAID1C* profiles.
-  Just go through each extent and scrub the extent.
-
-- scrub_simple_stripe()
-  For RAID0/RAID10 profiles.
-  Instead we go each data stripe first, then inside each data stripe, we
-  can call scrub_simple_mirror(), since after stripe split, RAID0 is
-  just SINGLE and RAID10 is just RAID1.
-
-- scrub_stripe() untouched for RAID56
-  RAID56 still has all the complex things to do, but they can still be
-  split into two types (already done by the original code)
-
-  * data stripes
-    They are no different in the verification part, RAID56 is just
-    SINGLE if we ignore the repair path.
-    It's only in repair path that our path divides.
-
-    So we can reuse scrub_simple_mirror() again.
-
-  * P/Q stripes
-    They already have a dedicated function handling the case.
-
-With all these refactors, although we have several more functions, we
-get rid of:
-
-- A double while () loop
-- Several jumps inside the double loop
-- Complex calculation to try to fit all profiles
-
-And we get:
-
-- Better comments
-- More dedicated functions
-- A better basis for further refactors
-
-[FUTURE CLEANUPS]
-- Refactor scrub_pages/scrub_parity/... structures
-- Further cleanup RAID56 codes
-
-Changelog:
-v2:
-- Rebased to latest misc-next
-
-- Fix several uninitialized variables in the 2nd and 3rd patch
-  This is because @physical, @physical_end and @offset are also used for
-  zoned device sync.
-
-  Initial those values early to fix the problem.
-
-v3:
-- Add two patches to better split cleanups from refactors
-  One to change the timing of initialization of @physical and
-  @physical_end
-
-  One to remove dead non-RAID56 branches after making scrub_stripe() to
-  work on RAID56 only.
-
-- Fix an unfinished comment in scrub_simple_mirror()
-
-Qu Wenruo (9):
-  btrfs: calculate @physical_end using @dev_extent_len directly in
-    scrub_stripe()
-  btrfs: introduce a helper to locate an extent item
-  btrfs: introduce dedicated helper to scrub simple-mirror based range
-  btrfs: introduce dedicated helper to scrub simple-stripe based range
-  btrfs: scrub: cleanup the non-RAID56 branches in scrub_stripe()
-  btrfs: use scrub_simple_mirror() to handle RAID56 data stripe scrub
-  btrfs: refactor scrub_raid56_parity()
-  btrfs: use find_first_extent_item() to replace the open-coded extent
-    item search
-  btrfs: move scrub_remap_extent() call into scrub_extent() with more
-    comments
-
- fs/btrfs/scrub.c | 1037 +++++++++++++++++++++++++---------------------
- 1 file changed, 559 insertions(+), 478 deletions(-)
-
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 2316269cade0..c2bf7bbcee67 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3183,10 +3183,10 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 	int slot;
+ 	u64 nstripes;
+ 	struct extent_buffer *l;
+-	u64 physical;
++	u64 physical = map->stripes[stripe_index].physical;
+ 	u64 logical;
+ 	u64 logic_end;
+-	u64 physical_end;
++	const u64 physical_end = physical + dev_extent_len;
+ 	u64 generation;
+ 	int mirror_num;
+ 	struct btrfs_key key;
+@@ -3205,7 +3205,6 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 	int extent_mirror_num;
+ 	int stop_loop = 0;
+ 
+-	physical = map->stripes[stripe_index].physical;
+ 	offset = 0;
+ 	nstripes = div64_u64(dev_extent_len, map->stripe_len);
+ 	mirror_num = 1;
+@@ -3242,7 +3241,6 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 	path->reada = READA_FORWARD;
+ 
+ 	logical = chunk_logical + offset;
+-	physical_end = physical + nstripes * map->stripe_len;
+ 	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+ 		get_raid56_logic_offset(physical_end, stripe_index,
+ 					map, &logic_end, NULL);
 -- 
 2.35.1
 
