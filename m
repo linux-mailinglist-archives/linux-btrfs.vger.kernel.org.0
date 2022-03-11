@@ -2,235 +2,1186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCA34D681A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 18:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A443D4D6844
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Mar 2022 19:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348784AbiCKR5u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 12:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
+        id S1350577AbiCKSGR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 13:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350362AbiCKR5s (ORCPT
+        with ESMTP id S1350687AbiCKSGP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 12:57:48 -0500
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088571C60DA
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 09:56:44 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 6FE458076A;
-        Fri, 11 Mar 2022 12:56:44 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1647021404; bh=NZPQHQXaD19VIkyhmHkb7Q4Ts6SI4bT2SPx1QFECv3E=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jNmcmDsyjOQtz8FU2Vty4h+kGK7vgtmEzos8kJi9jV+EOwYUnOnvzyFbUHqYWFTOb
-         wuc8o2S52U4un5kqTYcUrf9YLqwDnVQaVb6TSKEU1/oegq9xzuPlyRvN/tuVMZmxas
-         iqVlVL60kywqi4lX83A76x5txhALFMCHnTlkP059+QsDzEjakWQFx5yvDLus6m0saQ
-         evG7fnPoVXkZ17bEhpYhMoNp4UXhkdjByo7cSEi8qsaHbcUf60svQBAVU7wQXsdian
-         d5qTthWLwmrzDkVC6ecXKOWSIT0j2QR/sax/jSIeoWCj4Vq1gpVCtM6Ch1jIAJmX6p
-         LGqu+hhcIwmjg==
-Message-ID: <b3ad488a-862d-6394-4bc8-2bd1bd443b5b@dorminy.me>
-Date:   Fri, 11 Mar 2022 12:56:43 -0500
+        Fri, 11 Mar 2022 13:06:15 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6412B1B0BC4
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 10:05:09 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 206A1210EA;
+        Fri, 11 Mar 2022 18:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1647021908;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pYqb8G1GcTfPPqWaevf7WCJN4ZT/+ePqfdoOjdYjoYE=;
+        b=S4EvTtS7cSWoHvaqZ1T0Rhwfeo9h27yDn/zdMfo+gKwiXsp34pS7BvHXH3+MWj3Hx1pZLb
+        rsElOZkVUZXstzU4BoEqKXHLouldaln9lLsBhZLDLbzi03JDMq4QpRGvLEAGCgF/u+dJcv
+        8u+cFJu3I8vuvxPI1FBpVJc7h6fC+Xo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1647021908;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pYqb8G1GcTfPPqWaevf7WCJN4ZT/+ePqfdoOjdYjoYE=;
+        b=LqyIeUhwtaso5X2POK8GfHalVvmokFkcDuu19jcWzcHY0UR+ur9YPsePq2jIXUjpGIkLtV
+        nqc43NqQaQv7VABA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 0E769A3B81;
+        Fri, 11 Mar 2022 18:05:08 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 54E73DA7E1; Fri, 11 Mar 2022 19:01:11 +0100 (CET)
+Date:   Fri, 11 Mar 2022 19:01:11 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] btrfs: scrub: rename scrub_page to scrub_sector
+Message-ID: <20220311180111.GF12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1646983771.git.wqu@suse.com>
+ <dfe5ae002779f7163aed8317f256685ee9d0cacf.1646983771.git.wqu@suse.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 15/16] btrfs: reserve correct number of items for inode
- creation
-Content-Language: en-US
-To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-References: <cover.1646875648.git.osandov@fb.com>
- <bdde51c0d6c3e20d3c0e1566f0342bc1820a2116.1646875648.git.osandov@fb.com>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <bdde51c0d6c3e20d3c0e1566f0342bc1820a2116.1646875648.git.osandov@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dfe5ae002779f7163aed8317f256685ee9d0cacf.1646983771.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-On 3/9/22 20:31, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
->
-> The various inode creation code paths do not account for the compression
-> property, POSIX ACLs, or the parent inode item when starting a
-> transaction. Fix it by refactoring all of these code paths to use a new
-> function, btrfs_new_inode_prepare(), which computes the correct number
-> of items. To do so, it needs to know whether POSIX ACLs will be created,
-> so move the ACL creation into that function. To reduce the number of
-> arguments that need to be passed around for inode creation, define
-> struct btrfs_new_inode_args containing all of the relevant information.
->
-> btrfs_new_inode_prepare() will also be a good place to set up the
-> fscrypt context and encrypted filename in the future.
->
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+On Fri, Mar 11, 2022 at 03:34:19PM +0800, Qu Wenruo wrote:
+> Since the subpage support of scrub, scrub_sector is in fact just
+> representing one sector.
+> 
+> Thus the name scrub_page is no longer correct, rename it to
+> scrub_sector.
+> 
+> This will also rename involving short names like spage -> ssector, and
+> other functions which takes scrub_page as arguments.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->   fs/btrfs/acl.c   |  36 +------
->   fs/btrfs/ctree.h |  34 +++++--
->   fs/btrfs/inode.c | 256 ++++++++++++++++++++++++++++++++++-------------
->   fs/btrfs/ioctl.c |  83 ++++++++++-----
->   4 files changed, 277 insertions(+), 132 deletions(-)
->
-> diff --git a/fs/btrfs/acl.c b/fs/btrfs/acl.c
-> index a6909ec9bc38..548d6a5477b4 100644
-> --- a/fs/btrfs/acl.c
-> +++ b/fs/btrfs/acl.c
-> @@ -55,8 +55,8 @@ struct posix_acl *btrfs_get_acl(struct inode *inode, int type, bool rcu)
->   	return acl;
->   }
->   
-> -static int __btrfs_set_acl(struct btrfs_trans_handle *trans,
-> -			   struct inode *inode, struct posix_acl *acl, int type)
-> +int __btrfs_set_acl(struct btrfs_trans_handle *trans, struct inode *inode,
-> +		    struct posix_acl *acl, int type)
->   {
->   	int ret, size = 0;
->   	const char *name;
-> @@ -127,35 +127,3 @@ int btrfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
->   		inode->i_mode = old_mode;
->   	return ret;
->   }
-> -
-> -int btrfs_init_acl(struct btrfs_trans_handle *trans,
-> -		   struct inode *inode, struct inode *dir)
-> -{
-> -	struct posix_acl *default_acl, *acl;
-> -	int ret = 0;
-> -
-> -	/* this happens with subvols */
-> -	if (!dir)
-> -		return 0;
-> -
-> -	ret = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (default_acl) {
-> -		ret = __btrfs_set_acl(trans, inode, default_acl,
-> -				      ACL_TYPE_DEFAULT);
-> -		posix_acl_release(default_acl);
-> -	}
-> -
-> -	if (acl) {
-> -		if (!ret)
-> -			ret = __btrfs_set_acl(trans, inode, acl,
-> -					      ACL_TYPE_ACCESS);
-> -		posix_acl_release(acl);
-> -	}
-> -
-> -	if (!default_acl && !acl)
-> -		cache_no_acl(inode);
-> -	return ret;
-> -}
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index f39730420e8a..322c02610e9e 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3254,11 +3254,32 @@ int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, long nr,
->   int btrfs_set_extent_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
->   			      unsigned int extra_bits,
->   			      struct extent_state **cached_state);
-> +struct btrfs_new_inode_args {
-> +	/* Input */
-> +	struct inode *dir;
-> +	struct dentry *dentry;
-> +	struct inode *inode;
-> +	bool orphan;
-> +	bool subvol;
-> +
-> +	/*
-> +	 * Output from btrfs_new_inode_prepare(), input to
-> +	 * btrfs_create_new_inode().
-> +	 */
-> +	struct posix_acl *default_acl;
-> +	struct posix_acl *acl;
-> +};
-> +int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
-> +			    unsigned int *trans_num_items);
-> +int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
-> +			   struct btrfs_new_inode_args *args,
-> +			   u64 *index);
-> +void btrfs_new_inode_args_destroy(struct btrfs_new_inode_args *args);
->   struct inode *btrfs_new_subvol_inode(struct user_namespace *mnt_userns,
->   				     struct inode *dir);
->   int btrfs_create_subvol_root(struct btrfs_trans_handle *trans,
->   			     struct btrfs_root *parent_root,
-> -			     struct inode *inode);
-> +			     struct btrfs_new_inode_args *args);
->    void btrfs_set_delalloc_extent(struct inode *inode, struct extent_state *state,
->   			       unsigned *bits);
->   void btrfs_clear_delalloc_extent(struct inode *inode,
-> @@ -3816,15 +3837,16 @@ static inline int __btrfs_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag)
->   struct posix_acl *btrfs_get_acl(struct inode *inode, int type, bool rcu);
->   int btrfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
->   		  struct posix_acl *acl, int type);
-> -int btrfs_init_acl(struct btrfs_trans_handle *trans,
-> -		   struct inode *inode, struct inode *dir);
-> +int __btrfs_set_acl(struct btrfs_trans_handle *trans, struct inode *inode,
-> +		    struct posix_acl *acl, int type);
->   #else
->   #define btrfs_get_acl NULL
->   #define btrfs_set_acl NULL
-> -static inline int btrfs_init_acl(struct btrfs_trans_handle *trans,
-> -				 struct inode *inode, struct inode *dir)
-> +static inline int __btrfs_set_acl(struct btrfs_trans_handle *trans,
-> +				  struct inode *inode, struct posix_acl *acl,
-> +				  int type)
->   {
-> -	return 0;
-> +	return -EOPNOTSUPP;
->   }
->   #endif
->   
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index bea2cb2d90a5..e2b1b1969d0b 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -223,14 +223,26 @@ static int btrfs_dirty_inode(struct inode *inode);
->   
->   static int btrfs_init_inode_security(struct btrfs_trans_handle *trans,
->   				     struct inode *inode,  struct inode *dir,
-> -				     const struct qstr *qstr)
-> +				     const struct qstr *qstr,
-> +				     struct posix_acl *default_acl,
-> +				     struct posix_acl *acl)
->   {
->   	int err;
->   
-> -	err = btrfs_init_acl(trans, inode, dir);
-> -	if (!err)
-> -		err = btrfs_xattr_security_init(trans, inode, dir, qstr);
-> -	return err;
-> +	if (default_acl) {
-> +		err = __btrfs_set_acl(trans, inode, default_acl,
-> +				      ACL_TYPE_DEFAULT);
-> +		if (err)
-> +			return err;
-> +	}
-> +	if (acl) {
-> +		err = __btrfs_set_acl(trans, inode, acl, ACL_TYPE_ACCESS);
-> +		if (err)
-> +			return err;
-> +	}
-> +	if (!default_acl && !acl)
-> +		cache_no_acl(inode);
-> +	return btrfs_xattr_security_init(trans, inode, dir, qstr);
->   }
+>  fs/btrfs/scrub.c | 460 +++++++++++++++++++++++------------------------
+>  1 file changed, 230 insertions(+), 230 deletions(-)
+> 
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index fd67e1acdba6..c9198c9af4c4 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -60,7 +60,7 @@ struct scrub_recover {
+>  	u64			map_length;
+>  };
+>  
+> -struct scrub_page {
+> +struct scrub_sector {
+>  	struct scrub_block	*sblock;
+>  	struct page		*page;
+>  	struct btrfs_device	*dev;
+> @@ -87,16 +87,16 @@ struct scrub_bio {
+>  	blk_status_t		status;
+>  	u64			logical;
+>  	u64			physical;
+> -	struct scrub_page	*pagev[SCRUB_PAGES_PER_BIO];
+> +	struct scrub_sector	*pagev[SCRUB_PAGES_PER_BIO];
+>  	int			page_count;
+>  	int			next_free;
+>  	struct btrfs_work	work;
+>  };
+>  
+>  struct scrub_block {
+> -	struct scrub_page	*sectorv[SCRUB_MAX_SECTORS_PER_BLOCK];
+> +	struct scrub_sector	*sectorv[SCRUB_MAX_SECTORS_PER_BLOCK];
+>  	int			sector_count;
+> -	atomic_t		outstanding_pages;
+> +	atomic_t		outstanding_sectors;
+>  	refcount_t		refs; /* free mem on transition to zero */
+>  	struct scrub_ctx	*sctx;
+>  	struct scrub_parity	*sparity;
+> @@ -129,7 +129,7 @@ struct scrub_parity {
+>  
+>  	refcount_t		refs;
+>  
+> -	struct list_head	spages;
+> +	struct list_head	ssectors;
 
+This is also an opportunity to rename it to something more suitable,
+I really don't like ssectors. We've been using 'list' or you may find
+something better.
 
-Would it be worth making this take a btrfs_new_inode_args also, since 
-basically everything it needs is contained therein? I think the only 
-place calling btrfs_init_inode_security() with params not just pulled 
-out of the btrfs_new_inode_args is btrfs_tempfile, which is passing a 
-NULL name instead of &dentry->d_name; I'm not clear on why in that case 
-it's different...
+>  	/* Work of parity check and repair */
+>  	struct btrfs_work	work;
+> @@ -212,24 +212,24 @@ static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
+>  static void scrub_recheck_block_checksum(struct scrub_block *sblock);
+>  static int scrub_repair_block_from_good_copy(struct scrub_block *sblock_bad,
+>  					     struct scrub_block *sblock_good);
+> -static int scrub_repair_page_from_good_copy(struct scrub_block *sblock_bad,
+> +static int scrub_repair_sector_from_good_copy(struct scrub_block *sblock_bad,
+>  					    struct scrub_block *sblock_good,
+> -					    int page_num, int force_write);
+> +					    int sector_num, int force_write);
+>  static void scrub_write_block_to_dev_replace(struct scrub_block *sblock);
+> -static int scrub_write_page_to_dev_replace(struct scrub_block *sblock,
+> -					   int page_num);
+> +static int scrub_write_sector_to_dev_replace(struct scrub_block *sblock,
+> +					     int sector_num);
+>  static int scrub_checksum_data(struct scrub_block *sblock);
+>  static int scrub_checksum_tree_block(struct scrub_block *sblock);
+>  static int scrub_checksum_super(struct scrub_block *sblock);
+>  static void scrub_block_put(struct scrub_block *sblock);
+> -static void scrub_page_get(struct scrub_page *spage);
+> -static void scrub_page_put(struct scrub_page *spage);
+> +static void scrub_sector_get(struct scrub_sector *ssector);
+> +static void scrub_sector_put(struct scrub_sector *ssector);
+>  static void scrub_parity_get(struct scrub_parity *sparity);
+>  static void scrub_parity_put(struct scrub_parity *sparity);
+> -static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+> -		       u64 physical, struct btrfs_device *dev, u64 flags,
+> -		       u64 gen, int mirror_num, u8 *csum,
+> -		       u64 physical_for_dev_replace);
+> +static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+> +			 u64 physical, struct btrfs_device *dev, u64 flags,
+> +			 u64 gen, int mirror_num, u8 *csum,
+> +			 u64 physical_for_dev_replace);
+>  static void scrub_bio_end_io(struct bio *bio);
+>  static void scrub_bio_end_io_worker(struct btrfs_work *work);
+>  static void scrub_block_complete(struct scrub_block *sblock);
+> @@ -238,17 +238,17 @@ static void scrub_remap_extent(struct btrfs_fs_info *fs_info,
+>  			       u64 *extent_physical,
+>  			       struct btrfs_device **extent_dev,
+>  			       int *extent_mirror_num);
+> -static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+> -				    struct scrub_page *spage);
+> +static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+> +				      struct scrub_sector *ssector);
+>  static void scrub_wr_submit(struct scrub_ctx *sctx);
+>  static void scrub_wr_bio_end_io(struct bio *bio);
+>  static void scrub_wr_bio_end_io_worker(struct btrfs_work *work);
+>  static void scrub_put_ctx(struct scrub_ctx *sctx);
+>  
+> -static inline int scrub_is_page_on_raid56(struct scrub_page *spage)
+> +static inline int scrub_is_page_on_raid56(struct scrub_sector *ssector)
+>  {
+> -	return spage->recover &&
+> -	       (spage->recover->bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK);
+> +	return ssector->recover &&
+> +	       (ssector->recover->bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK);
+>  }
+>  
+>  static void scrub_pending_bio_inc(struct scrub_ctx *sctx)
+> @@ -798,8 +798,8 @@ static inline void scrub_put_recover(struct btrfs_fs_info *fs_info,
+>  
+>  /*
+>   * scrub_handle_errored_block gets called when either verification of the
+> - * pages failed or the bio failed to read, e.g. with EIO. In the latter
+> - * case, this function handles all pages in the bio, even though only one
+> + * sectors failed or the bio failed to read, e.g. with EIO. In the latter
+> + * case, this function handles all sectors in the bio, even though only one
+>   * may be bad.
+>   * The goal of this function is to repair the errored block by using the
+>   * contents of one of the mirrors.
+> @@ -854,7 +854,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  	 * might be waiting the scrub task to pause (which needs to wait for all
+>  	 * the worker tasks to complete before pausing).
+>  	 * We do allocations in the workers through insert_full_stripe_lock()
+> -	 * and scrub_add_page_to_wr_bio(), which happens down the call chain of
+> +	 * and scrub_add_sector_to_wr_bio(), which happens down the call chain of
+>  	 * this function.
+>  	 */
+>  	nofs_flag = memalloc_nofs_save();
+> @@ -918,7 +918,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  		goto out;
+>  	}
+>  
+> -	/* setup the context, map the logical blocks and alloc the pages */
+> +	/* setup the context, map the logical blocks and alloc the sectors */
+>  	ret = scrub_setup_recheck_block(sblock_to_check, sblocks_for_recheck);
+>  	if (ret) {
+>  		spin_lock(&sctx->stat_lock);
+> @@ -937,7 +937,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  	if (!sblock_bad->header_error && !sblock_bad->checksum_error &&
+>  	    sblock_bad->no_io_error_seen) {
+>  		/*
+> -		 * the error disappeared after reading page by page, or
+> +		 * the error disappeared after reading sector by sector, or
+>  		 * the area was part of a huge bio and other parts of the
+>  		 * bio caused I/O errors, or the block layer merged several
+>  		 * read requests into one and the error is caused by a
+> @@ -998,10 +998,10 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  	 * that is known to contain an error is rewritten. Afterwards
+>  	 * the block is known to be corrected.
+>  	 * If a mirror is found which is completely correct, and no
+> -	 * checksum is present, only those pages are rewritten that had
+> +	 * checksum is present, only those sectors are rewritten that had
+>  	 * an I/O error in the block to be repaired, since it cannot be
+> -	 * determined, which copy of the other pages is better (and it
+> -	 * could happen otherwise that a correct page would be
+> +	 * determined, which copy of the other sectors is better (and it
+> +	 * could happen otherwise that a correct sector would be
+>  	 * overwritten by a bad one).
+>  	 */
+>  	for (mirror_index = 0; ;mirror_index++) {
+> @@ -1080,11 +1080,11 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  	success = 1;
+>  	for (sector_num = 0; sector_num < sblock_bad->sector_count;
+>  	     sector_num++) {
+> -		struct scrub_page *spage_bad = sblock_bad->sectorv[sector_num];
+> +		struct scrub_sector *ssector_bad = sblock_bad->sectorv[sector_num];
+>  		struct scrub_block *sblock_other = NULL;
+>  
+> -		/* skip no-io-error page in scrub */
+> -		if (!spage_bad->io_error && !sctx->is_dev_replace)
+> +		/* skip no-io-error sectors in scrub */
 
-Either way,
+Comments that get updates should also follow the preferred style, ie.
+the first uppercase letter.
 
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-
+> +		if (!ssector_bad->io_error && !sctx->is_dev_replace)
+>  			continue;
+>  
+>  		if (scrub_is_page_on_raid56(sblock_bad->sectorv[0])) {
+> @@ -1096,8 +1096,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  			 * sblock_for_recheck array to target device.
+>  			 */
+>  			sblock_other = NULL;
+> -		} else if (spage_bad->io_error) {
+> -			/* try to find no-io-error page in mirrors */
+> +		} else if (ssector_bad->io_error) {
+> +			/* try to find no-io-error sector in mirrors */
+>  			for (mirror_index = 0;
+>  			     mirror_index < BTRFS_MAX_MIRRORS &&
+>  			     sblocks_for_recheck[mirror_index].sector_count > 0;
+> @@ -1115,27 +1115,27 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  
+>  		if (sctx->is_dev_replace) {
+>  			/*
+> -			 * did not find a mirror to fetch the page
+> -			 * from. scrub_write_page_to_dev_replace()
+> -			 * handles this case (page->io_error), by
+> +			 * Did not find a mirror to fetch the sector
+> +			 * from. scrub_write_sector_to_dev_replace()
+> +			 * handles this case (sector->io_error), by
+>  			 * filling the block with zeros before
+>  			 * submitting the write request
+>  			 */
+>  			if (!sblock_other)
+>  				sblock_other = sblock_bad;
+>  
+> -			if (scrub_write_page_to_dev_replace(sblock_other,
+> -							    sector_num) != 0) {
+> +			if (scrub_write_sector_to_dev_replace(sblock_other,
+> +							      sector_num) != 0) {
+>  				atomic64_inc(
+>  					&fs_info->dev_replace.num_write_errors);
+>  				success = 0;
+>  			}
+>  		} else if (sblock_other) {
+> -			ret = scrub_repair_page_from_good_copy(sblock_bad,
+> -							       sblock_other,
+> -							       sector_num, 0);
+> +			ret = scrub_repair_sector_from_good_copy(sblock_bad,
+> +								 sblock_other,
+> +								 sector_num, 0);
+>  			if (0 == ret)
+> -				spage_bad->io_error = 0;
+> +				ssector_bad->io_error = 0;
+>  			else
+>  				success = 0;
+>  		}
+> @@ -1197,7 +1197,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+>  					sblock->sectorv[sector_index]->recover =
+>  									NULL;
+>  				}
+> -				scrub_page_put(sblock->sectorv[sector_index]);
+> +				scrub_sector_put(sblock->sectorv[sector_index]);
+>  			}
+>  		}
+>  		kfree(sblocks_for_recheck);
+> @@ -1272,7 +1272,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+>  	int ret;
+>  
+>  	/*
+> -	 * note: the two members refs and outstanding_pages
+> +	 * note: the two members refs and outstanding_sectors
+>  	 * are not used (and not set) in the blocks that are used for
+>  	 * the recheck procedure
+>  	 */
+> @@ -1313,13 +1313,13 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+>  		for (mirror_index = 0; mirror_index < nmirrors;
+>  		     mirror_index++) {
+>  			struct scrub_block *sblock;
+> -			struct scrub_page *spage;
+> +			struct scrub_sector *ssector;
+>  
+>  			sblock = sblocks_for_recheck + mirror_index;
+>  			sblock->sctx = sctx;
+>  
+> -			spage = kzalloc(sizeof(*spage), GFP_NOFS);
+> -			if (!spage) {
+> +			ssector = kzalloc(sizeof(*ssector), GFP_NOFS);
+> +			if (!ssector) {
+>  leave_nomem:
+>  				spin_lock(&sctx->stat_lock);
+>  				sctx->stat.malloc_errors++;
+> @@ -1327,15 +1327,15 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+>  				scrub_put_recover(fs_info, recover);
+>  				return -ENOMEM;
+>  			}
+> -			scrub_page_get(spage);
+> -			sblock->sectorv[sector_index] = spage;
+> -			spage->sblock = sblock;
+> -			spage->flags = flags;
+> -			spage->generation = generation;
+> -			spage->logical = logical;
+> -			spage->have_csum = have_csum;
+> +			scrub_sector_get(ssector);
+> +			sblock->sectorv[sector_index] = ssector;
+> +			ssector->sblock = sblock;
+> +			ssector->flags = flags;
+> +			ssector->generation = generation;
+> +			ssector->logical = logical;
+> +			ssector->have_csum = have_csum;
+>  			if (have_csum)
+> -				memcpy(spage->csum,
+> +				memcpy(ssector->csum,
+>  				       original_sblock->sectorv[0]->csum,
+>  				       sctx->fs_info->csum_size);
+>  
+> @@ -1348,23 +1348,23 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+>  						      mirror_index,
+>  						      &stripe_index,
+>  						      &stripe_offset);
+> -			spage->physical = bioc->stripes[stripe_index].physical +
+> +			ssector->physical = bioc->stripes[stripe_index].physical +
+>  					 stripe_offset;
+> -			spage->dev = bioc->stripes[stripe_index].dev;
+> +			ssector->dev = bioc->stripes[stripe_index].dev;
+>  
+>  			BUG_ON(sector_index >= original_sblock->sector_count);
+> -			spage->physical_for_dev_replace =
+> +			ssector->physical_for_dev_replace =
+>  				original_sblock->sectorv[sector_index]->
+>  				physical_for_dev_replace;
+>  			/* for missing devices, dev->bdev is NULL */
+> -			spage->mirror_num = mirror_index + 1;
+> +			ssector->mirror_num = mirror_index + 1;
+>  			sblock->sector_count++;
+> -			spage->page = alloc_page(GFP_NOFS);
+> -			if (!spage->page)
+> +			ssector->page = alloc_page(GFP_NOFS);
+> +			if (!ssector->page)
+>  				goto leave_nomem;
+>  
+>  			scrub_get_recover(recover);
+> -			spage->recover = recover;
+> +			ssector->recover = recover;
+>  		}
+>  		scrub_put_recover(fs_info, recover);
+>  		length -= sublen;
+> @@ -1382,19 +1382,19 @@ static void scrub_bio_wait_endio(struct bio *bio)
+>  
+>  static int scrub_submit_raid56_bio_wait(struct btrfs_fs_info *fs_info,
+>  					struct bio *bio,
+> -					struct scrub_page *spage)
+> +					struct scrub_sector *ssector)
+>  {
+>  	DECLARE_COMPLETION_ONSTACK(done);
+>  	int ret;
+>  	int mirror_num;
+>  
+> -	bio->bi_iter.bi_sector = spage->logical >> 9;
+> +	bio->bi_iter.bi_sector = ssector->logical >> 9;
+>  	bio->bi_private = &done;
+>  	bio->bi_end_io = scrub_bio_wait_endio;
+>  
+> -	mirror_num = spage->sblock->sectorv[0]->mirror_num;
+> -	ret = raid56_parity_recover(bio, spage->recover->bioc,
+> -				    spage->recover->map_length,
+> +	mirror_num = ssector->sblock->sectorv[0]->mirror_num;
+> +	ret = raid56_parity_recover(bio, ssector->recover->bioc,
+> +				    ssector->recover->map_length,
+>  				    mirror_num, 0);
+>  	if (ret)
+>  		return ret;
+> @@ -1406,26 +1406,26 @@ static int scrub_submit_raid56_bio_wait(struct btrfs_fs_info *fs_info,
+>  static void scrub_recheck_block_on_raid56(struct btrfs_fs_info *fs_info,
+>  					  struct scrub_block *sblock)
+>  {
+> -	struct scrub_page *first_page = sblock->sectorv[0];
+> +	struct scrub_sector *first_sector = sblock->sectorv[0];
+>  	struct bio *bio;
+>  	int sector_num;
+>  
+> -	/* All pages in sblock belong to the same stripe on the same device. */
+> -	ASSERT(first_page->dev);
+> -	if (!first_page->dev->bdev)
+> +	/* All sectors in sblock belong to the same stripe on the same device. */
+> +	ASSERT(first_sector->dev);
+> +	if (!first_sector->dev->bdev)
+>  		goto out;
+>  
+>  	bio = btrfs_bio_alloc(BIO_MAX_VECS);
+> -	bio_set_dev(bio, first_page->dev->bdev);
+> +	bio_set_dev(bio, first_sector->dev->bdev);
+>  
+>  	for (sector_num = 0; sector_num < sblock->sector_count; sector_num++) {
+> -		struct scrub_page *spage = sblock->sectorv[sector_num];
+> +		struct scrub_sector *ssector = sblock->sectorv[sector_num];
+>  
+> -		WARN_ON(!spage->page);
+> -		bio_add_page(bio, spage->page, PAGE_SIZE, 0);
+> +		WARN_ON(!ssector->page);
+> +		bio_add_page(bio, ssector->page, PAGE_SIZE, 0);
+>  	}
+>  
+> -	if (scrub_submit_raid56_bio_wait(fs_info, bio, first_page)) {
+> +	if (scrub_submit_raid56_bio_wait(fs_info, bio, first_sector)) {
+>  		bio_put(bio);
+>  		goto out;
+>  	}
+> @@ -1444,10 +1444,10 @@ static void scrub_recheck_block_on_raid56(struct btrfs_fs_info *fs_info,
+>  
+>  /*
+>   * this function will check the on disk data for checksum errors, header
+> - * errors and read I/O errors. If any I/O errors happen, the exact pages
+> + * errors and read I/O errors. If any I/O errors happen, the exact sectors
+>   * which are errored are marked as being bad. The goal is to enable scrub
+> - * to take those pages that are not errored from all the mirrors so that
+> - * the pages that are errored in the just handled mirror can be repaired.
+> + * to take those sectors that are not errored from all the mirrors so that
+> + * the sectors that are errored in the just handled mirror can be repaired.
+>   */
+>  static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
+>  				struct scrub_block *sblock,
+> @@ -1463,24 +1463,24 @@ static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
+>  
+>  	for (sector_num = 0; sector_num < sblock->sector_count; sector_num++) {
+>  		struct bio *bio;
+> -		struct scrub_page *spage = sblock->sectorv[sector_num];
+> +		struct scrub_sector *ssector = sblock->sectorv[sector_num];
+>  
+> -		if (spage->dev->bdev == NULL) {
+> -			spage->io_error = 1;
+> +		if (ssector->dev->bdev == NULL) {
+> +			ssector->io_error = 1;
+>  			sblock->no_io_error_seen = 0;
+>  			continue;
+>  		}
+>  
+> -		WARN_ON(!spage->page);
+> +		WARN_ON(!ssector->page);
+>  		bio = btrfs_bio_alloc(1);
+> -		bio_set_dev(bio, spage->dev->bdev);
+> +		bio_set_dev(bio, ssector->dev->bdev);
+>  
+> -		bio_add_page(bio, spage->page, fs_info->sectorsize, 0);
+> -		bio->bi_iter.bi_sector = spage->physical >> 9;
+> +		bio_add_page(bio, ssector->page, fs_info->sectorsize, 0);
+> +		bio->bi_iter.bi_sector = ssector->physical >> 9;
+>  		bio->bi_opf = REQ_OP_READ;
+>  
+>  		if (btrfsic_submit_bio_wait(bio)) {
+> -			spage->io_error = 1;
+> +			ssector->io_error = 1;
+>  			sblock->no_io_error_seen = 0;
+>  		}
+>  
+> @@ -1492,9 +1492,9 @@ static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
+>  }
+>  
+>  static inline int scrub_check_fsid(u8 fsid[],
+> -				   struct scrub_page *spage)
+> +				   struct scrub_sector *ssector)
+>  {
+> -	struct btrfs_fs_devices *fs_devices = spage->dev->fs_devices;
+> +	struct btrfs_fs_devices *fs_devices = ssector->dev->fs_devices;
+>  	int ret;
+>  
+>  	ret = memcmp(fsid, fs_devices->fsid, BTRFS_FSID_SIZE);
+> @@ -1522,9 +1522,9 @@ static int scrub_repair_block_from_good_copy(struct scrub_block *sblock_bad,
+>  	for (sector_num = 0; sector_num < sblock_bad->sector_count; sector_num++) {
+>  		int ret_sub;
+>  
+> -		ret_sub = scrub_repair_page_from_good_copy(sblock_bad,
+> -							   sblock_good,
+> -							   sector_num, 1);
+> +		ret_sub = scrub_repair_sector_from_good_copy(sblock_bad,
+> +							     sblock_good,
+> +							     sector_num, 1);
+>  		if (ret_sub)
+>  			ret = ret_sub;
+>  	}
+> @@ -1532,41 +1532,41 @@ static int scrub_repair_block_from_good_copy(struct scrub_block *sblock_bad,
+>  	return ret;
+>  }
+>  
+> -static int scrub_repair_page_from_good_copy(struct scrub_block *sblock_bad,
+> -					    struct scrub_block *sblock_good,
+> -					    int sector_num, int force_write)
+> +static int scrub_repair_sector_from_good_copy(struct scrub_block *sblock_bad,
+> +					      struct scrub_block *sblock_good,
+> +					      int sector_num, int force_write)
+>  {
+> -	struct scrub_page *spage_bad = sblock_bad->sectorv[sector_num];
+> -	struct scrub_page *spage_good = sblock_good->sectorv[sector_num];
+> +	struct scrub_sector *ssector_bad = sblock_bad->sectorv[sector_num];
+> +	struct scrub_sector *ssector_good = sblock_good->sectorv[sector_num];
+>  	struct btrfs_fs_info *fs_info = sblock_bad->sctx->fs_info;
+>  	const u32 sectorsize = fs_info->sectorsize;
+>  
+> -	BUG_ON(spage_bad->page == NULL);
+> -	BUG_ON(spage_good->page == NULL);
+> +	BUG_ON(ssector_bad->page == NULL);
+> +	BUG_ON(ssector_good->page == NULL);
+>  	if (force_write || sblock_bad->header_error ||
+> -	    sblock_bad->checksum_error || spage_bad->io_error) {
+> +	    sblock_bad->checksum_error || ssector_bad->io_error) {
+>  		struct bio *bio;
+>  		int ret;
+>  
+> -		if (!spage_bad->dev->bdev) {
+> +		if (!ssector_bad->dev->bdev) {
+>  			btrfs_warn_rl(fs_info,
+>  				"scrub_repair_page_from_good_copy(bdev == NULL) is unexpected");
+>  			return -EIO;
+>  		}
+>  
+>  		bio = btrfs_bio_alloc(1);
+> -		bio_set_dev(bio, spage_bad->dev->bdev);
+> -		bio->bi_iter.bi_sector = spage_bad->physical >> 9;
+> +		bio_set_dev(bio, ssector_bad->dev->bdev);
+> +		bio->bi_iter.bi_sector = ssector_bad->physical >> 9;
+>  		bio->bi_opf = REQ_OP_WRITE;
+>  
+> -		ret = bio_add_page(bio, spage_good->page, sectorsize, 0);
+> +		ret = bio_add_page(bio, ssector_good->page, sectorsize, 0);
+>  		if (ret != sectorsize) {
+>  			bio_put(bio);
+>  			return -EIO;
+>  		}
+>  
+>  		if (btrfsic_submit_bio_wait(bio)) {
+> -			btrfs_dev_stat_inc_and_print(spage_bad->dev,
+> +			btrfs_dev_stat_inc_and_print(ssector_bad->dev,
+>  				BTRFS_DEV_STAT_WRITE_ERRS);
+>  			atomic64_inc(&fs_info->dev_replace.num_write_errors);
+>  			bio_put(bio);
+> @@ -1593,22 +1593,22 @@ static void scrub_write_block_to_dev_replace(struct scrub_block *sblock)
+>  	for (sector_num = 0; sector_num < sblock->sector_count; sector_num++) {
+>  		int ret;
+>  
+> -		ret = scrub_write_page_to_dev_replace(sblock, sector_num);
+> +		ret = scrub_write_sector_to_dev_replace(sblock, sector_num);
+>  		if (ret)
+>  			atomic64_inc(&fs_info->dev_replace.num_write_errors);
+>  	}
+>  }
+>  
+> -static int scrub_write_page_to_dev_replace(struct scrub_block *sblock,
+> -					   int sector_num)
+> +static int scrub_write_sector_to_dev_replace(struct scrub_block *sblock,
+> +					     int sector_num)
+>  {
+> -	struct scrub_page *spage = sblock->sectorv[sector_num];
+> +	struct scrub_sector *ssector = sblock->sectorv[sector_num];
+>  
+> -	BUG_ON(spage->page == NULL);
+> -	if (spage->io_error)
+> -		clear_page(page_address(spage->page));
+> +	BUG_ON(ssector->page == NULL);
+> +	if (ssector->io_error)
+> +		clear_page(page_address(ssector->page));
+>  
+> -	return scrub_add_page_to_wr_bio(sblock->sctx, spage);
+> +	return scrub_add_sector_to_wr_bio(sblock->sctx, ssector);
+>  }
+>  
+>  static int fill_writer_pointer_gap(struct scrub_ctx *sctx, u64 physical)
+> @@ -1633,8 +1633,8 @@ static int fill_writer_pointer_gap(struct scrub_ctx *sctx, u64 physical)
+>  	return ret;
+>  }
+>  
+> -static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+> -				    struct scrub_page *spage)
+> +static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+> +				    struct scrub_sector *ssector)
+>  {
+>  	struct scrub_bio *sbio;
+>  	int ret;
+> @@ -1657,14 +1657,14 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+>  		struct bio *bio;
+>  
+>  		ret = fill_writer_pointer_gap(sctx,
+> -					      spage->physical_for_dev_replace);
+> +					      ssector->physical_for_dev_replace);
+>  		if (ret) {
+>  			mutex_unlock(&sctx->wr_lock);
+>  			return ret;
+>  		}
+>  
+> -		sbio->physical = spage->physical_for_dev_replace;
+> -		sbio->logical = spage->logical;
+> +		sbio->physical = ssector->physical_for_dev_replace;
+> +		sbio->logical = ssector->logical;
+>  		sbio->dev = sctx->wr_tgtdev;
+>  		bio = sbio->bio;
+>  		if (!bio) {
+> @@ -1679,14 +1679,14 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+>  		bio->bi_opf = REQ_OP_WRITE;
+>  		sbio->status = 0;
+>  	} else if (sbio->physical + sbio->page_count * sectorsize !=
+> -		   spage->physical_for_dev_replace ||
+> +		   ssector->physical_for_dev_replace ||
+>  		   sbio->logical + sbio->page_count * sectorsize !=
+> -		   spage->logical) {
+> +		   ssector->logical) {
+>  		scrub_wr_submit(sctx);
+>  		goto again;
+>  	}
+>  
+> -	ret = bio_add_page(sbio->bio, spage->page, sectorsize, 0);
+> +	ret = bio_add_page(sbio->bio, ssector->page, sectorsize, 0);
+>  	if (ret != sectorsize) {
+>  		if (sbio->page_count < 1) {
+>  			bio_put(sbio->bio);
+> @@ -1698,8 +1698,8 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+>  		goto again;
+>  	}
+>  
+> -	sbio->pagev[sbio->page_count] = spage;
+> -	scrub_page_get(spage);
+> +	sbio->pagev[sbio->page_count] = ssector;
+> +	scrub_sector_get(ssector);
+>  	sbio->page_count++;
+>  	if (sbio->page_count == sctx->pages_per_bio)
+>  		scrub_wr_submit(sctx);
+> @@ -1754,15 +1754,15 @@ static void scrub_wr_bio_end_io_worker(struct btrfs_work *work)
+>  			&sbio->sctx->fs_info->dev_replace;
+>  
+>  		for (i = 0; i < sbio->page_count; i++) {
+> -			struct scrub_page *spage = sbio->pagev[i];
+> +			struct scrub_sector *ssector = sbio->pagev[i];
+>  
+> -			spage->io_error = 1;
+> +			ssector->io_error = 1;
+>  			atomic64_inc(&dev_replace->num_write_errors);
+>  		}
+>  	}
+>  
+>  	for (i = 0; i < sbio->page_count; i++)
+> -		scrub_page_put(sbio->pagev[i]);
+> +		scrub_sector_put(sbio->pagev[i]);
+>  
+>  	bio_put(sbio->bio);
+>  	kfree(sbio);
+> @@ -1809,26 +1809,26 @@ static int scrub_checksum_data(struct scrub_block *sblock)
+>  	struct btrfs_fs_info *fs_info = sctx->fs_info;
+>  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+>  	u8 csum[BTRFS_CSUM_SIZE];
+> -	struct scrub_page *spage;
+> +	struct scrub_sector *ssector;
+>  	char *kaddr;
+>  
+>  	BUG_ON(sblock->sector_count < 1);
+> -	spage = sblock->sectorv[0];
+> -	if (!spage->have_csum)
+> +	ssector = sblock->sectorv[0];
+> +	if (!ssector->have_csum)
+>  		return 0;
+>  
+> -	kaddr = page_address(spage->page);
+> +	kaddr = page_address(ssector->page);
+>  
+>  	shash->tfm = fs_info->csum_shash;
+>  	crypto_shash_init(shash);
+>  
+>  	/*
+> -	 * In scrub_pages() and scrub_pages_for_parity() we ensure each spage
+> +	 * In scrub_sectors() and scrub_sectors_for_parity() we ensure each ssector
+>  	 * only contains one sector of data.
+>  	 */
+>  	crypto_shash_digest(shash, kaddr, fs_info->sectorsize, csum);
+>  
+> -	if (memcmp(csum, spage->csum, fs_info->csum_size))
+> +	if (memcmp(csum, ssector->csum, fs_info->csum_size))
+>  		sblock->checksum_error = 1;
+>  	return sblock->checksum_error;
+>  }
+> @@ -1849,16 +1849,16 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+>  	const u32 sectorsize = sctx->fs_info->sectorsize;
+>  	const int num_sectors = fs_info->nodesize >> fs_info->sectorsize_bits;
+>  	int i;
+> -	struct scrub_page *spage;
+> +	struct scrub_sector *ssector;
+>  	char *kaddr;
+>  
+>  	BUG_ON(sblock->sector_count < 1);
+>  
+> -	/* Each member in pagev is just one sector , not a full page */
+> +	/* Each member in sectorv is just one sector */
+>  	ASSERT(sblock->sector_count == num_sectors);
+>  
+> -	spage = sblock->sectorv[0];
+> -	kaddr = page_address(spage->page);
+> +	ssector = sblock->sectorv[0];
+> +	kaddr = page_address(ssector->page);
+>  	h = (struct btrfs_header *)kaddr;
+>  	memcpy(on_disk_csum, h->csum, sctx->fs_info->csum_size);
+>  
+> @@ -1867,15 +1867,15 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+>  	 * a) don't have an extent buffer and
+>  	 * b) the page is already kmapped
+>  	 */
+> -	if (spage->logical != btrfs_stack_header_bytenr(h))
+> +	if (ssector->logical != btrfs_stack_header_bytenr(h))
+>  		sblock->header_error = 1;
+>  
+> -	if (spage->generation != btrfs_stack_header_generation(h)) {
+> +	if (ssector->generation != btrfs_stack_header_generation(h)) {
+>  		sblock->header_error = 1;
+>  		sblock->generation_error = 1;
+>  	}
+>  
+> -	if (!scrub_check_fsid(h->fsid, spage))
+> +	if (!scrub_check_fsid(h->fsid, ssector))
+>  		sblock->header_error = 1;
+>  
+>  	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid,
+> @@ -1906,23 +1906,23 @@ static int scrub_checksum_super(struct scrub_block *sblock)
+>  	struct btrfs_fs_info *fs_info = sctx->fs_info;
+>  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+>  	u8 calculated_csum[BTRFS_CSUM_SIZE];
+> -	struct scrub_page *spage;
+> +	struct scrub_sector *ssector;
+>  	char *kaddr;
+>  	int fail_gen = 0;
+>  	int fail_cor = 0;
+>  
+>  	BUG_ON(sblock->sector_count < 1);
+> -	spage = sblock->sectorv[0];
+> -	kaddr = page_address(spage->page);
+> +	ssector = sblock->sectorv[0];
+> +	kaddr = page_address(ssector->page);
+>  	s = (struct btrfs_super_block *)kaddr;
+>  
+> -	if (spage->logical != btrfs_super_bytenr(s))
+> +	if (ssector->logical != btrfs_super_bytenr(s))
+>  		++fail_cor;
+>  
+> -	if (spage->generation != btrfs_super_generation(s))
+> +	if (ssector->generation != btrfs_super_generation(s))
+>  		++fail_gen;
+>  
+> -	if (!scrub_check_fsid(s->fsid, spage))
+> +	if (!scrub_check_fsid(s->fsid, ssector))
+>  		++fail_cor;
+>  
+>  	shash->tfm = fs_info->csum_shash;
+> @@ -1943,10 +1943,10 @@ static int scrub_checksum_super(struct scrub_block *sblock)
+>  		++sctx->stat.super_errors;
+>  		spin_unlock(&sctx->stat_lock);
+>  		if (fail_cor)
+> -			btrfs_dev_stat_inc_and_print(spage->dev,
+> +			btrfs_dev_stat_inc_and_print(ssector->dev,
+>  				BTRFS_DEV_STAT_CORRUPTION_ERRS);
+>  		else
+> -			btrfs_dev_stat_inc_and_print(spage->dev,
+> +			btrfs_dev_stat_inc_and_print(ssector->dev,
+>  				BTRFS_DEV_STAT_GENERATION_ERRS);
+>  	}
+>  
+> @@ -1967,22 +1967,22 @@ static void scrub_block_put(struct scrub_block *sblock)
+>  			scrub_parity_put(sblock->sparity);
+>  
+>  		for (i = 0; i < sblock->sector_count; i++)
+> -			scrub_page_put(sblock->sectorv[i]);
+> +			scrub_sector_put(sblock->sectorv[i]);
+>  		kfree(sblock);
+>  	}
+>  }
+>  
+> -static void scrub_page_get(struct scrub_page *spage)
+> +static void scrub_sector_get(struct scrub_sector *ssector)
+>  {
+> -	atomic_inc(&spage->refs);
+> +	atomic_inc(&ssector->refs);
+>  }
+>  
+> -static void scrub_page_put(struct scrub_page *spage)
+> +static void scrub_sector_put(struct scrub_sector *ssector)
+>  {
+> -	if (atomic_dec_and_test(&spage->refs)) {
+> -		if (spage->page)
+> -			__free_page(spage->page);
+> -		kfree(spage);
+> +	if (atomic_dec_and_test(&ssector->refs)) {
+> +		if (ssector->page)
+> +			__free_page(ssector->page);
+> +		kfree(ssector);
+>  	}
+>  }
+>  
+> @@ -2060,10 +2060,10 @@ static void scrub_submit(struct scrub_ctx *sctx)
+>  	btrfsic_submit_bio(sbio->bio);
+>  }
+>  
+> -static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+> -				    struct scrub_page *spage)
+> +static int scrub_add_sector_to_rd_bio(struct scrub_ctx *sctx,
+> +				      struct scrub_sector *ssector)
+>  {
+> -	struct scrub_block *sblock = spage->sblock;
+> +	struct scrub_block *sblock = ssector->sblock;
+>  	struct scrub_bio *sbio;
+>  	const u32 sectorsize = sctx->fs_info->sectorsize;
+>  	int ret;
+> @@ -2089,9 +2089,9 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+>  	if (sbio->page_count == 0) {
+>  		struct bio *bio;
+>  
+> -		sbio->physical = spage->physical;
+> -		sbio->logical = spage->logical;
+> -		sbio->dev = spage->dev;
+> +		sbio->physical = ssector->physical;
+> +		sbio->logical = ssector->logical;
+> +		sbio->dev = ssector->dev;
+>  		bio = sbio->bio;
+>  		if (!bio) {
+>  			bio = btrfs_bio_alloc(sctx->pages_per_bio);
+> @@ -2105,16 +2105,16 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+>  		bio->bi_opf = REQ_OP_READ;
+>  		sbio->status = 0;
+>  	} else if (sbio->physical + sbio->page_count * sectorsize !=
+> -		   spage->physical ||
+> +		   ssector->physical ||
+>  		   sbio->logical + sbio->page_count * sectorsize !=
+> -		   spage->logical ||
+> -		   sbio->dev != spage->dev) {
+> +		   ssector->logical ||
+> +		   sbio->dev != ssector->dev) {
+>  		scrub_submit(sctx);
+>  		goto again;
+>  	}
+>  
+> -	sbio->pagev[sbio->page_count] = spage;
+> -	ret = bio_add_page(sbio->bio, spage->page, sectorsize, 0);
+> +	sbio->pagev[sbio->page_count] = ssector;
+> +	ret = bio_add_page(sbio->bio, ssector->page, sectorsize, 0);
+>  	if (ret != sectorsize) {
+>  		if (sbio->page_count < 1) {
+>  			bio_put(sbio->bio);
+> @@ -2126,7 +2126,7 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+>  	}
+>  
+>  	scrub_block_get(sblock); /* one for the page added to the bio */
+> -	atomic_inc(&sblock->outstanding_pages);
+> +	atomic_inc(&sblock->outstanding_sectors);
+>  	sbio->page_count++;
+>  	if (sbio->page_count == sctx->pages_per_bio)
+>  		scrub_submit(sctx);
+> @@ -2228,9 +2228,9 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
+>  		goto rbio_out;
+>  
+>  	for (i = 0; i < sblock->sector_count; i++) {
+> -		struct scrub_page *spage = sblock->sectorv[i];
+> +		struct scrub_sector *ssector = sblock->sectorv[i];
+>  
+> -		raid56_add_scrub_pages(rbio, spage->page, spage->logical);
+> +		raid56_add_scrub_pages(rbio, ssector->page, ssector->logical);
+>  	}
+>  
+>  	btrfs_init_work(&sblock->work, scrub_missing_raid56_worker, NULL, NULL);
+> @@ -2249,7 +2249,7 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
+>  	spin_unlock(&sctx->stat_lock);
+>  }
+>  
+> -static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+> +static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+>  		       u64 physical, struct btrfs_device *dev, u64 flags,
+>  		       u64 gen, int mirror_num, u8 *csum,
+>  		       u64 physical_for_dev_replace)
+> @@ -2273,7 +2273,7 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+>  	sblock->no_io_error_seen = 1;
+>  
+>  	for (index = 0; len > 0; index++) {
+> -		struct scrub_page *spage;
+> +		struct scrub_sector *ssector;
+>  		/*
+>  		 * Here we will allocate one page for one sector to scrub.
+>  		 * This is fine if PAGE_SIZE == sectorsize, but will cost
+> @@ -2281,8 +2281,8 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+>  		 */
+>  		u32 l = min(sectorsize, len);
+>  
+> -		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
+> -		if (!spage) {
+> +		ssector = kzalloc(sizeof(*ssector), GFP_KERNEL);
+> +		if (!ssector) {
+>  leave_nomem:
+>  			spin_lock(&sctx->stat_lock);
+>  			sctx->stat.malloc_errors++;
+> @@ -2291,25 +2291,25 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+>  			return -ENOMEM;
+>  		}
+>  		ASSERT(index < SCRUB_MAX_SECTORS_PER_BLOCK);
+> -		scrub_page_get(spage);
+> -		sblock->sectorv[index] = spage;
+> -		spage->sblock = sblock;
+> -		spage->dev = dev;
+> -		spage->flags = flags;
+> -		spage->generation = gen;
+> -		spage->logical = logical;
+> -		spage->physical = physical;
+> -		spage->physical_for_dev_replace = physical_for_dev_replace;
+> -		spage->mirror_num = mirror_num;
+> +		scrub_sector_get(ssector);
+> +		sblock->sectorv[index] = ssector;
+> +		ssector->sblock = sblock;
+> +		ssector->dev = dev;
+> +		ssector->flags = flags;
+> +		ssector->generation = gen;
+> +		ssector->logical = logical;
+> +		ssector->physical = physical;
+> +		ssector->physical_for_dev_replace = physical_for_dev_replace;
+> +		ssector->mirror_num = mirror_num;
+>  		if (csum) {
+> -			spage->have_csum = 1;
+> -			memcpy(spage->csum, csum, sctx->fs_info->csum_size);
+> +			ssector->have_csum = 1;
+> +			memcpy(ssector->csum, csum, sctx->fs_info->csum_size);
+>  		} else {
+> -			spage->have_csum = 0;
+> +			ssector->have_csum = 0;
+>  		}
+>  		sblock->sector_count++;
+> -		spage->page = alloc_page(GFP_KERNEL);
+> -		if (!spage->page)
+> +		ssector->page = alloc_page(GFP_KERNEL);
+> +		if (!ssector->page)
+>  			goto leave_nomem;
+>  		len -= l;
+>  		logical += l;
+> @@ -2326,10 +2326,10 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+>  		scrub_missing_raid56_pages(sblock);
+>  	} else {
+>  		for (index = 0; index < sblock->sector_count; index++) {
+> -			struct scrub_page *spage = sblock->sectorv[index];
+> +			struct scrub_sector *ssector = sblock->sectorv[index];
+>  			int ret;
+>  
+> -			ret = scrub_add_page_to_rd_bio(sctx, spage);
+> +			ret = scrub_add_sector_to_rd_bio(sctx, ssector);
+>  			if (ret) {
+>  				scrub_block_put(sblock);
+>  				return ret;
+> @@ -2365,19 +2365,19 @@ static void scrub_bio_end_io_worker(struct btrfs_work *work)
+>  	ASSERT(sbio->page_count <= SCRUB_PAGES_PER_BIO);
+>  	if (sbio->status) {
+>  		for (i = 0; i < sbio->page_count; i++) {
+> -			struct scrub_page *spage = sbio->pagev[i];
+> +			struct scrub_sector *ssector = sbio->pagev[i];
+>  
+> -			spage->io_error = 1;
+> -			spage->sblock->no_io_error_seen = 0;
+> +			ssector->io_error = 1;
+> +			ssector->sblock->no_io_error_seen = 0;
+>  		}
+>  	}
+>  
+>  	/* now complete the scrub_block items that have all pages completed */
+>  	for (i = 0; i < sbio->page_count; i++) {
+> -		struct scrub_page *spage = sbio->pagev[i];
+> -		struct scrub_block *sblock = spage->sblock;
+> +		struct scrub_sector *ssector = sbio->pagev[i];
+> +		struct scrub_block *sblock = ssector->sblock;
+>  
+> -		if (atomic_dec_and_test(&sblock->outstanding_pages))
+> +		if (atomic_dec_and_test(&sblock->outstanding_sectors))
+>  			scrub_block_complete(sblock);
+>  		scrub_block_put(sblock);
+>  	}
+> @@ -2571,7 +2571,7 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+>  			if (have_csum == 0)
+>  				++sctx->stat.no_csum;
+>  		}
+> -		ret = scrub_pages(sctx, logical, l, physical, dev, flags, gen,
+> +		ret = scrub_sectors(sctx, logical, l, physical, dev, flags, gen,
+>  				  mirror_num, have_csum ? csum : NULL,
+>  				  physical_for_dev_replace);
+>  		if (ret)
+> @@ -2584,7 +2584,7 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+>  	return 0;
+>  }
+>  
+> -static int scrub_pages_for_parity(struct scrub_parity *sparity,
+> +static int scrub_sectors_for_parity(struct scrub_parity *sparity,
+>  				  u64 logical, u32 len,
+>  				  u64 physical, struct btrfs_device *dev,
+>  				  u64 flags, u64 gen, int mirror_num, u8 *csum)
+> @@ -2613,10 +2613,10 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
+>  	scrub_parity_get(sparity);
+>  
+>  	for (index = 0; len > 0; index++) {
+> -		struct scrub_page *spage;
+> +		struct scrub_sector *ssector;
+>  
+> -		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
+> -		if (!spage) {
+> +		ssector = kzalloc(sizeof(*ssector), GFP_KERNEL);
+> +		if (!ssector) {
+>  leave_nomem:
+>  			spin_lock(&sctx->stat_lock);
+>  			sctx->stat.malloc_errors++;
+> @@ -2626,27 +2626,27 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
+>  		}
+>  		ASSERT(index < SCRUB_MAX_SECTORS_PER_BLOCK);
+>  		/* For scrub block */
+> -		scrub_page_get(spage);
+> -		sblock->sectorv[index] = spage;
+> +		scrub_sector_get(ssector);
+> +		sblock->sectorv[index] = ssector;
+>  		/* For scrub parity */
+> -		scrub_page_get(spage);
+> -		list_add_tail(&spage->list, &sparity->spages);
+> -		spage->sblock = sblock;
+> -		spage->dev = dev;
+> -		spage->flags = flags;
+> -		spage->generation = gen;
+> -		spage->logical = logical;
+> -		spage->physical = physical;
+> -		spage->mirror_num = mirror_num;
+> +		scrub_sector_get(ssector);
+> +		list_add_tail(&ssector->list, &sparity->ssectors);
+> +		ssector->sblock = sblock;
+> +		ssector->dev = dev;
+> +		ssector->flags = flags;
+> +		ssector->generation = gen;
+> +		ssector->logical = logical;
+> +		ssector->physical = physical;
+> +		ssector->mirror_num = mirror_num;
+>  		if (csum) {
+> -			spage->have_csum = 1;
+> -			memcpy(spage->csum, csum, sctx->fs_info->csum_size);
+> +			ssector->have_csum = 1;
+> +			memcpy(ssector->csum, csum, sctx->fs_info->csum_size);
+>  		} else {
+> -			spage->have_csum = 0;
+> +			ssector->have_csum = 0;
+>  		}
+>  		sblock->sector_count++;
+> -		spage->page = alloc_page(GFP_KERNEL);
+> -		if (!spage->page)
+> +		ssector->page = alloc_page(GFP_KERNEL);
+> +		if (!ssector->page)
+>  			goto leave_nomem;
+>  
+>  
+> @@ -2658,17 +2658,17 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
+>  
+>  	WARN_ON(sblock->sector_count == 0);
+>  	for (index = 0; index < sblock->sector_count; index++) {
+> -		struct scrub_page *spage = sblock->sectorv[index];
+> +		struct scrub_sector *ssector = sblock->sectorv[index];
+>  		int ret;
+>  
+> -		ret = scrub_add_page_to_rd_bio(sctx, spage);
+> +		ret = scrub_add_sector_to_rd_bio(sctx, ssector);
+>  		if (ret) {
+>  			scrub_block_put(sblock);
+>  			return ret;
+>  		}
+>  	}
+>  
+> -	/* last one frees, either here or in bio completion for last page */
+> +	/* last one frees, either here or in bio completion for last sector */
+>  	scrub_block_put(sblock);
+>  	return 0;
+>  }
+> @@ -2707,7 +2707,7 @@ static int scrub_extent_for_parity(struct scrub_parity *sparity,
+>  			if (have_csum == 0)
+>  				goto skip;
+>  		}
+> -		ret = scrub_pages_for_parity(sparity, logical, l, physical, dev,
+> +		ret = scrub_sectors_for_parity(sparity, logical, l, physical, dev,
+>  					     flags, gen, mirror_num,
+>  					     have_csum ? csum : NULL);
+>  		if (ret)
+> @@ -2767,7 +2767,7 @@ static int get_raid56_logic_offset(u64 physical, int num,
+>  static void scrub_free_parity(struct scrub_parity *sparity)
+>  {
+>  	struct scrub_ctx *sctx = sparity->sctx;
+> -	struct scrub_page *curr, *next;
+> +	struct scrub_sector *curr, *next;
+>  	int nbits;
+>  
+>  	nbits = bitmap_weight(sparity->ebitmap, sparity->nsectors);
+> @@ -2778,9 +2778,9 @@ static void scrub_free_parity(struct scrub_parity *sparity)
+>  		spin_unlock(&sctx->stat_lock);
+>  	}
+>  
+> -	list_for_each_entry_safe(curr, next, &sparity->spages, list) {
+> +	list_for_each_entry_safe(curr, next, &sparity->ssectors, list) {
+>  		list_del_init(&curr->list);
+> -		scrub_page_put(curr);
+> +		scrub_sector_put(curr);
+>  	}
+>  
+>  	kfree(sparity);
+> @@ -2943,7 +2943,7 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
+>  	sparity->logic_start = logic_start;
+>  	sparity->logic_end = logic_end;
+>  	refcount_set(&sparity->refs, 1);
+> -	INIT_LIST_HEAD(&sparity->spages);
+> +	INIT_LIST_HEAD(&sparity->ssectors);
+>  	sparity->dbitmap = sparity->bitmap;
+>  	sparity->ebitmap = (void *)sparity->bitmap + bitmap_len;
+>  
+> @@ -3940,9 +3940,9 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+>  		if (!btrfs_check_super_location(scrub_dev, bytenr))
+>  			continue;
+>  
+> -		ret = scrub_pages(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
+> -				  scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,
+> -				  NULL, bytenr);
+> +		ret = scrub_sectors(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
+> +				    scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,
+> +				    NULL, bytenr);
+>  		if (ret)
+>  			return ret;
+>  	}
+> @@ -4061,7 +4061,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+>  	    SCRUB_MAX_SECTORS_PER_BLOCK * fs_info->sectorsize ||
+>  	    fs_info->sectorsize > PAGE_SIZE * SCRUB_MAX_SECTORS_PER_BLOCK) {
+>  		/*
+> -		 * would exhaust the array bounds of pagev member in
+> +		 * would exhaust the array bounds of sectorv member in
+>  		 * struct scrub_block
+>  		 */
+>  		btrfs_err(fs_info,
+> @@ -4137,7 +4137,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+>  	/*
+>  	 * In order to avoid deadlock with reclaim when there is a transaction
+>  	 * trying to pause scrub, make sure we use GFP_NOFS for all the
+> -	 * allocations done at btrfs_scrub_pages() and scrub_pages_for_parity()
+> +	 * allocations done at btrfs_scrub_sectors() and scrub_sectors_for_parity()
+>  	 * invoked by our callees. The pausing request is done when the
+>  	 * transaction commit starts, and it blocks the transaction until scrub
+>  	 * is paused (done at specific points at scrub_stripe() or right above
+> -- 
+> 2.35.1
