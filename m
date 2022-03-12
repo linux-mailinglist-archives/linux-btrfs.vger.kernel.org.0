@@ -2,192 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A0F4D6B02
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Mar 2022 00:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B0B4D6B37
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Mar 2022 01:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbiCKXwS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 18:52:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
+        id S229475AbiCLADS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 19:03:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiCKXwR (ORCPT
+        with ESMTP id S229457AbiCLADS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 18:52:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC0B1F1245
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 15:51:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F4CA611A3
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 23:51:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 882F0C340E9;
-        Fri, 11 Mar 2022 23:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647042671;
-        bh=UI2goh65mPC1mFugwSZ0cc1kXUSkapnnhg4Uu0oa1F8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I7PnY/EQPh5N9YwmOOhMzTByoMK0IP44STNIggcPJ9/UXfLJtZESPwmhhBR+Nq2+P
-         EYUZJFdJsCQ8CNMXWSFOoEjA1C6YMYHNv7FI2YrBYOucYSxcKpHWBG9MqfcxhhYYP0
-         44R5/+FK5XoknlhpZipligSYnpkKaqjNpYde7URK2YMPoQkdeJt1LdLh5McXG0p0Ih
-         TRVdCvn2umRxVVdRLQOsIvNYgJLWzKExnpthOY93vVhxovPpjIcJM20AMj4l5p6Td1
-         uDrQPFwel4IcxB79pUj3lyADLUEe1BuVEdyFDe/prlGBG7xEQJwmbiGmT83YDUhYuP
-         3e7UxM3bGR/Hg==
-Date:   Fri, 11 Mar 2022 15:51:10 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix fallocate to use file_modified to update
- permissions consistently
-Message-ID: <20220311235110.GB8241@magnolia>
-References: <20220310192245.GA8165@magnolia>
- <YitAiiQ+cpbGZ2K/@debian9.Home>
+        Fri, 11 Mar 2022 19:03:18 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F8C65B3
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 16:02:13 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id z9-20020a05683020c900b005b22bf41872so7360424otq.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 16:02:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VHXiScQBkvlamojgfhsC3IL7pQirX7DEY3UipVx6qxw=;
+        b=EkcR2erdeIQYx1yTwcxu2WFp5ZZQrqp8igw9GroJeLKWsLRoNZoOsDwPzowq3DJEC7
+         NtuLIEL/jFdg9t0J6fUkE90lHyqBcyjiFvohqh+HMdxBA7E5uFLI+cTvD/V5PrUsxXkv
+         EbMDQtEouM8amnye7zxrjsmTfzegQBMmI037A18m81dZAJb3t9fCoNSnmJqcwRftR1an
+         Y1sFfWz7D4uWiibRhgWRIMp5NZbVssiOHNB8PVUs9Rpdh1INQmBJcLBySMIcW5f7kGYm
+         I4qapheX/KrJNCcg5VLqCkCwAYYjmCR2p3qt1HtH//vDFRpVHMtxrRpGLBGIbTJ4oMza
+         t2cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VHXiScQBkvlamojgfhsC3IL7pQirX7DEY3UipVx6qxw=;
+        b=NyVRvZ3oe54O1pil1cIIxxi3t4W7PIn+h1hwM6y+kl4mKN4Z/dQJUDmVqUd38YZUcv
+         GLSRAAF2rIFpM8Cz+cPZ/upO6i6OiPitKjQ1OTKSV+F4aLP0N5ADG+vAZHAR4lOeQ4mf
+         k79Pz44kvrBJwAK6GznQipLRVpAHdBz5uVzqJcojAdIo36jgImYwyR5hLyePsJbRDryS
+         m1toyQrj2P8ePcGT2SFrTvUzX+abtFFGZHF4NezgDBkm3bGADikxuv5+y3CP+uk3RYP0
+         dJbOO+hkaJJwN5gvf71hu3TYY9W33nG0KOvweBIeFYlMhFQ4HBo61xl1j4uj5VKcXvc6
+         Ovww==
+X-Gm-Message-State: AOAM533i0g90czsBqksukppkKdWkphZ3QnYvVOMjBJtSaEJtyD/Tb1w6
+        Nbz207WsFnjV0u3dwwwOjR+rNe5TDBYo8VtNPN0=
+X-Google-Smtp-Source: ABdhPJxdNSn2OXkpKa8h9yTguJQKCVUbEV5370DBGvkuzR07ttXbVykpEde3LvDQ3nO31fg0UentorMIavp51oJFhi0=
+X-Received: by 2002:a05:6830:4406:b0:5af:d53c:18f with SMTP id
+ q6-20020a056830440600b005afd53c018fmr6098582otv.236.1647043332365; Fri, 11
+ Mar 2022 16:02:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YitAiiQ+cpbGZ2K/@debian9.Home>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+ <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
+ <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com> <3c668ffe-edb0-bbbb-cfe0-e307bad79b1a@gmx.com>
+ <CAODFU0pcT73bXwkXOpjQMvG0tYO73mLdeG2i4foxr6kHorh1jQ@mail.gmail.com>
+ <70bc749c-4b85-f7e6-b5fd-23eb573aab70@gmx.com> <CAODFU0q7TxxHP6yndndnVtE+62asnbOQmfD_1KjRrG0uJqiqgg@mail.gmail.com>
+ <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com> <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
+ <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com> <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
+ <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com> <CAODFU0q+F2Za=pUVsi1uz9CLi4gs-k1hAAndYmVopgmF9673gw@mail.gmail.com>
+ <CAODFU0pxmTShj7OrgGH+-_YuObhwoLBrgwVvx-v+WbFerHM01A@mail.gmail.com>
+ <e7df8c6e-5185-4bea-2863-211214968153@gmx.com> <CAODFU0r=9i2mOwNXVx74GcKUSt4Z6wGqshgD=5bktFhoXCWE4A@mail.gmail.com>
+ <452af644-e871-20e3-60b2-f69a92dc406d@gmx.com>
+In-Reply-To: <452af644-e871-20e3-60b2-f69a92dc406d@gmx.com>
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Sat, 12 Mar 2022 01:01:36 +0100
+Message-ID: <CAODFU0oWBvRkpM3oirpfitGiTex8=EST021egQzUiBCMYrhVVg@mail.gmail.com>
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 12:28:58PM +0000, Filipe Manana wrote:
-> On Thu, Mar 10, 2022 at 11:22:45AM -0800, Darrick J. Wong wrote:
-> > From: Darrick J. Wong <djwong@kernel.org>
-> > 
-> > Since the initial introduction of (posix) fallocate back at the turn of
-> > the century, it has been possible to use this syscall to change the
-> > user-visible contents of files.  This can happen by extending the file
-> > size during a preallocation, or through any of the newer modes (punch,
-> > zero range).  Because the call can be used to change file contents, we
-> > should treat it like we do any other modification to a file -- update
-> > the mtime, and drop set[ug]id privileges/capabilities.
-> > 
-> > The VFS function file_modified() does all this for us if pass it a
-> > locked inode, so let's make fallocate drop permissions correctly.
-> > 
-> > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> > ---
-> > Note: I plan to add fstests to test this behavior, but after the
-> > generic/673 mess, I'm holding back on them until I can fix the three
-> > major filesystems and clean up the xfs setattr_copy code.
-> > 
-> > https://lore.kernel.org/linux-ext4/20220310174410.GB8172@magnolia/T/#u
-> > ---
-> >  fs/btrfs/file.c |   23 +++++++++++++++++++----
-> >  1 file changed, 19 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > index a0179cc62913..79e61c88b9e7 100644
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@ -2918,8 +2918,9 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
-> >  	return ret;
-> >  }
-> >  
-> > -static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
-> > +static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
-> >  {
-> > +	struct inode *inode = file_inode(file);
-> >  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> >  	struct btrfs_root *root = BTRFS_I(inode)->root;
-> >  	struct extent_state *cached_state = NULL;
-> > @@ -2951,6 +2952,10 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
-> >  		goto out_only_mutex;
-> >  	}
-> >  
-> > +	ret = file_modified(file);
-> > +	if (ret)
-> > +		goto out_only_mutex;
-> > +
-> >  	lockstart = round_up(offset, btrfs_inode_sectorsize(BTRFS_I(inode)));
-> >  	lockend = round_down(offset + len,
-> >  			     btrfs_inode_sectorsize(BTRFS_I(inode))) - 1;
-> > @@ -3177,11 +3182,12 @@ static int btrfs_zero_range_check_range_boundary(struct btrfs_inode *inode,
-> >  	return ret;
-> >  }
-> >  
-> > -static int btrfs_zero_range(struct inode *inode,
-> > +static int btrfs_zero_range(struct file *file,
-> >  			    loff_t offset,
-> >  			    loff_t len,
-> >  			    const int mode)
-> >  {
-> > +	struct inode *inode = file_inode(file);
-> >  	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
-> >  	struct extent_map *em;
-> >  	struct extent_changeset *data_reserved = NULL;
-> > @@ -3202,6 +3208,12 @@ static int btrfs_zero_range(struct inode *inode,
-> >  		goto out;
-> >  	}
-> >  
-> > +	ret = file_modified(file);
-> > +	if (ret) {
-> > +		free_extent_map(em);
-> > +		goto out;
-> > +	}
-> > +
-> 
-> Could be done before getting the extent map, to make the code a bit shorter, or
-> see the comment below.
+On Sat, Mar 12, 2022 at 12:39 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> On 2022/3/12 07:28, Jan Ziak wrote:
+> > On Sat, Mar 12, 2022 at 12:04 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >> As stated before, autodefrag is not really that useful for database.
+> >
+> > Do you realize that you are claiming that btrfs autodefrag should not
+> > - by design - be effective in the case of high-fragmentation files?
+>
+> Unfortunately, that's exactly what I mean.
+>
+> We all know random writes would cause fragments, but autodefrag is not
+> like regular defrag ioctl, as it only scan newer extents.
+>
+> For example:
+>
+> Our autodefrag is required to defrag writes newer than gen 100, and our
+> inode has the following layout:
+>
+> |---Ext A---|--- Ext B---|---Ext C---|---Ext D---|---Ext E---|
+>      Gen 50       Gen 101     Gen 49      Gen 30      Gen 30
+>
+> Then autodefrag will only try to defrag extent B and extent C.
+>
+> Extent B meets the generation requirement, and is mergable with the next
+> extent C.
+>
+> But all the remaining extents A, D, E will not be defragged as their
+> generations don't meet the requirement.
+>
+> While for regular defrag ioctl, we don't have such generation
+> requirement, and is able to defrag all extents from A to E.
+> (But cause way more IO).
+>
+> Furthermore, autodefrag works by marking the target range dirty, and
+> wait for writeback (and hopefully get more writes near it, so it can get
+> even larger)
+>
+> But if the application, like the database, is calling fsync()
+> frequently, such re-dirtied range is going to writeback almost
+> immediately, without any further chance to get merged larger.
 
-The trouble is, if getting the extent map fails, we didn't change the
-file, so there's no reason to bump the timestamps and whatnot...
+So, basically, what you are saying is that you are refusing to work
+together towards fixing/improving the auto-defragmentation algorithm.
 
-> 
-> >  	/*
-> >  	 * Avoid hole punching and extent allocation for some cases. More cases
-> >  	 * could be considered, but these are unlikely common and we keep things
-> > @@ -3391,7 +3403,7 @@ static long btrfs_fallocate(struct file *file, int mode,
-> >  		return -EOPNOTSUPP;
-> >  
-> >  	if (mode & FALLOC_FL_PUNCH_HOLE)
-> > -		return btrfs_punch_hole(inode, offset, len);
-> > +		return btrfs_punch_hole(file, offset, len);
-> >  
-> >  	/*
-> >  	 * Only trigger disk allocation, don't trigger qgroup reserve
-> > @@ -3446,7 +3458,7 @@ static long btrfs_fallocate(struct file *file, int mode,
-> >  		goto out;
-> >  
-> >  	if (mode & FALLOC_FL_ZERO_RANGE) {
-> > -		ret = btrfs_zero_range(inode, offset, len, mode);
-> > +		ret = btrfs_zero_range(file, offset, len, mode);
-> >  		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
-> >  		return ret;
-> >  	}
-> > @@ -3528,6 +3540,9 @@ static long btrfs_fallocate(struct file *file, int mode,
-> >  		cur_offset = last_byte;
-> >  	}
-> >  
-> > +	if (!ret)
-> > +		ret = file_modified(file);
-> 
-> If call file_modified() before the if that checks for the zero range case,
-> then we avoid having to call file_modified() at btrfs_zero_range() too,
-> and get the behaviour for both plain fallocate and zero range.
+Based on your decision in this matter, I am now forced either to find
+a replacement filesystem with features similar to btrfs or to
+implement a filesystem (where auto-defragmentation works correctly)
+myself.
 
-...and the reason I put it here is to make sure the ordered IO finishes
-ok and that we pass the quota limit checks before we start modifying
-things.
+Since I failed to persuade you that there are serious errors/mistakes
+in the current btrfs-autodefrag implementation, this is my last email
+in this whole forum thread.
 
-That said -- you all know btrfs far better than I do, so if you'd rather
-I put these calls further up (probably right after the inode_newsize_ok
-check?) then I'm happy to do that. :)
-
---D
-
-> 
-> Otherwise, it looks good.
-> 
-> Thanks for doing this, I had it on my todo list since I noticed the generic/673
-> failure with reflinks and the suid/sgid bits.
-> 
-> > +
-> >  	/*
-> >  	 * If ret is still 0, means we're OK to fallocate.
-> >  	 * Or just cleanup the list and exit.
+Sincerely
+Jan
