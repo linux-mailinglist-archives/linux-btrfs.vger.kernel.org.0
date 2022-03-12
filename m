@@ -2,79 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8661E4D6BB8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Mar 2022 02:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58A34D6BCC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Mar 2022 03:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbiCLBos (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 20:44:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
+        id S229756AbiCLCIk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 21:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiCLBor (ORCPT
+        with ESMTP id S229447AbiCLCIj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 20:44:47 -0500
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D05E18C0CF
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 17:43:39 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 1925480671;
-        Fri, 11 Mar 2022 20:43:38 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1647049419; bh=+LQnnQJg9Fr0iwygfkSzJeF93ptWIh0yk9Eou1H8BwI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PIwh14itWrxxPmDjZvNGLWUbSUhbt4VA6NLXxlt1fWgnQ52WitDj9v8gn+W+0/YX1
-         eDiowYHTQb/GuvnUZQ2pOBuFREExe6HGUQSCI1mvWVmvOsBA4JsCIy3qKXAh1MWZQk
-         Ol0PnnzxdNtJlzEGwEX7UawTGmqDGbPw0f3zLyQwj2YjGp71ZhMm+NUZHtAEW4OnrF
-         Q5PtWhRNMRb8edhSlzkQWMQQ42wx0YnxOanDwBiOsyxFWwpCH4RH7kg6HQEA4VS4Xg
-         I6E3I3B6jJ7rN2O19J99VszAy5VhyD8HPQwQX/RRBFAScm2Ua6YKrNYVG1bP4ljV6W
-         zDrmLWomgJtxw==
-Message-ID: <aac3e4b3-2e59-f243-d0e3-02c68d797642@dorminy.me>
-Date:   Fri, 11 Mar 2022 20:43:38 -0500
+        Fri, 11 Mar 2022 21:08:39 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC70B2A6D35;
+        Fri, 11 Mar 2022 18:07:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=n8AgEWKp9LFRshxYuEwas2r7rF8fdkoMavI6bguLHYM=; b=uKQg5DPbamAXK2FBue7Sc5goqu
+        XZk4+n7PKsHGOZRRefQsGUvV4JgleA1MsYZnzMIgebOAczaSBBNWjGpCmSnnP28gnne1hwWtPD7lv
+        JK8aPobIN+Nmy/jt6j4ZHQ/1JqxtHRl++6rb1/PKSKUL/MNsmbUmj54OMiZQE1iC+jxHDe2FuS3TS
+        KPzKUA1fz6P0vCVmDpYhSNjmrAERaM71j1Cg0Wqqb9aRhm6RLPfBWlvIsbZE83pDsCDzt8T7RUQ42
+        A2BHjfmsE93BplkYybzotaH9tlkZWyokZqaoLCWodaEL3DFAYz7q2O0v5WU9Cf/l1ZPMyXAgWUMsb
+        9S6WTd9g==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nSrA9-000ZN5-9H; Sat, 12 Mar 2022 02:07:21 +0000
+Date:   Fri, 11 Mar 2022 18:07:21 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.cz>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        lsf-pc <lsf-pc@lists.linux-foundation.org>,
+        linux-btrfs@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Pankaj Raghav <p.raghav@samsung.com>,
+        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Adam Manzanares <a.manzanares@samsung.com>,
+        kanchan Joshi <joshi.k@samsung.com>,
+        Pankaj Raghav <pankydev8@gmail.com>,
+        Kanchan Joshi <joshiiitr@gmail.com>
+Subject: Re: [LSF/MM TOPIC] FS, MM, and stable trees
+Message-ID: <YiwAWRRS8AmurVm6@bombadil.infradead.org>
+References: <20190212170012.GF69686@sasha-vm>
+ <CAOQ4uxjysufPUtwepPGNZDhoC_HdsnkHx7--kso_OXWPyPkw_A@mail.gmail.com>
+ <YicrMCidylefTC3n@kroah.com>
+ <YieG8rZkgnfwygyu@mit.edu>
+ <Yij08f7ee4pDZ2AC@bombadil.infradead.org>
+ <Yij2rqDn4TiN3kK9@localhost.localdomain>
+ <Yij5YTD5+V2qpsSs@bombadil.infradead.org>
+ <YikZ2Zy6CtdNQ7WQ@localhost.localdomain>
+ <YilUPAGQBPwI0V3n@bombadil.infradead.org>
+ <YipIqqiz91D39nMQ@localhost.localdomain>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 03/16] btrfs: fix anon_dev leak in create_subvol()
-Content-Language: en-US
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1646875648.git.osandov@fb.com>
- <ee5528d299d357f225a228c394830d88e6eda17c.1646875648.git.osandov@fb.com>
- <1f55ff0e-c89d-0216-2c2f-0e1d7aa2a089@dorminy.me>
- <YivpceXk9xnkBikj@relinquished.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <YivpceXk9xnkBikj@relinquished.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YipIqqiz91D39nMQ@localhost.localdomain>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Mar 10, 2022 at 01:51:22PM -0500, Josef Bacik wrote:
+> [root@fedora-rawhide ~]# cat /xfstests-dev/local.config
+> [btrfs_normal_freespacetree]
+> [btrfs_compress_freespacetree]
+> [btrfs_normal]
+> [btrfs_compression]
+> [kdave]
+> [btrfs_normal_noholes]
+> [btrfs_compress_noholes]
+> [btrfs_noholes_freespacetree]
 
-On 3/11/22 19:29, Omar Sandoval wrote:
-> On Fri, Mar 11, 2022 at 10:42:14AM -0500, Sweet Tea Dorminy wrote:
->>> +out_anon_dev:
->>>    	if (anon_dev)
->>>    		free_anon_bdev(anon_dev);
->> It looks to me as though the finer-grained cleanup means free_anon_bdev()
->> can always be called with no conditional; if the code reaches this point in
->> cleanup, anon_dev was populated by get_anon_bdev() (which must have returned
->> zero, indicating successfully populating anon_dev).
-> The conditional is required because halfway through the function, we
-> assign the anon_dev to a struct btrfs_root, which means that the
-> anon_dev will be freed when the root is freed:
->
-> 	new_root = btrfs_get_new_fs_root(fs_info, objectid, anon_dev);
-> 	if (IS_ERR(new_root)) {
-> 		ret = PTR_ERR(new_root);
-> 		btrfs_abort_transaction(trans, ret);
-> 		goto out;
-> 	}
-> 	/* anon_dev is owned by new_root now. */
-> 	anon_dev = 0;
++ linux-btrfs and zone folks.
 
-Makes sense, thanks for pointing that out!
+I simplified these as follows, please let me know if the names are
+alright. I think we may be able to come up with something more
+clever than btrfs_dave. The raid56/noraid56 exist just for the
+defaults of the distro/btrfs-progs. The expunge list is used
+to determine if something is raid56 or not sadly given we
+have no groups for putting tests into the raid56 group. The idea
+is some distros don't support raid56 so that is the goal with
+the noraid56 config.
 
+The name needs to be: $FS_$FANCY_SINGLE_SPACED_NAME
+
+Each guest spawned will have that same hostname. And likewise
+the expunges are collected for each guest hostname. The hostname
+is used to pick the expunge directory so to ensure it reflects
+the baseline.
+
+You may want to look at this expunge file:
+
+https://github.com/mcgrof/kdevops/blob/master/workflows/fstests/expunges/op=
+ensuse-leap/15.3/btrfs/unassigned/btrfs_noraid56.txt=02
+
+[default]
+TEST_DEV=3D@FSTESTSTESTDEV@
+TEST_DIR=3D@FSTESTSDIR@
+SCRATCH_DEV_POOL=3D"@FSTESTSSCRATCHDEVPOOL@"
+
+SCRATCH_MNT=3D@FSTESTSSCRATCHMNT@
+RESULT_BASE=3D$PWD/results/$HOST/$(uname -r)
+
+[btrfs_raid56]
+MKFS_OPTIONS=3D'-f'
+FSTYP=3Dbtrfs
+
+[btrfs_noraid56]
+MKFS_OPTIONS=3D'-f'
+FSTYP=3Dbtrfs
+
+[btrfs_normalfreespacetree]
+LOGWRITES_DEV=3D@FSTESTSLOGWRITESDEV@
+MKFS_OPTIONS=3D"-K -f -O ^no-holes"
+MOUNT_OPTIONS=3D"-o space_cache=3Dv2"
+FSTYP=3Dbtrfs
+
+[btrfs_compressfreespacetree]
+MOUNT_OPTIONS=3D"-o compress=3Dzlib,space_cache=3Dv2"
+MKFS_OPTIONS=3D"-K -f -O ^no-holes"
+
+[btrfs_normal]
+LOGWRITES_DEV=3D@FSTESTSLOGWRITESDEV@
+MKFS_OPTIONS=3D"-K -O ^no-holes -R ^free-space-tree"
+MOUNT_OPTIONS=3D"-o discard=3Dasync"
+
+[btrfs_compression]
+MOUNT_OPTIONS=3D"-o compress=3Dzstd,discard=3Dasync"
+MKFS_OPTIONS=3D"-K -O ^no-holes -R ^free-space-tree"
+
+[btrfs_kdave]
+MKFS_OPTIONS=3D"-K -O no-holes -R ^free-space-tree"
+MOUNT_OPTIONS=3D"-o discard,space_cache=3Dv2"
+
+[btrfs_normalnoholes]
+LOGWRITES_DEV=3D@FSTESTSLOGWRITESDEV@
+MKFS_OPTIONS=3D"-K -O no-holes -f -R ^free-space-tree"
+
+[btrfs_compressnoholes]
+MKFS_OPTIONS=3D"-K -O no-holes -f -R ^free-space-tree"
+MOUNT_OPTIONS=3D"-o compress=3Dlzo"
+
+[btrfs_noholesfreespacetree]
+MKFS_OPTIONS=3D"-K -O no-holes -f"
+MOUNT_OPTIONS=3D"-o space_cache=3Dv2"
+
+I see nothing for NVMe ZNS.. so how about=20
+
+[btrfs_zns]
+MKFS_OPTIONS=3D"-f -d single -m single"
+TEST_DEV=3D@FSTESTSTESTZNSDEV@
+SCRATCH_DEV_POOL=3D"@FSTESTSSCRATCHDEVZNSPOOL@"
+
+[btrfs_simple]
+TEST_DEV=3D@FSTESTSTESTSDEV@
+MKFS_OPTIONS=3D"-f -d single -m single"
+SCRATCH_DEV_POOL=3D"@FSTESTSSCRATCHDEVPOOL@"
+
+The idea being btrfs_simple will not use zns drives behind the scenes
+but btrfs_zns will.
+
+  Luis
