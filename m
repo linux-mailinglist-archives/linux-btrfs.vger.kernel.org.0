@@ -2,221 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8E14D6C1D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Mar 2022 03:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622D94D6C2D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Mar 2022 04:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbiCLCtm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Mar 2022 21:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        id S230176AbiCLDIj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Mar 2022 22:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiCLCtl (ORCPT
+        with ESMTP id S229480AbiCLDIh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Mar 2022 21:49:41 -0500
+        Fri, 11 Mar 2022 22:08:37 -0500
+X-Greylist: delayed 1451 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Mar 2022 19:07:33 PST
 Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 026E2114774
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 18:48:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4DB492713C7
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Mar 2022 19:07:32 -0800 (PST)
 Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 822612502C0; Fri, 11 Mar 2022 21:48:35 -0500 (EST)
-Date:   Fri, 11 Mar 2022 21:48:35 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Pierre Abbat <phma@bezitopo.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Computer stalled, apparently from filesystem corruption
-Message-ID: <YiwKA1LTrX56dd9T@hungrycats.org>
-References: <12976593.dW097sEU6C@puma>
+        id 69010250280; Fri, 11 Mar 2022 21:43:18 -0500 (EST)
+Date:   Fri, 11 Mar 2022 21:43:18 -0500
+From:   Zygo Blaxell <zblaxell@furryterror.org>
+To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+Message-ID: <YiwIxnCMjsl8BPPA@hungrycats.org>
+References: <CAODFU0q7TxxHP6yndndnVtE+62asnbOQmfD_1KjRrG0uJqiqgg@mail.gmail.com>
+ <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com>
+ <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
+ <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com>
+ <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
+ <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com>
+ <CAODFU0q+F2Za=pUVsi1uz9CLi4gs-k1hAAndYmVopgmF9673gw@mail.gmail.com>
+ <CAODFU0pxmTShj7OrgGH+-_YuObhwoLBrgwVvx-v+WbFerHM01A@mail.gmail.com>
+ <e7df8c6e-5185-4bea-2863-211214968153@gmx.com>
+ <CAODFU0r=9i2mOwNXVx74GcKUSt4Z6wGqshgD=5bktFhoXCWE4A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <12976593.dW097sEU6C@puma>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAODFU0r=9i2mOwNXVx74GcKUSt4Z6wGqshgD=5bktFhoXCWE4A@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 10, 2022 at 05:56:35AM -0500, Pierre Abbat wrote:
-> Sending again, with less syslog. I wrote this on the 8th.
+On Sat, Mar 12, 2022 at 12:28:10AM +0100, Jan Ziak wrote:
+> On Sat, Mar 12, 2022 at 12:04 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > As stated before, autodefrag is not really that useful for database.
 > 
-> My computer was up for several months. On Saturday I came home from church and 
-> found it unresponsive except that I could move the mouse cursor and make the 
-> keyboard lights blink. I tried to shell in from another computer; I got a 
-> connection, but not a login prompt. I rebooted it with the power button and 
-> copied the syslog file that contains the incident. I saw "btrfs" several times 
-> in the section of log.
-> 
-> This morning, I was rsyncing some files and the same thing happened, except 
-> that the screen was stuck in the middle of flipping through windows with alt-
-> tab and I was able to switch to a console, log in as root, and reboot. Again I 
-> found "btrfs" in syslog.
-> 
-> Running dmesg produces too much information. Here is the rest of the info:
-> root@puma:/home/phma# uname -a
-> Linux puma 5.15.15-76051515-generic #202201160435~1642693824~20.04~97db1bb-
-> Ubuntu SMP Fri Jan 21 14: x86_64 x86_64 x86_64 GNU/Linux
-> root@puma:/home/phma# btrfs --version
-> btrfs-progs v5.4.1 
-> root@puma:/home/phma# btrfs fi show
-> Label: none  uuid: d0137494-fe35-488f-b0da-fdbe075b8832
->         Total devices 1 FS bytes used 72.88GiB
->         devid    1 size 673.51GiB used 75.02GiB path /dev/mapper/concolor-big
-> 
-> Label: none  uuid: 174643ac-cb44-46a9-a5a4-5fb5e9a4e79f
->         Total devices 1 FS bytes used 48.84GiB
->         devid    1 size 100.00GiB used 57.02GiB path /dev/mapper/concolor-
-> rootcopy
-> 
-> Label: none  uuid: 155a20c7-2264-4923-b082-288a3c146384
->         Total devices 1 FS bytes used 101.49GiB
->         devid    1 size 158.00GiB used 134.02GiB path /dev/mapper/concolor-
-> cougar
-> 
-> Label: none  uuid: 10c61748-efe7-4b9c-b1f7-041dc45d894b
->         Total devices 1 FS bytes used 39.38GiB
->         devid    1 size 127.98GiB used 53.04GiB path /dev/mapper/cougar-crypt
-> 
-> Label: none  uuid: 1f5a6f23-a7ef-46c6-92b1-84fc2f684931
->         Total devices 1 FS bytes used 92.58GiB
->         devid    1 size 158.00GiB used 131.00GiB path /dev/mapper/puma-cougar
-> 
-> root@puma:/home/phma# btrfs fi df /big
-> Data, single: total=74.01GiB, used=72.78GiB
-> System, single: total=4.00MiB, used=16.00KiB
-> Metadata, single: total=1.01GiB, used=101.59MiB
-> GlobalReserve, single: total=92.41MiB, used=0.00B
-> root@puma:/home/phma# btrfs fi df /rootcopy
-> Data, single: total=55.01GiB, used=47.68GiB
-> System, single: total=4.00MiB, used=16.00KiB
-> Metadata, single: total=2.01GiB, used=1.16GiB
-> GlobalReserve, single: total=113.17MiB, used=0.00B
-> root@puma:/home/phma# btrfs fi df /home
-> Data, single: total=132.01GiB, used=100.23GiB
-> System, single: total=4.00MiB, used=16.00KiB
-> Metadata, single: total=2.01GiB, used=1.26GiB
-> GlobalReserve, single: total=321.31MiB, used=0.00B
-> root@puma:/home/phma# btrfs fi df /crypt
-> Data, single: total=52.01GiB, used=39.29GiB
-> System, single: total=32.00MiB, used=16.00KiB
-> Metadata, single: total=1.00GiB, used=91.14MiB
-> GlobalReserve, single: total=45.91MiB, used=0.00B
-> root@puma:/home/phma# btrfs fi df /olv
-> Data, single: total=52.01GiB, used=39.29GiB
-> System, single: total=32.00MiB, used=16.00KiB
-> Metadata, single: total=1.00GiB, used=91.14MiB
-> GlobalReserve, single: total=45.91MiB, used=0.00B
-> root@puma:/home/phma# btrfs fi df /backup
-> Data, single: total=52.01GiB, used=39.29GiB
-> System, single: total=32.00MiB, used=16.00KiB
-> Metadata, single: total=1.00GiB, used=91.14MiB
-> GlobalReserve, single: total=45.91MiB, used=0.00B
-> 
-> The kernel I was running on Saturday may be older.
-> 
-> Here are some excerpts from syslog:
-> Mar  5 08:31:52 puma kernel: [10359910.035946] INFO: task Indexed~ #56145:1182901 blocked for more than 120 seconds.
-> Mar  5 08:31:52 puma kernel: [10359910.035948]       Tainted: P           OE     5.13.0-7614-generic #14~1631647151~20.04~930e87c-Ubuntu
-> Mar  5 08:31:52 puma kernel: [10359910.035949] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> Mar  5 08:31:52 puma kernel: [10359910.035950] task:Indexed~ #56145 state:D stack:    0 pid:1182901 ppid:     1 flags:0x00000000
-> Mar  5 08:31:52 puma kernel: [10359910.035953] Call Trace:
-> Mar  5 08:31:52 puma kernel: [10359910.035954]  __schedule+0x2ee/0x900
-> Mar  5 08:31:52 puma kernel: [10359910.035956]  ? try_to_unlazy+0x55/0x90
-> Mar  5 08:31:52 puma kernel: [10359910.035959]  schedule+0x4f/0xc0
-> Mar  5 08:31:52 puma kernel: [10359910.035964]  wait_current_trans+0xd6/0x140 [btrfs]
-> Mar  5 08:31:52 puma kernel: [10359910.036043]  ? wait_woken+0x80/0x80
-> Mar  5 08:31:52 puma kernel: [10359910.036047]  start_transaction+0x4bb/0x5a0 [btrfs]
-> Mar  5 08:31:52 puma kernel: [10359910.036081]  btrfs_start_transaction_fallback_global_rsv+0x1b/0x20 [btrfs]
-> Mar  5 08:31:52 puma kernel: [10359910.036113]  btrfs_unlink+0x30/0xe0 [btrfs]
-> Mar  5 08:31:52 puma kernel: [10359910.036145]  vfs_unlink+0x114/0x200
-> Mar  5 08:31:52 puma kernel: [10359910.036147]  do_unlinkat+0x1a2/0x2d0
-> Mar  5 08:31:52 puma kernel: [10359910.036150]  __x64_sys_unlink+0x23/0x30
-> Mar  5 08:31:52 puma kernel: [10359910.036153]  do_syscall_64+0x61/0xb0
-> Mar  5 08:31:52 puma kernel: [10359910.036155]  ? do_syscall_64+0x6e/0xb0
-> Mar  5 08:31:52 puma kernel: [10359910.036157]  ? do_syscall_64+0x6e/0xb0
-> Mar  5 08:31:52 puma kernel: [10359910.036159]  ? do_syscall_64+0x6e/0xb0
-> Mar  5 08:31:52 puma kernel: [10359910.036160]  ? do_syscall_64+0x6e/0xb0
-> Mar  5 08:31:52 puma kernel: [10359910.036162]  ? do_syscall_64+0x6e/0xb0
-> Mar  5 08:31:52 puma kernel: [10359910.036164]  ? asm_sysvec_apic_timer_interrupt+0xa/0x20
-> Mar  5 08:31:52 puma kernel: [10359910.036166]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> Mar  5 08:31:52 puma kernel: [10359910.036167] RIP: 0033:0x7fc30923de3b
-> Mar  5 08:31:52 puma kernel: [10359910.036169] RSP: 002b:00007fc2c2bbd4d8 EFLAGS: 00000202 ORIG_RAX: 0000000000000057
-> Mar  5 08:31:52 puma kernel: [10359910.036170] RAX: ffffffffffffffda RBX: 00007fc274b75271 RCX: 00007fc30923de3b
-> Mar  5 08:31:52 puma kernel: [10359910.036171] RDX: 0000000000000000 RSI: 00007fc274b75271 RDI: 00007fc274b75271
-> Mar  5 08:31:52 puma kernel: [10359910.036173] RBP: 0000000000000000 R08: 0000000000000000 R09: 00007fc272f01748
-> Mar  5 08:31:52 puma kernel: [10359910.036174] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fc274b75271
-> Mar  5 08:31:52 puma kernel: [10359910.036175] R13: 00007fc2734b4400 R14: 0000000000000000 R15: 00007fc3085bd578
-> 
-> Mar  8 04:36:29 puma kernel: [39151.885472] INFO: task tracker-store:53596 blocked for more than 120 seconds.
-> Mar  8 04:36:29 puma kernel: [39151.885492]       Tainted: G           OE     5.15.15-76051515-generic #202201160435~1642693824~20.04~97db1bb-Ubuntu
-> Mar  8 04:36:29 puma kernel: [39151.885494] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> Mar  8 04:36:29 puma kernel: [39151.885496] task:tracker-store   state:D stack:    0 pid:53596 ppid:  3662 flags:0x00000000
-> Mar  8 04:36:29 puma kernel: [39151.885503] Call Trace:
-> Mar  8 04:36:29 puma kernel: [39151.885508]  <TASK>
-> Mar  8 04:36:29 puma kernel: [39151.885518]  __schedule+0x2cd/0x890
-> Mar  8 04:36:29 puma kernel: [39151.885530]  ? __cond_resched+0x19/0x30
-> Mar  8 04:36:29 puma kernel: [39151.885533]  schedule+0x4e/0xb0
-> Mar  8 04:36:29 puma kernel: [39151.885539]  btrfs_sync_log+0x178/0xef0 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885704]  ? __raw_callee_save___native_queued_spin_unlock+0x15/0x23
-> Mar  8 04:36:29 puma kernel: [39151.885717]  ? release_extent_buffer+0xbb/0xe0 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885753]  ? wait_woken+0x60/0x60
-> Mar  8 04:36:29 puma kernel: [39151.885758]  ? btrfs_free_path+0x27/0x30 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885787]  ? dput+0x62/0x320
-> Mar  8 04:36:29 puma kernel: [39151.885794]  ? log_all_new_ancestors+0x3bc/0x470 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885841]  ? btrfs_log_inode_parent+0x2db/0x890 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885872]  ? join_transaction+0x135/0x4c0 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885900]  ? start_transaction+0xd5/0x5b0 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885931]  ? dput+0x62/0x320
-> Mar  8 04:36:29 puma kernel: [39151.885933]  btrfs_sync_file+0x33f/0x460 [btrfs]
-> Mar  8 04:36:29 puma kernel: [39151.885961]  vfs_fsync_range+0x49/0x80
-> Mar  8 04:36:29 puma kernel: [39151.885965]  do_fsync+0x3d/0x70
-> Mar  8 04:36:29 puma kernel: [39151.885967]  __x64_sys_fsync+0x14/0x20
-> Mar  8 04:36:29 puma kernel: [39151.885968]  do_syscall_64+0x5c/0xc0
-> Mar  8 04:36:29 puma kernel: [39151.885971]  ? do_sys_openat2+0x1d3/0x320
-> Mar  8 04:36:29 puma kernel: [39151.885975]  ? exit_to_user_mode_prepare+0x3d/0x1c0
-> Mar  8 04:36:29 puma kernel: [39151.885980]  ? syscall_exit_to_user_mode+0x27/0x50
-> Mar  8 04:36:29 puma kernel: [39151.885983]  ? __x64_sys_openat+0x20/0x30
-> Mar  8 04:36:29 puma kernel: [39151.885986]  ? do_syscall_64+0x69/0xc0
-> Mar  8 04:36:29 puma kernel: [39151.885987]  ? do_syscall_64+0x69/0xc0
-> Mar  8 04:36:29 puma kernel: [39151.885988]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> Mar  8 04:36:29 puma kernel: [39151.885993] RIP: 0033:0x7f0eb970832b
-> Mar  8 04:36:29 puma kernel: [39151.885995] RSP: 002b:00007ffde79e29b0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-> Mar  8 04:36:29 puma kernel: [39151.885997] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f0eb970832b
-> Mar  8 04:36:29 puma kernel: [39151.885999] RDX: 0000000000101441 RSI: 0000564c61177b50 RDI: 0000000000000008
-> Mar  8 04:36:29 puma kernel: [39151.886000] RBP: 0000000000000008 R08: 0000000000000000 R09: 0000000000000001
-> Mar  8 04:36:29 puma kernel: [39151.886001] R10: 00000000000001b0 R11: 0000000000000293 R12: 0000564c61176e50
-> Mar  8 04:36:29 puma kernel: [39151.886002] R13: 00007ffde79e2a00 R14: 00007ffde79e2be4 R15: 0000000000000000
-> Mar  8 04:36:29 puma kernel: [39151.886005]  </TASK>
-> 
-> Please copy me, I'm not on the mailing list.
+> Do you realize that you are claiming that btrfs autodefrag should not
+> - by design - be effective in the case of high-fragmentation files? If
+> it isn't supposed to be useful for high-fragmentation files then where
+> is it supposed to be useful? Low-fragmentation files?
 
-There's no indication of corruption in those logs.  Above the kernel
-is complaining that it's taking too long to finish transactions, which
-could be a btrfs problem, or a hardware problem, or even simply a large
-filesystem running normally on very slow disks.  Not enough information
-to tell.
+IMHO it's best to deprecate the in-kernel autodefrag option, and start
+over with a better approach.  The kernel is the wrong place to solve
+this problem, and the undesirable and unfixable things in autodefrag
+are a consequence of that early design error.
 
-When posting logs, extract all lines with 'btrfs' on them, plus context
-lines, e.g.
+As far as I can tell, in-kernel autodefrag's only purpose is to provide
+exposure to new and exciting bugs on each kernel release, and a lot of
+uncontrolled IO demands even when it's working perfectly.  Inevitably,
+re-reading old fragments that are no longer in memory will consume RAM
+and iops during writeback activity, when memory and IO bandwidth is least
+available.  If we avoid expensive re-reading of extents, then we don't
+get a useful rate of reduction of fragmentation, because we can't coalesce
+small new exists with small existing ones.  If we try to fix these issues
+one at a time, the feature would inevitably grow a lot of complicated
+and brittle configuration knobs to turn it off selectively, because it's
+so awful without extensive filtering.
 
-	grep -B9 -i btrfs /var/log/kern.log
+All the above criticism applies to abstract ideal in-kernel autodefrag,
+_before_ considering whether a concrete implementation might have
+limitations or bugs which make it worse than the already-bad best case.
+5.16 happened to have a lot of examples of these, but fixing the
+regressions can only restore autodefrag's relative harmlessness, not
+add utility within the constraints the kernel is under.
 
-or
+The right place to do autodefrag is userspace.  Interfaces already
+exist for userspace to 1) discover new extents and their neighbors,
+quickly and safely, across the entire filesystem; 2) invoke defrag_range
+on file extent ranges found in step 1; and 3) run a while (true)
+loop that periodically performs steps 1 and 2.  Indeed, the existing
+kernel autodefrag implementation is already using the same back-end
+infrastructure for parts 1 and 2, so all that would be required for
+userspace is to reimplement (and start improving upon) part 3.
 
-	dmesg | grep -B9 -i btrfs
+A command-line utility or daemon can locate new extents immediately with
+tree_search queries, either at filesystem-wide scales, or directed at
+user-chosen file subsets.  Tools can quickly assess whether new extents
+are good candidates for defrag, then coalesce them with their neighbors.
 
-If you can reproduce the hang, enable sysrq and do Alt-SysRq-W when it
-hangs (or run
+The user can choose between different tools to decide basic policy
+questions like: whether to run once in a batch job or continuously in
+the background, what amounts of IO bandwidth and memory to consume,
+whether to recompress data with a more aggressive algorithm/level, which
+reference to a snapshot-shared extent should be preferred for defrag,
+file-type-specific layout optimizations to apply, or any custom or
+experimental selection, scheduling, or optimization logic desired.
 
-	echo w > /proc/sysrq-trigger
+Implementations can be kept simple because it's not necessary for
+userspace tools to pile every possible option into a single implementation,
+and support every released option forever (as required for the kernel).
+A specialist implementation can discard existing code with impunity or
+start from scratch with an experimental algorithm, and spend its life
+in a fork of the main userspace autodefrag project with niche users
+who never have to cope with generic users' use cases and vice versa.
+This efficiently distributes development and maintenance costs.
 
-from a command line).  This will provide stack traces of all blocked
-processes so we can see what the transaction is waiting for.
+Userspace autodefrag can be implemented today in any programming language
+with btrfs ioctl support, and run on any kernel released in the last
+6 years.  Alas, I don't know of anybody who's released a userspace
+autodefrag tool yet, and it hasn't been important enough to me to build
+one myself (other than a few proof-of-concept prototypes).
 
-> Pierre
-> -- 
-> The gostak pelled at the fostin lutt for darfs for her martle plave.
-> The darfs had smibbed, the lutt was thale, and the pilter had nothing snave.
-> 
-> 
-> 
+For now, I do defrag mostly ad-hoc with 'btrfs fi defrag' on the most
+severely fragmented files (top N list of files with the highest extent
+counts on the filesystem), and ignore fragmentation everywhere else.
+
+
+> -Jan
