@@ -2,96 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A437E4D7439
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Mar 2022 11:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8273B4D7446
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Mar 2022 11:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbiCMKZt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Mar 2022 06:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
+        id S232640AbiCMKlb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Mar 2022 06:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbiCMKZs (ORCPT
+        with ESMTP id S232326AbiCMKla (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Mar 2022 06:25:48 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBEA2C64C;
-        Sun, 13 Mar 2022 03:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1647167076;
-        bh=RBnTYpvhytvABdmuxOOQarUBhg0bWr+FwUypMI32+NQ=;
-        h=X-UI-Sender-Class:Date:To:From:Subject;
-        b=jgiBjpNwmt99wQkyD9f+AMvy/uGIkONBUM7TG7P4CJyASfdVjXKBe3wl9UievtfRY
-         QUCbyXwBvLfRG/7d7pN1ytz/TRIwgDlfQ2E1YWOOW8gZ0CCu0nW424rvmny63236/f
-         KB4A3OFldfdB633cplx0hzddJ7hBUxCutl8eOcnY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4axq-1nSmu5238Q-001fD4; Sun, 13
- Mar 2022 11:24:36 +0100
-Message-ID: <88a5d138-68b0-da5f-8b08-5ddf02fff244@gmx.com>
-Date:   Sun, 13 Mar 2022 18:24:32 +0800
+        Sun, 13 Mar 2022 06:41:30 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D96614004
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Mar 2022 03:40:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DBF17212C7
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Mar 2022 10:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1647168020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=F/KZyxi/NZJMza4/wdD2QSm8EBwVycMbrZO1yjcTDzU=;
+        b=cWkE+kDxUCB89FPyzDG4I4HzQWnuh0vF1ieufENkzDnLx8d54zsXtJ0eAH3fd54Yml8p+0
+        d3CJ92hoy0JEvlNmYKxpthWfgeSQ4FFmVgN2AiWjdmfKIsohgYFfEber1tp+aJgYtlryz8
+        enyFfuzC5Hu6wc8SzF04Qoau59zACRU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3592F13AF7
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Mar 2022 10:40:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MgCaOxPKLWLUFwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Mar 2022 10:40:19 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/3] btrfs: scrub: big renaming to address the page and sector difference
+Date:   Sun, 13 Mar 2022 18:39:59 +0800
+Message-Id: <cover.1647161284.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Content-Language: en-US
-To:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Better read bio error granularity?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eDbfbmB7YpEKXAqDHWfkxATH4FVeK7qmSSfBVYbpbU+WyG8C/N4
- FGk1JI8mNe7rIKyJEs0z9hoRNOSgwNZsT6HetEApaaUzpDl5ODQnRBlRUKD0Hnn9YhcdO/u
- pEkUY0IvhVs4x3qdwKmynNl5Tetn1FFlrxv0yr8WqUAyGHypi/tFuJqS+EsQ5tDk8GiUNTB
- RdfFaJ0pS7pcE/oulY52A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TkgtGE0/COw=:3NT/lA8cywBCJKaqQv2Gs4
- sSbNR4cEqNGTggnOBGEMRouN2YM0Iqzi9OrTcevwzPnonk3BU+CGa2ItAdLN66V7HR2phFiso
- f9EhHadDoEDQz/wD5/ERiuk7+VyhAiHxXO7CB40lS8YYymN7gz2k1MY7VAFu6E1VJhYR0EI2z
- u1bcEPP0dRA83sPJ7Ee8v8VZLoeQt6HZCdmaWuuEClSlPLL6m5tMPeZRwdzipSkD1rFz5osIo
- 3Y5X9DFX9YJsJNGw8fpgZsb6J8n+Rq6zpj4OimT7++OxcXCxSVu8375sHik8GO1H155HZTDIi
- FCm9+HgRf2aIzJq4ri8yo5l7RM5NYPjuL77GmIm3oaJJgsJ4czu3/bSiZWI9f5G26yzH8KKOo
- 2ZVH2ivHvkVqqLWgSc1B1apdZxOQi/w3eFzXWB4tkZ7plhV+x5DUzpiuKTEop7tgY0S3T610B
- BAgZdBxBMcii4VmUfLmsMHY21OELerleK23PxqRr5m/zmqfSThk3EbS0U2vT1x+9mfIz49UWu
- /AbYuhF8lBIXTQqpYN5kGsbUHP6BCy8h9GjQSaCaxeiKOeJDylWUcF/8X0+OYXN5V+8yOBBt7
- TFaYsh0XZwS79M0PnqXp7hPU5J6+EIGDNo2hVDmF0ucWeaK3oZS0WSJDzcoLKj/EW60hNWZ0Z
- dI6/Pk+DZ8iETDpK9tUcM0LC/QzKSyQZ9M0jFnifUyYkrsLekyB7AW2JIK1cy3bo7CZ9cEqqI
- vBFB0w1Dt2qmKKZKAi3Pbm7c5G9R9QzCrIzKvkSZgc4EgZ1oLtINTJKy3Jpo8Gwf6j781eFWD
- 92f/AkRX04B6qG1uaSIj93OMyADakTDY3rZ0lvTTX57hPmMLeMmZSCf0p8TNYFj7E0CgqGihN
- V29upv5o0E3IPvvM8ocLDblN0uoW2VuI6bJVtK/FM6z507msgBcnEpO2pGGMg4YsEhPLrNIQz
- Z6iYumJPAdk3UdW1CCVD+OFbs3U116jqfByb/opAsPdav5e4H1qeH494m7QPCCvMjMRF7YaoJ
- PX+56kWtmXA9A/n+UKoxwFr9JCKFdVpmlCJ5mAUM83lSgUENy4wtlAoruzafGwxl9aKrl3k2I
- e+cQ2Zw9DIh1qw=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+[CHANGELOG]
+v2:
+- Rebased to misc-next directly, before scrub entrance refactor
+  As this patchset is safer than entrance refactor.
 
-Since if any of the split bio got an error, the whole bio will have
-bi_status set to some error number.
+  Minor conflicts due to scrub_remap() renaming.
 
-This is completely fine for write bio, but I'm wondering can we get a
-better granularity by introducing per-bvec bi_status or using page status?
+v3:
+- Get rid of the name "ssector", using "sector" directly.
+  Previously we use names like "spage" to avoid confusion between MM
+  layer page, and scrub page.
+  But now since we rename it to scrub sector, and there is no naming
+  conflicts, we are safe to use "sector" directly, without the eye
+  hurting "ss".
+
+- Use names like "sectors" to replace "pagev"
+  Which is more close to our latest naming schema.
+
+- Update involved comments to use latest style
+
+- Use bitshift to convert from sectors to bytes
 
 
-One situation is, for fs like btrfs or dm device like dm-verify, if a
-large bio is submitted, say a 128K one, and one of the page failed to
-pass checksum/hmac verification.
+This patchset can be cherry-picked from my github repo:
+https://github.com/adam900710/linux/tree/refactor_scrub
 
-Then the whole 128K will be marked error, while in fact the rest 124K
-are completely fine.
+They are the first 3 patches after misc-next.
 
+From the ancient day, btrfs doesn't support sectorsize < PAGE_SIZE, thus
+a lot of the old code consider one page == one sector, not only the
+behavior, but also the naming.
 
-Can this be solved by something like per-vec bi_status, or using page
-error status to indicate where exactly the error is?
+This is no longer true after v5.16 since we have subpage support.
 
-Or is such usage case too niche (only makes sense for read, only makes
-sense for fs with verification)?
+One of the worst location is scrub, we have tons of things named like
+scrub_page, scrub_block::pagev, scrub_bio::pagev.
 
-Thanks,
-Qu
+Even scrub for subpage is supported, the naming is not touched yet.
+
+This patchset will first do the rename, providing the basis for later
+scrub enhancement for subpage.
+
+This patchset should not bring any behavior change.
+
+Qu Wenruo (3):
+  btrfs: scrub: rename members related to scrub_block::pagev
+  btrfs: scrub: rename scrub_page to scrub_sector
+  btrfs: scrub: rename scrub_bio::pagev[] and related members
+
+ fs/btrfs/scrub.c | 693 +++++++++++++++++++++++------------------------
+ 1 file changed, 346 insertions(+), 347 deletions(-)
+
+-- 
+2.35.1
+
