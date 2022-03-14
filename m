@@ -2,77 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2AE4D8BFB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 19:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5164D8C11
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 20:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235715AbiCNTAu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 15:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
+        id S243794AbiCNTKg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 15:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbiCNTAt (ORCPT
+        with ESMTP id S233327AbiCNTKf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 15:00:49 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4860813D51
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 11:59:39 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DE4C821111;
-        Mon, 14 Mar 2022 18:59:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1647284377;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VTXGw5YFvJ9H0DprQ3eEt6uTztoUC/9Guc1wUW5MS+g=;
-        b=OyzEj7CfscyhHmLSfvBOcYFqnYU3xBW++0YPQ9RaAid/hmzS2PlXyffb1V206Q63Nj7ix6
-        9+V0XFts4CSV9wuh1i6jOR7Z/1G317BbmbX3lmTuza9QQkQcmbUaHvmK0KFA4FaZ27+mDK
-        3B9QEAEPbE4OC0DADN2QJLWXeRo2Wwg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1647284377;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VTXGw5YFvJ9H0DprQ3eEt6uTztoUC/9Guc1wUW5MS+g=;
-        b=tO3qFwPcKbYSH6mSVfOTh5p1fjOTw50VtfXvVlgEfrVSA7w6Nj6OtMBEhbk+VXN2jEbntO
-        rvrceLFWx33TvCCg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 9D3C1A3B8A;
-        Mon, 14 Mar 2022 18:59:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5AF6EDA7E1; Mon, 14 Mar 2022 19:55:39 +0100 (CET)
-Date:   Mon, 14 Mar 2022 19:55:39 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: zoned: use alloc_list instead of rcu locked
- device_list
-Message-ID: <20220314185539.GM12643@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        Mon, 14 Mar 2022 15:10:35 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E012AC71;
+        Mon, 14 Mar 2022 12:09:25 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 087E4800B8;
+        Mon, 14 Mar 2022 15:09:20 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1647284964; bh=D65mw+VPjgm9JWYvPB45yIJYu6PVXrs9awDCVElvqKU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oqWNLfFMM0t5ScMbi/WPyX6ZvOi4rhNhgY/9LcB9hXP/lRZsjXcewTSRHxlYvXODO
+         9wMdnCz6gkOY/01XMnaTWEDR+2nXdH8Q4zPFi7R9sLcWdNT6QWor5f+p3Klyvv++B8
+         lvhL+GyGckUDhv/4bT6NtM70+O7h9bl4Z+Tw5oNMGfy0vl+kzjPPRS73gsYNKIpcsM
+         AoWW1+Mv0H+wOlb3/Ck5Hy1bU06IaqUSnOPwElwSTMhtZ6fFUm9a8LhENZgFY1gFGT
+         Hen0TVo2P4pzY7aBrxEOK8yJy9s6mkXSOHfxhwG/kKnGRPgmNLJAffLP7/6fZ5YllL
+         tO92Ttv6QB2aA==
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nick Terrell <terrelln@fb.com>, linux-kernel@vger.kernel.org,
         linux-btrfs@vger.kernel.org
-References: <f7108349f3a7d690166c88691c5dc1932cab3610.1647267391.git.johannes.thumshirn@wdc.com>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH] MAINTAINERS: btrfs: update development git tree location
+Date:   Mon, 14 Mar 2022 15:09:07 -0400
+Message-Id: <20220314190907.23279-1-sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7108349f3a7d690166c88691c5dc1932cab3610.1647267391.git.johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 14, 2022 at 07:16:47AM -0700, Johannes Thumshirn wrote:
-> Anand pointed out, that instead of using the rcu locked version of
-> fs_devices->device_list we cab use fs_devices->alloc_list, prrotected by
-> the chunk_mutex to traverse the list of active deviices in
-> btrfs_can_activate_zone().
+Patches get pulled into a branch on github as listed, before eventually
+making it into a pull request using the kernel.org git repository.
+Development is expected to work off of the github branch, though, so
+list it in MAINTAINERS as a secondary tree.
 
-Why?
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e127c2fb08a7..38316c82f64a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4108,6 +4108,7 @@ W:	http://btrfs.wiki.kernel.org/
+ Q:	http://patchwork.kernel.org/project/linux-btrfs/list/
+ C:	irc://irc.libera.chat/btrfs
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
++T:	git https://github.com/kdave/btrfs-devel.git misc-next
+ F:	Documentation/filesystems/btrfs.rst
+ F:	fs/btrfs/
+ F:	include/linux/btrfs*
+-- 
+2.35.1
+
