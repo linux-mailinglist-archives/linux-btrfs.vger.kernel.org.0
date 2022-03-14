@@ -2,140 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1764D809A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 12:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 137054D8581
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 13:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238883AbiCNL0f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 07:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
+        id S237750AbiCNM4J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 08:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbiCNL0e (ORCPT
+        with ESMTP id S237740AbiCNM4I (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 07:26:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A3C3B029;
-        Mon, 14 Mar 2022 04:25:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DD5F60F90;
-        Mon, 14 Mar 2022 11:25:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16D21C340E9;
-        Mon, 14 Mar 2022 11:25:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647257123;
-        bh=SiP4Qn2jTFv6RByEUSvXD5ODclyZr9Ye1fB0nauJE9s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DTq4YS+/kdeLb9sfvgSO+mfansL4Mxq+qR1ZcJBTNqqOqg+mIm1bHTv31a3/t94CY
-         GbTde97QOhozBEM2PqvsfbHAnL0Y/IX4h/9uaVj6aEGSjtEwl0orobP2JrP6v5e2RJ
-         /WSrO1ISmOkoLMTyWEBHLStmBCXFT1oUk6g7XH3kSANQuqSxEr7AH9w2e0v/ZIEfMg
-         yhwmoe4N2oOMMNh/Ez6MDhp3OH7RiliADZemorsRGQRjb/hVEqb47Yc5PsAHF13VN1
-         C3hKXhX8pK0/CECnJ3mN4zDbmEtzov5rszzJkgAqAWc0tNel14Ju/PL3LAr567bYWz
-         V4QZ2YDqsaUmA==
-Date:   Mon, 14 Mar 2022 11:25:20 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "david@fromorbit.com" <david@fromorbit.com>
-Subject: Re: [PATCH 1/4] btrfs: mark resumed async balance as writing
-Message-ID: <Yi8mIFooTUybN+l0@debian9.Home>
-References: <cover.1646983176.git.naohiro.aota@wdc.com>
- <65730df62341500bfcbde7d86eeaa3e9b15f1bcb.1646983176.git.naohiro.aota@wdc.com>
- <YitX5fpZcC/P70o6@debian9.Home>
- <20220314022922.e4k5wxob6rqjw3aw@naota-xeon>
+        Mon, 14 Mar 2022 08:56:08 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40C411A16
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 05:54:58 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8B1931F391;
+        Mon, 14 Mar 2022 12:54:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1647262497;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1o63nSHEUjpo3VxPtLKsy6WTYd6j/MXvpDdOMtrrfWs=;
+        b=hj7I4Ly0mWFDVkJ0679a5cuj+AlS4/MSZQrssuUjypNx2ebWRz7E36TAOv8WXiS4TELgAs
+        T/9XlfU8icyqIqbZb/rMNGMOH5oZBvtFFRlymNJHh6eGvzSTBfOJBTv5wRelr+ggP0nC1G
+        xQRpuB4o1760uM0JuIvrLyQ3SI5bK3A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1647262497;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1o63nSHEUjpo3VxPtLKsy6WTYd6j/MXvpDdOMtrrfWs=;
+        b=bZNz7+4T2EOLfq0WEwZF7MELBP2ukhOvpmv0OqOszdKZLGqBueak+5Ja/HKjYilV/whY/b
+        EvJygmUBkInuVYCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7E21AA3B83;
+        Mon, 14 Mar 2022 12:54:57 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 32831DA7E1; Mon, 14 Mar 2022 13:50:59 +0100 (CET)
+Date:   Mon, 14 Mar 2022 13:50:59 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 00/16] btrfs: inode creation cleanups and fixes
+Message-ID: <20220314125059.GH12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1646875648.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220314022922.e4k5wxob6rqjw3aw@naota-xeon>
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <cover.1646875648.git.osandov@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 14, 2022 at 02:29:22AM +0000, Naohiro Aota wrote:
-> On Fri, Mar 11, 2022 at 02:08:37PM +0000, Filipe Manana wrote:
-> > On Fri, Mar 11, 2022 at 04:38:02PM +0900, Naohiro Aota wrote:
-> > > When btrfs balance is interrupted with umount, the background balance
-> > > resumes on the next mount. There is a potential deadlock with FS freezing
-> > > here like as described in commit 26559780b953 ("btrfs: zoned: mark
-> > > relocation as writing").
-> > > 
-> > > Mark the process as sb_writing. To preserve the order of sb_start_write()
-> > > (or mnt_want_write_file()) and btrfs_exclop_start(), call sb_start_write()
-> > > at btrfs_resume_balance_async() before taking fs_info->super_lock.
-> > > 
-> > > Fixes: 5accdf82ba25 ("fs: Improve filesystem freezing handling")
-> > 
-> > This seems odd to me. I read the note you left on the cover letter about
-> > this, but honestly I don't think it's fair to blame that commit. I see
-> > it more as btrfs specific problem.
+On Wed, Mar 09, 2022 at 05:31:30PM -0800, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> Yeah, I was really not sure how I should write the tag. The issue is
-> we missed to add sb_start_write() after this commit.
+> This series contains several cleanups and fixes for our inode creation
+> codepaths. The main motivation for this is preparation for fscrypt
+> support (in particular, setting up the fscrypt context and encrypted
+> names at inode creation time). But, it also reduces a lot of code
+> duplication and fixes some minor bugs, so it's worth getting in ahead of
+> time.
 > 
-> > Plus it's a 10 years old commit, so instead of the Fixes tag, adding a
-> > minimal kernel version to the CC stable tag below makes more sense.
+> Patches 1-3 are small fixes. Patches 5-12 are small cleanups. Patches
+> 13-16 are the bulk of the change.
 > 
-> So, only with "Cc: stable@vger.kernel.org # 3.6+" ?
+> Based on misc-next.
+> 
+> Changes since v1 [1]:
+> 
+> - Split the big final patch into patches 3 and 13-16.
+> - Added Sweet Tea's reviewed-by to the remaining patches.
+> - Rebased on latest misc-next.
+> 
+> Thanks!
+> 
+> 1: https://lore.kernel.org/linux-btrfs/cover.1646348486.git.osandov@fb.com/
+> 
+> Omar Sandoval (16):
+>   btrfs: reserve correct number of items for unlink and rmdir
+>   btrfs: reserve correct number of items for rename
+>   btrfs: fix anon_dev leak in create_subvol()
+>   btrfs: get rid of btrfs_add_nondir()
+>   btrfs: remove unnecessary btrfs_i_size_write(0) calls
+>   btrfs: remove unnecessary inode_set_bytes(0) call
+>   btrfs: remove unnecessary set_nlink() in btrfs_create_subvol_root()
+>   btrfs: remove unused mnt_userns parameter from __btrfs_set_acl
+>   btrfs: remove redundant name and name_len parameters to create_subvol
+>   btrfs: don't pass parent objectid to btrfs_new_inode() explicitly
+>   btrfs: move btrfs_get_free_objectid() call into btrfs_new_inode()
+>   btrfs: set inode flags earlier in btrfs_new_inode()
+>   btrfs: allocate inode outside of btrfs_new_inode()
 
-Looking at kernel.org the oldest stable kernel is 4.9, so anything older
-than that is pointless.
+Patches 1-13 added to misc-next. The remaining patches seem to be still
+a bit big for review.
 
+>   btrfs: factor out common part of btrfs_{mknod,create,mkdir}()
+>   btrfs: reserve correct number of items for inode creation
+>   btrfs: move common inode creation code into btrfs_create_new_inode()
 > 
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > > ---
-> > >  fs/btrfs/volumes.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > > index 1be7cb2f955f..0d27d8d35c7a 100644
-> > > --- a/fs/btrfs/volumes.c
-> > > +++ b/fs/btrfs/volumes.c
-> > > @@ -4443,6 +4443,7 @@ static int balance_kthread(void *data)
-> > >  	if (fs_info->balance_ctl)
-> > >  		ret = btrfs_balance(fs_info, fs_info->balance_ctl, NULL);
-> > >  	mutex_unlock(&fs_info->balance_mutex);
-> > > +	sb_end_write(fs_info->sb);
-> > >  
-> > >  	return ret;
-> > >  }
-> > > @@ -4463,6 +4464,7 @@ int btrfs_resume_balance_async(struct btrfs_fs_info *fs_info)
-> > >  		return 0;
-> > >  	}
-> > >  
-> > > +	sb_start_write(fs_info->sb);
-> > 
-> > I don't understand this.
-> > 
-> > We are doing the sb_start_write() here, in the task doing the mount, and then
-> > we do the sb_end_write() at the kthread that runs balance_kthread().
+>  fs/btrfs/acl.c   |  39 +-
+>  fs/btrfs/ctree.h |  37 +-
+>  fs/btrfs/inode.c | 942 +++++++++++++++++++++++------------------------
+>  fs/btrfs/ioctl.c | 176 ++++-----
+>  fs/btrfs/props.c |  40 +-
+>  fs/btrfs/props.h |   4 -
+>  6 files changed, 579 insertions(+), 659 deletions(-)
 > 
-> Oops, I made a mistake here. It actually printed the lockdep warning
-> "lock held when returning to user space!".
-> 
-> > Why not do the sb_start_write() in the kthread?
-> > 
-> > This is also buggy in the case the call below to kthread_run() fails, as
-> > we end up never calling sb_end_write().
-> 
-> I was trying to preserve the lock taking order: sb_start_write() ->
-> spin_lock(fs_info->super_lock). But, it might not be a big deal as
-> long as we don't call sb_start_write() in the super_lock.
-> 
-> > Thanks.
-> > 
-> > >  	spin_lock(&fs_info->super_lock);
-> > >  	ASSERT(fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED);
-> > >  	fs_info->exclusive_operation = BTRFS_EXCLOP_BALANCE;
-> > > -- 
-> > > 2.35.1
-> > > 
+> -- 
+> 2.35.1
