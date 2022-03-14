@@ -2,69 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC284D8DED
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 21:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8D24D8EF5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 22:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243995AbiCNUL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 16:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
+        id S244409AbiCNVmL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 17:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233445AbiCNUL6 (ORCPT
+        with ESMTP id S243834AbiCNVmL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 16:11:58 -0400
-Received: from vps.thesusis.net (vps.thesusis.net [34.202.238.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF9B13D05
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 13:10:48 -0700 (PDT)
-Received: by vps.thesusis.net (Postfix, from userid 1000)
-        id EB232835FB; Mon, 14 Mar 2022 16:10:47 -0400 (EDT)
-References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
- <455d2012-aeaf-42c5-fadb-a5dc67beff35@gmx.com>
- <CAODFU0q56n3UxNyZJYsw2zK0CQ543Fm7fxD6_4ZSfgqPynFU7g@mail.gmail.com>
- <e5bb2e23-2101-dcc3-695e-f3a0f5a4aba7@gmx.com>
- <3c668ffe-edb0-bbbb-cfe0-e307bad79b1a@gmx.com>
- <CAODFU0pcT73bXwkXOpjQMvG0tYO73mLdeG2i4foxr6kHorh1jQ@mail.gmail.com>
- <70bc749c-4b85-f7e6-b5fd-23eb573aab70@gmx.com>
- <CAODFU0q7TxxHP6yndndnVtE+62asnbOQmfD_1KjRrG0uJqiqgg@mail.gmail.com>
- <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com>
- <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
- <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com>
- <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
- <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com>
-User-agent: mu4e 1.7.0; emacs 27.1
-From:   Phillip Susi <phill@thesusis.net>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
- measurable benefit
-Date:   Mon, 14 Mar 2022 16:09:08 -0400
-In-reply-to: <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com>
-Message-ID: <87a6dscn20.fsf@vps.thesusis.net>
+        Mon, 14 Mar 2022 17:42:11 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729D31DA54
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 14:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1647294060; x=1678830060;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=duz+74g0FHVD9ZCC3FyZ5cJrURG4rWVLDfZjXqxt3QM=;
+  b=YgO7YW7pkj/iTSh3QuMPFOFGvmHz6uR4k1JPnZ/+452Cp3FgnNKZvUcP
+   21ThVk2FFOZ1hpUG/L4h5IciMWWsHxk5k0HcU50LejzNeIfYGmTQfWvFi
+   hrB7MvoVnAH9DCp4F59iJ4X3lBwNtAFpLtaqkl3kOfWoWnSeOUEWgQIDE
+   GjArwdw6lhLViJHu0gR3QItI7nzKAmPjzRNnTtwTy5A+WyHY0z89Oej/Q
+   AzBX2bX778YMgSHeF43BUrO7oXy4/JdC4WcJS49+4XKat+WAE+WWjj9jk
+   w4nDynZ1MZONlbEiypttSvTrtB0RUXUVXdG2sqtHea4UEIHudNu5bbHWI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="319373464"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; 
+   d="scan'208";a="319373464"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2022 14:41:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; 
+   d="scan'208";a="540158450"
+Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 14 Mar 2022 14:40:58 -0700
+Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nTsQz-000AFt-P0; Mon, 14 Mar 2022 21:40:57 +0000
+Date:   Tue, 15 Mar 2022 05:40:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: zoned: make auto-reclaim less aggressive
+Message-ID: <202203150504.VbCtEy3b-lkp@intel.com>
+References: <d4e31fe56800bdc3bd8ed9230c6a5629ee555cd5.1647268601.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4e31fe56800bdc3bd8ed9230c6a5629ee555cd5.1647268601.git.johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Johannes,
 
-Qu Wenruo <quwenruo.btrfs@gmx.com> writes:
+I love your patch! Yet something to improve:
 
-> That's more or less expected.
->
-> Autodefrag has two limitations:
->
-> 1. Only defrag newer writes
->    It doesn't defrag older fragments.
->    This is the existing behavior from the beginning of autodefrag.
->    Thus it's not that effective against small random writes.
+[auto build test ERROR on kdave/for-next]
+[also build test ERROR on next-20220310]
+[cannot apply to v5.17-rc8]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-I don't understand this bit.  The whole point of defrag is to reduce the
-fragmentation of previous writes.  New writes should always attempt to
-follow the previous one if possible.  If auto defrag only changes the
-behavior of new writes, then how does it change it and why is that not
-the way new writes are always done?
+url:    https://github.com/0day-ci/linux/commits/Johannes-Thumshirn/btrfs-zoned-make-auto-reclaim-less-aggressive/20220314-231037
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: hexagon-randconfig-r041-20220313 (https://download.01.org/0day-ci/archive/20220315/202203150504.VbCtEy3b-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 3e4950d7fa78ac83f33bbf1658e2f49a73719236)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/e742bf2051b5066cae517342b8bbe81eb44809a4
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Johannes-Thumshirn/btrfs-zoned-make-auto-reclaim-less-aggressive/20220314-231037
+        git checkout e742bf2051b5066cae517342b8bbe81eb44809a4
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: undefined symbol: __hexagon_udivdi3
+   >>> referenced by zoned.c
+   >>>               btrfs/zoned.o:(btrfs_zoned_should_reclaim) in archive fs/built-in.a
+   >>> referenced by zoned.c
+   >>>               btrfs/zoned.o:(btrfs_zoned_should_reclaim) in archive fs/built-in.a
+   >>> did you mean: __hexagon_udivsi3
+   >>> defined in: arch/hexagon/built-in.a(lib/udivsi3.o)
+
+---
+0-DAY CI Kernel Test Service
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
