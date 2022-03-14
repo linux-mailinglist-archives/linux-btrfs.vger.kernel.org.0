@@ -2,75 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5164D8C11
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 20:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B104D8C3D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 20:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243794AbiCNTKg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 15:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        id S229767AbiCNTXI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 15:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbiCNTKf (ORCPT
+        with ESMTP id S244009AbiCNTWt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 15:10:35 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E012AC71;
-        Mon, 14 Mar 2022 12:09:25 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 087E4800B8;
-        Mon, 14 Mar 2022 15:09:20 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1647284964; bh=D65mw+VPjgm9JWYvPB45yIJYu6PVXrs9awDCVElvqKU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oqWNLfFMM0t5ScMbi/WPyX6ZvOi4rhNhgY/9LcB9hXP/lRZsjXcewTSRHxlYvXODO
-         9wMdnCz6gkOY/01XMnaTWEDR+2nXdH8Q4zPFi7R9sLcWdNT6QWor5f+p3Klyvv++B8
-         lvhL+GyGckUDhv/4bT6NtM70+O7h9bl4Z+Tw5oNMGfy0vl+kzjPPRS73gsYNKIpcsM
-         AoWW1+Mv0H+wOlb3/Ck5Hy1bU06IaqUSnOPwElwSTMhtZ6fFUm9a8LhENZgFY1gFGT
-         Hen0TVo2P4pzY7aBrxEOK8yJy9s6mkXSOHfxhwG/kKnGRPgmNLJAffLP7/6fZ5YllL
-         tO92Ttv6QB2aA==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Terrell <terrelln@fb.com>, linux-kernel@vger.kernel.org,
+        Mon, 14 Mar 2022 15:22:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FE61EC57
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 12:21:39 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 422021F37E;
+        Mon, 14 Mar 2022 19:21:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1647285698;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ctWGwSzNOsVbHQEuHjBoeTfMxayFZvVA8RKPSQkSrtI=;
+        b=lq3jCMGpCiGW4nZeczwZH/GRpWo/l89ZAMTDLApEZ8ks1dJwBEDROFtfH6w5Pu77MYsboG
+        RSXM93p6U5h4APuYwgITfQphLHrwG6bbtb3fwTjv+7+/G+KMtvlfETR6D2/NUHvzR9OUvy
+        jSv2akyMrYkWyBGiRjt3zeudGlJhQok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1647285698;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ctWGwSzNOsVbHQEuHjBoeTfMxayFZvVA8RKPSQkSrtI=;
+        b=pEZeeRBuwaVO/QOqo3aZlfcBhyzTc05Ora8oppHDACyR7/9Uw74X6K81wmOBZQFM64lgrH
+        Q4XRTV2fwOWBkYAA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 36F49A3B83;
+        Mon, 14 Mar 2022 19:21:38 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D55E2DA7E1; Mon, 14 Mar 2022 20:17:39 +0100 (CET)
+Date:   Mon, 14 Mar 2022 20:17:39 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH] MAINTAINERS: btrfs: update development git tree location
-Date:   Mon, 14 Mar 2022 15:09:07 -0400
-Message-Id: <20220314190907.23279-1-sweettea-kernel@dorminy.me>
+Subject: Re: [PATCH v2 1/3] btrfs: scrub: rename members related to
+ scrub_block::pagev
+Message-ID: <20220314191739.GN12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1646983771.git.wqu@suse.com>
+ <b971391a31a3cee8f7c19d02dd2a48328c580d1b.1646983771.git.wqu@suse.com>
+ <20220311174914.GE12643@twin.jikos.cz>
+ <3c5ddeae-69dd-2dd9-c15b-a811396a8981@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c5ddeae-69dd-2dd9-c15b-a811396a8981@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Patches get pulled into a branch on github as listed, before eventually
-making it into a pull request using the kernel.org git repository.
-Development is expected to work off of the github branch, though, so
-list it in MAINTAINERS as a secondary tree.
+On Sat, Mar 12, 2022 at 07:17:42AM +0800, Qu Wenruo wrote:
+> >> @@ -1078,16 +1078,16 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+> >>   	 * area are unreadable.
+> >>   	 */
+> >>   	success = 1;
+> >> -	for (page_num = 0; page_num < sblock_bad->page_count;
+> >> -	     page_num++) {
+> >> -		struct scrub_page *spage_bad = sblock_bad->pagev[page_num];
+> >> +	for (sector_num = 0; sector_num < sblock_bad->sector_count;
+> >
+> > This is a simple indexing, so while sector_num is accurate a plain 'i'
+> > would work too. It would also make some lines shorter.
+> 
+> Here I intentionally avoid using single letter, because the existing
+> code is doing a pretty bad practice by doing a double for loop.
+> 
+> Here we're doing two different loops, one is iterating all the sectors,
+> the other one is iterating all the mirrors.
+> 
+> Thus we need to distinguish them, or it' can easily get screwed up using
+> different loop indexes.
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e127c2fb08a7..38316c82f64a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4108,6 +4108,7 @@ W:	http://btrfs.wiki.kernel.org/
- Q:	http://patchwork.kernel.org/project/linux-btrfs/list/
- C:	irc://irc.libera.chat/btrfs
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
-+T:	git https://github.com/kdave/btrfs-devel.git misc-next
- F:	Documentation/filesystems/btrfs.rst
- F:	fs/btrfs/
- F:	include/linux/btrfs*
--- 
-2.35.1
-
+Yeah in this case it makes more sense to keep the descriptive name.
