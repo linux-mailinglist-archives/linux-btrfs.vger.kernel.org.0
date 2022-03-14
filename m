@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9D04D7E28
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 10:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F854D7E27
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 10:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237796AbiCNJJU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 05:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        id S237823AbiCNJJW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 05:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237441AbiCNJJM (ORCPT
+        with ESMTP id S237518AbiCNJJM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 14 Mar 2022 05:09:12 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE3024BEF
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 02:08:02 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603FC13F27
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 02:08:03 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CCE29210F5
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DCFEB1F391
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1647248880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1647248881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X1E1C1d1jdg2pJY4I0rJ8b6S2Rf7/n8TbO1ERJ4gnVI=;
-        b=pOcDsSPmOkve84V1MWQ3X/df74od8znwPUmvIcLNBcgQEZ2F85H/gQrB3d62fARs5ntm37
-        4T1MXCN6jtTaWB3Lbtmq4OQkKh2SPx5INjDhoMIQLAwqCjI3Ost8deKlB/4LV5GaA70dTl
-        yH/vPnVwBBzJ0sAh9OnjXw4c6XEosP4=
+        bh=ysFRSTgZeunQpGJMJMLzn47VZyt2wqZCBvF0o1re9S4=;
+        b=PUyb6l27UsWXTKjE2zg8wsYJJG0VeLZdyg95Y9Koo8pBWP1ohXB64HHxJwrHl5LcX/BJSh
+        zCrU/Kj6ZVB2/cQfZmNsqeozxNtnSiLHm38CSfrZVZM+AMF8BXAVM8mYARjJNABBxs6NNF
+        erD39z+IIFjjVlzuweC2BpjV6PZdQVQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B4BB13ADA
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:07:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3ADB813ADA
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id YAOGOe8FL2IaYgAAMHmgww
+        id cMzBAfEFL2IaYgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:07:59 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:01 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 10/18] btrfs: make metadata write endio functions to be split bio compatible
-Date:   Mon, 14 Mar 2022 17:07:23 +0800
-Message-Id: <f61a1a5b177759ee81950c643cb1845e0f3a13e6.1647248613.git.wqu@suse.com>
+Subject: [PATCH v3 11/18] btrfs: make dec_and_test_compressed_bio() to be split bio compatible
+Date:   Mon, 14 Mar 2022 17:07:24 +0800
+Message-Id: <7e820b1356ac76ae3acb0de31bbdb2dd065142ae.1647248613.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1647248613.git.wqu@suse.com>
 References: <cover.1647248613.git.wqu@suse.com>
@@ -61,99 +61,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Two modifications are needed:
+For compression read write endio functions, they all rely on
+dec_and_test_compressed_bio() to determine if they are the last bio.
 
-- Convert to __bio_for_each_segment()
-  bio_for_each_segment_all() should not be called on cloned bio, as it
-  will iterate range which no longer belongs to the split bio.
-
-- Avoid bio_first_page_all() for end_bio_subpage_eb_writepage()
-  bio_first_page_all() will use the original bvec, thus on cloned bio it
-  will trigger a WARN_ON().
-
-  Introduce a helper to grab page and fs_info from bios.
+So here we only need to convert the bio_for_each_segment_all() call into
+__bio_for_each_segment() so that compression read/write endio functions
+will handle both split and unsplit bios well.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 43 +++++++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+ fs/btrfs/compression.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a758a5acb8fb..e8c298572d3e 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4482,6 +4482,21 @@ static struct extent_buffer *find_extent_buffer_nolock(
- 	return NULL;
- }
- 
-+/*
-+ * Since the bio can be cloned, we can no longer use bio_first_*_all()
-+ * calls to grab a page.
-+ * Thus here we introduce such helper to grab page and fs_info correctly.
-+ */
-+static struct btrfs_fs_info *bio_to_fs_info(struct bio *bio)
-+{
-+	struct bio_vec bvec;
-+
-+	bvec = bio_iter_iovec(bio, btrfs_bio(bio)->iter);
-+
-+	ASSERT(bvec.bv_page->mapping);
-+	return btrfs_sb(bvec.bv_page->mapping->host->i_sb);
-+}
-+
- /*
-  * The endio function for subpage extent buffer write.
-  *
-@@ -4491,20 +4506,20 @@ static struct extent_buffer *find_extent_buffer_nolock(
- static void end_bio_subpage_eb_writepage(struct bio *bio)
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 5c9b28f2f034..e9b0887c03a9 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -205,18 +205,14 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
+ static bool dec_and_test_compressed_bio(struct compressed_bio *cb, struct bio *bio)
  {
- 	struct btrfs_fs_info *fs_info;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
++	struct bio_vec bvec;
++	struct bvec_iter iter;
+ 	unsigned int bi_size = 0;
+ 	bool last_io = false;
 -	struct bio_vec *bvec;
 -	struct bvec_iter_all iter_all;
-+	struct bvec_iter iter;
-+	struct bio_vec bvec;
  
--	fs_info = btrfs_sb(bio_first_page_all(bio)->mapping->host->i_sb);
-+	fs_info = bio_to_fs_info(bio);
- 	ASSERT(fs_info->sectorsize < PAGE_SIZE);
- 
--	ASSERT(!bio_flagged(bio, BIO_CLONED));
--	bio_for_each_segment_all(bvec, bio, iter_all) {
--		struct page *page = bvec->bv_page;
--		u64 bvec_start = page_offset(page) + bvec->bv_offset;
--		u64 bvec_end = bvec_start + bvec->bv_len - 1;
+-	/*
+-	 * At endio time, bi_iter.bi_size doesn't represent the real bio size.
+-	 * Thus here we have to iterate through all segments to grab correct
+-	 * bio size.
+-	 */
+-	bio_for_each_segment_all(bvec, bio, iter_all)
+-		bi_size += bvec->bv_len;
 +	ASSERT(btrfs_bio(bio)->iter.bi_size);
-+	__bio_for_each_segment(bvec, bio, iter, btrfs_bio(bio)->iter) {
-+		struct page *page = bvec.bv_page;
-+		u64 bvec_start = page_offset(page) + bvec.bv_offset;
-+		u64 bvec_end = bvec_start + bvec.bv_len - 1;
- 		u64 cur_bytenr = bvec_start;
++	__bio_for_each_segment(bvec, bio, iter, btrfs_bio(bio)->iter)
++		bi_size += bvec.bv_len;
  
--		ASSERT(IS_ALIGNED(bvec->bv_len, fs_info->nodesize));
-+		ASSERT(IS_ALIGNED(bvec.bv_len, fs_info->nodesize));
- 
- 		/* Iterate through all extent buffers in the range */
- 		while (cur_bytenr <= bvec_end) {
-@@ -4547,14 +4562,14 @@ static void end_bio_subpage_eb_writepage(struct bio *bio)
- 
- static void end_bio_extent_buffer_writepage(struct bio *bio)
- {
--	struct bio_vec *bvec;
- 	struct extent_buffer *eb;
-+	struct bvec_iter iter;
-+	struct bio_vec bvec;
- 	int done;
--	struct bvec_iter_all iter_all;
- 
--	ASSERT(!bio_flagged(bio, BIO_CLONED));
--	bio_for_each_segment_all(bvec, bio, iter_all) {
--		struct page *page = bvec->bv_page;
-+	ASSERT(btrfs_bio(bio)->iter.bi_size);
-+	__bio_for_each_segment(bvec, bio, iter, btrfs_bio(bio)->iter) {
-+		struct page *page = bvec.bv_page;
- 
- 		eb = (struct extent_buffer *)page->private;
- 		BUG_ON(!eb);
+ 	if (bio->bi_status)
+ 		cb->status = bio->bi_status;
 -- 
 2.35.1
 
