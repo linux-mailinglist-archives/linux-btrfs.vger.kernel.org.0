@@ -2,188 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E064C4D7E59
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 10:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B674D8092
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 12:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237899AbiCNJUP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 05:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S238881AbiCNLU5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 07:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232571AbiCNJUN (ORCPT
+        with ESMTP id S238879AbiCNLUz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 05:20:13 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24A8433B4;
-        Mon, 14 Mar 2022 02:19:03 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 7F5ED3200A2E;
-        Mon, 14 Mar 2022 05:19:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 14 Mar 2022 05:19:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; bh=iv+ksUDVdMe5HbfK0QvBmH/tkqgpJ2kejWYiRW
-        ICHRY=; b=rPDK8foFS0J3adNv3oXo7e0kjc5VNHEh3DxxGD/+ySEuBhD95Y9N4W
-        vOvJ4C/YnUAPtxwvrDjtyTjiZj987424gDIzn85UM9fBCh9ymyGzom0tvAkV68jn
-        F9E+WvYRZ6/iPWha21ykLZSMScQxnkpBsK+2Iwhfxp+dIvRJ3PWgI358e/ur5iGr
-        adIQwdNZGa6FmQCh035fhrGBa3RMs92rb1OJ0EySkcXJhncqtUAwMoUYhCSbYH1t
-        i4EO9bKnBTdyCJ1Zg0ujpZtrjU2zofKiB6IGnMr9U2/bCFwfGQLegCc+Fv2oXXUH
-        eKrDcK/G/W5vQE3dM0jQXy+/j+0jrZuQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=iv+ksUDVdMe5HbfK0
-        QvBmH/tkqgpJ2kejWYiRWICHRY=; b=V71J0boSZvNM6XGwbifqyI7ewhm1JgY8U
-        VlPR8DO2omDUrOVx/oRgt2DANrp8bn24HajgjKp9qEhARHryuqbh833EQxVWAlkt
-        WhWmYFvweWR31kgXr7bB+kcoFL7se3qrUlflNgev3kQn5XsiFz1HRjhsynkYRXfZ
-        jQcoMcgNqj0kcbKALyWAx5Ll1d0txHPPS9Q2HfjGC7ppADXXGTYtSFletA1t3yk6
-        W4iO+/Dh4dXVD1KL/LpkE98BxYQN7SjUaZue8T01lt+AzFCo37rXgicDD7n4+8KG
-        1F8CJXSFQRB3vayXmoyxjACx8q1ESq7Igtdth5q/BAtchTzJMo+Hg==
-X-ME-Sender: <xms:hQgvYqFRbMKYC9t3XPwFXKW-h7pFRFrGlhYJhvyqRisZ4urAIj3kvA>
-    <xme:hQgvYrWD1z_0AmnOqbzu_ppTvYFbD9KcPEXVbqfWd2rxo2USbHkVZsEtyrx4W_4Rp
-    Xi3baY-XjnrIg>
-X-ME-Received: <xmr:hQgvYkIKVCe4rqV-dWrbggNPLkX1ydo3rrCjnRcGkMtFkW9O45f2V7kcnuJ8yAomaS42vKpyLVShXWJizoQetUPlXnobwCBZ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddruddvkedgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:hQgvYkEWuzWY0v4KDL4_tn9w6vJ6C2XFOXIQo9UFDL16ej2L1jZrWA>
-    <xmx:hQgvYgWk1hQXaR6rdpLR1g6uN9y36wgo7f4M414C5QJUysk2Y5Gcmw>
-    <xmx:hQgvYnPwQsKpWHfRDojQ_SlVA654ACj566z4wA3dJhnsUNlUl9vsiQ>
-    <xmx:hggvYkoHAkLQzZVATQMHu56dRHLpbkptucMSiusVk43p7HGQZfNK6g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Mar 2022 05:19:00 -0400 (EDT)
-Date:   Mon, 14 Mar 2022 10:18:57 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     stable@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH stable-5.15.y stable-5.16.y] btrfs: make send work with
- concurrent block group relocation
-Message-ID: <Yi8Iga4RMdqmJG69@kroah.com>
-References: <bc51b8d12cfc0768a8e4965cce9814901bc5e0c9.1646885512.git.anand.jain@oracle.com>
+        Mon, 14 Mar 2022 07:20:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59593A183
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 04:19:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8DFA7B80DB0
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 11:19:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A65C340ED;
+        Mon, 14 Mar 2022 11:19:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647256783;
+        bh=tey1nuXi1enSpbjJl05uxRXDgcCRWhP8C/6ts4SFrYM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rRHp5ojpIlUSJ7Qa6pXL7NmkqHyb9byJYl54rApCTXijpj8oDmWKodscX+UJyRBsB
+         ZYWZ6EQq4KzcE6mSA9+q73fPl7yoTlrRet/wylgUwr2qd4kPT59HWhnlu23QopJHYO
+         RQ9xI2Nnia/Zu9BjfAlYa/ap7N7cQXRijHw2QyAdNGlXeIctTk5orScj+kLPGnY/DT
+         Dsi7nL7cRxb5HgHfjNJiVQ7IP44PytKcaR9GP1xlljkADkPLHDaMOJbd2biObLsXbR
+         INsh26fh1vgq9pZlMVh53ZDmCpIoNEOot303SDNGdvlHYuHzqTZd7xX8ee2ws+VAlv
+         jVDsBG+c0rJ+w==
+Date:   Mon, 14 Mar 2022 11:19:39 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix fallocate to use file_modified to update
+ permissions consistently
+Message-ID: <Yi8ky7zU4L6Kk+eo@debian9.Home>
+References: <20220310192245.GA8165@magnolia>
+ <YitAiiQ+cpbGZ2K/@debian9.Home>
+ <20220311235110.GB8241@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc51b8d12cfc0768a8e4965cce9814901bc5e0c9.1646885512.git.anand.jain@oracle.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220311235110.GB8241@magnolia>
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 10, 2022 at 12:40:23PM +0800, Anand Jain wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Fri, Mar 11, 2022 at 03:51:10PM -0800, Darrick J. Wong wrote:
+> On Fri, Mar 11, 2022 at 12:28:58PM +0000, Filipe Manana wrote:
+> > On Thu, Mar 10, 2022 at 11:22:45AM -0800, Darrick J. Wong wrote:
+> > > From: Darrick J. Wong <djwong@kernel.org>
+> > > 
+> > > Since the initial introduction of (posix) fallocate back at the turn of
+> > > the century, it has been possible to use this syscall to change the
+> > > user-visible contents of files.  This can happen by extending the file
+> > > size during a preallocation, or through any of the newer modes (punch,
+> > > zero range).  Because the call can be used to change file contents, we
+> > > should treat it like we do any other modification to a file -- update
+> > > the mtime, and drop set[ug]id privileges/capabilities.
+> > > 
+> > > The VFS function file_modified() does all this for us if pass it a
+> > > locked inode, so let's make fallocate drop permissions correctly.
+> > > 
+> > > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+> > > ---
+> > > Note: I plan to add fstests to test this behavior, but after the
+> > > generic/673 mess, I'm holding back on them until I can fix the three
+> > > major filesystems and clean up the xfs setattr_copy code.
+> > > 
+> > > https://lore.kernel.org/linux-ext4/20220310174410.GB8172@magnolia/T/#u
+> > > ---
+> > >  fs/btrfs/file.c |   23 +++++++++++++++++++----
+> > >  1 file changed, 19 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > > index a0179cc62913..79e61c88b9e7 100644
+> > > --- a/fs/btrfs/file.c
+> > > +++ b/fs/btrfs/file.c
+> > > @@ -2918,8 +2918,9 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
+> > >  	return ret;
+> > >  }
+> > >  
+> > > -static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> > > +static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
+> > >  {
+> > > +	struct inode *inode = file_inode(file);
+> > >  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> > >  	struct btrfs_root *root = BTRFS_I(inode)->root;
+> > >  	struct extent_state *cached_state = NULL;
+> > > @@ -2951,6 +2952,10 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> > >  		goto out_only_mutex;
+> > >  	}
+> > >  
+> > > +	ret = file_modified(file);
+> > > +	if (ret)
+> > > +		goto out_only_mutex;
+> > > +
+> > >  	lockstart = round_up(offset, btrfs_inode_sectorsize(BTRFS_I(inode)));
+> > >  	lockend = round_down(offset + len,
+> > >  			     btrfs_inode_sectorsize(BTRFS_I(inode))) - 1;
+> > > @@ -3177,11 +3182,12 @@ static int btrfs_zero_range_check_range_boundary(struct btrfs_inode *inode,
+> > >  	return ret;
+> > >  }
+> > >  
+> > > -static int btrfs_zero_range(struct inode *inode,
+> > > +static int btrfs_zero_range(struct file *file,
+> > >  			    loff_t offset,
+> > >  			    loff_t len,
+> > >  			    const int mode)
+> > >  {
+> > > +	struct inode *inode = file_inode(file);
+> > >  	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
+> > >  	struct extent_map *em;
+> > >  	struct extent_changeset *data_reserved = NULL;
+> > > @@ -3202,6 +3208,12 @@ static int btrfs_zero_range(struct inode *inode,
+> > >  		goto out;
+> > >  	}
+> > >  
+> > > +	ret = file_modified(file);
+> > > +	if (ret) {
+> > > +		free_extent_map(em);
+> > > +		goto out;
+> > > +	}
+> > > +
+> > 
+> > Could be done before getting the extent map, to make the code a bit shorter, or
+> > see the comment below.
 > 
-> Commit d96b34248c2f4ea8cd09286090f2f6f77102eaab upstream.
-> 
-> We don't allow send and balance/relocation to run in parallel in order
-> to prevent send failing or silently producing some bad stream. This is
-> because while send is using an extent (specially metadata) or about to
-> read a metadata extent and expecting it belongs to a specific parent
-> node, relocation can run, the transaction used for the relocation is
-> committed and the extent gets reallocated while send is still using the
-> extent, so it ends up with a different content than expected. This can
-> result in just failing to read a metadata extent due to failure of the
-> validation checks (parent transid, level, etc), failure to find a
-> backreference for a data extent, and other unexpected failures. Besides
-> reallocation, there's also a similar problem of an extent getting
-> discarded when it's unpinned after the transaction used for block group
-> relocation is committed.
-> 
-> The restriction between balance and send was added in commit 9e967495e0e0
-> ("Btrfs: prevent send failures and crashes due to concurrent relocation"),
-> kernel 5.3, while the more general restriction between send and relocation
-> was added in commit 1cea5cf0e664 ("btrfs: ensure relocation never runs
-> while we have send operations running"), kernel 5.14.
-> 
-> Both send and relocation can be very long running operations. Relocation
-> because it has to do a lot of IO and expensive backreference lookups in
-> case there are many snapshots, and send due to read IO when operating on
-> very large trees. This makes it inconvenient for users and tools to deal
-> with scheduling both operations.
-> 
-> For zoned filesystem we also have automatic block group relocation, so
-> send can fail with -EAGAIN when users least expect it or send can end up
-> delaying the block group relocation for too long. In the future we might
-> also get the automatic block group relocation for non zoned filesystems.
-> 
-> This change makes it possible for send and relocation to run in parallel.
-> This is achieved the following way:
-> 
-> 1) For all tree searches, send acquires a read lock on the commit root
->    semaphore;
-> 
-> 2) After each tree search, and before releasing the commit root semaphore,
->    the leaf is cloned and placed in the search path (struct btrfs_path);
-> 
-> 3) After releasing the commit root semaphore, the changed_cb() callback
->    is invoked, which operates on the leaf and writes commands to the pipe
->    (or file in case send/receive is not used with a pipe). It's important
->    here to not hold a lock on the commit root semaphore, because if we did
->    we could deadlock when sending and receiving to the same filesystem
->    using a pipe - the send task blocks on the pipe because it's full, the
->    receive task, which is the only consumer of the pipe, triggers a
->    transaction commit when attempting to create a subvolume or reserve
->    space for a write operation for example, but the transaction commit
->    blocks trying to write lock the commit root semaphore, resulting in a
->    deadlock;
-> 
-> 4) Before moving to the next key, or advancing to the next change in case
->    of an incremental send, check if a transaction used for relocation was
->    committed (or is about to finish its commit). If so, release the search
->    path(s) and restart the search, to where we were before, so that we
->    don't operate on stale extent buffers. The search restarts are always
->    possible because both the send and parent roots are RO, and no one can
->    add, remove of update keys (change their offset) in RO trees - the
->    only exception is deduplication, but that is still not allowed to run
->    in parallel with send;
-> 
-> 5) Periodically check if there is contention on the commit root semaphore,
->    which means there is a transaction commit trying to write lock it, and
->    release the semaphore and reschedule if there is contention, so as to
->    avoid causing any significant delays to transaction commits.
-> 
-> This leaves some room for optimizations for send to have less path
-> releases and re searching the trees when there's relocation running, but
-> for now it's kept simple as it performs quite well (on very large trees
-> with resulting send streams in the order of a few hundred gigabytes).
-> 
-> Test case btrfs/187, from fstests, stresses relocation, send and
-> deduplication attempting to run in parallel, but without verifying if send
-> succeeds and if it produces correct streams. A new test case will be added
-> that exercises relocation happening in parallel with send and then checks
-> that send succeeds and the resulting streams are correct.
-> 
-> A final note is that for now this still leaves the mutual exclusion
-> between send operations and deduplication on files belonging to a root
-> used by send operations. A solution for that will be slightly more complex
-> but it will eventually be built on top of this change.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/block-group.c |   9 +-
->  fs/btrfs/ctree.c       |  98 ++++++++---
->  fs/btrfs/ctree.h       |  14 +-
->  fs/btrfs/disk-io.c     |   4 +-
->  fs/btrfs/relocation.c  |  13 --
->  fs/btrfs/send.c        | 357 +++++++++++++++++++++++++++++++++++------
->  fs/btrfs/transaction.c |   4 +
->  7 files changed, 395 insertions(+), 104 deletions(-)
+> The trouble is, if getting the extent map fails, we didn't change the
+> file, so there's no reason to bump the timestamps and whatnot...
 
-Now queued up, thanks.
+Right, I figured you had that sort of intention.
 
-greg k-h
+However after the call to file_modified(), we may actually have not change the
+file at all, like when trying to zero a range that is already fully covered by a
+preallocated extent.
+
+> 
+> > 
+> > >  	/*
+> > >  	 * Avoid hole punching and extent allocation for some cases. More cases
+> > >  	 * could be considered, but these are unlikely common and we keep things
+> > > @@ -3391,7 +3403,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+> > >  		return -EOPNOTSUPP;
+> > >  
+> > >  	if (mode & FALLOC_FL_PUNCH_HOLE)
+> > > -		return btrfs_punch_hole(inode, offset, len);
+> > > +		return btrfs_punch_hole(file, offset, len);
+> > >  
+> > >  	/*
+> > >  	 * Only trigger disk allocation, don't trigger qgroup reserve
+> > > @@ -3446,7 +3458,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+> > >  		goto out;
+> > >  
+> > >  	if (mode & FALLOC_FL_ZERO_RANGE) {
+> > > -		ret = btrfs_zero_range(inode, offset, len, mode);
+> > > +		ret = btrfs_zero_range(file, offset, len, mode);
+> > >  		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
+> > >  		return ret;
+> > >  	}
+> > > @@ -3528,6 +3540,9 @@ static long btrfs_fallocate(struct file *file, int mode,
+> > >  		cur_offset = last_byte;
+> > >  	}
+> > >  
+> > > +	if (!ret)
+> > > +		ret = file_modified(file);
+> > 
+> > If call file_modified() before the if that checks for the zero range case,
+> > then we avoid having to call file_modified() at btrfs_zero_range() too,
+> > and get the behaviour for both plain fallocate and zero range.
+> 
+> ...and the reason I put it here is to make sure the ordered IO finishes
+> ok and that we pass the quota limit checks before we start modifying
+> things.
+
+Ok, but before that point we may already have modified the file, through
+a call to either btrfs_cont_expand() or btrfs_truncate_block() above, to
+zero out part of the content of a page.
+
+So if we did that, and we got an error when waiting for ordered extents
+or from the qgroup reservation, we end up leaving fallocate without
+calling file_modified(), despite having modified the file.
+
+> 
+> That said -- you all know btrfs far better than I do, so if you'd rather
+> I put these calls further up (probably right after the inode_newsize_ok
+> check?) then I'm happy to do that. :)
+
+Technically I suppose we should only call file_modified() if we actually
+change anything in the file, but as it is, we are calling it even when we
+don't end up modifying it or in some cases not calling it when we modify
+it.
+
+How does xfs behaves in this respect? Does it call file_modified() only
+if something in the file actually changed?
+
+Thanks.
+
+> 
+> --D
+> 
+> > 
+> > Otherwise, it looks good.
+> > 
+> > Thanks for doing this, I had it on my todo list since I noticed the generic/673
+> > failure with reflinks and the suid/sgid bits.
+> > 
+> > > +
+> > >  	/*
+> > >  	 * If ret is still 0, means we're OK to fallocate.
+> > >  	 * Or just cleanup the list and exit.
