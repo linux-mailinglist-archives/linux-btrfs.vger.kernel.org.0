@@ -2,63 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDF34D861C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 14:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1590E4D868B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 15:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241900AbiCNNlN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 09:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
+        id S242211AbiCNOSE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 10:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236169AbiCNNlM (ORCPT
+        with ESMTP id S242222AbiCNOSD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 09:41:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFBC344F2
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 06:40:02 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2A9C41F383;
-        Mon, 14 Mar 2022 13:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1647265201;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eYzGsFJC0enUxSlv9uqjYQgRbc88FThdDSM54ud5nIk=;
-        b=HklvAJQBYsMiN5/c3ABTkMHSGIBQSDkYD3Y2Dm+qvK0CSwX3AdyMFJf1wOsssX8AmxDsZX
-        MMOZZf1H5tyJ80he4yds0GObjWrizwGNpZpvQ+JSP+20vAUw77hzvcf/QG7G+KghwSHF7o
-        t04AbKsSrj75J6EbqFwuUtsTDyqHjTQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1647265201;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eYzGsFJC0enUxSlv9uqjYQgRbc88FThdDSM54ud5nIk=;
-        b=Sz2bTxPklVWoudbT1CVq+Nlkji62N9t/dpWGCahSaPTmzi9om0x4u/m3g8ki2OcnH6hy3n
-        +JMxyMPWUQlS98BQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 1FB94A3B81;
-        Mon, 14 Mar 2022 13:40:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E958CDA7E1; Mon, 14 Mar 2022 14:36:02 +0100 (CET)
-Date:   Mon, 14 Mar 2022 14:36:02 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] btrfs: scrub: big renaming to address the page
- and sector difference
-Message-ID: <20220314133602.GK12643@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1647161284.git.wqu@suse.com>
+        Mon, 14 Mar 2022 10:18:03 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4D419C1C
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 07:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1647267411; x=1678803411;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=wkONxQ9Pv71JTCigchV2IHgLlXFbgJKX9v2aJdaHaTk=;
+  b=Wm9nFfppXZy8OYBmYiXpNye51LnVVCkvsE0i7k3zn431njid93H6drNC
+   2ISqxvr3kgYmoerIhAPldxpmU8o6B1OthWqSEHQuHwLYeimMgzqq+TQd9
+   PngkZvh+lqAklDpkl6sHayK5DLT17/Qvtv+PNjDMbTyyphzxecExTcNk6
+   f++7O+TXI9LiTm2nsDoGFpQoTKmUlXn0yqx2B/bcbzLdvUeuK5ze5KQGF
+   +c55l5DXpCHvwFBdc9VVyB1ADlGiIUmN9cmFPAMw0z6G9m+UB/pG+I3Vu
+   IZvnpcAtugCRyzoyjWB3HBf0J50oFNSULlTzXBdzEGN7SZ4RJv08EovSu
+   g==;
+X-IronPort-AV: E=Sophos;i="5.90,181,1643644800"; 
+   d="scan'208";a="195313308"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Mar 2022 22:16:50 +0800
+IronPort-SDR: RE3nNfySG0al1x/hs7q2IWK8no4TRbe3jSUn3X3y/7cahrEU90BceS+2eB4jNIerYWF1gxlWFN
+ /KKfLPKTlNuSQF6mh2YED2P7NZY0ihUn/H7tzlWZdvRmcZNYElF+ueHb18N/kS6J/WzuKzRqro
+ GECcBN3ZXA2oFZo6AIGEAEx1psg/Y517MMrGSpkDyFVFXWGSyzdbPHqgDEpCC5zHdLgiWNKAAZ
+ KKJ2kkhK0M2dPoIJnVd5yokRvQ73v0S0LyMTQ5YudV+BDbqxVO+yJTCCTHZzhV02nsIKjU8KkO
+ LbpfMq81KysHI0M4EP8jud9c
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2022 06:49:00 -0700
+IronPort-SDR: qpkO6gJFBilomD2WJo49fIHyBs75/IHM9fkERPobMeqyI0KBIhODK+GPaTftkrcN47MDV8yc4w
+ aOG/UyzuBHojMaCmjMP5uD6u4b0Ss0tvcRohw9i0K2FumQ8mmFjJyCUQCSlN377k/dD6G+XYxx
+ 3pcr45M9PNTrOEn7R9uAcrpwOazWG66WDSZljF8WrzzeffL7lVeqg36jy/9+csUPv/IcVgag+G
+ Emoo+jkaoQH1RlSTR+61mAqDY5eJ0t+AWRyzSp/lUVMhKws2QP0FdVQaw0FaDYlyXgWb5jDkRB
+ RI4=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
+  by uls-op-cesaip02.wdc.com with ESMTP; 14 Mar 2022 07:16:52 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: zoned: use alloc_list instead of rcu locked device_list
+Date:   Mon, 14 Mar 2022 07:16:47 -0700
+Message-Id: <f7108349f3a7d690166c88691c5dc1932cab3610.1647267391.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1647161284.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,30 +67,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 13, 2022 at 06:39:59PM +0800, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Rebased to misc-next directly, before scrub entrance refactor
->   As this patchset is safer than entrance refactor.
-> 
->   Minor conflicts due to scrub_remap() renaming.
-> 
-> v3:
-> - Get rid of the name "ssector", using "sector" directly.
->   Previously we use names like "spage" to avoid confusion between MM
->   layer page, and scrub page.
->   But now since we rename it to scrub sector, and there is no naming
->   conflicts, we are safe to use "sector" directly, without the eye
->   hurting "ss".
-> 
-> - Use names like "sectors" to replace "pagev"
->   Which is more close to our latest naming schema.
-> 
-> - Update involved comments to use latest style
-> 
-> - Use bitshift to convert from sectors to bytes
+Anand pointed out, that instead of using the rcu locked version of
+fs_devices->device_list we cab use fs_devices->alloc_list, prrotected by
+the chunk_mutex to traverse the list of active deviices in
+btrfs_can_activate_zone().
 
-With minor fixups added to misc-next, thanks.
+Suggested-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/zoned.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-I've seen some multiplications by sectorsize that's a local variable,
-this could be also switched to use the bitshift.
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 49446bb5a5d1..7da630ff5708 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1975,15 +1975,16 @@ int btrfs_zone_finish(struct btrfs_block_group *block_group)
+ 
+ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
+ {
++	struct btrfs_fs_info *fs_info = fs_devices->fs_info;
+ 	struct btrfs_device *device;
+ 	bool ret = false;
+ 
+-	if (!btrfs_is_zoned(fs_devices->fs_info))
++	if (!btrfs_is_zoned(fs_info))
+ 		return true;
+ 
+ 	/* Check if there is a device with active zones left */
+-	rcu_read_lock();
+-	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
++	mutex_lock(&fs_info->chunk_mutex);
++	list_for_each_entry(device, &fs_devices->alloc_list, dev_list) {
+ 		struct btrfs_zoned_device_info *zinfo = device->zone_info;
+ 
+ 		if (!device->bdev)
+@@ -1995,7 +1996,7 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
+ 			break;
+ 		}
+ 	}
+-	rcu_read_unlock();
++	mutex_unlock(&fs_info->chunk_mutex);
+ 
+ 	return ret;
+ }
+-- 
+2.35.1
+
