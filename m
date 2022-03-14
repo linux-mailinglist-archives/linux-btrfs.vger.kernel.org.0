@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A4E4D7E2A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 10:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 924034D7E30
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 10:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237809AbiCNJJ3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 05:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        id S237818AbiCNJJa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 05:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237811AbiCNJJS (ORCPT
+        with ESMTP id S236080AbiCNJJS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 14 Mar 2022 05:09:18 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5AB245A1
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 02:08:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF39F25E80
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 02:08:09 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3A9721F397
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:07 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4AC681F399
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1647248887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1647248888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ykiGxuu+R7nLLXRNibQup3CXgx40o+X/s56O8wHxbhI=;
-        b=G7p3vLCUjMTLTIX3Yj7gaRqwoJDbcIKPmq1drnDKy0d180/GcpvOrlo49VZWK/EisSOenK
-        WQ0f5glrKaPyQchYq/jeBgAGZoIfTyr3KcxUmvS00ti8jykV+UTuFyKUMvA6Wz+uB40tmJ
-        kBLQNIgUQvXUd0I0ve4shp+BR5/f594=
+        bh=SjDxlswy1I+/nTCdio1iY8X4sJopZMEqEPET5bn/k8k=;
+        b=URwpb0kG/ax72GxXB/rEglxg3vWdWjxMBXQ4clvPFDkFiiSxQuTJ4H/1oPKZ11h5SS5gT5
+        h/yjNv6Yr6MuIPi9G1frcv7V2KkuessQuaBSqdVxYge1sDpEI4vIGdVW2gP+t4kJgPTnSH
+        mYdUJ9EbhpCkfdpJaI/dgR/F8ZIdDa0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8DA8313ADA
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:06 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D5D913ADA
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id qMHpFfYFL2IaYgAAMHmgww
+        id 8M3NGfcFL2IaYgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:06 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 09:08:07 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 16/18] btrfs: remove the stripe boundary calculation for direct IO
-Date:   Mon, 14 Mar 2022 17:07:29 +0800
-Message-Id: <b163fbc34a302b7f5501c06b591d849328ed613e.1647248613.git.wqu@suse.com>
+Subject: [PATCH v3 17/18] btrfs: remove the stripe boundary calcluation for encoded IO
+Date:   Mon, 14 Mar 2022 17:07:30 +0800
+Message-Id: <c1b71bed891a6df0500e9f0979e8208f1e72bd01.1647248613.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1647248613.git.wqu@suse.com>
 References: <cover.1647248613.git.wqu@suse.com>
@@ -61,179 +61,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs_submit_direct() we have a do {} while () loop to handle the bio
-split due to stripe boundary.
+In btrfs_encoded_read_regular_fill_pages(), we have a loop to handle the
+bio split due to stripe boundary.
 
 Since btrfs_map_bio() can handle it for us now, there is no need to
 manually do the split anymore.
 
-Also since we don't need to split bio, there is no special check for
-RAID56 anymore, make btrfs_submit_dio_bio() to have the same rule as
-btrfs_submit_data_bio() for async submit.
+Just remove the related btrfs_get_io_geometry() call inside
+btrfs_encoded_read_regular_fill_pages().
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 113 ++++++++++-------------------------------------
- 1 file changed, 24 insertions(+), 89 deletions(-)
+ fs/btrfs/inode.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index d5f4c102bab3..66a6cb5d9572 100644
+index 66a6cb5d9572..ecf039c272fc 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -7913,22 +7913,16 @@ static void btrfs_end_dio_bio(struct bio *bio)
- }
- 
- static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
--		struct inode *inode, u64 file_offset, int async_submit)
-+		struct inode *inode, u64 file_offset)
+@@ -10331,7 +10331,6 @@ static int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
+ 						 u64 disk_io_size,
+ 						 struct page **pages)
  {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_dio_private *dip = bio->bi_private;
- 	bool write = btrfs_op(bio) == BTRFS_MAP_WRITE;
-+	bool async_submit;
- 	blk_status_t ret;
- 
--	/*
--	 * Check btrfs_submit_data_bio() for rules about async submit.
--	 *
--	 * The only exception is for RAID56, when there are more than one bios
--	 * to submit, async submit seems to make it harder to collect csums
--	 * for the full stripe.
--	 */
--	if (async_submit)
--		async_submit = !atomic_read(&BTRFS_I(inode)->sync_writers);
-+	/* Check btrfs_submit_data_bio() for rules about async submit. */
-+	async_submit = !atomic_read(&BTRFS_I(inode)->sync_writers);
- 
- 	if (!write)
- 		btrfs_bio(bio)->endio_type = BTRFS_WQ_ENDIO_DATA;
-@@ -8002,25 +7996,12 @@ static void btrfs_submit_direct(const struct iomap_iter *iter,
- 		struct bio *dio_bio, loff_t file_offset)
- {
- 	struct inode *inode = iter->inode;
-+	struct btrfs_dio_data *dio_data = iter->iomap.private;
- 	const bool write = (btrfs_op(dio_bio) == BTRFS_MAP_WRITE);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	const bool raid56 = (btrfs_data_alloc_profile(fs_info) &
--			     BTRFS_BLOCK_GROUP_RAID56_MASK);
- 	struct btrfs_dio_private *dip;
- 	struct bio *bio;
- 	const u32 length = dio_bio->bi_iter.bi_size;
--	u32 submitted_bytes = 0;
--	u64 start_sector;
--	int async_submit = 0;
--	u64 submit_len;
--	u64 clone_offset = 0;
--	u64 clone_len;
--	u64 logical;
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_encoded_read_private priv = {
+ 		.inode = inode,
+ 		.file_offset = file_offset,
+@@ -10340,7 +10339,6 @@ static int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
+ 	};
+ 	unsigned long i = 0;
+ 	u64 cur = 0;
 -	int ret;
- 	blk_status_t status;
--	struct btrfs_io_geometry geom;
--	struct btrfs_dio_data *dio_data = iter->iomap.private;
--	struct extent_map *em = NULL;
  
- 	dip = btrfs_create_dio_private(dio_bio, inode, file_offset, length);
- 	if (!dip) {
-@@ -8044,80 +8025,34 @@ static void btrfs_submit_direct(const struct iomap_iter *iter,
- 			goto out_err;
- 	}
+ 	init_waitqueue_head(&priv.wait);
+ 	/*
+@@ -10348,25 +10346,9 @@ static int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
+ 	 * necessary.
+ 	 */
+ 	while (cur < disk_io_size) {
+-		struct extent_map *em;
+-		struct btrfs_io_geometry geom;
+ 		struct bio *bio = NULL;
+-		u64 remaining;
++		u64 remaining = disk_io_size - cur;
  
--	start_sector = dio_bio->bi_iter.bi_sector;
--	submit_len = dio_bio->bi_iter.bi_size;
--
--	do {
--		logical = start_sector << 9;
--		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
+-		em = btrfs_get_chunk_map(fs_info, disk_bytenr + cur,
+-					 disk_io_size - cur);
 -		if (IS_ERR(em)) {
--			status = errno_to_blk_status(PTR_ERR(em));
--			em = NULL;
--			goto out_err_em;
+-			ret = PTR_ERR(em);
+-		} else {
+-			ret = btrfs_get_io_geometry(fs_info, em, BTRFS_MAP_READ,
+-						    disk_bytenr + cur, &geom);
+-			free_extent_map(em);
 -		}
--		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
--					    logical, &geom);
 -		if (ret) {
--			status = errno_to_blk_status(ret);
--			goto out_err_em;
+-			WRITE_ONCE(priv.status, errno_to_blk_status(ret));
+-			break;
 -		}
--
--		clone_len = min(submit_len, geom.len);
--		ASSERT(clone_len <= UINT_MAX);
--
--		/*
--		 * This will never fail as it's passing GPF_NOFS and
--		 * the allocation is backed by btrfs_bioset.
--		 */
--		bio = btrfs_bio_clone_partial(dio_bio, clone_offset, clone_len);
--		bio->bi_private = dip;
--		bio->bi_end_io = btrfs_end_dio_bio;
--
--		if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
--			status = extract_ordered_extent(BTRFS_I(inode), bio,
--							file_offset);
--			if (status) {
--				bio_put(bio);
--				goto out_err;
--			}
--		}
--
--		ASSERT(submit_len >= clone_len);
--		submit_len -= clone_len;
-+	/*
-+	 * This will never fail as it's passing GPF_NOFS and
-+	 * the allocation is backed by btrfs_bioset.
-+	 */
-+	bio = btrfs_bio_clone(dio_bio);
-+	bio->bi_private = dip;
-+	bio->bi_end_io = btrfs_end_dio_bio;
+-		remaining = min(geom.len, disk_io_size - cur);
+ 		while (bio || remaining) {
+ 			size_t bytes = min_t(u64, remaining, PAGE_SIZE);
  
--		if (submit_len > 0) {
--			/*
--			 * If we are submitting more than one bio, submit them
--			 * all asynchronously. The exception is RAID 5 or 6, as
--			 * asynchronous checksums make it difficult to collect
--			 * full stripe writes.
--			 */
--			if (!raid56)
--				async_submit = 1;
--		}
- 
--		status = btrfs_submit_dio_bio(bio, inode, file_offset,
--						async_submit);
-+	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-+		status = extract_ordered_extent(BTRFS_I(inode), bio,
-+						file_offset);
- 		if (status) {
- 			bio_put(bio);
--			goto out_err_em;
-+			goto out_err;
- 		}
--
--		submitted_bytes += clone_len;
--		dio_data->submitted += clone_len;
--		clone_offset += clone_len;
--		start_sector += clone_len >> 9;
--		file_offset += clone_len;
--
--		free_extent_map(em);
--	} while (submit_len > 0);
-+	}
-+	status = btrfs_submit_dio_bio(bio, inode, file_offset);
-+	if (status) {
-+		bio_put(bio);
-+		goto out_err;
-+	}
-+	dio_data->submitted += length;
- 	return;
- 
--out_err_em:
--	free_extent_map(em);
- out_err:
- 	dip->dio_bio->bi_status = status;
--	dio_private_finish(dip, status, length - submitted_bytes);
-+	dio_private_finish(dip, status, length);
- }
- 
- const struct iomap_ops btrfs_dio_iomap_ops = {
 -- 
 2.35.1
 
