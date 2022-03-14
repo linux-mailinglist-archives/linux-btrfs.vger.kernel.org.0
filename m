@@ -2,149 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FD84D8F1C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 22:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0C64D8F7F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 23:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238660AbiCNVzg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 17:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        id S245568AbiCNWZ4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 18:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235932AbiCNVzf (ORCPT
+        with ESMTP id S245547AbiCNWZ4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 17:55:35 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336F13A5ED
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 14:54:25 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id w2so10864303oie.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 14:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=8J2KqqzaNNqQjhFwCeLS/exVEq+mmxX5Pknvq9APbUM=;
-        b=fFKyYIRYIDUN3+JR/ozZfwJKOUuDLKI8mVu4XAEzYATdbRhEmcudyybQ2cEVPKZHzN
-         A17ES99Wdpjm3x6oLMs8WV0hmiiA5UK7Jrwmj1ZudGUml6MWpJBer5YJGuHQWY2VTb5x
-         Evd6kr3ox0ZIzdhIO3QA02uM2G6Hw5kiwYCeYzlvjYak1m/+ljGMj9rEzVJXUcYGYqhG
-         TwoGxWcqGaK8+OLzJo9lRs7TVr6LWxYsbc3jnz5X2AcfYTI7gR9RcL/F5A/4COOpKL4x
-         NkRXB4fo02yHs7ItwApd4/tDE87d6QjKq+Lu70xurtOYpGDyRcwS/jD2cTNCrMTPCZlr
-         0rlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=8J2KqqzaNNqQjhFwCeLS/exVEq+mmxX5Pknvq9APbUM=;
-        b=rKUWpCP+EjYjI2fg+7nICu1IQ5eBfli4ZUb0koaVSaOn8jX8Y1UhCWkoPq4mwpCpVc
-         NTjIpV8DEwIFheiu9CxhhIL+L8ptpLnAa6eSsfV1ub2bvomaFjn6JbRH2Ogwm+/RAm2s
-         aoQ/v4OK+GlkW/S0ElwN0rxjhqIS0IIDBqn770hihsD2X8NkDd7n+il6pMiC9tI0TDRW
-         xewEFax6QRRw0QytAtZGfNbhSw8Yp8yWhwVo4h5jeX2u8+7GsBXdFinT692w7ATo7M/n
-         bhgF29I88YOYG3dIWvZvhRuXm55PHKR/1DJcyoflHiep+ct/azfVTY+yK36L5WoAzzsS
-         v8QQ==
-X-Gm-Message-State: AOAM5312U48WA/xvfPoRpv3KIs+Ne+ZieMirmKSoCCU7seQ6xuOro6aN
-        YlETEmp/xp4thKmKOeA9HhS5B80S+UxrOU03vVSW120wFak=
-X-Google-Smtp-Source: ABdhPJz7GlSx8o4rzYT5QncdrSGOVKYvuZyrgmgniXGlKeyWaWiSPeXD3LWxxBExz3iQTFh46RvjustF7B5ovYsZHC4=
-X-Received: by 2002:a05:6808:2117:b0:2da:5906:22c3 with SMTP id
- r23-20020a056808211700b002da590622c3mr585245oiw.80.1647294864223; Mon, 14 Mar
- 2022 14:54:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
- <87tuc9q1fc.fsf@vps.thesusis.net> <CAODFU0py06T4Eet+i0ZAY5Zrp5174eQJOCGh_03oZdDXO55TKw@mail.gmail.com>
- <87tuc7gdzp.fsf@vps.thesusis.net> <CAODFU0oM02WDpOPXp1of177aEJ9=ux2QFrHZF=khhzAg+3N1dA@mail.gmail.com>
- <87ee34cnaq.fsf@vps.thesusis.net>
-In-Reply-To: <87ee34cnaq.fsf@vps.thesusis.net>
-From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Date:   Mon, 14 Mar 2022 22:53:48 +0100
-Message-ID: <CAODFU0rXnDhQjGPyuBQ8kxUGBXzQFMkXrNXiSxmcvgaaixspvg@mail.gmail.com>
+        Mon, 14 Mar 2022 18:25:56 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC44C5FFB
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 15:24:45 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 33D5832009E0
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 18:24:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 14 Mar 2022 18:24:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; bh=xiBsnhnYHXj9OT
+        /F++2SCi/9CbkDfGyLZvYt2bviH8g=; b=iR0ZjT0hzcxYG8HTT+GPv4R5bWRxZ1
+        rHphN75ywrn7hwW96QECMLNbXi8y4pl+VWNXkTWwRy1X98XvB9ESYAUMmTENeEra
+        1Tiem/7wZ1sDBdTwNYDMXnc6Xkw/Tex4yGELxowRgNUFJj5HiAvi4ccxc/L/CWcv
+        pa1s3KwM/iPpHHe+JifotvMCrHy9istlhVtod+2CJtzE1Atq7Kk2ivZknAVKvjXE
+        KiVXJ1BKEuc00mgOTONOIeOY19ZepkRqUGBdkSllEr4b+R5VfDzi0YHbIIxZtq1S
+        pn+h4iaVV7bJrLNSJWqwpM5LG9VMO8GhPkcWLuLIiFwipbefGo2ey2Hg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:date:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=xiBsnhnYHXj9OT/F++2SCi/9CbkDfGyLZvYt2bviH8g=; b=oRQ36WRg
+        opSrAs1kqQl6mLVuuL4wxZAppwvBCm37xT0q+1FcUWeHUTRRh4NTvDfOlMpBwoxc
+        AldzbNFtc8ItX0jZuapVUQ1KAQJkQRpo/dNagrFSb9O9SdKJcSvFhQTUhErYLmV8
+        psFuJMs2/bL2gBZDWpdVa6JrBvVcWLtV2SkpDdq+uA0D4Gr2DmO2Tx0Nl1bAhFch
+        5TcAj5L1VYilEKDjDSH6hBWgAVSSW3Q3vche78TC95JcKR/Q1lW7BL1lBgi1iqIu
+        Qsz9OVwnLF6lDkOJFWLicyAcdbHQAZq0bVsSF1JLPZ22TQgOFBQv66mHuymMAOFr
+        lwAP/tjqQqXTug==
+X-ME-Sender: <xms:rMAvYgNXIyxS_1I33zh6QEDcAuZIFw9aEWvJ0xZZZxrAOVM1mCTefg>
+    <xme:rMAvYm_a8qNY3R5BD-jb3MSq6Usn-1OhTwM9_OS5DoBVYJJoNZfxUPjGqKQ1JaqD3
+    HzmEJg5GjegC8KBnA>
+X-ME-Received: <xmr:rMAvYnQTW5Ye9EHcRWNCJevlE_-N1ujmCxBYzBYMdQM22TUOeIY0uwOS76Sr_pKXO8IhhGmG-wyC8TTnH6jZSc5o1q4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddruddvkedgudehlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtgfesth
+    ejredttdefjeenucfhrhhomheptfgvmhhiucfirghuvhhinhcuoehrvghmihesghgvohhr
+    ghhirghnihhtrdgtohhmqeenucggtffrrghtthgvrhhnpefhgfefuedttdduhfdujeekje
+    duveeltdduueffhffhueekjeekkeeitdffhfffieenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtoh
+    hm
+X-ME-Proxy: <xmx:rMAvYovsFKS6UWss7sp79l4Y2MKrhzQQVbxqCqT0N8Z1hQXg2pzNKw>
+    <xmx:rMAvYodd1X8uaFnsBUGLnwNif-15upgjymc5DfcwtDvc6QH3e70F0A>
+    <xmx:rMAvYs24OutbPrM99gOS57x2fW9tybEM9y41WRlFjuomL_UeNGXRzw>
+    <xmx:rMAvYipMyOoHT5vvVro7nEvKwv27XUdXu2j9uEFhIfs27ZLbLCbEug>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 18:24:44 -0400 (EDT)
 Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
  measurable benefit
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: multipart/mixed; boundary="000000000000390b0905da34b9f7"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,MISSING_HEADERS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
+ <87tuc9q1fc.fsf@vps.thesusis.net>
+ <CAODFU0py06T4Eet+i0ZAY5Zrp5174eQJOCGh_03oZdDXO55TKw@mail.gmail.com>
+ <87tuc7gdzp.fsf@vps.thesusis.net>
+ <CAODFU0oM02WDpOPXp1of177aEJ9=ux2QFrHZF=khhzAg+3N1dA@mail.gmail.com>
+ <87ee34cnaq.fsf@vps.thesusis.net>
+ <CAODFU0rXnDhQjGPyuBQ8kxUGBXzQFMkXrNXiSxmcvgaaixspvg@mail.gmail.com>
+From:   Remi Gauvin <remi@georgianit.com>
+Message-ID: <cd54e6e1-6180-1685-6500-278c639bb2e8@georgianit.com>
+Date:   Mon, 14 Mar 2022 18:24:43 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAODFU0rXnDhQjGPyuBQ8kxUGBXzQFMkXrNXiSxmcvgaaixspvg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---000000000000390b0905da34b9f7
-Content-Type: text/plain; charset="UTF-8"
+On 2022-03-14 5:53 p.m., Jan Ziak wrote:
 
-On Mon, Mar 14, 2022 at 9:05 PM Phillip Susi <phill@thesusis.net> wrote:
-> Jan Ziak <0xe2.0x9a.0x9b@gmail.com> writes:
->
-> > The actual disk usage of a file in a copy-on-write filesystem can be
-> > much larger than sb.st_size obtained via fstat(fd, &sb) if, for
-> > example, a program performs many (millions) single-byte file changes
-> > using write(fd, buf, 1) to distinct/random offsets in the file.
->
-> How?  I mean if you write to part of the file a new block is written
-> somewhere else but the original one is then freed, so the overall size
-> should not change.  Just because all of the blocks of the file are not
-> contiguous does not mean that the file has more of them, and making them
-> contiguous does not reduce the number of them.
->
 
-It is true that it is possible to design a copy-on-write filesystem,
-albeit it may have additional costs, that will never waste a single
-extent even in the case of high-fragmentation files. But, btrfs isn't
-such a filesystem.
+> ....
+> 
+> In this test case, "Disk Usage" is 60% higher than the file's size:
+> 
+> $ compsize data
+> Processed 1 file, 612 regular extents (1221 refs), 0 inline.
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL      100%       16M          16M          10M
 
-The manpage of /usr/bin/compsize contains the following diagram (use a
-fixed font when viewing):
 
-                +-------+-------+---------------+
-       extent A | used  | waste | used          |
-                +-------+-------+---------------+
-       extent B         | used  |
-                        +-------+
+It would be nice if we could get a mount option to specify maximum
+extent size, so this effect could be minimized on SSD without having to
+use compress-force.  (Or maybe this should be the default When ssd mode
+is automaticallyd detected.)
 
-However, what the manpage doesn't mention is that, in the case of
-btrfs, the above diagram applies not only to compressed extents but to
-other types of extents as well.
 
-You can examine this yourself if you compile compsize-1.5 using "make
-debug" on your machine and use the Bash script that is attached to
-this email.
-
-The Bash script creates one 10 MiB file. This file has 1 extent of
-size 10 MiB (assuming the btrfs filesystem has enough non-fragmented
-free space to create a continuous extent of size 10 MiB). Then the
-script writes random 4K blocks at random 4K offsets in the file.
-Examination of compsize's debug output shows that the whole 10 MiB
-extent is still stored on the storage device, despite the fact that
-many of the 4K pages comprising the 10 MiB extent have been
-overwritten and the file has been synced to the storage device:
-
-....
-regular: ram_bytes=10485760 compression=0 disk_num_bytes=10485760
-....
-
-In this test case, "Disk Usage" is 60% higher than the file's size:
-
-$ compsize data
-Processed 1 file, 612 regular extents (1221 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%       16M          16M          10M
-
--Jan
-
---000000000000390b0905da34b9f7
-Content-Type: application/x-shellscript; name="btrfs-waste.sh"
-Content-Disposition: attachment; filename="btrfs-waste.sh"
-Content-Transfer-Encoding: base64
-Content-ID: <f_l0r8si300>
-X-Attachment-Id: f_l0r8si300
-
-IyEvYmluL2Jhc2gKc2V0IC1lClsgLWUgZGF0YSBdICYmIHsgZWNobyAiZXJyb3I6IGZpbGUgZXhp
-c3RzOiBkYXRhIjsgZXhpdCAxOyB9CgpkZCBpZj0vZGV2L3VyYW5kb20gb2Y9ZGF0YSBicz0xTSBj
-b3VudD0xMCBzdGF0dXM9bm9uZQpzeW5jIC0tZmlsZS1zeXN0ZW0gLgp4ZnNfaW8gLWMgImZpZW1h
-cCAtdiAwZyAxMDBnIiBkYXRhIHwmIHRlZSBleHRlbnRzMQpzdWRvIGNvbXBzaXplIGRhdGEKCmZv
-cigoaT0wO2k8MjU2MDtpKyspKTsgZG8KCWRkIGlmPS9kZXYvdXJhbmRvbSBvZj1kYXRhIGJzPTRL
-IGNvdW50PTEgc2Vlaz0kW1JBTkRPTSUyNTYwXSBjb252PW5vdHJ1bmMgc3RhdHVzPW5vbmUKZG9u
-ZQpzeW5jIC0tZmlsZS1zeXN0ZW0gLgp4ZnNfaW8gLWMgImZpZW1hcCAtdiAwZyAxMDBnIiBkYXRh
-IHwmIHRlZSBleHRlbnRzMi1maWVtYXAKc3VkbyBjb21wc2l6ZS0xLjUvY29tcHNpemUgZGF0YSAy
-PiBleHRlbnRzMi1jb21wc2l6ZQoKYnRyZnMgZmlsZXN5c3RlbSBkZWZyYWdtZW50IGRhdGEKc3lu
-YyAtLWZpbGUtc3lzdGVtIC4KY29tcHNpemUgZGF0YQoKcm0gLWYgZGF0YQo=
---000000000000390b0905da34b9f7--
