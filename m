@@ -2,121 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966224D8B29
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 18:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5214D8BE4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Mar 2022 19:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243408AbiCNR4o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 13:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        id S243951AbiCNSna (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 14:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242402AbiCNR4n (ORCPT
+        with ESMTP id S236506AbiCNSn3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 13:56:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31ED2DD62
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 10:55:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7AB5160F5B
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 17:55:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD6C0C340EE;
-        Mon, 14 Mar 2022 17:55:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647280532;
-        bh=TGenUJFFIkBdkUHG/YRUP2/veMp//Pd1G+6vNecFedI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Uc1iQz4ts/szW6F0RXVFoc6wTr2G0eR4NjFwr9n6T0ujrphAkA+MGYw7bWrcWeJdA
-         525aPT9LYZubHIn+9gxGI/Rn+hhmIqkFlatVOpI/q1L+jmXKMTOPhJ1kRHL8hsPRxG
-         Y2CzLYYAZq8PwAKnS9elBBV8kIJcm5xBJzcAVwcwUQ7S4bexAPXO9Lao8KBxpmqOlw
-         +H8WiZ03KAPrEDjP2hKzQ2u0wWuK5t6OAPbq6og5vDX2alXb2QyLyaZLPi4cXqslHm
-         OQ21vwA4cKzMxsVP7PrDpDjxQF5LrHoZz72QZGk3tqjdXk5nL5rwdao4zVWAvYbxHX
-         XuOIiCSCW85LA==
-Date:   Mon, 14 Mar 2022 10:55:32 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: fix fallocate to use file_modified to update
- permissions consistently
-Message-ID: <20220314175532.GB8165@magnolia>
+        Mon, 14 Mar 2022 14:43:29 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF943DDE8
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 11:42:19 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id cx5so15598713pjb.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 11:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qAZf8+c1QJzjFnHXLHLyhxdXiTMjdxZAP6KpvFVoAC0=;
+        b=jX2y6GXLGXZDpzbMTX/3T+fm9q9i24HL+hsXpiB2dYi3ah38lYaxL2mPL1xjVfPkmx
+         +VcaU4AclIvnhhXXc2aXW4kmllHKBGyEh4WNJhrZuu1muGWTv0eYwqJh73gTT+73dzen
+         oo86GlY/hW0qi5qcA9SQlfMEaR56oD3ERF+ITH6UtU8ZmE+SNQX3UQOo2NAqnIa7O+yQ
+         /4R2Olyb4nvSHpXydIb3MRQ0+a8Ri93n3UeMht914aC6H9/Gm/y7/RHz7135H+qBK/p5
+         QRlOF8W9ugLGKaRpOtZVaVpjcgSnsMzzZ5fvc4Zqw0HflbkHCQ8XqjSDzoOYf7G7ZwaT
+         n9KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qAZf8+c1QJzjFnHXLHLyhxdXiTMjdxZAP6KpvFVoAC0=;
+        b=nCMmZnajnk0oIUpuzYNm0KNcy8gKDp2XosVbCHDz9dPbVJqPdTiBOk20kkoxOsnZle
+         LMDx9uxKq+eozKmTP+jHnxLJKVZGT8YdJ0yeMbDY56wI1tqgGOKZTUtROJPVp6vTC4rD
+         Ifc2Wa6lfj1s66H6VOsJ+1YQm+N/olShtzpnA2O/yVdTwl/HFB6uN2QO2GPd6oGR5UNG
+         pUTW2/R3V1VpvhAHVlegte+CvDhqz/Tw3o/fBv7ICcd3LmcRyEawvcNcxAeHu7jvIbvm
+         U0Z5PJO4qO2KBvaNFNsSKhpfb21Kd29kvTg7tW0MbsabK1PIzGkCcqkvnnxgylBhtx7b
+         J6SA==
+X-Gm-Message-State: AOAM533DyLgGGWqtFPlGWIttS3EoXCJ4I5NsVWFlNYOzRjAT963gL70C
+        jujGIZPDyrsFfQqN5Ke0EziW4rOPOhIiKA==
+X-Google-Smtp-Source: ABdhPJxI6TonYSR4oJSpU2FBHh/0p5lwXnkcmrpAH9S28p79ZK4wv2JdyOj+sqschVFUn2EK4EiVXw==
+X-Received: by 2002:a17:90a:5643:b0:1bf:ac1f:a1de with SMTP id d3-20020a17090a564300b001bfac1fa1demr566891pji.224.1647283339104;
+        Mon, 14 Mar 2022 11:42:19 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:46f5])
+        by smtp.gmail.com with ESMTPSA id k14-20020aa7972e000000b004f7b8b43d96sm7137939pfg.51.2022.03.14.11.42.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Mar 2022 11:42:18 -0700 (PDT)
+Date:   Mon, 14 Mar 2022 11:42:17 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 00/16] btrfs: inode creation cleanups and fixes
+Message-ID: <Yi+MiU4D4i0tBG7T@relinquished.localdomain>
+References: <cover.1646875648.git.osandov@fb.com>
+ <20220314125059.GH12643@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220314125059.GH12643@twin.jikos.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+On Mon, Mar 14, 2022 at 01:50:59PM +0100, David Sterba wrote:
+> On Wed, Mar 09, 2022 at 05:31:30PM -0800, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> > 
+> > This series contains several cleanups and fixes for our inode creation
+> > codepaths. The main motivation for this is preparation for fscrypt
+> > support (in particular, setting up the fscrypt context and encrypted
+> > names at inode creation time). But, it also reduces a lot of code
+> > duplication and fixes some minor bugs, so it's worth getting in ahead of
+> > time.
+> > 
+> > Patches 1-3 are small fixes. Patches 5-12 are small cleanups. Patches
+> > 13-16 are the bulk of the change.
+> > 
+> > Based on misc-next.
+> > 
+> > Changes since v1 [1]:
+> > 
+> > - Split the big final patch into patches 3 and 13-16.
+> > - Added Sweet Tea's reviewed-by to the remaining patches.
+> > - Rebased on latest misc-next.
+> > 
+> > Thanks!
+> > 
+> > 1: https://lore.kernel.org/linux-btrfs/cover.1646348486.git.osandov@fb.com/
+> > 
+> > Omar Sandoval (16):
+> >   btrfs: reserve correct number of items for unlink and rmdir
+> >   btrfs: reserve correct number of items for rename
+> >   btrfs: fix anon_dev leak in create_subvol()
+> >   btrfs: get rid of btrfs_add_nondir()
+> >   btrfs: remove unnecessary btrfs_i_size_write(0) calls
+> >   btrfs: remove unnecessary inode_set_bytes(0) call
+> >   btrfs: remove unnecessary set_nlink() in btrfs_create_subvol_root()
+> >   btrfs: remove unused mnt_userns parameter from __btrfs_set_acl
+> >   btrfs: remove redundant name and name_len parameters to create_subvol
+> >   btrfs: don't pass parent objectid to btrfs_new_inode() explicitly
+> >   btrfs: move btrfs_get_free_objectid() call into btrfs_new_inode()
+> >   btrfs: set inode flags earlier in btrfs_new_inode()
+> >   btrfs: allocate inode outside of btrfs_new_inode()
+> 
+> Patches 1-13 added to misc-next. The remaining patches seem to be still
+> a bit big for review.
 
-Since the initial introduction of (posix) fallocate back at the turn of
-the century, it has been possible to use this syscall to change the
-user-visible contents of files.  This can happen by extending the file
-size during a preallocation, or through any of the newer modes (punch,
-zero range).  Because the call can be used to change file contents, we
-should treat it like we do any other modification to a file -- update
-the mtime, and drop set[ug]id privileges/capabilities.
-
-The VFS function file_modified() does all this for us if pass it a
-locked inode, so let's make fallocate drop permissions correctly.
-
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
----
-v2: move up file_modified to catch a case where we could modify file
-contents but fail on something else before we end up calling
-file_modified
----
- fs/btrfs/file.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index a0179cc62913..28ddd9cf2069 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2918,8 +2918,9 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
- 	return ret;
- }
- 
--static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
-+static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
- {
-+	struct inode *inode = file_inode(file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
- 	struct extent_state *cached_state = NULL;
-@@ -2951,6 +2952,10 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 		goto out_only_mutex;
- 	}
- 
-+	ret = file_modified(file);
-+	if (ret)
-+		goto out_only_mutex;
-+
- 	lockstart = round_up(offset, btrfs_inode_sectorsize(BTRFS_I(inode)));
- 	lockend = round_down(offset + len,
- 			     btrfs_inode_sectorsize(BTRFS_I(inode))) - 1;
-@@ -3391,7 +3396,7 @@ static long btrfs_fallocate(struct file *file, int mode,
- 		return -EOPNOTSUPP;
- 
- 	if (mode & FALLOC_FL_PUNCH_HOLE)
--		return btrfs_punch_hole(inode, offset, len);
-+		return btrfs_punch_hole(file, offset, len);
- 
- 	/*
- 	 * Only trigger disk allocation, don't trigger qgroup reserve
-@@ -3413,6 +3418,10 @@ static long btrfs_fallocate(struct file *file, int mode,
- 			goto out;
- 	}
- 
-+	ret = file_modified(file);
-+	if (ret)
-+		goto out;
-+
- 	/*
- 	 * TODO: Move these two operations after we have checked
- 	 * accurate reserved space, or fallocate can still fail but
+I see that misc-next has the whole series, did you change your mind? I
+was going to resend with a couple of Sweet Tea's comments addressed
+(passing btrfs_new_inode_args to btrfs_init_inode_security() and
+mentioning the d_instantiate() change in the commit message for patch
+13), but I don't see a good way to split these up further.
