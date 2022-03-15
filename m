@@ -2,117 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5266C4DA338
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 20:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5B24DA346
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 20:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345783AbiCOTYB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 15:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
+        id S1350166AbiCOT36 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 15:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345039AbiCOTYA (ORCPT
+        with ESMTP id S233489AbiCOT3z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 15:24:00 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CADB1E
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:22:46 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id F07D75C0243;
-        Tue, 15 Mar 2022 15:22:43 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 15 Mar 2022 15:22:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; bh=ugv531OgHik20g
-        qVEWjn0TCQjvQSBY16lXr1WwRPT34=; b=M+k1mz2QyvrFsLLN+l2RfpIdH9FkaZ
-        NFgVixwYINRrN3tUooXLuwnFYxRNM12Veth4VMWFN0IZdKfybo9sDnX1F1bAudBt
-        VaKO0qndcegpxYVFE46mAlLfC40MXsZrWPD51K5cY2McXiQbJ35dASXVUgxGM3hh
-        9IUAu2q2DTrFVVpOOLa+HZT0uvFT7IDO0x6c7ONBDIybFSDjATd2nxZsSxKkQPlX
-        k7hpUBiywN7etO58r8YWdXqlRZGzcD8BbrUzTQanKPRJZOLvXXhqTK7S8LjSWl/q
-        r6PRQ5V4F/gGJulzto0L39FozMLRV8neLd3ycXNXXRuBLpOqpq1avt8g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=ugv531OgHik20gqVEWjn0TCQjvQSBY16lXr1WwRPT34=; b=P2eWrvSj
-        fsTappavOnF92SygIe4avwG3YMQJVv071tWpcLHeJVVJGvJKz5WAg1KugQzoJ/hV
-        2NmQ3j9ohcdKTF+/ibTn+N+lVUfOa6fboDO/eszKEwPn4uNhgY4WXhWLymPwNm5d
-        sYB/rrxHScizgc0DZYoU2cMLZtOqA2eLsNgMCd3J6GhwMjrZvtbnO3j+aichjx6C
-        L9STfYSsYP4YVkOrGTZg1SVDesKyc1SbfvBFiXGBE3n/0+kTEA9NFA94HwKDe0zL
-        90thdDCNJIj9YJzokEQ+E+uTJSFUJxBxlHHQ2ygVXNjGY1NRdO0g+oqQL0Ba6OeU
-        1oZXaje6gA/cpA==
-X-ME-Sender: <xms:g-cwYg2Ga-_Xq7fTYdj_imhoTgoYFv5wbCWs3tbvHwqFpn2PmhmW3g>
-    <xme:g-cwYrHdKa3_2ije-iVKgbCAAOvoCYIeClqeJAQilI6iop1FLnTkAVOiz7zPa3leY
-    0cuKinRnr0pemUI4A>
-X-ME-Received: <xmr:g-cwYo7CjCwJ-IeD_Oqql7dRTfC9uQrtACBDfPf93HfDO0QJhSSk5oP73S3WMSQNDZe0gydBUwXsh9lFICVl9-FhOAA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudeftddguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtgfesth
-    ejredttdefjeenucfhrhhomheptfgvmhhiucfirghuvhhinhcuoehrvghmihesghgvohhr
-    ghhirghnihhtrdgtohhmqeenucggtffrrghtthgvrhhnpefhgfefuedttdduhfdujeekje
-    duveeltdduueffhffhueekjeekkeeitdffhfffieenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtoh
-    hm
-X-ME-Proxy: <xmx:g-cwYp3WhTIoGFiYK0kpRfg8AhZd0smA-M1jXZbQvtaa3tZry5u_gA>
-    <xmx:g-cwYjEzzfxo00HdztPcXKlwRJlyFxIgv85rf40kYfg7miup2j4ZnA>
-    <xmx:g-cwYi9uby8Ythx-v-rH-F0bw1Q7bkP3UL3ez5XWy3Tqb_9Sylu7YA>
-    <xmx:g-cwYmNjzqPO0x73_hUCs0jDbNwEb-TsO1FUh1zbUBNKGfEuQGChbg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 15 Mar 2022 15:22:43 -0400 (EDT)
+        Tue, 15 Mar 2022 15:29:55 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF9D4553B
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:28:42 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id n5-20020a4a9545000000b0031d45a442feso194122ooi.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BtRRgJnqcR82FsxZVkJDMMpxTK0vKElTlDTBNy9oMz8=;
+        b=HDw4x2hkzJMo7gNN2H3rFVKgdR0rHt7Q1TJCfKQCh5pR30x9IJsB2yWXR9R9Y7Atc4
+         MHTP7CinXf5BIdOydN7dBCoYl3yvZZMqlb+gr/w4lGIMs6WHEbxAhwfBrT1GCMRHP9px
+         dszjyZ1i7gX3AbFYSwcDJLmRTkBwEuIDSJqJsgxUQ+hfcBJ9Xtg6cSMjmu9qy09TQbDd
+         DxV6whfIrIebKvEwrQgN/J/XUv86E4v65ASbpdkqbbkt9YwRgNZTir6g4ZS2sYcbkcn3
+         9RT3N6zDruBc7jz9+GVGaJPJIjc1ym6lN/FBDWV7iX3BzMshYk3pxvBgiK4/1SvInxV0
+         C2Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BtRRgJnqcR82FsxZVkJDMMpxTK0vKElTlDTBNy9oMz8=;
+        b=uhVjWFNSc+lGWK9jvd0EV7RUTIGYO4pVPL28jh4rrzHh8tyh9tgYI+1k2yiJSdxrZN
+         69X+RhHbAALq1kMOh6ls8+iH//6S+s70Nb4iDyfAiQRTzdENqS5w2lKmDBDgQKw5C1yH
+         J4o6UU+T+tzpCMsF3W2i0WrxBamwoEy1rB1NKB4bwC13EqSPJP11m27+0/aj3wdukoq4
+         EPJ5iUQxlnJRY98EA7Si2BnQ+15+qEVy66LcArvHfRHhUM66e4Lmd+K7BYGzNf+gs2E4
+         MCCJKVmP+4nOPKzWa/eZOdJV7ufDhtCfK5X0XVsnbG5tYXyo0kAOxeTw/hRhkwUAKy8P
+         k/VQ==
+X-Gm-Message-State: AOAM531gjmRqKv5fcFz6t+z5Tn+sx2UBZklhC/u4ghslgH4hAysyP7zN
+        wetbIMbpmDB+Q3un4/OCAYn4lstEL09ygCUIOLQ=
+X-Google-Smtp-Source: ABdhPJyRF3gOYPKj5xAdaeTun52Xf6JsV2vKM+0qd2acFKDawce/tW8TjE8m1pRt0RrjEKwXoVebVJmM09ZCLknUWCg=
+X-Received: by 2002:a05:6870:1613:b0:da:b3f:2b3c with SMTP id
+ b19-20020a056870161300b000da0b3f2b3cmr2227570oae.219.1647372521976; Tue, 15
+ Mar 2022 12:28:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <3c668ffe-edb0-bbbb-cfe0-e307bad79b1a@gmx.com> <CAODFU0pcT73bXwkXOpjQMvG0tYO73mLdeG2i4foxr6kHorh1jQ@mail.gmail.com>
+ <70bc749c-4b85-f7e6-b5fd-23eb573aab70@gmx.com> <CAODFU0q7TxxHP6yndndnVtE+62asnbOQmfD_1KjRrG0uJqiqgg@mail.gmail.com>
+ <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com> <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
+ <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com> <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
+ <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com> <87a6dscn20.fsf@vps.thesusis.net>
+ <Yi/I54pemZzSrNGg@hungrycats.org> <87fsnjnjxr.fsf@vps.thesusis.net>
+In-Reply-To: <87fsnjnjxr.fsf@vps.thesusis.net>
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Tue, 15 Mar 2022 20:28:05 +0100
+Message-ID: <CAODFU0r4Q5_+5hS51uOfLh2tPQqxB9Dv8LQxnNb0aDHXXDp5MQ@mail.gmail.com>
 Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
  measurable benefit
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAODFU0py06T4Eet+i0ZAY5Zrp5174eQJOCGh_03oZdDXO55TKw@mail.gmail.com>
- <87tuc7gdzp.fsf@vps.thesusis.net>
- <CAODFU0oM02WDpOPXp1of177aEJ9=ux2QFrHZF=khhzAg+3N1dA@mail.gmail.com>
- <87ee34cnaq.fsf@vps.thesusis.net>
- <CAODFU0rXnDhQjGPyuBQ8kxUGBXzQFMkXrNXiSxmcvgaaixspvg@mail.gmail.com>
- <cd54e6e1-6180-1685-6500-278c639bb2e8@georgianit.com>
- <Yi/G+FFqF8TlafF3@hungrycats.org>
- <23441a6c-3860-4e99-0e56-43490d8c0ac2@georgianit.com>
- <Yi/SR7CNbtDvIsPn@hungrycats.org>
- <eda21cae-4825-458a-dd69-1e2740955dc0@georgianit.com>
- <YjDgKzAx/tawKHCz@hungrycats.org>
-From:   Remi Gauvin <remi@georgianit.com>
-Message-ID: <97800cf4-b96d-27f9-1ed9-b508501e5532@georgianit.com>
-Date:   Tue, 15 Mar 2022 15:22:43 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YjDgKzAx/tawKHCz@hungrycats.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     Phillip Susi <phill@thesusis.net>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2022-03-15 2:51 p.m., Zygo Blaxell wrote:
+On Tue, Mar 15, 2022 at 7:34 PM Phillip Susi <phill@thesusis.net> wrote:
+> Zygo Blaxell <ce3g8jdj@umail.furryterror.org> writes:
+>
+> > btrfs extents are immutable, so the filesystem can't extend an existing
+> > extent with new data.  Instead, a new extent must be created that contains
+> > both the old and new data to replace the old extent.  At least one new
+>
+> Wait, what?  How is an extent immutable?  Why isn't a new tree written
+> out with a larger extent and once the transaction commits, bam... you've
+> enlarged your extent?  Just like modifying any other data.
+>
+> And do you mean to say that before the new data can be written, the old
+> data must first be read in and moved to the new extent?  That seems
+> horridly inefficient.
 
-> The main advantage of larger extents is smaller metadata, and it doesn't
-> matter very much whether it's SSD or HDD.  Adjacent extents will be in
-> the same metadata page, so not much is lost with 256K extents even on HDD,
-> as long as they are physically allocated adjacent to each other.
-> 
+I think, one way of how to make sense of this is that, in btrfs, not
+just past file-data is immutable due to the fact that it is a CoW
+filesystem, but also certain parts of the filesystem's meta-data (such
+as: extents) are immutable as well. Modifying meta-data belonging to a
+previous (thus, by design, unmodifiable) generation in the btrfs
+filesystem is somewhat complicated.
 
-When I tried enabling compress-force on my HDD storage, it *killed*
-sequential read performance.  I could write a file out at over
-100MB/s... but trying to read that same file sequentially would trash
-the drives with less than 5MB/s actually being able to be read.
-
-
-No such problems were observed on ssd storage.
-
-I was under the impression this problem was caused trying to read files
-with the 127k extents,, which, for whatever reason, could not be done
-without excessive seeking.
-
-
+-Jan
