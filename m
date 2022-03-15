@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2734D9970
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 11:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483E94D9985
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 11:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347620AbiCOKuW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 06:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
+        id S1347589AbiCOKuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 06:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348609AbiCOKtk (ORCPT
+        with ESMTP id S1348617AbiCOKtk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 15 Mar 2022 06:49:40 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8810152B23
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A595552B37
         for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 03:47:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 509FCB81215
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 10:47:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AF2EC340E8
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 10:47:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 64583B8124F
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 10:47:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9072CC340EE
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 10:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647341239;
-        bh=JVjLPaMEBu3wtaHIGsh2emlb4EtWF0FLHuBp4Cpju6U=;
+        s=k20201202; t=1647341240;
+        bh=n6TiDAoyme3T0bZN9Bfc0CRhQ/l4aFiGgvU+JlRDq1I=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=hZ9IVkOBh3HaXFIcOFUEpBw2HspYOjuI1bQ10wiYUnUBQzFzPs/qgp3Rgoa5Sv29h
-         lDuUSqlFCbxUU0hTlylbBQQ12tSpS2wap9s00H0TiOcxW8IaBJOO0yR4QDHf2wETY1
-         vCO6gcpMixUakWKwUkRnMWyX8Uv5oORvb2AVgS3Q9Gr1XQk0CBc2+D+zR1D8vGUxur
-         Db/kp7jBGEQhVoFFq2+pndJ7BmOGhzOYG7rcra6QWenQbt5t7kh8NqWJCaVWRC0cm/
-         C0GfnPh/rMIOEhm5blK6UasUm3TYelfJ/knrIS4S8MnmquRcKVd/11d9n/t7EpwNey
-         7T4pFfd9iWMpQ==
+        b=fuJHoKrYnTfUiwVvn4eEpUQvGpSZp+mgW3wfUD5LTrLBvo2BOxzM+fDsbbnPnwkFi
+         u2wkuXvmkMLGnu8HqbBQ/eW7eiXrOB24MV+jcirJRA8G8gO9+ZLCTz7qbQGYKdqEWw
+         jY4wbqmXbU2Tj3OFf5vcdqf/nRIJb9RUZaZZLM5jYh0pCu4u0BLuj+/nQ+cdGGk7BH
+         VU2EE21UHoQI/fVxXSAnKIPJXj6JpIKFYBNj1sIRsSWx40qz6BYh3ApytYXdihU43/
+         x1sSwXOJKVlQ5KbTekpoUEXqITIalArohZNRHWowFm605/gSdHPvstNAL7pZ4h3LQt
+         rEo5un2vJoeNg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/6] btrfs: remove ordered extent check and wait during fallocate
-Date:   Tue, 15 Mar 2022 10:47:09 +0000
-Message-Id: <bff6ab6151e52b6389e917913de2c5018315fcf5.1647340917.git.fdmanana@suse.com>
+Subject: [PATCH 5/6] btrfs: remove ordered extent check and wait during hole punching and zero range
+Date:   Tue, 15 Mar 2022 10:47:10 +0000
+Message-Id: <bc5144c1420e6d9d11163867e8ba5612ebb8eae5.1647340917.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1647340917.git.fdmanana@suse.com>
 References: <cover.1647340917.git.fdmanana@suse.com>
@@ -54,9 +54,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-For fallocate() we have this loop that checks if we have ordered extents
-after locking the file range, and if so unlock the range, wait for ordered
-extents, and retry until we don't find more ordered extents.
+For hole punching and zero range we have this loop that checks if we have
+ordered extents after locking the file range, and if so unlock the range,
+wait for ordered extents, and retry until we don't find more ordered
+extents.
 
 This logic was needed in the past because:
 
@@ -76,73 +77,109 @@ This logic was needed in the past because:
    fallocate operations").
 
 So stop looking for ordered extents after locking the file range when
-doing a plain fallocate.
+doing hole punching and zero range operations.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c | 42 ++++++++----------------------------------
- 1 file changed, 8 insertions(+), 34 deletions(-)
+ fs/btrfs/file.c | 54 +++++++++++++++++--------------------------------
+ 1 file changed, 18 insertions(+), 36 deletions(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 2f57f7d9d9cb..a7fd05c1d52f 100644
+index a7fd05c1d52f..9f8db8a12a2f 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -3474,8 +3474,12 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	}
+@@ -2570,10 +2570,10 @@ static int find_first_non_hole(struct btrfs_inode *inode, u64 *start, u64 *len)
+ 	return ret;
+ }
  
+-static int btrfs_punch_hole_lock_range(struct inode *inode,
+-				       const u64 lockstart,
+-				       const u64 lockend,
+-				       struct extent_state **cached_state)
++static void btrfs_punch_hole_lock_range(struct inode *inode,
++					const u64 lockstart,
++					const u64 lockend,
++					struct extent_state **cached_state)
+ {
  	/*
--	 * wait for ordered IO before we have any locks.  We'll loop again
--	 * below with the locks held.
-+	 * We have locked the inode at the VFS level (in exclusive mode) and we
-+	 * have locked the i_mmap_lock lock (in exclusive mode). Now before
-+	 * locking the file range, flush all dealloc in the range and wait for
-+	 * all ordered extents in the range to complete. After this we can lock
-+	 * the file range and, due to the previous locking we did, we know there
-+	 * can't be more delalloc or ordered extents in the range.
- 	 */
- 	ret = btrfs_wait_ordered_range(inode, alloc_start,
- 				       alloc_end - alloc_start);
-@@ -3489,38 +3493,8 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	}
+ 	 * For subpage case, if the range is not at page boundary, we could
+@@ -2587,40 +2587,27 @@ static int btrfs_punch_hole_lock_range(struct inode *inode,
+ 	const u64 page_lockend = round_down(lockend + 1, PAGE_SIZE) - 1;
  
- 	locked_end = alloc_end - 1;
--	while (1) {
+ 	while (1) {
 -		struct btrfs_ordered_extent *ordered;
+-		int ret;
 -
--		/* the extent lock is ordered inside the running
--		 * transaction
--		 */
--		lock_extent_bits(&BTRFS_I(inode)->io_tree, alloc_start,
--				 locked_end, &cached_state);
+ 		truncate_pagecache_range(inode, lockstart, lockend);
+ 
+ 		lock_extent_bits(&BTRFS_I(inode)->io_tree, lockstart, lockend,
+ 				 cached_state);
 -		ordered = btrfs_lookup_first_ordered_extent(BTRFS_I(inode),
--							    locked_end);
+-							    lockend);
 -
--		if (ordered &&
--		    ordered->file_offset + ordered->num_bytes > alloc_start &&
--		    ordered->file_offset < alloc_end) {
--			btrfs_put_ordered_extent(ordered);
--			unlock_extent_cached(&BTRFS_I(inode)->io_tree,
--					     alloc_start, locked_end,
--					     &cached_state);
--			/*
--			 * we can't wait on the range with the transaction
--			 * running or with the extent lock held
--			 */
--			ret = btrfs_wait_ordered_range(inode, alloc_start,
--						       alloc_end - alloc_start);
--			if (ret)
--				goto out;
--		} else {
+ 		/*
+-		 * We need to make sure we have no ordered extents in this range
+-		 * and nobody raced in and read a page in this range, if we did
+-		 * we need to try again.
++		 * We can't have ordered extents in the range, nor dirty/writeback
++		 * pages, because we have locked the inode's VFS lock in exclusive
++		 * mode, we have locked the inode's i_mmap_lock in exclusive mode,
++		 * we have flushed all delalloc in the range and we have waited
++		 * for any ordered extents in the range to complete.
++		 * We can race with anyone reading pages from this range, so after
++		 * locking the range check if we have pages in the range, and if
++		 * we do, unlock the range and retry.
+ 		 */
+-		if ((!ordered ||
+-		    (ordered->file_offset + ordered->num_bytes <= lockstart ||
+-		     ordered->file_offset > lockend)) &&
+-		     !filemap_range_has_page(inode->i_mapping,
+-					     page_lockstart, page_lockend)) {
 -			if (ordered)
 -				btrfs_put_ordered_extent(ordered);
--			break;
++		if (!filemap_range_has_page(inode->i_mapping, page_lockstart,
++					    page_lockend))
+ 			break;
 -		}
--	}
-+	lock_extent_bits(&BTRFS_I(inode)->io_tree, alloc_start, locked_end,
-+			 &cached_state);
+-		if (ordered)
+-			btrfs_put_ordered_extent(ordered);
++
+ 		unlock_extent_cached(&BTRFS_I(inode)->io_tree, lockstart,
+ 				     lockend, cached_state);
+-		ret = btrfs_wait_ordered_range(inode, lockstart,
+-					       lockend - lockstart + 1);
+-		if (ret)
+-			return ret;
+ 	}
+-	return 0;
+ }
  
- 	/* First, check if we exceed the qgroup limit */
- 	INIT_LIST_HEAD(&reserve_list);
+ static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
+@@ -3072,10 +3059,7 @@ static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
+ 		goto out_only_mutex;
+ 	}
+ 
+-	ret = btrfs_punch_hole_lock_range(inode, lockstart, lockend,
+-					  &cached_state);
+-	if (ret)
+-		goto out_only_mutex;
++	btrfs_punch_hole_lock_range(inode, lockstart, lockend, &cached_state);
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+@@ -3366,10 +3350,8 @@ static int btrfs_zero_range(struct inode *inode,
+ 		if (ret < 0)
+ 			goto out;
+ 		space_reserved = true;
+-		ret = btrfs_punch_hole_lock_range(inode, lockstart, lockend,
+-						  &cached_state);
+-		if (ret)
+-			goto out;
++		btrfs_punch_hole_lock_range(inode, lockstart, lockend,
++					    &cached_state);
+ 		ret = btrfs_qgroup_reserve_data(BTRFS_I(inode), &data_reserved,
+ 						alloc_start, bytes_to_reserve);
+ 		if (ret) {
 -- 
 2.33.0
 
