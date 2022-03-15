@@ -2,202 +2,257 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A44994D9AFF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 13:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4874D9BFF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 14:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348197AbiCOMUV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 08:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37742 "EHLO
+        id S235832AbiCONRk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 09:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348194AbiCOMUT (ORCPT
+        with ESMTP id S233135AbiCONRj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 08:20:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1B8527CC
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 05:19:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E0B66B815FE
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:19:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 050C7C340ED
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:19:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647346744;
-        bh=948AsPo5PMZUhu26NgHnnfY0ixzi8nVI5u1gC0teGug=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=OU+TLlPvVCE/pKRNiRiroFeERVjBorxQKlY2EpCvnSp75xhnSd+2Iu3FgS4VVp8e7
-         ocqTIYPOubszuits41v4VBaMECStKIykkkyFQ3eSCexxEpZOLgxNSItqwucJ1gKzuP
-         kK5XcC+v2S+UQGLPjjtWcOdJMuI25uYaxIzZ3ygG0QJZL05HKejGhSb9PkbdRyUike
-         YWlI2WiMMTNi8V9ELmaguf9XQFTkl8Nw2ZSmPMU+/qHXUkIHbwAJR8w9ay2lAJiPQ/
-         8wN7hZFtHeQpQ1ozX8EwkEq/iuSSLUvA6bX62k5Hia0+ZfdjK0QGYVnzM6nv2UkwlZ
-         XCp4gRYSXsE8A==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 7/7] btrfs: add and use helper to assert an inode range is clean
-Date:   Tue, 15 Mar 2022 12:18:54 +0000
-Message-Id: <83c4e667509aa824cfb511ae4b65d7572d6f4c5a.1647346287.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1647346287.git.fdmanana@suse.com>
-References: <cover.1647346287.git.fdmanana@suse.com>
+        Tue, 15 Mar 2022 09:17:39 -0400
+Received: from out20-49.mail.aliyun.com (out20-49.mail.aliyun.com [115.124.20.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A28527E0
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 06:16:26 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04437399|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.209243-0.0558655-0.734892;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.N57PGXB_1647350183;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.N57PGXB_1647350183)
+          by smtp.aliyun-inc.com(33.37.68.185);
+          Tue, 15 Mar 2022 21:16:24 +0800
+Date:   Tue, 15 Mar 2022 21:16:27 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     fdmanana@kernel.org
+Subject: Re: [PATCH v2 1/7] btrfs: only reserve the needed data space amount during fallocate
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <dde255ba71e1bfe38daf88c1b7ef51df15d5c150.1647346287.git.fdmanana@suse.com>
+References: <cover.1647346287.git.fdmanana@suse.com> <dde255ba71e1bfe38daf88c1b7ef51df15d5c150.1647346287.git.fdmanana@suse.com>
+Message-Id: <20220315211627.BD66.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hi,
 
-We have four different scenarios where we don't expect to find ordered
-extents after locking a file range:
+> TODO: test case when the file with/without snapshot
+> 
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> During a plain fallocate, we always start by reserving an amount of data
+> space that matches the length of the range passed to fallocate. When we
+> already have extents allocated in that range, we may end up trying to
+> reserve a lot more data space then we need, which can result in two
+> undesired behaviours:
 
-1) During plain fallocate;
-2) During hole punching;
-3) During zero range;
-4) During reflinks (both cloning and deduplication).
+Need we check whether the allocated extents are exclusive  or shared?
 
-This is because in all these cases we follow the pattern:
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/03/15
 
-1) Lock the inode's VFS lock in exclusive mode;
+> 
+> 1) We fail with -ENOSPC. For example the passed range has a length
+>    of 1G, but there's only one hole with a size of 1M in that range;
+> 
+> 2) We temporarily reserve excessive data space that could be used by
+>    other operations happening concurrently;
+> 
+> 3) By reserving much more data space then we need, we can end up
+>    doing expensive things like triggering dellaloc for other inodes,
+>    waiting for the ordered extents to complete, trigger transaction
+>    commits, allocate new block groups, etc.
+> 
+> Example:
+> 
+>   $ cat test.sh
+>   #!/bin/bash
+> 
+>   DEV=/dev/sdj
+>   MNT=/mnt/sdj
+> 
+>   mkfs.btrfs -f -b 1g $DEV
+>   mount $DEV $MNT
+> 
+>   # Create a file with a size of 600M and two holes, one at [200M, 201M[
+>   # and another at [401M, 402M[
+>   xfs_io -f -c "pwrite -S 0xab 0 200M" \
+>             -c "pwrite -S 0xcd 201M 200M" \
+>             -c "pwrite -S 0xef 402M 198M" \
+>             $MNT/foobar
+> 
+>   # Now call fallocate against the whole file range, see if it fails
+>   # with -ENOSPC or not - it shouldn't since we only need to allocate
+>   # 2M of data space.
+>   xfs_io -c "falloc 0 600M" $MNT/foobar
+> 
+>   umount $MNT
+> 
+>   $ ./test.sh
+>   (...)
+>   wrote 209715200/209715200 bytes at offset 0
+>   200 MiB, 51200 ops; 0.8063 sec (248.026 MiB/sec and 63494.5831 ops/sec)
+>   wrote 209715200/209715200 bytes at offset 210763776
+>   200 MiB, 51200 ops; 0.8053 sec (248.329 MiB/sec and 63572.3172 ops/sec)
+>   wrote 207618048/207618048 bytes at offset 421527552
+>   198 MiB, 50688 ops; 0.7925 sec (249.830 MiB/sec and 63956.5548 ops/sec)
+>   fallocate: No space left on device
+>   $
+> 
+> So fix this by not allocating an amount of data space that matches the
+> length of the range passed to fallocate. Instead allocate an amount of
+> data space that corresponds to the sum of the sizes of each hole found
+> in the range. This reservation now happens after we have locked the file
+> range, which is safe since we know at this point there's no delalloc
+> in the range because we've taken the inode's VFS lock in exclusive mode,
+> we have taken the inode's i_mmap_lock in exclusive mode, we have flushed
+> delalloc and waited for all ordered extents in the range to complete.
+> 
+> This type of failure actually seems to happen in pratice with systemd,
+> and we had at least one report about this in a very long thread which
+> is referenced by the Link tag below.
+> 
+> Link: https://lore.kernel.org/linux-btrfs/bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/file.c | 69 ++++++++++++++++++++++++++-----------------------
+>  1 file changed, 37 insertions(+), 32 deletions(-)
+> 
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 380054c94e4b..b7c0db1000cd 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -3417,6 +3417,9 @@ static long btrfs_fallocate(struct file *file, int mode,
+>  	u64 alloc_hint = 0;
+>  	u64 locked_end;
+>  	u64 actual_end = 0;
+> +	u64 data_space_needed = 0;
+> +	u64 data_space_reserved = 0;
+> +	u64 qgroup_reserved = 0;
+>  	struct extent_map *em;
+>  	int blocksize = btrfs_inode_sectorsize(BTRFS_I(inode));
+>  	int ret;
+> @@ -3437,18 +3440,6 @@ static long btrfs_fallocate(struct file *file, int mode,
+>  	if (mode & FALLOC_FL_PUNCH_HOLE)
+>  		return btrfs_punch_hole(file, offset, len);
+>  
+> -	/*
+> -	 * Only trigger disk allocation, don't trigger qgroup reserve
+> -	 *
+> -	 * For qgroup space, it will be checked later.
+> -	 */
+> -	if (!(mode & FALLOC_FL_ZERO_RANGE)) {
+> -		ret = btrfs_alloc_data_chunk_ondemand(BTRFS_I(inode),
+> -						      alloc_end - alloc_start);
+> -		if (ret < 0)
+> -			return ret;
+> -	}
+> -
+>  	btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
+>  
+>  	if (!(mode & FALLOC_FL_KEEP_SIZE) && offset + len > inode->i_size) {
+> @@ -3548,48 +3539,66 @@ static long btrfs_fallocate(struct file *file, int mode,
+>  		if (em->block_start == EXTENT_MAP_HOLE ||
+>  		    (cur_offset >= inode->i_size &&
+>  		     !test_bit(EXTENT_FLAG_PREALLOC, &em->flags))) {
+> +			const u64 range_len = last_byte - cur_offset;
+> +
+>  			ret = add_falloc_range(&reserve_list, cur_offset,
+> -					       last_byte - cur_offset);
+> +					       range_len);
+>  			if (ret < 0) {
+>  				free_extent_map(em);
+>  				break;
+>  			}
+>  			ret = btrfs_qgroup_reserve_data(BTRFS_I(inode),
+>  					&data_reserved, cur_offset,
+> -					last_byte - cur_offset);
+> +					range_len);
+>  			if (ret < 0) {
+> -				cur_offset = last_byte;
+>  				free_extent_map(em);
+>  				break;
+>  			}
+> -		} else {
+> -			/*
+> -			 * Do not need to reserve unwritten extent for this
+> -			 * range, free reserved data space first, otherwise
+> -			 * it'll result in false ENOSPC error.
+> -			 */
+> -			btrfs_free_reserved_data_space(BTRFS_I(inode),
+> -				data_reserved, cur_offset,
+> -				last_byte - cur_offset);
+> +			qgroup_reserved += range_len;
+> +			data_space_needed += range_len;
+>  		}
+>  		free_extent_map(em);
+>  		cur_offset = last_byte;
+>  	}
+>  
+> +	if (!ret && data_space_needed > 0) {
+> +		/*
+> +		 * We are safe to reserve space here as we can't have delalloc
+> +		 * in the range, see above.
+> +		 */
+> +		ret = btrfs_alloc_data_chunk_ondemand(BTRFS_I(inode),
+> +						      data_space_needed);
+> +		if (!ret)
+> +			data_space_reserved = data_space_needed;
+> +	}
+> +
+>  	/*
+>  	 * If ret is still 0, means we're OK to fallocate.
+>  	 * Or just cleanup the list and exit.
+>  	 */
+>  	list_for_each_entry_safe(range, tmp, &reserve_list, list) {
+> -		if (!ret)
+> +		if (!ret) {
+>  			ret = btrfs_prealloc_file_range(inode, mode,
+>  					range->start,
+>  					range->len, i_blocksize(inode),
+>  					offset + len, &alloc_hint);
+> -		else
+> +			/*
+> +			 * btrfs_prealloc_file_range() releases space even
+> +			 * if it returns an error.
+> +			 */
+> +			data_space_reserved -= range->len;
+> +			qgroup_reserved -= range->len;
+> +		} else if (data_space_reserved > 0) {
+>  			btrfs_free_reserved_data_space(BTRFS_I(inode),
+> -					data_reserved, range->start,
+> -					range->len);
+> +					       data_reserved, range->start,
+> +					       range->len);
+> +			data_space_reserved -= range->len;
+> +			qgroup_reserved -= range->len;
+> +		} else if (qgroup_reserved > 0) {
+> +			btrfs_qgroup_free_data(BTRFS_I(inode), data_reserved,
+> +					       range->start, range->len);
+> +			qgroup_reserved -= range->len;
+> +		}
+>  		list_del(&range->list);
+>  		kfree(range);
+>  	}
+> @@ -3606,10 +3615,6 @@ static long btrfs_fallocate(struct file *file, int mode,
+>  			     &cached_state);
+>  out:
+>  	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
+> -	/* Let go of our reservation. */
+> -	if (ret != 0 && !(mode & FALLOC_FL_ZERO_RANGE))
+> -		btrfs_free_reserved_data_space(BTRFS_I(inode), data_reserved,
+> -				cur_offset, alloc_end - cur_offset);
+>  	extent_changeset_free(data_reserved);
+>  	return ret;
+>  }
+> -- 
+> 2.33.0
 
-2) Lock the inode's i_mmap_lock in exclusive node, to serialize with
-   mmap writes;
-
-3) Flush delalloc in a file range and wait for all ordered extents
-   to complete - both done through btrfs_wait_ordered_range();
-
-4) Lock the file range in the inode's io_tree.
-
-So add a helper that asserts that we don't have ordered extents for a
-given range. Make the four scenarios listed above use this helper after
-locking the respective file range.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.h   |  1 +
- fs/btrfs/file.c    |  4 ++++
- fs/btrfs/inode.c   | 37 +++++++++++++++++++++++++++++++++++++
- fs/btrfs/reflink.c | 13 +++++++++++--
- 4 files changed, 53 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4db17bd05a21..c58baad426f8 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3327,6 +3327,7 @@ void btrfs_inode_unlock(struct inode *inode, unsigned int ilock_flags);
- void btrfs_update_inode_bytes(struct btrfs_inode *inode,
- 			      const u64 add_bytes,
- 			      const u64 del_bytes);
-+void btrfs_assert_inode_range_clean(struct btrfs_inode *inode, u64 start, u64 end);
- 
- /* ioctl.c */
- long btrfs_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index b9e43734d1ed..f3bb2aa0514a 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2608,6 +2608,8 @@ static void btrfs_punch_hole_lock_range(struct inode *inode,
- 		unlock_extent_cached(&BTRFS_I(inode)->io_tree, lockstart,
- 				     lockend, cached_state);
- 	}
-+
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode), lockstart, lockend);
- }
- 
- static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
-@@ -3479,6 +3481,8 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	lock_extent_bits(&BTRFS_I(inode)->io_tree, alloc_start, locked_end,
- 			 &cached_state);
- 
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode), alloc_start, locked_end);
-+
- 	/* First, check if we exceed the qgroup limit */
- 	INIT_LIST_HEAD(&reserve_list);
- 	while (cur_offset < alloc_end) {
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2e7143ff5523..50c7e23877a9 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -11306,6 +11306,43 @@ void btrfs_update_inode_bytes(struct btrfs_inode *inode,
- 	spin_unlock(&inode->lock);
- }
- 
-+/*
-+ * Verify that there are no ordered extents for a given file range.
-+ *
-+ * @inode:                The target inode.
-+ * @start:                Start offset of the file range, should be sector size
-+ *                        aligned.
-+ * @end:                  End offset (inclusive) of the file range, its value +1
-+ *                        should be sector size aligned.
-+ *
-+ * This should typically be used for cases where we locked an inode's VFS lock in
-+ * exclusive mode, we have also locked the inode's i_mmap_lock in exclusive mode,
-+ * we have flushed all delalloc in the range, we have waited for all ordered
-+ * extents in the range to complete and finally we have locked the file range in
-+ * the inode's io_tree.
-+ */
-+void btrfs_assert_inode_range_clean(struct btrfs_inode *inode, u64 start, u64 end)
-+{
-+	struct btrfs_root *root = inode->root;
-+	struct btrfs_ordered_extent *ordered;
-+
-+	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
-+		return;
-+
-+	ordered = btrfs_lookup_first_ordered_range(inode, start,
-+						   end + 1 - start);
-+	if (ordered) {
-+		btrfs_err(root->fs_info,
-+"found unexpected ordered extent in file range [%llu, %llu] for inode %llu root %llu (ordered range [%llu, %llu])",
-+			  start, end, btrfs_ino(inode), root->root_key.objectid,
-+			  ordered->file_offset,
-+			  ordered->file_offset + ordered->num_bytes - 1);
-+		btrfs_put_ordered_extent(ordered);
-+	}
-+
-+	ASSERT(ordered == NULL);
-+}
-+
- static const struct inode_operations btrfs_dir_inode_operations = {
- 	.getattr	= btrfs_getattr,
- 	.lookup		= btrfs_lookup,
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index bbd5da25c475..85d8f0d5d3e0 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -614,14 +614,23 @@ static void btrfs_double_extent_unlock(struct inode *inode1, u64 loff1,
- static void btrfs_double_extent_lock(struct inode *inode1, u64 loff1,
- 				     struct inode *inode2, u64 loff2, u64 len)
- {
-+	u64 range1_end = loff1 + len - 1;
-+	u64 range2_end = loff2 + len - 1;
-+
- 	if (inode1 < inode2) {
- 		swap(inode1, inode2);
- 		swap(loff1, loff2);
-+		swap(range1_end, range2_end);
- 	} else if (inode1 == inode2 && loff2 < loff1) {
- 		swap(loff1, loff2);
-+		swap(range1_end, range2_end);
- 	}
--	lock_extent(&BTRFS_I(inode1)->io_tree, loff1, loff1 + len - 1);
--	lock_extent(&BTRFS_I(inode2)->io_tree, loff2, loff2 + len - 1);
-+
-+	lock_extent(&BTRFS_I(inode1)->io_tree, loff1, range1_end);
-+	lock_extent(&BTRFS_I(inode2)->io_tree, loff2, range2_end);
-+
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode1), loff1, range1_end);
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode2), loff2, range2_end);
- }
- 
- static void btrfs_double_mmap_lock(struct inode *inode1, struct inode *inode2)
--- 
-2.33.0
 
