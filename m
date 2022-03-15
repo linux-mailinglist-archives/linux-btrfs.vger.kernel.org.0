@@ -2,98 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 497AF4D911C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 01:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F311D4D9202
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 02:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245446AbiCOAR6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Mar 2022 20:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        id S235519AbiCOBJX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Mar 2022 21:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233869AbiCOAR5 (ORCPT
+        with ESMTP id S235346AbiCOBJW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Mar 2022 20:17:57 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BD341622
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 17:16:47 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id e3so16171215pjm.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 17:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZRjqe/yqzaAVyCySE2DnAuiA2qA3IX21BPkBy7O5zEQ=;
-        b=McdKBLzHKooA7o8E3clklrpqFLZvq/TopZCXXF0gMoCPWlfQmZ7/V/4r6inAoVBhJt
-         4Eq7lZMB7I/SIxkuTkVoXj9B7ga+TPFXIz92HZcLJRaD+WmLjx66JJ8ORgbKSkJR42cH
-         /slmkqqCpS7D0hBV3VqncO3/X+hkf+WhXzBtwIlbX5o/aKpnR4s0lwr+fsACVF4JpulI
-         GVAJLvj2jNzbtmPs2EsyBXdTWczWTUqZAC+pes9xMOELJPssYqvG41oN3fofLlNiK4zK
-         O9ku4caOzBqxfsr6QJ9ScBKDyLfvIKxHvO9lOmLg//jod5Mb2a15jpsbWAyBNz9gBo2U
-         08gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZRjqe/yqzaAVyCySE2DnAuiA2qA3IX21BPkBy7O5zEQ=;
-        b=nOCL/gp6pTo+Deg6L65EK6C2AlZRI5vXFmGxRcC6wOOPsQosQ+RRewY1Th9QAO7hSL
-         nILubp40HRHlsOJfHMw6wqPb8i0sbTz4ccMCWGQ1D2jsaDaoe+nmjFuM7oSsD9ypt7N7
-         2Fy9ks4Z4CqTr6P06g/kSPQE2nCrOI17wBMte1DaHn7FHpGRb2bu8XL4+yEnvb0YimA9
-         2kcxgZNvdC+sxC8FYCR7PLBj39drkPVX88JB/l+crOgb0b8gqyZ7xSRje9/EEf1opGNF
-         7CYvIS7vazSy17WPbBPJvXL4ojGvZ3grTq9xw73f6wxt17os07ZD6RTlP1pBNQrBVX96
-         htRg==
-X-Gm-Message-State: AOAM533Phft8XBRr5HFQiqqLNMzAQMswbXJT11zow6+AjcLoSNCBG474
-        89zxTjr3341rkUSYL+jye4ZYTA==
-X-Google-Smtp-Source: ABdhPJyV959yzMdIrp0Xj4DieDY6+X6Ma7bDlhOuP0rf7wG0QgsDRe1XI4rRUOKG4/Gczont9jpZmA==
-X-Received: by 2002:a17:902:e549:b0:151:f021:51e6 with SMTP id n9-20020a170902e54900b00151f02151e6mr25423033plf.71.1647303406834;
-        Mon, 14 Mar 2022 17:16:46 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:46f5])
-        by smtp.gmail.com with ESMTPSA id t8-20020a6549c8000000b00372eb3a7fb3sm17437230pgs.92.2022.03.14.17.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Mar 2022 17:16:46 -0700 (PDT)
-Date:   Mon, 14 Mar 2022 17:16:45 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH v2 13/16] btrfs: allocate inode outside of
- btrfs_new_inode()
-Message-ID: <Yi/a7a4C9zT/c+KR@relinquished.localdomain>
-References: <cover.1646875648.git.osandov@fb.com>
- <24d8818e1152a8fb31e2d78239ce410d2a0f8cd4.1646875648.git.osandov@fb.com>
- <CAL3q7H5ACv3ej1=7P2y7mA1vCJoAcHkCqro6_VBuAUxeaw25rw@mail.gmail.com>
+        Mon, 14 Mar 2022 21:09:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E802E10FFF
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Mar 2022 18:08:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9DF861F37E
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 01:08:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1647306490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=20+puWsWq5RqpJW9u5eZg2yFBeJNKkKprLOc5JnOMQM=;
+        b=COe4KE1tucHX/XPKyHZHXlqTSTw1JPB27e+VsDCeTdyzwRAlZRfux4JiE5h8phJNw1kRoq
+        YxzktvI9rZelwQv09Q2YJX9f/sFtuUh6qr71DzNUfd6cGfoeeKpMdPNicqKrJwMaG5vp+v
+        HKPeG6Fqd8JNMMUuQ3/h5ZITwOaTVWQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0031213ADA
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 01:08:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kx0xL/nmL2JSWwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 01:08:09 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: avoid defragging extents whose next extents are not targets
+Date:   Tue, 15 Mar 2022 09:07:52 +0800
+Message-Id: <795e3dee8c4789f845e5e14bfc02c992b86fa2d9.1647306224.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H5ACv3ej1=7P2y7mA1vCJoAcHkCqro6_VBuAUxeaw25rw@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 14, 2022 at 11:33:51PM +0000, Filipe Manana wrote:
-> On Thu, Mar 10, 2022 at 4:56 AM Omar Sandoval <osandov@osandov.com> wrote:
-> >
-> > From: Omar Sandoval <osandov@fb.com>
-> >
-> > Instead of calling new_inode() and inode_init_owner() inside of
-> > btrfs_new_inode(), do it in the callers. This allows us to pass in just
-> > the inode instead of the mnt_userns and mode and removes the need for
-> > memalloc_nofs_{save,restores}() since we do it before starting a
-> > transaction. This also paves the way for some more cleanups in later
-> > patches.
-> >
-> > This also removes the comments about Smack checking i_op, which are no
-> > longer true since commit 5d6c31910bc0 ("xattr: Add
-> > __vfs_{get,set,remove}xattr helpers"). Now it checks inode->i_opflags &
-> > IOP_XATTR, which is set based on sb->s_xattr.
-> >
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> 
-> There's some leak here Omar.
-> 
-> misc-next is triggering tons of these on dmesg:
+[BUG]
+There is a report that autodefrag is defragging single sector, which
+is completely waste of IO, and no help for defragging:
 
-I reproduced the "page private not zero" messages on misc-next, but not
-on my full series, so it's probably some mistake I made when splitting
-up these patches that doesn't exist in the end result. I'll fix it.
+   btrfs-cleaner-808     defrag_one_locked_range: root=256 ino=651122 start=0 len=4096
+
+[CAUSE]
+In defrag_collect_targets(), we check if the current range (A) can be merged
+with next one (B).
+
+If mergeable, we will add range A into target for defrag.
+
+However there is a catch for autodefrag, when checking mergebility against
+range B, we intentionally pass 0 as @newer_than, hoping to get a
+higher chance to merge with the next extent.
+
+But in next iteartion, range B will looked up by defrag_lookup_extent(),
+with non-zero @newer_than.
+
+And if range B is not really newer, it will rejected directly, causing
+only range A being defragged, while we expect to defrag both range A and
+B.
+
+[FIX]
+Since the root cause is the difference in check condition of
+defrag_check_next_extent() and defrag_collect_targets(), we fix it by:
+
+1. Pass @newer_than to defrag_check_next_extent()
+2. Pass @extent_thresh to defrag_check_next_extent()
+
+This makes the check between defrag_collect_targets() and
+defrag_check_next_extent() more consistent.
+
+While there is still some minor difference, the remaining checks are
+focus on runtime flags like writeback/delalloc, which are mostly
+transient and safe to be checked only in defrag_collect_targets().
+
+Issue: 423#issuecomment-1066981856
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/ioctl.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 3d3d6e2f110a..7d7520a2e281 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1189,7 +1189,7 @@ static u32 get_extent_max_capacity(const struct extent_map *em)
+ }
+ 
+ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+-				     bool locked)
++				     u32 extent_thresh, u64 newer_than, bool locked)
+ {
+ 	struct extent_map *next;
+ 	bool ret = false;
+@@ -1199,11 +1199,13 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+ 		return false;
+ 
+ 	/*
+-	 * We want to check if the next extent can be merged with the current
+-	 * one, which can be an extent created in a past generation, so we pass
+-	 * a minimum generation of 0 to defrag_lookup_extent().
++	 * Here we need to pass @newer_then when checking the next extent, or
++	 * we will hit a case we mark current extent for defrag, but the next
++	 * one will not be a target.
++	 * This will just cause extra IO without really reducing the fragments.
+ 	 */
+-	next = defrag_lookup_extent(inode, em->start + em->len, 0, locked);
++	next = defrag_lookup_extent(inode, em->start + em->len, newer_than,
++				    locked);
+ 	/* No more em or hole */
+ 	if (!next || next->block_start >= EXTENT_MAP_LAST_BYTE)
+ 		goto out;
+@@ -1215,6 +1217,13 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+ 	 */
+ 	if (next->len >= get_extent_max_capacity(em))
+ 		goto out;
++	/* Skip older extent */
++	if (next->generation < newer_than)
++		goto out;
++	/* Also check extent size */
++	if (next->len >= extent_thresh)
++		goto out;
++
+ 	ret = true;
+ out:
+ 	free_extent_map(next);
+@@ -1420,7 +1429,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 			goto next;
+ 
+ 		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
+-							  locked);
++						extent_thresh, newer_than, locked);
+ 		if (!next_mergeable) {
+ 			struct defrag_target_range *last;
+ 
+-- 
+2.35.1
+
