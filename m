@@ -2,135 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FBF4D9D68
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 15:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317184D9D9A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 15:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241974AbiCOOZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 10:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
+        id S1349360AbiCOOdJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 10:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233770AbiCOOZI (ORCPT
+        with ESMTP id S1349300AbiCOOcz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 10:25:08 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9496A527C2
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 07:23:56 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id eq14so15084653qvb.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 07:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xh3j/GyDKAkH+mhH+O+Z91OS2wkGYBwp1E3DXBXZ0sQ=;
-        b=vs54IXrzFMB04rjiYh+EnVph2p6r9ljD49QH7XSLLzEd2GcfSE/oPlMGfqRP16ls1U
-         jyejB/+sKOvGt8jBGfmuXO37gQoLXjYbBYRTvZtQ/l8hxt7D6TZP8ERqrIH2W9AtEcH6
-         8ogXBjB6bpKFzQbbAbFxPF38to+nn5UOXS6t8g28SoZa97Vn8jzdJC+3KSTO1mhHEJXN
-         91FbIXf7lNLJBBRqJy5ZoCzchXzvXhpmbQF2N1E1MusHL5cB3k5Y9myc5Uv3CeoXsMse
-         lDCrD6W/nCnU8NfaoJMjorsOMPtL1UFP30uu4qDfayGBj19B6lWkFdTnxbO6lYnkMNv2
-         nH3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xh3j/GyDKAkH+mhH+O+Z91OS2wkGYBwp1E3DXBXZ0sQ=;
-        b=ax0WBIpIuEtTRmAuEDrXTLOy3Advt68THCNMkKRjLyrOMe5O886Z0AJtfBwAo//n10
-         4oXAGBZhMtkt4HCdZ7QYu838ItZUiyShuwhLa8RrTyjcxoZRtAkHeXdgPWH8DOHTxrAZ
-         1e23A3pggJpAnm9WXkcuNuYmH5S/yNQ0CvNA4l17wwifI6AFYIw9IfqV+CRuV50Zzl8U
-         +sdmv7OSOBHuxRKBNd87dKZ+c6r5FEI3QGAAP9gWJShzxUbrPKboPogNXV5qDUbtYrrP
-         6yG8SEAO3vO7E86pAZfIFjtiM/6CJ+4pwVORHLosqZbbkMozZ9ZgTCcIDqeq1ON15Z5E
-         pj+w==
-X-Gm-Message-State: AOAM5330XBQoyR1TbKJsfe+WCyKRvBN/VbJGQIfHNohVYsfvATTeSjHC
-        kei5G5Ay7navXnQqnN8jI5VjAQ==
-X-Google-Smtp-Source: ABdhPJxnHgzC0C7gzo9iTAOfCmZkSMBoAOA1x3kmK2wRW/NjkyDVQjY2YzeqE/0DodKcuXil1ew5XQ==
-X-Received: by 2002:ad4:5aa4:0:b0:440:ac92:53a9 with SMTP id u4-20020ad45aa4000000b00440ac9253a9mr7678194qvg.130.1647354235463;
-        Tue, 15 Mar 2022 07:23:55 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y11-20020ac85f4b000000b002e1e038a8fdsm1536037qta.13.2022.03.15.07.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Mar 2022 07:23:54 -0700 (PDT)
-Date:   Tue, 15 Mar 2022 10:23:53 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     David Sterba <dsterba@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        lsf-pc <lsf-pc@lists.linux-foundation.org>,
-        linux-btrfs@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+        Tue, 15 Mar 2022 10:32:55 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B15D54FA5;
+        Tue, 15 Mar 2022 07:31:43 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0A4571F391;
+        Tue, 15 Mar 2022 14:31:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1647354702;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X4cn6JV8O5AWRhPuK4Wz8bFqAnv8oC3Dsib+SHAacxc=;
+        b=AeePv1tYMjuFa+aHT+vLeUHCFANUp2upgQvR8FONiCoHkfgRPwtYn+YcU47g8mQR8xGMjj
+        dF8lRdVfTicMFe2IfCiJWp6NsR35uAjZHmWjG+23uQTEi+1BZcWZ4Dn05qtApxxz8hgCKN
+        /KHQseXyUpbpX4EqAUILwbcg7z/PUQ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1647354702;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X4cn6JV8O5AWRhPuK4Wz8bFqAnv8oC3Dsib+SHAacxc=;
+        b=taUQzUafQQZZAq34Z4BXfJfJMlBB/yEH93K5d2DJbUxkQyKCDrlRYIsIzerMcwkYGj5E20
+        MrNXb5dXtx/3sNAg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 196C0A3B81;
+        Tue, 15 Mar 2022 14:31:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 22423DA7E1; Tue, 15 Mar 2022 15:27:40 +0100 (CET)
+Date:   Tue, 15 Mar 2022 15:27:40 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier@javigon.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matias =?iso-8859-1?Q?Bj=F8rling?= <Matias.Bjorling@wdc.com>,
         Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Keith Busch <kbusch@kernel.org>,
+        Pankaj Raghav <p.raghav@samsung.com>,
         Adam Manzanares <a.manzanares@samsung.com>,
+        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
         kanchan Joshi <joshi.k@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
         Pankaj Raghav <pankydev8@gmail.com>,
-        Kanchan Joshi <joshiiitr@gmail.com>
-Subject: Re: btrfs profiles to test was: (Re: [LSF/MM TOPIC] FS, MM, and
- stable trees)
-Message-ID: <YjCheepcDh/oRp9M@localhost.localdomain>
-References: <YicrMCidylefTC3n@kroah.com>
- <YieG8rZkgnfwygyu@mit.edu>
- <Yij08f7ee4pDZ2AC@bombadil.infradead.org>
- <Yij2rqDn4TiN3kK9@localhost.localdomain>
- <Yij5YTD5+V2qpsSs@bombadil.infradead.org>
- <YikZ2Zy6CtdNQ7WQ@localhost.localdomain>
- <YilUPAGQBPwI0V3n@bombadil.infradead.org>
- <YipIqqiz91D39nMQ@localhost.localdomain>
- <YiwAWRRS8AmurVm6@bombadil.infradead.org>
- <Yi/FiHhw01zW2NXc@bombadil.infradead.org>
+        Kanchan Joshi <joshiiitr@gmail.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 0/6] power_of_2 emulation support for NVMe ZNS devices
+Message-ID: <20220315142740.GU12643@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier@javigon.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matias =?iso-8859-1?Q?Bj=F8rling?= <Matias.Bjorling@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Keith Busch <kbusch@kernel.org>,
+        Pankaj Raghav <p.raghav@samsung.com>,
+        Adam Manzanares <a.manzanares@samsung.com>,
+        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
+        kanchan Joshi <joshi.k@samsung.com>, Jens Axboe <axboe@kernel.dk>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Pankaj Raghav <pankydev8@gmail.com>,
+        Kanchan Joshi <joshiiitr@gmail.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+References: <20220314104938.hv26bf5vah4x32c2@ArmHalley.local>
+ <BYAPR04MB49682B9263F21EE67070A4B1F10F9@BYAPR04MB4968.namprd04.prod.outlook.com>
+ <20220314195551.sbwkksv33ylhlyx2@ArmHalley.local>
+ <BYAPR04MB49688BD817284E5C317DD5D8F1109@BYAPR04MB4968.namprd04.prod.outlook.com>
+ <20220315130501.q7fjpqzutadadfu3@ArmHalley.localdomain>
+ <BYAPR04MB49689803ED6E1E32C49C6413F1109@BYAPR04MB4968.namprd04.prod.outlook.com>
+ <20220315132611.g5ert4tzuxgi7qd5@unifi>
+ <20220315133052.GA12593@lst.de>
+ <20220315135245.eqf4tqngxxb7ymqa@unifi>
+ <PH0PR04MB74167377D7D86C60C290DAB29B109@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <Yi/FiHhw01zW2NXc@bombadil.infradead.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <PH0PR04MB74167377D7D86C60C290DAB29B109@PH0PR04MB7416.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 14, 2022 at 03:45:28PM -0700, Luis Chamberlain wrote:
-> On Fri, Mar 11, 2022 at 06:07:21PM -0800, Luis Chamberlain wrote:
-> > On Thu, Mar 10, 2022 at 01:51:22PM -0500, Josef Bacik wrote:
-> > > [root@fedora-rawhide ~]# cat /xfstests-dev/local.config
-> > > [btrfs_normal_freespacetree]
-> > > [btrfs_compress_freespacetree]
-> > > [btrfs_normal]
-> > > [btrfs_compression]
-> > > [kdave]
-> > > [btrfs_normal_noholes]
-> > > [btrfs_compress_noholes]
-> > > [btrfs_noholes_freespacetree]
+On Tue, Mar 15, 2022 at 02:14:23PM +0000, Johannes Thumshirn wrote:
+> On 15/03/2022 14:52, Javier González wrote:
+> > On 15.03.2022 14:30, Christoph Hellwig wrote:
+> >> On Tue, Mar 15, 2022 at 02:26:11PM +0100, Javier González wrote:
+> >>> but we do not see a usage for ZNS in F2FS, as it is a mobile
+> >>> file-system. As other interfaces arrive, this work will become natural.
+> >>>
+> >>> ZoneFS and butrfs are good targets for ZNS and these we can do. I would
+> >>> still do the work in phases to make sure we have enough early feedback
+> >>> from the community.
+> >>>
+> >>> Since this thread has been very active, I will wait some time for
+> >>> Christoph and others to catch up before we start sending code.
+> >>
+> >> Can someone summarize where we stand?  Between the lack of quoting
+> >> from hell and overly long lines from corporate mail clients I've
+> >> mostly stopped reading this thread because it takes too much effort
+> >> actually extract the information.
 > > 
-> > + linux-btrfs and zone folks.
+> > Let me give it a try:
 > > 
-> > The name needs to be: $FS_$FANCY_SINGLE_SPACED_NAME
+> >   - PO2 emulation in NVMe is a no-go. Drop this.
+> > 
+> >   - The arguments against supporting PO2 are:
+> >       - It makes ZNS depart from a SMR assumption of PO2 zone sizes. This
+> >         can create confusion for users of both SMR and ZNS
+> > 
+> >       - Existing applications assume PO2 zone sizes, and probably do
+> >         optimizations for these. These applications, if wanting to use
+> >         ZNS will have to change the calculations
+> > 
+> >       - There is a fear for performance regressions.
+> > 
+> >       - It adds more work to you and other maintainers
+> > 
+> >   - The arguments in favour of PO2 are:
+> >       - Unmapped LBAs create holes that applications need to deal with.
+> >         This affects mapping and performance due to splits. Bo explained
+> >         this in a thread from Bytedance's perspective.  I explained in an
+> >         answer to Matias how we are not letting zones transition to
+> >         offline in order to simplify the host stack. Not sure if this is
+> >         something we want to bring to NVMe.
+> > 
+> >       - As ZNS adds more features and other protocols add support for
+> >         zoned devices we will have more use-cases for the zoned block
+> >         device. We will have to deal with these fragmentation at some
+> >         point.
+> > 
+> >       - This is used in production workloads in Linux hosts. I would
+> >         advocate for this not being off-tree as it will be a headache for
+> >         all in the future.
+> > 
+> >   - If you agree that removing PO2 is an option, we can do the following:
+> >       - Remove the constraint in the block layer and add ZoneFS support
+> >         in a first patch.
+> > 
+> >       - Add btrfs support in a later patch
 > 
-> Actually using_underscores_is_fine for the hostnames so we can keep
-> your original except kdave :) and that just gets mapped to btrfs_kdave
-> for now until you guys figure out what to call it.
+> (+ linux-btrfs )
 > 
-
-Lol you didn't need to save the name, I just threw that in there because Sterba
-wanted me to test something specific for some patch and I just never deleted it.
-
-> Likewise it would be useful if someone goees through these and gives me
-> hints as to the kernel revision that supports such config, so that if
-> testing on stable for instance or an older kernel, then the kconfig
-> option for them does not appear.
+> Please also make sure to support btrfs and not only throw some patches 
+> over the fence. Zoned device support in btrfs is complex enough and has 
+> quite some special casing vs regular btrfs, which we're working on getting
+> rid of. So having non-power-of-2 zone size, would also mean having NPO2
+> block-groups (and thus block-groups not aligned to the stripe size).
 > 
+> Just thinking of this and knowing I need to support it gives me a 
+> headache.
 
-I'm cloning this stuff and doing it now, I got fed up trying to find the
-performance difference between virtme and libvirt.  If your shit gives me the
-right performance and makes it so I don't have to think then I'll be happy
-enough to use it.  Thanks,
+PO2 is really easy to work with and I guess allocation on the physical
+device could also benefit from that, I'm still puzzled why the NPO2 is
+even proposed.
 
-Josef
+We can possibly hide the calculations behind some API so I hope in the
+end it should be bearable. The size of block groups is flexible we only
+want some reasonable alignment.
+
+> Also please consult the rest of the btrfs developers for thoughts on this.
+> After all btrfs has full zoned support (including ZNS, not saying it's 
+> perfect) and is also the default FS for at least two Linux distributions.
+
+I haven't read the whole thread yet, my impression is that some hardware
+is deliberately breaking existing assumptions about zoned devices and in
+turn breaking btrfs support. I hope I'm wrong on that or at least that
+it's possible to work around it.
