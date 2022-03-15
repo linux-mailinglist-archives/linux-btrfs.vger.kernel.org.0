@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1785E4D9AF9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 13:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698834D9AFB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 13:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348184AbiCOMUO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 08:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
+        id S1348191AbiCOMUQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 08:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242292AbiCOMUN (ORCPT
+        with ESMTP id S1348185AbiCOMUP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 08:20:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE0E522CF
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 05:19:00 -0700 (PDT)
+        Tue, 15 Mar 2022 08:20:15 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FB7527CC
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 05:19:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F3036151A
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:19:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3290DC340E8
+        by ams.source.kernel.org (Postfix) with ESMTPS id DE124B815E9
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:19:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B96FC340ED
         for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 12:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647346739;
-        bh=prLo2g90VxRuGXkHVFyxoTFtd9+a4i/uZs830m2R60w=;
+        s=k20201202; t=1647346740;
+        bh=N1uGgZ7jpmB97xU/FjNjDPP7MCBs2/e+l7l5TUpFegg=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=I+kzbnWKPIDQu7WHgODpsQPnmEQQINMZNu+xe4jQBFRg2hk4Kh50TidDJ7YSE4BbZ
-         ElDZkyaUTA+r0zKky3FG1Mg7FVfqM2JBaFIIQ2sxnqkKsymfOzf/NGuxyTxrXh7tdb
-         Yi52PKoz5839WymOqeavQbblFo5L9ys2RqciFjHkixyqMvcUObfHzz08lloimxBpBd
-         Elu3LA8LctkbgXhKcn7A69cCQCojOQkpZNvUM2iCp/YGJjw636aiQg+Bhnwd+x4pon
-         m2GJKYoSEafjDFkfHJ/tXWXXMuucHTgRXPfPCElVA0dgt5E0NGegNxQjR9sLhVoPDC
-         Bmqb+WmHTN3wA==
+        b=UhdR4GXFtpkxgCS8Sm60jvwJD0ydtdmzAQYBUJdb7Str+GK8WrCrZm6PxGAuvOxN1
+         bfzX+wiHuJMcD+eKS8IJBj7cQMnazMo7L/ODCDRS1QSs5yeumxGg7upTtCYeYbA0i2
+         KaUSHc/djQAV6IplhVs/nDeJhZo4FFONwHs1X2T+aDPtUHliCYhVu2L5lP9M5I7PsA
+         d2FjJAkO6hNpSKRbqXJDA0KLOA1kBUOfd6D7OcA3lVUuH8v+GWL/CetR2qGCvlpkwS
+         xPU8r16/ZdriASdJ4WFhCWzOY3AGj0WjFZoZWn+fD3bBH5zJHTvjLekbH0nYvEpY/+
+         q+liLPS7hJx2Q==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/7] btrfs: remove useless dio wait call when doing fallocate zero range
-Date:   Tue, 15 Mar 2022 12:18:49 +0000
-Message-Id: <678ac3f09a739ed7797248043d1f1baf1b6f10fe.1647346287.git.fdmanana@suse.com>
+Subject: [PATCH v2 3/7] btrfs: remove inode_dio_wait() calls when starting reflink operations
+Date:   Tue, 15 Mar 2022 12:18:50 +0000
+Message-Id: <e6da202b1105a4466e0a04272d936eb69b2b826e.1647346287.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1647346287.git.fdmanana@suse.com>
 References: <cover.1647346287.git.fdmanana@suse.com>
@@ -54,42 +54,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When starting a fallocate zero range operation, before getting the first
-extent map for the range, we make a call to inode_dio_wait().
+When starting a reflink operation we have these calls to inode_dio_wait()
+which used to be needed because direct IO writes that don't cross the
+i_size boundary did not take the inode's VFS lock, so we could race with
+them and end up with ordered extents in target range after calling
+btrfs_wait_ordered_range().
 
-This logic was needed in the past because direct IO writes within the
-i_size boundary did not take the inode's VFS lock. This was because that
-lock used to be a mutex, then some years ago it was switched to a rw
-semaphore (by commit 9902af79c01a8e ("parallel lookups: actual switch to
-rwsem")), and then btrfs was changed to take the VFS inode's lock in
-shared mode for writes that don't cross the i_size boundary (done in
-commit e9adabb9712ef9 ("btrfs: use shared lock for direct writes within
-EOF")). The lockless direct IO writes could result in a race with the
-zero range operation, resulting in the later getting a stale extent
-map for the range.
+However that is not the case anymore, because the inode's VFS lock was
+changed from a mutex to a rw semaphore, by commit 9902af79c01a8e
+("parallel lookups: actual switch to rwsem"), and several years later we
+started to lock the inode's VFS lock in shared mode for direct IO writes
+that don't cross the i_size boundary (commit e9adabb9712ef9 ("btrfs: use
+shared lock for direct writes within EOF")).
 
-So remove this no longer needed call to inode_dio_wait(), as fallocate
-takes the inode's VFS lock in exclusive mode and direct IO writes within
-i_size take that same lock in shared mode.
+So remove those inode_dio_wait() calls.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/btrfs/reflink.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index b7c0db1000cd..2f57f7d9d9cb 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3237,8 +3237,6 @@ static int btrfs_zero_range(struct inode *inode,
- 	u64 bytes_to_reserve = 0;
- 	bool space_reserved = false;
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 04a88bfe4fcf..bbd5da25c475 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -771,7 +771,6 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+ 	struct inode *inode_in = file_inode(file_in);
+ 	struct inode *inode_out = file_inode(file_out);
+ 	u64 bs = BTRFS_I(inode_out)->root->fs_info->sb->s_blocksize;
+-	bool same_inode = inode_out == inode_in;
+ 	u64 wb_len;
+ 	int ret;
  
--	inode_dio_wait(inode);
+@@ -809,15 +808,6 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+ 	else
+ 		wb_len = ALIGN(*len, bs);
+ 
+-	/*
+-	 * Since we don't lock ranges, wait for ongoing lockless dio writes (as
+-	 * any in progress could create its ordered extents after we wait for
+-	 * existing ordered extents below).
+-	 */
+-	inode_dio_wait(inode_in);
+-	if (!same_inode)
+-		inode_dio_wait(inode_out);
 -
- 	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, alloc_start,
- 			      alloc_end - alloc_start);
- 	if (IS_ERR(em)) {
+ 	/*
+ 	 * Workaround to make sure NOCOW buffered write reach disk as NOCOW.
+ 	 *
 -- 
 2.33.0
 
