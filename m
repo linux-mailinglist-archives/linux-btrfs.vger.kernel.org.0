@@ -2,172 +2,222 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD124D9A98
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 12:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E704D9ACD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 13:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242461AbiCOLsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 07:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
+        id S1348127AbiCOMBw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 08:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343754AbiCOLsI (ORCPT
+        with ESMTP id S1348128AbiCOMBv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 07:48:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053DB5005A
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 04:46:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 15 Mar 2022 08:01:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EFA52B31;
+        Tue, 15 Mar 2022 05:00:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E3F36614C6
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 11:46:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9AEDC340E8;
-        Tue, 15 Mar 2022 11:46:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647344808;
-        bh=/cPGSXo6SCLZCEsU+UTNLu0PeAz0rnaMFL2HPm/XxUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cYb2iWpBjNyMkdPYsQtM/Gcu1vRZS7LLdeHMpCc5CKcpPjLFVS1D33OH8jdQpRi5X
-         9nNvjoD8Ax54wF+YPv0JGQielFRzFw9YtduXsftJRxSAzJFDAdHYfwAmX6suLXR7iF
-         F80V8eLIY7+De3ISoHw29C3gWF6JpqBPJ409/gMd+Hzz4LrPUwEnK9bpOUmQJ7J6x0
-         EfL0eQZa55fcdyTcptGaRxwZKdaTaRcBNvhy8SV4/LJAedeMy5joUBYQWvSJj6FYZ3
-         SVo+UzanfLzomzf4niVBYbOt7tSp315z3o/2+cd76eTf02r1ex2Xs1sYjuwpuorHCv
-         a/7YdCTfY+qSA==
-Date:   Tue, 15 Mar 2022 11:46:45 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3] btrfs: zoned: make auto-reclaim less aggressive
-Message-ID: <YjB8perl04WEeTnE@debian9.Home>
-References: <74cbd8cdefe76136b3f9fb9b96bddfcbcd5b5861.1647342146.git.johannes.thumshirn@wdc.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A25A91F391;
+        Tue, 15 Mar 2022 12:00:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1647345638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=69C8m+2kMy+wXHvAY++o/bQMj/PPOmUYdZehTfuze6Y=;
+        b=NwdbHFZ1B7sogFEWdlZerRLDIWGwa1QWji6icvFsRRMZ1nqOsIVqSOtASyPLR4hKQ/YSqC
+        0DI6YsQi6GcQwMP4jnrFoqR0w/NPUVbYJ6sw7d/EBAmuD1xyLNIwj7aEx6QWcw8Nx/UszB
+        eb+BX0cwb3L/TWbRne67TNi6+yMFyCM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87EAF13B59;
+        Tue, 15 Mar 2022 12:00:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6Gj9E+V/MGKHRgAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 15 Mar 2022 12:00:37 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2] btrfs: test that autdodefrag does not rewrite single extents
+Date:   Tue, 15 Mar 2022 20:00:20 +0800
+Message-Id: <20220315120020.68874-1-wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <74cbd8cdefe76136b3f9fb9b96bddfcbcd5b5861.1647342146.git.johannes.thumshirn@wdc.com>
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 04:02:57AM -0700, Johannes Thumshirn wrote:
-> The current auto-reclaim algorithm starts reclaiming all block-group's
-> with a zone_unusable value above a configured threshold. This is causing a
-> lot of reclaim IO even if there would be enough free zones on the device.
-> 
-> Instead of only accounting a block-group's zone_unusable value, also take
-> the number of empty zones into account.
-> 
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> 
-> ---
-> Changes since v4:
-> * Use div_u64()
-> 
-> Changes since RFC:
-> * Fix logic error
-> * Skip unavailable devices
-> * Use different metric working for non-zoned devices as well
-> ---
->  fs/btrfs/block-group.c |  3 +++
->  fs/btrfs/zoned.c       | 30 ++++++++++++++++++++++++++++++
->  fs/btrfs/zoned.h       |  6 ++++++
->  3 files changed, 39 insertions(+)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index c22d287e020b..2e77b38c538b 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1522,6 +1522,9 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->  	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
->  		return;
->  
-> +	if (!btrfs_zoned_should_reclaim(fs_info))
-> +		return;
-> +
->  	sb_start_write(fs_info->sb);
->  
->  	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE)) {
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 49446bb5a5d1..dc62a14594de 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -15,6 +15,7 @@
->  #include "transaction.h"
->  #include "dev-replace.h"
->  #include "space-info.h"
-> +#include "misc.h"
+There is a report that btrfs autodefrag is defragging extents which only
+have one single sector.
 
-Why is this included added?
-Did you intended to use div_factor()?
+Such defragging will not reduce the number of extents, but only waste
+IO.
 
-Thanks.
+The fix for it is titled:
 
->  
->  /* Maximum number of zones to report per blkdev_report_zones() call */
->  #define BTRFS_REPORT_NR_ZONES   4096
-> @@ -2078,3 +2079,32 @@ void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info)
->  	}
->  	mutex_unlock(&fs_devices->device_list_mutex);
->  }
-> +
-> +bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
-> +{
-> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-> +	struct btrfs_device *device;
-> +	u64 bytes_used = 0;
-> +	u64 total_bytes = 0;
-> +	u64 factor;
-> +
-> +	if (!btrfs_is_zoned(fs_info))
-> +		return false;
-> +
-> +	if (!fs_info->bg_reclaim_threshold)
-> +		return false;
-> +
-> +	mutex_lock(&fs_devices->device_list_mutex);
-> +	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> +		if (!device->bdev)
-> +			continue;
-> +
-> +		total_bytes += device->disk_total_bytes;
-> +		bytes_used += device->bytes_used;
-> +
-> +	}
-> +	mutex_unlock(&fs_devices->device_list_mutex);
-> +
-> +	factor = div_u64(bytes_used * 100, total_bytes);
-> +	return factor >= fs_info->bg_reclaim_threshold;
-> +}
-> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-> index cbf016a7bb5d..d0d0e5c02606 100644
-> --- a/fs/btrfs/zoned.h
-> +++ b/fs/btrfs/zoned.h
-> @@ -78,6 +78,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
->  			     u64 length);
->  void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg);
->  void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info);
-> +bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info);
->  #else /* CONFIG_BLK_DEV_ZONED */
->  static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
->  				     struct blk_zone *zone)
-> @@ -236,6 +237,11 @@ static inline void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info,
->  static inline void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg) { }
->  
->  static inline void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info) { }
-> +
-> +static inline bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
-> +{
-> +	return false;
-> +}
->  #endif
->  
->  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
-> -- 
-> 2.35.1
-> 
+  btrfs: avoid defragging extents whose next extents are not targets
+
+Here we add a test case, which will create an inode with the following
+layout:
+
+  0                16K   20K                  64K
+  |<-- Extent A -->|<-B->|<----- Extent C --->|
+  |Gen 7           |Gen 9|Gen 7               |
+
+And we trigger autodefrag with newer_than = 8, which means it will only
+defrag extents newer than or equal to generation 8.
+
+Currently only Extent B meets the condition, but it can not be merged
+with Extent A nor Extent C, as they don't meet the generation 
+requirement.
+
+Unpatched kernel will defrag only Extent B, resulting no change in
+fragmentation, while costs extra IO.
+
+Patched kernel will not defrag anything.
+
+Although this is still not the ideal case, as we can defrag the whole
+64K range, but that's not what autodefrag can do with its generation 
+limitation.
+
+And such "perfect" defrag can cause way more IO than some users can
+stand.
+
+At least we should not only defrag extent B.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+---
+Changelog:
+v2:
+- Use short and less confusing subject
+- Remove unused _cleanup() override
+- End every sentence with punctuation in comments
+- Remove unnecessary -f option for xfs_io
+- Fix the spell of "generation"
+---
+ tests/btrfs/262     | 92 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/262.out |  2 +
+ 2 files changed, 94 insertions(+)
+ create mode 100755 tests/btrfs/262
+ create mode 100644 tests/btrfs/262.out
+
+diff --git a/tests/btrfs/262 b/tests/btrfs/262
+new file mode 100755
+index 00000000..a25a588a
+--- /dev/null
++++ b/tests/btrfs/262
+@@ -0,0 +1,92 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
++#
++# FS QA Test 262
++#
++# Make sure btrfs autodefrag will not defrag ranges which won't reduce
++# defragmentation.
++#
++. ./common/preamble
++_begin_fstest auto quick defrag
++
++# Import common functions.
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch
++_require_xfs_io_command "fiemap" "ranged"
++
++# Needs fixed 4K sector size, or the file layout will not match the expected
++# result.
++_require_btrfs_support_sectorsize 4096
++
++_scratch_mkfs >> $seqres.full
++
++_scratch_mount -o noautodefrag
++
++# Create the initial layout, with a large 64K extent for later fragments.
++$XFS_IO_PROG -f -c "pwrite 0 64K" -c sync "$SCRATCH_MNT/foobar" >> $seqres.full
++
++# Need to bump the generation by one, as autodefrag uses the last modified
++# generation of a subvolume. Without this generation bump, autodefrag will
++# defrag the whole file, not only the new write.
++touch "$SCRATCH_MNT/trash"
++sync
++
++# Remount to autodefrag.
++_scratch_remount autodefrag
++
++# Write a new sector, which should trigger autodefrag.
++$XFS_IO_PROG -c "pwrite 16K 4K" -c sync "$SCRATCH_MNT/foobar" >> $seqres.full
++
++echo "=== File extent layout before autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
++
++old_csum=$(_md5_checksum "$SCRATCH_MNT/foobar")
++old_ext_0=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
++old_ext_16k=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 16384)
++old_ext_20k=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 20480)
++
++# Trigger autodefrag.
++_scratch_remount commit=1
++sleep 3
++# Make sure the defragged range reach disk.
++sync
++
++echo "=== File extent layout after autodefrag ===" >> $seqres.full
++$XFS_IO_PROG -c "fiemap -v" "$SCRATCH_MNT/foobar" >> $seqres.full
++
++new_csum=$(_md5_checksum "$SCRATCH_MNT/foobar")
++new_ext_0=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 0)
++new_ext_16k=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 16384)
++new_ext_20k=$(_get_file_extent_sector "$SCRATCH_MNT/foobar" 20480)
++
++# For extent at offset 0 and 20K, they are older than the target generation,
++# thus they should not be defragged.
++if [ "$new_ext_0" != "$old_ext_0" ]; then
++	echo "extent at offset 0 got defragged"
++fi
++if [ "$new_ext_20k" != "$old_ext_20k" ]; then
++	echo "extent at offset 20K got defragged"
++fi
++
++# For extent at offset 4K, it's a single sector, and its adjacent extents
++# are not targets, thus it should not be defragged.
++if [ "$new_ext_16k" != "$old_ext_16k" ]; then
++	echo "extent at offset 16K got defragged"
++fi
++
++# Defrag should not change file content.
++if [ "$new_csum" != "$old_csum" ]; then
++	echo "file content changed"
++fi
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/262.out b/tests/btrfs/262.out
+new file mode 100644
+index 00000000..404badc3
+--- /dev/null
++++ b/tests/btrfs/262.out
+@@ -0,0 +1,2 @@
++QA output created by 262
++Silence is golden
+-- 
+2.34.1
+
