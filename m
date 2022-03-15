@@ -2,46 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 157CB4D9E94
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 16:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955604DA046
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 17:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349556AbiCOPYJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 11:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
+        id S1350144AbiCOQl2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 12:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349464AbiCOPYE (ORCPT
+        with ESMTP id S1350113AbiCOQl1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 11:24:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F65B2F3
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 08:22:52 -0700 (PDT)
+        Tue, 15 Mar 2022 12:41:27 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A9E57175;
+        Tue, 15 Mar 2022 09:40:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CF64D6120C
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 15:22:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF26CC340ED
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 15:22:50 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E7E35B81800;
+        Tue, 15 Mar 2022 16:40:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A5FC340EE;
+        Tue, 15 Mar 2022 16:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647357771;
-        bh=m7t+boH1QR/Upp+/wF510RVC44QI/F0xBgUaG66r5OE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=USBkTz9w4fR2F0Xspx0kadVkZf8A+KRFhzZjw1MFM8fCxML7cUCek/AsIOKF3zTnB
-         bVHY0Uq+lSzoYF/HcU7KKNdhZ947pq+tqA2TnItD9lCf8winSo2e/ZJw/7MHEQm3Zz
-         +OIxTQpq0p3NCkEHaf4UTfQnmazTYisJl6pTXP4UXllBnSMw8aMrvJtnHsKnFOsuDo
-         pf0qyGE9WuYlY+RCnenvmJZte/pTFaCTvVnuIiRmcdxqe5Ghurzr1d/oFr3X18Fmrv
-         QAEjJ7LYSstFIGvuOCvrm8TTCVkVIr0Guj4YHQTcUel1VQYAzJ0jPMHkph/DLmWk1y
-         LYGr2SzgUbkwg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 7/7] btrfs: add and use helper to assert an inode range is clean
-Date:   Tue, 15 Mar 2022 15:22:41 +0000
-Message-Id: <d708920a3bb286ef91b69f38694cadcf10a68c4a.1647357395.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1647357395.git.fdmanana@suse.com>
-References: <cover.1647357395.git.fdmanana@suse.com>
+        s=k20201202; t=1647362411;
+        bh=zMSN4EDWfLyeKFjSrNqGOOdCx+fqnp4HWPs+Y98Eb7Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AUvbdugFduhQ0xhMoyhxlMKRuh9trDB3nPY39vwntB3JVgdwudZ504gM7QrNmJ0vj
+         Q/k8jIpkyCJomIRkj0p9RHXa0i/ggjJzb44WkW3vYp6//y9ANboBSJJz7i5Ru+tYyW
+         LbN9ce5DUOgKJd2yBbtgTtNtmSrBWIlAQz2ftl6Bocth/vNvtDIN/ja5nuaRpAapQI
+         R9molKCuPiRJnepMg4/yP1CSfnXM5YnzS7minDLQbDxcDQsOPYTbH/IUvecZN1k+U4
+         B15lw+VxxeZreTpwU5YmcCmCxC8jgVaTfGPyXxv2a+/rZFlxdcEJYf8/SOZ2eD7CjF
+         wWguQPT2mr9ew==
+Date:   Tue, 15 Mar 2022 09:40:11 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: fix fallocate to use file_modified to update
+ permissions consistently
+Message-ID: <20220315164011.GF8241@magnolia>
+References: <20220310192245.GA8165@magnolia>
+ <YitAiiQ+cpbGZ2K/@debian9.Home>
+ <20220311235110.GB8241@magnolia>
+ <Yi8ky7zU4L6Kk+eo@debian9.Home>
+ <20220314174055.GE8241@magnolia>
+ <YjByOZr5Lmw2/jw1@debian9.Home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YjByOZr5Lmw2/jw1@debian9.Home>
 X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -52,152 +59,300 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+[add xfs list]
 
-We have four different scenarios where we don't expect to find ordered
-extents after locking a file range:
+On Tue, Mar 15, 2022 at 11:02:17AM +0000, Filipe Manana wrote:
+> On Mon, Mar 14, 2022 at 10:40:55AM -0700, Darrick J. Wong wrote:
+> > On Mon, Mar 14, 2022 at 11:19:39AM +0000, Filipe Manana wrote:
+> > > On Fri, Mar 11, 2022 at 03:51:10PM -0800, Darrick J. Wong wrote:
+> > > > On Fri, Mar 11, 2022 at 12:28:58PM +0000, Filipe Manana wrote:
+> > > > > On Thu, Mar 10, 2022 at 11:22:45AM -0800, Darrick J. Wong wrote:
+> > > > > > From: Darrick J. Wong <djwong@kernel.org>
+> > > > > > 
+> > > > > > Since the initial introduction of (posix) fallocate back at the turn of
+> > > > > > the century, it has been possible to use this syscall to change the
+> > > > > > user-visible contents of files.  This can happen by extending the file
+> > > > > > size during a preallocation, or through any of the newer modes (punch,
+> > > > > > zero range).  Because the call can be used to change file contents, we
+> > > > > > should treat it like we do any other modification to a file -- update
+> > > > > > the mtime, and drop set[ug]id privileges/capabilities.
+> > > > > > 
+> > > > > > The VFS function file_modified() does all this for us if pass it a
+> > > > > > locked inode, so let's make fallocate drop permissions correctly.
+> > > > > > 
+> > > > > > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+> > > > > > ---
+> > > > > > Note: I plan to add fstests to test this behavior, but after the
+> > > > > > generic/673 mess, I'm holding back on them until I can fix the three
+> > > > > > major filesystems and clean up the xfs setattr_copy code.
+> > > > > > 
+> > > > > > https://lore.kernel.org/linux-ext4/20220310174410.GB8172@magnolia/T/#u
+> > > > > > ---
+> > > > > >  fs/btrfs/file.c |   23 +++++++++++++++++++----
+> > > > > >  1 file changed, 19 insertions(+), 4 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > > > > > index a0179cc62913..79e61c88b9e7 100644
+> > > > > > --- a/fs/btrfs/file.c
+> > > > > > +++ b/fs/btrfs/file.c
+> > > > > > @@ -2918,8 +2918,9 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
+> > > > > >  	return ret;
+> > > > > >  }
+> > > > > >  
+> > > > > > -static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> > > > > > +static int btrfs_punch_hole(struct file *file, loff_t offset, loff_t len)
+> > > > > >  {
+> > > > > > +	struct inode *inode = file_inode(file);
+> > > > > >  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> > > > > >  	struct btrfs_root *root = BTRFS_I(inode)->root;
+> > > > > >  	struct extent_state *cached_state = NULL;
+> > > > > > @@ -2951,6 +2952,10 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> > > > > >  		goto out_only_mutex;
+> > > > > >  	}
+> > > > > >  
+> > > > > > +	ret = file_modified(file);
+> > > > > > +	if (ret)
+> > > > > > +		goto out_only_mutex;
+> > > > > > +
+> > > > > >  	lockstart = round_up(offset, btrfs_inode_sectorsize(BTRFS_I(inode)));
+> > > > > >  	lockend = round_down(offset + len,
+> > > > > >  			     btrfs_inode_sectorsize(BTRFS_I(inode))) - 1;
+> > > > > > @@ -3177,11 +3182,12 @@ static int btrfs_zero_range_check_range_boundary(struct btrfs_inode *inode,
+> > > > > >  	return ret;
+> > > > > >  }
+> > > > > >  
+> > > > > > -static int btrfs_zero_range(struct inode *inode,
+> > > > > > +static int btrfs_zero_range(struct file *file,
+> > > > > >  			    loff_t offset,
+> > > > > >  			    loff_t len,
+> > > > > >  			    const int mode)
+> > > > > >  {
+> > > > > > +	struct inode *inode = file_inode(file);
+> > > > > >  	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
+> > > > > >  	struct extent_map *em;
+> > > > > >  	struct extent_changeset *data_reserved = NULL;
+> > > > > > @@ -3202,6 +3208,12 @@ static int btrfs_zero_range(struct inode *inode,
+> > > > > >  		goto out;
+> > > > > >  	}
+> > > > > >  
+> > > > > > +	ret = file_modified(file);
+> > > > > > +	if (ret) {
+> > > > > > +		free_extent_map(em);
+> > > > > > +		goto out;
+> > > > > > +	}
+> > > > > > +
+> > > > > 
+> > > > > Could be done before getting the extent map, to make the code a bit shorter, or
+> > > > > see the comment below.
+> > > > 
+> > > > The trouble is, if getting the extent map fails, we didn't change the
+> > > > file, so there's no reason to bump the timestamps and whatnot...
+> > > 
+> > > Right, I figured you had that sort of intention.
+> > > 
+> > > However after the call to file_modified(), we may actually have not change the
+> > > file at all, like when trying to zero a range that is already fully covered by a
+> > > preallocated extent.
+> > 
+> > <nod>  At least in XFSland, there's no good way to check for a
+> > pre-existing prealloc extent without holding the ILOCK, which makes
+> > things complicated as I'll explain below. :)
+> > 
+> > > > 
+> > > > > 
+> > > > > >  	/*
+> > > > > >  	 * Avoid hole punching and extent allocation for some cases. More cases
+> > > > > >  	 * could be considered, but these are unlikely common and we keep things
+> > > > > > @@ -3391,7 +3403,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+> > > > > >  		return -EOPNOTSUPP;
+> > > > > >  
+> > > > > >  	if (mode & FALLOC_FL_PUNCH_HOLE)
+> > > > > > -		return btrfs_punch_hole(inode, offset, len);
+> > > > > > +		return btrfs_punch_hole(file, offset, len);
+> > > > > >  
+> > > > > >  	/*
+> > > > > >  	 * Only trigger disk allocation, don't trigger qgroup reserve
+> > > > > > @@ -3446,7 +3458,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+> > > > > >  		goto out;
+> > > > > >  
+> > > > > >  	if (mode & FALLOC_FL_ZERO_RANGE) {
+> > > > > > -		ret = btrfs_zero_range(inode, offset, len, mode);
+> > > > > > +		ret = btrfs_zero_range(file, offset, len, mode);
+> > > > > >  		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
+> > > > > >  		return ret;
+> > > > > >  	}
+> > > > > > @@ -3528,6 +3540,9 @@ static long btrfs_fallocate(struct file *file, int mode,
+> > > > > >  		cur_offset = last_byte;
+> > > > > >  	}
+> > > > > >  
+> > > > > > +	if (!ret)
+> > > > > > +		ret = file_modified(file);
+> > > > > 
+> > > > > If call file_modified() before the if that checks for the zero range case,
+> > > > > then we avoid having to call file_modified() at btrfs_zero_range() too,
+> > > > > and get the behaviour for both plain fallocate and zero range.
+> > > > 
+> > > > ...and the reason I put it here is to make sure the ordered IO finishes
+> > > > ok and that we pass the quota limit checks before we start modifying
+> > > > things.
+> > > 
+> > > Ok, but before that point we may already have modified the file, through
+> > > a call to either btrfs_cont_expand() or btrfs_truncate_block() above, to
+> > > zero out part of the content of a page.
+> > 
+> > Ahh, ok.  My goal was to eliminate the places where we don't call
+> > file_modified, even if that comes at the cost of occasionally doing it
+> > when it wasn't strictly necessary.
+> > 
+> > > So if we did that, and we got an error when waiting for ordered extents
+> > > or from the qgroup reservation, we end up leaving fallocate without
+> > > calling file_modified(), despite having modified the file.
+> > > 
+> > > > 
+> > > > That said -- you all know btrfs far better than I do, so if you'd rather
+> > > > I put these calls further up (probably right after the inode_newsize_ok
+> > > > check?) then I'm happy to do that. :)
+> > > 
+> > > Technically I suppose we should only call file_modified() if we actually
+> > > change anything in the file, but as it is, we are calling it even when we
+> > > don't end up modifying it or in some cases not calling it when we modify
+> > > it.
+> > 
+> > Yep.
+> > 
+> > > How does xfs behaves in this respect? Does it call file_modified() only
+> > > if something in the file actually changed?
+> > 
+> > file_modified calls back into the filesystem to run transactions to
+> > update metadata, which means that XFS can't call it if it's already
+> > gotten a transaction and an inode ILOCK.  Unfortunately, we also can't
+> > check to see if the file actually requires modifications (zeroing
+> > contents, extending i_size) until we've taken the ILOCK.
+> > 
+> > If we really wanted to be strict about only stripping permissions if the
+> > file *actually* changed, we'd either have to re-design our setattr
+> > implementation to notice a running transaction and use it; or do a weird
+> > little dance where we lock the inode, check it, undo all that to call
+> > file_modified if we decide it's necessary, and then create a new
+> > transaction and re-lock it.  We'd also have to keep doing that until the
+> > file stabilizes, which seemed like a lot of work to handle something
+> > that's mostly a corner case, so XFS always calls file_modified after
+> > successfully flushing data to disk.
+> 
+> Ah, I see.
+> 
+> So that also explains why XFS fails for this test:
+> 
+>   #!/bin/bash
+> 
+>   DEV=/dev/sdj
+>   MNT=/mnt/sdj
+> 
+>   umount $DEV &> /dev/null
+> 
+>   #mkfs.btrfs -f -b 1g $DEV
+>   #mkfs.ext4 -F -b 4096 $DEV $(((1024 * 1024 * 1024) / 4096))
+>   #mkfs.f2fs -f -w 4096 $DEV $(((1024 * 1024 * 1024) / 4096))
+>   mkfs.xfs -f -d size=1g $DEV
+>   mount $DEV $MNT
+> 
+>   # Create a file with a size of 600M and two holes, one at [200M, 201M[
+>   # and another at [401M, 402M[
+>   xfs_io -f -c "pwrite -S 0xab 0 200M" \
+>             -c "pwrite -S 0xcd 201M 200M" \
+>             -c "pwrite -S 0xef 402M 198M" \
+>             $MNT/foobar
+> 
+>   # Now call fallocate against the whole file range, see if it fails
+>   # with -ENOSPC or not - it shouldn't since we only need to allocate
+>   # 2M of data space.
+>   echo -e "\nCalling fallocate..."
+>   xfs_io -c "falloc 0 600M" $MNT/foobar
+> 
+>   umount $MNT
+> 
+> The fallocate fails with -ENOSPC, as it seems XFS tries to allocate 600M
+> of space. So it seems that happens before taking the ILOCK, but it can
+> only know for sure how much space it needs to allocate after taking that
+> lock - I assume the space allocation can't happen after taking the ILOCK,
+> due to some possible deadlock maybe?
 
-1) During plain fallocate;
-2) During hole punching;
-3) During zero range;
-4) During reflinks (both cloning and deduplication).
+Space *allocation* can only happen after taking the ILOCK, because
+that's the only way to stabilize the inode metadata.  However, space
+*reservation* has to take place before taking the ILOCK, which creates
+an unfortunate chicken-egg problem.
 
-This is because in all these cases we follow the pattern:
+fallocate /could/ operate in a more incremental fashion -- all we'd have
+to do is walk the specified range looking for holes in the mapping, and
+when we find one, we'd reserve space to fill that hole, lock everything,
+reread the mapping to see if it's still a hole, and if so, actually fill
+it.  You'd race with someone punching holes, but fmeh to that usecase.
+:)
 
-1) Lock the inode's VFS lock in exclusive mode;
+However, Dave has opined that fallocate shouldn't fail with ENOSPC
+halfway through the operation after consuming all of the free space in
+the filesystem:
 
-2) Lock the inode's i_mmap_lock in exclusive node, to serialize with
-   mmap writes;
+https://lore.kernel.org/linux-xfs/20210826020637.GA2402680@onthe.net.au/
 
-3) Flush delalloc in a file range and wait for all ordered extents
-   to complete - both done through btrfs_wait_ordered_range();
+...and that's why it's better to try to reserve the entire amount
+requested and ENOSPC immediately, even if it were the case that the file
+isn't sparse at all.
 
-4) Lock the file range in the inode's io_tree.
+I feel like this is one of those instances where the original model of
+what fallocate did was "preallocate space in this empty file range"
+whereas now it's shifted to include "(p)reallocate space in this heavily
+fragmented sparse VM image that someone called FITRIM on".
 
-So add a helper that asserts that we don't have ordered extents for a
-given range. Make the four scenarios listed above use this helper after
-locking the respective file range.
+Either that or "preallocate space, but my cloud provider charges me by
+the gigabyte so I'm financially incentivized to fill the fs to 99%
+before leasing even one more megabyte and running growfs, and I don't
+understand why everything is freakishly slow and fragmented". :(
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.h   |  1 +
- fs/btrfs/file.c    |  4 ++++
- fs/btrfs/inode.c   | 37 +++++++++++++++++++++++++++++++++++++
- fs/btrfs/reflink.c | 13 +++++++++++--
- 4 files changed, 53 insertions(+), 2 deletions(-)
+(I don't think that's your usecase, but <cough> I keep hearing things
+like that from the growing t****fire of customer escalations...)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4db17bd05a21..c58baad426f8 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3327,6 +3327,7 @@ void btrfs_inode_unlock(struct inode *inode, unsigned int ilock_flags);
- void btrfs_update_inode_bytes(struct btrfs_inode *inode,
- 			      const u64 add_bytes,
- 			      const u64 del_bytes);
-+void btrfs_assert_inode_range_clean(struct btrfs_inode *inode, u64 start, u64 end);
- 
- /* ioctl.c */
- long btrfs_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 3019a5182766..0197ede06750 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2608,6 +2608,8 @@ static void btrfs_punch_hole_lock_range(struct inode *inode,
- 		unlock_extent_cached(&BTRFS_I(inode)->io_tree, lockstart,
- 				     lockend, cached_state);
- 	}
-+
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode), lockstart, lockend);
- }
- 
- static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
-@@ -3479,6 +3481,8 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	lock_extent_bits(&BTRFS_I(inode)->io_tree, alloc_start, locked_end,
- 			 &cached_state);
- 
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode), alloc_start, locked_end);
-+
- 	/* First, check if we exceed the qgroup limit */
- 	INIT_LIST_HEAD(&reserve_list);
- 	while (cur_offset < alloc_end) {
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2e7143ff5523..50c7e23877a9 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -11306,6 +11306,43 @@ void btrfs_update_inode_bytes(struct btrfs_inode *inode,
- 	spin_unlock(&inode->lock);
- }
- 
-+/*
-+ * Verify that there are no ordered extents for a given file range.
-+ *
-+ * @inode:                The target inode.
-+ * @start:                Start offset of the file range, should be sector size
-+ *                        aligned.
-+ * @end:                  End offset (inclusive) of the file range, its value +1
-+ *                        should be sector size aligned.
-+ *
-+ * This should typically be used for cases where we locked an inode's VFS lock in
-+ * exclusive mode, we have also locked the inode's i_mmap_lock in exclusive mode,
-+ * we have flushed all delalloc in the range, we have waited for all ordered
-+ * extents in the range to complete and finally we have locked the file range in
-+ * the inode's io_tree.
-+ */
-+void btrfs_assert_inode_range_clean(struct btrfs_inode *inode, u64 start, u64 end)
-+{
-+	struct btrfs_root *root = inode->root;
-+	struct btrfs_ordered_extent *ordered;
-+
-+	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
-+		return;
-+
-+	ordered = btrfs_lookup_first_ordered_range(inode, start,
-+						   end + 1 - start);
-+	if (ordered) {
-+		btrfs_err(root->fs_info,
-+"found unexpected ordered extent in file range [%llu, %llu] for inode %llu root %llu (ordered range [%llu, %llu])",
-+			  start, end, btrfs_ino(inode), root->root_key.objectid,
-+			  ordered->file_offset,
-+			  ordered->file_offset + ordered->num_bytes - 1);
-+		btrfs_put_ordered_extent(ordered);
-+	}
-+
-+	ASSERT(ordered == NULL);
-+}
-+
- static const struct inode_operations btrfs_dir_inode_operations = {
- 	.getattr	= btrfs_getattr,
- 	.lookup		= btrfs_lookup,
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index bbd5da25c475..85d8f0d5d3e0 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -614,14 +614,23 @@ static void btrfs_double_extent_unlock(struct inode *inode1, u64 loff1,
- static void btrfs_double_extent_lock(struct inode *inode1, u64 loff1,
- 				     struct inode *inode2, u64 loff2, u64 len)
- {
-+	u64 range1_end = loff1 + len - 1;
-+	u64 range2_end = loff2 + len - 1;
-+
- 	if (inode1 < inode2) {
- 		swap(inode1, inode2);
- 		swap(loff1, loff2);
-+		swap(range1_end, range2_end);
- 	} else if (inode1 == inode2 && loff2 < loff1) {
- 		swap(loff1, loff2);
-+		swap(range1_end, range2_end);
- 	}
--	lock_extent(&BTRFS_I(inode1)->io_tree, loff1, loff1 + len - 1);
--	lock_extent(&BTRFS_I(inode2)->io_tree, loff2, loff2 + len - 1);
-+
-+	lock_extent(&BTRFS_I(inode1)->io_tree, loff1, range1_end);
-+	lock_extent(&BTRFS_I(inode2)->io_tree, loff2, range2_end);
-+
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode1), loff1, range1_end);
-+	btrfs_assert_inode_range_clean(BTRFS_I(inode2), loff2, range2_end);
- }
- 
- static void btrfs_double_mmap_lock(struct inode *inode1, struct inode *inode2)
--- 
-2.33.0
+--D
 
+> That test currently fails on btrfs as well, but I had just sent a patch
+> to fix it:
+> 
+> https://lore.kernel.org/linux-btrfs/9a69626ef93741583ab7f6386f2b450f5d064080.1647340917.git.fdmanana@suse.com/
+> 
+> We actually had at least one report about systemd using fallocate against
+> a file range that has already allocated extents, so it could unnecessarily
+> fail with -ENOSPC if the fs free space is low (it's reported somewhere
+> in the middle of the thread in the Link tag of the patch).
+> 
+> Ext4 and f2fs pass the test.
+> 
+> I was turning the test case into a generic test for fstests, but then
+> noticied XFS failing. Is this something you would consider fixing for
+> XFS? Should I submit it as a generic test case, or as a btrfs specific
+> test case?
+> 
+> Thanks for the explanation and the patch.
+> 
+> > 
+> > At that point XFS haven't even gotten to checking quota yet, so
+> > technically that's also a gap where we could drop privs but then fail
+> > the fallocate with EDQUOT.
+> > 
+> > --D
+> > 
+> > > 
+> > > Thanks.
+> > > 
+> > > > 
+> > > > --D
+> > > > 
+> > > > > 
+> > > > > Otherwise, it looks good.
+> > > > > 
+> > > > > Thanks for doing this, I had it on my todo list since I noticed the generic/673
+> > > > > failure with reflinks and the suid/sgid bits.
+> > > > > 
+> > > > > > +
+> > > > > >  	/*
+> > > > > >  	 * If ret is still 0, means we're OK to fallocate.
+> > > > > >  	 * Or just cleanup the list and exit.
