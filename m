@@ -2,188 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECC84DA2B2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 19:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B254DA2B4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Mar 2022 19:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351156AbiCOSw0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 14:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
+        id S1351158AbiCOSwi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 14:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbiCOSwZ (ORCPT
+        with ESMTP id S231664AbiCOSwh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 14:52:25 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A3857B04
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 11:51:12 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20220315185109euoutp02d9eac0ea5077b489ff0dc14e86a1b3b0~coog0WCtO1232812328euoutp02G
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 18:51:09 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20220315185109euoutp02d9eac0ea5077b489ff0dc14e86a1b3b0~coog0WCtO1232812328euoutp02G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1647370269;
-        bh=nkc3Du4QNPEyOxxUTfMg29rYgsADp+pzAtd3I3uhNLw=;
-        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
-        b=UuqQhoAJRFtGGJX3trDcExa3z/fuvUiCuFg/Oll6LIW0nInDUqUrNkBaudTmcMpdG
-         iH7lAimVgYmhbBUWzewo7JafQ11RuAcm1qD6ROhEd89zIunkLc4RhXNAYyVTBai4VL
-         DLHy5j/ml8g352i5nqto9a6FBXkLEj/xuqEPlGdA=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20220315185108eucas1p28935b32e6b129c3d05201b94aaf8cd05~coofxZYQ81376113761eucas1p2b;
-        Tue, 15 Mar 2022 18:51:08 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 25.EE.10260.C10E0326; Tue, 15
-        Mar 2022 18:51:08 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20220315185107eucas1p10d346295af21f069148baf696b14951c~coofJQ1T71940519405eucas1p1w;
-        Tue, 15 Mar 2022 18:51:07 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20220315185107eusmtrp1e432ee2b21badd22a26cb054eb36f85a~coofIdjiG0311703117eusmtrp1g;
-        Tue, 15 Mar 2022 18:51:07 +0000 (GMT)
-X-AuditID: cbfec7f5-bf3ff70000002814-04-6230e01ce196
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 6F.BF.09522.B10E0326; Tue, 15
-        Mar 2022 18:51:07 +0000 (GMT)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20220315185107eusmtip1bc14dc9482a4ca69f6eda7fd69aa01cf~cooe_VQJM0357103571eusmtip1r;
-        Tue, 15 Mar 2022 18:51:07 +0000 (GMT)
-Received: from [192.168.8.130] (106.210.248.212) by CAMSVWEXC01.scsc.local
-        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Tue, 15 Mar 2022 18:51:04 +0000
-Message-ID: <f034dc8c-ab78-3c4e-3ed4-8173dcdb2819@samsung.com>
-Date:   Tue, 15 Mar 2022 19:51:03 +0100
+        Tue, 15 Mar 2022 14:52:37 -0400
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 413515881C
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 11:51:24 -0700 (PDT)
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 2BE6F25CC81; Tue, 15 Mar 2022 14:51:23 -0400 (EDT)
+Date:   Tue, 15 Mar 2022 14:51:23 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Remi Gauvin <remi@georgianit.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+Message-ID: <YjDgKzAx/tawKHCz@hungrycats.org>
+References: <CAODFU0py06T4Eet+i0ZAY5Zrp5174eQJOCGh_03oZdDXO55TKw@mail.gmail.com>
+ <87tuc7gdzp.fsf@vps.thesusis.net>
+ <CAODFU0oM02WDpOPXp1of177aEJ9=ux2QFrHZF=khhzAg+3N1dA@mail.gmail.com>
+ <87ee34cnaq.fsf@vps.thesusis.net>
+ <CAODFU0rXnDhQjGPyuBQ8kxUGBXzQFMkXrNXiSxmcvgaaixspvg@mail.gmail.com>
+ <cd54e6e1-6180-1685-6500-278c639bb2e8@georgianit.com>
+ <Yi/G+FFqF8TlafF3@hungrycats.org>
+ <23441a6c-3860-4e99-0e56-43490d8c0ac2@georgianit.com>
+ <Yi/SR7CNbtDvIsPn@hungrycats.org>
+ <eda21cae-4825-458a-dd69-1e2740955dc0@georgianit.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
-        Thunderbird/91.5.0
-Subject: Re: [PATCH 0/6] power_of_2 emulation support for NVMe ZNS devices
-Content-Language: en-US
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        =?UTF-8?Q?Javier_Gonz=c3=a1lez?= <javier@javigon.com>,
-        Christoph Hellwig <hch@lst.de>
-CC:     =?UTF-8?Q?Matias_Bj=c3=b8rling?= <Matias.Bjorling@wdc.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Keith Busch <kbusch@kernel.org>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
-        kanchan Joshi <joshi.k@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
-        Pankaj Raghav <pankydev8@gmail.com>,
-        Kanchan Joshi <joshiiitr@gmail.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-From:   Pankaj Raghav <p.raghav@samsung.com>
-In-Reply-To: <PH0PR04MB74167377D7D86C60C290DAB29B109@PH0PR04MB7416.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [106.210.248.212]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKKsWRmVeSWpSXmKPExsWy7djPc7oyDwySDO4dE7ZYfbefzeL32fPM
-        FitXH2Wy6Dx9gcmi58AHFou/XfeYLM6/PcxkMenQNUaLvbe0LS49XsFuMX/ZU3aLCW1fmS1u
-        THjKaLHm5lMWi3Wv37M48Hv8O7GGzWPnrLvsHufvbWTxaF5wh8Xj8tlSj02rOtk8Ni+p99h9
-        swGooPU+q8fnTXIe7Qe6mQK4o7hsUlJzMstSi/TtErgyJux8zlZwgq/iUUM3YwPjae4uRk4O
-        CQETibOde1i7GLk4hARWMEoc2/WeHcL5wijxbMl6JgjnM6PEmsWfmWBaHhz8DtWynFHi/IHF
-        7HBVd15dY4RwdjNKrL48ixWkhVfATuLVns/sIDaLgKrEw1cHmSHighInZz5hAbFFBSIkXh75
-        C7ZCWMBLouPtWrB6ZgFxiVtP5oPdISLQxyjR8OM22AZmgYWsEs1NH4C6OTjYBLQkGjvBGjgF
-        YiW+rT/IAtGsKdG6/TfUIHmJ7W/nMIOUSwgoS7xebwPxTq3E2mNnwD6QEHjEKbF71g92iISL
-        xOpVs6FsYYlXx7dA2TISpyf3sEA09DNKTG35wwThzGCU6Dm8mQlig7VE35kciAZHiXdtG1kg
-        wnwSN94KQtzDJzFp23TmCYyqs5DCYhaSn2cheWEWkhcWMLKsYhRPLS3OTU8tNs5LLdcrTswt
-        Ls1L10vOz93ECEyJp/8d/7qDccWrj3qHGJk4GA8xSnAwK4nwnnmhnyTEm5JYWZValB9fVJqT
-        WnyIUZqDRUmcNzlzQ6KQQHpiSWp2ampBahFMlomDU6qBKcL/Fd8X9e3HxZdkvTP2fKB8uEWj
-        26zCtMrzV+in0JU8G4IkvXzvti/ZEfy+QGN+/Pzt3nI/ODSitPc8dPX1Fn3ZcDGE+3vqxq8t
-        n/P5ZEo4W6+3R1UUVv3cs+fVpHMm+d7Wd3/96uj9sXxB9gKThKTvQe2/GPxWF0pMbrU70fA2
-        Rl/k566a2GiH/9GzxM+cTLzUsFI7u7py11MXGdUHbevW+3q9Vtoru2mD3/vYixvdPZJ1pr9t
-        Ksmx8bp/IO/1p+oAk9XnYsW258lllrod9GGUvrHT7cCzOfFcq9JO2V177PrVrVXbZEn0hu3P
-        rvxdWL9761JxlxTrKTy7+TssDkrxWbctVTv+fd4OrdsTlViKMxINtZiLihMBZiKlFPgDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJKsWRmVeSWpSXmKPExsVy+t/xu7rSDwySDA4/1LJYfbefzeL32fPM
-        FitXH2Wy6Dx9gcmi58AHFou/XfeYLM6/PcxkMenQNUaLvbe0LS49XsFuMX/ZU3aLCW1fmS1u
-        THjKaLHm5lMWi3Wv37M48Hv8O7GGzWPnrLvsHufvbWTxaF5wh8Xj8tlSj02rOtk8Ni+p99h9
-        swGooPU+q8fnTXIe7Qe6mQK4o/RsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOtjEyV
-        9O1sUlJzMstSi/TtEvQyJux8zlZwgq/iUUM3YwPjae4uRk4OCQETiQcHv7N2MXJxCAksZZRY
-        +6CXESIhI/Hpykd2CFtY4s+1LjaIoo+MEp0PW6A6djNK7Dy9HKyKV8BO4tWez2A2i4CqxMNX
-        B5kh4oISJ2c+YQGxRQUiJNqWTQGLCwt4SXS8XQtWzywgLnHryXwmkKEiAn2MEg0/bjOCOMwC
-        C1klbvVvY4ZYN4dNovfnP6DdHBxsAloSjZ1g3ZwCsRLf1h9kgZikKdG6/TfUVHmJ7W/nMIOU
-        SwgoS7xebwPxTq3Eq/u7GScwis5Cct8sJHfMQjJpFpJJCxhZVjGKpJYW56bnFhvqFSfmFpfm
-        pesl5+duYgSmkW3Hfm7ewTjv1Ue9Q4xMHIyHGCU4mJVEeM+80E8S4k1JrKxKLcqPLyrNSS0+
-        xGgKDKSJzFKiyfnARJZXEm9oZmBqaGJmaWBqaWasJM7rWdCRKCSQnliSmp2aWpBaBNPHxMEp
-        1cAkduXF9amfDpkFJTVfKoxte//VNuS+V3XDYovSkuvOhb+yv7QLV5xdLs2Svjb3pXquTW6V
-        1svi9gkejSf3HHYSjndvE330XlMvqavpPMPOgGllDW5r5ZV+G1SsL85oZHv14cZzuSjLjAyF
-        2UaZvmrHrjPIzduwXFEsVXn5TY8ku+5Uw5amaR1i3OWSIjfNZsmtPxe3Z75WuI+llpzvyvDQ
-        bY7X93Au823aEHUroVYrS8QphyfbINP+WpfmqY19zm4Ou4IsLi5NlP8YPPVSlv2+wD/LLp7T
-        uWXjOvOfd+3EWq3S0B9RdwqP33IofHUtJ1/i76e/09Y+/G/aO6Fl+X5J75XuHL4STxiKv2Rv
-        VWIpzkg01GIuKk4EAPCaR86sAwAA
-X-CMS-MailID: 20220315185107eucas1p10d346295af21f069148baf696b14951c
-X-Msg-Generator: CA
-X-RootMTR: 20220315141431eucas1p211ee887321bb49977a7ce30543bbbf3c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20220315141431eucas1p211ee887321bb49977a7ce30543bbbf3c
-References: <20220314073537.GA4204@lst.de>
-        <05a1fde2-12bd-1059-6177-2291307dbd8d@opensource.wdc.com>
-        <20220314104938.hv26bf5vah4x32c2@ArmHalley.local>
-        <BYAPR04MB49682B9263F21EE67070A4B1F10F9@BYAPR04MB4968.namprd04.prod.outlook.com>
-        <20220314195551.sbwkksv33ylhlyx2@ArmHalley.local>
-        <BYAPR04MB49688BD817284E5C317DD5D8F1109@BYAPR04MB4968.namprd04.prod.outlook.com>
-        <20220315130501.q7fjpqzutadadfu3@ArmHalley.localdomain>
-        <BYAPR04MB49689803ED6E1E32C49C6413F1109@BYAPR04MB4968.namprd04.prod.outlook.com>
-        <20220315132611.g5ert4tzuxgi7qd5@unifi> <20220315133052.GA12593@lst.de>
-        <20220315135245.eqf4tqngxxb7ymqa@unifi>
-        <CGME20220315141431eucas1p211ee887321bb49977a7ce30543bbbf3c@eucas1p2.samsung.com>
-        <PH0PR04MB74167377D7D86C60C290DAB29B109@PH0PR04MB7416.namprd04.prod.outlook.com>
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eda21cae-4825-458a-dd69-1e2740955dc0@georgianit.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Johannes,
-
-On 2022-03-15 15:14, Johannes Thumshirn wrote:
-> Please also make sure to support btrfs and not only throw some patches 
-> over the fence. Zoned device support in btrfs is complex enough and has 
-> quite some special casing vs regular btrfs, which we're working on getting
-> rid of. So having non-power-of-2 zone size, would also mean having NPO2
-
-I already made a simple btrfs npo2 poc and it involved mostly changing
-the po2 calculation to be based on generic calculation. I understand
-that changing the calculations from using log & shifts to division will
-incur some performance penalty but I think we can wrap them with helpers
-to minimize those impact.
-
-> So having non-power-of-2 zone size, would also mean having NPO2
-> block-groups (and thus block-groups not aligned to the stripe size).
->
-
-I agree with your point that we risk not aligning to stripe size when we
-move to npo2 zone size which I believe the minimum is 64K (please
-correct me if I am wrong). As David Sterba mentioned in his email, we
-could agree on some reasonable alignment, which I believe would be the
-minimum stripe size of 64k to avoid added complexity to the existing
-btrfs zoned support. And it is a much milder constraint that most
-devices can naturally adhere compared to the po2 zone size requirement.
-
-> Just thinking of this and knowing I need to support it gives me a 
-> headache.
+On Tue, Mar 15, 2022 at 10:14:01AM -0400, Remi Gauvin wrote:
+> On 2022-03-14 7:39 p.m., Zygo Blaxell wrote:
+> > If we're adding a mount option for this (I'm not opposed to it, I'm
+> > pointing out that it's not the first tool to reach for), then ideally
+> > we'd overload it for the compressed batch size (currently hardcoded
+> > at 512K).
 > 
-This is definitely not some one off patch that we want upstream and
-disappear. As Javier already pointed out, we would be more than happy
-help you out here.
-> Also please consult the rest of the btrfs developers for thoughts on this.
-> After all btrfs has full zoned support (including ZNS, not saying it's 
-> perfect) and is also the default FS for at least two Linux distributions.
-> 
-> Thanks a lot,
-> 	Johannes
+> Are there any advantages to extents larger than 256K on ssd Media?  
 
--- 
-Regards,
-Pankaj
+The main advantage of larger extents is smaller metadata, and it doesn't
+matter very much whether it's SSD or HDD.  Adjacent extents will be in
+the same metadata page, so not much is lost with 256K extents even on HDD,
+as long as they are physically allocated adjacent to each other.
+
+There is a CPU hit for every extent, and when snapshot pages become
+unshared, every distinct extent on the page needs its reference count
+updated for the new page.  The costs of small extents add up during
+balances, resizes, and snapshot deletes, but on a small filesystem you'd
+want smaller extents so that balances and resizes are possible at all
+(this is why there's a 128M limit now--previously, extents of multiple
+GB were possible).
+
+Averaged across my filesystems, half of the data blocks are in extents
+below 512K, and only 1% of extents are 1M or larger.  Capping the extent
+size at 256K wouldn't make much difference--the total extent count would
+increase by less than 5%.
+
+In my defrag experiments, the pareto limit kicks in at a target extent
+size of 100K-200K (anything larger than this doesn't get better when
+defragged, anything smaller kills performance if it's _not_ defragged).
+256K may already be larger than optimal for some workloads.
+
+> Even if a much needed garbage collection process were to be created,
+> the smaller extents would mean less data would need to be re-written,
+> (and potentially duplicated due to snapshots and ref copies.)
+
+GC has to take all references into account when computing block
+reachability, and it has to eliminate all references to remove garbage,
+so there should not be any new duplicate data.  Currently GC has to
+be implemented by copying the data and then using dedupe to replace
+references to the original data individually, but that could be optimized
+with a new kernel ioctl that handles all the references at once with a
+lock, instead of comparing the data bytes for each one.
+
+GC could create smaller extents intentionally, by creating new extents
+in units of 256K, but reflinking them in reverse order over the original
+large extents to prevent coalescing extents in writeback.
+
+GC would also have to figure out whether the IO cost of splitting the
+extent is worth the space saving (e.g. don't relocate 100MB of data to
+save 4K of disk space, wait until it's at least 1MB of space saved).
+That's a sysadmin policy input.
+
+GC is not autodefrag.  If it sees that it has to carve up 100M extents
+for sub-64K writes, GC can create 400x 256K extents to replace the large
+extents, and only defrag when there's a contiguous range of modified
+extents with length 64K or less.  Or whatever sizes turn out to be the
+right ones--setting the sizes isn't the hard thing to do here.
+
+Obviously, in that scenario it is more efficient if there's a way to
+not write the 100M extents in the first place, but it quickly reaches
+a steady state with relatively little wasted space, and doesn't require
+tuning knobs in the kernel.
+
+GC + autodefrag could go the other way, too:  make the default extent
+size small, but allow autodefrag to request very large extents for files
+that have not been modified in a while.  That's inefficient too, but
+in other other direction, so it would be a better match for the steady
+state of some workloads (e.g. video recording or log files).
+
+Ideally there'd be an "optimum extent size" inheritable inode property,
+so we can have databases use tiny extents and video recorders use huge
+extents on the same filesystem.  But maybe that's overengineering,
+and 256K (128K?  512K?) is within the range of values for most.
+
+> The fine details on how to implement all of this is way over my head,
+> but it seemed to me like the logic to keep the extents small is already
+> more or less already there, and would need relatively very little work
+> to manifest.
+
+There's a #define for maximum new extent length.  It wouldn't be too
+difficult to look up that number in fs_info instead, slightly harder
+to look it up in an inode.  The limit applies only to new extents,
+so there's no backward compatibility issue with the on-disk format.
