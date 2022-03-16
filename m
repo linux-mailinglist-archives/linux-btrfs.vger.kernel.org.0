@@ -2,151 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D60694DB918
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 20:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CBF4DB94E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 21:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347035AbiCPUBK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Mar 2022 16:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
+        id S1357713AbiCPU0g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Mar 2022 16:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244611AbiCPUBK (ORCPT
+        with ESMTP id S239396AbiCPU0f (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Mar 2022 16:01:10 -0400
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD18B6AA50
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 12:59:54 -0700 (PDT)
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 621D7260A8A; Wed, 16 Mar 2022 15:59:44 -0400 (EDT)
-Date:   Wed, 16 Mar 2022 15:59:37 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Phillip Susi <phill@thesusis.net>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Jan Ziak <0xe2.0x9a.0x9b@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
- measurable benefit
-Message-ID: <YjJBqetcCAaYWPVs@hungrycats.org>
-References: <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com>
- <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
- <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com>
- <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
- <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com>
- <87a6dscn20.fsf@vps.thesusis.net>
- <Yi/I54pemZzSrNGg@hungrycats.org>
- <87fsnjnjxr.fsf@vps.thesusis.net>
- <YjD/7zhERFjcY5ZP@hungrycats.org>
- <877d8twwrn.fsf@vps.thesusis.net>
+        Wed, 16 Mar 2022 16:26:35 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E78D49901;
+        Wed, 16 Mar 2022 13:25:20 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id A6D66320206E;
+        Wed, 16 Mar 2022 16:25:17 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 16 Mar 2022 16:25:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm1; bh=QDot+6UjOxbQyyLJnalWB0idftOb7lHn6p2ARWoQz2I=; b=kq4N2
+        4miAZROuVmcwnWqU+2xAR00f17/+cKSvhhi0w6cE69t50SuPIA6LV8qOda3M0PFB
+        uyDmbuYR7xwzlB/5yi00RBS2AX38BJKyRkfrKnqqcCPqw9jfyRdwY9AoA2n8c6U+
+        YygsFa1u/mzyqlhbKUzZkT50FB5ZpP78pu3IL6tShErBdFzDdnn25a/s625zeEfU
+        3nh9cvlC5oRUPCo+utJRai5OiwauQXe6ANFa6xgue7XtKLikWqjwg8DC1bKQHlQB
+        cFTKHHPVjEjg7dIQ8umGYe2wy/Ll7gWAzMBVZokfLJmNLXjMsO8Oh5LbMTcJbn1X
+        4nLm5LD60hWw3EfpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; bh=QDot+6UjOxbQyyLJnalWB0idftOb7
+        lHn6p2ARWoQz2I=; b=QxhLthIB6PXpMEg/LlMEowjJATaojxkRnZpkM+yBlmtmL
+        MxTOrE2rRnlxu4UAf76W1FylRlGGg80o9Mnyy8ZmA1+PWC5BBwGbzHWa0rdFn1Co
+        rGxnHg0MxbpxYRVToSNOKj1g6Bjn/PS3WkmAaOLIvXAB0PdokAOzraOCRiZVRJ/D
+        E8RbNPiwcXa/QR4Vh86yfCQ3ft4YblVg/euLCxmsayaj5wPOG7mk2peMiMh3L/QI
+        EdUp52itQSlhOZYvPa9scsM+zx5DKuh1YO+us5/oOJitDJehrhcIt2KgVzl3pqC9
+        lXwW4Ee6396t11ZK/sLWn5Qmw+LmJbxRTEz48fRTw==
+X-ME-Sender: <xms:rUcyYrqA2DMkcOeJPOODFrw23mLAREGuzKhiMIKg3HiE13JsarfOCw>
+    <xme:rUcyYloHRNa2zDWDQHRAFABFLq3Brfa-MaBcSwOysq9p7ZGnDzzOooxYvIaAaOs7e
+    ch6dxkM-zzNXLdLX2g>
+X-ME-Received: <xmr:rUcyYoNV6iNFPsAql1qxnGrUWCET2f-jt2V-jwT84Nj7QMkS9u4Xa3tk6pwc4pyWW4QKgFIjudiJYCR5ugcwvvH76Qra_Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudefvddgudeffecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
+    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:rUcyYu6GQYfpqlq-tzev7n3rz2OCQZeyduVTEmRN2mZFTZ40DyFpdw>
+    <xmx:rUcyYq4LzHm1jZhLV6Vs00CH1jLTCajJRX9q-VAQOiTVa3WsP_zDow>
+    <xmx:rUcyYmjprVcPL-mYdrUu3HjSrfZFKO6fgGZ_rS5GQOsofyuaB26XIg>
+    <xmx:rUcyYqGgf-3FrtysdhsYbczVDWlK94VeNjPIXsa8g75gVQaWCt7vJA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Mar 2022 16:25:16 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v8 0/5] tests for btrfs fsverity
+Date:   Wed, 16 Mar 2022 13:25:10 -0700
+Message-Id: <cover.1647461985.git.boris@bur.io>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877d8twwrn.fsf@vps.thesusis.net>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 02:46:33PM -0400, Phillip Susi wrote:
-> 
-> Zygo Blaxell <ce3g8jdj@umail.furryterror.org> writes:
-> 
-> > If the extent is compressed, you have to write a new extent, because
-> > there's no other way to atomically update a compressed extent.
-> 
-> Right, that makes sense for compression.
-> 
-> > If it's reflinked or snapshotted, you can't overwrite the data in place
-> > as long as a second reference to the data exists.  This is what makes
-> > nodatacow and prealloc slow--on every write, they have to check whether
-> > the blocks being written are shared or not, and that check is expensive
-> > because it's a linear search of every reference for overlapping block
-> > ranges, and it can't exit the search early until it has proven there
-> > are no shared references.  Contrast with datacow, which allocates a new
-> > unshared extent that it knows it can write to, and only has to check
-> > overwritten extents when they are completely overwritten (and only has
-> > to check for the existence of one reference, not enumerate them all).
-> 
-> Right, I know you can't overwrite the data in place.  What I'm not
-> understanding is why you can't just just write the new data elsewhere
-> and then free the no longer used portion of the old extent.
-> 
-> > When a file refers to an extent, it refers to the entire extent from the
-> > file's subvol tree, even if only a single byte of the extent is contained
-> > in the file.  There's no mechanism in btrfs extent tree v1 for atomically
-> > replacing an extent with separately referenceable objects, and updating
-> > all the pointers to parts of the old object to point to the new one.
-> > Any such update could cascade into updates across all reflinks and
-> > snapshots of the extent, so the write multiplier can be arbitrarily large.
-> 
-> So the inode in the subvol tree points to an extent in the extent tree,
-> and then the extent points to the space on disk?  
+This patchset provides tests for fsverity support in btrfs.
 
-The extent item tracks ownership of the space on disk.  The extent item
-key _is_ the location on disk, so there's no need for a pointer in the
-item itself (e.g. read doesn't bother with the extent tree, it just goes
-straight from the inode ref to the data blocks and csums).  The extent
-tree only comes up to resolve ownership issues, like whether the last
-reference to an extent has been removed, or a new reference added,
-or whether multiple references to the extent exist.
+It includes modifications for generic tests to pass with btrfs as well
+as new tests.
 
-> And only one extent in
-> the extent tree can ever point to a given location on disk?
+--
+v8:
+- reorganize to have a patch for enabling generic tests followed by the
+  patches with new and specific tests.
+- fix some rebasing miscues from v7.
+- fix a chunk of space characters instead of a tab in the new requires
+  function.
+v7:
+- add a new patch to make the new corruption requires more clear
+- require corruption in generic/576
+- require only btrfs_corrupt_block in btrfs/290
+- add missing xfs_io requirements in btrfs/290
+- remove unneeded zero byte check from btrfs corruption function
+- fix sloppy extras in generic/690
+v6:
+- refactor "requires" for verity corruption tests so that other verity
+  tests can run on btrfs even without the corruption command available.
+  Also, explictly require xfs_io fiemap for all corruption tests.
+- simplify and clarify "non-trivial EFBIG" calculation and documentation
+  per suggestions by Eric Biggers.
+- remove unnecessary adjustment to max file size in the new EFBIG test;
+  the bug it worked around has been fixed.
+v5:
+- more idiomatic requires structure for making efbig test generic
+- make efbig test use truncate instead of pwrite for making a big file
+- improve documentation for efbig test approximation
+- fix underscores vs dashes in btrfs_requires_corrupt_block
+- improvements in missing/redundant requires invocations
+- move orphan test image file to $TEST_DIR
+- make orphan test replay/snapshot device size depend on log device
+  instead of hard-coding it.
+- rebase (signicant: no more "groups" file; use preamble)
+v4:
+- mark local variables
+- get rid of redundant mounts and syncs
+- use '_' in function names correctly
+- add a test for the EFBIG case
+- reduce usage of requires_btrfs_corrupt_block
+- handle variable input when corrupting merkle tree
+v3: rebase onto xfstests master branch
+v2: pass generic tests, add logwrites test
 
-Correct.  That restriction is characteristic of extent tree v1.
-Each extent maintains a list of references to itself.  The extent is
-the exclusive owner of the physical space, and ownership of the extent
-item is shared by multiple inode references.  Each inode reference knows
-which bytes of the extent it is referring to, but this information is
-scattered over the subvol trees and not available in the extent tree.
 
-Extent tree v2 creates a separate extent object in the extent tree for
-each reflink, and allows the physical regions covered by each extent
-to overlap.  The inode reference is the exclusive owner of the extent
-item, and ownership of the physical space is shared by multiple extents.
-The extent tree in v2 tracks which inodes refer to which specific blocks,
-so the availability of a block can be computed without referring to any
-other trees.
+Boris Burkov (5):
+  common/verity: require corruption functionality
+  common/verity: support btrfs in generic fsverity tests
+  btrfs: test btrfs specific fsverity corruption
+  btrfs: test verity orphans with dmlogwrites
+  generic: test fs-verity EFBIG scenarios
 
-In v2, free space is recalculated when an extent is removed.  The nearby
-extent tree is searched to see if any blocks no longer overlap with an
-extent, and any such blocks are added to free space.  To me it looks like
-that free space search is O(N), since there's no proposed data structure
-to make it not a linear search of every possibly-overlapping extent item
-(all extents within MAX_EXTENT_SIZE bytes from the point where space
-was freed).
+ common/btrfs          |   5 ++
+ common/config         |   1 +
+ common/verity         |  40 ++++++++++
+ tests/btrfs/290       | 168 ++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/290.out   |  25 +++++++
+ tests/btrfs/291       | 161 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/291.out   |   2 +
+ tests/generic/574     |   1 +
+ tests/generic/576     |   1 +
+ tests/generic/690     |  64 ++++++++++++++++
+ tests/generic/690.out |   7 ++
+ 11 files changed, 475 insertions(+)
+ create mode 100755 tests/btrfs/290
+ create mode 100644 tests/btrfs/290.out
+ create mode 100755 tests/btrfs/291
+ create mode 100644 tests/btrfs/291.out
+ create mode 100755 tests/generic/690
+ create mode 100644 tests/generic/690.out
 
-The v2 proposal also has a deferred GC worker, so maybe the O(N)
-searches will be performed in a background thread where they aren't as
-time-sensitive, and maybe the search cost can be amortized over multiple
-deletions near the same physical position.  Deferred GC doesn't help
-nodatacow or prealloc though, which have to know whether a block is
-shared during the write operation, and can't wait until later.
+-- 
+2.31.0
 
-> In other words, if file B is a reflink copy of file A, and you update
-> one page in file B, it can't just create 3 new extents in the extent
-> tree: one that refers to the firt part of the original extent, one that
-> refers to the last part of the original extent, and one for the new
-> location of the new data?  Instead file B refers to the original extent,
-> and to one new extent, in such a way that the second superceeds part of
-> the first only for file B?
-
-Correct.  Changing an extent in tree v1 requires updating every reference
-to the extent, because any inode referring to the entire extent will
-now need to refer to 3 distinct extent items.  That means updating
-metadata pages in snapshots, and can lead to 4-digit multiples of write
-amplification with only a few dozen snapshots--in the worst cases there
-are page splits because the old data now needs space for 3x more reference
-items.  So in v1 we don't do anything like that--extents are immutable
-from the moment they are created until their last reference is deleted.
-
-In v2, file B doesn't refer to file A's extent.  Instead, file B creates
-a new extent which overlaps the physical space of file A's extent.
-After overwriting the one new page, file B then replaces its reference to
-file A's space with two new references to shared parts of file A's space,
-and a third new extent item for the new data in B.  If file A is later
-deleted, the lack of reference to the middle of the physical space is
-(eventually) detected, and the overwritten part of the shared extent
-becomes free space.
