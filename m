@@ -2,103 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7134DB6B8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 17:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5F14DB6DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 18:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242560AbiCPQxd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Mar 2022 12:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
+        id S241476AbiCPREE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Mar 2022 13:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357689AbiCPQxR (ORCPT
+        with ESMTP id S232373AbiCPRED (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Mar 2022 12:53:17 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5E237BCF
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 09:52:03 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id o6so3948617ljp.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 09:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=QtT03o6DUM9YqlkzdjNndBLvQngfLyuCDpwUBX4Aw1k=;
-        b=oNNX2Mv9tjWt6gFjOmkX9+ahFmKKdT/Gp26bSVLSHQLibtIYps4OHx9/N77QQ3FfkL
-         5rAMQGE3zp2dxJN/G9+heeSx18D/wsIw8bzpUg0bjfbM5JeNCVZ6yi0731ZsK2izeNt0
-         Iwm3ZwtIP6jxOKVcQJLbaxzl2eXe4bkWNCT6PCn83u8N7YATf9tkmt6aZtIQMro3hMYJ
-         h+ANad3ukwDWrWiVf5BUqfuR5PK66UwU4/Gj5ykd4s2xg7fVeog3w0Ymb+38h2O9/Uz5
-         d4d1eCYtRFJtBJ5aXqtHkfp/247BtwmwqgnDBvY+zbmbYWtyp39KAEDAbLSbf1pB6gj5
-         lttQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=QtT03o6DUM9YqlkzdjNndBLvQngfLyuCDpwUBX4Aw1k=;
-        b=NkT2nPvFMPazQ/tClmvH3y1TicIJIsP2+WIByvoi6raA553jH9wTVNZRlyRaT3x6Ma
-         y5XfBEfHAisM+EJgrZOX0V2/K39OlY2WSmPu4d16DG1YIubhqSV9Q4WKUJdtNxBxK/UO
-         VE/dsKVAR6FtBqpINpwV7WafK7uZuxzfng02SPYmHh3bUFqseVWQCO7SKBqqj5R/mqNE
-         QtYD3lYN3FWMYElWx3rosmkj002sqCAlHKudMF2SbRAqFv1Jyy4t9W7kXrJddIyDRJfo
-         J8Ow2bpT9qJJL/LXk8Ec1oiPRF1pMqO98UXSEqOmmEBHBPaV5EPxJ58isP+XXDuZP56Y
-         T6EQ==
-X-Gm-Message-State: AOAM531L45PM7hbpUtEqcavxOM/AlSKgtENpITgRcnrAQ3rOIEEfCoCj
-        Qm7m5PABkXrd3bHx4S19DCg=
-X-Google-Smtp-Source: ABdhPJz9CHv9GmTW9vpZs6Heu7YiutTUrJLVUP36QFXq9H57XH/F6l0sRQzLey+pOghQEQQZja5o/A==
-X-Received: by 2002:a2e:7c16:0:b0:244:be33:9718 with SMTP id x22-20020a2e7c16000000b00244be339718mr270063ljc.467.1647449521560;
-        Wed, 16 Mar 2022 09:52:01 -0700 (PDT)
-Received: from ?IPV6:2a00:1370:8182:3ffd:fa46:42b2:52e1:1c7d? ([2a00:1370:8182:3ffd:fa46:42b2:52e1:1c7d])
-        by smtp.gmail.com with ESMTPSA id u8-20020a196008000000b004487a7a4afasm221272lfb.41.2022.03.16.09.52.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Mar 2022 09:52:01 -0700 (PDT)
-Message-ID: <5bfd9f15-c696-3962-aaf9-7d0eb4a79694@gmail.com>
-Date:   Wed, 16 Mar 2022 19:52:00 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
+        Wed, 16 Mar 2022 13:04:03 -0400
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D9E8C08
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 10:02:47 -0700 (PDT)
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 9DB3D2602F8; Wed, 16 Mar 2022 13:02:46 -0400 (EDT)
+Date:   Wed, 16 Mar 2022 13:02:46 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Cc:     Phillip Susi <phill@thesusis.net>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
  measurable benefit
-Content-Language: en-US
-To:     Phillip Susi <phill@thesusis.net>,
-        Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
- <87tuc9q1fc.fsf@vps.thesusis.net>
- <CAODFU0py06T4Eet+i0ZAY5Zrp5174eQJOCGh_03oZdDXO55TKw@mail.gmail.com>
- <87tuc7gdzp.fsf@vps.thesusis.net>
- <CAODFU0oM02WDpOPXp1of177aEJ9=ux2QFrHZF=khhzAg+3N1dA@mail.gmail.com>
- <87ee34cnaq.fsf@vps.thesusis.net>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <87ee34cnaq.fsf@vps.thesusis.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <YjIYNjq8b7Ar/+Gt@hungrycats.org>
+References: <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com>
+ <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
+ <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com>
+ <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
+ <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com>
+ <87a6dscn20.fsf@vps.thesusis.net>
+ <Yi/I54pemZzSrNGg@hungrycats.org>
+ <87fsnjnjxr.fsf@vps.thesusis.net>
+ <YjD/7zhERFjcY5ZP@hungrycats.org>
+ <CAODFU0pwch49XB4oGX0GKvuRyrp+JEYBbrHvHcXTnWapPBQ8Aw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAODFU0pwch49XB4oGX0GKvuRyrp+JEYBbrHvHcXTnWapPBQ8Aw@mail.gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 14.03.2022 23:02, Phillip Susi wrote:
+On Tue, Mar 15, 2022 at 11:20:09PM +0100, Jan Ziak wrote:
+> On Tue, Mar 15, 2022 at 10:06 PM Zygo Blaxell
+> <ce3g8jdj@umail.furryterror.org> wrote:
+> > This is what makes
+> > nodatacow and prealloc slow--on every write, they have to check whether
+> > the blocks being written are shared or not, and that check is expensive
+> > because it's a linear search of every reference for overlapping block
+> > ranges, and it can't exit the search early until it has proven there
+> > are no shared references.  Contrast with datacow, which allocates a new
+> > unshared extent that it knows it can write to, and only has to check
+> > overwritten extents when they are completely overwritten (and only has
+> > to check for the existence of one reference, not enumerate them all).
 > 
-> Jan Ziak <0xe2.0x9a.0x9b@gmail.com> writes:
+> Some questions:
 > 
->> The actual disk usage of a file in a copy-on-write filesystem can be
->> much larger than sb.st_size obtained via fstat(fd, &sb) if, for
->> example, a program performs many (millions) single-byte file changes
->> using write(fd, buf, 1) to distinct/random offsets in the file.
-> 
-> How?  I mean if you write to part of the file a new block is written
-> somewhere else but the original one is then freed, so the overall size
-> should not change.  Just because all of the blocks of the file are not
-> contiguous does not mean that the file has more of them, and making them
-> contiguous does not reduce the number of them.
-> 
+> - Linear nodatacow search: Do you mean that write(fd1, buf1, 4096) to
+> a larger nodatacow file is slower compared to write(fd2, buf2, 4096)
+> to a smaller nodatacow file?
 
-btrfs does not manage space in fixed size blocks. You describe behavior
-of WAFL.
+Size doesn't matter, the number and position of references do.  It's true
+that large extents tend to end up with higher average reference counts
+than small extents, but that's only spurious correlation--the "large
+extent" and "many references" cases are independent.  An 8K nodatacow
+extent, where the first 4K block has exactly one reference and the second
+4K has 32767 references, requires a 32768 times more CPU work to write
+than a 128M extent with a single reference.
 
-btrfs manages space in variable size extents. If you change 999 bytes in
-1000 bytes extent, original extent remains allocated because 1 byte is
-still referenced. So actual space consumption is now 1999 bytes.
+In sane cases, there's only one reference to a nodatacow/prealloc extent,
+because multiple references will turn off nodatacow and multiple writes
+will turn off prealloc, defeating both features.  When there's only one
+reference, the linear search for overlapping blocks ends quickly.
+
+In insane cases (after hole punching, snapshots, reflinks, or writes
+to prealloc files) there exist multiple references to the extent,
+each covering distinct byte ranges of the extent.  The btrfs trees
+only index references from leaf metadata pages to the entire extent,
+so to calculate the number of times an individual block is referenced,
+we have to iterate over every existing reference to see if it happens to
+overlap the blocks of interest.  That's O(N) in the number of references
+(roughly--e.g. we don't need to examine different snapshots sharing a
+metadata page, because every snapshot sharing a metadata page references
+the same bytes in the data extent, but I don't know if btrfs implements
+that optimization).
+
+We can't simply read the reference count on the extent for various
+reasons.  One is that we don't know what the true reference count is
+without walking all parent tree nodes toward the root to see if there's
+a snapshot.  The extent is referenced by one metadata page, so its
+reference count is 1, but the metadata page is shared by multiple tree
+roots, so the true reference count is higher.  Another is that a hole
+punched into the middle of an extent causes two references from the same
+file, where each reference covers a distinct set of blocks.  None of
+the individual blocks are shared, but the extent's reference count is 2.
+
+> - Linear nodatacow search: Does the search happen only with uncached
+> metadata, or also with metadata cached in RAM?
+
+All metadata is cached in RAM prior to searching.  I think I missed
+where you were going with this question.
+
+> - Extent tree v2 + nodatacow: V2 also features the linear search (like
+> v1) or has the search been redesigned to be logarithmic?
+
+I haven't seen the implementation, but the design implies a linear
+search over the adjacent range of extent physical addresses that is up
+to 2 * max_extent_len wide.  It could be made faster with a clever data
+structure, which is implied in the project description, but I haven't
+seen details.
+
+There are simple ways to make nodatacow fast, but btrfs doesn't implement
+them.  e.g. nodatacow could be a subvol property, where reflink and
+snapshot is prohibited over the entire subvol when nodatacow is enabled.
+That would eliminate the need to ever search extent references on
+write--nodatacow writes could safely assume everything in the subvol is
+never shared--and it would match the expectations of people who prefer
+that nodatacow takes precedence over all incompatible btrfs features.
+
+> -Jan
