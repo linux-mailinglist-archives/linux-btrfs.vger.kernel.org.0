@@ -2,113 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A624DB8FD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 20:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D60694DB918
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 20:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346028AbiCPTrc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Mar 2022 15:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S1347035AbiCPUBK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Mar 2022 16:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343506AbiCPTrc (ORCPT
+        with ESMTP id S244611AbiCPUBK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Mar 2022 15:47:32 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A752140A7
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 12:46:17 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id v14so2742499qta.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 12:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E10/RHxqxdnO02yRvPfaNr/v1jdUvJvGTwpcCM2UuCE=;
-        b=fB361frlMZcmPFNRJnWIY0N33kIHBkuzrYHZNokfoqCoIzuZEL0MDnT3DmDnAo37Jw
-         fPQu/v32EjcIBE/hNQPZr9Shi2+Jtq4zrV/0lCwUNcHOXPWX6IHLl9BTBQZSmJ3H1Mgq
-         CecWI2kv9rrCpqL+b+spCjWoBlrunZlxpEvQAoSThY/Oj0WOshxw3phyvhfNkFPRiong
-         l8CcCWsIwg02zaY9Fjb+60SVFPzp8U17cxiG4fb2JMEMx/FnQvbtXMsuIRuhHx+k5+wR
-         yyLIKC8meKzEVsJK9OJL1fGNJGstG4eX7Zvo6by02gx6PkRMmQxxsnYadDeyre6672oh
-         LY5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E10/RHxqxdnO02yRvPfaNr/v1jdUvJvGTwpcCM2UuCE=;
-        b=jz2iWEP6ueT0ndLDOiuFZmnNJwoJQadZD1hahmb2MuxVr+kRSX5cWfplg1QZuvrk4s
-         S7uOSLnj3DIEhZgbn5RS3XwomBz2+B88kMQdD9g3S1o4Ekesog+MVozeN8prxelrrR25
-         V0FUlETqn5INkEckcAjbJkTymOzexuf1f7fcvX0jOb9HSHGqGnF2kdANg48BOuRCcCH/
-         gaeDITO5LAj0s6F4y/90cbp0AljrTrqaS8IwTvJzme/nj2UrVH5PY7qL/l97CDRTy+CE
-         nita2c+ROxVLRIlh8JfuVUKpumPSzJX+iBIm6nAt+to/aGn5b/23qAej4ey/mMBw0IkU
-         qIPA==
-X-Gm-Message-State: AOAM532BNgh94fm2WQ4XAx7bq5/4ntlJTITCNgIUocHRCRzc8KnCrtxM
-        BpFxL2domWqruk1O7otrEzpHPg==
-X-Google-Smtp-Source: ABdhPJzdid00/41lxSbckANfhz3hmgkLiL0sjFGBBL7VjSFouD738FwEvMgn4bxoZSVrvIQ/cKsiQg==
-X-Received: by 2002:a05:622a:490:b0:2e1:cd32:f3da with SMTP id p16-20020a05622a049000b002e1cd32f3damr1206863qtx.339.1647459976253;
-        Wed, 16 Mar 2022 12:46:16 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id a14-20020a05620a066e00b0067d36cc5b12sm1253247qkh.87.2022.03.16.12.46.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Mar 2022 12:46:15 -0700 (PDT)
-Date:   Wed, 16 Mar 2022 15:46:14 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com
-Subject: Re: [PATCH 11/17] btrfs: make dec_and_test_compressed_bio() to be
- split bio compatible
-Message-ID: <YjI+hkhhTTWMmPkz@localhost.localdomain>
-References: <20211201051756.53742-1-wqu@suse.com>
- <20211201051756.53742-12-wqu@suse.com>
+        Wed, 16 Mar 2022 16:01:10 -0400
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD18B6AA50
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 12:59:54 -0700 (PDT)
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 621D7260A8A; Wed, 16 Mar 2022 15:59:44 -0400 (EDT)
+Date:   Wed, 16 Mar 2022 15:59:37 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Phillip Susi <phill@thesusis.net>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Jan Ziak <0xe2.0x9a.0x9b@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+Message-ID: <YjJBqetcCAaYWPVs@hungrycats.org>
+References: <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com>
+ <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
+ <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com>
+ <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
+ <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com>
+ <87a6dscn20.fsf@vps.thesusis.net>
+ <Yi/I54pemZzSrNGg@hungrycats.org>
+ <87fsnjnjxr.fsf@vps.thesusis.net>
+ <YjD/7zhERFjcY5ZP@hungrycats.org>
+ <877d8twwrn.fsf@vps.thesusis.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211201051756.53742-12-wqu@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <877d8twwrn.fsf@vps.thesusis.net>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 01:17:50PM +0800, Qu Wenruo wrote:
-> For compression read write endio functions, they all rely on
-> dec_and_test_compressed_bio() to determine if they are the last bio.
+On Wed, Mar 16, 2022 at 02:46:33PM -0400, Phillip Susi wrote:
 > 
-> So here we only need to convert the bio_for_each_segment_all() call into
-> __bio_for_each_segment() so that compression read/write endio functions
-> will handle both split and unsplit bios well.
+> Zygo Blaxell <ce3g8jdj@umail.furryterror.org> writes:
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/compression.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
+> > If the extent is compressed, you have to write a new extent, because
+> > there's no other way to atomically update a compressed extent.
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 8668c5190805..8b4b84b59b0c 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -205,18 +205,14 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
->  static bool dec_and_test_compressed_bio(struct compressed_bio *cb, struct bio *bio)
->  {
->  	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
-> +	struct bio_vec bvec;
-> +	struct bvec_iter iter;
->  	unsigned int bi_size = 0;
->  	bool last_io = false;
-> -	struct bio_vec *bvec;
-> -	struct bvec_iter_all iter_all;
->  
-> -	/*
-> -	 * At endio time, bi_iter.bi_size doesn't represent the real bio size.
-> -	 * Thus here we have to iterate through all segments to grab correct
-> -	 * bio size.
-> -	 */
-> -	bio_for_each_segment_all(bvec, bio, iter_all)
-> -		bi_size += bvec->bv_len;
-> +	ASSERT(btrfs_bio(bio)->iter.bi_size);
+> Right, that makes sense for compression.
+> 
+> > If it's reflinked or snapshotted, you can't overwrite the data in place
+> > as long as a second reference to the data exists.  This is what makes
+> > nodatacow and prealloc slow--on every write, they have to check whether
+> > the blocks being written are shared or not, and that check is expensive
+> > because it's a linear search of every reference for overlapping block
+> > ranges, and it can't exit the search early until it has proven there
+> > are no shared references.  Contrast with datacow, which allocates a new
+> > unshared extent that it knows it can write to, and only has to check
+> > overwritten extents when they are completely overwritten (and only has
+> > to check for the existence of one reference, not enumerate them all).
+> 
+> Right, I know you can't overwrite the data in place.  What I'm not
+> understanding is why you can't just just write the new data elsewhere
+> and then free the no longer used portion of the old extent.
+> 
+> > When a file refers to an extent, it refers to the entire extent from the
+> > file's subvol tree, even if only a single byte of the extent is contained
+> > in the file.  There's no mechanism in btrfs extent tree v1 for atomically
+> > replacing an extent with separately referenceable objects, and updating
+> > all the pointers to parts of the old object to point to the new one.
+> > Any such update could cascade into updates across all reflinks and
+> > snapshots of the extent, so the write multiplier can be arbitrarily large.
+> 
+> So the inode in the subvol tree points to an extent in the extent tree,
+> and then the extent points to the space on disk?  
 
-We're tripping this assert with generic/476 with -o compress, so I assume
-there's some error condition that isn't being handled properly.  Thanks,
+The extent item tracks ownership of the space on disk.  The extent item
+key _is_ the location on disk, so there's no need for a pointer in the
+item itself (e.g. read doesn't bother with the extent tree, it just goes
+straight from the inode ref to the data blocks and csums).  The extent
+tree only comes up to resolve ownership issues, like whether the last
+reference to an extent has been removed, or a new reference added,
+or whether multiple references to the extent exist.
 
-Josef
+> And only one extent in
+> the extent tree can ever point to a given location on disk?
+
+Correct.  That restriction is characteristic of extent tree v1.
+Each extent maintains a list of references to itself.  The extent is
+the exclusive owner of the physical space, and ownership of the extent
+item is shared by multiple inode references.  Each inode reference knows
+which bytes of the extent it is referring to, but this information is
+scattered over the subvol trees and not available in the extent tree.
+
+Extent tree v2 creates a separate extent object in the extent tree for
+each reflink, and allows the physical regions covered by each extent
+to overlap.  The inode reference is the exclusive owner of the extent
+item, and ownership of the physical space is shared by multiple extents.
+The extent tree in v2 tracks which inodes refer to which specific blocks,
+so the availability of a block can be computed without referring to any
+other trees.
+
+In v2, free space is recalculated when an extent is removed.  The nearby
+extent tree is searched to see if any blocks no longer overlap with an
+extent, and any such blocks are added to free space.  To me it looks like
+that free space search is O(N), since there's no proposed data structure
+to make it not a linear search of every possibly-overlapping extent item
+(all extents within MAX_EXTENT_SIZE bytes from the point where space
+was freed).
+
+The v2 proposal also has a deferred GC worker, so maybe the O(N)
+searches will be performed in a background thread where they aren't as
+time-sensitive, and maybe the search cost can be amortized over multiple
+deletions near the same physical position.  Deferred GC doesn't help
+nodatacow or prealloc though, which have to know whether a block is
+shared during the write operation, and can't wait until later.
+
+> In other words, if file B is a reflink copy of file A, and you update
+> one page in file B, it can't just create 3 new extents in the extent
+> tree: one that refers to the firt part of the original extent, one that
+> refers to the last part of the original extent, and one for the new
+> location of the new data?  Instead file B refers to the original extent,
+> and to one new extent, in such a way that the second superceeds part of
+> the first only for file B?
+
+Correct.  Changing an extent in tree v1 requires updating every reference
+to the extent, because any inode referring to the entire extent will
+now need to refer to 3 distinct extent items.  That means updating
+metadata pages in snapshots, and can lead to 4-digit multiples of write
+amplification with only a few dozen snapshots--in the worst cases there
+are page splits because the old data now needs space for 3x more reference
+items.  So in v1 we don't do anything like that--extents are immutable
+from the moment they are created until their last reference is deleted.
+
+In v2, file B doesn't refer to file A's extent.  Instead, file B creates
+a new extent which overlaps the physical space of file A's extent.
+After overwriting the one new page, file B then replaces its reference to
+file A's space with two new references to shared parts of file A's space,
+and a third new extent item for the new data in B.  If file A is later
+deleted, the lack of reference to the middle of the physical space is
+(eventually) detected, and the overwritten part of the shared extent
+becomes free space.
