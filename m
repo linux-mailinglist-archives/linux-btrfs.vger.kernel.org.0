@@ -2,63 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35D34DB14F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 14:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAB04DB22D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 15:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356223AbiCPNY3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Mar 2022 09:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        id S1345247AbiCPOKk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Mar 2022 10:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348686AbiCPNYZ (ORCPT
+        with ESMTP id S1351602AbiCPOKi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Mar 2022 09:24:25 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F044E140FE;
-        Wed, 16 Mar 2022 06:23:10 -0700 (PDT)
+        Wed, 16 Mar 2022 10:10:38 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D514D26B
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 07:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1647436991; x=1678972991;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QjZyVW2Vmz9PfM7KmmbwgSWBd6UhTpv2ye+92Bbx6tI=;
-  b=Xziow4cuik54hi8blkhJ1tB5szf7Et8jbdb46UUoKiQuNlRSU5mUzn5Y
-   aZSiZzr+SLMLWfS1dAB7LHT7Z2SegCr8ZgqJ2l4cOEN4lA11POD9xjnQ7
-   ir2W7+TCck3XQ/gxG9dB0mcYISUK3KCm2pK+n68do/ZNURZqhwEWNhBMX
-   soLEOAC7Cf9KybIGJWvO//HqFaSESCP+nSnKLJLSm2OnLk6ZVUEvrqhGX
-   kSxEyKIWs4+AGeLuNEfU6FSBMXJiXQlO6gTR/GEaSSzvsZjqKEq2Xj9Qm
-   HrwwwbSOV0oel/tM38enbqCIRWePw6rKGmp/IqO4UQfzPbuUwMXq+Fc6A
-   A==;
+  t=1647439764; x=1678975764;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1QQMwGymv2ZmMjlKXRKSrogoH1rAGNXi+XiXBxwuNyg=;
+  b=E0A4B/y4tJv3viECPyG63kj8SKknxYKeCcoGsBae18tU9LD1yBydesG+
+   BvttzbxAGmO/qielRIkY7UaIUUec9wVrUzBYSiSZcNmGibwKYwWATlgB5
+   JU2ht+Omk7K8bSqvPMLxPqyvgwwrmdLctPZfIeuR00862EA7vxuOGvRor
+   EGdE3dp3328OVtQMC6vDn25BvQzPbcvtTwDrLHrstg/YUaHDVy7JsAGSF
+   LH9057EESzcG7KMlo/a+AsbVzrrnXJK+bYKnaDOcrSxuehiDkT3sgC+rk
+   olrwamxglKKIUjqChb1vz+lMlT0JKcCeXClHXTGTnaMzvKEYrCQl6ta0Z
+   Q==;
 X-IronPort-AV: E=Sophos;i="5.90,186,1643644800"; 
-   d="scan'208";a="299654891"
+   d="scan'208";a="196448081"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Mar 2022 21:23:10 +0800
-IronPort-SDR: VIZpG+hzxKsXV83zWAoKKWRCw4fZnpCRZEunrq7EKTImnL0y0UvQdKYvVqpiQ/sYe416G2Vcyf
- x8mfdF4CAv/P6EcLS9mt4DvDPx5lHEqyT5cVpSlL9Jz3ZSFO2x/JCV9SrLnvOEsbsKMHBOsD+e
- W4nPl9jTNkLxtnApS/GR+ol/as83lpNHTqnlXoJLu6b2sRzy/IQGK42GLloAl6guT1CCvbO942
- E1LR+5/RJhcpVlEftfry6lBT4kM/fj/n1df3YsljyFIUONK3L2z2AG5ptZkMWT5SqqZKKljDFh
- aI5swdztAc00DDv6eaJu8Lu7
+  by ob1.hgst.iphmx.com with ESMTP; 16 Mar 2022 22:09:22 +0800
+IronPort-SDR: j8ftzcxhRX06mmaQ5E/WR48DR/EZYxXWw4te97OKoci88wZVdAv2SQLE5oPYv1cbJnVcXYrazw
+ IqNevxYh40QgR2fADGqDe6miKcZAv4wO6X+fOHZx24PPmKF91CBJmsr+rDbMta+cD9Oj4y+09f
+ OfFwR3Ap63mF5xGm60bihPvbcvWoFVIm07l/6/UiN5PzdhgJoFz3XVD/3ayNKVsrVTA7XhVnL/
+ JnQE15fyZ8iVlmGVc/r8kyweiJQRZq8kScGI6mya+Q8JfDdLrNbINBbC5AIqF++ds+/wMjkH8j
+ owBoq89KzUO4tDQtomr+gG0x
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2022 05:54:17 -0700
-IronPort-SDR: GMps7eOP8mqHYSEz31iuKTv3l681MnxrtnrOd/maTu+qcgCfi6QvSUyfr9JNPUbkdqLAwGAEFr
- YhBkU1hLv26k3a/+EXb5ydpWtQGw/dSyd9dSyCjsCbZmTIndlAPz1GayCPVeAtW0M8GJkMaRPT
- NxI8EuN2V4EsOt0Sl8iFI2mb/mPOecDo0ji+6waGOvGaVmzO42yNaCCJiBVPuCo/ZpnpvAMkdX
- 2hpQyyPsgMVMymyloZTmQFavxZ2boBQkW1fuaidco+sWVMJcg14Go1D8qhN8XsV0umIzL1UOzR
- scs=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2022 06:40:27 -0700
+IronPort-SDR: +Iq4GLE96InCzsjjvTZ5u0cnu5H4tQu37Fc3UjVT0FnWyrtP1OOc5O31hY4Cvd25B5PrHwojGf
+ FLNDxbTZ2n9V052MXxB6IrzVsJhM/7exR9FXE5NvqbmuYgCa6uqbIvRyOQhAy0LYaia74nBIEe
+ MTRO04R7MMoD8MlSnqm6xIww/SjEiDlOegfaBx7cmNI8IUBMq/2Wf1J6FksZQ5Wmt32tMzCX+R
+ pJopLe3sHQyxuu0HKSwz+mu50nto/sGU6CKfeNyn/bSokSqSCCppzXYF1Z4aBiN4lnJTX85TJv
+ 704=
 WDCIronportException: Internal
 Received: from d2bbl13.ad.shared (HELO naota-xeon.wdc.com) ([10.225.55.209])
-  by uls-op-cesaip01.wdc.com with ESMTP; 16 Mar 2022 06:23:10 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Mar 2022 07:09:20 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     johannes.thumshirn@wdc.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, david@fromorbit.com,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2 4/4] btrfs: assert that relocation is protected with sb_start_write()
-Date:   Wed, 16 Mar 2022 22:22:40 +0900
-Message-Id: <3f88d51b35da92bf2391febd7186973cc9539e95.1647436353.git.naohiro.aota@wdc.com>
+Cc:     johannes.thumshirn@wdc.com, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/2] btrfs: zoned: activate new BG only from extent allocation context
+Date:   Wed, 16 Mar 2022 23:09:10 +0900
+Message-Id: <cover.1647437890.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1647436353.git.naohiro.aota@wdc.com>
-References: <cover.1647436353.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,32 +66,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_relocate_chunk() initiates new ordered extents. They can cause a
-hang when a process is trying to thaw the filesystem.
+In btrfs_make_block_group(), we activate the allocated block group,
+expecting that the block group is soon used for the extent allocation.
 
-We should have called sb_start_write(), so the filesystem is not being
-frozen. Add an ASSERT to check it is protected.
+With a lot of IOs, btrfs_async_reclaim_data_space() tries to prepare
+for them by pre-allocating data block groups. That preallocation can
+consume all the active zone counting. It is OK if they are soon
+written and filled. However, that's not the case. As a result, an
+allocation of non-data block groups fails due to the lack of an active
+zone resource.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/volumes.c | 3 +++
- 1 file changed, 3 insertions(+)
+This series fixes the issue by activating a new block group only when
+it's called from find_free_extent(). This series introduces
+CHUNK_ALLOC_FORCE_FOR_EXTENT in btrfs_chunk_alloc_enum to distinguish
+the context.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 3471698fd831..393fc7db99d3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3230,6 +3230,9 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
- 	u64 length;
- 	int ret;
- 
-+	/* Assert we called sb_start_write(), not to race with FS freezing */
-+	ASSERT(sb_write_started(fs_info->sb));
-+
- 	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
- 		btrfs_err(fs_info,
- 			  "relocate: not supported on extent tree v2 yet");
+Naohiro Aota (2):
+  btrfs: return allocated block group from do_chunk_alloc()
+  btrfs: zoned: activate block group only for extent allocation
+
+ fs/btrfs/block-group.c | 36 +++++++++++++++++++++++++++---------
+ fs/btrfs/block-group.h |  1 +
+ fs/btrfs/extent-tree.c |  2 +-
+ 3 files changed, 29 insertions(+), 10 deletions(-)
+
 -- 
 2.35.1
 
