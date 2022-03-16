@@ -2,116 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0BE4DB00F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 13:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E370F4DB152
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 14:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245605AbiCPMtY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Mar 2022 08:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
+        id S1346404AbiCPNYY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Mar 2022 09:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbiCPMtY (ORCPT
+        with ESMTP id S236695AbiCPNYW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Mar 2022 08:49:24 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4277624087
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 05:48:10 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id j29so1463008ila.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 05:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3qNp0GSXVlvzU2kehm79qxtB2lNi0xHeQzEF0km3Im0=;
-        b=mqUFu3uBS5LkAU9DF4i16+/S41oJwj5EouGhi4SLQ9FLhssWE0b2t4Udg6whkq6EAW
-         o9EauzQ+FvMKuIZ+zNcsKYFyj+EdxHIOxZP+ic1KGIkhb/MbAzoM+Bm5VwYU4ewaCuHH
-         eDM41mMZgBeYx+V0S1QY1ueVvr+v8wscU+pDCUcIe8SEVeDlnez9j9r/2pu04v1M+MbS
-         wcMRAGrXpBDK7652+24MxIxSLlmhAW59xvvS2pOgj98PyX0apXhx+482BV54z5GyCVR9
-         0DPhSr36EuEqbXUf4z18OVom4sxPI0w87i1erlbKl9PEkMuaG/EHKuO1dhYhMTv7KbSL
-         VRhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3qNp0GSXVlvzU2kehm79qxtB2lNi0xHeQzEF0km3Im0=;
-        b=Lv6x++QD2gpts2S8a76jSNacSwWjldlin4HI16tw/qY49l+fygRWF7z/4yvOt3zwom
-         8Uy7NP9Au+Fj0emkKWm40ZjnNwgXgq//HhUTNjbKVcJquTM6Hy5RFievNXJUvWdmCrSM
-         IVw+GeWSHGwh1NIwAR6ITdUsZlLkJms9v9MvdblRWyrWpnrXMP0HXsuCZsxB0XAzMngp
-         pEewjdDV1wipo7lX+g5MAPX+Qjsaf4P91TSNq5yR0mP28MP/RIxY7g6jQ4zpfUJzB68P
-         YbmEU/8RI8oEDfMeHzHLi4Kmee+pf5+Ep0Gvbp2iGM6jXqDTQynrLx7P1EkSFHtM6kta
-         FCoA==
-X-Gm-Message-State: AOAM531pqV/9JeT6GpNMJUKkwcHjg+Xc+32nvFYTLZuytu8VAqzJ2QHm
-        mksUbGq+GJQIwd9xFxG/5xF89zeM6nf7pzcTrVjfltuoQgA=
-X-Google-Smtp-Source: ABdhPJzSR38H6wvn2vw+HerUhHi2JJDvUNbbfIMBqOk2fb8AMx0mGnTQM8+CZevGfHDjxdCIMiH3nyK7P+irUAdTBrM=
-X-Received: by 2002:a05:6e02:154f:b0:2c7:d5da:f12f with SMTP id
- j15-20020a056e02154f00b002c7d5daf12fmr519059ilu.66.1647434889434; Wed, 16 Mar
- 2022 05:48:09 -0700 (PDT)
+        Wed, 16 Mar 2022 09:24:22 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F86A64FF;
+        Wed, 16 Mar 2022 06:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1647436987; x=1678972987;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Lhi2nnAaW5WDGC50h+Y+39ChFJieqInTYmGd5Oew2ys=;
+  b=PhebxgaYhEYCZOPxbYO8r8qS6xIIHlr9w4Ot/cBygITV1A7KH1lrevbw
+   CtkDz+2mH8ex7VIZs0zAvIyK7Y6Y0U8WDO+xvevAEZbgVDj7/I61sTGsK
+   KkQwkxzr0qYqz5Q6YS4LMd6vyjruDxq1LzOECO0WcALsd7dckS2+eLnqq
+   ZS9OvYpNFrfq0WN5nBGsqAO5wgv0DtBRW0tvZe5vXEy4a3nLP1j54m262
+   FXbkOCr37uN2QS4SsJK2QWOna1zOPRCRAAZZkQQCWiNAVGc7T3FGhMvFF
+   svfdFizN/yKu1KnjHTi4GL2UmABUmK5V9BS5yg68T5J6ogDJO+uA3HgHz
+   g==;
+X-IronPort-AV: E=Sophos;i="5.90,186,1643644800"; 
+   d="scan'208";a="299654873"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Mar 2022 21:23:05 +0800
+IronPort-SDR: RyI/pAngn2No5hbBIBYmNZ5fP7piGxzXagkuhzafh3RTliEtxYNe6qCG3WrDHJ73k2WuEisQK/
+ /sCuw5mrMp9xP9HyIcO2cYQDzFuwHYH89SKs5q4y8pYSjxs+xkX40sEu2U4IJDiGkq58YyFlMk
+ A23IUg3cEBFGitbbDc/VEZwMqCzdm3Vkr/Zq2La9jNUfF338dMsG1nER7netvyJH1YIWEjQTgK
+ DaqTWm0SxwBV7sAOvsgWg91vNWfST7y9u6+0JoYjlbABMh+rJOLbIhcH35CWY7fiKeviR4944y
+ 0Aeug/yLZLm9M6DPVsTN1rc1
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2022 05:54:12 -0700
+IronPort-SDR: oWVh2WPrHCoYwaggq2JfUbfQgR62FTJNIxC0mRjxlu8/OqyW6GMAWv1JnvESn+mdJh3LNxwoZd
+ HK4UClDFndUCfG1ajewZVM+lZTpRgnOGnHh9/Zxf2/g3RzI7gf9OeWkIoB3mPDYZ0eWAtXPla4
+ uTxKkOZtLkeQRMalNPnZxtvfZF+htn4/SgvljoKoLZLNMA8J+cqF+d7VUu0MnXhbbucMKttaDF
+ VYTWTIb9wGv5Xr8UkMD14c473GoPEuoJ6sZOQ0CAalZtDJDgOFesYWzGvOlXRAKYavRTsQtrEC
+ BF8=
+WDCIronportException: Internal
+Received: from d2bbl13.ad.shared (HELO naota-xeon.wdc.com) ([10.225.55.209])
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Mar 2022 06:23:05 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     johannes.thumshirn@wdc.com, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, david@fromorbit.com,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v2 0/4] protect relocation with sb_start_write
+Date:   Wed, 16 Mar 2022 22:22:36 +0900
+Message-Id: <cover.1647436353.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
-In-Reply-To: <CAODFU0rZEy064KkSK1juHA6=r2zC4=Go8Me2V2DqHWb-AirL-Q@mail.gmail.com>
-From:   Kai Krakow <hurikhan77+btrfs@gmail.com>
-Date:   Wed, 16 Mar 2022 13:47:42 +0100
-Message-ID: <CAMthOuNR099Un3TvZMXVBaoBFChN9BWs7dxTzkgoQh90eYQRDg@mail.gmail.com>
-Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
- measurable benefit
-To:     Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello!
+This series is a follow-up to the series below. The old series added
+an assertion to btrfs_relocate_chunk() to check if it is protected
+with sb_start_write(). However, it revealed another location we need
+to add sb_start_write() [1].
 
-Am So., 6. M=C3=A4rz 2022 um 18:57 Uhr schrieb Jan Ziak <0xe2.0x9a.0x9b@gma=
-il.com>:
->
-> I would like to report that btrfs in Linux kernel 5.16.12 mounted with
-> the autodefrag option wrote 5TB in a single day to a 1TB SSD that is
-> about 50% full.
->
-> Defragmenting 0.5TB on a drive that is 50% full should write far less tha=
-n 5TB.
->
-> Benefits to the fragmentation of the most written files over the
-> course of the one day (sqlite database files) are nil. Please see the
-> data below. Also note that the sqlite file is using up to 10 GB more
-> than it should due to fragmentation.
->
-> CPU utilization on an otherwise idle machine is approximately 600% all
-> the time: btrfs-cleaner 100%, kworkers...btrfs 500%.
->
-> I am not just asking you to fix this issue - I am asking you how is it
-> possible for an algorithm that is significantly worse than O(N*log(N))
-> to be merged into the Linux kernel in the first place!?
->
-> Please try to avoid discussing no-CoW (chattr +C) in your response,
-> because it is beside the point. Thanks.
+https://lore.kernel.org/linux-btrfs/cover.1645157220.git.naohiro.aota@wdc.com/T/
 
-Yeah, that's one solution. But you could also try disabling
-double-write by turning on WAL-mode in sqlite:
+[1] https://lore.kernel.org/linux-btrfs/cover.1645157220.git.naohiro.aota@wdc.com/T/#e06eecc07ce1cd1e45bfd30a374bd2d15b4fd76d8
 
-Use the cmdline tool to connect to the database file, then run "PRAGMA
-journal_mode=3DWAL;". This can only be switched, when only one client is
-connect so you need to temporarily suspend processes using the
-database.
-(https://dev.to/lefebvre/speed-up-sqlite-with-write-ahead-logging-wal-do)
+Patches 1 and 2 add (indirectly) sb_{start,end}_write() to the resumed
+async balancing and device addition.
 
-It may be worth disabling compression: "chmod +m
-DIRECTORY-OF-SQLITE-DB", but this can only be switched for newly
-created files, so you'd need to rename and copy the existing sqlite
-files. This reduces the amount of extents created.
+Patches 3 and 4 add an ASSERT to catch a future error.
 
-Enabling WAL disables the rollback journal and prevents smallish
-in-place updates of data blocks in the database file. Instead, it uses
-checkpointing to update the database safely in bigger chunks, thus
-using write-patterns better suited for cow-filesystems.
+--
+v2:
+  - Use mnt_want_write_file() instead of sb_start_write() for
+    btrfs_ioctl_add_dev()
+  - Drop bogus fixes tag
+  - Change the stable target to meaningful 4.9+
 
-HTH
-Kai
+Naohiro Aota (4):
+  btrfs: mark resumed async balance as writing
+  btrfs: mark device addition as mnt_want_write_file
+  fs: add check functions for sb_start_{write,pagefault,intwrite}
+  btrfs: assert that relocation is protected with sb_start_write()
+
+ fs/btrfs/ioctl.c   | 11 +++++++++--
+ fs/btrfs/volumes.c |  5 +++++
+ include/linux/fs.h | 20 ++++++++++++++++++++
+ 3 files changed, 34 insertions(+), 2 deletions(-)
+
+-- 
+2.35.1
+
