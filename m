@@ -2,190 +2,262 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E7D4DA5F7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 00:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8164DA6A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 01:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352499AbiCOXHX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Mar 2022 19:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S243433AbiCPAHb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Mar 2022 20:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352515AbiCOXHW (ORCPT
+        with ESMTP id S238771AbiCPAHb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Mar 2022 19:07:22 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DDF5D66E
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 16:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1647385555;
-        bh=BB+8nOrBQ9N6o6r97WQ1sOfjLLVBYK2Z1XIMnWRDBh8=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=Jj556WkGTWz9AGCSdrHNZlVtTfKMyYiQ0kukC8HFQsqpUltMKd51OAkBDmJa3RUDd
-         L2emP0p5kpZgSlX5HZuEtK62f8xQgCL2qLPN7covU53CaX2CzrfGyRGI7s3KcUGiXt
-         JPJCL5VOCmD2UUC+vrPNlaDNtLPb+/AgOwyxZlHU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MowGa-1nuFzw2bgE-00qSNl; Wed, 16
- Mar 2022 00:05:55 +0100
-Message-ID: <d03d620c-a287-075d-a2e8-77cbdf4dcba5@gmx.com>
-Date:   Wed, 16 Mar 2022 07:05:50 +0800
+        Tue, 15 Mar 2022 20:07:31 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B304D4A3F7
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Mar 2022 17:06:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6769F1F385
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 00:06:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1647389176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=OPlP/q3rTQ6Cy1UPx71AZeQc/2mVGw0pDmi2orew3qg=;
+        b=jnI5NYCZQlRPlp9FJi8erETh+KRCGFhsqE9hXu/FtVxYmQg5wqwlXSPOKxtzVaEoY9j2bG
+        6t8VKVHr2O9Cg7iawMaNgjci2juJTPQzzDTsHGU5LyigPuSmpY7m0WEKFec01rmsTsp5ay
+        AOF4MF1i65SOmL66oT5dJ7/XGgn3Zu0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5B6B139DB
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 00:06:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id B/uIJPcpMWK9VgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 00:06:15 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3] btrfs: check extent buffer owner against the owner rootid
+Date:   Wed, 16 Mar 2022 08:05:58 +0800
+Message-Id: <38ac33583d7eb954d6428b21582b16bee56b3761.1647388920.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [RFC PATCH] btrfs: don't trust sub_stripes from disk
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-References: <d5fb898de7b87629a08f51bf1ca50a2b8f48b95b.1647329345.git.wqu@suse.com>
- <20220315201534.GY12643@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220315201534.GY12643@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7swce7DoAAA/UNZXt63iOZpi0Pwg8XnQptXtmjgkqMlfMOgJBw7
- 64tKdXCLPvG5AzGovVAMOKt6UksA3Oj+bmMdgxgvYQWfbz/9q88ox+cAKa/t21N9cR4iuNn
- Y3+Lq4ZIbIp4iaD7R+oQDbjFhRXZCvNfnCEGhVsnN67bOyDZaPBfz9+GuPrZz9NDww4RKhl
- RoPEUv9cJNfsIBviKDMAA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4YZQpJ/Euks=:MiLLOkC7q2INdDyIZI+jCj
- u9/As8dGRbZltZp6NKT54kIU3c2c3tbbQEJFKJ9zzczIru+grkolUQQ6lMcTFXkQs79hddpMd
- 496S4w03oMXb3NaXN+0HNR3P5Jzu6LT+bWXfqPLsjVvpGWNZbcl0kBNzXknNsP9hMJ5irPnRz
- QiUPiwUErKGa2tMqxbqncPJ0WlSMZOfEWl1IhbQmY3el9R36cUNMmG7yWlkJb7vrR62TWH63/
- zE3OZ7MknQz76G/Ww/RU42u+VxDJ9Xn2gFeUHDj7OZGGMwh81nAniA08LWIbclKZyq/Ks4Z1A
- Fnhiz/oyzRbePzGY+YyzOwY0O9KKkLEYAcl4SYRjHUjTdOqJ5hekOjYJjj2aEsFUei67xHkmf
- ygBormPihW1Ue+e+0Lp+6uwhMXfGTWpC2/lOieJK7HjSL7unBNRANKn4+fYcyUQt613hsxieY
- Z3XFZ8uYEJpdWDTqEuZ2ztxzeAPntdfpttriEH7vUZMVuZ9c6qfUxcNZIzVHI9kW1XHXC9fbc
- EH6MD0j2gODnlMIai4svdplU0oHj28jNyyVkEcBgCUu0hLkAWVkCzY0Y4ijoXCE1CU4Udm01e
- 0YATjU9ceIHZJs3G9dNVVMjovpmQDz8WoOYKw2Tw6n6yOCVJuMxti8EQhhBWzcQ6AyH4BRors
- /fhTYsucImosl5QNXScLXEJCDxoFE/GngFDCAEaEyYxgDn0ESSk1kNS4sAFdxP8Wi3YSGbsu9
- bi0UKxeQBlb/AUBtuYtUSBxjsbfzrEQ6uzKy5YdC5TeEP34KtlTqIHa55hi7p+tItL/tqQMDO
- 19cUKfofLlun51/YLk1IMR6n7Z3Hw4vWj2jXIUEFWkwgk8dED5DJzzqy7sbcz2mwYFqJXRHND
- 8g+q6k0pMPC9QrJ+GelQSWXuyYxSjmkp1H+PMl6JX7LL9fvtNg9Jtcydl7LYhcKiTHQO17DJD
- EAeHIVryKv8lUpGt0rG5l4mVuZ9C31zc9kcNNpAlo0EixDCrR78Rc1JxAeFJjM1/3nl/iPRFP
- SBHvSKBZBRxAdx780jH86gQUdkGpqzFORvFICuxPKxb6ZPB7l7NKzoLftQqWvVeBrm8/S5Q+J
- zc5EGEqMVKDIkg=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Btrfs doesn't really check whether the tree block really respects the
+root owner.
 
+This means, if a tree block referred by a parent in extent tree, but has
+owner of 5, btrfs can still continue reading the tree block, as long as
+it doesn't trigger other sanity checks.
 
-On 2022/3/16 04:15, David Sterba wrote:
-> On Tue, Mar 15, 2022 at 03:32:59PM +0800, Qu Wenruo wrote:
->> [BUG]
->> LKP reported a divide error testing my scrub entrance tests:
->>
->>   BTRFS info (device sdb2): dev_replace from /dev/sdb3 (devid 2) to /de=
-v/sdb6 started
->>   divide error: 0000 [#1] SMP KASAN PTI
->>   CPU: 3 PID: 3293 Comm: btrfs Not tainted 5.17.0-rc5-00101-g3626a285f8=
-7d #1
->>   Hardware name: Dell Inc. OptiPlex 9020/0DNKMN, BIOS A05 12/05/2013
->>   RIP: 0010:scrub_stripe (kbuild/src/consumer/fs/btrfs/scrub.c:3448 kbu=
-ild/src/consumer/fs/btrfs/scrub.c:3486 kbuild/src/consumer/fs/btrfs/scrub.=
-c:3644) btrfs
->>   Code: 00 00 fc ff df 48 89 f9 48 c1 e9 03 0f b6 0c 11 48 89 fa 83 e2 =
-07 83 c2 03 38 ca 7c 08 84 c9 0f 85 27 09 00 00 41 8b 5d 1c 99 <f7> fb 48 =
-8b 54 24 30 48 c1 ea 03 48 63 e8 48 b8 00 00 00 00 00 fc
->>     0:	00 00                	add    %al,(%rax)
->>     2:	fc                   	cld
->>     3:	ff                   	(bad)
->>     4:	df 48 89             	fisttps -0x77(%rax)
->>     7:	f9                   	stc
->>     8:	48 c1 e9 03          	shr    $0x3,%rcx
->>     c:	0f b6 0c 11          	movzbl (%rcx,%rdx,1),%ecx
->>    10:	48 89 fa             	mov    %rdi,%rdx
->>    13:	83 e2 07             	and    $0x7,%edx
->>    16:	83 c2 03             	add    $0x3,%edx
->>    19:	38 ca                	cmp    %cl,%dl
->>    1b:	7c 08                	jl     0x25
->>    1d:	84 c9                	test   %cl,%cl
->>    1f:	0f 85 27 09 00 00    	jne    0x94c
->>    25:	41 8b 5d 1c          	mov    0x1c(%r13),%ebx
->>    29:	99                   	cltd
->>    2a:*	f7 fb                	idiv   %ebx		<-- trapping instruction
->>    2c:	48 8b 54 24 30       	mov    0x30(%rsp),%rdx
->>    31:	48 c1 ea 03          	shr    $0x3,%rdx
->>    35:	48 63 e8             	movslq %eax,%rbp
->>    38:	48                   	rex.W
->>    39:	b8 00 00 00 00       	mov    $0x0,%eax
->>    3e:	00 fc                	add    %bh,%ah
->>
->> [CAUSE]
->> The offending function is simple_stripe_full_stripe_len(), which handle=
-s
->> both RAID0 and RAID10.
->>
->> In that function we will divide by map->sub_stripes.
->>
->> So this means map->sub_stripes is 0.
->>
->> For RAID10 it's impossible as btrfs_check_chunk_valid() will ensure
->> RAID10 chunk has sub_stripes set to 2.
->>
->> But it doesn't check RAID0 (nor any other profiles).
->>
->> With more help from Oliver, it shows that under their environment,
->> SINGLE/DUP profiles also have 0 as their sub_stripes.
->>
->> So it looks like a bug in btrfs-progs, but I can not reproduce nor pin =
-down
->> the exact commit.
->>
->> [FIX]
->> >From btrfs_raid_array[], all profiles have either sub_stripes as 1 or =
-2
->> (only for RAID10).
->>
->> Thus there is no need to trust the sub_stripe value from disk at all.
->>
->> I'm not yet confident to put such sub_stripes check for all profiles, a=
-s
->> there is no concrete evidence to indicate it's a bug in mkfs.btrfs, nor
->> how many users are affected by it.
->>
->> Reported-by: kernel test robot <oliver.sang@intel.com>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Reason for RFC:
->>
->> I don't have direct evidence to indicate it's a bug in mkfs.btrfs.
->>
->> But both code review and extra debug patches show Oliver's environment
->> has chunk items with 0 as sub_stripes (for DUP at least).
->>
->> However using the same progs version, I can not reproduce the same
->> behavior at all (still 1 sub_stripes for SINGLE/RAID0/DUP/...)
->>
->> So this is just a preventive method.
->
-> This is obviously safer as the values in the table are fixed, but it
-> would be also good to find the cause. I think that if it was a bug we'd
-> have seen it already but it could also depend on the setup.
->
-> Have you noticed any other strange looking values during the analysis?
+Normally this is fine, but combined with the empty tree check in
+check_leaf(), if we hit an empty extent tree, but the root node has
+csum tree owner, we can let such extent buffer to sneak in.
 
-Not yet.
+Shrink the hole by:
 
-The current definitive debugging is adding BUG_ON() to each
-map->sub_stripe assignment when it got 0 sub_stripes.
+- Do extra eb owner check at tree read time
 
-The first trigger is from read from sys_chunk_array.
+- Make sure the root owner extent buffer exactly match the root id.
 
-And according to the result from LKP guys, the offending fs is using
-default mkfs profile (AKA, DUP for sys chunk).
+Unfortunately we can't yet completely patch the hole, there are several
+call sites can't pass all info we need:
 
-So currently I'm suspecting the progs is doing something wrong.
-But their progs is 5.15.1, and I failed to reproduce using that tag.
+- For reloc/log trees
+  Their owner is key::offset, not key::objectid.
+  We need the full root key to do that accurate check.
 
-Thanks,
-Qu
-> One weird value would mean it's a bug but if there's like a missing
-> whole update in some data structure that would get fixed after first
-> write it could be eg. a missing fsync somewhere or a bug on the lower
-> layer.
+  For now, we just skip the ownership check for those trees.
+
+- For add_data_references() of relocation
+  That call site doesn't have any parent/ownership info, as all the
+  bytenrs are all from btrfs_find_all_leafs().
+
+- For direct backref items walk
+  Direct backref items records the parent bytenr directly, thus unlike
+  indirect backref item, we don't do a full tree search.
+
+  Thus in that case, we don't have full parent owner to check.
+
+For the later two cases, they all pass 0 as @owner_root, thus we can
+skip those cases if @owner_root is 0.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Skip @owner_root == 0 cases completely to remove a false alert
+
+  For add_data_references() we pass 0 as @owner_root for data extents.
+  However v1 space cache uses data extents but belongs to root tree.
+
+  Thus previous handling (marking all owner_root == 0 case as is_subvol)
+  will reject the read.
+
+v3:
+- Resolve a conflict with "btrfs: release upper nodes when reading stale
+  btree node from disk"
+  Just check the eb owner before checking @unlock_up
+---
+ fs/btrfs/ctree.c        |  6 +++++
+ fs/btrfs/disk-io.c      | 21 +++++++++++++++
+ fs/btrfs/tree-checker.c | 57 +++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/tree-checker.h |  1 +
+ 4 files changed, 85 insertions(+)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 6ae1bf7ab27f..1e24695ede0a 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -16,6 +16,7 @@
+ #include "volumes.h"
+ #include "qgroup.h"
+ #include "tree-mod-log.h"
++#include "tree-checker.h"
+ 
+ static int split_node(struct btrfs_trans_handle *trans, struct btrfs_root
+ 		      *root, struct btrfs_path *path, int level);
+@@ -1456,6 +1457,11 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
+ 			btrfs_release_path(p);
+ 			return -EIO;
+ 		}
++		if (btrfs_check_eb_owner(tmp, root->root_key.objectid)) {
++			free_extent_buffer(tmp);
++			btrfs_release_path(p);
++			return -EUCLEAN;
++		}
+ 
+ 		if (unlock_up)
+ 			ret = -EAGAIN;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index d429a53704d0..d456f426924c 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1122,6 +1122,10 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 		free_extent_buffer_stale(buf);
+ 		return ERR_PTR(ret);
+ 	}
++	if (btrfs_check_eb_owner(buf, owner_root)) {
++		free_extent_buffer_stale(buf);
++		return ERR_PTR(-EUCLEAN);
++	}
+ 	return buf;
+ 
+ }
+@@ -1561,6 +1565,23 @@ static struct btrfs_root *read_tree_root_path(struct btrfs_root *tree_root,
+ 		ret = -EIO;
+ 		goto fail;
+ 	}
++
++	/*
++	 * For real fs, and not log/reloc trees, root owner must
++	 * match its root node owner
++	 */
++	if (!test_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &fs_info->fs_state) &&
++	    root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID &&
++	    root->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID &&
++	    root->root_key.objectid != btrfs_header_owner(root->node)) {
++		btrfs_crit(fs_info,
++"root=%llu block=%llu, tree root owner mismatch, have %llu expect %llu",
++			   root->root_key.objectid, root->node->start,
++			   btrfs_header_owner(root->node),
++			   root->root_key.objectid);
++		ret = -EUCLEAN;
++		goto fail;
++	}
+ 	root->commit_root = btrfs_root_node(root);
+ 	return root;
+ fail:
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index e56c0107eea3..e9b564674d85 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -1855,3 +1855,60 @@ int btrfs_check_node(struct extent_buffer *node)
+ 	return ret;
+ }
+ ALLOW_ERROR_INJECTION(btrfs_check_node, ERRNO);
++
++int btrfs_check_eb_owner(struct extent_buffer *eb, u64 root_owner)
++{
++	const bool is_subvol = is_fstree(root_owner);
++	const u64 eb_owner = btrfs_header_owner(eb);
++
++	/*
++	 * Skip dummy fs, as selftest doesn't bother to create unique ebs for
++	 * each dummy root.
++	 */
++	if (test_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &eb->fs_info->fs_state))
++		return 0;
++	/*
++	 * There are several call sites (backref walking, qgroup, and data
++	 * reloc) passing 0 as @root_owner, as they are not holding the
++	 * tree root.
++	 * In that case, we can not do a reliable ownership check, so just
++	 * exit.
++	 */
++	if (root_owner == 0)
++		return 0;
++	/*
++	 * Those trees uses key.offset as their owner, our callers don't
++	 * have the extra capacity to pass key.offset here.
++	 * So we just skip those trees.
++	 */
++	if (root_owner == BTRFS_TREE_LOG_OBJECTID ||
++	    root_owner == BTRFS_TREE_RELOC_OBJECTID)
++		return 0;
++
++	if (!is_subvol) {
++		/* For non-subvolume trees, the eb owner should match root owner */
++		if (root_owner != eb_owner) {
++			btrfs_crit(eb->fs_info,
++"corrupted %s, root=%llu block=%llu owner mismatch, have %llu expect %llu",
++				btrfs_header_level(eb) == 0 ? "leaf" : "node",
++				root_owner, btrfs_header_bytenr(eb), eb_owner,
++				root_owner);
++			return -EUCLEAN;
++		}
++		return 0;
++	}
++
++	/*
++	 * For subvolume trees, owner can mismatch, but they should all belong
++	 * to subvolume trees.
++	 */
++	if (is_subvol != is_fstree(eb_owner)) {
++		btrfs_crit(eb->fs_info,
++"corrupted %s, root=%llu block=%llu owner mismatch, have %llu expect [%llu, %llu]",
++			btrfs_header_level(eb) == 0 ? "leaf" : "node",
++			root_owner, btrfs_header_bytenr(eb), eb_owner,
++			BTRFS_FIRST_FREE_OBJECTID, BTRFS_LAST_FREE_OBJECTID);
++		return -EUCLEAN;
++	}
++	return 0;
++}
+diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
+index 32fecc9dc1dd..c48719485687 100644
+--- a/fs/btrfs/tree-checker.h
++++ b/fs/btrfs/tree-checker.h
+@@ -25,5 +25,6 @@ int btrfs_check_node(struct extent_buffer *node);
+ 
+ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
+ 			    struct btrfs_chunk *chunk, u64 logical);
++int btrfs_check_eb_owner(struct extent_buffer *eb, u64 root_owner);
+ 
+ #endif
+-- 
+2.35.1
+
