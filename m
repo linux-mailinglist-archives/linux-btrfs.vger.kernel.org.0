@@ -2,190 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB524DB74A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 18:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD854DB791
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Mar 2022 18:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357637AbiCPRiF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Mar 2022 13:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
+        id S1352472AbiCPRt4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Mar 2022 13:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240034AbiCPRiE (ORCPT
+        with ESMTP id S237760AbiCPRtz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Mar 2022 13:38:04 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4984969CC4;
-        Wed, 16 Mar 2022 10:36:49 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 6CD9B3201F32;
-        Wed, 16 Mar 2022 13:36:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 16 Mar 2022 13:36:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; bh=+IcXjFyj+KNzUjiChNEzR+WJm8In33CdG6oyA/
-        LYTgM=; b=iGiOMuLbc7YJZxHZOresWNAj0Pc9wwXLfZvAe+NnWYjMdyGs2XZRtt
-        ncDkRPiD/CAypitcjfqXIpfuKkvun/prrT6qO6sh4mdrND7A0bxg8tdj5Hqoce5g
-        YyXMxduvFYB+m7aOvbpEftPIQQr/ngrzXjtR0UJHvYzBZNWUQMnzGWcBc5c/Bxr3
-        peWXpgmyYas/p14a2lkYECRZr9OdNf+djAp5eHyoyjgq+ju1NLXGxF0g80EaQ+Kb
-        kSvQI+GJrc0INCTLbIaqYIJNQzMAk+k+YXg2Oz63tXySPH0d3KvhioP4EvzaOl96
-        w4cDUinKgunDcZ+SPKUgMXN7g7Ru++nQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+IcXjFyj+KNzUjiCh
-        NEzR+WJm8In33CdG6oyA/LYTgM=; b=cmxnLNctLoUS4XKDtNFqNnMG4mekiSIM1
-        IEf84khS7a8g4gG/eYLXgBK8IJ2UBUT1mIYURBzbQjIRP4/IBXZ7lgZVwxsmfE9C
-        SsKy6jA33JDIX7g3x8/NeOtdVZ+RZMrcyt/WTEw1wyd0ho84mH6mCuCw/LTBQQ5U
-        CU3NzEkgc9tVNv4b5NQSHjD6UMj2pB9T3zOphv2xcKJS6u9fK7sARhIfi9Gx3+ng
-        oJkSO1uxGbZtI397ubv/90kdJFx2RA+Nl6mCtZ+7aC+thG0vy41Vy/n6LAlBhiq2
-        /wujx6pUPDMTxYt+3dRc1Oa+tYN7ZYfEUhQxgelc/k+HGJQfrORQg==
-X-ME-Sender: <xms:LSAyYoLob6J7PezTNE8N5WXfM-smP0fsDEt1wK2yBxPxMasEpUVh0g>
-    <xme:LSAyYoLnWBBqigfPKVXXKsiEKp05lr7G7pwEI3dY-S2ebRkT8_zEl3LxGbqEBhUDW
-    xUOL1hmDnzZ-5DuIOQ>
-X-ME-Received: <xmr:LSAyYou2EfWG_BJdqPJSb8N6U7-hcKt4EWwwd_T6r3xIW_1fo7ObyxdhF7OkGQxzBnQVpvNxzHODK14bRK9f1-DIk50sYw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudefvddguddttdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:LSAyYlYHk1lo0ayRf6HFimoLn9ANwnlDNXOuUgbfG543QJGzTt3C6w>
-    <xmx:LSAyYvYnvc-3AOe5Cq2vKxEKENfWSYP9SDdZKEoEAIwV9yM6_Wyolg>
-    <xmx:LSAyYhCkHxHA8zPGdODxost69MonN-wn6wrTzby9HgH7v8KP6FBL-g>
-    <xmx:LSAyYrF78mfise0Vkd-ve_WgXFGlyaoO8cKqSW-7VqbfsvX6UdqWGQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Mar 2022 13:36:45 -0400 (EDT)
-Date:   Wed, 16 Mar 2022 10:36:44 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v7 2/5] btrfs: test btrfs specific fsverity corruption
-Message-ID: <YjIgLFp3XVoch2MY@zen>
-References: <cover.1647382272.git.boris@bur.io>
- <a860be32471a885292c2f6f3136cac40bebdbf05.1647382272.git.boris@bur.io>
- <YjId47Ta24xoEbW/@gmail.com>
+        Wed, 16 Mar 2022 13:49:55 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2F6419A2
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 10:48:41 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id w17-20020a056830111100b005b22c584b93so1892241otq.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 10:48:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YuDz+JGU6tqw3rLhnolyvSrc6vY0Ur7/qyobZz5LCWI=;
+        b=DOvxVWZUTM16dtU6z4feKvu08fhGIrhQfJoXsmtUoXQ+odAvft5j8PLq4I/uG4eOCS
+         jHzfRyYuhE/g3OEOT8b/F7fN2e9zvZyPHG78zCdL97m+qDgfkn5HWQ4QE4weh8uSjsQe
+         5dFpf1Et/F1uHXLzOMoZcvIQWR2ZxBNQnWxKkZychj1JCHIzPkIcmaX+6FMIHSHqTCZb
+         LoMYPk8eqLRYZQ0MQFXLpxOl51xFDKlyCafYDRF+Me55OAJZEJ5NzPBbticqazvnSDmO
+         S1DOQSHj3M0qDfTOGXUsEu4221mQ6Z+amq3FQvrIyecqd55ZScH/1sSMZBnn5NcCOLUR
+         iong==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YuDz+JGU6tqw3rLhnolyvSrc6vY0Ur7/qyobZz5LCWI=;
+        b=Ufg5rjDh7WsELg6wAFdkJswx1L2oAwR9HkDkNgXv7LB/F0LYcDzNzmWGNOMOSKTYVz
+         lwcaRbMHJfpvXmcIWioLId56kly1H611hA0Ii3eSWriF1lE5tGbJqd4/XjKCnWvPMiw+
+         Spm8Vp/vTnJH3RrXBzN4lGpvsVvsxyWiEofcGaELAmGNBVLOVrcxZl4jgJQeNNWKv77L
+         6nEaRxWgqt2EadLJ1p8lFu4KPlofidAB1F9DOzYPX/JXNu3Xf751+t7Iu9ckL+PA9uwr
+         lD41Uzwy6w/iro1YPQP67rBGRIrdExcoJ5BqxlPXLpffJCwhnTgvnwNAUcmhFO3+DP9j
+         JSDg==
+X-Gm-Message-State: AOAM530fx82ZrfUnEjfVzH1j5x4FI9ncTypfsl9Ri0HGp/VMLDmEQrZt
+        qq6vyL9OmFGbz6FQUJAQCAczkr0gQn/S6iA1jdY=
+X-Google-Smtp-Source: ABdhPJyskOWGe9OG7IyY9CDA6ifMCPeBPNUxeF9hA5Myb1iOs8TwMYnnk/I6Tj8MlfCA+/tskZPZ0y4ymxLO3tE2cfI=
+X-Received: by 2002:a05:6830:11d6:b0:5b2:5a37:3cc7 with SMTP id
+ v22-20020a05683011d600b005b25a373cc7mr378983otq.381.1647452920380; Wed, 16
+ Mar 2022 10:48:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YjId47Ta24xoEbW/@gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <a3d8c748-0ac7-4437-57b7-99735f1ffd2b@gmx.com> <CAODFU0rK7886qv4JBFuCYqaNh9yh_H-8Y+=_gPRbLSCLUfbE1Q@mail.gmail.com>
+ <7fc9f5b4-ddb6-bd3b-bb02-2bd4af703e3b@gmx.com> <CAODFU0oj3y3MiGH0t-QbDKBk5+LfrVoHDkomYjWLWv509uA8Hg@mail.gmail.com>
+ <078f9f05-3f8f-eef1-8b0b-7d2a26bf1f97@gmx.com> <87a6dscn20.fsf@vps.thesusis.net>
+ <Yi/I54pemZzSrNGg@hungrycats.org> <87fsnjnjxr.fsf@vps.thesusis.net>
+ <YjD/7zhERFjcY5ZP@hungrycats.org> <CAODFU0pwch49XB4oGX0GKvuRyrp+JEYBbrHvHcXTnWapPBQ8Aw@mail.gmail.com>
+ <YjIYNjq8b7Ar/+Gt@hungrycats.org>
+In-Reply-To: <YjIYNjq8b7Ar/+Gt@hungrycats.org>
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Wed, 16 Mar 2022 18:48:04 +0100
+Message-ID: <CAODFU0obuBSFtwgfxr9PdsGSfpADogw1bEhu7DGsExRXfau1Dg@mail.gmail.com>
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Phillip Susi <phill@thesusis.net>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 05:26:59PM +0000, Eric Biggers wrote:
-> On Tue, Mar 15, 2022 at 03:15:58PM -0700, Boris Burkov wrote:
-> > There are some btrfs specific fsverity scenarios that don't map
-> > neatly onto the tests in generic/574 like holes, inline extents,
-> > and preallocated extents. Cover those in a btrfs specific test.
-> > 
-> > This test relies on the btrfs implementation of fsverity in the patch:
-> > btrfs: initial fsverity support
-> > 
-> > and on btrfs-corrupt-block for corruption in the patches titled:
-> > btrfs-progs: corrupt generic item data with btrfs-corrupt-block
-> > btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  common/btrfs        |   5 ++
-> >  common/config       |   1 +
-> >  common/verity       |  14 ++++
-> >  tests/btrfs/290     | 168 ++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/290.out |  25 +++++++
-> >  5 files changed, 213 insertions(+)
-> >  create mode 100755 tests/btrfs/290
-> >  create mode 100644 tests/btrfs/290.out
-> > 
-> > diff --git a/common/btrfs b/common/btrfs
-> > index 670d9d1f..c3a7dc6e 100644
-> > --- a/common/btrfs
-> > +++ b/common/btrfs
-> > @@ -511,3 +511,8 @@ _btrfs_metadump()
-> >  	$BTRFS_IMAGE_PROG "$device" "$dumpfile"
-> >  	[ -n "$DUMP_COMPRESSOR" ] && $DUMP_COMPRESSOR -f "$dumpfile" &> /dev/null
-> >  }
-> > +
-> > +_require_btrfs_corrupt_block()
-> > +{
-> > +	_require_command "$BTRFS_CORRUPT_BLOCK_PROG" btrfs-corrupt-block
-> > +}
-> > diff --git a/common/config b/common/config
-> > index 479e50d1..67bdf912 100644
-> > --- a/common/config
-> > +++ b/common/config
-> > @@ -296,6 +296,7 @@ export BTRFS_UTIL_PROG=$(type -P btrfs)
-> >  export BTRFS_SHOW_SUPER_PROG=$(type -P btrfs-show-super)
-> >  export BTRFS_CONVERT_PROG=$(type -P btrfs-convert)
-> >  export BTRFS_TUNE_PROG=$(type -P btrfstune)
-> > +export BTRFS_CORRUPT_BLOCK_PROG=$(type -P btrfs-corrupt-block)
-> >  export XFS_FSR_PROG=$(type -P xfs_fsr)
-> >  export MKFS_NFS_PROG="false"
-> >  export MKFS_CIFS_PROG="false"
-> > diff --git a/common/verity b/common/verity
-> > index 1afe4a82..77766fca 100644
-> > --- a/common/verity
-> > +++ b/common/verity
-> > @@ -3,6 +3,8 @@
-> >  #
-> >  # Functions for setting up and testing fs-verity
-> >  
-> > +. common/btrfs
-> > +
-> >  _require_scratch_verity()
-> >  {
-> >  	_require_scratch
-> > @@ -48,6 +50,15 @@ _require_scratch_verity()
-> >  	FSV_BLOCK_SIZE=$(get_page_size)
-> >  }
-> >  
-> > +# Check for userspace tools needed to corrupt verity data or metadata.
-> > +_require_fsverity_corruption()
-> > +{
-> > +	_require_xfs_io_command "fiemap"
-> > +	if [ $FSTYP == "btrfs" ]; then
-> > +		_require_btrfs_corrupt_block
-> > +	fi
-> > +}
-> 
-> This is adding a second definition of _require_fsverity_corruption().
-> Probably a rebase error.
-> 
-> Also, is this hunk in the right patch?  This patch is for adding btrfs/290;
-> however, btrfs/290 doesn't use _require_fsverity_corruption() anymore.
-> 
-> > +
-> >  # Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y, as well as the userspace
-> >  # commands needed to generate certificates and add them to the kernel.
-> >  _require_fsverity_builtin_signatures()
-> > @@ -153,6 +164,9 @@ _scratch_mkfs_verity()
-> >  	ext4|f2fs)
-> >  		_scratch_mkfs -O verity
-> >  		;;
-> > +	btrfs)
-> > +		_scratch_mkfs
-> > +		;;
-> 
-> I think a good way to organize things would be to wire up the existing verity
-> tests for btrfs first, then to add the btrfs-specific tests at thet end of the
-> series.  That would mean the above hunk would go earlier in the series, not with
-> btrfs/290.  It's a little hard to review as-is, as the different hunks needed to
-> wire up the existing tests are mixed around in different patches.
+On Wed, Mar 16, 2022 at 6:02 PM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
+> On Tue, Mar 15, 2022 at 11:20:09PM +0100, Jan Ziak wrote:
+> > - Linear nodatacow search: Does the search happen only with uncached
+> > metadata, or also with metadata cached in RAM?
+>
+> All metadata is cached in RAM prior to searching.  I think I missed
+> where you were going with this question.
 
-I like that. I've definitely been struggling with getting all the hunks
-in the right places.. I'll double check it all better before sending it
-again. Thanks for the review,
-
-Boris
-> 
-> - Eric
+The idea behind the question was whether the on-disk format of
+metadata differs from the in-memory format of metadata; whether
+metadata is being transformed when loading/saving it from/to the
+storage device.
