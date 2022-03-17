@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7EC4DCC66
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 18:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901B24DCC5C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 18:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236868AbiCQR1h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Mar 2022 13:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        id S236869AbiCQR1i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Mar 2022 13:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbiCQR1g (ORCPT
+        with ESMTP id S236870AbiCQR1h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Mar 2022 13:27:36 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8616114DFE5
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:20 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id bc27so3155444pgb.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:20 -0700 (PDT)
+        Thu, 17 Mar 2022 13:27:37 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612C314DFE5
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:21 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id b8so5435698pjb.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sWeARFa44iA3jS4ac9DyrmIZLzJAv6WrYv7ger6fmvw=;
-        b=xma0LR9Njnc5jtBs9yq/Hj4zeFDikZsNTmL1yFTesGXJypxudmS0Q/G4l248s+49/p
-         WdoY0P0weSJfZ4LC3OCzZ1QoSkQHajjjIIwqivsk9WqNRZRgGEBcuxh4e362F2qhsdBH
-         SnoAPY535FkLx9lnVEzVgRgROzWHoD1aX/zgbmnm6IEW6NWajqQxEIU140vfQU08Okox
-         tHNOfP1cHfHHzudj7EiUNgrj9vV7FOLbmK4KrVVIvtvX/AjgSXkD18j8zqKPpf0PdpaD
-         gQOXUTX54GnLDTBYdtsxkhH9cFcE0u1mvAIQ4r2ldXdGxzW3RRvyrZ40GLXA6KzcOqzC
-         qOng==
+        bh=N4Zc2VDwcN7WNUNPczgMrS6RYIapeQEbHJjjRCTXvSI=;
+        b=3lO9WAU0II71mjlNVRHDpbb9L8LWK9QbcEUeh/sbYmZsFAtmkdVP3K/JFhtcSEX4Sn
+         RsVRbCf1iRx325ddjWX5F8bFrCuptdeurb7FVXIv7a+iA/IIuxqdNAglEAAFM3BZd4cv
+         wPqH806FTBYcsgX/6z3zzTiicAM1BBeCpM+11JA9+andTbjPZ58l7lFW1DzxmIemUa8R
+         EAgGla0wWc2LwEACyYsvt15svyXSVPR+oM3LlJbNhucOrA1LESbLToSfWylI/G0GYhjT
+         pkxvdVVLmxxy6l+j9Kx4qPTkTjmj9W7o7LoRaWXu3sunIVG7nTGr01DAa0KW4LqVNwVQ
+         BJIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sWeARFa44iA3jS4ac9DyrmIZLzJAv6WrYv7ger6fmvw=;
-        b=JR/eyC9ZSbuookwzzqzoKxdGbI9VmuCw/vY3w7IvphkMZ2Tv63nbzckGrPO3UFFM82
-         3LZTkoWVF8W8CLpvrm5W7BLsUaMJiSHqVRM6ivsnQrRBbZCTVXg1tQPnvxD2DkXynXhT
-         UXXVKkcHE1eZfY4NSLzqfaAboODtpwKfQuWR9KPAtbh9CJ0Jy+/UXpfdjzOK5YOmm7S9
-         OBpUH8HeQLaVZS9P34aDrKQa9NniyI+/j7CEY230ok4uBgas7++7gpoAjAzh/B3WbMyI
-         BzDSep2ZvAR1sWkLH/kUy7htwtmHMRhxcuLe8OUyF6s+HLArOE6aBFCQPU0tYIqn2JU4
-         /xug==
-X-Gm-Message-State: AOAM533gYyJcvt7ViWQN2j/+e+BOM+lP2DTIXQdezoxoDi32UNqYTI0J
-        OywDuHJoyjpAwWfjc3bpuLadNUAsT2fi4w==
-X-Google-Smtp-Source: ABdhPJwRp9+u9PJm2lIUE98ZCL1btt6Bk9DUzhY+kjnJnTsH72ltk8aYMpZxa6zG82EyEUp8Dqt8kA==
-X-Received: by 2002:a63:ea05:0:b0:381:1497:63ab with SMTP id c5-20020a63ea05000000b00381149763abmr4474401pgi.463.1647537979652;
-        Thu, 17 Mar 2022 10:26:19 -0700 (PDT)
+        bh=N4Zc2VDwcN7WNUNPczgMrS6RYIapeQEbHJjjRCTXvSI=;
+        b=WFuSOBv1zZCMZgeHTKCCbYJjAx6u+F3zK4MMpTTUIpD4Lth/ZAWwye7VtbtY0m4QMX
+         /Esq1DRyfNBe6v2sBymcOUimmN3lJpr0NOKxUgAIMg7DsOuDhbLl+7h+IwW1JbiIqMSV
+         cMXBIPWBbYRH3IbhpY+iUVvDIfyRK6DKLKsIHyXHBMQgLmsVrw9seJULwGm7MBxH4G7s
+         5bms/ioiyMJ93URxnPjux+M/X7ZBJUY4Iht2aaeU4E5QHE3ffXoiHan+5Siu9q8jcVWn
+         H4vIIsUxc2Rnf5ncllp/fEhAlSOUujAhUo/MWpBT5gUEf1PlYM3RcIgaWKNkhYw06yli
+         MhrA==
+X-Gm-Message-State: AOAM532uQZZO8PMrRKTWmyNM6NFWB8/bt/E7+jFIzC3zQ8V4NoBXBQyD
+        lW6i0wO0TPE5EYR4NEIR7omvf+t0ej6PaA==
+X-Google-Smtp-Source: ABdhPJx3WA+g6YIxvZY89r+/2SvsJL9xQJ9DMRA4oqu0Nrgwv0rICn8VdiQ9VxKOmaaN+nayp99cVQ==
+X-Received: by 2002:a17:902:8bc2:b0:149:1ce6:c28c with SMTP id r2-20020a1709028bc200b001491ce6c28cmr5939137plo.164.1647537980554;
+        Thu, 17 Mar 2022 10:26:20 -0700 (PDT)
 Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:624e])
-        by smtp.gmail.com with ESMTPSA id q10-20020a056a00088a00b004f7ceff389esm7815424pfj.152.2022.03.17.10.26.18
+        by smtp.gmail.com with ESMTPSA id q10-20020a056a00088a00b004f7ceff389esm7815424pfj.152.2022.03.17.10.26.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 10:26:19 -0700 (PDT)
+        Thu, 17 Mar 2022 10:26:20 -0700 (PDT)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com
-Subject: [PATCH v14 07/10] btrfs-progs: receive: process fallocate commands
-Date:   Thu, 17 Mar 2022 10:25:50 -0700
-Message-Id: <cb11e41ab1e99f484b4972b814126fc0452af91e.1647537098.git.osandov@fb.com>
+Subject: [PATCH v14 08/10] btrfs-progs: receive: process setflags ioctl commands
+Date:   Thu, 17 Mar 2022 10:25:51 -0700
+Message-Id: <7e92fa68eafefadb4f384b3b8cb2879b6edbcd89.1647537098.git.osandov@fb.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1647537027.git.osandov@fb.com>
 References: <cover.1647537027.git.osandov@fb.com>
@@ -70,55 +70,58 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Boris Burkov <boris@bur.io>
 
-Send stream v2 can emit fallocate commands, so receive must support them
-as well. The implementation simply passes along the arguments to the
-syscall. Note that mode is encoded as a u32 in send stream but fallocate
-takes an int, so there is a unsigned->signed conversion there.
+In send stream v2, send can emit a command for setting inode flags via
+the setflags ioctl. Pass the flags attribute through to the ioctl call
+in receive.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- cmds/receive-dump.c  |  9 +++++++++
+ cmds/receive-dump.c  |  6 ++++++
  cmds/receive.c       | 25 +++++++++++++++++++++++++
- common/send-stream.c |  9 +++++++++
- common/send-stream.h |  2 ++
- 4 files changed, 45 insertions(+)
+ common/send-stream.c |  7 +++++++
+ common/send-stream.h |  1 +
+ 4 files changed, 39 insertions(+)
 
 diff --git a/cmds/receive-dump.c b/cmds/receive-dump.c
-index 83701b62..fa397bcf 100644
+index fa397bcf..df5991e1 100644
 --- a/cmds/receive-dump.c
 +++ b/cmds/receive-dump.c
-@@ -331,6 +331,14 @@ static int print_encoded_write(const char *path, const void *data, u64 offset,
- 			  unencoded_offset, compression, encryption);
+@@ -339,6 +339,11 @@ static int print_fallocate(const char *path, int mode, u64 offset, u64 len,
+ 			  mode, offset, len);
  }
  
-+static int print_fallocate(const char *path, int mode, u64 offset, u64 len,
-+			   void *user)
++static int print_setflags(const char *path, int flags, void *user)
 +{
-+	return PRINT_DUMP(user, path, "fallocate",
-+			  "mode=%d offset=%llu len=%llu",
-+			  mode, offset, len);
++	return PRINT_DUMP(user, path, "setflags", "flags=%d", flags);
 +}
 +
  struct btrfs_send_ops btrfs_print_send_ops = {
  	.subvol = print_subvol,
  	.snapshot = print_snapshot,
-@@ -354,4 +362,5 @@ struct btrfs_send_ops btrfs_print_send_ops = {
- 	.utimes = print_utimes,
+@@ -363,4 +368,5 @@ struct btrfs_send_ops btrfs_print_send_ops = {
  	.update_extent = print_update_extent,
  	.encoded_write = print_encoded_write,
-+	.fallocate = print_fallocate,
+ 	.fallocate = print_fallocate,
++	.setflags = print_setflags,
  };
 diff --git a/cmds/receive.c b/cmds/receive.c
-index 5fd939ce..4893d693 100644
+index 4893d693..7f76a04f 100644
 --- a/cmds/receive.c
 +++ b/cmds/receive.c
-@@ -1260,6 +1260,30 @@ static int process_encoded_write(const char *path, const void *data, u64 offset,
- 				    compression);
+@@ -38,6 +38,7 @@
+ #include <sys/types.h>
+ #include <sys/uio.h>
+ #include <sys/xattr.h>
++#include <linux/fs.h>
+ #include <uuid/uuid.h>
+ 
+ #include <lzo/lzo1x.h>
+@@ -1284,6 +1285,29 @@ static int process_fallocate(const char *path, int mode, u64 offset, u64 len,
+ 	return 0;
  }
  
-+static int process_fallocate(const char *path, int mode, u64 offset, u64 len,
-+			     void *user)
++static int process_setflags(const char *path, int flags, void *user)
 +{
 +	int ret;
 +	struct btrfs_receive *rctx = user;
@@ -126,16 +129,16 @@ index 5fd939ce..4893d693 100644
 +
 +	ret = path_cat_out(full_path, rctx->full_subvol_path, path);
 +	if (ret < 0) {
-+		error("fallocate: path invalid: %s", path);
++		error("setflags: path invalid: %s", path);
 +		return ret;
 +	}
 +	ret = open_inode_for_write(rctx, full_path);
 +	if (ret < 0)
 +		return ret;
-+	ret = fallocate(rctx->write_fd, mode, offset, len);
++	ret = ioctl(rctx->write_fd, FS_IOC_SETFLAGS, &flags);
 +	if (ret < 0) {
 +		ret = -errno;
-+		error("fallocate: fallocate on %s failed: %m", path);
++		error("setflags: setflags ioctl on %s failed: %m", path);
 +		return ret;
 +	}
 +	return 0;
@@ -144,51 +147,50 @@ index 5fd939ce..4893d693 100644
  static struct btrfs_send_ops send_ops = {
  	.subvol = process_subvol,
  	.snapshot = process_snapshot,
-@@ -1283,6 +1307,7 @@ static struct btrfs_send_ops send_ops = {
- 	.utimes = process_utimes,
+@@ -1308,6 +1332,7 @@ static struct btrfs_send_ops send_ops = {
  	.update_extent = process_update_extent,
  	.encoded_write = process_encoded_write,
-+	.fallocate = process_fallocate,
+ 	.fallocate = process_fallocate,
++	.setflags = process_setflags,
  };
  
  static int do_receive(struct btrfs_receive *rctx, const char *tomnt,
 diff --git a/common/send-stream.c b/common/send-stream.c
-index ce7c40f5..2d0aa624 100644
+index 2d0aa624..21295cbb 100644
 --- a/common/send-stream.c
 +++ b/common/send-stream.c
-@@ -373,6 +373,7 @@ static int read_and_process_cmd(struct btrfs_send_stream *sctx)
- 	u64 unencoded_offset;
+@@ -374,6 +374,7 @@ static int read_and_process_cmd(struct btrfs_send_stream *sctx)
  	int len;
  	int xattr_len;
-+	int fallocate_mode;
+ 	int fallocate_mode;
++	int setflags_flags;
  
  	ret = read_cmd(sctx);
  	if (ret)
-@@ -537,6 +538,14 @@ static int read_and_process_cmd(struct btrfs_send_stream *sctx)
- 	case BTRFS_SEND_C_END:
- 		ret = 1;
+@@ -546,8 +547,14 @@ static int read_and_process_cmd(struct btrfs_send_stream *sctx)
+ 		ret = sctx->ops->fallocate(path, fallocate_mode, offset, tmp,
+ 					   sctx->user);
  		break;
-+	case BTRFS_SEND_C_FALLOCATE:
++	case BTRFS_SEND_C_SETFLAGS:
 +		TLV_GET_STRING(sctx, BTRFS_SEND_A_PATH, &path);
-+		TLV_GET_U32(sctx, BTRFS_SEND_A_FALLOCATE_MODE, &fallocate_mode);
-+		TLV_GET_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, &offset);
-+		TLV_GET_U64(sctx, BTRFS_SEND_A_SIZE, &tmp);
-+		ret = sctx->ops->fallocate(path, fallocate_mode, offset, tmp,
-+					   sctx->user);
++		TLV_GET_U32(sctx, BTRFS_SEND_A_SETFLAGS_FLAGS, &setflags_flags);
++		ret = sctx->ops->setflags(path, setflags_flags, sctx->user);
 +		break;
  	}
  
++
  tlv_get_failed:
+ out:
+ 	free(path);
 diff --git a/common/send-stream.h b/common/send-stream.h
-index 44abbc9d..61a88d3d 100644
+index 61a88d3d..3189f889 100644
 --- a/common/send-stream.h
 +++ b/common/send-stream.h
-@@ -57,6 +57,8 @@ struct btrfs_send_ops {
- 			     u64 len, u64 unencoded_file_len, u64 unencoded_len,
- 			     u64 unencoded_offset, u32 compression,
+@@ -59,6 +59,7 @@ struct btrfs_send_ops {
  			     u32 encryption, void *user);
-+	int (*fallocate)(const char *path, int mode, u64 offset, u64 len,
-+			 void *user);
+ 	int (*fallocate)(const char *path, int mode, u64 offset, u64 len,
+ 			 void *user);
++	int (*setflags)(const char *path, int flags, void *user);
  };
  
  int btrfs_read_and_process_send_stream(int fd,
