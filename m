@@ -2,145 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EDA4DBB14
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 00:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975104DBBA2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 01:23:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239550AbiCPXb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Mar 2022 19:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S1346480AbiCQAYs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Mar 2022 20:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232408AbiCPXb5 (ORCPT
+        with ESMTP id S229648AbiCQAYr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Mar 2022 19:31:57 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E66167C0;
-        Wed, 16 Mar 2022 16:30:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1647473434;
-        bh=rK/jWEulh9ssWmz2krX0rC0OcdJw22aqasKTpxCx6ws=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=TfUOVntrqKpRQSwwyVS1p2X6E6DBz3uJWhwAoouuK/HuCOPUXsQ4XgL4/SShcU+27
-         tVR+3Mg9J54KWoTXI7S7pvU4X7kYO79nqEdBh/ApDT6l1BGEDPX110uUbG5yEmPR7X
-         5SxCa8rbAd5R2ZcvoisNJb85DW05STzlO70gqPfw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNKhm-1njOoy0auw-00Oq4X; Thu, 17
- Mar 2022 00:30:34 +0100
-Message-ID: <99f7371d-f818-f533-d82b-71729a5bfb9d@gmx.com>
-Date:   Thu, 17 Mar 2022 07:30:30 +0800
+        Wed, 16 Mar 2022 20:24:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90710F50
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 17:23:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BD52F210F9
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 00:23:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1647476610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=S4rIjdVveBk5W3Ods7oNOD+lgCY1Pf4VqqXRl82flOA=;
+        b=A2aY91yv9dz1dVD4ryMLc0kZdzCMumecPMkIsoiT30ylPOWFNXcMVdYvq6oPmxNNoDx04x
+        uvTJSC6ssV3J4lKMKkriir+NqKnyP5iQN4IyInjifjGU4lCLaaeRFJYKfWF0TyACmpwotZ
+        ybDqtPUjfe3/lWCykPgVvz0mGdOXMk8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1DEB813B4D
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 00:23:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Hv5YNoF/MmJAZwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 00:23:29 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix the uninitialized btrfs_bio::iter
+Date:   Thu, 17 Mar 2022 08:23:12 +0800
+Message-Id: <f7698bebfcbd1687dbf8742290cd8d88b891590f.1647476483.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH 11/17] btrfs: make dec_and_test_compressed_bio() to be
- split bio compatible
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com
-References: <20211201051756.53742-1-wqu@suse.com>
- <20211201051756.53742-12-wqu@suse.com>
- <YjI+hkhhTTWMmPkz@localhost.localdomain>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <YjI+hkhhTTWMmPkz@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gIK32EJoOO5bu//AY9fiTTXVQGmcy8/RH/SJQkoLy1CqCCD6YXU
- Aj7i0u6LDFMEVOMHUFzRgdiGVdhM5b/YEVbhmI1oH9t2Xya7fdVSWDF8NV6vqlQVEyb5yIG
- gSt4ibL2JA2J8+L1sWs6/VWl3GpOD0YfauA9tJ4pAIY6tMWbN3EKSTvfiDq0Q0iZhO18I95
- 0ynMUpHrleUlAOhHlcB3Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:G/+nrPI6jcc=:K/mLfXhJc31KhMjgACSmUf
- yPezyPL/7b7u6w5LSlGltvz6UozPQxuboZ/K6cPrzPI5fFA6P7FuStf05UA/uURA3mNTuZE+F
- WRqvEU/yCMGnIzf3NuqJEjnPe9UCIEGPk9Z24wRgU+oz0O18acjEFc5KobhkUA4h0SmKLmKeS
- yvsLBiPbftH1BvvGg4fiE4fYyK8lQR0oTJLfF6drx+79qehBslYlhc5Xlro/byHGw9Ea39QLg
- ip9v7vyAJxw3xWhIt8/HPZMvlTJ9kzd0tdPGVQ+0GCtj9WGACdoR4VNDBJ//0Rxo89FwcWFN/
- JFTYqiq5BKeHMlpj+99lE+Q5sS3xqV9DNZXDkZC7Yi2ITbBQt+YtihPhs5A9yKndLO/4Bn3pH
- HgoWU1nM8HpPmrgDjRlUngUbVdHLuA6oNznkO5bVppm3Yts34Ai6vNPp0uA5sb0VETUWgCCQd
- rzq0LzkxsaYtkKJKa36ajxaxGqlFCp4Qj7x+lEEUepeiR7dwtkmlNajWPmDanfNJMinujhw1y
- YSYL3apD2oUkxtLNnWMpKVbYnXiMVA1Q/xU1+f1CsC5CGsMEQognWfGyAeU1wSiz+BIqyc7/i
- LeSDqiN/N23UD35mnu2h+4ci1awwPmbKCyWC+HXb5d3j5tUj9wpuOZqYa5NP7rTPaFKhzmcyk
- rNQEduop8lz0OYWOybr2zvHHiDajsJg4SDP4qDFcpaVuKdXD0QMtjwZYEKjSZ/HcJqa7j2W7s
- aD07hMJgRUR/X7YKQqDOKIALzX+zu9kskvJVIEdq+ovi1Do9yPVsur8BwkwMW/RHxMuGjImkA
- iYTb6yA/nZUCm+6N037oo7c6oGTf9u9LTNXargMkQdIKhA7tis30pXIMBiod6wgguinkZCm5+
- PcG3utB8XI08CG9f/P0li+YPFIgHMq02cq6cqZgUUtdtv59BHGKzyQN7M4TVJUY/nexmTLu1D
- Vz5LwQL2RRrWIFFPB3NezuKYHXcOjZcLUTYCYtqjMGKV89bNw+/M6emRvNFE7DGdeZfo9gaor
- KNIowE6OiqraVG2/mmIfASVbgJGExuJPOM4ebfBHD2da6uoSMl+4WUZyv+ROL+uB+L9W539+Q
- bPc//0d8l07/ng=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+There are reports about compression crash with error injection, mostly
+triggering the following ASSERT()s in dec_and_test_compressed_bio():
 
+	ASSERT(btrfs_bio(bio)->iter.bi_size);
 
-On 2022/3/17 03:46, Josef Bacik wrote:
-> On Wed, Dec 01, 2021 at 01:17:50PM +0800, Qu Wenruo wrote:
->> For compression read write endio functions, they all rely on
->> dec_and_test_compressed_bio() to determine if they are the last bio.
->>
->> So here we only need to convert the bio_for_each_segment_all() call int=
-o
->> __bio_for_each_segment() so that compression read/write endio functions
->> will handle both split and unsplit bios well.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/compression.c | 14 +++++---------
->>   1 file changed, 5 insertions(+), 9 deletions(-)
->>
->> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
->> index 8668c5190805..8b4b84b59b0c 100644
->> --- a/fs/btrfs/compression.c
->> +++ b/fs/btrfs/compression.c
->> @@ -205,18 +205,14 @@ static int check_compressed_csum(struct btrfs_ino=
-de *inode, struct bio *bio,
->>   static bool dec_and_test_compressed_bio(struct compressed_bio *cb, st=
-ruct bio *bio)
->>   {
->>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(cb->inode->i_sb);
->> +	struct bio_vec bvec;
->> +	struct bvec_iter iter;
->>   	unsigned int bi_size =3D 0;
->>   	bool last_io =3D false;
->> -	struct bio_vec *bvec;
->> -	struct bvec_iter_all iter_all;
->>
->> -	/*
->> -	 * At endio time, bi_iter.bi_size doesn't represent the real bio size=
-.
->> -	 * Thus here we have to iterate through all segments to grab correct
->> -	 * bio size.
->> -	 */
->> -	bio_for_each_segment_all(bvec, bio, iter_all)
->> -		bi_size +=3D bvec->bv_len;
->> +	ASSERT(btrfs_bio(bio)->iter.bi_size);
->
-> We're tripping this assert with generic/476 with -o compress, so I assum=
-e
-> there's some error condition that isn't being handled properly.  Thanks,
+The call trace triggered by generic/475 (needs compress mount option)
+looks like this:
 
-Thank you very much for catching it.
+  assertion failed: btrfs_bio(bio)->iter.bi_size, in fs/btrfs/compression.c:213
+  ------------[ cut here ]------------
+  kernel BUG at fs/btrfs/ctree.h:3551!
+  invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+  CPU: 5 PID: 6548 Comm: fsstress Tainted: G           OE     5.17.0-rc7-custom+ #10
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
+  Call Trace:
+   <TASK>
+   dec_and_test_compressed_bio.cold+0x16/0x2c [btrfs]
+   end_compressed_bio_read+0x37/0x170 [btrfs]
+   btrfs_submit_compressed_read+0x803/0x820 [btrfs]
+   submit_one_bio+0xc7/0x100 [btrfs]
+   btrfs_readpage+0xec/0x130 [btrfs]
+   filemap_read_folio+0x53/0xf0
+   filemap_get_pages+0x6f3/0xa10
+   filemap_read+0x1d6/0x520
+   new_sync_read+0x24e/0x360
+   vfs_read+0x1a1/0x2a0
+   ksys_read+0xc9/0x160
+   do_syscall_64+0x3b/0x90
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-It turns out the ASSERT() is really helpful to detect uninitialized
-btrfs_bio::iter.
+[CAUSE]
+Unlike regular IO path, we will initialize btrfs_bio::iter in
+btrfs_map_bio(), for error path, we have to manually initialize
+btrfs_bio::iter before calling the endio function.
 
-The problem is related to two call sites:
-- btrfs_submit_compressed_read()
-- btrfs_submit_compressed_write()
+In above case, due to injected errors, we go to finish_cb: tag directly
+without submitting with btrfs_map_bio() call.
 
-The compressed bio doesn't have its iter properly initialized for error
-path, thus it's causing the problem.
+This leaves btrfs_bio::iter for the compressed bio uninitialized and
+caught by the ASSERT().
 
-Just two new lines and the problem can be fixed.
+[FIX]
+Fix it by calling btrfs_bio_save_iter() before we call endio for the
+compressed bio.
 
-I'll refresh the patchset.
+Please fold this fix into commit "btrfs: make
+dec_and_test_compressed_bio() to be split bio compatible".
 
-Thank you again for catching this,
-Qu
+If needed, I can update the series and resend, but if this is the only
+problem, it may be better not to flood the list with 17 patches.
 
->
-> Josef
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/compression.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 0bf694038c61..2df034f6194c 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -582,6 +582,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ finish_cb:
+ 	if (bio) {
+ 		bio->bi_status = ret;
++		btrfs_bio_save_iter(btrfs_bio(bio));
+ 		bio_endio(bio);
+ 	}
+ 	/* Last byte of @cb is submitted, endio will free @cb */
+@@ -924,6 +925,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ finish_cb:
+ 	if (comp_bio) {
+ 		comp_bio->bi_status = ret;
++		btrfs_bio_save_iter(btrfs_bio(comp_bio));
+ 		bio_endio(comp_bio);
+ 	}
+ 	/* All bytes of @cb is submitted, endio will free @cb */
+-- 
+2.35.1
+
