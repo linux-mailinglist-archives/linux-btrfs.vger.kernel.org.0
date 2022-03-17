@@ -2,60 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1501C4DBE95
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 06:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCCE4DBE96
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 06:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbiCQFn7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Mar 2022 01:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
+        id S229447AbiCQFoE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Mar 2022 01:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiCQFn6 (ORCPT
+        with ESMTP id S229464AbiCQFoD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Mar 2022 01:43:58 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF15E886C
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 22:13:44 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id bx24-20020a17090af49800b001c6872a9e4eso374203pjb.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 22:13:44 -0700 (PDT)
+        Thu, 17 Mar 2022 01:44:03 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AC228F80D
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 22:13:46 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id z3so3557329plg.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Mar 2022 22:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=thejof-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gG0FA13sGmpIrJJjd67FlvXdhhK6l9woGsFobs+hR+M=;
-        b=w/uoDBarwqg0Br4mJOmiatfyHg7zYPf2bnLLwfeHwXX1rEt1cLEp2R9/OZfe43kLBN
-         FhBzlSbl1lGtHrU/noiX0sR5UjpVxwA6Crsu72FZmD2hkrAFnVyHhiEwJQI2XrvirLa4
-         c4+CQbJzHvXlJJUomAitqLzh8Vn02AdY9ieusSkdmYjoIh1koB/pNEA3ne6w+P9fhZEB
-         TwZjx11bz6mYUD5IyC2zqrp46quDFFmrgxy6+71l2K9etvMMGQuH2i1KoNM1qHtjYhVq
-         phCF+j++6fMQdy/bgWfFMYPKCodMI0BOsRuoZFypa9U64vewivzWuOyMeuwx2zZ/iXXz
-         aOEA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YDKEfpJWkpVZACR75sRKEY2oJm2O4P8lQwnQc8piB6U=;
+        b=j7mKUOiJRgnEMV3m8l3jYhW6eGtCn/sAjFILdOGAGNGrYNZ7pwGJWzCtCpvxAe1F9t
+         9xKixC3j/IrSPtTC3edRz57pD4MIfptFqo6cNaSPoNTFmtic0Io8IklDxvkO34ibDm+6
+         jS5CNq4HNivVqSPT1ikSzH15ouglZtEjakH6AtKNTvq2ghxikGV1dLfA9dYEtrXx/UPc
+         9T08aKSVfdh/8cUwb1SCySh3uNgopSgurjqoL5cWL2b1579wUNiZZrTs3f0baBlbsIOk
+         6pJkyZtpQS3BUlbh4c4jG1ebOGDq51XwTiS4gPYKVCHjewx/sjeoCdYpqAIvJ5ChXydM
+         zKsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gG0FA13sGmpIrJJjd67FlvXdhhK6l9woGsFobs+hR+M=;
-        b=Hi9E7TybsICuUQU6syObMzo280GU7iYCtkz8ZhhJGBvSsLAAX6jw0yFNEzPR7s140c
-         eHgXOU0FL5lPkegGA5Gufkxb3LH6ZV387eccEnzhEsjvcdm66ArlKE2L4rEHuL7HVB6e
-         OQ2QmksoXG/Q3FOV8MjMb8N8crbI3ODdberqeGUJjcu3fyj0wgW7g77m699iihWwsNeW
-         8/c2DBUOp5xnQsk+xrbND0irolaM1jGyn/ZK8KqVgtDy8JeVT26qNGhHusI6o+U3+0iP
-         KJFx0cMKwZFmxzTxZAjWCmrqjSROg5RomfdR4x2V9dfnJ+yehiK72E03uPxiPx1U1Oba
-         1z+Q==
-X-Gm-Message-State: AOAM533P908n26yKCmkQTt0PjUvtNWm7UJDkae2HBGIm1MB4xTlr7bwc
-        9r8GOyUuk0lj0bGQ995JIDF8K6M2sbWkzDUA0DNQdg==
-X-Google-Smtp-Source: ABdhPJzm/4aHK6/2nLW93YbGpaLsr/9DcHeZ9Scy5pdiwvAU5s/SC8r17VrCSRFOcAfcz+Zdq2ewEg==
-X-Received: by 2002:a17:903:2342:b0:152:249:ea71 with SMTP id c2-20020a170903234200b001520249ea71mr3371317plh.129.1647494023285;
-        Wed, 16 Mar 2022 22:13:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YDKEfpJWkpVZACR75sRKEY2oJm2O4P8lQwnQc8piB6U=;
+        b=gT/EuLfsxYtCz9d0KZ89BVoeDmvrvJZmWIOAfD71B+CuQT0cRfkYiw4fRlmoMndKs5
+         aCy49Fe1UNCySwTTT90WgO6onMHIpI2iAkYcjt5fGbc9jgHykKiMFrqg1VvaXf2JghYm
+         u+4LhXCsj3m49vdbtoTl1HEVjOPR9CS4DnK3+iEGuKwMfrA81rj4u3/On+En1U3KMJ0j
+         LgYxUgAjtlSoeKQFRTtLjIPiP/5u9PIwycHe8FWu2Zt0zY0TKImQ/gBU9uf3GchLNsSi
+         G3PpBow84qyxxVVQIBQ8h2Fj0GC1SWWrleG0AVKZb+4EfU0TcnV87+ovPtiSgyV+gLN8
+         w98g==
+X-Gm-Message-State: AOAM531PcI5zgfPEobgGd3qdreLG8GptMyQwR4c2gPbGFDMeH0DEzpYi
+        ykdkLINnSDry6vMSKu0ECZl39vkFfAcpf/kcEaMrEg==
+X-Google-Smtp-Source: ABdhPJyRlpkrLB2IQ+CJFaFxrT9vZ8r2+GWzY20RNdtDgBYklL/h4YD23GoiNcUnDJXXvEWHTwZahA==
+X-Received: by 2002:a17:902:b68c:b0:153:bd06:85ad with SMTP id c12-20020a170902b68c00b00153bd0685admr3307522pls.99.1647494024543;
+        Wed, 16 Mar 2022 22:13:44 -0700 (PDT)
 Received: from banyan.jof.github.beta.tailscale.net ([2600:1700:2f74:11f:a6ae:11ff:fe14:a442])
-        by smtp.gmail.com with ESMTPSA id y15-20020a056a00190f00b004f7e6d14bc2sm5339057pfi.86.2022.03.16.22.13.42
+        by smtp.gmail.com with ESMTPSA id y15-20020a056a00190f00b004f7e6d14bc2sm5339057pfi.86.2022.03.16.22.13.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Mar 2022 22:13:42 -0700 (PDT)
+        Wed, 16 Mar 2022 22:13:43 -0700 (PDT)
 From:   Jonathan Lassoff <jof@thejof.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
         Jonathan Lassoff <jof@thejof.com>
-Subject: [PATCH v0 0/1] Add Btrfs messages to printk index
-Date:   Wed, 16 Mar 2022 22:13:35 -0700
-Message-Id: <fe7dcb58ac812fb6c37a92a1f74a42890c8c0bc8.1647493897.git.jof@thejof.com>
+Subject: [PATCH v0 1/1] Add Btrfs messages to printk index
+Date:   Wed, 16 Mar 2022 22:13:36 -0700
+Message-Id: <42cf14692c234fdc16895217bb900efaf173a7bd.1647493897.git.jof@thejof.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <fe7dcb58ac812fb6c37a92a1f74a42890c8c0bc8.1647493897.git.jof@thejof.com>
+References: <fe7dcb58ac812fb6c37a92a1f74a42890c8c0bc8.1647493897.git.jof@thejof.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -67,99 +69,643 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In order for end users to quickly react to new issues that come up in
-production, it is proving useful to leverage this printk indexing system. This
-printk index enables kernel developers to use calls to printk() with changable
-ad-hoc format strings, while still enabling end users to detect changes and
-develop a semi-stable interface for detecting and parsing these messages.
-
-So that detailed Btrfs messages are captured by this printk index, this patch
-wraps btrfs_printk and btrfs_handle_fs_error with macros.
+Don't merge this.
+This just shows what format strings were added to the printk index after
+merging the macro wrappers.
 
 Signed-off-by: Jonathan Lassoff <jof@thejof.com>
 ---
- fs/btrfs/ctree.h | 28 ++++++++++++++++++++++++++--
- fs/btrfs/super.c |  6 +++---
- 2 files changed, 29 insertions(+), 5 deletions(-)
+ btrfs_printks.txt | 621 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 621 insertions(+)
+ create mode 100644 btrfs_printks.txt
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index ebb2d109e8bb..cc768f71d0a5 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3344,9 +3344,22 @@ void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
- }
- 
- #ifdef CONFIG_PRINTK
-+#define btrfs_printk(fs_info, fmt, args...)                          \
-+do {                                                                 \
-+	printk_index_subsys_emit("%sBTRFS %s (device %s): ", NULL, fmt); \
-+	_btrfs_printk(fs_info, fmt, ##args);                             \
-+} while (0)
- __printf(2, 3)
- __cold
--void btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
-+void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
-+#elif defined(CONFIG_PRINTK)
-+#define btrfs_printk(fs_info, fmt, args...)                          \
-+do {                                                                 \
-+	_btrfs_printk(fs_info, fmt, ##args);                             \
-+} while (0)
-+__printf(2, 3)
-+__cold
-+void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
- #else
- #define btrfs_printk(fs_info, fmt, args...) \
- 	btrfs_no_printk(fs_info, fmt, ##args)
-@@ -3598,11 +3611,22 @@ do {								\
- 				  __LINE__, (errno));		\
- } while (0)
- 
-+#ifdef CONFIG_PRINTK
-+#define btrfs_handle_fs_error(fs_info, errno, fmt, args...)  \
-+do {								                         \
-+	printk_index_subsys_emit(                                \
-+		"BTRFS: error (device %s) in %s:%d: errno=%d %s",    \
-+		KERN_CRIT, fmt, ##args);                             \
-+	__btrfs_handle_fs_error((fs_info), __func__, __LINE__,	 \
-+			  (errno), fmt, ##args);		                 \
-+} while (0)
-+#else
- #define btrfs_handle_fs_error(fs_info, errno, fmt, args...)		\
--do {								\
-+do {								                            \
- 	__btrfs_handle_fs_error((fs_info), __func__, __LINE__,	\
- 			  (errno), fmt, ##args);		\
- } while (0)
-+#endif
- 
- #define BTRFS_FS_ERROR(fs_info)	(unlikely(test_bit(BTRFS_FS_STATE_ERROR, \
- 						   &(fs_info)->fs_state)))
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 4d947ba32da9..4eff3e20f55a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -213,7 +213,7 @@ static struct ratelimit_state printk_limits[] = {
- 	RATELIMIT_STATE_INIT(printk_limits[7], DEFAULT_RATELIMIT_INTERVAL, 100),
- };
- 
--void __cold btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
-+void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
- {
- 	char lvl[PRINTK_MAX_SINGLE_HEADER_LEN + 1] = "\0";
- 	struct va_format vaf;
-@@ -241,10 +241,10 @@ void __cold btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, .
- 
- 	if (__ratelimit(ratelimit)) {
- 		if (fs_info)
--			printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
-+			_printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
- 				fs_info->sb->s_id, &vaf);
- 		else
--			printk("%sBTRFS %s: %pV\n", lvl, type, &vaf);
-+			_printk("%sBTRFS %s: %pV\n", lvl, type, &vaf);
- 	}
- 
- 	va_end(args);
+diff --git a/btrfs_printks.txt b/btrfs_printks.txt
+new file mode 100644
+index 000000000000..3c2c9c47a751
+--- /dev/null
++++ b/btrfs_printks.txt
+@@ -0,0 +1,621 @@
++"BTRFS: error (device %s) in %s:%d: errno=%d %s%d errors while writing supers"
++"BTRFS: error (device %s) in %s:%d: errno=%d %serrors while submitting device barriers."
++"BTRFS: error (device %s) in %s:%d: errno=%d %sError while writing out transaction"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sError while writing out transaction for qgroup"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sFailed lookup while freeing chunk."
++"BTRFS: error (device %s) in %s:%d: errno=%d %sFailed to delete chunk item."
++"BTRFS: error (device %s) in %s:%d: errno=%d %sFailed to delete root orphan item"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sfailed to drop verity items in rollback %llu"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sFailed to recover log tree"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sFailed to relocate sys chunks after device initialization. This can be fixed using the \"btrfs balance\" command."
++"BTRFS: error (device %s) in %s:%d: errno=%d %sfailed to start transaction in verity rollback %llu"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sFailed to start trans to delete orphan item"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sfailed to update qgroup status and info"
++"BTRFS: error (device %s) in %s:%d: errno=%d %sunexpected superblock corruption detected"
++"%sBTRFS %s (device %s): access to eb bytenr %llu len %lu out of range start %lu len %lu"
++"%sBTRFS %s (device %s): adding refs to an existing tree ref, bytenr %llu num_bytes %llu root_objectid %llu"
++"%sBTRFS %s (device %s): allocation failed flags %llu, wanted %llu tree-log %d, relocation: %d"
++"%sBTRFS %s (device %s): allowing degraded mounts"
++"%sBTRFS %s (device %s): async extent submission failed root=%lld inode=%llu start=%llu len=%llu ret=%d"
++"%sBTRFS %s (device %s): attempting to add another ref for an existing ref on a tree block"
++"%sBTRFS %s (device %s): attempt to delete subvolume %llu during send"
++"%sBTRFS %s (device %s): Attempt to set subvolume %llu read-write during send"
++"%sBTRFS %s (device %s): at unmount delalloc count %lld"
++"%sBTRFS %s (device %s): at unmount dio bytes count %lld"
++"%sBTRFS %s (device %s): auto deleting %Lu"
++"%sBTRFS %s (device %s): bad eb member end: ptr 0x%lx start %llu member offset %lu size %d"
++"%sBTRFS %s (device %s): bad eb member start: ptr 0x%lx start %llu member offset %lu size %d"
++"%sBTRFS %s (device %s): bad extent! em: [%llu %llu] passed [%llu %llu]"
++"%sBTRFS %s (device %s): bad fsid on block %llu"
++"%sBTRFS %s (device %s): bad key order, sibling blocks, left last (%llu %u %llu) right first (%llu %u %llu)"
++"%sBTRFS %s (device %s): bad ordered accounting left %llu size %llu"
++"%sBTRFS %s (device %s): bad ordered extent accounting, root=%llu ino=%llu OE offset=%llu OE len=%llu to_dec=%u left=%llu"
++"%sBTRFS %s (device %s): bad tree block level %d on %llu"
++"%sBTRFS %s (device %s): bad tree block start %llu"
++"%sBTRFS %s (device %s): bad tree block start, want %llu have %llu"
++"%sBTRFS %s (device %s): balance: canceled"
++"%sBTRFS %s (device %s): balance: cannot set exclusive op status, resume manually"
++"%sBTRFS %s (device %s): balance: ended with status: %d"
++"%sBTRFS %s (device %s): balance: force reducing metadata redundancy"
++"%sBTRFS %s (device %s): balance: invalid convert %s profile %s"
++"%sBTRFS %s (device %s): balance: metadata profile %s has lower redundancy than data profile %s"
++"%sBTRFS %s (device %s): balance: mixed groups data and metadata options must be the same"
++"%sBTRFS %s (device %s): balance: paused"
++"%sBTRFS %s (device %s): balance: reduces metadata redundancy, use --force if you want this"
++"%sBTRFS %s (device %s): balance: resume skipped"
++"%sBTRFS %s (device %s): balance: %s %s"
++"%sBTRFS %s (device %s): bdev %s errs: wr %u, rd %u, flush %u, corrupt %u, gen %u"
++"%sBTRFS %s (device %s): bg %llu is a mixed block group but filesystem hasn't enabled mixed block groups"
++"%sBTRFS %s (device %s): block entry overlaps a block group [%llu,%llu]!"
++"%sBTRFS %s (device %s): block group for swapfile at %llu is read-only%s"
++"%sBTRFS %s (device %s): block group has cluster?: %s"
++"%sBTRFS %s (device %s): block group %llu has %llu bytes, %llu used %llu pinned %llu reserved %llu zone_unusable %s"
++"%sBTRFS %s (device %s): block group %llu has wrong amount of free space"
++"%sBTRFS %s (device %s): block group %llu length is zero"
++"%sBTRFS %s (device %s): block group %llu len %llu mismatch with chunk %llu len %llu"
++"%sBTRFS %s (device %s): block group %llu len %llu type flags 0x%llx mismatch with chunk type flags 0x%llx"
++"%sBTRFS %s (device %s): block=%llu read time tree block corruption detected"
++"%sBTRFS %s (device %s): block=%llu write time tree block corruption detected"
++"%sBTRFS %s (device %s): btree block(%llu) has %d references rather than 1: action %d ref_root %llu parent %llu"
++"%sBTRFS %s (device %s): btrfs_map_bio: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u"
++"%sBTRFS %s (device %s): btrfs_scrub_dev(%s, %llu, %s) failed %d"
++"%sBTRFS %s (device %s): btrfs_uuid_scan_kthread failed %d"
++"%sBTRFS %s (device %s): bytenr %llu doesn't have a backref path ending in a root"
++"%sBTRFS %s (device %s): bytenr %llu has improper references to it"
++"%sBTRFS %s (device %s): bytenr %llu has multiple refs with one ending in a non-shareable root"
++"%sBTRFS %s (device %s): bytenr %llu possibly has multiple roots pointing at the same bytenr %llu"
++"%sBTRFS %s (device %s): bytes_used is too small %llu"
++"%sBTRFS %s (device %s): cannot activate swapfile because snapshot creation is in progress"
++"%sBTRFS %s (device %s): cannot activate swapfile while exclusive operation is running"
++"%sBTRFS %s (device %s): cannot continue dev_replace, tgtdev is missing"
++"%sBTRFS %s (device %s): cannot deduplicate to root %llu while send operations are using it (%d in progress)"
++"%sBTRFS %s (device %s): cannot disable free space tree"
++"%sBTRFS %s (device %s): cannot mount because device replace operation is ongoing and"
++"%sBTRFS %s (device %s): cannot mount because of unsupported optional features (%llx)"
++"%sBTRFS %s (device %s): cannot mount read-write because of unsupported optional features (%llx)"
++"%sBTRFS %s (device %s): cannot remove device %s (devid %llu) due to active swapfile"
++"%sBTRFS %s (device %s): cannot replace device %s (devid %llu) due to active swapfile"
++"%sBTRFS %s (device %s): cannot resume dev-replace, other exclusive operation running"
++"%sBTRFS %s (device %s): cannot satisfy tickets, dumping space info"
++"%sBTRFS %s (device %s): cannot snapshot subvolume with active swapfile"
++"%sBTRFS %s (device %s): cannot use root %llu for send while deduplications on it are in progress (%d in progress)"
++"%sBTRFS %s (device %s): can't clear %s bits 0x%llx while mounted"
++"%sBTRFS %s (device %s): can't clear the %s feature bit%s while mounted"
++"%sBTRFS %s (device %s): can't set %s bits 0x%llx while mounted"
++"%sBTRFS %s (device %s): can't set the %s feature bit%s while mounted"
++"%sBTRFS %s (device %s): checking UUID tree"
++"%sBTRFS %s (device %s): check_integrity_print_mask 0x%x"
++"%sBTRFS %s (device %s): Check Repairable: cannot repair, num_copies=%d, next_mirror %d, failed_mirror %d"
++"%sBTRFS %s (device %s): Check Repairable: (fail) num_copies=%d, next_mirror %d, failed_mirror %d"
++"%sBTRFS %s (device %s): checksum verify failed on %llu wanted 0x%*phN found 0x%*phN level %d"
++"%sBTRFS %s (device %s): chunk_block_rsv: size %llu reserved %llu"
++"%sBTRFS %s (device %s): chunk %llu has missing dev extent, have %d expect %d"
++"%sBTRFS %s (device %s): chunk %llu missing %d devices, max tolerance is %d for writable mount"
++"%sBTRFS %s (device %s): chunk relocation canceled during operation"
++"%sBTRFS %s (device %s): chunk relocation canceled on start"
++"%sBTRFS %s (device %s): chunk_root block unaligned: %llu"
++"%sBTRFS %s (device %s): chunk_root level too big: %d >= %d"
++"%sBTRFS %s (device %s): chunk start=%llu len=%llu doesn't have corresponding block group"
++"%sBTRFS %s (device %s): chunk start=%llu len=%llu flags=0x%llx doesn't match block group start=%llu len=%llu flags=0x%llx"
++"%sBTRFS %s (device %s): cleaner removing %llu"
++"%sBTRFS %s (device %s): cleaning free space cache v1"
++"%sBTRFS %s (device %s): clearing compat-ro feature flag for %s (0x%llx)"
++"%sBTRFS %s (device %s): clearing free space tree"
++"%sBTRFS %s (device %s): clearing incompat feature flag for %s (0x%llx)"
++"%sBTRFS %s (device %s): commit super ret %d"
++"%sBTRFS %s (device %s): continuing dev_replace from %s (devid %llu) to target %s @%u%%"
++"%sBTRFS %s (device %s): corrupted chunk tree devid -1 matched"
++"%sBTRFS %s (device %s): corrupt leaf: root=%llu block=%llu slot=%d chunk_start=%llu, %pV"
++"%sBTRFS %s (device %s): corrupt node: root=%llu block=%llu, nritems too %s, have %lu expect range [1,%u]"
++"%sBTRFS %s (device %s): corrupt %s: block=%llu slot=%d extent bytenr=%llu len=%llu %pV"
++"%sBTRFS %s (device %s): corrupt %s: root=%llu block=%llu slot=%d bg_start=%llu bg_len=%llu, %pV"
++"%sBTRFS %s (device %s): corrupt %s: root=%llu block=%llu slot=%d devid=%llu %pV"
++"%sBTRFS %s (device %s): corrupt %s: root=%llu block=%llu slot=%d ino=%llu file_offset=%llu, %pV"
++"%sBTRFS %s (device %s): corrupt %s: root=%llu block=%llu slot=%d ino=%llu, %pV"
++"%sBTRFS %s (device %s): corrupt %s: root=%llu block=%llu slot=%d, %pV"
++"%sBTRFS %s (device %s): corrupt superblock syschunk array: chunk_start=%llu, %pV"
++"%sBTRFS %s (device %s): could not allocate space for delete; will truncate on mount"
++"%sBTRFS %s (device %s): could not do orphan cleanup %d"
++"%sBTRFS %s (device %s): could not find block group containing swapfile"
++"%sBTRFS %s (device %s): could not shrink block group %llu due to active swapfile"
++"%sBTRFS %s (device %s): couldn't alloc memory for raid level kobject"
++"%sBTRFS %s (device %s): couldn't build ref tree"
++"%sBTRFS %s (device %s): couldn't find block (%llu) (level %d) in tree (%llu) with key (%llu %u %llu)"
++"%sBTRFS %s (device %s): couldn't get super block location for mirror %d"
++"%sBTRFS %s (device %s): couldn't get super block page for bytenr %llu"
++"%sBTRFS %s (device %s): couldn't read tree root"
++"%sBTRFS %s (device %s): COW'ing blocks on a fs root that's being dropped"
++"%sBTRFS %s (device %s): creating free space tree"
++"%sBTRFS %s (device %s): creating sysfs device link for devid %llu failed: %d"
++"%sBTRFS %s (device %s): creating UUID tree"
++"%sBTRFS %s (device %s): csum failed root %lld ino %lld off %llu csum 0x%*phN expected csum 0x%*phN mirror %d"
++"%sBTRFS %s (device %s): csum failed root %llu ino %llu off %llu csum 0x%*phN expected csum 0x%*phN mirror %d"
++"%sBTRFS %s (device %s): csum hole found for disk bytenr range [%llu, %llu)"
++"%sBTRFS %s (device %s): csum mismatch on free space cache"
++"%sBTRFS %s (device %s): current progress key (%llu %u %llu), search_slot ret %d"
++"%sBTRFS %s (device %s): %d blocks of free space at or bigger than bytes is"
++"%sBTRFS %s (device %s): defrag_root cancelled"
++"%sBTRFS %s (device %s): delayed_block_rsv: size %llu reserved %llu"
++"%sBTRFS %s (device %s): delayed_refs has NO entry"
++"%sBTRFS %s (device %s): delayed_refs_rsv: size %llu reserved %llu"
++"%sBTRFS %s (device %s): delete too small dev_replace item failed %d!"
++"%sBTRFS %s (device %s): delete too small dev_stats item for device %s failed %d"
++"%sBTRFS %s (device %s): deleting default subvolume %llu is not allowed"
++"%sBTRFS %s (device %s): %d enospc errors during balance"
++"%sBTRFS %s (device %s): %d errors while writing supers"
++"%sBTRFS %s (device %s): dev extent devid %llu physical offset %llu len %llu is beyond device boundary %llu"
++"%sBTRFS %s (device %s): dev extent devid %llu physical offset %llu overlap with previous dev extent end %llu"
++"%sBTRFS %s (device %s): dev extent physical offset %llu devid %llu has no corresponding chunk"
++"%sBTRFS %s (device %s): dev extent physical offset %llu on devid %llu doesn't have corresponding chunk"
++"%sBTRFS %s (device %s): dev extent physical offset %llu on devid %llu length doesn't match chunk %llu, have %llu expect %llu"
++"%sBTRFS %s (device %s): device deleted: id %llu"
++"%sBTRFS %s (device %s): device deleted: %s"
++"%sBTRFS %s (device %s): device stats zeroed by %s (%d)"
++"%sBTRFS %s (device %s): device total_bytes should be at most %llu but found %llu"
++"%sBTRFS %s (device %s): devid %llu device path %s changed to %s scanned by %s (%d)"
++"%sBTRFS %s (device %s): devid %llu uuid %pU is missing"
++"%sBTRFS %s (device %s): devinfo init for devid %llu failed: %d"
++"%sBTRFS %s (device %s): dev_item UUID does not match metadata fsid: %pU != %pU"
++"%sBTRFS %s (device %s): dev_replace entry found has unexpected size, ignore entry"
++"%sBTRFS %s (device %s): dev_replace from %s (devid %llu) to %s canceled"
++"%sBTRFS %s (device %s): dev_replace from %s (devid %llu) to %s finished"
++"%sBTRFS %s (device %s): dev_replace from %s (devid %llu) to %s started"
++"%sBTRFS %s (device %s): dev-replace: zoned type of target device mismatch with filesystem"
++"%sBTRFS %s (device %s): did not find backref in send_root. inode=%llu, offset=%llu, disk_byte=%llu found extent=%llu"
++"%sBTRFS %s (device %s): direct IO failed ino %llu rw %d,%u sector %#Lx len %u err no %d"
++"%sBTRFS %s (device %s): disabling auto defrag"
++"%sBTRFS %s (device %s): disabling disk space caching"
++"%sBTRFS %s (device %s): disabling free space tree"
++"%sBTRFS %s (device %s): disabling log replay at mount time"
++"%sBTRFS %s (device %s): disabling tree log"
++"%sBTRFS %s (device %s): discard failed while removing blockgroup: errno=%d %s"
++"%sBTRFS %s (device %s): disk added %s"
++"%sBTRFS %s (device %s): disk deleted %s"
++"%sBTRFS %s (device %s): disk space caching is enabled"
++"%sBTRFS %s (device %s): doing ref verification"
++"%sBTRFS %s (device %s): dropping a ref for a existing root that doesn't have a ref on the block"
++"%sBTRFS %s (device %s): dropping a ref for a root that doesn't have a ref on the block"
++"%sBTRFS %s (device %s): drop snapshot early exit"
++"%sBTRFS %s (device %s): Drop subvolume %llu"
++"%sBTRFS %s (device %s): dumping block entry [%llu %llu], num_refs %llu, metadata %d, from disk %d"
++"%sBTRFS %s (device %s): duplicate device %s devid %llu generation %llu scanned by %s (%d)"
++"%sBTRFS %s (device %s): Duplicate entries in free space cache, dumping"
++"%sBTRFS %s (device %s): Duplicate root found for start=%llu while inserting into relocation tree"
++"%sBTRFS %s (device %s): eb %llu iref 0x%lx invalid extent inline ref type %d"
++"%sBTRFS %s (device %s): enabling all of the rescue options"
++"%sBTRFS %s (device %s): enabling auto defrag"
++"%sBTRFS %s (device %s): enabling check integrity"
++"%sBTRFS %s (device %s): enabling check integrity including extent data"
++"%sBTRFS %s (device %s): enabling disk space caching"
++"%sBTRFS %s (device %s): enabling free space tree"
++"%sBTRFS %s (device %s): enabling ssd optimizations"
++"%sBTRFS %s (device %s): enabling tree log"
++"%sBTRFS %s (device %s): end_bio_extent_readpage: bi_sector=%llu, err=%d, mirror=%u"
++"%sBTRFS %s (device %s): entry offset %llu, bytes %llu, bitmap %s"
++"%sBTRFS %s (device %s): err add delayed dir index item(index: %llu) into the deletion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)"
++"%sBTRFS %s (device %s): err add delayed dir index item(name: %.*s) into the insertion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)"
++"%sBTRFS %s (device %s): error accounting new delayed refs extent (err code: %d), quota inconsistent"
++"%sBTRFS %s (device %s): error allocating %s hash for checksum"
++"%sBTRFS %s (device %s): error applying prop %s to ino %llu (root %llu): %d"
++"%sBTRFS %s (device %s): error clearing superblock number %d (%d)"
++"%sBTRFS %s (device %s): error %d accounting leaf items, quota is out of sync, rescan required"
++"%sBTRFS %s (device %s): Error %d accounting shared subtree. Quota is out of sync, rescan required."
++"%sBTRFS %s (device %s): error %d while searching for dev_replace item!"
++"%sBTRFS %s (device %s): error %d while searching for dev_stats item for device %s"
++"%sBTRFS %s (device %s): error %d while searching for uuid item!"
++"%sBTRFS %s (device %s): error inheriting props for ino %llu (root %llu): %d"
++"%sBTRFS %s (device %s): error inheriting subvolume %llu properties: %d"
++"%sBTRFS %s (device %s): error loading props for ino %llu (root %llu): %d"
++"%sBTRFS %s (device %s): error reading free space cache"
++"%sBTRFS %s (device %s): error relocating chunk %llu"
++"%sBTRFS %s (device %s): Error removing orphan entry, stopping orphan cleanup"
++"%sBTRFS %s (device %s): error while reading tree root"
++"%sBTRFS %s (device %s): error writing primary super block to device %llu"
++"%sBTRFS %s (device %s): excessive commit interval %d"
++"%sBTRFS %s (device %s): existing ref when reading from disk?"
++"%sBTRFS %s (device %s): existing shared ref when reading from disk?"
++"%sBTRFS %s (device %s): failed setting block group ro: %d"
++"%sBTRFS %s (device %s): failed to account subtree at bytenr %llu: %d"
++"%sBTRFS %s (device %s): failed to add chunk map, start=%llu len=%llu: %d"
++"%sBTRFS %s (device %s): failed to add kobject for block cache, ignoring"
++"%sBTRFS %s (device %s): failed to add missing dev %llu: %ld"
++"%sBTRFS %s (device %s): failed to check the UUID tree: %d"
++"%sBTRFS %s (device %s): failed to clear free space tree: %d"
++"%sBTRFS %s (device %s): failed to create free space tree: %d"
++"%sBTRFS %s (device %s): failed to create the UUID tree %d"
++"%sBTRFS %s (device %s): failed to decompress"
++"%sBTRFS %s (device %s): failed to delete reference to %.*s, inode %llu parent %llu"
++"%sBTRFS %s (device %s): failed to find devid %llu"
++"%sBTRFS %s (device %s): failed to find root %llu for %llu"
++"%sBTRFS %s (device %s): failed to init dev_replace: %d"
++"%sBTRFS %s (device %s): failed to init dev_stats: %d"
++"%sBTRFS %s (device %s): failed to initialize integrity check module: %d"
++"%sBTRFS %s (device %s): failed to initialize space info: %d"
++"%sBTRFS %s (device %s): failed to initialize zoned mode: %d"
++"%sBTRFS %s (device %s): failed to init missing dev %llu: %ld"
++"%sBTRFS %s (device %s): failed to init sysfs device interface"
++"%sBTRFS %s (device %s): failed to init sysfs devinfo kobject"
++"%sBTRFS %s (device %s): failed to init sysfs fsid interface: %d"
++"%sBTRFS %s (device %s): failed to init sysfs interface: %d"
++"%sBTRFS %s (device %s): failed to load free space cache for block group %llu, rebuilding it now"
++"%sBTRFS %s (device %s): failed to load root %s"
++"%sBTRFS %s (device %s): failed to read block groups: %d"
++"%sBTRFS %s (device %s): failed to read chunk root"
++"%sBTRFS %s (device %s): failed to read chunk tree: %d"
++"%sBTRFS %s (device %s): failed to read devices"
++"%sBTRFS %s (device %s): failed to read fs tree: %d"
++"%sBTRFS %s (device %s): failed to read log tree"
++"%sBTRFS %s (device %s): failed to read root (objectid=%llu): %d"
++"%sBTRFS %s (device %s): failed to read the system array: %d"
++"%sBTRFS %s (device %s): failed to read tree block %llu from get_old_root"
++"%sBTRFS %s (device %s): failed to rebuild valid logical %llu for dev %s"
++"%sBTRFS %s (device %s): failed to recover balance: %d"
++"%sBTRFS %s (device %s): failed to recover relocation: %d"
++"%sBTRFS %s (device %s): failed to reset zone %llu after relocation"
++"%sBTRFS %s (device %s): failed to resume dev_replace"
++"%sBTRFS %s (device %s): failed to rollback verity items: %d"
++"%sBTRFS %s (device %s): failed to start uuid_rescan task"
++"%sBTRFS %s (device %s): failed to start uuid_scan task"
++"%sBTRFS %s (device %s): failed to trim %llu block group(s), last error %d"
++"%sBTRFS %s (device %s): failed to trim %llu device(s), last error %d"
++"%sBTRFS %s (device %s): failed to verify dev extents against chunks: %d"
++"%sBTRFS %s (device %s): failed to write free space cache for block group %llu error %d"
++"%sBTRFS %s (device %s): failing ticket with %llu bytes"
++"%sBTRFS %s (device %s): fail to start transaction for status update: %d"
++"%sBTRFS %s (device %s): fail to update qgroup status: %d"
++"%sBTRFS %s (device %s): find_extent_clone: data_offset=%llu, ino=%llu, num_bytes=%llu, logical=%llu"
++"%sBTRFS %s (device %s): fixed up error at logical %llu on dev %s"
++"%sBTRFS %s (device %s): flagging fs with big metadata feature"
++"%sBTRFS %s (device %s): following ref at offset %u for inode %llu in tree %llu"
++"%sBTRFS %s (device %s): force clearing of disk cache"
++"%sBTRFS %s (device %s): forced readonly"
++"%sBTRFS %s (device %s): found a bad mapping, wanted %llu-%llu, found %llu-%llu"
++"%sBTRFS %s (device %s): Found empty symlink inode %llu at root %llu"
++"%sBTRFS %s (device %s): found %llu extents, stage: %s"
++"%sBTRFS %s (device %s): found metadata UUID change in progress flag, clearing"
++"%sBTRFS %s (device %s): found node %llu %llu on insert of %llu %llu"
++"%sBTRFS %s (device %s): found ordered extent %llu %llu on inode cleanup"
++"%sBTRFS %s (device %s): found replace target device without a valid replace item"
++"%sBTRFS %s (device %s): fragmenting all space"
++"%sBTRFS %s (device %s): fragmenting data"
++"%sBTRFS %s (device %s): fragmenting metadata"
++"%sBTRFS %s (device %s): free space cache page truncated"
++"%sBTRFS %s (device %s): free space inode generation (%llu) did not match free space cache generation (%llu)"
++"%sBTRFS %s (device %s): free space %llu active %d"
++"%sBTRFS %s (device %s): free space tree is invalid"
++"%sBTRFS %s (device %s): full stripe lock at %llu refcount underflow"
++"%sBTRFS %s (device %s): get dev_stats failed, device not found"
++"%sBTRFS %s (device %s): get dev_stats failed, not yet valid"
++"%sBTRFS %s (device %s): Get IO Failure Record: (found) logical=%llu, start=%llu, len=%llu"
++"%sBTRFS %s (device %s): Get IO Failure Record: (new) logical=%llu, start=%llu, len=%llu"
++"%sBTRFS %s (device %s): global_block_rsv: size %llu reserved %llu"
++"%sBTRFS %s (device %s): has skinny extents"
++"%sBTRFS %s (device %s): holding back delayed_ref %llu, lowest is %llu"
++"%sBTRFS %s (device %s): ignoring attempt to trim beyond device size: offset %llu length %llu device %s device size %llu"
++"%sBTRFS %s (device %s): ignoring bad roots"
++"%sBTRFS %s (device %s): ignoring data csums"
++"%sBTRFS %s (device %s): incomplete page read with offset %u and length %u"
++"%sBTRFS %s (device %s): incomplete page write with offset %u and length %u"
++"%sBTRFS %s (device %s): inconsistent number of zones on %s (%u/%u)"
++"%sBTRFS %s (device %s): inconsistent qgroup config"
++"%sBTRFS %s (device %s): incorrect extent count for %llu; counted %u, expected %u"
++"%sBTRFS %s (device %s): inode mode mismatch with dir: inode mode=0%o btrfs type=%u dir type=%u"
++"%sBTRFS %s (device %s): insert dev_replace item failed %d!"
++"%sBTRFS %s (device %s): insert dev_stats item for device %s failed %d"
++"%sBTRFS %s (device %s): insert state: end < start %llu %llu"
++"%sBTRFS %s (device %s): insert uuid item failed %d (0x%016llx, 0x%016llx) type %u!"
++"%sBTRFS %s (device %s): invalid chunk type 0x%llx requested"
++"%sBTRFS %s (device %s): invalid chunk type %llu in sys_array at offset %u"
++"%sBTRFS %s (device %s): invalid csum type, has %u want %u"
++"%sBTRFS %s (device %s): invalid exclop balance operation %d requested"
++"%sBTRFS %s (device %s): invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %zu"
++"%sBTRFS %s (device %s): invalid incompat flags, has 0x%llx valid mask 0x%llx"
++"%sBTRFS %s (device %s): invalid iref, extent item key (%llu %u %llu) doesn't have wanted iref"
++"%sBTRFS %s (device %s): invalid iref, got inlined extent ref but no EXTENT/METADATA_ITEM found"
++"%sBTRFS %s (device %s): invalid iref, no EXTENT/METADATA_ITEM found but has inline extent ref"
++"%sBTRFS %s (device %s): invalid key type in iref"
++"%sBTRFS %s (device %s): invalid leafsize %u, should be %llu"
++"%sBTRFS %s (device %s): invalid lzo header, lzo len %u compressed len %u"
++"%sBTRFS %s (device %s): invalid nodesize %llu"
++"%sBTRFS %s (device %s): invalid number of stripes %u in sys_array at offset %u"
++"%sBTRFS %s (device %s): invalid refs_to_drop, current refs %u refs_to_drop %u"
++"%sBTRFS %s (device %s): invalid refs_to_drop, dropping more than 1 refs for tree block %llu refs_to_drop %u"
++"%sBTRFS %s (device %s): invalid sectorsize %llu"
++"%sBTRFS %s (device %s): invalid SHARED_* item, previous item is not EXTENT/METADATA_ITEM"
++"%sBTRFS %s (device %s): invalid stripesize %u"
++"%sBTRFS %s (device %s): invalid tree nritems, bytenr=%llu nritems=0 expect >0"
++"%sBTRFS %s (device %s): IOC_BALANCE ioctl (v1) is deprecated and will be removed in kernel 5.18"
++"%sBTRFS %s (device %s): IO error rebuilding logical %llu for dev %s"
++"%sBTRFS %s (device %s): item at slot %d with data offset %u beyond data end of leaf %u"
++"%sBTRFS %s (device %s): iterating uuid_tree failed %d"
++"%sBTRFS %s (device %s): kobj add dev failed %d"
++"%sBTRFS %s (device %s): label is too long, return the first %zu bytes"
++"%sBTRFS %s (device %s): leaf free space ret %d, leaf data size %lu, used %d nritems %d"
++"%sBTRFS %s (device %s): leaf %llu gen %llu total ptrs %d free space %d owner %llu"
++"%sBTRFS %s (device %s): leaked root %s refcount %d"
++"%sBTRFS %s (device %s): leaking qgroup reserved space, ino: %llu, start: %llu, end: %llu"
++"%sBTRFS %s (device %s): left=%llu, need=%llu, flags=%llu"
++"%sBTRFS %s (device %s): logical %llu is at position %llu within the extent (%llu EXTENT_ITEM %llu) flags %#llx size %u"
++"%sBTRFS %s (device %s): logical %llu is not within any extent"
++"%sBTRFS %s (device %s): logical %llu len %llu found bg but no related chunk"
++"%sBTRFS %s (device %s): log replay required on RO media"
++"%sBTRFS %s (device %s): log_root block unaligned: %llu"
++"%sBTRFS %s (device %s): log_root level too big: %d >= %d"
++"%sBTRFS %s (device %s): lost page write due to IO error on %s (%d)"
++"%sBTRFS %s (device %s): lowest leaf/node mismatch: bytenr %llu node->bytenr %llu slot %d upper %llu"
++"%sBTRFS %s (device %s): mapping failed logical %llu bio len %llu len %llu"
++"%sBTRFS %s (device %s): max_inline at %llu"
++"%sBTRFS %s (device %s): metadata ratio %u"
++"%sBTRFS %s (device %s): metadata reservation failed for delayed dir item deltiona, should have been reserved"
++"%sBTRFS %s (device %s): mismatched block owner"
++"%sBTRFS %s (device %s): mismatched level"
++"%sBTRFS %s (device %s): mismatching generation and generation_v2 found in root item. This root was probably mounted with an older kernel. Resetting all new fields."
++"%sBTRFS %s (device %s): missing free space info for %llu"
++"%sBTRFS %s (device %s): Missing references."
++"%sBTRFS %s (device %s): missing root in new block entry?"
++"%sBTRFS %s (device %s): mount required to replay tree-log, cannot remount read-write"
++"%sBTRFS %s (device %s): name_cache_delete lookup failed ino %llu cache size %d, leaking memory"
++"%sBTRFS %s (device %s): new initial S-block (bdev %p, %s) @%llu (%pg/%llu/%d)"
++"%sBTRFS %s (device %s): no clones found"
++"%sBTRFS %s (device %s): node %llu level %d gen %llu total ptrs %d free spc %u owner %llu"
++"%sBTRFS %s (device %s): 'nologreplay' is deprecated, use 'rescue=nologreplay' instead"
++"%sBTRFS %s (device %s): No space info for %llu"
++"%sBTRFS %s (device %s): not enough freespace need %u have %d"
++"%sBTRFS %s (device %s): not using spread ssd allocation scheme"
++"%sBTRFS %s (device %s): not using ssd optimizations"
++"%sBTRFS %s (device %s): no valid FS found"
++"%sBTRFS %s (device %s): number of devices is 0"
++"%sBTRFS %s (device %s): old qgroup version, quota disabled"
++"%sBTRFS %s (device %s): Old style space inode found, converting."
++"%sBTRFS %s (device %s): open_ctree failed"
++"%sBTRFS %s (device %s): orphan qgroup relation 0x%llx->0x%llx"
++"%sBTRFS %s (device %s): page %lu not writeback, cur %llu end %llu"
++"%sBTRFS %s (device %s): page private not zero on page %llu"
++"%sBTRFS %s (device %s): panic in %s:%d: %pV (errno=%d %s)"
++"%sBTRFS %s (device %s): parent transid verify failed on %llu wanted %llu found %llu"
++"%sBTRFS %s (device %s): partial page read in btrfs with offset %u and length %u"
++"%sBTRFS %s (device %s): partial page write in btrfs with offset %u and length %u"
++"%sBTRFS %s (device %s): path->slots[0]=%d extent_slot=%d"
++"%sBTRFS %s (device %s): path->slots[0]=%d path->nodes[0]:"
++"%sBTRFS %s (device %s): pending commit done"
++"%sBTRFS %s (device %s): pending csums is %llu"
++"%sBTRFS %s (device %s): process_recorded_refs %llu"
++"%sBTRFS %s (device %s): qgroup generation mismatch, marked as inconsistent"
++"%sBTRFS %s (device %s): qgroup %hu/%llu has unreleased space, type %d rsv %llu"
++"%sBTRFS %s (device %s): qgroup rescan init failed, qgroup is not enabled"
++"%sBTRFS %s (device %s): qgroup rescan init failed, qgroup rescan is not queued"
++"%sBTRFS %s (device %s): qgroup rescan is already in progress"
++"%sBTRFS %s (device %s): qgroup reserved space leaked"
++"%sBTRFS %s (device %s): qgroup scan completed%s"
++"%sBTRFS %s (device %s): qgroup scan failed with %d"
++"%sBTRFS %s (device %s): qgroup scan paused"
++"%sBTRFS %s (device %s): RAID56 is not yet supported for sector size %u with page size %lu"
++"%sBTRFS %s (device %s): RAID56 is not yet supported for sectorsize %u with page size %lu"
++"%sBTRFS %s (device %s): read error corrected: ino %llu off %llu (dev %s sector %llu)"
++"%sBTRFS %s (device %s): read policy set to '%s'"
++"%sBTRFS %s (device %s): read-write for sector size %u with page size %lu is experimental"
++"%sBTRFS %s (device %s): re-allocated a block that still has references to it!"
++"%sBTRFS %s (device %s): reclaiming chunk %llu with %llu%% used %llu%% unusable"
++"%sBTRFS %s (device %s):   Ref action %d, root %llu, ref_root %llu, parent %llu, owner %llu, offset %llu, num_refs %llu"
++"%sBTRFS %s (device %s): ref for %llu resolved, key (%llu EXTEND_DATA %llu), root %llu"
++"%sBTRFS %s (device %s):   ref root %llu, parent %llu, owner %llu, offset %llu, num_refs %llu"
++"%sBTRFS %s (device %s): refs %u lock_owner %u current %u"
++"%sBTRFS %s (device %s):   ref-verify: no stacktrace"
++"%sBTRFS %s (device %s): regular/prealloc extent found for non-regular inode %llu"
++"%sBTRFS %s (device %s): reloc already running, cannot start"
++"%sBTRFS %s (device %s): relocating block group %llu flags %s"
++"%sBTRFS %s (device %s): Remounting read-write after error is not allowed"
++"%sBTRFS %s (device %s): remount supports changing free space tree only from ro to rw"
++"%sBTRFS %s (device %s): repair read error: read error at %llu"
++"%sBTRFS %s (device %s): repair read error: submitting new read to mirror %d"
++"%sBTRFS %s (device %s): replace devid present without an active replace item"
++"%sBTRFS %s (device %s): resize device %s (devid %llu) from %llu to %llu"
++"%sBTRFS %s (device %s): resizer unable to apply on readonly device %llu"
++"%sBTRFS %s (device %s): resizer unable to find device %llu"
++"%sBTRFS %s (device %s): resize thread pool %d -> %d"
++"%sBTRFS %s (device %s): resizing devid %llu"
++"%sBTRFS %s (device %s): resolving all inodes for extent %llu"
++"%sBTRFS %s (device %s):   root entry %llu, num_refs %llu"
++"%sBTRFS %s (device %s): root %llu has two reloc roots associated with it"
++"%sBTRFS %s (device %s): root %llu references leaf %llu, data list %#llx"
++"%sBTRFS %s (device %s): run_delayed_extent_op returned %d"
++"%sBTRFS %s (device %s): run_one_delayed_ref returned %d"
++"%sBTRFS %s (device %s): %sabling feature %s on mounted fs is not supported."
++"%sBTRFS %s (device %s): %s at logical %llu on dev %s, physical %llu: metadata %s (level %d) in tree %llu"
++"%sBTRFS %s (device %s): %s at logical %llu on dev %s, physical %llu, root %llu, inode %llu, offset %llu, length %u, links %u (path: %s)"
++"%sBTRFS %s (device %s): %s at logical %llu on dev %s, physical %llu, root %llu, inode %llu, offset %llu: path resolving failed with ret=%d"
++"%sBTRFS %s (device %s): %s: bad levels, cur_level=%d root_level=%d"
++"%sBTRFS %s (device %s): %s: bad parameter order, src_gen=%llu dst_gen=%llu"
++"%sBTRFS %s (device %s): %s: bad parameter order, subvol_gen=%llu reloc_gen=%llu"
++"%sBTRFS %s (device %s): %s block device %s, %u %szones of %llu bytes"
++"%sBTRFS %s (device %s): %s could not find the bad stripe in raid56 so that we cannot recover any more (bio has logical %llu len %llu, bioc has map_type %llu)"
++"%sBTRFS %s (device %s): scrub on devid %llu: filesystem on %s is not writable"
++"%sBTRFS %s (device %s): scrub_repair_page_from_good_copy(bdev == NULL) is unexpected"
++"%sBTRFS %s (device %s): scrub: size assumption nodesize and sectorsize <= SCRUB_MAX_PAGES_PER_BLOCK (%d <= %d && %d <= %d) fails"
++"%sBTRFS %s (device %s): scrub: size assumption nodesize <= BTRFS_STRIPE_LEN (%d <= %d) fails"
++"%sBTRFS %s (device %s): scrub: %s on devid %llu with status: %d"
++"%sBTRFS %s (device %s): scrub: started on devid %llu"
++"%sBTRFS %s (device %s): scrub: tree block %llu spanning stripes, ignored. logical=%llu"
++"%sBTRFS %s (device %s): %s: devid %llu has no free space, have=%llu want=%llu"
++"%sBTRFS %s (device %s): %s: dst_path->nodes[%d] not initialized, root_level=%d cur_level=%d"
++"%sBTRFS %s (device %s): search slot in root %llu (level %d, ref count %d) returned %d for key (%llu %u %llu)"
++"%sBTRFS %s (device %s): sectorsize %llu not yet supported for page size %lu"
++"%sBTRFS %s (device %s): send_chmod %llu mode=%llu"
++"%sBTRFS %s (device %s): send_chown %llu uid=%llu, gid=%llu"
++"%sBTRFS %s (device %s): send_clone offset=%llu, len=%d, clone_root=%llu, clone_inode=%llu, clone_offset=%llu"
++"%sBTRFS %s (device %s): send_create_inode %llu"
++"%sBTRFS %s (device %s): Send: inconsistent snapshot, found %s %s for inode %llu without updated inode item, send root is %llu, parent root is %llu"
++"%sBTRFS %s (device %s): send_in_progress unbalanced %d root %llu"
++"%sBTRFS %s (device %s): send: IO error at offset %llu for inode %llu root %llu"
++"%sBTRFS %s (device %s): send: key (%llu %u %llu) not found in %s root %llu, lowest_level %d, slot %d"
++"%sBTRFS %s (device %s): send_link %s -> %s"
++"%sBTRFS %s (device %s): send_rename %s -> %s"
++"%sBTRFS %s (device %s): send_rmdir %s"
++"%sBTRFS %s (device %s): send_truncate %llu size=%llu"
++"%sBTRFS %s (device %s): send_unlink %s"
++"%sBTRFS %s (device %s): send_utimes %llu"
++"%sBTRFS %s (device %s): send_write offset=%llu, len=%d"
++"%sBTRFS %s (device %s): setting compat-ro feature flag for %s (0x%llx)"
++"%sBTRFS %s (device %s): setting datacow"
++"%sBTRFS %s (device %s): setting datasum"
++"%sBTRFS %s (device %s): setting datasum, datacow enabled"
++"%sBTRFS %s (device %s): setting incompat feature flag for %s (0x%llx)"
++"%sBTRFS %s (device %s): setting nodatacow"
++"%sBTRFS %s (device %s): setting nodatacow, compression disabled"
++"%sBTRFS %s (device %s): setting nodatasum"
++"%sBTRFS %s (device %s): %s gets something invalid in DIR_ITEM (name %s, directory ino %llu, location(%llu %u %llu))"
++"%sBTRFS %s (device %s): %s: ino %llu isize %llu odd range [%llu,%llu]"
++"%sBTRFS %s (device %s): '%s' is deprecated, use 'rescue=usebackuproot' instead"
++"%sBTRFS %s (device %s): '%s' is not a valid subvolume"
++"%sBTRFS %s (device %s): Skipping commit of aborted transaction."
++"%sBTRFS %s (device %s): skipping relocation of block group %llu due to active swapfile"
++"%sBTRFS %s (device %s): skipping scrub of block group %llu due to active swapfile"
++"%sBTRFS %s (device %s): slot %d too large, nritems %d"
++"%sBTRFS %s (device %s): slot %u key (%llu %u %llu) new key (%llu %u %llu)"
++"%sBTRFS %s (device %s): %s: low (%d) > high (%d) eb %llu owner %llu level %d"
++"%sBTRFS %s (device %s): %s must be used with ro mount option"
++"%sBTRFS %s (device %s): Snapshot src from another FS"
++"%sBTRFS %s (device %s): %s: not enough devices with free space: have=%d minimum required=%d"
++"%sBTRFS %s (device %s): %s: no writable device"
++"%sBTRFS %s (device %s): space cache generation (%llu) does not match inode (%llu)"
++"%sBTRFS %s (device %s): space_info %llu has %lld free, is %sfull"
++"%sBTRFS %s (device %s): space_info total=%llu, used=%llu, pinned=%llu, reserved=%llu, may_use=%llu, readonly=%llu zone_unusable=%llu"
++"%sBTRFS %s (device %s): srcdev (devid %llu) is missing, need to run 'btrfs dev scan'?"
++"%sBTRFS %s (device %s): %s %s compression, level %d"
++"%sBTRFS %s (device %s): %s %s feature flag"
++"%sBTRFS %s (device %s): start tree-log replay"
++"%sBTRFS %s (device %s): stopping iteration for %llu due to ret=%d"
++"%sBTRFS %s (device %s): stripe index math went horribly wrong, got stripe_index=%u, num_stripes=%u"
++"%sBTRFS %s (device %s): stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu"
++"%sBTRFS %s (device %s): subvol '%s' does not match subvolid %llu"
++"%sBTRFS %s (device %s): superblock checksum mismatch"
++"%sBTRFS %s (device %s): superblock contains fatal errors"
++"%sBTRFS %s (device %s): super block corruption detected before writing it to disk"
++"%sBTRFS %s (device %s): superblock fsid doesn't match fsid of fs_devices: %pU != %pU"
++"%sBTRFS %s (device %s): superblock metadata_uuid doesn't match metadata uuid of fs_devices: %pU != %pU"
++"%sBTRFS %s (device %s): super_num_devices %llu mismatch with num_devices %llu found here"
++"%sBTRFS %s (device %s): super offset mismatch %llu != %u"
++"%sBTRFS %s (device %s): super_setup_bdi failed"
++"%sBTRFS %s (device %s): super_total_bytes %llu mismatch with fs_devices total_rw_bytes %llu"
++"%sBTRFS %s (device %s): suspended dev_replace from %s (devid %llu) to %s canceled"
++"%sBTRFS %s (device %s): suspending dev_replace for unmount"
++"%sBTRFS %s (device %s): suspicious: generation < cache_generation: %llu < %llu"
++"%sBTRFS %s (device %s): suspicious: generation < chunk_root_generation: %llu < %llu"
++"%sBTRFS %s (device %s): suspicious number of devices: %llu"
++"%sBTRFS %s (device %s): swapfile must be on one device"
++"%sBTRFS %s (device %s): swapfile must have single data profile"
++"%sBTRFS %s (device %s): swapfile must not be checksummed"
++"%sBTRFS %s (device %s): swapfile must not be compressed"
++"%sBTRFS %s (device %s): swapfile must not be copy-on-write"
++"%sBTRFS %s (device %s): swapfile must not be inline"
++"%sBTRFS %s (device %s): swapfile must not have holes"
++"%sBTRFS %s (device %s): sys_array too short to read %u bytes at offset %u"
++"%sBTRFS %s (device %s): sysfs: failed to create fsid for sprout"
++"%sBTRFS %s (device %s): sysfs: failed to update devid for %llu"
++"%sBTRFS %s (device %s): system chunk array too big %u > %u"
++"%sBTRFS %s (device %s): system chunk array too small %u < %zu"
++"%sBTRFS %s (device %s): target device is in the filesystem!"
++"%sBTRFS %s (device %s): target device is smaller than source device!"
++"%sBTRFS %s (device %s): target device %s is invalid!"
++"%sBTRFS %s (device %s): tgtdev (devid %llu) is missing, need to run 'btrfs dev scan'?"
++"%sBTRFS %s (device %s): the filesystem is a seed filesystem!"
++"%sBTRFS %s (device %s): the free space cache file (%llu) is invalid, skip it"
++"%sBTRFS %s (device %s): the 'inode_cache' option is deprecated and has no effect since 5.11"
++"%sBTRFS %s (device %s): the objectid of root %llu reaches its highest value"
++"%sBTRFS %s (device %s): this kernel does not support %s bits 0x%llx"
++"%sBTRFS %s (device %s): this kernel does not support the %s feature bit%s"
++"%sBTRFS %s (device %s): too many dev extents for chunk %llu found"
++"%sBTRFS %s (device %s): too many missing devices, writable remount is not allowed"
++"%sBTRFS %s (device %s): Transaction aborted (error %d)"
++"%sBTRFS %s (device %s): transaction %llu (with %llu dirty metadata bytes) is not committed"
++"%sBTRFS %s (device %s): trans_block_rsv: size %llu reserved %llu"
++"%sBTRFS %s (device %s): tree block crosses page boundary, start %llu nodesize %lu"
++"%sBTRFS %s (device %s): tree block extent item (%llu) is not found in extent tree"
++"%sBTRFS %s (device %s): tree block %llu owner %llu already locked by pid=%d, extent tree corruption detected"
++"%sBTRFS %s (device %s): tree first key mismatch detected, bytenr=%llu parent_transid=%llu key expected=(%llu,%u,%llu) has=(%llu,%u,%llu)"
++"%sBTRFS %s (device %s): tree level mismatch detected, bytenr=%llu level expected=%u has=%u"
++"%sBTRFS %s (device %s): tree_root block unaligned: %llu"
++"%sBTRFS %s (device %s): tree_root level too big: %d >= %d"
++"%sBTRFS %s (device %s): trying to do action %d for a bytenr that has 0 total references"
++"%sBTRFS %s (device %s): trying to do action %d to bytenr %llu num_bytes %llu but there is no existing entry!"
++"%sBTRFS %s (device %s): trying to drop %d refs but we only have %llu for bytenr %llu"
++"%sBTRFS %s (device %s): trying to use backup root at mount time"
++"%sBTRFS %s (device %s): turning off async discard"
++"%sBTRFS %s (device %s): turning off barriers"
++"%sBTRFS %s (device %s): turning off discard"
++"%sBTRFS %s (device %s): turning off flush-on-commit"
++"%sBTRFS %s (device %s): turning on async discard"
++"%sBTRFS %s (device %s): turning on barriers"
++"%sBTRFS %s (device %s): turning on flush-on-commit"
++"%sBTRFS %s (device %s): turning on sync discard"
++"%sBTRFS %s (device %s): umm, got %d back from search, was looking for %llu"
++"%sBTRFS %s (device %s): Umm, you don't have the default diritem, this isn't going to work"
++"%sBTRFS %s (device %s): unable to add free space :%d"
++"%sBTRFS %s (device %s): unable to find block group for %llu"
++"%sBTRFS %s (device %s): Unable to find block group for %llu"
++"%sBTRFS %s (device %s): unable to find logical %llu length %llu"
++"%sBTRFS %s (device %s): unable to find ref byte nr %llu parent %llu root %llu  owner %llu offset %llu"
++"%sBTRFS %s (device %s): unable to find root key (%llu %u %llu) in tree %llu"
++"%sBTRFS %s (device %s): unable to fixup (regular) error at logical %llu on dev %s"
++"%sBTRFS %s (device %s): unable to make block group %llu ro"
++"%sBTRFS %s (device %s): unable to set label with more than %d bytes"
++"%sBTRFS %s (device %s): unable to update quota limit for %llu"
++"%sBTRFS %s (device %s): unequal nodesize/sectorsize (%u != %u) are not allowed for mixed block groups"
++"%sBTRFS %s (device %s): unexpected inode type %o"
++"%sBTRFS %s (device %s): unexpected item type %u in sys_array at offset %u"
++"%sBTRFS %s (device %s): unexpectedly large lzo segment len %u"
++"%sBTRFS %s (device %s): unexpected tree owner, have %llu expect %llu"
++"%sBTRFS %s (device %s): unknown file extent item type %d, inode %llu, offset %llu, root %llu"
++"%sBTRFS %s (device %s): unknown pending changes left 0x%lx, ignoring"
++"%sBTRFS %s (device %s): unknown read_policy type %u, reset to pid"
++"%sBTRFS %s (device %s): unlinked %d orphans"
++"%sBTRFS %s (device %s): unrecognized mount option '%s'"
++"%sBTRFS %s (device %s): unrecognized or unsupported super flag: %llu"
++"%sBTRFS %s (device %s): unrecognized rescue option '%s'"
++"%sBTRFS %s (device %s): unsupported checksum algorithm: %u"
++"%sBTRFS %s (device %s): Unsupported V0 extent filesystem detected. Aborting. Please re-create your filesystem with a newer kernel"
++"%sBTRFS %s (device %s): update block group failed for %llu %llu"
++"%sBTRFS %s (device %s): use no compression"
++"%sBTRFS %s (device %s): using default commit interval %us"
++"%sBTRFS %s (device %s): using free space tree"
++"%sBTRFS %s (device %s): using spread ssd allocation scheme"
++"%sBTRFS %s (device %s): uuid item with illegal size %lu!"
++"%sBTRFS %s (device %s): uuid_tree_add failed %d"
++"%sBTRFS %s (device %s): writable mount is not allowed due to too many missing devices"
++"%sBTRFS %s (device %s): Wrong command %d in process_all_refs"
++"%sBTRFS %s (device %s): you may cancel the operation after 'mount -o degraded'"
++"%sBTRFS %s (device %s): zoned: block group %llu len %llu unaligned to zone size %llu"
++"%sBTRFS %s (device %s): zoned: block group %llu must not contain super block"
++"%sBTRFS %s (device %s): zoned: cannot mix zoned and regular devices"
++"%sBTRFS %s (device %s): zoned: cannot recover write pointer for zone %llu"
++"%sBTRFS %s (device %s): zoned: clearing existing space cache"
++"%sBTRFS %s (device %s): zoned: dev extent devid %llu physical offset %llu len %llu is not aligned to device zone"
++"%sBTRFS %s (device %s): zoned: failed to allocate zone cache for %s"
++"%sBTRFS %s (device %s): zoned: failed to determine allocation offset of bg %llu"
++"%sBTRFS %s (device %s): zoned: failed to load zone info of bg %llu"
++"%sBTRFS %s (device %s): zoned: failed to read device zone info: %d"
++"%sBTRFS %s (device %s): zoned: failed to read super block log zone info at devid %llu zone %u"
++"%sBTRFS %s (device %s): zoned: failed to read zone %llu on %s (devid %llu)"
++"%sBTRFS %s (device %s): zoned: failed to recover write pointer"
++"%sBTRFS %s (device %s): zoned: got wrong write pointer in BG %llu: %llu > %llu"
++"%sBTRFS %s (device %s): zoned: invalid write pointer %llu in block group %llu"
++"%sBTRFS %s (device %s): zoned: invalid write pointer %llu (larger than zone capacity %llu) in block group %llu"
++"%sBTRFS %s (device %s): zoned: mixed block groups not supported"
++"%sBTRFS %s (device %s): zoned mode enabled with zone size %llu"
++"%sBTRFS %s (device %s): zoned: mode not enabled but zoned device found"
++"%sBTRFS %s (device %s): zoned: NODATACOW not supported"
++"%sBTRFS %s (device %s): zoned: no zoned devices found on a zoned filesystem"
++"%sBTRFS %s (device %s): zoned: offline/readonly zone %llu on device %s (devid %llu)"
++"%sBTRFS %s (device %s): zoned: profile %s not yet supported"
++"%sBTRFS %s (device %s): zoned: relocating block group %llu to repair IO failure"
++"%sBTRFS %s (device %s): zoned: resetting device %s (devid %llu) zone %llu for allocation"
++"%sBTRFS %s (device %s): zoned: skip relocating block group %llu to repair: EBUSY"
++"%sBTRFS %s (device %s): zoned: %s: max active zones %u is too small, need at least %u active zones"
++"%sBTRFS %s (device %s): zoned: space cache v1 is not supported"
++"%sBTRFS %s (device %s): zoned: super block log zone corrupted devid %llu zone %u"
++"%sBTRFS %s (device %s): zoned: %s: zone size %llu larger than supported maximum %llu"
++"%sBTRFS %s (device %s): zoned: %u active zones on %s exceeds max_active_zones %u"
++"%sBTRFS %s (device %s): zoned: unequal block device zone sizes: have %llu found %llu"
++"%sBTRFS %s (device %s): zoned: unexpected conventional zone %llu on device %s (devid %llu)"
++"%sBTRFS %s (device %s): zoned: unsupported model %d on %s"
++"%sBTRFS %s (device %s): zoned: zone size %llu not aligned to stripe %u"
 -- 
 2.35.1
 
