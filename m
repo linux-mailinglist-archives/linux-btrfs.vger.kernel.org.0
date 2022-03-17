@@ -2,206 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BE94DCC5E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 18:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711934DCCB1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 18:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236871AbiCQR1l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Mar 2022 13:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        id S237008AbiCQRpo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Mar 2022 13:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236875AbiCQR1k (ORCPT
+        with ESMTP id S237002AbiCQRpn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Mar 2022 13:27:40 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D486E21047B
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:23 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id v4so5454163pjh.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:23 -0700 (PDT)
+        Thu, 17 Mar 2022 13:45:43 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD3CF3F8C
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:44:26 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id t1so7499851edc.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RIflKMx6orNUBBzvTaVkzMgSRIIbO7dH/hPzc4Os/l8=;
-        b=f8hjOBq53EbXo4sN7ojf8rUjF+GjY1rGIJSoTvvAPOJTKk0WrSx5nc5WkTcPi3bMUI
-         00US3FfFlKua27qIk4M085NqCsaLkCEhabYXuv4y/dfoQpx2CK5ml1L97AeDI64qHoz+
-         Z4hcq4UIZv3gCEda5TF6wYsAzikwFcMBU8AaXuczccWS7Uj+JmHFQ0XC4bIG+fnbd7T6
-         g9XexcytwVwcaVbnzEzL2VDn3SaVCojXkM+sTCIPG2W/T6H5cOm4M+VYKTBloxJLM76B
-         h8B1DDgrOIepPxdi10jmG5LpVZ7aTSyEcxO8btegZvRrUJC9yi4Qh6E+180km1EDqgdX
-         A9RQ==
+        d=thejof-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Xy2XnNEEmoGBL07/AfLf+1AzuiJStrrNdEzOwIFCxsY=;
+        b=fHkQwQI0iKI4R46zCbt7EzbRcEdSxT6qhE1ynEPOfTX9V3r+uE/CSkSFnQianiVqn9
+         SZqcffb2jaVqWleqYjj3e/iJ1djElRGptnDYL4C/zRPYtsdqSwLf417YdlXHr5ml5yC2
+         IyxZzUi28E/VJ7MkCkAYiq0OA+dJMvn+mGE4z1Sn7EVe8JsjChJV9GWyoOeDSFq+6KTO
+         V0BvX4i2/CMsmJatb094yzjiPL954A8xpNFzgSmSn9TuKMx75LdbUiT2DqhSFBXyAmja
+         GsZZRqbYZ/7MPDivGs4aQnbotC5+H2xMu9XP4+KF5NcRRAdAyflJqdR7tVCePUfx+BQd
+         Kb5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RIflKMx6orNUBBzvTaVkzMgSRIIbO7dH/hPzc4Os/l8=;
-        b=VXCDO9AD354RyoNZEeGLxYdV/Z/FBAr6X6ctdG4oFsMVbPG5fO4TtVsQ0RJDl4YM0L
-         I5BqR+XDL8M6jAmbvzeLOsqvHcFrOAcnWjZrrd77WUV0x3+wumDzNV7z5biVt8xWd2EZ
-         wMngxAtnpeczASXvksZZdfM9gGX5OY9jBhc4VSoPVJjNlly8NR6CDcIh6b8d4t4H1DOS
-         YZPEazuVOlZX+baOnweI/siswiSMkHwFDOkkeTJoZVW6hbS0chtMpuGB6uHFSQdjI/cw
-         osdfA4koEToCoHBsREz82El+WIuRSZ33k4Mc6pRz3kxoHi0U5pviH+IRy+4LVpDV4D0Q
-         +jWQ==
-X-Gm-Message-State: AOAM532sSd2s4N9+T2oe2HgohAmWpLw5viDN4dTLleo18DJcJFboIPgj
-        cg9cFunlvx7lsEBxhXOMjPpk3nS+4UhjpA==
-X-Google-Smtp-Source: ABdhPJwqFHPf9c9HxJ5Kihdzb4XSe0Ie19ArJ4kUP+HQ9335nTHOBKoezvl/5HqVPC8y3r8QHeySPQ==
-X-Received: by 2002:a17:902:ce08:b0:153:8d90:a109 with SMTP id k8-20020a170902ce0800b001538d90a109mr6190283plg.157.1647537982984;
-        Thu, 17 Mar 2022 10:26:22 -0700 (PDT)
-Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:624e])
-        by smtp.gmail.com with ESMTPSA id q10-20020a056a00088a00b004f7ceff389esm7815424pfj.152.2022.03.17.10.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 10:26:22 -0700 (PDT)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-Subject: [PATCH v14 10/10] btrfs-progs: receive: add tests for basic encoded_write send/receive
-Date:   Thu, 17 Mar 2022 10:25:53 -0700
-Message-Id: <7fe7eb90c6c1cbcb898a429d6235c551b3d9c3ba.1647537098.git.osandov@fb.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1647537027.git.osandov@fb.com>
-References: <cover.1647537027.git.osandov@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Xy2XnNEEmoGBL07/AfLf+1AzuiJStrrNdEzOwIFCxsY=;
+        b=u/SF6zIMvcdX5uhxCJyLcR0l8aUqLeAjvc8ZRH1j9ww4n8/jcAuaxMFyK1DB8S/c1G
+         zodCWq/5Q62USltJOYINdI527P//JOxvr7N8DFbWivLGn730Uz19RYzUe2zDu5Uy1WQD
+         qo1ymN6hSZdqPUkHWHRnkSbwiT1WkX8qWQ+NYUGIs7B+mz7cVeRHXfGTDle4y9ZA3le/
+         8X7h+JWVaDTvkEuNG7LpGOyWQVfUgh/uqUyUgus0XvFzKCVWod9JdK4el+d+TuMB8ubS
+         p2LdDK+4Sg+NgA/baIy8RQ9uz3fLolQ2zKDg2H/1nHUq4UYrsBWVyn5zjCabdt5oVHCv
+         vKzg==
+X-Gm-Message-State: AOAM5339zndMUMmLOLr/4+gMehECCf2XP3nYVmGF2/s7IbDN7jjaDAZM
+        9ILbNifDxyG/27f8AuX8vYPhec6ngtYJRUI8WdXxTtSarDZgng==
+X-Google-Smtp-Source: ABdhPJxFIJ0nBE9TM2DVH8OVwZzj7l3sEIYw0NV0cKnXYvDyVgsi6KqWK6GqKqijzn8NtQm7RcE/nWdoKRHydiRqqls=
+X-Received: by 2002:a05:6402:151a:b0:416:187f:bf8d with SMTP id
+ f26-20020a056402151a00b00416187fbf8dmr5730282edw.126.1647539064570; Thu, 17
+ Mar 2022 10:44:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <fe7dcb58ac812fb6c37a92a1f74a42890c8c0bc8.1647493897.git.jof@thejof.com>
+ <e23301f7-5d5f-0a9c-7ae5-e9b521ef8b2b@suse.com>
+In-Reply-To: <e23301f7-5d5f-0a9c-7ae5-e9b521ef8b2b@suse.com>
+From:   Jonathan Lassoff <jof@thejof.com>
+Date:   Thu, 17 Mar 2022 17:44:13 +0000
+Message-ID: <CAHsqw9tO8t7tjpiqrh0+9eC2kLt8AusvJTkw=LGeR6DQq4OyAA@mail.gmail.com>
+Subject: Re: [PATCH v0 0/1] Add Btrfs messages to printk index
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Chris Mason <clm@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
+Oops -- that was indeed a mistake; CONFIG_PRINTK should have really
+been CONFIG_PRINTK_INDEX.
 
-Adapt the existing send/receive tests by passing '-o compress-force' to
-the mount commands in a new test. After writing a few files in the
-various compression formats, send/receive them with and without
---force-decompress to test both the encoded_write path and the fallback
-to decode+write.
+I will follow up with a PATCH v1.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- .../052-receive-write-encoded/test.sh         | 114 ++++++++++++++++++
- 1 file changed, 114 insertions(+)
- create mode 100755 tests/misc-tests/052-receive-write-encoded/test.sh
+--j
 
-diff --git a/tests/misc-tests/052-receive-write-encoded/test.sh b/tests/misc-tests/052-receive-write-encoded/test.sh
-new file mode 100755
-index 00000000..47330281
---- /dev/null
-+++ b/tests/misc-tests/052-receive-write-encoded/test.sh
-@@ -0,0 +1,114 @@
-+#!/bin/bash
-+#
-+# test that we can send and receive encoded writes for three modes of
-+# transparent compression: zlib, lzo, and zstd.
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+
-+setup_root_helper
-+prepare_test_dev
-+
-+here=`pwd`
-+
-+# assumes the filesystem exists, and does mount, write, snapshot, send, unmount
-+# for the specified encoding option
-+send_one() {
-+	local str
-+	local subv
-+	local snap
-+
-+	algorithm="$1"
-+	shift
-+	str="$1"
-+	shift
-+
-+	subv="subv-$algorithm"
-+	snap="snap-$algorithm"
-+
-+	run_check_mount_test_dev "-o" "compress-force=$algorithm"
-+	cd "$TEST_MNT" || _fail "cannot chdir to TEST_MNT"
-+
-+	run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$subv"
-+	run_check $SUDO_HELPER dd if=/dev/zero of="$subv/file1" bs=1M count=1
-+	run_check $SUDO_HELPER dd if=/dev/zero of="$subv/file2" bs=500K count=1
-+	run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "$subv" "$snap"
-+	run_check $SUDO_HELPER "$TOP/btrfs" send -f "$str" "$snap" "$@"
-+
-+	cd "$here" || _fail "cannot chdir back to test directory"
-+	run_check_umount_test_dev
-+}
-+
-+receive_one() {
-+	local str
-+	str="$1"
-+	shift
-+
-+	run_check_mkfs_test_dev
-+	run_check_mount_test_dev
-+	run_check $SUDO_HELPER "$TOP/btrfs" receive "$@" -v -f "$str" "$TEST_MNT"
-+	run_check_umount_test_dev
-+	run_check rm -f -- "$str"
-+}
-+
-+test_one_write_encoded() {
-+	local str
-+	local algorithm
-+	algorithm="$1"
-+	shift
-+	str="$here/stream-$algorithm.stream"
-+
-+	run_check_mkfs_test_dev
-+	send_one "$algorithm" "$str" --compressed-data
-+	receive_one "$str" "$@"
-+}
-+
-+test_one_stream_v1() {
-+	local str
-+	local algorithm
-+	algorithm="$1"
-+	shift
-+	str="$here/stream-$algorithm.stream"
-+
-+	run_check_mkfs_test_dev
-+	send_one "$algorithm" "$str" --proto 1
-+	receive_one "$str" "$@"
-+}
-+
-+test_mix_write_encoded() {
-+	local strzlib
-+	local strlzo
-+	local strzstd
-+	strzlib="$here/stream-zlib.stream"
-+	strlzo="$here/stream-lzo.stream"
-+	strzstd="$here/stream-zstd.stream"
-+
-+	run_check_mkfs_test_dev
-+
-+	send_one "zlib" "$strzlib" --compressed-data
-+	send_one "lzo" "$strlzo" --compressed-data
-+	send_one "zstd" "$strzstd" --compressed-data
-+
-+	receive_one "$strzlib"
-+	receive_one "$strlzo"
-+	receive_one "$strzstd"
-+}
-+
-+test_one_write_encoded "zlib"
-+test_one_write_encoded "lzo"
-+test_one_write_encoded "zstd"
-+
-+# with decompression forced
-+test_one_write_encoded "zlib" "--force-decompress"
-+test_one_write_encoded "lzo" "--force-decompress"
-+test_one_write_encoded "zstd" "--force-decompress"
-+
-+# send stream v1
-+test_one_stream_v1 "zlib"
-+test_one_stream_v1 "lzo"
-+test_one_stream_v1 "zstd"
-+
-+# files use a mix of compression algorithms
-+test_mix_write_encoded
--- 
-2.35.1
-
+On Thu, 17 Mar 2022 at 07:20, Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 17.03.22 =D0=B3. 7:13 =D1=87., Jonathan Lassoff wrote:
+> > In order for end users to quickly react to new issues that come up in
+> > production, it is proving useful to leverage this printk indexing syste=
+m. This
+> > printk index enables kernel developers to use calls to printk() with ch=
+angable
+> > ad-hoc format strings, while still enabling end users to detect changes=
+ and
+> > develop a semi-stable interface for detecting and parsing these message=
+s.
+> >
+> > So that detailed Btrfs messages are captured by this printk index, this=
+ patch
+> > wraps btrfs_printk and btrfs_handle_fs_error with macros.
+> >
+> > Signed-off-by: Jonathan Lassoff <jof@thejof.com>
+> > ---
+> >   fs/btrfs/ctree.h | 28 ++++++++++++++++++++++++++--
+> >   fs/btrfs/super.c |  6 +++---
+> >   2 files changed, 29 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index ebb2d109e8bb..cc768f71d0a5 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -3344,9 +3344,22 @@ void btrfs_no_printk(const struct btrfs_fs_info =
+*fs_info, const char *fmt, ...)
+> >   }
+> >
+> >   #ifdef CONFIG_PRINTK
+> > +#define btrfs_printk(fs_info, fmt, args...)                          \
+> > +do {                                                                 \
+> > +     printk_index_subsys_emit("%sBTRFS %s (device %s): ", NULL, fmt); =
+\
+> > +     _btrfs_printk(fs_info, fmt, ##args);                             =
+\
+> > +} while (0)
+> >   __printf(2, 3)
+> >   __cold
+> > -void btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt=
+, ...);
+> > +void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fm=
+t, ...);
+> > +#elif defined(CONFIG_PRINTK)
+>
+> But you already checked for #idef CONFIG_PRINTK ? In case CONFIG_PRINTK
+> is not defined we'll call btrfs_no_printk as btrfs_printk would be
+> compiled-out. So what's your intention here?
+>
+> > +#define btrfs_printk(fs_info, fmt, args...)                          \
+> > +do {                                                                 \
+> > +     _btrfs_printk(fs_info, fmt, ##args);                             =
+\
+> > +} while (0)
+> > +__printf(2, 3)
+> > +__cold
+> > +void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fm=
+t, ...);
+> >   #else
+> >   #define btrfs_printk(fs_info, fmt, args...) \
+> >       btrfs_no_printk(fs_info, fmt, ##args)
+> > @@ -3598,11 +3611,22 @@ do {                                           =
+               \
+> >                                 __LINE__, (errno));           \
+> >   } while (0)
+> >
+>
+>
+> <snip>
