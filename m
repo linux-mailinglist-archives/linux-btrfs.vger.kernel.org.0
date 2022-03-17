@@ -2,185 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B94304DCB86
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 17:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7129A4DCC58
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 18:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbiCQQhB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Mar 2022 12:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41614 "EHLO
+        id S232741AbiCQR1Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Mar 2022 13:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233157AbiCQQhA (ORCPT
+        with ESMTP id S236840AbiCQR1Y (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Mar 2022 12:37:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA28E9C88;
-        Thu, 17 Mar 2022 09:35:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4858F60C2B;
-        Thu, 17 Mar 2022 16:35:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C060AC340E9;
-        Thu, 17 Mar 2022 16:35:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647534942;
-        bh=EVdYIShHMqNCuMJYYZpEjWXLt93c0L4H3oxEZjXQMSw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n5h/6nvUIgXyEUHzYSLauA+yZzY4y6nTWNEtL1WeMZt0xRinsqJt5iV/ZnjHVKj4A
-         D03+Li4hulA5r1fENfW7hgk0OfQyzRYv4Wn715e7R0Xthme2JONarjz+k1H/jDWUzk
-         CcTJpSKcmDRkNHIb2imJPLJ3apt3ChbSWPGvggC3bXrQ854fdoE+9MdusXpypMU2Od
-         f9bAZ/vQ0bZf8AUFvOliPAbwRa6lkQKFeUAUx/nPRHOuLCNO1dg1rG+HqDzOKE65SN
-         AFMDdYXnhlUab3RDblHezGNx0L0hod4du9ic7JVttH37zySb5CobBpUy0VBVk1vjjR
-         xFFTacH0s4H5A==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] generic: test fallocate against a file range with a mix of holes and extents
-Date:   Thu, 17 Mar 2022 16:34:32 +0000
-Message-Id: <a3ebb63f523f67e998f51b70f12be02a8376ed29.1647534701.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <4db70a749eaf214025dd944df5b231f4c317e13e.1647529329.git.fdmanana@suse.com>
-References: <4db70a749eaf214025dd944df5b231f4c317e13e.1647529329.git.fdmanana@suse.com>
+        Thu, 17 Mar 2022 13:27:24 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F418C114FC7
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:06 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id w8so4996802pll.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 10:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H7DHGubPYd3ZDKu8pJXjL5r5SlAt1Oem/2PJOqwf3L8=;
+        b=Zi2nIJpzbiO6DtEv8ZGgZxIxWMI5fXBJ/wsvp72Y83QkCqzuINHSSDKxaF58IvVfDf
+         ROwtrAY1xyogimvskQV299F86fHrkZed9JJiGcWplfKs8Isowi6+3gNpzzGOlkzklP4y
+         T4NVp/5sx/bQZWePbsstIpHWBJA6Mu/vYza+gALZrzqK1YFohXjC/8IU6yCTWxXKy9OF
+         Pk+RITt6BNHJsCmrgnbfplW/S5TXeJkY9Z4w1kxiKv3A6MAciSqHojhZcXjt4jdMJxra
+         vTP8KHD7XXrvJpeXmY2ROjQgdYuVXZFkWNs5ucvJFXNpMXwx66eH7gx0a7Sk8VxL6uOU
+         LLaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H7DHGubPYd3ZDKu8pJXjL5r5SlAt1Oem/2PJOqwf3L8=;
+        b=p5YquJEpleoZf4SsIuXmFPu8J60BTkxoTTTsQiM0klFsB0L07dDPOpMxHf+le/zyv5
+         evm7DpeWmwkg0NQHB11KYpCLqwZoBglFXbJ6N7eon0zX2Ri1rON4HmlpBp1aHGH4HH8R
+         +AHtRxnq5OBF+cWqs/5GVCU/k0TQInXgciuuHj6WHDMIiVd2BgS8yvAZqt6zYkZ0Dydq
+         hYPtaR3FIHqGpTtOocP31hbT4yVtbkCU4BA9/DoFDSzrjXS/OjgHOTjeGf2Qh53P8hlN
+         q4MC2qgLzB6pfFOTaDosRE/a43whLirC+i4QR+3t2pNXzyMyUvMwKsj428IozUts0neM
+         jD5Q==
+X-Gm-Message-State: AOAM5336pEFr/ofKhvqoOwKkJzZevnu1sUJuKzXzdRdqAGlWzA/I0paN
+        0Il3g4MZa+TvlYF2sILqtpyinWx4mWOKcg==
+X-Google-Smtp-Source: ABdhPJwBQJj2dRzswN3S8qxso5tXxui5u26j+vWWdYUzFdmNxYOC8nxmG5bRiK7NEDop4pjsjw39yg==
+X-Received: by 2002:a17:903:24c:b0:153:853c:25c with SMTP id j12-20020a170903024c00b00153853c025cmr6282995plh.84.1647537965987;
+        Thu, 17 Mar 2022 10:26:05 -0700 (PDT)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:624e])
+        by smtp.gmail.com with ESMTPSA id q10-20020a056a00088a00b004f7ceff389esm7815424pfj.152.2022.03.17.10.26.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Mar 2022 10:26:05 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+Subject: [PATCH v14 0/7] btrfs: add send/receive support for reading/writing compressed data
+Date:   Thu, 17 Mar 2022 10:25:36 -0700
+Message-Id: <cover.1647537027.git.osandov@fb.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Omar Sandoval <osandov@fb.com>
 
-Test that if we call fallocate against a file range that has a mix of
-holes and written extents, the fallocate succeeds if the filesystem has
-enough free space to allocate extents for the holes.
+This series adds support for sending compressed data via Btrfs send and
+btrfs-progs support for sending/receiving compressed data and writing it
+with BTRFS_IOC_ENCODED_WRITE, which was previously merged into
+misc-next. See the previous posting for more details and benchmarks [1].
 
-This test currently fails on btrfs and is fixed by a patch that has the
-following subject:
+Patches 1 and 2 are cleanups for Btrfs send. Patches 3-5 prepare some
+protocol changes for send stream v2. Patch 6 implements compressed send.
+Patch 7 enables send stream v2 and compressed send in the send ioctl
+when requested.
 
-    "btrfs: only reserve the needed data space amount during fallocate"
+Changes since v13 [2]:
 
-The test also fails on xfs, and after some discussion with Darrick, it
-seems it's due to technical reasons that would require a significant
-effort to xfs's implementation, and at the moment there isn't enough
-motivation to do such change. The relevent thread is at:
+- Rebased on latest misc-next branch.
+- Dropped ioctl patches which are already in misc-next.
 
-    https://lore.kernel.org/linux-btrfs/20220315164011.GF8241@magnolia/
+1: https://lore.kernel.org/linux-btrfs/cover.1615922753.git.osandov@fb.com/
+2: https://lore.kernel.org/linux-btrfs/cover.1644519257.git.osandov@fb.com/
 
-Therefore the test is intentionally skipped on xfs only. Ext4 and f2fs
-pass this test.
+Omar Sandoval (7):
+  btrfs: send: remove unused send_ctx::{total,cmd}_send_size
+  btrfs: send: explicitly number commands and attributes
+  btrfs: add send stream v2 definitions
+  btrfs: send: write larger chunks when using stream v2
+  btrfs: send: allocate send buffer with alloc_page() and vmap() for v2
+  btrfs: send: send compressed extents with encoded writes
+  btrfs: send: enable support for stream v2 and compressed writes
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
+ fs/btrfs/ctree.h           |   6 +
+ fs/btrfs/inode.c           |  13 +-
+ fs/btrfs/send.c            | 324 +++++++++++++++++++++++++++++++++----
+ fs/btrfs/send.h            | 142 +++++++++-------
+ include/uapi/linux/btrfs.h |  10 +-
+ 5 files changed, 395 insertions(+), 100 deletions(-)
 
-V2: Fixed a typo, moved the test into the generic group while also
-    making it skip xfs as per Darrick's suggestion.
+The btrfs-progs patches were written by Boris Burkov with some updates
+from me. Patches 1-4 are preparation. Patch 5 implements encoded writes.
+Patch 6 implements the fallback to decompressing. Patches 7 and 8
+implement the other commands. Patch 9 adds the new `btrfs send` options.
+Patch 10 adds a test case.
 
- tests/generic/678     | 63 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/678.out | 20 ++++++++++++++
- 2 files changed, 83 insertions(+)
- create mode 100755 tests/generic/678
- create mode 100644 tests/generic/678.out
+Changes since v13:
 
-diff --git a/tests/generic/678 b/tests/generic/678
-new file mode 100755
-index 00000000..9fe1bdcc
---- /dev/null
-+++ b/tests/generic/678
-@@ -0,0 +1,63 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 678
-+#
-+# Test that if we call fallocate against a file range that has a mix of holes
-+# and written extents, the fallocate succeeds if the filesystem has enough free
-+# space to allocate extents for the holes.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick prealloc
-+
-+. ./common/rc
-+. ./common/filter
-+. ./common/punch
-+
-+# real QA test starts here
-+
-+_supported_fs generic
-+_require_scratch
-+_require_xfs_io_command "falloc"
-+_require_xfs_io_command "fiemap"
-+
-+# This test is currently not valid for xfs, see the following thread for details:
-+#
-+#   https://lore.kernel.org/linux-btrfs/20220315164011.GF8241@magnolia/
-+#
-+[ $FSTYP == "xfs" ] && _notrun "test not valid for xfs"
-+
-+rm -f $seqres.full
-+
-+# Create a 1G filesystem.
-+_scratch_mkfs_sized $((1024 * 1024 * 1024)) >>$seqres.full 2>&1
-+_scratch_mount
-+
-+# Create a file with a size of 600M and two holes, each with a size of 1M and
-+# at file ranges [200, 201M[ and [401M, 402M[.
-+$XFS_IO_PROG -f -c "pwrite -S 0xab 0 200M" \
-+                -c "pwrite -S 0xcd 201M 200M" \
-+                -c "pwrite -S 0xef 402M 198M" \
-+		$SCRATCH_MNT/foobar | _filter_xfs_io
-+
-+# Now call fallocate against the whole file range.
-+# It should succeed, because only 2M of data space needs to be allocated,
-+# and not 600M (which isn't available since our fs has a size of 1G).
-+$XFS_IO_PROG -c "falloc 0 600M" $SCRATCH_MNT/foobar
-+
-+# Unmount and mount again the filesystem. We want to verify that the fallocate
-+# results were persisted and that all the file data on disk are also correct.
-+_scratch_cycle_mount
-+
-+echo -n "Number of unwritten extents in the file: "
-+$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/foobar | _filter_fiemap | \
-+    grep "unwritten" | wc -l
-+
-+# Verify we don't have any corruption caused by the fallocate.
-+echo "File content after fallocate:"
-+od -A d -t x1 $SCRATCH_MNT/foobar
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/678.out b/tests/generic/678.out
-new file mode 100644
-index 00000000..61f800c1
---- /dev/null
-+++ b/tests/generic/678.out
-@@ -0,0 +1,20 @@
-+QA output created by 678
-+wrote 209715200/209715200 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 209715200/209715200 bytes at offset 210763776
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 207618048/207618048 bytes at offset 421527552
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Number of unwritten extents in the file: 2
-+File content after fallocate:
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-+*
-+209715200 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+210763776 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
-+*
-+420478976 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+421527552 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
-+*
-+629145600
+- Rebased on latest devel branch.
+- Updated the btrfs_ioctl_encoded_io_args definition to the version that
+  was merged into misc-next.
+
+Boris Burkov (8):
+  btrfs-progs: receive: support v2 send stream larger tlv_len
+  btrfs-progs: receive: dynamically allocate sctx->read_buf
+  btrfs-progs: receive: support v2 send stream DATA tlv format
+  btrfs-progs: receive: process encoded_write commands
+  btrfs-progs: receive: encoded_write fallback to explicit decode and
+    write
+  btrfs-progs: receive: process fallocate commands
+  btrfs-progs: receive: process setflags ioctl commands
+  btrfs-progs: receive: add tests for basic encoded_write send/receive
+
+Omar Sandoval (2):
+  btrfs-progs: receive: add send stream v2 cmds and attrs to send.h
+  btrfs-progs: send: stream v2 ioctl flags
+
+ Documentation/btrfs-receive.rst               |   5 +
+ Documentation/btrfs-send.rst                  |  22 ++
+ cmds/receive-dump.c                           |  31 +-
+ cmds/receive.c                                | 347 +++++++++++++++++-
+ cmds/send.c                                   | 100 ++++-
+ common/send-stream.c                          | 165 +++++++--
+ common/send-stream.h                          |   7 +
+ ioctl.h                                       | 151 +++++++-
+ kernel-shared/send.h                          | 146 +++++---
+ libbtrfs/send-stream.c                        |   2 +-
+ .../052-receive-write-encoded/test.sh         | 114 ++++++
+ 11 files changed, 993 insertions(+), 97 deletions(-)
+ create mode 100755 tests/misc-tests/052-receive-write-encoded/test.sh
+
 -- 
-2.33.0
+2.35.1
 
