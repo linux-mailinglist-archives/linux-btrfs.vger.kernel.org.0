@@ -2,59 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F90A4DCEAD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 20:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E9F4DCF53
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Mar 2022 21:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbiCQTUj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Mar 2022 15:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        id S229669AbiCQU1J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Mar 2022 16:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233990AbiCQTUi (ORCPT
+        with ESMTP id S229665AbiCQU1I (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Mar 2022 15:20:38 -0400
+        Thu, 17 Mar 2022 16:27:08 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AE11A7770;
-        Thu, 17 Mar 2022 12:19:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5BF156C5C
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Mar 2022 13:25:50 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BB69E210EB;
-        Thu, 17 Mar 2022 19:19:19 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id CA0AB210EE;
+        Thu, 17 Mar 2022 20:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1647544759;
+        t=1647548748;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=GA/iXeu+kqE0tAWTLqgPwmosvMWmgP5VfMy6nqbLXFA=;
-        b=OcgigAWwmsSSRH889WMS2m9k0eDXDmJPEvLr5uvho9mSU7T6FeUhixpiOep4Jynr2s6bO2
-        VEzAkjKX6/T30FwVg58UECaWIplZgByh6sTI8HLvtTwiX0vm9OBCfKt2zqRQ/aEOlbhPE3
-        RD+Ks4dYqB1lTwzcoYEoOYNxhMYyaco=
+        bh=Cr9aF59x/7gUb3yjpsJv8lmrfhgmnL9LSYZuGFdukyY=;
+        b=qLbb5WW6NN7/6ZdXOgyc+i301UHrkFTFHQQLbjVT95EwMicQ874j21So+a+qqd7UTubnea
+        tjkRas6mjhMAOduajcfL4ecgD4aWDH7zQBc0oPJOVa0Qx4VLgiOG/pRuDG+HoPhhhamZA3
+        8rq2G9wLfcKtt3dkU9h6uB/+PtMz304=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1647544759;
+        s=susede2_ed25519; t=1647548748;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=GA/iXeu+kqE0tAWTLqgPwmosvMWmgP5VfMy6nqbLXFA=;
-        b=nP/N3UVKQnFKAlBb+YIzOTVlTMY5MnS1jMwfHaYxjrBVhm7rnp1w0yjOsXRFEBr7zTFW8b
-        wYFPp4KcZgVuPDBQ==
+        bh=Cr9aF59x/7gUb3yjpsJv8lmrfhgmnL9LSYZuGFdukyY=;
+        b=TUyEPVuNEk76L/gvdFUL7Pix2yOcXg1Gvuh73V6vzIwGuva+FJidrNy7nd5/jwMWOWiw23
+        sRY46cN7sUkkE9DA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id B216DA3B81;
-        Thu, 17 Mar 2022 19:19:19 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id BDADFA3B81;
+        Thu, 17 Mar 2022 20:25:48 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D5F9DDA7E1; Thu, 17 Mar 2022 20:15:19 +0100 (CET)
-Date:   Thu, 17 Mar 2022 20:15:19 +0100
+        id D08BCDA7E1; Thu, 17 Mar 2022 21:21:48 +0100 (CET)
+Date:   Thu, 17 Mar 2022 21:21:48 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: avoid defragging extents whose next extents
- are not targets
-Message-ID: <20220317191519.GD12643@twin.jikos.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 0/4] btrfs: inode creation cleanups and fixes
+Message-ID: <20220317202148.GE12643@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-References: <ea541c3e37b6531e709eefe81541f8c20b4cfc82.1647343600.git.wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1647306546.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ea541c3e37b6531e709eefe81541f8c20b4cfc82.1647343600.git.wqu@suse.com>
+In-Reply-To: <cover.1647306546.git.osandov@fb.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -66,53 +65,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 07:28:05PM +0800, Qu Wenruo wrote:
-> [BUG]
-> There is a report that autodefrag is defragging single sector, which
-> is completely waste of IO, and no help for defragging:
+On Mon, Mar 14, 2022 at 06:12:31PM -0700, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
->    btrfs-cleaner-808 defrag_one_locked_range: root=256 ino=651122 start=0 len=4096
+> This series contains minor updates of the final four patches of my
+> previous series [1].
 > 
-> [CAUSE]
-> In defrag_collect_targets(), we check if the current range (A) can be merged
-> with next one (B).
+> Based on misc-next with the previous version of "btrfs: allocate inode
+> outside of btrfs_new_inode()" removed.
 > 
-> If mergeable, we will add range A into target for defrag.
+> Changes since v3 [2]:
 > 
-> However there is a catch for autodefrag, when checking mergebility against
-> range B, we intentionally pass 0 as @newer_than, hoping to get a
-> higher chance to merge with the next extent.
+> - Fixed a struct btrfs_root leak [3] in patch 1 which was fixed later in
+>   the same series by patch 3 for the sake of git bisect.
 > 
-> But in next iteartion, range B will looked up by defrag_lookup_extent(),
-> with non-zero @newer_than.
+> Changes since v2:
 > 
-> And if range B is not really newer, it will rejected directly, causing
-> only range A being defragged, while we expect to defrag both range A and
-> B.
+> - Mentioned reason for removal of btrfs_lookup_dentry() call in
+>   create_subvol() in commit message of patch 1.
+> - Made btrfs_init_inode_security() also take btrfs_new_inode_args in
+>   patch 2.
 > 
-> [FIX]
-> Since the root cause is the difference in check condition of
-> defrag_check_next_extent() and defrag_collect_targets(), we fix it by:
+> Thanks!
 > 
-> 1. Pass @newer_than to defrag_check_next_extent()
-> 2. Pass @extent_thresh to defrag_check_next_extent()
+> 1: https://lore.kernel.org/linux-btrfs/cover.1646875648.git.osandov@fb.com/
+> 2: https://lore.kernel.org/linux-btrfs/cover.1647288019.git.osandov@fb.com/
+> 3: https://lore.kernel.org/linux-btrfs/CAL3q7H5ACv3ej1=7P2y7mA1vCJoAcHkCqro6_VBuAUxeaw25rw@mail.gmail.com/
 > 
-> This makes the check between defrag_collect_targets() and
-> defrag_check_next_extent() more consistent.
-> 
-> While there is still some minor difference, the remaining checks are
-> focus on runtime flags like writeback/delalloc, which are mostly
-> transient and safe to be checked only in defrag_collect_targets().
-> 
-> Link: https://github.com/btrfs/linux/issues/423#issuecomment-1066981856
-> Cc: stable@vger.kernel.org # 5.16+
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Add proper CC to stable
-> - Use Link: tag to replace Issue: tag
->   As every developer/maintainer has their own btrfs tree, Issue: tag is
->   really confusing
+> Omar Sandoval (4):
+>   btrfs: allocate inode outside of btrfs_new_inode()
+>   btrfs: factor out common part of btrfs_{mknod,create,mkdir}()
+>   btrfs: reserve correct number of items for inode creation
+>   btrfs: move common inode creation code into btrfs_create_new_inode()
 
 Added to misc-next, thanks.
