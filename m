@@ -2,76 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE05E4DE760
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Mar 2022 10:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3C14DEA1C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Mar 2022 19:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242652AbiCSKBI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Mar 2022 06:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
+        id S241181AbiCSSdO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Mar 2022 14:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242627AbiCSKBI (ORCPT
+        with ESMTP id S233591AbiCSSdN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Mar 2022 06:01:08 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3C91A6365
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Mar 2022 02:59:44 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id k21so1042906lfe.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Mar 2022 02:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=+u3eDSpVEHfi5Vjnao6D2d6kxlC4QCzMwuebH1x5JOI=;
-        b=MSU8S4EfrgQZbpBPVzoMoL3ABBfbTbbWXzauJ30ymNOEy4mo2ALdRAmuZcUAatcjXj
-         qe1CYveSzM4YMj+gOYIb1OWE1vslmEvE4Oo63jzmyhyZ8Axv3Q0nBCmR6DCactiHP2pM
-         sr/ZVWGqOgfiFZfzGgpILryjdJlg6LsP6X9TYzjSSnUsu5B6fWSCOUSB0MSG3LJkG0kv
-         fVhHcWx/8fvoly5wkEA1n/RceXReNL60p8MPMahg7+sm9NoUMjs5T9kTH05DlQicLkSv
-         lyRBX+RkqLirmYg1mdOIffMM06uhO4uOt1v/tjDpk5veSDEjJ3Ej/lGgdQOZLvPtxRME
-         /58Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=+u3eDSpVEHfi5Vjnao6D2d6kxlC4QCzMwuebH1x5JOI=;
-        b=vGIOaNtTJ4E6J75MJKI2Ugyv3rnAy6ZrK8PEUKMaF0oVbHR+j0obyqpchNAqZ67Qcf
-         YggPD1VmX5H5MxarQ3Grr7mh1oV5ssUjwdFkx5dP35/aKgnpVcVkG9BfAyOqxAl/fop/
-         bqshEW/87OKU2zCqpTW6jw5Gbmr0fLrFzJ4gIW+XxcZlUOprhY/bRP4Goa2N6GyjAvq/
-         rdxAwMh8S8pu50OtCNuH/ni6PFu4sOTJ042hHM2NtvATILufanMHFoOJlnUd79SMB74Z
-         I1bvEWlBQ/xvuhLDFOof8j9ReDqu+SWowSEWhXkY/dhEOu16ipPyVTxoBwocKX/bgpEG
-         3MKQ==
-X-Gm-Message-State: AOAM530bgvdJNQWryZO5acRJastBGs/Uu3DHACIVSf/wz0ktdODlLio0
-        QITIlI7nbVsse79k3oA8VtkxyAg/oz4PaPgm9V8=
-X-Google-Smtp-Source: ABdhPJwEDu7LuvgqDMao/keAl2AEwJDzL7ry6Xq13wL2ZjcSDhK0YnuAb6seir8sznKgJZvG8vUcIST1f63290eqqYY=
-X-Received: by 2002:ac2:5fc8:0:b0:445:a43e:3526 with SMTP id
- q8-20020ac25fc8000000b00445a43e3526mr8240683lfg.39.1647683982790; Sat, 19 Mar
- 2022 02:59:42 -0700 (PDT)
+        Sat, 19 Mar 2022 14:33:13 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2162986DD
+        for <linux-btrfs@vger.kernel.org>; Sat, 19 Mar 2022 11:31:51 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id B21BC803CA;
+        Sat, 19 Mar 2022 14:31:50 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1647714711; bh=EtOzveuYpbIzrvMLsvYzRia5wtbe+9LxI+L60WoPqeQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MpgnnCJIBbIsOLZHl5JP7ZKPVjFAtlwqSTXbNoLv3TobUPr+TotQ05dZXfK980fzE
+         o8Cgs2jVrW40Bm9bg/gBuw8TtZ2CFMDOlx+XxwIMngv6XIFXzOgsHnsyPykKtQ0Gzd
+         R3zfEf53DQUZLO3q/4hJ002jkweI6o1ON6/jq6pVoEAbTKWVEzKF+5YB7KMdXM6xSz
+         7z0jgxnHMtI6YwH7hxLjFj60a0Hlb5hx/jp8lVqCPzaF+Hs6v/2ItY061+X3fAU17v
+         nf4NhKOYGx1a9wtKwq73vphY2R1ce2m/5mGbFMseBKOsB6iYvft8kqeb5cHTHuSciI
+         atVxLYMKa9+Ag==
+Message-ID: <32eaf406-aca7-a17a-813a-631616480e42@dorminy.me>
+Date:   Sat, 19 Mar 2022 14:31:49 -0400
 MIME-Version: 1.0
-Sender: mrssuzaramalingwan2@gmail.com
-Received: by 2002:a05:6500:b83:b0:132:eb07:805f with HTTP; Sat, 19 Mar 2022
- 02:59:41 -0700 (PDT)
-From:   AZIZAT ABIATU KASIMU <kazizatabiatu@gmail.com>
-Date:   Sat, 19 Mar 2022 02:59:41 -0700
-X-Google-Sender-Auth: afUP5UHwAN8EtK97RVggqF9qvDo
-Message-ID: <CAGa6i3jrP88Pn1_tmUF8usiwY1LdNr0wvLm2dZzTyPL6Z0vfug@mail.gmail.com>
-Subject: compensation
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ***
+Subject: Re: [PATCH] btrfs: raid56: do blk_check_plugged check twice while
+ writing
+Content-Language: en-US
+To:     Yusuf Khan <yusisamerican@gmail.com>, linux-btrfs@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com, clm@fb.com
+References: <20220319011840.16213-1-yusisamerican@gmail.com>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <20220319011840.16213-1-yusisamerican@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-hello....
-this is to inform you that you have be   compensated with the sum of
-1.2 million dollars in your pass effort,and  the payment will be issue
-into ATM visa  card and send to you from the UBA BANK we need your
-address and your Whats App number
+Hi Yusuf:
 
-Thanks
-Mrs AZIZAT ABIATU KASIMU
+On 3/18/22 21:18, Yusuf Khan wrote:
+> Do the check to see if the drive was connected twice in case that
+> the first was a fluke.
+
+Block plugging is not actually about checking the connectivity of the 
+drive; it's about batching IO submission. Specifically, when a client of 
+the block layer (a filesystem or DM device, for instance) knows that it 
+needs to send a whole batch of IO to disk from a thread, it can request 
+the thread's be temporarily delayed, with blk_start_plug() 
+(block/blk-core.c has a lengthy great comment about it). Then it submits 
+its batch of requests. Finally, it requests the plug be released. This 
+is useful because it can allow better IO by releasing a large, 
+potentially better ordered batch at once.
+
+In this particular case, to my understanding, blk_check_plug() checks 
+whether the current thread is plugged, and, if it is, it adds the rbio 
+to a list; when the plug expires, perhaps from the thread going to 
+sleep, the plug callback gets called, specifically btrfs_raid_unplug(), 
+which sorts the pending IOs.
+
+As such, it shouldn't be necessary to check whether the thread is 
+plugged twice. Your change description is a little light on *why* you'd 
+like to check twice; maybe I'm missing something.
+
+Hope this helps,
+
+Sweet Tea
+
