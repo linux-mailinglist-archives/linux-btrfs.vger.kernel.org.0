@@ -2,212 +2,303 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD864E31B2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Mar 2022 21:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 575674E31D2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Mar 2022 21:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346176AbiCUU1r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Mar 2022 16:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
+        id S1353367AbiCUUcA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Mar 2022 16:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235913AbiCUU1q (ORCPT
+        with ESMTP id S1348478AbiCUUb5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Mar 2022 16:27:46 -0400
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC07165A86
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Mar 2022 13:26:20 -0700 (PDT)
-Date:   Mon, 21 Mar 2022 20:26:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1647894376;
-        bh=Q+xYQSP9Fe16mDsHGuRFU4MkrdidY0C/Z4hsCxkeDmk=;
-        h=Date:To:From:Reply-To:Subject:Message-ID:From:To:Cc:Date:Subject:
-         Reply-To:Feedback-ID:Message-ID;
-        b=gBxdPlrvd9JHs8R/uxmzupo4tBcf0UujXQ57//czbdMIk9OrJVDOtfBOmTp/Sk5Y9
-         IVGRx5dZ9nTHGjzG91XCeU8YjFSlQoWJNN6LOb4nmMLZt4RIDTmO5m7BXrv4Xuv6no
-         1mw400ouSx7VPnFk0oZATgXqRRo7y1KEYkuzskV+P5gcF6hMyu1KA8oFqsLxwmhIFC
-         FtIW4Bg7KRaV10unhrsapXwDzMxBYyeB6jo1FYZ8DlmOvv/zvaySi0RD2ZLyhcH3m/
-         x0asp1LAPHRcIexgm8ECculu2UI4cGqdd8ypFtY2PFcXx6hMi4pf9c7ZPjlDQlj+0i
-         XJgqm0RoGf6mQ==
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   felipecastrotc@protonmail.com
-Reply-To: felipecastrotc@protonmail.com
-Subject: Bad tree block after hibernation and reboot
-Message-ID: <dWRELj6T5paHnz-hagwgT6ciYcUwi9XIYx-QS5YsUJiMMYPtUTJnkmwTb8L1apmxYGBTmMYHtPDWdINlSysqgOrL1w3Jk9N5FlQsrHGKRhU=@protonmail.com>
+        Mon, 21 Mar 2022 16:31:57 -0400
+X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Mar 2022 13:30:29 PDT
+Received: from libero.it (smtp-32-i6.italiaonline.it [213.209.14.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43CE82D1A
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Mar 2022 13:30:29 -0700 (PDT)
+Received: from [192.168.1.27] ([84.220.27.216])
+        by smtp-32.iol.local with ESMTPA
+        id WOebngnlOptnyWOebnZQLz; Mon, 21 Mar 2022 21:29:25 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1647894566; bh=0b9wT2vLNDfkVs7Nm19l93qEUP4dpVGq79k5OXGR7vQ=;
+        h=From;
+        b=Y+k82BGvPvCOD68vTT1mSU08Wsyx86eGWVbpv+DPnT4yjdu+oPtWr1aQ0Z8GxHzoa
+         ZlTgiuraFO3YER+M6N3sdXIf0lKa5xrwCjc+l2Oc+ZZnld8/dIH2OkNi47kxikRbpd
+         A4AsKZdthNYvYNRdmg8FiIjTxApkQ6PjM4CSTN9xbQGUNiyUkNkr6xdNuEq4DUlxFJ
+         SmIrM09pb6jpWT53EemaC6owQzBmn9y4zyerh845zPdKwPcoaZFHJXSQA4V73pASxI
+         /rqnO5/NLN+XNkJ2JXCiFW6Xg7L7NBQijRINymQEr62FHDzMO0L+X68IjQn006+h/Z
+         EMWmwY81FI3yg==
+X-CNFS-Analysis: v=2.4 cv=fIX8YbWe c=1 sm=1 tr=0 ts=6238e025 cx=a_exe
+ p=kT-NTsFwAAAA:8 a=jMrWlYnwW16pavatx/Gsew==:117 a=jMrWlYnwW16pavatx/Gsew==:17
+ a=IkcTkHD0fZMA:10 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=Nzt9PIjX-G4oH9b5Kc4A:9
+ a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=TLwuWKmryFjkTYsgBL5T:22
+Message-ID: <7644137c-b6ac-6503-f533-c1ad6821d81d@libero.it>
+Date:   Mon, 21 Mar 2022 21:29:25 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH 0/5][V12] btrfs: allocation_hint
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <cover.1646589622.git.kreijack@inwind.it>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <cover.1646589622.git.kreijack@inwind.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfO0jb1GE7HQQy2oZYtL26rSa2CbNM9vg7Uqj79oN3nCkzhOjy+egdcXC1OuJvv+K+4k8q/Uivx7Wg+0EKRzFfahJS6ZTdh72qMSkoarU/wX3VewgJAyC
+ 8Tl4MZ3Plqgeq95A9k+mMACJzFey3O4hUfYYiS1sM1mLzlsRP8USdPVowfxBDnyP7fjWx0MIkTgsRbzk7mnj7jgjBSUa28PHofuMIC76/TWfs1JFyhJtUGm4
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello everyone.
+Gentle ping
+On 06/03/2022 19.14, Goffredo Baroncelli wrote:
+> From: Goffredo Baroncelli <kreijack@inwind.it>
+> 
+> Hi all,
+> 
+> This patches set was born after some discussion between me, Zygo and Josef.
+> Some details can be found in https://github.com/btrfs/btrfs-todo/issues/19.
+> 
+> Some further information about a real use case can be found in
+> https://lore.kernel.org/linux-btrfs/20210116002533.GE31381@hungrycats.org/
+> 
+> Recently Shafeeq told me that he is interested too, due to the performance gain.
+> 
+> In V8, revision I switched away from an ioctl API in favor of a sysfs API (
+> see patch #2 and #3).
+> 
+> In V9, I renamed the sysfs interface from devinfo/type to devinfo/allocation_hint.
+> Moreover I renamed dev_info->type to dev_info->flags.
+> 
+> In V10, I renamed the tag 'PREFERRED' from PREFERRED_X to X_PREFERRED; I added
+> another devinfo property, called major_minor. For now it is unused;
+> the plan is to use this in btrfs-progs to go from the block device to the
+> filesystem.
+> First client will be "btrfs prop get/set allocation_hint", but I see others
+> possible clients.
+> Finally I made some cleanup, and remove the mount option 'allocation_hint'
+> 
+> In V12 I removed some features introduced in V11 (like major_minor sysfs
+> filed and the 'feature' file) and changed the values to write in the
+> sysfs files: until V12 the values are numericals ones. Now are strings ones:
+> - METADATA_ONLY
+> - METADATA_PREFERRED
+> - DATA_PREFERRED
+> - DATA_ONLY
+> 
+> The idea behind this patches set, is to dedicate some disks (the fastest one)
+> to the metadata chunk. My initial idea was a "soft" hint. However Zygo
+> asked an option for a "strong" hint (== mandatory). The result is that
+> each disk can be "tagged" by one of the following flags:
+> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
+> - BTRFS_DEV_ALLOCATION_METADATA_PREFERRED
+> - BTRFS_DEV_ALLOCATION_DATA_PREFERRED
+> - BTRFS_DEV_ALLOCATION_DATA_ONLY
+> 
+> When the chunk allocator search a disks to allocate a chunk, scans the disks
+> in an order decided by these tags. For metadata, the order is:
+> *_METADATA_ONLY
+> *_METADATA_PREFERRED
+> *_DATA_PREFERRED
+> 
+> The *_DATA_ONLY are not eligible from metadata chunk allocation.
+> 
+> For the data chunk, the order is reversed, and the *_METADATA_ONLY are
+> excluded.
+> 
+> The exact sort logic is to sort first for the "tag", and then for the space
+> available. If there is no space available, the next "tag" disks set are
+> selected.
+> 
+> To set these tags, a new property called "allocation_hint" was created.
+> There is a dedicated btrfs-prog patches set [[PATCH V11] btrfs-progs:
+> allocation_hint disk property].
+> 
+> $ sudo mount /dev/loop0 /mnt/test-btrfs/
+> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
+> devid=1, path=/dev/loop0: allocation_hint=METADATA_PREFERRED
+> devid=2, path=/dev/loop1: allocation_hint=METADATA_PREFERRED
+> devid=3, path=/dev/loop2: allocation_hint=DATA_PREFERRED
+> devid=4, path=/dev/loop3: allocation_hint=DATA_PREFERRED
+> devid=5, path=/dev/loop4: allocation_hint=DATA_PREFERRED
+> devid=6, path=/dev/loop5: allocation_hint=DATA_ONLY
+> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
+> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
+> 
+> $ sudo ./btrfs fi us /mnt/test-btrfs/
+> Overall:
+>      Device size:           2.75GiB
+>      Device allocated:           1.34GiB
+>      Device unallocated:           1.41GiB
+>      Device missing:             0.00B
+>      Used:             400.89MiB
+>      Free (estimated):           1.04GiB    (min: 1.04GiB)
+>      Data ratio:                  2.00
+>      Metadata ratio:              1.00
+>      Global reserve:           3.25MiB    (used: 0.00B)
+>      Multiple profiles:                no
+> 
+> Data,RAID1: Size:542.00MiB, Used:200.25MiB (36.95%)
+>     /dev/loop0     288.00MiB
+>     /dev/loop1     288.00MiB
+>     /dev/loop2     127.00MiB
+>     /dev/loop3     127.00MiB
+>     /dev/loop4     127.00MiB
+>     /dev/loop5     127.00MiB
+> 
+> Metadata,single: Size:256.00MiB, Used:384.00KiB (0.15%)
+>     /dev/loop1     256.00MiB
+> 
+> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+>     /dev/loop0      32.00MiB
+> 
+> Unallocated:
+>     /dev/loop0     704.00MiB
+>     /dev/loop1     480.00MiB
+>     /dev/loop2       1.00MiB
+>     /dev/loop3       1.00MiB
+>     /dev/loop4       1.00MiB
+>     /dev/loop5       1.00MiB
+>     /dev/loop6     128.00MiB
+>     /dev/loop7     128.00MiB
+> 
+> # change the tag of some disks
+> 
+> $ sudo ./btrfs prop set /dev/loop0 allocation_hint DATA_ONLY
+> $ sudo ./btrfs prop set /dev/loop1 allocation_hint DATA_ONLY
+> $ sudo ./btrfs prop set /dev/loop5 allocation_hint METADATA_ONLY
+> 
+> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
+> devid=1, path=/dev/loop0: allocation_hint=DATA_ONLY
+> devid=2, path=/dev/loop1: allocation_hint=DATA_ONLY
+> devid=3, path=/dev/loop2: allocation_hint=DATA_PREFERRED
+> devid=4, path=/dev/loop3: allocation_hint=DATA_PREFERRED
+> devid=5, path=/dev/loop4: allocation_hint=DATA_PREFERRED
+> devid=6, path=/dev/loop5: allocation_hint=METADATA_ONLY
+> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
+> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
+> 
+> $ sudo btrfs bal start --full-balance /mnt/test-btrfs/
+> $ sudo ./btrfs fi us /mnt/test-btrfs/
+> Overall:
+>      Device size:           2.75GiB
+>      Device allocated:         735.00MiB
+>      Device unallocated:           2.03GiB
+>      Device missing:             0.00B
+>      Used:             400.72MiB
+>      Free (estimated):           1.10GiB    (min: 1.10GiB)
+>      Data ratio:                  2.00
+>      Metadata ratio:              1.00
+>      Global reserve:           3.25MiB    (used: 0.00B)
+>      Multiple profiles:                no
+> 
+> Data,RAID1: Size:288.00MiB, Used:200.19MiB (69.51%)
+>     /dev/loop0     288.00MiB
+>     /dev/loop1     288.00MiB
+> 
+> Metadata,single: Size:127.00MiB, Used:336.00KiB (0.26%)
+>     /dev/loop5     127.00MiB
+> 
+> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+>     /dev/loop7      32.00MiB
+> 
+> Unallocated:
+>     /dev/loop0     736.00MiB
+>     /dev/loop1     736.00MiB
+>     /dev/loop2     128.00MiB
+>     /dev/loop3     128.00MiB
+>     /dev/loop4     128.00MiB
+>     /dev/loop5       1.00MiB
+>     /dev/loop6     128.00MiB
+>     /dev/loop7      96.00MiB
+> 
+> 
+> #As you can see all the metadata were placed on the disk loop5/loop7 even if
+> #the most empty one are loop0 and loop1.
+> 
+> Furher works:
+> - the tool which show the space available should consider the tagging (eg
+>    the disks tagged by _METADATA_ONLY should be excluded from the data
+>    availability)
+> - allow btrfs-prog to change the allocation_hint even when the filesystem
+>    is not mountead.
+> 
+> In following emails, there will be the btrfs-progs patches set and the xfstest
+> suite patches set.
+> 
+> Comments are welcome
+> BR
+> G.Baroncelli
+> 
+> Revision:
+> V12:
+> - removed the property /sys/fs/btrfs/features/allocation_hint
+> - changed the value to write in <devid>/allocation hint from numericals one
+>    to string one (METADATA_PREFERRED, DATA_ONLY....)
+> - removed major_minor sysfs field (added in v11)
+> V11:
+> - added the property /sys/fs/btrfs/features/allocation_hint
+> 
+> V10:
+> - renamed two disk tags/constants:
+>          - *_METADATA_PREFERRED -> *_METADATA_PREFERRED
+>          - *_DATA_PREFERRED -> *_DATA_EFERRED
+> - add /sys/fs/btrfs/$UUID/devinfo/$DEVID/major_minor
+> - revise some commit description
+> - refactored the code of gather_device_info(): one portion of this code
+>    is moved in a separate function called sort_and_reduce_device_info()
+>    for clarity.
+> - removed the 'allocation_hint' mount option
+> 
+> V9:
+> - rename dev_item->type to dev_item->flags
+> - rename /sys/fs/btrfs/$UUID/devinfo/type -> allocation_hint
+> 
+> V8:
+> - drop the ioctl API, instead use a sysfs one
+> 
+> V7:
+> - make more room in the struct btrfs_ioctl_dev_properties up to 1K
+> - leave in btrfs_tree.h only the costants
+> - removed the mount option (sic)
+> - correct an 'use before check' in the while loop (signaled
+>    by Zygo)
+> - add a 2nd sort to be sure that the device_info array is in the
+>    expected order
+> 
+> V6:
+> - add further values to the hints: add the possibility to
+>    exclude a disk for a chunk type
+> 
+> 
+> 
+> Goffredo Baroncelli (5):
+>    btrfs: add flags to give an hint to the chunk allocator
+>    btrfs: export the device allocation_hint property in sysfs
+>    btrfs: change the device allocation_hint property via sysfs
+>    btrfs: add allocation_hint mode
+>    btrfs: rename dev_item->type to dev_item->flags
+> 
+>   fs/btrfs/ctree.h                |   4 +-
+>   fs/btrfs/disk-io.c              |   2 +-
+>   fs/btrfs/sysfs.c                | 106 ++++++++++++++++++++++++++++
+>   fs/btrfs/volumes.c              | 121 ++++++++++++++++++++++++++++++--
+>   fs/btrfs/volumes.h              |   7 +-
+>   include/uapi/linux/btrfs_tree.h |  20 +++++-
+>   6 files changed, 246 insertions(+), 14 deletions(-)
+> 
 
-After starting up from a hibernate state and a reboot, my btrfs partition s=
-eems to be corrupted. I spent the last few days reading the documentation a=
-nd trying different repair methods, first on an image of the partition and =
-then directly on the partition. In both cases, I was unsuccessful, and the =
-output messages were all the same. The repair method does not seem to advan=
-ce and halts with similar messages, except the `btrfs rescue super-recover`=
-  and `btrfs rescue super`, which return that the supers are ok.
 
-I am sending this message hoping that you can at least explain what the iss=
-ue is.
-
-The disk was running with Linux 5.16.14 at the moment of the crash. When I =
-booted sytem from the hibernate state, the filesystem was mounted as read-o=
-nly access. Then, when I restarted it again, I was unable to boot. I have b=
-een using a recovery environment with a Linux 5.16.11 with btrfs-progs v5.1=
-6.2. Also, some possible relevant information:
-
-  ~ # btrfs fi show
-
-    Label: 'ROOT'  uuid: 77307dfc-2951-4453-b789-49cc2924077a
-    Total devices 1 FS bytes used 301.63GiB
-    devid    1 size 700.00GiB used 369.02GiB path /dev/nvme0n1p2
-
-Here are some steps that I tried and their output:
-
-* Simply mounting the partition
-
-  ~ # mount /dev/block/nvme0n1p2 /mnt
-
-    mount: /mnt: wrong fs type, bad option, bad superblock on /dev/nvme0n1p=
-2, missing codepage or helper program, or other error.
-
-* Then, I looked at the dmesg output
-
-    [   51.002678] BTRFS error (device nvme0n1p2): bad tree block start, wa=
-nt 164689903616 have 0
-    [   51.002708] BTRFS error (device nvme0n1p2): failed to read block gro=
-ups: -5
-    [   51.003142] BTRFS error (device nvme0n1p2): open_ctree failed
-
-* I tried to mount with the option `usebackuproot`
-
-  ~ # mount -t btrfs -o ro,rescue=3Dusebackuproot /dev/nvme0n1p2 /mnt
-
-    mount: /mnt: wrong fs type, bad option, bad superblock on /dev/nvme0n1p=
-2, missing codepage or helper program, or other error.
-
-* And the dmesg output were
-
-    [ 7338.494567] BTRFS info (device nvme0n1p2): flagging fs with big meta=
-data feature
-    [ 7338.494576] BTRFS info (device nvme0n1p2): trying to use backup root=
- at mount time
-    [ 7338.494578] BTRFS info (device nvme0n1p2): disk space caching is ena=
-bled
-    [ 7338.494579] BTRFS info (device nvme0n1p2): has skinny extents
-    [ 7338.499017] BTRFS error (device nvme0n1p2): bad tree block start, wa=
-nt 164689903616 have 0
-    [ 7338.499047] BTRFS error (device nvme0n1p2): failed to read block gro=
-ups: -5
-    [ 7338.499403] BTRFS error (device nvme0n1p2): open_ctree failed
-
-* I tried to check the partition
-
-  ~ # btrfs check /dev/nvme0n1p2
-
-    Opening filesystem to check...
-    checksum verify failed on 164689903616 wanted 0x00000000 found 0xb6bde3=
-e4
-    checksum verify failed on 164689903616 wanted 0x00000000 found 0xb6bde3=
-e4
-    bad tree block 164689903616, bytenr mismatch, want=3D164689903616, have=
-=3D0
-    ERROR: failed to read block groups: Input/output error
-    ERROR: cannot open file system
-
-* The superblocks seems to be ok
-
-  ~ # btrfs rescue super-recover /dev/nvme0n1p2
-
-    All supers are valid, no need to recover
-
-  ~ # btrfs rescue super -v /dev/nvme0n1p2
-
-    All Devices:
-    Device: id =3D 1, name =3D /dev/nvme0n1p2
-
-    Before Recovering:
-    [All good supers]:
-    device name =3D /dev/nvme0n1p2
-    superblock bytenr =3D 65536
-
-    device name =3D /dev/nvme0n1p2
-    superblock bytenr =3D 67108864
-
-    device name =3D /dev/nvme0n1p2
-    superblock bytenr =3D 274877906944
-
-    [All bad supers]:
-
-    All supers are valid, no need to recover
-
-* While the following repair methods, return similar outputs
-
-  ~ # btrfs rescue zero-log /dev/nvme0n1p2
-
-    checksum verify failed on 381634265088 wanted 0x00000000 found 0xb6bde3=
-e4
-    ERROR: could not open ctree
-
-  ~ # btrfs check --init-csum-tree /dev/nvme0n1p2
-
-    Creating a new CRC tree
-    WARNING:
-
-    Do not use --repair unless you are advised to do so by a developer
-    or an experienced user, and then only after having accepted that no
-    fsck can successfully repair all types of filesystem corruption. Eg.
-    some software or hardware bugs can fatally damage a volume.
-    The operation will start in 10 seconds.
-    Use Ctrl-C to stop it.
-    10 9 8 7 6 5 4 3 2 1
-    Starting repair.
-    Opening filesystem to check...
-    checksum verify failed on 164689903616 wanted 0x00000000 found 0xb6bde3=
-e4
-    checksum verify failed on 164689903616 wanted 0x00000000 found 0xb6bde3=
-e4
-    bad tree block 164689903616, bytenr mismatch, want=3D164689903616, have=
-=3D0
-    ERROR: failed to read block groups: Input/output error
-    ERROR: cannot open file system
-
-  ~ # btrfs check --init-extent-tree /dev/nvme0n1p2
-
-    WARNING:
-
-    Do not use --repair unless you are advised to do so by a developer
-    or an experienced user, and then only after having accepted that no
-    fsck can successfully repair all types of filesystem corruption. Eg.
-    some software or hardware bugs can fatally damage a volume.
-    The operation will start in 10 seconds.
-    Use Ctrl-C to stop it.
-    10 9 8 7 6 5 4 3 2 1
-    Starting repair.
-    Opening filesystem to check...
-    checksum verify failed on 381634265088 wanted 0x00000000 found 0xb6bde3=
-e4
-    checksum verify failed on 381634265088 wanted 0x00000000 found 0xb6bde3=
-e4
-    bad tree block 381634265088, bytenr mismatch, want=3D381634265088, have=
-=3D0
-    ERROR: cannot open file system
-
- I tried other commands, including:
-
-* btrfs rescue chunk-recover
-* btrfs restore with the tree root found by btrfs-find-root
-
-I am not sure what is the real culprit, and I know that I probably ran some=
- nonsense commands. However, the `bad tree block #### ...` error appears co=
-nsistently on them, including on the `btrfs restore` with different root tr=
-ees.
-
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
