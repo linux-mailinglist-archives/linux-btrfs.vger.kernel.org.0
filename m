@@ -2,203 +2,278 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 459B24E3F1A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 14:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CEB4E3F32
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 14:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbiCVNGt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Mar 2022 09:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S234345AbiCVNNB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Mar 2022 09:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbiCVNGq (ORCPT
+        with ESMTP id S232743AbiCVNNA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Mar 2022 09:06:46 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9511080205
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 06:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1647954315;
-        bh=vEwbb4YZpTeJ5+ZtxKN4Kaiv2kaPVgSiZHcAOF8zG9w=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=LiNDUCI51xBFsDDgFqkeFuduPyx2jpezcHzrftYSE9lQrurzgglRWuNl48J4l5bgq
-         K4YRkgcbTcpzxxVXDDOeSZD14p33zM8r8QdVOjm2D78biUsI8HJ3DMQrCS2547BKIv
-         iEccIqCYtbUl1HHo+nb3UjVM/g4qltgNoDsZe8RY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mxm3Q-1oIIq41i50-00zJPf; Tue, 22
- Mar 2022 14:05:15 +0100
-Message-ID: <f1159186-c73d-5102-549d-8e343f1bca0d@gmx.com>
-Date:   Tue, 22 Mar 2022 21:05:11 +0800
+        Tue, 22 Mar 2022 09:13:00 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EA383B0E;
+        Tue, 22 Mar 2022 06:11:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7B43AB81CEE;
+        Tue, 22 Mar 2022 13:11:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF08DC340EC;
+        Tue, 22 Mar 2022 13:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647954690;
+        bh=TpBXM727e3ZHMIyuIdvw5htaVDQjvYk5u5ce6KzSoYY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pMKqubdyFgKxMcTinsoqliEFOQaupYQeE3VTp5BX1VENB6EVjPIZTXrNTkJQGf1yk
+         sVt6AKT7v5FzvvwcEpYJ29C3iifMv0x0rc4vTFX4DnjNHBF+4rXv29NiOtUeRVLvFS
+         ZnkOHRtSoZlU3JTyqXLIvwBDBkr75j2OPZ2nZ2zVHGSjttV5w1AwmjZIkJ1ZVKjmXV
+         GOdNGe3EuSFRMk69F6qH8kvtOvUVsLLpoMOtJljNQihRH1ynMWd4YtQ5+J1BzZLwKc
+         a8aZEf9FY7u8wPRmF/nngIgSb4Nsga1nA/dTBG/vlBeMc55t3oAA5V+Pp6uahBkMy0
+         Rlab65XFQufPw==
+Date:   Tue, 22 Mar 2022 13:11:27 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "david@fromorbit.com" <david@fromorbit.com>
+Subject: Re: [PATCH v2 2/4] btrfs: mark device addition as mnt_want_write_file
+Message-ID: <YjnK/yHH4TdEzKmi@debian9.Home>
+References: <cover.1647436353.git.naohiro.aota@wdc.com>
+ <4b8a439c276e774ab2402cbd5395061ea0bd3cde.1647436353.git.naohiro.aota@wdc.com>
+ <YjILAo2ueZsnhza/@debian9.Home>
+ <20220317073628.slh4iyexpen7lmjh@naota-xeon>
+ <YjMSaLIhKNcKUuHM@debian9.Home>
+ <20220322043056.3sgb75menaja4xex@naota-xeon>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: failed to read block groups: Input/output error; bad tree block -
- bytenr mismatch;
-Content-Language: en-US
-To:     Joseph Spagnol <joseph.spagnol@programmer.net>,
-        linux-btrfs@vger.kernel.org
-References: <trinity-58cb51fa-9b3e-4fd0-9ff7-29da0dd13e14-1647953588232@3c-app-mailcom-lxa08>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <trinity-58cb51fa-9b3e-4fd0-9ff7-29da0dd13e14-1647953588232@3c-app-mailcom-lxa08>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sPpBt2tIkqrTeWX+0eWhO+fubf91ywl5vFHDbzbGarNr4/2ZxPB
- iCwzTSeXtQVJ7kUq2aAc+cvi42k5IPwk3YZ9ptMfjDwAJzJl3EbwXxNF+gqhCKCBl/hkyZ2
- Hkt9MPil0pzHJxZVBKEMgCqS4nZTe0FfIFA6CjCd5UxNuPrt5ZHZidJ+rRDvwLfK+X2hfRZ
- WUxushIORLM+4/CScQDyw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7h6v9Q8D2+Q=:P/kYUonMvi+peyYxtwgA3F
- Ws882ncxFQPb3Ahj3oDjPUDUVy353WJskWwmIQ1Zftn6Mwm6atFHBZsUG1uGudI2c6RCNy1q/
- 2YestO7XJK3EGMUd/4NrPAoYX6/s5GOkZjylC6kkQYEpCjKRjS6Dx9dwtqdii7Xw389q1k/J0
- /vVq9AiqLwNbHj6Xd24rjrFpsrF2HQOQUExpHEe7awj+fd4sdLDcmLCvXDI/y5U0RT9x5eXxi
- XB6xSnxPx3CtgF7kgpmg0QoxrtObbg4KnRNIop4/bMC7YZhECfSedlRJie+RRpMyTO1yC1vGQ
- lB7XXKEnu/tP0oJacp7bY5yaM5QtkLN5a2g81GQnWn8xyKll+paGUI7GoHOZxXQVFrn+raLdg
- kBc0lxrATxdTR1noXwqEdFvbgrsK8hzSzogG9pOsbmFGeih317LLOgUUB5jIAbN4FGFa2pLSJ
- 5/Bvz5pZGyuVuWzYw281qhta2Q/LwqkJ2gCPRftKH5Aq/U2UkNrmZcdgkqiCYrCmS/aUYVPNq
- ztMXN0LymhHNV89rVucAHqBc3SqMW1T4VGRSWQSViuMORipsb18EV7hPVowfabqfFDzQGXHDD
- HcNvrqlWUWdKmphlBmRhzKOkW6ocz3WBTGBBHrWhmLbpTdNgfcKqo7roueB7P0cKgM0RrKv+C
- rU6OadJr980BZkEvVt0umwYoSKhzvbjUcFTqYSsd+KcpiIC2xIc+cjbUaR96fR44cUzauSolE
- VNMNhDh0FHa4SaVG+TjtxXNSx4d87Hn1JpcPuenDU8wFDNpQS+lmoX7yLF62B92593N6js6PF
- P3syzAtx3QoigM+jljqekT341l8/F8A0UN5payjk0s87VoNMOsLk+nl1980TznNmkUodEp6xi
- cYNix3NL1u6nm8fq9XxUKv2TPCCw5w9le8ENMJBeCuPxJY9s1OQth7YWMB5FLSPGIBuIWi4si
- 56mhE792VVR/7K3AMMjq1u6vOQRWiMcL3fvCeHKqmEoBq2wzjtb//JbWRMC6KR1M7D2uuDAyu
- XffvYuWbsGNXcpvAoIr+g6oyhwtYiRbp2a+arGEYyfmRyzSMt4OAm1/ceEdK0fLlBgNvYzbAv
- FXOEFEh3ziIoIw=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220322043056.3sgb75menaja4xex@naota-xeon>
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Mar 22, 2022 at 04:30:56AM +0000, Naohiro Aota wrote:
+> On Thu, Mar 17, 2022 at 10:50:16AM +0000, Filipe Manana wrote:
+> > On Thu, Mar 17, 2022 at 07:36:29AM +0000, Naohiro Aota wrote:
+> > > On Wed, Mar 16, 2022 at 04:06:26PM +0000, Filipe Manana wrote:
+> > > > On Wed, Mar 16, 2022 at 10:22:38PM +0900, Naohiro Aota wrote:
+> > > > > btrfs_init_new_device() calls btrfs_relocate_sys_chunk() which incurs
+> > > > > file-system internal writing. That writing can cause a deadlock with
+> > > > > FS freezing like as described in like as described in commit
+> > > > > 26559780b953 ("btrfs: zoned: mark relocation as writing").
+> > > > > 
+> > > > > Mark the device addition as mnt_want_write_file. This is also consistent
+> > > > > with the removing device ioctl counterpart.
+> > > > > 
+> > > > > Cc: stable@vger.kernel.org # 4.9+
+> > > > > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > > > > ---
+> > > > >  fs/btrfs/ioctl.c | 11 +++++++++--
+> > > > >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > > > > index 60c907b14547..a6982a1fde65 100644
+> > > > > --- a/fs/btrfs/ioctl.c
+> > > > > +++ b/fs/btrfs/ioctl.c
+> > > > > @@ -3474,8 +3474,10 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
+> > > > >  	return ret;
+> > > > >  }
+> > > > >  
+> > > > > -static long btrfs_ioctl_add_dev(struct btrfs_fs_info *fs_info, void __user *arg)
+> > > > > +static long btrfs_ioctl_add_dev(struct file *file, void __user *arg)
+> > > > >  {
+> > > > > +	struct inode *inode = file_inode(file);
+> > > > > +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> > > > >  	struct btrfs_ioctl_vol_args *vol_args;
+> > > > >  	bool restore_op = false;
+> > > > >  	int ret;
+> > > > > @@ -3488,6 +3490,10 @@ static long btrfs_ioctl_add_dev(struct btrfs_fs_info *fs_info, void __user *arg)
+> > > > >  		return -EINVAL;
+> > > > >  	}
+> > > > >  
+> > > > > +	ret = mnt_want_write_file(file);
+> > > > > +	if (ret)
+> > > > > +		return ret;
+> > > > 
+> > > > So, this now breaks all test cases that exercise device seeding, and I clearly
+> > > > forgot about seeding when I asked about why not use mnt_want_write_file()
+> > > > instead of a bare call to sb_start_write():
+> > > 
+> > > Ah, yes, I also confirmed they fail.
+> > > 
+> > > > 
+> > > > $ ./check btrfs/161 btrfs/162 btrfs/163 btrfs/164 btrfs/248
+> > > ><snip>
+> > > > Ran: btrfs/161 btrfs/162 btrfs/163 btrfs/164 btrfs/248
+> > > > Failures: btrfs/161 btrfs/162 btrfs/163 btrfs/164 btrfs/248
+> > > > Failed 5 of 5 tests
+> > > > 
+> > > > So device seeding introduces a special case. If we mount a seeding
+> > > > filesystem, it's RO, so the mnt_want_write_file() fails.
+> > > 
+> > > Yeah, so we are in a mixed state here. It's RO with a seeding
+> > > device. Or, it must be RW otherwise (checked in
+> > > btrfs_init_new_device()).
+> > > 
+> > > > Something like this deals with it and it makes the tests pass:
+> > > > 
+> > > ><snip>
+> > > > 
+> > > > We are also changing the semantics as we no longer allow for adding a device
+> > > > to a RO filesystem. So the lack of a mnt_want_write_file() was intentional
+> > > > to deal with the seeding filesystem case. But calling mnt_want_write_file()
+> > > > if we are not seeding, changes the semantics - I'm not sure if anyone relies
+> > > > on the ability to add a device to a fs mounted RO, I'm not seeing if it's an
+> > > > useful use case.
+> > > 
+> > > Adding a device to RO FS anyway returns -EROFS from
+> > > btrfs_init_new_device(). So, there is no change.
+> > > 
+> > > > So either we do that special casing like in that diff, or we always do the
+> > > > sb_start_write() / sb_end_write() - in any case please add a comment explaining
+> > > > why we do it like that, why we can't use mnt_want_write_file().
+> > > 
+> > > The conditional using of sb_start_write() or mnt_want_write_file()
+> > > seems a bit dirty. And, I just thought, marking the FS "writing" when
+> > > it's read-only also seems odd.
+> > > 
+> > > I'm now thinking we should have sb_start_write() around here where the
+> > > FS is surely RW.
+> > > 
+> > > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> > > index 393fc7db99d3..50e02dc4e2b2 100644
+> > > --- a/fs/btrfs/volumes.c
+> > > +++ b/fs/btrfs/volumes.c
+> > > @@ -2731,6 +2731,8 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+> > >  
+> > >  	mutex_unlock(&fs_devices->device_list_mutex);
+> > >  
+> > > +	sb_start_write(fs_info->sb);
+> > > +
+> > >  	if (seeding_dev) {
+> > >  		mutex_lock(&fs_info->chunk_mutex);
+> > >  		ret = init_first_rw_device(trans);
+> > > @@ -2786,6 +2788,8 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+> > >  		ret = btrfs_commit_transaction(trans);
+> > >  	}
+> > >  
+> > > +	sb_end_write(fs_info->sb);
+> > > +
+> > >  	/*
+> > >  	 * Now that we have written a new super block to this device, check all
+> > >  	 * other fs_devices list if device_path alienates any other scanned
+> > > @@ -2801,6 +2805,8 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+> > >  	return ret;
+> > >  
+> > >  error_sysfs:
+> > > +	sb_end_write(fs_info->sb);
+> > > +
+> > >  	btrfs_sysfs_remove_device(device);
+> > >  	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+> > >  	mutex_lock(&fs_info->chunk_mutex);
+> > 
+> > Why not just reduce the scope to surround the btrfs_relocate_sys_chunks() call?
+> > It's simpler, and I don't see why all the other code needs to be surround by
+> > sb_start_write() and sb_end_write().
+> 
+> Yep, it turned out my patch caused a lockdep issue. Because we call
+> sb_start_intwrite in the transaction path, we can't call
+> sb_start_write() while the transaction is committed. So, at least we
+> need to narrow the region around btrfs_relocate_sys_chunks().
+
+I don't understand. What do you mean with "while the transaction is committed"?
+
+Do you mean having the following flow leads to a lockdep warning?
+
+   sb_start_write()
+   btrfs_[start|join]_transaction()
+   btrfs_commit_transaction()
+   sb_end_write()
+
+If that's what you mean, than it's really odd, because we do that in many ioctls,
+like the resize ioctl and snapshot creation for example:
+
+  btrfs_ioctl_resize()
+    mnt_want_write_file()
+      -> calls sb_start_write()
+    btrfs_start_transaction()
+    btrfs_commit_transaction()
+    mnt_end_write_file()
+    mnt_drop_write_file()
+      -> calls sb_end_write()
+
+And it's been like that for many years, with no known lockdep complaints.
+
+Also I don't see why surrounding only btrfs_relocate_sys_chunks() would make
+lockdep happy. Because inside the relocation code we have several places that
+start a transaction and then commit the transaction.
+
+Can you be more explicit, perhaps show the warning/trace from lockdep?
+
+> 
+> > Actually, relocating system chunks does not create ordered extents - that only
+> > happens for data block groups. So we could could get away with all this, and
+> > have the relocation code do the assertion only if we are relocating a data
+> > block group - so no need to touch anything in the device add path.
+> 
+> Hmm, that's true. And, such metadata update is protected with
+> sb_start_intwrite()/sb_end_intwrite() in the transaction functions.
+> 
+> Maybe, we can just add sb_start_write_trylock() to
+> relocate_file_extent_cluster() ?
+
+Why not make it simple as I suggested? Drop this patch, and change the next
+patch in the series to do the assertion like this:
+
+  At btrfs_relocate_block_group() add:
 
 
-On 2022/3/22 20:53, Joseph Spagnol wrote:
-> Hello, recently one of my btrfs partitions has become unavailable and am=
- not able to mount it.
->
-> # mount -t btrfs /dev/sda4 /mnt/
-> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda4, mis=
-sing codepage or helper program, or other error.
->
-> # btrfs-find-root /dev/sda4
-> Couldn't read tree root
-> Superblock thinks the generation is 432440
-> Superblock thinks the level is 1
-> Well block 23235313664(gen: 432440 level: 0) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23231447040(gen: 432439 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23229202432(gen: 432438 level: 0) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23192911872(gen: 432431 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23177084928(gen: 432430 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23149035520(gen: 432429 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23124443136(gen: 432427 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23113547776(gen: 432426 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23080730624(gen: 432425 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23048241152(gen: 432424 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23013031936(gen: 432422 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> .......
->
-> # btrfsck -b -p /dev/sda4
-> Opening filesystem to check...
-> checksum verify failed on 23234035712 wanted 0x00000000 found 0x0810faf8
-> checksum verify failed on 23234035712 wanted 0x00000000 found 0x0810faf8
-> bad tree block 23234035712, bytenr mismatch, want=3D23234035712, have=3D=
-0
+    /*
+     * Add some comment why we check this...
+     */
+    if (bg->flags & BTRFS_BLOCK_GROUP_DATA)
+        ASSERT(sb_write_started(fs_info->sb));
 
-Some range is completely wiped out.
-And that wiped out range is in extent tree.
+Wouldn't that work? Why not?
 
-
-There are several two theories for it:
-
-- Some discard related bug
-   It can be the firmware of disk, or btrfs itself.
-   Some range got wiped out even we're still needing it.
-
-- Some missing writes
-   The write should reach disk but didn't.
-   This means the barrier is not working.
-   In that case, disk firmware may be the problem.
-
-
-> ERROR: failed to read block groups: Input/output error
-> ERROR: cannot open file system
->
-> Here are some more details;
-> # uname -a
-> Linux msi-b17-manjaro 5.4.184-1-MANJARO #1 SMP PREEMPT Fri Mar 11 13:59:=
-07 UTC 2022 x86_64 GNU/Linux
-> # btrfs --version
-> btrfs-progs v5.16.2
-> # btrfs fi show
-> Label: 'OLDDATA'  uuid: 9bc104b4-c889-477f-aae1-4d865cdc0372
->          Total devices 1 FS bytes used 34.20GiB
->          devid    1 size 50.00GiB used 37.52GiB path /dev/sda3
-> Label: 'OPENSUSE'  uuid: c3632d30-a117-43ef-8993-88f1933f6676
->          Total devices 1 FS bytes used 24.60GiB
->          devid    1 size 150.00GiB used 31.05GiB path /dev/nvme0n1p4
-> Label: 'DATA'  uuid: 4ce61b29-8c8d-4c04-b715-96f0dda809a4
->          Total devices 1 FS bytes used 118.67GiB
->          devid    1 size 200.00GiB used 122.02GiB path /dev/sda4
-> # btrfs fi df /dev/sda4
-> ERROR: not a directory: /dev/sda4
-> # btrfs fi df /data/
-> ERROR: not a btrfs filesystem: /data/
-> ## dmesg.log ##
-> [65500.890756] BTRFS info (device sda4): flagging fs with big metadata f=
-eature
-> [65500.890766] BTRFS warning (device sda4): 'recovery' is deprecated, us=
-e 'usebackuproot' instead
-> [65500.890768] BTRFS info (device sda4): trying to use backup root at mo=
-unt time
-> [65500.890771] BTRFS info (device sda4): disabling disk space caching
-> [65500.890773] BTRFS info (device sda4): force clearing of disk cache
-> [65500.890775] BTRFS info (device sda4): has skinny extents
-> [65500.893556] BTRFS error (device sda4): bad tree block start, want 232=
-35280896 have 0
-> [65500.893593] BTRFS warning (device sda4): failed to read tree root
-> [65500.893852] BTRFS error (device sda4): bad tree block start, want 232=
-35280896 have 0
-> [65500.893856] BTRFS warning (device sda4): failed to read tree root
-> [65500.908097] BTRFS error (device sda4): bad tree block start, want 232=
-34035712 have 0
-> [65500.908111] BTRFS error (device sda4): failed to read block groups: -=
-5
-> [65500.963167] BTRFS error (device sda4): open_ctree failed
->
-> P.S. I must say that I get the same results when I try to mount the part=
-ition from another linux system OpenSuse tumbleweed
-
-There are already at least two tree blocks got wiped.
-
-I won't be surprised if there are more.
-
-For now, only data salvage can be even attempted.
-
-Using newer enough kernel (like from openSUSE tumbleweed), then mount
-with -o rescue=3Dall,ro to see if it can be mounted.
-
-That's more or less the same as btrfs-restore, but more convenient to
-copy things out.
-
-Thanks,
-Qu
->
-> Is there any way I could rebuild the tree?
->
-> Thanks in advance
-> Joseph
->
->
+> 
+> > Thanks.
+> > 
+> > > 
+> > > > Thanks.
+> > > > 
+> > > > 
+> > > > > +
+> > > > >  	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_DEV_ADD)) {
+> > > > >  		if (!btrfs_exclop_start_try_lock(fs_info, BTRFS_EXCLOP_DEV_ADD))
+> > > > >  			return BTRFS_ERROR_DEV_EXCL_RUN_IN_PROGRESS;
+> > > > > @@ -3520,6 +3526,7 @@ static long btrfs_ioctl_add_dev(struct btrfs_fs_info *fs_info, void __user *arg)
+> > > > >  		btrfs_exclop_balance(fs_info, BTRFS_EXCLOP_BALANCE_PAUSED);
+> > > > >  	else
+> > > > >  		btrfs_exclop_finish(fs_info);
+> > > > > +	mnt_drop_write_file(file);
+> > > > >  	return ret;
+> > > > >  }
+> > > > >  
+> > > > > @@ -5443,7 +5450,7 @@ long btrfs_ioctl(struct file *file, unsigned int
+> > > > >  	case BTRFS_IOC_RESIZE:
+> > > > >  		return btrfs_ioctl_resize(file, argp);
+> > > > >  	case BTRFS_IOC_ADD_DEV:
+> > > > > -		return btrfs_ioctl_add_dev(fs_info, argp);
+> > > > > +		return btrfs_ioctl_add_dev(file, argp);
+> > > > >  	case BTRFS_IOC_RM_DEV:
+> > > > >  		return btrfs_ioctl_rm_dev(file, argp);
+> > > > >  	case BTRFS_IOC_RM_DEV_V2:
+> > > > > -- 
+> > > > > 2.35.1
+> > > > > 
