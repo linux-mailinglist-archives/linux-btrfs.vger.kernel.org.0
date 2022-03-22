@@ -2,143 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0EE4E45B0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 19:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA734E45E9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 19:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240159AbiCVSGu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Mar 2022 14:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S238395AbiCVSZy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Mar 2022 14:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbiCVSGt (ORCPT
+        with ESMTP id S240326AbiCVSZS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Mar 2022 14:06:49 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F0E4C430
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 11:05:21 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id hu11so3564901qvb.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 11:05:21 -0700 (PDT)
+        Tue, 22 Mar 2022 14:25:18 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327218E183
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 11:23:34 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g20so22742576edw.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 11:23:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8pmxzezQGur+rUQFVYFik0j1yeKxbxZYrQHSOeBahdQ=;
-        b=bnFh3uqRF2TwFdym/WGL6OuKOyuvWh1So0WMbJv2lvO4vOLT8D1TCYN+Ds7n1h3TrP
-         EA1xKBbgnPsGoe1Z0GM9v4FYSaYDmooCRHWg66deiWAOwSq1k1YGO7vpgwWrFVORenRl
-         xF45/1YpHNzo4oiWKtPXIOAiEwFNX1fa80Bf5ZLSFPg6cYUoEEfGtHBwbH9YAXNi8Omi
-         AVPJjzVQKvv3Do0Nbzsxi56j0srGaehak7ebwCPZ099lpP19oQqak37Wcg8rCjl3F2Mz
-         mQ4cl02W4MaysbY8ZBIy9s+O4R5l/gHZj2t66O9tNsBhNVkLK+v0x9E+iKyUgovmgJZd
-         VZ8g==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=85Ws1qb644UrDxX3GqtVYKt4YI7t6y+/3TtLCRrTTKc=;
+        b=Ku1bCHHBy4U/B0ntBvZYaNo6sJY8WQONWU//cYuzD1bsiWewQg70QTeDzl2hXY4XFN
+         NwP5Gw/RMT8B+yi8bWlXB4Skrv6zKuyqhznjY3mFaV89GZ3JlOBl5l20RiE80NBafVP2
+         AU1HrlWh98Cpn2TbAJ9BGX4m7EnwW3Eei6uQg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8pmxzezQGur+rUQFVYFik0j1yeKxbxZYrQHSOeBahdQ=;
-        b=EizHTDxTBI7egj+RLZv+COSYaAdfnS2HSVq3FnadQylHZQTKUb/5E0czOlAIz50N9Z
-         zbi3bOutgdLE/SR3nVALYqAOU+Mqe8mWVImnhxHXApowkzVswa85o/gl8r6eu+OdUIkw
-         oNSGnAgBuuGQ/TzkYnnLJpo0jjojUITg2PcDhqHccikiH5k3rcjlcr5JG3OeQEl6k1KJ
-         /Z8JXeU+4eawMNYOpG3QNkZZoSz17PZZ6/5wDIPZhjRnSgLhrvu9hs4ESQ/lx6MOmj70
-         tipdjvYf5EBrbxljjw/BKcqIQ/9AWEgm1/iypvJbszL/VZEgH+gM03n0aszFUtCFCok9
-         5yTA==
-X-Gm-Message-State: AOAM532S86eXzdVovk3k/CnVUAc+QpV3t1BGGptJ6wzVkGLAFsChCS8H
-        XkWkhe56zRL5Bkq93364SuMl8Q==
-X-Google-Smtp-Source: ABdhPJzxh/4ULjoTHDme1RjsJfJxpkFuRpfZJ52vGj8bjlG7qEebBYWfW6YvD5AzHa8qunDWj3Qwaw==
-X-Received: by 2002:a05:6214:1c8e:b0:432:4f21:aedb with SMTP id ib14-20020a0562141c8e00b004324f21aedbmr20310717qvb.74.1647972320264;
-        Tue, 22 Mar 2022 11:05:20 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n9-20020a05622a11c900b002e1c508ba41sm13857383qtk.19.2022.03.22.11.05.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Mar 2022 11:05:19 -0700 (PDT)
-Date:   Tue, 22 Mar 2022 14:05:18 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Goffredo Baroncelli <kreijack@libero.it>
-Cc:     linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH 2/5] btrfs: export the device allocation_hint property in
- sysfs
-Message-ID: <YjoP3lreFX3eA4Ic@localhost.localdomain>
-References: <cover.1646589622.git.kreijack@inwind.it>
- <aa62c61a0a9858d010d7d3ec67019332bd20d801.1646589622.git.kreijack@inwind.it>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=85Ws1qb644UrDxX3GqtVYKt4YI7t6y+/3TtLCRrTTKc=;
+        b=FZisA3/+Gmk96uyzMFT++8OKO0ftx/1kZQ+oJjcjZOH+At+/zLjtVLUq3jQs/T4ZRq
+         JmQdNuWmrkcFjOQ9nt8O8Xk0qxAne77MzSrraxPbr2Iw12zeueja/FA5RRHu3GA/0UZP
+         tvKcUCoAm30XqYaOmi+68DeHvAay1ScGjY4NjYBjyDdb5KLIaIDVwQAb00MlsJNSAg4e
+         7qElqBT+Fo328qYGvhjfQQdWskcFX08gjPmdhWiekEaTshzSsjXLm5Rvri5a6+aCA+Je
+         kfv5XDhSI4uKleeywnTYY7/QBCOPApJ9vdVaihY1FAh6tbln/York5CMBANY3HsSupGR
+         p9wA==
+X-Gm-Message-State: AOAM532iQT4fiZOHO63MFydMiXWSMQXeOYwHcY2szq9I57+E2QPX//gC
+        v2KOKWTAePT19a7tWw0au+U9VN17RLIodjSixH80rwu9PtUpEiuSFeE=
+X-Google-Smtp-Source: ABdhPJwMtH2ef4MJrXE0r5q0QsAUPWiDH4EPuum8RS4ja9iTxc2/V115+eJwjZT4xBGe3Onik6xG+a123W5HezabEwg=
+X-Received: by 2002:aa7:c755:0:b0:419:2f66:e22c with SMTP id
+ c21-20020aa7c755000000b004192f66e22cmr14457833eds.381.1647973412741; Tue, 22
+ Mar 2022 11:23:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa62c61a0a9858d010d7d3ec67019332bd20d801.1646589622.git.kreijack@inwind.it>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1647894991.git.dsterba@suse.com>
+In-Reply-To: <cover.1647894991.git.dsterba@suse.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Mar 2022 11:23:21 -0700
+Message-ID: <CAADWXX-uX74SETx8QNnGDyBGMJHY-6wr8jC9Sjpv4ARqUca0Xw@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs updates for 5.18
+To:     David Sterba <dsterba@suse.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 06, 2022 at 07:14:40PM +0100, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
-> 
-> Export the device allocation_hint property via
-> /sys/fs/btrfs/<uuid>/devinfo/<devid>/allocation_hint
-> 
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->  fs/btrfs/sysfs.c | 31 +++++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 17389a42a3ab..59d92a385a96 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -1578,6 +1578,36 @@ static ssize_t btrfs_devinfo_error_stats_show(struct kobject *kobj,
->  }
->  BTRFS_ATTR(devid, error_stats, btrfs_devinfo_error_stats_show);
->  
-> +
-> +struct allocation_hint_name_t {
-> +	const char *name;
-> +	const u64 value;
-> +} allocation_hint_name[] = {
-> +	{ "DATA_PREFERRED", BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED },
-> +	{ "METADATA_PREFERRED", BTRFS_DEV_ALLOCATION_HINT_METADATA_PREFERRED },
-> +	{ "DATA_ONLY", BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY },
-> +	{ "METADATA_ONLY", BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY },
-> +};
-> +
+On Mon, Mar 21, 2022 at 2:37 PM David Sterba <dsterba@suse.com> wrote:
+>
+> - allow reflinks/deduplication from two different mounts of the same
+>   filesystem
 
-The ktest robot complained about this, but also we don't need to be this clever,
-also it looks better to have the flags first with standard tabbing.
+So I've pulled this, and it looks ok, but I'm not getting the warm and fuzzies.
 
-struct allocation_hint_name {
-	const u64 val;
-	const char *name;
-};
+In particular, I'm not seeing any commentary about different
+filesystems for this.
 
-static struct allocation_hint_name allocation_hints[] = {
-	{ BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED,	"DATA_PREFERRED"	},
-	{ BTRFS_DEV_ALLOCATION_HINT_METADATA_PREFERRED,	"METADATA_PREFERRED"	},
-	...
-};
+There are several filesystems that use that ->remap_file_range()
+operation, so these relaxed rules don't just affect btrfs.
 
+Yes, yes, checking for i_sb matching does seem sensible, but I'd
+*really* have liked some sign that people checked with other
+filesystem maintainers and this is ok for all of them, and they didn't
+make assumptions about "always same mount" rather than "always same
+filesystem".
 
-> +static ssize_t btrfs_devinfo_allocation_hint_show(struct kobject *kobj,
-> +					struct kobj_attribute *a, char *buf)
-> +{
-> +	int i;
-> +	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-> +						   devid_kobj);
-> +
-> +	for (i = 0 ; i < ARRAY_SIZE(allocation_hint_name) ; i++) {
-> +		if ((device->type & BTRFS_DEV_ALLOCATION_HINT_MASK) !=
-> +		    allocation_hint_name[i].value)
-> +			continue;
-> +
-> +		return scnprintf(buf, PAGE_SIZE, "%s\n",
-> +			allocation_hint_name[i].name);
-> +	}
-> +	return scnprintf(buf, PAGE_SIZE, "<UNKNOWN>\n");
+This affects at least cifs, nfs, overlayfs and ocfs2.
 
-Since we have fs'es that won't use this you should just spit out "NONE".
-Thanks,
+Adding fsdevel, and pointing to that
 
-Josef
+-       if (src_file->f_path.mnt != dst_file->f_path.mnt)
++       if (file_inode(src_file)->i_sb != file_inode(dst_file)->i_sb)
+
+change in commit 9f5710bbfd30 ("fs: allow cross-vfsmount reflink/dedupe")
+
+And yes, there was already a comment about "Practically, they only
+need to be on the same file system" from before that matches the new
+behavior, but hey, comments have been known to be wrong in the past
+too.
+
+And yes, I'm also aware that do_clone_file_range() already had that
+exact same i_sb check and it's not new, but since ioctl_file_clone()
+cheched for the mount path, I don't think you could actually reach it
+without being on the same mount.
+
+And while discussing these sanity checks: wouldn't it make sense to
+check that *both* the source file and the destination file support
+that remap_file_range() op, and it's the same op?
+
+Yes, yes, it probably always is in practice, but I could imagine some
+type confusion thing. So wouldn't it be nice to also have something
+like
+
+    if (dst_file->f_op != src_file->f_op)
+          goto out_drop_write;
+
+in there? I'm thinking "how about dedupe from a directory to a regular
+file" kind of craziness...
+
+                 Linus
