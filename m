@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F40C4E4582
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 18:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E1F4E459A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 18:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239891AbiCVRxB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Mar 2022 13:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
+        id S239990AbiCVR5q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Mar 2022 13:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239889AbiCVRxA (ORCPT
+        with ESMTP id S239982AbiCVR5o (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Mar 2022 13:53:00 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36BA6D3BC
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 10:51:31 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id t7so15053703qta.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 10:51:31 -0700 (PDT)
+        Tue, 22 Mar 2022 13:57:44 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAF123BE3
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 10:56:16 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id b189so14532793qkf.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 10:56:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=FMzhok0yBCuifhf76Tvr+EzYkTDhpzoAb4DJhUSHV0E=;
-        b=5uIN4kTQtQ3cuTfUCD4+NK+GT7cA1PVn0dQC6rXwnGsFl5xcCvlchx4IvjfwnuKO8d
-         WpoAt3ZulrwBs9c7l0oopSXmrb/K0RKRXi9zO0/URsG0vemxcmaCCVS6DKwTaSEG7Tlm
-         MfH4wzBtx9kyuXv2pxrHBWvpYf2v+6wSaqam6+gkI6uON1eh+V5mzoXoyayPouKsJKbw
-         DstZG9WbiKb2HF6pgHJX7Tg0MVlKMrp0oerEflyegtdal2MF+xYGZUL86oBodf7MVRnX
-         bLZ1gdcGSW17AIYqJYk8HfcHlGKAeIsKS/OUwxia86AbBJUjeqB8YRIhNDusJnNR1OXx
-         RCIw==
+        bh=79QGpeOenOwbMRmYF+OGKBvl9oaceigLLywBHEos7Bk=;
+        b=j4up9UWKbh1NDbcQig9tyrbQGMx9JLNnVwRKRmRmko7+KGXEXXKeHi+yPKM1Gcf/MS
+         mf67Da1EIpgcM1ddhBrN+eOUfqTyKnQjJQLk0F0hb+qFSUKY40JNPf1s1p0iqBW3A6VE
+         dhBMGiaOy8sNlfbMc8pg3wpZE8XsF3rOdUGGwBtwlscIMMWEtx3gL7uGXligDxlIgmJa
+         HQ5THakLLavnKBz0IX96hmD0ooPHXsXtE3GBNoSS1SG5oy9qpntHbqN7ArJXX4AjTr8p
+         ngLcym4avb1Wp6q32LYKGLCNTEO4+ULEbd4lCtepV3CHclmg2TY6SKjLHb32hZOigK6s
+         A8Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=FMzhok0yBCuifhf76Tvr+EzYkTDhpzoAb4DJhUSHV0E=;
-        b=IKWViIpkwTGR08lj1nIxq5tqVfDMBP5eKNk6ixr1cmPiL0ZMFuUsEZxidJ3+tseXPJ
-         BLol9hoocTXANEZmA7odMMrBYg0boVaeRQqtIs1i82aCubvPXM5Rahc0A4uNK+Fp6bi0
-         sQl0l2cEDIZTsecKe0DRFjfkCzZMjMVFPDfQtyG0NM4ZWtJDbT5wjMtBcyQPp3xvQmyY
-         M+s+Oow8yKAT4HZgAuO/D8GjjieoTiiOc34QV6R+OVGoBHNIaI18Smar366LI0lUjBop
-         6sEplhOxMe7u0F4NE+HcTYWLQzk4R90dyD3laAml5TrVHjIGS+bDSVsEd7jGY06bsLRm
-         L8dw==
-X-Gm-Message-State: AOAM531ge74147U/cVCc2z8PPZScWCdGcKrjPupDP5qriotmQW/bigO/
-        u6vAP3/ZA9MAa1DHYvpD4C41Yg==
-X-Google-Smtp-Source: ABdhPJwXumS3gWcgbpNcMLhAIPTdaXat9Yeu6kXYQWViS4PCquuhrvRHT9tCk+kYaYlXdAOWB4GVCg==
-X-Received: by 2002:a05:622a:15cf:b0:2e1:e5cb:aed3 with SMTP id d15-20020a05622a15cf00b002e1e5cbaed3mr21375950qty.524.1647971490790;
-        Tue, 22 Mar 2022 10:51:30 -0700 (PDT)
+        bh=79QGpeOenOwbMRmYF+OGKBvl9oaceigLLywBHEos7Bk=;
+        b=dmq8vYr1VgmL5gjAOTfH4uU4kvO/eEkgDwePDV0KQzwH6Cngr9dnbmrp8ysK+JEYLM
+         BJ1VddJbN2UsvNHLD7vnPIjMBPBJDWGJ1yEFUGK53C2+mynCS1Oyl6ekHNfs1mHh8lii
+         VUKx8J93FU3tAAy9sLncBB+DDgOhPPOqukKUHiugkJ966/PM+yY/HMm5V87Qgo4eaiUK
+         jQqS/HyaKQOhNPbU1FKVl5yt3g8Cvz279w28ry6eCdlJuh7sTyGFXN0dxRnVPvzCGP4t
+         oqRM9KNjt5RgTxOLrBczJVDDzEkCdXfRuUQz3uGnfxr788gqUjXY0QHsVe4yBAP+nX65
+         W9Qw==
+X-Gm-Message-State: AOAM531+L0A8ZHmJMN1Ghlj6WXYoP/0j+CMIUk8rrhwvDHri1YuerW3A
+        etachWk0dQA4eDI4ZcsjtAvCmxL1Mf+1GA==
+X-Google-Smtp-Source: ABdhPJzG2tvSmNfUmcS8JEmuAPaxPWT4D0iISAZar+0jaZbPhTkZ89p8dyqXNEGjnsxyrPyngo5HnA==
+X-Received: by 2002:a37:993:0:b0:67b:1331:6abf with SMTP id 141-20020a370993000000b0067b13316abfmr16210021qkj.201.1647971775767;
+        Tue, 22 Mar 2022 10:56:15 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n70-20020a372749000000b0067d4067ba89sm9299652qkn.100.2022.03.22.10.51.30
+        by smtp.gmail.com with ESMTPSA id r8-20020a05622a034800b002e1d615484bsm14527952qtw.37.2022.03.22.10.56.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Mar 2022 10:51:30 -0700 (PDT)
-Date:   Tue, 22 Mar 2022 13:51:29 -0400
+        Tue, 22 Mar 2022 10:56:15 -0700 (PDT)
+Date:   Tue, 22 Mar 2022 13:56:14 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Goffredo Baroncelli <kreijack@libero.it>
 Cc:     linux-btrfs@vger.kernel.org,
@@ -59,7 +59,7 @@ Cc:     linux-btrfs@vger.kernel.org,
         Goffredo Baroncelli <kreijack@inwind.it>
 Subject: Re: [PATCH 1/5] btrfs: add flags to give an hint to the chunk
  allocator
-Message-ID: <YjoMoSLf5YE2sXYS@localhost.localdomain>
+Message-ID: <YjoNvoIy/WmulvEc@localhost.localdomain>
 References: <cover.1646589622.git.kreijack@inwind.it>
  <b15072e61eac46aa9f61317c59219713a01ff897.1646589622.git.kreijack@inwind.it>
 MIME-Version: 1.0
@@ -112,38 +112,9 @@ On Sun, Mar 06, 2022 at 07:14:39PM +0100, Goffredo Baroncelli wrote:
 > +	((1 << BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT) - 1)
 > +/* preferred data chunk, but metadata chunk allowed */
 > +#define BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED	(0ULL)
-> +/* preferred metadata chunk, but data chunk allowed */
-> +#define BTRFS_DEV_ALLOCATION_HINT_METADATA_PREFERRED	(1ULL)
-> +/* only metadata chunk are allowed */
-> +#define BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY		(2ULL)
-> +/* only data chunk allowed */
-> +#define BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY		(3ULL)
-> +
 
-Just a style thing here, format it to match everything else, and have the bit
-stuff later, as well as newlines between everything since we're commenting.
-Also we don't need the () around the values, generally it's best to follow the
-style of the surrounding code when in doubt.
-
-I know Dave probably has stronger opinions on this than I do, but I think
-something like this would be better.
-
-/*
- * btrfs_dev_item.type values.
- *
- * The _PREFERRED options indicate we prefer to allocate the respective type on
- * this device, but will fall back to allocating any chunk type if we run out of
- * space.  The _ONLY options indicate we will only allocate the given type from
- * this device and no other types.
- */
-#define BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED	0ULL
-#define BTRFS_DEV_ALLOCATION_HINT_METADATA_PREFERRED	1ULL
-....
-
-#define BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT	2
-#define BTRFS_DEV_ALLOCATION_HINT_MASK		\
-	((1 << BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT) - 1)
-
-This will make it a bit clearer and easier to read.  Thanks,
+Actually don't we have 0 set on type already?  So this will make all existing
+file systems have DATA_PREFERRED, when in reality they may not want that
+behavior.  So should we start at 1?  Thanks,
 
 Josef
