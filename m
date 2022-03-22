@@ -2,223 +2,236 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A3A4E44DC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 18:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B424E4530
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 18:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239477AbiCVRTS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Mar 2022 13:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
+        id S239573AbiCVReR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Mar 2022 13:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235774AbiCVRTR (ORCPT
+        with ESMTP id S236813AbiCVReR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Mar 2022 13:19:17 -0400
-Received: from mout.gmx.com (mout.gmx.com [74.208.4.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199C96FA0A
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 10:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.com;
-        s=dbd5af2cbaf7; t=1647969466;
-        bh=WCMMMMt5E35zj1McojiseAm5pHmcRYgnw10nanxHNc4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=cOX0aPURh0IXubIsDaNoADxa7cSMcvOYE6ZMlkNGCX9pIyU3cE3rvnZ5GdRDGHhfN
-         KFMELE9ZpOVcCBoi6c4jnrCh60kQ28/A7qKXzCL9MtGLXduH1Vmhl+sky52Wc1iZfz
-         rQ1vhEvToenyA2Iiy5nHqPDeSKhO7P/iBDd1SW7k=
-X-UI-Sender-Class: 214d933f-fd2f-45c7-a636-f5d79ae31a79
-Received: from [88.156.136.188] ([88.156.136.188]) by web-mail.mail.com
- (3c-app-mailcom-lxa08.server.lan [10.76.45.9]) (via HTTP); Tue, 22 Mar 2022
- 18:17:46 +0100
+        Tue, 22 Mar 2022 13:34:17 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067518CD9E
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 10:32:49 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id s16so14519219qks.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 10:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JtYvdZRFT2Ivy1v/zc8k6mKjS4IYfl3QPmvDOstsEOQ=;
+        b=kZZ2UvGrsBSfNabVLU/+poh4VkCC4l0Njmpzf3QnGSCSQ1fYoS600FLcKehWPNojgF
+         FHl5kAj3Eko9p/aikwP5nKpio5uxeQEod0o4Hp7Gi6XIWnLzw2s0bcbQAAVKIAQ5Z9hl
+         qJtbhsf0A/izX2FjDUW6VTO6E6Nnf55SHgZ0rsTddPZE8heFZ4YIs6o4XwWAdaRu4d7j
+         PWlv7NUsqzEIi5JAc80aNgsBWlhmfF8QGJPxyTlAtIndqJr8ApZVVjPTgFWVFpu8yI0c
+         8hp25amGzu4JJ06/5cq7151pqXbraVprhxQ9Lw2nV19IjNS5hAla6jJ29cWCBdLOCjIk
+         QcXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JtYvdZRFT2Ivy1v/zc8k6mKjS4IYfl3QPmvDOstsEOQ=;
+        b=X9zim++wUeHiGQ5qWmG0t6FAIrk7n/0gWT8N/Ji9NiU45oVoU/555eTRFJA0E7YmRJ
+         727uWXRNS7JJ6GMDJKpJKPXezMA5KViKsA3azqid4CYTBIL8nFZICuIfU/ONvcA/Zqd8
+         eyZ4Xr4L6C0o3tuaY9Td7YqRMb5Xsl/Y7/1S+L1Y6nnP7xlyA0Xbj7scf7k2znU4Cqkw
+         5jD8yek4/BcwQr2CofBTI6OiHT/QHzjZTnWBLDHx2fPIfOJPtVBU2Os/EiWsNLFKpfVu
+         RZM+WiVD/S9uCMRn794TwgOTrjBQ4wCl2FXvaXoiKgeZHttco4XyYKD3hzYpLxCs8WzJ
+         ih3Q==
+X-Gm-Message-State: AOAM533VyrcgrZ1zmcevcexW1xrNxDkZW9VXhr/lKoSrKziTGX6m2BYa
+        JL2T/8eW4k75IypH9QX9DWKOcA==
+X-Google-Smtp-Source: ABdhPJxjwhSmIS+/Gle98bJqRhtkzZ0s5hLlsmNwHnu7q4NacOe9U7/3CW+D36r+fDxtPed/g6RB7w==
+X-Received: by 2002:a05:620a:13fb:b0:67b:12dd:27c5 with SMTP id h27-20020a05620a13fb00b0067b12dd27c5mr16030697qkl.498.1647970367809;
+        Tue, 22 Mar 2022 10:32:47 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id e15-20020ac8670f000000b002e22d9c756dsm45294qtp.30.2022.03.22.10.32.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Mar 2022 10:32:47 -0700 (PDT)
+Date:   Tue, 22 Mar 2022 13:32:45 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/5] btrfs: make the bg_reclaim_threshold per-space info
+Message-ID: <YjoIPZtKly5+jBfV@localhost.localdomain>
+References: <cover.1647878642.git.johannes.thumshirn@wdc.com>
+ <63d4d206dd2e652aa968ab0fa30dd9aab98a666b.1647878642.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Message-ID: <trinity-56388cba-8de1-43e3-8e32-a8f8b6d0d246-1647969466534@3c-app-mailcom-lxa08>
-From:   Joseph Spagnol <joseph.spagnol@programmer.net>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: failed to read block groups: Input/output error; bad tree block
- - bytenr mismatch;
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 22 Mar 2022 18:17:46 +0100
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <f1159186-c73d-5102-549d-8e343f1bca0d@gmx.com>
-References: <trinity-58cb51fa-9b3e-4fd0-9ff7-29da0dd13e14-1647953588232@3c-app-mailcom-lxa08>
- <f1159186-c73d-5102-549d-8e343f1bca0d@gmx.com>
-Content-Transfer-Encoding: quoted-printable
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:w2gV7zFslU5zWhngnW3qvxYyywlfqI60tt9oicBpgAlLU19B3nVUXAVwn4FBdJwHRn7Qm
- nEk4T5eKheVvHCbEfRid4/Hgiusr3dT0iFz5x6nHnoxvZiY6rm53EH9AZCEFJmnWX9WWRbNpynpU
- 0gcpZIin822MDCpt24bDXUwxDhFr1i0RpaIyihv+YhS2WFjnHE44CofJfzW/YiOWLQt+WbEbYaAO
- ay0YQeUW37/SbSfQR1d7/eDqxTPtFohQkgKqJu9zlqL/Bl2EH7hjG599qhFAu64xZvzDqORPds0p
- n0=
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MryOGsyj1T0=:4RtUJhIdzEiDgf0i0MEug5
- KsrGUJwpXkwKo8Mgk8kXrZIVjCcMAtY+eNw5SawaIFYPeVzHZLD0CjPFLROoJLBR20Od/hG20
- JzDd4gjdqy3tzF3ThfFT9cVkl6WHL3nSpOB+x56AAbdohzO6w0DvFY/91O1LxBZGu6fzh5Vz2
- aSBK+M5kz3oT+z/wxPHwJFWwzZap55xRjppXwPahla5AOSMDW1SS18PB8KqG27s42d2wRhzrN
- BW35+YCWHoc5Cmcxiq6oPXfolkQCCJj4GRZ7okTKr3jlCN6s6LFodGcS+ZdgFgNFCXPHk7Bwe
- 1JF6mUq3J9nvDfJtKu0FTVAHnd9N2AQN7N8qo7PciQNqBpOJtPGoh/K9rooLhyQpYK/74fy+/
- Z7qXJw7BEb8D/TJlg5QYw2XZZLMmjEw5eiZAkOLBa8/EFyqIhA2Zvyq10CxUR01l+6WRLuR1s
- gz/1pOgMfH/+fbVhOX5VSb5+GJJFU9Jf8J5RRj2SBNwow1leeHg+OThjuubAcBwwdc2CYg8tt
- YHeWjBlbQGN8x0IVXVUm8cYYk7w+DQYBhK/su1MhwUIVPYkBfIeb3k+yrv93hsep1ZPCHdGeg
- MfXGVVU4SmGw8oaknTwyJiiVoyIzG0kjxqQeD0VyIQskWrLNkPhIdxbi/dlr32fD4EwoyUbgw
- Br48CbzicLKwX0veLxqc1qHA1Z+JWYRqexj7X3I0f4kIa8ouOH1yY2hBhe2maM/9THtwMEAFx
- qI61+Dbw8UK65mbYB85HaBDkcgimPfWoEZzRz7dD4f8C2ud9WX4ouSv7IBLGiAxII0UNY6iW4
- FLCDrPy
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63d4d206dd2e652aa968ab0fa30dd9aab98a666b.1647878642.git.johannes.thumshirn@wdc.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, thanks for the quick response=2E
-unfortunately the ro mount from a more recent kernel does not work as well
-=C2=A0
-# uname -r
-5=2E16=2E11-1-default
-# mount -t btrfs -o rescue=3Dall,ro /dev/sda4 /mnt/
-mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda4, missi=
-ng codepage or helper program, or other error=2E
+On Mon, Mar 21, 2022 at 09:14:10AM -0700, Johannes Thumshirn wrote:
+> From: Josef Bacik <josef@toxicpanda.com>
+> 
+> For !zoned file systems it's useful to have the auto reclaim feature,
+> however there are different use cases for !zoned, for example we may not
+> want to reclaim metadata chunks ever, only data chunks.  Move this sysfs
+> flag to per-space_info.  This won't affect current users because this
+> tunable only ever did anything for zoned, and that is currently hidden
+> behind BTRFS_CONFIG_DEBUG.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> [ jth restore global bg_reclaim_threshold ]
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/free-space-cache.c |  7 +++++--
+>  fs/btrfs/space-info.c       |  9 +++++++++
+>  fs/btrfs/space-info.h       |  6 ++++++
+>  fs/btrfs/sysfs.c            | 37 +++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/zoned.h            |  6 +-----
+>  5 files changed, 58 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index 01a408db5683..ef84bc5030cd 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -2630,16 +2630,19 @@ int __btrfs_add_free_space(struct btrfs_block_group *block_group,
+>  static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+>  					u64 bytenr, u64 size, bool used)
+>  {
+> -	struct btrfs_fs_info *fs_info = block_group->fs_info;
+> +	struct btrfs_space_info *sinfo = block_group->space_info;
+>  	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
+>  	u64 offset = bytenr - block_group->start;
+>  	u64 to_free, to_unusable;
+> -	const int bg_reclaim_threshold = READ_ONCE(fs_info->bg_reclaim_threshold);
+> +	int bg_reclaim_threshold = 0;
+>  	bool initial = (size == block_group->length);
+>  	u64 reclaimable_unusable;
+>  
+>  	WARN_ON(!initial && offset + size > block_group->zone_capacity);
+>  
+> +	if (!initial)
+> +		bg_reclaim_threshold = READ_ONCE(sinfo->bg_reclaim_threshold);
+> +
+>  	spin_lock(&ctl->tree_lock);
+>  	if (!used)
+>  		to_free = size;
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index b87931a458eb..60d0a58c4644 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -181,6 +181,12 @@ void btrfs_clear_space_info_full(struct btrfs_fs_info *info)
+>  		found->full = 0;
+>  }
+>  
+> +/*
+> + * Block groups with more than this value (percents) of unusable space will be
+> + * scheduled for background reclaim.
+> + */
+> +#define BTRFS_DEFAULT_ZONED_RECLAIM_THRESH	75
+> +
+>  static int create_space_info(struct btrfs_fs_info *info, u64 flags)
+>  {
+>  
+> @@ -203,6 +209,9 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
+>  	INIT_LIST_HEAD(&space_info->priority_tickets);
+>  	space_info->clamp = 1;
+>  
+> +	if (btrfs_is_zoned(info))
+> +		space_info->bg_reclaim_threshold = BTRFS_DEFAULT_ZONED_RECLAIM_THRESH;
+> +
+>  	ret = btrfs_sysfs_add_space_info_type(info, space_info);
+>  	if (ret)
+>  		return ret;
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index d841fed73492..0c45f539e3cf 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -24,6 +24,12 @@ struct btrfs_space_info {
+>  				   the space info if we had an ENOSPC in the
+>  				   allocator. */
+>  
+> +	/*
+> +	 * Once a block group drops below this threshold we'll schedule it for
+> +	 * reclaim.
+> +	 */
+> +	int bg_reclaim_threshold;
+> +
+>  	int clamp;		/* Used to scale our threshold for preemptive
+>  				   flushing. The value is >> clamp, so turns
+>  				   out to be a 2^clamp divisor. */
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 17389a42a3ab..90da1ea0cae0 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -722,6 +722,42 @@ SPACE_INFO_ATTR(bytes_zone_unusable);
+>  SPACE_INFO_ATTR(disk_used);
+>  SPACE_INFO_ATTR(disk_total);
+>  
+> +static ssize_t btrfs_sinfo_bg_reclaim_threshold_show(struct kobject *kobj,
+> +						     struct kobj_attribute *a,
+> +						     char *buf)
+> +{
+> +	struct btrfs_space_info *space_info = to_space_info(kobj);
+> +	ssize_t ret;
+> +
+> +	ret = sysfs_emit(buf, "%d\n", READ_ONCE(space_info->bg_reclaim_threshold));
+> +
+> +	return ret;
+> +}
+> +
+> +static ssize_t btrfs_sinfo_bg_reclaim_threshold_store(struct kobject *kobj,
+> +						      struct kobj_attribute *a,
+> +						      const char *buf, size_t len)
+> +{
+> +	struct btrfs_space_info *space_info = to_space_info(kobj);
+> +	int thresh;
+> +	int ret;
+> +
+> +	ret = kstrtoint(buf, 10, &thresh);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (thresh != 0 && (thresh <= 50 || thresh > 100))
+> +		return -EINVAL;
+> +
+> +	WRITE_ONCE(space_info->bg_reclaim_threshold, thresh);
+> +
+> +	return len;
+> +}
+> +
+> +BTRFS_ATTR_RW(space_info, bg_reclaim_threshold,
+> +	      btrfs_sinfo_bg_reclaim_threshold_show,
+> +	      btrfs_sinfo_bg_reclaim_threshold_store);
+> +
+>  /*
+>   * Allocation information about block group types.
+>   *
+> @@ -738,6 +774,7 @@ static struct attribute *space_info_attrs[] = {
+>  	BTRFS_ATTR_PTR(space_info, bytes_zone_unusable),
+>  	BTRFS_ATTR_PTR(space_info, disk_used),
+>  	BTRFS_ATTR_PTR(space_info, disk_total),
+> +	BTRFS_ATTR_PTR(space_info, bg_reclaim_threshold),
+>  	NULL,
+>  };
+>  ATTRIBUTE_GROUPS(space_info);
+> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+> index cbf016a7bb5d..c489c08d7fd5 100644
+> --- a/fs/btrfs/zoned.h
+> +++ b/fs/btrfs/zoned.h
+> @@ -10,11 +10,7 @@
+>  #include "block-group.h"
+>  #include "btrfs_inode.h"
+>  
+> -/*
+> - * Block groups with more than this value (percents) of unusable space will be
+> - * scheduled for background reclaim.
+> - */
+> -#define BTRFS_DEFAULT_RECLAIM_THRESH		75
+> +#define BTRFS_DEFAULT_RECLAIM_THRESH           75
+> 
 
-Am not sure this can help but this btrfs partition become like this after =
-a sudden system freeze=2E
+Looks like you added this back by accident?
 
-Is there a possibility to check an fix the partition size?
-I believe it could be an issue with the actual size of the partition/parti=
-tions=2E
-
-Sent:=C2=A0Tuesday, March 22, 2022 at 2:05 PM
-From:=C2=A0"Qu Wenruo" <quwenruo=2Ebtrfs@gmx=2Ecom>
-To:=C2=A0"Joseph Spagnol" <joseph=2Espagnol@programmer=2Enet>, linux-btrfs=
-@vger=2Ekernel=2Eorg
-Subject:=C2=A0Re: failed to read block groups: Input/output error; bad tre=
-e block - bytenr mismatch;
-
-On 2022/3/22 20:53, Joseph Spagnol wrote:
-> Hello, recently one of my btrfs partitions has become unavailable and am=
- not able to mount it=2E
->
-> # mount -t btrfs /dev/sda4 /mnt/
-> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda4, mis=
-sing codepage or helper program, or other error=2E
->
-> # btrfs-find-root /dev/sda4
-> Couldn't read tree root
-> Superblock thinks the generation is 432440
-> Superblock thinks the level is 1
-> Well block 23235313664(gen: 432440 level: 0) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23231447040(gen: 432439 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23229202432(gen: 432438 level: 0) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23192911872(gen: 432431 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23177084928(gen: 432430 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23149035520(gen: 432429 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23124443136(gen: 432427 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23113547776(gen: 432426 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23080730624(gen: 432425 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23048241152(gen: 432424 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> Well block 23013031936(gen: 432422 level: 1) seems good, but generation/=
-level doesn't match, want gen: 432440 level: 1
-> =2E=2E=2E=2E=2E=2E=2E
->
-> # btrfsck -b -p /dev/sda4
-> Opening filesystem to check=2E=2E=2E
-> checksum verify failed on 23234035712 wanted 0x00000000 found 0x0810faf8
-> checksum verify failed on 23234035712 wanted 0x00000000 found 0x0810faf8
-> bad tree block 23234035712, bytenr mismatch, want=3D23234035712, have=3D=
-0
-
-Some range is completely wiped out=2E
-And that wiped out range is in extent tree=2E
-
-
-There are several two theories for it:
-
-- Some discard related bug
-It can be the firmware of disk, or btrfs itself=2E
-Some range got wiped out even we're still needing it=2E
-
-- Some missing writes
-The write should reach disk but didn't=2E
-This means the barrier is not working=2E
-In that case, disk firmware may be the problem=2E
-
-
-> ERROR: failed to read block groups: Input/output error
-> ERROR: cannot open file system
->
-> Here are some more details;
-> # uname -a
-> Linux msi-b17-manjaro 5=2E4=2E184-1-MANJARO #1 SMP PREEMPT Fri Mar 11 13=
-:59:07 UTC 2022 x86_64 GNU/Linux
-> # btrfs --version
-> btrfs-progs v5=2E16=2E2
-> # btrfs fi show
-> Label: 'OLDDATA' uuid: 9bc104b4-c889-477f-aae1-4d865cdc0372
-> Total devices 1 FS bytes used 34=2E20GiB
-> devid 1 size 50=2E00GiB used 37=2E52GiB path /dev/sda3
-> Label: 'OPENSUSE' uuid: c3632d30-a117-43ef-8993-88f1933f6676
-> Total devices 1 FS bytes used 24=2E60GiB
-> devid 1 size 150=2E00GiB used 31=2E05GiB path /dev/nvme0n1p4
-> Label: 'DATA' uuid: 4ce61b29-8c8d-4c04-b715-96f0dda809a4
-> Total devices 1 FS bytes used 118=2E67GiB
-> devid 1 size 200=2E00GiB used 122=2E02GiB path /dev/sda4
-> # btrfs fi df /dev/sda4
-> ERROR: not a directory: /dev/sda4
-> # btrfs fi df /data/
-> ERROR: not a btrfs filesystem: /data/
-> ## dmesg=2Elog ##
-> [65500=2E890756] BTRFS info (device sda4): flagging fs with big metadata=
- feature
-> [65500=2E890766] BTRFS warning (device sda4): 'recovery' is deprecated, =
-use 'usebackuproot' instead
-> [65500=2E890768] BTRFS info (device sda4): trying to use backup root at =
-mount time
-> [65500=2E890771] BTRFS info (device sda4): disabling disk space caching
-> [65500=2E890773] BTRFS info (device sda4): force clearing of disk cache
-> [65500=2E890775] BTRFS info (device sda4): has skinny extents
-> [65500=2E893556] BTRFS error (device sda4): bad tree block start, want 2=
-3235280896 have 0
-> [65500=2E893593] BTRFS warning (device sda4): failed to read tree root
-> [65500=2E893852] BTRFS error (device sda4): bad tree block start, want 2=
-3235280896 have 0
-> [65500=2E893856] BTRFS warning (device sda4): failed to read tree root
-> [65500=2E908097] BTRFS error (device sda4): bad tree block start, want 2=
-3234035712 have 0
-> [65500=2E908111] BTRFS error (device sda4): failed to read block groups:=
- -5
-> [65500=2E963167] BTRFS error (device sda4): open_ctree failed
->
-> P=2ES=2E I must say that I get the same results when I try to mount the =
-partition from another linux system OpenSuse tumbleweed
-
-There are already at least two tree blocks got wiped=2E
-
-I won't be surprised if there are more=2E
-
-For now, only data salvage can be even attempted=2E
-
-Using newer enough kernel (like from openSUSE tumbleweed), then mount
-with -o rescue=3Dall,ro to see if it can be mounted=2E
-
-That's more or less the same as btrfs-restore, but more convenient to
-copy things out=2E
-
-Thanks,
-Qu
->
-> Is there any way I could rebuild the tree?
->
-> Thanks in advance
-> Joseph
->
->
+Josef 
