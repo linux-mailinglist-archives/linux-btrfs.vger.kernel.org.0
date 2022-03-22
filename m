@@ -2,63 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E99104E434B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 16:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558114E436B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Mar 2022 16:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234425AbiCVPqQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Mar 2022 11:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
+        id S238737AbiCVP5m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Mar 2022 11:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232819AbiCVPqQ (ORCPT
+        with ESMTP id S236152AbiCVP5l (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Mar 2022 11:46:16 -0400
+        Tue, 22 Mar 2022 11:57:41 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370DEE76
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 08:44:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C518945058;
+        Tue, 22 Mar 2022 08:56:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LfnJPJXX6Hj7YyNbB0EikDREhdLcxrOoIy4HE+L22lY=; b=j9lrKd7O5mjuN9NoiPMmt+lEtg
-        EGm9LkGz3J/aHereyCTUt6eX/AB2OsbSa930d5AqVMPLWcy33hYiXo6Gcq7fKg5ZezdnDMKSfQiIJ
-        OZeJcqjh9aYghUqkxaqDkf2jdcmaMxcSaa3jTEYdl29ehrVCDKEm3DDa6XzAyUM/HQIgdLLByrwIU
-        NN1o4M/f+oNhMcOqGyXrD1PqM7bp2VmG9HEkI6c5dpndqp6iD0P9TFBS8G0CQkr6qc4qp0LiadrMU
-        ehMzS/3GXDT9h2WNdFoxYQKTKhuk0RKROmbJFlk/Y4i3qwLj+0ajxmzaGmZQK22YFpMRCIzSkJDZ7
-        H064UfJA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nWggh-00BZGA-Jv; Tue, 22 Mar 2022 15:44:47 +0000
-Date:   Tue, 22 Mar 2022 08:44:47 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 00/18] btrfs: split bio at btrfs_map_bio() time
-Message-ID: <Yjnu7yWxAforTGQF@infradead.org>
-References: <cover.1647248613.git.wqu@suse.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=v97JQb/s6I9ln6w/L26b2TZ1/z0lqM+qyN/n6zSZlCI=; b=2KkZ4VlhPnQnZkHiGX6mvFPlcH
+        UWtPfcacUiBmMOaAMqV75TB6p2EPPpExSk+bnJUYLPKcCj8w0ePSDlxDuvhczrqgPndykKvsKS7w0
+        TgkYm4YkTXGCBKeNsYel77z9p4WAwjG41y3p5mHIBqgpzPqYFwDKLrWLOqAaDR1/PqxdRkdRh3cGF
+        1mWvzAvGHaANeGu/hQmxphQtQd81t0RpT0UvkP9Epbzt3IpEsSyXWSVCaea7kq0O58UE25aVgbsJ6
+        1VgnqlQ8OwfHvu31diYQw8kToEnn/333p3+KjBnD8TogUO/K/ORJlKqHMfm5NsUuYKOceHtYmrrN6
+        GPJTINmQ==;
+Received: from [2001:4bb8:19a:b822:6444:5366:9486:4da] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nWgrh-00Bab8-1P; Tue, 22 Mar 2022 15:56:09 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: RFC: cleanup btrfs bio handling
+Date:   Tue, 22 Mar 2022 16:55:26 +0100
+Message-Id: <20220322155606.1267165-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1647248613.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I spent some time looking over this series and I think while it has
-some nice cleanups, it also goes fundamentally in the wrong direction.
+Hi all,
 
-The way bios are used is that the file systems always builds bios
-to it's own limits like extents, lower drivers split them up if needed.
-By building the bigger bios in btrfs a lot of the completion handling
-gets much more complicated.
+this series started out as an attempt to move btrfs to use the new
+as of 5.18 bio interface, which then turned into cleaning up a lot
+of the surrounding areas.  It can be roughly divided into 4 sub-series:
 
-I had actually started a series a bit ago to clean up the btrfs bio
-usage bottom up, taking advantage of the newer bios interfaces.  I've
-spent some of my vacation time last week to finish this off and also
-add a few iomap improvements so that btrfs doesn't need to clone the
-iomap dio bios above btrfs_map_bio either.  I'll send it out in a bit.
+ - patches 1 to 4 are bug fixes for bugs found during code inspection.
+   It might be a good idea if experienced btrfs developers could help
+   review them or correct me if I misunderstood something
+ - patches 5 to 22 are general cleanups on how bios are used and
+   surrounding code
+ - patches 23 to 29 clean up various extra memory allocations in the
+   bio I/O path.  With I/Os that go to a single device (like all
+   reads) only need the btrfs_bio memory allocation and not additional
+   object.
+ - patches 30 to 40 integrate the btrfs dio code more tightly with
+   iomap and avoid the extra dio_private allocation and bio clone
+
+All this is pretty rough.  It survices a xfstests auto group run on
+a default file system config, though.
+
+The tree is based on Jens' for-next tree as it started with the bio
+cleanups, and will need a rebase once 5.18-rc1 is out.
+
+A git tree is available here:
+
+   git://git.infradead.org/users/hch/misc.git btrfs-bio-cleanup
+
+Gitweb:
+
+   http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/btrfs-bio-cleanup
+
+Diffstat:
+ fs/btrfs/btrfs_inode.h     |   25 -
+ fs/btrfs/check-integrity.c |  165 +++++------
+ fs/btrfs/check-integrity.h |    8 
+ fs/btrfs/compression.c     |   54 +--
+ fs/btrfs/ctree.h           |    6 
+ fs/btrfs/disk-io.c         |  272 +++---------------
+ fs/btrfs/disk-io.h         |   21 -
+ fs/btrfs/extent_io.c       |  210 ++++++--------
+ fs/btrfs/extent_io.h       |   17 -
+ fs/btrfs/file.c            |    6 
+ fs/btrfs/inode.c           |  661 ++++++++++++++++++---------------------------
+ fs/btrfs/raid56.c          |  156 ++++------
+ fs/btrfs/scrub.c           |   92 ++----
+ fs/btrfs/super.c           |   11 
+ fs/btrfs/volumes.c         |  392 +++++++++++++++-----------
+ fs/btrfs/volumes.h         |   60 ++--
+ fs/iomap/direct-io.c       |   29 +
+ fs/iomap/iter.c            |   13 
+ include/linux/iomap.h      |   23 +
+ 19 files changed, 963 insertions(+), 1258 deletions(-)
