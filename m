@@ -2,69 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62EA4E4A06
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 01:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4438F4E4A15
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 01:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbiCWAWX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Mar 2022 20:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S240921AbiCWAbL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Mar 2022 20:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbiCWAWV (ORCPT
+        with ESMTP id S230174AbiCWAbK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Mar 2022 20:22:21 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8485EDCC;
-        Tue, 22 Mar 2022 17:20:52 -0700 (PDT)
+        Tue, 22 Mar 2022 20:31:10 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6B52D1FA;
+        Tue, 22 Mar 2022 17:29:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1647994846;
-        bh=DeXPJ50PuI0JA5jpifPXgc62pgyFVj9O5bc8G9sSlio=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=BH/lm6qKGDa3SXvVqRCaXGCKJKmYVTcqIohTU/3x/3XChZxltiT+PiXhgUZVtTMUH
-         5dVDhTm2jFX81QtlA7vixntK+/kDZMzgXX2hZ1t2cmbPEClWG8jeee4xFEZ4TCP5k0
-         HP6F0MgehhRPZkQ72Dp8Vlxm2P/khRM0YcFOiN10=
+        s=badeba3b8450; t=1647995375;
+        bh=WqxLOU0CxpvzOIvs8f609g2mFCcYNo2rqWGb3QscDW8=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=U3Sfk8Ee0Xx+Toc/MwbbT6Z6vDAtQNCBuooGkYNFP7/7VkBJesTPZtZlVPmRMWAvI
+         EfTIbIhjCkpXH1NjPQTFf0aVTFQJ0+t2siyAUOgkB8tnHcy/UcZVgGbf+YGgp9eorw
+         7cBdDoL08WIfgmYiDwdppFDQHaRhtuuk9rxhJLf0=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9dsb-1oBpqS14ar-015csX; Wed, 23
- Mar 2022 01:20:45 +0100
-Message-ID: <49d2563e-a611-0b44-569e-8e88053b7385@gmx.com>
-Date:   Wed, 23 Mar 2022 08:20:41 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MeCtZ-1o6z6n1IDX-00bK1Q; Wed, 23
+ Mar 2022 01:29:35 +0100
+Message-ID: <5c6320e4-a130-79bf-4229-e5e12bedd921@gmx.com>
+Date:   Wed, 23 Mar 2022 08:29:29 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: [PATCH 17/40] btrfs: remove the submit_bio_hook argument to
- submit_read_repair
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
 Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
 References: <20220322155606.1267165-1-hch@lst.de>
- <20220322155606.1267165-18-hch@lst.de>
+ <20220322155606.1267165-19-hch@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220322155606.1267165-18-hch@lst.de>
+Subject: Re: [PATCH 18/40] btrfs: move more work into btrfs_end_bioc
+In-Reply-To: <20220322155606.1267165-19-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EphsUVClpm9fqs+jGMdxwMyAd/am3vEeB+ovJ6C8PCiKRne4KEF
- IruZCv2mwQMy74kqWtT1OYkBoRP0+RiY8g8jhoUOUd3Whpat+qimBxBzQnEuuZC3WYY05ze
- 96VojvKlIgxrNAIEIpfk5ZLbe5mX7n/xIC6WTIiHcF7I/tXmUKruuk7J34E9kLCyhydpiYS
- Sovto33uXbV8gD/qLNMtQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OgLbHs4P3BM=:5QwarakI0UeWwmoTwblc9K
- VlFWozSqvf501IfUnwnBTL0tuLC3xYTBt09ejmHJBhZIezyvjsP8UhJU6JnVcvuYHUARltnfV
- dYX/+uFv/sr4aBjQgeABsoiGw9CjHbWYHdTYGhSENXqYNJHauvyWTQwaoh19JLvB/R1m7jsan
- jWlSMH6fXQ0KHXmYuC87x8liKRscycBtvsonh3MkH9f8Mq8QnrznjH91duUT7ZrFHod2NVlTL
- qBhSu4Fn+SaeSGoqIVIeju9P/hyfA394GHt65NzJlFzG/eieuqeTMkIBHZSqcnhG67WO5Iw6a
- TaXpIHwRfN9sW++YXgS73SS7N+g8N9FtKw0p7WhOUz5zz/TB2+UCPcsR5HrlUpz6rjFFrS7En
- T4R2jxagTPehZR9HS7oGiBbcImq/rNlqwXGbYCaWLr9F67Dq85talfrJJ7f7586wditGrXpRo
- tm6N4Ip+4geJg5TB3lNWSuj9AwPkBQJtjiBPSTchgAefcqNzNEb1mvsrT2Gxt6zRtQ3Uck4c2
- ol0MXGbqEJz8543gYmoLseye1vZbsXBNT09dKekFmJl16PBvv99C6LsvUuQhfxbB+uAj0MLh0
- V3GL8R+uzI0tbH6MBIMHvYsofG4FjOdyA/oPPzAv29n+o5gQrIL0vUmrqYduYs0fzJ268uQ62
- SfMGFNtKGHtjGJSxLmpFO2pp2+CwBjepWXxR0k3njROQNVZley642fjHjM2VN7tlNgkQHy8v0
- m3xGxHd/ysWvCEAMk2O8HrOkhqghN9piT0gH/Iiuh1CfQXWBtdM2LviLkX7aqfCQC70x9uZwg
- eJEKOPrExqBwRvCYwENw6yhFEpDdBikh6dVOisDGEE0xEXTswWsYrKpnoCuIYOB6m3tqOXXoD
- b9uXZ5EqJTvnHst4jJQZh7Wu1nupvf7ukCJ75KnjySHVLeLWktSKxmzP6lWygqcM7xjhzY6oO
- gXdPEBhIXfO69ap3QzBY3+zjgmo798ILBElDpth8KBL41IpJY3oK1ynckoKDIYJE92gVWIU4d
- vgQFEkkwmK0tSWBNeZ4VXNV9gi67ORGTprVV4b+g99hC9WRDH8lyMlCX6NTfGFLckof3fwhjP
- h+3YEVSrSRjXJI=
+X-Provags-ID: V03:K1:jXxdJEg/4y9ZWOTSvSDW1TOXbYlUY12G1dwQglM6FVSNCKbBWr1
+ HCLRsPqnc2z8mSiKXxRkPQkQWSue7cAozVdBhfSW7yj+bgc49nuTpRZBrw4xdIJ8qjoJ7Oh
+ ndQsE/AXi+k+SbnUUyQAQ7r3vj6Z9NoAYUwRfDx+/ZaS3Q7W3HbNaWzKieLopoQIpNNPGv0
+ 0pTlvyfvvk3vqjDEuEeYw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:l9K6+b2kyg0=:+gUXFNqHZQMl2sEqzaHoZQ
+ r/jBlZVqbju4V37gKmJw6FQXY18gRW9oypscI7JP7H2trVLlmAFM9Er/DYYJL/VOlScyMvmBL
+ eLyZ6fg6dD72SMOd4fGUY9CipcS12HCgpTpH1bl7KmRlJHA8aI3sN932vkz6o4+gkp5iy7FXE
+ qRDdyZWITEPOnUzpyUTbrSx1xdzkbu5EQZVD7AkLi/p+zOOzQiyB6kVi+EdbmVfvDyS8C6rd5
+ t8TgBBZVFjhYZiHGyyQ3C+JX/kVo1J6QiWsUCMGz/ZPTedNJeKrLlzC9s2p5iZe9RRjSqr6sl
+ ST6upFvibINU7gPLhtl8HC8klZOkwBCPG4S7f7gQb3Xhz7v/3inzw62p8o+WprYVNcNiDfxBv
+ ChKVzwAcSOQixE5Uf4N1txH0fmCEHCsAxvvt7Kn9upB8mt+Wg1/eLGyzPlUH0uu1SLkGYwEv5
+ /+DpO8lXXlGs5+VW1a2txp5xa6ZRz7JGwQcqM7BjwiRLBIi/6j8znDwbW8VmvB+IGNuGUhXpp
+ FVJFNFx7ftvf/55HiDW2ThBcqWKNZKG6N+wccvvBsV6zw3XSfeHXui+pgm34kTUaWKwXZzT2j
+ j0zFDwQH4DOGdU5+c7JD0Jv/0N2j9BXYOp5aNc6tJ3VnmZHiSIxxAJtX6bMM3a27sKU3ReLF8
+ 4ENNsqK2RHioxSPi8sHmgHBs9/a3y3cA3YUVnNFTMpxx0UGi8nF61ns5VK+Q7NAoNON//Robi
+ q1QplPWq/D/IlLOw57et/f95xQzfJ/rw5xpVumdeY1ZzSsSd8oHoWZbr1jE+RoExgYO2MUO4v
+ s1aE9TeN25RAf9944JaN/+gL+vNatAI43CtsXt+8IhqDQZC8qKvwmzivcWh9irFbvWNslspKQ
+ 0AWdlGpGby/IOQbOEU+O3GT6JOSJafOyCQp+eGAqWaC/VWW9p+Z9Xcvv2iCGALeXlbipJr24T
+ vdo8xGygdppxBlARctWNZShmJnuK5bk697np+GtKwKYViduUQ75jH1jeXjWjyIkUSLOJdUTlY
+ x27wpB+6DnwU9i0BKQvwgBC7ihvIKu4+rD3RXA7cdxSzNlbmPUDrnXOUq17nja1ERm2zi1Xd0
+ rg+oPzOVbrxyJA=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -78,60 +77,145 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2022/3/22 23:55, Christoph Hellwig wrote:
-> submit_bio_hooks is always set to btrfs_submit_data_bio, so just remove
-> it.
->
-
-The same as my recent cleanup for it.
-
-https://lore.kernel.org/linux-btrfs/9e29ec4e546249018679224518a465d0240912=
-b0.1647841657.git.wqu@suse.com/T/#u
-
-Although I did extra renaming as submit_read_repair() only works for
-data read.
+> Assign ->mirror_num and ->bi_status in btrfs_end_bioc instead of
+> duplicating the logic in the callers.  Also remove the bio argument as
+> it always must be bioc->orig_bio and the now pointless bioc_error that
+> did nothing but assign bi_sector to the same value just sampled in the
+> caller.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+It may be better to rename @first_bio or the @bio parameter, as it takes
+me several seconds to realize that @bio get reused for RAID1*/DUP bio
+cloned submission.
+
 Thanks,
 Qu
+
+>
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->   fs/btrfs/extent_io.c | 8 +++-----
->   1 file changed, 3 insertions(+), 5 deletions(-)
+>   fs/btrfs/volumes.c | 68 ++++++++++++++--------------------------------
+>   1 file changed, 20 insertions(+), 48 deletions(-)
 >
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 88d3a46e89a51..238252f86d5ad 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2721,8 +2721,7 @@ static blk_status_t submit_read_repair(struct inod=
-e *inode,
->   				      struct bio *failed_bio, u32 bio_offset,
->   				      struct page *page, unsigned int pgoff,
->   				      u64 start, u64 end, int failed_mirror,
-> -				      unsigned int error_bitmap,
-> -				      submit_bio_hook_t *submit_bio_hook)
-> +				      unsigned int error_bitmap)
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 4dd54b80dac81..9d1f8c27eff33 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6659,19 +6659,29 @@ int btrfs_map_sblock(struct btrfs_fs_info *fs_in=
+fo, enum btrfs_map_op op,
+>   	return __btrfs_map_block(fs_info, op, logical, length, bioc_ret, 0, 1=
+);
+>   }
+>
+> -static inline void btrfs_end_bioc(struct btrfs_io_context *bioc, struct=
+ bio *bio)
+> +static inline void btrfs_end_bioc(struct btrfs_io_context *bioc)
 >   {
->   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
->   	const u32 sectorsize =3D fs_info->sectorsize;
-> @@ -2760,7 +2759,7 @@ static blk_status_t submit_read_repair(struct inod=
-e *inode,
->   		ret =3D btrfs_repair_one_sector(inode, failed_bio,
->   				bio_offset + offset,
->   				page, pgoff + offset, start + offset,
-> -				failed_mirror, submit_bio_hook);
-> +				failed_mirror, btrfs_submit_data_bio);
->   		if (!ret) {
->   			/*
->   			 * We have submitted the read repair, the page release
-> @@ -3075,8 +3074,7 @@ static void end_bio_extent_readpage(struct bio *bi=
-o)
->   			 */
->   			submit_read_repair(inode, bio, bio_offset, page,
->   					   start - page_offset(page), start,
-> -					   end, mirror, error_bitmap,
-> -					   btrfs_submit_data_bio);
-> +					   end, mirror, error_bitmap);
+> +	struct bio *bio =3D bioc->orig_bio;
+> +
+> +	btrfs_bio(bio)->mirror_num =3D bioc->mirror_num;
+>   	bio->bi_private =3D bioc->private;
+>   	bio->bi_end_io =3D bioc->end_io;
+> -	bio_endio(bio);
 >
->   			ASSERT(bio_offset + len > bio_offset);
->   			bio_offset +=3D len;
+> +	/*
+> +	 * Only send an error to the higher layers if it is beyond the toleran=
+ce
+> +	 * threshold.
+> +	 */
+> +	if (atomic_read(&bioc->error) > bioc->max_errors)
+> +		bio->bi_status =3D BLK_STS_IOERR;
+> +	else
+> +		bio->bi_status =3D BLK_STS_OK;
+> +	bio_endio(bio);
+>   	btrfs_put_bioc(bioc);
+>   }
+>
+>   static void btrfs_end_bio(struct bio *bio)
+>   {
+>   	struct btrfs_io_context *bioc =3D bio->bi_private;
+> -	int is_orig_bio =3D 0;
+>
+>   	if (bio->bi_status) {
+>   		atomic_inc(&bioc->error);
+> @@ -6692,35 +6702,12 @@ static void btrfs_end_bio(struct bio *bio)
+>   		}
+>   	}
+>
+> -	if (bio =3D=3D bioc->orig_bio)
+> -		is_orig_bio =3D 1;
+> +	if (bio !=3D bioc->orig_bio)
+> +		bio_put(bio);
+>
+>   	btrfs_bio_counter_dec(bioc->fs_info);
+> -
+> -	if (atomic_dec_and_test(&bioc->stripes_pending)) {
+> -		if (!is_orig_bio) {
+> -			bio_put(bio);
+> -			bio =3D bioc->orig_bio;
+> -		}
+> -
+> -		btrfs_bio(bio)->mirror_num =3D bioc->mirror_num;
+> -		/* only send an error to the higher layers if it is
+> -		 * beyond the tolerance of the btrfs bio
+> -		 */
+> -		if (atomic_read(&bioc->error) > bioc->max_errors) {
+> -			bio->bi_status =3D BLK_STS_IOERR;
+> -		} else {
+> -			/*
+> -			 * this bio is actually up to date, we didn't
+> -			 * go over the max number of errors
+> -			 */
+> -			bio->bi_status =3D BLK_STS_OK;
+> -		}
+> -
+> -		btrfs_end_bioc(bioc, bio);
+> -	} else if (!is_orig_bio) {
+> -		bio_put(bio);
+> -	}
+> +	if (atomic_dec_and_test(&bioc->stripes_pending))
+> +		btrfs_end_bioc(bioc);
+>   }
+>
+>   static void submit_stripe_bio(struct btrfs_io_context *bioc, struct bi=
+o *bio,
+> @@ -6758,23 +6745,6 @@ static void submit_stripe_bio(struct btrfs_io_con=
+text *bioc, struct bio *bio,
+>   	submit_bio(bio);
+>   }
+>
+> -static void bioc_error(struct btrfs_io_context *bioc, struct bio *bio, =
+u64 logical)
+> -{
+> -	atomic_inc(&bioc->error);
+> -	if (atomic_dec_and_test(&bioc->stripes_pending)) {
+> -		/* Should be the original bio. */
+> -		WARN_ON(bio !=3D bioc->orig_bio);
+> -
+> -		btrfs_bio(bio)->mirror_num =3D bioc->mirror_num;
+> -		bio->bi_iter.bi_sector =3D logical >> 9;
+> -		if (atomic_read(&bioc->error) > bioc->max_errors)
+> -			bio->bi_status =3D BLK_STS_IOERR;
+> -		else
+> -			bio->bi_status =3D BLK_STS_OK;
+> -		btrfs_end_bioc(bioc, bio);
+> -	}
+> -}
+> -
+>   blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *=
+bio,
+>   			   int mirror_num)
+>   {
+> @@ -6833,7 +6803,9 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *f=
+s_info, struct bio *bio,
+>   						   &dev->dev_state) ||
+>   		    (btrfs_op(first_bio) =3D=3D BTRFS_MAP_WRITE &&
+>   		    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
+> -			bioc_error(bioc, first_bio, logical);
+> +			atomic_inc(&bioc->error);
+> +			if (atomic_dec_and_test(&bioc->stripes_pending))
+> +				btrfs_end_bioc(bioc);
+>   			continue;
+>   		}
+>
