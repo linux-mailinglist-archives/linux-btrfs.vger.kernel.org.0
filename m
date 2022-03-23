@@ -2,99 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C384E553B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 16:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01A84E5633
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 17:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237955AbiCWPcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Mar 2022 11:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S238855AbiCWQVK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Mar 2022 12:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237933AbiCWPcJ (ORCPT
+        with ESMTP id S237130AbiCWQVK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Mar 2022 11:32:09 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A833A70F70
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 08:30:39 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id gi14so1489658qvb.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 08:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wbo+swqHzp3mYIhmXXuGb6NU1EIZkfivbVtIKaq/XNo=;
-        b=1Df6OsX1+gPV+Q5SylKWZ2RDALp6R1cwVf5/UAeicx5/P8W+1axSNiPU9IwCzRMmSZ
-         Oro7IpEzst/O9g9cvgQh03cZbU59TmSn0LNp9P44KoEIWcJBoR8at9eyBrQG6BxSr4aQ
-         A+lLJcpYTaIAEYvfSAZPBlE2i2920cQ1cqpKURXC5awOWmjHCXVN7KBFmgLc584imMaY
-         sDA36HsssXQJ4PzVQo3HBvt43bOeGfjNArT2vYQ3KrbKPwwJt7C75hrUMVoWy51JUpK3
-         fpvpRzzjeO2gSG8AHuMsK9RaNORx3psJXORwHSC1c1KzAv7amz6k3lgPFQAr8lvYp9TX
-         LTfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wbo+swqHzp3mYIhmXXuGb6NU1EIZkfivbVtIKaq/XNo=;
-        b=WPcEFWSLHHCKeJ9xibiF1QXRW1VJ2nT5TiYcKcJZ/PV9s3dVml8DLjUsuOfpFrYdVR
-         6b1iqkTXuJ6L5Qaihtb8G3jcNDpe5vpAv3hp98Hg3tdWqUl0FtB3PTN+3tKLDGwlJODo
-         yqiQYG/fiYXXAMrj2WG0OKN7GFntVTf6+zysYKwaWKce9ARdMkookWnuV+GrDJGXkVaw
-         /WRZJwo6kGSdFXrKbYFz7fvs+EA5EWrawZd5DHFwqUysbhwDYOyrRaaCAyAf2vREhWNs
-         v6n1YkEKrqpIB0fgg4Q/5D7Vay25R5Xs1JCWP8mYvO+sY2K29E/09O+IBVLAF3p3uNwu
-         TH3A==
-X-Gm-Message-State: AOAM532FFonuf51CE1UakNcMWTT3Jqza/Y58quG0cWK32/ZLNtXXRVKb
-        zcpuisX31QsSpfX0bcXs6TnPTzAPz2vXMw==
-X-Google-Smtp-Source: ABdhPJwun4FzpK7EczGJK4LYC9R44HFGJvKwDr22AQRMZLmX6krLS8Gr9lnbUdsy4dqsTF36KPZJug==
-X-Received: by 2002:ad4:5d49:0:b0:441:5682:9b92 with SMTP id jk9-20020ad45d49000000b0044156829b92mr401622qvb.10.1648049438409;
-        Wed, 23 Mar 2022 08:30:38 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id a129-20020a376687000000b0067d186d953bsm116885qkc.121.2022.03.23.08.30.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Mar 2022 08:30:37 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: do not warn for free space inode in cow_file_range
-Date:   Wed, 23 Mar 2022 11:30:36 -0400
-Message-Id: <ae796792f263dd906ce5f3962c6bddec6b8048e3.1648049428.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+        Wed, 23 Mar 2022 12:21:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822B270044
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 09:19:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA49B61846
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 16:19:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61D8C340E8
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 16:19:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648052379;
+        bh=nYLekwpOsDe3qvY1PZwBbmyEWLpePyU20oXSMKQSZIU=;
+        h=From:To:Subject:Date:From;
+        b=ZYwRX4AtWylqGxC5YmpLlAYWASJoWZkgK+m3wf8HPHAJZK2iXGQu4c3qQ6eUFrnOK
+         FWy/ZGJ/FUQgT111971Dcyltce2SjRbc0EQZBA4GWmFRhhrH0sJbNg7afKjvismvOC
+         Wuw+1P9cTm9JHghn7fDg/9U95coNePCvfoGjtFcof2MO6SNQfi1FJHasTNwcX13KQE
+         B3YGN5S0NtTPeEi8efyc21iO5ADbpYpQFRJx+6dNgEa5q16uvZcidiVAHNRt3H/Bux
+         BJmzwIm5qIIIM+8PWonhWx6t0RRPDobB7jmXT3/mXqyW/0E/+XyCRHNLOWvB7NAVXm
+         1SVHgC36gesOw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/8] btrfs: some speedups around nowait dio
+Date:   Wed, 23 Mar 2022 16:19:22 +0000
+Message-Id: <cover.1648051582.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a long time leftover from when I originally added the free space
-inode, the point was to catch cases where we weren't honoring the NOCOW
-flag.  However there exists a race with relocation, if we allocate our
-free space inode in a block group that is about to be relocated, we
-could trigger the COW path before the relocation has the opportunity to
-find the extents and delete the free space cache.  In production where
-we have auto-relocation enabled we're seeing this WARN_ON_ONCE() around
-5k times in a 2 week period, so not super common but enough that it's at
-the top of our metrics.
+From: Filipe Manana <fdmanana@suse.com>
 
-We're properly handling the error here, and with us phasing out v1 space
-cache anyway just drop the WARN_ON_ONCE.
+This patchset makes our direct IO code behave better for NOWAIT writes,
+avoiding blocking in several places for potentially long periods due to
+waits for IO. It also removes running the same nocow checks twice (which
+can be expensive) and doing extra path allocations. The last patch in
+the series has a test and the results I got before and after applying
+this patchset.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/inode.c | 1 -
- 1 file changed, 1 deletion(-)
+Filipe Manana (8):
+  btrfs: avoid blocking on page locks with nowait dio on compressed range
+  btrfs: avoid blocking nowait dio when locking file range
+  btrfs: avoid double nocow check when doing nowait dio writes
+  btrfs: stop allocating a path when checking if cross reference exists
+  btrfs: free path at can_nocow_extent() before checking for checksum items
+  btrfs: release path earlier at can_nocow_extent()
+  btrfs: avoid blocking when allocating context for nowait dio read/write
+  btrfs: avoid blocking on space revervation when doing nowait dio writes
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 78a5145353e1..ea7551d3ee6f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1138,7 +1138,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	int ret = 0;
- 
- 	if (btrfs_is_free_space_inode(inode)) {
--		WARN_ON_ONCE(1);
- 		ret = -EINVAL;
- 		goto out_unlock;
- 	}
+ fs/btrfs/ctree.h          |   5 +-
+ fs/btrfs/delalloc-space.c |   9 +--
+ fs/btrfs/extent-tree.c    |   9 +--
+ fs/btrfs/file.c           | 104 +++++++++++-----------------------
+ fs/btrfs/inode.c          | 116 ++++++++++++++++++++++++++++----------
+ fs/btrfs/qgroup.c         |   5 +-
+ fs/btrfs/qgroup.h         |  12 ++--
+ fs/btrfs/relocation.c     |   3 +-
+ fs/btrfs/root-tree.c      |   3 +-
+ 9 files changed, 144 insertions(+), 122 deletions(-)
+
 -- 
-2.26.3
+2.33.0
 
