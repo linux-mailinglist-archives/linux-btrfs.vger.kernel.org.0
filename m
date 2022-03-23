@@ -2,76 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFD64E4D02
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 07:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86BB4E4D05
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 08:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241989AbiCWHAw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Mar 2022 03:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
+        id S242043AbiCWHDW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Mar 2022 03:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234794AbiCWHAv (ORCPT
+        with ESMTP id S234794AbiCWHDW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Mar 2022 03:00:51 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C314186F1;
-        Tue, 22 Mar 2022 23:59:22 -0700 (PDT)
+        Wed, 23 Mar 2022 03:03:22 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E057B71EF2
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 00:01:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1648018755;
-        bh=9PGxySqIwSrPZnPxsTwA1vXAzLST7mxkt1wOyUdRReE=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=Q7TCWLLxXdNmVHp/6xGm2I+adS3oeJBowedSJMDwQOQ/w4lP3LzP15v5gohhOC6I9
-         2s8DVHyAsaxjEjrHWaQP7pFPkTJ645oFZP3DqFfWE/M9OLKlF7uivpk4tqxIV0sF0e
-         eqVzCw5y0fg8Tpal1wuZrvgjUJm27oUjBf7B1qgg=
+        s=badeba3b8450; t=1648018906;
+        bh=McBK0fu6lgmNZfaNMuZBmhc92nkgP+De7YoXuLlQq9s=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=eXNwAA9ZHaPwySXhbbWyRHT0/N4FEBZNKdzIOMcSNXkDgsp34u9HZz29k6vxTAknI
+         xVm6zvYriNbwcKtBpIpS4ZsWEkCmzdhven2/LbW4FXXlNHZG6IFco/gxOWbjmLzO9G
+         /6W1MJ36i3cT96ZltdS/SQbWk2swYZ+xe8N9btQ8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7iCW-1o9oTh0KVW-014mMh; Wed, 23
- Mar 2022 07:59:15 +0100
-Message-ID: <ebb61597-dc43-2e81-2106-e448145f212c@gmx.com>
-Date:   Wed, 23 Mar 2022 14:59:10 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8hZD-1nSoGG0Qdt-004lAN; Wed, 23
+ Mar 2022 08:01:45 +0100
+Message-ID: <3d5aaf86-ff17-0cde-7ef0-f805f8b25b25@gmx.com>
+Date:   Wed, 23 Mar 2022 15:01:41 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
+Subject: Re: [PATCH v4 2/9] btrfs: introduce a helper to locate an extent item
 Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20220322155606.1267165-1-hch@lst.de>
- <20220322155606.1267165-29-hch@lst.de>
- <d9062a7d-c83c-06d7-50ac-272ffc0788f1@gmx.com>
- <20220323061339.GJ24302@lst.de>
+To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1646984153.git.wqu@suse.com>
+ <140f3318f93d004713e12c10dc44f7640f04856e.1646984153.git.wqu@suse.com>
+ <Yjq935OOywPFefuo@infradead.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 28/40] btrfs: do not allocate a btrfs_io_context in
- btrfs_map_bio
-In-Reply-To: <20220323061339.GJ24302@lst.de>
+In-Reply-To: <Yjq935OOywPFefuo@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UOJPDJj/NAcT2gIOdVJgMIld+Fkfdy5/kuPP1I3JFdfrmBwVLVR
- U3cQKT7YuHCtu9z5d5pasFzg9JkpTi3SgzzQjwZkQgFQGeQ3tXP7wrF/T5JS+t7J8tBcxQV
- eikVjNtC+E4M6vsAYiBi5tHkpjiElZ6MyvdopZP8YtfydAxzPTiwBQ2DUkVqYC01Xax8B0I
- rwWAob9Cw9SHl0EBoKUnw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4ee319k9EnA=:kZwj4SB+3QEad4p8g7Ih/Y
- cUVqp4lYgwOSFwQHYOLdmr2e3OCplwi2UyjGqH2UHhRNWO+WAxLxFj7K2fMNyOWDXv3ZglyGw
- fvL3ESuUFgVN0r4T9hDMWtVYjms3xGd3jWb81PGg2F/KlzelfQ06jaqhqXvGaRxKiOBWN6qky
- 75nB6STiecVTx40J3oppG0DWWdPegfxPncriXCC1k2DXyCCWrlBgVGzOXKo94M2xLgmakrp3c
- XxJI0HOPeT8GVpSUeFlodlpFupPFuZibDC+8VjNO5AwwHuEI6NBLpRe29iGvbAckB2HhXOznC
- S5ZH36tW6r6rUNG4XCLsIOGTQFtkknzhNSOKES0Y+rYlJ8OnhOZekKEBhBhPbVhYj93+kNkkK
- t5apcdPYCHNOCYTxHo/MhvbM7M15ookVqkF3JIIKOhUsHv+lKOI6KeDxgdcvu0uSc9hyfRrLK
- Y3bsdibgnXgpPAMIypENZW6JdYoXmLSt+GnVeN0MhezMMhmDhShFZCPFl9o4YPdzlsqvezigh
- hqdvSZv8wUBwdY0qr5n5l8Vw1BqUmRnYptO0o0LulYWZZIq/OTaNXIdWJy6NTF5fZ7JIixDB3
- RtT1d4wh2I1MZV8tBIZxE15B3x5Kb9JPoo2aTgHCERiJrjn2rFncvpFrMEfaYYcK3n20MP3hm
- zUFCzTmjNa01Rd7Aajg9attLiDveEAKQ7+S6lkn4s4GS9/uonatcxlOQ6NL5oyhUEPIZKviBk
- LN1YZHnQISXJurTspbc4joOe8l39u9KnTE28oWL0X+ASwDyPSjf+RTiFkzQVLg56zE0iwFTWk
- q0p6IoQZREm4RCDxEvJp00GA9lQ5kI8FZ2or3Y06Nhm6rsSxhFQghnBQNFoaTIS3RzRrZMkdg
- Bylo1j6I7LtHVwLbZfaRd/hBwK0qLO26e+jIoRg50x2VPZgLruU1l+P0PS6fsY4R1t63vSFR+
- XfZulCyiBIIqZB2BJzbszRIm3egZ8eETGmScZEYnNVqr8MI811Z+MSbMy+ZM0Ll2WxmRaqBUL
- x+u0jsJ+w58XeWCYXuoa6fwbKQBwz9CT1AtqvaegMWXUjxjrOjQdRqHxZuinCa9ZV69S02nfV
- hg06jKtWSK/ux8=
+X-Provags-ID: V03:K1:WQgaQNseQEUFNbL4jeXtMowdy6MrX0Iz8EqUCQVSbSfxtfaKg+7
+ 1yAT6q010RzBxFVtgsvefBLy/qtahPZ6ZE/7pw8SOR8rO1aqDoZGiEdKYGwn0g9apTfE0ri
+ 7rKHO73UZBiGmEiv683OCvONZA4oJ6azrb4NfgHl0s+uirH20T5veZrjY3/jO21J1ZlBgUT
+ JtcHst6oibqSeLJw645Dg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VRQbdYGaB3E=:NUAhUcr9vvE9Gx4B8bj++S
+ fiCFZ80HzReNQ9vtcmL8jH84PdcNiRIUyt//UYOiqbOVKxkvaRJ9GxJ3F8h7LwgoUrNX3pLZy
+ qdJL7Ak9qALYtBUxNPljYP2qrmUCkMkLKXZAaYbr/iICkMKZXxQ/1uzXmKcUi/5iqWL2aTBY1
+ SlzDqEaqLCtvgNxJ8+NNUsyI0aC3a+vgQ/mtp2IBXakUu9Q+myOBJ8dECo7RF100MfCDGeOZd
+ OhLrLmI0eXO2ReR/V4NoZ45GKwayUajPKuW43DzWa+fBOmOMpN1VOyL+XUBSVmcOB0Em//8Sn
+ ZARr7j9ZGkgrFBFmqoCTn3OvJp9uesfpYIuriz57IJPoEF6L8VAFVzdeH65DTKBp3M4BPV1Ah
+ XTSFQyUWqO12fpGK6UVNoL87evQ8kaM7+QVsdwD//X4CfeFJWtL9S90txRN3g9PdV8xQpWCkc
+ +lrOkK+0nXNqi0u7zHeOczqBLWoMcC1vxAY16ArKDAYaL21vCAHgjAmiEGqzUTLXNtNylLgOh
+ d0f5ucls1iJP/4AhdRZpMwFBjTRyLGbH/KMZhCyTnQmSLrO6uew6cE2F4PN0vHJIMCu0ad+3p
+ wLQdkj21k/DLoIukq8bdWZ1jvkOxuSuIRTRGVbaXXcqSnocToI3TImfo6xiTGr/iMzjjdaauL
+ YZnKE6L45aDf6aHgEyneGthfHc08JnO+zZ+O/x+yRWsqIuN3pltbPBFs+PhSiPm5THxk+2Qe5
+ WG8rEnfQYJaUvYF8Mzn86q95xoVp0E/Ni9jbDnOCz1awtG9g74eaSS0n57lmyluTi8wEObwT+
+ 1Twxdcn4H542Ej1VYwnoDaANE0cRQ04c/epRETIldaMvBH+yRIo7bCSDr9CMwQ9E8UpLp/5Io
+ XRMSZALvSCtEbvFGz7JvIxhurUrCCVOMTSeo6Q/3Evqhx4GFhvRzA2Q/nxOP5pc7Kqu5Y1H02
+ 81aXsZz6xY63BUhxv9yaqOZpLclyBM+Ek6IF9nwiYQ2cVnmy10CWaA6lzNTPxyXKq0I4w6lhw
+ gL6W1GhLsJLi2ZSCqrp1knuQN09tEkhUM4/Kpw8JZlfbeQ1bvNqmrBmbKTdEq/sqeWIyQUDnq
+ Ojig72ixXmQ0Wo=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,26 +75,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/3/23 14:13, Christoph Hellwig wrote:
-> On Wed, Mar 23, 2022 at 09:14:06AM +0800, Qu Wenruo wrote:
->> Really not a fan of enlarging btrfs_bio again and again.
->>
->> Especially for the btrfs_bio_stripe and btrfs_bio_stripe * part.
->>
->> Considering how many bytes we waste for SINGLE profile, now we need an
->> extra pointer which we will never really use.
->
-> How do we waste memory?  We stop allocating the btrfs_io_context now
-> which can be quite big.
+On 2022/3/23 14:27, Christoph Hellwig wrote:
+> Adding a static function without a user will generate a compiler
+> warning.
+Yep I know.
 
-Doesn't we waste the embedded __stripe if we choose to use the pointer one=
-?
-And vice versus.
-
-
-And for SINGLE profile, we don't really need btrfs_bio_stripe at all, we
-can fast-path just setting bdev and bi_sector, and submit without even
-overriding its endio/private.
+But considering the size of the helper, and the size of the next patch,
+I'd say the split is acceptable, or there would be a near 400 lines
+single patch for it.
 
 Thanks,
 Qu
