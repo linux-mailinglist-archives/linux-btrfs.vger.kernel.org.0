@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A214E5636
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 17:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F184E5639
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 17:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245446AbiCWQVP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Mar 2022 12:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245439AbiCWQVO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
+        id S245444AbiCWQVO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 23 Mar 2022 12:21:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E851975E6A
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237130AbiCWQVN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Mar 2022 12:21:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E3A7563D
         for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 09:19:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 94D3DB81F12
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC4D66183B
         for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 16:19:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4DC4C340F2
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 16:19:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAA2DC340E8
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 16:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648052381;
-        bh=4r+f7/Qe3nOGJiq/PHmXFjCVGpvExaDQ5ZApT7mwDVQ=;
+        s=k20201202; t=1648052382;
+        bh=mD3dV1/IK6G9T3JKmAJENuqzXIRGle5vK8cCtd2YmHI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=iHhXNI9mtadlDcxJ5Kz5zWi8JTZTNEcDpHiNS5nEhlYv/QXH21/qqr04zjM0/U0ec
-         VIYvLu1iYV/iKANvAF9YoFfNdbLSKQ7UbFararxWZWY3nUoWVLq7rJ78pBMBX0PVZW
-         tOyPxLlhoh6+BE+SxrrYYAhOhxib00bjwQYjU/F80MAdXGrFXQSJCGSWSaP3fM6sHs
-         5iJyxpdQpZpkG+EfGPblTGPCvZOGi7FSglboVfy+9wrm+CUOr5rt6R8odEIy2Qr8gY
-         mBQwSWoy3N/VCCc2suEy/5VAAuQHzDZ9zIajAilIrN0en2rHu6riahzI13WXXHwK12
-         WPFsQjiqGoJMg==
+        b=rDLEyXRRWSRqA4HHpslyBXPCYq3Hx5eQlUGxtZguSgZY4bcX97dndXXwO7p/D12Is
+         7OSrXpxCdsdMn5TWuhSFmNWeXBGLoQjaGCo/j8jCPtvP+q+ybmO7jsb/MCQ5ncpJeu
+         2Ihh85GmY7llutZ/oFg30FKBN9tONgJA+U6ag2NHgAjeiV45OAEEzh8Yxk8fdyHRY7
+         SQ6HGETR59lN/STMNffmzYQjtYfa48Eh9JxH2vqGWp4h/aJuOWGvhPwNxPlVO8gA1r
+         jpjwezAoc9AKAg/ulRxfe2XPWDqksr0YZeFA9FxPNvnstlHdu3ckyTpe/lQqqzY7MT
+         MYbgKIoPxx7nQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/8] btrfs: avoid blocking nowait dio when locking file range
-Date:   Wed, 23 Mar 2022 16:19:24 +0000
-Message-Id: <8241451e5f9b9b713f58b50711d21caee292b727.1648051582.git.fdmanana@suse.com>
+Subject: [PATCH 3/8] btrfs: avoid double nocow check when doing nowait dio writes
+Date:   Wed, 23 Mar 2022 16:19:25 +0000
+Message-Id: <adb2fd0d9a5337f1740a50b04b4731bf82843a39.1648051582.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1648051582.git.fdmanana@suse.com>
 References: <cover.1648051582.git.fdmanana@suse.com>
@@ -54,120 +54,212 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we are doing a NOWAIT direct IO read/write, we can block when locking
-the file range at btrfs_dio_iomap_begin(), as it's possible the range (or
-a part of it) is already locked by another task (mmap writes, another
-direct IO read/write racing with us, fiemap, etc). We are also waiting for
-completion of any ordered extent we find in the range, which also can
-block us for a significant amount of time.
+When doing a NOWAIT direct IO write we are checking twice if we can COW
+into the target file range using can_nocow_extent() - once at the very
+beginning of the write path, at btrfs_write_check() via
+check_nocow_nolock(), and later again at btrfs_get_blocks_direct_write().
 
-There's also the incorrect fallback to buffered IO (returning -ENOTBLK)
-when we are dealing with a NOWAIT request and we can't proceed. In this
-case we should be returning -EAGAIN, as falling back to buffered IO can
-result in blocking for many different reasons, so that the caller can
-delegate a retry to a context where blocking is more acceptable.
+The can_nocow_extent() function does a lot of expensive things - searching
+for the file extent item in the inode's subvolume tree, searching for the
+extent item in the extent tree, checking delayed references, etc, so it
+isn't a very cheap call.
 
-Fix these cases by:
+We can remove the first check at btrfs_write_check(), and add there a
+quick check to verify if the inode has the NODATACOW or PREALLOC flags,
+and quickly bail out if it doesn't have neither of those flags, as that
+means we have to COW and therefore can't comply with the NOWAIT semantics.
 
-1) Doing a try lock on the file range and failing with -EAGAIN if we
-   can not lock right away;
-
-2) Fail with -EAGAIN if we find an ordered extent;
-
-3) Return -EAGAIN instead of -ENOTBLK when we need to fallback to
-   buffered IO and we have a NOWAIT request.
-
-This will also allow us to avoid a duplicated check that verifies if we
-are able to do a NOCOW write for NOWAIT direct IO writes, done in the
-next patch.
+After this we do only one call to can_nocow_extent(), while we are at
+btrfs_get_blocks_direct_write(), where we have already locked the file
+range and we did a try lock on the range before, at
+btrfs_dio_iomap_begin() (since the previous patch in the series).
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 34 +++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ fs/btrfs/file.c  | 102 +++++++++++++++--------------------------------
+ fs/btrfs/inode.c |   8 +++-
+ 2 files changed, 39 insertions(+), 71 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 3a10b729fd51..2412116a279d 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7255,14 +7255,22 @@ noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index bd329316945f..ceac806155b8 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1460,8 +1460,27 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ 	return ret;
  }
  
- static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
--			      struct extent_state **cached_state, bool writing)
-+			      struct extent_state **cached_state,
-+			      unsigned int iomap_flags)
+-static int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+-			   size_t *write_bytes, bool nowait)
++/*
++ * Check if we can do nocow write into the range [@pos, @pos + @write_bytes)
++ *
++ * @pos:         File offset.
++ * @write_bytes: The length to write, will be updated to the nocow writeable
++ *               range.
++ *
++ * This function will flush ordered extents in the range to ensure proper
++ * nocow checks.
++ *
++ * Return:
++ * > 0          If we can nocow, and updates @write_bytes.
++ *  0           If we can't do a nocow write.
++ * -EAGAIN      If we can't do a nocow write because snapshoting of the inode's
++ *              root is in progress.
++ * < 0          If an error happened.
++ *
++ * NOTE: Callers need to call btrfs_check_nocow_unlock() if we return > 0.
++ */
++int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
++			   size_t *write_bytes)
  {
-+	const bool writing = (iomap_flags & IOMAP_WRITE);
-+	const bool nowait = (iomap_flags & IOMAP_NOWAIT);
-+	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
- 	struct btrfs_ordered_extent *ordered;
- 	int ret = 0;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_root *root = inode->root;
+@@ -1472,7 +1491,7 @@ static int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+ 	if (!(inode->flags & (BTRFS_INODE_NODATACOW | BTRFS_INODE_PREALLOC)))
+ 		return 0;
  
- 	while (1) {
--		lock_extent_bits(&BTRFS_I(inode)->io_tree, lockstart, lockend,
--				 cached_state);
-+		if (nowait) {
-+			if (!try_lock_extent(io_tree, lockstart, lockend))
-+				return -EAGAIN;
-+		} else {
-+			lock_extent_bits(io_tree, lockstart, lockend, cached_state);
-+		}
- 		/*
- 		 * We're concerned with the entire range that we're going to be
- 		 * doing DIO to, so we need to make sure there's no ordered
-@@ -7283,10 +7291,14 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
- 							 lockstart, lockend)))
- 			break;
+-	if (!nowait && !btrfs_drew_try_write_lock(&root->snapshot_lock))
++	if (!btrfs_drew_try_write_lock(&root->snapshot_lock))
+ 		return -EAGAIN;
  
--		unlock_extent_cached(&BTRFS_I(inode)->io_tree, lockstart, lockend,
--				     cached_state);
-+		unlock_extent_cached(io_tree, lockstart, lockend, cached_state);
+ 	lockstart = round_down(pos, fs_info->sectorsize);
+@@ -1480,71 +1499,21 @@ static int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+ 			   fs_info->sectorsize) - 1;
+ 	num_bytes = lockend - lockstart + 1;
  
- 		if (ordered) {
-+			if (nowait) {
-+				btrfs_put_ordered_extent(ordered);
-+				ret = -EAGAIN;
-+				break;
-+			}
- 			/*
- 			 * If we are doing a DIO read and the ordered extent we
- 			 * found is for a buffered write, we can not wait for it
-@@ -7306,7 +7318,7 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
- 			    test_bit(BTRFS_ORDERED_DIRECT, &ordered->flags))
- 				btrfs_start_ordered_extent(ordered, 1);
- 			else
--				ret = -ENOTBLK;
-+				ret = nowait ? -EAGAIN : -ENOTBLK;
- 			btrfs_put_ordered_extent(ordered);
- 		} else {
- 			/*
-@@ -7322,7 +7334,7 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
- 			 * ordered extent to complete while holding a lock on
- 			 * that page.
- 			 */
--			ret = -ENOTBLK;
-+			ret = nowait ? -EAGAIN : -ENOTBLK;
- 		}
- 
- 		if (ret)
-@@ -7577,12 +7589,12 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 
- 	/*
- 	 * If this errors out it's because we couldn't invalidate pagecache for
--	 * this range and we need to fallback to buffered.
-+	 * this range and we need to fallback to buffered IO, or we are doing a
-+	 * NOWAIT read/write and we need to block.
- 	 */
--	if (lock_extent_direct(inode, lockstart, lockend, &cached_state, write)) {
--		ret = -ENOTBLK;
-+	ret = lock_extent_direct(inode, lockstart, lockend, &cached_state, flags);
-+	if (ret < 0)
- 		goto err;
+-	if (nowait) {
+-		struct btrfs_ordered_extent *ordered;
+-
+-		if (!try_lock_extent(&inode->io_tree, lockstart, lockend))
+-			return -EAGAIN;
+-
+-		ordered = btrfs_lookup_ordered_range(inode, lockstart,
+-						     num_bytes);
+-		if (ordered) {
+-			btrfs_put_ordered_extent(ordered);
+-			ret = -EAGAIN;
+-			goto out_unlock;
+-		}
+-	} else {
+-		btrfs_lock_and_flush_ordered_range(inode, lockstart,
+-						   lockend, NULL);
 -	}
+-
++	btrfs_lock_and_flush_ordered_range(inode, lockstart, lockend, NULL);
+ 	ret = can_nocow_extent(&inode->vfs_inode, lockstart, &num_bytes,
+ 			NULL, NULL, NULL, false);
+ 	if (ret <= 0) {
+ 		ret = 0;
+-		if (!nowait)
+-			btrfs_drew_write_unlock(&root->snapshot_lock);
++		btrfs_drew_write_unlock(&root->snapshot_lock);
+ 	} else {
+ 		*write_bytes = min_t(size_t, *write_bytes ,
+ 				     num_bytes - pos + lockstart);
+ 	}
+-out_unlock:
+ 	unlock_extent(&inode->io_tree, lockstart, lockend);
  
- 	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, start, len);
- 	if (IS_ERR(em)) {
+ 	return ret;
+ }
+ 
+-static int check_nocow_nolock(struct btrfs_inode *inode, loff_t pos,
+-			      size_t *write_bytes)
+-{
+-	return check_can_nocow(inode, pos, write_bytes, true);
+-}
+-
+-/*
+- * Check if we can do nocow write into the range [@pos, @pos + @write_bytes)
+- *
+- * @pos:	 File offset
+- * @write_bytes: The length to write, will be updated to the nocow writeable
+- *		 range
+- *
+- * This function will flush ordered extents in the range to ensure proper
+- * nocow checks.
+- *
+- * Return:
+- * >0		and update @write_bytes if we can do nocow write
+- *  0		if we can't do nocow write
+- * -EAGAIN	if we can't get the needed lock or there are ordered extents
+- * 		for * (nowait == true) case
+- * <0		if other error happened
+- *
+- * NOTE: Callers need to release the lock by btrfs_check_nocow_unlock().
+- */
+-int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
+-			   size_t *write_bytes)
+-{
+-	return check_can_nocow(inode, pos, write_bytes, false);
+-}
+-
+ void btrfs_check_nocow_unlock(struct btrfs_inode *inode)
+ {
+ 	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
+@@ -1579,20 +1548,15 @@ static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
+ 	loff_t oldsize;
+ 	loff_t start_pos;
+ 
+-	if (iocb->ki_flags & IOCB_NOWAIT) {
+-		size_t nocow_bytes = count;
+-
+-		/* We will allocate space in case nodatacow is not set, so bail */
+-		if (check_nocow_nolock(BTRFS_I(inode), pos, &nocow_bytes) <= 0)
+-			return -EAGAIN;
+-		/*
+-		 * There are holes in the range or parts of the range that must
+-		 * be COWed (shared extents, RO block groups, etc), so just bail
+-		 * out.
+-		 */
+-		if (nocow_bytes < count)
+-			return -EAGAIN;
+-	}
++	/*
++	 * Quickly bail out on NOWAIT writes if we don't have the nodatacow or
++	 * prealloc flags, as without those flags we always have to COW. We will
++	 * later check if we can really COW into the target range (using
++	 * can_nocow_extent() at btrfs_get_blocks_direct_write()).
++	 */
++	if ((iocb->ki_flags & IOCB_NOWAIT) &&
++	    !(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW | BTRFS_INODE_PREALLOC)))
++		return -EAGAIN;
+ 
+ 	current->backing_dev_info = inode_to_bdi(inode);
+ 	ret = file_remove_privs(file);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 2412116a279d..c4b77017bf5c 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7408,7 +7408,8 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
+ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 					 struct inode *inode,
+ 					 struct btrfs_dio_data *dio_data,
+-					 u64 start, u64 len)
++					 u64 start, u64 len,
++					 unsigned int iomap_flags)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct extent_map *em = *map;
+@@ -7478,6 +7479,9 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 		free_extent_map(em);
+ 		*map = NULL;
+ 
++		if (iomap_flags & IOMAP_NOWAIT)
++			return -EAGAIN;
++
+ 		/* We have to COW, so need to reserve metadata and data space. */
+ 		ret = btrfs_delalloc_reserve_space(BTRFS_I(inode),
+ 						   &dio_data->data_reserved,
+@@ -7654,7 +7658,7 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
+ 
+ 	if (write) {
+ 		ret = btrfs_get_blocks_direct_write(&em, inode, dio_data,
+-						    start, len);
++						    start, len, flags);
+ 		if (ret < 0)
+ 			goto unlock_err;
+ 		unlock_extents = true;
 -- 
 2.33.0
 
