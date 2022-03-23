@@ -2,63 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0584E5998
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 21:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866494E59BA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 21:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344139AbiCWUMr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Mar 2022 16:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+        id S240569AbiCWUS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Mar 2022 16:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbiCWUMp (ORCPT
+        with ESMTP id S239619AbiCWUS5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Mar 2022 16:12:45 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC7F6CA5E
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 13:11:15 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id b18so2164956qtk.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 13:11:15 -0700 (PDT)
+        Wed, 23 Mar 2022 16:18:57 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AD18BF15
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 13:17:26 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id t7so2190545qta.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 13:17:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=VUMIpHfUdIoFrslX0gjypBjD2CqbOIzjjUl/qg+jRlw=;
-        b=iy13Knp5KESezNhrIsFSxH7+Wa15CMSFt9Q+kaJyTxmZppAwX9T/RwWu4VZNQWOuVQ
-         QdPwx2Jx0tHuPkXVYk9+kUR5hVCqMyi2AKxK2zg9UDVivEywyjv4oXlEjKc7SCdPJjye
-         TKWc5N5YKhAozbraBp7OWnS9uLmsSYfAoZ5CSXMoORZWwnQ0KL/FrDTVoCjfykECKYoQ
-         WRecyhb8iDX4k3oJ2WWN7LDZJqWah0hyWXRyhJa0R5QzscFeu6pVYg6l4FDq98oP4nxA
-         +Hl6m/ZPqfmqVQZMNrBBu7OS/A8dS7P6G+nqXliizyxedcxyh4cLKiu0H8v52mKUsE+C
-         4PKg==
+        bh=ARMW266FOX5vdi1XPB905/KPUMdzUmknXV1o2Hltu1c=;
+        b=2/vwLVSMSkvZ+54Y/Sm7BPlbHGmP+CTgTghD/lTB9LYW1zpvi0SGzY+YavwoVh+iD8
+         YDgw6pA0I7Q95AGZDeImqPdfVH7yx9wd8RecDSX1WpHI4XNK4nzXEG2j+CI3S6Y/txXi
+         ZpgCwmGppfkrJozzofGV8jztZANlwNS3HWawH5KOLQ8+6ac5WeQZvjHftz0w/okjWnIo
+         3ScylVYr9i6vEgeYsFYxCgyKCvy1pT9Sd/eYR6H/TgJWhOIMs1OZFXf/tgLz/bl9/lrp
+         VsdJig8DknCt5yAGNQxpM/cNrYgT2YIt/LCwoGrf6vy33UhU7zuey1XtGnfJRKHY0TXw
+         pT4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VUMIpHfUdIoFrslX0gjypBjD2CqbOIzjjUl/qg+jRlw=;
-        b=pYn1ZeEIxk5EvsyQgyuGepdb3ZRBIrRUIYQriEdeAXr12UVTm7T4ycY7zPVrlGuYXQ
-         1oFFWidCpjmc7S9uUtGgiCrtG2ZXoISFdt4zuAwQRVW8GheONeBdAWUslvwZDf6CqigR
-         zqByDsubHo+2oCdtIVIk/KlhQcdVpSAhp74jPtH1OvAFMP9ktwU0NMpjwhhGCSr8c/gn
-         E7gRyl1qcV895Oyxs7+ydy6Pmx7eAEAqp+I+OxP9/MAZokaZRmAIRSW3ezslQtcGdvmV
-         +zSaKRzqDEo1t9EQqIfF8ix5p17TuVBAbYLUZ6QT/pxxEUe32hWQxqkduDZcDwCuA4da
-         lmuw==
-X-Gm-Message-State: AOAM531gm4ttHjPfgsURb1vGvsEFHD3tlsx+uiuKfsOYwdyQ4OuYcqjs
-        SZDJkZwSo3ViZDU74MgUdCEiHg==
-X-Google-Smtp-Source: ABdhPJz7cUGkIC472XfiKJpG6ke04LnWh2QaPYQA4/0tOs/0YYmVqs0y2Z9PW3Pgaur3XWHoR17ynQ==
-X-Received: by 2002:ac8:5f8c:0:b0:2e1:cd8a:bcad with SMTP id j12-20020ac85f8c000000b002e1cd8abcadmr1406997qta.683.1648066274234;
-        Wed, 23 Mar 2022 13:11:14 -0700 (PDT)
+        bh=ARMW266FOX5vdi1XPB905/KPUMdzUmknXV1o2Hltu1c=;
+        b=mxm52hqqBTAQiAI4+Ifcnrca25hyBK3pclL7jt0ZjL+NhVotL6DXFvsBKnYEwSSAit
+         AFxKNPXJ3Q71dkCqyX6MBAfJN75dBJ5QKWdFieHonP6Vb84bMX+PCHy72T5RzxZWw5f2
+         iydYKR7BOy9cyjlEdAY6WNqq68Xc4AcqujHYdmloI4Saj4zWr/k2yek/Ix0yGS392doE
+         5oe40SBdXF/4xeIRIDh2XJznDM+idA1/a7HpDG+XTplCZ+fLSnJ1arCKE720KqFV7dZ9
+         +jrTdZtJjhG4zbFJ8PcyJNF57R2l8xzCJrCNeTzWLfOgJUGz48xC62quIoLP7GBD4u9N
+         CCzw==
+X-Gm-Message-State: AOAM530yytVUlHhoQAUACfLC8i9BhrSWhUlfNEUa9siUwVSTefY3lB6E
+        FWJmcwpl0+VO9gi/u0UT/sEEJcTZyt6Ruw==
+X-Google-Smtp-Source: ABdhPJzPwRQyFpoVR4GZZGGs5UaonPZL1A+hXdQyXya/zUqDmoDYL55uh2UABcxGQnrRj7j/nGgLyw==
+X-Received: by 2002:a05:622a:1b89:b0:2e2:1ed2:310d with SMTP id bp9-20020a05622a1b8900b002e21ed2310dmr1445459qtb.421.1648066645973;
+        Wed, 23 Mar 2022 13:17:25 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05622a008300b002e06a103476sm729507qtw.55.2022.03.23.13.11.13
+        by smtp.gmail.com with ESMTPSA id b17-20020a05622a021100b002e1f86db385sm667748qtx.68.2022.03.23.13.17.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Mar 2022 13:11:13 -0700 (PDT)
-Date:   Wed, 23 Mar 2022 16:11:12 -0400
+        Wed, 23 Mar 2022 13:17:25 -0700 (PDT)
+Date:   Wed, 23 Mar 2022 16:17:24 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     boris@bur.io, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs-progs: add print support for verity items.
-Message-ID: <Yjt+4F1fjdkaPxmx@localhost.localdomain>
-References: <20220323194504.1777182-1-sweettea-kernel@dorminy.me>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: do not clear read-only when adding sprout device
+Message-ID: <YjuAVJ6PwxXjwWOZ@localhost.localdomain>
+References: <16c05d39566858bb8bc1e03bd19947cf2b601b98.1647906815.git.boris@bur.io>
+ <b4ff2316-fca8-2f04-bf0a-d7747118b768@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220323194504.1777182-1-sweettea-kernel@dorminy.me>
+In-Reply-To: <b4ff2316-fca8-2f04-bf0a-d7747118b768@oracle.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -68,17 +70,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 03:45:05PM -0400, Sweet Tea Dorminy wrote:
-> 'btrfs inspect-internals dump-tree' doesn't currently know about the two
-> types of verity items and prints them as 'UNKNOWN.36' or 'UNKNOWN.37'.
-> So add them to the known item types.
+On Wed, Mar 23, 2022 at 06:44:42PM +0800, Anand Jain wrote:
+> On 22/03/2022 07:56, Boris Burkov wrote:
+> > If you follow the seed/sprout wiki, it suggests the following workflow:
+> > 
+> > btrfstune -S 1 seed_dev
+> > mount seed_dev mnt
+> > btrfs device add sprout_dev
 > 
-> Suggested-by: Boris Burkov <boris@bur.io>
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> > mount -o remount,rw mnt
+> or
+>  umount mnt
+>  mount sprout mnt
+> 
+> > The first mount mounts the FS readonly, which results in not setting
+> > BTRFS_FS_OPEN, and setting the readonly bit on the sb.
+> 
+>  Why not set the BTRFS_FS_OPEN?
+> 
+> @@ -3904,8 +3904,11 @@ int __cold open_ctree(struct super_block *sb, struct
+> btrfs_fs_devices *fs_device
+>                 goto fail_qgroup;
+>         }
+> 
+> -       if (sb_rdonly(sb))
+> +       if (sb_rdonly(sb)) {
+> +               btrfs_set_sb_rdonly(sb);
+> +               set_bit(BTRFS_FS_OPEN, &fs_info->flags);
+>                 goto clear_oneshot;
+> +       }
+> 
+>         ret = btrfs_start_pre_rw_mount(fs_info);
+>         if (ret) {
+> 
+> > The device add
+> > somewhat surprisingly clears the readonly bit on the sb (though the
+> > mount is still practically readonly, from the users perspective...).
+> > Finally, the remount checks the readonly bit on the sb against the flag
+> > and sees no change, so it does not run the code intended to run on
+> > ro->rw transitions, leaving BTRFS_FS_OPEN unset.
+> 
+>  Originally, the step 'btrfs device add sprout_dev' provided seed
+>  fs writeable without a remount.
+> 
+>  I think the btrfs_clear_sb_rdonly(sb) in btrfs_init_new_device()
+>  was part of it.
 > 
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+Yeah this was a bad idea, I don't want to randomly flip a mount from ro->rw
+without the user telling us to.  Thanks,
 
 Josef
