@@ -2,113 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A200E4E57CB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 18:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721084E583F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 19:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239746AbiCWRsm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Mar 2022 13:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        id S243889AbiCWSS1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Mar 2022 14:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238293AbiCWRsl (ORCPT
+        with ESMTP id S238448AbiCWSS1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Mar 2022 13:48:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D146E56A
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 10:47:11 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D1AAD1F387;
-        Wed, 23 Mar 2022 17:47:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648057629;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eZlrU5YG4A2QYAVftidxwT2sJoDAyz8+kwrDWCygBew=;
-        b=VtCDkXHgfcMicC/NXHxQB2AdpPofUnIWofbOiP5WRROC23uNHJnzu17/dnHsCfvjiUAPik
-        HwyxCyE7MTDjq09zb2whl4dbntbqO/o9F0wWVVSTrkEIjmSNoijolX1s485g9QRXd3HJZt
-        eyaS5RQtx4B+pWjCtIKMa7GRXR/oTnk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648057629;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eZlrU5YG4A2QYAVftidxwT2sJoDAyz8+kwrDWCygBew=;
-        b=UI4jrSDYse4ER/w7MdZECOVnUXYeSY+yMuAREnPNt6cuzXKLWl0f7UfWuYG6rlv24M6jAr
-        SnWET9KQJ9d+LnDQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C8CD8A3B83;
-        Wed, 23 Mar 2022 17:47:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 88EB6DA7DA; Wed, 23 Mar 2022 18:43:15 +0100 (CET)
-Date:   Wed, 23 Mar 2022 18:43:15 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Luca =?iso-8859-1?Q?B=E9la?= Palkovics 
-        <luca.bela.palkovics@gmail.com>
-Subject: Re: [PATCH 1/2] btrfs-progs: check: add check and repair ability for
- super num devs mismatch
-Message-ID: <20220323174315.GC2237@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        Luca =?iso-8859-1?Q?B=E9la?= Palkovics <luca.bela.palkovics@gmail.com>
-References: <cover.1646009185.git.wqu@suse.com>
- <029df99dabfee5b8fc602bf284bb3ea364176418.1646009185.git.wqu@suse.com>
+        Wed, 23 Mar 2022 14:18:27 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE0488B3D
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 11:16:56 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 0F6973202041;
+        Wed, 23 Mar 2022 14:16:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 23 Mar 2022 14:16:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; bh=HPuu9QDvLvdOkC2D8cQXXIzqCm/6Z/sHc8addR
+        eSPrU=; b=ecaOwNfz5B9bxqYlhuqj64UXVJk2A9+FMUWU8DIWakiOIs2XL02X7A
+        MaXPaJmfAkm6tD0e7bKRdcHwrDzlDGUvR8hzRoyXiXks7uSI1V0NRmOVH1XYJuSR
+        jhQ0OO2V8WkAV7wM9QrB6r4+xamZ6+huKeP7Y/JtqxXB1bb5osVaJEJKs0y0+KMG
+        l6Y8TUe1Dd5aoI96ryYfaswz7XWZuopxvTo/NzhacCOeHBRo665y8V0ocfbyp0T3
+        ufvriIt5S7raTF+ZxstkHCQPq7kdxNVvootnWvMotVMEJxsazMN6r3jeuKs4Bih9
+        NDnqVYyoMpJOXOs83DXMyUoJiRxdKnVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=HPuu9QDvLvdOkC2D8
+        cQXXIzqCm/6Z/sHc8addReSPrU=; b=LZYOVQZ33JzOM+gZ5hiXN4nrgHxSLQ7xy
+        EEMz+xjc/+FMKpBYbOu9Oa9KZGj10qzMu5GHVz6OkhWVXL5aSi3a++aQMOqMw1vP
+        AKWzT0XgSgBX8FecHXhBeYXjeWo2v048GnBE3zUMYDYTVgkXhho19z6+LxqNlQcc
+        Ont1uKK61wcIqIVrrdlLVe+dYAL5MHDDsN6jlrDMnAeTMG++Ygh4nbWyZqzky7xs
+        FbS+Oom5I2WnvNQEC8P5/Z9KHkJRkW4gxkkyFZ8zU0NWxNu3jXzP92IaDVtpZjOT
+        NR12rCFrX8QLEiph2WRnf6t1kAbqrCggxYcpguzzfMLhyu3IsnuXw==
+X-ME-Sender: <xms:FWQ7YnN351PRJAzWJ_pLTVFh4FbpOuu0syHKBkxej6I3AYs77HREfg>
+    <xme:FWQ7Yh9K2c50DiCa-wpr_WW5qMSREdfI0Fmwr-lZ_tKqo-pBJa8mTSr25kXxFOyB7
+    2RzHIVplaygm36gh_M>
+X-ME-Received: <xmr:FWQ7YmTBEHl4b_9AV6RCafxTDG5FDJWnFdwfGrIwY9ypVevu4DE8AXpIP_t5DGEZEHuRBwZKzEAjfMoPgVRRias5GZCEzQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudegjedguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    eikeeuhffgtdegudfffffhtdfhtdeutefhhfetledvfedtvefhtdfhhefgjeejieenucff
+    ohhmrghinhepghhithhhuhgsuhhsvghrtghonhhtvghnthdrtghomhdpmhhkshgvvggurd
+    hshhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegs
+    ohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:FWQ7Yrub9d6PzYuLMCMFOj3F8dBsGEsbtWgDel0gYx6doqDifsxlCA>
+    <xmx:FWQ7YvcUJY8TGmXsZvTf0Jdpf2Nu1JZ41e2Cm6JJwcI4vlWp9nyIuw>
+    <xmx:FWQ7Yn1zOkpNRTCBs_zeMVqwv68ieJqOtz89f3D4u8gY0k26DFk2BQ>
+    <xmx:FWQ7YnFDwAsxDIj061oekEQqcVLg4lctP4cVybnlcHnGPsj2FuAiEg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Mar 2022 14:16:53 -0400 (EDT)
+Date:   Wed, 23 Mar 2022 11:16:51 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH] btrfs: do not clear read-only when adding sprout device
+Message-ID: <YjtkE6DkhV0V0gXq@zen>
+References: <16c05d39566858bb8bc1e03bd19947cf2b601b98.1647906815.git.boris@bur.io>
+ <20220323005215.22qkdgherdyrocuq@naota-xeon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <029df99dabfee5b8fc602bf284bb3ea364176418.1646009185.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220323005215.22qkdgherdyrocuq@naota-xeon>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 08:50:07AM +0800, Qu Wenruo wrote:
-> [BUG]
-> There is a bug report of kernel rejecting fs which has a mismatch in
-> super num devices and num devices found in chunk tree.
+On Wed, Mar 23, 2022 at 12:52:15AM +0000, Naohiro Aota wrote:
+> On Mon, Mar 21, 2022 at 04:56:17PM -0700, Boris Burkov wrote:
+> > If you follow the seed/sprout wiki, it suggests the following workflow:
+> > 
+> > btrfstune -S 1 seed_dev > > mount seed_dev mnt
+> > btrfs device add sprout_dev
+> > mount -o remount,rw mnt
+> > 
+> > The first mount mounts the FS readonly, which results in not setting
+> > BTRFS_FS_OPEN, and setting the readonly bit on the sb. The device add
+> > somewhat surprisingly clears the readonly bit on the sb (though the
+> > mount is still practically readonly, from the users perspective...).
+> > Finally, the remount checks the readonly bit on the sb against the flag
+> > and sees no change, so it does not run the code intended to run on
+> > ro->rw transitions, leaving BTRFS_FS_OPEN unset.
+> > 
+> > As a result, when the cleaner_kthread runs, it sees no BTRFS_FS_OPEN and
+> > does no work. This results in leaking deleted snapshots until we run out
+> > of space.
+> > 
+> > I propose fixing it at the first departure from what feels reasonable:
+> > when we clear the readonly bit on the sb during device add. I have a
+> > reproducer of the issue here:
+> > https://raw.githubusercontent.com/boryas/scripts/main/sh/seed/mkseed.sh
+> > and confirm that this patch fixes it, and seems to work OK, otherwise. I
+> > will admit that I couldn't dig up the original rationale for clearing
+> > the bit here (it dates back to the original seed/sprout commit without
+> > explicit explanation) so it's hard to imagine all the ramifications of
+> > the change.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  fs/btrfs/volumes.c | 4 ----
+> >  1 file changed, 4 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> > index 3fd17e87815a..75d7eeb26fe6 100644
+> > --- a/fs/btrfs/volumes.c
+> > +++ b/fs/btrfs/volumes.c
+> > @@ -2675,8 +2675,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+> >  	set_blocksize(device->bdev, BTRFS_BDEV_BLOCKSIZE);
+> >  
+> >  	if (seeding_dev) {
+> > -		btrfs_clear_sb_rdonly(sb);
+> > -
 > 
-> But btrfs-check reports no problem about the fs.
-> 
-> [CAUSE]
-> We just didn't verify super num devices against the result found in
-> chunk tree.
-> 
-> [FIX]
-> Add such check and repair ability for btrfs-check.
-> 
-> The ability is mode independent.
-> 
-> Reported-by: Luca Béla Palkovics <luca.bela.palkovics@gmail.com>
-> Link: https://lore.kernel.org/linux-btrfs/CA+8xDSpvdm_U0QLBAnrH=zqDq_cWCOH5TiV46CKmp3igr44okQ@mail.gmail.com/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> After this line, it updates the metadata e.g, with
+> init_first_rw_device() and writes them out with
+> btrfs_commit_transaction(). Is that OK to do so with the SB_RDONLY
+> flag set?
 
-With this patch applied there's a new test failure:
+Good question. As far as I can tell, the functions don't explicitly
+check sb_rdonly, though that could be because they expect that to be
+checked before you ever try to commit a transaction, for example..
 
-=== START TEST .../tests/fsck-tests/014-no-extent-info
-testing image no_extent.raw.restored
-====== RUN MUSTFAIL .../btrfs check ./no_extent.raw.restored
-Opening filesystem to check...
-Checking filesystem on ./no_extent.raw.restored
-UUID: aeee7297-37a4-4547-a8a9-7b870d58d31f
-cache and super generation don't match, space cache will be invalidated
-found 180224 bytes used, no error found
-total csum bytes: 0
-total tree bytes: 180224
-total fs tree bytes: 81920
-total extent tree bytes: 16384
-btree space waste bytes: 138540
-file data blocks allocated: 0
- referenced 0
-succeeded (unexpected!): .../btrfs check ./no_extent.raw.restored
-unexpected success: btrfs check should have detected corruption
+If there is an issue, it's probably somewhat subtle, because the basic
+behavior does work.
+
+> 
+> >  		/* GFP_KERNEL allocation must not be under device_list_mutex */
+> >  		seed_devices = btrfs_init_sprout(fs_info);
+> >  		if (IS_ERR(seed_devices)) {
+> > @@ -2819,8 +2817,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+> >  	mutex_unlock(&fs_info->chunk_mutex);
+> >  	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+> >  error_trans:
+> > -	if (seeding_dev)
+> > -		btrfs_set_sb_rdonly(sb);
+> >  	if (trans)
+> >  		btrfs_end_transaction(trans);
+> >  error_free_zone:
+> > -- 
+> > 2.30.2
+> > 
