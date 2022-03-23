@@ -2,62 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5707E4E5BFF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 00:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59BF4E5C11
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 00:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243010AbiCWXn7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Mar 2022 19:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
+        id S245224AbiCWXyN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Mar 2022 19:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347075AbiCWXns (ORCPT
+        with ESMTP id S241574AbiCWXyL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Mar 2022 19:43:48 -0400
+        Wed, 23 Mar 2022 19:54:11 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE4CBD8
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 16:42:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE8F3FD86
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Mar 2022 16:52:41 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 390E4210F0;
-        Wed, 23 Mar 2022 23:42:17 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0EC5D210F0;
+        Wed, 23 Mar 2022 23:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648078937;
+        t=1648079560;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2MCL9/IAhgAj/6NfC5o+xhf4NTmZKOzbdKw0/eD/p90=;
-        b=QOz18Pb+oUXpxDpMUb/KUPmC2wKQ27FtbRP67frNSb0UuIZgZXnxiLuzw4sw38ftvlxgfM
-        QTfchh1obbkyeh0xLKG1TKVy0cMEwjfeLZXpAgIVDR7c9lMD0ziwjbvcEWiQXhnNPyY/CZ
-        twlIyDeDUbxirAqeOLbxhXXFu2hem2Q=
+        bh=rFDz/riKKCq4gqHDX89jnsqkZxbVFlvtiNDXVVNO0Dg=;
+        b=DD2hjx62JAPDQMpEsBA0GfR1IkhtL/R+w3TBsw6zc2w2jJdHDLwxNdxtGtvo8frVsgszrI
+        xBf8YZRktGPFuqvsCynodPhgE0WtqtjzQpDlpTlncLLnJkJq4oON4qk4O2LN3+bxcCHQF8
+        PN04N25PGLxAJLNXYaNfeoyfPJGB4fk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648078937;
+        s=susede2_ed25519; t=1648079560;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2MCL9/IAhgAj/6NfC5o+xhf4NTmZKOzbdKw0/eD/p90=;
-        b=2uwX2C33P3sqVHZxSuP9bjw5hpTG3fLSwdjStA5BDimZ4Mux7wlesc6lNTVRZvU8mf/vpI
-        INDl5AvgBDmp2jCQ==
+        bh=rFDz/riKKCq4gqHDX89jnsqkZxbVFlvtiNDXVVNO0Dg=;
+        b=cmaxulD5AbjV0koezoMWKmEgD1WG5e7wtb8Nymv+yUrCS5M3V7vqv9Q+q6ufLN95njvfFk
+        qpVjmhweVgJvopCA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2B3A2A3B83;
-        Wed, 23 Mar 2022 23:42:17 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 03B63A3B83;
+        Wed, 23 Mar 2022 23:52:40 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 99A8EDA7DE; Thu, 24 Mar 2022 00:38:22 +0100 (CET)
-Date:   Thu, 24 Mar 2022 00:38:22 +0100
+        id 90183DA7DE; Thu, 24 Mar 2022 00:48:45 +0100 (CET)
+Date:   Thu, 24 Mar 2022 00:48:45 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     boris@bur.io, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs-progs: add print support for verity items.
-Message-ID: <20220323233822.GG2237@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: check: fix return value override in
+ do_check_chunks_and_extents()
+Message-ID: <20220323234845.GH2237@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, boris@bur.io,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20220323194504.1777182-1-sweettea-kernel@dorminy.me>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <f576d7a548b91d42d02b17d2dc52ee04d943a57d.1648077794.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220323194504.1777182-1-sweettea-kernel@dorminy.me>
+In-Reply-To: <f576d7a548b91d42d02b17d2dc52ee04d943a57d.1648077794.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -69,62 +66,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 03:45:05PM -0400, Sweet Tea Dorminy wrote:
-> 'btrfs inspect-internals dump-tree' doesn't currently know about the two
-> types of verity items and prints them as 'UNKNOWN.36' or 'UNKNOWN.37'.
-> So add them to the known item types.
+On Thu, Mar 24, 2022 at 07:23:21AM +0800, Qu Wenruo wrote:
+> Patch "btrfs-progs: check: add check and repair ability for super num
+> devs mismatch" is causing fsck/014 to fail.
 > 
-> Suggested-by: Boris Burkov <boris@bur.io>
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> The cause is that in do_check_chunks_and_extents() we can override the
+> return value.
 > 
-> ---
+> Fix it by simply exit early if we found any problems in chunk/extent
+> tree.
+> As super num devices is really a minor problem compared to any
+> chunk/extent tree corruption.
 > 
-> Inspired by Boris' recent patchset noting that these items were not yet
-> properly printed:
-> https://lore.kernel.org/linux-btrfs/5579a70597cd660ffb265db9e97840a1faca8812.1647382272.git.boris@bur.io/T/#u
-> 
-> ---
-> 
->  kernel-shared/ctree.h      | 4 ++++
->  kernel-shared/print-tree.c | 2 ++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index bf71fc85..b8d7e5a8 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -1350,6 +1350,10 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
->  #define BTRFS_INODE_REF_KEY		12
->  #define BTRFS_INODE_EXTREF_KEY		13
->  #define BTRFS_XATTR_ITEM_KEY		24
-> +
-> +#define BTRFS_VERITY_DESC_ITEM_KEY	36
-> +#define BTRFS_VERITY_MERKLE_ITEM_KEY	37
-> +
->  #define BTRFS_ORPHAN_ITEM_KEY		48
->  
->  #define BTRFS_DIR_LOG_ITEM_KEY  60
-> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-> index 73f969c3..ee7f679c 100644
-> --- a/kernel-shared/print-tree.c
-> +++ b/kernel-shared/print-tree.c
-> @@ -647,6 +647,8 @@ void print_key_type(FILE *stream, u64 objectid, u8 type)
->  		[BTRFS_DIR_LOG_ITEM_KEY]	= "DIR_LOG_ITEM",
->  		[BTRFS_DIR_LOG_INDEX_KEY]	= "DIR_LOG_INDEX",
->  		[BTRFS_XATTR_ITEM_KEY]		= "XATTR_ITEM",
-> +		[BTRFS_VERITY_DESC_ITEM_KEY]	= "VERITY_DESC_ITEM",
-> +		[BTRFS_VERITY_MERKLE_ITEM_KEY	= "VERITY_MERKLE_ITEM",
+> Please fold this one into patch "btrfs-progs: check: add check and
+> repair ability for super num devs mismatch".
+> As there are quite some comments update in devel branch already.
 
-    [CC]     kernel-shared/print-tree.o
-kernel-shared/print-tree.c: In function ‘print_key_type’:
-kernel-shared/print-tree.c:650:49: error: lvalue required as left operand of assignment
-  650 |                 [BTRFS_VERITY_MERKLE_ITEM_KEY   = "VERITY_MERKLE_ITEM",
-      |                                                 ^
-kernel-shared/print-tree.c:650:71: error: expected ‘]’ before ‘,’ token
-  650 |                 [BTRFS_VERITY_MERKLE_ITEM_KEY   = "VERITY_MERKLE_ITEM",
-      |                                                                       ^
-      |                                                                       ]
-kernel-shared/print-tree.c:682:9: error: expected expression before ‘}’ token
-  682 |         };
-      |         ^
-make: *** [Makefile:414: kernel-shared/print-tree.o] Error 1
+Thanks, fixups are easier to apply but if you send v2 of the original
+patch I apply the differences to the updated committed version so no
+changes are lost.
