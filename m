@@ -2,128 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FA34E4B71
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 04:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24A54E4BF1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Mar 2022 05:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbiCWD2B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Mar 2022 23:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
+        id S238026AbiCWElx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Mar 2022 00:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241531AbiCWD16 (ORCPT
+        with ESMTP id S234431AbiCWElv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Mar 2022 23:27:58 -0400
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B3CB6EB3D
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 20:26:29 -0700 (PDT)
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id C4E5F277F6A; Tue, 22 Mar 2022 23:26:28 -0400 (EDT)
-Date:   Tue, 22 Mar 2022 23:26:28 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH 1/5] btrfs: add flags to give an hint to the chunk
- allocator
-Message-ID: <YjqTZIxRm0wJ05Rx@hungrycats.org>
-References: <cover.1646589622.git.kreijack@inwind.it>
- <b15072e61eac46aa9f61317c59219713a01ff897.1646589622.git.kreijack@inwind.it>
- <YjoNvoIy/WmulvEc@localhost.localdomain>
+        Wed, 23 Mar 2022 00:41:51 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CFD668FB2
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Mar 2022 21:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1648010406;
+        bh=voNKk+jl/4dPcsbkCV/WuU8dMHYBpWtLAb7oHBKvtc4=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=bEyz5Ig/t18LpGNFWMVu5dbIeGeHxesmHAK5QhYIfyUqN+2GFtIEEg5LndRfFLKlT
+         judPRdgixEqKf1RvXMPY2+iVWr+CekK3BV88ODhU3ym8qu665aOn43Xn4rAnt5o8+C
+         MNFUjF7AkWEzGw3i3DzujEANNG1Us4CG6wfujrnU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6UZl-1nQaKq1lYf-006sYf; Wed, 23
+ Mar 2022 05:40:06 +0100
+Message-ID: <89f67d6a-2574-0ad0-625c-c921adf3a4f6@gmx.com>
+Date:   Wed, 23 Mar 2022 12:40:01 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YjoNvoIy/WmulvEc@localhost.localdomain>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] btrfs: prevent subvol with swapfile from being deleted
+Content-Language: en-US
+To:     Kaiwen Hu <kevinhu@synology.com>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org, robbieko@synology.com,
+        cccheng@synology.com, seanding@synology.com
+References: <20220322102705.1252830-1-kevinhu@synology.com>
+ <b1c66869-2920-9055-faa1-a84b05958289@gmx.com>
+ <20220322193932.GI12643@twin.jikos.cz>
+ <71bc3a52-ae07-3030-49f1-6cc176a0f16e@synology.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <71bc3a52-ae07-3030-49f1-6cc176a0f16e@synology.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vs1Rd7C+QUpPXoWbu+Hr4pkzX9TYdWQAXXFqiUoR8ra6VC3rvD3
+ 5rWk1DJ+3hTGOornbMG2XGBR+gvXoGc2WkyOmf/z0pjg8KvrTGSGqk+lDEqso2GaahxVE3l
+ kmOvW5QuZ4xaDrmaAdtg0Ytjclrg7EYmxWpMGFelk6X+/ara7afxsyPPalp0HfOm/8h8rk+
+ RmkUM0j4avh7be3GqqwIg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WZD9JLuvD8o=:QqUtHGENmVjoFn+rL1kk3t
+ o6BHy4M4t1QUa+2Y4g0FDIW6v8VpNNfdScHSO6R/FiYVbAcBfYoFsHeCST2xtoNrTxpgIUxpM
+ bKhG1U0c7yzzeddo+kr6pL0YrGkhh77/ehpemxicXFXXKY+11L6iOhXqGoqy3zTZHpQAZBtw5
+ ViKP+aajkF0EBXD4XOJrut19SQJKR2WIHahbM8xzr2hlW3MQ7DBMjMS7GfBJKnlk0mXySj0rM
+ 81pM3wyM88+Z4RZpljmRWbIlq9EAm7xLnTl9EaVJ+A0hau74McFg3ROlQN5HPPi3SRoJW7PCT
+ I4U1qT/IzdRM/FYLKD4XBmr8CQAw4b53oxsr30YPdpvaG2gYiS585W4bi5STdv+9xKsS5la/r
+ BN9jtuTFtdgAG4QfeYjCE0e2ycQuhpRLubN4ynOc8poT2W+mjPNoq1ZReM1G1r0d79Ogx9lFe
+ ZRLOMfHALYDNaNbQih+TZCWqLQrXVy+B1B9dq2opYC/xjtIInC6gd/H0BC68Zb2FW+w3MYYNk
+ TvaFErG1Jp57/NiNNO1BbHqVKP83VsGtEmfZBPHEU2DZ1Jfd1lZo8fM9qbUpLeuP3iwogEqvI
+ YCF/7NUhWh4wQ9KbAf0rVPmKWUhcupjcdCzIA4YWwNqHedU+EmsRp7jeX6Ul5fVl5zOt1TGfW
+ R9gHozRl4c1+MuHitHvlwOH6RpxXRWqGWY4TczilKM2V7PRCMoXP48M+ESsQv4+IeCXJn28mg
+ +1pMi6oC8gogtzjW0sEEcrN16Hi86QpkYY120G4qo07oBKDtI7/d4R4Kkzk8Der/llwcVt9Rr
+ HuJUoDpTfMj9xjcmHL3QKOiGUEwKIGHVPf/Rtak1JJ1U103K71pYSkQC5i1wgHb2RxUBIGU8A
+ joy0qgrWQtEmIeCa5b0YUj/sd+IB6arY+QWbHNC9zyBu3lEBiCpbYVTpxqjoliA1S0fj9hai+
+ nL05/14+eDpRMX6jFHpYvmbxyr/20A4KLAjSQzXr9X9z0BB/2VFLRIBPe9jNAmAEN+zPYSlsx
+ O+bRcvxPORq+sc2jrFqdIzDQiJbNbzhUIYrmfvvDSz0MgsWV5wMGeQY37RktLOQK3JR11KJZI
+ XMawTF3xlOLMt8=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 22, 2022 at 01:56:14PM -0400, Josef Bacik wrote:
-> On Sun, Mar 06, 2022 at 07:14:39PM +0100, Goffredo Baroncelli wrote:
-> > From: Goffredo Baroncelli <kreijack@inwind.it>
-> > 
-> > Add the following flags to give an hint about which chunk should be
-> > allocated in which disk:
-> > 
-> > - BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED
-> >   preferred for data chunk, but metadata chunk allowed
-> > - BTRFS_DEV_ALLOCATION_HINT_METADATA_PREFERRED
-> >   preferred for metadata chunk, but data chunk allowed
-> > - BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY
-> >   only metadata chunk allowed
-> > - BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY
-> >   only data chunk allowed
-> > 
-> > Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> > ---
-> >  include/uapi/linux/btrfs_tree.h | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> > index b069752a8ecf..e0d842c2e616 100644
-> > --- a/include/uapi/linux/btrfs_tree.h
-> > +++ b/include/uapi/linux/btrfs_tree.h
-> > @@ -389,6 +389,22 @@ struct btrfs_key {
-> >  	__u64 offset;
-> >  } __attribute__ ((__packed__));
-> >  
-> > +/* dev_item.type */
-> > +
-> > +/* btrfs chunk allocation hint */
-> > +#define BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT	2
-> > +/* btrfs chunk allocation hint mask */
-> > +#define BTRFS_DEV_ALLOCATION_HINT_MASK	\
-> > +	((1 << BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT) - 1)
-> > +/* preferred data chunk, but metadata chunk allowed */
-> > +#define BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED	(0ULL)
-> 
-> Actually don't we have 0 set on type already?  So this will make all existing
-> file systems have DATA_PREFERRED, when in reality they may not want that
-> behavior.  So should we start at 1?  Thanks,
-
-If all the disks in the filesystem have the same value, and it's one
-of the two _PREFERRED values, then there is no change in behavior from
-before:  all devices will be filled with no (difference in) preferences.
-So if the default is either DATA_PREFERRED or METADATA_PREFERRED, then
-nothing changes for existing filesystems until at least one device is
-set to some other type.
-
-Another problem is, what happens if we add a new device to a filesystem
-where some devices have _ONLY set?  In that case, the new device has
-type 0, and might get either data or metadata allocated on it that we
-don't want.
-
-Four possible solutions to choose from:
-
-1.  Leave things as they are, sysadmins will have to set the type on
-new devices immediately after add, and possibly balance to fix bad
-allocations if they lose the race.
-
-2.  Make device type a parameter to the add-device ioctl, so that
-drives can be added with a non-default type already set.
-
-3.  Define "0" as "get the preference value from a mount option, a
-sysfs variable, or some on-disk item?" which is another way to do
-#2 that doesn't mean having to change an existing ioctl's parameters
-or roll a new one (I haven't checked to see if we have a spare u64
-on device add).
-
-4.  Define "0" as meaning "last resort", a new preference level where
-the device is not preferred for any allocation unless there are no other
-devices with a preference set.  Ecch I don't like this one because there's
-a possible race where we're converting e.g. a 4-disk raid1 array into 2
-data-only 2 metadata-only, and there's a point where we have 2x data-only
-1x metadata-only and one type 0 device and it's possible to ENOSPC on
-metadata at that moment if type 0 doesn't allow metadata allocation.
-This plan would prevent the "data on the wrong drive" failure mode, so
-it's in the list, but don't use it unless you can solve the new problem.
 
 
-> Josef
-> 
+On 2022/3/23 11:13, Kaiwen Hu wrote:
+>
+> On 3/23/2022 3:39 AM, David Sterba wrote:
+>> On Tue, Mar 22, 2022 at 06:47:59PM +0800, Qu Wenruo wrote:
+>>> This looks a little weird to me.
+>>>
+>>> If the root is already dead, it means we should not be able to access
+>>> any file inside the subvolume.
+>>>
+>>> How could we go into btrfs_swap_activate() while the root is already
+>>> dead?
+>>>
+>>> Or is there some special race I missed?
+>> The deletion has a few steps, eg. the dentry is removed, root is marked
+>> as dead and different thing locking protection.
+>>
+>> I was wondering about file descriptor access to the subvolume and
+>> calling swapon on that, but swapon/swapoff is a syscall and work with a
+>> path argument so that can't happen. I haven't checked in what order are
+>> the dentry removal and dead flag done, it could be theoretically
+>> possible that there's a short window where the dentry is accessible and
+>> subvolume already marked.
+>
+>
+> Thanks for david's help.=C2=A0 Yes, it is possible the subvolume is mark=
+ed
+> for deletion,=C2=A0 but still not remove yet.=C2=A0 So like
+> |btrfs_ioctl_send()|doing, I check the dead-root mark before activating
+> swapfile to prevent the race condition.
+
+OK, I just went to check btrfs_delete_subvolume(), it's indeed marking
+the subvolume dead first, before even starting to delete the dentry.
+Not the reverse.
+
+Then it looks fine to me, better with a short comment on it.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
+>
+>
+> Thanks,
+>
+> Kaiwen Hu
+>
+>
+>
+>
