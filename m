@@ -2,61 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 902DB4E6899
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 19:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8284E68E6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 19:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352594AbiCXSZK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Mar 2022 14:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
+        id S1352753AbiCXSzH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Mar 2022 14:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233548AbiCXSZJ (ORCPT
+        with ESMTP id S1347682AbiCXSzF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Mar 2022 14:25:09 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97018CCD9;
-        Thu, 24 Mar 2022 11:23:36 -0700 (PDT)
+        Thu, 24 Mar 2022 14:55:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135B924F17;
+        Thu, 24 Mar 2022 11:53:32 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8A1F5210F4;
-        Thu, 24 Mar 2022 18:23:35 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 471AF1F745;
+        Thu, 24 Mar 2022 18:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648146215;
+        t=1648148011;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5huxXi8OoqhvQXUgQMDKb0oQVXSd7yjT4jvQnm+x+dc=;
-        b=swlicSYoQn/QprqtZsdfOi0wCfolM2xCkqtGW9U74hBplWw/DjNlqn3T8UZyTSiMhT6pOT
-        kyMMM2yO0I//xPovecUAU+K7S+0eY7g3RokB95WFMHi+Le/nJJPFp6vFbD3vsihsGGP9Oh
-        PjD+e+nvU+qqGVx3bRuWG3zkxXHdz+o=
+        bh=mxmc7ediERSNp/9oSucpGCHIBIwx+Z1tUQd5pDNQoeU=;
+        b=SMSoMF/bJ+WqVhBx2VnpeAnW0h2DTDGFa9k9yn4j+F4XRJKrDOc+P2fd/xeQt+brez3zWc
+        JY/CjJl/fgfGO/ApgJdVrZMSWY168n+17fPnUEYnZyoSeUxlMIgpiywo6Lp8GnaOWaZdN0
+        dA4ZPr2vF/Un2Kj4efMQCJtlKq7f+d0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648146215;
+        s=susede2_ed25519; t=1648148011;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5huxXi8OoqhvQXUgQMDKb0oQVXSd7yjT4jvQnm+x+dc=;
-        b=NVCjOa/yt5/RjhQD9RzlqNmSMzplxexATDB9qqHvJV3NHrNju+OeN9oHmKCgP5C7hqD+wz
-        PZ8TP17mGBtNlnBA==
+        bh=mxmc7ediERSNp/9oSucpGCHIBIwx+Z1tUQd5pDNQoeU=;
+        b=eMzOJ5+VRV5jfX49BQ5f1H4FKDb83yFqWdTeugv9hJpSYxyxtBQRx5YUXrRnWcS58rzWld
+        cgeOet6JGELJgVAw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 7DDCAA3B87;
-        Thu, 24 Mar 2022 18:23:35 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 3106CA3B82;
+        Thu, 24 Mar 2022 18:53:31 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AAED9DA7F3; Thu, 24 Mar 2022 19:19:40 +0100 (CET)
-Date:   Thu, 24 Mar 2022 19:19:40 +0100
+        id 36686DA7F3; Thu, 24 Mar 2022 19:49:36 +0100 (CET)
+Date:   Thu, 24 Mar 2022 19:49:36 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: btrfs: fix possible use-after-free bug in error
- handling code of btrfs_get_root_ref()
-Message-ID: <20220324181940.GK2237@suse.cz>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Remove unused variable in
+ btrfs_{start,write}_dirty_block_groups()
+Message-ID: <20220324184936.GL2237@suse.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Jia-Ju Bai <baijiaju1990@gmail.com>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220324134454.15192-1-baijiaju1990@gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Nathan Chancellor <nathan@kernel.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev,
+        stable@vger.kernel.org
+References: <20220324153644.4079376-1-nathan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220324134454.15192-1-baijiaju1990@gmail.com>
+In-Reply-To: <20220324153644.4079376-1-nathan@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -68,44 +76,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 06:44:54AM -0700, Jia-Ju Bai wrote:
-> In btrfs_get_root_ref(), when btrfs_insert_fs_root() fails,
-> btrfs_put_root() will be called to possibly free the memory area of
-> the variable root. However, this variable is then used again in error
-> handling code after "goto fail", when ret is not -EEXIST.
+On Thu, Mar 24, 2022 at 08:36:45AM -0700, Nathan Chancellor wrote:
+> Clang's version of -Wunused-but-set-variable recently gained support for
+> unary operations, which reveals two unused variables:
 > 
-> To fix this possible bug, btrfs_put_root() is only called when ret is 
-> -EEXIST for "goto again".
+>   fs/btrfs/block-group.c:2949:6: error: variable 'num_started' set but not used [-Werror,-Wunused-but-set-variable]
+>           int num_started = 0;
+>               ^
+>   fs/btrfs/block-group.c:3116:6: error: variable 'num_started' set but not used [-Werror,-Wunused-but-set-variable]
+>           int num_started = 0;
+>               ^
+>   2 errors generated.
 > 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  fs/btrfs/disk-io.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> These variables appear to be unused from their introduction, so just
+> remove them to silence the warnings.
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index b30309f187cf..126f244cdf88 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1850,9 +1850,10 @@ static struct btrfs_root *btrfs_get_root_ref(struct btrfs_fs_info *fs_info,
->  
->  	ret = btrfs_insert_fs_root(fs_info, root);
->  	if (ret) {
-> -		btrfs_put_root(root);
-> -		if (ret == -EEXIST)
-> +		if (ret == -EEXIST) {
-> +			btrfs_put_root(root);
+> Cc: stable@vger.kernel.org
+> Fixes: c9dc4c657850 ("Btrfs: two stage dirty block group writeout")
+> Fixes: 1bbc621ef284 ("Btrfs: allow block group cache writeout outside critical section in commit")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1614
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-I think this fix is correct, though it's not that clear. If you look how
-the code changed, there was the unconditional put and then followed by a
-free:
+Added to misc-next, thanks.
 
-8c38938c7bb0 ("btrfs: move the root freeing stuff into btrfs_put_root")
+> I am requesting a stable backport because this is visible with
+> allmodconfig, which enables CONFIG_WERROR, breaking the build.
 
-Here it's putting twice where one will be the final free.
+Yeah warning fixes are accepted in stable trees and we care about
+warning-free builds. My gcc 11.1 does not produce any warning with
+-Wunused-but-set-variable and we have extended the set of warnings in
+the directory fs/btrfs/ that also includes that one.
 
-And then the whole refcounting gets updated in
+> To quote Linus:
+> 
+> "EVERYBODY should have CONFIG_WERROR=y on at least x86-64 and other
+> serious architectures, unless you have some completely random
+> experimental (and broken) compiler."
 
-4785e24fa5d2 ("btrfs: don't take an extra root ref at allocation time")
-
-which could be removing the wrong put, I'm not yet sure.
+I have CONFIG_WERROR disabled, for own development it's quite annoying
+when build fails outside of the code I care about, while I apply visual
+checks of warning-free builds.
