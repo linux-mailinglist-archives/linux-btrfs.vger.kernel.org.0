@@ -2,80 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFE44E6747
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 17:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD7F4E6752
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 17:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236214AbiCXQvB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Mar 2022 12:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S1352046AbiCXQ4P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Mar 2022 12:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbiCXQvA (ORCPT
+        with ESMTP id S1351971AbiCXQyq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Mar 2022 12:51:00 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB87D54F96
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 09:49:27 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 1208480787;
-        Thu, 24 Mar 2022 12:49:26 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1648140567; bh=TA072rY/co9+FxE5LTJa8Chhl47wEpyLAPGm9SVW+ao=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LeSjCKKi3LLva9HnVX7e6Zc/NWWhC48I9rObcD+AaubzD4h+q1c5yu7NMrch8Mbiw
-         TZeIANffrNyNG9yPQE1z6+TYK2DPuqSNcjFR3dGx3fM303yo0jmNByLh2Zlhk/9759
-         patBM1dxSwGMVHNpH/G2yQHXPiXyU/4bXefc3ByvdZalt1xm4ZubC9QHns/PF7X8yC
-         oPRnOT3XHddbYLJKTTVyqlZo18yD5TYpNCB5W6QKy7Y6USCLh2efa7nbYg671Hjvzz
-         2whYGriS/QW1G9DQ/5qQxwHacxPKhJ328xI9/aSkvFG8pzhAe2FCQ+w7nn9jtaQZ0l
-         UvKve/dVQklZw==
-Message-ID: <46203a49-0fde-aa5c-e92e-da0f1dd48885@dorminy.me>
-Date:   Thu, 24 Mar 2022 12:49:26 -0400
+        Thu, 24 Mar 2022 12:54:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A3DB2473
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 09:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=gaq/fj5deajDP+JgXYVamlCcYTyL7tLiFX2rnDZz0gk=; b=yFJMX99ERlExkB4gDO2wnSoynD
+        zJuY++mPFnXw15trKq+6e2++MQ4YGCBnwdQhYAmAdJd8pQfn/l+xi+IyfDnXKWnsELu14csN9b3A8
+        lqmuAM2svANU3SQVWG1k++Ihi/3CV0iWsCsmCyY+oY6ySu/N8wCP6wbdupt41lJUtPHrvxUR8u+YD
+        n/84rGYdb6TQVhhCAHIzkv9xx3A1C1lsNSkCYLgQff8lWP3EmOso/VYtaki9mKoABHj2eGwHfcYXo
+        /3evwAs+eYDKv8MjQi3Ia+I9MBmw1mdnWt7FeGrFdeidnsQYlGxtu7IaNJSxFzu8R0N17JnuccAOE
+        NCFs/zxA==;
+Received: from [2001:4bb8:19a:b822:2a44:1428:2337:3096] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nXQh2-00HFwp-JK; Thu, 24 Mar 2022 16:52:13 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: btrfs zoned fixlets
+Date:   Thu, 24 Mar 2022 17:52:08 +0100
+Message-Id: <20220324165210.1586851-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Subject: Re: fixes for handling of split direct I/O bios
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-References: <20220324160628.1572613-1-hch@lst.de>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <20220324160628.1572613-1-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi all,
 
+this series fixes a minor and slightly less minor problem in the btrfs
+zoned device code.  Note that for the second patch the comment might
+not be correct any more - AFAICS 5.18 added support for the dup
+profile for zoned devices, which means we do have a real issue now
+if different devices have different hardware limitations.  I think we'll
+need some code to check that all zoned devices have the exact same
+hardware limits (max_sectors, max_segments, max_segment_size,
+queue_boundary, virt_boundary), but I don't know the code well enough
+to implement that myself
 
-On 3/24/22 12:06, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series fixes two problems in the direct I/O code where the
-> file_offset field in the dio_private structure is used in a context where
-> we really need the file_offset for the given low-level bios and not for
-> the bio submitted by the iomap direct I/O as recorded in the dio_private
-> structure.  To do so we need a new file_offset in the btrfs_dio
-> structure.
-> 
-> Found by code inspection as part of my bio cleanups.
-> 
-> Diffstat:
->   extent_io.c |    1 +
->   inode.c     |   18 ++++++++----------
->   volumes.h   |    3 +++
->   3 files changed, 12 insertions(+), 10 deletions(-)
-
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-
-I'm pretty new and don't know much about the criteria for cc'ing stable, 
-but arguably this makes the check_data_csum() error message not lie 
-about the start offset in such cases and it seems like a very low risk 
-improvement to me... might it be worth adding a Fixes: tag / might this 
-be a reasonable fix for stable?
+Found by code inspection as part of my bio cleanups.
