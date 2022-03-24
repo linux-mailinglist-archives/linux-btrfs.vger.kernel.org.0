@@ -2,99 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BC34E6448
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 14:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9850D4E64A3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 15:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345548AbiCXNqj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Mar 2022 09:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        id S1350724AbiCXOGU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Mar 2022 10:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238731AbiCXNqj (ORCPT
+        with ESMTP id S1344334AbiCXOGT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Mar 2022 09:46:39 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DE728D;
-        Thu, 24 Mar 2022 06:45:07 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 123-20020a1c1981000000b0038b3616a71aso2596645wmz.4;
-        Thu, 24 Mar 2022 06:45:07 -0700 (PDT)
+        Thu, 24 Mar 2022 10:06:19 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB56369E8
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 07:04:47 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id y10so720068pfa.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 07:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=oZ1sQ/s8ZI7VgUG5Kyss6T5kos76Vzc3N9Tcf43ykvg=;
-        b=G1JkArYGVVqnvhMr0qayvYA2Sda9lv02t5+m+9n88gcrFN9uhb2xuY0llB1i+61IvZ
-         4hij9LmZumxp4RR95ieNjVtHKomSK73vmTrY/r1JhH461/XofR0XGM2Ug4IGwh1hYlUI
-         D7ENMuCJN9Fg1PCefQIR1sMxdlu2FcrMva5KyQbeXUjjfKhhABTfFsc0VtYCNtiON0Rt
-         CtHneiW4E1O1ixBk7/Qwm+5pyqISgt4/9k2fDIgF3f3SKRgnuevdXSwA2XgWpzw3bWGv
-         1/DBHI6kd3VTGsuKTbr53WaThAavZs52kv5+YtURwo1MA3CoUmIo4S341dKjmvL7+Cb4
-         XpvQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=hTxCgye7BS+8xhu8iC9h1EV20LT2IK2RAWcPZdTP0io=;
+        b=FI7XE2BGWrpMJOyU/lfCWwTQTD1api9lFOrUZELWBlmGm8W8L6yv5dzjVjBxBHVWlp
+         YICouvYizXXadySE0m+cEoOTP0Vt5xQsTSsjSEJXU288Hu2tPUoGvzWWtgiuqsVAD1SG
+         FXEKRZ4uqcf20h3qSep1ZI+xcwMQTqzo/F/+TFMdNOaWpuhrYsCRANtj/LBWd+KHl+DA
+         Xy3NVvrUW7uTWXWmC58YGC9iTB4QQ5VPySAf7P3VyW0NUyL3Id0rUsvdul37EBxc3Tmm
+         9LDU9G1PEb8MwaI7Gyvu1gwP/QxyffYfSf4SzPVoYeoWheLTPafUT5UNp2gHu/+JdTgu
+         r9jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=oZ1sQ/s8ZI7VgUG5Kyss6T5kos76Vzc3N9Tcf43ykvg=;
-        b=5fm8KhmeRSio7sa7QgSXuWIoDFeffrjYNii49MubaLCcLVJF9Si4LuYSac33/eEwZ8
-         SvaR0jPCUmtNWfEnlo5KCDNbqByceyiPlHj0mKrrpRQghcphBNT5GIcCSNsbgbw5iW+I
-         5NTAGqvrHVgdZecky4kYaQxPqhPI6suM7HOXLFOB5v1ZHCWIPvMHdV/heYTIgX3fjMjX
-         M4J0p0TL9IaguLTOC92nfmAtXdv58Mty9Epl8PFPd+0mYG/DVUnVj9NyMz8smd11sMv4
-         QEfEXnRPzbhcWnIxf3SPCjUnN5/rYQniMVp5qeib3piD5zgTdHHtFhx4BvwruFWFleAy
-         aN4g==
-X-Gm-Message-State: AOAM530puyARNQNna3LTmkSX2DTvzoKx/U42pdQJDntOnOtbwncULqmN
-        hkex2ctSMJNJoG/PeRLCfr0gd21FmCo=
-X-Google-Smtp-Source: ABdhPJzbRhiMs7w2yHcB9tUaqUaDFJA0Sma/O8lYUcRw7b1jV70ocMyqdUL5ilw2TzSeD4D/v0r+7g==
-X-Received: by 2002:a05:600c:1d11:b0:38c:97f4:197b with SMTP id l17-20020a05600c1d1100b0038c97f4197bmr14576154wms.88.1648129505617;
-        Thu, 24 Mar 2022 06:45:05 -0700 (PDT)
-Received: from localhost.localdomain ([64.64.123.65])
-        by smtp.gmail.com with ESMTPSA id bg18-20020a05600c3c9200b0037c2ef07493sm2620590wmb.3.2022.03.24.06.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Mar 2022 06:45:05 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] fs: btrfs: fix possible use-after-free bug in error handling code of btrfs_get_root_ref()
-Date:   Thu, 24 Mar 2022 06:44:54 -0700
-Message-Id: <20220324134454.15192-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=hTxCgye7BS+8xhu8iC9h1EV20LT2IK2RAWcPZdTP0io=;
+        b=1SSuHh0dF47FHnABhHqNTl9n3U3a2DIx6/hZjRK9atUGNzR6NRCdOJJ9w9jTfGvLjN
+         4ZWUjJDrpa+fzUumEqnGZMCFbtuQromLOEGiEUAIj9ec6uYfcuAZhQVeVK7z5MOe/9Gc
+         7F4ihxiZ1goEBq6ps1o/+Ncdg9upt7H8otDwAEGAHR9fP0OTQy0pAVKHucvLRNsr8j02
+         UsqbEQyESIuTWhIeYos5ZfPHpsxVz3JymcWiI8XfYA7cCvjPRXnZhuMI5pULmBU4I6U5
+         IkjaPOmM5pzC3k/04SLVeGYwHzyxahdhEJjD/syvuCvat+9D+A7ZdNEb/9uiu2L5EKfb
+         /OKA==
+X-Gm-Message-State: AOAM530cPRxlu+QpkGSqsHB9IWYPSQFslDt/N+g44RO5lfNvG5QAj3jn
+        W4oEqwgVgwqr6zP7FWrscSM8t92JkmGNIdO022A=
+X-Google-Smtp-Source: ABdhPJx5eiYbxHz/G+NSfbHWdEZcfPfReF9vQnSr/DwRkbfo42yJFpT4MrHjMevn2neT+Latsv7OmELRe2g6rJtPAOU=
+X-Received: by 2002:a65:5882:0:b0:380:f8dc:912b with SMTP id
+ d2-20020a655882000000b00380f8dc912bmr4200801pgu.217.1648130686336; Thu, 24
+ Mar 2022 07:04:46 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6a10:a850:0:0:0:0 with HTTP; Thu, 24 Mar 2022 07:04:45
+ -0700 (PDT)
+Reply-To: wijh555@gmail.com
+From:   "Mrs. Rose Godwin" <rosegodwin1999@gmail.com>
+Date:   Thu, 24 Mar 2022 07:04:45 -0700
+Message-ID: <CAL6LAtqC0N30xj5acT_JveaO7swpwZwjSD_C-mu4vrkEnux_1A@mail.gmail.com>
+Subject: Good Day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:42b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4998]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [rosegodwin1999[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [wijh555[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [rosegodwin1999[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.8 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs_get_root_ref(), when btrfs_insert_fs_root() fails,
-btrfs_put_root() will be called to possibly free the memory area of
-the variable root. However, this variable is then used again in error
-handling code after "goto fail", when ret is not -EEXIST.
-
-To fix this possible bug, btrfs_put_root() is only called when ret is 
--EEXIST for "goto again".
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- fs/btrfs/disk-io.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b30309f187cf..126f244cdf88 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1850,9 +1850,10 @@ static struct btrfs_root *btrfs_get_root_ref(struct btrfs_fs_info *fs_info,
- 
- 	ret = btrfs_insert_fs_root(fs_info, root);
- 	if (ret) {
--		btrfs_put_root(root);
--		if (ret == -EEXIST)
-+		if (ret == -EEXIST) {
-+			btrfs_put_root(root);
- 			goto again;
-+		}
- 		goto fail;
- 	}
- 	return root;
 -- 
-2.17.1
+Greetings,
+I'm Mrs. Rose Godwin, how are you doing hope you are in good health,
+the Board director try to reach you on phone several times Meanwhile,
+your number was not connecting. before he ask me to send you an email
+to hear from you if you are fine. hoping to hear from you soonest.
 
+Thanks
+Mrs. Rose Godwin,
+
+Sincerely
+Dr. Irene Lam.
