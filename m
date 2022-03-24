@@ -2,109 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB8E4E65E7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 16:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9F14E6630
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 16:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346697AbiCXPSP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Mar 2022 11:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
+        id S1351319AbiCXPla (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Mar 2022 11:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236651AbiCXPSO (ORCPT
+        with ESMTP id S243459AbiCXPla (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Mar 2022 11:18:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FBEABF53
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 08:16:40 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 39F00210FD;
-        Thu, 24 Mar 2022 15:16:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648134999;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cg6I39UR+bl+hwkm8JHS0fUoeYxWDJjZvnrZ2/3QICI=;
-        b=Cobn9DBCtS0plfSyeNUFyJ+3AX6uFbIAyTJMMEP//bHAI8+I37R59+VtwfXligOPf1SuXy
-        YyK76axfgKjwcvPMnV/i5JOClXw2PhBkM0ru2rcaX+bHuB0brAJo/I7TIG3+Cn1suTxUgo
-        yvwYAQf5kdDHS346CdRbtm9KG8MsRak=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648134999;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cg6I39UR+bl+hwkm8JHS0fUoeYxWDJjZvnrZ2/3QICI=;
-        b=D6tV+Mne2yU9XzvjOKuLyxkHvkyOFNR9Keti/ciJEhKbSXrU9VroZKctbVcBvjmG/cohOH
-        HPj1dfA3NT+mVkDw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 23FDBA3B8A;
-        Thu, 24 Mar 2022 15:16:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 693F7DA7F3; Thu, 24 Mar 2022 16:12:44 +0100 (CET)
-Date:   Thu, 24 Mar 2022 16:12:44 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs-progs: add check and repair ability for super
- num devices mismatch
-Message-ID: <20220324151244.GI2237@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1646009185.git.wqu@suse.com>
- <20220323171759.GB2237@twin.jikos.cz>
- <15fcb764-d25a-6424-2560-25e4ce3baf7b@gmx.com>
+        Thu, 24 Mar 2022 11:41:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5599198F46;
+        Thu, 24 Mar 2022 08:39:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E1BFA61835;
+        Thu, 24 Mar 2022 15:39:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5691C340EC;
+        Thu, 24 Mar 2022 15:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648136397;
+        bh=W2gwKBXTGnbi1TztKRUks+XIXhyWOZvvzMkuDRdIR+U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pkmMmzYnW3px4Ml8thL52AnBARS1xU5McoGTxS2ANE3DZgQouliDKdQGS6U5tf6F/
+         n8yoRpkGLCBZbo9C6ws1l7wSAbDIBY7kPWdN8LwTaNnqqcbEe2nbX+/lUWyLOx/q5D
+         9hpb7ScnOEf5oGfZMVkzQp6V2hJPx7E/6EdFMg5lIxJxtcf9G3TsKEWp+B46wCK9HX
+         Lbpgfpf2i8qSkhgyI35ca1kMPn1OshG57j9G0tPisX0EreJPXMMmur/eCNZOSVaTfT
+         gqc65f1xzzbmlB30wSjEDmiSP+UrQswqAuP2JX+B6iAl2eUJ+zwjHk29Rj92M19nlm
+         g9AO4AjAhZxoA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] btrfs: Remove unused variable in btrfs_{start,write}_dirty_block_groups()
+Date:   Thu, 24 Mar 2022 08:36:45 -0700
+Message-Id: <20220324153644.4079376-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15fcb764-d25a-6424-2560-25e4ce3baf7b@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 07:30:31AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2022/3/24 01:17, David Sterba wrote:
-> > On Mon, Feb 28, 2022 at 08:50:06AM +0800, Qu Wenruo wrote:
-> >> The patchset can be fetched from github:
-> >> https://github.com/adam900710/btrfs-progs/tree/super_num_devs
-> >>
-> >> The 2nd patch contains a compressed raw image, thus it may be a little
-> >> too large for the mail list.
-> >
-> > The compressed size is 22K, that's fine. I've recompressed it with 'xz
-> > --best -e' and it shaved a few hundred bytes but that was just out of
-> > curiosity.
-> 
-> I'm also a little interested in why things like zstd/xz is not that
-> efficient in compressing raw btrfs images.
+Clang's version of -Wunused-but-set-variable recently gained support for
+unary operations, which reveals two unused variables:
 
-I think it is efficient, unpacked image was 128M and getting that to 22K
-is a good result.
+  fs/btrfs/block-group.c:2949:6: error: variable 'num_started' set but not used [-Werror,-Wunused-but-set-variable]
+          int num_started = 0;
+              ^
+  fs/btrfs/block-group.c:3116:6: error: variable 'num_started' set but not used [-Werror,-Wunused-but-set-variable]
+          int num_started = 0;
+              ^
+  2 errors generated.
 
-> Especially when creating the image I have created the image with all
-> zero (fallocated) file in the first place, thus most space should just
-> be all zero, and any compression method should be super efficient on them.
-> 
-> My current guesses are:
-> 
-> - DUP metadata is not fully detected by the algo
->    Especially when they are mostly quite some ranges away
-> 
-> - Some older tree blocks from mkfs
-> 
-> So for further raw image size reduction, we may want to:
-> 
-> - Use SINGLE metadata/data
-> 
-> - Fstrim the image first
+These variables appear to be unused from their introduction, so just
+remove them to silence the warnings.
 
-Yeah that could remove any stale blocks.
+Cc: stable@vger.kernel.org
+Fixes: c9dc4c657850 ("Btrfs: two stage dirty block group writeout")
+Fixes: 1bbc621ef284 ("Btrfs: allow block group cache writeout outside critical section in commit")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1614
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+
+I am requesting a stable backport because this is visible with
+allmodconfig, which enables CONFIG_WERROR, breaking the build.
+
+To quote Linus:
+
+"EVERYBODY should have CONFIG_WERROR=y on at least x86-64 and other
+serious architectures, unless you have some completely random
+experimental (and broken) compiler."
+
+https://lore.kernel.org/r/CAHk-=wifoM9VOp-55OZCRcO9MnqQ109UTuCiXeZ-eyX_JcNVGg@mail.gmail.com/
+
+ fs/btrfs/block-group.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index c22d287e020b..9ad265066225 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2946,7 +2946,6 @@ int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 	struct btrfs_path *path = NULL;
+ 	LIST_HEAD(dirty);
+ 	struct list_head *io = &cur_trans->io_bgs;
+-	int num_started = 0;
+ 	int loops = 0;
+ 
+ 	spin_lock(&cur_trans->dirty_bgs_lock);
+@@ -3012,7 +3011,6 @@ int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 			cache->io_ctl.inode = NULL;
+ 			ret = btrfs_write_out_cache(trans, cache, path);
+ 			if (ret == 0 && cache->io_ctl.inode) {
+-				num_started++;
+ 				should_put = 0;
+ 
+ 				/*
+@@ -3113,7 +3111,6 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 	int should_put;
+ 	struct btrfs_path *path;
+ 	struct list_head *io = &cur_trans->io_bgs;
+-	int num_started = 0;
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+@@ -3171,7 +3168,6 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 			cache->io_ctl.inode = NULL;
+ 			ret = btrfs_write_out_cache(trans, cache, path);
+ 			if (ret == 0 && cache->io_ctl.inode) {
+-				num_started++;
+ 				should_put = 0;
+ 				list_add_tail(&cache->io_list, io);
+ 			} else {
+
+base-commit: d3e29967079c522ce1c5cab0e9fab2c280b977eb
+-- 
+2.35.1
+
