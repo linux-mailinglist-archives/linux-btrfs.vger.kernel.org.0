@@ -2,140 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24E54E627E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 12:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD0B4E63A0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Mar 2022 13:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345590AbiCXLbl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Mar 2022 07:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        id S1346410AbiCXMtk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Mar 2022 08:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235263AbiCXLbk (ORCPT
+        with ESMTP id S1347497AbiCXMti (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Mar 2022 07:31:40 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA9E2C126
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 04:30:08 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22O8oG0X001944;
-        Thu, 24 Mar 2022 11:30:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=xYMAJQrtWTxyGVZphEgAVJ91xkmQXTVEfrAXSJP2yFA=;
- b=OLQOv0b7leY00mDhxa+eoTjn/N7F51Z9Is+ZesMKm/RvyXsE2QD2FBN5fXcZ2NfBqFt3
- x+YXbrGVeuf6GlHfUEremOb2q0018A2wrdsUw4/IuHsQgh+51mjWB6OlI1655kocjWqj
- jbryie3kj3bOMqydS1dIglYoqwUT/dQS9XCO2xEr5cbOBb8UwrTWPwPwCAdv0R6vkv0A
- 4d0X5lBi7bpo0paWvfiQlHKitu3NUQ457+Fs6sa0aXrxKFMqqQXuZMUdHXfsXw4/eEs7
- sugUCNjqnotUpbo487lu8fTiEecTkdEg+em2eh769tITXV3/5o9SQbMuc0KD1QQehPGj IA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ew5kcuvam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Mar 2022 11:30:02 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 22OBGSl6030523;
-        Thu, 24 Mar 2022 11:30:01 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
-        by aserp3020.oracle.com with ESMTP id 3ew701r8e1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Mar 2022 11:30:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KB/JiKQtGQUaOs/Zn1krnVJb6DvIZsB/LuM5/Cvgx45WFYNeo788O5oaM9TvdMG335j0lhn1s96uQUZAxbnlnt7UWxTso8tIqwlI4VW2eItyiX48KOJa7xy+HdMCJXFKw1dSLn0XLLGFBLqQ8cExthQcB1sakmXPSUGtI6oVW9ZJAGYCvL+bDuUJZuHVlg/l8dVlvaT4gTMYYuJ3xyXfx4l9Q9jeT1gKTmK3rOEX9+/kPuRy5b8vUiVcCtLTJXDDOWULEZo8kq34QxhDZuy4o3/JhCDRIfUswhO/zxMA5tTCyesPmgMIpCajbT7ktVU0PbWAStkzH4GcwqIdf23WwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xYMAJQrtWTxyGVZphEgAVJ91xkmQXTVEfrAXSJP2yFA=;
- b=oR6OISSbiuIRSnHeEl1/7ZxHnxuBWZrYyfXq+cDIfqGz8YQtCD7EddQT1QWvVO5P9Tt7Illi3e9pu5eoMCrYj71LNPzl2tkUoZG/z/cf2inY15LPSjYsVRiYIwuyHbWLMvpHGNzAbUvLHFzmOvzqi5eCMNvT/uSK5kUtmqST2JWBs3Us4TWGUkbcFGyxzySZckwCdF0BVTG0TqY+H5qD1u9KaUdxm3pTuQDCebmx7gQPslWcQNDn14WAexigddMPXronvvdH2CN4DqPUr+9/WQXwz59GZQDzao7XUNzXi8ASnLk6drwCh8tb9zxxFXue+qm6llgJt5nJBDDhzVR56w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 24 Mar 2022 08:49:38 -0400
+X-Greylist: delayed 569 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Mar 2022 05:48:06 PDT
+Received: from mtaextp1.scidom.de (mtaextp1.scidom.de [146.107.3.202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B9225CC
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 05:48:05 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mtaextp1.scidom.de (Postfix) with ESMTP id 96E2218001D65
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 13:38:25 +0100 (CET)
+Received: from mtaextp1.scidom.de ([127.0.0.1])
+        by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id wWADdCqF0Zpy for <linux-btrfs@vger.kernel.org>;
+        Thu, 24 Mar 2022 13:38:25 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by mtaextp1.scidom.de (Postfix) with ESMTP id 6751118CD8F0F
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 13:38:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mtaextp1.scidom.de 6751118CD8F0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xYMAJQrtWTxyGVZphEgAVJ91xkmQXTVEfrAXSJP2yFA=;
- b=eNnRE/+BuJ3TlYcK1FBaVWjZfw8xK2WclyjWY2m4CiRfAsF+fzsPgk30tu0s4KnnxmITQNnCYNU8XSROnfv6jDdpqzNASsJE61YV+ubttNCowWK0JeIEtrXXOV2aPaHwGMK4J7bQFgrkLoTWqrw2ZnkHYXWJa0rZwVVH8mpoLHs=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by DM5PR10MB1946.namprd10.prod.outlook.com (2603:10b6:3:110::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.18; Thu, 24 Mar
- 2022 11:29:59 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::c0a1:3beb:af48:3867]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::c0a1:3beb:af48:3867%5]) with mapi id 15.20.5102.016; Thu, 24 Mar 2022
- 11:29:59 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com, boris@bur.io
-Subject: [PATCH] btrfs: rename BTRFS_FS_OPEN add comment
-Date:   Thu, 24 Mar 2022 19:29:51 +0800
-Message-Id: <67a23a46711e1e479332622728d035af0b21bc16.1648120624.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.33.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0008.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::19) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
+        t=1648125505; bh=IeqIByezPZUq97wsVKe4oric8khqHOxkQ/olLJ+jvQw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=rptyZsgPkbkJ03VViTZudf0JvCw2Nwu8AQ2N6ymCWT1ClENABV9IYMTTxFuLUPiYx
+         X+6a3yPwJztfwc1PAlRF5+Q3G7zkxAAIzXqdY9XFR3pFcrXD+gbvDjxSBMHRAN9g9E
+         dSYteZt4xRJLDaEirPThNdoDuma5j64eLMQ/Ti2CG6dRubkIG6VrOMHwbPajqOWedQ
+         f3tHErQwuiB8ew2BlPGjqMBcEVVp2ZZSDhK6RmxDCekTgdMAFyMEVraf8ijeiSYRLN
+         JyCFHkXkH4bAGv8Jq5HrjUA4oc+gSMCee/3x18QSt+9EiP0U2SclV5Q+i11eL3//vr
+         dAR485CAOcAZA==
+X-Amavis-Modified: Mail body modified (using disclaimer) - mtaextp1.scidom.de
+X-Virus-Scanned: amavisd-new at mtaextp1.scidom.de
+Received: from mtaextp1.scidom.de ([127.0.0.1])
+        by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id lmqXQMy2wKAZ for <linux-btrfs@vger.kernel.org>;
+        Thu, 24 Mar 2022 13:38:25 +0100 (CET)
+Received: from mtaintp1.scidom.de (mtaintp1.scidom.de [146.107.8.197])
+        by mtaextp1.scidom.de (Postfix) with ESMTPS id 4211918057A09
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 13:38:25 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by mtaintp1.scidom.de (Postfix) with ESMTP id 107B58268250
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 13:38:33 +0100 (CET)
+Received: from mtaintp1.scidom.de ([127.0.0.1])
+        by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id WZ1nBq3Lhqlk for <linux-btrfs@vger.kernel.org>;
+        Thu, 24 Mar 2022 13:38:32 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by mtaintp1.scidom.de (Postfix) with ESMTP id DDAFF838F059
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 13:38:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mtaintp1.scidom.de DDAFF838F059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
+        t=1648125512; bh=IeqIByezPZUq97wsVKe4oric8khqHOxkQ/olLJ+jvQw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Rwf9KPBAn91Z2TDBjZxNyOcv/g3qSVCyMriKOdXOq+H73yv6dIzK1/4H1vKpVmxg1
+         yi90pT6xZj/mgYfMh+VZ50SyHgAc8AXrhaZ2lihgPGh6lDzdvd/hLC+5+xsRUrzt5Q
+         IK212nmDAMRy4ODmw90bp/a2oMnHs8BhixHyXAMoPnnZUDe+nZhFWy6H0jDsz00q6y
+         Q0EARoxc9npb8Dj4VncjyC0E04izSzygVtKbUx7kjgbVnqowRTiIsybIrSS6notsNi
+         hwgU0xL/6GKY90sQ2ugNP8TCHupCSBAjIXaljHK7ifEW9uZgm0offBe/Klbe3LV56B
+         kCMSdjN107NKg==
+X-Amavis-Modified: Mail body modified (using disclaimer) - mtaintp1.scidom.de
+X-Virus-Scanned: amavisd-new at mtaintp1.scidom.de
+Received: from mtaintp1.scidom.de ([127.0.0.1])
+        by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XW0OCnEeamWb for <linux-btrfs@vger.kernel.org>;
+        Thu, 24 Mar 2022 13:38:32 +0100 (CET)
+Received: from mbxp1.scidom.de (mbxp1.scidom.de [146.107.8.207])
+        by mtaintp1.scidom.de (Postfix) with ESMTP id BFD0C8268250
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Mar 2022 13:38:32 +0100 (CET)
+Date:   Thu, 24 Mar 2022 13:38:32 +0100 (CET)
+From:   "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
+To:     Btrfs ML <linux-btrfs@vger.kernel.org>
+Message-ID: <587892959.1863318.1648125512532.JavaMail.zimbra@helmholtz-muenchen.de>
+Subject: what mens gen and ogen in btrfs sub list / ?
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: be19f7db-f9b3-423a-b9c7-08da0d89a14b
-X-MS-TrafficTypeDiagnostic: DM5PR10MB1946:EE_
-X-Microsoft-Antispam-PRVS: <DM5PR10MB19469717078CA95F1888AEADE5199@DM5PR10MB1946.namprd10.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iwjef0l0iIk5tv+i4DjsHG+GUry/Zeuyk19M+XIqk0VLIwGVVS77G6mOnN8KynP6fw1mdqOSmpP3djb0jH/oC/AzWmI75NM2ZWPO1/jmOUjDhQEWhaEmETpbnx20GKLASqMYqBOzmX95AnXz4sGaqn1K6D4VZE7wbKZT2m2koG5KzXA7eLYiCp9b3MG/0PY4BBIo1NyWEfCL5dSV8O6/5+14hhBo8BfRERXtBAUtJc0GIwNBpjyOJlAEN53iolEK1Q0HLfOmUd7nyewNjXEXtalDOCKdKue6KqJ6X0/wXEG+6ruHbWOlLhB10UKf3ZnaBANdymepTOkI0iJM/kCkekPQCROOjfWNx1obXrIO7U2WpnRV0z24GHLzUARreAePbx3B7ZAp3qDmjlpSaNSgekiC/hqYoJ3YyAtMomYXkpjDpz4LuKKfpPFL+SCgvdQGWVmk39hCjq/rM4OUHvMDgcGNUtCd4rFwedBjhq0Fp1o/s2exTiUakDEZ5UWWvXnCAjsxyWBEhDdkDdpm8nP6otbJ2eYxQDWUcFRcXYAtudwFnEhjNwe2ud6LH9Ajcu2gEgQVhgrF2A2x+xCHl1VbFLQPFTLj9uH27dFOG2tYvuZX23loqdeY+z11TN2cBYZKrRnkO0fcf0gcKIjJ+pju5A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6486002)(8936002)(4326008)(8676002)(508600001)(2616005)(66476007)(6916009)(6666004)(86362001)(6512007)(66946007)(66556008)(2906002)(6506007)(83380400001)(5660300002)(26005)(38100700002)(186003)(44832011)(316002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3yZ9Hp0XrkRaVrSnqmVUWHfBC5ai+SG5OjfATGD7uW6KDpanROpPBsOntWIK?=
- =?us-ascii?Q?Qdoaj9sBcpbX+T4wRP7EQuuIo6tTmNTZ0Dq+LwzW+bqATuizQQA38TYlf/yS?=
- =?us-ascii?Q?QtyC/Fxwo8XMAsooi6TdkAxRDejtQvENE1hqzJ6Q55z91nhoWNli+K/7jpZv?=
- =?us-ascii?Q?+nMjFDzXCcU0ScZfIoK7rOHyCHoQy2zNNFcPhuVxiVvBduUUuz8jhPYQaLrO?=
- =?us-ascii?Q?MYYjTrOwO0NvjwA27U1mhcCiFcCSMZJhGw9FtGfv9Z8Lor5+6WrrOaeJUWlt?=
- =?us-ascii?Q?2hchV2LWr9pufn8cCnWYdAxibLK9+ly8KWYjZnN28Tv5CCMh+EVG1wp/wboQ?=
- =?us-ascii?Q?PcXXeZSgHzxhtNE/oMrUy+rF7vZE9uvDKUJxAeoy5eqnQvBwKVrUr59Cx1Wr?=
- =?us-ascii?Q?45Lwu37nXWqrcdmYHF+6YdfIu3oLoggHghw301tB4V1m1Y1Z9P6hc4s2xN9a?=
- =?us-ascii?Q?S7N/jynnoljyb7Ltj0uBN8+h1f8CZicX7FCmVcZpaRLQ1/wncHDG29I/DhfD?=
- =?us-ascii?Q?W3jv/RNgj1wSUIZvolIXj+aocfZxTQMpYlBybR5c33QfOFNuglHcLHHw+LVZ?=
- =?us-ascii?Q?pGWGCm39wL1QSRiVjQsrEKsOdiR2kZia/6uozaEwn9dUOTKKqc/jRgtOYKvy?=
- =?us-ascii?Q?iO8dAAg40d+0+M/2/jWi4OgOLVid4O9AB8O8xoaaTx7/Xzw1ulLLadFvWKeb?=
- =?us-ascii?Q?JHgfOyRsz9ubG218Q05sZKbi4BRNt3uzK+XQabuwjxNeZcdsPN8kRQXDfFYL?=
- =?us-ascii?Q?YEftF5kmaarYrf21hMuOfT1ABYP9tJ6N55Q3mno8NYwOCFMBjMjjk0CILrhO?=
- =?us-ascii?Q?d9V45LkIZPVU2A7ZmEdm9kNVoaIAMhBj/h62zMm716BWq/qxELXpl1yl3/r6?=
- =?us-ascii?Q?SiVYO8aZ+W1aiIcEwt7Lm+6nIBKzvKCvt2ENra0iOT/mpIKL+HuqG8GxIPXk?=
- =?us-ascii?Q?dlD1hrCyO31k13iOmswMXPHbbuLqGs7wsUakGBJRMNH5/dfMudiL+fUruQn8?=
- =?us-ascii?Q?guAnwtXAdpS5Kfy9ah8E5jMVQIhiKNXHDmr+fVix/zKuKOm0Po00AKl4W64m?=
- =?us-ascii?Q?FSBwSn431sj9VIpEC5Y7AWgkLXjef20jZK0vKWjTJDIe3BqU+DI6j1bqrUrh?=
- =?us-ascii?Q?zGebgyGheQnKBGGp1TWCF9umh9Oo5c3+nw92zCAQ2nHkz7IkXREaIzdVMxsa?=
- =?us-ascii?Q?Uc5RN6ON9mjHu76Kk7OBoYQtoXDxurgrG0oNjiEeiSvfWho7QsVHEd9W07Hg?=
- =?us-ascii?Q?y2qa/Qs/EJohOOCYK33QIHc0qMWb6EGGGw5W0R20nvQmvV3+6+lM0extx68l?=
- =?us-ascii?Q?n5HvP+wBg3g4DLwkfwlipSz1s45taguiseWtt2bhGuKpmCYvbZyLIgn4ppU/?=
- =?us-ascii?Q?ek/A3PJ58TkBWhcA7Z/Re/E6Dd2IntcgHnfdFo61aoze8J04ChFtuvUyTMQ6?=
- =?us-ascii?Q?0pFPRZR34IAxKwTEi/dk2ZhXCWZCpVVNxH+3rTWABtDhnVAVwaWBENS7fIkV?=
- =?us-ascii?Q?8yWAKrfPjRLGQw5F4dJBWhYDs0V5GF0DMTQxeXlrc6p4ZjfMxugxfrjy/koH?=
- =?us-ascii?Q?tfCMG5VBIlRWhfEBbB00RU6ZJzjicxGeSYCEYTM0yRm0ZhduDFGyc+E2OaWC?=
- =?us-ascii?Q?g+MZfj/Tez1U1aRt0/6K0GsRqtVYUWjSVoQe2G1xRrDGQAbXjLL6RZMlW9Ct?=
- =?us-ascii?Q?waXLvwSkCGjEHwbte0t1ImdUGqbt7AHqMohv+73cOGszL6RJAw5/siSZ7g/5?=
- =?us-ascii?Q?JDkql4clSY/rwgJqBmNUv2uPBJ+FcxE=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: be19f7db-f9b3-423a-b9c7-08da0d89a14b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2022 11:29:59.4700
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NgMhLSWycIi/mq7fs52AS4sDNoa7DHvVraGpFPyVOpSlGE4W7OZlexDR/vynxOvUIZ5CZUjs2dFYz6nsI5XRHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR10MB1946
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10295 signatures=694973
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
- definitions=main-2203240067
-X-Proofpoint-GUID: PHLBg09MHxCiAV5ZAx-0ELu0TPWZyA5b
-X-Proofpoint-ORIG-GUID: PHLBg09MHxCiAV5ZAx-0ELu0TPWZyA5b
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; 
+        boundary="----=_Part_1863328_174847465.1648125512746"
+X-Originating-IP: [146.107.159.74]
+X-Mailer: Zimbra 8.8.15_GA_4203 (ZimbraWebClient - GC98 (Win)/8.8.15_GA_4232)
+Thread-Index: AqPWMDCDLeUl24/5ier5p2tf+Tv0hw==
+Thread-Topic: what mens gen and ogen in btrfs sub list / ?
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -143,122 +97,115 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The in-memory flag BTRFS_FS_OPEN in fs_info->flags indicate the status of
-the open_ctree() if it has completed for the read-write. The mount -o ro
-or the seed device don't get this flag set because they aren't RW
-mounted.
+------=_Part_1863328_174847465.1648125512746
+Date: Thu, 24 Mar 2022 13:38:32 +0100 (CET)
+From: "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
+To: Btrfs ML <linux-btrfs@vger.kernel.org>
+Message-ID: <587892959.1863318.1648125512532.JavaMail.zimbra@helmholtz-muenchen.de>
+Subject: what mens gen and ogen in btrfs sub list / ?
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [146.107.159.74]
+X-Mailer: Zimbra 8.8.15_GA_4203 (ZimbraWebClient - GC98 (Win)/8.8.15_GA_4232)
+Thread-Index: AqPWMDCDLeUl24/5ier5p2tf+Tv0hw==
+Thread-Topic: what mens gen and ogen in btrfs sub list / ?
 
-The threads like delete_unused_bgs(), reclaim_bgs_work() and
-cleaner_kthread() test this flag and if false they return without executing
-the functionality in it.
 
-This patch renames BTRFS_FS_OPEN to BTRFS_FS_OPENED_RW to make it more
-intuitive. Also, add a comment.
+Hi,
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/block-group.c | 4 ++--
- fs/btrfs/ctree.h       | 5 ++++-
- fs/btrfs/disk-io.c     | 6 +++---
- fs/btrfs/super.c       | 2 +-
- fs/btrfs/volumes.c     | 2 +-
- 5 files changed, 11 insertions(+), 8 deletions(-)
+i'd like to write a script in which, beneath other stuff, the oldest snapsh=
+ot(s) are deleted.
+So i'm looking for a way to sort the list of the snapshots by date.
+I read the manpage and stumbled across gen and ogen of snapshots.
+But what does that mean and how can the values be interpreted ?
+Or is there another way to list the snapshots by e.g. creation date ?
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 59f18a10fd5f..cefbab299a35 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1295,7 +1295,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 	const bool async_trim_enabled = btrfs_test_opt(fs_info, DISCARD_ASYNC);
- 	int ret = 0;
- 
--	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
-+	if (!test_bit(BTRFS_FS_OPENED_RW, &fs_info->flags))
- 		return;
- 
- 	/*
-@@ -1519,7 +1519,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	struct btrfs_block_group *bg;
- 	struct btrfs_space_info *space_info;
- 
--	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
-+	if (!test_bit(BTRFS_FS_OPENED_RW, &fs_info->flags))
- 		return;
- 
- 	sb_start_write(fs_info->sb);
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 49026d27063b..4675645e1329 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -586,7 +586,10 @@ enum {
- 	BTRFS_FS_CLOSING_START,
- 	BTRFS_FS_CLOSING_DONE,
- 	BTRFS_FS_LOG_RECOVERING,
--	BTRFS_FS_OPEN,
-+
-+	/* Indicates the open_ctree() is complete for read-write operations */
-+	BTRFS_FS_OPENED_RW,
-+
- 	BTRFS_FS_QUOTA_ENABLED,
- 	BTRFS_FS_UPDATE_UUID_TREE_GEN,
- 	BTRFS_FS_CREATING_FREE_SPACE_TREE,
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 3de3e67145e5..0a1b23f8d968 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1998,7 +1998,7 @@ static int cleaner_kthread(void *arg)
- 		 * Do not do anything if we might cause open_ctree() to block
- 		 * before we have finished mounting the filesystem.
- 		 */
--		if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
-+		if (!test_bit(BTRFS_FS_OPENED_RW, &fs_info->flags))
- 			goto sleep;
- 
- 		if (!mutex_trylock(&fs_info->cleaner_mutex))
-@@ -3927,7 +3927,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		}
- 	}
- 
--	set_bit(BTRFS_FS_OPEN, &fs_info->flags);
-+	set_bit(BTRFS_FS_OPENED_RW, &fs_info->flags);
- 
- 	/* Kick the cleaner thread so it'll start deleting snapshots. */
- 	if (test_bit(BTRFS_FS_UNFINISHED_DROPS, &fs_info->flags))
-@@ -4761,7 +4761,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	/* We shouldn't have any transaction open at this point */
- 	warn_about_uncommitted_trans(fs_info);
- 
--	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
-+	clear_bit(BTRFS_FS_OPENED_RW, &fs_info->flags);
- 	free_root_pointers(fs_info, true);
- 	btrfs_free_fs_roots(fs_info);
- 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 5f7032d14455..66ca1e24586c 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2112,7 +2112,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 
- 		btrfs_clear_sb_rdonly(sb);
- 
--		set_bit(BTRFS_FS_OPEN, &fs_info->flags);
-+		set_bit(BTRFS_FS_OPENED_RW, &fs_info->flags);
- 	}
- out:
- 	/*
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 5be81fc26092..39b5a9f7664a 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7710,7 +7710,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 	 * and at this point there can't be any concurrent task modifying the
- 	 * chunk tree, to keep it simple, just skip locking on the chunk tree.
- 	 */
--	ASSERT(!test_bit(BTRFS_FS_OPEN, &fs_info->flags));
-+	ASSERT(!test_bit(BTRFS_FS_OPENED_RW, &fs_info->flags));
- 	path->skip_locking = 1;
- 
- 	/*
--- 
-2.33.1
+OS: Ubuntu 20.04
+btrfs-progs: 5.4.1-2
 
+root@nc-mcd:~/skripte# btrfs sub list -tcg /
+ID      gen     cgen    top level       path
+--      ---     ----    ---------       ----
+273     1060462 170590  5               snapshots/pre_upgrade_27112020
+279     1060464 1006204 5               snapshots/root-19102021
+
+
+Thanks.
+
+Bernd
+
+
+
+--
+Bernd Lentes=20
+System Administrator=20
+Institute for Metabolism and Cell Death (MCD)=20
+Building 25 - office 122=20
+HelmholtzZentrum M=C3=BCnchen=20
+bernd.lentes@helmholtz-muenchen.de=20
+phone: +49 89 3187 1241=20
+fax: +49 89 3187 2294=20
+http://www.helmholtz-muenchen.de/mcd=20
+
+
+Public key:=20
+
+30 82 01 0a 02 82 01 01 00 b3 72 3e ce 2c 0a 6f 58 49 2c 92 23 c7 b9 c1 ff =
+6c 3a 53 be f7 9e e9 24 b7 49 fa 3c e8 de 28 85 2c d3 ed f7 70 03 3f 4d 82 =
+fc cc 96 4f 18 27 1f df 25 b3 13 00 db 4b 1d ec 7f 1b cf f9 cd e8 5b 1f 11 =
+b3 a7 48 f8 c8 37 ed 41 ff 18 9f d7 83 51 a9 bd 86 c2 32 b3 d6 2d 77 ff 32 =
+83 92 67 9e ae ae 9c 99 ce 42 27 6f bf d8 c2 a1 54 fd 2b 6b 12 65 0e 8a 79 =
+56 be 53 89 70 51 02 6a eb 76 b8 92 25 2d 88 aa 57 08 42 ef 57 fb fe 00 71 =
+8e 90 ef b2 e3 22 f3 34 4f 7b f1 c4 b1 7c 2f 1d 6f bd c8 a6 a1 1f 25 f3 e4 =
+4b 6a 23 d3 d2 fa 27 ae 97 80 a3 f0 5a c4 50 4a 45 e3 45 4d 82 9f 8b 87 90 =
+d0 f9 92 2d a7 d2 67 53 e6 ae 1e 72 3e e9 e0 c9 d3 1c 23 e0 75 78 4a 45 60 =
+94 f8 e3 03 0b 09 85 08 d0 6c f3 ff ce fa 50 25 d9 da 81 7b 2a dc 9e 28 8b =
+83 04 b4 0a 9f 37 b8 ac 58 f1 38 43 0e 72 af 02 03 01 00 01
+
+------=_Part_1863328_174847465.1648125512746
+Content-Type: application/pkcs7-signature; name=smime.p7s; smime-type=signed-data
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCAMIIF
+yDCCBLCgAwIBAgIMIgdroMAv99uEUtszMA0GCSqGSIb3DQEBCwUAMIGNMQswCQYDVQQGEwJERTFF
+MEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdz
+bmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2Jh
+bCBJc3N1aW5nIENBMB4XDTE5MTIwNDE3MzQwOVoXDTIyMTIwMzE3MzQwOVowVzELMAkGA1UEBhMC
+REUxIzAhBgNVBAoMGkhlbG1ob2x0eiBaZW50cnVtIE11ZW5jaGVuMQwwCgYDVQQLDANJREcxFTAT
+BgNVBAMMDEJlcm5kIExlbnRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALNyPs4s
+Cm9YSSySI8e5wf9sOlO+957pJLdJ+jzo3iiFLNPt93ADP02C/MyWTxgnH98lsxMA20sd7H8bz/nN
+6FsfEbOnSPjIN+1B/xif14NRqb2GwjKz1i13/zKDkmeerq6cmc5CJ2+/2MKhVP0raxJlDop5Vr5T
+iXBRAmrrdriSJS2IqlcIQu9X+/4AcY6Q77LjIvM0T3vxxLF8Lx1vvcimoR8l8+RLaiPT0vonrpeA
+o/BaxFBKReNFTYKfi4eQ0PmSLafSZ1Pmrh5yPungydMcI+B1eEpFYJT44wMLCYUI0Gzz/876UCXZ
+2oF7KtyeKIuDBLQKnze4rFjxOEMOcq8CAwEAAaOCAlswggJXMD4GA1UdIAQ3MDUwDwYNKwYBBAGB
+rSGCLAEBBDAQBg4rBgEEAYGtIYIsAQEEBDAQBg4rBgEEAYGtIYIsAgEEBDAJBgNVHRMEAjAAMA4G
+A1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwHQYDVR0OBBYEFIbj
+udERXYhU7DMaI17GPlWqLTQVMB8GA1UdIwQYMBaAFGs6mIv58lOJ2uCtsjIeCR/oqjt0MC0GA1Ud
+EQQmMCSBImJlcm5kLmxlbnRlc0BoZWxtaG9sdHotbXVlbmNoZW4uZGUwgY0GA1UdHwSBhTCBgjA/
+oD2gO4Y5aHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jcmwvY2Fj
+cmwuY3JsMD+gPaA7hjlodHRwOi8vY2RwMi5wY2EuZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHVi
+L2NybC9jYWNybC5jcmwwgdsGCCsGAQUFBwEBBIHOMIHLMDMGCCsGAQUFBzABhidodHRwOi8vb2Nz
+cC5wY2EuZGZuLmRlL09DU1AtU2VydmVyL09DU1AwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAxLnBj
+YS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSQYIKwYBBQUH
+MAKGPWh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2Nh
+Y2VydC5jcnQwDQYJKoZIhvcNAQELBQADggEBAG9FaTFBh6Yp8cNfWoaMF6GhZRFiARkPSNlvI8BJ
+y+tS5W9urRKluF0mtgseNk1Eff3AD1bqicMIzThTuScwq1WhY5ZCGlD/qYLf+FY3VnPTjk6ZVruE
+KuoA4bKJaVrXGkfBmw+oSMh6rfw6pwnchLXP7l40hDQ5tQ2/8BcpZYcykC4ziIga3hqe7vN4vhF6
+gYKN6lET83QXYoh0IGCfFw3fIdTJk1IStMqe0Cd7eXpfwKQfjtzK8M5Qccj46923WGIwo0zSRiJR
+R1J97qDZZxBsGJfj3tC5X/FkWhn3fDiPZYeTlvmFrzSyLSw/FBR/D2o/bUz+eaeVmenc32vxYmEA
+ADGCApswggKXAgEBMIGeMIGNMQswCQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2Vy
+ZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdE
+Rk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBAgwiB2ugwC/324RS
+2zMwDQYJYIZIAWUDBAIBBQCggc4wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjIwMzI0MTIzODMyWjAtBgkqhkiG9w0BCTQxIDAeMA0GCWCGSAFlAwQCAQUAoQ0GCSqG
+SIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCD8WA7lsSj7e0/l0RyCfKvkPKakyXxnzy8b0Cm1OLlt
+/TA0BgkqhkiG9w0BCQ8xJzAlMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAHBgUrDgMCBzAN
+BgkqhkiG9w0BAQsFAASCAQCQ5a3C1+elP5UpG+LDXgDc1ca9M+eLallJRigrcVyZDbRbPXVyLPcc
+PR1lEvzF/kx+UrQ9sodbrKhkKOZrjKNxNbxTNRJgqRykcNB+7IBt2NFGDCoKG9EucHQFS9C9EXRu
+wW3nzRcYr9UeQfm9hLq0IZPyuD2iGU4mtWCVTuEIg9jm5kQYOdo8vgYqS6LGgzPsdQgod3Uz+wxi
+XQ/6o2a58ViAwoY52TvTDJT4tCFfPNaUwQ9ztffOYMHhCMlY0ompC30rNwQIfYjcUL/uhqcONZRl
+mQvLUE1NbIByOZs40cNz29PGQ8B9syNcpBKHLGPvOz6hwiYHkmCqflfUQQuzAAAAAAAA
+------=_Part_1863328_174847465.1648125512746--
