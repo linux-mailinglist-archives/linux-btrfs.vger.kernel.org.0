@@ -2,64 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A624F4E9F63
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 21:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97CB4E9FA2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 21:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245436AbiC1TGx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Mar 2022 15:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        id S241161AbiC1TSa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Mar 2022 15:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240477AbiC1TGw (ORCPT
+        with ESMTP id S1343653AbiC1TSU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Mar 2022 15:06:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D470E2655F
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Mar 2022 12:05:11 -0700 (PDT)
+        Mon, 28 Mar 2022 15:18:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793186662F
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Mar 2022 12:16:39 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 895C7210EB;
-        Mon, 28 Mar 2022 19:05:10 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 26E2F1FD3E;
+        Mon, 28 Mar 2022 19:16:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648494310;
+        t=1648494998;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=t2S+u+HfGnVJypaxHseosXnayDzHZm7RDm4eU2rbL3I=;
-        b=dyauWtToS439+OQu5M5aLqXLET5IVx0Au5QsyCUdF9+86fRcRLM9DRi/XCuQTyTb3ODEuw
-        ezgGyOUeGX0vtOA+j+9mzmO1MxicwGGx2F1pHiFtcJCxjRzRH2GWqSBanBMY4Czhk5DMoW
-        wcIVyNpvd8XlvWbzM9hLNa97rPsxvbs=
+        bh=wa1xN9dr1JY1MHAISOAlNONzGxbTcetPHGS7drjaey0=;
+        b=uomAn5wuwLSMFZI0JMkVFDHSQV0xfAb00tmDTmvNxivn5JRTKRPmGaQ+yQfr2Cmzgvbb16
+        Tu5Robu84m39j2ARF1y3t7dJp6r6TG3cFtoTGMA7VDP2FHYuIPXH6BFP3BJqlV1XkXjKjM
+        d6K7EzMEDnZL4FlKH5KKVIULW6nNJU4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648494310;
+        s=susede2_ed25519; t=1648494998;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=t2S+u+HfGnVJypaxHseosXnayDzHZm7RDm4eU2rbL3I=;
-        b=VdjoZ1DfBeZgBDVrOLCTqWAh8oSoavUYSj4GLPsqU2yU77o6XUCflCW5CTe1IEik7UlwcW
-        Prp7uG534QymczDg==
+        bh=wa1xN9dr1JY1MHAISOAlNONzGxbTcetPHGS7drjaey0=;
+        b=8W7tvIYJ9igH6Mdg7Qn808e3Cl9YEeaL/so8yCvoQgCVl6XQy0xKvI2PNASV9JxhnXfYaJ
+        5T3Y+eNIJRFzjoBQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5787CA3B92;
-        Mon, 28 Mar 2022 19:05:10 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E3608A3B82;
+        Mon, 28 Mar 2022 19:16:37 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 58A67DA7F3; Mon, 28 Mar 2022 21:01:13 +0200 (CEST)
-Date:   Mon, 28 Mar 2022 21:01:13 +0200
+        id D2AF0DA7F3; Mon, 28 Mar 2022 21:12:40 +0200 (CEST)
+Date:   Mon, 28 Mar 2022 21:12:40 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs: remove the zoned/zone_size union in struct
- btrfs_fs_info
-Message-ID: <20220328190113.GS2237@twin.jikos.cz>
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 2/2] btrfs: fix and document the zoned device choice in
+ alloc_new_bio
+Message-ID: <20220328191240.GT2237@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <20220324165210.1586851-1-hch@lst.de>
- <20220324165210.1586851-2-hch@lst.de>
+ <20220324165210.1586851-3-hch@lst.de>
+ <PH0PR04MB7416CF5DB1670FF12D823D779B1A9@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220324165210.1586851-2-hch@lst.de>
+In-Reply-To: <PH0PR04MB7416CF5DB1670FF12D823D779B1A9@PH0PR04MB7416.namprd04.prod.outlook.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,13 +75,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 05:52:09PM +0100, Christoph Hellwig wrote:
-> Reading a value from a different member of a union is not just a great
-> way to obsfucate code, but also creates an aliasing violation.
+On Fri, Mar 25, 2022 at 09:09:56AM +0000, Johannes Thumshirn wrote:
+> On 24/03/2022 17:54, Christoph Hellwig wrote:
+> > Zone Append bios only need a valid block device in struct bio, but
+> > not the device in the btrfs_bio.  Use the information from
+> > btrfs_zoned_get_device to set up bi_bdev and fix zoned writes on
+> > multi-device file system with non-homogeneous capabilities and remove
+> > the pointless btrfs_bio.device assignment.
+> > 
+> > Add big fat comments explaining what is going on here.
+> 
+> Looks like the old code worked by sheer luck, as we had wbc set and thus
+> always assigned fs_info->fs_devices->latest_dev->bdev to the bio. Which 
+> would obviously not work on a multi device FS.
 
-Is it a violation in this case? Both are of the same type, violation
-could be int/u64 and others but even in this case this is transparent to
-the compiler and union cast is the cleanest way to access same bytes in
-a structure. Anaywy now the helper btrfs_is_zoned is used everywhere
-which abstracts the condition, which was the original idea for the
-union.
+No, it worked fine because the real bio is set just before writing the
+data somewhere deep in the io submit path in submit_stripe_bio().
+
+That it has to be set here is because of the cgroup implementation that
+accesses it, see 429aebc0a9a0 ("btrfs: get bdev directly from fs_devices
+in submit_extent_page").
+
+Which brings me to the question if Christoph's fix is correct because
+the comment for the wbc + zoned append is assuming something that's not
+true.
