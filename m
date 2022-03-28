@@ -2,230 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550BC4E954D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 13:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1C44E96A7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 14:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241853AbiC1LlQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Mar 2022 07:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
+        id S236156AbiC1Mdv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Mar 2022 08:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243792AbiC1Lg7 (ORCPT
+        with ESMTP id S242354AbiC1Mdt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Mar 2022 07:36:59 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46101EEDF;
-        Mon, 28 Mar 2022 04:28:54 -0700 (PDT)
-Received: from ip4d144895.dynamic.kabel-deutschland.de ([77.20.72.149] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1nYnYI-0003Fc-C2; Mon, 28 Mar 2022 13:28:50 +0200
-Message-ID: <35b62998-e386-2032-5a7a-07e3413b3bc1@leemhuis.info>
-Date:   Mon, 28 Mar 2022 13:28:49 +0200
+        Mon, 28 Mar 2022 08:33:49 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAC64D621
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Mar 2022 05:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1648470727; x=1680006727;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qC+1GJogQ3SfMKhncuR6Q2BTV29fAzh62/b73Er/Wzw=;
+  b=URIZeALo/Lh3KaBxUs2IpuLgJE/rfxgWfcq+fmRVAVJhMTCXzH/JeCbg
+   qkKIX3eLt6fL1NCAu4wXkQuqdh3ZkwyqRGMmISRnjbQwbVTagrPZ7T1UY
+   KREmelswvjYYAfGpqrliO51Y+jLqoGmSQew9rUG00AlIpD8NZ6eemJerY
+   Q1jR0M9s80Nd5kj1O8cfgm6jaM8J/dNwq9vx+s/m8x/8zfQq3otGX172C
+   yHo18XnUz7ERltyG0ZMQ2iONr42CLnEkK26ecvQmhrBZCVvcEJD9rG8AB
+   5Ym+5rOmAb6I4rAD4sPlan/5reCHUG5XEYVVvWa9Dgy/W2RWUiibEGA7w
+   w==;
+X-IronPort-AV: E=Sophos;i="5.90,217,1643644800"; 
+   d="scan'208";a="300589752"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Mar 2022 20:32:07 +0800
+IronPort-SDR: giek9tqfrCDeoP1pFFKKjPJtIQYQ6cGy27UL16OS3ZVNGqe4sIEi8/KjgO3bZHNwAcBVngQqE0
+ cDYWKFcWPIvis4PipEHVVvmrfgHmHA5GVEVFRh/KbCgSiDvLC5plgwgEVvOkw9iOhdpLC9hWcu
+ R7WlqKrNMwQmjQjCTCON9RaadzQW5QpldeVTaLbIWWAJbMDUoHEAA4z+riNFS6xuxnEzInR6aH
+ lloGBPsLP8P18So3LM5rD/gQrlB8MixW3lCpvTXrN/ppBxxM7b8VsOOUbizWD9UBQbDh9ryqRi
+ tz1tqAWOliveFHDK/cCmA3JE
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Mar 2022 05:03:53 -0700
+IronPort-SDR: KdiJQFSVoYKQvHHCGu8jgEXFQ4u3+pP7+M8UTQhwoR2gT1THY4fjCkw9xwJ9dH91xnmUS4WtNk
+ hKxAy/dL0YDH/CH65Sf3C/66GUlWQtX40gyhujApBdrHsEcKMXHlCA3ZFFR3gtVF1sYqTFv3w1
+ LbbpcXtcMAnRVilG67raQ1Ke4D701QpgDWNYhvAzIq2buKh5mgB6wrxtsucAXKz03fKB1ToRMB
+ 3SFUmuSZcPmHCcaaCa6z5wWIb3TM7L9fQ8KUkpPX1DQ3ni82U90S+K9JY+tw2cGjGTpaoTJKv2
+ 4Ts=
+WDCIronportException: Internal
+Received: from b6wzvt2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.53.101])
+  by uls-op-cesaip01.wdc.com with ESMTP; 28 Mar 2022 05:32:08 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: fix outstanding extents calculation
+Date:   Mon, 28 Mar 2022 21:32:05 +0900
+Message-Id: <06cc127b5d3c535917e90fbdce0534742dcde478.1648470587.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [regression] 5.15 kernel triggering 100x more inode evictions
-Content-Language: en-US
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        Bruno Damasceno Freire <bdamasceno@hotmail.com.br>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <MN2PR20MB2512314446801B92562E26B5D2169@MN2PR20MB2512.namprd20.prod.outlook.com>
- <07bb78be-1d58-7d88-288b-6516790f3b5d@leemhuis.info>
- <MN2PR20MB251203B4B5445B4B0C4148C9D21D9@MN2PR20MB2512.namprd20.prod.outlook.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <MN2PR20MB251203B4B5445B4B0C4148C9D21D9@MN2PR20MB2512.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1648466934;fd67f8be;
-X-HE-SMSGID: 1nYnYI-0003Fc-C2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Btrfs developers, this is your Linux kernel regression tracker.
-Top-posting for once, to make this easily accessible to everyone.
+Running generic/406 causes the following WARNING in btrfs_destroy_inode()
+which tells there is outstanding extents left.
 
-Are there any known regressions in 5.15 that cause more inode evictions?
-There is a user reporting such problems, see the msg quoted below, which
-is the last from this thread:
+In btrfs_get_blocks_direct_write(), we reserve a temporary outstanding
+extents with btrfs_delalloc_reserve_metadata() (or indirectly from
+btrfs_delalloc_reserve_space(()). We then release the outstanding extents
+with btrfs_delalloc_release_extents(). However, the "len" can be modified
+in the CoW case, which releasing fewer outstanding extents than expected.
 
-https://lore.kernel.org/all/MN2PR20MB2512314446801B92562E26B5D2169@MN2PR20MB2512.namprd20.prod.outlook.com/
+Fix it by calling btrfs_delalloc_release_extents() for the original length.
 
-@Bruno: sorry, you report is very hard to follow at least for me. Maybe
-the btrfs developers have a idea what's wrong here, but if not you
-likely need to make this easier for all us:
+    ------------[ cut here ]------------
+    WARNING: CPU: 0 PID: 757 at fs/btrfs/inode.c:8848 btrfs_destroy_inode+0x1e6/0x210 [btrfs]
+    Modules linked in: btrfs blake2b_generic xor lzo_compress
+    lzo_decompress raid6_pq zstd zstd_decompress zstd_compress xxhash zram
+    zsmalloc
+    CPU: 0 PID: 757 Comm: umount Not tainted 5.17.0-rc8+ #101
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS d55cb5a 04/01/2014
+    RIP: 0010:btrfs_destroy_inode+0x1e6/0x210 [btrfs]
+    Code: fe ff ff 0f 0b e9 d6 fe ff ff 0f 0b 48 83 bb e0 01 00 00 00 0f 84
+    65 fe ff ff 0f 0b 48 83 bb 78 ff ff ff 00 0f 84 63 fe ff ff <0f> 0b 48
+    83 bb 70 ff ff ff 00 0f 84 61 fe ff ff 0f 0b e9 5a fe ff
+    RSP: 0018:ffffc9000327bda8 EFLAGS: 00010206
+    RAX: 0000000000000000 RBX: ffff888100548b78 RCX: 0000000000000000
+    RDX: 0000000000026900 RSI: 0000000000000000 RDI: ffff888100548b78
+    RBP: ffff888100548940 R08: 0000000000000000 R09: ffff88810b48aba8
+    R10: 0000000000000001 R11: ffff8881004eb240 R12: ffff88810b48a800
+    R13: ffff88810b48ec08 R14: ffff88810b48ed00 R15: ffff888100490c68
+    FS:  00007f8549ea0b80(0000) GS:ffff888237c00000(0000) knlGS:0000000000000000
+    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: 00007f854a09e733 CR3: 000000010a2e9003 CR4: 0000000000370eb0
+    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+    Call Trace:
+     <TASK>
+     destroy_inode+0x33/0x70
+     dispose_list+0x43/0x60
+     evict_inodes+0x161/0x1b0
+     generic_shutdown_super+0x2d/0x110
+     kill_anon_super+0xf/0x20
+     btrfs_kill_super+0xd/0x20 [btrfs]
+     deactivate_locked_super+0x27/0x90
+     cleanup_mnt+0x12c/0x180
+     task_work_run+0x54/0x80
+     exit_to_user_mode_prepare+0x152/0x160
+     syscall_exit_to_user_mode+0x12/0x30
+     do_syscall_64+0x42/0x80
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+    RIP: 0033:0x7f854a000fb7
 
-Write a really simple testcase and run it on those vanilla kernels that
-matter, which are in this case: The latest 5.17.y and 5.15.y releases to
-check if it was already solved -- and if not, on 5.14 and 5.15. Maybe
-you need to bisect the issue to bring us closer the the root of the
-problem. But with a bit of luck the btrfs developers might have an idea
-already.
+Fixes: f0bfa76a11e9 ("btrfs: fix ENOSPC failure when attempting direct IO write into NOCOW range")
+CC: stable@vger.kernel.org # 5.17
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ fs/btrfs/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Ciao, Thosten
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index c7b15634fe70..5c0c54057921 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7409,6 +7409,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 	u64 block_start, orig_start, orig_block_len, ram_bytes;
+ 	bool can_nocow = false;
+ 	bool space_reserved = false;
++	u64 prev_len;
+ 	int ret = 0;
+ 
+ 	/*
+@@ -7436,6 +7437,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 			can_nocow = true;
+ 	}
+ 
++	prev_len = len;
+ 	if (can_nocow) {
+ 		struct extent_map *em2;
+ 
+@@ -7465,8 +7467,6 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 			goto out;
+ 		}
+ 	} else {
+-		const u64 prev_len = len;
+-
+ 		/* Our caller expects us to free the input extent map. */
+ 		free_extent_map(em);
+ 		*map = NULL;
+@@ -7497,7 +7497,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 	 * We have created our ordered extent, so we can now release our reservation
+ 	 * for an outstanding extent.
+ 	 */
+-	btrfs_delalloc_release_extents(BTRFS_I(inode), len);
++	btrfs_delalloc_release_extents(BTRFS_I(inode), prev_len);
+ 
+ 	/*
+ 	 * Need to update the i_size under the extent lock so buffered
+-- 
+2.35.1
 
-On 28.03.22 05:12, Bruno Damasceno Freire wrote:
-> ___Updated test results
-> 
-> These results were obtained with the script I've made to research this regression [1].
-> [1] https://github.com/bdamascen0/s3e
-> 
-> 
-> Main results
-> 
-> The regression was reproduced on:
-> -several different 5.15 kernels versions across several different distros.
-> -all 5.15 kernels that I have tried on.
-> -the 5.15.0-rc1 kernel from the opensuse tumbleweed comunity repository.
-> -the 5.15.12 vanilla kernel from the official opensuse tumbleweed repository.
-> 
-> The regression could not be reproduced on kernels versions other than the 5.15.
-> 
-> The vanilla kernel test was suggested by Thorsten Leemhuis to make sure downstream custom patches aren't causing the symptoms.
-> The vanilla kernel test result shows the exact same pattern verified on downstream kernels and fully validates the regression.
-> 
-> 
-> General test results for the 5.15 kernel series (x86_64)
-> 
-> opensuse tumbleweed ----- kernel 5.15.12 --- vanilla --- (kvm)
-> ... 250 files - zstd:         13327 ms @inode_evictions: 31375
-> ... 250 files - lzo:          13361 ms @inode_evictions: 31375
-> ... 250 files - uncompressed:  1204 ms @inode_evictions: 499
-> opensuse tumbleweed ----- kernel 5.15.0-rc1-1.g8787773 - (kvm)
-> ... 250 files - zstd:         13875 ms @inode_evictions: 31375
-> ... 250 files - lzo:          15351 ms @inode_evictions: 31375
-> ... 250 files - uncompressed:  1231 ms @inode_evictions: 499
-> opensuse tumbleweed ----- kernel 5.15.12----------------------
-> ... 250 files - zstd:         12500 ms @inode_evictions: 31375
-> ... 250 files - lzo:          12327 ms @inode_evictions: 31375
-> ... 250 files - uncompressed:  1482 ms @inode_evictions: 499
-> debian bookworm --------- kernel 5.15.0-3 - (5.15.15) -- (kvm)
-> ... 250 files - zstd:         12343 ms @inode_evictions: 31375
-> ... 250 files - lzo:          14028 ms @inode_evictions: 31375
-> ... 250 files - uncompressed:  1092 ms @inode_evictions: 499
-> Zenwalk 15.0 Skywalker ---kernel 5.15.19 --------------- (kvm)
-> ... 250 files - zstd:         14374 ms @inode_evictions: -
-> ... 250 files - lzo:          14163 ms @inode_evictions: -
-> ... 250 files - uncompressed:  2173 ms @inode_evictions: -
-> ubuntu jammy jellyfish -- kernel 5.15.0.23 - (5.15.27) - (kvm) 
-> ... 250 files - zstd:         17521 ms @inode_evictions: 31375
-> ... 250 files - lzo:          17114 ms @inode_evictions: 31375
-> ... 250 files - uncompressed:  1138 ms @inode_evictions: 499
-> 
-> 
-> General test results for other kernels (x86_64)
-> 
-> opensuse leap 15.3 ------ kernel 5.3.18-150300.59.54----------
-> ... 250 files - zstd:           668 ms @inode_evictions: 251
-> ... 250 files - lzo:            693 ms @inode_evictions: 251
-> ... 250 files - uncompressed:   661 ms @inode_evictions: 252
-> opensuse leap 15.4 beta - kernel 5.14.21-150400.11 ----- (kvm)
-> ... 250 files - zstd:           811 ms @inode_evictions: 251
-> ... 250 files - lzo:            912 ms @inode_evictions: 251
-> ... 250 files - uncompressed:   993 ms @inode_evictions: 251
-> opensuse tumbleweed ----- kernel 5.14.14 --------------- (kvm)
-> ... 250 files - zstd:           888 ms @inode_evictions: 251
-> ... 250 files - lzo:           1063 ms @inode_evictions: 251
-> ... 250 files - uncompressed:   778 ms @inode_evictions: 251
-> opensuse tumbleweed ----- kernel 5.16.14----------------------
-> ... 250 files - zstd:          1398 ms @inode_evictions: 250
-> ... 250 files - lzo:           1323 ms @inode_evictions: 250
-> ... 250 files - uncompressed:  1365 ms @inode_evictions: 250
-> 
-> 
-> Load test results (x86_64):
-> 
-> opensuse leap 15.4 beta - kernel 5.14.21-150400.11 ----- (kvm)
-> ...   50 files - zstd:            261 ms @inode_evictions: 51
-> ...   50 files - lzo:             256 ms @inode_evictions: 51
-> ...   50 files - uncompressed:    317 ms @inode_evictions: 51
-> ...  100 files - zstd:            450 ms @inode_evictions: 101
-> ...  100 files - lzo:             461 ms @inode_evictions: 101
-> ...  100 files - uncompressed:    471 ms @inode_evictions: 101
-> ...  150 files - zstd:            618 ms @inode_evictions: 151
-> ...  150 files - lzo:             624 ms @inode_evictions: 151
-> ...  150 files - uncompressed:    612 ms @inode_evictions: 151
-> ...  200 files - zstd:            822 ms @inode_evictions: 201
-> ...  200 files - lzo:             933 ms @inode_evictions: 201
-> ...  200 files - uncompressed:    747 ms @inode_evictions: 201
-> ...  250 files - zstd:           1128 ms @inode_evictions: 251
-> ...  250 files - lzo:             974 ms @inode_evictions: 251
-> ...  250 files - uncompressed:    936 ms @inode_evictions: 251
-> ... 1000 files - zstd:           3517 ms @inode_evictions: 1001
-> ... 1000 files - lzo:            4373 ms @inode_evictions: 1001
-> ... 1000 files - uncompressed:   3797 ms @inode_evictions: 1001
-> ubuntu jammy jellyfish -- kernel 5.15.0.23 - (5.15.27) - (kvm) 
-> ...   50 files - zstd:            424 ms @inode_evictions: 1275
-> ...   50 files - lzo:             423 ms @inode_evictions: 1275
-> ...   50 files - uncompressed:    207 ms @inode_evictions: 99
-> ...  100 files - zstd:           1744 ms @inode_evictions: 5050
-> ...  100 files - lzo:            1838 ms @inode_evictions: 5050
-> ...  100 files - uncompressed:    373 ms @inode_evictions: 199
-> ...  150 files - zstd:           4785 ms @inode_evictions: 11325
-> ...  150 files - lzo:            4660 ms @inode_evictions: 11325
-> ...  150 files - uncompressed:    689 ms @inode_evictions: 299
-> ...  200 files - zstd:           9763 ms @inode_evictions: 20100
-> ...  200 files - lzo:           10106 ms @inode_evictions: 20100
-> ...  200 files - uncompressed:    938 ms @inode_evictions: 399
-> ...  250 files - zstd:          17550 ms @inode_evictions: 31375
-> ...  250 files - lzo:           17337 ms @inode_evictions: 31375
-> ...  250 files - uncompressed:   1373 ms @inode_evictions: 499
-> ... 1000 files - zstd:         143614 ms @inode_evictions: 101132
-> ... 1000 files - lzo:          146724 ms @inode_evictions: 100314
-> ... 1000 files - uncompressed:   7735 ms @inode_evictions: 1999
-> 
-> 
-> Load test results comparisson for compressed files (x86_64):
-> ubuntu jammy jellyfish - compared to - opensuse leap 15.4 beta
-> 
-> 50   files gives aprox.  1.6 x more time and aprox.  25 x more inode evictions 
-> 100  files gives aprox.  3.8 x more time and aprox.  50 x more inode evictions 
-> 150  files gives aprox.  7.4 x more time and aprox.  75 x more inode evictions 
-> 200  files gives aprox. 10.8 x more time and aprox. 100 x more inode evictions 
-> 250  files gives aprox. 15.5 x more time and aprox. 125 x more inode evictions 
-> 1000 files gives aprox. 33.5 x more time and aprox. 100 x more inode evictions 
-> 
-> 
-> Load test results comparisson for uncompressed files (x86_64):
-> ubuntu jammy jellyfish - compared to - opensuse leap 15.4 beta
-> 
-> 50   files gives aprox. 0.6 x more time and aprox. 2 x more inode evictions 
-> 100  files gives aprox. 0.8 x more time and aprox. 2 x more inode evictions 
-> 150  files gives aprox. 1.1 x more time and aprox. 2 x more inode evictions 
-> 200  files gives aprox. 1.2 x more time and aprox. 2 x more inode evictions 
-> 250  files gives aprox. 1.4 x more time and aprox. 2 x more inode evictions 
-> 1000 files gives aprox. 2.0 x more time and aprox. 2 x more inode evictions 
-> 
-> 
-> CPU usage results:
-> The regression causes significant CPU usage by the kernel.
-> 
-> ubuntu jammy jellyfish -- kernel  5.15.0.23 (5.15.27) - (kvm) 
-> ... 1000 files - zstd:         137841 ms
->     real    2m17,881s
->     user    0m 1,704s
->     sys     2m11,937s
-> ... 1000 files - lzo:          135456 ms
->     real    2m15,478s
->     user    0m 1,805s
->     sys     2m 9,758s
-> ... 1000 files - uncompressed:   7496 ms
->     real    0m 7,517s
->     user    0m 1,386s
->     sys     0m 4,899s
-> 
-> 
-> Test system specification:
-> host: AMD FX-8370E 8 cores / 8GB RAM / ssd
-> guests (kvm): 2 cores / 2G RAM / ssd
-> test storage medium: RAM disk block device (host and guest)
-> 
-> 
-> TIA, Bruno
