@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3590B4EA135
+	by mail.lfdr.de (Postfix) with ESMTP id A61D64EA136
 	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 22:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344363AbiC1UQV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Mar 2022 16:16:21 -0400
+        id S1344377AbiC1UQW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Mar 2022 16:16:22 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344337AbiC1UQT (ORCPT
+        with ESMTP id S1344338AbiC1UQU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Mar 2022 16:16:19 -0400
+        Mon, 28 Mar 2022 16:16:20 -0400
 Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8527D27170;
-        Mon, 28 Mar 2022 13:14:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4482C26568;
+        Mon, 28 Mar 2022 13:14:38 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id F291D806B7;
-        Mon, 28 Mar 2022 16:14:35 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id 45D3E806B3;
+        Mon, 28 Mar 2022 16:14:38 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1648498476; bh=2bUR5RKViaX8SfbfpxT73b8DjBpuhwRa7cVPxAtx/6w=;
+        t=1648498478; bh=2bUR5RKViaX8SfbfpxT73b8DjBpuhwRa7cVPxAtx/6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hsDCL2Tl8mA9FyUPuqPxAWP5cVNeY0rH39m8oVf6XV0DTWycWgBl319eBc75KsY17
-         v5UsddxghGXwIVRUYWL+3XfL7Rt+01E5bouWImkd5DIhNoHquffIH5mXThxVOENGPL
-         SlptkK2XFMg1mJNaIjaiS2mIc+j3pFcSfvzAcCfZex7jO8Bjh1q97Q50TwydLWjtnW
-         s4+gMkXWFvrDfFBc1RZLW6tlJQj4qrcSzPbfYLkVnIPRKEE36WmWa0ER+4RK1qJFQ1
-         TJcbkAmwR/3cTa9n+uUyjqq1N479s/NvaaRTGNn3Pqe6OWjZKEanFn18Vi5mCmzcsE
-         85C1zMNzs3DWw==
+        b=Lc20l/2kHxiioBKy2cOHz9BsDuoGE3JrzetOoRJUP/JJW//mpOB7hPadA3Dqh15En
+         fBUr7zk2+/xrR5qzoqaGlegJ+egcGSA00tn/lQ/5gsFQPpQ6yzHjQKH+jLEy/8TCeQ
+         HlbTQuroxVbXPFHCpCG4bvsrReE/Lp1DK/2A3ey9NBnMpJdz9u+v921tS/BUPuV+3w
+         FNfq5Te16UAjK46RvpcL5lpsaj8HGldaRDXQr0z73tf0HD+uSZmfQWVA32pivaBoR4
+         9U776CR46KtLobtIFkBl5sGTYtO7phpGNvI37VNC2AwqkofDuGkhO5hf2Z+cSnsOvo
+         +KtvHKfbjAk1w==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -36,7 +36,7 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Subject: [PATCH 2/2] btrfs: Allocate page arrays using bulk page allocator.
-Date:   Mon, 28 Mar 2022 16:14:28 -0400
+Date:   Mon, 28 Mar 2022 16:14:29 -0400
 Message-Id: <9cbd861d3b302e19b990848ea747d2ea91d01aed.1648497027.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1648497027.git.sweettea-kernel@dorminy.me>
 References: <cover.1648497027.git.sweettea-kernel@dorminy.me>
