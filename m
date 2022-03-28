@@ -2,89 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6124E8D71
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 07:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191524E8E36
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 08:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbiC1FG1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Mar 2022 01:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        id S238469AbiC1GbL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Mar 2022 02:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238098AbiC1FG0 (ORCPT
+        with ESMTP id S230488AbiC1GbK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Mar 2022 01:06:26 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36EF205F1
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Mar 2022 22:04:46 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id m3so22689883lfj.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Mar 2022 22:04:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FKaaumvBBrK9yDYcVqFdXGKP27XjtOk+hkdjrp/Fues=;
-        b=m6yDCCi3mV7E8+nKOOuFZSTg+84azqr2MatyM21zgnc/WVuR8roXZUzFk+wLeTUVUV
-         V2kZFle8Yhj/7tLlDIwg0E8+NQ3PaO6U1LZ+G+eltElqJ8xI0b6v5QFRe2vdL9YC6Ttd
-         mxR/35CpPGte09xrAA9PokvaCy0kZs/J45PklZCf24z4GPyWeYkYPZitzII/R3NCfQfM
-         zCxuX4vFHoTMBXJjOlO0MbZrw7RLfa2Dvq0HcfCYv81qutSeAfAwrfw4jrwWcwobbtlf
-         Ye/Oo809kotimNGgdHST6cHLjqK9G5LhZk7JHsfaAi+awduLDlIYgMVbHFjy+nKOoyso
-         lcfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FKaaumvBBrK9yDYcVqFdXGKP27XjtOk+hkdjrp/Fues=;
-        b=Jxyppm33aQsAVgBsrnSPQjlIZ2q9SlrbfHjl1sgvG5QYSs+cgXsyPEPQuL2rmw1JDB
-         dEx63u9hRA5n3qSMtCqtuuuEzymCYW+CbGLmdTTGeu7+DBIbWDykI57fiU/0rrG5dYMU
-         qjqrABt/ML8YR8Yx2P1lx4KAA9N7Slls067kQuMz9dBTvLWZtgFV0l6YbprthiLRl6R2
-         AIFbbGTtXphUtfbChzClTqhmyFFAdWDT3i8ZJGyYsDmx/nZl5HlQSCuBiwNvQobNZ053
-         144UXjwPEIUbqT/NXOpESUwjZo1reOPq/lZneZK02Q7vvtsOYbxlj8feQrpcLeUYbzWH
-         fDeg==
-X-Gm-Message-State: AOAM5333v+VgG1Dxe0nqmEahNDX8gXMx4IFTzZSI1jrFzGi4Y3ifAj1O
-        rFKRn+lPhWVtVzpqrdWhDnvK78lW0EyBlZS+Ey651g==
-X-Google-Smtp-Source: ABdhPJzRbowPT6MnKrFhN2S+FnW+9wrlyUacj1SqnZ9xYdGAAUR9++Aof0DcIvflH3Ho1pgnke9SgRrLxx3W+IVWD4Q=
-X-Received: by 2002:a05:6512:33d5:b0:44a:7d31:7773 with SMTP id
- d21-20020a05651233d500b0044a7d317773mr9145585lfg.357.1648443885150; Sun, 27
- Mar 2022 22:04:45 -0700 (PDT)
+        Mon, 28 Mar 2022 02:31:10 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5491162
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Mar 2022 23:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1648448971; x=1679984971;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lha5qhLhUobRPvfodJrHsvkGGiEhI4a3hdFH66/rv30=;
+  b=AtGSY2wzBgjZXj3QcFrnz74gk0Ji2xkn6VVBcYMqPO44jELRPfn7Gc4J
+   gmcK0sADPc7EKe8lazkOZoNc6P1brp2UrTlsFyjpKZxjEmGJ3mwfucc3A
+   DlC+lREO1QXyb2ZRiJKrwxiQ512cBYwevDSvaNLMhPrxUP3wsGtuIKOXH
+   xX2hD2414fEbEPPicRIea9GR/XqJpeWGWAccejPF2o/OGS2ACGyJCx3l1
+   TfEU7E/uAHy3ACNjn2WPO9EBvFNdUjJE/q+i7/I1FzLLqfRY8IsGhAgn5
+   qE86OF8pYul4UpLypvtt3g3nOyR5sdbI7s5lnrMfKUsjSGvv9kie5e5zW
+   w==;
+X-IronPort-AV: E=Sophos;i="5.90,216,1643644800"; 
+   d="scan'208";a="300566279"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Mar 2022 14:29:30 +0800
+IronPort-SDR: Y8IY9EiY2EiUkuOQDdhf4EpSxxp5boqhCilqdj4MR5zZzFkthvcbYtKtT7gHQWX521lvzPF8N8
+ voTTI5C/GvkcdMgvqnOQycpl/7545eJ9dua32Yr4w4ekEXut7ADDU8hCpOkZ+uC+ecGAwxV7kr
+ n/suhTBUQWaNqCwuReG1jm+KYam7bL3CDmPDklpPyU/nqHsAE9OcbTlBM69LFUUkoZAQB6lbID
+ pzGkiuML+hyH6b9UhHQH/F7awYi5VGIePn5QEOBsZimPlhUSKL9ipyvru98jneFxqiggnbZXzQ
+ A3RLUi9X6ZK1dQ1iCy50UU2B
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Mar 2022 23:00:23 -0700
+IronPort-SDR: 1j/KtO1fatvIwiWxq4RcQcB/xtQerUfUsvDYfkXg1kjvIwa+NoG/KzPuj3G2vCMbff+Kbv0jxR
+ wx4pDThXAwOMtEEBcfKZgB8YfAZ2S6deD7k1MRjFj8uWuscmBkZxpCnIuxYy9qymNQYliPbO8j
+ ZULS1+q9ZdEU6+kJJ0fhDLNLRXzmFW14XwuZhG0vOjC3Ihst8ryRcvI1xXYJGtGl8q8q5/katm
+ WkqskbP33BV+8QVGTns6VaZ+R5u91B0CO3ztHhzdPmqSZtGXE4iuKaqOAqRLCbuy7LjjFeujFt
+ yeY=
+WDCIronportException: Internal
+Received: from phd006511.ad.shared (HELO naota-xeon.wdc.com) ([10.225.52.242])
+  by uls-op-cesaip01.wdc.com with ESMTP; 27 Mar 2022 23:29:30 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     johannes.thumshirn@wdc.com, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v3 0/3] protect relocation with sb_start_write
+Date:   Mon, 28 Mar 2022 15:29:19 +0900
+Message-Id: <cover.1648448228.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <5790FFB1-5F16-4E2A-9132-41B8FADD428E@icloud.com>
-In-Reply-To: <5790FFB1-5F16-4E2A-9132-41B8FADD428E@icloud.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 27 Mar 2022 23:04:28 -0600
-Message-ID: <CAJCQCtTwb6H2hOrNEVpsrrTT3p_EO55A91i=HqJanHZy+CE56Q@mail.gmail.com>
-Subject: Re: Ref-Linking across multiple mounts of the same filesystem
-To:     Alex Lieflander <atlief@icloud.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 27, 2022 at 9:29 PM Alex Lieflander <atlief@icloud.com> wrote:
->
-> Hello,
->
-> I=E2=80=99ve been using BTRFS for a while now, and absolutely love it and=
- CoW in general. Unfortunately, I=E2=80=99ve encountered a limitation that =
-conflicts with my desired usage; it's impossible to create ref-links betwee=
-n (or efficiently mv) files on the same filesystem when the roots of both p=
-aths are mounted independently.
+This series is a follow-up to the series below. The old series added
+an assertion to btrfs_relocate_chunk() to check if it is protected
+with sb_start_write(). However, it revealed another location we need
+to add sb_start_write() [1].
 
-Yep. It's a VFS limitation, disallowing reflinks across mount points.
-And when mounted independently they effectively are bind mounts. This
-looks slated to get fixed in 5.18 barring some unexpected fallout.
+https://lore.kernel.org/linux-btrfs/cover.1645157220.git.naohiro.aota@wdc.com/T/
 
-https://lore.kernel.org/linux-fsdevel/CAOQ4uxjNqNxF6YQK7Euo9qCg3sTHrWESw+H_=
-G0c8QaXFDQhGRA@mail.gmail.com/
+[1] https://lore.kernel.org/linux-btrfs/cover.1645157220.git.naohiro.aota@wdc.com/T/#e06eecc07ce1cd1e45bfd30a374bd2d15b4fd76d8
 
-In the meantime you'll need to use the work around you mentioned.
-Note, upcoming coreutils 9.0 cp command will default to --reflink=3Dauto
+Patch 1 adds sb_{start,end}_write() to the resumed async balancing.
 
+Patches 2 and 3 add an ASSERT to catch a future error.
 
---=20
-Chris Murphy
+--
+v3:
+  - Only add sb_write_started(), which we really use. (Dave Chinner)
+  - Drop patch "btrfs: mark device addition as mnt_want_write_file" (Filipe Manana)
+  - Narrow asserting region to btrfs_relocate_block_group() and check only
+    when the BG is data BG. (Filipe Manana)
+v2:
+  - Use mnt_want_write_file() instead of sb_start_write() for
+    btrfs_ioctl_add_dev()
+  - Drop bogus fixes tag
+  - Change the stable target to meaningful 4.9+
+
+Naohiro Aota (3):
+  btrfs: mark resumed async balance as writing
+  fs: add check functions for sb_start_{write,pagefault,intwrite}
+  btrfs: assert that relocation is protected with sb_start_write()
+
+ fs/btrfs/relocation.c | 4 ++++
+ fs/btrfs/volumes.c    | 2 ++
+ include/linux/fs.h    | 5 +++++
+ 3 files changed, 11 insertions(+)
+
+-- 
+2.35.1
+
