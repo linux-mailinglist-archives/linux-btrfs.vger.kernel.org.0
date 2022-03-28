@@ -2,140 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E96F44E9731
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 14:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDB74E979C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Mar 2022 15:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241765AbiC1NAP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Mar 2022 09:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        id S237861AbiC1NKr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Mar 2022 09:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235473AbiC1NAN (ORCPT
+        with ESMTP id S242474AbiC1NKh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Mar 2022 09:00:13 -0400
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046021CB34
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Mar 2022 05:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1648472311; x=1680008311;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=tnAh/5kwTKi3+nNPM4wJG3SISEWzlVfjvif57yVY4qA=;
-  b=jntZoV+ux6SIjanH4qBAlTuw5Cr37wwde83rMVTVsrJTlrJ1sEADcaj3
-   z1mAMBMGDtrQNG0Kl7WuJYrSBRWpw5Z7WS7Nn/ZJi3siZcoJp3M/I7SuD
-   5C519BkhRK+vEkdEL0nYyuDGfjnWS4dIxu2BhAfFN7ezkrhuTbgSLRk72
-   hnxO2K5C6DVq1sY9JZpibEPg0imbo3uUsL17itD9PK7axDYV35mPhK/Pv
-   TlgOneOXGSfmD00dfTg06mSqcaYkTrrDlXrUaQyv0tiNPyo49F7shMbaC
-   BIuOPb3QwiC+KQJJotIlzIk3zxgOQT5X2qv6WJ/iR++Y0wBf2hacz+g1O
-   g==;
-X-IronPort-AV: E=Sophos;i="5.90,217,1643644800"; 
-   d="scan'208";a="196447527"
-Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Mar 2022 20:58:30 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HzDYmVwrwRgY4KfC9fD4JZSqBjdKOCL/8lM4mNE+ye2HnebBbgsGhGBMZCp3iATH9duYkYZ2Ry9Cg3M/5NHpgRqF895gDRAksxpLrPuYuhsy1+uvpqxYdgd3i2J6Ij1h/aWkCZHpeDEIWg0T/t5BCwyX3O40kPjAj1aHjy399vKqniRWhCymRReNbUnpk9pD0UUST4cw1NKxCNIZFztxvpb9FUuOyI2ZX5PiBVtAaCsz62VRy6c2CCeQCyzjcyb7lY6fRQjJsfDkk7cAqlFUmUqd3wDjafBQ7+ilF/54qkY2gOjubDOYm9ZRPRxnbCspNE1WEW8ibuR6G1wafa22Ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tnAh/5kwTKi3+nNPM4wJG3SISEWzlVfjvif57yVY4qA=;
- b=Vxz0lfl7ap/6A8oIA1XGUQT9T1q3EvRH5bfepekvYslzXBF9FyNT00iwx2E+eJOvaY2bXhm6WWRksaJIJMvUuDAZxEKm2M8NvcYx4ad8zW9LYgMcX/SP2euwykKCdqpOTIBNg6lQfcu7SyL53ah5VeHslZry2YtXaO9rg8FY976bVOgJA2qSYtHpB5q4kkl8mCMkSnyg7/uoWkX61AWzPQf7E6S5JBEGj0DFleYgUo1V6gjpghWwRrEWB2rw1fv8nHZ59oGUtZY6qWvmoKl6t30DlKVVrkVp8F+qaBXa7yRup5oWPuMYKob9js/KMX3zkSqil9U2v9mdqE5Kw0np4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tnAh/5kwTKi3+nNPM4wJG3SISEWzlVfjvif57yVY4qA=;
- b=q5mQgfGLBAlqaEE0Cj++xB85FdyEojaCFBI58+VB/wDkB48YX2JY0FBH10noQSbs+aWqbE41dUx29MX1UjcTiCY+wtWIDhzXPPmhhKo7FNGJEtoIVwyMO8ErpEQc6MIZabvSDvvVvmm05HTQwCoAbziMpy1amx6x5m3OR8+4Nro=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by SN6PR04MB5165.namprd04.prod.outlook.com (2603:10b6:805:9b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.17; Mon, 28 Mar
- 2022 12:58:29 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::a898:5c75:3097:52c2]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::a898:5c75:3097:52c2%3]) with mapi id 15.20.5102.023; Mon, 28 Mar 2022
- 12:58:29 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+        Mon, 28 Mar 2022 09:10:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B9E5E15B
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Mar 2022 06:08:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B5BF60F77
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Mar 2022 13:08:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 199E5C340EC;
+        Mon, 28 Mar 2022 13:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648472913;
+        bh=fzIzYvqKcWkVcv0fM1MRZjE76LLkm6lK1E+SlTt0B0o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UHfLPDteem4CxoJaBtQFP9vmJOaVpHNId7ZJbm1CSadllQw3lNr2fzNLYXU2kInDE
+         0+5H0NthS1Y8Zuz5OKwf0ndQqCfzbu8/Kz5e7HUDJFV+2i+iWxp+Xe9sEbFYmkhTeV
+         VlQz+zGFCzCMO6AsB0HFPlHWetS+1IMgfjRM4DUPJaTd+PpvnrL9EtEmkBjLyP0k53
+         CG+2ZnJeQlcn23jxRFZBSKjmbivqSSf9jOf0195yeuOEFRuyiZvAgY8zCn0BtmFh1B
+         3YIHYiKaIQTPDoWiQAvY1Gjneo737920L+UQm34Z+6Uk72RgvymYNckuh/wGo0oFiu
+         MU9h1vWFf1UgA==
+Date:   Mon, 28 Mar 2022 14:08:30 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH] btrfs: fix outstanding extents calculation
-Thread-Topic: [PATCH] btrfs: fix outstanding extents calculation
-Thread-Index: AQHYQp/pD+O+D6y0/Ee6vtk2aMtoZQ==
-Date:   Mon, 28 Mar 2022 12:58:29 +0000
-Message-ID: <PH0PR04MB74160F3F0D815331B6B498B99B1D9@PH0PR04MB7416.namprd04.prod.outlook.com>
+Message-ID: <YkGzTsQtFNI9s7Ji@debian9.Home>
 References: <06cc127b5d3c535917e90fbdce0534742dcde478.1648470587.git.naohiro.aota@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6d862571-d670-4836-aed9-08da10baa806
-x-ms-traffictypediagnostic: SN6PR04MB5165:EE_
-x-microsoft-antispam-prvs: <SN6PR04MB51654C41CF6E527A708B6ECB9B1D9@SN6PR04MB5165.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0d8qdA5jyTsm9VWA/R1vAIx5k/l7WTIik/xGb9tf4aZ+nLmvep62675IKzwzCKLGXjH7rNrKrLgeCVyIchkuEvp4xNO+udMUFbqmx6GLuIj00OTm03H/PHdczw5ZUaZaoeOuxWsHoFsUKE7YSU0H5cgHqheu2rd6bTDelaXfP3pjoaBB12HcUyXBCw5N2wtBb2ZSOy7wLHMHJ5jh9TaRAmU44rPMug5F56YWgMb8eDp0nlpk57zMbHHGfn7HmMhyPsf/kLNR7L0Y19NCABispQpTh98sYf6uoohFY415aPFQDE9DkP+HOm+RauqNjDFjn+LwBtH4eZPTvm+pO0Cuws2dw6Rr9BTcJPbHkYtQ8DtAztcdzbnS/dXyxNuao5Fk36o4lD9WqHDzgTQhNK901yxxvFjugtOkwytssHTTrCfCivX/pNZPpfHmbpD+/wr/559pgEN8TKr2eX1J4BpWE67BzIR/e3LHKnYOR1lzaOOwDxiLTEJfrnKzA/lhqbOYTKgFsweZLl2uy+zFEIi93R4UHiqIMImC7XO8+w7Sbqq2T31oNize5rnWOI2bbxVgJSCSkwaSXRdAjoK7PgrT/3yQhmaJiQFll65m0318N6iqHYVg3rPUxtFrpJSDPGY/ZltyLKexvAUXW50tzOFegJXYwxMOaYfX71fuhBVDX8JbKQFJk8KyqKxnz/WeITLD+3xRaI78QI3LcDmQ86zulg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(186003)(558084003)(7696005)(8936002)(52536014)(6506007)(2906002)(9686003)(4270600006)(5660300002)(55016003)(38070700005)(91956017)(110136005)(38100700002)(33656002)(76116006)(122000001)(82960400001)(316002)(66556008)(8676002)(64756008)(66476007)(66446008)(508600001)(71200400001)(86362001)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Zvp/24bddHdHQgPmb7rnMZMUPN2ec2PTL/GKnKiXW/NzKB5+QkzA336W0uW8?=
- =?us-ascii?Q?Z7I2DcqdGDv1UsxMhSuUD9jsvRhZgnnr2wm7aAncoCQVYxCJL4QzuFJvwWN7?=
- =?us-ascii?Q?XFayeSHlZIf7+gEfL8hQkyFWAPK6jD5iKXXeRgSkxF8PeN1uh0qw0xrdM7pW?=
- =?us-ascii?Q?MglLoa+OQywxNA0c7TnlbZQd2onjogjFA5ThQjTNPhLsdFgCQxi8gASnhSoj?=
- =?us-ascii?Q?Al6GGBLuiR/7+hZrC9c/JdVJVYrs3uSMrVMW6yq0W5vInlIjCArYAF5moM0o?=
- =?us-ascii?Q?OWSwPiXlA3Ok5wYwb/7WMFksLVbcAUOSNDYaAsCzom1LMiPn9+h1U2bKLkP6?=
- =?us-ascii?Q?hCNB2RlB66Oir+i2Fps2IHu7/267+HCS+PXX9MxktNPR+6RVdlsSxBmbeR6y?=
- =?us-ascii?Q?+FrN/1TWJLg0eBpmVOHBP8f4gMmEaFU2JQWyBz3PqEx9/dZEjtajY3OLrQVx?=
- =?us-ascii?Q?Sc7n8+PMTho4OGSOtTH2wZIEl3IG8pMguA73iHElRoDTGeZ35NWMLmJwvQnZ?=
- =?us-ascii?Q?0KpiYTxkelo+NQ6NARkqBqr+/onzPMh1wc2r9KzMWN4Pw/m5+qRktU6zD7hS?=
- =?us-ascii?Q?XRLQ6tuuDvhgeDEZVR2n9p6gGPz1JPPJ+ZeuT5ccPaOQxPPgDzyE/sCGKTyw?=
- =?us-ascii?Q?h7cL0xcdqn0KykiXYLafU4xIwhX+wMEnD3sEVm7px27kPy22/kmnVkaC0RIS?=
- =?us-ascii?Q?sb8K2UnI5nSc6CJNshfk4kPIx2dzs53s3eg9NmTq8NysJPLq1XwNGDpQRVKj?=
- =?us-ascii?Q?boUzL1+0GUGnBWysknQhacrY7kklYiay5cDt5g7mxTMNOyrQMwY9w7kYuqy0?=
- =?us-ascii?Q?E8fkUCYMD1wprckLzsbV1qkJfo8mWg+X5KVeTnz++gOreRSbuvvPdGFyTzcO?=
- =?us-ascii?Q?+6V15F98rzrQBhQmagtU15onseuor2plea0JLlf9Dq1Q3nWidN5qtNac8Pzn?=
- =?us-ascii?Q?TaLm+Vf5mgm5kUA2CiUvcQrta4gKurlUfduoxKVii3L/Mah+rIt07pBL1SMc?=
- =?us-ascii?Q?sofuU2x+NHeNt2sQC74kAhYK17E7V9ZqKWC54lIK17byYHVgI3dnn0522TDU?=
- =?us-ascii?Q?yhntSTdZNSIbIl7MWSesIi+jEJjTkQ6u1TBnUjo4Tur1T8BOG051SpHgDcOj?=
- =?us-ascii?Q?EmoQYkbaRiYSjzqE/oYjwrnx5NEqfAvv6Ug0yc/H8JIalA7PNtSJqHejg+p9?=
- =?us-ascii?Q?kKUwJ4C8IyosSisO/8n/nl8HKm8wSi4N4i6J0a7h0TAWqgczzJzIwb3QRPl3?=
- =?us-ascii?Q?gCzLz990r/VoViJePkjdyxLUF2zDPFe79KtYPMj0qjDDe7+42MKxyPx3747x?=
- =?us-ascii?Q?iMlnHzQ2kauvi1GyFsH+Yfd3+wQBOqyLhVGPzc/CSdJGAuoygpMTiwR1oj3w?=
- =?us-ascii?Q?gYdEjBgrQqsiBG3zCStUoh/wAKzzhuzLJBrUHDPJz6LdiyCpVerxupdQdVl+?=
- =?us-ascii?Q?q3pp1Zyoih8l2I7n6HN5rssl0CJcQ0CHUVnSnvV62RSHsP36Xi33B0ue7X8v?=
- =?us-ascii?Q?ofAobjjR8tEosvjpVQefPXGTmFXQUhnautdCItdnJOCeHGkaBFDPbsKo8Uby?=
- =?us-ascii?Q?U5tel7elcjnQybIpDxXy6Ci/oq5pLtIdHKbtbvS1akHKr0YEhyfFrgMI4ZaO?=
- =?us-ascii?Q?yPHeWM8ep1HZSE65QJQXk4VcQqJqD1Pw2jMWdN/WPMhi4epiCsEHloByAU6g?=
- =?us-ascii?Q?Pi/hajr4RTBEAydZGD93PQMoVduHSEw6xLX5lvJ118wzF6vIOBOkFH3iJ11t?=
- =?us-ascii?Q?l2r0Samlq05l9nTjUWlpq10lA5b0iar5KN38hSaOEqm0xAv4slZfuYn0vfIt?=
-x-ms-exchange-antispam-messagedata-1: hbCJJXl2ebcTOYoeSpJaRsyNU+erDAnRgMm2D1CwbR+rMamIVzF9KU12
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d862571-d670-4836-aed9-08da10baa806
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2022 12:58:29.3756
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aQf0mxx13Af8DWcPI9tk2NqenaDjymnUvPco89r41JpegxYiFDAmlV3KrHYl+SdtwgB+tC5bptCoPTn7F0EBw6ssROdXrY0agpD7rXLYk8A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5165
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <06cc127b5d3c535917e90fbdce0534742dcde478.1648470587.git.naohiro.aota@wdc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-Tested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On Mon, Mar 28, 2022 at 09:32:05PM +0900, Naohiro Aota wrote:
+> Running generic/406 causes the following WARNING in btrfs_destroy_inode()
+> which tells there is outstanding extents left.
+
+I can't trigger the warning with generic/406.
+Any special setup or config to trigger it?
+
+The change looks fine to me, however I'm curious why this isn't triggered
+with generic/406, nor anyone else reported it before, since the test is
+fully deterministic.
+
+Thanks.
+
+> 
+> In btrfs_get_blocks_direct_write(), we reserve a temporary outstanding
+> extents with btrfs_delalloc_reserve_metadata() (or indirectly from
+> btrfs_delalloc_reserve_space(()). We then release the outstanding extents
+> with btrfs_delalloc_release_extents(). However, the "len" can be modified
+> in the CoW case, which releasing fewer outstanding extents than expected.
+> 
+> Fix it by calling btrfs_delalloc_release_extents() for the original length.
+> 
+>     ------------[ cut here ]------------
+>     WARNING: CPU: 0 PID: 757 at fs/btrfs/inode.c:8848 btrfs_destroy_inode+0x1e6/0x210 [btrfs]
+>     Modules linked in: btrfs blake2b_generic xor lzo_compress
+>     lzo_decompress raid6_pq zstd zstd_decompress zstd_compress xxhash zram
+>     zsmalloc
+>     CPU: 0 PID: 757 Comm: umount Not tainted 5.17.0-rc8+ #101
+>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS d55cb5a 04/01/2014
+>     RIP: 0010:btrfs_destroy_inode+0x1e6/0x210 [btrfs]
+>     Code: fe ff ff 0f 0b e9 d6 fe ff ff 0f 0b 48 83 bb e0 01 00 00 00 0f 84
+>     65 fe ff ff 0f 0b 48 83 bb 78 ff ff ff 00 0f 84 63 fe ff ff <0f> 0b 48
+>     83 bb 70 ff ff ff 00 0f 84 61 fe ff ff 0f 0b e9 5a fe ff
+>     RSP: 0018:ffffc9000327bda8 EFLAGS: 00010206
+>     RAX: 0000000000000000 RBX: ffff888100548b78 RCX: 0000000000000000
+>     RDX: 0000000000026900 RSI: 0000000000000000 RDI: ffff888100548b78
+>     RBP: ffff888100548940 R08: 0000000000000000 R09: ffff88810b48aba8
+>     R10: 0000000000000001 R11: ffff8881004eb240 R12: ffff88810b48a800
+>     R13: ffff88810b48ec08 R14: ffff88810b48ed00 R15: ffff888100490c68
+>     FS:  00007f8549ea0b80(0000) GS:ffff888237c00000(0000) knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: 00007f854a09e733 CR3: 000000010a2e9003 CR4: 0000000000370eb0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     Call Trace:
+>      <TASK>
+>      destroy_inode+0x33/0x70
+>      dispose_list+0x43/0x60
+>      evict_inodes+0x161/0x1b0
+>      generic_shutdown_super+0x2d/0x110
+>      kill_anon_super+0xf/0x20
+>      btrfs_kill_super+0xd/0x20 [btrfs]
+>      deactivate_locked_super+0x27/0x90
+>      cleanup_mnt+0x12c/0x180
+>      task_work_run+0x54/0x80
+>      exit_to_user_mode_prepare+0x152/0x160
+>      syscall_exit_to_user_mode+0x12/0x30
+>      do_syscall_64+0x42/0x80
+>      entry_SYSCALL_64_after_hwframe+0x44/0xae
+>     RIP: 0033:0x7f854a000fb7
+> 
+> Fixes: f0bfa76a11e9 ("btrfs: fix ENOSPC failure when attempting direct IO write into NOCOW range")
+> CC: stable@vger.kernel.org # 5.17
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  fs/btrfs/inode.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index c7b15634fe70..5c0c54057921 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7409,6 +7409,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+>  	u64 block_start, orig_start, orig_block_len, ram_bytes;
+>  	bool can_nocow = false;
+>  	bool space_reserved = false;
+> +	u64 prev_len;
+>  	int ret = 0;
+>  
+>  	/*
+> @@ -7436,6 +7437,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+>  			can_nocow = true;
+>  	}
+>  
+> +	prev_len = len;
+>  	if (can_nocow) {
+>  		struct extent_map *em2;
+>  
+> @@ -7465,8 +7467,6 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+>  			goto out;
+>  		}
+>  	} else {
+> -		const u64 prev_len = len;
+> -
+>  		/* Our caller expects us to free the input extent map. */
+>  		free_extent_map(em);
+>  		*map = NULL;
+> @@ -7497,7 +7497,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+>  	 * We have created our ordered extent, so we can now release our reservation
+>  	 * for an outstanding extent.
+>  	 */
+> -	btrfs_delalloc_release_extents(BTRFS_I(inode), len);
+> +	btrfs_delalloc_release_extents(BTRFS_I(inode), prev_len);
+>  
+>  	/*
+>  	 * Need to update the i_size under the extent lock so buffered
+> -- 
+> 2.35.1
+> 
