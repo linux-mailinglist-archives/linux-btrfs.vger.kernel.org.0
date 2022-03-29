@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5344EA9E0
+	by mail.lfdr.de (Postfix) with ESMTP id 7B76C4EA9E1
 	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Mar 2022 10:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbiC2I6A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S234312AbiC2I6A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Tue, 29 Mar 2022 04:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbiC2I57 (ORCPT
+        with ESMTP id S234304AbiC2I57 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 29 Mar 2022 04:57:59 -0400
 Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C8D190B54
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 01:56:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960C5190B5E
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 01:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1648544176; x=1680080176;
+  t=1648544177; x=1680080177;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=o8OCy0g7xB1UK3ZwczxP0PJny07qDFNDokaC0Iq1iSs=;
-  b=kDrGYzyG682dKElN9H4VAkhzfCO0NGzFlmQEbu1CIitBm1sJWrwA84yd
-   duMsERfJwhaESR2rlqK5yentRhl33NsGgujo8Ev77DpUOczH6uLvzqUJs
-   6BSDuvisATMcZ6A6+goI3v8c0fwFsnYgPtVvov9TVgbMI90J/knAPgJ+F
-   18Do7TdFtU8Thr5dC63MMo9KJatNlhQql5s066eHs1G2TW+0z0kVIyulW
-   SacUzcAB5NjFW4If+5nu5carHiZDIojB3UYbazIwJKVPzYhoNK1DGINDU
-   krPXlgnWY8WdXyH+ikfjqIlsLXP0Wrn0feHBQ+hPObrDzNgLkSqOyPcD9
-   A==;
+  bh=wJrqRCYSAbg1LnyyBqCL8XJOy/fAnNCtxaK/xgeCWfs=;
+  b=aX0OsNBxKESwe5kTkXnf5SFRVbC9OZdHGRJV/tsRzuzAGs3KupTsdx/K
+   HpLtxhnlG2C2rMC+lUXyM+7UajiYTnqHJGbwDvLR/KAgI4nWGW3uCEgpK
+   U/ugGzzNPvo7rl5eBqbPfZALkmJ8rGPPHZcdV5UTZJWP9vRw9V0ww6wPC
+   He3Iw0FnDhgl3tuOYJ16cRChjpZiuYrOnt0Og/bsMXIiz8toCFE2//W2p
+   46ZqoLsjyHQuwzB2Wvqg6EfN41falRVA7HKqCC+NKMRRFrwrPJ1rLXGJb
+   duDqoDp1rFJJ5OPiL/9lkuDM+gQYNHu13bjvGMZIaa+hOs1dsQvozfRPD
+   Q==;
 X-IronPort-AV: E=Sophos;i="5.90,219,1643644800"; 
-   d="scan'208";a="308481648"
+   d="scan'208";a="308481652"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Mar 2022 16:56:16 +0800
-IronPort-SDR: 2arWa3iP21Gt3FTFEYaSU84S65bUO3rekd1G/O1vICvWxPc1JHpRUBjOoh5uJpRAByhMWYfHVR
- vVpwWGaDeOfsOlHpy69Kv3DJNAnY9u0iCEnQht+mESfXdgj2ZhhleIWOnoy/q/2GrzSRvketGG
- pknvowQdE2m6F5sgaag6F8ecI4yh1kUO+hU0xFAYSkRb+KfYnffK6w2hG3GPilqaOEYCLepw8i
- YKu1Io6RjwpyYU363iJk/itLx4cF1t55HLFUHDmGhbeq7INTQGpIbB5uMb2P+guYz48SWND1Rj
- 3eAnHGzpEjvfO821yRCmaeAd
+  by ob1.hgst.iphmx.com with ESMTP; 29 Mar 2022 16:56:17 +0800
+IronPort-SDR: BEA8UpAOItDVdWPpD9n0uvkyabn+h8l19Dyl4N2erlWhiXBYfYrFj7ffzGij8Kr4zogNmM9I/e
+ a4s7jHg5j8+fes9TGf54RVXiZloUgCd0oyd7FEAJlKyzZI0xzfcLQ5MAzxK/eH0AA3WYeFEvrR
+ Xk58d3HFbfzud14dYrlcjsYwt0h1wCCo1VRHBUjU4Qy5w81oF1bCGjTHc/PqcGfFg2/6BW0UYW
+ sSvNnwvGdI543wARPUu68WPf3EfIUoeespuS69D3i4OqAKcO3G+fhgU18l7BGHaAMsVe1PIDtL
+ qQ7QzzUmOylCmamaZC2b/1uD
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2022 01:28:00 -0700
-IronPort-SDR: ZiH9Wna24tCwc2KbDLt+4JuBvhp2nMh2rzjhMFwXqK6ogwKPfHQegsnkCPBxkX0SUD1oZiDK67
- NdFKavdw9EGqd0S0YGrc9KtnzOpk4lKwMDMxUIVhAN/PUnbrSiTfKYLd++CuID+bnkBmjY2nhD
- +hpdbVD37XriITZ1ov82yepFyudN/HafBtGy+KscQu8PsgTzZc+Ixo4aI3l+NKvYhc8UmgQl6s
- 4j//AftuWeFAKGsqErGTPShBBcpJg9RFPJ9jRH4eMzew4j2E+T+79myxjjN5XQhRS3q6bjwfy1
- DHk=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2022 01:28:01 -0700
+IronPort-SDR: +RPNHv0TDmyAcFyGkwsL7YtfQZHnCPoUXcvbaOzU3iLV5LaEJEv07HgZad551K8YBnFa5yMEhe
+ mq+Ak2m7eKUx6nS15POTKSTptSps7uQkm3+HMwjaSNG4Q/GcER1stJdVB+ekWlhHvmdcH8iwAq
+ rG+SpFb9jXu2NFIfkIf5ALTobNbAIH5Y1lBH6Qt4MCKGKFNC1vitVyyITQlkUfmXfWyIGfkrTx
+ eSseAMaHDG7azb8LblzaxWrClsiHwttRCA17lR7uuGZxiO4X4Eo4dwb0suu/biW72F5WcJf9Dq
+ aSU=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip01.wdc.com with ESMTP; 29 Mar 2022 01:56:16 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 29 Mar 2022 01:56:17 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     Josef Bacik <josef@toxicpanda.com>,
@@ -54,9 +54,9 @@ Cc:     Josef Bacik <josef@toxicpanda.com>,
         Pankaj Raghav <p.raghav@samsung.com>,
         "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 1/4] btrfs: make the bg_reclaim_threshold per-space info
-Date:   Tue, 29 Mar 2022 01:56:06 -0700
-Message-Id: <63d4d206dd2e652aa968ab0fa30dd9aab98a666b.1648543951.git.johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 2/4] btrfs: allow block group background reclaim for !zoned fs'es
+Date:   Tue, 29 Mar 2022 01:56:07 -0700
+Message-Id: <7243b0e2e57f2eb276f9ddbff3c772e6b3cbe956.1648543951.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1648543951.git.johannes.thumshirn@wdc.com>
 References: <cover.1648543951.git.johannes.thumshirn@wdc.com>
@@ -74,166 +74,81 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-For !zoned file systems it's useful to have the auto reclaim feature,
-however there are different use cases for !zoned, for example we may not
-want to reclaim metadata chunks ever, only data chunks.  Move this sysfs
-flag to per-space_info.  This won't affect current users because this
-tunable only ever did anything for zoned, and that is currently hidden
-behind BTRFS_CONFIG_DEBUG.
+We have found this feature invaluable at Facebook due to how our
+workload interacts with the allocator.  We have been using this in
+production for months with only a single problem that has already been
+fixed.  This will allow us to set a threshold for block groups to be
+automatically relocated even if we don't have zoned devices.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-[ jth restore global bg_reclaim_threshold ]
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/free-space-cache.c |  7 +++++--
- fs/btrfs/space-info.c       |  9 +++++++++
- fs/btrfs/space-info.h       |  6 ++++++
- fs/btrfs/sysfs.c            | 37 +++++++++++++++++++++++++++++++++++++
- fs/btrfs/zoned.h            |  6 +-----
- 5 files changed, 58 insertions(+), 7 deletions(-)
+ fs/btrfs/block-group.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 01a408db5683..ef84bc5030cd 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -2630,16 +2630,19 @@ int __btrfs_add_free_space(struct btrfs_block_group *block_group,
- static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
- 					u64 bytenr, u64 size, bool used)
- {
--	struct btrfs_fs_info *fs_info = block_group->fs_info;
-+	struct btrfs_space_info *sinfo = block_group->space_info;
- 	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
- 	u64 offset = bytenr - block_group->start;
- 	u64 to_free, to_unusable;
--	const int bg_reclaim_threshold = READ_ONCE(fs_info->bg_reclaim_threshold);
-+	int bg_reclaim_threshold = 0;
- 	bool initial = (size == block_group->length);
- 	u64 reclaimable_unusable;
- 
- 	WARN_ON(!initial && offset + size > block_group->zone_capacity);
- 
-+	if (!initial)
-+		bg_reclaim_threshold = READ_ONCE(sinfo->bg_reclaim_threshold);
-+
- 	spin_lock(&ctl->tree_lock);
- 	if (!used)
- 		to_free = size;
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index b87931a458eb..60d0a58c4644 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -181,6 +181,12 @@ void btrfs_clear_space_info_full(struct btrfs_fs_info *info)
- 		found->full = 0;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 59f18a10fd5f..628741ecb97b 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3208,6 +3208,31 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 	return ret;
  }
  
-+/*
-+ * Block groups with more than this value (percents) of unusable space will be
-+ * scheduled for background reclaim.
-+ */
-+#define BTRFS_DEFAULT_ZONED_RECLAIM_THRESH	75
++static inline bool should_reclaim_block_group(struct btrfs_block_group *block_group,
++					      u64 bytes_freed)
++{
++	const struct btrfs_space_info *space_info = block_group->space_info;
++	const int reclaim_thresh = READ_ONCE(space_info->bg_reclaim_threshold);
++	const u64 new_val = block_group->used;
++	const u64 old_val = new_val + bytes_freed;
++	u64 thresh;
 +
- static int create_space_info(struct btrfs_fs_info *info, u64 flags)
- {
- 
-@@ -203,6 +209,9 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
- 	INIT_LIST_HEAD(&space_info->priority_tickets);
- 	space_info->clamp = 1;
- 
-+	if (btrfs_is_zoned(info))
-+		space_info->bg_reclaim_threshold = BTRFS_DEFAULT_ZONED_RECLAIM_THRESH;
++	if (reclaim_thresh == 0)
++		return false;
 +
- 	ret = btrfs_sysfs_add_space_info_type(info, space_info);
- 	if (ret)
- 		return ret;
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index d841fed73492..0c45f539e3cf 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -24,6 +24,12 @@ struct btrfs_space_info {
- 				   the space info if we had an ENOSPC in the
- 				   allocator. */
- 
++	thresh = div_factor_fine(block_group->length, reclaim_thresh);
++
 +	/*
-+	 * Once a block group drops below this threshold we'll schedule it for
-+	 * reclaim.
++	 * If we were below the threshold before don't reclaim, we are likely a
++	 * brand new block group and we don't want to relocate new block groups.
 +	 */
-+	int bg_reclaim_threshold;
-+
- 	int clamp;		/* Used to scale our threshold for preemptive
- 				   flushing. The value is >> clamp, so turns
- 				   out to be a 2^clamp divisor. */
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 17389a42a3ab..90da1ea0cae0 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -722,6 +722,42 @@ SPACE_INFO_ATTR(bytes_zone_unusable);
- SPACE_INFO_ATTR(disk_used);
- SPACE_INFO_ATTR(disk_total);
- 
-+static ssize_t btrfs_sinfo_bg_reclaim_threshold_show(struct kobject *kobj,
-+						     struct kobj_attribute *a,
-+						     char *buf)
-+{
-+	struct btrfs_space_info *space_info = to_space_info(kobj);
-+	ssize_t ret;
-+
-+	ret = sysfs_emit(buf, "%d\n", READ_ONCE(space_info->bg_reclaim_threshold));
-+
-+	return ret;
++	if (old_val < thresh)
++		return false;
++	if (new_val >= thresh)
++		return false;
++	return true;
 +}
 +
-+static ssize_t btrfs_sinfo_bg_reclaim_threshold_store(struct kobject *kobj,
-+						      struct kobj_attribute *a,
-+						      const char *buf, size_t len)
-+{
-+	struct btrfs_space_info *space_info = to_space_info(kobj);
-+	int thresh;
-+	int ret;
-+
-+	ret = kstrtoint(buf, 10, &thresh);
-+	if (ret)
-+		return ret;
-+
-+	if (thresh != 0 && (thresh <= 50 || thresh > 100))
-+		return -EINVAL;
-+
-+	WRITE_ONCE(space_info->bg_reclaim_threshold, thresh);
-+
-+	return len;
-+}
-+
-+BTRFS_ATTR_RW(space_info, bg_reclaim_threshold,
-+	      btrfs_sinfo_bg_reclaim_threshold_show,
-+	      btrfs_sinfo_bg_reclaim_threshold_store);
-+
- /*
-  * Allocation information about block group types.
-  *
-@@ -738,6 +774,7 @@ static struct attribute *space_info_attrs[] = {
- 	BTRFS_ATTR_PTR(space_info, bytes_zone_unusable),
- 	BTRFS_ATTR_PTR(space_info, disk_used),
- 	BTRFS_ATTR_PTR(space_info, disk_total),
-+	BTRFS_ATTR_PTR(space_info, bg_reclaim_threshold),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(space_info);
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index cbf016a7bb5d..c489c08d7fd5 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -10,11 +10,7 @@
- #include "block-group.h"
- #include "btrfs_inode.h"
+ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 			     u64 bytenr, u64 num_bytes, bool alloc)
+ {
+@@ -3230,6 +3255,8 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 	spin_unlock(&info->delalloc_root_lock);
  
--/*
-- * Block groups with more than this value (percents) of unusable space will be
-- * scheduled for background reclaim.
-- */
--#define BTRFS_DEFAULT_RECLAIM_THRESH		75
-+#define BTRFS_DEFAULT_RECLAIM_THRESH           75
+ 	while (total) {
++		bool reclaim;
++
+ 		cache = btrfs_lookup_block_group(info, bytenr);
+ 		if (!cache) {
+ 			ret = -ENOENT;
+@@ -3275,6 +3302,8 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 					cache->space_info, num_bytes);
+ 			cache->space_info->bytes_used -= num_bytes;
+ 			cache->space_info->disk_used -= num_bytes * factor;
++
++			reclaim = should_reclaim_block_group(cache, num_bytes);
+ 			spin_unlock(&cache->lock);
+ 			spin_unlock(&cache->space_info->lock);
  
- struct btrfs_zoned_device_info {
- 	/*
+@@ -3301,6 +3330,8 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 		if (!alloc && old_val == 0) {
+ 			if (!btrfs_test_opt(info, DISCARD_ASYNC))
+ 				btrfs_mark_bg_unused(cache);
++		} else if (!alloc && reclaim) {
++			btrfs_mark_bg_to_reclaim(cache);
+ 		}
+ 
+ 		btrfs_put_block_group(cache);
 -- 
 2.35.1
 
