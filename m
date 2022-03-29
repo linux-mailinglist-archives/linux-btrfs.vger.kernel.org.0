@@ -2,126 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DE34EAB2C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Mar 2022 12:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E89D4EABA2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Mar 2022 12:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235117AbiC2KXq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Mar 2022 06:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
+        id S234471AbiC2KvH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Mar 2022 06:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235125AbiC2KWx (ORCPT
+        with ESMTP id S232641AbiC2KvD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Mar 2022 06:22:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB649E025;
-        Tue, 29 Mar 2022 03:21:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D28ED61194;
-        Tue, 29 Mar 2022 10:21:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE0E4C3410F;
-        Tue, 29 Mar 2022 10:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648549268;
-        bh=1ANO9Lo1sojOZqkPtzcdK9gqsV//54mXWnVR798ohRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YsdoVbdPcMXh0SvDUEy+8Il2NJf2CqGixuDurlAeDkZ0IvmgrnOikAmsCSwiiwEjM
-         Fcd1Ri+j2YzwP4s0XEVVOaJ/RqJK/845H6XkW4Abwdn2J85P011GLnxuzoz412UPeB
-         8RDGxqXV7O1Bo3WqfGod9J5yieAwvROphynBhQWLjxOB3Ftq16cRIjgEZ2Gi9LoKPo
-         qsP8QDksgKty9AOugfN4uibXoFv6iEwmU8L5V+YHcoD/oLkeythkRZYGDfy7CkmN7d
-         KwiJFZeii9UXQsdozuzXF39ayPUupPChnJ8biU7KLS53p6SSWyn2i5+jnSwzXSzY4A
-         7nRD1yTmmEpSA==
-Date:   Tue, 29 Mar 2022 11:21:05 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Kaiwen Hu <kevinhu@synology.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        robbieko@synology.com, cccheng@synology.com, seanding@synology.com
-Subject: Re: [PATCH] btrfs: test that we can't delete subvolume within
- swapfile
-Message-ID: <YkLdkbw/DeV1grHP@debian9.Home>
-References: <20220329100201.1502010-1-kevinhu@synology.com>
+        Tue, 29 Mar 2022 06:51:03 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B3513CDD
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 03:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1648550954;
+        bh=k+bDxaF0Rv5Am7Xd14stfzTdAeTs8WxMAfYA4y1YM9g=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=Qeld8/DxNl0wkiUboCFhBMUPVwUCXJ3Jh+mOoo9R0ys+2aX1oOllz71CJ1tI4/BAO
+         lL1M/v0qfjg1/n/HkjJpaygHPrnJA3kNqQW/WM6eFJsSL0F4MvROaUJuhdd+Nasc4O
+         Pr9j9Hfrj94Aom0xezMJKE0PnkQdQUQVmXzpncuY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MOzOw-1nPCjt3ZG8-00PP8s; Tue, 29
+ Mar 2022 12:49:14 +0200
+Message-ID: <ed81efec-0303-d152-a84d-74f4ff4f5058@gmx.com>
+Date:   Tue, 29 Mar 2022 18:49:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220329100201.1502010-1-kevinhu@synology.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] btrfs: replace a wrong memset() with memzero_page()
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org
+References: <8d6f911a0282eba76f9e05d6f1e7c6f091d4870b.1648199349.git.wqu@suse.com>
+ <20220328185121.GQ2237@twin.jikos.cz> <YkLYJ+xRvmm0yN9Y@debian9.Home>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <YkLYJ+xRvmm0yN9Y@debian9.Home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aZ69dZ+u3fiVNmm2AnoHcMY8NhCe6PNQxaRKd/vKVuwwTMFjlef
+ Qit3ZJIGvD59A0NjDMQRZ8HSS/ZDOaNHVEl2gdeeFHWNj+U2vVWS0pSu4ApyYLLMT091Nt6
+ TOmtPWj/lLkV7c0gSD6m/40b+w/9ieQCrF6LadSLi83u68ljfNRpA9lpXnEHyg4/t/TOC8l
+ cS5ZblGDovwqm5URABhag==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lQj+anHFuUg=:j6AddLsxTfcjCS8R1hft+b
+ QDqVZttddhd1cIqpmGkdLoO5RpRC/dfty/h+++d2A/9nbqgDmTbKkPNnilad65eNt4FvVFmDb
+ r23n14xwCIAYVJCqdoMKA3xy6mr+yslUk2Fff/ncNI+ZKnLZvaR8AmpsdECZ0tiZNnh28kM36
+ XQ5fs7kJrsJBIfBUHkoL6OhdWyLi7b0mc4ZhTZFrkVwMciLpA8mtux1qlctj5sPD+Npl2InHY
+ Txs0CLUVKcYAhxphQjKJS+wWf+9WTQMxo6z5scOuPezLGQiKsHfw6dCeb/Nh6Bb2ajb3O/GSe
+ 1dJtmgzs/joiew5LvevVNECyf6jKVIDbj02WEPYKmfEsgecYRb2qCbfM6c7TY8mawn7YUD/KS
+ 0kUgc4nKxHxHWWkADYzWlA0HlbxZWEPqm0SPxt4ijwP5RLLxcu7/2+Uv+Tbax2h+7gNnYXGrm
+ WfOl89bw+akm/UcVRsLnC04VpnNEsyvAKvucRLdOdXVRRg0pk2vFGx1Li36rh9s7P5i8zswMb
+ hRz+F+rAiTwLl0CAtWUvYR+MTSO8XY/q4tTzy4cZg6vKblHANwHbDRejk+QrtOt4KVKqwlTqq
+ Gos431WI+4v8MTEio0kk68Ebbf6Xuuw7mPCjAgSelzIuOfOBN48bnPgailgVMOez9KuV+4399
+ sXYF3zfK13YqJYkWSv70wYj5wrkf9hfxdY0/dV+J2ruvU35YqCiDAmNEvP41zetLtxne0xOgZ
+ k8xIXx5iwkOX0ZWfDfBJwavDXjP9QbfX4cOMdhjnC3GuW5katj4zPjrp10C5R7cvHxLtfhbv7
+ h5InMq0bqGKAn2Vqtg0u19ge02ctTSvEN22TzcbeDs1Mf3a+pieLtsBEye+Ao1XRlHFKsIlVs
+ E3IjRtM7wHB9PtnK3fXDfoBXBMesOCVSQ89x7m5EFpYUWacbV6bp2aWFHiP+pAiR9ZW6voUnN
+ 1tnoXwrfafIRjRTlXNKOZFhUGzanHOXGlGQrJvep5PeiMYeQ8Nn5Co9Ymh26n0Qv4ZiOETUXX
+ zP8hkKZHuPf2+1Vivl2J0mw0t7eSXQXX9s4psT/NkvjqJZHHJCHxl5ieBR1TLdA4+ZqpNfnNb
+ hjedFLsTiiCchY=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 06:02:02PM +0800, Kaiwen Hu wrote:
-> Subvolumes with active swapfiles should be forbidden
-> to be deleted, because when the subvolume is deleted,
-> we cannot swapoff the swapfile in the deleted subvolume.
-> 
-> Fixed by the patch
-> 	btrfs: prevent subvol with swapfile from being deleted
-> 
-> Reviewed-by: Robbie Ko <robbieko@synology.com>
-> Signed-off-by: Kaiwen Hu <kevinhu@synology.com>
-> ---
->  tests/btrfs/174     | 10 ++++++++++
->  tests/btrfs/174.out |  3 +++
->  2 files changed, 13 insertions(+)
 
-Thanks for doing this.
 
-However we don't change existing tests to exercise bugs.
+On 2022/3/29 17:57, Filipe Manana wrote:
+> On Mon, Mar 28, 2022 at 08:51:21PM +0200, David Sterba wrote:
+>> On Fri, Mar 25, 2022 at 05:37:59PM +0800, Qu Wenruo wrote:
+>>> The original code is not really setting the memory to 0x00 but 0x01.
+>>>
+>>> To prevent such problem from happening, use memzero_page() instead.
+>>
+>> This should at least mention we think that setting it to 0 is right, as
+>> you call it wrong but give no hint why it's thought to be wrong.
+>
+> My guess is that something different from zero makes it easier to spot
+> the problem in user space, as 0 is not uncommon (holes, prealloced exten=
+ts)
+> and may get unnoticed by applications/users.
 
-The few exceptions where we change an existing test case are, typically,
-if the test case is very recent and we didn't get it quite right, or
-if we had a filesystem behaviour change that makes the test fail - like
-for example the recent changes that allow cross mount reflink operations.
+OK, that makes some sense.
 
-So this should be a new test case.
+But shouldn't user space tool get an -EIO directly?
 
-> 
-> diff --git a/tests/btrfs/174 b/tests/btrfs/174
-> index 3bb5e7f9..08d4af40 100755
-> --- a/tests/btrfs/174
-> +++ b/tests/btrfs/174
-> @@ -11,6 +11,7 @@
->  _begin_fstest auto quick swap
->  
->  . ./common/filter
-> +. ./common/filter.btrfs
->  
->  _supported_fs btrfs
->  _require_scratch_swapfile
-> @@ -43,7 +44,16 @@ echo "Defrag"
->  # fragmented.
->  $BTRFS_UTIL_PROG filesystem defrag -c "$swapfile" 2>&1 | grep -o "Text file busy"
->  
-> +# We cannot delete sub-volume when the sub-volume contains active swapfile.
-> +echo "Delete subvol"
-> +$BTRFS_UTIL_PROG subvolume delete "$SCRATCH_MNT/swapvol" \
-> +	2>&1 | grep -o "Text file busy"
-> +
->  swapoff "$swapfile"
-> +
-> +# Delete the sub-volume
-> +$BTRFS_UTIL_PROG subvolume delete $SCRATCH_MNT/swapvol | _filter_btrfs_subvol_delete
-> +
->  _scratch_unmount
->  
->  status=0
-> diff --git a/tests/btrfs/174.out b/tests/btrfs/174.out
-> index 15bdf79e..8bed461b 100644
-> --- a/tests/btrfs/174.out
-> +++ b/tests/btrfs/174.out
-> @@ -8,3 +8,6 @@ Snapshot
->  Text file busy
->  Defrag
->  Text file busy
-> +Delete subvol
-> +Text file busy
-> +Delete subvolume 'SCRATCH_MNT/swapvol'
-> -- 
-> 2.25.1
-> 
+As the corrupted range won't have PageUptodate set anyway.
+
+Thanks,
+Qu
+>
+> I don't see a good reason to change this behaviour. Maybe it's just the
+> label name 'zeroit' that makes it confusing. >
+>>
+>>> Since we're here, also make @len const since it's just sectorsize.
+>>
+>> Please don't do that, adding const is fine when the line gets touched
+>> but otherwise adding it to an unrelated fix is not what I want to
+>> encourage.
+>
