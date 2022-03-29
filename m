@@ -2,120 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5D34EB457
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Mar 2022 21:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD88A4EB501
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Mar 2022 23:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241083AbiC2T7L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Mar 2022 15:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S232795AbiC2VGQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Mar 2022 17:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238323AbiC2T7K (ORCPT
+        with ESMTP id S232495AbiC2VGP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Mar 2022 15:59:10 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927C28BF58
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 12:57:26 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id e5so18610655pls.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 12:57:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yIT4p7ShXHLUNOjV8CvgepES5xgtr9srlJOvqbKocNI=;
-        b=kjeNyVLDw5gfpGN6mw79/GvJcQUnO9h4KG7JQXWW7+lMBvuE7+gpRGnoM9tHv09Qv9
-         t2l3lEwvIoLb/JEa5uMXY2LTipPPBIBgtR+UiX4uOtoeAnzCROOS0e5tya/scJYnCTPL
-         e0d8gYrRvsICGZMjGtanaku1+tmyy4ceY3YSr1RnDFPNKD3Rh2+0TbZgzAWAHGw/TlDM
-         1bMrL0m33jyeKj8iwYCHUoMtOroc3r1Uc0pYHtQulZjZRKzFNdrssTorQDj4I/z7kPVD
-         ZqSmsB62Lv0WoghLr31QWyoOFI513dDOm68umOnNz8WCRUC4fIPgqQf3K1FUKyqD6qeW
-         x0OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yIT4p7ShXHLUNOjV8CvgepES5xgtr9srlJOvqbKocNI=;
-        b=kJDxvjK7+ukxPnBGErPrpBrUSnwowpjN4/3ngbUgm+Mr9RXld9UQFvUlMkD4r1ctwK
-         KajMxlurV2j6kKFdw2apvLQv6hmW6brkV7oWKp9yTBmR9pOVCTgwivzcdVhCSiOKWGvO
-         bIZYgoBs3sSoM5Q6+qqzpKUJAMSaU9GBTOqk2ht8+ksX4BzGoe+jJTXVi62NUE1tQa84
-         aILt2Zo6ZLrT7WaJlqvCjVad3HxySzUqiijzbg2pitVFqON916Yare4O5EQ0b3qBWMGf
-         eI+Nwc7xchVP+XaPv5NeDaCJzkO9Ymd7No5HcZ88p1TVWAd3NkL6UiC0JHHN9KsaDxWw
-         6/9w==
-X-Gm-Message-State: AOAM530GrjjyqTKYmDIqfAPG5D7eQxQeH7GbzRshFF2JVWbUnqbw1qmU
-        alh4MW7O1uOw51kB4YQ+cR5LiA==
-X-Google-Smtp-Source: ABdhPJxXbNP+DG2LiBZF6CN5/bbP5jCUmTbPtiuDEPEq6c1AqNZk16Ydy4+mvxb/OeMYAKyvPv7t1A==
-X-Received: by 2002:a17:902:e0ca:b0:156:24d4:23e7 with SMTP id e10-20020a170902e0ca00b0015624d423e7mr6462076pla.13.1648583845945;
-        Tue, 29 Mar 2022 12:57:25 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:421])
-        by smtp.gmail.com with ESMTPSA id u15-20020a056a00098f00b004faa58d44eesm21890847pfg.145.2022.03.29.12.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Mar 2022 12:57:25 -0700 (PDT)
-Date:   Tue, 29 Mar 2022 12:57:23 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>, clm@fb.com, jbacik@fb.com,
+        Tue, 29 Mar 2022 17:06:15 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091B8122991
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 14:04:31 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A115921639;
+        Tue, 29 Mar 2022 21:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1648587870;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=poTqrBX/KmFDZWQPx3Fa/QttSaNmIT22TbU9cPX1Qf8=;
+        b=U4v9JWp7cENAlVcq60vVWS/4jiK6MBHJ5LFzIs/0WOJq9K4eAEtwBdv44LTKt6QLktIgQA
+        6hdc6zZmDMvcqXKeML5bLS1IBardmEfel/f6xF2kvfHXkaGoG60s8pWMEMGXuuU0tljn9F
+        E0xQUkBStSLoQ7BknmUHAehst3nywaU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1648587870;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=poTqrBX/KmFDZWQPx3Fa/QttSaNmIT22TbU9cPX1Qf8=;
+        b=0hbTta9umXt9/NCrgGRDhnE8MJmrXUJHwhrOzx+/CfYo4PeyryDNjP25CEybE0CjTsZpz0
+        tsrYfGR669qC2bDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 98EB4A3B88;
+        Tue, 29 Mar 2022 21:04:30 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DC92DDA7F3; Tue, 29 Mar 2022 23:00:32 +0200 (CEST)
+Date:   Tue, 29 Mar 2022 23:00:32 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs-progs: avoid checking wrong RAID5/6 P/Q data
+Message-ID: <20220329210032.GA2237@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.17 12/21] btrfs: don't advance offset for
- compressed bios in btrfs_csum_one_bio()
-Message-ID: <YkNko1BcsyDt2QUS@relinquished.localdomain>
-References: <20220328194157.1585642-1-sashal@kernel.org>
- <20220328194157.1585642-12-sashal@kernel.org>
+References: <cover.1648546873.git.wqu@suse.com>
+ <1f2706f3ef6733df2d1732715553c01d51b06374.1648546873.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220328194157.1585642-12-sashal@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1f2706f3ef6733df2d1732715553c01d51b06374.1648546873.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 28, 2022 at 03:41:47PM -0400, Sasha Levin wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On Tue, Mar 29, 2022 at 05:44:25PM +0800, Qu Wenruo wrote:
+> [BUG]
+> "btrfs check --check-data-csum" is causing tons of false alerts for
+> RAID56 systems:
 > 
-> [ Upstream commit e331f6b19f8adde2307588bb325ae5de78617c20 ]
+>   # mkfs.btrfs -f $dev1 $dev2 $dev3 -m raid1 -d raid5
+>   # mount $dev1 $mnt
+>   # xfs_io -f -c "pwrite 0 16k" $mnt/file
+>   # umount $mnt
+>   # btrfs check --check-data-csum $dev1
+>   ...
+>   [5/7] checking csums against data
+>   mirror 2 bytenr 389152768 csum 0x02ca4e98 expected csum 0x98757625
+>   mirror 2 bytenr 389156864 csum 0x02ca4e98 expected csum 0x98757625
+>   mirror 2 bytenr 389160960 csum 0x02ca4e98 expected csum 0x98757625
+>   mirror 2 bytenr 389165056 csum 0x02ca4e98 expected csum 0x98757625
+>   ERROR: errors found in csum tree
+>   [6/7] checking root refs
 > 
-> btrfs_csum_one_bio() loops over each filesystem block in the bio while
-> keeping a cursor of its current logical position in the file in order to
-> look up the ordered extent to add the checksums to. However, this
-> doesn't make much sense for compressed extents, as a sector on disk does
-> not correspond to a sector of decompressed file data. It happens to work
-> because:
+> But scrub is completely fine, and manually inspecting the on-disk data
+> shows nothing wrong.
 > 
-> 1) the compressed bio always covers one ordered extent
-> 2) the size of the bio is always less than the size of the ordered
->    extent
+> [CAUSE]
+> Btrfs-progs only implemented the RAID56 write support, mostly for
+> metadata.
 > 
-> However, the second point will not always be true for encoded writes.
+> It doesn't have RAID56 repair ability at all.
+> (Btrfs-fuse has the ability ready to be contribued to progs though).
 > 
-> Let's add a boolean parameter to btrfs_csum_one_bio() to indicate that
-> it can assume that the bio only covers one ordered extent. Since we're
-> already changing the signature, let's get rid of the contig parameter
-> and make it implied by the offset parameter, similar to the change we
-> recently made to btrfs_lookup_bio_sums(). Additionally, let's rename
-> nr_sectors to blockcount to make it clear that it's the number of
-> filesystem blocks, not the number of 512-byte sectors.
+> In read_extent_data(), it always read data from the first stripe,
+> without any RAID56 rebuild.
 > 
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> [WORKAROUND]
+> It will take a while to port RAID56 repair into btrfs-progs.
+> Just reduce the btrfs_num_copies() report for RAID56 to 1, so that we
+> won't even try to rebuild using P/Q.
+> 
+> Also add a warning message for open_ctree() of btrfs-progs, so
+> explicitly show the lack of RAID56 rebuild ability.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/compression.c |  2 +-
->  fs/btrfs/ctree.h       |  2 +-
->  fs/btrfs/file-item.c   | 37 +++++++++++++++++--------------------
->  fs/btrfs/inode.c       |  8 ++++----
->  4 files changed, 23 insertions(+), 26 deletions(-)
+>  kernel-shared/disk-io.c |  7 +++++++
+>  kernel-shared/volumes.c | 10 ++++++----
+>  2 files changed, 13 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+> index 4964cd3827e4..426fe40b53d6 100644
+> --- a/kernel-shared/disk-io.c
+> +++ b/kernel-shared/disk-io.c
+> @@ -997,6 +997,13 @@ int btrfs_check_fs_compatibility(struct btrfs_super_block *sb,
+>  		btrfs_set_super_incompat_flags(sb, features);
+>  	}
+>  
+> +	/*
+> +	 * We don't have the ability to repair from P/Q yet, give some warning
+> +	 * about this
+> +	 */
+> +	if (features & BTRFS_FEATURE_INCOMPAT_RAID56)
+> +		printf("WARNING: repairing using RAID56 P/Q is not supported yet\n");
 
-Hi, Sasha,
+There's a helper for warnings, warning()
 
-This patch doesn't fix a real bug, so it should be dropped from both
-5.16 and 5.17.
-
-Thanks!
+> +
+>  	features = btrfs_super_compat_ro_flags(sb);
+>  	if (flags & OPEN_CTREE_WRITES) {
+>  		if (flags & OPEN_CTREE_INVALIDATE_FST) {
+> diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
+> index e24428db8412..5845a4383d5f 100644
+> --- a/kernel-shared/volumes.c
+> +++ b/kernel-shared/volumes.c
+> @@ -1645,10 +1645,12 @@ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
+>  		ret = map->num_stripes;
+>  	else if (map->type & BTRFS_BLOCK_GROUP_RAID10)
+>  		ret = map->sub_stripes;
+> -	else if (map->type & BTRFS_BLOCK_GROUP_RAID5)
+> -		ret = 2;
+> -	else if (map->type & BTRFS_BLOCK_GROUP_RAID6)
+> -		ret = 3;
+> +	else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
+> +		/*
+> +		 * In btrfs-progs we don't yet have the ability to rebuild
+> +		 * from P/Q, thus currently it can only provide one mirror.
+> +		 */
+> +		ret = 1;
+>  	else
+>  		ret = 1;
+>  	return ret;
+> -- 
+> 2.35.1
