@@ -2,60 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB154EB6E7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 01:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2BF4EB733
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 01:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240793AbiC2XlT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Mar 2022 19:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
+        id S241370AbiC2XzO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Mar 2022 19:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234637AbiC2XlS (ORCPT
+        with ESMTP id S241368AbiC2Xyj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Mar 2022 19:41:18 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE5965499
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 16:39:34 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id z134so16788080vsz.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 16:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=6Lg0goOTC0gYfsTqI7xY923Ujf54D0QFokxxYo3sp/A=;
-        b=b07oUqqwLWIoxxF8uwVHw6set/yBezOF835/EA8UlPzr4NVRrSOB3luoJajq9RI4As
-         AEidBM76Io5FtQvdt2b4sQRvZAf/rZfxwIzpMCme7WNXoIQPy3pDxTOnA6usXzeYCVLw
-         MAGQrXZRV9FhZ9xyL4+LQEglo263G25/i0ZfcALEGeiRZy0uC4NWrSISyfk3fqWMJxIL
-         fifUxyDmxQFA3LnPswux4xRQWBts66kipnZwiEaHPwsXSOvY3w6UecwYJ4zqcR8DfHAR
-         DwEixwGP2S1VQ3YCtM/XWuo453+qFfkBeQ4ZduguDwaFsy5ztbRW7B+upESHbc1FOZYa
-         xDrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=6Lg0goOTC0gYfsTqI7xY923Ujf54D0QFokxxYo3sp/A=;
-        b=hdRfRzcPJ4Dzf4y8JpyBcmtEMkZaDpn3L/x2b5PNN6SxdVrg3AVjPuYG2vOg5oCj3Q
-         Jkw/sTPEj14mtRtq1+KN8dDhz1voXV13Bs6lGlbFWpP2Ql8pidzS24bq/cT0fl+JRo/M
-         VWsgiRwUJWsuNNnYUWHAl3HPf6/MqojuAbm1l/72P48MLCIcoXaiqiIWUDuFb8Sw3RsG
-         eqkjuCsN9Hkg/1nK7KtYIHdZAYkAcoQ1Vox5ewxNGuR/4irdcPFXrjhCNJQI0vHy/zuR
-         naLbcfqxuNEpiApaA25ss1yxGFD8gChTdMYnTf0CZW+c/KgheNn0Q1Ufxd9+aRbot/y5
-         oaCw==
-X-Gm-Message-State: AOAM531DRG7JO/eOv3YVqFgxZJht2/t3gFcCuKhN9VmX+IjNxz8W6nDZ
-        jwYQMcUpyCTrYSVOrln//c1iZ/zcTt+Wq1JuQ9RH6CluuISWMg==
-X-Google-Smtp-Source: ABdhPJzzAOvrd8UmIKu1Am/Tt5cnE1RRadwxfsd1CJD0p6qXPBpO0/IUwLs8wSKW/D7z8n8nEj2KDKrn5EXZpLvDVcE=
-X-Received: by 2002:a67:6686:0:b0:325:3d74:f2f0 with SMTP id
- a128-20020a676686000000b003253d74f2f0mr17918008vsc.20.1648597173359; Tue, 29
- Mar 2022 16:39:33 -0700 (PDT)
+        Tue, 29 Mar 2022 19:54:39 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3FD237FEC
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 16:52:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1648597928;
+        bh=meDmwufNaTWblYfEhnvczipaNp2BbrZioEnwhWp5mn0=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=LtkjkoAYgKU7Ji+6e01HPNmFw+/L7UdJukUIKJ538S/tK1B9nUOR/ajEYcpmHYx6r
+         QmsW+QWI112x/28O8p31qj5vM3ft+qFC4Zqpfq6CodmG7C7QGw2qmWX/ZAfKE1KF3M
+         HZctcETvHgsadX+5o7SbZMjZSKRmUqgrrQQRSl10=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlf0U-1oGgmz25Ao-00ihA6; Wed, 30
+ Mar 2022 01:52:08 +0200
+Message-ID: <d7e95b14-1e87-9c09-e172-680d53cb51c5@gmx.com>
+Date:   Wed, 30 Mar 2022 07:52:04 +0800
 MIME-Version: 1.0
-References: <CAGdWbB7onZzhe3EHM9+TvJARGr9Kcg6rKuxdy2-1Jk6V-wuDwQ@mail.gmail.com>
-In-Reply-To: <CAGdWbB7onZzhe3EHM9+TvJARGr9Kcg6rKuxdy2-1Jk6V-wuDwQ@mail.gmail.com>
-From:   Dave T <davestechshop@gmail.com>
-Date:   Tue, 29 Mar 2022 19:39:21 -0400
-Message-ID: <CAGdWbB5N827QrHiuQt2r3ZxLNRfGXkgOJj7u7M8mD81wiXL+7g@mail.gmail.com>
-Subject: Re: kernel: BTRFS error (device dm-1): Missing references.
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] btrfs: replace a wrong memset() with memzero_page()
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <8d6f911a0282eba76f9e05d6f1e7c6f091d4870b.1648199349.git.wqu@suse.com>
+ <20220328185121.GQ2237@twin.jikos.cz> <YkLYJ+xRvmm0yN9Y@debian9.Home>
+ <ed81efec-0303-d152-a84d-74f4ff4f5058@gmx.com>
+ <YkLwAf7SK95iOreD@debian9.Home>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <YkLwAf7SK95iOreD@debian9.Home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rlgkyfXCdiYF2VoIFPsGxqKCP7kPbGyfu8NbTujVGNNzL1BwVFK
+ GYzQUnkBzpCh+Ziy8V+SdHhYPmIMtp8dADySO+KPoe6iWqL2X4nnraaZO0w7Tx64Upqj5/a
+ X+4nfbOIYYY8cAECahn8LBfkQTbc3RuLiWmP3IboPRopxy4vNrB3bOEFUXNoo+GW6wUfgES
+ 4mB7lTx3WAYOdXUmf0m9g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:N0jrI/rwUMk=:FXxEOUpRkQqzEDIlzzsGlk
+ ePVZ4IjY2CrqTWwcbTBulr+ldx0Idxwxv8Y0Lt/I/HGNjk84/ONHo2GQM2FwAyXItfcL8BL48
+ tYAB96nb0frS2ZJ0tMfzKO0z3JtbH3SR61UZcyoecZcNQMz3+ZQWEoYMscgBx66Zg2rERhaah
+ idDa7U3BJ1hc8C0t7Xi3Tr5PSSKKxO0wrdLaiTYLKHNfry3QQcSJ9ghh22Sy7fjEI6B7Dl+4c
+ 5RPIHwTIZ3bkTAKcOF6cosGomJkps8q93MMpb91xT9ZWxDoHMz6rAheiK52sIkc2+RRPwWmdo
+ 7lv3nFMY4KhDhsdUXhaNcnEa4dkAlS4KLBC/ZXeAcm2YkbnxseN817bXBMphJh6QzhejzG8ms
+ guJBwNzLIWbcyoZ2eoVTvGGVXL9uBZPg4/al6V+3E4I9tzx/YkZ7GkNqx9h9cPRod5UfeqBEK
+ bzdXFQ1bUA7+/KO3SFxp+Jeci1+gy7Y/BhUX1uFsLX/CXOn3LZfYcJJNq0oehWdXOuJQ26ZZ2
+ KHotzp2LoXaP6P1dqvKsv87kuiulFZvsftEeUxzRaDLKTTnFD9NahsUivboCNlcDLFIYrxe5A
+ 2AL2WJdFOyiJXw6HWr54RqSPGpa9Y2cLbF/cPJA8wUdkzsTYaEuloegv+lMxkMzM9E9ZAKrKh
+ hpqx+lfFP8hROS5AVfAIqLh9IyGrzCYf/MAXbU4WBpStnPn0QiAMsc/bMuf2w3GPCtz9VhR6Q
+ w8gMB7rXo5lCyIOZhnAHLqBTqhWOHvWpb9ao42jsN0sgCd1Oa97BNkPlI44dI8hIUMw8+jTir
+ 4d84Phv5hTCeDLZrLM1j3kqEIIY1BiBh/dws4v1N3ggilQY9MebQPAfD8r6ln1DoWiMSBWpQ4
+ cqhfZUr+bD6NbqTHSVf6VmxjbFVvAkcs1ptvAwquPYVzoNV1MZgGaKIOCZJAZLAp3/OtdGC4j
+ Lkl41z3SfdbNBwYHMI645ALJQVm6lieYmN23GAA2o1HgTYcoobcktMYXY7AslSpG9oxEbBgp3
+ vTFi1D1yTykRwJ7RfaiBVcuJHOHylPXsxzlMkZ9pYgFYYPJS1YUqpKXponsAc36PDPImpQS06
+ fTyTcLOgmwzxwY=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,149 +74,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 7:08 PM Dave T <davestechshop@gmail.com> wrote:
->
-> My systemd journal (log) is filled with the BTRFS error shown below.
-> I'm running a fully updated Arch Linux system on a ThinkPad with the
-> latest bios updates for that hardware.
->
-> BTRFS scrub reports no errors on the internal and external storage devices.
->
-> An online search did not return anything I found relevant, so I have
-> no idea what this message means or how serious it is.
->
-> Mar 29 17:46:15 archlinux kernel: ------------[ cut here ]------------
-> Mar 29 17:46:15 archlinux kernel: WARNING: CPU: 2 PID: 1424 at
-> fs/btrfs/extent-tree.c:232 btrfs_lookup_extent_info+0x3bf/0x3e0
-> [btrfs]
-> Mar 29 17:46:15 archlinux kernel: Modules linked in: rfcomm
-> rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace sunrpc
-> fscache netfs cmac algif_hash algif_skcipher af_alg bnep snd_soc_skl
-> snd_soc_hdac_hda snd_hda_ext_core snd_hda_codec_hdmi snd_soc_sst_ipc
-> snd_soc_sst_dsp snd_soc_acpi_intel_match snd_soc_acpi intel_rapl_msr
-> snd_ctl_led snd_soc_core snd_compress snd_hda_codec_realtek ac97_bus
-> iTCO_wdt tps6598x snd_pcm_dmaengine snd_hda_codec_generic
-> intel_pmc_bxt ee1004 mei_pxp mei_hdcp typec snd_hda_intel
-> iTCO_vendor_support intel_rapl_common snd_intel_dspcfg iwlmvm
-> snd_intel_sdw_acpi snd_hda_codec mac80211 intel_tcc_cooling uvcvideo
-> snd_hda_core x86_pkg_temp_thermal intel_powerclamp videobuf2_vmalloc
-> libarc4 think_lmi btusb coretemp videobuf2_memops snd_hwdep rapl
-> intel_cstate intel_uncore iwlwifi pcspkr psmouse btrtl snd_pcm
-> cdc_mbim i2c_i801 videobuf2_v4l2 btbcm firmware_attributes_class
-> wmi_bmof intel_wmi_thunderbolt e1000e i2c_smbus snd_timer
-> videobuf2_common cdc_wdm mei_me intel_lpss_pci
-> Mar 29 17:46:15 archlinux kernel:  btintel cdc_ncm cfg80211 intel_lpss
-> mei idma64 videodev bluetooth cdc_ether qcserial mc usbnet i915
-> ecdh_generic mii usb_wwan mousedev joydev crc16
-> intel_xhci_usb_role_switch ttm thinkpad_acpi roles intel_pch_thermal
-> intel_gtt ledtrig_audio i2c_multi_instantiate platform_profile rfkill
-> snd soundcore acpi_pad mac_hid ipmi_devintf ipmi_msghandler
-> crypto_user fuse bpf_preload ip_tables x_tables ecb crypto_simd xts
-> btrfs blake2b_generic libcrc32c crc32c_generic xor raid6_pq
-> hid_multitouch usbhid uas usb_storage dm_crypt cbc encrypted_keys
-> dm_mod trusted asn1_encoder tee tpm rng_core rtsx_pci_sdmmc serio_raw
-> mmc_core atkbd libps2 crct10dif_pclmul crc32_pclmul crc32c_intel
-> ghash_clmulni_intel cryptd rtsx_pci xhci_pci xhci_pci_renesas wmi
-> i8042 video serio vfat fat
-> Mar 29 17:46:15 archlinux kernel: CPU: 2 PID: 1424 Comm: btrfs-cleaner
-> Tainted: G     U  W         5.16.16-arch1-1 #1
-> ea44c25f01916b44dd68de6a90ee2f4c9e51dcb4
-> Mar 29 17:46:15 archlinux kernel: Hardware name: LENOVO
-> 20HNCTO1WW/20HNCTO1WW, BIOS R0IET64W (1.42 ) 05/27/2021
-> Mar 29 17:46:15 archlinux kernel: RIP:
-> 0010:btrfs_lookup_extent_info+0x3bf/0x3e0 [btrfs]
-> Mar 29 17:46:15 archlinux kernel: Code: 08 0d 00 00 c7 44 24 14 00 00
-> 00 00 48 89 44 24 08 e9 d0 fc ff ff 80 48 6a 0c e9 e3 fc ff ff 48 85
-> db 0f 85 61 ff ff ff 0f 0b <0f> 0b eb 82 b8 f4 ff ff ff eb aa e8 01 ef
-> 38 db e9 3f 1c 0c 00 66
-> Mar 29 17:46:15 archlinux kernel: RSP: 0018:ffffba48014cfc50 EFLAGS: 00010246
-> Mar 29 17:46:15 archlinux kernel: RAX: 0000000000000000 RBX:
-> 0000000000000000 RCX: 0000000000000000
-> Mar 29 17:46:15 archlinux kernel: RDX: 0000000000000000 RSI:
-> 000000531c714000 RDI: ffff93640021b178
-> Mar 29 17:46:15 archlinux kernel: RBP: ffff9365d8a11ee0 R08:
-> 0000000000000000 R09: ffff9365d8a11ee0
-> Mar 29 17:46:15 archlinux kernel: R10: 000145ce761ca360 R11:
-> 0000000000000000 R12: ffff93640021b000
-> Mar 29 17:46:15 archlinux kernel: R13: ffff93640021b178 R14:
-> 0000000000000000 R15: 000000531c714000
-> Mar 29 17:46:15 archlinux kernel: FS:  0000000000000000(0000)
-> GS:ffff936b1f500000(0000) knlGS:0000000000000000
-> Mar 29 17:46:15 archlinux kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-> 0000000080050033
-> Mar 29 17:46:15 archlinux kernel: CR2: 00007f448004a000 CR3:
-> 000000055c810001 CR4: 00000000003706e0
-> Mar 29 17:46:15 archlinux kernel: DR0: 0000000000000000 DR1:
-> 0000000000000000 DR2: 0000000000000000
-> Mar 29 17:46:15 archlinux kernel: DR3: 0000000000000000 DR6:
-> 00000000fffe0ff0 DR7: 0000000000000400
-> Mar 29 17:46:15 archlinux kernel: Call Trace:
-> Mar 29 17:46:15 archlinux kernel:  <TASK>
-> Mar 29 17:46:15 archlinux kernel:  do_walk_down+0x171/0x690 [btrfs
-> 0911a8fe6c71eb7dbbad7c3b2067cc4913bade04]
-> Mar 29 17:46:15 archlinux kernel:  walk_down_tree+0xce/0x110 [btrfs
-> 0911a8fe6c71eb7dbbad7c3b2067cc4913bade04]
-> Mar 29 17:46:15 archlinux kernel:  btrfs_drop_snapshot+0x1de/0x830
-> [btrfs 0911a8fe6c71eb7dbbad7c3b2067cc4913bade04]
-> Mar 29 17:46:15 archlinux kernel:
-> btrfs_clean_one_deleted_snapshot+0xe4/0x100 [btrfs
-> 0911a8fe6c71eb7dbbad7c3b2067cc4913bade04]
-> Mar 29 17:46:15 archlinux kernel:  cleaner_kthread+0xe5/0x130 [btrfs
-> 0911a8fe6c71eb7dbbad7c3b2067cc4913bade04]
-> Mar 29 17:46:15 archlinux kernel:  ? end_workqueue_bio+0xc0/0xc0
-> [btrfs 0911a8fe6c71eb7dbbad7c3b2067cc4913bade04]
-> Mar 29 17:46:15 archlinux kernel:  kthread+0x15c/0x180
-> Mar 29 17:46:15 archlinux kernel:  ? set_kthread_struct+0x40/0x40
-> Mar 29 17:46:15 archlinux kernel:  ret_from_fork+0x22/0x30
-> Mar 29 17:46:15 archlinux kernel:  </TASK>
-> Mar 29 17:46:15 archlinux kernel: ---[ end trace bc332cefd9295579 ]---
-> Mar 29 17:46:15 archlinux kernel: BTRFS error (device dm-1): Missing references.
->
->
-> # btrfs scrub status /mnt/usb_hdd
-> UUID:             <redacted>
-> Scrub started:    Tue Mar 29 01:45:08 2022
-> Status:           finished
-> Duration:         1:43:34
-> Total to scrub:   392.98GiB
-> Rate:             64.76MiB/s
-> Error summary:    no errors found
->
->
-> # btrfs scrub status /
-> UUID:             <redacted>
-> Scrub started:    Tue Mar 29 03:33:08 2022
-> Status:           finished
-> Duration:         0:02:42
-> Total to scrub:   59.40GiB
-> Rate:             318.16MiB/s
-> Error summary:    no errors found
->
-> Here is an indication of how frequently the errors are reported in the logs:
->
-> Mar 29 17:44:12 kernel: BTRFS error (device dm-1): Missing references.
-> Mar 29 17:44:43 kernel: BTRFS error (device dm-1): Missing references.
-> Mar 29 17:45:14 kernel: BTRFS error (device dm-1): Missing references.
-> Mar 29 17:45:44 kernel: BTRFS error (device dm-1): Missing references.
->
-> It looks like it is reported every 30 seconds continuously, whether
-> the device is being actively used or is idle.
 
-adding info to the above post:
 
-device dm-1 is my usb-attached HDD (WD Elements).
-It contains 400 snapshots. This large number of snapshots has not
-presented any problems in the past because it is a backup disk only.
+On 2022/3/29 19:39, Filipe Manana wrote:
+> On Tue, Mar 29, 2022 at 06:49:10PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2022/3/29 17:57, Filipe Manana wrote:
+>>> On Mon, Mar 28, 2022 at 08:51:21PM +0200, David Sterba wrote:
+>>>> On Fri, Mar 25, 2022 at 05:37:59PM +0800, Qu Wenruo wrote:
+>>>>> The original code is not really setting the memory to 0x00 but 0x01.
+>>>>>
+>>>>> To prevent such problem from happening, use memzero_page() instead.
+>>>>
+>>>> This should at least mention we think that setting it to 0 is right, =
+as
+>>>> you call it wrong but give no hint why it's thought to be wrong.
+>>>
+>>> My guess is that something different from zero makes it easier to spot
+>>> the problem in user space, as 0 is not uncommon (holes, prealloced ext=
+ents)
+>>> and may get unnoticed by applications/users.
+>>
+>> OK, that makes some sense.
+>>
+>> But shouldn't user space tool get an -EIO directly?
+>
+> It should.
+>
+> But even if applications get -EIO, they may often ignore return values.
+> It's their fault, but if we can make it less likely that errors are not =
+noticed,
+> the better. I think we all did often, ignore all or just some return val=
+ues
+> from read(), write(), open(), etc.
+>
+> One recent example is the MariaDB case with io-uring. They were reportin=
+g
+> corruption to the users, but the problem is that didn't properly check
+> return values, ignoring partial reads and treating them as success:
+>
+> https://jira.mariadb.org/browse/MDEV-27900?focusedCommentId=3D216582&pag=
+e=3Dcom.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#com=
+ment-216582
+>
+> The data was fine, not corrupted, they just didn't deal with partial rea=
+ds
+> and then read the remaining data when a read returns less data than expe=
+cted.
 
-Every 30 seconds the message contains the same btrfs UUID values, like
-this example:
+Then can we slightly improve the filling pattern?
 
-btrfs_clean_one_deleted_snapshot+0xe4/0x100 [btrfs
-0911a8fe6c71eb7dbbad7c3b2067cc4913bade04]
+Instead of 0x01, introduce some poison value?
 
-The logs are always for btrfs 0911a8fe6c71eb7dbbad7c3b2067cc4913bade04 only.
+And of course, change the lable "zeroit" to something like "poise_it"?
 
-I'm using btrbk to create snapshots. I see that the last one that was
-sent to the USB HDD is listed as "incomplete" by btrbk.
-
-Any suggestions for tracking this down and resolving it?
+Thanks,
+Qu
+>
+>
+>
+>>
+>> As the corrupted range won't have PageUptodate set anyway.
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> I don't see a good reason to change this behaviour. Maybe it's just th=
+e
+>>> label name 'zeroit' that makes it confusing. >
+>>>>
+>>>>> Since we're here, also make @len const since it's just sectorsize.
+>>>>
+>>>> Please don't do that, adding const is fine when the line gets touched
+>>>> but otherwise adding it to an unrelated fix is not what I want to
+>>>> encourage.
+>>>
