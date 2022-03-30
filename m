@@ -2,74 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE824EC718
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 16:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1194EC7F2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 17:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347256AbiC3Ovk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Mar 2022 10:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S241802AbiC3PQD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Mar 2022 11:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347179AbiC3Ovh (ORCPT
+        with ESMTP id S236742AbiC3PQB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Mar 2022 10:51:37 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A660D1706C
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:49:39 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id j15so14650156ila.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=S7jHDD9H3A3SYC5lPe9ohlnX79nRebzt30Q3Ep3X12o=;
-        b=OZ3cEQ5h4qtPgX1AY6RLmB6gT57kvwRHQ79ygDaebLZjiOApKBgJvNSiNC+hGN40JU
-         KFowpuzoi9RAMLTJX0fOxY1oyMHVZHloUrVLxLuOG/UlFNOYGVgGvwa2UU4emiJEzaf9
-         q/b6t2EDuopDh+F9mdxQX6O8ADsK4gowwAsRa9RVPJ5GdcZXQj2mX6/QUQhRN12B8hnH
-         NkupImYcQse6AfeDQRluWPm9O4lLIm1PCY+Y0ru6sks+rFgKWBzTtmSTEYxmLYKnRe/x
-         TPd8nXiKZe260b1aynJD8YblWjvbxaX/g0RFrXX3pPqJAeiHYOnhcG7UGyHQwei5xlG9
-         5gPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=S7jHDD9H3A3SYC5lPe9ohlnX79nRebzt30Q3Ep3X12o=;
-        b=Mgzlm9lKyzG4wL0lMnlxFYeIVnYrzIM/RDdLk3C3IEKo3DYM3glqMNgByubC5SXsP/
-         nf06iPEGxuQ0J+WRLdyuPHFsMTTq4hiRz9BKOZ4J/QyAPLtoNCxm2WkIHFvZVqFUDV3a
-         edDhJfd0srMFotBJlutQZjXz3YBpU/j5OxDsy9IY3zx0Nu2Lrs6LtUKTI1M9W7KirpWu
-         C7G+thTECv+tiCvXj8c2Natru9JMypRZ8pzmc4dHzu8J0+80zXIkvNFLwGwI74Q56a7w
-         0o1Hw2isOLRTfLslfKcOTgXqrHSa5gAwPdOU2SmhA2I6H9LWv/85+UqLwe/rcnodVwe+
-         tsrA==
-X-Gm-Message-State: AOAM530RTDENNMXCV+ArPPpgM/6PwveTVTdg4knWhrAS+EBHJIq4JhL+
-        +EDoG2N77Bb2xQzdd9ybAvYLf60a7FmUikWJ
-X-Google-Smtp-Source: ABdhPJz3EibI69DwP9lkcaYHyRWrAtLzvk4HhXkWXzgIOSW08I0BfaQQag5PmpjZEv83Snk+VZv0fA==
-X-Received: by 2002:a05:6e02:1e0e:b0:2c6:18c3:9691 with SMTP id g14-20020a056e021e0e00b002c618c39691mr11475070ila.287.1648651778718;
-        Wed, 30 Mar 2022 07:49:38 -0700 (PDT)
-Received: from [127.0.1.1] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id r9-20020a6b6009000000b006412abddbbbsm11434439iog.24.2022.03.30.07.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Mar 2022 07:49:38 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-bcache@vger.kernel.org, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
-        Coly Li <colyli@suse.de>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        target-devel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        linux-raid@vger.kernel.org, linux-block@vger.kernel.org
-In-Reply-To: <20220308061551.737853-1-hch@lst.de>
-References: <20220308061551.737853-1-hch@lst.de>
-Subject: Re: cleanup bio_kmalloc v2
-Message-Id: <164865177761.37391.13379579175408786139.b4-ty@kernel.dk>
-Date:   Wed, 30 Mar 2022 08:49:37 -0600
+        Wed, 30 Mar 2022 11:16:01 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4307139866
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 08:14:15 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8171B1F38C;
+        Wed, 30 Mar 2022 15:14:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1648653254;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zQiz/9aEAeWbrR42dqdnPJfGpmtXseGSmKyH26QcgBE=;
+        b=cEjDduIZo4KAgesjKRbItB/ZFJWcOXxQwaYOqrFKSSvsbuy434A2/2ACQwYKcLYqX2E/wj
+        pJArxeMwTPNj/V8r1uz9z0vzj2zRLxcz/clLrmoxwXHFUDw8je08C+eOz+f8+MJwnPxhPQ
+        gCao0RkHBrPNyOUyEOxtLIQfnQV6aUE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1648653254;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zQiz/9aEAeWbrR42dqdnPJfGpmtXseGSmKyH26QcgBE=;
+        b=EuW7LZvrzwnk/Lcri/9+TKzt0Edk6RaXX9ade2bvCVlaPbeGtWdG3g4XUPncwGShzyUkH7
+        e/MQfxV4/nuKmTCw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 4B80FA3B88;
+        Wed, 30 Mar 2022 15:14:14 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 46B46DA7F3; Wed, 30 Mar 2022 17:10:16 +0200 (CEST)
+Date:   Wed, 30 Mar 2022 17:10:16 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 2/2] btrfs: fix and document the zoned device choice in
+ alloc_new_bio
+Message-ID: <20220330151016.GG2237@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20220324165210.1586851-1-hch@lst.de>
+ <20220324165210.1586851-3-hch@lst.de>
+ <PH0PR04MB7416CF5DB1670FF12D823D779B1A9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20220328191240.GT2237@twin.jikos.cz>
+ <20220328230426.n3aanogu7at7hnsj@naota-xeon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220328230426.n3aanogu7at7hnsj@naota-xeon>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,36 +78,69 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 8 Mar 2022 07:15:46 +0100, Christoph Hellwig wrote:
-> this series finishes off the bio allocation interface cleanups by dealing
-> with the weirdest member of the famility.  bio_kmalloc combines a kmalloc
-> for the bio and bio_vecs with a hidden bio_init call and magic cleanup
-> semantics.
+On Mon, Mar 28, 2022 at 11:04:26PM +0000, Naohiro Aota wrote:
+> On Mon, Mar 28, 2022 at 09:12:40PM +0200, David Sterba wrote:
+> > On Fri, Mar 25, 2022 at 09:09:56AM +0000, Johannes Thumshirn wrote:
+> > > On 24/03/2022 17:54, Christoph Hellwig wrote:
+> > > > Zone Append bios only need a valid block device in struct bio, but
+> > > > not the device in the btrfs_bio.  Use the information from
+> > > > btrfs_zoned_get_device to set up bi_bdev and fix zoned writes on
+> > > > multi-device file system with non-homogeneous capabilities and remove
+> > > > the pointless btrfs_bio.device assignment.
+> > > > 
+> > > > Add big fat comments explaining what is going on here.
+> > > 
+> > > Looks like the old code worked by sheer luck, as we had wbc set and thus
+> > > always assigned fs_info->fs_devices->latest_dev->bdev to the bio. Which 
+> > > would obviously not work on a multi device FS.
+> > 
+> > No, it worked fine because the real bio is set just before writing the
+> > data somewhere deep in the io submit path in submit_stripe_bio().
+> > 
+> > That it has to be set here is because of the cgroup implementation that
+> > accesses it, see 429aebc0a9a0 ("btrfs: get bdev directly from fs_devices
+> > in submit_extent_page").
+> > 
+> > Which brings me to the question if Christoph's fix is correct because
+> > the comment for the wbc + zoned append is assuming something that's not
+> > true.
 > 
-> This series moves a few callers away from bio_kmalloc and then turns
-> bio_kmalloc into a simple wrapper for a slab allocation of a bio and the
-> inline biovecs.  The callers need to manually call bio_init instead with
-> all that entails and the magic that turns bio_put into a kfree goes away
-> as well, allowing for a proper debug check in bio_put that catches
-> accidental use on a bio_init()ed bio.
-> 
-> [...]
+> While the real bio is setup in submit_stripe_bio(), we need to set the
 
-Applied, thanks!
+Oh sorry I actually wanted to say that the real 'bdev' is set in
+submit_stripe_bio (ie. the one where the write is going to be done).
 
-[1/5] btrfs: simplify ->flush_bio handling
-      commit: 6978ffddd5bba44e6b7614d52868cf4954e0529b
-[2/5] squashfs: always use bio_kmalloc in squashfs_bio_read
-      commit: 88a39feabf25efbaec775ffb48ea240af198994e
-[3/5] target/pscsi: remove pscsi_get_bio
-      commit: bbccc65bd7c1b22f050b65d8171fbdd8d72cf39c
-[4/5] block: turn bio_kmalloc into a simple kmalloc wrapper
-      commit: 57c47b42f4545b5f8fa288f190c0d68f96bc477f
-[5/5] pktcdvd: stop using bio_reset
-      commit: 1292fb59f283e76f55843d94f066c2f0b91dfb7e
+> device destination for bio_add_zone_append_page() called in
+> btrfs_bio_add_page(). The bio_add_zone_append_page() checks that the
+> bio length is not exceeding max_zone_append_sectors() of the device,
+> and checks other hardware restrictions.
 
-Best regards,
--- 
-Jens Axboe
+Yeah, but can this still mean that it's checking potentially different
+devices with different hw restrictions? In alloc_new_bio() it's one and in
+submit_stripe_bio() it's a different one.
 
+Before the cgroup writeback was added to bios, the only reason why
+bio_set_bdev required the block device is to check if it's the same one
+as before and drop some bit:
 
+static inline void bio_set_dev(struct bio *bio, struct block_device *bdev)
+{
+	bio_clear_flag(bio, BIO_REMAPPED);
+	if (bio->bi_bdev != bdev)
+		bio_clear_flag(bio, BIO_THROTTLED);
+	bio->bi_bdev = bdev;
+	bio_associate_blkg(bio);		<-- this was not here
+}
+
+So the latest_dev was just a stub to satisfy the bio API requirements.
+Please note that its existence spans a long time and things have
+changed, I remember that Chris' answer to why we need the latest_dev was
+"to put something to the bios". Ie. we don't need it because we have to
+write same data to different block devices and distribute that in
+submit_stripe_bio(), while the bios have to be set much earlier
+expecting a block device.
+
+I'm not sure we have a 1:1 match in what the APIs provide and expect and
+what btrfs wants to do. At this point multi-device support for zoned
+mode is not complete so we probably won't observe any problems with
+hardware with different restrictions.
