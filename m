@@ -2,74 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1194EC7F2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 17:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75C84EC81D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 17:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241802AbiC3PQD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Mar 2022 11:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
+        id S1348131AbiC3PYP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Mar 2022 11:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236742AbiC3PQB (ORCPT
+        with ESMTP id S1348129AbiC3PYN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Mar 2022 11:16:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4307139866
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 08:14:15 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8171B1F38C;
-        Wed, 30 Mar 2022 15:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648653254;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zQiz/9aEAeWbrR42dqdnPJfGpmtXseGSmKyH26QcgBE=;
-        b=cEjDduIZo4KAgesjKRbItB/ZFJWcOXxQwaYOqrFKSSvsbuy434A2/2ACQwYKcLYqX2E/wj
-        pJArxeMwTPNj/V8r1uz9z0vzj2zRLxcz/clLrmoxwXHFUDw8je08C+eOz+f8+MJwnPxhPQ
-        gCao0RkHBrPNyOUyEOxtLIQfnQV6aUE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648653254;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zQiz/9aEAeWbrR42dqdnPJfGpmtXseGSmKyH26QcgBE=;
-        b=EuW7LZvrzwnk/Lcri/9+TKzt0Edk6RaXX9ade2bvCVlaPbeGtWdG3g4XUPncwGShzyUkH7
-        e/MQfxV4/nuKmTCw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4B80FA3B88;
-        Wed, 30 Mar 2022 15:14:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 46B46DA7F3; Wed, 30 Mar 2022 17:10:16 +0200 (CEST)
-Date:   Wed, 30 Mar 2022 17:10:16 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 2/2] btrfs: fix and document the zoned device choice in
- alloc_new_bio
-Message-ID: <20220330151016.GG2237@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20220324165210.1586851-1-hch@lst.de>
- <20220324165210.1586851-3-hch@lst.de>
- <PH0PR04MB7416CF5DB1670FF12D823D779B1A9@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20220328191240.GT2237@twin.jikos.cz>
- <20220328230426.n3aanogu7at7hnsj@naota-xeon>
+        Wed, 30 Mar 2022 11:24:13 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA500192362
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 08:22:26 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20220330152221euoutp019ff0bd873b2fac24ebf88dc13312d572~hMdfbB5BK2825528255euoutp01b
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 15:22:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20220330152221euoutp019ff0bd873b2fac24ebf88dc13312d572~hMdfbB5BK2825528255euoutp01b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1648653741;
+        bh=98afstKcFp5woRvh65sc5QmV9YMqipjOsmmsVa5Nx1k=;
+        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
+        b=MLQRvd4WR7oyElNmKRxJyl366gC1zeBMBBOQdDKpFgKO/1OdMdy53KbjfCT8rcM0u
+         ee44dAb+c37RfvnlKdWQrJlpA5TX/sTd4jQJ21XQsADNHIUz+tXWf0VdDyEmT9dEwP
+         ikVk1UWXTrnapRMsGFjXIzQwv86Ads6YVYgZYsoc=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20220330152221eucas1p2583340b98c12008908de79481a98b1bf~hMdfLac0i2620626206eucas1p20;
+        Wed, 30 Mar 2022 15:22:21 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 7B.56.10009.DA574426; Wed, 30
+        Mar 2022 16:22:21 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20220330152221eucas1p1bcf2d34b16a062815e866c5dca3b0c84~hMde2rEWQ2746527465eucas1p13;
+        Wed, 30 Mar 2022 15:22:21 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20220330152221eusmtrp1c940646da465833d90dfe591007b714c~hMde12-fM2667026670eusmtrp1R;
+        Wed, 30 Mar 2022 15:22:21 +0000 (GMT)
+X-AuditID: cbfec7f2-e7fff70000002719-f2-624475ad139b
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 08.72.09522.DA574426; Wed, 30
+        Mar 2022 16:22:21 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20220330152220eusmtip2fa608e1f58bd5d57ae0f93306788df18~hMdesYm5q1625416254eusmtip2N;
+        Wed, 30 Mar 2022 15:22:20 +0000 (GMT)
+Received: from [192.168.8.130] (106.210.248.91) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Wed, 30 Mar 2022 16:22:20 +0100
+Message-ID: <e5584ddc-9c06-8860-9999-3978e27c5c4d@samsung.com>
+Date:   Wed, 30 Mar 2022 17:22:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220328230426.n3aanogu7at7hnsj@naota-xeon>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+        Thunderbird/91.7.0
+Subject: Re: [PATCH v2 4/4] btrfs: zoned: make auto-reclaim less aggressive
+Content-Language: en-US
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+From:   Pankaj Raghav <p.raghav@samsung.com>
+In-Reply-To: <c69adfe62944e32a0d2e37b25c34cd49edc15f43.1648543951.git.johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [106.210.248.91]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAKsWRmVeSWpSXmKPExsWy7djPc7prS12SDA79lLJY/Ps7i8XfrntM
+        Fn8eGlpceryC3WLi8c2sDqweZxYcYfeYsHkjq8fnTXIe7Qe6mQJYorhsUlJzMstSi/TtErgy
+        Pva8Ziy4J1dx/e1GtgbGVZJdjJwcEgImEnMuNrN3MXJxCAmsYJR4NvE1M4TzhVHi95JeFgjn
+        M6NE+8cZ7DAtu1Z8hEosZ5Q496yfHa7q9pQVbBDOLkaJx4tbgco4OHgF7CQ2L8wG6WYRUJXY
+        cuY+G4jNKyAocXLmExYQW1QgQuLXrUdgG4QFvCV+XL/HDGIzC4hL3HoynwnEFhEIlWj5sJIV
+        ZD6zwASgzU/mgc1nE9CSaOwE6+UUSJQ4cukvI0SvpkTr9t/sELa8xPa3c5ghPlCSmLFvMyOE
+        XStxasstJpCZEgIfOCTunN/DBpFwkdjzczIrhC0s8er4Fqj3ZSROT+5hgbCrJZ7e+M0M0dzC
+        KNG/cz0byEESAtYSfWdyIGocJfoPPIIK80nceCsIcQ+fxKRt05knMKrOQgqKWUhenoXkhVlI
+        XljAyLKKUTy1tDg3PbXYMC+1XK84Mbe4NC9dLzk/dxMjMNGc/nf80w7Gua8+6h1iZOJgPMQo
+        wcGsJML78aBzkhBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHe5MwNiUIC6YklqdmpqQWpRTBZJg5O
+        qQYm37lye6IK+a/vqeSbYsL4qzl356KoEnFL162OBaqr57osTCkxOdiQFaIakciwTs0iui3G
+        W/jZi8C/bJOdwnbzH7pR7DD71I/JO6f8CXkhPJV1+q6KPtl33qWxp/a+XW3bdOrWaZu61KI3
+        ml/3nmPnjX0qume7MM8rd7crv01nBXutdDXpS9letEzYzVjup8614z8nPFj0jW+7TF75snm5
+        8w3Wn1+XJ1yhtsnJ+abTR9XiBrF5drvq+x6uCrsUsbaLaXIA6/3vM9cYJVQ0z5l47vWuC3ra
+        F7MPKMVdYNv7Nt3dXV3o4Uz3xtNvBWJ1izNVV+xnyus0WLu8cN2aFI4iVW3DCXfnJ5Vuulbl
+        2LBUiaU4I9FQi7moOBEAyDQHP6MDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRmVeSWpSXmKPExsVy+t/xe7prS12SDLb8Z7ZY/Ps7i8XfrntM
+        Fn8eGlpceryC3WLi8c2sDqweZxYcYfeYsHkjq8fnTXIe7Qe6mQJYovRsivJLS1IVMvKLS2yV
+        og0tjPQMLS30jEws9QyNzWOtjEyV9O1sUlJzMstSi/TtEvQyPva8Ziy4J1dx/e1GtgbGVZJd
+        jJwcEgImErtWfGTpYuTiEBJYyihx/9dRFoiEjMSnKx/ZIWxhiT/Xutggij4ySixcMxusSEhg
+        F6PE+weyXYwcHLwCdhKbF2aDhFkEVCW2nLnPBmLzCghKnJz5BKxcVCBCYtmuqWC2sIC3xI/r
+        95hBbGYBcYlbT+YzgdgiAqESLR9WsoLsYhaYwChx7sk8qF0vGCV2Tc8E2cUmoCXR2Al2G6dA
+        osSRS38ZIeZoSrRu/80OYctLbH87hxnifiWJGfs2M0LYtRKf/z5jnMAoOgvJebOQnDELyahZ
+        SEYtYGRZxSiSWlqcm55bbKhXnJhbXJqXrpecn7uJERib24793LyDcd6rj3qHGJk4GA8xSnAw
+        K4nwfjzonCTEm5JYWZValB9fVJqTWnyI0RQYRhOZpUST84HJIa8k3tDMwNTQxMzSwNTSzFhJ
+        nNezoCNRSCA9sSQ1OzW1ILUIpo+Jg1OqgSlSpkxGPNb5Vufe4rT4114e88VZt06xPng1jccp
+        YeLNORulogL5X7PVRcy6XxJ1vFIuxPNmg0nD9X4B49hZXxbX856tYHjwQ7rj7VndU++/SD38
+        NfXpf4892ZGTquROGAj0L7t7+F+83vzlM88HCqndSDFRrGgN/L5u65r2d0eeTb7+cFrMhD2T
+        3ZWuSGsun2r+4zW74esw43cfHDXm5Mi3P1191qJv2Y59rxI0pPza9vy3N8kuv3SnrF3dyTKo
+        YUHnOcaP65IfFs+f7X6UZdpbdrnQtWazZOOLFP+d4q02npZ4x85XpUKtscNjwbfURLf+n113
+        F4ZNCeVu5RS8uF/tWPxTx5dLTmV5L90VeEWJpTgj0VCLuag4EQDyARxFVgMAAA==
+X-CMS-MailID: 20220330152221eucas1p1bcf2d34b16a062815e866c5dca3b0c84
+X-Msg-Generator: CA
+X-RootMTR: 20220329085623eucas1p1966efab8140be00383df73e684e1aac8
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20220329085623eucas1p1966efab8140be00383df73e684e1aac8
+References: <cover.1648543951.git.johannes.thumshirn@wdc.com>
+        <CGME20220329085623eucas1p1966efab8140be00383df73e684e1aac8@eucas1p1.samsung.com>
+        <c69adfe62944e32a0d2e37b25c34cd49edc15f43.1648543951.git.johannes.thumshirn@wdc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,69 +122,115 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 28, 2022 at 11:04:26PM +0000, Naohiro Aota wrote:
-> On Mon, Mar 28, 2022 at 09:12:40PM +0200, David Sterba wrote:
-> > On Fri, Mar 25, 2022 at 09:09:56AM +0000, Johannes Thumshirn wrote:
-> > > On 24/03/2022 17:54, Christoph Hellwig wrote:
-> > > > Zone Append bios only need a valid block device in struct bio, but
-> > > > not the device in the btrfs_bio.  Use the information from
-> > > > btrfs_zoned_get_device to set up bi_bdev and fix zoned writes on
-> > > > multi-device file system with non-homogeneous capabilities and remove
-> > > > the pointless btrfs_bio.device assignment.
-> > > > 
-> > > > Add big fat comments explaining what is going on here.
-> > > 
-> > > Looks like the old code worked by sheer luck, as we had wbc set and thus
-> > > always assigned fs_info->fs_devices->latest_dev->bdev to the bio. Which 
-> > > would obviously not work on a multi device FS.
-> > 
-> > No, it worked fine because the real bio is set just before writing the
-> > data somewhere deep in the io submit path in submit_stripe_bio().
-> > 
-> > That it has to be set here is because of the cgroup implementation that
-> > accesses it, see 429aebc0a9a0 ("btrfs: get bdev directly from fs_devices
-> > in submit_extent_page").
-> > 
-> > Which brings me to the question if Christoph's fix is correct because
-> > the comment for the wbc + zoned append is assuming something that's not
-> > true.
+LGTM. Tested it in QEMU with zcap == zsize and zcap!= zsize.
+
+Tested-by: Pankaj Raghav <p.raghav@samsung.com>
+
+On 2022-03-29 10:56, Johannes Thumshirn wrote:
+> The current auto-reclaim algorithm starts reclaiming all block-group's
+> with a zone_unusable value above a configured threshold. This is causing a
+> lot of reclaim IO even if there would be enough free zones on the device.
 > 
-> While the real bio is setup in submit_stripe_bio(), we need to set the
+> Instead of only accounting a block-group's zone_unusable value, also take
+> the ratio of free and not usable (written as well as zone_unusable) bytes
+> a device has into account.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/block-group.c | 10 ++++++++++
+>  fs/btrfs/zoned.c       | 28 ++++++++++++++++++++++++++++
+>  fs/btrfs/zoned.h       |  6 ++++++
+>  3 files changed, 44 insertions(+)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 628741ecb97b..12454304bb85 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1512,6 +1512,13 @@ static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
+>  	return bg1->used > bg2->used;
+>  }
+>  
+> +static inline bool btrfs_should_reclaim(struct btrfs_fs_info *fs_info)
+> +{
+> +	if (btrfs_is_zoned(fs_info))
+> +		return btrfs_zoned_should_reclaim(fs_info);
+> +	return true;
+> +}
+> +
+>  void btrfs_reclaim_bgs_work(struct work_struct *work)
+>  {
+>  	struct btrfs_fs_info *fs_info =
+> @@ -1522,6 +1529,9 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>  	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
+>  		return;
+>  
+> +	if (!btrfs_should_reclaim(fs_info))
+> +		return;
+> +
+>  	sb_start_write(fs_info->sb);
+>  
+>  	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE)) {
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 1b1b310c3c51..c0c460749b74 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -2079,3 +2079,31 @@ void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info)
+>  	}
+>  	mutex_unlock(&fs_devices->device_list_mutex);
+>  }
+> +
+> +bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+> +	struct btrfs_device *device;
+> +	u64 used = 0;
+> +	u64 total = 0;
+> +	u64 factor;
+> +
+> +	ASSERT(btrfs_is_zoned(fs_info));
+> +
+> +	if (!fs_info->bg_reclaim_threshold)
+> +		return false;
+> +
+> +	mutex_lock(&fs_devices->device_list_mutex);
+> +	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+> +		if (!device->bdev)
+> +			continue;
+> +
+> +		total += device->disk_total_bytes;
+> +		used += device->bytes_used;
+> +
+> +	}
+> +	mutex_unlock(&fs_devices->device_list_mutex);
+> +
+> +	factor = div64_u64(used * 100, total);
+> +	return factor >= fs_info->bg_reclaim_threshold;
+> +}
+> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+> index c489c08d7fd5..f2d16395087f 100644
+> --- a/fs/btrfs/zoned.h
+> +++ b/fs/btrfs/zoned.h
+> @@ -74,6 +74,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
+>  			     u64 length);
+>  void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg);
+>  void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info);
+> +bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info);
+>  #else /* CONFIG_BLK_DEV_ZONED */
+>  static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
+>  				     struct blk_zone *zone)
+> @@ -232,6 +233,11 @@ static inline void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info,
+>  static inline void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg) { }
+>  
+>  static inline void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info) { }
+> +
+> +static inline bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
+> +{
+> +	return false;
+> +}
+>  #endif
+>  
+>  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
 
-Oh sorry I actually wanted to say that the real 'bdev' is set in
-submit_stripe_bio (ie. the one where the write is going to be done).
-
-> device destination for bio_add_zone_append_page() called in
-> btrfs_bio_add_page(). The bio_add_zone_append_page() checks that the
-> bio length is not exceeding max_zone_append_sectors() of the device,
-> and checks other hardware restrictions.
-
-Yeah, but can this still mean that it's checking potentially different
-devices with different hw restrictions? In alloc_new_bio() it's one and in
-submit_stripe_bio() it's a different one.
-
-Before the cgroup writeback was added to bios, the only reason why
-bio_set_bdev required the block device is to check if it's the same one
-as before and drop some bit:
-
-static inline void bio_set_dev(struct bio *bio, struct block_device *bdev)
-{
-	bio_clear_flag(bio, BIO_REMAPPED);
-	if (bio->bi_bdev != bdev)
-		bio_clear_flag(bio, BIO_THROTTLED);
-	bio->bi_bdev = bdev;
-	bio_associate_blkg(bio);		<-- this was not here
-}
-
-So the latest_dev was just a stub to satisfy the bio API requirements.
-Please note that its existence spans a long time and things have
-changed, I remember that Chris' answer to why we need the latest_dev was
-"to put something to the bios". Ie. we don't need it because we have to
-write same data to different block devices and distribute that in
-submit_stripe_bio(), while the bios have to be set much earlier
-expecting a block device.
-
-I'm not sure we have a 1:1 match in what the APIs provide and expect and
-what btrfs wants to do. At this point multi-device support for zoned
-mode is not complete so we probably won't observe any problems with
-hardware with different restrictions.
+-- 
+Regards,
+Pankaj
