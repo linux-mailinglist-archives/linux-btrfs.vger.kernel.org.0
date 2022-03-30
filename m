@@ -2,80 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01A84EC6AC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 16:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355EC4EC6C7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 16:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346952AbiC3OjV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Mar 2022 10:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
+        id S243859AbiC3Old (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Mar 2022 10:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346954AbiC3OjS (ORCPT
+        with ESMTP id S236149AbiC3Old (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Mar 2022 10:39:18 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AF4424B9
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:37:32 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id 125so24974019iov.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=p1LjEXlqSlyorFbt9Hj6fJ3D33ukmQymP4McTXiwuvI=;
-        b=iTrIn1cbRbAafOVWLJoaPGvGcG92oIQWuKAS8ld+7TzJMGrlIZGIecgHB0YJqawVqp
-         BhvNXZPmWjZk8ScJ3H2NT2B3evZc2HHv+m2IoVTNGJs/uVQbfc4AFgCMhIWaCEag/LWw
-         5Fd3pDUzbDFZl5mAPUU2O/d3E5AVwqUwOEL76KWtoaQL50kBR2PeTsU1iZ3w2z1gT6yZ
-         MQu4DjmNSajgQAP4gBsofstkf/ZsLttPcbJLsAsd+BEMD8XdjnotqxQaTvPzCwmys+p1
-         l9SW+wiU+BLQYIFrRuix4jLY5PvqHbzpkWyct18SBvYcHkTJS+mGI2Jozs9gvobywIvJ
-         tBvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=p1LjEXlqSlyorFbt9Hj6fJ3D33ukmQymP4McTXiwuvI=;
-        b=c9bvSrm7bSMWNNagwGsERV2bOaIIgHLmZBTaiikfljlJUHMx2o9s2ZUyxqKbJYYwg1
-         Mst6ZAoAV3RLEvzmTIwKZR0X2XiRewSyYi83iF01MwZ1sWqSm99drfGUZGVTorJa8vgA
-         uTzNKtpNVQ9r2XPeeyD8wEZiV25Mk39jbF4Sp/v/6oZoHsJP7O50Wnq4s9Gv5zMacUEW
-         l0VCyYHm/iLtxr5aYBlqCtjkCROob9D7DhNndvN4eG282Y4j03jeABXT7R+oQ2P2Xka8
-         zBbhJHKI+aa65bs0WC5Whvko9jykbZ+4kzSKAecktqNLrwmXW59+CCLq3vbsP68TB4KW
-         Sodg==
-X-Gm-Message-State: AOAM530CPRwJpvfmTlCSxWWTJnvj/wlcr59HhXv7Z8+TINaER2zOzsEp
-        u3fpJyNjAbyG05ZCo0v3mEUk9A/QhzraETea
-X-Google-Smtp-Source: ABdhPJxWZjyhMiWtwRr2IJsCj1tDCDDyu4dISaBGduLCOvlTo7fi3P8RUag3/yt+zUT6N1KJCo0sFA==
-X-Received: by 2002:a5d:9a0a:0:b0:648:c8a4:c86 with SMTP id s10-20020a5d9a0a000000b00648c8a40c86mr11682274iol.168.1648651052133;
-        Wed, 30 Mar 2022 07:37:32 -0700 (PDT)
-Received: from [192.168.1.172] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id k11-20020a926f0b000000b002c2756f7e90sm10089799ilc.17.2022.03.30.07.37.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Mar 2022 07:37:31 -0700 (PDT)
-Message-ID: <97a03884-9dcf-b1b3-a97c-506cec2f6d27@kernel.dk>
-Date:   Wed, 30 Mar 2022 08:37:28 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: cleanup bio_kmalloc v2
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Wed, 30 Mar 2022 10:41:33 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EDC5372F
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:39:47 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nZZU8-0006fa-AB by authid <merlin>; Wed, 30 Mar 2022 07:39:44 -0700
+Date:   Wed, 30 Mar 2022 07:39:44 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
         Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        linux-block@vger.kernel.org, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20220308061551.737853-1-hch@lst.de>
- <20220330142941.GA3479@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20220330142941.GA3479@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Su Yue <Damenly_Su@gmx.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Su Yue <suy.fnst@cn.fujitsu.com>
+Subject: Re: 5.6 pretty massive unexplained btrfs corruption: parent transid
+ verify failed + open_ctree failed
+Message-ID: <20220330143944.GE14158@merlins.org>
+References: <20220329171818.GD1314726@merlins.org>
+ <dffec23f-bef1-30e2-83fc-b3fb9bb5f21e@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dffec23f-bef1-30e2-83fc-b3fb9bb5f21e@gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,12 +50,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/30/22 8:29 AM, Christoph Hellwig wrote:
-> I just noticed this didn't make it into the 5.18 queue.  Which is a
-> bit sad as it leaves us with a rather inconsistent bio API in 5.18.
+On Wed, Mar 30, 2022 at 08:38:19AM +0300, Andrei Borzenkov wrote:
+> On 29.03.2022 20:18, Marc MERLIN wrote:
+> > Howdy,
+> > 
+> > This is the followup I was hoping I'd never have to send.
+> > 
+> > kernel was 5.7 (long uptime, just upgraded to 5.16).
+> > 
+> > One raid5 drive failed, and as I was replacing it, another one went
+> > offline, but not in a way that the md5 array was taken down.
+> > I shut the the system down, replaced the bad drive, the 2nd drive that
+> > went down wasn't really down, so I broght back the array with a drive
+> > missing.
+> 
+> Sorry, which drive? You had one drive that failed and another drive that
+> went offline. Which drive you replaced? Which drive is missing now? The
+ 
+The drive that failed entirely is the one I removed since clearly I
+couldn't bring the array back up with it.
+The one that went offline during shutdown was working again after
+reboot, so I brought the array back with one drive missing as shown
+below (4 out of 5)
 
-Let me take a look, we might still be able to make it...
+> third one? The one that failed? The one that went offline?
 
+> > mdadm --assemble --run --force /dev/md7 /dev/sd[gijk]1
+> > cryptsetup luksOpen /dev/bcache3 dshelf1a
+> > btrfs device scan --all-devices
+> > mount /dev/mapper/dshelf1a /mnt/btrfs_pool1/
+> > 
+> > BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> > BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> > BTRFS error (device dm-17): failed to read chunk tree: -5
+> > BTRFS error (device dm-17): open_ctree failed
+
+But clearly the drive that went offline during shutdown, must have
+caused some corruption, even if it all it did was just refuse all
+writes.
+That said, I was somehow hoping that btrfs could unwind the last writes
+that failed/were incomplete and get back to a proper state. I'm still
+saddened by how fragile btrfs seems compared to ext4 in those cases
+(I've had similar issues happen with ext4 in the past, and was always
+able to repair the filesystem even if I lost a few files in the process)
+
+Marc
 -- 
-Jens Axboe
-
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
