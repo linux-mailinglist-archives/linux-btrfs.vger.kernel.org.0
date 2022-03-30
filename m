@@ -2,129 +2,271 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8F94EBA41
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 07:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542544EBA50
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 07:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbiC3FkO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Mar 2022 01:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
+        id S243025AbiC3FrR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Mar 2022 01:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbiC3FkK (ORCPT
+        with ESMTP id S229998AbiC3FrQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Mar 2022 01:40:10 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C80B63A2
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 22:38:25 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id c15so26199161ljr.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 22:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=+op4kYQLYOc7+1jVcMfDL6zEMtvMY5xmHr7nEgfrHJI=;
-        b=ikM93CvdQc3LRMCUgNOHilZUMhnGdMlTQqvruoptSOl1uhR72IPOhwlu8SbWMyzOum
-         7rQcM8b5cIQ7C2c+21pzWulyk0EuWRsGSgZAPJDYO99yoNqusrRr0r5ZHkr2umrzdd32
-         yWWhnGk4CRx8Qkbk02nFIPFs5BerDaLXRslBISL0cj5WC0UULAG4R9fnWLKHPWqGGxtE
-         pGxDSLk5elshY92y/gs3eJzlZf8ofz+Nq8QG0/bPrQnmH9zDnnfDinWr5QgWwERV8/sU
-         vO8n3K6EJg87ril1t49Dpbw66vTRV2MfghOpNM+kiPOYxHqSgqzadZXdSAJMNM+VsmPC
-         1jRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=+op4kYQLYOc7+1jVcMfDL6zEMtvMY5xmHr7nEgfrHJI=;
-        b=424IZK4jR4PazOxIhYLbV6ITpNXs8Mj8Hb9Nvr30nxoAKXYKQITO+ehkcDXPiDblmH
-         J4B27xsxucR96u5InUayItpW2l7dUCB9asDGPtox7tDwpeHRadsi1h8bJn6I7tbsMB/E
-         5VWba91a32heHSCID+glg3X/VV0zmYmNr13SWwoRVRchtvNkI2QdHLxB8ZzDqZQxMcge
-         8/jii4ClX9niaYuU78RK04XAP9jdMb60LhKXWpj/obmF+sOiSMbfiWkl/SDgibbldvQ7
-         0YwZErSNy6naWOQEuNXS8/Qzf/jJmCougLqnqBMByAeZndhVxES+F1W0UpCpjYg15qua
-         2LaA==
-X-Gm-Message-State: AOAM532b+2wdg85e/L0kPfCYCAcGXUJ4mQuJMSYzsmzvxamVUljOFepa
-        8WDG74AM99RysU2TPnwSMHGTqXDGyvt/gJheN9Y=
-X-Google-Smtp-Source: ABdhPJz1bWr2FYyYEvbuPZaA0aI0o7osoTWdKJEWjtMwvlJfnVCguB2sSrO2y5Or1NzmVAYnHTANrw==
-X-Received: by 2002:a2e:b88d:0:b0:249:86c0:fbd8 with SMTP id r13-20020a2eb88d000000b0024986c0fbd8mr5519350ljp.247.1648618702886;
-        Tue, 29 Mar 2022 22:38:22 -0700 (PDT)
-Received: from ?IPV6:2a00:1370:8182:3ffd:fa46:42b2:52e1:1c7d? ([2a00:1370:8182:3ffd:fa46:42b2:52e1:1c7d])
-        by smtp.gmail.com with ESMTPSA id f15-20020a0565123b0f00b0044a29f8ec94sm2210571lfv.95.2022.03.29.22.38.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Mar 2022 22:38:22 -0700 (PDT)
-Message-ID: <dffec23f-bef1-30e2-83fc-b3fb9bb5f21e@gmail.com>
-Date:   Wed, 30 Mar 2022 08:38:19 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: 5.6 pretty massive unexplained btrfs corruption: parent transid
- verify failed + open_ctree failed
-Content-Language: en-US
-To:     Marc MERLIN <marc@merlins.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Chris Murphy <lists@colorremedies.com>,
-        Su Yue <Damenly_Su@gmx.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Su Yue <suy.fnst@cn.fujitsu.com>
-References: <20220329171818.GD1314726@merlins.org>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <20220329171818.GD1314726@merlins.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 30 Mar 2022 01:47:16 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F303425B90A
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Mar 2022 22:45:30 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 9099FC01C; Wed, 30 Mar 2022 07:45:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1648619129; bh=xyko/7EqlrULMSNJwnyo9RB5yp9MBOBSMfOTi0ia3Sc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dmYw5fPbSsi4kJ7wprDLCKHz1eot4qgorFrebS0Ut6SdQgUI7yqtO6FDGPoXs9Njd
+         pa+21YWRoB5XjpRDfp3yTEleBPyoFALgERNsH+Z6Khga+EMkfpxO39RorXJqLdxWlU
+         KSF8B9xftwbywWr4UMZI1o0ilZy/yJOtE9/CCkhAg4o8wz0Cf93pRz1nJokC3VodY+
+         EihtnjlydwbwhvSu7bSg5JBnLo3iZqgf4H5iHxlt63suCVeIH/DA00jYJxlNsqGBHT
+         rkQnyRkf70CSqw8xlJOCJTS/XZkWwTe9rePKf9MQRPOpeI1VCwaCZ/jrGOsROtJKTY
+         u2j4xfOXFUyjg==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id DA348C009;
+        Wed, 30 Mar 2022 07:45:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1648619127; bh=xyko/7EqlrULMSNJwnyo9RB5yp9MBOBSMfOTi0ia3Sc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fiilbsocXCDrW2pi4DTQlzRdSUchQiPBEhnerrQZiYVw5OnBGJD0TQ68ZAlFwKdaP
+         tYvpvzui3drhcRZcexKY6qFC46zFeSzAgIOS9vCJ1UTjonq+15ZQhhAgv/u/KmGpYh
+         bhsQ/CMK4dRXVg3YvMpUJezIamdgG/YHl/zQ7bOw9m6b2+OG4FOeqN1z3UwratUNCZ
+         FHUMxn37zyROTGF/hnFdvnhspCcrstZ+6NSoVHIvM8MaFfRerzVRKiKlf/iB8nNJBk
+         +357aPlbD1fxS5F2rwsVwVKgwpvTEP2rnATxSUAcHWOc7wsmfv4MxmNNGOQZ6GPxe+
+         awmdC3fqY26bg==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 52d4044d;
+        Wed, 30 Mar 2022 05:45:23 +0000 (UTC)
+Date:   Wed, 30 Mar 2022 14:45:07 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com,
+        Dominique Martinet <dominique.martinet@atmark-techno.com>
+Subject: Re: [RFC PATCH] btrfs-progs: prop: add datacow inode property
+Message-ID: <YkPuYyoV6LRWJdbS@codewreck.org>
+References: <20220324042235.1483914-1-asmadeus@codewreck.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220324042235.1483914-1-asmadeus@codewreck.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29.03.2022 20:18, Marc MERLIN wrote:
-> Howdy,
-> 
-> This is the followup I was hoping I'd never have to send.
-> 
-> kernel was 5.7 (long uptime, just upgraded to 5.16).
-> 
-> One raid5 drive failed, and as I was replacing it, another one went
-> offline, but not in a way that the md5 array was taken down.
-> I shut the the system down, replaced the bad drive, the 2nd drive that
-> went down wasn't really down, so I broght back the array with a drive
-> missing.
-> 
+Hi,
 
-Sorry, which drive? You had one drive that failed and another drive that
-went offline. Which drive you replaced? Which drive is missing now? The
-third one? The one that failed? The one that went offline?
+Dominique Martinet wrote on Thu, Mar 24, 2022 at 01:22:35PM +0900:
+> The btrfs property documentation states that it is an unified and
+> user-friendly method to tune btrfs properties instead of chattr,
+> so let's add something for datacow as well.
 
-> mdadm --assemble --run --force /dev/md7 /dev/sd[gijk]1
-> cryptsetup luksOpen /dev/bcache3 dshelf1a
-> btrfs device scan --all-devices
-> mount /dev/mapper/dshelf1a /mnt/btrfs_pool1/
-> 
-> BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
-> BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
-> BTRFS error (device dm-17): failed to read chunk tree: -5
-> BTRFS error (device dm-17): open_ctree failed
-> 
-> It's a pretty massive array that will take a *long* time to recover from
-> backup. If there is a reaosnable way to bring it back up, I'd be
-> appreciative.
-> 
-> gargamel:~# mount -o ro,recovery /dev/mapper/dshelf1a /mnt/btrfs_pool1/
-> BTRFS info (device dm-17): flagging fs with big metadata feature
-> BTRFS warning (device dm-17): 'recovery' is deprecated, use 'rescue=usebackuproot' instead
-> BTRFS info (device dm-17): trying to use backup root at mount time
-> BTRFS info (device dm-17): disk space caching is enabled
-> BTRFS info (device dm-17): has skinny extents
-> BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
-> BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
-> BTRFS error (device dm-17): failed to read chunk tree: -5
-> BTRFS error (device dm-17): open_ctree failed
-> 
-> Worst case, if it's dead, I'm still happy to try btrfs check lowmem to
-> see if it has gotten better.
-> 
-> Thanks,
-> Marc
 
+I appreciate it's a trifling feature, but I'd appreciate not having to
+teach our users about chattr if they could only have to manipulate btrfs
+properties so I'd appreciate some feedback! :)
+
+If you just say 'no' I'll bite the bullet and install e2fsprogs just for
+btrfs and document the command, but as things stand my users (embedded
+device developpers) have no way of disabling cow for e.g. database
+workloads and that's not really good long-term.
+
+
+
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+> ---
+> - I've sent it on github[1] first as there were other PRs, I'll close it
+> there if this gets a reply 
+> [1] https://github.com/kdave/btrfs-progs/pull/454 
+> 
+> - naming: I wasn't sure whether to name it datacow with yes/no, or making it
+> "nodatacow" with true/false (readonly uses true/false so it might make more
+> sense to use the later), I've picked datacow to avoid double-negation for
+> ease of understanding but happy to change it to anything
+> 
+> - documentation: I got a bit confused with the rst and asciidoc file, as
+> things got "converted" to rst recently but the asciidoc file didn't get
+> removed. Should I have updated both?
+> 
+> Documentation/btrfs-man5.asciidoc          |  2 +-
+>  Documentation/btrfs-property.rst           |  3 +
+>  Documentation/ch-swapfile.rst              |  2 +-
+>  cmds/property.c                            | 67 ++++++++++++++++++++++
+>  tests/cli-tests/017-btrfs-property/test.sh | 25 ++++++++
+>  5 files changed, 97 insertions(+), 2 deletions(-)
+>  create mode 100755 tests/cli-tests/017-btrfs-property/test.sh
+> 
+> diff --git a/Documentation/btrfs-man5.asciidoc b/Documentation/btrfs-man5.asciidoc
+> index dd296fac6fec..a2ed7eb582d9 100644
+> --- a/Documentation/btrfs-man5.asciidoc
+> +++ b/Documentation/btrfs-man5.asciidoc
+> @@ -712,7 +712,7 @@ To create and activate a swapfile run the following commands:
+>  
+>  --------------------
+>  # truncate -s 0 swapfile
+> -# chattr +C swapfile
+> +# btrfs property set swapfile datacow no
+>  # fallocate -l 2G swapfile
+>  # chmod 0600 swapfile
+>  # mkswap swapfile
+> diff --git a/Documentation/btrfs-property.rst b/Documentation/btrfs-property.rst
+> index 5896faa2b2e2..600f6e60d255 100644
+> --- a/Documentation/btrfs-property.rst
+> +++ b/Documentation/btrfs-property.rst
+> @@ -48,6 +48,9 @@ get [-t <type>] <object> [<name>]
+>          compression
+>                  compression algorithm set for an inode, possible values: *lzo*, *zlib*, *zstd*.
+>                  To disable compression use "" (empty string), *no* or *none*.
+> +        datacow
+> +                copy on write flag for an inode: *no* or *yes*.
+> +                This is the same as ``chattr``/``lsattr`` *+C* flag.
+>  
+>  list [-t <type>] <object>
+>          Lists available properties with their descriptions for the given object.
+> diff --git a/Documentation/ch-swapfile.rst b/Documentation/ch-swapfile.rst
+> index 9d121bc5c569..f682e868632a 100644
+> --- a/Documentation/ch-swapfile.rst
+> +++ b/Documentation/ch-swapfile.rst
+> @@ -36,7 +36,7 @@ To create and activate a swapfile run the following commands:
+>  .. code-block:: bash
+>  
+>          # truncate -s 0 swapfile
+> -        # chattr +C swapfile
+> +        # btrfs property set swapfile datacow no
+>          # fallocate -l 2G swapfile
+>          # chmod 0600 swapfile
+>          # mkswap swapfile
+> diff --git a/cmds/property.c b/cmds/property.c
+> index b3ccc0ff69b0..de9fde9e09e2 100644
+> --- a/cmds/property.c
+> +++ b/cmds/property.c
+> @@ -24,6 +24,7 @@
+>  #include <sys/xattr.h>
+>  #include <uuid/uuid.h>
+>  #include <btrfsutil.h>
+> +#include <linux/fs.h>
+>  #include "cmds/commands.h"
+>  #include "cmds/props.h"
+>  #include "kernel-shared/ctree.h"
+> @@ -232,6 +233,65 @@ static int prop_compression(enum prop_object_type type,
+>  	return ret;
+>  }
+>  
+> +static int prop_datacow(enum prop_object_type type,
+> +			const char *object,
+> +			const char *name,
+> +			const char *value,
+> +			bool force)
+> +{
+> +	int ret;
+> +	ssize_t sret;
+> +	int fd = -1;
+> +	DIR *dirstream = NULL;
+> +	//int open_flags = value ? O_RDWR : O_RDONLY;
+> +	int open_flags = O_RDONLY;
+> +	int attr;
+> +
+> +	fd = open_file_or_dir3(object, &dirstream, open_flags);
+> +	if (fd == -1) {
+> +		ret = -errno;
+> +		error("failed to open %s: %m", object);
+> +		goto out;
+> +	}
+> +
+> +	sret = ioctl(fd, FS_IOC_GETFLAGS, &attr);
+> +	if (sret < 0) {
+> +		ret = -errno;
+> +		error("failed to get attr flags on %s: %m", object);
+> +		goto out;
+> +	}
+> +
+> +	if (value) {
+> +		if (strcmp(value, "no") == 0) {
+> +			attr |= FS_NOCOW_FL;
+> +		} else if (strcmp(value, "yes") == 0) {
+> +			attr &= ~FS_NOCOW_FL;
+> +		} else {
+> +			ret = -EINVAL;
+> +			error("datacow value must be yes or no");
+> +			goto out;
+> +		}
+> +
+> +		sret = ioctl(fd, FS_IOC_SETFLAGS, &attr);
+> +		if (sret < 0) {
+> +			ret = -errno;
+> +			error("failed to set nocow flag on %s: %m",
+> +			      object);
+> +			goto out;
+> +		}
+> +	} else {
+> +		fprintf(stdout, "datacow=%s\n",
+> +			attr & FS_NOCOW_FL ? "no" : "yes");
+> +	}
+> +
+> +	ret = 0;
+> +out:
+> +	if (fd >= 0)
+> +		close_file_or_dir(fd, dirstream);
+> +
+> +	return ret;
+> +}
+> +
+>  const struct prop_handler prop_handlers[] = {
+>  	{
+>  		.name ="ro",
+> @@ -254,6 +314,13 @@ const struct prop_handler prop_handlers[] = {
+>  		.types = prop_object_inode,
+>  		.handler = prop_compression
+>  	},
+> +	{
+> +		.name = "datacow",
+> +		.desc = "copy on write status of a file",
+> +		.read_only = 0,
+> +		.types = prop_object_inode,
+> +		.handler = prop_datacow
+> +	},
+>  	{NULL, NULL, 0, 0, NULL}
+>  };
+>  
+> diff --git a/tests/cli-tests/017-btrfs-property/test.sh b/tests/cli-tests/017-btrfs-property/test.sh
+> new file mode 100755
+> index 000000000000..1da3eda4cd3a
+> --- /dev/null
+> +++ b/tests/cli-tests/017-btrfs-property/test.sh
+> @@ -0,0 +1,25 @@
+> +#!/bin/bash
+> +# test btrfs property commands
+> +
+> +source "$TEST_TOP/common"
+> +
+> +# compare with lsattr to make sure
+> +check_global_prereq lsattr
+> +
+> +setup_root_helper
+> +prepare_test_dev
+> +
+> +run_check_mkfs_test_dev
+> +run_check_mount_test_dev
+> +
+> +run_check $SUDO_HELPER touch "$TEST_MNT/file"
+> +run_check $SUDO_HELPER "$TOP/btrfs" property set "$TEST_MNT/file" datacow no
+> +run_check_stdout $SUDO_HELPER "$TOP/btrfs" property get "$TEST_MNT/file" datacow |
+> +	grep -q "datacow=no" || _fail "datacow wasn't no"
+> +run_check_stdout $SUDO_HELPER lsattr "$TEST_MNT/file" |
+> +	grep -q -- "C.* " || _fail "lsattr didn't agree NOCOW flag is set"
+> +run_check $SUDO_HELPER "$TOP/btrfs" property set "$TEST_MNT/file" datacow yes
+> +run_check_stdout $SUDO_HELPER "$TOP/btrfs" property get "$TEST_MNT/file" datacow |
+> +	grep -q "datacow=yes" || _fail "datacow wasn't yes"
+> +
+> +run_check_umount_test_dev
+-- 
+Dominique
