@@ -2,215 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 317754ECFB5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 00:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B6F4ECFEC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 01:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351642AbiC3WcO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Mar 2022 18:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
+        id S234095AbiC3XRY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Mar 2022 19:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351648AbiC3WcN (ORCPT
+        with ESMTP id S234105AbiC3XRX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Mar 2022 18:32:13 -0400
-X-Greylist: delayed 41146 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Mar 2022 15:30:24 PDT
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [213.138.97.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBF95BE46
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 15:30:24 -0700 (PDT)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 8BD6A9B7C5; Wed, 30 Mar 2022 23:30:22 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1648679422;
-        bh=73Gx3IQFaDVzlVTxcpvcV2JE0MNcj15oh/L4gakYXWk=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=brVwFdINHpjs5XYwVz5nyRpUtlXORCTWdGNuevY5Mt8BxKnRvs9xHFyXf4vPIo1ZY
-         gKh/8tee6EFAm4v/g3wA8sI8L0f+2cVzoqIYmbpEzXIq9LlbeymgB68SC6baKLgDkW
-         XJtibL7vhDMbyMcEyerEupO1pI8uQ7S0mgYbjbz+F8O2RzBJ9bMZc9oRl1x8GQygRJ
-         fiTD0M1mJIOUnjMm7JzxBHhyCuYJaW5EohXLe4UcuombOMOwGd1VBhzVd6i31h2BUW
-         qSI6Ep0YyqgTlMOzEtcEoTQZbcZzN5/kfT52yR5/7bQo4XvVt41KRWR4OpT5qaMr6q
-         T3QQoAlPBHq6A==
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 38BB99B6B6;
-        Wed, 30 Mar 2022 23:29:35 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1648679375;
-        bh=73Gx3IQFaDVzlVTxcpvcV2JE0MNcj15oh/L4gakYXWk=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=GMPtIfgNl13xeocWNuzVNbH8bpuOazlmIVUAO2FZRTUs3MrotlEeOlE0w+Ue+C3id
-         NfUHVw0MQfNstj2XS6WxsSTMTOGOPemt43ZSUK9lai3wAhfCtACGfmJfgyGZvDKUXM
-         bkNT+Nwkx1cwVZcIiwWeXPfQDvQ4iyUbBMVGr0Pv59Mfk9PN/jMnRNfVS7VFAB0od9
-         E4aw5LXV/k6f2sQ+0hSLb6YA+fCv26AgfkQqyiVE4wHEWzuBqSxjFmyKmSr79j55ha
-         I6Gkn+Yt7xUgHoJCMlIxvBDN/0yMo0exTurqs5sHpLMNkPVbOoDmek601OKX+5cv6T
-         8n+VjmvQ7LNDA==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id 0D4A3146382;
-        Wed, 30 Mar 2022 23:29:35 +0100 (BST)
-Message-ID: <518fbfe6-3a95-163d-1015-eada776ed9eb@cobb.uk.net>
-Date:   Wed, 30 Mar 2022 23:29:34 +0100
+        Wed, 30 Mar 2022 19:17:23 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD473F889
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 16:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1648682062;
+        bh=WZJ65tfE15uuzeUIxT2QAlHJG9sy/qlXd6qK3WXuhb8=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=EVzafBpZcX5oGF4JkwBKb5vHwhHYxoSejX80oqiyrSmkuFgCgagywL26pZZMztk4h
+         lGZhUWwNGLy20VmwXmQIEEfWMuQXaLX9SfkwCyo85BgdZ2cOTdrAv79IsIkdCn9llm
+         Pm3q4gJlZ0k0bwezFBN3BIO7+rF1v+yD33SZkH2Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MhU5R-1oE0UA2Ect-00eYwz; Thu, 31
+ Mar 2022 01:14:22 +0200
+Message-ID: <a2973c8d-0c8b-368f-1733-b4326eed121c@gmx.com>
+Date:   Thu, 31 Mar 2022 07:14:17 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Re: [PATCH] btrfs: replace a wrong memset() with memzero_page()
+ Thunderbird/91.7.0
 Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
         linux-btrfs@vger.kernel.org
-References: <8d6f911a0282eba76f9e05d6f1e7c6f091d4870b.1648199349.git.wqu@suse.com>
- <20220328185121.GQ2237@twin.jikos.cz> <YkLYJ+xRvmm0yN9Y@debian9.Home>
- <ed81efec-0303-d152-a84d-74f4ff4f5058@gmx.com>
- <YkLwAf7SK95iOreD@debian9.Home>
- <d7e95b14-1e87-9c09-e172-680d53cb51c5@gmx.com>
- <YkQimcdT5KwU5i/P@debian9.Home> <YkQyLfTjAjbPZR9y@debian9.Home>
- <6e5e4112-8b9f-fcb4-1a04-c68db2fa9880@gmx.com>
- <bc1c01bd-7f98-a2a3-8a2e-2a1c1d31e853@cobb.uk.net>
- <YkTM1yX2G02JyhHj@debian9.Home>
-In-Reply-To: <YkTM1yX2G02JyhHj@debian9.Home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20220324160628.1572613-1-hch@lst.de>
+ <20220324160628.1572613-2-hch@lst.de> <20220330144358.GF2237@twin.jikos.cz>
+ <bcb7b671-6c82-1914-7442-a96fcc460b71@gmx.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH 1/2] btrfs: fix direct I/O read repair for split bios
+In-Reply-To: <bcb7b671-6c82-1914-7442-a96fcc460b71@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:57+Hs5PY7CxTqC8lQz6JRdj2CbwM663GPAfgiCTkyXgS7CbxL7Y
+ 1gh/f67/elwz+/SgnkaMu4xZYHaKrRfIkZChmcnPnEihMgwwGi/VjJr0Y5fbLBx13PUvixt
+ OxDO6J8Ni7qeQ+ocFe9rG2eJ9eD2qpKMX39+qlG6iVWQ8r0AWmSxfnUu6RqKuCJ1qxX/vaF
+ XJP+kcGW9ZegU8JPHdzBQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VNkoRSBeFzk=:sWmCFH5mJDm0Nugv2nHNIw
+ l7EZY9mcq8k+dVDhN/LPeLZKG3AT8YVgiYsSMgFIGNJ7ANr7Ogll9/f+MHMi0cswtQ5X9/vYL
+ if89QLzMXYg+1eEBZNi41h5nbKnIjlu2ac0D0Y57iP25u9cFU7ZqyDMDzIB69shURun7M3zd6
+ BjB5pce5MeSKJDa9Um7RyifyhdpE/7DmrDOkN05DHsUqHZVnWcTj2Q+xieVOZ6A3Ml9bXr7Mn
+ 70O6ML2u7GuEC5WIChOjJef0C/DL5SBUH/0E0hoSy9CHnH7S5meu27YuX/jnebVzeyHo76+sx
+ 2LygLFycwqHkMED05yTrrF4JX//oXs1EuZUY12oXcrKpGpGw4eUWIjZ1P2q19bjmgcDcIKZnn
+ lCv/I3yD6mmexQdPDwQAei5jjhHchKi5o5XLVa+qa4wiUat8SXZ7ksUORrc5oraaU9DrPf/xB
+ HvH6ygKowlJWq2nnjf7pTZm1ml8ILjA7Go7AwQycXWDnkJKUxB7EkUL8Q8Z4WLiFyuBHfa5sZ
+ bNVilWNWocFHb6F3Zl1iV4w5OGhptsHX6mzwVAgBauzWUqZMmVU+pzBA5QhCjiruWsxmhUmVJ
+ VFaegpXdiXa8ddroxzgatm2XRr2WOgMWGoe6ynlefbK4cVZE95dPuZ1padLCqucLVwmPdvF3F
+ MazC9zbdi7WqWoq+wQvKFjDsb4WwRMbswBwKeIGc/LeZbCRFSWv8IqkjaEXcWCis69aXXTAJP
+ +zjX3/hAYBes8mE7n1Hye8zsoHFiLU6H04wmAiAd5+7ZvUK0EZI7kLOcDIbcdM8enimWkZUmI
+ lQBJBcjVT3NQyJwv2mQ5wFZXDtCJcpoEgT1yEG4Owp41u60P6NdLYVzfXjT+slhmKwDAMsCFo
+ ESfL588QeFHUrMm+ZQbeVaSN7Gexf8HHrhKoE98mghBkGUOOFNTkE1vh6EREn+aieLzWCauP5
+ LgyA6PfykQVp9gWfDewkDMWjHN0BJ9qHZOBz5bdEpQNszHr9VkKXQzESqYhS+IUFVseaxoSy/
+ UNcINankih76ICttLPm9PSn8k1iyTRZI8HMjAZslRgFmjocs+yjRX5aaOuUhFMaipZN/SJTOA
+ pce8JwpzluXrwo=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 30/03/2022 22:34, Filipe Manana wrote:
-> On Wed, Mar 30, 2022 at 12:03:36PM +0100, Graham Cobb wrote:
->>
->> On 30/03/2022 11:42, Qu Wenruo wrote:
->>>
->>>
->>> On 2022/3/30 18:34, Filipe Manana wrote:
->>>> On Wed, Mar 30, 2022 at 10:27:53AM +0100, Filipe Manana wrote:
->>>>> On Wed, Mar 30, 2022 at 07:52:04AM +0800, Qu Wenruo wrote:
->>>>>>
->>>>>>
->>>>>> On 2022/3/29 19:39, Filipe Manana wrote:
->>>>>>> On Tue, Mar 29, 2022 at 06:49:10PM +0800, Qu Wenruo wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2022/3/29 17:57, Filipe Manana wrote:
->>>>>>>>> On Mon, Mar 28, 2022 at 08:51:21PM +0200, David Sterba wrote:
->>>>>>>>>> On Fri, Mar 25, 2022 at 05:37:59PM +0800, Qu Wenruo wrote:
->>>>>>>>>>> The original code is not really setting the memory to 0x00 but
->>>>>>>>>>> 0x01.
->>>>>>>>>>>
->>>>>>>>>>> To prevent such problem from happening, use memzero_page()
->>>>>>>>>>> instead.
->>>>>>>>>>
->>>>>>>>>> This should at least mention we think that setting it to 0 is
->>>>>>>>>> right, as
->>>>>>>>>> you call it wrong but give no hint why it's thought to be wrong.
->>>>>>>>>
->>>>>>>>> My guess is that something different from zero makes it easier to
->>>>>>>>> spot
->>>>>>>>> the problem in user space, as 0 is not uncommon (holes,
->>>>>>>>> prealloced extents)
->>>>>>>>> and may get unnoticed by applications/users.
->>>>>>>>
->>>>>>>> OK, that makes some sense.
->>>>>>>>
->>>>>>>> But shouldn't user space tool get an -EIO directly?
->>>>>>>
->>>>>>> It should.
->>>>>>>
->>>>>>> But even if applications get -EIO, they may often ignore return
->>>>>>> values.
->>>>>>> It's their fault, but if we can make it less likely that errors are
->>>>>>> not noticed,
->>>>>>> the better. I think we all did often, ignore all or just some
->>>>>>> return values
->>>>>>> from read(), write(), open(), etc.
->>>>>>>
->>>>>>> One recent example is the MariaDB case with io-uring. They were
->>>>>>> reporting
->>>>>>> corruption to the users, but the problem is that didn't properly check
->>>>>>> return values, ignoring partial reads and treating them as success:
->>>>>>>
->>>>>>> https://jira.mariadb.org/browse/MDEV-27900?focusedCommentId=216582&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-216582
->>>>>>>
->>>>>>>
->>>>>>> The data was fine, not corrupted, they just didn't deal with
->>>>>>> partial reads
->>>>>>> and then read the remaining data when a read returns less data than
->>>>>>> expected.
->>>>>>
->>>>>> Then can we slightly improve the filling pattern?
->>>>>>
->>>>>> Instead of 0x01, introduce some poison value?
->>>>>
->>>>> Why isn't 0x01 a good enough value?
->>>>>
->>>>> A long range of 0x01 values is certainly unexpected in text files,
->>>>> and very likely
->>>>> on binary formats as well. Or do you think there's some case where
->>>>> long sequences
->>>>> of 0x01 are common and not unexpected?
->>>>>
->>>>>>
->>>>>> And of course, change the lable "zeroit" to something like "poise_it"?
->>>>>
->>>>> "poison_it", poise has a very different and unrelated meaning in
->>>>> English.
->>>>
->>>> It's also worth considering if we should change the page content at all.
->>>>
->>>> Adding a poison value makes it easier to detect the corruption, both for
->>>> developers and for sloppy applications that don't check error values.
->>>>
->>>> However people often want to still have access to the corrupted data,
->>>> they
->>>> can tolerate a few corrupted bytes and find the remaining useful. This
->>>> has
->>>> been requested a few times in the past.
->>>
->>> This looks more favorable.
->>>
->>> And I didn't think the change would break anything.
->>>
->>> For proper user space programs checking the error, they know it's an
->>> -EIO and will error out.
->>>
->>> For bad programs not checking the error, it will just read the corrupted
->>> data, and may even pass its internal sanity checks (if the corrupted
->>> bytes are not in some critical part).
->>>
->>> Or is there something we haven't taken into consideration?
->>
->> Well.... If an error occurred something has gone wrong. It could be a
->> simple bit flip in the storage itself, or it could be something else.
->> The something else could be a software or firmware bug, or a memory
->> corruption or memory controller power fluctuation blip, or .... I guess
->> it might even be possible in some architectures that the problem could
->> result in page table updates validating a page that actually was never
->> written to at all and could still contain some previous contents.
->>
->> In a time when we worry about things like Spectre, Meltdown, Rowhammer,
->> stale cache leakage, etc it may be a good security principle that data
->> left over from failed operations should never be made visible to user mode.
->>
->> Possibly unnecessary worrying, but then who thought that jump prediction
->> would create a side-channel for exposing data that can actually be
->> exploited in real life.
-> 
-> Hum, then a filesystem that doesn't have data checksums (the vast majority of
-> them), like ext4, xfs, etc, has a serious security flaw, no? You ask to read an
-> extent, and it returns whatever is on disk, even if it has suffered some corruption.
-> 
-> Shall we open a CVE, and force all filesystems to implement data checksums? ;)
-> We would also have to drop support for nodatacow and nodatasum from btrfs.
 
-No. There is a clear difference between cases where you don't know
-whether the data is valid and cases where there has been an error
-detected (a device-reported read error, a checksum error, a logic error,
-or whatever).
 
-You asked if there was anything you hadn't taken into consideration. It
-is entirely up to you and the team to consider it - in cases where you
-*know* an error has occurred should you refuse to return the data? I
-don't know - but the decision should be deliberate and deserves a comment.
+On 2022/3/31 06:24, Qu Wenruo wrote:
+>
+>
+> On 2022/3/30 22:43, David Sterba wrote:
+>> On Thu, Mar 24, 2022 at 05:06:27PM +0100, Christoph Hellwig wrote:
+>>> When a bio is split in btrfs_submit_direct, dip->file_offset contains
+>>> the file offset for the first bio.=C2=A0 But this means the start valu=
+e used
+>>> in btrfs_check_read_dio_bio is incorrect for subsequent bios.=C2=A0 Ad=
+d
+>>> a file_offset field to struct btrfs_bio to pass along the correct
+>>> offset.
+>>>
+>>> Given that check_data_csum only uses start of an error message this
+>>> means problems with this miscalculation will only show up when I/O
+>>> fails or checksums mismatch.
+>>>
+>>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>>> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>>
+>> Qu, you've removed the same logic in f4f39fc5dc30 ("btrfs: remove
+>> btrfs_bio::logical member") where it was a different name for the same
+>> variable. What changed in the logic that we don't need to store it alon=
+g
+>> the btrfs_bio and that btrfs_dio_private can't provide anymore?
+>
+> All my fault, I didn't realize that in btrfs_submit_direct() what we
+> really do is splitting the iomap bio.
+>
+> Thus we still need that @logical member as dip is only allocated for the
+> whole iomap bio, not for each split btrfs bio.
+>
+> Thus we need the fixes: tag.
+>
+>>
+>> I'm a bit worried about your changes that remove/rewrite code, silently
+>> introducing bugs so it has to be reinstated. We don't have enough
+>> review coverage and in the amount of patches you send I'm increasingly
+>> worried how many bugs I've inadvertently let in.
+>
+> Normally it should be caught by test cases. But test case coverage is
+> not that better than our review coverage, especially for read repair, as
+> it's a btrfs specific feature, and almost impossible to do stress tests.
+>
+> The good news is, for most of my subpage related rewrite, the existing
+> test cases are pretty good catching the bugs.
+>
+>
+> I don't really have better way other than adding regression tests cases
+> until we found some regression.
+
+While crafting the test case for this particular case, I found all the
+existing tools, like dd (iflag=3Ddirect) or xfs_io (pwrite -d -i), are all
+reading the content using 4K block, even block size is specified.
+
+Thus unable to reproduce the bug (no split will happen).
+
+Any good tool to cause a large direct IO read?
+
+Thanks,
+Qu
+
+>
+> Thanks,
+> Qu
