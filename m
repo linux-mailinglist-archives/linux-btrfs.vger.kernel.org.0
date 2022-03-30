@@ -2,69 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBF34EC700
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 16:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE824EC718
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Mar 2022 16:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347154AbiC3Otq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Mar 2022 10:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S1347256AbiC3Ovk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Mar 2022 10:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243105AbiC3Oto (ORCPT
+        with ESMTP id S1347179AbiC3Ovh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Mar 2022 10:49:44 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C47237A25
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:47:58 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D7C2A218FC;
-        Wed, 30 Mar 2022 14:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648651676;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MduYLXPs0iDq0/JQc6QPFzunf2sxqFz4VM6rsWq3iI4=;
-        b=RW0ddLCo4fEyJtnl2ACrKrH7TaNyn4rv7+rgc0DpL2OPQ/fUTlFGjJ8COxtR9SaiWlsb4G
-        Zcqlo/PZ22avcJE3m+LiDoye86YQZ0VIeTI/gix2ga53JxOBZvWA7h8lqCnVQo+pvYsYb3
-        fXXDSQM4Ii+AqOZWCxXcdze+JTFULZ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648651676;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MduYLXPs0iDq0/JQc6QPFzunf2sxqFz4VM6rsWq3iI4=;
-        b=tYyR40mlci6BgAQIiWK8Oa6OvkoBIrbbVAKi68wkRBDrIqDYuQmVWwMhaGw9a8wKYSfNWu
-        6f8M5Si/6JMdypDw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id A936CA3B88;
-        Wed, 30 Mar 2022 14:47:56 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id ABBA3DA7F3; Wed, 30 Mar 2022 16:43:58 +0200 (CEST)
-Date:   Wed, 30 Mar 2022 16:43:58 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs: fix direct I/O read repair for split bios
-Message-ID: <20220330144358.GF2237@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        Christoph Hellwig <hch@lst.de>, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-References: <20220324160628.1572613-1-hch@lst.de>
- <20220324160628.1572613-2-hch@lst.de>
+        Wed, 30 Mar 2022 10:51:37 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A660D1706C
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:49:39 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id j15so14650156ila.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Mar 2022 07:49:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=S7jHDD9H3A3SYC5lPe9ohlnX79nRebzt30Q3Ep3X12o=;
+        b=OZ3cEQ5h4qtPgX1AY6RLmB6gT57kvwRHQ79ygDaebLZjiOApKBgJvNSiNC+hGN40JU
+         KFowpuzoi9RAMLTJX0fOxY1oyMHVZHloUrVLxLuOG/UlFNOYGVgGvwa2UU4emiJEzaf9
+         q/b6t2EDuopDh+F9mdxQX6O8ADsK4gowwAsRa9RVPJ5GdcZXQj2mX6/QUQhRN12B8hnH
+         NkupImYcQse6AfeDQRluWPm9O4lLIm1PCY+Y0ru6sks+rFgKWBzTtmSTEYxmLYKnRe/x
+         TPd8nXiKZe260b1aynJD8YblWjvbxaX/g0RFrXX3pPqJAeiHYOnhcG7UGyHQwei5xlG9
+         5gPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=S7jHDD9H3A3SYC5lPe9ohlnX79nRebzt30Q3Ep3X12o=;
+        b=Mgzlm9lKyzG4wL0lMnlxFYeIVnYrzIM/RDdLk3C3IEKo3DYM3glqMNgByubC5SXsP/
+         nf06iPEGxuQ0J+WRLdyuPHFsMTTq4hiRz9BKOZ4J/QyAPLtoNCxm2WkIHFvZVqFUDV3a
+         edDhJfd0srMFotBJlutQZjXz3YBpU/j5OxDsy9IY3zx0Nu2Lrs6LtUKTI1M9W7KirpWu
+         C7G+thTECv+tiCvXj8c2Natru9JMypRZ8pzmc4dHzu8J0+80zXIkvNFLwGwI74Q56a7w
+         0o1Hw2isOLRTfLslfKcOTgXqrHSa5gAwPdOU2SmhA2I6H9LWv/85+UqLwe/rcnodVwe+
+         tsrA==
+X-Gm-Message-State: AOAM530RTDENNMXCV+ArPPpgM/6PwveTVTdg4knWhrAS+EBHJIq4JhL+
+        +EDoG2N77Bb2xQzdd9ybAvYLf60a7FmUikWJ
+X-Google-Smtp-Source: ABdhPJz3EibI69DwP9lkcaYHyRWrAtLzvk4HhXkWXzgIOSW08I0BfaQQag5PmpjZEv83Snk+VZv0fA==
+X-Received: by 2002:a05:6e02:1e0e:b0:2c6:18c3:9691 with SMTP id g14-20020a056e021e0e00b002c618c39691mr11475070ila.287.1648651778718;
+        Wed, 30 Mar 2022 07:49:38 -0700 (PDT)
+Received: from [127.0.1.1] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id r9-20020a6b6009000000b006412abddbbbsm11434439iog.24.2022.03.30.07.49.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Mar 2022 07:49:38 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
+        Coly Li <colyli@suse.de>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        target-devel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        linux-raid@vger.kernel.org, linux-block@vger.kernel.org
+In-Reply-To: <20220308061551.737853-1-hch@lst.de>
+References: <20220308061551.737853-1-hch@lst.de>
+Subject: Re: cleanup bio_kmalloc v2
+Message-Id: <164865177761.37391.13379579175408786139.b4-ty@kernel.dk>
+Date:   Wed, 30 Mar 2022 08:49:37 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220324160628.1572613-2-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,25 +77,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 05:06:27PM +0100, Christoph Hellwig wrote:
-> When a bio is split in btrfs_submit_direct, dip->file_offset contains
-> the file offset for the first bio.  But this means the start value used
-> in btrfs_check_read_dio_bio is incorrect for subsequent bios.  Add
-> a file_offset field to struct btrfs_bio to pass along the correct offset.
+On Tue, 8 Mar 2022 07:15:46 +0100, Christoph Hellwig wrote:
+> this series finishes off the bio allocation interface cleanups by dealing
+> with the weirdest member of the famility.  bio_kmalloc combines a kmalloc
+> for the bio and bio_vecs with a hidden bio_init call and magic cleanup
+> semantics.
 > 
-> Given that check_data_csum only uses start of an error message this
-> means problems with this miscalculation will only show up when I/O
-> fails or checksums mismatch.
+> This series moves a few callers away from bio_kmalloc and then turns
+> bio_kmalloc into a simple wrapper for a slab allocation of a bio and the
+> inline biovecs.  The callers need to manually call bio_init instead with
+> all that entails and the magic that turns bio_put into a kfree goes away
+> as well, allowing for a proper debug check in bio_put that catches
+> accidental use on a bio_init()ed bio.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> [...]
 
-Qu, you've removed the same logic in f4f39fc5dc30 ("btrfs: remove
-btrfs_bio::logical member") where it was a different name for the same
-variable. What changed in the logic that we don't need to store it along
-the btrfs_bio and that btrfs_dio_private can't provide anymore?
+Applied, thanks!
 
-I'm a bit worried about your changes that remove/rewrite code, silently
-introducing bugs so it has to be reinstated. We don't have enough
-review coverage and in the amount of patches you send I'm increasingly
-worried how many bugs I've inadvertently let in.
+[1/5] btrfs: simplify ->flush_bio handling
+      commit: 6978ffddd5bba44e6b7614d52868cf4954e0529b
+[2/5] squashfs: always use bio_kmalloc in squashfs_bio_read
+      commit: 88a39feabf25efbaec775ffb48ea240af198994e
+[3/5] target/pscsi: remove pscsi_get_bio
+      commit: bbccc65bd7c1b22f050b65d8171fbdd8d72cf39c
+[4/5] block: turn bio_kmalloc into a simple kmalloc wrapper
+      commit: 57c47b42f4545b5f8fa288f190c0d68f96bc477f
+[5/5] pktcdvd: stop using bio_reset
+      commit: 1292fb59f283e76f55843d94f066c2f0b91dfb7e
+
+Best regards,
+-- 
+Jens Axboe
+
+
