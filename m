@@ -2,253 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0364ED835
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 13:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD5C4EDEE1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 18:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbiCaLJm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Mar 2022 07:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
+        id S240031AbiCaQgw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Mar 2022 12:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbiCaLJk (ORCPT
+        with ESMTP id S240022AbiCaQgv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Mar 2022 07:09:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2CD205BDD;
-        Thu, 31 Mar 2022 04:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1648724862;
-        bh=+dV+EoUnXu4gqfokgsxfhwdJxygHbTwokTskhNYoX0A=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=k1cHKNJcFa0Q6Qnti6ftAK5g5JtkMDAMXeuZMfin2zqrR9++/S2Ex5dZhMz0ITr5h
-         z//ZxoATUhPie1tPVijOCXB8I9MrG6mKWlPrmxCF9hV4TFy8Y8dBctljEYoLi24+UV
-         F4PLEwXwO3rYKWTtpf25Wn96TncTqT5zZ5qhweqc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MOiHl-1nO8O10MOt-00QEOw; Thu, 31
- Mar 2022 13:07:42 +0200
-Message-ID: <bc671baa-f2bc-5c6f-63d5-28ac87eb08e1@gmx.com>
-Date:   Thu, 31 Mar 2022 19:07:33 +0800
+        Thu, 31 Mar 2022 12:36:51 -0400
+Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850411BBF62;
+        Thu, 31 Mar 2022 09:35:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1648744503; x=1680280503;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vcu31rMS0yn2EqzHi27wb6PxKwLH34tTd/+ys8ECp/A=;
+  b=ADDuc88FzNWZGKBrIk06zzzX+k6YSxqk27uWQNihSUCGuZ1GtMpxcMlV
+   xTEWa75dpfcsFQw+mC064HKR7W4MWXLYRVTC8926TBwzR2AQWBCbndTjo
+   VEkv7SFykl4Py4aMRGoIAena380+aMTSMqaNCRjn7CsXqgUcJlMFOvVOW
+   g=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 31 Mar 2022 09:35:03 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2022 09:35:02 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Thu, 31 Mar 2022 09:35:02 -0700
+Received: from qian (10.80.80.8) by nalasex01a.na.qualcomm.com (10.47.209.196)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Thu, 31 Mar
+ 2022 09:34:58 -0700
+Date:   Thu, 31 Mar 2022 12:34:56 -0400
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "David Sterba" <dsterba@suse.com>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        <linux-block@vger.kernel.org>, <dm-devel@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-bcache@vger.kernel.org>,
+        <linux-raid@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-btrfs@vger.kernel.org>
+Subject: Re: cleanup bio_kmalloc v2
+Message-ID: <YkXYMGGbk/ZTbGaA@qian>
+References: <20220308061551.737853-1-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] btrfs: remove unnecessary type castings
-Content-Language: en-US
-To:     Yu Zhe <yuzhe@nfschina.com>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, liqiong@nfschina.com
-References: <20220331103408.31867-1-yuzhe@nfschina.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220331103408.31867-1-yuzhe@nfschina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SA5OIFuHugMkcK4LC/uDml2zM9oemrQEVmXA4zgY9EE6KNRpKzT
- idAoScabHd3dxfpqiBSlN2zzyD1defdT4XbAXzQUe94kDTsy7l2SOiiFUWf2oYPcWAEf8Fl
- kYpqxokmKUbcNp7VZT0o4C5fZ3YLWEI7b4m/YleiRtJmuSweQGGm+ED4n3CiNOBkyqANurS
- v5B530Rbgt8aPCQP5O+QA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aqIUE2+eDBI=:EFIXC37jm5ZQGLz5WliUmU
- G3YXgHruYLLlzOzkz0TKdKkIBFWkPiGGcZzEejJWD90bOnT7Y5tjoEf3Zoaf/sJ83G1psqRiW
- 23GiA8uq7qHnlXqtpc/L/Tiaj3LqFRtn4SI9MNrGmIN84K6DIm+O6gT/SFittXiUb8RQeXj31
- 4MZO6VarQvp05ahZ9fIX8RzOaVQKNvbcgzC8rEXKlYoN4xWOEWq3blxGLFXCNEhZw6WrA7b6c
- a/BdM4S9isXpouUv3fQ8PXWAvnDKtkcamQs8edhDgx6LX8iGN9eQbtcqDYgUcHQP8ToYw89qK
- ptdj+7Am9RpPnaQmWC8BWkDM0tV6VV9lXRxJtifL7VmB3+jqvaOEKvwJE7k5+UGqlX96r3pLZ
- LfEBdTeYONqGr5pYARdvO6au6AM/3YzxDC2xZMo7AEP49Th7monCbXc5NR1/5Z9hwdaY2Qj2/
- zRs5/cdblfMWeVuG/wNCoLbqzzBn667C7jPmSF70vh42U3UMZItXMykxvFNSKwJv7nsJx8QsK
- VcCphaej455XZq7z1OU55mj/JSJZVRa178sQ8u6amxN6o9nl8Vpe+8vzWiWIpzBG35LOrLCKM
- gCwZ0gn7a99b9XGOHPGny4HhFcTrEqkEFV3oAzGg4VSsVKwHv3a4HJNEPLzCE8JRmH6tYiGk8
- QuQylTk0N7pYaxn+qlwSYe/ItEsK0/Ef7tx5XtMDkKvPSX9IOrWLHIT7ISKl3T/S1XTPCLJpJ
- sKbB2TVYKSOcnHw5OtXS6Sulfbo3F4+DK5rM9jtR/Zg7FJgx1YqvaQXWgKEKtTjSN8nv16dCL
- Wpq6qrik8OCfuwQhCwClwxyWhj28Oeo24lGwdVR3GdQueDFmlz5/3TYABxd6ofbSUai8yNzFC
- YscDvO6i65Qr1DtGEL8FfyY4QlQu5d3xqLPQBPoemCl/DdyN+f/q5sXVkiGzazh/r3JGU3plD
- gXu1bRdklYgz+flKd3YI4a6ZXSw+A1I4qw5AjsxI/alXm7fTybHHES7ee7Ib9gIQ3wTYUJM97
- qJcmqTLLcAJssw0wF+Y8OyT1s/0WmteHnY3HKdv0H7uJP5KaF/Ym/M+xVK66HJXQXxTYs2OMi
- GhZFGRauWuglvc=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20220308061551.737853-1-hch@lst.de>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Mar 08, 2022 at 07:15:46AM +0100, Christoph Hellwig wrote:
+> Hi Jens,
+> 
+> this series finishes off the bio allocation interface cleanups by dealing
+> with the weirdest member of the famility.  bio_kmalloc combines a kmalloc
+> for the bio and bio_vecs with a hidden bio_init call and magic cleanup
+> semantics.
+> 
+> This series moves a few callers away from bio_kmalloc and then turns
+> bio_kmalloc into a simple wrapper for a slab allocation of a bio and the
+> inline biovecs.  The callers need to manually call bio_init instead with
+> all that entails and the magic that turns bio_put into a kfree goes away
+> as well, allowing for a proper debug check in bio_put that catches
+> accidental use on a bio_init()ed bio.
 
+Reverting this series fixed boot crashes.
 
-On 2022/3/31 18:34, Yu Zhe wrote:
-> remove unnecessary void* type castings.
->
-> Signed-off-by: Yu Zhe <yuzhe@nfschina.com>
-> ---
->   fs/btrfs/check-integrity.c | 2 +-
->   fs/btrfs/disk-io.c         | 4 ++--
->   fs/btrfs/inode.c           | 2 +-
->   fs/btrfs/ioctl.c           | 4 ++--
->   fs/btrfs/relocation.c      | 2 +-
->   fs/btrfs/scrub.c           | 2 +-
->   fs/btrfs/space-info.c      | 2 +-
->   fs/btrfs/subpage.c         | 2 +-
->   fs/btrfs/volumes.c         | 2 +-
->   9 files changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-> index abac86a75840..62eb149aac98 100644
-> --- a/fs/btrfs/check-integrity.c
-> +++ b/fs/btrfs/check-integrity.c
-> @@ -2033,7 +2033,7 @@ static void btrfsic_process_written_block(struct b=
-trfsic_dev_state *dev_state,
->
->   static void btrfsic_bio_end_io(struct bio *bp)
->   {
-> -	struct btrfsic_block *block =3D (struct btrfsic_block *)bp->bi_private=
-;
-> +	struct btrfsic_block *block =3D bp->bi_private;
->   	int iodone_w_error;
->
->   	/* mutex is not held! This is not save if IO is not yet completed
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index b30309f187cf..51f7ad6cadce 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1963,7 +1963,7 @@ static void end_workqueue_fn(struct btrfs_work *wo=
-rk)
->
->   static int cleaner_kthread(void *arg)
->   {
-> -	struct btrfs_fs_info *fs_info =3D (struct btrfs_fs_info *)arg;
-> +	struct btrfs_fs_info *fs_info =3D arg;
->   	int again;
->
->   	while (1) {
-> @@ -3293,7 +3293,7 @@ static int init_mount_fs_info(struct btrfs_fs_info=
- *fs_info, struct super_block
->
->   static int btrfs_uuid_rescan_kthread(void *data)
->   {
-> -	struct btrfs_fs_info *fs_info =3D (struct btrfs_fs_info *)data;
-> +	struct btrfs_fs_info *fs_info =3D data;
->   	int ret;
->
->   	/*
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index aa0a60ee26cb..6eafb46eadae 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -8951,7 +8951,7 @@ int btrfs_drop_inode(struct inode *inode)
->
->   static void init_once(void *foo)
->   {
-> -	struct btrfs_inode *ei =3D (struct btrfs_inode *) foo;
-> +	struct btrfs_inode *ei =3D foo;
->
->   	inode_init_once(&ei->vfs_inode);
->   }
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 238cee5b5254..c05a2afb74a7 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -2593,7 +2593,7 @@ static noinline int btrfs_ioctl_tree_search(struct=
- inode *inode,
->   	if (!capable(CAP_SYS_ADMIN))
->   		return -EPERM;
->
-> -	uargs =3D (struct btrfs_ioctl_search_args __user *)argp;
-> +	uargs =3D argp;
->
->   	if (copy_from_user(&sk, &uargs->key, sizeof(sk)))
->   		return -EFAULT;
-> @@ -2627,7 +2627,7 @@ static noinline int btrfs_ioctl_tree_search_v2(str=
-uct inode *inode,
->   		return -EPERM;
->
->   	/* copy search header and buffer size */
-> -	uarg =3D (struct btrfs_ioctl_search_args_v2 __user *)argp;
-> +	uarg =3D argp;
->   	if (copy_from_user(&args, uarg, sizeof(args)))
->   		return -EFAULT;
->
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index fdc2c4b411f0..13befafab3b4 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -362,7 +362,7 @@ struct btrfs_root *find_reloc_root(struct btrfs_fs_i=
-nfo *fs_info, u64 bytenr)
->   	rb_node =3D rb_simple_search(&rc->reloc_root_tree.rb_root, bytenr);
->   	if (rb_node) {
->   		node =3D rb_entry(rb_node, struct mapping_node, rb_node);
-> -		root =3D (struct btrfs_root *)node->data;
-> +		root =3D node->data;
->   	}
->   	spin_unlock(&rc->reloc_root_tree.lock);
->   	return btrfs_grab_root(root);
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 11089568b287..e338e3f9a0b5 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -2798,7 +2798,7 @@ static void scrub_parity_bio_endio_worker(struct b=
-trfs_work *work)
->
->   static void scrub_parity_bio_endio(struct bio *bio)
->   {
-> -	struct scrub_parity *sparity =3D (struct scrub_parity *)bio->bi_privat=
-e;
-> +	struct scrub_parity *sparity =3D bio->bi_private;
->   	struct btrfs_fs_info *fs_info =3D sparity->sctx->fs_info;
->
->   	if (bio->bi_status)
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index b87931a458eb..4de2c82051b1 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -519,7 +519,7 @@ static void shrink_delalloc(struct btrfs_fs_info *fs=
-_info,
->   		items =3D calc_reclaim_items_nr(fs_info, to_reclaim) * 2;
->   	}
->
-> -	trans =3D (struct btrfs_trans_handle *)current->journal_info;
-> +	trans =3D current->journal_info;
->
->   	/*
->   	 * If we are doing more ordered than delalloc we need to just wait on
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index ef7ae20d2b77..45fbc9e20715 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -127,7 +127,7 @@ void btrfs_detach_subpage(const struct btrfs_fs_info=
- *fs_info,
->   	if (fs_info->sectorsize =3D=3D PAGE_SIZE || !PagePrivate(page))
->   		return;
->
-> -	subpage =3D (struct btrfs_subpage *)detach_page_private(page);
-> +	subpage =3D detach_page_private(page);
-
-Indeed without the type casting, latest GCC doesn't report any warning.
-
-So it's fine to now casting (void *).
-
-Maybe it's my bad memory, but I remember without such casting the
-compiler used to report warning...
-
-Anyway looks good to me.
-
-But not confident if slightly older compiler would report warning.
-
-Thanks,
-Qu
->   	ASSERT(subpage);
->   	btrfs_free_subpage(subpage);
->   }
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 1be7cb2f955f..c7a6d290e67b 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -8295,7 +8295,7 @@ bool btrfs_pinned_by_swapfile(struct btrfs_fs_info=
- *fs_info, void *ptr)
->
->   static int relocating_repair_kthread(void *data)
->   {
-> -	struct btrfs_block_group *cache =3D (struct btrfs_block_group *)data;
-> +	struct btrfs_block_group *cache =3D data;
->   	struct btrfs_fs_info *fs_info =3D cache->fs_info;
->   	u64 target;
->   	int ret =3D 0;
+ WARNING: CPU: 1 PID: 2622 at block/bio.c:229 bio_free
+ Modules linked in: cdc_ether usbnet ipmi_devintf ipmi_msghandler cppc_cpufreq fuse ip_tables x_tables ipv6 btrfs blake2b_generic libcrc32c xor xor_neon raid6_pq zstd_compress dm_mod nouveau crct10dif_ce drm_ttm_helper mlx5_core ttm drm_dp_helper drm_kms_helper nvme mpt3sas xhci_pci nvme_core raid_class drm xhci_pci_renesas
+ CPU: 1 PID: 2622 Comm: mount Not tainted 5.17.0-next-20220331 #50
+ pstate: 10400009 (nzcV daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+ pc : bio_free
+ lr : bio_put
+ sp : ffff8000371b7760
+ x29: ffff8000371b7760 x28: 0000000000000000 x27: dfff800000000000
+ x26: ffff08028f93a600 x25: 0000000000000000 x24: ffff08028f92f600
+ x23: 1ffff00006e36f10 x22: ffff08028fa18510 x21: 1fffe10051f430a2
+ x20: 0000000000000000 x19: ffff08028fa18500 x18: ffffde03db3e7d2c
+ x17: ffffde03d55f8bc4 x16: 1fffe10051e75129 x15: 1fffe106cfcfbb46
+ x14: 1fffe10051e7511c x13: 0000000000000004 x12: ffff700006e36eab
+ x11: 1ffff00006e36eaa x10: ffff700006e36eaa x9 : ffffde03d5cb9fec
+ x8 : ffff8000371b7557 x7 : 0000000000000001 x6 : ffff700006e36eaa
+ x5 : 1ffff00006e36ea9 x4 : 1ffff00006e36ebe x3 : 1fffe10051f430a2
+ x2 : 1fffe10051f430ae x1 : 0000000000000000 x0 : ffff08028fa18570
+ Call trace:
+  bio_free
+  bio_put
+  squashfs_read_data
+  squashfs_read_table
+  squashfs_fill_super
+  get_tree_bdev
+  squashfs_get_tree
+  vfs_get_tree
+  do_new_mount
+  path_mount
+  __arm64_sys_mount
+  invoke_syscall
+  el0_svc_common.constprop.0
+  do_el0_svc
+  el0_svc
+  el0t_64_sync_handler
+  el0t_64_sync
+ irq event stamp: 33146
+ hardirqs last  enabled at (33145):  free_unref_page
+ hardirqs last disabled at (33146):  el1_dbg
+ softirqs last  enabled at (33122):  __do_softirq
+ softirqs last disabled at (33111):  __irq_exit_rcu
+ ---[ end trace 0000000000000000 ]---
+ Unable to handle kernel paging request at virtual address dfff800000000001
+ KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+ Mem abort info:
+   ESR = 0x96000004
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+   FSC = 0x04: level 0 translation fault
+ Data abort info:
+   ISV = 0, ISS = 0x00000004
+   CM = 0, WnR = 0
+ [dfff800000000001] address between user and kernel address ranges
+ Internal error: Oops: 96000004 [#1] PREEMPT SMP
+ Modules linked in: cdc_ether usbnet ipmi_devintf ipmi_msghandler cppc_cpufreq fuse ip_tables x_tables ipv6 btrfs blake2b_generic libcrc32c xor xor_neon raid6_pq zstd_compress dm_mod nouveau crct10dif_ce
+drm_ttm_helper mlx5_core ttm drm_dp_helper drm_kms_helper nvme mpt3sas xhci_pci nvme_core raid_class drm xhci_pci_renesas
+ CPU: 1 PID: 2622 Comm: mount Tainted: G        W         5.17.0-next-20220331 #50
+ pc : bio_free
+ lr : bio_free
+ sp : ffff8000371b7760
+ x29: ffff8000371b7760 x28: 0000000000000000 x27: dfff800000000000
+ x26: ffff08028f93a600 x25: 0000000000000000 x24: ffff08028f92f600
+ x23: 1ffff00006e36f10 x22: ffff08028fa18548 x21: 00000000000000d0
+ x20: 0000000000000000 x19: ffff08028fa18500 x18: ffffde03db3e7d2c
+ x17: ffffde03d55f8bc4 x16: 1fffe10051e75129 x15: 1fffe106cfcfbb46
+ x14: 1fffe10051e7511c x13: 0000000000000004 x12: ffff700006e36eab
+ x11: 1ffff00006e36eaa x10: ffff700006e36eaa x9 : ffffde03d5cb9c78
+ x8 : ffff8000371b7557 x7 : 0000000000000001 x6 : ffff700006e36eaa
+ x5 : 1ffff00006e36ea9 x4 : 1fffe10051f430ac x3 : 0000000000000001
+ x2 : 0000000000000003 x1 : dfff800000000000 x0 : 0000000000000008
+ Call trace:
+  bio_free
+  bio_put
+  squashfs_read_data
+  squashfs_read_table
+  squashfs_fill_super
+  get_tree_bdev
+  squashfs_get_tree
+  vfs_get_tree
+  do_new_mount
+  path_mount
+  __arm64_sys_mount
+  invoke_syscall
+  el0_svc_common.constprop.0
+  do_el0_svc
+  el0_svc
+  el0t_64_sync_handler
+  el0t_64_sync
+ Code: d2d00001 f2fbffe1 52800062 d343fc03 (38e16861)
+ ---[ end trace 0000000000000000 ]---
+ SMP: stopping secondary CPUs
+ Kernel Offset: 0x5e03ccd70000 from 0xffff800008000000
+ PHYS_OFFSET: 0x80000000
+ CPU features: 0x000,00085c0d,19801c82
+ Memory Limit: none
+ ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+> 
+> Changes since v1:
+>  - update a pre-existing comment per maintainer suggestion
+> 
+> Diffstat:
+>  block/bio.c                        |   47 ++++++++++++++-----------------------
+>  block/blk-crypto-fallback.c        |   14 ++++++-----
+>  block/blk-map.c                    |   42 +++++++++++++++++++++------------
+>  drivers/block/pktcdvd.c            |   34 +++++++++++---------------
+>  drivers/md/bcache/debug.c          |   10 ++++---
+>  drivers/md/dm-bufio.c              |    9 +++----
+>  drivers/md/raid1.c                 |   12 ++++++---
+>  drivers/md/raid10.c                |   21 +++++++++++-----
+>  drivers/target/target_core_pscsi.c |   36 ++++------------------------
+>  fs/btrfs/disk-io.c                 |    8 +++---
+>  fs/btrfs/volumes.c                 |   11 --------
+>  fs/btrfs/volumes.h                 |    2 -
+>  fs/squashfs/block.c                |   14 +++--------
+>  include/linux/bio.h                |    2 -
+>  14 files changed, 116 insertions(+), 146 deletions(-)
