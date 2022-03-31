@@ -2,159 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0257A4EDFCC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 19:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E574EDFFA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 19:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbiCaRlQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Mar 2022 13:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
+        id S232791AbiCaR7a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Mar 2022 13:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbiCaRlN (ORCPT
+        with ESMTP id S232758AbiCaR72 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Mar 2022 13:41:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79FF15280A;
-        Thu, 31 Mar 2022 10:39:25 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id A5E201F7AC;
-        Thu, 31 Mar 2022 17:39:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1648748364;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UNcgLh6DoJ9DDbDIFiiw9A3K3hiKEzb8GtkO14hUjeY=;
-        b=EV3xXJjoDGHZ28OkkQp9sGfXg5wy7n0OaVmEqkhYgaC2CTkunPsB6KyFMyXCVafNYGUg4W
-        CSvtIKY5Q69+vH4SWH1S6zBsdm3aA51AlwlEBckIlbOPi37lqnxUJzAHyaZcOkhnr5uijP
-        RXy4Ie629fUKCjoUNeUw7Lu7pMq74lM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1648748364;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UNcgLh6DoJ9DDbDIFiiw9A3K3hiKEzb8GtkO14hUjeY=;
-        b=sWxHHqfJb1nrDnuP02nLZPtpfBAE77ZyOnC22F2O32YZzIvxyekpvs6yogd+ZVGmDpXCtJ
-        VqtI3dkCsP5aGYBw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 9A0F9A3B83;
-        Thu, 31 Mar 2022 17:39:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0F8D7DA7F3; Thu, 31 Mar 2022 19:35:25 +0200 (CEST)
-Date:   Thu, 31 Mar 2022 19:35:25 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Terrell <terrelln@fb.com>, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH v3 2/2] btrfs: allocate page arrays using bulk page
- allocator
-Message-ID: <20220331173525.GF15609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, Nikolay Borisov <nborisov@suse.com>
-References: <cover.1648669832.git.sweettea-kernel@dorminy.me>
- <ede1d39f7878ee2ed12c1526cc2ec358a2d862cf.1648669832.git.sweettea-kernel@dorminy.me>
+        Thu, 31 Mar 2022 13:59:28 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763442220E2;
+        Thu, 31 Mar 2022 10:57:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 36E93B82055;
+        Thu, 31 Mar 2022 17:57:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA542C3410F;
+        Thu, 31 Mar 2022 17:57:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648749458;
+        bh=Pd8nG9z0Q3DS24pgaW2OH5ERDzXwBcXAArJQBvW+IR8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NV8527sSPkm1hnVw6VVnpKW5cabOMI4XoWbMW5iwZUJmlovW9YIOp4qAhthzhvTF3
+         tu5FKaBYkAtUviG2ld1PjnK5HB3/ahc8GiVEpdLHe4StHZ2ZB+k3FeS9pyqY8WpJ4J
+         dhG9X8cOxY7GWjdkLbTWgh04rNDoGP6guaKKANupatLCQumMyxxPkvQh2lof2WuPNu
+         ZdufnC+3CG/gLwQhba8QujopE/O0gWTuj54kvH+hvQlTdEeEtn9zKGDexYm+i2cDf4
+         gvih1fyK+08OknPxpFQrcxUAMFlF5Lz2KQbsx4MmkljFRJ3RJ2Zed7ZrqL8+r7c8eQ
+         aauzDc8dm9aog==
+Received: by mail-qv1-f49.google.com with SMTP id kd21so169207qvb.6;
+        Thu, 31 Mar 2022 10:57:36 -0700 (PDT)
+X-Gm-Message-State: AOAM533aXxSrzEC9ahAm3MEcMitVaxMvTHIYrNuy31HrijgHTGhUeTdm
+        vEqyyzp/R+cr/q4wbe8JbMbcQIH/kZbMYvH8NBc=
+X-Google-Smtp-Source: ABdhPJwEVeLKB7Vs1bxXRXcyvhnkH0USk3DG0DecGzpkX4X6QfinHpsmohMAYHYQCFOhu9OfhkS+0VxRE2hhH54vVbg=
+X-Received: by 2002:ad4:5be9:0:b0:441:651c:2d23 with SMTP id
+ k9-20020ad45be9000000b00441651c2d23mr5067459qvc.5.1648749455929; Thu, 31 Mar
+ 2022 10:57:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ede1d39f7878ee2ed12c1526cc2ec358a2d862cf.1648669832.git.sweettea-kernel@dorminy.me>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220328194157.1585642-1-sashal@kernel.org> <20220328194157.1585642-17-sashal@kernel.org>
+ <YkLYhad7iX2Bv/j1@debian9.Home> <YkXd9UTuFbNDNjo3@sashalap>
+In-Reply-To: <YkXd9UTuFbNDNjo3@sashalap>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 31 Mar 2022 18:57:00 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5x0-7w7udtt3qCGLB=OiRY29EBoj=eJWgDVkShmYOogQ@mail.gmail.com>
+Message-ID: <CAL3q7H5x0-7w7udtt3qCGLB=OiRY29EBoj=eJWgDVkShmYOogQ@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.17 17/21] btrfs: reset last_reflink_trans after
+ fsyncing inode
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <jbacik@fb.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 04:11:23PM -0400, Sweet Tea Dorminy wrote:
-> While calling alloc_page() in a loop is an effective way to populate an
-> array of pages, the kernel provides a method to allocate pages in bulk.
-> alloc_pages_bulk_array() populates the NULL slots in a page array, trying to
-> grab more than one page at a time.
-> 
-> Unfortunately, it doesn't guarantee allocating all slots in the array,
-> but it's easy to call it in a loop and return an error if no progress
-> occurs. Similar code can be found in xfs/xfs_buf.c:xfs_buf_alloc_pages().
-> 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> ---
-> Changes in v3:
->  - Added a newline after variable declaration
-> Changes in v2:
->  - Moved from ctree.c to extent_io.c
-> ---
->  fs/btrfs/extent_io.c | 24 +++++++++++++++---------
->  1 file changed, 15 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index ab4c1c4d1b59..b268e47aa2b7 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3144,19 +3144,25 @@ static void end_bio_extent_readpage(struct bio *bio)
->   */
->  int btrfs_alloc_page_array(unsigned long nr_pages, struct page **page_array)
->  {
-> -	int i;
-> +	long allocated = 0;
-> +
-> +	for (;;) {
-> +		long last = allocated;
->  
-> -	for (i = 0; i < nr_pages; i++) {
-> -		struct page *page;
-> +		allocated = alloc_pages_bulk_array(GFP_NOFS, nr_pages,
-> +						   page_array);
-> +		if (allocated == nr_pages)
-> +			return 0;
->  
-> -		if (page_array[i])
-> +		if (allocated != last)
->  			continue;
-> -		page = alloc_page(GFP_NOFS);
-> -		if (!page)
-> -			return -ENOMEM;
-> -		page_array[i] = page;
-> +		/*
-> +		 * During this iteration, no page could be allocated, even
-> +		 * though alloc_pages_bulk_array() falls back to alloc_page()
-> +		 * if  it could not bulk-allocate. So we must be out of memory.
-> +		 */
-> +		return -ENOMEM;
->  	}
+On Thu, Mar 31, 2022 at 5:59 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> On Tue, Mar 29, 2022 at 10:59:33AM +0100, Filipe Manana wrote:
+> >On Mon, Mar 28, 2022 at 03:41:52PM -0400, Sasha Levin wrote:
+> >> From: Filipe Manana <fdmanana@suse.com>
+> >>
+> >> [ Upstream commit 23e3337faf73e5bb2610697977e175313d48acb0 ]
+> >>
+> >> When an inode has a last_reflink_trans matching the current transaction,
+> >> we have to take special care when logging its checksums in order to
+> >> avoid getting checksum items with overlapping ranges in a log tree,
+> >> which could result in missing checksums after log replay (more on that
+> >> in the changelogs of commit 40e046acbd2f36 ("Btrfs: fix missing data
+> >> checksums after replaying a log tree") and commit e289f03ea79bbc ("btrfs:
+> >> fix corrupt log due to concurrent fsync of inodes with shared extents")).
+> >> We also need to make sure a full fsync will copy all old file extent
+> >> items it finds in modified leaves, because they might have been copied
+> >> from some other inode.
+> >>
+> >> However once we fsync an inode, we don't need to keep paying the price of
+> >> that extra special care in future fsyncs done in the same transaction,
+> >> unless the inode is used for another reflink operation or the full sync
+> >> flag is set on it (truncate, failure to allocate extent maps for holes,
+> >> and other exceptional and infrequent cases).
+> >>
+> >> So after we fsync an inode reset its last_unlink_trans to zero. In case
+> >> another reflink happens, we continue to update the last_reflink_trans of
+> >> the inode, just as before. Also set last_reflink_trans to the generation
+> >> of the last transaction that modified the inode whenever we need to set
+> >> the full sync flag on the inode, just like when we need to load an inode
+> >> from disk after eviction.
+> >>
+> >> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> >> Signed-off-by: David Sterba <dsterba@suse.com>
+> >> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> >
+> >What's the motivation to backport this to stable?
+> >
+> >It doesn't fix a bug or any regression, as far as I know at least.
+> >Or is it to make some other backport easier?
+>
+> I wasn't sure if it's needed for completeness for the mentioned fixes,
+> so I took it. Can drop it if it's not needed.
 
-I find the way the loop is structured a bit cumbersome so I'd suggest to
-rewrite it as:
+Yes, please drop it. It's not needed (nor was intended) to go to any
+stable releases.
 
-int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array)
-{
-        unsigned int allocated;
+Thanks.
 
-        for (allocated = 0; allocated < nr_pages;) {
-                unsigned int last = allocated;
-
-                allocated = alloc_pages_bulk_array(GFP_NOFS, nr_pages, page_array);
-
-                /*
-                 * During this iteration, no page could be allocated, even
-                 * though alloc_pages_bulk_array() falls back to alloc_page()
-                 * if  it could not bulk-allocate. So we must be out of memory.
-                 */
-                if (allocated == last)
-                        return -ENOMEM;
-        }
-        return 0;
-}
-
-Also in the xfs code there's memalloc_retry_wait() which is supposed to be
-called when repeated memory allocation is retried. What was the reason
-you removed it?
+>
+> --
+> Thanks,
+> Sasha
