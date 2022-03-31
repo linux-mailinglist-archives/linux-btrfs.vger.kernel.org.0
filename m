@@ -2,108 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE45A4EE3B0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 00:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B137F4EE4D9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 01:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242191AbiCaWBQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Mar 2022 18:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
+        id S243113AbiCaXlx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Mar 2022 19:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242185AbiCaWBK (ORCPT
+        with ESMTP id S243122AbiCaXlw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Mar 2022 18:01:10 -0400
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756F83879A
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Mar 2022 14:59:22 -0700 (PDT)
-Received: by mail-pj1-f44.google.com with SMTP id o3-20020a17090a3d4300b001c6bc749227so735665pjf.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Mar 2022 14:59:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Znm+xY6mGatmaemFgCNs/1Q7aa+ft4q2oHBusKXx5+I=;
-        b=IjioVn6ra0hRxLu60d0xShjdb+fNOyeMYrtYoU2rbDc5lZslClRv7wzRK+zYdSGQjC
-         FS2rsv32WLf2gVrICcPs3/dlx7w+c6w4pIvdC5U53lJwuRF7C7jf40v8x/E6aG87Y+H9
-         ukaqzvfgowXontfHy4vSAzcL1B67nUvIVesvJLEwQKo9IIqCEvRxVZ/uKCo8c7gymrCk
-         2qfqZk+HhAzUR6oL2gm5V6W6axT/hD5fn+8TDEnNvfK9tqhf2AkqPr9vEFTE1JKAB89y
-         AxWfc/FeFbfwW647HwKSHAvKAGS3Su1QMlcmnfY0xGw8E6vmr6gtx5p6ivPaO5yEIYco
-         GaTA==
-X-Gm-Message-State: AOAM533cMBJ7xYNLZwWxjoXpGo9Hw39kYOXZHtHBNd/2d3GOV9yEbyZo
-        ika88fUUD3SA30UJg9GGgv4=
-X-Google-Smtp-Source: ABdhPJw8ucYA1RFB/sydkgsC2Pf8LiBTxwRKEzZ6zXlwnVyDM1twmcFGVRjoMpI51ROg0qtb3qIEIw==
-X-Received: by 2002:a17:902:e40a:b0:155:d894:79a3 with SMTP id m10-20020a170902e40a00b00155d89479a3mr7436177ple.73.1648763961718;
-        Thu, 31 Mar 2022 14:59:21 -0700 (PDT)
-Received: from localhost.localdomain (136-24-99-118.cab.webpass.net. [136.24.99.118])
-        by smtp.gmail.com with ESMTPSA id s10-20020a63a30a000000b003987eaef296sm300914pge.44.2022.03.31.14.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Mar 2022 14:59:21 -0700 (PDT)
-From:   Dennis Zhou <dennis@kernel.org>
-To:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, Dennis Zhou <dennis@kernel.org>
-Subject: [PATCH 1/1] btrfs: fix btrfs_submit_compressed_write cgroup attribution
-Date:   Thu, 31 Mar 2022 14:58:28 -0700
-Message-Id: <20220331215828.179991-2-dennis@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220331215828.179991-1-dennis@kernel.org>
-References: <20220331215828.179991-1-dennis@kernel.org>
+        Thu, 31 Mar 2022 19:41:52 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA12619E087
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Mar 2022 16:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1648770000;
+        bh=i/xkVZ9ibCS5SxNUJrGry8g4+ihQlE+D+dEhjw8wFEk=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=RQBcDOzOCDrD0e34tJXZ3KoImuTnU+My4SaMBVIIn45+n0o2ex9V+J19WbgR8gQdV
+         k0duE2/S0Ggn6b0Eiir84NiW79lZjFtTxnShJFWSsyk5kF8+IA/56RdzGDOvSuE7Bq
+         p0mZWZn2S2qpApKBuSstSZSdsWUN4r9RrskYA9Oo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0oBr-1nvR2A3iY1-00woJa; Fri, 01
+ Apr 2022 01:40:00 +0200
+Message-ID: <562b797f-49b6-80a0-4a1e-7dafa1975e86@gmx.com>
+Date:   Fri, 1 Apr 2022 07:39:57 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: btrfs volume can't see files in folder
+Content-Language: en-US
+To:     Rosen Penev <rosenp@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAKxU2N-FKf-RsbA4S7hrYJXHUe7wJUrRyHGKjzKGgBmNcE1sCA@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAKxU2N-FKf-RsbA4S7hrYJXHUe7wJUrRyHGKjzKGgBmNcE1sCA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:p/8jB16CgWPvfNvd0pi0h6axURW6r912OLNLWzLYWHq+x/Pwze7
+ COfR+B8qTA7u3FdKgR5H4l3nEIYPMwR3OU+4ksTrVq8kuVwabDUpvZjocnrqvD8QZc3OUda
+ YLjE9HtvuwY1B1S1xGsgMx4DkqLIqvi965RzbyNiBBYFCG4d76/vOjUB04ggXzgVll/4dwa
+ HmTteVyaNaGSAzBWCSjkA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UVhQaoWkij4=:DwKsCpp6/WYUjbE65ey7ZL
+ ux/HzEowTYCyNG1VAhAkPisecIAGulexNoBQNlB67ndGIf8HbwFu7IEPo10NLYC0vNkAGDmTr
+ 18TeVa2bkP3YJcnn+rphjafDGXDHpbHO0Xf/jOT4/Zx/sVX4IgiV9UVfW8hKB+SGgAIvU78YU
+ a402BiIvw+/ap/TWjUbrTQXPRFoVshRmI6WTUYAKUZ/E0RHTQu016EwMS1BPOka/Pvy7wQoEC
+ q5KH20iVEVVuc+99uw1WcPCf/0wP/VzqHuLGRBNEEk7m1aH750JljOi4Opw4xTQAGCa1M722Y
+ aDy2rDATpHE0QQ85O+XN4jhcAnIltJXKkPRJxvkNbtlDntLLR0F6var7AU6BSQQlKW2XAruaE
+ ZCzHD5tWJn/HgrIsDnrzDe1EAiauT1soNOWS/f8ue4JhvTOarz83EVbrQAsXPiXhFFDpyrn3l
+ LBuGkff3lVWQSQkFwr+wjga+ze08L4PhmPG+f2TqDUcI7b6sWdsI9FylltZYtg6rgFcwTMuCH
+ bki+rwL0LFwh3WJ/XDzmIgGGmFNc7G/klFoMBvcE0NyBq9gUj9iMQOUjQm0Yj62TGEVHcQ9MV
+ xJeIvoiq/iRs803F2qaovgwmcTXVj3YYfk1/zw8W23759oeBi/60X1NWTu3mPnBE09bukdOmo
+ hSm3zFgHpbm46HrGYy73jeSj1PtfodgCtaHgxtP3MGhkWn9Rci8Iv1thPTYYV/sK8M0i0Cs9x
+ p4pKVWbobwBa/Jt+N3FuQHmvpTs2eDOJsU7rMK71OHcmzQqkWS14iS9FV/U/pGN116yzv/wev
+ v1gJDzQTRXfMv7zPVq5MoOFXXARBjCTwLNoPm1zt8JBWHR2MTSgTClhFG2jswddKMjSbAbrs0
+ k4Vg3U+nkXZ6/jDdyNJlrJQeL8X5Sq6LpbQh9RDtYa3tkqsvlE8T6jAblKSfIGgTNwK8N4lsC
+ fznSRP1DPrkXEn6Yohk/Tell4p4qm4bJ3Jq9cR5++p+q7kmW8aH30D2DNAv9PnYxg+vhckZ7G
+ Mu/0Mvhr9Z2R/YtgW2YJfJgnrH8hXm9z/Z76dgMTBCFhxL4KKi+H3W9w72e4Fc7gKMsoLhOp7
+ SXZjibiY1z1dqg=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This restores the logic from commit 46bcff2bfc5e
-("btrfs: fix compressed write bio blkcg attribution") which added cgroup
-attribution to btrfs writeback. It also adds back the REQ_CGROUP_PUNT
-flag for these ios.
 
-Fixes: 91507240482e ("btrfs: determine stripe boundary at bio allocation time in btrfs_submit_compressed_write")
-Signed-off-by: Dennis Zhou <dennis@kernel.org>
----
- fs/btrfs/compression.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index be476f094300..19bf36d8ffea 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -537,6 +537,9 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	cb->orig_bio = NULL;
- 	cb->nr_pages = nr_pages;
- 
-+	if (blkcg_css)
-+		kthread_associate_blkcg(blkcg_css);
-+
- 	while (cur_disk_bytenr < disk_start + compressed_len) {
- 		u64 offset = cur_disk_bytenr - disk_start;
- 		unsigned int index = offset >> PAGE_SHIFT;
-@@ -555,6 +558,8 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 				bio = NULL;
- 				goto finish_cb;
- 			}
-+			if (blkcg_css)
-+				bio->bi_opf |= REQ_CGROUP_PUNT;
- 		}
- 		/*
- 		 * We should never reach next_stripe_start start as we will
-@@ -612,6 +617,9 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	return 0;
- 
- finish_cb:
-+	if (blkcg_css)
-+		kthread_associate_blkcg(NULL);
-+
- 	if (bio) {
- 		bio->bi_status = ret;
- 		bio_endio(bio);
--- 
-2.34.1
+On 2022/4/1 03:29, Rosen Penev wrote:
+> A specific folder has files in it. Directly accessing the path works
+> but ls in the directory returns empty.
+>
+> Any way to fix this issue? I believe it happened after a btrfs
+> replace(failed drive in RAID5) + btrfs balance.
 
+Btrfs check please.
+
+It looks like an DIR_ITEM/DIR_INDEX corruption.
+
+Thanks,
+Qu
