@@ -2,55 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA494EDF3C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 18:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A7D4EDF49
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Mar 2022 19:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240358AbiCaRAW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Mar 2022 13:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
+        id S240427AbiCaRBY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Mar 2022 13:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238759AbiCaRAU (ORCPT
+        with ESMTP id S240419AbiCaRBX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Mar 2022 13:00:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BAF510FDA;
-        Thu, 31 Mar 2022 09:58:32 -0700 (PDT)
+        Thu, 31 Mar 2022 13:01:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A9A5E17F;
+        Thu, 31 Mar 2022 09:59:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 974E1B8218B;
-        Thu, 31 Mar 2022 16:58:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F925C340ED;
-        Thu, 31 Mar 2022 16:58:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F3DD60E07;
+        Thu, 31 Mar 2022 16:59:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA3A8C340EE;
+        Thu, 31 Mar 2022 16:59:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648745909;
-        bh=BKvjdCsLv3Ic0I4T8UQJKKMnRKPo6SUNKqirrFu3/C4=;
+        s=k20201202; t=1648745974;
+        bh=7kePnT16ECG6vUzK8truXpfEWu5ek7LRonOL0F/VLQI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JtVeH3izMStBmLto12CoHY4knU6SF4TbKy6AqDSbaWECEbBUP1DE4hLgj/+p4sY42
-         pw0/AbXsy4aANqylze5HV/8gqhD1JhCrK7OCAejPCmdyFqNGNqMthkz3aAuynVkv18
-         FNvkKCmTUdVu/sXQmJzSV5iOGiRZU148YVqIfrX8kPM9/nQB47GD77M2+J2hi+8LBc
-         2gMGB3y3LuFvTHmVm1Y9yxoUiJYnG/3QcCuLl9H6ez5Bur1IBVPC3AHM4O2IPMjvmw
-         6ULEk5b4jTP6VEIapaGh9Y8M9CCaxNLeObTMgLp3ZblDhgSiPkUBPaC2UTzi+APBst
-         33VrTfgRN1gQA==
-Date:   Thu, 31 Mar 2022 12:58:28 -0400
+        b=kCZiOh1DDEfiqjqBWHNiuYgKMl0D2Y2Zp/KLewtCTnTDXrqsT00LjRSTfealyT+6/
+         Y7PHnOatYazgb7MakPlgACWBSFKqMqznd5oTyDqCdNH79Yx4RPpFEZSHAnlHKUTBsI
+         1JOci/b/diMpiN8V0fiwDPRI8NjgkG7yJya/R2YPH16NkHv9DsL8TVu/k2ZzoNF3ea
+         wCZYWtZFE4Dv8zt/NqGxxHPkd7apnNYbivs5Zp8AfI4uUGv2XE5cckX7ZDkd+JeIP1
+         UpSfMrIjrr8a+sW5Xakh3QS/KM+4WgMId6JVS98Rg8jlpXGKkbu7lTRb6HUv7qG/VD
+         H4lvPALsq+9zQ==
+Date:   Thu, 31 Mar 2022 12:59:33 -0400
 From:   Sasha Levin <sashal@kernel.org>
-To:     Omar Sandoval <osandov@osandov.com>
+To:     Filipe Manana <fdmanana@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
+        Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>, clm@fb.com, jbacik@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.17 12/21] btrfs: don't advance offset for
- compressed bios in btrfs_csum_one_bio()
-Message-ID: <YkXdtBfNbH2/oP5z@sashalap>
+Subject: Re: [PATCH AUTOSEL 5.17 17/21] btrfs: reset last_reflink_trans after
+ fsyncing inode
+Message-ID: <YkXd9UTuFbNDNjo3@sashalap>
 References: <20220328194157.1585642-1-sashal@kernel.org>
- <20220328194157.1585642-12-sashal@kernel.org>
- <YkNko1BcsyDt2QUS@relinquished.localdomain>
+ <20220328194157.1585642-17-sashal@kernel.org>
+ <YkLYhad7iX2Bv/j1@debian9.Home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <YkNko1BcsyDt2QUS@relinquished.localdomain>
+In-Reply-To: <YkLYhad7iX2Bv/j1@debian9.Home>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -61,51 +59,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 12:57:23PM -0700, Omar Sandoval wrote:
->On Mon, Mar 28, 2022 at 03:41:47PM -0400, Sasha Levin wrote:
->> From: Omar Sandoval <osandov@fb.com>
+On Tue, Mar 29, 2022 at 10:59:33AM +0100, Filipe Manana wrote:
+>On Mon, Mar 28, 2022 at 03:41:52PM -0400, Sasha Levin wrote:
+>> From: Filipe Manana <fdmanana@suse.com>
 >>
->> [ Upstream commit e331f6b19f8adde2307588bb325ae5de78617c20 ]
+>> [ Upstream commit 23e3337faf73e5bb2610697977e175313d48acb0 ]
 >>
->> btrfs_csum_one_bio() loops over each filesystem block in the bio while
->> keeping a cursor of its current logical position in the file in order to
->> look up the ordered extent to add the checksums to. However, this
->> doesn't make much sense for compressed extents, as a sector on disk does
->> not correspond to a sector of decompressed file data. It happens to work
->> because:
+>> When an inode has a last_reflink_trans matching the current transaction,
+>> we have to take special care when logging its checksums in order to
+>> avoid getting checksum items with overlapping ranges in a log tree,
+>> which could result in missing checksums after log replay (more on that
+>> in the changelogs of commit 40e046acbd2f36 ("Btrfs: fix missing data
+>> checksums after replaying a log tree") and commit e289f03ea79bbc ("btrfs:
+>> fix corrupt log due to concurrent fsync of inodes with shared extents")).
+>> We also need to make sure a full fsync will copy all old file extent
+>> items it finds in modified leaves, because they might have been copied
+>> from some other inode.
 >>
->> 1) the compressed bio always covers one ordered extent
->> 2) the size of the bio is always less than the size of the ordered
->>    extent
+>> However once we fsync an inode, we don't need to keep paying the price of
+>> that extra special care in future fsyncs done in the same transaction,
+>> unless the inode is used for another reflink operation or the full sync
+>> flag is set on it (truncate, failure to allocate extent maps for holes,
+>> and other exceptional and infrequent cases).
 >>
->> However, the second point will not always be true for encoded writes.
+>> So after we fsync an inode reset its last_unlink_trans to zero. In case
+>> another reflink happens, we continue to update the last_reflink_trans of
+>> the inode, just as before. Also set last_reflink_trans to the generation
+>> of the last transaction that modified the inode whenever we need to set
+>> the full sync flag on the inode, just like when we need to load an inode
+>> from disk after eviction.
 >>
->> Let's add a boolean parameter to btrfs_csum_one_bio() to indicate that
->> it can assume that the bio only covers one ordered extent. Since we're
->> already changing the signature, let's get rid of the contig parameter
->> and make it implied by the offset parameter, similar to the change we
->> recently made to btrfs_lookup_bio_sums(). Additionally, let's rename
->> nr_sectors to blockcount to make it clear that it's the number of
->> filesystem blocks, not the number of 512-byte sectors.
->>
->> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
->> Signed-off-by: Omar Sandoval <osandov@fb.com>
+>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 >> Signed-off-by: David Sterba <dsterba@suse.com>
 >> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  fs/btrfs/compression.c |  2 +-
->>  fs/btrfs/ctree.h       |  2 +-
->>  fs/btrfs/file-item.c   | 37 +++++++++++++++++--------------------
->>  fs/btrfs/inode.c       |  8 ++++----
->>  4 files changed, 23 insertions(+), 26 deletions(-)
 >
->Hi, Sasha,
+>What's the motivation to backport this to stable?
 >
->This patch doesn't fix a real bug, so it should be dropped from both
->5.16 and 5.17.
+>It doesn't fix a bug or any regression, as far as I know at least.
+>Or is it to make some other backport easier?
 
-I'll drop it, thanks.
+I wasn't sure if it's needed for completeness for the mentioned fixes,
+so I took it. Can drop it if it's not needed.
 
 -- 
 Thanks,
