@@ -2,88 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA0B4EEC14
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 13:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05F64EEC5A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 13:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242352AbiDALPy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Apr 2022 07:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
+        id S1345474AbiDALZo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Apr 2022 07:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237488AbiDALPx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 07:15:53 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CA4EA760
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 04:14:03 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id bq8so5077145ejb.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Apr 2022 04:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=LCePTVvVP6NNXN0nV1wIves547GSNi8TXNroUTBpaRk=;
-        b=ajQ0nFxQZt0uuGIZZLgt4Lds8zLc2ItjrBlbUGWS8oiZwtWKcLwWQg011k6FtAFKkB
-         wpjC/pSkZHzY19DFtOvk2P0YqFOBnzlfYLirlPwgLmGR74/5x2pT4m1anKgEySiiX2ge
-         99ZcBT0aN9x6ZJeiuJoK3L0S9nsC3077aGuac2kbZ2Dj5hGHqHtcvduvMMUyFP9hwFM7
-         W7jumqjfVvCElV4yobdWfbQ6vd3zUD5rfle6Tj7j/X90q2Wf1M4ibzS5ENf0OYthd+D/
-         0miM1rMecFRTUrnFlKZSEn2crhr80eVmn90DXs67REuh3/v4fPKR8r947ImG+Ac4Xfuc
-         QF3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=LCePTVvVP6NNXN0nV1wIves547GSNi8TXNroUTBpaRk=;
-        b=GHndJkgs98/N6bG8cHvDnklX8iWPFPPRr1Ejfp9VQolGYpcam0wPHyhuy2XUXFdBb1
-         LaLMV9Hv/UhLUdiDfD/S1C3Rde2F3AnaFHuOAY3li6M6ly/LmoRKFE7y+uhjSXEyQX8U
-         d/w6dvNxmEfdfmw0TqOP8U450rLsyehjFln1I40LBIYD1zezBvlv24kNQqLBd23hcjvV
-         OC87qWr5XKLyaYklj4W+uPM4GodpYqAwrkVabAbaiz2BDde2pC6JOLiYpHT7TV1J5Jqz
-         cbAM2ipMGRAjmYFndsb9wKE12Mww6IZWvJ/nE15T/eQRCmEH6gz45EWLlrvLZXielvnK
-         DS7A==
-X-Gm-Message-State: AOAM533VHbxBGVy0q01LqJ2MJFRH/sYqrPrQM5sExK2QUcNB51/DMAfu
-        rxANebadZnX50xW3t+obuub2gxCUxbM=
-X-Google-Smtp-Source: ABdhPJxIkgemsnPxJLcJU0UpYYqFF8TmkOziBuKJC7eXAj0nqaOkZTWjFvO+W4HdlletTQ/QiBcyQQ==
-X-Received: by 2002:a17:906:2646:b0:6d5:d889:c92b with SMTP id i6-20020a170906264600b006d5d889c92bmr9211405ejc.696.1648811642290;
-        Fri, 01 Apr 2022 04:14:02 -0700 (PDT)
-Received: from ?IPv6:2a02:587:af09:1bb8:e04b:d138:63fd:e7c0? ([2a02:587:af09:1bb8:e04b:d138:63fd:e7c0])
-        by smtp.googlemail.com with ESMTPSA id v20-20020a056402349400b00419651e513asm1111562edc.45.2022.04.01.04.14.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 01 Apr 2022 04:14:01 -0700 (PDT)
-From:   Konstantinos Skarlatos <k.skarlatos@gmail.com>
-Subject: Adding a 4TB disk to a 2x4TB btrfs (data:single) filesystem and
- balancing takes extremely long (over a month). Filesystem has been deduped
- with bees
+        with ESMTP id S238719AbiDALZm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 07:25:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7176E16BFA4
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 04:23:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1432721612
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 11:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1648812229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=FIqHYdRpl57+wzkumdPDKsP/oq4XlZ866JdWhTYz0h0=;
+        b=aPxPTBHXXXtQTuWIoyT+/PUMmeZFerkpb1Zp7riNCskggC3OmxRijD1iwWYzlOtiYX5e5Q
+        a+rLQELpxmC6VdEAKAEWLzktcxNy2Q9v0fohfN1oxuTuZSHwuzA8jjGk1AZkaGMHRByndy
+        p4HfAaz7BlMRVt0UCWyyR+jnE/QyaBQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E094132C1
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 11:23:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rXLbDsTgRmJeFwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Apr 2022 11:23:48 +0000
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     ce3g8jdj@umail.furryterror.org
-Message-ID: <8a536fe1-68bd-4136-8cfb-bd410afc5fa1@gmail.com>
-Date:   Fri, 1 Apr 2022 14:13:58 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+Subject: [PATCH 00/16] btrfs: add subpage support for RAID56
+Date:   Fri,  1 Apr 2022 19:23:15 +0800
+Message-Id: <cover.1648807440.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-I am running btrfs on 2x 4TB HDDs (data: single, metadata: raid1) and i 
-added another 4TB disk.
-According to btrfs wiki i should run balance after adding the new device.
-My problem is that this balance takes extremely long, it is running for 
-4 days and it still has 91% left.
-Is this normal, and can i do anything to fix this?
+The branch can be fetched from github, based on a slightly older
+misc-next branch:
+https://github.com/adam900710/linux/tree/subpage_raid56
 
-kernel is linux-5.17.1, i have also tried with 5.16 kernels.
-mount options are: rw,relatime,compress-force=zstd:11,space_cache=v2
-I have been using bees for dedup, but it is disabled for the balance.
-I am not doing any IO on the disks, they have no smart errors, and none 
-of them are SMR (2x WD40EFRX and 1x ST4000DM000)
-Autodefrag is disabled, and i also have checked that the disks are in 
-stable drive cages in order to be sure i have no problems with vibration.
-Benchmarking them gives normal speeds. Quotas have never been enabled.
+[DESIGN]
+To make RAID56 code to support subpage, we need to make every sector of
+a RAID56 full stripe (including P/Q) to be addressable.
+
+Previously we use page pointer directly for things like stripe_pages:
+
+Full stripe is 64K * 3, 2 data stripes, one P stripe (RAID5)
+
+stripe_pages:   | 0 | 1 | 2 |  .. | 46 | 47 |
+
+Those 48 pages all points to a page we allocated.
+
+
+The new subpage support will introduce a sector layer, based on the old
+stripe_pages[] array:
+
+The same 64K * 3, RAID5 layout, but 64K page size and 4K sector size:
+
+stripe_sectors: | 0 | 1 | .. |15 |16 |  ...  |31 |32 | ..    |47 |
+stripe_pages:   |      Page 0    |     Page 1    |    Page 2     |
+
+Each stripe_ptr of stripe_sectors[] will include:
+
+- One page pointer
+  Points back the page inside stripe_pages[].
+
+- One pgoff member
+  To indicate the offset inside the page
+
+- One uptodate member
+  To indicate if the sector is uptodate, replacing the old PageUptodate
+  flag.
+  As introducing btrfs_subpage structure to stripe_pages[] looks a
+  little overkilled, as we only care Uptodate flag.
+
+The same applies to bio_sectors[] array, which is going to completely
+replace the old bio_pages[] array.
+
+[SIDE EFFECT]
+Despite the obvious new ability for subpage to utilize btrfs RAID56
+profiles, it will cause more memory usage for real btrfs_raid_bio
+structure.
+
+We allocate extra memory based on the stripe size and number of stripes,
+and update the pointer arrays to utilize the extra memory.
+
+To compare, we use a pretty standard setup, 3 disks raid5, 4K page size
+on x86_64:
+
+ Before: 1176
+ After:  2032 (+72.8%)
+
+The reason for such a big bump is:
+
+- Extra size for sector_ptr.
+  Instead of just a page pointer, now it's twice the size of a pointer
+  (a page pointer + 2 * unsigned int)
+
+  This means although we replace bio_pages[] with bio_sectors[], we are
+  still enlarging the size.
+
+- A completely new array for stripe_sectors[]
+  And the array itself is also twice the size of the old stripe_pages[].
+
+There is some attempt to reduce the size of btrfs_raid_bio itself, but
+the big impact still comes from the new sector_ptr arrays.
+
+I have tried my best to reduce the size, by compacting the sector_ptr
+structure.
+Without exotic macros, I don't have any better ideas on reducing the
+real size of btrfs_raid_bio.
+
+[TESTS]
+Full fstests are run on both x86_64 and aarch64.
+No new regressions found.
+(In fact several regressions found during development, all fixed).
+
+[PATCHSET LAYOUT]
+The patchset layout puts several things into consideration:
+
+- Every patch can be tested independently on x86_64
+  No more tons of unused helpers then a big switch.
+  Every change can be verified on x86_64.
+
+- More temporary sanity checks than previous code
+  For example, when rbio_add_io_page() is converted to be subpage
+  compatible, extra ASSERT() is added to ensure no subpage range
+  can even be added.
+
+  Such temporary checks are removed in the last enablement patch.
+  This is to make testing on x86_64 more comprehensive.
+
+- Mostly small change in each patch
+  The only exception is the conversion for rbio_add_io_page().
+  But the most change in that patch comes from variable renaming.
+  The overall line changed in each patch should still be small enough
+  for review.
+
+Qu Wenruo (16):
+  btrfs: open-code rbio_nr_pages()
+  btrfs: make btrfs_raid_bio more compact
+  btrfs: introduce new cached members for btrfs_raid_bio
+  btrfs: introduce btrfs_raid_bio::stripe_sectors
+  btrfs: introduce btrfs_raid_bio::bio_sectors
+  btrfs: make rbio_add_io_page() subpage compatible
+  btrfs: make finish_parity_scrub() subpage compatible
+  btrfs: make __raid_recover_endio_io() subpage compatibable
+  btrfs: make finish_rmw() subpage compatible
+  btrfs: open-code rbio_stripe_page_index()
+  btrfs: make raid56_add_scrub_pages() subpage compatible
+  btrfs: remove btrfs_raid_bio::bio_pages array
+  btrfs: make set_bio_pages_uptodate() subpage compatible
+  btrfs: make steal_rbio() subpage compatible
+  btrfs: make alloc_rbio_essential_pages() subpage compatible
+  btrfs: enable subpage support for RAID56
+
+ fs/btrfs/disk-io.c |   8 -
+ fs/btrfs/raid56.c  | 748 ++++++++++++++++++++++++++++-----------------
+ fs/btrfs/raid56.h  |   2 +-
+ fs/btrfs/scrub.c   |   6 +-
+ fs/btrfs/volumes.c |   7 -
+ 5 files changed, 467 insertions(+), 304 deletions(-)
+
+-- 
+2.35.1
+
