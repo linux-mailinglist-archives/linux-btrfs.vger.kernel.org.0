@@ -2,121 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2194EE91F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 09:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA0B4EEC14
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 13:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244704AbiDAHbr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Apr 2022 03:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        id S242352AbiDALPy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Apr 2022 07:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbiDAHbr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 03:31:47 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B64E9972;
-        Fri,  1 Apr 2022 00:29:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7FD1B1FCFF;
-        Fri,  1 Apr 2022 07:29:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1648798196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=yTLxz2zmDFPW72NOc7d54HaV38sbRvDTxR8Jw1v57GE=;
-        b=nzgpXJQEgY8ORnOIj6IN8DGPOUbr4sPu5FDljC/c271wniPaCLfAUOt0siHrXKItZ3WCa+
-        sr/ZjVUlgWv9/6z+bxnWjtMtlasqQVamvb55m4eH6cvabeUQk5Ya8pjryP9V/5EEDgGt+b
-        M5CKjsPPvOzROeUdpo9zraTZg7tl+dA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6577313A84;
-        Fri,  1 Apr 2022 07:29:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6gOLC/OpRmJMIAAAMHmgww
-        (envelope-from <wqu@suse.com>); Fri, 01 Apr 2022 07:29:55 +0000
-From:   Qu Wenruo <wqu@suse.com>
+        with ESMTP id S237488AbiDALPx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 07:15:53 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CA4EA760
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 04:14:03 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id bq8so5077145ejb.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Apr 2022 04:14:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=LCePTVvVP6NNXN0nV1wIves547GSNi8TXNroUTBpaRk=;
+        b=ajQ0nFxQZt0uuGIZZLgt4Lds8zLc2ItjrBlbUGWS8oiZwtWKcLwWQg011k6FtAFKkB
+         wpjC/pSkZHzY19DFtOvk2P0YqFOBnzlfYLirlPwgLmGR74/5x2pT4m1anKgEySiiX2ge
+         99ZcBT0aN9x6ZJeiuJoK3L0S9nsC3077aGuac2kbZ2Dj5hGHqHtcvduvMMUyFP9hwFM7
+         W7jumqjfVvCElV4yobdWfbQ6vd3zUD5rfle6Tj7j/X90q2Wf1M4ibzS5ENf0OYthd+D/
+         0miM1rMecFRTUrnFlKZSEn2crhr80eVmn90DXs67REuh3/v4fPKR8r947ImG+Ac4Xfuc
+         QF3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=LCePTVvVP6NNXN0nV1wIves547GSNi8TXNroUTBpaRk=;
+        b=GHndJkgs98/N6bG8cHvDnklX8iWPFPPRr1Ejfp9VQolGYpcam0wPHyhuy2XUXFdBb1
+         LaLMV9Hv/UhLUdiDfD/S1C3Rde2F3AnaFHuOAY3li6M6ly/LmoRKFE7y+uhjSXEyQX8U
+         d/w6dvNxmEfdfmw0TqOP8U450rLsyehjFln1I40LBIYD1zezBvlv24kNQqLBd23hcjvV
+         OC87qWr5XKLyaYklj4W+uPM4GodpYqAwrkVabAbaiz2BDde2pC6JOLiYpHT7TV1J5Jqz
+         cbAM2ipMGRAjmYFndsb9wKE12Mww6IZWvJ/nE15T/eQRCmEH6gz45EWLlrvLZXielvnK
+         DS7A==
+X-Gm-Message-State: AOAM533VHbxBGVy0q01LqJ2MJFRH/sYqrPrQM5sExK2QUcNB51/DMAfu
+        rxANebadZnX50xW3t+obuub2gxCUxbM=
+X-Google-Smtp-Source: ABdhPJxIkgemsnPxJLcJU0UpYYqFF8TmkOziBuKJC7eXAj0nqaOkZTWjFvO+W4HdlletTQ/QiBcyQQ==
+X-Received: by 2002:a17:906:2646:b0:6d5:d889:c92b with SMTP id i6-20020a170906264600b006d5d889c92bmr9211405ejc.696.1648811642290;
+        Fri, 01 Apr 2022 04:14:02 -0700 (PDT)
+Received: from ?IPv6:2a02:587:af09:1bb8:e04b:d138:63fd:e7c0? ([2a02:587:af09:1bb8:e04b:d138:63fd:e7c0])
+        by smtp.googlemail.com with ESMTPSA id v20-20020a056402349400b00419651e513asm1111562edc.45.2022.04.01.04.14.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 Apr 2022 04:14:01 -0700 (PDT)
+From:   Konstantinos Skarlatos <k.skarlatos@gmail.com>
+Subject: Adding a 4TB disk to a 2x4TB btrfs (data:single) filesystem and
+ balancing takes extremely long (over a month). Filesystem has been deduped
+ with bees
 To:     linux-btrfs@vger.kernel.org
-Cc:     Matt Corallo <blnxfsl@bluematt.me>, stable@vger.kernel.org
-Subject: [PATCH] btrfs: force v2 space cache usage for subpage mount
-Date:   Fri,  1 Apr 2022 15:29:37 +0800
-Message-Id: <1f622305ee7ecb3b6ec09f878c26ad0446e18311.1648798164.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
+Cc:     ce3g8jdj@umail.furryterror.org
+Message-ID: <8a536fe1-68bd-4136-8cfb-bd410afc5fa1@gmail.com>
+Date:   Fri, 1 Apr 2022 14:13:58 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-For a 4K sector sized btrfs with v1 cache enabled and only mounted on
-systems with 4K page size, if it's mounted on subpage (64K page size)
-systems, it can cause the following warning on v1 space cache:
+Hello,
+I am running btrfs on 2x 4TB HDDs (data: single, metadata: raid1) and i 
+added another 4TB disk.
+According to btrfs wiki i should run balance after adding the new device.
+My problem is that this balance takes extremely long, it is running for 
+4 days and it still has 91% left.
+Is this normal, and can i do anything to fix this?
 
- BTRFS error (device dm-1): csum mismatch on free space cache
- BTRFS warning (device dm-1): failed to load free space cache for block group 84082688, rebuilding it now
-
-Although not a big deal, as kernel can rebuild it without problem, such
-warning will bother end users, especially if they want to switch the
-same btrfs seamlessly between different page sized systems.
-
-[CAUSE]
-V1 free space cache is still using fixed PAGE_SIZE for various bitmap,
-like BITS_PER_BITMAP.
-
-Such hard-coded PAGE_SIZE usage will cause various mismatch, from v1
-cache size to checksum.
-
-Thus kernel will always reject v1 cache with a different PAGE_SIZE with
-csum mismatch.
-
-[FIX]
-Although we should fix v1 cache, it's already going to be marked
-deprecated soon.
-
-And we have v2 cache based on metadata (which is already fully subpage
-compatible), and it has almost everything superior than v1 cache.
-
-So just force subpage mount to use v2 cache on mount.
-
-Reported-by: Matt Corallo <blnxfsl@bluematt.me>
-CC: stable@vger.kernel.org # 5.15+
-Link: https://lore.kernel.org/linux-btrfs/61aa27d1-30fc-c1a9-f0f4-9df544395ec3@bluematt.me/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index d456f426924c..34eb6d4b904a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3675,6 +3675,17 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	if (sectorsize < PAGE_SIZE) {
- 		struct btrfs_subpage_info *subpage_info;
- 
-+		/*
-+		 * V1 space cache has some hardcoded PAGE_SIZE usage, and is
-+		 * going to be deprecated.
-+		 *
-+		 * Force to use v2 cache for subpage case.
-+		 */
-+		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
-+		btrfs_set_and_info(fs_info, FREE_SPACE_TREE,
-+			"forcing free space tree for sector size %u with page size %lu",
-+			sectorsize, PAGE_SIZE);
-+
- 		btrfs_warn(fs_info,
- 		"read-write for sector size %u with page size %lu is experimental",
- 			   sectorsize, PAGE_SIZE);
--- 
-2.35.1
-
+kernel is linux-5.17.1, i have also tried with 5.16 kernels.
+mount options are: rw,relatime,compress-force=zstd:11,space_cache=v2
+I have been using bees for dedup, but it is disabled for the balance.
+I am not doing any IO on the disks, they have no smart errors, and none 
+of them are SMR (2x WD40EFRX and 1x ST4000DM000)
+Autodefrag is disabled, and i also have checked that the disks are in 
+stable drive cages in order to be sure i have no problems with vibration.
+Benchmarking them gives normal speeds. Quotas have never been enabled.
