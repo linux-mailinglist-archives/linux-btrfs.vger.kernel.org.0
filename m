@@ -2,172 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 694404EFCEF
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Apr 2022 00:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339644EFD43
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Apr 2022 01:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352801AbiDAXAN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Apr 2022 19:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
+        id S242356AbiDAXwM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Apr 2022 19:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbiDAXAM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 19:00:12 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845911037;
-        Fri,  1 Apr 2022 15:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1648853883;
-        bh=rEwbnzA7y5go1R83gZ81JCcwNi/lzBlUr1wv6FJe6zM=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=iTaf6/KJSq7E++xx8Citi6d+fpsWoSKDGHErB/CkfMQeiJOshd2qRGnID+xlHNRsC
-         JdIdSH1IyAHb9HLkiiAaYwv9YYoyThnB9Cm8N6u4KCyeQC48EnMoslmpbIdZV2Yf1S
-         cgxPyLejX2WM58j3GuEIxzMu1W2Zw1EYGFgKFjEg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJVG-1oCFfY3C6A-00fS0L; Sat, 02
- Apr 2022 00:58:03 +0200
-Message-ID: <b9b41fbd-e60d-6698-53f6-545a320acf1a@gmx.com>
-Date:   Sat, 2 Apr 2022 06:57:58 +0800
+        with ESMTP id S233669AbiDAXwL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 19:52:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8622233A1B
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 16:50:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EEA461BB5
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 23:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D27FC2BBE4
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Apr 2022 23:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648857018;
+        bh=xEbPz0nri1Drxoqe/OKsfJuworyNlLC+EcmByf/oUzA=;
+        h=From:Date:Subject:To:Cc:From;
+        b=IFoDACijx2OktryRV+TBd9a5u1gw2GBRIELrlabyW8jR+renwfNd3MS7JWqyDFd2p
+         nJ1sMAC5eIm8/ZNwsvQj/5kTS3r9CQ2EeHiYzd4wCkOh2TAyAEz0Ms4IMX5zIxD5lh
+         SJSGJ0ZmkoDBG3NKcc6Wfe0rXF9FbTT2TTh6xsXt8Rs8w5Qm3EErtsGrC59dkESpt5
+         WvRHfMbDTBhtV28UcBofhRHQuoHTcRLRtnFS4rYwEotvJBENzq0Xh18KYIlAs0oKKH
+         +te4qB5b6to0EKCG56s+KxEQa3XYc1veBPvSv+GRxWrA8A9+/TUZWG++WyM95GmTO8
+         bzOpwW6QK8Enw==
+Received: by mail-qt1-f178.google.com with SMTP id a11so3430273qtb.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Apr 2022 16:50:18 -0700 (PDT)
+X-Gm-Message-State: AOAM530ZoPGNDscTKh3263o8q5RtbSvj1iJ+JvZ1ShbtOM1OUi9lx7m7
+        QAB20+CpC7R/ckqjx/iQqkZcSkXs1DbI9IkXNR4=
+X-Google-Smtp-Source: ABdhPJz7sJ3a9bvKVoYCkdiSFSA6WlaK1SOPuJZ+Etov0+kctnHQzQrjnqz2ODW5lzs/5xF7vrlsHUCbRpsZMA/jVJM=
+X-Received: by 2002:a05:622a:60a:b0:2e2:7b2:ba74 with SMTP id
+ z10-20020a05622a060a00b002e207b2ba74mr10554043qta.293.1648857016486; Fri, 01
+ Apr 2022 16:50:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Matt Corallo <blnxfsl@bluematt.me>,
-        stable@vger.kernel.org
-References: <1f622305ee7ecb3b6ec09f878c26ad0446e18311.1648798164.git.wqu@suse.com>
- <20220401163954.GM15609@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs: force v2 space cache usage for subpage mount
-In-Reply-To: <20220401163954.GM15609@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nMNBkjLq9aEwykYrVVXH0JZuoN5hnMM37ZjoxkYZ5gcIHrUYdMd
- GiVN9oSVmke5IiWDn1lsj9zhvFiv1Xm+iHdThZ5MC7h8eboBo6bmBEqr7EHIuXJmjW8m7d9
- bPycDt/fDMxsVAFGJvV+71FOpZ+nRcNafIderPnG8am8gOwhLmupOiZeAd1Qbjb/RSXKntC
- sVTs0ebequgQ3jgLYgL7g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fzgU9CwD+T0=:RyqKPTf1gEQFByY66eVE3N
- 0POgkSX2YSN1ro+rs5kkFdekYkJLinR4CWEoPrUxl2JLOonzymDue5c7VZ5Mi3nXHEDoJWxVx
- Yffno8mWcu64UCPoZrRr6tqAPL84tObGvOKzomF8++kO6lsFygXBHtHTDD+bIvcbX+MBs0hBa
- SEBw+/gPNi03y4xgsErePnmfE+uQG74GFKiXeNbFa2wKFDuSuBpG2TMf9yYUVglee+YrqkVMI
- 0wyej5HYu1d461bjrX+Je4E+HYPNbpmqCidY1T7tHrb1tZ8k5CnwfOXiRM2nwvIe2psW6jv4A
- E4NLedjVUHdkzRpiNGsTEIENtU87RmMY/oOBggBdAdn+5Aq8e4ijpX54iQrVMw2ivd53qLUXS
- eKOwci62WWkH176wiu98dwkyNgxKeJOQcUEXlHRnMue+xLQ+kzqNwQnsREmWbDtXE+jo7z5gx
- n3oBY/Bhbzfly2/Hmvx4tP8pXNZ13/VHZ4dQru29VDYlqxnUD4SF3bcXs+cVX4r7mmPtEWNt4
- q3/solBjUq4Q4BvkbvQUg2Q9KTDMJMvmXI9ck7qaWGWBbF2rtp5cuN7L0JWjWSG89dCFtheGj
- cetLQc3cexwrmXSn3+n9H2ZFVr/ByNsbP2/PsOgAMRUTbfHxjKZCkoJjCI6pU11B/Q4SxSC3D
- kPOg52gqFmPlXG0as/9uFwPDY2AM3S1gvxT/uKSX/tiKHKeqOnRw1PAm74glB1B6hx5lqoQH1
- XOQFtQfB8qDOZH1ELdMSex7w8gddw0GV9uyTamXFdim7oBgB6HeBseejwVN+5Ey90IuJOMFp6
- +a1v0dGBthTUBHdFPB2S+S7esoBJ/e2SjM6EZW0g12MwNtmKPW7AAORaOOdsFHoc4YZEyNY/8
- VRpXfnZwyNS7IlaRg/rheeiZSy2gYiziBXJdoDLuM33RF5T4wTqcButbd2ffXtstQCyzqfYkF
- YNL1ZHWoicpc5bUVc1JdIvQ28koXMdlPkND1w7UJjCM/QErVO3xBmWD5InmYVVbTqOVwpEoK/
- 21xWH+idpkIAdaEWkJVpVxNJXtWUaJcKqGwoOm5Qtqy+BPz5Y26seps/x5CO6lJNjP8u4ooRS
- mQsc3OPAxkvEv0=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   Luis Chamberlain <mcgrof@kernel.org>
+Date:   Fri, 1 Apr 2022 16:50:05 -0700
+X-Gmail-Original-Message-ID: <CAB=NE6VyZYEmQbTcP=hsBdwM7ptMj0XUjQTfoO03Ghp0tnF6eg@mail.gmail.com>
+Message-ID: <CAB=NE6VyZYEmQbTcP=hsBdwM7ptMj0XUjQTfoO03Ghp0tnF6eg@mail.gmail.com>
+Subject: btrfs/011 crashing on v5.17-rc7 with null pointer dereference on raid6_avx5121_gen_syndrome+0x99
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc:     Pankaj Raghav <pankydev8@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I'm sure you all know, but figured I'd check just in case it is not
+the case. I don't see this mentioned in the mailing lists. btfs/011
+crashes with an fstests configuration on kdevops btrfs_raid56:
 
+[default]
+TEST_DIR=/media/test
+SCRATCH_MNT=/media/scratch
+RESULT_BASE=$PWD/results/$HOST/$(uname -r)
+FSTYP=btrfs
 
-On 2022/4/2 00:39, David Sterba wrote:
-> On Fri, Apr 01, 2022 at 03:29:37PM +0800, Qu Wenruo wrote:
->> [BUG]
->> For a 4K sector sized btrfs with v1 cache enabled and only mounted on
->> systems with 4K page size, if it's mounted on subpage (64K page size)
->> systems, it can cause the following warning on v1 space cache:
->>
->>   BTRFS error (device dm-1): csum mismatch on free space cache
->>   BTRFS warning (device dm-1): failed to load free space cache for bloc=
-k group 84082688, rebuilding it now
->>
->> Although not a big deal, as kernel can rebuild it without problem, such
->> warning will bother end users, especially if they want to switch the
->> same btrfs seamlessly between different page sized systems.
->>
->> [CAUSE]
->> V1 free space cache is still using fixed PAGE_SIZE for various bitmap,
->> like BITS_PER_BITMAP.
->>
->> Such hard-coded PAGE_SIZE usage will cause various mismatch, from v1
->> cache size to checksum.
->>
->> Thus kernel will always reject v1 cache with a different PAGE_SIZE with
->> csum mismatch.
->>
->> [FIX]
->> Although we should fix v1 cache, it's already going to be marked
->> deprecated soon.
->>
->> And we have v2 cache based on metadata (which is already fully subpage
->> compatible), and it has almost everything superior than v1 cache.
->>
->> So just force subpage mount to use v2 cache on mount.
->>
->> Reported-by: Matt Corallo <blnxfsl@bluematt.me>
->> CC: stable@vger.kernel.org # 5.15+
->> Link: https://lore.kernel.org/linux-btrfs/61aa27d1-30fc-c1a9-f0f4-9df54=
-4395ec3@bluematt.me/
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/disk-io.c | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index d456f426924c..34eb6d4b904a 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -3675,6 +3675,17 @@ int __cold open_ctree(struct super_block *sb, st=
-ruct btrfs_fs_devices *fs_device
->>   	if (sectorsize < PAGE_SIZE) {
->>   		struct btrfs_subpage_info *subpage_info;
->>
->> +		/*
->> +		 * V1 space cache has some hardcoded PAGE_SIZE usage, and is
->> +		 * going to be deprecated.
->> +		 *
->> +		 * Force to use v2 cache for subpage case.
->> +		 */
->> +		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
->> +		btrfs_set_and_info(fs_info, FREE_SPACE_TREE,
->> +			"forcing free space tree for sector size %u with page size %lu",
->> +			sectorsize, PAGE_SIZE);
->
-> I'm not sure this is implemented the right way. Why is it unconditional?
+[btrfs_raid56]
+TEST_DEV=/dev/loop16
+SCRATCH_DEV_POOL="/dev/loop5 /dev/loop6 /dev/loop7 /dev/loop8
+/dev/loop9 /dev/loop10 /dev/loop11 /dev/loop12"
+MKFS_OPTIONS='-f'
 
-Isn't the same thing we do when parsing the mount options for switch
-v1->v2 cache?
+The crash is:
 
-> Does any subsequent mount have to clear and set the bits after it has
-> been already? Or what if the free space tree is set at mkfs time, which
-> is now the default.
+[16570.301631] BTRFS info (device loop5): checking UUID tree
+[16575.562319] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[16575.565764] #PF: supervisor read access in kernel mode
+[16575.568645] #PF: error_code(0x0000) - not-present page
+[16575.571473] PGD 0 P4D 0
+[16575.573387] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[16575.575930] CPU: 7 PID: 52803 Comm: kworker/u16:17 Kdump: loaded
+Tainted: G            E     5.17.0-rc7 #1
+[16575.580412] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.15.0-1 04/01/2014
+[16575.584607] Workqueue: btrfs-endio-raid56 btrfs_work_helper [btrfs]
+[16575.588237] RIP: 0010:raid6_avx5121_gen_syndrome+0x99/0x150 [raid6_pq]
+[16575.591603] Code: 48 8d 74 03 f8 4c 8d 0c 03 44 89 c0 48 c1 e0 03
+48 29 c6 41 0f 18 04 0b 62 d1 fd 48 6f 14 0b 41 0f 18 04 0a 62 f1 fd
+48 6f e2 <62> d1 fd 48 6f 34 0a 45 85 c0 78 44 4c 89 c8 48 8b 10 0f 18
+04 0a
+[16575.599228] RSP: 0018:ffffa33bc4ddfd50 EFLAGS: 00010282
+[16575.601501] RAX: 00000007fffffff0 RBX: ffff9295d04bd410 RCX: 0000000000000000
+[16575.604259] RDX: 0000000000000000 RSI: ffff928dd04bd408 RDI: 0000000000000000
+[16575.606796] RBP: 0000000000000003 R08: 00000000fffffffe R09: ffff9295d04bd400
+[16575.609268] R10: 0000000000000000 R11: ffff92964e220000 R12: 0000000000001000
+[16575.611660] R13: ffff9295e4213000 R14: ffff9295c8c2e000 R15: 0000000000000000
+[16575.613919] FS:  0000000000000000(0000) GS:ffff9296f7dc0000(0000)
+knlGS:0000000000000000
+[16575.616336] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[16575.618048] CR2: 0000000000000000 CR3: 0000000203e0a006 CR4: 0000000000770ee0
+[16575.620085] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[16575.621993] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[16575.623915] PKRU: 55555554
+[16575.624925] Call Trace:
+[16575.625899]  <TASK>
+[16575.626790]  finish_rmw+0x27d/0x5d0 [btrfs]
+[16575.628158]  end_workqueue_fn+0x29/0x40 [btrfs]
+[16575.629470]  btrfs_work_helper+0xe1/0x360 [btrfs]
+[16575.630832]  process_one_work+0x1e2/0x3b0
+[16575.632063]  worker_thread+0x50/0x3a0
+[16575.633097]  ? rescuer_thread+0x390/0x390
+[16575.634183]  kthread+0xe5/0x110
+[16575.635139]  ? kthread_complete_and_exit+0x20/0x20
+[16575.636366]  ret_from_fork+0x1f/0x30
+[16575.637362]  </TASK>
+[16575.638128] Modules linked in: loop(E) nvme_fabrics(E) kvm_intel(E)
+kvm(E) irqbypass(E) crct10dif_pclmul(E) ghash_clmulni_intel(E)
+aesni_intel(E) crypto_simd(E) cryptd(E) cirrus(E) joydev(E)
+drm_shmem_helper(E) drm_kms_helper(E) evdev(E) serio_raw(E)
+virtio_balloon(E) cec(E) i6300esb(E) button(E) drm(E) configfs(E)
+ip_tables(E) x_tables(E) autofs4(E) ext4(E) crc16(E) mbcache(E)
+jbd2(E) btrfs(E) blake2b_generic(E) xor(E) raid6_pq(E)
+zstd_compress(E) libcrc32c(E) crc32c_generic(E) virtio_net(E)
+net_failover(E) virtio_blk(E) failover(E) ata_generic(E) ata_piix(E)
+uhci_hcd(E) libata(E) ehci_hcd(E) crc32_pclmul(E) crc32c_intel(E)
+psmouse(E) usbcore(E) scsi_mod(E) nvme(E) nvme_core(E) virtio_pci(E)
+virtio_pci_legacy_dev(E) virtio_pci_modern_dev(E) virtio(E)
+virtio_ring(E) usb_common(E) t10_pi(E) i2c_piix4(E) scsi_common(E)
+[16575.651503] CR2: 0000000000000000
 
-The function btrfs_set_and_info() will only inform the end users if the
-bit is not set.
+For more details:
 
->
-> Next, remounting v1->v2 does more things, like removing the v1 tree if
-> it exists. And due to some bugs there are more bits for free space tree
-> to be set like FREE_SPACE_TREE_VALID.  So I don't thing this patch
-> covers all cases for the v2.
+https://github.com/mcgrof/kdevops/commit/e95050955cd6d4c13b0accd19f1825dad9539394
 
-You're right on remounting, but in the opposite way.
-There is nothing prevent the users from re-enabling v1 cache.
-
-I should also prevent user from setting v1 cache.
-
-Another concern is, I didn't see code cleaning up v1 cache when we do
-the v1->v2 switch.
-The only code doing such cleanup is cleanup_free_space_cache_v1() in
-free-space-cache.c, but it only gets called in
-btrfs_set_free_space_cache_v1_active().
-
-Or did I miss something?
-
-Thanks,
-Qu
-
+  Luis
