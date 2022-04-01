@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A8C4EE7C1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 07:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBAF4EE7D1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Apr 2022 07:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234975AbiDAF2r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Apr 2022 01:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
+        id S245133AbiDAFlC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Apr 2022 01:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234670AbiDAF2q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 01:28:46 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F391D19532B
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Mar 2022 22:26:55 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id c2so1552870pga.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Mar 2022 22:26:55 -0700 (PDT)
+        with ESMTP id S235087AbiDAFlB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Apr 2022 01:41:01 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC76219316E
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Mar 2022 22:39:11 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id x31so1626223pfh.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Mar 2022 22:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0Trga+BdFI4efDKajUY1NAXF+DAbMyRVl4+Tkk/zkxs=;
-        b=UcNzlZ2ZfAu7MzmolIZQWuYI5pDoc++QaCA4IapXXbHjOQBlegPVYWU+mrYeGexvvf
-         oCTvVPne1B0TOt97qcHIuryw8X1uiZUcDxlduvuQlnShWQq0YesO2IiJqp7gmF0HAj1u
-         9DiQxBM1EhJ2VjhSmcSyiJzWniEggsf0zQ578Ln7vGbrzWC4sBYJu7al9SCJcIo9AULK
-         L/yW9HVkXR+ciptvEQ5XbFrHUSCRpvroVd1ANIVgYCuc23WL5NsxJIqfksy/ekzVVH1M
-         rgHJ4pdopDBo55xAHUtxB99hK44EyM4lXk7Hdn5cKFfplfqeCCW8AaIiFvU8ic9OHll5
-         d6tg==
+        bh=A0bSnsdG14wkdVkqGem4uOmVV98w9m/J4IKDRMvBQcU=;
+        b=UNwdDSWDuj+Wl003x0nMWahdwsQK0f733d8sh69x9IGUBmrrjy7A2UEUBwGxu346qy
+         rgKiCXXCX42UlaYaLGxOokPF4JlwlguHzbQDViTlSeugvrRq4m9fEivXa3LIBlwpRGZ5
+         a8fmVnBKN/70a5UC1jXP1Usm2JAxz0N+15qJwwFwxfPGd9Sx6x4gX9LfW6fi9f40aEbm
+         mmoQBH9Fsk0+y8xwllwhmQr13jHZTydm1LdSAtlWTkwH1P4le3pqQaHMn1LaMXMmeJOA
+         mytuCOp8RqfoEsmp8HXaEa9uAT3ChUMUVsN/HvNbJO0ifhTTVryjo5xbB28wNNWHE0Pr
+         DfjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0Trga+BdFI4efDKajUY1NAXF+DAbMyRVl4+Tkk/zkxs=;
-        b=3emw33EZtLrgsAECL/0qM/vMgDDq1m4MoqegYKUj8wi/aUIxuAsyX49ILbF5E5VYRz
-         gmo5lldRabo7uQ6kDbGM/aRmiyyfgxYdXgCed9lXvDHLqX+i05VDjUVB1T+49oeZPR4X
-         Ti0Px9sC7/ATKGOuTa0uc9RdngbVgrMh3rfmxoCHeb2z9TfQkd1/ScoVvxkLoNk05v/M
-         XrYtS+nad9plh5U3KJjTidTi0b5dUv78BB2fi9TAQptoKj6/Lwg8SMFT7Ad2A/wDw5gr
-         SB6hKInCRzb2/4czsGx7VMRxN65hGvuOUXEFQ3H/Mfzq85Vk9kmZ8lZbkJLH/C6aZ6wV
-         nqQw==
-X-Gm-Message-State: AOAM5306aC7EdRC6qKTfZFLySyVdl1VFZvXYn7EfbdNfXY4EW9qZgJgz
-        4w+NXKEHblt5eXlLRJxOLH1KBzcGH6mLPyg2QL7c5fWPFzU=
-X-Google-Smtp-Source: ABdhPJzJTabMs1cfbLc1CS11StWEg66ng/TovMjrfv2grHrgmRNiRQ7eue7Qm2eDv4Xx5rfReLNg02pJ9v6yJk+LMpo=
-X-Received: by 2002:a63:a51:0:b0:378:dd95:a341 with SMTP id
- z17-20020a630a51000000b00378dd95a341mr13387664pgk.615.1648790815182; Thu, 31
- Mar 2022 22:26:55 -0700 (PDT)
+        bh=A0bSnsdG14wkdVkqGem4uOmVV98w9m/J4IKDRMvBQcU=;
+        b=J2+6CviWXAfcXaALRJ5DFFFDP7bMbkvgbcA6pAQtsLTblTQ243E02qVXzamQsjuKpN
+         ZQ4Sc2tx6nFJwN7IqCgot6F5sJIu6V7R/hqTMbYqwN9A4E17+SsU+Qm5XadnH/9H3PIW
+         xgnaQajFLm/PDfaOE3Y2V16sEjp7eyBGn4Q5pqPN+L+yf+S5Rz2nxiGdNiDpL911sspq
+         CTKQvljogjrx8YZVk5G/VvAncTqAUFdd99xhPlYC8R0kTQajANKIlJ4Wh4NSK97jIxAE
+         USV9Po9CU4sYi5jvTeqJmlZYuLIGHMPYeo4SgVnXZ3dFhPRxRqhKWZUcG/N5XtAOIvZ0
+         hvgA==
+X-Gm-Message-State: AOAM532IZdQQyg9LiqJUN+d1EJ6T8WojKphiR+iho1ST5D/AsUa2Yyit
+        jCx49I0N6rOzFgDqsHX7t6J6vEa7BOwKZW65oHtUJ8/f
+X-Google-Smtp-Source: ABdhPJwm7pwA7qGgMPKzjIcv8EzBa6yPcLo1mMFQZNUpsm8x64im6IjBvc4vsvyMyW1GwfMs2sIN8D1129JDVdNmrLQ=
+X-Received: by 2002:a63:7f15:0:b0:398:5224:9b52 with SMTP id
+ a21-20020a637f15000000b0039852249b52mr13622502pgd.249.1648791550888; Thu, 31
+ Mar 2022 22:39:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAKxU2N-FKf-RsbA4S7hrYJXHUe7wJUrRyHGKjzKGgBmNcE1sCA@mail.gmail.com>
  <562b797f-49b6-80a0-4a1e-7dafa1975e86@gmx.com> <CAKxU2N9bzKpt94i53vzKgYKaDEGZ7tAj_nE-KFm-71qK3yXDjw@mail.gmail.com>
@@ -53,8 +53,8 @@ References: <CAKxU2N-FKf-RsbA4S7hrYJXHUe7wJUrRyHGKjzKGgBmNcE1sCA@mail.gmail.com>
  <b9ccc5f3-a003-bde1-deea-a988959c3ea6@gmx.com>
 In-Reply-To: <b9ccc5f3-a003-bde1-deea-a988959c3ea6@gmx.com>
 From:   Rosen Penev <rosenp@gmail.com>
-Date:   Thu, 31 Mar 2022 22:26:43 -0700
-Message-ID: <CAKxU2N8i1PQ0aiy52S6LzpC1kww5eNFwEV-Cse7aA8HAR1kWXQ@mail.gmail.com>
+Date:   Thu, 31 Mar 2022 22:38:59 -0700
+Message-ID: <CAKxU2N9vkcjt3sCoBmDSV65kD5yLdh=rRbKT-dTdwnZSwh8udg@mail.gmail.com>
 Subject: Re: btrfs volume can't see files in folder
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
@@ -237,84 +237,18 @@ On Thu, Mar 31, 2022 at 10:05 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >
 > Transid mismatch, a big problem.
 > It can explain the problem.
+Alright. I actually found my files. Turns out, there was some
+configuration change in LinuxServer.io's qBittorrent docker container
+or maybe an upstream one that resulted in them being placed within the
+docker volume instead of the actual directory. I'll probably be
+rebuilding my setup...
+
+Sorry for the noise.
 >
 > Maybe kernel can solve it but progs can not really utilize RAID5 parity
 > to rebuild.
 >
 > BTW, when you access the directory, no dmesg output?
-Nope. I get dmesg output when accessing a specific file (QuasselIRC
-database). Maybe that's what the output was referring to.
-
-[ 4989.026269] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 99, gen 0
-[ 4989.046520] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 4989.046742] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 1
-[ 4989.046753] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 100, gen 0
-[ 4989.046963] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 5197.247306] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 1
-[ 5197.247326] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 101, gen 0
-[ 5197.247648] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 5725.000447] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 1
-[ 5725.000469] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 102, gen 0
-[ 5725.000835] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 5725.001099] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 1
-[ 5725.001115] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 103, gen 0
-[ 5725.001369] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 5725.002310] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 1
-[ 5725.002326] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 104, gen 0
-[ 5725.002602] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 5750.381840] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 1
-[ 5750.381860] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 105, gen 0
-[ 5750.382338] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 5754.388921] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 1
-[ 5754.388941] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 106, gen 0
-[ 5754.389262] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 246456320 csum 0x4fcb51d2 expected csum 0x981271e6 mirror 2
-[ 9098.137439] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 1
-[ 9098.137459] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 107, gen 0
-[ 9098.160482] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 2
-[ 9102.465457] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 1
-[ 9102.465478] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 108, gen 0
-[ 9102.465831] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 2
-[ 9102.466118] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 1
-[ 9102.466129] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 109, gen 0
-[ 9102.466368] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 2
-[ 9102.466555] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 1
-[ 9102.466565] BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd
-0, flush 0, corrupt 110, gen 0
-[ 9102.466765] BTRFS warning (device sda): csum failed root 1094 ino
-157635 off 150896640 csum 0x209b44e3 expected csum 0x06aeaa69 mirror 2
 >
 > Thanks,
 > Qu
