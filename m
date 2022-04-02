@@ -2,132 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E6F4F05B4
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Apr 2022 21:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05E84F0563
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Apr 2022 20:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237654AbiDBTN1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 Apr 2022 15:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        id S238670AbiDBS1q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 Apr 2022 14:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236076AbiDBTN0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 2 Apr 2022 15:13:26 -0400
-Received: from pc232-3.mailgun.net (pc232-3.mailgun.net [143.55.232.3])
-        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id 0C118532C5
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 Apr 2022 12:11:31 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=kemenpora.go.id; q=dns/txt;
- s=mailo; t=1648926691; h=Message-Id: Reply-To: Date: From: From: To:
- To: Subject: Subject: Content-Description: Content-Transfer-Encoding:
- MIME-Version: Content-Type: Sender: Sender;
- bh=Nt4Dj4Z9m99aZYP7veatwYClRlVhyjI59Ey2CH/1HYI=; b=VqptEdzy3DsOUYnufc3FYN44sAP6sSbMKQ4OsiF54gBUGLCpj9HDrxO6HkIr5bKgesbLLzp+
- 3wwAhl4FEnlyx7WfoTLy8yntyIRJwpCV9Gx0xVbBP9h2IghaBw3sgd/Q1w+y/49x4bbTClVI
- 8YWM2trNld7J20OHRo8EVADWbZA=
-X-Mailgun-Sending-Ip: 143.55.232.3
-X-Mailgun-Sid: WyI4ZDEwZSIsICJsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmciLCAiY2U3NDgwIl0=
-Received: from mta.kemenpora.go.id (mail.kemenpora.go.id [202.52.49.154]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 62489fe00418b8d3d7021897 (version=TLS1.3, cipher=TLS_AES_128_GCM_SHA256);
- Sat, 02 Apr 2022 19:11:28 GMT
-Sender: sesdep2@kemenpora.go.id
-Received: from localhost (localhost [127.0.0.1])
-        by mta.kemenpora.go.id (Postfix) with ESMTP id B5D8B813B7;
-        Sun,  3 Apr 2022 02:11:24 +0700 (WIB)
-Received: from mta.kemenpora.go.id ([127.0.0.1])
-        by localhost (mta.kemenpora.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 4TwdSBmzJhyM; Sun,  3 Apr 2022 02:11:24 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mta.kemenpora.go.id (Postfix) with ESMTP id C6AD480437;
-        Sun,  3 Apr 2022 00:08:50 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mta.kemenpora.go.id C6AD480437
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenpora.go.id;
-        s=ADBEFE62-19FD-11EC-AADF-9C047DAC492B; t=1648919330;
-        bh=Nt4Dj4Z9m99aZYP7veatwYClRlVhyjI59Ey2CH/1HYI=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=iWXaA58g9jipAL1Mav/V7+hXWuG6sMg46ebpXBiA34EYtDBCF9Ha5T9GO2QQvz03e
-         ZWoTpyE//2fdyh2pVewOcCyLICNl84GzJFBp3fUnYFH++Crexj2rTUkap8k7mGVvDf
-         MxHASktf1qGAjN+m6liuGZ+o6wyZQone//OOWi7I9hH5s+uxypGQQ7exBB39WMwruW
-         8q6nfSVl4z/AwmeN2wu1byYfzvBbppoPhjThm3+hQfkwBwA9844WpWp9Et9vnpbs5F
-         Zi7rwwNn98JFzPFF18F0FC4kVW5y4D/wX5O7O3z/XaTnG8hC1BJmLJovwefPd3lL0y
-         /qMdJ7cz47lIA==
-X-Virus-Scanned: amavisd-new at mta.kemenpora.go.id
-Received: from mta.kemenpora.go.id ([127.0.0.1])
-        by localhost (mta.kemenpora.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id uL75DzPi_uqp; Sun,  3 Apr 2022 00:08:50 +0700 (WIB)
-Received: from info.gfllum3nfugurne0j1ov0rswqa.zx.internal.cloudapp.net (unknown [51.140.35.89])
-        by mta.kemenpora.go.id (Postfix) with ESMTPSA id EB80F82774;
-        Sat,  2 Apr 2022 22:12:11 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
+        with ESMTP id S231172AbiDBS1q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 2 Apr 2022 14:27:46 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49096DCA99
+        for <linux-btrfs@vger.kernel.org>; Sat,  2 Apr 2022 11:25:53 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id r10so779578eda.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 02 Apr 2022 11:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=+zg0Wj7V1uBR/2d8N5B44gDdG3PuV4CufFJYgdfkavM=;
+        b=ITgUKfm1D+ICcrCggNG24gcTXH3AZjer8E913q4ngYsTRfcFpLSyE/3O/5VuFWr/w+
+         S+/fQB3/E3fDnfWfOqDKf6Zpe3knjhRVES9CfVbZPso3/1YYBoyOxyAKZKlN4MnWCMWx
+         PWQaeqgRS/6kJEnpF7pRvEvtoleb5iDtZ9VWUJA16bFuHimHvcy5d1utGAqWXUlcr+Hu
+         17PySJvUGYueFM3QLnZ3/GGDuufmvFN1+i2aSxNqnyxrsIEa8g421n13GDT20mNwgf/d
+         7vrRzcEHPsV3eSEB+gE2fdRcPpLN4OS05Yf6t31ddAItF8RaKA5cb0Te7HddF5iYPstb
+         JyUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=+zg0Wj7V1uBR/2d8N5B44gDdG3PuV4CufFJYgdfkavM=;
+        b=J983yQVokM3Aj6f22LzdiZFG8guLaJjnL2hR2WmBZpS/BTxHoqV5vUa092vo2oBzsl
+         bDRhFDojkIlff+nKiUfPPyvxXw4Xw6fv5zVD9WMOZnMbn1wnAYP7ovLL9+3MzjiH6q0u
+         Aso0WlqLvY/vGEoeJe9D+EbXOhgmGPbxudQV3pphkwL1MDBcFrcwnAFzcQc6VZZobL6G
+         Slx/oIQ7W2mNnuVHrONUIAAUFfQrVvah7cg8+CY3UcMyq3Gi3HJRv0Iyw2BmYS0tC8qL
+         OmGrnu2vY1QzUOkz0/ngzLYtKELMR6wJbfxSFiqsgvQsUgJQDYI0cQlX88ZfNsJhjSaP
+         5+wQ==
+X-Gm-Message-State: AOAM532zXZcwjpSUTM70eRkPidRcLwE/qf+bWNDsRx88O3joj6dVbEkr
+        sOFpx5N0Oz/Aq8NM1dhfUpopHEQAF8U=
+X-Google-Smtp-Source: ABdhPJypPw/GDP8/uGuh37i8WNZDEr8n8sUwNuYm4kCLMOdu90Wyya5P+bd+1e8wILkSB846QE6zjg==
+X-Received: by 2002:a05:6402:2805:b0:41b:630b:de68 with SMTP id h5-20020a056402280500b0041b630bde68mr18842532ede.143.1648923951737;
+        Sat, 02 Apr 2022 11:25:51 -0700 (PDT)
+Received: from [192.168.1.121] ([94.65.83.40])
+        by smtp.googlemail.com with ESMTPSA id 22-20020a17090600d600b006dfbc46efabsm2331340eji.126.2022.04.02.11.25.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 02 Apr 2022 11:25:51 -0700 (PDT)
+Subject: Re: Adding a 4TB disk to a 2x4TB btrfs (data:single) filesystem and
+ balancing takes extremely long (over a month). Filesystem has been deduped
+ with bees
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org, Hugo Mills <hugo@carfax.org.uk>
+References: <8a536fe1-68bd-4136-8cfb-bd410afc5fa1@gmail.com>
+ <YkcIIFuxqj5l17Nu@hungrycats.org>
+From:   Konstantinos Skarlatos <k.skarlatos@gmail.com>
+Message-ID: <67609646-f896-4e69-5246-147a37ccf271@gmail.com>
+Date:   Sat, 2 Apr 2022 21:27:00 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Re: Information
-To:     Recipients <sesdep2@kemenpora.go.id>
-From:   "Mr. Alexei Navalny" <sesdep2@kemenpora.go.id>
-Date:   Sat, 02 Apr 2022 15:11:54 +0000
-Reply-To: wetttttwwttrttr@yandex.com
-Message-Id: <20220402151211.EB80F82774@mta.kemenpora.go.id>
-X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_5_NEW,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FORGED_REPLYTO,HK_NAME_MR_MRS,HK_RANDOM_REPLYTO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [143.55.232.3 listed in list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.0 HK_RANDOM_REPLYTO Reply-To username looks random
-        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
-        *      [143.55.232.3 listed in wl.mailspike.net]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  1.0 HK_NAME_MR_MRS No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  2.1 ADVANCE_FEE_5_NEW Appears to be advance fee fraud (Nigerian
-        *      419)
-X-Spam-Level: ******
+In-Reply-To: <YkcIIFuxqj5l17Nu@hungrycats.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-My name is Alexei Navalny from Russia whom Vladimir Putin President of Russ=
-ia the detects is jailing me because I'm against his evil war plans against=
- Ukraine, killing of Russia people and the world in general. =
+On 1/4/2022 5:11 μμ, Zygo Blaxell wrote:
+> As Hugo pointed out, it's not necessary to balance more than a few
+> block groups in this situation.  You have to ensure that the amount
+> of unallocated space on all the disks is large enough to contain one
+> mirror copy of the metadata.  For most users that means at most 0.5%
+> unallocated on each disk.  If you've already balanced 9% of the disk
+> then you've already done 18x more balancing than needed and you can
+> stop now.
+Thank you for your answer. I guess that this should be documented 
+somehow in the wiki or the btrfs balance command or even better make a 
+"btrfs balance-after-device-add" command that does the right thing 
+because now it is very easy to assume that after adding a device one 
+should wait for the complete
+balance to finish.
 
 
-You can read more with below links: =
-
-https://www.bbc.com/news/world-europe-16057045 =
-
-https://www.theguardian.com/world/2022/feb/15/alexei-navalny-faces-10-more-=
-years-prison-focus-ukraine-crisis-russia =
-
-
-I will be happy to serve the 15 years in jail imposed by Putin but I need t=
-o assist Ukraine's displaced people around the world with the money I secre=
-tly deposited in one of the Turkish private banks, now such money will be r=
-eturned to Russian because d western world has blocked Russia . =
-
-
-If you agreed to assist me 25% of the total sum will be for your assistance=
- and the 75% will be used to assist the Ukraine displaced by Putin war. If =
-you agreed and are also willing to keep this transaction confidential, I wi=
-ll send you all the details to approach the bank. =
-
-
-I contacted you because I need somebody out of Russia to do this job. =
-
-Please reply me here: reeninvestor111@kakao.com
-
-Regards, =
-
-Alexei Navalny
