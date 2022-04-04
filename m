@@ -2,66 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9574F1C4A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Apr 2022 23:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2020C4F1C4E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Apr 2022 23:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380633AbiDDV0S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Apr 2022 17:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S1380854AbiDDV0W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Apr 2022 17:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379515AbiDDRU6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Apr 2022 13:20:58 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D06CDEFB
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 Apr 2022 10:19:00 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id e22so12086219ioe.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 04 Apr 2022 10:19:00 -0700 (PDT)
+        with ESMTP id S1379558AbiDDRbP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Apr 2022 13:31:15 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C8B615E
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 Apr 2022 10:29:19 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id ch16-20020a17090af41000b001ca867ef52bso417283pjb.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 04 Apr 2022 10:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ybOCW8P6F/Yqf3OcdlmcI2ZZHw0MxYTzS9UF7EPTtBM=;
-        b=zp3sdaOgUNlvGn6XGHbiCWXrSLBLxFytJshP7sNRHI7YNlr0J9MZmjx5VxvlxqoGv4
-         diqO0klkolSu6J20w/TYDswiAc33ddMskBM5ElJH8flgu+2J1nQMVQFr1zqI+MDg87pk
-         IRzBTnNb8MWcPTFmJs57iT9Rl/N8gglqr4Z9VGZbC2RHCWFFO3moGCNrxqeTqUaUO4BX
-         r2wYzDy4lhffOHi1kE63ojn/KUr+quvPqSllxJwvSRgXbQu/axh5103k+uSKT8dgADQC
-         VHtn13i6ITM1Ea2IX7gP82Z+WJGNLMGrnePZKB5UbKJJiRmn7fOFEUB6j1sKaWJyHHU4
-         zyeQ==
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Y/xPGZPRltwnNLJkEW7Y4NAxYs+n4k2Vm++2BZkKAE=;
+        b=XdBP9nOyNj2izVDrfPDMvFI3ICNCGrUWpmuhWOldW9G0CnSOkJIw6S05gqcts9abw5
+         wgKR4ngRtwBMTtPfs9r35lOG2w48VrLNBE7uU/p2agjORqtkcsYReoUHmmmWbbGHNpYH
+         TLsGpt0zauvSyZsvqQCHkDXW+HefcJ176c4vZJa5Ipgck3DuZDyhuZhJdqFgL5blPjs+
+         TBPlLc9XONOhx8OBd10HD3Imu1muue1MrCi7EOCEi/rXyjnVgdX1PVhJ8m9d+6xCoO7w
+         LNtqcKVPWX8f+D0G0Sad1tncSKnj/nFOGNWDPvR5hIfiwAUZA+tf8YexUkWF+J7HMWO+
+         Zr7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ybOCW8P6F/Yqf3OcdlmcI2ZZHw0MxYTzS9UF7EPTtBM=;
-        b=xd0I4G5LZoGbPppvxhh7N+pp1uFj5fJdWG/TwGEmdcke8azGEgvII1z/R8HHglO4A8
-         kt2LugdaofCftV6mn59uIiZh/vOfLQeJr2Q93J2RzVYzq5XNG3QLJ9cu6oJonbmcUYUf
-         hnghGFRcG9FVwtxrcQGK1j4jL/nYrbLK+IOGwxRxyM4ehtuoDOqmBXxIjdJBNAE3Aupr
-         2zp+lRMYr0jC+NsmwgU5dq4lxMuzZSWKZ98zq4jcWmI4DwG71Efcx/cV07GfHCYgkEWA
-         cY8i5DxIWtHOhgB5PeECX99D2bWzw51AOP7g1+azX15FLUXPpX/LlYfPl/bEZf7hlOPy
-         +edA==
-X-Gm-Message-State: AOAM532rZ55qZDwbWqvL09Ic/TVXCzDHuU1Jov+71hVvQTPypsc4/qoh
-        NGy71UbFbe5qc5iG2RbHoJlD1bI2oYUy+pCBOFe0pg==
-X-Google-Smtp-Source: ABdhPJxkvNjRuoL+Lj/lnccTuQ2bqggqJgGo4JwvgmG4ulBfpJ+ratu0xQvq87xq+NQGG92+Whix1JYY50BF8PoeT1U=
-X-Received: by 2002:a02:c89a:0:b0:321:25b2:4b52 with SMTP id
- m26-20020a02c89a000000b0032125b24b52mr355244jao.218.1649092739881; Mon, 04
- Apr 2022 10:18:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Y/xPGZPRltwnNLJkEW7Y4NAxYs+n4k2Vm++2BZkKAE=;
+        b=KDJjKOT6wofRF55M3CT+irnYGGxWCqGKH1UmqKy5kVuzRINuVyeRnmjpup7usE0Ed5
+         e4cgm+Q6f1BdQUhBQQRIwAAx6vWYznIyGsGagdNY/n1XhazGhMjEXewNIPuCiZAtFdxW
+         GMJjgS1gcPtkioYB4ImHscTih97Vpho9NOxKSQtmJfefpf1dZXNoe4kdsfkTSJmP+ajb
+         FLd9NT3x+KbHrKmCbhOuMsyxR/Ux0pCiTqqtIm50bTsC32Q84mf7HwKc2XzRgQjuouYq
+         uBOkKtjUqY+dR3K8Rp6gBk73AyOugH+5fGA3SWdzINgXSfM6kMoTQVsBiamGgWxlwXUE
+         2uXw==
+X-Gm-Message-State: AOAM532pOAYqOZY0XSQ98YmGuVGW23A+e4br245rJ9YXfAT5pYafak2e
+        3RHesjRvLY1kYHm2MAk2aYQSRenmWCifMw==
+X-Google-Smtp-Source: ABdhPJymdThgFYqRdewg+CRmfdznmdwOCcayfm10Q8KAuflr4YRR0tWIFr2aisbubqI2oTUg2lONJg==
+X-Received: by 2002:a17:90a:9f0b:b0:1ca:4647:a447 with SMTP id n11-20020a17090a9f0b00b001ca4647a447mr255473pjp.11.1649093358119;
+        Mon, 04 Apr 2022 10:29:18 -0700 (PDT)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:eb9])
+        by smtp.gmail.com with ESMTPSA id g6-20020a056a001a0600b004f7bd56cc08sm12880787pfv.123.2022.04.04.10.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Apr 2022 10:29:17 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+Subject: [PATCH v15 0/7] btrfs: add send/receive support for reading/writing compressed data
+Date:   Mon,  4 Apr 2022 10:29:02 -0700
+Message-Id: <cover.1649092662.git.osandov@fb.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220329171818.GD1314726@merlins.org> <dffec23f-bef1-30e2-83fc-b3fb9bb5f21e@gmail.com>
- <20220330143944.GE14158@merlins.org> <20220331171927.GL1314726@merlins.org>
- <Ykoux6Oczf6+hmGg@localhost.localdomain> <20220404010101.GQ1314726@merlins.org>
- <20220404150858.GS1314726@merlins.org>
-In-Reply-To: <20220404150858.GS1314726@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Mon, 4 Apr 2022 13:18:48 -0400
-Message-ID: <CAEzrpqc1yvK+v5MSiCxPRxX2c27xPsO5POMPJ8OuQaN4u1y2wA@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Chris Murphy <lists@colorremedies.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -71,31 +65,49 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 4, 2022 at 11:09 AM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Sun, Apr 03, 2022 at 06:01:01PM -0700, Marc MERLIN wrote:
-> > gargamel:~# btrfs rescue chunk-recover /dev/mapper/dshelf1a
-> > Scanning: 1509736448 in dev0
-> >
-> > I'll let this run, looks like it might take a while.
->
-> 14h later, still going on. I'll update when it's done, it may take a few
-> days.
-> gargamel:~# btrfs rescue chunk-recover /dev/mapper/dshelf1a
-> Scanning: 7049296592896 in dev0
->
-> Please let me know about the backup chunk roots that all seemed to be
-> the same and were apparently all pointing to the same corrupted version?
+From: Omar Sandoval <osandov@fb.com>
 
-Ok cool apparently we have code that does this already, can you do
+This series adds support for sending compressed data via Btrfs send and
+btrfs-progs support for sending/receiving compressed data and writing it
+with BTRFS_IOC_ENCODED_WRITE, which was previously merged into
+misc-next. See the previous posting for more details and benchmarks [1].
 
-btrfs-find-root -o 3 /dev/whatever
+Patches 1 and 2 are cleanups for Btrfs send. Patches 3-5 prepare some
+protocol changes for send stream v2. Patch 6 implements compressed send.
+Patch 7 enables send stream v2 and compressed send in the send ioctl
+when requested.
 
-and then use the bytenr's it finds like you did with the backup roots
+Changes since v14 [2]:
 
-btrfs check --chunk-bytenr <bytenr> /dev/whatever
+- Added a comment about "put_data" to patch 4.
+- Replaced hard-coded 2s with sizeof(__le16) in patch 4.
+- Replaced patch 5 with new approach using vmalloc() + vmalloc_to_page()
+  (instead of alloc_page() + vmap()) as suggested by Sweet Tea.
+- Added Sweet Tea's reviewed-bys.
+- Rebased on latest misc-next branch.
 
-and see if one of them works.  You can do this without stopping the
-chunk recovery if you want to let that keep going.  Thanks,
+The btrfs-progs patches are unchanged since v14, so I'm not resending
+them this time.
 
-Josef
+1: https://lore.kernel.org/linux-btrfs/cover.1615922753.git.osandov@fb.com/
+2: https://lore.kernel.org/linux-btrfs/cover.1647537027.git.osandov@fb.com/
+
+Omar Sandoval (7):
+  btrfs: send: remove unused send_ctx::{total,cmd}_send_size
+  btrfs: send: explicitly number commands and attributes
+  btrfs: add send stream v2 definitions
+  btrfs: send: write larger chunks when using stream v2
+  btrfs: send: get send buffer pages for protocol v2
+  btrfs: send: send compressed extents with encoded writes
+  btrfs: send: enable support for stream v2 and compressed writes
+
+ fs/btrfs/ctree.h           |   6 +
+ fs/btrfs/inode.c           |  13 +-
+ fs/btrfs/send.c            | 320 +++++++++++++++++++++++++++++++++----
+ fs/btrfs/send.h            | 142 +++++++++-------
+ include/uapi/linux/btrfs.h |  10 +-
+ 5 files changed, 392 insertions(+), 99 deletions(-)
+
+-- 
+2.35.1
+
