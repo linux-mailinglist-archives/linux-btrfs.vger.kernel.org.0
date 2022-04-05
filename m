@@ -2,129 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E504F5440
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 06:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632994F5449
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 06:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1391283AbiDFEqk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 00:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
+        id S1443343AbiDFErE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 00:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1587877AbiDFAKn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 20:10:43 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D12DA0BE
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 15:36:01 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id ED1FFC01D; Wed,  6 Apr 2022 00:35:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1649198157; bh=c4O6il5kWGpFyEaqDcisvmQ+DmfAGO+9GMA9Ik3IrUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DtJoEWmqMWVAc4LPYte//euyvyEM+G8UDkoxqi454ebX9p8DnfUdADA1TwB05Vec0
-         FU6gJGGr5btOBF4SPRxqFU5KUR1duAXGeVIh/9vb1lCxdd3o8pvDKWpT8Zd/MJOjfy
-         qGVNodViZ/CBKdPENTFeSBhrHyAGVllDux4jkc3GMhg1l5kvS3emOlOER77pp6QGyZ
-         L+HZQfCuDoZMd7LROfdN7xWvivPBh7I5sQFJTl/rg6DXo5oWRCDnYFaV3lGktJud+b
-         DsHGVclNrjZBlQAZ+IhP2INh6gOqx2VBFwutHJdtR1OdiMvnnd1r2IT8TWRF3HKVO7
-         GyyK5ghkR+Z1g==
+        with ESMTP id S1589013AbiDFASJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 20:18:09 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE61D179B37
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 15:41:14 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id x4so936358iop.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Apr 2022 15:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=33pTq7Eu9kMdEMBWRIzdWY75qJ31wP0mnLk0t/nBCls=;
+        b=gS7TbbcsyUGBrnTpH9GEETtexSyvAUuxBeKNnekH6Dyhxt94SkuxcyYzav9zHAkqaF
+         I2aw1I7k9aUN/flSR1WEX7ZQX3UjviLDQB/n/OyEAhgPZfUhef3jcM2kq7KlkgSysrjf
+         fGuPYI6ooL9/IZEUP3RHyQSyKL/yTMIEYdZw3c1bFXTLUmFo/DltvteUnjFyffU18Ecp
+         RsdNnowWczvpqvmqwfcRcb900ehUZf+OjVv6MChQQz8VlCDkxSGHgG1Mw/+zlh3lo1zo
+         BF4dfQTtpzJ/w8Vnvo4NqGkraW1hSkNWo6B0VNxse1ECzOPTva8GtnlBhZaAPa45zlCy
+         63xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=33pTq7Eu9kMdEMBWRIzdWY75qJ31wP0mnLk0t/nBCls=;
+        b=TCdKA2zdUqR1o+Ywtt8cs0K44m+QUTXHIhcxV9hf5OTfyAwsBMCMWImt5ZhLn2YOtv
+         38U60VWd4WBlJjQ5sPdzCz4e8o6W7VRvzPWghrfBS4C9oH90ilD7aObSzf69Ue8/pEOL
+         v5MLn9qtvf21KNlb1oqZ2Sey16IMBmyiJFZSp0zKkvxl3mQnDjbtqw8BT6Ieil+1BQaT
+         bvdhQwakhfUVpM1E9jMnTwv73xURfCqTnwNG5hqFEGbSh3bdCVu9vI41dO2yCZEOh3Ny
+         oI1k46mFYDTd5aSKPNloy6gcEVxKuSh2t2NmfzFiPz0tz8CaxaLGBfGXqK/bEC0/GZhV
+         mlRA==
+X-Gm-Message-State: AOAM5318MR7+v5iDXV2AqQb+it5hQ3dOLeA9Y7frLJKV9RioQUPuBsqU
+        1PQpbvjW3Q8ypLFGDfhc0alAjL3BCXqvpth9WezelbNJirE=
+X-Google-Smtp-Source: ABdhPJzo2PGUdp0H45yAnJi15/ykjR7zARaAwqkDpscvnn4mnVVa0AJk2hZFETEBccbo7JFZoBXiymJjL1UeOQudEzY=
+X-Received: by 2002:a02:b10f:0:b0:323:9bba:a956 with SMTP id
+ r15-20020a02b10f000000b003239bbaa956mr3121051jah.313.1649198473781; Tue, 05
+ Apr 2022 15:41:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220405195901.GC28707@merlins.org> <CAEzrpqe-tBN9iuDJPwf7cj7J8=d6gtr27LnTat9nZiA7iVERNQ@mail.gmail.com>
+ <20220405200805.GD28707@merlins.org> <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
+ <20220405203737.GE28707@merlins.org> <CAEzrpqemQ2Uzi+ZJHtQtbF62=hZMTmuPT3HxwkYedUvAsXhdvQ@mail.gmail.com>
+ <20220405211412.GF28707@merlins.org> <CAEzrpqeZoUF3+Pgyaup1DGFENs6zDKtRqHiJQ6sx_CoXE2HOOA@mail.gmail.com>
+ <20220405212655.GH28707@merlins.org> <CAEzrpqc0Ss+J6oTqNPfTgWOwyhPAF2uHnRELmc6AO6je6Ht88w@mail.gmail.com>
+ <20220405214309.GI28707@merlins.org>
+In-Reply-To: <20220405214309.GI28707@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Tue, 5 Apr 2022 18:41:02 -0400
+Message-ID: <CAEzrpqeDZxjbis5kPWH3khiOALyFqUoTuh5eojFtWHPcwj-Ygw@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 066F6C009;
-        Wed,  6 Apr 2022 00:35:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1649198157; bh=c4O6il5kWGpFyEaqDcisvmQ+DmfAGO+9GMA9Ik3IrUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DtJoEWmqMWVAc4LPYte//euyvyEM+G8UDkoxqi454ebX9p8DnfUdADA1TwB05Vec0
-         FU6gJGGr5btOBF4SPRxqFU5KUR1duAXGeVIh/9vb1lCxdd3o8pvDKWpT8Zd/MJOjfy
-         qGVNodViZ/CBKdPENTFeSBhrHyAGVllDux4jkc3GMhg1l5kvS3emOlOER77pp6QGyZ
-         L+HZQfCuDoZMd7LROfdN7xWvivPBh7I5sQFJTl/rg6DXo5oWRCDnYFaV3lGktJud+b
-         DsHGVclNrjZBlQAZ+IhP2INh6gOqx2VBFwutHJdtR1OdiMvnnd1r2IT8TWRF3HKVO7
-         GyyK5ghkR+Z1g==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 90d0f19a;
-        Tue, 5 Apr 2022 22:35:53 +0000 (UTC)
-Date:   Wed, 6 Apr 2022 07:35:38 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Dominique Martinet <dominique.martinet@atmark-techno.com>
-Subject: Re: [RFC PATCH] btrfs-progs: prop: add datacow inode property
-Message-ID: <YkzEOswx7te3B6uC@codewreck.org>
-References: <20220324042235.1483914-1-asmadeus@codewreck.org>
- <YkPuYyoV6LRWJdbS@codewreck.org>
- <85af4827-0a21-80d4-5d60-43e0e398a4e2@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <85af4827-0a21-80d4-5d60-43e0e398a4e2@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thanks for the reply!!
+On Tue, Apr 5, 2022 at 5:43 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Tue, Apr 05, 2022 at 05:35:02PM -0400, Josef Bacik wrote:
+> > On Tue, Apr 5, 2022 at 5:26 PM Marc MERLIN <marc@merlins.org> wrote:
+> > >
+> > > On Tue, Apr 05, 2022 at 05:19:57PM -0400, Josef Bacik wrote:
+> > > > Otra vez por favor,
+> > >
+> > > (gdb) run -o 1 /dev/mapper/dshelf1a
+> > > Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs-find-ro=
+ot -o 1 /dev/mapper/dshelf1a
+> > > [Thread debugging using libthread_db enabled]
+> > > Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.s=
+o.1".
+> > > parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> > > parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> > > parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> > > FS_INFO IS 0x5555555cf2a0
+> > > parent transid verify failed on 13577821667328 wanted 1602089 found 1=
+602242
+> > > parent transid verify failed on 13577821667328 wanted 1602089 found 1=
+602242
+> > > parent transid verify failed on 13577821667328 wanted 1602089 found 1=
+602242
+> > > parent transid verify failed on 13577821667328 wanted 1602089 found 1=
+602242
+> > > parent transid verify failed on 13577821667328 wanted 1602089 found 1=
+602242
+> > > parent transid verify failed on 13577821667328 wanted 1602089 found 1=
+602242
+> > > Couldn't find the last root for 4
+> > > Couldn't setup device tree
+> > > FS_INFO AFTER IS 0x5555555cf2a0
+> > > Superblock thinks the generation is 1602089
+> > > Superblock thinks the level is 1
+> > >
+> > > Program received signal SIGSEGV, Segmentation fault.
+> >
+> > Ugh sorry, try again.  Thanks,
+>
+>
+> Thanks. Note that you still have 2 functions to comment out
+> From https://github.com/josefbacik/btrfs-progs
+>    ce32ea15..914c9847  for-marc   -> origin/for-marc
+> Updating ce32ea15..914c9847
+> Fast-forward
+>  btrfs-find-root.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> sauron:/var/local/src/btrfs-progs-josefbacik# make
+>     [CC]     btrfs-find-root.o
+> btrfs-find-root.c:383:13: warning: =E2=80=98print_find_root_result=E2=80=
+=99 defined but not used [-Wunused-function]
+>   383 | static void print_find_root_result(struct cache_tree *result,
+>
+>
+> New version after I fixed the build warnings that were errors for me
+> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs-find-root -o 1 /d=
+ev/mapper/dshelf1a 2>&1 |tee /tmp/out
+> parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> FS_INFO IS 0x564897ec32a0
+> parent transid verify failed on 13577821667328 wanted 1602089 found 16022=
+42
+> parent transid verify failed on 13577821667328 wanted 1602089 found 16022=
+42
+> parent transid verify failed on 13577821667328 wanted 1602089 found 16022=
+42
+> parent transid verify failed on 13577821667328 wanted 1602089 found 16022=
+42
+> parent transid verify failed on 13577821667328 wanted 1602089 found 16022=
+42
+> parent transid verify failed on 13577821667328 wanted 1602089 found 16022=
+42
+> Couldn't find the last root for 4
+> Couldn't setup device tree
+> FS_INFO AFTER IS 0x564897ec32a0
+> Superblock thinks the generation is 1602089
+> Superblock thinks the level is 1
+> Found tree root at 13577814573056 gen 1602089 level 1
+> gargamel:/var/local/src/btrfs-progs-josefbacik#
+>
 
-Nikolay Borisov wrote on Tue, Apr 05, 2022 at 05:21:06PM +0300:
-> On 30.03.22 г. 8:45 ч., Dominique Martinet wrote:
-> > If you just say 'no' I'll bite the bullet and install e2fsprogs just for
-> > btrfs and document the command, but as things stand my users (embedded
-> > device developpers) have no way of disabling cow for e.g. database
-> > workloads and that's not really good long-term.
-> 
-> Just my 2 cents: I think we should strive to rely as much as possible on the
-> generic infrastructure where we can. The nocow options is one such case. The
-> way I see it btrfs property is used to manage features which are indeed
-> specific to btrfs and have no generic alternative.
+I'm wandering down this rabbit hole because if I'm able to read the
+blocks fine, wtf is the device root not being found.  I've pushed more
+printfs, lets see what that says.  Thanks,
 
-That's not what the man page says:
-
-       btrfs property provides an unified and user-friendly method
-       to tune different btrfs properties instead of using the
-       traditional method like chattr(1) or lsattr(1).
-
-I appreciate not wanting to duplicate code however, but documentation
-should be adjusted if that is what we want to do.
-
-
-> What's more I don't see how 'chattr +C /some/path' can be considered
-> 'complex' to teach someone, plus chattr is a standard linux utility.
-
-Well, '+C' is harder to remember than 'datacow', so in that sense yes it
-is more complex to teach someone from that regard.
-
-My users are mostly windows users who barely ever used linux, and I'm
-throwing a listing of command they should use in which conditions in our
-product manual, so it's much more coherent to have a group of 'btrfs
-property set' commands where I explain ro/compression/datacow together
-than resort to 'chattr' on one.
-
-Yes, there are other generic chattr commands that work on btrfs (append
-only, immutable come to mind immediately), but compression and datacow
-are historically handled differently for btrfs... Admittedly not a very
-good reason, the above and manual page paragraph I quoted are more
-important to me.
-(Speaking of which if the mountpoint has compress=smth, lsattr doesn't
-list +c and `btrfs property set x compression none` doesn't seem to
-cancel it, so I see no way of disabling compression on a single file in
-that case on 5.17.1 -- didn't that use to work?)
-
-
-
-Another reason for me would be that, on alpine linux, chattr is packaged
-as part of e2fsprogs-extra, which grows my root filesystem by a whole
-2MB.
-
-This might not seem much, but when I have to make everything fit in
-<200MB every bit counts. Adding a new flag here doesn't increase the
-size of the system much.
-(busybox has a chattr implementation, but for some reason it's not
-enabled on alpine linux -- I'll request to consider enabling it after
-checking how big it is if this isn't wanted here)
-
-
-Thanks,
--- 
-Dominique
+Josef
