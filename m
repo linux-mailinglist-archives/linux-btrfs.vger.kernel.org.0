@@ -2,113 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BE94F45BA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 00:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7C54F477B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 01:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239736AbiDEPDp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Apr 2022 11:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        id S230272AbiDEVGC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Apr 2022 17:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1392015AbiDENt3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 09:49:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7345910FCD
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 05:48:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 322AE1F7AD
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 12:48:58 +0000 (UTC)
+        with ESMTP id S1384078AbiDEPOw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 11:14:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295A1689A6;
+        Tue,  5 Apr 2022 06:28:51 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DABBD210DE;
+        Tue,  5 Apr 2022 13:28:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649162938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0KmXwuEewfG0oeTwclLT2n5ZxaTtpBCjb87b2DYrruA=;
-        b=XAMVe2FGZHF70OtqdqL8BEq8K5c6cR0oDxcMJlc97VDXrqNJDJ/DHKHlLF3/UNn58HLw5R
-        BL5Xi6Koi1pbN+XEGgEtKgk8raCgAwt3p0Cm2CEk2+Cxqa8DNdohaBUhcHC/ucmxE8yuzz
-        aHxm6/v0BMguBSFuUMC+UZsZVR3577c=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 849DC13A04
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 12:48:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6J2YE7k6TGJLGgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Apr 2022 12:48:57 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 8/8] btrfs-progs: tests/fsck: add test case for data csum check on raid5
-Date:   Tue,  5 Apr 2022 20:48:30 +0800
-Message-Id: <33cdbaa1de3160605d0c552497bd02f9ee632f41.1649162174.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1649162174.git.wqu@suse.com>
-References: <cover.1649162174.git.wqu@suse.com>
+        t=1649165329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=B1KHdOwVSkxc4cwioVl/fqGmb4ILJaNXLeIecIndREU=;
+        b=Jg1tYOq01mB8B0vxbgs4NgOXJtRQr3uDIvlYQoTjvOY7mEVQ3u6at1FQZe9Tw3SE3QbNZ9
+        yZdEcUaKfQVEW+gX5DmsUmWlZ09rfQXT/6A699HqreRbUT5ylyrydwStiI9dbGzoL9EGpI
+        vudzaTBUEUaXlugYM7VcAAseaxSEPf4=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id CF71DA3B87;
+        Tue,  5 Apr 2022 13:28:49 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B1C70DA80E; Tue,  5 Apr 2022 15:24:48 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.18-rc2
+Date:   Tue,  5 Apr 2022 15:24:47 +0200
+Message-Id: <cover.1649109877.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Previously 'btrfs check --check-data-csum' will report tons of false
-alerts for RAID56.
+Hi,
 
-Add a test case to make sure with the new RAID56 rebuild ability, there
-should be no false alerts.
+please pull the following fixes for btrfs, thanks.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- .../056-raid56-false-alerts/test.sh           | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
- create mode 100755 tests/fsck-tests/056-raid56-false-alerts/test.sh
+- prevent deleting subvolume with active swapfile
 
-diff --git a/tests/fsck-tests/056-raid56-false-alerts/test.sh b/tests/fsck-tests/056-raid56-false-alerts/test.sh
-new file mode 100755
-index 000000000000..b82e999c7740
---- /dev/null
-+++ b/tests/fsck-tests/056-raid56-false-alerts/test.sh
-@@ -0,0 +1,31 @@
-+#!/bin/bash
-+#
-+# Make sure "btrfs check --check-data-csum" won't report false alerts on RAID56
-+# data.
-+#
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq btrfs
-+check_prereq mkfs.btrfs
-+check_global_prereq losetup
-+
-+setup_loopdevs 3
-+prepare_loopdevs
-+dev1=${loopdevs[1]}
-+TEST_DEV=$dev1
-+
-+setup_root_helper
-+
-+run_check $SUDO_HELPERS "$TOP/mkfs.btrfs" -f -m raid1 -d raid5 ${loopdevs[@]}
-+run_check_mount_test_dev
-+
-+run_check $SUDO_HELPER dd if=/dev/urandom of="$TEST_MNT/file" bs=16K count=1 \
-+	status=noxfer > /dev/null 2>&1
-+
-+run_check_umount_test_dev
-+
-+# Check data csum should not report false alerts
-+run_check "$TOP/btrfs" check --check-data-csum "$dev1"
-+
-+cleanup_loopdevs
--- 
-2.35.1
+- fix qgroup reserve limit calculation overflow
 
+- remove device count in superblock and its item in one transaction so
+  they cant't get out of sync
+
+- skip defragmenting an isolated sector, this could cause some extra IO
+
+- unify handling of mtime/permissions in hole punch with fallocate
+
+- zoned mode fixes:
+  - remove assert checking for only single mode, we have the DUP mode
+    implemented
+
+  - fix potential lockdep warning while traversing devices when checking
+    for zone activation
+
+----------------------------------------------------------------
+The following changes since commit d3e29967079c522ce1c5cab0e9fab2c280b977eb:
+
+  btrfs: zoned: put block group after final usage (2022-03-14 13:13:54 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.18-rc1-tag
+
+for you to fetch changes up to 60021bd754c6ca0addc6817994f20290a321d8d6:
+
+  btrfs: prevent subvol with swapfile from being deleted (2022-03-24 17:50:57 +0100)
+
+----------------------------------------------------------------
+Darrick J. Wong (1):
+      btrfs: fix fallocate to use file_modified to update permissions consistently
+
+Ethan Lien (1):
+      btrfs: fix qgroup reserve overflow the qgroup limit
+
+Johannes Thumshirn (2):
+      btrfs: zoned: traverse devices under chunk_mutex in btrfs_can_activate_zone
+      btrfs: zoned: remove left over ASSERT checking for single profile
+
+Josef Bacik (1):
+      btrfs: do not warn for free space inode in cow_file_range
+
+Kaiwen Hu (1):
+      btrfs: prevent subvol with swapfile from being deleted
+
+Qu Wenruo (2):
+      btrfs: remove device item and update super block in the same transaction
+      btrfs: avoid defragging extents whose next extents are not targets
+
+ fs/btrfs/extent_io.h |  2 +-
+ fs/btrfs/file.c      | 13 +++++++++--
+ fs/btrfs/inode.c     | 23 ++++++++++++++++++-
+ fs/btrfs/ioctl.c     | 20 +++++++++++-----
+ fs/btrfs/volumes.c   | 65 ++++++++++++++++++++++------------------------------
+ fs/btrfs/zoned.c     | 13 ++++-------
+ 6 files changed, 81 insertions(+), 55 deletions(-)
