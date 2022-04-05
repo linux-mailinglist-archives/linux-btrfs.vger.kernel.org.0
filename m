@@ -2,57 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE724F4773
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 01:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA974F4795
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 01:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235735AbiDEVLo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Apr 2022 17:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        id S1347417AbiDEVNz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Apr 2022 17:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1455100AbiDEP7h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 11:59:37 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718421EC620;
-        Tue,  5 Apr 2022 08:10:00 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C418F68AFE; Tue,  5 Apr 2022 17:09:56 +0200 (CEST)
-Date:   Tue, 5 Apr 2022 17:09:56 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: cleanup btrfs bio handling, part 1
-Message-ID: <20220405150956.GA16714@lst.de>
-References: <20220404044528.71167-1-hch@lst.de> <20220405145626.GY15609@twin.jikos.cz>
+        with ESMTP id S1456376AbiDEQBh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 12:01:37 -0400
+X-Greylist: delayed 398 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Apr 2022 08:22:51 PDT
+Received: from mail.660.email (unknown [106.75.247.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E5017ECF5
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 08:22:47 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by mail.660.email (Postfix) with ESMTP id 0F0CD87981;
+        Tue,  5 Apr 2022 15:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=660.email; h=
+        reply-to:date:date:from:from:to:subject:subject
+        :content-description:content-transfer-encoding:mime-version
+        :content-type:content-type; s=dkim; t=1649171763; x=1651763764;
+         bh=WrW15A3S1XqchLC9baR/nKsfD50S1aYwTaLWlqd1eDA=; b=2wuK9fozJu34
+        cve38li2f6+Tqgcty8vdurGYOGwcwzCfLaxiGSF/3Dv4GjEG3GxasseIycsHDyAx
+        ytsroPWAVBmyMVnOUlGLo4Yo/9ieoG85YGawSwRpsYRI5mr9oniivDVMKOpGlRx/
+        2FVB5fwMXCUuiGXoE64mJ0pXaa8tw3Q=
+X-Virus-Scanned: amavisd-new at 660.email
+Received: from mail.660.email ([127.0.0.1])
+        by localhost (mail.660.email [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aMrfgw0gDh_c; Tue,  5 Apr 2022 23:16:03 +0800 (CST)
+Received: from reverse-dns.chicago (unknown [213.222.247.118])
+        by mail.660.email (Postfix) with ESMTPA id EBEA7876DD;
+        Tue,  5 Apr 2022 23:15:43 +0800 (CST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220405145626.GY15609@twin.jikos.cz>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Darlehen Angebot
+To:     Recipients <test@660.email>
+From:   test@660.email
+Date:   Tue, 05 Apr 2022 10:15:22 -0500
+Reply-To: rafaelalexandera2710@gmail.com
+Message-Id: <20220405151604.0F0CD87981@mail.660.email>
+X-Spam-Status: Yes, score=7.0 required=5.0 tests=BAYES_99,BAYES_999,
+        DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        RDNS_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
+        *      [score: 1.0000]
+        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
+        *      [score: 1.0000]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [rafaelalexandera2710[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.8 RDNS_NONE Delivered to internal network by a host with no rDNS
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.1 DKIM_INVALID DKIM or DK signature exists, but is not valid
+        *  0.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 04:56:26PM +0200, David Sterba wrote:
-> On Mon, Apr 04, 2022 at 06:45:16AM +0200, Christoph Hellwig wrote:
-> > Hi all,
-> > 
-> > this series  moves btrfs to use the new as of 5.18 bio interface and
-> > cleans up a few close by areas.  Larger cleanups focussed around
-> > the btrfs_bio will follow as a next step.
-> 
-> I've looked at the previous batch of 40 patches which was doing some
-> things I did not like (eg. removing the worker) but this subset are just
-> cleanups and all seem to be fine. I'll add the series as topic branch to
-> for-next and move misc-next. Thanks.
+Gute Tage
 
-If it helps can rebase.  And it would be really helpful to start
-a discussion on the things you did not like on the patches already
-on the list if you have a little time to spare.
+
+
+Haben Sie nach einem besseren Angebot gesucht? Wir bieten verschiedene Arte=
+n von Darlehen, Projektdarlehen, Gesch=E4ftsdarlehen, Kurzzeitdarlehen und =
+Privatdarlehen an. Unsere Angebote beginnen bei 50.000,00 EUR bis 10.000.00=
+0,00 EUR mit einer maximalen Laufzeit von 1,5 %. Kontaktieren Sie uns jetzt=
+ f=FCr weitere Einzelheiten.
+
+
+
+Danke f=FCr dich.
+
+Herr Raffael Alexander
