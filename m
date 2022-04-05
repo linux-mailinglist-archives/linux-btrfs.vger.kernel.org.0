@@ -2,72 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B384F479C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 01:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206E64F478A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 01:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350005AbiDEVOV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Apr 2022 17:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
+        id S243956AbiDEVM4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Apr 2022 17:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1457667AbiDEQb2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 12:31:28 -0400
-X-Greylist: delayed 414 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Apr 2022 09:29:29 PDT
-Received: from rin.romanrm.net (rin.romanrm.net [IPv6:2001:bc8:2dd2:1000::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11772BF006
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 09:29:28 -0700 (PDT)
-Received: from nvm (nvm2.home.romanrm.net [IPv6:fd39::4a:3cff:fe57:d6b5])
-        by rin.romanrm.net (Postfix) with SMTP id 9062175F;
-        Tue,  5 Apr 2022 16:22:31 +0000 (UTC)
-Date:   Tue, 5 Apr 2022 21:22:30 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220405212230.28db3079@nvm>
-In-Reply-To: <20220405014259.GG5566@merlins.org>
-References: <20220405001325.GB5566@merlins.org>
-        <CAEzrpqcb2jHehpnrjxtNJ4KWW3M5pvJThUNGFZw78=MBNdTG5g@mail.gmail.com>
-        <20220405001808.GC5566@merlins.org>
-        <CAEzrpqfKaXjk7J_oAY0pSL4YPy_vw5Z0tKmjMPQgQSd_OhYwXA@mail.gmail.com>
-        <20220405002826.GD5566@merlins.org>
-        <CAEzrpqeHa7tG+S_9Owu5XYa0hwBKJPVN2ttr_E_1Q4UV8u0Nmg@mail.gmail.com>
-        <20220405005809.GE5566@merlins.org>
-        <CAEzrpqfjTUoK9fi43tLZaJ9mkBewAqcUH77di7QipH9Vj6AB0g@mail.gmail.com>
-        <20220405011559.GF5566@merlins.org>
-        <CAEzrpqfGF3O6gZTqGVN+iju92=8Zemz09_AJN2nvy2yHUmYyGg@mail.gmail.com>
-        <20220405014259.GG5566@merlins.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S1457874AbiDEQyG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 12:54:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892E5326E9;
+        Tue,  5 Apr 2022 09:52:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2276B6187A;
+        Tue,  5 Apr 2022 16:52:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7EA34C385A1;
+        Tue,  5 Apr 2022 16:52:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649177527;
+        bh=Y7Mst8KQiuSlm/hirze6AqU381D0n5oCqAcv5T0uzsQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Rik8keXLhHjTTb9+WfjTpHN7fhIp0W77s2Ye55P9Feqy3C0Z/vHSTWGYV5LHndpRP
+         5lI8TxrKifRHSBKPdqGMBqcuHAAZTm67bo9AJ2mlvfoBUNW7VerfVSOmBDisKF1Xpz
+         YfToC0IICv4VG2OlrAGOfwbyGXqXvvmD4xEUTDRY4xoe+aPb4CO1OsyOnmaN3aPRe5
+         Kl53yE5dpvT2yM8hP+fMCCqY3ndLp8K6RNpahiWIcsqihtEc861vVT2FcUensY1zfL
+         QVJZvpzEnq7LQ1iP5yAKDcS1pdWghaS3rYKOXON/afehyEsMA0xhn9fFVoyQPoas0d
+         5+QGbGf1SetcA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67F56E6D402;
+        Tue,  5 Apr 2022 16:52:07 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.18-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1649109877.git.dsterba@suse.com>
+References: <cover.1649109877.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1649109877.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.18-rc1-tag
+X-PR-Tracked-Commit-Id: 60021bd754c6ca0addc6817994f20290a321d8d6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ce4c854ee8681bc66c1c369518b6594e93b11ee5
+Message-Id: <164917752741.856.4378700460752736894.pr-tracker-bot@kernel.org>
+Date:   Tue, 05 Apr 2022 16:52:07 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 4 Apr 2022 18:42:59 -0700
-Marc MERLIN <marc@merlins.org> wrote:
+The pull request you sent on Tue, 5 Apr 2022 13:28:27 +0200:
 
-> And shit, I got distracted and sent the text output to
-> /dev/mapper/dshelf1a, so I clobbered about 30K of the device. 
-> I'm assuming there was probably something there?
-> 
-> Script started on Mon 04 Apr 2022 18:36:51 PDT
-> 1;37mgargamel:/var/local/src/btrfs-progs-josefbacik#m ./btrfs-inspect-internal dump-tree -b 13577821667328 &>/dev/mapper/dshelf1a
-> btrfs inspect-internal dump-tree: not enough arguments: 0 but at least 1 expected
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.18-rc1-tag
 
-It doesn't appear like it would write 30K to the device, it failed right away
-since you didn't *specify* the device; the above output was to STDERR, and
-there would be no writes to STDOUT (i.e. the device). Did you check the
-content of /dev/mapper/dshelf1a (with less -f, for example)?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ce4c854ee8681bc66c1c369518b6594e93b11ee5
 
-I know Josef said this is no prolem, but anyways. :)
+Thank you!
 
 -- 
-With respect,
-Roman
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
