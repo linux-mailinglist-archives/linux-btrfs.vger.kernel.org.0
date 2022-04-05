@@ -2,48 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2703C4F444E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 00:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BF24F45E6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 00:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239582AbiDEPD2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Apr 2022 11:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        id S234810AbiDEPD6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Apr 2022 11:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391999AbiDENt3 (ORCPT
+        with ESMTP id S1392005AbiDENt3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 09:49:29 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A569FFE
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 05:48:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D882BA198
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 05:48:52 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B8457210EA
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 12:48:48 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 510D221110
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 12:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649162928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=8IEYzUhKxYrXLzg6TUfbpwH4IlFvHVWQG3dyYqPbqo0=;
-        b=eJm3O2pP+YNqZAu/sejgeepUJT8fWr+dJyA/JpI0hFSP+as2LbE28kxyNaCAq8kEaUQse0
-        USIDCs4X59lthvrqug8jsVQdy1dHc7nXppXyMvpBju0r/00E013lCX/eTEBZ1iUxSIWCT2
-        COwK6ZuGzcjRzkzQwJh/WqxP1qDBQaE=
+        t=1649162931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8TpcigrgfrlUSp+RfphJdAoz3ogvmEYZqc4PS+4JjJ4=;
+        b=FK1PaLOYykRKVC2nCIEJseXYJ/ZrO4vj3iV7xpEGlDXcnjVi5vt7F9WBs+x1nsyo96hCIB
+        A/C+0VkWbiaDm2Me/TbX5k3ZCOoKnqKdr9tJ1bl3lmAm9C2ht7D/4O4CbsP8F3tTLUywIe
+        qXJ5IM9+hk9D0F6WjVwaqWA0pAuP+O8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 13F3613A04
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 12:48:47 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A30BC13A04
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 12:48:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id RErEM686TGJLGgAAMHmgww
+        id +MTrGrI6TGJLGgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Apr 2022 12:48:47 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Apr 2022 12:48:50 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/8] btrfs-progs: add RAID56 rebuild ability at read time
-Date:   Tue,  5 Apr 2022 20:48:22 +0800
-Message-Id: <cover.1649162174.git.wqu@suse.com>
+Subject: [PATCH 2/8] btrfs-progs: extract metadata restore read code into its own helper
+Date:   Tue,  5 Apr 2022 20:48:24 +0800
+Message-Id: <ccb15024f673d984578e25e1537b840bf50a58b3.1649162174.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1649162174.git.wqu@suse.com>
+References: <cover.1649162174.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,87 +60,109 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This branch can be fetched from github:
-https://github.com/adam900710/btrfs-progs/tree/raid56_rebuild
+For metadata restore, our logical address is mapped to a single device
+with logical address 1:1 mapped to device physical address.
 
-Please note that, the last time I check devel branch, the RAID56 warning
-patch is not yet merged.
+Move this part of code into a helper, this will make later extent buffer
+read path refactoer much easier.
 
-So this is based on the latest devel branch from github.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/disk-io.c | 69 +++++++++++++++++++++++++----------------
+ 1 file changed, 42 insertions(+), 27 deletions(-)
 
-And since we're adding proper RAID56 repair ability, there is no need
-for the patchset "btrfs-progs: check: avoid false alerts for --check-data-csum on RAID56"
-
-This patchset is mostly to add the ability to properly read data/metadata
-for RAID56 when mirror_num > 1.
-
-[PROBLEMS]
-There are several for current btrfs-progs:
-
-- No RAID56 rebuild ability
-  Thus for any mirror > 1 on RAID56, we will read the parity data
-  straight, causing no way to recover.
-
-- No unified logical read/write entrance
-  We have various different functions, for read we have
-  read_data_from_disk(), read_extent_data() and read_extent_from_disk().
-
-  Unlike kernel, we have no btrfs_map_bio() to address everything.
-
-  This makes adding RAID56 rebuild even hard.
-
-[FIXES]
-To address the problem, this patchset will:
-
-- Cleanup and refactors
-  Mostly to unify the logical read/write entrance.
-  In patch 1~6, we will unify the logical read write entrances to
-  only two functions:
-  * read_extent_from_disk()
-  * write_extent_to_disk()
-
-  They will do the chunk mapping and stripe splitting.
-
-- Add RAID56 read rebuild ability
-  We already have RAID56 RMW for write path.
-  Just add a new helper for mirror > 1 read on RAID56.
-
-- A new test case
-  In fact the same test case from previous RAID56 warning patchset.
-
-Qu Wenruo (8):
-  btrfs-progs: remove the unnecessary BTRFS_SUPER_INFO_OFFSET path for
-    tree block read
-  btrfs-progs: extract metadata restore read code into its own helper
-  btrfs-progs: don't use write_extent_to_disk() directly
-  btrfs-progs: use write_data_to_disk() to replace
-    write_extent_to_disk()
-  btrfs-progs: use read_data_from_disk() to replace
-    read_extent_from_disk() and replace read_extent_data()
-  btrfs-progs: remove extent_buffer::fd and extent_buffer::dev_bytes
-  btrfs-progs: allow read_data_from_disk() to rebuild RAID56 using P/Q
-  btrfs-progs: tests/fsck: add test case for data csum check on raid5
-
- btrfs-corrupt-block.c                         |  38 +---
- btrfs-map-logical.c                           |   5 +-
- btrfstune.c                                   |   3 +-
- check/main.c                                  |   2 +-
- check/mode-common.c                           |   4 +-
- cmds/restore.c                                |   4 +-
- image/main.c                                  |   2 +-
- kernel-shared/ctree.c                         |   5 +-
- kernel-shared/disk-io.c                       | 140 +++++--------
- kernel-shared/disk-io.h                       |   2 -
- kernel-shared/extent_io.c                     | 188 ++++++++++++------
- kernel-shared/extent_io.h                     |   9 +-
- kernel-shared/file.c                          |  20 +-
- kernel-shared/free-space-cache.c              |  20 +-
- kernel-shared/volumes.c                       |  39 ++--
- kernel-shared/volumes.h                       |   1 +
- .../056-raid56-false-alerts/test.sh           |  31 +++
- 17 files changed, 277 insertions(+), 236 deletions(-)
- create mode 100755 tests/fsck-tests/056-raid56-false-alerts/test.sh
-
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index f2492547f77d..e6f5d554f13a 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -288,6 +288,30 @@ out:
+ 
+ }
+ 
++static int read_on_restore(struct extent_buffer *eb)
++{
++	struct btrfs_fs_info *fs_info = eb->fs_info;
++	struct btrfs_device *device;
++	int ret;
++
++	/*
++	 * For on_restoring mode, there should be only one device, and logical
++	 * address is mapped 1:1 to device physical offset.
++	 */
++	list_for_each_entry(device, &fs_info->fs_devices->devices, dev_list) {
++		if (device->devid == 1)
++			break;
++	}
++	device->total_ios++;
++
++	ret = btrfs_pread(device->fd, eb->data, eb->len, eb->start,
++			  eb->fs_info->zoned);
++	if (ret != eb->len)
++		ret = -EIO;
++	else
++		ret = 0;
++	return ret;
++}
+ 
+ int read_whole_eb(struct btrfs_fs_info *info, struct extent_buffer *eb, int mirror)
+ {
+@@ -302,38 +326,29 @@ int read_whole_eb(struct btrfs_fs_info *info, struct extent_buffer *eb, int mirr
+ 		read_len = bytes_left;
+ 		device = NULL;
+ 
+-		if (!info->on_restoring) {
+-			ret = btrfs_map_block(info, READ, eb->start + offset,
+-					      &read_len, &multi, mirror, NULL);
+-			if (ret) {
+-				printk("Couldn't map the block %llu\n", eb->start + offset);
+-				kfree(multi);
+-				return -EIO;
+-			}
+-			device = multi->stripes[0].dev;
+-
+-			if (device->fd <= 0) {
+-				kfree(multi);
+-				return -EIO;
+-			}
++		if (info->on_restoring)
++			return read_on_restore(eb);
+ 
+-			eb->fd = device->fd;
+-			device->total_ios++;
+-			eb->dev_bytenr = multi->stripes[0].physical;
++		ret = btrfs_map_block(info, READ, eb->start + offset,
++				      &read_len, &multi, mirror, NULL);
++		if (ret) {
++			printk("Couldn't map the block %llu\n", eb->start + offset);
+ 			kfree(multi);
+-			multi = NULL;
+-		} else {
+-			/* special case for restore metadump */
+-			list_for_each_entry(device, &info->fs_devices->devices, dev_list) {
+-				if (device->devid == 1)
+-					break;
+-			}
++			return -EIO;
++		}
++		device = multi->stripes[0].dev;
+ 
+-			eb->fd = device->fd;
+-			eb->dev_bytenr = eb->start;
+-			device->total_ios++;
++		if (device->fd <= 0) {
++			kfree(multi);
++			return -EIO;
+ 		}
+ 
++		eb->fd = device->fd;
++		device->total_ios++;
++		eb->dev_bytenr = multi->stripes[0].physical;
++		kfree(multi);
++		multi = NULL;
++
+ 		if (read_len > bytes_left)
+ 			read_len = bytes_left;
+ 
 -- 
 2.35.1
 
