@@ -2,88 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C0E4F4790
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 01:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6CC4F4793
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 01:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345064AbiDEVNb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Apr 2022 17:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
+        id S1346388AbiDEVNn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Apr 2022 17:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447311AbiDEPqR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 11:46:17 -0400
+        with ESMTP id S1453353AbiDEP4Z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Apr 2022 11:56:25 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D5F92D30
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 07:21:08 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 640841F38D;
-        Tue,  5 Apr 2022 14:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649168467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBE013369F;
+        Tue,  5 Apr 2022 08:00:29 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 733E41F38D;
+        Tue,  5 Apr 2022 15:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649170828;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Y/HrSp+SiYmNHA34Q9Y3WX5pmJ5YbtfykkwGA+G8QiE=;
-        b=MuAnClznHcgr17Q6od1TPk8o3yimUrsx4p4nHadPuzvHkpLqZPyPd3JE45nghY9kr+TD5f
-        GZhzVGU3uc8sXxURurODYBv74iqLrtlx3k1r3SWAHqqG3gVCQphjgH/cxYnMd7mMOy83x+
-        sB91slK2X02fGTHuL2O4rcejoDKV//g=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E02D13A04;
-        Tue,  5 Apr 2022 14:21:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mjF0BFNQTGJMTAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 05 Apr 2022 14:21:07 +0000
-Message-ID: <85af4827-0a21-80d4-5d60-43e0e398a4e2@suse.com>
-Date:   Tue, 5 Apr 2022 17:21:06 +0300
+        bh=ymtPDihI+BaQ3NeOugErm/4eh+I6Mm9oHF+riZmHBLg=;
+        b=PYffe1B2SylsYUV0f9qe2/bAy8aZZyiPuclBV3eRel5+cDDU7gQ4IZotyPmAHFDgtZh4nf
+        CEAqRcEKqEe25Ynll2UkCgJiksZqNgGBXLsEKC99aD8eJ2+SpchirAoKMF1SahAWB2X5dT
+        b+C0z/G/dTpjfqXks56IrGx5FZVuOuw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649170828;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ymtPDihI+BaQ3NeOugErm/4eh+I6Mm9oHF+riZmHBLg=;
+        b=CbqLhoUf0auHaeiPtEl8aWUXBYSpB+lJrYlOpNvACf3SkrSLfAsA7qL98zQD88xciPBzv7
+        LVXjD3jz52EK63CQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 37D47A3B97;
+        Tue,  5 Apr 2022 15:00:28 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0C30DDA80E; Tue,  5 Apr 2022 16:56:26 +0200 (CEST)
+Date:   Tue, 5 Apr 2022 16:56:26 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: cleanup btrfs bio handling, part 1
+Message-ID: <20220405145626.GY15609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Qu Wenruo <wqu@suse.com>, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20220404044528.71167-1-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [RFC PATCH] btrfs-progs: prop: add datacow inode property
-Content-Language: en-US
-To:     Dominique Martinet <asmadeus@codewreck.org>,
-        linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com,
-        Dominique Martinet <dominique.martinet@atmark-techno.com>
-References: <20220324042235.1483914-1-asmadeus@codewreck.org>
- <YkPuYyoV6LRWJdbS@codewreck.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <YkPuYyoV6LRWJdbS@codewreck.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220404044528.71167-1-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 30.03.22 г. 8:45 ч., Dominique Martinet wrote:
+On Mon, Apr 04, 2022 at 06:45:16AM +0200, Christoph Hellwig wrote:
+> Hi all,
 > 
-> I appreciate it's a trifling feature, but I'd appreciate not having to
-> teach our users about chattr if they could only have to manipulate btrfs
-> properties so I'd appreciate some feedback!:)
-> 
-> If you just say 'no' I'll bite the bullet and install e2fsprogs just for
-> btrfs and document the command, but as things stand my users (embedded
-> device developpers) have no way of disabling cow for e.g. database
-> workloads and that's not really good long-term.
+> this series  moves btrfs to use the new as of 5.18 bio interface and
+> cleans up a few close by areas.  Larger cleanups focussed around
+> the btrfs_bio will follow as a next step.
 
-
-Just my 2 cents: I think we should strive to rely as much as possible on 
-the generic infrastructure where we can. The nocow options is one such 
-case. The way I see it btrfs property is used to manage features which 
-are indeed specific to btrfs and have no generic alternative.
-
-What's more I don't see how 'chattr +C /some/path' can be considered 
-'complex' to teach someone, plus chattr is a standard linux utility.
+I've looked at the previous batch of 40 patches which was doing some
+things I did not like (eg. removing the worker) but this subset are just
+cleanups and all seem to be fine. I'll add the series as topic branch to
+for-next and move misc-next. Thanks.
