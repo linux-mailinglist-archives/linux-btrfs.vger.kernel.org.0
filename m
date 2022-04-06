@@ -2,201 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6114F6C1C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 23:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A554F6C36
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 23:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbiDFVIj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 17:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
+        id S234925AbiDFVLj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 17:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235217AbiDFVIS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 17:08:18 -0400
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9B13CC535
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 12:45:58 -0700 (PDT)
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id D0E5A2B252E; Wed,  6 Apr 2022 15:45:57 -0400 (EDT)
-Date:   Wed, 6 Apr 2022 15:45:57 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <Yk3t9U/XtQjFAcAE@hungrycats.org>
-References: <20220405195901.GC28707@merlins.org>
- <CAEzrpqe-tBN9iuDJPwf7cj7J8=d6gtr27LnTat9nZiA7iVERNQ@mail.gmail.com>
- <20220405200805.GD28707@merlins.org>
- <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
- <YkzWAZtf7rcY/d+7@hungrycats.org>
- <20220406000844.GK28707@merlins.org>
- <Ykzvoz47Rvknw7aH@hungrycats.org>
- <20220406040913.GE3307770@merlins.org>
- <Yk3W88Eyh0pSm9mQ@hungrycats.org>
- <20220406191317.GC14804@merlins.org>
+        with ESMTP id S235192AbiDFVLS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 17:11:18 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5654158568
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 12:53:46 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id d3so2694249ilr.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 06 Apr 2022 12:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n6zfysJgvZERnxM2mCtWsEoF3y+zSGYBlNstf5iSXXw=;
+        b=W9tKqUj6+hvsHwKykYOfZ09DI0/zd2REKXsQ+xx20IPXLz/faHZ8dytuCi9CFAHDXh
+         rlthYPRKCEq2h2Uuebb6+xhGm70wHYXTP+pM7YbzYEeP9mnYwIeZa9lCknS+e27h5801
+         DJDTAS3KO5D051krVY7vEBI1eMtLPzjZB23WjDterZ8Aq9CNyWnN3tq1e1hwYF2sZRiG
+         frpVNcKuXKIsqAJJPKcwfOmM8o6fE2OYS4qOSy4aQX9fr2B4YLwQL3EUgL9yGtERzXF3
+         OI8gVPgPhQIR4FKNCncxtcwLJhF3s5MrQAQoalD5jG6TFr0d4Qc8YdRz8nYhFpVynU7l
+         cDTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n6zfysJgvZERnxM2mCtWsEoF3y+zSGYBlNstf5iSXXw=;
+        b=yjVpIQAXw2miO7BUzsliek6GDU55WjtTkswGSVYcrZlHT19AVWgwIT9PcBQy4iphUd
+         pv+LZrrAWeDxC2UYEbEkLxmXHM7SgtJtvdMDKVAJSW/2EhZZD3iB2V2ssEZjM+5qqsXU
+         9z53tQS4C850Q+y14QzABUBpLeUcyFXLOnsfQRaWTzIFjUhYkaScYNNt7yRwg7dUAvkS
+         9YY1T7xiZh19oDCXn+fNIF/m1un+BchZ+aWqXsA/1/mXT6j5q4ZKj5bbAMcgGEmJBVXR
+         S1NF5eLSlSdPlsnB16fUn3i2rZp3XU68X1SHOVL0XoW9BC13r6dOE1EGa1NMMrqUk/O8
+         UIoA==
+X-Gm-Message-State: AOAM531y/pNwK9EOowrM/lNEfchA8LwdpLBJk38NRRNytm8dC9IX5LgM
+        51mFofwllHPNMeIF8KV92sOfjj1opcyL7kc9ZpCXhc+RQMU=
+X-Google-Smtp-Source: ABdhPJx1aHe3/tK7t9cl+6S0xRZYkTDsxT4evZTF+FTzRP39xy/WWFUOkL15i6c7JsU4QRE4nLrM6yw/9KrEAJGVJ/I=
+X-Received: by 2002:a05:6e02:170a:b0:2c9:f038:7f2e with SMTP id
+ u10-20020a056e02170a00b002c9f0387f2emr5007769ill.127.1649274825528; Wed, 06
+ Apr 2022 12:53:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220406191317.GC14804@merlins.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20220405225808.GJ28707@merlins.org> <CAEzrpqdtvY7vu50-xSFpdJoySutMWF3JYsqORjMBHNzmTZ52UQ@mail.gmail.com>
+ <20220406003521.GM28707@merlins.org> <CAEzrpqesUdkDXhdJXHewPZuFGPVu_qyGfH07i5Lxw=NDs=LASQ@mail.gmail.com>
+ <CAEzrpqfV9MgU_XbVxpnv05gKnKXQRnHy_BrSYddDfNLZFqi2+g@mail.gmail.com>
+ <20220406031255.GO28707@merlins.org> <20220406033404.GQ28707@merlins.org>
+ <CAEzrpqfnGCvE36-r-0OkN7yoA7j9XPCNqQVOnLrgA+cQZNoR3A@mail.gmail.com>
+ <20220406185431.GB14804@merlins.org> <CAEzrpqd0Pjx7qXz1nXEXubTfN3rmR++idOL8z6fx3tZtyaj2TQ@mail.gmail.com>
+ <20220406191636.GD14804@merlins.org>
+In-Reply-To: <20220406191636.GD14804@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Wed, 6 Apr 2022 15:53:34 -0400
+Message-ID: <CAEzrpqf0Vz=6nn-iMeyFsB0qLX+X48zO26Ero-3R6FLCqnzivg@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 06, 2022 at 12:13:17PM -0700, Marc MERLIN wrote:
-> On Wed, Apr 06, 2022 at 02:07:47PM -0400, Zygo Blaxell wrote:
-> > Readahead can fail for a number of reasons that aren't real problems,
-> 
-> thanks.
-> 
-> > Once a degraded array has an IO failure, mdadm assumes you're in
-> > a data-scraping recovery mode and simply passes errors through.
-> > bcache does something similar when the backing store fails.
->  
-> shouldn't it go read only also?
-> I haven't found a setting to tell it to do that if it's not the default.
+On Wed, Apr 6, 2022 at 3:16 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Wed, Apr 06, 2022 at 02:57:03PM -0400, Josef Bacik wrote:
+> > Yeah lets go for that, I saw some errors on your fs tree's earlier, I
+> > may need to adapt this to fix that tree, or if it's a snapshot we can
+> > just delete it.  We can burn that bridge when we get to it, thanks,
+>
+> Sounds good. Is mode=lowmem a thing of the past by the way?
+> (I remember that the old regular repair would eat up my 32GB of RAM and
+> take the machine down)
+>
+> The current one failed quickly though
+>
+> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs check --repair /dev/mapper/dshelf1a
+> enabling repair mode
+> WARNING:
+>
+>         Do not use --repair unless you are advised to do so by a developer
+>         or an experienced user, and then only after having accepted that no
+>         fsck can successfully repair all types of filesystem corruption. Eg.
+>         some software or hardware bugs can fatally damage a volume.
+>         The operation will start in 10 seconds.
+>         Use Ctrl-C to stop it.
+> 10 9 8 7 6 5 4 3 2 1
+> Starting repair.
+> Opening filesystem to check...
+> parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> parent transid verify failed on 22216704 wanted 1600938 found 1602177
+> FS_INFO IS 0x55e2e75defc0
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+> Couldn't find the last root for 8
+> checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+> parent transid verify failed on 15645261971456 wanted 1602297 found 1600989
+> checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+> bad tree block 15645261971456, bad level, 127 > 8
+> ERROR: failed to read block groups: Input/output error
+> FS_INFO AFTER IS 0x55e2e75defc0
+> Checking filesystem on /dev/mapper/dshelf1a
+> UUID: 96539b8c-ccc9-47bf-9e6c-29305890941e
+> [1/7] checking root items
+> checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+> parent transid verify failed on 15645261971456 wanted 1602297 found 1600989
+> checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+> bad tree block 15645261971456, bad level, 127 > 8
+> ERROR: failed to repair root items: Input/output error
+>
 
-bcache in writethrough mode could leave cached blocks dirty as long as
-the SSD completes the write.  It should be reporting the write errors
-back to upper layers.
+Alright so it's up to you, clearly my put the tree back together stuff
+takes forever, you can use --init-extent-tree with --lowmem if you'd
+like, I have no idea what the time on that is going to look like.  You
+still may run into problems with that if your subvols are screwed, but
+then I just have to do the work to put subvols back together.  I
+*think* the --init-extent-tree thing will be faster, but let me know
+what you want to do.  Thanks,
 
-Whether it actually does...I don't know, I haven't run that kind of
-stress test on bcache.  I usually pair bcache SSD 1:1 with HDD, so if
-either the SSD or HDD fails, I scrub or replace them both as a single
-logical btrfs device, which makes this kind of question mostly irrelevant.
-Unfortunately this approach doesn't work with raid5--the striping cuts IO
-requests into tiny fragments, so the cache will try to cache everything.
-
-> > btrfs is the agent that has to stop attempting writes, and make sure
-> > any transaction in progress doesn't get committed.  ext4 has similar
-> > responsibility and implements its own force-read-only feature.
-> 
-> Agreed, but I like the defense in multiple layers approach
-> mdadm knows that any data going to be written is going to be incomplete
-> due to the 2nd missing drive, and there are few to no scenarios where 
-> continuing to write is a good thing.
-
-True, there's no way the parity would make any sense with two drives
-in a stripe missing during an update.  So maybe there weren't any
-writes going through mdadm at that point, and everything failed at the
-drive-offline event.  Or writes completed on the working drives before
-the failing drive's failure was detected, messing up the data there.
-A typical drive bus timeout is a long time, and a lot of raid stripes
-could be modified on other drives while that happens.
-
-> > There's a possibility that the drive dropped the writes during the
-> > bus reset at the start of the second drive failure.  If write caching
-> > was enabled in the drive, and the drive has a firmware bug that drops
-> > the write cache contents (or it's just failing hardware, i.e. the CPU
-> > running the drive firmware is getting killed by electrical problems on the
-> > controller board, causing both the bus drop and the loss of write cache
-> > contents), then writes in the drive's cache could be lost _after_ mdadm,
-> > bcache and btrfs had been told by the drive that they were completed.
-> 
-> That's true, but I've seen btfrs remount read only before, and it didn't
-> there. Shouldn't hard IO errors immediately cause btrfs to go read only?
-
-No, only hard write IO errors on all metadata mirror drives, and cases
-where btrfs needs to CoW a page or read free space tree, and can't find
-an intact mirror.  Anything less is correctable (write failure on some
-mirrors) or can be retried (any read failure) if the raid profile has
-redundancy.
-
-> Write caching is on all those drives though:
-> gargamel:/var/local/src/btrfs-progs-josefbacik# hdparm -v -W /dev/sdh
-> /dev/sdh:
->  multcount     = 16 (on)
->  readonly      =  0 (off)
->  readahead     = 256 (on)
->  geometry      = 729601/255/63, sectors = 11721045168, start = 0
->  write-caching =  1 (on)
-> 
-> I haven't heard that these drives have broken caching, but maybe they do?
-> Device Model:     ST6000VN0041-2EL11C
-> Serial Number:    ZA18TVFZ
-> LU WWN Device Id: 5 000c50 0a4d9b49c
-> Firmware Version: SC61
-> User Capacity:    6,001,175,126,016 bytes [6.00 TB]
-
-I've heard of problems with SC60, but IIRC SC61 was supposed to be the
-fix for them.  I had some SC60 drives for a while without encountering
-issues, but I didn't have any bus timeouts with them.  When they failed,
-they had a burst of 10k+ UNC sectors and then stopped spinning up,
-with no bus timeouts.
-
-> > If the failing drive also reorders cached writes across flush
-> > commands, then we go directly to parent transid verify failed in btrfs.
-> > Parent transid verification is designed to detect this exact firmware
-> > failure mode, and it usually works as intended.  It's a pretty direct
-> > and reliable signal that write ordering is broken in a lower level of
-> > the storage stack, and must be fixed or disabled before trying again.
->  
-> Agreed, I do want to fix the underlying problem here.
-> What I can do is
-> 
-> 1) disable write caching on the drives
-> 
-> 2) disable bcache by removing the caching device
-> 
-> 3) change the cache mode
-> gargamel:/sys/block/md7/bcache# cat cache_mode 
-> [writethrough] writeback writearound none
-> writethrough should be safe, but I could use writearound instead
-> 
-> 4) if I end up wiping my device, I can just remove the bcache layer altogether.
-> 
-> > Even if a single drive doesn't reorder writes, multiple drives in
-> > raid effectively reorder writes between drives as each drive has its
-> > own distinct write queue.  A dropped write that would be harmless in a
-> 
-> very good point.
-> 
-> > single-device filesystem could be harmful in a multi-device array as the
-> > non-failing drives will have writes that occurred after the lost writes
-> > on the failing drive.  Normally mdadm enforces flush ordering across all
-> > component devices so that this isn't a problem, but if you have optimistic
-> > firmware and a drive failure after the flush command returns success,
-> > the inter-drive ordering enforcement fails and the result is the same
-> > as if an individual drive had a write/flush reordering bug.
-> 
-> That's all fair, but it feels like FS kept writing way longer than it
-> was supposed to and that is what worries me the most.
-
-The log excerpt I saw didn't show any write errors from btrfs, only
-from mdadm.  That suggests to me that the failure happened earlier when
-it was already too late to respond.  Also we can't rule out that bcache
-is doing something stupid.
-
-> > Some years ago we did a fleetwide audit of bad firmware drives and
-> > found about a third of our drives were bad.  We disabled write cache on
-> 
-> Looks like I just want to disable write caching then. Correctness beats
-> speed for sure.
-> 
-> > Yeah, experimental recovery code is fun, but robust backups and a working
-> > disaster recovery plan is usually better.  Even if the filesystem is
-> > up and running again, I'd want to compare all the files against backups
-> > because I'd trust nothing on a filesystem after fsck touched it.
->  
-> That is totally my plan. Given the output that I'm seeing, I'll definitely do
-> at least a diff of all files between the backup and the array being recovered.
-> I might even do an rsync, forcing md5 checksums, but if I do that, it
-> will take days and longer than restoring the backup.
-> 
-> > On the other hand, if you get lucky and the filesystem isn't too badly
-> > damaged, then comparing the data with backups will be more convenient
-> > than starting over with a new filesystem.
-> 
-> Agreed.
-> 
-> Thanks,
-> Marc
-> -- 
-> "A mouse is a device used to point at the xterm you want to type in" - A.S.R.
->  
-> Home page: http://marc.merlins.org/  
-> 
+Josef
