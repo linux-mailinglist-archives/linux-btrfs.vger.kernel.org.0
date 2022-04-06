@@ -2,119 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA6F4F6A7C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 21:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D664F69F8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 21:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbiDFTyY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 15:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        id S231810AbiDFTdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 15:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbiDFTw2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 15:52:28 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607792CE209;
-        Wed,  6 Apr 2022 10:28:30 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id b21so5307724lfb.5;
-        Wed, 06 Apr 2022 10:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WJLYFFwKJzu0AzBejzceyC93Fh4AhvIk3A/MNZXzKIU=;
-        b=nHoFYmIVcbUdYBuRBczLdRhO5AcYZ6GHHFtKpS9G1n5vNIpBGLipmKmQ40hQnwfBEK
-         9YcCx5HGe8T4NG1UPywpqZKblDsiU8Uam6EvTYaei53mUEV7gX/X6QEIMPDVNdTe1RsC
-         lSqUADllCjDlRJ3aqfDHj4gGsZ5WvTndElsOvm3ukXbURNWbOjm9tS3FKy9TW5JIte+s
-         iqchodtdlLO+0839AsHapTHL+am4rmkQFqKuweIuQiuTq0iA/dxkHoEkiJl793SmXbAL
-         d6FIVbXVTWtg6j4nPkHK8I7vb1+rBuBMN5T4ZVmgoa+qulAgS9/S0AV92hnwAdWJS/in
-         gNUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WJLYFFwKJzu0AzBejzceyC93Fh4AhvIk3A/MNZXzKIU=;
-        b=RQhuh1VW2nh/dlZLeIhr9KmcpN0aPNEI+bySuhv/r4F71i1vjkfPP0l4zqy/umh7ki
-         L9hYrQAPZxIhhKyH29OI8SFZnOzKwIPrEK77UeJ14ahP0USQFU+Jv4F8GNGn4dBvfyDS
-         M9O+cFoN2t50uRNJVSbqaxsK1Val6vQbikXT/G6UharYbRtqMjRsMez2j3/syfoSZMsB
-         hwYPzdJqWT4l5fLkKOSZa3DXw/6Ks2UBeCXjV/0TMUooggjoq8C91XLr5HDzRIwGLAby
-         9oCZ+grhbBjh5zMNvy44LIs8hprwKhM6P8l1jlGsd67WJ6VRm0H7aZlPuXd4nlJD4IhT
-         ojbw==
-X-Gm-Message-State: AOAM533qJRZDilB+U+foSwg4+93mGooPkjZ6clWyf1Cx4YsYOKos1fbN
-        aKI5/NVj9Vxyc2bkKGTZSY6y8i3IZiG7RMTSTnnWKJBEjIqw4w==
-X-Google-Smtp-Source: ABdhPJxvT7YhfWN8QbCVz4oydCsKwT/zbXQ5089WXaSZlqzdjbFflulVc086iBmKtewP4KtbC66vp+jW8qrWjcRFTmg=
-X-Received: by 2002:ac2:5f4d:0:b0:43e:da3e:4529 with SMTP id
- 13-20020ac25f4d000000b0043eda3e4529mr6768924lfz.627.1649266108188; Wed, 06
- Apr 2022 10:28:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220406060516.409838-1-hch@lst.de> <20220406060516.409838-24-hch@lst.de>
-In-Reply-To: <20220406060516.409838-24-hch@lst.de>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Thu, 7 Apr 2022 02:28:15 +0900
-Message-ID: <CAKFNMokGOma3pvHdEsnsjuKgW+jpYX9zx8fWwJWyeKuCpKz-YQ@mail.gmail.com>
-Subject: Re: [PATCH 23/27] block: add a bdev_max_discard_sectors helper
+        with ESMTP id S232167AbiDFTcv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 15:32:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9440F12AC8;
+        Wed,  6 Apr 2022 11:04:27 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 471261F856;
+        Wed,  6 Apr 2022 18:04:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649268266;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ObRx/ixLhOv9tUVvgwIL58okbeieSFDn4fU3xy2XX9k=;
+        b=BFBgN0kJwVoEZH3+LRKv0s8HSEZhObV608IjIFx9STMbJ2uGQ3h5q1PhQZwykhUa4leJWB
+        xnQln+8IfR1wCJI7cYTyG7BHi0HMfe9NLF+4pKzYxu2zZIL5JlUrkYEjXV3n19n2xZLSx7
+        Cqth1Hwagrea37lxEFHYFl3IyYJPuTk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649268266;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ObRx/ixLhOv9tUVvgwIL58okbeieSFDn4fU3xy2XX9k=;
+        b=aOevRpJFbhW/UZONWWZTBfL4JbyvXm9avtKhF1j5GrwPKQsh8YfjM6jL263HXCZ578j4vP
+        EblEvk/rLnxqwQCg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1019AA3B82;
+        Wed,  6 Apr 2022 18:04:26 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 47295DA80E; Wed,  6 Apr 2022 20:00:24 +0200 (CEST)
+Date:   Wed, 6 Apr 2022 20:00:24 +0200
+From:   David Sterba <dsterba@suse.cz>
 To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        device-mapper development <dm-devel@redhat.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
-        drbd-dev@lists.linbit.com, nbd@other.debian.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
-        linux-nilfs <linux-nilfs@vger.kernel.org>, ntfs3@lists.linux.dev,
-        ocfs2-devel@oss.oracle.com, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Cc:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: cleanup btrfs bio handling, part 1
+Message-ID: <20220406180023.GC15609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Qu Wenruo <wqu@suse.com>, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20220404044528.71167-1-hch@lst.de>
+ <20220405145626.GY15609@twin.jikos.cz>
+ <20220405150956.GA16714@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220405150956.GA16714@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 11:05 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> Add a helper to query the number of sectors support per each discard bio
-> based on the block device and use this helper to stop various places from
-> poking into the request_queue to see if discard is supported and if so how
-> much.  This mirrors what is done e.g. for write zeroes as well.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
-...
-> diff --git a/drivers/target/target_core_device.c b/drivers/target/target_core_device.c
-> index 16e775bcf4a7c..7d510e4231713 100644
-> --- a/drivers/target/target_core_device.c
-> +++ b/drivers/target/target_core_device.c
-> @@ -829,9 +829,7 @@ struct se_device *target_alloc_device(struct se_hba *hba, const char *name)
->  }
->
->  /*
-> - * Check if the underlying struct block_device request_queue supports
-> - * the QUEUE_FLAG_DISCARD bit for UNMAP/WRITE_SAME in SCSI + TRIM
-> - * in ATA and we need to set TPE=1
+On Tue, Apr 05, 2022 at 05:09:56PM +0200, Christoph Hellwig wrote:
+> On Tue, Apr 05, 2022 at 04:56:26PM +0200, David Sterba wrote:
+> > On Mon, Apr 04, 2022 at 06:45:16AM +0200, Christoph Hellwig wrote:
+> > > Hi all,
+> > > 
+> > > this series  moves btrfs to use the new as of 5.18 bio interface and
+> > > cleans up a few close by areas.  Larger cleanups focussed around
+> > > the btrfs_bio will follow as a next step.
+> > 
+> > I've looked at the previous batch of 40 patches which was doing some
+> > things I did not like (eg. removing the worker) but this subset are just
+> > cleanups and all seem to be fine. I'll add the series as topic branch to
+> > for-next and move misc-next. Thanks.
+> 
+> If it helps can rebase.  And it would be really helpful to start
+> a discussion on the things you did not like on the patches already
+> on the list if you have a little time to spare.
 
-> + * Check if the underlying struct block_device request_queue supports disard.
->   */
-
-Here was a typo:
-
- s/disard/discard/
-
-On Thu, Apr 7, 2022 at 12:19 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> If I'm misreading things, could you please document that
-> bdev_max_discard_sectors() != 0 implies that discard is supported?
-
-I got the same impression.   Checking the discard support with
-bdev_max_discard_sectors() != 0 seems a bit unclear than before.
-
-Thanks,
-Ryusuke Konishi
+I was able to resolve all the merge conflicts either manually or using
+the tool wiggle, no need to rebase. Regarding the whole patchset, I'll
+reply there. Right now I'm trying to merge all the easy or short series
+first, from the lower layers up in case there's a need to rebase.
