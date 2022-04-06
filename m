@@ -2,65 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0FB4F63DC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 17:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5944F65D3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 18:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236478AbiDFPsi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 11:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        id S237547AbiDFQbV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 12:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236424AbiDFPs1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 11:48:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719434961DE;
-        Wed,  6 Apr 2022 06:09:31 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1B58C210F4;
-        Wed,  6 Apr 2022 13:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649250535;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ny6SkW/jjvFpcVUGJahdGz/N3Zi6Zn73i10e9D2Lh3E=;
-        b=UZlmD6C1rcVd7c9TYRt/MA0lDF47JspYw//BPhBSRvqyAnMd4a3lIiZ4eizQW9DFdw/MHF
-        1dWIeP+32cmwnnlMnyAgHZDmH0NzATbB6x2tf2x2b3ag10oCI9XF2FAx26O0dmeSq2S0Oo
-        nCF+YTvEuyLdMC6V7+atUIVQr7+R+HQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649250535;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ny6SkW/jjvFpcVUGJahdGz/N3Zi6Zn73i10e9D2Lh3E=;
-        b=85Vj1nlNdiZXDGccmK9QqluymfR/owT8jdecNZDrZ/7Xncs1RHkrzEnpmk5uyyEvqjRY7E
-        BtKfJojqA68BCgCA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C6AD5A3B83;
-        Wed,  6 Apr 2022 13:08:54 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 32AB9DA80E; Wed,  6 Apr 2022 15:04:53 +0200 (CEST)
-Date:   Wed, 6 Apr 2022 15:04:53 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     cgel.zte@gmail.com
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] Btrfs: remove redundant judgment
-Message-ID: <20220406130453.GB15609@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, cgel.zte@gmail.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20220406090404.2488787-1-lv.ruyi@zte.com.cn>
+        with ESMTP id S237704AbiDFQah (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 12:30:37 -0400
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD632DE168
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 18:43:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1649209429; x=1680745429;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=GG+ZeDHCHx9HkO26a6Cm2XY2cf8ReqgI9BCe1pJ1iOQ=;
+  b=dcng/1Zx0evjP76YSPI/J9dtSVvcxfqIOmqFki+uZuWaoWCjYnPcizXS
+   KuifbE1/BCup9UwBzywJ1dClbYLkf79UEeJQbnYxIQHR7KDD3lOyab69z
+   Z2VWoi2m3kly9WCNq6NXtgLNlUhWtHFgJXW8kEQ7eZRqK7DTaxPW1A4I7
+   Dkfcz39/vNLt/JH5E6sVgeokRXxCswjYBswdpUMNJ8PhAIc6jxDhB7HkA
+   deKnGPAyPrGTk6RfRx3GcNeh1A6jSJKeTOMzxUMzWtmL0R6HgiQS+PtEZ
+   KA55XqMNHQwjrchDCaxXrcU2NXB31jUn5DNZpOQ91pTuEV1w5n/62TcH9
+   g==;
+X-IronPort-AV: E=Sophos;i="5.90,238,1643644800"; 
+   d="scan'208";a="309153504"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Apr 2022 09:43:48 +0800
+IronPort-SDR: yms9kpj29l6FjSxheedTcDVGMA3KuqVk7Env/PiVxz6PwBXt9vtbNOSWRab0YdgvDxISY4foSA
+ ZDAgx0O2swRiDemiDgJc2gYYfHGUNoBz5PY22UZWtzinch1KbeLf8DcHSnr2gj+6AIJ8REtsQL
+ iDrskX6lOowKZk6P46E7dt4Rjnb2pljvcKQXH3SYwa8SeCugkekT4bAHR/JgREqwptrPJBEG02
+ BVN5PJbyx7WmzIJi4SrryBTFHD7OT9zGv8LQPZN3nhlFSitbXiR0js09yeelQBxNVvKB1ycZcZ
+ 3CbQb0XmS20w7QchGPqIUvbX
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2022 18:14:31 -0700
+IronPort-SDR: t5YFejW2KnwkerNwtEOojzMEzGOFOJ6OMDq1MmbmYu7HnNTLZkbmVZsFrppn4uGhaEykRv2Aeu
+ Dtb9JRkP7B85u7/5byvYRx+7hitRREwNs0jaX4YPrWpn055x79ovB5EhaXAm2VyzH6Ukhh5dKm
+ 2ZXArvjSRduCkDAiVWIRR3BQL4r0a9Mr7IljU9uB336zikmXUDHAYK2gSot64NvHT5oepbUVSr
+ BgzAoMvmbPkwytx+00v0djtnl7f5OHCG99PlqiW4YBfWBPlWLfyclsyorGxGkvq+Uv5bNqlLli
+ 6/s=
+WDCIronportException: Internal
+Received: from 5cg2012qdx.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.10])
+  by uls-op-cesaip01.wdc.com with ESMTP; 05 Apr 2022 18:43:49 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 2/4] btrfs-progs: zoned: fix initial system BG location
+Date:   Wed,  6 Apr 2022 10:43:11 +0900
+Message-Id: <20220406014313.993961-3-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220406014313.993961-1-naohiro.aota@wdc.com>
+References: <20220406014313.993961-1-naohiro.aota@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220406090404.2488787-1-lv.ruyi@zte.com.cn>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,11 +67,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 06, 2022 at 09:04:04AM +0000, cgel.zte@gmail.com wrote:
-> From: Lv Ruyi <lv.ruyi@zte.com.cn>
-> 
-> iput() has already handled null and non-null parameter. so there is no
-> need to use if().
+Currently, we create the initial system block group in the zone 2. That
+will create the BG at 64MB when the zone size is 32 MB, which collides with
+the regular superblock location. It results in mount failure with:
 
-Ok, we can drop the check, have you looked if there are more similar
-places to update?
+  BTRFS info (device nullb0): zoned mode enabled with zone size 33554432
+  BTRFS error (device nullb0): zoned: block group 67108864 must not contain super block
+  BTRFS error (device nullb0): failed to read block groups: -117
+  BTRFS error (device nullb0): open_ctree failed
+
+Fix that by calculating the proper location of the initial system BG. It
+avoids using zones reserved for zoned superblock logging and the zones
+where a regular superblock resides.
+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ mkfs/common.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/mkfs/common.c b/mkfs/common.c
+index 75680d032d30..218854491c14 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -232,6 +232,34 @@ static int create_block_group_tree(int fd, struct btrfs_mkfs_config *cfg,
+ 	return 0;
+ }
+ 
++static u64 zoned_system_group_offset(u64 zone_size)
++{
++	const int zone_shift = ilog2(zone_size);
++	u32 zone_num = BTRFS_NR_SB_LOG_ZONES;
++	u64 start = (u64)zone_num * zone_size;
++	u32 sb_zones[BTRFS_SUPER_MIRROR_MAX];
++	int i;
++
++	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++)
++		sb_zones[i] = sb_zone_number(zone_shift, i);
++
++	for (;;) {
++		for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
++			if (zone_num == sb_zones[i] ||
++			    !(btrfs_sb_offset(i) + BTRFS_SUPER_INFO_SIZE <= start ||
++			      start + zone_size <= btrfs_sb_offset(i)))
++				goto next;
++		}
++
++		return start;
++next:
++		zone_num++;
++		start += zone_size;
++	}
++
++	__builtin_unreachable();
++}
++
+ /*
+  * @fs_uuid - if NULL, generates a UUID, returns back the new filesystem UUID
+  *
+@@ -298,7 +326,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	}
+ 
+ 	if ((cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)) {
+-		system_group_offset = cfg->zone_size * BTRFS_NR_SB_LOG_ZONES;
++		system_group_offset = zoned_system_group_offset(cfg->zone_size);
+ 		system_group_size = cfg->zone_size;
+ 	}
+ 
+-- 
+2.35.1
+
