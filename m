@@ -2,82 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1B24F62A5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 17:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0FB4F63DC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 17:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbiDFPKG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 11:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        id S236478AbiDFPsi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 11:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235838AbiDFPJ7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 11:09:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A84126C2CC
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 05:06:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3AE0D61793
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 11:52:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F838C385A3
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 11:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649245978;
-        bh=19HeUUw1fDQptAZu1OMgz9NQVCF8gKKE8KEnZpGv5qA=;
-        h=From:To:Subject:Date:From;
-        b=atZxBp/n+q689bgT5+i8geHhFVgHOoTaw/+p7cT5inqLsJzKumIFL3UmYd1GcFg82
-         IIQf8qwi8hE4yIb4+hMDYGp0UL+gYI/eY5x0+dlEFkLoepCErZgalTaQFS6wfxMgeL
-         wksIiTowJpWlmdpz/SiHScSkNph5G04e+wXkiHskTEhHL4/qglSZygmjoO7I6xLAmJ
-         McOq/10HLt0J5Y+AwwhultB53fnIjw2hquZAyeEsQV2IFGHTeHc27bl3MG4EfyP9kB
-         Yzbd4QXITV7SRxWd2n9+FwnGy5BGk1hiZXvIyIspbOwZol8l0S6bdzs8/ccLS5wAck
-         BFO8rOnkh6oRQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix leaked plug after falilure syncing log on zoned filesystems
-Date:   Wed,  6 Apr 2022 12:52:54 +0100
-Message-Id: <c766f439fa12967383d8e62c6f5883bd1f62c483.1649245880.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S236424AbiDFPs1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 11:48:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719434961DE;
+        Wed,  6 Apr 2022 06:09:31 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1B58C210F4;
+        Wed,  6 Apr 2022 13:08:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649250535;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ny6SkW/jjvFpcVUGJahdGz/N3Zi6Zn73i10e9D2Lh3E=;
+        b=UZlmD6C1rcVd7c9TYRt/MA0lDF47JspYw//BPhBSRvqyAnMd4a3lIiZ4eizQW9DFdw/MHF
+        1dWIeP+32cmwnnlMnyAgHZDmH0NzATbB6x2tf2x2b3ag10oCI9XF2FAx26O0dmeSq2S0Oo
+        nCF+YTvEuyLdMC6V7+atUIVQr7+R+HQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649250535;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ny6SkW/jjvFpcVUGJahdGz/N3Zi6Zn73i10e9D2Lh3E=;
+        b=85Vj1nlNdiZXDGccmK9QqluymfR/owT8jdecNZDrZ/7Xncs1RHkrzEnpmk5uyyEvqjRY7E
+        BtKfJojqA68BCgCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C6AD5A3B83;
+        Wed,  6 Apr 2022 13:08:54 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 32AB9DA80E; Wed,  6 Apr 2022 15:04:53 +0200 (CEST)
+Date:   Wed, 6 Apr 2022 15:04:53 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     cgel.zte@gmail.com
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] Btrfs: remove redundant judgment
+Message-ID: <20220406130453.GB15609@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, cgel.zte@gmail.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20220406090404.2488787-1-lv.ruyi@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220406090404.2488787-1-lv.ruyi@zte.com.cn>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Apr 06, 2022 at 09:04:04AM +0000, cgel.zte@gmail.com wrote:
+> From: Lv Ruyi <lv.ruyi@zte.com.cn>
+> 
+> iput() has already handled null and non-null parameter. so there is no
+> need to use if().
 
-On a zoned filesystem, if we fail to allocate the root node for the log
-root tree while syncing the log, we end up returning without finishing
-the IO plug we started before, resulting in leaking resources as we
-have started writeback for extent buffers of a log tree before. That
-allocation failure is typically either -ENOMEM or -ENOSPC.
-
-So release the IO plug if we fail to allocate the extent buffer for the
-root of the log root tree when syncing the log on a zoned filesystem.
-
-Fixes: 3ddebf27fcd3a9 ("btrfs: zoned: reorder log node allocation on zoned filesystem")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/tree-log.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 273998153fcc..6533329e5fd7 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3187,6 +3187,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
- 		if (!log_root_tree->node) {
- 			ret = btrfs_alloc_log_tree_node(trans, log_root_tree);
- 			if (ret) {
-+				blk_finish_plug(&plug);
- 				mutex_unlock(&fs_info->tree_root->log_mutex);
- 				goto out;
- 			}
--- 
-2.33.0
-
+Ok, we can drop the check, have you looked if there are more similar
+places to update?
