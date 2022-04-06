@@ -2,182 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE594F5AD2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 12:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094914F5BB2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 12:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235568AbiDFKFc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 06:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        id S1344942AbiDFKlU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 06:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbiDFKEk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 06:04:40 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6FE2DD3A5
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 18:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1649209429; x=1680745429;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=q1w6wnSgfWk7aRR5DChrrbID1bDVYX1evttk/zngMFc=;
-  b=HzH/Mhwi4MoUgBIcAcBG++AKZUgtDZdLESwEsdnjXmD4tcgEmfY2Brsd
-   0Y0f8/ULZsAjpVTaB/hiD7p2PRTWjhS1l8iKZ3ZkY3mS53c7Fk19PEIF3
-   V7eJ4rKZZOsV75qnkKmfaF78i2O4hL2uXxhM2t29/Joq/XCKUUnJLdtoW
-   yVPZ966mKY2bT4blkGGyimB5zkdzkGRLvCwHqpl6mA8bFWLt9yRBLQqa8
-   sAukxSAotrAiOi+fRjFunJSQFhf5GXqbzuNiELfYlrYkThySWLwAlPJKU
-   9CSUhBYToYzDHV0JrbdxKN2BRuXtP8nw8udtkto4JdiSFagnA0bAChJKF
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.90,238,1643644800"; 
-   d="scan'208";a="309153502"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Apr 2022 09:43:47 +0800
-IronPort-SDR: Qcx+HmMU/Vfw16+iK4NdO7gt6xUeWYmnj9G/J1HyHY7EHXs0wUA2M6XhJQjUoReU2mGmOSddse
- 5K/Ndyrm3T7EAIXNAgl34dzbILNEN/1TcskwdVQWfOVCDfXvCeqH1oyAoJEORmQVp8jIrd3W6m
- MAIAY+hDGeRyZNfs5s18Qi7hY+3OiIWx7ERYBlWEy6wEORmHfsIweuzhH3zob/616EXTkCE4gT
- K6BaKA7RF9DGySOiSSrjY7ajIxyqVPHTYqUw/2KDvDV9+1xYonwhARBeKbbnPuZqZwyTDFvQwz
- zBnkyVUuf5zvJZYb0+l8qFGq
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2022 18:14:30 -0700
-IronPort-SDR: x6K0rF8u15lwowP0kSB+G4IS4zvNqrnoUFIUYnQBlg0GrJA/nh0Lf7oPDe86BUactF/GV7tUVc
- TpnKVTiYhdMuZ64HOF/WbiUMgEJ3ZJK87D86Ol9xeECha3SMdW09tFqSMJbCXcWfRZTrdacQDo
- GhAKfgjdbITgKSNzSKkTg5c0zBzZEMHCFoWdk4Q4Od/QtVPIENIbEgmBVsh0y027UU00cyTvL4
- A22lJWAzY/OHFRnXuS8P7brQj0sOD8BbrD57LpBdjAEVgOMOmYk2KVPUbr81VRfQgR4IVfH3aj
- MUI=
-WDCIronportException: Internal
-Received: from 5cg2012qdx.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.10])
-  by uls-op-cesaip01.wdc.com with ESMTP; 05 Apr 2022 18:43:48 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/4] btrfs-progs: zoned: export sb_zone_number() and related constants
-Date:   Wed,  6 Apr 2022 10:43:10 +0900
-Message-Id: <20220406014313.993961-2-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220406014313.993961-1-naohiro.aota@wdc.com>
-References: <20220406014313.993961-1-naohiro.aota@wdc.com>
+        with ESMTP id S239971AbiDFKkB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 06:40:01 -0400
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBC04F994D;
+        Wed,  6 Apr 2022 00:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1649228714; i=@fujitsu.com;
+        bh=05cGtA6yxrBEXr8TsKfNblRw+Bdby9YhP92PsT290U4=;
+        h=Date:To:Cc:Subject:Message-ID:Reply-To:References:MIME-Version:
+         Content-Type:In-Reply-To:From;
+        b=BJDFFQHg7gw8WYACPIsS5IO7QZ2Et0/snRy0O1P7sPcx3klPBjnAcFB0x5vQmkc7B
+         wdj7sgZsarcq07EkkN9Uk7cWaXRM4BHIkDNaIuDnoDW/xdWPN+yfeRQ0VLd0GPd0XX
+         YqbordNSTrdttI2gAjHO+G0BfdXM58RE64W8BbUe7mviFWROX5XjUVwj2GTsNCRtCK
+         2WJ4V8hKwe8nmUuYA+n39zIapfnu0J3NGApl7UCEEBLyvU7tS2BrmjwMlFpa9b2hDX
+         gUaY7GvBudukN14SBUkBadO1YF+sMHYk2wGdlkRTCLILZZ+pMjV2no6kK1JlP7i/NG
+         hrGSl+X1ARJQg==
+X-Brightmail-Tracker: H4sIAAAAAAAAA1WSf1CTdRzH+T4bzx5hDz38iq9L8ljCH3ibDDW
+  +ilh6lk8nFJfJJVfZgyy2GsjteThnXAdKKIcRKiTHVFDHrwFhB6OIOQ60BDwhGM6BFxWyGU4R
+  kwqMX+1p54/+e3/u9fq8P/98CEFAPS4hlDpOqc1gNFLcR7h5E8HI6mITUqJcB19GDaPFOHowc
+  gJDvQ3jOLLcP+WNxmx1QmRs+BFDg3/kY+jKtzcwZLm5GlnH60SovOJnHFnPb0cXLb1C9Evjkj
+  f6YakYIPOhGhGaL1uHKmucInSksh2gY+fyBOiovQ1HRfXxqH2+TYTmnF9jyDjeiqH2e/0ilF8
+  9iaHavgoczZhKsFdD6aG+LLr54QkR3VKVQ3/+22GcLhmuBfRESzmgzWenMfryg+tC2jySi9MD
+  Nfdw2vZ3noCe6rDh9HTzi4lksrc6I2Wf7kNv1dRoF5Y56KNrt1zGc8E8UQiWEQGUCcBbV94sB
+  D7ubASwqMMkKASEe8iChp/EvCOkVkFLpRnwOYiSQqerD/C+gGoiYZfTIeL9QCoZLt6O5x2Sio
+  Z/3jJgnv6X4BnbAs77JDVLwuq2CW8PyIZHf50Uehb8YW+5478soCLh8OIdjO8UUC/A2kWCj8u
+  oJJh/XMobkFoB54wzOJ+D3fVNhl7AKzi1BrqKGI8SAW39zYJjIFD/TL/+mX790/6zQFAPNqZo
+  1WkqLp1Ra2SKqCiZQrFetjZGptggZz6VMXJllmy/kuVk0XJmPytXsqycPZC+V5Mqz1ByzcD9Q
+  qlseGAbKDA+kl8CywlMGkz6KhJSAvxS9qUeUDGsao82S6NkL4EVBCGFZBxyM3+tMk2p+0itcT
+  /iYwwJsTSIrNroxiSbyaSz6jQPugrCJCHkyAY3oHigysp4svb4ha0gVBJIAi8vrwBxplKbrub
+  +z10ghADSQHIHXy9WZ3BP2l3uw5j78P1rb/CHOeYpkuRiOVWl7x8SfveXV2mR5OTzV3PqoheN
+  8ht3LNyuk9zUZwMLSQn2nG7ZBY2j9fXj4/Xh6J+Y0PeSaktax4Y6d4cFOZ7z//LgrtqvDm/2t
+  W9dWnvb3L/tiNrwdkfbzTDCd94gjg5/95FjbO+gZtI+y5ozcZk43XrBOln9+2vFBZvW567Z9r
+  1f6qzuA8KkHzrTOXG3xfXJW3si49dl55zK18VVrPzm9FJB8kxZ07XEPMeA3frKF82dFysL5hq
+  Dd6++a1ie0POwZ2DnaGwMN709Qp+4yh63My4WdkU4sod7ulc6TeLr3X51WxpLqKCwyK0maam1
+  qj6pbOGdEGdhiVl3Pu3jc0Nb9JxUyKoYRaRAyzL/Akr/LJA9BAAA
+X-Env-Sender: Alan.Robinson@fujitsu.com
+X-Msg-Ref: server-8.tower-548.messagelabs.com!1649228712!85085!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.85.5; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 31866 invoked from network); 6 Apr 2022 07:05:12 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+  by server-8.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 6 Apr 2022 07:05:12 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 3681F100190;
+        Wed,  6 Apr 2022 08:05:12 +0100 (BST)
+Received: from nera.osd.abg.fsc.net (unknown [172.17.20.8])
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with SMTP id 07836100181;
+        Wed,  6 Apr 2022 08:05:10 +0100 (BST)
+Received: by nera.osd.abg.fsc.net (Postfix, from userid 5004)
+        id B86E417478B; Wed,  6 Apr 2022 09:04:46 +0200 (CEST)
+Date:   Wed, 6 Apr 2022 09:04:46 +0200
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "jfs-discussion@lists.sourceforge.net" 
+        <jfs-discussion@lists.sourceforge.net>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "nbd@other.debian.org" <nbd@other.debian.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 15/27] block: use bdev_alignment_offset in
+ part_alignment_offset_show
+Message-ID: <20220406070446.GA1722@ts.fujitsu.com>
+Reply-To: Alan.Robinson@fujitsu.com
+Mail-Followup-To: Alan.Robinson@fujitsu.com, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        "jfs-discussion@lists.sourceforge.net" <jfs-discussion@lists.sourceforge.net>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "nbd@other.debian.org" <nbd@other.debian.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20220406060516.409838-1-hch@lst.de>
+ <0b7ae3df301c4fdd8d37f773d8d1eb93@FR3P281MB0843.DEUP281.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b7ae3df301c4fdd8d37f773d8d1eb93@FR3P281MB0843.DEUP281.PROD.OUTLOOK.COM>
+X-sent-by-me: robin@sanpedro
+User-Agent: Mutt/1.9.3 (2018-01-21)
+From:   Alan.Robinson@fujitsu.com (Alan Robinson)
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Move sb_zone_number() and related constants from zoned.c to the
-corresponding header for later use.
+Hi Christoph,
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- kernel-shared/zoned.c | 33 ---------------------------------
- kernel-shared/zoned.h | 33 +++++++++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+), 33 deletions(-)
+On Wed, Apr 06, 2022 at 06:05:04AM +0000, Christoph Hellwig wrote:
+> From: Christoph Hellwig <hch@lst.de>
+> Subject: [PATCH 15/27] block: use bdev_alignment_offset in
+>  part_alignment_offset_show
+> 
+> Replace the open coded offset calculation with the proper helper.
+> This is an ABI change in that the -1 for a misaligned partition is
+> properly propagated, which can be considered a bug fix and maches
 
-diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-index 2a11a1d723aa..396b74f0d906 100644
---- a/kernel-shared/zoned.c
-+++ b/kernel-shared/zoned.c
-@@ -33,20 +33,6 @@
- /* Pseudo write pointer value for conventional zone */
- #define WP_CONVENTIONAL			((u64)-2)
- 
--/*
-- * Location of the first zone of superblock logging zone pairs.
-- *
-- * - primary superblock:    0B (zone 0)
-- * - first copy:          512G (zone starting at that offset)
-- * - second copy:           4T (zone starting at that offset)
-- */
--#define BTRFS_SB_LOG_PRIMARY_OFFSET	(0ULL)
--#define BTRFS_SB_LOG_FIRST_OFFSET	(512ULL * SZ_1G)
--#define BTRFS_SB_LOG_SECOND_OFFSET	(4096ULL * SZ_1G)
--
--#define BTRFS_SB_LOG_FIRST_SHIFT	const_ilog2(BTRFS_SB_LOG_FIRST_OFFSET)
--#define BTRFS_SB_LOG_SECOND_SHIFT	const_ilog2(BTRFS_SB_LOG_SECOND_OFFSET)
--
- #define EMULATED_ZONE_SIZE		SZ_256M
- 
- static int btrfs_get_dev_zone_info(struct btrfs_device *device);
-@@ -220,25 +206,6 @@ static int sb_write_pointer(int fd, struct blk_zone *zones, u64 *wp_ret)
- 	return 0;
- }
- 
--/*
-- * Get the first zone number of the superblock mirror
-- */
--static inline u32 sb_zone_number(int shift, int mirror)
--{
--	u64 zone = 0;
--
--	ASSERT(0 <= mirror && mirror < BTRFS_SUPER_MIRROR_MAX);
--	switch (mirror) {
--	case 0: zone = 0; break;
--	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
--	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
--	}
--
--	ASSERT(zone <= U32_MAX);
--
--	return (u32)zone;
--}
--
- int btrfs_reset_dev_zone(int fd, struct blk_zone *zone)
- {
- 	struct blk_zone_range range;
-diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
-index 75327610e537..cc0d6b6f166d 100644
---- a/kernel-shared/zoned.h
-+++ b/kernel-shared/zoned.h
-@@ -36,6 +36,20 @@ struct blk_zone {
- /* Number of superblock log zones */
- #define BTRFS_NR_SB_LOG_ZONES		2
- 
-+/*
-+ * Location of the first zone of superblock logging zone pairs.
-+ *
-+ * - primary superblock:    0B (zone 0)
-+ * - first copy:          512G (zone starting at that offset)
-+ * - second copy:           4T (zone starting at that offset)
-+ */
-+#define BTRFS_SB_LOG_PRIMARY_OFFSET	(0ULL)
-+#define BTRFS_SB_LOG_FIRST_OFFSET	(512ULL * SZ_1G)
-+#define BTRFS_SB_LOG_SECOND_OFFSET	(4096ULL * SZ_1G)
-+
-+#define BTRFS_SB_LOG_FIRST_SHIFT	const_ilog2(BTRFS_SB_LOG_FIRST_OFFSET)
-+#define BTRFS_SB_LOG_SECOND_SHIFT	const_ilog2(BTRFS_SB_LOG_SECOND_OFFSET)
-+
- /*
-  * Zoned block device models
-  */
-@@ -206,6 +220,25 @@ static inline bool zoned_profile_supported(u64 map_type)
- 
- #endif /* BTRFS_ZONED */
- 
-+/*
-+ * Get the first zone number of the superblock mirror
-+ */
-+static inline u32 sb_zone_number(int shift, int mirror)
-+{
-+	u64 zone = 0;
-+
-+	ASSERT(0 <= mirror && mirror < BTRFS_SUPER_MIRROR_MAX);
-+	switch (mirror) {
-+	case 0: zone = 0; break;
-+	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
-+	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-+	}
-+
-+	ASSERT(zone <= U32_MAX);
-+
-+	return (u32)zone;
-+}
-+
- static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
- {
- 	return zone_is_sequential(device->zone_info, pos);
--- 
-2.35.1
+s/maches/matches/
+
+> what is done on the whole device.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/partitions/core.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/block/partitions/core.c b/block/partitions/core.c
+> index 2ef8dfa1e5c85..240b3fff521e4 100644
+> --- a/block/partitions/core.c
+> +++ b/block/partitions/core.c
+> @@ -200,11 +200,7 @@ static ssize_t part_ro_show(struct device *dev,
+>  static ssize_t part_alignment_offset_show(struct device *dev,
+>  					  struct device_attribute *attr, char *buf)
+>  {
+> -	struct block_device *bdev = dev_to_bdev(dev);
+> -
+> -	return sprintf(buf, "%u\n",
+> -		queue_limit_alignment_offset(&bdev_get_queue(bdev)->limits,
+> -				bdev->bd_start_sect));
+> +	return sprintf(buf, "%u\n", bdev_alignment_offset(dev_to_bdev(dev)));
+
+Should this now be %d instead of %u, there are one or two examples of
+both in the rest of the patch series.
+
+Alan
 
