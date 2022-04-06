@@ -2,90 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1043C4F6CB9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 23:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6EE4F6CBA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 23:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbiDFVcM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 17:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
+        id S233212AbiDFVcQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 17:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235881AbiDFVby (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 17:31:54 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9974D2B4DE0
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 13:38:18 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id x4so4424345iop.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 06 Apr 2022 13:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VEJ7lrqXMS5R3HROuj6nb5Ngf2w184uL0BeTdHRc/hs=;
-        b=MMspGQsWgAUtCa4fBB8yU8Bf/ad69PV7GaqPAH9wB8GSAC2e9XjmCiFyHDr4MmAKs/
-         ENLdAkkZxDT3hECtlrxzKRVIXldT636nLDU6cuwLR0bheJGNOsM+oNZ7rzJFdo26S0dt
-         FB9OTVq/C0IEpcm3aZcBt+jsIqdhPblKzB0xiyDFIgDGhHqkuwH496fB/WXRJoS/jnHP
-         2gcRQP5NGEt76voQrwzjZaNyLedIvKGG3LverZU5/EriUPZLLkUOCKSC+QeLH1ZjcaTF
-         U7/Rgcjj7Fu0kc7B5xmWUp61jNOt5drloJkmiWu7u0K0rAMeVJ4LvcuRjb6tS28pWVzi
-         YkEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VEJ7lrqXMS5R3HROuj6nb5Ngf2w184uL0BeTdHRc/hs=;
-        b=BUGA4Jy7+g+JHt/Hpn8K4G1lqfHRDBWvEj+SHHbQpR5O3U584lHlG5ycmeEGULlVFc
-         dNMzLVTxkRSf4ocLFYftYC4HzMHhoMvMQY5O3GZGxUbj25KUXMp97BwsL+voZbkDwfZV
-         wqoaRzTgrrmAU0GFAzb9Frj3kriWudN3WjBimvM2RxlSajximXupb4HGYmV1zbZOLXm9
-         fMQiqvI9WYtkr5ov4GflaNDJW0DyYiBWclxyTLxK4aPDHeHxfDzJj0UFx9epoeotaefi
-         6fC220uyWhxc710K39CV/jkYARSa0Lp/160QtTeX97PUsPqP/5n9qJ3oN8Ylst0owj8K
-         jB/w==
-X-Gm-Message-State: AOAM532DS1sqaUMD2ESjEMJd4slO25ARL3kexJsDOL1uuoA8oMAjBIAY
-        rLIKaw1b8KASmbJLrq/VZtt6/265HEmgjpMs4EDQyjE+/L8=
-X-Google-Smtp-Source: ABdhPJzoTltEMeTN9Q1CgMIXjr7urGyIYutA7WFkRJVtNh/G3p+lcOEDOqDrIxulsDKMMDppz95KvqP7jXg4/ckwvwM=
-X-Received: by 2002:a05:6602:168b:b0:646:3bbb:7db4 with SMTP id
- s11-20020a056602168b00b006463bbb7db4mr4924443iow.134.1649277497888; Wed, 06
- Apr 2022 13:38:17 -0700 (PDT)
+        with ESMTP id S235841AbiDFVbx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 17:31:53 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F742B4592
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 13:38:13 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1ncCPr-0001y1-DT by authid <merlin>; Wed, 06 Apr 2022 13:38:11 -0700
+Date:   Wed, 6 Apr 2022 13:38:11 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: figuring out why transient double raid failure caused a fair
+ amount of btrfs corruption
+Message-ID: <20220406203811.GF14804@merlins.org>
+References: <20220405195901.GC28707@merlins.org>
+ <CAEzrpqe-tBN9iuDJPwf7cj7J8=d6gtr27LnTat9nZiA7iVERNQ@mail.gmail.com>
+ <20220405200805.GD28707@merlins.org>
+ <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
+ <YkzWAZtf7rcY/d+7@hungrycats.org>
+ <20220406000844.GK28707@merlins.org>
+ <Ykzvoz47Rvknw7aH@hungrycats.org>
+ <20220406040913.GE3307770@merlins.org>
+ <Yk3W88Eyh0pSm9mQ@hungrycats.org>
+ <20220406191317.GC14804@merlins.org>
 MIME-Version: 1.0
-References: <20220406003521.GM28707@merlins.org> <CAEzrpqesUdkDXhdJXHewPZuFGPVu_qyGfH07i5Lxw=NDs=LASQ@mail.gmail.com>
- <CAEzrpqfV9MgU_XbVxpnv05gKnKXQRnHy_BrSYddDfNLZFqi2+g@mail.gmail.com>
- <20220406031255.GO28707@merlins.org> <20220406033404.GQ28707@merlins.org>
- <CAEzrpqfnGCvE36-r-0OkN7yoA7j9XPCNqQVOnLrgA+cQZNoR3A@mail.gmail.com>
- <20220406185431.GB14804@merlins.org> <CAEzrpqd0Pjx7qXz1nXEXubTfN3rmR++idOL8z6fx3tZtyaj2TQ@mail.gmail.com>
- <20220406191636.GD14804@merlins.org> <CAEzrpqf0Vz=6nn-iMeyFsB0qLX+X48zO26Ero-3R6FLCqnzivg@mail.gmail.com>
- <20220406203445.GE14804@merlins.org>
-In-Reply-To: <20220406203445.GE14804@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 6 Apr 2022 16:38:06 -0400
-Message-ID: <CAEzrpqdW-Kf7agSfTy_EK6UYUt2Wkf53j-WTzKjSPXWYgEUNkw@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220406191317.GC14804@merlins.org>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 4:34 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Wed, Apr 06, 2022 at 03:53:34PM -0400, Josef Bacik wrote:
-> > Alright so it's up to you, clearly my put the tree back together stuff
-> > takes forever, you can use --init-extent-tree with --lowmem if you'd
-> > like, I have no idea what the time on that is going to look like.  You
-> > still may run into problems with that if your subvols are screwed, but
-> > then I just have to do the work to put subvols back together.  I
-> > *think* the --init-extent-tree thing will be faster, but let me know
-> > what you want to do.  Thanks,
->
-> Thanks for sticking with me all this time.
-> So, it was pretty quick before it failed:
->
+This is an interesting discussion, so let's make a new thread out of it.
+TL;DR: I think btrfs may have failed to go read only earlier, causing
+more damage than needed to be, or some block layers just held enough
+data in flight that partial data got written, causing more damage than
+expected.
+Figuring out the underlying problem would be good to avoid this again.
 
-Ah yeah I should have expected that, can you pull and re-run the same
-command?  It'll tell me which root we need to target next.  Thanks,
+On Wed, Apr 06, 2022 at 02:07:47PM -0400, Zygo Blaxell wrote:
+> Readahead can fail for a number of reasons that aren't real problems,
 
-Josef
+thanks.
+
+> Once a degraded array has an IO failure, mdadm assumes you're in
+> a data-scraping recovery mode and simply passes errors through.
+> bcache does something similar when the backing store fails.
+ 
+shouldn't it go read only also?
+I haven't found a setting to tell it to do that if it's not the default.
+
+> btrfs is the agent that has to stop attempting writes, and make sure
+> any transaction in progress doesn't get committed.  ext4 has similar
+> responsibility and implements its own force-read-only feature.
+
+Agreed, but I like the defense in multiple layers approach
+mdadm knows that any data going to be written is going to be incomplete
+due to the 2nd missing drive, and there are few to no scenarios where 
+continuing to write is a good thing.
+
+> I note that btrfs is reporting only read errors here.
+
+Yeah, me too. That seems very bad and likely the cause or the corruption
+I got.
+A double raid failure (I've had them before) should be almost a non
+event. The first write after that should fail and that should be the end
+of it.
+This underlying problem makes me very uncomfortable.
+As much as I'm super thankful for Josef's efforts, and ultimately it
+will make btrfs recovery better, which is a win for all, my situation
+shouldn't have happened from what I can tell.
+
+> There's a possibility that the drive dropped the writes during the
+> bus reset at the start of the second drive failure.  If write caching
+> was enabled in the drive, and the drive has a firmware bug that drops
+> the write cache contents (or it's just failing hardware, i.e. the CPU
+> running the drive firmware is getting killed by electrical problems on the
+> controller board, causing both the bus drop and the loss of write cache
+> contents), then writes in the drive's cache could be lost _after_ mdadm,
+> bcache and btrfs had been told by the drive that they were completed.
+
+That's true, but I've seen btfrs remount read only before, and it didn't
+there. Shouldn't hard IO errors immediately cause btrfs to go read only?
+
+Write caching is on all those drives though:
+gargamel:/var/local/src/btrfs-progs-josefbacik# hdparm -v -W /dev/sdh
+/dev/sdh:
+ multcount     = 16 (on)
+ readonly      =  0 (off)
+ readahead     = 256 (on)
+ geometry      = 729601/255/63, sectors = 11721045168, start = 0
+ write-caching =  1 (on)
+
+I haven't heard that these drives have broken caching, but maybe they do?
+Device Model:     ST6000VN0041-2EL11C
+Serial Number:    ZA18TVFZ
+LU WWN Device Id: 5 000c50 0a4d9b49c
+Firmware Version: SC61
+User Capacity:    6,001,175,126,016 bytes [6.00 TB]
+
+> If the failing drive also reorders cached writes across flush
+> commands, then we go directly to parent transid verify failed in btrfs.
+> Parent transid verification is designed to detect this exact firmware
+> failure mode, and it usually works as intended.  It's a pretty direct
+> and reliable signal that write ordering is broken in a lower level of
+> the storage stack, and must be fixed or disabled before trying again.
+ 
+Agreed, I do want to fix the underlying problem here.
+What I can do is
+
+1) disable write caching on the drives
+
+2) disable bcache by removing the caching device
+
+3) change the cache mode
+gargamel:/sys/block/md7/bcache# cat cache_mode 
+[writethrough] writeback writearound none
+writethrough should be safe, but I could use writearound instead
+
+4) if I end up wiping my device, I can just remove the bcache layer altogether.
+
+> Even if a single drive doesn't reorder writes, multiple drives in
+> raid effectively reorder writes between drives as each drive has its
+> own distinct write queue.  A dropped write that would be harmless in a
+
+very good point.
+
+> single-device filesystem could be harmful in a multi-device array as the
+> non-failing drives will have writes that occurred after the lost writes
+> on the failing drive.  Normally mdadm enforces flush ordering across all
+> component devices so that this isn't a problem, but if you have optimistic
+> firmware and a drive failure after the flush command returns success,
+> the inter-drive ordering enforcement fails and the result is the same
+> as if an individual drive had a write/flush reordering bug.
+
+That's all fair, but it feels like FS kept writing way longer than it
+was supposed to and that is what worries me the most.
+
+> Some years ago we did a fleetwide audit of bad firmware drives and
+> found about a third of our drives were bad.  We disabled write cache on
+
+Looks like I just want to disable write caching then. Correctness beats
+speed for sure.
+
+> Yeah, experimental recovery code is fun, but robust backups and a working
+> disaster recovery plan is usually better.  Even if the filesystem is
+> up and running again, I'd want to compare all the files against backups
+> because I'd trust nothing on a filesystem after fsck touched it.
+ 
+That is totally my plan. Given the output that I'm seeing, I'll definitely do
+at least a diff of all files between the backup and the array being recovered.
+I might even do an rsync, forcing md5 checksums, but if I do that, it
+will take days and longer than restoring the backup.
+
+> On the other hand, if you get lucky and the filesystem isn't too badly
+> damaged, then comparing the data with backups will be more convenient
+> than starting over with a new filesystem.
+
+Agreed.
+
+Thanks,
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
