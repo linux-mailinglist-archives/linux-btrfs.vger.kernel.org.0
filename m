@@ -2,161 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B184F5A01
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 11:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A12E4F5BAB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 12:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242484AbiDFJba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 05:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S233582AbiDFJjQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 05:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580556AbiDFJVA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 05:21:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F70E4BEF33;
-        Tue,  5 Apr 2022 23:12:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=WNO6sTXUX6Lx7qkV5Fa2+br/k0Bo8EgFlPApwDJnToY=; b=xn6wfwtVXlctp/6je7N/z3ay9E
-        vGgbs23+aruJ8Ua5VzorhXNI4nQMolw+5pKtcwBtlsPC54vTW3zS5Q3vVEOmi7hKNAeRnjCP5S2oc
-        MdDvUsYPr0xq+wTKucFCjIxAE2E0ovjCPpwm1eh2GygBnaD4y9og20yZkzsGTMXU5HfLXABk971aR
-        Hdpb4uVi+dtKTlTRcn2LAafiR1urZ/VfKUkW7R7a6J/8GstZI5Jz5EZ5CIp2kNLxmJRI4H15ddcHA
-        0hOoIrQx8+/15ngTv3AMezRv8D04WX+GJCeB5To1CSL5+vtqbrpg3UdV9n/ChPELmDeYtNeQueOc4
-        OCzyTuew==;
-Received: from 213-225-3-188.nat.highway.a1.net ([213.225.3.188] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nbyuQ-003zQR-Ag; Wed, 06 Apr 2022 06:12:51 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        linux-block@vger.kernel.org, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/5] pktcdvd: stop using bio_reset
-Date:   Wed,  6 Apr 2022 08:12:28 +0200
-Message-Id: <20220406061228.410163-6-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220406061228.410163-1-hch@lst.de>
-References: <20220406061228.410163-1-hch@lst.de>
+        with ESMTP id S1583889AbiDFJfn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 05:35:43 -0400
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1DB2DD3A3
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 18:43:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1649209429; x=1680745429;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MSXj4YJFRZPfM0SZ0eQO0LtLItYtmBCZ3wYCgtJHijE=;
+  b=lkqXPmTKqf7CAuGaEoGExQZgRDHfss/UTSUcHQxN+eOsIRgX9y8s3Rmv
+   ZN0JlyIQ+i0m5ZWwABPlp38qhhLF8IbVuV9LIgKJ866JSggqk2a77hPy6
+   w69mx7LkG7S+vdeFKQ2O+TVzjEcdfnVDxqRHS6Tu2vcJ8pMpwcbdJhF47
+   kvMbyae98pHASGUvsHhGT+6D8LtklgAyj+o8FZqBJTeLbBeFH3XrqAXjW
+   Nfw+kjOGbsSJGiI+zYrp0Ilo2hbobFW/ju9rblk76JmYv5g7B6fhUisj1
+   xsWAB2/701ieuzemnSdYvqsFFx9zLdgfFVhGjIuqwRSk3UZ+GZjO3/q6V
+   w==;
+X-IronPort-AV: E=Sophos;i="5.90,238,1643644800"; 
+   d="scan'208";a="309153500"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Apr 2022 09:43:47 +0800
+IronPort-SDR: +eN9I9HKqgnWOAa/zxDB8xRtWTHd1Vp0mdOSkWQ2CV+ODQ5c6K7S/qUttDgCtLHhcOVlJxzuk0
+ 86l0+hIZmF8/CtWcs5TJFt4JlVSLoJtu/DGcYviScHE+TdbhTjWme/WGkWvk+uJfHQw4oHMrip
+ SJUp6LBkOh7EHjGS9IJ3SWCr0nO+36tkIu6F+/PgWX7ONJh1iQzUhJCdp6+mj5YEAowuJhN+nF
+ qTLImXmeT/7VI/DiJ0Kde+nb9CbQ0zCc/jqBBV+8aan1LU+9JRKce6YDJ71mGZZlIN3NuMSaNY
+ gSZ8yK4WazWJjhRPypqHi09v
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2022 18:14:29 -0700
+IronPort-SDR: 7v5cc+D7yQ7HrLfiamTBHm/BvHukpjGpSwkOEw+1F60RFvML6Tne+4wdgVUiEGNlvVnNk5ZVa5
+ N0oKaMmYcLfzVxTANDvnCzDbc1IJqNTTs+xoHktB47Irc9XBZZbEDlydCE3pCH3anyHRYCqPey
+ AI+wKUEqfuB9nk5TvpzQgtzv7B5YafpzXrq6ANyShhJ/pCyHqri2VdKGQ9xFKZxn7PtmEaZKvP
+ ImYttgy/O7Wiu+9+jTEZcQnK3/YB7PRnMGhPtdTgt8jvorpddbbV5oge893GYapEZ/bDIIEpRj
+ HQw=
+WDCIronportException: Internal
+Received: from 5cg2012qdx.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.10])
+  by uls-op-cesaip01.wdc.com with ESMTP; 05 Apr 2022 18:43:47 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/4] btrfs-progs: zoned: fix mkfs failure on various zone size
+Date:   Wed,  6 Apr 2022 10:43:09 +0900
+Message-Id: <20220406014313.993961-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just initialize the bios on-demand.
+There are mkfs.btrfs failures on various zone sizes. For example, with 32
+MB zone size, mkfs.btrfs creates the initial system block group at 64 MB,
+which collides with the regular superblock location. This series addresses
+the issues.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/pktcdvd.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
+Patches 1 and 2 fix the location of the initial system block group when the
+zone size is 32 MB.
 
-diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
-index 4a5b8730133c5..f270080f14786 100644
---- a/drivers/block/pktcdvd.c
-+++ b/drivers/block/pktcdvd.c
-@@ -525,7 +525,6 @@ static struct packet_data *pkt_alloc_packet_data(int frames)
- 	pkt->w_bio = bio_kmalloc(frames, GFP_KERNEL);
- 	if (!pkt->w_bio)
- 		goto no_bio;
--	bio_init(pkt->w_bio, NULL, pkt->w_bio->bi_inline_vecs, frames, 0);
- 
- 	for (i = 0; i < frames / FRAMES_PER_PAGE; i++) {
- 		pkt->pages[i] = alloc_page(GFP_KERNEL|__GFP_ZERO);
-@@ -537,26 +536,20 @@ static struct packet_data *pkt_alloc_packet_data(int frames)
- 	bio_list_init(&pkt->orig_bios);
- 
- 	for (i = 0; i < frames; i++) {
--		struct bio *bio = bio_kmalloc(1, GFP_KERNEL);
--		if (!bio)
-+		pkt->r_bios[i] = bio_kmalloc(1, GFP_KERNEL);
-+		if (!pkt->r_bios[i])
- 			goto no_rd_bio;
--		bio_init(bio, NULL, bio->bi_inline_vecs, 1, 0);
--		pkt->r_bios[i] = bio;
- 	}
- 
- 	return pkt;
- 
- no_rd_bio:
--	for (i = 0; i < frames; i++) {
--		if (pkt->r_bios[i])
--			bio_uninit(pkt->r_bios[i]);
-+	for (i = 0; i < frames; i++)
- 		kfree(pkt->r_bios[i]);
--	}
- no_page:
- 	for (i = 0; i < frames / FRAMES_PER_PAGE; i++)
- 		if (pkt->pages[i])
- 			__free_page(pkt->pages[i]);
--	bio_uninit(pkt->w_bio);
- 	kfree(pkt->w_bio);
- no_bio:
- 	kfree(pkt);
-@@ -571,13 +564,10 @@ static void pkt_free_packet_data(struct packet_data *pkt)
- {
- 	int i;
- 
--	for (i = 0; i < pkt->frames; i++) {
--		bio_uninit(pkt->r_bios[i]);
-+	for (i = 0; i < pkt->frames; i++)
- 		kfree(pkt->r_bios[i]);
--	}
- 	for (i = 0; i < pkt->frames / FRAMES_PER_PAGE; i++)
- 		__free_page(pkt->pages[i]);
--	bio_uninit(pkt->w_bio);
- 	kfree(pkt->w_bio);
- 	kfree(pkt);
- }
-@@ -952,6 +942,7 @@ static void pkt_end_io_read(struct bio *bio)
- 
- 	if (bio->bi_status)
- 		atomic_inc(&pkt->io_errors);
-+	bio_uninit(bio);
- 	if (atomic_dec_and_test(&pkt->io_wait)) {
- 		atomic_inc(&pkt->run_sm);
- 		wake_up(&pd->wqueue);
-@@ -969,6 +960,7 @@ static void pkt_end_io_packet_write(struct bio *bio)
- 
- 	pd->stats.pkt_ended++;
- 
-+	bio_uninit(bio);
- 	pkt_bio_finished(pd);
- 	atomic_dec(&pkt->io_wait);
- 	atomic_inc(&pkt->run_sm);
-@@ -1023,7 +1015,7 @@ static void pkt_gather_data(struct pktcdvd_device *pd, struct packet_data *pkt)
- 			continue;
- 
- 		bio = pkt->r_bios[f];
--		bio_reset(bio, pd->bdev, REQ_OP_READ);
-+		bio_init(bio, pd->bdev, bio->bi_inline_vecs, 1, REQ_OP_READ);
- 		bio->bi_iter.bi_sector = pkt->sector + f * (CD_FRAMESIZE >> 9);
- 		bio->bi_end_io = pkt_end_io_read;
- 		bio->bi_private = pkt;
-@@ -1236,7 +1228,8 @@ static void pkt_start_write(struct pktcdvd_device *pd, struct packet_data *pkt)
- {
- 	int f;
- 
--	bio_reset(pkt->w_bio, pd->bdev, REQ_OP_WRITE);
-+	bio_init(pkt->w_bio, pd->bdev, pkt->w_bio->bi_inline_vecs, pkt->frames,
-+		 REQ_OP_WRITE);
- 	pkt->w_bio->bi_iter.bi_sector = pkt->sector;
- 	pkt->w_bio->bi_end_io = pkt_end_io_packet_write;
- 	pkt->w_bio->bi_private = pkt;
+Patch 3 fixes the location of the initial data block group when the zone
+size is 16 MB.
+
+Patch 4 fixes a bug revealed by patch 3.
+
+Naohiro Aota (4):
+  btrfs-progs: zoned: export sb_zone_number() and related constants
+  btrfs-progs: zoned: fix initial system BG location
+  btrfs-progs: fix ordering of hole_size setting and
+    dev_extent_hole_check()
+  btrfs-progs: zoned: fix and simplify dev_extent_hole_check_zoned()
+
+ kernel-shared/volumes.c | 32 ++++++++++----------------------
+ kernel-shared/zoned.c   | 33 ---------------------------------
+ kernel-shared/zoned.h   | 33 +++++++++++++++++++++++++++++++++
+ mkfs/common.c           | 30 +++++++++++++++++++++++++++++-
+ 4 files changed, 72 insertions(+), 56 deletions(-)
+
 -- 
-2.30.2
+2.35.1
 
