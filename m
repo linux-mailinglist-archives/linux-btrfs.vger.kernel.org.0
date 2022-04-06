@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DF64F6846
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 19:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9084F683C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 19:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239695AbiDFR45 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 13:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
+        id S239647AbiDFR6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 13:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239703AbiDFR4n (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 13:56:43 -0400
+        with ESMTP id S240045AbiDFR5s (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 13:57:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08B83E8FD0
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 09:07:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17929362201
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 09:08:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B37F6125B
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 16:07:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BB6BC385A1
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 16:07:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 949DC612E4
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 16:08:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83394C385A1
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 16:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649261277;
+        s=k20201202; t=1649261311;
         bh=QEdod27xsirH6UfghpbDBMdqdlqVKMqwYCtilE2kGm0=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=QHjaH891tfso1zQmw4vEh1t81l2teFXDPku3BC1l9LQq9dzSH5vsEbVmfooG1kLGF
-         NO17cOjH74AyO2cVnuF1I1PYC8LqUgSMSWmCeeaHIYYiMZnQ3SymPKieFyqPHjqrWH
-         DEbYJDXEyWholLdTuSLwro1dGyZLwIZbcUKPf1xD/eIGXZ7niHM5A2z4zSyRkQJPWW
-         mf3Cqm6c39k+gnYUJO/EiIf02dMSq0SjOJQwxc5DJ9XxxhB/vyqBGPbc91rN/Opryv
-         BiQ51IHf/Blb3dCUMq/zPUhNkW271h5y6lyBz5fc4lfPlcLPse89E3CRRX9/CjtpPi
-         P4V37NsrHD//A==
+        b=dvJq8LsvLzNT50tY++1qK2cgUOJSN0V4gbIW4LIcytUjN8J0lqyn76aaLkxrt0sSz
+         1uCTRb+LCJM9B331DzyTw7o+xEbBpb1Jn1BmypiTRpP5qrolQ77slnksAaTOOeqBn/
+         MmVqF1BPoHdMCqRprcKyVV22epWSPo4uH0GyH98nDIFQJu/r+bhbVKldZc/Ole6zpG
+         BItb/mNuPMoNPB8z2z59tOyKBEBxOFWyIZFAaSqKXLLlT7kJaGKCu8Q/D7nHlU6Ele
+         m/SMLGfdPvKbK32pUOzP8z3QdxZhvD0pPJWnRid+L6O04+/Mha9Wb26aN5Hk/IA/Bt
+         FziabukYpCtAg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
 Subject: [PATCH v2] btrfs: fix leaked plug after failure syncing log on zoned filesystems
-Date:   Wed,  6 Apr 2022 17:07:54 +0100
+Date:   Wed,  6 Apr 2022 17:08:27 +0100
 Message-Id: <7950a1a3db370ab5f38e8da4f43b002e11397b18.1649261167.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <c766f439fa12967383d8e62c6f5883bd1f62c483.1649245880.git.fdmanana@suse.com>
