@@ -2,248 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DF24F6089
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 15:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E59B4F5E99
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 15:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbiDFNdF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 09:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
+        id S230064AbiDFMsz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 08:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233411AbiDFNcC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 09:32:02 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB67D38CD02
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 21:09:16 -0700 (PDT)
-Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:48732 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1nbwyo-00082d-6i by authid <merlins.org> with srv_auth_plain; Tue, 05 Apr 2022 21:09:14 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1nbwyn-00EXde-Ue; Tue, 05 Apr 2022 21:09:13 -0700
-Date:   Tue, 5 Apr 2022 21:09:13 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220406040913.GE3307770@merlins.org>
-References: <CAEzrpqc=h2A42nnHzeo_DwHik8Lu0xfkuNm2mhd=Ygams6aj=w@mail.gmail.com>
- <20220405195157.GA3307770@merlins.org>
- <CAEzrpqeQ=Q8u+Kgy6r+axYdbrZKs9=9cvMwEfKr=O2urgZTXHw@mail.gmail.com>
- <20220405195901.GC28707@merlins.org>
- <CAEzrpqe-tBN9iuDJPwf7cj7J8=d6gtr27LnTat9nZiA7iVERNQ@mail.gmail.com>
- <20220405200805.GD28707@merlins.org>
- <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
- <YkzWAZtf7rcY/d+7@hungrycats.org>
- <20220406000844.GK28707@merlins.org>
- <Ykzvoz47Rvknw7aH@hungrycats.org>
+        with ESMTP id S230314AbiDFMs1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 08:48:27 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3074AF78D
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 01:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1649235164; x=1680771164;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LFM3dJ4XtmmQmpjm/ADKwYliPf/iPacGMSt9/3x5IFU=;
+  b=D0HxHZF4iE1yMQ3iI0QZagj0/TbJ0iH2y1HFmGrrHImKDz5+ldWccS1C
+   YWQx59hVuDHftiDwElIjyWcMHDf4KrgogQ90VM5Jirg9k9rJwKcAQMH2e
+   PzrSi84KkGyG6O0RzxJfIsXHQSiMOlOv3vsmWBgXvY4H4NfZIO7FvjEHW
+   pVWw6lZ7EhcDTOh3ovG8JPprbD6LiCbf55kJfSW+MEo1bvLbuUyqciHPk
+   M/Gc+5cEAXmVbvMXdIZquPbpVxcfBLPU1TAmNtRno8VAtmB0erC4Q6KQN
+   4c8B4S8rQSnZkXZbhkMgSo2HtbZcTfRJlefzNPwLY4hSWzhUoIWwJlC7W
+   g==;
+X-IronPort-AV: E=Sophos;i="5.90,239,1643644800"; 
+   d="scan'208";a="197223422"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Apr 2022 16:52:42 +0800
+IronPort-SDR: fAMYWHK4YnWTnSP4j2Kx0EAI/mJX7S9uyhrcFqabc6dIBFdXgwY1KosFD1CFiJz/TVwm19aOKI
+ HqWmzAXGwrggC3QK1Dt8N0fpU8W6x+pG0ru3wypB8k27u5NtFkETwEjTznCBAaknWWVKTcZruN
+ xnOuICVES1vhDdSLdJ4SiLvPfFiE4Eo3uzUAZKWTNCwRtvRysTpfpWm7v3sILMDN4AtperCKHF
+ ZuJn4d1TYOGna8kzPH+Qwhfu8WgVnhAmSj4bU223BZ0MmLsGIGOtrtv9179S5+XncPh8CC67Rs
+ 3Gww3IFLb5HzRjECdS5XAcrB
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Apr 2022 01:24:14 -0700
+IronPort-SDR: g2Ivqps36ex6hk8P4uEMIxMtGlFwc9FTXPdSZJRA3GE8dR19ytp4Qf33+ZQ4G6YciAC/PZq851
+ gUu2BM2U7W59gGSHoHJasparFR+uJ8CovN+PYuM36dutTx8glBo7WFzV59DwQHj94gKBWh+1+y
+ YwpSCMCMaAPH6PHpBd1k4so7KsV3lsZZ8HoBUhvNGDRDbIEajqBhSlk/pQXoqwynnS4c97tRv4
+ PnQK/qdJkyiFGx2LFAWfz5j8UhhviVRTSM+19sVNeSm0nEew05ZrhYGSvKLDq3qdaltfFpljmF
+ I9U=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Apr 2022 01:52:43 -0700
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4KYJDn2V60z1SVpB
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 01:52:41 -0700 (PDT)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1649235160; x=1651827161; bh=LFM3dJ4XtmmQmpjm/ADKwYliPf/iPacGMSt
+        9/3x5IFU=; b=FzUociJ5h7WAQTsg6/of1WcVO/OsM8WZr8TGwq4XsiCjPsWYnIG
+        8/w+gKZQabfM5/6lPmJQreKk5Ou6wFCFKuKzU34LNEBfiEEQgQdKgaFRiQjCbS+v
+        bXmYOK12GNp/Ja0XBlu9I1309M6iplipC0iSH4zUASq/4DY1Z1ntJWZZ2gnz7v04
+        gr+tHwiyI12IKqfvshI8zep4+bgj/F03PH6lDam0sCy+54uxyIAUOpes7fa1mbqW
+        oKbTS+GZl8C4hDtpg8QtlcOVicbeOAAs2w8xnnXnZGy/42U80yMH8z7K4uMfNY4W
+        C4OWYxx5B6+JAZVIxV0TMfw3Lljnnr2SA9w==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 2cGQSaGUDnRZ for <linux-btrfs@vger.kernel.org>;
+        Wed,  6 Apr 2022 01:52:40 -0700 (PDT)
+Received: from [10.149.53.254] (washi.fujisawa.hgst.com [10.149.53.254])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4KYJDg4WyPz1Rvlx;
+        Wed,  6 Apr 2022 01:52:35 -0700 (PDT)
+Message-ID: <ea3d14cb-00ea-8d7b-4615-9347fdd7aa27@opensource.wdc.com>
+Date:   Wed, 6 Apr 2022 17:52:34 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ykzvoz47Rvknw7aH@hungrycats.org>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 24.5.124.255
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH 14/27] block: add a bdev_max_zone_append_sectors helper
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     dm-devel@redhat.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        nbd@other.debian.org, ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+References: <20220406060516.409838-1-hch@lst.de>
+ <20220406060516.409838-15-hch@lst.de>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital Research
+In-Reply-To: <20220406060516.409838-15-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 09:40:51PM -0400, Zygo Blaxell wrote:
-> Based on the history, I'd expect the filesystem is missing some number
-> of tree nodes, from a few dozen to thousands, depending on how many
-> writes were dropped after the 2nd drive failure before it was detected.
-> Since the array was also degraded at that time, with 4 drives in raid5,
-> there's 3 data drives, and if one of them was offline then we'd have a 2/3
-> success rate reading metadata blocks and 1/3 garbage.  That's definitely
-> in the "we need to write new software to recover from this" territory.
- 
-I think your conclusion is correct. I'm very dismayed that the
-filesystem didn't go read only right away.
-Hell, the mdadm block device should have done read only as soon as it
-lost more than one drive.
-Why were any writes allowed once more than one drive was missing?
+On 4/6/22 15:05, Christoph Hellwig wrote:
+> Add a helper to check the max supported sectors for zone append based on
+> the block_device instead of having to poke into the block layer internal
+> request_queue.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   drivers/nvme/target/zns.c | 3 +--
+>   fs/zonefs/super.c         | 3 +--
+>   include/linux/blkdev.h    | 6 ++++++
+>   3 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/nvme/target/zns.c b/drivers/nvme/target/zns.c
+> index e34718b095504..82b61acf7a72b 100644
+> --- a/drivers/nvme/target/zns.c
+> +++ b/drivers/nvme/target/zns.c
+> @@ -34,8 +34,7 @@ static int validate_conv_zones_cb(struct blk_zone *z,
+>   
+>   bool nvmet_bdev_zns_enable(struct nvmet_ns *ns)
+>   {
+> -	struct request_queue *q = ns->bdev->bd_disk->queue;
+> -	u8 zasl = nvmet_zasl(queue_max_zone_append_sectors(q));
+> +	u8 zasl = nvmet_zasl(bdev_max_zone_append_sectors(ns->bdev));
+>   	struct gendisk *bd_disk = ns->bdev->bd_disk;
+>   	int ret;
+>   
+> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+> index 3614c7834007d..7a63807b736c4 100644
+> --- a/fs/zonefs/super.c
+> +++ b/fs/zonefs/super.c
+> @@ -678,13 +678,12 @@ static ssize_t zonefs_file_dio_append(struct kiocb *iocb, struct iov_iter *from)
+>   	struct inode *inode = file_inode(iocb->ki_filp);
+>   	struct zonefs_inode_info *zi = ZONEFS_I(inode);
+>   	struct block_device *bdev = inode->i_sb->s_bdev;
+> -	unsigned int max;
+> +	unsigned int max = bdev_max_zone_append_sectors(bdev);
+>   	struct bio *bio;
+>   	ssize_t size;
+>   	int nr_pages;
+>   	ssize_t ret;
+>   
+> -	max = queue_max_zone_append_sectors(bdev_get_queue(bdev));
+>   	max = ALIGN_DOWN(max << SECTOR_SHIFT, inode->i_sb->s_blocksize);
+>   	iov_iter_truncate(from, max);
+>   
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index a433798c3343e..f8c50b77543eb 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -1188,6 +1188,12 @@ static inline unsigned int queue_max_zone_append_sectors(const struct request_qu
+>   	return min(l->max_zone_append_sectors, l->max_sectors);
+>   }
+>   
+> +static inline unsigned int
+> +bdev_max_zone_append_sectors(struct block_device *bdev)
+> +{
+> +	return queue_max_zone_append_sectors(bdev_get_queue(bdev));
+> +}
+> +
+>   static inline unsigned queue_logical_block_size(const struct request_queue *q)
+>   {
+>   	int retval = 512;
 
-Let's look at this for a second:
-Mar 28 02:28:11 gargamel kernel: [1512988.446844] sd 6:1:8:0: Device offlined - not ready after error recovery
-Mar 28 02:28:11 gargamel kernel: [1512988.475270] sd 6:1:8:0: rejecting I/O to offline device
-Mar 28 02:28:11 gargamel kernel: [1512988.491531] blk_update_request: I/O error, dev sdi, sector 261928312 op 0x0:(READ) flags 0x84700
- phys_seg 42 prio class 0
-Mar 28 02:28:11 gargamel kernel: [1512988.525073] blk_update_request: I/O error, dev sdi, sector 261928824 op 0x0:(READ) flags 0x80700
- phys_seg 5 prio class 0
-Mar 28 02:28:12 gargamel kernel: [1512988.579667] blk_update_request: I/O error, dev sdi, sector 261927936 op 0x0:(READ) flags 0x80700
- phys_seg 47 prio class 0
-(..)
-Mar 28 02:28:12 gargamel kernel: [1512988.615910] md: super_written gets error=10
-Mar 28 02:28:12 gargamel kernel: [1512988.619241] md/raid:md7: Disk failure on sdi1, disabling device.
-Mar 28 02:28:12 gargamel kernel: [1512988.619241] md/raid:md7: Operation continuing on 4 devices.
-Mar 28 02:28:21 gargamel kernel: [1512998.170192] usb 2-1.6-port1: disabled by hub (EMI?), re-enabling...
-Mar 28 02:28:21 gargamel kernel: [1512998.240404] print_req_error: 134 callbacks suppressed
-Mar 28 02:28:21 gargamel kernel: [1512998.240406] blk_update_request: I/O error, dev sdi, sector 11721044992 op 0x0:(READ) flags 0x807
-00 phys_seg 1 prio class 0
-Mar 28 02:28:21 gargamel kernel: [1512998.243415] ftdi_sio 2-1.6.1:1.0: device disconnected
-Mar 28 02:28:21 gargamel kernel: [1512998.341221] blk_update_request: I/O error, dev sdi, sector 11721044992 op 0x0:(READ) flags 0x0 p
-(...)
-Mar 28 02:28:22 gargamel kernel: [1512998.716351] blk_update_request: I/O error, dev sdi, sector 2058 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-Mar 28 02:28:22 gargamel kernel: [1512998.716362] blk_update_request: I/O error, dev sdi, sector 2059 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Looks good.
 
-Ok, one drive died, but raid5 continues degraded.
-md7 : active raid5 sdi1[5](F) sdo1[7] sdg1[6] sdj1[3] sdh1[1]
-      23441561600 blocks super 1.2 level 5, 512k chunk, algorithm 2 [5/4] [UUUU_]
-      bitmap: 0/44 pages [0KB], 65536KB chunk
+Acked-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 
-not sure what these were:
-Mar 29 00:00:08 gargamel kernel: [1590505.415665] bcache: bch_count_backing_io_errors() md7: Read-ahead I/O failed on backing device, ignore
-Mar 29 00:00:09 gargamel kernel: [1590505.866094] bcache: bch_count_backing_io_errors() md7: Read-ahead I/O failed on backing device, ignore
-
-9H later a 2nd drive dies just when I'm replacing the failed one:
-Mar 29 09:30:12 gargamel kernel: [1624709.301830] sd 6:1:5:0: [sdh] tag#523 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=2s
-Mar 29 09:30:12 gargamel kernel: [1624709.331812] sd 6:1:5:0: [sdh] tag#523 CDB: Read(16) 88 00 00 00 00 00 00 26 3f d0 00 00 00 18 00 00
-Mar 29 09:30:12 gargamel kernel: [1624709.359459] blk_update_request: I/O error, dev sdh, sector 2506704 op 0x0:(READ) flags 0x0 phys_seg 3 prio class 0
-Mar 29 09:30:12 gargamel kernel: [1624709.359465] md/raid:md7: read error not correctable (sector 2504656 on sdh1).
-Mar 29 09:30:12 gargamel kernel: [1624709.359471] md/raid:md7: read error not correctable (sector 2504664 on sdh1).
-Mar 29 09:30:12 gargamel kernel: [1624709.359472] md/raid:md7: read error not correctable (sector 2504672 on sdh1).
-Mar 29 09:30:12 gargamel kernel: [1624709.359486] md/raid:md7: read error not correctable (sector 2504656 on sdh1).
-Mar 29 09:30:12 gargamel kernel: [1624709.455886] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.681637] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.695785] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.717624] md/raid:md7: read error not correctable (sector 2504664 on sdh1).
-Mar 29 09:30:13 gargamel kernel: [1624709.739746] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.757206] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.770348] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.790298] md/raid:md7: read error not correctable (sector 2504672 on sdh1).
-Mar 29 09:30:13 gargamel kernel: [1624709.812546] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.825856] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.839006] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.866656] md/raid:md7: read error not correctable (sector 24815552 on sdh1).
-Mar 29 09:30:13 gargamel kernel: [1624709.898796] md/raid:md7: read error not correctable (sector 24815552 on sdh1).
-Mar 29 09:30:13 gargamel kernel: [1624709.921135] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.934315] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.947500] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624709.988589] md/raid:md7: read error not correctable (sector 1763985936 on sdh1).
-Mar 29 09:30:13 gargamel kernel: [1624710.036204] md/raid:md7: read error not correctable (sector 1763985936 on sdh1).
-Mar 29 09:30:13 gargamel kernel: [1624710.059121] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624710.088858] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624710.102026] md: super_written gets error=10
-Mar 29 09:30:13 gargamel kernel: [1624710.158830] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.096055] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:36:37 gargamel kernel: [1625094.122910] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 1, flush 0, corrupt 0, gen 0
-Mar 29 09:36:37 gargamel kernel: [1625094.153249] md/raid:md7: read error not correctable (sector 6562801616 on sdh1).
-Mar 29 09:36:37 gargamel kernel: [1625094.176011] md/raid:md7: read error not correctable (sector 6562801624 on sdh1).
-Mar 29 09:36:37 gargamel kernel: [1625094.223351] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.250628] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.263726] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.276989] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.290121] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.303267] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.325084] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.342083] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.355206] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.368394] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.383304] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.396423] md: super_written gets error=10
-Mar 29 09:36:37 gargamel kernel: [1625094.409498] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:36:37 gargamel kernel: [1625094.436355] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 2, flush 0, corrupt 0, gen 0
-Mar 29 09:36:37 gargamel kernel: [1625094.466729] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:36:37 gargamel kernel: [1625094.493600] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 3, flush 0, corrupt 0, gen 0
-Mar 29 09:36:37 gargamel kernel: [1625094.523998] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:36:38 gargamel kernel: [1625094.550938] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 4, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.066422] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.093309] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 5, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.124768] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.151651] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 6, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.182803] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.209677] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 7, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.239972] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.266862] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 8, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.297234] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.324094] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 9, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.354422] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.381286] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 10, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.411926] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.438770] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 11, flush 0, corrupt 0, gen 0
-Mar 29 09:37:34 gargamel kernel: [1625151.469361] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:34 gargamel kernel: [1625151.496269] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 12, flush 0, corrupt 0, gen 0
-Mar 29 09:37:35 gargamel kernel: [1625151.527455] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:35 gargamel kernel: [1625151.554360] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 13, flush 0, corrupt 0, gen 0
-Mar 29 09:37:35 gargamel kernel: [1625151.584963] bcache: bch_count_backing_io_errors() md7: IO error on backing device, unrecoverable
-Mar 29 09:37:35 gargamel kernel: [1625151.611842] BTRFS error (device dm-17): bdev /dev/mapper/dshelf1a errs: wr 0, rd 14, flush 0, corrupt 0, gen 0
-
-24 seconds are lost before btrfs notices anything, and then it seems to
-continue without going read only for another full minute before things
-stopped.
-
-Why would the raid5 not go read only immediately after 2 drives are lost?
-
-> Normally, I'd expect that once we dig through a few layers of simple
-> dropped write blocks, we'll start hitting metadata pages with bad csums
-> and trashed contents, since the parity blocks will be garbage in the raid5
-> stripes where the writes were lost.  One important data point against
-> this theory is that we have not seen a csum failure yet, so maybe this
-> is a different (possibly better) scenario.  Possibly some of the lost
-> writes on the raid5 are still stored in the bcache, so there's few or no
-> garbage blocks (though reading the array through the cache might evict
-> the last copy of usable data and make some damage permanent--you might
-> want to make a backup copy of the cache device).
- 
-Interesting, thanks.
-
-> Backup roots only work if writes are dropped only in the most recent
-> transaction, maybe two, because only these trees are guaranteed to be
-> intact on disk.  After that, previously occupied pages are fair game
-> for new write allocations, and old metadata will be lost.  Unlike other
-> filesystems, btrfs never writes metadata in the same place twice, so when
-> a write is dropped, there isn't an old copy of the data still available at
-> the location of the dropped write--that location contains some completely
-> unrelated piece of the metadata tree whose current version now lives
-> at some other location.  Later tree updates will overwrite old copies
-> of the updated page, destroying the data in the affected page forever.
-> Essentially there will be a set of metadata pages where you have two
-> versions of different ages, and another set of metadata pages where you
-> have zero versions, and (hopefully) most of the other pages are intact.
- 
-I see. It's definitely a lot more complex and much more likely to break when some
-amount of recent writes get lost/corrupted.
-
-> If we have a superblock, the chunk tree, and a subvol tree, we can
-> drop all the other trees and rebuild them (bonus points if the csum
-> tree survived, then we can verify all the data was recovered correctly;
-> otherwise, we can read all the files and make a new csum tree but it won't
-> detect any data corruption that might have happened in degraded mode).
-> This is roughly what 'btrfs check --init-extent-tree' does (though due
-> to implementation details it has a few extra dependencies that might
-> get in the way) and you can find subvol roots with btrfs-find-root.
- 
-Got it, thanks.
-
-> If we don't have any intact subvol trees (or the subvol trees we really
-> want aren't intact), then we can't recover this way.  Instead we'd have
-> to scrape the disk looking for metadata leaf nodes, and try to reinsert
-> those into a new tree structure.  The trick here is that we'll have the
-> duplicated and inconsitent nodes and we won't have some nodes at all,
-> and we'll have to make sense of those (or pass it to the existing btrfs
-> check and hope it can cope with them).  I'm guessing that a simplified
-> version of this is what Josef is building at this point, or will be
-> building soon if we aren't extremely lucky and find an intact subvol tree.
-> After building an intact subvol tree (even with a few garbage items in it
-> as long as check can handle them) we can go back to the --init-extent-tree
-> step and rebuild the rest of the filesystem.
-
-I see. In that case, I'm still happy to help, to help improve the tools, but if
-I'm looking at some amount of non trivial loss/corruption, at soe point
-I'll go back to backups, since they'll be more intact than this now
-damaged filesystem.
-
-Thanks for the detailed answers.
-Marc
 -- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Damien Le Moal
+Western Digital Research
