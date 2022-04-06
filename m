@@ -2,137 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 283A44F6C0A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 23:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6114F6C1C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 23:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234211AbiDFVEi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 17:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        id S233175AbiDFVIj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 17:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234409AbiDFVCI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 17:02:08 -0400
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3C526E027
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 12:32:12 -0700 (PDT)
-Received: from [192.168.1.27] ([78.12.30.135])
-        by smtp-16.iol.local with ESMTPA
-        id cBNtngO3RxXfVcBNunyREM; Wed, 06 Apr 2022 21:32:09 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1649273529; bh=WRnbIRDdppeiPmUzWGfXgOkqi2eNV24bARN3E29338U=;
-        h=From;
-        b=IABm4Cz4zYBmcPkG4u2BPG1KG+2gU2BIFhKorhcjRYn7qv2OQvgB11eMVgXg5sSfu
-         ErwQQAIudmFJpbs0aTQ3bCasBZiP9Q+ygby4p/aBF9XFWOilkPHrqZUOVirhyiZVzM
-         mSZ9Cd8A+MlgqrYde0OQGwJ/AtuCNyVPj5pjZAwvanU+VWl/kajPDj7CsqSClXHLel
-         Zh7m+PbngHirUPVESxKqM/+TFwcxC1ND0/wbiU0E7m+oL/JyvFaHj5xHsXhSBklVnZ
-         AFEOt88DzsMVR4D+HefRLfoGD0s2otanTKCn/6dcFH4OWlnD0XqsBbMfoIkn+y3phy
-         lybIxxqMH6Kkg==
-X-CNFS-Analysis: v=2.4 cv=XoI/hXJ9 c=1 sm=1 tr=0 ts=624deab9 cx=a_exe
- a=4XrYznHYtoO9gW1wDwXiyQ==:117 a=4XrYznHYtoO9gW1wDwXiyQ==:17
- a=IkcTkHD0fZMA:10 a=fx8nN4BKGLmDRhAw9MwA:9 a=QEXdDO2ut3YA:10
-Message-ID: <a6615921-8cc7-c0bd-f74f-9c64bcd3708a@inwind.it>
-Date:   Wed, 6 Apr 2022 21:32:05 +0200
+        with ESMTP id S235217AbiDFVIS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 17:08:18 -0400
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9B13CC535
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 12:45:58 -0700 (PDT)
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id D0E5A2B252E; Wed,  6 Apr 2022 15:45:57 -0400 (EDT)
+Date:   Wed, 6 Apr 2022 15:45:57 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <Yk3t9U/XtQjFAcAE@hungrycats.org>
+References: <20220405195901.GC28707@merlins.org>
+ <CAEzrpqe-tBN9iuDJPwf7cj7J8=d6gtr27LnTat9nZiA7iVERNQ@mail.gmail.com>
+ <20220405200805.GD28707@merlins.org>
+ <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
+ <YkzWAZtf7rcY/d+7@hungrycats.org>
+ <20220406000844.GK28707@merlins.org>
+ <Ykzvoz47Rvknw7aH@hungrycats.org>
+ <20220406040913.GE3307770@merlins.org>
+ <Yk3W88Eyh0pSm9mQ@hungrycats.org>
+ <20220406191317.GC14804@merlins.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 1/5] btrfs: add flags to give an hint to the chunk
- allocator
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.cz>,
-        Sinnamohideen Shafeeq <shafeeqs@panasas.com>,
-        Paul Jones <paul@pauljones.id.au>, Boris Burkov <boris@bur.io>
-References: <cover.1646589622.git.kreijack@inwind.it>
- <b15072e61eac46aa9f61317c59219713a01ff897.1646589622.git.kreijack@inwind.it>
- <YjoNvoIy/WmulvEc@localhost.localdomain>
- <365418c8-3cf5-aa46-94ef-9ca63b0764ef@libero.it>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <365418c8-3cf5-aa46-94ef-9ca63b0764ef@libero.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfBumpTzgLty+6aKD+N9Bo0Ryw9Sk6NK29ixGW3I48zT/OSgiGLj8is1Cn9EQ0oHZRfP26UBYxVRSfACS54yLdnGnFHnintmqESz32y9HxI+UeeN0Vpy8
- YodoRu+mufYYv1gRbrt3pCZMv5ACkgNWew3jd0XIUBEBoc6sYC1vwQtfPddWMhQWSiEp3T7cn/KfHRV7iVAo09aKsi8ormiKitDN3DczuTtRLWVH1RQNbWqj
- 7VWIswAf8K0E+d/D336WKo+NoAvfQI2Var6ESvYAnBXlc8OCvMfVpSLRCh393ROqZetoYeWZjlCAVJjMqmHeD5w71c53PRnXpx55BeAvZfe+61d7pstMJUBz
- zYXuVhLdOfGHUr+Z8LO/C0dJcpgUzg==
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220406191317.GC14804@merlins.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Gentle ping
+On Wed, Apr 06, 2022 at 12:13:17PM -0700, Marc MERLIN wrote:
+> On Wed, Apr 06, 2022 at 02:07:47PM -0400, Zygo Blaxell wrote:
+> > Readahead can fail for a number of reasons that aren't real problems,
+> 
+> thanks.
+> 
+> > Once a degraded array has an IO failure, mdadm assumes you're in
+> > a data-scraping recovery mode and simply passes errors through.
+> > bcache does something similar when the backing store fails.
+>  
+> shouldn't it go read only also?
+> I haven't found a setting to tell it to do that if it's not the default.
 
-On 22/03/2022 19.49, Goffredo Baroncelli wrote:
-> On 22/03/2022 18.56, Josef Bacik wrote:
->> On Sun, Mar 06, 2022 at 07:14:39PM +0100, Goffredo Baroncelli wrote:
->>> From: Goffredo Baroncelli <kreijack@inwind.it>
->>>
->>> Add the following flags to give an hint about which chunk should be
->>> allocated in which disk:
->>>
->>> - BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED
->>>    preferred for data chunk, but metadata chunk allowed
->>> - BTRFS_DEV_ALLOCATION_HINT_METADATA_PREFERRED
->>>    preferred for metadata chunk, but data chunk allowed
->>> - BTRFS_DEV_ALLOCATION_HINT_METADATA_ONLY
->>>    only metadata chunk allowed
->>> - BTRFS_DEV_ALLOCATION_HINT_DATA_ONLY
->>>    only data chunk allowed
->>>
->>> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
->>> ---
->>>   include/uapi/linux/btrfs_tree.h | 16 ++++++++++++++++
->>>   1 file changed, 16 insertions(+)
->>>
->>> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
->>> index b069752a8ecf..e0d842c2e616 100644
->>> --- a/include/uapi/linux/btrfs_tree.h
->>> +++ b/include/uapi/linux/btrfs_tree.h
->>> @@ -389,6 +389,22 @@ struct btrfs_key {
->>>       __u64 offset;
->>>   } __attribute__ ((__packed__));
->>> +/* dev_item.type */
->>> +
->>> +/* btrfs chunk allocation hint */
->>> +#define BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT    2
->>> +/* btrfs chunk allocation hint mask */
->>> +#define BTRFS_DEV_ALLOCATION_HINT_MASK    \
->>> +    ((1 << BTRFS_DEV_ALLOCATION_HINT_BIT_COUNT) - 1)
->>> +/* preferred data chunk, but metadata chunk allowed */
->>> +#define BTRFS_DEV_ALLOCATION_HINT_DATA_PREFERRED    (0ULL)
->>
->> Actually don't we have 0 set on type already?  So this will make all existing
->> file systems have DATA_PREFERRED, when in reality they may not want that
->> behavior.  So should we start at 1?  Thanks,
-> 
-> Yes, the default is 0 (now DATA_PREFERRED).
-> If we have all the disks set to DATA_PREFERRED (or METADATA_PREFERRED), all the disks
-> have the same priority so the chunks allocator works as usual.
-> 
-> If we have DATA_PREFERRED=1, it is not clear to me which would be the expected behavior when the allocator has to choice one of the followings disks:
-> - TYPE=0
-> - DATA_PREFERRED
-> - DATA_ONLY
-> 
-> It should ignore TYPE=0 ? or it should block the 'allocation_hint' policy ? Or TYPE=0 should have the lowest (or highest) priority ?
-> 
-> DATA_PREFERRED to me seems a safe default, because at worst we have only missing performance penalty (i.e. it is a faster disk where we should put METADATA)
-> 
-> BR
-> 
->>
->> Josef
-> 
-> 
+bcache in writethrough mode could leave cached blocks dirty as long as
+the SSD completes the write.  It should be reporting the write errors
+back to upper layers.
 
+Whether it actually does...I don't know, I haven't run that kind of
+stress test on bcache.  I usually pair bcache SSD 1:1 with HDD, so if
+either the SSD or HDD fails, I scrub or replace them both as a single
+logical btrfs device, which makes this kind of question mostly irrelevant.
+Unfortunately this approach doesn't work with raid5--the striping cuts IO
+requests into tiny fragments, so the cache will try to cache everything.
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+> > btrfs is the agent that has to stop attempting writes, and make sure
+> > any transaction in progress doesn't get committed.  ext4 has similar
+> > responsibility and implements its own force-read-only feature.
+> 
+> Agreed, but I like the defense in multiple layers approach
+> mdadm knows that any data going to be written is going to be incomplete
+> due to the 2nd missing drive, and there are few to no scenarios where 
+> continuing to write is a good thing.
+
+True, there's no way the parity would make any sense with two drives
+in a stripe missing during an update.  So maybe there weren't any
+writes going through mdadm at that point, and everything failed at the
+drive-offline event.  Or writes completed on the working drives before
+the failing drive's failure was detected, messing up the data there.
+A typical drive bus timeout is a long time, and a lot of raid stripes
+could be modified on other drives while that happens.
+
+> > There's a possibility that the drive dropped the writes during the
+> > bus reset at the start of the second drive failure.  If write caching
+> > was enabled in the drive, and the drive has a firmware bug that drops
+> > the write cache contents (or it's just failing hardware, i.e. the CPU
+> > running the drive firmware is getting killed by electrical problems on the
+> > controller board, causing both the bus drop and the loss of write cache
+> > contents), then writes in the drive's cache could be lost _after_ mdadm,
+> > bcache and btrfs had been told by the drive that they were completed.
+> 
+> That's true, but I've seen btfrs remount read only before, and it didn't
+> there. Shouldn't hard IO errors immediately cause btrfs to go read only?
+
+No, only hard write IO errors on all metadata mirror drives, and cases
+where btrfs needs to CoW a page or read free space tree, and can't find
+an intact mirror.  Anything less is correctable (write failure on some
+mirrors) or can be retried (any read failure) if the raid profile has
+redundancy.
+
+> Write caching is on all those drives though:
+> gargamel:/var/local/src/btrfs-progs-josefbacik# hdparm -v -W /dev/sdh
+> /dev/sdh:
+>  multcount     = 16 (on)
+>  readonly      =  0 (off)
+>  readahead     = 256 (on)
+>  geometry      = 729601/255/63, sectors = 11721045168, start = 0
+>  write-caching =  1 (on)
+> 
+> I haven't heard that these drives have broken caching, but maybe they do?
+> Device Model:     ST6000VN0041-2EL11C
+> Serial Number:    ZA18TVFZ
+> LU WWN Device Id: 5 000c50 0a4d9b49c
+> Firmware Version: SC61
+> User Capacity:    6,001,175,126,016 bytes [6.00 TB]
+
+I've heard of problems with SC60, but IIRC SC61 was supposed to be the
+fix for them.  I had some SC60 drives for a while without encountering
+issues, but I didn't have any bus timeouts with them.  When they failed,
+they had a burst of 10k+ UNC sectors and then stopped spinning up,
+with no bus timeouts.
+
+> > If the failing drive also reorders cached writes across flush
+> > commands, then we go directly to parent transid verify failed in btrfs.
+> > Parent transid verification is designed to detect this exact firmware
+> > failure mode, and it usually works as intended.  It's a pretty direct
+> > and reliable signal that write ordering is broken in a lower level of
+> > the storage stack, and must be fixed or disabled before trying again.
+>  
+> Agreed, I do want to fix the underlying problem here.
+> What I can do is
+> 
+> 1) disable write caching on the drives
+> 
+> 2) disable bcache by removing the caching device
+> 
+> 3) change the cache mode
+> gargamel:/sys/block/md7/bcache# cat cache_mode 
+> [writethrough] writeback writearound none
+> writethrough should be safe, but I could use writearound instead
+> 
+> 4) if I end up wiping my device, I can just remove the bcache layer altogether.
+> 
+> > Even if a single drive doesn't reorder writes, multiple drives in
+> > raid effectively reorder writes between drives as each drive has its
+> > own distinct write queue.  A dropped write that would be harmless in a
+> 
+> very good point.
+> 
+> > single-device filesystem could be harmful in a multi-device array as the
+> > non-failing drives will have writes that occurred after the lost writes
+> > on the failing drive.  Normally mdadm enforces flush ordering across all
+> > component devices so that this isn't a problem, but if you have optimistic
+> > firmware and a drive failure after the flush command returns success,
+> > the inter-drive ordering enforcement fails and the result is the same
+> > as if an individual drive had a write/flush reordering bug.
+> 
+> That's all fair, but it feels like FS kept writing way longer than it
+> was supposed to and that is what worries me the most.
+
+The log excerpt I saw didn't show any write errors from btrfs, only
+from mdadm.  That suggests to me that the failure happened earlier when
+it was already too late to respond.  Also we can't rule out that bcache
+is doing something stupid.
+
+> > Some years ago we did a fleetwide audit of bad firmware drives and
+> > found about a third of our drives were bad.  We disabled write cache on
+> 
+> Looks like I just want to disable write caching then. Correctness beats
+> speed for sure.
+> 
+> > Yeah, experimental recovery code is fun, but robust backups and a working
+> > disaster recovery plan is usually better.  Even if the filesystem is
+> > up and running again, I'd want to compare all the files against backups
+> > because I'd trust nothing on a filesystem after fsck touched it.
+>  
+> That is totally my plan. Given the output that I'm seeing, I'll definitely do
+> at least a diff of all files between the backup and the array being recovered.
+> I might even do an rsync, forcing md5 checksums, but if I do that, it
+> will take days and longer than restoring the backup.
+> 
+> > On the other hand, if you get lucky and the filesystem isn't too badly
+> > damaged, then comparing the data with backups will be more convenient
+> > than starting over with a new filesystem.
+> 
+> Agreed.
+> 
+> Thanks,
+> Marc
+> -- 
+> "A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+>  
+> Home page: http://marc.merlins.org/  
+> 
