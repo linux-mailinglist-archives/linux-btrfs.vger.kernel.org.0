@@ -2,42 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A184F6BBE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 22:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE434F6BD5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 22:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbiDFUyR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 16:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S234575AbiDFU5s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 16:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232625AbiDFUxv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 16:53:51 -0400
+        with ESMTP id S234910AbiDFU4n (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 16:56:43 -0400
 Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99015FC888
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 12:13:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D93EE4CA
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Apr 2022 12:16:36 -0700 (PDT)
 Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1ncB5h-0002iL-Ql by authid <merlin>; Wed, 06 Apr 2022 12:13:17 -0700
-Date:   Wed, 6 Apr 2022 12:13:17 -0700
+        id 1ncB8u-0002tS-2f by authid <merlin>; Wed, 06 Apr 2022 12:16:36 -0700
+Date:   Wed, 6 Apr 2022 12:16:36 -0700
 From:   Marc MERLIN <marc@merlins.org>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
  transid verify failed + open_ctree failed)
-Message-ID: <20220406191317.GC14804@merlins.org>
-References: <CAEzrpqeQ=Q8u+Kgy6r+axYdbrZKs9=9cvMwEfKr=O2urgZTXHw@mail.gmail.com>
- <20220405195901.GC28707@merlins.org>
- <CAEzrpqe-tBN9iuDJPwf7cj7J8=d6gtr27LnTat9nZiA7iVERNQ@mail.gmail.com>
- <20220405200805.GD28707@merlins.org>
- <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
- <YkzWAZtf7rcY/d+7@hungrycats.org>
- <20220406000844.GK28707@merlins.org>
- <Ykzvoz47Rvknw7aH@hungrycats.org>
- <20220406040913.GE3307770@merlins.org>
- <Yk3W88Eyh0pSm9mQ@hungrycats.org>
+Message-ID: <20220406191636.GD14804@merlins.org>
+References: <20220405225808.GJ28707@merlins.org>
+ <CAEzrpqdtvY7vu50-xSFpdJoySutMWF3JYsqORjMBHNzmTZ52UQ@mail.gmail.com>
+ <20220406003521.GM28707@merlins.org>
+ <CAEzrpqesUdkDXhdJXHewPZuFGPVu_qyGfH07i5Lxw=NDs=LASQ@mail.gmail.com>
+ <CAEzrpqfV9MgU_XbVxpnv05gKnKXQRnHy_BrSYddDfNLZFqi2+g@mail.gmail.com>
+ <20220406031255.GO28707@merlins.org>
+ <20220406033404.GQ28707@merlins.org>
+ <CAEzrpqfnGCvE36-r-0OkN7yoA7j9XPCNqQVOnLrgA+cQZNoR3A@mail.gmail.com>
+ <20220406185431.GB14804@merlins.org>
+ <CAEzrpqd0Pjx7qXz1nXEXubTfN3rmR++idOL8z6fx3tZtyaj2TQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yk3W88Eyh0pSm9mQ@hungrycats.org>
+In-Reply-To: <CAEzrpqd0Pjx7qXz1nXEXubTfN3rmR++idOL8z6fx3tZtyaj2TQ@mail.gmail.com>
 X-Sysadmin: BOFH
 X-URL:  http://marc.merlins.org/
 User-Agent: Mutt/1.10.1 (2018-07-13)
@@ -52,129 +51,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 06, 2022 at 02:07:47PM -0400, Zygo Blaxell wrote:
-> Readahead can fail for a number of reasons that aren't real problems,
+On Wed, Apr 06, 2022 at 02:57:03PM -0400, Josef Bacik wrote:
+> Yeah lets go for that, I saw some errors on your fs tree's earlier, I
+> may need to adapt this to fix that tree, or if it's a snapshot we can
+> just delete it.  We can burn that bridge when we get to it, thanks,
 
-thanks.
+Sounds good. Is mode=lowmem a thing of the past by the way?
+(I remember that the old regular repair would eat up my 32GB of RAM and
+take the machine down)
 
-> Once a degraded array has an IO failure, mdadm assumes you're in
-> a data-scraping recovery mode and simply passes errors through.
-> bcache does something similar when the backing store fails.
- 
-shouldn't it go read only also?
-I haven't found a setting to tell it to do that if it's not the default.
+The current one failed quickly though
 
-> btrfs is the agent that has to stop attempting writes, and make sure
-> any transaction in progress doesn't get committed.  ext4 has similar
-> responsibility and implements its own force-read-only feature.
+gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs check --repair /dev/mapper/dshelf1a 
+enabling repair mode
+WARNING:
 
-Agreed, but I like the defense in multiple layers approach
-mdadm knows that any data going to be written is going to be incomplete
-due to the 2nd missing drive, and there are few to no scenarios where 
-continuing to write is a good thing.
+	Do not use --repair unless you are advised to do so by a developer
+	or an experienced user, and then only after having accepted that no
+	fsck can successfully repair all types of filesystem corruption. Eg.
+	some software or hardware bugs can fatally damage a volume.
+	The operation will start in 10 seconds.
+	Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting repair.
+Opening filesystem to check...
+parent transid verify failed on 22216704 wanted 1600938 found 1602177
+parent transid verify failed on 22216704 wanted 1600938 found 1602177
+parent transid verify failed on 22216704 wanted 1600938 found 1602177
+FS_INFO IS 0x55e2e75defc0
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+parent transid verify failed on 15645251010560 wanted 1602089 found 1602297
+Couldn't find the last root for 8
+checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+parent transid verify failed on 15645261971456 wanted 1602297 found 1600989
+checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+bad tree block 15645261971456, bad level, 127 > 8
+ERROR: failed to read block groups: Input/output error
+FS_INFO AFTER IS 0x55e2e75defc0
+Checking filesystem on /dev/mapper/dshelf1a
+UUID: 96539b8c-ccc9-47bf-9e6c-29305890941e
+[1/7] checking root items
+checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+parent transid verify failed on 15645261971456 wanted 1602297 found 1600989
+checksum verify failed on 15645261971456 wanted 0x10a0c9b9 found 0x08b85944
+bad tree block 15645261971456, bad level, 127 > 8
+ERROR: failed to repair root items: Input/output error
 
-> I note that btrfs is reporting only read errors here.
 
-Yeah, me too. That seems very bad and likely the cause or the corruption
-I got.
-A double raid failure (I've had them before) should be almost a non
-event. The first write after that should fail and that should be the end
-of it.
-This underlying problem makes me very uncomfortable.
-As much as I'm super thankful for Josef's efforts, and ultimately it
-will make btrfs recovery better, which is a win for all, my situation
-shouldn't have happened from what I can tell.
-
-> There's a possibility that the drive dropped the writes during the
-> bus reset at the start of the second drive failure.  If write caching
-> was enabled in the drive, and the drive has a firmware bug that drops
-> the write cache contents (or it's just failing hardware, i.e. the CPU
-> running the drive firmware is getting killed by electrical problems on the
-> controller board, causing both the bus drop and the loss of write cache
-> contents), then writes in the drive's cache could be lost _after_ mdadm,
-> bcache and btrfs had been told by the drive that they were completed.
-
-That's true, but I've seen btfrs remount read only before, and it didn't
-there. Shouldn't hard IO errors immediately cause btrfs to go read only?
-
-Write caching is on all those drives though:
-gargamel:/var/local/src/btrfs-progs-josefbacik# hdparm -v -W /dev/sdh
-/dev/sdh:
- multcount     = 16 (on)
- readonly      =  0 (off)
- readahead     = 256 (on)
- geometry      = 729601/255/63, sectors = 11721045168, start = 0
- write-caching =  1 (on)
-
-I haven't heard that these drives have broken caching, but maybe they do?
-Device Model:     ST6000VN0041-2EL11C
-Serial Number:    ZA18TVFZ
-LU WWN Device Id: 5 000c50 0a4d9b49c
-Firmware Version: SC61
-User Capacity:    6,001,175,126,016 bytes [6.00 TB]
-
-> If the failing drive also reorders cached writes across flush
-> commands, then we go directly to parent transid verify failed in btrfs.
-> Parent transid verification is designed to detect this exact firmware
-> failure mode, and it usually works as intended.  It's a pretty direct
-> and reliable signal that write ordering is broken in a lower level of
-> the storage stack, and must be fixed or disabled before trying again.
- 
-Agreed, I do want to fix the underlying problem here.
-What I can do is
-
-1) disable write caching on the drives
-
-2) disable bcache by removing the caching device
-
-3) change the cache mode
-gargamel:/sys/block/md7/bcache# cat cache_mode 
-[writethrough] writeback writearound none
-writethrough should be safe, but I could use writearound instead
-
-4) if I end up wiping my device, I can just remove the bcache layer altogether.
-
-> Even if a single drive doesn't reorder writes, multiple drives in
-> raid effectively reorder writes between drives as each drive has its
-> own distinct write queue.  A dropped write that would be harmless in a
-
-very good point.
-
-> single-device filesystem could be harmful in a multi-device array as the
-> non-failing drives will have writes that occurred after the lost writes
-> on the failing drive.  Normally mdadm enforces flush ordering across all
-> component devices so that this isn't a problem, but if you have optimistic
-> firmware and a drive failure after the flush command returns success,
-> the inter-drive ordering enforcement fails and the result is the same
-> as if an individual drive had a write/flush reordering bug.
-
-That's all fair, but it feels like FS kept writing way longer than it
-was supposed to and that is what worries me the most.
-
-> Some years ago we did a fleetwide audit of bad firmware drives and
-> found about a third of our drives were bad.  We disabled write cache on
-
-Looks like I just want to disable write caching then. Correctness beats
-speed for sure.
-
-> Yeah, experimental recovery code is fun, but robust backups and a working
-> disaster recovery plan is usually better.  Even if the filesystem is
-> up and running again, I'd want to compare all the files against backups
-> because I'd trust nothing on a filesystem after fsck touched it.
- 
-That is totally my plan. Given the output that I'm seeing, I'll definitely do
-at least a diff of all files between the backup and the array being recovered.
-I might even do an rsync, forcing md5 checksums, but if I do that, it
-will take days and longer than restoring the backup.
-
-> On the other hand, if you get lucky and the filesystem isn't too badly
-> damaged, then comparing the data with backups will be more convenient
-> than starting over with a new filesystem.
-
-Agreed.
-
-Thanks,
-Marc
 -- 
 "A mouse is a device used to point at the xterm you want to type in" - A.S.R.
  
