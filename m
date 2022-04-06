@@ -2,64 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 531334F607B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 15:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA8F4F5D79
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Apr 2022 14:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbiDFNxL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Apr 2022 09:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        id S230350AbiDFMQx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Apr 2022 08:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234447AbiDFNwv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 09:52:51 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE762DE84B
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 18:43:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1649209430; x=1680745430;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iyo/T2F7zIihT49w53yL0fog+bdlpAC+n01ffJe1qCI=;
-  b=fU4yu22ogg75pErIUHcIOlq6hoxWd+6HlGmQ1w/8lc7pQYvwB4F/UeQ5
-   +8vh5jDywqWwt30jTnUBsAOfVAWq/ya0TagrHM+nLytNOpi/DHjkndbO+
-   Vsx7Yvx3N0+njk8lgb7XXIID2VSpLQgaHF6wFWNR0N1xUhn1GriltW9pB
-   Pc4/MPAGh+40KR72gfNlkBzzI1oOPHHNe8lYA2nFdAqlVOa6FOcCvYaRw
-   25HqDrfUXPKCovkogEQcehP8Hg3v5kVD5YsXqlus4Op2z/KXcfY9zM+BZ
-   bmDNUKOf+TgAS4Fc5F1MmN9aBn6uKu5GBdI88UfKoMRCxPLChMMeEcQIw
-   A==;
-X-IronPort-AV: E=Sophos;i="5.90,238,1643644800"; 
-   d="scan'208";a="309153509"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Apr 2022 09:43:49 +0800
-IronPort-SDR: CCWAhGVB0S0EkCa6r8X62c1qDmavRUcpSNI74zSOa65NoXX5LHVjHYTj8L3UcuwZlyAmKlghZ+
- 2a3AeqzRSF7IxBGb+igIdH2oCl4uC4EFkgjSN5mIjfVCS9St5QuYlMN6wokYm36Q1xwv8uel6D
- oV9YSIMNfvJrmCwNZNC/ZLGDQuUA15X0g4uMKtuiZ5bUdOoiW8CN7Gj+W6DABPYwAV4rqYZefj
- AkFGqAqzxYEesaZogT+Z39Guu+zn4LZ+aH0UHUbIwbSxlwYdjnXmqkjrDj0FC3wKMgAz1s35WG
- XzlH7fIZ2d314yIoZoAaG46t
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2022 18:14:32 -0700
-IronPort-SDR: hzyNIKQfcaAaaLELA6joBUN7ryIgkGkj1ZocysnC393XViebCt+3Rap3R0wg/xQxMaRGEXn/Nj
- iN4IkG8lq/avlPAxxxqKR9DtuIBO8k5Mjs0tu3eoFjN9gJJyrC4Q37bA2SJlOALP1fVZCFk9q2
- OjC1AiQVjHm71S/tecVY813jadThZC4755xT065u02etVtQb7N7zsPjR2re7cw2fxmgz8IxNCa
- GiztnNDebv6iqNzNxXLCZL7ed3CpWEjFQ+IPDNxeFIsTV2/2iGNrKA3GoianWCju+VPP6tp/aM
- whw=
-WDCIronportException: Internal
-Received: from 5cg2012qdx.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.10])
-  by uls-op-cesaip01.wdc.com with ESMTP; 05 Apr 2022 18:43:50 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 4/4] btrfs-progs: zoned: fix and simplify dev_extent_hole_check_zoned()
-Date:   Wed,  6 Apr 2022 10:43:13 +0900
-Message-Id: <20220406014313.993961-5-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220406014313.993961-1-naohiro.aota@wdc.com>
-References: <20220406014313.993961-1-naohiro.aota@wdc.com>
+        with ESMTP id S232137AbiDFMPP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Apr 2022 08:15:15 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F7A22EB04
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Apr 2022 20:12:57 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nbw6J-0004Sd-FM by authid <merlin>; Tue, 05 Apr 2022 20:12:55 -0700
+Date:   Tue, 5 Apr 2022 20:12:55 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220406031255.GO28707@merlins.org>
+References: <CAEzrpqeZoUF3+Pgyaup1DGFENs6zDKtRqHiJQ6sx_CoXE2HOOA@mail.gmail.com>
+ <20220405212655.GH28707@merlins.org>
+ <CAEzrpqc0Ss+J6oTqNPfTgWOwyhPAF2uHnRELmc6AO6je6Ht88w@mail.gmail.com>
+ <20220405214309.GI28707@merlins.org>
+ <CAEzrpqeDZxjbis5kPWH3khiOALyFqUoTuh5eojFtWHPcwj-Ygw@mail.gmail.com>
+ <20220405225808.GJ28707@merlins.org>
+ <CAEzrpqdtvY7vu50-xSFpdJoySutMWF3JYsqORjMBHNzmTZ52UQ@mail.gmail.com>
+ <20220406003521.GM28707@merlins.org>
+ <CAEzrpqesUdkDXhdJXHewPZuFGPVu_qyGfH07i5Lxw=NDs=LASQ@mail.gmail.com>
+ <CAEzrpqfV9MgU_XbVxpnv05gKnKXQRnHy_BrSYddDfNLZFqi2+g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqfV9MgU_XbVxpnv05gKnKXQRnHy_BrSYddDfNLZFqi2+g@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,68 +51,97 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The previous patch revealed a bug in dev_extent_hole_check_zoned(). If the
-given hole is OK to use as is, it should have just returned the hole. But
-on the contrary, it shifts the hole start position by one zone. That
-results in refusing any hole.
+On Tue, Apr 05, 2022 at 09:08:32PM -0400, Josef Bacik wrote:
+> Also keep in mind this isn't the final fix, this is the pre-repair so
+> hopefully fsck can put the rest of it back together.  Thanks,
 
-We don't use btrfs_ensure_empty_zones() in the btrfs-progs version of
-dev_extent_hole_check_zoned() unlike the kernel side, because
-btrfs_find_allocatable_zones() itself is doing the necessary checks. So, we
-can just "return changed" if the "pos" is unchanged. That also makes the
-loop and "changed" variable unnecessary.
+Done, so now I can run 
+btrfs check --repair /dev/mapper/dshelf1a ?
 
-So, fix and simplify the code in one shot.
+with or without mode=lowmem?
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- kernel-shared/volumes.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+Do I need to reset the ctree too, or repair will do it?
+[642321.755553] BTRFS warning (device dm-17): 'recovery' is deprecated, use 'rescue=usebackuproot' instead
+[642321.755566] BTRFS info (device dm-17): trying to use backup root at mount time
+[642321.755568] BTRFS info (device dm-17): disk space caching is enabled
+[642321.755569] BTRFS info (device dm-17): has skinny extents
+[642322.242161] BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
+[642322.282393] BTRFS error (device dm-17): parent transid verify failed on 22216704 wanted 1600938 found 1602177
+[642322.313951] BTRFS error (device dm-17): failed to read chunk tree: -5
+[642322.339490] BTRFS error (device dm-17): open_ctree failed
 
-diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-index 0199bc26a8b4..598ac553442c 100644
---- a/kernel-shared/volumes.c
-+++ b/kernel-shared/volumes.c
-@@ -583,30 +583,19 @@ static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
- 					u64 *hole_start, u64 *hole_size,
- 					u64 num_bytes)
- {
--	u64 zone_size = device->zone_info->zone_size;
- 	u64 pos;
--	bool changed = false;
--
--	ASSERT(IS_ALIGNED(*hole_start, zone_size));
--
--	while (*hole_size > 0) {
--		pos = btrfs_find_allocatable_zones(device, *hole_start,
--						   *hole_start + *hole_size,
--						   num_bytes);
--		if (pos != *hole_start) {
--			*hole_size = *hole_start + *hole_size - pos;
--			*hole_start = pos;
--			changed = true;
--			if (*hole_size < num_bytes)
--				break;
--		}
- 
--		*hole_start += zone_size;
--		*hole_size -= zone_size;
--		changed = true;
-+	ASSERT(IS_ALIGNED(*hole_start, device->zone_info->zone_size));
-+
-+	pos = btrfs_find_allocatable_zones(device, *hole_start,
-+					   *hole_start + *hole_size, num_bytes);
-+	if (pos != *hole_start) {
-+		*hole_size = *hole_start + *hole_size - pos;
-+		*hole_start = pos;
-+		return true;
- 	}
- 
--	return changed;
-+	return false;
- }
- 
- /**
+
+gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs-find-root -o 1 /dev/mapper/dshelf1a 2>&1 |tee /tmp/outn
+parent transid verify failed on 22216704 wanted 1600938 found 1602177
+parent transid verify failed on 22216704 wanted 1600938 found 1602177
+parent transid verify failed on 22216704 wanted 1600938 found 1602177
+FS_INFO IS 0x557e9cc375f0
+parent transid verify failed on 13577821667328 wanted 1602089 found 1602242
+parent transid verify failed on 13577821667328 wanted 1602089 found 1602242
+parent transid verify failed on 13577821667328 wanted 1602089 found 1602242
+parent transid verify failed on 13577821667328 wanted 1602089 found 1602242
+parent transid verify failed on 13577821667328 wanted 1602089 found 1602242
+parent transid verify failed on 13577821667328 wanted 1602089 found 1602242
+Couldn't find the last root for 4
+Couldn't setup device tree
+FS_INFO AFTER IS 0x557e9cc375f0
+fixed slot 0
+fixed slot 2
+fixed slot 5
+fixed slot 7
+(...)
+Couldn't find a replacement block for slot 261
+fixed slot 263
+fixed slot 264
+fixed slot 265
+fixed slot 267
+fixed slot 269
+fixed slot 271
+fixed slot 273
+fixed slot 274
+fixed slot 276
+fixed slot 277
+fixed slot 278
+fixed slot 279
+fixed slot 282
+fixed slot 283
+fixed slot 285
+fixed slot 286
+fixed slot 287
+fixed slot 288
+fixed slot 289
+fixed slot 291
+fixed slot 293
+fixed slot 294
+fixed slot 296
+fixed slot 297
+fixed slot 298
+fixed slot 300
+fixed slot 301
+fixed slot 302
+fixed slot 303
+fixed slot 304
+fixed slot 305
+fixed slot 306
+fixed slot 307
+fixed slot 308
+fixed slot 309
+fixed slot 311
+fixed slot 312
+fixed slot 313
+fixed slot 314
+fixed slot 315
+fixed slot 316
+fixed slot 317
+fixed slot 318
+fixed slot 319
+fixed slot 320
+fixed slot 321
+
+
+Thanks,
+Marc
 -- 
-2.35.1
-
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
