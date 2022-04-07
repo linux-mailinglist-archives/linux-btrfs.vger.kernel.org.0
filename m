@@ -2,61 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A28044F7D47
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Apr 2022 12:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5DB4F7D99
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Apr 2022 13:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244548AbiDGKxx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Apr 2022 06:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        id S239944AbiDGLLY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Apr 2022 07:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244545AbiDGKxw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Apr 2022 06:53:52 -0400
+        with ESMTP id S233754AbiDGLLV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Apr 2022 07:11:21 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B0BE6164;
-        Thu,  7 Apr 2022 03:51:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56F1183BD;
+        Thu,  7 Apr 2022 04:09:21 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 98F1221117;
-        Thu,  7 Apr 2022 10:51:51 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5DCE721117;
+        Thu,  7 Apr 2022 11:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649328711;
+        t=1649329760;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=l1Tzxv44rv0NjNRX4WlYNhE5cU//xGlEDNhpdKJU4PQ=;
-        b=22WOQxpzIbLL/gHYhoRUeNZsZwNXDn8q7nXiDhJ9x5xh2epQ/bJTHWJU5YAcw+dpBOdJC0
-        HWSutIPaFZBmZcv8PIpyJKClsQKZ4kGoT7xe/kYTQqnzvaodKaBAsbQgHiRVjX+VBAcC9F
-        hnfjeINBtMi74UqV2J74zhHWIpoufNw=
+        bh=98548563aIgFxuTbEGhuFrrjF0oRxSf7O8rE+4waoDU=;
+        b=g4l9K/uvaXiqTrh3Weo9re3njIkaiqWsHhVzlu2BUyNo8+Kh97Oe45WKq1IDepkLQ+TCXq
+        DWZCwJ6llV/96zFlTJlkAQsQx4ls9hq9WD2RvRBSCuqRBeaTM2glq5AusAaLjUIyrHa8sw
+        Gci42F79V2a/ZAc58R5BDeZFhJPA1GM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649328711;
+        s=susede2_ed25519; t=1649329760;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=l1Tzxv44rv0NjNRX4WlYNhE5cU//xGlEDNhpdKJU4PQ=;
-        b=1qasprG3GnuRkCPq23tnKm4YcOmWoOAZz7RmjrLzwIqVc5DKs+iNhlxrTA6xYzuH9voXam
-        Xkd85YDfLqNmWvAw==
+        bh=98548563aIgFxuTbEGhuFrrjF0oRxSf7O8rE+4waoDU=;
+        b=LI5tM34lmFPs2XvK0D3ZAkCwGn99zxxeFnUMWJtRtT3TH/8rccyWZ9R4XYqXWwEnLrQoGV
+        +Yxxp19aOb7tPGDQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 9FAD0A3B82;
-        Thu,  7 Apr 2022 10:51:50 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 47FA2A3B88;
+        Thu,  7 Apr 2022 11:09:20 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 596A6DA80E; Thu,  7 Apr 2022 12:47:48 +0200 (CEST)
-Date:   Thu, 7 Apr 2022 12:47:48 +0200
+        id 314E5DA80E; Thu,  7 Apr 2022 13:05:18 +0200 (CEST)
+Date:   Thu, 7 Apr 2022 13:05:18 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     cgel.zte@gmail.com
-Cc:     dsterba@suse.cz, clm@fb.com, dsterba@suse.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lv.ruyi@zte.com.cn
-Subject: Re: [PATCH] Btrfs: remove redundant judgment
-Message-ID: <20220407104748.GD15609@twin.jikos.cz>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] btrfs: Avoid live-lock in search_ioctl() on
+ hardware with sub-page faults
+Message-ID: <20220407110518.GE15609@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, cgel.zte@gmail.com, clm@fb.com,
-        dsterba@suse.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lv.ruyi@zte.com.cn
-References: <20220406130453.GB15609@suse.cz>
- <20220407015700.2489671-1-lv.ruyi@zte.com.cn>
+Mail-Followup-To: dsterba@suse.cz,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Will Deacon <will@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220406180922.1522433-1-catalin.marinas@arm.com>
+ <20220406180922.1522433-4-catalin.marinas@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220407015700.2489671-1-lv.ruyi@zte.com.cn>
+In-Reply-To: <20220406180922.1522433-4-catalin.marinas@arm.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -68,23 +82,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 07, 2022 at 01:57:00AM +0000, cgel.zte@gmail.com wrote:
-> < Ok, we can drop the check, have you looked if there are more similar
-> < places to update?
-> I found six by coccinelle, but they are in different paths.Should I
-> send one patch or six?
+On Wed, Apr 06, 2022 at 07:09:22PM +0100, Catalin Marinas wrote:
+> Commit a48b73eca4ce ("btrfs: fix potential deadlock in the search
+> ioctl") addressed a lockdep warning by pre-faulting the user pages and
+> attempting the copy_to_user_nofault() in an infinite loop. On
+> architectures like arm64 with MTE, an access may fault within a page at
+> a location different from what fault_in_writeable() probed. Since the
+> sk_offset is rewound to the previous struct btrfs_ioctl_search_header
+> boundary, there is no guaranteed forward progress and search_ioctl() may
+> live-lock.
+> 
+> Use fault_in_subpage_writeable() instead of fault_in_writeable() to
+> ensure the permission is checked at the right granularity (smaller than
+> PAGE_SIZE).
+> 
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> Fixes: a48b73eca4ce ("btrfs: fix potential deadlock in the search ioctl")
+> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
 
-As this is a simple change it can be in one patch, provided that it's
-the same logic (dropping inode check before iput).
-
-I've found only 2 instances with this coccinelle script:
-
-@@
-expression E;
-@@
-
-* if (E)
-*       iput(E);
---
-
-not sure where you found 6.
+Acked-by: David Sterba <dsterba@suse.com>
