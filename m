@@ -2,137 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A7C4F7EF9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Apr 2022 14:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF1E4F80F0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Apr 2022 15:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245145AbiDGMaU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Apr 2022 08:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S240165AbiDGNt1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Apr 2022 09:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245139AbiDGM36 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Apr 2022 08:29:58 -0400
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02066A88AD
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Apr 2022 05:27:55 -0700 (PDT)
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 509CF2B521B; Thu,  7 Apr 2022 08:27:54 -0400 (EDT)
-Date:   Thu, 7 Apr 2022 08:27:54 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Marc MERLIN <marc@merlins.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: figuring out why transient double raid failure caused a fair
- amount of btrfs corruption
-Message-ID: <Yk7YyhQ/CdcMfoS7@hungrycats.org>
-References: <20220405200805.GD28707@merlins.org>
- <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
- <YkzWAZtf7rcY/d+7@hungrycats.org>
- <20220406000844.GK28707@merlins.org>
- <Ykzvoz47Rvknw7aH@hungrycats.org>
- <20220406040913.GE3307770@merlins.org>
- <Yk3W88Eyh0pSm9mQ@hungrycats.org>
- <20220406191317.GC14804@merlins.org>
- <20220406203811.GF14804@merlins.org>
- <CAEzrpqdLm+Kwp9AWtPvxEBHXXm3wb_NhGLnhxsAsEXhufstPPw@mail.gmail.com>
+        with ESMTP id S229619AbiDGNtZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Apr 2022 09:49:25 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65ED299685
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Apr 2022 06:47:23 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id a127so3682691vsa.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 07 Apr 2022 06:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=SUWQMmwZSct1NUq5pHL/uGOr0m/f9iWjJQkP63QJuAY=;
+        b=aQvftbaInKs0sgdRp3fR7c+KuKWgjuyDLbbi2Xwrt53wMdA2LqrwSczR9b4HBQV9tl
+         YLYwHeh+nD3kSq4sqZQSImBw8RiypTN74Q56H3UXDRhz+vtuZRbav+UvMu/0EyrOM3Hv
+         1MW4QM4V4FWk4eQWeFpVDE94IJOHc26vGxxektGACRntnLRUngpZjE3OYu5X6Xi4byh9
+         p/+dS38ZqZI46gpiqeh1zRej8PXIw30LrPqie308N0AntsJcPPzib9pTkae0yApMPW5F
+         FKXxVOvJTUEmi5mKEVp5PwpJTlZ9uvK2/sOdy2h7BM1DYmw3gx72hXYaJDBRewTkFVxT
+         8O8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=SUWQMmwZSct1NUq5pHL/uGOr0m/f9iWjJQkP63QJuAY=;
+        b=YNAxnKcd+WfZe2UYDqRkSnxTvBuio1lSKYBotkTy5ustffLC/0QEd8PF1mqrUBPmS2
+         V5pXRgqQ9YGYXFdwDZtU+/DWyPZlwups9E/OsEbegJmWucHAUR2WxIXoGW88ILX0W1/b
+         IN4orAcJzsRfNM4l4oNgcxeBjpjWbo5T2HuoH7a4kHxGZq9JvJuOUN4iPfvaDHjetZUV
+         pG/MgTnQ+Ib7wd3YFjA1BE85F8O2MMsl4PkXZrNtXqxhHW0o76MaF05z+4WPpYiVDpmr
+         GXt+fyawqjinTodThQktBGeT9t72wSBS/++NLZbIKY+MEhufk6KXurQstcHxoQ0GXT8n
+         ujyw==
+X-Gm-Message-State: AOAM533r8A5vvKWGPWloxJ8IS53WgpCjfn1/5qPIro5oJigdaM9qvIla
+        jzwSxJeogp/Kaag1ELH6qJ59mgnuxyJqjlpV2ok=
+X-Google-Smtp-Source: ABdhPJwKIK0E1vGjDiPsrzrzja4vb+7xOmKEZaqZS5D0kyNRx8e38wuJOOZ9WbvAOobBhGea1NNvTi5Ndmkgw3Zlq8Y=
+X-Received: by 2002:a05:6102:3592:b0:325:84f0:4b61 with SMTP id
+ h18-20020a056102359200b0032584f04b61mr4607190vsu.12.1649339242503; Thu, 07
+ Apr 2022 06:47:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqdLm+Kwp9AWtPvxEBHXXm3wb_NhGLnhxsAsEXhufstPPw@mail.gmail.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Received: by 2002:a67:d718:0:0:0:0:0 with HTTP; Thu, 7 Apr 2022 06:47:21 -0700 (PDT)
+Reply-To: jub47823@gmail.com
+From:   Julian Bikram <woloumarceline@gmail.com>
+Date:   Thu, 7 Apr 2022 13:47:21 +0000
+Message-ID: <CAKM2rXtXVsRoxj2up5XYgh-zAi7a5k-_mK0GQkugy5aAJrjmYQ@mail.gmail.com>
+Subject: Please can i have your attention
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:e2e listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4584]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [jub47823[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [woloumarceline[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.8 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 06, 2022 at 04:51:14PM -0400, Josef Bacik wrote:
-> On Wed, Apr 6, 2022 at 4:38 PM Marc MERLIN <marc@merlins.org> wrote:
-> >
-> > This is an interesting discussion, so let's make a new thread out of it.
-> > TL;DR: I think btrfs may have failed to go read only earlier, causing
-> > more damage than needed to be, or some block layers just held enough
-> > data in flight that partial data got written, causing more damage than
-> > expected.
-> > Figuring out the underlying problem would be good to avoid this again.
+Dear ,
 
-> We can't do anything about the disks lying to us.  If a disk has a
-> wonky FUA/FLUSH implementation then we're just sort of screwed.
-> Unfortunately because our metadata moves around a lot we're waaaaay
-> more susceptible to this failure case than ext4 or xfs, their metadata
-> is relatively static they can put humpty dumpty back together again
-> relatively simply.
 
-Disks are pretty good at FUA/FLUSH bugs these days, though you can
-still buy new old drives that have them.
+Please can I have your attention and possibly help me for humanity's
+sake please. I am writing this message with a heavy heart filled with
+sorrows and sadness.
 
-SSDs have a whole lot of bugs, especially if they get old. have a few bits
-fail, and try to recover themselves, but blow up the whole filesystem
-by losing a few pages.  These ones get through firmware qualification
-testing because they only misbehave when they're a year or two old.
+Please if you can respond, i have an issue that i will be most
+grateful if you could help me deal with it please.
 
-> Btrfs needs to
-> 
-> 1. Go whole hog on error injection testing.  I only barely scratched
-> the surface with my bpf error injection stuff.  This is on our roadmap
-> and I plan on devoting developer time to this, but clearly that
-> doesn't help you right now.
-> 2. Put a lot more effort into disaster recovery.  What I've written
-> for you is an idea I've had in my head for a while.  Some of this
-> failures aren't catastrophic, we can generally pretty easily put back
-> together a file system that resembles something sane by simply
-> stitching together blocks that we find that are close enough to what
-> we wanted.  Unfortunately this gets back-burnered because in reality
-> this doesn't happen that often.
-
-This does seem to be an important missing piece at the moment.  
-In practice, when we see "parent transid verify failed," we go directly
-to mkfs + restore backups, as none of the existing tools will touch it.
-They all want intact interior nodes in some tree to work, and that's
-the one thing that FUA/FLUSH bugs destroy.
-
-It doesn't solve the underlying problem--the drive will still trash
-the filesystem every other month until its write ordering gets fixed or
-worked around--but at least it lets users fix the filesystem in place
-without mkfs + restoring a full set of backups.
-
-> 3. Test these btrfs+dmcrypt+mdraid setups.  Every time I notice one of
-> these catastrophic failures it generally involves btrfs+<something
-> else>.  This is likely just because it's a timing thing, you put more
-> layers you get a wider window in per-io races, you're more likely to
-> be sad in the event of a failure.  However it would be good to make
-> sure these layers are doing the correct thing themselves.
-
-bcache and dmcache layers in series with the underlying storage multiply
-the failure rates (including software regressions) of the individual
-components, and mdadm blends firmware bugs from all the drives together.
-Statistically we're always going to see more problems if there are more
-moving parts in the system, especially if they aggregate risks and break
-fault isolation.
-
-FWIW I'm not seeing a difference in failure rate between "btrfs +
-mdadm" and "btrfs alone", but I'm intentionally avoiding the many mdadm
-configurations that introduce new failure modes by design (e.g. raid5
-without ppl or journal, raid1 without component device integrity, or
-single/raid1 SSD cache in writeback mode running over multiple drives).
-There isn't a fix for those except to not use them.  In most cases
-there's a better way to do the same thing, though there are some gaps
-(e.g. there's no working solution for writeback SSD caching on raid5).
-
-Thought experiment:  if you have 2 drives from vendor A and 2 drives
-from vendor B, and you want to build two filesystems that replicate
-to each other, where do you put the drives if you know one vendor has
-a firmware bug but you don't know which one?  With mdadm, you build
-filesystems with AA and BB drives, because that way a firmware bug
-corrupts one filesystems and leaves the other intact.  With btrfs, you
-build two filesystems with AB and AB drives, because that way a firmware
-bug gets autocorrected by btrfs and both filesystems remain intact.
-If you put btrfs on mdadm on AB drives, you combine the risk from both
-vendors, lose both filesystems, and skew the failure statistics.
-
-> We need to be better about this scenario, both in making sure we don't
-> have bugs that contribute to the problem, but also that we have the
-> tools necessary to recover when things go wrong.  Thanks,
-> 
-> Josef
+Julian
