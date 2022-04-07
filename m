@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A4D4F77A8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Apr 2022 09:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263C34F77E0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Apr 2022 09:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241885AbiDGHiH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Apr 2022 03:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
+        id S242025AbiDGHnf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Apr 2022 03:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242089AbiDGHiC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Apr 2022 03:38:02 -0400
-X-Greylist: delayed 318 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Apr 2022 00:36:02 PDT
-Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7AEC254683
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Apr 2022 00:36:02 -0700 (PDT)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id ADFE43FD1CC;
-        Thu,  7 Apr 2022 09:30:42 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Josef Bacik <josef@toxicpanda.com>, Marc MERLIN <marc@merlins.org>
-Cc:     Linux BTRFS mailing list <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid verify failed + open_ctree failed)
-Date:   Thu, 07 Apr 2022 09:30:41 +0200
-Message-ID: <11970220.O9o76ZdvQC@ananda>
-In-Reply-To: <20220407044006.GB25669@merlins.org>
-References: <CAEzrpqd0Pjx7qXz1nXEXubTfN3rmR++idOL8z6fx3tZtyaj2TQ@mail.gmail.com> <20220407043717.GA25669@merlins.org> <20220407044006.GB25669@merlins.org>
+        with ESMTP id S232312AbiDGHnd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Apr 2022 03:43:33 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146771A810;
+        Thu,  7 Apr 2022 00:41:32 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id EC75368AFE; Thu,  7 Apr 2022 09:41:28 +0200 (CEST)
+Date:   Thu, 7 Apr 2022 09:41:28 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: cleanup btrfs bio handling, part 1
+Message-ID: <20220407074128.GA15763@lst.de>
+References: <20220404044528.71167-1-hch@lst.de> <20220405145626.GY15609@twin.jikos.cz> <20220405150956.GA16714@lst.de> <20220406180023.GC15609@twin.jikos.cz> <20220407055343.GA13812@lst.de> <PH0PR04MB7416AEB0B8ED6AA096472DAF9BE69@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR04MB7416AEB0B8ED6AA096472DAF9BE69@PH0PR04MB7416.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -43,20 +43,13 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi!
+On Thu, Apr 07, 2022 at 06:48:42AM +0000, Johannes Thumshirn wrote:
+> > No problem.  What branch should I use as baseline?  for-next seems to
+> > be merged from not otherwise visible branches so I'm not sure that is
+> > a good baseline.
+> > 
+> 
+> Most (if not all) btrfs development happens based on misc-next which is
+> at https://github.com/kdave/btrfs-devel.git misc-next
 
-Marc MERLIN - 07.04.22, 06:40:06 CEST:
-> Damn, it's hosed so badly that even sysrq-o isn't working, never seen
-> that before.
-
-I did not keep statistics, but this might be one of the longest threads 
-on BTRFS mailing list.
-
-Good luck with restoring your filesystem or at least recovering all data 
-from it!
-
-Best,
--- 
-Martin
-
-
+Eww.  Having to track to it trees is a bit of a nightmare..
