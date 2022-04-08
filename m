@@ -2,184 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3B44F9DC4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Apr 2022 21:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4744F9E0F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Apr 2022 22:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235561AbiDHTvk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Apr 2022 15:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
+        id S237628AbiDHULv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Apr 2022 16:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbiDHTvh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Apr 2022 15:51:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875821C115
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Apr 2022 12:49:33 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 41FF81F862;
-        Fri,  8 Apr 2022 19:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649447372;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MFQf+oKIGkR22HBji5qg5AbNiC1iv03V+JdhYZ17WKY=;
-        b=u7K/C8XHX8jJ5yU8yTpQdtFKRuThOxzkyB8LUkvWsb9o8Ho+k+y66Uf3MKQi6/btNBg+ON
-        1V88gBXGqM4DutWnfOsppVmp9lfzdVh0XbiJn+OcQqhuj2XKP5wwx6B4zxhsPqrZJvuZYx
-        iYdQOA0Yf+x611kF/kcXWYfx+srpXfA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649447372;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MFQf+oKIGkR22HBji5qg5AbNiC1iv03V+JdhYZ17WKY=;
-        b=rxCx2bFF0q65BQ51VujAiPLpuGgXZZRnCRjt6W4aZdaTT8jOHJqYICrXM+udl52+xPym4a
-        mNJj2yBSQdKLjNDw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 0B10CA3B82;
-        Fri,  8 Apr 2022 19:49:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 28B0ADA832; Fri,  8 Apr 2022 21:45:28 +0200 (CEST)
-Date:   Fri, 8 Apr 2022 21:45:28 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] btrfs-progs: zoned: export sb_zone_number() and
- related constants
-Message-ID: <20220408194528.GC15609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-References: <20220406014313.993961-1-naohiro.aota@wdc.com>
- <20220406014313.993961-2-naohiro.aota@wdc.com>
+        with ESMTP id S233202AbiDHULu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Apr 2022 16:11:50 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1678C1CFFF
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Apr 2022 13:09:46 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id h63so11895558iof.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Apr 2022 13:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CKG1ik/AYLK6b/MP0w1iQHfZHLGfkbisG8AbHotVU10=;
+        b=Byu7yjBjt/ECpyk1ZijPXGypcQAIZKjQ9o080yjxUJgOGmFneBBTIwJYFEHA7b38MQ
+         VdHxYZHk+BtBj2e6Gif5WQW/o4ATdCrMRs76QEsMaltATtvAovkPHBRQwSVm6jpzTK5c
+         N3NAOuc/ONsbFtG+OC2S1QOxAndBBFFy0S8mS+TXJpSfi/RwzV/vTFkHYN3CU+G7QX4V
+         5uCHx/nIDYfCo4wxVDoaXz1SPZKFGi6xCvgSByHfw+84J6rsvEsknRgY/nQnKefd/DUk
+         4p1S+BHhPQhjaPOhmKq+xS6qDQ2z1nrbD3t5SqkSAQ0G1EUd9edP+pWueJlTl3evHibh
+         /0Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CKG1ik/AYLK6b/MP0w1iQHfZHLGfkbisG8AbHotVU10=;
+        b=zQPbp0971HqvA+HNHwRZOtC5YEp2D9oa3mqeei95GXUztP5UAw8zx6a3DcdzzDz0/R
+         7GAIJa6j8cOfcUcyKQY4WcAgF4yfJDpnluDzDyPFi4qVGKu9WiSSwD2l/+bAOUbbR6Z/
+         sgHzSjHCKbmegLAlBUTfRCKPyfepPTRvNljpds5Pk91yCg6iRM4mutsp227vUM3aErpR
+         9CWEwK8GvhxoFryYVX+Nd/+IEFzBTfyNVZyALfw5B2W9owGY01kD100QXZDiG1d9eaDc
+         bODxS8kJmta4FpftwxxsVd9bfpVaDLepa/6oypM6NWozPdagyikRF+1DVCelYAD6eVj/
+         rqPA==
+X-Gm-Message-State: AOAM530fKz+UsLDB/3UR7JK4rCa1LuqbTGkZG1V0t3MTN2XfRjd0DyVV
+        amRH2GSh7ZV0099HpTcajxzYzqQzNFIvKKGqcjSVgmH6Yqw=
+X-Google-Smtp-Source: ABdhPJz2l2loMMtmsTX7KOmntfudIqApIgo0qixnEA8pP0/n0SPYrDyTKq6f8uW2OsNf/ccFdhkZ4haTpmR/VVZbnzA=
+X-Received: by 2002:a02:9585:0:b0:324:202d:224e with SMTP id
+ b5-20020a029585000000b00324202d224emr4947239jai.218.1649448585354; Fri, 08
+ Apr 2022 13:09:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220406014313.993961-2-naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <11970220.O9o76ZdvQC@ananda> <20220407052022.GC25669@merlins.org>
+ <20220407162951.GD25669@merlins.org> <CAEzrpqdeph1AM74habMeOg_VURv5AFvZZ-9aUM9ZVEkM+-3Xkg@mail.gmail.com>
+ <CAEzrpqdjKE3ehKjEqWOuBHPuScpjDG+B7r81SP1Vd+G8RVK6rA@mail.gmail.com>
+ <20220408102209.GG25669@merlins.org> <CAEzrpqf+64jMsWnddCuoiVPEWyHOK+U3cGJMHrFAdHRn2Vbd0g@mail.gmail.com>
+In-Reply-To: <CAEzrpqf+64jMsWnddCuoiVPEWyHOK+U3cGJMHrFAdHRn2Vbd0g@mail.gmail.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Fri, 8 Apr 2022 16:09:34 -0400
+Message-ID: <CAEzrpqf1etZPKDrNexLLerdz3zXUai-zOfj8=LXzjbxdwiom0g@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 06, 2022 at 10:43:10AM +0900, Naohiro Aota wrote:
-> Move sb_zone_number() and related constants from zoned.c to the
-> corresponding header for later use.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  kernel-shared/zoned.c | 33 ---------------------------------
->  kernel-shared/zoned.h | 33 +++++++++++++++++++++++++++++++++
->  2 files changed, 33 insertions(+), 33 deletions(-)
-> 
-> diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-> index 2a11a1d723aa..396b74f0d906 100644
-> --- a/kernel-shared/zoned.c
-> +++ b/kernel-shared/zoned.c
-> @@ -33,20 +33,6 @@
->  /* Pseudo write pointer value for conventional zone */
->  #define WP_CONVENTIONAL			((u64)-2)
->  
-> -/*
-> - * Location of the first zone of superblock logging zone pairs.
-> - *
-> - * - primary superblock:    0B (zone 0)
-> - * - first copy:          512G (zone starting at that offset)
-> - * - second copy:           4T (zone starting at that offset)
-> - */
-> -#define BTRFS_SB_LOG_PRIMARY_OFFSET	(0ULL)
-> -#define BTRFS_SB_LOG_FIRST_OFFSET	(512ULL * SZ_1G)
-> -#define BTRFS_SB_LOG_SECOND_OFFSET	(4096ULL * SZ_1G)
-> -
-> -#define BTRFS_SB_LOG_FIRST_SHIFT	const_ilog2(BTRFS_SB_LOG_FIRST_OFFSET)
-> -#define BTRFS_SB_LOG_SECOND_SHIFT	const_ilog2(BTRFS_SB_LOG_SECOND_OFFSET)
-> -
->  #define EMULATED_ZONE_SIZE		SZ_256M
->  
->  static int btrfs_get_dev_zone_info(struct btrfs_device *device);
-> @@ -220,25 +206,6 @@ static int sb_write_pointer(int fd, struct blk_zone *zones, u64 *wp_ret)
->  	return 0;
->  }
->  
-> -/*
-> - * Get the first zone number of the superblock mirror
-> - */
-> -static inline u32 sb_zone_number(int shift, int mirror)
-> -{
-> -	u64 zone = 0;
-> -
-> -	ASSERT(0 <= mirror && mirror < BTRFS_SUPER_MIRROR_MAX);
-> -	switch (mirror) {
-> -	case 0: zone = 0; break;
-> -	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
-> -	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-> -	}
-> -
-> -	ASSERT(zone <= U32_MAX);
-> -
-> -	return (u32)zone;
-> -}
-> -
->  int btrfs_reset_dev_zone(int fd, struct blk_zone *zone)
->  {
->  	struct blk_zone_range range;
-> diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
-> index 75327610e537..cc0d6b6f166d 100644
-> --- a/kernel-shared/zoned.h
-> +++ b/kernel-shared/zoned.h
-> @@ -36,6 +36,20 @@ struct blk_zone {
->  /* Number of superblock log zones */
->  #define BTRFS_NR_SB_LOG_ZONES		2
->  
-> +/*
-> + * Location of the first zone of superblock logging zone pairs.
-> + *
-> + * - primary superblock:    0B (zone 0)
-> + * - first copy:          512G (zone starting at that offset)
-> + * - second copy:           4T (zone starting at that offset)
-> + */
-> +#define BTRFS_SB_LOG_PRIMARY_OFFSET	(0ULL)
-> +#define BTRFS_SB_LOG_FIRST_OFFSET	(512ULL * SZ_1G)
-> +#define BTRFS_SB_LOG_SECOND_OFFSET	(4096ULL * SZ_1G)
-> +
-> +#define BTRFS_SB_LOG_FIRST_SHIFT	const_ilog2(BTRFS_SB_LOG_FIRST_OFFSET)
-> +#define BTRFS_SB_LOG_SECOND_SHIFT	const_ilog2(BTRFS_SB_LOG_SECOND_OFFSET)
-> +
->  /*
->   * Zoned block device models
->   */
-> @@ -206,6 +220,25 @@ static inline bool zoned_profile_supported(u64 map_type)
->  
->  #endif /* BTRFS_ZONED */
->  
-> +/*
-> + * Get the first zone number of the superblock mirror
-> + */
-> +static inline u32 sb_zone_number(int shift, int mirror)
-> +{
+On Fri, Apr 8, 2022 at 6:23 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On Fri, Apr 8, 2022 at 6:22 AM Marc MERLIN <marc@merlins.org> wrote:
+> >
+> > On Thu, Apr 07, 2022 at 06:09:53PM -0400, Josef Bacik wrote:
+> > > Just following up on this, I've got hungry kids, I'm about halfway
+> > > through the new shit.  Depending on how much help kids need with
+> > > homework I may have this done later tonight, or it'll be tomorrow
+> > > morning.  Thanks,
+> >
+> > It finished after more than 24H, but that didn't seem to be enough, quite.
+> > Hopefully we're getting closer, though :)
+> >
+>
+> Yup we're getting there, I'm about 90% done with the new stuff, and
+> that'll delete block pointers that we can't find good matches for.
+>
+> Also it'll cache the results of the disk wide search, so it'll have to
+> do it once per root instead of for every bad block we find, which will
+> drastically cut down on the runtime.  I'll let you know when it's
+> ready, figure another hour or so.  Thanks,
+>
 
-This does not need to be static inline but not a big deal.
+Course the last 10% takes the longest, but I corrupted a local file
+system and ran it to shake out all the stupid bugs.  Go ahead and pull
+and run
 
-> +	u64 zone = 0;
-> +
-> +	ASSERT(0 <= mirror && mirror < BTRFS_SUPER_MIRROR_MAX);
-> +	switch (mirror) {
-> +	case 0: zone = 0; break;
-> +	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
-> +	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-> +	}
-> +
-> +	ASSERT(zone <= U32_MAX);
-> +
-> +	return (u32)zone;
-> +}
-> +
->  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
->  {
->  	return zone_is_sequential(device->zone_info, pos);
-> -- 
-> 2.35.1
+./btrfs rescue tree-recover /dev/whatever
+
+and then *hopefully* you can just run btrfs check --repair, but it may
+fail out with a "btrfs unable to find ref byte", which is what I was
+seeing locally.  I'm fixing that but it's tricky and may be a while.
+If you hit that then go ahead and use --init-extent-tree
+--init-csum-tree and let it ride.  Thanks,
+
+Josef
