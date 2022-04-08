@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2864F8D7B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Apr 2022 08:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330824F8E70
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Apr 2022 08:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234627AbiDHFLJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Apr 2022 01:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        id S234629AbiDHFLN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Apr 2022 01:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234615AbiDHFLH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Apr 2022 01:11:07 -0400
+        with ESMTP id S234615AbiDHFLM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Apr 2022 01:11:12 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB9023B3D5
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Apr 2022 22:09:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB15923CC74
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Apr 2022 22:09:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=wQDnPvUklJ/9wwN9GPdS7bBkV4qoMQg2piTutqn3mG8=; b=q42LZ/Qp0tzNGPnVUBiUAsEKrN
-        ZPWdysU8sN9RZ/M+Prc+Y6YN57tMOVmINJEfnb5cBagKp/r9aiIVvzfAJtv6F1AK3XhOu07HEk/Hr
-        r3SH6fPv1q+4Di98zlSz3pfwUSwlxmCHT7qC+UaGsQ9rvN45v8Dik6IzYvv5Mmjy3IQwBTxkkgXJA
-        kwKVYLz7Q+DhL2dWRu4peE8H57cUKWodtzV3Qx16VrwYRNMmlwJlbQbr6cbn3waPTD//pSPZD7d82
-        NdxEIHSdIjjSSGsMS/jeO4afFd20GCgPeozkxgFhg5y2j4mIcKwlFOWq/Yzqw/g8vTpOD1ksfIXuf
-        qnDbD7Bg==;
+        bh=gRtxf3wPu+HtLnptI5wxttjrNo3+rZXe6jPtl0Kavjc=; b=Nf2Ujiq7tjvUXNBuhyB25HWWIa
+        uDcMJ9bMFYkkDlv2egWBWImlaiBngw7ErGf2f9z01s3hNruGWRq8fG2ez4N8KMvo9lGmVsG92Pkkn
+        D/R2/kzrYPXyUyq0nQMKhNVUrmRVWFKcGq5qgkg0AYHMsAUttACLamsKAjtIqWhbXr+NZpWs3SLZM
+        FTCju0k8EUDAYMhPfJ0vDl7nwpmN3XebZsKlzHSlxPoCQhU10RBEB4XQaRFMN9sDSLZlcmDYS2UB1
+        kQkPGkc+IsQHqoZd5D2mmhGSo3IwQM/Eu5gdAOvD1quWIQFylNWv7dbZLfF2KpayYs6ekPRiYPtAi
+        UVlNsWjQ==;
 Received: from 213-225-37-164.nat.highway.a1.net ([213.225.37.164] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ncgrm-00F177-PQ; Fri, 08 Apr 2022 05:09:03 +0000
+        id 1ncgrq-00F17y-2Q; Fri, 08 Apr 2022 05:09:06 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
 Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/12] btrfs: simplify scrub_repair_page_from_good_copy
-Date:   Fri,  8 Apr 2022 07:08:33 +0200
-Message-Id: <20220408050839.239113-7-hch@lst.de>
+Subject: [PATCH 07/12] btrfs: move the call to bio_set_dev out of submit_stripe_bio
+Date:   Fri,  8 Apr 2022 07:08:34 +0200
+Message-Id: <20220408050839.239113-8-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220408050839.239113-1-hch@lst.de>
 References: <20220408050839.239113-1-hch@lst.de>
@@ -50,63 +50,33 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The I/O in repair_io_failue is synchronous and doesn't need a btrfs_bio,
-so just use an on-stack bio.
+Prepare for additional refactoring.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 23 +++++++++--------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+ fs/btrfs/volumes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 3790747c449b0..fe25a0d3d7c2d 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1538,7 +1538,8 @@ static int scrub_repair_sector_from_good_copy(struct scrub_block *sblock_bad,
- 	BUG_ON(sector_good->page == NULL);
- 	if (force_write || sblock_bad->header_error ||
- 	    sblock_bad->checksum_error || sector_bad->io_error) {
--		struct bio *bio;
-+		struct bio_vec bvec;
-+		struct bio bio;
- 		int ret;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 6b49d78d15029..8e066b9ebfbde 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6738,7 +6738,6 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc, struct bio *bio,
+ 		bio_op(bio), bio->bi_opf, bio->bi_iter.bi_sector,
+ 		(unsigned long)dev->bdev->bd_dev, rcu_str_deref(dev->name),
+ 		dev->devid, bio->bi_iter.bi_size);
+-	bio_set_dev(bio, dev->bdev);
  
- 		if (!sector_bad->dev->bdev) {
-@@ -1547,26 +1548,20 @@ static int scrub_repair_sector_from_good_copy(struct scrub_block *sblock_bad,
- 			return -EIO;
- 		}
+ 	btrfs_bio_counter_inc_noblocked(fs_info);
  
--		bio = btrfs_bio_alloc(1);
--		bio_set_dev(bio, sector_bad->dev->bdev);
--		bio->bi_iter.bi_sector = sector_bad->physical >> 9;
--		bio->bi_opf = REQ_OP_WRITE;
-+		bio_init(&bio, sector_bad->dev->bdev, &bvec, 1, REQ_OP_WRITE);
-+		bio.bi_iter.bi_sector = sector_bad->physical >> 9;
-+		__bio_add_page(&bio, sector_good->page, sectorsize, 0);
+@@ -6830,6 +6829,7 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 		else
+ 			bio = first_bio;
  
--		ret = bio_add_page(bio, sector_good->page, sectorsize, 0);
--		if (ret != sectorsize) {
--			bio_put(bio);
--			return -EIO;
--		}
-+		btrfsic_check_bio(&bio);
-+		ret = submit_bio_wait(&bio);
-+		bio_uninit(&bio);
- 
--		btrfsic_check_bio(bio);
--		if (submit_bio_wait(bio)) {
-+		if (ret) {
- 			btrfs_dev_stat_inc_and_print(sector_bad->dev,
- 				BTRFS_DEV_STAT_WRITE_ERRS);
- 			atomic64_inc(&fs_info->dev_replace.num_write_errors);
--			bio_put(bio);
- 			return -EIO;
- 		}
--		bio_put(bio);
++		bio_set_dev(bio, dev->bdev);
+ 		submit_stripe_bio(bioc, bio, bioc->stripes[dev_nr].physical, dev);
  	}
- 
- 	return 0;
+ 	btrfs_bio_counter_dec(fs_info);
 -- 
 2.30.2
 
