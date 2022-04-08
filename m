@@ -2,178 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FDD4F9B72
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Apr 2022 19:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BCA4F9BBB
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Apr 2022 19:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238051AbiDHRRV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Apr 2022 13:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        id S235113AbiDHReK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Apr 2022 13:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbiDHRRU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Apr 2022 13:17:20 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E841D2E09D;
-        Fri,  8 Apr 2022 10:15:13 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 81FB9802B5;
-        Fri,  8 Apr 2022 13:15:09 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1649438113; bh=sOloqC9Hoe8taMsC7pqq6QLu8pc1+Df4rG4vqV3DLrw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fxrh/L3ufFOfYrGQPpb0KQstKoL//AmfeXWxAMOIl/g5DHKPldJ8JvLMuDqumYVjd
-         j1/AgFnENR+NoBT2PYTSSEZyup0WwOBYNHNI9eUEqrFKwm1yWBR8nFHisQ2Loy9fWg
-         WW3W92dkShwmkEeLUhthmeAykogwPhQDhnH6XlCK0ltxiEt2pgnX6oBtqi0e/nEhCj
-         gCCehCQBmfnKIVgGtoQhoamxs198RApm32uZ4aQ8ZtIFgtpxFHU4/TgNFWOcT91Tx3
-         HRDUK+upeqvsRrWH6b5LNbv1HcCkasQbTGzdDvUBcInkElX17ER7XIMgHH2dlOZtXG
-         HPoJRJuOaiAUQ==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Omar Sandoval <osandov@osandov.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: restore inode creation before xattr setting
-Date:   Fri,  8 Apr 2022 13:15:07 -0400
-Message-Id: <8a60e54c02d8951cf5650cc8452ae583c130bbf7.1649437335.git.sweettea-kernel@dorminy.me>
+        with ESMTP id S230438AbiDHReJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Apr 2022 13:34:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D00728CA90
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Apr 2022 10:32:05 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 266A11F864;
+        Fri,  8 Apr 2022 17:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649439124;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LX5kQEOD/lCQ57o81tKkGspjCwzQfJ3GfDuHyCkExoo=;
+        b=AYxqcbe7jVOwIK3gqJV5OyuBqYgp8EGP5jOtTDxLdAiHfE4Tr+UFh9a1CNqDwFDAlfvHid
+        REyqETAbRbHbYr09KmUYwnGqk3ImwEQCAVPuhwJRuJ+IUexxF3neq0dZAvpzE0MeR4GFf/
+        qGZswc3Sb76ZOUPlE4s+avnA7WGggHY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649439124;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LX5kQEOD/lCQ57o81tKkGspjCwzQfJ3GfDuHyCkExoo=;
+        b=eu9JZteLll4BAC8+thQygdaaGabkCgU26JkhwaczJI0tZGUgzw9x62zkcHj9bV6Kxv8zpQ
+        nKXtGnhWx+kcb8DQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1C3EBA3B83;
+        Fri,  8 Apr 2022 17:32:04 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3F306DA832; Fri,  8 Apr 2022 19:28:01 +0200 (CEST)
+Date:   Fri, 8 Apr 2022 19:28:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 10/16] btrfs: open-code rbio_stripe_page_index()
+Message-ID: <20220408172801.GY15609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1648807440.git.wqu@suse.com>
+ <dc402b70e4dea8f2ccda06c33896406caf918846.1648807440.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,DOS_RCVD_IP_TWICE_B,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc402b70e4dea8f2ccda06c33896406caf918846.1648807440.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-According to the tree checker, "all xattrs with a given objectid follow
-the inode with that objectid in the tree" is an invariant. This was
-broken by the recent change "btrfs: move common inode creation code into
-btrfs_create_new_inode()", which moved acl creation and property
-inheritance (stored in xattrs) to before inode insertion into the tree.
-As a result, under certain timings, the xattrs could be written to the
-tree before the inode, causing the tree checker to report violation of
-the invariant.
+On Fri, Apr 01, 2022 at 07:23:25PM +0800, Qu Wenruo wrote:
+> There is only one caller for that helper now, and we're definitely fine
+> to open-code it.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/raid56.c | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index 61df2b3636d2..998c30867554 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -699,12 +699,6 @@ static struct sector_ptr *rbio_qstripe_sector(const struct btrfs_raid_bio *rbio,
+>  	return rbio_stripe_sector(rbio, rbio->nr_data + 1, sector_nr);
+>  }
+>  
+> -static int rbio_stripe_page_index(struct btrfs_raid_bio *rbio, int stripe,
+> -				  int index)
+> -{
+> -	return stripe * rbio->stripe_npages + index;
+> -}
+> -
+>  /*
+>   * The first stripe in the table for a logical address
+>   * has the lock.  rbios are added in one of three ways:
+> @@ -1131,9 +1125,7 @@ static int alloc_rbio_parity_pages(struct btrfs_raid_bio *rbio)
+>  	int i;
+>  	struct page *page;
+>  
+> -	i = rbio_stripe_page_index(rbio, rbio->nr_data, 0);
+> -
+> -	for (; i < rbio->nr_pages; i++) {
+> +	for (i = rbio->nr_data * rbio->stripe_npages; i < rbio->nr_pages; i++) {
 
-Move property inheritance and acl creation back to their old ordering
-after the inode insertion.
+The context has changed in misc-next so I applied it manually, there was
+still just one caller so it was straightforward.
 
-Suggested-by: Omar Sandoval <osandov@osandov.com>
-Reported-by: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
-This should apply on top of osandov's patch at
- https://lore.kernel.org/linux-btrfs/da6cfa1b8e42db5c8954680cac1ca322d463b880.1647306546.git.osandov@fb.com/
-
-It's survived a good dose of fstests, and several iterations of specific
-tests that were failing, e.g. generic/650.
-
-David: I don't know if you'd rather roll this into osandov's original
-patch, or whether you'd like me or osandov to resend the patch linked
-above with this addition rolled into it, or whether you'd like to apply
-it separately. 
-
----
- fs/btrfs/inode.c | 74 ++++++++++++++++++++++++------------------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2f4935649555..213e7048d911 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6213,43 +6213,6 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
- 		goto out;
- 	}
- 
--	if (args->subvol) {
--		struct inode *parent;
--
--		/*
--		 * Subvolumes inherit properties from their parent subvolume,
--		 * not the directory they were created in.
--		 */
--		parent = btrfs_iget(fs_info->sb, BTRFS_FIRST_FREE_OBJECTID,
--				    BTRFS_I(dir)->root);
--		if (IS_ERR(parent)) {
--			ret = PTR_ERR(parent);
--		} else {
--			ret = btrfs_inode_inherit_props(trans, inode, parent);
--			iput(parent);
--		}
--	} else {
--		ret = btrfs_inode_inherit_props(trans, inode, dir);
--	}
--	if (ret) {
--		btrfs_err(fs_info,
--			  "error inheriting props for ino %llu (root %llu): %d",
--			  btrfs_ino(BTRFS_I(inode)), root->root_key.objectid,
--			  ret);
--	}
--
--	/*
--	 * Subvolumes don't inherit ACLs or get passed to the LSM. This is
--	 * probably a bug.
--	 */
--	if (!args->subvol) {
--		ret = btrfs_init_inode_security(trans, args);
--		if (ret) {
--			btrfs_abort_transaction(trans, ret);
--			goto discard;
--		}
--	}
--
- 	/*
- 	 * We could have gotten an inode number from somebody who was fsynced
- 	 * and then removed in this same transaction, so let's just set full
-@@ -6327,6 +6290,43 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
- 	btrfs_mark_buffer_dirty(path->nodes[0]);
- 	btrfs_release_path(path);
- 
-+	if (args->subvol) {
-+		struct inode *parent;
-+
-+		/*
-+		 * Subvolumes inherit properties from their parent subvolume,
-+		 * not the directory they were created in.
-+		 */
-+		parent = btrfs_iget(fs_info->sb, BTRFS_FIRST_FREE_OBJECTID,
-+				    BTRFS_I(dir)->root);
-+		if (IS_ERR(parent)) {
-+			ret = PTR_ERR(parent);
-+		} else {
-+			ret = btrfs_inode_inherit_props(trans, inode, parent);
-+			iput(parent);
-+		}
-+	} else {
-+		ret = btrfs_inode_inherit_props(trans, inode, dir);
-+	}
-+	if (ret) {
-+		btrfs_err(fs_info,
-+			  "error inheriting props for ino %llu (root %llu): %d",
-+			  btrfs_ino(BTRFS_I(inode)), root->root_key.objectid,
-+			  ret);
-+	}
-+
-+	/*
-+	 * Subvolumes don't inherit ACLs or get passed to the LSM. This is
-+	 * probably a bug.
-+	 */
-+	if (!args->subvol) {
-+		ret = btrfs_init_inode_security(trans, args);
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			goto discard;
-+		}
-+	}
-+
- 	inode_tree_add(inode);
- 
- 	trace_btrfs_inode_new(inode);
--- 
-2.35.1
-
+>  		if (rbio->stripe_pages[i])
+>  			continue;
+>  		page = alloc_page(GFP_NOFS);
+> -- 
+> 2.35.1
