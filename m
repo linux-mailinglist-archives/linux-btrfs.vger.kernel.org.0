@@ -2,59 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE864FA41E
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Apr 2022 06:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6B04FA596
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Apr 2022 09:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241222AbiDIE40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Apr 2022 00:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S233204AbiDIHjP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Apr 2022 03:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241289AbiDIEzm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Apr 2022 00:55:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220B5BAB9C;
-        Fri,  8 Apr 2022 21:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=eypoqjBCbHteIGJMjEE77faduCfiNIsAQ0ydQeu7OQ0=; b=nqH1nBV8lOr2r5wyOjol3g7s8X
-        NGopilIp147x4XNnQqzR5o2YWkY6IO58VVUojmV/ASvSDXVzRQHv+BqUNN8ISkIuVH5Huq+5W/+g6
-        Fx9NKN7nsNjG6IaaR01B6x8gfqb84JVGaMt2Mch/XsNqmw38mh/kWIOczl1+aSfojYjwvPWnkVT0z
-        zeBYxWSj02o09fDuqh1c1ftABUKI9QxyXU2GCBR2V2aNbgjbyvKcSUL75+QEIgn+hIxNaN3b6eMN+
-        HQ75AhIB7YFYQ9KIFGF2dUiaHQ4ZLNQzEzLlTd1WzYc4Lz5oFphMfcUxRdKyObtKnqHpozib+pvzE
-        Et/uKlCg==;
-Received: from 213-147-167-116.nat.highway.webapn.at ([213.147.167.116] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nd35G-0021rI-Lh; Sat, 09 Apr 2022 04:52:27 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     dm-devel@redhat.com, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        nbd@other.debian.org, ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
-Subject: [PATCH 27/27] direct-io: remove random prefetches
-Date:   Sat,  9 Apr 2022 06:50:43 +0200
-Message-Id: <20220409045043.23593-28-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220409045043.23593-1-hch@lst.de>
-References: <20220409045043.23593-1-hch@lst.de>
+        with ESMTP id S229530AbiDIHjN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Apr 2022 03:39:13 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9333B1014;
+        Sat,  9 Apr 2022 00:37:06 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id az14so5303590uab.8;
+        Sat, 09 Apr 2022 00:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gP0HSqV1BPP2hnHJJSIVwulWD40qBqjNUo5/F5WUJ2E=;
+        b=lC/20A2H4ewWck8MRE7sgdRRrdeJE1N9jpjg9kaG51m7SU7u1LcTk83vsD6EsoTFaQ
+         o83LWeBx96W3UHCx9lffyprOP8OByVrb6y6LeDQg1bRD4oIRMTrfy1eS0Kj3W7laZxbE
+         cQAFvredScs/l/qlGSY1SlZEe35vATs3vkkz4iePODxvf7BIzcBxaqF7rWHmbjRqYGOv
+         m//T5UjV3VY9l9jZLOAlbjNZ5L2iNDnLyMT3B1iQ6V32kyrXWj29GumFw8XYr6nazBYz
+         rcsWcpBP3Em8MWkgKJZGoYAAmmWH2NNcw5ytwUmgyBfcFM+JUDPIiLnkGOo+SflAvWQE
+         eSRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gP0HSqV1BPP2hnHJJSIVwulWD40qBqjNUo5/F5WUJ2E=;
+        b=kbxF0yNP34yfh/eKJ2dr887Y7rVWyR0M97K9T30tMtCBpL4sqVVo6NaEdsmN9m7KMB
+         E4IFw8SRHaNgpEjwtb0i84C4GKQLWntx6dArpMm3xc3ZCIIfqK8x7AkazRyDMLFDrDCk
+         7eUu++CVot6VKPo+xiRdjo4jfSh86/6J0egmNsCsdGx9ZRy18x7kSe1HU09cgBMpN/O9
+         Nx+hVEzgU9yCC3MmpSz9zjWiNcjWdyUZrgiyKGUNeEh9xt/Oc9FDOETzFWgr9ESzvxFd
+         HpIZ/H681/aXX87zcQ3xgZIDcdzcmuvQzUcoDAkecepuNtaGCpRAGkV2/JQGexoMUccf
+         4e/Q==
+X-Gm-Message-State: AOAM530bIViimnm9BAdy44uFKe2guR0NGmYA9ui2U3Enk8kZomN3Knu8
+        sHZDDU0JqTnQpq32APtNCOYz4rA9UlUZKqg4Lz0=
+X-Google-Smtp-Source: ABdhPJzEWISu9Ys30lXt0FoeSXqBob1j1HwdxSkSS6E/3tJtIKzaC8oq1tDpoJJC4Pogm9czRRvEYTa8r8BRDCyLfbQ=
+X-Received: by 2002:a9f:360c:0:b0:34c:5bd:c4d1 with SMTP id
+ r12-20020a9f360c000000b0034c05bdc4d1mr6222271uad.61.1649489825657; Sat, 09
+ Apr 2022 00:37:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220408181523.92322-1-schspa@gmail.com> <20220408184449.GB15609@twin.jikos.cz>
+In-Reply-To: <20220408184449.GB15609@twin.jikos.cz>
+From:   Schspa Shi <schspa@gmail.com>
+Date:   Sat, 9 Apr 2022 15:36:54 +0800
+Message-ID: <CAMA88Tp26+AWtcgU5yN=3Q5B8MSxqWMt=BpigQ3XADRJdOrpiA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: zstd: use spin_lock in timer function
+To:     dsterba@suse.cz
+Cc:     clm@fb.com, Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        terrelln@fb.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,66 +66,28 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Randomly poking into block device internals for manual prefetches isn't
-exactly a very maintainable thing to do.  And none of the performance
-criticil direct I/O implementations still use this library function
-anyway, so just drop it.
+David Sterba <dsterba@suse.cz> writes:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/direct-io.c | 32 ++++----------------------------
- 1 file changed, 4 insertions(+), 28 deletions(-)
+> On Sat, Apr 09, 2022 at 02:15:23AM +0800, Schspa Shi wrote:
+>> timer callback was running on bh, and there is no need to disable bh again.
+>
+> Why do you think so? There was a specific fix fee13fe96529 ("btrfs:
+> correct zstd workspace manager lock to use spin_lock_bh()") that
+> actually added the _bh, so either you need to explain why exactly it's
+> not needed anymore and verify that the reported lockdep warning from the
+> fix does not happen.
 
-diff --git a/fs/direct-io.c b/fs/direct-io.c
-index aef06e607b405..840752006f601 100644
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -1115,11 +1115,10 @@ static inline int drop_refcount(struct dio *dio)
-  * individual fields and will generate much worse code. This is important
-  * for the whole file.
-  */
--static inline ssize_t
--do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
--		      struct block_device *bdev, struct iov_iter *iter,
--		      get_block_t get_block, dio_iodone_t end_io,
--		      dio_submit_t submit_io, int flags)
-+ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
-+		struct block_device *bdev, struct iov_iter *iter,
-+		get_block_t get_block, dio_iodone_t end_io,
-+		dio_submit_t submit_io, int flags)
- {
- 	unsigned i_blkbits = READ_ONCE(inode->i_blkbits);
- 	unsigned blkbits = i_blkbits;
-@@ -1334,29 +1333,6 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
- 	kmem_cache_free(dio_cache, dio);
- 	return retval;
- }
--
--ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
--			     struct block_device *bdev, struct iov_iter *iter,
--			     get_block_t get_block,
--			     dio_iodone_t end_io, dio_submit_t submit_io,
--			     int flags)
--{
--	/*
--	 * The block device state is needed in the end to finally
--	 * submit everything.  Since it's likely to be cache cold
--	 * prefetch it here as first thing to hide some of the
--	 * latency.
--	 *
--	 * Attempt to prefetch the pieces we likely need later.
--	 */
--	prefetch(&bdev->bd_disk->part_tbl);
--	prefetch(bdev->bd_disk->queue);
--	prefetch((char *)bdev->bd_disk->queue + SMP_CACHE_BYTES);
--
--	return do_blockdev_direct_IO(iocb, inode, bdev, iter, get_block,
--				     end_io, submit_io, flags);
--}
--
- EXPORT_SYMBOL(__blockdev_direct_IO);
- 
- static __init int dio_init(void)
--- 
-2.30.2
+Yes, I've seen this fix, and wsm.lru_list is protected by wsm.lock.
+This patch will not remove all changes that were fixed. Just a little
+improvement
+to remove the unnecessary bh disabling. Like
+static inline void red_adaptative_timer(struct timer_list *t)
+in net/sched/sch_red.c.
 
+Because the critical section is only used by the process context and
+the softirq context,
+it is safe to remove bh_disable in the softirq context since it will
+not be preempted by the softirq.
+
+BRs
+Schspa Shi
