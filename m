@@ -2,82 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2524FA5D8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Apr 2022 10:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1982B4FA5E7
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Apr 2022 10:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241105AbiDIIRs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Apr 2022 04:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
+        id S238986AbiDIITP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Apr 2022 04:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241079AbiDIIRq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Apr 2022 04:17:46 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64DC2DCC8B
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 Apr 2022 01:15:38 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id m30so16080126wrb.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 09 Apr 2022 01:15:38 -0700 (PDT)
+        with ESMTP id S239103AbiDIITL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Apr 2022 04:19:11 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83D8254952
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 Apr 2022 01:17:03 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r13so16021087wrr.9
+        for <linux-btrfs@vger.kernel.org>; Sat, 09 Apr 2022 01:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linbit-com.20210112.gappssmtp.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=sw+fQbvS6SFTnotjqrxbhqCVHIPsenv7yxMzOYGId1I=;
-        b=swx5mkkbJNix1TPl46oJjK+Fw0+J2z/XHhCyUPh+dcKkTNBekj88xkgZeDCIEgfzZd
-         +FA0t7ckuNM4K4OwCilxgo/M+WNIfDm8hTC88nPXmxm39Wp7Y3PlmqfYEyysUU8hQUUf
-         QcFmQYaxbOUrhMO1omCXZ8F/Rog5zixS+JPWEUQR0KkNkX4orlWG0JIiavrTh9qI4888
-         PfuJYdextltFDNT3Q+47ZPQuPkokUbAa0jhifptu2z1GSQMaUF7eHMsw0ukFDymbedqA
-         fJT7coHgReWy+GC/y+kW2UJS/DziuPPZTxFTP9KzlhdtF9p6DIhUJyZVoMiIdhtFkJM+
-         cESQ==
+        bh=Ga61vN/TMGQoWv5pdVva9yHEVEk7JvDu8SvkqTkiHOU=;
+        b=16VWXfTcecI6vKD89hlxEi4M1sM+lDWraPFKcdJek4zYvKgcUI+UTTfswq4WTG3pUA
+         DwGdvejVPHmGbB6WxyxpG5RxCDgxrI8ELqeSKx9xnWZSuDqFsfTR7C0q23UBJ4NTUUke
+         9rs/lGq9PScZMcSAS9SHkk+s8lIoFrVgzxTJ9NRLUES2XsBvbZXGJskPHSy0jdzHruaB
+         iGqoe9YksSt5XleGcAhaVmv2OHki/8AO1/zdgDuyMqAmL6dyveVZDyPGB/rY+7+4UaaK
+         b7o7nIN/SrEk1fy76OtZuySau99YX+Sryl6fYO8t+jUUvribl7KiF9nqytVWelfdH+Mk
+         O4fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=sw+fQbvS6SFTnotjqrxbhqCVHIPsenv7yxMzOYGId1I=;
-        b=nTxJwYYp+q6l+azNAR0fTY033GWzSlDUylIzT+a+uKIvzQIwK3T579/kjKNqNRn/Jw
-         avGrm34Cz9EA05EGOqeC3zszv1DUTZpT4Botxk1EVNPLnZ/1l4cBcwpHq+c7TvNZ0SPm
-         mPlww4BBq+JN9b11JVJijERdloIA9uFFKFOaJxX/wXNW057w8oIF659qbu4K8ah/x4e7
-         CVDn/wAPwppE3FnzMKj2EOEOQn/iEE6xG+cnqLW7WYn0+ieRHreeSqF5qH5gWDN8jMB0
-         bD+KnLwKTxsjvcxtMLtojXwrOnNqvaIpa9gZitDRfF8nXVUCKndTqUBQv0DBF+dvKGYm
-         p+6g==
-X-Gm-Message-State: AOAM531TQvNYfyopqFJxbAZoqsmQVG77kZifk+hukd0qyLAh/HfAulKh
-        iGspqe5Q3WndVnwn4YTk/bPu8w==
-X-Google-Smtp-Source: ABdhPJzQQyyFsXyXf3Tt03078VjcrkSv2k98fwj9oToPATRHlAVDyH773lIm4bEik17KjObuot5lIg==
-X-Received: by 2002:a5d:6c6b:0:b0:1ea:77ea:dde8 with SMTP id r11-20020a5d6c6b000000b001ea77eadde8mr17920640wrz.690.1649492137216;
-        Sat, 09 Apr 2022 01:15:37 -0700 (PDT)
+        bh=Ga61vN/TMGQoWv5pdVva9yHEVEk7JvDu8SvkqTkiHOU=;
+        b=tGWXIbsOEpsjWEvJSXROSFA9/MCWjpyleqNYRr1CpzT5riACWZ6b5GMjp80+ux5z3d
+         cIFi+yKsEN4EMj9KqIIyadMCIyf0KqinOgJSZOsTQdcONHrVwPUvtMGFJhELBFIH2JPj
+         YsHOsB2cbnlphH/3RV799vSKheQTg3rau0es9cIAQQvyAndhb3DM3wm/4h4rcdL8Fcmn
+         XGgh5mGbKgwbzUyknNvbUbuWpKwvrr1IoK19maSP2Z/uWe0rHY7PIrQf2famAaDvAMtf
+         O6HyJmZI7CCU/TSJWPOmIDmafJOk/SExYFx8OwJNDh3Zj/qy1j/eJUrhg9NclX6oay5w
+         +Atw==
+X-Gm-Message-State: AOAM533H8mj72QYG7FTPvj2S0e7aTaSC4ziOx9XkEfbkA9Q7we0I8Jrs
+        Ji6XyQ1WN88+0DvYUrOCMKi7qA==
+X-Google-Smtp-Source: ABdhPJyMl7hUdRWB67QUv24ZWK8mJRwBaxhnGq09ejE28bU5zjvkHivlidIC/JIf/EdWqVvIZNI6nA==
+X-Received: by 2002:adf:9581:0:b0:1ed:c341:4ed1 with SMTP id p1-20020adf9581000000b001edc3414ed1mr16998132wrp.299.1649492221449;
+        Sat, 09 Apr 2022 01:17:01 -0700 (PDT)
 Received: from [192.168.169.127] (178.115.52.210.wireless.dyn.drei.com. [178.115.52.210])
-        by smtp.gmail.com with ESMTPSA id m20-20020a05600c4f5400b0038b5162260csm16809052wmq.23.2022.04.09.01.15.34
+        by smtp.gmail.com with ESMTPSA id r14-20020a05600c35ce00b0038c9f469979sm12169802wmq.40.2022.04.09.01.16.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Apr 2022 01:15:36 -0700 (PDT)
-Message-ID: <72e9bd34-3380-e305-65f0-a17306f5bd08@linbit.com>
-Date:   Sat, 9 Apr 2022 10:15:33 +0200
+        Sat, 09 Apr 2022 01:17:01 -0700 (PDT)
+Message-ID: <5a26cdb1-b63b-8d35-640b-bc0e0f78a181@linbit.com>
+Date:   Sat, 9 Apr 2022 10:16:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.6.2
-Subject: Re: [PATCH 24/27] block: remove QUEUE_FLAG_DISCARD
+Subject: Re: [Drbd-dev] [PATCH 04/27] drbd: remove assign_p_sizes_qlim
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>
-Cc:     dm-devel@redhat.com, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        nbd@other.debian.org, ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, Jens Axboe <axboe@kernel.dk>,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com,
-        linux-mm@kvack.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Coly Li <colyli@suse.de>
+Cc:     jfs-discussion@lists.sourceforge.net,
+        linux-nvme@lists.infradead.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, target-devel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, drbd-dev@lists.linbit.com,
+        linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        linux-scsi@vger.kernel.org, cluster-devel@redhat.com,
+        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
+        linux-um@lists.infradead.org, nbd@other.debian.org,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, ntfs3@lists.linux.dev,
+        linux-btrfs@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
 References: <20220409045043.23593-1-hch@lst.de>
- <20220409045043.23593-25-hch@lst.de>
+ <20220409045043.23593-5-hch@lst.de>
 From:   =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= 
         <christoph.boehmwalder@linbit.com>
-In-Reply-To: <20220409045043.23593-25-hch@lst.de>
+In-Reply-To: <20220409045043.23593-5-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -91,20 +89,85 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 09.04.22 06:50, Christoph Hellwig wrote:
-> Just use a non-zero max_discard_sectors as an indicator for discard
-> support, similar to what is done for write zeroes.
-> 
-> The only places where needs special attention is the RAID5 driver,
-> which must clear discard support for security reasons by default,
-> even if the default stacking rules would allow for it.
+> Fold each branch into its only caller.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-> Acked-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com> [btrfs]
-
-I think you may have a typo there: my ACK was for drbd, not btrfs.
-
-> Acked-by: Coly Li <colyli@suse.de> [bcache]
 > ---
->   arch/um/drivers/ubd_kern.c          |  2 --
->   block/blk-core.c                    |  2 +-
+>   drivers/block/drbd/drbd_main.c | 47 +++++++++++++++-------------------
+>   1 file changed, 20 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+> index 9676a1d214bc5..1262fe1c33618 100644
+> --- a/drivers/block/drbd/drbd_main.c
+> +++ b/drivers/block/drbd/drbd_main.c
+> @@ -903,31 +903,6 @@ void drbd_gen_and_send_sync_uuid(struct drbd_peer_device *peer_device)
+>   	}
+>   }
+>   
+> -/* communicated if (agreed_features & DRBD_FF_WSAME) */
+> -static void
+> -assign_p_sizes_qlim(struct drbd_device *device, struct p_sizes *p,
+> -					struct request_queue *q)
+> -{
+> -	if (q) {
+> -		p->qlim->physical_block_size = cpu_to_be32(queue_physical_block_size(q));
+> -		p->qlim->logical_block_size = cpu_to_be32(queue_logical_block_size(q));
+> -		p->qlim->alignment_offset = cpu_to_be32(queue_alignment_offset(q));
+> -		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
+> -		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
+> -		p->qlim->discard_enabled = blk_queue_discard(q);
+> -		p->qlim->write_same_capable = 0;
+> -	} else {
+> -		q = device->rq_queue;
+> -		p->qlim->physical_block_size = cpu_to_be32(queue_physical_block_size(q));
+> -		p->qlim->logical_block_size = cpu_to_be32(queue_logical_block_size(q));
+> -		p->qlim->alignment_offset = 0;
+> -		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
+> -		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
+> -		p->qlim->discard_enabled = 0;
+> -		p->qlim->write_same_capable = 0;
+> -	}
+> -}
+> -
+>   int drbd_send_sizes(struct drbd_peer_device *peer_device, int trigger_reply, enum dds_flags flags)
+>   {
+>   	struct drbd_device *device = peer_device->device;
+> @@ -957,14 +932,32 @@ int drbd_send_sizes(struct drbd_peer_device *peer_device, int trigger_reply, enu
+>   		q_order_type = drbd_queue_order_type(device);
+>   		max_bio_size = queue_max_hw_sectors(q) << 9;
+>   		max_bio_size = min(max_bio_size, DRBD_MAX_BIO_SIZE);
+> -		assign_p_sizes_qlim(device, p, q);
+> +		p->qlim->physical_block_size =
+> +			cpu_to_be32(queue_physical_block_size(q));
+> +		p->qlim->logical_block_size =
+> +			cpu_to_be32(queue_logical_block_size(q));
+> +		p->qlim->alignment_offset =
+> +			cpu_to_be32(queue_alignment_offset(q));
+> +		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
+> +		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
+> +		p->qlim->discard_enabled = blk_queue_discard(q);
+>   		put_ldev(device);
+>   	} else {
+> +		struct request_queue *q = device->rq_queue;
+> +
+> +		p->qlim->physical_block_size =
+> +			cpu_to_be32(queue_physical_block_size(q));
+> +		p->qlim->logical_block_size =
+> +			cpu_to_be32(queue_logical_block_size(q));
+> +		p->qlim->alignment_offset = 0;
+> +		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
+> +		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
+> +		p->qlim->discard_enabled = 0;
+> +
+>   		d_size = 0;
+>   		u_size = 0;
+>   		q_order_type = QUEUE_ORDERED_NONE;
+>   		max_bio_size = DRBD_MAX_BIO_SIZE; /* ... multiple BIOs per peer_request */
+> -		assign_p_sizes_qlim(device, p, NULL);
+>   	}
+>   
+>   	if (peer_device->connection->agreed_pro_version <= 94)
+
+LGTM now, thanks.
+
+Acked-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com>
