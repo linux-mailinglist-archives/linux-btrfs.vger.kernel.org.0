@@ -2,67 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C94A4FC2C4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 18:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937EA4FC2D4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 19:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348704AbiDKQzv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 12:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        id S1344369AbiDKRCs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 13:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241922AbiDKQzt (ORCPT
+        with ESMTP id S1348783AbiDKRCd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 12:55:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8865335264;
-        Mon, 11 Apr 2022 09:53:34 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CF7F61F38D;
-        Mon, 11 Apr 2022 16:53:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649696012;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mx2MNXzBPvqRmySauuxaY9S1RzVPKVLNe1AYpqQ8uSU=;
-        b=yiv8JRM1Mf4utmtOopUv1sB2Y/Z/a6O+R/ACrYUHoD20N49808AaOywlk+hdJFWWkg44fo
-        KT+IEtPlbLOraSFWUH1Iew2QWbrrJP1Ku1WrZ6NNv08m1rRHDFb9rxYpJys4C6jm/xVz8g
-        VoWucXGJ83BaKTPXkr2JLzEqQVNOgVs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649696012;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mx2MNXzBPvqRmySauuxaY9S1RzVPKVLNe1AYpqQ8uSU=;
-        b=EUMZH8PKI2U1eB1D+B3BzP7pg6noZSg+Go2steQvH6iMmQYa/HIuNorpm0ytAbw/6C9jk9
-        2cvMTmKd/iR821Dw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C381DA3B82;
-        Mon, 11 Apr 2022 16:53:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 349D1DA7F7; Mon, 11 Apr 2022 18:49:28 +0200 (CEST)
-Date:   Mon, 11 Apr 2022 18:49:28 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Matt Corallo <blnxfsl@bluematt.me>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: force v2 space cache usage for subpage mount
-Message-ID: <20220411164927.GR15609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Matt Corallo <blnxfsl@bluematt.me>, stable@vger.kernel.org
-References: <1f622305ee7ecb3b6ec09f878c26ad0446e18311.1648798164.git.wqu@suse.com>
- <20220401163954.GM15609@twin.jikos.cz>
- <b9b41fbd-e60d-6698-53f6-545a320acf1a@gmx.com>
+        Mon, 11 Apr 2022 13:02:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F95B5F5F
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 10:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CKOfGGHdUsrvcGUkN3l+u1i76VC+mj6K5qxExCGc/Gs=; b=ECFqzZlFD/vpHABSRsVmbA+fQz
+        wcjPwccQrv7eUi2pHXh7zcT0HKB7j7mJr1C54XBJL8yGHzl0td2XpENFEDB2AHH4/xICFfbOvgEVS
+        b9OINwN9n4hudW/py+2bB4b5xH5doA9SglHhvX9u7zNd9BYFspvATIgbl6Lqarg5LlU+uGehItJka
+        bbVOrmzQv4IfOlHOVZhif+MU0Lkr3O27x34LzReD0ZJilEBlaoN7WbrGvkoX+3GViSFJCPhOqQtIo
+        +fGNsuRRmQGq9zDNjlMIuaDkObx/ogc19/Vik0GunqsjdqJtYHBZCGL/Dg2IdETmXG1Artw+bMer+
+        faFCxHxA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ndxOg-009p3d-V0; Mon, 11 Apr 2022 17:00:14 +0000
+Date:   Mon, 11 Apr 2022 10:00:14 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 09/16] btrfs: make finish_rmw() subpage compatible
+Message-ID: <YlRentZd9vVt1Ff2@infradead.org>
+References: <cover.1648807440.git.wqu@suse.com>
+ <911628d0221328e4e5c0bdff58313c0c64485315.1648807440.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b9b41fbd-e60d-6698-53f6-545a320acf1a@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <911628d0221328e4e5c0bdff58313c0c64485315.1648807440.git.wqu@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,61 +50,18 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 02, 2022 at 06:57:58AM +0800, Qu Wenruo wrote:
-> >> index d456f426924c..34eb6d4b904a 100644
-> >> --- a/fs/btrfs/disk-io.c
-> >> +++ b/fs/btrfs/disk-io.c
-> >> @@ -3675,6 +3675,17 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
-> >>   	if (sectorsize < PAGE_SIZE) {
-> >>   		struct btrfs_subpage_info *subpage_info;
-> >>
-> >> +		/*
-> >> +		 * V1 space cache has some hardcoded PAGE_SIZE usage, and is
-> >> +		 * going to be deprecated.
-> >> +		 *
-> >> +		 * Force to use v2 cache for subpage case.
-> >> +		 */
-> >> +		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
-> >> +		btrfs_set_and_info(fs_info, FREE_SPACE_TREE,
-> >> +			"forcing free space tree for sector size %u with page size %lu",
-> >> +			sectorsize, PAGE_SIZE);
-> >
-> > I'm not sure this is implemented the right way. Why is it unconditional?
-> 
-> Isn't the same thing we do when parsing the mount options for switch
-> v1->v2 cache?
+On Fri, Apr 01, 2022 at 07:23:24PM +0800, Qu Wenruo wrote:
+> The trick involved is how we call kunmap_local(), as now the pointers[]
+> only store the address with @pgoff added, thus they can not be directly
+> used for kunmap_local().
 
-The mount code checks if the v1 is active ie. has some existing
-structures and then clears v1.
-> 
-> > Does any subsequent mount have to clear and set the bits after it has
-> > been already? Or what if the free space tree is set at mkfs time, which
-> > is now the default.
-> 
-> The function btrfs_set_and_info() will only inform the end users if the
-> bit is not set.
-> 
-> >
-> > Next, remounting v1->v2 does more things, like removing the v1 tree if
-> > it exists. And due to some bugs there are more bits for free space tree
-> > to be set like FREE_SPACE_TREE_VALID.  So I don't thing this patch
-> > covers all cases for the v2.
-> 
-> You're right on remounting, but in the opposite way.
-> There is nothing prevent the users from re-enabling v1 cache.
-> 
-> I should also prevent user from setting v1 cache.
+Yes, they can. kumap_local only needs a pointer somewhere into the
+mapped page, not the return value from kmap_local_page:
 
-Good point, for the subpage case yes, but otherwise not though it's
-a valid operation it does not make much sense.
+ * @__addr can be any address within the mapped page.  Commonly it is the
+ * address return from kmap_local_page(), but it can also include offsets.
 
-> Another concern is, I didn't see code cleaning up v1 cache when we do
-> the v1->v2 switch.
-> The only code doing such cleanup is cleanup_free_space_cache_v1() in
-> free-space-cache.c, but it only gets called in
-> btrfs_set_free_space_cache_v1_active().
-> 
-> Or did I miss something?
+> For the cleanup, we have to re-grab all the sectors and reduce the
+> @pgoff from pointers[], then call kunmap_local().
 
-No, that's the code I had in mind, and clearing the v1 code once v2 is
-activated has been added because it was not there before.
+No need for that.
