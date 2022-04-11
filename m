@@ -2,52 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1C14FC7BC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 00:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05D24FC7D1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 00:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240384AbiDKWkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 18:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
+        id S243496AbiDKWtT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 18:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349179AbiDKWkL (ORCPT
+        with ESMTP id S234169AbiDKWtS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 18:40:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888D82E9FC;
-        Mon, 11 Apr 2022 15:37:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3031361783;
-        Mon, 11 Apr 2022 22:37:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F00C385A4;
-        Mon, 11 Apr 2022 22:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649716675;
-        bh=CKm7Pg4qG2X/1DTjoTgvcXN4zl4yjMqz4X0OeGA117Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FJCXf5O8ujtvG1jmqCWZDRLU1ojKxpoF62dnvk42XyOZObIBC2ig+XmDHOGt+uQ+i
-         Oxp5uQxs0GtIT3jr2dSUSNju9v3mt3MjweVEsLGqFTT9IgJ0JwLpy021FmBug9rS0u
-         cZzlLKte/zR1S7E7d7EXaPi03kvGVEd1OWz2AAqvPmSa+lsniuG4/vcE6xihnPb1XV
-         +7RPPESnReSdja90g8MxHm80f3adyMfaMAVcALvkxBJOks0kkikhQXqsoLYLGdB5U+
-         saqiYuQpLSx5ce1OuIfc6NODarHuRCnnSNGwjGEyYpM6ehsNUYZoEJKBxu6yZVTV3F
-         c3CJD1sFnABtQ==
-Date:   Mon, 11 Apr 2022 15:37:54 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        Mon, 11 Apr 2022 18:49:18 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AFCE92ED73;
+        Mon, 11 Apr 2022 15:47:02 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-233-190.pa.vic.optusnet.com.au [49.186.233.190])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id B9C5810C888F;
+        Tue, 12 Apr 2022 08:47:01 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1ne2oF-00GbEI-PK; Tue, 12 Apr 2022 08:46:59 +1000
+Date:   Tue, 12 Apr 2022 08:46:59 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     fdmanana@kernel.org
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
         brauner@kernel.org, Filipe Manana <fdmanana@suse.com>
 Subject: Re: [PATCH] common/rc: fix _try_scratch_mount() and _test_mount()
  when mount fails
-Message-ID: <20220411223754.GB16774@magnolia>
+Message-ID: <20220411224659.GK1609613@dread.disaster.area>
 References: <0ab59504aef01776ab58f9f92c55e86bf1c75424.1649685964.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <0ab59504aef01776ab58f9f92c55e86bf1c75424.1649685964.git.fdmanana@suse.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=deDjYVbe c=1 sm=1 tr=0 ts=6254afe6
+        a=bHAvQTfMiaNt/bo4vVGwyA==:117 a=bHAvQTfMiaNt/bo4vVGwyA==:17
+        a=kj9zAlcOel0A:10 a=z0gMJWrwH1QA:10 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
+        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=49UVxCNO6jtb8jSYA8wA:9
+        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22 a=WzC6qhA0u3u7Ye7llzcV:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,55 +103,14 @@ On Mon, Apr 11, 2022 at 03:08:38PM +0100, fdmanana@kernel.org wrote:
 > a mount failure. Also do the same for _test_mount().
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Aha, that's why the test cloud reported a 4% test failure rate.
-
-Well, this fixes things, so:
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
 > ---
 >  common/rc | 8 ++++++++
 >  1 file changed, 8 insertions(+)
-> 
-> diff --git a/common/rc b/common/rc
-> index 17629801..37d18599 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -329,11 +329,15 @@ _supports_filetype()
->  # mount scratch device with given options but don't check mount status
->  _try_scratch_mount()
->  {
-> +	local mount_ret
-> +
->  	if [ "$FSTYP" == "overlay" ]; then
->  		_overlay_scratch_mount $*
->  		return $?
->  	fi
->  	_mount -t $FSTYP `_scratch_mount_options $*`
-> +	mount_ret=$?
-> +	[ $mount_ret -ne 0 ] && return $mount_ret
->  	_idmapped_mount $SCRATCH_DEV $SCRATCH_MNT
->  }
->  
-> @@ -494,12 +498,16 @@ _idmapped_mount()
->  
->  _test_mount()
->  {
-> +    local mount_ret
-> +
->      if [ "$FSTYP" == "overlay" ]; then
->          _overlay_test_mount $*
->          return $?
->      fi
->      _test_options mount
->      _mount -t $FSTYP $TEST_OPTIONS $TEST_FS_MOUNT_OPTS $SELINUX_MOUNT_OPTIONS $* $TEST_DEV $TEST_DIR
-> +    mount_ret=$?
-> +    [ $mount_ret -ne 0 ] && return $mount_ret
->      _idmapped_mount $TEST_DEV $TEST_DIR
->  }
->  
-> -- 
-> 2.35.1
-> 
+
+Yup, that fixes the generic/607 failure that I just hit.
+
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
+
+-- 
+Dave Chinner
+david@fromorbit.com
