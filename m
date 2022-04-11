@@ -2,119 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F984FBF91
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02004FBF9E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347504AbiDKOxP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 10:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        id S1347354AbiDKOzI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 10:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347537AbiDKOwh (ORCPT
+        with ESMTP id S1347487AbiDKOzG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 10:52:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636BE1A381
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 07:50:23 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D41551F38D;
-        Mon, 11 Apr 2022 14:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649688621;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=agAVKMToum/D49Pkc7aXJYB+WTTSIWEWJNLgA/M66eU=;
-        b=QKYiFACLwNvkWD7HPHuwSa1wnMOSbGQg0cpVMgGHpPet1JtNBTioDjBgHzZJAKVBH1x6Lh
-        3F+DcL6rMn+eJGyt6usoU72DxIZuYeEVze9lusakH/KjAscURV/2AaSkNN8+djwhiX5yrh
-        aLbl8XM+n7I7b6iphlQsAQ/020qkNo8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649688621;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=agAVKMToum/D49Pkc7aXJYB+WTTSIWEWJNLgA/M66eU=;
-        b=Z/VCjOXSIzbClMnxzbgWZ6qXQ2BEmRNlpDOEWK1kx7dgcLb0yVUJVU/i4jgua0/YxbmHsi
-        FVvzYH++N9tWQ4CA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id CB240A3B83;
-        Mon, 11 Apr 2022 14:50:21 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 627A7DA7DA; Mon, 11 Apr 2022 16:46:17 +0200 (CEST)
-Date:   Mon, 11 Apr 2022 16:46:17 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 07/16] btrfs: make finish_parity_scrub() subpage
- compatible
-Message-ID: <20220411144617.GO15609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1648807440.git.wqu@suse.com>
- <d0a5f106303ee83daba01f65d6671b011791289a.1648807440.git.wqu@suse.com>
- <20220408170434.GX15609@twin.jikos.cz>
- <3ecd3692-4974-8dcb-e678-7ff45fd3438a@gmx.com>
- <20220411143620.GN15609@twin.jikos.cz>
+        Mon, 11 Apr 2022 10:55:06 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D1139B81
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 07:52:52 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-ddfa38f1c1so17444548fac.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 07:52:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=pSKuz9BJS/Qwel4yBJUKsJP++c1z8gtIosTtEbMtN5I=;
+        b=n1xsHII+fJ6VpoiXpHNhz7wBViHFn56CyGZ2aQJLjKdBFBOYndlF4puueyNaaKz793
+         5HNG0iWhGk8lpvQYKCHUdVrBaKhmhz3+r50yqPkV2errAvfaSf0GtHgkF92SQ3kI6crU
+         2c85l8hWzpbk1WR0DfKXr6fga7gzJfb6M/OjJGShpOxxTFubLrt/Ii3YadmruWdYcHP9
+         iDVsbQFXKDJwHiheMUSjDYALiSxpdyjspr496+ZszITOliCO2v7/MCG5CA9ujgCsyjYP
+         FWCX9HD+TaQ0CAgjrNNDHa5pnspT2lLdfLZImyT0SNAKts80oHhZDq3JQJnhSN63bvCg
+         GUoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=pSKuz9BJS/Qwel4yBJUKsJP++c1z8gtIosTtEbMtN5I=;
+        b=oIZ2ggWD6Z9ndqPirQ5/DUYCE2aR5iu38NlRazx5P0zyJHodc3RBx6UNPB6Clv5m5W
+         2fmzHJT9scbUFEgdWj3ndOsB9j9DqwOdBTn8gyrX32n7RM4MP5dDdH98t47JbfMThaR6
+         NZGB357Dr6Tjvo2oFhOGuGWmsYruQePn93xJ9TuWiRR/LnyUpHrmJE/2OKW2OAooZyCs
+         XpEOnyEk1yvoioUWOwMGzDYA0ZxVPh3vsqjZDUXg4bCXcJJ9oXJUdEjiCxp4VGa7ReRS
+         Na5r30P9rdddG8ttQ7DR5fjiIaou1VkC99rgBb7Eyln21MEIoLx1w1u4crZso5s7cpCz
+         RTWA==
+X-Gm-Message-State: AOAM5332nJtrlCS4wWd3bDUuVX6sih8+yHyt8wtC/kaEIu2czSKQZIE8
+        Ktelol8aaHKHW4RvTT0rqEt/zji/eHPSLNuNRzc=
+X-Google-Smtp-Source: ABdhPJy+xt/k4MS5VxWiKx2SV/XYjoJX3L0LlKwe4QPJ45hZOEdPuI9sxQXyCINW+qOwcImHo1+Tfj0XldfMUunCU0s=
+X-Received: by 2002:a05:6870:d355:b0:e2:6def:5892 with SMTP id
+ h21-20020a056870d35500b000e26def5892mr8943323oag.50.1649688771649; Mon, 11
+ Apr 2022 07:52:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220411143620.GN15609@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:ac9:3bc9:0:0:0:0:0 with HTTP; Mon, 11 Apr 2022 07:52:51
+ -0700 (PDT)
+Reply-To: davidnelson7702626@gmail.com
+From:   Tibike Amah <amah.tibike@gmail.com>
+Date:   Mon, 11 Apr 2022 16:52:51 +0200
+Message-ID: <CA+Yd2rCUAZb1gK-Adye1amV3Te1riV=sqzhJaxc42zmMHaH9FQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2001:4860:4864:20:0:0:0:2e listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4555]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [amah.tibike[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [davidnelson7702626[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 04:36:20PM +0200, David Sterba wrote:
-> On Sat, Apr 09, 2022 at 06:59:37AM +0800, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2022/4/9 01:04, David Sterba wrote:
-> > > On Fri, Apr 01, 2022 at 07:23:22PM +0800, Qu Wenruo wrote:
-> > >> The core is to convert direct page usage into sector_ptr usage, and
-> > >> use memcpy() to replace copy_page().
-> > >>
-> > >> For pointers usage, we need to convert it to kmap_local_page() +
-> > >> sector->pgoff.
-> > >>
-> > >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > >> ---
-> > >>   fs/btrfs/raid56.c | 56 +++++++++++++++++++++++++++--------------------
-> > >>   1 file changed, 32 insertions(+), 24 deletions(-)
-> > >>
-> > >> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> > >> index 07d0b26024dd..bd01e64ea4fc 100644
-> > >> --- a/fs/btrfs/raid56.c
-> > >> +++ b/fs/btrfs/raid56.c
-> > >> @@ -2492,14 +2492,15 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
-> > >>   					 int need_check)
-> > >>   {
-> > >>   	struct btrfs_io_context *bioc = rbio->bioc;
-> > >> +	const u32 sectorsize = bioc->fs_info->sectorsize;
-> > >>   	void **pointers = rbio->finish_pointers;
-> > >>   	unsigned long *pbitmap = rbio->finish_pbitmap;
-> > >>   	int nr_data = rbio->nr_data;
-> > >>   	int stripe;
-> > >>   	int sectornr;
-> > >>   	bool has_qstripe;
-> > >> -	struct page *p_page = NULL;
-> > >> -	struct page *q_page = NULL;
-> > >> +	struct sector_ptr p_sector = {};
-> > >> +	struct sector_ptr q_sector = {};
-> > >
-> > > This should be { 0 }
-> > 
-> > That's not what you said before.
-> > 
-> > You said that { 0 } conversion is not going to be merged and {} is fine.
-> 
-> Let me check, I could have misremembered that.
-
-Nope, { 0 } it is
-
-https://lore.kernel.org/all/9292fc4a-9c6e-8e28-8203-f70118e9ee20@gmx.com/
+Hello friend, I want to send money to you to enable me invest in your
+country get back to me if you are interested.
