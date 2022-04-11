@@ -2,60 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9673B4FBEF3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991354FBF10
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbiDKOYH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 10:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S1344998AbiDKO3V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 10:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbiDKOYG (ORCPT
+        with ESMTP id S243351AbiDKO3T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 10:24:06 -0400
+        Mon, 11 Apr 2022 10:29:19 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96130369EF
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 07:21:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D23BC16
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 07:27:05 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 53B751F38D;
-        Mon, 11 Apr 2022 14:21:50 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 46EED1F7AD;
+        Mon, 11 Apr 2022 14:27:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649686910;
+        t=1649687224;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wMPG3o/sMtCnmzfsLqWavVXTd2v1hE4z9j93GYbi4Cw=;
-        b=wyLW5d2+LIIea0DvKPSUBClvEr/7Ton0LLrBwjU7tevBoVxvEMce7w2F2LdRmZpPeeqrAe
-        VGqtZYhgZ1QcXG6YYKqkuoRTaM4fGyT9AHJts53hTkpRPRrzngO5byqVeu64NS0KmU+4Ub
-        U+jRJdmNfFoaw/iDBcit01iclVBXtYQ=
+        bh=79IC81lK/uZYSoR7+p1nWKQc8qVv0MNc+KuoZ+1IlU4=;
+        b=rbRQrmthPBoUGe3Y8Ww/2XCsSDAOX6norun5loRUlvb7ymoTHFkEmTX95JVSO2eQPUnyNT
+        OAmoiJP/GYJIIA2eemwu3WS5SNEesTl7wjT2v8LdBYC3rDH6mpL3THwMkRxdyFx3K5XFA0
+        IMwcMt00SQLvcjBSEYTjMNhcprzWQk4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649686910;
+        s=susede2_ed25519; t=1649687224;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wMPG3o/sMtCnmzfsLqWavVXTd2v1hE4z9j93GYbi4Cw=;
-        b=a0moW/Al9J/nFNbI+clvfVXPjYADq3NYruLqTLkPExnBwAG6k/JPdbMrjK7nFZWq4wNBBn
-        vZdarJtU2sifeUCg==
+        bh=79IC81lK/uZYSoR7+p1nWKQc8qVv0MNc+KuoZ+1IlU4=;
+        b=IULvrTvJuMWD6mZPMSPSOU5p08tA2vMSjZs1NeQKg2TRXcco7D3IprYVgEbUPLI4LBPLWF
+        2Dk4w8NPeLJ+y9DQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 45F87A3B94;
-        Mon, 11 Apr 2022 14:21:50 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 39600A3B83;
+        Mon, 11 Apr 2022 14:27:04 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D6C9DDA7DA; Mon, 11 Apr 2022 16:17:45 +0200 (CEST)
-Date:   Mon, 11 Apr 2022 16:17:45 +0200
+        id C7471DA7DA; Mon, 11 Apr 2022 16:22:59 +0200 (CEST)
+Date:   Mon, 11 Apr 2022 16:22:59 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Gabriel Niebler <gniebler@suse.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] Turn delayed_nodes_tree into XArray and adjust usages
-Message-ID: <20220411141745.GK15609@twin.jikos.cz>
+To:     Chung-Chiang Cheng <cccheng@synology.com>
+Cc:     dsterba@suse.com, josef@toxicpanda.com, clm@fb.com,
+        linux-btrfs@vger.kernel.org, shepjeng@gmail.com,
+        kernel@cccheng.net, Jayce Lin <jaycelin@synology.com>
+Subject: Re: [PATCH] btrfs: do not allow compression on nocow files
+Message-ID: <20220411142259.GL15609@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Gabriel Niebler <gniebler@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20220407153855.21089-1-gniebler@suse.com>
- <20220407164414.GO15609@twin.jikos.cz>
- <cff2bcc4-536f-3ea4-e835-109d3ad45da2@suse.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Chung-Chiang Cheng <cccheng@synology.com>, dsterba@suse.com,
+        josef@toxicpanda.com, clm@fb.com, linux-btrfs@vger.kernel.org,
+        shepjeng@gmail.com, kernel@cccheng.net,
+        Jayce Lin <jaycelin@synology.com>
+References: <20220409043432.1244773-1-cccheng@synology.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cff2bcc4-536f-3ea4-e835-109d3ad45da2@suse.com>
+In-Reply-To: <20220409043432.1244773-1-cccheng@synology.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -67,31 +70,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 09:41:54AM +0200, Gabriel Niebler wrote:
-> Am 07.04.22 um 18:44 schrieb David Sterba:
-> > On Thu, Apr 07, 2022 at 05:38:48PM +0200, Gabriel Niebler wrote:
-> >> [...]
-> >> This patchset converts `delayed_nodes_radix` into an XArray, renames it
-> >> accordingly and adjusts all usages of this object to the XArray API.
-> >> It survived a complete fstests run.
-> > 
-> > So it converts just one structure, it would be better do it in one
-> > patch otherwise it leaves the conversion half way and it's confusing to
-> > see xarray structure in the radix-tree API.
-> 
-> Yes, I figured that converting each structure separately is easier to 
-> achieve for me, since the changes in this patch set are done, but 
-> changes to other structures are not (yet).
-> 
-> As for splitting the changes, as I did: My thought was that it's easier 
-> to review this way, patch-by-patch and that the important thing is that 
-> the conversion be done by the end of the patch set.
+On Sat, Apr 09, 2022 at 12:34:32PM +0800, Chung-Chiang Cheng wrote:
+> -static int prop_compression_validate(const char *value, size_t len)
+> +static int prop_compression_validate(struct inode *inode, const char *value, size_t len)
+>  {
+>  	if (!value)
+>  		return 0;
+>  
+> -	if (btrfs_compress_is_valid_type(value, len))
+> -		return 0;
+> -
+>  	if ((len == 2 && strncmp("no", value, 2) == 0) ||
+>  	    (len == 4 && strncmp("none", value, 4) == 0))
+>  		return 0;
+>  
+> +	if (!inode || BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW)
+> +		return -EINVAL;
 
-The change splitting should be on the logical level and with focus on
-a selected context, but there's no universal advice. In this case the
-scope is one structure per patch, all actions with the structure are the
-context that often remains same for all the API calls, splitting that
-per patch does not help the review. Switching all structures in one
-patch would mean that each call site is using a different structure so
-the context is changing too often and that's adding to the congnitive
-load.  Which leads to oversights and review quality goes down.
+I think the nodatacow check should be the first one, before the
+validation of value for "no" or "none", it's logically the same as the
+btrfs_compress_is_valid_type.
+
+Also, should there be a check for NODATASUM? The checks in the property
+should do the same as the normal compression code, see eg.
+inode_can_compress. It's an internal helper so it would be cleaner to
+have it exported and reuse here instead of duplicatin the conditions.
+
+For a minimal fix I'd be OK with the code duplication as this would need
+to go to stable, so "fixes before cleanups".
