@@ -2,47 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9894FB539
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 09:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E1F4FB652
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 10:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245646AbiDKHvs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 03:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        id S231534AbiDKIv1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 04:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245648AbiDKHvr (ORCPT
+        with ESMTP id S229591AbiDKIv1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 03:51:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE7C245A2;
-        Mon, 11 Apr 2022 00:49:34 -0700 (PDT)
+        Mon, 11 Apr 2022 04:51:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D92E2
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 01:49:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E51EF61481;
-        Mon, 11 Apr 2022 07:49:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2C5CC385A4;
-        Mon, 11 Apr 2022 07:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1649663373;
-        bh=BtY5SJaAmb/z5LHvIgaCPzuS0BSrv/D5lOTTxenPImc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xLB/mqzc9lEe+qqkDDMiQjRC/8wzWKWLT0tC2cv0L4H4FOZ06nbfeqyiup6iNQskb
-         vkCDHdzBUM2gAJNupHtCwLNS3WqWTCWS5eix7uwm5n0ycwzeopk7ncxmUtaI9qGmtM
-         rTxqUFiZWisRzpd1SyTqHdBRgnx/0Mpemr1I+dd0=
-Date:   Mon, 11 Apr 2022 09:49:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Filipe Manana <fdmanana@kernel.org>, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, agruenba@redhat.com
-Subject: Re: [PATCH 00/17 stable-5.15.y] Fix mmap + page fault deadlocks
-Message-ID: <YlPdiqAxpS1HJDrc@kroah.com>
-References: <cover.1648636044.git.anand.jain@oracle.com>
- <Ykq9UXXZLTZOJ6N+@debian9.Home>
- <e9805474-f672-3c29-a294-0fce060037b5@oracle.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3172F61550
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 08:49:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 960D6C385AC
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 08:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649666951;
+        bh=taawvodZ6v+rAzrCtXG3PvZJT4/xYilgzfGTfoSJz2M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UdQlQhEy7B1NJbCtYtp7VplmH4VWYYV6B5Zm3C8IiXFEqcbrGv2D2ImkWsVuNNLFa
+         p/I/vr83dbNe0SgAAHVtlSSuuScTBkg9Eo+hULh/l/q36UjwpztdmqY4VdCAtszqoO
+         ueXtTDoIt4IYtNM+HJGzCex2ga0yTKNhKta0stJGKzeRwocWrjFUJot9pCTfaf8Ht4
+         yEFfgO0Sj4BZB6o8lRexXcNE/BMndxLyKIuIUQXv6hh3KZrMG+VC6x3In/gOOnXQJL
+         Fteg5itOg8Lziux6SvRfRr945vLNf2GnMWY8tqPi/l1JvdfLmjXd289Lgdqn1XZeC3
+         nbjAe0ikujYsg==
+Received: by mail-qv1-f48.google.com with SMTP id kl29so12695395qvb.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 01:49:11 -0700 (PDT)
+X-Gm-Message-State: AOAM530mfIhi4X8bKSHw+ugpRRxpNZ7o+zXruyaaT3v5IcjR5w8wyya4
+        tzMOX4kcK+1kUxw+x4mfnSEaiYypuNT7436LqTQ=
+X-Google-Smtp-Source: ABdhPJzgOfshYKAHWlTWRchJ3VQeB8CtuW4ZChaIwTa3Qlusb44WiyhDCx6EKYjhOfUQvr2c0F7HvWmk6nwoU0bCTsI=
+X-Received: by 2002:a05:6214:f6d:b0:443:f201:aac9 with SMTP id
+ iy13-20020a0562140f6d00b00443f201aac9mr22966626qvb.1.1649666950565; Mon, 11
+ Apr 2022 01:49:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9805474-f672-3c29-a294-0fce060037b5@oracle.com>
+References: <20220409043432.1244773-1-cccheng@synology.com>
+In-Reply-To: <20220409043432.1244773-1-cccheng@synology.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 11 Apr 2022 09:48:34 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H77p6yFhHMu-1kpgh+J5jv_dKeqqwga8mJMRXY6r0wAvg@mail.gmail.com>
+Message-ID: <CAL3q7H77p6yFhHMu-1kpgh+J5jv_dKeqqwga8mJMRXY6r0wAvg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: do not allow compression on nocow files
+To:     Chung-Chiang Cheng <cccheng@synology.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, shepjeng@gmail.com,
+        kernel@cccheng.net, Jayce Lin <jaycelin@synology.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,86 +64,156 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 07:32:11PM +0800, Anand Jain wrote:
-> 
-> 
-> On 04/04/2022 17:41, Filipe Manana wrote:
-> > On Sat, Apr 02, 2022 at 06:25:37PM +0800, Anand Jain wrote:
-> > > This set fixes a process hang issue in btrfs and gf2 filesystems. When we
-> > > do a direct IO read or write when the buffer given by the user is
-> > > memory-mapped to the file range we are going to do IO, we end up ending
-> > > in a deadlock. This is triggered by the test case generic/647 from
-> > > fstests.
-> > > 
-> > > This fix depends on the iov_iter and iomap changes introduced in the
-> > > commit c03098d4b9ad ("Merge tag 'gfs2-v5.15-rc5-mmap-fault' of
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2") and they
-> > > are part of this set for stable-5.15.y.
-> > > 
-> > > Please note that patch 3/17 in this patchset changes the prototype and
-> > > renames an exported symbol as below. All its references are updated as
-> > > well.
-> > > 
-> > > -EXPORT_SYMBOL(iov_iter_fault_in_readable);
-> > > +EXPORT_SYMBOL(fault_in_iov_iter_readable);
-> > > 
-> > > Andreas Gruenbacher (15):
-> > >    powerpc/kvm: Fix kvm_use_magic_page
-> > >    gup: Turn fault_in_pages_{readable,writeable} into
-> > >      fault_in_{readable,writeable}
-> > >    iov_iter: Turn iov_iter_fault_in_readable into
-> > >      fault_in_iov_iter_readable
-> > >    iov_iter: Introduce fault_in_iov_iter_writeable
-> > >    gfs2: Add wrapper for iomap_file_buffered_write
-> > >    gfs2: Clean up function may_grant
-> > >    gfs2: Move the inode glock locking to gfs2_file_buffered_write
-> > >    gfs2: Eliminate ip->i_gh
-> > >    gfs2: Fix mmap + page fault deadlocks for buffered I/O
-> > >    iomap: Fix iomap_dio_rw return value for user copies
-> > >    iomap: Support partial direct I/O on user copy failures
-> > >    iomap: Add done_before argument to iomap_dio_rw
-> > >    gup: Introduce FOLL_NOFAULT flag to disable page faults
-> > >    iov_iter: Introduce nofault flag to disable page faults
-> > >    gfs2: Fix mmap + page fault deadlocks for direct I/O
-> > > 
-> > > Bob Peterson (1):
-> > >    gfs2: Introduce flag for glock holder auto-demotion
-> > > 
-> > > Filipe Manana (1):
-> > >    btrfs: fix deadlock due to page faults during direct IO reads and
-> > >      writes
-> > 
-> > If this patchset is backported, then at least the following two commits
-> > must also be backported:
-> > 
-> > commit fe673d3f5bf1fc50cdc4b754831db91a2ec10126
-> > Author: Linus Torvalds <torvalds@linux-foundation.org>
-> > Date:   Tue Mar 8 11:55:48 2022 -0800
-> > 
-> >      mm: gup: make fault_in_safe_writeable() use fixup_user_fault()
-> > 
-> > commit ca93e44bfb5fd7996b76f0f544999171f647f93b
-> > Author: Filipe Manana <fdmanana@suse.com>
-> > Date:   Wed Mar 2 11:48:39 2022 +0000
-> > 
-> >      btrfs: fallback to blocking mode when doing async dio over multiple extents
-> 
-> Thanks for pointing it out.
-> 
-> > Maybe there's more that need to be backported. So cc'ing Andreas in
-> > case he's aware of any such other commits.
-> 
-> I have scanned through the commits. I didn't find any further Fixes
-> for this series.
-> 
-> I am sending these two patches in a new patch set as part2. Instead,
-> if it is better, I am ok to include these and send v2.
+On Sat, Apr 9, 2022 at 10:14 AM Chung-Chiang Cheng <cccheng@synology.com> wrote:
+>
+> Compression and nocow are mutually exclusive. Besides ioctl, there is
+> another way to enable/disable/reset compression directly via xattr. The
+> following steps will result in a invalid combination.
+>
+>   $ touch bar
+>   $ lsattr bar
+>   ---------------C-- bar
 
-Please rebase the series and send a whole new one as I think there will
-be at least one change you can drop as it has been accepted already, and
-trying to deal with two different patch series is hard for everyone
-involved.
+The example should show how the NOCOW attribute ended up in the file.
+Either the filesystem mounted with -o nodatacow or a chattr +C was
+done on the file bar before the lsattr command.
 
-thanks,
+>   $ setfattr -n btrfs.compression -v zstd bar
+>   $ lsattr bar
+>   --------c------C-- bar
+>
+> Reported-by: Jayce Lin <jaycelin@synology.com>
+> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
 
-greg k-h
+The changelog should mention what happens if we end up both with
+compression and nodatacow set on a file.
+Will all future writes be compressed and nodatacow have no effect? Or
+will compression have no effect and we nodatacow overrides it?
+Or something else? Some corruption, some crash, etc?
+
+> ---
+>  fs/btrfs/props.c | 20 ++++++++++++--------
+>  fs/btrfs/props.h |  3 ++-
+>  fs/btrfs/xattr.c |  2 +-
+>  3 files changed, 15 insertions(+), 10 deletions(-)
+>
+> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+> index 1a6d2d5b4b33..fde2bf069b03 100644
+> --- a/fs/btrfs/props.c
+> +++ b/fs/btrfs/props.c
+> @@ -17,7 +17,7 @@ static DEFINE_HASHTABLE(prop_handlers_ht, BTRFS_PROP_HANDLERS_HT_BITS);
+>  struct prop_handler {
+>         struct hlist_node node;
+>         const char *xattr_name;
+> -       int (*validate)(const char *value, size_t len);
+> +       int (*validate)(struct inode *inode, const char *value, size_t len);
+>         int (*apply)(struct inode *inode, const char *value, size_t len);
+>         const char *(*extract)(struct inode *inode);
+>         int inheritable;
+> @@ -55,7 +55,8 @@ find_prop_handler(const char *name,
+>         return NULL;
+>  }
+>
+> -int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
+> +int btrfs_validate_prop(struct inode *inode, const char *name,
+
+The inode can be made const.
+The validation handler should never need to change anything in the inode.
+
+Also, we can use struct btrfs_inode * instead of struct inode (preferred).
+
+> +                       const char *value, size_t value_len)
+>  {
+>         const struct prop_handler *handler;
+>
+> @@ -69,7 +70,7 @@ int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
+>         if (value_len == 0)
+>                 return 0;
+>
+> -       return handler->validate(value, value_len);
+> +       return handler->validate(inode, value, value_len);
+>  }
+>
+>  int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+> @@ -252,18 +253,21 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path)
+>         return ret;
+>  }
+>
+> -static int prop_compression_validate(const char *value, size_t len)
+> +static int prop_compression_validate(struct inode *inode, const char *value, size_t len)
+
+Same here, about const and using struct btrfs_inode * instead.
+
+>  {
+>         if (!value)
+>                 return 0;
+>
+> -       if (btrfs_compress_is_valid_type(value, len))
+> -               return 0;
+> -
+>         if ((len == 2 && strncmp("no", value, 2) == 0) ||
+>             (len == 4 && strncmp("none", value, 4) == 0))
+>                 return 0;
+>
+> +       if (!inode || BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW)
+
+How can inode ever be NULL?
+Unless I missed something, it can't be NULL.
+
+We should also get a test case for fstests, to help prevent
+regressions in the future.
+
+Otherwise it looks fine.
+
+Thanks.
+
+
+
+
+> +               return -EINVAL;
+> +
+> +       if (btrfs_compress_is_valid_type(value, len))
+> +               return 0;
+> +
+>         return -EINVAL;
+>  }
+>
+> @@ -364,7 +368,7 @@ static int inherit_props(struct btrfs_trans_handle *trans,
+>                  * This is not strictly necessary as the property should be
+>                  * valid, but in case it isn't, don't propagate it further.
+>                  */
+> -               ret = h->validate(value, strlen(value));
+> +               ret = h->validate(inode, value, strlen(value));
+>                 if (ret)
+>                         continue;
+>
+> diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
+> index 40b2c65b518c..0504c03177e3 100644
+> --- a/fs/btrfs/props.h
+> +++ b/fs/btrfs/props.h
+> @@ -13,7 +13,8 @@ void __init btrfs_props_init(void);
+>  int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+>                    const char *name, const char *value, size_t value_len,
+>                    int flags);
+> -int btrfs_validate_prop(const char *name, const char *value, size_t value_len);
+> +int btrfs_validate_prop(struct inode *inode, const char *name,
+> +                       const char *value, size_t value_len);
+>
+>  int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path);
+>
+> diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+> index 99abf41b89b9..9aceae07a02b 100644
+> --- a/fs/btrfs/xattr.c
+> +++ b/fs/btrfs/xattr.c
+> @@ -403,7 +403,7 @@ static int btrfs_xattr_handler_set_prop(const struct xattr_handler *handler,
+>         struct btrfs_root *root = BTRFS_I(inode)->root;
+>
+>         name = xattr_full_name(handler, name);
+> -       ret = btrfs_validate_prop(name, value, size);
+> +       ret = btrfs_validate_prop(inode, name, value, size);
+>         if (ret)
+>                 return ret;
+>
+> --
+> 2.34.1
+>
