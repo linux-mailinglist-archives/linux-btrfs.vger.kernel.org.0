@@ -2,96 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 600FD4FBC19
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 14:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B277B4FBD49
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 15:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346090AbiDKMc7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 08:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
+        id S1346431AbiDKNj4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 09:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346258AbiDKMcg (ORCPT
+        with ESMTP id S1343774AbiDKNjz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 08:32:36 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FD83EAB3
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 05:30:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1649680207;
-        bh=I5+6cclsaddFetqW0wbQbOP1P1KeA82QD6vQBPb1W7I=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=d8CGix3v/nl9J4Fq/UcvYBc0x/UrA9aeB75JnRyH7C7ujIGfKK5X4kODK7pHX47lx
-         e2YOTX+YMg2fPZgmOPOGIJz2i84zxtAMo0EBqwVsJVvCSpl8ScKKOCJ+r4jsYkqecv
-         rorWFYm+ZvAJCIgzFzNu44gAssb1tpgTC/CDoFII=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIdif-1nhTYm3olZ-00EbIo; Mon, 11
- Apr 2022 14:30:06 +0200
-Message-ID: <19c5dc85-7591-14d1-b298-783180b86352@gmx.com>
-Date:   Mon, 11 Apr 2022 20:29:59 +0800
+        Mon, 11 Apr 2022 09:39:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B472180D;
+        Mon, 11 Apr 2022 06:37:40 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2083D215FF;
+        Mon, 11 Apr 2022 13:37:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649684259;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=11KZMTEDGr7Y36I2Hveh49be2Dvb2g0aFWQxmVrJlYI=;
+        b=eDK1BZE9UndY5Nm9Y1Q59yBMO963EEGxBP0S38+VGGctz+x2Fb0yJXLQjsEeMpv39fol/F
+        UxqWru6Qnx8Qla0tyL+dE2espoSNyvL6V3VCh/Bnu15mMpRhx1IJxNESIv93US4PeeDFwJ
+        03qWuC61jirABqrbJF1paxcbuKv7YK4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649684259;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=11KZMTEDGr7Y36I2Hveh49be2Dvb2g0aFWQxmVrJlYI=;
+        b=LGdulimxNbMm/rpsEUldDVRgpVU3DBCKIiIk43EGsCiab+bFLyjHVXUmCAKOSIv6ZgDjzV
+        zspTx+zQhFykusBA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C20BBA3B82;
+        Mon, 11 Apr 2022 13:37:38 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 69163DA7DA; Mon, 11 Apr 2022 15:33:34 +0200 (CEST)
+Date:   Mon, 11 Apr 2022 15:33:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH] btrfs: wait between incomplete batch allocations
+Message-ID: <20220411133334.GF15609@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+References: <07d6dbf34243b562287e953c44a70cbb6fca15a1.1649268923.git.sweettea-kernel@dorminy.me>
+ <20220411071124.zwtcarqngqqkdd6q@naota-xeon>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 4/4] btrfs: make submit_one_bio() to return void
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1649657016.git.wqu@suse.com>
- <e4bb98b5884a77114ef0334dee6677e6e6260ea7.1649657016.git.wqu@suse.com>
- <YlPWXw+cWtMG0kE8@infradead.org>
- <32af072b-ab06-9a89-ad6b-0503106cef94@suse.com>
- <YlQb9pH6dQ1zL8ix@infradead.org> <YlQdvFjBq8ESu3Yz@kroah.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <YlQdvFjBq8ESu3Yz@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:I8fBXPpRUIVAIxVonOdEBKWemCTWLln1KnlW0N2Ck6HpyqCij/i
- iyjUJ3jc+OEpHHAd9WPu23R85eFhNS0VaWQYKcGzbadxMxEjw07N5t5fPnV0oGoDaZmFAsQ
- LHjVC5H27f5GRlZWQLKZoE7Sh8bqwy0jUARDIYCV/TM5sAH8cevQoFFxwH9g9yLBeMASqno
- SQocxkq+Br3hqDTUVUsyA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aipoKxEneiA=:K19QWGQ1WKu6/DzWJorQC4
- NS/4TB0WoM7ACtI0YMtp4ivxrXFjqBJtIOKzeDLULkYwG9SpXBYfBodLKLPvHyONveGpVMb3a
- AmRx5y8cslOeT2Tsq5OjhAIsDOzzfO+Z54jnp5he2BR8uN9EYc6EhK+bcBzEBN0Ku65sO0gzm
- vBY+0O0JYKujzjAz3jq1EjFObKjuYDL+Gw1Du2lqMj9FtU0KCKOu4+zSWMkcjkAQmVklfDbcG
- HSv6PsCJWZyVWhnNvUUtJ4S0+GpUuuRP/rOJotKS0Tx17/m4il0m61d5+1M8TC2YJY8ejtHd5
- lNVOebD+J4Udha9HImcCuClDQKS7qgIr/kMg3m3od9vaXv6KV1YfbfJ/8pEWCSIJKf9t3WywC
- 1OBy+LLC/eJJs0Pkg6p0GTJCg6DDouShCKcFWXpaCUfT78C5PRCIBxJfMkz2Ddv5QVfBOVvo1
- wfHIxvONXehBOo3k2pDWKa6wS4sKwLY9GSMvpsIRYT7upWuFzTJMB4tB2As4POMUUmEkd2GV7
- lBk+Dpg5xVlVilqbiXhKjBHSVZTePNX1RL4ynQ7lP8NXsJES0tgBbM0OkpGxA0+hGFQcYASIZ
- Fnmj54MREy6q+bDzFv/Cb0cSrwsZWf1bTEqdhR1vCXrL71WIXoWsXmUQAGIQlPt9q2DmeuPEi
- iXVku9aDunLiwYH1A8ENvQAY2UvLgyJq9yIUZmFkpu7ko+jonvs78RJPW6ujUy/A1szYkIA13
- fhVE6yAVzfJB+Isxrg3CoGz1pOzZ6TzjVDqTcwUEE8bJjmukhddjwnf2uORSjuFUuz/XTtcqQ
- klJbKp0iGbEwKdyk8Wmo2CVuB9J3rBvxm1TqHiZwC93GmNSvxuBJFYlB+C/8ebtxZg6elpLem
- iNvfn/z0kTfs6Io/VXDMe4OQKju0EqYk9BqXM2xk/gw5sK2Ps47tcDUWDIRrO7Uxnj4t2pOQU
- MfvNuBOwNmYD4BcXNWvh1CMxaA7+3EAoC4jiXgPMZ6KDYUI+AI3b1AwRXtStJ/7yR1rLGB4D8
- rdAmFZpDEuAPEVm8v0jiZoCk8663E1q5PmGwODlvPRzcjKEFURIsvnOEBBC7A5DOBTk2NY+xv
- qd54iw8zow9ydc=
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220411071124.zwtcarqngqqkdd6q@naota-xeon>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Apr 11, 2022 at 07:11:24AM +0000, Naohiro Aota wrote:
+> On Wed, Apr 06, 2022 at 02:24:18PM -0400, Sweet Tea Dorminy wrote:
+> > When allocating memory in a loop, each iteration should call
+> > memalloc_retry_wait() in order to prevent starving memory-freeing
+> > processes (and to mark where allcoation loops are). ext4, f2fs, and xfs
+> > all use this function at present for their allocation loops; btrfs ought
+> > also.
+> > 
+> > The bulk page allocation is the only place in btrfs with an allocation
+> > retry loop, so add an appropriate call to it.
+> > 
+> > Suggested-by: David Sterba <dsterba@suse.cz>
+> > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> 
+> The fstests btrfs/187 becomes incredibly slow with this patch applied.
+> 
+> For example, on a nvme ZNS SSD (zoned) device, it takes over 10 hours to
+> finish the test case. It only takes 765 seconds if I revert this commit
+> from the misc-next branch.
+> 
+> I also confirmed the same slowdown occurs on regular btrfs. For the
+> baseline, with this commit reverted, it takes 335 seconds on 8GB ZRAM
+> device running on QEMU (8GB RAM), and takes 768 seconds on a (non-zoned)
+> HDD running on a real machine (128GB RAM). The tests on misc-next with the
+> same setup above is still running, but it already took 2 hours.
+> 
+> The test case runs full btrfs sending 5 times and incremental btrfs sending
+> 10 times at the same time. Also, dedupe loop and balance loop is running
+> simultaneously while all the send commands finish.
+> 
+> The slowdown of the test case basically comes from slow "btrfs send"
+> command. On the HDD run, it takes 25 minutes to run a full btrfs sending
+> command and 1 hour 18 minutes to run a incremental btrfs sending
+> command. Thus, we will need 78 minutes x 5 = 6.5 hours to finish all the
+> send commands, making the test case incredibly slow.
+> 
+> > ---
+> >  fs/btrfs/extent_io.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index 9f2ada809dea..4bcc182744e4 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -6,6 +6,7 @@
+> >  #include <linux/mm.h>
+> >  #include <linux/pagemap.h>
+> >  #include <linux/page-flags.h>
+> > +#include <linux/sched/mm.h>
+> >  #include <linux/spinlock.h>
+> >  #include <linux/blkdev.h>
+> >  #include <linux/swap.h>
+> > @@ -3159,6 +3160,8 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array)
+> >  		 */
+> >  		if (allocated == last)
+> >  			return -ENOMEM;
+> > +
+> > +		memalloc_retry_wait(GFP_NOFS);
+> 
+> And, I just noticed this is because we are waiting for the retry even if we
+> successfully allocated all the pages. We should exit the loop if (allocated
+> == nr_pages).
 
-
-On 2022/4/11 20:23, Greg KH wrote:
-> On Mon, Apr 11, 2022 at 05:15:50AM -0700, Christoph Hellwig wrote:
->> On Mon, Apr 11, 2022 at 03:20:47PM +0800, Qu Wenruo wrote:
->>>> This really should go into patch 1.
->>>>
->>> Stable tree won't be happy about the size.
->>
->> Really?  I've never really seen stable maintainers complain about
->> the size of a patch.  Especially if it is almost 100% removal of buggy
->> code.
->
-> That sounds like a great patch to take for stable kernels :)
-
-OK, I'll merge patch 1 and patch 4 in this case.
-
-Thanks,
-Qu
+Can you please test if the fixup restores the run time? This looks like
+a mistake and the delays are not something we'd observe otherwise. If it
+does not fix the problem then the last option is to revert the patch.
