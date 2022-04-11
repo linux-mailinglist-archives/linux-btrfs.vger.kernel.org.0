@@ -2,104 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 792C74FBAAC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 13:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AB24FBBA5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 14:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244669AbiDKLRd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 07:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
+        id S1344985AbiDKMHv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 08:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344023AbiDKLR0 (ORCPT
+        with ESMTP id S229664AbiDKMHu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 07:17:26 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CAD11A11
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 04:14:53 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E8F3C215FC;
-        Mon, 11 Apr 2022 11:14:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649675691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hmHGj2VuS0Jf+3WWDK3Z3Ir7SXWFYY8DhUqUoxREQho=;
-        b=D3aY06M9xNerxvzNcKp+4f3jNsNvpfUHbFiYlwcERzGmNeB6y6AZ1HTWjc7TaoZqzSB9wl
-        zfiFzePoUAaytvo3ZRUwDKo2Og4fB5MTg5IP7dhCY6a7LpVIOk68T0oHeAlgJkR4yIRkYj
-        d01CAPvA1YkhHWMHwHcZeyu4Fz1dr58=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6C3513AB5;
-        Mon, 11 Apr 2022 11:14:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DBrXJKsNVGIJcwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 11 Apr 2022 11:14:51 +0000
-Message-ID: <01f1427d-09fa-cf7c-dec7-95b6fd10bd9d@suse.com>
-Date:   Mon, 11 Apr 2022 14:14:50 +0300
+        Mon, 11 Apr 2022 08:07:50 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268723A709;
+        Mon, 11 Apr 2022 05:05:35 -0700 (PDT)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 23B9NnvU025178;
+        Mon, 11 Apr 2022 12:03:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=gYNUMVwDP13qlMS4+UHaJJ3PaCFPgROQJTYtqXnOX7M=;
+ b=RDqgcHKph8Jm2BhrynHRzlAqx8nGWKQVGDEreK7n+J6njlw2fY/eROIb0LG1Go0keNpO
+ U7B7ao4FH0/uzQKEPYrHVhNG/pJ2E7Z6UBEEa2SxZlUdVDQJZ6TEFr72vPR9TSXOEBKG
+ MqlChSHpWchCsB0wZHoGw70dgQSIwe1Dr/3iyUd7QHcinyuGvNuFdGbEFCrbqw9Rsc9z
+ JkcowV5iFVIqo42z4/eOag4ZGEVEYQqZe/457g+H8egdMxH/HXBM9/jRkB0BPaAeZihE
+ GFX1OIArRJYPFHkICDQZB90KgaeOXTtU3/g2gqArNZA/NmuhAbDjv3WPLEAFQ6zGE6gp Sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fchnqtx4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Apr 2022 12:03:59 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 23BAmtcM013717;
+        Mon, 11 Apr 2022 12:03:58 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fchnqtx39-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Apr 2022 12:03:58 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 23BC3gZm003276;
+        Mon, 11 Apr 2022 12:03:54 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3fb1s8u242-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Apr 2022 12:03:54 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 23BC40Q146596476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Apr 2022 12:04:01 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1327BA4065;
+        Mon, 11 Apr 2022 12:03:52 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9DE7A404D;
+        Mon, 11 Apr 2022 12:03:50 +0000 (GMT)
+Received: from [9.145.81.78] (unknown [9.145.81.78])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Apr 2022 12:03:50 +0000 (GMT)
+Message-ID: <e971095e-1015-c348-3c24-114193ee5ff0@linux.ibm.com>
+Date:   Mon, 11 Apr 2022 14:03:50 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] btrfs: do not sleep unnecessary on successful batch page
- allocation
+ Thunderbird/91.5.0
+Subject: Re: [PATCH 24/27] block: remove QUEUE_FLAG_DISCARD
 Content-Language: en-US
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-References: <1c7f75c138cba65d0af23ad4eda7c1bab1cc21fe.1649666810.git.naohiro.aota@wdc.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <1c7f75c138cba65d0af23ad4eda7c1bab1cc21fe.1649666810.git.naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     dm-devel@redhat.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        nbd@other.debian.org, ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>, Coly Li <colyli@suse.de>
+References: <20220409045043.23593-1-hch@lst.de>
+ <20220409045043.23593-25-hch@lst.de>
+From:   =?UTF-8?Q?Jan_H=c3=b6ppner?= <hoeppner@linux.ibm.com>
+In-Reply-To: <20220409045043.23593-25-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fq1U6p5RSJi3IUi0XnNkXpRDl0Ogb6A0
+X-Proofpoint-ORIG-GUID: D9QlKI8GujOSuLx30db3fYGBx6ksQFZ5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-11_04,2022-04-11_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0 phishscore=0
+ adultscore=0 clxscore=1011 mlxlogscore=999 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2204110067
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 11.04.22 г. 12:02 ч., Naohiro Aota wrote:
-> After commit 727fd577af04 ("btrfs: wait between incomplete batch memory
-> allocations"), fstests btrfs/187 becomes incredibly slow. Before the commit
-> it takes 335 seconds to run the test on 8GB ZRAM device running on QEMU.
-> But, after that patch, it never finish after 4 hours.
+On 09/04/2022 06:50, Christoph Hellwig wrote:
+> Just use a non-zero max_discard_sectors as an indicator for discard
+> support, similar to what is done for write zeroes.
 > 
-> This is because of unnecessary memalloc_retry_wait() call. If
-> alloc_pages_bulk_array() successfully allocated all the requested pages, it
-> is no use to call memalloc_retry_wait() to wait for retrying.
+> The only places where needs special attention is the RAID5 driver,
+> which must clear discard support for security reasons by default,
+> even if the default stacking rules would allow for it.
 > 
-> I confirmed the test run time back to 353 seconds with this patch applied.
-> 
-> Link: https://lore.kernel.org/linux-btrfs/20220411071124.zwtcarqngqqkdd6q@naota-xeon/
-> Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+> Acked-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com> [btrfs]
+> Acked-by: Coly Li <colyli@suse.de> [bcache]
 > ---
->   fs/btrfs/extent_io.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 1a5a7ded3175..2681a998ee1c 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3150,6 +3150,9 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array)
->   
->   		allocated = alloc_pages_bulk_array(GFP_NOFS, nr_pages, page_array);
->   
-> +		if (allocated == nr_pages)
-> +			return 0;
-> +
->   		/*
->   		 * During this iteration, no page could be allocated, even
->   		 * though alloc_pages_bulk_array() falls back to alloc_page()
+
+For 
+
+>  drivers/s390/block/dasd_fba.c       |  1 -
+
+Acked-by: Jan Höppner <hoeppner@linux.ibm.com>
