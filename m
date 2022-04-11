@@ -2,114 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 351C24FB24A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 05:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6E64FB265
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 05:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244510AbiDKDZN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Apr 2022 23:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S231189AbiDKDfa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Apr 2022 23:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbiDKDZL (ORCPT
+        with ESMTP id S243905AbiDKDf1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Apr 2022 23:25:11 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35581A05E;
-        Sun, 10 Apr 2022 20:22:58 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id hu11so12270393qvb.7;
-        Sun, 10 Apr 2022 20:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2gljv/4/7vROqfmzYygZy8dl2lPYRGvUXzmii0Kd9zg=;
-        b=Rkg3T1u3wWauWXKxCVGqmY0uEc+A/TRU/MJ4aLfc2+otjFG38A1RmaOFFGvIKu+J6P
-         ahTECQeb7p6r+Pwo5MWbVrx5lucJAapZxGzXBiHGHGFJVonTfsPTii3VS/wtp5gf2ul/
-         gOEmiio7vT7R29frAr126zVuNSjYVCeTA4NN6UsfQ5teSEsSpq5BA4LhKjtIQabBdpvD
-         zmbOUEh92lD640OZWw7iNaSP+gbElE0qyjIhahh6GvMeW6XREe/hUurS1g0wGfWSl4I/
-         dJvomvR8qGGXZLtVczle90dxSWgqZ8QPabJVpPCiiqF1T/bxpCD9KnUIuUP/JAa67vhT
-         SKYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2gljv/4/7vROqfmzYygZy8dl2lPYRGvUXzmii0Kd9zg=;
-        b=A+LmvgQOA+wmdJevTgk/jFszv3YPj+gC1ETocUVE79L/rmyn6Z4lAg9ODc7yPnAjai
-         eqcpSRnjgb7xd4GV+mmFoidt4TfXck21UGcKVp2IHfdlsFVj0XhVl1ZjhW/F3H3GxT5B
-         zqTSmniBp/xgA6hyevRRD5BT+h9CMbHNZ8XZLPbat70OpRDEdhH9+TBwLm7Q6stR7N/C
-         bMAuobkAvhuLdrifkz7YSq6/pUMwTvcgs8IcjcMA3ZZYibuxyskb6DCLGxM0+xByZyfk
-         534PvJjZog94conp4VTEyV1ie+03TsDYNN7p0cGJVJjiiD8dMUvu4rQ4sTXcOmnA7s2P
-         Mi+Q==
-X-Gm-Message-State: AOAM5324WhQYIPVOhRiSdFfpkaKwIDTj/csb/9aEnIRukqGh0jjgSJFl
-        2hjqFAhT43ML4bL6hn6O2Uc=
-X-Google-Smtp-Source: ABdhPJzvKAUDtGhX1nuADHq4ZcnNUzwB0Ihku8lhanqUKLdMKV6mjFRhbDmzudTpXWFP1laVJZCz1w==
-X-Received: by 2002:a05:6214:2a8d:b0:443:7f75:2aa7 with SMTP id jr13-20020a0562142a8d00b004437f752aa7mr25282238qvb.36.1649647378166;
-        Sun, 10 Apr 2022 20:22:58 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id s12-20020a05622a018c00b002e1cd88645dsm24490142qtw.74.2022.04.10.20.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Apr 2022 20:22:57 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     dsterba@suse.com
+        Sun, 10 Apr 2022 23:35:27 -0400
+X-Greylist: delayed 320 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 10 Apr 2022 20:33:12 PDT
+Received: from relay3.hostedemail.com (relay3.hostedemail.com [64.99.140.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671293700C
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Apr 2022 20:33:11 -0700 (PDT)
+Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay11.hostedemail.com (Postfix) with ESMTP id 9C01A80E02;
+        Mon, 11 Apr 2022 03:27:49 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id EF0F620013;
+        Mon, 11 Apr 2022 03:27:47 +0000 (UTC)
+Message-ID: <c855ba7ca204b948c59c9fd966c154e5505b3d77.camel@perches.com>
+Subject: Re: [PATCH] btrfs: remove unnecessary conditional
+From:   Joe Perches <joe@perches.com>
+To:     cgel.zte@gmail.com, dsterba@suse.com
 Cc:     clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] btrfs: remove unnecessary conditional
-Date:   Mon, 11 Apr 2022 03:22:52 +0000
-Message-Id: <20220411032252.2517399-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+Date:   Sun, 10 Apr 2022 20:27:47 -0700
+In-Reply-To: <20220411032252.2517399-1-lv.ruyi@zte.com.cn>
+References: <20220411032252.2517399-1-lv.ruyi@zte.com.cn>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: EF0F620013
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=unavailable
+        autolearn_force=no version=3.4.6
+X-Stat-Signature: x9zcho6otzoqyaap4jsuow1knk4szspy
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/JE10KGuUKttvL2rS3dxE7Klpi/bq+qqs=
+X-HE-Tag: 1649647667-178116
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+On Mon, 2022-04-11 at 03:22 +0000, cgel.zte@gmail.com wrote:
+> iput() has already handled null and non-null parameter, so it is no
+> need to use if().
+[]
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+[]
+> @@ -3846,8 +3846,7 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
+>  	btrfs_end_transaction(trans);
+>  	btrfs_btree_balance_dirty(fs_info);
+>  	if (err) {
+> -		if (inode)
+> -			iput(inode);
+> +		iput(inode);
+>  		inode = ERR_PTR(err);
+>  	}
+>  	return inode;
 
-iput() has already handled null and non-null parameter, so it is no
-need to use if().
+I think a direct return would be easier to understand.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
----
- fs/btrfs/relocation.c | 3 +--
- fs/btrfs/tree-log.c   | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+	if (err) {
+		iput(inode);
+		return ERR_PTR(err);
+	}
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 50bdd82682fa..edddd93d2118 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3846,8 +3846,7 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
- 	btrfs_end_transaction(trans);
- 	btrfs_btree_balance_dirty(fs_info);
- 	if (err) {
--		if (inode)
--			iput(inode);
-+		iput(inode);
- 		inode = ERR_PTR(err);
- 	}
- 	return inode;
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 273998153fcc..c46696896f03 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -894,8 +894,7 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
- 	btrfs_update_inode_bytes(BTRFS_I(inode), nbytes, drop_args.bytes_found);
- 	ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
- out:
--	if (inode)
--		iput(inode);
-+	iput(inode);
- 	return ret;
- }
- 
--- 
-2.25.1
+	return inode;
+
 
