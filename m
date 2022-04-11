@@ -2,64 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F39484FBEBF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9673B4FBEF3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347001AbiDKOS0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 10:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S233575AbiDKOYH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 10:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347158AbiDKOR3 (ORCPT
+        with ESMTP id S231232AbiDKOYG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 10:17:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF7D13F6E;
-        Mon, 11 Apr 2022 07:14:56 -0700 (PDT)
+        Mon, 11 Apr 2022 10:24:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96130369EF
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 07:21:51 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 54AA6210E3;
-        Mon, 11 Apr 2022 14:14:55 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 53B751F38D;
+        Mon, 11 Apr 2022 14:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649686495;
+        t=1649686910;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xAV7PZtZa1/q3Byq00oQJjXQLIfNCIYGqpoVQIgdBaA=;
-        b=STMO/2Saod2TnGj3mehgEezpd2zGo/nuXeJnMrJIoYC+fU8EPr3F6/Thn1Y2UZtFaaYUzT
-        D9NwX7CKgDRkAWPKNki1c6Yf1cKpsPvU+xU0/LUlJBRMgDenvqjnnINHOR71VmNfkzoZc4
-        XjmQ5G2w2mLztNt2dIGwkRtcO1xRLNE=
+        bh=wMPG3o/sMtCnmzfsLqWavVXTd2v1hE4z9j93GYbi4Cw=;
+        b=wyLW5d2+LIIea0DvKPSUBClvEr/7Ton0LLrBwjU7tevBoVxvEMce7w2F2LdRmZpPeeqrAe
+        VGqtZYhgZ1QcXG6YYKqkuoRTaM4fGyT9AHJts53hTkpRPRrzngO5byqVeu64NS0KmU+4Ub
+        U+jRJdmNfFoaw/iDBcit01iclVBXtYQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649686495;
+        s=susede2_ed25519; t=1649686910;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xAV7PZtZa1/q3Byq00oQJjXQLIfNCIYGqpoVQIgdBaA=;
-        b=5AP2QO3JxOmFIFJzaWtvRzneJoAAM1G9LBxZV2lT2wp2yMgmgB5oSRMw6MBqiM/11UYzn+
-        Go+lyQ1Cg2oyfKCw==
+        bh=wMPG3o/sMtCnmzfsLqWavVXTd2v1hE4z9j93GYbi4Cw=;
+        b=a0moW/Al9J/nFNbI+clvfVXPjYADq3NYruLqTLkPExnBwAG6k/JPdbMrjK7nFZWq4wNBBn
+        vZdarJtU2sifeUCg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 83F01A3B99;
-        Mon, 11 Apr 2022 14:14:54 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 45F87A3B94;
+        Mon, 11 Apr 2022 14:21:50 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 29582DA7DA; Mon, 11 Apr 2022 16:10:50 +0200 (CEST)
-Date:   Mon, 11 Apr 2022 16:10:50 +0200
+        id D6C9DDA7DA; Mon, 11 Apr 2022 16:17:45 +0200 (CEST)
+Date:   Mon, 11 Apr 2022 16:17:45 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     Boris Burkov <boris@bur.io>, fstests@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v8 3/5] btrfs: test btrfs specific fsverity corruption
-Message-ID: <20220411141050.GJ15609@twin.jikos.cz>
+To:     Gabriel Niebler <gniebler@suse.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/6] Turn delayed_nodes_tree into XArray and adjust usages
+Message-ID: <20220411141745.GK15609@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Eryu Guan <guan@eryu.me>,
-        Boris Burkov <boris@bur.io>, fstests@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1647461985.git.boris@bur.io>
- <fd69c62b9971d446f53ba3d168625fb3a3468882.1647461985.git.boris@bur.io>
- <YlLvUCWvx3fK2ocg@desktop>
+Mail-Followup-To: dsterba@suse.cz, Gabriel Niebler <gniebler@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20220407153855.21089-1-gniebler@suse.com>
+ <20220407164414.GO15609@twin.jikos.cz>
+ <cff2bcc4-536f-3ea4-e835-109d3ad45da2@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YlLvUCWvx3fK2ocg@desktop>
+In-Reply-To: <cff2bcc4-536f-3ea4-e835-109d3ad45da2@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,42 +67,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Apr 10, 2022 at 10:53:04PM +0800, Eryu Guan wrote:
-> On Wed, Mar 16, 2022 at 01:25:13PM -0700, Boris Burkov wrote:
-> > There are some btrfs specific fsverity scenarios that don't map
-> > neatly onto the tests in generic/574 like holes, inline extents,
-> > and preallocated extents. Cover those in a btrfs specific test.
+On Mon, Apr 11, 2022 at 09:41:54AM +0200, Gabriel Niebler wrote:
+> Am 07.04.22 um 18:44 schrieb David Sterba:
+> > On Thu, Apr 07, 2022 at 05:38:48PM +0200, Gabriel Niebler wrote:
+> >> [...]
+> >> This patchset converts `delayed_nodes_radix` into an XArray, renames it
+> >> accordingly and adjusts all usages of this object to the XArray API.
+> >> It survived a complete fstests run.
 > > 
-> > This test relies on the btrfs implementation of fsverity in the patch:
-> > btrfs: initial fsverity support
-> > 
-> > and on btrfs-corrupt-block for corruption in the patches titled:
-> > btrfs-progs: corrupt generic item data with btrfs-corrupt-block
-> > btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  tests/btrfs/290     | 168 ++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/290.out |  25 +++++++
-> >  2 files changed, 193 insertions(+)
-> >  create mode 100755 tests/btrfs/290
-> >  create mode 100644 tests/btrfs/290.out
-> > 
-> > diff --git a/tests/btrfs/290 b/tests/btrfs/290
-> > new file mode 100755
-> > index 00000000..f9acd55a
-> > --- /dev/null
-> > +++ b/tests/btrfs/290
-> > @@ -0,0 +1,168 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2021 Facebook, Inc. All Rights Reserved.
+> > So it converts just one structure, it would be better do it in one
+> > patch otherwise it leaves the conversion half way and it's confusing to
+> > see xarray structure in the radix-tree API.
 > 
-> I noticed that all patches have 2021 in copyright statement, should be
-> updated to 2022?
+> Yes, I figured that converting each structure separately is easier to 
+> achieve for me, since the changes in this patch set are done, but 
+> changes to other structures are not (yet).
 > 
-> And I'd like btrfs folks to help review these 2 btrfs specific tests.
+> As for splitting the changes, as I did: My thought was that it's easier 
+> to review this way, patch-by-patch and that the important thing is that 
+> the conversion be done by the end of the patch set.
 
-I did not do a deep review so no rev-by tag, but overall it looks sane
-to me, also we'd rather like to have some fsverity tests in the suite
-and fix them later eventually than nothing.
+The change splitting should be on the logical level and with focus on
+a selected context, but there's no universal advice. In this case the
+scope is one structure per patch, all actions with the structure are the
+context that often remains same for all the API calls, splitting that
+per patch does not help the review. Switching all structures in one
+patch would mean that each call site is using a different structure so
+the context is changing too often and that's adding to the congnitive
+load.  Which leads to oversights and review quality goes down.
