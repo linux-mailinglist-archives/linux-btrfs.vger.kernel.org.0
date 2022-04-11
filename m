@@ -2,82 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 361834FBE11
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07814FBE21
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Apr 2022 16:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346845AbiDKODW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Apr 2022 10:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
+        id S1346853AbiDKOEG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Apr 2022 10:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346843AbiDKODU (ORCPT
+        with ESMTP id S1346841AbiDKOEF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Apr 2022 10:03:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1B131DEE
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Apr 2022 07:01:05 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 9C03B1F38D;
-        Mon, 11 Apr 2022 14:01:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649685664;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DAaWsFlQgnpFiKa2ICentdlcTubkB3MJUuvPCoVAhKE=;
-        b=YrQW2iQP8B8vp4EcUm3z38P0bdbQbF5Z+Q2FYtjN76/SgLwj37X0mrO4+OI61LUaE+y7Y0
-        IFkSE3LhQe49Rz1hyFTg7LHaQMcLpHm0rCZfoRLGb1sasQxvuQicb6tjSaXMlF467wE1P2
-        ncMP8iY+iLOG5exScWTzNsT4FGZFrz0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649685664;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DAaWsFlQgnpFiKa2ICentdlcTubkB3MJUuvPCoVAhKE=;
-        b=t/UlWD2rPd0dj6KGIIlRc/wZIbls55dbQPKRvZgElXgTqN9oEfT79f0UPr58q1FKurSfPY
-        AsIQ/uLqRcSq+yDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 65242A3BA4;
-        Mon, 11 Apr 2022 14:01:04 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0B4D7DA7DA; Mon, 11 Apr 2022 15:56:59 +0200 (CEST)
-Date:   Mon, 11 Apr 2022 15:56:59 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: Re: [PATCH] btrfs: do not sleep unnecessary on successful batch page
- allocation
-Message-ID: <20220411135659.GH15609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-References: <1c7f75c138cba65d0af23ad4eda7c1bab1cc21fe.1649666810.git.naohiro.aota@wdc.com>
+        Mon, 11 Apr 2022 10:04:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379D731DEB;
+        Mon, 11 Apr 2022 07:01:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F3CB6B8160D;
+        Mon, 11 Apr 2022 14:01:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60E77C385A4;
+        Mon, 11 Apr 2022 14:01:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649685706;
+        bh=aoF5JI4oA+WPgt/y0IgsxtsbxAXaCuGafPntNOloKP4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z3DJooO+lpgxb0V7M65iVrqmxI0PEssCJPh+vJ1dEw1YBTDUO4k0Ftowa06gEpR83
+         S1WtT+TAlqYOA3SV5oPOUKBv5r5Czq1jXlmgnBC2vlAsKUSP12Z7m3WPk2IIXa7ddE
+         7+rat37phwTAQkXhdDcOfyIkaP50hX9uWu9MCv3Yv354dhMqhNyhEKK5VIXvkcNSo/
+         Yw75O5ZXcRgYxwAIHqrZej/c3adf+HQOwXoAdC34I68eRF5zbda1Ysdnlbmc/q5KXa
+         +yAvml8INLRMKi4FRTZn17313igwH9BKq1x7zfZpQGp7kDf9WzbZnpQOZP3oofxBEN
+         wCj97MUpv05qA==
+Date:   Mon, 11 Apr 2022 08:01:41 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
+        drbd-dev@lists.linbit.com, nbd@other.debian.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>, Coly Li <colyli@suse.de>
+Subject: Re: [PATCH 24/27] block: remove QUEUE_FLAG_DISCARD
+Message-ID: <YlQ0xbtIcf8gti43@kbusch-mbp.dhcp.thefacebook.com>
+References: <20220409045043.23593-1-hch@lst.de>
+ <20220409045043.23593-25-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c7f75c138cba65d0af23ad4eda7c1bab1cc21fe.1649666810.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220409045043.23593-25-hch@lst.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 06:02:52PM +0900, Naohiro Aota wrote:
-> After commit 727fd577af04 ("btrfs: wait between incomplete batch memory
-> allocations"), fstests btrfs/187 becomes incredibly slow. Before the commit
-> it takes 335 seconds to run the test on 8GB ZRAM device running on QEMU.
-> But, after that patch, it never finish after 4 hours.
-> 
-> This is because of unnecessary memalloc_retry_wait() call. If
-> alloc_pages_bulk_array() successfully allocated all the requested pages, it
-> is no use to call memalloc_retry_wait() to wait for retrying.
-> 
-> I confirmed the test run time back to 353 seconds with this patch applied.
+On Sat, Apr 09, 2022 at 06:50:40AM +0200, Christoph Hellwig wrote:
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> index efb85c6d8e2d5..7e07dd69262a7 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -1607,10 +1607,8 @@ static void nvme_config_discard(struct gendisk *disk, struct nvme_ns *ns)
+>  	struct request_queue *queue = disk->queue;
+>  	u32 size = queue_logical_block_size(queue);
+>  
+> -	if (ctrl->max_discard_sectors == 0) {
+> -		blk_queue_flag_clear(QUEUE_FLAG_DISCARD, queue);
+> +	if (ctrl->max_discard_sectors == 0)
+>  		return;
+> -	}
 
-Thanks, I've folded the fixup to the patch.
+I think we need to update the queue limit in this condition. While unlikley,
+the flag was cleared here in case the device changed support for discard from
+the previous reset. 
