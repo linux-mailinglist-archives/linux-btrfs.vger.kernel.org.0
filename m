@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 641234FDCB9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75D64FDCB0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352931AbiDLKia (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Apr 2022 06:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
+        id S1350721AbiDLKiF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Apr 2022 06:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354496AbiDLKdl (ORCPT
+        with ESMTP id S1354555AbiDLKdm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Apr 2022 06:33:41 -0400
+        Tue, 12 Apr 2022 06:33:42 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872E45B3FF
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEAA5BD01
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:46 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 37CE521609
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:44 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 52B0A21608
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649756024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1649756025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Fq8ocL1FRdC4cUlhpDvjkl5ml+OjEt95oGBGfmJ6UWg=;
-        b=Sk6kGJkAYvTKT+yqxSHacB9yO1Q9B1UDFhKX0JEf2KXlA+hB/Eo55hcB12JIIRk2LoK16o
-        7+Os+ldbfZ1ZGtyXmdK09UY7NkFnPRSfaG5hJzzKDzxoxSpRVrfgl/19SjIV+TtrHr/fFG
-        hhLXEPI8w232SVN/XNI9KcBskvNPyzg=
+        bh=QhYPDaLCfopoXzqA40OGTpjEy81f8LlQpGN84HusD7E=;
+        b=tiQK3WIuEhvQ3OFcbFuhuZs597W+ek1nk9pGse3mLd5a6sV7CdK/r5ywI+51m5XXt6O3k/
+        /knC7yysvjxlNmU0drprlTx5lqodSge55bBNQuUrRUVCIJxuZTVgLirfmhd4u+W3f2T85P
+        TOQ/WgSPJX4mYX9Fe4KCja9I22UDL6U=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 851D613A99
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:43 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F68E13A99
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id KJxfE3dHVWI8LwAAMHmgww
+        id ODaRGXhHVWI8LwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:43 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:44 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 16/17] btrfs: make alloc_rbio_essential_pages() subpage compatible
-Date:   Tue, 12 Apr 2022 17:33:06 +0800
-Message-Id: <d34b0f871c07b97fa528e5756d3c85e89a6e9eb2.1649753690.git.wqu@suse.com>
+Subject: [PATCH v2 17/17] btrfs: enable subpage support for RAID56
+Date:   Tue, 12 Apr 2022 17:33:07 +0800
+Message-Id: <48f2ed0b11100c8e01ce88bc712cb9921236408d.1649753690.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1649753690.git.wqu@suse.com>
 References: <cover.1649753690.git.wqu@suse.com>
@@ -61,49 +61,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The non-compatible part is only the bitmap iteration part, now the
-bitmap size is extended to rbio::stripe_nsectors, not the old
-rbio::stripe_npages.
-
-Since we're here, also slightly improve the function by:
-
-- Rename @i to @stripe
-- Rename @bit to @sectornr
-- Move @page and @index into the inner loop
+Now the btrfs RAID56 infrastructure has migrated to use sector_ptr
+interface, it should be safe to enable subpage support for btrfs RAID56.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ fs/btrfs/disk-io.c | 8 --------
+ fs/btrfs/raid56.c  | 6 ------
+ fs/btrfs/volumes.c | 7 -------
+ 3 files changed, 21 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 2bc867d35308..e816943ddb7a 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3682,14 +3682,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		btrfs_warn(fs_info,
+ 		"read-write for sector size %u with page size %lu is experimental",
+ 			   sectorsize, PAGE_SIZE);
+-		if (btrfs_super_incompat_flags(fs_info->super_copy) &
+-			BTRFS_FEATURE_INCOMPAT_RAID56) {
+-			btrfs_err(fs_info,
+-		"RAID56 is not yet supported for sector size %u with page size %lu",
+-				sectorsize, PAGE_SIZE);
+-			err = -EINVAL;
+-			goto fail_alloc;
+-		}
+ 		subpage_info = kzalloc(sizeof(*subpage_info), GFP_KERNEL);
+ 		if (!subpage_info)
+ 			goto fail_alloc;
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index d0f9bee0c10d..ef3d3b67098b 100644
+index ef3d3b67098b..97a92576a163 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -2422,14 +2422,16 @@ void raid56_add_scrub_pages(struct btrfs_raid_bio *rbio, struct page *page,
-  */
- static int alloc_rbio_essential_pages(struct btrfs_raid_bio *rbio)
- {
--	int i;
--	int bit;
--	int index;
--	struct page *page;
-+	const u32 sectorsize = rbio->bioc->fs_info->sectorsize;
-+	int stripe;
-+	int sectornr;
-+
-+	for_each_set_bit(sectornr, rbio->dbitmap, rbio->stripe_nsectors) {
-+		for (stripe = 0; stripe < rbio->real_stripes; stripe++) {
-+			struct page *page;
-+			int index = (stripe * rbio->stripe_nsectors + sectornr) *
-+				    sectorsize >> PAGE_SHIFT;
+@@ -1158,9 +1158,6 @@ static int rbio_add_io_sector(struct btrfs_raid_bio *rbio,
+ 	ASSERT(sector_nr >= 0 && sector_nr < rbio->stripe_nsectors);
+ 	ASSERT(sector->page);
  
--	for_each_set_bit(bit, rbio->dbitmap, rbio->stripe_npages) {
--		for (i = 0; i < rbio->real_stripes; i++) {
--			index = i * rbio->stripe_npages + bit;
- 			if (rbio->stripe_pages[index])
- 				continue;
+-	/* We don't yet support subpage, thus pgoff should always be 0 */
+-	ASSERT(sector->pgoff == 0);
+-
+ 	stripe = &rbio->bioc->stripes[stripe_nr];
+ 	disk_start = stripe->physical + sector_nr * sectorsize;
  
+@@ -2385,9 +2382,6 @@ struct btrfs_raid_bio *raid56_parity_alloc_scrub_rbio(struct bio *bio,
+ 	}
+ 	ASSERT(i < rbio->real_stripes);
+ 
+-	/* Now we just support the sectorsize equals to page size */
+-	ASSERT(fs_info->sectorsize == PAGE_SIZE);
+-	ASSERT(rbio->stripe_npages == stripe_nsectors);
+ 	bitmap_copy(rbio->dbitmap, dbitmap, stripe_nsectors);
+ 
+ 	/*
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 93072a090fdd..1b75cde5a267 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4063,13 +4063,6 @@ static inline int validate_convert_profile(struct btrfs_fs_info *fs_info,
+ 	if (!(bargs->flags & BTRFS_BALANCE_ARGS_CONVERT))
+ 		return true;
+ 
+-	if (fs_info->sectorsize < PAGE_SIZE &&
+-		bargs->target & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+-		btrfs_err(fs_info,
+-		"RAID56 is not yet supported for sectorsize %u with page size %lu",
+-			  fs_info->sectorsize, PAGE_SIZE);
+-		return false;
+-	}
+ 	/* Profile is valid and does not have bits outside of the allowed set */
+ 	if (alloc_profile_is_valid(bargs->target, 1) &&
+ 	    (bargs->target & ~allowed) == 0)
 -- 
 2.35.1
 
