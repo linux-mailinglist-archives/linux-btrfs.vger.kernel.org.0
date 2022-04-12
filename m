@@ -2,53 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C47F64FE174
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 15:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179F44FE76E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 19:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355039AbiDLNAZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Apr 2022 09:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        id S1345277AbiDLRsv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Apr 2022 13:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355032AbiDLNAS (ORCPT
+        with ESMTP id S231675AbiDLRsu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Apr 2022 09:00:18 -0400
+        Tue, 12 Apr 2022 13:48:50 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AB95F8DE
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 05:35:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AD3F421607;
-        Tue, 12 Apr 2022 12:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649766956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/ykD7WHjOr8WOp83RaZgdSeWrBa0JDSmCsqFcmT5GTc=;
-        b=iMnaeRcih69QMfCSEkq++OAarWWrtUZNg0bAyX11YNSkLhTAMB/a45hhAMUNV3KjuCEeBV
-        0VDAHE3RbyVW9kXfwrZVnSe5W3Ndu0Zcw3cabJXzXSCxkz8m9BT5mg4KzxmMyd0O1v4uvk
-        d0xvGi7+XMjjqxxkrANtdmaLhNmHeC4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AE3013780;
-        Tue, 12 Apr 2022 12:35:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WGhqHCxyVWK/fQAAMHmgww
-        (envelope-from <gniebler@suse.com>); Tue, 12 Apr 2022 12:35:56 +0000
-From:   Gabriel Niebler <gniebler@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, Gabriel Niebler <gniebler@suse.com>
-Subject: [PATCH v2] btrfs: Turn delayed_nodes_tree into an XArray
-Date:   Tue, 12 Apr 2022 14:35:46 +0200
-Message-Id: <20220412123546.30478-1-gniebler@suse.com>
-X-Mailer: git-send-email 2.35.1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC6F18B35
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 10:46:31 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 69E46212B7;
+        Tue, 12 Apr 2022 17:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649785590;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CnYNT9IY00AR9bK4+32D3jCnyev8Hq5T8ew73+U2wxg=;
+        b=mT6VcsdEDKVHSYLkFmLOlcMgRJYVswRBsKYmM3gINepUDCqlngx/XGIwvPn2DzaJKjYsPV
+        FgNCtYN1yfSI7feaTDgqm6UatPqi+EwSTLoasn/YZIunxlJ5fUXuaYAgmC6uFTzn2q5fkg
+        HgqDdtTDTxF56wYrmr78yk3quobApJk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649785590;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CnYNT9IY00AR9bK4+32D3jCnyev8Hq5T8ew73+U2wxg=;
+        b=yWhQv/aVHTcyGviizBOmq8RDJD5scrIBHshiyYTbFWsdMoOMex6PQY350Po1675ZxoCaWS
+        ycFlA87XJ/PoOYAQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6112EA3B82;
+        Tue, 12 Apr 2022 17:46:30 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5C2ADDA7B0; Tue, 12 Apr 2022 19:42:25 +0200 (CEST)
+Date:   Tue, 12 Apr 2022 19:42:25 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] btrfs: add subpage support for RAID56
+Message-ID: <20220412174225.GY15609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1649753690.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1649753690.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -59,188 +65,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-… in the btrfs_root struct. Also adjust all usages of this object to use
-the XArray API.
+On Tue, Apr 12, 2022 at 05:32:50PM +0800, Qu Wenruo wrote:
+> The branch can be fetched from github, based on latest misc-next branch
+> (with bio and memory allocation refactors):
+> https://github.com/adam900710/linux/tree/subpage_raid56
+> 
+> [CHANGELOG]
+> v2:
+> - Rebased to latest misc-next
+>   There are several conflicts caused by bio interface change and page
+>   allocation update.
+> 
+> - A new patch to reduce the width of @stripe_len to u32
+>   Currently @stripe_len is fixed to 64K, and even in the future we
+>   choose to enlarge the value, I see no reason to go beyond 4G for
+>   stripe length.
+> 
+>   Thus change it u32 to avoid some u64-divided-by-u32 situations.
+> 
+>   This will reduce memory usage for map_lookup (which has a lifespan as
+>   long as the mounted fs) and btrfs_io_geometry (which only has a very
+>   short lifespan, mostly bounded to bio).
+> 
+>   Furthermore, add some extra alignment check and use right bit shift
+>   to replace involved division to avoid possible problems on 32bit
+>   systems.
+> 
+> - Pack sector_ptr::pgoff and sector_ptr::uptodate into one u32
+>   This will reduce memory usage and reduce unaligned memory access
+> 
+>   Please note that, even with it packed, we still have a 4 bytes padding
+>   (it's u64 + u32, thus not perfectly aligned).
+>   Without packed attribute, it will cost more memory usage anyway.
+> 
+> - Call kunmap_local() using address with pgoff
+>   As it can handle it without problem, no need to bother extra search
+>   just for pgoff.
+> 
+> - Use "= { 0 }" for structure initialization
+> 
+> - Reduce comment updates to minimal
+>   If one comment line is not really touched, then don't touch it just to
+>   fix some bad styles.
 
-Signed-off-by: Gabriel Niebler <gniebler@suse.com>
----
-
-Notes:
-    XArrays offer a somewhat nicer API than radix trees and were implemented
-    specifically to replace the latter. They utilize the exact same underlying
-    data structure, but their API is notionally easier to use, as it provides
-    array semantics to the user of radix trees. The higher level API also
-    takes care of locking, adding even more ease of use.
-    
-    The btrfs code uses radix trees in several places. This patch only
-    converts the `delayed_nodes_tree` member of the btrfs_root struct.
-    
-    It survived a complete fstests run.
-
- fs/btrfs/ctree.h         |  4 ++--
- fs/btrfs/delayed-inode.c | 48 ++++++++++++++++++----------------------
- fs/btrfs/disk-io.c       |  2 +-
- fs/btrfs/inode.c         |  2 +-
- 4 files changed, 26 insertions(+), 30 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index b7631b88426e..9377dded9679 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1224,10 +1224,10 @@ struct btrfs_root {
- 	struct rb_root inode_tree;
- 
- 	/*
--	 * radix tree that keeps track of delayed nodes of every inode,
-+	 * XArray that keeps track of delayed nodes of every inode,
- 	 * protected by inode_lock
- 	 */
--	struct radix_tree_root delayed_nodes_tree;
-+	struct xarray delayed_nodes;
- 	/*
- 	 * right now this just gets used so that a root has its own devid
- 	 * for stat.  It may be used for more later
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 748bf6b0d860..89e1c39c2aef 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -78,7 +78,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
- 	}
- 
- 	spin_lock(&root->inode_lock);
--	node = radix_tree_lookup(&root->delayed_nodes_tree, ino);
-+	node = xa_load(&root->delayed_nodes, (unsigned long)ino);
- 
- 	if (node) {
- 		if (btrfs_inode->delayed_node) {
-@@ -90,9 +90,9 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
- 
- 		/*
- 		 * It's possible that we're racing into the middle of removing
--		 * this node from the radix tree.  In this case, the refcount
-+		 * this node from the XArray.  In this case, the refcount
- 		 * was zero and it should never go back to one.  Just return
--		 * NULL like it was never in the radix at all; our release
-+		 * NULL like it was never in the XArray at all; our release
- 		 * function is in the process of removing it.
- 		 *
- 		 * Some implementations of refcount_inc refuse to bump the
-@@ -100,7 +100,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
- 		 * here, refcount_inc() may decide to just WARN_ONCE() instead
- 		 * of actually bumping the refcount.
- 		 *
--		 * If this node is properly in the radix, we want to bump the
-+		 * If this node is properly in the XArray, we want to bump the
- 		 * refcount twice, once for the inode and once for this get
- 		 * operation.
- 		 */
-@@ -141,23 +141,17 @@ static struct btrfs_delayed_node *btrfs_get_or_create_delayed_node(
- 	/* cached in the btrfs inode and can be accessed */
- 	refcount_set(&node->refs, 2);
- 
--	ret = radix_tree_preload(GFP_NOFS);
--	if (ret) {
--		kmem_cache_free(delayed_node_cache, node);
--		return ERR_PTR(ret);
--	}
--
- 	spin_lock(&root->inode_lock);
--	ret = radix_tree_insert(&root->delayed_nodes_tree, ino, node);
--	if (ret == -EEXIST) {
-+	ret = xa_insert(&root->delayed_nodes, ino, node, GFP_NOFS);
-+	if (ret) {
- 		spin_unlock(&root->inode_lock);
- 		kmem_cache_free(delayed_node_cache, node);
--		radix_tree_preload_end();
--		goto again;
-+		if (ret == -EBUSY)
-+			goto again;
-+		return ERR_PTR(ret);
- 	}
- 	btrfs_inode->delayed_node = node;
- 	spin_unlock(&root->inode_lock);
--	radix_tree_preload_end();
- 
- 	return node;
- }
-@@ -276,8 +270,7 @@ static void __btrfs_release_delayed_node(
- 		 * back up.  We can delete it now.
- 		 */
- 		ASSERT(refcount_read(&delayed_node->refs) == 0);
--		radix_tree_delete(&root->delayed_nodes_tree,
--				  delayed_node->inode_id);
-+		xa_erase(&root->delayed_nodes, delayed_node->inode_id);
- 		spin_unlock(&root->inode_lock);
- 		kmem_cache_free(delayed_node_cache, delayed_node);
- 	}
-@@ -1870,29 +1863,32 @@ void btrfs_kill_delayed_inode_items(struct btrfs_inode *inode)
- 
- void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
- {
--	u64 inode_id = 0;
-+	unsigned long index;
-+	struct btrfs_delayed_node *delayed_node;
- 	struct btrfs_delayed_node *delayed_nodes[8];
- 	int i, n;
- 
- 	while (1) {
- 		spin_lock(&root->inode_lock);
--		n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
--					   (void **)delayed_nodes, inode_id,
--					   ARRAY_SIZE(delayed_nodes));
--		if (!n) {
-+		if (xa_empty(&root->delayed_nodes)) {
- 			spin_unlock(&root->inode_lock);
- 			break;
- 		}
- 
--		inode_id = delayed_nodes[n - 1]->inode_id + 1;
--		for (i = 0; i < n; i++) {
-+		n = 0;
-+		xa_for_each_start(&root->delayed_nodes, index,
-+				  delayed_node, index) {
- 			/*
- 			 * Don't increase refs in case the node is dead and
- 			 * about to be removed from the tree in the loop below
- 			 */
--			if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
--				delayed_nodes[i] = NULL;
-+			if (!refcount_inc_not_zero(&delayed_node->refs))
-+				delayed_nodes[n] = NULL;
-+			n++;
-+			if (n >= ARRAY_SIZE(delayed_nodes))
-+				break;
- 		}
-+		index++;
- 		spin_unlock(&root->inode_lock);
- 
- 		for (i = 0; i < n; i++) {
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b30309f187cf..2a49c772d175 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1164,7 +1164,7 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 	root->nr_delalloc_inodes = 0;
- 	root->nr_ordered_extents = 0;
- 	root->inode_tree = RB_ROOT;
--	INIT_RADIX_TREE(&root->delayed_nodes_tree, GFP_ATOMIC);
-+	xa_init_flags(&root->delayed_nodes, GFP_ATOMIC);
- 
- 	btrfs_init_root_block_rsv(root);
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 17d5557f98ec..5b5355fdfa62 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3827,7 +3827,7 @@ static int btrfs_read_locked_inode(struct inode *inode,
- 	 * cache.
- 	 *
- 	 * This is required for both inode re-read from disk and delayed inode
--	 * in delayed_nodes_tree.
-+	 * in the delayed_nodes XArray.
- 	 */
- 	if (BTRFS_I(inode)->last_trans == fs_info->generation)
- 		set_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
--- 
-2.35.1
-
+v2 updated in for-next, I had a local branch with more changes so I
+transferred the changes manually.
