@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A607F4FDCA8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CFA4FDCA4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241283AbiDLKhZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Apr 2022 06:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        id S238513AbiDLKhQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Apr 2022 06:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354383AbiDLKdj (ORCPT
+        with ESMTP id S1354410AbiDLKdj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 12 Apr 2022 06:33:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C195B3F6
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:33 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4236B5B3F8
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:34 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D9D6E21639
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:31 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F38811F868
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649756011; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1649756012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+DPlA0UJTHpcnljPOAFWSv22wxLIa8BhQ+r5KafyybM=;
-        b=T7gK7uLFfSnRFAZPtZXl8SrJyiuZ6H7wvLh0aLAkyCS8iM89/hAxqHtX/fc2yewRZBsHcu
-        FpdAFM8zZyw/idEUK+HfFFV8cYm8Ig3KAMndKWICZ5DjmvxelAwmNtnYG3jP4J3hiuxSOu
-        I8a9b0djyVShfKu6LmG5kP5FCr4l4vs=
+        bh=Ulli860WTBrAaOyKlw3kz8CK274mMLuTF3sNDrK9jog=;
+        b=IKkaL0XQt4xLPiCzgF+k6EfGq/3wMMB7LP+I1B3pY6RT2eAOZAI0R0C9s28ByF3KxU19l0
+        YcK9irmQuSZlH+i+OAy9LzFdbO3SSr0zzNyy2RXVLN0zfk0+dC8jXEnYSNsxIGvwtxCfNm
+        MacrJIkYyea5hrFrQxsk3OFCuVAY7Uc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E18313A99
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:30 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C1B813A99
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id AKIGOWpHVWI8LwAAMHmgww
+        id YP+aBWxHVWI8LwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:30 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 05/17] btrfs: introduce btrfs_raid_bio::stripe_sectors
-Date:   Tue, 12 Apr 2022 17:32:55 +0800
-Message-Id: <70896d3914f27aa5bf30445c751c9f559ee8a2b9.1649753690.git.wqu@suse.com>
+Subject: [PATCH v2 06/17] btrfs: introduce btrfs_raid_bio::bio_sectors
+Date:   Tue, 12 Apr 2022 17:32:56 +0800
+Message-Id: <a1616217ca122be7877d20a82b1b1e7b5cac4888.1649753690.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1649753690.git.wqu@suse.com>
 References: <cover.1649753690.git.wqu@suse.com>
@@ -61,171 +61,127 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new member is an array of sector_ptr pointers, they will represent
-all sectors inside a full stripe (including P/Q).
+This new member is going to fully replace bio_pages in the future, but
+for now let's keep them co-exist, until the full switch is done.
 
-They co-operate with btrfs_raid_bio::stripe_pages:
+Currently cache_rbio_pages() and index_rbio_pages() will also populate
+the new array.
 
-stripe_pages:   | Page 0, range [0, 64K)   | Page 1 ...
-stripe_sectors: |  |  | ...             |  |
-                  |  |                    \- sector 15, page 0, pgoff=60K
-                  |  \- sector 1, page 0, pgoff=4K
-                  \---- sector 0, page 0, pfoff=0
+And cache_rbio_pages() need to record which sectors are uptodate, so we
+also need to introduce sector_ptr::uptodate bit.
 
-With such structure, we can represent subpage sectors without using
-extra pages.
-
-Here we introduce a new helper, index_stripe_sectors(), to update
-stripe_sectors[] to point to correct page and pgoff.
-
-So every time rbio::stripe_pages[] pointer gets updated, the new helper
-should be called.
-
-The following functions have to call the new helper:
-
-- steal_rbio()
-- alloc_rbio_pages()
-- alloc_rbio_parity_pages()
-- alloc_rbio_essential_pages()
+To avoid extra memory usage, we let the new @uptodate bit to share bits
+with @pgoff.
+Now pgoff only have at most 31 bits, which is already more than enough,
+as even for 256K page size, we only need 18 bits.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 65 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 60 insertions(+), 5 deletions(-)
+ fs/btrfs/raid56.c | 51 +++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 92d464d4456a..0c7b6a06d5ce 100644
+index 0c7b6a06d5ce..f88dd11a208d 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -52,6 +52,16 @@ struct btrfs_stripe_hash_table {
- 	struct btrfs_stripe_hash table[];
+@@ -59,7 +59,8 @@ struct btrfs_stripe_hash_table {
+  */
+ struct sector_ptr {
+ 	struct page *page;
+-	unsigned int pgoff;
++	unsigned int pgoff:24;
++	unsigned int uptodate:8;
  };
  
-+/*
-+ * A bvec like structure to present a sector inside a page.
-+ *
-+ * Unlike bvec we don't need bvlen, as it's fixed to sectorsize.
-+ */
-+struct sector_ptr {
-+	struct page *page;
-+	unsigned int pgoff;
-+};
-+
  enum btrfs_rbio_ops {
- 	BTRFS_RBIO_WRITE,
- 	BTRFS_RBIO_READ_REBUILD,
-@@ -171,8 +181,12 @@ struct btrfs_raid_bio {
- 	struct page **bio_pages;
- 
- 	/*
--	 * bitmap to record which horizontal stripe has data
-+	 * For subpage support, we need to map each sector to above
-+	 * stripe_pages.
+@@ -174,6 +175,9 @@ struct btrfs_raid_bio {
  	 */
-+	struct sector_ptr *stripe_sectors;
-+
-+	/* Bitmap to record which horizontal stripe has data */
- 	unsigned long *dbitmap;
+ 	struct page **stripe_pages;
  
- 	/* allocated with real_stripes-many pointers for finish_*() calls */
-@@ -291,6 +305,26 @@ static int rbio_bucket(struct btrfs_raid_bio *rbio)
- 	return hash_64(num >> 16, BTRFS_STRIPE_HASH_TABLE_BITS);
++	/* Pointers to the sectors in the bio_list, for faster lookup */
++	struct sector_ptr *bio_sectors;
++
+ 	/*
+ 	 * pointers to the pages in the bio_list.  Stored
+ 	 * here for faster lookup
+@@ -284,6 +288,20 @@ static void cache_rbio_pages(struct btrfs_raid_bio *rbio)
+ 		copy_highpage(rbio->stripe_pages[i], rbio->bio_pages[i]);
+ 		SetPageUptodate(rbio->stripe_pages[i]);
+ 	}
++
++	for (i = 0; i < rbio->nr_sectors; i++) {
++		/* Some range not covered by bio (partial write), skip it */
++		if (!rbio->bio_sectors[i].page)
++			continue;
++
++		ASSERT(rbio->stripe_sectors[i].page);
++		memcpy_page(rbio->stripe_sectors[i].page,
++			    rbio->stripe_sectors[i].pgoff,
++			    rbio->bio_sectors[i].page,
++			    rbio->bio_sectors[i].pgoff,
++			    rbio->bioc->fs_info->sectorsize);
++		rbio->stripe_sectors[i].uptodate = 1;
++	}
+ 	set_bit(RBIO_CACHE_READY_BIT, &rbio->flags);
  }
  
-+/*
-+ * Update the stripe_sectors[] array to use correct page and pgoff
-+ *
-+ * Should be called every time any page pointer in stripes_pages[] got modified.
-+ */
-+static void index_stripe_sectors(struct btrfs_raid_bio *rbio)
+@@ -1013,7 +1031,7 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
+ 
+ 	rbio = kzalloc(sizeof(*rbio) +
+ 		       sizeof(*rbio->stripe_pages) * num_pages +
+-		       sizeof(*rbio->bio_pages) * num_pages +
++		       sizeof(*rbio->bio_sectors) * num_sectors +
+ 		       sizeof(*rbio->stripe_sectors) * num_sectors +
+ 		       sizeof(*rbio->finish_pointers) * real_stripes +
+ 		       sizeof(*rbio->dbitmap) * BITS_TO_LONGS(stripe_nsectors) +
+@@ -1052,6 +1070,7 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
+ 	} while (0)
+ 	CONSUME_ALLOC(rbio->stripe_pages, num_pages);
+ 	CONSUME_ALLOC(rbio->bio_pages, num_pages);
++	CONSUME_ALLOC(rbio->bio_sectors, num_sectors);
+ 	CONSUME_ALLOC(rbio->stripe_sectors, num_sectors);
+ 	CONSUME_ALLOC(rbio->finish_pointers, real_stripes);
+ 	CONSUME_ALLOC(rbio->dbitmap, BITS_TO_LONGS(stripe_nsectors));
+@@ -1171,6 +1190,31 @@ static void validate_rbio_for_rmw(struct btrfs_raid_bio *rbio)
+ 	}
+ }
+ 
++static void index_one_bio(struct btrfs_raid_bio *rbio, struct bio *bio)
 +{
 +	const u32 sectorsize = rbio->bioc->fs_info->sectorsize;
-+	u32 offset;
-+	int i;
++	struct bio_vec bvec;
++	struct bvec_iter iter;
++	u32 offset = (bio->bi_iter.bi_sector << SECTOR_SHIFT) -
++		     rbio->bioc->raid_map[0];
 +
-+	for (i = 0, offset = 0; i < rbio->nr_sectors; i++, offset += sectorsize) {
-+		int page_index = offset >> PAGE_SHIFT;
++	if (bio_flagged(bio, BIO_CLONED))
++		bio->bi_iter = btrfs_bio(bio)->iter;
++	bio_for_each_segment(bvec, bio, iter) {
++		u32 bvec_offset;
 +
-+		ASSERT(page_index < rbio->nr_pages);
-+		rbio->stripe_sectors[i].page = rbio->stripe_pages[page_index];
-+		rbio->stripe_sectors[i].pgoff = offset_in_page(offset);
++		for (bvec_offset = 0; bvec_offset < bvec.bv_len;
++		     bvec_offset += sectorsize, offset += sectorsize) {
++			int index = offset / sectorsize;
++			struct sector_ptr *sector = &rbio->bio_sectors[index];
++
++			sector->page = bvec.bv_page;
++			sector->pgoff = bvec.bv_offset + bvec_offset;
++			ASSERT(sector->pgoff < PAGE_SIZE);
++		}
 +	}
 +}
 +
  /*
-  * stealing an rbio means taking all the uptodate pages from the stripe
-  * array in the source rbio and putting them into the destination rbio
-@@ -317,6 +351,8 @@ static void steal_rbio(struct btrfs_raid_bio *src, struct btrfs_raid_bio *dest)
- 		dest->stripe_pages[i] = s;
- 		src->stripe_pages[i] = NULL;
- 	}
-+	index_stripe_sectors(dest);
-+	index_stripe_sectors(src);
- }
- 
- /*
-@@ -978,6 +1014,7 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
- 	rbio = kzalloc(sizeof(*rbio) +
- 		       sizeof(*rbio->stripe_pages) * num_pages +
- 		       sizeof(*rbio->bio_pages) * num_pages +
-+		       sizeof(*rbio->stripe_sectors) * num_sectors +
- 		       sizeof(*rbio->finish_pointers) * real_stripes +
- 		       sizeof(*rbio->dbitmap) * BITS_TO_LONGS(stripe_nsectors) +
- 		       sizeof(*rbio->finish_pbitmap) *
-@@ -1015,6 +1052,7 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
- 	} while (0)
- 	CONSUME_ALLOC(rbio->stripe_pages, num_pages);
- 	CONSUME_ALLOC(rbio->bio_pages, num_pages);
-+	CONSUME_ALLOC(rbio->stripe_sectors, num_sectors);
- 	CONSUME_ALLOC(rbio->finish_pointers, real_stripes);
- 	CONSUME_ALLOC(rbio->dbitmap, BITS_TO_LONGS(stripe_nsectors));
- 	CONSUME_ALLOC(rbio->finish_pbitmap, BITS_TO_LONGS(stripe_nsectors));
-@@ -1031,19 +1069,35 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
- 	return rbio;
- }
- 
--/* allocate pages for all the stripes in the bio, including parity */
-+/*
-+ * Allocate pages for all the stripes in the bio including parity, and map all
-+ * sectors to their corresponding pages
-+ */
- static int alloc_rbio_pages(struct btrfs_raid_bio *rbio)
- {
--	return btrfs_alloc_page_array(rbio->nr_pages, rbio->stripe_pages);
-+	int ret;
-+
-+	ret = btrfs_alloc_page_array(rbio->nr_pages, rbio->stripe_pages);
-+	if (ret < 0)
-+		return ret;
-+	/* Mapping all sectors */
-+	index_stripe_sectors(rbio);
-+	return 0;
- }
- 
- /* only allocate pages for p/q stripes */
- static int alloc_rbio_parity_pages(struct btrfs_raid_bio *rbio)
- {
- 	int data_pages = rbio_stripe_page_index(rbio, rbio->nr_data, 0);
-+	int ret;
- 
--	return btrfs_alloc_page_array(rbio->nr_pages - data_pages,
--				      rbio->stripe_pages + data_pages);
-+	ret = btrfs_alloc_page_array(rbio->nr_pages - data_pages,
-+				     rbio->stripe_pages + data_pages);
-+	if (ret < 0)
-+		return ret;
-+
-+	index_stripe_sectors(rbio);
-+	return 0;
- }
- 
- /*
-@@ -2286,6 +2340,7 @@ static int alloc_rbio_essential_pages(struct btrfs_raid_bio *rbio)
- 			rbio->stripe_pages[index] = page;
+  * helper function to walk our bio list and populate the bio_pages array with
+  * the result.  This seems expensive, but it is faster than constantly
+@@ -1201,6 +1245,9 @@ static void index_rbio_pages(struct btrfs_raid_bio *rbio)
+ 			i++;
  		}
  	}
-+	index_stripe_sectors(rbio);
- 	return 0;
++	bio_list_for_each(bio, &rbio->bio_list)
++		index_one_bio(rbio, bio);
++
+ 	spin_unlock_irq(&rbio->bio_list_lock);
  }
  
 -- 
