@@ -2,53 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A75D64FDCB0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6292F4FE14F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 14:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350721AbiDLKiF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Apr 2022 06:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S1354758AbiDLM7O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Apr 2022 08:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354555AbiDLKdm (ORCPT
+        with ESMTP id S1351355AbiDLM4r (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Apr 2022 06:33:42 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEAA5BD01
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:46 -0700 (PDT)
+        Tue, 12 Apr 2022 08:56:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E918B4B1EB
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 05:30:37 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 52B0A21608
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:45 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 916B61F38D
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 12:30:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649756025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QhYPDaLCfopoXzqA40OGTpjEy81f8LlQpGN84HusD7E=;
-        b=tiQK3WIuEhvQ3OFcbFuhuZs597W+ek1nk9pGse3mLd5a6sV7CdK/r5ywI+51m5XXt6O3k/
-        /knC7yysvjxlNmU0drprlTx5lqodSge55bBNQuUrRUVCIJxuZTVgLirfmhd4u+W3f2T85P
-        TOQ/WgSPJX4mYX9Fe4KCja9I22UDL6U=
+        t=1649766636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=/+CmOP2Ukl2NSSggFfi8hXlLM9Sq9HvLb3IefjtoNLQ=;
+        b=WavPmeAKzb9v2dXnq2QqA/8u4tCKywCCSAS49yhR614PqAWCYz/tvo4hU/NT6Mpe3iKMnY
+        uWr/AGDzqKSXUKCQa+gf6+yuMktNvxjf0NZfjBKXZAH5RsKVtVdJIGod06WrV6d63WrCFu
+        yqbO3OGohI/6Kc/EoDNQgInF2iLkjKM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F68E13A99
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:44 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 574A813A99
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 12:30:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ODaRGXhHVWI8LwAAMHmgww
+        id +gmmButwVWKBewAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:44 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 12:30:35 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 17/17] btrfs: enable subpage support for RAID56
-Date:   Tue, 12 Apr 2022 17:33:07 +0800
-Message-Id: <48f2ed0b11100c8e01ce88bc712cb9921236408d.1649753690.git.wqu@suse.com>
+Subject: [PATCH v2 0/3] btrfs: vairous bug fixes related to generic/475 failure with subpage cases
+Date:   Tue, 12 Apr 2022 20:30:12 +0800
+Message-Id: <cover.1649766550.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1649753690.git.wqu@suse.com>
-References: <cover.1649753690.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -61,77 +57,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now the btrfs RAID56 infrastructure has migrated to use sector_ptr
-interface, it should be safe to enable subpage support for btrfs RAID56.
+[CHANGELOG]
+v2:
+- Make submit_one_bio() to return void just in the same patch
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 8 --------
- fs/btrfs/raid56.c  | 6 ------
- fs/btrfs/volumes.c | 7 -------
- 3 files changed, 21 deletions(-)
+- Update the commit message the for 2nd patch
+  To mention remaining error path (which is not really possible to
+  trigger), to prove the first patch is already fixing all involved
+  error paths.
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2bc867d35308..e816943ddb7a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3682,14 +3682,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		btrfs_warn(fs_info,
- 		"read-write for sector size %u with page size %lu is experimental",
- 			   sectorsize, PAGE_SIZE);
--		if (btrfs_super_incompat_flags(fs_info->super_copy) &
--			BTRFS_FEATURE_INCOMPAT_RAID56) {
--			btrfs_err(fs_info,
--		"RAID56 is not yet supported for sector size %u with page size %lu",
--				sectorsize, PAGE_SIZE);
--			err = -EINVAL;
--			goto fail_alloc;
--		}
- 		subpage_info = kzalloc(sizeof(*subpage_info), GFP_KERNEL);
- 		if (!subpage_info)
- 			goto fail_alloc;
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index ef3d3b67098b..97a92576a163 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -1158,9 +1158,6 @@ static int rbio_add_io_sector(struct btrfs_raid_bio *rbio,
- 	ASSERT(sector_nr >= 0 && sector_nr < rbio->stripe_nsectors);
- 	ASSERT(sector->page);
+[DESCRIPTION]
+When testing my subpage raid56 support, generic/475 is always hanging
+with some data page unable to be unlocked.
+
+It turns out that, the hang is not related to the raid56 subpage
+support (obviously, as the test case is not utilizing RAID56 at all),
+but a recent commit 1784b7d502a9 ("btrfs: handle csum lookup errors
+properly on reads") introduced a new error path, and it caught us by
+surprise.
+
+The new error path is from btrfs_lookup_bio_sums(), which can now return
+error if the csum search failed.
+
+This new error path exposed several problems:
+
+- Double cleanup for submit_one_bio() and its callers
+  Bio submission hooks, btrfs_submit_data_bio() and
+  btrfs_submit_metadata_bio() will call endio to cleanup on errors.
+
+  But those bio submission hooks will also return error, and
+  finally callers of submit_extent_page() will also try to do
+  cleanup.
+
+  This will be fixed by the first patch, by always returning 0 for
+  submit_one_bio().
+  This fix is kept as minimal as possible, to make backport easier.
+  The proper conversion to return void will be done in the last patch.
+
+- btrfs_do_readpage() can leave page locked on error
+  If submit_extent_page() failed in btrfs_do_readpage(), we only
+  cleanup the current range, and leaving the remaining subpage
+  range locked.
+
+  This bug is subpage specific, and will not affect regular cases.
+
+  Fix it by cleaning up all the remaining subpage range before
+  exiting.
+
+- __extent_writepage_io() can return 0 even it hit some error
+  Although we continue writing the remaining ranges, we didn't save
+  the first error, causing @ret to be overwritten.
  
--	/* We don't yet support subpage, thus pgoff should always be 0 */
--	ASSERT(sector->pgoff == 0);
--
- 	stripe = &rbio->bioc->stripes[stripe_nr];
- 	disk_start = stripe->physical + sector_nr * sectorsize;
- 
-@@ -2385,9 +2382,6 @@ struct btrfs_raid_bio *raid56_parity_alloc_scrub_rbio(struct bio *bio,
- 	}
- 	ASSERT(i < rbio->real_stripes);
- 
--	/* Now we just support the sectorsize equals to page size */
--	ASSERT(fs_info->sectorsize == PAGE_SIZE);
--	ASSERT(rbio->stripe_npages == stripe_nsectors);
- 	bitmap_copy(rbio->dbitmap, dbitmap, stripe_nsectors);
- 
- 	/*
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 93072a090fdd..1b75cde5a267 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4063,13 +4063,6 @@ static inline int validate_convert_profile(struct btrfs_fs_info *fs_info,
- 	if (!(bargs->flags & BTRFS_BALANCE_ARGS_CONVERT))
- 		return true;
- 
--	if (fs_info->sectorsize < PAGE_SIZE &&
--		bargs->target & BTRFS_BLOCK_GROUP_RAID56_MASK) {
--		btrfs_err(fs_info,
--		"RAID56 is not yet supported for sectorsize %u with page size %lu",
--			  fs_info->sectorsize, PAGE_SIZE);
--		return false;
--	}
- 	/* Profile is valid and does not have bits outside of the allowed set */
- 	if (alloc_profile_is_valid(bargs->target, 1) &&
- 	    (bargs->target & ~allowed) == 0)
+  This bug is subpage specific, as for regular cases we only have one
+  sector inside the page.
+
+  Fix it by introducing @has_error and @saved_ret.
+
+I manually checked all other submit_extent_page() callers, they all
+look fine and won't cause problems like the above.
+
+Finally since submit_one_bio() will always return 0, the final patch
+will make it return void, which greatly makes our code cleaner.
+
+But that patch is introducing quite some modifications, not a candidate
+for backport, unlike the first 3 patches.
+
+Special thanks to Josef, as my initial bisection points to his patch and
+I have no clue why it can cause problems at all.
+His hints immediately solved all my questions, and lead to this
+patchset.
+
+
+Qu Wenruo (3):
+  btrfs: avoid double clean up when submit_one_bio() failed
+  btrfs: fix the error handling for submit_extent_page() for
+    btrfs_do_readpage()
+  btrfs: return correct error number for __extent_writepage_io()
+
+ fs/btrfs/extent_io.c | 135 ++++++++++++++++++-------------------------
+ fs/btrfs/extent_io.h |   3 +-
+ fs/btrfs/inode.c     |  13 ++---
+ 3 files changed, 62 insertions(+), 89 deletions(-)
+
 -- 
 2.35.1
 
