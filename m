@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BC34FDCD6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8244FDCA7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243816AbiDLKmX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Apr 2022 06:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
+        id S239737AbiDLKhS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Apr 2022 06:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354425AbiDLKdj (ORCPT
+        with ESMTP id S1354439AbiDLKdj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 12 Apr 2022 06:33:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEFA5622C
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:37 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C524B5622D
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:38 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6EBC721609
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:36 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 85E8A1F868
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649756016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1649756017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yYR7018TOBCn5MY3HRwd3e6lFWtBPve+lE8FkrzRegw=;
-        b=MP6CDIgEn+K8siQaQfyZhH5Wp10257t3zq0S8d0tBQU1d9Ebl0xmu2ZDx9Zva9rV5aqEHn
-        1H8Kxoa4eoxcYu/mlPYLQyN0mVcw0WhVBaRRox2T1efuts+E6Z5aVE0Uo9+MqdkSy9S6dt
-        oMQRKuGkBRY4NjZmBzyvRBFl/G2JIwE=
+        bh=JnavMaJ+S/+lrV/5yld7BQI92vg3dRO35Iatv6GdQLg=;
+        b=cFWB/Vxi9ldK7x0DXGzgbyPPLo5d0mmKKEMAKIaJ02LpHNLeVZ7M7hPXoQWKzDhuGGdIM9
+        o2cFUFy0LwMFKWbSHmEfDu0zSbYbHW2OEs0BzNkFOQFX1yyo9c97DHvUGdJCoixrP23um3
+        QwN0UG/H5T66j8hEvEZQBK/7tRpsth8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE23913A99
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:35 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFA9B13A99
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mK/6HG9HVWI8LwAAMHmgww
+        id ODDNJHBHVWI8LwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:35 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:36 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 09/17] btrfs: make __raid_recover_endio_io() subpage compatibable
-Date:   Tue, 12 Apr 2022 17:32:59 +0800
-Message-Id: <83de7b1b22bcff9684f879525ec10300c3340a23.1649753690.git.wqu@suse.com>
+Subject: [PATCH v2 10/17] btrfs: make finish_rmw() subpage compatible
+Date:   Tue, 12 Apr 2022 17:33:00 +0800
+Message-Id: <64ef7c98b87001a19ac0d2d9c75faadf9fd9670b.1649753690.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1649753690.git.wqu@suse.com>
 References: <cover.1649753690.git.wqu@suse.com>
@@ -61,155 +61,178 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This involves:
+With this function converted to subpage compatible sector interfaces,
+the following helper functions can be removed:
 
-- Use sector_ptr interface to grab the pointers
-
-- Add sector->pgoff to pointers[]
-
-- Rebuild data using sectorsize instead of PAGE_SIZE
-
-- Use memcpy() to replace copy_page()
+- rbio_stripe_page()
+- rbio_pstripe_page()
+- rbio_qstripe_page()
+- page_in_rbio()
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 52 ++++++++++++++++++++++++++---------------------
- 1 file changed, 29 insertions(+), 23 deletions(-)
+ fs/btrfs/raid56.c | 108 ++++++++++++++--------------------------------
+ 1 file changed, 32 insertions(+), 76 deletions(-)
 
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 6b2d75a09896..075b996040ba 100644
+index 075b996040ba..928359840e8e 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -1929,14 +1929,18 @@ int raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc,
-  */
- static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
+@@ -681,39 +681,26 @@ static struct sector_ptr *rbio_stripe_sector(const struct btrfs_raid_bio *rbio,
+ 							      sector_nr)];
+ }
+ 
+-static int rbio_stripe_page_index(struct btrfs_raid_bio *rbio, int stripe,
+-				  int index)
++/* Helper to grab a sector inside P stripe */
++static struct sector_ptr *rbio_pstripe_sector(const struct btrfs_raid_bio *rbio,
++					      unsigned int sector_nr)
  {
--	int pagenr, stripe;
-+	const u32 sectorsize = rbio->bioc->fs_info->sectorsize;
-+	int sectornr, stripe;
- 	void **pointers;
- 	void **unmap_array;
- 	int faila = -1, failb = -1;
--	struct page *page;
- 	blk_status_t err;
- 	int i;
+-	return stripe * rbio->stripe_npages + index;
++	return rbio_stripe_sector(rbio, rbio->nr_data, sector_nr);
+ }
  
-+	/*
-+	 * This array stores the pointer for each sector, thus it has the extra
-+	 * pgoff value added from each sector
-+	 */
- 	pointers = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
- 	if (!pointers) {
- 		err = BLK_STS_RESOURCE;
-@@ -1965,43 +1969,44 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
+-/*
+- * these are just the pages from the rbio array, not from anything
+- * the FS sent down to us
+- */
+-static struct page *rbio_stripe_page(struct btrfs_raid_bio *rbio, int stripe,
+-				     int index)
++/* Helper to grab a sector inside Q stripe, return NULL if not RAID6 */
++static struct sector_ptr *rbio_qstripe_sector(const struct btrfs_raid_bio *rbio,
++					      unsigned int sector_nr)
+ {
+-	return rbio->stripe_pages[rbio_stripe_page_index(rbio, stripe, index)];
+-}
+-
+-/*
+- * helper to index into the pstripe
+- */
+-static struct page *rbio_pstripe_page(struct btrfs_raid_bio *rbio, int index)
+-{
+-	return rbio_stripe_page(rbio, rbio->nr_data, index);
++	if (rbio->nr_data + 1 == rbio->real_stripes)
++		return NULL;
++	return rbio_stripe_sector(rbio, rbio->nr_data + 1, sector_nr);
+ }
  
- 	index_rbio_pages(rbio);
+-/*
+- * helper to index into the qstripe, returns null
+- * if there is no qstripe
+- */
+-static struct page *rbio_qstripe_page(struct btrfs_raid_bio *rbio, int index)
++static int rbio_stripe_page_index(struct btrfs_raid_bio *rbio, int stripe,
++				  int index)
+ {
+-	if (rbio->nr_data + 1 == rbio->real_stripes)
+-		return NULL;
+-	return rbio_stripe_page(rbio, rbio->nr_data + 1, index);
++	return stripe * rbio->stripe_npages + index;
+ }
  
--	for (pagenr = 0; pagenr < rbio->stripe_npages; pagenr++) {
-+	for (sectornr = 0; sectornr < rbio->stripe_nsectors; sectornr++) {
+ /*
+@@ -1030,40 +1017,6 @@ static struct sector_ptr *sector_in_rbio(struct btrfs_raid_bio *rbio,
+ 	return &rbio->stripe_sectors[index];
+ }
+ 
+-/*
+- * the read/modify/write code wants to use the original bio for
+- * any pages it included, and then use the rbio for everything
+- * else.  This function decides if a given index (stripe number)
+- * and page number in that stripe fall inside the original bio
+- * or the rbio.
+- *
+- * if you set bio_list_only, you'll get a NULL back for any ranges
+- * that are outside the bio_list
+- *
+- * This doesn't take any refs on anything, you get a bare page pointer
+- * and the caller must bump refs as required.
+- *
+- * You must call index_rbio_pages once before you can trust
+- * the answers from this function.
+- */
+-static struct page *page_in_rbio(struct btrfs_raid_bio *rbio,
+-				 int index, int pagenr, int bio_list_only)
+-{
+-	int chunk_page;
+-	struct page *p = NULL;
+-
+-	chunk_page = index * (rbio->stripe_len >> PAGE_SHIFT) + pagenr;
+-
+-	spin_lock_irq(&rbio->bio_list_lock);
+-	p = rbio->bio_pages[chunk_page];
+-	spin_unlock_irq(&rbio->bio_list_lock);
+-
+-	if (p || bio_list_only)
+-		return p;
+-
+-	return rbio->stripe_pages[chunk_page];
+-}
+-
+ /*
+  * allocation and initial setup for the btrfs_raid_bio.  Not
+  * this does not allocate any pages for rbio->pages.
+@@ -1333,6 +1286,7 @@ static void index_rbio_pages(struct btrfs_raid_bio *rbio)
+ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+ {
+ 	struct btrfs_io_context *bioc = rbio->bioc;
++	const u32 sectorsize = bioc->fs_info->sectorsize;
+ 	void **pointers = rbio->finish_pointers;
+ 	int nr_data = rbio->nr_data;
+ 	int stripe;
+@@ -1381,34 +1335,36 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+ 		clear_bit(RBIO_CACHE_READY_BIT, &rbio->flags);
+ 
+ 	for (sectornr = 0; sectornr < rbio->stripe_nsectors; sectornr++) {
+-		struct page *p;
+-		/* first collect one page from each data stripe */
 +		struct sector_ptr *sector;
 +
- 		/*
- 		 * Now we just use bitmap to mark the horizontal stripes in
- 		 * which we have data when doing parity scrub.
- 		 */
- 		if (rbio->operation == BTRFS_RBIO_PARITY_SCRUB &&
--		    !test_bit(pagenr, rbio->dbitmap))
-+		    !test_bit(sectornr, rbio->dbitmap))
- 			continue;
- 
- 		/*
--		 * Setup our array of pointers with pages from each stripe
-+		 * Setup our array of pointers with sectors from each stripe
- 		 *
- 		 * NOTE: store a duplicate array of pointers to preserve the
- 		 * pointer order
- 		 */
- 		for (stripe = 0; stripe < rbio->real_stripes; stripe++) {
- 			/*
--			 * if we're rebuilding a read, we have to use
-+			 * If we're rebuilding a read, we have to use
- 			 * pages from the bio list
- 			 */
- 			if ((rbio->operation == BTRFS_RBIO_READ_REBUILD ||
- 			     rbio->operation == BTRFS_RBIO_REBUILD_MISSING) &&
- 			    (stripe == faila || stripe == failb)) {
--				page = page_in_rbio(rbio, stripe, pagenr, 0);
-+				sector = sector_in_rbio(rbio, stripe, sectornr, 0);
- 			} else {
--				page = rbio_stripe_page(rbio, stripe, pagenr);
-+				sector = rbio_stripe_sector(rbio, stripe, sectornr);
- 			}
--			pointers[stripe] = kmap_local_page(page);
-+			ASSERT(sector->page);
++		/* First collect one sector from each data stripe */
+ 		for (stripe = 0; stripe < nr_data; stripe++) {
+-			p = page_in_rbio(rbio, stripe, sectornr, 0);
+-			pointers[stripe] = kmap_local_page(p);
++			sector = sector_in_rbio(rbio, stripe, sectornr, 0);
 +			pointers[stripe] = kmap_local_page(sector->page) +
 +					   sector->pgoff;
- 			unmap_array[stripe] = pointers[stripe];
  		}
  
--		/* all raid6 handling here */
-+		/* All raid6 handling here */
- 		if (rbio->bioc->map_type & BTRFS_BLOCK_GROUP_RAID6) {
--			/*
--			 * single failure, rebuild from parity raid5
--			 * style
--			 */
-+			/* Single failure, rebuild from parity raid5 style */
- 			if (failb < 0) {
- 				if (faila == rbio->nr_data) {
- 					/*
-@@ -2044,10 +2049,10 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
+-		/* then add the parity stripe */
+-		p = rbio_pstripe_page(rbio, sectornr);
+-		SetPageUptodate(p);
+-		pointers[stripe++] = kmap_local_page(p);
++		/* Then add the parity stripe */
++		sector = rbio_pstripe_sector(rbio, sectornr);
++		sector->uptodate = 1;
++		pointers[stripe++] = kmap_local_page(sector->page) + sector->pgoff;
  
- 			if (rbio->bioc->raid_map[failb] == RAID5_P_STRIPE) {
- 				raid6_datap_recov(rbio->real_stripes,
--						  PAGE_SIZE, faila, pointers);
-+						  sectorsize, faila, pointers);
- 			} else {
- 				raid6_2data_recov(rbio->real_stripes,
--						  PAGE_SIZE, faila, failb,
-+						  sectorsize, faila, failb,
- 						  pointers);
- 			}
+ 		if (has_qstripe) {
+-
+ 			/*
+-			 * raid6, add the qstripe and call the
++			 * RAID6, add the qstripe and call the
+ 			 * library function to fill in our p/q
+ 			 */
+-			p = rbio_qstripe_page(rbio, sectornr);
+-			SetPageUptodate(p);
+-			pointers[stripe++] = kmap_local_page(p);
++			sector = rbio_qstripe_sector(rbio, sectornr);
++			sector->uptodate = 1;
++			pointers[stripe++] = kmap_local_page(sector->page) +
++					     sector->pgoff;
+ 
+-			raid6_call.gen_syndrome(rbio->real_stripes, PAGE_SIZE,
++			raid6_call.gen_syndrome(rbio->real_stripes, sectorsize,
+ 						pointers);
  		} else {
-@@ -2057,7 +2062,8 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
- 			BUG_ON(failb != -1);
- pstripe:
- 			/* Copy parity block into failed block to start with */
--			copy_page(pointers[faila], pointers[rbio->nr_data]);
-+			memcpy(pointers[faila], pointers[rbio->nr_data],
-+			       sectorsize);
- 
- 			/* rearrange the pointer array */
- 			p = pointers[faila];
-@@ -2066,7 +2072,7 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
- 			pointers[rbio->nr_data - 1] = p;
- 
- 			/* xor in the rest */
--			run_xor(pointers, rbio->nr_data - 1, PAGE_SIZE);
-+			run_xor(pointers, rbio->nr_data - 1, sectorsize);
+ 			/* raid5 */
+-			copy_page(pointers[nr_data], pointers[0]);
+-			run_xor(pointers + 1, nr_data - 1, PAGE_SIZE);
++			memcpy(pointers[nr_data], pointers[0], sectorsize);
++			run_xor(pointers + 1, nr_data - 1, sectorsize);
  		}
- 		/* if we're doing this rebuild as part of an rmw, go through
- 		 * and set all of our private rbio pages in the
-@@ -2075,14 +2081,14 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
- 		 * other endio functions will fiddle the uptodate bits
- 		 */
- 		if (rbio->operation == BTRFS_RBIO_WRITE) {
--			for (i = 0;  i < rbio->stripe_npages; i++) {
-+			for (i = 0;  i < rbio->stripe_nsectors; i++) {
- 				if (faila != -1) {
--					page = rbio_stripe_page(rbio, faila, i);
--					SetPageUptodate(page);
-+					sector = rbio_stripe_sector(rbio, faila, i);
-+					sector->uptodate = 1;
- 				}
- 				if (failb != -1) {
--					page = rbio_stripe_page(rbio, failb, i);
--					SetPageUptodate(page);
-+					sector = rbio_stripe_sector(rbio, failb, i);
-+					sector->uptodate = 1;
- 				}
- 			}
- 		}
+ 		for (stripe = stripe - 1; stripe >= 0; stripe--)
+ 			kunmap_local(pointers[stripe]);
 -- 
 2.35.1
 
