@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D72CE4FDCAB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2134FDCB1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Apr 2022 13:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245373AbiDLKha (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Apr 2022 06:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
+        id S1351585AbiDLKiM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Apr 2022 06:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354484AbiDLKdl (ORCPT
+        with ESMTP id S1354491AbiDLKdl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 12 Apr 2022 06:33:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189D856432
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:41 -0700 (PDT)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2930456439
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 02:33:42 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CE27F1F858
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:39 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D9DC0210EC
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649756019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1649756020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=B0OHzjCnQPTeUgq8zZpJxJ0nb7YyMCJmHFikiBdzoYE=;
-        b=W/JSASZNKrBOEUw1lDrNyTUUkdAS1b0wkJQI+NXEnEVGmve65krSelxIYx7lsTwVAatwYP
-        kJLcXBlOYW5XQZniCY3UwFnO0CUlMizCG4S+7SCxFJBK+WBJ6XqBI99qXQPgr6IjzG3yJO
-        sO3p2vnp3majI1wfWndS1MxlahOtcoM=
+        bh=Bk6HnXLQwuKeDK6UBDclm4rT0IUGAeI8LePTjyEOZak=;
+        b=V66shsqaatCS/YJyeAJagTVlJbolE6riuouZFCqieF2rjgjaSnHe5pq7GFOzjii4+PCTbo
+        DBaF0IaujBXp7LRjLLYhH3gymNK3Hk/r9YyicF8jy7pKJ9LVDbKvkdZiQPMmomc7ED1+tg
+        L275e7nMTuxdzEhHRLH3sI88U6ym97k=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 17D1913A99
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:38 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33FD713A99
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id MGWbM3JHVWI8LwAAMHmgww
+        id MJ4jO3NHVWI8LwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:38 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 09:33:39 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 12/17] btrfs: make raid56_add_scrub_pages() subpage compatible
-Date:   Tue, 12 Apr 2022 17:33:02 +0800
-Message-Id: <1ef28e7bb172bea239c12e3b2ab548a6a62b1401.1649753690.git.wqu@suse.com>
+Subject: [PATCH v2 13/17] btrfs: remove btrfs_raid_bio::bio_pages array
+Date:   Tue, 12 Apr 2022 17:33:03 +0800
+Message-Id: <18f0ece5263b55c0a373eeaa67404d2dd557d18b.1649753690.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1649753690.git.wqu@suse.com>
 References: <cover.1649753690.git.wqu@suse.com>
@@ -61,79 +61,107 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This requires one extra parameter @pgoff for the function.
-
-In the current code base, scrub is still one page per sector, thus the
-new parameter will always be 0.
-
-It needs the extra subpage scrub optimization code to fully take
-advantage.
+The functionality is completely replaced by the new bio_sectors member,
+now it's time to remove the old member.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 10 ++++++----
- fs/btrfs/raid56.h |  2 +-
- fs/btrfs/scrub.c  |  6 +++++-
- 3 files changed, 12 insertions(+), 6 deletions(-)
+ fs/btrfs/raid56.c | 38 +++-----------------------------------
+ 1 file changed, 3 insertions(+), 35 deletions(-)
 
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 5d383f894eb9..5f89ff3963c2 100644
+index 5f89ff3963c2..af8ba1aff682 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -2379,17 +2379,19 @@ struct btrfs_raid_bio *raid56_parity_alloc_scrub_rbio(struct bio *bio,
+@@ -178,12 +178,6 @@ struct btrfs_raid_bio {
+ 	/* Pointers to the sectors in the bio_list, for faster lookup */
+ 	struct sector_ptr *bio_sectors;
  
- /* Used for both parity scrub and missing. */
- void raid56_add_scrub_pages(struct btrfs_raid_bio *rbio, struct page *page,
--			    u64 logical)
-+			    unsigned int pgoff, u64 logical)
- {
-+	const u32 sectorsize = rbio->bioc->fs_info->sectorsize;
- 	int stripe_offset;
- 	int index;
+-	/*
+-	 * pointers to the pages in the bio_list.  Stored
+-	 * here for faster lookup
+-	 */
+-	struct page **bio_pages;
+-
+ 	/*
+ 	 * For subpage support, we need to map each sector to above
+ 	 * stripe_pages.
+@@ -265,7 +259,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
  
- 	ASSERT(logical >= rbio->bioc->raid_map[0]);
--	ASSERT(logical + PAGE_SIZE <= rbio->bioc->raid_map[0] +
-+	ASSERT(logical + sectorsize <= rbio->bioc->raid_map[0] +
- 				rbio->stripe_len * rbio->nr_data);
- 	stripe_offset = (int)(logical - rbio->bioc->raid_map[0]);
--	index = stripe_offset >> PAGE_SHIFT;
--	rbio->bio_pages[index] = page;
-+	index = stripe_offset / sectorsize;
-+	rbio->bio_sectors[index].page = page;
-+	rbio->bio_sectors[index].pgoff = pgoff;
+ /*
+  * caching an rbio means to copy anything from the
+- * bio_pages array into the stripe_pages array.  We
++ * bio_sectors array into the stripe_pages array.  We
+  * use the page uptodate bit in the stripe cache array
+  * to indicate if it has valid data
+  *
+@@ -281,14 +275,6 @@ static void cache_rbio_pages(struct btrfs_raid_bio *rbio)
+ 	if (ret)
+ 		return;
+ 
+-	for (i = 0; i < rbio->nr_pages; i++) {
+-		if (!rbio->bio_pages[i])
+-			continue;
+-
+-		copy_highpage(rbio->stripe_pages[i], rbio->bio_pages[i]);
+-		SetPageUptodate(rbio->stripe_pages[i]);
+-	}
+-
+ 	for (i = 0; i < rbio->nr_sectors; i++) {
+ 		/* Some range not covered by bio (partial write), skip it */
+ 		if (!rbio->bio_sectors[i].page)
+@@ -1064,7 +1050,7 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
+ 	atomic_set(&rbio->stripes_pending, 0);
+ 
+ 	/*
+-	 * the stripe_pages, bio_pages, etc arrays point to the extra
++	 * The stripe_pages, bio_sectors, etc arrays point to the extra
+ 	 * memory we allocated past the end of the rbio
+ 	 */
+ 	p = rbio + 1;
+@@ -1073,7 +1059,6 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
+ 		p = (unsigned char *)p + sizeof(*(ptr)) * (count);	\
+ 	} while (0)
+ 	CONSUME_ALLOC(rbio->stripe_pages, num_pages);
+-	CONSUME_ALLOC(rbio->bio_pages, num_pages);
+ 	CONSUME_ALLOC(rbio->bio_sectors, num_sectors);
+ 	CONSUME_ALLOC(rbio->stripe_sectors, num_sectors);
+ 	CONSUME_ALLOC(rbio->finish_pointers, real_stripes);
+@@ -1234,7 +1219,7 @@ static void index_one_bio(struct btrfs_raid_bio *rbio, struct bio *bio)
  }
  
  /*
-diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
-index fb35ae157b02..b5bc0feb3401 100644
---- a/fs/btrfs/raid56.h
-+++ b/fs/btrfs/raid56.h
-@@ -36,7 +36,7 @@ int raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc,
- 			u32 stripe_len);
+- * helper function to walk our bio list and populate the bio_pages array with
++ * Helper function to walk our bio list and populate the bio_sectors array with
+  * the result.  This seems expensive, but it is faster than constantly
+  * searching through the bio list as we setup the IO in finish_rmw or stripe
+  * reconstruction.
+@@ -1244,25 +1229,8 @@ static void index_one_bio(struct btrfs_raid_bio *rbio, struct bio *bio)
+ static void index_rbio_pages(struct btrfs_raid_bio *rbio)
+ {
+ 	struct bio *bio;
+-	u64 start;
+-	unsigned long stripe_offset;
+-	unsigned long page_index;
  
- void raid56_add_scrub_pages(struct btrfs_raid_bio *rbio, struct page *page,
--			    u64 logical);
-+			    unsigned int pgoff, u64 logical);
+ 	spin_lock_irq(&rbio->bio_list_lock);
+-	bio_list_for_each(bio, &rbio->bio_list) {
+-		struct bio_vec bvec;
+-		struct bvec_iter iter;
+-		int i = 0;
+-
+-		start = bio->bi_iter.bi_sector << 9;
+-		stripe_offset = start - rbio->bioc->raid_map[0];
+-		page_index = stripe_offset >> PAGE_SHIFT;
+-
+-		bio_for_each_segment(bvec, bio, iter) {
+-			rbio->bio_pages[page_index + i] = bvec.bv_page;
+-			i++;
+-		}
+-	}
+ 	bio_list_for_each(bio, &rbio->bio_list)
+ 		index_one_bio(rbio, bio);
  
- struct btrfs_raid_bio *raid56_parity_alloc_scrub_rbio(struct bio *bio,
- 				struct btrfs_io_context *bioc, u32 stripe_len,
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 13ba458c080c..ccc2cb869cca 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -2205,7 +2205,11 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
- 	for (i = 0; i < sblock->sector_count; i++) {
- 		struct scrub_sector *sector = sblock->sectors[i];
- 
--		raid56_add_scrub_pages(rbio, sector->page, sector->logical);
-+		/*
-+		 * For now, our scrub is still one page per-sector, so pgoff
-+		 * is always 0.
-+		 */
-+		raid56_add_scrub_pages(rbio, sector->page, 0, sector->logical);
- 	}
- 
- 	btrfs_init_work(&sblock->work, scrub_missing_raid56_worker, NULL, NULL);
 -- 
 2.35.1
 
