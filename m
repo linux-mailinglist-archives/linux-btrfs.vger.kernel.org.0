@@ -2,146 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F944FEA3C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Apr 2022 01:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86CF4FEB16
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Apr 2022 01:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbiDLXSH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Apr 2022 19:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
+        id S231239AbiDLXpl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Apr 2022 19:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiDLXSA (ORCPT
+        with ESMTP id S231248AbiDLXpb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Apr 2022 19:18:00 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6037D223BE5
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Apr 2022 15:04:26 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EA94A2112B;
-        Tue, 12 Apr 2022 20:46:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649796392;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YIVSvtt6H1jOaR0Z7YawJvNY9d2jjHFLhVX+UW1rnmY=;
-        b=aDcVF2hNKQMTaUeqXJyIPVDKnbUMSssYT2sxLB1yK6RUuVJStUUUoWl7k2Eg3xQpBoisv7
-        IJvV0OWB5BFUTl4IuB+z04nUc64GIqgWurKt0yzSyii/5FnrCF1yCJl4EZaBa/9fXq23LJ
-        8zYpcqP+DGIS907HMb3lZn9PIoCv4xw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649796392;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YIVSvtt6H1jOaR0Z7YawJvNY9d2jjHFLhVX+UW1rnmY=;
-        b=kzeQhE2AfcvO6l57GcP1N4CmTzB85kvW8/CvnUxjnoqAUPBZ7hphlN8wxt5EEbozkjfBII
-        xTteoVvW60zRfmBg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E21FAA3B82;
-        Tue, 12 Apr 2022 20:46:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EA531DA7B0; Tue, 12 Apr 2022 22:42:27 +0200 (CEST)
-Date:   Tue, 12 Apr 2022 22:42:27 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] btrfs: vairous bug fixes related to generic/475
- failure with subpage cases
-Message-ID: <20220412204227.GB15609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1649766550.git.wqu@suse.com>
+        Tue, 12 Apr 2022 19:45:31 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C0FD65;
+        Tue, 12 Apr 2022 16:32:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1649806366;
+        bh=ocx9dbxHYl/RSl3Ky4lnC9XLEZrtGjLWElYgtT7bOqQ=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=PTGricf0c2h7byw6PhErKIhV9L2VO+9piUxmh8spH0sn7hAxKM+7cQagw4ZqjkmrA
+         XPmVSW36ski0gmN5JxIpq3YgTeUbhUpRZZLNBHZUESxvApRoGQRJclmoPiuU+KIwo2
+         /SE81hu9umBR6LLOsXYB1RzguswviF+YosdkUPY8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mo6qv-1oK7oE22eJ-00pcCJ; Wed, 13
+ Apr 2022 01:32:46 +0200
+Message-ID: <447a2d76-dfff-9efb-09e8-9778ac4a44f2@gmx.com>
+Date:   Wed, 13 Apr 2022 07:32:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1649766550.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH v2 1/3] btrfs: avoid double clean up when submit_one_bio()
+ failed
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+References: <cover.1649766550.git.wqu@suse.com>
+ <0b13dccbc4d6e066530587d6c00c54b10c3d00d7.1649766550.git.wqu@suse.com>
+ <20220412204104.GA15609@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220412204104.GA15609@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:d7JhIzIOEhggklzwnHg1+cpmi0y82YUS+eWP7GMHsMTE3hl5qFh
+ DPbm7wiiRgih2Io/2ZdJ5wl5zdj4NKdjBsSed1jpWfB5ba9KyvQSAhG5cW+5fhZObTklL2y
+ fYNpnUgJeFiO25e3KnrM+ZuVewSjJOnFmsQB/wpGLsPTIBHebJDKng1MS6GG1t7qEHnx64L
+ OROxeIVK1z3Jsmin2ceOw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5k8dHvyFXIA=:boLlsKt3RgIjFhVDf3wMBM
+ vtbFgy5VSxSpliwM2Y3YAhCtsImDGH8h1JefuUI08OQ55AYY2adCSy6SJ2xtMJNz5UXsrODrJ
+ pHS8/x/Fn+SLax96DiPorQRCJ5E5EdglBMXvA5JYS+L+HV/TRjtLfPe1URfA7SwE717blUQuj
+ 02CYRlbs6v6vkLWKBDrqGVZiALYOEijRLaQ9roZOMFD81cnXs3QWJIhuBpR5Gf0iXtIZbmGvu
+ NWVRTqJMdTAOAr/MagVZdCkyHCGhxk1WDWOgXB7VnBcMVICQEHk8oLwYPh0tB8ocpX7iFEQtK
+ DvOGebiUkjp3dqlsXGhhjm6Pq8pl/pXLXJedqfDTYVBEjhxEVA/cq6FjvXT9tqWNiaqWpysMy
+ ifJnSd8PfUusUWXHoSI0gX140HtATHbugwN2Sl7pJAxNUzSGXM9yTQD4CtjW4fc/QUnWOVaJi
+ vzUaCec7wwe8mAkP0DUivHMrIcoUn0IzZ35wxXwweIoLqg4CCVEzyiJqYhwuj5cn+oWPl+7YG
+ 40YGktztQWMcIlwMobhAght0CGZxAYMA+47yiazB/LeSlg8fu5yomabrM2s/YH5NmjjyqagsH
+ IbkvnmvQbEVdE7FLrltJnDYmJMWTS8zCMVHVaby6mjKZoqAMPnYxEHHZgV470r+LUxJpUx057
+ PXg+Vs3aZvsc/sNalM9WQobqEX6P3peKjjZAkKl5PJJ1LG5hqZtZFief44Rxcb9X0nsmD8y62
+ Da7UH4w/xCAZsfu2pWhS9nSQoH68zP8lbzAduRIwLqUzwEI/ZZu3TYJAApt549jxYO6B9gPny
+ YAXertKhYTy1wUkhbJkqh7OCRG+mJkgaOPd42qZ4GNGKnP+5VYmx9ps9NNv2+e7/8rsfTtKMR
+ /5myUYSlbew1J62YQmsZdMkNLgu+rOI72YNjLFdGo3yozTNayTVBRYoxViaYVho4MJ5aomRx0
+ VpDArsA0HE0EKZmudcrcyGufB5QHe9fQv336S3zOHAlFbWj5UOQveIlO8ThwL38ciSNjF+lnh
+ OgLODz+EhKGD7WeXsdRV9Au/hSU3v7mBEob6nBCYk07gGsqpZFWszU3a6uP/KeCjX4hh97MeI
+ gc7Bk0KKRFUUKk=
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 08:30:12PM +0800, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Make submit_one_bio() to return void just in the same patch
-> 
-> - Update the commit message the for 2nd patch
->   To mention remaining error path (which is not really possible to
->   trigger), to prove the first patch is already fixing all involved
->   error paths.
-> 
-> [DESCRIPTION]
-> When testing my subpage raid56 support, generic/475 is always hanging
-> with some data page unable to be unlocked.
-> 
-> It turns out that, the hang is not related to the raid56 subpage
-> support (obviously, as the test case is not utilizing RAID56 at all),
-> but a recent commit 1784b7d502a9 ("btrfs: handle csum lookup errors
-> properly on reads") introduced a new error path, and it caught us by
-> surprise.
-> 
-> The new error path is from btrfs_lookup_bio_sums(), which can now return
-> error if the csum search failed.
-> 
-> This new error path exposed several problems:
-> 
-> - Double cleanup for submit_one_bio() and its callers
->   Bio submission hooks, btrfs_submit_data_bio() and
->   btrfs_submit_metadata_bio() will call endio to cleanup on errors.
-> 
->   But those bio submission hooks will also return error, and
->   finally callers of submit_extent_page() will also try to do
->   cleanup.
-> 
->   This will be fixed by the first patch, by always returning 0 for
->   submit_one_bio().
->   This fix is kept as minimal as possible, to make backport easier.
->   The proper conversion to return void will be done in the last patch.
-> 
-> - btrfs_do_readpage() can leave page locked on error
->   If submit_extent_page() failed in btrfs_do_readpage(), we only
->   cleanup the current range, and leaving the remaining subpage
->   range locked.
-> 
->   This bug is subpage specific, and will not affect regular cases.
-> 
->   Fix it by cleaning up all the remaining subpage range before
->   exiting.
-> 
-> - __extent_writepage_io() can return 0 even it hit some error
->   Although we continue writing the remaining ranges, we didn't save
->   the first error, causing @ret to be overwritten.
->  
->   This bug is subpage specific, as for regular cases we only have one
->   sector inside the page.
-> 
->   Fix it by introducing @has_error and @saved_ret.
-> 
-> I manually checked all other submit_extent_page() callers, they all
-> look fine and won't cause problems like the above.
-> 
-> Finally since submit_one_bio() will always return 0, the final patch
-> will make it return void, which greatly makes our code cleaner.
-> 
-> But that patch is introducing quite some modifications, not a candidate
-> for backport, unlike the first 3 patches.
-> 
-> Special thanks to Josef, as my initial bisection points to his patch and
-> I have no clue why it can cause problems at all.
-> His hints immediately solved all my questions, and lead to this
-> patchset.
-> 
-> 
-> Qu Wenruo (3):
->   btrfs: avoid double clean up when submit_one_bio() failed
->   btrfs: fix the error handling for submit_extent_page() for
->     btrfs_do_readpage()
->   btrfs: return correct error number for __extent_writepage_io()
 
-Added as topic branch to for-next, thanks.
+
+On 2022/4/13 04:41, David Sterba wrote:
+> On Tue, Apr 12, 2022 at 08:30:13PM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> When running generic/475 with 64K page size and 4K sector size, it has =
+a
+>> very high chance (almost 100%) to hang, with mostly data page locked bu=
+t
+>> no one is going to unlock it.
+>>
+>> [CAUSE]
+>> With commit 1784b7d502a9 ("btrfs: handle csum lookup errors properly on
+>> reads"), if we failed to lookup checksum due to metadata IO error, we
+>> will return error for btrfs_submit_data_bio().
+>>
+>> This will cause the page to be unlocked twice in btrfs_do_readpage():
+>>
+>>   btrfs_do_readpage()
+>>   |- submit_extent_page()
+>>   |  |- submit_one_bio()
+>>   |     |- btrfs_submit_data_bio()
+>>   |        |- if (ret) {
+>>   |        |-     bio->bi_status =3D ret;
+>>   |        |-     bio_endio(bio); }
+>>   |               In the endio function, we will call end_page_read()
+>>   |               and unlock_extent() to cleanup the subpage range.
+>>   |
+>>   |- if (ret) {
+>>   |-        unlock_extent(); end_page_read() }
+>>             Here we unlock the extent and cleanup the subpage range
+>>             again.
+>>
+>> For unlock_extent(), it's mostly double unlock safe.
+>>
+>> But for end_page_read(), it's not, especially for subpage case,
+>> as for subpage case we will call btrfs_subpage_end_reader() to reduce
+>> the reader number, and use that to number to determine if we need to
+>> unlock the full page.
+>>
+>> If double accounted, it can underflow the number and leave the page
+>> locked without anyone to unlock it.
+>>
+>> [FIX]
+>> The commit 1784b7d502a9 ("btrfs: handle csum lookup errors properly on
+>> reads") itself is completely fine, it's our existing code not properly
+>> handling the error from bio submission hook properly.
+>>
+>> This patch will make submit_one_bio() to return void so that the caller=
+s
+>> will never be able to do cleanup when bio submission hook fails.
+>>
+>> CC: stable@vger.kernel.org # 5.18+
+>
+> BTW stable tags are only for released kernels, if it's still in some rc
+> then Fixes: is appropriate.
+
+The problem is I don't have a good idea on which commit to be fixed.
+
+Commit 1784b7d502a9 ("btrfs: handle csum lookup errors properly on
+reads") is completely fine by itself.
+
+The problem is there for a long long time, but can only be triggered
+with IO errors with that newer commit.
+
+Should we really use that commit? It looks like a scapegoat to me...
+
+Thanks,
+Qu
