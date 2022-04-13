@@ -2,69 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2868B4FF8CC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Apr 2022 16:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BB44FF96B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Apr 2022 16:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbiDMOUb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Apr 2022 10:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
+        id S234268AbiDMOwm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Apr 2022 10:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbiDMOUa (ORCPT
+        with ESMTP id S236339AbiDMOwf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Apr 2022 10:20:30 -0400
+        Wed, 13 Apr 2022 10:52:35 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2317960DB2
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Apr 2022 07:18:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EC824966
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Apr 2022 07:50:13 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D02731F85A;
-        Wed, 13 Apr 2022 14:18:07 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C770C1F868;
+        Wed, 13 Apr 2022 14:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649859487;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        t=1649861411;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mMLifnT9Xlj4fc6eYqnPBvsYCerDocMA1vWGXa7Pw9M=;
-        b=oPlO77tgUPFjmduM/aniKc4n0uiAFXNLd/xtpXf/NPQ52XSJHbRY2Jkd2KY8Vrc5bxO+8t
-        yZDBpykel8IL6/1/x39/EnHDiTOdI50takA8Utl+dOsKUmtzcBX3qgtJaHR6FsICxGowSA
-        0APnwzIDfxXVSmRRLTwRjf3bd4FHvfs=
+        bh=j3cVwitPmC8+atW+QKd5HxJQCPyWf6TNpGQdzoJYJIA=;
+        b=W8WJ9luGKbtqcfFhv9UfszLkfXScUEQ1OusgseLkM8Tum4f6jMKQIPs0jSvwZhbUxm5/Ud
+        DtehmVf0pj4vpXjugb6wAXR+cQ8Cbg695ID9mF+yPe4V1jsjvaKFAKS8phCCgyzQQ4oo97
+        ZbjOYAmffLubsi45N79eVgzzjd7XMk0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649859487;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=susede2_ed25519; t=1649861411;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mMLifnT9Xlj4fc6eYqnPBvsYCerDocMA1vWGXa7Pw9M=;
-        b=DlRPScLpcLr5WDeTStXfZ7F6s58dA4c+9Wbe9B1sR5fwmEr6//GxxBVvDehb7OlGDteZuw
-        r7gl+fTazKkuM7CQ==
+        bh=j3cVwitPmC8+atW+QKd5HxJQCPyWf6TNpGQdzoJYJIA=;
+        b=ORpvBssyBHgVhJlqKJ2ZiLuaL1y8CTW3fo+mYorHfDlAvxh8nI2PykXCXBOeDz3/RvXT2U
+        dXybmwtN3uMShiCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A747313A91;
-        Wed, 13 Apr 2022 14:18:07 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A4FEF13A91;
+        Wed, 13 Apr 2022 14:50:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id U6kNKJ/bVmLGFAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 13 Apr 2022 14:18:07 +0000
-Date:   Wed, 13 Apr 2022 16:14:01 +0200
+        id GYaJJyPjVmK+IgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 13 Apr 2022 14:50:11 +0000
+Date:   Wed, 13 Apr 2022 16:46:05 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Gabriel Niebler <gniebler@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: Re: [PATCH v2] btrfs: Turn delayed_nodes_tree into an XArray
-Message-ID: <20220413141401.GJ15609@twin.jikos.cz>
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] btrfs: add subpage support for RAID56
+Message-ID: <20220413144605.GK15609@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Gabriel Niebler <gniebler@suse.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <20220412123546.30478-1-gniebler@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1649753690.git.wqu@suse.com>
+ <20220412174225.GY15609@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220412123546.30478-1-gniebler@suse.com>
+In-Reply-To: <20220412174225.GY15609@twin.jikos.cz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -76,25 +74,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 02:35:46PM +0200, Gabriel Niebler wrote:
-> … in the btrfs_root struct. Also adjust all usages of this object to use
-> the XArray API.
+On Tue, Apr 12, 2022 at 07:42:25PM +0200, David Sterba wrote:
+> On Tue, Apr 12, 2022 at 05:32:50PM +0800, Qu Wenruo wrote:
+> > The branch can be fetched from github, based on latest misc-next branch
+> > (with bio and memory allocation refactors):
+> > https://github.com/adam900710/linux/tree/subpage_raid56
+> > 
+> > [CHANGELOG]
+> > v2:
+> > - Rebased to latest misc-next
+> >   There are several conflicts caused by bio interface change and page
+> >   allocation update.
+> > 
+> > - A new patch to reduce the width of @stripe_len to u32
+> >   Currently @stripe_len is fixed to 64K, and even in the future we
+> >   choose to enlarge the value, I see no reason to go beyond 4G for
+> >   stripe length.
+> > 
+> >   Thus change it u32 to avoid some u64-divided-by-u32 situations.
+> > 
+> >   This will reduce memory usage for map_lookup (which has a lifespan as
+> >   long as the mounted fs) and btrfs_io_geometry (which only has a very
+> >   short lifespan, mostly bounded to bio).
+> > 
+> >   Furthermore, add some extra alignment check and use right bit shift
+> >   to replace involved division to avoid possible problems on 32bit
+> >   systems.
+> > 
+> > - Pack sector_ptr::pgoff and sector_ptr::uptodate into one u32
+> >   This will reduce memory usage and reduce unaligned memory access
+> > 
+> >   Please note that, even with it packed, we still have a 4 bytes padding
+> >   (it's u64 + u32, thus not perfectly aligned).
+> >   Without packed attribute, it will cost more memory usage anyway.
+> > 
+> > - Call kunmap_local() using address with pgoff
+> >   As it can handle it without problem, no need to bother extra search
+> >   just for pgoff.
+> > 
+> > - Use "= { 0 }" for structure initialization
+> > 
+> > - Reduce comment updates to minimal
+> >   If one comment line is not really touched, then don't touch it just to
+> >   fix some bad styles.
 > 
-> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
-> ---
-> 
-> Notes:
->     XArrays offer a somewhat nicer API than radix trees and were implemented
->     specifically to replace the latter. They utilize the exact same underlying
->     data structure, but their API is notionally easier to use, as it provides
->     array semantics to the user of radix trees. The higher level API also
->     takes care of locking, adding even more ease of use.
->     
->     The btrfs code uses radix trees in several places. This patch only
->     converts the `delayed_nodes_tree` member of the btrfs_root struct.
+> v2 updated in for-next, I had a local branch with more changes so I
+> transferred the changes manually.
 
-You've put this under the --- marker which means this is not supposed to
-be in the changelog (as we do for various patch revision commments) but
-then there would be basically no useful changelog left. That the
-conversion is done is clear, maybe there are some useful notes or
-comments what changed and how, eg. the locking.
+Now moved to misc-next as it's an isolated functionality and should not
+affect anything else. Thanks.
