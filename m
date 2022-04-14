@@ -2,93 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 649DC501A73
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 19:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A234C501A95
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 19:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343838AbiDNRww (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Apr 2022 13:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
+        id S234170AbiDNR6L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Apr 2022 13:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343812AbiDNRwu (ORCPT
+        with ESMTP id S1344360AbiDNR54 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Apr 2022 13:52:50 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29B8E9976
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 10:50:24 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id t25so10392540lfg.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 10:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=DEbyqe5T1fF6VgFja/FH+cT3MjyU6Qe5ms7Et35C47I=;
-        b=enRFJPN2ry3oLW9Nu5JotbGGsHR7ByeR1DibeBcVvutB5c5vKiYOunirRxVMIU6gSP
-         8VzrpgJ4KulhydUE1oyN9Kg2vpoufZ90jQ6sdPbZ3YRiC2uaSo5o2bFMGcI/DEOSoyfm
-         udgRJWxheBJznlvkIj0zcpZ/xiHnHKIMx8nAk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=DEbyqe5T1fF6VgFja/FH+cT3MjyU6Qe5ms7Et35C47I=;
-        b=hpj0j8ZqHvIi/zSbnO/1XUaqZTqXxpAEnl9XPx97BfOGNFM0bmUF9t4O6G6kZjNHzo
-         6SkHOnSS8Di/eh2FijQDUKDqxFMYheetwkzi1lWhRystFI2fi1Kl4kVIGks090BvPM7R
-         Kg4jlQv0uDsJpiT8/VWTrMmxy8xjEsPqb3FQrsjrse98KqeKgnbkqVyMunHfFyOp2eQt
-         BHtRsZUiwr4Oravh2jxHarpCJgHyVTm45zdJglOXKdPNmchu57qvWJcaJyYiMxdUEH24
-         /4booTY8ozmx79xVAMnyg3nOu1NGRuHFe0HnYBiyjYOu1erAhwgOLCAeR7CQSu7bHaUH
-         G5CQ==
-X-Gm-Message-State: AOAM533a9h90V40gQ70cxwUI6aIIM05VocwQH1bBFZ/Ux4OlwJbW13Ru
-        /XITzFJgZRJhcW6IoFEYnE+SMASt1aQNVfI9
-X-Google-Smtp-Source: ABdhPJysLT1U0UXn/w5Wh93+lsBZekoFf+tcDgU0pfecfQ0kzGhhDr8+JUM/lVBmy3mRRnCEM8vIzg==
-X-Received: by 2002:a05:6512:1516:b0:448:39b8:d603 with SMTP id bq22-20020a056512151600b0044839b8d603mr2517238lfb.599.1649958622674;
-        Thu, 14 Apr 2022 10:50:22 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id f20-20020a056512229400b0044a6ac1af69sm60416lfu.181.2022.04.14.10.50.20
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Apr 2022 10:50:20 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id w19so10364553lfu.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 10:50:20 -0700 (PDT)
-X-Received: by 2002:a05:6512:3c93:b0:44b:4ba:c334 with SMTP id
- h19-20020a0565123c9300b0044b04bac334mr2598700lfv.27.1649958619851; Thu, 14
- Apr 2022 10:50:19 -0700 (PDT)
+        Thu, 14 Apr 2022 13:57:56 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF313EBAD2
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 10:55:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 737C41F747;
+        Thu, 14 Apr 2022 17:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649958929;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z6XG4eFrqjato0R4wP7P/l0ALnxB176CUzIFok4ed1M=;
+        b=VZ1+5QIdCfoxqfXTwqkoHLiUd3W/yutik43zH7bRs3zoo7sa/FwX2rNlMPMFk1G9NPqWt/
+        MQctyeW7dJPZofpn/hvC/RYJkIBxD4SK1TiPpcHhJ+qPcR3vVtxZV1kMDndKT+klzjpYAG
+        Pil0KYhKmtecMZtTc6209xLXmbNqUIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649958929;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z6XG4eFrqjato0R4wP7P/l0ALnxB176CUzIFok4ed1M=;
+        b=e2wQYxmXK9gikWtqidM7BPojR/ayuCk0dNYbaIv8Cq/xvhWUFFadSlwg09okpFrUGkOCYj
+        6g9h5rxPoWotpCCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 55C48132C0;
+        Thu, 14 Apr 2022 17:55:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HWc7FBFgWGIYJQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 14 Apr 2022 17:55:29 +0000
+Date:   Thu, 14 Apr 2022 19:51:22 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 07/17] btrfs: make rbio_add_io_page() subpage
+ compatible
+Message-ID: <20220414175122.GR15609@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1649753690.git.wqu@suse.com>
+ <d2873b5f3a00e9bb966150b4dd0253f4db107c12.1649753690.git.wqu@suse.com>
+ <20220413191456.GN15609@twin.jikos.cz>
+ <5b296828-65fb-b684-dedc-6f018e5ece4e@gmx.com>
+ <5b190bf5-892c-0856-e623-f6f716985b28@gmx.com>
+ <20220414154341.GP15609@twin.jikos.cz>
 MIME-Version: 1.0
-References: <cover.1649705056.git.dsterba@suse.com> <20220414143729.GP3658@twin.jikos.cz>
-In-Reply-To: <20220414143729.GP3658@twin.jikos.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 14 Apr 2022 10:50:03 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg5m1uDfeGQ=rRA7Kvz=hQe4p3jVKcXc40-zBKqwTiU0g@mail.gmail.com>
-Message-ID: <CAHk-=wg5m1uDfeGQ=rRA7Kvz=hQe4p3jVKcXc40-zBKqwTiU0g@mail.gmail.com>
-Subject: Re: [GIT PULL] Btrfs fixes for 5.18-rc3
-To:     dave@jikos.cz, David Sterba <dsterba@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220414154341.GP15609@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 7:37 AM David Sterba <dave@jikos.cz> wrote:
->
-> I'm sending this from a different mail address after 2 days of no reply
-> and no merge of the btrfs updates (message body deleted in case it
-> triggers the spam filter). The mail is in lore archives at
-> https://lore.kernel.org/all/cover.1649705056.git.dsterba@suse.com/
+On Thu, Apr 14, 2022 at 05:43:42PM +0200, David Sterba wrote:
+> On Thu, Apr 14, 2022 at 08:43:45AM +0800, Qu Wenruo wrote:
+> > > Failed to reproduce here, both x86_64 and aarch64 survived over 64 loops
+> > > of btrfs/023.
+> > > 
+> > > Although that's withy my github branch. Let me check the current branch
+> > > to see what's wrong.
+> > 
+> > It's a rebase error.
+> > 
+> > At least one patch has incorrect diff snippet.
+> 
+> Ok, my bad, I did not do a finall diff check, I'll update the patchset.
 
-Indeed, I don't see that email in my inbox, and I must have apparently
-missed it and deleted it from spam too.
-
-gmail *really* hates email from suse.cz these days, I had multiple
-emails from Vlastimil about the page pinning series go into the spam
-folder too.
-
-I've explicitly added you as a contact in the hopes that it will help.
-
-Thanks for re-sending,
-
-             Linus
+I should have done that, there are way more code changes that I missed
+when going through the patch difference manually. I'll try to port it
+again but uh.
