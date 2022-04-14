@@ -2,105 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D49E500407
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 04:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4035004D6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 05:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239268AbiDNCNf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Apr 2022 22:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
+        id S239766AbiDNDye (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Apr 2022 23:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiDNCNe (ORCPT
+        with ESMTP id S229549AbiDNDyd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Apr 2022 22:13:34 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE8B49CB1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Apr 2022 19:11:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1491121123
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 02:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1649902270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=2cED4GlBlf1GCv9m4iuPx6/wfq4cKetmOuDyl/vstXk=;
-        b=GWsuyAuuL/qZFCHG5dYePyh+YZ0+GFL6dFLg8YkrcpGjTQeipEM+z7psIu+65OtBgDe3UX
-        X+R5bGOKuOzPVJoZSKUM/TuKPUXNI3iv5AeV0ggExtrY003uLIptgk5UdSMe28jJdcsjy1
-        XyqayorpLRQPkuYZ1Q1OIkRZ68NQC6A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1649902270;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=2cED4GlBlf1GCv9m4iuPx6/wfq4cKetmOuDyl/vstXk=;
-        b=PLjyiP35vdYWbwY/Zi+lVOo2sr4ASbIeo8vSv0eJ2vWrbBASPysV+5WKm1J5QAIT17Pp4W
-        oYCKDfqHOkc0w+AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BFA2134D9
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 02:11:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JobiEb2CV2KGewAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 02:11:09 +0000
-Date:   Wed, 13 Apr 2022 21:11:07 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: Do not pass compressed_bio to submit_compressed_bio()
-Message-ID: <20220414020917.llk3mbnsp34bspyc@fiona>
+        Wed, 13 Apr 2022 23:54:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A133F1D32B;
+        Wed, 13 Apr 2022 20:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=e2IE6y8upDGME4pq7hb1E5/1es9xH7Kx1EBn5ly2PvM=; b=UB4Z/ZI5nB8gQcPZjqCEIb+ie3
+        FrcHSoXOO/tnKcrJBXaIxDGcyvATD3w66R4GdQneAR/u3gtLWOyISGz5DP0KkeJPP6zchZZBQUgew
+        DchcO2U8tYJ4ySAnqJfKEeeGv+lF38hN4/8nscpdoWu5BClKFySX7IfL3ZSt2fd12To1mMmLNLHHE
+        mXMzKt1mNp5Rc+dATB0pPLgisWuaS8ldhGhmPghcIQr6oyByxkNWxMJQ5SB9wqX95ngpHrm5WBW0A
+        mHMWiAxOqNaKRarlZ4drRj4G6f4fCszti8p874Rpjl0Bs4hm15bX01f6WShUoV27z1Sj6L539fybf
+        NG5HMZFA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1neqWV-004tNH-Bv; Thu, 14 Apr 2022 03:52:00 +0000
+Message-ID: <bc6de555-6fcf-16f3-bdb9-e591b5759e51@infradead.org>
+Date:   Wed, 13 Apr 2022 20:51:54 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: mmotm 2022-04-12-21-05 uploaded (fs/btrfs/raid56.o)
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        mhocko@suse.cz, sfr@canb.auug.org.au, linux-next@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20220413040610.06AAAC385A4@smtp.kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220413040610.06AAAC385A4@smtp.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Parameter struct compressed_bio is not used by the function
-submit_compressed_bio(). Remove it.
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/btrfs/compression.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index be476f094300..8cd6bb1c142e 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -425,7 +425,6 @@ static void end_compressed_bio_write(struct bio *bio)
- }
- 
- static blk_status_t submit_compressed_bio(struct btrfs_fs_info *fs_info,
--					  struct compressed_bio *cb,
- 					  struct bio *bio, int mirror_num)
- {
- 	blk_status_t ret;
-@@ -599,7 +598,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 					goto finish_cb;
- 			}
- 
--			ret = submit_compressed_bio(fs_info, cb, bio, 0);
-+			ret = submit_compressed_bio(fs_info, bio, 0);
- 			if (ret)
- 				goto finish_cb;
- 			bio = NULL;
-@@ -941,7 +940,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 						  fs_info->sectorsize);
- 			sums += fs_info->csum_size * nr_sectors;
- 
--			ret = submit_compressed_bio(fs_info, cb, comp_bio, mirror_num);
-+			ret = submit_compressed_bio(fs_info, comp_bio, mirror_num);
- 			if (ret)
- 				goto finish_cb;
- 			comp_bio = NULL;
+On 4/12/22 21:06, Andrew Morton wrote:
+> The mm-of-the-moment snapshot 2022-04-12-21-05 has been uploaded to
+> 
+>    https://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> https://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> https://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
+
+on i386:
+
+ld: fs/btrfs/raid56.o: in function `alloc_rbio':
+raid56.c:(.text+0x2778): undefined reference to `__udivdi3'
+ld: raid56.c:(.text+0x2798): undefined reference to `__udivdi3'
+
+
 -- 
-2.35.1
+~Randy
