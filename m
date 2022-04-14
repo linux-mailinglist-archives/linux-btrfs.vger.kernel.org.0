@@ -2,90 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4035004D6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 05:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4B55004F8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 06:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239766AbiDNDye (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Apr 2022 23:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        id S239812AbiDNESW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Apr 2022 00:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbiDNDyd (ORCPT
+        with ESMTP id S229485AbiDNESV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Apr 2022 23:54:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A133F1D32B;
-        Wed, 13 Apr 2022 20:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=e2IE6y8upDGME4pq7hb1E5/1es9xH7Kx1EBn5ly2PvM=; b=UB4Z/ZI5nB8gQcPZjqCEIb+ie3
-        FrcHSoXOO/tnKcrJBXaIxDGcyvATD3w66R4GdQneAR/u3gtLWOyISGz5DP0KkeJPP6zchZZBQUgew
-        DchcO2U8tYJ4ySAnqJfKEeeGv+lF38hN4/8nscpdoWu5BClKFySX7IfL3ZSt2fd12To1mMmLNLHHE
-        mXMzKt1mNp5Rc+dATB0pPLgisWuaS8ldhGhmPghcIQr6oyByxkNWxMJQ5SB9wqX95ngpHrm5WBW0A
-        mHMWiAxOqNaKRarlZ4drRj4G6f4fCszti8p874Rpjl0Bs4hm15bX01f6WShUoV27z1Sj6L539fybf
-        NG5HMZFA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1neqWV-004tNH-Bv; Thu, 14 Apr 2022 03:52:00 +0000
-Message-ID: <bc6de555-6fcf-16f3-bdb9-e591b5759e51@infradead.org>
-Date:   Wed, 13 Apr 2022 20:51:54 -0700
+        Thu, 14 Apr 2022 00:18:21 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBA732EC6
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Apr 2022 21:15:57 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id bg10so7743416ejb.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Apr 2022 21:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hXnNN7pC3MUdsVUNM6oe781dcKiiLYE16DY+rH0mhAA=;
+        b=PhY0lx8b8s6n4JMDGGEU3LFFZwPmk9U7a+w/ZMP3V9GZ9w7xbUW6/FAbpWgW+3HyDJ
+         BH/EaCQVjagMZjWX7ayiMxRfPp0PfcTL+tVL03Oi0tvgJAVbbsn6RNN8FnfAWjWcJ1Ps
+         BA2RFLMbGcLT6k9Vh3fhEeWXepg2ufloq43uPUElQayE04Qrj0xj7OVMeo32PnI1T0wb
+         DkUgfK4u7n4CK5wUJ3EhsPJKW21H8b1Iev8Ab0gmEJwLy9TgZz7oE6d9fWkbZm6xKCnQ
+         koowPL0Q+cM3B25Y4x4RfnZ2WM/oHTqzU/HpLn2XBfIi32+pZZDL/KART4hYZeBvefvb
+         XchQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hXnNN7pC3MUdsVUNM6oe781dcKiiLYE16DY+rH0mhAA=;
+        b=0OUenaAkuTJ/5xOHfqqeY/q5IMIIkZRGSg6Z/Xr+rwD8uZvSV3VNpBFWGNiW5nUXhD
+         2+MvOeoPLSFsS7d/5xZJwH2m7wlMsAfS8YFp459G8nLryHbCjVuBnz9jqFxMiQcNHvHZ
+         UbBZSzaTtnclGHqZgpkiPu//sKlTOLhX8EDKAUxYoZQTYXADOuif8E3qMTT+oSmu2biK
+         LANvpBif2OUy2zdXpLVo29eUqXn5lTb9oA6xMrsl1NnrfC2snaOlTu7gUDZnycVkw50Z
+         yQkD/eBvZmdXCMY1x1v8zAlbkSL1L7e6xYQujUXmvBHIbJr6GdFhg5npoTFyRnxjhhOW
+         ac0w==
+X-Gm-Message-State: AOAM531NpBL0H+Vg/2V2byiDABbHKitxuQjqLvzj9gHA3m/x+ru2RFVX
+        bhpkXtq32scu94y4WAnCVbZyq1DrWM4Q+HEE9FtNDRQZHy/RWA==
+X-Google-Smtp-Source: ABdhPJx2/Z3+Jp/+yqT41seeoKKE+RayvCvjLFaB//tX+tgkBzkgX3VViLgWPNh0m1w3Kr9cR3BCxOLCVCtqhoF2dQI=
+X-Received: by 2002:a17:906:3708:b0:6e8:9459:88f3 with SMTP id
+ d8-20020a170906370800b006e8945988f3mr681695ejc.629.1649909756387; Wed, 13 Apr
+ 2022 21:15:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: mmotm 2022-04-12-21-05 uploaded (fs/btrfs/raid56.o)
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
-        mhocko@suse.cz, sfr@canb.auug.org.au, linux-next@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20220413040610.06AAAC385A4@smtp.kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20220413040610.06AAAC385A4@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220409043432.1244773-1-cccheng@synology.com>
+ <CAL3q7H77p6yFhHMu-1kpgh+J5jv_dKeqqwga8mJMRXY6r0wAvg@mail.gmail.com> <CAHuHWt=LB9WvAuEmQe9nM8ZQpUBz6LG4Asr6ss+f2C_G3LNW2w@mail.gmail.com>
+In-Reply-To: <CAHuHWt=LB9WvAuEmQe9nM8ZQpUBz6LG4Asr6ss+f2C_G3LNW2w@mail.gmail.com>
+From:   Chung-Chiang Cheng <shepjeng@gmail.com>
+Date:   Thu, 14 Apr 2022 12:15:45 +0800
+Message-ID: <CAHuHWt=RiaO=1W9LOvXbD1o6qViMF_+Ebtic9R+3=ss+2VaXSA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: do not allow compression on nocow files
+To:     David Sterba <dsterba@suse.com>
+Cc:     Chung-Chiang Cheng <cccheng@synology.com>,
+        Filipe Manana <fdmanana@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel@cccheng.net,
+        Jayce Lin <jaycelin@synology.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Apr 11, 2022 at 10:27 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Sat, Apr 09, 2022 at 12:34:32PM +0800, Chung-Chiang Cheng wrote:
+> > -static int prop_compression_validate(const char *value, size_t len)
+> > +static int prop_compression_validate(struct inode *inode, const char *value, size_t len)
+> >  {
+> >       if (!value)
+> >               return 0;
+> >
+> > -     if (btrfs_compress_is_valid_type(value, len))
+> > -             return 0;
+> > -
+> >       if ((len == 2 && strncmp("no", value, 2) == 0) ||
+> >           (len == 4 && strncmp("none", value, 4) == 0))
+> >               return 0;
+> >
+> > +     if (!inode || BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW)
+> > +             return -EINVAL;
+>
+> I think the nodatacow check should be the first one, before the
+> validation of value for "no" or "none", it's logically the same as the
+> btrfs_compress_is_valid_type.
 
+if this check is located before the validation of value for no/none, the
+following operation isn't allowed. is it ok? although it makes no sense,
+it doesn't produce any invalid combination.
 
-On 4/12/22 21:06, Andrew Morton wrote:
-> The mm-of-the-moment snapshot 2022-04-12-21-05 has been uploaded to
-> 
->    https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
+      $ touch bar
+      $ chattr +C bar
+      $ lsattr bar
+      ---------------C-- bar
+      $ setfattr -n btrfs.compression -v no bar
+      setfattr: bar: Invalid argument
 
-on i386:
-
-ld: fs/btrfs/raid56.o: in function `alloc_rbio':
-raid56.c:(.text+0x2778): undefined reference to `__udivdi3'
-ld: raid56.c:(.text+0x2798): undefined reference to `__udivdi3'
-
-
--- 
-~Randy
+Thanks.
