@@ -2,97 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A234C501A95
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 19:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1D6501B78
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Apr 2022 21:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbiDNR6L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Apr 2022 13:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        id S1344989AbiDNTBb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Apr 2022 15:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344360AbiDNR54 (ORCPT
+        with ESMTP id S1344815AbiDNTBa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Apr 2022 13:57:56 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF313EBAD2
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 10:55:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Thu, 14 Apr 2022 15:01:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DD3E887B;
+        Thu, 14 Apr 2022 11:59:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 737C41F747;
-        Thu, 14 Apr 2022 17:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649958929;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z6XG4eFrqjato0R4wP7P/l0ALnxB176CUzIFok4ed1M=;
-        b=VZ1+5QIdCfoxqfXTwqkoHLiUd3W/yutik43zH7bRs3zoo7sa/FwX2rNlMPMFk1G9NPqWt/
-        MQctyeW7dJPZofpn/hvC/RYJkIBxD4SK1TiPpcHhJ+qPcR3vVtxZV1kMDndKT+klzjpYAG
-        Pil0KYhKmtecMZtTc6209xLXmbNqUIw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649958929;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z6XG4eFrqjato0R4wP7P/l0ALnxB176CUzIFok4ed1M=;
-        b=e2wQYxmXK9gikWtqidM7BPojR/ayuCk0dNYbaIv8Cq/xvhWUFFadSlwg09okpFrUGkOCYj
-        6g9h5rxPoWotpCCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 55C48132C0;
-        Thu, 14 Apr 2022 17:55:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HWc7FBFgWGIYJQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 14 Apr 2022 17:55:29 +0000
-Date:   Thu, 14 Apr 2022 19:51:22 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 07/17] btrfs: make rbio_add_io_page() subpage
- compatible
-Message-ID: <20220414175122.GR15609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1649753690.git.wqu@suse.com>
- <d2873b5f3a00e9bb966150b4dd0253f4db107c12.1649753690.git.wqu@suse.com>
- <20220413191456.GN15609@twin.jikos.cz>
- <5b296828-65fb-b684-dedc-6f018e5ece4e@gmx.com>
- <5b190bf5-892c-0856-e623-f6f716985b28@gmx.com>
- <20220414154341.GP15609@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220414154341.GP15609@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24F9A61AE4;
+        Thu, 14 Apr 2022 18:59:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8AEE8C385A9;
+        Thu, 14 Apr 2022 18:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649962744;
+        bh=cGeSw59Fv7JJDhyg+1pXh9iLfGBu4RQKPA3b4RX+TOI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Y4eokNXHsEpDDAVoJJAQYaQnOT4OJKEB+Tlhgh57zJkwuFnhdnClmP70fuSslWJIx
+         k2DMbGRaQL3jq6j0y7FUTIkRoonXG8K7jaMYq17+Nt6eEH2yBdf9WGTM4mU3ovLEv1
+         xTqWI0UyspZqWaH8pslErRGfpRmwrIT9xLQftp9eHK5IUpRuEoC1A1O1sqw0eez+Uh
+         CDtP6yOM2FOCkbld6FHWqkJ2AnMcuuqBwFX+JSzRXHY6/mAEM12Y0o1cDZrtbq+8kY
+         umo0GrptincA4WFIMFJ+WBmU9mZ5iz7C63UxJfEJgWq6lw/ZZqK4ga+8WQ3LH+bejb
+         hn/CuG1dR6MLQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 77FD7E8DBD4;
+        Thu, 14 Apr 2022 18:59:04 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.18-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1649705056.git.dsterba@suse.com>
+References: <cover.1649705056.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1649705056.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.18-rc2-tag
+X-PR-Tracked-Commit-Id: acee08aaf6d158d03668dc82b0a0eef41100531b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 722985e2f6ec9127064771ba526578ea8275834d
+Message-Id: <164996274448.15440.11784724442404556147.pr-tracker-bot@kernel.org>
+Date:   Thu, 14 Apr 2022 18:59:04 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 05:43:42PM +0200, David Sterba wrote:
-> On Thu, Apr 14, 2022 at 08:43:45AM +0800, Qu Wenruo wrote:
-> > > Failed to reproduce here, both x86_64 and aarch64 survived over 64 loops
-> > > of btrfs/023.
-> > > 
-> > > Although that's withy my github branch. Let me check the current branch
-> > > to see what's wrong.
-> > 
-> > It's a rebase error.
-> > 
-> > At least one patch has incorrect diff snippet.
-> 
-> Ok, my bad, I did not do a finall diff check, I'll update the patchset.
+The pull request you sent on Mon, 11 Apr 2022 23:31:43 +0200:
 
-I should have done that, there are way more code changes that I missed
-when going through the patch difference manually. I'll try to port it
-again but uh.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.18-rc2-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/722985e2f6ec9127064771ba526578ea8275834d
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
