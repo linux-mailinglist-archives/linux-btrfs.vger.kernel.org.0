@@ -2,170 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F61150267E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Apr 2022 10:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FA45028E8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Apr 2022 13:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351308AbiDOIGl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Apr 2022 04:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
+        id S241119AbiDOLkc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Apr 2022 07:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244921AbiDOIGj (ORCPT
+        with ESMTP id S233670AbiDOLkb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Apr 2022 04:06:39 -0400
-Received: from synology.com (mail.synology.com [211.23.38.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23730A204F
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 01:04:12 -0700 (PDT)
-From:   Chung-Chiang Cheng <cccheng@synology.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1650009850; bh=QQBa8d1ySWNdzGeUund8uyWp5xzqnd6NipZxFAh2ruQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=bLJ7LTwTgvO4rkHocLBNnqGj/A0j8b05dNtfTssopB6hoeO9QPny+DZSCZ/e+F9wT
-         roMQmOnVO3zKymYVkSLcN/hHBI96H7Sh/TzhgEerv4Hjo4XwK+eccQtg+1+h7PlrHx
-         lCdHVMdjuLFElck4D0vXO21TVc0OCd689eIRQMdc=
-To:     dsterba@suse.com, fdmanana@kernel.org
-Cc:     josef@toxicpanda.com, clm@fb.com, linux-btrfs@vger.kernel.org,
-        shepjeng@gmail.com, kernel@cccheng.net,
-        Chung-Chiang Cheng <cccheng@synology.com>,
-        Jayce Lin <jaycelin@synology.com>
-Subject: [PATCH 2/2] btrfs: do not allow compression on nodatacow files
-Date:   Fri, 15 Apr 2022 16:04:06 +0800
-Message-Id: <20220415080406.234967-2-cccheng@synology.com>
-In-Reply-To: <20220415080406.234967-1-cccheng@synology.com>
-References: <20220415080406.234967-1-cccheng@synology.com>
+        Fri, 15 Apr 2022 07:40:31 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700A95DE59
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 04:38:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 183BF210E6
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 11:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1650022682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Sb0r/WPgE7lQpaM+jpUY+vq5fZK8jR7Ky0Wamx/WI8I=;
+        b=u6z/AY8obrh4ovlq1uk/S43gbtFXr3lC48SE32vWLRiXJA2j3Io44CMHS6aekRhjS994C4
+        844XEOFSUwFsjWI486ClXkabNDzCUJvOVr8IfbiNT88q3kXCPEJNufSU5FOWkoG2zymWaz
+        /Xm9gb2Ds3tOeKr89ypges0s3wAxzgE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 54F1013A9B
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 11:38:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id jylGBhlZWWJkQgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 11:38:01 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: do not allow setting seed flag on fs with dirty log
+Date:   Fri, 15 Apr 2022 19:37:43 +0800
+Message-Id: <4022d9f87067124c26bb83d4bba1970c954cdf50.1650022504.git.wqu@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Compression and nodatacow are mutually exclusive. A similar issue was
-fixed by commit f37c563bab429 ("btrfs: add missing check for nocow and
-compression inode flags"). Besides ioctl, there is another way to
-enable/disable/reset compression directly via xattr. The following
-steps will result in a invalid combination.
+[BUG]
+The following sequence operation can lead to a seed fs rejected by
+kernel:
 
-  $ touch bar
-  $ chattr +C bar
-  $ lsattr bar
-  ---------------C-- bar
-  $ setfattr -n btrfs.compression -v zstd bar
-  $ lsattr bar
-  --------c------C-- bar
+ # Generate a fs with dirty log
+ mkfs.btrfs -f $file
+ mount $dev $mnt
+ xfs_io -f -c "pwrite 0 16k" -c fsync $mnt/file
+ cp $file $file.backup
+ umount $mnt
+ mv $file.backup $file
 
-To align with the logic in check_fsflags, nocompress will also be
-unacceptable after this patch, to prevent mix any compression-related
-options with nodatacow.
+ # now $file has dirty log, set seed flag on it
+ btrfstune -S1 $file
 
-  $ touch bar
-  $ chattr +C bar
-  $ lsattr bar
-  ---------------C-- bar
-  $ setfattr -n btrfs.compression -v zstd bar
-  setfattr: bar: Invalid argument
-  $ setfattr -n btrfs.compression -v no bar
-  setfattr: bar: Invalid argument
+ # mount will fail
+ mount $file $mnt
 
-Reported-by: Jayce Lin <jaycelin@synology.com>
-Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+The mount failure with the following dmesg:
+
+[  980.363667] loop0: detected capacity change from 0 to 262144
+[  980.371177] BTRFS info (device loop0): flagging fs with big metadata feature
+[  980.372229] BTRFS info (device loop0): using free space tree
+[  980.372639] BTRFS info (device loop0): has skinny extents
+[  980.375075] BTRFS info (device loop0): start tree-log replay
+[  980.375513] BTRFS warning (device loop0): log replay required on RO media
+[  980.381652] BTRFS error (device loop0): open_ctree failed
+
+[CAUSE]
+Although btrfs will replay its dirty log even with RO mount, but kernel
+will treat seed device as RO device, and dirty log can not be replayed
+on RO device.
+
+This rejection is already the better end, just imagine if we don't treat
+seed device as RO, and replayed the dirty log.
+The filesystem relying on the seed device will be completely screwed up.
+
+[FIX]
+Just add extra check on log tree in btrfstune to reject setting seed
+flag on filesystems with dirty log.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/props.c | 16 +++++++++++-----
- fs/btrfs/props.h |  3 ++-
- fs/btrfs/xattr.c |  2 +-
- 3 files changed, 14 insertions(+), 7 deletions(-)
+ btrfstune.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-index 1a6d2d5b4b33..5a6f87744c28 100644
---- a/fs/btrfs/props.c
-+++ b/fs/btrfs/props.c
-@@ -17,7 +17,8 @@ static DEFINE_HASHTABLE(prop_handlers_ht, BTRFS_PROP_HANDLERS_HT_BITS);
- struct prop_handler {
- 	struct hlist_node node;
- 	const char *xattr_name;
--	int (*validate)(const char *value, size_t len);
-+	int (*validate)(const struct btrfs_inode *inode, const char *value,
-+			size_t len);
- 	int (*apply)(struct inode *inode, const char *value, size_t len);
- 	const char *(*extract)(struct inode *inode);
- 	int inheritable;
-@@ -55,7 +56,8 @@ find_prop_handler(const char *name,
- 	return NULL;
- }
- 
--int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
-+int btrfs_validate_prop(const struct btrfs_inode *inode, const char *name,
-+			const char *value, size_t value_len)
- {
- 	const struct prop_handler *handler;
- 
-@@ -69,7 +71,7 @@ int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
- 	if (value_len == 0)
- 		return 0;
- 
--	return handler->validate(value, value_len);
-+	return handler->validate(inode, value, value_len);
- }
- 
- int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
-@@ -252,8 +254,12 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path)
- 	return ret;
- }
- 
--static int prop_compression_validate(const char *value, size_t len)
-+static int prop_compression_validate(const struct btrfs_inode *inode,
-+				     const char *value, size_t len)
- {
-+	if (!btrfs_inode_can_compress(inode))
-+		return -EINVAL;
-+
- 	if (!value)
- 		return 0;
- 
-@@ -364,7 +370,7 @@ static int inherit_props(struct btrfs_trans_handle *trans,
- 		 * This is not strictly necessary as the property should be
- 		 * valid, but in case it isn't, don't propagate it further.
- 		 */
--		ret = h->validate(value, strlen(value));
-+		ret = h->validate(BTRFS_I(inode), value, strlen(value));
- 		if (ret)
- 			continue;
- 
-diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
-index 40b2c65b518c..2b2ac15ab788 100644
---- a/fs/btrfs/props.h
-+++ b/fs/btrfs/props.h
-@@ -13,7 +13,8 @@ void __init btrfs_props_init(void);
- int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
- 		   const char *name, const char *value, size_t value_len,
- 		   int flags);
--int btrfs_validate_prop(const char *name, const char *value, size_t value_len);
-+int btrfs_validate_prop(const struct btrfs_inode *inode, const char *name,
-+			const char *value, size_t value_len);
- 
- int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path);
- 
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 99abf41b89b9..9632d0ff2038 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -403,7 +403,7 @@ static int btrfs_xattr_handler_set_prop(const struct xattr_handler *handler,
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
- 
- 	name = xattr_full_name(handler, name);
--	ret = btrfs_validate_prop(name, value, size);
-+	ret = btrfs_validate_prop(BTRFS_I(inode), name, value, size);
- 	if (ret)
- 		return ret;
- 
+diff --git a/btrfstune.c b/btrfstune.c
+index 33c83bf16291..7e4ad30a1cbd 100644
+--- a/btrfstune.c
++++ b/btrfstune.c
+@@ -59,6 +59,10 @@ static int update_seeding_flag(struct btrfs_root *root, int set_flag)
+ 						device);
+ 			return 1;
+ 		}
++		if (btrfs_super_log_root(disk_super)) {
++			error("this filesystem has dirty log, can not set seed flag");
++			return 1;
++		}
+ 		super_flags |= BTRFS_SUPER_FLAG_SEEDING;
+ 	} else {
+ 		if (!(super_flags & BTRFS_SUPER_FLAG_SEEDING)) {
 -- 
-2.34.1
+2.35.1
 
