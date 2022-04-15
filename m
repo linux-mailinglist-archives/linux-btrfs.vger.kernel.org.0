@@ -2,113 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8EE50259E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Apr 2022 08:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEFF5025F9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Apr 2022 09:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350465AbiDOGeD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Apr 2022 02:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
+        id S245712AbiDOHFZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Apr 2022 03:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236512AbiDOGdz (ORCPT
+        with ESMTP id S231905AbiDOHFX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Apr 2022 02:33:55 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2445BD33
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Apr 2022 23:31:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2D7861F74D
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 06:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650004286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Gw5kNAhuzhvnNbUc8WjiNySvFb7nVfxC0wMV4blhgPY=;
-        b=cUsVE42InNgg+KNa4uJFERBaTdgNlu1MwxigHBxwLxA43oPZYQNDo0IwSt99OtteSOJ9rn
-        eQf0PYQ+IM4VN4toCGcaANfVak7NCXyOnZ6BPDlTkYbp0k9Cp9+32CWUCbOSqpGOiE1Kfy
-        m4ynqokpMBMowUUdBlyPnYE62JHcJj8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3BF513A9B
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 06:31:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iShUKTwRWWLfeAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 06:31:24 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC] btrfs-progs: discourage users from setting seed flag on multi-device filesystem
-Date:   Fri, 15 Apr 2022 14:31:07 +0800
-Message-Id: <ab69c04203bc44a71c1efe2dde9df2eb5b392405.1650004139.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
+        Fri, 15 Apr 2022 03:05:23 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D008B1A9F;
+        Fri, 15 Apr 2022 00:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1650006166;
+        bh=dtAT3rEXGIzFcVqDUogX+eie4QwgphXzhaDg5TRCw6g=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=d2vOVh2DwfP9ZK8p4dP41iTRpgQefakc1Im/Da3iws/KwZtmIHCVgw1H118OWBFdI
+         MQ3vvd2TjJEGhIgH0CBLzKDmORInW8KIv0OjwQDsW7/ecX4tceiFy9leUbtOxjH/6g
+         PcWLl3+Xnk3DqArImhhxNP2jmKv52yFsAJ1/1APo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO6C-1oGnev0d8i-00omGM; Fri, 15
+ Apr 2022 09:02:45 +0200
+Message-ID: <37226b35-7d5a-dd86-7b20-7a0dfd3b96fc@gmx.com>
+Date:   Fri, 15 Apr 2022 15:02:41 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+References: <cover.1649766550.git.wqu@suse.com>
+ <0b13dccbc4d6e066530587d6c00c54b10c3d00d7.1649766550.git.wqu@suse.com>
+ <YlkQgTCv+Iw2QzPz@infradead.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v2 1/3] btrfs: avoid double clean up when submit_one_bio()
+ failed
+In-Reply-To: <YlkQgTCv+Iw2QzPz@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gHOUDqyxySdTTSvAmYN7JKSxDdutshLbBV3fQ9gAmQlAdcYgmAa
+ EcvJe9tX8gKOp7etdC/f7ZLf+oavd74pcpWdjrVKXh7ervqfU6F/awMyj7vVOMOCWVG9+fu
+ a9D9gXI3iTVo2A/yxI++H/swd4wroU0pSJ1W2PTnRKzux7JAmSepElme+iTk6MPvtJIcP7l
+ 9aFMu0ijwFcYGWivsFIug==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Z1tV8W/LLW0=:KQ+SlmFz5RvUC5kWcUJhsv
+ Lstrhg5/1watScFDKbnPh4pPqqGhU3sRlLdV6gKT84oGkxG2j9/E3xybdag2O0EbJ3jSvXSXL
+ 31OXIvJK2RglR2HBF23ysJZDlOc6pAJNYa0pRpddqLMEHuf+SHhqNK2krxCLgTMfVbOrvjx39
+ NVlmr1tspoWUDsfDv1aHamaAxTJ7T8nIsxYN2pA4EIXbt322DKLpJ1GSWPOhfrgrTf+BJHTag
+ z5KNkwBmDHbPi6+GDqR6Pb4QdJ4bwzNhvmMDh2hHMrka5OMMtmV4UXzr1BsboKAI/Z22lgTSt
+ ZRu84RXeb2s0vL0LF841WGVntg4GUsYCf3nklIDTXU72p+qq0kJgPgEtvSE+Vyac3JZi+y6Cr
+ vjyxwt+RU5vAbG17Oc/EyTZEiNKQ/9tUJFUjXjCm5/fk0VR21jJWybyl2XE+bu8LT8jx3bLxr
+ 4f5iCZAvLc/upXimTYEx81vUaM9h7EEtDfxi4EH9b/oexMf9AP7kdSabm9j/0++QZiZItxcQr
+ Y2KE4r9lBTkioyD2W8ByVw5SqQ509ajdShw9ixdW2Vda5iA4O0QqKq9qzAdwiWnElaF9VerWG
+ RU1g5MBlN1gx8qGunk0ZsUAO3uPiSc/z9K81HvEYs4erxhT7IwhCBVy3pSRzifsPRoYlnwz0n
+ EsSxuWlg9dFqsCqPqN7aG5q0BVMvfBnF2ook6UKCwxWOocYTns2Lhc6b0XJS/EEAihQVMigT8
+ hitasu+xIhXPu2NJNkpTtbF2lMpgyl2V6wkP1Dh8zJA2eJifzuOOvJ+vwsIijxPBCPgXJuKgf
+ bYursZRevYhaosYsulFZ/lrFu0D+iMlicYepE63RG5KHwfGVa/VtCi8yVGs9bx1zjt6qnNM6a
+ taJbJ3wEMcGQv7yfcN/XnCiF20Bx7IlSXL+QhP0PBC5VBhspPfr/gNIN2h1At3UIA/PCMl295
+ iGUtFZamfRL01XVIu05ovfXod0cUvNK0gO+CNosZDnOs3pnThCJP3v6xEaYsctEhZxTugUDDG
+ uuMMSvW25b5gfPbI1xwZDMVptKENiP//qC/oZYbrLwezIDmItwiGboFZyyXlTyvzKwqdoc2Ve
+ hcN7Cl3hMw50jY=
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently kernel and btrfs-progs all maintain two fs_devices, one for rw
-devices, one for read-only (seed) devices.
 
-The reason is we allow seed flag set on multi-device filesystems.
 
-However I'm not sure if most seed device usage care about multi-device
-support.
+On 2022/4/15 14:28, Christoph Hellwig wrote:
+> Btw, btrfs_submit_compressed_write also seems to do some double cleanups=
+,
+> even if the pattern is slightly different as the bio is allocated inside
+> btrfs_submit_compressed_write itself.  Can someone who is more familiar
+> with that code look into that?
 
-If we can deprecate multi-device seed filesystem support, in the long
-run we can replace the seed fs_devices with just one btrfs_device
-pointer and make sense much cleaner.
+I just checked the code, it's indeed causing problems.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- btrfstune.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+If btrfs_csum_one_bio() or submit_compressed_bio() failed (either ENOMEM
+or failed some sanity checks), then we have one bio for writing the
+compressed data back to disk.
 
-diff --git a/btrfstune.c b/btrfstune.c
-index c9a92349a44c..52bef8ba2ced 100644
---- a/btrfstune.c
-+++ b/btrfstune.c
-@@ -51,6 +51,9 @@ static int update_seeding_flag(struct btrfs_root *root, int set_flag)
- 	disk_super = root->fs_info->super_copy;
- 	super_flags = btrfs_super_flags(disk_super);
- 	if (set_flag) {
-+		struct list_head *list;
-+		int num_devs = 0;
-+
- 		if (super_flags & BTRFS_SUPER_FLAG_SEEDING) {
- 			if (force)
- 				return 0;
-@@ -59,6 +62,20 @@ static int update_seeding_flag(struct btrfs_root *root, int set_flag)
- 						device);
- 			return 1;
- 		}
-+		list_for_each(list, &root->fs_info->fs_devices->devices)
-+			num_devs++;
-+		/*
-+		 * Multi-device seed fs is still supported in kernel, but
-+		 * that's really making fs_devices more complex than it should
-+		 * be, especially multi-device seed is rarely used.
-+		 */
-+		if (num_devs > 1) {
-+			warning("setting seed flag on mult-device fs is not recommended");
-+			if (!force) {
-+				error("abort setting seed, use -f to force it");
-+				return 1;
-+			}
-+		}
- 		super_flags |= BTRFS_SUPER_FLAG_SEEDING;
- 	} else {
- 		if (!(super_flags & BTRFS_SUPER_FLAG_SEEDING)) {
--- 
-2.35.1
+Finish_cb label will call endio on it, which will call:
+  -> end_compressed_bio_write()
+     -> finish_compressed_bio() (this needs the compressed write bio not
+be split)
 
+Then finish_cb tag will also call finish_compressed_bio() directly.
+Double freeing cb, and double clearing writeback flags.
+
+The only relief is, regular EIO won't trigger the bug for write path.
+
+
+But this can not be said to btrfs_submit_compressed_read(), which has
+the same problem and can be triggered by EIO error easily.
+
+Do you want to give it a try? Or mind to me fix it?
+
+Thanks,
+Qu
