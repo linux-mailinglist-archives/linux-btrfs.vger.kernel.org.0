@@ -2,72 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75565031C7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Apr 2022 01:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08685031AF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Apr 2022 01:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239855AbiDOWvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Apr 2022 18:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
+        id S233397AbiDOWwD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Apr 2022 18:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbiDOWvQ (ORCPT
+        with ESMTP id S229864AbiDOWwC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Apr 2022 18:51:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280FF60ABE
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 15:48:45 -0700 (PDT)
+        Fri, 15 Apr 2022 18:52:02 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E791463F8
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Apr 2022 15:49:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1650062922;
-        bh=VzoFGr9OF4ZVehBpdJ0JKM6ul7WUNtcNW98O0GENa4g=;
+        s=badeba3b8450; t=1650062966;
+        bh=U5pgn+fbW536m0lnClCGE0zeuAWG868PF/RIJobYTxg=;
         h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=h55sgmKh8s7CFEPfWeKRLvZL55zLXxl/w4+j/wa95JMsP3slQpCvRh8ZosnVo1Bkl
-         N69eu+TuVSLdN8XK5aM2l/xssOnbmMpeQkmsD/LPDYL3I8bYInOu9vqZPsf9C3Wd1h
-         n9vTQhIbslr3iePvP/peVMXg9izhlyU2UGEu8RDg=
+        b=Ws8Ed2lywtE8700FhRsGIx+FMvlTzPhMNkbqhjLY9d43UJQHVYJHjrv0DwAZXOx66
+         pwjMMeV8o2GEEqeSbqWDpdyC+/lxOEuO9zZ4h8laOFrA+4xMlwM7r9wH8737ZF6ij9
+         UrLVuC9R4wPyDtrvBu8dikcHD6zZNZowwbN3GIRw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFbRm-1njINL1Dfa-00H4GH; Sat, 16
- Apr 2022 00:48:41 +0200
-Message-ID: <935e4667-2414-4620-382c-333075150f8f@gmx.com>
-Date:   Sat, 16 Apr 2022 06:48:37 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N17UW-1o40eF2a5q-012Zc4; Sat, 16
+ Apr 2022 00:49:26 +0200
+Message-ID: <ad361fac-c81d-4a6a-84a8-040ca28763bc@gmx.com>
+Date:   Sat, 16 Apr 2022 06:49:22 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.0
-Subject: Re: [PATCH 4/5] btrfs: do not return errors from
- btrfs_submit_compressed_read
+Subject: Re: [PATCH 5/5] btrfs: do not return errors from submit_bio_hook_t
+ instances
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20220415143328.349010-1-hch@lst.de>
- <20220415143328.349010-5-hch@lst.de>
+ <20220415143328.349010-6-hch@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220415143328.349010-5-hch@lst.de>
+In-Reply-To: <20220415143328.349010-6-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TjvM6YSUtiyNgxDnMLNI9sSTsPKBHeotBoKieHBTGxL7LnMEznR
- uwyk3eiaM3pGN/Jh6GI87T27mdJO2Gr394T1SVoBe0jIb2PufPQKxYcQVErWFpWT3BO2Ywb
- 2Ng76kQHvEHO/caM8PSrc51VR6ztNMn4yCLt8i1ZcKoKjI4hCqElaqnC1BHQ2RIOexfa6Gk
- /r4iBPbEnnZ7nnVDQDm5g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JVEhqhcua5o=:wTWhRxIxhdEygLLLTMuKKk
- ADChk2iKmy8AOCDZhRMgBfnF8e51vC5ytcf9Z+o0VhHFDAg8o/ICdq93kHeSTXJwbBKA3SNl4
- 8h6xAQgWfWxp7aeNteuu3zDHr2tVfFwrlPcynLMLbXPx/lDDffNd3GkWP2EXCSuXQOcsmwATK
- PZazuG0qM6At1uf25PKsQ/qD1dEkgmQIJVUncOSN7q3ew30VecqrDv8Q/iTSFQduRJj/0t56K
- iLbAqaCw9bsRvEkTVATWC5uAAODmKcmkyFjNhFIEbpjaM/PCmQ8vxxd3LhP5/UY22TuU9erdb
- l75wXh88ukPGXl2WgLFzmEus0iEE1EJNpni8DnECtrmucbFSFPFIvp5mxCEeNhIQ+6cTRtezU
- /kYLco/qAfdcKsyF/kCDZl5NiOMHOcj9WdX6Rg68gIPXi9HtyLHeaqrZWEFy5wut+ccZjn5Za
- 8SV7w6HeYX+3V8ScUarAKYvcDwV+rCJuHqxY+OPYAUQ/kxgBTHp6VNMBQfRCdfpLbfzE/oqeq
- 7QHcz6dZBuxk+hHpPs/WOPksaRPVBSQdOLvdfmls8OLwd7y183EsEXDtxtFpqHKibdVRLMpUr
- PgdlfzSRxVrMBpNbTqfwLTYGe1S1KQ8pR5H25I0Tx8f9fZeA87R1wuRhbPR1ZtBFXsynR0qco
- mFjQJJ//2FN+HxZsObl5Rbdv+SIqQC+uaLuSm3CvbCdxT6VS7s/fkCP1LQTjIAO3IZbpeyoK1
- ui1/lTFC4n2wEB2yOszwb7iFG0VpkkndVtGM/pb+RQZ6ayzeX/1nRikcuHhoPobYLrEEIi+r1
- 6DFuK1F19WTZyeL0kDJhvHTXp+aWxO9Bt3Ux6S7GMZSwfV4GwFDYqWlQ5y1Xo+bq33PNJOoUs
- syu6RRphwc2DeBU26mBeW9siYq2ArzUff8JfN1J0KwTxo85f/GRfGYtQALXsgUdJSKul+tH4i
- bQMZ3jCaCtXr+OZXoUv9GXQ2Eq4Dk60HowlET72FrH4suygeiB4va44auUpZuaCYnFHzJrUXK
- 1RBZ5XZz36Skne/A0D7+GrB+0Xp5yPaR5PxISaeAoOq0HZeiV+jDNKg4mbRkXHEianYseabpb
- 5HqLLnRsFM0cbk=
+X-Provags-ID: V03:K1:h7sp2dkyPrInFCE4OJ2fYqDDLX3rAJw5ZGMorUZaSvZaNGGCVG1
+ 0y4hugSRqc6SonJsUFav3HNNV5Lxnipv3mtIFK3G/aRCHAUp7QAwINtYEnVsbxbmvi7rj4v
+ DIPopFEjMDjruZZtzdKjVY858FKXsltsVpfj3xwZwvIXv6TBIutrtcSHlsFtNNDxRU34ZdS
+ JSXer9XNhP63+U/66pETg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wb47z36nrG4=:sQ7hXxWbI29j8yC/CljqqW
+ XBdOLplH2aLRsQhR3qXnC7rSNWlLetZHiI4K0hplFpjRsRCX46y+p3lbAMfrJA5IaQCY5BmV9
+ qXUjtFRW3I8mdBHHisH63LwLoNg4cIuEChAbisXwaSp+9oBhQug1KjSLI3OjmGyNJt7wKKnvH
+ YOxK9c8rrC02XUyF7Yxs6VR6so4fDHqwRcbzdrRTEvumzNiOh5HtlvAMBjdzjDP3g898EkVAZ
+ gm3QjNmLA5kG/ZrFRUOemur0Tv8l5+q33Y8lcY+D7kaqr+gNTQYJ/N019/A79T35NaYbfrzL+
+ JX1GNLqRWUZV+Po4dYlT0j1/oe6jPdURqUrr/Q7dgGrbWWgbIop11/E2WtooFAFQDcOZTCdKR
+ 5nsjS6lFDyjSlz0at8EXT71+KsQFMYXrfIhrZjhkw9ORLzKTq6J5pkzdAKzelJMsr7oz3wok1
+ 7t7AcRhKPDDSegq7voc1nCmmD3MQdWFAcYu5fmVJ899+jFXMhxdoXKiPMRc8lvpwznn+SFUz8
+ OMrmnil+9rVBYeVhEti6FZUQomM37VnxxYMwcfFX8uP+UAONsa5oAe22sitBUvzkuoycQtKP7
+ wbnJLRnARS/54Zd8U1UuEUvEDDH4lR8GG4X6fsgLZrhxujr3En1Pjhg1xwlPLmd0B8PzmwcLt
+ DLbg6LwOrB5KElHMOqv2KfuFG2CyHXYAo25CwBR1Jgp+GsjSsdJNC+i4K7VHQjhv162b+CgKj
+ IWll2Zkc4U5qKhHXr8Uw2d12QfDT2LDjFfXEFZB2lW2t2EiIztmv6Vk0Kxacsansv26pMYIqs
+ 1ec0cbDXmrydlkau13IpJxeGWuLb12a7FjHvJvP6ff7nZKFagT4YHIjGPZu8KsBpnhqopppaD
+ FCwShgS/jYwdpCq2Yc3oDaOhXxTd8o6opu2KBTuIS3I5/3l2ibchab1J1c8tEtbHg2gklBDcC
+ r485YSV0ooQpjlhJa1UekoqwlGF2ObT1gmuCezdDcX3A5bPTtyRNQdIb/nAPXlXHstvP6mgPp
+ 6/uaT6b3ZZoD4+5YpMka+3Z5hcEVFyNElRIxHI1OFgOAOJnOsl5H6tSECTSbexaXMzr6L1FQU
+ fyPHrm3Mx/DXyk=
 X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,133 +77,122 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2022/4/15 22:33, Christoph Hellwig wrote:
-> btrfs_submit_compressed_read already calls ->bi_end_io on error and
-> the caller must ignore the return value, so remove it.
+> Both btrfs_repair_one_sector and submit_bio_one as the direct caller of
+> one of the instances ignore errors as they expect the methods themselves
+> to call ->bi_end_io on error.  Remove the unused and dangerous return
+> value.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-The patch itself is fine.
-
 Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Although more such cleanups are going to bring some question on how
-those bio handling functions should behavior.
-
-More and more bio submit functions are returning void and endio of the bio=
-.
-
-But there are still quite some not doing this, like btrfs_map_bio().
-
-I'm wondering at which boundary we should return void and handle
-everything in-house?
 
 Thanks,
 Qu
 > ---
->   fs/btrfs/compression.c | 11 +++++------
->   fs/btrfs/compression.h |  4 ++--
->   fs/btrfs/inode.c       |  8 +++-----
->   3 files changed, 10 insertions(+), 13 deletions(-)
+>   fs/btrfs/ctree.h     |  4 ++--
+>   fs/btrfs/extent_io.h |  2 +-
+>   fs/btrfs/inode.c     | 23 ++++++++---------------
+>   3 files changed, 11 insertions(+), 18 deletions(-)
 >
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 3e8417bfabe65..8fda38a587067 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -801,8 +801,8 @@ static noinline int add_ra_bio_pages(struct inode *i=
-node,
->    * After the compressed pages are read, we copy the bytes into the
->    * bio we were passed and then call the bio end_io calls
->    */
-> -blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct b=
-io *bio,
-> -				 int mirror_num, unsigned long bio_flags)
-> +void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
-> +				  int mirror_num, unsigned long bio_flags)
->   {
->   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
->   	struct extent_map_tree *em_tree;
-> @@ -947,7 +947,7 @@ blk_status_t btrfs_submit_compressed_read(struct ino=
-de *inode, struct bio *bio,
->   			comp_bio =3D NULL;
->   		}
->   	}
-> -	return BLK_STS_OK;
-> +	return;
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 0fd3a21cd5a89..67e169ba55e87 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3249,8 +3249,8 @@ void btrfs_inode_safe_disk_i_size_write(struct btr=
+fs_inode *inode, u64 new_i_siz
+>   u64 btrfs_file_extent_end(const struct btrfs_path *path);
 >
->   fail:
->   	if (cb->compressed_pages) {
-> @@ -963,7 +963,7 @@ blk_status_t btrfs_submit_compressed_read(struct ino=
-de *inode, struct bio *bio,
->   	free_extent_map(em);
->   	bio->bi_status =3D ret;
->   	bio_endio(bio);
-> -	return ret;
-> +	return;
->   finish_cb:
->   	if (comp_bio) {
->   		comp_bio->bi_status =3D ret;
-> @@ -971,7 +971,7 @@ blk_status_t btrfs_submit_compressed_read(struct ino=
-de *inode, struct bio *bio,
->   	}
->   	/* All bytes of @cb is submitted, endio will free @cb */
->   	if (cur_disk_byte =3D=3D disk_bytenr + compressed_len)
-> -		return ret;
-> +		return;
+>   /* inode.c */
+> -blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio=
+,
+> -				   int mirror_num, unsigned long bio_flags);
+> +void btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+> +			   int mirror_num, unsigned long bio_flags);
+>   unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
+>   				    u32 bio_offset, struct page *page,
+>   				    u64 start, u64 end);
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index c94df8e2ab9d6..b390ec79f9a86 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -71,7 +71,7 @@ struct btrfs_fs_info;
+>   struct io_failure_record;
+>   struct extent_io_tree;
 >
->   	wait_var_event(cb, refcount_read(&cb->pending_sectors) =3D=3D
->   			   (disk_bytenr + compressed_len - cur_disk_byte) >>
-> @@ -983,7 +983,6 @@ blk_status_t btrfs_submit_compressed_read(struct ino=
-de *inode, struct bio *bio,
->   	ASSERT(refcount_read(&cb->pending_sectors));
->   	/* Now we are the only one referring @cb, can finish it safely. */
->   	finish_compressed_bio_read(cb);
-> -	return ret;
->   }
->
->   /*
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index ac5b20731d2ad..ac3c79f8c3492 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -102,8 +102,8 @@ blk_status_t btrfs_submit_compressed_write(struct bt=
-rfs_inode *inode, u64 start,
->   				  unsigned int write_flags,
->   				  struct cgroup_subsys_state *blkcg_css,
->   				  bool writeback);
-> -blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct b=
-io *bio,
-> -				 int mirror_num, unsigned long bio_flags);
-> +void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
-> +				  int mirror_num, unsigned long bio_flags);
->
->   unsigned int btrfs_compress_str2level(unsigned int type, const char *s=
-tr);
+> -typedef blk_status_t (submit_bio_hook_t)(struct inode *inode, struct bi=
+o *bio,
+> +typedef void (submit_bio_hook_t)(struct inode *inode, struct bio *bio,
+>   					 int mirror_num,
+>   					 unsigned long bio_flags);
 >
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index f2fb2bfc2f9a2..414156c0ac38a 100644
+> index 414156c0ac38a..a37da2decf958 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -2618,10 +2618,9 @@ blk_status_t btrfs_submit_data_bio(struct inode *=
-inode, struct bio *bio,
->   			 * the bio if there were any errors, so just return
->   			 * here.
+> @@ -2581,9 +2581,8 @@ static blk_status_t extract_ordered_extent(struct =
+btrfs_inode *inode,
+>    *
+>    *    c-3) otherwise:			async submit
+>    */
+> -blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio=
+,
+> -				   int mirror_num, unsigned long bio_flags)
+> -
+> +void btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+> +			   int mirror_num, unsigned long bio_flags)
+>   {
+>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+>   	struct btrfs_root *root =3D BTRFS_I(inode)->root;
+> @@ -2620,7 +2619,7 @@ blk_status_t btrfs_submit_data_bio(struct inode *i=
+node, struct bio *bio,
 >   			 */
-> -			ret =3D btrfs_submit_compressed_read(inode, bio,
-> -							   mirror_num,
-> -							   bio_flags);
-> -			goto out_no_endio;
-> +			btrfs_submit_compressed_read(inode, bio, mirror_num,
-> +						     bio_flags);
-> +			return BLK_STS_OK;
+>   			btrfs_submit_compressed_read(inode, bio, mirror_num,
+>   						     bio_flags);
+> -			return BLK_STS_OK;
+> +			return;
 >   		} else {
 >   			/*
 >   			 * Lookup bio sums does extra checks around whether we
-> @@ -2655,7 +2654,6 @@ blk_status_t btrfs_submit_data_bio(struct inode *i=
+> @@ -2654,7 +2653,6 @@ blk_status_t btrfs_submit_data_bio(struct inode *i=
 node, struct bio *bio,
 >   		bio->bi_status =3D ret;
 >   		bio_endio(bio);
 >   	}
-> -out_no_endio:
->   	return ret;
+> -	return ret;
 >   }
 >
+>   /*
+> @@ -7798,25 +7796,20 @@ static void btrfs_dio_private_put(struct btrfs_d=
+io_private *dip)
+>   	kfree(dip);
+>   }
+>
+> -static blk_status_t submit_dio_repair_bio(struct inode *inode, struct b=
+io *bio,
+> -					  int mirror_num,
+> -					  unsigned long bio_flags)
+> +static void submit_dio_repair_bio(struct inode *inode, struct bio *bio,
+> +				  int mirror_num, unsigned long bio_flags)
+>   {
+>   	struct btrfs_dio_private *dip =3D bio->bi_private;
+>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+> -	blk_status_t ret;
+>
+>   	BUG_ON(bio_op(bio) =3D=3D REQ_OP_WRITE);
+>
+> -	ret =3D btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
+> -	if (ret)
+> -		return ret;
+> +	if (btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA))
+> +		return;
+>
+>   	refcount_inc(&dip->refs);
+> -	ret =3D btrfs_map_bio(fs_info, bio, mirror_num);
+> -	if (ret)
+> +	if (btrfs_map_bio(fs_info, bio, mirror_num))
+>   		refcount_dec(&dip->refs);
+> -	return ret;
+>   }
+>
+>   static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private =
+*dip,
