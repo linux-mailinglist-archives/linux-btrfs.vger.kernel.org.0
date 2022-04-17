@@ -2,134 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8055046F0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Apr 2022 09:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F73350472B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Apr 2022 10:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbiDQHde (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Apr 2022 03:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
+        id S233691AbiDQIhr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Apr 2022 04:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233550AbiDQHdd (ORCPT
+        with ESMTP id S231700AbiDQIhp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Apr 2022 03:33:33 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2F319C05
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 00:30:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4C7771F38C
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 07:30:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650180658; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZtFgdtzDrEDqF13+UZeeHesmDwYdeH0D4TroTjTp/2s=;
-        b=duj7lttQtItsX7TSLboYuDsd55aZEaHMsquU/8BZRJS3laqnbm+k1sNcDAqcWkVSpqgqre
-        Nr4KSfBiv18R8ogQf/I6tZrdkTrTr1tOjGk61XwUVES80K3AxNH8xZ78xnDS6LGs9p7XQ7
-        XSElLwVGh1tR3dx9fd9vXRkR4nWmW5Q=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B54F13ACB
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 07:30:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uHhhEzHCW2JvVAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 07:30:57 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs-progs: fsck-tests: check warning for seed and sprouted filesystems
-Date:   Sun, 17 Apr 2022 15:30:36 +0800
-Message-Id: <c1c97aca3ca89edfb23788858d186a50ed80d488.1650180472.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1650180472.git.wqu@suse.com>
-References: <cover.1650180472.git.wqu@suse.com>
+        Sun, 17 Apr 2022 04:37:45 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E2E1AD8A
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 01:35:09 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id s68so44631vke.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 01:35:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=z+v8ugHyK4Bi1bsAOtuex5rzJWIULuLfF++ZnJg6JJs=;
+        b=oNJc2INf8Rhr5FB/7dmVLUtXIN32Zpr+JOws5mZo8yLIZkx20k3ktobg4cFsyHfo10
+         opyovUTmrMqZBrjIIPL8dwM3Cl42hbyZvaLR8TbrZDbPh7rgV94AneypUIz7gx5LvazE
+         zDLFkcDX1nbPbvLE1YDjvnnDO6sd+MeRRKk7hJojVtPLOuB8iX7Tisqm37Yqye5BOvOD
+         qrtEmC9HZPFnF8UhgjxviHDBiEkp+KFrjrNS6AiUfUOujeKcrIPlTDjJJypvibkN2ZRc
+         Fcc5bL7t8fX01QLLow126XRV2cU5sFntAnAB/7YbhrXrCEA2hg1PeuWagasZGrwW/+fq
+         MCiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=z+v8ugHyK4Bi1bsAOtuex5rzJWIULuLfF++ZnJg6JJs=;
+        b=G3SPh+y5IPi61+wlVRTfuB43Siy2jaVS/KNX0uHq/ManlFt6r2Dpki3ORaY2ZtWBWP
+         D6C2Egzu05/OSOL3cbUL0dTShL5Rde/S26JVIj3RKkVnwFVEh1cwhd7AchEfxEuV60gV
+         iFsEiw6tsQ2ZiIp9BZ2Hw299mTZT/nuiF/g34Xft4TcmUEvEUEzNsWQgfCNOVeHNASXQ
+         J/Y0BwKrXNi3hWNcZHAlSlVnuIQhJqjyCCfXtjVUQF/x5w9gFzzk5YZgXaXPLXd0FW5W
+         MKdrJl80H0HDIZimiPLjT09QMp3uwX6WGotgav6g5bUoME0Vz5JVrWPG7OKlzD11LbrB
+         OhZQ==
+X-Gm-Message-State: AOAM531nl6ma8goZOxJo48BqPnYY0EXp8a8OpnpPkt6KKBeqL9h8w0s2
+        0UKhQDbNc/ttR9BwTjJsajS/tRFBvb4q9qKjJws=
+X-Google-Smtp-Source: ABdhPJw9Xt2OFrIK7hURg4kp9HjRikv5sLzHEzVl1NzDr5ZjkMyPbwTBECFNWcwqZlk35V3UQisOkE0Lf5eHqEkQTho=
+X-Received: by 2002:a1f:5105:0:b0:345:252e:b0f5 with SMTP id
+ f5-20020a1f5105000000b00345252eb0f5mr1463329vkb.22.1650184508047; Sun, 17 Apr
+ 2022 01:35:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a05:612c:2303:b0:2a3:2b46:b7d with HTTP; Sun, 17 Apr 2022
+ 01:35:07 -0700 (PDT)
+Reply-To: markwillima00@gmail.com
+From:   Mark <muhammadsuleima888@gmail.com>
+Date:   Sun, 17 Apr 2022 01:35:07 -0700
+Message-ID: <CANCcrFBrB3Qw8Ab_hBy19n0Ch6+XNpkXj3PjXKrc26cej7s+Kg@mail.gmail.com>
+Subject: Re: Greetings!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:a41 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [markwillima00[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [muhammadsuleima888[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [muhammadsuleima888[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Previously we had a bug that btrfs check would report false warning for
-a sprouted filesystem.
+Hello,
 
-So this patch will add a new test case to make sure neither seed nor
-and sprouted filesystem will cause such false warning.
+The HSBC Bank is a financial institution in United Kingdom. We
+promotes long-term,sustainable and broad-based economic growth in
+developing and emerging countries by providing financial support like
+loans and investment to large, small and
+medium-sized companies (SMEs) as well as fast-growing enterprises
+which in turn helps to create secure and permanent jobs and reduce
+poverty.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- .../fsck-tests/057-seed-false-alerts/test.sh  | 51 +++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100755 tests/fsck-tests/057-seed-false-alerts/test.sh
+If you need fund to promotes your business, project(Project Funding),
+Loan, planning, budgeting and expansion of your business(s) , do not
+hesitate to indicate your interest as we are here to serve you better
+by granting your request.
 
-diff --git a/tests/fsck-tests/057-seed-false-alerts/test.sh b/tests/fsck-tests/057-seed-false-alerts/test.sh
-new file mode 100755
-index 000000000000..3a442c1202d0
---- /dev/null
-+++ b/tests/fsck-tests/057-seed-false-alerts/test.sh
-@@ -0,0 +1,51 @@
-+#!/bin/bash
-+#
-+# Make sure "btrfs check" won't report false alerts on sprouted filesystems
-+#
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq btrfs
-+check_prereq mkfs.btrfs
-+check_prereq btrfstune
-+check_global_prereq losetup
-+
-+setup_loopdevs 2
-+prepare_loopdevs
-+dev1=${loopdevs[1]}
-+dev2=${loopdevs[2]}
-+TEST_DEV=$dev1
-+
-+setup_root_helper
-+
-+run_check $SUDO_HELPERS "$TOP/mkfs.btrfs" -f $dev1
-+run_check $SUDO_HELPERS "$TOP/btrfstune" -S1 $dev1
-+run_check_mount_test_dev
-+run_check $SUDO_HELPERS "$TOP/btrfs" device add -f $dev2 $TEST_MNT
-+
-+# Here we can not use umount helper, as it uses the seed device to do the
-+# umount. We need to manually unmout using the mount point
-+run_check $SUDO_HELPERS umount $TEST_MNT
-+
-+seed_output=$(_mktemp --tmpdir btrfs-progs-seed-check-stdout.XXXXXX)
-+sprouted_output=$(_mktemp --tmpdir btrfs-progs-sprouted-check-stdout.XXXXXX)
-+
-+# The false alerts are just warnings, so we need to save and filter
-+# the output
-+run_check_stdout "$TOP/btrfs" check "$dev1" >> "$seed_output"
-+run_check_stdout "$TOP/btrfs" check "$dev2" >> "$sprouted_output"
-+
-+# There should be no warning for both seed and sprouted fs
-+if grep -q "WARNING" "$seed_output"; then
-+	cleanup_loopdevs
-+	rm -f -- "$seed_output" "$sprouted_output"
-+	_fail "false alerts detected for seed fs"
-+fi
-+if grep -q "WARNING" "$sprouted_output"; then
-+	cleanup_loopdevs
-+	rm -f -- "$seed_output" "$sprouted_output"
-+	_fail "false alerts detected for sprouted fs"
-+fi
-+
-+cleanup_loopdevs
-+rm -f -- "$seed_output" "$sprouted_output"
--- 
-2.35.1
 
+Thank you
+Mr:Mark
