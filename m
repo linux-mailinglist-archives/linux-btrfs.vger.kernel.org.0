@@ -2,157 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D2D504C6A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 07:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6858C504CC5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 08:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236678AbiDRFxR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Apr 2022 01:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
+        id S233034AbiDRGnx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Apr 2022 02:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236148AbiDRFxR (ORCPT
+        with ESMTP id S230496AbiDRGnx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Apr 2022 01:53:17 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2254C55A3
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 22:50:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1650261038; x=1681797038;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=xoCMnmczuljhDtFeo3A0IFPvsEmbEiaihOA2cNgQvYo=;
-  b=djcXnKpl2+lJ+7GIHpb+fa5I9T7xSs6pZ6tf96Hjj3wFEUpuz6W/NN4H
-   irkXXbkQrKjNvg5N1FCbkDTIepB4Qy8EJ9KlmfWzec0uEJ9aIMokf4N/r
-   6NzAMPVXt7n1FqVu3QI+fH7Tsz50ZwbSCRRjSmwukLD6rKKH7XoMUaeup
-   /L5/sDRcLPWZbC9DjMDEbgJL19LTaV/CCUZ6D6aJ/dWfA7HKGBp+YNoS8
-   /hHCHBxnRkd3Lcn/loMYNsehtdSEOQyI2AowUF0kYUROCU5NdQtnS2AmP
-   xmMSjID4Tp922WkvxHLnyRMEJYvhuCJVRbniVQkbfUBHtUk3cNf8SLS+k
-   w==;
-X-IronPort-AV: E=Sophos;i="5.90,267,1643644800"; 
-   d="scan'208";a="302331499"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Apr 2022 13:50:32 +0800
-IronPort-SDR: 8i9fN6O+/j46VsgFNJe7DQ9BogErPqdaSdv1G6/etOpgZkA41vXUgXxT4zjtyX1Au+yF5ndKOF
- BCHX7JRB5JD8Ojhs8C0oPn71h35QnkZRKkvQpviGj8XPyjnXrRhav9eGUWjUyKqw08ItU8u4Rl
- mDAu6G7/ESOHOXI5jLnPzwrOkaj0VfCq0FqF11fgqjFPnQiYhdl9BBkaAZfRc2G8o/WAXFx/tX
- mWuq4tKBAn0PjWtB4ol1Fu6q+QVCw8+tpwsW5GtKow6V4YxQ3s2vuVdIfU7C3L28WqYHJ/nKrd
- ULKxIJ0wCaIr23g9eKWmXJy1
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Apr 2022 22:20:51 -0700
-IronPort-SDR: C4ANNov/CS3AgD9NDWjW1ozSlOHJtOLzcCmJGjfUZhOc3Wht/z9tgNV/4/89BmmCYkD46jCwtD
- 1B6teylCqosLoNkdtrSBnKVCy5nZoYnWBSgXNkroL1aWUeYZuoMm/wAQZYjRIiAq5QRuRDJaL8
- z2560Oao7PDa3KaPhDH1xlXDpHo0ztksF0J1qbxxu2jGZItTK0l4fvQbAiuQaBX7M58aRr7fGi
- Y89nzmXwqHiPg4GYLON1c/zIGrw48lloldwfDHHFK/Q2sJmRPdeHwrTnlPtwrucoSpnZEAnpJX
- 9hY=
-WDCIronportException: Internal
-Received: from hfp4fb3.ad.shared (HELO naota-xeon.ad.shared) ([10.225.53.140])
-  by uls-op-cesaip01.wdc.com with ESMTP; 17 Apr 2022 22:50:30 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     johannes.thumshirn@wdc.com, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: use dedicated lock for data relocation
-Date:   Mon, 18 Apr 2022 14:50:20 +0900
-Message-Id: <1ad4d3f6ed32ab2d3352adb6da7ba4ff049e79a0.1650257630.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.35.1
+        Mon, 18 Apr 2022 02:43:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C32713DEB
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 23:41:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 05C531F383;
+        Mon, 18 Apr 2022 06:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1650264074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SC5UQhfdjUFTcM1lIGhl6wgftZbcZuEnv9BVIKYGVl8=;
+        b=Bx28kCIexijO0+1+mzODB+DFl41gc2yKPijnprjjv2PfNf6XmIeVycPpUwKPRJFGIGZk/1
+        ceQlI73G4DTGNNZlbu+2dOgRTQKRCILeIJxBEb/OTqqcBlIERg9Bi5blnQNFV2yYFYr3U+
+        773/qbp3r4mKFs5qrDN1B3v8RKpKzME=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5FAD13ACB;
+        Mon, 18 Apr 2022 06:41:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AjxYLAkIXWKmWgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 18 Apr 2022 06:41:13 +0000
+Message-ID: <988fb59d-da07-1419-cfe3-85a5ad0efbca@suse.com>
+Date:   Mon, 18 Apr 2022 09:41:13 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] btrfs-progs: do not allow setting seed flag on fs with
+ dirty log
+Content-Language: en-US
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <4022d9f87067124c26bb83d4bba1970c954cdf50.1650022504.git.wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <4022d9f87067124c26bb83d4bba1970c954cdf50.1650022504.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently, we use btrfs_inode_{lock,unlock}() to grant an exclusive
-writeback of the relocation data inode in
-btrfs_zoned_data_reloc_{lock,unlock}(). However, that can cause a deadlock
-in the following path.
 
-Thread A takes btrfs_inode_lock() and waits for metadata reservation by
-e.g, waiting for writeback:
 
-prealloc_file_extent_cluster()
-  - btrfs_inode_lock(&inode->vfs_inode, 0);
-  - btrfs_prealloc_file_range()
-  ...
-    - btrfs_replace_file_extents()
-      - btrfs_start_transaction
-      ...
-        - btrfs_reserve_metadata_bytes()
+On 15.04.22 г. 14:37 ч., Qu Wenruo wrote:
+> [BUG]
+> The following sequence operation can lead to a seed fs rejected by
+> kernel:
+> 
+>   # Generate a fs with dirty log
+>   mkfs.btrfs -f $file
+>   mount $dev $mnt
+>   xfs_io -f -c "pwrite 0 16k" -c fsync $mnt/file
+>   cp $file $file.backup
+>   umount $mnt
+>   mv $file.backup $file
+> 
+>   # now $file has dirty log, set seed flag on it
+>   btrfstune -S1 $file
+> 
+>   # mount will fail
+>   mount $file $mnt
+> 
+> The mount failure with the following dmesg:
+> 
+> [  980.363667] loop0: detected capacity change from 0 to 262144
+> [  980.371177] BTRFS info (device loop0): flagging fs with big metadata feature
+> [  980.372229] BTRFS info (device loop0): using free space tree
+> [  980.372639] BTRFS info (device loop0): has skinny extents
+> [  980.375075] BTRFS info (device loop0): start tree-log replay
+> [  980.375513] BTRFS warning (device loop0): log replay required on RO media
+> [  980.381652] BTRFS error (device loop0): open_ctree failed
+> 
+> [CAUSE]
+> Although btrfs will replay its dirty log even with RO mount, but kernel
+> will treat seed device as RO device, and dirty log can not be replayed
+> on RO device.
+> 
+> This rejection is already the better end, just imagine if we don't treat
+> seed device as RO, and replayed the dirty log.
+> The filesystem relying on the seed device will be completely screwed up.
+> 
+> [FIX]
+> Just add extra check on log tree in btrfstune to reject setting seed
+> flag on filesystems with dirty log.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Thread B (e.g, doing a writeback work) needs to wait for the inode lock to
-continue writeback process:
+LGTM:
 
-do_writepages
-  - btrfs_writepages
-    - extent_writpages
-      - btrfs_zoned_data_reloc_lock(BTRFS_I(inode));
-        - btrfs_inode_lock()
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-The deadlock is caused by relying on the vfs_inode's lock. By using it, we
-introduced unnecessary exclusion of writeback and
-btrfs_prealloc_file_range(). Also, the lock at this point is useless as we
-don't have any dirty pages in the inode yet.
+One minor nit below but it can be rectified by David at merge time. Why 
+don't you also add a btrfs-progs test for this functionality.
 
-Introduce fs_info->zoned_data_reloc_io_lock and use it for the exclusive
-writeback.
+> ---
+>   btrfstune.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/btrfstune.c b/btrfstune.c
+> index 33c83bf16291..7e4ad30a1cbd 100644
+> --- a/btrfstune.c
+> +++ b/btrfstune.c
+> @@ -59,6 +59,10 @@ static int update_seeding_flag(struct btrfs_root *root, int set_flag)
+>   						device);
+>   			return 1;
+>   		}
+> +		if (btrfs_super_log_root(disk_super)) {
+> +			error("this filesystem has dirty log, can not set seed flag");
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/ctree.h   | 1 +
- fs/btrfs/disk-io.c | 1 +
- fs/btrfs/zoned.h   | 4 ++--
- 3 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 55dee124ee44..580a392d7c37 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1056,6 +1056,7 @@ struct btrfs_fs_info {
- 	 */
- 	spinlock_t relocation_bg_lock;
- 	u64 data_reloc_bg;
-+	struct mutex zoned_data_reloc_io_lock;
- 
- 	u64 nr_global_roots;
- 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2689e8589627..2a0284c2430e 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3179,6 +3179,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- 	mutex_init(&fs_info->reloc_mutex);
- 	mutex_init(&fs_info->delalloc_root_mutex);
- 	mutex_init(&fs_info->zoned_meta_io_lock);
-+	mutex_init(&fs_info->zoned_data_reloc_io_lock);
- 	seqlock_init(&fs_info->profiles_lock);
- 
- 	INIT_LIST_HEAD(&fs_info->dirty_cowonly_roots);
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index fc2034e66ce3..de923fc8449d 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -361,7 +361,7 @@ static inline void btrfs_zoned_data_reloc_lock(struct btrfs_inode *inode)
- 	struct btrfs_root *root = inode->root;
- 
- 	if (btrfs_is_data_reloc_root(root) && btrfs_is_zoned(root->fs_info))
--		btrfs_inode_lock(&inode->vfs_inode, 0);
-+		mutex_lock(&root->fs_info->zoned_data_reloc_io_lock);
- }
- 
- static inline void btrfs_zoned_data_reloc_unlock(struct btrfs_inode *inode)
-@@ -369,7 +369,7 @@ static inline void btrfs_zoned_data_reloc_unlock(struct btrfs_inode *inode)
- 	struct btrfs_root *root = inode->root;
- 
- 	if (btrfs_is_data_reloc_root(root) && btrfs_is_zoned(root->fs_info))
--		btrfs_inode_unlock(&inode->vfs_inode, 0);
-+		mutex_unlock(&root->fs_info->zoned_data_reloc_io_lock);
- }
- 
- #endif
--- 
-2.35.1
+nit: I'd probably put something less colloquial such as:
 
+"Filesystem with dirty log detected, not setting seed flag"
+
+> +			return 1;
+> +		}
+>   		super_flags |= BTRFS_SUPER_FLAG_SEEDING;
+>   	} else {
+>   		if (!(super_flags & BTRFS_SUPER_FLAG_SEEDING)) {
