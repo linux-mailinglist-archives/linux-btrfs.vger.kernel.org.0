@@ -2,47 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA60B504BBE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 06:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D2D504C6A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 07:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236517AbiDREqC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Apr 2022 00:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        id S236678AbiDRFxR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Apr 2022 01:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbiDREqB (ORCPT
+        with ESMTP id S236148AbiDRFxR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Apr 2022 00:46:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E4413E97
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 21:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=ax+3gXNcGcHvoJsEEQEhxYgri6qYtyqv8I9ItVCoJ/w=; b=pdywUhIH4op2/aX/5NR84x7Kww
-        M0Z7173JNthoy1LlJW2jVt/ev0gBhqMLilxN+HjUz/Ae+Gb4MHZGjZs8f4vG84shXkF+RufA+LIZw
-        E6/L+6ACfejEo4gnT3ZtK8fEnDDCbDDl4AxaxQi9GdF7yYAZlhXYGmSSv2Ir6KtCueOvXN7qAsoMf
-        UQ9iT8zA8F0Jnko3XxuSVq99lt5rl9Rv3/oHYix90ta7GOOQIPTLyxtvRlvCO0IixzG8IC3PY9UpV
-        1Go5IzEtJBEwKaFQrnpXCgOlN2rFEOIkp27/FEU4cFsngajoE/aLqL2Dt13I46GJtKHDgtIMVLBAj
-        mtNXO9oQ==;
-Received: from [2a02:1205:504b:4280:f5dd:42a4:896c:d877] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ngJEQ-00FYRR-2i; Mon, 18 Apr 2022 04:43:22 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: use a normal workqueue for rmw_workers
-Date:   Mon, 18 Apr 2022 06:43:11 +0200
-Message-Id: <20220418044311.359720-4-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220418044311.359720-1-hch@lst.de>
-References: <20220418044311.359720-1-hch@lst.de>
+        Mon, 18 Apr 2022 01:53:17 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2254C55A3
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 22:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1650261038; x=1681797038;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xoCMnmczuljhDtFeo3A0IFPvsEmbEiaihOA2cNgQvYo=;
+  b=djcXnKpl2+lJ+7GIHpb+fa5I9T7xSs6pZ6tf96Hjj3wFEUpuz6W/NN4H
+   irkXXbkQrKjNvg5N1FCbkDTIepB4Qy8EJ9KlmfWzec0uEJ9aIMokf4N/r
+   6NzAMPVXt7n1FqVu3QI+fH7Tsz50ZwbSCRRjSmwukLD6rKKH7XoMUaeup
+   /L5/sDRcLPWZbC9DjMDEbgJL19LTaV/CCUZ6D6aJ/dWfA7HKGBp+YNoS8
+   /hHCHBxnRkd3Lcn/loMYNsehtdSEOQyI2AowUF0kYUROCU5NdQtnS2AmP
+   xmMSjID4Tp922WkvxHLnyRMEJYvhuCJVRbniVQkbfUBHtUk3cNf8SLS+k
+   w==;
+X-IronPort-AV: E=Sophos;i="5.90,267,1643644800"; 
+   d="scan'208";a="302331499"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Apr 2022 13:50:32 +0800
+IronPort-SDR: 8i9fN6O+/j46VsgFNJe7DQ9BogErPqdaSdv1G6/etOpgZkA41vXUgXxT4zjtyX1Au+yF5ndKOF
+ BCHX7JRB5JD8Ojhs8C0oPn71h35QnkZRKkvQpviGj8XPyjnXrRhav9eGUWjUyKqw08ItU8u4Rl
+ mDAu6G7/ESOHOXI5jLnPzwrOkaj0VfCq0FqF11fgqjFPnQiYhdl9BBkaAZfRc2G8o/WAXFx/tX
+ mWuq4tKBAn0PjWtB4ol1Fu6q+QVCw8+tpwsW5GtKow6V4YxQ3s2vuVdIfU7C3L28WqYHJ/nKrd
+ ULKxIJ0wCaIr23g9eKWmXJy1
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Apr 2022 22:20:51 -0700
+IronPort-SDR: C4ANNov/CS3AgD9NDWjW1ozSlOHJtOLzcCmJGjfUZhOc3Wht/z9tgNV/4/89BmmCYkD46jCwtD
+ 1B6teylCqosLoNkdtrSBnKVCy5nZoYnWBSgXNkroL1aWUeYZuoMm/wAQZYjRIiAq5QRuRDJaL8
+ z2560Oao7PDa3KaPhDH1xlXDpHo0ztksF0J1qbxxu2jGZItTK0l4fvQbAiuQaBX7M58aRr7fGi
+ Y89nzmXwqHiPg4GYLON1c/zIGrw48lloldwfDHHFK/Q2sJmRPdeHwrTnlPtwrucoSpnZEAnpJX
+ 9hY=
+WDCIronportException: Internal
+Received: from hfp4fb3.ad.shared (HELO naota-xeon.ad.shared) ([10.225.53.140])
+  by uls-op-cesaip01.wdc.com with ESMTP; 17 Apr 2022 22:50:30 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     johannes.thumshirn@wdc.com, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: zoned: use dedicated lock for data relocation
+Date:   Mon, 18 Apr 2022 14:50:20 +0900
+Message-Id: <1ad4d3f6ed32ab2d3352adb6da7ba4ff049e79a0.1650257630.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,153 +66,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-rmw_workers doesn't need ordered execution or thread disabling threshold
-(as the thresh parameter is less than DFT_THRESHOLD).
+Currently, we use btrfs_inode_{lock,unlock}() to grant an exclusive
+writeback of the relocation data inode in
+btrfs_zoned_data_reloc_{lock,unlock}(). However, that can cause a deadlock
+in the following path.
 
-Just switch to the normal workqueues that use a lot less resources,
-especially in the work_struct vs btrfs_work structures.
+Thread A takes btrfs_inode_lock() and waits for metadata reservation by
+e.g, waiting for writeback:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+prealloc_file_extent_cluster()
+  - btrfs_inode_lock(&inode->vfs_inode, 0);
+  - btrfs_prealloc_file_range()
+  ...
+    - btrfs_replace_file_extents()
+      - btrfs_start_transaction
+      ...
+        - btrfs_reserve_metadata_bytes()
+
+Thread B (e.g, doing a writeback work) needs to wait for the inode lock to
+continue writeback process:
+
+do_writepages
+  - btrfs_writepages
+    - extent_writpages
+      - btrfs_zoned_data_reloc_lock(BTRFS_I(inode));
+        - btrfs_inode_lock()
+
+The deadlock is caused by relying on the vfs_inode's lock. By using it, we
+introduced unnecessary exclusion of writeback and
+btrfs_prealloc_file_range(). Also, the lock at this point is useless as we
+don't have any dirty pages in the inode yet.
+
+Introduce fs_info->zoned_data_reloc_io_lock and use it for the exclusive
+writeback.
+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/ctree.h   |  2 +-
- fs/btrfs/disk-io.c |  5 ++---
- fs/btrfs/raid56.c  | 29 ++++++++++++++---------------
- 3 files changed, 17 insertions(+), 19 deletions(-)
+ fs/btrfs/ctree.h   | 1 +
+ fs/btrfs/disk-io.c | 1 +
+ fs/btrfs/zoned.h   | 4 ++--
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 59135f0850a6e..74fbd92f704f9 100644
+index 55dee124ee44..580a392d7c37 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -853,7 +853,7 @@ struct btrfs_fs_info {
- 	struct btrfs_workqueue *endio_workers;
- 	struct btrfs_workqueue *endio_meta_workers;
- 	struct btrfs_workqueue *endio_raid56_workers;
--	struct btrfs_workqueue *rmw_workers;
-+	struct workqueue_struct *rmw_workers;
- 	struct btrfs_workqueue *endio_meta_write_workers;
- 	struct btrfs_workqueue *endio_write_workers;
- 	struct btrfs_workqueue *endio_freespace_worker;
+@@ -1056,6 +1056,7 @@ struct btrfs_fs_info {
+ 	 */
+ 	spinlock_t relocation_bg_lock;
+ 	u64 data_reloc_bg;
++	struct mutex zoned_data_reloc_io_lock;
+ 
+ 	u64 nr_global_roots;
+ 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 980616cc08bfc..cc7ca8a0df697 100644
+index 2689e8589627..2a0284c2430e 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2290,7 +2290,7 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
- 	btrfs_destroy_workqueue(fs_info->workers);
- 	btrfs_destroy_workqueue(fs_info->endio_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_raid56_workers);
--	btrfs_destroy_workqueue(fs_info->rmw_workers);
-+	destroy_workqueue(fs_info->rmw_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_write_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_freespace_worker);
- 	btrfs_destroy_workqueue(fs_info->delayed_workers);
-@@ -2500,8 +2500,7 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
- 	fs_info->endio_raid56_workers =
- 		btrfs_alloc_workqueue(fs_info, "endio-raid56", flags,
- 				      max_active, 4);
--	fs_info->rmw_workers =
--		btrfs_alloc_workqueue(fs_info, "rmw", flags, max_active, 2);
-+	fs_info->rmw_workers = alloc_workqueue("btrfs-rmw", flags, max_active);
- 	fs_info->endio_write_workers =
- 		btrfs_alloc_workqueue(fs_info, "endio-write", flags,
- 				      max_active, 2);
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 79438cdd604ea..c1c320f87216d 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -77,7 +77,7 @@ struct btrfs_raid_bio {
- 	/*
- 	 * for scheduling work in the helper threads
- 	 */
--	struct btrfs_work work;
-+	struct work_struct work;
+@@ -3179,6 +3179,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+ 	mutex_init(&fs_info->reloc_mutex);
+ 	mutex_init(&fs_info->delalloc_root_mutex);
+ 	mutex_init(&fs_info->zoned_meta_io_lock);
++	mutex_init(&fs_info->zoned_data_reloc_io_lock);
+ 	seqlock_init(&fs_info->profiles_lock);
  
- 	/*
- 	 * bio list and bio_list_lock are used
-@@ -176,8 +176,8 @@ struct btrfs_raid_bio {
+ 	INIT_LIST_HEAD(&fs_info->dirty_cowonly_roots);
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index fc2034e66ce3..de923fc8449d 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -361,7 +361,7 @@ static inline void btrfs_zoned_data_reloc_lock(struct btrfs_inode *inode)
+ 	struct btrfs_root *root = inode->root;
  
- static int __raid56_parity_recover(struct btrfs_raid_bio *rbio);
- static noinline void finish_rmw(struct btrfs_raid_bio *rbio);
--static void rmw_work(struct btrfs_work *work);
--static void read_rebuild_work(struct btrfs_work *work);
-+static void rmw_work(struct work_struct *work);
-+static void read_rebuild_work(struct work_struct *work);
- static int fail_bio_stripe(struct btrfs_raid_bio *rbio, struct bio *bio);
- static int fail_rbio_index(struct btrfs_raid_bio *rbio, int failed);
- static void __free_raid_bio(struct btrfs_raid_bio *rbio);
-@@ -186,12 +186,12 @@ static int alloc_rbio_pages(struct btrfs_raid_bio *rbio);
- 
- static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
- 					 int need_check);
--static void scrub_parity_work(struct btrfs_work *work);
-+static void scrub_parity_work(struct work_struct *work);
- 
--static void start_async_work(struct btrfs_raid_bio *rbio, btrfs_func_t work_func)
-+static void start_async_work(struct btrfs_raid_bio *rbio, work_func_t work_func)
- {
--	btrfs_init_work(&rbio->work, work_func, NULL, NULL);
--	btrfs_queue_work(rbio->bioc->fs_info->rmw_workers, &rbio->work);
-+	INIT_WORK(&rbio->work, work_func);
-+	queue_work(rbio->bioc->fs_info->rmw_workers, &rbio->work);
+ 	if (btrfs_is_data_reloc_root(root) && btrfs_is_zoned(root->fs_info))
+-		btrfs_inode_lock(&inode->vfs_inode, 0);
++		mutex_lock(&root->fs_info->zoned_data_reloc_io_lock);
  }
  
- /*
-@@ -1599,7 +1599,7 @@ struct btrfs_plug_cb {
- 	struct blk_plug_cb cb;
- 	struct btrfs_fs_info *info;
- 	struct list_head rbio_list;
--	struct btrfs_work work;
-+	struct work_struct work;
- };
+ static inline void btrfs_zoned_data_reloc_unlock(struct btrfs_inode *inode)
+@@ -369,7 +369,7 @@ static inline void btrfs_zoned_data_reloc_unlock(struct btrfs_inode *inode)
+ 	struct btrfs_root *root = inode->root;
  
- /*
-@@ -1667,7 +1667,7 @@ static void run_plug(struct btrfs_plug_cb *plug)
-  * if the unplug comes from schedule, we have to push the
-  * work off to a helper thread
-  */
--static void unplug_work(struct btrfs_work *work)
-+static void unplug_work(struct work_struct *work)
- {
- 	struct btrfs_plug_cb *plug;
- 	plug = container_of(work, struct btrfs_plug_cb, work);
-@@ -1680,9 +1680,8 @@ static void btrfs_raid_unplug(struct blk_plug_cb *cb, bool from_schedule)
- 	plug = container_of(cb, struct btrfs_plug_cb, cb);
- 
- 	if (from_schedule) {
--		btrfs_init_work(&plug->work, unplug_work, NULL, NULL);
--		btrfs_queue_work(plug->info->rmw_workers,
--				 &plug->work);
-+		INIT_WORK(&plug->work, unplug_work);
-+		queue_work(plug->info->rmw_workers, &plug->work);
- 		return;
- 	}
- 	run_plug(plug);
-@@ -2167,7 +2166,7 @@ int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bioc,
- 
+ 	if (btrfs_is_data_reloc_root(root) && btrfs_is_zoned(root->fs_info))
+-		btrfs_inode_unlock(&inode->vfs_inode, 0);
++		mutex_unlock(&root->fs_info->zoned_data_reloc_io_lock);
  }
  
--static void rmw_work(struct btrfs_work *work)
-+static void rmw_work(struct work_struct *work)
- {
- 	struct btrfs_raid_bio *rbio;
- 
-@@ -2175,7 +2174,7 @@ static void rmw_work(struct btrfs_work *work)
- 	raid56_rmw_stripe(rbio);
- }
- 
--static void read_rebuild_work(struct btrfs_work *work)
-+static void read_rebuild_work(struct work_struct *work)
- {
- 	struct btrfs_raid_bio *rbio;
- 
-@@ -2621,7 +2620,7 @@ static void raid56_parity_scrub_stripe(struct btrfs_raid_bio *rbio)
- 	validate_rbio_for_parity_scrub(rbio);
- }
- 
--static void scrub_parity_work(struct btrfs_work *work)
-+static void scrub_parity_work(struct work_struct *work)
- {
- 	struct btrfs_raid_bio *rbio;
- 
+ #endif
 -- 
-2.30.2
+2.35.1
 
