@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2092C504BBF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 06:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136E6504BBC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 06:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236514AbiDREqA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Apr 2022 00:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
+        id S236518AbiDREqC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Apr 2022 00:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbiDREp7 (ORCPT
+        with ESMTP id S236515AbiDREqB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Apr 2022 00:45:59 -0400
+        Mon, 18 Apr 2022 00:46:01 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17FB17052
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 21:43:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8820F17052
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 21:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=07hNFD1fYyyocCmvLDqianVyuUGSE1yUKd42koT3oTs=; b=cVLaw1hFw50RtBQ/phsVwpb0i4
-        PDcygKT81sVdeLTnavMWPputwcVB3ht3oLvwHlrWBi//jOJLs6io7MZgBu49QII0DSSOIMbcZ5E7S
-        p8rErU+Y7Fsug5Gc4uhF8YXN7GWQBDSIL/qs57LIGOX14xlJJKL1kBduvYcdNtk1I9sq9LgKyrbTM
-        MYkZHeJ6mZkoFFwISaBmYF8jttdrRdZxbfArpPP0RVREdxB8Tf6KBr4aLuugccuhE8G4ujkf9SiGZ
-        9/4QKwwzZZW1B8+yHGXLcu6oK/ZpTFjvHW7qfoE5xBSBZZd5jo7zUGWOyhoW1VksqVIXPkxaIdrmS
-        Cr+M6miA==;
+        bh=H1Y4bLJT4ePNgrjFJrEzc/Vb5pMH+rbcJCF4jvongn8=; b=W47GeY49pu0/PJNARLe7YeiBft
+        5tt1i2mXbOZ82ykAGI4YCurth0kx6c+pE0tRDGD9o8A39kgelwkZsq8A4P0y0sYXcPZ3WvLjjpNbt
+        diCinQvoLODfv3MG7rPMzUL0kGrre32TilO30fK8TCH6yBfP3R93w+uf/rcnrNrfxTylvkYr/npQg
+        yOaLMFKzUJPXiSOy/c0pH27llIEPFVo5I1mcdmgItNCvvAo6IviqoSNwtJlER6M8935agFDexDw7q
+        K8zI6kNw88BO/lJUTckFjaj6d1DJXoUj+vhGx0nARyuFMW9IP6N5OVadjefELB+XWtH1Yej4bRhpq
+        fE/sMVIQ==;
 Received: from [2a02:1205:504b:4280:f5dd:42a4:896c:d877] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ngJEL-00FYRA-Lt; Mon, 18 Apr 2022 04:43:18 +0000
+        id 1ngJEN-00FYRH-S5; Mon, 18 Apr 2022 04:43:20 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: simplify WQ_HIGHPRI handling in struct btrfs_workqueue
-Date:   Mon, 18 Apr 2022 06:43:09 +0200
-Message-Id: <20220418044311.359720-2-hch@lst.de>
+Subject: [PATCH 2/3] btrfs: use normal workqueues for scrub
+Date:   Mon, 18 Apr 2022 06:43:10 +0200
+Message-Id: <20220418044311.359720-3-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220418044311.359720-1-hch@lst.de>
 References: <20220418044311.359720-1-hch@lst.de>
@@ -50,440 +50,260 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just let the one callers that want optional WQ_HIGHPRI handling allocate
-a separate btrfs_workqueue for that.  This allows to rename
-struct __btrfs_workqueue to btrfs_workqueue, remove a pointer indirection
-and separate allocation for all btrfs_workqueue users and generally
-simplify the code.
+All three scrub workqueues don't need ordered execution or thread
+disabling threshold (as the thresh parameter is less than DFT_THRESHOLD).
+Just switch to the normal workqueues that use a lot less resources,
+especially in the work_struct vs btrfs_work structures.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/async-thread.c      | 123 +++++++----------------------------
- fs/btrfs/async-thread.h      |   7 +-
- fs/btrfs/ctree.h             |   1 +
- fs/btrfs/disk-io.c           |  14 ++--
- fs/btrfs/super.c             |   1 +
- include/trace/events/btrfs.h |  32 ++++-----
- 6 files changed, 50 insertions(+), 128 deletions(-)
+ fs/btrfs/ctree.h |  6 ++--
+ fs/btrfs/scrub.c | 76 ++++++++++++++++++++++--------------------------
+ fs/btrfs/super.c |  2 --
+ 3 files changed, 38 insertions(+), 46 deletions(-)
 
-diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
-index 43c89952b7d25..44e04059bbfc3 100644
---- a/fs/btrfs/async-thread.c
-+++ b/fs/btrfs/async-thread.c
-@@ -15,13 +15,12 @@
- enum {
- 	WORK_DONE_BIT,
- 	WORK_ORDER_DONE_BIT,
--	WORK_HIGH_PRIO_BIT,
- };
- 
- #define NO_THRESHOLD (-1)
- #define DFT_THRESHOLD (32)
- 
--struct __btrfs_workqueue {
-+struct btrfs_workqueue {
- 	struct workqueue_struct *normal_wq;
- 
- 	/* File system this workqueue services */
-@@ -48,12 +47,7 @@ struct __btrfs_workqueue {
- 	spinlock_t thres_lock;
- };
- 
--struct btrfs_workqueue {
--	struct __btrfs_workqueue *normal;
--	struct __btrfs_workqueue *high;
--};
--
--struct btrfs_fs_info * __pure btrfs_workqueue_owner(const struct __btrfs_workqueue *wq)
-+struct btrfs_fs_info * __pure btrfs_workqueue_owner(const struct btrfs_workqueue *wq)
- {
- 	return wq->fs_info;
- }
-@@ -66,22 +60,22 @@ struct btrfs_fs_info * __pure btrfs_work_owner(const struct btrfs_work *work)
- bool btrfs_workqueue_normal_congested(const struct btrfs_workqueue *wq)
- {
- 	/*
--	 * We could compare wq->normal->pending with num_online_cpus()
-+	 * We could compare wq->pending with num_online_cpus()
- 	 * to support "thresh == NO_THRESHOLD" case, but it requires
- 	 * moving up atomic_inc/dec in thresh_queue/exec_hook. Let's
- 	 * postpone it until someone needs the support of that case.
- 	 */
--	if (wq->normal->thresh == NO_THRESHOLD)
-+	if (wq->thresh == NO_THRESHOLD)
- 		return false;
- 
--	return atomic_read(&wq->normal->pending) > wq->normal->thresh * 2;
-+	return atomic_read(&wq->pending) > wq->thresh * 2;
- }
- 
--static struct __btrfs_workqueue *
--__btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info, const char *name,
--			unsigned int flags, int limit_active, int thresh)
-+struct btrfs_workqueue *btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info,
-+		const char *name, unsigned int flags, int limit_active,
-+		int thresh)
- {
--	struct __btrfs_workqueue *ret = kzalloc(sizeof(*ret), GFP_KERNEL);
-+	struct btrfs_workqueue *ret = kzalloc(sizeof(*ret), GFP_KERNEL);
- 
- 	if (!ret)
- 		return NULL;
-@@ -105,12 +99,8 @@ __btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info, const char *name,
- 		ret->thresh = thresh;
- 	}
- 
--	if (flags & WQ_HIGHPRI)
--		ret->normal_wq = alloc_workqueue("btrfs-%s-high", flags,
--						 ret->current_active, name);
--	else
--		ret->normal_wq = alloc_workqueue("btrfs-%s", flags,
--						 ret->current_active, name);
-+	ret->normal_wq = alloc_workqueue("btrfs-%s", flags, ret->current_active,
-+					 name);
- 	if (!ret->normal_wq) {
- 		kfree(ret);
- 		return NULL;
-@@ -119,41 +109,7 @@ __btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info, const char *name,
- 	INIT_LIST_HEAD(&ret->ordered_list);
- 	spin_lock_init(&ret->list_lock);
- 	spin_lock_init(&ret->thres_lock);
--	trace_btrfs_workqueue_alloc(ret, name, flags & WQ_HIGHPRI);
--	return ret;
--}
--
--static inline void
--__btrfs_destroy_workqueue(struct __btrfs_workqueue *wq);
--
--struct btrfs_workqueue *btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info,
--					      const char *name,
--					      unsigned int flags,
--					      int limit_active,
--					      int thresh)
--{
--	struct btrfs_workqueue *ret = kzalloc(sizeof(*ret), GFP_KERNEL);
--
--	if (!ret)
--		return NULL;
--
--	ret->normal = __btrfs_alloc_workqueue(fs_info, name,
--					      flags & ~WQ_HIGHPRI,
--					      limit_active, thresh);
--	if (!ret->normal) {
--		kfree(ret);
--		return NULL;
--	}
--
--	if (flags & WQ_HIGHPRI) {
--		ret->high = __btrfs_alloc_workqueue(fs_info, name, flags,
--						    limit_active, thresh);
--		if (!ret->high) {
--			__btrfs_destroy_workqueue(ret->normal);
--			kfree(ret);
--			return NULL;
--		}
--	}
-+	trace_btrfs_workqueue_alloc(ret, name);
- 	return ret;
- }
- 
-@@ -162,7 +118,7 @@ struct btrfs_workqueue *btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info,
-  * This hook WILL be called in IRQ handler context,
-  * so workqueue_set_max_active MUST NOT be called in this hook
-  */
--static inline void thresh_queue_hook(struct __btrfs_workqueue *wq)
-+static inline void thresh_queue_hook(struct btrfs_workqueue *wq)
- {
- 	if (wq->thresh == NO_THRESHOLD)
- 		return;
-@@ -174,7 +130,7 @@ static inline void thresh_queue_hook(struct __btrfs_workqueue *wq)
-  * This hook is called in kthread content.
-  * So workqueue_set_max_active is called here.
-  */
--static inline void thresh_exec_hook(struct __btrfs_workqueue *wq)
-+static inline void thresh_exec_hook(struct btrfs_workqueue *wq)
- {
- 	int new_current_active;
- 	long pending;
-@@ -217,7 +173,7 @@ static inline void thresh_exec_hook(struct __btrfs_workqueue *wq)
- 	}
- }
- 
--static void run_ordered_work(struct __btrfs_workqueue *wq,
-+static void run_ordered_work(struct btrfs_workqueue *wq,
- 			     struct btrfs_work *self)
- {
- 	struct list_head *list = &wq->ordered_list;
-@@ -305,7 +261,7 @@ static void btrfs_work_helper(struct work_struct *normal_work)
- {
- 	struct btrfs_work *work = container_of(normal_work, struct btrfs_work,
- 					       normal_work);
--	struct __btrfs_workqueue *wq;
-+	struct btrfs_workqueue *wq = work->wq;
- 	int need_order = 0;
- 
- 	/*
-@@ -318,7 +274,6 @@ static void btrfs_work_helper(struct work_struct *normal_work)
- 	 */
- 	if (work->ordered_func)
- 		need_order = 1;
--	wq = work->wq;
- 
- 	trace_btrfs_work_sched(work);
- 	thresh_exec_hook(wq);
-@@ -350,8 +305,8 @@ void btrfs_init_work(struct btrfs_work *work, btrfs_func_t func,
- 	work->flags = 0;
- }
- 
--static inline void __btrfs_queue_work(struct __btrfs_workqueue *wq,
--				      struct btrfs_work *work)
-+void btrfs_queue_work(struct btrfs_workqueue *wq,
-+		      struct btrfs_work *work)
- {
- 	unsigned long flags;
- 
-@@ -366,54 +321,22 @@ static inline void __btrfs_queue_work(struct __btrfs_workqueue *wq,
- 	queue_work(wq->normal_wq, &work->normal_work);
- }
- 
--void btrfs_queue_work(struct btrfs_workqueue *wq,
--		      struct btrfs_work *work)
--{
--	struct __btrfs_workqueue *dest_wq;
--
--	if (test_bit(WORK_HIGH_PRIO_BIT, &work->flags) && wq->high)
--		dest_wq = wq->high;
--	else
--		dest_wq = wq->normal;
--	__btrfs_queue_work(dest_wq, work);
--}
--
--static inline void
--__btrfs_destroy_workqueue(struct __btrfs_workqueue *wq)
--{
--	destroy_workqueue(wq->normal_wq);
--	trace_btrfs_workqueue_destroy(wq);
--	kfree(wq);
--}
--
- void btrfs_destroy_workqueue(struct btrfs_workqueue *wq)
- {
- 	if (!wq)
- 		return;
--	if (wq->high)
--		__btrfs_destroy_workqueue(wq->high);
--	__btrfs_destroy_workqueue(wq->normal);
-+	destroy_workqueue(wq->normal_wq);
-+	trace_btrfs_workqueue_destroy(wq);
- 	kfree(wq);
- }
- 
- void btrfs_workqueue_set_max(struct btrfs_workqueue *wq, int limit_active)
- {
--	if (!wq)
--		return;
--	wq->normal->limit_active = limit_active;
--	if (wq->high)
--		wq->high->limit_active = limit_active;
--}
--
--void btrfs_set_work_high_priority(struct btrfs_work *work)
--{
--	set_bit(WORK_HIGH_PRIO_BIT, &work->flags);
-+	if (wq)
-+		wq->limit_active = limit_active;
- }
- 
- void btrfs_flush_workqueue(struct btrfs_workqueue *wq)
- {
--	if (wq->high)
--		flush_workqueue(wq->high->normal_wq);
--
--	flush_workqueue(wq->normal->normal_wq);
-+	flush_workqueue(wq->normal_wq);
- }
-diff --git a/fs/btrfs/async-thread.h b/fs/btrfs/async-thread.h
-index 3204daa51b955..07960529b3601 100644
---- a/fs/btrfs/async-thread.h
-+++ b/fs/btrfs/async-thread.h
-@@ -11,8 +11,6 @@
- 
- struct btrfs_fs_info;
- struct btrfs_workqueue;
--/* Internal use only */
--struct __btrfs_workqueue;
- struct btrfs_work;
- typedef void (*btrfs_func_t)(struct btrfs_work *arg);
- typedef void (*btrfs_work_func_t)(struct work_struct *arg);
-@@ -25,7 +23,7 @@ struct btrfs_work {
- 	/* Don't touch things below */
- 	struct work_struct normal_work;
- 	struct list_head ordered_list;
--	struct __btrfs_workqueue *wq;
-+	struct btrfs_workqueue *wq;
- 	unsigned long flags;
- };
- 
-@@ -40,9 +38,8 @@ void btrfs_queue_work(struct btrfs_workqueue *wq,
- 		      struct btrfs_work *work);
- void btrfs_destroy_workqueue(struct btrfs_workqueue *wq);
- void btrfs_workqueue_set_max(struct btrfs_workqueue *wq, int max);
--void btrfs_set_work_high_priority(struct btrfs_work *work);
- struct btrfs_fs_info * __pure btrfs_work_owner(const struct btrfs_work *work);
--struct btrfs_fs_info * __pure btrfs_workqueue_owner(const struct __btrfs_workqueue *wq);
-+struct btrfs_fs_info * __pure btrfs_workqueue_owner(const struct btrfs_workqueue *wq);
- bool btrfs_workqueue_normal_congested(const struct btrfs_workqueue *wq);
- void btrfs_flush_workqueue(struct btrfs_workqueue *wq);
- 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 55dee124ee447..383aba168e1d2 100644
+index 383aba168e1d2..59135f0850a6e 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -847,6 +847,7 @@ struct btrfs_fs_info {
- 	 * two
+@@ -946,9 +946,9 @@ struct btrfs_fs_info {
+ 	 * running.
  	 */
- 	struct btrfs_workqueue *workers;
-+	struct btrfs_workqueue *hipri_workers;
- 	struct btrfs_workqueue *delalloc_workers;
- 	struct btrfs_workqueue *flush_workers;
- 	struct btrfs_workqueue *endio_workers;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2689e85896272..980616cc08bfc 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -874,9 +874,9 @@ blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
- 	async->status = 0;
+ 	refcount_t scrub_workers_refcnt;
+-	struct btrfs_workqueue *scrub_workers;
+-	struct btrfs_workqueue *scrub_wr_completion_workers;
+-	struct btrfs_workqueue *scrub_parity_workers;
++	struct workqueue_struct *scrub_workers;
++	struct workqueue_struct *scrub_wr_completion_workers;
++	struct workqueue_struct *scrub_parity_workers;
+ 	struct btrfs_subpage_info *subpage_info;
  
- 	if (op_is_sync(bio->bi_opf))
--		btrfs_set_work_high_priority(&async->work);
--
--	btrfs_queue_work(fs_info->workers, &async->work);
-+		btrfs_queue_work(fs_info->hipri_workers, &async->work);
-+	else
-+		btrfs_queue_work(fs_info->workers, &async->work);
- 	return 0;
+ 	struct btrfs_discard_ctl discard_ctl;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 13ba458c080ce..0be910baf2235 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -90,7 +90,7 @@ struct scrub_bio {
+ 	struct scrub_sector	*sectors[SCRUB_SECTORS_PER_BIO];
+ 	int			sector_count;
+ 	int			next_free;
+-	struct btrfs_work	work;
++	struct work_struct	work;
+ };
+ 
+ struct scrub_block {
+@@ -110,7 +110,7 @@ struct scrub_block {
+ 		/* It is for the data with checksum */
+ 		unsigned int	data_corrected:1;
+ 	};
+-	struct btrfs_work	work;
++	struct work_struct	work;
+ };
+ 
+ /* Used for the chunks with parity stripe such RAID5/6 */
+@@ -132,7 +132,7 @@ struct scrub_parity {
+ 	struct list_head	sectors_list;
+ 
+ 	/* Work of parity check and repair */
+-	struct btrfs_work	work;
++	struct work_struct	work;
+ 
+ 	/* Mark the parity blocks which have data */
+ 	unsigned long		*dbitmap;
+@@ -231,7 +231,7 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 			 u64 gen, int mirror_num, u8 *csum,
+ 			 u64 physical_for_dev_replace);
+ static void scrub_bio_end_io(struct bio *bio);
+-static void scrub_bio_end_io_worker(struct btrfs_work *work);
++static void scrub_bio_end_io_worker(struct work_struct *work);
+ static void scrub_block_complete(struct scrub_block *sblock);
+ static void scrub_remap_extent(struct btrfs_fs_info *fs_info,
+ 			       u64 extent_logical, u32 extent_len,
+@@ -242,7 +242,7 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+ 				      struct scrub_sector *sector);
+ static void scrub_wr_submit(struct scrub_ctx *sctx);
+ static void scrub_wr_bio_end_io(struct bio *bio);
+-static void scrub_wr_bio_end_io_worker(struct btrfs_work *work);
++static void scrub_wr_bio_end_io_worker(struct work_struct *work);
+ static void scrub_put_ctx(struct scrub_ctx *sctx);
+ 
+ static inline int scrub_is_page_on_raid56(struct scrub_sector *sector)
+@@ -587,8 +587,7 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
+ 		sbio->index = i;
+ 		sbio->sctx = sctx;
+ 		sbio->sector_count = 0;
+-		btrfs_init_work(&sbio->work, scrub_bio_end_io_worker, NULL,
+-				NULL);
++		INIT_WORK(&sbio->work, scrub_bio_end_io_worker);
+ 
+ 		if (i != SCRUB_BIOS_PER_SCTX - 1)
+ 			sctx->bios[i]->next_free = i + 1;
+@@ -1718,11 +1717,11 @@ static void scrub_wr_bio_end_io(struct bio *bio)
+ 	sbio->status = bio->bi_status;
+ 	sbio->bio = bio;
+ 
+-	btrfs_init_work(&sbio->work, scrub_wr_bio_end_io_worker, NULL, NULL);
+-	btrfs_queue_work(fs_info->scrub_wr_completion_workers, &sbio->work);
++	INIT_WORK(&sbio->work, scrub_wr_bio_end_io_worker);
++	queue_work(fs_info->scrub_wr_completion_workers, &sbio->work);
  }
  
-@@ -2286,6 +2286,7 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+-static void scrub_wr_bio_end_io_worker(struct btrfs_work *work)
++static void scrub_wr_bio_end_io_worker(struct work_struct *work)
  {
- 	btrfs_destroy_workqueue(fs_info->fixup_workers);
- 	btrfs_destroy_workqueue(fs_info->delalloc_workers);
-+	btrfs_destroy_workqueue(fs_info->hipri_workers);
- 	btrfs_destroy_workqueue(fs_info->workers);
- 	btrfs_destroy_workqueue(fs_info->endio_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_raid56_workers);
-@@ -2465,6 +2466,9 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
+ 	struct scrub_bio *sbio = container_of(work, struct scrub_bio, work);
+ 	struct scrub_ctx *sctx = sbio->sctx;
+@@ -2119,10 +2118,10 @@ static void scrub_missing_raid56_end_io(struct bio *bio)
  
- 	fs_info->workers =
- 		btrfs_alloc_workqueue(fs_info, "worker",
-+				      flags, max_active, 16);
-+	fs_info->hipri_workers =
-+		btrfs_alloc_workqueue(fs_info, "worker-high",
- 				      flags | WQ_HIGHPRI, max_active, 16);
+ 	bio_put(bio);
  
- 	fs_info->delalloc_workers =
-@@ -2512,8 +2516,8 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
- 	fs_info->discard_ctl.discard_workers =
- 		alloc_workqueue("btrfs_discard", WQ_UNBOUND | WQ_FREEZABLE, 1);
+-	btrfs_queue_work(fs_info->scrub_workers, &sblock->work);
++	queue_work(fs_info->scrub_workers, &sblock->work);
+ }
  
--	if (!(fs_info->workers && fs_info->delalloc_workers &&
--	      fs_info->flush_workers &&
-+	if (!(fs_info->workers && fs_info->hipri_workers &&
-+	      fs_info->delalloc_workers && fs_info->flush_workers &&
- 	      fs_info->endio_workers && fs_info->endio_meta_workers &&
- 	      fs_info->endio_meta_write_workers &&
- 	      fs_info->endio_write_workers && fs_info->endio_raid56_workers &&
+-static void scrub_missing_raid56_worker(struct btrfs_work *work)
++static void scrub_missing_raid56_worker(struct work_struct *work)
+ {
+ 	struct scrub_block *sblock = container_of(work, struct scrub_block, work);
+ 	struct scrub_ctx *sctx = sblock->sctx;
+@@ -2208,7 +2207,7 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
+ 		raid56_add_scrub_pages(rbio, sector->page, sector->logical);
+ 	}
+ 
+-	btrfs_init_work(&sblock->work, scrub_missing_raid56_worker, NULL, NULL);
++	INIT_WORK(&sblock->work, scrub_missing_raid56_worker);
+ 	scrub_block_get(sblock);
+ 	scrub_pending_bio_inc(sctx);
+ 	raid56_submit_missing_rbio(rbio);
+@@ -2328,10 +2327,10 @@ static void scrub_bio_end_io(struct bio *bio)
+ 	sbio->status = bio->bi_status;
+ 	sbio->bio = bio;
+ 
+-	btrfs_queue_work(fs_info->scrub_workers, &sbio->work);
++	queue_work(fs_info->scrub_workers, &sbio->work);
+ }
+ 
+-static void scrub_bio_end_io_worker(struct btrfs_work *work)
++static void scrub_bio_end_io_worker(struct work_struct *work)
+ {
+ 	struct scrub_bio *sbio = container_of(work, struct scrub_bio, work);
+ 	struct scrub_ctx *sctx = sbio->sctx;
+@@ -2761,7 +2760,7 @@ static void scrub_free_parity(struct scrub_parity *sparity)
+ 	kfree(sparity);
+ }
+ 
+-static void scrub_parity_bio_endio_worker(struct btrfs_work *work)
++static void scrub_parity_bio_endio_worker(struct work_struct *work)
+ {
+ 	struct scrub_parity *sparity = container_of(work, struct scrub_parity,
+ 						    work);
+@@ -2782,9 +2781,8 @@ static void scrub_parity_bio_endio(struct bio *bio)
+ 
+ 	bio_put(bio);
+ 
+-	btrfs_init_work(&sparity->work, scrub_parity_bio_endio_worker, NULL,
+-			NULL);
+-	btrfs_queue_work(fs_info->scrub_parity_workers, &sparity->work);
++	INIT_WORK(&sparity->work, scrub_parity_bio_endio_worker);
++	queue_work(fs_info->scrub_parity_workers, &sparity->work);
+ }
+ 
+ static void scrub_parity_check_and_repair(struct scrub_parity *sparity)
+@@ -3930,22 +3928,20 @@ static void scrub_workers_put(struct btrfs_fs_info *fs_info)
+ {
+ 	if (refcount_dec_and_mutex_lock(&fs_info->scrub_workers_refcnt,
+ 					&fs_info->scrub_lock)) {
+-		struct btrfs_workqueue *scrub_workers = NULL;
+-		struct btrfs_workqueue *scrub_wr_comp = NULL;
+-		struct btrfs_workqueue *scrub_parity = NULL;
+-
+-		scrub_workers = fs_info->scrub_workers;
+-		scrub_wr_comp = fs_info->scrub_wr_completion_workers;
+-		scrub_parity = fs_info->scrub_parity_workers;
++		struct workqueue_struct *scrub_workers = fs_info->scrub_workers;
++		struct workqueue_struct *scrub_wr_comp =
++			fs_info->scrub_wr_completion_workers;
++		struct workqueue_struct *scrub_parity =
++			fs_info->scrub_parity_workers;
+ 
+ 		fs_info->scrub_workers = NULL;
+ 		fs_info->scrub_wr_completion_workers = NULL;
+ 		fs_info->scrub_parity_workers = NULL;
+ 		mutex_unlock(&fs_info->scrub_lock);
+ 
+-		btrfs_destroy_workqueue(scrub_workers);
+-		btrfs_destroy_workqueue(scrub_wr_comp);
+-		btrfs_destroy_workqueue(scrub_parity);
++		destroy_workqueue(scrub_workers);
++		destroy_workqueue(scrub_wr_comp);
++		destroy_workqueue(scrub_parity);
+ 	}
+ }
+ 
+@@ -3955,9 +3951,9 @@ static void scrub_workers_put(struct btrfs_fs_info *fs_info)
+ static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
+ 						int is_dev_replace)
+ {
+-	struct btrfs_workqueue *scrub_workers = NULL;
+-	struct btrfs_workqueue *scrub_wr_comp = NULL;
+-	struct btrfs_workqueue *scrub_parity = NULL;
++	struct workqueue_struct *scrub_workers = NULL;
++	struct workqueue_struct *scrub_wr_comp = NULL;
++	struct workqueue_struct *scrub_parity = NULL;
+ 	unsigned int flags = WQ_FREEZABLE | WQ_UNBOUND;
+ 	int max_active = fs_info->thread_pool_size;
+ 	int ret = -ENOMEM;
+@@ -3965,18 +3961,16 @@ static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
+ 	if (refcount_inc_not_zero(&fs_info->scrub_workers_refcnt))
+ 		return 0;
+ 
+-	scrub_workers = btrfs_alloc_workqueue(fs_info, "scrub", flags,
+-					      is_dev_replace ? 1 : max_active, 4);
++	scrub_workers = alloc_workqueue("btrfs-scrub", flags,
++					is_dev_replace ? 1 : max_active);
+ 	if (!scrub_workers)
+ 		goto fail_scrub_workers;
+ 
+-	scrub_wr_comp = btrfs_alloc_workqueue(fs_info, "scrubwrc", flags,
+-					      max_active, 2);
++	scrub_wr_comp = alloc_workqueue("btrfs-scrubwrc", flags, max_active);
+ 	if (!scrub_wr_comp)
+ 		goto fail_scrub_wr_completion_workers;
+ 
+-	scrub_parity = btrfs_alloc_workqueue(fs_info, "scrubparity", flags,
+-					     max_active, 2);
++	scrub_parity = alloc_workqueue("btrfs-scrubparity", flags, max_active);
+ 	if (!scrub_parity)
+ 		goto fail_scrub_parity_workers;
+ 
+@@ -3997,11 +3991,11 @@ static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
+ 	mutex_unlock(&fs_info->scrub_lock);
+ 
+ 	ret = 0;
+-	btrfs_destroy_workqueue(scrub_parity);
++	destroy_workqueue(scrub_parity);
+ fail_scrub_parity_workers:
+-	btrfs_destroy_workqueue(scrub_wr_comp);
++	destroy_workqueue(scrub_wr_comp);
+ fail_scrub_wr_completion_workers:
+-	btrfs_destroy_workqueue(scrub_workers);
++	destroy_workqueue(scrub_workers);
+ fail_scrub_workers:
+ 	return ret;
+ }
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 206f44005c52a..2236024aca648 100644
+index 2236024aca648..b1fdc6a26c76e 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -1903,6 +1903,7 @@ static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
- 	       old_pool_size, new_pool_size);
+@@ -1913,8 +1913,6 @@ static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
+ 	btrfs_workqueue_set_max(fs_info->endio_write_workers, new_pool_size);
+ 	btrfs_workqueue_set_max(fs_info->endio_freespace_worker, new_pool_size);
+ 	btrfs_workqueue_set_max(fs_info->delayed_workers, new_pool_size);
+-	btrfs_workqueue_set_max(fs_info->scrub_wr_completion_workers,
+-				new_pool_size);
+ }
  
- 	btrfs_workqueue_set_max(fs_info->workers, new_pool_size);
-+	btrfs_workqueue_set_max(fs_info->hipri_workers, new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->delalloc_workers, new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->caching_workers, new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->endio_workers, new_pool_size);
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index f068ff30d6541..5cbc60b938535 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -24,7 +24,7 @@ struct btrfs_free_cluster;
- struct map_lookup;
- struct extent_buffer;
- struct btrfs_work;
--struct __btrfs_workqueue;
-+struct btrfs_workqueue;
- struct btrfs_qgroup_extent_record;
- struct btrfs_qgroup;
- struct extent_io_tree;
-@@ -1457,42 +1457,38 @@ DEFINE_EVENT(btrfs__work, btrfs_ordered_sched,
- 	TP_ARGS(work)
- );
- 
--DECLARE_EVENT_CLASS(btrfs__workqueue,
-+DECLARE_EVENT_CLASS(btrfs_workqueue,
- 
--	TP_PROTO(const struct __btrfs_workqueue *wq,
--		 const char *name, int high),
-+	TP_PROTO(const struct btrfs_workqueue *wq,
-+		 const char *name),
- 
--	TP_ARGS(wq, name, high),
-+	TP_ARGS(wq, name),
- 
- 	TP_STRUCT__entry_btrfs(
- 		__field(	const void *,	wq			)
- 		__string(	name,	name			)
--		__field(	int ,	high			)
- 	),
- 
- 	TP_fast_assign_btrfs(btrfs_workqueue_owner(wq),
- 		__entry->wq		= wq;
- 		__assign_str(name, name);
--		__entry->high		= high;
- 	),
- 
--	TP_printk_btrfs("name=%s%s wq=%p", __get_str(name),
--		  __print_flags(__entry->high, "",
--				{(WQ_HIGHPRI),	"-high"}),
-+	TP_printk_btrfs("name=%s wq=%p", __get_str(name),
- 		  __entry->wq)
- );
- 
--DEFINE_EVENT(btrfs__workqueue, btrfs_workqueue_alloc,
-+DEFINE_EVENT(btrfs_workqueue, btrfs_workqueue_alloc,
- 
--	TP_PROTO(const struct __btrfs_workqueue *wq,
--		 const char *name, int high),
-+	TP_PROTO(const struct btrfs_workqueue *wq,
-+		 const char *name),
- 
--	TP_ARGS(wq, name, high)
-+	TP_ARGS(wq, name)
- );
- 
--DECLARE_EVENT_CLASS(btrfs__workqueue_done,
-+DECLARE_EVENT_CLASS(btrfs_workqueue_done,
- 
--	TP_PROTO(const struct __btrfs_workqueue *wq),
-+	TP_PROTO(const struct btrfs_workqueue *wq),
- 
- 	TP_ARGS(wq),
- 
-@@ -1507,9 +1503,9 @@ DECLARE_EVENT_CLASS(btrfs__workqueue_done,
- 	TP_printk_btrfs("wq=%p", __entry->wq)
- );
- 
--DEFINE_EVENT(btrfs__workqueue_done, btrfs_workqueue_destroy,
-+DEFINE_EVENT(btrfs_workqueue_done, btrfs_workqueue_destroy,
- 
--	TP_PROTO(const struct __btrfs_workqueue *wq),
-+	TP_PROTO(const struct btrfs_workqueue *wq),
- 
- 	TP_ARGS(wq)
- );
+ static inline void btrfs_remount_begin(struct btrfs_fs_info *fs_info,
 -- 
 2.30.2
 
