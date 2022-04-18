@@ -2,118 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C96F3505BD7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 17:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1CF505BE4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 17:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345690AbiDRPux (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Apr 2022 11:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
+        id S1345723AbiDRPvT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Apr 2022 11:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345474AbiDRPuE (ORCPT
+        with ESMTP id S1345500AbiDRPuw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Apr 2022 11:50:04 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D39F1AD80
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 08:28:21 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id d198so8242460qkc.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 08:28:21 -0700 (PDT)
+        Mon, 18 Apr 2022 11:50:52 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8919922BD6
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 08:29:14 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id s70so4642528qke.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 08:29:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7qj+wLzAkHpxSmzaRTcWTs7O2et9GwKcZLdjjXXnL1A=;
-        b=DoqHfAuFjGyol/Og/Yb4elYNIy/mLi+gOTL4zgYkeoxb25zP3/T1oPF7Tw371ljfI6
-         N2Vuu26MbG7cxTEKgcP8EHC/DA31c98j9zIRSozXnYezYvDxDunxfNCkDtMClXv3V/uI
-         DaGWwDKHJJZZ1CcaAxAINTAUq4hNtI9zXs2Ha3m4LJK00iLFMMxEqIzCtoA6o/pfm0Vu
-         4VgH8Y9pPTBdC1o7GXs/bsKhaTzKV2CRhBkDYXxRo9M2WwRT7Qn7u/flaw56jfAPdQgL
-         xZqm2LT6gUI+z5IuVNoTvFipWi6LI8/NWq5BUAt3tMbBZ/9VSielWaBcx228dnUlaVy1
-         xKAQ==
+        bh=bk1eGuqJwndoaxsSvNYecRXq6M9A/bw4S/fhOCK+UVc=;
+        b=7F1UZiOfTJRn87TwUEurTc5P9PUWSoCZVGAWHNHavR/bXr65b7KljKF0kk1dwg8xtX
+         FV2/yylNEvwEn6tcML003t9HpMDMOOawvHFcZTPEutpToRtbZWi+UaQk8xQzv04nizSZ
+         z3nZfVkKDQV81BL2ItSAoeePcPWD9Qg2Z5i1WBFyGsUhAVxc3pB8JbhNF1jOIXOoaiSH
+         8HheabbU4cpxESbOeAge9Vh2k/fJ9DIqUXhtwrgrXor14veeWkLZs43ptPfI6ZunZrcv
+         K8Veoug7qzQGyJ7hZFDpX7uKERtiGsdL5XFq9Tcp9XHLPVDqm4ABNTRKMLETwb9l3kl4
+         VlpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7qj+wLzAkHpxSmzaRTcWTs7O2et9GwKcZLdjjXXnL1A=;
-        b=RJ5qI+zeTweAp5pZVXLlClcmT8hc9Vt+3gFXPiED6BxuM/zyK+5A32hmGpU079CEqO
-         Om0GpXU20LgmywwdduenWDgo9dbG/1snBQLfs4aj2dCwmSDEh+dCinAtCtIy7p40iAgI
-         1toHDz9BRWUIcnWyYlQOBe/UOuq2C5mrobTa91FUa+vYF25xUoax5tv4++BqLeDkFNsG
-         6BD0V464WPSOw505RQXXL6IXTQMUuJZ10Hu/33ceI8XgiCMvm4Rdm9Vf0Oh+hDvcDScZ
-         LAV+VJK8KvlJFmEAX3Q7cebKeokK6bwhy+sF9rqxpQfRluQUGf2ZbWrT3QRXzz06ezPX
-         E5nQ==
-X-Gm-Message-State: AOAM531uncbVnN7gXiw+Dw6JfS7IFJpyeSz7mIPK7yYe3jgVC3O8ynZx
-        Il1NeX92+3UpqHPY6x0j1E/taQ==
-X-Google-Smtp-Source: ABdhPJzLT3tZrbj6gSWzmAIm5Rav/G0Ehq28KyMUjYmucPGiWYrgaxv+C45vUQscrBjQsYqpC8H67A==
-X-Received: by 2002:a05:620a:4689:b0:69e:a989:5f4b with SMTP id bq9-20020a05620a468900b0069ea9895f4bmr1798796qkb.452.1650295700333;
-        Mon, 18 Apr 2022 08:28:20 -0700 (PDT)
+        bh=bk1eGuqJwndoaxsSvNYecRXq6M9A/bw4S/fhOCK+UVc=;
+        b=A9ChY6uCRnpXjkojAJQQqisFR7WhgdrBwWZjnyCqvzb6E0408ISA5amHKNimkxfgKK
+         cj4cwbPGLYhMIyhiKgoD7fY97KzrBoYTU6pCqBBugvsvCRPzQSklEe3S5kpj3P2bFl/k
+         1aHlYACpu1c2ltektes0XOuB0I+pg1AOnwjEXbPc0EDQKEKF4QIsVD1XnsHRYTEWKNzQ
+         dMfScQtBQPawX6KwqBjDHeHE3C55QO9/1b3BwxWBdcUeYP057nl5phxboa0/ZhC6kevA
+         IU+RDAhNJI7PCNYEo+IOSx7z483zITY66fAbZxr/iAIa5E6NlDn1TYs7//SNh5l/1ogc
+         kxWg==
+X-Gm-Message-State: AOAM530Tr6ppMdmhA+ZCV2e3vLYBaRE6xTFEwpk27Nciy10ShAz3BrHP
+        7cUDGOJLi9QBrBTTVgqCRQwBEw==
+X-Google-Smtp-Source: ABdhPJz/YKZah8C+U0YgIVsCTc14vr9OwHpssgyFke0VAkIsnTf4JBHSdxL1MhhT+PHSqXV7HFH79w==
+X-Received: by 2002:a37:b502:0:b0:69a:ca1:298 with SMTP id e2-20020a37b502000000b0069a0ca10298mr6942704qkf.133.1650295753354;
+        Mon, 18 Apr 2022 08:29:13 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h5-20020ac85845000000b002edfd4b0503sm8152505qth.88.2022.04.18.08.28.19
+        by smtp.gmail.com with ESMTPSA id c17-20020ac85a91000000b002e1dd8ae44bsm7800323qtc.29.2022.04.18.08.29.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Apr 2022 08:28:19 -0700 (PDT)
-Date:   Mon, 18 Apr 2022 11:28:19 -0400
+        Mon, 18 Apr 2022 08:29:12 -0700 (PDT)
+Date:   Mon, 18 Apr 2022 11:29:11 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs-progs: fix an error path which can lead to
- empty device list
-Message-ID: <Yl2DkxaFud5Gu5YR@localhost.localdomain>
-References: <cover.1650287150.git.wqu@suse.com>
- <9f9bba7ebbf66361ac7741a74704228652b3b4b9.1650287150.git.wqu@suse.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Nick Terrell <terrelln@fb.com>, Schspa Shi <schspa@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: zstd: remove extraneous asterix at the head of
+ zstd_reclaim_timer_fn() comment
+Message-ID: <Yl2Dx+jefYs1Un+8@localhost.localdomain>
+References: <20220418125934.566647-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9f9bba7ebbf66361ac7741a74704228652b3b4b9.1650287150.git.wqu@suse.com>
+In-Reply-To: <20220418125934.566647-1-bagasdotme@gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 09:10:08PM +0800, Qu Wenruo wrote:
-> [BUG]
-> With the incoming delayed chunk item insertion feature, there is a super
-> weird failure at mkfs/022:
+On Mon, Apr 18, 2022 at 07:59:35PM +0700, Bagas Sanjaya wrote:
+> kernel test robot reports kernel-doc warning:
 > 
->   ====== RUN CHECK ./mkfs.btrfs -f --rootdir tmp.KnKpP5 -d dup -b 350M tests/test.img
->   ...
->   Checksum:           crc32c
->   Number of devices:  0
->   Devices:
->      ID        SIZE  PATH
+> >> fs/btrfs/zstd.c:98: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 > 
-> Note the "Number of devices: 0" line, this means our
-> fs_info->fs_devices->devices list is empty.
+> The comment is for zstd_reclaim_timer_fn(). Since the function is
+> static, the comment isn't meant for kernel-doc consumption.
 > 
-> And since our rw device list is empty, we won't finish the mkfs with
-> proper superblock magic, and cause later btrfs check to fail.
+> Remove the extraneous (second) asterix at the head of function comment.
 > 
-> [CAUSE]
-> Although the failure is only triggered by the incoming delayed chunk
-> item insertion feature, the bug itself is here for a while.
-> 
-> In btrfs_alloc_chunk(), we move rw devices to our @private_devs list
-> first, then in create_chunk(), we move it back to our rw devices list.
-> 
-> This dance is pretty dangerous, epsecially if btrfs_alloc_dev_extent()
-> failed inside create_chunk(), and current profile have multiple stripes
-> (including DUP), we will exit create_chunk() directly, without moving the
-> remaining devices in @private_devs list back to @dev_list.
-> 
-> Furthermore, btrfs_alloc_chunk() is expected to return -ENOSPC, as we
-> call btrfs_alloc_chunk() to pre-allocate chunks, and ignore the -ENOSPC
-> error if it's just a pre-allocation failure.
-> 
-> This existing error path can lead to the empty rw list seen above.
-> 
-> [FIX]
-> After create_chunk(), unconditionally move all devices in @private_devs
-> back to rw device list.
-> 
-> And add extra check to make sure our rw device list is never empty after
-> a chunk allocation attempt.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Link: https://lore.kernel.org/linux-doc/202204151934.CkKcnvuJ-lkp@intel.com/
+> Fixes: b672526e2ee935 ("btrfs: use non-bh spin_lock in zstd timer callback")
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: Nick Terrell <terrelln@fb.com>
+> Cc: Schspa Shi <schspa@gmail.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
