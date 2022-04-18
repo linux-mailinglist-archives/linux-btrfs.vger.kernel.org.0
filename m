@@ -2,161 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BB0504769
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Apr 2022 11:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CCC504A7F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Apr 2022 03:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbiDQJfv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Apr 2022 05:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        id S235609AbiDRBgB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Apr 2022 21:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233007AbiDQJft (ORCPT
+        with ESMTP id S235614AbiDRBft (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Apr 2022 05:35:49 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6314F3CFF9
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 02:33:14 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id o5so10896523pjr.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 02:33:14 -0700 (PDT)
+        Sun, 17 Apr 2022 21:35:49 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F408A1835B
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 18:32:48 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id s14-20020a17090a880e00b001caaf6d3dd1so16053795pjn.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Apr 2022 18:32:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fydeos.io; s=fydeos;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=rbpt6SrSc/QgFoHqnVgYbms+e7L0+iwGeLzpbadSmrM=;
-        b=FCUXBP9zjwj4f3CL2vCyYxFZmBZMHrGHk8PqOc6w4U5o9OsLuBtahBvzPlN14QoAet
-         RlWC5+gQhBUDzh2c1g1NoDPW5YeIY3Dl6rg+7WmMy7Pn0FNwMkPBuGMiG7pg6oxlhylo
-         w7zFVxU9fQSSjB73rc2evN6vRwC2CDhVeqcc+treSpIGBRH0lOFT2HUGDSq5eGqsB6aw
-         YV5WA//tdUK8NiM6I3tr62XW8YEQ/11HX+wTFjYLppMvzyI0twZTiJcuZPrVaRiRk2qf
-         ApZ6Oo49RiaIa4h4Wxu3yaaKKBHxWebEw7eitLMK26/VgDUL+eC07+ZE2a7yY+ptU1Qe
-         oX5A==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=KJfLbwgngO3OiGtIZhQTnGZUpV/6KTf4a6VxaVn0jHA=;
+        b=fUiWEs30cpVdTgnRTDuIunTyD3sFwyNXIMjD2xrDFFhby9PvozDytSBEVj5TLA3enQ
+         WJg5PUCFZhavWnDTUSjcqiWdtbmRSnwGPVoJqfidCHXMsRiC/8miYakfaAZVFsJvX3bS
+         5rW4pfgKMUPRH4xvCV8Ayqx16fXXcBpmLJ8ouv1MDWzBzzeX6sTvregS6+W7imKu2o9s
+         JkpStrFdIm2UGzcq7WrYJf9XXlMNLf1O1L3ohQXq8EaSjdqThCTtF7dsfLFbH0M279GX
+         9j/pkX//BLTGvZs/WRmTotqH1MNj+h8ET2s+rsNWcTHLVYqXbzx2Z0wD2+tsX+cqIWVh
+         IhOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=rbpt6SrSc/QgFoHqnVgYbms+e7L0+iwGeLzpbadSmrM=;
-        b=yP5vW0Jae7n/iOC3UpPA8ynIegkKAtO88sFEMiIj8Ynwxd7VrpOR6NBo6P6vQJD+D7
-         Gi0cGdHVqL6V7KCZ6q9SGLjVuY6bnV12vYE1yvsZEUFLrwSqjAJWbbQXG0SNbT+L7YZT
-         PoY+FVE1mjP3urh/PNoRsTph71NBBE+wBc/Do+62JEpSa6Yf5ZdVhRCICp+2G+N4rbbG
-         2BDduRMCPuGxgBuoPO1IXdoCzQBOXU5E7LvHePUDZn1nFbpOWAnGb9O+UiAiaml0YdaZ
-         w3x3lp2RIHDlYZDiAhPB0+oViKVLbd65qWs3dDZM6mS13FwWfzE8Oyt/k9obX++gdiZ/
-         audg==
-X-Gm-Message-State: AOAM5328e43j2mj+wPYkin1ofSmVvd5SEvz8uulMeCE+NDxquRVkH732
-        PTsnWREWWFy/fytqWNTEew/5MRxMq9tvbDtS3sZMUA==
-X-Google-Smtp-Source: ABdhPJy3pF00BD9HP6/i8+vn/CmFKarFhin7sRO3pVGYy/2q3MpPDI5/Axv663ZYtrAqlAr2KN8awQ==
-X-Received: by 2002:a17:90b:4f91:b0:1cd:3a73:3a5d with SMTP id qe17-20020a17090b4f9100b001cd3a733a5dmr7554467pjb.98.1650187993776;
-        Sun, 17 Apr 2022 02:33:13 -0700 (PDT)
-Received: from [192.168.66.144] ([103.177.44.12])
-        by smtp.gmail.com with ESMTPSA id x3-20020a17090aca0300b001d26c525be1sm3246125pjt.12.2022.04.17.02.33.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Apr 2022 02:33:13 -0700 (PDT)
-Message-ID: <1ea30dc4-2380-7e04-cab8-deeb63d967ed@fydeos.io>
-Date:   Sun, 17 Apr 2022 17:33:10 +0800
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=KJfLbwgngO3OiGtIZhQTnGZUpV/6KTf4a6VxaVn0jHA=;
+        b=5OFE0U7c3IcRDzledHiazrRjB8sRDrvK2qedtW68qyZG7NIEGbLaPf6wJZo/TPKVVA
+         hiWQizymjYioOAe2p/UtSDyItkCs89SO2punVqh7iC8bDV4xVXZFuSsNy6DwC1zOHQsb
+         jSkUmuQOsK/8oQBU48Ky7+AKfc7CGZVoAk1p/GOwrqrdKhK8ZYsBNOSkIoWd9nURstex
+         p2CrbrV8ObQOBv/QbZoyRvU13n5cCHakdpX4zjzm7kPDaOuehxhr3GJJzYBXfm2lA2WH
+         Sedj0AdM8sshm6S8B06Z+pMdw5lhCXd3IhOpef5tb7ZKwTxcLtlj38Rd0JkCjPQs7Y2D
+         SPeg==
+X-Gm-Message-State: AOAM53352Du6yBR0CX13NxW6wHTbOskgpwLUUjFAUxyNgCBXHUe3L1XY
+        awoONCiWHKCWnLaqRfsF77pwJA==
+X-Google-Smtp-Source: ABdhPJxH3Tcv8urG8TWDL99aaKBrMqsxLK1RCMCg75RZRVpxh7Td568gOGSDadX3DzyNp9aRqA2iCg==
+X-Received: by 2002:a17:903:2406:b0:158:f6f0:6c44 with SMTP id e6-20020a170903240600b00158f6f06c44mr4676524plo.88.1650245568439;
+        Sun, 17 Apr 2022 18:32:48 -0700 (PDT)
+Received: from [127.0.1.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id g15-20020a63be4f000000b0039934531e95sm10726611pgo.18.2022.04.17.18.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Apr 2022 18:32:47 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-block@vger.kernel.org, phillip@squashfs.org.uk,
+        target-devel@vger.kernel.org, colyli@suse.de,
+        linux-btrfs@vger.kernel.org, martin.petersen@oracle.com,
+        linux-raid@vger.kernel.org, dsterba@suse.com, josef@toxicpanda.com,
+        song@kernel.org, dm-devel@redhat.com, snitzer@redhat.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20220406061228.410163-1-hch@lst.de>
+References: <20220406061228.410163-1-hch@lst.de>
+Subject: Re: cleanup bio_kmalloc v3
+Message-Id: <165024556441.258485.6980891929042026868.b4-ty@kernel.dk>
+Date:   Sun, 17 Apr 2022 19:32:44 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.8.0
-Subject: Re: [PATCH 1/2] btrfs-progs: check: fix wrong total bytes check for
- seed device
-Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1650180472.git.wqu@suse.com>
- <8ed9c80d960090f44b11c4420b5bfbe04170c4a4.1650180472.git.wqu@suse.com>
-From:   Su Yue <glass@fydeos.io>
-In-Reply-To: <8ed9c80d960090f44b11c4420b5bfbe04170c4a4.1650180472.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, 6 Apr 2022 08:12:23 +0200, Christoph Hellwig wrote:
+> this series finishes off the bio allocation interface cleanups by dealing
+> with the weirdest member of the famility.  bio_kmalloc combines a kmalloc
+> for the bio and bio_vecs with a hidden bio_init call and magic cleanup
+> semantics.
+> 
+> This series moves a few callers away from bio_kmalloc and then turns
+> bio_kmalloc into a simple wrapper for a slab allocation of a bio and the
+> inline biovecs.  The callers need to manually call bio_init instead with
+> all that entails and the magic that turns bio_put into a kfree goes away
+> as well, allowing for a proper debug check in bio_put that catches
+> accidental use on a bio_init()ed bio.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/5] btrfs: simplify ->flush_bio handling
+      commit: f9e69aa9ccd7e51c47b147e45e03987ea0ef9aa3
+[2/5] squashfs: always use bio_kmalloc in squashfs_bio_read
+      commit: 46a2d4ccc49903923506685a8368ca88312bbdc9
+[3/5] target/pscsi: remove pscsi_get_bio
+      commit: 7655db80932d95f501a0811544d9520ec720e38d
+[4/5] block: turn bio_kmalloc into a simple kmalloc wrapper
+      commit: 066ff571011d8416e903d3d4f1f41e0b5eb91e1d
+[5/5] pktcdvd: stop using bio_reset
+      commit: 852ad96cb03621f7995764b4b31cbff9801d8bcd
+
+Best regards,
+-- 
+Jens Axboe
 
 
-On 2022/4/17 15:30, Qu Wenruo wrote:
-> [BUG]
-> The following script can lead to false positive from btrfs check:
-> 
->    mkfs.btrfs -f $dev1
->    mount $dev1 $mnt
->    btrfstune -S1 $dev1
->    mount $dev1 $mnt
->    btrfs dev add -f $dev2 $mnt
->    umount $mnt
-> 
->    # Now dev1 is seed, and dev2 is the rw fs.
->    btrfs check $dev2
->    ...
->    [2/7] checking extents
->    WARNING: minor unaligned/mismatch device size detected
->    WARNING: recommended to use 'btrfs rescue fix-device-size' to fix it
->    ...
-> 
-> This false positive only happens on $dev2, $dev1 is completely fine.
-> 
-> [CAUSE]
-> The warning is from is_super_size_valid(), in that function we verify
-> the super block total bytes (@super_bytes) is correct against the total
-> device bytes (@total_bytes).
-> 
-> However the when calculating @total_bytes, we only use devices in
-> current fs_devices, which only contains RW devices.
-> 
-> Thus all bytes from seed device are not taken into consideration, and
-> trigger the false positive.
-> 
-> [FIX]
-> Fix it by also iterating seed devices.
-> 
-> Since we're here, also output @total_bytes and @super_bytes when
-> outputting the warning message, to allow end users have a better idea on
-> what's going wrong.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: Su Yue <glass@fydeos.io>
-> ---
->   check/main.c | 18 ++++++++++++------
->   1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/check/main.c b/check/main.c
-> index e6e85784d5ea..64fc6f2ebdb7 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -8550,13 +8550,17 @@ static int check_device_used(struct device_record *dev_rec,
->    */
->   static bool is_super_size_valid(void)
->   {
-> -	struct btrfs_device *dev;
-> -	struct list_head *dev_list = &gfs_info->fs_devices->devices;
-> +	struct btrfs_fs_devices *fs_devices = gfs_info->fs_devices;
-> +	const u64 super_bytes = btrfs_super_total_bytes(gfs_info->super_copy);
->   	u64 total_bytes = 0;
-> -	u64 super_bytes = btrfs_super_total_bytes(gfs_info->super_copy);
->   
-> -	list_for_each_entry(dev, dev_list, dev_list)
-> -		total_bytes += dev->total_bytes;
-> +	while (fs_devices) {
-> +		struct btrfs_device *dev;
-> +
-> +		list_for_each_entry(dev, &fs_devices->devices, dev_list)
-> +			total_bytes += dev->total_bytes;
-> +		fs_devices = fs_devices->seed;
-> +	}
->   
->   	/* Important check, which can cause unmountable fs */
->   	if (super_bytes < total_bytes) {
-> @@ -8579,7 +8583,9 @@ static bool is_super_size_valid(void)
->   	if (!IS_ALIGNED(super_bytes, gfs_info->sectorsize) ||
->   	    !IS_ALIGNED(total_bytes, gfs_info->sectorsize) ||
->   	    super_bytes != total_bytes) {
-> -		warning("minor unaligned/mismatch device size detected");
-> +		warning("minor unaligned/mismatch device size detected:");
-> +		warning("  super block total bytes=%llu found total bytes=%llu",
-> +			super_bytes, total_bytes);
->   		warning(
->   		"recommended to use 'btrfs rescue fix-device-size' to fix it");
->   	}
