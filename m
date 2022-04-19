@@ -2,248 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8A450675E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 11:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8165068EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 12:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241486AbiDSJF5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 05:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
+        id S1348868AbiDSKon (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 06:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240297AbiDSJF4 (ORCPT
+        with ESMTP id S242585AbiDSKok (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 05:05:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AF522B33
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 02:03:14 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D556F210F1;
-        Tue, 19 Apr 2022 09:03:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650358992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6fKcq3p2saSEuJXUr+gk4hYeP1V24bs72zMGgo0Kl0o=;
-        b=is3Ga+Wllc8EyuMPxIIm5QLXZ6kdWk3Y/w1+bDNq27x/YF3AEYL3jb7qIgXQtdj1stSO4h
-        RtKo/qG4M47Uy1T9Td802OW8AKMaWFxCq/TMa4SdA+EEHu1BthB7e2tc2IPzwPxuXRn45X
-        JaWHZkVL7Y6XNX5tLETHOxhyylsYRMI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE2AB139BE;
-        Tue, 19 Apr 2022 09:03:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id aSiqKNB6XmLbAwAAMHmgww
-        (envelope-from <gniebler@suse.com>); Tue, 19 Apr 2022 09:03:12 +0000
-Message-ID: <17646325-5f22-9d5d-a507-813e23c4ff5c@suse.com>
-Date:   Tue, 19 Apr 2022 11:03:12 +0200
+        Tue, 19 Apr 2022 06:44:40 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C5922526
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 03:41:57 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id c23so15421327plo.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 03:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=+pUQ03bbjApxFr+6C8b9/cnAL2hsO3EeAFuRUe7zhp4=;
+        b=llXVN1OR+dirptA23pAzO44LFPYDXW4f/rEVhjIv2FPd923v8JilvKRihITTWVG9Ux
+         NRAK8gbzVMxMRvsibr7RX4o/ye22DQH88nl7P9FzRF/Li0M8eM2l6PQ4ARSGrbwpi5H/
+         7oEYxoVYWJCQ0ZN79FF67JuEkfbT+NYOqhatTLhgAyaIRqFvUaEP3jCEIsbCxWlyCyKl
+         Giawh5R8Zl6yyAOR5OdTB7xzaggZe6iqp6VXMIxCBS0YZA1KxijhBveezitiloEv2uNM
+         Euy3mzcp/V1Vt7vMlXa6Bhm7A+f5E1FNTvDNbZTQib2AFRc3TcG0E/AGlJH4IYJaIBR/
+         r6fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=+pUQ03bbjApxFr+6C8b9/cnAL2hsO3EeAFuRUe7zhp4=;
+        b=KZGrOBf/waQIShiqipOmrOQ8P+MCGFoVPssVRBUzy2Ubwa3O4ERPcmIu0s4XQ80nZC
+         dRJ3KHl6rL9G3frvFSeKIVSvwQmZF2pdJFzjZQH+VaWlyIT0oBrTofJa3kol1bztD2/0
+         y2e1H+gn8IoPP6QS5SUa1E9b4hbkh5a15+VxX4f2d1s6MUiuJtAiwa4fHUtu9perlDdW
+         joieOUJR92vR59Z4UcNMIqCG11xfe4cH7YpdJhtnnraGImZyqAFLYNldY1THQELjc0Hj
+         fuSKdkJdr1AEe20FFgjcue231RMdp9xF6HufbQV465rAD01VXnyezw8rcne3XEUyA3Xq
+         bK6g==
+X-Gm-Message-State: AOAM53003oA7xbtFSfIaKoxxhpupk3UgvB70aBrWvvg/yJ/sGkGvxTom
+        HGGeNO0u7BkCGA43muexuwhAA6wp623T9o8/A6Po+VD8nYo=
+X-Google-Smtp-Source: ABdhPJw+wE438uZdYlzK48I9XWcFRwWO3qdfLm2J9q/dHckK9CH4Z2DqylFOIykSo6lOzgtzCEJKs+lA99TjCApJoSk=
+X-Received: by 2002:a17:90a:6d96:b0:1c9:c1de:ef2f with SMTP id
+ a22-20020a17090a6d9600b001c9c1deef2fmr22928118pjk.210.1650364917304; Tue, 19
+ Apr 2022 03:41:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v3] btrfs: Turn delayed_nodes_tree into an XArray
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220414101054.15230-1-gniebler@suse.com>
- <d108b994-3583-e794-d14e-f07e4cc3d91a@suse.com>
-From:   Gabriel Niebler <gniebler@suse.com>
-In-Reply-To: <d108b994-3583-e794-d14e-f07e4cc3d91a@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Alex Powell <alexj.powellalt@googlemail.com>
+Date:   Tue, 19 Apr 2022 20:11:46 +0930
+Message-ID: <CAKGv6Cq+uwBMgo6th6E16=om8321wTO3fZPXF151VLSYiexFUg@mail.gmail.com>
+Subject: space still allocated post deletion
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tl;dr: All your points are well taken, will resubmit with them applied.
+Hi team,
+I have deleted hundreds of GB of files however space still remains the
+same, even after a full balance and a dusage=0 balance. The location I
+am deleting from is usually a mount point but I found some files had
+saved there while the array was unmounted, which I then removed.
 
-Am 14.04.22 um 15:18 schrieb Nikolay Borisov:
-> On 14.04.22 г. 13:10 ч., Gabriel Niebler wrote:
->> … in the btrfs_root struct and adjust all usages of this object to use 
->> the
->> XArray API, because it is notionally easier to use and unserstand, as it
->> provides array semantics, and also takes care of locking for us, further
->> simplifying the code.
-[...]
->> @@ -141,23 +141,17 @@ static struct btrfs_delayed_node 
->> *btrfs_get_or_create_delayed_node(
->>       /* cached in the btrfs inode and can be accessed */
->>       refcount_set(&node->refs, 2);
->> -    ret = radix_tree_preload(GFP_NOFS);
->> -    if (ret) {
->> -        kmem_cache_free(delayed_node_cache, node);
->> -        return ERR_PTR(ret);
->> -    }
->> -
->>       spin_lock(&root->inode_lock);
->> -    ret = radix_tree_insert(&root->delayed_nodes_tree, ino, node);
->> -    if (ret == -EEXIST) {
->> +    ret = xa_insert(&root->delayed_nodes, ino, node, GFP_NOFS);
->> +    if (ret) {
->>           spin_unlock(&root->inode_lock);
->>           kmem_cache_free(delayed_node_cache, node);
->> -        radix_tree_preload_end();
->> -        goto again;
->> +        if (ret == -EBUSY)
->> +            goto again;
->> +        return ERR_PTR(ret);
->>       }
->>       btrfs_inode->delayed_node = node;
->>       spin_unlock(&root->inode_lock);
->> -    radix_tree_preload_end();
-> 
-> nit: One suggestion instead of relying on the goto again; do implement 
-> what's
-> essentially a do {} while() loop, this code can be easily turned into a
-> well-formed do {} while(). Usually this type of construct (label to 
-> implement a loop)
-> is used to reduce indentation levels however in this case I did the 
-> transformation
-> and we are not breaking the 80 chars line:
-> 
->      21         do {
->      20                 node = btrfs_get_delayed_node(btrfs_inode);
->      19                 if (node)
->      18                         return node;
->      17
->      16                 node = kmem_cache_zalloc(delayed_node_cache, 
-> GFP_NOFS);
->      15                 if (!node)
->      14                         return ERR_PTR(-ENOMEM);
->      13                 btrfs_init_delayed_node(node, root, ino);
->      12
->      11                 /* cached in the btrfs inode and can be accessed */
->      10                 refcount_set(&node->refs, 2);
->       9
->       8                 spin_lock(&root->inode_lock);
->       7                 ret = xa_insert(&root->delayed_nodes, ino, node, 
-> GFP_NOFS);
->       6                 if (ret) {
->       5                         spin_unlock(&root->inode_lock);
->       4                         kmem_cache_free(delayed_node_cache, node);
->       3                         if (ret != -EBUSY)
->       2                                 return ERR_PTR(ret);
->       1                 }
->    152          } while (ret);
-> 
-> I personally dislike using labels like that but since you are changing 
-> this code now might be
-> a good time to also fix this wrinkle but this is not a deal breaker and 
-> I'd be happy to see David's
-> opinion.
+root@bean:/home/bean# du -h --max-depth=1 /mnt/data/triage
+6.4G /mnt/data/triage/complete
+189G /mnt/data/triage/incomplete
+195G /mnt/data/triage
 
-I don't like labels (and gotos) either, esp. when they're used like 
-this. But as I had tried (and failed) to opportunistically remove some 
-labels in my last patch, I've become more "minimalist" in this one. The 
-trick is striking the right balance, I guess, and you demonstrate very 
-nicely how to it here, so I will apply that.
+root@bean:/home/bean# rm -rf /mnt/data/triage/complete/*
+root@bean:/home/bean# rm -rf /mnt/data/triage/incomplete/*
+root@bean:/home/bean# du -h --max-depth=1 /mnt/data/triage
+0 /mnt/data/triage/complete
+0 /mnt/data/triage/incomplete
+0 /mnt/data/triage
 
->> @@ -1870,29 +1863,33 @@ void btrfs_kill_delayed_inode_items(struct 
->> btrfs_inode *inode)
->>   void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
->>   {
->> -    u64 inode_id = 0;
->> +    unsigned long index = 0;
->> +    struct btrfs_delayed_node *delayed_node;
->>       struct btrfs_delayed_node *delayed_nodes[8];
->>       int i, n;
->>       while (1) {
->>           spin_lock(&root->inode_lock);
->> -        n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
->> -                       (void **)delayed_nodes, inode_id,
->> -                       ARRAY_SIZE(delayed_nodes));
->> -        if (!n) {
->> +        if (xa_empty(&root->delayed_nodes)) {
->>               spin_unlock(&root->inode_lock);
->>               break;
-> 
-> nit: This could be turned into a return just because if someone's 
-> reading the code seeing the return would be an
-> instant "let's forget this function" rather than having to scan 
-> downwards to see if anything special
-> is going on after the loop's body.
+root@bean:/home/bean# btrfs filesystem show
+Label: none  uuid: 24933208-0a7a-42ff-90d8-f0fc2028dec9
+Total devices 1 FS bytes used 209.03GiB
+devid    1 size 223.07GiB used 211.03GiB path /dev/sdh2
 
-You're right! I think I just kept the old logic here w/o thinking about 
-it, but doing a return is exactly equivalent and quicker to understand, 
-as you point out.
+root@bean:/home/bean# du -h --max-depth=1 /
+244M /boot
+91M /home
+7.5M /etc
+0 /media
+0 /dev
+0 /mnt
+0 /opt
+0 /proc
+2.7G /root
+1.6M /run
+0 /srv
+0 /sys
+0 /tmp
+3.6G /usr
+13G /var
+710M /snap
+22G /
 
-(It's funny: There are people who are very dogmatic about the idea that 
-"a function should only ever have a single return statement!". I'm *not* 
-one of them, but I've worked with such people and perhaps the attitude 
-has rubbed off on me - subconciously even. Maybe it's a Python thing - 
-is this thinking ever found in the C/kernel development space?)
-
->>           }
->> -        inode_id = delayed_nodes[n - 1]->inode_id + 1;
->> -        for (i = 0; i < n; i++) {
->> +        n = 0;
->> +        xa_for_each_start(&root->delayed_nodes, index,
->> +                  delayed_node, index) {
->>               /*
->>                * Don't increase refs in case the node is dead and
->>                * about to be removed from the tree in the loop below
->>                */
->> -            if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
->> -                delayed_nodes[i] = NULL;
->> +            delayed_nodes[n] = delayed_node;
->> +            if (!refcount_inc_not_zero(&delayed_node->refs))
->> +                delayed_nodes[n] = NULL;
-> 
-> nit: instead of doing the assign; check if we should undo the assignment 
-> you can do
-> something like :
-> 
-> @@ -1878,13 +1879,13 @@ void btrfs_kill_all_delayed_nodes(struct 
-> btrfs_root *root)
->                  n = 0;
->                  xa_for_each_start(&root->delayed_nodes, index,
->                                    delayed_node, index) {
-> +                       struct btrfs_delayed_node *delayed_nodes[8] = {};
->                          /*
->                           * Don't increase refs in case the node is dead 
-> and
->                           * about to be removed from the tree in the 
-> loop below
->                           */
-> -                       delayed_nodes[n] = delayed_node;
-> -                       if (!refcount_inc_not_zero(&delayed_node->refs))
-> -                               delayed_nodes[n] = NULL;
-> +                       if (refcount_inc_not_zero(&delayed_node->refs))
-> +                               delayed_nodes[n] = delayed_node;
->                          n++;
->                          if (n >= ARRAY_SIZE(delayed_nodes))
->                                  break;
-> 
-> That is define the delayed_nodes array inside the loop as this is its 
-> lifetime, and also uses an
-> empty designated initializer so that the array is guaranteed to be zero 
-> initialized, then you only
-> assign a node if you manged to get a refcount. IMO this is somewhat 
-> cleaner.
-> 
-> 
->> +            n++;
-> 
-> Also since you are doing a "for each" style iteration then n++ can be 
-> incremented only if you actually
-> saved a node, that is refcount was successful. That way you guarantee 
-> that delayed_nodes will contain 8 nodes to free.
-> 
-> Alternatively think if you have 8 nodes and 7 of them are dying, in this 
-> case you will only save 1 node but increment n 8 times
-> and then break, so the subsequent invocation of the freeing loop will 
-> only free 1 node i.e you lose the effect of batching.
-
-Oh yeah, this is somewhat inefficient. Again, I stuck to close to the 
-old logic w/o "stepping back" and thinking about it. But your 
-suggestions make perfect sense and I will apply them.
+Linux bean 5.15.0-25-generic #25-Ubuntu SMP Wed Mar 30 15:54:22 UTC
+2022 x86_64 x86_64 x86_64 GNU/Linux
+btrfs-progs v5.16.2
