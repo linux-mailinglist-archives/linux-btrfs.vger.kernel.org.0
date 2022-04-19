@@ -2,139 +2,248 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B93550660E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 09:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8A450675E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 11:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349460AbiDSHkq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 03:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
+        id S241486AbiDSJF5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 05:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349470AbiDSHkp (ORCPT
+        with ESMTP id S240297AbiDSJF4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 03:40:45 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB59A237C3
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 00:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1650353883; x=1681889883;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=gRqLnulKItekAafU+/Me+YsDqZPkqXte/jedOxg9H6bw1tfjxpJ4HsX3
-   0x1UySaWb82ga9dHCWkmb5qTXmc8co8Y59mdCNbXTZAAsoTdnLx6epY4t
-   TC1ifw1oUUqkCi1afrFWC2/rCJBB3YKXUzLyycbHYfY7VnFeKSudrKTSH
-   BflXQkOdAXhliSIyMjv7dUffl4R1Bsfr4WI8s7aEAbcXdltaoqJIgcqeb
-   f57S85rIiiC80ZkLO1QS7ybBQc99G7Dg1qfYiHce3orbINiBSXLOGWO2N
-   BR3sn2iu/sjStACYwje+ZZO62SQrTUr/cMUTBUQuiJ/ShTjnlHU33WeiR
-   g==;
-X-IronPort-AV: E=Sophos;i="5.90,272,1643644800"; 
-   d="scan'208";a="310211724"
-Received: from mail-dm6nam12lp2169.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.169])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Apr 2022 15:38:02 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gShSLZjgAQvfRX47Il04o1MTZCMv7mm96nSd/Efd6Yf28M1d22yCDH+KDDXyEcoUg6Dc0AwBBKBa/3zJLImcmYPmEDt+MMnc/0M5eYkbf6ZXYsDJJvb+iMR94G+7OgXyaGGbIKpn7R2uzTpsKJFYeC5eq1ngPlxNAn3G55SUhc5gU64glQg87vseQXstumQkeGKr7bEXiDJxF8qM8ZYucQpe3WsKCX2pmwbM8f56JZpHj4xHk2zhbyEbT/cj/yikFWVOf1aEZtbjupR9DAZjCKyiu0seL+BoGrUX3klRsHOVZ4tUK+wSOanVcVGkoviJ0oxu+nOgTZJ+ztYvGFVanw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=gFLlZYEd7j5Zu9xaMl5xWMTK+rPYfiBTmPQtNrCgLl4kkptebCz+hQ4aUuQmyApl+z+qJY0dfJhbuk9/39txDTT/9jA6+4nAr9NkxNb4VH/haXYjdGot16hhqapN/F4FGYP9vP7cDMVwJ57m8NliwB9DZky60Ptst7Sy+OUMPWDJIcnu2RIr1TT/Pf15aB8P2hRttiHRHzI42fXu9tBype75py9dsOsIzC8NHeQeLUFzmtfZzbqr2wQaMzOlg4HaQmUmRjOplX8AfQuKhzKFWVZ97lX6yU3Xt/CXif5vGpdKcOPU/a+RfwGORULizNrXYoAoD4Wk3jod9aCkfOgbFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=a08PGVtySwgYbc3HEy64qnRD0lbtRs9pJWP7623xi8IrrRUFcGon1GNYf1RTMhEbH54Z+q+O4Qd77kqdJAFVMqHjnPKxfTZ6DeWq2uE7QdTFH5ecZHDZt/ukc33as6T4uOqcoC67+1SupKPZzFK7KWUQ8N0kHL29yOg8QdoyXvs=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BN8PR04MB6276.namprd04.prod.outlook.com (2603:10b6:408:7d::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.18; Tue, 19 Apr
- 2022 07:38:00 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::6cfd:b252:c66e:9e12]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::6cfd:b252:c66e:9e12%3]) with mapi id 15.20.5164.026; Tue, 19 Apr 2022
- 07:38:00 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: zoned: use dedicated lock for data relocation
-Thread-Topic: [PATCH] btrfs: zoned: use dedicated lock for data relocation
-Thread-Index: AQHYUvQO7L0hp9LvkkaunZOFkOdDPQ==
-Date:   Tue, 19 Apr 2022 07:38:00 +0000
-Message-ID: <PH0PR04MB7416A75C88F9475337D74C5B9BF29@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <4ebda439981990cd5903e4fba19f199b4eb36fba.1650266002.git.naohiro.aota@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fcb4cd21-929e-4e57-5869-08da21d787e8
-x-ms-traffictypediagnostic: BN8PR04MB6276:EE_
-x-microsoft-antispam-prvs: <BN8PR04MB6276C136FCDBE78BA7DBC68C9BF29@BN8PR04MB6276.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WGc8RiMLThom/eias3ubI1PLnsbGoIzVoL+QaMfiWXSxURY+tYzhyHSkUYcLvCLgHlI58upZ6ydrlLM3GCm4XICfbCSioKaAgvv3TrljNfNqmeGrkVEzk/dyn+yofAlDBDAtIIuqLh4tmDDyfOi2Can7Yb0HpQmd4UVHNmlBKe1SyK5nbDoW8f4TgDSxiTKeTs1VS/F9gBY+EEEYOdN5crUNrswa+N+ru4GyFX0U3WbW3YooUIo9hDkVNljTG0IGNShBM8xsAokxwMTWNjZleU2xtwrC5BxdSaco4mGXApKpnMAamSl3RhEhhHmh/CSk5kRJPZhkQ2FmPEezTBzcyThSMOJ+jVJ9DM/VySmM2SHpPXCeqcYjk1C3Dc3PA95BHixaZy2xwf/6exsgfhPMFSjegLUHjpFhBqjRJO5PQwzw1vI4aOmnQ3vI9iNR6I5tjLjYcPQ7slfP/ah3rJoZ7fnjjeGVRhnepz7hDG/VoGcySJ9erNIS0srA7vmgzxcyf0icZfKOWd6O32si/yuNjD7a3KgCAB+o4OjsIK6teCC0+rNREd4GG0Gx44bdXV1lNh7hOaCOadGU2OR9PTP27TzCawUjiB+sz7BK4knoK/JlN9tI0PHU1HvvRQJldjD3ioWqq3XjhGVpBTUUvZR3mv5gwvqZ6cMXi6Mk/pFmCfowu2JL47JXFM4/+LyjJ8qpeevHJTLw2XKOS6ut45uk/Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(508600001)(52536014)(86362001)(8936002)(38100700002)(122000001)(91956017)(5660300002)(316002)(64756008)(66446008)(4270600006)(2906002)(33656002)(71200400001)(9686003)(82960400001)(8676002)(66476007)(66556008)(38070700005)(19618925003)(66946007)(6506007)(76116006)(186003)(7696005)(110136005)(55016003)(558084003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SzoG5Pf6YrCbKj7SoIcBcEOYTVU5ZeRJ10ve8L7ShaL+/nE9sLvqQlgrdA1b?=
- =?us-ascii?Q?AYayzddiEisNChlSscDxAgta6AmUav9ti5yxooX8dlQCuvXbgEQ/8HTvAmQB?=
- =?us-ascii?Q?onNn01VybKwfuNgk8t6Ro3zDEcTdjLiDZHQdWXFCIPeuTTCQOR+9FYSUz2Dn?=
- =?us-ascii?Q?zeSrpv+xhy1qg3WtWC66DWpGrDVKC8yCP43sm+Rugd1PgwUKsNlpwfq9J5a6?=
- =?us-ascii?Q?75bwjG0lg6ilVRDb/xi+PPADmIo0DEbzcCkQProVftAMfzcjuq1+oAYs1adU?=
- =?us-ascii?Q?F+4KUegy/VuERvuvuoV8vT5boJGN8UU1sZs6AUR/K7ly+4QkMMp6/c7e8T6S?=
- =?us-ascii?Q?8lnovtV3vcrereKdffvxrJqyilcQSQkGZNeVM3ESK5/ofiZnbXRjASXlk2NI?=
- =?us-ascii?Q?1QgOqV8CuEydiL73tvi2HmfYkmFDBiwg/ccL5I7rbj3LN5ufKjOMCi7495rE?=
- =?us-ascii?Q?sQ6Xhjw3qpmI9WKH0PjOa43IJPHpspNQFWqqyKySwo7K17CvrjiOKNdkgS50?=
- =?us-ascii?Q?W5JJ2GlEtlib90vWANUPRbq675brbvWe+Dr73OmoczGojyfAFz7tSUc/KIAO?=
- =?us-ascii?Q?UBnrBCyjrc5yip1imVpJIAQoQ+3+i+4MHUxujsyXr0Hdq3JkABi5e6WH1eWF?=
- =?us-ascii?Q?jWn0LFjzJNaAZ4+wwrO8jFrFaZr/MLjB7nS1U56PujqPB7zcckJWpe0NtH0z?=
- =?us-ascii?Q?S3zD+1mAmg4U+d3cptdGQ1RsCt8VR1SvK/+51Zx2HKnCbTuk1urAMVDSSj5a?=
- =?us-ascii?Q?qrhOB+A4xED8WCARQkt2gJ9lW6aFFrz4jRcyiuJGrEKipHrnrZn3qi9/FuXt?=
- =?us-ascii?Q?TjRagBs6tVwEJCOgd4/lzDS1zqGq/JYNgAHYwHmsuZW8hiW+ibto/rxDhKxZ?=
- =?us-ascii?Q?ZUw6Eo7PkW3OG24Fv5z/fnw4LRIWUsnq7slO4maiUipAojAx6jysBowEeBiy?=
- =?us-ascii?Q?cXovsYJmAHYilMH7L5RJoyL9nDQvZP8J+t1PKUGa+2tCxQLi//5Gc8NSVzp9?=
- =?us-ascii?Q?cSyst6Zyp0C3O57kkdZvMSHHf1cTQ5VD25T4xWA3ziDtDd73MCxCk18hbLWj?=
- =?us-ascii?Q?W9ogurh/ELJ1SQNSBW+wwgBPf/5wfzFDDsTewvS+QP8pq5XK04Hu9008DHd3?=
- =?us-ascii?Q?Ptux+lSzFKWV85SwKy6KA4QKB5r3sxwYye+ADHfnj3ejBU/pdNOvtSEaWM+d?=
- =?us-ascii?Q?tBmzutsy7fQiyPTqM9pVHtCiNqUERVezeQrudmSlVeLka2SAjzl5s3L2tXBo?=
- =?us-ascii?Q?IowfR/HWgIp2QxKUqq4rwYF2FThj/exPZXmo8cVy7elZZxHHTDSPutH48L5W?=
- =?us-ascii?Q?5hU/kzgRGQN2PTeDX5tiE3m+riKKg0fd3anc3na5ReOg9riZc08bPhjvz9PV?=
- =?us-ascii?Q?yUH2GolzwqczOmqjunCJ+6tfBoc9eXsqdELNWBK3+EHf4QsnPGnJxzQNAGun?=
- =?us-ascii?Q?iEpHxIPqBm2vHN7EvMkz09bL8YN2LGwMMmJeKTrIhquyTR7RrXEbtND+Itix?=
- =?us-ascii?Q?LEP4R4+ticycBQHoA2cZ9LOzwRjuLLP6ZQQsQMWMe+L/de/tcf5Vzv0VGnrL?=
- =?us-ascii?Q?CyULpVi258mvYe6o0e/Da5TOr+pBmQjR5EwHW8NSYJfukCt5lzVad5/LDiT8?=
- =?us-ascii?Q?6V2/6x4OxJG39ontpZt4xihnXG6ngQSkiAihcbcVnohBhmxrD2qCNfLOCVEO?=
- =?us-ascii?Q?2TMzf+36JgUgnBt0JgxPHEG1/5yC/1Uotu3K3EfeGYnBOmERtvpZxVS3YsWs?=
- =?us-ascii?Q?9WD2hI44p/4Z9EjaW/G1vVutvLD/IjpekiJNgvcQ3aGrxVXxWW3rcuYgePGX?=
-x-ms-exchange-antispam-messagedata-1: tqfNPdr+yj20sWpZ1k6SULpIe1e8NSzPoJg=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 19 Apr 2022 05:05:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AF522B33
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 02:03:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D556F210F1;
+        Tue, 19 Apr 2022 09:03:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1650358992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fKcq3p2saSEuJXUr+gk4hYeP1V24bs72zMGgo0Kl0o=;
+        b=is3Ga+Wllc8EyuMPxIIm5QLXZ6kdWk3Y/w1+bDNq27x/YF3AEYL3jb7qIgXQtdj1stSO4h
+        RtKo/qG4M47Uy1T9Td802OW8AKMaWFxCq/TMa4SdA+EEHu1BthB7e2tc2IPzwPxuXRn45X
+        JaWHZkVL7Y6XNX5tLETHOxhyylsYRMI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE2AB139BE;
+        Tue, 19 Apr 2022 09:03:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id aSiqKNB6XmLbAwAAMHmgww
+        (envelope-from <gniebler@suse.com>); Tue, 19 Apr 2022 09:03:12 +0000
+Message-ID: <17646325-5f22-9d5d-a507-813e23c4ff5c@suse.com>
+Date:   Tue, 19 Apr 2022 11:03:12 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcb4cd21-929e-4e57-5869-08da21d787e8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2022 07:38:00.7088
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9c2AjXW8wPllpHGr/sfBLxFe+JMle1/tmH8PV06AhaB5bKy/73+KsozJcm1J4ZZUZtbVxNJBJQftpZda+rQIPpk4SGNtWagOazn2QijMMBI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR04MB6276
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v3] btrfs: Turn delayed_nodes_tree into an XArray
+Content-Language: en-US
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <20220414101054.15230-1-gniebler@suse.com>
+ <d108b994-3583-e794-d14e-f07e4cc3d91a@suse.com>
+From:   Gabriel Niebler <gniebler@suse.com>
+In-Reply-To: <d108b994-3583-e794-d14e-f07e4cc3d91a@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+tl;dr: All your points are well taken, will resubmit with them applied.
+
+Am 14.04.22 um 15:18 schrieb Nikolay Borisov:
+> On 14.04.22 г. 13:10 ч., Gabriel Niebler wrote:
+>> … in the btrfs_root struct and adjust all usages of this object to use 
+>> the
+>> XArray API, because it is notionally easier to use and unserstand, as it
+>> provides array semantics, and also takes care of locking for us, further
+>> simplifying the code.
+[...]
+>> @@ -141,23 +141,17 @@ static struct btrfs_delayed_node 
+>> *btrfs_get_or_create_delayed_node(
+>>       /* cached in the btrfs inode and can be accessed */
+>>       refcount_set(&node->refs, 2);
+>> -    ret = radix_tree_preload(GFP_NOFS);
+>> -    if (ret) {
+>> -        kmem_cache_free(delayed_node_cache, node);
+>> -        return ERR_PTR(ret);
+>> -    }
+>> -
+>>       spin_lock(&root->inode_lock);
+>> -    ret = radix_tree_insert(&root->delayed_nodes_tree, ino, node);
+>> -    if (ret == -EEXIST) {
+>> +    ret = xa_insert(&root->delayed_nodes, ino, node, GFP_NOFS);
+>> +    if (ret) {
+>>           spin_unlock(&root->inode_lock);
+>>           kmem_cache_free(delayed_node_cache, node);
+>> -        radix_tree_preload_end();
+>> -        goto again;
+>> +        if (ret == -EBUSY)
+>> +            goto again;
+>> +        return ERR_PTR(ret);
+>>       }
+>>       btrfs_inode->delayed_node = node;
+>>       spin_unlock(&root->inode_lock);
+>> -    radix_tree_preload_end();
+> 
+> nit: One suggestion instead of relying on the goto again; do implement 
+> what's
+> essentially a do {} while() loop, this code can be easily turned into a
+> well-formed do {} while(). Usually this type of construct (label to 
+> implement a loop)
+> is used to reduce indentation levels however in this case I did the 
+> transformation
+> and we are not breaking the 80 chars line:
+> 
+>      21         do {
+>      20                 node = btrfs_get_delayed_node(btrfs_inode);
+>      19                 if (node)
+>      18                         return node;
+>      17
+>      16                 node = kmem_cache_zalloc(delayed_node_cache, 
+> GFP_NOFS);
+>      15                 if (!node)
+>      14                         return ERR_PTR(-ENOMEM);
+>      13                 btrfs_init_delayed_node(node, root, ino);
+>      12
+>      11                 /* cached in the btrfs inode and can be accessed */
+>      10                 refcount_set(&node->refs, 2);
+>       9
+>       8                 spin_lock(&root->inode_lock);
+>       7                 ret = xa_insert(&root->delayed_nodes, ino, node, 
+> GFP_NOFS);
+>       6                 if (ret) {
+>       5                         spin_unlock(&root->inode_lock);
+>       4                         kmem_cache_free(delayed_node_cache, node);
+>       3                         if (ret != -EBUSY)
+>       2                                 return ERR_PTR(ret);
+>       1                 }
+>    152          } while (ret);
+> 
+> I personally dislike using labels like that but since you are changing 
+> this code now might be
+> a good time to also fix this wrinkle but this is not a deal breaker and 
+> I'd be happy to see David's
+> opinion.
+
+I don't like labels (and gotos) either, esp. when they're used like 
+this. But as I had tried (and failed) to opportunistically remove some 
+labels in my last patch, I've become more "minimalist" in this one. The 
+trick is striking the right balance, I guess, and you demonstrate very 
+nicely how to it here, so I will apply that.
+
+>> @@ -1870,29 +1863,33 @@ void btrfs_kill_delayed_inode_items(struct 
+>> btrfs_inode *inode)
+>>   void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
+>>   {
+>> -    u64 inode_id = 0;
+>> +    unsigned long index = 0;
+>> +    struct btrfs_delayed_node *delayed_node;
+>>       struct btrfs_delayed_node *delayed_nodes[8];
+>>       int i, n;
+>>       while (1) {
+>>           spin_lock(&root->inode_lock);
+>> -        n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
+>> -                       (void **)delayed_nodes, inode_id,
+>> -                       ARRAY_SIZE(delayed_nodes));
+>> -        if (!n) {
+>> +        if (xa_empty(&root->delayed_nodes)) {
+>>               spin_unlock(&root->inode_lock);
+>>               break;
+> 
+> nit: This could be turned into a return just because if someone's 
+> reading the code seeing the return would be an
+> instant "let's forget this function" rather than having to scan 
+> downwards to see if anything special
+> is going on after the loop's body.
+
+You're right! I think I just kept the old logic here w/o thinking about 
+it, but doing a return is exactly equivalent and quicker to understand, 
+as you point out.
+
+(It's funny: There are people who are very dogmatic about the idea that 
+"a function should only ever have a single return statement!". I'm *not* 
+one of them, but I've worked with such people and perhaps the attitude 
+has rubbed off on me - subconciously even. Maybe it's a Python thing - 
+is this thinking ever found in the C/kernel development space?)
+
+>>           }
+>> -        inode_id = delayed_nodes[n - 1]->inode_id + 1;
+>> -        for (i = 0; i < n; i++) {
+>> +        n = 0;
+>> +        xa_for_each_start(&root->delayed_nodes, index,
+>> +                  delayed_node, index) {
+>>               /*
+>>                * Don't increase refs in case the node is dead and
+>>                * about to be removed from the tree in the loop below
+>>                */
+>> -            if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
+>> -                delayed_nodes[i] = NULL;
+>> +            delayed_nodes[n] = delayed_node;
+>> +            if (!refcount_inc_not_zero(&delayed_node->refs))
+>> +                delayed_nodes[n] = NULL;
+> 
+> nit: instead of doing the assign; check if we should undo the assignment 
+> you can do
+> something like :
+> 
+> @@ -1878,13 +1879,13 @@ void btrfs_kill_all_delayed_nodes(struct 
+> btrfs_root *root)
+>                  n = 0;
+>                  xa_for_each_start(&root->delayed_nodes, index,
+>                                    delayed_node, index) {
+> +                       struct btrfs_delayed_node *delayed_nodes[8] = {};
+>                          /*
+>                           * Don't increase refs in case the node is dead 
+> and
+>                           * about to be removed from the tree in the 
+> loop below
+>                           */
+> -                       delayed_nodes[n] = delayed_node;
+> -                       if (!refcount_inc_not_zero(&delayed_node->refs))
+> -                               delayed_nodes[n] = NULL;
+> +                       if (refcount_inc_not_zero(&delayed_node->refs))
+> +                               delayed_nodes[n] = delayed_node;
+>                          n++;
+>                          if (n >= ARRAY_SIZE(delayed_nodes))
+>                                  break;
+> 
+> That is define the delayed_nodes array inside the loop as this is its 
+> lifetime, and also uses an
+> empty designated initializer so that the array is guaranteed to be zero 
+> initialized, then you only
+> assign a node if you manged to get a refcount. IMO this is somewhat 
+> cleaner.
+> 
+> 
+>> +            n++;
+> 
+> Also since you are doing a "for each" style iteration then n++ can be 
+> incremented only if you actually
+> saved a node, that is refcount was successful. That way you guarantee 
+> that delayed_nodes will contain 8 nodes to free.
+> 
+> Alternatively think if you have 8 nodes and 7 of them are dying, in this 
+> case you will only save 1 node but increment n 8 times
+> and then break, so the subsequent invocation of the freeing loop will 
+> only free 1 node i.e you lose the effect of batching.
+
+Oh yeah, this is somewhat inefficient. Again, I stuck to close to the 
+old logic w/o "stepping back" and thinking about it. But your 
+suggestions make perfect sense and I will apply them.
