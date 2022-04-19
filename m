@@ -2,49 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72389506B47
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 13:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C6E506B30
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 13:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351719AbiDSLl4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 07:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        id S1351855AbiDSLl7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 07:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351734AbiDSLlt (ORCPT
+        with ESMTP id S1351729AbiDSLlt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 19 Apr 2022 07:41:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD40236B6D
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 04:36:42 -0700 (PDT)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395BF33364
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 04:36:44 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 070661F74D
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 11:36:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A20DF21118;
+        Tue, 19 Apr 2022 11:36:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650368201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=DoWklFmV9AcX1lThKWLuXiY/oxTbO3Y1bZNEfr9m8g0=;
-        b=ALLJQkHxngBLZ5hoP8nrGG9xvIXp216nCOu7/agdO/LldhPTobRP+Ip0VX3+7D75UKddZP
-        r0PLefnaZgDH+cAyz7+twSBL/ugymKvoPaaj+xHmLAfHEm4NleE/5H5nFlg5m5oHALeH6a
-        o7WcrFixuZ0iaYpdg8cFr0WJke380wc=
+        t=1650368202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lisvwZelW1mLDnJIQ8frS17TX5aN/ztzbA59sEq4MoQ=;
+        b=mIvunYUWT3c1jQICFnqndA+b3Vt59uO4PVvY8pzuyUl4Oz2sYIkI2F5NI2mAYFhiQnwUfG
+        kk+cpH3C4PWZSv+WwqX//Hk1KeRCIhyXh2NyrLRSzt/PuDQeu18QQxVP5Jrgun0ruuY+zw
+        Gljc30kGXU04dE6n44ZbwWsDe+n14sg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 523CC132E7
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 11:36:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7209E132E7;
+        Tue, 19 Apr 2022 11:36:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CB2UBsieXmK8UQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 11:36:40 +0000
+        id MM1EDsmeXmK8UQAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 19 Apr 2022 11:36:41 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/2] btrfs-progs: make "btrfstune -S1" to reject fs with dirty log
-Date:   Tue, 19 Apr 2022 19:36:20 +0800
-Message-Id: <cover.1650368004.git.wqu@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2 1/2] btrfs-progs: do not allow setting seed flag on fs with dirty log
+Date:   Tue, 19 Apr 2022 19:36:21 +0800
+Message-Id: <a1a0b1461fe27e809717797573c7454e0059983e.1650368004.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1650368004.git.wqu@suse.com>
+References: <cover.1650368004.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -57,32 +62,69 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[CHANGELOG]
-v2:
-- Add a test case for it
+[BUG]
+The following sequence operation can lead to a seed fs rejected by
+kernel:
 
+ # Generate a fs with dirty log
+ mkfs.btrfs -f $file
+ mount $dev $mnt
+ xfs_io -f -c "pwrite 0 16k" -c fsync $mnt/file
+ cp $file $file.backup
+ umount $mnt
+ mv $file.backup $file
 
-A seed device with dirty log can be rejected by kernel, as kernel will
-try to replay log even on RO mount.
-But log replay on RO device is strongly prohibited, thus such seed
-device will be rejected without a way to sprout.
+ # now $file has dirty log, set seed flag on it
+ btrfstune -S1 $file
 
-Fix the problem by letting "btrfstune -S1" to check if the fs has dirty
-log first.
+ # mount will fail
+ mount $file $mnt
 
-Also add a test case for it, using a btrfs-image dump.
+The mount failure with the following dmesg:
 
-Qu Wenruo (2):
-  btrfs-progs: do not allow setting seed flag on fs with dirty log
-  btrfs-progs: make sure "btrfstune -S1" will reject fs with dirty log
+[  980.363667] loop0: detected capacity change from 0 to 262144
+[  980.371177] BTRFS info (device loop0): flagging fs with big metadata feature
+[  980.372229] BTRFS info (device loop0): using free space tree
+[  980.372639] BTRFS info (device loop0): has skinny extents
+[  980.375075] BTRFS info (device loop0): start tree-log replay
+[  980.375513] BTRFS warning (device loop0): log replay required on RO media
+[  980.381652] BTRFS error (device loop0): open_ctree failed
 
- btrfstune.c                                      |   4 ++++
- .../052-seed-dirty-log/dirty_log.img.xz          | Bin 0 -> 2140 bytes
- tests/misc-tests/052-seed-dirty-log/test.sh      |  12 ++++++++++++
- 3 files changed, 16 insertions(+)
- create mode 100644 tests/misc-tests/052-seed-dirty-log/dirty_log.img.xz
- create mode 100755 tests/misc-tests/052-seed-dirty-log/test.sh
+[CAUSE]
+Although btrfs will replay its dirty log even with RO mount, but kernel
+will treat seed device as RO device, and dirty log can not be replayed
+on RO device.
 
+This rejection is already the better end, just imagine if we don't treat
+seed device as RO, and replayed the dirty log.
+The filesystem relying on the seed device will be completely screwed up.
+
+[FIX]
+Just add extra check on log tree in btrfstune to reject setting seed
+flag on filesystems with dirty log.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+---
+ btrfstune.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/btrfstune.c b/btrfstune.c
+index c9a92349a44c..3824a3d9d8ff 100644
+--- a/btrfstune.c
++++ b/btrfstune.c
+@@ -59,6 +59,10 @@ static int update_seeding_flag(struct btrfs_root *root, int set_flag)
+ 						device);
+ 			return 1;
+ 		}
++		if (btrfs_super_log_root(disk_super)) {
++			error("filesystem with dirty log detected, not setting seed flag");
++			return 1;
++		}
+ 		super_flags |= BTRFS_SUPER_FLAG_SEEDING;
+ 	} else {
+ 		if (!(super_flags & BTRFS_SUPER_FLAG_SEEDING)) {
 -- 
 2.35.1
 
