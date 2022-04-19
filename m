@@ -2,113 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE005063C2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 07:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC725063CF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 07:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241224AbiDSFMI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 01:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
+        id S229657AbiDSFSI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 01:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbiDSFMH (ORCPT
+        with ESMTP id S1348536AbiDSFSG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 01:12:07 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF35D201A1
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 22:09:25 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id g19so13543487lfv.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 22:09:25 -0700 (PDT)
+        Tue, 19 Apr 2022 01:18:06 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E58220FD
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 22:15:23 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-e5bdd14b59so6842834fac.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 22:15:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=yOIbjjDk2T95Qdc+epwt4gBtCKRfwKVsWt+fzj31M8k=;
-        b=ndI2kuZWgyHTgOEgmONKSGYlCKdzzqs0QYWLzFSSbf49wNZXPrGIRuTG5ptVPbqtGc
-         elHs3pz6iJxmPnuiYAV9LOIKx+O1HtzU0ds8vQIvxjuX3gIj85Eoypi9ej8/m2zgkzb7
-         y672bvTbMP+c5xx4eoZ984rN7EfWmTqyZS+t6nbijU1hGVGPqDh1Y5HQHgY2dXhr3bG1
-         tU0o0i+HcVpN/NhZ3Xam9VIlc5e+IL5bL/dzWJHjqLDba3bB9JNZDVxi4qd6rwf3XV1j
-         BKO/17gjTL6N3Dt0UsKjbpqmRoLJOmSfTDRdbKDKpJCUhQ/kO/S81akIuJ6HfiXxzciW
-         E16A==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=ZQ+Chfr41Ap1rnBqjRyg9YSdPtFNo1mvhN33hifHLWI=;
+        b=SgYB1IeyZzeluQKAhNlXoUvDdLKB9j73p/SJpqG1ghc6xhT1sjHPNkvvWk5dRRvXJ6
+         DyYnnuVkTHBCiLS1Z85mzCXBleMrUks6k3S3EJORfwP3nuq5rGj4tzu5Z7ocJTp3lILq
+         G5JqAVtYLNhE9jdUVbLDGAGkw4yxRVE1GcXnSzirGT/YjQf8DKi1zdErSIu0lX3y1kUU
+         3/AtEVkLvoM2WFULUoZwUe2cwtM0jUvAtWXuM3VV4pkcdxht3Y1uMvrwThMXVYv034yL
+         E8lRvhGDx18PB2R28NqvV2eN/uzeCM76THYJtQNJPnArgA02FpBczPGrsgndOVK+cztV
+         uPUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=yOIbjjDk2T95Qdc+epwt4gBtCKRfwKVsWt+fzj31M8k=;
-        b=r+hfdbSly1CA2sDJQBtAikNgQa+Wr86grtyd7i6g1zUez6Pl7fqoiIYpCQ88OT4gwE
-         p0Qu/+6FCA8Uk4JXmGAb4Gmu3LJbOfc/N82AosXlBvmnCuP4D2LyKxxzNmTRWSv2cHCJ
-         XBaZaFYr564jplHarNI6YMJAQAy/ipCJvxxCsYohjPcTwDUx7br0X+N48zCnDSLNqs9y
-         UZ2v7CwsEbU/9K+kHCnI6GSdVYjkWTtKv/MEi7G+0PixvV3NM/TcF7K4zm1qteRgPFJe
-         RSQgrXQbI8RuOTPoSHbeLrQ8fBJ3MIeOtyK2gYXR+cyr23UJ9P7dHJEJyki67LK/E1Nw
-         EDiw==
-X-Gm-Message-State: AOAM533eP0Mt5iSBVh0jPCPkBqLQ3Y5rjmSJB2Dk1un6IUbJKAOaFcxP
-        q3dQEuqCrTbS8igXxC+A0erfMjUYuq3taQ==
-X-Google-Smtp-Source: ABdhPJwhKsBsx5Pg/S/kP0zOP+7cD21xq2jfONjTiQH5ahhr60oys2otUseSlauuED9Z+/nAKUfDdg==
-X-Received: by 2002:a05:6512:752:b0:471:9d5e:1ec8 with SMTP id c18-20020a056512075200b004719d5e1ec8mr4081572lfs.492.1650344963961;
-        Mon, 18 Apr 2022 22:09:23 -0700 (PDT)
-Received: from ?IPV6:2a00:1370:8182:3365:df52:ce71:56d4:e7e6? ([2a00:1370:8182:3365:df52:ce71:56d4:e7e6])
-        by smtp.gmail.com with ESMTPSA id w15-20020a05651c102f00b0024db4728681sm823486ljm.50.2022.04.18.22.09.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Apr 2022 22:09:23 -0700 (PDT)
-Message-ID: <e329a96b-8fe0-0426-f368-f0a1c2eb13b9@gmail.com>
-Date:   Tue, 19 Apr 2022 08:09:21 +0300
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=ZQ+Chfr41Ap1rnBqjRyg9YSdPtFNo1mvhN33hifHLWI=;
+        b=nXb1nGFsLd7PXADDwoqoJHYpOb8WKzLQz9D27dGO7OYpsPuIxtgsf24kP2H8po5Xzx
+         D9oO+vnETNwo32ewQAD9gOT18DNMypzixo0YVwx5ruTlj0sWeL24mywbHCK5UDHN0xpR
+         ju9mUTOSaIsIYwfue2logLzI6/Uc0WZBYeNrP2QnrJjWa0M73kfhSUu8QKrHTuHN7Jnj
+         GBPs4uqd53z58YDyvLiDeFd1Xrk5gBIbG/nGzye3f4GxDMyXqSjLpckZYcmoQymzM3cW
+         otqPP99QxOmJSRPu3ktPGfkquEoHuTPDvAHPelI6iVszgLyqd8Ou7w2ioytUBONe4w//
+         bvDg==
+X-Gm-Message-State: AOAM533xAxGkkXHvRrGTw20B6bhL1yhBscJP2+XUp7DV+w2DPyHmvbCl
+        5YLF/lFIYa5+Uq3JNtxNb1W4pQiZkzS0t5w/zSs=
+X-Google-Smtp-Source: ABdhPJz2uzcpUpHik1ep7TmFi2HqW9KO6ld7aJNTpDJ5WP/l2DTJPKPewetwXDfLsvnw2mX57wfAxV1k6WhxmtTRCp8=
+X-Received: by 2002:a05:6870:5829:b0:de:ab74:44c1 with SMTP id
+ r41-20020a056870582900b000deab7444c1mr7573139oap.167.1650345322978; Mon, 18
+ Apr 2022 22:15:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH 1/2] btrfs-progs: fix a memory leak when starting a
- transaction on fs with error
-Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1650287150.git.wqu@suse.com>
- <0aa27221eba9359cd566fc6448d46b12583211f2.1650287150.git.wqu@suse.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <0aa27221eba9359cd566fc6448d46b12583211f2.1650287150.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Sender: mr.azzizsalim@gmail.com
+Received: by 2002:ac9:5c8:0:0:0:0:0 with HTTP; Mon, 18 Apr 2022 22:15:22 -0700 (PDT)
+From:   "Mr. Jimmy Moore" <jimmymoore265@gmail.com>
+Date:   Tue, 19 Apr 2022 06:15:22 +0100
+X-Google-Sender-Auth: Ozf3iddArM0AgEr7o7Lh8s0LqvI
+Message-ID: <CADCzDA2oafToaFUrYuXa6hUfR6Qh=Wm7e3fACqZ=h5GXoy0KYg@mail.gmail.com>
+Subject: YOUR OVERDUE COMPENSATION.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_NAME_FM_MR_MRS,
+        LOTS_OF_MONEY,LOTTO_DEPT,MILLION_USD,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2001:4860:4864:20:0:0:0:2d listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [mr.azzizsalim[at]gmail.com]
+        *  0.0 MILLION_USD BODY: Talks about millions of dollars
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  1.5 HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  1.4 LOTTO_DEPT Claims Department
+        *  2.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 18.04.2022 16:10, Qu Wenruo wrote:
-> Function btrfs_start_transaction() will allocate the memory
-> unconditionally, but if the fs has an aborted transaction we don't free
-> the allocated memory but return error directly.
-> 
-> Fix it by only allocate the new memory after the transaction_aborted
-> check.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  kernel-shared/transaction.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel-shared/transaction.c b/kernel-shared/transaction.c
-> index 0201226678ba..799520a0ef71 100644
-> --- a/kernel-shared/transaction.c
-> +++ b/kernel-shared/transaction.c
-> @@ -25,13 +25,15 @@ struct btrfs_trans_handle* btrfs_start_transaction(struct btrfs_root *root,
->  		int num_blocks)
->  {
->  	struct btrfs_fs_info *fs_info = root->fs_info;
-> -	struct btrfs_trans_handle *h = kzalloc(sizeof(*h), GFP_NOFS);
-> -
-> +	struct btrfs_trans_handle *h;
-> +	
->  	if (fs_info->transaction_aborted)
->  		return ERR_PTR(-EROFS);
->  
-> +	h = kzalloc(sizeof(*h), GFP_NOFS);
->  	if (!h)
->  		return ERR_PTR(-ENOMEM);
-> +
->  	if (root->commit_root) {
->  		error("commit_root already set when starting transaction");
->  		kfree(h);
+UNITED NATIONS COVID-19 OVERDUE COMPENSATION UNIT.
+REFERENCE PAYMENT CODE: 8525595
+BAILOUT AMOUNT:$10.5 MILLION USD
+ADDRESS: NEW YORK, NY 10017, UNITED STATES
 
-If you are moving allocation of h anyway, why not move it beyond all
-checks and delete redundant kfree(h)?
+Dear award recipient, Covid-19 Compensation funds.
+
+You are receiving this correspondence because we have finally reached
+a consensus with UN, IRS and IMF that your total fund worth $10.5
+Million Dollars of Covid-19 Compensation payment shall be delivered to
+your nominated mode of receipt, and you are expected to pay the sum of
+$12,000 for levies owed to authorities after receiving your funds.
+
+You have a grace period of 2 weeks to pay the $12,000 levy after you
+have receive your Covid-19 Compensation total sum of $10.5 Million. We
+shall proceed with the payment of your bailout grant only if you agree
+to the terms and conditions stated.
+
+Contact Dr. Mustafa Ali for more information by email on:(
+mustafa.ali@rahroco.com ) Your consent in this regard would be highly
+appreciated.
+
+Best Regards,
+Mr. Jimmy Moore.
+Undersecretary General United Nations
+Office of Internal Oversight-UNIOS
+UN making the world a better place
+http://www.un.org/sg/
