@@ -2,48 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D169507146
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 17:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1153C507154
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 17:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350579AbiDSPFd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 11:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        id S1351368AbiDSPG0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 11:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347789AbiDSPFc (ORCPT
+        with ESMTP id S1347789AbiDSPGY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 11:05:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BA52DD4A
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 08:02:49 -0700 (PDT)
+        Tue, 19 Apr 2022 11:06:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB26438BFA
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 08:03:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA17A615BA
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 15:02:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0876C385A7;
-        Tue, 19 Apr 2022 15:02:47 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 79236B81A7C
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 15:03:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE63CC385A7;
+        Tue, 19 Apr 2022 15:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650380568;
-        bh=2O/9wBKMA78Y5AbCI5M7UzLx/Sb0v4cSt1VGyQI0YaQ=;
+        s=k20201202; t=1650380619;
+        bh=LsPJl5/N4JjFNo7t5F9k0uck816dzZlWaIOIGPaS+Ww=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CTc7AQ/97Hn7PLpJHT635XIko/GmZce2dko7RfAMYKAQJYriHRdgQlYjOZQJy/7Ar
-         sdzkl+JvGfksTlUMSPB7LscHbK5Aolh7zZH0n6HXcPKuoDoMUz9yTcSBJ9BurF+RS2
-         rVvKc4iHYrmB0Z3emxeJKuL0V2DLB2PIZxUJnSeWwfumMiTCBiC3URzhDQdIhVZLfT
-         2LNW19CKGMTiushuzm6wXbsJNQT+wd++xVbBFhPNrHhf3phnuWGCWAq4xu6s3v9NW6
-         7u0XnlRbVH/Z3S0RAWHovCZj2H8f4ToQR03RxAttCHicYvr8p1irn9e5tsHl72snvV
-         Va35RksYlBXvQ==
-Date:   Tue, 19 Apr 2022 16:02:45 +0100
+        b=oInbgQT8ZkOLX/PrTuU3rH1j9T2f8+nebjrHC8Uq2auE0I1eqQiJ3xp1Pq0/V1ZbX
+         ss1Li3eRbrj6T0D0z0z9us4j5YUTajblPWPlYST+zskgsVwoE/71WQK0wzoPq8dpKh
+         RESXUxw0eEhEa6uQPMCzWIYiqyaPHOuprJa9zTjLZy3H3qvQ+a6tqohcrnuriBk4Pj
+         8DdqQA7eBQ4k09ZPWI6wskImFcrQLooV0I539UfeqjaKPg0GwOozUiVOj5Q/ELDKrW
+         vtm0/aywnAe6sN+A/FtX4UsthprKUytvqMvVH4aoFfTN2Zsb7MTPJrzTGVmWEjP7ve
+         hP3HTKOIIaJgw==
+Date:   Tue, 19 Apr 2022 16:03:36 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Chung-Chiang Cheng <cccheng@synology.com>
 Cc:     dsterba@suse.com, josef@toxicpanda.com, clm@fb.com,
-        linux-btrfs@vger.kernel.org, shepjeng@gmail.com, kernel@cccheng.net
-Subject: Re: [PATCH 1/2] btrfs: export a helper for compression hard check
-Message-ID: <Yl7PFUvb80AtpNd9@debian9.Home>
+        linux-btrfs@vger.kernel.org, shepjeng@gmail.com,
+        kernel@cccheng.net, Jayce Lin <jaycelin@synology.com>
+Subject: Re: [PATCH 2/2] btrfs: do not allow compression on nodatacow files
+Message-ID: <Yl7PSEolqP0hc67l@debian9.Home>
 References: <20220415080406.234967-1-cccheng@synology.com>
+ <20220415080406.234967-2-cccheng@synology.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220415080406.234967-1-cccheng@synology.com>
+In-Reply-To: <20220415080406.234967-2-cccheng@synology.com>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -54,96 +56,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 15, 2022 at 04:04:05PM +0800, Chung-Chiang Cheng wrote:
-> inode_can_compress will be used outside of inode.c to check the
-> availability of setting compression flag by xattr. This patch moves
-> this function as an internal helper and renames it to
-> btrfs_inode_can_compress.
-
-Btw, the idea was to export the function in a patch following the bug fix
-patch. That would imply temporarily duplicating the validation logic in
-the bug fix patch, and then the followup patch would export
-inode_can_compress() and make inode.c and props.c use it.
-
-That makes the backport to stable easier.
-
-Alternatively, IMO, since it's such a short and trivial change, both
-patches could be combined in a single patch. Not everyone might agree
-with that however.
-
-Either way, I'm fine with it, thanks.
+On Fri, Apr 15, 2022 at 04:04:06PM +0800, Chung-Chiang Cheng wrote:
+> Compression and nodatacow are mutually exclusive. A similar issue was
+> fixed by commit f37c563bab429 ("btrfs: add missing check for nocow and
+> compression inode flags"). Besides ioctl, there is another way to
+> enable/disable/reset compression directly via xattr. The following
+> steps will result in a invalid combination.
+> 
+>   $ touch bar
+>   $ chattr +C bar
+>   $ lsattr bar
+>   ---------------C-- bar
+>   $ setfattr -n btrfs.compression -v zstd bar
+>   $ lsattr bar
+>   --------c------C-- bar
+> 
+> To align with the logic in check_fsflags, nocompress will also be
+> unacceptable after this patch, to prevent mix any compression-related
+> options with nodatacow.
+> 
+>   $ touch bar
+>   $ chattr +C bar
+>   $ lsattr bar
+>   ---------------C-- bar
+>   $ setfattr -n btrfs.compression -v zstd bar
+>   setfattr: bar: Invalid argument
+>   $ setfattr -n btrfs.compression -v no bar
+>   setfattr: bar: Invalid argument
+> 
+> Reported-by: Jayce Lin <jaycelin@synology.com>
+> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-> 
-> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+Looks good, thanks.
+
 > ---
->  fs/btrfs/btrfs_inode.h | 11 +++++++++++
->  fs/btrfs/inode.c       | 15 ++-------------
->  2 files changed, 13 insertions(+), 13 deletions(-)
+>  fs/btrfs/props.c | 16 +++++++++++-----
+>  fs/btrfs/props.h |  3 ++-
+>  fs/btrfs/xattr.c |  2 +-
+>  3 files changed, 14 insertions(+), 7 deletions(-)
 > 
-> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> index 47e72d72f7d0..32131a5d321b 100644
-> --- a/fs/btrfs/btrfs_inode.h
-> +++ b/fs/btrfs/btrfs_inode.h
-> @@ -384,6 +384,17 @@ static inline bool btrfs_inode_in_log(struct btrfs_inode *inode, u64 generation)
+> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+> index 1a6d2d5b4b33..5a6f87744c28 100644
+> --- a/fs/btrfs/props.c
+> +++ b/fs/btrfs/props.c
+> @@ -17,7 +17,8 @@ static DEFINE_HASHTABLE(prop_handlers_ht, BTRFS_PROP_HANDLERS_HT_BITS);
+>  struct prop_handler {
+>  	struct hlist_node node;
+>  	const char *xattr_name;
+> -	int (*validate)(const char *value, size_t len);
+> +	int (*validate)(const struct btrfs_inode *inode, const char *value,
+> +			size_t len);
+>  	int (*apply)(struct inode *inode, const char *value, size_t len);
+>  	const char *(*extract)(struct inode *inode);
+>  	int inheritable;
+> @@ -55,7 +56,8 @@ find_prop_handler(const char *name,
+>  	return NULL;
+>  }
+>  
+> -int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
+> +int btrfs_validate_prop(const struct btrfs_inode *inode, const char *name,
+> +			const char *value, size_t value_len)
+>  {
+>  	const struct prop_handler *handler;
+>  
+> @@ -69,7 +71,7 @@ int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
+>  	if (value_len == 0)
+>  		return 0;
+>  
+> -	return handler->validate(value, value_len);
+> +	return handler->validate(inode, value, value_len);
+>  }
+>  
+>  int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+> @@ -252,8 +254,12 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path)
 >  	return ret;
 >  }
 >  
-> +/*
-> + * Check if the inode has flags compatible with compression
-> + */
-> +static inline bool btrfs_inode_can_compress(const struct btrfs_inode *inode)
-> +{
-> +	if (inode->flags & BTRFS_INODE_NODATACOW ||
-> +	    inode->flags & BTRFS_INODE_NODATASUM)
-> +		return false;
-> +	return true;
-> +}
-> +
->  struct btrfs_dio_private {
->  	struct inode *inode;
->  
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 17d5557f98ec..99725e5508f9 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -480,17 +480,6 @@ static noinline int add_async_extent(struct async_chunk *cow,
->  	return 0;
->  }
->  
-> -/*
-> - * Check if the inode has flags compatible with compression
-> - */
-> -static inline bool inode_can_compress(struct btrfs_inode *inode)
-> -{
-> -	if (inode->flags & BTRFS_INODE_NODATACOW ||
-> -	    inode->flags & BTRFS_INODE_NODATASUM)
-> -		return false;
-> -	return true;
-> -}
-> -
->  /*
->   * Check if the inode needs to be submitted to compression, based on mount
->   * options, defragmentation, properties or heuristics.
-> @@ -500,7 +489,7 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
+> -static int prop_compression_validate(const char *value, size_t len)
+> +static int prop_compression_validate(const struct btrfs_inode *inode,
+> +				     const char *value, size_t len)
 >  {
->  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> +	if (!btrfs_inode_can_compress(inode))
+> +		return -EINVAL;
+> +
+>  	if (!value)
+>  		return 0;
 >  
-> -	if (!inode_can_compress(inode)) {
-> +	if (!btrfs_inode_can_compress(inode)) {
->  		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
->  			KERN_ERR "BTRFS: unexpected compression for ino %llu\n",
->  			btrfs_ino(inode));
-> @@ -2020,7 +2009,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
->  		       (zoned && btrfs_is_data_reloc_root(inode->root)));
->  		ret = run_delalloc_nocow(inode, locked_page, start, end,
->  					 page_started, nr_written);
-> -	} else if (!inode_can_compress(inode) ||
-> +	} else if (!btrfs_inode_can_compress(inode) ||
->  		   !inode_need_compress(inode, start, end)) {
->  		if (zoned)
->  			ret = run_delalloc_zoned(inode, locked_page, start, end,
+> @@ -364,7 +370,7 @@ static int inherit_props(struct btrfs_trans_handle *trans,
+>  		 * This is not strictly necessary as the property should be
+>  		 * valid, but in case it isn't, don't propagate it further.
+>  		 */
+> -		ret = h->validate(value, strlen(value));
+> +		ret = h->validate(BTRFS_I(inode), value, strlen(value));
+>  		if (ret)
+>  			continue;
+>  
+> diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
+> index 40b2c65b518c..2b2ac15ab788 100644
+> --- a/fs/btrfs/props.h
+> +++ b/fs/btrfs/props.h
+> @@ -13,7 +13,8 @@ void __init btrfs_props_init(void);
+>  int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+>  		   const char *name, const char *value, size_t value_len,
+>  		   int flags);
+> -int btrfs_validate_prop(const char *name, const char *value, size_t value_len);
+> +int btrfs_validate_prop(const struct btrfs_inode *inode, const char *name,
+> +			const char *value, size_t value_len);
+>  
+>  int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path);
+>  
+> diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+> index 99abf41b89b9..9632d0ff2038 100644
+> --- a/fs/btrfs/xattr.c
+> +++ b/fs/btrfs/xattr.c
+> @@ -403,7 +403,7 @@ static int btrfs_xattr_handler_set_prop(const struct xattr_handler *handler,
+>  	struct btrfs_root *root = BTRFS_I(inode)->root;
+>  
+>  	name = xattr_full_name(handler, name);
+> -	ret = btrfs_validate_prop(name, value, size);
+> +	ret = btrfs_validate_prop(BTRFS_I(inode), name, value, size);
+>  	if (ret)
+>  		return ret;
+>  
 > -- 
 > 2.34.1
 > 
