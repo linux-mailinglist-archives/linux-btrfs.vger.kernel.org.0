@@ -2,123 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683F2506CEF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 14:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9B6506D02
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 15:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347378AbiDSNCG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 09:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
+        id S1345109AbiDSNEj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 09:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236243AbiDSNCE (ORCPT
+        with ESMTP id S235870AbiDSNEh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 09:02:04 -0400
+        Tue, 19 Apr 2022 09:04:37 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19622377CB;
-        Tue, 19 Apr 2022 05:59:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F643702A;
+        Tue, 19 Apr 2022 06:01:55 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C99F51F38D;
-        Tue, 19 Apr 2022 12:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1650373160;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 405951F38D;
+        Tue, 19 Apr 2022 13:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1650373314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VfBYsPW8LdFmKxr65w1hdhdV60yv3YMcCbpJWSrqKvk=;
-        b=NvUNYJ0aijygZaycEKANEzrLj5OpFXGbpMkv75nQ6FnXKgRf9EXcV4+9POedJBZkOwU5S7
-        5pILnN4Shqgf3JhLxLgoR5OWcJL0pDDsuxwB46NB53CVYSYKQtDfU6ZcMenkfu3sqHVTkW
-        IM2WCbvx+MAK2WLHjSdOm9gfT/yomU4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1650373160;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VfBYsPW8LdFmKxr65w1hdhdV60yv3YMcCbpJWSrqKvk=;
-        b=R3XLspmIJ8AmIyyP6ZGhyQkfkNAvIfydJiDrLZbCwnLmc9AnAFEIt/H4vRE7D3uxeV/uH+
-        hd0WY76/Imja80AA==
+        bh=9vN+XTepgNW/qw3GEIsYzifQhkj8V3BEekB3LB/twmk=;
+        b=lXfGpYBn4Af8dwmtLLIazr68958A3oPhENq2DRwF+If9cD35FvULq4UfhyrRibFUEyaoyD
+        fbxieYXRs8f4wU6X8Ef4NHAA33wyW0gr+6TZIx2VnY+uxdw//g3XidhaaQDCsrAzTCpNQA
+        ZPokBUX2cCWMzNn44X0xQHHU3WtABvo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 550DC139BE;
-        Tue, 19 Apr 2022 12:59:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FE29139BE;
+        Tue, 19 Apr 2022 13:01:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id BH7rEyiyXmLxeQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 19 Apr 2022 12:59:20 +0000
-Date:   Tue, 19 Apr 2022 14:55:17 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
-        drbd-dev@lists.linbit.com, nbd@other.debian.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
-Subject: Re: [PATCH 27/27] direct-io: remove random prefetches
-Message-ID: <20220419125517.GB2348@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
-        drbd-dev@lists.linbit.com, nbd@other.debian.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
-References: <20220415045258.199825-1-hch@lst.de>
- <20220415045258.199825-28-hch@lst.de>
+        id q4GuOcCyXmJFewAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 19 Apr 2022 13:01:52 +0000
+Message-ID: <86175a32-eaff-b48b-9971-4bbd123127fc@suse.com>
+Date:   Tue, 19 Apr 2022 16:01:51 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220415045258.199825-28-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] fstests: btrfs: test setting compression via xattr on
+ nodatacow files
+Content-Language: en-US
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     Chung-Chiang Cheng <cccheng@synology.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, fdmanana@kernel.org, dsterba@suse.com
+Cc:     shepjeng@gmail.com, kernel@cccheng.net
+References: <20220418075430.484158-1-cccheng@synology.com>
+ <322a24a2-8ab3-63da-a284-e78663ddd0f8@suse.com>
+In-Reply-To: <322a24a2-8ab3-63da-a284-e78663ddd0f8@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 15, 2022 at 06:52:58AM +0200, Christoph Hellwig wrote:
-> Randomly poking into block device internals for manual prefetches isn't
-> exactly a very maintainable thing to do.  And none of the performance
-> criticil direct I/O implementations still use this library function
-> anyway, so just drop it.
+
+
+On 19.04.22 г. 15:47 ч., Nikolay Borisov wrote:
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 
+> On 18.04.22 г. 10:54 ч., Chung-Chiang Cheng wrote:
+>> Compression and nodatacow are mutually exclusive. Besides ioctl, there
+>> is another way to setting compression via xattrs, and shouldn't produce
+>> invalid combinations.
+>>
+>> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+>> ---
+>>   tests/btrfs/264     | 76 +++++++++++++++++++++++++++++++++++++++++++++
+>>   tests/btrfs/264.out | 15 +++++++++
+>>   2 files changed, 91 insertions(+)
+>>   create mode 100755 tests/btrfs/264
+>>   create mode 100644 tests/btrfs/264.out
+>>
+>> diff --git a/tests/btrfs/264 b/tests/btrfs/264
+>> new file mode 100755
+>> index 000000000000..42bfcd4f93a0
+>> --- /dev/null
+>> +++ b/tests/btrfs/264
+>> @@ -0,0 +1,76 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (C) 2022 Synology Inc. All Rights Reserved.
+>> +#
+>> +# FS QA Test No. 264
+>> +#
+>> +# Compression and nodatacow are mutually exclusive. Besides ioctl, there
+>> +# is another way to setting compression via xattrs, and shouldn't 
+>> produce
+>> +# invalid combinations.
+>> +#
+>> +# To prevent mix any compression-related options with nodatacow, 
+>> FS_NOCOMP_FL
+>> +# is also rejected by ioctl as well as FS_COMPR_FL on nodatacow 
+>> files. To
+>> +# align with it, no and none are also unacceptable in this test.
+>> +#
+>> +# The regression is fixed by a patch with the following subject:
+>> +#   btrfs: do not allow compression on nodatacow files
+>> +#
+>> +. ./common/preamble
+>> +_begin_fstest auto quick compress attr
+>> +
+>> +# Import common functions.
+>> +. ./common/filter
+>> +. ./common/attr
+>> +
+>> +# real QA test starts here
+>> +
+>> +_supported_fs btrfs
+>> +_require_scratch
+>> +_require_chattr C
+>> +_require_chattr c
+>> +
+>> +_scratch_mkfs >>$seqres.full 2>&1
+>> +_scratch_mount
+>> +
+>> +#
+>> +# DATACOW
+>> +#
+>> +test_file="$SCRATCH_MNT/foo"
+>> +touch "$test_file"
+>> +$CHATTR_PROG -C "$test_file"
+>> +$LSATTR_PROG -l "$test_file" | _filter_scratch
+>> +
+>> +$SETFATTR_PROG -n "btrfs.compression" -v zlib "$test_file" |& 
+>> _filter_scratch
+> 
+> In my testing setfattr doesn't produce any output, so why the 
+> _filter_scratch ?
 
-That the direct io function needed a valid bdev just for the prefetch
-but nothing else was one of the reasons we had to keep the latest_bdev
-in btrfs, so good riddance.
+nit: Ah right, that applies to those setfattr calls that are expected to 
+fail when doing the nodatacow ops. So perhaps you could only do |& on 
+the setfattr calls which are expected to fail.
 
-You may want to add the reference to the patch that added the prefetch,
-65dd2aa90aa1 ("dio: optimize cache misses in the submission path") and
-also remove #include <linux/prefetch.h> as there are no more uses of
-prefetch in the file.
+<snip>
 
-With that
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+SO the main thing which remains to fix is calling the _filter_spaces to 
+ensure the test succeeds.
