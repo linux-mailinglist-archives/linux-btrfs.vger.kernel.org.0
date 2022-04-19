@@ -2,120 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC725063CF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 07:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD8B5063DC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Apr 2022 07:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbiDSFSI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 01:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
+        id S1348524AbiDSFWr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 01:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348536AbiDSFSG (ORCPT
+        with ESMTP id S1348563AbiDSFWd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 01:18:06 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E58220FD
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 22:15:23 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-e5bdd14b59so6842834fac.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Apr 2022 22:15:23 -0700 (PDT)
+        Tue, 19 Apr 2022 01:22:33 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAA46167;
+        Mon, 18 Apr 2022 22:19:49 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id k14so22891168pga.0;
+        Mon, 18 Apr 2022 22:19:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=ZQ+Chfr41Ap1rnBqjRyg9YSdPtFNo1mvhN33hifHLWI=;
-        b=SgYB1IeyZzeluQKAhNlXoUvDdLKB9j73p/SJpqG1ghc6xhT1sjHPNkvvWk5dRRvXJ6
-         DyYnnuVkTHBCiLS1Z85mzCXBleMrUks6k3S3EJORfwP3nuq5rGj4tzu5Z7ocJTp3lILq
-         G5JqAVtYLNhE9jdUVbLDGAGkw4yxRVE1GcXnSzirGT/YjQf8DKi1zdErSIu0lX3y1kUU
-         3/AtEVkLvoM2WFULUoZwUe2cwtM0jUvAtWXuM3VV4pkcdxht3Y1uMvrwThMXVYv034yL
-         E8lRvhGDx18PB2R28NqvV2eN/uzeCM76THYJtQNJPnArgA02FpBczPGrsgndOVK+cztV
-         uPUQ==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=je3GAhnrsS3qmDoIuVcaSDn6nM7iLRjCpgJb3vVvrAc=;
+        b=A8a3td9wlfAiSIhFkg5saM13qY+3v4FW01xS8tmywfWv+aYfg1FQGkNcWC4Uv1QrHZ
+         yKMabMhWqEPo93hessEAL59glLZtvZVAsMUV+faVLPCX/yG9wO1y0kO3XR3zFx/BV4yc
+         u5cTZITXyaQJN1ZX2NyR+3+xwkUvX5KDPJ1p38D3qJdub1fXJfndKJv7kDWiLpNoYNLC
+         lUluKrxiRx34yY2knrldzdzePWBdiSl5H8SRjJyPoJgC8HzXt4Pco7333xU7kg2vRf1K
+         bu/64+uxtsguYjnDmbLB9iOFgs5zlQfWqkpR8TvrIi8r65x77ter9yFWogkfVNhfHDwZ
+         ElyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=ZQ+Chfr41Ap1rnBqjRyg9YSdPtFNo1mvhN33hifHLWI=;
-        b=nXb1nGFsLd7PXADDwoqoJHYpOb8WKzLQz9D27dGO7OYpsPuIxtgsf24kP2H8po5Xzx
-         D9oO+vnETNwo32ewQAD9gOT18DNMypzixo0YVwx5ruTlj0sWeL24mywbHCK5UDHN0xpR
-         ju9mUTOSaIsIYwfue2logLzI6/Uc0WZBYeNrP2QnrJjWa0M73kfhSUu8QKrHTuHN7Jnj
-         GBPs4uqd53z58YDyvLiDeFd1Xrk5gBIbG/nGzye3f4GxDMyXqSjLpckZYcmoQymzM3cW
-         otqPP99QxOmJSRPu3ktPGfkquEoHuTPDvAHPelI6iVszgLyqd8Ou7w2ioytUBONe4w//
-         bvDg==
-X-Gm-Message-State: AOAM533xAxGkkXHvRrGTw20B6bhL1yhBscJP2+XUp7DV+w2DPyHmvbCl
-        5YLF/lFIYa5+Uq3JNtxNb1W4pQiZkzS0t5w/zSs=
-X-Google-Smtp-Source: ABdhPJz2uzcpUpHik1ep7TmFi2HqW9KO6ld7aJNTpDJ5WP/l2DTJPKPewetwXDfLsvnw2mX57wfAxV1k6WhxmtTRCp8=
-X-Received: by 2002:a05:6870:5829:b0:de:ab74:44c1 with SMTP id
- r41-20020a056870582900b000deab7444c1mr7573139oap.167.1650345322978; Mon, 18
- Apr 2022 22:15:22 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=je3GAhnrsS3qmDoIuVcaSDn6nM7iLRjCpgJb3vVvrAc=;
+        b=OwabXReaj3dYCiinBjSMRw4lCwt2ZcV07YvJVdVbfFxPicmbeQS+dzkGZVmVUzt6Vi
+         xdbN9A443MNFCKdw5qAfiE47XYQhJb1fouetawGT7/PEEkMVHXykT5WaiFyZ/hYN9tDi
+         p6mgWgZTtEqu2eAszJl7f9osSKp0gnaMz8ARQV/SIzxWdyLWyst9aq9YBAhJCzpLPXq2
+         wC5QjUdoSpqFAyld6zUbFzsWlZ9q+1Uu9kt86Qjea67zGAPRIGEGr0nY4HhOc25IUpME
+         ru4TP38k4hbnXPEODDDS3MPBAaEYEKd4CIChZKGIEYG94bCpln8FiBIL1Y3uD4yo+nqJ
+         i7RA==
+X-Gm-Message-State: AOAM530v7/m4ZmHW03P2sUjTYsjAxJw6r5tu/YWzZNi7XTiNW7ncTGsP
+        Sb/Lisy1JA3ga9mBLA+kIZQ=
+X-Google-Smtp-Source: ABdhPJzhM5IkrPTBazVFqfWlLXwWqrSQLkhlty36WeiwKvHzSvbQHp5tWd0+ALc1qK1qWDh+XUJuNg==
+X-Received: by 2002:a63:68c6:0:b0:380:3fbc:dfb6 with SMTP id d189-20020a6368c6000000b003803fbcdfb6mr13102086pgc.326.1650345589078;
+        Mon, 18 Apr 2022 22:19:49 -0700 (PDT)
+Received: from [192.168.43.80] (subs03-180-214-233-72.three.co.id. [180.214.233.72])
+        by smtp.gmail.com with ESMTPSA id 124-20020a621982000000b0050a73577a37sm6583315pfz.45.2022.04.18.22.19.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Apr 2022 22:19:48 -0700 (PDT)
+Message-ID: <b5b42b49-9d0c-c745-f355-89900b53f6e1@gmail.com>
+Date:   Tue, 19 Apr 2022 12:19:44 +0700
 MIME-Version: 1.0
-Sender: mr.azzizsalim@gmail.com
-Received: by 2002:ac9:5c8:0:0:0:0:0 with HTTP; Mon, 18 Apr 2022 22:15:22 -0700 (PDT)
-From:   "Mr. Jimmy Moore" <jimmymoore265@gmail.com>
-Date:   Tue, 19 Apr 2022 06:15:22 +0100
-X-Google-Sender-Auth: Ozf3iddArM0AgEr7o7Lh8s0LqvI
-Message-ID: <CADCzDA2oafToaFUrYuXa6hUfR6Qh=Wm7e3fACqZ=h5GXoy0KYg@mail.gmail.com>
-Subject: YOUR OVERDUE COMPENSATION.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_NAME_FM_MR_MRS,
-        LOTS_OF_MONEY,LOTTO_DEPT,MILLION_USD,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:2d listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mr.azzizsalim[at]gmail.com]
-        *  0.0 MILLION_USD BODY: Talks about millions of dollars
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  1.5 HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  1.4 LOTTO_DEPT Claims Department
-        *  2.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH] btrfs: zstd: remove extraneous asterix at the head of
+ zstd_reclaim_timer_fn() comment
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Nick Terrell <terrelln@fb.com>, Schspa Shi <schspa@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220418125934.566647-1-bagasdotme@gmail.com>
+ <Yl2Dx+jefYs1Un+8@localhost.localdomain>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <Yl2Dx+jefYs1Un+8@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-UNITED NATIONS COVID-19 OVERDUE COMPENSATION UNIT.
-REFERENCE PAYMENT CODE: 8525595
-BAILOUT AMOUNT:$10.5 MILLION USD
-ADDRESS: NEW YORK, NY 10017, UNITED STATES
+On 4/18/22 22:29, Josef Bacik wrote:
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> Thanks,
+> 
+> Josef
 
-Dear award recipient, Covid-19 Compensation funds.
+Thanks for the review. Should I send v2 with your Reviewed-by
+tag?
 
-You are receiving this correspondence because we have finally reached
-a consensus with UN, IRS and IMF that your total fund worth $10.5
-Million Dollars of Covid-19 Compensation payment shall be delivered to
-your nominated mode of receipt, and you are expected to pay the sum of
-$12,000 for levies owed to authorities after receiving your funds.
-
-You have a grace period of 2 weeks to pay the $12,000 levy after you
-have receive your Covid-19 Compensation total sum of $10.5 Million. We
-shall proceed with the payment of your bailout grant only if you agree
-to the terms and conditions stated.
-
-Contact Dr. Mustafa Ali for more information by email on:(
-mustafa.ali@rahroco.com ) Your consent in this regard would be highly
-appreciated.
-
-Best Regards,
-Mr. Jimmy Moore.
-Undersecretary General United Nations
-Office of Internal Oversight-UNIOS
-UN making the world a better place
-http://www.un.org/sg/
+-- 
+An old man doll... just what I always wanted! - Clara
