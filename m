@@ -2,179 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB9250832A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 10:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E64508330
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 10:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376636AbiDTILi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Apr 2022 04:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        id S1376617AbiDTIQp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Apr 2022 04:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376560AbiDTILf (ORCPT
+        with ESMTP id S237048AbiDTIQo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Apr 2022 04:11:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD00C16
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 01:08:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5D7751F385
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650442129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vFlfb9VsDbk/wZFU9xeutkXCmD5+fyyS7SG7ed4Gyw8=;
-        b=OGccdQOYAYO/CtKI2C8pEXVum2fkZz9C1KLOY0V0gJoLJLFZb5NsOQB1ufgvtXMAbS3SvR
-        uq7uvF/WWlx7QCjLQCJmowMKADzqYjS102ARBsuvSr6m5wzrcM9ivGXhcZVYmay+FfVNIo
-        rVwz159o9UrkiyIcigy3I9t6p01Ra7Y=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 977A113AD5
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AO0QFpC/X2JEbAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:48 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 2/2] btrfs: use ilog2() to replace if () branches for btrfs_bg_flags_to_raid_index()
-Date:   Wed, 20 Apr 2022 16:08:28 +0800
-Message-Id: <beb111504cb32088bcf4fc6bc1ef36004d0761cb.1650441750.git.wqu@suse.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1650441750.git.wqu@suse.com>
+        Wed, 20 Apr 2022 04:16:44 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF175B864
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 01:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1650442438; x=1681978438;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=p8jI36nkfGLIi5cVD62nirQtXK+0JEF+JYBOjI4wFkYvtuLT4PQd/0HH
+   DazrQ+q/UrJD2xhOxyS8x1mYSqjclKJ7zaxOHEk3hp3ZQw/majWsWCE8F
+   OlOpUWYFIkx5MmYQtfWOe53sHK4m/Tzx+1p5z0BvdrAb5c9ELCy7+SAdb
+   LLa6+o6zvIIYnf8wKh9HituWWaUD6b1JnSOBsn4hNcS5B4X92tSns03h1
+   SplmdX7+vWABJADBEfoz4LCyJGWRc9O6EMIF4oTGyeSPrstZc4yeMSjpr
+   NBn2wtzOE+mNMUgNkOBJifxZ8S5Hu/lEsFg8aFb3Gy9I6YirBlvKGamPD
+   w==;
+X-IronPort-AV: E=Sophos;i="5.90,275,1643644800"; 
+   d="scan'208";a="302539685"
+Received: from mail-bn8nam12lp2175.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.175])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Apr 2022 16:13:57 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mknd6EHKx64uCqXxlC5C9JHXcOIQrsFVc+ZL9YsfspDLQdxb/5s8AZKOrPmJFlU5RUxdWSri6a/VSG1VPHPdmcr06amxO65y92CjQCZi+mkYPtmVdkH3bAIAqBTgkx063/LC0yl+M68fImBZtNTFXLhs0+M9y0CTDSLxFbAvJGD/mlCg+e5qyw+q0cc6UIdE+ZPLPxrNtYWs5WeowvX6EGOHTc+3ffDTSZtTcXpE6UVJN/yv4pamgUx3X4VvkBU2uGbGQjBhTLgOnf+Nuvl+PZgekbgFWF8KqxbPXH9UluDFIIaidt5P8hpGF60H/rIhOJ8FJCT+sCqW3C+S8M+Vrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=P0yRt008rfVok05W0xVAhwN5cIAbxMhfbbmkH28wmMm8wIs66+Hw0TTWOMezUlB8SVYXiW/v+X0kUeFBunCHcjyCckIjB+MrWJXwdazYhHPWULbwl+nOW4Ca0ft3gexxBNn19mPI4ag7ctrPvWs71MFc2tZhWVtj+HPqV5kT/DNpGFyrzLE7WDhLrR750SrnT9cUnQiEsSRKDRZDEzbwuhjCJiq9K9FZvHd2i8gfrp/TppjPZZsXD4bNZbmSPeVmvuUKfzDt9KuFiVC91InZ7/NQ++eRIECv9LHTDfqS3NN8w5fVZ5BVVe1vAJ/c6zpcLBRaxz4zzia3MqvI7Ue/Ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=yUM/Qg1fEoXFhGUKJw/6FD+bmP0bNoWQRHHH6L5uMl6E16E2NXF1VlrcLU/B99BJIgZDFWZ8F3MRm9GYAgJNY4PNZfCHIyNaL8etMYYwe6nktADSi/DBABgigDyTkG8ys+E6iHHuI2PhKFhyaxl2COZYYrT2pHOSfvBF+nmLyo8=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BYAPR04MB4086.namprd04.prod.outlook.com (2603:10b6:a02:aa::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.20; Wed, 20 Apr
+ 2022 08:13:56 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12%3]) with mapi id 15.20.5186.014; Wed, 20 Apr 2022
+ 08:13:55 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] btrfs: move definition of btrfs_raid_types to
+ volumes.h
+Thread-Topic: [PATCH v3 1/2] btrfs: move definition of btrfs_raid_types to
+ volumes.h
+Thread-Index: AQHYVI3l1HcQMtP5a06eXXGcxL2jUA==
+Date:   Wed, 20 Apr 2022 08:13:55 +0000
+Message-ID: <PH0PR04MB7416B8B139758AD5AAF0A71B9BF59@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <cover.1650441750.git.wqu@suse.com>
+ <5f91946ad971e6d9a3d10dbcb1c9899fb939df1b.1650441750.git.wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 41974fa5-d80c-4d04-23fe-08da22a5b6d3
+x-ms-traffictypediagnostic: BYAPR04MB4086:EE_
+x-microsoft-antispam-prvs: <BYAPR04MB4086CA16F0235FF4F1495F3C9BF59@BYAPR04MB4086.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +M3ufo+lkhRwEZyFfZUs1M7KiIa38hmaDNS/xuKyZ9HBKPw5hiMHnAXpAUty/WLz9VtvXvMswgxNdpOC0vH983EH0y+gix7tg5fAayFvqctXL70akLsy/R+wAXZoLex8CLZpgIRB68bk7Ttl6VBR/g0nNuUzxKzx142VK7xWXZgdHgngBV/vdL1i/7vD82S59zfhcfv5+GHnB+agNdumhyU2W4g+KS2MJC38z/a7VdkBKE0Asdswtc73lhWalhFc2J6N2BWpw7BVETN9y5/VfSErbKKowTGLsIFiLOhpoI/PbLenSgbCvj1BFP7XAe9wiFdxyiP38pwscfgvitNIUjyMctq53vtI7zhFWIdviA16MRuBzX8A8OZ9K2VKYlhg4fxdbg6UF6FFzETL0TXkBQZ3hub5LevY+EVOIzX9HFkQZ6swLt+msP7V7+o2ue84oZGwF8v2IwuK9J7wT6B/ndbb3bwJNGhEKOYFRxcZblaQ/kc+YmjKIpTKX2CipZQvILCf6spuuMui3/OlaFoCb8KT71n+SR8xUdr6dqbS7TUlp7m0XhnFx/ByPyewUqMGX4drFhXsVteBkTXlL8oIYqbpa4bQv5cCzOPVsTXiFchRexDenjhC43XD3o99USCsCOEFY4bw2aCYgOuEWsxKQ1/rGPzsgQtWx1NjyJipel7N30Hku2VrU2U8twNzDJiiyS4ZpqW5cXbiv/mQCMkeEA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(316002)(82960400001)(64756008)(66556008)(38070700005)(71200400001)(8676002)(91956017)(508600001)(33656002)(8936002)(52536014)(122000001)(86362001)(66946007)(19618925003)(558084003)(76116006)(66446008)(66476007)(55016003)(38100700002)(186003)(9686003)(6506007)(7696005)(4270600006)(110136005)(5660300002)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MhMnr5oA3Va0BwIKM598IynlafIwCSbNH2865ZRcIOsLLwlufpiKLnYWBbXq?=
+ =?us-ascii?Q?IcHtZYaqKKq3tbEpdt5FgzNU/ZNxx3zgK9n057m1NhzECrs+58iG+sx4ICzG?=
+ =?us-ascii?Q?geArDxyjMyDtmjkm8HuFFg4zs7dcbpIOIavt6Fz7DzF8rEefGfd1Y8jDtoe8?=
+ =?us-ascii?Q?9E9l/vpPbqT/tVXQ6X7iU9eDptFjo2bZbsSzq82+wqiyVpQiq3FgEKACmmzP?=
+ =?us-ascii?Q?NlZn74yVQQJECinyoU6DZQZm8W61LQ8tLyG3PFB0ADFXDgGzSAGhBDGrYd4X?=
+ =?us-ascii?Q?xhGw7+JTCyfXA0hDlMkQEV+fZTEjCkgId2QeUSV1MoCO5Cl1iw2pcRyH5dAG?=
+ =?us-ascii?Q?OkrCTWTEVAIgyyGq56b1wl1AvjyL/sDrpZ+xp5jeDCTxTvtHldIB9EVvP/CZ?=
+ =?us-ascii?Q?+XQTClspC1t1qpue8lHoTkQyJJbtqh9D9xKd0WCX+uVPsVMyXjQR/bRp5yUp?=
+ =?us-ascii?Q?ueAeZXZYwwoVcQgFGa8lJWsFYXLxk9WMgUOTvNUvuX7PYVsuKBeffEjjKD1R?=
+ =?us-ascii?Q?Yc1bbPq/RAKEh4nJ0ii11doFqNJ5hidO70J0aacI/MbChPLu2JgpujPV8AWJ?=
+ =?us-ascii?Q?4ThD9Kn1InxoC4+oXD7csL3sUenITN3e7bZXT2EviQj61AqmSqVqYccjd+Ke?=
+ =?us-ascii?Q?N+dBr35u7FuRFMYfoMAnG4QTjTFqez/GRke1d38FEME5fDRLP+cNFG/ayh5m?=
+ =?us-ascii?Q?sMgnRXVF5fzWvHgJ2NE2jRgi9PPO5Wklaq+3ZsoT+YFnIkrpM2oSJCBW6Q5G?=
+ =?us-ascii?Q?2zHSxKcgBzjhSRcLqk7eSG9zUY+jl+jhGInCbdALUKjhQaoFMfrOEPZR/JHt?=
+ =?us-ascii?Q?8BNoGNl7gOoyDBAk/TWTRqBJjdws3s8571zu57LZ0RluTdPAkZh5zrwsYS0I?=
+ =?us-ascii?Q?7Po7EMBqcAf1iXdJRtmbUlIE7Tzy6pUhEkBbTaK70OHahs26oS3bwKHVFhEA?=
+ =?us-ascii?Q?3n9BluMm396iMYTBYeo3RaztF/jVdnY8b2o0dPtfbnnudgVSkdrg4/Jqlnr6?=
+ =?us-ascii?Q?yiEA7+VUGCkVNfvn25+fdebJmm9RewE7LCNlJ2FKN4etc6AGbOX+8khREkDK?=
+ =?us-ascii?Q?5m49Y4e0+Jt5nfWzDh7gNE9zocRBnAZM7r1SJtRVE+TV2N2WFjwoLeUGhpzf?=
+ =?us-ascii?Q?+7bp9JNax5dLOZabgKm/Y3xc/nCGjG0yF9LNWhaNtBNG7fcXzHRNsH9o64BA?=
+ =?us-ascii?Q?h0XMjHx5GpNWchQTM+wMdgnn/LDSZWJ1llVm2HIqXM8I6J/JsBL1EzaR1Tkj?=
+ =?us-ascii?Q?h+um4DhVwxO9Z3zJZQF38RZ2T5OVXoq93yuErk3N3oJIfNGvhTjY7P2+whXA?=
+ =?us-ascii?Q?mFoZWmsis315JcPCVu7YHTbgixpT6yKQXqPOd0/FxbAz3jNPVQWyhdUhA+/q?=
+ =?us-ascii?Q?QaSK5+fo07kEZb88zg6H4xMdB4r+zAGTuk2sPvJ5WcP3b9mAuEVZvop/rN2F?=
+ =?us-ascii?Q?E1SB2wHJRPj/ZYeAu2I77FLYo8svikReriLu95Mig5lViKinFhYb/FPIYZ+9?=
+ =?us-ascii?Q?MyTkijyug3vU8a54bdK59hTXBqBjSvvQICtqlW7hzaieVTt2vNBkGxd9refs?=
+ =?us-ascii?Q?dA9m/oN7o+MFrOJHM7p7rux6cBEJci+HSeD+EBJlWapJGwrVTy3YHDSECnpW?=
+ =?us-ascii?Q?TquYN+rBOCJ1L/LoUqe3zK51KKIKPcm60zqcNtLBqomPIhheMAV3eVyeP3TT?=
+ =?us-ascii?Q?xwM9vcJuIJtQfa7FXlTlfsu1YmLWT0hXEPPiQx40V09MSDmCb+itsMv1gPzZ?=
+ =?us-ascii?Q?AGmAFUVbaFQBHoTojf+yAZ4JH9FRVlabooQX6LNOYMlCxMedAyXea3cLPTEB?=
+x-ms-exchange-antispam-messagedata-1: QJQHkKcRLWRdKPwGOnp5BJYAe5NLI0dYFoKpT+lDwuGGGBPBphvALsbd
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41974fa5-d80c-4d04-23fe-08da22a5b6d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2022 08:13:55.7960
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oxFWZkf/CuQIAyTGBcpCxbx9PaszIgUDjA/KqLp4SQTh52qUv6qBSXYzq8rNuosM+0LJXT9saanYgyCIadPhU5ILVlLTjTuPE18FJ6PrHCA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4086
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In function btrfs_bg_flags_to_raid_index(), we use quite some if () to
-convert the BTRFS_BLOCK_GROUP_* bits to a index number.
-
-But the truth is, there is really no such need for so many branches at
-all.
-Since all BTRFS_BLOCK_GROUP_* flags are just one single bit set inside
-BTRFS_BLOCK_GROUP_PROFILES_MASK, we can easily use ilog2() to calculate
-their values.
-
-This calculation has an anchor point, the lowest PROFILE bit, which is
-RAID0.
-
-Even it's fixed on-disk format and should never change, here I added
-extra compile time checks to make it super safe:
-
-1. Make sure RAID0 is always the lowest bit in PROFILE_MASK
-   This is done by finding the first (least significant) bit set of
-   RAID0 and PROFILE_MASK & ~RAID0.
-
-2. Make sure RAID0 bit set beyond the highest bit of TYPE_MASK
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/volumes.c | 24 ++++++------------------
- fs/btrfs/volumes.h | 40 +++++++++++++++++++++++++++++++---------
- 2 files changed, 37 insertions(+), 27 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 2368a2ffbee7..4cfe6daa0fee 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -164,24 +164,12 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
-  */
- enum btrfs_raid_types __attribute_const__ btrfs_bg_flags_to_raid_index(u64 flags)
- {
--	if (flags & BTRFS_BLOCK_GROUP_RAID10)
--		return BTRFS_RAID_RAID10;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID1)
--		return BTRFS_RAID_RAID1;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID1C3)
--		return BTRFS_RAID_RAID1C3;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID1C4)
--		return BTRFS_RAID_RAID1C4;
--	else if (flags & BTRFS_BLOCK_GROUP_DUP)
--		return BTRFS_RAID_DUP;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID0)
--		return BTRFS_RAID_RAID0;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID5)
--		return BTRFS_RAID_RAID5;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID6)
--		return BTRFS_RAID_RAID6;
--
--	return BTRFS_RAID_SINGLE; /* BTRFS_BLOCK_GROUP_SINGLE */
-+	u64 profile = flags & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-+
-+	if (!profile)
-+		return BTRFS_RAID_SINGLE;
-+
-+	return BTRFS_BG_FLAG_TO_INDEX(profile);
- }
- 
- const char *btrfs_bg_type_to_raid_name(u64 flags)
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index dbb15e4eaa50..627f1ae672c4 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -17,16 +17,38 @@ extern struct mutex uuid_mutex;
- 
- #define BTRFS_STRIPE_LEN	SZ_64K
- 
-+/* Used by sanity check for btrfs_raid_types. */
-+#define const_ffs(n) (__builtin_ctzll(n) + 1)
-+
-+/*
-+ * The conversion from BTRFS_BLOCK_GROUP_* bits to btrfs_raid_type requires
-+ * RAID0 always to be the lowest profile bit.
-+ * Although it's part of on-disk format and should never change, just do extra
-+ * compile time sanity check on it.
-+ */
-+static_assert(const_ffs(BTRFS_BLOCK_GROUP_RAID0) <
-+	      const_ffs(BTRFS_BLOCK_GROUP_PROFILE_MASK &
-+			~BTRFS_BLOCK_GROUP_RAID0));
-+static_assert(const_ilog2(BTRFS_BLOCK_GROUP_RAID0) >
-+	      ilog2(BTRFS_BLOCK_GROUP_TYPE_MASK));
-+
-+/* ilog2() can handle both constants and variables */
-+#define BTRFS_BG_FLAG_TO_INDEX(profile)	\
-+	ilog2((profile) >> (ilog2(BTRFS_BLOCK_GROUP_RAID0) - 1))
-+
- enum btrfs_raid_types {
--	BTRFS_RAID_RAID10,
--	BTRFS_RAID_RAID1,
--	BTRFS_RAID_DUP,
--	BTRFS_RAID_RAID0,
--	BTRFS_RAID_SINGLE,
--	BTRFS_RAID_RAID5,
--	BTRFS_RAID_RAID6,
--	BTRFS_RAID_RAID1C3,
--	BTRFS_RAID_RAID1C4,
-+	/* SINGLE is the special one as it doesn't have on-disk bit. */
-+	BTRFS_RAID_SINGLE  = 0,
-+
-+	BTRFS_RAID_RAID0   = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_RAID0),
-+	BTRFS_RAID_RAID1   = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_RAID1),
-+	BTRFS_RAID_DUP	   = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_DUP),
-+	BTRFS_RAID_RAID10  = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_RAID10),
-+	BTRFS_RAID_RAID5   = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_RAID5),
-+	BTRFS_RAID_RAID6   = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_RAID6),
-+	BTRFS_RAID_RAID1C3 = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_RAID1C3),
-+	BTRFS_RAID_RAID1C4 = BTRFS_BG_FLAG_TO_INDEX(BTRFS_BLOCK_GROUP_RAID1C4),
-+
- 	BTRFS_NR_RAID_TYPES
- };
- 
--- 
-2.35.1
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
