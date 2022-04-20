@@ -2,49 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AD3508328
+	by mail.lfdr.de (Postfix) with ESMTP id 87B50508329
 	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 10:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376633AbiDTILf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Apr 2022 04:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
+        id S1376498AbiDTILh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Apr 2022 04:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242714AbiDTILd (ORCPT
+        with ESMTP id S1376625AbiDTILe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Apr 2022 04:11:33 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31336283
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 01:08:48 -0700 (PDT)
+        Wed, 20 Apr 2022 04:11:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2C1E23
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 01:08:49 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E28CF1F385
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:46 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 214CD210F4
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650442126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=OzE2h51pF7min95rPR9LYnwycmjVjn46MOPXMlErTG8=;
-        b=XQQCMFXh3Qp4Z1lIRwcXu+iFy6VX3pRTRApBZN7sWMIQffvOsHPfPfrzZ6Co4Hb++zjca0
-        KdwrF89/skfSz0sEBf9LLtvdi1JjoxNQEuUiSy+DKVWM2BgDQfDyPf3jFBz6MX7jblovqE
-        r+1yLUc3EvUPoLjx9+wJPDJwCIMdi+I=
+        t=1650442128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ddonTg2E3UY1IVNNJBI1j0ea3xIZd7e6dauLb5TgUME=;
+        b=oFKheM8hS1hkRBLFgd3zp7RYRNYHQpeme2mGX/eij2gBLfS43yHibVR6UHKg7RfI0Obe++
+        Sn0GVMh5warLEg5/w2uxsNLVjLgPQQ6KYlALsiZzghTS6+AZ8s8v1pRzqbVPRLO94N4ITb
+        /BGd8WOwMgJIL9tvQ+Fa9K/pPPLOlZA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2AB4513AD5
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:45 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5EAF613AD5
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id yU0IN42/X2JEbAAAMHmgww
+        id yOTWCI+/X2JEbAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:45 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 08:08:47 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 0/2] btrfs: re-define btrfs_raid_types
-Date:   Wed, 20 Apr 2022 16:08:26 +0800
-Message-Id: <cover.1650441750.git.wqu@suse.com>
+Subject: [PATCH v3 1/2] btrfs: move definition of btrfs_raid_types to volumes.h
+Date:   Wed, 20 Apr 2022 16:08:27 +0800
+Message-Id: <5f91946ad971e6d9a3d10dbcb1c9899fb939df1b.1650441750.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1650441750.git.wqu@suse.com>
+References: <cover.1650441750.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -57,51 +61,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[CHANGELOG]
-Changelog:
-v2:
-- Fix the start value of BTRFS_RAID_RAID0
+It's only internally used as another way to represent btrfs profiles,
+it's not exposed through any on-disk format, in fact this
+btrfs_raid_types is diverted from the on-disk format values.
 
-v3:
-- Introduce more static sanity checks
-  They are kinda overkilled, but they are only compile time checks, it
-  should be fine.
+Furthermore, since it's internal structure, its definition can change in
+the future.
 
-- Keep btrfs_bg_flags_to_raid_index() as regular function
-
-By the nature of BTRFS_BLOCK_GROUP_* profiles, converting the flag into
-an index should only need one bits AND, one if () check for SINGLE
-profile, one right shift to align the values, one ilog2() call which is
-normally converted into ffs() assembly code.
-
-But we're using a lot of if () branches to do the convert.
-
-This patch will re-define btrfs_raid_types by:
-
-- Move it to volumes.h
-  btrfs_raid_types are only used internally, no need to be exposed
-  through UAPI.
-
-- Re-order btrfs_raid_types
-  To make them match their value order.
-
-- Use ilog2() to convert them into index
-
-- Extra static_assert()s to make sure RAID0 is always the least
-  significant bit in PROFILE_MASK
-
-
-Qu Wenruo (2):
-  btrfs: move definition of btrfs_raid_types to volumes.h
-  btrfs: use ilog2() to replace if () branches for
-    btrfs_bg_flags_to_raid_index()
-
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
  fs/btrfs/space-info.h           |  2 ++
- fs/btrfs/volumes.c              | 24 ++++++----------------
- fs/btrfs/volumes.h              | 35 +++++++++++++++++++++++++++++++++
- include/uapi/linux/btrfs_tree.h | 13 ------------
- 4 files changed, 43 insertions(+), 31 deletions(-)
+ fs/btrfs/volumes.h              | 13 +++++++++++++
+ include/uapi/linux/btrfs_tree.h | 13 -------------
+ 3 files changed, 15 insertions(+), 13 deletions(-)
 
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index a803e29bd781..c096695598c1 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -3,6 +3,8 @@
+ #ifndef BTRFS_SPACE_INFO_H
+ #define BTRFS_SPACE_INFO_H
+ 
++#include "volumes.h"
++
+ struct btrfs_space_info {
+ 	spinlock_t lock;
+ 
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index f3e28f11cfb6..dbb15e4eaa50 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -17,6 +17,19 @@ extern struct mutex uuid_mutex;
+ 
+ #define BTRFS_STRIPE_LEN	SZ_64K
+ 
++enum btrfs_raid_types {
++	BTRFS_RAID_RAID10,
++	BTRFS_RAID_RAID1,
++	BTRFS_RAID_DUP,
++	BTRFS_RAID_RAID0,
++	BTRFS_RAID_SINGLE,
++	BTRFS_RAID_RAID5,
++	BTRFS_RAID_RAID6,
++	BTRFS_RAID_RAID1C3,
++	BTRFS_RAID_RAID1C4,
++	BTRFS_NR_RAID_TYPES
++};
++
+ struct btrfs_io_geometry {
+ 	/* remaining bytes before crossing a stripe */
+ 	u64 len;
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index b069752a8ecf..d4117152d907 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -880,19 +880,6 @@ struct btrfs_dev_replace_item {
+ #define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
+ 					 BTRFS_SPACE_INFO_GLOBAL_RSV)
+ 
+-enum btrfs_raid_types {
+-	BTRFS_RAID_RAID10,
+-	BTRFS_RAID_RAID1,
+-	BTRFS_RAID_DUP,
+-	BTRFS_RAID_RAID0,
+-	BTRFS_RAID_SINGLE,
+-	BTRFS_RAID_RAID5,
+-	BTRFS_RAID_RAID6,
+-	BTRFS_RAID_RAID1C3,
+-	BTRFS_RAID_RAID1C4,
+-	BTRFS_NR_RAID_TYPES
+-};
+-
+ #define BTRFS_BLOCK_GROUP_TYPE_MASK	(BTRFS_BLOCK_GROUP_DATA |    \
+ 					 BTRFS_BLOCK_GROUP_SYSTEM |  \
+ 					 BTRFS_BLOCK_GROUP_METADATA)
 -- 
 2.35.1
 
