@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FDB507D8D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 02:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8A5507D8A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 02:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358539AbiDTAXL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 20:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36444 "EHLO
+        id S1358553AbiDTAXN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 20:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358519AbiDTAXI (ORCPT
+        with ESMTP id S1358530AbiDTAXJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 20:23:08 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220EE2C64F
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 17:20:24 -0700 (PDT)
+        Tue, 19 Apr 2022 20:23:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4488E2C651
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 17:20:25 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D4F89210F1
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:22 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 082311F380
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650414022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1650414024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DsrUhaL1i5mzCYPyhGR7/OZS0JyBtHTRjASqVozgGoo=;
-        b=ng/m+yJahSJHTp+hH0pprje1l2Kkya9/EQSm7O10Xm2Gn16HPwxgKWinpHC70l+ROVXhqv
-        aVGrWY5a0uaDbA+VaHEAPQP01FXhGxczS78S+88o8/G7PKgmYjMBlqo70XNTein9jVoYep
-        ISQfh2tK8BgxyygOATpASt7WPbhPPzg=
+        bh=w++lN50DaPxkOLKFJhP6rnJ6F3Ss7apXaiKwRd/U3c8=;
+        b=FT/VmPVUsj+lDokfQDIvsEiLF1r6LncecVWbxiwVk1YR/qDiqhN/itN+75sIG1iV9pXjpz
+        jrwZtYe+OeRmgvKTuO1elA7HkjVYaakv+CaEjAYXAs//xfiNrPDKC9MmHaAbk56qIHjmhq
+        PtV4TM4OWG9LyfvdH3Z2dSyG5KeWtsY=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25151139BE
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:21 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4DD3E139BE
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8Hi/NsVRX2KvZAAAMHmgww
+        id MJwaBcdRX2KvZAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:21 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:23 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 04/10] btrfs-progs: mkfs: avoid error out if some trees exist
-Date:   Wed, 20 Apr 2022 08:19:53 +0800
-Message-Id: <6cfa6781b8a287b1a485a89b597f359610ed8cd5.1650413308.git.wqu@suse.com>
+Subject: [PATCH RFC 05/10] btrfs-progs: extract btrfs_fs_devices structure allocation into a helper
+Date:   Wed, 20 Apr 2022 08:19:54 +0800
+Message-Id: <1af9f1d7c9c1fa1eb96482e4d1f975baf309554b.1650413308.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1650413308.git.wqu@suse.com>
 References: <cover.1650413308.git.wqu@suse.com>
@@ -61,156 +61,92 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With the incoming seed sprout support at mkfs time, we can have quite
-some trees already exist, those trees includes:
+The new helper function, btrfs_alloc_fs_devices() will allocate and
+initialize a btrfs_fs_devices structure.
 
-- data reloc tree
-- uuid tree
-- quota tree
-- root dir
-
-Handle the existing tress properly so we won't error out just because
-the seed device already have the same tree.
+This helper will be later used by seed sprout, as we will need to create
+a new fs_devices for the sproted fs.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/main.c | 74 +++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 72 insertions(+), 2 deletions(-)
+ kernel-shared/volumes.c | 38 +++++++++++++++++++++++++++-----------
+ kernel-shared/volumes.h |  2 ++
+ 2 files changed, 29 insertions(+), 11 deletions(-)
 
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 7b7793f8b996..ca035cbb27f7 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -712,6 +712,33 @@ static void update_chunk_allocation(struct btrfs_fs_info *fs_info,
- 	}
+diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
+index 923e1a9378d5..fe4e61710951 100644
+--- a/kernel-shared/volumes.c
++++ b/kernel-shared/volumes.c
+@@ -331,6 +331,31 @@ static struct btrfs_fs_devices *find_fsid(u8 *fsid, u8 *metadata_uuid)
+ 	return NULL;
  }
  
-+/*
-+ * Check if we already have an existing tree from seed device.
-+ *
-+ * Return >0 if we have seed device and already have the tree.
-+ * Return 0 if we don't have seed device or the tree doesn't exist.
-+ * Return <0 for error.
-+ */
-+static int check_seed_existing_tree(struct btrfs_fs_info *fs_info,
-+				    struct btrfs_key *root_key)
++struct btrfs_fs_devices *btrfs_alloc_fs_devices(const u8 *fsid,
++						const u8 *metadata_uuid)
 +{
-+	struct btrfs_path path;
-+	int ret;
++	struct btrfs_fs_devices *fs_devices;
 +
-+	if (!fs_info->fs_devices->seed)
-+		return 0;
++	fs_devices = kzalloc(sizeof(*fs_devices), GFP_NOFS);
++	if (!fs_devices)
++		return NULL;
 +
-+	btrfs_init_path(&path);
-+	ret = btrfs_search_slot(NULL, fs_info->tree_root, root_key, &path, 0, 0);
-+	btrfs_release_path(&path);
-+	if (ret < 0)
-+		return ret;
++	INIT_LIST_HEAD(&fs_devices->devices);
++	list_add(&fs_devices->list, &fs_uuids);
++	memcpy(fs_devices->fsid, fsid, BTRFS_FSID_SIZE);
 +
-+	if (ret == 0)
-+		return 1;
-+	return 0;
++	if (metadata_uuid)
++		memcpy(fs_devices->metadata_uuid, metadata_uuid,
++		       BTRFS_FSID_SIZE);
++	else
++		memcpy(fs_devices->metadata_uuid, fsid, BTRFS_FSID_SIZE);
++
++	fs_devices->latest_trans = 0;
++	fs_devices->latest_devid = (u64)-1;
++	fs_devices->lowest_devid = (u64)-1;
++	return fs_devices;
 +}
 +
- static int create_data_reloc_tree(struct btrfs_trans_handle *trans)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
-@@ -726,6 +753,12 @@ static int create_data_reloc_tree(struct btrfs_trans_handle *trans)
- 	char *name = "..";
- 	int ret;
+ static int device_list_add(const char *path,
+ 			   struct btrfs_super_block *disk_super,
+ 			   u64 devid, struct btrfs_fs_devices **fs_devices_ret)
+@@ -348,22 +373,13 @@ static int device_list_add(const char *path,
+ 		fs_devices = find_fsid(disk_super->fsid, NULL);
  
-+	ret = check_seed_existing_tree(fs_info, &key);
-+	if (ret < 0)
-+		return ret;
-+	if (ret > 0)
-+		return 0;
-+
- 	root = btrfs_create_tree(trans, fs_info, &key);
- 	if (IS_ERR(root)) {
- 		ret = PTR_ERR(root);
-@@ -792,7 +825,12 @@ static int create_uuid_tree(struct btrfs_trans_handle *trans)
- 	};
- 	int ret = 0;
+ 	if (!fs_devices) {
+-		fs_devices = kzalloc(sizeof(*fs_devices), GFP_NOFS);
++		fs_devices = btrfs_alloc_fs_devices(disk_super->fsid,
++				metadata_uuid ? disk_super->metadata_uuid : NULL);
+ 		if (!fs_devices)
+ 			return -ENOMEM;
+-		INIT_LIST_HEAD(&fs_devices->devices);
+-		list_add(&fs_devices->list, &fs_uuids);
+-		memcpy(fs_devices->fsid, disk_super->fsid, BTRFS_FSID_SIZE);
+-		if (metadata_uuid)
+-			memcpy(fs_devices->metadata_uuid,
+-			       disk_super->metadata_uuid, BTRFS_FSID_SIZE);
+-		else
+-			memcpy(fs_devices->metadata_uuid, fs_devices->fsid,
+-			       BTRFS_FSID_SIZE);
  
--	ASSERT(fs_info->uuid_root == NULL);
-+	ret = check_seed_existing_tree(fs_info, &key);
-+	if (ret < 0)
-+		return ret;
-+	if (ret > 0)
-+		return 0;
-+
- 	root = btrfs_create_tree(trans, fs_info, &key);
- 	if (IS_ERR(root)) {
- 		ret = PTR_ERR(root);
-@@ -896,7 +934,7 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_qgroup_status_item *qsi;
--	struct btrfs_root *quota_root;
-+	struct btrfs_root *quota_root = fs_info->quota_root;
- 	struct btrfs_path path;
- 	struct btrfs_key key;
- 	int qgroup_repaired = 0;
-@@ -909,6 +947,15 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
- 		error("failed to start transaction: %d (%m)", ret);
- 		return ret;
- 	}
-+	key.objectid = BTRFS_QUOTA_TREE_OBJECTID;
-+	key.type = BTRFS_ROOT_ITEM_KEY;
-+	key.offset = 0;
-+	ret = check_seed_existing_tree(fs_info, &key);
-+	if (ret < 0)
-+		goto fail;
-+	if (ret > 0)
-+		goto insert_status;
-+
- 	ret = btrfs_create_root(trans, fs_info, BTRFS_QUOTA_TREE_OBJECTID);
- 	if (ret < 0) {
- 		error("failed to create quota root: %d (%m)", ret);
-@@ -927,6 +974,25 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
- 		error("failed to insert qgroup status item: %d (%m)", ret);
- 		goto fail;
- 	}
-+	btrfs_release_path(&path);
-+
-+insert_status:
-+	/*
-+	 * We reach here either we're creating a new quota root, or using
-+	 * the existing quota root from seed.
-+	 * So here we intentionally do a search, other than reusing the
-+	 * inserted item, to handle both cases well.
-+	 */
-+	key.objectid = 0;
-+	key.type = BTRFS_QGROUP_STATUS_KEY;
-+	key.offset = 0;
-+	ret = btrfs_search_slot(trans, quota_root, &key, &path, 1, 0);
-+	if (ret > 0)
-+		ret = -ENOENT;
-+	if (ret < 0) {
-+		btrfs_release_path(&path);
-+		goto fail;
-+	}
- 
- 	qsi = btrfs_item_ptr(path.nodes[0], path.slots[0],
- 			     struct btrfs_qgroup_status_item);
-@@ -941,6 +1007,8 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
- 
- 	/* Currently mkfs will only create one subvolume */
- 	ret = insert_qgroup_items(trans, fs_info, BTRFS_FS_TREE_OBJECTID);
-+	if (ret == -EEXIST)
-+		ret = 0;
- 	if (ret < 0) {
- 		error("failed to insert qgroup items: %d (%m)", ret);
- 		goto fail;
-@@ -1554,6 +1622,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	}
- 
- 	ret = make_root_dir(trans, root);
-+	if (ret == -EEXIST && root->fs_info->fs_devices->seed)
-+		return 0;
- 	if (ret) {
- 		error("failed to setup the root directory: %d", ret);
- 		goto error;
+ 		fs_devices->latest_devid = devid;
+ 		fs_devices->latest_trans = found_transid;
+-		fs_devices->lowest_devid = (u64)-1;
+ 		fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_REGULAR;
+ 		device = NULL;
+ 	} else {
+diff --git a/kernel-shared/volumes.h b/kernel-shared/volumes.h
+index 2beae2d02fad..f9e564e4dc5e 100644
+--- a/kernel-shared/volumes.h
++++ b/kernel-shared/volumes.h
+@@ -276,6 +276,8 @@ int btrfs_insert_chunk_item(struct btrfs_trans_handle *trans,
+ 			    struct map_lookup *map);
+ int btrfs_open_devices(struct btrfs_fs_info *fs_info,
+ 		       struct btrfs_fs_devices *fs_devices, int flags);
++struct btrfs_fs_devices *btrfs_alloc_fs_devices(const u8 *fsid,
++						const u8 *metadata_uuid);
+ int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
+ void btrfs_close_all_devices(void);
+ int btrfs_insert_dev_extent(struct btrfs_trans_handle *trans,
 -- 
 2.35.1
 
