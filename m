@@ -2,201 +2,293 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32769508529
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 11:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AA850853B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 11:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243155AbiDTJsi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Apr 2022 05:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        id S1353052AbiDTJyK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Apr 2022 05:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237711AbiDTJse (ORCPT
+        with ESMTP id S233795AbiDTJyI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Apr 2022 05:48:34 -0400
-Received: from de-smtp-delivery-102.mimecast.com (de-smtp-delivery-102.mimecast.com [194.104.111.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AE937AB0
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 02:45:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1650447946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q5hjoyIVko0KW25ANMxZmTeCwSEFrnU7KKPY9n468oI=;
-        b=CLljAn0XFACe+7iFTEZ40hZv80QcOcTS7KRKs9Fw+llWAbkk/MKqJsHVrsyZtR9Se6+O1s
-        4pjfJ1miKbMg+6dumrxYV5VeXRtidBvUqYkixB/dLwJwsiHj59CWfYrw2vDAOSnnlMsmpr
-        zhLszcm1rJbEbICXcYBk95AqnFcYCGQ=
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01lp2055.outbound.protection.outlook.com [104.47.1.55]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- de-mta-4-bA8QaU3XOCitRHRNF0oFbA-1; Wed, 20 Apr 2022 11:45:46 +0200
-X-MC-Unique: bA8QaU3XOCitRHRNF0oFbA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aCrc1cDfBQy6wS1x47Z4nsXpuTFPGY6dwFINbLjrctwOwdJ3aCzI5zXmNQmbjetpmHVhxd98ZJbJiwtVJbEHqXzYwfEKoFpni74ySHsM+bQn88B4sagp7dWL73EJFFaCc1wnEwhOArA8ciQ32oGGkfDIVEr+IvsaUp0DdcjnfjEqgTHVK+TKw7fF+OZe0fu9StvpJHI9TA76Juh+HYh72gXtHYkLhuvU4IVyxSi8okmfb9KPUUjg7nr4aW/a5UL216V+HMclFPK7fvHuFwxVM4CkCGiSCfHC/y4rFVkq5AG5E+32b0jLVYEz6h0rZ/4jBNtzZkU+sZViyTSRvIACCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q5hjoyIVko0KW25ANMxZmTeCwSEFrnU7KKPY9n468oI=;
- b=i+WO9YLXnvewFZez3JftO+oa37oKSbemMcsVZg4RDk3ZJi9mXitINGDSCeF7Umr7w8gFv4t45MSJu/0r5gtK+GT7GoizG1pbPswlTwt4cPP5N81aAyC7dBlfgEdke63xBCM7yCZcdsiaqKvGh0scbUtLQau0JEe4vhnw9pAMl9IzKhW0prcV9Gv5IpntEpigg9tMOgxy7lCvKcTYV65RrWuBhWGbanS+CksVqnAdmUYPmA53QojelLzxh3eE/ZKPoTYZfhwkvpn6N1+DfrRDlXfFWudB5DwFrRf/J7+OAaTYFDVOdzn9Ph+iBwFj/wQPd27HekUQ0dlcm4ZqkBFcYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB9PR04MB9426.eurprd04.prod.outlook.com (2603:10a6:10:36a::14)
- by VI1PR0402MB3343.eurprd04.prod.outlook.com (2603:10a6:803:8::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.20; Wed, 20 Apr
- 2022 09:45:40 +0000
-Received: from DB9PR04MB9426.eurprd04.prod.outlook.com
- ([fe80::21fb:190b:867a:67d2]) by DB9PR04MB9426.eurprd04.prod.outlook.com
- ([fe80::21fb:190b:867a:67d2%4]) with mapi id 15.20.5186.014; Wed, 20 Apr 2022
- 09:45:40 +0000
-Message-ID: <1d1dcbd6-d9bb-ff2b-fc70-75bbd926ff78@suse.com>
-Date:   Wed, 20 Apr 2022 17:45:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v3 2/2] btrfs: use ilog2() to replace if () branches for
- btrfs_bg_flags_to_raid_index()
-Content-Language: en-US
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1650441750.git.wqu@suse.com>
- <beb111504cb32088bcf4fc6bc1ef36004d0761cb.1650441750.git.wqu@suse.com>
- <PH0PR04MB7416E7100B6C5EA70446C09F9BF59@PH0PR04MB7416.namprd04.prod.outlook.com>
- <e57d9b3e-94fc-a20f-ff92-ccf19c0b035b@gmx.com>
- <PH0PR04MB741682A87F86554F81F5AE839BF59@PH0PR04MB7416.namprd04.prod.outlook.com>
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <PH0PR04MB741682A87F86554F81F5AE839BF59@PH0PR04MB7416.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR03CA0008.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::13) To DB9PR04MB9426.eurprd04.prod.outlook.com
- (2603:10a6:10:36a::14)
+        Wed, 20 Apr 2022 05:54:08 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26D2381A5
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 02:51:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6AC7DB81DD2
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 09:51:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11EC9C385A0
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 09:51:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650448279;
+        bh=9P3Oo3isWb+rV7Y/MuVQ1ynoXY6a/rZieYXZE17Pnec=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lNTNc4d1DAF2pfqH6N8vBhfmFCvG7StRmkplf5mwv1/72Xu7r5C4mE/xaF6Fbt+qj
+         bezkuoWZXc7K9d/1aLNO8nGELZMy4xJ9ciikGNpdKnRgnJctiokvX9UV8rPAp0BwJb
+         nBSNeVZJlRG3uIUd+b1l0lXdvPLy7uOCBr4LGDz1JMUsJ2MiI+bsPKSPxk3Hm/uaOk
+         XwLcMuRhWBzBt3o/nwavM/wyXI463eTEDaREGqAWEfdKBAQf0+gZ8QZ8x/I0YgxOuD
+         7ZaMpt1nc9Uj04jS2lal32oq/efEy4BbAbSjmh8Py59+QAwShBhnwvfCs8HdjieR9v
+         KM/gpf0qKlcyA==
+Received: by mail-qt1-f172.google.com with SMTP id d9so558529qty.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 02:51:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531Sk+Sn1gMLgbyaN+q2dTAgVO5V5+ZiFhVRYvKw+/uHiFOhYO3f
+        C1WgqB2Ve/T8qeZ7r0wx3c/ItZ1iC2GOt80o9k0=
+X-Google-Smtp-Source: ABdhPJwpvquCaOOnFJ8gJcJ1UmTm1VdyhYHc+6FI7exGjFRDAqlpizygqkSKcv/WOSDRnFhypqRfXOwTd+ShOWOvDL0=
+X-Received: by 2002:a05:622a:48e:b0:2e0:706f:1d4 with SMTP id
+ p14-20020a05622a048e00b002e0706f01d4mr13011625qtx.326.1650448277822; Wed, 20
+ Apr 2022 02:51:17 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 958cef85-cb96-40eb-3a20-08da22b287af
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3343:EE_
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB334355233E0B424C51DDEAAED6F59@VI1PR0402MB3343.eurprd04.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5wN4/sNTlzY8sHLgNYaJicRSMrprvLTpfjRH67Ra7/Ds5M/yVHWSe5LXUvYDh5pQlz7R0z/QoP295K7Q/HSl7e+jCoCHRKkyhQ4QrpLtXDUnqhiPnpZcneBl3ELoFGcYHYofB6ueUKvGRtd4UQp6VPxgudqKBl9YltuoVn++/nIzRG3LwziFEwaPhexgdm2ixEwPz83BI1/0kwnYun+Ct4hYsJ3EI0WkoND2KpoVsI7aYKVWBuQ5jHk/n2+LeM0Bwm1INdTbxeeTIdFjK9aNPIs56kPXEK1kUt+vWQF+ClViKWl0cBLShg0wsfiGTlTUVqkL/VweUbPBFh0C77EcgdZhMv6ReCAADsmpKOo18Qll+0n7dlplh4CFT0xspEbaNzoCbFpnSe1HsXrKOhtWf/xf1C61/5KmpMjHE4QznY8dgPZBhFAhveNkE0jbRQ+vqLJGqUoa9ezUka4yhZlHa66XXmQQ7YcGwNpq0MpjW/zUh4r5u3HbBuuK/kneiow1/uX4avZ+vKkjLqIWStMx83OGhs4arSPlqMtXhTn6+yFoGUWYIJuJdEPr3TBkbN5UC9ljOJTcug+BbD8a7ZT9cmlb4fFXbjYiVZ5YthsE392SrcOZ18L8AAZHiSRApFM9WUGCCzWLdyJaBqixOxC5+/4DDpQjUbDRoytDlWoeABJo0vUwk3NVd1vF5/kvzR5Dkn1x83EXnmm5W9BgZx1C0aHzQIiuz9sw+LCFHXGHk3w=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6512007)(31696002)(2906002)(31686004)(26005)(66946007)(86362001)(66556008)(66476007)(6666004)(6506007)(5660300002)(8676002)(2616005)(186003)(36756003)(53546011)(8936002)(83380400001)(508600001)(316002)(6486002)(110136005)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UzNXTXlrRjgwRXBVRUhXSlJBMkFqK0JZSWc3cmJDUTJneVNQdjVaa3J3TUdU?=
- =?utf-8?B?bzArdnR2L1prd3ZhTjB6R1A5d0FJZ1VaTVJJK2VydFB3Z29LR0Y3dG0zcDM4?=
- =?utf-8?B?OWIyUlQ4SDFGWTlmRlR5ekhWejRTTWxuSWt6TUhDL0F1UFFDRnZKUHZ1WmFC?=
- =?utf-8?B?amsrUFMyM2o4dUhYQ2ZMRHM0dVhhVHFwaS9TbkVoaUpiZ1FoeGZYMkc5YlJR?=
- =?utf-8?B?WXBhckx5bkppVkh3QjdqWTZTT2FTRVl4cUpzMlBmRVdMTFkybHE4L0lJa1F3?=
- =?utf-8?B?OHB2WHYxWjR0NkVzek16eTN2blhRdE5PdmJYL3c2eTdoUDdLM00yMDNiTWE0?=
- =?utf-8?B?SjdDdHR4WWFkRHo1Y01sSDNFc1ZBZElkbm9mcVRUZDdaQ21TZTRSeDBIb1Fs?=
- =?utf-8?B?SUZIV3JHT1JJNis2d2gyUWUvelVKRXg5RnJ4OHlGUzJ2VEdhdmlsTDlyZVlq?=
- =?utf-8?B?Z0dEUjcvOGlLcENjRmd2c21wV1pjUzgrVlpucyt6Y2pzYXJmYVRxaURzY0lE?=
- =?utf-8?B?cWRRWHV4cC84czJmQVJiOHRqSHRmWHo0VzNxcktuU2krYll2aUovc0MrRkxs?=
- =?utf-8?B?ZWF1QTNPWDdYVmZQOVdhd0QyazFQNkI0Z2tEa2NYaWJUZGpzODlIU0VxTU9j?=
- =?utf-8?B?ci9XazV3TzFkS2VrR1BsTHMxZmlQbStaMGQ2Z1MrejJjODd1WVBqdnU0NGV1?=
- =?utf-8?B?eDZqdjl3dmlEbU5COFhGMFNQczhFODZHRnIxVGVjeTBEdlBNby9jMmxHWlZW?=
- =?utf-8?B?YnEwK2Zvc3lZYjhWUWxTN1ppVktBMlM5Q0FybmZ6TjZucmt0ZXpMVVMvUlhn?=
- =?utf-8?B?V2xLMkhHVXdkSlVocFNaSDViS05rNDdVU0xQUzg3L053L1ZrWnhlS3BPc3hr?=
- =?utf-8?B?M1VrelFENjQzOFRxNXlEYy9mT2JiaGhGTEQrUlRHQkFUVnNqTzEvME41eDFV?=
- =?utf-8?B?b1NsTVhWMjdmNC8vVmg0NTJlUUFTdTlidkJadWpCTWNpQktCWE12cHlIci90?=
- =?utf-8?B?LzZWRzg3c2dnZjQzSkdiVWVHWTNXQThKc3ZrQUp0eFFJZ0hPbDFRTENTdkpC?=
- =?utf-8?B?ZmJjN3pIdjFRMlhaRlpWKytSTEpScityYWlPV2tjOXZzVmd4NCtaemF2RnlF?=
- =?utf-8?B?U3JvQWFXcHdua3JXV0VwNmlNcEx1cXN4Z2ZKQ2NZVnJYcy84QzNaNWRVd09h?=
- =?utf-8?B?c1NMM2Z4VjREL3JybGFiMVlCdmxVSXdyQTRDTDR1QnBGRTkwdjgyMUMwTVBx?=
- =?utf-8?B?S21iSlFJOG81UXI5VmxpUFU3aWV5b0I5Z3YxcXNHcnpHSkZhQVFpVC9ZZW81?=
- =?utf-8?B?NzRBRGZ0czRzU2FNOWczSlA4VUZlUHV2WDJEMWdEdUdIcHQ2RUtkc0Y1Mkho?=
- =?utf-8?B?dTkzOXVQSUlBTTNiRG9ZZDZURzZNcTVVZUdicm56WkkzTWVaYyt0SE11NW5m?=
- =?utf-8?B?MDRPN1Z4OCthLzRHN2wyKzh3c3RKOG04VFZ5Qk9VOUd5NHNoN2JtR252ckQ2?=
- =?utf-8?B?SnpMQnB6SklQZ2Y3MmY0bUZnd3J5NWl4WGVHcmFKc21pYzY1TWFlQVJDSDFk?=
- =?utf-8?B?QTI0dXFXTDFaV2RaNlQ5V2k2UUNmZWQwSFRVVnJOUm1VeUovdFlWdWV1cmo0?=
- =?utf-8?B?S0RzT1BJVytaYThqWktSNlhkZThoKzV0WVVEZC9aQS83Ym93Y0Y3M2oxbVpC?=
- =?utf-8?B?UDdZWFI5bStJazdBZ083M09QaG1TQThkYVAyZGxSZ0JneXFuaEZpWEo4dk93?=
- =?utf-8?B?Zkl1aTdYY1loQldDeDNWQzk3eCtneTIvNVBJZWllb2p0cnhNV2ZsanFvT0JH?=
- =?utf-8?B?OHdIUGQ0NWhCK3QyZFVCQUhrMUR5SDZyQ2VtUk1MVFNlQ2VIQnNob1ZWQ0cx?=
- =?utf-8?B?VDIxTlpDajNpQWdVNmpWeVNUcGVtdStVTitRWUZZYjAyWWRzbmg5Z2dZcW5U?=
- =?utf-8?B?SGRNdWNlNWN0Z2FnaUE1ZDd1RnpGa2puM24wbG55UDhCQzBWa05ydGlWUmdX?=
- =?utf-8?B?THlxc2h6ay9nbHpmVmtFdnZvTE9nZ1d2eEdIWldjQlBlOWljKzdIc3o5OVNu?=
- =?utf-8?B?aWdNR0NsaDdRUXhvL3QzZVBpNWxqWG9lTHBFTXdmbnlGVkVJWFFJUUErZ3hZ?=
- =?utf-8?B?U0dkblNxRm1mSjFpZ3dqV1V0YUFYcnFISEJET1ZCZW90dnp1NTM0Zy91TGF1?=
- =?utf-8?B?RUJDNU1DL3h1VE8rekdIMkNEa0tnZjJoc1VucFYxWXdzM1NKZXhMV04rZndy?=
- =?utf-8?B?SVp1WUc3SUVOakFGcFNid2lkQSs2SjFBZzVSZUhGbTRUTFVna2tLQStERnBk?=
- =?utf-8?Q?P4cRcmc9sYpo7wqBmO?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 958cef85-cb96-40eb-3a20-08da22b287af
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9426.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2022 09:45:40.3526
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BRTVOc0yvUhupDNGUST1Hie5kjmXzFaubvT9MPZRx+qnUJVHf9gES/lSiOmCJlkx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3343
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <e39beae941fdde3176fe75c35e273e39e0661f4b.1650374396.git.fdmanana@suse.com>
+ <d3490e45-da8d-7c02-4a2e-c580cf673338@gmx.com>
+In-Reply-To: <d3490e45-da8d-7c02-4a2e-c580cf673338@gmx.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 20 Apr 2022 10:50:41 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5kXdiuBpDtish83+-XABHxc7DsuY2ceZQd3g59uH_aBA@mail.gmail.com>
+Message-ID: <CAL3q7H5kXdiuBpDtish83+-XABHxc7DsuY2ceZQd3g59uH_aBA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix assertion failure during scrub due to block
+ group reallocation
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Apr 20, 2022 at 3:24 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2022/4/19 21:23, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > During a scrub, or device replace, we can race with block group removal
+> > and allocation and trigger the following assertion failure:
+> >
+> > [ 7526.385524] assertion failed: cache->start == chunk_offset, in fs/btrfs/scrub.c:3817
+> > [ 7526.387351] ------------[ cut here ]------------
+> > [ 7526.387373] kernel BUG at fs/btrfs/ctree.h:3599!
+> > [ 7526.388001] invalid opcode: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
+> > [ 7526.388970] CPU: 2 PID: 1158150 Comm: btrfs Not tainted 5.17.0-rc8-btrfs-next-114 #4
+> > [ 7526.390279] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> > [ 7526.392430] RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
+> > [ 7526.393520] Code: f3 48 c7 c7 20 (...)
+> > [ 7526.396926] RSP: 0018:ffffb9154176bc40 EFLAGS: 00010246
+> > [ 7526.397690] RAX: 0000000000000048 RBX: ffffa0db8a910000 RCX: 0000000000000000
+> > [ 7526.398732] RDX: 0000000000000000 RSI: ffffffff9d7239a2 RDI: 00000000ffffffff
+> > [ 7526.399766] RBP: ffffa0db8a911e10 R08: ffffffffa71a3ca0 R09: 0000000000000001
+> > [ 7526.400793] R10: 0000000000000001 R11: 0000000000000000 R12: ffffa0db4b170800
+> > [ 7526.401839] R13: 00000003494b0000 R14: ffffa0db7c55b488 R15: ffffa0db8b19a000
+> > [ 7526.402874] FS:  00007f6c99c40640(0000) GS:ffffa0de6d200000(0000) knlGS:0000000000000000
+> > [ 7526.404038] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 7526.405040] CR2: 00007f31b0882160 CR3: 000000014b38c004 CR4: 0000000000370ee0
+> > [ 7526.406112] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [ 7526.407148] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [ 7526.408169] Call Trace:
+> > [ 7526.408529]  <TASK>
+> > [ 7526.408839]  scrub_enumerate_chunks.cold+0x11/0x79 [btrfs]
+> > [ 7526.409690]  ? do_wait_intr_irq+0xb0/0xb0
+> > [ 7526.410276]  btrfs_scrub_dev+0x226/0x620 [btrfs]
+> > [ 7526.410995]  ? preempt_count_add+0x49/0xa0
+> > [ 7526.411592]  btrfs_ioctl+0x1ab5/0x36d0 [btrfs]
+> > [ 7526.412278]  ? __fget_files+0xc9/0x1b0
+> > [ 7526.412825]  ? kvm_sched_clock_read+0x14/0x40
+> > [ 7526.413459]  ? lock_release+0x155/0x4a0
+> > [ 7526.414022]  ? __x64_sys_ioctl+0x83/0xb0
+> > [ 7526.414601]  __x64_sys_ioctl+0x83/0xb0
+> > [ 7526.415150]  do_syscall_64+0x3b/0xc0
+> > [ 7526.415675]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [ 7526.416408] RIP: 0033:0x7f6c99d34397
+> > [ 7526.416931] Code: 3c 1c e8 1c ff (...)
+> > [ 7526.419641] RSP: 002b:00007f6c99c3fca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> > [ 7526.420735] RAX: ffffffffffffffda RBX: 00005624e1e007b0 RCX: 00007f6c99d34397
+> > [ 7526.421779] RDX: 00005624e1e007b0 RSI: 00000000c400941b RDI: 0000000000000003
+> > [ 7526.422820] RBP: 0000000000000000 R08: 00007f6c99c40640 R09: 0000000000000000
+> > [ 7526.423906] R10: 00007f6c99c40640 R11: 0000000000000246 R12: 00007fff746755de
+> > [ 7526.424924] R13: 00007fff746755df R14: 0000000000000000 R15: 00007f6c99c40640
+> > [ 7526.425950]  </TASK>
+> >
+> > That assertion is relatively new, introduced with commit d04fbe19aefd2
+> > ("btrfs: scrub: cleanup the argument list of scrub_chunk()").
+> >
+> > The block group we get at scrub_enumerate_chunks() can actually have a
+> > start address that is smaller then the chunk offset we extracted from a
+> > device extent item we got from the commit root of the device tree.
+> > This is very rare, but it can happen due to a race with block group
+> > removal and allocation. For example, the following steps show how this
+> > can happen:
+> >
+> > 1) We are at transaction T, and we have the following blocks groups,
+> >     sorted by their logical start address:
+> >
+> >     [ bg A, start address A, length 1G (data) ]
+> >     [ bg B, start address B, length 1G (data) ]
+> >     (...)
+> >     [ bg W, start address W, length 1G (data) ]
+> >
+> >       --> logical address space hole of 256M,
+> >           there used to be a 256M metadata block group here
+> >
+> >     [ bg Y, start address Y, length 256M (metadata) ]
+> >
+> >        --> Y matches W's end offset + 256M
+> >
+> >     Block group Y is the block group with the highest logical address in
+> >     the whole filesystem;
+> >
+> > 2) Block group Y is deleted and its extent mapping is removed by the call
+> >     to remove_extent_mapping() made from btrfs_remove_block_group().
+> >
+> >     So after this point, the last element of the mapping red black tree,
+> >     its rightmost node, is the mapping for block group W;
+> >
+> > 3) While still at transaction T, a new data block group is allocated,
+> >     with a length of 1G. When creating the block group we do a call to
+> >     find_next_chunk(), which returns the logical start address for the
+> >     new block group. This calls returns X, which corresponds to the
+> >     end offset of the last block group, the rightmost node in the mapping
+> >     red black tree (fs_info->mapping_tree), plus one.
+> >
+> >     So we get a new block group that starts at logical address X and with
+> >     a length of 1G. It spans over the whole logical range of the old block
+> >     group Y, that was previously removed in the same transaction.
+> >
+> >     However the device extent allocated to block group X is not the same
+> >     device extent that was used by block group Y, and it also does not
+> >     overlap that extent, which must be always the case because we allocate
+> >     extents by searching through the commit root of the device tree
+> >     (otherwise it could corrupt a filesystem after a power failure or
+> >     an unclean shutdown in general), so the extent allocator is behaving
+> >     as expected;
+> >
+> > 4) We have a task running scrub, currently at scrub_enumerate_chunks().
+> >     There it searches for device extent items in the device tree, using
+> >     its commit root. It finds a device extent item that was used by
+> >     block group Y, and it extracts the value Y from that item into the
+> >     local variable 'chunk_offset', using btrfs_dev_extent_chunk_offset();
+>
+> That perfectly explains the problem I hit.
 
+Wasn't it Su who hit it?
 
-On 2022/4/20 16:41, Johannes Thumshirn wrote:
-> On 20/04/2022 10:38, Qu Wenruo wrote:
->>
->>
->> On 2022/4/20 16:25, Johannes Thumshirn wrote:
->>> On 20/04/2022 10:09, Qu Wenruo wrote:
->>>> In function btrfs_bg_flags_to_raid_index(), we use quite some if () to
->>>> convert the BTRFS_BLOCK_GROUP_* bits to a index number.
->>>>
->>>> But the truth is, there is really no such need for so many branches at
->>>> all.
->>>> Since all BTRFS_BLOCK_GROUP_* flags are just one single bit set inside
->>>> BTRFS_BLOCK_GROUP_PROFILES_MASK, we can easily use ilog2() to calculate
->>>> their values.
->>>>
->>>> This calculation has an anchor point, the lowest PROFILE bit, which is
->>>> RAID0.
->>>>
->>>> Even it's fixed on-disk format and should never change, here I added
->>>> extra compile time checks to make it super safe:
->>>>
->>>> 1. Make sure RAID0 is always the lowest bit in PROFILE_MASK
->>>>      This is done by finding the first (least significant) bit set of
->>>>      RAID0 and PROFILE_MASK & ~RAID0.
->>>>
->>>> 2. Make sure RAID0 bit set beyond the highest bit of TYPE_MASK
->>>
->>> TBH I think this change obscures the code more than it improves it.
->>>
->> Right, that kinda makes sense.
->>
->> Will update the patchset to remove that line if needed.
-> 
-> I think the whole patch makes the code harder to follow. As of now you can
-> just look it up, now you have to look how the calculation is done etc.
+>
+> Thank you very much for further pin down the cause.
+>
+> >
+> >     It then calls btrfs_lookup_block_group() to find block group for
+> >     the logical address Y - since there's currently no block group that
+> >     starts at that logical address, it returns block group X, because
+> >     its range contains Y.
+> >
+> >     This results in triggering the assertion:
+> >
+> >        ASSERT(cache->start == chunk_offset);
+> >
+> >     right before calling scrub_chunk(), as cache->start is X and
+> >     chunk_offset is Y.
+> >
+> > This is more likely to happen of filesystems not larger than 50G, because
+> > for these filesystems we use a 256M size for metadata block groups and
+> > a 1G size for data block groups, while for filesystems larger than 50G,
+> > we use a 1G size for both data and metadata block groups (except for
+> > zoned filesystems). It could also happen on any filesystem size due to
+> > the fact that system block groups are always smaller (32M) than both
+> > data and metadata block groups, but these are not frequently deleted, so
+> > much less likely to trigger the race.
+> >
+> > So make scrub skip any block group with a start offset that is less than
+> > the value we expect, as that means it's a new block group that was created
+> > in the current transaction. It's pointless to continue and try to scrub
+> > its extents, because scrub searches for extents using the commit root, so
+> > it won't find any. For a device replace, skip it as well for the same
+> > reasons, and we don't need to worry about the possibility of extents of
+> > the new block group not being to the new device, because we have the write
+> > duplication setup done through btrfs_map_block().
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>
+> The offending commit is relatively new, do we need to Cc to stable just
+> for v5.17 kernel?
 
-The problem is, why you need to look the index up?
+David added that to the changelog in misc-next.
 
-The index is pretty straight forward, just a enum for each profile, one 
-should not really bother whatever the value is.
-
-> 
-> If you want to get rid of the branches (which I still don't see a reason for)
-
-The new code is just 5 asm commands on x86_64.
-
-> have you considered creating a lookup table?
-
-The index is used for the lookup table of btrfs_raid_type.
-
-Thanks,
-Qu
-
+>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>
+> Thanks,
+> Qu
+>
+> > ---
+> >   fs/btrfs/dev-replace.c |  7 ++++++-
+> >   fs/btrfs/scrub.c       | 26 +++++++++++++++++++++++++-
+> >   2 files changed, 31 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> > index 677b99e66c21..a7dd6ba25e99 100644
+> > --- a/fs/btrfs/dev-replace.c
+> > +++ b/fs/btrfs/dev-replace.c
+> > @@ -707,7 +707,12 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+> >
+> >       btrfs_wait_ordered_roots(fs_info, U64_MAX, 0, (u64)-1);
+> >
+> > -     /* Commit dev_replace state and reserve 1 item for it. */
+> > +     /*
+> > +      * Commit dev_replace state and reserve 1 item for it.
+> > +      * This is crucial to ensure we won't miss copying extents for new block
+> > +      * groups that are allocated after we started the device replace, and
+> > +      * must be done after setting up the device replace state.
+> > +      */
+> >       trans = btrfs_start_transaction(root, 1);
+> >       if (IS_ERR(trans)) {
+> >               ret = PTR_ERR(trans);
+> > diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> > index 13ba458c080c..b79a3221d7af 100644
+> > --- a/fs/btrfs/scrub.c
+> > +++ b/fs/btrfs/scrub.c
+> > @@ -3674,6 +3674,31 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+> >               if (!cache)
+> >                       goto skip;
+> >
+> > +             ASSERT(cache->start <= chunk_offset);
+> > +             /*
+> > +              * We are using the commit root to search for device extents, so
+> > +              * that means we could have found a device extent item from a
+> > +              * block group that was deleted in the current transaction. The
+> > +              * logical start offset of the deleted block group, stored at
+> > +              * @chunk_offset, might be part of the logical address range of
+> > +              * a new block group (which uses different physical extents).
+> > +              * In this case btrfs_lookup_block_group() has returned the new
+> > +              * block group, and its start address is less than @chunk_offset.
+> > +              *
+> > +              * We skip such new block groups, because it's pointless to
+> > +              * process them, as we won't find their extents because we search
+> > +              * for them using the commit root of the extent tree. For a device
+> > +              * replace it's also fine to skip it, we won't miss copying them
+> > +              * to the target device because we have the write duplication
+> > +              * setup through the regular write path (by btrfs_map_block()),
+> > +              * and we have committed a transaction when we started the device
+> > +              * replace, right after setting up the device replace state.
+> > +              */
+> > +             if (cache->start < chunk_offset) {
+> > +                     btrfs_put_block_group(cache);
+> > +                     goto skip;
+> > +             }
+> > +
+> >               if (sctx->is_dev_replace && btrfs_is_zoned(fs_info)) {
+> >                       spin_lock(&cache->lock);
+> >                       if (!cache->to_copy) {
+> > @@ -3797,7 +3822,6 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+> >               dev_replace->item_needs_writeback = 1;
+> >               up_write(&dev_replace->rwsem);
+> >
+> > -             ASSERT(cache->start == chunk_offset);
+> >               ret = scrub_chunk(sctx, cache, scrub_dev, found_key.offset,
+> >                                 dev_extent_len);
+> >
