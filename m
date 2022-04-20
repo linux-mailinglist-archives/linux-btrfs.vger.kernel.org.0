@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCC1507D8F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 02:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8E3507D8E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 02:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358546AbiDTAXR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 20:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
+        id S1358569AbiDTAXS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 20:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358550AbiDTAXN (ORCPT
+        with ESMTP id S1358554AbiDTAXN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 19 Apr 2022 20:23:13 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2282C656
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 17:20:28 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1FA2C676
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 17:20:29 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7F9E1210F1
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:27 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A604A1F380
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650414027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1650414028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mdFMSr8JOAZMwhL7/26Rrs0hLzGnuoH22R3i2eSL4bo=;
-        b=rJlsY+/ZEiO5vODzp9YEumulW+RqSdkoSDhqzLKRd05Y9xt896k8u6lMEen5waStRYULUu
-        ceMVLdMY8i/CQuKRZyV5H6ItVnlPZcy8qb66ZR0oT8MqWgpRgDPDiFk0/mFORZD1d0dgpR
-        ZJBoyLSAU54rTRNfBbjfu/yr6ege9as=
+        bh=U9NraPPh7cljiaoLIwDvhHbrob+tO4OO7VJm2i7NrGM=;
+        b=NBO5Yz/xahHseE8Ko9+rQq8yDp6pe+TTjBeTbwdWyUUVTy9UykOffBEGMIvWb+k83nBbmv
+        eth4y6MrsZ5qiW3wxNi7gRcPnzkXKlxt1jKQ09JU5IJo4Bmfk+7gPjImnMVwZVzqsUakdX
+        BxTnoEf4hjBVYnAL6zWeUqWX844EKB8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5ACC139BE
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:26 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC00F139BE
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id sBxcIspRX2KvZAAAMHmgww
+        id gGjrK8tRX2KvZAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:26 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:27 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 08/10] btrfs-progs: mkfs/sprout: introduce a helper to relocate system chunks
-Date:   Wed, 20 Apr 2022 08:19:57 +0800
-Message-Id: <840cf2c6421abd49b2fee4bbacfe3478baf159d9.1650413308.git.wqu@suse.com>
+Subject: [PATCH RFC 09/10] btrfs-progs: mkfs/sprout: introduce a helper to remove empty system chunks from seed device
+Date:   Wed, 20 Apr 2022 08:19:58 +0800
+Message-Id: <0bfae2b54049cb076c1443fd58ec065a9e84c1f2.1650413308.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1650413308.git.wqu@suse.com>
 References: <cover.1650413308.git.wqu@suse.com>
@@ -61,88 +61,78 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In kernel, for seed sprout we always relocate all system chunks.
+Even if an empty system chunk is still in sys_chunk_array, kernel will
+reject the mount.
 
-The reason is a little complex, at mount time, especially for
-sys_chunk_array processing, we don't have any idea which device is seed
-device.
-
-And all we can access is just all deviecs with the same fsid, not even
-knowing if that fsid has any seed device.
-
-Thus kernel choose to relocate all system chunks, and remove the empty
-seed system chunks to allow a proper mount.
-
-Here we do the same thing, but since in progs we don't have chunk
-relocation ability, here we just CoW every leaf, then all nodes will
-also be CoWed, thus the whole chunk tree will be relocated.
+So here we introduce the helper to do the removal, by iterating through
+all block groups, and remove the block group if it's a system chunk and
+contains stripe which points to the seed device.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/sprout.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ mkfs/sprout.c | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
 diff --git a/mkfs/sprout.c b/mkfs/sprout.c
-index 66119bbe975f..38d80d789084 100644
+index 38d80d789084..049098872d3e 100644
 --- a/mkfs/sprout.c
 +++ b/mkfs/sprout.c
-@@ -187,3 +187,57 @@ error:
- 	btrfs_abort_transaction(trans, ret);
+@@ -241,3 +241,56 @@ static int sprout_relocate_chunk_tree(struct btrfs_trans_handle *trans)
+ 	btrfs_release_path(&path);
  	return ret;
  }
 +
-+/*
-+ * Relocate all chunk tree blocks by CoWing every leaf.
-+ *
-+ * Kernel and btrfs-progs requires sys_chunk_array to only contain devices from
-+ * current fsid.
-+ *
-+ * As btrfs_stripe only contains devid and dev uuid, no fsid to determine if
-+ * the current device is a seed.
-+ *
-+ * And at sys_chunk_array read time, btrfs doesn't have seed devices setup,
-+ * thus if we have a chunk with seed device in it, kernel and progs will
-+ * treat it as missing directly.
-+ *
-+ * So we need this function to relocate all system chunks from seed device,
-+ * so later we can cleanup those system chunks.
-+ */
-+static int sprout_relocate_chunk_tree(struct btrfs_trans_handle *trans)
++static int sprout_remove_seed_sys_chunk(struct btrfs_trans_handle *trans)
 +{
 +	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_root *chunk_root = fs_info->chunk_root;
-+	struct btrfs_key key = { 0 };
-+	struct btrfs_path path;
++	struct btrfs_block_group *bg;
++	struct btrfs_device *seed_dev;
 +	int ret;
 +
-+	while (true) {
-+		btrfs_init_path(&path);
-+		ret = btrfs_search_slot(trans, chunk_root, &key, &path, 0, 1);
-+		if (ret < 0)
-+			break;
-+		/*
-+		 * This is for the first search, we should be at the first item
-+		 * of chunk tree. That's expected.
-+		 */
-+		if (ret > 0) {
-+			ASSERT(key.offset == 0 && key.type == 0 &&
-+			       key.objectid == 0);
-+			ret = 0;
-+		}
++	/* We should have exacly one seed device */
++	ASSERT(fs_info->fs_devices->seed);
++	ASSERT(fs_info->fs_devices->seed->devices.next ==
++	       fs_info->fs_devices->seed->devices.prev);
++	seed_dev = list_entry(fs_info->fs_devices->seed->devices.next,
++			      struct btrfs_device, dev_list);
++	bg = btrfs_lookup_first_block_group(fs_info, 0);
++	while (bg) {
++		const u64 cur = bg->start + bg->length;
 +
-+		ret = btrfs_next_leaf(chunk_root, &path);
-+		if (ret < 0)
-+			break;
-+		if (ret > 0) {
-+			ret = 0;
-+			break;
++		struct cache_extent *ce;
++		struct map_lookup *map;
++		bool delete = false;
++		int i;
++
++		if (!(bg->flags & BTRFS_BLOCK_GROUP_SYSTEM))
++			goto next;
++
++		ce = search_cache_extent(&fs_info->mapping_tree.cache_tree,
++					 bg->start);
++		if (!ce) {
++			/* No chunk map for an bg, a big problem */
++			error("no chunk map for block group at %llu", bg->start);
++			return -EUCLEAN;
 +		}
-+		/* Save the key for next search */
-+		btrfs_item_key_to_cpu(path.nodes[0], &key, 0);
-+		btrfs_release_path(&path);
++		map = container_of(ce, struct map_lookup, ce);
++
++		for (i = 0; i < map->num_stripes; i++) {
++			if (map->stripes[i].dev == seed_dev) {
++				delete = true;
++				break;
++			}
++		}
++		if (!delete)
++			goto next;
++
++		ret = btrfs_remove_block_group(trans, bg->start, bg->length);
++		if (ret < 0)
++			return ret;
++next:
++		/* Has to using @cur, as the current bg may has been deleted */
++		bg = btrfs_lookup_first_block_group(fs_info, cur);
 +	}
-+	btrfs_release_path(&path);
-+	return ret;
++	return 0;
 +}
 -- 
 2.35.1
