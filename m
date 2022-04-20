@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 854A7507D90
+	by mail.lfdr.de (Postfix) with ESMTP id CC916507D91
 	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 02:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358525AbiDTAXI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Apr 2022 20:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        id S1358531AbiDTAXJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Apr 2022 20:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244218AbiDTAXG (ORCPT
+        with ESMTP id S1343907AbiDTAXH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Apr 2022 20:23:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB10B2C64F
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 17:20:21 -0700 (PDT)
+        Tue, 19 Apr 2022 20:23:07 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A5A2C651
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Apr 2022 17:20:22 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 854641F758
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:20 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AC6D52129B
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650414020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1650414021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UGFP9puq3tGcnHIbspzxi6FjlTBkpm4h2GrjAblNRL4=;
-        b=k1QnbmCD4rRA6y/s93TM7X0rHUgINKhbi8imbHb7Ub8kNHlg/3NpM/0yzTAQU49Mj8UafA
-        KN4il3qw3fO5UCf+x6/KPIJsCB4UDGmljkbhZQQySVkwh7y8upreWqhQc/SkbXROIGkGtr
-        2a0KaWTPyO1dhVpjp3sn2KXDvrr6KPQ=
+        bh=VI/sCnj31c7AHPdZSvrKDQXJGIHN5bewfHx6n1reAXQ=;
+        b=P+a/b+6Czr9PME3zFuZSXUbVZMeH9Fk4K0EHbeTQMBjFTuVDxcOmLcnhrYNWv5Z1Rrgnhf
+        mJfc0d0BKZbavZdKqXPFEhrStgRiHGuVsp+24koFbctbdhOodyUZrLvfNJ6tthxFB4NpGX
+        +2zoI8qjAQRdG39jRssJYZwK94N8M9k=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8E79139BE
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:19 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F12C4139BE
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ILMsI8NRX2KvZAAAMHmgww
+        id IMQCLcRRX2KvZAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:19 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:20:20 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 02/10] btrfs-progs: delay chunk and device extent items insertion
-Date:   Wed, 20 Apr 2022 08:19:51 +0800
-Message-Id: <e963c78e806ce5033d71595fa2bd41f914c51936.1650413308.git.wqu@suse.com>
+Subject: [PATCH RFC 03/10] btrfs-progs: mkfs: introduce helper to set seed flag
+Date:   Wed, 20 Apr 2022 08:19:52 +0800
+Message-Id: <0fe28f7170bd687ad0015c4ce1c606ab2a23cc1a.1650413308.git.wqu@suse.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1650413308.git.wqu@suse.com>
 References: <cover.1650413308.git.wqu@suse.com>
@@ -61,486 +61,247 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently btrfs-progs always insert chunk and device extent items at
-btrfs_chunk_alloc() time.
+The new helper, prepare_seed_device(), will be used for later mkfs time
+seed sprouting.
 
-This behavior has one limitation, if we don't have enough space for even
-CoWing the chunk and device trees, then we can not allocate new chunks
-to fulfill our btrfs_reserve_extent() call.
+Although it has way more checks than btrfstune:
 
-This is not a problem so far as we always make sure we have enough
-space.
+- csum_type/sectorsize/nodesize/features checks
+  Any mismatch means we can not use that seed device
+  Normally it should not be a problem for default mkfs profiles,
+  but since we're going to do the sprout at mkfs time, we must
+  do these checks.
 
-But it's going to cause problem for the incoming sprout support at mkfs
-time.
+- Device number check
+  I see no reason nor use-case to support nested/multi-device seed at
+  mkfs time.
 
-As when sprouting the seed fs, initially there is no RW block group at
-all, we must allocate new chunks to do anything.
-
-To resolve the problem, we need to delay chunk item insertion, so that
-in do_chunk_alloc() we can create new chunk mapping with new block group
-cache without triggering tree block CoW.
-
-With block group cache inserted, then we're able to call
-btrfs_reserve_extent() and do regular tree block CoW or whatever.
+Currently mkfs.btrfs will accept --seed (undocumented, and experimental)
+and call the helper to set seed flag on the target, but will not really
+do the sprout yet.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/extent-tree.c |   1 -
- kernel-shared/transaction.c |  77 ++++++++++++++++++
- kernel-shared/transaction.h |  12 +++
- kernel-shared/volumes.c     | 154 ++++++++++++++++++++----------------
- kernel-shared/volumes.h     |  10 +++
- 5 files changed, 187 insertions(+), 67 deletions(-)
+ Makefile      |   2 +-
+ mkfs/main.c   |  17 ++++++++
+ mkfs/sprout.c | 114 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ mkfs/sprout.h |  10 +++++
+ 4 files changed, 142 insertions(+), 1 deletion(-)
+ create mode 100644 mkfs/sprout.c
+ create mode 100644 mkfs/sprout.h
 
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 697a8a1e4dec..da801b1d9926 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -1741,7 +1741,6 @@ static int do_chunk_alloc(struct btrfs_trans_handle *trans,
- 		trans->allocating_chunk = 0;
- 		return 0;
- 	}
--
- 	BUG_ON(ret);
- 
- 	ret = btrfs_make_block_group(trans, fs_info, 0, flags, start,
-diff --git a/kernel-shared/transaction.c b/kernel-shared/transaction.c
-index 56828ee1714b..eb4e2b01cd83 100644
---- a/kernel-shared/transaction.c
-+++ b/kernel-shared/transaction.c
-@@ -54,6 +54,8 @@ struct btrfs_trans_handle* btrfs_start_transaction(struct btrfs_root *root,
- 	root->commit_root = root->node;
- 	extent_buffer_get(root->node);
- 	INIT_LIST_HEAD(&h->dirty_bgs);
-+	INIT_LIST_HEAD(&h->new_chunks);
-+	INIT_LIST_HEAD(&h->reserved_dev_extents);
- 
- 	return h;
- }
-@@ -162,16 +164,74 @@ again:
- 	return 0;
- }
- 
-+static int insert_items_for_one_chunk(struct btrfs_trans_handle *trans,
-+				      struct map_lookup *map)
-+{
-+	const u64 dev_extent_len = calc_stripe_length(map->type, map->ce.size,
-+						      map->num_stripes);
-+	int ret;
-+	int i;
-+
-+	/* Insert dev extents */
-+	for (i = 0; i < map->num_stripes; i++) {
-+		ret = btrfs_insert_dev_extent(trans, map->stripes[i].dev,
-+					      map->ce.start, dev_extent_len,
-+					      map->stripes[i].physical);
-+		/*
-+		 * Since we're delaying chunk allocation, normally there should
-+		 * be no dev extent. But there are call sites like btrfs convert
-+		 * manually insert dev extents before creating the chunk.
-+		 *
-+		 * So here we're safe to ignore -EEXIST error.
-+		 */
-+		if (ret == -EEXIST)
-+			ret = 0;
-+		if (ret < 0)
-+			goto out;
-+		ret = btrfs_update_device(trans, map->stripes[i].dev);
-+		if (ret < 0)
-+			goto out;
-+
-+	}
-+	/* Insert chunk item */
-+	ret = btrfs_insert_chunk_item(trans, map);
-+out:
-+	return ret;
-+}
-+
- int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root)
- {
- 	u64 transid = trans->transid;
- 	int ret = 0;
-+	struct map_lookup *map;
-+	struct map_lookup *tmp;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_space_info *sinfo;
- 
- 	if (trans->fs_info->transaction_aborted)
- 		return -EROFS;
-+
-+	/* Finish the items insert for new chunks */
-+	list_for_each_entry_safe(map, tmp, &trans->new_chunks, list) {
-+		ret = insert_items_for_one_chunk(trans, map);
-+		if (ret < 0)
-+			goto error;
-+		list_del_init(&map->list);
-+	}
-+	/*
-+	 * And cleanup the reserved extents, they have been inserted into dev
-+	 * tree in above insert_items_for_one_chunk().
-+	 */
-+	while (!list_empty(&trans->reserved_dev_extents)) {
-+		struct btrfs_reserved_dev_extent *reserved;
-+
-+		reserved = list_entry(trans->reserved_dev_extents.next,
-+				struct btrfs_reserved_dev_extent, list);
-+		list_del_init(&reserved->list);
-+		free(reserved);
-+	}
-+
- 	/*
- 	 * Flush all accumulated delayed refs so that root-tree updates are
- 	 * consistent
-@@ -249,6 +309,23 @@ error:
- 	return ret;
- }
- 
-+int btrfs_add_reserved_device_extent(struct btrfs_trans_handle *trans,
-+				     struct btrfs_device *dev, u64 physical,
-+				     u64 length)
-+{
-+	struct btrfs_reserved_dev_extent *reserved;
-+
-+	reserved = malloc(sizeof(*reserved));
-+	if (!reserved)
-+		return -ENOMEM;
-+
-+	reserved->dev = dev;
-+	reserved->length = length;
-+	reserved->physical = physical;
-+	list_add_tail(&reserved->list, &trans->reserved_dev_extents);
-+	return 0;
-+}
-+
- void btrfs_abort_transaction(struct btrfs_trans_handle *trans, int error)
- {
- 	trans->fs_info->transaction_aborted = error;
-diff --git a/kernel-shared/transaction.h b/kernel-shared/transaction.h
-index 599cc95408de..b325cbe8ea3e 100644
---- a/kernel-shared/transaction.h
-+++ b/kernel-shared/transaction.h
-@@ -37,6 +37,15 @@ struct btrfs_trans_handle {
- 	struct btrfs_block_group *block_group;
- 	struct btrfs_delayed_ref_root delayed_refs;
- 	struct list_head dirty_bgs;
-+	struct list_head new_chunks;
-+	struct list_head reserved_dev_extents;
-+};
-+
-+struct btrfs_reserved_dev_extent {
-+	struct list_head list;
-+	struct btrfs_device *dev;
-+	u64 physical;
-+	u64 length;
- };
- 
- struct btrfs_trans_handle* btrfs_start_transaction(struct btrfs_root *root,
-@@ -48,5 +57,8 @@ int commit_tree_roots(struct btrfs_trans_handle *trans,
- int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root);
- void btrfs_abort_transaction(struct btrfs_trans_handle *trans, int error);
-+int btrfs_add_reserved_device_extent(struct btrfs_trans_handle *trans,
-+				     struct btrfs_device *dev, u64 physical,
-+				     u64 length);
- 
+diff --git a/Makefile b/Makefile
+index af4908f9d8de..4e56326e4746 100644
+--- a/Makefile
++++ b/Makefile
+@@ -226,7 +226,7 @@ libbtrfsutil_objects = libbtrfsutil/errors.o libbtrfsutil/filesystem.o \
+ convert_objects = convert/main.o convert/common.o convert/source-fs.o \
+ 		  convert/source-ext2.o convert/source-reiserfs.o \
+ 		  mkfs/common.o
+-mkfs_objects = mkfs/main.o mkfs/common.o mkfs/rootdir.o
++mkfs_objects = mkfs/main.o mkfs/common.o mkfs/rootdir.o mkfs/sprout.o
+ image_objects = image/main.o image/sanitize.o
+ all_objects = $(objects) $(cmds_objects) $(libbtrfs_objects) $(convert_objects) \
+ 	      $(mkfs_objects) $(image_objects) $(libbtrfsutil_objects)
+diff --git a/mkfs/main.c b/mkfs/main.c
+index 4e0a46a77aa5..7b7793f8b996 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -48,6 +48,7 @@
+ #include "common/parse-utils.h"
+ #include "mkfs/common.h"
+ #include "mkfs/rootdir.h"
++#include "mkfs/sprout.h"
+ #include "common/fsfeatures.h"
+ #include "common/box.h"
+ #include "common/units.h"
+@@ -999,6 +1000,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	bool force_overwrite = false;
+ 	int oflags;
+ 	char *source_dir = NULL;
++	char *seed_dev = NULL;
+ 	bool source_dir_set = false;
+ 	bool shrink_rootdir = false;
+ 	u64 source_dir_size = 0;
+@@ -1024,6 +1026,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			GETOPT_VAL_SHRINK = 257,
+ 			GETOPT_VAL_CHECKSUM,
+ 			GETOPT_VAL_GLOBAL_ROOTS,
++			GETOPT_VAL_SEED_DEV,
+ 		};
+ 		static const struct option long_options[] = {
+ 			{ "byte-count", required_argument, NULL, 'b' },
+@@ -1050,6 +1053,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			{ "shrink", no_argument, NULL, GETOPT_VAL_SHRINK },
+ #if EXPERIMENTAL
+ 			{ "num-global-roots", required_argument, NULL, GETOPT_VAL_GLOBAL_ROOTS },
++			{ "seed", required_argument, NULL, GETOPT_VAL_SEED_DEV },
  #endif
-diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-index c61fb51c4def..923e1a9378d5 100644
---- a/kernel-shared/volumes.c
-+++ b/kernel-shared/volumes.c
-@@ -653,6 +653,7 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
- 				      u64 num_bytes, u64 search_start,
- 				      u64 *start, u64 *len)
- {
-+	struct btrfs_trans_handle *trans = device->fs_info->running_transaction;
- 	struct btrfs_root *root = device->dev_root;
- 	struct btrfs_path path = { 0 };
- 	struct btrfs_key key;
-@@ -735,6 +736,21 @@ next:
- 		cond_resched();
+ 			{ "help", no_argument, NULL, GETOPT_VAL_HELP },
+ 			{ NULL, 0, NULL, 0}
+@@ -1158,6 +1162,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			case GETOPT_VAL_GLOBAL_ROOTS:
+ 				nr_global_roots = (int)arg_strtou64(optarg);
+ 				break;
++			case GETOPT_VAL_SEED_DEV:
++				seed_dev = optarg;
++				break;
+ 			case GETOPT_VAL_HELP:
+ 			default:
+ 				print_usage(c != GETOPT_VAL_HELP);
+@@ -1207,6 +1214,16 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		}
  	}
  
-+	/* Add reserved dev extents into @used_root */
-+	if (trans) {
-+		struct btrfs_reserved_dev_extent *reserved;
-+
-+		list_for_each_entry(reserved, &trans->reserved_dev_extents,
-+				    list) {
-+			if (reserved->dev != device)
-+				continue;
-+
-+			ret = add_merge_cache_extent(&used_root,
-+					reserved->physical, reserved->length);
-+			if (ret < 0)
-+				goto out;
++	if (seed_dev) {
++		ret = prepare_seed_device(seed_dev, features, csum_type,
++					  sectorsize, nodesize);
++		if (ret < 0) {
++			errno = -ret;
++			error("faield to set seed flag on %s: %m", seed_dev);
++			goto error;
 +		}
 +	}
- again:
- 	/*
- 	 * Now used_root contains all the dev extents. Iterate through the tree
-@@ -795,7 +811,6 @@ again:
- 		ret = -ENOSPC;
- 	else
- 		ret = 0;
--
- out:
- 	btrfs_release_path(&path);
- 	free_extent_cache_tree(&used_root);
-@@ -863,26 +878,12 @@ err:
- 	return ret;
- }
- 
--/*
-- * Allocate one free dev extent and insert it into the fs.
-- */
--static int btrfs_alloc_dev_extent(struct btrfs_trans_handle *trans,
--				  struct btrfs_device *device,
--				  u64 chunk_offset, u64 num_bytes, u64 *start)
--{
--	int ret;
--
--	ret = find_free_dev_extent(device, num_bytes, start, NULL);
--	if (ret)
--		return ret;
--	return btrfs_insert_dev_extent(trans, device, chunk_offset, num_bytes,
--					*start);
--}
--
- static int find_next_chunk(struct btrfs_fs_info *fs_info, u64 *offset)
- {
-+	struct btrfs_trans_handle *trans = fs_info->running_transaction;
- 	struct btrfs_root *root = fs_info->chunk_root;
- 	struct btrfs_path *path;
-+	u64 new_chunk_end = 0;
- 	int ret;
- 	struct btrfs_key key;
- 	struct btrfs_chunk *chunk;
-@@ -917,6 +918,16 @@ static int find_next_chunk(struct btrfs_fs_info *fs_info, u64 *offset)
- 				btrfs_chunk_length(path->nodes[0], chunk);
- 		}
- 	}
 +
-+	/* Still need to check the new chunks to avoid conflicts */
-+	if (trans && !list_empty(&trans->new_chunks)) {
-+		struct map_lookup *map;
+ 	while (dev_cnt-- > 0) {
+ 		file = argv[optind++];
+ 		if (source_dir_set && path_exists(file) == 0)
+diff --git a/mkfs/sprout.c b/mkfs/sprout.c
+new file mode 100644
+index 000000000000..eb423d082c7c
+--- /dev/null
++++ b/mkfs/sprout.c
+@@ -0,0 +1,114 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +
-+		list_for_each_entry(map, &trans->new_chunks, list)
-+			new_chunk_end = max(new_chunk_end, map->ce.start +
-+					    map->ce.size);
-+		*offset = max(*offset, new_chunk_end);
-+	}
- 	ret = 0;
- error:
- 	btrfs_free_path(path);
-@@ -1362,10 +1373,7 @@ static int create_chunk(struct btrfs_trans_handle *trans,
- 			struct btrfs_fs_info *info, struct alloc_chunk_ctl *ctl,
- 			struct list_head *private_devs)
- {
--	struct btrfs_root *chunk_root = info->chunk_root;
--	struct btrfs_stripe *stripes;
- 	struct btrfs_device *device = NULL;
--	struct btrfs_chunk *chunk;
- 	struct list_head *dev_list = &info->fs_devices->devices;
- 	struct list_head *cur;
- 	struct map_lookup *map;
-@@ -1387,22 +1395,14 @@ static int create_chunk(struct btrfs_trans_handle *trans,
- 	key.type = BTRFS_CHUNK_ITEM_KEY;
- 	key.offset = offset;
- 
--	chunk = kmalloc(btrfs_chunk_item_size(ctl->num_stripes), GFP_NOFS);
--	if (!chunk)
--		return -ENOMEM;
--
- 	map = kmalloc(btrfs_map_lookup_size(ctl->num_stripes), GFP_NOFS);
--	if (!map) {
--		kfree(chunk);
-+	if (!map)
- 		return -ENOMEM;
--	}
- 
--	stripes = &chunk->stripe;
- 	ctl->num_bytes = chunk_bytes_by_type(ctl);
- 	index = 0;
- 	while (index < ctl->num_stripes) {
- 		u64 dev_offset;
--		struct btrfs_stripe *stripe;
- 
- 		BUG_ON(list_empty(private_devs));
- 		cur = private_devs->next;
-@@ -1414,45 +1414,30 @@ static int create_chunk(struct btrfs_trans_handle *trans,
- 			list_move(&device->dev_list, dev_list);
- 
- 		if (!ctl->dev_offset) {
--			ret = btrfs_alloc_dev_extent(trans, device, key.offset,
--					ctl->stripe_size, &dev_offset);
-+			ret = find_free_dev_extent(device, ctl->stripe_size, &dev_offset, NULL);
-+			if (ret < 0)
-+				goto out_chunk_map;
-+			/*
-+			 * Add this dev extent to trans::reserved_dev_ext, to
-+			 * prevent allocation from the allocated one.
-+			 */
-+			ret = btrfs_add_reserved_device_extent(trans, device,
-+					dev_offset, ctl->stripe_size);
- 			if (ret < 0)
- 				goto out_chunk_map;
- 		} else {
- 			dev_offset = ctl->dev_offset;
--			ret = btrfs_insert_dev_extent(trans, device, key.offset,
--						      ctl->stripe_size,
--						      ctl->dev_offset);
--			BUG_ON(ret);
- 		}
- 
- 		ASSERT(!zone_size || IS_ALIGNED(dev_offset, zone_size));
- 
- 		device->bytes_used += ctl->stripe_size;
--		ret = btrfs_update_device(trans, device);
--		if (ret < 0)
--			goto out_chunk_map;
--
- 		map->stripes[index].dev = device;
- 		map->stripes[index].physical = dev_offset;
--		stripe = stripes + index;
--		btrfs_set_stack_stripe_devid(stripe, device->devid);
--		btrfs_set_stack_stripe_offset(stripe, dev_offset);
--		memcpy(stripe->dev_uuid, device->uuid, BTRFS_UUID_SIZE);
- 		index++;
- 	}
- 	BUG_ON(!list_empty(private_devs));
- 
--	/* key was set above */
--	btrfs_set_stack_chunk_length(chunk, ctl->num_bytes);
--	btrfs_set_stack_chunk_owner(chunk, BTRFS_EXTENT_TREE_OBJECTID);
--	btrfs_set_stack_chunk_stripe_len(chunk, BTRFS_STRIPE_LEN);
--	btrfs_set_stack_chunk_type(chunk, ctl->type);
--	btrfs_set_stack_chunk_num_stripes(chunk, ctl->num_stripes);
--	btrfs_set_stack_chunk_io_align(chunk, BTRFS_STRIPE_LEN);
--	btrfs_set_stack_chunk_io_width(chunk, BTRFS_STRIPE_LEN);
--	btrfs_set_stack_chunk_sector_size(chunk, info->sectorsize);
--	btrfs_set_stack_chunk_sub_stripes(chunk, ctl->sub_stripes);
- 	map->sector_size = info->sectorsize;
- 	map->stripe_len = BTRFS_STRIPE_LEN;
- 	map->io_align = BTRFS_STRIPE_LEN;
-@@ -1461,9 +1446,6 @@ static int create_chunk(struct btrfs_trans_handle *trans,
- 	map->num_stripes = ctl->num_stripes;
- 	map->sub_stripes = ctl->sub_stripes;
- 
--	ret = btrfs_insert_item(trans, chunk_root, &key, chunk,
--				btrfs_chunk_item_size(ctl->num_stripes));
--	BUG_ON(ret);
- 	ctl->start = key.offset;
- 
- 	map->ce.start = key.offset;
-@@ -1472,21 +1454,16 @@ static int create_chunk(struct btrfs_trans_handle *trans,
- 	ret = insert_cache_extent(&info->mapping_tree.cache_tree, &map->ce);
- 	if (ret < 0)
- 		goto out_chunk_map;
-+	/*
-+	 * Add the new chunk to new_chunks list so at commit trans time we can
-+	 * finish the items insert.
-+	 */
-+	list_add(&map->list, &trans->new_chunks);
- 
--	if (ctl->type & BTRFS_BLOCK_GROUP_SYSTEM) {
--		ret = btrfs_add_system_chunk(info, &key,
--			    chunk, btrfs_chunk_item_size(ctl->num_stripes));
--		if (ret < 0)
--			goto out_chunk;
--	}
--
--	kfree(chunk);
- 	return ret;
- 
- out_chunk_map:
- 	kfree(map);
--out_chunk:
--	kfree(chunk);
- 	return ret;
- }
- 
-@@ -1594,6 +1571,51 @@ again:
- 	return ret;
- }
- 
-+int btrfs_insert_chunk_item(struct btrfs_trans_handle *trans,
-+			    struct map_lookup *map)
++#include "kernel-shared/ctree.h"
++#include "kernel-shared/disk-io.h"
++#include "kernel-shared/volumes.h"
++#include "kernel-shared/transaction.h"
++#include "common/messages.h"
++#include "mkfs/common.h"
++
++int prepare_seed_device(const char *path, u64 features, u32 csum_type,
++			u32 sectorsize, u32 nodesize)
 +{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_stripe *stripe;
-+	struct btrfs_chunk *chunk;
-+	struct btrfs_key key;
-+	int i;
++	struct open_ctree_flags ocf = { 0 };
++	struct btrfs_trans_handle *trans;
++	struct btrfs_fs_devices *fs_devs;
++	struct btrfs_fs_info *fs_info;
++	int nr_devs = 0;
 +	int ret;
 +
-+	chunk = malloc(btrfs_chunk_item_size(map->num_stripes));
-+	if (!chunk)
-+		return -ENOMEM;
++	ocf.filename = path;
++	ocf.flags = OPEN_CTREE_WRITES;
 +
-+	btrfs_set_stack_chunk_length(chunk, map->ce.size);
-+	btrfs_set_stack_chunk_owner(chunk, BTRFS_EXTENT_TREE_OBJECTID);
-+	btrfs_set_stack_chunk_stripe_len(chunk, map->stripe_len);
-+	btrfs_set_stack_chunk_type(chunk, map->type);
-+	btrfs_set_stack_chunk_num_stripes(chunk, map->num_stripes);
-+	btrfs_set_stack_chunk_io_align(chunk, BTRFS_STRIPE_LEN);
-+	btrfs_set_stack_chunk_io_width(chunk, BTRFS_STRIPE_LEN);
-+	btrfs_set_stack_chunk_sector_size(chunk, fs_info->sectorsize);
-+	btrfs_set_stack_chunk_sub_stripes(chunk, map->sub_stripes);
-+	for (i = 0, stripe = &chunk->stripe; i < map->num_stripes;
-+	     i++, stripe++) {
-+		struct btrfs_device *device = map->stripes[i].dev;
-+
-+		btrfs_set_stack_stripe_devid(stripe, device->devid);
-+		btrfs_set_stack_stripe_offset(stripe, map->stripes[i].physical);
-+		memcpy(stripe->dev_uuid, device->uuid, BTRFS_UUID_SIZE);
++	fs_info = open_ctree_fs_info(&ocf);
++	if (!fs_info) {
++		error("can not open btrfs on %s", path);
++		return -EINVAL;
 +	}
 +
-+	key.objectid = BTRFS_FIRST_CHUNK_TREE_OBJECTID;
-+	key.type = BTRFS_CHUNK_ITEM_KEY;
-+	key.offset = map->ce.start;
-+	ret = btrfs_insert_item(trans, fs_info->chunk_root, &key, chunk,
-+				btrfs_chunk_item_size(map->num_stripes));
-+	if (ret < 0)
-+		return ret;
-+	if (map->type & BTRFS_BLOCK_GROUP_SYSTEM)
-+		ret = btrfs_add_system_chunk(fs_info, &key, chunk,
-+				btrfs_chunk_item_size(map->num_stripes));
-+	return ret;
-+}
++	fs_devs = fs_info->fs_devices;
++	while (fs_devs) {
++		struct list_head *list;
 +
- /*
-  * Alloc a DATA chunk with SINGLE profile.
-  *
-diff --git a/kernel-shared/volumes.h b/kernel-shared/volumes.h
-index 6e9103a933b7..2beae2d02fad 100644
---- a/kernel-shared/volumes.h
-+++ b/kernel-shared/volumes.h
-@@ -113,6 +113,14 @@ struct btrfs_multi_bio {
- 
- struct map_lookup {
- 	struct cache_extent ce;
++		list_for_each(list, &fs_devs->devices)
++			nr_devs++;
++		fs_devs = fs_devs->seed;
++	}
 +
 +	/*
-+	 * Newly allocated chunk map will be added to trans::new_chunks,
-+	 * and its chunk/dev_extent/block_group items will be inserted into
-+	 * the trees at transaction commit time.
++	 * Multi-device seed is not recommended, we just reject them.
++	 * This also rejects sported fs which still has seed attached.
 +	 */
-+	struct list_head list;
++	if (nr_devs > 1) {
++		ret = -EINVAL;
++		error("the seed filesystem has multiple devices, have %u expect 1",
++			nr_devs);
++		goto out;
++	}
 +
- 	u64 type;
- 	int io_align;
- 	int io_width;
-@@ -264,6 +272,8 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
- 		      u64 *num_bytes, u64 type);
- int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
- 			   struct btrfs_fs_info *fs_info, u64 *start, u64 num_bytes);
-+int btrfs_insert_chunk_item(struct btrfs_trans_handle *trans,
-+			    struct map_lookup *map);
- int btrfs_open_devices(struct btrfs_fs_info *fs_info,
- 		       struct btrfs_fs_devices *fs_devices, int flags);
- int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
++	/* METADATA_UUID feature should not be enabled on seed device */
++	if (btrfs_fs_incompat(fs_info, METADATA_UUID)) {
++		ret = -EINVAL;
++		error("the seed filesystem can not have METADATA_UUID feature enabled");
++		goto out;
++	}
++	/* Transient device can not be seed target */
++	if (btrfs_super_flags(fs_info->super_copy) &
++	    (BTRFS_SUPER_FLAG_CHANGING_CSUM |
++	     BTRFS_SUPER_FLAG_CHANGING_FSID |
++	     BTRFS_SUPER_FLAG_CHANGING_FSID_V2 |
++	     BTRFS_SUPER_FLAG_METADUMP |
++	     BTRFS_SUPER_FLAG_METADUMP_V2)) {
++		ret = -EINVAL;
++		error("the seed filesystem has transient flags: 0x%llx",
++		      btrfs_super_flags(fs_info->super_copy));
++		goto out;
++	}
++	/*
++	 * Make sure the seed device matches all the criteria
++	 * For incompat flags, we only require our target features is a subset
++	 * of the seed device.
++	 */
++	if (fs_info->sectorsize != sectorsize ||
++	    fs_info->nodesize != nodesize ||
++	    fs_info->csum_type != csum_type ||
++	    ~btrfs_super_incompat_flags(fs_info->super_copy) & features) {
++		ret = -EINVAL;
++		error("the seed filesystem parameters don't match the target");
++		error("  seed features=0x%llx csum_type=%u sectorsize=%u nodesize=%u",
++			btrfs_super_incompat_flags(fs_info->super_copy),
++			fs_info->csum_type, fs_info->sectorsize,
++			fs_info->nodesize);
++		error("  target features=0x%llx csum_type=%u sectorsize=%u nodesize=%u",
++			features, csum_type, sectorsize, nodesize);
++		goto out;
++	}
++
++	/* Already has seed flag */
++	if (btrfs_super_flags(fs_info->super_copy) & BTRFS_SUPER_FLAG_SEEDING) {
++		ret = 0;
++		goto out;
++	}
++
++	/* All check passed, set seed flag */
++	trans = btrfs_start_transaction(fs_info->tree_root, 0);
++	if (IS_ERR(trans)) {
++		ret = PTR_ERR(trans);
++		errno = -ret;
++		error("failed to start transaction for setting seed flag: %m");
++		goto out;
++	}
++	btrfs_set_super_flags(fs_info->super_copy, BTRFS_SUPER_FLAG_SEEDING |
++			      btrfs_super_flags(fs_info->super_copy));
++	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to commit transaction for setting seed flag: %m");
++		goto out;
++	} else {
++		printf("Seed flag set for %s\n", path);
++	}
++out:
++	close_ctree(fs_info->tree_root);
++	return ret;
++}
+diff --git a/mkfs/sprout.h b/mkfs/sprout.h
+new file mode 100644
+index 000000000000..2e8b794c93e4
+--- /dev/null
++++ b/mkfs/sprout.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/* Functions only used for seed sprout at mkfs time. */
++#ifndef __BTRFS_MKFS_SPROUT_H__
++#define __BTRFS_MKFS_SPROUT_H__
++
++int prepare_seed_device(const char *path, u64 features, u32 csum_type,
++			u32 sectorsize, u32 nodesize);
++
++#endif
 -- 
 2.35.1
 
