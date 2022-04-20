@@ -2,148 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 361835081BE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 09:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928EF5081E1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Apr 2022 09:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359590AbiDTHL4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Apr 2022 03:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        id S1350874AbiDTHUy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Apr 2022 03:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233550AbiDTHLy (ORCPT
+        with ESMTP id S244636AbiDTHUv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Apr 2022 03:11:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F971275C1
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:09:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 12895210E5;
-        Wed, 20 Apr 2022 07:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650438548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OYfWBKDhqnaJcIPoJsky77GIhVAtnes44hovsY8b4ho=;
-        b=bnagxJxdmDO/sEkousZsWn/z3qbLoC++7yf2BEn5tb9QsBVj+2wOAihbFRkrn3S2ea5MJM
-        TrhOZTBu6tTxRhzU5N8Z8jhbzSmJq6LARR05f8YWdW2c0UgwC0DiosKszV69sNo6WbOOyq
-        qpB1EEZcdgaaV5ipUVeIZsvDnyPd7a0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD52F13A30;
-        Wed, 20 Apr 2022 07:09:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZV8QL5OxX2ISUwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 20 Apr 2022 07:09:07 +0000
-Message-ID: <9a8d4a62-8ca9-9ee3-2d94-8094428dd182@suse.com>
-Date:   Wed, 20 Apr 2022 10:09:07 +0300
+        Wed, 20 Apr 2022 03:20:51 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916903AA55
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:18:06 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id t13so832404pgn.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 00:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KShDa2PjJXDUAAPLhosxnDR0KNtzqTAwj60JBRrdtRI=;
+        b=p3HLvrh9PRbNea4BBFIOSD73OiGuhPWJwNmFgobPcifofT/OglDO32IHMuSu2dJGth
+         UkqJAPT8gAU7Q+p6CmxnWsrMWxdB8yRu23PSHYdRhV8YWmYxuPm0pkuQHDRR5PiWVGKn
+         N9OWXokUXC01IlkF3Co9l8mueQVJQl9tKgfBKNqQlzjCj2Qnwp6xqC2abUejeiBxYQVR
+         1SMyxgb6vmhezFWIOIOec/vIM9wIO99syRc9AP7kWbAIuMcMLL/6dEo5nKuawg5FHzuW
+         bI4ShAWwzuKGSZaoxG94CCTUcBsvf2x59L86r04s7hZY4xh5JDVUTPPUeNBotP9rRMka
+         BH3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KShDa2PjJXDUAAPLhosxnDR0KNtzqTAwj60JBRrdtRI=;
+        b=BqnZz1w5WvQULc6qUfoWv/7QB4FGLX/ZxokRPiquF3e42Lvol90RbJqaJbMP9+ERrI
+         KUpPXmya6lNVsiZztcumFDyCQ5rDx5QvbTQei6zetJzQfPVMgkQnK9Z5HSsezmppkBpx
+         KlnlVAmLCLrQj3eQQq++fLJqj04yMYTB8v77r3Nwpw9trSIDEVyGvx5EBe8fyiQbQH7y
+         J8z5GDzijHsufVPmrorjmplbZ09tQlPOw+Le0Jd6+j24Yaz8xLqJ2J3b6KvDq8SRraXh
+         VwpcJQc6Ho35rU6E/F8J114VqsAnouGCrUtWgciovhjg9lnObO11/2ZFAmqYdkJXYfvc
+         buxQ==
+X-Gm-Message-State: AOAM531mJzQGxbI5EiGYUtcTHXkquz/EBlMeTlayqocPtnshqu4COwTJ
+        zLaboK8lxbtEOVSiCJG34oG4L0/Cu7I88vC4BjHzaVBB
+X-Google-Smtp-Source: ABdhPJyjepc6qqwLD+ydVYKIulibxQhaiIQPVzC1zt1erd1f2kwwxFpegw+tvW7yyPD+u28JyXGQVU/aLK6D4WvenCY=
+X-Received: by 2002:a05:6a00:98e:b0:50a:9524:94f0 with SMTP id
+ u14-20020a056a00098e00b0050a952494f0mr7132300pfg.9.1650439086087; Wed, 20 Apr
+ 2022 00:18:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v5] btrfs: Turn delayed_nodes_tree into an XArray
-Content-Language: en-US
-To:     Gabriel Niebler <gniebler@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220419155721.6702-1-gniebler@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220419155721.6702-1-gniebler@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAKGv6Cq+uwBMgo6th6E16=om8321wTO3fZPXF151VLSYiexFUg@mail.gmail.com>
+ <6672365e-c3d2-1a4c-7eb6-957f7a692d3a@cobb.uk.net>
+In-Reply-To: <6672365e-c3d2-1a4c-7eb6-957f7a692d3a@cobb.uk.net>
+From:   Alex Powell <alexj.powellalt@googlemail.com>
+Date:   Wed, 20 Apr 2022 16:47:54 +0930
+Message-ID: <CAKGv6CovkUjb92MAaM-irNcJvJk2P_2QNpybzCSsSs2RMgfz4A@mail.gmail.com>
+Subject: Re: space still allocated post deletion
+To:     Graham Cobb <g.btrfs@cobb.me.uk>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Thank you,
+The issue was veeam keeping snapshots in .veeam-snapshots above the
+root subvolume. I have no idea why this is the expected behaviour,
+because the backups are set to go to /mnt/data.
 
+I'm confident that if I wait 7 days, the backup retention period, this
+will fix itself. So this itself is not a bug in btrfs, it is more a
+misconfiguration by Ubuntu or Veeam.
 
-On 19.04.22 г. 18:57 ч., Gabriel Niebler wrote:
-> … in the btrfs_root struct and adjust all usages of this object to use the
-> XArray API, because it is notionally easier to use and unserstand, as it
-> provides array semantics, and also takes care of locking for us, further
-> simplifying the code.
-> 
-> Also use the opportunity to do some light refactoring.
-> 
-> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
-> ---
-> 
-
-<snip>
-
-> @@ -1870,29 +1863,33 @@ void btrfs_kill_delayed_inode_items(struct btrfs_inode *inode)
->   
->   void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
->   {
-> -	u64 inode_id = 0;
-> +	unsigned long index = 0;
-> +	struct btrfs_delayed_node *delayed_node;
->   	struct btrfs_delayed_node *delayed_nodes[8];
-
-Actually in order for the new code to be correct this array needs to be 
-zero-initialized upon every iteration of the while() loop. That's 
-because as it stands ATM delayed_nodes would retain the value from the 
-previous iteration. What this could lead to is on the last iteration we 
-potentially have 8 nodes in delayed_nodes which have been freed, so if 
-in the last iteration of the xa_for_each_start we copy only 3 nodes the 
-array would still have 8 nodes in total - 3 from the  last iteration and 
-5 stale from the previous since they haven't been cleared out. So the 
-final for() loop which does the freeing would incur a double free on the 
-5 already-freed entries.
-
-To fix this you either need to clear delayed_nodes[i] in the final for 
-loop, so simply define it inside the while() like so:
-
-struct btrfs_delayed_node *delayed_nodes[8] = {};
-
-That would ensure that on every iteration of the while() loop only those 
-entries which have been poopulated by the inner xa_for_each are non-null 
-when the final for loop executes.
-
->   	int i, n;
->   
->   	while (1) {
->   		spin_lock(&root->inode_lock);
-> -		n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
-> -					   (void **)delayed_nodes, inode_id,
-> -					   ARRAY_SIZE(delayed_nodes));
-> -		if (!n) {
-> +		if (xa_empty(&root->delayed_nodes)) {
->   			spin_unlock(&root->inode_lock);
-> -			break;
-> +			return;
->   		}
->   
-> -		inode_id = delayed_nodes[n - 1]->inode_id + 1;
-> -		for (i = 0; i < n; i++) {
-> +		n = 0;
-> +		xa_for_each_start(&root->delayed_nodes, index,
-> +				  delayed_node, index) {
->   			/*
->   			 * Don't increase refs in case the node is dead and
->   			 * about to be removed from the tree in the loop below
->   			 */
-> -			if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
-> -				delayed_nodes[i] = NULL;
-> +			if (refcount_inc_not_zero(&delayed_node->refs)) {
-> +				delayed_nodes[n] = delayed_node;
-> +				n++;
-> +                        }
-> +			if (n >= ARRAY_SIZE(delayed_nodes))
-> +				break;
->   		}
-> +		index++;
->   		spin_unlock(&root->inode_lock);
->   
->   		for (i = 0; i < n; i++) {
-
-<snip>
+On Tue, Apr 19, 2022 at 8:51 PM Graham Cobb <g.btrfs@cobb.me.uk> wrote:
+>
+> On 19/04/2022 11:41, Alex Powell wrote:
+> > Hi team,
+> > I have deleted hundreds of GB of files however space still remains the
+> > same, even after a full balance and a dusage=0 balance. The location I
+> > am deleting from is usually a mount point but I found some files had
+> > saved there while the array was unmounted, which I then removed.
+>
+> Most likely you have files in subvolumes which are not currently mounted
+> anywhere. You need to mount the root subvolume of the filesystem to see
+> all the files. Many distros default to putting the system root into a
+> non-root subvolume.
+>
+> I think you can see them all if you use:
+>
+> btrfs subv list -a /
+>
+> To access them...
+>
+> mkdir /mnt/1
+> mount -o subvolid=5 /dev/sdh2 /mnt/1
+>
+> Graham
+>
+> >
+> > root@bean:/home/bean# du -h --max-depth=1 /mnt/data/triage
+> > 6.4G /mnt/data/triage/complete
+> > 189G /mnt/data/triage/incomplete
+> > 195G /mnt/data/triage
+> >
+> > root@bean:/home/bean# rm -rf /mnt/data/triage/complete/*
+> > root@bean:/home/bean# rm -rf /mnt/data/triage/incomplete/*
+> > root@bean:/home/bean# du -h --max-depth=1 /mnt/data/triage
+> > 0 /mnt/data/triage/complete
+> > 0 /mnt/data/triage/incomplete
+> > 0 /mnt/data/triage
+> >
+> > root@bean:/home/bean# btrfs filesystem show
+> > Label: none  uuid: 24933208-0a7a-42ff-90d8-f0fc2028dec9
+> > Total devices 1 FS bytes used 209.03GiB
+> > devid    1 size 223.07GiB used 211.03GiB path /dev/sdh2
+> >
+> > root@bean:/home/bean# du -h --max-depth=1 /
+> > 244M /boot
+> > 91M /home
+> > 7.5M /etc
+> > 0 /media
+> > 0 /dev
+> > 0 /mnt
+> > 0 /opt
+> > 0 /proc
+> > 2.7G /root
+> > 1.6M /run
+> > 0 /srv
+> > 0 /sys
+> > 0 /tmp
+> > 3.6G /usr
+> > 13G /var
+> > 710M /snap
+> > 22G /
+> >
+> > Linux bean 5.15.0-25-generic #25-Ubuntu SMP Wed Mar 30 15:54:22 UTC
+> > 2022 x86_64 x86_64 x86_64 GNU/Linux
+> > btrfs-progs v5.16.2
+>
