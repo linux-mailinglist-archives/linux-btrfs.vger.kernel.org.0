@@ -2,343 +2,253 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B8950A103
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 15:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C1250A13B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 15:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386546AbiDUNpX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Apr 2022 09:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
+        id S1351352AbiDUNy7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Apr 2022 09:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359071AbiDUNpW (ORCPT
+        with ESMTP id S231261AbiDUNy5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Apr 2022 09:45:22 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9D236E37
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 06:42:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Thu, 21 Apr 2022 09:54:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6489313FAE
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 06:52:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 775BC21117;
-        Thu, 21 Apr 2022 13:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650548549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3bThi9y24xV9qcMDCmIiTHNkgAr6J3lEs635OzEsUqI=;
-        b=f85qN3Y2ttopK6VOHp7EXqG7M+u/X3CiIKILH9Bh54EGtQajnjZoKsHpylnJy2iRJlqGhn
-        bMIsBnSK9vFRiSywDeKYZ2/Ac3osej24TpmPOBl5CNYSH6AD4GdJh3vw57gix9TpqTJZJi
-        /avcn/bKWhFBNoPs3iW0v2wNY1y7isM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4E90413446;
-        Thu, 21 Apr 2022 13:42:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nuOWEUVfYWLpOgAAMHmgww
-        (envelope-from <gniebler@suse.com>); Thu, 21 Apr 2022 13:42:29 +0000
-From:   Gabriel Niebler <gniebler@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, Gabriel Niebler <gniebler@suse.com>
-Subject: [PATCH] Turn fs_info member 'buffer_radix' into an XArray
-Date:   Thu, 21 Apr 2022 15:42:26 +0200
-Message-Id: <20220421134226.12059-1-gniebler@suse.com>
-X-Mailer: git-send-email 2.35.3
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ECEC361D3B
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 13:52:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6101FC385A8
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 13:52:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650549126;
+        bh=rpNoxTRCPUY8vjWhtW6Q5LGnO6tkB7RISVG0K0pwgXQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h9GwcQ95gJWA+zYiVBJNSps6FYGFGZ8a4pSIRUehYo+EThpCq3JwDmvxuOGqwUaLV
+         goERTmbbcc6HRZdma1NBQC2gFQ2EM2PiDCFX74A/sqjq6yu7CxZxIJB9TaGXwSkUNc
+         E9JyQM+2BAgqpX607yJ7EM5HJ7G7NoQ552uFiGUFtjwW490DC42UQ21cDvYvXyYufQ
+         OAWEHW9Zgbfnmr1fnuU08jIa1jMksk/N5Pzn6d9HIzmZwJ4DGeIHBpgmmiMm93fVLD
+         UBx0Qrrb6uZmyNWQjPbFHY1/BnvfEvjWxSX4BJjIdGOS0fdJ6Q2L97LXonzuYE/8Ip
+         yzWb68tPncVMA==
+Received: by mail-qk1-f182.google.com with SMTP id q75so3557652qke.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 06:52:06 -0700 (PDT)
+X-Gm-Message-State: AOAM533uc17prNvtptlf5SUq2CZr4DUbSXRzIEDP4sCnoP5MUarocEug
+        kDtWN52pRI4f2M4+vUixr7n70UEG9n6AmRiJWCM=
+X-Google-Smtp-Source: ABdhPJy+2zBMDkab6adZgOEG6k3yNhNMK979pokv5fvgnKcNJ7lo2V86KDCsYRGHmAa02WrKgiU9NsctUE1FHhm5riA=
+X-Received: by 2002:a05:620a:288c:b0:699:b9a0:b61a with SMTP id
+ j12-20020a05620a288c00b00699b9a0b61amr15491650qkp.233.1650549125308; Thu, 21
+ Apr 2022 06:52:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <bbb363e71d966670d8938898803dac2b8a581c7c.1650535137.git.fdmanana@suse.com>
+ <970520d8-74eb-a4c6-53e4-53363ee963f9@oracle.com>
+In-Reply-To: <970520d8-74eb-a4c6-53e4-53363ee963f9@oracle.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 21 Apr 2022 14:51:29 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5APJ0p4NFECgmvUV8ahTdELyXF6Hsjhd0Q6StgNJ-0vA@mail.gmail.com>
+Message-ID: <CAL3q7H5APJ0p4NFECgmvUV8ahTdELyXF6Hsjhd0Q6StgNJ-0vA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: skip compression property for anything other than
+ files and dirs
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-… named 'extent_buffers'. Also adjust all usages of this object to use the
-XArray API, which greatly simplifies the code as it takes care of locking
-and is generally easier to use and understand, providing notionally
-simpler array semantics.
+On Thu, Apr 21, 2022 at 2:42 PM Anand Jain <anand.jain@oracle.com> wrote:
+>
+> On 21/04/2022 18:01, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > The compression property only has effect on regular files and directories
+> > (so that it's propagated to files and subdirectories created inside a
+> > directory). For any other inode type (symlink, fifo, device, socket),
+> > it's pointless to set the compression property because it does nothing
+>
+> Hm. symlink propagates the compression xattrs to the target file/dir.
+>
+>   A symlink to a directory
+>
+>   $ /btrfs$ ls -la | grep test-029
+> drwxr-xr-x.  1 root root    0 Apr 12 13:07 test-029
+> lrwxrwxrwx.  1 root root   10 Apr 21 20:00 test-029-link -> ./test-029
+>
+>
+>   $ btrfs prop get ./test-029 compression
+>   $ btrfs prop get ./test-029-link compression
+>
+>   Set xattr compression to the symlink
+>
+>   $ btrfs prop set ./test-029-link compression lzo
+>
+>   The target directory also gets it.
+>
+>   $ btrfs prop get ./test-029 compression
+> compression=lzo
+>   $ btrfs prop get ./test-029 compression
+> compression=lzo
+>
+>   This patch affects the change in semantics. No?
 
-Also perform some light refactoring.
+In your examples you are setting/getting the property not to/from the
+symlink inode itself but to/from the inode it points at.
 
-Signed-off-by: Gabriel Niebler <gniebler@suse.com>
----
- fs/btrfs/ctree.h             |   4 +-
- fs/btrfs/disk-io.c           |   4 +-
- fs/btrfs/extent_io.c         | 118 ++++++++++++++---------------------
- fs/btrfs/tests/btrfs-tests.c |  22 +------
- 4 files changed, 55 insertions(+), 93 deletions(-)
+"btrfs property set/get" follows symlinks.
+That's why in my example I used setfattr with -h (don't follow symlinks).
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index b7631b88426e..833a95be041b 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -994,10 +994,10 @@ struct btrfs_fs_info {
- 
- 	struct btrfs_delayed_root *delayed_root;
- 
--	/* Extent buffer radix tree */
-+	/* Extent buffer xarray */
- 	spinlock_t buffer_lock;
- 	/* Entries are eb->start / sectorsize */
--	struct radix_tree_root buffer_radix;
-+	struct xarray extent_buffers;
- 
- 	/* next backup root to be overwritten */
- 	int backup_root_index;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 126f244cdf88..4ab3eba6578d 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -486,7 +486,7 @@ static int csum_dirty_subpage_buffers(struct btrfs_fs_info *fs_info,
- 		uptodate = btrfs_subpage_test_uptodate(fs_info, page, cur,
- 						       fs_info->nodesize);
- 
--		/* A dirty eb shouldn't disappear from buffer_radix */
-+		/* A dirty eb shouldn't disappear from extent_buffers */
- 		if (WARN_ON(!eb))
- 			return -EUCLEAN;
- 
-@@ -3133,7 +3133,7 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- {
- 	INIT_RADIX_TREE(&fs_info->fs_roots_radix, GFP_ATOMIC);
--	INIT_RADIX_TREE(&fs_info->buffer_radix, GFP_ATOMIC);
-+	xa_init_flags(&fs_info->extent_buffers, GFP_ATOMIC);
- 	INIT_LIST_HEAD(&fs_info->trans_list);
- 	INIT_LIST_HEAD(&fs_info->dead_roots);
- 	INIT_LIST_HEAD(&fs_info->delayed_iputs);
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 724e8fe06aa0..d54a6a20d3b9 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2950,7 +2950,7 @@ static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
- }
- 
- /*
-- * Find extent buffer for a givne bytenr.
-+ * Find extent buffer for a given bytenr.
-  *
-  * This is for end_bio_extent_readpage(), thus we can't do any unsafe locking
-  * in endio context.
-@@ -2969,11 +2969,9 @@ static struct extent_buffer *find_extent_buffer_readpage(
- 		return (struct extent_buffer *)page->private;
- 	}
- 
--	/* For subpage case, we need to lookup buffer radix tree */
--	rcu_read_lock();
--	eb = radix_tree_lookup(&fs_info->buffer_radix,
--			       bytenr >> fs_info->sectorsize_bits);
--	rcu_read_unlock();
-+	/* For subpage case, we need to lookup extent buffer xarray */
-+	eb = xa_load(&fs_info->extent_buffers,
-+		     bytenr >> fs_info->sectorsize_bits);
- 	ASSERT(eb);
- 	return eb;
- }
-@@ -4383,8 +4381,8 @@ static struct extent_buffer *find_extent_buffer_nolock(
- 	struct extent_buffer *eb;
- 
- 	rcu_read_lock();
--	eb = radix_tree_lookup(&fs_info->buffer_radix,
--			       start >> fs_info->sectorsize_bits);
-+	eb = xa_load(&fs_info->extent_buffers,
-+		     start >> fs_info->sectorsize_bits);
- 	if (eb && atomic_inc_not_zero(&eb->refs)) {
- 		rcu_read_unlock();
- 		return eb;
-@@ -6072,24 +6070,22 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
- 	if (!eb)
- 		return ERR_PTR(-ENOMEM);
- 	eb->fs_info = fs_info;
--again:
--	ret = radix_tree_preload(GFP_NOFS);
--	if (ret) {
--		exists = ERR_PTR(ret);
--		goto free_eb;
--	}
--	spin_lock(&fs_info->buffer_lock);
--	ret = radix_tree_insert(&fs_info->buffer_radix,
--				start >> fs_info->sectorsize_bits, eb);
--	spin_unlock(&fs_info->buffer_lock);
--	radix_tree_preload_end();
--	if (ret == -EEXIST) {
--		exists = find_extent_buffer(fs_info, start);
--		if (exists)
-+
-+	do {
-+		ret = xa_insert(&fs_info->extent_buffers,
-+				start >> fs_info->sectorsize_bits,
-+				eb, GFP_NOFS);
-+		if (ret == -ENOMEM) {
-+			exists = ERR_PTR(ret);
- 			goto free_eb;
--		else
--			goto again;
--	}
-+		}
-+		if (ret == -EBUSY) {
-+			exists = find_extent_buffer(fs_info, start);
-+			if (exists)
-+				goto free_eb;
-+		}
-+	} while (ret);
-+
- 	check_buffer_tree_ref(eb);
- 	set_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags);
- 
-@@ -6250,25 +6246,22 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	}
- 	if (uptodate)
- 		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
--again:
--	ret = radix_tree_preload(GFP_NOFS);
--	if (ret) {
--		exists = ERR_PTR(ret);
--		goto free_eb;
--	}
--
--	spin_lock(&fs_info->buffer_lock);
--	ret = radix_tree_insert(&fs_info->buffer_radix,
--				start >> fs_info->sectorsize_bits, eb);
--	spin_unlock(&fs_info->buffer_lock);
--	radix_tree_preload_end();
--	if (ret == -EEXIST) {
--		exists = find_extent_buffer(fs_info, start);
--		if (exists)
-+
-+	do {
-+		ret = xa_insert(&fs_info->extent_buffers,
-+				start >> fs_info->sectorsize_bits,
-+				eb, GFP_NOFS);
-+		if (ret == -ENOMEM) {
-+			exists = ERR_PTR(ret);
- 			goto free_eb;
--		else
--			goto again;
--	}
-+		}
-+		if (ret == -EBUSY) {
-+			exists = find_extent_buffer(fs_info, start);
-+			if (exists)
-+				goto free_eb;
-+		}
-+	} while (ret);
-+
- 	/* add one reference for the tree */
- 	check_buffer_tree_ref(eb);
- 	set_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags);
-@@ -6313,10 +6306,8 @@ static int release_extent_buffer(struct extent_buffer *eb)
- 
- 			spin_unlock(&eb->refs_lock);
- 
--			spin_lock(&fs_info->buffer_lock);
--			radix_tree_delete(&fs_info->buffer_radix,
--					  eb->start >> fs_info->sectorsize_bits);
--			spin_unlock(&fs_info->buffer_lock);
-+			xa_erase(&fs_info->extent_buffers,
-+				 eb->start >> fs_info->sectorsize_bits);
- 		} else {
- 			spin_unlock(&eb->refs_lock);
- 		}
-@@ -7249,41 +7240,28 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
- 	}
- }
- 
--#define GANG_LOOKUP_SIZE	16
- static struct extent_buffer *get_next_extent_buffer(
- 		struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
- {
--	struct extent_buffer *gang[GANG_LOOKUP_SIZE];
-+	struct extent_buffer *eb;
- 	struct extent_buffer *found = NULL;
-+	unsigned long index;
- 	u64 page_start = page_offset(page);
--	u64 cur = page_start;
- 
- 	ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
- 	lockdep_assert_held(&fs_info->buffer_lock);
- 
--	while (cur < page_start + PAGE_SIZE) {
--		int ret;
--		int i;
--
--		ret = radix_tree_gang_lookup(&fs_info->buffer_radix,
--				(void **)gang, cur >> fs_info->sectorsize_bits,
--				min_t(unsigned int, GANG_LOOKUP_SIZE,
--				      PAGE_SIZE / fs_info->nodesize));
--		if (ret == 0)
--			goto out;
--		for (i = 0; i < ret; i++) {
--			/* Already beyond page end */
--			if (gang[i]->start >= page_start + PAGE_SIZE)
--				goto out;
-+	xa_for_each_start(&fs_info->extent_buffers, index, eb,
-+			  page_start >> fs_info->sectorsize_bits) {
-+		if (eb->start >= page_start + PAGE_SIZE)
-+		        /* Already beyond page end */
-+			break;
-+		if (eb->start >= bytenr) {
- 			/* Found one */
--			if (gang[i]->start >= bytenr) {
--				found = gang[i];
--				goto out;
--			}
-+			found = eb;
-+			break;
- 		}
--		cur = gang[ret - 1]->start + gang[ret - 1]->len;
- 	}
--out:
- 	return found;
- }
- 
-diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-index d8e56edd6991..c8c4efc9a3fb 100644
---- a/fs/btrfs/tests/btrfs-tests.c
-+++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -150,8 +150,8 @@ struct btrfs_fs_info *btrfs_alloc_dummy_fs_info(u32 nodesize, u32 sectorsize)
- 
- void btrfs_free_dummy_fs_info(struct btrfs_fs_info *fs_info)
- {
--	struct radix_tree_iter iter;
--	void **slot;
-+	unsigned long index;
-+	struct extent_buffer *eb;
- 	struct btrfs_device *dev, *tmp;
- 
- 	if (!fs_info)
-@@ -163,25 +163,9 @@ void btrfs_free_dummy_fs_info(struct btrfs_fs_info *fs_info)
- 
- 	test_mnt->mnt_sb->s_fs_info = NULL;
- 
--	spin_lock(&fs_info->buffer_lock);
--	radix_tree_for_each_slot(slot, &fs_info->buffer_radix, &iter, 0) {
--		struct extent_buffer *eb;
--
--		eb = radix_tree_deref_slot_protected(slot, &fs_info->buffer_lock);
--		if (!eb)
--			continue;
--		/* Shouldn't happen but that kind of thinking creates CVE's */
--		if (radix_tree_exception(eb)) {
--			if (radix_tree_deref_retry(eb))
--				slot = radix_tree_iter_retry(&iter);
--			continue;
--		}
--		slot = radix_tree_iter_resume(slot, &iter);
--		spin_unlock(&fs_info->buffer_lock);
-+	xa_for_each(&fs_info->extent_buffers, index, eb) {
- 		free_extent_buffer_stale(eb);
--		spin_lock(&fs_info->buffer_lock);
- 	}
--	spin_unlock(&fs_info->buffer_lock);
- 
- 	btrfs_mapping_tree_free(&fs_info->mapping_tree);
- 	list_for_each_entry_safe(dev, tmp, &fs_info->fs_devices->devices,
--- 
-2.35.3
 
+
+
+>
+> Thanks, Anand
+>
+>
+> > and ends up unnecessarily wasting leaf space due to the pointless xattr
+> > (75 or 76 bytes, depending on the compression value). Symlinks in
+> > particular are very common (for example, I have almost 10k symlinks under
+> > /etc, /usr and /var alone) and therefore it's worth to avoid wasting
+> > leaf space with the compression xattr.
+> >
+> > For example, the compression property can end up on a symlink or character
+> > device implicitly, through inheritance from a parent directory
+> >
+> >    $ mkdir /mnt/testdir
+> >    $ btrfs property set /mnt/testdir compression lzo
+> >
+> >    $ ln -s yadayada /mnt/testdir/lnk
+> >    $ mknod /mnt/testdir/dev c 0 0
+> >
+> > Or explicitly like this:
+> >
+> >    $ ln -s yadayda /mnt/lnk
+> >    $ setfattr -h -n btrfs.compression -v lzo /mnt/lnk
+> >
+> > So skip the compression property on inodes that are neither a regular
+> > file nor a directory.
+>
+>
+>
+>
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >   fs/btrfs/props.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+> >   fs/btrfs/props.h |  1 +
+> >   fs/btrfs/xattr.c |  3 +++
+> >   3 files changed, 47 insertions(+)
+> >
+> > diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+> > index f5565c296898..7a0038797015 100644
+> > --- a/fs/btrfs/props.c
+> > +++ b/fs/btrfs/props.c
+> > @@ -20,6 +20,7 @@ struct prop_handler {
+> >       int (*validate)(const char *value, size_t len);
+> >       int (*apply)(struct inode *inode, const char *value, size_t len);
+> >       const char *(*extract)(struct inode *inode);
+> > +     bool (*ignore)(const struct btrfs_inode *inode);
+> >       int inheritable;
+> >   };
+> >
+> > @@ -72,6 +73,28 @@ int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
+> >       return handler->validate(value, value_len);
+> >   }
+> >
+> > +/*
+> > + * Check if a property should be ignored (not set) for an inode.
+> > + *
+> > + * @inode:     The target inode.
+> > + * @name:      The property's name.
+> > + *
+> > + * The caller must be sure the given property name is valid, for example by
+> > + * having previously called btrfs_validate_prop().
+> > + *
+> > + * Returns:    true if the property should be ignored for the given inode
+> > + *             false if the property must not be ignored for the given inode
+> > + */
+> > +bool btrfs_ignore_prop(const struct btrfs_inode *inode, const char *name)
+> > +{
+> > +     const struct prop_handler *handler;
+> > +
+> > +     handler = find_prop_handler(name, NULL);
+> > +     ASSERT(handler != NULL);
+> > +
+> > +     return handler->ignore(inode);
+> > +}
+> > +
+> >   int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+> >                  const char *name, const char *value, size_t value_len,
+> >                  int flags)
+> > @@ -310,6 +333,22 @@ static int prop_compression_apply(struct inode *inode, const char *value,
+> >       return 0;
+> >   }
+> >
+> > +static bool prop_compression_ignore(const struct btrfs_inode *inode)
+> > +{
+> > +     /*
+> > +      * Compression only has effect for regular files, and for directories
+> > +      * we set it just to propagate it to new files created inside them.
+> > +      * Everything else (symlinks, devices, sockets, fifos) is pointless as
+> > +      * it will do nothing, so don't waste metadata space on a compression
+> > +      * xattr for anything that is neither a file nor a directory.
+> > +      */
+> > +     if (!S_ISREG(inode->vfs_inode.i_mode) &&
+> > +         !S_ISDIR(inode->vfs_inode.i_mode))
+> > +             return true;
+> > +
+> > +     return false;
+> > +}
+> > +
+> >   static const char *prop_compression_extract(struct inode *inode)
+> >   {
+> >       switch (BTRFS_I(inode)->prop_compress) {
+> > @@ -330,6 +369,7 @@ static struct prop_handler prop_handlers[] = {
+> >               .validate = prop_compression_validate,
+> >               .apply = prop_compression_apply,
+> >               .extract = prop_compression_extract,
+> > +             .ignore = prop_compression_ignore,
+> >               .inheritable = 1
+> >       },
+> >   };
+> > @@ -355,6 +395,9 @@ int btrfs_inode_inherit_props(struct btrfs_trans_handle *trans,
+> >               if (!h->inheritable)
+> >                       continue;
+> >
+> > +             if (h->ignore(BTRFS_I(inode)))
+> > +                     continue;
+> > +
+> >               value = h->extract(parent);
+> >               if (!value)
+> >                       continue;
+> > diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
+> > index 1dcd5daa3b22..09bf1702bb34 100644
+> > --- a/fs/btrfs/props.h
+> > +++ b/fs/btrfs/props.h
+> > @@ -14,6 +14,7 @@ int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+> >                  const char *name, const char *value, size_t value_len,
+> >                  int flags);
+> >   int btrfs_validate_prop(const char *name, const char *value, size_t value_len);
+> > +bool btrfs_ignore_prop(const struct btrfs_inode *inode, const char *name);
+> >
+> >   int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path);
+> >
+> > diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+> > index b96ffd775b41..f9d22ff3567f 100644
+> > --- a/fs/btrfs/xattr.c
+> > +++ b/fs/btrfs/xattr.c
+> > @@ -389,6 +389,9 @@ static int btrfs_xattr_handler_set_prop(const struct xattr_handler *handler,
+> >       if (ret)
+> >               return ret;
+> >
+> > +     if (btrfs_ignore_prop(BTRFS_I(inode), name))
+> > +             return 0;
+> > +
+> >       trans = btrfs_start_transaction(root, 2);
+> >       if (IS_ERR(trans))
+> >               return PTR_ERR(trans);
+>
