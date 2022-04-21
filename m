@@ -2,43 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C81C509CE9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 11:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEF4509D0A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 12:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387972AbiDUKAH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Apr 2022 06:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
+        id S1388017AbiDUKES (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Apr 2022 06:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232617AbiDUKAF (ORCPT
+        with ESMTP id S234458AbiDUKEQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Apr 2022 06:00:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687B6237D1;
-        Thu, 21 Apr 2022 02:57:16 -0700 (PDT)
+        Thu, 21 Apr 2022 06:04:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5C3245AF
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 03:01:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2B927B82391;
-        Thu, 21 Apr 2022 09:57:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B55AC385A5;
-        Thu, 21 Apr 2022 09:57:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 871D9617F5
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 10:01:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F489C385A5
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 10:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650535034;
-        bh=pKXdkPe8slEdVuFepa9Tj1DyELC4EFwYH5XyAcK/TV4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RCuVRz+tW3I4/7MdYvfA5s5W/Iqxv3RxiCNTwLQD6gERiNeEGmPkA9pNxmqIMFgZK
-         pzsKS/X3p84KBxiOsEU8fwJZTTFtAXyC7P99mLtTQss2cRRutUrKIuzeEpAS5nJIAo
-         CV5MsWdMBWVUUTH7YhB+FN0nDAOx2wN0SiO6qnKz5iV9QnCylSV39S1c1ixprTPLxt
-         0UfiklBqkBbJED+6+r7i8TItyrPcnxbTfSQIprDTcIJF+ouMhbygv0sFWUBWx5g3Pi
-         dLvB6JjMhKYypcjxZBx9wrdB7NlZZyslVWLrYc5fMrAu7EI3o/oNf2NvPtMXQVqNJT
-         g1rSO668+OS7Q==
+        s=k20201202; t=1650535286;
+        bh=OKXCUhD3tcH7rYjWg69Iv0uKhUd/Szfnf0nULEnOSlg=;
+        h=From:To:Subject:Date:From;
+        b=YQYdlf0qsIq4PsslltbgyL6my8TayoaV07UN7r5JCEh0IFpFJK+mpp+tbA9Ap4jxV
+         0ApReghXJdTPFYvtTOWqucay1242J1gdQ4wnJhPsGJKkjN0mLeokDhxiAe0jJDC+xi
+         Ww5yt7+oxT81uneOgXxIgoYvUV+2+6C1AA8H/dtH7wDy7VWMfflFfKz/8JrMMz8XaK
+         brPzAMfOh6Rr496fPv/PFi2e5opvHYUpRLEp1/4O7GZiBm4DmGwK8Ui/WloldPVW3s
+         J0BEdO+l2xCpQS1DFxMPZ9JKc5eM251wx99Ov2VE/8UTNhyb1sSJp4o4USpYF67GUS
+         fcT5DE1iA3U8g==
 From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic: test fsync of directory with renamed symlink
-Date:   Thu, 21 Apr 2022 10:57:04 +0100
-Message-Id: <baa250ca3d77abd6bd98f947bea9e7aa2c0116f8.1650534747.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.35.1
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: skip compression property for anything other than files and dirs
+Date:   Thu, 21 Apr 2022 11:01:22 +0100
+Message-Id: <bbb363e71d966670d8938898803dac2b8a581c7c.1650535137.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -52,127 +51,148 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Test that if we fsync a directory, create a symlink inside it, rename
-the symlink, fsync again the directory and then power fail, after the
-filesystem is mounted again, the symlink exists with the new name and
-it has the correct content.
+The compression property only has effect on regular files and directories
+(so that it's propagated to files and subdirectories created inside a
+directory). For any other inode type (symlink, fifo, device, socket),
+it's pointless to set the compression property because it does nothing
+and ends up unnecessarily wasting leaf space due to the pointless xattr
+(75 or 76 bytes, depending on the compression value). Symlinks in
+particular are very common (for example, I have almost 10k symlinks under
+/etc, /usr and /var alone) and therefore it's worth to avoid wasting
+leaf space with the compression xattr.
 
-This currently fails on btrfs, because the symlink ends up empty (which
-is illegal on Linux), but it is fixed by a patch that has the subject:
+For example, the compression property can end up on a symlink or character
+device implicitly, through inheritance from a parent directory
 
-    "btrfs: always log symlinks in full mode"
+  $ mkdir /mnt/testdir
+  $ btrfs property set /mnt/testdir compression lzo
+
+  $ ln -s yadayada /mnt/testdir/lnk
+  $ mknod /mnt/testdir/dev c 0 0
+
+Or explicitly like this:
+
+  $ ln -s yadayda /mnt/lnk
+  $ setfattr -h -n btrfs.compression -v lzo /mnt/lnk
+
+So skip the compression property on inodes that are neither a regular
+file nor a directory.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/generic/683     | 89 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/683.out |  2 +
- 2 files changed, 91 insertions(+)
- create mode 100755 tests/generic/683
- create mode 100644 tests/generic/683.out
+ fs/btrfs/props.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/props.h |  1 +
+ fs/btrfs/xattr.c |  3 +++
+ 3 files changed, 47 insertions(+)
 
-diff --git a/tests/generic/683 b/tests/generic/683
-new file mode 100755
-index 00000000..b9a955a3
---- /dev/null
-+++ b/tests/generic/683
-@@ -0,0 +1,89 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 683
-+#
-+# Test that if we fsync a directory, create a symlink inside it, rename the
-+# symlink, fsync again the directory and then power fail, after the filesystem
-+# is mounted again, the symlink exists with the new name and it has the correct
-+# content.
-+#
-+# On btrfs this used to result in the symlink being empty (i_size 0), and it was
-+# fixed by a patch with the subject:
-+#
-+#    "btrfs: always log symlinks in full mode"
-+#
-+. ./common/preamble
-+_begin_fstest auto quick log
-+
-+_cleanup()
+diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+index f5565c296898..7a0038797015 100644
+--- a/fs/btrfs/props.c
++++ b/fs/btrfs/props.c
+@@ -20,6 +20,7 @@ struct prop_handler {
+ 	int (*validate)(const char *value, size_t len);
+ 	int (*apply)(struct inode *inode, const char *value, size_t len);
+ 	const char *(*extract)(struct inode *inode);
++	bool (*ignore)(const struct btrfs_inode *inode);
+ 	int inheritable;
+ };
+ 
+@@ -72,6 +73,28 @@ int btrfs_validate_prop(const char *name, const char *value, size_t value_len)
+ 	return handler->validate(value, value_len);
+ }
+ 
++/*
++ * Check if a property should be ignored (not set) for an inode.
++ *
++ * @inode:     The target inode.
++ * @name:      The property's name.
++ *
++ * The caller must be sure the given property name is valid, for example by
++ * having previously called btrfs_validate_prop().
++ *
++ * Returns:    true if the property should be ignored for the given inode
++ *             false if the property must not be ignored for the given inode
++ */
++bool btrfs_ignore_prop(const struct btrfs_inode *inode, const char *name)
 +{
-+	_cleanup_flakey
-+	cd /
-+	rm -r -f $tmp.*
++	const struct prop_handler *handler;
++
++	handler = find_prop_handler(name, NULL);
++	ASSERT(handler != NULL);
++
++	return handler->ignore(inode);
 +}
 +
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmflakey
+ int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+ 		   const char *name, const char *value, size_t value_len,
+ 		   int flags)
+@@ -310,6 +333,22 @@ static int prop_compression_apply(struct inode *inode, const char *value,
+ 	return 0;
+ }
+ 
++static bool prop_compression_ignore(const struct btrfs_inode *inode)
++{
++	/*
++	 * Compression only has effect for regular files, and for directories
++	 * we set it just to propagate it to new files created inside them.
++	 * Everything else (symlinks, devices, sockets, fifos) is pointless as
++	 * it will do nothing, so don't waste metadata space on a compression
++	 * xattr for anything that is neither a file nor a directory.
++	 */
++	if (!S_ISREG(inode->vfs_inode.i_mode) &&
++	    !S_ISDIR(inode->vfs_inode.i_mode))
++		return true;
 +
-+# real QA test starts here
++	return false;
++}
 +
-+_supported_fs generic
-+_require_scratch
-+_require_symlinks
-+_require_dm_target flakey
+ static const char *prop_compression_extract(struct inode *inode)
+ {
+ 	switch (BTRFS_I(inode)->prop_compress) {
+@@ -330,6 +369,7 @@ static struct prop_handler prop_handlers[] = {
+ 		.validate = prop_compression_validate,
+ 		.apply = prop_compression_apply,
+ 		.extract = prop_compression_extract,
++		.ignore = prop_compression_ignore,
+ 		.inheritable = 1
+ 	},
+ };
+@@ -355,6 +395,9 @@ int btrfs_inode_inherit_props(struct btrfs_trans_handle *trans,
+ 		if (!h->inheritable)
+ 			continue;
+ 
++		if (h->ignore(BTRFS_I(inode)))
++			continue;
 +
-+rm -f $seqres.full
+ 		value = h->extract(parent);
+ 		if (!value)
+ 			continue;
+diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
+index 1dcd5daa3b22..09bf1702bb34 100644
+--- a/fs/btrfs/props.h
++++ b/fs/btrfs/props.h
+@@ -14,6 +14,7 @@ int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+ 		   const char *name, const char *value, size_t value_len,
+ 		   int flags);
+ int btrfs_validate_prop(const char *name, const char *value, size_t value_len);
++bool btrfs_ignore_prop(const struct btrfs_inode *inode, const char *name);
+ 
+ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path);
+ 
+diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+index b96ffd775b41..f9d22ff3567f 100644
+--- a/fs/btrfs/xattr.c
++++ b/fs/btrfs/xattr.c
+@@ -389,6 +389,9 @@ static int btrfs_xattr_handler_set_prop(const struct xattr_handler *handler,
+ 	if (ret)
+ 		return ret;
+ 
++	if (btrfs_ignore_prop(BTRFS_I(inode), name))
++		return 0;
 +
-+# f2fs doesn't support fs-op level transaction functionality, so it has no way
-+# to persist all metadata updates in one transaction. We have to use its mount
-+# option "fastboot" so that it triggers a metadata checkpoint to persist all
-+# metadata updates that happen before a fsync call. Without this, after the
-+# last fsync in the test, the symlink named "baz" will not exist.
-+if [ $FSTYP = "f2fs" ]; then
-+	export MOUNT_OPTIONS="-o fastboot $MOUNT_OPTIONS"
-+fi
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+# Create our test directory.
-+mkdir $SCRATCH_MNT/testdir
-+
-+# Commit the current transaction and persist the directory.
-+sync
-+
-+# Create a file in the test directory, so that the next fsync on the directory
-+# actually does something (it logs the directory).
-+echo -n > $SCRATCH_MNT/testdir/foo
-+
-+# Fsync the directory.
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
-+
-+# Now create a symlink inside the test directory.
-+ln -s $SCRATCH_MNT/testdir/foo $SCRATCH_MNT/testdir/bar
-+
-+# Rename the symlink.
-+mv $SCRATCH_MNT/testdir/bar $SCRATCH_MNT/testdir/baz
-+
-+# Fsync again the directory.
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
-+
-+# Simulate a power failure and then mount again the filesystem to replay the
-+# journal/log.
-+_flakey_drop_and_remount
-+
-+# The symlink should exist, with the name "baz" and its content must be
-+# "$SCRATCH_MNT/testdir/foo".
-+[ -L $SCRATCH_MNT/testdir/baz ] || echo "symlink 'baz' is missing"
-+echo "symlink content: $(readlink $SCRATCH_MNT/testdir/baz | _filter_scratch)"
-+
-+_unmount_flakey
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/683.out b/tests/generic/683.out
-new file mode 100644
-index 00000000..1167be40
---- /dev/null
-+++ b/tests/generic/683.out
-@@ -0,0 +1,2 @@
-+QA output created by 683
-+symlink content: SCRATCH_MNT/testdir/foo
+ 	trans = btrfs_start_transaction(root, 2);
+ 	if (IS_ERR(trans))
+ 		return PTR_ERR(trans);
 -- 
 2.35.1
 
