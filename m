@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79198509834
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 09:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA1D509845
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 09:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385088AbiDUGsc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Apr 2022 02:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
+        id S1385151AbiDUGsd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Apr 2022 02:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385040AbiDUGrV (ORCPT
+        with ESMTP id S1385396AbiDUGrs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Apr 2022 02:47:21 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E65715710
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 23:43:53 -0700 (PDT)
+        Thu, 21 Apr 2022 02:47:48 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD44F2C
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Apr 2022 23:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650523433; x=1682059433;
+  t=1650523493; x=1682059493;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=IxwthZv67U3Phdmt9bJcErmgnbyb5DyViYXU0zBdAN8=;
-  b=EZv9nRUZsE3opgb+2/NPufRpF8g5PrNNBX7QiRJ0KsJtxx6oSsPVhsIN
-   Q1EP6351BZUISGWZ+m/UjKs0JjRolxqeFQDyHC1jSFYdXBNQcOFYJ5qRf
-   9iwecWfVKbJ5EKO+FjNH5xpxrecQfl8Hpem514iLCKc8va6W7k83wAbJY
-   u/MHGnDqrKJJa6Tdj409XGpwSOuBb7HlkFbr1HZ91Y9269nzQb0XYhxJi
-   r9Hk2apr38k50fx24eDd9yb1atIbw4FKytKObwXZp0igpj6Lj8cUeKb7X
-   mv42XaClCLEadUKxRCe4bazfVO1g25z8Dl9QTsF0VFDCVEXH2UroYJqZk
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="289369457"
+  bh=MJV81wHGZtVbn3qKCtegAkrBAVIKQ1xycUC69umkCas=;
+  b=kXoHkn8MM2yGg2WKNNssnRyEC29Tssu8mS7WJsRzDn6mYiBkUShZR4WO
+   xHWkUJrTVaWgv50npFXQdVOg/Mla8dpCLdLHUFho/v5P/FCq1YQBNIHR+
+   tR9ymDiXSDUqhndDD/P36IJT5fvrK8dX1RmWI/l/JIokfyrwLCI8LX8/t
+   32x+nvB9lq9lCmMvvbdN9LjkpECx9cCdMDbKlWj3OPAYZzB33BZltPd/N
+   QmKSM8VGCYUgbP0dipnesuS39kNyESyaFo2RXQAx3e0LgFYqUQQvjkbLj
+   h+Rkqiljsm4rENEs/LP2fEKU1qFVTIo82JRYQhTKcTzsUZPBDbTy3bLks
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="261857747"
 X-IronPort-AV: E=Sophos;i="5.90,278,1643702400"; 
-   d="scan'208";a="289369457"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2022 23:43:53 -0700
+   d="scan'208";a="261857747"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2022 23:44:53 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,278,1643702400"; 
-   d="scan'208";a="510918529"
+   d="scan'208";a="626388020"
 Received: from lkp-server01.sh.intel.com (HELO 3abc53900bec) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 20 Apr 2022 23:43:51 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 20 Apr 2022 23:44:52 -0700
 Received: from kbuild by 3abc53900bec with local (Exim 4.95)
         (envelope-from <lkp@intel.com>)
-        id 1nhQXe-00080V-Sz;
-        Thu, 21 Apr 2022 06:43:50 +0000
-Date:   Thu, 21 Apr 2022 14:43:48 +0800
+        id 1nhQYd-00081w-Fm;
+        Thu, 21 Apr 2022 06:44:51 +0000
+Date:   Thu, 21 Apr 2022 14:44:24 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     kbuild-all@lists.01.org, Nikolay Borisov <nborisov@suse.com>
 Subject: Re: [PATCH] btrfs: Improve error reporting in
  lookup_inline_extent_backref
-Message-ID: <202204210801.4G6iUKKd-lkp@intel.com>
+Message-ID: <202204210906.VK0dZtcM-lkp@intel.com>
 References: <20220420115401.186147-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -56,8 +56,7 @@ Content-Disposition: inline
 In-Reply-To: <20220420115401.186147-1-nborisov@suse.com>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,9 +75,11 @@ https://git-scm.com/docs/git-format-patch]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Nikolay-Borisov/btrfs-Improve-error-reporting-in-lookup_inline_extent_backref/20220420-195528
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: i386-randconfig-s002 (https://download.01.org/0day-ci/archive/20220421/202204210801.4G6iUKKd-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
+config: alpha-randconfig-s032-20220420 (https://download.01.org/0day-ci/archive/20220421/202204210906.VK0dZtcM-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 11.2.0
 reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
         # apt-get install sparse
         # sparse version: v0.6.4-dirty
         # https://github.com/intel-lab-lkp/linux/commit/a77df79d2f67b166cb64a21808ec432edcbf5bba
@@ -87,16 +88,17 @@ reproduce:
         git checkout a77df79d2f67b166cb64a21808ec432edcbf5bba
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash fs/btrfs/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=alpha SHELL=/bin/bash fs/btrfs/
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
 
 sparse warnings: (new ones prefixed by >>)
->> fs/btrfs/extent-tree.c:900:61: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected struct extent_buffer *l @@     got int @@
+   fs/btrfs/extent-tree.c:900:61: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected struct extent_buffer *l @@     got int @@
    fs/btrfs/extent-tree.c:900:61: sparse:     expected struct extent_buffer *l
    fs/btrfs/extent-tree.c:900:61: sparse:     got int
+>> fs/btrfs/extent-tree.c:900:50: sparse: sparse: non size-preserving integer to pointer cast
    fs/btrfs/extent-tree.c:1784:9: sparse: sparse: context imbalance in 'run_and_cleanup_extent_op' - unexpected unlock
    fs/btrfs/extent-tree.c:1838:28: sparse: sparse: context imbalance in 'cleanup_ref_head' - unexpected unlock
    fs/btrfs/extent-tree.c:1917:36: sparse: sparse: context imbalance in 'btrfs_run_delayed_refs_for_head' - unexpected unlock
