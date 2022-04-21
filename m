@@ -2,42 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81059509CEA
+	by mail.lfdr.de (Postfix) with ESMTP id 0C81C509CE9
 	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 11:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352377AbiDUJ7f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Apr 2022 05:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        id S1387972AbiDUKAH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Apr 2022 06:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232617AbiDUJ7d (ORCPT
+        with ESMTP id S232617AbiDUKAF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Apr 2022 05:59:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D8821250
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 02:56:44 -0700 (PDT)
+        Thu, 21 Apr 2022 06:00:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687B6237D1;
+        Thu, 21 Apr 2022 02:57:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 69BE660F6C
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 09:56:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58FD9C385A9
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 09:56:43 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2B927B82391;
+        Thu, 21 Apr 2022 09:57:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B55AC385A5;
+        Thu, 21 Apr 2022 09:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650535003;
-        bh=Cpf6Mgxwv5hajs9HUyTXheWuak4FBePwa1ipp/iFUqM=;
-        h=From:To:Subject:Date:From;
-        b=RGFYiII3xW5s6x2QRxPnoPNiWP2FT9QTgxfJomMqPaV055BmaEccg/58YiQk7xLys
-         UIAKYYBx11otwr+arDX9LwgJrxXVIzMlErXWbRv1uyi9q8L31oSf0m/yXw/809ZJOY
-         6iI3+uq5dfktwXVvGe1Be0enj6lExTpcGt6wxDZY61fp98SRoYTzYBayTwipAbGKCq
-         ZoP8KQ62ZgdH246s91sxb+BWKv29AfaDnElwp+2L2qkreyrNEgdtWzZQta7JRYq8gQ
-         Zo+FmELkeB063fP+8I50n2/pjebaVbX7EJ9Ot8H0FXSe4D6HkNcP9Gt68WwoKWVerq
-         1du5Wi02XjAgg==
+        s=k20201202; t=1650535034;
+        bh=pKXdkPe8slEdVuFepa9Tj1DyELC4EFwYH5XyAcK/TV4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RCuVRz+tW3I4/7MdYvfA5s5W/Iqxv3RxiCNTwLQD6gERiNeEGmPkA9pNxmqIMFgZK
+         pzsKS/X3p84KBxiOsEU8fwJZTTFtAXyC7P99mLtTQss2cRRutUrKIuzeEpAS5nJIAo
+         CV5MsWdMBWVUUTH7YhB+FN0nDAOx2wN0SiO6qnKz5iV9QnCylSV39S1c1ixprTPLxt
+         0UfiklBqkBbJED+6+r7i8TItyrPcnxbTfSQIprDTcIJF+ouMhbygv0sFWUBWx5g3Pi
+         dLvB6JjMhKYypcjxZBx9wrdB7NlZZyslVWLrYc5fMrAu7EI3o/oNf2NvPtMXQVqNJT
+         g1rSO668+OS7Q==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: always log symlinks in full mode
-Date:   Thu, 21 Apr 2022 10:56:39 +0100
-Message-Id: <058da244fe15b0c5f0d55eaccd9af9f7c039d0a8.1650534831.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic: test fsync of directory with renamed symlink
+Date:   Thu, 21 Apr 2022 10:57:04 +0100
+Message-Id: <baa250ca3d77abd6bd98f947bea9e7aa2c0116f8.1650534747.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -51,86 +52,127 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-On Linux, empty symlinks are invalid, and attempting to create one with
-the system call symlink(2) results in an -ENOENT error and this is
-explicitly documented in the man page.
+Test that if we fsync a directory, create a symlink inside it, rename
+the symlink, fsync again the directory and then power fail, after the
+filesystem is mounted again, the symlink exists with the new name and
+it has the correct content.
 
-If we rename a symlink that was created in the current transaction and its
-parent directory was logged before, we actually end up logging the symlink
-without logging its content, which is stored in an inline extent. That
-means that after a power failure we can end up with an empty symlink,
-having no content and an i_size of 0 bytes.
+This currently fails on btrfs, because the symlink ends up empty (which
+is illegal on Linux), but it is fixed by a patch that has the subject:
 
-It can be easily reproduced like this:
+    "btrfs: always log symlinks in full mode"
 
-  $ mkfs.btrfs -f /dev/sdc
-  $ mount /dev/sdc /mnt
-
-  $ mkdir /mnt/testdir
-  $ sync
-
-  # Create a file inside the directory and fsync the directory.
-  $ touch /mnt/testdir/foo
-  $ xfs_io -c "fsync" /mnt/testdir
-
-  # Create a symlink inside the directory and then rename the symlink.
-  $ ln -s /mnt/testdir/foo /mnt/testdir/bar
-  $ mv /mnt/testdir/bar /mnt/testdir/baz
-
-  # Now fsync again the directory, this persist the log tree.
-  $ xfs_io -c "fsync" /mnt/testdir
-
-  <power failure>
-
-  $ mount /dev/sdc /mnt
-  $ stat -c %s /mnt/testdir/baz
-  0
-  $ readlink /mnt/testdir/baz
-  $
-
-Fix this by always logging symlinks in full mode (LOG_INODE_ALL), so that
-their content is also logged.
-
-A test case for fstests will follow.
-
-CC: stable@vger.kernel.org # 4.9+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ tests/generic/683     | 89 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/683.out |  2 +
+ 2 files changed, 91 insertions(+)
+ create mode 100755 tests/generic/683
+ create mode 100644 tests/generic/683.out
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index e356334ef797..b561dc3807f2 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5803,6 +5803,18 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 		mutex_lock(&inode->log_mutex);
- 	}
- 
-+	/*
-+	 * For symlinks, we must always log their content, which is stored in an
-+	 * inline extent, otherwise we could end up with an empty symlink after
-+	 * log replay, which is invalid on linux (symlink(2) returns -ENOENT if
-+	 * one attempts to create an empty symlink).
-+	 * We don't need to worry about flushing delalloc, because when we create
-+	 * the inline extent when the symlink is created (we never have delalloc
-+	 * for symlinks).
-+	 */
-+	if (S_ISLNK(inode->vfs_inode.i_mode))
-+		inode_only = LOG_INODE_ALL;
+diff --git a/tests/generic/683 b/tests/generic/683
+new file mode 100755
+index 00000000..b9a955a3
+--- /dev/null
++++ b/tests/generic/683
+@@ -0,0 +1,89 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
++#
++# FS QA Test 683
++#
++# Test that if we fsync a directory, create a symlink inside it, rename the
++# symlink, fsync again the directory and then power fail, after the filesystem
++# is mounted again, the symlink exists with the new name and it has the correct
++# content.
++#
++# On btrfs this used to result in the symlink being empty (i_size 0), and it was
++# fixed by a patch with the subject:
++#
++#    "btrfs: always log symlinks in full mode"
++#
++. ./common/preamble
++_begin_fstest auto quick log
 +
- 	/*
- 	 * Before logging the inode item, cache the value returned by
- 	 * inode_logged(), because after that we have the need to figure out if
-@@ -6181,7 +6193,7 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 			}
- 
- 			ctx->log_new_dentries = false;
--			if (type == BTRFS_FT_DIR || type == BTRFS_FT_SYMLINK)
-+			if (type == BTRFS_FT_DIR)
- 				log_mode = LOG_INODE_ALL;
- 			ret = btrfs_log_inode(trans, BTRFS_I(di_inode),
- 					      log_mode, ctx);
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -r -f $tmp.*
++}
++
++. ./common/rc
++. ./common/filter
++. ./common/dmflakey
++
++# real QA test starts here
++
++_supported_fs generic
++_require_scratch
++_require_symlinks
++_require_dm_target flakey
++
++rm -f $seqres.full
++
++# f2fs doesn't support fs-op level transaction functionality, so it has no way
++# to persist all metadata updates in one transaction. We have to use its mount
++# option "fastboot" so that it triggers a metadata checkpoint to persist all
++# metadata updates that happen before a fsync call. Without this, after the
++# last fsync in the test, the symlink named "baz" will not exist.
++if [ $FSTYP = "f2fs" ]; then
++	export MOUNT_OPTIONS="-o fastboot $MOUNT_OPTIONS"
++fi
++
++_scratch_mkfs >>$seqres.full 2>&1
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++# Create our test directory.
++mkdir $SCRATCH_MNT/testdir
++
++# Commit the current transaction and persist the directory.
++sync
++
++# Create a file in the test directory, so that the next fsync on the directory
++# actually does something (it logs the directory).
++echo -n > $SCRATCH_MNT/testdir/foo
++
++# Fsync the directory.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
++
++# Now create a symlink inside the test directory.
++ln -s $SCRATCH_MNT/testdir/foo $SCRATCH_MNT/testdir/bar
++
++# Rename the symlink.
++mv $SCRATCH_MNT/testdir/bar $SCRATCH_MNT/testdir/baz
++
++# Fsync again the directory.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
++
++# Simulate a power failure and then mount again the filesystem to replay the
++# journal/log.
++_flakey_drop_and_remount
++
++# The symlink should exist, with the name "baz" and its content must be
++# "$SCRATCH_MNT/testdir/foo".
++[ -L $SCRATCH_MNT/testdir/baz ] || echo "symlink 'baz' is missing"
++echo "symlink content: $(readlink $SCRATCH_MNT/testdir/baz | _filter_scratch)"
++
++_unmount_flakey
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/683.out b/tests/generic/683.out
+new file mode 100644
+index 00000000..1167be40
+--- /dev/null
++++ b/tests/generic/683.out
+@@ -0,0 +1,2 @@
++QA output created by 683
++symlink content: SCRATCH_MNT/testdir/foo
 -- 
 2.35.1
 
