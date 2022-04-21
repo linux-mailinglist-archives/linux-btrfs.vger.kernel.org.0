@@ -2,90 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF4A50A3AC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 17:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077F150A481
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Apr 2022 17:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1389870AbiDUPMB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Apr 2022 11:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S1390248AbiDUPoT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Apr 2022 11:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235754AbiDUPMA (ORCPT
+        with ESMTP id S1390296AbiDUPoI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Apr 2022 11:12:00 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347C218E0F
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 08:09:10 -0700 (PDT)
+        Thu, 21 Apr 2022 11:44:08 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F5C4888B
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Apr 2022 08:41:16 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E5EEB21107;
-        Thu, 21 Apr 2022 15:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1650553748;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D7D561F388;
+        Thu, 21 Apr 2022 15:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1650555674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YXcqTJE0Rw85A5c9ulVuFU3bHUARp9rO3Sj8GlC4Zeo=;
-        b=OjCiSiOjyzlDbE8h/7TtEnnUOERmWvvCzmdjybYiBUo+4Qx5UxBQ8ye2/YnyKdjAPpLG/D
-        tmLIMHt5nJMn5Y0Npuwv2E9YYbnr4gpD8zNoPZ8VA6erSOWmu8ABKNidyex9pem5849rwi
-        +mjA8Khto4Fo0n8uVrd4h1IZsaf2Xc8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1650553748;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YXcqTJE0Rw85A5c9ulVuFU3bHUARp9rO3Sj8GlC4Zeo=;
-        b=5Fno4ipxeiSlJh0mzuEQm7ovdeD5v3xhwZu+CPN+GcmMKJjegthyNPadHEMRONDqYRKClI
-        HXm00Mb3G3pI3iCQ==
+        bh=B9g4Pf2exWfGZPTlSlHPZrsZBRI2CEqykr/85GMGVdw=;
+        b=HJyYfm7ta/1QzKVDYQtsj53S0wrspuJ80YRw0GpwhTWzeEW99DR+htxWDvYhLWOby4AKUN
+        wafjpY+hwJzUQdtmrKfNOFx3epfPXPDDtlatVmVwEoQpvViQAT/EeMADabASz3k0VR1r/N
+        gjxjg4oU+g4Rn0vkyycn3cS1n/mfEd0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA4DE13A84;
-        Thu, 21 Apr 2022 15:09:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B895813446;
+        Thu, 21 Apr 2022 15:41:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CR52MJRzYWJOXQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 21 Apr 2022 15:09:08 +0000
-Date:   Thu, 21 Apr 2022 17:05:04 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: do not BUG_ON() on failure to update inode when
- setting xattr
-Message-ID: <20220421150504.GC18596@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <bf2fb575bc7b960b925693b9d64a802f4c477fc3.1650535321.git.fdmanana@suse.com>
+        id i3+pKhp7YWLQaAAAMHmgww
+        (envelope-from <gniebler@suse.com>); Thu, 21 Apr 2022 15:41:14 +0000
+Message-ID: <ad8a68f9-a016-0546-38f4-d6bcd1d05402@suse.com>
+Date:   Thu, 21 Apr 2022 17:41:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf2fb575bc7b960b925693b9d64a802f4c477fc3.1650535321.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] Turn fs_info member 'buffer_radix' into an XArray
+Content-Language: en-US
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <20220421134226.12059-1-gniebler@suse.com>
+From:   Gabriel Niebler <gniebler@suse.com>
+In-Reply-To: <20220421134226.12059-1-gniebler@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 11:03:09AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> We are doing a BUG_ON() if we fail to update an inode after setting (or
-> clearing) a xattr, but there's really no reason to not instead simply
-> abort the transaction and return the error to the caller. This should be
-> a rare error because we have previously reserved enough metadata space to
-> update the inode and the delayed inode should have already been setup, so
-> an -ENOSPC or -ENOMEM, which are the possible errors, are very unlikely to
-> happen.
-> 
-> So replace the BUG_ON()s with a transaction abort.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+First line of commit message doesn't start with "btrfs: ".
 
-Added to misc-next, thanks.
+Resubmitting...
+
+Sorry for the inconvenience!
