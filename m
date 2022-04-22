@@ -2,73 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D1950C4FE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 01:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B0950C526
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 01:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbiDVXXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Apr 2022 19:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
+        id S229686AbiDVXj7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Apr 2022 19:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbiDVXXZ (ORCPT
+        with ESMTP id S230294AbiDVXjS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Apr 2022 19:23:25 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2631759C7
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Apr 2022 15:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1650668309;
-        bh=JjcDOXzblS9KCS50jKcVSNPOrP4FtymSKlKDyOCsDeU=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=TuUzOl+aXqxJ4JZHWws9nsCPEDhf+wXzDgPUSskXgZ4zPFKb6kBGEcqO3J61laMkL
-         yBo0gms8fV8Hldo0SJWppXpC54twWnyAoL7aysp+GpOSsbx9F3UvbJFl4c6LVxfqH1
-         qbKYFA+203077I4yv+jcov+A/K0u5mAHnFPdHe7I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McY8d-1oKPJx1IU9-00cusF; Sat, 23
- Apr 2022 00:58:29 +0200
-Message-ID: <6bd7fdf2-62eb-d109-44bb-21a9eed09d3b@gmx.com>
-Date:   Sat, 23 Apr 2022 06:58:23 +0800
+        Fri, 22 Apr 2022 19:39:18 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC16FEA368;
+        Fri, 22 Apr 2022 16:27:34 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8E5575C02A2;
+        Fri, 22 Apr 2022 19:27:31 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 22 Apr 2022 19:27:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1650670051; x=1650756451; bh=rJIu+Ovt6f
+        P+dAw+EBOmNDStx5QJ708nxegqnirSQww=; b=s0gtDiCmGDfo1ooAcuZIZA/kzp
+        ylrCaVjk+zpz/kuY6MafHCYnLesbrwndSgUnqJvvdumBQfFaSmI93Ygw5cmdG+CE
+        pfMLaGy5Pf6+OFAUfzMya0J8K1MiYKVPS04tPLtLblMDLkW8Fe3GiTuwp7cQofGy
+        7MYDKatx8YtgYdMjUw4m1M2FG5o0C2iqlwRQ7SmF/ARh97KZgHAZs6uLhGd9ILjL
+        lZYSuJjf8hEBNffFMVuOvun9Gfrszl7ATbO6x8OsKiYwEJMZKofEhGk0o9dg1Ygl
+        cZ8qicF2GPGvGCUkfYd60YmdH9cZ1gIZ3PwesoW8CEpGHoa3bZETXjBgQ2+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1650670051; x=
+        1650756451; bh=rJIu+Ovt6fP+dAw+EBOmNDStx5QJ708nxegqnirSQww=; b=w
+        HG5UKy4vE9v3e9Mt1QmiDmhp+L2331GGrzHfA66ZI/Hz7VIQeA6bb0rntJr4YxaP
+        5oa9yg00TnZd5XoCI/fVgPjUun81apW9PH47oTuGGF0vILfVq5EnCJAFw99e99Ji
+        rKM5eH4FjKlL0Bspe+pHW8e5+8E86XhonLgP8+fu/Mmb/ZfxHbrYak7VhwvWNyfz
+        w1XWSrmR/s/qyKRKbDMW+DDSQtCJ75EJrj1P1wGaUyedqpZmLZZin5LCV+Zn5IXH
+        +hfoeohJ3V2Sacsr666uOqnNeX8GEcALiXyniH91rFm5ZtxW5PdiqX/vFAkdWywf
+        t3StmLtqauYFoQ4tlP2Bw==
+X-ME-Sender: <xms:4zljYshl9ckbzSRSiBqtmyhFmk3ebqVeDJwUgT_zjw48YByp3bG_kw>
+    <xme:4zljYlAiRAPIjHVf9a6cNS_gi18RC2C1ojjJ8F2h8alxdNLPu50hxHMP3MErqAkQo
+    348xG4PeE1j2wPvNhE>
+X-ME-Received: <xmr:4zljYkHU9pM46LNnJBHgCN5bxxh8LPDHS3jmtM8im6kLWTYEmHHsg3lw63UB4voBLOzYdNQ3jUjSW-vn4P-FUvdMz2ucVQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrtdehgddvfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
+    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:4zljYtQxmhGwmLADUuOsTwkl6MkxTtdd7nS0RCDpI0pbbQsaoudm6g>
+    <xmx:4zljYpxzHwtuyADBYyigmmVlZzfjtrS_XCHRbU371AJKGZHk-GC4Tg>
+    <xmx:4zljYr79-FofUmJtcqX6zKDLqf0X0-kl--Ahufst-nCCUlzXs0v-kg>
+    <xmx:4zljYh8d0PMffg1X2mRpOPCivHzMPtCdY3vdyZD7SUq_U2-JAxnwDA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Apr 2022 19:27:31 -0400 (EDT)
+Date:   Fri, 22 Apr 2022 16:27:29 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v8 2/5] common/verity: support btrfs in generic fsverity
+ tests
+Message-ID: <YmM54bCgX6Kz2XVX@zen>
+References: <cover.1647461985.git.boris@bur.io>
+ <9c64fbf9ad37dc84a31caf91762edd64b33d59db.1647461985.git.boris@bur.io>
+ <YjN7Dc9aTD2FHTTO@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH 1/3] btrfs: simplify WQ_HIGHPRI handling in struct
- btrfs_workqueue
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20220418044311.359720-1-hch@lst.de>
- <20220418044311.359720-2-hch@lst.de>
- <03ea07cb-d724-26f6-bfce-99befb3ab15e@suse.com>
- <20220422210525.GL18596@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220422210525.GL18596@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OQKgajLFgsR9ifjzD2EjTC730GSmhtaCSsRVvhE10Yth7f64YdZ
- 1qT/l1UdvzaCRghKrRckHOIaDLrhlGgY6X/OIkQgmT83VKGvjcNSZVPrnGLQIdGDf7dNDWr
- od4Ve7tq/U/k8h+pn3j9zXlp29hNACY28OKjWRgxREdr0CKfhrjqv+6QQ45WOFi+UDq3n/s
- 6Rdn1bG++7NXjG2jPXYrg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ku2CD5qVXMk=:lVMrng9G6b1folgecH/8Xt
- ETIXEAPfsiziYhG2uqK1DTvw29CkHHlcLfM3RXQQmIT4qO9b5FSPdzQolitebOpK49anLXb8R
- DdAP6MhwmvczpCVHhAdGerrzj0zbBLlQR/hQ0864pohSkgMgsVW6/QAsmWvMfEwlpbph2A6tu
- UyfayzhUuV6JRIhNv+S1NGTtf2Zllm9AQNxzltxbEFCwh8vlegaKz0N+U0SYBowkxw1mBsTfD
- fblOo1I439ywPv/AXa56gsr97EaWNOedoLCC5jEVJBaPvlY4OneaX433AK4mGxwZExgE18m8S
- zL5gfn/TVfSHMfrbd2JF8/INbFT6fcn4WBssdH0dKdr5DrnUlOBSwfifYiHF4eBVSnZP+clZt
- Dsawjo5/NxQLs1WeIUsYtxc7Foi45u9XgUxdAC5+8dU4YfuO+0Yq7xkxhI/0W9i6ueCcLIad8
- 7F3M3BNQP3xgVFyQus9qDtrgKN+GWQEHIHl7W115tBiZpi0c3hRXP7npDkGUvnmQBvTrACuRP
- piBoBY+F1Xibgb8Y3eREuN+zO4tTsrZwmP035pPDWoqLBHcSTYcgY406RV0MSnMqqcig90j2I
- uVmMMlk1KMJsy6wwXl9i275apiqkb0DxIPAbtZUmHpJC5q/bNuNgioX6AEcY5/FQOIhPMnHMe
- 8KCmxYfRG+L3GU4kjhQBLLs3JRT72U/XvmBYbKNWHRBiOZdeRrgYW7iQIS5RfOC7Icccckda2
- 17wEmj10F/CI34OVrOvZ+5dn/3+RJekh01+f2blI+vdrInWQeLGkQRnr1kQput0WHaKbclEhb
- ZUwl+ZwOyGqsAjkLhoy37uKMObo+ViPiiFwbHeJWwXtzMcrkjgQ/8a2ZfwuKyQkI/pd1nm5HH
- sq2SRlSXkw+cR5EYSNhxAf/+IoruO/MtxTe69HRCsrOlrT6zM0RNK5sL6FxyNITFlJ6qQhvJQ
- ks5blsXWZVxXMqYI0ww5jXJVD8rrQMropaOowwrCBJA7sNYS0on4zS/5EmGv4hTwK1qmlGoMN
- ZJ4MjJY6dr7VLXlMGZgK/Wq9nbCkTb5LrBazkAEdgBL466ymbeajY1P40X8whZf1HvO6wa3WU
- m86dWI+aMFSoeI=
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YjN7Dc9aTD2FHTTO@gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,59 +84,65 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Mar 17, 2022 at 06:16:45PM +0000, Eric Biggers wrote:
+> On Wed, Mar 16, 2022 at 01:25:12PM -0700, Boris Burkov wrote:
+> > generic/572-579 have tests for fsverity. Now that btrfs supports
+> > fsverity, make these tests function as well. For a majority of the tests
+> > that pass, simply adding the case to mkfs a btrfs filesystem with no
+> > extra options is sufficient.
+> > 
+> > However, generic/574 has tests for corrupting the merkle tree itself.
+> > Since btrfs uses a different scheme from ext4 and f2fs for storing this
+> > data, the existing logic for corrupting it doesn't work out of the box.
+> > Adapt it to properly corrupt btrfs merkle items.
+> > 
+> > 576 does not run because btrfs does not support transparent encryption.
+> > 
+> > This test relies on the btrfs implementation of fsverity in the patch:
+> > btrfs: initial fsverity support
+> > 
+> > and on btrfs-corrupt-block for corruption in the patches titled:
+> > btrfs-progs: corrupt generic item data with btrfs-corrupt-block
+> > btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  common/btrfs  |  5 +++++
+> >  common/config |  1 +
+> >  common/verity | 23 +++++++++++++++++++++++
+> >  3 files changed, 29 insertions(+)
+> 
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+> 
+> - Eric
 
+Eric,
 
-On 2022/4/23 05:05, David Sterba wrote:
-> On Mon, Apr 18, 2022 at 04:03:43PM +0800, Qu Wenruo wrote:
->>> -struct __btrfs_workqueue {
->>> +struct btrfs_workqueue {
->>>    	struct workqueue_struct *normal_wq;
->>
->> I guess we can also rename @normal_wq here, as there is only one wq in
->> each btrfs_workqueue, no need to distinguish them in btrfs_workqueue.
->
-> Yeah now the 'normal_' prefix does not make sense.
->
->> And since we're here, doing a pahole optimization would also be a good
->> idea (can be done in a sepearate patchset).
->>
->> Especially there is a huge 16 bytes hole between @ordered_list and
->> @list_lock.
->
-> On a release build the packing is good, I don't see any holes there:
+Unfortunately, I think I found a more serious problem with the
+compatibility of generic/574 and btrfs while working on testing the
+enable/disable sysctls.
 
-Oh, I'm using debug builds, no wonder.
+I realized that I had forgotten to customize the mount options for btrfs
+to use "nodatasum" and as a result, this test was passing for btrfs
+inappropriately, since we were getting EIOs for failing data checksums,
+not verity checks.
 
-Just by my pure curiosity, there seems to be some topic on randomizing
-kernel structures (definitely not all, that would not only screw up
-on-disk format but also various interface).
+I fixed the mount option issue only to realize that some of the test
+cases make assumptions that don't apply to btrfs. For example:
+"corruption_test 130999 131000 72"
 
-But for structures only used inside one module, and not exposed, is
-there any attribute to allow compiler to do the optimization at runtime?
+Btrfs zeros pages past EOF in readpage before they make it to the user
+via read or mmap, and the fsverity check is done at that point, so
+corrupting the disk past EOF does not cause a verity failure (or get
+leaked to the user) but it does cause csum failures since those are done
+on bios, like verity checks in ext4. I verified that removing that
+zeroing in readpage makes the test case pass.
+
+Do you have a preference for how I might fix this? My first thought is
+to try to factor out any such test cases into a new test with a new
+requires clause that btrfs fails but ext4/f2fs pass, kind of like what
+we did for the EFBIG test for future FSes that might not logically
+address the Merkle tree in the past-EOF space.
 
 Thanks,
-Qu
->
-> struct btrfs_work {
->          btrfs_func_t               func;                 /*     0     8=
- */
->          btrfs_func_t               ordered_func;         /*     8     8=
- */
->          btrfs_func_t               ordered_free;         /*    16     8=
- */
->          struct work_struct         normal_work;          /*    24    32=
- */
->          struct list_head           ordered_list;         /*    56    16=
- */
->          /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
->          struct btrfs_workqueue *   wq;                   /*    72     8=
- */
->          long unsigned int          flags;                /*    80     8=
- */
->
->          /* size: 88, cachelines: 2, members: 7 */
->          /* last cacheline: 24 bytes */
-> };
->
-> The fs_info structure grew a bit but it's a large one and there's still
-> enough space before it hits 4K.
+Boris
