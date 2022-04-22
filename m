@@ -2,60 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D15CB50B5F0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Apr 2022 13:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4832C50B62E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Apr 2022 13:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447006AbiDVLOu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Apr 2022 07:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        id S1447067AbiDVLdX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Apr 2022 07:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446686AbiDVLOr (ORCPT
+        with ESMTP id S232054AbiDVLdW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Apr 2022 07:14:47 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FDF53A77;
-        Fri, 22 Apr 2022 04:11:54 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id u15so15647242ejf.11;
-        Fri, 22 Apr 2022 04:11:54 -0700 (PDT)
+        Fri, 22 Apr 2022 07:33:22 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026CB54F9E;
+        Fri, 22 Apr 2022 04:30:29 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id y20so15791699eju.7;
+        Fri, 22 Apr 2022 04:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ckJ2PtJm72g5syOBFNN3wDr8qwL96QcVpgUdvrmCb5Q=;
-        b=jF4PE8PMvQysZcf0u96ctJK61CELY4ARRb1CVixpIo826b7nq3oah72n8D2iIdybjm
-         bVfXngBH+WIdwjYFPqS7mJvx8ymDfT7bnFg/gN2TOoLG1gHaBLjudte7zYJxOF7lpegH
-         aHf4sLWvKNV6ejVZtBhK8V4NEtQgWxQNqHkXr2sgVVeJ+VqLlCgW4aGMfDQItSCD+2k5
-         Dya1o+iWHwgXnzhBbzVJqyKxD3fxG6iu2R+L2f3SaUvVH+nouHZznptDVi5EbsEdS3jy
-         4lEfMjqMLxt45bSqBh/F7GETJKF0Htyc0woBU4aW211of+Fx3GFfcJgSyo3mMKbhLaEO
-         tVew==
+        bh=PW90qCpcw9JhJLd4PJqvcUvBRQnXb0n6cSMgcLtCn7Q=;
+        b=KxC8SM8I7xatMtVihig/toj4KLWATMhXuyFZz5d1NZTPzDNzN/hHr3tDE6sxlNduKt
+         NoKFu14JpoTD5jfuMqOm55tMjFWTR847weikP4NIWpxk1iYafg21lBvZXEbyRztvqEpQ
+         KM+EoFwaWa8jvkP6fOwp8RZ+TAORG8xKX+p0gc79M+EBtDJ2RR3xDaYNKy9ReOMm05N5
+         6awfpYUu6Vgzfd4xjeRUSkU6SZnGXjdt3T3OxVNkMUh2D3tJoP+5rZYZuvItbFSgdmAO
+         fWD2zBbWy/AtJdPwkcS8CTohRTq/eEBcvfknQNZWGrTqoR07+XF+1YwgYWE5oSx2uFGI
+         PPFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ckJ2PtJm72g5syOBFNN3wDr8qwL96QcVpgUdvrmCb5Q=;
-        b=zlIKhm+vEBBv/sliMbJQfD4C+x4pcom9Pd+cRC8tUBxqZHJ4cluy2WUOenZMzHVSiT
-         QLwzZjZsa/mHDFufgtV5kI9Dw3S2fypi1N8jpCwKFbzxiZZ85x6gsz3LcwPQ6wlwJ9Sw
-         cunMiSA6z+UeTjpO0+30b+aRh+eSsjJMdYBqVFgzDBwHsDewNm/Xyz2dGsvGp2DAcuyj
-         mL979aAaM6Gf29yQBfI/r+dKnfAHueF+IP7X+pVhDvJX2FpvP7v3xshMAOlyEuXdjfz/
-         YFkJXaweGyv4Fk2IRS9OCXaIniO8h17WrimDyBewAwNhi4gHTJmljb1lF9+L7TV2EmRc
-         vaDA==
-X-Gm-Message-State: AOAM532LoepxdSlDZ+Y+W+yB+SWOczLysP6YjFYh57qHj4PQjhj2ix2S
-        Q9OzsznBPhTpc7x4kMPXZK8Sq5vOXLmuZXsr9k4=
-X-Google-Smtp-Source: ABdhPJzRaD40/rBGnWxl6FisIhHH9AbO0EkjHvg7QHEsCq7aDbibc8MoppDsPgnTEfIxQF7vpX7h3hUYqfLYrB/xLl0=
-X-Received: by 2002:a17:907:209c:b0:6e8:807c:cdf0 with SMTP id
- pv28-20020a170907209c00b006e8807ccdf0mr3773078ejb.256.1650625912967; Fri, 22
- Apr 2022 04:11:52 -0700 (PDT)
+        bh=PW90qCpcw9JhJLd4PJqvcUvBRQnXb0n6cSMgcLtCn7Q=;
+        b=btoZHPH0deY4G1IDk3eTJwSw5VnUZ8cyc1YrJ8Gm0CxVfTTIlETQ+svzUtj4RKX8zS
+         By7luNPYF6VQp6uop7HNNufUCSGmniB5EGpbuPpWeRyp0SkYpXvioXZ0h1B2MKe0KxOh
+         fNyOg9W2oEMINpcTVo1Fm8pA94H86ooz3pO1LC9niq9l7mZEiX6qew1uC/7ENAWSoxII
+         1ptJ3g2ZmAWjTV+c8ZaqfDs9bPpMKjryqlcLukrWKzst2dGkFbT7cLP1pDzHfw4uEtaN
+         /zVOW1PZhRf2sGVenJWmTKGKcTjIw0NutwtKU13PhlzGimgLruKPC0cCsUDIj+mQwg53
+         hjNg==
+X-Gm-Message-State: AOAM530u0MOkuzjr3+I0JCcWlOAv7N75M2I+9w4s+iVcuzrUBUZmOc+M
+        UCfjzMwzFwKkcKQBxKok4tAFUY+JH08Xublw734=
+X-Google-Smtp-Source: ABdhPJwVJPBqcs9F/wBYC2y+7WI+DpVXl2VLu4seddTGdq0CuPOGCl0JWKhtUD2VP34dyeueuVX+GTQrwhLJXXRsTS8=
+X-Received: by 2002:a17:906:3708:b0:6e8:9459:88f3 with SMTP id
+ d8-20020a170906370800b006e8945988f3mr3545341ejc.629.1650627027491; Fri, 22
+ Apr 2022 04:30:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220418075430.484158-1-cccheng@synology.com> <Yl7MsVxpaYWfIEZH@debian9.Home>
-In-Reply-To: <Yl7MsVxpaYWfIEZH@debian9.Home>
+References: <20220418075430.484158-1-cccheng@synology.com> <322a24a2-8ab3-63da-a284-e78663ddd0f8@suse.com>
+In-Reply-To: <322a24a2-8ab3-63da-a284-e78663ddd0f8@suse.com>
 From:   Chung-Chiang Cheng <shepjeng@gmail.com>
-Date:   Fri, 22 Apr 2022 19:11:42 +0800
-Message-ID: <CAHuHWtnCxSgh+JOOHhPQc_4A0f9O6DCXUz3vBVZg6riOQg01FA@mail.gmail.com>
+Date:   Fri, 22 Apr 2022 19:30:15 +0800
+Message-ID: <CAHuHWtkqKYgb2aBim220GxbvL3=Ss3bGAuyMmJrSh5_EKNtt6g@mail.gmail.com>
 Subject: Re: [PATCH] fstests: btrfs: test setting compression via xattr on
  nodatacow files
-To:     Filipe Manana <fdmanana@kernel.org>
+To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     Chung-Chiang Cheng <cccheng@synology.com>, fstests@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>, nborisov@suse.com,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@kernel.org>,
         David Sterba <dsterba@suse.com>, kernel@cccheng.net
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -68,48 +69,20 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Filipe,
+Hi Nikolay,
 
-> > +_require_scratch
-> > +_require_chattr C
-> > +_require_chattr c
+> This (as all other lsattr lines) fail for me because of difference in
+> output - in your golden file there is a single space char between the
+> filename and its state whilst lsattr produces a number of spaces. So in
+> addition to filter_scratch this needs _filter_spaces as well :
 >
-> This require, for chattr c, is not needed, since the test never calls
-> chattr with +c or -c.
+> +$LSATTR_PROG -l "$test_file" | _filter_scratch | _filter_spaces
 >
-> It also misses a call to:
->
-> _require_attrs
->
-> Due to the calls to setfattr and lsattr.
 
-Thanks for your notification. I'll fix these issues.
-
-
-> root 15:43:50 /home/fdmanana/git/hub/xfstests (master)> diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/264.out /home/fdmanana/git/hub/xfstests/results//btrfs/264.out.bad
-> --- /home/fdmanana/git/hub/xfstests/tests/btrfs/264.out 2022-04-19 14:49:03.845696283 +0100
-> +++ /home/fdmanana/git/hub/xfstests/results//btrfs/264.out.bad  2022-04-19 15:43:50.413816742 +0100
-> @@ -1,9 +1,9 @@
->  QA output created by 264
->  SCRATCH_MNT/foo ---
->  SCRATCH_MNT/foo Compression_Requested
-> -SCRATCH_MNT/foo ---
-> +SCRATCH_MNT/foo Dont_Compress
->  SCRATCH_MNT/foo Compression_Requested
-> -SCRATCH_MNT/foo ---
-> +SCRATCH_MNT/foo Dont_Compress
->  SCRATCH_MNT/foo Compression_Requested
->  SCRATCH_MNT/bar No_COW
->  setfattr: SCRATCH_MNT/bar: Invalid argument
-> root 15:43:52 /home/fdmanana/git/hub/xfstests (master)>
->
-> So the test needs to be updated and tested on a recent kernel.
-> Other than that, it looks fine to me.
-
-I can see why my output is different from yours. I tested this item with
-the latest upstream kernel, but my `chattr` comes from e2fsprogs-1.45.5,
-which does not yet support Dont_Compress. This test relies on a recent
-chattr, but `_require_attrs` does not check its version. In any case, I
-will send a v2 patch based on the latest chattr.
+Thanks for your comment. I did not notice the space issue before. From
+the output of Filipe's test, there is also only one space between filename
+and its state. This is the same as my test results. I have no idea which
+procedure these space were eliminated, but I think it is reasonable to add
+a space filter here.
 
 Thanks.
