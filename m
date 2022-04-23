@@ -2,197 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 339B250CCAA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 19:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E3250CD03
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 20:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236646AbiDWRoi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Apr 2022 13:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
+        id S234049AbiDWSsv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Apr 2022 14:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235171AbiDWRoh (ORCPT
+        with ESMTP id S233223AbiDWSsu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Apr 2022 13:44:37 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50471C82C7
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Apr 2022 10:41:39 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id ECD423200D60;
-        Sat, 23 Apr 2022 13:41:35 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Sat, 23 Apr 2022 13:41:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-        cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1650735695; x=1650822095; bh=VlC3qe3DL9
-        ZrJah186hjkejplZMQyw6msEP4Fi/aS9U=; b=U/DUZh1B3DBT6dS7XoFlM/E6Ne
-        oMVu8ZOpd3XK6Mm6+m57MwmcfmqBY8ltr5X2zYFtw0FmFUaYTxcJWa99XPpBfvbV
-        3ZaxWrjKcwLMbR+DWhIDlZBNa0Z8w7NO3mQ6E2yByAYyaqc3g4KrkrLY510+/zen
-        7zVwBzsg2dKZVZiRepK6hHN89I6B/Kcq7EZv3xDPXMDSO/uC9gCHdoqjEvMncjMp
-        hs8CG4r2VeNtrkrOTUxlz8McdPMk1rBAky+1KJb4VOwtW+Mwdqqzn6m0o7ZUHSKm
-        IrAaQ9p4M2Mp1XJ0FoYDQvQgYPSC8E0xWLbSWvjkJPWRgBdykSYwTQ9v/y7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1650735695; x=
-        1650822095; bh=VlC3qe3DL9ZrJah186hjkejplZMQyw6msEP4Fi/aS9U=; b=Z
-        E/wiPRzntM55FO7GSmZWeWOrBuHAmbAt2lyMHKXQWWzd86brq7bAHJ6PjknM6c2I
-        MQaE1bU9I+BjLBTviaRBI5extfPqyhcQ38GtAm2w07CBN2hs6TvB+xCyVMbqn0xr
-        Tf9VAPEdvTNguMqHYo/aXaSbvrpNcBedbRY+9FiqKRMOyTf53ZOVBOMhzs/0VM9M
-        SjB5Qm7QSsVHmNFYGDnYAo1ZXISkpkUilR7M37mUjWSPlQW2pVrp2vi1zCdoAGnE
-        e1dft6lGg/kYZq7Drly2Mn/YB3eZhX3YSfOE1U3BgZGQPJ8Su5BQNfBnJU/ppRgQ
-        MJsbmCZONeCmwazh9tRCA==
-X-ME-Sender: <xms:TzpkYrWDPdjC3taHX1mc_imZmcTHBpx3S2uZ9JpDWwN7q03CVtAKnQ>
-    <xme:TzpkYjnOV__h3Cn5fJoPPS9vAeKgGbo645vfyQrjCkP-auAQ0RJR1BEegVdWvMPVp
-    6tkr5mBCFbsPw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrtdeigdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpeflrghtuceosghtrhhfshesjhgrthdrfhgrshhtmhgrihhl
-    rdgtohhmqeenucggtffrrghtthgvrhhnpeeutdeikeehgfdulefgkeeileehffeiieekle
-    duvdeukeetfeevfffggffggfevvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
-    mhepmhgrihhlfhhrohhmpegsthhrfhhssehjrghtrdhfrghsthhmrghilhdrtghomh
-X-ME-Proxy: <xmx:TzpkYnZclh0wP2T-feiuElFlNSKUULv_kuanl7lRMQYX9JElobGPaw>
-    <xmx:TzpkYmXOwoWAKfRFIQOTjiA5IOzYJFXxc-BNasL8RWwv3gzDv4qxZw>
-    <xmx:TzpkYlljwBB_K9wFI3ffvek06YIFOwWzV3KOAnpnllgMj5MKkA4dXQ>
-    <xmx:TzpkYjQvaBgy78LRZjZJhxRy22Z3RW43YZtgCszvxuyE2FINnCT1hg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 34476AC0E98; Sat, 23 Apr 2022 13:41:35 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-569-g7622ad95cc-fm-20220421.002-g7622ad95
-Mime-Version: 1.0
-Message-Id: <a03acb5f-02dc-491b-b44d-62a59246c4f7@beta.fastmail.com>
-In-Reply-To: <fe391705-79d2-a365-27ca-fc52b260fcbf@gmx.com>
-References: <a41c8f80-78de-49d3-a34f-2cd4109d20a0@beta.fastmail.com>
- <fe391705-79d2-a365-27ca-fc52b260fcbf@gmx.com>
-Date:   Sat, 23 Apr 2022 10:40:28 -0700
-From:   Jat <btrfs@jat.fastmail.com>
-To:     "Qu Wenruo" <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs check fail
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 23 Apr 2022 14:48:50 -0400
+X-Greylist: delayed 345 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 23 Apr 2022 11:45:48 PDT
+Received: from mx2.b1-systems.de (mx2.b1-systems.de [159.69.135.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAEB1AD3DD
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Apr 2022 11:45:46 -0700 (PDT)
+Message-ID: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+Date:   Sat, 23 Apr 2022 20:39:57 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Content-Language: en-US
+From:   Johannes Kastl <kastl@b1-systems.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------vmQe9TLfnebDPrUENI6WbrKT"
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,HEXHASH_WORD,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thanks very much, Qu!
-I attempted your advise, but was only partially successful.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------vmQe9TLfnebDPrUENI6WbrKT
+Content-Type: multipart/mixed; boundary="------------1fOMaGso88nbaNBRLA0JEBV7";
+ protected-headers="v1"
+From: Johannes Kastl <kastl@b1-systems.de>
+To: linux-btrfs@vger.kernel.org
+Message-ID: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+Subject: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
 
-> Recommended to go v2 cache.
-Done, no problem.
+--------------1fOMaGso88nbaNBRLA0JEBV7
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> just go copy the files to other locations and remove the old file
-This is where I had trouble.
-I tried on just one file to start:
-/mnt/@_190127freshinstall/var/log/journal/b0eb202aa367415fb973e99ecd54889e/user-1000.journal
+R29vZCBldmVuaW5nLA0KDQpJIG5lZWQgeW91ciBhZHZpY2Ugb24gaG93IHRvIGNvbnRpbnVl
+IHdpdGggb25lIG9mIG15IEJUUkZTIFJBSUQxIHNldHVwcy4NCg0KVGhlIG1hY2hpbmUgYW5k
+IHRoZSBCVFJGUyBSQUlEMSB3ZXJlIGJ1aWx0L2NyZWF0ZWQgaW4gMjAxNCwgYXMgZmFyIGFz
+IEkgY2FuIHNheS4gDQpJdCB3YXMgYnVpbHQgdXNpbmcgb3BlblNVU0UgTGVhcCwgSSB0aGlu
+ayAxMy5YIG9yIHNpbWlsYXIuIFRoZSBtYWNoaW5lIHdhcyB0aGVuIA0KY29uc3RhbnRseSB1
+cGdyYWRlZCBhbmQgaXMgbm93IHJ1bm5pbmcgb3BlblNVU0UgTGVhcCAxNS4zIHdpdGggYSA1
+LjMuMTgga2VybmVsIA0KKGRldGFpbGVkIGluZm9zIGJlbG93KS4NCg0KQXMgb25lIG9mIHRo
+ZSBIRERzIHN0YXJ0ZWQgcmVwb3J0aW5nIFNNQVJUIGVycm9ycywgSSBqdXN0IGRkJ2VkIGVh
+Y2ggb2YgdGhlIDRUQiANCmRpc2tzIG9udG8gbmV3IDhUQiBkaXNrcyAoYW5kIGZpeGVkIHRo
+ZSBHUFQgYmFja3VwKS4gSSBkaWQgbm90IHJlc2l6ZSB0aGUgDQpmaWxlc3lzdGVtLCBzbyBp
+dCBpcyBzdGlsbCAzLjYgVGlCIGxpa2Ugb24gdGhlIG9sZCBIRERzLg0KVG8gbWFrZSBzdXJl
+IHRoYXQgdGhlIGZpbGVzeXN0ZW0gd2FzIHdvcmtpbmcsIEkgaXNzdWVkIGEgYnRyZnNjayBh
+Z2FpbnN0IGVhY2ggb2YgDQp0aGUgZGV2aWNlcy4NCg0KVGhlIG91dHB1dCBvZiB0aGUgY2hl
+Y2sgaXMgYmVsb3cuIFRoZSBUTDtEUiB3YXMgdGhhdCBJIHNob3VsZCBydW4gJ2J0cmZzIHJl
+c2N1ZSANCmZpeC1kZXZpY2Utc2l6ZScgdG8gZml4IGEgIm1pbm9yIiBpc3N1ZS4NCg0KVW5m
+b3J0dW5hdGVseSwgcnVubmluZyB0aGlzIGNvbW1hbmQgZmFpbHM6DQoNCj4gcm9vdCBkdW1i
+bzovcm9vdCAjIGJ0cmZzIHJlc2N1ZSBmaXgtZGV2aWNlLXNpemUgL2Rldi9zZGMxDQo+IFVu
+YWJsZSB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciAwDQo+IFVuYWJsZSB0byBmaW5kIGJsb2Nr
+IGdyb3VwIGZvciAwDQo+IFVuYWJsZSB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciAwDQo+IGJ0
+cmZzIHVuYWJsZSB0byBmaW5kIHJlZiBieXRlIG5yIDI5NTkyOTUzODE1MDQgcGFyZW50IDAg
+cm9vdCAzICBvd25lciAxIG9mZnNldCAwDQo+IHRyYW5zYWN0aW9uLmM6MTY4OiBidHJmc19j
+b21taXRfdHJhbnNhY3Rpb246IEJVR19PTiBgcmV0YCB0cmlnZ2VyZWQsIHZhbHVlIC01DQo+
+IGJ0cmZzKCsweDUxZjk5KVsweDU1YWVlYWUxMmY5OV0NCj4gYnRyZnMoYnRyZnNfY29tbWl0
+X3RyYW5zYWN0aW9uKzB4MTkzKVsweDU1YWVlYWUxMzU3M10NCj4gYnRyZnMoYnRyZnNfZml4
+X2RldmljZV9zaXplKzB4MTIzKVsweDU1YWVlYWRmZTJhM10NCj4gYnRyZnMoYnRyZnNfZml4
+X2RldmljZV9hbmRfc3VwZXJfc2l6ZSsweDZiKVsweDU1YWVlYWRmZTU2Yl0NCj4gYnRyZnMo
+KzB4NmNlZWUpWzB4NTVhZWVhZTJkZWVlXQ0KPiBidHJmcyhtYWluKzB4OGUpWzB4NTVhZWVh
+ZGUwMDhlXQ0KPiAvbGliNjQvbGliYy5zby42KF9fbGliY19zdGFydF9tYWluKzB4ZWYpWzB4
+N2Y5MDdmYzBkMmJkXQ0KPiBidHJmcyhfc3RhcnQrMHgyYSlbMHg1NWFlZWFkZTAyOGFdDQo+
+IEFib3J0ZWQgKGNvcmUgZHVtcGVkKQ0KPiByb290IGR1bWJvOi9yb290ICMNCg0KU28sIG15
+IHF1ZXN0aW9uIGlzIHdoYXQgSSBzaG91bGQgZG86DQoNCkRvIEkgbmVlZCB0byBydW4gYW5v
+dGhlciBjb21tYW5kIHRvIGZpeCB0aGlzIGlzc3VlPw0KQ2FuIEkgc2FmZWx5IGlnbm9yZSB0
+aGUgaXNzdWU/DQpTaG91bGQgSSBjb3B5IGFsbCBvZiB0aGUgZGF0YSB0byBhbm90aGVyIGRp
+c2ssIGFuZCBjcmVhdGUgYSBuZXcgQlRSRlMgUkFJRDEgZnJvbSANCnNjcmF0Y2g/IChXaGlj
+aCBvZiBjb3Vyc2UgSSB3b3VsZCBsaWtlIHRvIGF2b2lkLCBpZiBwb3NzaWJsZS4uLikNCg0K
+TWF5YmUgc29tZW9uZSBjYW4gYWR2aXNlIG1lIG9uIGhvdyB0byBwcm9jZWVkLiBJIGFtIGdy
+YXRlZnVsIGZvciBhbGwgb2YgdGhlIA0KaW5wdXQgSSBnZXQuDQoNCklmIHRoZXJlIGlzIG90
+aGVyIGluZm9ybWF0aW9uIEkgc2hvdWxkIGdpdmUsIHBsZWFzZSBmZWVsIGZyZWUgdG8gcmVh
+Y2ggb3V0IHRvIG1lLg0KDQpLaW5kIFJlZ2FyZHMNCkpvaGFubmVzDQoNCiMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjDQpidHJmcyBjaGVjayBvdXRwdXQ6DQoNCj4gcm9vdCBkdW1ibzovcm9vdCAjIGJ0
+cmZzIGNoZWNrIC1wIC9kZXYvc2RjMSA7YnRyZnMgY2hlY2sgLXAgL2Rldi9zZGQxDQo+IE9w
+ZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4uLg0KPiBDaGVja2luZyBmaWxlc3lzdGVtIG9u
+IC9kZXYvc2RjMQ0KPiBVVUlEOiA1MDY1MWI0MS1iZjMzLTQ3ZTctOGEwOC1hZmJjNzFiYTBi
+ZjgNCj4gWzEvN10gY2hlY2tpbmcgcm9vdCBpdGVtcyAgICAgICAgICAgICAgICAgICAgICAo
+MDowMzowOSBlbGFwc2VkLCA5NDY3ODc3IGl0ZW1zIGNoZWNrZWQpDQo+IFdBUk5JTkc6IHVu
+YWxpZ25lZCB0b3RhbF9ieXRlcyBkZXRlY3RlZCBmb3IgZGV2aWQgMiwgaGF2ZSA0MDAwNzg1
+OTY0NTQ0IHNob3VsZCBiZSBhbGlnbmVkIHRvIDQwOTYNCj4gV0FSTklORzogdGhpcyBpcyBP
+SyBmb3Igb2xkZXIga2VybmVsLCBidXQgbWF5IGNhdXNlIGtlcm5lbCB3YXJuaW5nIGZvciBu
+ZXdlciBrZXJuZWxzDQo+IFdBUk5JTkc6IHRoaXMgY2FuIGJlIGZpeGVkIGJ5ICdidHJmcyBy
+ZXNjdWUgZml4LWRldmljZS1zaXplJw0KPiBbMi83XSBjaGVja2luZyBleHRlbnRzICAgICAg
+ICAgICAgICAgICAgICAgICAgICgwOjM4OjM4IGVsYXBzZWQsIDY5MTA0ODUgaXRlbXMgY2hl
+Y2tlZCkNCj4gV0FSTklORzogbWlub3IgdW5hbGlnbmVkL21pc21hdGNoIGRldmljZSBzaXpl
+IGRldGVjdGVkDQo+IFdBUk5JTkc6IHJlY29tbWVuZGVkIHRvIHVzZSAnYnRyZnMgcmVzY3Vl
+IGZpeC1kZXZpY2Utc2l6ZScgdG8gZml4IGl0DQo+IFszLzddIGNoZWNraW5nIGZyZWUgc3Bh
+Y2UgY2FjaGUgICAgICAgICAgICAgICAgKDA6MDI6MjYgZWxhcHNlZCwgMzczMCBpdGVtcyBj
+aGVja2VkKQ0KPiBbNC83XSBjaGVja2luZyBmcyByb290cyAgICAgICAgICAgICAgICAgICAg
+ICAgICg2OjQzOjQwIGVsYXBzZWQsIDY2MTQ4MTggaXRlbXMgY2hlY2tlZCkNCj4gWzUvN10g
+Y2hlY2tpbmcgY3N1bXMgKHdpdGhvdXQgdmVyaWZ5aW5nIGRhdGEpICAoMDoxMDozNiBlbGFw
+c2VkLCAxNDE5MTAxIGl0ZW1zIGNoZWNrZWQpDQo+IFs2LzddIGNoZWNraW5nIHJvb3QgcmVm
+cyAgICAgICAgICAgICAgICAgICAgICAgKDA6MDA6MDAgZWxhcHNlZCwgNCBpdGVtcyBjaGVj
+a2VkKQ0KPiBbNy83XSBjaGVja2luZyBxdW90YSBncm91cHMgc2tpcHBlZCAobm90IGVuYWJs
+ZWQgb24gdGhpcyBGUykNCj4gZm91bmQgMzMwODI3NTAyMzg3MiBieXRlcyB1c2VkLCBubyBl
+cnJvciBmb3VuZA0KPiB0b3RhbCBjc3VtIGJ5dGVzOiAzMTE5Mzg2OTI4DQo+IHRvdGFsIHRy
+ZWUgYnl0ZXM6IDExMzIyMTIzODc4NA0KPiB0b3RhbCBmcyB0cmVlIGJ5dGVzOiAxMDg3NzAw
+ODI4MTYNCj4gdG90YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDk3MTQ1NjUxMg0KPiBidHJlZSBz
+cGFjZSB3YXN0ZSBieXRlczogMTUzMDg4MTE3OTcNCj4gZmlsZSBkYXRhIGJsb2NrcyBhbGxv
+Y2F0ZWQ6IDMxOTUwNTM3ODUwODgNCj4gIHJlZmVyZW5jZWQgMzE5NTA0NzAxODQ5Ng0KDQoj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIw0KDQpNYWNoaW5lIGFuZCBmaWxlc3lzdGVtIGRldGFpbHMNCg0K
+PiAkIHVuYW1lIC1hDQo+IExpbnV4IGR1bWJvIDUuMy4xOC0xNTAzMDAuNTkuNjAtZGVmYXVs
+dCAjMSBTTVAgRnJpIE1hciAxOCAxODozNzowOCBVVEMgMjAyMiAoNzllMTY4MykgeDg2XzY0
+IHg4Nl82NCB4ODZfNjQgR05VL0xpbnV4DQo+IA0KPiAjIGJ0cmZzIC0tdmVyc2lvbg0KPiBi
+dHJmcy1wcm9ncyB2NC4xOS4xDQo+IA0KPiAjIGJ0cmZzIGZpIHNob3cNCj4gTGFiZWw6ICdE
+VU1CT19CQUNLVVBfNFRCJyAgdXVpZDogNTA2NTFiNDEtYmYzMy00N2U3LThhMDgtYWZiYzcx
+YmEwYmY4DQo+ICAgICAgICAgVG90YWwgZGV2aWNlcyAyIEZTIGJ5dGVzIHVzZWQgMy4wOFRp
+Qg0KPiAgICAgICAgIGRldmlkICAgIDEgc2l6ZSAzLjY0VGlCIHVzZWQgMy42NFRpQiBwYXRo
+IC9kZXYvc2RkMQ0KPiAgICAgICAgIGRldmlkICAgIDIgc2l6ZSAzLjY0VGlCIHVzZWQgMy42
+M1RpQiBwYXRoIC9kZXYvc2RjMQ0KPiANCj4gIyBidHJmcyBmaSBkZiAvbW50L0RVTUJPX0JB
+Q0tVUF80VEIvDQo+IERhdGEsIFJBSUQxOiB0b3RhbD0zLjM2VGlCLCB1c2VkPTIuOTdUaUIN
+Cj4gRGF0YSwgRFVQOiB0b3RhbD0xMy41ME1pQiwgdXNlZD0yLjgxTWlCDQo+IERhdGEsIHNp
+bmdsZTogdG90YWw9MS4wMEdpQiwgdXNlZD0wLjAwQg0KPiBTeXN0ZW0sIFJBSUQxOiB0b3Rh
+bD0zMi4wME1pQiwgdXNlZD01NjAuMDBLaUINCj4gU3lzdGVtLCBzaW5nbGU6IHRvdGFsPTMy
+LjAwTWlCLCB1c2VkPTAuMDBCDQo+IE1ldGFkYXRhLCBSQUlEMTogdG90YWw9Mjg0Ljk0R2lC
+LCB1c2VkPTEwOC4wNUdpQg0KPiBNZXRhZGF0YSwgRFVQOiB0b3RhbD01MTIuMDBNaUIsIHVz
+ZWQ9NjQuMDBLaUINCj4gTWV0YWRhdGEsIHNpbmdsZTogdG90YWw9MS4wMEdpQiwgdXNlZD0w
+LjAwQg0KPiBHbG9iYWxSZXNlcnZlLCBzaW5nbGU6IHRvdGFsPTUxMi4wME1pQiwgdXNlZD0w
+LjAwQg0KDQotLSANCkpvaGFubmVzIEthc3RsDQpMaW51eCBDb25zdWx0YW50ICYgVHJhaW5l
+cg0KVGVsLjogKzQ5ICgwKSAxNTEgMjM3MiA1ODAyDQpNYWlsOiBrYXN0bEBiMS1zeXN0ZW1z
+LmRlDQoNCkIxIFN5c3RlbXMgR21iSA0KT3N0ZXJmZWxkc3RyYcOfZSA3IC8gODUwODggVm9o
+YnVyZw0KaHR0cDovL3d3dy5iMS1zeXN0ZW1zLmRlDQpHRjogUmFscGggRGVobmVyDQpVbnRl
+cm5laG1lbnNzaXR6OiBWb2hidXJnIC8gQUc6IEluZ29sc3RhZHQsSFJCIDM1MzcNCg==
 
-I made a copy, deleted the original, and then renamed back to original:
-cp user-1000.journal user-1000.journal.temp2
-rm user-1000.journal
-mv user-1000.journal.temp2 user-1000.journal
+--------------1fOMaGso88nbaNBRLA0JEBV7--
 
-But afterward I got the same error, just different inode:
-Pre: root 267 inode 249749 errors 1040, bad file extent, some csum missing
-Post: root 267 inode 249772 errors 1040, bad file extent, some csum missing
+--------------vmQe9TLfnebDPrUENI6WbrKT
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-What have I done wrong?
+-----BEGIN PGP SIGNATURE-----
 
-Thanks again for your help!
+wsF5BAABCAAjFiEEOjtDOPXdIVAWcUziyeav2MG3z/wFAmJkR/0FAwAAAAAACgkQyeav2MG3z/y0
+Gw/+OZWZvUOiyvw4dKNlkZJz5ygOkgjh3fn8YYH1e1aNHoTBzpK+0S3BOnCoythk4IYluPfOGtWe
+7ORutVmgn+rGmCHzcj5/5hmABuMOp+eNZoRspsJ6ycSB4+UYvJyEDMFASwddpYthgOIShAN4I6bc
+GiFfcbct88EmbgD8fniEIdXcjETr2MK/TbOr2+CNb3SgV1xbPZUO7k9uu0bbpZ3xt5G+8vsqU8P0
+sOi5q/f0B2PhapoXtoWkXUXYk3zpkY+7QGaVO9pZ+BONNY+7BVwTg2JFRXlVwWdz+BNpBZgxaYAB
+Pu8AgqbGmZWOu7/Poo2ev1Ldcsh22+nUIe/y6UgLykgMGzln67xgCfrh2FJEEaDg+k2A4voHFF+X
+RJiV5q0CGMQIQ1qJPgoZQ2qzEF4O7Q4cs8kRUjxODiCUI2WdoBGsWCeOXAVlfx9pWJbQuYEqlrna
+9lSZ75rZEe1oRLFudYcTP7mFpq39lnxSW63xo4wGmO0QEkrQFQSyk+OnQZuFKiMa1lrSNcrGpFCR
++bXZ6O4plaSo573M62jviDCX1RCdDGcs0e9qSczuB0OWsy8KHUf62ub2qvfP3dcOYM+a8nyVCVe6
+bkrHR2J79sDHTGxARC0OO6q8ns16MZ55w30e1tRV05fr804M1xSJv9o1JWQUrwzg4acKYMh2v+TX
+TFY=
+=74kX
+-----END PGP SIGNATURE-----
 
-Regards,
-Jat
-
-
------ Original message -----
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Jat <btrfs@jat.fastmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs check fail
-Date: Friday, April 22, 2022 9:53 PM
-
-
-
-On 2022/4/23 11:56, Jat wrote:
-> Hello,
-> I am trying to resize a partition offline, but it fails the check.
-> The output of running btrfs check manually is below, can you please advise me how to resolve the issues?
->
-> Here is the output from btrfs check:
-> sudo btrfs check /dev/sda7
-> Opening filesystem to check...
-> Checking filesystem on /dev/sda7
-> UUID: 4599055f-785a-4843-9f59-5b04e84fea1a
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> cache and super generation don't match, space cache will be invalidated
-
-Recommended to go v2 cache.
-
-You can just mount it with space_cache=v2.
-
-> [4/7] checking fs roots
-> root 267 inode 249749 errors 1040, bad file extent, some csum missing
-> root 268 inode 466 errors 1040, bad file extent, some csum missing
-> root 308 inode 249749 errors 1040, bad file extent, some csum missing
-> root 313 inode 466 errors 1040, bad file extent, some csum missing
-
-Please run "btrfs check --mode=lowmem" to provide a more readable output.
-
-There are several different reasons to cause the "bad file extent".
-
- From inline extents for non-zero offset, to compressed file extents for
-NODATASUM inodes.
-
-The later case can explain all your problems in one go, and can be
-caused by older kernels.
-
-If that's the case, you can just go copy the files to other locations
-and remove the old file, and call it a day.
-
-Thanks,
-Qu
-
-> ERROR: errors found in fs roots
-> found 103264391173 bytes used, error(s) found
-> total csum bytes: 93365076
-> total tree bytes: 2113994752
-> total fs tree bytes: 1825112064
-> total extent tree bytes: 144097280
-> btree space waste bytes: 432782214
-> file data blocks allocated: 352758886400
->   referenced 178094907392
->
->
-> Here is the requested info from Live boot environment for offline partition sizing & btrfs check...
-> uname -a
-> Linux manjaro 5.15.32-1-MANJARO #1 SMP PREEMPT Mon Mar 28 09:16:36 UTC 2022 x86_64 GNU/Linux
->
-> dmesg > dmesg.log
-> [Sorry, didn't capture this after running the check in live boot environment. Will capture as needed next time along with recommendation]
->
->
-> Here is the requested info from within mounted environment...
-> uname -a
-> Linux manjaro-desktop 5.17.1-3-MANJARO #1 SMP PREEMPT Thu Mar 31 12:27:24 UTC 2022 x86_64 GNU/Linux
->
-> btrfs --version
-> btrfs-progs v5.16.2
->
-> sudo btrfs fi show
-> Label: 'manjaro-kde'  uuid: 4599055f-785a-4843-9f59-5b04e84fea1a
->          Total devices 1 FS bytes used 96.19GiB
->          devid    1 size 226.34GiB used 226.34GiB path /dev/sda7
->
-> btrfs fi df /
-> Data, single: total=220.33GiB, used=94.92GiB
-> System, single: total=4.00MiB, used=48.00KiB
-> Metadata, single: total=6.01GiB, used=1.97GiB
-> GlobalReserve, single: total=275.20MiB, used=0.00B
->
->
-> Thank you,
-> Jat
+--------------vmQe9TLfnebDPrUENI6WbrKT--
