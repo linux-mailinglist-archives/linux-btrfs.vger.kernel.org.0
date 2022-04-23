@@ -2,67 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EC150CD72
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 22:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2732950CDEF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Apr 2022 00:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237009AbiDWU5H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Apr 2022 16:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
+        id S231145AbiDWW3A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Apr 2022 18:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236075AbiDWU5F (ORCPT
+        with ESMTP id S229552AbiDWW26 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Apr 2022 16:57:05 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAA312C434
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Apr 2022 13:54:07 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e1so7087107ile.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Apr 2022 13:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+86Ed/isXjevaMMTvI2TKVPVCkUG1nFNM21bvVYiNq4=;
-        b=ZQOhaNPmZhGjeXdFp2cyyhAJ93mfDEWZ05qPO6vD520doP6YKsM7fNTqDGow2w5E7K
-         30OHejDsi1e6d6K+04iQphTugwETdmJ4Y5juAd+wTMldsrqpubHNBoInoj3KIEXbab+B
-         oPq3YLnb7CEZ6/DfqtnkET4HYwxqSv9p1Tptw6QWoa9w4brLuZAnaZI57t1BgfhMhfjJ
-         vwR5ipfvCb5jWk+dmqH2vog77GjAiB0ROBlSRbCTYBKN8e80nPAdJc1Xcbu0bgJkaQ48
-         C5p7V0H03Lv4mNBfPenZiCD0hbUNuF2fP2nofKMFArGLxeJMNFGB6tsJProMM5Q/Xqer
-         EEhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+86Ed/isXjevaMMTvI2TKVPVCkUG1nFNM21bvVYiNq4=;
-        b=k6s6Y3hm66oNDQcsSZNaBhRiV3hr1fvXuMQDUxzy1DFwDTpi2vUZRgTRTHhKqHs7Me
-         CdL8JRBbLrSEyhzWltNou7BtO8bZHRxeRQxNaFmm4HjQnsqg8cZau03VhhP8dKAXhVBu
-         I8aLJg8dV7fDmuP4VVff23zoBCWg0zi11WnAHJV9lmQ70B1QEhk1DInyIIcMNrkwWRaf
-         VOtr5H9hrxYQG0/3skECy2pGYHdz4ll2S2Pyyrzj/mDio5CVJcmdNAXOlb4DkC5PGIMv
-         2jB0dH1fKKrPPu8duYm07NOKrb/iWPaQwAU5Zc4A6EWQPSxIIj8CyiuyKTt2XU6aceqh
-         pXGw==
-X-Gm-Message-State: AOAM531nDGM85uIpTUuHyJHSWYiPiJc1ei8nB1zdVnU3oGQ/3U4JxPeY
-        MlBZPizSiH6Xm+mYxo2D2+bhvZFdjFYnr8szzBsuAlsabHA=
-X-Google-Smtp-Source: ABdhPJy9r1oRJ+0q1GelSm8IxnOTYW+YliiC7QQGZm+Y4NKXUU4vXl/17yvxM7jvjLwmj0v6vBXljG7YNYHuWRgS6u0=
-X-Received: by 2002:a92:d6c9:0:b0:2c7:aba1:6231 with SMTP id
- z9-20020a92d6c9000000b002c7aba16231mr3889757ilp.206.1650747246206; Sat, 23
- Apr 2022 13:54:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
- <YkzWAZtf7rcY/d+7@hungrycats.org> <20220406000844.GK28707@merlins.org>
- <Ykzvoz47Rvknw7aH@hungrycats.org> <20220406040913.GE3307770@merlins.org>
- <Yk3W88Eyh0pSm9mQ@hungrycats.org> <20220406191317.GC14804@merlins.org>
- <20220422184850.GX13115@merlins.org> <CAEzrpqfhCHL=pWXvQK9rYftQFe+Z6CyQPwRYxgCaX1w6JaqOTA@mail.gmail.com>
- <20220422200115.GV11868@merlins.org> <20220423201225.GZ13115@merlins.org>
-In-Reply-To: <20220423201225.GZ13115@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Sat, 23 Apr 2022 16:53:55 -0400
-Message-ID: <CAEzrpqeo4U4SXH7LVz_Yx8ydX5BiqzFNJmAhQv1jCpjOessjHA@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Sat, 23 Apr 2022 18:28:58 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27C6B878
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Apr 2022 15:26:00 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 09D555C0110;
+        Sat, 23 Apr 2022 18:26:00 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Sat, 23 Apr 2022 18:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+        cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1650752760; x=1650839160; bh=ybZkkdSZl+
+        +N2gv6oJYw2+armFAA3Ods6WnS23SoItk=; b=N4QBU0GdakWmuzLWTpRilJt39u
+        8UeB+nNqfrW94O0V4py73f+jv7fna1yaLPQWoABxAjN1B+8Yu5gvsTH1nDJM9KIy
+        95athCrXSYf1rhDFMRr4/CNjPf7qfI4HtB2lLn1PcWZcNrg+7s8BpKNhv/QmBPWj
+        nkt9tk2LTjADIjK3eKAO9fVLS3VwpOOT+Yvk7zjmwB+Tmsu8LS/viAqpDo7YnV1i
+        EWGZSrsVhr4pJUbtH0S1Mb6diRjrCk/rt2/NI91urrlgkZ0yZwR0VbVsxDSAD3oS
+        smc2e51XFcf3UFyrzDTG1eNi8E3Yf1di5cC01KkmiEFn9kfnEIfcyEaS05mQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1650752760; x=
+        1650839160; bh=ybZkkdSZl++N2gv6oJYw2+armFAA3Ods6WnS23SoItk=; b=X
+        kmmNF78gQ8Tw5Gg8tb6bgFmINiF0PsZmcOC6aNGJLfAkQ+kMryQfnCkAvw4G+tlt
+        /1bk+KjuSlbsG8RcC14qIye8MH1S3zsst428bxrubhAMSg6mKnXHCwaaREvvh0qi
+        lP+RcFDKHeRvEwxSOb+4ZAmeVHsICAial4xTNkubphl8F8F/dTo7lO/a6OfIzL1c
+        kwElHY951si5JrkjWo+fUJ293yhkHY0Q/y7oxEJ1sm4tpdPZXaVr8Oml5z879r3h
+        zZi9arvLSGk+e2syUsfIxJuL5xbFjvA1bzj5ZCF12gWOVVEHcl8p7GWsz+gNi34c
+        DeDtHk0DyhfwCznY8Mrsw==
+X-ME-Sender: <xms:93xkYlBUS_KQs1GJkTokc8r6yIKpjCHHG0koFeat8aBMK-JgLVPR3w>
+    <xme:93xkYjjiiDnf-WgmtEdaNPCu7fA-DB-3QhDmeu9Ow7EQf4V4f3WrYJb1jOEPH9K4L
+    3kuowDQxSjxYQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrtdejgdduudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkjghffffhvffutgesthdtre
+    dtreertdenucfhrhhomheplfgrthcuoegsthhrfhhssehjrghtrdhfrghsthhmrghilhdr
+    tghomheqnecuggftrfgrthhtvghrnhepuedtieekhefgudelgfekieelheffieeikeelud
+    dvueekteefveffgffggffgvedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghtrhhfshesjhgrthdrfhgrshhtmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:93xkYgn6ho3UMKxPE6OTClKzNN6xAmyy1qMeih-iIYJkAUMjwhVW_w>
+    <xmx:93xkYvz3SxpQOCTJMYeIx04tjuYwJZIY0w7OF5WETeoRFCbMfVqvsw>
+    <xmx:93xkYqTCuNOlc0fFa8YHqcCpYF9gU7biALd0R022kDx8Cn9qEETcGQ>
+    <xmx:-HxkYhMkAlk1_FEIQEy8vB5VTBdS_OrBb7eRpoE2ZOzSBLC7U2lKig>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id CA8DCAC0E98; Sat, 23 Apr 2022 18:25:59 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-569-g7622ad95cc-fm-20220421.002-g7622ad95
+Mime-Version: 1.0
+Message-Id: <e6e90f1f-4e6c-496f-8f0b-69ec93a1513a@beta.fastmail.com>
+In-Reply-To: <a03acb5f-02dc-491b-b44d-62a59246c4f7@beta.fastmail.com>
+References: <a41c8f80-78de-49d3-a34f-2cd4109d20a0@beta.fastmail.com>
+ <fe391705-79d2-a365-27ca-fc52b260fcbf@gmx.com>
+ <a03acb5f-02dc-491b-b44d-62a59246c4f7@beta.fastmail.com>
+Date:   Sat, 23 Apr 2022 15:25:39 -0700
+From:   Jat <btrfs@jat.fastmail.com>
+To:     "Qu Wenruo" <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs check fail
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,39 +81,132 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 23, 2022 at 4:12 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Fri, Apr 22, 2022 at 01:01:15PM -0700, Marc MERLIN wrote:
-> > > Now if we get to Monday and it's still running I can take a crack at
-> > > making it faster.  I was hoping it would only take a day or two, but
-> > > we're balancing me trying to make it better and possibly fucking it up
-> > > with letting it take the rest of our lives but be correct.  Thanks,
-> >
-> > Makes sense. I don't need faster, and it may not be able to go faster
-> > anyway, it's a lot of data. Just wanted to make sure the output and
-> > relative slow results were expected.
->
-> Looking at the output, is there any way I can figure out if it's at 5%
-> or 80% completion?
->
-> tree backref 238026752 parent 236814336 not found in extent tree
-> backpointer mismatch on [238026752 16384]
-> adding new tree backref on start 238026752 len 16384 parent 236814336 root 236814336
-> Repaired extent references for 238026752
-> ref mismatch on [238043136 16384] extent item 0, found 1
-> tree backref 238043136 parent 236814336 not found in extent tree
-> backpointer mismatch on [238043136 16384]
-> adding new tree backref on start 238043136 len 16384 parent 236814336 root 236814336
-> Repaired extent references for 238043136
-> ref mismatch on [238059520 16384] extent item 0, found 1
-> tree backref 238059520 parent 236814336 not found in extent tree
-> backpointer mismatch on [238059520 16384]
-> adding new tree backref on start 238059520 len 16384 parent 236814336 root 236814336
->
+Okay, I got it resolved, btrfs check passed and partition moved & resized successfully.
+Solution was to move the files to a different filesystem and back.
 
-Hmm I don't know, that's byte 227, but you're in fs trees now, so
-hopefully soon?  I've got some free time, let me rewrite this to be
-less stupid and see if I can get it done before your thing finishes,
-and I'll add some sort of progress indicator.  Thanks,
+Thanks again!
+Jat
 
-Josef
+----- Original message -----
+From: Jat <btrfs@jat.fastmail.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs check fail
+Date: Saturday, April 23, 2022 10:40 AM
+
+Thanks very much, Qu!
+I attempted your advise, but was only partially successful.
+
+> Recommended to go v2 cache.
+Done, no problem.
+
+> just go copy the files to other locations and remove the old file
+This is where I had trouble.
+I tried on just one file to start:
+/mnt/@_190127freshinstall/var/log/journal/b0eb202aa367415fb973e99ecd54889e/user-1000.journal
+
+I made a copy, deleted the original, and then renamed back to original:
+cp user-1000.journal user-1000.journal.temp2
+rm user-1000.journal
+mv user-1000.journal.temp2 user-1000.journal
+
+But afterward I got the same error, just different inode:
+Pre: root 267 inode 249749 errors 1040, bad file extent, some csum missing
+Post: root 267 inode 249772 errors 1040, bad file extent, some csum missing
+
+What have I done wrong?
+
+Thanks again for your help!
+
+Regards,
+Jat
+
+
+----- Original message -----
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Jat <btrfs@jat.fastmail.com>, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs check fail
+Date: Friday, April 22, 2022 9:53 PM
+
+
+
+On 2022/4/23 11:56, Jat wrote:
+> Hello,
+> I am trying to resize a partition offline, but it fails the check.
+> The output of running btrfs check manually is below, can you please advise me how to resolve the issues?
+>
+> Here is the output from btrfs check:
+> sudo btrfs check /dev/sda7
+> Opening filesystem to check...
+> Checking filesystem on /dev/sda7
+> UUID: 4599055f-785a-4843-9f59-5b04e84fea1a
+> [1/7] checking root items
+> [2/7] checking extents
+> [3/7] checking free space cache
+> cache and super generation don't match, space cache will be invalidated
+
+Recommended to go v2 cache.
+
+You can just mount it with space_cache=v2.
+
+> [4/7] checking fs roots
+> root 267 inode 249749 errors 1040, bad file extent, some csum missing
+> root 268 inode 466 errors 1040, bad file extent, some csum missing
+> root 308 inode 249749 errors 1040, bad file extent, some csum missing
+> root 313 inode 466 errors 1040, bad file extent, some csum missing
+
+Please run "btrfs check --mode=lowmem" to provide a more readable output.
+
+There are several different reasons to cause the "bad file extent".
+
+ From inline extents for non-zero offset, to compressed file extents for
+NODATASUM inodes.
+
+The later case can explain all your problems in one go, and can be
+caused by older kernels.
+
+If that's the case, you can just go copy the files to other locations
+and remove the old file, and call it a day.
+
+Thanks,
+Qu
+
+> ERROR: errors found in fs roots
+> found 103264391173 bytes used, error(s) found
+> total csum bytes: 93365076
+> total tree bytes: 2113994752
+> total fs tree bytes: 1825112064
+> total extent tree bytes: 144097280
+> btree space waste bytes: 432782214
+> file data blocks allocated: 352758886400
+>   referenced 178094907392
+>
+>
+> Here is the requested info from Live boot environment for offline partition sizing & btrfs check...
+> uname -a
+> Linux manjaro 5.15.32-1-MANJARO #1 SMP PREEMPT Mon Mar 28 09:16:36 UTC 2022 x86_64 GNU/Linux
+>
+> dmesg > dmesg.log
+> [Sorry, didn't capture this after running the check in live boot environment. Will capture as needed next time along with recommendation]
+>
+>
+> Here is the requested info from within mounted environment...
+> uname -a
+> Linux manjaro-desktop 5.17.1-3-MANJARO #1 SMP PREEMPT Thu Mar 31 12:27:24 UTC 2022 x86_64 GNU/Linux
+>
+> btrfs --version
+> btrfs-progs v5.16.2
+>
+> sudo btrfs fi show
+> Label: 'manjaro-kde'  uuid: 4599055f-785a-4843-9f59-5b04e84fea1a
+>          Total devices 1 FS bytes used 96.19GiB
+>          devid    1 size 226.34GiB used 226.34GiB path /dev/sda7
+>
+> btrfs fi df /
+> Data, single: total=220.33GiB, used=94.92GiB
+> System, single: total=4.00MiB, used=48.00KiB
+> Metadata, single: total=6.01GiB, used=1.97GiB
+> GlobalReserve, single: total=275.20MiB, used=0.00B
+>
+>
+> Thank you,
+> Jat
