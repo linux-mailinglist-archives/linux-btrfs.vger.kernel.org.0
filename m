@@ -2,76 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A90450CCEC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 20:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A3850CD5B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 22:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236745AbiDWSns (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Apr 2022 14:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S236998AbiDWUPL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Apr 2022 16:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236723AbiDWSnr (ORCPT
+        with ESMTP id S236995AbiDWUPK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Apr 2022 14:43:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4423473BC;
-        Sat, 23 Apr 2022 11:40:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C663BB80CC7;
-        Sat, 23 Apr 2022 18:40:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66F7DC385A0;
-        Sat, 23 Apr 2022 18:40:44 +0000 (UTC)
-Date:   Sat, 23 Apr 2022 19:40:40 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/3] Avoid live-lock in btrfs fault-in+uaccess loop
-Message-ID: <YmRIKJSr0xSRHliN@arm.com>
-References: <20220423100751.1870771-1-catalin.marinas@arm.com>
- <CAHk-=wgafGgBC9JEu397YxFD8o8qiCZHQS+f5i+BSXOkOFqX3w@mail.gmail.com>
+        Sat, 23 Apr 2022 16:15:10 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54401A6B48
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Apr 2022 13:12:12 -0700 (PDT)
+Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:41112 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1niM6z-0004HC-MU by authid <merlins.org> with srv_auth_plain; Sat, 23 Apr 2022 13:12:10 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1niM7F-004Zgy-OU; Sat, 23 Apr 2022 13:12:25 -0700
+Date:   Sat, 23 Apr 2022 13:12:25 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220423201225.GZ13115@merlins.org>
+References: <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
+ <YkzWAZtf7rcY/d+7@hungrycats.org>
+ <20220406000844.GK28707@merlins.org>
+ <Ykzvoz47Rvknw7aH@hungrycats.org>
+ <20220406040913.GE3307770@merlins.org>
+ <Yk3W88Eyh0pSm9mQ@hungrycats.org>
+ <20220406191317.GC14804@merlins.org>
+ <20220422184850.GX13115@merlins.org>
+ <CAEzrpqfhCHL=pWXvQK9rYftQFe+Z6CyQPwRYxgCaX1w6JaqOTA@mail.gmail.com>
+ <20220422200115.GV11868@merlins.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgafGgBC9JEu397YxFD8o8qiCZHQS+f5i+BSXOkOFqX3w@mail.gmail.com>
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220422200115.GV11868@merlins.org>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 24.5.124.255
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 23, 2022 at 09:35:42AM -0700, Linus Torvalds wrote:
-> On Sat, Apr 23, 2022 at 3:07 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >
-> > The series introduces fault_in_subpage_writeable() together with the
-> > arm64 probing counterpart and the btrfs fix.
+On Fri, Apr 22, 2022 at 01:01:15PM -0700, Marc MERLIN wrote:
+> > Now if we get to Monday and it's still running I can take a crack at
+> > making it faster.  I was hoping it would only take a day or two, but
+> > we're balancing me trying to make it better and possibly fucking it up
+> > with letting it take the rest of our lives but be correct.  Thanks,
 > 
-> Looks fine to me - and I think it can probably go through the arm64
-> tree since you'd be the only one really testing it anyway.
+> Makes sense. I don't need faster, and it may not be able to go faster
+> anyway, it's a lot of data. Just wanted to make sure the output and
+> relative slow results were expected. 
 
-I'll queue it via arm64 then.
+Looking at the output, is there any way I can figure out if it's at 5%
+or 80% completion?
 
-> I assume you checked that btrfs is the only one that uses
-> fault_in_writeable() in this way? Everybody else updates to the right
-> byte boundary and retries (or returns immediately)?
+tree backref 238026752 parent 236814336 not found in extent tree
+backpointer mismatch on [238026752 16384]
+adding new tree backref on start 238026752 len 16384 parent 236814336 root 236814336
+Repaired extent references for 238026752
+ref mismatch on [238043136 16384] extent item 0, found 1
+tree backref 238043136 parent 236814336 not found in extent tree
+backpointer mismatch on [238043136 16384]
+adding new tree backref on start 238043136 len 16384 parent 236814336 root 236814336
+Repaired extent references for 238043136
+ref mismatch on [238059520 16384] extent item 0, found 1
+tree backref 238059520 parent 236814336 not found in extent tree
+backpointer mismatch on [238059520 16384]
+adding new tree backref on start 238059520 len 16384 parent 236814336 root 236814336
 
-I couldn't find any other places (by inspection or testing). The
-buffered file I/O can already make progress in current fault_in_*() +
-copy_*_user() loops. O_DIRECT either goes via GUP (and memcpy() doesn't
-fault) or, if the user buffer is not PAGE aligned, it may fall back to
-buffered I/O. That's why I simplified the series, AFAICT it's only btrfs
-search_ioctl() with this problem.
-
+Thanks,
+Marc
 -- 
-Catalin
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
