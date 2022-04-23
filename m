@@ -2,170 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E3250CD03
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 20:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A90450CCEC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Apr 2022 20:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbiDWSsv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Apr 2022 14:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
+        id S236745AbiDWSns (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Apr 2022 14:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbiDWSsu (ORCPT
+        with ESMTP id S236723AbiDWSnr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Apr 2022 14:48:50 -0400
-X-Greylist: delayed 345 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 23 Apr 2022 11:45:48 PDT
-Received: from mx2.b1-systems.de (mx2.b1-systems.de [159.69.135.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAEB1AD3DD
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Apr 2022 11:45:46 -0700 (PDT)
-Message-ID: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
-Date:   Sat, 23 Apr 2022 20:39:57 +0200
+        Sat, 23 Apr 2022 14:43:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4423473BC;
+        Sat, 23 Apr 2022 11:40:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C663BB80CC7;
+        Sat, 23 Apr 2022 18:40:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66F7DC385A0;
+        Sat, 23 Apr 2022 18:40:44 +0000 (UTC)
+Date:   Sat, 23 Apr 2022 19:40:40 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/3] Avoid live-lock in btrfs fault-in+uaccess loop
+Message-ID: <YmRIKJSr0xSRHliN@arm.com>
+References: <20220423100751.1870771-1-catalin.marinas@arm.com>
+ <CAHk-=wgafGgBC9JEu397YxFD8o8qiCZHQS+f5i+BSXOkOFqX3w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
-From:   Johannes Kastl <kastl@b1-systems.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: 'btrfs rescue' command (recommended by btrfs check) fails on old
- BTRFS RAID1 on (currently) openSUSE Leap 15.3
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------vmQe9TLfnebDPrUENI6WbrKT"
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,HEXHASH_WORD,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgafGgBC9JEu397YxFD8o8qiCZHQS+f5i+BSXOkOFqX3w@mail.gmail.com>
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------vmQe9TLfnebDPrUENI6WbrKT
-Content-Type: multipart/mixed; boundary="------------1fOMaGso88nbaNBRLA0JEBV7";
- protected-headers="v1"
-From: Johannes Kastl <kastl@b1-systems.de>
-To: linux-btrfs@vger.kernel.org
-Message-ID: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
-Subject: 'btrfs rescue' command (recommended by btrfs check) fails on old
- BTRFS RAID1 on (currently) openSUSE Leap 15.3
+On Sat, Apr 23, 2022 at 09:35:42AM -0700, Linus Torvalds wrote:
+> On Sat, Apr 23, 2022 at 3:07 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> >
+> > The series introduces fault_in_subpage_writeable() together with the
+> > arm64 probing counterpart and the btrfs fix.
+> 
+> Looks fine to me - and I think it can probably go through the arm64
+> tree since you'd be the only one really testing it anyway.
 
---------------1fOMaGso88nbaNBRLA0JEBV7
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+I'll queue it via arm64 then.
 
-R29vZCBldmVuaW5nLA0KDQpJIG5lZWQgeW91ciBhZHZpY2Ugb24gaG93IHRvIGNvbnRpbnVl
-IHdpdGggb25lIG9mIG15IEJUUkZTIFJBSUQxIHNldHVwcy4NCg0KVGhlIG1hY2hpbmUgYW5k
-IHRoZSBCVFJGUyBSQUlEMSB3ZXJlIGJ1aWx0L2NyZWF0ZWQgaW4gMjAxNCwgYXMgZmFyIGFz
-IEkgY2FuIHNheS4gDQpJdCB3YXMgYnVpbHQgdXNpbmcgb3BlblNVU0UgTGVhcCwgSSB0aGlu
-ayAxMy5YIG9yIHNpbWlsYXIuIFRoZSBtYWNoaW5lIHdhcyB0aGVuIA0KY29uc3RhbnRseSB1
-cGdyYWRlZCBhbmQgaXMgbm93IHJ1bm5pbmcgb3BlblNVU0UgTGVhcCAxNS4zIHdpdGggYSA1
-LjMuMTgga2VybmVsIA0KKGRldGFpbGVkIGluZm9zIGJlbG93KS4NCg0KQXMgb25lIG9mIHRo
-ZSBIRERzIHN0YXJ0ZWQgcmVwb3J0aW5nIFNNQVJUIGVycm9ycywgSSBqdXN0IGRkJ2VkIGVh
-Y2ggb2YgdGhlIDRUQiANCmRpc2tzIG9udG8gbmV3IDhUQiBkaXNrcyAoYW5kIGZpeGVkIHRo
-ZSBHUFQgYmFja3VwKS4gSSBkaWQgbm90IHJlc2l6ZSB0aGUgDQpmaWxlc3lzdGVtLCBzbyBp
-dCBpcyBzdGlsbCAzLjYgVGlCIGxpa2Ugb24gdGhlIG9sZCBIRERzLg0KVG8gbWFrZSBzdXJl
-IHRoYXQgdGhlIGZpbGVzeXN0ZW0gd2FzIHdvcmtpbmcsIEkgaXNzdWVkIGEgYnRyZnNjayBh
-Z2FpbnN0IGVhY2ggb2YgDQp0aGUgZGV2aWNlcy4NCg0KVGhlIG91dHB1dCBvZiB0aGUgY2hl
-Y2sgaXMgYmVsb3cuIFRoZSBUTDtEUiB3YXMgdGhhdCBJIHNob3VsZCBydW4gJ2J0cmZzIHJl
-c2N1ZSANCmZpeC1kZXZpY2Utc2l6ZScgdG8gZml4IGEgIm1pbm9yIiBpc3N1ZS4NCg0KVW5m
-b3J0dW5hdGVseSwgcnVubmluZyB0aGlzIGNvbW1hbmQgZmFpbHM6DQoNCj4gcm9vdCBkdW1i
-bzovcm9vdCAjIGJ0cmZzIHJlc2N1ZSBmaXgtZGV2aWNlLXNpemUgL2Rldi9zZGMxDQo+IFVu
-YWJsZSB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciAwDQo+IFVuYWJsZSB0byBmaW5kIGJsb2Nr
-IGdyb3VwIGZvciAwDQo+IFVuYWJsZSB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciAwDQo+IGJ0
-cmZzIHVuYWJsZSB0byBmaW5kIHJlZiBieXRlIG5yIDI5NTkyOTUzODE1MDQgcGFyZW50IDAg
-cm9vdCAzICBvd25lciAxIG9mZnNldCAwDQo+IHRyYW5zYWN0aW9uLmM6MTY4OiBidHJmc19j
-b21taXRfdHJhbnNhY3Rpb246IEJVR19PTiBgcmV0YCB0cmlnZ2VyZWQsIHZhbHVlIC01DQo+
-IGJ0cmZzKCsweDUxZjk5KVsweDU1YWVlYWUxMmY5OV0NCj4gYnRyZnMoYnRyZnNfY29tbWl0
-X3RyYW5zYWN0aW9uKzB4MTkzKVsweDU1YWVlYWUxMzU3M10NCj4gYnRyZnMoYnRyZnNfZml4
-X2RldmljZV9zaXplKzB4MTIzKVsweDU1YWVlYWRmZTJhM10NCj4gYnRyZnMoYnRyZnNfZml4
-X2RldmljZV9hbmRfc3VwZXJfc2l6ZSsweDZiKVsweDU1YWVlYWRmZTU2Yl0NCj4gYnRyZnMo
-KzB4NmNlZWUpWzB4NTVhZWVhZTJkZWVlXQ0KPiBidHJmcyhtYWluKzB4OGUpWzB4NTVhZWVh
-ZGUwMDhlXQ0KPiAvbGliNjQvbGliYy5zby42KF9fbGliY19zdGFydF9tYWluKzB4ZWYpWzB4
-N2Y5MDdmYzBkMmJkXQ0KPiBidHJmcyhfc3RhcnQrMHgyYSlbMHg1NWFlZWFkZTAyOGFdDQo+
-IEFib3J0ZWQgKGNvcmUgZHVtcGVkKQ0KPiByb290IGR1bWJvOi9yb290ICMNCg0KU28sIG15
-IHF1ZXN0aW9uIGlzIHdoYXQgSSBzaG91bGQgZG86DQoNCkRvIEkgbmVlZCB0byBydW4gYW5v
-dGhlciBjb21tYW5kIHRvIGZpeCB0aGlzIGlzc3VlPw0KQ2FuIEkgc2FmZWx5IGlnbm9yZSB0
-aGUgaXNzdWU/DQpTaG91bGQgSSBjb3B5IGFsbCBvZiB0aGUgZGF0YSB0byBhbm90aGVyIGRp
-c2ssIGFuZCBjcmVhdGUgYSBuZXcgQlRSRlMgUkFJRDEgZnJvbSANCnNjcmF0Y2g/IChXaGlj
-aCBvZiBjb3Vyc2UgSSB3b3VsZCBsaWtlIHRvIGF2b2lkLCBpZiBwb3NzaWJsZS4uLikNCg0K
-TWF5YmUgc29tZW9uZSBjYW4gYWR2aXNlIG1lIG9uIGhvdyB0byBwcm9jZWVkLiBJIGFtIGdy
-YXRlZnVsIGZvciBhbGwgb2YgdGhlIA0KaW5wdXQgSSBnZXQuDQoNCklmIHRoZXJlIGlzIG90
-aGVyIGluZm9ybWF0aW9uIEkgc2hvdWxkIGdpdmUsIHBsZWFzZSBmZWVsIGZyZWUgdG8gcmVh
-Y2ggb3V0IHRvIG1lLg0KDQpLaW5kIFJlZ2FyZHMNCkpvaGFubmVzDQoNCiMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjDQpidHJmcyBjaGVjayBvdXRwdXQ6DQoNCj4gcm9vdCBkdW1ibzovcm9vdCAjIGJ0
-cmZzIGNoZWNrIC1wIC9kZXYvc2RjMSA7YnRyZnMgY2hlY2sgLXAgL2Rldi9zZGQxDQo+IE9w
-ZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4uLg0KPiBDaGVja2luZyBmaWxlc3lzdGVtIG9u
-IC9kZXYvc2RjMQ0KPiBVVUlEOiA1MDY1MWI0MS1iZjMzLTQ3ZTctOGEwOC1hZmJjNzFiYTBi
-ZjgNCj4gWzEvN10gY2hlY2tpbmcgcm9vdCBpdGVtcyAgICAgICAgICAgICAgICAgICAgICAo
-MDowMzowOSBlbGFwc2VkLCA5NDY3ODc3IGl0ZW1zIGNoZWNrZWQpDQo+IFdBUk5JTkc6IHVu
-YWxpZ25lZCB0b3RhbF9ieXRlcyBkZXRlY3RlZCBmb3IgZGV2aWQgMiwgaGF2ZSA0MDAwNzg1
-OTY0NTQ0IHNob3VsZCBiZSBhbGlnbmVkIHRvIDQwOTYNCj4gV0FSTklORzogdGhpcyBpcyBP
-SyBmb3Igb2xkZXIga2VybmVsLCBidXQgbWF5IGNhdXNlIGtlcm5lbCB3YXJuaW5nIGZvciBu
-ZXdlciBrZXJuZWxzDQo+IFdBUk5JTkc6IHRoaXMgY2FuIGJlIGZpeGVkIGJ5ICdidHJmcyBy
-ZXNjdWUgZml4LWRldmljZS1zaXplJw0KPiBbMi83XSBjaGVja2luZyBleHRlbnRzICAgICAg
-ICAgICAgICAgICAgICAgICAgICgwOjM4OjM4IGVsYXBzZWQsIDY5MTA0ODUgaXRlbXMgY2hl
-Y2tlZCkNCj4gV0FSTklORzogbWlub3IgdW5hbGlnbmVkL21pc21hdGNoIGRldmljZSBzaXpl
-IGRldGVjdGVkDQo+IFdBUk5JTkc6IHJlY29tbWVuZGVkIHRvIHVzZSAnYnRyZnMgcmVzY3Vl
-IGZpeC1kZXZpY2Utc2l6ZScgdG8gZml4IGl0DQo+IFszLzddIGNoZWNraW5nIGZyZWUgc3Bh
-Y2UgY2FjaGUgICAgICAgICAgICAgICAgKDA6MDI6MjYgZWxhcHNlZCwgMzczMCBpdGVtcyBj
-aGVja2VkKQ0KPiBbNC83XSBjaGVja2luZyBmcyByb290cyAgICAgICAgICAgICAgICAgICAg
-ICAgICg2OjQzOjQwIGVsYXBzZWQsIDY2MTQ4MTggaXRlbXMgY2hlY2tlZCkNCj4gWzUvN10g
-Y2hlY2tpbmcgY3N1bXMgKHdpdGhvdXQgdmVyaWZ5aW5nIGRhdGEpICAoMDoxMDozNiBlbGFw
-c2VkLCAxNDE5MTAxIGl0ZW1zIGNoZWNrZWQpDQo+IFs2LzddIGNoZWNraW5nIHJvb3QgcmVm
-cyAgICAgICAgICAgICAgICAgICAgICAgKDA6MDA6MDAgZWxhcHNlZCwgNCBpdGVtcyBjaGVj
-a2VkKQ0KPiBbNy83XSBjaGVja2luZyBxdW90YSBncm91cHMgc2tpcHBlZCAobm90IGVuYWJs
-ZWQgb24gdGhpcyBGUykNCj4gZm91bmQgMzMwODI3NTAyMzg3MiBieXRlcyB1c2VkLCBubyBl
-cnJvciBmb3VuZA0KPiB0b3RhbCBjc3VtIGJ5dGVzOiAzMTE5Mzg2OTI4DQo+IHRvdGFsIHRy
-ZWUgYnl0ZXM6IDExMzIyMTIzODc4NA0KPiB0b3RhbCBmcyB0cmVlIGJ5dGVzOiAxMDg3NzAw
-ODI4MTYNCj4gdG90YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDk3MTQ1NjUxMg0KPiBidHJlZSBz
-cGFjZSB3YXN0ZSBieXRlczogMTUzMDg4MTE3OTcNCj4gZmlsZSBkYXRhIGJsb2NrcyBhbGxv
-Y2F0ZWQ6IDMxOTUwNTM3ODUwODgNCj4gIHJlZmVyZW5jZWQgMzE5NTA0NzAxODQ5Ng0KDQoj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIw0KDQpNYWNoaW5lIGFuZCBmaWxlc3lzdGVtIGRldGFpbHMNCg0K
-PiAkIHVuYW1lIC1hDQo+IExpbnV4IGR1bWJvIDUuMy4xOC0xNTAzMDAuNTkuNjAtZGVmYXVs
-dCAjMSBTTVAgRnJpIE1hciAxOCAxODozNzowOCBVVEMgMjAyMiAoNzllMTY4MykgeDg2XzY0
-IHg4Nl82NCB4ODZfNjQgR05VL0xpbnV4DQo+IA0KPiAjIGJ0cmZzIC0tdmVyc2lvbg0KPiBi
-dHJmcy1wcm9ncyB2NC4xOS4xDQo+IA0KPiAjIGJ0cmZzIGZpIHNob3cNCj4gTGFiZWw6ICdE
-VU1CT19CQUNLVVBfNFRCJyAgdXVpZDogNTA2NTFiNDEtYmYzMy00N2U3LThhMDgtYWZiYzcx
-YmEwYmY4DQo+ICAgICAgICAgVG90YWwgZGV2aWNlcyAyIEZTIGJ5dGVzIHVzZWQgMy4wOFRp
-Qg0KPiAgICAgICAgIGRldmlkICAgIDEgc2l6ZSAzLjY0VGlCIHVzZWQgMy42NFRpQiBwYXRo
-IC9kZXYvc2RkMQ0KPiAgICAgICAgIGRldmlkICAgIDIgc2l6ZSAzLjY0VGlCIHVzZWQgMy42
-M1RpQiBwYXRoIC9kZXYvc2RjMQ0KPiANCj4gIyBidHJmcyBmaSBkZiAvbW50L0RVTUJPX0JB
-Q0tVUF80VEIvDQo+IERhdGEsIFJBSUQxOiB0b3RhbD0zLjM2VGlCLCB1c2VkPTIuOTdUaUIN
-Cj4gRGF0YSwgRFVQOiB0b3RhbD0xMy41ME1pQiwgdXNlZD0yLjgxTWlCDQo+IERhdGEsIHNp
-bmdsZTogdG90YWw9MS4wMEdpQiwgdXNlZD0wLjAwQg0KPiBTeXN0ZW0sIFJBSUQxOiB0b3Rh
-bD0zMi4wME1pQiwgdXNlZD01NjAuMDBLaUINCj4gU3lzdGVtLCBzaW5nbGU6IHRvdGFsPTMy
-LjAwTWlCLCB1c2VkPTAuMDBCDQo+IE1ldGFkYXRhLCBSQUlEMTogdG90YWw9Mjg0Ljk0R2lC
-LCB1c2VkPTEwOC4wNUdpQg0KPiBNZXRhZGF0YSwgRFVQOiB0b3RhbD01MTIuMDBNaUIsIHVz
-ZWQ9NjQuMDBLaUINCj4gTWV0YWRhdGEsIHNpbmdsZTogdG90YWw9MS4wMEdpQiwgdXNlZD0w
-LjAwQg0KPiBHbG9iYWxSZXNlcnZlLCBzaW5nbGU6IHRvdGFsPTUxMi4wME1pQiwgdXNlZD0w
-LjAwQg0KDQotLSANCkpvaGFubmVzIEthc3RsDQpMaW51eCBDb25zdWx0YW50ICYgVHJhaW5l
-cg0KVGVsLjogKzQ5ICgwKSAxNTEgMjM3MiA1ODAyDQpNYWlsOiBrYXN0bEBiMS1zeXN0ZW1z
-LmRlDQoNCkIxIFN5c3RlbXMgR21iSA0KT3N0ZXJmZWxkc3RyYcOfZSA3IC8gODUwODggVm9o
-YnVyZw0KaHR0cDovL3d3dy5iMS1zeXN0ZW1zLmRlDQpHRjogUmFscGggRGVobmVyDQpVbnRl
-cm5laG1lbnNzaXR6OiBWb2hidXJnIC8gQUc6IEluZ29sc3RhZHQsSFJCIDM1MzcNCg==
+> I assume you checked that btrfs is the only one that uses
+> fault_in_writeable() in this way? Everybody else updates to the right
+> byte boundary and retries (or returns immediately)?
 
---------------1fOMaGso88nbaNBRLA0JEBV7--
+I couldn't find any other places (by inspection or testing). The
+buffered file I/O can already make progress in current fault_in_*() +
+copy_*_user() loops. O_DIRECT either goes via GUP (and memcpy() doesn't
+fault) or, if the user buffer is not PAGE aligned, it may fall back to
+buffered I/O. That's why I simplified the series, AFAICT it's only btrfs
+search_ioctl() with this problem.
 
---------------vmQe9TLfnebDPrUENI6WbrKT
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEEOjtDOPXdIVAWcUziyeav2MG3z/wFAmJkR/0FAwAAAAAACgkQyeav2MG3z/y0
-Gw/+OZWZvUOiyvw4dKNlkZJz5ygOkgjh3fn8YYH1e1aNHoTBzpK+0S3BOnCoythk4IYluPfOGtWe
-7ORutVmgn+rGmCHzcj5/5hmABuMOp+eNZoRspsJ6ycSB4+UYvJyEDMFASwddpYthgOIShAN4I6bc
-GiFfcbct88EmbgD8fniEIdXcjETr2MK/TbOr2+CNb3SgV1xbPZUO7k9uu0bbpZ3xt5G+8vsqU8P0
-sOi5q/f0B2PhapoXtoWkXUXYk3zpkY+7QGaVO9pZ+BONNY+7BVwTg2JFRXlVwWdz+BNpBZgxaYAB
-Pu8AgqbGmZWOu7/Poo2ev1Ldcsh22+nUIe/y6UgLykgMGzln67xgCfrh2FJEEaDg+k2A4voHFF+X
-RJiV5q0CGMQIQ1qJPgoZQ2qzEF4O7Q4cs8kRUjxODiCUI2WdoBGsWCeOXAVlfx9pWJbQuYEqlrna
-9lSZ75rZEe1oRLFudYcTP7mFpq39lnxSW63xo4wGmO0QEkrQFQSyk+OnQZuFKiMa1lrSNcrGpFCR
-+bXZ6O4plaSo573M62jviDCX1RCdDGcs0e9qSczuB0OWsy8KHUf62ub2qvfP3dcOYM+a8nyVCVe6
-bkrHR2J79sDHTGxARC0OO6q8ns16MZ55w30e1tRV05fr804M1xSJv9o1JWQUrwzg4acKYMh2v+TX
-TFY=
-=74kX
------END PGP SIGNATURE-----
-
---------------vmQe9TLfnebDPrUENI6WbrKT--
+-- 
+Catalin
