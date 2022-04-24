@@ -2,92 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B79350D515
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Apr 2022 22:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6754650D52E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Apr 2022 22:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239577AbiDXUfi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 24 Apr 2022 16:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S239597AbiDXU57 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 24 Apr 2022 16:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232991AbiDXUfg (ORCPT
+        with ESMTP id S233920AbiDXU56 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 24 Apr 2022 16:35:36 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F66156E23
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 13:32:35 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id m13so324918iob.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 13:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GQ2h3j/qkvNw+0MpXoG283y5gQdyW9B84gddX7KR3jY=;
-        b=Jafy1gDskMkIthkYe20zrbq+Ii2xl26gYmeMOULLaKnZHl4M5380hzTQLnqFZPNaFg
-         +5o1ujDLIMFZbk1sAT/NzhYjHYqfdcfQM5pD72ReeYUKJQIcjYvfQEJbssiW6DGCSgRo
-         w6tLkGG2s6FLxr7NcENgn/GYMvIjEwQg7i/+yPYrncar6GNTx7be75cZK/M1wfj0M2zl
-         D6evWYq/NUUQJMTzv2gFVmCdADNbeQRw2+bBWE9+FEjkj+1w8nDVdJz+6vZIL7+m9MQg
-         stf77m2//IJoz6rIu5aJfPTB2QvI4D5qh1ZeUesdrzmUjvJh/BnMX0GvlfUOuaCjqLqs
-         5j9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GQ2h3j/qkvNw+0MpXoG283y5gQdyW9B84gddX7KR3jY=;
-        b=JLXkabUKkIsngci0N0giiHOvmcVXilOyshi6nfZQqIC7UzsmydttASEz1O9IjiC95U
-         rHHsLoLQwIIWLZ1G2zfRwPejdURXj7gdBEkgha24nfW5OW7oqZMsQnrRD9jJsEorps06
-         MuE4zE96VO/K3bfF+4C/JO1TUXoDRBZlSXDzAXoxjuqBizFEzD0RYV0emgIgpmkyg4r7
-         x9XqQz5Ua+iCllBjZ9/TeJcMnu8tzQtuVWHBmkDS/5u1eT6vDiCV2vHOzQZ9Mw0zen5J
-         MR/PB6/7v/hMqEHEdiSNsDl1vLWYSPP/Q1483N/bbFfKaxycv2zHEx6WyMoWgQvDVC7c
-         MycQ==
-X-Gm-Message-State: AOAM533MiFXv9NUSdllE1rarIwjnsUlBKPlOz+YVrHRB/jspyx2y36gm
-        1l4jOwFUfedA+hsz4jWpm+CZsTG6QThf6yDp49jqP+0Szj4=
-X-Google-Smtp-Source: ABdhPJyqM73/bJ3ri5yd4jorcdH8Ns42+jMEaU1KEFsBUIH5Hx4rAJbP0J56AxXnlDC7WxxRaOCuT6/woY/dSmuf3Ic=
-X-Received: by 2002:a5e:8416:0:b0:654:9404:ffb2 with SMTP id
- h22-20020a5e8416000000b006549404ffb2mr5911599ioj.166.1650832354133; Sun, 24
- Apr 2022 13:32:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220422200115.GV11868@merlins.org> <20220423201225.GZ13115@merlins.org>
- <CAEzrpqeo4U4SXH7LVz_Yx8ydX5BiqzFNJmAhQv1jCpjOessjHA@mail.gmail.com>
- <CAEzrpqdHAS2E1iuoSFVX-A-T-vsMoCo6CoW0ebw42vkCjqpMPw@mail.gmail.com>
- <20220424162450.GY11868@merlins.org> <CAEzrpqe6gwpF9k=Gj4=aCzkj-kW5GrZNueNnfoL8ZAAnMvwbng@mail.gmail.com>
- <20220424184341.GA1523521@merlins.org> <CAEzrpqeUJwtkMAUaxEd-qARe1aEZBx-v1-G_WY7vPr5MNL+3TQ@mail.gmail.com>
- <20220424194444.GA12542@merlins.org> <CAEzrpqeY_BAMLdL7NQmtC7ROBkZLrx=FHr=JC4KHoPF6Kwn3Kg@mail.gmail.com>
- <20220424203133.GA29107@merlins.org>
-In-Reply-To: <20220424203133.GA29107@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Sun, 24 Apr 2022 16:32:23 -0400
-Message-ID: <CAEzrpqemyJ8PS5-eF3iSKugy6u3UAzkwwM=o+bHPOh2_7aPHFA@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
+        Sun, 24 Apr 2022 16:57:58 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F2255481
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 13:54:54 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nijFu-0008HJ-8Y by authid <merlin>; Sun, 24 Apr 2022 13:54:54 -0700
+Date:   Sun, 24 Apr 2022 13:54:54 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220424205454.GB29107@merlins.org>
+References: <CAEzrpqeo4U4SXH7LVz_Yx8ydX5BiqzFNJmAhQv1jCpjOessjHA@mail.gmail.com>
+ <CAEzrpqdHAS2E1iuoSFVX-A-T-vsMoCo6CoW0ebw42vkCjqpMPw@mail.gmail.com>
+ <20220424162450.GY11868@merlins.org>
+ <CAEzrpqe6gwpF9k=Gj4=aCzkj-kW5GrZNueNnfoL8ZAAnMvwbng@mail.gmail.com>
+ <20220424184341.GA1523521@merlins.org>
+ <CAEzrpqeUJwtkMAUaxEd-qARe1aEZBx-v1-G_WY7vPr5MNL+3TQ@mail.gmail.com>
+ <20220424194444.GA12542@merlins.org>
+ <CAEzrpqeY_BAMLdL7NQmtC7ROBkZLrx=FHr=JC4KHoPF6Kwn3Kg@mail.gmail.com>
+ <20220424203133.GA29107@merlins.org>
+ <CAEzrpqemyJ8PS5-eF3iSKugy6u3UAzkwwM=o+bHPOh2_7aPHFA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqemyJ8PS5-eF3iSKugy6u3UAzkwwM=o+bHPOh2_7aPHFA@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Apr 24, 2022 at 4:31 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Sun, Apr 24, 2022 at 04:01:34PM -0400, Josef Bacik wrote:
-> > > (gdb) run rescue init-extent-tree /dev/mapper/dshelf1
-> > > Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
-> > > [Thread debugging using libthread_db enabled]
-> > > Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
-> > > FS_INFO IS 0x55555564cbc0
-> > > JOSEF: root 9
+On Sun, Apr 24, 2022 at 04:32:23PM -0400, Josef Bacik wrote:
+> On Sun, Apr 24, 2022 at 4:31 PM Marc MERLIN <marc@merlins.org> wrote:
 > >
-> > Huh ok, it's the UUID tree, weird.  I pushed, can you re-run
-> > tree-recover, you can stop it after it does root 9, I just want to see
-> > what bytenr it thinks the root node is at.  Thanks,
->
-> (gdb) run rescue init-extent-tree /dev/mapper/dshelf1
-> Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
+> > On Sun, Apr 24, 2022 at 04:01:34PM -0400, Josef Bacik wrote:
+> > > > (gdb) run rescue init-extent-tree /dev/mapper/dshelf1
+> > > > Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
+> > > > [Thread debugging using libthread_db enabled]
+> > > > Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+> > > > FS_INFO IS 0x55555564cbc0
+> > > > JOSEF: root 9
+> > >
+> > > Huh ok, it's the UUID tree, weird.  I pushed, can you re-run
+> > > tree-recover, you can stop it after it does root 9, I just want to see
+> > > what bytenr it thinks the root node is at.  Thanks,
+> >
+> > (gdb) run rescue init-extent-tree /dev/mapper/dshelf1
+> > Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
+> 
+> Sorry, I need tree-recover, not init-extent-tree.  Thanks,
 
-Sorry, I need tree-recover, not init-extent-tree.  Thanks,
+gdb) run rescue tree-recover /dev/mapper/dshelf1
+Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue
+tree-recover /dev/mapper/dshelf1
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library
+"/lib/x86_64-linux-gnu/libthread_db.so.1".
+FS_INFO IS 0x55555564cbc0
+JOSEF: root 9
+Couldn't find the last root for 8
+FS_INFO AFTER IS 0x55555564cbc0
+Checking root 2 bytenr 67387392
+Checking root 4 bytenr 15645196861440
+Checking root 5 bytenr 13577660252160
+Checking root 7 bytenr 13577819963392
+Checking root 9 bytenr 15645878108160
+Checking root 11221 bytenr 13577562996736
+Checking root 11222 bytenr 15645261905920
+Checking root 11223 bytenr 13576862547968
+Checking root 11224 bytenr 13577126182912
+Checking root 159785 bytenr 6781490577408
+Checking root 159787 bytenr 15645908385792
+Checking root 160494 bytenr 6781491265536
+Checking root 160496 bytenr 11822309965824
+Checking root 161197 bytenr 6781492101120
+Checking root 161199 bytenr 13576850833408
+Checking root 162628 bytenr 15645764812800
+Checking root 162632 bytenr 6781492756480
+Checking root 162645 bytenr 5809981095936
+Checking root 163298 bytenr 15645124263936
+Checking root 163302 bytenr 6781495197696
+Checking root 163303 bytenr 15645365993472
+Checking root 163316 bytenr 6781496393728
+Checking root 163318 bytenr 15645980491776
+Checking root 163916 bytenr 11822437826560
+Checking root 163920 bytenr 11971021275136
+Checking root 163921 bytenr 11971073802240
+Checking root 164620 bytenr 15645434036224
+Checking root 164624 bytenr 15645502210048
+Checking root 164633 bytenr 15645526884352
+Checking root 165098 bytenr 11970667446272
+Checking root 165100 bytenr 11970733621248
+Checking root 165198 bytenr 12511656394752
+Checking root 165200 bytenr 12511677972480
+Checking root 165294 bytenr 13576901328896
+Checking root 165298 bytenr 13577133326336
+Checking root 165299 bytenr 13577191505920
+Checking root 18446744073709551607 bytenr 13576823685120
+Tree recovery finished, you can run check now
+[Inferior 1 (process 6147) exited normally]
+(gdb) 
 
-Josef
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
