@@ -2,166 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2229850D0C2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Apr 2022 11:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE7050D33F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Apr 2022 18:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236338AbiDXJYL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 24 Apr 2022 05:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
+        id S234400AbiDXQX4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 24 Apr 2022 12:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbiDXJYJ (ORCPT
+        with ESMTP id S234404AbiDXQXz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 24 Apr 2022 05:24:09 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B628B3C
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 02:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1650792065;
-        bh=R3PNDa1jvy5Md+op3J90aP/dxeRGOjDngknXGfKMwIo=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=RL2c2fqX4/EC/FrhQKxfyiurDUZ0vBLb5xVD0OMxwr+4qqaRKrGF7JeT1otbKSc19
-         VkK1659+GXif+jb/kFZoyYY9PRxZ12Otrg/UtAmxFjbbIpDKsS6//0MNDxLjx/kOjJ
-         F9cbh2SLTuiash8gP4wXHMk4jijpPfuqE/Ket5Kg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MORAU-1nX3j41S86-00PyX9; Sun, 24
- Apr 2022 11:21:04 +0200
-Message-ID: <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
-Date:   Sun, 24 Apr 2022 17:21:01 +0800
+        Sun, 24 Apr 2022 12:23:55 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502D93AA56
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 09:20:54 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id d3so7954859ilr.10
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 09:20:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3ZaO1F+SQIoBRAGZFF1WOCuPrBbs02qzajwjDE651ZA=;
+        b=VVVbg44WvJxU1sWGjIMNMBh+5TRFwMRhb6FfJebw4TSfaj9B/c0OGJf4+wMigAUILb
+         0cAZlPbl5X+D7E8OT6ZBQXebjz+OTOmyNvOkMyMk12NmbKXmvsGlLPaIAh/i9a7495iR
+         pyfl85Ul8Qew7FbNYlCTjGj+EoJzc7k5vnN3lKN/6ep1yMWclH6BPIUcxoDf2P3vJtTy
+         FCnRWg7yIZ84xQnGI6LGdYs5Df8ha5ZaHgEK2biSs1O/LPHqYoAY3mdmBLE4xN6eLUAb
+         JimM1ndK4q1Dg7g6IdkkrwzyAqS/9T+h9cnt2c03WQKFaO2a9JVC42OUYD9b/jRK4Cxc
+         tbHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3ZaO1F+SQIoBRAGZFF1WOCuPrBbs02qzajwjDE651ZA=;
+        b=OfNQ3kj7czaPdPnO3nkMTCCAUmwRcnSFDZyunHGhzIsnUBfcbAs1rrTL39WsDZYWvn
+         j4dsirqk3YKMtL6j5cPYk4LExF+p44zUSBgyC+UJYkDUqrne+B7oF7mB9IkVzusG1vcs
+         ov/nMF+7qkBBh8jxBCiZOEJqH6x4SoK8miPorV7hfqTUOFzXEz4E1acuhv1LlvSmxGUr
+         cS8HLcpZWCB+MxOliqqJI6ubYBj9wHhX/jSbma9mcFK3hjIZUYjy+z3tXXoBN3ZmYodw
+         2XhajA4yxCDdkWm3nshqs+Op1XUL8c6YDluNwjqN4fEHE+wMYcVBktJi+GZPL/cmN7a/
+         SYEw==
+X-Gm-Message-State: AOAM5332njjqQes8XcknFUYiJw2Pq+uEf1BPOyDEVrdunlrSTuvfBz9l
+        iUFPXBO1GMRcy0AQmWOFRCRCb4qPyqiFkEtvPLdNJgvsodk=
+X-Google-Smtp-Source: ABdhPJxqS1fCGQKdnRAe2PIdhTB7QUn0UWp1xXwZJA/5ny64VJCrWvuPTuSnbmDUzRrQ5mdXMvl0qsf0380f/XMNP4Y=
+X-Received: by 2002:a92:d2ca:0:b0:2ca:ca3a:de89 with SMTP id
+ w10-20020a92d2ca000000b002caca3ade89mr5517767ilg.127.1650817253207; Sun, 24
+ Apr 2022 09:20:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
- BTRFS RAID1 on (currently) openSUSE Leap 15.3
-Content-Language: en-US
-To:     Johannes Kastl <kastl@b1-systems.de>, linux-btrfs@vger.kernel.org
-References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
- <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
- <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VTpyvO62KZltMD4RUL2drK0VdCub9t+GQmzkATrHEXJpcXJmfQy
- RfCZr1ZO/7V77QSbXpGb84+P1DBCe6SCiffDhT6putJ7YAwu7O2lcLNLQ1CLM/bL3LsBfdQ
- VsMMNi+Tt4ij7QUxAIwl7RCNX+1xZBmu/pDHOYEmlYJdkk8nHKWaYQenedRan03UqUEihBC
- 1edi5h0RIsutfagBqdADQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Jrd8XvnRc6k=:2+cC6UHc5mwPJbZ+6ZPNEI
- fHA+chIefObxI4cWdz9KYBHam6voeWU1cSSQPNKNVPYXi4fMdbgq4zNkjtoExFZzSi+fVk3MB
- cLwOj/lQpqCUOz77LRBk5zcHAJ49Z0yz8auurnKQ2Tn3Z+iLNPpupAV2v4unxPtz7lpa7jKuz
- 5agGTP2Ej2gsMs1xO8sqVDVzgFRPfZKncWSdsrTm75B1X8K9gbDsW0V3zpml178kLLmK5UMld
- IyWVybCbn9ZS+bO+ibXagRiN95BrxoR11Cmb7HsOJLIeeMuSWokFSIq1ufb9YTLVjudkH9tmb
- f3ragIy5UYcX7gCUYu2riTRig7AFwo6tqco7quPiKdaDhZ4APx2esmbFGMdnCY5gjvhbi01TG
- taEYAEey4CI8DW5iRFzAKuiGekf1ZXYJfoIJrPceCM0HPYxOt9ckuWJepFb+S3qJtBEoUg0X7
- zcBvXlhTxnFD/kYXiZOmMYYAUGcMY9CP2gfs2BwYKW2+ST2enjPbbU3M/wnSzzm/sqcRGu8ij
- KvZievtSH1Ey+BwY5WP8loPSmt4j22RJNplQEKJGtqcdYaZirnfWu/vywNRt/t7M8XEgLkUd6
- mYcdC79AwcD1qGLJKrDz3el5+N+QGdr4iBCCb3UaCSdrda6ntdgeamJACY2plIm14op8QL+KA
- CUUUWGzP9s8Z6jaJnGaKGdg+ZsZvcXAWc1+WIlTSms13QcXqWhETBqRGsfFgh2CvXIWxxItZ5
- 5Owttz+7djl37wd0NhcdgxbW0AtQA9bcS0tQ8kmZ8QoaAQI9GNDAD+HPHa9QH7N5fUTrCpxfN
- 7T0Nt9zCoNSI1crN832H8dZD9f66zOvJNFJaCKR7WEQc4Wc54jnoE8KJibfxX3qStU89MwCw1
- QeJMFh7utDjqup5ixvpLsiij2oCFjnfj4j4nDEdk9+slIuS/G8ea+R9MK/AyOzvNlLoYjgrEO
- XgB96pkHd4p45HLTIZK4IaXGE6h82QgRkhgHw+N4g0mZBGqhgcjscRcx/Nds5MDjvIgco/ikt
- 8LH1VgUC0M6WIUDPnYofeM5HsnGLM1Lsk2ym1Xpv3p2/4FOMlkyXQZ34vHthba5qeGsM4BUHT
- yoDk9z/AToEqAo=
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAEzrpqf0Gz=UuJ83woXOsRvcdC7vhH-b2UphuG-1+dUOiRc2Kw@mail.gmail.com>
+ <YkzWAZtf7rcY/d+7@hungrycats.org> <20220406000844.GK28707@merlins.org>
+ <Ykzvoz47Rvknw7aH@hungrycats.org> <20220406040913.GE3307770@merlins.org>
+ <Yk3W88Eyh0pSm9mQ@hungrycats.org> <20220406191317.GC14804@merlins.org>
+ <20220422184850.GX13115@merlins.org> <CAEzrpqfhCHL=pWXvQK9rYftQFe+Z6CyQPwRYxgCaX1w6JaqOTA@mail.gmail.com>
+ <20220422200115.GV11868@merlins.org> <20220423201225.GZ13115@merlins.org> <CAEzrpqeo4U4SXH7LVz_Yx8ydX5BiqzFNJmAhQv1jCpjOessjHA@mail.gmail.com>
+In-Reply-To: <CAEzrpqeo4U4SXH7LVz_Yx8ydX5BiqzFNJmAhQv1jCpjOessjHA@mail.gmail.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Sun, 24 Apr 2022 12:20:42 -0400
+Message-ID: <CAEzrpqdHAS2E1iuoSFVX-A-T-vsMoCo6CoW0ebw42vkCjqpMPw@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, Apr 23, 2022 at 4:53 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On Sat, Apr 23, 2022 at 4:12 PM Marc MERLIN <marc@merlins.org> wrote:
+> >
+> > On Fri, Apr 22, 2022 at 01:01:15PM -0700, Marc MERLIN wrote:
+> > > > Now if we get to Monday and it's still running I can take a crack at
+> > > > making it faster.  I was hoping it would only take a day or two, but
+> > > > we're balancing me trying to make it better and possibly fucking it up
+> > > > with letting it take the rest of our lives but be correct.  Thanks,
+> > >
+> > > Makes sense. I don't need faster, and it may not be able to go faster
+> > > anyway, it's a lot of data. Just wanted to make sure the output and
+> > > relative slow results were expected.
+> >
+> > Looking at the output, is there any way I can figure out if it's at 5%
+> > or 80% completion?
+> >
+> > tree backref 238026752 parent 236814336 not found in extent tree
+> > backpointer mismatch on [238026752 16384]
+> > adding new tree backref on start 238026752 len 16384 parent 236814336 root 236814336
+> > Repaired extent references for 238026752
+> > ref mismatch on [238043136 16384] extent item 0, found 1
+> > tree backref 238043136 parent 236814336 not found in extent tree
+> > backpointer mismatch on [238043136 16384]
+> > adding new tree backref on start 238043136 len 16384 parent 236814336 root 236814336
+> > Repaired extent references for 238043136
+> > ref mismatch on [238059520 16384] extent item 0, found 1
+> > tree backref 238059520 parent 236814336 not found in extent tree
+> > backpointer mismatch on [238059520 16384]
+> > adding new tree backref on start 238059520 len 16384 parent 236814336 root 236814336
+> >
+>
+> Hmm I don't know, that's byte 227, but you're in fs trees now, so
+> hopefully soon?  I've got some free time, let me rewrite this to be
+> less stupid and see if I can get it done before your thing finishes,
+> and I'll add some sort of progress indicator.  Thanks,
+>
 
+Alright you can kill the command, pull my tree, then run
 
-On 2022/4/24 17:10, Johannes Kastl wrote:
-> Hi Qu,
->
-> On 24.04.22 at 01:07 Qu Wenruo wrote:
->
->> No need to run btrfs check on each device.
->>
->> Btrfs check will assemble the array automatically (just like kernel),
->> and check the fs on all involved devices.
->> Thus no need to run the same check on all devices.
->
-> OK, good to know. That saves half the time :-)
->
->>> The output of the check is below. The TL;DR was that I should run 'btr=
-fs
->>> rescue fix-device-size' to fix a "minor" issue.
->>>
->>> Unfortunately, running this command fails:
->>>
->>>> root dumbo:/root # btrfs rescue fix-device-size /dev/sdc1
->>>> Unable to find block group for 0
->>>> Unable to find block group for 0
->>>> Unable to find block group for 0
->>
->> This is an unique error message, which can only be triggered when
->> btrfs-progs failed to find a block group with enough free space.
->
-> So would resizing the filesystem (to 8GiB) workaround this "limitation",
-> so afterwards it could properly fix the device size?
+btrfs rescue init-extent-tree <blah>
 
-I'm not yet sure if it's a bug in progs causing false ENOSPC, or really
-there isn't many space left.
+This do the straight re-init of the extent tree without all the
+looping and extra stuff that fsck does, so hopefully will be faster?
+Also it keeps track of how many bytes we've processed, as well as how
+many bytes we may have to process, so you'll get a better feel for the
+progress.  I have a scratch fs here that has like 30gib of metadata
+with 1tib of data and it took around 30 seconds to run.  It has no
+snapshots, I ran it on a fsstress generated fs with like 5k snapshots
+and it took about a minute, but with significantly less metadata/data.
 
-For the former case, no matter how much free space you have, it won't help=
-.
+Once you run this you'll still have to run --repair, but it shouldn't
+have to touch the extent tree.  If you see it messing with the extent
+tree stop it and let me know what it's complaining about and I'll fix
+it up.  I'm pretty sure my thing is going to work, but your fs is more
+complex than I can generate on the fly.
 
-For the latter case, it would definitely help.
+Also, the indicator may show "processed" as less than "possible" bytes
+when it moves onto the next root, this is normal for snapshots, if
+we've already processed a subtree we won't walk down it, so it's fine
+if you see that.  Thanks,
 
-Thanks,
-Qu
-
->
->>>> btrfs unable to find ref byte nr 2959295381504 parent 0 root 3=C2=A0 =
-owner
->>>> 1 offset 0
->>>> transaction.c:168: btrfs_commit_transaction: BUG_ON `ret` triggered,
->>>> value -5
->>
->> So at least no damage done to the good and innocent (but a little old)
->> fs.
->
-> Puuuh, nice to hear that. :-)
->
->>> So, my question is what I should do:
->>>
->>> Do I need to run another command to fix this issue?
->>
->> Not really.
->>
->> But if you want to really remove the warning, please update btrfs-progs
->> first, to the latest stable version (v5.16.2), and try again.
->
-> I'll have a look if I can easily install a newer version of btrfsprogs
-> on this machine.
->
->> The involved progs, v4.19 is a little old, and IIRC we had some ENOSPC
->> related fixed in progs, thus if above problem a bug caused false ENOSPC=
-,
->> it should be fixed now.
->
-> If I can install a newer version, I'll let you know if the bug disappear=
-s.
->
->> You can ignore it for now.
->> It's not a big deal and kernel can handle it without problem.
->
-> That's good.
->
->>> Should I copy all of the data to another disk, and create a new BTRFS
->>> RAID1 from scratch? (Which of course I would like to avoid, if
->>> possible...)
->>
->> Definitely no.
->
-> Perfect.
->
-> Thanks for your reply! Have a nice day.
->
-> Kind Regards,
-> Johannes
->
+Josef
