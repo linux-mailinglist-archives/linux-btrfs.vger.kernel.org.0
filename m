@@ -2,57 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D704150CE1A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Apr 2022 02:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73A050D0BC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Apr 2022 11:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbiDWXwQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Apr 2022 19:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        id S235287AbiDXJNd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 24 Apr 2022 05:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbiDWXwQ (ORCPT
+        with ESMTP id S232261AbiDXJNa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Apr 2022 19:52:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F14E26113;
-        Sat, 23 Apr 2022 16:49:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3B4C3B80CFD;
-        Sat, 23 Apr 2022 23:49:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98098C385A0;
-        Sat, 23 Apr 2022 23:49:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1650757755;
-        bh=Ph02Z8NmFW9Xa0ZFqyBY0dnHe4IOaDafx/zUg80yRtQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TBBj3bG5S4VvgKxTlmXV4+9CZ/ALUdKJ2u2xj63Cg4+MxNFtYT+//RNFEyjpfXer5
-         rUVntarp+N8WQB8Ou/BXv1jECuyiVry1h9+zA/i3gjYAiKdNq5S0v8xpWGy/+VYN7W
-         gLflr7woNIoTmfGwtfzCowFogIhRN466ItRYoOkw=
-Date:   Sat, 23 Apr 2022 16:49:13 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Will Deacon <will@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] mm: Add fault_in_subpage_writeable() to probe at
- sub-page granularity
-Message-Id: <20220423164913.3f0c92f7ad6ec718ea7c0360@linux-foundation.org>
-In-Reply-To: <20220423100751.1870771-2-catalin.marinas@arm.com>
-References: <20220423100751.1870771-1-catalin.marinas@arm.com>
-        <20220423100751.1870771-2-catalin.marinas@arm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        Sun, 24 Apr 2022 05:13:30 -0400
+Received: from mx2.b1-systems.de (mx2.b1-systems.de [159.69.135.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13384644E4
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 02:10:29 -0700 (PDT)
+Message-ID: <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+Date:   Sun, 24 Apr 2022 11:10:26 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Content-Language: de-DE
+To:     linux-btrfs@vger.kernel.org
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+From:   Johannes Kastl <kastl@b1-systems.de>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+In-Reply-To: <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------o185Zeno2510r0yg7tE6x8jC"
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,68 +41,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, 23 Apr 2022 11:07:49 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------o185Zeno2510r0yg7tE6x8jC
+Content-Type: multipart/mixed; boundary="------------7d6WXI6aghw5ophwdNj6i11B";
+ protected-headers="v1"
+From: Johannes Kastl <kastl@b1-systems.de>
+To: linux-btrfs@vger.kernel.org
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+In-Reply-To: <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
 
-> On hardware with features like arm64 MTE or SPARC ADI, an access fault
-> can be triggered at sub-page granularity. Depending on how the
-> fault_in_writeable() function is used, the caller can get into a
-> live-lock by continuously retrying the fault-in on an address different
-> from the one where the uaccess failed.
-> 
-> In the majority of cases progress is ensured by the following
-> conditions:
-> 
-> 1. copy_to_user_nofault() guarantees at least one byte access if the
->    user address is not faulting.
-> 
-> 2. The fault_in_writeable() loop is resumed from the first address that
->    could not be accessed by copy_to_user_nofault().
-> 
-> If the loop iteration is restarted from an earlier (initial) point, the
-> loop is repeated with the same conditions and it would live-lock.
-> 
-> Introduce an arch-specific probe_subpage_writeable() and call it from
-> the newly added fault_in_subpage_writeable() function. The arch code
-> with sub-page faults will have to implement the specific probing
-> functionality.
-> 
-> Note that no other fault_in_subpage_*() functions are added since they
-> have no callers currently susceptible to a live-lock.
-> 
-> ...
->
-> --- a/include/linux/uaccess.h
-> +++ b/include/linux/uaccess.h
-> @@ -231,6 +231,28 @@ static inline bool pagefault_disabled(void)
->   */
->  #define faulthandler_disabled() (pagefault_disabled() || in_atomic())
->  
-> +#ifndef CONFIG_ARCH_HAS_SUBPAGE_FAULTS
-> +
-> +/**
-> + * probe_subpage_writeable: probe the user range for write faults at sub-page
-> + *			    granularity (e.g. arm64 MTE)
-> + * @uaddr: start of address range
-> + * @size: size of address range
-> + *
-> + * Returns 0 on success, the number of bytes not probed on fault.
-> + *
-> + * It is expected that the caller checked for the write permission of each
-> + * page in the range either by put_user() or GUP. The architecture port can
-> + * implement a more efficient get_user() probing if the same sub-page faults
-> + * are triggered by either a read or a write.
-> + */
-> +static inline size_t probe_subpage_writeable(void __user *uaddr, size_t size)
+--------------7d6WXI6aghw5ophwdNj6i11B
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-It's `char __user *' at the other definition.
+SGkgUXUsDQoNCk9uIDI0LjA0LjIyIGF0IDAxOjA3IFF1IFdlbnJ1byB3cm90ZToNCg0KPiBO
+byBuZWVkIHRvIHJ1biBidHJmcyBjaGVjayBvbiBlYWNoIGRldmljZS4NCj4gDQo+IEJ0cmZz
+IGNoZWNrIHdpbGwgYXNzZW1ibGUgdGhlIGFycmF5IGF1dG9tYXRpY2FsbHkgKGp1c3QgbGlr
+ZSBrZXJuZWwpLA0KPiBhbmQgY2hlY2sgdGhlIGZzIG9uIGFsbCBpbnZvbHZlZCBkZXZpY2Vz
+Lg0KPiBUaHVzIG5vIG5lZWQgdG8gcnVuIHRoZSBzYW1lIGNoZWNrIG9uIGFsbCBkZXZpY2Vz
+Lg0KDQpPSywgZ29vZCB0byBrbm93LiBUaGF0IHNhdmVzIGhhbGYgdGhlIHRpbWUgOi0pDQoN
+Cj4+IFRoZSBvdXRwdXQgb2YgdGhlIGNoZWNrIGlzIGJlbG93LiBUaGUgVEw7RFIgd2FzIHRo
+YXQgSSBzaG91bGQgcnVuICdidHJmcw0KPj4gcmVzY3VlIGZpeC1kZXZpY2Utc2l6ZScgdG8g
+Zml4IGEgIm1pbm9yIiBpc3N1ZS4NCj4+DQo+PiBVbmZvcnR1bmF0ZWx5LCBydW5uaW5nIHRo
+aXMgY29tbWFuZCBmYWlsczoNCj4+DQo+Pj4gcm9vdCBkdW1ibzovcm9vdCAjIGJ0cmZzIHJl
+c2N1ZSBmaXgtZGV2aWNlLXNpemUgL2Rldi9zZGMxDQo+Pj4gVW5hYmxlIHRvIGZpbmQgYmxv
+Y2sgZ3JvdXAgZm9yIDANCj4+PiBVbmFibGUgdG8gZmluZCBibG9jayBncm91cCBmb3IgMA0K
+Pj4+IFVuYWJsZSB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciAwDQo+IA0KPiBUaGlzIGlzIGFu
+IHVuaXF1ZSBlcnJvciBtZXNzYWdlLCB3aGljaCBjYW4gb25seSBiZSB0cmlnZ2VyZWQgd2hl
+bg0KPiBidHJmcy1wcm9ncyBmYWlsZWQgdG8gZmluZCBhIGJsb2NrIGdyb3VwIHdpdGggZW5v
+dWdoIGZyZWUgc3BhY2UuDQoNClNvIHdvdWxkIHJlc2l6aW5nIHRoZSBmaWxlc3lzdGVtICh0
+byA4R2lCKSB3b3JrYXJvdW5kIHRoaXMgImxpbWl0YXRpb24iLCBzbyANCmFmdGVyd2FyZHMg
+aXQgY291bGQgcHJvcGVybHkgZml4IHRoZSBkZXZpY2Ugc2l6ZT8NCg0KPj4+IGJ0cmZzIHVu
+YWJsZSB0byBmaW5kIHJlZiBieXRlIG5yIDI5NTkyOTUzODE1MDQgcGFyZW50IDAgcm9vdCAz
+wqAgb3duZXINCj4+PiAxIG9mZnNldCAwDQo+Pj4gdHJhbnNhY3Rpb24uYzoxNjg6IGJ0cmZz
+X2NvbW1pdF90cmFuc2FjdGlvbjogQlVHX09OIGByZXRgIHRyaWdnZXJlZCwNCj4+PiB2YWx1
+ZSAtNQ0KPiANCj4gU28gYXQgbGVhc3Qgbm8gZGFtYWdlIGRvbmUgdG8gdGhlIGdvb2QgYW5k
+IGlubm9jZW50IChidXQgYSBsaXR0bGUgb2xkKSBmcy4NCg0KUHV1dWgsIG5pY2UgdG8gaGVh
+ciB0aGF0LiA6LSkNCg0KPj4gU28sIG15IHF1ZXN0aW9uIGlzIHdoYXQgSSBzaG91bGQgZG86
+DQo+Pg0KPj4gRG8gSSBuZWVkIHRvIHJ1biBhbm90aGVyIGNvbW1hbmQgdG8gZml4IHRoaXMg
+aXNzdWU/DQo+IA0KPiBOb3QgcmVhbGx5Lg0KPiANCj4gQnV0IGlmIHlvdSB3YW50IHRvIHJl
+YWxseSByZW1vdmUgdGhlIHdhcm5pbmcsIHBsZWFzZSB1cGRhdGUgYnRyZnMtcHJvZ3MNCj4g
+Zmlyc3QsIHRvIHRoZSBsYXRlc3Qgc3RhYmxlIHZlcnNpb24gKHY1LjE2LjIpLCBhbmQgdHJ5
+IGFnYWluLg0KDQpJJ2xsIGhhdmUgYSBsb29rIGlmIEkgY2FuIGVhc2lseSBpbnN0YWxsIGEg
+bmV3ZXIgdmVyc2lvbiBvZiBidHJmc3Byb2dzIG9uIHRoaXMgDQptYWNoaW5lLg0KDQo+IFRo
+ZSBpbnZvbHZlZCBwcm9ncywgdjQuMTkgaXMgYSBsaXR0bGUgb2xkLCBhbmQgSUlSQyB3ZSBo
+YWQgc29tZSBFTk9TUEMNCj4gcmVsYXRlZCBmaXhlZCBpbiBwcm9ncywgdGh1cyBpZiBhYm92
+ZSBwcm9ibGVtIGEgYnVnIGNhdXNlZCBmYWxzZSBFTk9TUEMsDQo+IGl0IHNob3VsZCBiZSBm
+aXhlZCBub3cuDQoNCklmIEkgY2FuIGluc3RhbGwgYSBuZXdlciB2ZXJzaW9uLCBJJ2xsIGxl
+dCB5b3Uga25vdyBpZiB0aGUgYnVnIGRpc2FwcGVhcnMuDQoNCj4gWW91IGNhbiBpZ25vcmUg
+aXQgZm9yIG5vdy4NCj4gSXQncyBub3QgYSBiaWcgZGVhbCBhbmQga2VybmVsIGNhbiBoYW5k
+bGUgaXQgd2l0aG91dCBwcm9ibGVtLg0KDQpUaGF0J3MgZ29vZC4NCg0KPj4gU2hvdWxkIEkg
+Y29weSBhbGwgb2YgdGhlIGRhdGEgdG8gYW5vdGhlciBkaXNrLCBhbmQgY3JlYXRlIGEgbmV3
+IEJUUkZTDQo+PiBSQUlEMSBmcm9tIHNjcmF0Y2g/IChXaGljaCBvZiBjb3Vyc2UgSSB3b3Vs
+ZCBsaWtlIHRvIGF2b2lkLCBpZiBwb3NzaWJsZS4uLikNCj4gDQo+IERlZmluaXRlbHkgbm8u
+DQoNClBlcmZlY3QuDQoNClRoYW5rcyBmb3IgeW91ciByZXBseSEgSGF2ZSBhIG5pY2UgZGF5
+Lg0KDQpLaW5kIFJlZ2FyZHMsDQpKb2hhbm5lcw0KDQotLSANCkpvaGFubmVzIEthc3RsDQpM
+aW51eCBDb25zdWx0YW50ICYgVHJhaW5lcg0KVGVsLjogKzQ5ICgwKSAxNTEgMjM3MiA1ODAy
+DQpNYWlsOiBrYXN0bEBiMS1zeXN0ZW1zLmRlDQoNCkIxIFN5c3RlbXMgR21iSA0KT3N0ZXJm
+ZWxkc3RyYcOfZSA3IC8gODUwODggVm9oYnVyZw0KaHR0cDovL3d3dy5iMS1zeXN0ZW1zLmRl
+DQpHRjogUmFscGggRGVobmVyDQpVbnRlcm5laG1lbnNzaXR6OiBWb2hidXJnIC8gQUc6IElu
+Z29sc3RhZHQsSFJCIDM1MzcNCg==
 
-> +{
-> +	return 0;
-> +}
-> +
-> +#endif /* CONFIG_ARCH_HAS_SUBPAGE_FAULTS */
-> +
->  #ifndef ARCH_HAS_NOCACHE_UACCESS
->  
-> ...
->
+--------------7d6WXI6aghw5ophwdNj6i11B--
+
+--------------o185Zeno2510r0yg7tE6x8jC
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEOjtDOPXdIVAWcUziyeav2MG3z/wFAmJlFAIFAwAAAAAACgkQyeav2MG3z/wA
+lQ/+IbpToe8E8Wsn8CVZiCKayft6gpg1rX16lTt81IIjzyJvXB+yxU5i96I9DwzVo48xmoKe7MBX
+4JP7EBwtERuJQOXbE9hznc4wY3QgnrGSjnx58lQ2XgRTgVMc8Ej9Jn7alD3wN5w6eCJ2/gNu2MN4
+hYZxlhCVnyRk9b30USPaJdMocot4s7MVrUg8JfZH40v4I+xOH7tz7yMb9NnWqLKUa1sjyW7rYgzu
+8zCFXOTS/T8GaogMiupTXs1YiND8hpFKTAPD21U7BjCt6Rsk3AIUYgFTX7DtYXQA2/BHKXmn1s2h
+Y7dfPL7B5SefboHtyhnM2KAobdWx+ITUW25TsF905vDAepTko2MHqpvORS8ytZlCv88zMH25l2Ag
+VRi0gvpd6knp2vshkGtoqg6DVu7cEgRm3qIExhF7fRQcy9hRj5yEpQ80TFjlqpX8j0Npd0x9nDcT
+oACSBVL0MUgYde3cKBgDarTrTUI6sA6z95/UvEP9MMSVCr6QkShyLSFqgyYNaBiMSVQgML8AIgPK
+4JwRVP+pxdhm3PmXeripj+OyOysMrPd5mlzB9sgDphJLGqzIsYc/N/u4zXQcpb2/O5ag6JtyPXz/
+/caFBboftwf1a3WtZRSahxy+m9gXjf6qIAp+I8zhl/45CxQJ8lmUMqovbWYqEbmhAguv0hBumTPJ
+5s4=
+=zXKB
+-----END PGP SIGNATURE-----
+
+--------------o185Zeno2510r0yg7tE6x8jC--
