@@ -2,88 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE8450D5FD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Apr 2022 01:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954C350D621
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Apr 2022 02:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239902AbiDXXa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 24 Apr 2022 19:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S239987AbiDYA1T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 24 Apr 2022 20:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239899AbiDXXaS (ORCPT
+        with ESMTP id S238418AbiDYA1S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 24 Apr 2022 19:30:18 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BCC6A045
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 16:27:13 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id y85so14189884iof.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 16:27:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3rOgHzJrWeliCnySJ4m6HKwOZAYR61+42192DyFg9FE=;
-        b=8JEoXoEFzNuV/xI/6I1Z5t3tv4zw9Z3ysxHi8W+Sn4TPoQIq7BWBt6rmjPRjACnlHM
-         XX38p0eS7TeqPBCLv6v4TMrLoAXWfZEwbFApwkhHjB4azwomBJ4mPbClvbMwAnoE9Gfc
-         cECrZU9dqRdnvaCTnD86qqzJUYoHdvcXDmvetO9CCgdFQ0/FqcmSFsQQBup95q0OlRlF
-         R/Q1bg/qrIihnAkbTXBTRPKilq1O9NiGHYu3iXURHujOEsLZ93mp0wy6XzY6PsgnmKpm
-         TjGlTIac7gchMTcUCwtY/My9P2vHvw+uBMwGUUvJE/qgT6VEbh55CwaLEuE9F1A1IM14
-         ufTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3rOgHzJrWeliCnySJ4m6HKwOZAYR61+42192DyFg9FE=;
-        b=whDvG1Ib9KQ4TZbhyKMpvfea9VTeIP4ujAEtAoYQH97KJ8nRWolI5aHEMR0u/FXSgQ
-         y0XOD0O7tg0cnCN7Wznr5paUa4iQRai40hwdkXl/NEA7HuR61JC/M+p0Lno/Q5wEYhqM
-         XvINDuGlDU8E/WZ9DJviQB+sbW0cgAlJ5bOmUImzdRmZaR1VApS4d2ylyqrX2EyGdyn8
-         Mg2CxZN7bw4HtCn7hoHJ/XkbmtN7lFHNFQ7JhATQb/iYw3GD8vlT69TIJipJgblV6tNK
-         SVAyKLmQKHHaEzgdLvxUa7ONnpAlemSU0cfTRq8UMXPrybzJPjtQnT4KPKnoWdZ2lYui
-         XphA==
-X-Gm-Message-State: AOAM531WIy4Te/zrhedclI3DTCto5WZmKiDD821uuh8Obx7HSH5NZKac
-        yaSszSpIIP8ZQ5gWLtI8JX/oZZv7YlI/h+6vVRttoZp94nQ=
-X-Google-Smtp-Source: ABdhPJxBcsTQvkq9OCr2hy4OOB6Bq0da3xMmfz4ITC/yj/vy++7iuntEIkcnNpFwM/XpATE7JnL4hS/uLJsnWyrCrgY=
-X-Received: by 2002:a05:6602:14ce:b0:657:2bbc:ade8 with SMTP id
- b14-20020a05660214ce00b006572bbcade8mr6096424iow.83.1650842833049; Sun, 24
- Apr 2022 16:27:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220424203133.GA29107@merlins.org> <CAEzrpqemyJ8PS5-eF3iSKugy6u3UAzkwwM=o+bHPOh2_7aPHFA@mail.gmail.com>
- <20220424205454.GB29107@merlins.org> <CAEzrpqeVQQ+42Lnn9+3gevnRgrU=vsBEwczF41gmTukn=a2ycw@mail.gmail.com>
- <20220424210732.GC29107@merlins.org> <CAEzrpqcMV+paWShgAnF8d9WaSQ1Fd5R_DZPRQp-+VNsJGDoASg@mail.gmail.com>
- <20220424212058.GD29107@merlins.org> <CAEzrpqcBvh0MC6WeXQ+-80igZhg6t68OcgZnKi6xu+r=njifeA@mail.gmail.com>
- <20220424223819.GE29107@merlins.org> <CAEzrpqdBWMcai2uMe=kPxYshUe8wV0YX3Ge1pZW8aG_BSO-i-w@mail.gmail.com>
- <20220424231446.GF29107@merlins.org>
-In-Reply-To: <20220424231446.GF29107@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Sun, 24 Apr 2022 19:27:02 -0400
-Message-ID: <CAEzrpqcGy3aac6Lb7PKux+nA2KzDgbPSMyjYG6B-0TbgXXP=-A@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
+        Sun, 24 Apr 2022 20:27:18 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5559366AB
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Apr 2022 17:24:16 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nimWV-0001YL-LM by authid <merlin>; Sun, 24 Apr 2022 17:24:15 -0700
+Date:   Sun, 24 Apr 2022 17:24:15 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220425002415.GG29107@merlins.org>
+References: <20220424205454.GB29107@merlins.org>
+ <CAEzrpqeVQQ+42Lnn9+3gevnRgrU=vsBEwczF41gmTukn=a2ycw@mail.gmail.com>
+ <20220424210732.GC29107@merlins.org>
+ <CAEzrpqcMV+paWShgAnF8d9WaSQ1Fd5R_DZPRQp-+VNsJGDoASg@mail.gmail.com>
+ <20220424212058.GD29107@merlins.org>
+ <CAEzrpqcBvh0MC6WeXQ+-80igZhg6t68OcgZnKi6xu+r=njifeA@mail.gmail.com>
+ <20220424223819.GE29107@merlins.org>
+ <CAEzrpqdBWMcai2uMe=kPxYshUe8wV0YX3Ge1pZW8aG_BSO-i-w@mail.gmail.com>
+ <20220424231446.GF29107@merlins.org>
+ <CAEzrpqcGy3aac6Lb7PKux+nA2KzDgbPSMyjYG6B-0TbgXXP=-A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqcGy3aac6Lb7PKux+nA2KzDgbPSMyjYG6B-0TbgXXP=-A@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Apr 24, 2022 at 7:14 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Sun, Apr 24, 2022 at 06:56:01PM -0400, Josef Bacik wrote:
-> > I feel like this thing is purposefully changing itself between each
-> > run so I can't get a grasp on wtf is going on.  I pushed some stuff,
-> > lets see how that goes.  Thanks,
->
-> After all the tests we did, is it possible that some damaged the FS
-> further?
->
+On Sun, Apr 24, 2022 at 07:27:02PM -0400, Josef Bacik wrote:
+> On Sun, Apr 24, 2022 at 7:14 PM Marc MERLIN <marc@merlins.org> wrote:
+> >
+> > On Sun, Apr 24, 2022 at 06:56:01PM -0400, Josef Bacik wrote:
+> > > I feel like this thing is purposefully changing itself between each
+> > > run so I can't get a grasp on wtf is going on.  I pushed some stuff,
+> > > lets see how that goes.  Thanks,
+> >
+> > After all the tests we did, is it possible that some damaged the FS
+> > further?
+> >
+> 
+> That's the thing, we're literally deleting the entire tree and
+> starting over, it should do the same thing every time.  I pushed
+> another fix, I think I've been messing up the buffers and that's why
+> we're getting random values. Lets try this again,
 
-That's the thing, we're literally deleting the entire tree and
-starting over, it should do the same thing every time.  I pushed
-another fix, I think I've been messing up the buffers and that's why
-we're getting random values. Lets try this again,
+Gotcha.
 
-Josef
+(gdb) run rescue init-extent-tree /dev/mapper/dshelf1
+Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+FS_INFO IS 0x55555564cbc0
+JOSEF: root 9
+checksum verify failed on 15645878108160 wanted 0x1beaa67b found 0x27edb2c4
+Couldn't find the last root for 8
+checksum verify failed on 58720256 wanted 0x39dcdd2a found 0x79b62995
+checksum verify failed on 58720256 wanted 0x39dcdd2a found 0x79b62995
+checksum verify failed on 58720256 wanted 0x39dcdd2a found 0x79b62995
+checksum verify failed on 58720256 wanted 0x39dcdd2a found 0x79b62995
+checksum verify failed on 58720256 wanted 0x39dcdd2a found 0x79b62995
+checksum verify failed on 58720256 wanted 0x39dcdd2a found 0x79b62995
+(...)
+checksum verify failed on 58720256 wanted 0x39dcdd2a found 0x79b62995
+FS_INFO AFTER IS 0x55555564cbc0
+Walking all our trees and pinning down the currently accessible blocks
+Clearing the extent root and re-init'ing the block groups
+inserting block group 12582912
+inserting block group 20971520
+inserting block group 29360128
+inserting block group 1103101952
+(...)
+inserting block group 345237356544
+inserting block group 346311098368
+inserting block group 347384840192
+inserting block group 348458582016
+inserting block group 349532323840
+inserting block group 350606065664
+inserting block group 351679807488
+inserting block group 352753549312
+inserting block group 353827291136
+Ignoring transid failure
+Ignoring transid failure
+ERROR: Error adding block group -17
+ERROR: commit_root already set when starting transaction
+WARNING: reserved space leaked, flag=0x4 bytes_reserved=81920
+extent buffer leak: start 67469312 len 16384
+extent buffer leak: start 29540352 len 16384
+WARNING: dirty eb leak (aborted trans): start 29540352 len 16384
+extent buffer leak: start 29589504 len 16384
+WARNING: dirty eb leak (aborted trans): start 29589504 len 16384
+extent buffer leak: start 29655040 len 16384
+WARNING: dirty eb leak (aborted trans): start 29655040 len 16384
+Init extent tree failed
+[Inferior 1 (process 6259) exited with code 0357]
+(gdb) 
+
+
+I ran it a second time and got the same output
+
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
