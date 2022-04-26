@@ -2,48 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDADC50ED95
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 02:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1702650EE12
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 03:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239228AbiDZAbN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Apr 2022 20:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S239681AbiDZB1u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Apr 2022 21:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233656AbiDZAbM (ORCPT
+        with ESMTP id S240933AbiDZB1s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Apr 2022 20:31:12 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAC93DDDE
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Apr 2022 17:28:06 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nj93k-0007Mn-U7 by authid <merlin>; Mon, 25 Apr 2022 17:28:04 -0700
-Date:   Mon, 25 Apr 2022 17:28:04 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220426002804.GI29107@merlins.org>
-References: <20220424210732.GC29107@merlins.org>
- <CAEzrpqcMV+paWShgAnF8d9WaSQ1Fd5R_DZPRQp-+VNsJGDoASg@mail.gmail.com>
- <20220424212058.GD29107@merlins.org>
- <CAEzrpqcBvh0MC6WeXQ+-80igZhg6t68OcgZnKi6xu+r=njifeA@mail.gmail.com>
- <20220424223819.GE29107@merlins.org>
- <CAEzrpqdBWMcai2uMe=kPxYshUe8wV0YX3Ge1pZW8aG_BSO-i-w@mail.gmail.com>
- <20220424231446.GF29107@merlins.org>
- <CAEzrpqcGy3aac6Lb7PKux+nA2KzDgbPSMyjYG6B-0TbgXXP=-A@mail.gmail.com>
- <20220425002415.GG29107@merlins.org>
- <CAEzrpqcQkiMJt1B4Bx9NrCcRys1MD+_5Y3riActXYC6RQrkakw@mail.gmail.com>
+        Mon, 25 Apr 2022 21:27:48 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FAC11F949
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Apr 2022 18:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1650936273;
+        bh=izw8WLtlzi+e1qatV0hKMFD1xV1kRpUGNllZFuR3uCE=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=kouTjqp7Ed/pEWwuzmmcdV3Edw7QmFOzqdFSoQrMLkCz/008p1ypwXoBKGP4HYAQO
+         GWZ9KsYWqC/finOjj/Vgb0THqKblMBlUcL0Tob8zBe6j8yRfF+kyrnrvweFP9r9hCW
+         KqLzGMlKfjY4imFhSLag6QAGBCoBzsgkhGi0a88Y=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MsHns-1o2TBC1xOM-00toK0; Tue, 26
+ Apr 2022 03:24:33 +0200
+Message-ID: <2912410e-6b45-7058-dc3b-4cfaee07e8a2@gmx.com>
+Date:   Tue, 26 Apr 2022 09:24:28 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqcQkiMJt1B4Bx9NrCcRys1MD+_5Y3riActXYC6RQrkakw@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Qu Wenruo <wqu@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org
+References: <20220425075418.2192130-4-hch@lst.de>
+ <62f71a43-8167-f29f-8e9f-d95bc6667e0e@gmx.com>
+ <20220425091920.GC16446@lst.de>
+ <458ba4e0-15f3-93e4-bc17-ae464bdf13e7@gmx.com>
+ <20220425110928.GA24430@lst.de>
+ <bade7fa8-d95b-e0e8-0af8-e40fec341789@gmx.com>
+ <20220425111925.GA25233@lst.de>
+ <af44fee8-deb9-a3e2-a04f-06dbcc16b6c0@gmx.com>
+ <20220425113458.GA26412@lst.de>
+ <9d6e5424-e872-7767-e1c7-6eb35d53250e@suse.com>
+ <20220425171701.GA16295@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH 03/10] btrfs: split btrfs_submit_data_bio
+In-Reply-To: <20220425171701.GA16295@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OT3GvHlrpDpDq1CEBDRxJGd/FmcY/RW2ZbMz7+qJOLJ3iVc+fty
+ GP4cyrG+a69jJSOL6EsdlSlYwT0Hz6wkSrcaFUPicq7szSMkZ01zcwoHZ0KeP5vlfbh7zrB
+ UnT96q3dlcliw/IbFIx8GXhB22YiaGZ2VXgJjHj20v+sx+yG3s4ObxFWrcpOeV5F1f9mUfy
+ Iqe1UaOauvWUMWugh70Gw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bBsyEmTpIjc=:CL4PM+rqgiwlNva5mvEWXi
+ lacVQb37VKsReqMq3GIAVr1Y7Pn/ZQS+Y7oNriQvpRpW5m3Zqk9sJGc9tm5d6GoAdKwnrTKiW
+ BGC6AUIVMZu4LNhgPMe4vfqux9p//eHjZj2vInWEzfFshkFiNDNBgsQapKHXD7w0MP/uCdw0m
+ JSGPUfcbAcaV1FAcO9GKJBknEmqtmB/3GbFkc/RlWawdDx/hpF9WAXdHfCtWyMjiL7uPaRwZv
+ Kd2mmRta1r2lJS3lAHhEu04vpbFWmcWgjmKS1hV49srS8mlFuOEH4CcZqGfFSMz116LR7Pzim
+ 5uJyKb/QytY9cUNtpIxz+tcps7eXyg/yVLXWKGYFYEgJNv+2H8yc26Bq7ihErtXSDfo+OwFEa
+ 99RPKXzNUw9qF+wH4D5uMSddYL4dFZWAgXO7JX/hy1RUvESFcbQpR8/4SIW2VnpKsQ8PXSxme
+ iQHn01okdkFDAGcPrn+t+Cgc+sx2qKRta7dNkSKKxsf6zazMq17aZamrKd+ZDyf4aWbqrRWp2
+ TGC0SW1iGfG7yWXTXfea+WTY8+RldKHOj35g8x6BqHu2X9ILYvWfQmYnEXx+GD2eYWM+I9wls
+ s/VGyTGyt9xFgRrVeetvR0tJ1ZXDP76RQgC5KURqzJv+UuCObPl3MtQsQ42uv34rP3OnZGeQg
+ /9ghqUVxQwmP/6fhWsTiX03PH8UV+x/FW7bDENST+35qFbIOWYUezBY8IPsFdBYPUJx11nupd
+ LQHBfT48W+drJ+Y2C8D89AqzOWiBO7Ge4cugTKPChM48mUTG4omysPuC7e1tHps0g+/waXtld
+ c8mP1dlZdpwRXJpGpgRH1jn/iMw+S1Xtin1p8tTaA28xwFm93jtAGZg2D2Hp0Z0SpIxJT3wz9
+ AxfrMUAYlrueyp1FZTBqjXXCXmfC4+BxHUjLhfzobpd/P1SZKIylZfeMrqdUygUqt6lESkcPz
+ XRdTwnGkOwioDtwRlNVwFvwtNo4hIwajc8VzJQPuQqg3F2n2cUfHk7/2N7BGDpxPmr8FcwLsw
+ f+CaoRm9EPe8TrXBNWyE0Bhkl6QJLktxwckR9rhKmE/cW6bhIYPeezilez/8lDtd0AFitKhWz
+ VVHvJyDsLUzn9Q=
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,128 +83,28 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Apr 24, 2022 at 08:36:42PM -0400, Josef Bacik wrote:
-> > I ran it a second time and got the same output
-> 
-> Well thats something at least, I've rigged it up to dump the leaf so I
-> can see wtf is going on here.  Thanks,
 
-Sorry for the delay, took a while to run:
-(gdb) run rescue init-extent-tree /dev/mapper/dshelf1
-Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
-[Thread debugging using libthread_db enabled]
-Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
 
-FS_INFO IS 0x55555564cbc0
-JOSEF: root 9
-Couldn't find the last root for 8
-inserting block group 253969301504
-        item 33 key (328057487360 BLOCK_GROUP_ITEM 1073741824) itemoff 15467 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 173 key (477844471808 BLOCK_GROUP_ITEM 1073741824) itemoff 12107 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 174 key (478918213632 BLOCK_GROUP_ITEM 1073741824) itemoff 12083 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 175 key (479991955456 BLOCK_GROUP_ITEM 1073741824) itemoff 12059 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 176 key (481065697280 BLOCK_GROUP_ITEM 1073741824) itemoff 12035 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 177 key (482139439104 BLOCK_GROUP_ITEM 1073741824) itemoff 12011 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 178 key (483213180928 BLOCK_GROUP_ITEM 1073741824) itemoff 11987 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 179 key (484286922752 BLOCK_GROUP_ITEM 1073741824) itemoff 11963 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 180 key (485360664576 BLOCK_GROUP_ITEM 1073741824) itemoff 11939 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 181 key (486434406400 BLOCK_GROUP_ITEM 1073741824) itemoff 11915 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 182 key (487508148224 BLOCK_GROUP_ITEM 1073741824) itemoff 11891 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 183 key (488581890048 BLOCK_GROUP_ITEM 1073741824) itemoff 11867 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 184 key (489655631872 BLOCK_GROUP_ITEM 1073741824) itemoff 11843 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 185 key (490729373696 BLOCK_GROUP_ITEM 1073741824) itemoff 11819 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 186 key (491803115520 BLOCK_GROUP_ITEM 1073741824) itemoff 11795 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 187 key (492876857344 BLOCK_GROUP_ITEM 1073741824) itemoff 11771 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 188 key (493950599168 BLOCK_GROUP_ITEM 1073741824) itemoff 11747 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 189 key (495024340992 BLOCK_GROUP_ITEM 1073741824) itemoff 11723 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 190 key (496098082816 BLOCK_GROUP_ITEM 1073741824) itemoff 11699 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 191 key (497171824640 BLOCK_GROUP_ITEM 1073741824) itemoff 11675 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 192 key (498245566464 BLOCK_GROUP_ITEM 1073741824) itemoff 11651 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 193 key (499319308288 BLOCK_GROUP_ITEM 1073741824) itemoff 11627 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 194 key (500393050112 BLOCK_GROUP_ITEM 1073741824) itemoff 11603 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 195 key (501466791936 BLOCK_GROUP_ITEM 1073741824) itemoff 11579 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 196 key (502540533760 BLOCK_GROUP_ITEM 1073741824) itemoff 11555 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 197 key (503614275584 BLOCK_GROUP_ITEM 1073741824) itemoff 11531 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 198 key (504688017408 BLOCK_GROUP_ITEM 1073741824) itemoff 11507 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 199 key (505761759232 BLOCK_GROUP_ITEM 1073741824) itemoff 11483 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 200 key (506835501056 BLOCK_GROUP_ITEM 1073741824) itemoff 11459 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 201 key (507909242880 BLOCK_GROUP_ITEM 1073741824) itemoff 11435 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 202 key (508982984704 BLOCK_GROUP_ITEM 1073741824) itemoff 11411 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 203 key (510056726528 BLOCK_GROUP_ITEM 1073741824) itemoff 11387 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 204 key (511130468352 BLOCK_GROUP_ITEM 1073741824) itemoff 11363 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 205 key (512204210176 BLOCK_GROUP_ITEM 1073741824) itemoff 11339 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 206 key (513277952000 BLOCK_GROUP_ITEM 1073741824) itemoff 11315 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 207 key (514351693824 BLOCK_GROUP_ITEM 1073741824) itemoff 11291 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 208 key (515425435648 BLOCK_GROUP_ITEM 1073741824) itemoff 11267 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 209 key (516499177472 BLOCK_GROUP_ITEM 1073741824) itemoff 11243 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 210 key (517572919296 BLOCK_GROUP_ITEM 1073741824) itemoff 11219 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 211 key (518646661120 BLOCK_GROUP_ITEM 1073741824) itemoff 11195 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 212 key (519720402944 BLOCK_GROUP_ITEM 1073741824) itemoff 11171 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 213 key (520794144768 BLOCK_GROUP_ITEM 1073741824) itemoff 11147 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 214 key (521867886592 BLOCK_GROUP_ITEM 1073741824) itemoff 11123 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 215 key (522941628416 BLOCK_GROUP_ITEM 1073741824) itemoff 11099 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 216 key (524015370240 BLOCK_GROUP_ITEM 1073741824) itemoff 11075 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 217 key (525089112064 BLOCK_GROUP_ITEM 1073741824) itemoff 11051 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-ERROR: Error adding block group -17
-ERROR: commit_root already set when starting transaction
-WARNING: reserved space leaked, flag=0x4 bytes_reserved=81920
-extent buffer leak: start 67469312 len 16384
-extent buffer leak: start 29540352 len 16384
-WARNING: dirty eb leak (aborted trans): start 29540352 len 16384
-extent buffer leak: start 29589504 len 16384
-WARNING: dirty eb leak (aborted trans): start 29589504 len 16384
-extent buffer leak: start 29655040 len 16384
-WARNING: dirty eb leak (aborted trans): start 29655040 len 16384
-Init extent tree failed
-[Inferior 1 (process 24213) exited with code 0357]
+On 2022/4/26 01:17, Christoph Hellwig wrote:
+> On Mon, Apr 25, 2022 at 07:40:40PM +0800, Qu Wenruo wrote:
+>> That's only for RAID56, aren't you going to remove btrfs_bio usage
+>> completely for all write (including buffered, non-compressing write)?
+>
+> There are just two uses of bbio->iter in the current btrfs for-net
+> tree.  One is index_one_bio, which is removed by the patch I posted,
+> and the other one is btrfs_check_read_dio_bio, which is clearly read
+> specific.
+>
+> FYI, this is the next batch that's currently being tested:
+>
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/btrfs-bi=
+o-cleanup-part4
 
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+My bad, I forgot the fact that, my *READ* repair is only for read, no
+need to use btrfs_bio for write time.
+
+So your cleanup is completely fine, my head just short-circuited last nigh=
+t.
+
+Thanks,
+Qu
