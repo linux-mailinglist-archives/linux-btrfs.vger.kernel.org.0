@@ -2,146 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CA451007B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 16:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4A8510568
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 19:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346156AbiDZOfG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Apr 2022 10:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
+        id S245272AbiDZRbU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Apr 2022 13:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237151AbiDZOfF (ORCPT
+        with ESMTP id S234231AbiDZRbT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Apr 2022 10:35:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5234888D3
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 07:31:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7FB991F38D;
-        Tue, 26 Apr 2022 14:31:56 +0000 (UTC)
+        Tue, 26 Apr 2022 13:31:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7F66F4B2
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 10:28:10 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id ABC49210E7
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 17:28:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650983516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IT/CUggWQU94x0z31HrPNO8NqwKDNj1+F3ql1NL7DgE=;
-        b=YoAQElyufoBpca4AEqsX9jASgWOSWgzrqSgbCwIYuFeT9FwLW4kU3BuriNY3bXxNMi2C6W
-        Nhmtq1av0eNRUrVr7tXFmX9I9lUgdY/xKqOJ5vLchUQ80ml0qSH6gOQAlEk/uOZP3hh8dO
-        akUriadsCrniKlnwo4vIT3EfWnexRYc=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5735013223;
-        Tue, 26 Apr 2022 14:31:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ItOqE1wCaGLwTAAAMHmgww
-        (envelope-from <gniebler@suse.com>); Tue, 26 Apr 2022 14:31:56 +0000
-Message-ID: <d50ad9d1-f0a3-e51d-2c57-5f052c3f25c1@suse.com>
-Date:   Tue, 26 Apr 2022 16:31:55 +0200
+        t=1650994089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=LlVIMqi6A4z+ivmiTspaY6H233dd/oxobilOs4y1exg=;
+        b=AHzmddM7vz7sMem4gtKq4XPEBxZMQR/4YMODc4g0L1A3g/0A1cBgjDQqWvA9OFqYjFR53y
+        YPWRiv7z8jotdTN7U6aBO677dgJbyHGuR+u/pSES7mzgWTI8/YWpF1VHwrBegH7C4eZeyD
+        0uRU1D7ktmCGpknaZn15lR18tD6uYbg=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id A2A052C143
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 17:28:09 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 793A2DA7DE; Tue, 26 Apr 2022 19:24:03 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs release 5.17
+Date:   Tue, 26 Apr 2022 19:24:03 +0200
+Message-Id: <20220426172403.27553-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v6] btrfs: Turn delayed_nodes_tree into an XArray
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220426094304.7952-1-gniebler@suse.com>
- <8878c000-a9f2-477f-8996-08381d1fecc5@suse.com>
-From:   Gabriel Niebler <gniebler@suse.com>
-In-Reply-To: <8878c000-a9f2-477f-8996-08381d1fecc5@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am 26.04.22 um 13:11 schrieb Nikolay Borisov:
-> On 26.04.22 г. 12:43 ч., Gabriel Niebler wrote:
->> … in the btrfs_root struct and adjust all usages of this object to use 
->> the
->> XArray API, because it is notionally easier to use and unserstand, as it
->> provides array semantics, and also takes care of locking for us, further
->> simplifying the code.
->>
->> Also use the opportunity to do some light refactoring.
->>
->> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
-> 
-> <snip>
-> 
->> @@ -1870,32 +1863,36 @@ void btrfs_kill_delayed_inode_items(struct 
->> btrfs_inode *inode)
->>   void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
->>   {
->> -    u64 inode_id = 0;
->> +    unsigned long index = 0;
->> +    struct btrfs_delayed_node *delayed_node;
->>       struct btrfs_delayed_node *delayed_nodes[8];
->> -    int i, n;
->>       while (1) {
->> +        int n = 0;
->> +
->>           spin_lock(&root->inode_lock);
->> -        n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
->> -                       (void **)delayed_nodes, inode_id,
->> -                       ARRAY_SIZE(delayed_nodes));
->> -        if (!n) {
->> +        if (xa_empty(&root->delayed_nodes)) {
->>               spin_unlock(&root->inode_lock);
->> -            break;
->> +            return;
->>           }
->> -        inode_id = delayed_nodes[n - 1]->inode_id + 1;
->> -        for (i = 0; i < n; i++) {
->> +        xa_for_each_start(&root->delayed_nodes, index,
->> +                  delayed_node, index) {
->>               /*
->>                * Don't increase refs in case the node is dead and
->>                * about to be removed from the tree in the loop below
->>                */
->> -            if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
->> -                delayed_nodes[i] = NULL;
->> +            if (refcount_inc_not_zero(&delayed_node->refs)) {
->> +                delayed_nodes[n] = delayed_node;
->> +                n++;
->> +            }
->> +            if (n >= ARRAY_SIZE(delayed_nodes))
->> +                break;
->>           }
->> +        index++;
->>           spin_unlock(&root->inode_lock);
->> -        for (i = 0; i < n; i++) {
->> +        for (int i = 0; i < n; i++) {
->>               if (!delayed_nodes[i])
->>                   continue;
-> 
-> nit: This check now becomes redundant right, because the way n is 
-> modified we are guaranteed that everything from 0..n will actually be 
-> populated.
+Hi,
 
-You're right, these last two lines can now safely be removed like this:
+btrfs-progs version 5.17 have been released.
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 8d302f6a0557..ea9f808bce2a 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1893,8 +1893,6 @@ void btrfs_kill_all_delayed_nodes(struct 
-btrfs_root *root)
-                 spin_unlock(&root->inode_lock);
+Changelog:
 
-                 for (int i = 0; i < n; i++) {
--                       if (!delayed_nodes[i])
--                               continue;
-                         __btrfs_kill_delayed_node(delayed_nodes[i]);
-                         btrfs_release_delayed_node(delayed_nodes[i]);
-                 }
+* check:
+  * repair wrong num_devices in superblock
+  * recognize overly long xattr names
+  * fix wrong total bytes check for seed device
+* auto-repair on read on RAID56
+* property set: unify handling of empty value to mean default, changed meaning
+  for property 'compression' to allow reset to default and to set NOCOMPRESS,
+  since kernel 5.14
+* fixes:
+  * dump-tree: print fs-verity items
+  * fix location of system chunk on zoned filesystem
+  * do not allow setting seeding flag on a filesystem with dirty log
+  * mkfs and subpage support: use sectorsize as nodesize fallback for mixed
+    profiles
+* preparatory work for extent tree v2, global roots
+* experimental feature (unstable interface, not built by default,
+  do not use for production):
+  * btrfstune: option --csum to switch checksum algorithm
+* other:
+  * cleanups, refactoring
+  * update documentation build, remove asciidocs leftovers
+  * update fssum to consider xattrs
+  * add fsstress
+
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+
+David Sterba (15):
+      btrfs-progs: docs: add remaining targets for sphinx build
+      btrfs-progs: build: drop asciidoc detection, default to sphinx
+      btrfs-progs: docs: remove asciidoc build support
+      btrfs-progs: docs: remove all converted asciidoc sources
+      btrfs-progs: docs: generate section 5 to final name directly
+      btrfs-progs: docs: set version from VERSION file
+      btrfs-progs: btrfstune: experimental, new option to switch csums
+      btrfs-progs: tests: sync fssum.c from fstests
+      btrfs-progs: tests: copy fsstress.c from fstests
+      btrfs-progs: docs: update file attributes
+      btrfs-progs: build: use rm for cleaning build directory
+      btrfs-progs: docs: document generic error
+      btrfs-progs: remove asciidoc generated files from .gitignore
+      btrfs-progs: update CHANGES for 5.17
+      Btrfs progs v5.17
+
+Josef Bacik (40):
+      btrfs-progs: check: fix check_global_roots_uptodate
+      btrfs-progs: tests: use --force for --init-csum-tree in 003-multi-check-unmounted
+      btrfs-progs: repair: bail if we find an unaligned extent
+      btrfs-progs: do not try to load the free space tree if it's not enabled
+      btrfs-progs: properly populate missing trees
+      btrfs-progs: don't check skip_csum_check if there's no fs_info
+      btrfs-progs: tree-stats: initialize the key properly
+      btrfs-progs: handle orphan directories properly
+      btrfs-progs: tests: add a test to check orphaned directories
+      btrfs-progs: store LEAF_DATA_SIZE in the mkfs_config
+      btrfs-progs: store BTRFS_LEAF_DATA_SIZE in the fs_info
+      btrfs-progs: convert: use cfg->leaf_data_size
+      btrfs-progs: reduce usage of __BTRFS_LEAF_DATA_SIZE
+      btrfs-progs: btrfs_item_size_nr/btrfs_item_offset_nr everywhere
+      btrfs-progs: add btrfs_set_item_*_nr() helpers
+      btrfs-progs: change btrfs_file_extent_inline_item_len to take a slot
+      btrfs-progs: rename btrfs_item_end_nr to btrfs_item_end
+      btrfs-progs: remove the _nr from the item helpers
+      btrfs-progs: replace btrfs_item_nr_offset(0)
+      btrfs-progs: rework the btrfs_node accessors to match the item accessors
+      btrfs-progs: make all of the item/key_ptr offset helpers take an eb
+      btrfs-progs: add support for loading the block group root
+      btrfs-progs: add print support for the block group tree
+      btrfs-progs: mkfs: use the btrfs_block_group_root helper
+      btrfs-progs: check-lowmem: use the btrfs_block_group_root helper
+      btrfs-progs: handle no bg item in extent tree for free space tree
+      btrfs-progs: mkfs: add support for the block group tree
+      btrfs-progs: check: add block group tree support
+      btrfs-progs: qgroup-verify: scan extents based on block groups
+      btrfs-progs: check: make free space tree validation extent tree v2 aware
+      btrfs-progs: check: add helper to reinit the root based on a key
+      btrfs-progs: check: handle the block group tree properly
+      btrfs-progs: set the number of global roots in the super block
+      btrfs-progs: handle the per-block group global root id
+      btrfs-progs: add a btrfs_delete_and_free_root helper
+      btrfs-progs: make btrfs_clear_free_space_tree extent tree v2 aware
+      btrfs-progs: make btrfs_create_tree take a key for the root key
+      btrfs-progs: mkfs: set chunk_item_objectid properly for extent tree v2
+      btrfs-progs: mkfs: create the global root's
+      btrfs-progs: check: don't do the root item check for extent tree v2
+
+Li Zhang (1):
+      btrfs-progs: props: don't translate value of compression=none
+
+Mark Harmstone (1):
+      btrfs-progs: check: add check for overlong xattr names
+
+Naohiro Aota (4):
+      btrfs-progs: zoned: export sb_zone_number() and related constants
+      btrfs-progs: zoned: fix initial system BG location
+      btrfs-progs: fix ordering of hole_size setting and dev_extent_hole_check()
+      btrfs-progs: zoned: fix and simplify dev_extent_hole_check_zoned()
+
+Qu Wenruo (18):
+      btrfs-progs: check: fix two error messages used in qgroup verification
+      btrfs-progs: check: add check and repair ability for super num devs mismatch
+      btrfs-progs: tests: add test case for super num devs mismatch
+      btrfs-progs: do not allow setting seed flag on fs with dirty log
+      btrfs-progs: make sure "btrfstune -S1" will reject fs with dirty log
+      btrfs-progs: fix a memory leak when starting a transaction on fs with error
+      btrfs-progs: fix an error path which can lead to empty device list
+      btrfs-progs: check: fix wrong total bytes check for seed device
+      btrfs-progs: tests: check warning for seed and sprouted filesystems
+      btrfs-progs: remove the unnecessary BTRFS_SUPER_INFO_OFFSET path for tree block read
+      btrfs-progs: extract metadata restore read code into its own helper
+      btrfs-progs: don't use write_extent_to_disk() directly
+      btrfs-progs: use write_data_to_disk() to replace write_extent_to_disk()
+      btrfs-progs: use read_data_from_disk() to replace read_extent_from_disk() and replace read_extent_data()
+      btrfs-progs: remove extent_buffer::fd and extent_buffer::dev_bytes
+      btrfs-progs: allow read_data_from_disk() to rebuild RAID56 using P/Q
+      btrfs-progs: tests/fsck: add test case for data csum check on raid5
+      btrfs-progs: mkfs: use sectorsize as nodesize fallback for mixed profiles
+
+Sweet Tea Dorminy (1):
+      btrfs-progs: dump-tree: add print support for verity items
 
