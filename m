@@ -2,52 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9054E50FA5B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 12:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5161150FBBE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 13:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348833AbiDZK15 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Apr 2022 06:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S1345151AbiDZLOK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Apr 2022 07:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242988AbiDZK1P (ORCPT
+        with ESMTP id S232758AbiDZLOJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Apr 2022 06:27:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B89101D;
-        Tue, 26 Apr 2022 03:00:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 26 Apr 2022 07:14:09 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465D05FAF
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 04:11:02 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F0162B81C0A;
-        Tue, 26 Apr 2022 10:00:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51838C385A4;
-        Tue, 26 Apr 2022 10:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650967202;
-        bh=3Y77nyud+QztcPd/Bj4F3XVEUHHM4p7kpQsotfoDIKA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KvdKuwzWVxangtfJA7d51lFjUpsW7Y0G+fwg5EDE7fmP5rJkTTN2V3MXEAQy2x2xH
-         n4VJSYB87RnsvsE4JYuPcSouNkBDKadr+KuFIO5cLRpn5ayzeCA1ntJSAP7jeNlnmt
-         1GVQwmzehYQuHEPRnnf9KedLR4S1KmCogoLSOtkRaMs+XlpXOjslGwcS7oBz616Mdr
-         LDIuHs5KJrOXvUiGY7/0FTFwOhOICpuZdxO619rb/79yXDQyMW5UQBdBtvTxHJGo8h
-         WFQGfb8r1yv6QMWqzgD73EsTROwWg8zQBVwXuTQ58r+uDag15ZdehL2SNWiUi9gTyO
-         v4ZtdbUJIShWw==
-Date:   Tue, 26 Apr 2022 10:59:59 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Chung-Chiang Cheng <cccheng@synology.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        nborisov@suse.com, dsterba@suse.com, kernel@cccheng.net,
-        shepjeng@gmail.com
-Subject: Re: [PATCH v2] fstests: btrfs: test setting compression via xattr on
- nodatacow files
-Message-ID: <YmfCn4ZTlpGodHLl@debian9.Home>
-References: <20220425042226.302953-1-cccheng@synology.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EA7BA210E4;
+        Tue, 26 Apr 2022 11:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1650971460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ApN9LLjHYFwVzOk154LLCyqdNPudKzOrgwT8dw6FEQU=;
+        b=rxd5TTAqNAIyeiKD5AdekLMhTmzLLFu8D3cbSTN7ICfyvKX5h1Sqxk2OyYvDHM8ftPv6hH
+        YWfHkRBs+K54X/UMaiyk6JWweFbH+6bAtYKQd03IPZRPp43PV+dKB8/k8NSpKhr/L3o5VG
+        yl+4GL3t0+vvqCEG6XIHkaUtv4EeX78=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B14AE13AD5;
+        Tue, 26 Apr 2022 11:11:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5JdaKETTZ2JZagAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 26 Apr 2022 11:11:00 +0000
+Message-ID: <8878c000-a9f2-477f-8996-08381d1fecc5@suse.com>
+Date:   Tue, 26 Apr 2022 14:11:00 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220425042226.302953-1-cccheng@synology.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v6] btrfs: Turn delayed_nodes_tree into an XArray
+Content-Language: en-US
+To:     Gabriel Niebler <gniebler@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <20220426094304.7952-1-gniebler@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220426094304.7952-1-gniebler@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,147 +63,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 12:22:26PM +0800, Chung-Chiang Cheng wrote:
-> Compression and nodatacow are mutually exclusive. Besides ioctl, there
-> is another way to setting compression via xattrs, and shouldn't produce
-> invalid combinations.
+
+
+On 26.04.22 г. 12:43 ч., Gabriel Niebler wrote:
+> … in the btrfs_root struct and adjust all usages of this object to use the
+> XArray API, because it is notionally easier to use and unserstand, as it
+> provides array semantics, and also takes care of locking for us, further
+> simplifying the code.
 > 
-> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
-> ---
->  tests/btrfs/264     | 90 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/264.out | 11 ++++++
->  2 files changed, 101 insertions(+)
->  create mode 100755 tests/btrfs/264
->  create mode 100644 tests/btrfs/264.out
+> Also use the opportunity to do some light refactoring.
 > 
-> diff --git a/tests/btrfs/264 b/tests/btrfs/264
-> new file mode 100755
-> index 00000000..bb11116c
-> --- /dev/null
-> +++ b/tests/btrfs/264
-> @@ -0,0 +1,90 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2022 Synology Inc. All Rights Reserved.
-> +#
-> +# FS QA Test No. 264
-> +#
-> +# Compression and nodatacow are mutually exclusive. Besides ioctl, there
-> +# is another way to setting compression via xattrs, and shouldn't produce
-> +# invalid combinations.
-> +#
-> +# To prevent mix any compression-related options with nodatacow, FS_NOCOMP_FL
-> +# is also rejected by ioctl as well as FS_COMPR_FL on nodatacow files. To
-> +# align with it, no and none are also unacceptable in this test.
-> +#
-> +# The regression is fixed by a patch with the following subject:
-> +#   btrfs: do not allow compression on nodatacow files
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick compress attr
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +. ./common/attr
-> +
-> +# real QA test starts here
-> +
-> +_supported_fs btrfs
-> +_require_scratch
-> +_require_attrs
+> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
 
-_require_chattr C
+<snip>
 
-Is still needed, during the previous review I meant to remove only
-the "_require_chattr c".
+> @@ -1870,32 +1863,36 @@ void btrfs_kill_delayed_inode_items(struct btrfs_inode *inode)
+>   
+>   void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
+>   {
+> -	u64 inode_id = 0;
+> +	unsigned long index = 0;
+> +	struct btrfs_delayed_node *delayed_node;
+>   	struct btrfs_delayed_node *delayed_nodes[8];
+> -	int i, n;
+>   
+>   	while (1) {
+> +		int n = 0;
+> +
+>   		spin_lock(&root->inode_lock);
+> -		n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
+> -					   (void **)delayed_nodes, inode_id,
+> -					   ARRAY_SIZE(delayed_nodes));
+> -		if (!n) {
+> +		if (xa_empty(&root->delayed_nodes)) {
+>   			spin_unlock(&root->inode_lock);
+> -			break;
+> +			return;
+>   		}
+>   
+> -		inode_id = delayed_nodes[n - 1]->inode_id + 1;
+> -		for (i = 0; i < n; i++) {
+> +		xa_for_each_start(&root->delayed_nodes, index,
+> +				  delayed_node, index) {
+>   			/*
+>   			 * Don't increase refs in case the node is dead and
+>   			 * about to be removed from the tree in the loop below
+>   			 */
+> -			if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
+> -				delayed_nodes[i] = NULL;
+> +			if (refcount_inc_not_zero(&delayed_node->refs)) {
+> +				delayed_nodes[n] = delayed_node;
+> +				n++;
+> +			}
+> +			if (n >= ARRAY_SIZE(delayed_nodes))
+> +				break;
+>   		}
+> +		index++;
+>   		spin_unlock(&root->inode_lock);
+>   
+> -		for (i = 0; i < n; i++) {
+> +		for (int i = 0; i < n; i++) {
+>   			if (!delayed_nodes[i])
+>   				continue;
 
-Otherwise the test looks good.
+nit: This check now becomes redundant right, because the way n is 
+modified we are guaranteed that everything from 0..n will actually be 
+populated.
 
-Probably the _require_chattr C can be added by the maintainer when the
-patch is picked, so no need to send a v3 just for that.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks for doing this.
-
-> +
-> +_scratch_mkfs >>$seqres.full 2>&1
-> +_scratch_mount
-> +
-> +set_compression() # $1: filename, $2: alg
-> +{
-> +	[ -f "$1" ] || return
-> +	$SETFATTR_PROG -n "btrfs.compression" -v "$2" "$1" |& _filter_scratch
-> +}
-> +
-> +# FS_NOCOMP_FL bit isn't recognized by chattr/lsattr before e2fsprogs 1.46.2
-> +# In order to make this test available with an older version, we wrap the output
-> +# of lsattr to distinguish FS_COMP_FL and FS_NOCOMP_FL
-> +check_compression() # $1: filename
-> +{
-> +	$LSATTR_PROG -l "$1" | grep -q "Compression_Requested"
-> +
-> +	if [ $? -eq 0 ]; then
-> +		echo "$1: Compression is set" | _filter_scratch
-> +	else
-> +		echo "$1: Compression is not set" | _filter_scratch
-> +	fi
-> +}
-> +
-> +#
-> +# DATACOW
-> +#
-> +test_file="$SCRATCH_MNT/foo"
-> +touch "$test_file"
-> +$CHATTR_PROG -C "$test_file"
-> +
-> +set_compression "$test_file" zlib
-> +check_compression "$test_file"
-> +set_compression "$test_file" no
-> +check_compression "$test_file"
-> +set_compression "$test_file" lzo
-> +check_compression "$test_file"
-> +set_compression "$test_file" none
-> +check_compression "$test_file"
-> +set_compression "$test_file" zstd
-> +check_compression "$test_file"
-> +
-> +#
-> +# NODATACOW
-> +#
-> +test_file="$SCRATCH_MNT/bar"
-> +touch "$test_file"
-> +$CHATTR_PROG +C "$test_file"
-> +
-> +# all valid compression type are not allowed on nodatacow files
-> +set_compression "$test_file" zlib
-> +set_compression "$test_file" lzo
-> +set_compression "$test_file" zstd
-> +
-> +# no/none are also not allowed on nodatacow files
-> +set_compression "$test_file" no
-> +set_compression "$test_file" none
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/264.out b/tests/btrfs/264.out
-> new file mode 100644
-> index 00000000..7dd36054
-> --- /dev/null
-> +++ b/tests/btrfs/264.out
-> @@ -0,0 +1,11 @@
-> +QA output created by 264
-> +SCRATCH_MNT/foo: Compression is set
-> +SCRATCH_MNT/foo: Compression is not set
-> +SCRATCH_MNT/foo: Compression is set
-> +SCRATCH_MNT/foo: Compression is not set
-> +SCRATCH_MNT/foo: Compression is set
-> +setfattr: SCRATCH_MNT/bar: Invalid argument
-> +setfattr: SCRATCH_MNT/bar: Invalid argument
-> +setfattr: SCRATCH_MNT/bar: Invalid argument
-> +setfattr: SCRATCH_MNT/bar: Invalid argument
-> +setfattr: SCRATCH_MNT/bar: Invalid argument
-> -- 
-> 2.25.1
-> 
+<snip>
