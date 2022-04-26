@@ -2,48 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA98150FF72
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 15:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8825B50FF74
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 15:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244372AbiDZNuC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Apr 2022 09:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
+        id S244771AbiDZNur (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Apr 2022 09:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240946AbiDZNuB (ORCPT
+        with ESMTP id S235280AbiDZNuq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Apr 2022 09:50:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5AC1BEA3
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 06:46:54 -0700 (PDT)
+        Tue, 26 Apr 2022 09:50:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1BA1CB05
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 06:47:38 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 391151F388;
-        Tue, 26 Apr 2022 13:46:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650980813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C1E39210E7;
+        Tue, 26 Apr 2022 13:47:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1650980856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type;
         bh=Y+ukuQh+tAGnkmX0joJrKY/UzfmYDn7AgUeOrIvyEi0=;
-        b=JyD3YrSKoRwS0gumIUsFn2pHLf7Xp64nqwM1YUTe3Ae8ew5QfY+KWusjdFE6IXkxv6ohd3
-        ID347r8hvadKrvrZnWFcYLVGAPPyMqVFsVW9pkGKgx1ktKBeDZnmMkoJKZcV+2POtloj6x
-        iIdw+6o4ozXVW9M2hJWxVJe6FIrnqAI=
+        b=LuGrwGP6SSitbWkZMwKFEDNqALn0Wf/cSStAtO8hBtE0muGvqogA8xVqka+C53b5OsKGKK
+        hf0pcK7ra75Ogm6HXFqof6nx1iAtmHFV2NyG1dqlEADWvca2AErddPZnjBsQJ02f80hVT9
+        sgIin0tdL06pg8QO8aaYu2S4L9msyys=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1650980856;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=Y+ukuQh+tAGnkmX0joJrKY/UzfmYDn7AgUeOrIvyEi0=;
+        b=EGxk+hPDGw5O5OtKxcUQopoE2ZfL8ERPTFDh/Khm3BkN04U2UpMfI50ovd49eAUIenT0vY
+        MwtQ+6aTgoPnsjCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3FA013223;
-        Tue, 26 Apr 2022 13:46:52 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EE4313223;
+        Tue, 26 Apr 2022 13:47:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id xdusLcz3Z2IvOAAAMHmgww
-        (envelope-from <rgoldwyn@suse.com>); Tue, 26 Apr 2022 13:46:52 +0000
-Date:   Tue, 26 Apr 2022 08:46:50 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.com>
+        id HK/sDvj3Z2J1OAAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Tue, 26 Apr 2022 13:47:36 +0000
+Date:   Tue, 26 Apr 2022 08:47:34 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Dave Sterba <DSterba@suse.com>
 Subject: [PATCH] btrfs: Derive compression type from extent map during reads
-Message-ID: <20220426134650.o57rinvqerlp6fgw@fiona>
+Message-ID: <20220426134734.dxxdrf2hutbmimtc@fiona>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
