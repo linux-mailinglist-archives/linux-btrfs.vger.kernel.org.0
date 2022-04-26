@@ -2,141 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED2250F2DC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 09:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355A150F73A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Apr 2022 11:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244503AbiDZHoU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Apr 2022 03:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
+        id S237719AbiDZJ1g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Apr 2022 05:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344234AbiDZHnw (ORCPT
+        with ESMTP id S1348684AbiDZJZr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Apr 2022 03:43:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1BF133E69
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 00:40:41 -0700 (PDT)
+        Tue, 26 Apr 2022 05:25:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276DD1B380B
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 01:56:32 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0AEBC210EB;
-        Tue, 26 Apr 2022 07:40:40 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 244C21F388;
+        Tue, 26 Apr 2022 08:56:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1650958840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1650963376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vgsFdrPK5cWrH4ljep3R/KpzDlYWO/iOtS7OU797fkw=;
-        b=D3FuIcmvfo7nF1fjCGMgJTxqcD7OTKq1LGQJy1AxINzzeoXtIgHf/Ae19yFGNMzUkNz6Km
-        beiklswzGHxPTEAXtHJAKKP6xORH7tIhCcAYSRppFc1qkrfsNj/eemz6G+TciUNa9LtMA1
-        nntc2GN1kqShjNtXC6+epmJ/uz7MBAM=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aEEYrO9VK55vC65DbAwe0Pc0MfPxUhguA2djeUufF68=;
+        b=s2+rwxF835eaM1rOQGaGmnbjG9wwKsZ8Jlbbo1HMLhexM3TvL/MGArADjCptVXsYkVf43B
+        SmiXddb3YdvEW3kDr4GW0yzKcQKCs+cPhVnGQdw6bULwyqqcIcbqT951nXAQOSLFaWXU8N
+        kjA8R8XBmIlBu6s9G6b6F/J+1sREkU4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C6CFE13223;
-        Tue, 26 Apr 2022 07:40:39 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 00BCA13AD5;
+        Tue, 26 Apr 2022 08:56:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id +i98LfehZ2LtfgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 26 Apr 2022 07:40:39 +0000
-Message-ID: <c1cfd599-b730-c96a-c4f3-06de77c2c1bf@suse.com>
-Date:   Tue, 26 Apr 2022 10:40:39 +0300
+        id roprOq+zZ2LFJQAAMHmgww
+        (envelope-from <gniebler@suse.com>); Tue, 26 Apr 2022 08:56:15 +0000
+From:   Gabriel Niebler <gniebler@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, Gabriel Niebler <gniebler@suse.com>
+Subject: [PATCH] Turn name_cache radix tree into XArray in send_ctx
+Date:   Tue, 26 Apr 2022 10:56:09 +0200
+Message-Id: <20220426085609.5872-1-gniebler@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v5] btrfs: Turn delayed_nodes_tree into an XArray
-Content-Language: en-US
-To:     Gabriel Niebler <gniebler@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220419155721.6702-1-gniebler@suse.com>
- <9a8d4a62-8ca9-9ee3-2d94-8094428dd182@suse.com>
- <70c5e257-55d7-ff0a-8b6b-1051734aa1d5@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <70c5e257-55d7-ff0a-8b6b-1051734aa1d5@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+… and adjust all usages of this object to use the XArray API for the sake
+of consistency.
 
+XArray API provides array semantics, so it is notionally easier to use and
+understand, and it also takes care of locking for us.
 
-On 25.04.22 г. 12:28 ч., Gabriel Niebler wrote:
-<snip>
+None of this makes a real difference in this particular patch, but it does
+in other places where similar replacements are or have been made and we
+want to be consistent in our usage of data structures in btrfs.
 
-> 
->>>       int i, n;
->>>       while (1) {
->>>           spin_lock(&root->inode_lock);
->>> -        n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
->>> -                       (void **)delayed_nodes, inode_id,
->>> -                       ARRAY_SIZE(delayed_nodes));
->>> -        if (!n) {
->>> +        if (xa_empty(&root->delayed_nodes)) {
->>>               spin_unlock(&root->inode_lock);
->>> -            break;
->>> +            return;
->>>           }
->>> -        inode_id = delayed_nodes[n - 1]->inode_id + 1;
->>> -        for (i = 0; i < n; i++) {
->>> +        n = 0;
->>> +        xa_for_each_start(&root->delayed_nodes, index,
->>> +                  delayed_node, index) {
->>>               /*
->>>                * Don't increase refs in case the node is dead and
->>>                * about to be removed from the tree in the loop below
->>>                */
->>> -            if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
->>> -                delayed_nodes[i] = NULL;
->>> +            if (refcount_inc_not_zero(&delayed_node->refs)) {
->>> +                delayed_nodes[n] = delayed_node;
->>> +                n++;
->>> +                        }
->>> +            if (n >= ARRAY_SIZE(delayed_nodes))
->>> +                break;
->>>           }
->>> +        index++;
->>>           spin_unlock(&root->inode_lock);
->>>           for (i = 0; i < n; i++) {
-> 
-> There it is. This loop will never encounter old (already freed) or 
-> uninitialised entries, AFAICS.
-> 
-> I'd say that there actually isn't a problem with this code.
+Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+---
+ fs/btrfs/send.c | 40 +++++++++++++++++++---------------------
+ 1 file changed, 19 insertions(+), 21 deletions(-)
 
-You are right, the code as-is is correct. I have 2 more suggestions but 
-at this point they can be considered "bike shed" so you might as well 
-disregard them in which case it's only the whitespace issue that remains 
-and David could probably fix this. Here are the suggestions:
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 7d1642937274..19e39cdae0bb 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -10,7 +10,6 @@
+ #include <linux/mount.h>
+ #include <linux/xattr.h>
+ #include <linux/posix_acl_xattr.h>
+-#include <linux/radix-tree.h>
+ #include <linux/vmalloc.h>
+ #include <linux/string.h>
+ #include <linux/compat.h>
+@@ -128,7 +127,7 @@ struct send_ctx {
+ 	struct list_head new_refs;
+ 	struct list_head deleted_refs;
+ 
+-	struct radix_tree_root name_cache;
++	struct xarray name_cache;
+ 	struct list_head name_cache_list;
+ 	int name_cache_size;
+ 
+@@ -262,14 +261,14 @@ struct orphan_dir_info {
+ struct name_cache_entry {
+ 	struct list_head list;
+ 	/*
+-	 * radix_tree has only 32bit entries but we need to handle 64bit inums.
+-	 * We use the lower 32bit of the 64bit inum to store it in the tree. If
+-	 * more then one inum would fall into the same entry, we use radix_list
+-	 * to store the additional entries. radix_list is also used to store
+-	 * entries where two entries have the same inum but different
++	 * On 32bit kernels, XArray has only 32bit indices, but we need to
++	 * handle 64bit inums. We use the lower 32bit of the 64bit inum to store
++	 * it in the tree. If more than one inum would fall into the same entry,
++	 * we use inum_aliases to store the additional entries. inum_aliases is
++	 * also used to store entries with the same inum but different
+ 	 * generations.
+ 	 */
+-	struct list_head radix_list;
++	struct list_head inum_aliases;
+ 	u64 ino;
+ 	u64 gen;
+ 	u64 parent_ino;
+@@ -2019,9 +2018,9 @@ static int did_overwrite_first_ref(struct send_ctx *sctx, u64 ino, u64 gen)
+ }
+ 
+ /*
+- * Insert a name cache entry. On 32bit kernels the radix tree index is 32bit,
++ * Insert a name cache entry. On 32bit kernels the XArray index is 32bit,
+  * so we need to do some special handling in case we have clashes. This function
+- * takes care of this with the help of name_cache_entry::radix_list.
++ * takes care of this with the help of name_cache_entry::inum_aliases.
+  * In case of error, nce is kfreed.
+  */
+ static int name_cache_insert(struct send_ctx *sctx,
+@@ -2030,8 +2029,7 @@ static int name_cache_insert(struct send_ctx *sctx,
+ 	int ret = 0;
+ 	struct list_head *nce_head;
+ 
+-	nce_head = radix_tree_lookup(&sctx->name_cache,
+-			(unsigned long)nce->ino);
++	nce_head = xa_load(&sctx->name_cache, (unsigned long)nce->ino);
+ 	if (!nce_head) {
+ 		nce_head = kmalloc(sizeof(*nce_head), GFP_KERNEL);
+ 		if (!nce_head) {
+@@ -2040,14 +2038,15 @@ static int name_cache_insert(struct send_ctx *sctx,
+ 		}
+ 		INIT_LIST_HEAD(nce_head);
+ 
+-		ret = radix_tree_insert(&sctx->name_cache, nce->ino, nce_head);
++		ret = xa_insert(&sctx->name_cache, nce->ino, nce_head,
++				GFP_KERNEL);
+ 		if (ret < 0) {
+ 			kfree(nce_head);
+ 			kfree(nce);
+ 			return ret;
+ 		}
+ 	}
+-	list_add_tail(&nce->radix_list, nce_head);
++	list_add_tail(&nce->inum_aliases, nce_head);
+ 	list_add_tail(&nce->list, &sctx->name_cache_list);
+ 	sctx->name_cache_size++;
+ 
+@@ -2059,15 +2058,14 @@ static void name_cache_delete(struct send_ctx *sctx,
+ {
+ 	struct list_head *nce_head;
+ 
+-	nce_head = radix_tree_lookup(&sctx->name_cache,
+-			(unsigned long)nce->ino);
++	nce_head = xa_load(&sctx->name_cache, (unsigned long)nce->ino);
+ 	if (!nce_head) {
+ 		btrfs_err(sctx->send_root->fs_info,
+ 	      "name_cache_delete lookup failed ino %llu cache size %d, leaking memory",
+ 			nce->ino, sctx->name_cache_size);
+ 	}
+ 
+-	list_del(&nce->radix_list);
++	list_del(&nce->inum_aliases);
+ 	list_del(&nce->list);
+ 	sctx->name_cache_size--;
+ 
+@@ -2075,7 +2073,7 @@ static void name_cache_delete(struct send_ctx *sctx,
+ 	 * We may not get to the final release of nce_head if the lookup fails
+ 	 */
+ 	if (nce_head && list_empty(nce_head)) {
+-		radix_tree_delete(&sctx->name_cache, (unsigned long)nce->ino);
++		xa_erase(&sctx->name_cache, (unsigned long)nce->ino);
+ 		kfree(nce_head);
+ 	}
+ }
+@@ -2086,11 +2084,11 @@ static struct name_cache_entry *name_cache_search(struct send_ctx *sctx,
+ 	struct list_head *nce_head;
+ 	struct name_cache_entry *cur;
+ 
+-	nce_head = radix_tree_lookup(&sctx->name_cache, (unsigned long)ino);
++	nce_head = xa_load(&sctx->name_cache, (unsigned long)ino);
+ 	if (!nce_head)
+ 		return NULL;
+ 
+-	list_for_each_entry(cur, nce_head, radix_list) {
++	list_for_each_entry(cur, nce_head, inum_aliases) {
+ 		if (cur->ino == ino && cur->gen == gen)
+ 			return cur;
+ 	}
+@@ -7534,7 +7532,7 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 
+ 	INIT_LIST_HEAD(&sctx->new_refs);
+ 	INIT_LIST_HEAD(&sctx->deleted_refs);
+-	INIT_RADIX_TREE(&sctx->name_cache, GFP_KERNEL);
++	xa_init_flags(&sctx->name_cache, GFP_KERNEL);
+ 	INIT_LIST_HEAD(&sctx->name_cache_list);
+ 
+ 	sctx->flags = arg->flags;
+-- 
+2.35.3
 
-1. The 'n' variable could be defined inside the while() loop:
-
-int n = 0;
-
-That makes it obvious its lifetime is within the loop and it's always 
-initialized to 0.
-
-2. The kernel now moved to using -std=gnu11 (starting with e8c07082a810 
-("Kbuild: move to -std=gnu11"))  meaning variables can now be defined 
-inside for() loop bodies like:
-
-for (int i = 0; i < n; i++)
-
-IMO it would be good if we gradually start moving code to using this.
-
-
-Again I consider those 2 minor and the patch as-is is good to go so it's 
-up to David to decide if they are worth it.
-
-Thanks for sticking with it.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-
-<snip>
