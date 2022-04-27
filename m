@@ -2,95 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E697D5123D0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 22:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11F55123E8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 22:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236440AbiD0UY6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Apr 2022 16:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S236349AbiD0Ubx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Apr 2022 16:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235942AbiD0UYy (ORCPT
+        with ESMTP id S236186AbiD0Ubw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Apr 2022 16:24:54 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC6286E23
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 13:21:43 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id i8so707718ila.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 13:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2eKpz8alvGLF8AQ0B46Uc7IalvxxyADlHgnDLqt6wDY=;
-        b=g94hQzp6MS7uqg+Q3LZrsxbZan3M6fxjXjmzxNZPFxqyhzW060w6R3BE2fOffVehB3
-         YjSP7g/PK5R9Dx09dY7+kKCEbJ5j0EYbSwNnYxCZgMTluxxtAOoJvzBD5cQsRiI+2hFX
-         9ZmX6m0nnx6xizYSKsjfYEZRE86dJWqg4gIOjdWDK2KGupjJARfCsyACldma/NTk//P/
-         lgQnHIO1KB/qg0UFNMBa/wnrtt64pI4jNkNc9QwiDpZyWIWTCas48z2UiQeITFsrZCcm
-         mxwtkk496QxuL1+ghtvptkGvXK/FQsb/ofjZU1/JpdSZZ2KIKCAxft5iYD38sKzQOxru
-         wCmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2eKpz8alvGLF8AQ0B46Uc7IalvxxyADlHgnDLqt6wDY=;
-        b=skBurqMbW8nei4DyNcZ7SdW0dag+RjEIpWVT+c9HrWCkWBljc/QfSKCBDpc5wD/cft
-         6l0oWjk2toeJdPP9j1R2T+reZu72JmomXVg8qyDdOY43MkJc4oMdZ8L1ssVh1/Cn6qWC
-         oOHqU6UJjn3gSmymjEfn+A3vg8tL6CeGw90yphqOiKhxtmkk0amhCPM6BOJoYR4WBIFB
-         9gVEvGUayR+LDHQ4epsKiPPdW27W4rA/7xa8diBMv9D+HDj3HzUYABqL4pUpTq5757fG
-         QnXCFjNs/AjnxIa+bbmzD+BEvT64LZt/QCdfU1Yuu8iFdKYBc4Mx09gNLi4kDDyG6uvO
-         Gh5A==
-X-Gm-Message-State: AOAM532NWex7EgspmBLhTsjxaed/kqmkg1m2GD3POD5WKW+49mUpnRZu
-        qiQwVzrxF1ckymFS1wwHX1rNZ8iv1cUeZid2Go+03gjw/Jo=
-X-Google-Smtp-Source: ABdhPJzfOOmUtbEQ9LS3986Wgj7ZqZny/M5ZcU2q5dMzf3AeyVRUHAWAcJ/rDO+ykoxhBVsyFbWTNvqB6ySl37mm80o=
-X-Received: by 2002:a05:6e02:194d:b0:2cd:93bf:9569 with SMTP id
- x13-20020a056e02194d00b002cd93bf9569mr7599201ilu.152.1651090902417; Wed, 27
- Apr 2022 13:21:42 -0700 (PDT)
+        Wed, 27 Apr 2022 16:31:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA25B1A84
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 13:28:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 72384210E8;
+        Wed, 27 Apr 2022 20:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1651091318;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZC8nLpsGMhm9gfOXBUniT3MQ/ubs/UpJKXrlTaQUBLE=;
+        b=WaJrPufGH4orCbce+Dlbufq0eHVTiTslxoXV1PpHQ85bj4JoskFzVQP3GLdDX0qr44FgDr
+        +4O4c3Ng3Fv0tlfGeiQFOygyvbTJjz9kgpKDvPvtH7Pc1phi4d0YiFhDgmGmnOk1TUJBU/
+        xibfKLFVVZ2/0mWjKrcBCUCFWKyoZKA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1651091318;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZC8nLpsGMhm9gfOXBUniT3MQ/ubs/UpJKXrlTaQUBLE=;
+        b=Su2hDkAGhT8yKq/7dli68PWu39EQjFqo4wIO4hWUD1LkgpOYpCG/lUCQjVFKaJzkqUaif+
+        LbR1ldgOkC0/GcAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3E1791323E;
+        Wed, 27 Apr 2022 20:28:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6LoiDnanaWK0BQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 27 Apr 2022 20:28:38 +0000
+Date:   Wed, 27 Apr 2022 22:24:30 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org,
+        Dave Sterba <DSterba@suse.com>
+Subject: Re: [PATCH] btrfs: Derive compression type from extent map during
+ reads
+Message-ID: <20220427202430.GB18596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org,
+        Dave Sterba <DSterba@suse.com>
+References: <20220426134734.dxxdrf2hutbmimtc@fiona>
+ <7deead89-3be0-2ac2-cbb2-05171911cbe4@suse.com>
 MIME-Version: 1.0
-References: <20220425002415.GG29107@merlins.org> <CAEzrpqcQkiMJt1B4Bx9NrCcRys1MD+_5Y3riActXYC6RQrkakw@mail.gmail.com>
- <20220426002804.GI29107@merlins.org> <20220426204326.GK12542@merlins.org>
- <CAEzrpqcFewMWJ0e2umXNBdTkH32ehNi6_bnMQORAnGUg0nqFkw@mail.gmail.com>
- <CAEzrpqdKTrP_USiq9sKTXv1=uY1JVWRD5bVfdU_inGMhboxQdg@mail.gmail.com>
- <20220427035451.GM29107@merlins.org> <CAEzrpqdN7FaMMpemFbr6fO9Vi8t6upGPbAjonTtP-dpWMzdJwQ@mail.gmail.com>
- <20220427163423.GN29107@merlins.org> <CAEzrpqdaEFMi1ahnTkd+WHqN-pDWOnf4iK2AiOiOxb3Natv0Kw@mail.gmail.com>
- <20220427182440.GO12542@merlins.org>
-In-Reply-To: <20220427182440.GO12542@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 27 Apr 2022 16:21:31 -0400
-Message-ID: <CAEzrpqc7D5A6xZ7ztbWg4mztu+t9XUPSPt_gEgAbCCzVzhnHbA@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7deead89-3be0-2ac2-cbb2-05171911cbe4@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 2:24 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Wed, Apr 27, 2022 at 01:49:46PM -0400, Josef Bacik wrote:
-> > > Result:
-> > > doing insert of 12233379401728
-> > > Failed to find [7750833868800, 168, 262144]
-> >
-> > Oh it's data, interesting.  Pushed some more debugging.  Thanks,
->
-> inserting block group 15840439173120
-> inserting block group 15842586656768
-> processed 1556480 of 0 possible bytes
-> processed 1130496 of 0 possible bytesdoing an insert that overlaps our bytenr 7750833627136 262144
-> processed 1228800 of 0 possible bytesWTF???? we think we already inserted this bytenr??
+On Wed, Apr 27, 2022 at 12:06:37PM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 26.04.22 г. 16:47 ч., Goldwyn Rodrigues wrote:
+> > Derive the compression type from extent map as opposed to the bio flags
+> > passed. This makes it more precise and not reliant on function
+> > parameters.
+> > 
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> This patch also makes extent_compress_type unused so it can be removed. 
+> Also extent_set_compress_type also becomes redundant and can be removed.
 
-Well crap, you have bytenrs that overlap.  I've adjusted
-init-extent-tree to dump the paths of the files that have overlapping
-extents, as well as the keys.  Run it again so we know what files are
-fucked. From there you need to tell me which one you don't care about
-and are willing to delete, and then I'll give you the command you need
-to remove that bad extent and then we can go again.  Thanks,
-
-Josef
+I have a cleanup patch removing extent_set_compress_type so I'll rebase
+it on top of that patch.
