@@ -2,95 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3F6512779
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Apr 2022 01:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D92F51278A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Apr 2022 01:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbiD0XZR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Apr 2022 19:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+        id S233973AbiD0Xe5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Apr 2022 19:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbiD0XZQ (ORCPT
+        with ESMTP id S229677AbiD0Xe4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Apr 2022 19:25:16 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5705118B
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 16:22:03 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id 125so4827388iov.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 16:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1PSWnW6RdAv3DwRP7Jm9wPIfziTzYzdl+WmrFEgc/yk=;
-        b=JpZ7pVpHPk5RbozIr7aOvb88QJJvbigo/Vn8oiEPqe0k6DDJZMLOQzfkFNZntxA4T4
-         lkXYP+VOv9ab7ksODEwKowQ6SGwIBIT0+uLM9MBsFDUQNWMmtNS1ogC0paseYt+KO/vy
-         J2oVquxYDhWz53axg2E0ldT2/cBUzbAz62Uj5xPb5qBXvSn5PHcvAzx8/2T7j2zgLl1o
-         ECi8wEMpmfX2n9qxTNgdlA+BKs3tRbxAgV47sKcyzpiwkvu98wjHK5T1gEVH7lynnl3+
-         ULHVuMfL2tqwkVohOIIC6UlmiGfGoEbCp8zL7682/ZduggCrNahEJxTwvqmesFnXAHbB
-         E5ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1PSWnW6RdAv3DwRP7Jm9wPIfziTzYzdl+WmrFEgc/yk=;
-        b=t6CVCqED0x6tmnHAOrO8nFHhHdBklsBH2v/cfIyuIK5nDKUoLdFoNie5S+NaVnWI73
-         i6akwbiLbn8gnCqilBWWKRUfNHalDyUtri/KUjpYeuG+y2SRVbTqfLKNUYu87j9ez8nN
-         M3zFlAdKZkqDH2GRQgnA+2YDiBAKjEdV2qK49neaWq/0iFn6zRV8P9chdYp8ucnhNe9q
-         oQH1ijabtM2nRYQFSzehQHycsj2JkZBvagoO7fkFb/oLpmc46j1j5z6dNcvjTDZHZgo4
-         6MWFefXUsJGMTqYZSYlIOx+ZOwU718DO9X2MigN86Dtmo0nTYnRPj08IbZxVYzPzKHei
-         2i3w==
-X-Gm-Message-State: AOAM531ryb078XtTTuQmGrI2tgxHk5cdsGVQxN78eOSOs7zF553IHbLx
-        e9ANERJNJ/eNZZ4/lz8SPe+y4WpkcqLI7Ts1Yloobsv+Wg4=
-X-Google-Smtp-Source: ABdhPJzlO0lK67C4Mh1RCBB+Y+XH7nt7s8YpAPLLKwJhucddEPbtANdL6oF25eCtSTpvG2TJbZrpnT8fF1790ayL5DQ=
-X-Received: by 2002:a05:6602:14ce:b0:657:2bbc:ade8 with SMTP id
- b14-20020a05660214ce00b006572bbcade8mr12677374iow.83.1651101722671; Wed, 27
- Apr 2022 16:22:02 -0700 (PDT)
+        Wed, 27 Apr 2022 19:34:56 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8CB26F1
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 16:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1651102303; x=1682638303;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gLrzp6duhkPkV6taMyjQM6C7cL2l+fGNVwimG4CXPYA=;
+  b=UxwxbAqsimwtwGRnt2pWvurMD3DKCoV4txQE4Qikvpz85X7zOij+G24A
+   dYV++q3vdl/S2zGz6mPwlw3o1/RtH7HvwCa8ouDXOzPy5ELiBfrGDraa5
+   0IEkT469+4ei67t8VBwIsBWL/yl4idrCL8X5+UMrjkWDN7PpE8s48Oelk
+   dKvPifu1CsGXUvSNt9jqMqul96gf8TVr+kGYhrqXORkDwY1Ul++seufeB
+   A/JxKLXZLOAx/MnYVHvYl+cijAIq2sAxagbSzApTmD7WDYoJAKe05MPUl
+   XYGG4e2PKccIJv7SwaS6GVdic4zJzXC/F+hBMZqGIb/GzXxXUbWLc+b4N
+   A==;
+X-IronPort-AV: E=Sophos;i="5.90,294,1643644800"; 
+   d="scan'208";a="197843993"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Apr 2022 07:31:41 +0800
+IronPort-SDR: WC3xqj/i1fDStqykZatKQAumujtxV17FQRuASiwylN7BE9YtckSSdmY4xoTwRTPLe59jckFmvt
+ fX+LGk4tXshWtWeBBBoAurPWSetioBR0V/x8MNvPktLI81a9Byt3YCM+6gG3we8V71H+tBoA7A
+ kFAvO5HHePUMRcpLH1fCRYI1wALeYDvoDWo8Hz2tVAoiPzlpCFzNKW/H19BJ483S4vAkSyayhy
+ T1KdN//m94Fzff3jNVmIZVTmeaTbZ2068Oav5nJ/pF3Imt0PkLPWWwBbPXLGtSfCew33tOCik6
+ nrfmuXfUbKCSftKs+MFtq2zd
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Apr 2022 16:01:50 -0700
+IronPort-SDR: Deb1R+yMkHIGB3Rg8VIcWOQ9j+AY/CteLHRKXLVxWX4uR4o5ot6y5fgU0O+kg2HsuT5+ZC4mau
+ UXuo2smF/fDCYxsGEHrLM0BxPAkyBUCnV/xGdulU6WtmfeOLkgn+GD8jLrkHbLTBFDPoluxmv6
+ 9V8HvDyGQklbHqNKRYGOG4ZkiPCUGbw7/L/fbYPQlIKjdh+aEJZOt7HNNsYjf9OnBpzhFELHe7
+ tGm74Mw4yUodw7afY7ShKkTSLisC6xXqbau+zLWAk+1m9LPTyheXyV71F9yfdd5FGVT5dWXq7L
+ HBw=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Apr 2022 16:31:41 -0700
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4KpZlJ6c5Jz1SVp0
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 16:31:40 -0700 (PDT)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1651102299; x=1653694300; bh=gLrzp6duhkPkV6taMyjQM6C7cL2l+fGNVwi
+        mG4CXPYA=; b=PdTQSxxj3EOLpYEGcnBYVKUPguXiBCCpr5ymI7+k28TTGz3mfSs
+        KbvC8k3lhS5m6XprU6x/phnhFmDH5Zdpl9mtNhPvxWLwoLZA79RJ39tzK0T66DJg
+        cQ1J9s5aD6mTMKCIx7SKO/H0j3TVPipsOior8762yACFqgZPSPwSaryNVkrWfY9P
+        vFK6Qn1Dlh6ebNdzrLYEPjfHxjH1TIuA8nWpktFuNYhAu/AUjrulRyzZmZH+ftr1
+        f82lyX/KB3APT/Gb/yPBy31svE2vEO1vB1f3Yyd5uBMXra+42NUkawZ+Cd66ga7/
+        bklmIOigH4dlDMngOOGM9ReZ0ePeHAN6LGA==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id IS1Zum5izB9b for <linux-btrfs@vger.kernel.org>;
+        Wed, 27 Apr 2022 16:31:39 -0700 (PDT)
+Received: from [10.225.163.27] (unknown [10.225.163.27])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4KpZlB5PzJz1Rvlc;
+        Wed, 27 Apr 2022 16:31:34 -0700 (PDT)
+Message-ID: <652c33b5-1d85-e356-05b9-7bd84b768143@opensource.wdc.com>
+Date:   Thu, 28 Apr 2022 08:31:33 +0900
 MIME-Version: 1.0
-References: <20220427035451.GM29107@merlins.org> <CAEzrpqdN7FaMMpemFbr6fO9Vi8t6upGPbAjonTtP-dpWMzdJwQ@mail.gmail.com>
- <20220427163423.GN29107@merlins.org> <CAEzrpqdaEFMi1ahnTkd+WHqN-pDWOnf4iK2AiOiOxb3Natv0Kw@mail.gmail.com>
- <20220427182440.GO12542@merlins.org> <CAEzrpqc7D5A6xZ7ztbWg4mztu+t9XUPSPt_gEgAbCCzVzhnHbA@mail.gmail.com>
- <20220427210246.GV12542@merlins.org> <CAEzrpqezdFDLGjLvzznWrxCg11DptboeWCc7p_Wwz-=q5H+00w@mail.gmail.com>
- <20220427212023.GW12542@merlins.org> <CAEzrpqcvrA+qJspsusyk2fOOp5WovjWQEGX5sZA=Pr8pQRb9wA@mail.gmail.com>
- <20220427225942.GX12542@merlins.org> <CAEzrpqfN9QQqyRAoy=YOpcaCWnKCzpDcTxAtYNUGE=7A2vRTTQ@mail.gmail.com>
-In-Reply-To: <CAEzrpqfN9QQqyRAoy=YOpcaCWnKCzpDcTxAtYNUGE=7A2vRTTQ@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 27 Apr 2022 19:21:51 -0400
-Message-ID: <CAEzrpqfXFxunfC3KnVnWH4yqPTf=nkEPPg3dL=OPCRYhUvjPww@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH 03/16] block: add bdev_zone_no helper
+Content-Language: en-US
+To:     Pankaj Raghav <p.raghav@samsung.com>, jaegeuk@kernel.org,
+        axboe@kernel.dk, snitzer@kernel.org, hch@lst.de, mcgrof@kernel.org,
+        naohiro.aota@wdc.com, sagi@grimberg.me, dsterba@suse.com,
+        johannes.thumshirn@wdc.com
+Cc:     linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        clm@fb.com, gost.dev@samsung.com, chao@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, josef@toxicpanda.com,
+        jonathan.derrick@linux.dev, agk@redhat.com, kbusch@kernel.org,
+        kch@nvidia.com, linux-nvme@lists.infradead.org,
+        dm-devel@redhat.com, bvanassche@acm.org, jiangbo.365@bytedance.com,
+        linux-fsdevel@vger.kernel.org, matias.bjorling@wdc.com,
+        linux-block@vger.kernel.org
+References: <20220427160255.300418-1-p.raghav@samsung.com>
+ <CGME20220427160259eucas1p25aab0637fec229cd1140e6aa08678f38@eucas1p2.samsung.com>
+ <20220427160255.300418-4-p.raghav@samsung.com>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital Research
+In-Reply-To: <20220427160255.300418-4-p.raghav@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 7:02 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> On Wed, Apr 27, 2022 at 6:59 PM Marc MERLIN <marc@merlins.org> wrote:
-> >
-> > On Wed, Apr 27, 2022 at 05:27:44PM -0400, Josef Bacik wrote:
-> > > Sigh, added another print_leaf.  Thanks,
-> >
-> > doing an insert that overlaps our bytenr 7750833627136 262144
-> > processed 1146880 of 0 possible bytes
-> > processed 1163264 of 0 possible bytes
-> > processed 1179648 of 0 possible bytes
-> > processed 1196032 of 0 possible bytes
-> > processed 1212416 of 0 possible bytes
-> > processed 1228800 of 0 possible bytesWTF???? we think we already inserted this bytenr?? [5507, 108, 0] dumping paths
-> > inode ref info failed???
-> > leaf 15645023322112 items 123 free space 55 generation 1546750 owner ROOT_TREE
->
-> Ooooh that explains it, it's the free space cache, that's perfect!
-> I'll get something wired up and let you know when it's ready.  Thanks,
->
+On 4/28/22 01:02, Pankaj Raghav wrote:
+> Many places in the filesystem for zoned devices open code this function
+> to find the zone number for a given sector with power of 2 assumption.
+> This generic helper can be used to calculate zone number for a given
+> sector in a block device
+> 
+> This helper internally uses blk_queue_zone_no to find the zone number.
+> 
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> ---
+>  include/linux/blkdev.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index f8f2d2998afb..55293e0a8702 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -1392,6 +1392,15 @@ static inline bool bdev_zone_aligned(struct block_device *bdev, sector_t sec)
+>  	return false;
+>  }
+>  
+> +static inline unsigned int bdev_zone_no(struct block_device *bdev, sector_t sec)
+> +{
+> +	struct request_queue *q = bdev_get_queue(bdev);
+> +
+> +	if (q)
 
-Ok, lets hope for better results this time.  Thanks,
+q is never NULL. So this can be simplified to:
 
-Josef
+	return blk_queue_zone_no(bdev_get_queue(bdev), sector);
+
+> +		return blk_queue_zone_no(q, sec);
+> +	return 0;
+> +}
+> +
+>  static inline unsigned int bdev_max_open_zones(struct block_device *bdev)
+>  {
+>  	struct request_queue *q = bdev_get_queue(bdev);
+
+
+-- 
+Damien Le Moal
+Western Digital Research
