@@ -2,131 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE4151246D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 23:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65AD512486
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 23:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbiD0VXm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Apr 2022 17:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
+        id S237375AbiD0VbM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Apr 2022 17:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbiD0VXi (ORCPT
+        with ESMTP id S233092AbiD0VbK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Apr 2022 17:23:38 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF996E8D0
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 14:20:24 -0700 (PDT)
-Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:58286 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1njp5D-0007Qt-Oq by authid <merlins.org> with srv_auth_plain; Wed, 27 Apr 2022 14:20:23 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1njp5D-006gOs-J0; Wed, 27 Apr 2022 14:20:23 -0700
-Date:   Wed, 27 Apr 2022 14:20:23 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220427212023.GW12542@merlins.org>
+        Wed, 27 Apr 2022 17:31:10 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F1D2DD7
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 14:27:57 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id 125so4614736iov.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 14:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u0r3tijmwTTUOyrHg6oK5a+4JqZXbfBsjrXX/WZhnp0=;
+        b=1OQX5lOz54yZ6B/ta5dZKTnDUofwQLtzufesEtZ7Jetfwe2IysqXHfSoEQT2nlWJc4
+         H1JP+sNMbq/rWUZdyigHoOkRIzOzPzea4PcvMyxB31waLrtmYOCEiFTMgYT81Bi/C53z
+         SiqLdlX7nwuFzRSZowCIqn+VYwANuNLO/8otndmWvyfrRajwF4edF7U5lBfqyTheTqwW
+         Fem8T5bnxS5IXnTkjNZ1y2VleRhVKB/TGzX6OY8ihS96Al5JXVagdY7P20tbjw9IO4E4
+         V+60OrefUjKStEofKBLVbmuHHNkxACIER+GOQgw1dK1RQn1cV3g7zzam70UTmRSEPuia
+         pU1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u0r3tijmwTTUOyrHg6oK5a+4JqZXbfBsjrXX/WZhnp0=;
+        b=TM/rAGMFYcNjPWdBrM0vXh6vL9sMdVOH/AkNR/kwzNDwyHfUwUuuvxhKcmH+AyRYxV
+         xscPKW5CvaQC2KR9XD8rBr5FftiRCHQ35d9s5xbcctHaZ30gi2lY3Qwo0en2/lMEAYs9
+         I3j2YoGnBziF6xo1lYhgq1YxZA/ewfYq5/jIIaNKb3EAZ1nqMq4qFv9IGT9W6y7k9qWD
+         hKxCOSATYypxHx5UetIYovvuq0/poEPoAm2U9bmTYIZYaHDo9YWdlMpjRprcV4uPcep8
+         QiByw9nAdx4yTfHT9UY753K28TWnUWEqMm+nYDEvZ8+wmGTktbAk4wkclu6NgNGQK0fl
+         QZqA==
+X-Gm-Message-State: AOAM532kKr/eypAaLVxGY+mpLFU7n2Mw/0x55NEJsSoNZY9JIZ8gWtsP
+        W1x+hvNmX/2LYNuiKMw/D9LuCR9vGc9hbN2N2JJ1ROpka0Q=
+X-Google-Smtp-Source: ABdhPJwQeEpfuJ9UuH2Y0QWBey8eMlvxZnVTZd2k1fF2az8jp6+CI25qlDBZAwsUduRqz0xCiwCDJINOo++e1a+hLLI=
+X-Received: by 2002:a05:6638:30e:b0:32a:f864:e4d4 with SMTP id
+ w14-20020a056638030e00b0032af864e4d4mr6239172jap.218.1651094875152; Wed, 27
+ Apr 2022 14:27:55 -0700 (PDT)
+MIME-Version: 1.0
 References: <CAEzrpqcFewMWJ0e2umXNBdTkH32ehNi6_bnMQORAnGUg0nqFkw@mail.gmail.com>
  <CAEzrpqdKTrP_USiq9sKTXv1=uY1JVWRD5bVfdU_inGMhboxQdg@mail.gmail.com>
- <20220427035451.GM29107@merlins.org>
- <CAEzrpqdN7FaMMpemFbr6fO9Vi8t6upGPbAjonTtP-dpWMzdJwQ@mail.gmail.com>
- <20220427163423.GN29107@merlins.org>
- <CAEzrpqdaEFMi1ahnTkd+WHqN-pDWOnf4iK2AiOiOxb3Natv0Kw@mail.gmail.com>
- <20220427182440.GO12542@merlins.org>
- <CAEzrpqc7D5A6xZ7ztbWg4mztu+t9XUPSPt_gEgAbCCzVzhnHbA@mail.gmail.com>
- <20220427210246.GV12542@merlins.org>
- <CAEzrpqezdFDLGjLvzznWrxCg11DptboeWCc7p_Wwz-=q5H+00w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqezdFDLGjLvzznWrxCg11DptboeWCc7p_Wwz-=q5H+00w@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 24.5.124.255
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <20220427035451.GM29107@merlins.org> <CAEzrpqdN7FaMMpemFbr6fO9Vi8t6upGPbAjonTtP-dpWMzdJwQ@mail.gmail.com>
+ <20220427163423.GN29107@merlins.org> <CAEzrpqdaEFMi1ahnTkd+WHqN-pDWOnf4iK2AiOiOxb3Natv0Kw@mail.gmail.com>
+ <20220427182440.GO12542@merlins.org> <CAEzrpqc7D5A6xZ7ztbWg4mztu+t9XUPSPt_gEgAbCCzVzhnHbA@mail.gmail.com>
+ <20220427210246.GV12542@merlins.org> <CAEzrpqezdFDLGjLvzznWrxCg11DptboeWCc7p_Wwz-=q5H+00w@mail.gmail.com>
+ <20220427212023.GW12542@merlins.org>
+In-Reply-To: <20220427212023.GW12542@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Wed, 27 Apr 2022 17:27:44 -0400
+Message-ID: <CAEzrpqcvrA+qJspsusyk2fOOp5WovjWQEGX5sZA=Pr8pQRb9wA@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 05:11:30PM -0400, Josef Bacik wrote:
-> > inserting block group 15838291689472
-> > inserting block group 15839365431296
-> > inserting block group 15840439173120
-> > inserting block group 15842586656768
-> > processed 1556480 of 0 possible bytes
-> > processed 1130496 of 0 possible bytesadding a bytenr that overlaps our thing, dumping paths for [5064, 108, 0]
-> > doing an insert that overlaps our bytenr 7750833627136 262144
-> > processed 1228800 of 0 possible bytesWTF???? we think we already inserted this bytenr?? [5507, 108, 0] dumping paths
-> > Failed to find [7750833868800, 168, 262144]
+On Wed, Apr 27, 2022 at 5:20 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Wed, Apr 27, 2022 at 05:11:30PM -0400, Josef Bacik wrote:
+> > > inserting block group 15838291689472
+> > > inserting block group 15839365431296
+> > > inserting block group 15840439173120
+> > > inserting block group 15842586656768
+> > > processed 1556480 of 0 possible bytes
+> > > processed 1130496 of 0 possible bytesadding a bytenr that overlaps our thing, dumping paths for [5064, 108, 0]
+> > > doing an insert that overlaps our bytenr 7750833627136 262144
+> > > processed 1228800 of 0 possible bytesWTF???? we think we already inserted this bytenr?? [5507, 108, 0] dumping paths
+> > > Failed to find [7750833868800, 168, 262144]
+> > >
 > >
-> 
-> Of course it doesn't work for you, I pushed some debug stuff.  Thanks,
+> > Of course it doesn't work for you, I pushed some debug stuff.  Thanks,
+>
+> (gdb) run rescue init-extent-tree /dev/mapper/dshelf1
+> Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
+> [Thread debugging using libthread_db enabled]
+> Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+> FS_INFO IS 0x55555564cbc0
+> JOSEF: root 9
+> Couldn't find the last root for 8
+> checksum verify failed on 58720256 wanted 0x0d38525a found 0xb3a707fa
+> FS_INFO AFTER IS 0x55555564cbc0
+> Walking all our trees and pinning down the currently accessible blocks
+> (...)
+> inserting block group 15842586656768
+> processed 1556480 of 0 possible bytes
+> processed 1130496 of 0 possible bytesadding a bytenr that overlaps our thing, dumping paths for [5064, 108, 0]
+> elem_cnt 0 elem_missed 0 ret -2
+> doing an insert that overlaps our bytenr 7750833627136 262144
+> processed 1228800 of 0 possible bytesWTF???? we think we already inserted this bytenr?? [5507, 108, 0] dumping paths
+> elem_cnt 0 elem_missed 0 ret -2
+> Failed to find [7750833868800, 168, 262144]
 
-(gdb) run rescue init-extent-tree /dev/mapper/dshelf1
-Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue init-extent-tree /dev/mapper/dshelf1
-[Thread debugging using libthread_db enabled]
-Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
-FS_INFO IS 0x55555564cbc0
-JOSEF: root 9
-Couldn't find the last root for 8
-checksum verify failed on 58720256 wanted 0x0d38525a found 0xb3a707fa
-FS_INFO AFTER IS 0x55555564cbc0
-Walking all our trees and pinning down the currently accessible blocks
-(...)
-inserting block group 15842586656768
-processed 1556480 of 0 possible bytes
-processed 1130496 of 0 possible bytesadding a bytenr that overlaps our thing, dumping paths for [5064, 108, 0]
-elem_cnt 0 elem_missed 0 ret -2
-doing an insert that overlaps our bytenr 7750833627136 262144
-processed 1228800 of 0 possible bytesWTF???? we think we already inserted this bytenr?? [5507, 108, 0] dumping paths
-elem_cnt 0 elem_missed 0 ret -2
-Failed to find [7750833868800, 168, 262144]
+Sigh, added another print_leaf.  Thanks,
 
-Program received signal SIGSEGV, Segmentation fault.
-rb_search (root=root@entry=0x100000060, key=key@entry=0x7fffffffdce0, comp=comp@entry=0x55555559ae9a <cache_tree_comp_range>, 
-    next_ret=next_ret@entry=0x7fffffffdcf8) at common/rbtree-utils.c:48
-48              struct rb_node *n = root->rb_node;
-(gdb) bt
-#0  rb_search (root=root@entry=0x100000060, key=key@entry=0x7fffffffdce0, comp=comp@entry=0x55555559ae9a <cache_tree_comp_range>, 
-    next_ret=next_ret@entry=0x7fffffffdcf8) at common/rbtree-utils.c:48
-#1  0x000055555559b09e in search_cache_extent (tree=tree@entry=0x100000060, start=start@entry=100564992) at common/extent-cache.c:179
-#2  0x0000555555584c2c in set_extent_bits (tree=0x100000060, start=100564992, end=100564991, bits=bits@entry=1)
-    at kernel-shared/extent_io.c:380
-#3  0x0000555555584e5f in set_extent_dirty (tree=<optimized out>, start=<optimized out>, end=<optimized out>)
-    at kernel-shared/extent_io.c:486
-#4  0x0000555555585842 in set_extent_buffer_dirty (eb=eb@entry=0x555555729660) at kernel-shared/extent_io.c:976
-#5  0x000055555557bc10 in btrfs_mark_buffer_dirty (eb=eb@entry=0x555555729660) at kernel-shared/disk-io.c:2224
-#6  0x000055555557ee39 in setup_inline_extent_backref (refs_to_add=1, offset=0, owner=5507, root_objectid=93824998755744, parent=0, 
-    iref=0xffffffffffffffe3, path=0x555555b8cda0, root=<optimized out>) at kernel-shared/extent-tree.c:1085
-#7  insert_inline_extent_backref (refs_to_add=1, offset=0, owner=5507, root_objectid=93824998755744, parent=0, 
-    num_bytes=<optimized out>, bytenr=<optimized out>, path=0x555555b8cda0, root=<optimized out>, trans=<optimized out>)
-    at kernel-shared/extent-tree.c:1197
-#8  btrfs_inc_extent_ref (trans=trans@entry=0x555558a8d6a0, root=root@entry=0x55555564cde0, bytenr=<optimized out>, 
-    num_bytes=<optimized out>, parent=parent@entry=0, root_objectid=root_objectid@entry=1, owner=5507, offset=0)
-    at kernel-shared/extent-tree.c:1262
-#9  0x00005555555dfd17 in process_eb (trans=trans@entry=0x555558a8d6a0, root=root@entry=0x55555564cde0, eb=eb@entry=0x555559d00f00, 
-    current=current@entry=0x7fffffffe098) at cmds/rescue-init-extent-tree.c:557
-#10 0x00005555555dfe70 in process_eb (trans=trans@entry=0x555558a8d6a0, root=root@entry=0x55555564cde0, eb=0x555555944100, 
-    current=current@entry=0x7fffffffe098) at cmds/rescue-init-extent-tree.c:632
-#11 0x00005555555e00db in record_root (root=0x55555564cde0) at cmds/rescue-init-extent-tree.c:703
-#12 0x00005555555e03e5 in btrfs_init_extent_tree (path=path@entry=0x7fffffffe6c5 "/dev/mapper/dshelf1")
-    at cmds/rescue-init-extent-tree.c:839
-#13 0x00005555555d7a08 in cmd_rescue_init_extent_tree (cmd=<optimized out>, argc=<optimized out>, argv=<optimized out>)
-    at cmds/rescue.c:65
-#14 0x000055555556c17b in cmd_execute (argv=0x7fffffffe3c8, argc=2, cmd=0x555555642d40 <cmd_struct_rescue_init_extent_tree>)
-    at cmds/commands.h:125
-#15 handle_command_group (cmd=<optimized out>, argc=2, argv=0x7fffffffe3c8) at btrfs.c:152
-#16 0x000055555556c275 in cmd_execute (argv=0x7fffffffe3c0, argc=3, cmd=0x555555643cc0 <cmd_struct_rescue>) at cmds/commands.h:125
-#17 main (argc=3, argv=0x7fffffffe3c0) at btrfs.c:405
-
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Josef
