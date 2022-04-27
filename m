@@ -2,68 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 139B3512260
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 21:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EDB5122AB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 21:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbiD0TU2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Apr 2022 15:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
+        id S232405AbiD0TaU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Apr 2022 15:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233546AbiD0TUD (ORCPT
+        with ESMTP id S234833AbiD0T3N (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Apr 2022 15:20:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11BF366A0
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 12:14:49 -0700 (PDT)
+        Wed, 27 Apr 2022 15:29:13 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91CF15A19
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 12:25:22 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 717F31F755;
-        Wed, 27 Apr 2022 19:14:48 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3E3F8210E6;
+        Wed, 27 Apr 2022 19:25:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1651086888;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        t=1651087520;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oBCrBqpzaf8thYBNDmiTSN5GmkHpoh9uyAxDMDs29Mg=;
-        b=kWhPoJvJgwhqz+mYeubueGlNrMkT4fP2AJo2FHOD9xWfIOb6+ix56UO8b++/ZEyRfb///E
-        tu6a1g7yqIwTATU3xH8Edt+DsK0DNJIFZA34lp95QTQBnFpT4wZGN653lhWfVFZeAsDZbq
-        FnwJj/8OhqytMR+rz0nUikwBlqGIUP0=
+        bh=yO6Hi1rD4PhlRaq8Jzq1JnBm7uWWrrd4PnDu5Ygl8PI=;
+        b=wAKCDSLByN8xWE3djOjA8VLtmn6V+w3aErni0n7T3x3jlsKJPwMzvy73q3SVoq8vHUpoiJ
+        ODd6bdeUsmWJkkuwOijzLS69cRppNf/YwHLM7j2hSBJUt/nRKOh5H/A1nM0hYsDF8yDhTg
+        gMDPRwDf1DD9+QBKgsgQRj/lac9BLgA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1651086888;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1651087520;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oBCrBqpzaf8thYBNDmiTSN5GmkHpoh9uyAxDMDs29Mg=;
-        b=I9OB4hWZCR0Cx6gEtZSp6fV4gRR4Nt92DgPpjO3NYbNbewEKy2XCmF3He4+1oAfBzmGB7J
-        FahY5MqcqiLDEHBQ==
+        bh=yO6Hi1rD4PhlRaq8Jzq1JnBm7uWWrrd4PnDu5Ygl8PI=;
+        b=sBsmEr7Va2RRLujqwe7gBwoBUOn5qL63Qm/+kVDpxS4p8HVAhXwdMMuwNDTYIJa4nnBI5l
+        VlDpdOCVGuUdR1BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 520BC13A39;
-        Wed, 27 Apr 2022 19:14:48 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 149AE13A39;
+        Wed, 27 Apr 2022 19:25:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2dYZEyiWaWLNagAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 27 Apr 2022 19:14:48 +0000
-Date:   Wed, 27 Apr 2022 21:10:40 +0200
+        id pMgSBKCYaWKhbgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 27 Apr 2022 19:25:20 +0000
+Date:   Wed, 27 Apr 2022 21:21:12 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/9] btrfs: refactor scrub entrances for each profile
-Message-ID: <20220427191040.GY18596@twin.jikos.cz>
+To:     Gabriel Niebler <gniebler@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Turn fs_roots_radix in btrfs_fs_info into an
+ XArray
+Message-ID: <20220427192111.GZ18596@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Gabriel Niebler <gniebler@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <cover.1646984153.git.wqu@suse.com>
- <260f924b-e434-c49b-0c39-a09dbf61ac19@suse.com>
- <20220420211654.GL1513@twin.jikos.cz>
+References: <20220426214525.14192-1-gniebler@suse.com>
+ <b110e69e-d371-a29e-fd89-f810a4391e7b@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220420211654.GL1513@twin.jikos.cz>
+In-Reply-To: <b110e69e-d371-a29e-fd89-f810a4391e7b@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -74,22 +74,28 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 11:16:54PM +0200, David Sterba wrote:
-> On Tue, Mar 15, 2022 at 03:02:43PM +0800, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2022/3/11 15:38, Qu Wenruo wrote:
-> > > This patchset is cherry-picked from my github repo:
-> > > https://github.com/adam900710/linux/tree/refactor_scrub
-> > 
-> > Just to mention, the branch get an update as misc-next now merged the 
-> > renaming part.
-> > 
-> > The good news is, this entrance refactor can be applied without 
-> > conflicts. So no update on this patchset.
+On Wed, Apr 27, 2022 at 04:51:07PM +0200, Gabriel Niebler wrote:
+> >   	while (!list_empty(&fs_info->dead_roots)) {
+> > [...]   
+> > -		if (test_bit(BTRFS_ROOT_IN_RADIX, &gang[0]->state))
+> > -			btrfs_drop_and_free_fs_root(fs_info, gang[0]);
+> > -		btrfs_put_root(gang[0]);
+> > +		if (test_bit(BTRFS_ROOT_IN_RADIX, &root->state))
+> > +			btrfs_drop_and_free_fs_root(fs_info, root);
+> > +		btrfs_put_root(root);
 > 
-> Still applies on top of current misc-next with variuos patches merged,
-> even there's no conflict with the subpage support for raid56 so I'll
-> keep them both in the to-merge queue.
+> It occurs to me that BTRFS_ROOT_IN_RADIX should probably be renamed to 
+> something else within or following this patch...
+> 
+> ... but what to rename it /to/?
 
-Branch moved from topic to misc-next.
+Good point about the naming but I don't have a concrete idea. The naming
+could reflect the status of the entry rather than where is it tracked.
+
+> Naming things is hard. Here are some ideas I've had:
+> 
+> BTRFS_ROOT_IN_XARRAY is obvious, but it also includes kind of a needless 
+> implementation detail.
+
+This could be a fallback that at least follows the same pattern but yeah
+it's not the best one.
