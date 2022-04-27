@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DD9511242
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 09:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9812051123F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 09:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358715AbiD0HWd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Apr 2022 03:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
+        id S1358718AbiD0HWe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Apr 2022 03:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357783AbiD0HWc (ORCPT
+        with ESMTP id S1358690AbiD0HWd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Apr 2022 03:22:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570215E743
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 00:19:22 -0700 (PDT)
+        Wed, 27 Apr 2022 03:22:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF865E770
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 00:19:23 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0E795210E1
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 358C41F746
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651043961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1651043962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Sh8FfbYi+a6qBsyRlzi8CYom7sAbRwqbo7182kUDxuQ=;
-        b=RpUaBxBxJNnezZKmYQtQY8szsBjxbgqGc7wn2yZGkRku91MkM8Lzr7U7YpKB0+zF5i828B
-        2CryWZDhreKzjRDwqaYmmHIqZmpVDf2nCcfpi5zVVrLbTuvlwD4g4tvHYb/tUm/AaoDPEG
-        iyARPAC3J/j5E3oU//LOAMgSgeW6ep0=
+        bh=Bka4SFCUY7w3XBZ3qlwItufGkcpVMFK6Yd5BleIA368=;
+        b=RTlDGovh5qqgJQI4aREHDcgalheF6/8fy4dRxZnGxM0h1Xlh9wPs4PgCsig6tp3JXwG0BQ
+        xPDFdK5XCc7ShBZ6dsPBQY6QKPJLXIZxNFw7hf253Guch84Xzqht/RCajhmbgjUDnlr664
+        iU/cOO0ZyquOpDa7u+xAJhLFcoPTzbs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53E4813A39
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7BAD313A39
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WPOyBnjuaGIbJAAAMHmgww
+        id 4H14EHnuaGIbJAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:20 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:21 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC v2 04/12] btrfs: add btrfs_read_repair_ctrl to record corrupted sectors
-Date:   Wed, 27 Apr 2022 15:18:50 +0800
-Message-Id: <ad61ab273c5f591cb4963f348c4b34302f705705.1651043617.git.wqu@suse.com>
+Subject: [PATCH RFC v2 05/12] btrfs: add a helper to queue a corrupted sector for read repair
+Date:   Wed, 27 Apr 2022 15:18:51 +0800
+Message-Id: <a136fe858afe9efd29c8caa98d82cb7439d89677.1651043617.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <cover.1651043617.git.wqu@suse.com>
 References: <cover.1651043617.git.wqu@suse.com>
@@ -60,216 +60,158 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch will introduce a new infrastructure, btrfs_read_repair_ctrl,
-to record exactly which sectors are corrupted at read time, and hold
-other misc members for read time repair.
-
-The new structure is going to be an on-stack structure for
-end_bio_extent_readpage().
-
-It would increase the stack memory usage (would be around 100 bytes),
-but considering end_bio_extent_readpage() is the highest level endio
-function and it's executed in a workqueue, the extra stack memory usage
-should be OK.
-
-Currently we only allocate two bitmaps and initialize various members,
-no real work done yet.
+The new helper, read_repair_bio_add_sector(), will grab the page and
+page_offset, and queue the sector into
+btrfs_read_repair_ctrl::read_bios for later usage.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 86 ++++++++++++++++++++++++++++++++++++++++++--
- fs/btrfs/extent_io.h | 46 ++++++++++++++++++++++++
- 2 files changed, 129 insertions(+), 3 deletions(-)
+ fs/btrfs/extent_io.c | 107 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/extent_io.h |   6 +++
+ 2 files changed, 113 insertions(+)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1f273ef966bd..6304f694c8d6 100644
+index 6304f694c8d6..fbed78ffe8e1 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -2732,7 +2732,79 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+@@ -2732,6 +2732,110 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
  		btrfs_subpage_end_reader(fs_info, page, start, len);
  }
  
--static blk_status_t submit_data_read_repair(struct inode *inode,
-+static int read_repair_add_sector(struct inode *inode,
-+				  struct btrfs_read_repair_ctrl *ctrl,
-+				  struct bio *failed_bio, u32 bio_offset)
++static struct page *read_repair_get_sector(struct btrfs_read_repair_ctrl *ctrl,
++					   int sector_nr, unsigned int *pgoff)
 +{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	const struct btrfs_fs_info *fs_info = btrfs_sb(ctrl->inode->i_sb);
++	const u32 target_offset = sector_nr << fs_info->sectorsize_bits;
++	struct bvec_iter iter;
++	struct bio_vec bvec;
++	u32 offset = 0;
 +
-+	if (!ctrl->initialized) {
-+		const u32 sectorsize = fs_info->sectorsize;
++	ASSERT(pgoff);
++	ASSERT((sector_nr << fs_info->sectorsize_bits) < ctrl->bio_size);
 +
-+		ASSERT(ctrl->cur_bad_bitmap == NULL &&
-+		       ctrl->prev_bad_bitmap == NULL);
-+		/*
-+		 * failed_bio->bi_iter is not reliable at endio time, thus we
-+		 * must rely on btrfs_bio::iter to grab the original logical
-+		 * bytenr.
-+		 */
-+		ASSERT(btrfs_bio(failed_bio)->iter.bi_size);
-+
-+		ctrl->initialized = true;
-+		ctrl->failed_bio = failed_bio;
-+		ctrl->logical = btrfs_bio(failed_bio)->iter.bi_sector <<
-+				SECTOR_SHIFT;
-+		ctrl->bio_size = btrfs_bio(failed_bio)->iter.bi_size;
-+		ASSERT(ctrl->bio_size);
-+		ASSERT(IS_ALIGNED(ctrl->bio_size, fs_info->sectorsize));
-+		ctrl->error = false;
-+		ctrl->inode = inode;
-+		ctrl->init_mirror = btrfs_bio(failed_bio)->mirror_num;
-+		ctrl->num_copies = btrfs_num_copies(fs_info, ctrl->logical,
-+						    sectorsize);
-+
-+		ctrl->cur_bad_bitmap = bitmap_alloc(ctrl->bio_size >>
-+					fs_info->sectorsize_bits, GFP_NOFS);
-+		ctrl->prev_bad_bitmap = bitmap_alloc(ctrl->bio_size >>
-+					fs_info->sectorsize_bits, GFP_NOFS);
-+		/* Just set the error bit, so we will never try repair */
-+		if (!ctrl->cur_bad_bitmap || !ctrl->prev_bad_bitmap) {
-+			kfree(ctrl->cur_bad_bitmap);
-+			kfree(ctrl->prev_bad_bitmap);
-+			ctrl->cur_bad_bitmap = NULL;
-+			ctrl->prev_bad_bitmap = NULL;
-+			ctrl->error = true;
++	/*
++	 * This is definitely not effecient, but I don't have better way
++	 * to grab a specified bvec from a bio directly.
++	 */
++	__bio_for_each_segment(bvec, ctrl->failed_bio, iter,
++			       btrfs_bio(ctrl->failed_bio)->iter) {
++		if (target_offset - offset < bvec.bv_len) {
++			*pgoff = bvec.bv_offset + (target_offset - offset);
++			return bvec.bv_page;
 +		}
++		offset += bvec.bv_len;
++	}
++	return NULL;
++}
++
++static void read_repair_end_bio(struct bio *bio)
++{
++	struct btrfs_read_repair_ctrl *ctrl = bio->bi_private;
++	const struct btrfs_fs_info *fs_info = btrfs_sb(ctrl->inode->i_sb);
++	struct bvec_iter_all iter_all;
++	struct bio_vec *bvec;
++	u64 logical = btrfs_bio(bio)->iter.bi_sector << SECTOR_SHIFT;
++	u32 offset = 0;
++	bool uptodate = (bio->bi_status == BLK_STS_OK);
++
++	/* We should not have csum in bbio */
++	ASSERT(!btrfs_bio(bio)->csum);
++	bio_for_each_segment_all(bvec, bio, iter_all) {
++		/*
++		 * If we have a successful read, clear the error bit.
++		 * In read_repair_finish(), we will re-check the csum
++		 * (if exists) later.
++		 */
++		if (uptodate)
++			clear_bit((logical + offset - ctrl->logical) >>
++				  fs_info->sectorsize_bits,
++				  ctrl->cur_bad_bitmap);
++		atomic_sub(bvec->bv_len, &ctrl->io_bytes);
++		wake_up(&ctrl->io_wait);
++		offset += bvec->bv_len;
++	}
++	bio_put(bio);
++}
++
++/* Add a sector into the read repair bios list for later submission */
++static void read_repair_bio_add_sector(struct btrfs_read_repair_ctrl *ctrl,
++				       int sector_nr)
++{
++	const struct btrfs_fs_info *fs_info = btrfs_sb(ctrl->inode->i_sb);
++	struct page *page;
++	int pgoff;
++	struct bio *bio;
++	int ret;
++
++	page = read_repair_get_sector(ctrl, sector_nr, &pgoff);
++	ASSERT(page);
++
++	/* Check if the sector can be added to the last bio */
++	if (!bio_list_empty(&ctrl->read_bios)) {
++		bio = ctrl->read_bios.tail;
++		if ((bio->bi_iter.bi_sector << SECTOR_SHIFT) + bio->bi_iter.bi_size ==
++		    ctrl->logical + (sector_nr << fs_info->sectorsize_bits))
++			goto add;
 +	}
 +	/*
-+	 * We failed to allocate memory for bitmaps, some range has already been
-+	 * marked error, no need to try repair anymore.
++	 * Here we want to know the logical bytenr at endio time, so we can
++	 * update the bitmap.
++	 * Unfortunately our bi_private will be used, and bi_iter is not
++	 * reliable, thus we have to alloc btrfs_bio, even we just want
++	 * logical bytenr.
 +	 */
-+	if (ctrl->error)
-+		return -ENOMEM;
++	bio = btrfs_bio_alloc(BIO_MAX_VECS);
++	/* It's backed by mempool, thus should not fail */
++	ASSERT(bio);
 +
-+	ASSERT(ctrl->inode);
-+	ASSERT(ctrl->inode == inode);
-+	set_bit(bio_offset >> fs_info->sectorsize_bits, ctrl->cur_bad_bitmap);
-+	return 0;
++	bio->bi_opf = REQ_OP_READ;
++	bio->bi_iter.bi_sector = ((sector_nr << fs_info->sectorsize_bits) +
++				  ctrl->logical) >> SECTOR_SHIFT;
++	bio->bi_private = ctrl;
++	bio->bi_end_io = read_repair_end_bio;
++	bio_list_add(&ctrl->read_bios, bio);
++
++add:
++	ret = bio_add_page(bio, page, fs_info->sectorsize, pgoff);
++	/*
++	 * We allocated the read bio with enough bvecs to contain
++	 * the original bio, thus it should not fail to add a sector.
++	 */
++	ASSERT(ret == fs_info->sectorsize);
++	atomic_add(fs_info->sectorsize, &ctrl->io_bytes);
 +}
 +
-+static void read_repair_finish(struct btrfs_read_repair_ctrl *ctrl)
-+{
-+	if (!ctrl->initialized)
-+		return;
-+
-+	kfree(ctrl->cur_bad_bitmap);
-+	kfree(ctrl->prev_bad_bitmap);
-+	ctrl->cur_bad_bitmap = NULL;
-+	ctrl->prev_bad_bitmap = NULL;
-+	ctrl->initialized = false;
-+	ctrl->error = false;
-+	ctrl->failed_bio = NULL;
-+}
-+
-+static blk_status_t submit_data_read_repair(struct btrfs_read_repair_ctrl *ctrl,
-+					    struct inode *inode,
- 					    struct bio *failed_bio,
- 					    u32 bio_offset,
- 					    const struct bio_vec *bvec,
-@@ -2779,6 +2851,12 @@ static blk_status_t submit_data_read_repair(struct inode *inode,
- 			goto next;
- 		}
+ static int read_repair_add_sector(struct inode *inode,
+ 				  struct btrfs_read_repair_ctrl *ctrl,
+ 				  struct bio *failed_bio, u32 bio_offset)
+@@ -2762,6 +2866,9 @@ static int read_repair_add_sector(struct inode *inode,
+ 		ctrl->init_mirror = btrfs_bio(failed_bio)->mirror_num;
+ 		ctrl->num_copies = btrfs_num_copies(fs_info, ctrl->logical,
+ 						    sectorsize);
++		init_waitqueue_head(&ctrl->io_wait);
++		bio_list_init(&ctrl->read_bios);
++		atomic_set(&ctrl->io_bytes, 0);
  
-+		/*
-+		 * We currently only set the bitmap, no real repair, thus can
-+		 * ignore the error for now.
-+		 */
-+		read_repair_add_sector(inode, ctrl, failed_bio,
-+				       bio_offset + offset);
- 		ret = btrfs_repair_one_sector(inode, failed_bio,
- 				bio_offset + offset,
- 				page, pgoff + offset, start + offset,
-@@ -3015,6 +3093,7 @@ static struct extent_buffer *find_extent_buffer_readpage(
-  */
- static void end_bio_extent_readpage(struct bio *bio)
- {
-+	struct btrfs_read_repair_ctrl ctrl = { 0 };
- 	struct bio_vec *bvec;
- 	struct btrfs_bio *bbio = btrfs_bio(bio);
- 	struct extent_io_tree *tree, *failure_tree;
-@@ -3103,8 +3182,8 @@ static void end_bio_extent_readpage(struct bio *bio)
- 			 * submit_data_read_repair() will handle all the good
- 			 * and bad sectors, we just continue to the next bvec.
- 			 */
--			submit_data_read_repair(inode, bio, bio_offset, bvec,
--						mirror, error_bitmap);
-+			submit_data_read_repair(&ctrl, inode, bio, bio_offset,
-+						bvec, mirror, error_bitmap);
- 
- 			ASSERT(bio_offset + len > bio_offset);
- 			bio_offset += len;
-@@ -3149,6 +3228,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 	}
- 	/* Release the last extent */
- 	endio_readpage_release_extent(&processed, NULL, 0, 0, false);
-+	read_repair_finish(&ctrl);
- 	btrfs_bio_free_csum(bbio);
- 	bio_put(bio);
- }
+ 		ctrl->cur_bad_bitmap = bitmap_alloc(ctrl->bio_size >>
+ 					fs_info->sectorsize_bits, GFP_NOFS);
 diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index b390ec79f9a8..eff008ba194f 100644
+index eff008ba194f..4904229ee73a 100644
 --- a/fs/btrfs/extent_io.h
 +++ b/fs/btrfs/extent_io.h
-@@ -7,6 +7,7 @@
- #include <linux/refcount.h>
- #include <linux/fiemap.h>
- #include <linux/btrfs_tree.h>
-+#include <linux/bitmap.h>
- #include "ulist.h"
+@@ -121,6 +121,12 @@ struct btrfs_read_repair_ctrl {
+ 	 */
+ 	unsigned long *prev_bad_bitmap;
  
- /*
-@@ -102,6 +103,51 @@ struct extent_buffer {
- #endif
- };
++	struct bio_list read_bios;
++
++	wait_queue_head_t io_wait;
++
++	atomic_t io_bytes;
++
+ 	/* The logical bytenr of the original bio. */
+ 	u64 logical;
  
-+/* Strucutre for data read time repair. */
-+struct btrfs_read_repair_ctrl {
-+	struct inode *inode;
-+
-+	/* The initial failed bio, we will grab page/pgoff from it */
-+	struct bio *failed_bio;
-+
-+	/* Currently bad bitmap. */
-+	unsigned long *cur_bad_bitmap;
-+
-+	/*
-+	 * Bad bitmap for previous mirror, the diff between
-+	 * @cur_bad_bitmap and @prev_bad_bitmap shows the
-+	 * repaired range, that will be used to writeback
-+	 * the repaired data to corrupted mirror.
-+	 */
-+	unsigned long *prev_bad_bitmap;
-+
-+	/* The logical bytenr of the original bio. */
-+	u64 logical;
-+
-+	/* File offset of the original bio. */
-+	u64 file_offset;
-+
-+	/* The original bio size for the whole read. */
-+	u32 bio_size;
-+
-+	/* Current mirror number we're reading from. */
-+	u8 cur_mirror;
-+
-+	/* Initial mirror number we hit the first error. */
-+	u8 init_mirror;
-+
-+	/* How many copies we have. */
-+	u8 num_copies;
-+
-+	/*
-+	 * If we hit fatal error during repair, if so we will not try any
-+	 * repair but directly mark all existing and future bad range as
-+	 * error.
-+	 */
-+	bool error;
-+	bool initialized;
-+};
-+
- /*
-  * Structure to record how many bytes and which ranges are set/cleared
-  */
 -- 
 2.36.0
 
