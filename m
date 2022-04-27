@@ -2,184 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C6A511B3E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 16:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F93511902
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 16:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238351AbiD0Ojm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Apr 2022 10:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54086 "EHLO
+        id S238455AbiD0Oru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Apr 2022 10:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238363AbiD0Oje (ORCPT
+        with ESMTP id S238439AbiD0Ort (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Apr 2022 10:39:34 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509C231DCD
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:36:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E82ED21123;
-        Wed, 27 Apr 2022 14:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651070178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PVybj2vkgs8RrravetIMjUlAYFKBrmNlNZkw4hwoEpc=;
-        b=Ifnm6c05d//lETl++CH4Q5F8wXb0GBUZ1UCLaJ9wpvk9R03zaaaaEcF61nbPOByRcWyGKO
-        41+guz5ziEbcjCvLXN98kjWDWtYD2wkiDev01v3xf5m2U7oVy8W+hhTp7JkOi0DGbzSFt4
-        ZXeVaSTK1X1/jqwylu08vWGtwx5lA2o=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BCEF213A39;
-        Wed, 27 Apr 2022 14:36:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id b/JcLOJUaWKzegAAMHmgww
-        (envelope-from <gniebler@suse.com>); Wed, 27 Apr 2022 14:36:18 +0000
-Message-ID: <58aa36f6-6f86-19b1-2eff-50d172b97a6d@suse.com>
-Date:   Wed, 27 Apr 2022 16:36:18 +0200
+        Wed, 27 Apr 2022 10:47:49 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8A937A96
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:44:38 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id o5so97681ils.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YA8hZxqsey1AEQxmfsJTmUJGzZMw1A+bcEglZTQuW48=;
+        b=691YWncFA01/QliHwvaB7BvkOq5IZFgxTLgSoXHIT2HbNXc6Xji6o61x/+47G/1O0p
+         1NDHk8nND0czClXYdUhm6WplBD3IsDgDzmQirSTj3jYxKw3A+QAAC3HyXLd/dAqxp/LI
+         1xAdt2VS4f1YC3PR8hiPUTXGPk+LKFEMa7D18nf7LzNy79S8cAimVk5qlYNp4jftVs8L
+         76TZod4/anZ1/976Yl1H2oaAd9AMKUvshsDbI7hUoABTzP3yPOTUGMRr7ac1L2nO+Hnl
+         RKXjRWvWa+heD4nrEiMs++VeUfrmw8U0RyDvYXn+oarf9WjqiFV5j8hPiPj8Ek3eIg7N
+         WcUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YA8hZxqsey1AEQxmfsJTmUJGzZMw1A+bcEglZTQuW48=;
+        b=xJ7ZioHGwFD+JWqgKkER7RetQfLHHXNMzKaD55vjkTon4k1qXd8g8WncBEkqXgADWz
+         rm5LZP0rPb6WtkkAjgd6cekS2H1iMYcuiW/K4z8rzbHx5BcNlQHYFGxq1rse+DUJbyrb
+         cw/PkINspI1j/Lb7pgjWIp3mqSMHo3QDO8IoNkP2c/d10qkhRK8TgNGUWm+Ow/VhpP0o
+         JOjugBqHOr5gHnqr/nHDLHVvAWb3S0ytKLNwKzy834itR6mymSwtelzx50TtM4C75t/x
+         5grknLJ33EWix8Mot62tA5eewdRy+G3ccN0x7I4mWnHVKlpfBXCHv6wXyRTYiQlAAh7u
+         MWvQ==
+X-Gm-Message-State: AOAM530Gc7NsDAkrObTrWfOTAzFnhoHvjvt96h7DB8FCsbR0BCkcClDU
+        SyYueme1hDiZKkQbQtm0wl+66Jlo4TFvVxXT+1eqHOhA1CA=
+X-Google-Smtp-Source: ABdhPJxjarfdimukTR+mS4uHRlwHitp1hN51XCgHz6yoO06aHi+KXJUsKxDhjwamrYbdez5wuhhjQTm6t1vh5FwArIo=
+X-Received: by 2002:a05:6e02:17ce:b0:2cc:8c4:2c78 with SMTP id
+ z14-20020a056e0217ce00b002cc08c42c78mr11841032ilu.153.1651070677589; Wed, 27
+ Apr 2022 07:44:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2] btrfs: Turn name_cache radix tree into XArray in
- send_ctx
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220426095101.8516-1-gniebler@suse.com>
- <d5c1e631-a380-dc08-05b0-c4520318cadd@suse.com>
-From:   Gabriel Niebler <gniebler@suse.com>
-In-Reply-To: <d5c1e631-a380-dc08-05b0-c4520318cadd@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220424223819.GE29107@merlins.org> <CAEzrpqdBWMcai2uMe=kPxYshUe8wV0YX3Ge1pZW8aG_BSO-i-w@mail.gmail.com>
+ <20220424231446.GF29107@merlins.org> <CAEzrpqcGy3aac6Lb7PKux+nA2KzDgbPSMyjYG6B-0TbgXXP=-A@mail.gmail.com>
+ <20220425002415.GG29107@merlins.org> <CAEzrpqcQkiMJt1B4Bx9NrCcRys1MD+_5Y3riActXYC6RQrkakw@mail.gmail.com>
+ <20220426002804.GI29107@merlins.org> <20220426204326.GK12542@merlins.org>
+ <CAEzrpqcFewMWJ0e2umXNBdTkH32ehNi6_bnMQORAnGUg0nqFkw@mail.gmail.com>
+ <CAEzrpqdKTrP_USiq9sKTXv1=uY1JVWRD5bVfdU_inGMhboxQdg@mail.gmail.com> <20220427035451.GM29107@merlins.org>
+In-Reply-To: <20220427035451.GM29107@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Wed, 27 Apr 2022 10:44:26 -0400
+Message-ID: <CAEzrpqdN7FaMMpemFbr6fO9Vi8t6upGPbAjonTtP-dpWMzdJwQ@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am 27.04.22 um 13:46 schrieb Nikolay Borisov:
-> On 26.04.22 г. 12:51 ч., Gabriel Niebler wrote:
->> … and adjust all usages of this object to use the XArray API for the sake
->> of consistency.
->>
->> XArray API provides array semantics, so it is notionally easier to use 
->> and
->> understand, and it also takes care of locking for us.
->>
->> None of this makes a real difference in this particular patch, but it 
->> does
->> in other places where similar replacements are or have been made and we
->> want to be consistent in our usage of data structures in btrfs.
->>
->> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
->> ---
->>
->> Changes from v1:
->>   - Let commit message begin with "btrfs: "
->>
->> ---
->>   fs/btrfs/send.c | 40 +++++++++++++++++++---------------------
->>   1 file changed, 19 insertions(+), 21 deletions(-)
->>
-> 
-> LGTM, one minor nit below though.
-> 
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> <snip>
-> 
->> @@ -262,14 +261,14 @@ struct orphan_dir_info {
->>   struct name_cache_entry {
->>       struct list_head list;
->>       /*
->> -     * radix_tree has only 32bit entries but we need to handle 64bit 
->> inums.
->> -     * We use the lower 32bit of the 64bit inum to store it in the 
->> tree. If
->> -     * more then one inum would fall into the same entry, we use 
->> radix_list
->> -     * to store the additional entries. radix_list is also used to store
->> -     * entries where two entries have the same inum but different
->> +     * On 32bit kernels, XArray has only 32bit indices, but we need to
->> +     * handle 64bit inums. We use the lower 32bit of the 64bit inum 
->> to store
->> +     * it in the tree. If more than one inum would fall into the same 
->> entry,
->> +     * we use inum_aliases to store the additional entries. 
->> inum_aliases is
->> +     * also used to store entries with the same inum but different
->>        * generations.
->>        */
->> -    struct list_head radix_list;
->> +    struct list_head inum_aliases;
->>       u64 ino;
->>       u64 gen;
->>       u64 parent_ino;
->> @@ -2019,9 +2018,9 @@ static int did_overwrite_first_ref(struct 
->> send_ctx *sctx, u64 ino, u64 gen)
->>   }
->>   /*
->> - * Insert a name cache entry. On 32bit kernels the radix tree index 
->> is 32bit,
->> + * Insert a name cache entry. On 32bit kernels the XArray index is 
->> 32bit,
->>    * so we need to do some special handling in case we have clashes. 
->> This function
->> - * takes care of this with the help of name_cache_entry::radix_list.
->> + * takes care of this with the help of name_cache_entry::inum_aliases.
->>    * In case of error, nce is kfreed.
->>    */
->>   static int name_cache_insert(struct send_ctx *sctx,
->> @@ -2030,8 +2029,7 @@ static int name_cache_insert(struct send_ctx *sctx,
->>       int ret = 0;
->>       struct list_head *nce_head;
->> -    nce_head = radix_tree_lookup(&sctx->name_cache,
->> -            (unsigned long)nce->ino);
->> +    nce_head = xa_load(&sctx->name_cache, (unsigned long)nce->ino);
-> 
-> The casting is redundant since the function's argument is already 
-> declared as unsigned long so truncation happens anyway. The only 
-> rationale to keep is for documentation purposes but even this is 
-> somewhat dubious. But since there is already something said about that 
-> above the definition of inum_aliases I'd say lets do away with the casts.
+On Tue, Apr 26, 2022 at 11:54 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Tue, Apr 26, 2022 at 05:36:28PM -0400, Josef Bacik wrote:
+> > On Tue, Apr 26, 2022 at 5:20 PM Josef Bacik <josef@toxicpanda.com> wrote:
+> > >
+> > > On Tue, Apr 26, 2022 at 4:43 PM Marc MERLIN <marc@merlins.org> wrote:
+> > > >
+> > > > Generally would you say we're still on the right path and helping your
+> > > > recovery tools getting better, or is it getting close or to the time
+> > > > where I should restore from backups?
+> > > >
+> > >
+> > > Yup sorry for the radio silence, loads of meetings today, but good
+> > > news is I've reproduced your problem locally, so I'm trying to hammer
+> > > it out.  I hope to have something useful for you today.  Thanks,
+> >
+> > Sigh I'm dumb as fuck, can you pull and re-run tree-recover just to
+> > make sure any stupidity I've caused is undone, and then run rescue
+> > init-extent-tree and then we can go from there?  Thanks,
+>
 
-I see your point and I agree with you, but I'd like to point out that I 
-didn't add this cast - it was already there  (and I think there may be 
-others, too).
+Ok back to this problem again, I've added some debugging.
+Unfortunately the real bytenr is getting lost, so the new debugging
+will print the actual bytenr we're trying to add, and then I can add
+more targeted debugging to figure out whats going on.  Thanks,
 
-I thought about removing it (as we had discussed and I've done in 
-another patch), but then I decided to leave it, thinking that maybe 
-there was a reason for it. Like communicating something explicitely to 
-anyone reading the code.
-
-It's true, though, that the comment actually explains it.
-
->>       if (!nce_head) {
->>           nce_head = kmalloc(sizeof(*nce_head), GFP_KERNEL);
->>           if (!nce_head) {
->> @@ -2040,14 +2038,15 @@ static int name_cache_insert(struct send_ctx 
->> *sctx,
->>           }
->>           INIT_LIST_HEAD(nce_head);
->> -        ret = radix_tree_insert(&sctx->name_cache, nce->ino, nce_head);
->> +        ret = xa_insert(&sctx->name_cache, nce->ino, nce_head,
-> 
-> Here nce->ino is not cast, yet the parameter is still unsigned long 
-> meaning truncation occurs (as is expected). At the very least this makes 
-> the code style inconsistent.
-
-Yeah, true. Again, it was inconsistent before I got there, but I'll 
-admit that I didn't notice this one.
-
-For the sake of consistency, I'm willing to remove the cast (and perhaps 
-others, would have to check) and resend.
-
-I'll leave that up to the maintainer to decide.
+Josef
