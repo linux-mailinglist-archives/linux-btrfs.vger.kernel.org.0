@@ -2,48 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6421F510FB3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 05:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE165511243
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Apr 2022 09:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241032AbiD0D6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Apr 2022 23:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        id S1358678AbiD0HW3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Apr 2022 03:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239032AbiD0D6D (ORCPT
+        with ESMTP id S1357783AbiD0HW1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Apr 2022 23:58:03 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F254B1D5
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Apr 2022 20:54:53 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1njYlP-0005nh-Go by authid <merlin>; Tue, 26 Apr 2022 20:54:51 -0700
-Date:   Tue, 26 Apr 2022 20:54:51 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220427035451.GM29107@merlins.org>
-References: <20220424223819.GE29107@merlins.org>
- <CAEzrpqdBWMcai2uMe=kPxYshUe8wV0YX3Ge1pZW8aG_BSO-i-w@mail.gmail.com>
- <20220424231446.GF29107@merlins.org>
- <CAEzrpqcGy3aac6Lb7PKux+nA2KzDgbPSMyjYG6B-0TbgXXP=-A@mail.gmail.com>
- <20220425002415.GG29107@merlins.org>
- <CAEzrpqcQkiMJt1B4Bx9NrCcRys1MD+_5Y3riActXYC6RQrkakw@mail.gmail.com>
- <20220426002804.GI29107@merlins.org>
- <20220426204326.GK12542@merlins.org>
- <CAEzrpqcFewMWJ0e2umXNBdTkH32ehNi6_bnMQORAnGUg0nqFkw@mail.gmail.com>
- <CAEzrpqdKTrP_USiq9sKTXv1=uY1JVWRD5bVfdU_inGMhboxQdg@mail.gmail.com>
+        Wed, 27 Apr 2022 03:22:27 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83A45D5CE
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 00:19:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6495E1F380
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1651043956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=UpifccS/B0BpiUqPyiKZqQxaGD13VggDMzYqPi4UUPo=;
+        b=S1Utw9cEhdTFUsAk1d09TSC1rbBIqJ2Qd58n8e1Sp+MlSJjp2KAsjh80en8ykfBZN8j9sF
+        8vqyhdEc0W/hbVEC4InzOkrRFrZPOiBTjdErUP/CPZ96Q5TeQpFSYXJSZOWMmUyZEb0NrH
+        l07m5M3qOu3C89ZBmZKrkxuRpCr6zqM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A7AFD13A39
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nEL3GnPuaGIbJAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Apr 2022 07:19:15 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC v2 00/12] btrfs: make read repair work in synchronous mode
+Date:   Wed, 27 Apr 2022 15:18:46 +0800
+Message-Id: <cover.1651042800.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqdKTrP_USiq9sKTXv1=uY1JVWRD5bVfdU_inGMhboxQdg@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,168 +56,148 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 05:36:28PM -0400, Josef Bacik wrote:
-> On Tue, Apr 26, 2022 at 5:20 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> > On Tue, Apr 26, 2022 at 4:43 PM Marc MERLIN <marc@merlins.org> wrote:
-> > >
-> > > Generally would you say we're still on the right path and helping your
-> > > recovery tools getting better, or is it getting close or to the time
-> > > where I should restore from backups?
-> > >
-> >
-> > Yup sorry for the radio silence, loads of meetings today, but good
-> > news is I've reproduced your problem locally, so I'm trying to hammer
-> > it out.  I hope to have something useful for you today.  Thanks,
-> 
-> Sigh I'm dumb as fuck, can you pull and re-run tree-recover just to
-> make sure any stupidity I've caused is undone, and then run rescue
-> init-extent-tree and then we can go from there?  Thanks,
+[CHANGELOG]
+RFC v1 -> RFC v2:
+- Assemble a bio list for read/write bios and submit them in one go
+  This allows less submit bio hooks, while still allow us to wait
+  for them all to finish.
 
-FS_INFO IS 0x55555564cbc0
-JOSEF: root 9
-Couldn't find the last root for 8
-FS_INFO AFTER IS 0x55555564cbc0
-Checking root 2 bytenr 67387392
-Checking root 4 bytenr 15645196861440
-Checking root 5 bytenr 13577660252160
-Checking root 7 bytenr 13577819963392
-Checking root 9 bytenr 15645878108160
-Checking root 11221 bytenr 13577562996736
-Checking root 11222 bytenr 15645261905920
-Checking root 11223 bytenr 13576862547968
-Checking root 11224 bytenr 13577126182912
-Checking root 159785 bytenr 6781490577408
-Checking root 159787 bytenr 15645908385792
-Checking root 160494 bytenr 6781491265536
-Checking root 160496 bytenr 11822309965824
-Checking root 161197 bytenr 6781492101120
-Checking root 161199 bytenr 13576850833408
-Checking root 162628 bytenr 15645764812800
-Checking root 162632 bytenr 6781492756480
-Checking root 162645 bytenr 5809981095936
-Checking root 163298 bytenr 15645124263936
-Checking root 163302 bytenr 6781495197696
-Checking root 163303 bytenr 15645365993472
-Checking root 163316 bytenr 6781496393728
-Checking root 163318 bytenr 15645980491776
-Checking root 163916 bytenr 11822437826560
-Checking root 163920 bytenr 11971021275136
-Checking root 163921 bytenr 11971073802240
-Checking root 164620 bytenr 15645434036224
-Checking root 164624 bytenr 15645502210048
-Checking root 164633 bytenr 15645526884352
-Checking root 165098 bytenr 11970667446272
-Checking root 165100 bytenr 11970733621248
-Checking root 165198 bytenr 12511656394752
-Checking root 165200 bytenr 12511677972480
-Checking root 165294 bytenr 13576901328896
-Checking root 165298 bytenr 13577133326336
-Checking root 165299 bytenr 13577191505920
-Checking root 18446744073709551607 bytenr 13576823685120
-Tree recovery finished, you can run check now
-[Inferior 1 (process 28238) exited normally]
+- Completely remove io_failure_tree infrastructure
+  Now we don't need to remember which mirror we hit error.
+  At end_bio_extent_readpage() we either get good data and done the
+  repair already, or we there aren't enough mirrors for us to recover
+  all data.
+
+  This is mostly trading on-stack memory of end_bio_extent_readpage()
+  with btrfs_inode::io_failure_tree.
+  The latter tree has a much longer lifespan, thus I think it's still a
+  win overall
+
+[RFC POINTS]
+- How to improve read_repair_get_sector()?
+  Currently we always iterate the whole bio to grab the target
+  page/pgoff.
+
+  Is there any better cached method to avoid such iteration?
+
+- Is this new code logically more reader-friendly?
+  It's more for sure straight-forward, but I doubt if it's any easier to
+  read compared to the old code.
+
+- btrfs/157 failure
+  Need extra check to find out why btrfs/157 failed.
+  In theory, we should just iterate through all mirrors, I guess it's we
+  have no way to exhaust all combinations, thus the extra 2 "mirrors"
+  can gave us wrong result for RAID6.
+
+[BEFORE]
+For corrupted sectors, we just record the logical bytenr and mirror
+number into io_failure_tree, then re-queue the same block with different
+mirror number and call it a day.
+
+The re-queued read will trigger enter the same endio function, with
+extra failrec handling to either continue re-queue (csum mismatch/read
+failure), or clear the current failrec and submit a write to fix the
+corrupted mirror (read succeeded and csum match/no csum).
+
+This is harder to read, as we need to enter the same river twice or even
+more.
+
+[AFTER]
+For corrupted sectors, we record the following things into an on-stack
+structure in end_bio_extent_readpage():
+
+- The original bio
+
+- The original file offset of the bio
+  This is for direct IO case, as we can not grab file offset just using
+  page_offset()
+
+- Offset inside the bio of the corrupted sector
+
+- Corrupted mirror
+
+Then in the new btrfs_read_repair_ctrl structure, we hold those info
+like:
+
+Original bio logical = X, file_offset = Y, inode=(R/I)
+
+Offset inside bio: 0  4k 8K 12K 16K
+cur_bad_bitmap     | X| X|  | X|
+
+Each set bit will indicate we have a corrupted sector inside the
+original bio.
+
+During endio function, we only populate the cur_bad_bitmap.
+
+After we have iterated all sectors of the original bio, then we call
+btrfs_read_repair_finish() to do the real repair by:
+
+- Build a list of bios for cur_bad_bitmap
+  For above case, bio offset [0, 8K) will be inside one bio, while another bio
+  for bio offset [12K, 16K).
+
+  And the page/pgoff will be extracted from the orignial bio.
+
+  This is a little different from the old behavior, as old behavior will
+  submit a new bio for each sector.
+  The new behavior will save some btrfs_map_bio() calls.
+
+- Submit all the bios in the bio list and wait them to finish
+
+- Re-verify the read result
+
+- Submit write for the corrupted mirror
+  Currently the write is still submitted for each sector and we will
+  wait for each sector to finish.
+  This needs some optimization.
+
+  And for repaired sectors, remove them from @cur_bad_bitmap.
+
+- Do the same loop until either 1) we tried all mirrors, or 2) no more
+  corrupted sectors
+  
+- Handle the remaining corrupted sectors
+  Either mark them error for buffered read, or just return an error for
+  direct IO.
+
+By this we can:
+- Remove the re-entry behavior of endio function
+  Now everything is handled inside end_bio_extent_readpage().
+
+- Remove the io_failure_tree completely
+  As we don't need to record which mirror has failed.
+
+- Slightly reduced overhead on read repair
+  Now we won't call btrfs_map_bio() for each corrupted sector, as we can
+  merge the sectors into a much larger bio.
 
 
-(gdb) run rescue init-extent-tree /dev/mapper/dshelf1
-FS_INFO IS 0x55555564cbc0
-JOSEF: root 9
-Couldn't find the last root for 8
-FS_INFO AFTER IS 0x55555564cbc0
-Checking root 2 bytenr 67387392
-Checking root 4 bytenr 15645196861440
-Checking root 5 bytenr 13577660252160
-Checking root 7 bytenr 13577819963392
-Checking root 9 bytenr 15645878108160
-Checking root 11221 bytenr 13577562996736
-Checking root 11222 bytenr 15645261905920
-Checking root 11223 bytenr 13576862547968
-Checking root 11224 bytenr 13577126182912
-Checking root 159785 bytenr 6781490577408
-Checking root 159787 bytenr 15645908385792
-Checking root 160494 bytenr 6781491265536
-Checking root 160496 bytenr 11822309965824
-Checking root 161197 bytenr 6781492101120
-Checking root 161199 bytenr 13576850833408
-Checking root 162628 bytenr 15645764812800
-Checking root 162632 bytenr 6781492756480
-Checking root 162645 bytenr 5809981095936
-Checking root 163298 bytenr 15645124263936
-Checking root 163302 bytenr 6781495197696
-Checking root 163303 bytenr 15645365993472
-Checking root 163316 bytenr 6781496393728
-Checking root 163318 bytenr 15645980491776
-Checking root 163916 bytenr 11822437826560
-Checking root 163920 bytenr 11971021275136
-Checking root 163921 bytenr 11971073802240
-Checking root 164620 bytenr 15645434036224
-Checking root 164624 bytenr 15645502210048
-Checking root 164633 bytenr 15645526884352
-Checking root 165098 bytenr 11970667446272
-Checking root 165100 bytenr 11970733621248
-Checking root 165198 bytenr 12511656394752
-Checking root 165200 bytenr 12511677972480
-Checking root 165294 bytenr 13576901328896
-Checking root 165298 bytenr 13577133326336
-Checking root 165299 bytenr 13577191505920
-Checking root 18446744073709551607 bytenr 13576823685120
-Tree recovery finished, you can run check now
-[Inferior 1 (process 28238) exited normally]
-(gdb) 
-        item 210 key (517572919296 BLOCK_GROUP_ITEM 1073741824) itemoff 11219 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 211 key (518646661120 BLOCK_GROUP_ITEM 1073741824) itemoff 11195 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 212 key (519720402944 BLOCK_GROUP_ITEM 1073741824) itemoff 11171 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 214 key (521867886592 BLOCK_GROUP_ITEM 1073741824) itemoff 11123 itemsize 24
-                block group used 0 chunk_objectid 256 flags DATA|single
-        item 215 key (522941628416 BLOCK_GROUP_ITEM 1073741824) itemoff 11099 itemsize 24
-inserting block group 15731991248896
-inserting block group 15840439173120
-inserting block group 15842586656768
-processed 1556480 of 0 possible bytes
-processed 1228800 of 0 possible bytesFailed to find [7750833868800, 168, 262144]
+Qu Wenruo (12):
+  btrfs: introduce a pure data checksum checking helper
+  btrfs: always save bio::bi_iter into btrfs_bio::iter before submitting
+  btrfs: remove duplicated parameters from submit_data_read_repair()
+  btrfs: add btrfs_read_repair_ctrl to record corrupted sectors
+  btrfs: add a helper to queue a corrupted sector for read repair
+  btrfs: introduce a helper to repair from one mirror
+  btrfs: allow btrfs read repair to submit all writes in one go
+  btrfs: switch buffered read to the new btrfs_read_repair_* based
+    repair routine
+  btrfs: switch direct IO routine to use btrfs_read_repair_ctrl
+  btrfs: cleanup btrfs_repair_one_sector()
+  btrfs: remove io_failure_record infrastructure completely
+  btrfs: remove btrfs_inode::io_failure_tree
 
-Program received signal SIGSEGV, Segmentation fault.
-rb_search (root=root@entry=0x10000000060, key=key@entry=0x7fffffffdd00, comp=comp@entry=0x55555559ae9e <cache_tree_comp_range>, 
-    next_ret=next_ret@entry=0x7fffffffdd18) at common/rbtree-utils.c:48
-48              struct rb_node *n = root->rb_node;
-(gdb) bt
-#0  rb_search (root=root@entry=0x10000000060, key=key@entry=0x7fffffffdd00, comp=comp@entry=0x55555559ae9e <cache_tree_comp_range>, 
-    next_ret=next_ret@entry=0x7fffffffdd18) at common/rbtree-utils.c:48
-#1  0x000055555559b0a2 in search_cache_extent (tree=tree@entry=0x10000000060, start=start@entry=99713024)
-    at common/extent-cache.c:179
-#2  0x0000555555584c30 in set_extent_bits (tree=0x10000000060, start=99713024, end=99713023, bits=bits@entry=1)
-    at kernel-shared/extent_io.c:380
-#3  0x0000555555584e63 in set_extent_dirty (tree=<optimized out>, start=<optimized out>, end=<optimized out>)
-    at kernel-shared/extent_io.c:486
-#4  0x0000555555585846 in set_extent_buffer_dirty (eb=eb@entry=0x555555729660) at kernel-shared/extent_io.c:976
-#5  0x000055555557bc1e in btrfs_mark_buffer_dirty (eb=eb@entry=0x555555729660) at kernel-shared/disk-io.c:2224
-#6  0x000055555557ee3d in setup_inline_extent_backref (refs_to_add=1, offset=0, owner=5507, root_objectid=93824992434246, parent=0, 
-    iref=0xffffffffffffffe4, path=0x555555b92bd0, root=<optimized out>) at kernel-shared/extent-tree.c:1084
-#7  insert_inline_extent_backref (refs_to_add=1, offset=0, owner=5507, root_objectid=93824992434246, parent=0, 
-    num_bytes=<optimized out>, bytenr=<optimized out>, path=0x555555b92bd0, root=<optimized out>, trans=<optimized out>)
-    at kernel-shared/extent-tree.c:1196
-#8  btrfs_inc_extent_ref (trans=trans@entry=0x555558a89620, root=root@entry=0x55555564cde0, bytenr=<optimized out>, 
-    num_bytes=<optimized out>, parent=parent@entry=0, root_objectid=root_objectid@entry=1, owner=5507, offset=0)
-    at kernel-shared/extent-tree.c:1261
-#9  0x00005555555dfb81 in process_eb (trans=trans@entry=0x555558a89620, root=root@entry=0x55555564cde0, eb=eb@entry=0x555559cfce80, 
-    current=current@entry=0x7fffffffe098) at cmds/rescue-init-extent-tree.c:502
-#10 0x00005555555dfc90 in process_eb (trans=trans@entry=0x555558a89620, root=root@entry=0x55555564cde0, eb=0x555555944100, 
-    current=current@entry=0x7fffffffe098) at cmds/rescue-init-extent-tree.c:577
-#11 0x00005555555dfef8 in record_root (root=0x55555564cde0) at cmds/rescue-init-extent-tree.c:648
-#12 0x00005555555e0202 in btrfs_init_extent_tree (path=path@entry=0x7fffffffe6c5 "/dev/mapper/dshelf1")
-    at cmds/rescue-init-extent-tree.c:784
-#13 0x00005555555d7a0c in cmd_rescue_init_extent_tree (cmd=<optimized out>, argc=<optimized out>, argv=<optimized out>)
-    at cmds/rescue.c:65
-#14 0x000055555556c17b in cmd_execute (argv=0x7fffffffe3c8, argc=2, cmd=0x555555642d40 <cmd_struct_rescue_init_extent_tree>)
-    at cmds/commands.h:125
-#15 handle_command_group (cmd=<optimized out>, argc=2, argv=0x7fffffffe3c8) at btrfs.c:152
-#16 0x000055555556c275 in cmd_execute (argv=0x7fffffffe3c0, argc=3, cmd=0x555555643cc0 <cmd_struct_rescue>) at cmds/commands.h:125
-#17 main (argc=3, argv=0x7fffffffe3c0) at btrfs.c:405
+ fs/btrfs/btrfs_inode.h       |   5 -
+ fs/btrfs/compression.c       |  12 +-
+ fs/btrfs/ctree.h             |   2 +
+ fs/btrfs/extent-io-tree.h    |  15 -
+ fs/btrfs/extent_io.c         | 744 ++++++++++++++++++-----------------
+ fs/btrfs/extent_io.h         |  89 +++--
+ fs/btrfs/inode.c             | 108 +++--
+ include/trace/events/btrfs.h |   1 -
+ 8 files changed, 518 insertions(+), 458 deletions(-)
 
 -- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+2.36.0
+
