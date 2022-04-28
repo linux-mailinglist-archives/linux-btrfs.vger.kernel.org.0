@@ -2,68 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996DA513EBB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 00:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B67C513ECA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 00:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353053AbiD1Wza (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Apr 2022 18:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
+        id S1353099AbiD1W71 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Apr 2022 18:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbiD1Wz3 (ORCPT
+        with ESMTP id S1353087AbiD1W7Z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Apr 2022 18:55:29 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2999220BE1
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 15:52:11 -0700 (PDT)
+        Thu, 28 Apr 2022 18:59:25 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38D82E694
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 15:56:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1651186313;
-        bh=lsLolTSqX5Bmkixdw0UZRVa+BVIOUAIC/R2QEgFCuQ4=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=jpDRSFaDWOm3vr6G8woLTBeW1dkPr0KJpFrVCH2Gf74Dc/+6ch6OnerPzCTJ3LLv6
-         +LNe51dfGnst1BHI4iimf/U/Y9k/D12PKhnPYFiKrmqU0fMK0hwJizVB34aGDVf408
-         xt166cfRpVmpJIvM8hNRSNO2RUT1yqNHFCdeu/Fw=
+        s=badeba3b8450; t=1651186563;
+        bh=SY4hGqnLeBloezOA/3lrTAGRAY/abGA7AuzCl9DMHJ0=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=B8LPvDKTt1kmx/umSgzvYXStprrb+OunbyjLEiXH0Ivh0l+u0WUSK5OSLZtlHCknn
+         oWmiab+tuPyFKm0zigigg7HGvmPUolHajMnC5jjV8RAoQgdDh7kJDnh1lHrQbtuKXe
+         krHz0H8PjlDlmaXstuXsVzWe42Kq3ibRRIST4pyw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7b2d-1nnDGO0AOb-0086ov; Fri, 29
- Apr 2022 00:51:53 +0200
-Message-ID: <b27d0b0f-89de-13a5-013b-323e03d7cc40@gmx.com>
-Date:   Fri, 29 Apr 2022 06:51:50 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTzay-1nJMXo1e7O-00QxqI; Fri, 29
+ Apr 2022 00:56:03 +0200
+Message-ID: <4ac0c01f-73f6-e830-f3bc-6281bd79b7d2@gmx.com>
+Date:   Fri, 29 Apr 2022 06:55:59 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
+Subject: Re: [PATCH RFC v2 05/12] btrfs: add a helper to queue a corrupted
+ sector for read repair
 Content-Language: en-US
 To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <cover.1651043617.git.wqu@suse.com>
- <ad61ab273c5f591cb4963f348c4b34302f705705.1651043617.git.wqu@suse.com>
- <YmqYm+iFDSRTbV5W@infradead.org>
+ <a136fe858afe9efd29c8caa98d82cb7439d89677.1651043617.git.wqu@suse.com>
+ <2fd10883-5a4d-5cbd-d09f-7a30bb326a4a@suse.com>
+ <YmqaOynJjWS2XB76@infradead.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH RFC v2 04/12] btrfs: add btrfs_read_repair_ctrl to record
- corrupted sectors
-In-Reply-To: <YmqYm+iFDSRTbV5W@infradead.org>
+In-Reply-To: <YmqaOynJjWS2XB76@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UwOQyqW4AfbBZkkO3Yy0+fesOpPC68XLYdZIi5qIjlVgJG19RVe
- uj5FZl6bgqSqBqLj9ggXMgoGyLbcttwcnsxG9HeTBfqRM5buuUDQOeggifSGZUcZ5dsMh2p
- 4esSUJG4E3CX5oLf4asF7+en65DhRTGrdshN1UCYQpEiTn/BSLS5kcWdhp/hB63RFf1CFif
- JOxjIZ9nXfwTqu6K81+AQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UtVx7UqGGuU=:U+Xs6nVWUb//20kV4zhMfr
- 3Jo2HZB7rgsFVJC02FMMsvE3dMBBbUCsLR7KL7cyNvwfFbGk0R5ksuRZV61uSfOR0AYZIgOss
- m4iCiydWjmeACzTBAUTaCFgpTfprWK4ayIxKtW3ElaRL8OaTauG+B1eECcHeAWf99fOO5jtBE
- n0qn7pzW3HeXmXRJ3PptanIcPAaoOV4yHnQUlr4P6FDidniA/X7PmK0g35wHAd8JWruiMX2Zv
- IzIy1KyeT2dQGR6lA9/yF1DVrIZbK1Ti+8N1lWaMJkL+BeAawLUzkoFdXWxfsaT/r7B3F5Cxi
- ZheFEQtFjtiqNvTV/voGR9Cy3OHH3cwpFjjA64BPjdd8lAEAdzaY5I/izkOtlJuAoEZjeIwlw
- TTbxaEhgYc27DO0ttBZ8KPOBY07zDb4avQB6tTmGSYHurX3Iw2HB/wT7kZjCEIOBbdRSvahvt
- CQqlfaN29Xqr3tDJhpapnXS8YTcfWSPI06L7kiNVz7Zn1l/rdW43Af5PQ5ezSQ3TZqd1ta64v
- jh56XuYe+JlHtS8hMx2RGrD54Qc3qL1IkJ70KDA98eTgOGzOT/cuCJGfxwUzQMUclYiwOhEFj
- OmXcg719mdrQLiTfNkkLrsTVFB7k8jnurK0ACBECWu4Q0BPHd5zdmtKpXOkArhDSuHnVt3PDA
- Rjvi09xHl/Nl9p4iyXVnTxOaCz4XAKBG3dLg32dKoN6HE1zR3lzGOKs6ypf/tZ/6384EanMk8
- L6q73SDrj264iNHwQexdBQI0cgYRwTaB8tXOANrb6t/Af5PAsQKIom2B+L/ZebL5lO0grAPtd
- Ony6yIB0W1IvLmQyH7eFUjlfyQFJ8OflaOpv3pzAt8svtYVIDn0BLOn+4rIRnMurcvV+szffs
- ZSp2yNcIgFGzpA8GtWLoFLKhjzwxCkrl93Gr6LXYeridMEGSmHfwsUuX176qjiAC2lCeDyeJS
- dw3TrD3rNbgVs1brDf4qXHZj2cSrxqJ6d+WlLElFJhhfCbuZ2Y1FEEjuXMXu0QiC3XThgyBQs
- 0SfqtPmDxqwtUZK96imYEsgHevjjLtHFiJ4i3zmjSW1ZrMA6bxvwG0RoaaqRa7nKkIaUF5Bsr
- 5Yz4I2zdMHeRhY=
+X-Provags-ID: V03:K1:Ij2PxYjBAPeWNb6eUjAgRYQWIeJpJBJ951U5jrZr6BtBZI+S6i+
+ wkvjqugPkzS5g6h4/NUTLoXTtwkcLRsr95GH7u4pBDjtLfsQX2ftQR/WE75D5J4XgS2I9cq
+ JatBlLHnP1ykOn2R03BGUtnbOEaF2RCzBbesOiuI3Ut7lJuLoDLByyDxFH0NR4Kmfy5WPwg
+ 9QM/PPhE85sfLRo0TU1dg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lSiBwArr/kc=:7Mvw/erG12ruIwT4popf5E
+ wtg2Gpl5LpmzTlg649BhWQDVVEeokRASzA45kYpfbIbfbLx1yKSINxiFShENUu3k2+xMnUsBG
+ IAmKCOlhTBTcEl0G+Qp2NiSnYZLX2WuCGswfYBddpH/FX5pCX/VQsvzN7s5avU0nFfm14bVBf
+ ltczWC0ncGOUewNvHqjcGLcBzGqU6fev8s7sMQsLPDvNU5dXEjqV7duXZVTgooP4U3bzYhxvI
+ L9ihxNOi1kun1oH2+amXW6Um0vBiYi7W0+27VUTxc1fxCu5B/t8zRXszZqO4KGVZMHcwh2Z34
+ OWd7OPtM5tSF8GyvDSPD7IlsPhmRqbKinO8jrKUR2p8VSsCs9AivKHY3jwttc4Jf1MisAVviI
+ wbPwLeUzIrkOcgvvUE/aoY7Sr1sH6fkqcNt8sM75KhCqtDcnxoDGrEq5zdix6kpRSyaZfiuOE
+ 7nMTqbcV80LvXc9CK5vlj1hT7tcq9R1PE+1K/2HVio1aPhSbPX1xF0fhHac2KmxX8m+QKGinz
+ IrqB6IGMFx2+UQhZxvLavbtyqONf/us6kJPRoikPoPEzt+OEAt6ZAdmDL/VOdL4wrIxOmVVKM
+ QWVXtnVwyveQaioMzeZE8pG4WooZYXIcALSSUKtSDjEOF7Y0dB4yqsu4lF1/n6y/YRz2K7c9x
+ y0zKODWmoAzpXTwSiUfnELig3rq5kixARR6dZX2fw+XCsTMvYzMTRYG18XF8o1VgUhzHUmeFb
+ f8Q16l8jIRelqQ/RYhXI+8iaIEQbQI+L1t87/80qFR4vQVneCAZv2ykQi6k1rjhW1X1lYJTlr
+ iRN6OT5Ycvm97bBcLfVd1R4rkIRWYfhMQVbU6BSlm9BAuVwzivDZyJAlBiz5BJNyP9SLJjjrJ
+ wo09T6ujAS0zImxEpWSgzF/xuFGDSbUlMPs1n5rwKn8qzs5eANNz3nNMeQKAlj7ZbOkgB2/Ms
+ N79nJUooX+PD/RbfyVRsbmVv6lWN10nZ59PTYR5lMWNnNG2Ngr3iRNT4bRL6yfMV1a2Fslly9
+ 7OgzYYY8HkdHI2q5cxUeQy4e5gCVyICxVocqNMQL75Wgb7dHRI2NBSwMcBTu2Nb+24U1a2Fhd
+ RCt7H9xKIy9lVU=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -75,88 +76,59 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/4/28 21:37, Christoph Hellwig wrote:
-> On Wed, Apr 27, 2022 at 03:18:50PM +0800, Qu Wenruo wrote:
->> Currently we only allocate two bitmaps and initialize various members,
->> no real work done yet.
+On 2022/4/28 21:44, Christoph Hellwig wrote:
+> On Thu, Apr 28, 2022 at 01:20:37PM +0800, Qu Wenruo wrote:
+>> This function will get called very frequently, and I really want to avo=
+id
+>> doing such re-search every time from the beginning of the original bio.
+>>
+>> Maybe we can cache a bvec_iter and using the bi_size to check if the ta=
+rget
+>> offset is still beyond us (then advance), or re-wind and re-search from=
+ the
+>> beginning.
+>>
+>> I guess there is no existing helper to do the same work, right?
 >
-> I'm rather worried about these allocations.  These are called from
-> the I/O completion work queues, which can be rather deadlock heavy.
-> Never mind that just failing an I/O repair/recovery when we are out
-> of memory seems like a rather bad idea.
-
-That's why there is a btrfs_read_repair_ctrl::error member.
-
-If we failed the memory allocation, then we will not do any repair.
-
-To me, memory allocation is a much bigger problem.
-
-
-Although we can put the bitmap into btrfs_bio structure, and
-pre-allocate it for every bio we're going to submit.
-
-But I'm not sure if the pre-allocation way is a good idea, considering
-read-repair should be a relatively code path.
-
+> It is basically impossible to review this because you just add a
+> standalone static helper without the callers.  Please split the
+> work into logical chunks that actually are reviewable.  Yes, that will
+> be a pretty large patch, but that's still much better than having to
+> jump around hal a dozen ones.
 >
->> +	if (!ctrl->initialized) {
+> No, there is no way to efficiently look up what bvec in a bio some
+> offset falls into, because the bvecs are variable length.
 >
-> I don't think you need the initialize field.  Just check for
-> failed_bio being non-NULL to simplify this.
+> It seems like the caller (at least the one added a little later, not
+> sure if there are more) is iterating over the bitmap and then calls
+> this for every bit set.  So for that you're much better off making
+> the __bio_for_each_segment the main loop, and then at the beginning of
+> the loop checking the bitmap if we need to handle this sector.
+>
+>
+>>> +	struct bio_list read_bios;
+>
+> I'd just calls this bios.  Obviously they are used for reading here.
+>
+> Also please be very careful about dead locks.  The mempool for the
+> btrfs_bios is small right now, you need to size it up by the
+> largerst number of bios that can be on this list.
 
-That's indeed simpler.
+In fact I have some version locally checking the return value from
+btrfs_bio_alloc(), if we failed to alloc memory, then just mark the
+btrfs_read_repair_ctrl::error bit, and mark all remaining bad sectors as
+error, no more repairing.
 
->
->> +		const u32 sectorsize =3D fs_info->sectorsize;
->> +
->> +		ASSERT(ctrl->cur_bad_bitmap =3D=3D NULL &&
->> +		       ctrl->prev_bad_bitmap =3D=3D NULL);
->> +		/*
->> +		 * failed_bio->bi_iter is not reliable at endio time, thus we
->> +		 * must rely on btrfs_bio::iter to grab the original logical
->> +		 * bytenr.
->> +		 */
->> +		ASSERT(btrfs_bio(failed_bio)->iter.bi_size);
->
-> Also things would be lot more readable if the code inside this branch
-> just moved into a helper that you call if ->failed_bio is not set.
+As memory allocation failure is much more a problem than failed read repai=
+r.
 
-Indeed.
+Another consideration is, would it really dead lock?
 
->
->> +		ctrl->cur_bad_bitmap =3D bitmap_alloc(ctrl->bio_size >>
->> +					fs_info->sectorsize_bits, GFP_NOFS);
->> +		ctrl->prev_bad_bitmap =3D bitmap_alloc(ctrl->bio_size >>
->> +					fs_info->sectorsize_bits, GFP_NOFS);
->> +		/* Just set the error bit, so we will never try repair */
->> +		if (!ctrl->cur_bad_bitmap || !ctrl->prev_bad_bitmap) {
->> +			kfree(ctrl->cur_bad_bitmap);
->> +			kfree(ctrl->prev_bad_bitmap);
->> +			ctrl->cur_bad_bitmap =3D NULL;
->> +			ctrl->prev_bad_bitmap =3D NULL;
->> +			ctrl->error =3D true;
->> +		}
->
-> I don't think we need the extra error value either, you can just check
-> one of the bitmap pointers for NULL.  That being said, as mentioned
-> above I'm really worried about these huge allocations that can fail.
-> I think we need a mempool of some fixed size here and use that, and just
-> change the algorithm to work in chunks based on this upper bound.
->
->> +/* Strucutre for data read time repair. */
->> +struct btrfs_read_repair_ctrl {
->
-> Can we keep that structure private?  Based on the rest of the series
-> there actually is a fair amount of code using it, what about isolating
-> it in a new read_repair.c instead of in the giant extent_io.c and
-> inode.c files?
+We're only called for read path, not writeback path.
+IIRC it's easier to hit dead lock at writeback path, as writeback can be
+triggered by memory pressure.
 
-I was considering putting it into read_repair.c, and since you're also
-mentioning that, I guess it's a good idea now.
-
-And if we're going to make that structure private, I guess we have to
-pre-allocate it in btrfs_bio as a pointer then.
+But would the same problem happen just for read path?
 
 Thanks,
 Qu
-
