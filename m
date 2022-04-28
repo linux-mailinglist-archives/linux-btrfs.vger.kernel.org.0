@@ -2,365 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBC6513325
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Apr 2022 13:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324F851343F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Apr 2022 14:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233319AbiD1MCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Apr 2022 08:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
+        id S1346711AbiD1M5A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Apr 2022 08:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbiD1MCj (ORCPT
+        with ESMTP id S235479AbiD1M47 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Apr 2022 08:02:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BA08908A
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 04:59:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4EB2F210DF;
-        Thu, 28 Apr 2022 11:59:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651147163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YCw1gV5UVx00w73JfQFuxJMLF7WLyqMbg6WBPCn1bbM=;
-        b=Fo/4EcU6tg1vUfDMfijV7kF6ZMd7KZ9wH919nULSNvUu2D+zRpmJKqAk5v6t6lEtvePIau
-        ktu3XPduWNqrtmPPqSMHrLfK2k9bUzkKQgHLvAra8MZgNWDHVHM1UB+5ObQ79+T78k0ySC
-        3E1+wga0yLWMgW75UAyc5kXElKfaE0k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18D5B13AF8;
-        Thu, 28 Apr 2022 11:59:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hGv1ApuBamJDGgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 28 Apr 2022 11:59:23 +0000
-Message-ID: <a2b7e2c4-440c-318c-ea1f-273be04591f0@suse.com>
-Date:   Thu, 28 Apr 2022 14:59:22 +0300
+        Thu, 28 Apr 2022 08:56:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABAAAFB16
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 05:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=z1rASdb5GrWDtPii1zoFi8PqlHM4suWB85C8pRknSLU=; b=Y73+fiZUGOq+HTvjUoEbsDOHPp
+        bHfdZ/K8gcX0WBdBOn2VETiESTFMt+6VNwyvAvcuoXNBTAKiVB2AT4xX+XSPrnIHbKZLYMjeUX5mN
+        bqSnJ5f8gBxPAHUiRCZe0FoqwmC0wEz8n4xSeXaUz0frjamBPWaUogXIoqfbReGWvJ6kUsx/Ik5GP
+        WLSp7z9/pWnbxeTqgJKBYBt/vgrl5CL0KM88d6YDsBIG4yBqny84M4YUS2NkByKzcow4Jf3lhNXlb
+        htQ7/w2XyCDw/8P9Wyqj1WteiPOgnBHw6I+V/7l0txZ14ImY9R298Peaeb5oViR9iX8vMHqb0ZlSX
+        wzM7YXiw==;
+Received: from [2607:fb90:27d4:6954:2d46:df24:4d29:e3d2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nk3eQ-006uSb-PD; Thu, 28 Apr 2022 12:53:42 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     dsterba@suse.com
+Cc:     josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        syzbot+a2c720e0f056114ea7c6@syzkaller.appspotmail.com
+Subject: [PATCH] btrfs: don't call destroy_workqueue on NULL workqueues
+Date:   Thu, 28 Apr 2022 05:53:41 -0700
+Message-Id: <20220428125341.4152527-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] btrfs: Turn fs_roots_radix in btrfs_fs_info into an
- XArray
-Content-Language: en-US
-To:     Gabriel Niebler <gniebler@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220426214525.14192-1-gniebler@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220426214525.14192-1-gniebler@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Unlike the btrfs_workueue code, the kernel workqueues don't like their
+cleaup function called on a NULL pointer, so add checks for them.
 
+Fixes: a5eec25648da ("btrfs: use a normal workqueue for rmw_workers")
+Reported-by: syzbot+a2c720e0f056114ea7c6@syzkaller.appspotmail.com
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Tested-by: syzbot+a2c720e0f056114ea7c6@syzkaller.appspotmail.com
+---
+ fs/btrfs/disk-io.c | 3 ++-
+ fs/btrfs/scrub.c   | 9 ++++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-On 27.04.22 г. 0:45 ч., Gabriel Niebler wrote:
-> … rename it to simply fs_roots and adjust all usages of this object to use
-> the XArray API, because it is notionally easier to use and unserstand, as
-> it provides array semantics, and also takes care of locking for us,
-> further simplifying the code.
-> 
-> Also do some refactoring, esp. where the API change requires largely
-> rewriting some functions, anyway.
-> 
-> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
-> ---
->   fs/btrfs/ctree.h       |   5 +-
->   fs/btrfs/disk-io.c     | 176 ++++++++++++++++++++---------------------
->   fs/btrfs/inode.c       |  13 +--
->   fs/btrfs/transaction.c |  67 +++++++---------
->   4 files changed, 126 insertions(+), 135 deletions(-)
-> 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 307230436ecd6..fd8d91947d3fc 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2283,7 +2283,8 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+ 	btrfs_destroy_workqueue(fs_info->workers);
+ 	btrfs_destroy_workqueue(fs_info->endio_workers);
+ 	btrfs_destroy_workqueue(fs_info->endio_raid56_workers);
+-	destroy_workqueue(fs_info->rmw_workers);
++	if (fs_info->rmw_workers)
++		destroy_workqueue(fs_info->rmw_workers);
+ 	btrfs_destroy_workqueue(fs_info->endio_write_workers);
+ 	btrfs_destroy_workqueue(fs_info->endio_freespace_worker);
+ 	btrfs_destroy_workqueue(fs_info->delayed_workers);
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index a614ddde8c624..3985225f27be5 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3967,9 +3967,12 @@ static void scrub_workers_put(struct btrfs_fs_info *fs_info)
+ 		fs_info->scrub_parity_workers = NULL;
+ 		mutex_unlock(&fs_info->scrub_lock);
+ 
+-		destroy_workqueue(scrub_workers);
+-		destroy_workqueue(scrub_wr_comp);
+-		destroy_workqueue(scrub_parity);
++		if (scrub_workers)
++			destroy_workqueue(scrub_workers);
++		if (scrub_wr_comp)
++			destroy_workqueue(scrub_wr_comp);
++		if (scrub_parity)
++			destroy_workqueue(scrub_parity);
+ 	}
+ }
+ 
+-- 
+2.30.2
 
-<snip>
-
-> @@ -2346,28 +2340,23 @@ void btrfs_put_root(struct btrfs_root *root)
->   
->   void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info)
->   {
-> -	int ret;
-> -	struct btrfs_root *gang[8];
-> -	int i;
-> +	struct btrfs_root *root;
-> +	unsigned long index = 0;
->   
->   	while (!list_empty(&fs_info->dead_roots)) {
-> -		gang[0] = list_entry(fs_info->dead_roots.next,
-> -				     struct btrfs_root, root_list);
-> -		list_del(&gang[0]->root_list);
-> +		root = list_entry(fs_info->dead_roots.next,
-> +				  struct btrfs_root, root_list);
-> +		list_del(&root->root_list);
->   
-> -		if (test_bit(BTRFS_ROOT_IN_RADIX, &gang[0]->state))
-> -			btrfs_drop_and_free_fs_root(fs_info, gang[0]);
-> -		btrfs_put_root(gang[0]);
-> +		if (test_bit(BTRFS_ROOT_IN_RADIX, &root->state))
-> +			btrfs_drop_and_free_fs_root(fs_info, root);
-> +		btrfs_put_root(root);
->   	}
->   
-> -	while (1) {
-> -		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
-> -					     (void **)gang, 0,
-> -					     ARRAY_SIZE(gang));
-> -		if (!ret)
-> -			break;
-> -		for (i = 0; i < ret; i++)
-> -			btrfs_drop_and_free_fs_root(fs_info, gang[i]);
-> +	while (!xa_empty(&fs_info->fs_roots))  > +		xa_for_each(&fs_info->fs_roots, index, root) {
-
-Why do you need the nested loop structure? xa_for_each should be 
-sufficient as btrfs_free_fs_roots happens when the fs is being unmounted 
-and we can't get another loop added after having done xa_for_each. And 
-even if it could the nested loop structure won't help because we don't 
-hold any locks, so hypothetically speaking, even if there was a race 
-using nested loops doesn't solve it.
-
-TLDR: Leavint this xa_for_each should be sufficient.
-
-> +			btrfs_drop_and_free_fs_root(fs_info, root);
-> +		}
->   	}
->   }
->   
-
-<snip>
-
-> @@ -4491,12 +4480,12 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
->   {
->   	bool drop_ref = false;
->   
-> -	spin_lock(&fs_info->fs_roots_radix_lock);
-> -	radix_tree_delete(&fs_info->fs_roots_radix,
-> -			  (unsigned long)root->root_key.objectid);
-> +	spin_lock(&fs_info->fs_roots_lock);
-> +	xa_erase(&fs_info->fs_roots,
-> +		 (unsigned long)root->root_key.objectid);
-
-nit: No need to have the 2nd argument on a new line, as the line is 
-short enough.
->   	if (test_and_clear_bit(BTRFS_ROOT_IN_RADIX, &root->state))
->   		drop_ref = true;
-> -	spin_unlock(&fs_info->fs_roots_radix_lock);
-> +	spin_unlock(&fs_info->fs_roots_lock);
->   
->   	if (BTRFS_FS_ERROR(fs_info)) {
->   		ASSERT(root->log_root == NULL);
-> @@ -4512,50 +4501,54 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
->   
->   int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
->   {
-> -	u64 root_objectid = 0;
-> -	struct btrfs_root *gang[8];
-> -	int i = 0;
-> +	struct btrfs_root *roots[8];
-> +	unsigned long index = 0;
-> +	int i;
-nit: This can be defined into the 2 loops that use the variable.
-
-
->   	int err = 0;
-> -	unsigned int ret = 0;
-> +	int grabbed;
->   
->   	while (1) {
-> -		spin_lock(&fs_info->fs_roots_radix_lock);
-> -		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
-> -					     (void **)gang, root_objectid,
-> -					     ARRAY_SIZE(gang));
-> -		if (!ret) {
-> -			spin_unlock(&fs_info->fs_roots_radix_lock);
-> +		struct btrfs_root *root;
-> +
-> +		spin_lock(&fs_info->fs_roots_lock);
-> +		if (!xa_find(&fs_info->fs_roots, &index,
-> +			     ULONG_MAX, XA_PRESENT)) {
-> +			spin_unlock(&fs_info->fs_roots_lock);
->   			break;
->   		}
-> -		root_objectid = gang[ret - 1]->root_key.objectid + 1;
->   
-> -		for (i = 0; i < ret; i++) {
-> -			/* Avoid to grab roots in dead_roots */
-> -			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
-> -				gang[i] = NULL;
-> -				continue;
-> +		grabbed = 0;
-> +		xa_for_each_start(&fs_info->fs_roots, index, root,
-> +				  index) {
-> +			/* Avoid grabbing roots in dead_roots */
-> +			if (btrfs_root_refs(&root->root_item) == 0) {
-> +				roots[grabbed] = NULL;
-> +			} else {
-> +				/* Grab all the search results for later use */
-> +				roots[grabbed] = btrfs_grab_root(root);
->   			}
-> -			/* grab all the search result for later use */
-> -			gang[i] = btrfs_grab_root(gang[i]);
-> +			grabbed++;
-> +			if (grabbed >= ARRAY_SIZE(roots))
-> +				break;
->   		}
-> -		spin_unlock(&fs_info->fs_roots_radix_lock);
-> +		spin_unlock(&fs_info->fs_roots_lock);
->   
-> -		for (i = 0; i < ret; i++) {
-> -			if (!gang[i])
-> +		for (i = 0; i < grabbed; i++) {
-> +			if (!roots[i])
->   				continue;
-> -			root_objectid = gang[i]->root_key.objectid;
-> -			err = btrfs_orphan_cleanup(gang[i]);
-> +			index = roots[i]->root_key.objectid;
-> +			err = btrfs_orphan_cleanup(roots[i]);
->   			if (err)
->   				break;
-> -			btrfs_put_root(gang[i]);
-> +			btrfs_put_root(roots[i]);
->   		}
-> -		root_objectid++;
-> +		index++;
->   	}
->   
-> -	/* release the uncleaned roots due to error */
-> -	for (; i < ret; i++) {
-> -		if (gang[i])
-> -			btrfs_put_root(gang[i]);
-> +	/* Release the roots that remain uncleaned due to error */
-> +	for (; i < grabbed; i++) {
-> +		if (roots[i])
-> +			btrfs_put_root(roots[i]);
->   	}
->   	return err;
->   }
-> @@ -4872,31 +4865,36 @@ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
->   
->   static void btrfs_drop_all_logs(struct btrfs_fs_info *fs_info)
->   {
-> -	struct btrfs_root *gang[8];
-> -	u64 root_objectid = 0;
-> -	int ret;
-> +	unsigned long index = 0;
->   
-> -	spin_lock(&fs_info->fs_roots_radix_lock);
-> -	while ((ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
-> -					     (void **)gang, root_objectid,
-> -					     ARRAY_SIZE(gang))) != 0) {
-> +	spin_lock(&fs_info->fs_roots_lock);
-> +	while (xa_find(&fs_info->fs_roots,
-> +		       &index, ULONG_MAX, XA_PRESENT)) {
-
-nit: No need to split across two lines as it's short enough.
-
-> +		struct btrfs_root *root;
-> +		struct btrfs_root *roots[8];
->   		int i;
-
-nit: This can probably be defined inside the for loop
-
-> +		int grabbed = 0;
->   
-> -		for (i = 0; i < ret; i++)
-> -			gang[i] = btrfs_grab_root(gang[i]);
-> -		spin_unlock(&fs_info->fs_roots_radix_lock);
-> +		xa_for_each_start(&fs_info->fs_roots, index, root,
-> +				  index) {
-> +			roots[grabbed] = btrfs_grab_root(root);
-> +			grabbed++;
-> +			if (grabbed >= ARRAY_SIZE(roots))
-> +				break;
-> +		}
-> +		spin_unlock(&fs_info->fs_roots_lock);
->   
-> -		for (i = 0; i < ret; i++) {
-> -			if (!gang[i])
-> +		for (i = 0; i < grabbed; i++) {
-> +			if (!roots[i])
->   				continue;
-> -			root_objectid = gang[i]->root_key.objectid;
-> -			btrfs_free_log(NULL, gang[i]);
-> -			btrfs_put_root(gang[i]);
-> +			index = roots[i]->root_key.objectid;
-> +			btrfs_free_log(NULL, roots[i]);
-> +			btrfs_put_root(roots[i]);
->   		}
-> -		root_objectid++;
-> -		spin_lock(&fs_info->fs_roots_radix_lock);
-> +		index++;
-> +		spin_lock(&fs_info->fs_roots_lock);
->   	}
-> -	spin_unlock(&fs_info->fs_roots_radix_lock);
-> +	spin_unlock(&fs_info->fs_roots_lock);
->   	btrfs_free_log_root_tree(NULL, fs_info);
->   }
->   
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 5082b9c70f8c..d0ef3a17ce11 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3494,6 +3494,7 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
->   	u64 last_objectid = 0;
->   	int ret = 0, nr_unlink = 0;
->   
-> +	/* Bail out if the cleanup is already running. */
-nit: This seems like an irrelevant change.
-
->   	if (test_and_set_bit(BTRFS_ROOT_ORPHAN_CLEANUP, &root->state))
->   		return 0;
->   
-
-<snip>
-
-> @@ -1404,9 +1402,8 @@ void btrfs_add_dead_root(struct btrfs_root *root)
->   static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
->   {
->   	struct btrfs_fs_info *fs_info = trans->fs_info;
-> -	struct btrfs_root *gang[8];
-> -	int i;
-> -	int ret;
-> +	struct btrfs_root *root;
-> +	unsigned long index;
->   
->   	/*
->   	 * At this point no one can be using this transaction to modify any tree
-> @@ -1414,17 +1411,11 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
->   	 */
->   	ASSERT(trans->transaction->state == TRANS_STATE_COMMIT_DOING);
->   
-> -	spin_lock(&fs_info->fs_roots_radix_lock);
-> -	while (1) {
-> -		ret = radix_tree_gang_lookup_tag(&fs_info->fs_roots_radix,
-> -						 (void **)gang, 0,
-> -						 ARRAY_SIZE(gang),
-> -						 BTRFS_ROOT_TRANS_TAG);
-> -		if (ret == 0)
-> -			break;
-> -		for (i = 0; i < ret; i++) {
-> -			struct btrfs_root *root = gang[i];
-> -			int ret2;
-> +	spin_lock(&fs_info->fs_roots_lock);
-> +	while (xa_marked(&fs_info->fs_roots, BTRFS_ROOT_TRANS_TAG)) {
-> +		xa_for_each_marked(&fs_info->fs_roots, index, root,
-
-While the while/xa_for_each_marked and not straight xa_for_each_marked?
-
-> +				   BTRFS_ROOT_TRANS_TAG) {
-> +			int ret;
->   
->   			/*
->   			 * At this point we can neither have tasks logging inodes
-
-<snip>
