@@ -2,67 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9A0513E39
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Apr 2022 23:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46155513E47
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 00:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348629AbiD1V6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Apr 2022 17:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
+        id S1352763AbiD1WKK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Apr 2022 18:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233590AbiD1V6P (ORCPT
+        with ESMTP id S1347740AbiD1WKJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Apr 2022 17:58:15 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29934705B
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 14:54:58 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id f4so7971092iov.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 14:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8ICCJ9ys9vUn198UnJWa8a4FdaFe20q7pmxOrvgTM40=;
-        b=qJuYp1CagQ1ZFRWrvj8mmNBDdXV7s/sxyIgoa+5mbc46plIPWTjxRZsQe8R+VtUvMm
-         uTrtvImDgikkpJRtgAFY9Zks4ZM1C6Y864mL+3gzgJTZHLCayAqeOKecBOcpig03Id0U
-         nQLdL87SnMHj1YaGqnQnN6n9kMPBmnu2th0zvUgrZmkOdglKztAoZtCe8QC/vhy8iQoc
-         vwB8xc4ASNGi7f1pt6nHegeo6ExsBhOFKr9k/f12dsBNfPBisYqtelZTzNlpuNGWjius
-         EaCw6IDtWnuyBK6nLawfm0eK0xQpJ+vXuzipU0rY+TLlMnWb+eflXbdI067R2d06HCLG
-         Zaaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ICCJ9ys9vUn198UnJWa8a4FdaFe20q7pmxOrvgTM40=;
-        b=VJyu1vj8ypA2u2n8wHoh8FsJ//rdGiqGjL/PaiTqQmyDbDoI2ZLxq7c8b08LX12+OR
-         QvSIn32Onch68xY2NKT7J65JKNHTuJsDzqukv/4XkHuJ4V8sd7qs7+vAFdtpI1YpRnNQ
-         FVfuCaxFxHAraHy9V9dzye2KLLnlkNmdwwqv/S5Q88hl3Lbjes05lNQ3Tkloaa+SXk+n
-         qp8fzSuFYllO/GV+vvlqik/7aF3iKOlPz2iK6patUKbF3DWXPa/1Bgx4OowxpMG/9S34
-         +/3bj65JcHCUey7RVteCg6ZOWCSD3alFmD3XxGrcA4lxJhEBlZ6R9t913jl8u0yvU4Ky
-         Gf9A==
-X-Gm-Message-State: AOAM531IpYcALm0vsZuUefKj9jafiquYYyDUh0lcxjYcH79AwNPX0fSm
-        smnUs6EdnkyTOsEcNlzOfdgBj2736nsc4yG+Pld1VmFUuus=
-X-Google-Smtp-Source: ABdhPJxRfq6wdntILsJHmFbof6FFct4pObkUBy2konv7U09QxEaNFu/pdEjJgslw78wDYK5Slrgshw3Kgt4opcM+wOs=
-X-Received: by 2002:a05:6602:29ca:b0:649:558a:f003 with SMTP id
- z10-20020a05660229ca00b00649558af003mr15090498ioq.160.1651182898015; Thu, 28
- Apr 2022 14:54:58 -0700 (PDT)
+        Thu, 28 Apr 2022 18:10:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F5233EA9;
+        Thu, 28 Apr 2022 15:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9v/jwR+R8u87FL4qORMMhnuwU+FONow5gj9ZK60JlpI=; b=s7tZJeCHXPydeNyzQuN8NsfxgP
+        eu4k6UGhsVLB00xCdra8ScX0cG22vl4diUOaGh9FKdX7ZbDm54F7Sz0V6dDshrJNi6/wT9TaTLE7L
+        4lziHtohweA2A/pEGRkEQA/vjgE7pbVRnrWniCsX9yEkpQ2hMs2CWXd+7aGj4ahpDbzBv+jVDj0ap
+        JdQw0FhqNuU0KC9UTqrHuy4JXz7tHdwXRx/xwjjzvCWyXUc2CceR12Gm2rzyMoXNmRGC7jZDfM/Sd
+        fASKdOUqjIoKv+PaYoM25kjeVCygCtv96ptD2wNPrJ0lPiZpRzZ7Jn+O1gxO1aN3k4eGnAkBe8P/F
+        +J/VDTRA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nkCHX-008hOx-BO; Thu, 28 Apr 2022 22:06:39 +0000
+Date:   Thu, 28 Apr 2022 15:06:39 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Cc:     Pankaj Raghav <p.raghav@samsung.com>, jaegeuk@kernel.org,
+        axboe@kernel.dk, snitzer@kernel.org, hch@lst.de,
+        naohiro.aota@wdc.com, sagi@grimberg.me, dsterba@suse.com,
+        johannes.thumshirn@wdc.com, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, clm@fb.com, gost.dev@samsung.com,
+        chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        josef@toxicpanda.com, jonathan.derrick@linux.dev, agk@redhat.com,
+        kbusch@kernel.org, kch@nvidia.com, linux-nvme@lists.infradead.org,
+        dm-devel@redhat.com, bvanassche@acm.org, jiangbo.365@bytedance.com,
+        linux-fsdevel@vger.kernel.org, matias.bjorling@wdc.com,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH 16/16] dm-zoned: ensure only power of 2 zone sizes are
+ allowed
+Message-ID: <YmsP7wQAyDx9g8gy@bombadil.infradead.org>
+References: <20220427160255.300418-1-p.raghav@samsung.com>
+ <CGME20220427160313eucas1p1feecf74ec15c8c3d9250444710fd1676@eucas1p1.samsung.com>
+ <20220427160255.300418-17-p.raghav@samsung.com>
+ <2ffc46c7-945f-ba26-90db-737fccd74fdf@opensource.wdc.com>
+ <YmrQFu9EbMmrL2Ys@bombadil.infradead.org>
+ <ce56cb7d-f184-aad1-4935-5f622e7afe5d@opensource.wdc.com>
 MIME-Version: 1.0
-References: <20220428031131.GO29107@merlins.org> <CAEzrpqeg+kk91jEzKTdsVXHJBvWhVJeCJ4voOAJnx-oPSqi-1w@mail.gmail.com>
- <20220428041245.GP29107@merlins.org> <CAEzrpqcJLgPqarv_ejmV2aqVkJvythz9sgEeqD+d_TEDeFMwUA@mail.gmail.com>
- <20220428162746.GR29107@merlins.org> <CAEzrpqcL_ZyvenVuO4re9qCS2rLnGbsiz0Wx9zUH_UaZY9uVDA@mail.gmail.com>
- <20220428202205.GT29107@merlins.org> <CAEzrpqfHjAn7X9tMm6jAw8NJiv3vsvYioXj9=cjMqNcXjFhSdA@mail.gmail.com>
- <20220428205716.GU29107@merlins.org> <CAEzrpqduAKibaDJPJ6s7dCAfQHeynwG6zJwgVXVS_Uh=cQq2dw@mail.gmail.com>
- <20220428214241.GW29107@merlins.org>
-In-Reply-To: <20220428214241.GW29107@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Thu, 28 Apr 2022 17:54:46 -0400
-Message-ID: <CAEzrpqd0deCQ132HjNJC=AKQsRTXc=shnAmHfs0BR9pWiD4mhg@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce56cb7d-f184-aad1-4935-5f622e7afe5d@opensource.wdc.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,37 +65,17 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 5:42 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Thu, Apr 28, 2022 at 04:58:24PM -0400, Josef Bacik wrote:
-> > -2 is enoent, it must have committed with the deleted block, which is
-> > sort of scary but at this point I'll take it.  Go ahead and do the
-> > init-extent-tree.  Thanks,
->
-> Same output :(
-> Xilinx_Unified_2020.1_0602_1208/tps/lnx64/jre9.0.4/lib/modules
-> Failed to find [3700677820416, 168, 53248]
->
-> it's the one we just tried to clear, and got enoent on.
-> Unless -r 11223 is not the correct value? (not sure where it came from)
-> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs-corrupt-block -d "3700677820416,168,53248" -r 11223 /dev/mapper/dshelf1
-> FS_INFO IS 0x55d8bac70600
-> JOSEF: root 9
-> Couldn't find the last root for 8
-> FS_INFO AFTER IS 0x55d8bac70600
-> Error searching to node -2
->
+On Fri, Apr 29, 2022 at 06:43:58AM +0900, Damien Le Moal wrote:
+> On 4/29/22 02:34, Luis Chamberlain wrote:
+> > One step at a time.
+> 
+> Yes, in general, I agree. But in this case, that will create kernel
+> versions that end up having partial support for zoned drives. Not ideal to
+> say the least. So if the patches are not that big, I would rather like to
+> see everything go into a single release.
 
-Oooh I'm stupid, I thought the key it was printing out was the extent
-we needed to delete, but it's the extent in the extent tree.  You cut
-off the part I need, but that's because I'm printing the leaf when I
-don't need to.
+This would have delayed the patches more, and I see no rush for npo2 to
+use dm-zoned really. Just as with f2fs, we can take priorities at a
+time.
 
-I've fixed the output so it should print out something like
-
-[number, 108, number] dumping paths
-
-that's what you want to feed into btrfs-corrupt-block, that should
-delete the problematic item and then we can continue.  Thanks,
-
-Josef
+  Luis
