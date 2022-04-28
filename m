@@ -2,133 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B67C513ECA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 00:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C76513F05
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 01:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353099AbiD1W71 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Apr 2022 18:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        id S1353257AbiD1X1v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Apr 2022 19:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353087AbiD1W7Z (ORCPT
+        with ESMTP id S234016AbiD1X1u (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Apr 2022 18:59:25 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38D82E694
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 15:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1651186563;
-        bh=SY4hGqnLeBloezOA/3lrTAGRAY/abGA7AuzCl9DMHJ0=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=B8LPvDKTt1kmx/umSgzvYXStprrb+OunbyjLEiXH0Ivh0l+u0WUSK5OSLZtlHCknn
-         oWmiab+tuPyFKm0zigigg7HGvmPUolHajMnC5jjV8RAoQgdDh7kJDnh1lHrQbtuKXe
-         krHz0H8PjlDlmaXstuXsVzWe42Kq3ibRRIST4pyw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTzay-1nJMXo1e7O-00QxqI; Fri, 29
- Apr 2022 00:56:03 +0200
-Message-ID: <4ac0c01f-73f6-e830-f3bc-6281bd79b7d2@gmx.com>
-Date:   Fri, 29 Apr 2022 06:55:59 +0800
+        Thu, 28 Apr 2022 19:27:50 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4872CBC870
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 16:24:34 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id f5so2962548ilj.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 16:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E6mJENeC/sI+4Rm8WGBSnBJLRjBWRd1C/kmsRoGzoFQ=;
+        b=w0S5PaGKsFfGl7OqhUZZTztpIfMeaJy5l/jdEDUD+2hlEuQC6TlxdbR6J3iTGKqhzL
+         gfsibjS6N4Nyo2/bZ2kCnZw1Dwc2lDfF6U1n3mXkic+OfPWugA4HuJozKjWZMun9IMBH
+         L3FHa8MfghIttehJ0cNQsGq1hzFDaKcuYY6cd7kIMfOhM07PBuySqWmk6dKlOBuUo7NQ
+         0D3ccgE/x0zcMysaqWN7o1We0QcQ/EKqfbIKiY1pXDGTNC82Mj6iYR0XeFyGkwDwLhR+
+         3sNVDpaveDiodkCFNHLsRh9Uu00oUOLvZcW5NZi49Cgz/N5NgeXKHwf8K+wI5nunOPun
+         gNBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E6mJENeC/sI+4Rm8WGBSnBJLRjBWRd1C/kmsRoGzoFQ=;
+        b=N3q37cJwgqN7BAUyjtFisIBANQ/87yuhY8xi8VyzculBNqMZRRFWeLgRvWJlBIyLwN
+         kXgEwRCMf+5W24vIR0bj+2waEVn7bQ/1ZsBxtu6HcxLAxlyybU8ewdh9qZJ4s9VfdZpO
+         15XnJlJOI4vRZqzSb75Y2xFuc1UwcoFeQ01T4LnRJsKP3XepMPJEdhSe7TWt3X8JtyUs
+         lNlfRTWQSxPyfIHSfnflYEoxIeYoHAbH+npZr9mQDKI9WQGsjw5pGsukiyuCCqhuV+Kg
+         VJ5314PlMrdauyjsnGNrcPbPedBK6GMPw8vWqsIrdffa4RWTbn4MSw10nv9NQp1V4xTv
+         rKXw==
+X-Gm-Message-State: AOAM533Hqb6UEMNr4b/kWqFy/6HzDSJ7cZDl5YcRlV/kiS+2vcy+Y/yW
+        rrygF8d2n2DvY2FlQltaI5cG3coXDO55cl0U0Aw5RWAxzJE=
+X-Google-Smtp-Source: ABdhPJz006Lli+rIJi91s08ypP4SL1t4XqGCKZldByvf5GfWybK9ro96otX+DT7H0AVGNoOZP24CmguLf8/oWwiA6PM=
+X-Received: by 2002:a05:6e02:17ce:b0:2cc:8c4:2c78 with SMTP id
+ z14-20020a056e0217ce00b002cc08c42c78mr15004066ilu.153.1651188273628; Thu, 28
+ Apr 2022 16:24:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH RFC v2 05/12] btrfs: add a helper to queue a corrupted
- sector for read repair
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1651043617.git.wqu@suse.com>
- <a136fe858afe9efd29c8caa98d82cb7439d89677.1651043617.git.wqu@suse.com>
- <2fd10883-5a4d-5cbd-d09f-7a30bb326a4a@suse.com>
- <YmqaOynJjWS2XB76@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <YmqaOynJjWS2XB76@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ij2PxYjBAPeWNb6eUjAgRYQWIeJpJBJ951U5jrZr6BtBZI+S6i+
- wkvjqugPkzS5g6h4/NUTLoXTtwkcLRsr95GH7u4pBDjtLfsQX2ftQR/WE75D5J4XgS2I9cq
- JatBlLHnP1ykOn2R03BGUtnbOEaF2RCzBbesOiuI3Ut7lJuLoDLByyDxFH0NR4Kmfy5WPwg
- 9QM/PPhE85sfLRo0TU1dg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lSiBwArr/kc=:7Mvw/erG12ruIwT4popf5E
- wtg2Gpl5LpmzTlg649BhWQDVVEeokRASzA45kYpfbIbfbLx1yKSINxiFShENUu3k2+xMnUsBG
- IAmKCOlhTBTcEl0G+Qp2NiSnYZLX2WuCGswfYBddpH/FX5pCX/VQsvzN7s5avU0nFfm14bVBf
- ltczWC0ncGOUewNvHqjcGLcBzGqU6fev8s7sMQsLPDvNU5dXEjqV7duXZVTgooP4U3bzYhxvI
- L9ihxNOi1kun1oH2+amXW6Um0vBiYi7W0+27VUTxc1fxCu5B/t8zRXszZqO4KGVZMHcwh2Z34
- OWd7OPtM5tSF8GyvDSPD7IlsPhmRqbKinO8jrKUR2p8VSsCs9AivKHY3jwttc4Jf1MisAVviI
- wbPwLeUzIrkOcgvvUE/aoY7Sr1sH6fkqcNt8sM75KhCqtDcnxoDGrEq5zdix6kpRSyaZfiuOE
- 7nMTqbcV80LvXc9CK5vlj1hT7tcq9R1PE+1K/2HVio1aPhSbPX1xF0fhHac2KmxX8m+QKGinz
- IrqB6IGMFx2+UQhZxvLavbtyqONf/us6kJPRoikPoPEzt+OEAt6ZAdmDL/VOdL4wrIxOmVVKM
- QWVXtnVwyveQaioMzeZE8pG4WooZYXIcALSSUKtSDjEOF7Y0dB4yqsu4lF1/n6y/YRz2K7c9x
- y0zKODWmoAzpXTwSiUfnELig3rq5kixARR6dZX2fw+XCsTMvYzMTRYG18XF8o1VgUhzHUmeFb
- f8Q16l8jIRelqQ/RYhXI+8iaIEQbQI+L1t87/80qFR4vQVneCAZv2ykQi6k1rjhW1X1lYJTlr
- iRN6OT5Ycvm97bBcLfVd1R4rkIRWYfhMQVbU6BSlm9BAuVwzivDZyJAlBiz5BJNyP9SLJjjrJ
- wo09T6ujAS0zImxEpWSgzF/xuFGDSbUlMPs1n5rwKn8qzs5eANNz3nNMeQKAlj7ZbOkgB2/Ms
- N79nJUooX+PD/RbfyVRsbmVv6lWN10nZ59PTYR5lMWNnNG2Ngr3iRNT4bRL6yfMV1a2Fslly9
- 7OgzYYY8HkdHI2q5cxUeQy4e5gCVyICxVocqNMQL75Wgb7dHRI2NBSwMcBTu2Nb+24U1a2Fhd
- RCt7H9xKIy9lVU=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220428041245.GP29107@merlins.org> <CAEzrpqcJLgPqarv_ejmV2aqVkJvythz9sgEeqD+d_TEDeFMwUA@mail.gmail.com>
+ <20220428162746.GR29107@merlins.org> <CAEzrpqcL_ZyvenVuO4re9qCS2rLnGbsiz0Wx9zUH_UaZY9uVDA@mail.gmail.com>
+ <20220428202205.GT29107@merlins.org> <CAEzrpqfHjAn7X9tMm6jAw8NJiv3vsvYioXj9=cjMqNcXjFhSdA@mail.gmail.com>
+ <20220428205716.GU29107@merlins.org> <CAEzrpqduAKibaDJPJ6s7dCAfQHeynwG6zJwgVXVS_Uh=cQq2dw@mail.gmail.com>
+ <20220428214241.GW29107@merlins.org> <CAEzrpqd0deCQ132HjNJC=AKQsRTXc=shnAmHfs0BR9pWiD4mhg@mail.gmail.com>
+ <20220428222705.GX29107@merlins.org>
+In-Reply-To: <20220428222705.GX29107@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Thu, 28 Apr 2022 19:24:22 -0400
+Message-ID: <CAEzrpqeQrSrMgGLh0F34fVj8dnzJQF7kv=XSBKcD92oHyV8-gA@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/4/28 21:44, Christoph Hellwig wrote:
-> On Thu, Apr 28, 2022 at 01:20:37PM +0800, Qu Wenruo wrote:
->> This function will get called very frequently, and I really want to avo=
-id
->> doing such re-search every time from the beginning of the original bio.
->>
->> Maybe we can cache a bvec_iter and using the bi_size to check if the ta=
-rget
->> offset is still beyond us (then advance), or re-wind and re-search from=
- the
->> beginning.
->>
->> I guess there is no existing helper to do the same work, right?
+On Thu, Apr 28, 2022 at 6:27 PM Marc MERLIN <marc@merlins.org> wrote:
 >
-> It is basically impossible to review this because you just add a
-> standalone static helper without the callers.  Please split the
-> work into logical chunks that actually are reviewable.  Yes, that will
-> be a pretty large patch, but that's still much better than having to
-> jump around hal a dozen ones.
+> On Thu, Apr 28, 2022 at 05:54:46PM -0400, Josef Bacik wrote:
+> > Oooh I'm stupid, I thought the key it was printing out was the extent
+> > we needed to delete, but it's the extent in the extent tree.  You cut
+> > off the part I need, but that's because I'm printing the leaf when I
+> > don't need to.
+> >
+> > I've fixed the output so it should print out something like
+> >
+> > [number, 108, number] dumping paths
+> >
+> > that's what you want to feed into btrfs-corrupt-block, that should
+> > delete the problematic item and then we can continue.  Thanks,
 >
-> No, there is no way to efficiently look up what bvec in a bio some
-> offset falls into, because the bvecs are variable length.
->
-> It seems like the caller (at least the one added a little later, not
-> sure if there are more) is iterating over the bitmap and then calls
-> this for every bit set.  So for that you're much better off making
-> the __bio_for_each_segment the main loop, and then at the beginning of
-> the loop checking the bitmap if we need to handle this sector.
->
->
->>> +	struct bio_list read_bios;
->
-> I'd just calls this bios.  Obviously they are used for reading here.
->
-> Also please be very careful about dead locks.  The mempool for the
-> btrfs_bios is small right now, you need to size it up by the
-> largerst number of bios that can be on this list.
+> inserting block group 15835070464000
+> inserting block group 15836144205824
+> inserting block group 15837217947648
+> inserting block group 15838291689472
+> inserting block group 15839365431296
+> inserting block group 15840439173120
+> inserting block group 15842586656768
+> processed 1556480 of 0 possible bytes
+> processed 49152 of 0 possible bytesadding a bytenr that overlaps our
+> thing, dumping paths for [4088, 108, 0]
 
-In fact I have some version locally checking the return value from
-btrfs_bio_alloc(), if we failed to alloc memory, then just mark the
-btrfs_read_repair_ctrl::error bit, and mark all remaining bad sectors as
-error, no more repairing.
+Oh huh, we must not have a free space object for this, in that case lets do
 
-As memory allocation failure is much more a problem than failed read repai=
-r.
+./btrfs-corrupt-block -d "4088,108,0" -r 2 /dev/whatever
 
-Another consideration is, would it really dead lock?
+and then do the init.  Thanks,
 
-We're only called for read path, not writeback path.
-IIRC it's easier to hit dead lock at writeback path, as writeback can be
-triggered by memory pressure.
-
-But would the same problem happen just for read path?
-
-Thanks,
-Qu
+Josef
