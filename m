@@ -2,174 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8552E5149AF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 14:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36F2514C87
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 16:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359132AbiD2Moc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Apr 2022 08:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S1376773AbiD2ORh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 10:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358700AbiD2Moa (ORCPT
+        with ESMTP id S236775AbiD2ORg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Apr 2022 08:44:30 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4201562DC
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 05:41:11 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id 125so9558319iov.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 05:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9WcGdqB5J0pwXza5nkD7WuEUc3Izcg/De5UNlCT8g3M=;
-        b=Ggk13mNPmfYna1bBqCRnPvArfhMs16XuXt1NJ7KlG1RAdd6rEWaaC/LIxXHUeRLeQk
-         5NJPLqR/KYSE6SARXZYMJTqLuiQT5KrMOhWcrSWtSPA8hi9zwdpJH89ex0PfdmKmfHiI
-         Hx0QOdUXt8al6EUGwPiDTYNAkds+IEoeHLWvgFGfQN4mKJGEzOrUX7V3mJD3hediNYPI
-         VsWXxs1hMbuny0hBT3Aix5GHI++xm8RC2tCypQGDK+nw3YWfVzT5TsgrZd3EI5sEbxWc
-         l1CG9pY2b98mvHXqp/jW75d2q7zk7ZtCDO0MUYoWCMW8FdXzmby25A7YLZMIqTcI/rfN
-         QA8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9WcGdqB5J0pwXza5nkD7WuEUc3Izcg/De5UNlCT8g3M=;
-        b=phFjYMsT86IcVno0/LXtX0xqUhyhZVFtVgIZGQCFh8t4fH7DLLLJYPnJDQ5iIB6YN/
-         HeHsatL6SlacexDoWEup5tRD+2FOHbFuJxggU9jIhybCt9HnrL0TWK/mowg5OLpMuAOb
-         HozxdqkFVTcnDWMWmIAWTIMz0/AuiVMimbii8GUoA5p0Z0p0ag6TVobqgDj64R9vOQs2
-         lA7DwNxFHATRfS/aAeMRPY5OJ+FfxM0m+3YfRKK2y0kh5MS8IoHK89uiaA+zUBFQ/u6J
-         F6Ny2YHaPG9ljMTc9d5f7tZVDvSn0ZK4dG5zzrNWhLLhq1panMFytmhtbPui5BEf5b1g
-         j1Qw==
-X-Gm-Message-State: AOAM531bB06/MCue50fTHr2gti7qrrJ49Cga3HcRZn3o3Mc2QJANrrsx
-        xFOS3W7pgq+Csr2yhVbmoMcO4Vkkd4stNXmJG5rSYxKoJQY=
-X-Google-Smtp-Source: ABdhPJz4tcmiAyt9431AvFO272dn9zDnMaXuu3aQTNxNbr+FrukKt60enkT4qwSB4WdCBr7qVAsjs6295x54kIO+hmA=
-X-Received: by 2002:a05:6602:14c2:b0:657:d130:daa with SMTP id
- b2-20020a05660214c200b00657d1300daamr1217736iow.83.1651236071271; Fri, 29 Apr
- 2022 05:41:11 -0700 (PDT)
+        Fri, 29 Apr 2022 10:17:36 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537F456C2D
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 07:14:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D921F21878;
+        Fri, 29 Apr 2022 14:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1651241656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D8V3PWEBC3Naul0/t1GMbLIIv5kmS4bWb6ga8t/jJ7A=;
+        b=RYjDoZLc8AXFaDuGOP6o6dsAoOGhARBTbyhke8vjAp0oWDb5anXf+qdlS80Nj4Eup26Pbp
+        JpkkyNXlRZVFlrYtPLSxntVSWZ26nNJZAEELxTAWMeD4TiFOxmrHQxmAf2O2vVAfL3W9sg
+        m8HcymC1SpmlC7iyan0L6V4J5FSg32Y=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D07D13AE0;
+        Fri, 29 Apr 2022 14:14:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hfACI7jya2KnEAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 29 Apr 2022 14:14:16 +0000
+Message-ID: <8fa5a2af-7335-108b-9ce3-a45270331b4a@suse.com>
+Date:   Fri, 29 Apr 2022 17:14:15 +0300
 MIME-Version: 1.0
-References: <20220428205716.GU29107@merlins.org> <CAEzrpqduAKibaDJPJ6s7dCAfQHeynwG6zJwgVXVS_Uh=cQq2dw@mail.gmail.com>
- <20220428214241.GW29107@merlins.org> <CAEzrpqd0deCQ132HjNJC=AKQsRTXc=shnAmHfs0BR9pWiD4mhg@mail.gmail.com>
- <20220428222705.GX29107@merlins.org> <CAEzrpqeQrSrMgGLh0F34fVj8dnzJQF7kv=XSBKcD92oHyV8-gA@mail.gmail.com>
- <20220429005624.GY29107@merlins.org> <CAEzrpqe+n9iGQymL01eZQjPBnN+Z1NeGDyTDaC-pwsGkOwvuDg@mail.gmail.com>
- <20220429013409.GD12542@merlins.org> <CAEzrpqfF7xfLxSBpJGfu2uP5iUzBhirg=wRfs108rLyuiUSW1Q@mail.gmail.com>
- <20220429040335.GE12542@merlins.org>
-In-Reply-To: <20220429040335.GE12542@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Fri, 29 Apr 2022 08:41:00 -0400
-Message-ID: <CAEzrpqewAfxi9hK+vwK+Df3iziXBZZEmXhzgJdJDqTj-JXvFQw@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v2] btrfs: Turn fs_info member buffer_radix into XArray
+Content-Language: en-US
+To:     Gabriel Niebler <gniebler@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <20220421154538.413-1-gniebler@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220421154538.413-1-gniebler@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 29, 2022 at 12:03 AM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Thu, Apr 28, 2022 at 09:38:05PM -0400, Josef Bacik wrote:
-> > I'm going to scream.  Somehow the root pointer for 11223 got messed up
-> > in all of this, do rescue tree-recover again so it can unfuck 11223,
-> > and then init-extent-tree.  Thanks,
->
-> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
-> FS_INFO IS 0x5588db830bc0
-> JOSEF: root 9
-> Couldn't find the last root for 8
-> FS_INFO AFTER IS 0x5588db830bc0
-> Checking root 2 bytenr 15645018570752
-> Checking root 4 bytenr 15645196861440
-> Checking root 5 bytenr 13577660252160
-> Checking root 7 bytenr 15645018554368
-> Checking root 9 bytenr 15645878108160
-> Checking root 11221 bytenr 13577562996736
-> Checking root 11222 bytenr 15645261905920
-> Checking root 11223 bytenr 13576823668736
-> Repairing root 11223 bad_blocks 9 update 1
-> deleting slot 54 in block 11652138631168
-> deleting slot 54 in block 11652138631168
-> deleting slot 64 in block 11652138631168
-> deleting slot 86 in block 11652138631168
-> deleting slot 87 in block 11652138631168
-> deleting slot 87 in block 11652138631168
-> deleting slot 87 in block 11652138631168
-> deleting slot 87 in block 11652138631168
-> deleting slot 87 in block 11652138631168
-> Checking root 11224 bytenr 13577126182912
-> Checking root 159785 bytenr 6781490577408
-> Checking root 159787 bytenr 15645908385792
-> Checking root 160494 bytenr 6781491265536
-> Checking root 160496 bytenr 11822309965824
-> Checking root 161197 bytenr 6781492101120
-> Checking root 161199 bytenr 13576850833408
-> Checking root 162628 bytenr 15645764812800
-> Checking root 162632 bytenr 6781492756480
-> Checking root 162645 bytenr 5809981095936
-> Checking root 163298 bytenr 15645124263936
-> Checking root 163302 bytenr 6781495197696
-> Checking root 163303 bytenr 15645365993472
-> Checking root 163316 bytenr 6781496393728
-> Checking root 163318 bytenr 15645980491776
-> Checking root 163916 bytenr 11822437826560
-> Checking root 163920 bytenr 11971021275136
-> Checking root 163921 bytenr 11971073802240
-> Checking root 164620 bytenr 15645434036224
-> Checking root 164624 bytenr 15645502210048
-> Checking root 164633 bytenr 15645526884352
-> Checking root 165098 bytenr 11970667446272
-> Checking root 165100 bytenr 11970733621248
-> Checking root 165198 bytenr 12511656394752
-> Checking root 165200 bytenr 12511677972480
-> Checking root 165294 bytenr 13576901328896
-> Checking root 165298 bytenr 13577133326336
-> Checking root 165299 bytenr 13577191505920
-> Checking root 18446744073709551607 bytenr 13576823799808
-> Tree recovery finished, you can run check now
->
->
-> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue init-extent-tree /dev/mapper/dshelf1
-> inserting block group 15838291689472
-> inserting block group 15839365431296
-> inserting block group 15840439173120
-> inserting block group 15842586656768
-> processed 1556480 of 0 possible bytes
-> processed 1474560 of 0 possible bytes
-> Recording extents for root 4
-> processed 1032192 of 1064960 possible bytes
-> Recording extents for root 5
-> processed 10960896 of 10977280 possible bytes
-> Recording extents for root 7
-> processed 16384 of 16545742848 possible bytes
-> Recording extents for root 9
-> processed 16384 of 16384 possible bytes
-> Recording extents for root 11221
-> processed 16384 of 255983616 possible bytes
-> Recording extents for root 11222
-> processed 49479680 of 49479680 possible bytes
-> Recording extents for root 11223
-> processed 1634844672 of 1635549184 possible bytesadding a bytenr that overlaps our thing, dumping paths for [1834097, 108, 1835008]
-> inode ref info failed???
-> elem_cnt 1 elem_missed 0 ret 0
-> Xilinx_Unified_2020.1_0602_1208/tps/lnx64/jre9.0.4/lib/modules
-> doing an insert of the bytenr
-> doing an insert that overlaps our bytenr 3700677820416 53248
-> processed 1635319808 of 1635549184 possible bytes
-> Recording extents for root 11224
-> processed 75792384 of 75792384 possible bytes
-> Recording extents for root 159785
-> processed 108855296 of 108855296 possible bytes
-> Recording extents for root 159787
-> processed 49152 of 49479680 possible bytes
-> Recording extents for root 160494
-> processed 999424 of 109035520 possible bytesFailed to find [10467695652864, 168, 8675328]
 
-Yayyyy progress, I just updated the debugging for the new problem
-bytenr so we can figure out who to delete, run init-extent-tree again
-please.  Thanks,
 
-Josef
+On 21.04.22 г. 18:45 ч., Gabriel Niebler wrote:
+> … named 'extent_buffers'. Also adjust all usages of this object to use the
+> XArray API, which greatly simplifies the code as it takes care of locking
+> and is generally easier to use and understand, providing notionally
+> simpler array semantics.
+> 
+> Also perform some light refactoring.
+> 
+> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+> ---
+> 
+> Changes from v1:
+>   - Fixed first line of commit message
+> 
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+One minor suggestion below though.
+
+<snip>
+
+> @@ -6313,10 +6306,8 @@ static int release_extent_buffer(struct extent_buffer *eb)
+>   
+>   			spin_unlock(&eb->refs_lock);
+>   
+> -			spin_lock(&fs_info->buffer_lock);
+> -			radix_tree_delete(&fs_info->buffer_radix,
+> -					  eb->start >> fs_info->sectorsize_bits);
+> -			spin_unlock(&fs_info->buffer_lock);
+> +			xa_erase(&fs_info->extent_buffers,
+> +				 eb->start >> fs_info->sectorsize_bits);
+>   		} else {
+>   			spin_unlock(&eb->refs_lock);
+>   		}
+> @@ -7249,41 +7240,28 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
+>   	}
+>   }
+>   
+> -#define GANG_LOOKUP_SIZE	16
+>   static struct extent_buffer *get_next_extent_buffer(
+>   		struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
+>   {
+> -	struct extent_buffer *gang[GANG_LOOKUP_SIZE];
+> +	struct extent_buffer *eb;
+>   	struct extent_buffer *found = NULL;
+> +	unsigned long index;
+>   	u64 page_start = page_offset(page);
+> -	u64 cur = page_start;
+>   
+>   	ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
+>   	lockdep_assert_held(&fs_info->buffer_lock);
+>   
+> -	while (cur < page_start + PAGE_SIZE) {
+> -		int ret;
+> -		int i;
+> -
+> -		ret = radix_tree_gang_lookup(&fs_info->buffer_radix,
+> -				(void **)gang, cur >> fs_info->sectorsize_bits,
+> -				min_t(unsigned int, GANG_LOOKUP_SIZE,
+> -				      PAGE_SIZE / fs_info->nodesize));
+> -		if (ret == 0)
+> -			goto out;
+> -		for (i = 0; i < ret; i++) {
+> -			/* Already beyond page end */
+> -			if (gang[i]->start >= page_start + PAGE_SIZE)
+> -				goto out;
+> +	xa_for_each_start(&fs_info->extent_buffers, index, eb,
+> +			  page_start >> fs_info->sectorsize_bits) {
+> +		if (eb->start >= page_start + PAGE_SIZE)
+> +		        /* Already beyond page end */
+> +			break;
+> +		if (eb->start >= bytenr) {
+>   			/* Found one */
+> -			if (gang[i]->start >= bytenr) {
+> -				found = gang[i];
+> -				goto out;
+> -			}
+> +			found = eb;
+> +			break; >   		}
+> -		cur = gang[ret - 1]->start + gang[ret - 1]->len;
+>   	}
+
+nit: The body of the loop can be turned into:
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index da3d9dc186cd..7c1d5fec59dd 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -7318,16 +7318,13 @@ static struct extent_buffer *get_next_extent_buffer(
+
+         xa_for_each_start(&fs_info->extent_buffers, index, eb,
+                           page_start >> fs_info->sectorsize_bits) {
+-               if (eb->start >= page_start + PAGE_SIZE)
++               if (in_range(eb->start, page_start, PAGE_SIZE))
++                       return eb;
++               else if (eb->start >= page_start + PAGE_SIZE)
+                         /* Already beyond page end */
+-                       break;
+-               if (eb->start >= bytenr) {
+-                       /* Found one */
+-                       found = eb;
+-                       break;
+-               }
++                       return NULL;
+         }
+-       return found;
++       return NULL;
+  }
+
+
+That is use the in_range macro to detect when we have an eb between 
+page_start and page_start + PAGE_SIZE in which case we can directly 
+return it, and the in_range is self-documenting. And directly return 
+NULL in case of eb->start going beyond the current page and in case we 
+didn't find anything.  David, what do you think?
+
+> -out:
+>   	return found;
+>   }
+>   
+
+<snip>
