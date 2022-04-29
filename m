@@ -2,156 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0AF5140F7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 05:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1A6514128
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 06:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236293AbiD2DYe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Apr 2022 23:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
+        id S236834AbiD2EGy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 00:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbiD2DYb (ORCPT
+        with ESMTP id S230133AbiD2EGx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Apr 2022 23:24:31 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F33A8BE16
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 20:21:11 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id t6so9074898wra.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 20:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=5vWK0JpfQ+5dEz2CMtNV4odL0R9fmfLG6J7U7Dej0v0=;
-        b=C2EYCQ0UOC8OIsuYhp50g7NTB4bupPAquQJfMsQSQl5X2sWeWqV74B9e6paI2tY+hb
-         FuJQDD4N7kC97AqUcRn+DJvCjdz/Ggrh/qJUnfDfLZ4veiL9omt76UNx76yImiqQoL9A
-         ElS+HCMVJ4psZlvcXtzTclDjaRB5iOo+eFrnZMF0/up2ISdo40bFaCweFt3RE9ZlBPqZ
-         9gQ+oAAgELnMFdLHkCWLBiMJLd5mV/MyA+Bd2MgIh/P4+nRPJgXb1Xxvd8FDpX57spOO
-         17Hy0o36GQ1bkeNjErhlMoGMonheXOkeyAYJVOhzXdqmGKO1lLivXJ6RI12EPT0X26S+
-         xRpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=5vWK0JpfQ+5dEz2CMtNV4odL0R9fmfLG6J7U7Dej0v0=;
-        b=2hx0/cgdVEWzOr5utNVNOENEdQ1ZOm7FyCIVhGIi8xh8QL5xA+Smea49oawkYXTBrW
-         C2yd4fNmlXe85+HGDE5XR6s77qoPJsgxj0vv8RlbWjVbXW8JfNfs/JpfdtzXcyAt8wUT
-         UNaZZLtQ0H/bgkL2J7q7AejOT6YhcXUfLDm7rZftoPUBgBm2nRb2dKzTooK/GDww3pc8
-         hG9icxvn0nLvRYyyj5jOo8Hsvmb0f/P+OoqvZB+TXixfDNJs3e3zYi0hZNDpYj8ZsJcU
-         a1brLX56sKIcBGA04MAoS9XvVjjdkk36V78lyGOC2Qrib16cQKIEAXs0uJMYy/AdVA/9
-         xa3w==
-X-Gm-Message-State: AOAM530M5iZGKck95jW0yCnM6pK2GpbdCJb+/b/7R72qmoPscJ3u5LT6
-        QeS/m9a/0cTDDsAqsc/fZZZKel9bvLh3T4rqPAziyHmbSaU=
-X-Google-Smtp-Source: ABdhPJzeBK9tHosOMDeuPhiYPFOdbtaz7wPO3j1OHjQn9h2Im57coCSNxK2/bOob9g7mKKGRNveLYdO2NkMPsBBhrPY=
-X-Received: by 2002:a5d:4dcc:0:b0:20a:ddaa:1c30 with SMTP id
- f12-20020a5d4dcc000000b0020addaa1c30mr16780056wru.419.1651202469290; Thu, 28
- Apr 2022 20:21:09 -0700 (PDT)
+        Fri, 29 Apr 2022 00:06:53 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC47762A28
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 21:03:36 -0700 (PDT)
+Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:58306 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1nkHqy-0006IT-6N by authid <merlins.org> with srv_auth_plain; Thu, 28 Apr 2022 21:03:36 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1nkHqx-009DVR-Vj; Thu, 28 Apr 2022 21:03:35 -0700
+Date:   Thu, 28 Apr 2022 21:03:35 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220429040335.GE12542@merlins.org>
+References: <20220428205716.GU29107@merlins.org>
+ <CAEzrpqduAKibaDJPJ6s7dCAfQHeynwG6zJwgVXVS_Uh=cQq2dw@mail.gmail.com>
+ <20220428214241.GW29107@merlins.org>
+ <CAEzrpqd0deCQ132HjNJC=AKQsRTXc=shnAmHfs0BR9pWiD4mhg@mail.gmail.com>
+ <20220428222705.GX29107@merlins.org>
+ <CAEzrpqeQrSrMgGLh0F34fVj8dnzJQF7kv=XSBKcD92oHyV8-gA@mail.gmail.com>
+ <20220429005624.GY29107@merlins.org>
+ <CAEzrpqe+n9iGQymL01eZQjPBnN+Z1NeGDyTDaC-pwsGkOwvuDg@mail.gmail.com>
+ <20220429013409.GD12542@merlins.org>
+ <CAEzrpqfF7xfLxSBpJGfu2uP5iUzBhirg=wRfs108rLyuiUSW1Q@mail.gmail.com>
 MIME-Version: 1.0
-From:   Dave T <davestechshop@gmail.com>
-Date:   Thu, 28 Apr 2022 23:20:58 -0400
-Message-ID: <CAGdWbB4ndWsZQg13dbp2L5uXQUExtV=L0XmWvTEz61nWGzY=tg@mail.gmail.com>
-Subject: What is the recommended course of action for: Found file extent holes
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqfF7xfLxSBpJGfu2uP5iUzBhirg=wRfs108rLyuiUSW1Q@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 24.5.124.255
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs check found errors in fs roots. What is the recommended course
-of action? I don't care much about the data on the volume.
+On Thu, Apr 28, 2022 at 09:38:05PM -0400, Josef Bacik wrote:
+> I'm going to scream.  Somehow the root pointer for 11223 got messed up
+> in all of this, do rescue tree-recover again so it can unfuck 11223,
+> and then init-extent-tree.  Thanks,
 
-# btrfs check --progress --check-data-csum /dev/mapper/xyz_luks
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/xyz_luks
-UUID: <redacted>
-[1/7] checking root items                      (0:00:23 elapsed,
-4710592 items checked)
-[2/7] checking extents                         (0:01:03 elapsed,
-154607 items checked)
-[3/7] checking free space cache                (0:00:00 elapsed, 127
-items checked)
-root 1430 inode 7492 errors 100, file extent discount17 elapsed,
-121521 items checked)
-Found file extent holes:
-        start: 0, len: 937984
-root 1430 inode 7493 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 5390336
-root 1430 inode 7494 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 4096
-root 1430 inode 7495 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 1392640
-root 1430 inode 7496 errors 100, file extent discount
+gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
+FS_INFO IS 0x5588db830bc0
+JOSEF: root 9
+Couldn't find the last root for 8
+FS_INFO AFTER IS 0x5588db830bc0
+Checking root 2 bytenr 15645018570752
+Checking root 4 bytenr 15645196861440
+Checking root 5 bytenr 13577660252160
+Checking root 7 bytenr 15645018554368
+Checking root 9 bytenr 15645878108160
+Checking root 11221 bytenr 13577562996736
+Checking root 11222 bytenr 15645261905920
+Checking root 11223 bytenr 13576823668736
+Repairing root 11223 bad_blocks 9 update 1
+deleting slot 54 in block 11652138631168
+deleting slot 54 in block 11652138631168
+deleting slot 64 in block 11652138631168
+deleting slot 86 in block 11652138631168
+deleting slot 87 in block 11652138631168
+deleting slot 87 in block 11652138631168
+deleting slot 87 in block 11652138631168
+deleting slot 87 in block 11652138631168
+deleting slot 87 in block 11652138631168
+Checking root 11224 bytenr 13577126182912
+Checking root 159785 bytenr 6781490577408
+Checking root 159787 bytenr 15645908385792
+Checking root 160494 bytenr 6781491265536
+Checking root 160496 bytenr 11822309965824
+Checking root 161197 bytenr 6781492101120
+Checking root 161199 bytenr 13576850833408
+Checking root 162628 bytenr 15645764812800
+Checking root 162632 bytenr 6781492756480
+Checking root 162645 bytenr 5809981095936
+Checking root 163298 bytenr 15645124263936
+Checking root 163302 bytenr 6781495197696
+Checking root 163303 bytenr 15645365993472
+Checking root 163316 bytenr 6781496393728
+Checking root 163318 bytenr 15645980491776
+Checking root 163916 bytenr 11822437826560
+Checking root 163920 bytenr 11971021275136
+Checking root 163921 bytenr 11971073802240
+Checking root 164620 bytenr 15645434036224
+Checking root 164624 bytenr 15645502210048
+Checking root 164633 bytenr 15645526884352
+Checking root 165098 bytenr 11970667446272
+Checking root 165100 bytenr 11970733621248
+Checking root 165198 bytenr 12511656394752
+Checking root 165200 bytenr 12511677972480
+Checking root 165294 bytenr 13576901328896
+Checking root 165298 bytenr 13577133326336
+Checking root 165299 bytenr 13577191505920
+Checking root 18446744073709551607 bytenr 13576823799808
+Tree recovery finished, you can run check now
 
-<removed about 600 more lines like these>
 
-root 1430 inode 7699 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 770048
-root 1430 inode 7700 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 1802240
-root 1430 inode 7701 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 1007616
-root 1430 inode 7702 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 221184
-root 1430 inode 7703 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 380928
-root 1430 inode 7704 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 573440
-root 1430 inode 7705 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 212992
-root 1430 inode 7706 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 802816
-root 1430 inode 7707 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 65536
-root 1430 inode 7708 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 483328
-root 1430 inode 7709 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 172032
-root 1430 inode 7710 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 241664
-root 1430 inode 7711 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 12288
-root 1430 inode 7712 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 86016
-root 1430 inode 7713 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 1171456
-root 1430 inode 7714 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 90112
-root 1430 inode 7715 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 29728768
-root 1430 inode 7716 errors 100, file extent discount
-Found file extent holes:
-        start: 0, len: 741376
-[4/7] checking fs roots                        (0:00:17 elapsed,
-122659 items checked)
-ERROR: errors found in fs roots
-found 129201229839 bytes used, error(s) found
-total csum bytes: 123927020
-total tree bytes: 2527707136
-total fs tree bytes: 2024407040
-total extent tree bytes: 369098752
-btree space waste bytes: 379740661
-file data blocks allocated: 1630234861568
- referenced 1662138822656
+gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue init-extent-tree /dev/mapper/dshelf1
+inserting block group 15838291689472
+inserting block group 15839365431296
+inserting block group 15840439173120
+inserting block group 15842586656768
+processed 1556480 of 0 possible bytes
+processed 1474560 of 0 possible bytes
+Recording extents for root 4
+processed 1032192 of 1064960 possible bytes
+Recording extents for root 5
+processed 10960896 of 10977280 possible bytes
+Recording extents for root 7
+processed 16384 of 16545742848 possible bytes
+Recording extents for root 9
+processed 16384 of 16384 possible bytes
+Recording extents for root 11221
+processed 16384 of 255983616 possible bytes
+Recording extents for root 11222
+processed 49479680 of 49479680 possible bytes
+Recording extents for root 11223
+processed 1634844672 of 1635549184 possible bytesadding a bytenr that overlaps our thing, dumping paths for [1834097, 108, 1835008]
+inode ref info failed???
+elem_cnt 1 elem_missed 0 ret 0
+Xilinx_Unified_2020.1_0602_1208/tps/lnx64/jre9.0.4/lib/modules
+doing an insert of the bytenr
+doing an insert that overlaps our bytenr 3700677820416 53248
+processed 1635319808 of 1635549184 possible bytes
+Recording extents for root 11224
+processed 75792384 of 75792384 possible bytes
+Recording extents for root 159785
+processed 108855296 of 108855296 possible bytes
+Recording extents for root 159787
+processed 49152 of 49479680 possible bytes
+Recording extents for root 160494
+processed 999424 of 109035520 possible bytesFailed to find [10467695652864, 168, 8675328]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555557bc5d in btrfs_buffer_uptodate (buf=buf@entry=0x555564fce1f0, parent_transid=parent_transid@entry=1619126)
+    at kernel-shared/disk-io.c:2235
+2235            ret = verify_parent_transid(&buf->fs_info->extent_cache, buf,
+(gdb) bt
+#0  0x000055555557bc5d in btrfs_buffer_uptodate (buf=buf@entry=0x555564fce1f0, parent_transid=parent_transid@entry=1619126)
+    at kernel-shared/disk-io.c:2235
+#1  0x000055555557bebd in read_tree_block (fs_info=fs_info@entry=0x55555564cbc0, bytenr=<optimized out>, parent_transid=1619126)
+    at kernel-shared/disk-io.c:378
+#2  0x00005555555735f6 in read_node_slot (fs_info=fs_info@entry=0x55555564cbc0, root=root@entry=0x5555559547d0, 
+    parent=0x555559e7e7b0, slot=240) at ./kernel-shared/ctree.h:1941
+#3  0x00005555555769ff in btrfs_search_slot (trans=0x5555599539a0, root=root@entry=0x5555559547d0, key=key@entry=0x7fffffffd8a0, 
+    p=p@entry=0x7fffffffd760, ins_len=ins_len@entry=49, cow=cow@entry=1) at kernel-shared/ctree.c:1429
+#4  0x0000555555576e91 in btrfs_insert_empty_items (trans=trans@entry=0x5555599539a0, root=root@entry=0x5555559547d0, 
+    path=path@entry=0x7fffffffd760, cpu_key=cpu_key@entry=0x7fffffffd8a0, data_size=data_size@entry=0x7fffffffd75c, nr=nr@entry=1)
+    at kernel-shared/ctree.c:2824
+#5  0x00005555555dfb9d in btrfs_insert_empty_item (data_size=<optimized out>, key=0x7fffffffd8a0, path=0x7fffffffd760, 
+    root=0x5555559547d0, trans=0x5555599539a0) at ./kernel-shared/ctree.h:2780
+#6  insert_empty_extent (trans=trans@entry=0x5555599539a0, key=key@entry=0x7fffffffd8a0, generation=generation@entry=1591667, 
+    flags=flags@entry=1) at cmds/rescue-init-extent-tree.c:566
+#7  0x00005555555dfe62 in process_eb (trans=trans@entry=0x5555599539a0, root=root@entry=0x555562939390, eb=eb@entry=0x555559092800, 
+    current=current@entry=0x7fffffffdae8) at cmds/rescue-init-extent-tree.c:645
+#8  0x00005555555dffed in process_eb (trans=trans@entry=0x5555599539a0, root=root@entry=0x555562939390, eb=eb@entry=0x5555590aaf80, 
+    current=current@entry=0x7fffffffdae8) at cmds/rescue-init-extent-tree.c:734
+#9  0x00005555555dffed in process_eb (trans=trans@entry=0x5555599539a0, root=root@entry=0x555562939390, eb=0x5555590822a0, 
+    current=current@entry=0x7fffffffdae8) at cmds/rescue-init-extent-tree.c:734
+#10 0x00005555555e0258 in record_root (root=root@entry=0x555562939390) at cmds/rescue-init-extent-tree.c:805
+#11 0x00005555555e10e4 in record_roots (fs_info=0x55555564cbc0) at cmds/rescue-init-extent-tree.c:860
+#12 btrfs_init_extent_tree (path=path@entry=0x7fffffffe1cd "/dev/mapper/dshelf1") at cmds/rescue-init-extent-tree.c:944
+#13 0x00005555555d7a2e in cmd_rescue_init_extent_tree (cmd=<optimized out>, argc=<optimized out>, argv=<optimized out>)
+    at cmds/rescue.c:65
+#14 0x000055555556c17b in cmd_execute (argv=0x7fffffffdeb8, argc=2, cmd=0x555555642d40 <cmd_struct_rescue_init_extent_tree>)
+    at cmds/commands.h:125
+#15 handle_command_group (cmd=<optimized out>, argc=2, argv=0x7fffffffdeb8) at btrfs.c:152
+#16 0x000055555556c275 in cmd_execute (argv=0x7fffffffdeb0, argc=3, cmd=0x555555643cc0 <cmd_struct_rescue>) at cmds/commands.h:125
+#17 main (argc=3, argv=0x7fffffffdeb0) at btrfs.c:405
+
+
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
