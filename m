@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1F65153BC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 20:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F0D5153C1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 20:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379714AbiD2SfE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1380016AbiD2SfE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Fri, 29 Apr 2022 14:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380020AbiD2SfC (ORCPT
+        with ESMTP id S1380022AbiD2SfD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Apr 2022 14:35:02 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F063692B3
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 11:31:42 -0700 (PDT)
+        Fri, 29 Apr 2022 14:35:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFF56D1AF
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 11:31:44 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 146FD1F892;
-        Fri, 29 Apr 2022 18:31:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3D72721877;
+        Fri, 29 Apr 2022 18:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651257101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1651257103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GLQl1xx1rJL3qSYX87IVA/+KIvA+pstfAJ5DTQJS4aE=;
-        b=MaMeiqTFzI0rdl/PzsPzyVpgVB2X+l98SGdtNSwzCSVlSmuTgqX+sUQwdwTW6Iws7W/Pw+
-        i1/zG4QciKkpTlHgFzU/mOybBAaYzE/6n9X+HDFSgnEF0pBoYNXSf0ob0gPfC33BovG1hN
-        rrC7ypkPNGoN09gO2ZSh8UVgb0IIvcM=
+        bh=+YUFaK2uGIlxILKr34UmM/FPe/HrlvYVR3Or433KBF0=;
+        b=dtXF/beVewNq96c0aVRtcEyXegBPXl7II2uBZcaj0yF9bMJWLxKb9gBrgP+EJ1Vkuul+wh
+        V+pzndURMTpgxSJnEiGqPO+02bU/aqIgvE+6vspruOHe1C5Eo9YRpT87OFrT58LhgEJCmo
+        6KY2XdkZnkw6GH7PAxnKq51pz42eJQE=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 0CBB52C141;
-        Fri, 29 Apr 2022 18:31:41 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 356E02C141;
+        Fri, 29 Apr 2022 18:31:43 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 72970DA7DE; Fri, 29 Apr 2022 20:27:33 +0200 (CEST)
+        id 92DA8DA7DE; Fri, 29 Apr 2022 20:27:35 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 3/9] btrfs: remove unused parameter bio_flags from btrfs_wq_submit_bio
-Date:   Fri, 29 Apr 2022 20:27:33 +0200
-Message-Id: <6455730749fdad4022bb7138bd9108692a3697cb.1651255990.git.dsterba@suse.com>
+Subject: [PATCH 4/9] btrfs: remove trivial helper update_nr_written
+Date:   Fri, 29 Apr 2022 20:27:35 +0200
+Message-Id: <fea480c17b89b32fe9ed21739d568750abe4674f.1651255990.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1651255990.git.dsterba@suse.com>
 References: <cover.1651255990.git.dsterba@suse.com>
@@ -53,72 +53,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The helper used to do more with the wbc state but now it's just one
+subtraction, no need to have a special helper.
+
+It became trivial in a91326679f2a ("Btrfs: make mapping->writeback_index
+point to the last written page").
+
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/disk-io.c | 5 ++---
- fs/btrfs/disk-io.h | 3 +--
- fs/btrfs/inode.c   | 4 ++--
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ fs/btrfs/extent_io.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 73e12ecc81be..b9e03da5f2cb 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -849,8 +849,7 @@ static void run_one_async_free(struct btrfs_work *work)
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index f9d6dd310c42..15d27cc21750 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3839,12 +3839,6 @@ static inline void contiguous_readpages(struct page *pages[], int nr_pages,
+ 	}
  }
  
- blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
--				 int mirror_num, unsigned long bio_flags,
--				 u64 dio_file_offset,
-+				 int mirror_num, u64 dio_file_offset,
- 				 extent_submit_bio_start_t *submit_bio_start)
- {
- 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
-@@ -943,7 +942,7 @@ void btrfs_submit_metadata_bio(struct inode *inode, struct bio *bio, int mirror_
- 		 * checksumming can happen in parallel across all CPUs
- 		 */
- 		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, 0,
--					  0, btree_submit_bio_start);
-+					  btree_submit_bio_start);
+-static void update_nr_written(struct writeback_control *wbc,
+-			      unsigned long nr_written)
+-{
+-	wbc->nr_to_write -= nr_written;
+-}
+-
+ /*
+  * helper for __extent_writepage, doing all of the delayed allocation setup.
+  *
+@@ -4007,7 +4001,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 	 * we don't want to touch the inode after unlocking the page,
+ 	 * so we update the mapping writeback index now
+ 	 */
+-	update_nr_written(wbc, 1);
++	wbc->nr_to_write--;
+ 
+ 	while (cur <= end) {
+ 		u64 disk_bytenr;
+@@ -4620,7 +4614,7 @@ static int write_one_subpage_eb(struct extent_buffer *eb,
+ 	 * dirty anymore, we have submitted a page.  Update nr_written in wbc.
+ 	 */
+ 	if (no_dirty_ebs)
+-		update_nr_written(wbc, 1);
++		wbc->nr_to_write--;
+ 	return ret;
+ }
+ 
+@@ -4656,7 +4650,7 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
+ 			break;
+ 		}
+ 		disk_bytenr += PAGE_SIZE;
+-		update_nr_written(wbc, 1);
++		wbc->nr_to_write--;
+ 		unlock_page(p);
  	}
  
- 	if (ret) {
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 9340e3266e0a..4ee8c42c9f78 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -124,8 +124,7 @@ int btrfs_read_extent_buffer(struct extent_buffer *buf, u64 parent_transid,
- blk_status_t btrfs_bio_wq_end_io(struct btrfs_fs_info *info, struct bio *bio,
- 			enum btrfs_wq_endio_type metadata);
- blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
--				 int mirror_num, unsigned long bio_flags,
--				 u64 dio_file_offset,
-+				 int mirror_num, u64 dio_file_offset,
- 				 extent_submit_bio_start_t *submit_bio_start);
- blk_status_t btrfs_submit_bio_done(void *private_data, struct bio *bio,
- 			  int mirror_num);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5b7df1c0ee5e..ac37e5088fc8 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2624,7 +2624,7 @@ void btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
- 		if (btrfs_is_data_reloc_root(root))
- 			goto mapit;
- 		/* we're doing a write, do the async checksumming */
--		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, bio_flags,
-+		ret = btrfs_wq_submit_bio(inode, bio, mirror_num,
- 					  0, btrfs_submit_bio_start);
- 		goto out;
- 	} else if (!skip_sum) {
-@@ -7913,7 +7913,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		goto map;
- 
- 	if (write && async_submit) {
--		ret = btrfs_wq_submit_bio(inode, bio, 0, 0, file_offset,
-+		ret = btrfs_wq_submit_bio(inode, bio, 0, file_offset,
- 					  btrfs_submit_bio_start_direct_io);
- 		goto err;
- 	} else if (write) {
 -- 
 2.34.1
 
