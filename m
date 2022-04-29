@@ -2,68 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED3E5148A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 13:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8552E5149AF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 14:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358775AbiD2L6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Apr 2022 07:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S1359132AbiD2Moc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 08:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358760AbiD2L6a (ORCPT
+        with ESMTP id S1358700AbiD2Moa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Apr 2022 07:58:30 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234521FA54
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 04:55:11 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id p10so13560932lfa.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 04:55:11 -0700 (PDT)
+        Fri, 29 Apr 2022 08:44:30 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4201562DC
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 05:41:11 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id 125so9558319iov.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 05:41:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a5Z8Jx/dEBM01mYWNgTRbsAdY1cC6C5iAA0Vuh/nJ9I=;
-        b=QtI6ZtFefdXc0v88SOvUuzjCE55ktVrOSx6x0otm5fcTuunJuSg0A0rhRYiWV8/3VF
-         qprwvMjbYNPyGTg24D37aY7OcIcwxG5nLJ8SBhPGGHR9SU5jbBLbkaKMMlIBBSF7bGUb
-         afa/nTiys3E/ND56oJjQDuFTqofduys62GjQEPcda6EMA966lOz95nXPxwhuF8AJZfYO
-         sB6Bhe+Iv5tG24I3jP2Bv9PUHbA27TqSaYTJ7LMr2Ti+4pR83im3Zi4IrzdIqH9/0PXG
-         7qcdzg2J3xOrrfnXevJH9YgHMI1LRS8mD4INvZynloFdyxiV99+NPIk2A4EhqDoirMMi
-         1iMg==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9WcGdqB5J0pwXza5nkD7WuEUc3Izcg/De5UNlCT8g3M=;
+        b=Ggk13mNPmfYna1bBqCRnPvArfhMs16XuXt1NJ7KlG1RAdd6rEWaaC/LIxXHUeRLeQk
+         5NJPLqR/KYSE6SARXZYMJTqLuiQT5KrMOhWcrSWtSPA8hi9zwdpJH89ex0PfdmKmfHiI
+         Hx0QOdUXt8al6EUGwPiDTYNAkds+IEoeHLWvgFGfQN4mKJGEzOrUX7V3mJD3hediNYPI
+         VsWXxs1hMbuny0hBT3Aix5GHI++xm8RC2tCypQGDK+nw3YWfVzT5TsgrZd3EI5sEbxWc
+         l1CG9pY2b98mvHXqp/jW75d2q7zk7ZtCDO0MUYoWCMW8FdXzmby25A7YLZMIqTcI/rfN
+         QA8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a5Z8Jx/dEBM01mYWNgTRbsAdY1cC6C5iAA0Vuh/nJ9I=;
-        b=Jgvp0t44uQzABhaKwGjuSpzvwEZH7zQh519QSpDOPAqH2KZXlSFZM3fWQg4U16XnCv
-         bB+Y4qcZFao4ZAqvyqxLFQ1XhNrfrwQw6OpDFxEpAdnLc5yQ747VVo9jUvNUdpLnPeAd
-         g2PugyE7EqFGX4tf/2oCf13AHv4jG0/nz/AFLShCJPD/G86+C17NavPJTXuDUVU/TtBz
-         7p285brUaKTVWBql0Bs+sRzoLTEQTLPmltAD1Q0xvW8nTDMPRudWrDqlutqW6a2K6n1+
-         t3Kf6+U2TV122J3ZwVkvMsi8tvDaMA/f0Cf/DgnlDaL1PrZmozZT/F8E09XCAcWI+vhP
-         BofQ==
-X-Gm-Message-State: AOAM533/NKZKNRizHPuNHpWR1Sp0DqHW0MTl5MdaCAgH4CXUSpbxOnSy
-        OBsMcFG39md+WKW9uWeVcJU=
-X-Google-Smtp-Source: ABdhPJxAKor5dzJbBsQ5o+7uKmbL39jkrSRXDWdlQHw5FA8U57Q0ziypFAEm2hzWuE0+0mldz8pD0g==
-X-Received: by 2002:ac2:42c8:0:b0:471:f95d:efec with SMTP id n8-20020ac242c8000000b00471f95defecmr22723990lfl.686.1651233309490;
-        Fri, 29 Apr 2022 04:55:09 -0700 (PDT)
-Received: from localhost (80-62-117-19-mobile.dk.customer.tdc.net. [80.62.117.19])
-        by smtp.gmail.com with ESMTPSA id p10-20020a2eb7ca000000b0024f3d1daebbsm249944ljo.67.2022.04.29.04.55.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Apr 2022 04:55:08 -0700 (PDT)
-Date:   Fri, 29 Apr 2022 13:55:07 +0200
-From:   Pankaj Raghav <pankydev8@gmail.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 2/4] btrfs: zoned: finish BG when there are no more
- allocatable bytes left
-Message-ID: <20220429115507.l2zxgcj634nw2ytd@quentin>
-References: <cover.1651157034.git.naohiro.aota@wdc.com>
- <42758829d8696a471a27f7aaeab5468f60b1565d.1651157034.git.naohiro.aota@wdc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9WcGdqB5J0pwXza5nkD7WuEUc3Izcg/De5UNlCT8g3M=;
+        b=phFjYMsT86IcVno0/LXtX0xqUhyhZVFtVgIZGQCFh8t4fH7DLLLJYPnJDQ5iIB6YN/
+         HeHsatL6SlacexDoWEup5tRD+2FOHbFuJxggU9jIhybCt9HnrL0TWK/mowg5OLpMuAOb
+         HozxdqkFVTcnDWMWmIAWTIMz0/AuiVMimbii8GUoA5p0Z0p0ag6TVobqgDj64R9vOQs2
+         lA7DwNxFHATRfS/aAeMRPY5OJ+FfxM0m+3YfRKK2y0kh5MS8IoHK89uiaA+zUBFQ/u6J
+         F6Ny2YHaPG9ljMTc9d5f7tZVDvSn0ZK4dG5zzrNWhLLhq1panMFytmhtbPui5BEf5b1g
+         j1Qw==
+X-Gm-Message-State: AOAM531bB06/MCue50fTHr2gti7qrrJ49Cga3HcRZn3o3Mc2QJANrrsx
+        xFOS3W7pgq+Csr2yhVbmoMcO4Vkkd4stNXmJG5rSYxKoJQY=
+X-Google-Smtp-Source: ABdhPJz4tcmiAyt9431AvFO272dn9zDnMaXuu3aQTNxNbr+FrukKt60enkT4qwSB4WdCBr7qVAsjs6295x54kIO+hmA=
+X-Received: by 2002:a05:6602:14c2:b0:657:d130:daa with SMTP id
+ b2-20020a05660214c200b00657d1300daamr1217736iow.83.1651236071271; Fri, 29 Apr
+ 2022 05:41:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42758829d8696a471a27f7aaeab5468f60b1565d.1651157034.git.naohiro.aota@wdc.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20220428205716.GU29107@merlins.org> <CAEzrpqduAKibaDJPJ6s7dCAfQHeynwG6zJwgVXVS_Uh=cQq2dw@mail.gmail.com>
+ <20220428214241.GW29107@merlins.org> <CAEzrpqd0deCQ132HjNJC=AKQsRTXc=shnAmHfs0BR9pWiD4mhg@mail.gmail.com>
+ <20220428222705.GX29107@merlins.org> <CAEzrpqeQrSrMgGLh0F34fVj8dnzJQF7kv=XSBKcD92oHyV8-gA@mail.gmail.com>
+ <20220429005624.GY29107@merlins.org> <CAEzrpqe+n9iGQymL01eZQjPBnN+Z1NeGDyTDaC-pwsGkOwvuDg@mail.gmail.com>
+ <20220429013409.GD12542@merlins.org> <CAEzrpqfF7xfLxSBpJGfu2uP5iUzBhirg=wRfs108rLyuiUSW1Q@mail.gmail.com>
+ <20220429040335.GE12542@merlins.org>
+In-Reply-To: <20220429040335.GE12542@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Fri, 29 Apr 2022 08:41:00 -0400
+Message-ID: <CAEzrpqewAfxi9hK+vwK+Df3iziXBZZEmXhzgJdJDqTj-JXvFQw@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,41 +70,106 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 29, 2022 at 12:02:16AM +0900, Naohiro Aota wrote:
-> +++ b/fs/btrfs/zoned.c
-> @@ -2017,6 +2017,7 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
->  void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 length)
->  {
->  	struct btrfs_block_group *block_group;
-> +	u64 min_use;
-minor nit:
-Could you rename this variable to `min_alloc_bytes` or something else
-more descriptive?
->  
->  	if (!btrfs_is_zoned(fs_info))
->  		return;
-> @@ -2024,7 +2025,14 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 len
->  	block_group = btrfs_lookup_block_group(fs_info, logical);
->  	ASSERT(block_group);
->  
-> -	if (logical + length < block_group->start + block_group->zone_capacity)
-> +	/* No MIXED BG on zoned btrfs. */
-> +	if (block_group->flags & BTRFS_BLOCK_GROUP_DATA)
-> +		min_use = fs_info->sectorsize;
-> +	else
-> +		min_use = fs_info->nodesize;
-> +
-> +	/* Bail out if we can allocate more data from this BG. */
-> +	if (logical + length + min_use <= block_group->start + block_group->zone_capacity)
->  		goto out;
->  
->  	__btrfs_zone_finish(block_group, true);
-> -- 
-> 2.35.1
-> 
-Otherwise the changes look good to me.
+On Fri, Apr 29, 2022 at 12:03 AM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Thu, Apr 28, 2022 at 09:38:05PM -0400, Josef Bacik wrote:
+> > I'm going to scream.  Somehow the root pointer for 11223 got messed up
+> > in all of this, do rescue tree-recover again so it can unfuck 11223,
+> > and then init-extent-tree.  Thanks,
+>
+> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
+> FS_INFO IS 0x5588db830bc0
+> JOSEF: root 9
+> Couldn't find the last root for 8
+> FS_INFO AFTER IS 0x5588db830bc0
+> Checking root 2 bytenr 15645018570752
+> Checking root 4 bytenr 15645196861440
+> Checking root 5 bytenr 13577660252160
+> Checking root 7 bytenr 15645018554368
+> Checking root 9 bytenr 15645878108160
+> Checking root 11221 bytenr 13577562996736
+> Checking root 11222 bytenr 15645261905920
+> Checking root 11223 bytenr 13576823668736
+> Repairing root 11223 bad_blocks 9 update 1
+> deleting slot 54 in block 11652138631168
+> deleting slot 54 in block 11652138631168
+> deleting slot 64 in block 11652138631168
+> deleting slot 86 in block 11652138631168
+> deleting slot 87 in block 11652138631168
+> deleting slot 87 in block 11652138631168
+> deleting slot 87 in block 11652138631168
+> deleting slot 87 in block 11652138631168
+> deleting slot 87 in block 11652138631168
+> Checking root 11224 bytenr 13577126182912
+> Checking root 159785 bytenr 6781490577408
+> Checking root 159787 bytenr 15645908385792
+> Checking root 160494 bytenr 6781491265536
+> Checking root 160496 bytenr 11822309965824
+> Checking root 161197 bytenr 6781492101120
+> Checking root 161199 bytenr 13576850833408
+> Checking root 162628 bytenr 15645764812800
+> Checking root 162632 bytenr 6781492756480
+> Checking root 162645 bytenr 5809981095936
+> Checking root 163298 bytenr 15645124263936
+> Checking root 163302 bytenr 6781495197696
+> Checking root 163303 bytenr 15645365993472
+> Checking root 163316 bytenr 6781496393728
+> Checking root 163318 bytenr 15645980491776
+> Checking root 163916 bytenr 11822437826560
+> Checking root 163920 bytenr 11971021275136
+> Checking root 163921 bytenr 11971073802240
+> Checking root 164620 bytenr 15645434036224
+> Checking root 164624 bytenr 15645502210048
+> Checking root 164633 bytenr 15645526884352
+> Checking root 165098 bytenr 11970667446272
+> Checking root 165100 bytenr 11970733621248
+> Checking root 165198 bytenr 12511656394752
+> Checking root 165200 bytenr 12511677972480
+> Checking root 165294 bytenr 13576901328896
+> Checking root 165298 bytenr 13577133326336
+> Checking root 165299 bytenr 13577191505920
+> Checking root 18446744073709551607 bytenr 13576823799808
+> Tree recovery finished, you can run check now
+>
+>
+> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue init-extent-tree /dev/mapper/dshelf1
+> inserting block group 15838291689472
+> inserting block group 15839365431296
+> inserting block group 15840439173120
+> inserting block group 15842586656768
+> processed 1556480 of 0 possible bytes
+> processed 1474560 of 0 possible bytes
+> Recording extents for root 4
+> processed 1032192 of 1064960 possible bytes
+> Recording extents for root 5
+> processed 10960896 of 10977280 possible bytes
+> Recording extents for root 7
+> processed 16384 of 16545742848 possible bytes
+> Recording extents for root 9
+> processed 16384 of 16384 possible bytes
+> Recording extents for root 11221
+> processed 16384 of 255983616 possible bytes
+> Recording extents for root 11222
+> processed 49479680 of 49479680 possible bytes
+> Recording extents for root 11223
+> processed 1634844672 of 1635549184 possible bytesadding a bytenr that overlaps our thing, dumping paths for [1834097, 108, 1835008]
+> inode ref info failed???
+> elem_cnt 1 elem_missed 0 ret 0
+> Xilinx_Unified_2020.1_0602_1208/tps/lnx64/jre9.0.4/lib/modules
+> doing an insert of the bytenr
+> doing an insert that overlaps our bytenr 3700677820416 53248
+> processed 1635319808 of 1635549184 possible bytes
+> Recording extents for root 11224
+> processed 75792384 of 75792384 possible bytes
+> Recording extents for root 159785
+> processed 108855296 of 108855296 possible bytes
+> Recording extents for root 159787
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 160494
+> processed 999424 of 109035520 possible bytesFailed to find [10467695652864, 168, 8675328]
 
-Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
+Yayyyy progress, I just updated the debugging for the new problem
+bytenr so we can figure out who to delete, run init-extent-tree again
+please.  Thanks,
 
--- 
-Pankaj Raghav
+Josef
