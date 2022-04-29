@@ -2,303 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CE651419E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 06:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C86B5141AF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 07:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbiD2E77 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Apr 2022 00:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
+        id S238174AbiD2FNP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 01:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237887AbiD2E74 (ORCPT
+        with ESMTP id S238106AbiD2FNO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Apr 2022 00:59:56 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FAE23BD0
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 21:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1651208198; x=1682744198;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=orU103PX0CM3GoZnme/daQ4V1ms1g6yPng5PGG50yWA=;
-  b=XC8VEvA99YW0p6oUsWISp0Y+watCqSRo8Ju8NCYNYS1g+kMl85Mfhl+F
-   gu2VuTtAr2ExJ61Svjq79f4EQpoj70Tpnps4XpwujJXKx1ePiWpSLAjpn
-   2IupMvhly6IB8O+j7O4ycadrNHMipQS2csi8hBrvlbitDnC2BnM5/TLSp
-   6XBQEQQyyQ5514gyeeVEtwIhOQ84cDeFK0mhFoeGd+bWvfQm96mIw1Qka
-   e9XHUBcxzg0HAztiqj7jnaIJYUYzObNcsogYWiF7h9n9ypGfh7cR2zazg
-   II77m6R/agNlbNCoFNvpeLWe8+xNXjBwAtvTswyQXXQa37xIzi/bp+5Dw
-   A==;
-X-IronPort-AV: E=Sophos;i="5.91,297,1647273600"; 
-   d="scan'208";a="303336877"
-Received: from mail-bn7nam10lp2107.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.107])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Apr 2022 12:56:36 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PeVBpCt6ihg3MC3+uoAHvrMOkCq4ElAE9i432Kh4Rg1hB7RHgSDRKV0vRqMqp1Tx+EBNovEcKjCI9dAzETJxZHHMnoqRBU4NmPYZHIYg1UnH53IvJ/FQvbOAwfDcwEH8HI/Gy9pLMnhtuKJHK3Hvmds8x+yZmQI4n1iKp7FlY5p2Dtks5PDHzOZs70XlbrVfA6575xSFVl4uxnI2VN7knmtBbQHoaaAZ5Y00iHf7r4wj6fuVXE4JcTW1hGGCdl6po6rT8ZaSkphZscYX/rl/eEonPKAU0hEbILIqjLltBcfckyRrf1qEtEDaXRSxKlZguXuoK8nRFZUuz5yQLDhIzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lZDNJeRAhQ2hftMh3XngA9DXvWVxYQBB9Dw7alWN1mc=;
- b=AyZ4cir0BuVkTS4sOCOjj5VHLgTxxjcsqpAnXW8YNLv0jrQajSu+s1YS+Ycy3Drg1Y1pEFrAI/uEbrR3NJxckK6rXpSblW5NadUvR75fUxeIQaQASG1V8E0RpEhROoWMj17E5enMg6EChl9+RP1FG03lixeF9zo+iUT/5PuJ0iAOWwjVlQJBjTJQ9rSLCwT0bIMZAMPD/jF3gDgZaX+Akt5nPR/Mi6KCzoxMFf+PH2HWL81dJEYo0vc5rYpjf+KknvEVXgJLmDOsZFMEH6v+UPlwJGSUDuh9BfssNC57r3PhVMu1gxLpMn3gG2bq7UL0wxeapBnMut40P/iKaouH6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lZDNJeRAhQ2hftMh3XngA9DXvWVxYQBB9Dw7alWN1mc=;
- b=IhcqOZJPtZhMFqnE/Jkn7KltHBqfCeQF3zNkUp3ShfKVm6OBggGHANB/gWvwi8yI7LDbdte9AgCYHoFdR7wHce7aT+ofhV6s02/C/c1x4ATOFaAjOj1mcHvg0CSDGkboj9KcGJKEGOZ5ox+V+ooP/DBU05xJe48ICwpRFEozPjI=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by SJ0PR04MB7632.namprd04.prod.outlook.com (2603:10b6:a03:32d::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.14; Fri, 29 Apr
- 2022 04:56:33 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::8db2:701a:a93d:9b93]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::8db2:701a:a93d:9b93%9]) with mapi id 15.20.5206.013; Fri, 29 Apr 2022
- 04:56:33 +0000
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/4] btrfs: zoned: consolidate zone finish function
-Thread-Topic: [PATCH 1/4] btrfs: zoned: consolidate zone finish function
-Thread-Index: AQHYWxD51806VLnkHEKb/zvsvdOUaa0FfvuAgADV4AA=
-Date:   Fri, 29 Apr 2022 04:56:33 +0000
-Message-ID: <20220429045632.jlt2fn6chxubycbp@naota-xeon>
-References: <cover.1651157034.git.naohiro.aota@wdc.com>
- <4d5e42d343318979a254f7dbdd96aa1c48908ed8.1651157034.git.naohiro.aota@wdc.com>
- <20220428161103.GD18596@twin.jikos.cz>
-In-Reply-To: <20220428161103.GD18596@twin.jikos.cz>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e042d34e-8428-4efa-0f9d-08da299ca1bd
-x-ms-traffictypediagnostic: SJ0PR04MB7632:EE_
-x-microsoft-antispam-prvs: <SJ0PR04MB76323F0CD763422A5CC453558CFC9@SJ0PR04MB7632.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UqNDTl85t267omRhXHP8DP5E42906bKPXAvjltz3G11AxE+vzZXR+qmUccqQTh8Vn5IQEpnFwexh5F2udoV7VkSRJLF0Hm9jJlEZsaWnAzFPC3whL4COUyhfzqeLQr2MpaB0FvLy2+zVxF9chQBwk6iR0+6HqX6Ubn9cdSNj1pF5UgOHeSrWRL2QTke1Q/4TziN8TEOwAlVtMvfc3qTw4Hn2kHxNKxDtPjUeJQA3dOv3EOKLzQ52x/4cXmemCU7OldBOReSnC4FlhDqvvf3xy8ZLYhmCs6XdlW9z3PpPGJVG5A9AjO+psv8Y7gtXFu1J3YlqyzpxAhBPtzGpC6k5N/jDWDDC4xiFtwewECDIaElt4xvxYiR5oFSVbw+yT+EB8/UdVga+Y7HF7/mdYd162508tGRMEpOIe/kGiQ9rDHgY0i9GNHt4noiDaIT9SXyKI5/7oVzxlIYFxR/N5272qTQLEDo2wk2o7DwlJHqzDs87r6uzNYP4JRMAUCRi9ckpwE+HAdai+om1mWwfwkaGWY+ITmh1tlBbeSIpfQUBrZi9GrXxKRyuHo5xFsFxUzg1LmejxayuOsz3FEXgRB0t5Ps8VIyI+S2IwNUhAlUUZ35nEuh+NAvs3W35ls4eRLh4b0p9xM1+Yj1EHWCDvdU5hVUpDjtzr7oHfiUlU4gd14j5ofjqVLgDtJzc94vOqVDOvQwG0NVAbeunxMmOxXHyPA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(86362001)(1076003)(186003)(26005)(71200400001)(9686003)(6512007)(8936002)(6506007)(5660300002)(33716001)(110136005)(6486002)(122000001)(82960400001)(2906002)(316002)(66446008)(66946007)(66556008)(66476007)(64756008)(8676002)(76116006)(508600001)(91956017)(38070700005)(83380400001)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7mkYuke2r1CcCLpI3QDQ1q86gQP003u7g19P3lWG14CQTC6e72eARz6daVab?=
- =?us-ascii?Q?2jeexFnf2Rw55QnGOMwSwv4xZua61x+77X/XirEf3L3joxwpcjalLmJFB9sF?=
- =?us-ascii?Q?Wt06vYHizefkH4nveQScXPPx4mdEutJV38KEwIiwmNXj7LQgT1qA7QpsBfs3?=
- =?us-ascii?Q?8ftAeII0qzVshgLighdyY+XpcaPraiYTYvAywV73i/ZsReCMv9ZifNKYGq/j?=
- =?us-ascii?Q?qoW4P+Mz3cyX2hK651RIqimoysPA/W2JdPf6RdPo0fjJftyXfXQfLxjLKH/k?=
- =?us-ascii?Q?lq88N8lBRj0jZguXESFEhdLBVW/ScmvCK6IKW+TfPalPOvFCw3tY/uWSQ49p?=
- =?us-ascii?Q?1PCpmdIfzFwzWyOj/8w8bcIoWhq75dEFnviIMxQuELr7b9vsy9BST16DlDBa?=
- =?us-ascii?Q?C7HkbjVH13LzXK3Rc9/l67e+EJw95YZwas0ItMF+e9zBf4heMq6uuNS5m9Wg?=
- =?us-ascii?Q?XB+6xJ4QpAKHZHFUdQiO4PTyh42SDrLNcQ5eCVh0YQ5Tlm41pP7VoHGkPqPD?=
- =?us-ascii?Q?yj4XQqMBHO/++2uhGQ2sD/vDb0TSXrG5SskEkdxrgGRACS9AsBMT930ZEVug?=
- =?us-ascii?Q?HmAee6/yJ4fcN44ps8EJZAH7eXl1vOzeFLyALgCTiUww060FDbubKzBdFCHu?=
- =?us-ascii?Q?ClidwpBK95VcUqI4FyL69P2F/VFC1KLEWv0pfouNvmOkzaHRCo89DWJqz1wI?=
- =?us-ascii?Q?OZqjyi48AWWVq7YXfYV2C+bSifNfzCQYJsBKsK7XtDzKRU/vJQKouzwIOAUc?=
- =?us-ascii?Q?wBr95dXc/jxIU9xEsXZwa8+D0ggWAxQ9SxLwEzZSaUUW4A/Kmo5AP/wiuDOP?=
- =?us-ascii?Q?5TD6tOdv6Rls9heRibA15/Qri5pKFyU7cF1LSw0nzBP+o8F7SZjIrF1jDQjs?=
- =?us-ascii?Q?CZAJIkwgzpknii2e31k08zNmHVNF04+cAvAJuwvJmXRZ19+QrzMfPP1UW7PT?=
- =?us-ascii?Q?FA4VUR7M1kJGIfcaFN7emr+YPrL8LP7SVEO5pu/xVfPYClgOa2RNUU9fD9Vq?=
- =?us-ascii?Q?acEbG/uyYJd+/OqeYl1IB0RN2IK3jpXoj/L7LyDpA0gLtPbM8Ivzy0VIINkO?=
- =?us-ascii?Q?qrx1J7JXW+gWTbWzxyLF2JsTVhtzlHD0iZcJhjZ8bbQZyXesrGDRbbrq1A6I?=
- =?us-ascii?Q?szHwCANUmRtNfyTAUUkwo8KbxrjYelQMdPwvtquZNdJSmxBibIwCTziAR6Je?=
- =?us-ascii?Q?CMqo0L+OsBSrMrWnq/DXILRiFjtFaj/kF/vpMiIuKNJMNCZtRHH6oLl2eDSc?=
- =?us-ascii?Q?W1uSWgfbJCQsGHIUv5a5qHbyE6cwEWnYU0SP3K9HrXwMCd+WH7y4UYddq/To?=
- =?us-ascii?Q?8Zp/NO0YHIu0ZZUswrlOgjbI0Umm3mvFTcoBdHM2nEcaPFuDgzVKIpxpHVYm?=
- =?us-ascii?Q?lNEtwbkkp9P+jPkjIT8Q0SMCk202OH/XbYf7iWN2SnRdhttUvLiPwlR0Gszi?=
- =?us-ascii?Q?2/cz+yPzb5qvGsh2jkhTQxAnhwUfuA6s+MqyvNlshxdtGMpw2FJuNBISyyHb?=
- =?us-ascii?Q?J/fYG7oEI8k3EQrZ8fIpYrddHHvmukK5E3z1PZvC0Tt7UbjN5XGOwWtqTHmS?=
- =?us-ascii?Q?QU3UP5dyqHCuch9SSJBdAw2n0TxvaIdWje2F+sDr5z2RJ4rwAG8yxxhEzDr0?=
- =?us-ascii?Q?3hqyeBmZHNRIwvx4QZd4K6IXw4DDnl/BfldWlNQalWF3YM6S4gwHWpqqya0c?=
- =?us-ascii?Q?fi7H1T0IurNVPughvZ6oLHCEFMRyN0qP8QaLH62+LDwd1S9VsP3o+ro1hpLm?=
- =?us-ascii?Q?Px28jVewCS3XFlCMoeQPMHmWr30pNE8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <472D492FD2FDC441BEAC046EA1389590@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Fri, 29 Apr 2022 01:13:14 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC63220C4
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Apr 2022 22:09:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1651208994;
+        bh=ZN6Up7v0PkxXh2XStNX5it5bWb1PS4RkHFoSLsHtMGw=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=a3X5VktesA5Ikn082yo9YcP1qAgeXlmBekGnLxXlY7PNZzoLjXaHfmlE0BiU+OZwN
+         1a1htMb9NwVpQoXR0WxzNS5rvetS6pMbq3ZNhm0eU6lNZB6xj6YhBVxFeDCYuoQRCB
+         CR7YTlAN+K4Up/pCMAcxP7GUS3cB99yjF9r5dhtM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MjjCL-1o7mna2Fpb-00lENK; Fri, 29
+ Apr 2022 07:09:54 +0200
+Message-ID: <c2bf3e08-efb2-11fb-940a-b2ca5363da00@gmx.com>
+Date:   Fri, 29 Apr 2022 13:09:50 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e042d34e-8428-4efa-0f9d-08da299ca1bd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2022 04:56:33.1349
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RqNAL3AqvspoL3wql94VefjOB/TFRTC77X402aSPZV0gVjdNh2BeAvfwWSpIGYm4/CANgNKMT9oLQaqhYNIh7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7632
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: What is the recommended course of action for: Found file extent
+ holes
+Content-Language: en-US
+To:     Dave T <davestechshop@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAGdWbB4ndWsZQg13dbp2L5uXQUExtV=L0XmWvTEz61nWGzY=tg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAGdWbB4ndWsZQg13dbp2L5uXQUExtV=L0XmWvTEz61nWGzY=tg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:g2Ua/QI9xpCbuoJMpsvq9V6v+57RxvPxPNyTBuS1ITrE6kp0pAY
+ esFy6i1zBf8JtB+wpVvO//vcYYko99JI5PlVPAsXIMyRNSWD4R2hNaKFyF3qpuu+qh4W7Ob
+ qIftDHCAJ2CcnMxZO8lhT9Ix7hlSQVX11aNhl4rqGIjjGbD2dxrfTHz98xILwywylKbdRST
+ tzwevL0WUPP5gJGe+/gUA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+gW0xq8p/9g=:wNhCilgKGKwrEeAdaVd7oo
+ I/TGz5vM64HDKgRhdBNjb5XfXbt++w2cjCiF30caz5EfNl4OPagHT79Jf3u/pZJ6YpCYexxjx
+ SIV03+rRKS31MRZTL4WvwrwQ65dbQRFWPpVip8itxH4+2jwcfIWusaBPIN0qWIQWg4AT1t9Pq
+ aDsSpoKGP7WMOA9D//TPfG4iOBQYpUrPJg5xnz+fhc3LvI+v35qrhTw+i/d+KyJlXMzpjQGbZ
+ TUl5D5LsLzCyL2XFc4O+UrKST0GF0A/qHWLG1FdC+/l+TzaIFVMu02KPO9inWoF8vTqCCXgiF
+ nODrw9Fa+3W3rgdHm4gKqTHWcfSXN1rww3IkVfRZ4GPPJUPyH3giZDZ1NWm9pWId4TwK4vpTf
+ mu+8oOwYLbODAjOcq1MLZVWSMh2PxOUwfrfTVlWs/mB0WKgk5dPvIYqNe67RJDEZ4D3ZT23bS
+ I1d1G5pFvdOZV4N+tsBnTNnaMMBN8FGwUAb1rW2P1Dl20fklp822uKExkVOAYVWD+48DTTFop
+ 4veU32ZzFy7Giy274OYGzKjX8ESQj6qzsD4s7GtpYpThxwf4hnN7/oyPWwZGJAijqGsNnjkVw
+ za00NtlVGqPx4WOw4mcrFBNE92U5/EhNyXhvkbfeAJNgjH+OkMjIOk3FRgMgsXFMvKQ8W8KlM
+ ocHvmAmmDS1z+SwPI0f67vOUVzHYeIUhOJTmBFXdnSEpy78r7OhDeq9G2IlSBoxer+vS2JV8+
+ bsq8sq9OpXOAeMUqCB2kY2zBUbN55dyPXeaVRffob1Q1FiSJ6Hq73RHoTQYvRz+v3i48wLp3t
+ j9rLTTDmhj1rp+9OvAb7/Vvhi3GF+QFTgb2OYlwl8KwlH6kGKFe8bVeuPLTY6xRlJicS6Ib6I
+ xqyQ/rLMNyvl8awOHWWbRO9/YWPrhwkvsAGw1T3QZWz2/kVKgmKfCdFvZo2/3800f7KtkTyW8
+ xUX3CIb+yaGEnx3ue0HRKzJutwk8sCXdPB8PvYSvwdSj0pgCUhPFmlFgRjg4d8/UfLab3copD
+ AVKlX9lIe7RlCZ/o2lzLF7U7AabIDShZmnvwLSG1LE//WhPwmgCmCWOrvGSQJZqGtgG5Xhq6T
+ o4z8dhayhQEn9M=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 06:11:03PM +0200, David Sterba wrote:
-> On Fri, Apr 29, 2022 at 12:02:15AM +0900, Naohiro Aota wrote:
-> >  1 file changed, 54 insertions(+), 73 deletions(-)
-> >=20
-> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> > index 997a96d7a3d5..9cddafe78fb1 100644
-> > --- a/fs/btrfs/zoned.c
-> > +++ b/fs/btrfs/zoned.c
-> > @@ -1879,20 +1879,14 @@ bool btrfs_zone_activate(struct btrfs_block_gro=
-up *block_group)
-> >  	return ret;
-> >  }
-> > =20
-> > -int btrfs_zone_finish(struct btrfs_block_group *block_group)
-> > +static int __btrfs_zone_finish(struct btrfs_block_group *block_group, =
-bool nowait)
->=20
-> Can you please avoid using __ for functions? Eg. the main function can
-> be btrfs_zone_finish(taking 2 parameters) and the exported one being
-> btrfs_zone_finish_nowait reflecting the preset parameter and also making
-> the 'nowait' semantics clear.
 
-But, we exports both btrfs_zone_finish() (the waiting variant) and
-btrfs_zone_finish_endio() (the nowait variant + checking the left space
-after write). How about "do_zone_finish(block_group, bool nowait)" as a
-main function and "btrfs_zone_finish(block_group)" and
-"btrfs_zone_finish_endio(block_group)" ?
 
-> >  {
-> >  	struct btrfs_fs_info *fs_info =3D block_group->fs_info;
-> >  	struct map_lookup *map;
-> > -	struct btrfs_device *device;
-> > -	u64 physical;
-> > +	bool need_zone_finish;
-> >  	int ret =3D 0;
-> >  	int i;
-> > =20
-> > -	if (!btrfs_is_zoned(fs_info))
-> > -		return 0;
-> > -
-> > -	map =3D block_group->physical_map;
-> > -
-> >  	spin_lock(&block_group->lock);
-> >  	if (!block_group->zone_is_active) {
-> >  		spin_unlock(&block_group->lock);
-> > @@ -1906,36 +1900,42 @@ int btrfs_zone_finish(struct btrfs_block_group =
-*block_group)
-> >  		spin_unlock(&block_group->lock);
-> >  		return -EAGAIN;
-> >  	}
-> > -	spin_unlock(&block_group->lock);
-> > =20
-> > -	ret =3D btrfs_inc_block_group_ro(block_group, false);
-> > -	if (ret)
-> > -		return ret;
-> > +	if (!nowait) {
-> > +		spin_unlock(&block_group->lock);
-> > =20
-> > -	/* Ensure all writes in this block group finish */
-> > -	btrfs_wait_block_group_reservations(block_group);
-> > -	/* No need to wait for NOCOW writers. Zoned mode does not allow that.=
- */
-> > -	btrfs_wait_ordered_roots(fs_info, U64_MAX, block_group->start,
-> > -				 block_group->length);
-> > +		ret =3D btrfs_inc_block_group_ro(block_group, false);
-> > +		if (ret)
-> > +			return ret;
-> > =20
-> > -	spin_lock(&block_group->lock);
-> > +		/* Ensure all writes in this block group finish */
-> > +		btrfs_wait_block_group_reservations(block_group);
-> > +		/* No need to wait for NOCOW writers. Zoned mode does not allow that=
-. */
-> > +		btrfs_wait_ordered_roots(fs_info, U64_MAX, block_group->start,
-> > +					 block_group->length);
-> > =20
-> > -	/*
-> > -	 * Bail out if someone already deactivated the block group, or
-> > -	 * allocated space is left in the block group.
-> > -	 */
-> > -	if (!block_group->zone_is_active) {
-> > -		spin_unlock(&block_group->lock);
-> > -		btrfs_dec_block_group_ro(block_group);
-> > -		return 0;
-> > -	}
-> > +		spin_lock(&block_group->lock);
-> > =20
-> > -	if (block_group->reserved) {
-> > -		spin_unlock(&block_group->lock);
-> > -		btrfs_dec_block_group_ro(block_group);
-> > -		return -EAGAIN;
-> > +		/*
-> > +		 * Bail out if someone already deactivated the block group, or
-> > +		 * allocated space is left in the block group.
-> > +		 */
-> > +		if (!block_group->zone_is_active) {
-> > +			spin_unlock(&block_group->lock);
-> > +			btrfs_dec_block_group_ro(block_group);
-> > +			return 0;
-> > +		}
-> > +
-> > +		if (block_group->reserved) {
-> > +			spin_unlock(&block_group->lock);
-> > +			btrfs_dec_block_group_ro(block_group);
-> > +			return -EAGAIN;
-> > +		}
-> >  	}
-> > =20
-> > +	/* There is unwritten space left. Need to finish the underlying zones=
-. */
-> > +	need_zone_finish =3D (block_group->zone_capacity - block_group->alloc=
-_offset) > 0;
->=20
-> This could be simplified to 'bg->zone_capacity > bg->alloc_offset',
-> but maybe should be behind a helper as the expression appears more
-> times.
+On 2022/4/29 11:20, Dave T wrote:
+> btrfs check found errors in fs roots. What is the recommended course
+> of action? I don't care much about the data on the volume.
 
-Yep. True. I think extent-tree.c has some of this. Let me check.
+Nothing at all.
 
-> > +
-> >  	block_group->zone_is_active =3D 0;
-> >  	block_group->alloc_offset =3D block_group->zone_capacity;
-> >  	block_group->free_space_ctl->free_space =3D 0;
-> > @@ -1943,24 +1943,29 @@ int btrfs_zone_finish(struct btrfs_block_group =
-*block_group)
-> >  	btrfs_clear_data_reloc_bg(block_group);
-> >  	spin_unlock(&block_group->lock);
-> > =20
-> > +	map =3D block_group->physical_map;
-> >  	for (i =3D 0; i < map->num_stripes; i++) {
-> > -		device =3D map->stripes[i].dev;
-> > -		physical =3D map->stripes[i].physical;
-> > +		struct btrfs_device *device =3D map->stripes[i].dev;
-> > +		const u64 physical =3D map->stripes[i].physical;
-> > =20
-> >  		if (device->zone_info->max_active_zones =3D=3D 0)
-> >  			continue;
-> > =20
-> > -		ret =3D blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH,
-> > -				       physical >> SECTOR_SHIFT,
-> > -				       device->zone_info->zone_size >> SECTOR_SHIFT,
-> > -				       GFP_NOFS);
-> > +		if (need_zone_finish) {
-> > +			ret =3D blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH,
-> > +					       physical >> SECTOR_SHIFT,
-> > +					       device->zone_info->zone_size >> SECTOR_SHIFT,
-> > +					       GFP_NOFS);
-> > =20
-> > -		if (ret)
-> > -			return ret;
-> > +			if (ret)
-> > +				return ret;
-> > +		}
-> > =20
-> >  		btrfs_dev_clear_active_zone(device, physical);
-> >  	}
-> > -	btrfs_dec_block_group_ro(block_group);
-> > +
-> > +	if (!nowait)
-> > +		btrfs_dec_block_group_ro(block_group);
-> > =20
-> >  	spin_lock(&fs_info->zone_active_bgs_lock);
-> >  	ASSERT(!list_empty(&block_group->active_bg_list));=
+File extent discount is not a deal at all, kernel/progs/btrfs-fuse can
+all handle it well without problem.
+
+It's just the schema requires if a hole extent for each hole, for the
+old behavior.
+
+Nowadays, we have no-holes feature enabled for newer created fs, and
+kernel can handle this case very well.
+
+You can even able the feature on the fs by `btrfstune -n <device>`, and
+then btrfs check will never bother you on such file extent discount proble=
+m.
+
+Thanks,
+Qu
+>
+> # btrfs check --progress --check-data-csum /dev/mapper/xyz_luks
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/xyz_luks
+> UUID: <redacted>
+> [1/7] checking root items                      (0:00:23 elapsed,
+> 4710592 items checked)
+> [2/7] checking extents                         (0:01:03 elapsed,
+> 154607 items checked)
+> [3/7] checking free space cache                (0:00:00 elapsed, 127
+> items checked)
+> root 1430 inode 7492 errors 100, file extent discount17 elapsed,
+> 121521 items checked)
+> Found file extent holes:
+>          start: 0, len: 937984
+> root 1430 inode 7493 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 5390336
+> root 1430 inode 7494 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 4096
+> root 1430 inode 7495 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 1392640
+> root 1430 inode 7496 errors 100, file extent discount
+>
+> <removed about 600 more lines like these>
+>
+> root 1430 inode 7699 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 770048
+> root 1430 inode 7700 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 1802240
+> root 1430 inode 7701 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 1007616
+> root 1430 inode 7702 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 221184
+> root 1430 inode 7703 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 380928
+> root 1430 inode 7704 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 573440
+> root 1430 inode 7705 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 212992
+> root 1430 inode 7706 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 802816
+> root 1430 inode 7707 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 65536
+> root 1430 inode 7708 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 483328
+> root 1430 inode 7709 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 172032
+> root 1430 inode 7710 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 241664
+> root 1430 inode 7711 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 12288
+> root 1430 inode 7712 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 86016
+> root 1430 inode 7713 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 1171456
+> root 1430 inode 7714 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 90112
+> root 1430 inode 7715 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 29728768
+> root 1430 inode 7716 errors 100, file extent discount
+> Found file extent holes:
+>          start: 0, len: 741376
+> [4/7] checking fs roots                        (0:00:17 elapsed,
+> 122659 items checked)
+> ERROR: errors found in fs roots
+> found 129201229839 bytes used, error(s) found
+> total csum bytes: 123927020
+> total tree bytes: 2527707136
+> total fs tree bytes: 2024407040
+> total extent tree bytes: 369098752
+> btree space waste bytes: 379740661
+> file data blocks allocated: 1630234861568
+>   referenced 1662138822656
