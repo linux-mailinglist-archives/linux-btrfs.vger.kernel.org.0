@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BB25153B8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 20:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1F65153BC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 20:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380018AbiD2SfA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Apr 2022 14:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
+        id S1379714AbiD2SfE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 14:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379450AbiD2Se6 (ORCPT
+        with ESMTP id S1380020AbiD2SfC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Apr 2022 14:34:58 -0400
+        Fri, 29 Apr 2022 14:35:02 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B1665D0F
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 11:31:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F063692B3
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 11:31:42 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E9A541F892;
-        Fri, 29 Apr 2022 18:31:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 146FD1F892;
+        Fri, 29 Apr 2022 18:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651257098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1651257101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qk8HPa41xsjvG/EHptKr5AXF5kJukrAI/Gvbnfohb5Y=;
-        b=qvdfRnu7TWNFHE6HvZBS9zUmQcrpzkneKOiUhAwLB0Io4DVttuU21LhCOYj9Vt/nrmRTKg
-        WFeAkQigZDs9inPEpk6bRuBI00K64DU2KcEaEeMsII6Rr0yiibFxrlKzlEyvi/wVvcd8Bn
-        o7iitw8N6HIjoZBgRtMVi8tcLMO45k4=
+        bh=GLQl1xx1rJL3qSYX87IVA/+KIvA+pstfAJ5DTQJS4aE=;
+        b=MaMeiqTFzI0rdl/PzsPzyVpgVB2X+l98SGdtNSwzCSVlSmuTgqX+sUQwdwTW6Iws7W/Pw+
+        i1/zG4QciKkpTlHgFzU/mOybBAaYzE/6n9X+HDFSgnEF0pBoYNXSf0ob0gPfC33BovG1hN
+        rrC7ypkPNGoN09gO2ZSh8UVgb0IIvcM=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E06552C141;
-        Fri, 29 Apr 2022 18:31:38 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 0CBB52C141;
+        Fri, 29 Apr 2022 18:31:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 50284DA7DE; Fri, 29 Apr 2022 20:27:31 +0200 (CEST)
+        id 72970DA7DE; Fri, 29 Apr 2022 20:27:33 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/9] btrfs: remove btrfs_delayed_extent_op::is_data
-Date:   Fri, 29 Apr 2022 20:27:31 +0200
-Message-Id: <a6dec14ab56c4a831664d4864d63782679c0e5bf.1651255990.git.dsterba@suse.com>
+Subject: [PATCH 3/9] btrfs: remove unused parameter bio_flags from btrfs_wq_submit_bio
+Date:   Fri, 29 Apr 2022 20:27:33 +0200
+Message-Id: <6455730749fdad4022bb7138bd9108692a3697cb.1651255990.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1651255990.git.dsterba@suse.com>
 References: <cover.1651255990.git.dsterba@suse.com>
@@ -53,86 +53,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The value of btrfs_delayed_extent_op::is_data is always false, we can
-cascade the change and simplify code that depends on it, removing the
-structure member eventually.
-
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/delayed-ref.c | 4 +---
- fs/btrfs/delayed-ref.h | 1 -
- fs/btrfs/extent-tree.c | 6 ++----
- 3 files changed, 3 insertions(+), 8 deletions(-)
+ fs/btrfs/disk-io.c | 5 ++---
+ fs/btrfs/disk-io.h | 3 +--
+ fs/btrfs/inode.c   | 4 ++--
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 4176df149d04..99f37fca2e96 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -930,7 +930,6 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
- 	is_system = (generic_ref->tree_ref.owning_root == BTRFS_CHUNK_TREE_OBJECTID);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 73e12ecc81be..b9e03da5f2cb 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -849,8 +849,7 @@ static void run_one_async_free(struct btrfs_work *work)
+ }
  
- 	ASSERT(generic_ref->type == BTRFS_REF_METADATA && generic_ref->action);
--	BUG_ON(extent_op && extent_op->is_data);
- 	ref = kmem_cache_alloc(btrfs_delayed_tree_ref_cachep, GFP_NOFS);
- 	if (!ref)
- 		return -ENOMEM;
-@@ -1103,8 +1102,7 @@ int btrfs_add_delayed_extent_op(struct btrfs_trans_handle *trans,
- 		return -ENOMEM;
+ blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
+-				 int mirror_num, unsigned long bio_flags,
+-				 u64 dio_file_offset,
++				 int mirror_num, u64 dio_file_offset,
+ 				 extent_submit_bio_start_t *submit_bio_start)
+ {
+ 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
+@@ -943,7 +942,7 @@ void btrfs_submit_metadata_bio(struct inode *inode, struct bio *bio, int mirror_
+ 		 * checksumming can happen in parallel across all CPUs
+ 		 */
+ 		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, 0,
+-					  0, btree_submit_bio_start);
++					  btree_submit_bio_start);
+ 	}
  
- 	init_delayed_ref_head(head_ref, NULL, bytenr, num_bytes, 0, 0,
--			      BTRFS_UPDATE_DELAYED_HEAD, extent_op->is_data,
--			      false);
-+			      BTRFS_UPDATE_DELAYED_HEAD, false, false);
- 	head_ref->extent_op = extent_op;
+ 	if (ret) {
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 9340e3266e0a..4ee8c42c9f78 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -124,8 +124,7 @@ int btrfs_read_extent_buffer(struct extent_buffer *buf, u64 parent_transid,
+ blk_status_t btrfs_bio_wq_end_io(struct btrfs_fs_info *info, struct bio *bio,
+ 			enum btrfs_wq_endio_type metadata);
+ blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
+-				 int mirror_num, unsigned long bio_flags,
+-				 u64 dio_file_offset,
++				 int mirror_num, u64 dio_file_offset,
+ 				 extent_submit_bio_start_t *submit_bio_start);
+ blk_status_t btrfs_submit_bio_done(void *private_data, struct bio *bio,
+ 			  int mirror_num);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 5b7df1c0ee5e..ac37e5088fc8 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2624,7 +2624,7 @@ void btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+ 		if (btrfs_is_data_reloc_root(root))
+ 			goto mapit;
+ 		/* we're doing a write, do the async checksumming */
+-		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, bio_flags,
++		ret = btrfs_wq_submit_bio(inode, bio, mirror_num,
+ 					  0, btrfs_submit_bio_start);
+ 		goto out;
+ 	} else if (!skip_sum) {
+@@ -7913,7 +7913,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
+ 		goto map;
  
- 	delayed_refs = &trans->transaction->delayed_refs;
-diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-index 91a3aabad150..d6304b690ec4 100644
---- a/fs/btrfs/delayed-ref.h
-+++ b/fs/btrfs/delayed-ref.h
-@@ -58,7 +58,6 @@ struct btrfs_delayed_extent_op {
- 	u8 level;
- 	bool update_key;
- 	bool update_flags;
--	bool is_data;
- 	u64 flags_to_set;
- };
- 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 446a95053a7a..7cea22039608 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1577,12 +1577,12 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
- 	u32 item_size;
- 	int ret;
- 	int err = 0;
--	int metadata = !extent_op->is_data;
-+	int metadata = 1;
- 
- 	if (TRANS_ABORTED(trans))
- 		return 0;
- 
--	if (metadata && !btrfs_fs_incompat(fs_info, SKINNY_METADATA))
-+	if (!btrfs_fs_incompat(fs_info, SKINNY_METADATA))
- 		metadata = 0;
- 
- 	path = btrfs_alloc_path();
-@@ -2192,7 +2192,6 @@ int btrfs_set_disk_extent_flags(struct btrfs_trans_handle *trans,
- 	extent_op->flags_to_set = flags;
- 	extent_op->update_flags = true;
- 	extent_op->update_key = false;
--	extent_op->is_data = false;
- 	extent_op->level = level;
- 
- 	ret = btrfs_add_delayed_extent_op(trans, eb->start, eb->len, extent_op);
-@@ -4951,7 +4950,6 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 		extent_op->flags_to_set = flags;
- 		extent_op->update_key = skinny_metadata ? false : true;
- 		extent_op->update_flags = true;
--		extent_op->is_data = false;
- 		extent_op->level = level;
- 
- 		btrfs_init_generic_ref(&generic_ref, BTRFS_ADD_DELAYED_EXTENT,
+ 	if (write && async_submit) {
+-		ret = btrfs_wq_submit_bio(inode, bio, 0, 0, file_offset,
++		ret = btrfs_wq_submit_bio(inode, bio, 0, file_offset,
+ 					  btrfs_submit_bio_start_direct_io);
+ 		goto err;
+ 	} else if (write) {
 -- 
 2.34.1
 
