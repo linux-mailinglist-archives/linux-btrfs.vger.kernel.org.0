@@ -2,85 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC1E514E07
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 16:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE03514EBC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 17:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377811AbiD2Oti (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Apr 2022 10:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
+        id S1377647AbiD2PMt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 11:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377894AbiD2OtT (ORCPT
+        with ESMTP id S1354942AbiD2PMr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Apr 2022 10:49:19 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308BD8232B
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 07:46:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7896921877;
-        Fri, 29 Apr 2022 14:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651243559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jYSeQqDcOggoJGSGhEvg+/JuCnB8qk1uELRmzMX1IMk=;
-        b=bPA0IaxIoCuFjUa6doazfuYKK9GV+81QZ84cGxu9b2muQyce6KUmLJ/l715wRbAeD/5hlF
-        UQgwLLcJK6y3fNn9Yj7bouuINjhjOPXlxZYG0b2ZduPso3/WC4wEL+gEFa+u7vzMaAhoz1
-        nFKh65QlnfznZrlsOvhgRcwvDSPo0Qo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4ACB613AE0;
-        Fri, 29 Apr 2022 14:45:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id J8mbDyf6a2KnHQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 29 Apr 2022 14:45:59 +0000
-Message-ID: <be21d358-754a-3db4-df45-561258f47af4@suse.com>
-Date:   Fri, 29 Apr 2022 17:45:58 +0300
+        Fri, 29 Apr 2022 11:12:47 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA683D3DBB
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 08:09:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QcozVtJhLKEclF6rZeCRQPZlemJNZAbzTsoqZiHGFxg=; b=SMyA9fhLfL1g2eY1JPIrZ79Gut
+        6Gvy5nzzjpjqX3qubFwGc5hXC9E/IQ0IKJ/qnKQVPukSkRFphF5vjkaitc2wBk0GXDufT3EIULY/k
+        Jqqmlqy/K646fdT+iVjeUBkx1Y00smWKDiH31Svfi81MKlUiRfaI4lEv9H08JESWyFLXuZdM2QjJC
+        StQ8laiWYxPeq0S7DdzMqKlaEJHEl5CXds670oyWRieSw9QlyEhV2upDyehukfjhbr5+RJ5igbp+N
+        VDH1bjDpEJzvMVkkb1FlPId78LvjH2mMHAs2BKZWAX69ZeYOQUaPr9Ylm1QQW3S1yv7upYO91al/r
+        N6w1eJ2Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nkSFK-00Bibl-MV; Fri, 29 Apr 2022 15:09:26 +0000
+Date:   Fri, 29 Apr 2022 08:09:26 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC v2 02/12] btrfs: always save bio::bi_iter into
+ btrfs_bio::iter before submitting
+Message-ID: <Ymv/pv3Z9x1TGMGv@infradead.org>
+References: <cover.1651043617.git.wqu@suse.com>
+ <b11499d578ab90258d83ec9be6d46df78c1056bf.1651043617.git.wqu@suse.com>
+ <YmqXZ1Oa8UX3n2ZP@infradead.org>
+ <82eb8269-bf14-1396-7452-a8671ed24511@gmx.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] btrfs: Remove unnecessary inode_need_compress() check
-Content-Language: en-US
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
-Cc:     Dave Sterba <DSterba@suse.com>
-References: <20220428200735.j3yxdpi6fgdptsph@fiona>
- <20220429144147.xhfiqj27whufoyvt@fiona>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220429144147.xhfiqj27whufoyvt@fiona>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <82eb8269-bf14-1396-7452-a8671ed24511@gmx.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Apr 29, 2022 at 06:41:15AM +0800, Qu Wenruo wrote:
+> The problem here is, if any endio function needs to grab the original
+> bio, and btrfs submit bio hooks failed before btrfs_map_bio(), like some
+> failure from btrfs_bio_wq_end_io(), then we will call bio_endio(), and
+> the endio just got an empty iter.
 
-
-On 29.04.22 г. 17:41 ч., Goldwyn Rodrigues wrote:
-> Apparently, BTRFS_INODE_NOCOMPRESS can change runtime, so this patch is
-> incorrect. Sorry.
-> 
-
-Yes, when doing writes on compressed-enabled filesystem if a particular 
-file gets bad compression ratio that flag is getting set from 
-compress_file_range:
-
-
-   /* flag the file so we don't compress in the future */
-      32                 if (!btrfs_test_opt(fs_info, FORCE_COMPRESS) && 
-
-      31                     !(BTRFS_I(inode)->prop_compress)) { 
-
-      30                         BTRFS_I(inode)->flags |= 
-BTRFS_INODE_NOCOMPRESS;
-      29                 }
+True.  But the only places that uses it is direct I/O read repair (and
+with this seris buffered I/O read repair), and those should not run
+when we fail to even submit the bio.  We currently do, but maybe we
+need to fix that first?  In fact with my pending bio cleanup series
+we should be more or less there.
