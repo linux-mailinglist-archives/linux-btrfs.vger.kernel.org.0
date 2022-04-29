@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD09514D02
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 16:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEB8514D03
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Apr 2022 16:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354982AbiD2OeU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Apr 2022 10:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S1377442AbiD2OeW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 10:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377442AbiD2OeO (ORCPT
+        with ESMTP id S1377450AbiD2OeO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 29 Apr 2022 10:34:14 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314B650E08
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE2B7E589
         for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 07:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=zav3B6n2gyvExUB/Ec4RVOdr4gqrepqijXxpi5heWH4=; b=N34a4DHEYdZwfQgUFvlTh9QWmZ
-        EjTpljX5FDhdq4tttEwSlZXuyZoXA0EHXeFBYvqO4fLlL7YRrXe2XsUyWN/HVl2Lg5d3kBdU0iuHQ
-        lmjEtIr1O1zrseSj4ebwuZzTCKDw2PNNZlcoNrTXKUNuE4bBEsEMKXeh2LgwQ3kIIAvTmx5P9u583
-        7I5QCujB0bp3J/HPJHTmRG+Whwth3Hlb+L+0Vx9qvRhFLkZDoqYM0QtdA2EQq/uVkhgMZlHn6lSNZ
-        qMcpp0533UAywGUzFumycdVJz68uf0eXtcE5WuPCbYIxpRbeloslrlnBcBtGIOddyiJktHGB+RLSh
-        ZTH1A0sw==;
+        bh=9p9wV8+e6z21AZazcyp7c90XzYi5GUI7OfChZxgYHks=; b=Q3K8xJ95ZL+IzgDHXQ2CQV1547
+        rhIxZVnH84wEM49Bh5BRFhA2ZaNWMVqLQQIOHp3uuQT/RoMxie6RXfVVRgx3sZDCqyDLaC+4YdAWu
+        zSAMKjUYhIcFmhOw8vJvgbczvojk6b7FGzhMUnZYVmOZdebeDTbMBrbUsDNa4pzad4tSdvPZOgCRe
+        1vpww5XSf9BaHEiVoCvndiQ+H9Kfop2TNIpQEDJexaN10HyamGrCLUvw5xNHTJFpQEf/WKcOW+nbq
+        MWTaopzZDth1sf3ocEJ0BBmR5KDdbVfEDoQMP96YksuKE3pHVbvY31L+h1Kx6/HQKP7tjakqzpgxq
+        TtvvazEQ==;
 Received: from [2607:fb90:27d7:71af:6ca1:91e8:bf19:edd2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nkRdx-00Bakt-S4; Fri, 29 Apr 2022 14:30:49 +0000
+        id 1nkRdy-00Bal4-L1; Fri, 29 Apr 2022 14:30:50 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     David Sterba <dsterba@suse.com>,
         Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/10] btrfs: refactor btrfs_map_bio
-Date:   Fri, 29 Apr 2022 07:30:39 -0700
-Message-Id: <20220429143040.106889-10-hch@lst.de>
+Subject: [PATCH 10/10] btrfs: do not allocate a btrfs_bio for low-level bios
+Date:   Fri, 29 Apr 2022 07:30:40 -0700
+Message-Id: <20220429143040.106889-11-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220429143040.106889-1-hch@lst.de>
 References: <20220429143040.106889-1-hch@lst.de>
@@ -51,137 +51,129 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Move all per-stripe handling into submit_stripe_bio and use a label to
-cleanup instead of duplicating the logic.
+The bios submitted from btrfs_map_bio don't really interact with the
+rest of btrfs and the only btrfs_bio member actually used in the
+low-level bios is the pointer to the btrfs_io_contex used for endio
+handler.
+
+Use a union in struct btrfs_io_stripe that allows the endio handler to
+find the btrfs_io_context and remove the spurious ->device assignment
+so that a plain fs_bio_set bio can be used for the low-level bios
+allocated inside btrfs_map_bio.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/volumes.c | 77 +++++++++++++++++++++-------------------------
- 1 file changed, 35 insertions(+), 42 deletions(-)
+ fs/btrfs/extent_io.c | 13 -------------
+ fs/btrfs/extent_io.h |  1 -
+ fs/btrfs/volumes.c   | 20 ++++++++++----------
+ fs/btrfs/volumes.h   |  5 ++++-
+ 4 files changed, 14 insertions(+), 25 deletions(-)
 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index a14ed9b9dc2d0..37f4eee418219 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3209,19 +3209,6 @@ struct bio *btrfs_bio_alloc(unsigned int nr_iovecs)
+ 	return bio;
+ }
+ 
+-struct bio *btrfs_bio_clone(struct block_device *bdev, struct bio *bio)
+-{
+-	struct btrfs_bio *bbio;
+-	struct bio *new;
+-
+-	/* Bio allocation backed by a bioset does not fail */
+-	new = bio_alloc_clone(bdev, bio, GFP_NOFS, &btrfs_bioset);
+-	bbio = btrfs_bio(new);
+-	btrfs_bio_init(bbio);
+-	bbio->iter = bio->bi_iter;
+-	return new;
+-}
+-
+ struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size)
+ {
+ 	struct bio *bio;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index b390ec79f9a86..3078e90be3a99 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -265,7 +265,6 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+ 
+ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array);
+ struct bio *btrfs_bio_alloc(unsigned int nr_iovecs);
+-struct bio *btrfs_bio_clone(struct block_device *bdev, struct bio *bio);
+ struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size);
+ 
+ void end_extent_writepage(struct page *page, int err, u64 start, u64 end);
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 5f18e9105fe08..28ac2bfb5d296 100644
+index 28ac2bfb5d296..8577893ccb4b9 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -6695,10 +6695,30 @@ static void btrfs_end_bio(struct bio *bio)
- 		btrfs_end_bioc(bioc, true);
- }
+@@ -6666,23 +6666,21 @@ static void btrfs_end_bioc(struct btrfs_io_context *bioc, bool async)
  
--static void submit_stripe_bio(struct btrfs_io_context *bioc, struct bio *bio,
--			      u64 physical, struct btrfs_device *dev)
-+static void submit_stripe_bio(struct btrfs_io_context *bioc,
-+		struct bio *orig_bio, int dev_nr, bool clone)
+ static void btrfs_end_bio(struct bio *bio)
  {
- 	struct btrfs_fs_info *fs_info = bioc->fs_info;
-+	struct btrfs_device *dev = bioc->stripes[dev_nr].dev;
-+	u64 physical = bioc->stripes[dev_nr].physical;
-+	struct bio *bio;
-+
-+	if (!dev || !dev->bdev ||
-+	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
-+	    (btrfs_op(orig_bio) == BTRFS_MAP_WRITE &&
-+	     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
-+		atomic_inc(&bioc->error);
-+		if (atomic_dec_and_test(&bioc->stripes_pending))
-+			btrfs_end_bioc(bioc, false);
-+		return;
-+	}
-+
-+	if (clone) {
-+		bio = btrfs_bio_clone(dev->bdev, orig_bio);
-+	} else {
-+		bio = orig_bio;
-+		bio_set_dev(bio, dev->bdev);
-+	}
+-	struct btrfs_io_context *bioc = bio->bi_private;
++	struct btrfs_io_stripe *stripe = bio->bi_private;
++	struct btrfs_io_context *bioc = stripe->bioc;
  
- 	bio->bi_private = bioc;
- 	btrfs_bio(bio)->device = dev;
-@@ -6733,32 +6753,25 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc, struct bio *bio,
- blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 			   int mirror_num)
- {
--	struct btrfs_device *dev;
--	struct bio *first_bio = bio;
- 	u64 logical = bio->bi_iter.bi_sector << 9;
--	u64 length = 0;
--	u64 map_length;
-+	u64 length = bio->bi_iter.bi_size;
-+	u64 map_length = length;
- 	int ret;
- 	int dev_nr;
- 	int total_devs;
- 	struct btrfs_io_context *bioc = NULL;
- 
--	length = bio->bi_iter.bi_size;
--	map_length = length;
+ 	if (bio->bi_status) {
+ 		atomic_inc(&bioc->error);
+ 		if (bio->bi_status == BLK_STS_IOERR ||
+ 		    bio->bi_status == BLK_STS_TARGET) {
+-			struct btrfs_device *dev = btrfs_bio(bio)->device;
 -
- 	btrfs_bio_counter_inc_blocked(fs_info);
- 	ret = __btrfs_map_block(fs_info, btrfs_op(bio), logical,
- 				&map_length, &bioc, mirror_num, 1);
--	if (ret) {
--		btrfs_bio_counter_dec(fs_info);
--		return errno_to_blk_status(ret);
--	}
-+	if (ret)
-+		goto out_dec;
- 
- 	total_devs = bioc->num_stripes;
--	bioc->orig_bio = first_bio;
--	bioc->private = first_bio->bi_private;
--	bioc->end_io = first_bio->bi_end_io;
--	atomic_set(&bioc->stripes_pending, bioc->num_stripes);
-+	bioc->orig_bio = bio;
-+	bioc->private = bio->bi_private;
-+	bioc->end_io = bio->bi_end_io;
-+	atomic_set(&bioc->stripes_pending, total_devs);
- 
- 	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
- 	    ((btrfs_op(bio) == BTRFS_MAP_WRITE) || (mirror_num > 1))) {
-@@ -6770,9 +6783,7 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 			ret = raid56_parity_recover(bio, bioc, map_length,
- 						    mirror_num, 1);
+-			ASSERT(dev->bdev);
+ 			if (btrfs_op(bio) == BTRFS_MAP_WRITE)
+-				btrfs_dev_stat_inc_and_print(dev,
++				btrfs_dev_stat_inc_and_print(stripe->dev,
+ 						BTRFS_DEV_STAT_WRITE_ERRS);
+ 			else if (!(bio->bi_opf & REQ_RAHEAD))
+-				btrfs_dev_stat_inc_and_print(dev,
++				btrfs_dev_stat_inc_and_print(stripe->dev,
+ 						BTRFS_DEV_STAT_READ_ERRS);
+ 			if (bio->bi_opf & REQ_PREFLUSH)
+-				btrfs_dev_stat_inc_and_print(dev,
++				btrfs_dev_stat_inc_and_print(stripe->dev,
+ 						BTRFS_DEV_STAT_FLUSH_ERRS);
  		}
--
--		btrfs_bio_counter_dec(fs_info);
--		return errno_to_blk_status(ret);
-+		goto out_dec;
+ 	}
+@@ -6714,14 +6712,16 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc,
  	}
  
- 	if (map_length < length) {
-@@ -6782,29 +6793,11 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 		BUG();
+ 	if (clone) {
+-		bio = btrfs_bio_clone(dev->bdev, orig_bio);
++		bio = bio_alloc_clone(dev->bdev, orig_bio, GFP_NOFS,
++				      &fs_bio_set);
+ 	} else {
+ 		bio = orig_bio;
+ 		bio_set_dev(bio, dev->bdev);
++		btrfs_bio(bio)->device = dev;
  	}
  
--	for (dev_nr = 0; dev_nr < total_devs; dev_nr++) {
--		dev = bioc->stripes[dev_nr].dev;
--		if (!dev || !dev->bdev || test_bit(BTRFS_DEV_STATE_MISSING,
--						   &dev->dev_state) ||
--		    (btrfs_op(first_bio) == BTRFS_MAP_WRITE &&
--		    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
--			atomic_inc(&bioc->error);
--			if (atomic_dec_and_test(&bioc->stripes_pending))
--				btrfs_end_bioc(bioc, false);
--			continue;
--		}
--
--		if (dev_nr < total_devs - 1) {
--			bio = btrfs_bio_clone(dev->bdev, first_bio);
--		} else {
--			bio = first_bio;
--			bio_set_dev(bio, dev->bdev);
--		}
--
--		submit_stripe_bio(bioc, bio, bioc->stripes[dev_nr].physical, dev);
--	}
-+	for (dev_nr = 0; dev_nr < total_devs; dev_nr++)
-+		submit_stripe_bio(bioc, bio, dev_nr, dev_nr < total_devs - 1);
-+out_dec:
- 	btrfs_bio_counter_dec(fs_info);
--	return BLK_STS_OK;
-+	return errno_to_blk_status(ret);
- }
+-	bio->bi_private = bioc;
+-	btrfs_bio(bio)->device = dev;
++	bioc->stripes[dev_nr].bioc = bioc;
++	bio->bi_private = &bioc->stripes[dev_nr];
+ 	bio->bi_end_io = btrfs_end_bio;
+ 	bio->bi_iter.bi_sector = physical >> 9;
+ 	/*
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 28e28b7c48649..825e44c82f2b0 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -396,7 +396,10 @@ static inline void btrfs_bio_free_csum(struct btrfs_bio *bbio)
  
- static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
+ struct btrfs_io_stripe {
+ 	struct btrfs_device *dev;
+-	u64 physical;
++	union {
++		u64 physical;			/* block mapping */
++		struct btrfs_io_context *bioc;	/* for the endio handler */
++	};
+ 	u64 length; /* only used for discard mappings */
+ };
+ 
 -- 
 2.30.2
 
