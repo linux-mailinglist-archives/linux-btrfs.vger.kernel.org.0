@@ -2,73 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A07135158CF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Apr 2022 01:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798505159CA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Apr 2022 04:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377112AbiD2XLm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Apr 2022 19:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
+        id S1377085AbiD3C12 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Apr 2022 22:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbiD2XLk (ORCPT
+        with ESMTP id S240220AbiD3C11 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Apr 2022 19:11:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AA084A16
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 16:08:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1651273695;
-        bh=hW6gSLphHkSXgAsTRh8lQBW14weSzr+wBSKZ1QeT6MI=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=chd5LAHZNJzXJuOXkZoFHKnYPEHMaXUi5Sszwlxyj117v+NmiztmRZnmiLQRN1urW
-         ND5RkQaItUMiMOkaXEicL3uKxby4JM138jZUwVrkWRPdJlQUfgca8otZ4wA6hPrj+e
-         HC7B+hFeAZ+KaKdv2Lx0qHoTt2eSFV2mFe+vmwIk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8QWA-1nozZ00UyG-004WTy; Sat, 30
- Apr 2022 01:08:15 +0200
-Message-ID: <27992c93-3676-fd8c-098e-5900214d6d02@gmx.com>
-Date:   Sat, 30 Apr 2022 07:08:09 +0800
+        Fri, 29 Apr 2022 22:27:27 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAD6D17F7
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Apr 2022 19:24:07 -0700 (PDT)
+Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:58316 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1nkcmE-0006zn-Ur by authid <merlins.org> with srv_auth_plain; Fri, 29 Apr 2022 19:24:06 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1nkcmE-00BfGx-JO; Fri, 29 Apr 2022 19:24:06 -0700
+Date:   Fri, 29 Apr 2022 19:24:06 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220430022406.GH12542@merlins.org>
+References: <20220429013409.GD12542@merlins.org>
+ <CAEzrpqfF7xfLxSBpJGfu2uP5iUzBhirg=wRfs108rLyuiUSW1Q@mail.gmail.com>
+ <20220429040335.GE12542@merlins.org>
+ <CAEzrpqewAfxi9hK+vwK+Df3iziXBZZEmXhzgJdJDqTj-JXvFQw@mail.gmail.com>
+ <20220429151653.GF12542@merlins.org>
+ <CAEzrpqfjzzQ4KcHPJmwnaGLNO8-gYp_bcO8HtpGdPC7SctacrA@mail.gmail.com>
+ <20220429171619.GG12542@merlins.org>
+ <CAEzrpqdTzbpUZR-+UV1_fx9p_pq188cQbGOqraHP=2Vpdi89Mw@mail.gmail.com>
+ <20220429185839.GZ29107@merlins.org>
+ <CAEzrpqdpTXvDCmo-7H6QU1BKXM+fcG6ZdfHzQj0+=+7kcgkuOw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH RFC v2 05/12] btrfs: add a helper to queue a corrupted
- sector for read repair
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1651043617.git.wqu@suse.com>
- <a136fe858afe9efd29c8caa98d82cb7439d89677.1651043617.git.wqu@suse.com>
- <2fd10883-5a4d-5cbd-d09f-7a30bb326a4a@suse.com>
- <YmqaOynJjWS2XB76@infradead.org>
- <4ac0c01f-73f6-e830-f3bc-6281bd79b7d2@gmx.com>
- <YmwAzU+UORfX92Te@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <YmwAzU+UORfX92Te@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Pubcrf4gTdW7X4DQp+JkuH0xSTgrSr7IBsao5tydN6wJDYWzMec
- CYpOmxOucXvumSqMddCU/LxzLO+9GIMbRvEx0QRWUMP7h6ZKoRudtJLsWE/I/lhKIp6Xo4B
- oWmMVhCXY/YFk8bxWozFmARDApacI1ZA/bJ3+uiD9pQb6222X5fvfDaTrUbApv2xGIayRCj
- SFxssW/enBhW5tS1kA1EA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NYsB8iNiMxE=:8v6wFiLjI0S6kq/pX0YEs3
- 3Y78rkAzK5vieExPPHpZ4cDvdU0fyT6NZTZ+59wG85P95w9H0ZJVRMp6Q0jat/ipUQ6nuWMRp
- acEf0e0wJs0lDprOfET0e2Tc3BA9EHIzkUC7e/j19WlYgzXqwmFWkQo4+xU5talhpoNiMBjBr
- 06DYRcFSig/Hf2OCK8vC6qhcnDujWjDxolQkTgE+GTE4huKo+MyRIv1WfGmn0aKo26/6rBRQk
- oHzRmgAfDo2TqGYTmQwFATEZbw8bdZxoe21QRljgn/jf/o3TbWYi7pItRiIKuU0UQQDjME8W8
- GDbOYTrV8HhIGq2yB56ZgMzXu1Z+Qln6LfBlBqFXsUCW7NfB0pj6waSM8GX0ECI0gulIqIpIz
- MpR6kBmbfElMAme5ah5B0PgeHjWWKuHzjBwx5YbnBLn5AWZlTiFHvING5CTqdpBeiD5exCoiT
- S3C8yfampiU78ONCLOktMfvCHVbfVLDR4EH/vOMDkL3LIUoaTmT+EPVaU3cSP3dpDjQ3G8fB6
- f7wU32SBg328zMiKG+zpAAUJOiPN9/y0LyB3HVAtl3DXqh1l4pJJxhBD8o51GrDasUDY1YJhs
- UErbNGqqvrQwGNYqZJCO+tOOjrv+WgrmCacOihsNcP+2ZQWMGRv+Z2rbvkcGON9WEljRB4q2u
- TGB4/5jWrDOdJjfJOqWxdOahj7K7AO30Y1IxIYJwlNAoxp4k8a1EJlNbQxfoROEvst51iXkMZ
- 8iYj2ccPscof+rkJcbJLTAhcORL/RfvSouWf72iZHwxJTNEKqrdoWqv7hXuZD1ZJhnjw2Gu45
- FSw74J9zVqtAKQEcyM+gKiuqj28X5gHr4NvBKH5Mw7g0i66QA0U21ChXShbJPAfRh56KWULNc
- I1nSt/DSM8WSbUVsO2RfGZu53/O3Tkf8/KHMp2m+nsSE7pjXS5idRwEbiKw9SURvDK0MszqA+
- D77qxlG1fowlMio+L+2Ztdl1bTkdUTSbmJEV15XnPfWPhIAU428y6/vhBUF3RcbXJiNY4u+I6
- T7nI58BIUpK9i1I1ablD/rR4tS7pEAbUVpHNsagratKPA+xKwCjNdHFO+S/ZFYPYiI27t0XPN
- Ow77QoK8KpkssQ=
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqdpTXvDCmo-7H6QU1BKXM+fcG6ZdfHzQj0+=+7kcgkuOw@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 24.5.124.255
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,34 +55,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Apr 29, 2022 at 03:40:53PM -0400, Josef Bacik wrote:
+> 
+> I'm afraid it'll be longer/less safe for me to work out the kinks than
+> to continue manually removing stuff.  If you have to do it say 10 more
+> times let me know and I can try and rig up something that can dump
+> root ids that you can just feed into btrfs-corrupt-block to clear
+> everything out at once.  Thanks,
+
+Took a while:
+./btrfs-corrupt-block -d "76300,108,0" -r 163302 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 163303 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 163316 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 163920 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 164624 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 165098 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 165198 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 165298 /dev/mapper/dshelf1
+./btrfs-corrupt-block -d "76300,108,0" -r 16384 /dev/mapper/dshelf1
 
 
-On 2022/4/29 23:14, Christoph Hellwig wrote:
-> On Fri, Apr 29, 2022 at 06:55:59AM +0800, Qu Wenruo wrote:
->> Another consideration is, would it really dead lock?
->>
->> We're only called for read path, not writeback path.
->> IIRC it's easier to hit dead lock at writeback path, as writeback can b=
-e
->> triggered by memory pressure.
->>
->> But would the same problem happen just for read path?
->
-> System with sever memory pressure needs to page something in to get
-> something out.  The readpage uses the last available bio in the btrfs
-> bioset, but that read now needs a read repair, which needs to allocate
-> another bio from the bio_set -> deadlock.
 
-Thanks for the reason behind that.
+Now I'm stuck here:
 
-Then I'm wondering why the original code is not causing problems (or at
-least not so obviously), even the old code is allocating more bios.
+processed 16384 of 75792384 possible bytes
+Recording extents for root 18446744073709551607
+processed 16384 of 16384 possible bytes
+ERROR: commit_root already set when starting transaction
+extent buffer leak: start 13576823734272 len 16384
+Init extent tree failed
+[Inferior 1 (process 31377) exited with code 0377]
 
-Could it be the fact that, old code always submit the bio after
-allocation immediately?
+./btrfs-corrupt-block -d "76300,108,0" -r 18446744073709551607 /dev/mapper/dshelf1
 
-If so, I can get rid of the bio list and just hold the last bio for bio
-merging, and submit the current one if we got a unmergable sector.
+Recording extents for root 165299
+processed 16384 of 75792384 possible bytes
+Recording extents for root 18446744073709551607
+processed 16384 of 16384 possible bytes
+ERROR: commit_root already set when starting transaction
+extent buffer leak: start 13576823734272 len 16384
+Init extent tree failed
 
-Thanks,
-Qu
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
