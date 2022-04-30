@@ -2,86 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D86515F50
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Apr 2022 18:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1C0516044
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Apr 2022 22:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383165AbiD3QoV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Apr 2022 12:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
+        id S244889AbiD3UM0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Apr 2022 16:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383167AbiD3QoU (ORCPT
+        with ESMTP id S240648AbiD3UMZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Apr 2022 12:44:20 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4253192AB
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Apr 2022 09:40:57 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id l15so381318ilh.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Apr 2022 09:40:57 -0700 (PDT)
+        Sat, 30 Apr 2022 16:12:25 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62624719EA
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Apr 2022 13:09:02 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id a5so7747605qvx.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Apr 2022 13:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y9lnCrfPtzzooc7ibEgZP8W09SlBsPb47lWHSuDaVr4=;
-        b=BMTpL/MimGYeI5J2xebf6bNeDL53+bvIyd9dLYVq7NPKpjMsm0XcebNQtTLX3hGCOi
-         HUdsZk0FZGU690X2zkf62p7O9BiyosXA1PrWRaRCnoNy6iNFyaifv39oiloNLwEHJMwW
-         cyzf94huPMGH8ciWEduzwp/HQCDFrhmv7N7BdKWgUKr2m+Z1Ovz/hBNbDFSFOL1zrNeq
-         qUrhXVZde7t9HyE4Hbdzhkv0deu9/WLYmWS8WypubNzMRa4kddpPRVnlZb0zx9o2zzCr
-         eI9sZEJD4IEc6X24jovsoJaGdGj1utruSQ4KpQi1Ef1IqOT84UZmpmexZZ9ZyVpfEkoP
-         JR5A==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:from:mime-version:date:subject:message-id
+         :to;
+        bh=QeqMI9kOZ3XsfK+7r6GsaYHD1psCsveCgY6TGMUnuTg=;
+        b=jm2draaARdoVrv0G08mqDC1QkKFo6EKlV5W1HKRO7rJgS/Z/XqPFZL+hcQGY3otahV
+         COaigHUVz/9W5X/AR1Xg2NAxuFsB3FLkCTpw5tdfAWPGA5wlJ7sMKP/giKpUoGSP6mcC
+         1qdy7mIvTzpWoA96qz1vRkXUrw4QsQa0aDw2+/ssQnGJCe12BCzrogXlbEcId0IM7d50
+         gwch+gH5gSOa8mu0PBsBbJq/6lAwTmd4LZMa+Ckr/z19g41zAcNEV9zal+mVylWmQ7kG
+         IJ6zye0o/KbczMS4wuSAqP+nW6qptqZznDz0dek7TB4wYlS2wEwHYluFe1S5TLcDWixv
+         kS3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y9lnCrfPtzzooc7ibEgZP8W09SlBsPb47lWHSuDaVr4=;
-        b=w/24SrN0JET3JypFHKM70SrjnHaQbsGMoWyC6YpYmCKZEuwGOvwg+ThUpbEJ43qwpB
-         CR954ofwP7GIksfM9GwmdRrN4VPekuf1f387DtaPiG5j4BksITPCcwqa5qRsHTLw9Isn
-         bMIVEPZZXzPXwkELXBj6X8y5SiMS11z+R2oY0BK3r9gVHTHFVy2Z2blzk7jMHw9SMO3m
-         tCrJzZ9XoDkIy6QACTa4/PceTJHFrVNqZ0yqbTteIOsju/uGiDrOz+cRUwAKCTsCOyu4
-         1nYLukOYccKCc6Dc+j7ZLt4vtsTP5YxlE7M4Z87E3lAwnQjkB/2ClfOiUA36c6X38tca
-         9XnA==
-X-Gm-Message-State: AOAM533q7PwRM65kakIGPkEPAimbuwZ9pk1zov+lqbc6Yx6a6UcE/kmq
-        mGRTD5LG+m6I0ECUsLuw7H2JtP7mYiXEZc6RsyBdg5EzPU0=
-X-Google-Smtp-Source: ABdhPJyupC6qqkXza8ba0h3B6MLDZZt/LYTMu8ZgypEY69ZowkrqgXYKU6rafX17FxBo7EASGl2LxIolDmb7Ku7dW2s=
-X-Received: by 2002:a92:d6c9:0:b0:2c7:aba1:6231 with SMTP id
- z9-20020a92d6c9000000b002c7aba16231mr1712514ilp.206.1651336857071; Sat, 30
- Apr 2022 09:40:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220429040335.GE12542@merlins.org> <CAEzrpqewAfxi9hK+vwK+Df3iziXBZZEmXhzgJdJDqTj-JXvFQw@mail.gmail.com>
- <20220429151653.GF12542@merlins.org> <CAEzrpqfjzzQ4KcHPJmwnaGLNO8-gYp_bcO8HtpGdPC7SctacrA@mail.gmail.com>
- <20220429171619.GG12542@merlins.org> <CAEzrpqdTzbpUZR-+UV1_fx9p_pq188cQbGOqraHP=2Vpdi89Mw@mail.gmail.com>
- <20220429185839.GZ29107@merlins.org> <CAEzrpqdpTXvDCmo-7H6QU1BKXM+fcG6ZdfHzQj0+=+7kcgkuOw@mail.gmail.com>
- <20220430022406.GH12542@merlins.org> <CAEzrpqdiYrbG4FDyoR1=HFZ-d12kD6mF-szxE-e+M-9ahKWd8A@mail.gmail.com>
- <20220430130752.GI12542@merlins.org>
-In-Reply-To: <20220430130752.GI12542@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Sat, 30 Apr 2022 12:40:46 -0400
-Message-ID: <CAEzrpqc3jBA4gRiLuYWFgs8zu_XrNDZ_JS+d2J_TN2a-sivO=w@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version:date
+         :subject:message-id:to;
+        bh=QeqMI9kOZ3XsfK+7r6GsaYHD1psCsveCgY6TGMUnuTg=;
+        b=yB1XglN8s7cep2U6X0Z2JmUuzEaBWn5q+tOmAYk6SpuclOcmxbd4g8NUxhFJjwi5M9
+         DVSjo/RimnNjoXhEr1wRd527GiSPM3i5DnVdyQu6bjnnIYOK34Ky+UwO6DU6eYpAdYIi
+         QPDqIjY4saPnBmpNFtDGo5xNUv8yzXgqbpzdbtcm/h7F3fx3DkvqbAiQIzNHTGpfTX8X
+         z0UQxBOD1W3kvapzOZqy1aEjUUpwVnEC/8QryllOwF84lTgbiJXhYYSd40EEdHEfWFJO
+         4yZ7V4nVUd/09RQfMsGm7ZAF52u3wbDKUfZGbmw0nV7ZNAimqDwVKImI06F3aAVFbFQc
+         PBLQ==
+X-Gm-Message-State: AOAM530e6rWUA05vBzHHMHv8+mvJBQ/kKyuAN8W9t8fXM62i1RRTatTZ
+        gjI+1UfbKBv0HDMtUGTqh0HtDNb2Qf8=
+X-Google-Smtp-Source: ABdhPJwlet8TMJNRZ2epytFhzstHjAtmNIsZq3h8OVyOKgjR6fsLc3XqosRwfNeN2qFCzuONOMNHoQ==
+X-Received: by 2002:a05:6214:c2f:b0:456:553a:73cb with SMTP id a15-20020a0562140c2f00b00456553a73cbmr4081531qvd.29.1651349341049;
+        Sat, 30 Apr 2022 13:09:01 -0700 (PDT)
+Received: from smtpclient.apple ([2601:46:c600:af85:e40a:9df7:4908:4148])
+        by smtp.gmail.com with ESMTPSA id o20-20020a05620a229400b0069fc13ce23asm1598151qkh.107.2022.04.30.13.09.00
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Apr 2022 13:09:00 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   John Center <jlcenter15@gmail.com>
+Mime-Version: 1.0 (1.0)
+Date:   Sat, 30 Apr 2022 16:08:59 -0400
+Subject: How to convert a directory to a subvolume
+Message-Id: <87238001-69C5-4FA8-BE83-C35338BC8C81@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+X-Mailer: iPad Mail (19E258)
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,MIME_QP_LONG_LINE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 30, 2022 at 9:07 AM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Fri, Apr 29, 2022 at 11:13:08PM -0400, Josef Bacik wrote:
-> > Hooray we're at the data reloc root.  It should have been cleared tho,
-> > so I've fixed it up to see if it's doing the right thing, it should
-> > clear it this time, if it doesn't let me know.  Thanks,
->
-> Great
->
+Hi,
 
-Ok this is easier, the transaction commit stuff doesn't work quite
-right in progs, I've fixed the code and it should succeed this time.
-Thanks,
+I just installed Ubuntu 22.04 with a btrfs raid1 root filesystem.  I want to=
+ convert a directory, like /opt, into a subvolume. I haven=E2=80=99t been ha=
+ving much luck.  /opt is empty right now, so it=E2=80=99s a good candidate f=
+or conversion.  Could someone please explain how to do it?  I=E2=80=99ve bee=
+n at a dozen different websites, & tried different variations of the =E2=80=9C=
+btrfs subvolume create=E2=80=9D command, but nothing works when I go to moun=
+t it.  I think I=E2=80=99m missing something simple, but not sure what it is=
+.
 
-Josef
+Thanks!
+
+    -John=20
+
+Sent from my iPad=
