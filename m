@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DF7516364
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 May 2022 11:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6A851641B
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 May 2022 13:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbiEAJY7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 May 2022 05:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S1346173AbiEALcI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 May 2022 07:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243262AbiEAJYu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 May 2022 05:24:50 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8AF2BDC
-        for <linux-btrfs@vger.kernel.org>; Sun,  1 May 2022 02:21:24 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id h3so4724069qtn.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 May 2022 02:21:24 -0700 (PDT)
+        with ESMTP id S1346396AbiEALbw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 May 2022 07:31:52 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB606D953
+        for <linux-btrfs@vger.kernel.org>; Sun,  1 May 2022 04:28:23 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e1so6502973ile.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 May 2022 04:28:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gMQkZ6XrQterJ/NHW+5/bpkS/N/MR1FqcwQYnPK9WYs=;
-        b=k18A0WhlzNjw5T3fOzIjouelCLB7AGV4MNnfiemzJiSss62YCBqdZ1cegysHQ4mKXC
-         BJ54JSwwhFOXIfhKZVX8z7t64BKwDJ1i/3r2y1Bi3eUiNVS4JKIndczAqERammpmGIoJ
-         DbCPPqoRyyPXI8IP68V99tD46cBDgBXoRFeutOUXtncGTsEgYNXOxZ0B7T0AnV/vof1Y
-         9wFZxBwoWFSgrOrJDAzZVOjQ05SjkULDWft4O0SWBwfCSAYTyOdwpKPsvqSYAqWxXGx0
-         woUn9V+Md6usNhUkT+72etoFUCdapwZqNEBzTbuWiAcDfzrqR0aJV8IYVg4fE52JOhNG
-         +GKQ==
+         :cc;
+        bh=/91Ws+9W6AHAYLZfA6GbZGrSIbQ3KlsmVj9hhFR75ak=;
+        b=8CRezTH/DUTrpMuESwCj5I7hWpwRxR3YXcsQcEfp95MVt9x27cu18mq7xSstnrFhKC
+         OhRt3gCTvwBT31gis9Mpa01kOFzI4l9xNrrLYu7a9ffbNHyIWFcufFm3nq5TZCF9+eIH
+         g4ldOC9Y+8vdu4q5x5oc19IrrFauNWkB89NCttOLKpNCaLK5QvlPTAGdDoR5st6Ag0Yf
+         gJc720x/iLIyelQ5nXMQtKSxjBhagxzzj1lzvgFfmxpSRthnxzcLpsDq8KP9TpwxwVcw
+         ncmtZzrpGtuJRRc90D8G1+q2qcVyDvMM6/j7cI7CadilLB7qoZgU3ziHTPlA/X6EHpTt
+         ndRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gMQkZ6XrQterJ/NHW+5/bpkS/N/MR1FqcwQYnPK9WYs=;
-        b=08ExqP+LwKnY6gU4jvFI8cxbZzzO338a2GOnitK/56xFwDq7oC97aK5iLLQRrIj3Me
-         zdwsqlRE4neLQdzEHBzqX8hq+UsFuqfpMj0JXmCJWLCql1065wbMVtthoD4oeXYpv7pl
-         f1MBb4PifRJszUtH5N1odDfU8JyXcOD0ouiUtJ4ysN+wLbRTId1ZlbktwXXCucnLmfXb
-         AovhlhggCVWeA31moHLhIUFggsFHyI8UGvqWTDfe+321TzIKwK2hFCvNjIEsRJQUIvGr
-         HTLkI5oYlvmyl7EBp7w0pr+pTrtNMqo1RHzFwVOIc9hqmQu76LWGcgWojEirD6IW8U7U
-         UjnQ==
-X-Gm-Message-State: AOAM533r+45c3RthdJK9PbrY2RbXvZWGDyiC1LOuvG8EWdttUB4PTvxW
-        2vvWqEl8ao2feGhuPDDQkCzcC5SJlmilC7R4c0s=
-X-Google-Smtp-Source: ABdhPJzFA7rvIPs2XrO9TNTVkeZOtTDG/cyazw9r+xJFHf3NGml9cu9toS5KHZNGwfXSPSP2SgIrahm0CGl/q+plw5M=
-X-Received: by 2002:a05:622a:6082:b0:2f1:1f9c:251e with SMTP id
- hf2-20020a05622a608200b002f11f9c251emr6179796qtb.230.1651396883425; Sun, 01
- May 2022 02:21:23 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=/91Ws+9W6AHAYLZfA6GbZGrSIbQ3KlsmVj9hhFR75ak=;
+        b=Sgyza7f8cT8Sp8ZkWHvBzBeQ/3HySwF//ZHt/hi9DAt1oMPwUTw0RVh2nq637KzFhi
+         MLVzkjybZ3UKKL+Rx+6Sei0Xm99P3roYDdSuKeQWVMWVAJOpy/bt/PwvSO6Q6OsGJxC3
+         TJQzR7/AyFsMhtx9c29RJjjWPP3eZM6NC6pCs42tCCEGRxTVvSKDkOqef6/j969xblKC
+         BjWoKIrHEwQEcG5GSpehAeXIhBxE1hybFQupndUpGiL/vd8joZyRL7SIDuf/dUzrPYGw
+         2i0nOulaWl/LEWoSesMpLzr1ALUJHTKxpiTIJ0j0CQjyDYrPEKVPeShC6UafUwHDnKR1
+         hXxQ==
+X-Gm-Message-State: AOAM532zn6aHV1II/vjBDvonZeOPRZtiEFebzILOBMEvrdhwgIEBNnOC
+        AsqOOaIlE1pQgR8GNARZFBsxT/5yY+fDjsAYToQzqHHk4yc=
+X-Google-Smtp-Source: ABdhPJxIql02QbgzbXN0NRnegV/JNaHjFUfT0o0lpBleRoLj4W96+LKvP2NjLP/7rjmiLnjdQOBJbRvBVwN1B/D3s/w=
+X-Received: by 2002:a05:6e02:194d:b0:2cd:93bf:9569 with SMTP id
+ x13-20020a056e02194d00b002cd93bf9569mr3158597ilu.152.1651404501817; Sun, 01
+ May 2022 04:28:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGy3qQDeMHQMx6ULiw2uGfiJWzumpyb1jhKgizF5UsRppAoRPQ@mail.gmail.com>
- <20220429112309.nz2x6zdi6qvjqcip@quentin> <20220429113634.orbbcut6anmzzs6w@naota-xeon>
-In-Reply-To: <20220429113634.orbbcut6anmzzs6w@naota-xeon>
-From:   Inhwi Hwang <dlsgnl1@gmail.com>
-Date:   Sun, 1 May 2022 18:20:47 +0900
-Message-ID: <CAGy3qQCR-F=CLjjajZt5f6Z1ebmtTar0R2OBrFmD-AWVFw0eSw@mail.gmail.com>
-Subject: Re: Question on file system on ZNS SSD
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     Pankaj Raghav <pankydev8@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        yeom@snu.ac.kr
+References: <20220429171619.GG12542@merlins.org> <CAEzrpqdTzbpUZR-+UV1_fx9p_pq188cQbGOqraHP=2Vpdi89Mw@mail.gmail.com>
+ <20220429185839.GZ29107@merlins.org> <CAEzrpqdpTXvDCmo-7H6QU1BKXM+fcG6ZdfHzQj0+=+7kcgkuOw@mail.gmail.com>
+ <20220430022406.GH12542@merlins.org> <CAEzrpqdiYrbG4FDyoR1=HFZ-d12kD6mF-szxE-e+M-9ahKWd8A@mail.gmail.com>
+ <20220430130752.GI12542@merlins.org> <CAEzrpqc3jBA4gRiLuYWFgs8zu_XrNDZ_JS+d2J_TN2a-sivO=w@mail.gmail.com>
+ <20220430231115.GJ12542@merlins.org> <CAEzrpqe9Kh7k6n_ohyjgeMm4Pvy6tNCoKBXBPKhtcC5CrVfexw@mail.gmail.com>
+ <20220501045456.GL12542@merlins.org>
+In-Reply-To: <20220501045456.GL12542@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Sun, 1 May 2022 07:28:10 -0400
+Message-ID: <CAEzrpqe-92ZV-YqL8v9z1TV4wnqbVUjroTMsvC86z6Vws3Rb6A@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,98 +69,100 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you!
-The problem was the mq-deadline scheduler.
-I succeeded in running fio write workload.
-
-But, after the write step, the fio verifying step failed .
-The error message was
-"verify: bad magic header 0, wanted acca at file /mnt/nvme1n2/test.txt
-offset 10138288128, length 131072 (requested block:
-offset=3D10138288128, length=3D131072)
-".
-
-There are no errors in dmesg except this kernel INFO after running fio work=
-load:
-
-[  967.717212] INFO: task kworker/u40:10:531 blocked for more than 120 seco=
-nds.
-[  967.717232]       Not tainted 5.17.4 #1
-[  967.717238] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-disables this message.
-[  967.717241] task:kworker/u40:10  state:D stack:    0 pid:  531
-ppid:     2 flags:0x00004000
-[  967.717256] Workqueue: writeback wb_workfn (flush-btrfs-1)
-[  967.717276] Call Trace:
-[  967.717280]  <TASK>
-[  967.717287]  __schedule+0x302/0x9e0
-[  967.717302]  schedule+0x58/0xd0
-[  967.717310]  io_schedule+0x4b/0x80
-[  967.717319]  folio_wait_bit_common+0x14e/0x390
-[  967.717329]  ? file_fdatawait_range+0x30/0x30
-[  967.717338]  __folio_lock+0x17/0x20
-[  967.717345]  extent_write_cache_pages+0x35f/0x4a0
-[  967.717361]  extent_writepages+0x7b/0x140
-[  967.717369]  btrfs_writepages+0xe/0x10
-[  967.717379]  do_writepages+0xd0/0x1d0
-[  967.717389]  ? ttwu_do_wakeup+0x1c/0x170
-[  967.717396]  ? ttwu_do_activate+0x6d/0xb0
-[  967.717402]  ? _raw_spin_unlock_irqrestore+0x29/0x40
-[  967.717415]  ? try_to_wake_up+0x9d/0x5e0
-[  967.717422]  __writeback_single_inode+0x44/0x350
-[  967.717430]  ? _raw_spin_unlock+0x1a/0x30
-[  967.717437]  writeback_sb_inodes+0x226/0x4e0
-[  967.717450]  __writeback_inodes_wb+0x56/0xf0
-[  967.717459]  wb_writeback+0x1db/0x2c0
-[  967.717469]  wb_workfn+0x2d9/0x530
-[  967.717477]  ? _raw_spin_unlock+0x1a/0x30
-[  967.717485]  process_one_work+0x21a/0x3f0
-[  967.717495]  worker_thread+0x50/0x3d0
-[  967.717503]  ? rescuer_thread+0x390/0x390
-[  967.717511]  kthread+0xfd/0x130
-[  967.717517]  ? kthread_complete_and_exit+0x20/0x20
-[  967.717524]  ret_from_fork+0x1f/0x30
-[  967.717539]  </TASK>
-
-Best regards,
-Inhwi Hwang.
-
-
-2022=EB=85=84 4=EC=9B=94 29=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 8:36, N=
-aohiro Aota <Naohiro.Aota@wdc.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+On Sun, May 1, 2022 at 12:54 AM Marc MERLIN <marc@merlins.org> wrote:
 >
-> On Fri, Apr 29, 2022 at 01:23:09PM +0200, Pankaj Raghav wrote:
-> > On Fri, Apr 29, 2022 at 03:26:45PM +0900, Inhwi Hwang wrote:
-> > > Hello,
-> > > This is Inhwi Hwang from Seoul National University Distributed
-> > > Computing Laboratory.
-> > > I've contacted you to ask some questions about the file system on the=
- ZNS SSD.
-> > >
-> > > I read the documentation of BTRFS on zoned device(Zoned - btrfs Wiki
-> > > (kernel.org)).
-> > > I want to check the performance of BTRFS on ZNS SSD.
-> > > I attached BTRFS on a ZNS SSD(ZN540),
-> > > but a basic write test using fio failed and raised errors.
+> On Sat, Apr 30, 2022 at 10:48:08PM -0400, Josef Bacik wrote:
+> > > Recording extents for root 165299
+> > > processed 16384 of 75792384 possible bytes
+> > > Recording extents for root 18446744073709551607
+> > > processed 16384 of 16384 possible bytes
+> > > ERROR: commit_root already set when starting transaction
 > >
-> > Could you also post the errors you are getting?
+> > Well it looks like it finished, but I don't see my "start transaction
+> > failed" messages which should be printing, I've added some extra
+> > debugging to figure out wherever this is failing.  We're literally
+> > done and of course it's failing somewhere at the end, hopefully
+> > this'll be quicker to nail down.  Thanks,
 >
-> Please include dmesg as well.
->
-> But, I suspect you are not using mq-deadline scheduler.
->
-> Could you check which scheduler the device is using with the command belo=
-w?
->
-> $ cat /sys/block/nvme1n2/queue/scheduler
->
-> > > fio command : fio --filename=3D/mnt/nvme1n2/test.txt --direct=3D0 \
-> > >                       --size=3D10G --rw=3Dwrite --verify=3Dmd5 --bs=
-=3D128K
-> > > --output=3D${OUTPUT_NAME}
-> > >
-> > > Best regards,
-> > > Inhwi Hwang
-> >
-> > --
-> > Pankaj Raghav
+> Good news :)
+> Here is the new one:
+> doing roots
+> Recording extents for root 4
+> processed 1032192 of 1064960 possible bytes
+> Recording extents for root 5
+> processed 10960896 of 10977280 possible bytes
+> Recording extents for root 7
+> processed 16384 of 16545742848 possible bytes
+> Recording extents for root 9
+> processed 16384 of 16384 possible bytes
+> Recording extents for root 11221
+> processed 16384 of 255983616 possible bytes
+> Recording extents for root 11222
+> processed 49479680 of 49479680 possible bytes
+> Recording extents for root 11223
+> processed 1635319808 of 1635549184 possible bytes
+> Recording extents for root 11224
+> processed 75792384 of 75792384 possible bytes
+> Recording extents for root 159785
+> processed 108855296 of 108855296 possible bytes
+> Recording extents for root 159787
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 160494
+> processed 1179648 of 109035520 possible bytes
+> Recording extents for root 160496
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 161197
+> processed 147456 of 109019136 possible bytes
+> Recording extents for root 161199
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 162628
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 162632
+> processed 2129920 of 109314048 possible bytes
+> Recording extents for root 162645
+> processed 49152 of 75792384 possible bytes
+> Recording extents for root 163298
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 163302
+> processed 147456 of 109314048 possible bytes
+> Recording extents for root 163303
+> processed 81920 of 75792384 possible bytes
+> Recording extents for root 163316
+> processed 49152 of 109314048 possible bytes
+> Recording extents for root 163318
+> processed 16384 of 49479680 possible bytes
+> Recording extents for root 163916
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 163920
+> processed 81920 of 109314048 possible bytes
+> Recording extents for root 163921
+> processed 49152 of 75792384 possible bytes
+> Recording extents for root 164620
+> processed 49152 of 49479680 possible bytes
+> Recording extents for root 164624
+> processed 491520 of 109445120 possible bytes
+> Recording extents for root 164633
+> processed 49152 of 75792384 possible bytes
+> Recording extents for root 165098
+> processed 212992 of 109445120 possible bytes
+> Recording extents for root 165100
+> processed 16384 of 49479680 possible bytes
+> Recording extents for root 165198
+> processed 49152 of 109445120 possible bytes
+> Recording extents for root 165200
+> processed 16384 of 49479680 possible bytes
+> Recording extents for root 165294
+> processed 16384 of 49479680 possible bytes
+> Recording extents for root 165298
+> processed 81920 of 109445120 possible bytes
+> Recording extents for root 165299
+> processed 16384 of 75792384 possible bytes
+> Recording extents for root 18446744073709551607
+> processed 16384 of 16384 possible bytes
+> doing block accounting
+> doing close???
+
+Ok must be in the block accounting stuff which has 0 prints, fixed
+that up.  Thanks,
+
+Josef
