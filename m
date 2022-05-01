@@ -2,95 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBA35168D1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 01:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC935168DB
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 01:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239162AbiEAXM7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 May 2022 19:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S1349575AbiEAXZu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 May 2022 19:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232078AbiEAXM5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 May 2022 19:12:57 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB1A5DA41
-        for <linux-btrfs@vger.kernel.org>; Sun,  1 May 2022 16:09:31 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z18so14289076iob.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 May 2022 16:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Sq7Z/lIz8bbC56tb3CQAmeROLXNJUY4bdCbN5g9MAw=;
-        b=Dug1yTgNhO6gRyXCogECxsNg1jVGKHtF/SOiWF2c1iWVIcGzW76e2W4KDjn4PogKtY
-         z4k16K7Pjwhv4f0abzdaFF21TcBJ3fzT5jotaAop9+a8k5mIrnmQqJNbPh9Q2ucU6XJv
-         6RheD41mMLFa/hTT5f93jcWG+0T+30yO5WlNjtnQlQztCFbdglP8JqVafjJWeJaXYmx3
-         AQDibQ4+rbqKzwAb1hsoveevNhwh7C70ep2AlCblG19JmVDYP5hT/Mhg3RCi/PDau+Ac
-         T1lTpG5gxrYh/GMMuREu6c8wA5Y/Sf1dKdrp+dRs0l63MA3X2al0MEpU51DEwBI4uTgX
-         M8yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Sq7Z/lIz8bbC56tb3CQAmeROLXNJUY4bdCbN5g9MAw=;
-        b=uMfiRskbgJabZy6cfSXU+C7pXGtlUZl2ib3MeV+AbsixAibMtv230FJ+ajphYoAWYh
-         1HEkhSnXoPz4Y+5mvk/5VjtkUhShihf31dUNMYL1caSGgPEUZedGQ3/2+4Nh0KsvoYpJ
-         d3FY5i9HF1QU9SvaPObLBRKBH3jpBrRfFz9Iq1kxon/BaqTWH/gr2enxFKraASOp18R9
-         /uu47SLkJmC5JxlUg6UFHeKMqGM6queYZQaAkqjqO3wRxDPSVwdEBQc1XMBNL6/jWgAU
-         qKShLunjVyq3qUhui37hKql17eD9vTsafwrUVcYo5vUGHpOJmQ+4Z5d877WpeuOC6KpS
-         cQSQ==
-X-Gm-Message-State: AOAM532YtN6KxY/wL3hWVesTQwoyYIp6XbeVjs7n33f/B2cR/f1J1d/O
-        mdkgZ8gMkAPTM5x7uSmMKUdj/k4onJsf3F//HNDuiKjCIv4=
-X-Google-Smtp-Source: ABdhPJzJmi/UaA9E39pDtXL64ii7oxorADCwjku/wjgz09aB1/7kESmxtHNy/Df6AAJ/F2eAKP4PCj3EW+5gqjsFb9M=
-X-Received: by 2002:a02:ccd0:0:b0:32a:e2da:1e1f with SMTP id
- k16-20020a02ccd0000000b0032ae2da1e1fmr3912463jaq.313.1651446570465; Sun, 01
- May 2022 16:09:30 -0700 (PDT)
+        with ESMTP id S229449AbiEAXZu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 May 2022 19:25:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E955F5A;
+        Sun,  1 May 2022 16:22:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC42361152;
+        Sun,  1 May 2022 23:22:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C7F4C385AA;
+        Sun,  1 May 2022 23:22:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651447342;
+        bh=Rkk1Gh6W3dr24/uRK0uggQYdg1OCwuRy8D6PFoJ0TVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vCeQi5De0axC3YnCzWZYxaOm1vYM0/eac6h/vRmqe/h47zntqTViESOhRk2QG90/h
+         6/5IKbFR50vkEpNidEqquZwzTm4txwj65a99/r3sB9P281Qm9x44/OZKObcPoJKzT0
+         xP3X3we6PZIxsV4CevfHyrrUU2HAVYFO5kHXHP7geNUgAKr8VTbBqKEXf9GweewS4k
+         dagw/gCa9PENMFz8mqMlr2A3Cxho/Zu0bo1yyCqCTfMUgKmnpxh24uqYPqnhRg6JLl
+         5X16n5l8QzgQYY+17ToVI7nFZzxJg2GHdBf7vwMFGwwCMFu0kDnmg0dHUKU84q2pnM
+         7z5NL4yxqKO8w==
+Date:   Sun, 1 May 2022 16:22:18 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v9 2/5] common/verity: support btrfs in generic fsverity
+ tests
+Message-ID: <Ym8WKhTqoUhSCXjo@sol.localdomain>
+References: <cover.1651012461.git.boris@bur.io>
+ <3ac2f088ab31052659aa37a7e2f0821ef7b95e60.1651012461.git.boris@bur.io>
 MIME-Version: 1.0
-References: <20220429185839.GZ29107@merlins.org> <CAEzrpqdpTXvDCmo-7H6QU1BKXM+fcG6ZdfHzQj0+=+7kcgkuOw@mail.gmail.com>
- <20220430022406.GH12542@merlins.org> <CAEzrpqdiYrbG4FDyoR1=HFZ-d12kD6mF-szxE-e+M-9ahKWd8A@mail.gmail.com>
- <20220430130752.GI12542@merlins.org> <CAEzrpqc3jBA4gRiLuYWFgs8zu_XrNDZ_JS+d2J_TN2a-sivO=w@mail.gmail.com>
- <20220430231115.GJ12542@merlins.org> <CAEzrpqe9Kh7k6n_ohyjgeMm4Pvy6tNCoKBXBPKhtcC5CrVfexw@mail.gmail.com>
- <20220501045456.GL12542@merlins.org> <CAEzrpqe-92ZV-YqL8v9z1TV4wnqbVUjroTMsvC86z6Vws3Rb6A@mail.gmail.com>
- <20220501152231.GM12542@merlins.org>
-In-Reply-To: <20220501152231.GM12542@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Sun, 1 May 2022 19:09:19 -0400
-Message-ID: <CAEzrpqeiWrW6NbWLmUiWwE96sVNb+H0bEXmaij1K-HJQ38vL7w@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ac2f088ab31052659aa37a7e2f0821ef7b95e60.1651012461.git.boris@bur.io>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, May 1, 2022 at 11:22 AM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Sun, May 01, 2022 at 07:28:10AM -0400, Josef Bacik wrote:
-> > > processed 81920 of 109445120 possible bytes
-> > > Recording extents for root 165299
-> > > processed 16384 of 75792384 possible bytes
-> > > Recording extents for root 18446744073709551607
-> > > processed 16384 of 16384 possible bytes
-> > > doing block accounting
-> > > doing close???
-> >
-> > Ok must be in the block accounting stuff which has 0 prints, fixed
-> > that up.  Thanks,
->
-> Recording extents for root 18446744073709551607
-> processed 16384 of 16384 possible bytes
-> doing block accounting
-> ERROR: update block group failed
-> FIX BLOCK ACCOUNTING FAILED -1
-> ERROR: The commit failed???? -1
->
+On Tue, Apr 26, 2022 at 03:40:13PM -0700, Boris Burkov wrote:
+> diff --git a/common/verity b/common/verity
+> index d58cad90..8cde2737 100644
+> --- a/common/verity
+> +++ b/common/verity
+> @@ -3,6 +3,13 @@
+>  #
+>  # Functions for setting up and testing fs-verity
+>  
+> +. common/btrfs
+> +# btrfs will return IO errors on corrupted data with or without fs-verity.
+> +# to really test fs-verity, use nodatasum.
+> +if [ "$FSTYP" == "btrfs" ]; then
+> +	export MOUNT_OPTIONS="-o nodatasum"
+> +fi
 
-Sorry was on airplanes, pushed some more debugging.  Thanks,
+Shouldn't this append to MOUNT_OPTIONS rather than replacing it?
 
-Josef
+> diff --git a/tests/generic/574 b/tests/generic/574
+> index 17fdea52..680cece3 100755
+> --- a/tests/generic/574
+> +++ b/tests/generic/574
+> @@ -126,6 +126,41 @@ corruption_test()
+>  	fi
+>  }
+>  
+> +# xfs_io mread's output is parseable by xxd -r, except it has an extra space
+> +# after the colon. Output the number of non zero characters in the parsed contents.
+> +filter_mread() {
+> +	sed 's/:  /: /' | xxd -r | sed 's/\x0//g' | wc -c
+> +}
+> +
+> +# this expects to see stdout + stderr passed through filter_sigbus and filter_mread.
+> +# Outputs "OK" on a bus error or 0 non-zero characters counted by mread.
+> +filter_eof_block() {
+> +	sed 's/^Bus error$/OK/' | sed 's/^0$/OK/'
+> +}
+> +
+> +# some filesystems return zeros in the last block past EOF, regardless of
+> +# their contents. Handle those with a special test that accepts either zeros
+> +# or SIGBUS on an mmap+read of that block.
+> +corrupt_eof_block_test() {
+> +	local file_len=$1
+> +	local zap_len=$2
+> +	local page_aligned_eof=$(round_up_to_page_boundary $file_len)
+> +	local eof_page_start=$((page_aligned_eof - $(get_page_size)))
+> +	local corrupt_func=_fsv_scratch_corrupt_bytes
+
+The corrupt_func variable is unnecessary.
+
+> +	_fsv_scratch_begin_subtest "Corruption test: EOF block"
+> +	setup_zeroed_file $file_len false
+> +	cmp $fsv_file $fsv_orig_file
+> +	echo "Corrupting bytes..."
+> +	head -c $zap_len /dev/zero | tr '\0' X \
+> +		| $corrupt_func $fsv_file $((file_len + 1))
+> +
+> +	echo "Validating corruption or zeros (reading eof block via mmap)..."
+> +	bash -c "trap '' SIGBUS; $XFS_IO_PROG -r $fsv_file \
+> +		-c 'mmap -r $eof_page_start $(get_page_size)' \
+> +		-c 'mread -v $eof_page_start $(get_page_size)'" \
+> +		|& filter_mread | filter_sigbus | filter_eof_block
+> +}
+> +
+
+This actually causes the test to stop checking for the string "Bus error"
+because it sends the output through 'xxd -r' first, which turns anything that
+isn't valid 'xxd' input into all zeroed bytes, which passes the test.  So
+"Bus error" will still pass, but lots of other random strings will pass too.
+
+Also, I don't think we can assume that the xxd program is available, as it's
+part of the vim package.  This would be the first use of xxd in xfstests.
+
+Instead, how about dumping the output to a file $tmp.out, then checking if
+either of the following is true:
+
+   - The output contains the string "Bus error".
+   - The contents of the output matches that of the same xfs_io command executed
+     on the same region of a file containing all zeroes.
+
+Also, it might be a bit simpler to use $file_len as the $zap_offset (instead of
+$file_len + 1), and just reading $zap_len bytes starting at $file_len.  The
+mread doesn't need to be page aligned; only the mmap needs to be, and that can
+just be from 0 to page_aligned_eof.  That would also avoid the page/block
+ambiguity where the comments are talking about the "EOF block", but the code is
+actually reading a whole page.
+
+>  # Non-zeroed bytes in the final partial block beyond EOF should cause reads to
+> -# fail too.  Such bytes would be visible via mmap().
+> -corruption_test 130999 131000 72
+> +# fail too.  Such bytes could be visible via mmap().
+> +corrupt_eof_block_test 130999 72
+
+The above comment is now outdated.  Maybe just remove it and improve the comment
+above corrupt_eof_block_test().
+
+- Eric
