@@ -2,61 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D0F516CAA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 10:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA20516D57
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 11:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381690AbiEBJCe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 May 2022 05:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S1384208AbiEBJ3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 May 2022 05:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349574AbiEBJCc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 May 2022 05:02:32 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98F458381
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 01:59:03 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S1384211AbiEBJ3i (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 May 2022 05:29:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5811D1A05F
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 02:26:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A2A5C1F893;
-        Mon,  2 May 2022 08:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651481942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EAeonTHBr0oLPXiSTwWthNXF9q0KPu3QlUXfTi8ZC94=;
-        b=IJU4oTJyFbR7uXOQRYoMSmhAdWPkKi/vnid4tQDn4eAJJqGlBdJN6tzD+XtlmHn9K/Wwxl
-        uQH3kLBhPE429u75j0MHm6Xl+jcY5Q3qCDSbHN3Qj0i0pUyRPcuCppYnZ81tu9oOlNcAZr
-        E/flSIpqdpZD94rk7E6y+68NlhU20dE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 73A70133E5;
-        Mon,  2 May 2022 08:59:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YotTGFadb2IbGwAAMHmgww
-        (envelope-from <gniebler@suse.com>); Mon, 02 May 2022 08:59:02 +0000
-Message-ID: <e4ced932-1f39-86fb-c0a4-018c47cf10fa@suse.com>
-Date:   Mon, 2 May 2022 10:59:01 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D5766611BD
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 09:26:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC800C385AC;
+        Mon,  2 May 2022 09:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651483566;
+        bh=M+bO4NY29VaNriphBP4GGCgnCpcUtMkjvnUPwQnnbcU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nHU2g/smomOmUrmrKPltIZLID2oC/dVfC7uhw5hRz7znEdUBiacaefjK3j2xGtwtA
+         umZxZKkUJ+fRi597bPrRNLhtgRisPt+0aZpNSc2XnAesrwltH/vU6Hj29Zf11w929g
+         A0lpv7YDEdQz9Hl3TwB1N4FP0MWwlNzszjbEAWwkABmlgMbqwmfmjINxgBKXkdKDMQ
+         Z3HZMs7zgp8Zt/FvawWEUXJbedNu4b39T//eFbyM/mSRp2zrBZWzdFkXjM7zCuMjYj
+         i5+58EKqBkBiMeu8IlZgNaLMd8SzaFlUFr9KFObOPhyAmuUdc7iL8NTet58WVhWmqQ
+         GzpDaNmikiR3Q==
+Date:   Mon, 2 May 2022 10:25:58 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: misc-next 6a43055c266e: assertion failed: ret != -EEXIST, in
+ fs/btrfs/tree-log.c:3857
+Message-ID: <Ym+jpt5VmKwicgEf@debian9.Home>
+References: <YmyefE9mc2xl5ZMz@hungrycats.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH] btrfs: Turn fs_roots_radix in btrfs_fs_info into an
- XArray
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220426214525.14192-1-gniebler@suse.com>
- <a2b7e2c4-440c-318c-ea1f-273be04591f0@suse.com>
-From:   Gabriel Niebler <gniebler@suse.com>
-In-Reply-To: <a2b7e2c4-440c-318c-ea1f-273be04591f0@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YmyefE9mc2xl5ZMz@hungrycats.org>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,314 +53,135 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am 28.04.22 um 13:59 schrieb Nikolay Borisov:
-> On 27.04.22 г. 0:45 ч., Gabriel Niebler wrote:
->> … rename it to simply fs_roots and adjust all usages of this object to 
->> use
->> the XArray API, because it is notionally easier to use and unserstand, as
->> it provides array semantics, and also takes care of locking for us,
->> further simplifying the code.
->>
->> Also do some refactoring, esp. where the API change requires largely
->> rewriting some functions, anyway.
->>
->> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
->> ---
->>   fs/btrfs/ctree.h       |   5 +-
->>   fs/btrfs/disk-io.c     | 176 ++++++++++++++++++++---------------------
->>   fs/btrfs/inode.c       |  13 +--
->>   fs/btrfs/transaction.c |  67 +++++++---------
->>   4 files changed, 126 insertions(+), 135 deletions(-)
->>
+On Fri, Apr 29, 2022 at 10:27:08PM -0400, Zygo Blaxell wrote:
+> Running my usual "run everything at once" test...
 > 
-> <snip>
+> 	assertion failed: ret != -EEXIST, in fs/btrfs/tree-log.c:3857
+> 	[198255.980839][ T7460] ------------[ cut here ]------------
+> 	[198255.981666][ T7460] kernel BUG at fs/btrfs/ctree.h:3617!
+> 	[198255.983141][ T7460] invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+> 	[198255.984080][ T7460] CPU: 0 PID: 7460 Comm: repro-ghost-dir Not tainted 5.18.0-5314c78ac373-misc-next+ #159 9f66820f9a8b6f20d808b7fbd7aaeab2c04eefe1
+
+This is a bit confusing, the subject mentions 6a43055c266e, but here we see 5314c78ac373 and 9f66820f9a8b6f20d808b7fbd7aaeab2c04eefe1.
+
+> 	[198255.986027][ T7460] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> 	[198255.988600][ T7460] RIP: 0010:assertfail.constprop.0+0x1c/0x1e
+> 	[198255.989465][ T7460] Code: 8b 4c 89 ef e8 a7 26 ff ff e9 cf 79 dd fe 55 89 f1 48 c7 c2 40 a3 4f 8b 48 89 fe 48 c7 c7 80 a3 4f 8b 48 89 e5 e8 ec 7e fd ff <0f> 0b e8 47 88 96 fe be a7 0e 00 00 48 c7 c7 20 a4 4f 8b e8 cc ff
+> 	[198255.992599][ T7460] RSP: 0018:ffffc90007387188 EFLAGS: 00010282
+> 	[198255.993414][ T7460] RAX: 000000000000003d RBX: 0000000000000065 RCX: 0000000000000000
+> 	[198255.996056][ T7460] RDX: 0000000000000001 RSI: ffffffff8b62b180 RDI: fffff52000e70e24
+> 	[198255.997668][ T7460] RBP: ffffc90007387188 R08: 000000000000003d R09: ffff8881f0e16507
+> 	[198255.999199][ T7460] R10: ffffed103e1c2ca0 R11: 0000000000000001 R12: 00000000ffffffef
+> 	[198256.000683][ T7460] R13: ffff88813befc630 R14: ffff888116c16e70 R15: ffffc90007387358
+> 	[198256.007082][ T7460] FS:  00007fc7f7c24640(0000) GS:ffff8881f0c00000(0000) knlGS:0000000000000000
+> 	[198256.009939][ T7460] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	[198256.014133][ T7460] CR2: 0000560bb16d0b78 CR3: 0000000140b34005 CR4: 0000000000170ef0
+> 	[198256.015239][ T7460] Call Trace:
+> 	[198256.015674][ T7460]  <TASK>
+> 	[198256.016313][ T7460]  log_dir_items.cold+0x16/0x2c
+> 	[198256.018858][ T7460]  ? replay_one_extent+0xbf0/0xbf0
+> 	[198256.025932][ T7460]  ? release_extent_buffer+0x1d2/0x270
+> 	[198256.029658][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+> 	[198256.031114][ T7460]  ? lock_acquired+0xbe/0x660
+> 	[198256.032633][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+> 	[198256.034386][ T7460]  ? lock_release+0xcf/0x8a0
+> 	[198256.036152][ T7460]  log_directory_changes+0xf9/0x170
+> 	[198256.036993][ T7460]  ? log_dir_items+0xba0/0xba0
+> 	[198256.037661][ T7460]  ? do_raw_write_unlock+0x7d/0xe0
+> 	[198256.038680][ T7460]  btrfs_log_inode+0x233b/0x26d0
+> 	[198256.041294][ T7460]  ? log_directory_changes+0x170/0x170
+> 	[198256.042864][ T7460]  ? btrfs_attach_transaction_barrier+0x60/0x60
+> 	[198256.045130][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+> 	[198256.046568][ T7460]  ? lock_release+0xcf/0x8a0
+> 	[198256.047504][ T7460]  ? lock_downgrade+0x420/0x420
+> 	[198256.048712][ T7460]  ? ilookup5_nowait+0x81/0xa0
+> 	[198256.049747][ T7460]  ? lock_downgrade+0x420/0x420
+> 	[198256.050652][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
+> 	[198256.051618][ T7460]  ? __might_resched+0x128/0x1c0
+> 	[198256.052511][ T7460]  ? __might_sleep+0x66/0xc0
+> 	[198256.053442][ T7460]  ? __kasan_check_read+0x11/0x20
+> 	[198256.054251][ T7460]  ? iget5_locked+0xbd/0x150
+> 	[198256.054986][ T7460]  ? run_delayed_iput_locked+0x110/0x110
+> 	[198256.055929][ T7460]  ? btrfs_iget+0xc7/0x150
+> 	[198256.056630][ T7460]  ? btrfs_orphan_cleanup+0x4a0/0x4a0
+> 	[198256.057502][ T7460]  ? free_extent_buffer+0x13/0x20
+> 	[198256.058322][ T7460]  btrfs_log_inode+0x2654/0x26d0
+> 	[198256.059137][ T7460]  ? log_directory_changes+0x170/0x170
+> 	[198256.060020][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+> 	[198256.060930][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+> 	[198256.061905][ T7460]  ? lock_contended+0x770/0x770
+> 	[198256.062682][ T7460]  ? btrfs_log_inode_parent+0xd04/0x1750
+> 	[198256.063582][ T7460]  ? lock_downgrade+0x420/0x420
+> 	[198256.064432][ T7460]  ? preempt_count_sub+0x18/0xc0
+> 	[198256.065550][ T7460]  ? __mutex_lock+0x580/0xdc0
+> 	[198256.066654][ T7460]  ? stack_trace_save+0x94/0xc0
+> 	[198256.068008][ T7460]  ? __kasan_check_write+0x14/0x20
+> 	[198256.072149][ T7460]  ? __mutex_unlock_slowpath+0x12a/0x430
+> 	[198256.073145][ T7460]  ? mutex_lock_io_nested+0xcd0/0xcd0
+> 	[198256.074341][ T7460]  ? wait_for_completion_io_timeout+0x20/0x20
+> 	[198256.075345][ T7460]  ? lock_downgrade+0x420/0x420
+> 	[198256.076142][ T7460]  ? lock_contended+0x770/0x770
+> 	[198256.076939][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
+> 	[198256.078401][ T7460]  ? btrfs_sync_file+0x5e6/0xa40
+> 	[198256.080598][ T7460]  btrfs_log_inode_parent+0x523/0x1750
+> 	[198256.081991][ T7460]  ? wait_current_trans+0xc8/0x240
+> 	[198256.083320][ T7460]  ? lock_downgrade+0x420/0x420
+> 	[198256.085450][ T7460]  ? btrfs_end_log_trans+0x70/0x70
+> 	[198256.086362][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+> 	[198256.087544][ T7460]  ? lock_release+0xcf/0x8a0
+> 	[198256.088305][ T7460]  ? lock_downgrade+0x420/0x420
+> 	[198256.090375][ T7460]  ? dget_parent+0x8e/0x300
+> 	[198256.093538][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
+> 	[198256.094918][ T7460]  ? lock_downgrade+0x420/0x420
+> 	[198256.097815][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
+> 	[198256.101822][ T7460]  ? dget_parent+0xb7/0x300
+> 	[198256.103345][ T7460]  btrfs_log_dentry_safe+0x48/0x60
+> 	[198256.105052][ T7460]  btrfs_sync_file+0x629/0xa40
+> 	[198256.106829][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
+> 	[198256.109655][ T7460]  ? __fget_files+0x161/0x230
+> 	[198256.110760][ T7460]  vfs_fsync_range+0x6d/0x110
+> 	[198256.111923][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
+> 	[198256.113556][ T7460]  __x64_sys_fsync+0x45/0x70
+> 	[198256.114323][ T7460]  do_syscall_64+0x5c/0xc0
+> 	[198256.115084][ T7460]  ? syscall_exit_to_user_mode+0x3b/0x50
+> 	[198256.116030][ T7460]  ? do_syscall_64+0x69/0xc0
+> 	[198256.116768][ T7460]  ? do_syscall_64+0x69/0xc0
+> 	[198256.117555][ T7460]  ? do_syscall_64+0x69/0xc0
+> 	[198256.118324][ T7460]  ? sysvec_call_function_single+0x57/0xc0
+> 	[198256.119308][ T7460]  ? asm_sysvec_call_function_single+0xa/0x20
+> 	[198256.120363][ T7460]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 	[198256.121334][ T7460] RIP: 0033:0x7fc7fe97b6ab
+> 	[198256.122067][ T7460] Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 53 f7 ff ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 b1 f7 ff ff 8b 44
+> 	[198256.125198][ T7460] RSP: 002b:00007fc7f7c23950 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+> 	[198256.126568][ T7460] RAX: ffffffffffffffda RBX: 00007fc7f7c239f0 RCX: 00007fc7fe97b6ab
+> 	[198256.127942][ T7460] RDX: 0000000000000002 RSI: 000056167536bcf0 RDI: 0000000000000004
+> 	[198256.129302][ T7460] RBP: 0000000000000004 R08: 0000000000000000 R09: 000000007ffffeb8
+> 	[198256.130670][ T7460] R10: 00000000000001ff R11: 0000000000000293 R12: 0000000000000001
+> 	[198256.132046][ T7460] R13: 0000561674ca8140 R14: 00007fc7f7c239d0 R15: 000056167536dab8
+> 	[198256.133403][ T7460]  </TASK>
 > 
->> @@ -2346,28 +2340,23 @@ void btrfs_put_root(struct btrfs_root *root)
->>   void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info)
->>   {
->> -    int ret;
->> -    struct btrfs_root *gang[8];
->> -    int i;
->> +    struct btrfs_root *root;
->> +    unsigned long index = 0;
->>       while (!list_empty(&fs_info->dead_roots)) {
->> -        gang[0] = list_entry(fs_info->dead_roots.next,
->> -                     struct btrfs_root, root_list);
->> -        list_del(&gang[0]->root_list);
->> +        root = list_entry(fs_info->dead_roots.next,
->> +                  struct btrfs_root, root_list);
->> +        list_del(&root->root_list);
->> -        if (test_bit(BTRFS_ROOT_IN_RADIX, &gang[0]->state))
->> -            btrfs_drop_and_free_fs_root(fs_info, gang[0]);
->> -        btrfs_put_root(gang[0]);
->> +        if (test_bit(BTRFS_ROOT_IN_RADIX, &root->state))
->> +            btrfs_drop_and_free_fs_root(fs_info, root);
->> +        btrfs_put_root(root);
->>       }
->> -    while (1) {
->> -        ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
->> -                         (void **)gang, 0,
->> -                         ARRAY_SIZE(gang));
->> -        if (!ret)
->> -            break;
->> -        for (i = 0; i < ret; i++)
->> -            btrfs_drop_and_free_fs_root(fs_info, gang[i]);
->> +    while (!xa_empty(&fs_info->fs_roots))  > +        
->> xa_for_each(&fs_info->fs_roots, index, root) {
 > 
-> Why do you need the nested loop structure? xa_for_each should be 
-> sufficient as btrfs_free_fs_roots happens when the fs is being unmounted 
-> and we can't get another loop added after having done xa_for_each. And 
-> even if it could the nested loop structure won't help because we don't 
-> hold any locks, so hypothetically speaking, even if there was a race 
-> using nested loops doesn't solve it.
+>    3847                         if (key.offset > *last_old_dentry_offset + 1) {
+>    3848                                 ret = insert_dir_log_key(trans, log, dst_path,
+>    3849                                                  ino, *last_old_dentry_offset + 1,
+>    3850                                                  key.offset - 1);
+>    3851                                 /*
+>    3852                                  * -EEXIST should never happen because when we
+>    3853                                  * log a directory in full mode (LOG_INODE_ALL)
+>    3854                                  * we drop all BTRFS_DIR_LOG_INDEX_KEY keys from
+>    3855                                  * the log tree.
+>    3856                                  */
+>   >3857<                                ASSERT(ret != -EEXIST);
 
-I wasn't sure if the old code was implemented like this only because of 
-the way radix_tree_gang_lookup works, or if there was another reason, 
-like preventing a possible race condition (e.g. when another root gets 
-inserted), or perhaps as a retry mechanism in case of delays/faillures 
-in root removal.
+It can actually happen, there's a harmless race between logging a directory
+and inserting items from other inodes into a subvolume's tree that can result
+in an attempt to log the same BTRFS_DIR_LOG_INDEX_KEY twice.
 
-> TLDR: Leavint this xa_for_each should be sufficient.
+I'll fix that and send a patch soon.
+Thanks.
 
-Acknowledged.
 
->> +            btrfs_drop_and_free_fs_root(fs_info, root);
->> +        }
->>       }
->>   }
+>    3858                                 if (ret < 0)
+>    3859                                         return ret;
+>    3860                         }
 > 
-> <snip>
-> 
->> @@ -4491,12 +4480,12 @@ void btrfs_drop_and_free_fs_root(struct 
->> btrfs_fs_info *fs_info,
->>   {
->>       bool drop_ref = false;
->> -    spin_lock(&fs_info->fs_roots_radix_lock);
->> -    radix_tree_delete(&fs_info->fs_roots_radix,
->> -              (unsigned long)root->root_key.objectid);
->> +    spin_lock(&fs_info->fs_roots_lock);
->> +    xa_erase(&fs_info->fs_roots,
->> +         (unsigned long)root->root_key.objectid);
-> 
-> nit: No need to have the 2nd argument on a new line, as the line is 
-> short enough.
-
-Oh yeah, sorry... I had used `fs_roots_xarray` originally, then renamed 
-it before submission. I thought I had checked all the lines for possible 
-shortening, but it looks like I missed some.
-
-Thanks for noticing!
-
->>       if (test_and_clear_bit(BTRFS_ROOT_IN_RADIX, &root->state))
->>           drop_ref = true;
->> -    spin_unlock(&fs_info->fs_roots_radix_lock);
->> +    spin_unlock(&fs_info->fs_roots_lock);
->>       if (BTRFS_FS_ERROR(fs_info)) {
->>           ASSERT(root->log_root == NULL);
->> @@ -4512,50 +4501,54 @@ void btrfs_drop_and_free_fs_root(struct 
->> btrfs_fs_info *fs_info,
->>   int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
->>   {
->> -    u64 root_objectid = 0;
->> -    struct btrfs_root *gang[8];
->> -    int i = 0;
->> +    struct btrfs_root *roots[8];
->> +    unsigned long index = 0;
->> +    int i;
-> nit: This can be defined into the 2 loops that use the variable.
-
-Sure, why not.
-
->>       int err = 0;
->> -    unsigned int ret = 0;
->> +    int grabbed;
->>       while (1) {
->> -        spin_lock(&fs_info->fs_roots_radix_lock);
->> -        ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
->> -                         (void **)gang, root_objectid,
->> -                         ARRAY_SIZE(gang));
->> -        if (!ret) {
->> -            spin_unlock(&fs_info->fs_roots_radix_lock);
->> +        struct btrfs_root *root;
->> +
->> +        spin_lock(&fs_info->fs_roots_lock);
->> +        if (!xa_find(&fs_info->fs_roots, &index,
->> +                 ULONG_MAX, XA_PRESENT)) {
->> +            spin_unlock(&fs_info->fs_roots_lock);
->>               break;
->>           }
->> -        root_objectid = gang[ret - 1]->root_key.objectid + 1;
->> -        for (i = 0; i < ret; i++) {
->> -            /* Avoid to grab roots in dead_roots */
->> -            if (btrfs_root_refs(&gang[i]->root_item) == 0) {
->> -                gang[i] = NULL;
->> -                continue;
->> +        grabbed = 0;
->> +        xa_for_each_start(&fs_info->fs_roots, index, root,
->> +                  index) {
->> +            /* Avoid grabbing roots in dead_roots */
->> +            if (btrfs_root_refs(&root->root_item) == 0) {
->> +                roots[grabbed] = NULL;
->> +            } else {
->> +                /* Grab all the search results for later use */
->> +                roots[grabbed] = btrfs_grab_root(root);
->>               }
->> -            /* grab all the search result for later use */
->> -            gang[i] = btrfs_grab_root(gang[i]);
->> +            grabbed++;
->> +            if (grabbed >= ARRAY_SIZE(roots))
->> +                break;
->>           }
->> -        spin_unlock(&fs_info->fs_roots_radix_lock);
->> +        spin_unlock(&fs_info->fs_roots_lock);
->> -        for (i = 0; i < ret; i++) {
->> -            if (!gang[i])
->> +        for (i = 0; i < grabbed; i++) {
->> +            if (!roots[i])
->>                   continue;
->> -            root_objectid = gang[i]->root_key.objectid;
->> -            err = btrfs_orphan_cleanup(gang[i]);
->> +            index = roots[i]->root_key.objectid;
->> +            err = btrfs_orphan_cleanup(roots[i]);
->>               if (err)
->>                   break;
->> -            btrfs_put_root(gang[i]);
->> +            btrfs_put_root(roots[i]);
->>           }
->> -        root_objectid++;
->> +        index++;
->>       }
->> -    /* release the uncleaned roots due to error */
->> -    for (; i < ret; i++) {
->> -        if (gang[i])
->> -            btrfs_put_root(gang[i]);
->> +    /* Release the roots that remain uncleaned due to error */
->> +    for (; i < grabbed; i++) {
->> +        if (roots[i])
->> +            btrfs_put_root(roots[i]);
->>       }
->>       return err;
->>   }
->> @@ -4872,31 +4865,36 @@ static void btrfs_error_commit_super(struct 
->> btrfs_fs_info *fs_info)
->>   static void btrfs_drop_all_logs(struct btrfs_fs_info *fs_info)
->>   {
->> -    struct btrfs_root *gang[8];
->> -    u64 root_objectid = 0;
->> -    int ret;
->> +    unsigned long index = 0;
->> -    spin_lock(&fs_info->fs_roots_radix_lock);
->> -    while ((ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
->> -                         (void **)gang, root_objectid,
->> -                         ARRAY_SIZE(gang))) != 0) {
->> +    spin_lock(&fs_info->fs_roots_lock);
->> +    while (xa_find(&fs_info->fs_roots,
->> +               &index, ULONG_MAX, XA_PRESENT)) {
-> 
-> nit: No need to split across two lines as it's short enough.
-
-ACK
-
->> +        struct btrfs_root *root;
->> +        struct btrfs_root *roots[8];
->>           int i;
-> 
-> nit: This can probably be defined inside the for loop
-
-OK
-
->> +        int grabbed = 0;
->> -        for (i = 0; i < ret; i++)
->> -            gang[i] = btrfs_grab_root(gang[i]);
->> -        spin_unlock(&fs_info->fs_roots_radix_lock);
->> +        xa_for_each_start(&fs_info->fs_roots, index, root,
->> +                  index) {
->> +            roots[grabbed] = btrfs_grab_root(root);
->> +            grabbed++;
->> +            if (grabbed >= ARRAY_SIZE(roots))
->> +                break;
->> +        }
->> +        spin_unlock(&fs_info->fs_roots_lock);
->> -        for (i = 0; i < ret; i++) {
->> -            if (!gang[i])
->> +        for (i = 0; i < grabbed; i++) {
->> +            if (!roots[i])
->>                   continue;
->> -            root_objectid = gang[i]->root_key.objectid;
->> -            btrfs_free_log(NULL, gang[i]);
->> -            btrfs_put_root(gang[i]);
->> +            index = roots[i]->root_key.objectid;
->> +            btrfs_free_log(NULL, roots[i]);
->> +            btrfs_put_root(roots[i]);
->>           }
->> -        root_objectid++;
->> -        spin_lock(&fs_info->fs_roots_radix_lock);
->> +        index++;
->> +        spin_lock(&fs_info->fs_roots_lock);
->>       }
->> -    spin_unlock(&fs_info->fs_roots_radix_lock);
->> +    spin_unlock(&fs_info->fs_roots_lock);
->>       btrfs_free_log_root_tree(NULL, fs_info);
->>   }
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index 5082b9c70f8c..d0ef3a17ce11 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -3494,6 +3494,7 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
->>       u64 last_objectid = 0;
->>       int ret = 0, nr_unlink = 0;
->> +    /* Bail out if the cleanup is already running. */
-> nit: This seems like an irrelevant change.
-
-I did stumble a bit over the following line when I read through the 
-function for the first time, so I added this in for possible future newbies.
-
-I'd like to keep this in, if you don't mind. It's not like the comment 
-hurts anything.
-
->>       if (test_and_set_bit(BTRFS_ROOT_ORPHAN_CLEANUP, &root->state))
->>           return 0;
-> 
-> <snip>
-> 
->> @@ -1404,9 +1402,8 @@ void btrfs_add_dead_root(struct btrfs_root *root)
->>   static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
->>   {
->>       struct btrfs_fs_info *fs_info = trans->fs_info;
->> -    struct btrfs_root *gang[8];
->> -    int i;
->> -    int ret;
->> +    struct btrfs_root *root;
->> +    unsigned long index;
->>       /*
->>        * At this point no one can be using this transaction to modify 
->> any tree
->> @@ -1414,17 +1411,11 @@ static noinline int commit_fs_roots(struct 
->> btrfs_trans_handle *trans)
->>        */
->>       ASSERT(trans->transaction->state == TRANS_STATE_COMMIT_DOING);
->> -    spin_lock(&fs_info->fs_roots_radix_lock);
->> -    while (1) {
->> -        ret = radix_tree_gang_lookup_tag(&fs_info->fs_roots_radix,
->> -                         (void **)gang, 0,
->> -                         ARRAY_SIZE(gang),
->> -                         BTRFS_ROOT_TRANS_TAG);
->> -        if (ret == 0)
->> -            break;
->> -        for (i = 0; i < ret; i++) {
->> -            struct btrfs_root *root = gang[i];
->> -            int ret2;
->> +    spin_lock(&fs_info->fs_roots_lock);
->> +    while (xa_marked(&fs_info->fs_roots, BTRFS_ROOT_TRANS_TAG)) {
->> +        xa_for_each_marked(&fs_info->fs_roots, index, root,
-> 
-> While the while/xa_for_each_marked and not straight xa_for_each_marked?
-
-Like before, this just mimicks the old logic, because I wasn't sure 
-whether the double loop is only due to the bunched nature of gang lookup 
-or whether it has some additional safeguarding function.
-
-I'm fine with simplifying it to xa_for_each_marked if you say it's safe.
-
-Waiting for further feedback whether to resubmit or not.
