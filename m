@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA20516D57
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 11:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD8B516D64
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 11:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384208AbiEBJ3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 May 2022 05:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        id S1384221AbiEBJeP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 May 2022 05:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384211AbiEBJ3i (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 May 2022 05:29:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5811D1A05F
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 02:26:07 -0700 (PDT)
+        with ESMTP id S1384264AbiEBJeD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 May 2022 05:34:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8087AB1CE
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 02:30:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D5766611BD
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 09:26:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC800C385AC;
-        Mon,  2 May 2022 09:26:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 142E1B8136B
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 09:30:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E0C4C385AC;
+        Mon,  2 May 2022 09:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651483566;
-        bh=M+bO4NY29VaNriphBP4GGCgnCpcUtMkjvnUPwQnnbcU=;
+        s=k20201202; t=1651483831;
+        bh=REeP2Gyzx8WT2DYgc2T6XnjLWAYP2egqihFx749jPcU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nHU2g/smomOmUrmrKPltIZLID2oC/dVfC7uhw5hRz7znEdUBiacaefjK3j2xGtwtA
-         umZxZKkUJ+fRi597bPrRNLhtgRisPt+0aZpNSc2XnAesrwltH/vU6Hj29Zf11w929g
-         A0lpv7YDEdQz9Hl3TwB1N4FP0MWwlNzszjbEAWwkABmlgMbqwmfmjINxgBKXkdKDMQ
-         Z3HZMs7zgp8Zt/FvawWEUXJbedNu4b39T//eFbyM/mSRp2zrBZWzdFkXjM7zCuMjYj
-         i5+58EKqBkBiMeu8IlZgNaLMd8SzaFlUFr9KFObOPhyAmuUdc7iL8NTet58WVhWmqQ
-         GzpDaNmikiR3Q==
-Date:   Mon, 2 May 2022 10:25:58 +0100
+        b=NUJsnVA6XTRaaKjV3dw76g5IiOYCU+Fx8Ewm0xK3gceWH/qMk6gmxWleQZiskGmKg
+         cyW8yok6YRq/xtlsNCB5my8X9Tg50TplVHGbDl40jSJEl9VymzQ+iGfjvBFDVWCVoy
+         1P3xDNUF2BND+3nxiXm5ivlaKneRt5tmqQmgooz+5boibYqnHA2GsSDXjTr+y3E6bW
+         nF3ceOldsyRznn49VyFkVz/T/OXl1q/n6qiQFKQM1P4+WQdnQIsbwkFAvFNfnkIDSD
+         FvQLPRCwYHnK7fUfiNrd6rWt+lbWIM5IUtQ+UYsanQp4kz4W3asngN6t4M2dorhLgB
+         oz/rHAwOrjvZw==
+Date:   Mon, 2 May 2022 10:30:28 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: misc-next 6a43055c266e: assertion failed: ret != -EEXIST, in
- fs/btrfs/tree-log.c:3857
-Message-ID: <Ym+jpt5VmKwicgEf@debian9.Home>
-References: <YmyefE9mc2xl5ZMz@hungrycats.org>
+Subject: Re: [PATCH v5] btrfs: improve error reporting in
+ lookup_inline_extent_backref
+Message-ID: <Ym+ktE6Yrefhr39v@debian9.Home>
+References: <20220429141734.866132-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YmyefE9mc2xl5ZMz@hungrycats.org>
+In-Reply-To: <20220429141734.866132-1-nborisov@suse.com>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,135 +53,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 29, 2022 at 10:27:08PM -0400, Zygo Blaxell wrote:
-> Running my usual "run everything at once" test...
+On Fri, Apr 29, 2022 at 05:17:34PM +0300, Nikolay Borisov wrote:
+> When iterating the backrefs in an extent item if the ptr to the
+> 'current' backref record goes beyond the extent item a warning is
+> generated and -ENOENT is returned. However what's more appropriate to
+> debug such cases would be to return EUCLEAN and also print identifying
+> information about the performed search as well as the current content of
+> the leaf containing the possibly corrupted extent item.
 > 
-> 	assertion failed: ret != -EEXIST, in fs/btrfs/tree-log.c:3857
-> 	[198255.980839][ T7460] ------------[ cut here ]------------
-> 	[198255.981666][ T7460] kernel BUG at fs/btrfs/ctree.h:3617!
-> 	[198255.983141][ T7460] invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> 	[198255.984080][ T7460] CPU: 0 PID: 7460 Comm: repro-ghost-dir Not tainted 5.18.0-5314c78ac373-misc-next+ #159 9f66820f9a8b6f20d808b7fbd7aaeab2c04eefe1
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-This is a bit confusing, the subject mentions 6a43055c266e, but here we see 5314c78ac373 and 9f66820f9a8b6f20d808b7fbd7aaeab2c04eefe1.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-> 	[198255.986027][ T7460] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-> 	[198255.988600][ T7460] RIP: 0010:assertfail.constprop.0+0x1c/0x1e
-> 	[198255.989465][ T7460] Code: 8b 4c 89 ef e8 a7 26 ff ff e9 cf 79 dd fe 55 89 f1 48 c7 c2 40 a3 4f 8b 48 89 fe 48 c7 c7 80 a3 4f 8b 48 89 e5 e8 ec 7e fd ff <0f> 0b e8 47 88 96 fe be a7 0e 00 00 48 c7 c7 20 a4 4f 8b e8 cc ff
-> 	[198255.992599][ T7460] RSP: 0018:ffffc90007387188 EFLAGS: 00010282
-> 	[198255.993414][ T7460] RAX: 000000000000003d RBX: 0000000000000065 RCX: 0000000000000000
-> 	[198255.996056][ T7460] RDX: 0000000000000001 RSI: ffffffff8b62b180 RDI: fffff52000e70e24
-> 	[198255.997668][ T7460] RBP: ffffc90007387188 R08: 000000000000003d R09: ffff8881f0e16507
-> 	[198255.999199][ T7460] R10: ffffed103e1c2ca0 R11: 0000000000000001 R12: 00000000ffffffef
-> 	[198256.000683][ T7460] R13: ffff88813befc630 R14: ffff888116c16e70 R15: ffffc90007387358
-> 	[198256.007082][ T7460] FS:  00007fc7f7c24640(0000) GS:ffff8881f0c00000(0000) knlGS:0000000000000000
-> 	[198256.009939][ T7460] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> 	[198256.014133][ T7460] CR2: 0000560bb16d0b78 CR3: 0000000140b34005 CR4: 0000000000170ef0
-> 	[198256.015239][ T7460] Call Trace:
-> 	[198256.015674][ T7460]  <TASK>
-> 	[198256.016313][ T7460]  log_dir_items.cold+0x16/0x2c
-> 	[198256.018858][ T7460]  ? replay_one_extent+0xbf0/0xbf0
-> 	[198256.025932][ T7460]  ? release_extent_buffer+0x1d2/0x270
-> 	[198256.029658][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-> 	[198256.031114][ T7460]  ? lock_acquired+0xbe/0x660
-> 	[198256.032633][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-> 	[198256.034386][ T7460]  ? lock_release+0xcf/0x8a0
-> 	[198256.036152][ T7460]  log_directory_changes+0xf9/0x170
-> 	[198256.036993][ T7460]  ? log_dir_items+0xba0/0xba0
-> 	[198256.037661][ T7460]  ? do_raw_write_unlock+0x7d/0xe0
-> 	[198256.038680][ T7460]  btrfs_log_inode+0x233b/0x26d0
-> 	[198256.041294][ T7460]  ? log_directory_changes+0x170/0x170
-> 	[198256.042864][ T7460]  ? btrfs_attach_transaction_barrier+0x60/0x60
-> 	[198256.045130][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-> 	[198256.046568][ T7460]  ? lock_release+0xcf/0x8a0
-> 	[198256.047504][ T7460]  ? lock_downgrade+0x420/0x420
-> 	[198256.048712][ T7460]  ? ilookup5_nowait+0x81/0xa0
-> 	[198256.049747][ T7460]  ? lock_downgrade+0x420/0x420
-> 	[198256.050652][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
-> 	[198256.051618][ T7460]  ? __might_resched+0x128/0x1c0
-> 	[198256.052511][ T7460]  ? __might_sleep+0x66/0xc0
-> 	[198256.053442][ T7460]  ? __kasan_check_read+0x11/0x20
-> 	[198256.054251][ T7460]  ? iget5_locked+0xbd/0x150
-> 	[198256.054986][ T7460]  ? run_delayed_iput_locked+0x110/0x110
-> 	[198256.055929][ T7460]  ? btrfs_iget+0xc7/0x150
-> 	[198256.056630][ T7460]  ? btrfs_orphan_cleanup+0x4a0/0x4a0
-> 	[198256.057502][ T7460]  ? free_extent_buffer+0x13/0x20
-> 	[198256.058322][ T7460]  btrfs_log_inode+0x2654/0x26d0
-> 	[198256.059137][ T7460]  ? log_directory_changes+0x170/0x170
-> 	[198256.060020][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-> 	[198256.060930][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-> 	[198256.061905][ T7460]  ? lock_contended+0x770/0x770
-> 	[198256.062682][ T7460]  ? btrfs_log_inode_parent+0xd04/0x1750
-> 	[198256.063582][ T7460]  ? lock_downgrade+0x420/0x420
-> 	[198256.064432][ T7460]  ? preempt_count_sub+0x18/0xc0
-> 	[198256.065550][ T7460]  ? __mutex_lock+0x580/0xdc0
-> 	[198256.066654][ T7460]  ? stack_trace_save+0x94/0xc0
-> 	[198256.068008][ T7460]  ? __kasan_check_write+0x14/0x20
-> 	[198256.072149][ T7460]  ? __mutex_unlock_slowpath+0x12a/0x430
-> 	[198256.073145][ T7460]  ? mutex_lock_io_nested+0xcd0/0xcd0
-> 	[198256.074341][ T7460]  ? wait_for_completion_io_timeout+0x20/0x20
-> 	[198256.075345][ T7460]  ? lock_downgrade+0x420/0x420
-> 	[198256.076142][ T7460]  ? lock_contended+0x770/0x770
-> 	[198256.076939][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
-> 	[198256.078401][ T7460]  ? btrfs_sync_file+0x5e6/0xa40
-> 	[198256.080598][ T7460]  btrfs_log_inode_parent+0x523/0x1750
-> 	[198256.081991][ T7460]  ? wait_current_trans+0xc8/0x240
-> 	[198256.083320][ T7460]  ? lock_downgrade+0x420/0x420
-> 	[198256.085450][ T7460]  ? btrfs_end_log_trans+0x70/0x70
-> 	[198256.086362][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-> 	[198256.087544][ T7460]  ? lock_release+0xcf/0x8a0
-> 	[198256.088305][ T7460]  ? lock_downgrade+0x420/0x420
-> 	[198256.090375][ T7460]  ? dget_parent+0x8e/0x300
-> 	[198256.093538][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
-> 	[198256.094918][ T7460]  ? lock_downgrade+0x420/0x420
-> 	[198256.097815][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
-> 	[198256.101822][ T7460]  ? dget_parent+0xb7/0x300
-> 	[198256.103345][ T7460]  btrfs_log_dentry_safe+0x48/0x60
-> 	[198256.105052][ T7460]  btrfs_sync_file+0x629/0xa40
-> 	[198256.106829][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
-> 	[198256.109655][ T7460]  ? __fget_files+0x161/0x230
-> 	[198256.110760][ T7460]  vfs_fsync_range+0x6d/0x110
-> 	[198256.111923][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
-> 	[198256.113556][ T7460]  __x64_sys_fsync+0x45/0x70
-> 	[198256.114323][ T7460]  do_syscall_64+0x5c/0xc0
-> 	[198256.115084][ T7460]  ? syscall_exit_to_user_mode+0x3b/0x50
-> 	[198256.116030][ T7460]  ? do_syscall_64+0x69/0xc0
-> 	[198256.116768][ T7460]  ? do_syscall_64+0x69/0xc0
-> 	[198256.117555][ T7460]  ? do_syscall_64+0x69/0xc0
-> 	[198256.118324][ T7460]  ? sysvec_call_function_single+0x57/0xc0
-> 	[198256.119308][ T7460]  ? asm_sysvec_call_function_single+0xa/0x20
-> 	[198256.120363][ T7460]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 	[198256.121334][ T7460] RIP: 0033:0x7fc7fe97b6ab
-> 	[198256.122067][ T7460] Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 53 f7 ff ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 b1 f7 ff ff 8b 44
-> 	[198256.125198][ T7460] RSP: 002b:00007fc7f7c23950 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-> 	[198256.126568][ T7460] RAX: ffffffffffffffda RBX: 00007fc7f7c239f0 RCX: 00007fc7fe97b6ab
-> 	[198256.127942][ T7460] RDX: 0000000000000002 RSI: 000056167536bcf0 RDI: 0000000000000004
-> 	[198256.129302][ T7460] RBP: 0000000000000004 R08: 0000000000000000 R09: 000000007ffffeb8
-> 	[198256.130670][ T7460] R10: 00000000000001ff R11: 0000000000000293 R12: 0000000000000001
-> 	[198256.132046][ T7460] R13: 0000561674ca8140 R14: 00007fc7f7c239d0 R15: 000056167536dab8
-> 	[198256.133403][ T7460]  </TASK>
+Looks good now, thanks.
+
+> ---
 > 
+> V5:
+>  * Stop printing the key we are searching for as it was both wrong and redundant,
+>  since we have the slot number printed anyway. (Filipe)
 > 
->    3847                         if (key.offset > *last_old_dentry_offset + 1) {
->    3848                                 ret = insert_dir_log_key(trans, log, dst_path,
->    3849                                                  ino, *last_old_dentry_offset + 1,
->    3850                                                  key.offset - 1);
->    3851                                 /*
->    3852                                  * -EEXIST should never happen because when we
->    3853                                  * log a directory in full mode (LOG_INODE_ALL)
->    3854                                  * we drop all BTRFS_DIR_LOG_INDEX_KEY keys from
->    3855                                  * the log tree.
->    3856                                  */
->   >3857<                                ASSERT(ret != -EEXIST);
-
-It can actually happen, there's a harmless race between logging a directory
-and inserting items from other inodes into a subvolume's tree that can result
-in an attempt to log the same BTRFS_DIR_LOG_INDEX_KEY twice.
-
-I'll fix that and send a patch soon.
-Thanks.
-
-
->    3858                                 if (ret < 0)
->    3859                                         return ret;
->    3860                         }
+> V4:
+>  * Also print the value of 'parent' as it's pertinent when metadata inline backrefs
+>  are being searched (Filipe)
+>  * Print the leaf before printing the error message so that the latter is
+>  not lost (Filipe)
+> 
+> V3:
+>  * Fixed format for the btree slot
+>  * Removed redundant argument passed to format string
+> 
+>  fs/btrfs/extent-tree.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 963160a0c393..cca89016f2b3 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -895,7 +895,14 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+>  	err = -ENOENT;
+>  	while (1) {
+>  		if (ptr >= end) {
+> -			WARN_ON(ptr > end);
+> +			if (ptr > end) {
+> +				err = -EUCLEAN;
+> +				btrfs_print_leaf(path->nodes[0]);
+> +				btrfs_crit(fs_info,
+> +"overrun extent record at slot %d while looking for inline extent for root %llu owner %llu offset %llu parent %llu",
+> +				path->slots[0], root_objectid, owner, offset,
+> +				parent);
+> +			}
+>  			break;
+>  		}
+>  		iref = (struct btrfs_extent_inline_ref *)ptr;
+> --
+> 2.25.1
 > 
