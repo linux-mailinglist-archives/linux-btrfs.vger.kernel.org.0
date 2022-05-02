@@ -2,108 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6405168F1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 02:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12F65168F6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 02:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356190AbiEBAD1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 May 2022 20:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
+        id S1358176AbiEBAFe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 May 2022 20:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiEBAD0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 May 2022 20:03:26 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1451F42ED8
-        for <linux-btrfs@vger.kernel.org>; Sun,  1 May 2022 16:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1651449587;
-        bh=gIHMR6xQ6TWedXQL68i9iiG6XJY4zp2ebdVWyLBBZdQ=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=LBcu3q/OYFBSVu7S5+0qH7zZqnRugwVFoaL+Nq9LnqiT8ZzNSwa5kIRz0hOFk8lmT
-         FfoiGVa0EhfwNj68b5jGFPT9tn1BSZ3vykXxrW5ZJimoDVLnpska7odb8D29Pc2wp8
-         LVZUtdEg1c0SEcYOg/KepcuMUh4JGQZXEYwt9PUE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MZTmY-1nNkAe1S8U-00WRvO; Mon, 02
- May 2022 01:59:47 +0200
-Message-ID: <32e7a9c3-00b8-9e59-276c-ce5965ccb92a@gmx.com>
-Date:   Mon, 2 May 2022 07:59:43 +0800
+        with ESMTP id S229449AbiEBAFc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 May 2022 20:05:32 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C866431
+        for <linux-btrfs@vger.kernel.org>; Sun,  1 May 2022 17:02:05 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id jt15so219192qvb.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 May 2022 17:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=1aptWXCUJ4+R9bpg74Qk4poZ+GONbllUbL2q9FgUXP8=;
+        b=Rf2VCvm1LChrfxRNBHOA0RYBWRZ3WH4WjTFuQ9J+qxLx160A2ZDIhOH6G8uwZ8r+I4
+         S1Bu5hDSAF1nxOVdLJOxm9UwvDHPFYRUlTJCKqF5uDFUyVit24RN6hlgF9tcR/2XzxwO
+         n3pnChtB0KEHWNwz2/VWp/kRV55JO5Z6+jI6zkEdwuKTG4Tb8zR7oELEJWb8AX1B/ZI9
+         FOauVsGsNeE7ofLsTcehcS8x+vL+C5/uV2oZHv6MdFzor1vNC7bsde9Iw6G2t90zjbvO
+         O1Hmd4hWGug/Hk1mMYF7tt18derYil0YZz0BsW/jPmYT+R1DV2Zp/yeX5DHwo9NusyE8
+         i/og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1aptWXCUJ4+R9bpg74Qk4poZ+GONbllUbL2q9FgUXP8=;
+        b=04vqhX43LMYKaquxJ/hJBgYN1Qu2MV+N3AAMdGOeGz/SWCCiRIRSOWfOXCTY5qJvdm
+         obP4BQl4raGshD+1dvn44Jr5DhGU4gyZJgv8Pi+g2iINkyLYNu0UrYn9ezmn0UOR6qtU
+         TERlEH6PyM4G7Jaikb+BSAdtBQ5hpWNz0VOkDrmR63Dz5nlv4SRLqYzWaR+mgxar0riT
+         KwIHkqzv61NZq0Iu/sLRRq/bBGR0QfIo3h0cwRfv208BDarAmJUsCBTQykOUo0icKDok
+         RhelecymLAFVInvhArA6dbld4RY+arzCD97433ur3SF5a0AxmzIClsFJxiMmia0tB+ME
+         J4SQ==
+X-Gm-Message-State: AOAM532JxhQ4/++mMgXT175SB0P3QyeSldH71XYYklU4lqo9E8d5Hbja
+        zMuBt/wnH/Xzq0RB5764OH1t1KOB4k7SDg==
+X-Google-Smtp-Source: ABdhPJzb6jB5KgUiQQtug3Kn7PTRfWfwtwUHTHqmcYjdp1RZjreqQH7sbVPw9yb96yxYBJCJDv2skQ==
+X-Received: by 2002:a05:6214:240c:b0:456:46be:f6b3 with SMTP id fv12-20020a056214240c00b0045646bef6b3mr7590280qvb.49.1651449724971;
+        Sun, 01 May 2022 17:02:04 -0700 (PDT)
+Received: from ?IPV6:2601:46:c600:af85:3271:224b:5e3e:dacc? ([2601:46:c600:af85:3271:224b:5e3e:dacc])
+        by smtp.gmail.com with ESMTPSA id w6-20020a05620a0e8600b0069fd57d435fsm1567150qkm.101.2022.05.01.17.02.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 May 2022 17:02:04 -0700 (PDT)
+Message-ID: <85da8da9-54ee-f65b-e79e-bb24b7540e7c@gmail.com>
+Date:   Sun, 1 May 2022 20:02:03 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH RFC v2 05/12] btrfs: add a helper to queue a corrupted
- sector for read repair
+ Thunderbird/91.8.0
+Subject: Re: How to convert a directory to a subvolume
 Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1651043617.git.wqu@suse.com>
- <a136fe858afe9efd29c8caa98d82cb7439d89677.1651043617.git.wqu@suse.com>
- <2fd10883-5a4d-5cbd-d09f-7a30bb326a4a@suse.com>
- <YmqaOynJjWS2XB76@infradead.org>
- <4ac0c01f-73f6-e830-f3bc-6281bd79b7d2@gmx.com>
- <YmwAzU+UORfX92Te@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <YmwAzU+UORfX92Te@infradead.org>
+To:     Hugo Mills <hugo@carfax.org.uk>, linux-btrfs@vger.kernel.org
+References: <87238001-69C5-4FA8-BE83-C35338BC8C81@gmail.com>
+ <20220430201458.GG15632@savella.carfax.org.uk>
+From:   John Center <jlcenter15@gmail.com>
+In-Reply-To: <20220430201458.GG15632@savella.carfax.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8ov3P5nqNxkqcGFI7IR/hMbUZzay1H+x2vnqFfjFkiQzKFv1bSi
- 8pnxd2tSW/keMG44vX3xL04NVVKUYUg/oUNBUT5y3C1/6/G13Tt4jclmjHQrwa7rQ3learK
- wD4aj4k2MhzjbEEaS8H5JKDIuPQ1aQr5eKjrR1L4pAYr6jAtb3C6QL7a3MdUv05FOKFFLmp
- kUWnxaMQ6gyZeqEKQ/zNg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:g52KnOAcDdE=:T/lR3VT5t5gfwtI2tzgiOu
- 3aGHCTth185VVUwg0XLqcnqYbNvcfXFJH467FE+HkU5Ye4wtvEFiHHd2GaCrJ/KZq1VMGQk/H
- Y59yoWpDcmOypdQKgQSVq3DKErtP7iDFPzzCuckzD3ZyX4xTaraz195TrDXYlJ2fTp4tjHbHU
- JAu3uxvllHjlR1eeuBqxRj77cu9GVbp35KmCwJS25ghb8GfcXDIJ2nKcDhMV88Co2kBv9BgzR
- 3QuEx6A279ocGiYi9NCr3juhKANgNUtCKTsvQpZAEWEub99F/DPgryAgSZqSnbJSwVdDxCVkg
- mWBtJxXfCeEpuuJbLufTuD6ZEJgKCz5pYIeS3Nv+WRJ7YjUC8EVlXpeJoO8uVP83k2w1GDWM9
- lNmNADRnMEt6kE9vXa5zGN9GNIEpBJvK/R6v0933YlOQwCrK2fdGUSfwWU/UMVAPOjm+q1yLt
- FsLl3UnuP9sxoJ/cO9T3uboHg0YOM8x9OKyT4quAeciFjPZEleSJDEPe2eKeMNIxL+TK5Gggz
- 1X5E/StLBrjhWd2SoioS/0OoC6SS5u877qOAgG7WylToW9VU2A7HsKLK43S/mXXD0p1WYB5Og
- Rp6s9DqNNAKaZut3l76zyg9bpVUaX7wJL//V4mOBL64Yxi6xB0gzD91pNoyHjUflhUsfy6z+i
- AaZjHOjlNQJMJ8oUps7vIMpIO9ssUZwdqAnQA48Fc0RYAJ4/QiOMMFUG4SyfHq4AMG4C+3Jgz
- 4eUzim7lbN+NJfoxLokwm4IP4oKGs0FCdZrRU0fnkqQ88WbdiMOveQ2I7sl7fgL0y6dL2osqr
- kwHiOSIXgKTVTMa2TDN0PxTdYDqxelxGgMU3nHFHSAQ8FZOcyyh4Dkl5BbfK7KIfTxDQXaMIn
- Puq44xHa+oDo94MzyCcIWzl+lDsRpq2CWt08HQvDoxfG5wOvQvbkIE4xLbpIPuYJRmkQmRrPM
- dbjFZ5NxsGWEpGZOmngpuN4MovLap3vGMxKNd9BOb2FXY5UnfNx4TSYsP+2rOgUIc6H6bCaCv
- CGJG+u3ERHoX/JKKmBwSSnQfitzlHv1hassXzTVCPzL0C6u2iUyuN/dh19Qa0PMj9/MYEPILe
- fczzT+I+wTq0TI=
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Hugo,
+
+Thanks for responding.  I guess what I don't understand, @home is a 
+subvolume, but it appears as /home when it is mounted via fstab.  It has 
+a top level ID of 5.  If I create a subvolume for opt, it has a top 
+level of 256.  I've tried different variations of opt, /opt, & @opt, but 
+they all appear as that variation under /:
+
+john@Mariposa:~$ sudo btrfs subvolume create /@opt
+Create subvolume '//@opt'
+
+john@Mariposa:~$ sudo btrfs subvolume list /
+ID 256 gen 5968 top level 5 path @
+ID 257 gen 5968 top level 5 path @home
+ID 259 gen 5966 top level 256 path @opt
+
+john@Mariposa:~$ sudo btrfs subvolume delete /@opt
+Delete subvolume (no-commit): '//@opt'
+
+john@Mariposa:~$ sudo btrfs subvolume create /opt
+Create subvolume '//opt'
+
+john@Mariposa:~$ sudo btrfs subvolume list -t /
+ID    gen    top level    path
+--    ---    ---------    ----
+256    5993    5        @
+257    5993    5        @home
+260    5993    256        opt
 
 
-On 2022/4/29 23:14, Christoph Hellwig wrote:
-> On Fri, Apr 29, 2022 at 06:55:59AM +0800, Qu Wenruo wrote:
->> Another consideration is, would it really dead lock?
+What I'm expecting is when I do the subvolume list, I would see 
+something like this:
+
+john@Mariposa:~$ sudo btrfs subvolume list -t /
+ID    gen    top level    path
+--    ---    ---------    ----
+256    5993    5        @
+257    5993    5        @home
+260    5993    5        @opt
+
+I would also think the fstab would look something like this:
+
+UUID=ce05e908-2dce-4368-b864-2f29650185e8 /               btrfs   
+defaults,space_cache=v2,subvol=@ 0 1
+#
+UUID=ce05e908-2dce-4368-b864-2f29650185e8 /home btrfs   
+defaults,space_cache=v2,subvol=@home 0       2
+#
+UUID=ce05e908-2dce-4368-b864-2f29650185e8 /opt           btrfs 
+defaults,space_cache=v2,subvol=@opt 0       2
+
+I also thought I would have to mount the subvolume like a directory.
+
+So, what am I missing between what I'm seeing vs what I think I should 
+be seeing?
+
+Thanks for your help!
+
+     -John
+
+
+On 4/30/22 4:14 PM, Hugo Mills wrote:
+> On Sat, Apr 30, 2022 at 04:08:59PM -0400, John Center wrote:
+>> Hi,
 >>
->> We're only called for read path, not writeback path.
->> IIRC it's easier to hit dead lock at writeback path, as writeback can b=
-e
->> triggered by memory pressure.
->>
->> But would the same problem happen just for read path?
+>> I just installed Ubuntu 22.04 with a btrfs raid1 root filesystem.  I want to convert a directory, like /opt, into a subvolume. I haven’t been having much luck.  /opt is empty right now, so it’s a good candidate for conversion.  Could someone please explain how to do it?  I’ve been at a dozen different websites, & tried different variations of the “btrfs subvolume create” command, but nothing works when I go to mount it.  I think I’m missing something simple, but not sure what it is.
+>     You can't convert a directory into a subvolume.
 >
-> System with sever memory pressure needs to page something in to get
-> something out.  The readpage uses the last available bio in the btrfs
-> bioset, but that read now needs a read repair, which needs to allocate
-> another bio from the bio_set -> deadlock.
-
-So with your previous mention on mempool, did you mean that we allocate
-another mempool for read repair only?
-
-With the extra read repair mempool, even we exhaust the last btrfs bio
-in the pool, we still have something like btrfs read repair bio?
-(And we can get rid of the extra members unused in btrfs bio, since what
-we really need is just a logical bytenr and pointer back to
-btrfs_read_repair_ctrl).
-
-This sounds pretty good to me then.
-
-Thanks,
-Qu
+>     Since the directory in question is empty, just delete it and create
+> a subvol there instead:
+>
+> # rmdir /opt
+> # btrfs sub create /opt
+>
+>     If there's stuff in there, you need to create the subvolume with a
+> different name, copy the contents of the directory into it (optionally
+> with --reflink=always) and then delete the original directory and move
+> the subvolume into its place.
+>
+>     Hugo.
+>
