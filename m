@@ -2,110 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD8B516D64
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 11:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14539517018
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 May 2022 15:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384221AbiEBJeP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 May 2022 05:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
+        id S1385201AbiEBNUX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 May 2022 09:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384264AbiEBJeD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 May 2022 05:34:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8087AB1CE
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 02:30:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 142E1B8136B
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 09:30:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E0C4C385AC;
-        Mon,  2 May 2022 09:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651483831;
-        bh=REeP2Gyzx8WT2DYgc2T6XnjLWAYP2egqihFx749jPcU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NUJsnVA6XTRaaKjV3dw76g5IiOYCU+Fx8Ewm0xK3gceWH/qMk6gmxWleQZiskGmKg
-         cyW8yok6YRq/xtlsNCB5my8X9Tg50TplVHGbDl40jSJEl9VymzQ+iGfjvBFDVWCVoy
-         1P3xDNUF2BND+3nxiXm5ivlaKneRt5tmqQmgooz+5boibYqnHA2GsSDXjTr+y3E6bW
-         nF3ceOldsyRznn49VyFkVz/T/OXl1q/n6qiQFKQM1P4+WQdnQIsbwkFAvFNfnkIDSD
-         FvQLPRCwYHnK7fUfiNrd6rWt+lbWIM5IUtQ+UYsanQp4kz4W3asngN6t4M2dorhLgB
-         oz/rHAwOrjvZw==
-Date:   Mon, 2 May 2022 10:30:28 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v5] btrfs: improve error reporting in
- lookup_inline_extent_backref
-Message-ID: <Ym+ktE6Yrefhr39v@debian9.Home>
-References: <20220429141734.866132-1-nborisov@suse.com>
+        with ESMTP id S235101AbiEBNUW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 May 2022 09:20:22 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8A0B7DB
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 06:16:53 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id w1so25197297lfa.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 May 2022 06:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8XSAhrm03GGWEjMLlDF84S4bAtbLEkCKWCJtvQMW45U=;
+        b=NZfnMZTUfsg9DfI0DkYHoJOsoiJg8G/+eNuB6Ll5/LkEa6pf9CasxSb1JmGs4wr3ha
+         hOQjBd5VwaV0aWCvXA2KMIAq5Sz0UC4KiFQlZpUmbS4tCEEWrf9+PE0vfNWtDZzcXowu
+         5iWjrBmK0+IlaFRM8l2vdMGH1FlmNbCb5apvfhdV1UXvPfuTwGw1kNgJ0Z9eChfHvPKM
+         mzhoveSoYCZAhMphyw6MjaT5W9FIkE/ZfECwlqIJmiPjQyk+pe2y8TM4kn1I/FDKEJlO
+         48QzQF7yZxLQjJTwCOi2Nmqlj9coLC7bG62FCGQkr3khGa/t6ygBoA7jYi//MIaG5Yov
+         cAiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8XSAhrm03GGWEjMLlDF84S4bAtbLEkCKWCJtvQMW45U=;
+        b=mTHMcNaHWVEpZ9LLBj9ythhLDb7frH00dA6Qk0I8Hyi3Z36P8au1jvGdsHS6hy52VK
+         7c1GbXeDyLb0+2tep6/okEv+Q40SM9Otp9Xx0LWTnKdKyvUZf8OyX20FdqTAENs4k7Ya
+         0kvxWBzB20Bnt9tu7v6t2OmWZiRcLitanQ328OkS8b+xShU+jycP1dMPwjdD5KZEV5BV
+         jJ56RHsnOksQzoQcUCp33gOvxaRAyvS3V6bRot+a9Rr5B2r1Gnxv/J2YRDZ9uVrTBDXu
+         pnMSDEWMmoaKi9j3+zAzURZJGOmdg2D2mrVoJ9YcD/kr/4Yr9p4ae/s7BouIrVvD4Yx1
+         CELw==
+X-Gm-Message-State: AOAM531qYqGSgIQKlIA7Qv0g+dvclfkuE1NFL/fH6hq4fnzOuUljT7M5
+        QD5W0I2+JKairw5xI+m3pD0EtKPBmJRwkpJr2Lrz2w==
+X-Google-Smtp-Source: ABdhPJwoBJsbOH059vLBJG50hFPVbOlr0QxjSqMs9sAIcvYmIJQrQWcuz+oQAqgsu5HOsFjWnw5BR3bZbkFxsTPUrZ0=
+X-Received: by 2002:a05:6512:1194:b0:471:b0dd:8755 with SMTP id
+ g20-20020a056512119400b00471b0dd8755mr8496252lfr.212.1651497411418; Mon, 02
+ May 2022 06:16:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220429141734.866132-1-nborisov@suse.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <87238001-69C5-4FA8-BE83-C35338BC8C81@gmail.com>
+ <20220430201458.GG15632@savella.carfax.org.uk> <85da8da9-54ee-f65b-e79e-bb24b7540e7c@gmail.com>
+In-Reply-To: <85da8da9-54ee-f65b-e79e-bb24b7540e7c@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 2 May 2022 09:16:35 -0400
+Message-ID: <CAJCQCtQuCorJ6YaPb_hVpX4312U4Ec5v3jcw+g6whYFd4udx0g@mail.gmail.com>
+Subject: Re: How to convert a directory to a subvolume
+To:     John Center <jlcenter15@gmail.com>
+Cc:     Hugo Mills <hugo@carfax.org.uk>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 29, 2022 at 05:17:34PM +0300, Nikolay Borisov wrote:
-> When iterating the backrefs in an extent item if the ptr to the
-> 'current' backref record goes beyond the extent item a warning is
-> generated and -ENOENT is returned. However what's more appropriate to
-> debug such cases would be to return EUCLEAN and also print identifying
-> information about the performed search as well as the current content of
-> the leaf containing the possibly corrupted extent item.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+On Sun, May 1, 2022 at 8:02 PM John Center <jlcenter15@gmail.com> wrote:
+>
+> Hi Hugo,
+>
+> Thanks for responding.  I guess what I don't understand, @home is a
+> subvolume, but it appears as /home when it is mounted via fstab.  It has
+> a top level ID of 5.  If I create a subvolume for opt, it has a top
+> level of 256.  I've tried different variations of opt, /opt, & @opt, but
+> they all appear as that variation under /:
+>
+> john@Mariposa:~$ sudo btrfs subvolume create /@opt
+> Create subvolume '//@opt'
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+This is the mistake. Since @ is mounted at /, using /@opt actually
+means /@/@opt, thus it's been nested.
 
-Looks good now, thanks.
+>
+> john@Mariposa:~$ sudo btrfs subvolume list /
+> ID 256 gen 5968 top level 5 path @
+> ID 257 gen 5968 top level 5 path @home
+> ID 259 gen 5966 top level 256 path @opt
 
-> ---
-> 
-> V5:
->  * Stop printing the key we are searching for as it was both wrong and redundant,
->  since we have the slot number printed anyway. (Filipe)
-> 
-> V4:
->  * Also print the value of 'parent' as it's pertinent when metadata inline backrefs
->  are being searched (Filipe)
->  * Print the leaf before printing the error message so that the latter is
->  not lost (Filipe)
-> 
-> V3:
->  * Fixed format for the btree slot
->  * Removed redundant argument passed to format string
-> 
->  fs/btrfs/extent-tree.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 963160a0c393..cca89016f2b3 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -895,7 +895,14 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
->  	err = -ENOENT;
->  	while (1) {
->  		if (ptr >= end) {
-> -			WARN_ON(ptr > end);
-> +			if (ptr > end) {
-> +				err = -EUCLEAN;
-> +				btrfs_print_leaf(path->nodes[0]);
-> +				btrfs_crit(fs_info,
-> +"overrun extent record at slot %d while looking for inline extent for root %llu owner %llu offset %llu parent %llu",
-> +				path->slots[0], root_objectid, owner, offset,
-> +				parent);
-> +			}
->  			break;
->  		}
->  		iref = (struct btrfs_extent_inline_ref *)ptr;
-> --
-> 2.25.1
-> 
+@opt was created inside @, that's why it looks like this. Thus, @opt
+is nested within @. Thus, @ and @home follow a flat layout. And @opt
+follows a nested layout. To continue with the flat layout for @opt
+you'd need to create the @opt subvolume in the top-level of the file
+system alongside @ and @home rather than within one of them. To create
+it in the top-level you need to mount the top-level somewhere, e.g.
+
+btrfs subvolume get-default /
+
+Assuming this refers to ID 5, then you just
+
+mount /dev/sdXY /mnt
+btrfs subvolume create /mnt/@opt
+
+And the fstab entry should be subvol=@opt
+
+If get-default reports a value other than 5, then you need to
+explicitly mount the top level:
+
+mount -o subvol=/ /dev/sdXY /mnt       OR
+mount -o subvolid=5 /dev/sdXY /mnt    OR
+mount -o subvolid=0 /dev/sdXY /mnt
+
+The top-level subvolume was assigned ID 5 during initial creation of
+the file system. Soon after, ID 0 was set up as an alias for 5 because
+maybe it'd be easier to remember.
+
+Note: The top-level nomenclature used by btrfs subvolume list is
+considered confusing, and I think it's going away in btrfs-progs
+soonish? The "top-level" of the file system is considered equivalent
+to subvolume ID 5, which has no name, cannot be renamed or removed,
+but can be snapshot, and is the subvolume created at mkfs time. Above,
+it sounds like there's multiple "top-level" subvolumes, e.g. 5 and
+256. But in practice it's not how anyone is using the term "top
+level", which these days is intended to refer to just ID 5. The
+subvolume with no (explicit) name.
+
+
+
+>
+> john@Mariposa:~$ sudo btrfs subvolume delete /@opt
+> Delete subvolume (no-commit): '//@opt'
+>
+> john@Mariposa:~$ sudo btrfs subvolume create /opt
+> Create subvolume '//opt'
+
+Yep, / is still the @ subvolume here, because @ is bind mounted to /
+
+
+> So, what am I missing between what I'm seeing vs what I think I should
+> be seeing?
+
+It'd be neat if we had a way to create subvolumes in the top level
+directly without having to mount the top level. The FD variant of the
+C API found in libbtrfsutil suggests it's possible. And also we have a
+way to delete subvolumes by subvolid, even when they aren't locatable
+via the mounted file system hierarchy, using the --subvolid flag.
+
+
+
+
+-- 
+Chris Murphy
