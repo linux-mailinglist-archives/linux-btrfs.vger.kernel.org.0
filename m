@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DCD517D9E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 08:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632E7517DA0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 08:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbiECGyW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 02:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        id S230216AbiECGyU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 02:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbiECGx5 (ORCPT
+        with ESMTP id S230308AbiECGx5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 02:53:57 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B509D5FC3
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 23:50:24 -0700 (PDT)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E28315832
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 23:50:25 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 775021F749
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:23 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6131D210E4
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651560623; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1651560624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TsBWRTtYf0FGjZDIOyXwm69IomvEgbbJnsFMKcTFSuQ=;
-        b=GHY7nf4t/nPwbPe4jIV4RXinJamtf7Ghtg9NZ3LfVBrWxxlcVQU1FEdGLDuVefsMMe6FT/
-        DTWtnIFfaCmKvJIfzTeB37AabWKDAKTOOV+4Ih/9T1c9qLzEwlq1EG5i6riwOMARbB2Z/+
-        5iaqk1qO0zgi8aeveswE4JaSs0gSRYE=
+        bh=nZbGW9K/p2Vc8WMs2dxy79g/NrW/eTai0TSGqnMkpIE=;
+        b=kuOjzs7CpGQ1S2RFFzOdCx67SqpOuoSnUeNsTdElWdg6JpqlYqXYW2x9UKE4tZJZMf//fk
+        oO/wmgozIuunjXeLbMK0KD06Y8mwnOV6JvGJ+sAAo+7DDHsxxKwBxO5Y4MI7p1r2i5H4cj
+        ZWezYlgGKKQJXNT/5mWnmynBEP4zrpY=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E2E6F13AA3
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:22 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBE8C13AA3
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id kEqyLK7QcGIZDAAAMHmgww
+        id CCTuJq/QcGIZDAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 May 2022 06:50:22 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 May 2022 06:50:23 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/13] btrfs: allow btrfs read repair to submit writes in asynchronous mode
-Date:   Tue,  3 May 2022 14:49:52 +0800
-Message-Id: <ad68ea136896b9ceb6dfed3b42764746e9c0357a.1651559986.git.wqu@suse.com>
+Subject: [PATCH 09/13] btrfs: handle RAID56 read repair differently
+Date:   Tue,  3 May 2022 14:49:53 +0800
+Message-Id: <80006286af884f8aec7e53f6a0c87b9f968ef920.1651559986.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <cover.1651559986.git.wqu@suse.com>
 References: <cover.1651559986.git.wqu@suse.com>
@@ -60,148 +60,95 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently if we want to submit write for read time repair, we call
-btrfs_repair_io_failure(), which will submit the bio and wait for it.
+Our current read repair facility does its work completely relying on
+mirror number.
+And for repaired sector, it will write the correct data back to the bad
+mirror.
 
-But for our newer btrfs_read_repair infrastructure , we want to submit
-write bios and only wait for all of them to finish. Just like how we
-handle the read bios.
+This works great for mirror based profiles, but for RAID56 it's a
+different story.
 
-This patch will get rid of the btrfs_repair_io_failure() call, replacing
-it with the same bios handling, by try merging the sector into the bio
-first, and if not mergeable then submit the current bio and allocate a
-new one.
+Partial write in btrfs raid56 will lead to unconditional RMW, completely
+ignoring the mirror number (which is to indicate the corrupted data
+stripe number).
 
-And finally submit the last bio, and wait for all write bios to finish.
+This will cause us to read back the corrupted data on-disk, and result
+further corruption.
+
+To address it, we introduce btrfs_read_repair_ctrl::is_raid56, and for
+RAID56 read-repair, we fallback to the tried-and-tree
+btrfs_repair_io_failure().
+
+That function handles RAID56 by using MAP_READ for btrfs_map_block() and
+directly write the correct data back to disk, avoiding the RMW problem.
+
+Unfortunately we lose the asynchronous bio assembly/submission, but it
+should still be more or less acceptable considering RAID56 is really an
+odd ball here.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/read-repair.c | 46 +++++++++++++++++++++++++++++-------------
- 1 file changed, 32 insertions(+), 14 deletions(-)
+ fs/btrfs/read-repair.c | 26 ++++++++++++++++++++++++++
+ fs/btrfs/read-repair.h |  2 ++
+ 2 files changed, 28 insertions(+)
 
 diff --git a/fs/btrfs/read-repair.c b/fs/btrfs/read-repair.c
-index 3169f01e961b..aecdc4ee54ba 100644
+index aecdc4ee54ba..e1b11990a480 100644
 --- a/fs/btrfs/read-repair.c
 +++ b/fs/btrfs/read-repair.c
-@@ -119,7 +119,6 @@ static void read_repair_submit_bio(struct btrfs_read_repair_ctrl *ctrl,
- 	struct btrfs_fs_info *fs_info = btrfs_sb(ctrl->inode->i_sb);
- 	blk_status_t ret;
- 
--	ASSERT(bio_op(&rbio->bio) == REQ_OP_READ);
- 	ASSERT(rbio->bio.bi_private == ctrl);
- 	ASSERT(rbio->bio.bi_end_io == read_repair_end_bio);
- 	ASSERT(rbio->logical >= ctrl->logical &&
-@@ -140,13 +139,22 @@ static void read_repair_submit_bio(struct btrfs_read_repair_ctrl *ctrl,
- /* Add a sector into the read repair bios list for later submission */
- static void read_repair_bio_add_sector(struct btrfs_read_repair_ctrl *ctrl,
- 				       struct page *page, unsigned int pgoff,
--				       int sector_nr, int mirror)
-+				       int sector_nr, int mirror,
-+				       unsigned int opf)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(ctrl->inode->i_sb);
- 	struct btrfs_read_repair_bio *rbio;
- 	struct bio *bio;
- 	int ret;
- 
-+	ASSERT(opf == REQ_OP_WRITE || opf == REQ_OP_READ);
+@@ -55,6 +55,8 @@ void btrfs_read_repair_add_sector(struct inode *inode,
+ 		ASSERT(ctrl->init_mirror);
+ 		ctrl->num_copies = btrfs_num_copies(fs_info, ctrl->logical,
+ 						    sectorsize);
++		ctrl->is_raid56 = btrfs_is_parity_mirror(fs_info,
++						ctrl->logical, sectorsize);
+ 		init_waitqueue_head(&ctrl->io_wait);
+ 		atomic_set(&ctrl->io_bytes, 0);
+ 		/*
+@@ -153,6 +155,30 @@ static void read_repair_bio_add_sector(struct btrfs_read_repair_ctrl *ctrl,
+ 	if (opf == REQ_OP_WRITE) {
+ 		if (btrfs_repair_one_zone(fs_info, ctrl->logical))
+ 			return;
 +
-+	/* For write, we need to handle zoned case first */
-+	if (opf == REQ_OP_WRITE) {
-+		if (btrfs_repair_one_zone(fs_info, ctrl->logical))
++		/*
++		 * For RAID56, we can not just write the bad data back, as
++		 * any write will trigger RMW and read back the corrrupted
++		 * on-disk stripe, causing further damage.
++		 * So here we do special repair for raid56.
++		 *
++		 * And unfortunately, this repair is very low level and not
++		 * compatible with the rest of the mirror based repair.
++		 * So it's still done in synchronous mode using
++		 * btrfs_repair_io_failure().
++		 */
++		if (ctrl->is_raid56) {
++			const u64 logical = ctrl->logical +
++					(sector_nr << fs_info->sectorsize_bits);
++			const u64 file_offset = ctrl->file_offset +
++					(sector_nr << fs_info->sectorsize_bits);
++
++			btrfs_repair_io_failure(fs_info,
++					btrfs_ino(BTRFS_I(ctrl->inode)),
++					file_offset, fs_info->sectorsize,
++					logical, page, pgoff, mirror);
 +			return;
-+	}
-+
++		}
+ 	}
+ 
  	/* Check if the sector can be added to the last bio */
- 	if (ctrl->cur_bio) {
- 		bio = ctrl->cur_bio;
-@@ -162,10 +170,6 @@ static void read_repair_bio_add_sector(struct btrfs_read_repair_ctrl *ctrl,
- 		 * just submit it.
- 		 */
- 		read_repair_submit_bio(ctrl, rbio, mirror);
--		if (ret) {
--			bio->bi_status = ret;
--			bio_endio(bio);
--		}
- 		ctrl->cur_bio = NULL;
- 	}
- 	ASSERT(ctrl->cur_bio == NULL);
-@@ -176,7 +180,7 @@ static void read_repair_bio_add_sector(struct btrfs_read_repair_ctrl *ctrl,
- 
- 	rbio = repair_bio(bio);
- 	rbio->logical = ctrl->logical + (sector_nr << fs_info->sectorsize_bits);
--	bio->bi_opf = REQ_OP_READ;
-+	bio->bi_opf = opf;
- 	bio->bi_iter.bi_sector = rbio->logical >> SECTOR_SHIFT;
- 	bio->bi_private = ctrl;
- 	bio->bi_end_io = read_repair_end_bio;
-@@ -190,6 +194,15 @@ static void read_repair_bio_add_sector(struct btrfs_read_repair_ctrl *ctrl,
+diff --git a/fs/btrfs/read-repair.h b/fs/btrfs/read-repair.h
+index 3e1430489f89..6cc816e2ce4a 100644
+--- a/fs/btrfs/read-repair.h
++++ b/fs/btrfs/read-repair.h
+@@ -42,6 +42,8 @@ struct btrfs_read_repair_ctrl {
+ 	 * at bio allocation time.
  	 */
- 	ASSERT(ret == fs_info->sectorsize);
- 	atomic_add(fs_info->sectorsize, &ctrl->io_bytes);
+ 	bool error;
 +
-+	/* Output a meesage about we repaired a sector. */
-+	btrfs_info_rl(fs_info,
-+"read error corrected: root %lld ino %llu off %llu logical %llu from good mirror %d",
-+		BTRFS_I(ctrl->inode)->root->root_key.objectid,
-+		btrfs_ino(BTRFS_I(ctrl->inode)),
-+		ctrl->file_offset + (sector_nr << fs_info->sectorsize_bits),
-+		ctrl->logical + (sector_nr << fs_info->sectorsize_bits),
-+		mirror);
- }
++	bool is_raid56;
+ };
  
- static int get_prev_mirror(int cur_mirror, int num_copy)
-@@ -243,11 +256,12 @@ static void read_repair_from_one_mirror(struct btrfs_read_repair_ctrl *ctrl,
- 			continue;
- 		/* Queue and submit bad sectors. */
- 		read_repair_bio_add_sector(ctrl, bvec.bv_page, bvec.bv_offset,
--					   bit, mirror);
-+					   bit, mirror, REQ_OP_READ);
- 	}
- 	/* Submit the last assembled bio and wait for all bios to finish. */
- 	ASSERT(ctrl->cur_bio);
- 	read_repair_submit_bio(ctrl, repair_bio(ctrl->cur_bio), mirror);
-+	ctrl->cur_bio = NULL;
- 	wait_event(ctrl->io_wait, atomic_read(&ctrl->io_bytes) == 0);
- 
- 	/* Now re-verify the newly read out data */
-@@ -256,8 +270,6 @@ static void read_repair_from_one_mirror(struct btrfs_read_repair_ctrl *ctrl,
- 		struct btrfs_inode *binode = BTRFS_I(ctrl->inode);
- 		const u64 file_offset = ctrl->file_offset +
- 					(bit << fs_info->sectorsize_bits);
--		const u64 logical = ctrl->logical +
--				    (bit << fs_info->sectorsize_bits);
- 		struct extent_state *cached = NULL;
- 		u8 *csum = NULL;
- 		int ret;
-@@ -288,10 +300,10 @@ static void read_repair_from_one_mirror(struct btrfs_read_repair_ctrl *ctrl,
- 		 * We repaired one sector, write the correct data back to the bad
- 		 * mirror.
- 		 */
--		btrfs_repair_io_failure(fs_info, btrfs_ino(binode), file_offset,
--					sectorsize, logical, bvec.bv_page,
--					bvec.bv_offset,
--					get_prev_mirror(mirror, ctrl->num_copies));
-+		read_repair_bio_add_sector(ctrl, bvec.bv_page, bvec.bv_offset,
-+					bit, get_prev_mirror(mirror,
-+							     ctrl->num_copies),
-+					REQ_OP_WRITE);
- 
- 		/* Update the page status and extent locks. */
- 		btrfs_end_page_read(bvec.bv_page, true, file_offset, sectorsize);
-@@ -302,6 +314,12 @@ static void read_repair_from_one_mirror(struct btrfs_read_repair_ctrl *ctrl,
- 				file_offset, file_offset + sectorsize - 1,
- 				&cached);
- 	}
-+	/* Submit the last write bio from above loop and wait for them. */
-+	if (ctrl->cur_bio)
-+		read_repair_submit_bio(ctrl, repair_bio(ctrl->cur_bio),
-+				get_prev_mirror(mirror, ctrl->num_copies));
-+	ctrl->cur_bio = NULL;
-+	wait_event(ctrl->io_wait, atomic_read(&ctrl->io_bytes) == 0);
- }
- 
- void btrfs_read_repair_finish(struct btrfs_read_repair_ctrl *ctrl)
+ int btrfs_read_repair_alloc_bitmaps(struct btrfs_fs_info *fs_info,
 -- 
 2.36.0
 
