@@ -2,41 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 122535182C9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 12:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B088E5182F1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 12:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbiECLAr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 07:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        id S234584AbiECLBp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 07:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234599AbiECLAm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 07:00:42 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04E01DA67
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 03:57:09 -0700 (PDT)
+        with ESMTP id S234603AbiECLBm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 07:01:42 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454C536E25;
+        Tue,  3 May 2022 03:58:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 137E7CE1EE3
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 10:57:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E3B9C385B0
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 10:57:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2FEC5B81D73;
+        Tue,  3 May 2022 10:57:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEFF9C385A9;
+        Tue,  3 May 2022 10:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651575426;
-        bh=hTIR0Q8cbvONtGoNjhLRr82D6dRLnve6iB/zXvPnl3s=;
-        h=From:To:Subject:Date:From;
-        b=GOozL4JrDd8ZltjCNY3MJupsndHuhzkmYKqBujI7wl5eMKAiK/PH+vNPH2GmODCQ2
-         v+qh5plxIEELnr+5f4swdw17rj1URvvtBr9Z3qbMCQ6yHqdZAlJXQTVehLe52dlots
-         nv2HLV7HGnzVpmzjzaBpwrlV+UhDOqe8Z0XNoAjlD3Vp8/wgjCmZXT7NdDOJuTyyMi
-         uo3fLnq/a8aJbxOwJ6jc1I17k4T3yWXC6CVtL266l398iZzSz7RlmfHzuwDcqzD5A2
-         BRKKMxzNgz0DTCneR/Jbjtnav3vlMP+1q7mdOu5fWOeZaC4xzi4TtdI3WpXrQGPa8L
-         93suaXwxZEjBA==
+        s=k20201202; t=1651575476;
+        bh=RRLox75KOpyt9vFVOhFnBvdrBeKlfISKxs1owxx6W9Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GFRnSICe/IR40gx7RvWW8BUbLzLWfUOSF8xOvIynUPX/hNHtrRnOYpH+RHCuZDIk9
+         D4svzLk5PzoOLPTuLAVg0KXH9XLlgsXDubf3YVb1FCtfMi3seySYJG/49MyggyyRG5
+         8VQSIB0rMggpXu3yqLkfJbHwQ1OLe40W5lmEGmJOoLkh5qlLJRLeQoMUxAESzRzoc8
+         SUKSVobLV4qyUIel3ZdwOgd5DT3v0S1h+YAwMuLNZ9ZP1RthqOGoiXyg6dZfr6emkF
+         jHRGj1StPSihpK7Clz6R1zr/EiJyNNWPw2maMQiZU1qqy1gugmzcnad4KFHpEkRBsG
+         /a1/BGJXJbabA==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix assertion failure when logging directory key range item
-Date:   Tue,  3 May 2022 11:57:02 +0100
-Message-Id: <fff3b4bac2270d6d4dba22d6b2c08ce315b8956b.1651573932.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, zlang@kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: [Resend PATCH] generic: test fsync of directory with renamed symlink
+Date:   Tue,  3 May 2022 11:57:49 +0100
+Message-Id: <8f06924cda35f9a5e22c1c188eb46205dd50491f.1651573756.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -51,256 +53,131 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When inserting a key range item (BTRFS_DIR_LOG_INDEX_KEY) while logging
-a directory, we don't expect the insertion to fail with -EEXIST, because
-we are holding the directory's log_mutex and we have dropped all existing
-BTRFS_DIR_LOG_INDEX_KEY keys from the log tree before we started to log
-the directory. However it's possible that during the logging we attempt
-to insert the same BTRFS_DIR_LOG_INDEX_KEY key twice, but for this to
-happen we need to race with insertions of items from other inodes in the
-subvolume's tree while we are logging a directory. Here's how this can
-happen:
+Test that if we fsync a directory, create a symlink inside it, rename
+the symlink, fsync again the directory and then power fail, after the
+filesystem is mounted again, the symlink exists with the new name and
+it has the correct content.
 
-1) We are logging a directory with inode number 1000 that has its items
-   spread across 3 leaves in the subvolume's tree:
+This currently fails on btrfs, because the symlink ends up empty (which
+is illegal on Linux), but it is fixed by kernel commit:
 
-   leaf A - has index keys from the range 2 to 20 for example. The last
-   item in the leaf corresponds to a dir item for index number 20. All
-   these dir items were created in a past transaction.
+    d0e64a981fd841 ("btrfs: always log symlinks in full mode")
 
-   leaf B - has index keys from the range 22 to 100 for example. It has
-   no keys from other inodes, all its keys are dir index keys for our
-   directory inode number 1000. Its first key is for the dir item with
-   a sequence number of 22. All these dir items were also created in a
-   past transaction.
-
-   leaf C - has index keys for our directory for the range 101 to 120 for
-   example. This leaf also has items from other inodes, and its first
-   item corresponds to the dir item for index number 101 for our directory
-   with inode number 1000;
-
-2) When we finish processing the items from leaf A at log_dir_items(),
-   we log a BTRFS_DIR_LOG_INDEX_KEY key with an offset of 21 and a last
-   offset of 21, meaning the log is authoritative for the index range
-   from 21 to 21 (a single sequence number). At this point leaf B was
-   not yet modified in the current transaction;
-
-3) When we return from log_dir_items() we have released our read lock on
-   leaf B, and have set *last_offset_ret to 21 (index number of the first
-   item on leaf B minus 1);
-
-4) Some other task inserts an item for other inode (inode number 1001 for
-   example) into leaf C. That resulted in pushing some items from leaf C
-   into leaf B, in order to make room for the new item, so now leaf B
-   has dir index keys for the sequence number range from 22 to 102 and
-   leaf C has the dir items for the sequence number range 103 to 120;
-
-5) At log_directory_changes() we call log_dir_items() again, passing it
-   a 'min_offset' / 'min_key' value of 22 (*last_offset_ret from step 3
-   plus 1, so 21 + 1). Then btrfs_search_forward() leaves us at slot 0
-   of leaf B, since leaf B was modified in the current transaction.
-
-   We have also initialized 'last_old_dentry_offset' to 20 after calling
-   btrfs_previous_item() at log_dir_items(), as it left us at the last
-   item of leaf A, which refers to the dir item with sequence number 20;
-
-6) We then call process_dir_items_leaf() to process the dir items of
-   leaf B, and when we process the first item, corresponding to slot 0,
-   sequence number 22, we notice the dir item was created in a past
-   transaction and its sequence number is greater than the value of
-   *last_old_dentry_offset + 1 (20 + 1), so we decide to log again a
-   BTRFS_DIR_LOG_INDEX_KEY key with an offset of 21 and an end range
-   of 21 (key.offset - 1 == 22 - 1 == 21), which results in an -EEXIST
-   error from insert_dir_log_key(), as we have already inserted that
-   key at step 2, triggering the assertion at process_dir_items_leaf().
-
-The trace produced in dmesg is like the following:
-
-assertion failed: ret != -EEXIST, in fs/btrfs/tree-log.c:3857
-[198255.980839][ T7460] ------------[ cut here ]------------
-[198255.981666][ T7460] kernel BUG at fs/btrfs/ctree.h:3617!
-[198255.983141][ T7460] invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-[198255.984080][ T7460] CPU: 0 PID: 7460 Comm: repro-ghost-dir Not tainted 5.18.0-5314c78ac373-misc-next+
-[198255.986027][ T7460] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-[198255.988600][ T7460] RIP: 0010:assertfail.constprop.0+0x1c/0x1e
-[198255.989465][ T7460] Code: 8b 4c 89 (...)
-[198255.992599][ T7460] RSP: 0018:ffffc90007387188 EFLAGS: 00010282
-[198255.993414][ T7460] RAX: 000000000000003d RBX: 0000000000000065 RCX: 0000000000000000
-[198255.996056][ T7460] RDX: 0000000000000001 RSI: ffffffff8b62b180 RDI: fffff52000e70e24
-[198255.997668][ T7460] RBP: ffffc90007387188 R08: 000000000000003d R09: ffff8881f0e16507
-[198255.999199][ T7460] R10: ffffed103e1c2ca0 R11: 0000000000000001 R12: 00000000ffffffef
-[198256.000683][ T7460] R13: ffff88813befc630 R14: ffff888116c16e70 R15: ffffc90007387358
-[198256.007082][ T7460] FS:  00007fc7f7c24640(0000) GS:ffff8881f0c00000(0000) knlGS:0000000000000000
-[198256.009939][ T7460] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[198256.014133][ T7460] CR2: 0000560bb16d0b78 CR3: 0000000140b34005 CR4: 0000000000170ef0
-[198256.015239][ T7460] Call Trace:
-[198256.015674][ T7460]  <TASK>
-[198256.016313][ T7460]  log_dir_items.cold+0x16/0x2c
-[198256.018858][ T7460]  ? replay_one_extent+0xbf0/0xbf0
-[198256.025932][ T7460]  ? release_extent_buffer+0x1d2/0x270
-[198256.029658][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-[198256.031114][ T7460]  ? lock_acquired+0xbe/0x660
-[198256.032633][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-[198256.034386][ T7460]  ? lock_release+0xcf/0x8a0
-[198256.036152][ T7460]  log_directory_changes+0xf9/0x170
-[198256.036993][ T7460]  ? log_dir_items+0xba0/0xba0
-[198256.037661][ T7460]  ? do_raw_write_unlock+0x7d/0xe0
-[198256.038680][ T7460]  btrfs_log_inode+0x233b/0x26d0
-[198256.041294][ T7460]  ? log_directory_changes+0x170/0x170
-[198256.042864][ T7460]  ? btrfs_attach_transaction_barrier+0x60/0x60
-[198256.045130][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-[198256.046568][ T7460]  ? lock_release+0xcf/0x8a0
-[198256.047504][ T7460]  ? lock_downgrade+0x420/0x420
-[198256.048712][ T7460]  ? ilookup5_nowait+0x81/0xa0
-[198256.049747][ T7460]  ? lock_downgrade+0x420/0x420
-[198256.050652][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
-[198256.051618][ T7460]  ? __might_resched+0x128/0x1c0
-[198256.052511][ T7460]  ? __might_sleep+0x66/0xc0
-[198256.053442][ T7460]  ? __kasan_check_read+0x11/0x20
-[198256.054251][ T7460]  ? iget5_locked+0xbd/0x150
-[198256.054986][ T7460]  ? run_delayed_iput_locked+0x110/0x110
-[198256.055929][ T7460]  ? btrfs_iget+0xc7/0x150
-[198256.056630][ T7460]  ? btrfs_orphan_cleanup+0x4a0/0x4a0
-[198256.057502][ T7460]  ? free_extent_buffer+0x13/0x20
-[198256.058322][ T7460]  btrfs_log_inode+0x2654/0x26d0
-[198256.059137][ T7460]  ? log_directory_changes+0x170/0x170
-[198256.060020][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-[198256.060930][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-[198256.061905][ T7460]  ? lock_contended+0x770/0x770
-[198256.062682][ T7460]  ? btrfs_log_inode_parent+0xd04/0x1750
-[198256.063582][ T7460]  ? lock_downgrade+0x420/0x420
-[198256.064432][ T7460]  ? preempt_count_sub+0x18/0xc0
-[198256.065550][ T7460]  ? __mutex_lock+0x580/0xdc0
-[198256.066654][ T7460]  ? stack_trace_save+0x94/0xc0
-[198256.068008][ T7460]  ? __kasan_check_write+0x14/0x20
-[198256.072149][ T7460]  ? __mutex_unlock_slowpath+0x12a/0x430
-[198256.073145][ T7460]  ? mutex_lock_io_nested+0xcd0/0xcd0
-[198256.074341][ T7460]  ? wait_for_completion_io_timeout+0x20/0x20
-[198256.075345][ T7460]  ? lock_downgrade+0x420/0x420
-[198256.076142][ T7460]  ? lock_contended+0x770/0x770
-[198256.076939][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
-[198256.078401][ T7460]  ? btrfs_sync_file+0x5e6/0xa40
-[198256.080598][ T7460]  btrfs_log_inode_parent+0x523/0x1750
-[198256.081991][ T7460]  ? wait_current_trans+0xc8/0x240
-[198256.083320][ T7460]  ? lock_downgrade+0x420/0x420
-[198256.085450][ T7460]  ? btrfs_end_log_trans+0x70/0x70
-[198256.086362][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
-[198256.087544][ T7460]  ? lock_release+0xcf/0x8a0
-[198256.088305][ T7460]  ? lock_downgrade+0x420/0x420
-[198256.090375][ T7460]  ? dget_parent+0x8e/0x300
-[198256.093538][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
-[198256.094918][ T7460]  ? lock_downgrade+0x420/0x420
-[198256.097815][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
-[198256.101822][ T7460]  ? dget_parent+0xb7/0x300
-[198256.103345][ T7460]  btrfs_log_dentry_safe+0x48/0x60
-[198256.105052][ T7460]  btrfs_sync_file+0x629/0xa40
-[198256.106829][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
-[198256.109655][ T7460]  ? __fget_files+0x161/0x230
-[198256.110760][ T7460]  vfs_fsync_range+0x6d/0x110
-[198256.111923][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
-[198256.113556][ T7460]  __x64_sys_fsync+0x45/0x70
-[198256.114323][ T7460]  do_syscall_64+0x5c/0xc0
-[198256.115084][ T7460]  ? syscall_exit_to_user_mode+0x3b/0x50
-[198256.116030][ T7460]  ? do_syscall_64+0x69/0xc0
-[198256.116768][ T7460]  ? do_syscall_64+0x69/0xc0
-[198256.117555][ T7460]  ? do_syscall_64+0x69/0xc0
-[198256.118324][ T7460]  ? sysvec_call_function_single+0x57/0xc0
-[198256.119308][ T7460]  ? asm_sysvec_call_function_single+0xa/0x20
-[198256.120363][ T7460]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[198256.121334][ T7460] RIP: 0033:0x7fc7fe97b6ab
-[198256.122067][ T7460] Code: 0f 05 48 (...)
-[198256.125198][ T7460] RSP: 002b:00007fc7f7c23950 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-[198256.126568][ T7460] RAX: ffffffffffffffda RBX: 00007fc7f7c239f0 RCX: 00007fc7fe97b6ab
-[198256.127942][ T7460] RDX: 0000000000000002 RSI: 000056167536bcf0 RDI: 0000000000000004
-[198256.129302][ T7460] RBP: 0000000000000004 R08: 0000000000000000 R09: 000000007ffffeb8
-[198256.130670][ T7460] R10: 00000000000001ff R11: 0000000000000293 R12: 0000000000000001
-[198256.132046][ T7460] R13: 0000561674ca8140 R14: 00007fc7f7c239d0 R15: 000056167536dab8
-[198256.133403][ T7460]  </TASK>
-
-Fix this by treating -EEXIST as expected at insert_dir_log_key() and have
-it update the item with an end offset corresponding to the maximum between
-the previously logged end offset and the new requested end offset. The end
-offsets may be different due to dir index key deletions that happened as
-part of unlink operations while we are logging a directory (triggered when
-fsyncing some other inode parented by the directory) or during renames
-which always attempt to log a single dir index deletion.
-
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Link: https://lore.kernel.org/linux-btrfs/YmyefE9mc2xl5ZMz@hungrycats.org/
-Fixes: 732d591a5d6c12 ("btrfs: stop copying old dir items when logging a directory")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 39 +++++++++++++++++++++++++--------------
- 1 file changed, 25 insertions(+), 14 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index b561dc3807f2..370388fadf96 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3720,11 +3720,29 @@ static noinline int insert_dir_log_key(struct btrfs_trans_handle *trans,
- 	key.offset = first_offset;
- 	key.type = BTRFS_DIR_LOG_INDEX_KEY;
- 	ret = btrfs_insert_empty_item(trans, log, path, &key, sizeof(*item));
--	if (ret)
-+	/*
-+	 * -EEXIST is fine and can happen sporadically when we are logging a
-+	 * directory and have concurrent insertions in the subvolume's tree for
-+	 * items from other inodes and that result in pushing off some dir items
-+	 * from one leaf to another in order to accommodate for the new items.
-+	 * This results in logging the same dir index range key.
-+	 */
-+	if (ret && ret != -EEXIST)
- 		return ret;
- 
- 	item = btrfs_item_ptr(path->nodes[0], path->slots[0],
- 			      struct btrfs_dir_log_item);
-+	if (ret == -EEXIST) {
-+		const u64 curr_end = btrfs_dir_log_end(path->nodes[0], item);
+Resending as this was missed on the last update.
+No changes, only rebased on the current 'for-next' branch.
+
+ tests/generic/690     | 89 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/690.out |  2 +
+ 2 files changed, 91 insertions(+)
+ create mode 100755 tests/generic/690
+ create mode 100644 tests/generic/690.out
+
+diff --git a/tests/generic/690 b/tests/generic/690
+new file mode 100755
+index 00000000..0bf47dd7
+--- /dev/null
++++ b/tests/generic/690
+@@ -0,0 +1,89 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
++#
++# FS QA Test 690
++#
++# Test that if we fsync a directory, create a symlink inside it, rename the
++# symlink, fsync again the directory and then power fail, after the filesystem
++# is mounted again, the symlink exists with the new name and it has the correct
++# content.
++#
++# On btrfs this used to result in the symlink being empty (i_size 0), and it was
++# fixed by kernel commit:
++#
++#    d0e64a981fd841 ("btrfs: always log symlinks in full mode")
++#
++. ./common/preamble
++_begin_fstest auto quick log
 +
-+		/*
-+		 * btrfs_del_dir_entries_in_log() might have been called during
-+		 * an unlink between the initial insertion of this key and the
-+		 * current update, or we might be logging a single entry deletion
-+		 * during a rename, so set the new last_offset to the max value.
-+		 */
-+		last_offset = max(last_offset, curr_end);
-+	}
- 	btrfs_set_dir_log_end(path->nodes[0], item, last_offset);
- 	btrfs_mark_buffer_dirty(path->nodes[0]);
- 	btrfs_release_path(path);
-@@ -3848,13 +3866,6 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 				ret = insert_dir_log_key(trans, log, dst_path,
- 						 ino, *last_old_dentry_offset + 1,
- 						 key.offset - 1);
--				/*
--				 * -EEXIST should never happen because when we
--				 * log a directory in full mode (LOG_INODE_ALL)
--				 * we drop all BTRFS_DIR_LOG_INDEX_KEY keys from
--				 * the log tree.
--				 */
--				ASSERT(ret != -EEXIST);
- 				if (ret < 0)
- 					return ret;
- 			}
-@@ -7030,12 +7041,12 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 		/*
- 		 * Other concurrent task might be logging the old directory,
- 		 * as it can be triggered when logging other inode that had or
--		 * still has a dentry in the old directory. So take the old
--		 * directory's log_mutex to prevent getting an -EEXIST when
--		 * logging a key to record the deletion, or having that other
--		 * task logging the old directory get an -EEXIST if it attempts
--		 * to log the same key after we just did it. In both cases that
--		 * would result in falling back to a transaction commit.
-+		 * still has a dentry in the old directory. We lock the old
-+		 * directory's log_mutex to ensure the deletion of the old
-+		 * name is persisted, because during directory logging we
-+		 * delete all BTRFS_DIR_LOG_INDEX_KEY keys and the deletion of
-+		 * the old name's dir index item is in the delayed items, so
-+		 * it could be missed by an in progress directory logging.
- 		 */
- 		mutex_lock(&old_dir->log_mutex);
- 		ret = del_logged_dentry(trans, log, path, btrfs_ino(old_dir),
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -r -f $tmp.*
++}
++
++. ./common/rc
++. ./common/filter
++. ./common/dmflakey
++
++# real QA test starts here
++
++_supported_fs generic
++_require_scratch
++_require_symlinks
++_require_dm_target flakey
++
++rm -f $seqres.full
++
++# f2fs doesn't support fs-op level transaction functionality, so it has no way
++# to persist all metadata updates in one transaction. We have to use its mount
++# option "fastboot" so that it triggers a metadata checkpoint to persist all
++# metadata updates that happen before a fsync call. Without this, after the
++# last fsync in the test, the symlink named "baz" will not exist.
++if [ $FSTYP = "f2fs" ]; then
++	export MOUNT_OPTIONS="-o fastboot $MOUNT_OPTIONS"
++fi
++
++_scratch_mkfs >>$seqres.full 2>&1
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++# Create our test directory.
++mkdir $SCRATCH_MNT/testdir
++
++# Commit the current transaction and persist the directory.
++sync
++
++# Create a file in the test directory, so that the next fsync on the directory
++# actually does something (it logs the directory).
++echo -n > $SCRATCH_MNT/testdir/foo
++
++# Fsync the directory.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
++
++# Now create a symlink inside the test directory.
++ln -s $SCRATCH_MNT/testdir/foo $SCRATCH_MNT/testdir/bar
++
++# Rename the symlink.
++mv $SCRATCH_MNT/testdir/bar $SCRATCH_MNT/testdir/baz
++
++# Fsync again the directory.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
++
++# Simulate a power failure and then mount again the filesystem to replay the
++# journal/log.
++_flakey_drop_and_remount
++
++# The symlink should exist, with the name "baz" and its content must be
++# "$SCRATCH_MNT/testdir/foo".
++[ -L $SCRATCH_MNT/testdir/baz ] || echo "symlink 'baz' is missing"
++echo "symlink content: $(readlink $SCRATCH_MNT/testdir/baz | _filter_scratch)"
++
++_unmount_flakey
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/690.out b/tests/generic/690.out
+new file mode 100644
+index 00000000..84be1247
+--- /dev/null
++++ b/tests/generic/690.out
+@@ -0,0 +1,2 @@
++QA output created by 690
++symlink content: SCRATCH_MNT/testdir/foo
 -- 
 2.35.1
 
