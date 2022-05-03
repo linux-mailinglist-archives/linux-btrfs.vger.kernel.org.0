@@ -2,626 +2,305 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D1551827D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 12:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122535182C9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 12:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbiECKsU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 06:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
+        id S234490AbiECLAr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 07:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbiECKsU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 06:48:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A17927FE7
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 03:44:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S234599AbiECLAm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 07:00:42 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04E01DA67
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 03:57:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D7CC21F38D;
-        Tue,  3 May 2022 10:44:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651574685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZgghYqXUv92bGMuiL1OJRsJzazNoM42HXpTxHcqea4k=;
-        b=QkRI826mVd4ZTOOa45zvMRf9DP+WHEwxwlhBw+/+OxJjai+DHAmrP3gSeEM4DjCh+6Pm5R
-        jOFJ8chIfMeatzzRZpqv5lYoJyiGCjTZf6lfNNtKOs+xoRJaLf2TtL37EOPlgGJQtuH02k
-        3M7PtShsn8Q3ePCjG7T7Di3y1UnQjnA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB48213ABE;
-        Tue,  3 May 2022 10:44:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nzEEKJ0HcWIifAAAMHmgww
-        (envelope-from <gniebler@suse.com>); Tue, 03 May 2022 10:44:45 +0000
-From:   Gabriel Niebler <gniebler@suse.com>
+        by sin.source.kernel.org (Postfix) with ESMTPS id 137E7CE1EE3
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 10:57:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E3B9C385B0
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 10:57:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651575426;
+        bh=hTIR0Q8cbvONtGoNjhLRr82D6dRLnve6iB/zXvPnl3s=;
+        h=From:To:Subject:Date:From;
+        b=GOozL4JrDd8ZltjCNY3MJupsndHuhzkmYKqBujI7wl5eMKAiK/PH+vNPH2GmODCQ2
+         v+qh5plxIEELnr+5f4swdw17rj1URvvtBr9Z3qbMCQ6yHqdZAlJXQTVehLe52dlots
+         nv2HLV7HGnzVpmzjzaBpwrlV+UhDOqe8Z0XNoAjlD3Vp8/wgjCmZXT7NdDOJuTyyMi
+         uo3fLnq/a8aJbxOwJ6jc1I17k4T3yWXC6CVtL266l398iZzSz7RlmfHzuwDcqzD5A2
+         BRKKMxzNgz0DTCneR/Jbjtnav3vlMP+1q7mdOu5fWOeZaC4xzi4TtdI3WpXrQGPa8L
+         93suaXwxZEjBA==
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, Gabriel Niebler <gniebler@suse.com>
-Subject: [PATCH v2] btrfs: Turn fs_roots_radix in btrfs_fs_info into an XArray
-Date:   Tue,  3 May 2022 12:44:43 +0200
-Message-Id: <20220503104443.24758-1-gniebler@suse.com>
-X-Mailer: git-send-email 2.36.0
+Subject: [PATCH] btrfs: fix assertion failure when logging directory key range item
+Date:   Tue,  3 May 2022 11:57:02 +0100
+Message-Id: <fff3b4bac2270d6d4dba22d6b2c08ce315b8956b.1651573932.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-… rename it to simply fs_roots and adjust all usages of this object to use
-the XArray API, because it is notionally easier to use and understand, as
-it provides array semantics, and also takes care of locking for us,
-further simplifying the code.
+From: Filipe Manana <fdmanana@suse.com>
 
-Also do some refactoring, esp. where the API change requires largely
-rewriting some functions, anyway.
+When inserting a key range item (BTRFS_DIR_LOG_INDEX_KEY) while logging
+a directory, we don't expect the insertion to fail with -EEXIST, because
+we are holding the directory's log_mutex and we have dropped all existing
+BTRFS_DIR_LOG_INDEX_KEY keys from the log tree before we started to log
+the directory. However it's possible that during the logging we attempt
+to insert the same BTRFS_DIR_LOG_INDEX_KEY key twice, but for this to
+happen we need to race with insertions of items from other inodes in the
+subvolume's tree while we are logging a directory. Here's how this can
+happen:
 
-Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+1) We are logging a directory with inode number 1000 that has its items
+   spread across 3 leaves in the subvolume's tree:
+
+   leaf A - has index keys from the range 2 to 20 for example. The last
+   item in the leaf corresponds to a dir item for index number 20. All
+   these dir items were created in a past transaction.
+
+   leaf B - has index keys from the range 22 to 100 for example. It has
+   no keys from other inodes, all its keys are dir index keys for our
+   directory inode number 1000. Its first key is for the dir item with
+   a sequence number of 22. All these dir items were also created in a
+   past transaction.
+
+   leaf C - has index keys for our directory for the range 101 to 120 for
+   example. This leaf also has items from other inodes, and its first
+   item corresponds to the dir item for index number 101 for our directory
+   with inode number 1000;
+
+2) When we finish processing the items from leaf A at log_dir_items(),
+   we log a BTRFS_DIR_LOG_INDEX_KEY key with an offset of 21 and a last
+   offset of 21, meaning the log is authoritative for the index range
+   from 21 to 21 (a single sequence number). At this point leaf B was
+   not yet modified in the current transaction;
+
+3) When we return from log_dir_items() we have released our read lock on
+   leaf B, and have set *last_offset_ret to 21 (index number of the first
+   item on leaf B minus 1);
+
+4) Some other task inserts an item for other inode (inode number 1001 for
+   example) into leaf C. That resulted in pushing some items from leaf C
+   into leaf B, in order to make room for the new item, so now leaf B
+   has dir index keys for the sequence number range from 22 to 102 and
+   leaf C has the dir items for the sequence number range 103 to 120;
+
+5) At log_directory_changes() we call log_dir_items() again, passing it
+   a 'min_offset' / 'min_key' value of 22 (*last_offset_ret from step 3
+   plus 1, so 21 + 1). Then btrfs_search_forward() leaves us at slot 0
+   of leaf B, since leaf B was modified in the current transaction.
+
+   We have also initialized 'last_old_dentry_offset' to 20 after calling
+   btrfs_previous_item() at log_dir_items(), as it left us at the last
+   item of leaf A, which refers to the dir item with sequence number 20;
+
+6) We then call process_dir_items_leaf() to process the dir items of
+   leaf B, and when we process the first item, corresponding to slot 0,
+   sequence number 22, we notice the dir item was created in a past
+   transaction and its sequence number is greater than the value of
+   *last_old_dentry_offset + 1 (20 + 1), so we decide to log again a
+   BTRFS_DIR_LOG_INDEX_KEY key with an offset of 21 and an end range
+   of 21 (key.offset - 1 == 22 - 1 == 21), which results in an -EEXIST
+   error from insert_dir_log_key(), as we have already inserted that
+   key at step 2, triggering the assertion at process_dir_items_leaf().
+
+The trace produced in dmesg is like the following:
+
+assertion failed: ret != -EEXIST, in fs/btrfs/tree-log.c:3857
+[198255.980839][ T7460] ------------[ cut here ]------------
+[198255.981666][ T7460] kernel BUG at fs/btrfs/ctree.h:3617!
+[198255.983141][ T7460] invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+[198255.984080][ T7460] CPU: 0 PID: 7460 Comm: repro-ghost-dir Not tainted 5.18.0-5314c78ac373-misc-next+
+[198255.986027][ T7460] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+[198255.988600][ T7460] RIP: 0010:assertfail.constprop.0+0x1c/0x1e
+[198255.989465][ T7460] Code: 8b 4c 89 (...)
+[198255.992599][ T7460] RSP: 0018:ffffc90007387188 EFLAGS: 00010282
+[198255.993414][ T7460] RAX: 000000000000003d RBX: 0000000000000065 RCX: 0000000000000000
+[198255.996056][ T7460] RDX: 0000000000000001 RSI: ffffffff8b62b180 RDI: fffff52000e70e24
+[198255.997668][ T7460] RBP: ffffc90007387188 R08: 000000000000003d R09: ffff8881f0e16507
+[198255.999199][ T7460] R10: ffffed103e1c2ca0 R11: 0000000000000001 R12: 00000000ffffffef
+[198256.000683][ T7460] R13: ffff88813befc630 R14: ffff888116c16e70 R15: ffffc90007387358
+[198256.007082][ T7460] FS:  00007fc7f7c24640(0000) GS:ffff8881f0c00000(0000) knlGS:0000000000000000
+[198256.009939][ T7460] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[198256.014133][ T7460] CR2: 0000560bb16d0b78 CR3: 0000000140b34005 CR4: 0000000000170ef0
+[198256.015239][ T7460] Call Trace:
+[198256.015674][ T7460]  <TASK>
+[198256.016313][ T7460]  log_dir_items.cold+0x16/0x2c
+[198256.018858][ T7460]  ? replay_one_extent+0xbf0/0xbf0
+[198256.025932][ T7460]  ? release_extent_buffer+0x1d2/0x270
+[198256.029658][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+[198256.031114][ T7460]  ? lock_acquired+0xbe/0x660
+[198256.032633][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+[198256.034386][ T7460]  ? lock_release+0xcf/0x8a0
+[198256.036152][ T7460]  log_directory_changes+0xf9/0x170
+[198256.036993][ T7460]  ? log_dir_items+0xba0/0xba0
+[198256.037661][ T7460]  ? do_raw_write_unlock+0x7d/0xe0
+[198256.038680][ T7460]  btrfs_log_inode+0x233b/0x26d0
+[198256.041294][ T7460]  ? log_directory_changes+0x170/0x170
+[198256.042864][ T7460]  ? btrfs_attach_transaction_barrier+0x60/0x60
+[198256.045130][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+[198256.046568][ T7460]  ? lock_release+0xcf/0x8a0
+[198256.047504][ T7460]  ? lock_downgrade+0x420/0x420
+[198256.048712][ T7460]  ? ilookup5_nowait+0x81/0xa0
+[198256.049747][ T7460]  ? lock_downgrade+0x420/0x420
+[198256.050652][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
+[198256.051618][ T7460]  ? __might_resched+0x128/0x1c0
+[198256.052511][ T7460]  ? __might_sleep+0x66/0xc0
+[198256.053442][ T7460]  ? __kasan_check_read+0x11/0x20
+[198256.054251][ T7460]  ? iget5_locked+0xbd/0x150
+[198256.054986][ T7460]  ? run_delayed_iput_locked+0x110/0x110
+[198256.055929][ T7460]  ? btrfs_iget+0xc7/0x150
+[198256.056630][ T7460]  ? btrfs_orphan_cleanup+0x4a0/0x4a0
+[198256.057502][ T7460]  ? free_extent_buffer+0x13/0x20
+[198256.058322][ T7460]  btrfs_log_inode+0x2654/0x26d0
+[198256.059137][ T7460]  ? log_directory_changes+0x170/0x170
+[198256.060020][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+[198256.060930][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+[198256.061905][ T7460]  ? lock_contended+0x770/0x770
+[198256.062682][ T7460]  ? btrfs_log_inode_parent+0xd04/0x1750
+[198256.063582][ T7460]  ? lock_downgrade+0x420/0x420
+[198256.064432][ T7460]  ? preempt_count_sub+0x18/0xc0
+[198256.065550][ T7460]  ? __mutex_lock+0x580/0xdc0
+[198256.066654][ T7460]  ? stack_trace_save+0x94/0xc0
+[198256.068008][ T7460]  ? __kasan_check_write+0x14/0x20
+[198256.072149][ T7460]  ? __mutex_unlock_slowpath+0x12a/0x430
+[198256.073145][ T7460]  ? mutex_lock_io_nested+0xcd0/0xcd0
+[198256.074341][ T7460]  ? wait_for_completion_io_timeout+0x20/0x20
+[198256.075345][ T7460]  ? lock_downgrade+0x420/0x420
+[198256.076142][ T7460]  ? lock_contended+0x770/0x770
+[198256.076939][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
+[198256.078401][ T7460]  ? btrfs_sync_file+0x5e6/0xa40
+[198256.080598][ T7460]  btrfs_log_inode_parent+0x523/0x1750
+[198256.081991][ T7460]  ? wait_current_trans+0xc8/0x240
+[198256.083320][ T7460]  ? lock_downgrade+0x420/0x420
+[198256.085450][ T7460]  ? btrfs_end_log_trans+0x70/0x70
+[198256.086362][ T7460]  ? rcu_read_lock_sched_held+0x16/0x80
+[198256.087544][ T7460]  ? lock_release+0xcf/0x8a0
+[198256.088305][ T7460]  ? lock_downgrade+0x420/0x420
+[198256.090375][ T7460]  ? dget_parent+0x8e/0x300
+[198256.093538][ T7460]  ? do_raw_spin_lock+0x1c0/0x1c0
+[198256.094918][ T7460]  ? lock_downgrade+0x420/0x420
+[198256.097815][ T7460]  ? do_raw_spin_unlock+0xa9/0x100
+[198256.101822][ T7460]  ? dget_parent+0xb7/0x300
+[198256.103345][ T7460]  btrfs_log_dentry_safe+0x48/0x60
+[198256.105052][ T7460]  btrfs_sync_file+0x629/0xa40
+[198256.106829][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
+[198256.109655][ T7460]  ? __fget_files+0x161/0x230
+[198256.110760][ T7460]  vfs_fsync_range+0x6d/0x110
+[198256.111923][ T7460]  ? start_ordered_ops.constprop.0+0x120/0x120
+[198256.113556][ T7460]  __x64_sys_fsync+0x45/0x70
+[198256.114323][ T7460]  do_syscall_64+0x5c/0xc0
+[198256.115084][ T7460]  ? syscall_exit_to_user_mode+0x3b/0x50
+[198256.116030][ T7460]  ? do_syscall_64+0x69/0xc0
+[198256.116768][ T7460]  ? do_syscall_64+0x69/0xc0
+[198256.117555][ T7460]  ? do_syscall_64+0x69/0xc0
+[198256.118324][ T7460]  ? sysvec_call_function_single+0x57/0xc0
+[198256.119308][ T7460]  ? asm_sysvec_call_function_single+0xa/0x20
+[198256.120363][ T7460]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[198256.121334][ T7460] RIP: 0033:0x7fc7fe97b6ab
+[198256.122067][ T7460] Code: 0f 05 48 (...)
+[198256.125198][ T7460] RSP: 002b:00007fc7f7c23950 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+[198256.126568][ T7460] RAX: ffffffffffffffda RBX: 00007fc7f7c239f0 RCX: 00007fc7fe97b6ab
+[198256.127942][ T7460] RDX: 0000000000000002 RSI: 000056167536bcf0 RDI: 0000000000000004
+[198256.129302][ T7460] RBP: 0000000000000004 R08: 0000000000000000 R09: 000000007ffffeb8
+[198256.130670][ T7460] R10: 00000000000001ff R11: 0000000000000293 R12: 0000000000000001
+[198256.132046][ T7460] R13: 0000561674ca8140 R14: 00007fc7f7c239d0 R15: 000056167536dab8
+[198256.133403][ T7460]  </TASK>
+
+Fix this by treating -EEXIST as expected at insert_dir_log_key() and have
+it update the item with an end offset corresponding to the maximum between
+the previously logged end offset and the new requested end offset. The end
+offsets may be different due to dir index key deletions that happened as
+part of unlink operations while we are logging a directory (triggered when
+fsyncing some other inode parented by the directory) or during renames
+which always attempt to log a single dir index deletion.
+
+Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Link: https://lore.kernel.org/linux-btrfs/YmyefE9mc2xl5ZMz@hungrycats.org/
+Fixes: 732d591a5d6c12 ("btrfs: stop copying old dir items when logging a directory")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
+ fs/btrfs/tree-log.c | 39 +++++++++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
-Changes from v1:
- - Removed unnecessary enclosing while-loops around XArray iterators (Nikolay)
- - Renamed BTRFS_ROOT_IN_RADIX to BTRFS_ROOT_REGISTERED (Nikolay & me)
- - Moved variable declaration into the one loop that uses it (Nikolay)
- - Removed some unnecessary linebreaks (Nikolay)
-
----
- fs/btrfs/ctree.h             |   7 +-
- fs/btrfs/disk-io.c           | 179 +++++++++++++++++------------------
- fs/btrfs/extent-tree.c       |   2 +-
- fs/btrfs/inode.c             |  13 +--
- fs/btrfs/tests/btrfs-tests.c |   2 +-
- fs/btrfs/transaction.c       | 113 ++++++++++------------
- 6 files changed, 149 insertions(+), 167 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index b7631b88426e..357958645805 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -675,8 +675,9 @@ struct btrfs_fs_info {
- 	rwlock_t global_root_lock;
- 	struct rb_root global_root_tree;
- 
--	spinlock_t fs_roots_radix_lock;
--	struct radix_tree_root fs_roots_radix;
-+	/* The XArray that holds all the FS roots */
-+	spinlock_t fs_roots_lock;
-+	struct xarray fs_roots;
- 
- 	/* block group cache stuff */
- 	spinlock_t block_group_cache_lock;
-@@ -1120,7 +1121,7 @@ enum {
- 	 */
- 	BTRFS_ROOT_SHAREABLE,
- 	BTRFS_ROOT_TRACK_DIRTY,
--	BTRFS_ROOT_IN_RADIX,
-+	BTRFS_ROOT_REGISTERED,
- 	BTRFS_ROOT_ORPHAN_ITEM_INSERTED,
- 	BTRFS_ROOT_DEFRAG_RUNNING,
- 	BTRFS_ROOT_FORCE_COW,
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 126f244cdf88..f35eaf9d5bd1 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1216,9 +1216,9 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 	btrfs_qgroup_init_swapped_blocks(&root->swapped_blocks);
- #ifdef CONFIG_BTRFS_DEBUG
- 	INIT_LIST_HEAD(&root->leak_list);
--	spin_lock(&fs_info->fs_roots_radix_lock);
-+	spin_lock(&fs_info->fs_roots_lock);
- 	list_add_tail(&root->leak_list, &fs_info->allocated_roots);
--	spin_unlock(&fs_info->fs_roots_radix_lock);
-+	spin_unlock(&fs_info->fs_roots_lock);
- #endif
- }
- 
-@@ -1648,12 +1648,11 @@ static struct btrfs_root *btrfs_lookup_fs_root(struct btrfs_fs_info *fs_info,
- {
- 	struct btrfs_root *root;
- 
--	spin_lock(&fs_info->fs_roots_radix_lock);
--	root = radix_tree_lookup(&fs_info->fs_roots_radix,
--				 (unsigned long)root_id);
-+	spin_lock(&fs_info->fs_roots_lock);
-+	root = xa_load(&fs_info->fs_roots, (unsigned long)root_id);
- 	if (root)
- 		root = btrfs_grab_root(root);
--	spin_unlock(&fs_info->fs_roots_radix_lock);
-+	spin_unlock(&fs_info->fs_roots_lock);
- 	return root;
- }
- 
-@@ -1695,20 +1694,15 @@ int btrfs_insert_fs_root(struct btrfs_fs_info *fs_info,
- {
- 	int ret;
- 
--	ret = radix_tree_preload(GFP_NOFS);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index b561dc3807f2..370388fadf96 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3720,11 +3720,29 @@ static noinline int insert_dir_log_key(struct btrfs_trans_handle *trans,
+ 	key.offset = first_offset;
+ 	key.type = BTRFS_DIR_LOG_INDEX_KEY;
+ 	ret = btrfs_insert_empty_item(trans, log, path, &key, sizeof(*item));
 -	if (ret)
--		return ret;
--
--	spin_lock(&fs_info->fs_roots_radix_lock);
--	ret = radix_tree_insert(&fs_info->fs_roots_radix,
--				(unsigned long)root->root_key.objectid,
--				root);
-+	spin_lock(&fs_info->fs_roots_lock);
-+	ret = xa_insert(&fs_info->fs_roots,
-+			(unsigned long)root->root_key.objectid,
-+			root, GFP_NOFS);
- 	if (ret == 0) {
- 		btrfs_grab_root(root);
--		set_bit(BTRFS_ROOT_IN_RADIX, &root->state);
-+		set_bit(BTRFS_ROOT_REGISTERED, &root->state);
- 	}
--	spin_unlock(&fs_info->fs_roots_radix_lock);
--	radix_tree_preload_end();
-+	spin_unlock(&fs_info->fs_roots_lock);
++	/*
++	 * -EEXIST is fine and can happen sporadically when we are logging a
++	 * directory and have concurrent insertions in the subvolume's tree for
++	 * items from other inodes and that result in pushing off some dir items
++	 * from one leaf to another in order to accommodate for the new items.
++	 * This results in logging the same dir index range key.
++	 */
++	if (ret && ret != -EEXIST)
+ 		return ret;
  
- 	return ret;
- }
-@@ -2336,9 +2330,9 @@ void btrfs_put_root(struct btrfs_root *root)
- 		btrfs_drew_lock_destroy(&root->snapshot_lock);
- 		free_root_extent_buffers(root);
- #ifdef CONFIG_BTRFS_DEBUG
--		spin_lock(&root->fs_info->fs_roots_radix_lock);
-+		spin_lock(&root->fs_info->fs_roots_lock);
- 		list_del_init(&root->leak_list);
--		spin_unlock(&root->fs_info->fs_roots_radix_lock);
-+		spin_unlock(&root->fs_info->fs_roots_lock);
- #endif
- 		kfree(root);
- 	}
-@@ -2346,28 +2340,21 @@ void btrfs_put_root(struct btrfs_root *root)
- 
- void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info)
- {
--	int ret;
--	struct btrfs_root *gang[8];
--	int i;
-+	struct btrfs_root *root;
-+	unsigned long index = 0;
- 
- 	while (!list_empty(&fs_info->dead_roots)) {
--		gang[0] = list_entry(fs_info->dead_roots.next,
--				     struct btrfs_root, root_list);
--		list_del(&gang[0]->root_list);
-+		root = list_entry(fs_info->dead_roots.next,
-+				  struct btrfs_root, root_list);
-+		list_del(&root->root_list);
- 
--		if (test_bit(BTRFS_ROOT_IN_RADIX, &gang[0]->state))
--			btrfs_drop_and_free_fs_root(fs_info, gang[0]);
--		btrfs_put_root(gang[0]);
-+		if (test_bit(BTRFS_ROOT_REGISTERED, &root->state))
-+			btrfs_drop_and_free_fs_root(fs_info, root);
-+		btrfs_put_root(root);
- 	}
- 
--	while (1) {
--		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
--					     (void **)gang, 0,
--					     ARRAY_SIZE(gang));
--		if (!ret)
--			break;
--		for (i = 0; i < ret; i++)
--			btrfs_drop_and_free_fs_root(fs_info, gang[i]);
-+	xa_for_each(&fs_info->fs_roots, index, root) {
-+		btrfs_drop_and_free_fs_root(fs_info, root);
- 	}
- }
- 
-@@ -3132,7 +3119,7 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- 
- void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- {
--	INIT_RADIX_TREE(&fs_info->fs_roots_radix, GFP_ATOMIC);
-+	xa_init_flags(&fs_info->fs_roots, GFP_ATOMIC);
- 	INIT_RADIX_TREE(&fs_info->buffer_radix, GFP_ATOMIC);
- 	INIT_LIST_HEAD(&fs_info->trans_list);
- 	INIT_LIST_HEAD(&fs_info->dead_roots);
-@@ -3141,7 +3128,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- 	INIT_LIST_HEAD(&fs_info->caching_block_groups);
- 	spin_lock_init(&fs_info->delalloc_root_lock);
- 	spin_lock_init(&fs_info->trans_lock);
--	spin_lock_init(&fs_info->fs_roots_radix_lock);
-+	spin_lock_init(&fs_info->fs_roots_lock);
- 	spin_lock_init(&fs_info->delayed_iput_lock);
- 	spin_lock_init(&fs_info->defrag_inodes_lock);
- 	spin_lock_init(&fs_info->super_lock);
-@@ -3372,7 +3359,7 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
- 	/*
- 	 * btrfs_find_orphan_roots() is responsible for finding all the dead
- 	 * roots (with 0 refs), flag them with BTRFS_ROOT_DEAD_TREE and load
--	 * them into the fs_info->fs_roots_radix tree. This must be done before
-+	 * them into the fs_info->fs_roots. This must be done before
- 	 * calling btrfs_orphan_cleanup() on the tree root. If we don't do it
- 	 * first, then btrfs_orphan_cleanup() will delete a dead root's orphan
- 	 * item before the root's tree is deleted - this means that if we unmount
-@@ -4491,12 +4478,11 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- {
- 	bool drop_ref = false;
- 
--	spin_lock(&fs_info->fs_roots_radix_lock);
--	radix_tree_delete(&fs_info->fs_roots_radix,
--			  (unsigned long)root->root_key.objectid);
--	if (test_and_clear_bit(BTRFS_ROOT_IN_RADIX, &root->state))
-+	spin_lock(&fs_info->fs_roots_lock);
-+	xa_erase(&fs_info->fs_roots, (unsigned long)root->root_key.objectid);
-+	if (test_and_clear_bit(BTRFS_ROOT_REGISTERED, &root->state))
- 		drop_ref = true;
--	spin_unlock(&fs_info->fs_roots_radix_lock);
-+	spin_unlock(&fs_info->fs_roots_lock);
- 
- 	if (BTRFS_FS_ERROR(fs_info)) {
- 		ASSERT(root->log_root == NULL);
-@@ -4512,50 +4498,54 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- 
- int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
- {
--	u64 root_objectid = 0;
--	struct btrfs_root *gang[8];
--	int i = 0;
-+	struct btrfs_root *roots[8];
-+	unsigned long index = 0;
-+	int i;
- 	int err = 0;
--	unsigned int ret = 0;
-+	int grabbed;
- 
- 	while (1) {
--		spin_lock(&fs_info->fs_roots_radix_lock);
--		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
--					     (void **)gang, root_objectid,
--					     ARRAY_SIZE(gang));
--		if (!ret) {
--			spin_unlock(&fs_info->fs_roots_radix_lock);
-+		struct btrfs_root *root;
-+
-+		spin_lock(&fs_info->fs_roots_lock);
-+		if (!xa_find(&fs_info->fs_roots, &index,
-+			     ULONG_MAX, XA_PRESENT)) {
-+			spin_unlock(&fs_info->fs_roots_lock);
- 			break;
- 		}
--		root_objectid = gang[ret - 1]->root_key.objectid + 1;
- 
--		for (i = 0; i < ret; i++) {
--			/* Avoid to grab roots in dead_roots */
--			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
--				gang[i] = NULL;
--				continue;
-+		grabbed = 0;
-+		xa_for_each_start(&fs_info->fs_roots, index, root,
-+				  index) {
-+			/* Avoid grabbing roots in dead_roots */
-+			if (btrfs_root_refs(&root->root_item) == 0) {
-+				roots[grabbed] = NULL;
-+			} else {
-+				/* Grab all the search results for later use */
-+				roots[grabbed] = btrfs_grab_root(root);
- 			}
--			/* grab all the search result for later use */
--			gang[i] = btrfs_grab_root(gang[i]);
-+			grabbed++;
-+			if (grabbed >= ARRAY_SIZE(roots))
-+				break;
- 		}
--		spin_unlock(&fs_info->fs_roots_radix_lock);
-+		spin_unlock(&fs_info->fs_roots_lock);
- 
--		for (i = 0; i < ret; i++) {
--			if (!gang[i])
-+		for (i = 0; i < grabbed; i++) {
-+			if (!roots[i])
- 				continue;
--			root_objectid = gang[i]->root_key.objectid;
--			err = btrfs_orphan_cleanup(gang[i]);
-+			index = roots[i]->root_key.objectid;
-+			err = btrfs_orphan_cleanup(roots[i]);
- 			if (err)
- 				break;
--			btrfs_put_root(gang[i]);
-+			btrfs_put_root(roots[i]);
- 		}
--		root_objectid++;
-+		index++;
- 	}
- 
--	/* release the uncleaned roots due to error */
--	for (; i < ret; i++) {
--		if (gang[i])
--			btrfs_put_root(gang[i]);
-+	/* Release the roots that remain uncleaned due to error */
-+	for (; i < grabbed; i++) {
-+		if (roots[i])
-+			btrfs_put_root(roots[i]);
- 	}
- 	return err;
- }
-@@ -4872,31 +4862,34 @@ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
- 
- static void btrfs_drop_all_logs(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_root *gang[8];
--	u64 root_objectid = 0;
--	int ret;
--
--	spin_lock(&fs_info->fs_roots_radix_lock);
--	while ((ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
--					     (void **)gang, root_objectid,
--					     ARRAY_SIZE(gang))) != 0) {
--		int i;
-+	unsigned long index = 0;
- 
--		for (i = 0; i < ret; i++)
--			gang[i] = btrfs_grab_root(gang[i]);
--		spin_unlock(&fs_info->fs_roots_radix_lock);
-+	spin_lock(&fs_info->fs_roots_lock);
-+	while (xa_find(&fs_info->fs_roots, &index, ULONG_MAX, XA_PRESENT)) {
-+		struct btrfs_root *root;
-+		struct btrfs_root *roots[8];
-+		int grabbed = 0;
-+
-+		xa_for_each_start(&fs_info->fs_roots, index, root,
-+				  index) {
-+			roots[grabbed] = btrfs_grab_root(root);
-+			grabbed++;
-+			if (grabbed >= ARRAY_SIZE(roots))
-+				break;
-+		}
-+		spin_unlock(&fs_info->fs_roots_lock);
- 
--		for (i = 0; i < ret; i++) {
--			if (!gang[i])
-+		for (int i = 0; i < grabbed; i++) {
-+			if (!roots[i])
- 				continue;
--			root_objectid = gang[i]->root_key.objectid;
--			btrfs_free_log(NULL, gang[i]);
--			btrfs_put_root(gang[i]);
-+			index = roots[i]->root_key.objectid;
-+			btrfs_free_log(NULL, roots[i]);
-+			btrfs_put_root(roots[i]);
- 		}
--		root_objectid++;
--		spin_lock(&fs_info->fs_roots_radix_lock);
-+		index++;
-+		spin_lock(&fs_info->fs_roots_lock);
- 	}
--	spin_unlock(&fs_info->fs_roots_radix_lock);
-+	spin_unlock(&fs_info->fs_roots_lock);
- 	btrfs_free_log_root_tree(NULL, fs_info);
- }
- 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 6aa92f84f465..b00c16c188fe 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5818,7 +5818,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 	btrfs_qgroup_convert_reserved_meta(root, INT_MAX);
- 	btrfs_qgroup_free_meta_all_pertrans(root);
- 
--	if (test_bit(BTRFS_ROOT_IN_RADIX, &root->state))
-+	if (test_bit(BTRFS_ROOT_REGISTERED, &root->state))
- 		btrfs_add_dropped_root(trans, root);
- 	else
- 		btrfs_put_root(root);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5082b9c70f8c..d0ef3a17ce11 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3494,6 +3494,7 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 	u64 last_objectid = 0;
- 	int ret = 0, nr_unlink = 0;
- 
-+	/* Bail out if the cleanup is already running. */
- 	if (test_and_set_bit(BTRFS_ROOT_ORPHAN_CLEANUP, &root->state))
- 		return 0;
- 
-@@ -3576,17 +3577,17 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 			 *
- 			 * btrfs_find_orphan_roots() ran before us, which has
- 			 * found all deleted roots and loaded them into
--			 * fs_info->fs_roots_radix. So here we can find if an
-+			 * fs_info->fs_roots. So here we can find if an
- 			 * orphan item corresponds to a deleted root by looking
--			 * up the root from that radix tree.
-+			 * up the root from that xarray.
- 			 */
- 
--			spin_lock(&fs_info->fs_roots_radix_lock);
--			dead_root = radix_tree_lookup(&fs_info->fs_roots_radix,
--							 (unsigned long)found_key.objectid);
-+			spin_lock(&fs_info->fs_roots_lock);
-+			dead_root = xa_load(&fs_info->fs_roots,
-+					    (unsigned long)found_key.objectid);
- 			if (dead_root && btrfs_root_refs(&dead_root->root_item) == 0)
- 				is_dead_root = 1;
--			spin_unlock(&fs_info->fs_roots_radix_lock);
-+			spin_unlock(&fs_info->fs_roots_lock);
- 
- 			if (is_dead_root) {
- 				/* prevent this orphan from being found again */
-diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-index d8e56edd6991..78da7f90baae 100644
---- a/fs/btrfs/tests/btrfs-tests.c
-+++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -202,7 +202,7 @@ void btrfs_free_dummy_root(struct btrfs_root *root)
- 	if (!root)
- 		return;
- 	/* Will be freed by btrfs_free_fs_roots */
--	if (WARN_ON(test_bit(BTRFS_ROOT_IN_RADIX, &root->state)))
-+	if (WARN_ON(test_bit(BTRFS_ROOT_REGISTERED, &root->state)))
- 		return;
- 	btrfs_global_root_delete(root);
- 	btrfs_put_root(root);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index b008c5110958..980647a25381 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -23,7 +23,7 @@
- #include "space-info.h"
- #include "zoned.h"
- 
--#define BTRFS_ROOT_TRANS_TAG 0
-+#define BTRFS_ROOT_TRANS_TAG XA_MARK_0
- 
- /*
-  * Transaction states and transitions
-@@ -437,15 +437,15 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
- 		 */
- 		smp_wmb();
- 
--		spin_lock(&fs_info->fs_roots_radix_lock);
-+		spin_lock(&fs_info->fs_roots_lock);
- 		if (root->last_trans == trans->transid && !force) {
--			spin_unlock(&fs_info->fs_roots_radix_lock);
-+			spin_unlock(&fs_info->fs_roots_lock);
- 			return 0;
- 		}
--		radix_tree_tag_set(&fs_info->fs_roots_radix,
--				   (unsigned long)root->root_key.objectid,
--				   BTRFS_ROOT_TRANS_TAG);
--		spin_unlock(&fs_info->fs_roots_radix_lock);
-+		xa_set_mark(&fs_info->fs_roots,
-+			    (unsigned long)root->root_key.objectid,
-+			    BTRFS_ROOT_TRANS_TAG);
-+		spin_unlock(&fs_info->fs_roots_lock);
- 		root->last_trans = trans->transid;
- 
- 		/* this is pretty tricky.  We don't want to
-@@ -487,11 +487,9 @@ void btrfs_add_dropped_root(struct btrfs_trans_handle *trans,
- 	spin_unlock(&cur_trans->dropped_roots_lock);
- 
- 	/* Make sure we don't try to update the root at commit time */
--	spin_lock(&fs_info->fs_roots_radix_lock);
--	radix_tree_tag_clear(&fs_info->fs_roots_radix,
--			     (unsigned long)root->root_key.objectid,
--			     BTRFS_ROOT_TRANS_TAG);
--	spin_unlock(&fs_info->fs_roots_radix_lock);
-+	xa_clear_mark(&fs_info->fs_roots,
-+		      (unsigned long)root->root_key.objectid,
-+		      BTRFS_ROOT_TRANS_TAG);
- }
- 
- int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
-@@ -1404,9 +1402,8 @@ void btrfs_add_dead_root(struct btrfs_root *root)
- static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
--	struct btrfs_root *gang[8];
--	int i;
--	int ret;
-+	struct btrfs_root *root;
-+	unsigned long index;
- 
- 	/*
- 	 * At this point no one can be using this transaction to modify any tree
-@@ -1414,57 +1411,47 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 	 */
- 	ASSERT(trans->transaction->state == TRANS_STATE_COMMIT_DOING);
- 
--	spin_lock(&fs_info->fs_roots_radix_lock);
--	while (1) {
--		ret = radix_tree_gang_lookup_tag(&fs_info->fs_roots_radix,
--						 (void **)gang, 0,
--						 ARRAY_SIZE(gang),
--						 BTRFS_ROOT_TRANS_TAG);
--		if (ret == 0)
--			break;
--		for (i = 0; i < ret; i++) {
--			struct btrfs_root *root = gang[i];
--			int ret2;
--
--			/*
--			 * At this point we can neither have tasks logging inodes
--			 * from a root nor trying to commit a log tree.
--			 */
--			ASSERT(atomic_read(&root->log_writers) == 0);
--			ASSERT(atomic_read(&root->log_commit[0]) == 0);
--			ASSERT(atomic_read(&root->log_commit[1]) == 0);
--
--			radix_tree_tag_clear(&fs_info->fs_roots_radix,
--					(unsigned long)root->root_key.objectid,
--					BTRFS_ROOT_TRANS_TAG);
--			spin_unlock(&fs_info->fs_roots_radix_lock);
--
--			btrfs_free_log(trans, root);
--			ret2 = btrfs_update_reloc_root(trans, root);
--			if (ret2)
--				return ret2;
--
--			/* see comments in should_cow_block() */
--			clear_bit(BTRFS_ROOT_FORCE_COW, &root->state);
--			smp_mb__after_atomic();
--
--			if (root->commit_root != root->node) {
--				list_add_tail(&root->dirty_list,
--					&trans->transaction->switch_commits);
--				btrfs_set_root_node(&root->root_item,
--						    root->node);
--			}
-+	spin_lock(&fs_info->fs_roots_lock);
-+	xa_for_each_marked(&fs_info->fs_roots, index, root,
-+			   BTRFS_ROOT_TRANS_TAG) {
-+		int ret;
+ 	item = btrfs_item_ptr(path->nodes[0], path->slots[0],
+ 			      struct btrfs_dir_log_item);
++	if (ret == -EEXIST) {
++		const u64 curr_end = btrfs_dir_log_end(path->nodes[0], item);
 +
 +		/*
-+		 * At this point we can neither have tasks logging inodes
-+		 * from a root nor trying to commit a log tree.
++		 * btrfs_del_dir_entries_in_log() might have been called during
++		 * an unlink between the initial insertion of this key and the
++		 * current update, or we might be logging a single entry deletion
++		 * during a rename, so set the new last_offset to the max value.
 +		 */
-+		ASSERT(atomic_read(&root->log_writers) == 0);
-+		ASSERT(atomic_read(&root->log_commit[0]) == 0);
-+		ASSERT(atomic_read(&root->log_commit[1]) == 0);
-+
-+		xa_clear_mark(&fs_info->fs_roots,
-+			      (unsigned long)root->root_key.objectid,
-+			      BTRFS_ROOT_TRANS_TAG);
-+		spin_unlock(&fs_info->fs_roots_lock);
- 
--			ret2 = btrfs_update_root(trans, fs_info->tree_root,
--						&root->root_key,
--						&root->root_item);
--			if (ret2)
--				return ret2;
--			spin_lock(&fs_info->fs_roots_radix_lock);
--			btrfs_qgroup_free_meta_all_pertrans(root);
-+		btrfs_free_log(trans, root);
-+		ret = btrfs_update_reloc_root(trans, root);
-+		if (ret)
-+			return ret;
-+
-+		/* see comments in should_cow_block() */
-+		clear_bit(BTRFS_ROOT_FORCE_COW, &root->state);
-+		smp_mb__after_atomic();
-+
-+		if (root->commit_root != root->node) {
-+			list_add_tail(&root->dirty_list,
-+				      &trans->transaction->switch_commits);
-+			btrfs_set_root_node(&root->root_item, root->node);
- 		}
-+
-+		ret = btrfs_update_root(trans, fs_info->tree_root,
-+					&root->root_key, &root->root_item);
-+		if (ret)
-+			return ret;
-+		spin_lock(&fs_info->fs_roots_lock);
-+		btrfs_qgroup_free_meta_all_pertrans(root);
- 	}
--	spin_unlock(&fs_info->fs_roots_radix_lock);
-+	spin_unlock(&fs_info->fs_roots_lock);
- 	return 0;
- }
- 
++		last_offset = max(last_offset, curr_end);
++	}
+ 	btrfs_set_dir_log_end(path->nodes[0], item, last_offset);
+ 	btrfs_mark_buffer_dirty(path->nodes[0]);
+ 	btrfs_release_path(path);
+@@ -3848,13 +3866,6 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 				ret = insert_dir_log_key(trans, log, dst_path,
+ 						 ino, *last_old_dentry_offset + 1,
+ 						 key.offset - 1);
+-				/*
+-				 * -EEXIST should never happen because when we
+-				 * log a directory in full mode (LOG_INODE_ALL)
+-				 * we drop all BTRFS_DIR_LOG_INDEX_KEY keys from
+-				 * the log tree.
+-				 */
+-				ASSERT(ret != -EEXIST);
+ 				if (ret < 0)
+ 					return ret;
+ 			}
+@@ -7030,12 +7041,12 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 		/*
+ 		 * Other concurrent task might be logging the old directory,
+ 		 * as it can be triggered when logging other inode that had or
+-		 * still has a dentry in the old directory. So take the old
+-		 * directory's log_mutex to prevent getting an -EEXIST when
+-		 * logging a key to record the deletion, or having that other
+-		 * task logging the old directory get an -EEXIST if it attempts
+-		 * to log the same key after we just did it. In both cases that
+-		 * would result in falling back to a transaction commit.
++		 * still has a dentry in the old directory. We lock the old
++		 * directory's log_mutex to ensure the deletion of the old
++		 * name is persisted, because during directory logging we
++		 * delete all BTRFS_DIR_LOG_INDEX_KEY keys and the deletion of
++		 * the old name's dir index item is in the delayed items, so
++		 * it could be missed by an in progress directory logging.
+ 		 */
+ 		mutex_lock(&old_dir->log_mutex);
+ 		ret = del_logged_dentry(trans, log, path, btrfs_ino(old_dir),
 -- 
-2.36.0
+2.35.1
 
