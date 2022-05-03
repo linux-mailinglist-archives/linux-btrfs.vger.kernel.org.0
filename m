@@ -2,46 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F14517FCD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 10:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73F5517FD8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 10:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbiECIjC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 04:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
+        id S232844AbiECIkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 04:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbiECIik (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 04:38:40 -0400
-Received: from ssl1.xaq.nl (ssl1.xaq.nl [45.83.234.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0E53334C
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 01:35:09 -0700 (PDT)
-Received: from kakofonix.xaq.nl (kakofonix.utr.xaq.nl [192.168.64.105])
-        by ssl1.xaq.nl (Postfix) with ESMTPSA id 4E24482F50
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 10:35:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lucassen.org;
-        s=202104; t=1651566907;
-        bh=ljgDFb6vWZNsvKsxtH63WrY0A7ueypzGCj0Vk3xUQfM=;
-        h=Date:From:To:Subject:In-Reply-To:References:Reply-To;
-        b=Bk6S0I+B3NIO0v2oaejrzSWpzQgFwy6Y0xoR5WnEH9GnCtIvnfLagpY4mTTBlud87
-         3hqeyxR3CSqWmJWprC5hGLr5E0+kjSkTN07LV5kdAOaShfwJvrENTXRMHCC6aVdTGp
-         fub7K0oZMKDER5h4FpYsYyzijLkdhv3GFc3w3HrcduZ54YOcA5eAmuSh/bBN81fFyD
-         u/gu0HkNCm3QiNEEpOKH17P2V4RFfM8aF8pFfFEI8vnPTTYQcU66b2KuGwHvvgbKIa
-         TVSWkZ3Dzv/n5mmYc6d9xfm5Gix4g91EuCJBGoQEwfULCQ/BLL8nb7jc3zpoZx9Dvf
-         0D2KUOwicLtBg==
-Date:   Tue, 3 May 2022 10:35:06 +0200
-From:   richard lucassen <mailinglists@lucassen.org>
+        with ESMTP id S232839AbiECIkM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 04:40:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FD3340ED
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 01:36:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C76E91F74A;
+        Tue,  3 May 2022 08:36:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1651566999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=MmSsS/mhYGDBNFyJNxiK02TJEOrjA85IhTTxqmqeXvs=;
+        b=uvrtJdNW8O8QNlmwfgWhOcr25M0gzTwodY1GHrKcS1UkX1TKlndr72qt1E41zGdaRvPTtZ
+        xN6VHlbr9lbXP+8ijv71zSh6AnSTX51EWmyCeOaJzGaiCQyY+gCsQyKe5CQjIesNdz3SCU
+        xKdtfHlypDj1q210KDPS/UJIBen4tGE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8AC1C13ABE;
+        Tue,  3 May 2022 08:36:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q1w7H5fpcGIQPgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 03 May 2022 08:36:39 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: Re: cannot mount btrfs root partition
-Message-Id: <20220503103506.fbf5ae803d00eaa0aa7025f2@lucassen.org>
-In-Reply-To: <20220503102001.271842da4933a043ba106d92@lucassen.org>
-References: <20220503102001.271842da4933a043ba106d92@lucassen.org>
-Reply-To: linux-btrfs@vger.kernel.org
-Organization: XAQ Systems
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 0/2] Refactor btrfs_ioctl_balance
+Date:   Tue,  3 May 2022 11:36:35 +0300
+Message-Id: <20220503083637.1051023-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -50,31 +56,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 3 May 2022 10:20:01 +0200
-richard lucassen <mailinglists@lucassen.org> wrote:
+A recent bug report about a memleak as a result from my refactoring of
+btrfs_ioctl_balance clearly demonstrated that the function has become quite
+unwieldy and fragile. This stems from the fact that it involves some fairly
+convoluted logic in order to acquire the necessary locks (balance_mutex and the
+exclusive ops) and the requirement to handle in-progress or paused balance.
 
-> lilo stanza:
-> image=/boot/vmlinuz-5.10.113-apu1
->         label=btrfs
->         read-only
->         root=/dev/sdb6
->         append="console=ttyS0,115200n8"
-> 
-> BTRFS: device label data devid 1 transid 19 /dev/root scanned \
->   by swapper/0 (1)
-> BTRFS info (device sda6): flagging fs with big metadata feature
-> BTRFS info (device sda6): disk space caching is enabled
-> BTRFS info (device sda6): has skinny extents
-> BTRFS error (device sdb6): devid 1 uuid \
->  d201a08f-84ab-42e1-a411-83caadd1df2d is missing
-> BTRFS error (device sdb6): failed to read the system array: -2 
-> BTRFS error (device sdb6): open_ctree failed
+In order to simplify btrfs_ioctl_balance this series first factors out the locking
+code as it's de-facto separate functionality. It then replaces the open-coded
+locking logic with the newly introduced helper. This makes the code-flow in
+btrfs_ioctl_balance more linear and simple to follow.
 
-[addendum]
+Nikolay Borisov (2):
+  btrfs: Introduce btrfs_try_lock_balance
+  btrfs: Use btrfs_try_lock_balance in btrfs_ioctl_balance
 
-I also have a /dev/sda6 lilo stanza, it is possible that the logs shown
-come from using root=/dev/sda6
+ fs/btrfs/ioctl.c | 118 +++++++++++++++++++++++++++++------------------
+ 1 file changed, 72 insertions(+), 46 deletions(-)
 
--- 
-richard lucassen
-https://contact.xaq.nl/
+--
+2.25.1
+
