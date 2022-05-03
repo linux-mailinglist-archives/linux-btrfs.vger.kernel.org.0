@@ -2,139 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC61F517DA1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 08:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A24517F42
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 09:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbiECGyS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 02:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        id S232258AbiECIAz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 04:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbiECGyB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 02:54:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D626F17E0F
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 23:50:29 -0700 (PDT)
+        with ESMTP id S232186AbiECIAx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 04:00:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3E51F638
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 00:57:21 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 96E79210E4
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:28 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 41B0F1F74A;
+        Tue,  3 May 2022 07:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651560628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
+        t=1651564640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hcR656EPTOYc0yZGpyxOeKwpj806qnZl2NbI+bdWOQE=;
-        b=KnWgG49gl8iYL2lGsFpWc5Ox1qxeWujsxDxE7t+LQ102+RjklUQA5Y9ZMmuO7WEr091iWE
-        I/AFW0kTw6Kt4slJE0ijqlF0YarNN2LhlwH//LBG8klhaDCTb3Owst2DUtpN4ON1wFH2wN
-        Ddg4VtFYgCgNN1gKbAL1cjxLeMAc05Q=
+        bh=zWdlJtqTDpD5tTvRa5VYrC8RZra1BvwMChh48BnfIy8=;
+        b=RwERDSUWWI46qUequ9AYteidkpR3o5HkSJ4YmgI/SSlzgTHttChdsC3lhKAXOYVLWMG3D8
+        9D/wxwbOKp7UheYvKoVomPVfhW5f1Fme+ORqHehYrmFi7L58GVhYzNsZ5ipzWt6BtKa2rE
+        hPhAu1BQIWKQB+JrW5Z1dkOzv65f4Pg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E14513AA3
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:27 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19CDC13ABE;
+        Tue,  3 May 2022 07:57:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mJ9DNLPQcGIZDAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 May 2022 06:50:27 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 13/13] btrfs: remove btrfs_inode::io_failure_tree
-Date:   Tue,  3 May 2022 14:49:57 +0800
-Message-Id: <4c9d27f81cc9b2c004239f1501cbb28e421f0ad2.1651559986.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.0
-In-Reply-To: <cover.1651559986.git.wqu@suse.com>
-References: <cover.1651559986.git.wqu@suse.com>
+        id qLSKA2DgcGJ6KgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 03 May 2022 07:57:20 +0000
+Message-ID: <88811bd1-9a08-ae1b-8140-3e354c118792@suse.com>
+Date:   Tue, 3 May 2022 10:57:19 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH 0/9] Structre and parameter cleanups
+Content-Language: en-US
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1651255990.git.dsterba@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <cover.1651255990.git.dsterba@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since we're handling all data read error inside the endio function,
-there is no need to record any error in io_failure_tree.
 
-Let remove btrfs_inode::io_failure_tree completely.
 
-Although we have extra memory usage for btrfs_read_repair_ctrl, its
-lifespan is only in endio, while the io_failure_tree has a lifespan as
-long as each inode.
-Thus this should bring a overall memory usage reduce.
+On 29.04.22 г. 21:27 ч., David Sterba wrote:
+> Simplify some argument passing, remove too-trivial helpers or unused
+> structure members.
+> 
+> David Sterba (9):
+>    btrfs: sink parameter is_data to btrfs_set_disk_extent_flags
+>    btrfs: remove btrfs_delayed_extent_op::is_data
+>    btrfs: remove unused parameter bio_flags from btrfs_wq_submit_bio
+>    btrfs: remove trivial helper update_nr_written
+>    btrfs: simplify handling of bio_ctrl::bio_flags
+>    btrfs: open code extent_set_compress_type helpers
+>    btrfs: rename io_failure_record::bio_flags to compress_type
+>    btrfs: rename bio_flags in parameters and switch type
+>    btrfs: rename bio_ctrl::bio_flags to compress_type
+> 
+>   fs/btrfs/ctree.c       |  2 +-
+>   fs/btrfs/ctree.h       |  5 ++-
+>   fs/btrfs/delayed-ref.c |  4 +--
+>   fs/btrfs/delayed-ref.h |  1 -
+>   fs/btrfs/disk-io.c     |  5 ++-
+>   fs/btrfs/disk-io.h     |  3 +-
+>   fs/btrfs/extent-tree.c | 10 +++---
+>   fs/btrfs/extent_io.c   | 73 ++++++++++++++++++------------------------
+>   fs/btrfs/extent_io.h   | 22 ++-----------
+>   fs/btrfs/inode.c       | 10 +++---
+>   10 files changed, 50 insertions(+), 85 deletions(-)
+> 
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/btrfs_inode.h       | 5 -----
- fs/btrfs/extent-io-tree.h    | 1 -
- fs/btrfs/inode.c             | 3 ---
- include/trace/events/btrfs.h | 1 -
- 4 files changed, 10 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 32131a5d321b..2ff4da4ed2a1 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -91,11 +91,6 @@ struct btrfs_inode {
- 	/* the io_tree does range state (DIRTY, LOCKED etc) */
- 	struct extent_io_tree io_tree;
- 
--	/* special utility tree used to record which mirrors have already been
--	 * tried when checksums fail for a given block
--	 */
--	struct extent_io_tree io_failure_tree;
--
- 	/*
- 	 * Keep track of where the inode has extent items mapped in order to
- 	 * make sure the i_size adjustments are accurate
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index d46c064e5dad..8ab9b6cd53ed 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -56,7 +56,6 @@ enum {
- 	IO_TREE_FS_EXCLUDED_EXTENTS,
- 	IO_TREE_BTREE_INODE_IO,
- 	IO_TREE_INODE_IO,
--	IO_TREE_INODE_IO_FAILURE,
- 	IO_TREE_RELOC_BLOCKS,
- 	IO_TREE_TRANS_DIRTY_PAGES,
- 	IO_TREE_ROOT_DIRTY_LOG_PAGES,
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9c4cad0f4aee..31c89e707e9b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8833,12 +8833,9 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	inode = &ei->vfs_inode;
- 	extent_map_tree_init(&ei->extent_tree);
- 	extent_io_tree_init(fs_info, &ei->io_tree, IO_TREE_INODE_IO, inode);
--	extent_io_tree_init(fs_info, &ei->io_failure_tree,
--			    IO_TREE_INODE_IO_FAILURE, inode);
- 	extent_io_tree_init(fs_info, &ei->file_extent_tree,
- 			    IO_TREE_INODE_FILE_EXTENT, inode);
- 	ei->io_tree.track_uptodate = true;
--	ei->io_failure_tree.track_uptodate = true;
- 	atomic_set(&ei->sync_writers, 0);
- 	mutex_init(&ei->log_mutex);
- 	btrfs_ordered_inode_tree_init(&ei->ordered_tree);
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index f068ff30d654..020ca1f7687a 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -82,7 +82,6 @@ struct btrfs_space_info;
- 	EM( IO_TREE_FS_EXCLUDED_EXTENTS,  "EXCLUDED_EXTENTS")	    \
- 	EM( IO_TREE_BTREE_INODE_IO,	  "BTREE_INODE_IO")	    \
- 	EM( IO_TREE_INODE_IO,		  "INODE_IO")		    \
--	EM( IO_TREE_INODE_IO_FAILURE,	  "INODE_IO_FAILURE")	    \
- 	EM( IO_TREE_RELOC_BLOCKS,	  "RELOC_BLOCKS")	    \
- 	EM( IO_TREE_TRANS_DIRTY_PAGES,	  "TRANS_DIRTY_PAGES")      \
- 	EM( IO_TREE_ROOT_DIRTY_LOG_PAGES, "ROOT_DIRTY_LOG_PAGES")   \
--- 
-2.36.0
+FWIW:
 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+(I did look at the patches that have been merged into misc-next with the 
+compression type fixed up) .
