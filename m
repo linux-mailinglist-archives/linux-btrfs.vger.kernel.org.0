@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E86C9518A85
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 18:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1119518AA6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 19:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239898AbiECQ5w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 12:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
+        id S239999AbiECRFX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 13:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233719AbiECQ5u (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 12:57:50 -0400
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA082C124;
-        Tue,  3 May 2022 09:54:18 -0700 (PDT)
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-e2442907a1so17750488fac.8;
-        Tue, 03 May 2022 09:54:18 -0700 (PDT)
+        with ESMTP id S233476AbiECRFW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 13:05:22 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B712628;
+        Tue,  3 May 2022 10:01:50 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id q8so18372494oif.13;
+        Tue, 03 May 2022 10:01:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=1eh4gXcwKDJaVq28NyDGAP5u0RiukLhIIz4+qOM8ls8=;
-        b=eBE/MIc/urfwsUyHWM/SS/WAID/KF8tIPcmeNSLdP9Em1tn51M75iLWcUnR/VklFgD
-         EEdE1kq4NcFsnG4VBg+UNtLsw8ZnF9ZbiBtwKPf7lmPbPAAmZCYuSjETsKnIfnHIyKbv
-         bwaxCyUG1oQGLtdEAN0q7v3KboKfBG9Lw3UqJ+b1gRKwnyVrp5f9oQ2gcbr9Z9JHFIXo
-         SsI5IqnnyYO6pcBhtAJOWNtMzNHqFFJ5yZz8XQDW4vJ5k5bDbnMVL8wuS+pZcrMxeMGa
-         DNDYkE3AsBp2HZYVxPl7hTu/1OMASOr7x6Ppk1IuTgYbN3GfurEIsO1kYfcoaptG4Ryi
-         jGFA==
-X-Gm-Message-State: AOAM533CVB8q60npEKO2xcIUl759sCCe822Ffjn0T84q43Xi1oJIw4oL
-        4MAwwqhKntVFyq0kktHpKuI=
-X-Google-Smtp-Source: ABdhPJwIYsdQ5p1P5Q1mznCaYxjTnd/hJJG6oVZ/Lc+drskzCLzSd9wtxgyiNOjNc1Eeeh2wyOvvEw==
-X-Received: by 2002:a05:6870:b693:b0:de:7356:a3a3 with SMTP id cy19-20020a056870b69300b000de7356a3a3mr2077698oab.24.1651596857587;
-        Tue, 03 May 2022 09:54:17 -0700 (PDT)
+        bh=DRk7BATbee0He7UZ5VJP77cBX11TJXZ34BYAwZ+8AgM=;
+        b=xhLa9QqEPnziJXmsQV5gNVVce3r4YwzVcLNtv7st/OVFj/svHhnWqVllllhAoLtxiJ
+         w8cxZvVQh/RWTGE+pJqX6+IoUUdQQpk0IkT0RD85+RMG0tfFPFs0srokLEBWG8iFY93p
+         ANA5hDAIrqZAjcG/Cm3owfUXUJIqcC+u2ifdwdEOuMV1dImS1UGjSbjMcYyU70ACPW2d
+         ysPQVO+zv7WLk72XU3AJXX4nJIyLDurS2vGFEEEVkQhp/hwFQYzZ2/r34im4gpumeBNy
+         z9bNK0aJNAuI1pV7D0A5bA8eTUaAabqXPqYIvLLG08ydsNbiy+bnCOeQHxFvVR3WQ9w+
+         WtKw==
+X-Gm-Message-State: AOAM5336ea5EtQg0xXs9foz3ff+lIVipPp6z19JyqfTwbmmdKnopw6/k
+        XPdSVipkF7xdVGAok2wkcNk=
+X-Google-Smtp-Source: ABdhPJzQ7nN1tdLufKhuqG6pqOb+aTzQGH1sI9Wd1lN/gZWKJGxCZu7MZvXiQsv6VotmI9tLD36qJQ==
+X-Received: by 2002:a05:6808:1b10:b0:326:40f5:930c with SMTP id bx16-20020a0568081b1000b0032640f5930cmr840804oib.281.1651597309459;
+        Tue, 03 May 2022 10:01:49 -0700 (PDT)
 Received: from [10.10.69.251] ([8.34.116.185])
-        by smtp.gmail.com with ESMTPSA id v186-20020aca61c3000000b00325cda1ffa1sm3506854oib.32.2022.05.03.09.54.14
+        by smtp.gmail.com with ESMTPSA id a8-20020a4ad5c8000000b0035eb4e5a6c6sm5071917oot.28.2022.05.03.10.01.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 May 2022 09:54:16 -0700 (PDT)
-Message-ID: <78730bd4-a184-e0f0-4634-d09dbaf59958@acm.org>
-Date:   Tue, 3 May 2022 09:54:13 -0700
+        Tue, 03 May 2022 10:01:48 -0700 (PDT)
+Message-ID: <1b7f3aac-0941-2554-d966-01a6bf76cc58@acm.org>
+Date:   Tue, 3 May 2022 10:01:45 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: [PATCH 06/16] nvmet: use blk_queue_zone_no()
+Subject: Re: [PATCH 13/16] null_blk: allow non power of 2 zoned devices
 Content-Language: en-US
 To:     Pankaj Raghav <p.raghav@samsung.com>, jaegeuk@kernel.org,
         axboe@kernel.dk, snitzer@kernel.org, hch@lst.de, mcgrof@kernel.org,
@@ -58,10 +58,10 @@ Cc:     linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, matias.bjorling@wdc.com,
         linux-block@vger.kernel.org
 References: <20220427160255.300418-1-p.raghav@samsung.com>
- <CGME20220427160302eucas1p1aaba7a309778d3440c3315ad899e4035@eucas1p1.samsung.com>
- <20220427160255.300418-7-p.raghav@samsung.com>
+ <CGME20220427160310eucas1p28cd3c5ff4fb7a04bc77c4c0b9d96bb74@eucas1p2.samsung.com>
+ <20220427160255.300418-14-p.raghav@samsung.com>
 From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20220427160255.300418-7-p.raghav@samsung.com>
+In-Reply-To: <20220427160255.300418-14-p.raghav@samsung.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,
@@ -76,15 +76,24 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 4/27/22 09:02, Pankaj Raghav wrote:
-> From: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> Instead of open coding the number of zones given a sector, use the helper
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-I can't parse this. Please rephrase this.
+> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+> index c441a4972064..82a62b543782 100644
+> --- a/drivers/block/null_blk/main.c
+> +++ b/drivers/block/null_blk/main.c
+> @@ -1931,8 +1931,8 @@ static int null_validate_conf(struct nullb_device *dev)
+>   		dev->mbps = 0;
+>   
+>   	if (dev->zoned &&
+> -	    (!dev->zone_size || !is_power_of_2(dev->zone_size))) {
+> -		pr_err("zone_size must be power-of-two\n");
+> +	    (!dev->zone_size)) {
+> +		pr_err("zone_size must not be zero\n");
+>   		return -EINVAL;
+>   	}
 
-> blk_queue_zone_no(). This let's us make modifications to the math if
-> needed in one place and adds now support for npo2 zone devices.
+Please combine "if (dev->zoned &&" and "(!dev->zone_size)) {" into a 
+single line and leave out the parentheses that became superfluous.
 
-But since the code looks fine:
+Thanks,
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Bart.
