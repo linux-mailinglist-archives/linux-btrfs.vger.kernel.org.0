@@ -2,108 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5551D5181BE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 11:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62F0518231
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 12:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbiECJ6f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 05:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
+        id S231156AbiECKZL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 06:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbiECJ6b (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 05:58:31 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4182C34BA4
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 02:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1651571697;
-        bh=ihFjC4CjzmV+jo+l4bdV9Ilf+cRYDQFT+onDv0DuIVM=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=LDakGyFQcyLnxD1kLJCtxSPIYA6jhgb9DmHVT6Wox1eR9axtsaKrXgHO2JAYPiasj
-         9hjHk1Z637Hhov4stv7efk0ldH9yJ6ckkJXYiSrWKYm0UW1PpiI4BeJnOxCEPw53yP
-         qMTQ9wP1tF6UEgwT3qVBZnrUY8EBYOqUjg1AdAcw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHnm-1o5xMY35eU-00tkZo for
- <linux-btrfs@vger.kernel.org>; Tue, 03 May 2022 11:54:57 +0200
-Message-ID: <d018c2e9-b07c-6a2d-9819-810ce81ad24c@gmx.com>
-Date:   Tue, 3 May 2022 17:54:54 +0800
+        with ESMTP id S230281AbiECKZK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 06:25:10 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620B955AB
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 03:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651573298; x=1683109298;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F2TazI0aaCDtqUZB8Af0dFuA2JKk8qO6gB+gTKJXiPk=;
+  b=SKmXdsqZx8pf/D0rYJk2P9N75t63a7cj4+0ZOwa8tKjnGYsqr1QUcX5q
+   EHDRVci5n/Gx2GtQ1V93tZOuLwdhEZsId6SWmIEvLrowj9b4TR24GKKW2
+   NE3d4QeCiYzdWDgAL/Om850jW6FHtfcpLDD03bvnnAdKUlZWV6uyykHX3
+   EES5gCjgMEBLtYUAE6ECArggupMYJaB+9yz2E0Y2+M0A22P9Wg/vanBIK
+   J/cEurdJAi2ONcbnFT7qn9Inqkhvo2yg/pheaRMHfKmYrcUoMx/RAmqwN
+   RTu4Q9LcPFLHz2C4bIJiUdDf60aqSv12WUuMHaYpPH5oFIlFzFNMCDEFX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10335"; a="327985968"
+X-IronPort-AV: E=Sophos;i="5.91,194,1647327600"; 
+   d="scan'208";a="327985968"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2022 03:21:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,194,1647327600"; 
+   d="scan'208";a="599008652"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 03 May 2022 03:21:36 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nlpey-000AN3-4X;
+        Tue, 03 May 2022 10:21:36 +0000
+Date:   Tue, 3 May 2022 18:20:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH 1/2] btrfs: Introduce btrfs_try_lock_balance
+Message-ID: <202205031820.eWTnmpgQ-lkp@intel.com>
+References: <20220503083637.1051023-2-nborisov@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: cannot mount btrfs root partition
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org
-References: <20220503102001.271842da4933a043ba106d92@lucassen.org>
- <20220503083206.GI15632@savella.carfax.org.uk>
- <20220503104550.16d2465877beb89f713485c2@lucassen.org>
- <20220503090842.GJ15632@savella.carfax.org.uk>
- <20220503113427.3a192c5daf6197aa3b6c93bc@lucassen.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220503113427.3a192c5daf6197aa3b6c93bc@lucassen.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:I3VKdkFYaZGyyj0a5sZB0lmOyGbfg5KDmf3N/gy65KOAoIdCRdX
- XulxBeUspKqmkXDTx8AZSaClG1ZSdq/v/lNsc7yRrsON60XxcerGO3AsGGCl0batjUghvbv
- WI+j/QOzgkOU54PXmT9qLOxpqVrBEDmNe1cMUE3x+EBNA+0Qtupd6expygMYcyfgu1URHOV
- vxnRh2zaJWzK6qdNiuTwA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Tp4cOxACMs0=:lz7+rlQ6p2oL0iLWZbyRdB
- TLpW4jx2HoK2z8FzkdQgXAT4T2F21tWSAsy/A4rwpmgHReLrUG+vqWg5xldwMrGZZOYrXKmjA
- 5T0yJO2K+dFTY4e7VgzgTM8tsIAxh8sSsI43GIo/7S/SRkzII0awjoKLyxTADm/Xkn9pQkjRc
- meZD6flByoafjK/muEoLVjf7Rf6HLeQafufG5HvKKZWqJygCRHkBdDikEo8XZOwZVKV42PE82
- pG4MCrhO8E3gP7YGxfEr4HR+dgxHSYh8EkndkMgR+7j6JjSLR2WepRi9QnOXrZUmr+96IkThv
- NgYAj1xYVFBd78S4YGPZgpD4bPkp0e0GGM/v21ebyC5VCvY9y3dBov/3ZPL43KfyJ8JU/+Qsk
- F10rEI5BwyJNWFiEVz77J00Djoud9hRSEK2TNIAIg2Y8kb5xRjw+AIU6OeYnQqW8WPKNNT1Vb
- Q7YB0xC1kKee7cKm3OycgknaO+uKbUAS3HAOEPgb9LhfktQmHiX9vxpXVaIajt7bqurXHJPDM
- kMfZBfiZ5nUfh5uEpT99jpgSc3RwoVisu+DJH2FVYo+QOD4k2j3kW5P/s7YWcCdNprH4uOwTH
- wqLgLGz73GklHgkUtofOzgpKjrDu7DovAVS7nWJDQkW7w0ifU3h/5KT2kVfz/CHBSMncZVrtS
- bPRI7Y9mL3QTnlM7kA7c8zdYBx01Tc87u6lJT/3QztgeExb33HjHnHasRtN9kVVv14/b259wf
- nODvH4XEd2WYzgpTOEh2RznnxAlwCIl9zhFAaZ2EQ3GTXyXoMWXQMrHAuXvjKdQxYFA1mg6Al
- B9o7pHoOQDoMzeJkJ9fTcgaZzanNFtpa0DwLszYxC9cNeLUeEP+3mOR7Bm5Izli8ydohCoRnu
- PLIFcTOONCdJJWkkQ9RofXJebGJdYD7Gq44APuq1acIvFvkd4gi/vX0s+f36VgtfTLpaQZezl
- KyU/Ug2+ko49joUH/NA4+Uy222YNp1zXlyv1xvTAIEzWfn6Vk0gvgOHstVLWUHeRHzPRjZmVO
- eKMYvq2OwGzRh4INe7MvdQ64mtLC610AFsS8aHAGRHm2thAAg1wHTcDxZ25OcBMYbxaSKndyW
- mM6XSgtjQ6cit0=
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220503083637.1051023-2-nborisov@suse.com>
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Nikolay,
+
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on v5.18-rc5 next-20220503]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Nikolay-Borisov/Refactor-btrfs_ioctl_balance/20220503-163837
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: mips-allyesconfig (https://download.01.org/0day-ci/archive/20220503/202205031820.eWTnmpgQ-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/d383145190e87f46bc73d86059724df2b3af9720
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Nikolay-Borisov/Refactor-btrfs_ioctl_balance/20220503-163837
+        git checkout d383145190e87f46bc73d86059724df2b3af9720
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash fs/btrfs/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> fs/btrfs/ioctl.c:4350: warning: expecting prototype for Try to acquire fs_info:(). Prototype was for btrfs_try_lock_balance() instead
 
 
-On 2022/5/3 17:34, richard lucassen wrote:
-> On Tue, 3 May 2022 10:08:42 +0100
-> Hugo Mills <hugo@carfax.org.uk> wrote:
->
->>     For the single-drive case, I don't know why that's not working. Is
->> the error message the same with that as for the multi-device FS?
->
-> Oops, error, mea culpa, it's an SD card and I forgot the "rootwait"
-> option. It boots into btrfs now!
->
-> About the option to specify the devices explicitely, is this the right
-> syntax to tell the kernel what to do?
->
-> append=3D"root=3D/dev/sda6 rootflags=3Ddevice=3D/dev/sda6,device=3D/dev/=
-sdb6"
+vim +4350 fs/btrfs/ioctl.c
 
-Since you only have two devices in the fs, you can skip the one in the
-root=3D, just by:
+  4336	
+  4337	/**
+  4338	 * Try to acquire fs_info::balance_Mutex as well as set BTRFS_EXLCOP_BALANCE as
+  4339	 * required.
+  4340	 *
+  4341	 * @fs_info:       context of the filesystem
+  4342	 * @excl_acquired: ptr to boolean value which is set to 'false' in case balance
+  4343	 * is being resumed.
+  4344	 *
+  4345	 * Returns 0 on success in which case both fs_info::balance is acquired as well
+  4346	 * as exclusive ops are blocked. In case of failure returns an error code.
+  4347	 *
+  4348	 */
+  4349	static int btrfs_try_lock_balance(struct btrfs_fs_info *fs_info, bool *excl_acquired)
+> 4350	{
+  4351		int ret;
+  4352		/*
+  4353		 * mut. excl. ops lock is locked.  Three possibilities:
+  4354		 *   (1) some other op is running
+  4355		 *   (2) balance is running
+  4356		 *   (3) balance is paused -- special case (think resume)
+  4357		 */
+  4358		while (1) {
+  4359			if (btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE)) {
+  4360				*excl_acquired = true;
+  4361				mutex_lock(&fs_info->balance_mutex);
+  4362				return 0;
+  4363			}
+  4364	
+  4365			mutex_lock(&fs_info->balance_mutex);
+  4366			if (fs_info->balance_ctl) {
+  4367				/* this is either (2) or (3) */
+  4368				if (test_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags)) {
+  4369					/* this is (2) */
+  4370					ret = -EINPROGRESS;
+  4371					goto out_failure;
+  4372	
+  4373				} else {
+  4374					mutex_unlock(&fs_info->balance_mutex);
+  4375					/*
+  4376					 * Lock released to allow other waiters to continue,
+  4377					 * we'll reexamine the status again.
+  4378					 */
+  4379					mutex_lock(&fs_info->balance_mutex);
+  4380	
+  4381					if (fs_info->balance_ctl &&
+  4382					    !test_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags)) {
+  4383						/* this is (3) */
+  4384						*excl_acquired = false;
+  4385						return 0;
+  4386					}
+  4387				}
+  4388			} else {
+  4389				/* this is (1) */
+  4390				ret = BTRFS_ERROR_DEV_EXCL_RUN_IN_PROGRESS;
+  4391				goto out_failure;
+  4392			}
+  4393	
+  4394			mutex_unlock(&fs_info->balance_mutex);
+  4395		}
+  4396	
+  4397	out_failure:
+  4398		mutex_unlock(&fs_info->balance_mutex);
+  4399		*excl_acquired = false;
+  4400		return ret;
+  4401	}
+  4402	
 
-root=3D/dev/sda6 rootflags=3Ddevice=3D/dev/sdb6
-
-You can test with all devices forgot:
-
-# btrfs devices scan -u /dev/sda6
-# btrfs devices scan -u /dev/sdb6
-# mount /dev/sda6 -o device=3D/dev/sdb6 /mnt/btrfs
-
-Thanks,
-Qu
->
-> R.
->
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
