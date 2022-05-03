@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE43517DA7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 08:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580C7517DA4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 May 2022 08:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbiECGzl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 May 2022 02:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
+        id S230315AbiECGzs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 May 2022 02:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbiECGxx (ORCPT
+        with ESMTP id S230285AbiECGxx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 May 2022 02:53:53 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11CC63AF
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 23:50:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA5915FDE
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 May 2022 23:50:21 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 58B63210EA
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:18 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DD283210E4;
+        Tue,  3 May 2022 06:50:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651560618; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1651560619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FWAbtDGKIN1fbdmsym4iNqsHy3KEGM02Lg36Lop6FQA=;
-        b=VugKKktlpceKgfMiI521PpgUiEYDbjLcZL6LhFHYLVoA00wBrC9RujyPzmKWjh5tcndZZi
-        R4XfXRhTH0aMNnIXXkkfbELLn9epNJCrCU8moTM9UeT8JdiKdAZLJt/c3n9VQ85fvkzSqR
-        SzfKwvkXBGlakyTNoUzsGGoB6VVFREI=
+        bh=z4En+KBaa49xhWnWyqXPihxY4/PWZc2XOk1ADnB+VY0=;
+        b=LUhxHFk76Yg3uFRe+5/FmgIoQrmU4iAjBWSAtvfyGTUBO/8px3m2PeJmO+mxA3AnVdsJjS
+        DK/MIeoH93z9mPPQi1zz80bOObYNfi7/1vMCZQ18GMni+JJvIC9roIcl9JwDwAbhYEpSEc
+        IS31/ZH5/cyYh7JhR0aW0MN0e5prjQg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C38BC13AA3
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 06:50:17 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B10113AA3;
+        Tue,  3 May 2022 06:50:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id QBDgJKnQcGIZDAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 May 2022 06:50:17 +0000
+        id IFyRH6rQcGIZDAAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 03 May 2022 06:50:18 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/13] btrfs: save the original bi_iter into btrfs_bio for buffered read
-Date:   Tue,  3 May 2022 14:49:47 +0800
-Message-Id: <50c90265a7371f0ed1ec9e94c2e4e00a915ec69f.1651559986.git.wqu@suse.com>
+Cc:     Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 04/13] btrfs: remove duplicated parameters from submit_data_read_repair()
+Date:   Tue,  3 May 2022 14:49:48 +0800
+Message-Id: <f6aa1986ab6dd9b1f6b544445d8ce2f51661d6b2.1651559986.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <cover.1651559986.git.wqu@suse.com>
 References: <cover.1651559986.git.wqu@suse.com>
@@ -60,71 +60,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although we have btrfs_bio::iter, it currently have very limited usage:
+The function submit_data_read_repair() is only called for buffered data
+read path, thus those members can be calculated using bvec directly:
 
-- RAID56
-  Which is not needed at all
+- start
+  start = page_offset(bvec->bv_page) + bvec->bv_offset;
 
-- btrfs_bio_clone()
-  This is used mostly for direct IO.
+- end
+  end = start + bvec->bv_len - 1;
 
-For the incoming read repair patches, we want to grab the original
-logical bytenr, and be able to iterate the range of the bio (no matter
-if it's cloned).
+- page
+  page = bvec->bv_page;
 
-So this patch will also save btrfs_bio::iter for buffered read bios at
-submit_one_bio().
-And for the sake of consistency, also save the btrfs_bio::iter for
-direct IO at btrfs_submit_dio_bio().
+- pgoff
+  pgoff = bvec->bv_offset;
 
-The reason that we didn't save the iter in btrfs_map_bio() is,
-btrfs_map_bio() is going to handle various bios, with or without
-btrfs_bio bioset.
-And we  want to keep btrfs_map_bio() to handle and only handle plain bios
-without bother the bioset.
+Thus we can safely replace those 4 parameters with just one bio_vec.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 12 ++++++++++++
- fs/btrfs/inode.c     |  2 ++
- 2 files changed, 14 insertions(+)
+ fs/btrfs/extent_io.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 07888cce3bce..0ae4ee7f344d 100644
+index 0ae4ee7f344d..240277cdccd2 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -186,6 +186,18 @@ static void submit_one_bio(struct bio *bio, int mirror_num, unsigned long bio_fl
- 	/* Caller should ensure the bio has at least some range added */
- 	ASSERT(bio->bi_iter.bi_size);
+@@ -2740,13 +2740,16 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
  
-+	/*
-+	 * Save the original bi_iter for read bios, as read repair wants the
-+	 * orignial logical bytenr.
-+	 *
-+	 * We don't do this in btrfs_map_bio() because that function is
-+	 * bioset independent.
-+	 * We can later pass bios without btrfs_bio or with other bioset into
-+	 * btrfs_map_bio().
-+	 */
-+	if (bio_op(bio) == REQ_OP_READ)
-+		btrfs_bio(bio)->iter = bio->bi_iter;
-+
- 	if (is_data_inode(tree->private_data))
- 		btrfs_submit_data_bio(tree->private_data, bio, mirror_num,
- 					    bio_flags);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5b1a60a25ef6..f4dfb79fafce 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7926,6 +7926,8 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
- 		if (ret)
- 			goto err;
-+		/* Check submit_one_bio() for the reason. */
-+		btrfs_bio(bio)->iter = bio->bi_iter;
- 	}
+ static blk_status_t submit_data_read_repair(struct inode *inode,
+ 					    struct bio *failed_bio,
+-					    u32 bio_offset, struct page *page,
+-					    unsigned int pgoff,
+-					    u64 start, u64 end,
++					    u32 bio_offset,
++					    const struct bio_vec *bvec,
+ 					    int failed_mirror,
+ 					    unsigned int error_bitmap)
+ {
++	const unsigned int pgoff = bvec->bv_offset;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct page *page = bvec->bv_page;
++	const u64 start = page_offset(bvec->bv_page) + bvec->bv_offset;
++	const u64 end = start + bvec->bv_len - 1;
+ 	const u32 sectorsize = fs_info->sectorsize;
+ 	const int nr_bits = (end + 1 - start) >> fs_info->sectorsize_bits;
+ 	int error = 0;
+@@ -3106,10 +3109,8 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			 * submit_data_read_repair() will handle all the good
+ 			 * and bad sectors, we just continue to the next bvec.
+ 			 */
+-			submit_data_read_repair(inode, bio, bio_offset, page,
+-						start - page_offset(page),
+-						start, end, mirror,
+-						error_bitmap);
++			submit_data_read_repair(inode, bio, bio_offset, bvec,
++						mirror, error_bitmap);
  
- 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ 			ASSERT(bio_offset + len > bio_offset);
+ 			bio_offset += len;
 -- 
 2.36.0
 
