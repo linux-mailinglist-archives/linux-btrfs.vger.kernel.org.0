@@ -2,123 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A841451ABBC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 19:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FF651ACDD
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 20:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359542AbiEDRw6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 May 2022 13:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
+        id S1377117AbiEDSfb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 May 2022 14:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359125AbiEDRvd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 13:51:33 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15484C439;
-        Wed,  4 May 2022 10:11:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8BD9B1F38D;
-        Wed,  4 May 2022 17:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1651684289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N6EMoP13+uuDakjMHpvxy4PBHA2cakQS2VfsX4a/x94=;
-        b=DJBXlAYyuYbusnoUszCA+AfMUUtGYehcgNX/lQ0qb1pMGVJ8Y/wB2k+YBRDIZuhTeQqd7b
-        tHvLMy5QORZQYIpA9gIeZd+FIbx6yExh/jX0dTQhrTHcfqHSr/rMyA45YxKum1K9WKH687
-        TFFcsHo0sSle3EgUEzEdaFr8d2K/Tio=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1651684289;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N6EMoP13+uuDakjMHpvxy4PBHA2cakQS2VfsX4a/x94=;
-        b=5hv3tExqNVDL20PvtwaVNk13uh5hLvjqypg4NlyuP/W5i/E/1fSmlov7z3Q727EOdt2Ymq
-        Cgfxb1jhrkiVgADw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 272C0131BD;
-        Wed,  4 May 2022 17:11:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eGrpOruzcmIsWwAAMHmgww
-        (envelope-from <hare@suse.de>); Wed, 04 May 2022 17:11:23 +0000
-Message-ID: <2586cd78-cd54-97ed-86b0-8f78a444387a@suse.de>
-Date:   Wed, 4 May 2022 10:11:22 -0700
+        with ESMTP id S1377108AbiEDSfW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 14:35:22 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA5C21809
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 11:15:54 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id c15so2692448ljr.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 May 2022 11:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=QX0HNgrVS21Is8gMwDP+/rSETOCjRVGNklqfue5Uuis=;
+        b=pd5GrCz6KtgIsQWf5dg1TWqAQNNhtIy78U1pY9aYfL69gVNVbZLo5Bu4G6/kcIT3Oy
+         HLiCgDrCat5BJ+gGKZ/JUPP401+wo6HeAVfn78NGO5vEjyAbqqRdx9UY8+8Ah3Iv3/Gf
+         ZWf6Fdxrxo3vHnTUczl7n7UoqJWWgiolwy3LVjgOg/xsO6x3sTboCpDXTDasr+gTbkJ0
+         /htutVaqSWqDIVwIrwKqjrbdiJZSZ4yKrgLiuymnvM968ig/oQR9sYYo+PEsfIUsIfxM
+         JP5XqdUT219E1t5fcv3GYnoa4KtUqR0WFItzjCTpp5TvJcxlYCoJWjr7hfnsTxz/HWol
+         Jy2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=QX0HNgrVS21Is8gMwDP+/rSETOCjRVGNklqfue5Uuis=;
+        b=kw3pw2/AFCUtqSzIWI5EzGe7R8GhHvDgtH2XJsAJVREGd3WgENs6IrmaGTmIgZvubY
+         Ld1vYbHBMShR1Erowy1tSK0DGQHZSp8H1oA5Akapp27dEApntKf5pBUBdgi2faJ+wlNJ
+         0lLBHkYPtEcxo8eKdJMaqpdMrPbkGgrDNxJOPEuPh1YwLnWJbDPv2FCK3qS+Mz3+ZIbR
+         V/0hXlT1Nh3XdyB1IyhwdTZhl8bxq20QLmHWY2l4Y5h18UKmCIpwwc5If+AR9SwpdiUP
+         AczCAVOS+YQ08m2rLfotnpo5BWd53CMCiySC7rvaZ4VgAP7c/xnqWwGvF3sN1GE8nfkR
+         GxIw==
+X-Gm-Message-State: AOAM531kEPkBwHJs0jSIqobZjFvEjb6uuN7W1N7TV817ksz017l3uQFF
+        8M1hpkdj7knShyE4pzz7yi0tsovmfxF8Tw==
+X-Google-Smtp-Source: ABdhPJys1JmFACa4koPUHqc+yz4Yd1HvgPuQkmv8+xysea+OH0IKMzmCjcJRzBc6UCZWjel6fJQM9A==
+X-Received: by 2002:a2e:a7c3:0:b0:24f:5201:d839 with SMTP id x3-20020a2ea7c3000000b0024f5201d839mr10180246ljp.218.1651688152180;
+        Wed, 04 May 2022 11:15:52 -0700 (PDT)
+Received: from ?IPV6:2a00:1370:8182:3365:df52:ce71:56d4:e7e6? ([2a00:1370:8182:3365:df52:ce71:56d4:e7e6])
+        by smtp.gmail.com with ESMTPSA id q9-20020ac246e9000000b0047255d2116csm1270962lfo.155.2022.05.04.11.15.51
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 May 2022 11:15:51 -0700 (PDT)
+Message-ID: <42d841fc-d4ee-37e1-470f-4ac5c821afc7@gmail.com>
+Date:   Wed, 4 May 2022 21:15:50 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH 16/16] dm-zoned: ensure only power of 2 zone sizes are
- allowed
+ Thunderbird/91.8.1
+Subject: Re: Debian Bullseye install btrfs raid1
 Content-Language: en-US
-References: <20220427160255.300418-1-p.raghav@samsung.com>
- <CGME20220427160313eucas1p1feecf74ec15c8c3d9250444710fd1676@eucas1p1.samsung.com>
- <20220427160255.300418-17-p.raghav@samsung.com>
-From:   Hannes Reinecke <hare@suse.de>
-To:     undisclosed-recipients:;
-In-Reply-To: <20220427160255.300418-17-p.raghav@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     linux-btrfs@vger.kernel.org
+References: <20220504112315.71b41977e071f43db945687c@lucassen.org>
+ <c0a5db9f-2631-9177-929c-9e76a9c67ec5@suse.com>
+ <20220504120254.7fae6033bee9e63ed002bea9@lucassen.org>
+ <9129a5be-f0a2-5859-4c02-eb075d222a31@suse.com>
+ <20220504121454.8a43384a5c8ec25d6e9c1b77@lucassen.org>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <20220504121454.8a43384a5c8ec25d6e9c1b77@lucassen.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/27/22 09:02, Pankaj Raghav wrote:
-> From: Luis Chamberlain <mcgrof@kernel.org>
+On 04.05.2022 13:14, richard lucassen wrote:
+> On Wed, 4 May 2022 13:07:14 +0300
+> Nikolay Borisov <nborisov@suse.com> wrote:
 > 
-> Today dm-zoned relies on the assumption that you have a zone size
-> with a power of 2. Even though the block layer today enforces this
-> requirement, these devices do exist and so provide a stop-gap measure
-> to ensure these devices cannot be used by mistake
+>>> The wiki explains how to repair an array, but when the array is the
+>>> root fs you will have a problem.
+>>>
+>>> So, what should I do when the / fs is degraded?
+>>
+>> In case of btrfs raid1 if you managed to mount the array degraded
+>> it's possible to add another device to the array and then run a
+>> balance operation so that you end up with 2 copies of your data. I.e
+>> I don't see a problem? Have I misunderstood you?
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-> ---
->   drivers/md/dm-zone.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
+> I fear you did. I cannot mount it -o degraded, I have no working system!
 > 
-> diff --git a/drivers/md/dm-zone.c b/drivers/md/dm-zone.c
-> index 57daa86c19cf..221e0aa0f1a7 100644
-> --- a/drivers/md/dm-zone.c
-> +++ b/drivers/md/dm-zone.c
-> @@ -231,6 +231,18 @@ static int dm_revalidate_zones(struct mapped_device *md, struct dm_table *t)
->   	struct request_queue *q = md->queue;
->   	unsigned int noio_flag;
->   	int ret;
-> +	struct block_device *bdev = md->disk->part0;
-> +	sector_t zone_sectors;
-> +	char bname[BDEVNAME_SIZE];
-> +
-> +	zone_sectors = bdev_zone_sectors(bdev);
-> +
-> +	if (!is_power_of_2(zone_sectors)) {
-> +		DMWARN("%s: %s only power of two zone size supported\n",
-> +		       dm_device_name(md),
-> +		       bdevname(bdev, bname));
-> +		return 1;
-> +	}
->   
->   	/*
->   	 * Check if something changed. If yes, cleanup the current resources
+> I need fysical access to the system to repair it, contrary to an md
+> system, the latter will simply start as 'Degraded Array' even when I'm
+> abroad...
+> 
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+No, it will not. Some script(s), as part of startup sequence, will
+decide that array can be started even though it is degraded and force it
+to be started. Nothing in principle prevents your distribution from
+adding scripts to mount btrfs in degraded mode in this case. Those
+scripts are not part of btrfs, so you should report it to your
+distribution.
