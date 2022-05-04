@@ -2,200 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F0B519957
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 10:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8945199EF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 10:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346094AbiEDIOt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 May 2022 04:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
+        id S1346397AbiEDIjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 May 2022 04:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346087AbiEDIOs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 04:14:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774E322530
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 01:11:13 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2417D1F745;
-        Wed,  4 May 2022 08:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651651872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uOe6C9Iu1AVI0fjfmrodBcT76hOKNtvrzljY5ks45Es=;
-        b=Xn9SiT5tgtMLI5+WhU3wO2S2M3L4X/Ac+pPtX5BUaiINAORag9FB4+H27rD8WjKit1nkPd
-        3SFcDt46HKUKwz6phg2wVVKdNHq1M7ZpveyKmw6NKNGF0+YSPwNAc10yCfyL7fNUvIJmYo
-        +zl1hTbk5Dxi4IROyTTijaIsAU9Nr1A=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3AE1132C4;
-        Wed,  4 May 2022 08:11:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZCrXNB81cmLAZQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 04 May 2022 08:11:11 +0000
-Message-ID: <b6c63093-9e5f-b8a0-39a3-3ba9af46005f@suse.com>
-Date:   Wed, 4 May 2022 11:11:11 +0300
+        with ESMTP id S1346459AbiEDIiu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 04:38:50 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4145324978
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 01:35:12 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20220504083509euoutp02b9fa40fa59b7dabe0449ce27570c177f~r2e8udyRX3126131261euoutp02K
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 08:35:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20220504083509euoutp02b9fa40fa59b7dabe0449ce27570c177f~r2e8udyRX3126131261euoutp02K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1651653309;
+        bh=dRT7i+B2Yov3mR9oGnGvAueqIkGXxxHVKRrgzcNI3cU=;
+        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
+        b=dK2hgskREF92TYEpkqKsDjmkEjYwPK7wzzP1oiVva6bhCt79G74yWIFfuFfHSrERf
+         fdgw42C1GDIKRj1T8l+6mqOTjxQ64hGvvb5aOLVawjptknwzmOiEqKcAN68byJrlMZ
+         1QYABbNq2ARnlq98jANcweeMCqJlFE72UlInrMxU=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20220504083509eucas1p1bf302755e2c37837eba93e0b599d169b~r2e8Q2IW10045900459eucas1p1g;
+        Wed,  4 May 2022 08:35:09 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id A3.F1.10260.DBA32726; Wed,  4
+        May 2022 09:35:09 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20220504083508eucas1p2b13cd91f8b71fcf1a929d098c710ed9e~r2e7a28PG0925109251eucas1p2Z;
+        Wed,  4 May 2022 08:35:08 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20220504083508eusmtrp1cf71a20db9e2f38cdbb8f13ea104ef26~r2e7ZXh5Y3254032540eusmtrp1W;
+        Wed,  4 May 2022 08:35:08 +0000 (GMT)
+X-AuditID: cbfec7f5-bddff70000002814-a9-62723abdce8d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id B3.74.09404.CBA32726; Wed,  4
+        May 2022 09:35:08 +0100 (BST)
+Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20220504083508eusmtip2e7e8bbafdd96bdd30b9c5ab3df5cab58~r2e7M-lMY2662026620eusmtip2R;
+        Wed,  4 May 2022 08:35:08 +0000 (GMT)
+Received: from [192.168.8.130] (106.210.248.170) by CAMSVWEXC01.scsc.local
+        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Wed, 4 May 2022 09:35:05 +0100
+Message-ID: <a55665f1-26ae-c19f-5e2e-cf733e8f7fef@samsung.com>
+Date:   Wed, 4 May 2022 10:35:04 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH v2] btrfs: Turn fs_roots_radix in btrfs_fs_info into an
- XArray
+        Thunderbird/91.8.1
+Subject: Re: [PATCH 01/16] block: make blkdev_nr_zones and blk_queue_zone_no
+ generic for npo2 zsze
 Content-Language: en-US
-To:     Gabriel Niebler <gniebler@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220503104443.24758-1-gniebler@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220503104443.24758-1-gniebler@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Bart Van Assche <bvanassche@acm.org>, <jaegeuk@kernel.org>,
+        <axboe@kernel.dk>, <snitzer@kernel.org>, <hch@lst.de>,
+        <mcgrof@kernel.org>, <naohiro.aota@wdc.com>, <sagi@grimberg.me>,
+        <damien.lemoal@opensource.wdc.com>, <dsterba@suse.com>,
+        <johannes.thumshirn@wdc.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+        <clm@fb.com>, <gost.dev@samsung.com>, <chao@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <josef@toxicpanda.com>,
+        <jonathan.derrick@linux.dev>, <agk@redhat.com>,
+        <kbusch@kernel.org>, <kch@nvidia.com>,
+        <linux-nvme@lists.infradead.org>, <dm-devel@redhat.com>,
+        <jiangbo.365@bytedance.com>, <linux-fsdevel@vger.kernel.org>,
+        <matias.bjorling@wdc.com>, <linux-block@vger.kernel.org>
+From:   Pankaj Raghav <p.raghav@samsung.com>
+In-Reply-To: <3a178153-62c0-e298-ccb0-0edfd41b7ee2@acm.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [106.210.248.170]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sf1CTdRzm+77v3r0swZch8Y15dAf5RxoYRd330kxOjff6ddbxR5d3wYA3
+        4IBJGwuVQ0b80CHKZE5lWDOxRKyWwLYAh7ZwDDYcASOaSnGCFsmAQwgaSIwXO/57Ps/nee77
+        PJ/7UrjQQIZRGZJcVioRZ0WQAsJonXdGmV+TJr/4s5pA+i4rjq7crSTR6cl5HNk13RiqqjzL
+        R95uJ47Mnhoe6pkrwtDlKzcxNKLX4qjixiSBFsuHlrmSYRwtDMegKssAQKMuLYbM7i2o914d
+        H/VeiEfXzJ0E6ms5RyLdN6N8pCqbwdGgahSgkx2NPPT93xMEsrlFO0VMX//bzGPbtyRzstjD
+        Z5xDVwmmr1vONNQrSeYrhQZnGi8WMq3npzGm9TcFyRwv9pBMc+nvPGaizUUy+iYXwagar/KY
+        6YbwvUEfCbanslkZn7HSrTuSBOl3R+7gOT3rD7g09XwF+CKgHPhTkI6F+ul2ohwIKCFdB+B4
+        9zWSGx4BOHuujc8N0wBe/vIh/4nFNKDGuMUlAO3tJt7/qt4/P1+1tAA4o3GQPksAvQM6um6v
+        YIJ+DnYcO4NzfBDsrB4hfDiE/hCe1vr0FBVMp0K3Lc5H43QodI/oVl7bQJ/CoFl1D/cNON2D
+        w6VHg3yfgaQ3wyLlSjx/ehusnKgmOfPzsNTk5XP4WVhsqMG5CpFQPdiPcbgAfmd1rISG9B8C
+        qFjUrop2Q/vxrlUcDMc6mlb7b4R2dQXB4Xw4OujFOXMJgJXN+pUGcDnFCUcWp4mDinbDKh0I
+        B8eDuDyBsMp4BleBTdo1p9Cu6axdU0G7psJ5QNSDUFYuy05jZS9L2LxomThbJpekRafsz24A
+        yz/b/rhj5kdQNzYVbQEYBSwAUnjEhoBdX+ckCwNSxQcPsdL9iVJ5FiuzABFFRIQGpGT8IBbS
+        aeJcNpNlc1jpky1G+YcpMNOlj9vuJ8SJVZnbk4zrw73ZT3tefzA5kBCWsNXxQUNiW6A73bvH
+        XDZnPYblOF9lbJ1+zW+oKgxHdLPzpve3bUoEvyZlW235Uy9Z5LE1JZ+EHdbYDoQcuX5zLEaX
+        utAUWTurGj+MTb638SedekskdTQzN6U646kTJQ9KQ3bXA9ettxDvlbJ/34zfM2aIdCtB88Ls
+        cGCNsr/6AjqUH9IerN0VPhFb/I/4zjOVt/Naat21n1pu+YfPLb4z9K6zNccjKTQaXb/U7VsX
+        VWS5rjT4iYb3FoRenMqMWso1EWcfLimXzImiG4XxXv+8gt51B4/et+sEQstA8guu/L8cLpff
+        zox9EYQsXRyzGZfKxP8BTb8GHEgEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsVy+t/xe7p7rIqSDO58YrdYf+oYs8Xqu/1s
+        FtM+/GS2OD31LJPFpP4Z7Ba/z55nttj7bjarxYUfjUwWK1cfZbJ4sn4Ws0XPgQ8sFn+77gHF
+        Wh4yW/x5aGgx6dA1RounV2cxWey9pW1x6fEKdotLi9wt9uw9yWJxedccNov5y56yW0xo+8ps
+        cWPCU0aLicc3s1qse/2exeLELWkHaY/LV7w9/p1Yw+Yxsfkdu8f5extZPC6fLfXYtKqTzWNh
+        w1Rmj81L6j12L/jM5LH7ZgObR2/zOzaPna33WT3e77vK5rF+y1UWjwmbN7J6fN4kFyAYpWdT
+        lF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJdx98kd5oIL
+        /BVXp65ib2Ccy9vFyMkhIWAisf3aZKYuRi4OIYGljBK3Js1lhUjISHy68pEdwhaW+HOtiw2i
+        6COjxMze+cwQzi5GicPfbjOCVPEK2EmcOXWbDcRmEVCRON49nRkiLihxcuYTFhBbVCBC4sHu
+        s0AbODiEBVIkbp1wBAkzC4hL3HoyH+wKEYEpTBJ7JzwGW8AscIFZ4v+XG+wQ2z4wSvxbdpsF
+        pJtNQEuisRPsPE4Ba4n+9zPZICZpSrRu/80OYctLNG+dzQzxgrLE5BtXmCDsWolX93czTmAU
+        nYXkvllIDpmFZNQsJKMWMLKsYhRJLS3OTc8tNtIrTswtLs1L10vOz93ECEx024793LKDceWr
+        j3qHGJk4GA8xSnAwK4nwOi8tSBLiTUmsrEotyo8vKs1JLT7EaAoMpInMUqLJ+cBUm1cSb2hm
+        YGpoYmZpYGppZqwkzutZ0JEoJJCeWJKanZpakFoE08fEwSnVwLRa1t7kd9eegNsCFdISYmUm
+        9WmGrxVPBwjoNdfaR/Oe4550+JKWszP/ru4PizX6LY/8UbnpnnzgrP9sjSiOYLP/J3a2Nqdv
+        27jBPlnJ/nRqtf+elTwv9JZoHVt5nz32dOahKfMe9504dW3738Kn9epn7+dbz05zuceWLLL5
+        /2oplX9/3eM2Xd+QXdq3PZFf2ej6/aqfVTHX7tnzVJbsXa62TeWVZWu/+XuxArPfu5xefC2V
+        9bs/fY1R45vwVVHmJ5yvNLNOdQzvF3ETuqL26+XLit+sNxRiN/slCvx7WiMXmKBl/eLIq8Si
+        KoGJ+rPn+5WveXx+Z5RxfphXsCDvB46aTMH+afozv4luUmJeq8RSnJFoqMVcVJwIAKUYqwP9
+        AwAA
+X-CMS-MailID: 20220504083508eucas1p2b13cd91f8b71fcf1a929d098c710ed9e
+X-Msg-Generator: CA
+X-RootMTR: 20220427160257eucas1p21fb58d0129376a135fdf0b9c2fe88895
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20220427160257eucas1p21fb58d0129376a135fdf0b9c2fe88895
+References: <20220427160255.300418-1-p.raghav@samsung.com>
+        <CGME20220427160257eucas1p21fb58d0129376a135fdf0b9c2fe88895@eucas1p2.samsung.com>
+        <20220427160255.300418-2-p.raghav@samsung.com>
+        <3a178153-62c0-e298-ccb0-0edfd41b7ee2@acm.org>
+X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 3.05.22 г. 13:44 ч., Gabriel Niebler wrote:
-> … rename it to simply fs_roots and adjust all usages of this object to use
-> the XArray API, because it is notionally easier to use and understand, as
-> it provides array semantics, and also takes care of locking for us,
-> further simplifying the code.
+On 2022-05-03 18:37, Bart Van Assche wrote:
+>>       sector_t zone_sectors = blk_queue_zone_sectors(disk->queue);
+>> +    sector_t capacity = get_capacity(disk);
+>>         if (!blk_queue_is_zoned(disk->queue))
+>>           return 0;
+>> -    return (get_capacity(disk) + zone_sectors - 1) >>
+>> ilog2(zone_sectors);
+>> +
+>> +    if (is_power_of_2(zone_sectors))
+>> +        return (capacity + zone_sectors - 1) >>
+>> +               ilog2(zone_sectors);
+>> +
+>> +    return div64_u64(capacity + zone_sectors - 1, zone_sectors);
+>>   }
+>>   EXPORT_SYMBOL_GPL(blkdev_nr_zones);
 > 
-> Also do some refactoring, esp. where the API change requires largely
-> rewriting some functions, anyway.
+> Does anyone need support for more than 4 billion sectors per zone? If
+> not, do_div() should be sufficient.
 > 
-> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
-> ---
+You are absolutely right but blk_queue_zone_sectors explicitly changed
+the return type to uint32_t to sector_t in this commit:
+'113ab72  block: Fix potential overflow in blk_report_zones()'.
 
-LGTM, one nit below but I'd like David to say what he thinks of the style.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
+I initially did have a do_div but later changed to div64_u64 to avoid
+any implicit down casting even though zone_sectors will be always
+limited to an unsigned int.
+>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+>> index 60d016138997..c4e4c7071b7b 100644
+>> --- a/include/linux/blkdev.h
+>> +++ b/include/linux/blkdev.h
+>> @@ -665,9 +665,15 @@ static inline unsigned int
+>> blk_queue_nr_zones(struct request_queue *q)
+>>   static inline unsigned int blk_queue_zone_no(struct request_queue *q,
+>>                            sector_t sector)
+>>   {
+>> +    sector_t zone_sectors = blk_queue_zone_sectors(q);
+>> +
+>>       if (!blk_queue_is_zoned(q))
+>>           return 0;
+>> -    return sector >> ilog2(q->limits.chunk_sectors);
+>> +
+>> +    if (is_power_of_2(zone_sectors))
+>> +        return sector >> ilog2(zone_sectors);
+>> +
+>> +    return div64_u64(sector, zone_sectors);
+>>   }
 > 
-> Changes from v1:
->   - Removed unnecessary enclosing while-loops around XArray iterators (Nikolay)
->   - Renamed BTRFS_ROOT_IN_RADIX to BTRFS_ROOT_REGISTERED (Nikolay & me)
->   - Moved variable declaration into the one loop that uses it (Nikolay)
->   - Removed some unnecessary linebreaks (Nikolay)
+> Same comment here.
 > 
-> ---
->   fs/btrfs/ctree.h             |   7 +-
->   fs/btrfs/disk-io.c           | 179 +++++++++++++++++------------------
->   fs/btrfs/extent-tree.c       |   2 +-
->   fs/btrfs/inode.c             |  13 +--
->   fs/btrfs/tests/btrfs-tests.c |   2 +-
->   fs/btrfs/transaction.c       | 113 ++++++++++------------
->   6 files changed, 149 insertions(+), 167 deletions(-)
+> Thanks,
 > 
-
-<snip>
-
-> @@ -4872,31 +4862,34 @@ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
->   
->   static void btrfs_drop_all_logs(struct btrfs_fs_info *fs_info)
->   {
-> -	struct btrfs_root *gang[8];
-> -	u64 root_objectid = 0;
-> -	int ret;
-> -
-> -	spin_lock(&fs_info->fs_roots_radix_lock);
-> -	while ((ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
-> -					     (void **)gang, root_objectid,
-> -					     ARRAY_SIZE(gang))) != 0) {
-> -		int i;
-> +	unsigned long index = 0;
->   
-> -		for (i = 0; i < ret; i++)
-> -			gang[i] = btrfs_grab_root(gang[i]);
-> -		spin_unlock(&fs_info->fs_roots_radix_lock);
-> +	spin_lock(&fs_info->fs_roots_lock);
-> +	while (xa_find(&fs_info->fs_roots, &index, ULONG_MAX, XA_PRESENT)) {
-> +		struct btrfs_root *root;
-> +		struct btrfs_root *roots[8];
-> +		int grabbed = 0;
-> +
-> +		xa_for_each_start(&fs_info->fs_roots, index, root,
-> +				  index) {
-> +			roots[grabbed] = btrfs_grab_root(root);
-> +			grabbed++;
-> +			if (grabbed >= ARRAY_SIZE(roots))
-> +				break;
-> +		}
-> +		spin_unlock(&fs_info->fs_roots_lock);
->   
-> -		for (i = 0; i < ret; i++) {
-> -			if (!gang[i])
-> +		for (int i = 0; i < grabbed; i++) {
-> +			if (!roots[i])
->   				continue;
-> -			root_objectid = gang[i]->root_key.objectid;
-> -			btrfs_free_log(NULL, gang[i]);
-> -			btrfs_put_root(gang[i]);
-> +			index = roots[i]->root_key.objectid;
-> +			btrfs_free_log(NULL, roots[i]);
-> +			btrfs_put_root(roots[i]);
->   		}
-> -		root_objectid++;
-> -		spin_lock(&fs_info->fs_roots_radix_lock);
-> +		index++;
-> +		spin_lock(&fs_info->fs_roots_lock);
->   	}
-> -	spin_unlock(&fs_info->fs_roots_radix_lock);
-> +	spin_unlock(&fs_info->fs_roots_lock);
->   	btrfs_free_log_root_tree(NULL, fs_info);
->   }
->   
-
-nit: The xa_find/xa_for_each_start as used in this loop are really open-coded xa_extract.
-So the code could be simplified even further:
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 56d4d4db976b..cb1ccebfc48c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4875,23 +4875,18 @@ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
-  static void btrfs_drop_all_logs(struct btrfs_fs_info *fs_info)
-  {
-         unsigned long index = 0;
-+       int grabbed = 0;
-+       struct btrfs_root *roots[8];
-  
-         spin_lock(&fs_info->fs_roots_lock);
--       while (xa_find(&fs_info->fs_roots, &index, ULONG_MAX, XA_PRESENT)) {
--               struct btrfs_root *root;
--               struct btrfs_root *roots[8];
--               int i;
--               int grabbed = 0;
-+       while ((grabbed = xa_extract(&fs_info->fs_roots, (void **)roots, index,
-+                                    ULONG_MAX, 8, XA_PRESENT))) {
-  
--               xa_for_each_start(&fs_info->fs_roots, index, root, index) {
--                       roots[grabbed] = btrfs_grab_root(root);
--                       grabbed++;
--                       if (grabbed >= ARRAY_SIZE(roots))
--                               break;
--               }
-+               for (int i = 0; i < grabbed; i++)
-+                       roots[i] = btrfs_grab_root(roots[i]);
-                 spin_unlock(&fs_info->fs_roots_lock);
-  
--               for (i = 0; i < grabbed; i++) {
-+               for (int i = 0; i < grabbed; i++) {
-                         if (!roots[i])
-                                 continue;
-
-
-
-
-<snip>
+> Bart.
