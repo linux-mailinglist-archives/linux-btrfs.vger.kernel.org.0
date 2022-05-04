@@ -2,148 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 404A6519DC3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 13:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D60E519F11
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 14:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348639AbiEDLUN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 May 2022 07:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        id S1349297AbiEDMSY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 May 2022 08:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348640AbiEDLUL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 07:20:11 -0400
-Received: from ssl1.xaq.nl (ssl1.xaq.nl [IPv6:2a10:3781:1891:64::24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB819240AF
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 04:16:35 -0700 (PDT)
-Received: from kakofonix.xaq.nl (kakofonix.utr.xaq.nl [192.168.64.105])
-        by ssl1.xaq.nl (Postfix) with ESMTPSA id 9C70482E88
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 13:16:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lucassen.org;
-        s=202104; t=1651662993;
-        bh=bFVV0KDcbLs2lgrlE0MCxb+dQoR7UzLvfo9LQm2twGs=;
-        h=Date:From:To:Subject:In-Reply-To:References:Reply-To;
-        b=Ewy0W8HQWZ7cb1nPaT5qXxk4iVA3QPY4joD83VyMO7AAZatdKl5Gn7A1Zy0AGVqMv
-         BjafwCHpCkzG1+wRhTdZu9PszRk4/I/nlijf2gk00B19aZq/xZ10mDnp74bH9rI0bB
-         YgklXhgD2t/shUNXc9k/pC28yKUHnpPoOsn+DtTBMb805fkz1dOl0OQEwtqS9qbHNF
-         Gd3HpL6tCANx+cu+UByPQBPn+0iQnXk/DTMHFw0wo8K2d9izjAkyeAZAZOBxw6lKMI
-         sGJn2a/5Rpnubolmjbl5HA1yaE1d/lvP3jWsET2/KKlNBZ6pGzS1FbkcDS7I2074V8
-         2o8TqpgDyqmNQ==
-Date:   Wed, 4 May 2022 13:16:32 +0200
-From:   richard lucassen <mailinglists@lucassen.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: Debian Bullseye install btrfs raid1
-Message-Id: <20220504131632.00ffbd49c7ec5a7782f0e662@lucassen.org>
-In-Reply-To: <20220504102608.u4oublhjagp5h5hm@bitfolk.com>
+        with ESMTP id S243515AbiEDMSX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 08:18:23 -0400
+X-Greylist: delayed 494 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 May 2022 05:14:47 PDT
+Received: from syrinx.knorrie.org (syrinx.knorrie.org [82.94.188.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A8B18359
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 05:14:47 -0700 (PDT)
+Received: from [IPV6:2a02:a213:2b80:4c00::12] (unknown [IPv6:2a02:a213:2b80:4c00::12])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id B32B0611DD35A;
+        Wed,  4 May 2022 14:06:31 +0200 (CEST)
+Message-ID: <83b2f5df-fc16-627d-85b4-af07bac9a73b@knorrie.org>
+Date:   Wed, 4 May 2022 14:06:31 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Content-Language: en-US
+To:     linux-btrfs@vger.kernel.org,
+        richard lucassen <mailinglists@lucassen.org>
 References: <20220504112315.71b41977e071f43db945687c@lucassen.org>
-        <c0a5db9f-2631-9177-929c-9e76a9c67ec5@suse.com>
-        <20220504120254.7fae6033bee9e63ed002bea9@lucassen.org>
-        <9129a5be-f0a2-5859-4c02-eb075d222a31@suse.com>
-        <20220504121454.8a43384a5c8ec25d6e9c1b77@lucassen.org>
-        <20220504102608.u4oublhjagp5h5hm@bitfolk.com>
-Reply-To: linux-btrfs@vger.kernel.org
-Organization: XAQ Systems
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Hans van Kranenburg <hans@knorrie.org>
+Subject: Re: Debian Bullseye install btrfs raid1
+In-Reply-To: <20220504112315.71b41977e071f43db945687c@lucassen.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 4 May 2022 10:26:08 +0000
-Andy Smith <andy@strugglers.net> wrote:
+Hi Richard,
 
-> You can pause at the grub menu and edit the current boot selection
-> to have the additional kernel command line parameter:
+On 5/4/22 11:23, richard lucassen wrote:
+> Hello list,
 > 
->     rootflags=degraded
+> Still new to btrfs, I try to set up a system that is capable of
+> booting even if one of the two disks is removed or broken. The BIOS
+> supports this.
 > 
-> That has the same effect as "Mount -o degraded …" or putting
-> "degraded" in the fstab options.
+> As the Debian installer is not capable of installing btrfs raid1, I 
+> installed Bullseye using /dev/md0 for /boot (ext2) and a / btrfs on
+> /dev/sda3. This works of course. After install I added /dev/sdb3 to
+> the / fs: OK.
 
-Yes, but apparently I fsck'd up the whole system, even with two disks.
-I will first add a single disk / filesystem as rescue (never mind, this
-is a test system):
+Did you 'just' add the disk to the filesystem, or did you also do a next
+step of converting the existing data to the raid1 profile?
 
-[    5.622734]  sdb: sdb1 sdb2 sdb3 sdb4 < sdb5 sdb6 >
-[    5.634754]  sda: sda1 sda2 sda3 sda4 < sda5 sda6 >
-[    5.649152] sd 1:0:0:0: [sdb] Attached SCSI disk
-[    5.652889] sd 0:0:0:0: [sda] Attached SCSI disk
-[    5.724026] random: fast init done
-[    5.821439] md/raid1:md0: active with 2 out of 2 mirrors
-[    5.827536] md0: detected capacity change from 0 to 262078464
-[    5.828427] md/raid1:md1: active with 2 out of 2 mirrors
-[    5.839332] md1: detected capacity change from 0 to 4294901760
+If you start out with 1 disk and simply add another, it tells btrfs
+that it can continue writing just 1 (!) copy of your data wherever it 
+likes. And, in this case, the filesystem *always* wants (needs!) all 
+disks to be present to mount, of course.
 
-[..]
+disk 1  disk 2
+A       C
+B       E
+D
 
-Begin: Running /scripts/init-premount ... done.
-Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
-Begin: Running /scripts/local-premount ... [    6.826141] Btrfs loaded, crc32c=crc32c-generic
-Scanning for Btrfs filesystems
-[    6.868147] random: fast init done
-[    6.901066] BTRFS: device label data devid 1 transid 50 /dev/sda6 scanned by btrfs (171)
-[    6.909951] BTRFS: device fsid 1739f989-05e0-48d8-b99a-67f91c18c892 devid 1 transid 23 /dev/sda5 scanned by btrfs (171)
-[    6.921421] BTRFS: device fsid f9cf579f-d3d9-49b2-ab0d-ba258e9df3d8 devid 1 transid 3994 /dev/sda3 scanned by btrfs (171)
-Begin: Waiting for suspend/resume device ... Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... [   27.012381] md/raid1:md0: active with 1 out of 2 mirrors
-[   27.017890] md0: detected capacity change from 0 to 262078464
-[   27.033248] md/raid1:md1: active with 1 out of 2 mirrors
-[   27.038793] md1: detected capacity change from 0 to 4294901760
-done.
-done.
-done.
-Warning: fsck not present, so skipping root file system
-[   27.229282] BTRFS info (device sda3): flagging fs with big metadata feature
-[   27.236375] BTRFS info (device sda3): allowing degraded mounts
-[   27.242285] BTRFS info (device sda3): disk space caching is enabled
-[   27.248579] BTRFS info (device sda3): has skinny extents
-[   27.256813] BTRFS warning (device sda3): devid 2 uuid 5b50e238-ae76-426f-bae3-deee5999adbc is missing
-[   27.266833] BTRFS warning (device sda3): devid 2 uuid 5b50e238-ae76-426f-bae3-deee5999adbc is missing
-[   27.284235] BTRFS info (device sda3): enabling ssd optimizations
-done.
-Begin: Running /scripts/local-bottom ... done.
-Begin: Running /scripts/init-bottom ... mount: mounting /dev on /root/dev failed: No such file or directory
-mount: mounting /dev on /root/dev failed: No such file or directory
-done.
-mount: mounting /run on /root/run failed: No such file or directory
-run-init: can't execute '/sbin/init': No such file or directory
-Target filesystem doesn't have requested /sbin/init.
-run-init: can't execute '/sbin/init': No such file or directory
-run-init: can't execute '/etc/init': No such file or directory
-run-init: can't execute '/bin/init': No such file or directory
-run-init: can't execute '/bin/sh': No such file or directory
-run-init: can't execute '': No such file or directory
-No init found. Try passing init= bootarg.
+If you want everything duplicated on both disks, you need to convert the 
+existing data that you already had on the first disk to the raid1 
+profile, and from then on, it will keep writing 2 copies of the data on 
+any two disks in the filesystem (but you have exactly 2, so it's always 
+on both of those two in that case).
+
+disk 1  disk 2
+A       D
+B       B
+D       C
+C       A
+
+If the previous installed system still works well when you add back the 
+second disk again, you can still do this. (so, when you did not force 
+any destructive operations, and just had it fail like seen below)
+
+Can you share output of the following commands:
+
+btrfs fi usage <mountpoint>
+
+With the following command you let it convert all (d)ata and (m)etadata 
+to the raid1 profile:
+
+btrfs balance start -dconvert=raid1 -mconvert=raid1 /
+
+Afterwards, you can check the result with the usage command. The data, 
+metadata, and system lines in the output of the usage command should all 
+say RAID1, and you should see that on both disks, a similar amount of 
+data is present.
+
+Hans
+
+> Reboot: works. Proof/pudding/eating: I stopped the system, removed
+> one of the disks and started again. It boots, but it refuses to mount
+> the / fs, either without sda or sdb.
+> 
+> Question: is this newbie trying to set up an impossible config or
+> have I missed something crucial somewhere?
+> 
+> R.
+> 
+> Begin: Running /scripts/init-premount ... done. Begin: Mounting root
+> file system ... Begin: Running /scripts/local-top ... done. Begin:
+> Running /scripts/local-premount ... [    6.809309] Btrfs loaded,
+> crc32c=crc32c-generic Scanning for Btrfs filesystems [    6.849966]
+> random: fast init done [    6.884290] BTRFS: device label data devid
+> 1 transid 50 /dev/sda6 scanned by btrfs (171) [    6.892822] BTRFS:
+> device fsid 1739f989-05e0-48d8-b99a-67f91c18c892 devid 1 transid 23
+> /dev/sda5 scanned by btrfs (171) [    6.903959] BTRFS: device fsid
+> f9cf579f-d3d9-49b2-ab0d-ba258e9df3d8 devid 1 transid 3971 /dev/sda3
+> scanned by btrfs (171) Begin: Waiting for suspend/resume device ...
+> Begin: Running /scripts/local-block ... done. Begin: Running
+> /scripts/local-block ... done. Begin: Running /scripts/local-block
+> ... done. Begin: Running /scripts/local-block ... done. Begin:
+> Running /scripts/local-block ... done. Begin: Running
+> /scripts/local-block ... done. Begin: Running /scripts/local-block
+> ... done. Begin: Running /scripts/local-block ... done. Begin:
+> Running /scripts/local-block ... done. Begin: Running
+> /scripts/local-block ... done. Begin: Running /scripts/local-block
+> ... done. Begin: Running /scripts/local-block ... done. Begin:
+> Running /scripts/local-block ... done. Begin: Running
+> /scripts/local-block ... done. Begin: Running /scripts/local-block
+> ... done. Begin: Running /scripts/local-block ... done. Begin:
+> Running /scripts/local-block ... done. Begin: Running
+> /scripts/local-block ... [   27.015660] md/raid1:md0: active with 1
+> out of 2 mirrors [   27.021181] md0: detected capacity change from 0
+> to 262078464 [   27.036555] md/raid1:md1: active with 1 out of 2
+> mirrors [   27.042062] md1: detected capacity change from 0 to
+> 4294901760 done. done. done. Warning: fsck not present, so skipping
+> root file system [   27.235880] BTRFS info (device sda3): flagging fs
+> with big metadata feature [   27.242984] BTRFS info (device sda3):
+> disk space caching is enabled [   27.249314] BTRFS info (device
+> sda3): has skinny extents [   27.258259] BTRFS error (device sda3):
+> devid 2 uuid 5b50e238-ae76-426f-bae3-deee5999adbc is missing [
+> 27.267448] BTRFS error (device sda3): failed to read the system
+> array: -2 [   27.275696] BTRFS error (device sda3): open_ctree
+> failed mount: mounting /dev/sda3 on /root failed: Invalid argument 
+> Failed to mount /dev/sda3 as root file system.
+> 
+> 
+> BusyBox v1.30.1 (Debian 1:1.30.1-6+b3) built-in shell (ash) Enter
+> 'help' for a list of built-in commands.
+> 
+> (initramfs)
+> 
+> 
 
 
-BusyBox v1.30.1 (Debian 1:1.30.1-6+b3) built-in shell (ash)
-Enter 'help' for a list of built-in commands.
-
-(initramfs)
-
-
--- 
-richard lucassen
-https://contact.xaq.nl/
