@@ -2,189 +2,200 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0706519793
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 08:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F0B519957
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 10:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344972AbiEDGuw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 May 2022 02:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        id S1346094AbiEDIOt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 May 2022 04:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbiEDGuv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 02:50:51 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6D81E3C1
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 May 2022 23:47:16 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24428crM019152;
-        Wed, 4 May 2022 06:47:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : in-reply-to : mime-version;
- s=corp-2021-07-09; bh=+nsNxwiNeMQN/pqnu2ZM+97X8KxHLmPLljlU7ecurVc=;
- b=AI1kOjNrY/ZdObLelVNp6B+9ejjkOpJOwS/Yv5FSliN/Xq26c369Ritp/GFSeeBubyA2
- TPyHrq+XLHUxa46fSlOKyC/Yb1URIktlJd7fRxYAyWDfS+1kMfU6AMTfaCfSmjI01DhR
- InExQ4vD24PuAsgyXFkAFV4X0VXW0YJIapaav5/Vx/f4uoloE0dSvBFg2GAS+EE2wusG
- 8GLqOg5RQBOmHPlcAGipQOsfu6qpe7Bfwsz7ADos6dJ8KnrgfWPR+kNIAGq0pqPieltk
- AXhcrTcXzDjaI1Bxe/l2ypX5S2VzjjkiU+3MTxqbhXc5f2iIEJ6jGMTj57ahlqp0/hCm QA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3frw0aqb17-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 May 2022 06:47:11 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 2446kSdU004279;
-        Wed, 4 May 2022 06:47:10 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3fruj33c1x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 May 2022 06:47:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZuzMAESTTiR1Bf+rfzsBsnUlEAFdIflsAT1C7ckiSfhbkaHYRT72GRee/AUx2Z5flRAAP9kRLQ1GFLnIbvzy1KR0fbWqIibC9r7W85BMIos+m64bhwr+psXx7xNPjT6TGqCULHOVG3QwWBPI90kJBq9pZFzJ+Stzf/13aHsSfEJZqOL5BbO9jpM80tXBcZqyOswN3zN20F4YoQA4MUgnDEW+RtbVdikgc9Qx/Lv8LzTByR8uh0KfrGcQfKXU1Q7gWRcwUQO/qrG3XSW1aIJi2GL3wK3UeH0Fi6sT7zskUiOQSYpHD7DwLnevs+GOY0zK80FpnV6ZaWESQSOTf5kDKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+nsNxwiNeMQN/pqnu2ZM+97X8KxHLmPLljlU7ecurVc=;
- b=PtFo0VCFmAKyRdNhv69F3uHL3TqBmCc+Nq9S3oLOtqdSaEmPExOLibNtdavN77pz+9BdJg3oD/Y4L393Q152DXt2n9hT0wL4r8d5CHGlYsNq9hOm4B5v+t/ivPL28fXclw1c4rq+6Ckr++50AjoR4t4cF5fSQJDyy7ewduLXiK8DFxPkjcI3icM328ZSsXSJjE6g7x5HxDQHW/1jiLk0bo5prt9o1KbGD7Nd6elnSHDZ7vpy5qOYgP+BS0IGoQ13t5Zu5xIKwbH5jVAm1RnYdabGZvQtTh7UZ/kFzVcmLgYu6nh9f/lU0hwOJWgvkFwUK2elkkTytezqHfkexolq9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+nsNxwiNeMQN/pqnu2ZM+97X8KxHLmPLljlU7ecurVc=;
- b=x5axOlt/wMvFjE1K8ykxo4HmZIyDKNiIcqe5TCUXPEIiWK6yVeaWRhf3ksA5rPvJ+S8GpTvsikg++aB5EsMbl0AoxJ0xUF782IZJVSQLbXgbpp67obtNJ9ZyzeSu/fAIZ8gt2n47FJVqtoDqkunHxW1vTDGbxwynmFEZCgNl2II=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MW4PR10MB5751.namprd10.prod.outlook.com
- (2603:10b6:303:18f::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.13; Wed, 4 May
- 2022 06:47:08 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::b5d5:7b39:ca2d:1b87]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::b5d5:7b39:ca2d:1b87%5]) with mapi id 15.20.5164.025; Wed, 4 May 2022
- 06:47:08 +0000
-Date:   Wed, 4 May 2022 09:46:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: [kbuild] Re: [PATCH 2/2] btrfs: Use btrfs_try_lock_balance in
- btrfs_ioctl_balance
-Message-ID: <202205041423.NVVJIHSj-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220503083637.1051023-3-nborisov@suse.com>
-Message-ID-Hash: SYMM5PLM3NANCNSAY5MJU5M2CYNTLMLL
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0059.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::12)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        with ESMTP id S1346087AbiEDIOs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 04:14:48 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774E322530
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 01:11:13 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2417D1F745;
+        Wed,  4 May 2022 08:11:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1651651872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uOe6C9Iu1AVI0fjfmrodBcT76hOKNtvrzljY5ks45Es=;
+        b=Xn9SiT5tgtMLI5+WhU3wO2S2M3L4X/Ac+pPtX5BUaiINAORag9FB4+H27rD8WjKit1nkPd
+        3SFcDt46HKUKwz6phg2wVVKdNHq1M7ZpveyKmw6NKNGF0+YSPwNAc10yCfyL7fNUvIJmYo
+        +zl1hTbk5Dxi4IROyTTijaIsAU9Nr1A=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3AE1132C4;
+        Wed,  4 May 2022 08:11:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZCrXNB81cmLAZQAAMHmgww
+        (envelope-from <nborisov@suse.com>); Wed, 04 May 2022 08:11:11 +0000
+Message-ID: <b6c63093-9e5f-b8a0-39a3-3ba9af46005f@suse.com>
+Date:   Wed, 4 May 2022 11:11:11 +0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a23ee2d8-21ad-4a99-a01b-08da2d99e893
-X-MS-TrafficTypeDiagnostic: MW4PR10MB5751:EE_
-X-Microsoft-Antispam-PRVS: <MW4PR10MB5751D510734FF08D8B31C4668EC39@MW4PR10MB5751.namprd10.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e6tT1PTqwuA04ry1LsykW5ApZBF+AixWX2Q2m+V3TSxcuu5s4ukr1WbO1W0uFc7gTV7WUx9jjAGmuB2wpNbLjTAer5pNep3EocIdN19PSaRJhgbGPD9OYVvetT3LdOIO38frYsCtSsQVGXkyTx9PS2wYEaz+M78bPkUZKjREBGJWu/PNnrODLqCpKeAqrjHTcHf07X0h6Y3EeZgMjs9ugaIU69DbpUIzTJA9OyPfeQaQGdkSwHMk5QjNf0lgA64VlyOzfRBhlVicj8HKaSzGJEScjqHQ5iKECiOGTNk6F7c/mSJymR0vGq7XOVSWhGiJRvfvYcmonSbBJbma1m/gwe2CQ2VUmoqUV7XxPAv2q/DrCx+y0H992VBG/54pQYXhXr6t1irekuDppI+Q4ZDknJHBHsmoA8VRg1dtQ/V92APgnjlYkqsv55pprwXEvhwVc7Hi3TJ4raGnLIhfcPMzjUf8oTGaVrs6H8cL8V2mr5WLxvTHN3L7uuhIKZRI2Y32YKtDeqBogfeRb/fFdAnvQkc5xBOsrE4hidVZ78gUKth8zIxh4VSOhTtUIBm6drmPGbMxzuHEzBgySC51c2izfNM5bqEPNRIrjjRjga2dH7zuaM+kXOWMPupckytWFDRpdc42a0RHP1xRsS3MJYD0ocKMFqvgEkplfMww6xpYP3TP3WGm5POpnVZXgnTWTHgqWWpbvGULvcEJ9yjGLC8+o28rVc4sE0++aHjJ7NZbWSr7cmdaT8SWXdAuJP2se4yP4qt7gQhzyztLzZYhDuAWIYJlnOOPQ1KwgEcHh/9xvNQaIh+zjpnz4HC6dm+JqF/lvy5mriP9VPsc8XwWDYQuLQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(966005)(6486002)(508600001)(2906002)(6512007)(26005)(6506007)(9686003)(38100700002)(38350700002)(6666004)(1076003)(52116002)(4001150100001)(66556008)(66946007)(44832011)(66476007)(316002)(186003)(5660300002)(36756003)(8936002)(4326008)(83380400001)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/iZH/2JbHf7zb9WRHktb2wc4+ArGrR3Va5Mym5nxAKtnMWNP5X6C86j7Fea9?=
- =?us-ascii?Q?5ht0k1ZythxYg8V65VjyYooSs9jMIep4Ih5NifGRobf5yvDsTQlf5qNuBUSW?=
- =?us-ascii?Q?1uwVReQiLpJcE0l/IssXR1EYWnTTcnB2AzWpo47QO9uv06RzD+XH7UMf/Xj7?=
- =?us-ascii?Q?ODeVpHirg5YleYt3VwMioXosbn6qY1fyK6NdDqMxkkAEMmCBTSFS4k7apMVt?=
- =?us-ascii?Q?3PVkyATiWinZg7UXdu04Ec583tuYA5JFGe8ERW1I0jtnloLlIJ+NZgtgJ6Kz?=
- =?us-ascii?Q?SXAj09DLk+dbNLcdlh0hX4NQaOwXkCZqfH52+43VMLVkBuCxjL9j4uGNn/02?=
- =?us-ascii?Q?6bV/6VVA26/8UOQK2XRpJnJM8BnD/J+SmsoCpdo56xmaWEU6iFmwlvqXsJy7?=
- =?us-ascii?Q?KVNv0Mrk57QZHAZ8RuDP2VxCHW0UPy4M7uXo0FBxgTvCXCUF1OjPureKzBh9?=
- =?us-ascii?Q?+hLypHBdy8e/ZB+g9Qr96cEwVRcg8AiwWvQxKrXfdi9enmzRjO/0WIk0FE+o?=
- =?us-ascii?Q?Ys6nWwp8qOktSFCFxKQpuFK00tiVDXs+ciOkFHWezvPNo5S15W+5AJoSZqT+?=
- =?us-ascii?Q?g1DkM3w5f2WXqXig1xkMlxImrbZvaLDJURxksaQvilUUeh+qMUrx0h3QUXa5?=
- =?us-ascii?Q?tsaQ3GB34ndUTEioSQA94nTUAktqeeqRx/d5CFCul1iaOrqXVZn+znDfYb4e?=
- =?us-ascii?Q?x6BgwCIZizDDJ1d0kBmHKypT0vbJ0K0vCWfdRIowIKPP/ANDltx4Ul8B4uDb?=
- =?us-ascii?Q?j+cYrhUl0PsliEFkZwYCaXAEAwYfeGoEep6BvpsUa7nIBga9iqFL8VG3AehY?=
- =?us-ascii?Q?yhSI8Z+hKNkIlnkGKGRajL0BfKbe24WIMTVb+SNPax0eL419sqgEeuybu76C?=
- =?us-ascii?Q?ERghTPe2OM6UZ+kmPVvdx+xq6hLa7QDObNi4LC4FBxkZrTP1AmFCmgd7ZtnA?=
- =?us-ascii?Q?IDN0UOibMIRIaBgC3xcFNpx6mdIaZTbRWnpY3P+Gvjpb8Awl3GEOCQ8bpRHa?=
- =?us-ascii?Q?nbpyrVrxoDhgFTOjO39lC9uitDh065j7ggwDwYyzyGgALdpTlZfMEILQjqRG?=
- =?us-ascii?Q?hqHDK362PVjNvz3b4Bp9OSX8jJg0nEcThEnRO+eR0gINSgJkuJCFtSTLFHrr?=
- =?us-ascii?Q?WLid8V2653ysftyg90+qeyV/j+sbTuANTUXPlNHGHIzGKrRU11Dr+gria6F/?=
- =?us-ascii?Q?fCJBqxgpYm8YlHIFISI+4XB0dTtBmR7w/AQzLaCIzCb4eDiSNgJKg5dgd8oX?=
- =?us-ascii?Q?CUGho9b3wKYkWaA0K/g8HIpuacdlsDcrY7V/vLxRi8gzHujLvy60Y9LUZ5Vy?=
- =?us-ascii?Q?yXjtKJJ+CXtQOP+WqJ4JxUB/B3wLZKM822a64Bjm8GtQ2jHMTCMtXUHENHfQ?=
- =?us-ascii?Q?hCDtwPL5d+mAaq9ACwRosUn6dD7vIEMqua4O0/4NgzPpQJ+UC/Q86SY2sAkx?=
- =?us-ascii?Q?uqfuz96JfnKeuXeZW4Qm/YQmp1jZmPn0eYvAb8hOGSS+Irz192pDBmjCkkkx?=
- =?us-ascii?Q?I0Sj7OpIQWok5tJdFns0r2ayiQoL7xeGA8tJ3eQmNJXWGW5OzisJcBaMZjto?=
- =?us-ascii?Q?ABzBOkfDcyo0vL3DnVuhGLnlDzSLS+0bDGYy2ebBp4xTZyVEVNdfXpFPFIvl?=
- =?us-ascii?Q?keHHBBJeuKKpVUp4IJsA+dBqAKUYxojq3hMIj0XhhMFOjmmO6Vn/9hoF3mdX?=
- =?us-ascii?Q?m4rXCtmYwHCCCBXwgzu3PSgvXydywKRWuM+iu7tD3sMVz9ufLn+Cr1oDtMCI?=
- =?us-ascii?Q?GE2F4y5Q+ClnK1mVQedkA8yIkRvNizc=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a23ee2d8-21ad-4a99-a01b-08da2d99e893
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2022 06:47:08.3143
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 439DrMNbJwtTtKMnypCzp2IKFHH4SJM8ilAK+/PuAIs8nD9fkAzdkOp3l5eRSPtf73oPu4i3ZzIKkUSRmQjAt/2YNhEbgnUG9b/sv3hwYwY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB5751
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.486,18.0.858
- definitions=2022-05-04_02:2022-05-02,2022-05-04 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 mlxscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205040044
-X-Proofpoint-GUID: POP-RK8Ld_c0iwRSNK3RIW9yCJvYIYBW
-X-Proofpoint-ORIG-GUID: POP-RK8Ld_c0iwRSNK3RIW9yCJvYIYBW
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH v2] btrfs: Turn fs_roots_radix in btrfs_fs_info into an
+ XArray
+Content-Language: en-US
+To:     Gabriel Niebler <gniebler@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <20220503104443.24758-1-gniebler@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220503104443.24758-1-gniebler@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Nikolay,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Nikolay-Borisov/Refactor-btrfs_ioctl_balance/20220503-163837 
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git  for-next
-config: i386-randconfig-m021-20220502 (https://download.01.org/0day-ci/archive/20220504/202205041423.NVVJIHSj-lkp@intel.com/config )
-compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+On 3.05.22 г. 13:44 ч., Gabriel Niebler wrote:
+> … rename it to simply fs_roots and adjust all usages of this object to use
+> the XArray API, because it is notionally easier to use and understand, as
+> it provides array semantics, and also takes care of locking for us,
+> further simplifying the code.
+> 
+> Also do some refactoring, esp. where the API change requires largely
+> rewriting some functions, anyway.
+> 
+> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+> ---
 
-smatch warnings:
-fs/btrfs/ioctl.c:4493 btrfs_ioctl_balance() error: double free of 'bargs'
+LGTM, one nit below but I'd like David to say what he thinks of the style.
 
-vim +/bargs +4493 fs/btrfs/ioctl.c
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-c9e9f97bdfb64d Ilya Dryomov         2012-01-16  4484  
-0f89abf56abbd0 Christian Engelmayer 2015-10-21  4485  	kfree(bctl);
-ed0fb78fb6aa29 Ilya Dryomov         2013-01-20  4486  out_unlock:
-c9e9f97bdfb64d Ilya Dryomov         2012-01-16  4487  	mutex_unlock(&fs_info->balance_mutex);
-ed0fb78fb6aa29 Ilya Dryomov         2013-01-20  4488  	if (need_unlock)
-c3e1f96c37d0f8 Goldwyn Rodrigues    2020-08-25  4489  		btrfs_exclop_finish(fs_info);
-ed0fb78fb6aa29 Ilya Dryomov         2013-01-20  4490  out:
-c696e46e6ec2b3 Nikolay Borisov      2022-05-03  4491  	kfree(bargs);
-                                                              ^^^^^
+> 
+> Changes from v1:
+>   - Removed unnecessary enclosing while-loops around XArray iterators (Nikolay)
+>   - Renamed BTRFS_ROOT_IN_RADIX to BTRFS_ROOT_REGISTERED (Nikolay & me)
+>   - Moved variable declaration into the one loop that uses it (Nikolay)
+>   - Removed some unnecessary linebreaks (Nikolay)
+> 
+> ---
+>   fs/btrfs/ctree.h             |   7 +-
+>   fs/btrfs/disk-io.c           | 179 +++++++++++++++++------------------
+>   fs/btrfs/extent-tree.c       |   2 +-
+>   fs/btrfs/inode.c             |  13 +--
+>   fs/btrfs/tests/btrfs-tests.c |   2 +-
+>   fs/btrfs/transaction.c       | 113 ++++++++++------------
+>   6 files changed, 149 insertions(+), 167 deletions(-)
+> 
 
-e54bfa31044d60 Liu Bo               2012-06-29  4492  	mnt_drop_write_file(file);
-c746db1b6ed99f Nikolay Borisov      2022-03-30 @4493  	kfree(bargs);
-                                                              ^^^^^
+<snip>
 
-Freed twice.
+> @@ -4872,31 +4862,34 @@ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
+>   
+>   static void btrfs_drop_all_logs(struct btrfs_fs_info *fs_info)
+>   {
+> -	struct btrfs_root *gang[8];
+> -	u64 root_objectid = 0;
+> -	int ret;
+> -
+> -	spin_lock(&fs_info->fs_roots_radix_lock);
+> -	while ((ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
+> -					     (void **)gang, root_objectid,
+> -					     ARRAY_SIZE(gang))) != 0) {
+> -		int i;
+> +	unsigned long index = 0;
+>   
+> -		for (i = 0; i < ret; i++)
+> -			gang[i] = btrfs_grab_root(gang[i]);
+> -		spin_unlock(&fs_info->fs_roots_radix_lock);
+> +	spin_lock(&fs_info->fs_roots_lock);
+> +	while (xa_find(&fs_info->fs_roots, &index, ULONG_MAX, XA_PRESENT)) {
+> +		struct btrfs_root *root;
+> +		struct btrfs_root *roots[8];
+> +		int grabbed = 0;
+> +
+> +		xa_for_each_start(&fs_info->fs_roots, index, root,
+> +				  index) {
+> +			roots[grabbed] = btrfs_grab_root(root);
+> +			grabbed++;
+> +			if (grabbed >= ARRAY_SIZE(roots))
+> +				break;
+> +		}
+> +		spin_unlock(&fs_info->fs_roots_lock);
+>   
+> -		for (i = 0; i < ret; i++) {
+> -			if (!gang[i])
+> +		for (int i = 0; i < grabbed; i++) {
+> +			if (!roots[i])
+>   				continue;
+> -			root_objectid = gang[i]->root_key.objectid;
+> -			btrfs_free_log(NULL, gang[i]);
+> -			btrfs_put_root(gang[i]);
+> +			index = roots[i]->root_key.objectid;
+> +			btrfs_free_log(NULL, roots[i]);
+> +			btrfs_put_root(roots[i]);
+>   		}
+> -		root_objectid++;
+> -		spin_lock(&fs_info->fs_roots_radix_lock);
+> +		index++;
+> +		spin_lock(&fs_info->fs_roots_lock);
+>   	}
+> -	spin_unlock(&fs_info->fs_roots_radix_lock);
+> +	spin_unlock(&fs_info->fs_roots_lock);
+>   	btrfs_free_log_root_tree(NULL, fs_info);
+>   }
+>   
 
-c9e9f97bdfb64d Ilya Dryomov         2012-01-16  4494  	return ret;
-c9e9f97bdfb64d Ilya Dryomov         2012-01-16  4495  }
+nit: The xa_find/xa_for_each_start as used in this loop are really open-coded xa_extract.
+So the code could be simplified even further:
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp 
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 56d4d4db976b..cb1ccebfc48c 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4875,23 +4875,18 @@ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
+  static void btrfs_drop_all_logs(struct btrfs_fs_info *fs_info)
+  {
+         unsigned long index = 0;
++       int grabbed = 0;
++       struct btrfs_root *roots[8];
+  
+         spin_lock(&fs_info->fs_roots_lock);
+-       while (xa_find(&fs_info->fs_roots, &index, ULONG_MAX, XA_PRESENT)) {
+-               struct btrfs_root *root;
+-               struct btrfs_root *roots[8];
+-               int i;
+-               int grabbed = 0;
++       while ((grabbed = xa_extract(&fs_info->fs_roots, (void **)roots, index,
++                                    ULONG_MAX, 8, XA_PRESENT))) {
+  
+-               xa_for_each_start(&fs_info->fs_roots, index, root, index) {
+-                       roots[grabbed] = btrfs_grab_root(root);
+-                       grabbed++;
+-                       if (grabbed >= ARRAY_SIZE(roots))
+-                               break;
+-               }
++               for (int i = 0; i < grabbed; i++)
++                       roots[i] = btrfs_grab_root(roots[i]);
+                 spin_unlock(&fs_info->fs_roots_lock);
+  
+-               for (i = 0; i < grabbed; i++) {
++               for (int i = 0; i < grabbed; i++) {
+                         if (!roots[i])
+                                 continue;
 
+
+
+
+<snip>
