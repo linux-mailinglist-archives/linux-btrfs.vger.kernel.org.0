@@ -2,218 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BEC519FEC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 14:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B26251A020
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 May 2022 15:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239420AbiEDMuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 May 2022 08:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
+        id S1350004AbiEDNDe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 May 2022 09:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350047AbiEDMug (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 08:50:36 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4762CE37
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 05:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1651668415;
-        bh=AtZEKZNYC5IetjOfjwA+YpE3hzZBD762nOOn29JY8WU=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=i3LFVEtPwylrOuvA7psin+FF4+crvMWvd3IAUAW9KLIdL5TPlaTpK84KDmkrxENPv
-         +Jsd3U2shWaQ7br0mafbu4ol076HpWRA7c/7yQ7cp0TYdiOLxJ689kZopCKUKtXqAS
-         WvpVRNL2nx5cDCb446f7ymWs8k/R4jr+Qs0g6hLI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8XTv-1nqvCp1HJR-014RBE; Wed, 04
- May 2022 14:46:55 +0200
-Message-ID: <5aa3ffc2-2c34-54b0-c122-b6e9d7f8b79b@gmx.com>
-Date:   Wed, 4 May 2022 20:46:50 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH 09/10] btrfs: refactor btrfs_map_bio
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20220504122524.558088-1-hch@lst.de>
- <20220504122524.558088-10-hch@lst.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220504122524.558088-10-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TtOnZGaC6BByK3wY4exEq68/B/k8iYN292towX6weSAMlIF+YaM
- WVMs3KW6XS5fjEnN5pG+0xlg/2UmLrCtJMwq3AWTjAFDwBFTiGzhJXhAr6aRQNo7B5tLCdf
- nzGzABVyQkwUe0pMYRB5Vwzd3JATyAHG5tJA5IRFo++c21XMCMOc8lVCuRHzVUNLC7j4GYt
- en0gPw5kgk5i6vcikNOWA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6kdhODv0NAo=:hEk5pcQH0aZlaC3jBQ7G5B
- mlc/AuhbMS99DPAx5tBONXVOQj0cx3mOoq5kWU/4lczkgyt/Gwke8sdsk1tTENZmNsEjeqMyJ
- PyX9USd1J1CKBkdkFEExBz8WnDStiMyDdjQRjk9UmNIKf+ErJl8rW2fHO7s5ubc3TKSprLuLJ
- JDefY3CnSiV4B28esHdq3SsDZVLffrp3BxFtl1bAMMCUWhYGQqK+cF5LDNtVLI7E86imxU5ou
- LlO+It4loPlnUrdaEu4P+vs8VKPKqcRU2OY51rIlreBS/qT6pL2bsV1ZpShJHcSylQ2Ya0P9I
- Uv8Vm4zul7krHq2a7nPjF96v9YNbJ1d6WhLBOwTrmA2B7/Peo3FCldA8LYGMnvuFoHQqM95yp
- zKqXytFqKaCsyXgCmhC0ku0VeUSd53xcG/Ca64CUnlgiPtON+zkZL7ANvvRaA8oRFTAezz4b4
- 41YjEVEaeWsVMJ1qRGU/DHUlI699E5pmqdoZwECn8R1se6tX/Y7PszOcLX3BSC4IV6ALPN5P/
- EjGRbHkiQiz1RKrNMS3amtsvUlTVsj02zcMCO9j/yZijYiLXR7x63NZn0PqPggJvPqTw/wWGl
- mTMrNamQXe97ZB0OubadYlK031vOaEo+DHoPFnr8bDj+M2KbCE0nhD1t/GvGO2D16am9ncYWf
- Bq00ikKT0avD9b2lCIsko7KpWK9UV0oLwUF6nV2aFFSGkb/vIu/rNF2PLsHBf5lKkytqhVOK3
- lpBsxKAQ8N64s6oZHEpfINHYgYl31BDB6iTZdhWeqTfZ6SxyW79nx5vPtTB1CHYGDQQ2dAMTE
- gGOuCjWdBhBdIyP7EVAgRUw66S2OcP9q0i/D1/sl+oF/z24nhzJi8+Wz9zBNhDDItFkueEht2
- etRSSl8Dr+uducrSjGKOepYujI6hwl6IpVYerTSXdrA+pzWMI6syEzQ3Ng5wQcUViTRgqD20x
- ewmAAE1C3jZWijdwNRc9ysFyFQQ/16KtFXGR2SJdK9eeYZd9lNCVO5xl31OrhYCDJH7WGZ/zw
- lwupi2mAMoHUUgUZ3vkHPD1jRQ2JFhAYQlzGlbminqMD5Xl9X909JVuLzB6GqLqUAClBP0GBh
- HolsbVPKN5Si7w=
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S1350129AbiEDNDb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 09:03:31 -0400
+Received: from ssl1.xaq.nl (ssl1.xaq.nl [45.83.234.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BF73CFF9
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 05:59:54 -0700 (PDT)
+Received: from kakofonix.xaq.nl (kakofonix.utr.xaq.nl [192.168.64.105])
+        by ssl1.xaq.nl (Postfix) with ESMTPSA id A20FB82E88
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 14:59:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lucassen.org;
+        s=202104; t=1651669192;
+        bh=FAGX+LvqH7AUi8mmBDFb9xA9kLi07bpoinqPCTITnk8=;
+        h=Date:From:To:Subject:In-Reply-To:References:Reply-To;
+        b=QY77ikD1jwfLhyGeI9VEVQPX577H0HTO9VTieT1Ew9oyGUOH5AB884RLMeU08vOSH
+         CNh3h8xx/ENCBwZI+pK2m3KHDmDVbpGKyEwqog9MiYlJ10/B2PEG9V2zEEpaGriVxY
+         4ejcxJ0mvg3swpSmWMeUx917wB9UCb3Bepkz+JWSA6vW4yS9fE1vti6cquVbw2IYia
+         ezj+1JnAk6ATsjRJsBk1locQE6TLodhAi3KmZyfPXjuBG7uoXHyU8rN5B/ivlcKbh7
+         fH2dbu654ouEUB0Et35Z2VwuIt/qtfP+8NYYB8kgqHWayc+VlEumhoFh9qTIPTnBB0
+         6nw8vIS8/gp2A==
+Date:   Wed, 4 May 2022 14:59:51 +0200
+From:   richard lucassen <mailinglists@lucassen.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Debian Bullseye install btrfs raid1
+Message-Id: <20220504145951.93293c35de0a7a6c464e12c5@lucassen.org>
+In-Reply-To: <83b2f5df-fc16-627d-85b4-af07bac9a73b@knorrie.org>
+References: <20220504112315.71b41977e071f43db945687c@lucassen.org>
+        <83b2f5df-fc16-627d-85b4-af07bac9a73b@knorrie.org>
+Reply-To: linux-btrfs@vger.kernel.org
+Organization: XAQ Systems
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, 4 May 2022 14:06:31 +0200
+Hans van Kranenburg <hans@knorrie.org> wrote:
 
+> > Still new to btrfs, I try to set up a system that is capable of
+> > booting even if one of the two disks is removed or broken. The BIOS
+> > supports this.
+> > 
+> > As the Debian installer is not capable of installing btrfs raid1, I 
+> > installed Bullseye using /dev/md0 for /boot (ext2) and a / btrfs on
+> > /dev/sda3. This works of course. After install I added /dev/sdb3 to
+> > the / fs: OK.
+> 
+> Did you 'just' add the disk to the filesystem, or did you also do a
+> next step of converting the existing data to the raid1 profile?
 
-On 2022/5/4 20:25, Christoph Hellwig wrote:
-> Move all per-stripe handling into submit_stripe_bio and use a label to
-> cleanup instead of duplicating the logic.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+AFAIK this is what I need to do to convert sda3 mounted on / to a
+raid1 using sda3/sdb3:
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+btrfs device add /dev/sdb3 /
+btrfs balance start -dconvert=raid1 -mconvert=raid1 /
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/volumes.c | 77 +++++++++++++++++++++-------------------------
->   1 file changed, 35 insertions(+), 42 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 5f18e9105fe08..28ac2bfb5d296 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6695,10 +6695,30 @@ static void btrfs_end_bio(struct bio *bio)
->   		btrfs_end_bioc(bioc, true);
->   }
->
-> -static void submit_stripe_bio(struct btrfs_io_context *bioc, struct bio=
- *bio,
-> -			      u64 physical, struct btrfs_device *dev)
-> +static void submit_stripe_bio(struct btrfs_io_context *bioc,
-> +		struct bio *orig_bio, int dev_nr, bool clone)
->   {
->   	struct btrfs_fs_info *fs_info =3D bioc->fs_info;
-> +	struct btrfs_device *dev =3D bioc->stripes[dev_nr].dev;
-> +	u64 physical =3D bioc->stripes[dev_nr].physical;
-> +	struct bio *bio;
-> +
-> +	if (!dev || !dev->bdev ||
-> +	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
-> +	    (btrfs_op(orig_bio) =3D=3D BTRFS_MAP_WRITE &&
-> +	     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
-> +		atomic_inc(&bioc->error);
-> +		if (atomic_dec_and_test(&bioc->stripes_pending))
-> +			btrfs_end_bioc(bioc, false);
-> +		return;
-> +	}
-> +
-> +	if (clone) {
-> +		bio =3D btrfs_bio_clone(dev->bdev, orig_bio);
-> +	} else {
-> +		bio =3D orig_bio;
-> +		bio_set_dev(bio, dev->bdev);
-> +	}
->
->   	bio->bi_private =3D bioc;
->   	btrfs_bio(bio)->device =3D dev;
-> @@ -6733,32 +6753,25 @@ static void submit_stripe_bio(struct btrfs_io_co=
-ntext *bioc, struct bio *bio,
->   blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *=
-bio,
->   			   int mirror_num)
->   {
-> -	struct btrfs_device *dev;
-> -	struct bio *first_bio =3D bio;
->   	u64 logical =3D bio->bi_iter.bi_sector << 9;
-> -	u64 length =3D 0;
-> -	u64 map_length;
-> +	u64 length =3D bio->bi_iter.bi_size;
-> +	u64 map_length =3D length;
->   	int ret;
->   	int dev_nr;
->   	int total_devs;
->   	struct btrfs_io_context *bioc =3D NULL;
->
-> -	length =3D bio->bi_iter.bi_size;
-> -	map_length =3D length;
-> -
->   	btrfs_bio_counter_inc_blocked(fs_info);
->   	ret =3D __btrfs_map_block(fs_info, btrfs_op(bio), logical,
->   				&map_length, &bioc, mirror_num, 1);
-> -	if (ret) {
-> -		btrfs_bio_counter_dec(fs_info);
-> -		return errno_to_blk_status(ret);
-> -	}
-> +	if (ret)
-> +		goto out_dec;
->
->   	total_devs =3D bioc->num_stripes;
-> -	bioc->orig_bio =3D first_bio;
-> -	bioc->private =3D first_bio->bi_private;
-> -	bioc->end_io =3D first_bio->bi_end_io;
-> -	atomic_set(&bioc->stripes_pending, bioc->num_stripes);
-> +	bioc->orig_bio =3D bio;
-> +	bioc->private =3D bio->bi_private;
-> +	bioc->end_io =3D bio->bi_end_io;
-> +	atomic_set(&bioc->stripes_pending, total_devs);
->
->   	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
->   	    ((btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE) || (mirror_num > 1))) {
-> @@ -6770,9 +6783,7 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *f=
-s_info, struct bio *bio,
->   			ret =3D raid56_parity_recover(bio, bioc, map_length,
->   						    mirror_num, 1);
->   		}
-> -
-> -		btrfs_bio_counter_dec(fs_info);
-> -		return errno_to_blk_status(ret);
-> +		goto out_dec;
->   	}
->
->   	if (map_length < length) {
-> @@ -6782,29 +6793,11 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info =
-*fs_info, struct bio *bio,
->   		BUG();
->   	}
->
-> -	for (dev_nr =3D 0; dev_nr < total_devs; dev_nr++) {
-> -		dev =3D bioc->stripes[dev_nr].dev;
-> -		if (!dev || !dev->bdev || test_bit(BTRFS_DEV_STATE_MISSING,
-> -						   &dev->dev_state) ||
-> -		    (btrfs_op(first_bio) =3D=3D BTRFS_MAP_WRITE &&
-> -		    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
-> -			atomic_inc(&bioc->error);
-> -			if (atomic_dec_and_test(&bioc->stripes_pending))
-> -				btrfs_end_bioc(bioc, false);
-> -			continue;
-> -		}
-> -
-> -		if (dev_nr < total_devs - 1) {
-> -			bio =3D btrfs_bio_clone(dev->bdev, first_bio);
-> -		} else {
-> -			bio =3D first_bio;
-> -			bio_set_dev(bio, dev->bdev);
-> -		}
-> -
-> -		submit_stripe_bio(bioc, bio, bioc->stripes[dev_nr].physical, dev);
-> -	}
-> +	for (dev_nr =3D 0; dev_nr < total_devs; dev_nr++)
-> +		submit_stripe_bio(bioc, bio, dev_nr, dev_nr < total_devs - 1);
-> +out_dec:
->   	btrfs_bio_counter_dec(fs_info);
-> -	return BLK_STS_OK;
-> +	return errno_to_blk_status(ret);
->   }
->
->   static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_ar=
-gs *args,
+> If you start out with 1 disk and simply add another, it tells btrfs
+> that it can continue writing just 1 (!) copy of your data wherever it 
+> likes. And, in this case, the filesystem *always* wants (needs!) all 
+> disks to be present to mount, of course.
+> 
+> disk 1  disk 2
+> A       C
+> B       E
+> D
+> 
+> If you want everything duplicated on both disks, you need to convert
+> the existing data that you already had on the first disk to the raid1 
+> profile, and from then on, it will keep writing 2 copies of the data
+> on any two disks in the filesystem (but you have exactly 2, so it's
+> always on both of those two in that case).
+> 
+> disk 1  disk 2
+> A       D
+> B       B
+> D       C
+> C       A
+> 
+> If the previous installed system still works well when you add back
+> the second disk again, you can still do this. (so, when you did not
+> force any destructive operations, and just had it fail like seen
+> below)
+> 
+> Can you share output of the following commands:
+> 
+> btrfs fi usage <mountpoint>
+> 
+> With the following command you let it convert all (d)ata and
+> (m)etadata to the raid1 profile:
+> 
+> btrfs balance start -dconvert=raid1 -mconvert=raid1 /
+
+That's what I did
+
+> Afterwards, you can check the result with the usage command. The
+> data, metadata, and system lines in the output of the usage command
+> should all say RAID1, and you should see that on both disks, a
+> similar amount of data is present.
+
+Just chose the grub boot option "Debian 11 on sda6" (an older install),
+this works but in fact this seems to be the sda3/sdb3 raid1. I must have
+messed up grub somewhere:
+
+btrfs filesystem show
+Label: none  uuid: f9cf579f-d3d9-49b2-ab0d-ba258e9df3d8
+        Total devices 2 FS bytes used 1.15GiB
+        devid    1 size 16.00GiB used 2.28GiB path /dev/sda3
+        devid    2 size 16.00GiB used 2.28GiB path /dev/sdb3
+
+Label: none  uuid: 1739f989-05e0-48d8-b99a-67f91c18c892
+        Total devices 2 FS bytes used 448.00KiB
+        devid    1 size 16.00GiB used 2.57GiB path /dev/sda5
+        devid    2 size 16.00GiB used 2.56GiB path /dev/sdb5
+
+Label: 'data'  uuid: 3173a224-830f-41d7-8870-3db0e8c986c9
+        Total devices 2 FS bytes used 1020.38MiB
+        devid    1 size 187.32GiB used 2.01GiB path /dev/sda6
+        devid    2 size 187.32GiB used 2.01GiB path /dev/sdb6
+
+I will first clean up all the mess I created.
+
+"There are two types of people: those who have lost data and those who
+will" :-)
+
+R.
+
+-- 
+richard lucassen
+https://contact.xaq.nl/
