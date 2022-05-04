@@ -2,94 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466D951B3BF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 01:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692C751B410
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 02:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243192AbiEDXr5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 May 2022 19:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        id S233738AbiEEAGO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 May 2022 20:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385945AbiEDXRd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 19:17:33 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BD0F5D
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 16:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1651706034; x=1683242034;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PxnPOVhSijQqEPJX13eGDAqvE01Xf5KXzn2pYPAoq8A=;
-  b=nmqzjwMvVyoLCuTludmghvQkySU/UDk/JQ24Z8+k7cfoUAuuJPwwvzYs
-   qEbKcKFnvwilm4GOmMlQbDKIUo3adjJReTMsjWXfJnKYuEI9FPRKLAk4q
-   IdG8ODmmHYmdZnbCpJTXWFkoeC/qBeJqG0k2tCUTuLQuIB8+fODsbEJJE
-   1FUWSpKPBKR5CXFR/vmwHVioDNKEcKghcGqFUsUNC+gDEMJHymFF7uStO
-   WDWWi6ckGfvxxBzK3XoNxvnT2L7yz976X+sOjT7X2fWgLh7lF0BWu+Cyu
-   +JksA8L46wF+unilKUFic1HuydGlGqHSyjXMqcCeI1I4C+fZJT+5oG91O
-   g==;
-X-IronPort-AV: E=Sophos;i="5.91,199,1647273600"; 
-   d="scan'208";a="311517693"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 05 May 2022 07:13:54 +0800
-IronPort-SDR: q2ICAIOFS9yoHgj9Lbm8K2rrjgvnuXXhQrhxX54kS7B4eB+yVUqdNcQLKQATBEfdyWvgiI6AEX
- MKd6HZwUN02Vpazn/qZQGY4x3PRpQH7O6tqPJhzyH+FBSZ+JbuLas6z5ks2kkNGP6RdxN+1y5Z
- tBo9EApPZVex8RFju3L/eD+Ydu19Tv4q0+80+T2q2rg3UicGzsx2YPqyy2ozx9y9ghq6PPd+RZ
- JRWYE9ZoGlh58aE3nHbPq/+aT98ykRGGE1B/DTlYN9EQsPyBwoMq3vYJvnDgAWYAUaXZqmj3WN
- q44aTvVEz4HhXXMBvott2u4w
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 May 2022 15:43:55 -0700
-IronPort-SDR: UCnsE82Brb4Mpu78s09c7sBYh0ckbtuyUZS6+KU0vtpZV89YUZhfwKb/r0lqqkxXPZiuhDHg9L
- x20JDaYdM74gkOevwl5WOWDx4MY6ADLMpkkKw+8mOhDDuc9hn3zs7gYZqQ2tVSDcoUes3o2xmi
- IBz8kMfX+yKX6D/rdOmaCSL933SaN5JIuD4ZGEMfxr1sxAKVLL0LHuYJpjZuhS+1/hqQ9fQdqu
- E+k2fVLJZ0elYy5ygfe/7MgafwJOMaPccug3gxMWrG+q8yZzNvlVxe/NILTia7gxu9yxZtltOU
- qIk=
-WDCIronportException: Internal
-Received: from unknown (HELO naota-x1.wdc.com) ([10.225.48.235])
-  by uls-op-cesaip01.wdc.com with ESMTP; 04 May 2022 16:13:53 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: fix comparison of alloc_offset vs meta_write_pointer
-Date:   Wed,  4 May 2022 16:12:48 -0700
-Message-Id: <72f5f60036d5f9a3b096365f5c72cc1ad8db588b.1651705923.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S240072AbiEDX5j (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 May 2022 19:57:39 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFED14F45D
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 May 2022 16:54:00 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id s12-20020a0568301e0c00b00605f30530c2so1934032otr.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 May 2022 16:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
+        b=Dn1MT8x7p4Rbn+pctwVkt7IgIdUxT0LRLjox/JaF9ttsZ2N8sUUglHFRxQa3sl75aK
+         h1U1JpCoOjPff8rV+LL0edQuBh+YvYlTbZ4zx127Qa80qMcS49J0d2nS2s7mVVadwp/M
+         vGp6wV8qQhR9tMRiQjyWHIJslgvG4HigF7p24aLxixJ1l99K68kLikab9Y0HgtSpkDYW
+         0+riuhXlj9dAnGs04evyYz4sFXKtm0FlJKiBI2Dtbo7ebvKr6E7XJkxgxzCXhReMwL1D
+         yv9OUeo9KjH+/RIlVXefhsYivAQRdlwo604eWoXrrvRFVxcSgXwgPis+UtVhyLpBWx3z
+         WyWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
+        b=TM5esn74QjEjwc6ccKqT6IhNEDK437xNcTYjAiBcjTO1i5kWtKkzvYsm7Kqs6/viB9
+         ddC/Y9XahWrd7GjiVKFjJix2LBCsEXIo0bMvQBuQAzD183wUBThRov38xZXCMc50q9ct
+         h1MlFkvbKNpMsXIQigv4lv5lSgkC3ZPr/inDWVFLkObwagLaZaymLNPK/w6dzXOq+PAx
+         QlHrgXYW/VRloXkeO94qVK/a7H5bf+U0D3YPv+J/5Mwq6NMKaCV5MXK8kw1/Awy73XtB
+         boJA5NPW5nRnm25XsjxHp0KP+TIQozvs8kOtUtQh0A9VzPsJEtAb7i1hQXZJL/AG5YHW
+         Cveg==
+X-Gm-Message-State: AOAM530LdCode/vWuDoRc7hJ2McfJxg7oOMtLqFrxSZuGLu3j7I/By69
+        vdt76wQTnXzs+ALNqYTi292oLReEGBLewZKwMQo=
+X-Google-Smtp-Source: ABdhPJyXbFHNtxfp8+qt+M9kuv/iG7XfFeFFPd7I4/fmpdxuycMtmf6dIJw5ghtZAT2CwgvAVE/kUl0HxsirxLIU8v0=
+X-Received: by 2002:a9d:6b16:0:b0:605:e0eb:d3d6 with SMTP id
+ g22-20020a9d6b16000000b00605e0ebd3d6mr8263208otp.213.1651708440302; Wed, 04
+ May 2022 16:54:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a05:6802:1a9:0:0:0:0 with HTTP; Wed, 4 May 2022 16:53:59
+ -0700 (PDT)
+Reply-To: ortegainvestmmentforrealinvest@gmail.com
+From:   Info <joybhector64@gmail.com>
+Date:   Thu, 5 May 2022 05:23:59 +0530
+Message-ID: <CAP7KLYgH9LcKHS-KgR0zObHAgC6Fr3D+dOJSbDKurTc_12+iFw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:344 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [joybhector64[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [joybhector64[at]gmail.com]
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The block_group->alloc_offset is an offset from the start of the block
-group. OTOH, the ->meta_write_pointer is an address in the logical
-space. So, we should compare the alloc_offset shifted with the
-block_group->start.
-
-Fixes: afba2bc036b0 ("btrfs: zoned: implement active zone tracking")
-CC: stable@vger.kernel.org # 5.16+
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/zoned.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index db1848a24d44..253cba8c73ca 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1900,7 +1900,7 @@ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_writ
- 	/* Check if we have unwritten allocated space */
- 	if ((block_group->flags &
- 	     (BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_SYSTEM)) &&
--	    block_group->alloc_offset > block_group->meta_write_pointer) {
-+	    block_group->start + block_group->alloc_offset > block_group->meta_write_pointer) {
- 		spin_unlock(&block_group->lock);
- 		return -EAGAIN;
- 	}
 -- 
-2.35.1
+I am an investor. I came from the USA and I have many investments all
+over the world.
 
+I want you to partner with me to invest in your country I am into many
+investment such as real Estate or buying of properties i can also
+invest money in any of existing business with equity royalty or by %
+percentage so on,
+Warm regards
