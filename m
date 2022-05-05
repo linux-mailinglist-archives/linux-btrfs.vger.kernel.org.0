@@ -2,61 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C1651BA5B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 10:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4564151BA8F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 10:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348168AbiEEIbT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 May 2022 04:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
+        id S1349518AbiEEIhR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 May 2022 04:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348273AbiEEIbS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 May 2022 04:31:18 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A062FFC0
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 May 2022 01:27:38 -0700 (PDT)
+        with ESMTP id S1349585AbiEEIhP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 May 2022 04:37:15 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8037149905;
+        Thu,  5 May 2022 01:33:34 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8F0D81F37F
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 May 2022 08:27:37 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3F15721882;
+        Thu,  5 May 2022 08:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651739257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1651739613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=je4RYVhwVS2+1xEYKLVuPICsEGjaPoaarpSxdjrlNWI=;
-        b=Rp3fswPPMgBq5cHrhH5ktoGINSVQTKjWSVRPx3gdwHSbGLIQMHQRN7eyO8Cfk2EQ75wgTQ
-        ooSK1OYOAMD1J17Lb2Kt6bsCbDyP49D9l6vIQqNV05KNw3Mh4GaXkBIOn/wU3pqg5og2iG
-        hG/kQNluMm+9pxKzulYJ8Q18EpcYgmM=
+        bh=rEynGZ+H2w9ylxLdHigGAaKeSCzGaYGzl+zGjlh++AI=;
+        b=EDwbKz5V9G3lRyQNsgKdCVf32/nEh34MV4fFSfgI9SZFi58EdyCUW+PQnLu4jyadbNKZPt
+        v5UY/ol1LtPk37RUaDhYEnADZZX4AsGyjYtV5h5F3d3I/0mZ3PFBtr+vziVzmhtrmcwd0j
+        rWvibBYIRKhGqzArBlIlOS3h3WAxB/Y=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7021A13B11
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 May 2022 08:27:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A99F113B11;
+        Thu,  5 May 2022 08:33:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id tne0GHmKc2ISDQAAMHmgww
-        (envelope-from <nborisov@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 May 2022 08:27:37 +0000
-Message-ID: <09b97c23-5933-7814-9cd9-72e95b0ffadd@suse.com>
-Date:   Thu, 5 May 2022 11:27:36 +0300
+        id 8GihJtyLc2JJEAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 05 May 2022 08:33:32 +0000
+Message-ID: <e96fcd60-7b2d-59f2-be72-a8f578afd583@suse.com>
+Date:   Thu, 5 May 2022 11:33:32 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
-Subject: Re: Debian Bullseye install btrfs raid1
+Subject: Re: reduce memory allocation in the btrfs direct I/O path
 Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org
-References: <20220504112315.71b41977e071f43db945687c@lucassen.org>
- <c0a5db9f-2631-9177-929c-9e76a9c67ec5@suse.com>
- <20220504120254.7fae6033bee9e63ed002bea9@lucassen.org>
- <9129a5be-f0a2-5859-4c02-eb075d222a31@suse.com>
- <20220504121454.8a43384a5c8ec25d6e9c1b77@lucassen.org>
- <42d841fc-d4ee-37e1-470f-4ac5c821afc7@gmail.com>
- <20220504213349.b49135a060ec1d8111794db1@lucassen.org>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20220504162342.573651-1-hch@lst.de>
 From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220504213349.b49135a060ec1d8111794db1@lucassen.org>
+In-Reply-To: <20220504162342.573651-1-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,22 +69,26 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 4.05.22 г. 22:33 ч., richard lucassen wrote:
-> On Wed, 4 May 2022 21:15:50 +0300
-> Andrei Borzenkov <arvidjaar@gmail.com> wrote:
+On 4.05.22 г. 19:23 ч., Christoph Hellwig wrote:
+> Hi all,
 > 
->> No, it will not. Some script(s), as part of startup sequence, will
->> decide that array can be started even though it is degraded and force
->> it to be started. Nothing in principle prevents your distribution from
->> adding scripts to mount btrfs in degraded mode in this case. Those
->> scripts are not part of btrfs, so you should report it to your
->> distribution.
+> this series adds two minor improvements to iomap that allow btrfs
+> to avoid a memory allocation per read/write system call and another
+> one per submitted bio.  I also have at last two other pending uses
+> for the iomap functionality later on, so they are not really btrfs
+> specific either.
 > 
-> Ok thnx! Would it damage btrfs if I add a permanent "rootflags=degraded"
-> to the kernel?
+> Diffstat:
+>   fs/btrfs/btrfs_inode.h |   25 --------
+>   fs/btrfs/ctree.h       |    6 -
+>   fs/btrfs/file.c        |    6 -
+>   fs/btrfs/inode.c       |  152 +++++++++++++++++++++++--------------------------
+>   fs/iomap/direct-io.c   |   26 +++++++-
+>   include/linux/iomap.h  |    4 +
+>   6 files changed, 104 insertions(+), 115 deletions(-)
+> 
 
-The flag itself won't have any repercussions on stability but if your 
-only remaining disk crashes while you are in degraded mode, because your 
-other disk is already gone then you might lose data.
 
-> 
+Apart from the silent disk_bytenr removal nit:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
