@@ -2,58 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47D551B93D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 09:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C0151B99E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 10:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235115AbiEEHkH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 May 2022 03:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        id S1346355AbiEEIKc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 May 2022 04:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbiEEHkD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 May 2022 03:40:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426D24838B
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 May 2022 00:36:25 -0700 (PDT)
+        with ESMTP id S1346334AbiEEIKb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 May 2022 04:10:31 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432613337C;
+        Thu,  5 May 2022 01:06:53 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 02A1B1F37F;
-        Thu,  5 May 2022 07:36:24 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D6FDE211C3;
+        Thu,  5 May 2022 08:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651736184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1651738011; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Z+YZjAbglEsWmCI4RLbGODmA/hrFIIhiAhRlYYWT5VU=;
-        b=KaXB9d8U4c2mgvk3CyadSrs0HOVVoG/xGyfz5S93mYQ4IcjKwhO1G/Y2Qrqqau5WKjY2/s
-        LlD3C2oSMb6gMGd3cSyw1dN76k9VGfJ7ep5apGMW6ZexizTBHcreuP6WyBYYf4iE1/1PvP
-        itDd998w7aSBpn/MrZsMJauj/aQtr5U=
+        bh=eZibYFJG5L2p6UoYm18ZdrBgQ/joeqb23OybZbEbxM8=;
+        b=EueUyxcMRVtde2gP6R3UUx/00/YS5hBP1o99JvrcQ21/ObKygnimQ8ZdIopoHp98LuBiae
+        /kt5K+8cE+kpnPTIDoFkexblIVbmrd+5BbP9bHX2+BYy4r32XGsnHpY6aEY25kA1E8GsmR
+        ECs3I6XIXPa9wzYGWE905vrvDe5oitI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D133613A65;
-        Thu,  5 May 2022 07:36:23 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5EC5513A65;
+        Thu,  5 May 2022 08:06:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1QGLMXd+c2IodAAAMHmgww
-        (envelope-from <gniebler@suse.com>); Thu, 05 May 2022 07:36:23 +0000
-Message-ID: <505ded35-7b1a-b58a-3991-3facf974213b@suse.com>
-Date:   Thu, 5 May 2022 09:36:23 +0200
+        id R4J8FJuFc2LdAgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 05 May 2022 08:06:51 +0000
+Message-ID: <9d53e1bd-b370-cc8c-5194-fa084b887ecc@suse.com>
+Date:   Thu, 5 May 2022 11:06:50 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
-Subject: Re: [PATCH v2] btrfs: Turn name_cache radix tree into XArray in
- send_ctx
+Subject: Re: [PATCH 2/5] iomap: add per-iomap_iter private data
 Content-Language: en-US
-From:   Gabriel Niebler <gniebler@suse.com>
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20220426095101.8516-1-gniebler@suse.com>
- <d5c1e631-a380-dc08-05b0-c4520318cadd@suse.com>
- <58aa36f6-6f86-19b1-2eff-50d172b97a6d@suse.com>
-In-Reply-To: <58aa36f6-6f86-19b1-2eff-50d172b97a6d@suse.com>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20220504162342.573651-1-hch@lst.de>
+ <20220504162342.573651-3-hch@lst.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220504162342.573651-3-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -66,128 +68,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Should I resend with the casts removed?
 
-Am 27.04.22 um 16:36 schrieb Gabriel Niebler:
-> Am 27.04.22 um 13:46 schrieb Nikolay Borisov:
->> On 26.04.22 г. 12:51 ч., Gabriel Niebler wrote:
->>> … and adjust all usages of this object to use the XArray API for the 
->>> sake
->>> of consistency.
->>>
->>> XArray API provides array semantics, so it is notionally easier to 
->>> use and
->>> understand, and it also takes care of locking for us.
->>>
->>> None of this makes a real difference in this particular patch, but it 
->>> does
->>> in other places where similar replacements are or have been made and we
->>> want to be consistent in our usage of data structures in btrfs.
->>>
->>> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
->>> ---
->>>
->>> Changes from v1:
->>>   - Let commit message begin with "btrfs: "
->>>
->>> ---
->>>   fs/btrfs/send.c | 40 +++++++++++++++++++---------------------
->>>   1 file changed, 19 insertions(+), 21 deletions(-)
->>>
->>
->> LGTM, one minor nit below though.
->>
->> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
->>
->> <snip>
->>
->>> @@ -262,14 +261,14 @@ struct orphan_dir_info {
->>>   struct name_cache_entry {
->>>       struct list_head list;
->>>       /*
->>> -     * radix_tree has only 32bit entries but we need to handle 64bit 
->>> inums.
->>> -     * We use the lower 32bit of the 64bit inum to store it in the 
->>> tree. If
->>> -     * more then one inum would fall into the same entry, we use 
->>> radix_list
->>> -     * to store the additional entries. radix_list is also used to 
->>> store
->>> -     * entries where two entries have the same inum but different
->>> +     * On 32bit kernels, XArray has only 32bit indices, but we need to
->>> +     * handle 64bit inums. We use the lower 32bit of the 64bit inum 
->>> to store
->>> +     * it in the tree. If more than one inum would fall into the 
->>> same entry,
->>> +     * we use inum_aliases to store the additional entries. 
->>> inum_aliases is
->>> +     * also used to store entries with the same inum but different
->>>        * generations.
->>>        */
->>> -    struct list_head radix_list;
->>> +    struct list_head inum_aliases;
->>>       u64 ino;
->>>       u64 gen;
->>>       u64 parent_ino;
->>> @@ -2019,9 +2018,9 @@ static int did_overwrite_first_ref(struct 
->>> send_ctx *sctx, u64 ino, u64 gen)
->>>   }
->>>   /*
->>> - * Insert a name cache entry. On 32bit kernels the radix tree index 
->>> is 32bit,
->>> + * Insert a name cache entry. On 32bit kernels the XArray index is 
->>> 32bit,
->>>    * so we need to do some special handling in case we have clashes. 
->>> This function
->>> - * takes care of this with the help of name_cache_entry::radix_list.
->>> + * takes care of this with the help of name_cache_entry::inum_aliases.
->>>    * In case of error, nce is kfreed.
->>>    */
->>>   static int name_cache_insert(struct send_ctx *sctx,
->>> @@ -2030,8 +2029,7 @@ static int name_cache_insert(struct send_ctx 
->>> *sctx,
->>>       int ret = 0;
->>>       struct list_head *nce_head;
->>> -    nce_head = radix_tree_lookup(&sctx->name_cache,
->>> -            (unsigned long)nce->ino);
->>> +    nce_head = xa_load(&sctx->name_cache, (unsigned long)nce->ino);
->>
->> The casting is redundant since the function's argument is already 
->> declared as unsigned long so truncation happens anyway. The only 
->> rationale to keep is for documentation purposes but even this is 
->> somewhat dubious. But since there is already something said about that 
->> above the definition of inum_aliases I'd say lets do away with the casts.
+
+On 4.05.22 г. 19:23 ч., Christoph Hellwig wrote:
+> Allow the file system to keep state for all iterations.  For now only
+> wire it up for direct I/O as there is an immediate need for it there.
 > 
-> I see your point and I agree with you, but I'd like to point out that I 
-> didn't add this cast - it was already there  (and I think there may be 
-> others, too).
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   fs/iomap/direct-io.c  | 8 ++++++++
+>   include/linux/iomap.h | 1 +
+>   2 files changed, 9 insertions(+)
 > 
-> I thought about removing it (as we had discussed and I've done in 
-> another patch), but then I decided to leave it, thinking that maybe 
-> there was a reason for it. Like communicating something explicitely to 
-> anyone reading the code.
-> 
-> It's true, though, that the comment actually explains it.
-> 
->>>       if (!nce_head) {
->>>           nce_head = kmalloc(sizeof(*nce_head), GFP_KERNEL);
->>>           if (!nce_head) {
->>> @@ -2040,14 +2038,15 @@ static int name_cache_insert(struct send_ctx 
->>> *sctx,
->>>           }
->>>           INIT_LIST_HEAD(nce_head);
->>> -        ret = radix_tree_insert(&sctx->name_cache, nce->ino, nce_head);
->>> +        ret = xa_insert(&sctx->name_cache, nce->ino, nce_head,
->>
->> Here nce->ino is not cast, yet the parameter is still unsigned long 
->> meaning truncation occurs (as is expected). At the very least this 
->> makes the code style inconsistent.
-> 
-> Yeah, true. Again, it was inconsistent before I got there, but I'll 
-> admit that I didn't notice this one.
-> 
-> For the sake of consistency, I'm willing to remove the cast (and perhaps 
-> others, would have to check) and resend.
-> 
-> I'll leave that up to the maintainer to decide.
-> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 15929690d89e3..355abe2eacc6a 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -520,6 +520,14 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>   	dio->submit.waiter = current;
+>   	dio->submit.poll_bio = NULL;
+>   
+> +	/*
+> +	 * Transfer the private data that was passed by the caller to the
+> +	 * iomap_iter, and clear it in the iocb, as iocb->private will be
+> +	 * used for polled bio completion later.
+> +	 */
+> +	iomi.private = iocb->private;
+> +	WRITE_ONCE(iocb->private, NULL);
+
+nit: Why use WRITE_ONCE here? Generaly when it's used it will suggest to 
+the reader something funny is going on with accessing that variable 
+without holding a particular lock?
+
+> +
+>   	if (iov_iter_rw(iter) == READ) {
+>   		if (iomi.pos >= dio->i_size)
+>   			goto out_free_dio;
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index a5483020dad41..109c055865f73 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -188,6 +188,7 @@ struct iomap_iter {
+>   	unsigned flags;
+>   	struct iomap iomap;
+>   	struct iomap srcmap;
+> +	void *private;
+>   };
+>   
+>   int iomap_iter(struct iomap_iter *iter, const struct iomap_ops *ops);
