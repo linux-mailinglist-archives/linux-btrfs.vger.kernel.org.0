@@ -2,57 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7049451B93B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 09:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47D551B93D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 May 2022 09:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345280AbiEEHjf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 May 2022 03:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
+        id S235115AbiEEHkH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 May 2022 03:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242184AbiEEHje (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 May 2022 03:39:34 -0400
+        with ESMTP id S235142AbiEEHkD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 May 2022 03:40:03 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F144838B
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 May 2022 00:35:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426D24838B
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 May 2022 00:36:25 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 240D81F45B;
-        Thu,  5 May 2022 07:35:54 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 02A1B1F37F;
+        Thu,  5 May 2022 07:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651736154; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1651736184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GNTN4VBC9NCY9lg12481pDeShgOTCVLlMcdSIHpqzTQ=;
-        b=k/qffgmqDmsDYf7Wu/AF0E77ABNc+0cX3rfsrqfFR93jGbABXtFmuYwWXeD6gnJ8591Etp
-        TtNzJNzjRUB3OTp+ESidjrk8r3AF/DkgH+663Lg9WicY8/z7hN9JAE5B36VGa0YOJ9CAWp
-        U8b3tQuOZfiKzg2X1gqJ3nILG1AiLM4=
+        bh=Z+YZjAbglEsWmCI4RLbGODmA/hrFIIhiAhRlYYWT5VU=;
+        b=KaXB9d8U4c2mgvk3CyadSrs0HOVVoG/xGyfz5S93mYQ4IcjKwhO1G/Y2Qrqqau5WKjY2/s
+        LlD3C2oSMb6gMGd3cSyw1dN76k9VGfJ7ep5apGMW6ZexizTBHcreuP6WyBYYf4iE1/1PvP
+        itDd998w7aSBpn/MrZsMJauj/aQtr5U=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F265F13A65;
-        Thu,  5 May 2022 07:35:53 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D133613A65;
+        Thu,  5 May 2022 07:36:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1wI3OVl+c2LicwAAMHmgww
-        (envelope-from <gniebler@suse.com>); Thu, 05 May 2022 07:35:53 +0000
-Message-ID: <3de4b25a-9528-a2c5-336e-ac33f1a2692c@suse.com>
-Date:   Thu, 5 May 2022 09:35:53 +0200
+        id 1QGLMXd+c2IodAAAMHmgww
+        (envelope-from <gniebler@suse.com>); Thu, 05 May 2022 07:36:23 +0000
+Message-ID: <505ded35-7b1a-b58a-3991-3facf974213b@suse.com>
+Date:   Thu, 5 May 2022 09:36:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
-Subject: Re: [PATCH v6] btrfs: Turn delayed_nodes_tree into an XArray
+Subject: Re: [PATCH v2] btrfs: Turn name_cache radix tree into XArray in
+ send_ctx
 Content-Language: en-US
 From:   Gabriel Niebler <gniebler@suse.com>
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com
-References: <20220426094304.7952-1-gniebler@suse.com>
- <8878c000-a9f2-477f-8996-08381d1fecc5@suse.com>
- <d50ad9d1-f0a3-e51d-2c57-5f052c3f25c1@suse.com>
-In-Reply-To: <d50ad9d1-f0a3-e51d-2c57-5f052c3f25c1@suse.com>
+References: <20220426095101.8516-1-gniebler@suse.com>
+ <d5c1e631-a380-dc08-05b0-c4520318cadd@suse.com>
+ <58aa36f6-6f86-19b1-2eff-50d172b97a6d@suse.com>
+In-Reply-To: <58aa36f6-6f86-19b1-2eff-50d172b97a6d@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,88 +66,128 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Should I resend with the small changes outlined below, or will the patch 
-be accepted and the diff folded into it on the maintainer's side?
+Should I resend with the casts removed?
 
-Am 26.04.22 um 16:31 schrieb Gabriel Niebler:
-> Am 26.04.22 um 13:11 schrieb Nikolay Borisov:
->> On 26.04.22 г. 12:43 ч., Gabriel Niebler wrote:
->>> … in the btrfs_root struct and adjust all usages of this object to 
->>> use the
->>> XArray API, because it is notionally easier to use and unserstand, as it
->>> provides array semantics, and also takes care of locking for us, further
->>> simplifying the code.
+Am 27.04.22 um 16:36 schrieb Gabriel Niebler:
+> Am 27.04.22 um 13:46 schrieb Nikolay Borisov:
+>> On 26.04.22 г. 12:51 ч., Gabriel Niebler wrote:
+>>> … and adjust all usages of this object to use the XArray API for the 
+>>> sake
+>>> of consistency.
 >>>
->>> Also use the opportunity to do some light refactoring.
+>>> XArray API provides array semantics, so it is notionally easier to 
+>>> use and
+>>> understand, and it also takes care of locking for us.
+>>>
+>>> None of this makes a real difference in this particular patch, but it 
+>>> does
+>>> in other places where similar replacements are or have been made and we
+>>> want to be consistent in our usage of data structures in btrfs.
 >>>
 >>> Signed-off-by: Gabriel Niebler <gniebler@suse.com>
+>>> ---
+>>>
+>>> Changes from v1:
+>>>   - Let commit message begin with "btrfs: "
+>>>
+>>> ---
+>>>   fs/btrfs/send.c | 40 +++++++++++++++++++---------------------
+>>>   1 file changed, 19 insertions(+), 21 deletions(-)
+>>>
+>>
+>> LGTM, one minor nit below though.
+>>
+>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 >>
 >> <snip>
 >>
->>> @@ -1870,32 +1863,36 @@ void btrfs_kill_delayed_inode_items(struct 
->>> btrfs_inode *inode)
->>>   void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
->>>   {
->>> -    u64 inode_id = 0;
->>> +    unsigned long index = 0;
->>> +    struct btrfs_delayed_node *delayed_node;
->>>       struct btrfs_delayed_node *delayed_nodes[8];
->>> -    int i, n;
->>>       while (1) {
->>> +        int n = 0;
->>> +
->>>           spin_lock(&root->inode_lock);
->>> -        n = radix_tree_gang_lookup(&root->delayed_nodes_tree,
->>> -                       (void **)delayed_nodes, inode_id,
->>> -                       ARRAY_SIZE(delayed_nodes));
->>> -        if (!n) {
->>> +        if (xa_empty(&root->delayed_nodes)) {
->>>               spin_unlock(&root->inode_lock);
->>> -            break;
->>> +            return;
->>>           }
->>> -        inode_id = delayed_nodes[n - 1]->inode_id + 1;
->>> -        for (i = 0; i < n; i++) {
->>> +        xa_for_each_start(&root->delayed_nodes, index,
->>> +                  delayed_node, index) {
->>>               /*
->>>                * Don't increase refs in case the node is dead and
->>>                * about to be removed from the tree in the loop below
->>>                */
->>> -            if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
->>> -                delayed_nodes[i] = NULL;
->>> +            if (refcount_inc_not_zero(&delayed_node->refs)) {
->>> +                delayed_nodes[n] = delayed_node;
->>> +                n++;
->>> +            }
->>> +            if (n >= ARRAY_SIZE(delayed_nodes))
->>> +                break;
->>>           }
->>> +        index++;
->>>           spin_unlock(&root->inode_lock);
->>> -        for (i = 0; i < n; i++) {
->>> +        for (int i = 0; i < n; i++) {
->>>               if (!delayed_nodes[i])
->>>                   continue;
+>>> @@ -262,14 +261,14 @@ struct orphan_dir_info {
+>>>   struct name_cache_entry {
+>>>       struct list_head list;
+>>>       /*
+>>> -     * radix_tree has only 32bit entries but we need to handle 64bit 
+>>> inums.
+>>> -     * We use the lower 32bit of the 64bit inum to store it in the 
+>>> tree. If
+>>> -     * more then one inum would fall into the same entry, we use 
+>>> radix_list
+>>> -     * to store the additional entries. radix_list is also used to 
+>>> store
+>>> -     * entries where two entries have the same inum but different
+>>> +     * On 32bit kernels, XArray has only 32bit indices, but we need to
+>>> +     * handle 64bit inums. We use the lower 32bit of the 64bit inum 
+>>> to store
+>>> +     * it in the tree. If more than one inum would fall into the 
+>>> same entry,
+>>> +     * we use inum_aliases to store the additional entries. 
+>>> inum_aliases is
+>>> +     * also used to store entries with the same inum but different
+>>>        * generations.
+>>>        */
+>>> -    struct list_head radix_list;
+>>> +    struct list_head inum_aliases;
+>>>       u64 ino;
+>>>       u64 gen;
+>>>       u64 parent_ino;
+>>> @@ -2019,9 +2018,9 @@ static int did_overwrite_first_ref(struct 
+>>> send_ctx *sctx, u64 ino, u64 gen)
+>>>   }
+>>>   /*
+>>> - * Insert a name cache entry. On 32bit kernels the radix tree index 
+>>> is 32bit,
+>>> + * Insert a name cache entry. On 32bit kernels the XArray index is 
+>>> 32bit,
+>>>    * so we need to do some special handling in case we have clashes. 
+>>> This function
+>>> - * takes care of this with the help of name_cache_entry::radix_list.
+>>> + * takes care of this with the help of name_cache_entry::inum_aliases.
+>>>    * In case of error, nce is kfreed.
+>>>    */
+>>>   static int name_cache_insert(struct send_ctx *sctx,
+>>> @@ -2030,8 +2029,7 @@ static int name_cache_insert(struct send_ctx 
+>>> *sctx,
+>>>       int ret = 0;
+>>>       struct list_head *nce_head;
+>>> -    nce_head = radix_tree_lookup(&sctx->name_cache,
+>>> -            (unsigned long)nce->ino);
+>>> +    nce_head = xa_load(&sctx->name_cache, (unsigned long)nce->ino);
 >>
->> nit: This check now becomes redundant right, because the way n is 
->> modified we are guaranteed that everything from 0..n will actually be 
->> populated.
+>> The casting is redundant since the function's argument is already 
+>> declared as unsigned long so truncation happens anyway. The only 
+>> rationale to keep is for documentation purposes but even this is 
+>> somewhat dubious. But since there is already something said about that 
+>> above the definition of inum_aliases I'd say lets do away with the casts.
 > 
-> You're right, these last two lines can now safely be removed like this:
+> I see your point and I agree with you, but I'd like to point out that I 
+> didn't add this cast - it was already there  (and I think there may be 
+> others, too).
 > 
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index 8d302f6a0557..ea9f808bce2a 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1893,8 +1893,6 @@ void btrfs_kill_all_delayed_nodes(struct 
-> btrfs_root *root)
->                  spin_unlock(&root->inode_lock);
+> I thought about removing it (as we had discussed and I've done in 
+> another patch), but then I decided to leave it, thinking that maybe 
+> there was a reason for it. Like communicating something explicitely to 
+> anyone reading the code.
 > 
->                  for (int i = 0; i < n; i++) {
-> -                       if (!delayed_nodes[i])
-> -                               continue;
->                          __btrfs_kill_delayed_node(delayed_nodes[i]);
->                          btrfs_release_delayed_node(delayed_nodes[i]);
->                  }
+> It's true, though, that the comment actually explains it.
+> 
+>>>       if (!nce_head) {
+>>>           nce_head = kmalloc(sizeof(*nce_head), GFP_KERNEL);
+>>>           if (!nce_head) {
+>>> @@ -2040,14 +2038,15 @@ static int name_cache_insert(struct send_ctx 
+>>> *sctx,
+>>>           }
+>>>           INIT_LIST_HEAD(nce_head);
+>>> -        ret = radix_tree_insert(&sctx->name_cache, nce->ino, nce_head);
+>>> +        ret = xa_insert(&sctx->name_cache, nce->ino, nce_head,
+>>
+>> Here nce->ino is not cast, yet the parameter is still unsigned long 
+>> meaning truncation occurs (as is expected). At the very least this 
+>> makes the code style inconsistent.
+> 
+> Yeah, true. Again, it was inconsistent before I got there, but I'll 
+> admit that I didn't notice this one.
+> 
+> For the sake of consistency, I'm willing to remove the cast (and perhaps 
+> others, would have to check) and resend.
+> 
+> I'll leave that up to the maintainer to decide.
 > 
