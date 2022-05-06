@@ -2,112 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 531C751E08B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 May 2022 22:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C85851E0B6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 May 2022 23:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444308AbiEFVD0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 May 2022 17:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
+        id S245426AbiEFVKR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 May 2022 17:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444310AbiEFVDY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 May 2022 17:03:24 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA50F6EC48;
-        Fri,  6 May 2022 13:59:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8A0991F92C;
-        Fri,  6 May 2022 20:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651870759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=zR674RhM0j/QUf3xPcIjeF4uS7iA8qT7AtuAdc1NKmY=;
-        b=K83Qfgc5Cy41wq2LTtRvX2cCbmsZiTYl0v3QttKD901o33lIPGZ1YakjXpIFn7FbYkPQfA
-        Ge9+p+NJp/yO9uG2Y7sXrN8RbVKFYG7laDV1eHf4jAUJebdxtGHmvVhkXxhzCzsjzpSqn3
-        aAgBWRB6O6Nh5r1xQaTw4kmEfKxL9hA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5200613A1B;
-        Fri,  6 May 2022 20:59:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CYAqEieMdWI1CAAAMHmgww
-        (envelope-from <dsterba@suse.com>); Fri, 06 May 2022 20:59:19 +0000
-Date:   Fri, 6 May 2022 22:55:06 +0200
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.18-rc6, part 2
-Message-ID: <cover.1651860315.git.dsterba@suse.com>
-Mail-Followup-To: David Sterba <dsterba@suse.com>,
-        torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        with ESMTP id S1444198AbiEFVKP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 May 2022 17:10:15 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C136EC6A
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 May 2022 14:06:30 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id o69so8043890pjo.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 May 2022 14:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to;
+        bh=VSSUIwdzgxQxnEkB7+u7pnweyPajIQMP3nQqWYs8VX0=;
+        b=M7yusSoYt9af88U4kPfUWufRIREWhTzK2DgeC5eujU8MQEfaEs4UUrh/fFLuytW9oi
+         rCISitp9n49tGRTjeJx8iGJyFte4qjiDuMtDNtr+xw4248zGGIFHmPB959KsFrScJhMO
+         dlifxseF85/uZHX2PfQFapxngXQ7Un7ki9gfTb2Xq8De9r/ieZ8Tc2SPKRunyZaY1zi0
+         Vks9CPMXZ/aa0r9wl7zXBf7JGco5mmaoB/DP8m++5ntrEWL6dSWKgqggpBombfhckPfv
+         J8p03/gMwHYQMrso4PI9K702HAzEsAovcns2u+2lScdg+ycIaZZ41+AM1f+1b4u9bMQD
+         W/eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to;
+        bh=VSSUIwdzgxQxnEkB7+u7pnweyPajIQMP3nQqWYs8VX0=;
+        b=WUO1SwTO52vNUy6kkDY8ngjX7phDxYg+PLXGrViAFsdtHy2a41U2OBUD0KPvEerzTy
+         9r4bR4NDmWIRqo4N3fNaWCjGv8Fs+pEyK+LacHA7txKeHbuKTt4N9vSNjiqFb2iDgo7W
+         /fV1HCVR7sFUnbPEhMXuy6Lu1Fk7cSbBH8KNBycQvQb7Igmc4XOYV6wNKuXNbNphSO0U
+         vqBd1UywJZ7+em0wQKExr/RL40pwe/WDOBKZlXh+0pcurL+t0L+64qMVe+cHBgJItRWQ
+         MehftMPGrJ+Z1+UtFeCzIgnhw9b4uRxTO4AYiBqqVGhxn4ntOfwJdCEHiMuxgoHiTVN3
+         m1aw==
+X-Gm-Message-State: AOAM530hiYRUp1y2596j+oUe8Y13U4xiADIVsan8AtmA5m8NQKotmOVv
+        +niHwu64eDjaZbuSn/rz02J6LkHLnkbdOs3pTw==
+X-Google-Smtp-Source: ABdhPJxuCmPeqiBx6ZqsmPkyUIRLmOJwpybigdwPr3VRYSnRUwrwV87b4MhBepbE0YEslSnz73FFLaj5qIGcEI1pPPo=
+X-Received: by 2002:a17:902:edd1:b0:158:8318:b51e with SMTP id
+ q17-20020a170902edd100b001588318b51emr5647226plk.89.1651871190156; Fri, 06
+ May 2022 14:06:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:ac4:9906:0:b0:4ba:807b:b8f3 with HTTP; Fri, 6 May 2022
+ 14:06:29 -0700 (PDT)
+Reply-To: warren001buffett@gmail.com
+In-Reply-To: <CAD_xG_pvNZK6BFCW+28Xv4DE=_5rbDZXDok2BYNn9xw6Ma7iow@mail.gmail.com>
+References: <CAD_xG_pvNZK6BFCW+28Xv4DE=_5rbDZXDok2BYNn9xw6Ma7iow@mail.gmail.com>
+From:   Warren Buffett <guidayema@gmail.com>
+Date:   Fri, 6 May 2022 21:06:29 +0000
+Message-ID: <CAD_xG_od-sCCkXTsvpy6Axgd1QPuypw8vrgyMpZ3bqxH3n2QNw@mail.gmail.com>
+Subject: Fwd: My name is Warren Buffett, an American businessman.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:1044 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4981]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [guidayema[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+My name is Warren Buffett, an American businessman and investor I have
+something important to discuss with you.
 
-a few more regular fixes and regression fixes. Please pull, thanks.
-
-- regression fixes in zone activation:
-  - move a loop invariant out of the loop to avoid checking space status
-
-  - properly handle unlimited activation
-
-- fixes:
-  - for subpage, force the free space v2 mount to avoid a warning and
-    make it easy to switch a filesystem on different page size systems
-
-  - export sysfs status of exclusive operation 'balance paused', so the
-    user space tools can recognize it and allow adding a device with
-    paused balance
-
-  - fix assertion failure when logging directory key range item
-
-----------------------------------------------------------------
-The following changes since commit 4b73c55fdebd8939f0f6000921075f7f6fa41397:
-
-  btrfs: skip compression property for anything other than files and dirs (2022-04-27 22:20:21 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.18-rc5-tag
-
-for you to fetch changes up to 3e1ad196385c65c1454aceab1226d9a4baca27d5:
-
-  btrfs: sysfs: export the balance paused state of exclusive operation (2022-05-05 21:05:56 +0200)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: sysfs: export the balance paused state of exclusive operation
-
-Filipe Manana (1):
-      btrfs: fix assertion failure when logging directory key range item
-
-Naohiro Aota (2):
-      btrfs: zoned: move non-changing condition check out of the loop
-      btrfs: zoned: activate block group properly on unlimited active zone device
-
-Qu Wenruo (1):
-      btrfs: force v2 space cache usage for subpage mount
-
- fs/btrfs/disk-io.c  | 11 +++++++++++
- fs/btrfs/sysfs.c    |  3 +++
- fs/btrfs/tree-log.c | 39 +++++++++++++++++++++++++--------------
- fs/btrfs/zoned.c    | 34 ++++++++++++++--------------------
- 4 files changed, 53 insertions(+), 34 deletions(-)
+Mr. Warren Buffett
+warren001buffett@gmail.com
+Chief Executive Officer: Berkshire Hathaway
+aphy/Warren-Edward-Buffett
