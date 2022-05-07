@@ -2,52 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A88151E4A8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 May 2022 08:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F7951E83E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 May 2022 17:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383463AbiEGGne (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 May 2022 02:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
+        id S1385739AbiEGPnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 May 2022 11:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245165AbiEGGne (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 May 2022 02:43:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520AF40E6B
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 May 2022 23:39:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D03831F94C
-        for <linux-btrfs@vger.kernel.org>; Sat,  7 May 2022 06:39:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651905586; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=W43vrPYISdUcEuiNcOVXj0yyBmApzs+K0r8hI+/lY48=;
-        b=qyS16p6Qmj/gcTVroKnqXfLu2afV8WOKprsL1xiDDe6O4N1DZJQmLfQRA8mhM9H5dfhdiK
-        cGoalq0OHL6VEX0YXTZ3L1SJh+ERnXRIH9OxNbdL/NYakQVIdCQl5dfIxw66h21jh1N0ZF
-        KMOMhhX1kTDVkDzu6W2wvnvytq7IiXY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 255F6139E0
-        for <linux-btrfs@vger.kernel.org>; Sat,  7 May 2022 06:39:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lA8vNzEUdmKqPAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sat, 07 May 2022 06:39:45 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: allow defrag to convert inline extents to regular extents
-Date:   Sat,  7 May 2022 14:39:27 +0800
-Message-Id: <c26d8d377147d3a80e352ee31e432591c28e3f4b.1651905487.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.0
+        with ESMTP id S1385709AbiEGPnK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 May 2022 11:43:10 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F1227B2C
+        for <linux-btrfs@vger.kernel.org>; Sat,  7 May 2022 08:39:23 -0700 (PDT)
+Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:58452 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1nnMWf-0001Kh-KL by authid <merlins.org> with srv_auth_plain; Sat, 07 May 2022 08:39:21 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1nnMWf-00A8Hq-E4; Sat, 07 May 2022 08:39:21 -0700
+Date:   Sat, 7 May 2022 08:39:21 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220507153921.GG1020265@merlins.org>
+References: <20220503040250.GW12542@merlins.org>
+ <CAEzrpqecGYEzA6WTNxkm5Sa_H-esXe7JzxnhEwdjhtoCCRe0Xw@mail.gmail.com>
+ <20220503045553.GY12542@merlins.org>
+ <CAEzrpqdegGAkJmdpzqeLJrFNwkfkMMWEdFxkVQnfA0DvdK5_Zg@mail.gmail.com>
+ <20220503172425.GA12542@merlins.org>
+ <20220505150821.GB1020265@merlins.org>
+ <CAEzrpqfx3_BxSFPOByo5NY43pWOsQbhcCqU1+JqGAQpz+dgo7A@mail.gmail.com>
+ <20220506031910.GH12542@merlins.org>
+ <CAEzrpqfHzZrMuWrMERM-m4ASsuJAsijU9tpk_e5OML8dpgMeKg@mail.gmail.com>
+ <CAEzrpqdzdimQvXyhpDomvPgDXx5Dn9QCEKQMiXofTFb3WvWUJQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqdzdimQvXyhpDomvPgDXx5Dn9QCEKQMiXofTFb3WvWUJQ@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 24.5.124.255
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,71 +55,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs defaults to max_inline=2K to make small writes inlined into
-metadata.
+On Fri, May 06, 2022 at 09:15:58PM -0400, Josef Bacik wrote:
+> > > The delete block bit should be automated somehow, it's quite slow and painful to do by hand (hours again here)
+> >
+> > Agreed, I'm going to wire something up now.  Thanks,
+> >
+> 
+> Ok I pushed something, hopefully it works and you don't have to touch
+> it anymore?  Thanks,
 
-The default value is always a win, as even DUP/RAID1/RAID10 doubles the
-metadata usage, it should still cause less physical space used compared
-to a 4K regular extents.
+Thanks. That seems to almost work and I like the progress percentage,
+thanks :)
 
-But since the introduce of RAID1C3 and RAID1C4 it's no longer the case,
-users may find inlined extents causing too much space wasted, and want
-to convert those inlined extents back to regular extents.
+But now it seems to loop on the same one? I got over 50 of those
 
-Unfortunately defrag will unconditionally skip all inline extents, no
-matter if the user is trying to converting them back to regular extents.
+searching 11223 for bad extents
+prIgnoring transid failure35549184 possible bytes, 99%
+processed 1620017152 of 1635549184 possible bytes, 99%
+Found an extent we don't have a block group for in the file
+inode ref info failed???
+elem_cnt 1 elem_missed 0 ret 0
+Xilinx_Unified_2020.1_0602_1208/payload/rdi_0422_2020.1_0602_1208.xz
+Deleting
 
-So this patch will add a small exception for defrag_collect_targets() to
-allow defragging inline extents, if and only if the inlined extents are
-larger than max_inline, allowing users to convert them to regular ones.
+searching 11223 for bad extents
+prIgnoring transid failure35549184 possible bytes, 99%
+processed 1620017152 of 1635549184 possible bytes, 99%
+Found an extent we don't have a block group for in the file
+inode ref info failed???
+elem_cnt 1 elem_missed 0 ret 0
+Xilinx_Unified_2020.1_0602_1208/payload/rdi_0422_2020.1_0602_1208.xz
+Deleting
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ioctl.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+searching 11223 for bad extents
+prIgnoring transid failure35549184 possible bytes, 99%
+processed 1620017152 of 1635549184 possible bytes, 99%
+Found an extent we don't have a block group for in the file
+inode ref info failed???
+elem_cnt 1 elem_missed 0 ret 0
+Xilinx_Unified_2020.1_0602_1208/payload/rdi_0422_2020.1_0602_1208.xz
+Deleting
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 9d8e46815ee4..852c49565ab2 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1420,8 +1420,19 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		if (!em)
- 			break;
- 
--		/* Skip hole/inline/preallocated extents */
--		if (em->block_start >= EXTENT_MAP_LAST_BYTE ||
-+		/*
-+		 * If the file extent is an inlined one, we may still want to
-+		 * defrag it (fallthrough) if it will cause a regular extent.
-+		 * This is for users who want to convert inline extents to
-+		 * regular ones through max_inline= mount option.
-+		 */
-+		if (em->block_start == EXTENT_MAP_INLINE &&
-+		    em->len <= inode->root->fs_info->max_inline)
-+			goto next;
-+
-+		/* Skip hole/delalloc/preallocated extents */
-+		if (em->block_start == EXTENT_MAP_HOLE ||
-+		    em->block_start == EXTENT_MAP_DELALLOC ||
- 		    test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
- 			goto next;
- 
-@@ -1480,6 +1491,15 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		if (em->len >= get_extent_max_capacity(em))
- 			goto next;
- 
-+		/*
-+		 * For inline extent it should be the first extent and it
-+		 * should not have a next extent.
-+		 * If the inlined extent passed all above checks, just add it
-+		 * for defrag, and be converted to regular extents.
-+		 */
-+		if (em->block_start == EXTENT_MAP_INLINE)
-+			goto add;
-+
- 		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
- 						extent_thresh, newer_than, locked);
- 		if (!next_mergeable) {
+searching 11223 for bad extents
+prIgnoring transid failure35549184 possible bytes, 99%
+processed 1620017152 of 1635549184 possible bytes, 99%
+Found an extent we don't have a block group for in the file
+inode ref info failed???
+elem_cnt 1 elem_missed 0 ret 0
+Xilinx_Unified_2020.1_0602_1208/payload/rdi_0422_2020.1_0602_1208.xz
+Deleting
+
+
 -- 
-2.36.0
-
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
