@@ -2,81 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F32051E981
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 May 2022 21:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B5351EADE
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 May 2022 04:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446881AbiEGTkS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 May 2022 15:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
+        id S1359698AbiEHCTG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 May 2022 22:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbiEGTkR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 May 2022 15:40:17 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBE9205F0
-        for <linux-btrfs@vger.kernel.org>; Sat,  7 May 2022 12:36:29 -0700 (PDT)
-Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:58456 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1nnQE9-000110-30 by authid <merlins.org> with srv_auth_plain; Sat, 07 May 2022 12:36:29 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1nnQE8-00AWAt-TU; Sat, 07 May 2022 12:36:28 -0700
-Date:   Sat, 7 May 2022 12:36:28 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220507193628.GO12542@merlins.org>
-References: <20220503045553.GY12542@merlins.org>
- <CAEzrpqdegGAkJmdpzqeLJrFNwkfkMMWEdFxkVQnfA0DvdK5_Zg@mail.gmail.com>
- <20220503172425.GA12542@merlins.org>
- <20220505150821.GB1020265@merlins.org>
- <CAEzrpqfx3_BxSFPOByo5NY43pWOsQbhcCqU1+JqGAQpz+dgo7A@mail.gmail.com>
- <20220506031910.GH12542@merlins.org>
- <CAEzrpqfHzZrMuWrMERM-m4ASsuJAsijU9tpk_e5OML8dpgMeKg@mail.gmail.com>
- <CAEzrpqdzdimQvXyhpDomvPgDXx5Dn9QCEKQMiXofTFb3WvWUJQ@mail.gmail.com>
- <20220507153921.GG1020265@merlins.org>
- <CAEzrpqcRT6CqJJPYqW5AH+x0XvUCMd-EMEq-=SwtTL-Fn4pcvQ@mail.gmail.com>
+        with ESMTP id S243216AbiEHCTD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 May 2022 22:19:03 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CC01115C
+        for <linux-btrfs@vger.kernel.org>; Sat,  7 May 2022 19:15:13 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id y21so12616963edo.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 07 May 2022 19:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Cr4jqiwCZqgvtQ1mPAG6hA/aEXX0FhXJr8HGvR+MOF4=;
+        b=hIE5zwv2rTKn+CswdyopQHf0jMYKWFxRBF6odjeCxWBM/WRdVHzPYHl78NQfbEd29K
+         9enqxTUB9ZAvVAoyjF8AWhpC+f5IVcnJoMj+unQol6NBiW/KIRN+RPaYSq7RoP62yjw1
+         2X5NuVc9b98bRcPhXJz7ydAIkaPKYIMfoxEKnd5fu9ZsX03fmWcqseP8+bykpooAanlU
+         h5RINDqd4mWKTcsWni5bShtEPJLQkkRYT8dOneNqwF1lDvdzymwuLYp+4P1W1ToIwe8o
+         DNyWfhk7sajXrmDQAaFVYyGNgCHChouTJ3BZcW21ISZxH2nUIlO4cSJ32UEeiIotkomt
+         QV/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Cr4jqiwCZqgvtQ1mPAG6hA/aEXX0FhXJr8HGvR+MOF4=;
+        b=vB4zqCK6djHxA5ofOGdKznfPPaUm5M8t/G3ea4vVxKjtFYUX51UDEM7OCqdFE0xDU+
+         kf+AawRL2yVwxhukmK1xDuoce9ROEnMyuHKKvcr/gNRSoIzIzsMo1iFfmCbntUd0mS7x
+         Mc0IgDa5acQS0fMZTfqmpdV4b46Ph5Nd0R967hiurEiYHzjadCawNiOijUrVNzvUjMGO
+         ouM+dsh6DJvm4zQw6s+NEU5HIdFAhBngGYlLdEauQPk5Bk9Sws6uh11XpCJZxGYbYnRP
+         J7a02al/rBihG7L0cfCnDK1I9K7AovCzCbAE76sBDRx5frsewABYwwCrsYZLMAG4mgZb
+         m9/g==
+X-Gm-Message-State: AOAM532dBx5I6NmeVczykvwTgpaWe9ktyu6g4bW4SbH+md7blH9iKlZS
+        bnaKlP/G1kVByd8ORxh7/d53nB+Jn6hMQm2vhnI=
+X-Google-Smtp-Source: ABdhPJzTI/QqRCdwIAmphqF9OzyyYNq5Vx7Ax17gRaKdquRTzXBKHWHIi7p9/pNhdRsw+jE0joTHzv2TJm/aPiu3TUo=
+X-Received: by 2002:a50:ed0e:0:b0:425:e476:f4ed with SMTP id
+ j14-20020a50ed0e000000b00425e476f4edmr10770566eds.32.1651976112082; Sat, 07
+ May 2022 19:15:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqcRT6CqJJPYqW5AH+x0XvUCMd-EMEq-=SwtTL-Fn4pcvQ@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 24.5.124.255
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a50:3554:0:0:0:0:0 with HTTP; Sat, 7 May 2022 19:15:11 -0700 (PDT)
+Reply-To: wijh555@gmail.com
+From:   "Mr. David Kabore" <dkabore16@gmail.com>
+Date:   Sat, 7 May 2022 19:15:11 -0700
+Message-ID: <CANLKR0vzXK+xff8dc1NLRToAvTmMja99WOdUionm413PVRoNow@mail.gmail.com>
+Subject: Good Day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        HK_NAME_FM_MR_MRS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:530 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4996]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [wijh555[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [dkabore16[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [dkabore16[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 HK_NAME_FM_MR_MRS No description available.
+        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 07, 2022 at 02:58:38PM -0400, Josef Bacik wrote:
-> Did any of the previous ones succeed?  I hope so and we just have one
-> misbehaving thing.  I've pushed more debugging, maybe it's a large
-> file that has a lot of broken extents, in either case it'll tell us
-> what's going on so I can narrow down the problem.  Thanks,
-
-Ok, the debugging helps, now I can see that it's deleting different
-blocks for the same filename.
-Before I couldn't quite tell if it was making progress, but now I see
-it's deleting new locations. 
-Looks like I have 100s of deletions coming up, thanks for automating
-this.
-
-Will report back, it looks like it may run for a few hours
-
-Afer that just do a 
-check --repair
-or some other command options?
+-- 
+Hello,
+I'm Mr. David Kabore, how are you doing hope you are in good health,
+the Board irector try to reach you on phone several times Meanwhile,
+your number was not connecting. before he ask me to send you an email
+to hear from you if you are fine. hope to hear you are in good Health.
 
 Thanks,
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Mr. David Kabore.
