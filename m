@@ -2,66 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF10520594
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 21:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F04752059D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 22:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240718AbiEIUBx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 16:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        id S240714AbiEIUEa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 16:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240708AbiEIUBx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 16:01:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9790115EA57
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 12:57:57 -0700 (PDT)
+        with ESMTP id S240708AbiEIUE2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 16:04:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41401ACF90
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 13:00:31 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4BE0C1FA25;
-        Mon,  9 May 2022 19:57:56 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8552321C27;
+        Mon,  9 May 2022 20:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1652126276;
+        t=1652126430;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Cdcyl0rXQTRSyRFi9cvKLlpgkB0u6F6ye+aFA1UPqJw=;
-        b=lA/9ijGMM76bc8XB6X2GHBTqm71KBzJSBUEKTr0hVXTw+FadM0X54g8QRlUOWPIJ/KOl+L
-        LI5U17N0VHzGc4uyvX/oNC5dmhEy/JW3sfEgVcgJmiJ8/huTa4xr9UpwPtR2S3+xKkbWVY
-        hcBdGa2ZGO+LGFPxqHVzgchciFYoF+w=
+        bh=xwmOEgcv1Y0x5qip+gcljeyy3TFOmZNzEsASDrMDDPY=;
+        b=r95SaTcdL0lNqvNyPP43UMWyBlN+U7fyKqHJ0jsAoiSlfsl6K+Q16jkfX2EmtZwShNNsD4
+        kohJu+x4muDB9bHQe7JCmoy7dPeD9eplDkVZ62howEr3ZuvoPK5WjQ6Rr5nNooHitsf15b
+        tCM6HntOY5KE+lRedG5uDJCbifPpY70=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1652126276;
+        s=susede2_ed25519; t=1652126430;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Cdcyl0rXQTRSyRFi9cvKLlpgkB0u6F6ye+aFA1UPqJw=;
-        b=0GfywTPnQX+vR8/F1zSIXwTy7vBnkSIov4I9Y5SH9fdeOI0siQbW7YG66N/9bmVlPZlhRQ
-        TPEeGX5b/IruttBA==
+        bh=xwmOEgcv1Y0x5qip+gcljeyy3TFOmZNzEsASDrMDDPY=;
+        b=yMJG2qqNKd7YQXlEDO5herbk8K9pJjP7Kcz9Y2p96bLnR7i8Y7GMRrfu+/B1p8eXQgcXRd
+        HxHKTsZO6Zj+7VAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F45C132C0;
-        Mon,  9 May 2022 19:57:56 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5734E132C0;
+        Mon,  9 May 2022 20:00:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id H+WXCkRyeWJeCgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 09 May 2022 19:57:56 +0000
-Date:   Mon, 9 May 2022 21:53:42 +0200
+        id Uv1SFN5yeWJ2CwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 09 May 2022 20:00:30 +0000
+Date:   Mon, 9 May 2022 21:56:16 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: do not account twice for inode ref when reserving
- metadata units
-Message-ID: <20220509195342.GH18596@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/9] Structre and parameter cleanups
+Message-ID: <20220509195616.GI18596@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <bf988d76ebcb9003a16c6b3cd5d25ca94872b93e.1652109795.git.fdmanana@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1651255990.git.dsterba@suse.com>
+ <88811bd1-9a08-ae1b-8140-3e354c118792@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bf988d76ebcb9003a16c6b3cd5d25ca94872b93e.1652109795.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <88811bd1-9a08-ae1b-8140-3e354c118792@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,20 +76,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 09, 2022 at 04:29:14PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Tue, May 03, 2022 at 10:57:19AM +0300, Nikolay Borisov wrote:
 > 
-> When reserving metadata units for creating an inode, we don't need to
-> reserve one extra unit for the inode ref item because when creating the
-> inode, at btrfs_create_new_inode(), we always insert the inode item and
-> the inode ref item in a single batch (a single btree insert operation,
-> and both ending up in the same leaf).
 > 
-> As we have accounted already one unit for the inode item, the extra unit
-> for the inode ref item is superfluous, it only makes us reserve more
-> metadata than necessary and often adding more reclaim pressure if we are
-> low on available metadata space.
+> On 29.04.22 г. 21:27 ч., David Sterba wrote:
+> > Simplify some argument passing, remove too-trivial helpers or unused
+> > structure members.
+> > 
+> > David Sterba (9):
+> >    btrfs: sink parameter is_data to btrfs_set_disk_extent_flags
+> >    btrfs: remove btrfs_delayed_extent_op::is_data
+> >    btrfs: remove unused parameter bio_flags from btrfs_wq_submit_bio
+> >    btrfs: remove trivial helper update_nr_written
+> >    btrfs: simplify handling of bio_ctrl::bio_flags
+> >    btrfs: open code extent_set_compress_type helpers
+> >    btrfs: rename io_failure_record::bio_flags to compress_type
+> >    btrfs: rename bio_flags in parameters and switch type
+> >    btrfs: rename bio_ctrl::bio_flags to compress_type
+> > 
+> >   fs/btrfs/ctree.c       |  2 +-
+> >   fs/btrfs/ctree.h       |  5 ++-
+> >   fs/btrfs/delayed-ref.c |  4 +--
+> >   fs/btrfs/delayed-ref.h |  1 -
+> >   fs/btrfs/disk-io.c     |  5 ++-
+> >   fs/btrfs/disk-io.h     |  3 +-
+> >   fs/btrfs/extent-tree.c | 10 +++---
+> >   fs/btrfs/extent_io.c   | 73 ++++++++++++++++++------------------------
+> >   fs/btrfs/extent_io.h   | 22 ++-----------
+> >   fs/btrfs/inode.c       | 10 +++---
+> >   10 files changed, 50 insertions(+), 85 deletions(-)
+> > 
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> 
+> FWIW:
+> 
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> 
+> (I did look at the patches that have been merged into misc-next with the 
+> compression type fixed up) .
 
-Added to misc-next, thanks.
+Thanks, commits updated.
