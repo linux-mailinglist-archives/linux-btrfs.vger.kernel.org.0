@@ -2,139 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AA3520372
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 19:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F075203BE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 19:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239599AbiEIRX2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 13:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        id S239804AbiEIRsF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 13:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239495AbiEIRX0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 13:23:26 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C5024DC50
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 10:19:32 -0700 (PDT)
-Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:58490 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1no72f-0004kH-Iv by authid <merlins.org> with srv_auth_plain; Mon, 09 May 2022 10:19:29 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1no72f-00G3Ed-Cn; Mon, 09 May 2022 10:19:29 -0700
-Date:   Mon, 9 May 2022 10:19:29 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220509171929.GY12542@merlins.org>
-References: <CAEzrpqej2giQzLDcxsfze=e=uYOyMEh1v25V3R2xP_AEeHUAsw@mail.gmail.com>
- <20220508205224.GQ12542@merlins.org>
- <20220508212050.GR12542@merlins.org>
- <CAEzrpqdMFJ2cm0URWqwFehkQQzmrgYO+CdoibSUqqfN1hkGOvQ@mail.gmail.com>
- <20220508221444.GS12542@merlins.org>
- <CAEzrpqe=qUMdC-8UTeuSy7niO9i8PhFGa6auMmQk_ave30gKUw@mail.gmail.com>
- <20220509004635.GT12542@merlins.org>
- <CAEzrpqfYRkASd+7ac_2dO+bNtacYwE9ndcYDWsp9B4Esq9Hwug@mail.gmail.com>
- <20220509170054.GW12542@merlins.org>
- <CAEzrpqccXWAEELYsY0NQ+ZzecQygJFasipt3yE=0L1KA3GgzYg@mail.gmail.com>
+        with ESMTP id S239975AbiEIRru (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 13:47:50 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827312725CE
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 10:43:54 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-2ef5380669cso153108617b3.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 May 2022 10:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9c3QVnLpMQ/ArbpVJ9MZgC4u5LKPyo6e1lzTDi/wztk=;
+        b=iWgjuLRDmCxL1hn04gwY614CG73q5OsMdVww0EpKZX7NdBv00pTJDmNH6jePayBMrO
+         Ktk5oMaP7H3Zkn8k4de9fqUyhwn3+Fyks85u4hU2toEmnySrC6ptvQsU9Yb0IyssZ0GO
+         t0z4pAFd528r2Jkg3nlV6sQ5axN5gGcszmlQCN70/H7dEatwKLCopuUa/hnbW0b5FXig
+         5B1PY+Ln5KOf+RIafazm625vPA6ro1NVm5APvGF3UHrxzCylECERqw1Vb3WsDbcVDYvB
+         5W5Irb7+yYZ86PPmqB2AR2pXqI5G/eFrmwht1ex9M8+BYYpxFPNBS3oOcGKHGXM8RkDS
+         aaOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9c3QVnLpMQ/ArbpVJ9MZgC4u5LKPyo6e1lzTDi/wztk=;
+        b=ZQ+fn3MYkLK6TAKeR4Xkmq/CgUJwD0iFIgWFUVfOJuFzNdq0hHvLzBIizQ1EqVPVH4
+         ggRKVtlNT0vpBytLwXt6oLPv+9Y81j6zQDO035Lt6T6S9wd0+kBru5jdAIu46puiZlef
+         I7NNooeAj8NbPLEDUk09q0C5fJcDA62V9tl7YfUqbYsvebOXki6ZXKc/9tdYoPiDQYdw
+         5lHsorwcRvMrcqbcRnJcTqHrLIY8epwrIXLhDTyGreJCML44posxIITZN6FY2ero798c
+         u4oCxmR8TMQML/5ar2U1KWBIkRgZzYyU4r7nzTwp5ByorFOoQOkgrjJ1QTEp4jhTWH/S
+         OxYw==
+X-Gm-Message-State: AOAM531ayQV9VzBGEwdzzeOhmifePArE+RoAUzrDrth9lWqBbpSxjvqm
+        soAWwp0mZeUp3V5AJ7EhyfATanpJgBqDaiRJOc8=
+X-Google-Smtp-Source: ABdhPJzj+LL/QJBf1max14povFVopkYD9jyYDxTzzG1DZSf4HJ9hT0P3IfzrxNo0HBujETKmVNUgzuv2wUJHW4eFVFI=
+X-Received: by 2002:a81:1d48:0:b0:2f1:8ebf:25f3 with SMTP id
+ d69-20020a811d48000000b002f18ebf25f3mr14599984ywd.118.1652118233748; Mon, 09
+ May 2022 10:43:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqccXWAEELYsY0NQ+ZzecQygJFasipt3yE=0L1KA3GgzYg@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 24.5.124.255
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CAFd7XocnyH8d_U8A0Mjy9+fk=DOTyiHzTR9FX+QSFevMtHGs=Q@mail.gmail.com>
+ <CA+H1V9xQc0mxHkDXZTYMXEQtfJg7--CSs2k-RPQe92=+b09tBA@mail.gmail.com>
+In-Reply-To: <CA+H1V9xQc0mxHkDXZTYMXEQtfJg7--CSs2k-RPQe92=+b09tBA@mail.gmail.com>
+From:   Jose Manuel Perez Bethencourt <jmperezbeth@gmail.com>
+Date:   Mon, 9 May 2022 18:43:45 +0100
+Message-ID: <CALBWd87ywtPaogM+fdpzg3dH-k4Y+Gm7Hq5R4U=s15N+yMWzsA@mail.gmail.com>
+Subject: Re: How important is a full balance?
+To:     Matthew Warren <matthewwarren101010@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 09, 2022 at 01:09:37PM -0400, Josef Bacik wrote:
-> Ugh shit, I had an off by one error, that's not great.  I've fixed
-> that up and adjusted the debugging, lets see how that goes.  Thanks,
+You should use filters like limit and usage when doing (data) balance
+after addings disks to minimize tear and wear on hard disks. Like so:
 
-Looks better this time. Went pretty far, until here:
-processed 49152 of 75792384 possible bytes, 0%
-Recording extents for root 163298
-processed 49152 of 49479680 possible bytes, 0%
-Recording extents for root 163302
-processed 966656 of 108691456 possible bytes, 0%
-Recording extents for root 163303
-processed 49152 of 75792384 possible bytes, 0%
-Recording extents for root 163316
-processed 933888 of 108691456 possible bytes, 0%
-Recording extents for root 163318
-processed 16384 of 49479680 possible bytes, 0%
-Recording extents for root 163916
-processed 49152 of 49479680 possible bytes, 0%
-Recording extents for root 163920
-processed 966656 of 108691456 possible bytes, 0%
-Recording extents for root 163921
-processed 49152 of 75792384 possible bytes, 0%
-Recording extents for root 164620
-processed 49152 of 49479680 possible bytes, 0%
-Recording extents for root 164624
-processed 98304 of 109445120 possible bytes, 0%
-Recording extents for root 164633
-processed 49152 of 75792384 possible bytes, 0%
-Recording extents for root 165098
-processed 1015808 of 108756992 possible bytes, 0%
-Recording extents for root 165100
-processed 16384 of 49479680 possible bytes, 0%
-Recording extents for root 165198
-processed 491520 of 108756992 possible bytes, 0%WTF???? we think we already inserted this bytenr?? [76300, 108, 0] dumping paths 10467695652864 8675328
-misc/add0/new/file
-Failed to find [10467695652864, 168, 8675328]
+# btrfs balance start -dusage=3D50,limit=3D1000 /btrfs-mountpoint
 
-Program received signal SIGSEGV, Segmentation fault.
-rb_search (root=root@entry=0x100000060, key=key@entry=0x7fffffffd540, comp=comp@entry=0x55555559af95 <cache_tree_comp_range>, 
-    next_ret=next_ret@entry=0x7fffffffd558) at common/rbtree-utils.c:55
-55              struct rb_node *n = root->rb_node;
-(gdb) bt 
-#0  rb_search (root=root@entry=0x100000060, key=key@entry=0x7fffffffd540, comp=comp@entry=0x55555559af95 <cache_tree_comp_range>, 
-    next_ret=next_ret@entry=0x7fffffffd558) at common/rbtree-utils.c:55
-#1  0x000055555559b199 in search_cache_extent (tree=tree@entry=0x100000060, start=start@entry=15645171073024)
-    at common/extent-cache.c:179
-#2  0x0000555555584d27 in set_extent_bits (tree=0x100000060, start=15645171073024, end=15645171073023, bits=bits@entry=1)
-    at kernel-shared/extent_io.c:380
-#3  0x0000555555584f5a in set_extent_dirty (tree=<optimized out>, start=<optimized out>, end=<optimized out>)
-    at kernel-shared/extent_io.c:486
-#4  0x000055555558593d in set_extent_buffer_dirty (eb=eb@entry=0x55556ce60d60) at kernel-shared/extent_io.c:976
-#5  0x000055555557bc2a in btrfs_mark_buffer_dirty (eb=eb@entry=0x55556ce60d60) at kernel-shared/disk-io.c:2224
-#6  0x000055555557ef4c in setup_inline_extent_backref (refs_to_add=1, offset=0, owner=76300, root_objectid=93824992431962, parent=0, 
-    iref=0xffffffffffffffe3, path=0x5555703388f0, root=<optimized out>) at kernel-shared/extent-tree.c:1085
-#7  insert_inline_extent_backref (refs_to_add=1, offset=0, owner=76300, root_objectid=93824992431962, parent=0, 
-    num_bytes=<optimized out>, bytenr=<optimized out>, path=0x5555703388f0, root=<optimized out>, trans=<optimized out>)
-    at kernel-shared/extent-tree.c:1197
-#8  btrfs_inc_extent_ref (trans=trans@entry=0x5555685c9d90, root=root@entry=0x5555563d6bf0, bytenr=<optimized out>, 
-    num_bytes=<optimized out>, parent=parent@entry=0, root_objectid=root_objectid@entry=165198, owner=76300, offset=0)
-    at kernel-shared/extent-tree.c:1262
-#9  0x00005555555e086b in process_eb (trans=trans@entry=0x5555685c9d90, root=root@entry=0x5555563d6bf0, eb=eb@entry=0x555571271c40, 
-    current=current@entry=0x7fffffffd9e8) at cmds/rescue-init-extent-tree.c:986
-#10 0x00005555555e09d6 in process_eb (trans=trans@entry=0x5555685c9d90, root=root@entry=0x5555563d6bf0, eb=eb@entry=0x55557126dbc0, 
-    current=current@entry=0x7fffffffd9e8) at cmds/rescue-init-extent-tree.c:1061
-#11 0x00005555555e09d6 in process_eb (trans=trans@entry=0x5555685c9d90, root=root@entry=0x5555563d6bf0, eb=0x55555649b860, 
-    current=current@entry=0x7fffffffd9e8) at cmds/rescue-init-extent-tree.c:1061
-#12 0x00005555555e0c82 in record_root (root=0x5555563d6bf0) at cmds/rescue-init-extent-tree.c:1137
-#13 0x00005555555dfd9f in foreach_root (fs_info=fs_info@entry=0x55555564dbc0, cb=cb@entry=0x5555555e0b7d <record_root>)
-    at cmds/rescue-init-extent-tree.c:151
-#14 0x00005555555e0ff4 in btrfs_init_extent_tree (path=path@entry=0x7fffffffe1ce "/dev/mapper/dshelf1")
-    at cmds/rescue-init-extent-tree.c:1216
-#15 0x00005555555d7b70 in cmd_rescue_init_extent_tree (cmd=<optimized out>, argc=<optimized out>, argv=<optimized out>)
-    at cmds/rescue.c:65
-#16 0x000055555556c17b in cmd_execute (argv=0x7fffffffdeb8, argc=2, cmd=0x555555643d40 <cmd_struct_rescue_init_extent_tree>)
-    at cmds/commands.h:125
-#17 handle_command_group (cmd=<optimized out>, argc=2, argv=0x7fffffffdeb8) at btrfs.c:152
-#18 0x000055555556c275 in cmd_execute (argv=0x7fffffffdeb0, argc=3, cmd=0x555555644cc0 <cmd_struct_rescue>) at cmds/commands.h:125
-#19 main (argc=3, argv=0x7fffffffdeb0) at btrfs.c:405
+The value for limit should be about 1/N where N is the new number of
+disks, assuming they are equal sized... Should be sized about the
+proportional size of the new disk. It limits the number of chunks
+balanced.
 
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+The value for the usage filter depends on your filesystem use but 50%
+is a good starting point (if you delete data often, and have many
+non-full chunks), and you can go up if needed (if you don't process
+enough chunks to have an even usage across disks). This way you move
+less amount of data, and above that that data gets "compacted" into
+whole chunks.
+
+There's not much point to do a balance of metadata, unless you have at
+least N metadata chunks for N disks.
+
+Regards,
+
+Jose
+
+
+El lun, 9 may 2022 a las 17:34, Matthew Warren
+(<matthewwarren101010@gmail.com>) escribi=C3=B3:
+>
+> It's good enough. As long as the metadata and data are more or less
+> evenly distributed you aren't going to gain anything from letting the
+> balance finish.
+>
+> Matthew Warren
+>
+> On Mon, May 9, 2022 at 4:45 AM Alexander Zapatka <alexzapatka@gmail.com> =
+wrote:
+> >
+> > How important is completing a full balance after adding a device?  I
+> > had a 16tb single array.  I then added a 4tb harddrive and started a
+> > full balance.  It's been running for several days and I still have 81%
+> > to go.  Despite that, if I look at the usage statistics the drive has
+> > balanced out the free space among the 5 physical drives.  dmesg still
+> > shows chunks being moved... is it worth completing the balance even if
+> > it takes several weeks?  or is it "good enough" because the files are
+> > distributed?
