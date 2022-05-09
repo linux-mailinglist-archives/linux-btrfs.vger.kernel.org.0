@@ -2,184 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A7C51FFE9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 16:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C93351FFC0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 16:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237211AbiEIOfZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 10:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S237261AbiEIOgn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 10:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237084AbiEIOfY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 10:35:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5103AA7E;
-        Mon,  9 May 2022 07:31:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9BCBFB81629;
-        Mon,  9 May 2022 14:31:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD7FC385A8;
-        Mon,  9 May 2022 14:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652106686;
-        bh=+6UbeY9xYzbc2lM4FcLkUebuZm+rJOcmdE5EBSDH8wU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=I8P7RbLHkJIu4bmpaCZNGj24hNs3zcfnDFmIs3DunCKbI7qJrg9jxfjCXCvVsQ+6m
-         YGuby0ocgnkM92i6nPG2/15FUlF3iOvxvBuDJ2zgbeKq2MZoW/leW+4IWt1BBmIvIa
-         Jz5qspaFKFZNVLXVtev3My9993eDaS5qYZx2uootud4hRJX3GdhxJF42OifZQQ571O
-         z9cqJVlhn9lCL/OA6ALK54R+S5ZIa/TUuuEUmAQ+bkv4j8WQ/e2KfCLziv/e0PyJ0l
-         Bcu6dl4owZrqfKwXqMyqMmc7wN59xzST400wdh04CfVt0Z8NbnTsh7e5q1Ero44E3o
-         mFNXkehaWa3Tg==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, zlang@kernel.org, ddiss@suse.de,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] generic: test fsync of directory with renamed symlink
-Date:   Mon,  9 May 2022 15:31:02 +0100
-Message-Id: <3f3d20ef0abcc05ebfb6bc4aaa97261598611e49.1652106518.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S237253AbiEIOgh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 10:36:37 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F569344EA;
+        Mon,  9 May 2022 07:32:43 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id B434332002E8;
+        Mon,  9 May 2022 10:32:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 09 May 2022 10:32:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1652106758; x=1652193158; bh=q2fT6PeM+A
+        UuJffXe5pQrhxNHgfVI2C0XP0Aur0lGRQ=; b=A4iBPsoEz6TeExjL15OtRvqOBD
+        Rcgj3CEIbFxNDBWpEOvWhgqSxyHYQgHzP6L2rHOv76GyG2I8roO2CBtUMXeUs9QD
+        9VdNunZ3MY4PUGwckFplrl6SaD7x1jthvmNhxwLdwubzx4mOgdtLu9Z/zpGIRuBK
+        j1KPJ7/XdMqca2UVchc69aKrhnPXpz12NcwZ+T24LZUov1Bb/Phmy/kh6p9DzewY
+        tUe/vFcTfB2Np5VcQNEXnLeBl9LyKQGDcETW7lxcOVZiAuAAszWFcl6rRNknCpPg
+        WZ5ihOadmgWalMt133ueUqziTTCpokipTDuBUMKmg6wPOeR6VJ3oWB+alKkA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1652106758; x=
+        1652193158; bh=q2fT6PeM+AUuJffXe5pQrhxNHgfVI2C0XP0Aur0lGRQ=; b=y
+        Wjkna7tbZljgf02Qd2QXFkFZGxDoYaNx5upaQcv6P7XX8BwjG2UAk1Zgy9Ow6Wd+
+        KpBBa1qP4bBchGr5EIWsorFwDSDweMKcktE44Q/HTrSqXzT3BoDdLB6e6GQzVuou
+        SygHBe67fXPrAa0G8VcNbV51JdAxwipgyX2LVWI9CPlFx09rUQtbkCmqz84BVGkB
+        5H388WSa9pvcarZeT8YQ1n5jEIwQX2qGYyTTyhDHkh4oPCGvHVNaOtAAV+nApeBY
+        Qa7YaeHxaC2gNhy156KPUp+53bcGXCrvLAOFyL9fBw7D4Huie/RRqw4QALjfOQek
+        wpIPFsgrf+qVS/vDmWL6w==
+X-ME-Sender: <xms:BSZ5Ygx6-lm1QrNUBNVxmtjzNaKdnpHvAIj7CASikzSusu6FB20ZTg>
+    <xme:BSZ5YkTbUoxlRrcCqIfA4NF8FRaY3OF1y2czNdANLbvKAvx6NXiAeIEtkaEuhwuai
+    Oi9O3TJSKX7qQ>
+X-ME-Received: <xmr:BSZ5YiXMVkJZdC0KbhSKYfibYEBE-une6zY7CMcBXzkTEFYksd2ObeNnOPcz1ncTmTSNVTdLvyX8NePeXSY3u2R-bELYMuG9>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeelgdejjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeegheeuhe
+    fgtdeluddtleekfeegjeetgeeikeehfeduieffvddufeefleevtddtvdenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:BSZ5YuiVXce1FX60DhPXZ00MR2S_45sPs3-QqM1vM984dOgwr9am4Q>
+    <xmx:BSZ5YiAIq5WJI6s8VIZUUW3dLPw8yGeUDfw4GMQQXSGLOfZpMxjYlQ>
+    <xmx:BSZ5YvLRhSHtsKQfv2--elMtzCTHcbexfovunQT_9D90rsIlTYQINA>
+    <xmx:BiZ5Ym7iY5VG26jzw0l3cCdhnIfSfHyIsGPsBo3J1pacKoN2HJ7KWg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 9 May 2022 10:32:37 -0400 (EDT)
+Date:   Mon, 9 May 2022 16:32:35 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     stable@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Matt Corallo <blnxfsl@bluematt.me>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH stable-5.15.y] btrfs: force v2 space cache usage for
+ subpage mount
+Message-ID: <YnkmA3hE5LnVz3KQ@kroah.com>
+References: <edc6262ba229edce38a63b70960ffc170287ee11.1652088466.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <edc6262ba229edce38a63b70960ffc170287ee11.1652088466.git.wqu@suse.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, May 09, 2022 at 05:28:56PM +0800, Qu Wenruo wrote:
+> commit 9f73f1aef98b2fa7252c0a89be64840271ce8ea0 upstream.
+> 
+> [BUG]
+> For a 4K sector sized btrfs with v1 cache enabled and only mounted on
+> systems with 4K page size, if it's mounted on subpage (64K page size)
+> systems, it can cause the following warning on v1 space cache:
+> 
+>  BTRFS error (device dm-1): csum mismatch on free space cache
+>  BTRFS warning (device dm-1): failed to load free space cache for block group 84082688, rebuilding it now
+> 
+> Although not a big deal, as kernel can rebuild it without problem, such
+> warning will bother end users, especially if they want to switch the
+> same btrfs seamlessly between different page sized systems.
+> 
+> [CAUSE]
+> V1 free space cache is still using fixed PAGE_SIZE for various bitmap,
+> like BITS_PER_BITMAP.
+> 
+> Such hard-coded PAGE_SIZE usage will cause various mismatch, from v1
+> cache size to checksum.
+> 
+> Thus kernel will always reject v1 cache with a different PAGE_SIZE with
+> csum mismatch.
+> 
+> [FIX]
+> Although we should fix v1 cache, it's already going to be marked
+> deprecated soon.
+> 
+> And we have v2 cache based on metadata (which is already fully subpage
+> compatible), and it has almost everything superior than v1 cache.
+> 
+> So just force subpage mount to use v2 cache on mount.
+> 
+> Reported-by: Matt Corallo <blnxfsl@bluematt.me>
+> CC: stable@vger.kernel.org # 5.15+
+> Link: https://lore.kernel.org/linux-btrfs/61aa27d1-30fc-c1a9-f0f4-9df544395ec3@bluematt.me/
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/disk-io.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
-Test that if we fsync a directory, create a symlink inside it, rename
-the symlink, fsync again the directory and then power fail, after the
-filesystem is mounted again, the symlink exists with the new name and
-it has the correct content.
+Now queued up, thanks.
 
-This currently fails on btrfs, because the symlink ends up empty (which
-is illegal on Linux), but it is fixed by kernel commit:
-
-    d0e64a981fd841 ("btrfs: always log symlinks in full mode")
-
-Reviewed-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-v2: Rebased on latest for-next, quoted $SCRATCH_MNT references (David Disseldorp)
-    and added David's review tag.
-
- tests/generic/690     | 90 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/690.out |  2 +
- 2 files changed, 92 insertions(+)
- create mode 100755 tests/generic/690
- create mode 100644 tests/generic/690.out
-
-diff --git a/tests/generic/690 b/tests/generic/690
-new file mode 100755
-index 00000000..f03295a5
---- /dev/null
-+++ b/tests/generic/690
-@@ -0,0 +1,90 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 690
-+#
-+# Test that if we fsync a directory, create a symlink inside it, rename the
-+# symlink, fsync again the directory and then power fail, after the filesystem
-+# is mounted again, the symlink exists with the new name and it has the correct
-+# content.
-+#
-+# On btrfs this used to result in the symlink being empty (i_size 0), and it was
-+# fixed by kernel commit:
-+#
-+#    d0e64a981fd841 ("btrfs: always log symlinks in full mode")
-+#
-+. ./common/preamble
-+_begin_fstest auto quick log
-+
-+_cleanup()
-+{
-+	_cleanup_flakey
-+	cd /
-+	rm -r -f $tmp.*
-+}
-+
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmflakey
-+
-+# real QA test starts here
-+
-+_supported_fs generic
-+_require_scratch
-+_require_symlinks
-+_require_dm_target flakey
-+
-+rm -f $seqres.full
-+
-+# f2fs doesn't support fs-op level transaction functionality, so it has no way
-+# to persist all metadata updates in one transaction. We have to use its mount
-+# option "fastboot" so that it triggers a metadata checkpoint to persist all
-+# metadata updates that happen before a fsync call. Without this, after the
-+# last fsync in the test, the symlink named "baz" will not exist.
-+if [ $FSTYP = "f2fs" ]; then
-+	export MOUNT_OPTIONS="-o fastboot $MOUNT_OPTIONS"
-+fi
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+# Create our test directory.
-+mkdir "$SCRATCH_MNT"/testdir
-+
-+# Commit the current transaction and persist the directory.
-+sync
-+
-+# Create a file in the test directory, so that the next fsync on the directory
-+# actually does something (it logs the directory).
-+echo -n > "$SCRATCH_MNT"/testdir/foo
-+
-+# Fsync the directory.
-+$XFS_IO_PROG -c "fsync" "$SCRATCH_MNT"/testdir
-+
-+# Now create a symlink inside the test directory.
-+ln -s "$SCRATCH_MNT"/testdir/foo "$SCRATCH_MNT"/testdir/bar
-+
-+# Rename the symlink.
-+mv "$SCRATCH_MNT"/testdir/bar "$SCRATCH_MNT"/testdir/baz
-+
-+# Fsync again the directory.
-+$XFS_IO_PROG -c "fsync" "$SCRATCH_MNT"/testdir
-+
-+# Simulate a power failure and then mount again the filesystem to replay the
-+# journal/log.
-+_flakey_drop_and_remount
-+
-+# The symlink should exist, with the name "baz" and its content must be
-+# "$SCRATCH_MNT/testdir/foo".
-+[ -L "$SCRATCH_MNT"/testdir/baz ] || echo "symlink 'baz' is missing"
-+symlink_content=$(readlink "$SCRATCH_MNT"/testdir/baz | _filter_scratch)
-+echo "symlink content: ${symlink_content}"
-+
-+_unmount_flakey
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/690.out b/tests/generic/690.out
-new file mode 100644
-index 00000000..84be1247
---- /dev/null
-+++ b/tests/generic/690.out
-@@ -0,0 +1,2 @@
-+QA output created by 690
-+symlink content: SCRATCH_MNT/testdir/foo
--- 
-2.35.1
-
+greg k-h
