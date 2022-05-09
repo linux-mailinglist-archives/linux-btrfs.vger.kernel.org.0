@@ -2,47 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DDD51F93C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 12:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C4051F959
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 12:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbiEIKDb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 06:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
+        id S233733AbiEIKLg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 06:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbiEIKBq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 06:01:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E16B19FF72
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 02:57:14 -0700 (PDT)
+        with ESMTP id S233895AbiEIKLV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 06:11:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A3916EC86;
+        Mon,  9 May 2022 03:07:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FD6E6152A
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 09:56:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E418C385AB;
-        Mon,  9 May 2022 09:56:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D3F860A53;
+        Mon,  9 May 2022 10:03:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64338C385A8;
+        Mon,  9 May 2022 10:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652090193;
-        bh=3ndl8UvL/IEaFXJWbKsjdtmlSr1x4uvF8el1c/JldBg=;
+        s=k20201202; t=1652090600;
+        bh=9zNeZ8DnyLRmGEaNSH3mxI6tUr9i1xub7dpmjtwmirM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bzUZ2i+cGU4UkbjdytqzgACg+xzt1i+AiLZXYw5fusTVL53RW5HpGocPNY8AUAnQp
-         TMqZ1m94qBsKhTQoNURCREwFvPf6ahIm3Qse76w/RzrUSCreaMs8873SWW5gonNh5L
-         78mPbvmN8l0g7LkAjDgyIpQ9x1ce18D0ouI6X8X4dux9N7EgOeE1wg/WyI6f6VMyyC
-         r3psoXMKtXzEyhh6O0L096YTuhDRZh15C8f/96AqXcpCJuzN4eOmMmo9TdebgDRZ8C
-         i5cKU2v6+G9fjWbBD288tHqhRDxRipPFzJmBaUpqHpdIetDiK/ql64MmEq2T3U7xQK
-         TbmUjOeTNc90g==
-Date:   Mon, 9 May 2022 10:56:30 +0100
+        b=BC0d64RH8beeS9j0X58rMkmSGcH9gJrQvt63AtQSjCxdwhm2kY7jHbSH8AEQdt6tI
+         FouT0e+/xcoXo4eVgdkmxBMXHr/K/dAWTWA+FHV3b2u1DB+GVYwIOv+T74l9+WVpii
+         IhMeVYVB8BSI1VoUGcThApXUrswlL08b+QbrgFyHmfvJL1DrkRoPR/Xh1JTR/RrfZY
+         Vu7dYO2CwfZquOUBlB2K/wOLk9TRcqzTRr0MTPnyx2q+dsHiK1Dgy4XJK21dkdBU0e
+         iKY687LjCnaSxDxkXVyq+riCsSraqXaWXNa2Km05IkAFjIAr6VfaVENCdFe9G8B/0l
+         Lf2NcAB9fMTDw==
+Date:   Mon, 9 May 2022 11:03:17 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: allow defrag to convert inline extents to regular
- extents
-Message-ID: <20220509095630.GA2270453@falcondesktop>
-References: <c26d8d377147d3a80e352ee31e432591c28e3f4b.1651905487.git.wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, zlang@kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [Resend PATCH] generic: test fsync of directory with renamed
+ symlink
+Message-ID: <20220509100317.GB2270453@falcondesktop>
+References: <8f06924cda35f9a5e22c1c188eb46205dd50491f.1651573756.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c26d8d377147d3a80e352ee31e432591c28e3f4b.1651905487.git.wqu@suse.com>
+In-Reply-To: <8f06924cda35f9a5e22c1c188eb46205dd50491f.1651573756.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,93 +54,144 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 07, 2022 at 02:39:27PM +0800, Qu Wenruo wrote:
-> Btrfs defaults to max_inline=2K to make small writes inlined into
-> metadata.
+On Tue, May 03, 2022 at 11:57:49AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> The default value is always a win, as even DUP/RAID1/RAID10 doubles the
-> metadata usage, it should still cause less physical space used compared
-> to a 4K regular extents.
+> Test that if we fsync a directory, create a symlink inside it, rename
+> the symlink, fsync again the directory and then power fail, after the
+> filesystem is mounted again, the symlink exists with the new name and
+> it has the correct content.
 > 
-> But since the introduce of RAID1C3 and RAID1C4 it's no longer the case,
-> users may find inlined extents causing too much space wasted, and want
-> to convert those inlined extents back to regular extents.
+> This currently fails on btrfs, because the symlink ends up empty (which
+> is illegal on Linux), but it is fixed by kernel commit:
 > 
-> Unfortunately defrag will unconditionally skip all inline extents, no
-> matter if the user is trying to converting them back to regular extents.
+>     d0e64a981fd841 ("btrfs: always log symlinks in full mode")
 > 
-> So this patch will add a small exception for defrag_collect_targets() to
-> allow defragging inline extents, if and only if the inlined extents are
-> larger than max_inline, allowing users to convert them to regular ones.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
->  fs/btrfs/ioctl.c | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 9d8e46815ee4..852c49565ab2 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1420,8 +1420,19 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
->  		if (!em)
->  			break;
->  
-> -		/* Skip hole/inline/preallocated extents */
-> -		if (em->block_start >= EXTENT_MAP_LAST_BYTE ||
-> +		/*
-> +		 * If the file extent is an inlined one, we may still want to
-> +		 * defrag it (fallthrough) if it will cause a regular extent.
-> +		 * This is for users who want to convert inline extents to
-> +		 * regular ones through max_inline= mount option.
-> +		 */
-> +		if (em->block_start == EXTENT_MAP_INLINE &&
-> +		    em->len <= inode->root->fs_info->max_inline)
-> +			goto next;
-> +
-> +		/* Skip hole/delalloc/preallocated extents */
-> +		if (em->block_start == EXTENT_MAP_HOLE ||
-> +		    em->block_start == EXTENT_MAP_DELALLOC ||
->  		    test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
->  			goto next;
->  
-> @@ -1480,6 +1491,15 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
->  		if (em->len >= get_extent_max_capacity(em))
->  			goto next;
->  
-> +		/*
-> +		 * For inline extent it should be the first extent and it
-> +		 * should not have a next extent.
+> Resending as this was missed on the last update.
+> No changes, only rebased on the current 'for-next' branch.
 
-This is misleading.
+Zorro,
 
-As you know, and we've discussed this in a few threads in the past, there are
-at least a couple causes where we can have an inline extent followed by other
-extents. One has to do with compresson and the other with fallocate.
+This missed against the last fstests update.
+Did this patch fell through the cracks, or do you expect me to do something about it?
 
-So either this part of the comment should be rephrased or go away.
-
-This is also a good oppurtunity to convert cases where we have an inlined
-compressed extent followed by one (or more) extents:
-
-  $ mount -o compress /dev/sdi /mnt
-  $ xfs_io -f -s -c "pwrite -S 0xab 0 4K" -c "pwrite -S 0xcd -b 16K 4K 16K" /mnt/foobar
-
-In this case a defrag could mark the [0, 20K[ for defrag and we end up saving
-both data and metadata space (one less extent item in the fs tree and maybe in
-the extent tree too).
+Should I rebase and resend again?
 
 Thanks.
 
-> +		 * If the inlined extent passed all above checks, just add it
-> +		 * for defrag, and be converted to regular extents.
-> +		 */
-> +		if (em->block_start == EXTENT_MAP_INLINE)
-> +			goto add;
+> 
+>  tests/generic/690     | 89 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/690.out |  2 +
+>  2 files changed, 91 insertions(+)
+>  create mode 100755 tests/generic/690
+>  create mode 100644 tests/generic/690.out
+> 
+> diff --git a/tests/generic/690 b/tests/generic/690
+> new file mode 100755
+> index 00000000..0bf47dd7
+> --- /dev/null
+> +++ b/tests/generic/690
+> @@ -0,0 +1,89 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
+> +#
+> +# FS QA Test 690
+> +#
+> +# Test that if we fsync a directory, create a symlink inside it, rename the
+> +# symlink, fsync again the directory and then power fail, after the filesystem
+> +# is mounted again, the symlink exists with the new name and it has the correct
+> +# content.
+> +#
+> +# On btrfs this used to result in the symlink being empty (i_size 0), and it was
+> +# fixed by kernel commit:
+> +#
+> +#    d0e64a981fd841 ("btrfs: always log symlinks in full mode")
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick log
 > +
->  		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
->  						extent_thresh, newer_than, locked);
->  		if (!next_mergeable) {
+> +_cleanup()
+> +{
+> +	_cleanup_flakey
+> +	cd /
+> +	rm -r -f $tmp.*
+> +}
+> +
+> +. ./common/rc
+> +. ./common/filter
+> +. ./common/dmflakey
+> +
+> +# real QA test starts here
+> +
+> +_supported_fs generic
+> +_require_scratch
+> +_require_symlinks
+> +_require_dm_target flakey
+> +
+> +rm -f $seqres.full
+> +
+> +# f2fs doesn't support fs-op level transaction functionality, so it has no way
+> +# to persist all metadata updates in one transaction. We have to use its mount
+> +# option "fastboot" so that it triggers a metadata checkpoint to persist all
+> +# metadata updates that happen before a fsync call. Without this, after the
+> +# last fsync in the test, the symlink named "baz" will not exist.
+> +if [ $FSTYP = "f2fs" ]; then
+> +	export MOUNT_OPTIONS="-o fastboot $MOUNT_OPTIONS"
+> +fi
+> +
+> +_scratch_mkfs >>$seqres.full 2>&1
+> +_require_metadata_journaling $SCRATCH_DEV
+> +_init_flakey
+> +_mount_flakey
+> +
+> +# Create our test directory.
+> +mkdir $SCRATCH_MNT/testdir
+> +
+> +# Commit the current transaction and persist the directory.
+> +sync
+> +
+> +# Create a file in the test directory, so that the next fsync on the directory
+> +# actually does something (it logs the directory).
+> +echo -n > $SCRATCH_MNT/testdir/foo
+> +
+> +# Fsync the directory.
+> +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
+> +
+> +# Now create a symlink inside the test directory.
+> +ln -s $SCRATCH_MNT/testdir/foo $SCRATCH_MNT/testdir/bar
+> +
+> +# Rename the symlink.
+> +mv $SCRATCH_MNT/testdir/bar $SCRATCH_MNT/testdir/baz
+> +
+> +# Fsync again the directory.
+> +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
+> +
+> +# Simulate a power failure and then mount again the filesystem to replay the
+> +# journal/log.
+> +_flakey_drop_and_remount
+> +
+> +# The symlink should exist, with the name "baz" and its content must be
+> +# "$SCRATCH_MNT/testdir/foo".
+> +[ -L $SCRATCH_MNT/testdir/baz ] || echo "symlink 'baz' is missing"
+> +echo "symlink content: $(readlink $SCRATCH_MNT/testdir/baz | _filter_scratch)"
+> +
+> +_unmount_flakey
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/generic/690.out b/tests/generic/690.out
+> new file mode 100644
+> index 00000000..84be1247
+> --- /dev/null
+> +++ b/tests/generic/690.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 690
+> +symlink content: SCRATCH_MNT/testdir/foo
 > -- 
-> 2.36.0
+> 2.35.1
 > 
