@@ -2,110 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC93251FB5B
+	by mail.lfdr.de (Postfix) with ESMTP id A09A951FB5A
 	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 13:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbiEILgW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 07:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
+        id S232849AbiEILgp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 07:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232244AbiEILgF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 07:36:05 -0400
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C991DE579
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 04:32:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1652095932; x=1683631932;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=v0lVI0gmiUvzoNmI5a0guGMpgDZX+uKFFD4KLqB/fQU=;
-  b=jqj4ZCR8YmssCzTh7IcPWd3vz9jyGwCAO5tZK1uPSJgGlg3iY5qifmRS
-   gSSyyhTq/QzCzqc5zxPUNpAhF0U1HbGQOBSGxIvikJevvOvUBmMj/dl4c
-   umvmG5E3D9SaQgb0aOFlKUGMsrhGxb0ceumvIPdG/vRa6HYGZlFMQUXIP
-   HEZg2rZaoqZgkRsrM2s/gsDSuStjZ1JRycTM9nYPO0TmHrm9YW4HsAZtz
-   H1u3U/9tErzmFMkUhyv0WMCYOdkhuqCsZzQ6ipGECpvZIzQK5fpgnWdMO
-   kA01r58y6JbgYz5L1236Wl+y6f7lBnGnkIgiOO+b4oEv8rrum1p4wOlDk
-   w==;
-X-IronPort-AV: E=Sophos;i="5.91,211,1647273600"; 
-   d="scan'208";a="200733505"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 09 May 2022 19:32:09 +0800
-IronPort-SDR: aPeAH3zA6nVOX1qKDAS27bY2A+cMZPesNJ4detAbKh/gSIKOLyzjiYYIFuFwXunITqkAsyovac
- x0VFQik1NuHuDxdkSxUyHOxe5B6KGbrMs5kX4IHqqXyobG4RAL0w8gb4R9MB0wn7sJrxGdNys0
- r2PFGmGz4xZxaLnIH2HEMD26LjE7NRWND0zkpSHieODuC1vz6MdM94WzJTU2HTYqNnU6v63xm1
- 4XxsfmtUi4axUFPUlvgp+UXLrngTJ1XlX9+oIox2gW2MaIljZcwOsiz93XfDuh9rSAn/PT1MS3
- jLMEXmOZns/tC5MZnQiWochq
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 May 2022 04:02:14 -0700
-IronPort-SDR: rzUyegYN+J7BQ2P3KDYhXQPZGsDPYFeXteE1tns9wg632/jDLus1cVWR52yYF1obHs6nCdxRE6
- B2Ar9GZ5NpieOcItUITTGVWT9IPkpwR/W/YRCq4hqAN53OhHPGbU7rGmmcrcDaDlYwzCeuNicM
- A0XKc7NOPY4Z7g/elQIl8U3unZg1DcIqfCqQoSHXimPFbC2njIvZRr3J/hwfWg7CyWiw46AFbs
- zumGZCw5+0B4pRkfRhrO4fLVftKhixIhC9FfHnsBCQ+ztO79IFXkIEiRi48IHhvwaXyIWGen3U
- DSU=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 May 2022 04:32:07 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4KxfCW2FQ0z1SVp2
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 04:32:07 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1652095926; x=1654687927; bh=v0lVI0gmiUvzoNmI5a0guGMpgDZX+uKFFD4
-        KLqB/fQU=; b=E/S7+ftCKDojRwdfWfMiCt2FBFS6P6O4vQv9CY0mSrWKcOA/TUZ
-        cINZhwkUJYr2VgFPHiRT6KCIT63B1UNrpbQrpHSC1d6EEDVjfyCzgGRo25Yk+Mak
-        ke234L+h8WlpCNwP12dZFkUA1RUzY8bhjo/4g7dLD/EYNiArXQLxsSKwun2bK3Ud
-        0wdN4f58GNZYl3Y6Xy2a/6WnwZ19GsujmmSXyN8pGC3Pw9VYMxpmDi/CSROhi8Gv
-        ZaE8OWsdQY3K0YdfRMnjbNkDESbv3xgPsyP35A+xnGM6iDPATqr5gNEjatknRWB9
-        QJziNpUStccPtJO2rPx1Sa+x/ad4k2zfTDw==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mYZKPBn9kARO for <linux-btrfs@vger.kernel.org>;
-        Mon,  9 May 2022 04:32:06 -0700 (PDT)
-Received: from [192.168.10.49] (unknown [10.225.164.111])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4KxfCM384lz1Rvlc;
-        Mon,  9 May 2022 04:31:59 -0700 (PDT)
-Message-ID: <9eb00b42-ca5b-c94e-319d-a0e102b99f02@opensource.wdc.com>
-Date:   Mon, 9 May 2022 20:31:57 +0900
+        with ESMTP id S231795AbiEILgn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 07:36:43 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A40C1E15DD;
+        Mon,  9 May 2022 04:32:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E21EBB8118D;
+        Mon,  9 May 2022 11:32:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A793C385AB;
+        Mon,  9 May 2022 11:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652095966;
+        bh=O3aPZr9odp5zvYf0/RsLwG7/++lGiLJqnDLti+GmV60=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=CbJeN8cjvXHZB9F6TnpmPr6x0QKwLA+QPK4SblkpJGbZmAnaXoSgSiU9o3pvRdsb+
+         4wot8IGRkKIgf67N39y297eHPMMn9BRs8tFxHiAxdqYizNo3JVnlWJ/RFsQXwRIdpZ
+         biC6HVJ1Zn10GXYlOr2sQlodEtnFNQuPdtvk88ek+TL/1kL1+Ra+f+qwkcrXvx26l+
+         qAhp15QeH5bVhk/DTLbT+P0RyB1s2YNh5LeQbNlQ9v9pOJDrxYn5L1S99+tC8WYuCM
+         I6Dunx+bpMkWxfxKiuKMieQmPA0hQzk6dCb+ZyBYMftqRAuR71aSC4Uwmjb54xJNWN
+         YOsQFbCDacG/w==
+Date:   Mon, 9 May 2022 12:32:43 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [Resend PATCH] generic: test fsync of directory with renamed
+ symlink
+Message-ID: <20220509113243.GA2279159@falcondesktop>
+References: <8f06924cda35f9a5e22c1c188eb46205dd50491f.1651573756.git.fdmanana@suse.com>
+ <20220509100317.GB2270453@falcondesktop>
+ <20220509111355.nzbg3e2gp3vykvxa@zlang-mailbox>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH v3 10/11] null_blk: allow non power of 2 zoned devices
-Content-Language: en-US
-To:     Pankaj Raghav <p.raghav@samsung.com>, jaegeuk@kernel.org,
-        hare@suse.de, dsterba@suse.com, axboe@kernel.dk, hch@lst.de,
-        snitzer@kernel.org
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        bvanassche@acm.org, linux-fsdevel@vger.kernel.org,
-        matias.bjorling@wdc.com, Jens Axboe <axboe@fb.com>,
-        gost.dev@samsung.com, jonathan.derrick@linux.dev,
-        jiangbo.365@bytedance.com, linux-nvme@lists.infradead.org,
-        dm-devel@redhat.com, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-kernel@vger.kernel.org, Johannes Thumshirn <jth@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Alasdair Kergon <agk@redhat.com>, linux-block@vger.kernel.org,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Keith Busch <kbusch@kernel.org>, linux-btrfs@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-References: <20220506081105.29134-1-p.raghav@samsung.com>
- <CGME20220506081116eucas1p2cce67bbf30f4c9c4e6854965be41b098@eucas1p2.samsung.com>
- <20220506081105.29134-11-p.raghav@samsung.com>
- <39a80347-af70-8af0-024a-52f92e27a14a@opensource.wdc.com>
- <aef68bcf-4924-8004-3320-325e05ca9b20@samsung.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <aef68bcf-4924-8004-3320-325e05ca9b20@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220509111355.nzbg3e2gp3vykvxa@zlang-mailbox>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,57 +55,159 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2022/05/09 20:06, Pankaj Raghav wrote:
+On Mon, May 09, 2022 at 07:13:55PM +0800, Zorro Lang wrote:
+> On Mon, May 09, 2022 at 11:03:17AM +0100, Filipe Manana wrote:
+> > On Tue, May 03, 2022 at 11:57:49AM +0100, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > > 
+> > > Test that if we fsync a directory, create a symlink inside it, rename
+> > > the symlink, fsync again the directory and then power fail, after the
+> > > filesystem is mounted again, the symlink exists with the new name and
+> > > it has the correct content.
+> > > 
+> > > This currently fails on btrfs, because the symlink ends up empty (which
+> > > is illegal on Linux), but it is fixed by kernel commit:
+> > > 
+> > >     d0e64a981fd841 ("btrfs: always log symlinks in full mode")
+> > > 
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> > > 
+> > > Resending as this was missed on the last update.
+> > > No changes, only rebased on the current 'for-next' branch.
+> > 
+> > Zorro,
+> > 
+> > This missed against the last fstests update.
+> > Did this patch fell through the cracks, or do you expect me to do something about it?
+> > 
+> > Should I rebase and resend again?
 > 
->>> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
->>> index 5cb4c92cd..ed9a58201 100644
->>> --- a/drivers/block/null_blk/main.c
->>> +++ b/drivers/block/null_blk/main.c
->>> @@ -1929,9 +1929,8 @@ static int null_validate_conf(struct nullb_device *dev)
->>>  	if (dev->queue_mode == NULL_Q_BIO)
->>>  		dev->mbps = 0;
->>>  
->>> -	if (dev->zoned &&
->>> -	    (!dev->zone_size || !is_power_of_2(dev->zone_size))) {
->>> -		pr_err("zone_size must be power-of-two\n");
->>> +	if (dev->zoned && !dev->zone_size) {
->>> +		pr_err("zone_size must not be zero\n");
->>
->> May be a simpler phrasing would be better:
->>
->> pr_err("Invalid zero zone size\n");
->>
-> Ack. I will change this in the next rev.
->>>  		return -EINVAL;
->>>  	}
->>>  
->>> diff --git a/drivers/block/null_blk/zoned.c b/drivers/block/null_blk/zoned.c
->>> index dae54dd1a..00c34e65e 100644
->>> --- a/drivers/block/null_blk/zoned.c
->>> +++ b/drivers/block/null_blk/zoned.c
->>> @@ -13,7 +13,10 @@ static inline sector_t mb_to_sects(unsigned long mb)
->>>  
->>>  static inline unsigned int null_zone_no(struct nullb_device *dev, sector_t sect)
->>>  {
->>> -	return sect >> ilog2(dev->zone_size_sects);
->>> +	if (is_power_of_2(dev->zone_size_sects))
->>> +		return sect >> ilog2(dev->zone_size_sects);
->>
->> As a separate patch, I think we should really have ilog2(dev->zone_size_sects)
->> as a dev field to avoid doing this ilog2 for every call..
->>
-> I don't think that is possible because `zone_size_sects` can also be non
-> po2.
+> Oh, this patch is in my "still reviewing" list, I remembered I didn't see any
+> RVB/ACK for it, did I miss some emails? If so I missed something please feel
+> free to tell me :)
 
-But when it is we can optimize that. All we need is add a "zone_size_sect_shift"
-field that is initialized when zone_size_sects is set when the device is
-created. Then, you can have code like:
+There weren't any reviews, which is not uncommon.
+In the past, the maintainers (Eryu, Dave) usually reviewed the patches themselves.
 
-	if (dev->zone_size_sect_shift))
-		return sect >> dev->zone_size_sect_shift;
-
-Which avoids both is_power_of_2() and ilog2() calls for every IO.
-
--- 
-Damien Le Moal
-Western Digital Research
+> 
+> Thanks,
+> Zorro
+> 
+> > 
+> > Thanks.
+> > 
+> > > 
+> > >  tests/generic/690     | 89 +++++++++++++++++++++++++++++++++++++++++++
+> > >  tests/generic/690.out |  2 +
+> > >  2 files changed, 91 insertions(+)
+> > >  create mode 100755 tests/generic/690
+> > >  create mode 100644 tests/generic/690.out
+> > > 
+> > > diff --git a/tests/generic/690 b/tests/generic/690
+> > > new file mode 100755
+> > > index 00000000..0bf47dd7
+> > > --- /dev/null
+> > > +++ b/tests/generic/690
+> > > @@ -0,0 +1,89 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 690
+> > > +#
+> > > +# Test that if we fsync a directory, create a symlink inside it, rename the
+> > > +# symlink, fsync again the directory and then power fail, after the filesystem
+> > > +# is mounted again, the symlink exists with the new name and it has the correct
+> > > +# content.
+> > > +#
+> > > +# On btrfs this used to result in the symlink being empty (i_size 0), and it was
+> > > +# fixed by kernel commit:
+> > > +#
+> > > +#    d0e64a981fd841 ("btrfs: always log symlinks in full mode")
+> > > +#
+> > > +. ./common/preamble
+> > > +_begin_fstest auto quick log
+> > > +
+> > > +_cleanup()
+> > > +{
+> > > +	_cleanup_flakey
+> > > +	cd /
+> > > +	rm -r -f $tmp.*
+> > > +}
+> > > +
+> > > +. ./common/rc
+> > > +. ./common/filter
+> > > +. ./common/dmflakey
+> > > +
+> > > +# real QA test starts here
+> > > +
+> > > +_supported_fs generic
+> > > +_require_scratch
+> > > +_require_symlinks
+> > > +_require_dm_target flakey
+> > > +
+> > > +rm -f $seqres.full
+> > > +
+> > > +# f2fs doesn't support fs-op level transaction functionality, so it has no way
+> > > +# to persist all metadata updates in one transaction. We have to use its mount
+> > > +# option "fastboot" so that it triggers a metadata checkpoint to persist all
+> > > +# metadata updates that happen before a fsync call. Without this, after the
+> > > +# last fsync in the test, the symlink named "baz" will not exist.
+> > > +if [ $FSTYP = "f2fs" ]; then
+> > > +	export MOUNT_OPTIONS="-o fastboot $MOUNT_OPTIONS"
+> > > +fi
+> > > +
+> > > +_scratch_mkfs >>$seqres.full 2>&1
+> > > +_require_metadata_journaling $SCRATCH_DEV
+> > > +_init_flakey
+> > > +_mount_flakey
+> > > +
+> > > +# Create our test directory.
+> > > +mkdir $SCRATCH_MNT/testdir
+> > > +
+> > > +# Commit the current transaction and persist the directory.
+> > > +sync
+> > > +
+> > > +# Create a file in the test directory, so that the next fsync on the directory
+> > > +# actually does something (it logs the directory).
+> > > +echo -n > $SCRATCH_MNT/testdir/foo
+> > > +
+> > > +# Fsync the directory.
+> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
+> > > +
+> > > +# Now create a symlink inside the test directory.
+> > > +ln -s $SCRATCH_MNT/testdir/foo $SCRATCH_MNT/testdir/bar
+> > > +
+> > > +# Rename the symlink.
+> > > +mv $SCRATCH_MNT/testdir/bar $SCRATCH_MNT/testdir/baz
+> > > +
+> > > +# Fsync again the directory.
+> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
+> > > +
+> > > +# Simulate a power failure and then mount again the filesystem to replay the
+> > > +# journal/log.
+> > > +_flakey_drop_and_remount
+> > > +
+> > > +# The symlink should exist, with the name "baz" and its content must be
+> > > +# "$SCRATCH_MNT/testdir/foo".
+> > > +[ -L $SCRATCH_MNT/testdir/baz ] || echo "symlink 'baz' is missing"
+> > > +echo "symlink content: $(readlink $SCRATCH_MNT/testdir/baz | _filter_scratch)"
+> > > +
+> > > +_unmount_flakey
+> > > +
+> > > +# success, all done
+> > > +status=0
+> > > +exit
+> > > diff --git a/tests/generic/690.out b/tests/generic/690.out
+> > > new file mode 100644
+> > > index 00000000..84be1247
+> > > --- /dev/null
+> > > +++ b/tests/generic/690.out
+> > > @@ -0,0 +1,2 @@
+> > > +QA output created by 690
+> > > +symlink content: SCRATCH_MNT/testdir/foo
+> > > -- 
+> > > 2.35.1
+> > > 
+> > 
