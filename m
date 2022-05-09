@@ -2,212 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A09A951FB5A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 13:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EB451FBC8
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 13:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbiEILgp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 07:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
+        id S233540AbiEIMAf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 08:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231795AbiEILgn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 07:36:43 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A40C1E15DD;
-        Mon,  9 May 2022 04:32:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E21EBB8118D;
-        Mon,  9 May 2022 11:32:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A793C385AB;
-        Mon,  9 May 2022 11:32:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652095966;
-        bh=O3aPZr9odp5zvYf0/RsLwG7/++lGiLJqnDLti+GmV60=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=CbJeN8cjvXHZB9F6TnpmPr6x0QKwLA+QPK4SblkpJGbZmAnaXoSgSiU9o3pvRdsb+
-         4wot8IGRkKIgf67N39y297eHPMMn9BRs8tFxHiAxdqYizNo3JVnlWJ/RFsQXwRIdpZ
-         biC6HVJ1Zn10GXYlOr2sQlodEtnFNQuPdtvk88ek+TL/1kL1+Ra+f+qwkcrXvx26l+
-         qAhp15QeH5bVhk/DTLbT+P0RyB1s2YNh5LeQbNlQ9v9pOJDrxYn5L1S99+tC8WYuCM
-         I6Dunx+bpMkWxfxKiuKMieQmPA0hQzk6dCb+ZyBYMftqRAuR71aSC4Uwmjb54xJNWN
-         YOsQFbCDacG/w==
-Date:   Mon, 9 May 2022 12:32:43 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [Resend PATCH] generic: test fsync of directory with renamed
- symlink
-Message-ID: <20220509113243.GA2279159@falcondesktop>
-References: <8f06924cda35f9a5e22c1c188eb46205dd50491f.1651573756.git.fdmanana@suse.com>
- <20220509100317.GB2270453@falcondesktop>
- <20220509111355.nzbg3e2gp3vykvxa@zlang-mailbox>
+        with ESMTP id S233506AbiEIMAe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 08:00:34 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BC922A89F
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 04:56:40 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20220509115639euoutp02ae00cd55173d942a82e8356e7afd13b3~tbdTKmUFs2133421334euoutp02X
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 11:56:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20220509115639euoutp02ae00cd55173d942a82e8356e7afd13b3~tbdTKmUFs2133421334euoutp02X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1652097399;
+        bh=LRw79LxnO+9lbHN5Ml0ZeqPIsgf1kk4KqFqaSsEFqNo=;
+        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
+        b=enqvCLLH4SeYtRwOftszp1xVyY2IeY2vfBGT/0OXMVifQ881bdIl84yQXa9igowxt
+         IeDBapekR5etPpyxsZ3sdHWFnth9HxjvqdGv7p6znCA4TesCy7jzljpHybIAvnds7p
+         Jp96xy2jU1USyCXe61JgEV+m/pAfki6Ef+e3XVVk=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20220509115636eucas1p1ba44cde73ab43d615481bea150694fcf~tbdRLKZ0w1215112151eucas1p1s;
+        Mon,  9 May 2022 11:56:36 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8C.64.09887.47109726; Mon,  9
+        May 2022 12:56:36 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20220509115636eucas1p1d9d67f3b9235d3e46aaa11101bf4f991~tbdQzeA2G2169921699eucas1p1X;
+        Mon,  9 May 2022 11:56:36 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20220509115636eusmtrp219909889bd5adfa8058b3746a9437256~tbdQwWRk81410514105eusmtrp2J;
+        Mon,  9 May 2022 11:56:36 +0000 (GMT)
+X-AuditID: cbfec7f4-471ff7000000269f-fe-62790174fcd9
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id C2.02.09404.47109726; Mon,  9
+        May 2022 12:56:36 +0100 (BST)
+Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20220509115636eusmtip1e0015a7f6905dc16565c6158d4e6d90e~tbdQiOQ_y0902209022eusmtip1T;
+        Mon,  9 May 2022 11:56:36 +0000 (GMT)
+Received: from [106.110.32.130] (106.110.32.130) by CAMSVWEXC01.scsc.local
+        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Mon, 9 May 2022 12:56:34 +0100
+Message-ID: <9f1385a3-b471-fcd9-2c0c-61f544fbc855@samsung.com>
+Date:   Mon, 9 May 2022 13:56:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220509111355.nzbg3e2gp3vykvxa@zlang-mailbox>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+        Thunderbird/91.8.1
+Subject: Re: [PATCH v3 10/11] null_blk: allow non power of 2 zoned devices
+Content-Language: en-US
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        <jaegeuk@kernel.org>, <hare@suse.de>, <dsterba@suse.com>,
+        <axboe@kernel.dk>, <hch@lst.de>, <snitzer@kernel.org>
+CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        <bvanassche@acm.org>, <linux-fsdevel@vger.kernel.org>,
+        <matias.bjorling@wdc.com>, Jens Axboe <axboe@fb.com>,
+        <gost.dev@samsung.com>, <jonathan.derrick@linux.dev>,
+        <jiangbo.365@bytedance.com>, <linux-nvme@lists.infradead.org>,
+        <dm-devel@redhat.com>, Naohiro Aota <naohiro.aota@wdc.com>,
+        <linux-kernel@vger.kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Alasdair Kergon <agk@redhat.com>,
+        <linux-block@vger.kernel.org>, Chaitanya Kulkarni <kch@nvidia.com>,
+        Keith Busch <kbusch@kernel.org>, <linux-btrfs@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>
+From:   Pankaj Raghav <p.raghav@samsung.com>
+In-Reply-To: <9eb00b42-ca5b-c94e-319d-a0e102b99f02@opensource.wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [106.110.32.130]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf1CTdRzH+z7Ps2cPK+DhV/seJNIOMxYQhhff0ji78/IRLby87jw6oyFP
+        sIMN2qA08sIBdqC4sROkzUKR3z9EGKFDoI4zmAKxc0JzhgJuHUIgOMq4BeR4tOO/1/v7/vy+
+        L4X7GshASirPYhVySbqIFBAdfUu/RmSBI0lRs+NRqOVGH45Wu/pI1DimJlHZ/BKOtOpyPnIN
+        DeOoe07PQ+Z/jmGoq1KLofrGXzBkb9Hh6OTP8wSqz5/A0b8TW9DEoo1A2t5RgBwjOgx1215D
+        N+/X8VFX93UCWTrPkqiixsFHmuN/4ciqcQBU0m/goYszDwlksgXtCGIst/YwK6YmkinJm+Mz
+        w3dbCcYylM20NRSSzPncUpwxVH3DXL2dSzLFeXMkYyy4x2Me9oyQTEv7CMEYBnIYjaGVxzjb
+        gvf5JAi2J7Pp0i9YxeuxnwpSjUujZGbtC4ebK4fxXHBaUAQ8KEhvhQumcX4REFC+dB2AbRdN
+        BCcWATxnHMc54QRQNTVHPEtxzE8BzqgFcECvwv6PGjbbn6Z0AvinxV3Zg/KkY+FE8R3czQQd
+        CissUzj37gOvf2dfKxtAH4BlukHSzX50HPzt71rMzTgthDZ7xVoHf7oBwKYZF+kWOF3Ng5eu
+        9DxxKIqkxfBY4VozD/o9WDpczOOSw2DBZRef443w8uxZ3B0OaRHUWyK5dY7C5r5BPsd2AdTd
+        EXO8E5rum0mO/eB0f/vTmJfgqrEC4zgHOqyutYUhnQ+g2thCcvW3wVOD6Ry+C3tqgjn0gtZZ
+        H24YL6jtOINrwCbdukPo1i2sWze/bt385wDRAIRstlKWwirfkLNfRiolMmW2PCXyUIasDTz5
+        1wMr/YtXQO30QmQvwCjQCyCFi/w9fzp1OMnXM1ly5CtWkZGoyE5nlb0giCJEQs9D0ksSXzpF
+        ksWmsWwmq3jmYpRHYC62Wybwjon6sPxBXGdh6ItZSSduvx/qfbXsnTB99EjCHn1Kmf/+Hzq+
+        /p0WucJ3sAkrPVtlPX/orzkU0fpY5+Bo9YWqo6WbrSdXveMfhWsSf1yOHUCJ4d7it4SbZkLw
+        V0w3tF1vNn100Cu5ZvZCmHmZjlYtU4/buz/IiAidJJIDZPWZqXGqtH3VB2zlldKoKqHz1W/P
+        BGhU8rd3BplqxuZPR4jvBaYV7AIrsYrljSFmpm/8Y+fj5qIH8UAdumE633q3riKk/PsT4dLN
+        z88Ojd3auzBmmlTnHT/vte2mOeeTvamtHZ83Pnp5F+U3tqD6rKQ5xuc51/YNMe1J+69NTR6M
+        t+1ODBYRylTJFjGuUEr+A4YMLVFGBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJKsWRmVeSWpSXmKPExsVy+t/xu7oljJVJBseuC1msP3WM2eL/nmNs
+        Fqvv9rNZTPvwk9liUv8MdovfZ88zW+x9N5vV4sKPRiaLPYsmMVmsXH2UyeLJ+lnMFj0HPrBY
+        rGx5yGzx56GhxcMvt1gsJh26xmjx9OosJou9t7QtLj1ewW6xZ+9JFovLu+awWcxf9pTdYkLb
+        V2aLGxOeMlpMPL6Z1WLd6/csFiduSTtIe1y+4u3x78QaNo+Jze/YPc7f28jicflsqcemVZ1s
+        HgsbpjJ7bF5S77H7ZgObR2/zOzaPna33WT3e77vK5rF+y1UWj82nqz0mbN7I6vF5k1yAYJSe
+        TVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexs6f19gK
+        lvNUrF10nrmBcQpXFyMnh4SAicTTDy8Yuxi5OIQEljJK3G/oZIdIyEh8uvIRyhaW+HOtiw2i
+        6COjxM/FfawQzi5GiWsnG5hAqngF7CQe9t5mBrFZBFQk5l9+wQwRF5Q4OfMJC4gtKhAh8WD3
+        WVYQW1jAS+L6t+VgvcwC4hK3nsxnAhkqIrCKUWLN699g65gFFrNKXJz9DuwOIYHXTBJHr1V1
+        MXJwsAloSTRCnMop4CYx9XwvK8QgTYnW7b/ZIWx5ie1v5zCDlEsIKEnMvqwH8U2txKv7uxkn
+        MIrOQnLeLCRnzEIyaRaSSQsYWVYxiqSWFuem5xYb6RUn5haX5qXrJefnbmIEprltx35u2cG4
+        8tVHvUOMTByMhxglOJiVRHj391UkCfGmJFZWpRblxxeV5qQWH2I0BYbRRGYp0eR8YKLNK4k3
+        NDMwNTQxszQwtTQzVhLn9SzoSBQSSE8sSc1OTS1ILYLpY+LglGpgEutdsvUh29SNayYI3bn3
+        XC3v6aKnx0zvfPf5q2d68d+BkI5jy+N9pI4xa0xJUpRuvcc1tdPIRyXifMRvz6/W3QY9Xya9
+        429XWcOcNIFRp+5Z++EeDVXtyNJLisonHt8QC2yd7igXahLx/HxpW8TupR133r0yTa5c67Lm
+        kOweo56QH63/qiq/am256bbl8YvNBhsV90rZ67W+ySiIu6WTG7D6AKvaoU+b3Xlf3L5trmnZ
+        4qM1b3VUm99ix8cS1x4unJiU/ez89GzLCJFtQdHKzOYeWR+Pyiy2KnfYpRJ+cL7Wmw6lBPXY
+        mpIHzQLMZ++KPZqwVvpGvNVWFruELVFTOGWOWVU17XiYovX1sGmxEktxRqKhFnNRcSIAtvwA
+        yPwDAAA=
+X-CMS-MailID: 20220509115636eucas1p1d9d67f3b9235d3e46aaa11101bf4f991
+X-Msg-Generator: CA
+X-RootMTR: 20220506081116eucas1p2cce67bbf30f4c9c4e6854965be41b098
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20220506081116eucas1p2cce67bbf30f4c9c4e6854965be41b098
+References: <20220506081105.29134-1-p.raghav@samsung.com>
+        <CGME20220506081116eucas1p2cce67bbf30f4c9c4e6854965be41b098@eucas1p2.samsung.com>
+        <20220506081105.29134-11-p.raghav@samsung.com>
+        <39a80347-af70-8af0-024a-52f92e27a14a@opensource.wdc.com>
+        <aef68bcf-4924-8004-3320-325e05ca9b20@samsung.com>
+        <9eb00b42-ca5b-c94e-319d-a0e102b99f02@opensource.wdc.com>
+X-Spam-Status: No, score=-8.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 09, 2022 at 07:13:55PM +0800, Zorro Lang wrote:
-> On Mon, May 09, 2022 at 11:03:17AM +0100, Filipe Manana wrote:
-> > On Tue, May 03, 2022 at 11:57:49AM +0100, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > > 
-> > > Test that if we fsync a directory, create a symlink inside it, rename
-> > > the symlink, fsync again the directory and then power fail, after the
-> > > filesystem is mounted again, the symlink exists with the new name and
-> > > it has the correct content.
-> > > 
-> > > This currently fails on btrfs, because the symlink ends up empty (which
-> > > is illegal on Linux), but it is fixed by kernel commit:
-> > > 
-> > >     d0e64a981fd841 ("btrfs: always log symlinks in full mode")
-> > > 
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > > 
-> > > Resending as this was missed on the last update.
-> > > No changes, only rebased on the current 'for-next' branch.
-> > 
-> > Zorro,
-> > 
-> > This missed against the last fstests update.
-> > Did this patch fell through the cracks, or do you expect me to do something about it?
-> > 
-> > Should I rebase and resend again?
-> 
-> Oh, this patch is in my "still reviewing" list, I remembered I didn't see any
-> RVB/ACK for it, did I miss some emails? If so I missed something please feel
-> free to tell me :)
 
-There weren't any reviews, which is not uncommon.
-In the past, the maintainers (Eryu, Dave) usually reviewed the patches themselves.
+On 2022-05-09 13:31, Damien Le Moal wrote:
+>>>> diff --git a/drivers/block/null_blk/zoned.c b/drivers/block/null_blk/zoned.c
+>>>> index dae54dd1a..00c34e65e 100644
+>>>> --- a/drivers/block/null_blk/zoned.c
+>>>> +++ b/drivers/block/null_blk/zoned.c
+>>>> @@ -13,7 +13,10 @@ static inline sector_t mb_to_sects(unsigned long mb)
+>>>>  
+>>>>  static inline unsigned int null_zone_no(struct nullb_device *dev, sector_t sect)
+>>>>  {
+>>>> -	return sect >> ilog2(dev->zone_size_sects);
+>>>> +	if (is_power_of_2(dev->zone_size_sects))
+>>>> +		return sect >> ilog2(dev->zone_size_sects);
+>>>
+>>> As a separate patch, I think we should really have ilog2(dev->zone_size_sects)
+>>> as a dev field to avoid doing this ilog2 for every call..
+>>>
+>> I don't think that is possible because `zone_size_sects` can also be non
+>> po2.
+> 
+> But when it is we can optimize that. All we need is add a "zone_size_sect_shift"
+> field that is initialized when zone_size_sects is set when the device is
+> created. Then, you can have code like:
+> 
+> 	if (dev->zone_size_sect_shift))
+> 		return sect >> dev->zone_size_sect_shift;
+> 
+My only concern was confusing people who are reading the code where they
+might implicitly assume that it can only be po2 as we have shift_sects.
 
-> 
-> Thanks,
-> Zorro
-> 
-> > 
-> > Thanks.
-> > 
-> > > 
-> > >  tests/generic/690     | 89 +++++++++++++++++++++++++++++++++++++++++++
-> > >  tests/generic/690.out |  2 +
-> > >  2 files changed, 91 insertions(+)
-> > >  create mode 100755 tests/generic/690
-> > >  create mode 100644 tests/generic/690.out
-> > > 
-> > > diff --git a/tests/generic/690 b/tests/generic/690
-> > > new file mode 100755
-> > > index 00000000..0bf47dd7
-> > > --- /dev/null
-> > > +++ b/tests/generic/690
-> > > @@ -0,0 +1,89 @@
-> > > +#! /bin/bash
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +# Copyright (c) 2022 SUSE Linux Products GmbH.  All Rights Reserved.
-> > > +#
-> > > +# FS QA Test 690
-> > > +#
-> > > +# Test that if we fsync a directory, create a symlink inside it, rename the
-> > > +# symlink, fsync again the directory and then power fail, after the filesystem
-> > > +# is mounted again, the symlink exists with the new name and it has the correct
-> > > +# content.
-> > > +#
-> > > +# On btrfs this used to result in the symlink being empty (i_size 0), and it was
-> > > +# fixed by kernel commit:
-> > > +#
-> > > +#    d0e64a981fd841 ("btrfs: always log symlinks in full mode")
-> > > +#
-> > > +. ./common/preamble
-> > > +_begin_fstest auto quick log
-> > > +
-> > > +_cleanup()
-> > > +{
-> > > +	_cleanup_flakey
-> > > +	cd /
-> > > +	rm -r -f $tmp.*
-> > > +}
-> > > +
-> > > +. ./common/rc
-> > > +. ./common/filter
-> > > +. ./common/dmflakey
-> > > +
-> > > +# real QA test starts here
-> > > +
-> > > +_supported_fs generic
-> > > +_require_scratch
-> > > +_require_symlinks
-> > > +_require_dm_target flakey
-> > > +
-> > > +rm -f $seqres.full
-> > > +
-> > > +# f2fs doesn't support fs-op level transaction functionality, so it has no way
-> > > +# to persist all metadata updates in one transaction. We have to use its mount
-> > > +# option "fastboot" so that it triggers a metadata checkpoint to persist all
-> > > +# metadata updates that happen before a fsync call. Without this, after the
-> > > +# last fsync in the test, the symlink named "baz" will not exist.
-> > > +if [ $FSTYP = "f2fs" ]; then
-> > > +	export MOUNT_OPTIONS="-o fastboot $MOUNT_OPTIONS"
-> > > +fi
-> > > +
-> > > +_scratch_mkfs >>$seqres.full 2>&1
-> > > +_require_metadata_journaling $SCRATCH_DEV
-> > > +_init_flakey
-> > > +_mount_flakey
-> > > +
-> > > +# Create our test directory.
-> > > +mkdir $SCRATCH_MNT/testdir
-> > > +
-> > > +# Commit the current transaction and persist the directory.
-> > > +sync
-> > > +
-> > > +# Create a file in the test directory, so that the next fsync on the directory
-> > > +# actually does something (it logs the directory).
-> > > +echo -n > $SCRATCH_MNT/testdir/foo
-> > > +
-> > > +# Fsync the directory.
-> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
-> > > +
-> > > +# Now create a symlink inside the test directory.
-> > > +ln -s $SCRATCH_MNT/testdir/foo $SCRATCH_MNT/testdir/bar
-> > > +
-> > > +# Rename the symlink.
-> > > +mv $SCRATCH_MNT/testdir/bar $SCRATCH_MNT/testdir/baz
-> > > +
-> > > +# Fsync again the directory.
-> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir
-> > > +
-> > > +# Simulate a power failure and then mount again the filesystem to replay the
-> > > +# journal/log.
-> > > +_flakey_drop_and_remount
-> > > +
-> > > +# The symlink should exist, with the name "baz" and its content must be
-> > > +# "$SCRATCH_MNT/testdir/foo".
-> > > +[ -L $SCRATCH_MNT/testdir/baz ] || echo "symlink 'baz' is missing"
-> > > +echo "symlink content: $(readlink $SCRATCH_MNT/testdir/baz | _filter_scratch)"
-> > > +
-> > > +_unmount_flakey
-> > > +
-> > > +# success, all done
-> > > +status=0
-> > > +exit
-> > > diff --git a/tests/generic/690.out b/tests/generic/690.out
-> > > new file mode 100644
-> > > index 00000000..84be1247
-> > > --- /dev/null
-> > > +++ b/tests/generic/690.out
-> > > @@ -0,0 +1,2 @@
-> > > +QA output created by 690
-> > > +symlink content: SCRATCH_MNT/testdir/foo
-> > > -- 
-> > > 2.35.1
-> > > 
-> > 
+Even though I am not sure if this optimization will directly add value
+looking at my experiments with the current change, I can fold this in
+with a comment on top of zone_size_sect_shifts variable stating that
+size can be npo2 and this variable is only meaningful for the po2 size
+scenario.
