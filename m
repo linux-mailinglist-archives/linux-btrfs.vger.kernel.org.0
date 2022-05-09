@@ -2,127 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 556B151F8CA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 12:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DDD51F93C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 12:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbiEIJxD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 05:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
+        id S232594AbiEIKDb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 06:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237088AbiEIJdJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 05:33:09 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87059224689;
-        Mon,  9 May 2022 02:29:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S234654AbiEIKBq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 06:01:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E16B19FF72
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 02:57:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 45DA521BE5;
-        Mon,  9 May 2022 09:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652088555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=4NaC4APu3jomNZ56jZVR+i41Tj+65Rc/PlF4mSlDL78=;
-        b=GkolkL4jW2dm9+cnaMKFIAcNFHhc3iaJCSc+OMC9CibZu6fcnSIY7232fJJT8mOeQslLqr
-        OUwo8zNm2KrikW8Q0AmoTABOuZNi+NAVQoJEZFO1kIizYCdf6mmCURNluGEIqTP6CcegOJ
-        x7+NfKzVysuOdLkGb7ftVm9r7acr6lM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85DB813AA5;
-        Mon,  9 May 2022 09:29:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LuSaFeneeGL2YAAAMHmgww
-        (envelope-from <wqu@suse.com>); Mon, 09 May 2022 09:29:13 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     stable@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Matt Corallo <blnxfsl@bluematt.me>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH stable-5.15.y] btrfs: force v2 space cache usage for subpage mount
-Date:   Mon,  9 May 2022 17:28:56 +0800
-Message-Id: <edc6262ba229edce38a63b70960ffc170287ee11.1652088466.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FD6E6152A
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 09:56:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E418C385AB;
+        Mon,  9 May 2022 09:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652090193;
+        bh=3ndl8UvL/IEaFXJWbKsjdtmlSr1x4uvF8el1c/JldBg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bzUZ2i+cGU4UkbjdytqzgACg+xzt1i+AiLZXYw5fusTVL53RW5HpGocPNY8AUAnQp
+         TMqZ1m94qBsKhTQoNURCREwFvPf6ahIm3Qse76w/RzrUSCreaMs8873SWW5gonNh5L
+         78mPbvmN8l0g7LkAjDgyIpQ9x1ce18D0ouI6X8X4dux9N7EgOeE1wg/WyI6f6VMyyC
+         r3psoXMKtXzEyhh6O0L096YTuhDRZh15C8f/96AqXcpCJuzN4eOmMmo9TdebgDRZ8C
+         i5cKU2v6+G9fjWbBD288tHqhRDxRipPFzJmBaUpqHpdIetDiK/ql64MmEq2T3U7xQK
+         TbmUjOeTNc90g==
+Date:   Mon, 9 May 2022 10:56:30 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: allow defrag to convert inline extents to regular
+ extents
+Message-ID: <20220509095630.GA2270453@falcondesktop>
+References: <c26d8d377147d3a80e352ee31e432591c28e3f4b.1651905487.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c26d8d377147d3a80e352ee31e432591c28e3f4b.1651905487.git.wqu@suse.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-commit 9f73f1aef98b2fa7252c0a89be64840271ce8ea0 upstream.
+On Sat, May 07, 2022 at 02:39:27PM +0800, Qu Wenruo wrote:
+> Btrfs defaults to max_inline=2K to make small writes inlined into
+> metadata.
+> 
+> The default value is always a win, as even DUP/RAID1/RAID10 doubles the
+> metadata usage, it should still cause less physical space used compared
+> to a 4K regular extents.
+> 
+> But since the introduce of RAID1C3 and RAID1C4 it's no longer the case,
+> users may find inlined extents causing too much space wasted, and want
+> to convert those inlined extents back to regular extents.
+> 
+> Unfortunately defrag will unconditionally skip all inline extents, no
+> matter if the user is trying to converting them back to regular extents.
+> 
+> So this patch will add a small exception for defrag_collect_targets() to
+> allow defragging inline extents, if and only if the inlined extents are
+> larger than max_inline, allowing users to convert them to regular ones.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/ioctl.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 9d8e46815ee4..852c49565ab2 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1420,8 +1420,19 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+>  		if (!em)
+>  			break;
+>  
+> -		/* Skip hole/inline/preallocated extents */
+> -		if (em->block_start >= EXTENT_MAP_LAST_BYTE ||
+> +		/*
+> +		 * If the file extent is an inlined one, we may still want to
+> +		 * defrag it (fallthrough) if it will cause a regular extent.
+> +		 * This is for users who want to convert inline extents to
+> +		 * regular ones through max_inline= mount option.
+> +		 */
+> +		if (em->block_start == EXTENT_MAP_INLINE &&
+> +		    em->len <= inode->root->fs_info->max_inline)
+> +			goto next;
+> +
+> +		/* Skip hole/delalloc/preallocated extents */
+> +		if (em->block_start == EXTENT_MAP_HOLE ||
+> +		    em->block_start == EXTENT_MAP_DELALLOC ||
+>  		    test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
+>  			goto next;
+>  
+> @@ -1480,6 +1491,15 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+>  		if (em->len >= get_extent_max_capacity(em))
+>  			goto next;
+>  
+> +		/*
+> +		 * For inline extent it should be the first extent and it
+> +		 * should not have a next extent.
 
-[BUG]
-For a 4K sector sized btrfs with v1 cache enabled and only mounted on
-systems with 4K page size, if it's mounted on subpage (64K page size)
-systems, it can cause the following warning on v1 space cache:
+This is misleading.
 
- BTRFS error (device dm-1): csum mismatch on free space cache
- BTRFS warning (device dm-1): failed to load free space cache for block group 84082688, rebuilding it now
+As you know, and we've discussed this in a few threads in the past, there are
+at least a couple causes where we can have an inline extent followed by other
+extents. One has to do with compresson and the other with fallocate.
 
-Although not a big deal, as kernel can rebuild it without problem, such
-warning will bother end users, especially if they want to switch the
-same btrfs seamlessly between different page sized systems.
+So either this part of the comment should be rephrased or go away.
 
-[CAUSE]
-V1 free space cache is still using fixed PAGE_SIZE for various bitmap,
-like BITS_PER_BITMAP.
+This is also a good oppurtunity to convert cases where we have an inlined
+compressed extent followed by one (or more) extents:
 
-Such hard-coded PAGE_SIZE usage will cause various mismatch, from v1
-cache size to checksum.
+  $ mount -o compress /dev/sdi /mnt
+  $ xfs_io -f -s -c "pwrite -S 0xab 0 4K" -c "pwrite -S 0xcd -b 16K 4K 16K" /mnt/foobar
 
-Thus kernel will always reject v1 cache with a different PAGE_SIZE with
-csum mismatch.
+In this case a defrag could mark the [0, 20K[ for defrag and we end up saving
+both data and metadata space (one less extent item in the fs tree and maybe in
+the extent tree too).
 
-[FIX]
-Although we should fix v1 cache, it's already going to be marked
-deprecated soon.
+Thanks.
 
-And we have v2 cache based on metadata (which is already fully subpage
-compatible), and it has almost everything superior than v1 cache.
-
-So just force subpage mount to use v2 cache on mount.
-
-Reported-by: Matt Corallo <blnxfsl@bluematt.me>
-CC: stable@vger.kernel.org # 5.15+
-Link: https://lore.kernel.org/linux-btrfs/61aa27d1-30fc-c1a9-f0f4-9df544395ec3@bluematt.me/
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/disk-io.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index f1f7dbfa6ecd..8cbed2f08d1b 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3415,6 +3415,17 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	}
- 
- 	if (sectorsize != PAGE_SIZE) {
-+		/*
-+		 * V1 space cache has some hardcoded PAGE_SIZE usage, and is
-+		 * going to be deprecated.
-+		 *
-+		 * Force to use v2 cache for subpage case.
-+		 */
-+		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
-+		btrfs_set_and_info(fs_info, FREE_SPACE_TREE,
-+			"forcing free space tree for sector size %u with page size %lu",
-+			sectorsize, PAGE_SIZE);
-+
- 		btrfs_warn(fs_info,
- 		"read-write for sector size %u with page size %lu is experimental",
- 			   sectorsize, PAGE_SIZE);
--- 
-2.36.0
-
+> +		 * If the inlined extent passed all above checks, just add it
+> +		 * for defrag, and be converted to regular extents.
+> +		 */
+> +		if (em->block_start == EXTENT_MAP_INLINE)
+> +			goto add;
+> +
+>  		next_mergeable = defrag_check_next_extent(&inode->vfs_inode, em,
+>  						extent_thresh, newer_than, locked);
+>  		if (!next_mergeable) {
+> -- 
+> 2.36.0
+> 
