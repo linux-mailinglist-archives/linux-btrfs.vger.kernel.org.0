@@ -2,132 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C93351FFC0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 16:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D92F520120
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 May 2022 17:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237261AbiEIOgn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 May 2022 10:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
+        id S238318AbiEIPdN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 May 2022 11:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237253AbiEIOgh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 10:36:37 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F569344EA;
-        Mon,  9 May 2022 07:32:43 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id B434332002E8;
-        Mon,  9 May 2022 10:32:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 09 May 2022 10:32:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1652106758; x=1652193158; bh=q2fT6PeM+A
-        UuJffXe5pQrhxNHgfVI2C0XP0Aur0lGRQ=; b=A4iBPsoEz6TeExjL15OtRvqOBD
-        Rcgj3CEIbFxNDBWpEOvWhgqSxyHYQgHzP6L2rHOv76GyG2I8roO2CBtUMXeUs9QD
-        9VdNunZ3MY4PUGwckFplrl6SaD7x1jthvmNhxwLdwubzx4mOgdtLu9Z/zpGIRuBK
-        j1KPJ7/XdMqca2UVchc69aKrhnPXpz12NcwZ+T24LZUov1Bb/Phmy/kh6p9DzewY
-        tUe/vFcTfB2Np5VcQNEXnLeBl9LyKQGDcETW7lxcOVZiAuAAszWFcl6rRNknCpPg
-        WZ5ihOadmgWalMt133ueUqziTTCpokipTDuBUMKmg6wPOeR6VJ3oWB+alKkA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1652106758; x=
-        1652193158; bh=q2fT6PeM+AUuJffXe5pQrhxNHgfVI2C0XP0Aur0lGRQ=; b=y
-        Wjkna7tbZljgf02Qd2QXFkFZGxDoYaNx5upaQcv6P7XX8BwjG2UAk1Zgy9Ow6Wd+
-        KpBBa1qP4bBchGr5EIWsorFwDSDweMKcktE44Q/HTrSqXzT3BoDdLB6e6GQzVuou
-        SygHBe67fXPrAa0G8VcNbV51JdAxwipgyX2LVWI9CPlFx09rUQtbkCmqz84BVGkB
-        5H388WSa9pvcarZeT8YQ1n5jEIwQX2qGYyTTyhDHkh4oPCGvHVNaOtAAV+nApeBY
-        Qa7YaeHxaC2gNhy156KPUp+53bcGXCrvLAOFyL9fBw7D4Huie/RRqw4QALjfOQek
-        wpIPFsgrf+qVS/vDmWL6w==
-X-ME-Sender: <xms:BSZ5Ygx6-lm1QrNUBNVxmtjzNaKdnpHvAIj7CASikzSusu6FB20ZTg>
-    <xme:BSZ5YkTbUoxlRrcCqIfA4NF8FRaY3OF1y2czNdANLbvKAvx6NXiAeIEtkaEuhwuai
-    Oi9O3TJSKX7qQ>
-X-ME-Received: <xmr:BSZ5YiXMVkJZdC0KbhSKYfibYEBE-une6zY7CMcBXzkTEFYksd2ObeNnOPcz1ncTmTSNVTdLvyX8NePeXSY3u2R-bELYMuG9>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeelgdejjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeegheeuhe
-    fgtdeluddtleekfeegjeetgeeikeehfeduieffvddufeefleevtddtvdenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:BSZ5YuiVXce1FX60DhPXZ00MR2S_45sPs3-QqM1vM984dOgwr9am4Q>
-    <xmx:BSZ5YiAIq5WJI6s8VIZUUW3dLPw8yGeUDfw4GMQQXSGLOfZpMxjYlQ>
-    <xmx:BSZ5YvLRhSHtsKQfv2--elMtzCTHcbexfovunQT_9D90rsIlTYQINA>
-    <xmx:BiZ5Ym7iY5VG26jzw0l3cCdhnIfSfHyIsGPsBo3J1pacKoN2HJ7KWg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 9 May 2022 10:32:37 -0400 (EDT)
-Date:   Mon, 9 May 2022 16:32:35 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     stable@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Matt Corallo <blnxfsl@bluematt.me>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH stable-5.15.y] btrfs: force v2 space cache usage for
- subpage mount
-Message-ID: <YnkmA3hE5LnVz3KQ@kroah.com>
-References: <edc6262ba229edce38a63b70960ffc170287ee11.1652088466.git.wqu@suse.com>
+        with ESMTP id S238213AbiEIPdM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 May 2022 11:33:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1101FA4A
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 08:29:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 31B5E61180
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 15:29:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 118C9C385AE
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 May 2022 15:29:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652110157;
+        bh=Iu14NSTbNQEyoYLUOuKZHiO7vr/aMYiBjW2PBKI06GA=;
+        h=From:To:Subject:Date:From;
+        b=YhAhM+Sm60SDM0SpYqtPn5zEvOGwGwI8DRGhXRtOWvnt5NG4l5lyC/E/+Jvl4zO8g
+         rpGjJeU/d0RFqtccC11dAsZDAQiFL42M7tHXftk39CaZV7mF9ZOdHbAydPOmNofTNA
+         Uz3TN8cPI4aH+2bsGvJVyCEurekzI37VRPFs7u8Rc1jZCNM+IQ3qex+wsVuE8qYySM
+         qgT565O0UNTx2Huw5OX13fcJVeJiFaLBp9b4iKbVRhV95AUxV/9843oQ2DJ6mYdUy4
+         RkEk95x5xCDQ8km5icm2hmE35QPltowwDCKvkhXdPvx9kcDOaxBKia0lq6xztUWVJS
+         K5duziNmZVS6Q==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: do not account twice for inode ref when reserving metadata units
+Date:   Mon,  9 May 2022 16:29:14 +0100
+Message-Id: <bf988d76ebcb9003a16c6b3cd5d25ca94872b93e.1652109795.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <edc6262ba229edce38a63b70960ffc170287ee11.1652088466.git.wqu@suse.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 09, 2022 at 05:28:56PM +0800, Qu Wenruo wrote:
-> commit 9f73f1aef98b2fa7252c0a89be64840271ce8ea0 upstream.
-> 
-> [BUG]
-> For a 4K sector sized btrfs with v1 cache enabled and only mounted on
-> systems with 4K page size, if it's mounted on subpage (64K page size)
-> systems, it can cause the following warning on v1 space cache:
-> 
->  BTRFS error (device dm-1): csum mismatch on free space cache
->  BTRFS warning (device dm-1): failed to load free space cache for block group 84082688, rebuilding it now
-> 
-> Although not a big deal, as kernel can rebuild it without problem, such
-> warning will bother end users, especially if they want to switch the
-> same btrfs seamlessly between different page sized systems.
-> 
-> [CAUSE]
-> V1 free space cache is still using fixed PAGE_SIZE for various bitmap,
-> like BITS_PER_BITMAP.
-> 
-> Such hard-coded PAGE_SIZE usage will cause various mismatch, from v1
-> cache size to checksum.
-> 
-> Thus kernel will always reject v1 cache with a different PAGE_SIZE with
-> csum mismatch.
-> 
-> [FIX]
-> Although we should fix v1 cache, it's already going to be marked
-> deprecated soon.
-> 
-> And we have v2 cache based on metadata (which is already fully subpage
-> compatible), and it has almost everything superior than v1 cache.
-> 
-> So just force subpage mount to use v2 cache on mount.
-> 
-> Reported-by: Matt Corallo <blnxfsl@bluematt.me>
-> CC: stable@vger.kernel.org # 5.15+
-> Link: https://lore.kernel.org/linux-btrfs/61aa27d1-30fc-c1a9-f0f4-9df544395ec3@bluematt.me/
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/disk-io.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+From: Filipe Manana <fdmanana@suse.com>
 
-Now queued up, thanks.
+When reserving metadata units for creating an inode, we don't need to
+reserve one extra unit for the inode ref item because when creating the
+inode, at btrfs_create_new_inode(), we always insert the inode item and
+the inode ref item in a single batch (a single btree insert operation,
+and both ending up in the same leaf).
 
-greg k-h
+As we have accounted already one unit for the inode item, the extra unit
+for the inode ref item is superfluous, it only makes us reserve more
+metadata than necessary and often adding more reclaim pressure if we are
+low on available metadata space.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/inode.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index b42d6e7e4049..adc8b684fe31 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6138,12 +6138,15 @@ int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
+ 		(*trans_num_items)++;
+ 	} else {
+ 		/*
+-		 * 1 to add inode ref
+ 		 * 1 to add dir item
+ 		 * 1 to add dir index
+ 		 * 1 to update parent inode item
++		 *
++		 * No need for 1 unit for the inode ref item because it is
++		 * inserted in a batch together with the inode item at
++		 * btrfs_create_new_inode().
+ 		 */
+-		*trans_num_items += 4;
++		*trans_num_items += 3;
+ 	}
+ 	return 0;
+ }
+-- 
+2.35.1
+
