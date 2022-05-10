@@ -2,55 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AB9520F64
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 May 2022 10:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E336520FE0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 May 2022 10:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235359AbiEJIKW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 May 2022 04:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
+        id S238131AbiEJIqw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 May 2022 04:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237504AbiEJIKS (ORCPT
+        with ESMTP id S232706AbiEJIqs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 May 2022 04:10:18 -0400
+        Tue, 10 May 2022 04:46:48 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148D149FAF
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 May 2022 01:06:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF1C2A28E4
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 May 2022 01:42:51 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AE9DA21C34;
-        Tue, 10 May 2022 08:06:20 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 79A5F21BA4;
+        Tue, 10 May 2022 08:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652169980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1652172170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RAfqk1grvkVx9niH4N3xyDbvCZPFpA5dPAP3PbBPt8M=;
-        b=lnkUlnihGxePb+7MZt+v5QTg3wFa2wHY2B7Xf5NiFaBesY5O2a+z1BN+xH0acMgCIH9Gvq
-        f79gniNhsI+vY8uq2tu9sp2T1IP86d4E9N/JrKBaWY9/C89VWdUY2wpY5YAhmx7/kVdcbR
-        WIvHeAeW/CmoBHi25svvaQEWfnMba8U=
+        bh=4fTVtaRo660tXkkXAAF9PiY2mye9NJj/QDC2EEJQtlQ=;
+        b=pUp/sedruoEV7BKes8UXbHWis0A6cn96QkFm5dt8HhAOAhcXGuyE/c9AlpHvo5eB4N77Px
+        oMPBfYTbkMLEk6cwPe6YKSKhgd/vfQXwX2inER2a4E6dZiT4RBcshako7okqmRURElQ1AW
+        ugQ8k52Ch/Ck+Ynn8VfG7GXb5M3kEIg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85F7613AC1;
-        Tue, 10 May 2022 08:06:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 51A7713AC1;
+        Tue, 10 May 2022 08:42:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id OlUIHvwcemLnCQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 10 May 2022 08:06:20 +0000
-Message-ID: <40341642-2a12-0692-c3a9-61ed80ff1be6@suse.com>
-Date:   Tue, 10 May 2022 11:06:19 +0300
+        id thw9EYolemKHGgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 10 May 2022 08:42:50 +0000
+Message-ID: <af55ef8f-022b-01e6-1c25-d339b511a20b@suse.com>
+Date:   Tue, 10 May 2022 11:42:49 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
-Subject: Re: [PATCH] btrfs: add "0x" prefix for unsupported optional features
+Subject: Re: [PATCH] btrfs: sysfs: export the balance paused state of
+ exclusive operation
 Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <bc87beb85ce5b31157385eb2bc55a0bfacefc9d4.1652166589.git.wqu@suse.com>
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20220503153525.22045-1-dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <bc87beb85ce5b31157385eb2bc55a0bfacefc9d4.1652166589.git.wqu@suse.com>
+In-Reply-To: <20220503153525.22045-1-dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,15 +66,32 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 10.05.22 г. 10:10 ч., Qu Wenruo wrote:
-> The following error message lack the "0x" obviously:
+On 3.05.22 г. 18:35 ч., David Sterba wrote:
+> The new state allowing device addition with paused balance is not
+> exported to user space so it can't recognize it and actually start the
+> operation.
 > 
->    cannot mount because of unsupported optional features (4000)
-> 
-> Just add the prefix before any complains.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Fixes: efc0e69c2fea ("btrfs: introduce exclusive operation BALANCE_PAUSED state")
+> CC: stable@vger.kernel.org # 5.17
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-Though it doesn't make the output any more readable for humans :)
+> ---
+>   fs/btrfs/sysfs.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 366424222b4f..92a1fa8e3da6 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -957,6 +957,9 @@ static ssize_t btrfs_exclusive_operation_show(struct kobject *kobj,
+>   		case BTRFS_EXCLOP_BALANCE:
+>   			str = "balance\n";
+>   			break;
+> +		case BTRFS_EXCLOP_BALANCE_PAUSED:
+> +			str = "balance paused\n";
+> +			break;
+>   		case BTRFS_EXCLOP_DEV_ADD:
+>   			str = "device add\n";
+>   			break;
