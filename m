@@ -2,113 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D95A52100E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 May 2022 10:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81AC5213AA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 May 2022 13:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238256AbiEJI4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 May 2022 04:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
+        id S240916AbiEJL3g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 May 2022 07:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238279AbiEJI4E (ORCPT
+        with ESMTP id S240914AbiEJL3e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 May 2022 04:56:04 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEB415A3C7
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 May 2022 01:52:08 -0700 (PDT)
+        Tue, 10 May 2022 07:29:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E38E2ABBF4
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 May 2022 04:25:37 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BDB2D1FA34;
-        Tue, 10 May 2022 08:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652172726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2A0E321B8A;
+        Tue, 10 May 2022 11:25:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652181936;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZuV0rubJcUw+nT779qgTrdrZggFZiG5i6+LwKZvq2T0=;
-        b=bWcBFcgjyk/ZXw5DkeCChrHRlrqDlxhUuL1D+vSlSTnUj2U2QyrbFZi6JsBuT2vkhEnjgh
-        Jooc+ONhN4cSjtrFeTaNWjdr96uMsiD6YDa634gyl+t1wLbFUKK+nNQ/W8Ff0eoiqVtyhr
-        /tRDH8UAxuDD6b+08eiOdiCJqqexBsM=
+        bh=edwmskmoNniZxsxVL3ebySCTMLcMRxOAsAv76SmD1bk=;
+        b=kXodi+tfWDjUfa9qBwMkfljQsYBh4XxDFFUY+0zGeEWG8UbuAQqFIk5U3EXygthhkDiPMn
+        diq1aQqyBxCoSiirZDDkh5/hkLFJSjZXbIxqldAJtBH60ElJJ1VNAdgk+TWce1gPljNebu
+        lX/qw79kpekiI1S4vsowhsPkbQTLXWQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652181936;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=edwmskmoNniZxsxVL3ebySCTMLcMRxOAsAv76SmD1bk=;
+        b=n999mBFZipHCNoVk38KcGe+H1LDul5Y1yjl6+VC3bOz+Y8DOqngLyeFtQlrd/j0heMxe+r
+        ZiNQ/slTl/rvWxBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94CF013AA5;
-        Tue, 10 May 2022 08:52:06 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A55C13AA5;
+        Tue, 10 May 2022 11:25:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id jNmxIbYnemIzHwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 10 May 2022 08:52:06 +0000
-Message-ID: <cc5cf170-a5ff-791b-623f-01c893088593@suse.com>
-Date:   Tue, 10 May 2022 11:52:06 +0300
+        id jF2AAbBLemJfaQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 10 May 2022 11:25:36 +0000
+Date:   Tue, 10 May 2022 13:21:21 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add "0x" prefix for unsupported optional features
+Message-ID: <20220510112121.GJ18596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <bc87beb85ce5b31157385eb2bc55a0bfacefc9d4.1652166589.git.wqu@suse.com>
+ <40341642-2a12-0692-c3a9-61ed80ff1be6@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH] btrfs: do not account twice for inode ref when reserving
- metadata units
-Content-Language: en-US
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <bf988d76ebcb9003a16c6b3cd5d25ca94872b93e.1652109795.git.fdmanana@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <bf988d76ebcb9003a16c6b3cd5d25ca94872b93e.1652109795.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <40341642-2a12-0692-c3a9-61ed80ff1be6@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 9.05.22 г. 18:29 ч., fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Tue, May 10, 2022 at 11:06:19AM +0300, Nikolay Borisov wrote:
 > 
-> When reserving metadata units for creating an inode, we don't need to
-> reserve one extra unit for the inode ref item because when creating the
-> inode, at btrfs_create_new_inode(), we always insert the inode item and
-> the inode ref item in a single batch (a single btree insert operation,
-> and both ending up in the same leaf).
 > 
-> As we have accounted already one unit for the inode item, the extra unit
-> for the inode ref item is superfluous, it only makes us reserve more
-> metadata than necessary and often adding more reclaim pressure if we are
-> low on available metadata space.
+> On 10.05.22 г. 10:10 ч., Qu Wenruo wrote:
+> > The following error message lack the "0x" obviously:
+> > 
+> >    cannot mount because of unsupported optional features (4000)
+> > 
+> > Just add the prefix before any complains.
+> > 
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-That's a neat little optimisation.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->   fs/btrfs/inode.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index b42d6e7e4049..adc8b684fe31 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -6138,12 +6138,15 @@ int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
->   		(*trans_num_items)++;
->   	} else {
->   		/*
-> -		 * 1 to add inode ref
->   		 * 1 to add dir item
->   		 * 1 to add dir index
->   		 * 1 to update parent inode item
-> +		 *
-> +		 * No need for 1 unit for the inode ref item because it is
-> +		 * inserted in a batch together with the inode item at
-> +		 * btrfs_create_new_inode().
->   		 */
-> -		*trans_num_items += 4;
-> +		*trans_num_items += 3;
->   	}
->   	return 0;
->   }
+> Though it doesn't make the output any more readable for humans :)
+
+We can't do much better here, if the feature would be known and have a
+textual description it would be caught, so the raw value is at least
+something that can be matched in the newer versions.
