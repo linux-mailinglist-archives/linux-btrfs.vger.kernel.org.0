@@ -2,105 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DBC522B20
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 May 2022 06:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486D7522CD2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 May 2022 09:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238091AbiEKEj0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 May 2022 00:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S241013AbiEKHGi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 May 2022 03:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236508AbiEKEjW (ORCPT
+        with ESMTP id S230404AbiEKHGg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 May 2022 00:39:22 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2229314C76F
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 May 2022 21:39:12 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id iq10so1159459pjb.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 May 2022 21:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
-        b=nrkBIDyCffFbQz5WNhQU88q5l+bx8m1CoLNL/nRcxBFZRgp3B2RwRJzpJi69hjmFPQ
-         Eotn36CVTQor8sTwq84btYhQQ+OsypTpYdHIfGkC/Ekjg8a9U0HkQq0T/gbcQg5/if4Y
-         i1yzcJYhTRMm8ny1NIiOYUNRazrfloxlCC/1XVxW2+TG0ItQpx2/G3cXjgMuOALgO1Rc
-         auxKHXwS3ghK6vFFIfR8essc70JXfRi2oIpi3YT/VLqISCMTaVWCOI/Xf0rWfpfTmlnw
-         XgqCFC8jOuHD5AjsEtox3h0b9tzcHlVM0fA1RrJyDFubK9aS707t1BYf/K43qSc4slo4
-         wrQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
-        b=Zuu9I8HDVZ+QjdSH+3BNop7aPUyp0IFrdzFgbWp6T+34SODruY4R7lt5R1vKucn8J7
-         Nd0bgGKwACYSq9Xnbc5PewYUbs2/xai6zsXbhe4N2KVaUQUeidadWnJvHMG0MGxsY67o
-         HrlsC9+18JntvXmTBg4KjtJzJKXvIAn3w8UErITwjlW9SXZ7p1KL/FwQnejr4fA0N15l
-         C7NaULrzQEUi5g6v5FJ/VsilHEc3HtDoqaP9oh2W3WpIwP1mRPhayrJ6NWn92Wjfub8p
-         UuJcFE2HsTnCIf5XlHwIRe/hvAnYPegMtfuYQ8Chsfmus8wZCUrC3onWNnJklpuCi16R
-         +l5g==
-X-Gm-Message-State: AOAM5320QESjMvWgA2/ZnNWtRCyLQhv31dtydsIW3MIn1nDgsJrUfGkt
-        YBw4QEDW6UJ2J/THzAdsN8jFRLUD0hQQ0a03YAI=
-X-Google-Smtp-Source: ABdhPJwbKHmbnZDflMHBZCcp2YbZAAZvFdPcM4owWeuPIkoxodmwIZJ+Xpgi08ylB1RFXLrw63SQRxJzumbwJKMTxhs=
-X-Received: by 2002:a17:90b:1007:b0:1dc:9862:68af with SMTP id
- gm7-20020a17090b100700b001dc986268afmr3261389pjb.205.1652243951499; Tue, 10
- May 2022 21:39:11 -0700 (PDT)
+        Wed, 11 May 2022 03:06:36 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551A339BB5
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 May 2022 00:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1652252784;
+        bh=fDW0sDx3HMQK3LLZt6wcXWs34L2j8t6dRi7O3Bu2LBc=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=EUI8cM8X1/+nsUQffxLmBtfJ6pj5chpyANY3A4CLt3soxGM6k068Df9F19hJTJxOG
+         aordAhodeBeUReNngh6WtF/AJRcTUgMr4+acQPklOvzDWZfhJ49m/QB10IQFxfVSXh
+         dCV3QYsxaVyoNcqOxv6MLZJBYFliDu2XnRqWLSM4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzyJ-1oM6u70RwN-00dSWc; Wed, 11
+ May 2022 09:06:24 +0200
+Message-ID: <10c9170d-41e0-2a20-ecee-e37e96d0fa61@gmx.com>
+Date:   Wed, 11 May 2022 15:06:19 +0800
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:319:0:0:0:0 with HTTP; Tue, 10 May 2022 21:39:10
- -0700 (PDT)
-From:   Private Mail <privatemail1961@gmail.com>
-Date:   Tue, 10 May 2022 21:39:10 -0700
-Message-ID: <CANjAOAiiVcSrSv31FjThCVmeppS54UVvGVj3SRSvMfxOB+T8DA@mail.gmail.com>
-Subject: Have you had this? It is for your Benefit
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.3 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
-        BAYES_50,DEAR_BENEFICIARY,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
-        DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,
-        LOTS_OF_MONEY,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 1/1] btrfs: simplify lookup_data_extent()
+Content-Language: en-US
+To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Marek Behun <marek.behun@nic.cz>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        u-boot@lists.denx.de
+References: <20220510194338.24881-1-heinrich.schuchardt@canonical.com>
+ <ebc77987-0212-1623-245d-8c79cba5fa80@gmx.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <ebc77987-0212-1623-245d-8c79cba5fa80@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FVFpjeWIj02rfte3AwPpxQVMEr++2MXGe/Cz9KAPSxBxbRWvwZv
+ i/fOJ1vjk5IyvrDT5ayK9nqgK82QtlU4nGznI5bEm7+jqth/U4ZxJfN0nlwH7SfpWQ4vxN4
+ RaUoMew/2rA4HAerEo5NKQAXx8X9Dhs8CkK7bIJQ9v5UczQijlR7BH1KDy8be2AybslskhD
+ vdeip8zot/z48eaBfn9Eg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oe8CWxbpKuw=:mRmANlVAaKqzAgWc5g4ngy
+ 839+BjxA9vBfX4ORYYzHj6EhucRB9W3xT1Hdpfo7X0r04xQKspHfQX76LOOK9iKuWOxTjEk0m
+ GAPWc72jxaC9dfFbOXFdxaZkFlMnsZBjPW6pjfEbJRcgteCJYCjyT0is2MmrB6pPlmv2M7f11
+ a7pYRnrBS2naY0BEBPKtUDv8Tjpfi5np5bZ1ODrDOgvM7FzgsyWJ2I8s+9JH0r8afF6ciAVl1
+ 47PwzXNPhCY3QTUrT9h3RVnPmbZNJgZx6GP3Ww0uk6w0egG7n/9ITABXliDvaEAv8nyEzAx6n
+ JeZk8VIUzxsX6gh1d3Yqti1rSmAIjx67xryVReobFlfw+DtrmD3McXDQ8W40UOkq4nr+TyDjb
+ SJ4AD9BYnCvZWkp0fGzB673UpM9coaBEkAZ/dROT/LEIhBssNRHOhIL6ib37DNBcnEVB0knlK
+ aNsNB5vThKlfMQjB6l0wNhz/ooZTo26Mjk+tkNguQn+0HW3CCZ+eByO/HYN3C89jrmzlxM1ot
+ oK3K8U1RbZOAmkHVUCLS5b75VLM/9bP7boLo/5bLU26w0AXOHEmeuR+g3lv979THzsmsaP9Dr
+ UGB06AXoY30jITn6T3lWnFgR2YjaE2pPdr9QJJ3Xv1hyl/Hdf0Dsm3KNRy44o/t2R+w1hiZEB
+ IHGbxnRwzcg0ONe1CXGwfVoe7J+1fWcgJpOtU3B+OKzSFjjh8/ZZNP+m5S0TNBZPKwXqkMUGk
+ EATlgoUDtt6tuocqWEKkYWaBjuC81uaHpN2nLd/RYTdXgP3wuSteU4ildgNAHayDVv9KtOEe5
+ jvQ283lXPBDsKB8ko2RlHrGmfLT1DCg9EmMmon+ZYVLZtCtidKBoxF8mSdC95VF+TPuKc6z/c
+ L1f5Q0Bs/ABXcKPA3m64zZ9ONHgUMM3vSp6UO1VyncGLUcMtjnALHIAams53jdsrwmmpRFwTR
+ NknKBjnqbGd2vaNbgqPzsnuFS/3LTP+l855Pa/FGMXHQSVOV0h7exQJ+hwMmoXfWJ8PQSALah
+ vcaKWVUdSqgxtK6Gc/jL8nvU0Qhp5mrQG1Mwt38bqoR9kO30eeqnX5EfNt8IHrJ0Mo4ymOffy
+ j1GpisqcttMmc6oR81eiDxGJd/9nw7yCHxI2k3AoDNFuPzzG9PcYx5+dA==
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Our Ref: BG/WA0151/2022
 
-Dear Beneficiary
 
-Subject: An Estate of US$15.8 Million
+On 2022/5/11 06:48, Qu Wenruo wrote:
+>
+>
+> On 2022/5/11 03:43, Heinrich Schuchardt wrote:
+>> After returning if ret <=3D 0 we know that ret > 0. No need to check it=
+.
+>>
+>> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Blount and Griffin Genealogical Investigators specializes in probate
-research to locate missing heirs and beneficiaries to estates in the
-United Kingdom and Europe.
+Just to mention for other guys in the btrfs list, this patch is for
+U-boot btrfs implementation.
 
-We can also help you find wills, obtain copies of certificates, help
-you to administer an estate, as well as calculating how an estate,
-intestacy or trust should be distributed.
+And I also checked btrfs-fuse project, which has a similar function,
+lookup_file_extent(), it already does the check properly and even do
+extra quick exit for (ret > 0 && path->slots[0] =3D=3D 0) case.
 
-You may be entitled to a large pay out for an inheritance in Europe
-worth US$15.8 million. We have discovered an estate belonging to the
-late Depositor has remained unclaimed since he died in 2011 and we
-have strong reasons to believe you are the closest living relative to
-the deceased we can find.
+So you may want to also check btrfs-fuse project to find some possible
+optimization and cross-port to U-boot.
+(So far btrfs-fuse has better test coverage using fsstress, and
+cross-checked against kernel).
 
-You may unknowingly be the heir of this person who died without
-leaving a will (intestate). We will conduct a probate research to
-prove your entitlement, and can submit a claim on your behalf all at
-no risk to yourselves.
-
-Our service fee of 10% will be paid to us after you have received the estate.
-
-The estate transfer process should take just a matter of days as we
-have the mechanism and expertise to get this done very quickly. This
-message may come to you as a shock, however we hope to work with you
-to transfer the estate to you as quickly as possible.
-
-Feel free to email our senior case worker Mr. Malcolm Casey on email:
-malcolmcasey68@yahoo.com for further discussions.
-
-With warm regards,
-
-Mr. Blount W. Gort, CEO.
-Blount and Griffin Associates Inc
+Thanks,
+Qu
+>
+> Thanks,
+> Qu
+>> ---
+>> =C2=A0 fs/btrfs/inode.c | 15 ++++++---------
+>> =C2=A0 1 file changed, 6 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index d00b515333..0173d30cd8 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -546,15 +546,12 @@ static int lookup_data_extent(struct btrfs_root
+>> *root, struct btrfs_path *path,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Error or we're already at the file ex=
+tent */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret <=3D 0)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> -=C2=A0=C2=A0=C2=A0 if (ret > 0) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Check previous file exte=
+nt */
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_previous_item=
+(root, path, ino,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_EXTENT_DAT=
+A_KEY);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret=
+urn ret;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret > 0)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 got=
+o check_next;
+>> -=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 /* Check previous file extent */
+>> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_previous_item(root, path, ino, BTRFS_=
+EXTENT_DATA_KEY);
+>> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> +=C2=A0=C2=A0=C2=A0 if (ret > 0)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto check_next;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Now the key.offset must be smaller th=
+an @file_offset */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_item_key_to_cpu(path->nodes[0], &k=
+ey, path->slots[0]);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (key.objectid !=3D ino ||
