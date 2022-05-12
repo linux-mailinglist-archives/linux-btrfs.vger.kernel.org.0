@@ -2,140 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFC55247DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 May 2022 10:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8166F524A42
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 May 2022 12:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351443AbiELI1v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 May 2022 04:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
+        id S1352612AbiELKaM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 May 2022 06:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237176AbiELI1s (ORCPT
+        with ESMTP id S235697AbiELKaL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 May 2022 04:27:48 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C03495486
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 May 2022 01:27:47 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20220512082744euoutp01fa80837fafefdb9dcf9568ac92fa881c~uTiwmmeS_0478304783euoutp01D
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 May 2022 08:27:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20220512082744euoutp01fa80837fafefdb9dcf9568ac92fa881c~uTiwmmeS_0478304783euoutp01D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1652344064;
-        bh=bcQUGEOYxh1F+fPPVuVF7v9JJMrxdFG/aSzlmGfkeVw=;
-        h=Date:Subject:To:From:In-Reply-To:References:From;
-        b=TSTcRN3R6F//FYbixMQEqpOXA5AWNVgyqkFgwdz2s4LmlMRGXKTx/6P987tpkh8GL
-         AXYJzExCXrOjw1VOD/D2IKfrgV4sH1fv/kEPNhkqUaNQoiU+fICDr0l9of7QxSnguR
-         yGT/Pdfk/ZXallIvNKAgMz92PUxEwUEgPA4+K5Qg=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20220512082744eucas1p210240bbd37977d1995224e1d7664d7f5~uTiv_AvZs2198321983eucas1p2Z;
-        Thu, 12 May 2022 08:27:44 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 72.63.10009.FF4CC726; Thu, 12
-        May 2022 09:27:44 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20220512082743eucas1p2f2b8253db08a3cb212836fe634463f62~uTivLCT1p0648106481eucas1p2C;
-        Thu, 12 May 2022 08:27:43 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20220512082743eusmtrp13402dfcd903ac73c80eb6204db4fc67d~uTivJvnJU0978209782eusmtrp1N;
-        Thu, 12 May 2022 08:27:43 +0000 (GMT)
-X-AuditID: cbfec7f2-e7fff70000002719-49-627cc4ff5507
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 6F.C5.09404.FF4CC726; Thu, 12
-        May 2022 09:27:43 +0100 (BST)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20220512082743eusmtip1bfefa8841eba10cbdcaa7e99628c0ca6~uTiu_ZXg31785317853eusmtip1f;
-        Thu, 12 May 2022 08:27:43 +0000 (GMT)
-Received: from [192.168.8.130] (106.210.248.174) by CAMSVWEXC01.scsc.local
-        (106.1.227.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 12 May
-        2022 09:27:40 +0100
-Message-ID: <ccf73bfc-48a5-e5e7-2588-02f455c16f79@samsung.com>
-Date:   Thu, 12 May 2022 10:27:38 +0200
+        Thu, 12 May 2022 06:30:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE95222C12;
+        Thu, 12 May 2022 03:30:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 20AFA21C53;
+        Thu, 12 May 2022 10:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652351408;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kr+qXZt/eYRnHVkFQUb89v0qriZD+fVIZO2dGDtN6mM=;
+        b=QTFwnlbeTqCScIwcQTchLvRxxxQ7jV9o58HLRIATh5MGj7+nOUT86zcM10V7ChyQjxj2Zn
+        XazUcEQQHBUJa4g4P6tUcAGUfh7cTA2ZFoS1z0InPMRmnX2j3TS5ttxLO/2Xu9OqPLDEX2
+        14oPc5RZ7Xt9Fk3rmaf5LRdJ88TLCHY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652351408;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kr+qXZt/eYRnHVkFQUb89v0qriZD+fVIZO2dGDtN6mM=;
+        b=n8WgQymwPjK6lX9O5CaLtXN7zeAoRKPrfIMBh3UQ0HRQdmoV0jjdTs3AfFvWRZt/fDaQ5N
+        xE/OaDtTBEJGy7DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DBEB013ABE;
+        Thu, 12 May 2022 10:30:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EFzMNK/hfGITVAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 12 May 2022 10:30:07 +0000
+Date:   Thu, 12 May 2022 12:25:52 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-btrfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: reduce memory allocation in the btrfs direct I/O path v2
+Message-ID: <20220512102552.GR18596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-btrfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20220505201115.937837-1-hch@lst.de>
+ <dcab2ed0-d48f-e987-47fa-2fd1fc2dba08@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
-        Thunderbird/91.8.1
-Subject: Re: [PATCH v3 11/11] dm-zoned: ensure only power of 2 zone sizes
- are allowed
-Content-Language: en-US
-To:     <dsterba@suse.cz>, <jaegeuk@kernel.org>, <hare@suse.de>,
-        <dsterba@suse.com>, <axboe@kernel.dk>, <hch@lst.de>,
-        <damien.lemoal@opensource.wdc.com>, <snitzer@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        <bvanassche@acm.org>, <linux-fsdevel@vger.kernel.org>,
-        <matias.bjorling@wdc.com>, Jens Axboe <axboe@fb.com>,
-        <gost.dev@samsung.com>, <jonathan.derrick@linux.dev>,
-        <jiangbo.365@bytedance.com>, <linux-nvme@lists.infradead.org>,
-        <dm-devel@redhat.com>, Naohiro Aota <naohiro.aota@wdc.com>,
-        <linux-kernel@vger.kernel.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        "Sagi Grimberg" <sagi@grimberg.me>,
-        Alasdair Kergon <agk@redhat.com>,
-        <linux-block@vger.kernel.org>, Chaitanya Kulkarni <kch@nvidia.com>,
-        "Keith Busch" <kbusch@kernel.org>, <linux-btrfs@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-From:   Pankaj Raghav <p.raghav@samsung.com>
-In-Reply-To: <20220511160001.GQ18596@twin.jikos.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [106.210.248.174]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (106.1.227.71) To
-        CAMSVWEXC01.scsc.local (106.1.227.71)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxbZRTGee+9vb10dF5aDG+AbJGpceDqcGhePyBDl+xui0acoiHRWdi1
-        EPmyhemEuWLLdB0CK4ij1EERNlYYFLrx0QEllcLGxyBCldaNiVDZMIMpIw5KwHV3M/z3O895
-        npNz3rwULmojg6jktExWniZNCSUFREvv0tVtPvachO2TywA19vfiaK2jl0R11wtJVHpnCUfa
-        wlN85BkaxlHnXDkPjdzLxdCPnn8J1FGlxdC5OjuGpht1OMrvvkOgc+pJHK1MRqDJuy4CaW2/
-        AOR26DDU6QpHP0/V8lFH5xUCjVr0JKo44+ajomOLOBovcgN0ss/MQw1/zRPosit4ZwgzOraP
-        Wb1cTzInVXN8ZniiiWBGh7KYZuNxkjEov8MZc/VR5pJTSTLfquZIpj3vBo+Z73KQTOMFB8EM
-        VvbwGfNANlNkbuK9JYoXvHqQTUk+xMqfi/5IkKSsWyMyfn3s8+uGHlwJjH4a4EtBOhLmzS3g
-        GiCgRHQtgBbNTxhX3AXQplc97CwAqHJ+hT2KqFa7Sa5xFsCatTO8/133NC6CKxoA7DCd5nkj
-        Qjoa3qq/8YAJ+ilY0d6Ncbo/vFI2TXj5cfp9WKobJL0spt+DPfZK3Ms4HQhd0xUPlgqgHSRU
-        a/+8P4iiSDoM5h7nez2+9A64WDDG4/xbYV6rh8/xZth6W49za2+B8793Ed4opBOhqSzOOxLS
-        TgE0nLWQnL4LzkwBzi6Gs30X+ByHwIHifILjbOge9+BcVg1gYXvjw+wrsGAwhfPEwCrXTcDJ
-        G+H4bX9um41Q2/I9zslC+M0xURF4UrfuHXTr7tWtu0W37pZKQBhBIJulSJWxiog09jOJQpqq
-        yEqTSRLTU5vB/c89sNr3Txv4YfZviQ1gFLABSOGhAcIcVU6CSHhQevgLVp5+QJ6VwipsIJgi
-        QgOFickmqYiWSTPZT1g2g5U/6mKUb5ASA+eXwsq2+njKu0eGq3UXp5ZbY63Ni2O1y3HgCVbj
-        bLKQ0S/EZYs3r+2rP+TvMEVVTGaPGjX1kS+fV7z49ErXM0mZE8E7BFUluTVDp1SdbWXxE5KS
-        I7S8tOFNy5du+d5rf/iJZ4YNixuuRvXfutiUkO77m7JvWzj5vPXmjCH2w+LxnreXrtXsrCuO
-        DSlsWZAF7I80B0ZZXypc2ZSoFB3doNDq+itLiBODl/bsza8pf3agS5yqV5+mw09YVPyPqzG/
-        uLT4GPsRsP2DgLUt4gOicacftVvisztpVvWu1WTd//XryQUx1rBdvHdes0fI7EYTfKMgd1Uf
-        NO08nPGpWjMysimUUCRJI8JwuUL6H+ryAfNLBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMKsWRmVeSWpSXmKPExsVy+t/xu7r/j9QkGTx9zW2x/tQxZov/e46x
-        Way+289mMe3DT2aLSf0z2C1+nz3PbLH33WxWiws/GpksFv/+zmKxZ9EkJouVq48yWTxZP4vZ
-        oufABxaLlS0PmS3+PDS0ePjlFovFpEPXGC2eXp3FZLH3lrbFpccr2C327D3JYnF51xw2i/nL
-        nrJbTGj7ymxxY8JTRouJxzezWqx7/Z7F4sQtaQcZj8tXvD3+nVjD5jGx+R27x/l7G1k8Lp8t
-        9di0qpPNY2HDVGaPzUvqPXbfbGDz6G1+x+axs/U+q8f7fVfZPNZvucricWbBEXaPzaerPSZs
-        3sgaIBSlZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwea2VkqqRvZ5OSmpNZllqkb5eg
-        l9Gw+j9LwXX+irsLjzA3MK7i6WLk5JAQMJFo/neArYuRi0NIYCmjxNIT19khEjISn658hLKF
-        Jf5c64Iq+sgoMW33J3YIZx2jxNSDzUwgVbwCdhIv19xnBbFZBFQl5u88ABUXlDg58wkLiC0q
-        ECHxYPdZsBphgXCJNW+3MILYzALiEreezGcCGSoicJVNomXSM1aIDUeZJG7c/QGU4eBgE9CS
-        aOwEO4lTwFjia98VVohmTYnW7b/ZIWx5ie1v5zBDnK0s8f7BPhaQVgmBZIm/t8InMIrMQnLS
-        LCSrZyGZNAvJpAWMLKsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzECU9u2Yz+37GBc+eqj3iFG
-        Jg7GQ4wSHMxKIrw1zTVJQrwpiZVVqUX58UWlOanFhxhNgeEykVlKNDkfmFzzSuINzQxMDU3M
-        LA1MLc2MlcR5PQs6EoUE0hNLUrNTUwtSi2D6mDg4pRqYuvw99x1vyK9R2L3wzbYVqwueKR4S
-        e+ml/OeK/c0O0auWObJLpY01hTw4rnxbeTArZucvn2uq/+SbvM+IpbkuZlVvMPvUcWDnq3eH
-        p/sseyR5uPelf923r8kzpVhFFxoGfbRk/ntx/9GMG9ZM6R91zbf/clQ5zXS2oKt82Ym/GjPd
-        1vhwbFI+8d1Y+bTN4wzrSY+vbbDn9JY+czj7hd9ErqZ1nJuqzrWbC02Oi7m66aEQ533vpc7x
-        TNW/ZXgL5OO27FTO+W5t0qG5smEpK4vEnLRK9wXbstIm74hfLtmqsLCnkGOpmKPiz7CV6lw+
-        931mXevo1a2ec9+4tnjRtgX1RzZ2HXLm4/2T8LP+4UdRJZbijERDLeai4kQAhjJCOvYDAAA=
-X-CMS-MailID: 20220512082743eucas1p2f2b8253db08a3cb212836fe634463f62
-X-Msg-Generator: CA
-X-RootMTR: 20220506081118eucas1p17f3c29cc36d748c3b5a3246f069f434a
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20220506081118eucas1p17f3c29cc36d748c3b5a3246f069f434a
-References: <20220506081105.29134-1-p.raghav@samsung.com>
-        <CGME20220506081118eucas1p17f3c29cc36d748c3b5a3246f069f434a@eucas1p1.samsung.com>
-        <20220506081105.29134-12-p.raghav@samsung.com>
-        <20220509185432.GB18596@twin.jikos.cz>
-        <d8e86c32-f122-01df-168e-648179766c55@samsung.com>
-        <20220511160001.GQ18596@twin.jikos.cz>
-X-Spam-Status: No, score=-10.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dcab2ed0-d48f-e987-47fa-2fd1fc2dba08@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -143,50 +81,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
->>>> +	zone_sectors = bdev_zone_sectors(bdev);
->>>> +
->>>> +	if (!is_power_of_2(zone_sectors)) {
->>>
->>> is_power_of_2 takes 'unsigned long' and sector_t is u64, so this is not
->>> 32bit clean and we had an actual bug where value 1<<48 was not
->>> recognized as power of 2.
->>>
->> Good catch. Now I understand why btrfs has a helper for is_power_of_two_u64.
->>
->> But the zone size can never be more than 32bit value so the zone size
->> sect will never greater than unsigned long.
+On Thu, May 12, 2022 at 12:25:57PM +0530, Anand Jain wrote:
+> On 5/6/22 01:41, Christoph Hellwig wrote:
+> > Hi all,
+> > 
+> > this series adds two minor improvements to iomap that allow btrfs
+> > to avoid a memory allocation per read/write system call and another
+> > one per submitted bio.  I also have at last two other pending uses
+> > for the iomap functionality later on, so they are not really btrfs
+> > specific either.
+> > 
+> > Changes since v1:
+> >   - pass the private data direct to iomap_dio_rw instead of through the
+> >     iocb
+> >   - better document the bio_set in iomap_dio_ops
+> >   - split a patch into three
+> >   - use kcalloc to allocate the checksums
+> > 
+> > Diffstat:
+> >   fs/btrfs/btrfs_inode.h |   25 --------
+> >   fs/btrfs/ctree.h       |    6 -
+> >   fs/btrfs/file.c        |    6 -
+> >   fs/btrfs/inode.c       |  152 +++++++++++++++++++++++--------------------------
+> >   fs/erofs/data.c        |    2
+> >   fs/ext4/file.c         |    4 -
+> >   fs/f2fs/file.c         |    4 -
+> >   fs/gfs2/file.c         |    4 -
+> >   fs/iomap/direct-io.c   |   26 ++++++--
+> >   fs/xfs/xfs_file.c      |    6 -
+> >   fs/zonefs/super.c      |    4 -
+> >   include/linux/iomap.h  |   16 ++++-
+> >   12 files changed, 123 insertions(+), 132 deletions(-)
 > 
-> We've set the maximum supported zone size in btrfs to be 8G, which is a
-> lot and should be sufficient for some time, but this also means that the
-> value is larger than 32bit maximum. I have actually tested btrfs on top
-> of such emaulated zoned device via TCMU, so it's not dm-zoned, so it's
-> up to you to make sure that a silent overflow won't happen.
-> 
+> This patch got me curious a couple of days back while I was tracing
+> a dio read performance issue on nvme. I am sharing the results as below.
+> [1]. There is no performance difference. Thx.
 
-bdev_zone_sectors is used in this case and not the actual size in bytes.
-So the zone size need to be 2TB for the sectors value to cross the 32bit
-limit. This is likely not an issue in the near future.
-
->> With that said, we have two options:
->>
->> 1.) We can put a comment explaining that even though it is 32 bit
->> unsafe, zone size sect can never be a 32bit value
-> 
-> This is probably part of the protocol and specification of the zoned
-> devices, the filesystem either accepts the spec or makes some room for
-> larger values in case it's not too costly.
-> 
->> or
->>
->> 2) We should move the btrfs only helper `is_power_of_two_u64` to some
->> common header and use it everywhere.
-> 
-> Yeah, that can be done independently. With some macro magic it can be
-> made type-safe for any argument while preserving the 'is_power_of_2'
-> name.
-But I agree with your point that we need a type safe power of 2
-implementation in a common header so that we can avoid silent overflows
-in 32 bit architectures.
-
-I will keep the change as is in this patch and follow up on the type
-safe power of 2 later independently. Thanks.
+Thanks for the results.
