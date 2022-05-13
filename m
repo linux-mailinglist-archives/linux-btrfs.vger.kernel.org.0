@@ -2,57 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD64A5260EC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 May 2022 13:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBA1526140
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 May 2022 13:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238974AbiEMLX3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 May 2022 07:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        id S1380036AbiEMLnq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 May 2022 07:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358866AbiEMLX2 (ORCPT
+        with ESMTP id S1380029AbiEMLnS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 May 2022 07:23:28 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE6723DEF1
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 04:23:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xGu+ggtNU7gHyNn1wgc8wnh3l8Bfgmo1ZLGJlArDWe8=; b=TeIBUjuSs1ea4v8ZZPn8i9YWcs
-        990A/kKwsiD1djC9R4u16tk0WlGXodGFT3oCDdtBg17L7uoTT9VyiXeMQAMWXiLEyWINkjv9aMbZ2
-        2Af00Ib6rmZUdBXisdx5/tdjFHBlJ7py/+/Oo8F6Vqh99G1jjQKVh5iLoM1ODo37MtkLi2WfnJmb3
-        m10srMAszFOgmO+y1L62TWu4Z6vY7iiDDd/9sNvUsypziz3awP0rYRKVOAuPvHO3oBx/6hjejG0Kb
-        yVo+/uWLR3IWk7wCGG3Vi+3bv0AF2B70G8uR3TxvhGctOQxO7R/rPu6Ct+RpLDUxK41d4q8WzgPa5
-        RcF9DmAg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1npTOD-00FlNX-Sk; Fri, 13 May 2022 11:23:21 +0000
-Date:   Fri, 13 May 2022 04:23:21 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, dsterba@suse.cz,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 05/13] btrfs: add btrfs_read_repair_ctrl to record
- corrupted sectors
-Message-ID: <Yn4/qQmrWkRymqCV@infradead.org>
-References: <3f9b82f1bcc955fbb689a469e749cf1534857ea1.1651559986.git.wqu@suse.com>
- <YnFE62oGR5C/8UN2@infradead.org>
- <dac4707a-04f4-f143-342b-cd69e0ffcd80@gmx.com>
- <YnKIM/KBIJEqU/6b@infradead.org>
- <efb8bdf0-28f0-0db9-c2b0-a08ffbd22623@gmx.com>
- <20220512171629.GT18596@twin.jikos.cz>
- <Yn40Fkhz0jyef1ow@infradead.org>
- <5520df08-b998-a384-f1aa-16b301474cab@gmx.com>
- <Yn45tomlUQ8mGyVs@infradead.org>
- <581432b0-9324-8509-2737-a57f19c93937@gmx.com>
+        Fri, 13 May 2022 07:43:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749B6FD36C
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 04:42:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 26C9A1F460;
+        Fri, 13 May 2022 11:42:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1652442163;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ATb7NIJE0UbXKg+jMu55Ix4KBBTrGWyleP1/nJCRXw4=;
+        b=0LTSR9uPAaXNE8GiepSAy9GwwPmfrco00lXfqudkL/tsOyLZwIhZcTRs2vgrtGbq4rneNu
+        1hOYZMfrz+KjtCONZbQXaZHLQKWTbrPTSAtyobFD+IDX7Wrw6aZ+o9vo6xiP5RAyadn2/4
+        mflSgvOaSTAVy6u2A+rPIhH6CLNI/Ms=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1652442163;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ATb7NIJE0UbXKg+jMu55Ix4KBBTrGWyleP1/nJCRXw4=;
+        b=IsFLQQJZCUeRDVxCDc7aZ3PHwBOohcxu0mAXEPwwURUdLHp66gXEIWkSWPeHfcxPDHRxF1
+        brHkxjuvPyKd13DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0149D13A84;
+        Fri, 13 May 2022 11:42:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mXT5OjJEfmJFPwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 13 May 2022 11:42:42 +0000
+Date:   Fri, 13 May 2022 13:38:26 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] btrfs: cleanups and preparation for the incoming
+ RAID56J features
+Message-ID: <20220513113826.GV18596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1652428644.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <581432b0-9324-8509-2737-a57f19c93937@gmx.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <cover.1652428644.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,10 +74,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 13, 2022 at 07:21:55PM +0800, Qu Wenruo wrote:
-> This middle ground is still synchronous, but batched.
-> 
-> Although for the checker patterned corrupted sectors, it falls back to
-> fully synchronous submit for each sector.
+On Fri, May 13, 2022 at 04:34:27PM +0800, Qu Wenruo wrote:
+> Since I'm going to introduce two new chunk profiles, RAID5J and RAID6J
+> (J for journal),
 
-Indeed.  But how common is that case?
+Do you need to introduce completely new profiles? IIRC in my drafts I
+was more inclined to reuse a dedicated raid1c3 block group, of an
+arbitrary size and not used by anything else. A new profile would
+technically work too but it brings other issues.
+
+As a related feature to the raid56, I was working on the striped
+raid10c34 profiles but was not able to make it work. In a sense this is
+easier as it reuses existing code, but if you make the journal work we
+won't need that.
+
+> if we're relying on ad-hoc if () else if () branches to
+> calculate thing like number of p/q stripes, it will cause a lot of
+> problems.
+> 
+> In fact, during my development, I have hit tons of bugs related to this.
+> 
+> One example is alloc_rbio(), it will assign rbio->nr_data, if we forgot
+> to update the check for RAID5 and RAID6 profiles, we will got a bad
+> nr_data == num_stripes, and screw up later writeback.
+> 
+> 90% of my suffering comes from such ad-hoc usage doing manual checks on
+> RAID56.
+> 
+> Another example is, scrub_stripe() which due to the extra per-device
+> reservation, @dev_extent_len is no longer the same the data stripe
+> length calculated from extent_map.
+> 
+> So this patchset will do the following cleanups preparing for the
+> incoming RAID56J (already finished coding, functionality and on-disk
+> format are fine, although no journal yet):
+> 
+> - Calculate device stripe length in-house inside scrub_stripe()
+>   This removes one of the nasty mismatch which is less obvious.
+> 
+> - Use btrfs_raid_array[] based calculation instead of ad-hoc check
+>   The only exception is scrub_nr_raid_mirrors(), which has several
+>   difference against btrfs_num_copies():
+> 
+>   * No iteration on all RAID6 combinations
+>     No sure if it's planned or not.
+> 
+>   * Use bioc->num_stripes directly
+>     In that context, bioc is already all the mirrors for the same
+>     stripe, thus no need to lookup using btrfs_raid_array[].
+> 
+> With all these cleanups, the RAID56J will be much easier to implement.
+> 
+> Qu Wenruo (4):
+>   btrfs: remove @dev_extent_len argument from scrub_stripe() function
+>   btrfs: use btrfs_chunk_max_errors() to replace weird tolerance
+>     calculation
+>   btrfs: use btrfs_raid_array[] to calculate the number of parity
+>     stripes
+>   btrfs: use btrfs_raid_array[].ncopies in btrfs_num_copies()
+
+The preparatory patches look good to me.
