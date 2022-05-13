@@ -2,72 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4EF5265F7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 May 2022 17:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF59C526695
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 May 2022 17:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381941AbiEMPXP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 13 May 2022 11:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S1358928AbiEMPxA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 May 2022 11:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381922AbiEMPXO (ORCPT
+        with ESMTP id S1382265AbiEMPw7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 May 2022 11:23:14 -0400
-X-Greylist: delayed 525 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 May 2022 08:23:11 PDT
-Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855E463BC5
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 08:23:09 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id A11ED3F60E;
-        Fri, 13 May 2022 17:14:22 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -0.011
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_05,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tK8zAPTX7z1G; Fri, 13 May 2022 17:14:21 +0200 (CEST)
-Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id D54F63F36E;
-        Fri, 13 May 2022 17:14:21 +0200 (CEST)
-Received: from [192.168.0.126] (port=60920)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1npWzq-0002d9-2y; Fri, 13 May 2022 17:14:20 +0200
-Date:   Fri, 13 May 2022 17:14:21 +0200 (GMT+02:00)
-From:   Forza <forza@tnonline.net>
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Message-ID: <b49e00b.dcea448a.180bdfc2a51@tnonline.net>
-In-Reply-To: <cover.1652428644.git.wqu@suse.com>
-References: <cover.1652428644.git.wqu@suse.com>
-Subject: Re: [PATCH 0/4] btrfs: cleanups and preparation for the incoming
- RAID56J features
+        Fri, 13 May 2022 11:52:59 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269081FE1CB
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 08:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1652457178; x=1683993178;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=H5eTAL6roU+zpHuZPyBci91EKZLtiOskyKcgoNDXw50=;
+  b=JKdbPUNlo91u4rTU5lLzBYeZ9pleyKuohhcRPlJeas9FjN+wIwxivFXs
+   92a3/F91tUwBpHttLmpEO75WLeU8Bbh9+kioXLe75ONGShmD8DszdwtIR
+   OMKz0nsX0vT7qB3VPveOsW+CFFpVOlm9rjGjSMDql1EZXoGVysDPXjxAZ
+   X3Aux0DvTTXe3r9XQX1RfVWBU5bvlTsgPEkwKVE4TuoGlHZ5v4YkHuZH+
+   5QrXVinwsRb56rM2HFvuvfZOwFWqJpOx/xNc6Oogm8JuSXfP5AHtEoaoV
+   Is/5i0Y5Sy75ykf/ZabU2catOuQcPwxwadUtPN10HSEFL1IIh4wj5du3z
+   w==;
+X-IronPort-AV: E=Sophos;i="5.91,223,1647273600"; 
+   d="scan'208";a="199099870"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 13 May 2022 23:52:57 +0800
+IronPort-SDR: ilnPUR/mhs0wA9o0KGgfivfNUdbr8XyQt5Wr2k6rcS939gHMZRVJn6ddk5WSIaCheLM/oyq8yg
+ wKl9DnVAs4dHd8eZYHoUuLOZfAvZfZpRwiJfV0HJCTsYZeQKBVLCv+qyxTIUUssTvbmIbLpCH1
+ JDu72yUxx/h/hCRtj0vD0fcrYj1tshyF11S3P90cHK3YNLdxwyPU/roWqnPX/n6x9iTaKkcTSY
+ eK6tmsyFWFotyTpnhwVtps12FYGU6pqFtjfnJVTgzj2tsKXoRhIZtAKL47NMfwKYCZvCxA+T4V
+ Z3aTSqFUcVqj79ZGxs/1C/UY
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 May 2022 08:18:53 -0700
+IronPort-SDR: W9jPO0sWtkOcAZWJ/tNKeCC7uCNqMZJxgFPJhenyVQmwk3os4axtgDVJYjC0AFEgAO0lchhrrl
+ u4Db95VwePW90R5jul4Qiv3EXnEK0BEuK5ikSzsCQtjA7eXmEGkASB4Zt0Wc03pfmOPQXWpB5L
+ e/kl8aWzzESJJWxR5ymncY/NvsOK7+HSzO/DkNUFm14Rtj5XxoEWrpxqIZR08mfcpXWCFvucUx
+ Qj4k0TxzLb5iJZYVCzDVZv8Ry+WzgJdR+N/961P0ubkCEY9u7BiDB22uGxdPdJvONw1hDp63e/
+ 3SM=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 May 2022 08:52:57 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: zoned: introduce a minimal zone size and reject mount
+Date:   Fri, 13 May 2022 08:52:52 -0700
+Message-Id: <8aa15bbbacbafa2ab77c01bfdfdabe65d6bfa606.1652457157.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, 
+Zoned devices are expected to have zone sizes in the range of 1-2GB for
+ZNS SSDs and SMR HDDs have zone sizes of 256MB, so there is no need to
+allow arbitrarily small zone sizes on btrfs.
 
----- From: Qu Wenruo <wqu@suse.com> -- Sent: 2022-05-13 - 10:34 ----
+But for testing purposes with emulated devices it is sometimes desirable
+to create devices with as small as 4MB zone size to uncover errors.
 
-> Since I'm going to introduce two new chunk profiles, RAID5J and RAID6J
-> (J for journal), 
+So use 4MB as the smallest possible zone size and reject mounts of devices
+with a smaller zone size.
 
-Great to see work being done on the RAID56 parts of Btrfs. :) 
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/zoned.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-I am just a user of btrfs and don't have the full understanding of the internals, but it makes me a little curious that we choose to use journals and RMW instead of a CoW solution to solve the write hole. 
-
-
-Since we need on-disk changes to implement it, could it not be better to rethink the raid56 modes and implement a solution with full CoW, such as variable stripe extents etc? It is likely much more work, but could have better performance because it avoids double writes and RMW cycles too. 
-
-Thanks 
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 1b1b310c3c51..d9579d4ec0f2 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -51,11 +51,13 @@
+ #define BTRFS_MIN_ACTIVE_ZONES		(BTRFS_SUPER_MIRROR_MAX + 5)
  
-Forza
+ /*
+- * Maximum supported zone size. Currently, SMR disks have a zone size of
+- * 256MiB, and we are expecting ZNS drives to be in the 1-4GiB range. We do not
+- * expect the zone size to become larger than 8GiB in the near future.
++ * Minimum / maximum supported zone size. Currently, SMR disks have a zone
++ * size of 256MiB, and we are expecting ZNS drives to be in the 1-4GiB range.
++ * We do not expect the zone size to become larger than 8GiB or smaller than
++ * 4MiB in the near future.
+  */
+ #define BTRFS_MAX_ZONE_SIZE		SZ_8G
++#define BTRFS_MIN_ZONE_SIZE		(4 * SZ_1M)
+ 
+ #define SUPER_INFO_SECTORS	((u64)BTRFS_SUPER_INFO_SIZE >> SECTOR_SHIFT)
+ 
+@@ -402,6 +404,13 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
+ 				 zone_info->zone_size, BTRFS_MAX_ZONE_SIZE);
+ 		ret = -EINVAL;
+ 		goto out;
++	} else if (zone_info->zone_size < BTRFS_MIN_ZONE_SIZE) {
++		btrfs_err_in_rcu(fs_info,
++		"zoned: %s: zone size %llu smaller than supported minimum %u",
++				 rcu_str_deref(device->name),
++				 zone_info->zone_size, BTRFS_MIN_ZONE_SIZE);
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 
+ 	nr_sectors = bdev_nr_sectors(bdev);
+-- 
+2.35.1
 
