@@ -2,272 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA2C526163
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 May 2022 13:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF8E5261B8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 May 2022 14:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358530AbiEMLw0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 May 2022 07:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
+        id S1380196AbiEMMVt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 May 2022 08:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbiEMLwY (ORCPT
+        with ESMTP id S1380195AbiEMMVs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 May 2022 07:52:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7812F16D109
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 04:52:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 145A721AF8
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 11:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652442742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/eFmPSFl89eRCY/sN4WTu6pQMilbXgNJPcFZyQL50MI=;
-        b=YTNvc4Zspz0sWtoop2e0JL681fGc62a6Pa1xqPH/l13Bmkay3wRXVQj9vO6LttdkWyvyC4
-        0/D3Ka59LwO66zSQIIra7Xe2E9z24uf51BuDV1+qfVpCsWuOscy1ol/yva7PQyWGytacNa
-        uQrdxqdkD/yG/9x+y7VQnD6xrMZWxWo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9678913A84
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 11:52:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EanKGHRGfmLZQwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 11:52:20 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: removed unused header check/btrfsck.h
-Date:   Fri, 13 May 2022 19:52:01 +0800
-Message-Id: <5675e197da96530f011d40102b0e4dc8c88322b7.1652442718.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.1
+        Fri, 13 May 2022 08:21:48 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B24613FD56
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 05:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1652444504;
+        bh=DUigy7GofD+05wjRQMnKHydjoAkwsp+KZa0rExxgO/E=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=ldiICV3XcyAp3Yp6GDnq9CpezrJw4TjDmXnc0/q3oUi95i1VyAp1PBMaLgLP652/N
+         YSaMJP+bzcuaYbA0p8rxdia8dJ6LSazP08lVD2qXDXut8rbFhsdTX/c+w9gwvudDpz
+         C+yLUZpAXqyeh2pi3ba4RvIdb0YREUmS44I3DSnY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWRVb-1nIBq82x6h-00Xwkt; Fri, 13
+ May 2022 14:21:44 +0200
+Message-ID: <f119b7c7-aa86-b8f9-b5eb-79a16cdd58a4@gmx.com>
+Date:   Fri, 13 May 2022 20:21:40 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1652428644.git.wqu@suse.com>
+ <20220513113826.GV18596@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH 0/4] btrfs: cleanups and preparation for the incoming
+ RAID56J features
+In-Reply-To: <20220513113826.GV18596@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7iImGeHGZXfY63OVrNLgA9lc+j1ow0lfFhjgtY1YzZ1MNobOSUe
+ pXmCiDl6rtieBR80mhpoMUO7M29LNRke2o9CW+cNj49gQZWle7jkoReLftssdTvuL6UprcQ
+ EMQMAWrXeUA5Gr1lbThuNh0uH6oU+VgF1i4iSHbw4S+uHHKQQiqucG4dc3vztFrnhT6d6SJ
+ g61ikVnItjwgbn3ULQHrw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:u5/NqW0QfSE=:jl1NE7Y2JmxeoLaDqzVEDa
+ 4uS3FEirOB/GmiiJeYxVuAvAHkyCfEK6w/VhOHcsp1vxnhRt3Y7M56lyb2mMDWKaRodpggauO
+ hQFMnL2EheM9Q4Kdl29MCur/w2jJbwDWSsMGICmJV1UF4EpjgwHBaZnFjskPHQe8pjbbn1Iuz
+ XUO6hS3vspqc+cf7hGpw2eEjnt2ljZVM5p3tfR5ftr5JLiVT4QW9e+ScrmGEEiqp3YeEsZkSp
+ I4uKGOH2st+3zulEqRK1raKSfjzCt3FMqDkinrQEa3D1eCagQ1dxVONPxOJ+Zk5b1Ct57uIfL
+ 97TgwZD+7eiwEgLeCCKk1V4EqbEbV0P9V52R5SO5YovWUXjvw9Pa7x1oh8akoETNeOyIYQsVX
+ n0aHaoH6BuIOL++EBm95oc3dihXZnKKYhF+bhdzqZ6mcP9iwsWbhLFJFf8sj1ssNP+bClglWr
+ XjWUmTmb5CVl5JhqGewbnqtt4h1mgfpmpd3uRGsj2VXAZwtVeIIR3cTKPBXwwnlOswsk+dP+H
+ s6HRyYDSRuLnmRKgQCizXRYK44NG5olJqGY1BnA/WZh5iTbAH99WVkKMcO/2mA4xC+QbSSQtY
+ eYJxOArBef+9kaZKETlof7rwHSRxXBScDfcdEWBel5HGWMUhLJZsuCvD9+lICmAO0FDn+MYw5
+ ckxOXvuO6JlXO4WWgpCXmQnK1j705R6m4qdIUJKidBh7uliVYCWwtOVJI4RZ9AwZmIqGBKT2+
+ LScw0XAGx4UEyPZ5uKbdhA5ZES8PEO8hsNHtgLHfqe006shL+fkfhbgPvlhEGw5KkulW8aM2f
+ dOzHfkkCsoDuikaog2eFzYhE+TMBEOMz1u4LbgowrvSMVrcbPwDzw/+dUi4tCLHYYdeebwSLp
+ 0IQ3hLkkIIW/sVlAReadZf7um0+cMvC0nn+KqF3JEwa0/o6rt3FSWx9FUC+S403KHVCEMdLzE
+ tbFfpywkAp12YYkY9ygeRXuZiar7qaMI3yWHi72fs9fhYAyMepe5etymuJw99DbXIwyZWgsmh
+ s1dwRlebs2YMyxe0EzrlprZhPK6VNIIA8LvfH5YuzAaBIdaZrb62Rx6R9+x2kw1zBu9QhY9HH
+ 9vyzZGvOzipau0kQiKA0XYLjOxW6vl3hVPdQT9a2ylAbMy1ekMtx5kZxw==
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It should have been deleted, as CHANGES mentioned this in v5.14, but
-obvious it's not.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- check/btrfsck.h | 196 ------------------------------------------------
- 1 file changed, 196 deletions(-)
- delete mode 100644 check/btrfsck.h
 
-diff --git a/check/btrfsck.h b/check/btrfsck.h
-deleted file mode 100644
-index 112c5406633c..000000000000
---- a/check/btrfsck.h
-+++ /dev/null
-@@ -1,196 +0,0 @@
--/*
-- * Copyright (C) 2013 FUJITSU LIMITED.  All rights reserved.
-- * Written by Miao Xie <miaox@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public
-- * License v2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public
-- * License along with this program; if not, write to the
-- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-- * Boston, MA 021110-1307, USA.
-- */
--
--#ifndef __BTRFS_CHECK_H__
--#define __BTRFS_CHECK_H__
--
--#include "kerncompat.h"
--#include "kernel-shared/ctree.h"
--#include "common/extent-cache.h"
--#include "kernel-lib/list.h"
--
--struct block_group_record {
--	struct cache_extent cache;
--	/* Used to identify the orphan block groups */
--	struct list_head list;
--
--	u64 generation;
--
--	u64 objectid;
--	u8  type;
--	u64 offset;
--
--	u64 flags;
--};
--
--struct block_group_tree {
--	struct cache_tree tree;
--	struct list_head block_groups;
--};
--
--struct device_record {
--	struct rb_node node;
--	u64 devid;
--
--	u64 generation;
--
--	u64 objectid;
--	u8  type;
--	u64 offset;
--
--	u64 total_byte;
--	u64 byte_used;
--
--	u64 real_used;
--};
--
--struct stripe {
--	u64 devid;
--	u64 offset;
--	u8 dev_uuid[BTRFS_UUID_SIZE];
--};
--
--struct chunk_record {
--	struct cache_extent cache;
--
--	struct list_head list;
--	struct list_head dextents;
--	struct block_group_record *bg_rec;
--
--	u64 generation;
--
--	u64 objectid;
--	u8  type;
--	u64 offset;
--
--	u64 owner;
--	u64 length;
--	u64 type_flags;
--	u64 stripe_len;
--	u16 num_stripes;
--	u16 sub_stripes;
--	u32 io_align;
--	u32 io_width;
--	u32 sector_size;
--	struct stripe stripes[0];
--};
--
--struct device_extent_record {
--	struct cache_extent cache;
--	/*
--	 * Used to identify the orphan device extents (the device extents
--	 * don't belong to a chunk or a device)
--	 */
--	struct list_head chunk_list;
--	struct list_head device_list;
--
--	u64 generation;
--
--	u64 objectid;
--	u8  type;
--	u64 offset;
--
--	u64 chunk_objectid;
--	u64 chunk_offset;
--	u64 length;
--};
--
--struct device_extent_tree {
--	struct cache_tree tree;
--	/*
--	 * The idea is:
--	 * When checking the chunk information, we move the device extents
--	 * that has its chunk to the chunk's device extents list. After the
--	 * check, if there are still some device extents in no_chunk_orphans,
--	 * it means there are some device extents which don't belong to any
--	 * chunk.
--	 *
--	 * The usage of no_device_orphans is the same as the first one, but it
--	 * is for the device information check.
--	 */
--	struct list_head no_chunk_orphans;
--	struct list_head no_device_orphans;
--};
--
--static inline unsigned long btrfs_chunk_record_size(int num_stripes)
--{
--	return sizeof(struct chunk_record) +
--	       sizeof(struct stripe) * num_stripes;
--}
--void free_chunk_cache_tree(struct cache_tree *chunk_cache);
--
--/*
-- * Function to check validation for num_stripes, or it can call
-- * float point error for 0 division
-- * return < 0 for invalid combination
-- * return 0 for valid combination
-- */
--static inline int check_num_stripes(u64 type, int num_stripes)
--{
--	if (num_stripes == 0)
--		return -1;
--	if (type & BTRFS_BLOCK_GROUP_RAID5 && num_stripes <= 1)
--		return -1;
--	if (type & BTRFS_BLOCK_GROUP_RAID6 && num_stripes <= 2)
--		return -1;
--	return 0;
--}
--
--u64 calc_stripe_length(u64 type, u64 length, int num_stripes);
--/* For block group tree */
--static inline void block_group_tree_init(struct block_group_tree *tree)
--{
--	cache_tree_init(&tree->tree);
--	INIT_LIST_HEAD(&tree->block_groups);
--}
--
--int insert_block_group_record(struct block_group_tree *tree,
--			      struct block_group_record *bg_rec);
--void free_block_group_tree(struct block_group_tree *tree);
--
--/* For device extent tree */
--static inline void device_extent_tree_init(struct device_extent_tree *tree)
--{
--	cache_tree_init(&tree->tree);
--	INIT_LIST_HEAD(&tree->no_chunk_orphans);
--	INIT_LIST_HEAD(&tree->no_device_orphans);
--}
--
--int insert_device_extent_record(struct device_extent_tree *tree,
--				struct device_extent_record *de_rec);
--void free_device_extent_tree(struct device_extent_tree *tree);
--
--
--/* Create various in-memory record by on-disk data */
--struct chunk_record *btrfs_new_chunk_record(struct extent_buffer *leaf,
--					    struct btrfs_key *key,
--					    int slot);
--struct block_group_record *
--btrfs_new_block_group_record(struct extent_buffer *leaf, struct btrfs_key *key,
--			     int slot);
--struct device_extent_record *
--btrfs_new_device_extent_record(struct extent_buffer *leaf,
--			       struct btrfs_key *key, int slot);
--
--int check_chunks(struct cache_tree *chunk_cache,
--		 struct block_group_tree *block_group_cache,
--		 struct device_extent_tree *dev_extent_cache,
--		 struct list_head *good, struct list_head *bad,
--		 struct list_head *rebuild, int silent);
--#endif
--- 
-2.36.1
+On 2022/5/13 19:38, David Sterba wrote:
+> On Fri, May 13, 2022 at 04:34:27PM +0800, Qu Wenruo wrote:
+>> Since I'm going to introduce two new chunk profiles, RAID5J and RAID6J
+>> (J for journal),
+>
+> Do you need to introduce completely new profiles? IIRC in my drafts I
+> was more inclined to reuse a dedicated raid1c3 block group, of an
+> arbitrary size and not used by anything else. A new profile would
+> technically work too but it brings other issues.
 
+The point here is, I want to reserve some space for each data stripe of
+a RAID56 chunk.
+
+Unfortunately, we need some on-disk format change anyway, for reusing
+btrfs_chunk::io_align to represent how many bytes are reserved for each
+dev extent, before where the data really starts.
+
+So new RAID56 types are needed anyway.
+
+Sure, this will make dev_extent mismatch from pure calculated extent
+length from a chunk map.
+
+But all the involved change are not that huge, still reviewable.
+
+ From my latest version, already under fstests (with new RAID56J
+profiles added to related test cases), but without real journal code
+yet, the patch looks like this:
+
+  fs/btrfs/block-group.c          |  23 ++++++-
+  fs/btrfs/ctree.h                |   7 +-
+  fs/btrfs/scrub.c                |  15 ++--
+  fs/btrfs/tree-checker.c         |   4 ++
+  fs/btrfs/volumes.c              | 118 +++++++++++++++++++++++++++++---
+  fs/btrfs/volumes.h              |   7 +-
+  fs/btrfs/zoned.c                |   2 +
+  include/uapi/linux/btrfs.h      |   1 +
+  include/uapi/linux/btrfs_tree.h |  30 +++++++-
+  9 files changed, 185 insertions(+), 22 deletions(-)
+
+Most changes are involved in dev extent handling, and some sites can not
+use btrfs_raid_array[] directly.
+
+I guess you'll see that kernel patch soon, along with needed progs patch
+in next week.
+
+Thanks,
+Qu
+>
+> As a related feature to the raid56, I was working on the striped
+> raid10c34 profiles but was not able to make it work. In a sense this is
+> easier as it reuses existing code, but if you make the journal work we
+> won't need that.
+>
+>> if we're relying on ad-hoc if () else if () branches to
+>> calculate thing like number of p/q stripes, it will cause a lot of
+>> problems.
+>>
+>> In fact, during my development, I have hit tons of bugs related to this=
+.
+>>
+>> One example is alloc_rbio(), it will assign rbio->nr_data, if we forgot
+>> to update the check for RAID5 and RAID6 profiles, we will got a bad
+>> nr_data =3D=3D num_stripes, and screw up later writeback.
+>>
+>> 90% of my suffering comes from such ad-hoc usage doing manual checks on
+>> RAID56.
+>>
+>> Another example is, scrub_stripe() which due to the extra per-device
+>> reservation, @dev_extent_len is no longer the same the data stripe
+>> length calculated from extent_map.
+>>
+>> So this patchset will do the following cleanups preparing for the
+>> incoming RAID56J (already finished coding, functionality and on-disk
+>> format are fine, although no journal yet):
+>>
+>> - Calculate device stripe length in-house inside scrub_stripe()
+>>    This removes one of the nasty mismatch which is less obvious.
+>>
+>> - Use btrfs_raid_array[] based calculation instead of ad-hoc check
+>>    The only exception is scrub_nr_raid_mirrors(), which has several
+>>    difference against btrfs_num_copies():
+>>
+>>    * No iteration on all RAID6 combinations
+>>      No sure if it's planned or not.
+>>
+>>    * Use bioc->num_stripes directly
+>>      In that context, bioc is already all the mirrors for the same
+>>      stripe, thus no need to lookup using btrfs_raid_array[].
+>>
+>> With all these cleanups, the RAID56J will be much easier to implement.
+>>
+>> Qu Wenruo (4):
+>>    btrfs: remove @dev_extent_len argument from scrub_stripe() function
+>>    btrfs: use btrfs_chunk_max_errors() to replace weird tolerance
+>>      calculation
+>>    btrfs: use btrfs_raid_array[] to calculate the number of parity
+>>      stripes
+>>    btrfs: use btrfs_raid_array[].ncopies in btrfs_num_copies()
+>
+> The preparatory patches look good to me.
