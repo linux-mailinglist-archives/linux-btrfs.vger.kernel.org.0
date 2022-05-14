@@ -2,70 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCC5526D38
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 May 2022 00:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA54526F66
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 May 2022 09:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357020AbiEMW6Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 May 2022 18:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        id S231163AbiENC56 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 May 2022 22:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384916AbiEMW6W (ORCPT
+        with ESMTP id S231200AbiENCzz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 May 2022 18:58:22 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1426A5DD3F
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 15:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652482696;
-        bh=JgRkruD9tY5hM++EUGtf4pxfQs5vUXIt9GUI6mi88SU=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=YFryi+aPj5WI8YBLBNuNT/mdZxxsMqzA/VBo17Kn6Z6KC3B+jWdUlL6KMpjw9wq8B
-         4D7FJIM302J9Ae3jyAsBP8tlDTFCJBuZPgETao5oVE0YByZy1sX26pHC4ksERl8NSP
-         DkRDR+Xl+lCq1uxxx/TCi8XBVpmIGMoJYp3BVnOo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mn2WF-1oEVCi05El-00k9Ag; Sat, 14
- May 2022 00:58:15 +0200
-Message-ID: <aa64c204-2ae7-3a85-73c6-bb5f14b9a3c0@gmx.com>
-Date:   Sat, 14 May 2022 06:58:11 +0800
+        Fri, 13 May 2022 22:55:55 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B178D326D86
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 19:34:13 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id i20so10663391ion.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 May 2022 19:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=O4rVwxqnfB5bIkVJHV83qiZ6ZzfoCn0h63CX/QD9JbI=;
+        b=GbVo866doE669tK1/vAFVQ84LnCSibZtg4902pgHqDi4gSmoU6jPcowAERdxSDRW3K
+         CVSTrssbj1Emlb+kwHa0O0PSYd4BeDgBZ833frFpKSmflO7P+L4bObnHYxaCpz0WRNc1
+         5Mjga8tlCDD+ncZNsDl/Hqu0qo4H2E6A0ZWKKQZLJwOFLiCSXNQIfvZVfw9xCxW50CMc
+         VzeqyU0lVemWBIxoRWPhdsZprLx9xp6Ox/zazqMvDU8ITOQty3NRAZVZWaEq71n25GT6
+         J4jmjx/FbQAm3Aow9WOA2Qed6U7JnzZwrnawS4LpPwAv6yVojKJXykm38cH/rG/MgzBK
+         G+Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=O4rVwxqnfB5bIkVJHV83qiZ6ZzfoCn0h63CX/QD9JbI=;
+        b=1zltIVmLgQ51V0+TwDDIVmycG6g7OROavBwa+mkL6t+mrZfNMRWH2Vd8uiieKNPXPI
+         EIp0qtE4kWw/EriCw27AEj/vq2zarv9OzFE08voffPg7UAnU+2tXsyxaqrWppCqEFPLy
+         xH/+y6w8dJADQQ+cQitPd+iUrg3Tq+TTE+juyn++3Px/3Az/yQWHSYk3WzbsL2VMWJqv
+         JX1zKsLf45G4L4AHRfJaLeyKktFOoM8bLOmspW4UUtertPdIEnTOc+XJb6LfmMHxrJE2
+         /rWIFplcuY6ULEUOn3NzWjAGb7FaJlxGJH3sp76uQdjBb85qoYk7OA0JiIJhICersb8g
+         Ez0A==
+X-Gm-Message-State: AOAM533s7DMNRW9O3I5BgfZw5UszOjgqI9pDoRYd3vzu/Wu3XD3N+SBp
+        yhX50miQgv44lS1+lL2JpvULWBUW+DgQrbLsYjiwV4PLiF0cOw==
+X-Google-Smtp-Source: ABdhPJyv92lUSk6PhxCq7zICvK9+qaQP6ugAZlSEx9jWMyINbTJt8DUgjP8aMlRYkFqmQJAck7DmdTp4Z85gox3FtaE=
+X-Received: by 2002:a05:6602:3415:b0:648:b4f6:6e4d with SMTP id
+ n21-20020a056602341500b00648b4f66e4dmr3598416ioz.98.1652495652825; Fri, 13
+ May 2022 19:34:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Content-Language: en-US
-To:     Forza <forza@tnonline.net>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1652428644.git.wqu@suse.com>
- <b49e00b.dcea448a.180bdfc2a51@tnonline.net>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 0/4] btrfs: cleanups and preparation for the incoming
- RAID56J features
-In-Reply-To: <b49e00b.dcea448a.180bdfc2a51@tnonline.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yZYOdOYHyzzcewNh5N1XKIublXogY+V8R5PJiznIADIVLmmFwwH
- 27jfze5+KahZFdkJukpzvXmqSF4dJ2BgokcmCZL5hytR6xu4fz9b9uVzwfpcy4cJRfsszzg
- s05AETWepHcdL/PSKHY34YbosABsVrCpjiJzmG25MiZFr2GNYb+MCrCiqQ6tOihyriyOivp
- 0D0hbIecko4WWtz4jIryA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iMDBs5c8kNQ=:r0bb7hd+9sdn9xiGGrqg28
- pix4dFp5RAWVB7cffA7noBmsFj4KwyAFxEHtxeE7W7bH3JugBHuihGBh26QNUDvzWdolip6u3
- loV2dDntxrVWgVpo/izE6mt06MybLYY9x+GsVcRwzyBU+OeeQbalMsYvdLz/1BjHFEFL1RZCW
- ZOTOMtpwa37Bu8GWtu6VHv7gG5W3E3uJpz66Yg+KyGKuTHcfS4IFQIfZAHtg/FarFDQAhb2qo
- mCPrVMUKbjt1/BAMRL5eh3Mr3vWrpZdTIkp8JNiU966ISU5BClb0L3Rr0mxKG7sqYhWBd+8w9
- E49ix7MzLKM/y1NZy7IYR7iLcgSvJKBiPw16ravzZS/q1yc0c4aYdQuGGIvDxmFGbuEKL2mkv
- iRcEO2fY1E5mPv2CCAqQbeuaAJTmEhfxiXckTk6/JPhFIyljuzVoTE0dLePNkMJiXwQOZ4swt
- iqB6IxsmhY77dh5A2PZM98TbTIaAwtT37w9saPqYL/Fq/mShEnL+T1SptQqsYe1BYsnQHcrec
- Xj3u533iIhdVry8/WBsT7RSFESEbMzKSoB3fh9QP9wyu7jVfvOMaufJFKk+sMDGZfPvnw+8aL
- ZTBPnhuMYo+tE5dQZLOf1drkKvHki/KKi+ISTsWGrotRO8YMKZP8IVnSG/ddyeuoEG82CtU99
- 4bvcigLvFk0uNIe6e36HSDtvpIV3FHsDuPIpGOoQw3n1O40pqFW8+ul0bfGZYVGYC1uIqQP/m
- 7WhXpPLk7ENYbETzS9ooP3l+CqtOMhX20eGQRWq2wz+3Us5yefHYHuD/oVvSjHUxsqevw9QkZ
- IwusyLNxlgx+CGo5VA8TcXzFIDlMBIr4JqBnEhCcQrg12/HrLZ0aRfC0EVdsAlfDPttfREKyZ
- 6B3jh33cSnwlAK5Vo4QPXZiZbjsOWfnTQkqKg0U4KQlrfqTTU+xTkXRoUoFdg1Z20Blw18GoM
- 4ZdnWsk2g6DrrHcOri1S77lYFLF1M254m1TZ/J8cG7PU3MgOnK8CyiU2JNyx51Lr1JRZ12c47
- hkpq4S3YcEY7jCdZ1PvNCMuFwbMsGcNAFIrD6Cqc9zOlJscS09jZeR3tqIpjmyI70q6vnHol+
- Zr6zS/4FdAglzM=
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+From:   Gabe <felixnightshade@gmail.com>
+Date:   Fri, 13 May 2022 19:34:02 -0700
+Message-ID: <CAHRVCvZ4BDGK3gfD3WgC0VZFh1accyHFoZO+P0rX1mvt6wPoNw@mail.gmail.com>
+Subject: Trying to recover pair of drives after sudden power off
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,128 +60,195 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I have two 3tb hard drives in raid 1 in my Proxmox home server (sda1
+and sdc1) among the other drives. The server recently experienced a
+sudden power off that has rendered the two drives unable to mount. It
+looks like repairing in place is out of the question, so I'm hoping
+for the possibility to recover the data.
 
 
-On 2022/5/13 23:14, Forza wrote:
-> Hi,
->
-> ---- From: Qu Wenruo <wqu@suse.com> -- Sent: 2022-05-13 - 10:34 ----
->
->> Since I'm going to introduce two new chunk profiles, RAID5J and RAID6J
->> (J for journal),
->
-> Great to see work being done on the RAID56 parts of Btrfs. :)
->
-> I am just a user of btrfs and don't have the full understanding of the i=
-nternals, but it makes me a little curious that we choose to use journals =
-and RMW instead of a CoW solution to solve the write hole.
-
-In fact, Johannes from WDC is already working on a pure CoW based
-solution, called stripe tree.
-
-The idea there is to introduce a new layer of mapping.
-
-With that stripe tree, inside one chunk, the logical bytenr is no longer
-directly mapped to a physical location, but can be dynamically mapped to
-any physical location inside the chunk range.
-
-So previously if we have a RAID56 chunk with 3 disks looks like this:
-
-     Logical bytenr X		X + 64K		X + 128K
-		   |            |		|
-
-Then we have the following on-disk mapping:
-
-   [X, X + 64K):		Devid 1		Physical Y1
-   [X + 64K, X + 128K)	Devid 2		Physical Y2
-   Parity for above	Devid 3		Physical Y3
-
-So if we just write 64K into logical bytenr X, we need to read out data
-at logical bytenr [X + 64K, X + 128K), then calculate the parity, write
-into devid3 physical offset Y3.
-
-But with the new stripe tree, we can map [X, X + 64K) into any location
-in the devid 1.
-So is [X + 64K, X + 128K) and the parity.
-
-Then we we write data into logical bytenr [X, X + 64K), then we just
-find a free 64K range in stripe tree of devid 1, and check if we have
-mapped [X + 64K, X + 128) in the stripe tree.
-
-a) Mapped
-
-If we have [X + 64K, X + 128) mapped, then we read that range out,
-update our parity stripe, and write the parity stripe into some newer
-location (CoW), then free up the old stripe.
-
-b) Not mapped
-
-This means we don't have any data write into that range, thus it is all
-zero. We calculate parity with all zero, then find a new location for
-parity in devid 3, write the newly calculated parity and insert a
-mapping for the new parity location.
+# uname -a
+Linux gabrielServer 5.13.19-6-pve #1 SMP PVE 5.13.19-15 (Tue, 29 Mar
+2022 15:59:50 +0200) x86_64 GNU/Linux
 
 
-By this, we in fact decouple the 1:1 mapping for RAID56, and get way
-more flexibility.
-Although this idea no longer follows the strict rotation of RAID5, thus
-it's a middle ground between RAID4 and RAID5.
+# btrfs --version
+btrfs-progs v5.16.2
 
 
-The brilliant idea is introduced mostly to support different chunk
-profiles for zoned devices, but Johannes is working on enabling this for
-non-zoned devices too.
+# btrfs fi show
+Label: 'root'  uuid: cbd269fa-3ee7-4901-a19e-b2de3703bdd2
+        Total devices 1 FS bytes used 21.95GiB
+        devid    1 size 236.53GiB used 24.02GiB path
+/dev/mapper/gabrielServer--vg-root
+
+Label: 'Alpha'  uuid: 79e0fe98-b149-4efe-8d3f-17191104d477
+        Total devices 2 FS bytes used 1.04TiB
+        devid    1 size 2.73TiB used 1.22TiB path /dev/sda1
+        devid    2 size 2.73TiB used 1.22TiB path /dev/sdc1
+
+Label: 'Beta'  uuid: d67ce16d-1145-40ff-9e6c-07bd42e714d9
+        Total devices 1 FS bytes used 170.12GiB
+        devid    1 size 476.94GiB used 221.09GiB path /dev/sdb1
+
+Label: 'Seagate5TB'  uuid: 8458dd65-f70c-4659-bb32-b8a9296303f8
+        Total devices 3 FS bytes used 11.88GiB
+        devid    1 size 4.55TiB used 9.03GiB path /dev/sdf1
+        devid    2 size 4.55TiB used 9.03GiB path /dev/sde1
+        devid    3 size 4.55TiB used 10.00GiB path /dev/sdd1
 
 
-
-Then you may ask why I'm still pushing this way more traditional RAID56J
-solution, the reasons are:
-
-- Complexity
-   The stripe tree is flexible, thus more complex.
-   And AFAIK it will affect all chunk types, not only RAID56.
-   Thus it can be more challenging.
-
-- Currently relies on zoned unit to split extents/stripes
-   Thus I believe Johannes can solve it without any problems.
-
-- I just want a valid way to steal code from dm/md guys :)
-
-Don't get me wrong, I totally believe stripe tree can be the silver
-bullet, but it doesn't prevent us to explore some different (and more
-traditional) ways.
-
->
->
-> Since we need on-disk changes to implement it, could it not be better to=
- rethink the raid56 modes and implement a solution with full CoW, such as =
-variable stripe extents etc? It is likely much more work, but could have b=
-etter performance because it avoids double writes and RMW cycles too.
-
-Well, the journal will have optimizations, e.g. full stripe doesn't need
-to journal its data.
-
-I'll learn (steal code) from dm/md to implement the code.
+# btrfs fi df /mnt/Alpha
+N/A. The drives don't mount, so this just returns information on the root drive.
 
 
-But there are problems related in RAID56, affecting dm/md raid56 too.
+# dmesg
+. . .
+[  458.841547] BTRFS info (device sda1): flagging fs with big metadata feature
+[  458.841551] BTRFS info (device sda1): using free space tree
+[  458.841552] BTRFS info (device sda1): has skinny extents
+[  458.909583] BTRFS critical (device sda1): corrupt leaf: root=5
+block=1436734291968 slot=42 ino=504116, invalid inode transid: has
+13639 expect [0, 13638]
+[  458.909634] BTRFS error (device sda1): block=1436734291968 read
+time tree block corruption detected
+[  458.917694] BTRFS critical (device sda1): corrupt leaf: root=5
+block=1436734291968 slot=42 ino=504116, invalid inode transid: has
+13639 expect [0, 13638]
+[  458.917745] BTRFS error (device sda1): block=1436734291968 read
+time tree block corruption detected
+[  458.917791] BTRFS warning (device sda1): failed to read root (objectid=4): -5
+[  458.918441] BTRFS error (device sda1): open_ctree failed
 
-Like bitrot in one data stripe, while we're writing data into the other
-data stripe.
-Then RWM will read out the bad data stripe, calculate parity, and cause
-the bit rot permanent.
 
-The destructive RMW will not be detected in traditional raid56 with
-traditional fs, but can be detected by btrfs.
+Drives' details:
 
-Thus after the RAID56J project, I'll take more time on that destructive
-RMW problem.
+# smartctl -i /dev/sda
+smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.13.19-6-pve] (local build)
+Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
 
-Thanks,
-Qu
+=== START OF INFORMATION SECTION ===
+Device Model:     HITACHI HUA723030ALA640
+Serial Number:    YHHEWLAA
+LU WWN Device Id: 5 000cca 225d467e7
+Firmware Version: MKAONS00
+User Capacity:    3,000,592,982,016 bytes [3.00 TB]
+Sector Size:      512 bytes logical/physical
+Rotation Rate:    7200 rpm
+Form Factor:      3.5 inches
+Device is:        Not in smartctl database [for details use: -P showall]
+ATA Version is:   ATA8-ACS T13/1699-D revision 4
+SATA Version is:  SATA 2.6, 6.0 Gb/s (current: 6.0 Gb/s)
+Local Time is:    Wed May 11 18:59:21 2022 PDT
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
 
->
-> Thanks
->
-> Forza
->
+
+# smartctl -i /dev/sdc
+smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.13.19-6-pve] (local build)
+Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Model Family:     Hitachi Ultrastar 7K3000
+Device Model:     Hitachi HUA723030ALA640
+Serial Number:    MK0371YHKW73ZD
+LU WWN Device Id: 5 000cca 225f6a74a
+Firmware Version: MKAOA6L0
+User Capacity:    3,000,592,982,016 bytes [3.00 TB]
+Sector Size:      512 bytes logical/physical
+Rotation Rate:    7200 rpm
+Form Factor:      3.5 inches
+Device is:        In smartctl database [for details use: -P show]
+ATA Version is:   ATA8-ACS T13/1699-D revision 4
+SATA Version is:  SATA 2.6, 6.0 Gb/s (current: 6.0 Gb/s)
+Local Time is:    Wed May 11 18:59:26 2022 PDT
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+
+
+I have tried the following:
+
+# mount -t btrfs -oro,rescue=all /dev/sda1 /mnt/Alpha
+mount: /mnt/Alpha: wrong fs type, bad option, bad superblock on
+/dev/sda1, missing codepage or helper program, or other error.
+
+
+# dmesg
+. . .
+[ 1318.518058] BTRFS info (device sda1): flagging fs with big metadata feature
+[ 1318.518064] BTRFS info (device sda1): enabling all of the rescue options
+[ 1318.518065] BTRFS info (device sda1): ignoring data csums
+[ 1318.518065] BTRFS info (device sda1): ignoring bad roots
+[ 1318.518066] BTRFS info (device sda1): disabling log replay at mount time
+[ 1318.518067] BTRFS info (device sda1): using free space tree
+[ 1318.518068] BTRFS info (device sda1): has skinny extents
+[ 1318.553853] BTRFS critical (device sda1): corrupt leaf: root=5
+block=1436734291968 slot=42 ino=504116, invalid inode transid: has
+13639 expect [0, 13638]
+[ 1318.553900] BTRFS error (device sda1): block=1436734291968 read
+time tree block corruption detected
+[ 1318.570731] BTRFS critical (device sda1): corrupt leaf: root=5
+block=1436734291968 slot=42 ino=504116, invalid inode transid: has
+13639 expect [0, 13638]
+[ 1318.570777] BTRFS error (device sda1): block=1436734291968 read
+time tree block corruption detected
+[ 1318.798243] BTRFS critical (device sda1): corrupt leaf:
+block=1436732145664 slot=72 extent bytenr=1436746727424 len=16384
+invalid generation, have 13639 expect (0, 13638]
+[ 1318.798293] BTRFS error (device sda1): block=1436732145664 read
+time tree block corruption detected
+[ 1318.804951] BTRFS critical (device sda1): corrupt leaf:
+block=1436732145664 slot=72 extent bytenr=1436746727424 len=16384
+invalid generation, have 13639 expect (0, 13638]
+[ 1318.805000] BTRFS error (device sda1): block=1436732145664 read
+time tree block corruption detected
+[ 1318.805045] BTRFS error (device sda1): failed to read block groups: -5
+[ 1318.805858] BTRFS error (device sda1): open_ctree failed
+
+
+# btrfs restore -viD /dev/sda1 /mnt/Alpha2
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+Ignoring transid failure
+ERROR: root [4 0] level 0 does not match 1
+
+Couldn't setup device tree
+Could not open root, trying backup super
+warning, device 2 is missing
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+Ignoring transid failure
+ERROR: root [4 0] level 0 does not match 1
+
+Couldn't setup device tree
+Could not open root, trying backup super
+warning, device 2 is missing
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+Ignoring transid failure
+ERROR: root [4 0] level 0 does not match 1
+
+Couldn't setup device tree
+Could not open root, trying backup super
+
+
+# btrfs-find-root /dev/sda1
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+parent transid verify failed on 1436734291968 wanted 13636 found 13639
+Couldn't setup device tree
+Superblock thinks the generation is 13637
+Superblock thinks the level is 0
+Found tree root at 1436734324736 gen 13637 level 0
+Well block 1436731408384(gen: 13654 level: 0) seems good, but
+generation/level doesn't match, want gen: 13637 level: 0
+Well block 1436732293120(gen: 13648 level: 0) seems good, but
+generation/level doesn't match, want gen: 13637 level: 0
+Well block 1436730540032(gen: 13647 level: 0) seems good, but
+generation/level doesn't match, want gen: 13637 level: 0
+
+
+(There is no backup root?)
+
+
+Any help would be greatly appreciated.
