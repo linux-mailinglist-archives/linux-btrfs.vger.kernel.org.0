@@ -2,52 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EEC52751B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 May 2022 05:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355F0527729
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 May 2022 12:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbiEOC5K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 14 May 2022 22:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
+        id S236377AbiEOKzX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 May 2022 06:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbiEOC5H (ORCPT
+        with ESMTP id S233214AbiEOKzW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 14 May 2022 22:57:07 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDD23EA96
-        for <linux-btrfs@vger.kernel.org>; Sat, 14 May 2022 19:57:06 -0700 (PDT)
-Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:50616 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1nq4RM-0007QV-Aa by authid <merlins.org> with srv_auth_plain; Sat, 14 May 2022 19:57:04 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1nq4RL-000rvM-Vx; Sat, 14 May 2022 19:57:04 -0700
-Date:   Sat, 14 May 2022 19:57:03 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220515025703.GA13006@merlins.org>
-References: <20220511000815.GK12542@merlins.org>
- <CAEzrpqcPdf8kNjywtGY-OKDAm-87o+1QDh0qX+0mOSV3D4WEqQ@mail.gmail.com>
- <20220511014827.GL12542@merlins.org>
- <CAEzrpqfzXn0sZNVDud4UfysxvF4mgbq_a_ToJioDFz2wE-d3Rw@mail.gmail.com>
- <20220511150319.GM29107@merlins.org>
- <CAEzrpqcT0fObDa8XFWtvzeqCKom42t5o+xE9atmFjWyHCHmb=g@mail.gmail.com>
- <20220511160009.GN12542@merlins.org>
- <CAEzrpqdO4FX0A1b9xYycJQuMsvzUegSLcze4hpkMOD9dn2F-pQ@mail.gmail.com>
- <20220513144113.GA16501@merlins.org>
- <CAEzrpqfYg=Zf_GYjyvc+WZsnoCjiPTAS-08C_rB=gey74DGUqA@mail.gmail.com>
+        Sun, 15 May 2022 06:55:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1731573F
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 May 2022 03:55:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DDBEF1F8A3
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 May 2022 10:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652612118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=e6Msa0Un3G8MuWNqDe7zey6Q2PNMNby5uWLlDeLdxqY=;
+        b=UVG1HdsktsjJt8qh61EMNoidNGO/f1+Gmxkb3rU0n+pR8ihCcLrmfmIdoGawXQDrpiDlqK
+        pnt3T8nmyBdNyDzmgZxErHJf+NfcnvUhuE742tfsaCNryOfgH9NIiYQ8mAmraenneMZzx9
+        x8hJcMtlJwV3MXL+xjSfSTYzL7Djfrw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3DBBF13491
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 May 2022 10:55:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Iw5pAhbcgGLsfQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 May 2022 10:55:18 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/5] btrfs-progs: almost full support for RAID56J profiles
+Date:   Sun, 15 May 2022 18:54:55 +0800
+Message-Id: <cover.1652611957.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqfYg=Zf_GYjyvc+WZsnoCjiPTAS-08C_rB=gey74DGUqA@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 24.5.124.255
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,30 +57,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 13, 2022 at 12:16:02PM -0400, Josef Bacik wrote:
-> Once Sarah is asleep I'll look at the code, we can probably make this
-> go faster, but you've got a lot of data so I expect it's going to take
-> some time.  Thanks,
+This is the progs companion for the new RAID56J profiles.
 
-It's still running on my side, almost 4 days. Is there any way to know
-whether I'm close to 100%, or not really?
+Unlike kernel part, progs doesn't really need to implement the full
+journal, thus the following basic features should be enough:
 
-numbers go up and down, so it's not converging towards a bigger number.
+- Mkfs support
+- Check support (both original and lowmem mode)
+- Print tree support
 
-checksum verify failed on 12511716491264 wanted 0xb8b7d979 found 0xca46ff1e
-checksum verify failed on 12511716409344 wanted 0x67a73a8d found 0xbdc10807
-checksum verify failed on 12511716638720 wanted 0x001ed505 found 0x4af8413f
-checksum verify failed on 12511724437504 wanted 0x275e729d found 0xe4908156
-checksum verify failed on 13577574744064 wanted 0x93a1e209 found 0x29d35de7
-checksum verify failed on 12512041566208 wanted 0xe16cec19 found 0xbb3739bd
-checksum verify failed on 913014784 wanted 0x4c3d9d32 found 0x561dcfd3
-checksum verify failed on 15646027530240 wanted 0x9969c0a6 found 0x7dfb22f6
-checksum verify failed on 9227783651328 wanted 0xc6a441d7 found 0x7b82e991
-checksum verify failed on 9227783700480 wanted 0x03f1307a found 0xd2d1a1c4
-checksum verify failed on 9227817467904 wanted 0x253e13f0 found 0xb2ca98f5
-checksum verify failed on 12511748128768 wanted 0x5a02792e found 0x2fd56fdb
-(...)
+The final patch is a fix for a leakage of path which is exposed during
+kernel development.
+
+Qu Wenruo (5):
+  btrfs-progs: introduce the basic support for RAID56J feature
+  btrfs-progs: mkfs: add support for RAID56J creation
+  btrfs-progs: check: take per device reservation into consideration
+  btrfs-progs: print-tree: add support for per_dev_reserved of chunk
+    item
+  btrfs-progs: check/lowmem: fix path leakage when dev extents are
+    invalid
+
+ check/common.h              |   7 ++-
+ check/main.c                |  16 ++++--
+ check/mode-lowmem.c         |  17 ++++--
+ cmds/filesystem-usage.c     |   6 ++-
+ cmds/rescue-chunk-recover.c |  13 +++--
+ common/fsfeatures.c         |   9 ++++
+ common/utils.c              |   6 ++-
+ kernel-shared/ctree.h       |  42 +++++++++++++--
+ kernel-shared/extent-tree.c |  18 +++++--
+ kernel-shared/print-tree.c  |   5 +-
+ kernel-shared/volumes.c     | 105 +++++++++++++++++++++++++++++++-----
+ kernel-shared/volumes.h     |   2 +
+ mkfs/main.c                 |   3 ++
+ 13 files changed, 205 insertions(+), 44 deletions(-)
+
 -- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+2.36.1
+
