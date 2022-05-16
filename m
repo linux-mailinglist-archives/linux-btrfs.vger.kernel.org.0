@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 180885285FD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 May 2022 15:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985D0528638
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 May 2022 16:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbiEPNya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 May 2022 09:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        id S242718AbiEPOAw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 May 2022 10:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbiEPNyY (ORCPT
+        with ESMTP id S242884AbiEPOAu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 May 2022 09:54:24 -0400
+        Mon, 16 May 2022 10:00:50 -0400
 Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAD9272A
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 May 2022 06:54:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B786439170
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 May 2022 07:00:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1652709263; x=1684245263;
+  t=1652709648; x=1684245648;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=xnJmZYtrUHPz/1pW+2iKsxdcyh17EmGmxKC7iEmOkHc=;
-  b=liUwyZJWyroKxxkaFgiMP+K5KnJjw9fCrd4LIZ9kdcD4u9H1rmuwld5a
-   BNORXo91mBhj5YricH33/W4VpW6iiGt2KL39JyO6c733sVxjy9ZCQ4Kkw
-   QHN6h4227YT/pMYKi/osFPFv+GpYNAQ/5Khx1DSfjaH/Jp6vMNMMScV09
-   i58FaYvs4N/mmt1J3GfgrzAhNb77ukVBrIqzXAOQjIUaCEYkuvPOrgFXk
-   SnvmZCs22lY5ulTTO0NpYwHJ/YEALbLpNTK0soZ6zqmtBF9bM2IrngeCC
-   LQiY0iz4JJOt9L7aoG6Jo1akvrklrqjjnGiIJj2DWkuaEXJqhuxQKnS5r
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.91,229,1647273600"; 
-   d="scan'208";a="199259473"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 16 May 2022 21:54:21 +0800
-IronPort-SDR: 57MF+D1w8npCYEungyZ14vDgwVhzZ9I58dxFrIZSq+YwIS9BE8djOV/TjUfSu68bjn3kWlrXMd
- RNwF4FKV/d+O41ltPRDQ6k2S13ZYYntNisSVQT8j7Y9vtI3aYAYvnnvrEdU4j+82yvyqxbhbnJ
- takU3w/yQr3W5zvHnacezUvmVZXjnucN6D9QmvQ11yTDsKf6G3NS2NT/F5+LKeAYasTX4dizUh
- FbnDyDG/CWiYcYt2GlKrF4+ZGRpInfA/5cbU5hkg05G0CwLFJATJlmTW8wZxxmZmqQfdK6649E
- IqN8wQ1zGq43DeGswJLJF7IF
+  bh=bpKOdUAAE3c6nvdpBu7z/5CbYlPeXQknBERi9/T0QUU=;
+  b=FG5WtLrwl4kAXaOmb1VzvTy8rWMOkWxWHLTCslruaqA8E+YY9wh7i6qa
+   N2mLhQjSXhq0eQyuVI5Wt7LvG4CJBuNklNnmCPgJE5P7xTVXezEcZ21l8
+   rYR894jYmMjGOPQzXFMZ2aVWEQLXh/GHPFiIvjv7JHBfP5aSuVd/R5KY7
+   ikhNSGbGwQdh63forjfIyCIYb4+C8H5/PxNwEKzSZtcBdQKA6ZrCe4MSL
+   NsfY/juuhn/N38FyvyYA36DSjxGvdZPegAzmWn86/oFgUIc1MRZEMux7K
+   aN/72MhgcqzETR20ecwY7Hkgx+OBIRenBa5/mcOloXxtUkCKKCXTzV19Y
+   A==;
+X-IronPort-AV: E=Sophos;i="5.91,230,1647273600"; 
+   d="scan'208";a="199259926"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 16 May 2022 22:00:47 +0800
+IronPort-SDR: U3GOYqg7SuWXKyVrQKxWmvHuiPPc6lAhUi761uVfVjiTiB/hLqpdaPN5uHnC1un8SsHZSBBQ9w
+ IeTohJi7GLK/PxjJI6ix20N158jCLDieMo8emjMJjRcB36yNxmagFaDeQlJmLtGiJHNJ+UgnCG
+ DRKxZ+E1P5yb6mLkScjpWytAYBf+aNi+b+zmMu7hBuo0fKn2zs5HXQ0w/YYLROsRKPDM57UfuR
+ x1kDy+eqJAIpy8v2Z1fjr8NFAajW6iuokX0/bDaZ6nNeq4Qrz9oNQvIDaHN9Rl9fVltEa0GFRK
+ 4SEFZ5c92SB8ngWM/9ICBdtZ
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 May 2022 06:18:13 -0700
-IronPort-SDR: JhFBM2tcobHGOKvbyuIPgeRNfEpox9OGBLiYDkN2MTJZAgePljdqylLXQxTo5CfJbWfbLj+GDS
- GZ0d9PCmQjMc1uEPy7yqw1wyW1OtJ3A75Fa/CtYleeVhPHx/xAhcjVfeUCXYah798mhctUJhR8
- YxA8tB8R4lr/ss8Hzr403c5d+MDQysgv21dkyW9a/Ur60aiFCKo2etXtNeaVmjwjaAy6FqK2HW
- KqJ3ozUGfeCpcrXUZFwQZjy0wj/Y/7JJfSQ+mPbENEhSdz55nblf/vt4c1OYY+IXmuCJFImi4u
- AOA=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 May 2022 06:24:39 -0700
+IronPort-SDR: +rszIcdnXIblP7n24Ce7QZIW0TDuKOEN+p+HfPjFo2HO86UBFsB0mKTE9MzXqiH3zFZehIVV0/
+ xEAH/GR42lkq5VPCz5Pj4omSP7AJrH8y4il5K/5qW/8H/3oGTeOZBfQn3B8SvJgOMSwKmzH7Eg
+ BIgxPcjJDW1SP28ddYI9Ph6tJTmSbn8AbcatqmID1NZvU8fFgk/VLa0/MZExLAVP85+g95BBlQ
+ xE0wf/6iTUAkglf+Bwt5KqWm+N6/F/DTI+8ob5cZn0SJuw34oQJN6okbaJM242dY7SqSeJDIHt
+ 6W8=
 WDCIronportException: Internal
 Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 May 2022 06:54:22 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 May 2022 07:00:46 -0700
 Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4L212N4Ph8z1SVp3
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 May 2022 06:54:20 -0700 (PDT)
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4L219p2Nxdz1Rvlx
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 May 2022 07:00:46 -0700 (PDT)
 Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)"
         header.d=opensource.wdc.com
@@ -57,28 +57,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
         opensource.wdc.com; h=content-transfer-encoding:content-type
         :in-reply-to:organization:from:references:to:content-language
         :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1652709259; x=1655301260; bh=xnJmZYtrUHPz/1pW+2iKsxdcyh17EmGmxKC
-        7iEmOkHc=; b=UUHn+1Vyu14CMfOaCMgXraCj/MTu6WqTYOUVrT+4PUwPlX5ziiU
-        pSIvphH10gCc67fVq3XGywhvUeUqkqYl3C+JIeYNZL256XrllrM58UhqzOZaujF3
-        cbmBklJPJrOqfUwuSurt8JpO1UwMmikJGH4hvh5Qwx4pN/E2XnvxaPmNybMpFT83
-        xSpG9RchPPentNTApEt/m2/xRnaVgRJJKjnepi11fq5V05sUwhnpCcvU0f61+fwA
-        S+fDCn+IEtVKy285CWS8em7niz60i9Y+TCt+uHgrHXnSyVIC4Q8Mw6/XAy+RhYGq
-        bnKvHkQ9zRQTWYTH/DZejGfNQWFm7h+DJZQ==
+        1652709644; x=1655301645; bh=bpKOdUAAE3c6nvdpBu7z/5CbYlPeXQknBER
+        i9/T0QUU=; b=Jp0GkKDLoN7FWyYI0wYVxF/I7sjzP+tyRrHSSKSmJ+bGfD25sY3
+        slUDOReSbsT4UIq06mc/MTaSDkFM3p8huF4Vwmc+0Jc7l5PwDUC6dIovth0GsuJC
+        KyCGxsr5MndBydtp6i5KHbuupuakUpgjQdqZKWn29VxVDpGTTcucxOLv+pmOlxhV
+        Isnj0VX0do95Hs+WPubmzI9EzjkH33GSe/CAn0TqQE5cuOF5eY8uye41S9FvZv6r
+        YvemIRAlCCER2UYUlbDjJe/iXF8HEcoJNGI4c0+Z+2IIzq8mG8UiAZA0cdlVpIh/
+        ftAG9Vqk4fwZxMsjg3K3ratsNZTMegJx6lQ==
 X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
 Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
         by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qKu0MnwDef_K for <linux-btrfs@vger.kernel.org>;
-        Mon, 16 May 2022 06:54:19 -0700 (PDT)
+        with ESMTP id E3d6dRweWqOO for <linux-btrfs@vger.kernel.org>;
+        Mon, 16 May 2022 07:00:44 -0700 (PDT)
 Received: from [10.225.1.43] (unknown [10.225.1.43])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4L212D5R0Cz1Rvlc;
-        Mon, 16 May 2022 06:54:12 -0700 (PDT)
-Message-ID: <487c9368-36fe-25ec-7a76-f6aa50c4d3d5@opensource.wdc.com>
-Date:   Mon, 16 May 2022 15:54:10 +0200
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4L219d6jhvz1Rvlc;
+        Mon, 16 May 2022 07:00:37 -0700 (PDT)
+Message-ID: <d2fd2554-19c3-6ca3-6175-b8e8563986a5@opensource.wdc.com>
+Date:   Mon, 16 May 2022 16:00:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH v4 01/13] block: make blkdev_nr_zones and
- blk_queue_zone_no generic for npo2 zsze
+Subject: Re: [PATCH v4 02/13] block: allow blk-zoned devices to have
+ non-power-of-2 zone size
 Content-Language: en-US
 To:     Pankaj Raghav <p.raghav@samsung.com>, axboe@kernel.dk,
         naohiro.aota@wdc.com, Johannes.Thumshirn@wdc.com,
@@ -95,14 +95,13 @@ Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sagi Grimberg <sagi@grimberg.me>, dm-devel@redhat.com,
         jiangbo.365@bytedance.com, Chaitanya Kulkarni <kch@nvidia.com>,
         linux-fsdevel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Hannes Reinecke <hare@suse.de>
+        Luis Chamberlain <mcgrof@kernel.org>
 References: <20220516133921.126925-1-p.raghav@samsung.com>
- <CGME20220516133924eucas1p1817f306e3f2442088bf49ab513657cbe@eucas1p1.samsung.com>
- <20220516133921.126925-2-p.raghav@samsung.com>
+ <CGME20220516133925eucas1p1414fab2cfa7da1d6258315cbd33e1685@eucas1p1.samsung.com>
+ <20220516133921.126925-3-p.raghav@samsung.com>
 From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Organization: Western Digital Research
-In-Reply-To: <20220516133921.126925-2-p.raghav@samsung.com>
+In-Reply-To: <20220516133921.126925-3-p.raghav@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -116,79 +115,154 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 2022/05/16 15:39, Pankaj Raghav wrote:
-> Adapt blkdev_nr_zones and blk_queue_zone_no function so that it can
-> also work for non-power-of-2 zone sizes.
+> Checking if a given sector is aligned to a zone is a common
+> operation that is performed for zoned devices. Add
+> blk_queue_is_zone_start helper to check for this instead of opencoding it
+> everywhere.
 > 
-> As the existing deployments of zoned devices had power-of-2
-> assumption, power-of-2 optimized calculation is kept for those devices.
+> Convert the calculations on zone size to be generic instead of relying on
+> power_of_2 based logic in the block layer using the helpers wherever
+> possible.
 > 
-> There are no direct hot paths modified and the changes just
-> introduce one new branch per call.
+> The only hot path affected by this change for power_of_2 zoned devices
+> is in blk_check_zone_append() but blk_queue_is_zone_start() helper is
+> used to optimize the calculation for po2 zone sizes. Note that the append
+> path cannot be accessed by direct raw access to the block device but only
+> through a filesystem abstraction.
+> 
+> Finally, allow non power of 2 zoned devices provided that their zone
+> capacity and zone size are equal. The main motivation to allow non
+> power_of_2 zoned device is to remove the unmapped LBA between zcap and
+> zsze for devices that cannot have a power_of_2 zcap.
 > 
 > Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-> Reviewed by: Adam Manzanares <a.manzanares@samsung.com>
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
 > Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
 > ---
->  block/blk-zoned.c      | 13 ++++++++++---
->  include/linux/blkdev.h |  8 +++++++-
->  2 files changed, 17 insertions(+), 4 deletions(-)
+>  block/blk-core.c       |  3 +--
+>  block/blk-zoned.c      | 27 +++++++++++++++++++++------
+>  include/linux/blkdev.h | 22 ++++++++++++++++++++++
+>  3 files changed, 44 insertions(+), 8 deletions(-)
 > 
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index f305cb66c..b7051b7ea 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -634,8 +634,7 @@ static inline blk_status_t blk_check_zone_append(struct request_queue *q,
+>  		return BLK_STS_NOTSUPP;
+>  
+>  	/* The bio sector must point to the start of a sequential zone */
+> -	if (pos & (blk_queue_zone_sectors(q) - 1) ||
+> -	    !blk_queue_zone_is_seq(q, pos))
+> +	if (!blk_queue_is_zone_start(q, pos) || !blk_queue_zone_is_seq(q, pos))
+>  		return BLK_STS_IOERR;
+>  
+>  	/*
 > diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-> index 38cd840d8..140230134 100644
+> index 140230134..cfc2fb804 100644
 > --- a/block/blk-zoned.c
 > +++ b/block/blk-zoned.c
-> @@ -111,16 +111,23 @@ EXPORT_SYMBOL_GPL(__blk_req_zone_write_unlock);
->   * blkdev_nr_zones - Get number of zones
->   * @disk:	Target gendisk
->   *
-> - * Return the total number of zones of a zoned block device.  For a block
-> - * device without zone capabilities, the number of zones is always 0.
-> + * Return the total number of zones of a zoned block device, including the
-> + * eventual small last zone if present. For a block device without zone
-> + * capabilities, the number of zones is always 0.
->   */
->  unsigned int blkdev_nr_zones(struct gendisk *disk)
->  {
->  	sector_t zone_sectors = blk_queue_zone_sectors(disk->queue);
-> +	sector_t capacity = get_capacity(disk);
+> @@ -289,10 +289,10 @@ int blkdev_zone_mgmt(struct block_device *bdev, enum req_opf op,
+>  		return -EINVAL;
 >  
->  	if (!blk_queue_is_zoned(disk->queue))
->  		return 0;
-> -	return (get_capacity(disk) + zone_sectors - 1) >> ilog2(zone_sectors);
-> +
-> +	if (is_power_of_2(zone_sectors))
-> +		return (capacity + zone_sectors - 1) >>
-> +		       ilog2(zone_sectors);
-
-Why the line break here ? This fits on one line, no ?
-
-> +
-> +	return div64_u64(capacity + zone_sectors - 1, zone_sectors);
->  }
->  EXPORT_SYMBOL_GPL(blkdev_nr_zones);
+>  	/* Check alignment (handle eventual smaller last zone) */
+> -	if (sector & (zone_sectors - 1))
+> +	if (!blk_queue_is_zone_start(q, sector))
+>  		return -EINVAL;
 >  
+> -	if ((nr_sectors & (zone_sectors - 1)) && end_sector != capacity)
+> +	if (!blk_queue_is_zone_start(q, nr_sectors) && end_sector != capacity)
+>  		return -EINVAL;
+>  
+>  	/*
+> @@ -490,14 +490,29 @@ static int blk_revalidate_zone_cb(struct blk_zone *zone, unsigned int idx,
+>  	 * smaller last zone.
+>  	 */
+>  	if (zone->start == 0) {
+> -		if (zone->len == 0 || !is_power_of_2(zone->len)) {
+> -			pr_warn("%s: Invalid zoned device with non power of two zone size (%llu)\n",
+> -				disk->disk_name, zone->len);
+> +		if (zone->len == 0) {
+> +			pr_warn("%s: Invalid zone size",
+> +				disk->disk_name);
+
+This fits on one line, no ?
+
+> +			return -ENODEV;
+> +		}
+> +
+> +		/*
+> +		 * Don't allow zoned device with non power_of_2 zone size with
+> +		 * zone capacity less than zone size.
+> +		 */
+> +		if (!is_power_of_2(zone->len) &&
+> +		    zone->capacity < zone->len) {
+> +			pr_warn("%s: Invalid zoned size with non power of 2 zone size and zone capacity < zone size",
+> +				disk->disk_name);
+
+Very long... What about:
+
+pr_warn("%s: Invalid zone capacity for non power of 2 zone size",
+	disk->disk_name);
+
+>  			return -ENODEV;
+>  		}
+>  
+>  		args->zone_sectors = zone->len;
+> -		args->nr_zones = (capacity + zone->len - 1) >> ilog2(zone->len);
+> +		/*
+> +		 * Division is used to calculate nr_zones for both power_of_2
+> +		 * and non power_of_2 zone sizes as it is not in the hot path.
+> +		 */
+
+This comment is not very useful.
+
+> +		args->nr_zones = div64_u64(capacity + zone->len - 1, zone->len);
+>  	} else if (zone->start + args->zone_sectors < capacity) {
+>  		if (zone->len != args->zone_sectors) {
+>  			pr_warn("%s: Invalid zoned device with non constant zone size\n",
 > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index 1b24c1fb3..22fe512ee 100644
+> index 22fe512ee..32d7bd7b1 100644
 > --- a/include/linux/blkdev.h
 > +++ b/include/linux/blkdev.h
-> @@ -675,9 +675,15 @@ static inline unsigned int blk_queue_nr_zones(struct request_queue *q)
->  static inline unsigned int blk_queue_zone_no(struct request_queue *q,
->  					     sector_t sector)
->  {
-> +	sector_t zone_sectors = blk_queue_zone_sectors(q);
-> +
->  	if (!blk_queue_is_zoned(q))
->  		return 0;
-> -	return sector >> ilog2(q->limits.chunk_sectors);
-> +
-> +	if (is_power_of_2(zone_sectors))
-> +		return sector >> ilog2(zone_sectors);
-> +
-> +	return div64_u64(sector, zone_sectors);
+> @@ -686,6 +686,22 @@ static inline unsigned int blk_queue_zone_no(struct request_queue *q,
+>  	return div64_u64(sector, zone_sectors);
 >  }
 >  
+> +static inline bool blk_queue_is_zone_start(struct request_queue *q, sector_t sec)
+> +{
+> +	sector_t zone_sectors = blk_queue_zone_sectors(q);
+> +	u64 remainder = 0;
+> +
+> +	if (!blk_queue_is_zoned(q))
+> +		return false;
+> +
+> +	if (is_power_of_2(zone_sectors))
+> +		return IS_ALIGNED(sec, zone_sectors);
+> +
+> +	div64_u64_rem(sec, zone_sectors, &remainder);
+> +	/* if there is a remainder, then the sector is not aligned */
+
+Hmmm... Fairly obvious. Not sure this comment is useful.
+
+> +	return remainder == 0;
+> +}
+> +
 >  static inline bool blk_queue_zone_is_seq(struct request_queue *q,
+>  					 sector_t sector)
+>  {
+> @@ -732,6 +748,12 @@ static inline unsigned int blk_queue_zone_no(struct request_queue *q,
+>  {
+>  	return 0;
+>  }
+> +
+> +static inline bool blk_queue_is_zone_start(struct request_queue *q, sector_t sec)
+> +{
+> +	return false;
+> +}
+> +
+>  static inline unsigned int queue_max_open_zones(const struct request_queue *q)
+>  {
+>  	return 0;
 
 
 -- 
