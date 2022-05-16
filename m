@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFBE528719
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 May 2022 16:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F90528716
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 May 2022 16:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244563AbiEPOby (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 May 2022 10:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S244473AbiEPObw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 May 2022 10:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244456AbiEPObu (ORCPT
+        with ESMTP id S244468AbiEPObv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 May 2022 10:31:50 -0400
+        Mon, 16 May 2022 10:31:51 -0400
 Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04C527B02
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 May 2022 07:31:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773501D30A
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 May 2022 07:31:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1652711508; x=1684247508;
+  t=1652711509; x=1684247509;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jFTV7i7Hh3OaUG5j4fuJXk1l0TFnopVwjp9A7WCDbMM=;
-  b=Z9KR8i6OUuVYFHUG6MKxbGRGy7gqXaqWgTE5KmUoKgDsc0LcGokNzOlT
-   9ik8NdNSswZR9PfiwbqsH+rLRH7WBHWww+KBogfsqkEvx8CLX4f088Jvs
-   9anOIiDc/48KnV3jXB/mGFcghO3ma5prnMk6aaDoCBXlc40I/OKrIRyNP
-   CMBeFtxKUNoN4Ml8ovSuaFr293Kps+3qSonxDqgCw2Vasec/CSgeoJXKq
-   esIn6VLnMEC5debfdl2zDpW6uXq4XwKNAHljvowkk3qgcTR1JqbBiq5qu
-   26dVIsGiFgJgSeKcqyPiEeWPlAYmwCEBM9aTrBeR2+M21y11qUmugRYjy
-   Q==;
+  bh=N7IaAZK2OhkBxOuVYjm43d/ypc+u7QsecE/jcO5Z1Sk=;
+  b=XklpjfSqskxks95FeQOVsDXVP+RgDcFDf8N4A03Os7hqabhOdhdqBL3M
+   jCtcgGYZP3Gks3v4wJ4zKWPOrQhguO7aIfzZUXKVXEzleJa52/EfogPUK
+   0h8nkUzgUuEki1KDs0S1QuCkiuAt+LJAygx15e2loGJzcFPHxV3FaIwpH
+   SYzWL2vFgWlU9jd/GffYJJSLpgoifJDv9MDYWXaEJNTE3mv34BrUU5Np3
+   CnLdToxxH5eWH/BQ9eSuI8RjiUBtygkQr6T6XjbzOk21bJmuKBsz/KgN8
+   wln3g8MWOEBRZDQ+d7qL6dgo+PYkGI57hN5WoKNCnVinhFSibRuKU2Gib
+   g==;
 X-IronPort-AV: E=Sophos;i="5.91,230,1647273600"; 
-   d="scan'208";a="205309209"
+   d="scan'208";a="205309210"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 16 May 2022 22:31:47 +0800
-IronPort-SDR: MNqj4YmeN8kTBl5PL2M22/AHgawnsfsFaA+S/ELK6Q6xEWy+R62UiSjDwgy9NJPN/RS1QHIlFA
- B1WprAv0ezF61F/uVKxHeWzuObDiO8brz6y3fc9ENyURQCmz+7xAU7cvQ1yQx24tvADRL9JysZ
- nj4Srnx/ffMBuKW+1MUZYHCmsXly2Daw8XZYrZuiOhwUO6bqZvRZbH+Hoet1XUk2wMShVe7b/G
- 8uulSvd3CwQ7GLuqJzX5STz00B/mVXbp0ZdnA7Z+dxg+fqE5p7mXizMDjJzUUwlra1lDzBG/31
- VpQBOg6x7fjJD58UgWWV1alQ
+  by ob1.hgst.iphmx.com with ESMTP; 16 May 2022 22:31:48 +0800
+IronPort-SDR: G/QEK9wRtNVmij3XDdN/Y05g9Lbfi7Ckl64LL5MUtuyJx0o4uB9AFVOwmGn+G1g6qYr9qZKhKP
+ alCVIO4gf87axStmK3/imUSpuVdOj/D4B8R7HSrXOmQ1X5W0DriZ4Z8+M5HI/BzIGo2/Z7TZ9n
+ 3mF4MoOlP4jA8ycW3wpL9Mz7r2b6mM1D8yCoAnVjHRVPe+3KRDoffzqnSoUdW/mbFVoNHLPYrG
+ lyDo0O46emw1tVW4wPy4ne/dc85EeVU2m/epn6PO11gsPnDqaa1cqjt87E5dMhJfG2RtZPMeWi
+ 7OdO4vFQ5AE95PwZjfNKel28
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
   by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 May 2022 06:57:29 -0700
-IronPort-SDR: cJiXOciLLqW8t1ixOqTPTBoSRdmMsIHD7eeOGLdc421TMKDFE9gIoqfGoQHsfffpp/0opRKMv9
- 2se6isOQ1niKELK+FCJ0jWFdZgiB17RopIJEel5MwrlGYm+RNXVYqM9bQSdYyohiHeEdQPFKka
- F5FMLn73taeVMSz/pvYJb5FSjTqZOwM7GC3jTw8TtKOl6fiB+09jr3nlftJHpYTlvr54VfQ6fp
- pyGA3xsUIexVXxjrwGxIVPvPu+QlPqf8X+gDmhBhBrgDwU4wjEsS3RDpGiUlY/GBiov2kx1ZRY
- T9c=
+IronPort-SDR: RmnJrJcV3CGzcAKEF/7zQIPWWa4O+mmmyEg6N5/Z2ORD8wkF12zypz4JzMJZ1X5+C5At7ohU3L
+ b+mtRsVNzZpEQH67nekGnU/M3D/1jodqHm7oiM3q69UuaZWkZo36D5b7ec4CzUlbaMG5BO+8Ay
+ tScUZL00et9sFEj+SKbBSxr9N8FBtrsRpmiZWkgCtWsHGYLZRdWw+QAzEb9d36PZ7RM8OW7awh
+ lOC5Ftf7belCZtcb7vGJZBseGt39D4r4pMpnk3aA64l2EMlQpWtmHk+bDZhMeVPsdLszYeXeaL
+ jZo=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 16 May 2022 07:31:47 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 16 May 2022 07:31:48 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [RFC ONLY 1/8] btrfs: add raid stripe tree definitions
-Date:   Mon, 16 May 2022 07:31:36 -0700
-Message-Id: <06a217ce02243fe88b9649d689df89eea7a570c7.1652711187.git.johannes.thumshirn@wdc.com>
+Subject: [RFC ONLY 2/8] btrfs: move btrfs_io_context to volumes.h
+Date:   Mon, 16 May 2022 07:31:37 -0700
+Message-Id: <6bd71ff55e48686fc917736e686143ca7d5d2c64.1652711187.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1652711187.git.johannes.thumshirn@wdc.com>
 References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
@@ -68,96 +68,122 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add definitions for the raid-stripe-tree. This tree will hold informatioin
-about the on-disk layout of the stripes in a RAID set.
+In preparation for upcoming changes, move 'struct btrfs_io_context' to
+volumes.h, so we can use it outside of volumes.c
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/ctree.h                | 28 ++++++++++++++++++++++++++++
- include/uapi/linux/btrfs_tree.h | 17 +++++++++++++++++
- 2 files changed, 45 insertions(+)
+ fs/btrfs/volumes.h | 90 +++++++++++++++++++++++-----------------------
+ 1 file changed, 45 insertions(+), 45 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 7328fb17b7f5..20aa2ebac7cd 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1878,6 +1878,34 @@ BTRFS_SETGET_FUNCS(timespec_nsec, struct btrfs_timespec, nsec, 32);
- BTRFS_SETGET_STACK_FUNCS(stack_timespec_sec, struct btrfs_timespec, sec, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_timespec_nsec, struct btrfs_timespec, nsec, 32);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index bd297f23d19e..894d289a3b50 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -32,6 +32,51 @@ struct btrfs_io_geometry {
+ 	u64 raid56_stripe_offset;
+ };
  
-+BTRFS_SETGET_FUNCS(stripe_extent_devid, struct btrfs_stripe_extent, devid, 64);
-+BTRFS_SETGET_FUNCS(stripe_extent_offset, struct btrfs_stripe_extent, offset, 64);
-+BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_devid, struct btrfs_stripe_extent, devid, 64);
-+BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_offset, struct btrfs_stripe_extent, offset, 64);
++struct btrfs_io_stripe {
++	struct btrfs_device *dev;
++	u64 physical;
++	u64 length; /* only used for discard mappings */
++};
 +
-+static inline struct btrfs_stripe_extent *btrfs_stripe_extent_nr(
-+					 struct btrfs_dp_stripe *dps, int nr)
-+{
-+	unsigned long offset = (unsigned long)dps;
-+	offset += offsetof(struct btrfs_dp_stripe, extents);
-+	offset += nr * sizeof(struct btrfs_stripe_extent);
-+	return (struct btrfs_stripe_extent *)offset;
-+}
-+
-+static inline u64 btrfs_stripe_extent_devid_nr(const struct extent_buffer *eb,
-+					       struct btrfs_dp_stripe *dps,
-+					       int nr)
-+{
-+	return btrfs_stripe_extent_devid(eb, btrfs_stripe_extent_nr(dps, nr));
-+}
-+
-+static inline u64 btrfs_stripe_extent_offset_nr(const struct extent_buffer *eb,
-+						struct btrfs_dp_stripe *dps,
-+						int nr)
-+{
-+	return btrfs_stripe_extent_offset(eb, btrfs_stripe_extent_nr(dps, nr));
-+}
-+
- /* struct btrfs_dev_extent */
- BTRFS_SETGET_FUNCS(dev_extent_chunk_tree, struct btrfs_dev_extent,
- 		   chunk_tree, 64);
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index b069752a8ecf..a2d28d83cc96 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -56,6 +56,9 @@
- /* Holds the block group items for extent tree v2. */
- #define BTRFS_BLOCK_GROUP_TREE_OBJECTID 11ULL
- 
-+/* tracks RAID stripes in block groups. */
-+#define BTRFS_RAID_STRIPE_TREE_OBJECTID 12ULL
-+
- /* device stats in the device tree */
- #define BTRFS_DEV_STATS_OBJECTID 0ULL
- 
-@@ -264,6 +267,8 @@
-  */
- #define BTRFS_QGROUP_RELATION_KEY       246
- 
-+#define BTRFS_RAID_STRIPE_KEY 247
++/*
++ * Context for IO subsmission for device stripe.
++ *
++ * - Track the unfinished mirrors for mirror based profiles
++ *   Mirror based profiles are SINGLE/DUP/RAID1/RAID10.
++ *
++ * - Contain the logical -> physical mapping info
++ *   Used by submit_stripe_bio() for mapping logical bio
++ *   into physical device address.
++ *
++ * - Contain device replace info
++ *   Used by handle_ops_on_dev_replace() to copy logical bios
++ *   into the new device.
++ *
++ * - Contain RAID56 full stripe logical bytenrs
++ */
++struct btrfs_io_context {
++	refcount_t refs;
++	atomic_t stripes_pending;
++	struct btrfs_fs_info *fs_info;
++	u64 map_type; /* get from map_lookup->type */
++	bio_end_io_t *end_io;
++	struct bio *orig_bio;
++	void *private;
++	atomic_t error;
++	int max_errors;
++	int num_stripes;
++	int mirror_num;
++	int num_tgtdevs;
++	int *tgtdev_map;
++	/*
++	 * logical block numbers for the start of each stripe
++	 * The last one or two are p/q.  These are sorted,
++	 * so raid_map[0] is the start of our full stripe
++	 */
++	u64 *raid_map;
++	struct btrfs_io_stripe stripes[];
++};
 +
  /*
-  * Obsolete name, see BTRFS_TEMPORARY_ITEM_KEY.
-  */
-@@ -488,6 +493,18 @@ struct btrfs_free_space_header {
- 	__le64 num_bitmaps;
- } __attribute__ ((__packed__));
+  * Use sequence counter to get consistent device stat data on
+  * 32-bit processors.
+@@ -354,51 +399,6 @@ static inline void btrfs_bio_free_csum(struct btrfs_bio *bbio)
+ 	}
+ }
  
-+struct btrfs_stripe_extent {
-+	/* btrfs device-id this raid extent  lives on */
-+	__le64 devid;
-+	/* offset from  the devextent start */
-+	__le64 offset;
-+} __attribute__ ((__packed__));
-+
-+struct btrfs_dp_stripe {
-+	/* array of stripe extents this stripe is comprised of */
-+	struct btrfs_stripe_extent extents;
-+} __attribute__ ((__packed__));
-+
- #define BTRFS_HEADER_FLAG_WRITTEN	(1ULL << 0)
- #define BTRFS_HEADER_FLAG_RELOC		(1ULL << 1)
- 
+-struct btrfs_io_stripe {
+-	struct btrfs_device *dev;
+-	u64 physical;
+-	u64 length; /* only used for discard mappings */
+-};
+-
+-/*
+- * Context for IO subsmission for device stripe.
+- *
+- * - Track the unfinished mirrors for mirror based profiles
+- *   Mirror based profiles are SINGLE/DUP/RAID1/RAID10.
+- *
+- * - Contain the logical -> physical mapping info
+- *   Used by submit_stripe_bio() for mapping logical bio
+- *   into physical device address.
+- *
+- * - Contain device replace info
+- *   Used by handle_ops_on_dev_replace() to copy logical bios
+- *   into the new device.
+- *
+- * - Contain RAID56 full stripe logical bytenrs
+- */
+-struct btrfs_io_context {
+-	refcount_t refs;
+-	atomic_t stripes_pending;
+-	struct btrfs_fs_info *fs_info;
+-	u64 map_type; /* get from map_lookup->type */
+-	bio_end_io_t *end_io;
+-	struct bio *orig_bio;
+-	void *private;
+-	atomic_t error;
+-	int max_errors;
+-	int num_stripes;
+-	int mirror_num;
+-	int num_tgtdevs;
+-	int *tgtdev_map;
+-	/*
+-	 * logical block numbers for the start of each stripe
+-	 * The last one or two are p/q.  These are sorted,
+-	 * so raid_map[0] is the start of our full stripe
+-	 */
+-	u64 *raid_map;
+-	struct btrfs_io_stripe stripes[];
+-};
+-
+ struct btrfs_device_info {
+ 	struct btrfs_device *dev;
+ 	u64 dev_offset;
 -- 
 2.35.1
 
