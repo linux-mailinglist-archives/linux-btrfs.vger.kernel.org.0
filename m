@@ -2,305 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B434D529BA6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 10:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DFA529BA9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 10:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241485AbiEQIBm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 04:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S242204AbiEQIBq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 04:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242296AbiEQIA5 (ORCPT
+        with ESMTP id S242521AbiEQIB0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 04:00:57 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA912636
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 01:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652774450;
-        bh=9SoheUVmuLGLFStrikvhVBAHSizBwV6Nnt4T5Z750Bk=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=fvuiiSKqo11qr5FaHz9A8/FZBXidYH6rnfw4/iI2P4AeLyR0xoEvyz2wZ3ORVkwj6
-         osJdL8pRftN+QxiVSSeef7eCyN1z9X4B6r2y5fKBIgeyqUq2W4LFB+G0nwWtvjLaBb
-         Qtu5ckNIY4BwmDsvysxK61cIkCA3QR6dmN9JJlvA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MybGX-1ngku42lPZ-00ywzo; Tue, 17
- May 2022 10:00:50 +0200
-Message-ID: <bc94b2bf-4c29-d436-be18-da4e64f0fc18@gmx.com>
-Date:   Tue, 17 May 2022 16:00:46 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [RFC ONLY 4/8] btrfs: add boilerplate code to insert raid extent
-Content-Language: en-US
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
+        Tue, 17 May 2022 04:01:26 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39E821271
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 01:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1652774484; x=1684310484;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=+ji3/OT5L+FVmCekXMpUdr00FJvAW2+xYZUctud60uM=;
+  b=pc6fneIugPy3txHWdMV8Y8HSBl/OgZ3bR66ttLiW0NeR3E9Jxtnh6hy8
+   k0/HQMUf4GmoFLF6nU3GMBfuwoU1ZS9Q6meHJ8YhdEdNGuErWHG8C7Hag
+   a1/2fbeGNBnpaC7BZijhLeB7CJ8tAIqs0Qnl4eCPeuBtzTlSTgbd7gSwP
+   SMs0LMcAeVese4vNUdo1J4WW3sPuTuQjFr7J6bK45dNR5QcWskDfPR71i
+   Vij+tsx2NponQRJwaL3uaIEW1RXMPgSty8DoUnlmqop4KlEM1LvoI/FNA
+   56b2n+dxPlh2BUm0VmTCgqTORsT6MzNKrUi1iA3lU0SCWl/RUaOeqMsww
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.91,232,1647273600"; 
+   d="scan'208";a="304751536"
+Received: from mail-sn1anam02lp2042.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.42])
+  by ob1.hgst.iphmx.com with ESMTP; 17 May 2022 16:01:19 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZlxJpiQB796O34aqOmStViVJLOiQr3V21eZDxozvp44MZiZdnXX9twbkme4cJTyPhOST4ZleiBBqCfLCOREEaFPuy5gvFQ1VWWtGjqAAB7aji4rBUXPECec7GH2HBaflQCszn7xgVSEgQJBC4V5dv8U49ByqIiAlotPU4zSD8lavfWM65ci9wPtGn+UfizLsyqVoi3VZjrtVKWDjh44qgGj4XOXxtAr0RHXKjSUSpmC10+re0IhlTX9KQa3v2azoCIbvwxu+BNCLJs6V+K8ZH+hEcPXdRU9DNvP5+8ynusG7yg8PM/1xOCom9S+XgHoWw3yf/6vF5JcvHEFu0cQaKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+ji3/OT5L+FVmCekXMpUdr00FJvAW2+xYZUctud60uM=;
+ b=HPwR+ZY7HYBjvUCzsT6C4OaiK3ZBH1727oF1CFZam+Z+UtnPn6V3YBz/AFdknxBkBAo/HezJ1AIFGVzzmbH/r/YygynJ7+stcDC1tguwzo5yKpLlxy4A+2ZX5T+4CoU4Tv9XaXGjvOb8OvVQsnPEepdhUpef3JfUY2TV6OyqehQmYzUiqzbau5Ds4jeLQkcfsU+LKIMzztKUaaL1U0Ecd+GeGpsGi5hTXBs4vdzFYGJSrXQ7KcHONy6dQUszEhrq2rG5iAzNOsobuFp8o/neJcf5gphwSstc0VNeE21zeO31iku/a4uuCpG/HBiNHX+r0H1xPHOlD/5+p0rrruU3PA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+ji3/OT5L+FVmCekXMpUdr00FJvAW2+xYZUctud60uM=;
+ b=pUjKRZmqENVdVm088WXrRPhsKAy6qgRDa+YIs+TNhN1sp5FBDNBw1u4S8+KgWpdZmrGl/VMBYT2FoubzqKqLO29/fC6oiR2+MizrF3DVTIgTmeoPxes0GSJjJmDhapQDPgq2wGtmjaZaDeOA5uGVG8mwyT5zPmytxd8Bsywxy68=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by MWHPR04MB1167.namprd04.prod.outlook.com (2603:10b6:300:7a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.14; Tue, 17 May
+ 2022 08:01:18 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12%3]) with mapi id 15.20.5250.018; Tue, 17 May 2022
+ 08:01:18 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC ONLY 2/8] btrfs: move btrfs_io_context to volumes.h
+Thread-Topic: [RFC ONLY 2/8] btrfs: move btrfs_io_context to volumes.h
+Thread-Index: AQHYaTGympxAuoaYBU6nqqm7/wKLZg==
+Date:   Tue, 17 May 2022 08:01:18 +0000
+Message-ID: <PH0PR04MB7416E37722261F60A6B767AF9BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <35ea1d22a55d8dd30bc9f9dfcd4a48890bf7feaf.1652711187.git.johannes.thumshirn@wdc.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <35ea1d22a55d8dd30bc9f9dfcd4a48890bf7feaf.1652711187.git.johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <6bd71ff55e48686fc917736e686143ca7d5d2c64.1652711187.git.johannes.thumshirn@wdc.com>
+ <51ac74ff-ada4-a3ee-5638-2fad8fc14f03@gmx.com>
+ <PH0PR04MB7416045672918E66690ADE8D9BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <23307134-5651-281a-c6e3-359d3c846e4b@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 96f4cf02-f77f-41cb-d01d-08da37db6c52
+x-ms-traffictypediagnostic: MWHPR04MB1167:EE_
+x-microsoft-antispam-prvs: <MWHPR04MB1167832D0038DD834117A1269BCE9@MWHPR04MB1167.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Bts8zjOTdtTlK58r2rwXOWiZkAdixMnoaQodM7zwwHx7kwb66fyqqAebOgB8NpgtNsdyWyHdYR7N8AWDYimgldQRDjDS8EOqwukF8gMasTZUhz/Cwg8osg7iWFOGD1Kq0UgS5JyqusmnXqZgFw9f+JvrvvkL1QOfCbuMnRxfogykR5sICnHKpyeUwbfIEYziZlRqebq++phaob4kNtTcbO9lqyJA0nh+yfneJpDECpSvDU6CNCsVxImMc2Kpl8PVYbwxC2T0+3yIqT8eZs0OFSh7GUNLj9aTeOeCs88p4LC6XOmBztG6FrbsqSEUD8F318MqjaZDaZTtg47oE9XlIxZspmpcXfPKhI8hOKBJNIKimTGwAtn0mKV88ETo44hEHynxQSjkEn7cjIgb9mJy+sbyv0ZcVI3bhxh7yOjRlKXb4gOkK6HgCAQHkrOKFw9c7jZVz9PbevcS8obZPcdRD0XaTXVi2F/0aRpZqkBHw0sguNOx9CgADIPPB2/I6TBx5CpZ/eIDaUk89meXobWAVU/FrE9HjtMY637/GDRmJw40z+1qFuAmZEo5BjrY/0WgsV8JwEYesbOsxN/nVah7hmqGallSV2qBvrZGthtNd0qHaxP9NqRehBB9cgZuIBboTbzWZ1n9nls2MKWCmp8GPii0muWYJFVlc9tct7cFclsbwaW8QcWEFPoX1Y5Z3yOv9HnBNZdDpTkxaUI1AUE8SQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(110136005)(55016003)(53546011)(6506007)(8676002)(8936002)(86362001)(316002)(66476007)(66446008)(64756008)(9686003)(33656002)(71200400001)(508600001)(186003)(91956017)(52536014)(5660300002)(38070700005)(122000001)(2906002)(38100700002)(82960400001)(66556008)(66946007)(76116006)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fqbtFpNZeash0ybdOgJhqWE1XuxcDPjgP5Mj2WK0WT6fJjyvyrvl+YMHLppu?=
+ =?us-ascii?Q?HNdV6dzOO1dPr3qQl+uKR9qHbMi4ueEndDbtwh95u/sn38tnUiNuoZ+QZUPG?=
+ =?us-ascii?Q?RBMBoNisnqewT5PySnGF+EB/Gqu34zp0L0Oi9fPr+B1o9ASkWy20DOZWp39z?=
+ =?us-ascii?Q?/bUqh6JRCmRn4YkuLiFBoE7cN45AEy4yob66Vd6dSnq0EIn+Eoy5TM/kUCgO?=
+ =?us-ascii?Q?/oS8rBPHU7V9pGIKur7DFacW0/Wabp/8cYx0XcJJUlzjD5eQYA7AHcVaACSM?=
+ =?us-ascii?Q?ryRKbmROyhDa3TEEix9ze2xD0QjHfDGUyvw1bWAnG1p8J/F0ZeQBnA6lCtFS?=
+ =?us-ascii?Q?poT5CKLGVuy7PehRAR8RV6w8I5ntkBL/jOal3x9bEScPyV12WNSlhQnnFieK?=
+ =?us-ascii?Q?hje80gem6sejwPv6IZKKF9ZaPqLeJtNnrORYVvtAvXunz23+XDEbvD5kDIqh?=
+ =?us-ascii?Q?79y3Rr6Dn29vtEwdjTRpwSi1UV7FMLcnYJm2ntdKmSElJxLaJPRfq6JbC40C?=
+ =?us-ascii?Q?bonK5etE1WxO74HAilZBqoQpRyoBI2tLRu5d/sGEAZnwIHERr3GroN7bg3D8?=
+ =?us-ascii?Q?69LeXjuRiycNlyhx5UkSRiQeAhUu6oOvmVFhUCZbPGduNGmkJFn6BKQAz+lJ?=
+ =?us-ascii?Q?ASC5tOGM4xz85MCgcqj8vfD7i5l7OjxHK5DjMCokGIlTSFjeg5/vmQtpf/aP?=
+ =?us-ascii?Q?E5qUr0VtJKG39bbQPLdpA8TkvXddL1sxga+w4fGy/BiLl70DhKtCI8cQaTlO?=
+ =?us-ascii?Q?8eoRCUED6Xq6POEe+ZDSwm1/PwuXadwy8BRPJ7rT9jtJziOKvAv05yHHwsN1?=
+ =?us-ascii?Q?nu5uq67H/mW9yZKxvjyRnREU4BICeve+ys3wHySTQ0KgmW773Tv2JHh1S11d?=
+ =?us-ascii?Q?y0BWUUwXpFAsCUOepQB1jxN6OOeAdeYJsEyhw6zTbTBHprtReKeNIpzkTxhr?=
+ =?us-ascii?Q?m2saT/JO8TG9CNy8LiqBg8IrJf9XydeOKaqSuspstoVbvHp6Nz2t1d/H/i/C?=
+ =?us-ascii?Q?rOwLODxWE943kqMHbNoOkijY6oOn/Hhzx0WBjLjI7YbfLjC8EHJDcvuFAiro?=
+ =?us-ascii?Q?AoDYcr444uDFIL1lGUH5rXB25FGDni7I8R0/GoosqI3gp/znDR5n++HofR3N?=
+ =?us-ascii?Q?yJ10lmQOGs11cIYJfbTXf3NHuaRurbfAdV0BokgzcTl8JUfoUmc8kbgROTNN?=
+ =?us-ascii?Q?Jej/Hh/wvDNa/P6B5CUK8Z+t4COL4UZbqLtSFu1+MqPfYHbLfvINXr9iICoi?=
+ =?us-ascii?Q?IaE3tFgn/N1MNj0Vmmxh0Sf/Ex3PSGy5GoyarkioozRSpcAn2bq+HMb1ktXy?=
+ =?us-ascii?Q?37raIO5/t+nC4YM47HpOi3Qzw33TWi/EbVkw2DSSGTro2R8iCSJMqr2sw9I8?=
+ =?us-ascii?Q?sCXPLwLMViTDF1Y4AAZcCLBoQx7SF85Pk11ml1b6Oawwkrci41KGsvsP5+Ss?=
+ =?us-ascii?Q?00I5xsTPLy1STD7JfOm6Qg8vvxNEc3nuy/n+n4klhKqKeyLyZozeKcUYPaT7?=
+ =?us-ascii?Q?HdU1MQcctCwRZmKjlLkhVSHgl3p1+BxTc93Sc81iBx1g3SpZf6Zbb6X+Mujh?=
+ =?us-ascii?Q?/F2f9oD0QACUO5kIsyAqhF79ZsR0S9SwvXnCKuE4YMWAmaJKD0+yvC4cib73?=
+ =?us-ascii?Q?qelisXHM8NwUtfF4qi9F8yJ44VTkGXlrKxBJsd0L/Fh4HTS4O4Urqy2jKqHa?=
+ =?us-ascii?Q?KcKxmDKUSl+pwgGTRm+kd4IEmLc+SIBKEN6bSx70y65u5aecEa1y0ZH6VkXe?=
+ =?us-ascii?Q?CDveI5ti7tBXizMxARXoaKAwJezYazJqGZRSy6G/lr5+GtM5dPZKl3LBkkAv?=
+x-ms-exchange-antispam-messagedata-1: jmNuXeZownxm0BnfTOiykDjn/W7w6clD+5gnpeAhltRYA7P+YlQlMv02
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tHURCVfShyUMjaHegvcHF89Ri8KhWRz4P3wtVhJVtD3A67DQ2Mx
- naCvPLR9gfaz8+jytp8bU7EWy4knqvZJBJFTLN3Vrk2mDSd2CatfwC2FcDNxJ4Nft1Su9VX
- /YXT2VblaTWm/ah69su88ftk2PBx6kgvoOI152zmjKOdJyB349IApPH46XDQU90vw8Iy4Jx
- AlsujpARJjKoweuCpi90w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JlpdCvWBs5Q=:D9dRjdTaj78WRRj0e3Dkxj
- cnKh0v6uG7WYJo37vruXfjTuk+3pQBlLihSxlgkhf4Ug9tbDYJyaGMdI4pqgtmnYf29yh4iO8
- Zq0Hax4W1vc2pqo2L+FHvrdppL6vd7v0vnwaVBipRUgdLFnh7x//DKMF6V/OOF4i99Z0000p7
- esOh000nqOUTk23BdKDpWl5XdC4PMH2g68VP/hdGNx7wdI4oxVC0i+pgQvdPT4ApnXAaWfKw/
- gfEV2lzjZqlCsuch4fXNpf7bWBbzwNonkXBIfUqXHJuR7Vfd4knW5eLReYRUz5V3sFC8PVUlm
- c7Zq69Rl0SHUoMtSfNE4gGRX8qJ3S8Tkhb0zLCKJJGQD+VytOYoUHFQCBjwoQpNT1ty/s6rfQ
- ijA1jdInjjUKTrfMcbMcVJQ8T9NBSJQrqxCGy7LRCWYJWDPULUwONk/IIiuMYKJcosZICZkLp
- BlnANPHEAapJPzBRwts6yoR8JHPfI9Y5J7cXFeqLYLxx7NSZ1PX5HSrNj95bS8tBvCJCBUVcN
- dF3h137qQTvg4KJIMlG0ikilMJctQ3vTPYfzW5L+WS+6DTQMhsXcrmNcpZXyFB6eYU+KBZpGW
- /742q/SFJ7mMpo7lO7XQgln1WhgHlF8yBD3gwCgdtQ6KLNMg9toriyyuMaRMYaM+4H8Fbpolm
- EMIGytK9ORvcFrl47GhAo8zjuFKDHSlQ8tEp35OO/dwmjgsxPnHW6YHD5JVY9sAaQf67Zu34I
- 4qzziJjWtt1ww/4XKyfmIRzpVTN/2avAw5bjQj+jc9SJ3e6ltbkNQNg+WV99yz70iKhQ2uMdQ
- 0peroHpnYhxLqvWxEeOdf+DvkzpKhtrgIH4YP09BBy5SiWhiGVD8gb8IPzjW3L3dp9TJNYSog
- yuBu/XRDgkLPWrHKq0ZVaggoRfuYL6/mCR/0WP6mf0iOESQ6QP9tz51qgQzgm1pYp4+QytMDP
- Tp16ZFQc+5T36YQxJEEtewsW4eVpIUTBbp3RXbGlGupHuPZ7/o1PaBnPJKKenAJtykMGAzdLP
- rHndtO0HqVVmOPzCIcesT+7lCDuQVFB3rIrfGNNbGb65AFhYlpFhcALlylWSCZmK6qJOSK5ea
- wn5zpmfdKvrVhE=
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96f4cf02-f77f-41cb-d01d-08da37db6c52
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2022 08:01:18.0453
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zRwtho9Wotm4Gck39MQvqhoe6Av2vdY6puXy8bU3xtnD4VHhE3drsiY7Z/pMDN15H8sdkZ4fxej/9KXyomTOqtTY0dJrOaC8qvI1oMaLSTE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR04MB1167
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/5/16 22:31, Johannes Thumshirn wrote:
-> Add boilerplate code to insert raid extents into the raid-stripe-tree on
-> each write to a RAID1 block-group.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/Makefile           |  2 +-
->   fs/btrfs/raid-stripe-tree.c | 72 +++++++++++++++++++++++++++++++++++++
->   fs/btrfs/raid-stripe-tree.h | 28 +++++++++++++++
->   fs/btrfs/volumes.c          | 21 +++++++++++
->   fs/btrfs/volumes.h          |  3 ++
->   5 files changed, 125 insertions(+), 1 deletion(-)
->   create mode 100644 fs/btrfs/raid-stripe-tree.c
->   create mode 100644 fs/btrfs/raid-stripe-tree.h
->
-> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-> index 4188ba3fd8c3..6b9a00ad532a 100644
-> --- a/fs/btrfs/Makefile
-> +++ b/fs/btrfs/Makefile
-> @@ -30,7 +30,7 @@ btrfs-y +=3D super.o ctree.o extent-tree.o print-tree.=
-o root-tree.o dir-item.o \
->   	   backref.o ulist.o qgroup.o send.o dev-replace.o raid56.o \
->   	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o =
-\
->   	   block-rsv.o delalloc-space.o block-group.o discard.o reflink.o \
-> -	   subpage.o tree-mod-log.o
-> +	   subpage.o tree-mod-log.o raid-stripe-tree.o
->
->   btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) +=3D acl.o
->   btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) +=3D check-integrity.o
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> new file mode 100644
-> index 000000000000..426066bd7c0d
-> --- /dev/null
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -0,0 +1,72 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "ctree.h"
-> +#include "transaction.h"
-> +#include "disk-io.h"
-> +#include "raid-stripe-tree.h"
-> +#include "volumes.h"
-> +
-> +static void btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
-> +				     struct btrfs_io_context *bioc)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D bioc->fs_info;
-> +	struct btrfs_key stripe_key;
-> +	struct btrfs_root *stripe_root =3D fs_info->stripe_root;
-> +	struct btrfs_dp_stripe *raid_stripe;
-> +	struct btrfs_stripe_extent *stripe_extent;
-> +	size_t item_size;
-> +	int ret;
-> +	int i;
-> +
-> +	item_size =3D sizeof(struct btrfs_dp_stripe) - sizeof(struct btrfs_str=
-ipe_extent) +
-> +		bioc->num_stripes * sizeof(struct btrfs_stripe_extent);
-> +
-> +	raid_stripe =3D kzalloc(item_size, GFP_NOFS);
-> +	if (!raid_stripe) {
-> +		btrfs_abort_transaction(trans, -ENOMEM);
-> +		return;
-> +	}
-> +
-> +	stripe_extent =3D &raid_stripe->extents;
-> +	for (i =3D 0; i  < bioc->num_stripes; i++) {
-> +		u64 devid =3D bioc->stripes[i].dev->devid;
-> +		u64 physical =3D bioc->stripes[i].physical;
-> +
-> +		btrfs_set_stack_stripe_extent_devid(stripe_extent, devid);
-> +		btrfs_set_stack_stripe_extent_offset(stripe_extent, physical);
-> +		stripe_extent++;
-> +	}
-> +
-> +	stripe_key.objectid =3D bioc->logical;
-> +	stripe_key.type =3D BTRFS_RAID_STRIPE_KEY;
-> +	stripe_key.offset =3D bioc->length;
-> +
-> +	ret =3D btrfs_insert_item(trans, stripe_root, &stripe_key, raid_stripe=
-,
-> +				item_size);
-> +	if (ret) {
-> +		kfree(raid_stripe);
-> +		btrfs_abort_transaction(trans, ret);
-> +		return;
-> +	}
-> +
-> +	kfree(raid_stripe);
-> +}
-> +
-> +void btrfs_raid_stripe_tree_fn(struct work_struct *work)
-> +{
-> +	struct btrfs_io_context *bioc;
-> +	struct btrfs_fs_info *fs_info;
-> +	struct btrfs_root *root;
-> +	struct btrfs_trans_handle *trans =3D NULL;
-> +
-> +	bioc =3D container_of(work, struct btrfs_io_context, stripe_update_wor=
-k);
-> +	fs_info =3D bioc->fs_info;
-> +	root =3D fs_info->stripe_root;
-> +
-> +	trans =3D btrfs_join_transaction(root);
-> +
-> +	btrfs_insert_raid_extent(trans, bioc);
-> +	btrfs_end_transaction(trans);
-> +
-> +	btrfs_put_bioc(bioc);
-> +}
-> diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
-> new file mode 100644
-> index 000000000000..320a110ecc66
-> --- /dev/null
-> +++ b/fs/btrfs/raid-stripe-tree.h
-> @@ -0,0 +1,28 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef BTRFS_RAID_STRIPE_TREE_H
-> +#define BTRFS_RAID_STRIPE_TREE_H
-> +
-> +#include "volumes.h"
-> +
-> +void btrfs_raid_stripe_tree_fn(struct work_struct *work);
-> +
-> +static inline bool btrfs_need_stripe_tree_update(struct btrfs_io_contex=
-t *bioc)
-> +{
-> +	u64 type =3D bioc->map_type & BTRFS_BLOCK_GROUP_TYPE_MASK;
-> +	u64 profile =3D bioc->map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-> +
-> +	if (!bioc->fs_info->stripe_root)
-> +		return false;
-> +
-> +	// for now
-> +	if (type !=3D BTRFS_BLOCK_GROUP_DATA)
-> +		return false;
-> +
-> +	if (profile & BTRFS_BLOCK_GROUP_RAID1_MASK)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +#endif
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 3fd17e87815a..36acef2ae5d8 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -33,6 +33,7 @@
->   #include "block-group.h"
->   #include "discard.h"
->   #include "zoned.h"
-> +#include "raid-stripe-tree.h"
->
->   #define BTRFS_BLOCK_GROUP_STRIPE_MASK	(BTRFS_BLOCK_GROUP_RAID0 | \
->   					 BTRFS_BLOCK_GROUP_RAID10 | \
-> @@ -5917,6 +5918,7 @@ static struct btrfs_io_context *alloc_btrfs_io_con=
-text(struct btrfs_fs_info *fs_
->   	bioc->fs_info =3D fs_info;
->   	bioc->tgtdev_map =3D (int *)(bioc->stripes + total_stripes);
->   	bioc->raid_map =3D (u64 *)(bioc->tgtdev_map + real_stripes);
-> +	INIT_WORK(&bioc->stripe_update_work, btrfs_raid_stripe_tree_fn);
->
->   	return bioc;
->   }
-> @@ -6677,6 +6679,17 @@ static void btrfs_end_bio(struct bio *bio)
->   		}
->   	}
->
-> +	if (bio_op(bio) =3D=3D REQ_OP_ZONE_APPEND) {
-> +		int i;
-> +
-> +		for (i =3D 0; i < bioc->num_stripes; i++) {
-> +			if (bioc->stripes[i].dev->bdev !=3D bio->bi_bdev)
-> +				continue;
-> +			bioc->stripes[i].physical =3D bio->bi_iter.bi_sector << SECTOR_SHIFT=
-;
-> +		}
-> +	}
-> +
-> +
->   	if (bio =3D=3D bioc->orig_bio)
->   		is_orig_bio =3D 1;
->
-> @@ -6700,6 +6713,12 @@ static void btrfs_end_bio(struct bio *bio)
->   			 * go over the max number of errors
->   			 */
->   			bio->bi_status =3D BLK_STS_OK;
-> +
-> +			if (btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE &&
-> +			    btrfs_need_stripe_tree_update(bioc)) {
-> +				btrfs_get_bioc(bioc);
-> +				schedule_work(&bioc->stripe_update_work);
-
-Considering the stripe tree should be a 1:1 map for file extents, can't
-we do it in btrfs_finish_ordered_io()?
-
-Thanks,
-Qu
-
-> +			}
->   		}
->
->   		btrfs_end_bioc(bioc, bio);
-> @@ -6788,6 +6807,8 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *f=
-s_info, struct bio *bio,
->   	bioc->orig_bio =3D first_bio;
->   	bioc->private =3D first_bio->bi_private;
->   	bioc->end_io =3D first_bio->bi_end_io;
-> +	bioc->logical =3D logical;
-> +	bioc->length =3D length;
->   	atomic_set(&bioc->stripes_pending, bioc->num_stripes);
->
->   	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 894d289a3b50..4b4235b4432a 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -68,6 +68,9 @@ struct btrfs_io_context {
->   	int mirror_num;
->   	int num_tgtdevs;
->   	int *tgtdev_map;
-> +	u64 logical;
-> +	u64 length;
-> +	struct work_struct stripe_update_work;
->   	/*
->   	 * logical block numbers for the start of each stripe
->   	 * The last one or two are p/q.  These are sorted,
+On 17/05/2022 09:58, Qu Wenruo wrote:=0A=
+> =0A=
+> =0A=
+> On 2022/5/17 15:51, Johannes Thumshirn wrote:=0A=
+>> On 17/05/2022 09:42, Qu Wenruo wrote:=0A=
+>>>=0A=
+>>> On 2022/5/16 22:31, Johannes Thumshirn wrote:=0A=
+>>>> In preparation for upcoming changes, move 'struct btrfs_io_context' to=
+=0A=
+>>>> volumes.h, so we can use it outside of volumes.c=0A=
+>>> In fact I don't think the naming itself (from myself) is that good.=0A=
+>>>=0A=
+>>> It maybe a good idea to also do a rename here.=0A=
+>>>=0A=
+>>> I have some bad alternatives, but doesn't seem better than the current=
+=0A=
+>>> generic naming either:=0A=
+>>>=0A=
+>>> - btrfs_io_mapping=0A=
+>>> - btrfs_mapping_context=0A=
+>>>=0A=
+>>> Thus I guess the current name is chosen mostly due to lack of better on=
+es.=0A=
+>>=0A=
+>> Yep but I'm not any better in naming *cough* btrfs_dp_stripe *cough*. Ma=
+ybe=0A=
+>> someone else has an idea.=0A=
+> =0A=
+> Forgot to ask in that thread, what does the "dp" naming mean?=0A=
+=0A=
+Declustered Parity, but that's misleading actually, as RAID1 doesn't do par=
+ity=0A=
+at all (although BTRFS RAID1 is a declustered RAID already).=0A=
+=0A=
