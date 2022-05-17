@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C7452A542
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407A552A548
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349298AbiEQOv0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 10:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        id S1349392AbiEQOv1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 10:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349303AbiEQOu7 (ORCPT
+        with ESMTP id S1349313AbiEQOvD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 10:50:59 -0400
+        Tue, 17 May 2022 10:51:03 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5209FDD
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:50:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577C9DF1D
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=1l3lpKPkLNk10ZZ6IJyX9ESH2c9XV7eG7G9+whxn6+k=; b=KLbHHbzWGTQmE0Zx3FAFAlnQHo
-        IWAvxblpnncE+x1CGjkB/MgnEl8TIq+/iCLSRUpCkbapYLfcjGBDmSAW7LqbZqBza63ZQpfg08FW4
-        cgQzmy0kHzSm2Xfa6Mp8SPOBcqL0xH+7DvQ38YPTLaTkpvZNBWcbajPx2NjfpkBae2/JmugxUeYhH
-        G/E3glMe7TVHd8BYdxLBbi0Y7R8qVjYAuFLD3U2Vm56wY0N0Y961PWDiNQuAxsO/l0w4wGdMEvJuf
-        sQHKEaOeIjlQK7FVc7FdfYrraduLTzqiptxUlE/Whh1kn616/YD2oHHT7/ZwXejsl0eYuMgKnen0O
-        u5M9ybYA==;
+        bh=9lEPp0W11O6pCOqq3KvJ2LQANZTph+El3y/9ezo6YYc=; b=pW2j9kYbgITO4hHBdACEt5vD+F
+        bhk7InLzx8zVpHvb6CXATQd/D6TaKIsfzq3R3ODTBXjW0aF+DTy6VbGpYlsFF+FZRK+nc9NRbbI17
+        7NRvFE/Sn5rxlv/J+MZTw/pnQStU440cx/Zql5Riph5KQxm7PBJKHPn33cn6z8y3U4miPAKHCx4M1
+        iuz/BZa4lFsNVxVrrsLIuQCg3XZX4PxOG2VCIz3qG5F55Mp2JwvPcNb6g6uCzxDrrx7qrDs1gQrzt
+        IU2vF98MMD6pxrL6yLdYR3n2Zmu6kjgEouhgGg6nqTop6SZpxXTj7q0lGBQOV7oqjv1tYHWVsi8Tg
+        fuBaI6Ag==;
 Received: from [89.144.222.138] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nqyXG-00EXAf-1G; Tue, 17 May 2022 14:50:54 +0000
+        id 1nqyXJ-00EXBY-CW; Tue, 17 May 2022 14:50:57 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/15] btrfs: save the original bi_iter into btrfs_bio for buffered read
-Date:   Tue, 17 May 2022 16:50:27 +0200
-Message-Id: <20220517145039.3202184-4-hch@lst.de>
+Subject: [PATCH 04/15] btrfs: remove duplicated parameters from submit_data_read_repair()
+Date:   Tue, 17 May 2022 16:50:28 +0200
+Message-Id: <20220517145039.3202184-5-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220517145039.3202184-1-hch@lst.de>
 References: <20220517145039.3202184-1-hch@lst.de>
@@ -53,72 +53,97 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Qu Wenruo <wqu@suse.com>
 
-Although we have btrfs_bio::iter, it currently have very limited usage:
+The function submit_data_read_repair() is only called for buffered data
+read path, thus those members can be calculated using bvec directly:
 
-- RAID56
-  Which is not needed at all
+- start
+  start = page_offset(bvec->bv_page) + bvec->bv_offset;
 
-- btrfs_bio_clone()
-  This is used mostly for direct IO.
+- end
+  end = start + bvec->bv_len - 1;
 
-For the incoming read repair patches, we want to grab the original
-logical bytenr, and be able to iterate the range of the bio (no matter
-if it's cloned).
+- page
+  page = bvec->bv_page;
 
-So this patch will also save btrfs_bio::iter for buffered read bios at
-submit_one_bio().
-And for the sake of consistency, also save the btrfs_bio::iter for
-direct IO at btrfs_submit_dio_bio().
+- pgoff
+  pgoff = bvec->bv_offset;
 
-The reason that we didn't save the iter in btrfs_map_bio() is,
-btrfs_map_bio() is going to handle various bios, with or without
-btrfs_bio bioset.
-And we  want to keep btrfs_map_bio() to handle and only handle plain bios
-without bother the bioset.
+Thus we can safely replace those 4 parameters with just one bio_vec.
+
+Also remove the unused return value.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+[hch: also remove the return value]
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 12 ++++++++++++
- fs/btrfs/inode.c     |  2 ++
- 2 files changed, 14 insertions(+)
+ fs/btrfs/extent_io.c | 28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 588c7c606a2c6..8fe5f505d6e92 100644
+index 8fe5f505d6e92..cee205d8d4bac 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -188,6 +188,18 @@ static void submit_one_bio(struct bio *bio, int mirror_num,
- 	/* Caller should ensure the bio has at least some range added */
- 	ASSERT(bio->bi_iter.bi_size);
+@@ -2739,18 +2739,17 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+ 		btrfs_subpage_end_reader(fs_info, page, start, len);
+ }
  
-+	/*
-+	 * Save the original bi_iter for read bios, as read repair wants the
-+	 * orignial logical bytenr.
-+	 *
-+	 * We don't do this in btrfs_map_bio() because that function is
-+	 * bioset independent.
-+	 * We can later pass bios without btrfs_bio or with other bioset into
-+	 * btrfs_map_bio().
-+	 */
-+	if (bio_op(bio) == REQ_OP_READ)
-+		btrfs_bio(bio)->iter = bio->bi_iter;
-+
- 	if (is_data_inode(tree->private_data))
- 		btrfs_submit_data_bio(tree->private_data, bio, mirror_num,
- 					    compress_type);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 76169e4e3ec36..cb0ad1971be30 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7987,6 +7987,8 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
- 		if (ret)
- 			goto err;
-+		/* Check submit_one_bio() for the reason. */
-+		btrfs_bio(bio)->iter = bio->bi_iter;
+-static blk_status_t submit_data_read_repair(struct inode *inode,
+-					    struct bio *failed_bio,
+-					    u32 bio_offset, struct page *page,
+-					    unsigned int pgoff,
+-					    u64 start, u64 end,
+-					    int failed_mirror,
+-					    unsigned int error_bitmap)
++static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
++		u32 bio_offset, const struct bio_vec *bvec, int failed_mirror,
++		unsigned int error_bitmap)
+ {
++	const unsigned int pgoff = bvec->bv_offset;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct page *page = bvec->bv_page;
++	const u64 start = page_offset(bvec->bv_page) + bvec->bv_offset;
++	const u64 end = start + bvec->bv_len - 1;
+ 	const u32 sectorsize = fs_info->sectorsize;
+ 	const int nr_bits = (end + 1 - start) >> fs_info->sectorsize_bits;
+-	int error = 0;
+ 	int i;
+ 
+ 	BUG_ON(bio_op(failed_bio) == REQ_OP_WRITE);
+@@ -2797,11 +2796,9 @@ static blk_status_t submit_data_read_repair(struct inode *inode,
+ 			continue;
+ 		}
+ 		/*
+-		 * Repair failed, just record the error but still continue.
+-		 * Or the remaining sectors will not be properly unlocked.
++		 * Continue on failed repair, otherwise the remaining sectors
++		 * will not be properly unlocked.
+ 		 */
+-		if (!error)
+-			error = ret;
+ next:
+ 		end_page_read(page, uptodate, start + offset, sectorsize);
+ 		if (uptodate)
+@@ -2814,7 +2811,6 @@ static blk_status_t submit_data_read_repair(struct inode *inode,
+ 				start + offset + sectorsize - 1,
+ 				&cached);
  	}
+-	return errno_to_blk_status(error);
+ }
  
- 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ /* lots and lots of room for performance fixes in the end_bio funcs */
+@@ -3105,10 +3101,8 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			 * submit_data_read_repair() will handle all the good
+ 			 * and bad sectors, we just continue to the next bvec.
+ 			 */
+-			submit_data_read_repair(inode, bio, bio_offset, page,
+-						start - page_offset(page),
+-						start, end, mirror,
+-						error_bitmap);
++			submit_data_read_repair(inode, bio, bio_offset, bvec,
++						mirror, error_bitmap);
+ 
+ 			ASSERT(bio_offset + len > bio_offset);
+ 			bio_offset += len;
 -- 
 2.30.2
 
