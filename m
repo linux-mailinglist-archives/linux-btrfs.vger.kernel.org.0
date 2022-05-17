@@ -2,298 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC1252999F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 08:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3715299EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 08:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235751AbiEQGfU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 02:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34854 "EHLO
+        id S231151AbiEQGvt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 02:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbiEQGfT (ORCPT
+        with ESMTP id S240753AbiEQGu5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 02:35:19 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C9D43EF7
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 May 2022 23:35:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652769311;
-        bh=Ia2vxgwkAwrfQddgHV5O+oZjBlU13uOHRIR9aNkRb5I=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=a+JC9NFyyGcNaQm5OLbCPOSQ6GW+bnWa9mCvVH+4DoH750ZzUfQoXcBlBQr2ASFGg
-         9iRGwx0vqBYgVhRfdJ6Vv+ZYBoRFOqnOE49RZu+8dG0r89dm3ZIqQbzLl1oEL+nFzU
-         jO7V/AUi3kCzEY2szUVNmvocwd5sFLAntVz7zbFE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2O2Q-1ntbwu28X0-003yps; Tue, 17
- May 2022 08:35:11 +0200
-Message-ID: <50994099-b70e-8307-dd41-ac88784e552c@gmx.com>
-Date:   Tue, 17 May 2022 14:35:07 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 2/2] btrfs: send: avoid trashing the page cache
+        Tue, 17 May 2022 02:50:57 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0D411C2E;
+        Mon, 16 May 2022 23:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1652770256; x=1684306256;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=SojUIEYqe8cfBdXstKGR0BVYqNq04WIKDI4XcGvedjY=;
+  b=m+M/6uW0Z8HNqe51nFUAaLGs+UHWiMX6tmEfVGcPWhJKeWe+6bG3jB/9
+   sWK4uour1eOH5sfq60o6599kK/A76ZxnA787i2HWUMv0jfAUoiOufQH6N
+   rWQnLmmyfqYz21C14Pkc27T1H9rRjgOpBzoLMrRBZ7F/uiKiSOdKqaTOc
+   jxlF9R/bilaNS6cOlYNjpV1HapN3tV5sD1W2aiNyKVCU601LIcYXQwC/N
+   FW0anCBsjE11z1qsaLuh/9P1AqwDiiV32J9fQ/crvCX3O7/W33QKa6+Xm
+   0Pi5yQPFkoLFQ5u5HuXcjKlx98PGD7KAI/L0rdDb7M/8D2lBoWkpoj5JG
+   g==;
+X-IronPort-AV: E=Sophos;i="5.91,232,1647273600"; 
+   d="scan'208";a="205395433"
+Received: from mail-mw2nam12lp2049.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.49])
+  by ob1.hgst.iphmx.com with ESMTP; 17 May 2022 14:50:54 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L3yHctORlJQqd2Mc8094MnIqVNi+iyf+yY0kn6yC40UBEAIRZoYGDii3JvWQOUL6+lVIhQYWqRQosT5rCwUfRuiUVGqGHIyeMQ4Deb8C6yxQJNu/8niCDEDdSbhKmXWNaEeZd7XjI7IhTk/LtMQCPtTHRsHkKwrGbra2FiMSlBlbZy2Fkp23tFu0nAV9yQ/xrf8ukukX5XY2KnhA4QAi46uQozAsMbxQ7ZrsZs/s2BawSMNVPHXPaCLOI+HzWiVx8HNJ+CKQCinv1svGhkO0lxEiXgIyFV5bJgZY2N6M1LE5WzJ/nAYBeVlv5oYmhIClmiyG/koCoh2N8Za+joxb5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SojUIEYqe8cfBdXstKGR0BVYqNq04WIKDI4XcGvedjY=;
+ b=Tp3XLE+LYzNcm5gEEBoucQuvy1JU/SA/Ff1tMb/HwuyhEPuIcprNgmZn+GXwnPS45y2IwrKUpCcZO3zKi45OFeu8mukzIXcKELN+Au2GN7zMTSbuzrKIXImdxbpLe2oz4pwBO6o26sH6P2sQbRbl62t7Adi9bHJIMGdtngGR5W7sTLi8yR25zu2E9rTV2Gc0CZnzLI+aEn5fhYwTOUo/dlODi5xclKVGya5M/QEEBxr5CWZjZ1q3Ilr8VijYKtZuwrHIafZEGCW55ijPMSrYghfYEMNJfCfjVRiIiNfHZv72TqRQlfSwq6DCfPGJk5bQIS3OS0tGyuAkNoSp6muAgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SojUIEYqe8cfBdXstKGR0BVYqNq04WIKDI4XcGvedjY=;
+ b=dAzsOlhHVE4JrEK4DbzXZ5QrUSBmxBusJbkaJoM9dc2niukuea37c/2Mh6NSlJ3deOcdv3Mbea+hKjDEQQ4bUaVIdxVmKJW8EQ2BBz1wA0WcXJ5Y2U2svaDkpImUK1DO7/F+QPgYoKp6djo6q3nuMsjx6Dy/ZUXmcPgys8Xe9ic=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BYAPR04MB3816.namprd04.prod.outlook.com (2603:10b6:a02:ac::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.14; Tue, 17 May
+ 2022 06:50:53 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12%3]) with mapi id 15.20.5250.018; Tue, 17 May 2022
+ 06:50:53 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Pankaj Raghav <p.raghav@samsung.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "damien.lemoal@opensource.wdc.com" <damien.lemoal@opensource.wdc.com>,
+        "pankydev8@gmail.com" <pankydev8@gmail.com>,
+        "dsterba@suse.com" <dsterba@suse.com>, "hch@lst.de" <hch@lst.de>
+CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>
+Subject: Re: [PATCH v4 08/13] btrfs:zoned: make sb for npo2 zone devices align
+ with sb log offsets
+Thread-Topic: [PATCH v4 08/13] btrfs:zoned: make sb for npo2 zone devices
+ align with sb log offsets
+Thread-Index: AQHYaUWvGG/TZMkJWESbmBi0yiTiyA==
+Date:   Tue, 17 May 2022 06:50:53 +0000
+Message-ID: <PH0PR04MB7416DFEC00A21B533E86110E9BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20220516165416.171196-1-p.raghav@samsung.com>
+ <CGME20220516165429eucas1p272c8b4325a488675f08f2d7016aa6230@eucas1p2.samsung.com>
+ <20220516165416.171196-9-p.raghav@samsung.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1651770555.git.fdmanana@suse.com>
- <41782eb393b3a3ba47f4a7fce1cbb33433c3f994.1651770555.git.fdmanana@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <41782eb393b3a3ba47f4a7fce1cbb33433c3f994.1651770555.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e6b3a256-a096-41fc-a1e4-08da37d19607
+x-ms-traffictypediagnostic: BYAPR04MB3816:EE_
+x-microsoft-antispam-prvs: <BYAPR04MB3816133F9C79F22B15AAAA7C9BCE9@BYAPR04MB3816.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ilEEZpH79JHFziUm8Q4NyZFseJATqR+wtA8xnQ+asOD93BwFwQ3u+sRGho7+TzVDl2Duzb11eeypdNyMgRT6Hrrx9uiqJFUaVuXF4I6e5S68QGnJnlLA4XaEs1zKRpyfpXKm0MhkZ8Op13CI0/NxVA88NB4FZyVVdd+Ncz5dfihtwSPTM9s8EQWDgDuUmnr9F9FVBoySwBSrKZhOxxp7xQyRKZjjvb+wfLCbhupbjQrRIGpRqBXq1rV5ciYf1CGicAgFVt99b8lE+HFxbxpijG32ja73OV+N1G0dFE+pn5ZJ0AUrMDLWU0roQ0I3sqGgGQOxEWfIcWPUxnRbAkVHFJOmq2vusFuCvLV034ndpW2CZQXob7Pw6urlZcgMiHbg0/xvTDuykxevhSCJYd5gzJ3vA5mNS2A9vPaPhMxFbMJD8ZQ2SInC0ZE51yGSCQZBc3bMJjx3Y+AbcZ3rwEEE0m+uAd3hnfs1ZcXEDqJ0XyW6PNa3GGpM+risnoDmIjkv9FMNCMnrduy1CMHG+8Zf2Pe50AB3clAAJILxFxauhJe3n3hvMBe444w4hunNHNSJkETIW6hijrwW1mw0PQ1AQX3UJY3kgBwEfcmpy7P5dFygzNBFrVrnQn9Cr6vuvQPNVD5TAoHK6Ic94hpeyZDrNZkOc+bQSWvdpZH64PGa4RKSrzNJKSR1NpOAfhpdt6cdeT5OxLhuvSG/LwSYE3KwuA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(4326008)(122000001)(38100700002)(8676002)(64756008)(4744005)(91956017)(2906002)(66476007)(66556008)(5660300002)(86362001)(76116006)(7416002)(66946007)(8936002)(508600001)(38070700005)(186003)(55016003)(33656002)(53546011)(54906003)(316002)(83380400001)(9686003)(82960400001)(52536014)(71200400001)(66446008)(110136005)(7696005)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3LZ32nKeZjXeywVwc45a0jMJgEncxtOq8Y6/gge5jVaYLqzmeDqAcZ5eVhvY?=
+ =?us-ascii?Q?ZtrC4a2YVcax0Na1WjvSYueRVK1Rhaq6cPLKVHWG0SqrOabK9v0e1PcVpcxf?=
+ =?us-ascii?Q?KnyD6Dfsqd+Hpd6jraaUFJToEMBJTyFBjq9cWlGCWy/6Lyaefu+kPS/yR7jG?=
+ =?us-ascii?Q?QOwlPWY5cUYq8h7jrrWScHP8woQOklg+aCG7TQhaRq/pH3Z5UNK9BKa6ZiU1?=
+ =?us-ascii?Q?qYPmCTtEw5ZFIroMkjNGAsjTMjybZaPkLbn9rqPYgs9WxG+YNr+Wope3hVb3?=
+ =?us-ascii?Q?LPo51Zw/akHtv3wI5ZHqGTMXmu+lKvVhcDXneHqu5C8/pCWdg2C/BnP6c3kh?=
+ =?us-ascii?Q?UeThEGX/YpSGo+TsV6fb68XLb15TUYh9i6BEqcbyfUP7Kr/OUsSXdbGSq2sU?=
+ =?us-ascii?Q?JwFMlMTuvN/P3jHuiVP7UMG79VsqphI9YdcWZtmZ3hQGXit0wsZrk/gk8kWu?=
+ =?us-ascii?Q?FD+Xx1SY+XbI/BA1bQ4K8qp/XoaZCwmLNY9cwdKSh0gjzX3fkWGv89ldqwVb?=
+ =?us-ascii?Q?8ROsPmMDGDmU2NUj2tlCjeTeLp3UO3OV7Sde99TvdW3wLefLoMf9Qr5tKGRB?=
+ =?us-ascii?Q?ZO5zAle7f14jR57UUPPeTfA0W+ZYIiGBrIjtfSNuIFOP3uYupxVmDjzNYDMC?=
+ =?us-ascii?Q?zx8OsXlvfX/CeVJ1+wBGSqFEk00VX7XEje3uRDAmxqDW90V2W37/C00YegGe?=
+ =?us-ascii?Q?Z6JSWymjJY30gTdsP5XARtw7vhCyvSBYDznPjlAOWI4XSj4km67Cnc4kFcw5?=
+ =?us-ascii?Q?Ki/Rytz/YNi8e7AZVYROSCpQ1aT6lTCvFJIbox0fKwx3vt4SiiUWhIv8FV2S?=
+ =?us-ascii?Q?S6cohFh4G8GD+5jjhXbAbtW8NYnXH1lKNGC4QzZSaqx4ab8ghdMEh85+PO/8?=
+ =?us-ascii?Q?eBWiCUtBkKMPd0QZcUyC+vN7fHuLqXsoBfMMhka8pUB5Yh7VsrdKNjwMajh5?=
+ =?us-ascii?Q?D5t02VxhsT3JBqhI0VXpXM+FkhbAgDjPwsNAQx/139YEg1prTvou6z2eve/P?=
+ =?us-ascii?Q?FjfOWcctOO/E3pId5oecBpKaOgJWOaXonyF9MDgPJKrXQRdDwPYevBSRDd+z?=
+ =?us-ascii?Q?KdPxeY/s5WneMYSCnje7o+6xIcyjvpvhc97woy/e0Kdj0rDaQIcjxZQF3NfZ?=
+ =?us-ascii?Q?qGD/nTfgSkPq5+jVWQen4pJ2W68Ccfg/IhrG7Xnhb+RI2ffEvdAZJ6/gyQpR?=
+ =?us-ascii?Q?2EA2/cLyOnhADz1NnO3yH/YBOMQ0umvQvO07nkxrJ4HoiOHxUkfXwx4lI3wK?=
+ =?us-ascii?Q?PoVsWM4h167VyrpmsOi5abFgBA0KgrP6nI0wvC8OPZ/UkrUs3UEpGKOCoPNq?=
+ =?us-ascii?Q?UDzsNvMCAhQuSrZooXSsoNy4+lB2lsGHoEs+ZODrciXOwVjDPFx9chbuB3Im?=
+ =?us-ascii?Q?q6Zc7jtRUga3oYmZXdKr79zxad6YEEVX8Y6W41UV+nan3zH5gwKgtPNHjl9Y?=
+ =?us-ascii?Q?Y4NcDtcV9ui9VRXDFtuF6/v/7Emh1rBfLCUGxtbs+EJr1nuWsKXbi17of6v8?=
+ =?us-ascii?Q?V9wqm3d/mpfqznatSkiTWlBbYjs48SfxzV5IAfsisnyJzoOATO+9SFRoDyjm?=
+ =?us-ascii?Q?fhnwY/5Dqx86ESLafSnjrwwPOjTWFOaSBEECIzUtCgfYAnyNAx/5pf3aOU4b?=
+ =?us-ascii?Q?52XndwHzXZRDy4jG1apMXSkblA2KzCx6bJi4Qqh+j8+pCQIzwb06YMcbAe4J?=
+ =?us-ascii?Q?IADir7ln7T3S8DwK0oeBDd8JMkWhirXKxFX14zTdcsYQiYnunHw/nZfqZfVm?=
+ =?us-ascii?Q?mmnrLRTrI+ceNeIVZKO4mPiFKmTFJsQjwJ7PQU1X/NFI6NuaqPo99GJk+azJ?=
+x-ms-exchange-antispam-messagedata-1: pnBBFb1WuvaMgZ0F9Mv+JzYTg/j0JU6pPfhVkG/fAqrmhnqv7d5NaSLu
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LUgZU/zjt2OaZzn4MLB8O6zQ3yJ4qYF+XVBqedcUZghec9u66YM
- HTz/YIaVqhtwHDVF4qwgKN2OZGAd1jT1JTNzYNKMcIq2QzJFSESXmj5uSiLH+poa62uEMC3
- MHrEoFfvCpmh1V+ccOIo3fmCW9K0WBJesQX1NG/Qx3f9Ic0Emqk2MXCE0RjNUT+7IsCk6Mh
- 1Y0sOc42SNLrMk1lgSeCQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yG3pVTiIRPQ=:6RwcBBex25IKVhmvF9t148
- OWj1BFf4DjbDqJ5Qgo9fipnRAweR4JEiUNIJ+2LoCeRzqAO0tyFQ3c0bdStjG5ZXLP/iwZC6G
- K2teqsGOYB2zBNiqZ45JAJ+EPyKrkQ41lhgtCZZ7Raq3UFZDYLfLNBSk1bff6F8mkeWMOWXwR
- ofzYNiZNAiN6iLYahSxYFhiDSMMh5ydaLsFeRmwi5p0EKixhOew+j2dW8dKg6vS/KLRw+lgnS
- z9rA3epVY38bmRFGfH/OHNN3+g4UI0m2mYV7NwUr+CRJkf/lMASV9EEiQ+7HQ37SRztbFJo6X
- 08RdmzAAsf+m53IOjOMJKrJQ5WDVI5wkwwrmRxulaNM+abNTfk167NjAtKC00XbM1tDgb3yOK
- eXdEZ1qa6+15Jbiees+CRkBRrB7O1C6B/wqDoWAIIYvTs9CERIUu65wbPLhZTPKKcofk8Nwui
- Nv/s5nIyo6qzM94gKgViUZgiN2JkSM5DLLKotuHKguCDLb7LZpcfjDt8Jrc8KuhEBuPjJEPGd
- CfxYPVZnRZGGjY0YOZqbUQr4J9L36gCJgowcxcpZNmvPTgZMDYsYj3GawtFbvCfJF0mnt/9mU
- yLMMwpZbtbD2bzifE+MXW2ojQ+aWsWm5bDwMzMFbwZJWt32NW4lrTzULvIUQbM0AeLP4c2zrN
- PpgAKvlAdPL7KAqZuGbIzR1N1zXI5RluQsdVf9/L0jSrOk8iSJXxiU4OmVubpy1XNTAXmVOk2
- +n4kXm7RwA6aqrOd66a3XYn1cr4/VskRP8uo2rnRNtZ4jyiVCmxbDRWk5JeGK3JhJUQ217Ncn
- BlWQHvJrL5XaqiaIgil5/2ogsmuTTQTADrsk8iKV0iwnn0KKG4XaHwNrb7ksSbprNqsBpL47Q
- 0SimByladTd8FTEvRS1K1E+TziREzaeFW9+8IySdf05ZoXqCQkv/OgoRfRbZDZQxHqvUC5Tab
- AjeJrImLVULfe/PYWFUN3OUc1LEcUpai+kg6yk/yyJ2sHI5IFTEPrW9buxTiWdvUjscGzWhpR
- BPlBBKhGwi12O8ZNo4IBx67L8niJCNB+g2dUWFDG8OojfDtg9tTP6ed2f0Srqz7vBmB6NNQCm
- 8CpkeLmj+Rf76DlwFaFmUH8eB6dWqliTfQCkKBCvBTMz2UCKwEfZIt1fA==
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6b3a256-a096-41fc-a1e4-08da37d19607
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2022 06:50:53.0809
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qPBszXRcKXTXObgPvRC03m/V0GqF+ED729uih601hETzqTRx9MZrV3SOBzbgAl5kh+W8x8F1oRU0Q2qAwj2mjJ18LrKjjONQECiwNmrJxaU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3816
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/5/6 01:16, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> A send operation reads extent data using the buffered IO path for gettin=
-g
-> extent data to send in write commands and this is both because it's simp=
-le
-> and to make use of the generic readahead infrastructure, which results i=
-n
-> a massive speedup.
->
-> However this fills the page cache with data that, most of the time, is
-> really only used by the send operation - once the write commands are sen=
-t,
-> it's not useful to have the data in the page cache anymore. For large
-> snapshots, bringing all data into the page cache eventually leads to the
-> need to evict other data from the page cache that may be more useful for
-> applications (and kernel susbsystems).
->
-> Even if extents are shared with the subvolume on which a snapshot is bas=
-ed
-> on and the data is currently on the page cache due to being read through
-> the subvolume, attempting to read the data through the snapshot will
-> always result in bringing a new copy of the data into another location i=
-n
-> the page cache (there's currently no shared memory for shared extents).
->
-> So make send evict the data it has read before if when it first opened
-> the inode, its mapping had no pages currently loaded: when
-> inode->i_mapping->nr_pages has a value of 0. Do this instead of deciding
-> based on the return value of filemap_range_has_page() before reading an
-> extent because the generic readahead mechanism may read pages beyond the
-> range we request (and it very often does it), which means a call to
-> filemap_range_has_page() will return true due to the readahead that was
-> triggered when processing a previous extent - we don't have a simple way
-> to distinguish this case from the case where the data was brought into
-> the page cache through someone else. So checking for the mapping number
-> of pages being 0 when we first open the inode is simple, cheap and it
-> generally accomplishes the goal of not trashing the page cache - the
-> only exception is if part of data was previously loaded into the page
-> cache through the snapshot by some other process, in that case we end
-> up not evicting any data send brings into the page cache, just like
-> before this change - but that however is not the common case.
->
-> Example scenario, on a box with 32G of RAM:
->
->    $ btrfs subvolume create /mnt/sv1
->    $ xfs_io -f -c "pwrite 0 4G" /mnt/sv1/file1
->
->    $ btrfs subvolume snapshot -r /mnt/sv1 /mnt/snap1
->
->    $ free -m
->                   total        used        free      shared  buff/cache =
-  available
->    Mem:           31937         186       26866           0        4883 =
-      31297
->    Swap:           8188           0        8188
->
->    # After this we get less 4G of free memory.
->    $ btrfs send /mnt/snap1 >/dev/null
->
->    $ free -m
->                   total        used        free      shared  buff/cache =
-  available
->    Mem:           31937         186       22814           0        8935 =
-      31297
->    Swap:           8188           0        8188
->
-> The same, obviously, applies to an incremental send.
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Unfortunately, this patch seems to cause subpage cases to fail test case
-btrfs/007, the reproducibility is around 50%, thus better "-I 8" to be
-extra safe.
-
-And I believe it also causes other send related failure for subpage cases.
-
-I guess it's truncate_inode_pages_range() only truncating the full page,
-but for subpage case, since one sector is smaller than one page, it
-doesn't work as expected?
-
-If needed, I can provide you the access to my aarch64 vm for debugging.
-
-Thanks,
-Qu
-
-> ---
->   fs/btrfs/send.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 77 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index 55275ba90cb4..d899049dea53 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -137,6 +137,8 @@ struct send_ctx {
->   	 */
->   	struct inode *cur_inode;
->   	struct file_ra_state ra;
-> +	u64 prev_extent_end;
-> +	bool clean_page_cache;
->
->   	/*
->   	 * We process inodes by their increasing order, so if before an
-> @@ -5157,6 +5159,28 @@ static int send_extent_data(struct send_ctx *sctx=
-,
->   		}
->   		memset(&sctx->ra, 0, sizeof(struct file_ra_state));
->   		file_ra_state_init(&sctx->ra, sctx->cur_inode->i_mapping);
-> +
-> +		/*
-> +		 * It's very likely there are no pages from this inode in the page
-> +		 * cache, so after reading extents and sending their data, we clean
-> +		 * the page cache to avoid trashing the page cache (adding pressure
-> +		 * to the page cache and forcing eviction of other data more useful
-> +		 * for applications).
-> +		 *
-> +		 * We decide if we should clean the page cache simply by checking
-> +		 * if the inode's mapping nrpages is 0 when we first open it, and
-> +		 * not by using something like filemap_range_has_page() before
-> +		 * reading an extent because when we ask the readahead code to
-> +		 * read a given file range, it may (and almost always does) read
-> +		 * pages from beyond that range (see the documentation for
-> +		 * page_cache_sync_readahead()), so it would not be reliable,
-> +		 * because after reading the first extent future calls to
-> +		 * filemap_range_has_page() would return true because the readahead
-> +		 * on the previous extent resulted in reading pages of the current
-> +		 * extent as well.
-> +		 */
-> +		sctx->clean_page_cache =3D (sctx->cur_inode->i_mapping->nrpages =3D=
-=3D 0);
-> +		sctx->prev_extent_end =3D offset;
->   	}
->
->   	while (sent < len) {
-> @@ -5168,6 +5192,33 @@ static int send_extent_data(struct send_ctx *sctx=
-,
->   			return ret;
->   		sent +=3D size;
->   	}
-> +
-> +	if (sctx->clean_page_cache) {
-> +		const u64 end =3D round_up(offset + len, PAGE_SIZE);
-> +
-> +		/*
-> +		 * Always start from the end offset of the last processed extent.
-> +		 * This is because the readahead code may (and very often does)
-> +		 * reads pages beyond the range we request for readahead. So if
-> +		 * we have an extent layout like this:
-> +		 *
-> +		 *            [ extent A ] [ extent B ] [ extent C ]
-> +		 *
-> +		 * When we ask page_cache_sync_readahead() to read extent A, it
-> +		 * may also trigger reads for pages of extent B. If we are doing
-> +		 * an incremental send and extent B has not changed between the
-> +		 * parent and send snapshots, some or all of its pages may end
-> +		 * up being read and placed in the page cache. So when truncating
-> +		 * the page cache we always start from the end offset of the
-> +		 * previously processed extent up to the end of the current
-> +		 * extent.
-> +		 */
-> +		truncate_inode_pages_range(&sctx->cur_inode->i_data,
-> +					   sctx->prev_extent_end,
-> +					   end - 1);
-> +		sctx->prev_extent_end =3D end;
-> +	}
-> +
->   	return 0;
->   }
->
-> @@ -6172,6 +6223,30 @@ static int btrfs_unlink_all_paths(struct send_ctx=
- *sctx)
->   	return ret;
->   }
->
-> +static void close_current_inode(struct send_ctx *sctx)
-> +{
-> +	u64 i_size;
-> +
-> +	if (sctx->cur_inode =3D=3D NULL)
-> +		return;
-> +
-> +	i_size =3D i_size_read(sctx->cur_inode);
-> +
-> +	/*
-> +	 * If we are doing an incremental send, we may have extents between th=
-e
-> +	 * last processed extent and the i_size that have not been processed
-> +	 * because they haven't changed but we may have read some of their pag=
-es
-> +	 * through readahead, see the comments at send_extent_data().
-> +	 */
-> +	if (sctx->clean_page_cache && sctx->prev_extent_end < i_size)
-> +		truncate_inode_pages_range(&sctx->cur_inode->i_data,
-> +					   sctx->prev_extent_end,
-> +					   round_up(i_size, PAGE_SIZE) - 1);
-> +
-> +	iput(sctx->cur_inode);
-> +	sctx->cur_inode =3D NULL;
-> +}
-> +
->   static int changed_inode(struct send_ctx *sctx,
->   			 enum btrfs_compare_tree_result result)
->   {
-> @@ -6182,8 +6257,7 @@ static int changed_inode(struct send_ctx *sctx,
->   	u64 left_gen =3D 0;
->   	u64 right_gen =3D 0;
->
-> -	iput(sctx->cur_inode);
-> -	sctx->cur_inode =3D NULL;
-> +	close_current_inode(sctx);
->
->   	sctx->cur_ino =3D key->objectid;
->   	sctx->cur_inode_new_gen =3D 0;
-> @@ -7671,7 +7745,7 @@ long btrfs_ioctl_send(struct inode *inode, struct =
-btrfs_ioctl_send_args *arg)
->
->   		name_cache_free(sctx);
->
-> -		iput(sctx->cur_inode);
-> +		close_current_inode(sctx);
->
->   		kfree(sctx);
->   	}
+On 16/05/2022 18:55, Pankaj Raghav wrote:=0A=
+> Superblocks for zoned devices are fixed as 2 zones at 0, 512GB and 4TB.=
+=0A=
+> These are fixed at these locations so that recovery tools can reliably=0A=
+> retrieve the superblocks even if one of the mirror gets corrupted.=0A=
+> =0A=
+> power of 2 zone sizes align at these offsets irrespective of their=0A=
+> value but non power of 2 zone sizes will not align.=0A=
+> =0A=
+> To make sure the first zone at mirror 1 and mirror 2 align, write zero=0A=
+> operation is performed to move the write pointer of the first zone to=0A=
+> the expected offset. This operation is performed only after a zone reset=
+=0A=
+> of the first zone, i.e., when the second zone that contains the sb is FUL=
+L.=0A=
+=0A=
+Hi Pankaj, stupid question. Npo2 devices still have a zone size being a =0A=
+multiple of 4k don't they?=0A=
+=0A=
+If not, we'd need to also have a tail padding of the superblock zones, in o=
+rder=0A=
+to move the WP of these zones to the end, so the sb-log states match up.=0A=
