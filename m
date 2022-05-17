@@ -2,211 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 747ED52AD73
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 23:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E173952ADF0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 00:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbiEQVW2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 17:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
+        id S230349AbiEQWRi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 18:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbiEQVWZ (ORCPT
+        with ESMTP id S229527AbiEQWRg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 17:22:25 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3253DA60
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 14:22:23 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nr4e7-0005lV-9w by authid <merlin>; Tue, 17 May 2022 14:22:23 -0700
-Date:   Tue, 17 May 2022 14:22:23 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220517212223.GL8056@merlins.org>
-References: <CAEzrpqdbjeTYEy16KbzJ39bBkd8rkNTHA2n53UXHG-CdeUo6xw@mail.gmail.com>
- <20220516005759.GE13006@merlins.org>
- <CAEzrpqfMbB-sGLZUjGHjxHt1Gga+uULGkoZTqjXHwKnzsjP5aA@mail.gmail.com>
- <20220516151653.GF13006@merlins.org>
- <20220516153651.GG13006@merlins.org>
- <20220516165327.GD8056@merlins.org>
- <CAEzrpqfShQhaCVv1GY=JTTCO_T44ggidHFtbSABrcPCSNzY9hA@mail.gmail.com>
- <CAEzrpqdsi63zgudjzbSa3QyMLuE5nD3+t9nOuzXEdWZGCbTcNA@mail.gmail.com>
- <20220517202756.GK8056@merlins.org>
- <CAEzrpqdgKtSDJj2QekYuS+M77wYrp6bvXv2Ue3xQ8Vm2bGGYAg@mail.gmail.com>
+        Tue, 17 May 2022 18:17:36 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247F83BA65
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 15:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1652825847;
+        bh=pLybnxYDlzA22SXpWT0CbsvcZiHmPx3zuSoasIIzHMU=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=OC5s69kcHTmkiPt5+Z7K4NsBpK7rgN+b+GGc46f0awlo9dA7biHT2Wag1Ji2f2rrn
+         cxwQqXc40Cc0sSBvwsdEXT/1Jwellq0pF1rILAzqIfpO49KnRdrQmGpty15vetOtBB
+         fRmeJfJaQWNyjbKF8wz5rGLzLKG8MHTFMLDXu7/s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QWG-1nvTDZ2ucC-004SnK; Wed, 18
+ May 2022 00:17:26 +0200
+Message-ID: <0ddf001d-ca02-5bbb-4dfe-679c5106581c@gmx.com>
+Date:   Wed, 18 May 2022 06:17:20 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqdgKtSDJj2QekYuS+M77wYrp6bvXv2Ue3xQ8Vm2bGGYAg@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 07/15] btrfs: factor out a helper to end a single sector
+ from submit_data_read_repair
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20220517145039.3202184-1-hch@lst.de>
+ <20220517145039.3202184-8-hch@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220517145039.3202184-8-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4tJiB1LLlHP0jhvo2RBWXE1QzGZRrRkWCk+ZitJiovtgMjbaglS
+ +tsFFSv1oEh5SzUNDMQFLrDQ7744lfPsWHyOZus6C9SfLkT1Lkh5tLk28dUwkv+ZSCT++HZ
+ fdEf4YtcJ7HABMjnz7G4JadDqcAYuhvfql7kf7spZercrFkG9AWIq5v6kuC4xAmvH4diCkh
+ GjF3+qT45Zj9W+S2t/5PQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cc5fMVQL7Mw=:VFSMYwyXkM9XBN1qmPO1YK
+ GmaJSALxJQ2zF9ViaUZ2hOPowBOc4FLH/M1Kioox2bFFLcwauNayQ2uWy63PfwNHeLSIlOIZz
+ 5+T9MBDOBJRPVsREBYqEEmesSLUaAsEEgvpONLiyVTmAgd9BW+FkOoi+vjiVGKJ7GLwJEL0Fd
+ otWuEdI+aXq6dsXij/6tOkITzzHj690vC5eimB8ZdEc7rG4tNwPPS03kUN96e90kvepOPeLrt
+ oK/FiXwWUFf4wxuvcoL38Q4HgCYCdGqVK6K2yC4Hi2NoNzzHA0V0mZKLdckLlHnN7c08nYgFV
+ CYpSdHpgdgQzRIVH8h3eRKW0wKEMMRAuPNPidRjfua3YkMItzfZiS0wTeHStglUuzRtl118rw
+ SgiQlwI0vElKjA/BbeMPbs2wugzNvrX8cKvCwWu20MkkvXLx/3YzrKXiBHR9o+lu/6fKpWA/t
+ aVv330nw6ctiwQBCRS4IHaH54SZvhjQgPQEs1GN+4lyu9gWyQvcGcBUme5I/Sow5f7DYe3RQy
+ svtKLao84GA7RpRUHx/OANMW1oEGDqFBcna3FNkq3VlZb+iPQyy30EnJFrgFqMp2BjT4fQfBO
+ ZRIlK17eoC8KhXwLhXJO6YDuQQeJc2LYviRnTB+d/3hF5ORErr6eUMkaPDSYxsA/iNzAe+jZU
+ Vl6CbS8r6ym8Ee1BQ3fLgSUmPa6Q23LGq8YP+7dpqqTP6rUUBCwehKQ6cYVXis1bpQJ9wTfb3
+ KcOZnmRzZiWAOalSHGY0oMbrCDCACs/4/4XAeWEaYpPCTzxDAxlfHvTarxPoQJh9R4Tm9uEC6
+ XdyGs4nHFhYxymIv6y3M42ddToZ/+qJaQMjdY8/ATMUf2sxX2GcwKGUIzKv+ovWYAQ8mdOu2z
+ L642RCdABaUsCo7doR1GMuP/kICCfx8ke2TtHHiSeTPyK5SudXNOSCQgiuwNz9Dvt4bqU9pwR
+ jixE9kP/hi9XAJUX84PVRH7xjx90HNRjgt6Xqh3VCM/cJg7jnu43bRyI/EONmUqNKCjL9TJZV
+ aC1+ZlPaAcdKYHfiVBVY3zgUZLLbsvPnNfMxEkY9woN1J5aZgBLROykc0MujqZZu8WUQk8AW4
+ lDa7qo4Ed3kbWrvMCTrll5ewE2WxYuTreiGXtbcPbXtn9m1n2LV7mRy+w==
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 17, 2022 at 04:39:18PM -0400, Josef Bacik wrote:
-> What I *think* happened is you essentially lost random blocks from 1
-> transaction.  This isn't particularly harmful, except you had a chunk
-> allocation that happened, so you lost some of the chunk root.  I
-> didn't realize this is what was happening until now.  If I had I
-> probably could have pieced together these dev extents into chunks, and
-> then all those blocks that we had that didn't map to a chunk probably
-> would have been fine, because they were in the range that we lost.
-> 
-> It's not that you lost a lot of blocks, you just lost a few really,
-> really important blocks, and then I failed to recognize what happened
-> so I threw out more than I should have, plus all the other little
-> wonkiness from experimental recovery tools.  Thanks,
-
-Right, which is totally understandable. I'm still glad I have backups
-(waiting to restore), but I very much appreciate your work right now as
-it's fixing the bigger problem of recovering an unmountable filesystem.
-
-Ultimately I don't care as much about how much data is lost, but I very
-much care about btrfs check repair getting the filesystem back to a
-mountable state, so I've been more than happy helping you get to that
-state and I'm very thankful for all the time you spent on this so far.
-Hopefully we're almost there :)
-
-For extra points, files that have corrupted checksums, I'd love for them
-to be renamed to file.corrupted, so that someone who cares about partial
-data, can get some data back, and that you can recover much faster with
-rsync if it only has to look for missing files, as opposed to running a
-checksum on all the data on both sides, which would take ages.
-I know in this case, I may end up with some amount of files silently
-corrupted since we rebuilt the checksum table, not sure if there is a
-way to do this like I described or some similar way, in the future.
-
-I see you pushed another change, trying it now.
-
-I have the full output saved if need be.
-
-Device extent[1, 14812306210816, 1073741824] didn't find the relative chunk.
-Device extent[1, 9544528822272, 1073741824] didn't find the relative chunk.
-Device extent[1, 11231377227776, 1073741824] didn't find the relative chunk.
-Device extent[1, 11406397145088, 1073741824] didn't find the relative chunk.
-Device extent[1, 11416060821504, 1073741824] didn't find the relative chunk.
-Device extent[1, 11422503272448, 1073741824] didn't find the relative chunk.
-Device extent[1, 10616123162624, 1073741824] didn't find the relative chunk.
-incorrect local backref count on 2952871936 parent 13576823652352 owner 0 offset 0 found 0 wanted 1 back 0x55db601ea230
-backref disk bytenr does not match extent record, bytenr=2952871936, ref bytenr=0
-data backref 2952871936 root 11223 owner 258 offset 0 num_refs 0 not found in extent tree
-incorrect local backref count on 2952871936 root 11223 owner 258 offset 0 found 1 wanted 0 back 0x55db80f5c6a0
-backpointer mismatch on [2952871936 262144]
-repair deleting extent record: key [2952871936,168,262144]
-adding new data backref on 2952871936 root 1 owner 258 offset 0 found 1
-adding new data backref on 2952871936 root 11223 owner 258 offset 0 found 1
-Repaired extent references for 2952871936
-incorrect local backref count on 4156227584 parent 13576823652352 owner 0 offset 0 found 0 wanted 1 back 0x55db607ad1f0
-backref disk bytenr does not match extent record, bytenr=4156227584, ref bytenr=0
-data backref 4156227584 root 11223 owner 259 offset 0 num_refs 0 not found in extent tree
-incorrect local backref count on 4156227584 root 11223 owner 259 offset 0 found 1 wanted 0 back 0x55db80f5c570
-backpointer mismatch on [4156227584 262144]
-repair deleting extent record: key [4156227584,168,262144]
-adding new data backref on 4156227584 root 1 owner 259 offset 0 found 1
-adding new data backref on 4156227584 root 11223 owner 259 offset 0 found 1
-Repaired extent references for 4156227584
-(...)
-adding new data backref on 10449820549120 root 1 owner 256 offset 0 found 1
-adding new data backref on 10449820549120 root 11223 owner 256 offset 0 found 1
-Repaired extent references for 10449820549120
-super bytes used 14180042240000 mismatches actual used 14180042256384
-Invalid key type(ROOT_ITEM) found in root(11223)
-ignoring invalid key
-Invalid key type(ROOT_ITEM) found in root(11223)
-ignoring invalid key
-Invalid key type(ROOT_ITEM) found in root(11223)
-ignoring invalid key
-Invalid key type(ROOT_ITEM) found in root(11223)
-ignoring invalid key
-Invalid key type(ROOT_ITEM) found in root(11223)
-ignoring invalid key
-Block group[4523166793728, 1073741824] (flags = 1) didn't find the relative chunk.
-Block group[4524240535552, 1073741824] (flags = 1) didn't find the relative chunk.
-Block group[4525314277376, 1073741824] (flags = 1) didn't find the relative chunk.
-Block group[4526388019200, 1073741824] (flags = 1) didn't find the relative chunk.
-Block group[4527461761024, 1073741824] (flags = 1) didn't find the relative chunk.
-(...)
-super bytes used 14180042240000 mismatches actual used 14180042272768
-(...)
-root 159785 inode 74938 errors 1000, some csum missing
-root 159785 inode 74945 errors 1000, some csum missing
-root 159785 inode 74952 errors 1100, file extent discount, some csum missing
-Found file extent holes:
-        start: 2477785088, len: 934416384
-root 159785 inode 74958 errors 1500, file extent discount, nbytes wrong, some csum missing
-Found file extent holes:
-        start: 49020928, len: 1426894848
-root 159785 inode 74964 errors 1100, file extent discount, some csum missing
-Found file extent holes:
-        start: 714735616, len: 24973312
-root 159785 inode 74966 errors 1500, file extent discount, nbytes wrong, some csum missing
-Found file extent holes:
-        start: 13893632, len: 838578176
-root 159785 inode 74967 errors 1100, file extent discount, some csum missing
-Found file extent holes:
-        start: 86638592, len: 357191680
-root 159785 inode 74977 errors 1000, some csum missing
-root 159785 inode 74983 errors 1000, some csum missing
-root 159785 inode 74984 errors 1000, some csum missing
-(...)
-root 159785 inode 75025 errors 1000, some csum missing
-root 159785 inode 75034 errors 1500, file extent discount, nbytes wrong, some csum missing
-Found file extent holes:
-        start: 132841472, len: 112558080
-(...)
-root 165299 inode 95692 errors 1000, some csum missing
-root 165299 inode 95697 errors 1000, some csum missing
-root 165299 inode 95698 errors 1000, some csum missing
-root 165299 inode 95699 errors 1000, some csum missing
-root 165299 inode 95700 errors 1000, some csum missing
-root 165299 inode 95701 errors 1000, some csum missing
-root 165299 inode 95702 errors 1000, some csum missing
-root 165299 inode 95703 errors 1000, some csum missing
-root 165299 inode 95704 errors 1000, some csum missing
-root 165299 inode 95705 errors 1000, some csum missing
-ERROR: errors found in fs roots
-
-Starting repair.
-Opening filesystem to check...
-JOSEF: root 9
-Checking filesystem on /dev/mapper/dshelf1
-UUID: 96539b8c-ccc9-47bf-9e6c-29305890941e
-reset devid 1 bytes_used to 14599692746752
-No device size related problem found
-cache and super generation don't match, space cache will be invalidated
-found 85080253587456 bytes used, error(s) found
-total csum bytes: 0
-total tree bytes: 12561334272
-total fs tree bytes: 11398840320
-total extent tree bytes: 1138114560
-btree space waste bytes: 2020110583
-file data blocks allocated: 93624650268672
- referenced 93708263153664
 
 
-[1969680.027665] BTRFS info (device dm-1): flagging fs with big metadata feature
-[1969680.049987] BTRFS warning (device dm-1): 'recovery' is deprecated, use 'rescue=usebackuproot' instead
-[1969680.049991] BTRFS info (device dm-1): trying to use backup root at mount time
-[1969680.049992] BTRFS info (device dm-1): disk space caching is enabled
-[1969680.049993] BTRFS info (device dm-1): has skinny extents
-[1969681.639536] BTRFS error (device dm-1): logical 4523166793728 len 1073741824 found bg but no related chunk
-[1969681.670760] BTRFS error (device dm-1): failed to read block groups: -2
-[1969681.703366] BTRFS error (device dm-1): open_ctree failed
+On 2022/5/17 22:50, Christoph Hellwig wrote:
+> Add a helper to end I/O on a single sector, which will come in handy wit=
+h
+> the new read repair code.
 
+The code looks good to me.
 
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+Just one thing to mention, I also considered such refactor, but the main
+reason to prevent me doing this is, there are already more than enough
+helpers, and without a good enough naming, it can be messy easily.
 
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Although it looks like we're fine with the new helper for now.
+
+Thanks,
+Qu
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   fs/btrfs/extent_io.c | 26 +++++++++++++++-----------
+>   1 file changed, 15 insertions(+), 11 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 75466747a252c..f96d5b7071813 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2740,6 +2740,20 @@ static void end_page_read(struct page *page, bool=
+ uptodate, u64 start, u32 len)
+>   		btrfs_subpage_end_reader(fs_info, page, start, len);
+>   }
+>
+> +static void end_sector_io(struct page *page, u64 offset, bool uptodate)
+> +{
+> +	struct inode *inode =3D page->mapping->host;
+> +	u32 sectorsize =3D btrfs_sb(inode->i_sb)->sectorsize;
+> +	struct extent_state *cached =3D NULL;
+> +
+> +	end_page_read(page, uptodate, offset, sectorsize);
+> +	if (uptodate)
+> +		set_extent_uptodate(&BTRFS_I(inode)->io_tree, offset,
+> +				offset + sectorsize - 1, &cached, GFP_ATOMIC);
+> +	unlock_extent_cached_atomic(&BTRFS_I(inode)->io_tree, offset,
+> +			offset + sectorsize - 1, &cached);
+> +}
+> +
+>   static void submit_data_read_repair(struct inode *inode, struct bio *f=
+ailed_bio,
+>   		u32 bio_offset, const struct bio_vec *bvec, int failed_mirror,
+>   		unsigned int error_bitmap)
+> @@ -2770,7 +2784,6 @@ static void submit_data_read_repair(struct inode *=
+inode, struct bio *failed_bio,
+>   	/* Iterate through all the sectors in the range */
+>   	for (i =3D 0; i < nr_bits; i++) {
+>   		const unsigned int offset =3D i * sectorsize;
+> -		struct extent_state *cached =3D NULL;
+>   		bool uptodate =3D false;
+>   		int ret;
+>
+> @@ -2801,16 +2814,7 @@ static void submit_data_read_repair(struct inode =
+*inode, struct bio *failed_bio,
+>   		 * will not be properly unlocked.
+>   		 */
+>   next:
+> -		end_page_read(page, uptodate, start + offset, sectorsize);
+> -		if (uptodate)
+> -			set_extent_uptodate(&BTRFS_I(inode)->io_tree,
+> -					start + offset,
+> -					start + offset + sectorsize - 1,
+> -					&cached, GFP_ATOMIC);
+> -		unlock_extent_cached_atomic(&BTRFS_I(inode)->io_tree,
+> -				start + offset,
+> -				start + offset + sectorsize - 1,
+> -				&cached);
+> +		end_sector_io(page, start + offset, uptodate);
+>   	}
+>   }
+>
