@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D52152A553
+	by mail.lfdr.de (Postfix) with ESMTP id 6863D52A554
 	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349325AbiEQOvq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 10:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
+        id S1349315AbiEQOvu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 10:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349425AbiEQOve (ORCPT
+        with ESMTP id S1349431AbiEQOvg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 10:51:34 -0400
+        Tue, 17 May 2022 10:51:36 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A81318358
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2150418B28
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=CggfV78VLKOgKACYxrle1UO3y6/cU/pC/Ah7chn6aVY=; b=JsmCvsXpWbzT80igJyGt8iiy9b
-        QgwvbIihJoHsytbwCzNazT7DSQwdpKHZYE4z+8xBdVSYCcKNdMBVYLD7Wv1oEk2CZProhoqPqmbDv
-        Jm+RmnrHQs39qtlg0j6nzYpQTucbAFbUvCYou8tifAjF10nC62S3AXFiYhJVga6eFJ51RQsWNP3sT
-        92RpSJ28tB9MFzLl3H8odJbsT5woU+XbiPG5iqM1MelyvkGy7WKWATZkiyY8aaF/3m/HYTyfIfsLu
-        R6hT/QwTgIE7EMIRxi21CPTWkYpGjqXhNOAPBbZ8S9Aytx7XTSD1FwFSOy0Qa2lmhU+blMDTWbPpY
-        ssHHhQoQ==;
+        bh=eFxmJa/spBO9mPptmXnvy/7a2o2OtetRyUP1a65qLvM=; b=jWgZscDkAu8L0AzIupDnpKqIsX
+        kxEH4WdzlA+FofT5AmXICMNZWEj/QxWmvFdcddaYwwNDt11R//Uynp6SrIMiPUD2UVNfuQdnqd1tu
+        3dhuKvcExTENyB9DjN+O/qwgvRtoiyD/NRA5vjuKZJQMbxZ3gsf/TL40UObGytGw3R11UpU4/rVjr
+        sQCzl4zycUt0x/5E0ek7HX5rQZSajmjL6NV/XM3aSjOUT49D+o8o8FNEB4C0EYxYrSDDiwJkcFZB/
+        WC6F3aK96lqbTjuKaXzzN23q1ZPe6w9a0ji5vmr49ycT3G7v8UawsejE46mM7zTfpZBZFn09EGkMT
+        HejBq61g==;
 Received: from [89.144.222.138] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nqyXl-00EXHr-Uq; Tue, 17 May 2022 14:51:26 +0000
+        id 1nqyXp-00EXJ6-7o; Tue, 17 May 2022 14:51:29 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 13/15] btrfs: use the new read repair code for direct I/O
-Date:   Tue, 17 May 2022 16:50:37 +0200
-Message-Id: <20220517145039.3202184-14-hch@lst.de>
+Subject: [PATCH 14/15] btrfs: use the new read repair code for buffered reads
+Date:   Tue, 17 May 2022 16:50:38 +0200
+Message-Id: <20220517145039.3202184-15-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220517145039.3202184-1-hch@lst.de>
 References: <20220517145039.3202184-1-hch@lst.de>
@@ -51,118 +51,161 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Rewrite btrfs_check_read_dio_bio to use btrfs_bio_for_each_sector and
-start/end a repair session as needed.
+Start/end a repair session as needed in end_bio_extent_readpage and
+submit_data_read_repair.  Unlike direct I/O, the buffered I/O handler
+completes I/O on a per-sector basis and thus needs to pass an endio
+handler to the repair code, which unlocks all pages and marks them
+as either uptodate or not.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/inode.c | 76 +++++++++++++-----------------------------------
- 1 file changed, 21 insertions(+), 55 deletions(-)
+ fs/btrfs/extent_io.c | 76 ++++++++++++++++++++------------------------
+ 1 file changed, 35 insertions(+), 41 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c771136116151..51cca8f343b72 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -55,6 +55,7 @@
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index cbe3ab24af9e5..093e3ac28fe21 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -30,6 +30,7 @@
  #include "zoned.h"
- #include "subpage.h"
- #include "inode-item.h"
+ #include "block-group.h"
+ #include "compression.h"
 +#include "read-repair.h"
  
- struct btrfs_iget_args {
- 	u64 ino;
-@@ -7861,71 +7862,36 @@ static void btrfs_dio_private_put(struct btrfs_dio_private *dip)
- 	bio_endio(&dip->bio);
+ static struct kmem_cache *extent_state_cache;
+ static struct kmem_cache *extent_buffer_cache;
+@@ -2754,14 +2755,27 @@ static void end_sector_io(struct page *page, u64 offset, bool uptodate)
+ 			offset + sectorsize - 1, &cached);
  }
  
--static void submit_dio_repair_bio(struct inode *inode, struct bio *bio,
--				  int mirror_num,
--				  enum btrfs_compression_type compress_type)
--{
--	struct btrfs_dio_private *dip = bio->bi_private;
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--
--	BUG_ON(bio_op(bio) == REQ_OP_WRITE);
--
--	if (btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA))
--		return;
--
--	refcount_inc(&dip->refs);
--	if (btrfs_map_bio(fs_info, bio, mirror_num))
--		refcount_dec(&dip->refs);
--}
--
- static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
- 					     struct btrfs_bio *bbio,
- 					     const bool uptodate)
- {
- 	struct inode *inode = dip->inode;
- 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
--	const u32 sectorsize = fs_info->sectorsize;
--	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
--	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
- 	const bool csum = !(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM);
--	struct bio_vec bvec;
-+	struct btrfs_read_repair rr = { };
-+	blk_status_t ret = BLK_STS_OK;
- 	struct bvec_iter iter;
--	u32 bio_offset = 0;
--	blk_status_t err = BLK_STS_OK;
--
--	__bio_for_each_segment(bvec, &bbio->bio, iter, bbio->iter) {
--		unsigned int i, nr_sectors, pgoff;
--
--		nr_sectors = BTRFS_BYTES_TO_BLKS(fs_info, bvec.bv_len);
--		pgoff = bvec.bv_offset;
--		for (i = 0; i < nr_sectors; i++) {
--			u64 start = bbio->file_offset + bio_offset;
--
--			ASSERT(pgoff < PAGE_SIZE);
--			if (uptodate &&
--			    (!csum || !check_data_csum(inode, bbio,
--						       bio_offset, bvec.bv_page,
--						       pgoff, start))) {
--				clean_io_failure(fs_info, failure_tree, io_tree,
--						 start, bvec.bv_page,
--						 btrfs_ino(BTRFS_I(inode)),
--						 pgoff);
--			} else {
--				int ret;
--
--				ret = btrfs_repair_one_sector(inode, &bbio->bio,
--						bio_offset, bvec.bv_page, pgoff,
--						start, bbio->mirror_num,
--						submit_dio_repair_bio);
--				if (ret)
--					err = errno_to_blk_status(ret);
--			}
--			ASSERT(bio_offset + sectorsize > bio_offset);
--			bio_offset += sectorsize;
--			pgoff += sectorsize;
++static void end_read_repair(struct btrfs_bio *repair_bbio, struct inode *inode,
++		bool uptodate)
++{
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct bvec_iter iter;
 +	struct bio_vec bv;
 +	u32 offset;
 +
-+	btrfs_bio_for_each_sector(fs_info, bv, bbio, iter, offset) {
-+		if (uptodate &&
-+		    (!csum || !check_data_csum(inode, bbio, offset,
-+				bv.bv_page, bv.bv_offset,
-+				bbio->file_offset + offset))) {
-+			if (!btrfs_read_repair_end(&rr, bbio, inode, offset,
-+					NULL))
-+				ret = BLK_STS_IOERR;
-+		} else {
-+			if (!btrfs_read_repair_add(&rr, bbio, inode, offset))
-+				ret = BLK_STS_IOERR;
- 		}
- 	}
--	return err;
++	btrfs_bio_for_each_sector(fs_info, bv, repair_bbio, iter, offset)
++		end_sector_io(bv.bv_page, repair_bbio->file_offset + offset,
++				uptodate);
++}
 +
-+	if (!btrfs_read_repair_end(&rr, bbio, inode, offset, NULL))
-+		ret = BLK_STS_IOERR;
-+	return ret;
+ static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
+ 		u32 bio_offset, const struct bio_vec *bvec, int failed_mirror,
+-		unsigned int error_bitmap)
++		unsigned int error_bitmap, struct btrfs_read_repair *rr)
+ {
+-	const unsigned int pgoff = bvec->bv_offset;
++	struct btrfs_bio *failed_bbio = btrfs_bio(failed_bio);
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	u64 start = page_offset(bvec->bv_page) + bvec->bv_offset;
+ 	struct page *page = bvec->bv_page;
+-	const u64 start = page_offset(bvec->bv_page) + bvec->bv_offset;
+ 	const u64 end = start + bvec->bv_len - 1;
+ 	const u32 sectorsize = fs_info->sectorsize;
+ 	const int nr_bits = (end + 1 - start) >> fs_info->sectorsize_bits;
+@@ -2783,38 +2797,17 @@ static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
+ 
+ 	/* Iterate through all the sectors in the range */
+ 	for (i = 0; i < nr_bits; i++) {
+-		const unsigned int offset = i * sectorsize;
+-		bool uptodate = false;
+-		int ret;
+-
+-		if (!(error_bitmap & (1U << i))) {
+-			/*
+-			 * This sector has no error, just end the page read
+-			 * and unlock the range.
+-			 */
+-			uptodate = true;
+-			goto next;
++		bool uptodate = !(error_bitmap & (1U << i));
++
++		if (uptodate ||
++		    !btrfs_read_repair_add(rr, failed_bbio, inode,
++		    		bio_offset)) {
++			btrfs_read_repair_end(rr, failed_bbio, inode,
++					bio_offset, end_read_repair);
++			end_sector_io(page, start, uptodate);
+ 		}
+-
+-		ret = btrfs_repair_one_sector(inode, failed_bio,
+-				bio_offset + offset,
+-				page, pgoff + offset, start + offset,
+-				failed_mirror, btrfs_submit_data_bio);
+-		if (!ret) {
+-			/*
+-			 * We have submitted the read repair, the page release
+-			 * will be handled by the endio function of the
+-			 * submitted repair bio.
+-			 * Thus we don't need to do any thing here.
+-			 */
+-			continue;
+-		}
+-		/*
+-		 * Continue on failed repair, otherwise the remaining sectors
+-		 * will not be properly unlocked.
+-		 */
+-next:
+-		end_sector_io(page, start + offset, uptodate);
++		bio_offset += sectorsize;
++		start += sectorsize;
+ 	}
  }
  
- static void __endio_write_update_ordered(struct btrfs_inode *inode,
+@@ -3025,8 +3018,6 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 	struct bio_vec *bvec;
+ 	struct btrfs_bio *bbio = btrfs_bio(bio);
+ 	int mirror = bbio->mirror_num;
+-	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+-	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+ 	bool uptodate = !bio->bi_status;
+ 	struct processed_extent processed = { 0 };
+ 	/*
+@@ -3035,6 +3026,7 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 	 */
+ 	u32 bio_offset = 0;
+ 	struct bvec_iter_all iter_all;
++	struct btrfs_read_repair rr = { };
+ 
+ 	btrfs_bio(bio)->file_offset =
+ 		page_offset(first_vec->bv_page) + first_vec->bv_offset;
+@@ -3091,10 +3083,6 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			loff_t i_size = i_size_read(inode);
+ 			pgoff_t end_index = i_size >> PAGE_SHIFT;
+ 
+-			clean_io_failure(BTRFS_I(inode)->root->fs_info,
+-					 failure_tree, tree, start, page,
+-					 btrfs_ino(BTRFS_I(inode)), 0);
+-
+ 			/*
+ 			 * Zero out the remaining part if this range straddles
+ 			 * i_size.
+@@ -3134,9 +3122,13 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			 * and bad sectors, we just continue to the next bvec.
+ 			 */
+ 			submit_data_read_repair(inode, bio, bio_offset, bvec,
+-						mirror, error_bitmap);
++						mirror, error_bitmap,
++						&rr);
++
+ 		} else {
+ 			/* Update page status and unlock */
++			btrfs_read_repair_end(&rr, btrfs_bio(bio), inode,
++					bio_offset, end_read_repair);
+ 			end_page_read(page, uptodate, start, len);
+ 			endio_readpage_release_extent(&processed,
+ 					BTRFS_I(inode), start, end,
+@@ -3148,6 +3140,8 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 
+ 	}
+ 	/* Release the last extent */
++	btrfs_read_repair_end(&rr, btrfs_bio(bio), inode, bio_offset,
++			end_read_repair);
+ 	endio_readpage_release_extent(&processed, NULL, 0, 0, false);
+ 	btrfs_bio_free_csum(bbio);
+ 	bio_put(bio);
 -- 
 2.30.2
 
