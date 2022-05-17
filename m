@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CBE529FBA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 12:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66855529FBC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 12:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344694AbiEQKrs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 06:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S1344635AbiEQKru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 06:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344675AbiEQKrj (ORCPT
+        with ESMTP id S1344677AbiEQKrj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 17 May 2022 06:47:39 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7407736308
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 03:47:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124E53E5EF
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 03:47:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 46756B8181D
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 10:47:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E9B4C34100
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 10:47:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 376C0B8182D
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 10:47:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70C8DC385B8
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 10:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1652784454;
-        bh=q0OykQeCIAu7RwBBQ/P1cvBTKWozuCfVheJ5Y2FBZ6k=;
+        bh=nrs/ixux+EwxyQF6lTdHt0kTyMCoiVgqFqVB6d2DuZY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=T7Q0/Jtpjf9BkKmIqORrM4UqvjhqZ3dZDS/UmcvrgdGwuoZ8gv3U4IzI32TCn31LQ
-         PW7CcQnKbSRzgKLhpMeD5KUbx43WopN/hpJjU7cGjadR/vAXaOXMt1rkWZz/AE0AKd
-         gCU/A+hjvZ2lHGvVhBpOTiKYNROSbFUj3aV8q3mFBqVFwNORVNScE5T8svR/CQZMXF
-         FyULRaG4GUKgk6lMM0DjXBDXRYijWK8QMVwePJ6Bg8h/O4U5nuzEteYT6xIh9KFxaZ
-         NrWlcv1f8mvr2RSQbuMtIxoaRdwiQNtWl45tr2yEYhxl9XiJSxdbtsFciJ/HuoB0Vr
-         3PANJYOpcVV7w==
+        b=tEiIOIrLh/AhmI99mtSLOG5nWZotEeWTTjhN2BTi54hDU3N0xmVYU4anUA0Wf2F4f
+         4QO6QwUC/5A4hmqLpMsW4jMXWjUlcuolW9EegA81oMd6AJvTZCCBw/cJIGMBoIBJXY
+         offmN1ZMhp06lXcVx3prNYa7CagztAZiJQ3IgUy9KycOp7BbUNgos9uSC/Pb9US9Ue
+         3RIxOqlBkgOoxrIqqOAM5/Ixd306Tuce0jmV1FHL9fLRFqmhmu26pj2VdpMI0VaJa8
+         htG9XiLptVMt5VqfbC3pv8gY38pqa9rT5uHiEFuNChbsdUmSHYnZLEhtt64LwfvJm9
+         68o9BAhgs/V8g==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/2] btrfs: teach send to avoid trashing the page cache with data
-Date:   Tue, 17 May 2022 11:47:28 +0100
-Message-Id: <cover.1652784088.git.fdmanana@suse.com>
+Subject: [PATCH 1/2] btrfs: send: keep the current inode open while processing it
+Date:   Tue, 17 May 2022 11:47:29 +0100
+Message-Id: <82608be46352e0eaba9247107edbe5b39cced443.1652784088.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1651770555.git.fdmanana@suse.com>
-References: <cover.1651770555.git.fdmanana@suse.com>
+In-Reply-To: <cover.1652784088.git.fdmanana@suse.com>
+References: <cover.1652784088.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,25 +54,147 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When doing a send operation, we read the data of all extents we need to
-send into the page cache, which almost always is wasteful as it can lead
-to eviction of other things from the page cache that are more useful for
-applications (and maybe other kernel subsystems). This patchset makes send
-evict the data from the page cache once it has sent it. The actual work
-is in the second patch, while the first one is just preparatory work.
-More details in the changelogs.
+Every time we send a write command, we open the inode, read some data to
+a buffer and then close the inode. The amount of data we read for each
+write command is at most 48K, returned by max_send_read_size(), and that
+corresponds to: BTRFS_SEND_BUF_SIZE - 16K = 48K. In practice this does
+not add any significant overhead, because the time elapsed between every
+close (iput()) and open (btrfs_iget()) is very short, so the inode is kept
+in the VFS's cache after the iput() and it's still there by the time we
+do the next btrfs_iget().
 
-V2: Fixed it to work with subpage sector size. It was broken as we could
-    end up zeroing out part of a page when extents are not sector size
-    aligned. Reported by Qu.
+As between processing extents of the current inode we don't do anything
+else, it makes sense to keep the inode open after we process its first
+extent that needs to be sent and keep it open until we start processing
+the next inode. This serves to facilitate the next change, which aims
+to avoid having send operations trash the page cache with data extents.
 
-Filipe Manana (2):
-  btrfs: send: keep the current inode open while processing it
-  btrfs: send: avoid trashing the page cache
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/send.c | 54 ++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 35 insertions(+), 19 deletions(-)
 
- fs/btrfs/send.c | 133 +++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 114 insertions(+), 19 deletions(-)
-
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 330bef72a555..55275ba90cb4 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -131,6 +131,11 @@ struct send_ctx {
+ 	struct list_head name_cache_list;
+ 	int name_cache_size;
+ 
++	/*
++	 * The inode we are currently processing. It's not NULL only when we
++	 * need to issue write commands for data extents from this inode.
++	 */
++	struct inode *cur_inode;
+ 	struct file_ra_state ra;
+ 
+ 	/*
+@@ -4868,7 +4873,6 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ {
+ 	struct btrfs_root *root = sctx->send_root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+-	struct inode *inode;
+ 	struct page *page;
+ 	pgoff_t index = offset >> PAGE_SHIFT;
+ 	pgoff_t last_index;
+@@ -4879,37 +4883,30 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ 	if (ret)
+ 		return ret;
+ 
+-	inode = btrfs_iget(fs_info->sb, sctx->cur_ino, root);
+-	if (IS_ERR(inode))
+-		return PTR_ERR(inode);
+-
+ 	last_index = (offset + len - 1) >> PAGE_SHIFT;
+ 
+-	/* initial readahead */
+-	memset(&sctx->ra, 0, sizeof(struct file_ra_state));
+-	file_ra_state_init(&sctx->ra, inode->i_mapping);
+-
+ 	while (index <= last_index) {
+ 		unsigned cur_len = min_t(unsigned, len,
+ 					 PAGE_SIZE - pg_offset);
+ 
+-		page = find_lock_page(inode->i_mapping, index);
++		page = find_lock_page(sctx->cur_inode->i_mapping, index);
+ 		if (!page) {
+-			page_cache_sync_readahead(inode->i_mapping, &sctx->ra,
+-				NULL, index, last_index + 1 - index);
++			page_cache_sync_readahead(sctx->cur_inode->i_mapping,
++						  &sctx->ra, NULL, index,
++						  last_index + 1 - index);
+ 
+-			page = find_or_create_page(inode->i_mapping, index,
+-					GFP_KERNEL);
++			page = find_or_create_page(sctx->cur_inode->i_mapping,
++						   index, GFP_KERNEL);
+ 			if (!page) {
+ 				ret = -ENOMEM;
+ 				break;
+ 			}
+ 		}
+ 
+-		if (PageReadahead(page)) {
+-			page_cache_async_readahead(inode->i_mapping, &sctx->ra,
+-				NULL, page, index, last_index + 1 - index);
+-		}
++		if (PageReadahead(page))
++			page_cache_async_readahead(sctx->cur_inode->i_mapping,
++						   &sctx->ra, NULL, page, index,
++						   last_index + 1 - index);
+ 
+ 		if (!PageUptodate(page)) {
+ 			btrfs_readpage(NULL, page);
+@@ -4935,7 +4932,7 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+ 		len -= cur_len;
+ 		sctx->send_size += cur_len;
+ 	}
+-	iput(inode);
++
+ 	return ret;
+ }
+ 
+@@ -5148,6 +5145,20 @@ static int send_extent_data(struct send_ctx *sctx,
+ 	if (sctx->flags & BTRFS_SEND_FLAG_NO_FILE_DATA)
+ 		return send_update_extent(sctx, offset, len);
+ 
++	if (sctx->cur_inode == NULL) {
++		struct btrfs_root *root = sctx->send_root;
++
++		sctx->cur_inode = btrfs_iget(root->fs_info->sb, sctx->cur_ino, root);
++		if (IS_ERR(sctx->cur_inode)) {
++			int err = PTR_ERR(sctx->cur_inode);
++
++			sctx->cur_inode = NULL;
++			return err;
++		}
++		memset(&sctx->ra, 0, sizeof(struct file_ra_state));
++		file_ra_state_init(&sctx->ra, sctx->cur_inode->i_mapping);
++	}
++
+ 	while (sent < len) {
+ 		u64 size = min(len - sent, read_size);
+ 		int ret;
+@@ -6171,6 +6182,9 @@ static int changed_inode(struct send_ctx *sctx,
+ 	u64 left_gen = 0;
+ 	u64 right_gen = 0;
+ 
++	iput(sctx->cur_inode);
++	sctx->cur_inode = NULL;
++
+ 	sctx->cur_ino = key->objectid;
+ 	sctx->cur_inode_new_gen = 0;
+ 	sctx->cur_inode_last_extent = (u64)-1;
+@@ -7657,6 +7671,8 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 
+ 		name_cache_free(sctx);
+ 
++		iput(sctx->cur_inode);
++
+ 		kfree(sctx);
+ 	}
+ 
 -- 
 2.35.1
 
