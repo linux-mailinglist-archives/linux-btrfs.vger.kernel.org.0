@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5611752A557
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D73252A54D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349362AbiEQOvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 10:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
+        id S1349299AbiEQOvn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 10:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349380AbiEQOvS (ORCPT
+        with ESMTP id S1349387AbiEQOvT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 10:51:18 -0400
+        Tue, 17 May 2022 10:51:19 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4EE15737
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE1615831
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=ncoOIJVrELkZ1Yt/b6Y6PJSMmtx9R49eKAR+NeSiITY=; b=nsp5RTurbgkg2U3Jta1G7dADpr
-        V3OmZq34ARtNTQFLPQvICRhTjGUbCkc5QV7Ee51jrLCTtBIUxO57Np0NkMvDNrUXw/x0/6SGv/eXk
-        tl708u3Tr/+nr+Ndigb0A3rsHVWY/DEFp4yKSt/+uoYTR7koj+u0RjcL6azt+gbIHxBAc+2y4udbT
-        4sZ/YUIVVVsJlSIj9wJ2U1jOOMcWqN8ptwrYyxuItkceSQUog93OI95zyP7oWa9AxrkvTTMjw0ZcV
-        tsGJCKEm7nPzPDPx9TP1wmNO0eKLm/H9AMoeHFdxvBCzDhkhuVg5j5F3HfkfjCrWH5e+pukOp8zWO
-        F/RjKGjg==;
+        bh=l7e6jh4N6fG6Hwh7Zqm+d4K0UQfsCKbZxDQNeNzv8M8=; b=QTViyS1PbKcShSEUSjGad6TyxK
+        p7i0tnaf4u6r+8Xrs75KnOCuDdJiNqJHp1ZWKZqcxA3/dInBvmkf44I9S5a+2+yiT9EbOPWUbZZHs
+        M3vJboYRkS835jlRBi2b3p4d+eQViH+KAuh/vht9yD6erWuk+UiMp0v9cp0hsow9OIrvgLVM2j14P
+        NwxvsDoi7s4SFo8644+NZLvKvv3B5TxYn2/Paa7U7NkHsgMNEkES2CAw6laUrAmfokuICbI0xESN4
+        q0zlNGG9i3gQryjImqpsyHCoCVe5AfH+m4XWgzPlVz4VD1k77MCtAxBtOwaw9sHzgqB72ILAi8z9X
+        dRovO8AQ==;
 Received: from [89.144.222.138] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nqyXY-00EXEV-Oj; Tue, 17 May 2022 14:51:13 +0000
+        id 1nqyXc-00EXFN-4r; Tue, 17 May 2022 14:51:16 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/15] btrfs: factor out a btrfs_csum_ptr helper
-Date:   Tue, 17 May 2022 16:50:33 +0200
-Message-Id: <20220517145039.3202184-10-hch@lst.de>
+Subject: [PATCH 10/15] btrfs: add a btrfs_map_bio_wait helper
+Date:   Tue, 17 May 2022 16:50:34 +0200
+Message-Id: <20220517145039.3202184-11-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220517145039.3202184-1-hch@lst.de>
 References: <20220517145039.3202184-1-hch@lst.de>
@@ -51,68 +51,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a helper to find the csum for a byte offset into the csum buffer.
+This helpers works like submit_bio_wait, but goes through the btrfs bio
+mapping using btrfs_map_bio.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/ctree.h |  7 +++++++
- fs/btrfs/inode.c | 13 +++----------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ fs/btrfs/volumes.c | 21 +++++++++++++++++++++
+ fs/btrfs/volumes.h |  2 ++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4713d59ed1105..4ab41cb57f216 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2733,6 +2733,13 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 				     enum btrfs_inline_ref_type is_data);
- u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 0819db46dbc42..8925bc606db7e 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6818,6 +6818,27 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 	return BLK_STS_OK;
+ }
  
-+static inline u8 *btrfs_csum_ptr(struct btrfs_fs_info *fs_info, u8 *csums,
-+		u64 offset)
++static void btrfs_end_io_sync(struct bio *bio)
 +{
-+	return csums +
-+		((offset >> fs_info->sectorsize_bits) * fs_info->csum_size);
++	complete(bio->bi_private);
 +}
 +
- /*
-  * Take the number of bytes to be checksummmed and figure out how many leaves
-  * it would require to store the csums for that many bytes.
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index cb0ad1971be30..c771136116151 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3369,15 +3369,12 @@ static int check_data_csum(struct inode *inode, struct btrfs_bio *bbio,
++blk_status_t btrfs_map_bio_wait(struct btrfs_fs_info *fs_info, struct bio *bio,
++		int mirror)
++{
++	DECLARE_COMPLETION_ONSTACK(done);
++	blk_status_t ret;
++
++	bio->bi_private = &done;
++	bio->bi_end_io = btrfs_end_io_sync;
++	ret = btrfs_map_bio(fs_info, bio, mirror);
++	if (ret)
++		return ret;
++
++	wait_for_completion_io(&done);
++	return bio->bi_status;
++}
++
+ static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
+ 				      const struct btrfs_fs_devices *fs_devices)
  {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	u32 len = fs_info->sectorsize;
--	const u32 csum_size = fs_info->csum_size;
--	unsigned int offset_sectors;
- 	u8 *csum_expected;
- 	u8 csum[BTRFS_CSUM_SIZE];
- 
- 	ASSERT(pgoff + len <= PAGE_SIZE);
- 
--	offset_sectors = bio_offset >> fs_info->sectorsize_bits;
--	csum_expected = ((u8 *)bbio->csum) + offset_sectors * csum_size;
-+	csum_expected = btrfs_csum_ptr(fs_info, bbio->csum, bio_offset);
- 
- 	if (!btrfs_check_data_sector(fs_info, page, pgoff, csum, csum_expected))
- 		return 0;
-@@ -8007,12 +8004,8 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		if (ret)
- 			goto err;
- 	} else {
--		u64 csum_offset;
--
--		csum_offset = file_offset - dip->file_offset;
--		csum_offset >>= fs_info->sectorsize_bits;
--		csum_offset *= fs_info->csum_size;
--		btrfs_bio(bio)->csum = dip->csums + csum_offset;
-+		btrfs_bio(bio)->csum = btrfs_csum_ptr(fs_info, dip->csums,
-+				file_offset - dip->file_offset);
- 	}
- map:
- 	ret = btrfs_map_bio(fs_info, bio, 0);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 6f784d4f54664..b346f6c401515 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -555,6 +555,8 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
+ void btrfs_mapping_tree_free(struct extent_map_tree *tree);
+ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 			   int mirror_num);
++blk_status_t btrfs_map_bio_wait(struct btrfs_fs_info *fs_info, struct bio *bio,
++		int mirror);
+ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+ 		       fmode_t flags, void *holder);
+ struct btrfs_device *btrfs_scan_one_device(const char *path,
 -- 
 2.30.2
 
