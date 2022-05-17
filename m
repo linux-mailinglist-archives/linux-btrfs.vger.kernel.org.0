@@ -2,68 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EAC52AE1E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 00:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A9752AE45
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 00:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbiEQW03 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 18:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
+        id S231410AbiEQWrg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 18:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231348AbiEQW0X (ORCPT
+        with ESMTP id S231219AbiEQWre (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 18:26:23 -0400
+        Tue, 17 May 2022 18:47:34 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86296579
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 15:26:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9106B4ECC3
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 15:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652826376;
-        bh=OTaBhy/E5kzC12ZzEDdfcGs3zTe0yVrGEuLHItpfvfk=;
+        s=badeba3b8450; t=1652827645;
+        bh=KLi3KJ4yRyCXiSwUbs/8KTpqhRQpllVkLIVAUrIxKx4=;
         h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=O2ev/Y1dGKwQ+eyCfY/RxRAc/ECCstfAIjF7TT9s14fCVeb5fobzQP/Ez2RyWctHd
-         Wi2mpdKf1odhQ67oJU1mf5DPI7RUnl03fGi9LFz6fG4A3sBYIpVFmn3zYY1HJdVE8a
-         NUrUE26fG1rDKaJgHWFHt5UAt88e2xakq2jFcDkY=
+        b=Fuu6FvPMwS/LaD0hqtaFuxBdwAJyqxVuCKQy19rfzjXKRLverXcCqUaZU6Lkb3XGM
+         0/zjplPLDenZSCV5hVkMcsaIwYGkEEI1ogctVqkhxpGtNvHXryn5KTQzMlWPD0vEPh
+         S37sHATu9A/0SxH4ONUouPfJ5AdGWqJq1iSIVyj4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M72oB-1nxRhg18nf-008Zaj; Wed, 18
- May 2022 00:26:16 +0200
-Message-ID: <35c12a78-fe5d-c683-58c7-d600e8f7ce14@gmx.com>
-Date:   Wed, 18 May 2022 06:26:08 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCKFu-1o0Pd80xLW-009MXq; Wed, 18
+ May 2022 00:47:24 +0200
+Message-ID: <f77498f0-2fab-431c-5598-c85863e6a234@gmx.com>
+Date:   Wed, 18 May 2022 06:47:19 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: [PATCH 10/15] btrfs: add a btrfs_map_bio_wait helper
+Subject: Re: [PATCH 11/15] btrfs: set ->file_offset in end_bio_extent_readpage
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20220517145039.3202184-1-hch@lst.de>
- <20220517145039.3202184-11-hch@lst.de>
+ <20220517145039.3202184-12-hch@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220517145039.3202184-11-hch@lst.de>
+In-Reply-To: <20220517145039.3202184-12-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cslnKkD8gS59iNy80HeHc8Kh/kp8isfNbka+4KwPYRkJ/SPC2c6
- kM4bYtGgBztgJb87mnrTZiDspUt7hUi0GIAK+3E7Q29mLFrq4QijxqJvTBXBASekO7mJSZS
- HzF0i7JC6De3NJzAEr1rsz5zA8TBaUI+YggSdsjylmlokVjGwQP3WcjhQtQBmF4bhe0aNbK
- iYwMX2ZMiJtmnQlB8hhXw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:b3uOsIJbjt0=:cZUYX+iTizUwSO/yI+muoG
- gfyREr4qFb6RTeZo8AMEbueGXhmWGAsEs9O8bENNgovXPpM14s57OkR2bHWepJz55NLEJ1xYU
- tjjVXJSn5MVTyPGp6/UhLyp0as353RLNF4TCO+iJf716jVUMKYAIz4//bFYoP5hwSF8cd6mD/
- WF5T9CmMj1jpIYg9Sj1Rwo2cyJ34p5dNVTToFAXDWs5Lk3wJIPLIqf+xowstlPkw+0QrRCsqH
- hQfq8ASj6Aw/2G54EKg0ny8ukk4ooYtYi81C36sQPu8OUzDXXC4yrSNtxmIACktHyd9JEOY5h
- YNXBKhfOEcq38EKIQie9laDUZl1NYki5LD2NeUh3o4YjeKgmFhLHbw7HWKcdR8dhZvS8z9RRd
- 2AR8675Cq8/3qdIfjxWOkOh3q9t2/QBTKHaXoI8jG8T01I56zq+om2wbrtptLL8aSD6lSBeps
- FavOFBuK5xDtFFKzgEUYxEhBuIEOgCOixykVKz0ngimxMy3Zkm1CVVmsRM6EhuQe0VY3bz1Xb
- O+izuWafVCLv6Rs3JgFBZIFvVs4hhIpdzF+VVi26ogBmW4NwBF/1e39QxfuUgXAy2AwqNL5rb
- KcY7ddt+9pndPacIRtH0ygAcNHX/0MNIM/RRh+501VNER5RMYXmI/BtyN/q1lwNsn80LQdn4/
- uF2wubjJ+4K0Dd4hBWdUQ7GnKi0nM0bKp00fq5dH5eGgCWdxGfhGgleCC11DcvDmElEm5a9F9
- lOezg9OOdkJJSLoCEHlMeR/fcEKiGaAzvewz2CNJB3v9PuinLxC5Ft2XoY8cX5B7e5Yz8Mvnm
- eMTTO/ITSbky0IarrnJhJsMjveSbrTPDuoLkNUFBdS5cOEgpdjrqppymYIcAn20o9a0J069Hg
- ZX+dzJmmNGZYD6yErOpq/MMHUJM0VIEEhDJF1MCTG8c9dQt2pyosFxlUTFj84zq0KxttYEKCM
- M7YAn4xZIHh5OEvIC1R/pVvhyQN1vnoO9nTh8L6dp5jnzkSYHx6XBiN8ITcP1FVHHT5MStnw+
- 4S6aqLQAIXOfiO50pbOiUXwnPDgSa0QPUdl3jw3QwXnRk+IdGEX/GWCY3iF2kZEmPuE2LhsbD
- WIwrNdhyMwDith5p2pViRoK3bge/TSVloPOaYCrCI1Z+4IV/LsdWke7Qg==
+X-Provags-ID: V03:K1:JJcOatKECqR0NMLHBswYk1iymp1w/5TOBnaYK3Bb/WRdPWn/nF1
+ jxIvN6i/IpWnlq3V+Ho2iW1WRDMTGv8UTYnsIe3tSy2o2Cg2v0KsN2HxFAzAfjaRR712FIV
+ XCjhejE78Mz8v9kokapmq+0FQRR+yL+17rPuMpqZRc5p7q2Kiw/F5B8Vl3BN+GOGYQ8OwS5
+ Irrfnw8C8zBBVfeAMBYBQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lzeXN2r9QhQ=:G2Kx4exTKNvB6GZzoN7bGu
+ UVdN1qzZcdf40ffzSYByX9oxpLcDJO9x25JDl155xErCMkvJn8fDo7dg+bPH+kffNopFmARc+
+ Ltwdlg2/mSDk3VJpMkNHgQFG8e/WnV3P2Hb+DQ+UynQPs6CwnuM+mLAWfnlRuK8EpbK4TB7bS
+ dX4ltWo4Z0iWL0DV011++oz2wIUbaeDF3zhodujDnF9h0UPLarmUT5LtMA1lYlOJO+8Hqd0i7
+ +zVdibfdPNo1HbjF7Jeq35ZzaT8Qkpz8LeUrOy4NXgCTHQA8YmJnQhSkTBTXsKExgiSJ0/Nee
+ qcr2P9yjC+UjYYmmQS63YimjZY1fgovS6ZBA++61Pt+HVr7bxDfub7t3/viXoNdiXPjIY7yn3
+ xMZIJNvWan0Fdz64uTswpFSgHnul93UoWZj6Z2UPhwnZ5iUBFZuTxS2QT7kbGurYzqJhpD+dJ
+ uIx3tPTFD0H6M3AarbQbkg+b3Qxx8jDVmdUQ5lbHr/8j9JuBsMEt6maJnYZ+46JXq4jChS+ML
+ 7bJ55N7m91QXHYD7H48N3qn2/BSkA9QD7BShZ2k4iGLgsw1nJ1yQm9SXob+/O0NPAny0BFdQ+
+ xwH6d+z+A3fxiTtd4GZ/sJDXTqLz8Hq/6Wc23a8NPQAVKwPam1cVDOOZtwIEDiQYyz4rWzdHE
+ uZFrJQ+jGBvvL28imOWH2qs1ccD34u7lv0rO4CjEPXSCgScNMOJTylxli9QhwsgAUVdiXt2Kd
+ 9ej0WbnN3rk50rxqFn2+TsnClG3Bfs8Z2ObnYH+CPtT+hG3kY4GyaftnRDQQVqJgzGnJ0XuFN
+ gKCBKz/wiBAjm18dEGsnebAglveX+O74BF7RIckDGYtYROGCh9BI5QG+tVHgyeiBdXqNZLuQO
+ jYpGYctCKI3egfpRPhMjDgIEdAzy0gsv/mNYRt9NOibs904mIPxbsAFu8ED4mewzhmEZ+KhRZ
+ i1Xtv9QzStijJMzUo0NdHxQzSmcTkJelRA5HtSRSoqaAG/IMQ1rqurDvoSvJ3d37KqqPXY2Ng
+ tReGDv+lMvYedvANv5Fnvu+V+BccOFImd56uaHB6HB+qiZfWIUz4lBAtzug8H18oYas33wW5e
+ h9gEM1foFmySGCgWyf66addjshY6aTl6PmKUPx2lElqseTLUa/z6Bnj+Q==
 X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -77,77 +77,84 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2022/5/17 22:50, Christoph Hellwig wrote:
-> This helpers works like submit_bio_wait, but goes through the btrfs bio
-> mapping using btrfs_map_bio.
-
-I hate the naming of btrfs_map_bio(), which should be
-btrfs_map_and_submit_bio(), but I also totally understand my poor naming
-scheme is even worse for most cases.
-
-Maybe we can add the "submit" part into the new function?
+> The new repair code expects ->file_offset to be set for all bios.  Set
+> it just after entering end_bio_extent_readpage.  As that requires lookin=
+g
+> at the first vector before the first loop iteration also use that
+> opportunity to set various file-wide variables just once instead of once
+> per loop iteration.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   fs/btrfs/volumes.c | 21 +++++++++++++++++++++
->   fs/btrfs/volumes.h |  2 ++
->   2 files changed, 23 insertions(+)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 0819db46dbc42..8925bc606db7e 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6818,6 +6818,27 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *=
-fs_info, struct bio *bio,
->   	return BLK_STS_OK;
->   }
->
-> +static void btrfs_end_io_sync(struct bio *bio)
-> +{
-> +	complete(bio->bi_private);
-> +}
-> +
-> +blk_status_t btrfs_map_bio_wait(struct btrfs_fs_info *fs_info, struct b=
-io *bio,
-> +		int mirror)
-> +{
-> +	DECLARE_COMPLETION_ONSTACK(done);
-> +	blk_status_t ret;
 
-Is there any lockdep assert to make sure we're in wq context?
-
-Despite these nitpicks, it looks good to me.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> +
-> +	bio->bi_private =3D &done;
-> +	bio->bi_end_io =3D btrfs_end_io_sync;
-> +	ret =3D btrfs_map_bio(fs_info, bio, mirror);
-> +	if (ret)
-> +		return ret;
-> +
-> +	wait_for_completion_io(&done);
-> +	return bio->bi_status;
-> +}
-> +
->   static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_ar=
-gs *args,
->   				      const struct btrfs_fs_devices *fs_devices)
+> ---
+>   fs/btrfs/extent_io.c | 22 ++++++++++++----------
+>   1 file changed, 12 insertions(+), 10 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 1ba2d4b194f2e..cbe3ab24af9e5 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3018,25 +3018,30 @@ static struct extent_buffer *find_extent_buffer_=
+readpage(
+>    */
+>   static void end_bio_extent_readpage(struct bio *bio)
 >   {
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 6f784d4f54664..b346f6c401515 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -555,6 +555,8 @@ struct btrfs_block_group *btrfs_create_chunk(struct =
-btrfs_trans_handle *trans,
->   void btrfs_mapping_tree_free(struct extent_map_tree *tree);
->   blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *=
-bio,
->   			   int mirror_num);
-> +blk_status_t btrfs_map_bio_wait(struct btrfs_fs_info *fs_info, struct b=
-io *bio,
-> +		int mirror);
->   int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
->   		       fmode_t flags, void *holder);
->   struct btrfs_device *btrfs_scan_one_device(const char *path,
+> +	struct bio_vec *first_vec =3D bio_first_bvec_all(bio);
+> +	struct inode *inode =3D first_vec->bv_page->mapping->host;
+> +	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+> +	const u32 sectorsize =3D fs_info->sectorsize;
+>   	struct bio_vec *bvec;
+>   	struct btrfs_bio *bbio =3D btrfs_bio(bio);
+> -	struct extent_io_tree *tree, *failure_tree;
+> +	int mirror =3D bbio->mirror_num;
+> +	struct extent_io_tree *tree =3D &BTRFS_I(inode)->io_tree;
+> +	struct extent_io_tree *failure_tree =3D &BTRFS_I(inode)->io_failure_tr=
+ee;
+> +	bool uptodate =3D !bio->bi_status;
+>   	struct processed_extent processed =3D { 0 };
+>   	/*
+>   	 * The offset to the beginning of a bio, since one bio can never be
+>   	 * larger than UINT_MAX, u32 here is enough.
+>   	 */
+>   	u32 bio_offset =3D 0;
+> -	int mirror;
+>   	struct bvec_iter_all iter_all;
+>
+> +	btrfs_bio(bio)->file_offset =3D
+> +		page_offset(first_vec->bv_page) + first_vec->bv_offset;
+> +
+>   	ASSERT(!bio_flagged(bio, BIO_CLONED));
+>   	bio_for_each_segment_all(bvec, bio, iter_all) {
+> -		bool uptodate =3D !bio->bi_status;
+>   		struct page *page =3D bvec->bv_page;
+> -		struct inode *inode =3D page->mapping->host;
+> -		struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+> -		const u32 sectorsize =3D fs_info->sectorsize;
+>   		unsigned int error_bitmap =3D (unsigned int)-1;
+>   		bool repair =3D false;
+>   		u64 start;
+> @@ -3046,9 +3051,7 @@ static void end_bio_extent_readpage(struct bio *bi=
+o)
+>   		btrfs_debug(fs_info,
+>   			"end_bio_extent_readpage: bi_sector=3D%llu, err=3D%d, mirror=3D%u",
+>   			bio->bi_iter.bi_sector, bio->bi_status,
+> -			bbio->mirror_num);
+> -		tree =3D &BTRFS_I(inode)->io_tree;
+> -		failure_tree =3D &BTRFS_I(inode)->io_failure_tree;
+> +			mirror);
+>
+>   		/*
+>   		 * We always issue full-sector reads, but if some block in a
+> @@ -3071,7 +3074,6 @@ static void end_bio_extent_readpage(struct bio *bi=
+o)
+>   		end =3D start + bvec->bv_len - 1;
+>   		len =3D bvec->bv_len;
+>
+> -		mirror =3D bbio->mirror_num;
+>   		if (likely(uptodate)) {
+>   			if (is_data_inode(inode)) {
+>   				error_bitmap =3D btrfs_verify_data_csum(bbio,
