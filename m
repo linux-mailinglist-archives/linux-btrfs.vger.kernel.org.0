@@ -2,162 +2,316 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBE8529DBE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 11:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2743B529E31
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 11:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244396AbiEQJTN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 05:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
+        id S244902AbiEQJj0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 05:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244613AbiEQJTD (ORCPT
+        with ESMTP id S244034AbiEQJjT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 05:19:03 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174012AE1C
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 02:18:38 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20220517091837euoutp020f2ef24d68d79b68ad0ed8562cea6d13~v2dmjWMWW0553505535euoutp02Z
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 09:18:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20220517091837euoutp020f2ef24d68d79b68ad0ed8562cea6d13~v2dmjWMWW0553505535euoutp02Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1652779117;
-        bh=Xx6LiI2N7zXzXe6D47VeoDmtSPAgM7x9gfv66x7nXf4=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=IA4MPLLaEWwNdOeYo6LNZPRnH+Spn9FlillpzIsthWm0Us4gzJW4OFmJYxa+uwQi9
-         RCTemcymVdx5BWGIUBY2Ntc+4YBB7Zok4VNVvov059+YyzKXqlZOsXtqP2oz2xcUCm
-         T463E2j+XpLZ3S7NET7zPF0khI0EFyEJX9xc167Y=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20220517091836eucas1p1b4f31c8b471be4cec69d428e87500289~v2dmHOtrc0676506765eucas1p1o;
-        Tue, 17 May 2022 09:18:36 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 44.CF.09887.C6863826; Tue, 17
-        May 2022 10:18:36 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20220517091836eucas1p29b087b757e6368110a993b6161f558a4~v2dlr-o5d1027210272eucas1p2Z;
-        Tue, 17 May 2022 09:18:36 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20220517091836eusmtrp268345fd5a35205b6ac7f4519dcde07ee~v2dlqyygZ0823508235eusmtrp28;
-        Tue, 17 May 2022 09:18:36 +0000 (GMT)
-X-AuditID: cbfec7f4-45bff7000000269f-c5-6283686c6c70
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 24.C7.09522.B6863826; Tue, 17
-        May 2022 10:18:36 +0100 (BST)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20220517091835eusmtip22dc882ff288673a913e1a719db7c1311~v2dlik-a70904809048eusmtip2V;
-        Tue, 17 May 2022 09:18:35 +0000 (GMT)
-Received: from localhost (106.210.248.142) by CAMSVWEXC01.scsc.local
-        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Tue, 17 May 2022 10:18:35 +0100
-Date:   Tue, 17 May 2022 11:18:34 +0200
-From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier.gonz@samsung.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Pankaj Raghav <p.raghav@samsung.com>, <axboe@kernel.dk>,
-        <damien.lemoal@opensource.wdc.com>, <pankydev8@gmail.com>,
-        <dsterba@suse.com>, <linux-nvme@lists.infradead.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
-        <jiangbo.365@bytedance.com>, <linux-block@vger.kernel.org>,
-        <gost.dev@samsung.com>, <linux-kernel@vger.kernel.org>,
-        <dm-devel@redhat.com>
-Subject: Re: [PATCH v4 00/13] support non power of 2 zoned devices
-Message-ID: <20220517091834.dvkrab5l63v3b2zn@ArmHalley.local>
+        Tue, 17 May 2022 05:39:19 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA3B44764
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 02:39:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 2E649CE1921
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 09:39:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13F16C385B8;
+        Tue, 17 May 2022 09:39:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652780349;
+        bh=IetfwoJAa5dFj/fa3rJEobAqr40By5NNuuczGU5V19A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BYB4+nJx1NOTo2OyR1nxv+X3fVEboXmn2ZUwd7B9VJmFm+t+NtAS8aE3OK3MYCbEB
+         iZ7Wrah6osod389FiQsrWEhE5NL+joPskuhnYrZ2CDRpRqXav/DhYoWch7/nPc5KiF
+         Y2gNA6PXYmqGZLpDTrJmYEyBpQ6+EwCjloE0tGS5omhFDvyRZ5gQYpKWdey1f9fEQ9
+         RZkvb0nOLS/GV6L7uQhZeYXKmruolBZCib9wKvjG2Oj+vRL5H8fn1dWHPy4sO6Q/Dp
+         nK1nt4Q4OZRH2p233ihdF7dDd0hUjUpnIdFuEH3gBep7IhLdbAXEBlTtv9nklVOJcJ
+         SQRj36SjMq4kg==
+Date:   Tue, 17 May 2022 10:39:06 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: send: avoid trashing the page cache
+Message-ID: <20220517093906.GA2606208@falcondesktop>
+References: <cover.1651770555.git.fdmanana@suse.com>
+ <41782eb393b3a3ba47f4a7fce1cbb33433c3f994.1651770555.git.fdmanana@suse.com>
+ <50994099-b70e-8307-dd41-ac88784e552c@gmx.com>
+ <8ded3794-1a2e-605e-e01a-6c2ecbab1b7e@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20220517081048.GA13947@lst.de>
-X-Originating-IP: [106.210.248.142]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJKsWRmVeSWpSXmKPExsWy7djP87o5Gc1JBqubpC1W3+1ns/h99jyz
-        xd53s1ktLvxoZLJYufook0XPgQ8sFntvaVtceryC3WLP3pMsFpd3zWGzmL/sKbvFmptPWRx4
-        PP6dWMPmsXPWXXaPy2dLPTYvqffYfbMBKNJ6n9Xj/b6rbB7rt1xl8fi8SS6AM4rLJiU1J7Ms
-        tUjfLoErY/3CFSwFS/gqGtdvZ2xg7OXuYuTkkBAwkbi48RZLFyMXh5DACkaJLdPmskI4Xxgl
-        fs/fxgzhfGaU2Nl7kBGmZfu2j0wQieWMEl+vXGWEq7o7Zy4bhLOVUWJOywZ2kBYWAVWJ/iur
-        wWw2AXuJS8tuMYPYIgJKEk9fnQXrZhZoZpaY9PAckMPBISzgJLH4NzOIyStgK/HvcDRIOa+A
-        oMTJmU9YQGxmASuJzg9NrCAlzALSEsv/cYCEOQV0JG4uew/WKSGgLLF8ui/EzbUSa4+dYQdZ
-        JCGwmFNi8ssrbBAJF4nH+14xQ9jCEq+Ob2GHsGUk/u+czwRhZ0tcPNMNVVMisfj9Maj51hJ9
-        Z3Igwo4S7bf2skOE+SRuvBWEOJJPYtK26VDVvBIdbUIQ1WoSO5q2Mk5gVJ6F5K1ZSN6ahfDW
-        AkbmVYziqaXFuempxUZ5qeV6xYm5xaV56XrJ+bmbGIGp6/S/4192MC5/9VHvECMTB+MhRgkO
-        ZiURXoOKhiQh3pTEyqrUovz4otKc1OJDjNIcLErivMmZGxKFBNITS1KzU1MLUotgskwcnFIN
-        TNLvJ7dJB5YJ3Ft9kyUzz/vAopyD/gszri+vVDXbyqlSF8b9u8f9vairXnCEaMDJvDv8KZMZ
-        XQ7ePhlb2h94bs0JkeOt0hmHwqb8ivq17N8+hatf1NX/+cuGT8sL+znD97bc4mYuo+wTG9eX
-        3YtNeeN7LtPrukz3ks48mZaMx+H6M/O/K00NVHReac3ycgf3Nn0Wbv7X+klczr8rJ+z/8WfL
-        1MORqS+tF3wRDnBWLHYJW+QrFp6s6nPqmeDJrJUBbzTZhW9HrFP58NNp9Z+l9a+teayFmULf
-        /t5yXjDHtkBdOMQjoVlw4reT+57on7CffqGFkdFhu9i2KwKe3O3m73a5mX6OXrp7j2B6+uN5
-        SizFGYmGWsxFxYkALkktKMwDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOIsWRmVeSWpSXmKPExsVy+t/xe7o5Gc1JBiuvMVmsvtvPZvH77Hlm
-        i73vZrNaXPjRyGSxcvVRJoueAx9YLPbe0ra49HgFu8WevSdZLC7vmsNmMX/ZU3aLNTefsjjw
-        ePw7sYbNY+esu+wel8+WemxeUu+x+2YDUKT1PqvH+31X2TzWb7nK4vF5k1wAZ5SeTVF+aUmq
-        QkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexvqFK1gKlvBVNK7f
-        ztjA2MvdxcjJISFgIrF920emLkYuDiGBpYwSPWdWM0MkZCQ+XfnIDmELS/y51sUGUfSRUeLo
-        27WsEM5WRom9T2+CdbAIqEr0X1kN1sEmYC9xadktsLiIgJLE01dnGUEamAUamSUm3loGNIqD
-        Q1jASWLxb2YQk1fAVuLf4WiQciGBDUAzF3uC2LwCghInZz5hAbGZBSwkZs4/zwhSziwgLbH8
-        HwdImFNAR+LmsvdgUyQElCWWT/eFOLlW4tX93YwTGIVnIRk0C8mgWQiDFjAyr2IUSS0tzk3P
-        LTbUK07MLS7NS9dLzs/dxAiM4W3Hfm7ewTjv1Ue9Q4xMHIyHGCU4mJVEeA0qGpKEeFMSK6tS
-        i/Lji0pzUosPMZoCw2Eis5Rocj4wieSVxBuaGZgamphZGphamhkrifN6FnQkCgmkJ5akZqem
-        FqQWwfQxcXBKNTBxKyapr3/1xatW42ms5seT5RF/fSMv7JBKztHe2BZ9RFZytQ6vJntxf9Yf
-        t4f9YazrkoTyOKvedWhfvcLXc6d6i8pxnzRN3SMH/9vbv2EPYM/yP/7hvE3gOmmnY3fy1bKZ
-        dxTyf7y9qT+xb4vErgk9mr7Jcsv/8Tx3uhGg79+dcLQuxS6zaWtzwONbf5bs0m+am3j74OG0
-        byr3rxzJevDgzDWBovDEP4xMO8x+pPwtVUstVz5e7s2W5O22e/b6vfYv75p90v45xUd669eQ
-        697u9SbhD5vDLdcan69KLJRimP97+z179ckq/yXZYlddVZtVpJWx7NbLhntL3glK1sVYx8nZ
-        Of68deT8ro8t65RYijMSDbWYi4oTAbuoZDFqAwAA
-X-CMS-MailID: 20220517091836eucas1p29b087b757e6368110a993b6161f558a4
-X-Msg-Generator: CA
-X-RootMTR: 20220516165418eucas1p2be592d9cd4b35f6b71d39ccbe87f3fef
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20220516165418eucas1p2be592d9cd4b35f6b71d39ccbe87f3fef
-References: <CGME20220516165418eucas1p2be592d9cd4b35f6b71d39ccbe87f3fef@eucas1p2.samsung.com>
-        <20220516165416.171196-1-p.raghav@samsung.com>
-        <20220517081048.GA13947@lst.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8ded3794-1a2e-605e-e01a-6c2ecbab1b7e@gmx.com>
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 17.05.2022 10:10, Christoph Hellwig wrote:
->I'm a little surprised about all this activity.
->
->I though the conclusion at LSF/MM was that for Linux itself there
->is very little benefit in supporting this scheme.  It will massively
->fragment the supported based of devices and applications, while only
->having the benefit of supporting some Samsung legacy devices.
+On Tue, May 17, 2022 at 03:26:14PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2022/5/17 14:35, Qu Wenruo wrote:
+> > 
+> > 
+> > On 2022/5/6 01:16, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > > 
+> > > A send operation reads extent data using the buffered IO path for getting
+> > > extent data to send in write commands and this is both because it's
+> > > simple
+> > > and to make use of the generic readahead infrastructure, which results in
+> > > a massive speedup.
+> > > 
+> > > However this fills the page cache with data that, most of the time, is
+> > > really only used by the send operation - once the write commands are
+> > > sent,
+> > > it's not useful to have the data in the page cache anymore. For large
+> > > snapshots, bringing all data into the page cache eventually leads to the
+> > > need to evict other data from the page cache that may be more useful for
+> > > applications (and kernel susbsystems).
+> > > 
+> > > Even if extents are shared with the subvolume on which a snapshot is
+> > > based
+> > > on and the data is currently on the page cache due to being read through
+> > > the subvolume, attempting to read the data through the snapshot will
+> > > always result in bringing a new copy of the data into another location in
+> > > the page cache (there's currently no shared memory for shared extents).
+> > > 
+> > > So make send evict the data it has read before if when it first opened
+> > > the inode, its mapping had no pages currently loaded: when
+> > > inode->i_mapping->nr_pages has a value of 0. Do this instead of deciding
+> > > based on the return value of filemap_range_has_page() before reading an
+> > > extent because the generic readahead mechanism may read pages beyond the
+> > > range we request (and it very often does it), which means a call to
+> > > filemap_range_has_page() will return true due to the readahead that was
+> > > triggered when processing a previous extent - we don't have a simple way
+> > > to distinguish this case from the case where the data was brought into
+> > > the page cache through someone else. So checking for the mapping number
+> > > of pages being 0 when we first open the inode is simple, cheap and it
+> > > generally accomplishes the goal of not trashing the page cache - the
+> > > only exception is if part of data was previously loaded into the page
+> > > cache through the snapshot by some other process, in that case we end
+> > > up not evicting any data send brings into the page cache, just like
+> > > before this change - but that however is not the common case.
+> > > 
+> > > Example scenario, on a box with 32G of RAM:
+> > > 
+> > >    $ btrfs subvolume create /mnt/sv1
+> > >    $ xfs_io -f -c "pwrite 0 4G" /mnt/sv1/file1
+> > > 
+> > >    $ btrfs subvolume snapshot -r /mnt/sv1 /mnt/snap1
+> > > 
+> > >    $ free -m
+> > >                   total        used        free      shared
+> > > buff/cache   available
+> > >    Mem:           31937         186       26866           0
+> > > 4883       31297
+> > >    Swap:           8188           0        8188
+> > > 
+> > >    # After this we get less 4G of free memory.
+> > >    $ btrfs send /mnt/snap1 >/dev/null
+> > > 
+> > >    $ free -m
+> > >                   total        used        free      shared
+> > > buff/cache   available
+> > >    Mem:           31937         186       22814           0
+> > > 8935       31297
+> > >    Swap:           8188           0        8188
+> > > 
+> > > The same, obviously, applies to an incremental send.
+> > > 
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > 
+> > Unfortunately, this patch seems to cause subpage cases to fail test case
+> > btrfs/007, the reproducibility is around 50%, thus better "-I 8" to be
+> > extra safe.
+> > 
+> > And I believe it also causes other send related failure for subpage cases.
+> > 
+> > I guess it's truncate_inode_pages_range() only truncating the full page,
+> > but for subpage case, since one sector is smaller than one page, it
+> > doesn't work as expected?
+> 
+> It looks like that's the case.
+> 
+> The following diff fixed the send related bugs here:
+> (mail client seems to screw up the indent)
+> 
+> https://paste.opensuse.org/95871661
 
-I believed we had agreed that non-power-of-2 zoned devices was something
-to explore. Let me summarize the 3 main points we covered at different
-times at LSF/MM:
+That may seem to work often, but it's not really correct because prev_extent_end
+is already aligned to the page size, except possibly for the first extent processed.
 
-   - This is not for legacy Samsung ZNS devices. At least 4 other
-     vendors have reported building non-power-of-2 ZNS devices to meet
-     customer demands on removing holes in the address space. It seems
-     like there will be more ZNS devices with size=capacity out there
-     than with PO2 sizes. Block device and FS support is very desirable
-     for these.
+For the case of the first processed extent not starting at an offset that is page
+size aligned, we also need to round down that offset so that we evict the page
+(and not simply zero out part of its content).
 
-   - We also talked about how the capacity not being a PO2 is the one
-     introducing the fragmentation, as applications that already worked
-     with SMR HDDs will have to change their data placement policy. The
-     size is just a construction, but the real work is adopting the
-     capacity.
+Can you try this instead:  https://pastebin.com/raw/kRPZKYxG ?
 
-   - Besides the previous poit, the fragmentation will happen from the
-     moment we have available devices. This is not a kernel-only issue.
-     We have SMR, ZNS, and soon another spec for zone devices. I
-     understood that as long as we do not break any existing support, we
-     would be able to expend the zoned ecosystem in Linux.
+Thanks.
 
->So my impression was that this work, while technically feasible, is
->rather useless.  So unless I missed something important I have no
->interest in supporting this in NVMe.
 
-Does the above help you reconsidering your interest in supporting this
-in NVMe?
+> 
+> Thanks,
+> Qu
+> > 
+> > If needed, I can provide you the access to my aarch64 vm for debugging.
+> > 
+> > Thanks,
+> > Qu
+> > 
+> > > ---
+> > >   fs/btrfs/send.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++--
+> > >   1 file changed, 77 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> > > index 55275ba90cb4..d899049dea53 100644
+> > > --- a/fs/btrfs/send.c
+> > > +++ b/fs/btrfs/send.c
+> > > @@ -137,6 +137,8 @@ struct send_ctx {
+> > >        */
+> > >       struct inode *cur_inode;
+> > >       struct file_ra_state ra;
+> > > +    u64 prev_extent_end;
+> > > +    bool clean_page_cache;
+> > > 
+> > >       /*
+> > >        * We process inodes by their increasing order, so if before an
+> > > @@ -5157,6 +5159,28 @@ static int send_extent_data(struct send_ctx *sctx,
+> > >           }
+> > >           memset(&sctx->ra, 0, sizeof(struct file_ra_state));
+> > >           file_ra_state_init(&sctx->ra, sctx->cur_inode->i_mapping);
+> > > +
+> > > +        /*
+> > > +         * It's very likely there are no pages from this inode in
+> > > the page
+> > > +         * cache, so after reading extents and sending their data,
+> > > we clean
+> > > +         * the page cache to avoid trashing the page cache (adding
+> > > pressure
+> > > +         * to the page cache and forcing eviction of other data
+> > > more useful
+> > > +         * for applications).
+> > > +         *
+> > > +         * We decide if we should clean the page cache simply by
+> > > checking
+> > > +         * if the inode's mapping nrpages is 0 when we first open
+> > > it, and
+> > > +         * not by using something like filemap_range_has_page() before
+> > > +         * reading an extent because when we ask the readahead code to
+> > > +         * read a given file range, it may (and almost always does) read
+> > > +         * pages from beyond that range (see the documentation for
+> > > +         * page_cache_sync_readahead()), so it would not be reliable,
+> > > +         * because after reading the first extent future calls to
+> > > +         * filemap_range_has_page() would return true because the
+> > > readahead
+> > > +         * on the previous extent resulted in reading pages of the
+> > > current
+> > > +         * extent as well.
+> > > +         */
+> > > +        sctx->clean_page_cache =
+> > > (sctx->cur_inode->i_mapping->nrpages == 0);
+> > > +        sctx->prev_extent_end = offset;
+> > >       }
+> > > 
+> > >       while (sent < len) {
+> > > @@ -5168,6 +5192,33 @@ static int send_extent_data(struct send_ctx *sctx,
+> > >               return ret;
+> > >           sent += size;
+> > >       }
+> > > +
+> > > +    if (sctx->clean_page_cache) {
+> > > +        const u64 end = round_up(offset + len, PAGE_SIZE);
+> > > +
+> > > +        /*
+> > > +         * Always start from the end offset of the last processed
+> > > extent.
+> > > +         * This is because the readahead code may (and very often does)
+> > > +         * reads pages beyond the range we request for readahead. So if
+> > > +         * we have an extent layout like this:
+> > > +         *
+> > > +         *            [ extent A ] [ extent B ] [ extent C ]
+> > > +         *
+> > > +         * When we ask page_cache_sync_readahead() to read extent A, it
+> > > +         * may also trigger reads for pages of extent B. If we are doing
+> > > +         * an incremental send and extent B has not changed between the
+> > > +         * parent and send snapshots, some or all of its pages may end
+> > > +         * up being read and placed in the page cache. So when
+> > > truncating
+> > > +         * the page cache we always start from the end offset of the
+> > > +         * previously processed extent up to the end of the current
+> > > +         * extent.
+> > > +         */
+> > > +        truncate_inode_pages_range(&sctx->cur_inode->i_data,
+> > > +                       sctx->prev_extent_end,
+> > > +                       end - 1);
+> > > +        sctx->prev_extent_end = end;
+> > > +    }
+> > > +
+> > >       return 0;
+> > >   }
+> > > 
+> > > @@ -6172,6 +6223,30 @@ static int btrfs_unlink_all_paths(struct
+> > > send_ctx *sctx)
+> > >       return ret;
+> > >   }
+> > > 
+> > > +static void close_current_inode(struct send_ctx *sctx)
+> > > +{
+> > > +    u64 i_size;
+> > > +
+> > > +    if (sctx->cur_inode == NULL)
+> > > +        return;
+> > > +
+> > > +    i_size = i_size_read(sctx->cur_inode);
+> > > +
+> > > +    /*
+> > > +     * If we are doing an incremental send, we may have extents
+> > > between the
+> > > +     * last processed extent and the i_size that have not been processed
+> > > +     * because they haven't changed but we may have read some of
+> > > their pages
+> > > +     * through readahead, see the comments at send_extent_data().
+> > > +     */
+> > > +    if (sctx->clean_page_cache && sctx->prev_extent_end < i_size)
+> > > +        truncate_inode_pages_range(&sctx->cur_inode->i_data,
+> > > +                       sctx->prev_extent_end,
+> > > +                       round_up(i_size, PAGE_SIZE) - 1);
+> > > +
+> > > +    iput(sctx->cur_inode);
+> > > +    sctx->cur_inode = NULL;
+> > > +}
+> > > +
+> > >   static int changed_inode(struct send_ctx *sctx,
+> > >                enum btrfs_compare_tree_result result)
+> > >   {
+> > > @@ -6182,8 +6257,7 @@ static int changed_inode(struct send_ctx *sctx,
+> > >       u64 left_gen = 0;
+> > >       u64 right_gen = 0;
+> > > 
+> > > -    iput(sctx->cur_inode);
+> > > -    sctx->cur_inode = NULL;
+> > > +    close_current_inode(sctx);
+> > > 
+> > >       sctx->cur_ino = key->objectid;
+> > >       sctx->cur_inode_new_gen = 0;
+> > > @@ -7671,7 +7745,7 @@ long btrfs_ioctl_send(struct inode *inode,
+> > > struct btrfs_ioctl_send_args *arg)
+> > > 
+> > >           name_cache_free(sctx);
+> > > 
+> > > -        iput(sctx->cur_inode);
+> > > +        close_current_inode(sctx);
+> > > 
+> > >           kfree(sctx);
+> > >       }
