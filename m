@@ -2,606 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0B352A551
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BF952A57F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349377AbiEQOvz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 10:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        id S1349519AbiEQO7V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 10:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349330AbiEQOvi (ORCPT
+        with ESMTP id S1349516AbiEQO7S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 10:51:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A4318E20
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=iNzB+Lw2bX5LGINzTAHcj9qKV3+1tRpD+UkBFDe1nLY=; b=PZuA1t5eX8BOy7MQGsQGmOC9Rm
-        /taXYxGUGw/8K/x1q3MhaG8QIdIVLtJo6O/JmqYLh23Sb6usPuo2DnWFUSBo85v6WFiUUCFuvp46K
-        DNJvKz/lUbPyV3ij9toL8EbMdZS0WxWOzRppoNvoRGg/uXdjmF22Dg338QzX78LwNof5O1viUyVNu
-        qyseKYRumdNBavZC4qhQ5t9+zPBEFHKGC/qAt9UUnMYJAA6mjj8lSQD3KsJ/1E2JLO6sqXfsQWIsj
-        /u9Mh6dvIu6cDl6+GXENl0DFFuy4HmuFIF4qoORhzUWl1+OugSSbq3iH/+jlOOas1e3NK3r4weJ61
-        kF0kxVRQ==;
-Received: from [89.144.222.138] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nqyXs-00EXL2-Kc; Tue, 17 May 2022 14:51:33 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Tue, 17 May 2022 10:59:18 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A1C4BB94
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1652799556; x=1684335556;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=g6+eKRkVnCgwwAfdAiwg64IOwtT7eziQfrM9XYa+AKY=;
+  b=LfleulkliTI6iLoNmIi0anuavXrzLDAZrUR2aL50XQV9Vu87x0hocHpM
+   KHsP2fqSlIAO+Tepzpm93XXy+aZfAzKbG8XUkQf2JIqi8bMq8jBwY6QzB
+   zX3Lc+G8M43rWra0GmSdJOrMFJGfD15uSchLtGpo/pIYNDQTufA/jcPM+
+   6IDO+ucaWZ64y6QTYpG98QlFD/mqYcJ/Lgo7QRTCKRUet6ZDQYNkUe6vc
+   cb1suYwSI6WyxvOmYRBgZuaM3bRRNAfOsPyTw4j8JHWZazPTwjPcI3JQp
+   7rIADO2X3F2r85BRoP0koH/iaDBoTtufDTipFR+GBlH8x1ZUXsPMtdqe/
+   A==;
+X-IronPort-AV: E=Sophos;i="5.91,233,1647273600"; 
+   d="scan'208";a="200571540"
+Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
+  by ob1.hgst.iphmx.com with ESMTP; 17 May 2022 22:59:15 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DcDB8+TnB3UgNyzniRZvJ2lOPctYHL38EwsZNBNO/iOXz2S+kF9q2oFhXUsbWx340BiLqfEEo4CB4L7mTEhHyetKAKAWj/HVDNH1ek97aSThFUJX8IMEo3QmoOrjW1QXw8my5mM7skGSvZLolFnX8qSzHVPDtCg9qzLNEwF35PyIMRD+opxWFWcTVaoXJG50AHaCKtxvJ0g9g3TEsP1Z64t3aCJaqdhp7ScwY4hxY/RnfldfbPFnbcS8kVINpk2xvVT72vJpWu2dVLE2eVBJrXPwVc5JCyvO2vCga1y9WUt6jhYpuE6ri9UvaLWN00eT/tnq7+VJ2nwjqhCDce2gWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oz2+caX8+YDIx+l3GAVd2wp6Fo9lN6163gvqRcoHOGI=;
+ b=i2c47j1xQwp7k0+pVChP0P2SCuNaMYxoBNGOfiNxcykGORagJhqP9T7Kw0Y93QntVk2G/3txKInqsSCyzPui30yuuHKf3JMtZPuaVFF5ww5WkpEdbZbjN6JuaE8kIbRd9QC72dzs8pqt+y9uofLKfCjyxzVK+oeCkCLb5woyDKiuWNXNEJA7NeVr+PGcEC+klZoC/ZseRGsOt6drEkl1KERQxTmP0KwOxxjoV3BwbQjaKOUr+QISPOIShlAP/8uOUEbDGB9KEmWDlYgFzA29fBbyQ7RLvEb1Lg9LHg6KgzAx2nt3SfrxT8ErxoNOcOR7YeuLMp5yz2ZV8zZuqV6UQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oz2+caX8+YDIx+l3GAVd2wp6Fo9lN6163gvqRcoHOGI=;
+ b=cTGWKX6NY7vaj1YZBPMpIInV7cEjjBOLm4WuOGy5OEMnmmj8gPfIoEXykPKOZgmH5tfgnctcHID7WCh8mwwVJZLPo0ouv/7OIekGDGP40Eu8U7iqK9FEurY2+bAWCjPusaqy//G9pqmHsuHehFLMw3/VTJbKPYpNWeo9CuSPF/I=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BY5PR04MB7027.namprd04.prod.outlook.com (2603:10b6:a03:225::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.15; Tue, 17 May
+ 2022 14:59:14 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12%3]) with mapi id 15.20.5250.018; Tue, 17 May 2022
+ 14:59:14 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 15/15] btrfs: remove io_failure_record infrastructure completely
-Date:   Tue, 17 May 2022 16:50:39 +0200
-Message-Id: <20220517145039.3202184-16-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220517145039.3202184-1-hch@lst.de>
+CC:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 01/15] btrfs: introduce a pure data checksum checking
+ helper
+Thread-Topic: [PATCH 01/15] btrfs: introduce a pure data checksum checking
+ helper
+Thread-Index: AQHYaf2a+ReYTwdfPEeAFqchsFTEgA==
+Date:   Tue, 17 May 2022 14:59:13 +0000
+Message-ID: <PH0PR04MB74168E42A977889B254953D29BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <20220517145039.3202184-1-hch@lst.de>
+ <20220517145039.3202184-2-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ac368917-da46-41b3-4b45-08da3815cebe
+x-ms-traffictypediagnostic: BY5PR04MB7027:EE_
+x-microsoft-antispam-prvs: <BY5PR04MB70279BFE6CE6C2B4C9F1B34B9BCE9@BY5PR04MB7027.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 361ZFxqfNj8YVcNNSwYMPPMcNaEGj3eoQHlmj/DF7V49rJCfCZ8+vMKFkX44WBdVWLQnVPpbY8crBMFjtai+tljotXVjD0FmuHGSSAySVteu6OEYpp7NzkPU2fq31yKa2zhzsv4jiz3gv4nBNy88RqDFGUtdxtHElKWH1c0NVvlKsBWvgdbWuClNjiS5EfGgjFcWguCRHWYUGXTEgklpURNDUVCn7ZKrLdwiU8Cl+9xbUrj1myPow3YEnyf4otKAikSmhgk/GKcVmRvpzRRfsrK++a6eRf/mtBObw0au/uCIftdZlYlye0kjJKAeO/s4b6QoSo++x8Lm/pAwF0VTHE8qczdY68EIa4ae+8AJJRnRK6tZkMSoIcWTNWs6QWoA+BYFgOnYQjfXIWfY+HwzaYXf9jW6c0D7ER5B0UnKUwKtGN6S7nhtG44nXxx7iqs9gsiAmSe1vYHh+UL99bbZVqIRyRvm4vJbBGZwkiE0xMh5ywKjc262Zu4WZs7qh1TNCAB108XSbPin56OtiLKYG5ku+81gO1pQm7R8Iyoxso5kXGrcT+vr+/o5Nh88up27Lmr+LvuqLhXigDQbQpUiuU/iSHFqlL7sfDNB3csX7j27TeabAu44DClaAE7toVrIg8ts0Iv6G5F0Q9JmUjh7fGs0CRb8Jxb411p9XN6KD76N3Ds03mSrK4hYdJKzzdZzMuPw0RUV8SxuPun/nDez0A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(64756008)(76116006)(66946007)(66476007)(66446008)(8676002)(4326008)(66556008)(33656002)(122000001)(7696005)(91956017)(316002)(38070700005)(38100700002)(86362001)(4744005)(8936002)(5660300002)(53546011)(82960400001)(186003)(71200400001)(6506007)(9686003)(2906002)(55016003)(508600001)(52536014)(110136005)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jJSlM52zYCfhx4LgI0D46wadN6ouU/GSyfLA60YbLtueevoCizNRrpV9MxrS?=
+ =?us-ascii?Q?U/dtquZuIx09OozMzk28svff53XtgFj1ToZCPNp5uE5WgnJQ98AUNB1tWc1u?=
+ =?us-ascii?Q?zAuA5kJF+KW3nSrgAmAbEBFd0MrWWO/ZdzFaLojtVwhgIZQ5a87BCzRJj+fS?=
+ =?us-ascii?Q?amfrE/JlCYJHV7vRL+UAxPy7Dk5Fi6f+5la39BCOskCOqNgoRYksvePg9yGe?=
+ =?us-ascii?Q?qVf26UMH5fzZTvTzmQbzKXkL0ctB9syofqaygUcub10Nk39DwEhRYbyjsFtE?=
+ =?us-ascii?Q?UaLdDVR6eWs/NR+lfo67uYnLAtGFb4lL/6hsvHDaJeI2V61ZXX8gwRj/8RWs?=
+ =?us-ascii?Q?RCWiGIrB1L+Fb1JV5ppf5/4/LeZ/qees/WlZOvpKSeK0S86gZcOqTzdRVvnq?=
+ =?us-ascii?Q?K7g0gyf7BVJge8YwNZHqr6GWGVfOyvp/2sABbE4JKLWI+Ef7XWWzHuxr7HaW?=
+ =?us-ascii?Q?Kenb4hpczbct/ETAjI7bz0qmqObBNq9dpiFiWP59Qfq54lGT26wqlSybfJFp?=
+ =?us-ascii?Q?2kwBF01kkD+W87/qi7xhArq+nTJYD2zTVM7ALLcHFjsm2HcqTUNQqXpcxrpt?=
+ =?us-ascii?Q?jeLGeEOxsYoKprnEBzqj/TmVU8iIINLvmiZkUV8rq/jOh4CmxGAIxctNmDyU?=
+ =?us-ascii?Q?YJcIAC269lmpi7d9xAtItDkLHXZkb0vX707szU7H7UzczRn4CNeKe0DN8nP7?=
+ =?us-ascii?Q?32HLoyTnj4DolmadjGtoSEX/g/g7HQw4Mb15zy+2AmbXwJCIEqDdaXWmYIa0?=
+ =?us-ascii?Q?1bUbWM/9wD1h47wLnpiAn8cFXq9rutx5y3V9AzK/TBViOqZLIR8+ACrrGIjC?=
+ =?us-ascii?Q?XZzQHhspeWALg0nw6ID6iasL0P8J8G/xIcF2iJ1qAMRCKZ8/PJGyfPkpOu5B?=
+ =?us-ascii?Q?alUgHvltezBr3WqD4DUlCOH7Mo20RgfoJ2xe8rZcQhtkea4qFf8+gONcJfrf?=
+ =?us-ascii?Q?YuxLOKzYGoq5BIA4sEopRIcZoqLypf7e9o/Gu1VZQk3wYhHo4EOLV+wduzru?=
+ =?us-ascii?Q?YXo4atKEnNB/+YPnCMqp4x8GnlhRanyW1JlQ7o9RVBFMQCw0JuPOgfRUFU7a?=
+ =?us-ascii?Q?jZfuSJCx7HuYOuS+iSnHadyNcED6cqc1JW+B7akRL4PP5eBtI7odzShMl/8J?=
+ =?us-ascii?Q?kyCTgZCVEEW3GzztOceu1nrGrXXkYnSZfsnUStcWPQl+0LJ9pe5GP3f18yGZ?=
+ =?us-ascii?Q?GO8vyTKjWe/A8HcJQNKP7vqdv7uaQLB2fVV/RO6wWPkI8tooKD987A9S89xv?=
+ =?us-ascii?Q?gMB28vbaxT0CHq5GoXQViniJBXwDMqM+bGFB9ehuVRTFRmf9DaEfIROksB9s?=
+ =?us-ascii?Q?d1sKdr6D6yF5wYN/CwjVBy/M/k/z5oC3WksRvXbzfbAa5j1H8nGR3tW0DAod?=
+ =?us-ascii?Q?wuDRibmVY0hK3XXlfLgpJ6djFu6aAeo0OB3Mn2sX0LdHb0wmD7MpwrolVL42?=
+ =?us-ascii?Q?enxDC9LdMGV960uRmR06k9bxa/F4tp273O5lsAWMrobje4Rfq8ANjIRITJe5?=
+ =?us-ascii?Q?9k9vH7Xy8YUuKG2XG98H/o8BlIkalE6dXBLHGyy+nyyGv0evXFlCBnC6voW3?=
+ =?us-ascii?Q?GgOJUpPfWZGA8+g89zYYm7kJTwRjVoE+RrshIryRPdaLx5xndfm3EsIzUuFC?=
+ =?us-ascii?Q?nKiXAlwKwpjTO9MYvD0yno03FscpjeLdQeMMkNAdzGsjJVt+QfIEFvjhrHUR?=
+ =?us-ascii?Q?atYa18ZPYWXUlQYm4LaCwVAYJkz6LOy1ioe7hsH090ogbZTF4t43tKkapV9o?=
+ =?us-ascii?Q?aMJaxo6f3P36oGaHtXuTw0xCALjo0B2cS7ryQyVpslWnqdf96BxD1z9+kcCp?=
+x-ms-exchange-antispam-messagedata-1: thReKn2cK+GkhTCcOie74sZ0IGQKYEMlzhmSdsYz7iwPM0zar88azT8O
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac368917-da46-41b3-4b45-08da3815cebe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2022 14:59:13.9924
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gxvvLLJeQz+oKPTBtChT58zV7dDt/loZVunn2i0uv7LjV5aJujsKuIA7pGYYvtYxt4UpHG90e6Hi5IkUNTPNBtsD8+MD5k075C08L48YG8M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB7027
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
-
-Since our read repair are always handled by btrfs_read_repair_ctrl,
-which only has the lifespan inside endio function.
-
-This means we no longer needs to record which range and its mirror
-number for failure.
-
-Now if we failed to read some data page, we have already tried every
-mirrors we have, thus no need to record the failed range.
-
-Thus this patch can remove the whole io_failure_record structure and its
-related functions.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/btrfs_inode.h       |   5 -
- fs/btrfs/extent-io-tree.h    |  15 --
- fs/btrfs/extent_io.c         | 365 -----------------------------------
- fs/btrfs/extent_io.h         |  24 ---
- fs/btrfs/inode.c             |   7 -
- include/trace/events/btrfs.h |   1 -
- 6 files changed, 417 deletions(-)
-
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 33811e896623f..3eeba0eb9f16b 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -91,11 +91,6 @@ struct btrfs_inode {
- 	/* the io_tree does range state (DIRTY, LOCKED etc) */
- 	struct extent_io_tree io_tree;
- 
--	/* special utility tree used to record which mirrors have already been
--	 * tried when checksums fail for a given block
--	 */
--	struct extent_io_tree io_failure_tree;
--
- 	/*
- 	 * Keep track of where the inode has extent items mapped in order to
- 	 * make sure the i_size adjustments are accurate
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index c3eb52dbe61cc..8ab9b6cd53ed4 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -56,7 +56,6 @@ enum {
- 	IO_TREE_FS_EXCLUDED_EXTENTS,
- 	IO_TREE_BTREE_INODE_IO,
- 	IO_TREE_INODE_IO,
--	IO_TREE_INODE_IO_FAILURE,
- 	IO_TREE_RELOC_BLOCKS,
- 	IO_TREE_TRANS_DIRTY_PAGES,
- 	IO_TREE_ROOT_DIRTY_LOG_PAGES,
-@@ -250,18 +249,4 @@ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
- 			       u64 *end, u64 max_bytes,
- 			       struct extent_state **cached_state);
- 
--/* This should be reworked in the future and put elsewhere. */
--struct io_failure_record *get_state_failrec(struct extent_io_tree *tree, u64 start);
--int set_state_failrec(struct extent_io_tree *tree, u64 start,
--		      struct io_failure_record *failrec);
--void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
--		u64 end);
--int free_io_failure(struct extent_io_tree *failure_tree,
--		    struct extent_io_tree *io_tree,
--		    struct io_failure_record *rec);
--int clean_io_failure(struct btrfs_fs_info *fs_info,
--		     struct extent_io_tree *failure_tree,
--		     struct extent_io_tree *io_tree, u64 start,
--		     struct page *page, u64 ino, unsigned int pg_offset);
--
- #endif /* BTRFS_EXTENT_IO_TREE_H */
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 093e3ac28fe21..b115ba7a4902b 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2177,66 +2177,6 @@ u64 count_range_bits(struct extent_io_tree *tree,
- 	return total_bytes;
- }
- 
--/*
-- * set the private field for a given byte offset in the tree.  If there isn't
-- * an extent_state there already, this does nothing.
-- */
--int set_state_failrec(struct extent_io_tree *tree, u64 start,
--		      struct io_failure_record *failrec)
--{
--	struct rb_node *node;
--	struct extent_state *state;
--	int ret = 0;
--
--	spin_lock(&tree->lock);
--	/*
--	 * this search will find all the extents that end after
--	 * our range starts.
--	 */
--	node = tree_search(tree, start);
--	if (!node) {
--		ret = -ENOENT;
--		goto out;
--	}
--	state = rb_entry(node, struct extent_state, rb_node);
--	if (state->start != start) {
--		ret = -ENOENT;
--		goto out;
--	}
--	state->failrec = failrec;
--out:
--	spin_unlock(&tree->lock);
--	return ret;
--}
--
--struct io_failure_record *get_state_failrec(struct extent_io_tree *tree, u64 start)
--{
--	struct rb_node *node;
--	struct extent_state *state;
--	struct io_failure_record *failrec;
--
--	spin_lock(&tree->lock);
--	/*
--	 * this search will find all the extents that end after
--	 * our range starts.
--	 */
--	node = tree_search(tree, start);
--	if (!node) {
--		failrec = ERR_PTR(-ENOENT);
--		goto out;
--	}
--	state = rb_entry(node, struct extent_state, rb_node);
--	if (state->start != start) {
--		failrec = ERR_PTR(-ENOENT);
--		goto out;
--	}
--
--	failrec = state->failrec;
--out:
--	spin_unlock(&tree->lock);
--	return failrec;
--}
--
- /*
-  * searches a range in the state tree for a given mask.
-  * If 'filled' == 1, this returns 1 only if every extent in the tree
-@@ -2293,30 +2233,6 @@ int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 	return bitset;
- }
- 
--int free_io_failure(struct extent_io_tree *failure_tree,
--		    struct extent_io_tree *io_tree,
--		    struct io_failure_record *rec)
--{
--	int ret;
--	int err = 0;
--
--	set_state_failrec(failure_tree, rec->start, NULL);
--	ret = clear_extent_bits(failure_tree, rec->start,
--				rec->start + rec->len - 1,
--				EXTENT_LOCKED | EXTENT_DIRTY);
--	if (ret)
--		err = ret;
--
--	ret = clear_extent_bits(io_tree, rec->start,
--				rec->start + rec->len - 1,
--				EXTENT_DAMAGED);
--	if (ret && !err)
--		err = ret;
--
--	kfree(rec);
--	return err;
--}
--
- /*
-  * this bypasses the standard btrfs submit functions deliberately, as
-  * the standard behavior is to write all copies in a raid setup. here we only
-@@ -2432,287 +2348,6 @@ int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num)
- 	return ret;
- }
- 
--/*
-- * each time an IO finishes, we do a fast check in the IO failure tree
-- * to see if we need to process or clean up an io_failure_record
-- */
--int clean_io_failure(struct btrfs_fs_info *fs_info,
--		     struct extent_io_tree *failure_tree,
--		     struct extent_io_tree *io_tree, u64 start,
--		     struct page *page, u64 ino, unsigned int pg_offset)
--{
--	u64 private;
--	struct io_failure_record *failrec;
--	struct extent_state *state;
--	int num_copies;
--	int ret;
--
--	private = 0;
--	ret = count_range_bits(failure_tree, &private, (u64)-1, 1,
--			       EXTENT_DIRTY, 0);
--	if (!ret)
--		return 0;
--
--	failrec = get_state_failrec(failure_tree, start);
--	if (IS_ERR(failrec))
--		return 0;
--
--	BUG_ON(!failrec->this_mirror);
--
--	if (sb_rdonly(fs_info->sb))
--		goto out;
--
--	spin_lock(&io_tree->lock);
--	state = find_first_extent_bit_state(io_tree,
--					    failrec->start,
--					    EXTENT_LOCKED);
--	spin_unlock(&io_tree->lock);
--
--	if (state && state->start <= failrec->start &&
--	    state->end >= failrec->start + failrec->len - 1) {
--		num_copies = btrfs_num_copies(fs_info, failrec->logical,
--					      failrec->len);
--		if (num_copies > 1)  {
--			btrfs_repair_io_failure(fs_info, ino, start,
--					failrec->len, failrec->logical,
--					page, pg_offset, failrec->failed_mirror);
--		}
--	}
--
--out:
--	free_io_failure(failure_tree, io_tree, failrec);
--
--	return 0;
--}
--
--/*
-- * Can be called when
-- * - hold extent lock
-- * - under ordered extent
-- * - the inode is freeing
-- */
--void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start, u64 end)
--{
--	struct extent_io_tree *failure_tree = &inode->io_failure_tree;
--	struct io_failure_record *failrec;
--	struct extent_state *state, *next;
--
--	if (RB_EMPTY_ROOT(&failure_tree->state))
--		return;
--
--	spin_lock(&failure_tree->lock);
--	state = find_first_extent_bit_state(failure_tree, start, EXTENT_DIRTY);
--	while (state) {
--		if (state->start > end)
--			break;
--
--		ASSERT(state->end <= end);
--
--		next = next_state(state);
--
--		failrec = state->failrec;
--		free_extent_state(state);
--		kfree(failrec);
--
--		state = next;
--	}
--	spin_unlock(&failure_tree->lock);
--}
--
--static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode,
--							     u64 start)
--{
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	struct io_failure_record *failrec;
--	struct extent_map *em;
--	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
--	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
--	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
--	const u32 sectorsize = fs_info->sectorsize;
--	int ret;
--	u64 logical;
--
--	failrec = get_state_failrec(failure_tree, start);
--	if (!IS_ERR(failrec)) {
--		btrfs_debug(fs_info,
--	"Get IO Failure Record: (found) logical=%llu, start=%llu, len=%llu",
--			failrec->logical, failrec->start, failrec->len);
--		/*
--		 * when data can be on disk more than twice, add to failrec here
--		 * (e.g. with a list for failed_mirror) to make
--		 * clean_io_failure() clean all those errors at once.
--		 */
--
--		return failrec;
--	}
--
--	failrec = kzalloc(sizeof(*failrec), GFP_NOFS);
--	if (!failrec)
--		return ERR_PTR(-ENOMEM);
--
--	failrec->start = start;
--	failrec->len = sectorsize;
--	failrec->this_mirror = 0;
--	failrec->compress_type = BTRFS_COMPRESS_NONE;
--
--	read_lock(&em_tree->lock);
--	em = lookup_extent_mapping(em_tree, start, failrec->len);
--	if (!em) {
--		read_unlock(&em_tree->lock);
--		kfree(failrec);
--		return ERR_PTR(-EIO);
--	}
--
--	if (em->start > start || em->start + em->len <= start) {
--		free_extent_map(em);
--		em = NULL;
--	}
--	read_unlock(&em_tree->lock);
--	if (!em) {
--		kfree(failrec);
--		return ERR_PTR(-EIO);
--	}
--
--	logical = start - em->start;
--	logical = em->block_start + logical;
--	if (test_bit(EXTENT_FLAG_COMPRESSED, &em->flags)) {
--		logical = em->block_start;
--		failrec->compress_type = em->compress_type;
--	}
--
--	btrfs_debug(fs_info,
--		    "Get IO Failure Record: (new) logical=%llu, start=%llu, len=%llu",
--		    logical, start, failrec->len);
--
--	failrec->logical = logical;
--	free_extent_map(em);
--
--	/* Set the bits in the private failure tree */
--	ret = set_extent_bits(failure_tree, start, start + sectorsize - 1,
--			      EXTENT_LOCKED | EXTENT_DIRTY);
--	if (ret >= 0) {
--		ret = set_state_failrec(failure_tree, start, failrec);
--		/* Set the bits in the inode's tree */
--		ret = set_extent_bits(tree, start, start + sectorsize - 1,
--				      EXTENT_DAMAGED);
--	} else if (ret < 0) {
--		kfree(failrec);
--		return ERR_PTR(ret);
--	}
--
--	return failrec;
--}
--
--static bool btrfs_check_repairable(struct inode *inode,
--				   struct io_failure_record *failrec,
--				   int failed_mirror)
--{
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	int num_copies;
--
--	num_copies = btrfs_num_copies(fs_info, failrec->logical, failrec->len);
--	if (num_copies == 1) {
--		/*
--		 * we only have a single copy of the data, so don't bother with
--		 * all the retry and error correction code that follows. no
--		 * matter what the error is, it is very likely to persist.
--		 */
--		btrfs_debug(fs_info,
--			"Check Repairable: cannot repair, num_copies=%d, next_mirror %d, failed_mirror %d",
--			num_copies, failrec->this_mirror, failed_mirror);
--		return false;
--	}
--
--	/* The failure record should only contain one sector */
--	ASSERT(failrec->len == fs_info->sectorsize);
--
--	/*
--	 * There are two premises:
--	 * a) deliver good data to the caller
--	 * b) correct the bad sectors on disk
--	 *
--	 * Since we're only doing repair for one sector, we only need to get
--	 * a good copy of the failed sector and if we succeed, we have setup
--	 * everything for btrfs_repair_io_failure() to do the rest for us.
--	 */
--	ASSERT(failed_mirror);
--	failrec->failed_mirror = failed_mirror;
--	failrec->this_mirror++;
--	if (failrec->this_mirror == failed_mirror)
--		failrec->this_mirror++;
--
--	if (failrec->this_mirror > num_copies) {
--		btrfs_debug(fs_info,
--			"Check Repairable: (fail) num_copies=%d, next_mirror %d, failed_mirror %d",
--			num_copies, failrec->this_mirror, failed_mirror);
--		return false;
--	}
--
--	return true;
--}
--
--int btrfs_repair_one_sector(struct inode *inode,
--			    struct bio *failed_bio, u32 bio_offset,
--			    struct page *page, unsigned int pgoff,
--			    u64 start, int failed_mirror,
--			    submit_bio_hook_t *submit_bio_hook)
--{
--	struct io_failure_record *failrec;
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
--	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
--	struct btrfs_bio *failed_bbio = btrfs_bio(failed_bio);
--	const int icsum = bio_offset >> fs_info->sectorsize_bits;
--	struct bio *repair_bio;
--	struct btrfs_bio *repair_bbio;
--
--	btrfs_debug(fs_info,
--		   "repair read error: read error at %llu", start);
--
--	BUG_ON(bio_op(failed_bio) == REQ_OP_WRITE);
--
--	failrec = btrfs_get_io_failure_record(inode, start);
--	if (IS_ERR(failrec))
--		return PTR_ERR(failrec);
--
--
--	if (!btrfs_check_repairable(inode, failrec, failed_mirror)) {
--		free_io_failure(failure_tree, tree, failrec);
--		return -EIO;
--	}
--
--	repair_bio = btrfs_bio_alloc(1);
--	repair_bbio = btrfs_bio(repair_bio);
--	repair_bbio->file_offset = start;
--	repair_bio->bi_opf = REQ_OP_READ;
--	repair_bio->bi_end_io = failed_bio->bi_end_io;
--	repair_bio->bi_iter.bi_sector = failrec->logical >> 9;
--	repair_bio->bi_private = failed_bio->bi_private;
--
--	if (failed_bbio->csum) {
--		const u32 csum_size = fs_info->csum_size;
--
--		repair_bbio->csum = repair_bbio->csum_inline;
--		memcpy(repair_bbio->csum,
--		       failed_bbio->csum + csum_size * icsum, csum_size);
--	}
--
--	bio_add_page(repair_bio, page, failrec->len, pgoff);
--	repair_bbio->iter = repair_bio->bi_iter;
--
--	btrfs_debug(btrfs_sb(inode->i_sb),
--		    "repair read error: submitting new read to mirror %d",
--		    failrec->this_mirror);
--
--	/*
--	 * At this point we have a bio, so any errors from submit_bio_hook()
--	 * will be handled by the endio on the repair_bio, so we can't return an
--	 * error here.
--	 */
--	submit_bio_hook(inode, repair_bio, failrec->this_mirror, failrec->compress_type);
--	return BLK_STS_OK;
--}
--
- static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 6cdcea1551a66..e46fe23f6aff4 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -61,7 +61,6 @@ struct btrfs_root;
- struct btrfs_inode;
- struct btrfs_io_bio;
- struct btrfs_fs_info;
--struct io_failure_record;
- struct extent_io_tree;
- 
- typedef void (submit_bio_hook_t)(struct inode *inode, struct bio *bio,
-@@ -253,29 +252,6 @@ struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size);
- void end_extent_writepage(struct page *page, int err, u64 start, u64 end);
- int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num);
- 
--/*
-- * When IO fails, either with EIO or csum verification fails, we
-- * try other mirrors that might have a good copy of the data.  This
-- * io_failure_record is used to record state as we go through all the
-- * mirrors.  If another mirror has good data, the sector is set up to date
-- * and things continue.  If a good mirror can't be found, the original
-- * bio end_io callback is called to indicate things have failed.
-- */
--struct io_failure_record {
--	struct page *page;
--	u64 start;
--	u64 len;
--	u64 logical;
--	enum btrfs_compression_type compress_type;
--	int this_mirror;
--	int failed_mirror;
--};
--
--int btrfs_repair_one_sector(struct inode *inode,
--			    struct bio *failed_bio, u32 bio_offset,
--			    struct page *page, unsigned int pgoff,
--			    u64 start, int failed_mirror,
--			    submit_bio_hook_t *submit_bio_hook);
- int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
- 			    u64 length, u64 logical, struct page *page,
- 			    unsigned int pg_offset, int mirror_num);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 51cca8f343b72..37c1af902a84b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3143,8 +3143,6 @@ static int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered_extent)
- 					ordered_extent->disk_num_bytes);
- 	}
- 
--	btrfs_free_io_failure_record(inode, start, end);
--
- 	if (test_bit(BTRFS_ORDERED_TRUNCATED, &ordered_extent->flags)) {
- 		truncated = true;
- 		logical_len = ordered_extent->truncated_len;
-@@ -5353,8 +5351,6 @@ void btrfs_evict_inode(struct inode *inode)
- 	if (is_bad_inode(inode))
- 		goto no_delete;
- 
--	btrfs_free_io_failure_record(BTRFS_I(inode), 0, (u64)-1);
--
- 	if (test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags))
- 		goto no_delete;
- 
-@@ -8838,12 +8834,9 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	inode = &ei->vfs_inode;
- 	extent_map_tree_init(&ei->extent_tree);
- 	extent_io_tree_init(fs_info, &ei->io_tree, IO_TREE_INODE_IO, inode);
--	extent_io_tree_init(fs_info, &ei->io_failure_tree,
--			    IO_TREE_INODE_IO_FAILURE, inode);
- 	extent_io_tree_init(fs_info, &ei->file_extent_tree,
- 			    IO_TREE_INODE_FILE_EXTENT, inode);
- 	ei->io_tree.track_uptodate = true;
--	ei->io_failure_tree.track_uptodate = true;
- 	atomic_set(&ei->sync_writers, 0);
- 	mutex_init(&ei->log_mutex);
- 	btrfs_ordered_inode_tree_init(&ei->ordered_tree);
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 290f07eb050af..764e9643c123c 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -82,7 +82,6 @@ struct btrfs_space_info;
- 	EM( IO_TREE_FS_EXCLUDED_EXTENTS,  "EXCLUDED_EXTENTS")	    \
- 	EM( IO_TREE_BTREE_INODE_IO,	  "BTREE_INODE_IO")	    \
- 	EM( IO_TREE_INODE_IO,		  "INODE_IO")		    \
--	EM( IO_TREE_INODE_IO_FAILURE,	  "INODE_IO_FAILURE")	    \
- 	EM( IO_TREE_RELOC_BLOCKS,	  "RELOC_BLOCKS")	    \
- 	EM( IO_TREE_TRANS_DIRTY_PAGES,	  "TRANS_DIRTY_PAGES")      \
- 	EM( IO_TREE_ROOT_DIRTY_LOG_PAGES, "ROOT_DIRTY_LOG_PAGES")   \
--- 
-2.30.2
-
+On 17/05/2022 16:51, Christoph Hellwig wrote:=0A=
+> -	if (memcmp(csum, csum_expected, csum_size))=0A=
+> -		goto zeroit;=0A=
+> +	if (!btrfs_check_data_sector(fs_info, page, pgoff, csum, csum_expected)=
+)=0A=
+> +		return 0;=0A=
+>  =0A=
+> -	return 0;=0A=
+> -zeroit:=0A=
+=0A=
+This makes the read flow a bit awkward IMHO, as it returns in the middle of=
+ the=0A=
+function with the "good" condition and then continues with error handling.=
+=0A=
+=0A=
+How about:=0A=
+=0A=
+	if (btrfs_check_data_sector(...))=0A=
+		goto zeroit;=0A=
+=0A=
+	return 0;=0A=
+=0A=
+zeroit:=0A=
+	btrfs_print_data_csum_error(...);=0A=
+=0A=
+	=0A=
