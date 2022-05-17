@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C64C152A552
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5611752A557
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349428AbiEQOvf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 10:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S1349362AbiEQOvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 10:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349352AbiEQOvN (ORCPT
+        with ESMTP id S1349380AbiEQOvS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 10:51:13 -0400
+        Tue, 17 May 2022 10:51:18 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EC813F98
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4EE15737
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=dWM4kInP/wu1TXgDzSytANtXvOXHSNqFlF/66aIJ+zA=; b=dJoqblWEhdEdahzDbh9yTJzOwz
-        95HT2AI3sYCBrccjo1PQVNBtEtEL6GvxVV11/X7jo0AslOLHA9XgGIGMfEKrciKII1l/HQD/1z7sL
-        IF8nB5+qs2x0qCp00k3v1WXo3cAN85LH1GMGSxKnrPAujyAsEXD16rgvOYasADXFLlqWrWvDh/FQh
-        zqZvIIhkGJXWfmBSDkm3GkVJAvvLizZSubEeT6RIm8thjliRTrhX2VSNhUbT4XLyePcrVQmTo0Oma
-        E9HbH5/4qEpiWu6LXngpng0auJ1WHkl0yHYB9V+Dlr/6eLiqoRVgCYZZ8BCpCul+1YYwVI9UJuazf
-        AKkRf5jA==;
+        bh=ncoOIJVrELkZ1Yt/b6Y6PJSMmtx9R49eKAR+NeSiITY=; b=nsp5RTurbgkg2U3Jta1G7dADpr
+        V3OmZq34ARtNTQFLPQvICRhTjGUbCkc5QV7Ee51jrLCTtBIUxO57Np0NkMvDNrUXw/x0/6SGv/eXk
+        tl708u3Tr/+nr+Ndigb0A3rsHVWY/DEFp4yKSt/+uoYTR7koj+u0RjcL6azt+gbIHxBAc+2y4udbT
+        4sZ/YUIVVVsJlSIj9wJ2U1jOOMcWqN8ptwrYyxuItkceSQUog93OI95zyP7oWa9AxrkvTTMjw0ZcV
+        tsGJCKEm7nPzPDPx9TP1wmNO0eKLm/H9AMoeHFdxvBCzDhkhuVg5j5F3HfkfjCrWH5e+pukOp8zWO
+        F/RjKGjg==;
 Received: from [89.144.222.138] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nqyXV-00EXDp-FA; Tue, 17 May 2022 14:51:09 +0000
+        id 1nqyXY-00EXEV-Oj; Tue, 17 May 2022 14:51:13 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/15] btrfs: refactor end_bio_extent_readpage
-Date:   Tue, 17 May 2022 16:50:32 +0200
-Message-Id: <20220517145039.3202184-9-hch@lst.de>
+Subject: [PATCH 09/15] btrfs: factor out a btrfs_csum_ptr helper
+Date:   Tue, 17 May 2022 16:50:33 +0200
+Message-Id: <20220517145039.3202184-10-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220517145039.3202184-1-hch@lst.de>
 References: <20220517145039.3202184-1-hch@lst.de>
@@ -51,144 +51,68 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Untangle the goto mess and remove the pointless 'ret' local variable.
+Add a helper to find the csum for a byte offset into the csum buffer.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 87 +++++++++++++++++++++-----------------------
- 1 file changed, 41 insertions(+), 46 deletions(-)
+ fs/btrfs/ctree.h |  7 +++++++
+ fs/btrfs/inode.c | 13 +++----------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index f96d5b7071813..1ba2d4b194f2e 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3028,7 +3028,6 @@ static void end_bio_extent_readpage(struct bio *bio)
- 	 */
- 	u32 bio_offset = 0;
- 	int mirror;
--	int ret;
- 	struct bvec_iter_all iter_all;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 4713d59ed1105..4ab41cb57f216 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2733,6 +2733,13 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+ 				     enum btrfs_inline_ref_type is_data);
+ u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
  
- 	ASSERT(!bio_flagged(bio, BIO_CLONED));
-@@ -3039,6 +3038,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 		const u32 sectorsize = fs_info->sectorsize;
- 		unsigned int error_bitmap = (unsigned int)-1;
-+		bool repair = false;
- 		u64 start;
- 		u64 end;
- 		u32 len;
-@@ -3076,55 +3076,23 @@ static void end_bio_extent_readpage(struct bio *bio)
- 			if (is_data_inode(inode)) {
- 				error_bitmap = btrfs_verify_data_csum(bbio,
- 						bio_offset, page, start, end);
--				ret = error_bitmap;
-+				if (error_bitmap)
-+					uptodate = false;
- 			} else {
--				ret = btrfs_validate_metadata_buffer(bbio,
--					page, start, end, mirror);
-+				if (btrfs_validate_metadata_buffer(bbio,
-+						page, start, end, mirror))
-+					uptodate = false;
- 			}
--			if (ret)
--				uptodate = false;
--			else
--				clean_io_failure(BTRFS_I(inode)->root->fs_info,
--						 failure_tree, tree, start,
--						 page,
--						 btrfs_ino(BTRFS_I(inode)), 0);
- 		}
++static inline u8 *btrfs_csum_ptr(struct btrfs_fs_info *fs_info, u8 *csums,
++		u64 offset)
++{
++	return csums +
++		((offset >> fs_info->sectorsize_bits) * fs_info->csum_size);
++}
++
+ /*
+  * Take the number of bytes to be checksummmed and figure out how many leaves
+  * it would require to store the csums for that many bytes.
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index cb0ad1971be30..c771136116151 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3369,15 +3369,12 @@ static int check_data_csum(struct inode *inode, struct btrfs_bio *bbio,
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	u32 len = fs_info->sectorsize;
+-	const u32 csum_size = fs_info->csum_size;
+-	unsigned int offset_sectors;
+ 	u8 *csum_expected;
+ 	u8 csum[BTRFS_CSUM_SIZE];
  
--		if (likely(uptodate))
--			goto readpage_ok;
--
--		if (is_data_inode(inode)) {
--			/*
--			 * If we failed to submit the IO at all we'll have a
--			 * mirror_num == 0, in which case we need to just mark
--			 * the page with an error and unlock it and carry on.
--			 */
--			if (mirror == 0)
--				goto readpage_ok;
--
--			/*
--			 * submit_data_read_repair() will handle all the good
--			 * and bad sectors, we just continue to the next bvec.
--			 */
--			submit_data_read_repair(inode, bio, bio_offset, bvec,
--						mirror, error_bitmap);
--
--			ASSERT(bio_offset + len > bio_offset);
--			bio_offset += len;
--			continue;
--		} else {
--			struct extent_buffer *eb;
--
--			eb = find_extent_buffer_readpage(fs_info, page, start);
--			set_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
--			eb->read_mirror = mirror;
--			atomic_dec(&eb->io_pages);
--		}
--readpage_ok:
- 		if (likely(uptodate)) {
- 			loff_t i_size = i_size_read(inode);
- 			pgoff_t end_index = i_size >> PAGE_SHIFT;
+ 	ASSERT(pgoff + len <= PAGE_SIZE);
  
-+			clean_io_failure(BTRFS_I(inode)->root->fs_info,
-+					 failure_tree, tree, start, page,
-+					 btrfs_ino(BTRFS_I(inode)), 0);
-+
- 			/*
- 			 * Zero out the remaining part if this range straddles
- 			 * i_size.
-@@ -3141,14 +3109,41 @@ static void end_bio_extent_readpage(struct bio *bio)
- 				zero_user_segment(page, zero_start,
- 						  offset_in_page(end) + 1);
- 			}
-+		} else if (is_data_inode(inode)) {
-+			/*
-+			 * Only try to repair bios that actually made it to a
-+			 * device.  If the bio failed to be submitted mirror
-+			 * is 0 and we need to fail it without retrying.
-+			 */
-+			if (mirror > 0)
-+				repair = true;
-+		} else {
-+			struct extent_buffer *eb;
-+
-+			eb = find_extent_buffer_readpage(fs_info, page, start);
-+			set_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
-+			eb->read_mirror = mirror;
-+			atomic_dec(&eb->io_pages);
- 		}
-+
-+		if (repair) {
-+			/*
-+			 * submit_data_read_repair() will handle all the good
-+			 * and bad sectors, we just continue to the next bvec.
-+			 */
-+			submit_data_read_repair(inode, bio, bio_offset, bvec,
-+						mirror, error_bitmap);
-+		} else {
-+			/* Update page status and unlock */
-+			end_page_read(page, uptodate, start, len);
-+			endio_readpage_release_extent(&processed,
-+					BTRFS_I(inode), start, end,
-+					PageUptodate(page));
-+		}
-+
- 		ASSERT(bio_offset + len > bio_offset);
- 		bio_offset += len;
+-	offset_sectors = bio_offset >> fs_info->sectorsize_bits;
+-	csum_expected = ((u8 *)bbio->csum) + offset_sectors * csum_size;
++	csum_expected = btrfs_csum_ptr(fs_info, bbio->csum, bio_offset);
  
--		/* Update page status and unlock */
--		end_page_read(page, uptodate, start, len);
--		endio_readpage_release_extent(&processed, BTRFS_I(inode),
--					      start, end, PageUptodate(page));
+ 	if (!btrfs_check_data_sector(fs_info, page, pgoff, csum, csum_expected))
+ 		return 0;
+@@ -8007,12 +8004,8 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
+ 		if (ret)
+ 			goto err;
+ 	} else {
+-		u64 csum_offset;
+-
+-		csum_offset = file_offset - dip->file_offset;
+-		csum_offset >>= fs_info->sectorsize_bits;
+-		csum_offset *= fs_info->csum_size;
+-		btrfs_bio(bio)->csum = dip->csums + csum_offset;
++		btrfs_bio(bio)->csum = btrfs_csum_ptr(fs_info, dip->csums,
++				file_offset - dip->file_offset);
  	}
- 	/* Release the last extent */
- 	endio_readpage_release_extent(&processed, NULL, 0, 0, false);
+ map:
+ 	ret = btrfs_map_bio(fs_info, bio, 0);
 -- 
 2.30.2
 
