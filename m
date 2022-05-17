@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D73252A54D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCB352A546
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 16:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349299AbiEQOvn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 10:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        id S1349373AbiEQOvp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 10:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349387AbiEQOvT (ORCPT
+        with ESMTP id S1349294AbiEQOvY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 10:51:19 -0400
+        Tue, 17 May 2022 10:51:24 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE1615831
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AE616582
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 07:51:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=l7e6jh4N6fG6Hwh7Zqm+d4K0UQfsCKbZxDQNeNzv8M8=; b=QTViyS1PbKcShSEUSjGad6TyxK
-        p7i0tnaf4u6r+8Xrs75KnOCuDdJiNqJHp1ZWKZqcxA3/dInBvmkf44I9S5a+2+yiT9EbOPWUbZZHs
-        M3vJboYRkS835jlRBi2b3p4d+eQViH+KAuh/vht9yD6erWuk+UiMp0v9cp0hsow9OIrvgLVM2j14P
-        NwxvsDoi7s4SFo8644+NZLvKvv3B5TxYn2/Paa7U7NkHsgMNEkES2CAw6laUrAmfokuICbI0xESN4
-        q0zlNGG9i3gQryjImqpsyHCoCVe5AfH+m4XWgzPlVz4VD1k77MCtAxBtOwaw9sHzgqB72ILAi8z9X
-        dRovO8AQ==;
+        bh=aitXVb0uhzjJZZSN139uRZBWQSR3EMcA5zQjmyjFTIE=; b=LUTYIQk4Ru1NGSQLM42MVVxP5z
+        uiFtC7BC9g2o7rBtVimWG625RdFQTavtM/2N+6CFFuc1vza7h6c9XIk/FhcE6mFOuIEkN09Xx3AVE
+        BLXHlYkH18FibFhfAxMRMCRjixWPZUWBcnTTlhvr1+b5/gqmuJWAKdfWGOFST/XafpMIbH/nFq1an
+        6KKDews7PSZx8P7gqQawmP4S9cxljxA/CFf0arkA3Eiqfk7dz8DQTQ6UD5Yugu/NW0ajdvntmlgN9
+        kO/9x9eSzWCp8Dcnb30Yf6dI1GSAAHnaAId3hfuae19iGyIx3PJyGUmBMfv3Cq8xctG/iQShBQDP6
+        oim/MasA==;
 Received: from [89.144.222.138] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nqyXc-00EXFN-4r; Tue, 17 May 2022 14:51:16 +0000
+        id 1nqyXf-00EXGN-GO; Tue, 17 May 2022 14:51:19 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 10/15] btrfs: add a btrfs_map_bio_wait helper
-Date:   Tue, 17 May 2022 16:50:34 +0200
-Message-Id: <20220517145039.3202184-11-hch@lst.de>
+Subject: [PATCH 11/15] btrfs: set ->file_offset in end_bio_extent_readpage
+Date:   Tue, 17 May 2022 16:50:35 +0200
+Message-Id: <20220517145039.3202184-12-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220517145039.3202184-1-hch@lst.de>
 References: <20220517145039.3202184-1-hch@lst.de>
@@ -51,60 +51,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This helpers works like submit_bio_wait, but goes through the btrfs bio
-mapping using btrfs_map_bio.
+The new repair code expects ->file_offset to be set for all bios.  Set
+it just after entering end_bio_extent_readpage.  As that requires looking
+at the first vector before the first loop iteration also use that
+opportunity to set various file-wide variables just once instead of once
+per loop iteration.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/volumes.c | 21 +++++++++++++++++++++
- fs/btrfs/volumes.h |  2 ++
- 2 files changed, 23 insertions(+)
+ fs/btrfs/extent_io.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 0819db46dbc42..8925bc606db7e 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6818,6 +6818,27 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 	return BLK_STS_OK;
- }
- 
-+static void btrfs_end_io_sync(struct bio *bio)
-+{
-+	complete(bio->bi_private);
-+}
-+
-+blk_status_t btrfs_map_bio_wait(struct btrfs_fs_info *fs_info, struct bio *bio,
-+		int mirror)
-+{
-+	DECLARE_COMPLETION_ONSTACK(done);
-+	blk_status_t ret;
-+
-+	bio->bi_private = &done;
-+	bio->bi_end_io = btrfs_end_io_sync;
-+	ret = btrfs_map_bio(fs_info, bio, mirror);
-+	if (ret)
-+		return ret;
-+
-+	wait_for_completion_io(&done);
-+	return bio->bi_status;
-+}
-+
- static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
- 				      const struct btrfs_fs_devices *fs_devices)
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1ba2d4b194f2e..cbe3ab24af9e5 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3018,25 +3018,30 @@ static struct extent_buffer *find_extent_buffer_readpage(
+  */
+ static void end_bio_extent_readpage(struct bio *bio)
  {
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 6f784d4f54664..b346f6c401515 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -555,6 +555,8 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
- void btrfs_mapping_tree_free(struct extent_map_tree *tree);
- blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 			   int mirror_num);
-+blk_status_t btrfs_map_bio_wait(struct btrfs_fs_info *fs_info, struct bio *bio,
-+		int mirror);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       fmode_t flags, void *holder);
- struct btrfs_device *btrfs_scan_one_device(const char *path,
++	struct bio_vec *first_vec = bio_first_bvec_all(bio);
++	struct inode *inode = first_vec->bv_page->mapping->host;
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	const u32 sectorsize = fs_info->sectorsize;
+ 	struct bio_vec *bvec;
+ 	struct btrfs_bio *bbio = btrfs_bio(bio);
+-	struct extent_io_tree *tree, *failure_tree;
++	int mirror = bbio->mirror_num;
++	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
++	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
++	bool uptodate = !bio->bi_status;
+ 	struct processed_extent processed = { 0 };
+ 	/*
+ 	 * The offset to the beginning of a bio, since one bio can never be
+ 	 * larger than UINT_MAX, u32 here is enough.
+ 	 */
+ 	u32 bio_offset = 0;
+-	int mirror;
+ 	struct bvec_iter_all iter_all;
+ 
++	btrfs_bio(bio)->file_offset =
++		page_offset(first_vec->bv_page) + first_vec->bv_offset;
++
+ 	ASSERT(!bio_flagged(bio, BIO_CLONED));
+ 	bio_for_each_segment_all(bvec, bio, iter_all) {
+-		bool uptodate = !bio->bi_status;
+ 		struct page *page = bvec->bv_page;
+-		struct inode *inode = page->mapping->host;
+-		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-		const u32 sectorsize = fs_info->sectorsize;
+ 		unsigned int error_bitmap = (unsigned int)-1;
+ 		bool repair = false;
+ 		u64 start;
+@@ -3046,9 +3051,7 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		btrfs_debug(fs_info,
+ 			"end_bio_extent_readpage: bi_sector=%llu, err=%d, mirror=%u",
+ 			bio->bi_iter.bi_sector, bio->bi_status,
+-			bbio->mirror_num);
+-		tree = &BTRFS_I(inode)->io_tree;
+-		failure_tree = &BTRFS_I(inode)->io_failure_tree;
++			mirror);
+ 
+ 		/*
+ 		 * We always issue full-sector reads, but if some block in a
+@@ -3071,7 +3074,6 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		end = start + bvec->bv_len - 1;
+ 		len = bvec->bv_len;
+ 
+-		mirror = bbio->mirror_num;
+ 		if (likely(uptodate)) {
+ 			if (is_data_inode(inode)) {
+ 				error_bitmap = btrfs_verify_data_csum(bbio,
 -- 
 2.30.2
 
