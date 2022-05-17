@@ -2,209 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C31F529B47
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 09:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3438C529B50
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 May 2022 09:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbiEQHnU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 May 2022 03:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
+        id S237596AbiEQHpI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 May 2022 03:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242074AbiEQHnJ (ORCPT
+        with ESMTP id S229797AbiEQHpG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 May 2022 03:43:09 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994A912D31
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 00:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652773372;
-        bh=3wO7ll07HlhDaW9L4BKNFR3aBZZOKyYF2mKDoWQ/afM=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=BlV4wf+79Z0rfmszdAiqkwqtYOkk0VBjaKLYXXF7Q3QpH35/nk8JXLll9zMtA+P0X
-         osBc+CFTdw3goVRub1Gm+yHgl1GrUgnmWsChbflNjRaJcfgRCTBf57FrPOUb3t4WW+
-         Dg/0vTqj8GoUResLwIwB73rVURBK+wKSxtpDQBjs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4Jqb-1nqajk1nDV-000Oyi; Tue, 17
- May 2022 09:42:52 +0200
-Message-ID: <51ac74ff-ada4-a3ee-5638-2fad8fc14f03@gmx.com>
-Date:   Tue, 17 May 2022 15:42:37 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [RFC ONLY 2/8] btrfs: move btrfs_io_context to volumes.h
-Content-Language: en-US
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
+        Tue, 17 May 2022 03:45:06 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2441C1
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 00:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1652773504; x=1684309504;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=bzWP9jjT0997pqT5mAb3c1zaBxBR+PP83MIBa1Pn3dA=;
+  b=CBVAyz5VnhIBJDuOps2y0T9MqFaoQ53J8bmkVzxuSedN6MXRtrq6srJh
+   haHNE8H22SiCxgHQR7xgPI4qDFhog3CqeYJ7U37/0O176VPQ4BtAoWrX8
+   NwHqoQG+cSBoJduO6BeGT2RJ6sqEmo9DJW0WPrAzc9tyP9zXFDte0FVlW
+   W0uwQgKm4D2XYZcjfAVkJ7Wyxy38UXHaPj7Ew4JGQxg58LdbK2Bopv5yc
+   SqiCQOLsnPgVnd92QxVVR++EYkeSYZf4iK1n7Ut8Kz3L2XwKW2zKjelur
+   KKL9vUrWPxKJJ8hKdHexN6ew7IGasoWnQSUqzsgRIKgijLXLRBGnPWnqd
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.91,232,1647273600"; 
+   d="scan'208";a="205400227"
+Received: from mail-bn7nam10lp2101.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.101])
+  by ob1.hgst.iphmx.com with ESMTP; 17 May 2022 15:45:03 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KeB9aqYR9ir4w4wIMIQfXDX64BOWIpWIdBP5+PFle9tBsqLVkqFRLD67H8b7aos0fL4cL8Jl4EHuBDK1iltrM9SyRxdszHQi5rKMQexW/3KAhCj3dC42uaFf4rQyOy0+eO6ETVRVh1uKyPlcXApBHGOPpv6LSTR+a64/af7x1rPPL+NQurhGdDvs8Vjpiuq5CaaYXqDL4iP/82l+hGrlZFAFUGXisbC/g+1SHv2Rjujaf1gshp99TV1FeBTqCH+9FUqd6Np1F7K1tpvkKCFeSbxGy/XaRe0mpc0qJxECjPCobVC08GIOjuaxfF864PwKjmIWYno0cn8HXVg1gZz4VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+WPN7MEPPUL+QySyWkiV/lrkMv2b5b7nSOvl/8FSWx4=;
+ b=EkOW93eiTOznkoaLDQWCvPh4YClwWBclRSlV8yhCC6T9DBsbCGEoL6YmbfZK9UlQAuh+BR9HMRCaM9JZ4mnzdfJR0Pm6TkTnezZdvPbDDvCfeDHsfUwoO1Jcy2Rn51idFaStVOA5EnYJwehap7lTLGPX4aeIYAlfZdh2cb0089Ugp7GdrATrtivRi0vaZniRci8/B0AvFE756xrHlmUSC5FvQV0gMW+bky3fTgSiOBZ/cGKbZE9NVEwLNN7qjuftZMz1rvBQ0E0s2PqoVj3WMCtXLBoP7RP/ECjDruBChgbhErgrXG1Eh8PRS0iTELxTeNsOyFHLpDS+V4ezNe//kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+WPN7MEPPUL+QySyWkiV/lrkMv2b5b7nSOvl/8FSWx4=;
+ b=FLdjJhNae06b+U78o4YVNVbVhH2xSxCCnEQh8HZjdCK4EC0NWE2m/+FagTb+Fzffn4REJxVCsqCPnBFuAiItS1TkMs4kIQ5HkqtUrP6MwdW8DtcsnKf/5A89+NIBVOndEXCzXWdHB9UEJ1+rZWLbVEZf2LEdTXXCiHJZc6vJvbQ=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM8PR04MB7928.namprd04.prod.outlook.com (2603:10b6:5:315::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.18; Tue, 17 May
+ 2022 07:45:03 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::6cfd:b252:c66e:9e12%3]) with mapi id 15.20.5250.018; Tue, 17 May 2022
+ 07:45:03 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC ONLY 1/8] btrfs: add raid stripe tree definitions
+Thread-Topic: [RFC ONLY 1/8] btrfs: add raid stripe tree definitions
+Thread-Index: AQHYaTGxFQxgb+dZhEeF2fZUj1kr/A==
+Date:   Tue, 17 May 2022 07:45:02 +0000
+Message-ID: <PH0PR04MB7416044172EDAE0F7E17E3959BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <6bd71ff55e48686fc917736e686143ca7d5d2c64.1652711187.git.johannes.thumshirn@wdc.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <6bd71ff55e48686fc917736e686143ca7d5d2c64.1652711187.git.johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <06a217ce02243fe88b9649d689df89eea7a570c7.1652711187.git.johannes.thumshirn@wdc.com>
+ <cf5f8445-a622-bc8e-bfdf-8084a00e87ee@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a95623fc-19ef-4a74-288b-08da37d92721
+x-ms-traffictypediagnostic: DM8PR04MB7928:EE_
+x-microsoft-antispam-prvs: <DM8PR04MB79287917C467362C1590EAD39BCE9@DM8PR04MB7928.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ewBcP46nd+2SIb/FT4TVsaiZPjjftS3dWwk2dubljiM4lhfKptCr2rSOuzZU/h7frrnZURUaS/N9E4cvZdwzZhtnZ6I2CdFkiEHA9Uw5uKWEsu4A3toUDAQUFphd9ifpFQCfNqAjJGfXzWAbB9pyymsX6C0NxscN8yKF0pWE8VjMaQEHswpzJlFLiADRxrlxAffBmlmYMgzgx/OE/5vNxDZPnG1UQAjK2L42aysX+2mEEWoDGCkEsasFzN5F34hzHhnlb49pTNqzxAFCfNqLUCRupcZg8ypclQtm3p5bBx3b0Bma4YrdgfX37IZkuExK5WpKSc/IItTYEDmETyejXaN6Mkza+t2hyf1W5zaaUggpWMDpweRxxSp1P+vnMQY/LrhvsKt1I8rOZdhFsMxH2Xl2sbl3V08vpi+CoB173x5I2DqHOjEm6MTYUNLLXX3drGk6dWEykHwBWZp1936mef/iQaLSFYFn3AxKTowkEQXrcc2I6jH586o4vMc2bwVnnjXN/eozmiY/boQJVmnvUY+gkPLNwzT8BX0zKzLDifbce1ZpQHKvLFFF8fLsqtoPKd3E6o0+JDrS6rDh5NnguKQTZOBgzOvn22Mxlo+mDp5G5n8cC0tJtGdRaRDhaf4F92yVqcOEmKG9lxP/SbUtg5ie4wYM6lbh4yoUluomafTytL65wVSLMSgUmfPy1oagzY7+4x4+3iwHyeNhgoQxlQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(122000001)(2906002)(38100700002)(38070700005)(186003)(7696005)(82960400001)(316002)(110136005)(9686003)(83380400001)(91956017)(86362001)(71200400001)(5660300002)(508600001)(52536014)(76116006)(66446008)(8676002)(64756008)(66476007)(66556008)(66946007)(4744005)(8936002)(53546011)(55016003)(6506007)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sQEUVKai+psPUZvpCuIcfoRp2VkA9WvL4OSji2PaL+1EMRnKArJaMTvY4Cdu?=
+ =?us-ascii?Q?ZDen3tWX1U7qL11yOJPNxyEmxEnYEER3Gjn9acWzZ0okw5t+HHVIC0Y/H2QN?=
+ =?us-ascii?Q?eYZWdl3zh/UsqrBmSrRgv54t+t/Ei5/2DbiVUSAorlV4Q3qFv734TeEeXI/q?=
+ =?us-ascii?Q?cXNf5qbnM82im2JRv95zWs6Mhg0KX7Zd4YEiC6ASHRBSUjrDhl8d3VZXz7zD?=
+ =?us-ascii?Q?O9jlp1J+SDnD7c5UuYfLiErnIT/rDqHQCs7sq8cQ5OMF/DudaRmqTNjzw/7C?=
+ =?us-ascii?Q?tLIwAYDyoez8Cmaf9+b8mLNVo8PObvbRBEz7ROeanNOBF/mmGUN40z6Y280J?=
+ =?us-ascii?Q?1/9weTB6jkJWnu7XpkiMx1vfSGI1OHfSGE5jhpNOuf5WpxlrqN8wXUAjUBNt?=
+ =?us-ascii?Q?iba18qMEglGsBZxj2MRt5Lym8L2RERzGbymY28xxixhXatgVfa3Mp6CaVQKP?=
+ =?us-ascii?Q?DbrGQ5YVKTxcwXuzmJ/mlyIQYJ83DNp0YNfNm0wR9xGnae5PdftqpvlmblSO?=
+ =?us-ascii?Q?5akU/J8JxkFeMcvO/Wc7orZDW7ym78alwSGKROGvcn9X3zTV7Nb1MBthTXO0?=
+ =?us-ascii?Q?exajTkXaVWRj6+WWaciihRRovEUoZmZEqxDP2mhSCMv3EqNN4XoketvOHj3j?=
+ =?us-ascii?Q?lbzbGxRJ3Ez8AfU8L8j9HPwDEyKDgtzRHqxzmaEdIkwJJ8XigPwwE6eeO3Cp?=
+ =?us-ascii?Q?mxzh6x1KneRWxeDRkPbMlS6Jg8QiHPqDXhEsWTNalLJFA54w0j0h0Ikpl8fB?=
+ =?us-ascii?Q?7pQmXOftF+Oey7uASQAqCrIMTQXH9MNH5dl9yhbQWPH4Nw1l26pxRH529CXE?=
+ =?us-ascii?Q?r+qV1E57C2s1r4zULNMOJG7bnNyaBElHl1GN+HITaPReV8mqfinNbdEEEoEF?=
+ =?us-ascii?Q?sCUxtgzOZnVEfSv2R8Jq8N5iiYoxB2PF5TuvJMv9M0KjFfcbD2j2uqjGnh0e?=
+ =?us-ascii?Q?xzZbYBTzkacQvZQJOpV/EeSU4UMOuiZyELpZsHYoBeXQIgSPPZXHFJYbVZeM?=
+ =?us-ascii?Q?x1K7XMby1EcyJpaX/cFSB4N2NLQoP1JswZXkzG2UOoBlRFlettGXvizYjcWS?=
+ =?us-ascii?Q?7iKiNRxb81QWWOCDC2ui2cGrXEq3J65Ri0mDj8CWlDCCV0oUkxqMhSfAPcE7?=
+ =?us-ascii?Q?kRtU65ZSxTN/L7FDpGRZ+gmT9RM91Br85qE21U5f6ZVxNhuUqWpkQ9qM0F0P?=
+ =?us-ascii?Q?0n6HfTDrBYB+btkQat3/oGn2A5AzyUVaFd0El0iIX6EvNVr0M/GNQwuZDGYw?=
+ =?us-ascii?Q?Cn9vKzlgMAQzjnphmMtOmR5P1v+KwKEBl69B8XgXcF7iG+lpWG+hXetoyhAf?=
+ =?us-ascii?Q?POOj23QZU3W/GQZ5+k9u3fUqgazDsa8xIpq+ftOL/sMoq105AremBMSipPJb?=
+ =?us-ascii?Q?px03TIFscay5wZuVdSRIQFg/hZ91rWNEvoDpLghE4VwKJ9GMXItLHk2pmf5f?=
+ =?us-ascii?Q?aLutjj2gp7PKkRUY2aZLZu3S+OPMkfn7F3YqPEl/p1/E62YJGfQAdB01/M7X?=
+ =?us-ascii?Q?Pckcj8zUflnlK1hAo+DjxvkIRJWCKC24QyDGD++91yBkB7OIhM7IccZ5wcd6?=
+ =?us-ascii?Q?idQAc5As/L8lu7gHJGNzhPkWTQxlgFok7xXAE5kk+l3CB6qKXZNm7j1A7Xmc?=
+ =?us-ascii?Q?sRDCJGTVR/rVeIfuTp1+//r9RDnCqiFipAn2+SQdWX10wddhuOeZXpxspjE+?=
+ =?us-ascii?Q?xkpP7+IgC1vTW0mV5t2Mk4q9gh7g34/m/qkkjjxb+mQpsLCKZmFb10k/PJ32?=
+ =?us-ascii?Q?iDf+89DbdRBaw6ULvCH9vVxqqkRv2MwkEk0AoHfPSFBdszvtyr6Gq1hqgkBr?=
+x-ms-exchange-antispam-messagedata-1: F+/UF6kB/QCcCH8qlSm0jNaaPtW/kqryrmLGBQDn5n3KW+4D662urRxb
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sHXWP687tCgkvV7qcaMz5Cp0HUjWJR14hzDHclANefVPbMzZk7h
- uIviCr5qfkl+heIRrUF6/d8TqJiHaa5I+ScsZNWmunYywHunGI82N7xR7cZF/NnoAY7UicN
- BWL+581ajySIonO+GNi05iHWrdGKk84s1xIyonXCjS05/NFicEclIBl9KWWdAFdwBPCqRw6
- jJruAibylUz5EhfRnmIEA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rqYap0vP/l8=:jRCMb1ntzlD+71HKQ6pS6w
- yTGQXmbzT9TXn+ECkpCqrRrd2zjGLl+cjgiM47JMkLG1EQ7C4Tk42R8Geinlt0ANbac7Kqi21
- fhdh4ayVP5O6365D1BMK+y3iLp/LwjI24geCmSKHA8y+iiIgSN1z/cofhqKfkoR21eOMhQLaQ
- gehgXtkKX5C+cr/MtHF+rLUgEZWZ5ypQ+Lya3QHlLYJckHKGuNSb3xcokvvkT7QjBe4d0p0rw
- f1ZcXU72GXVhmVjnNFKE9AJmP8GujI7v0858ECq6g3GymCkawiA2tPSM70R29tHS2w7wLnySr
- +1/nSaawRErns5H8fVFgAk/6WWgdVqI0/hTKiiRUT3DhHC4vhvP5hlGtnBIsH4swfd4IWxXEt
- pt0eKvsn1X/4RZx+2+YYimYLoshovNV08be8quYIGIMVVlrne0ayLucrnpj3mX42BU2MIw7Vq
- +7DczYX0ES9tp/poMxgdGzs656160RuMVlPbMWnfBOHx65eaKs8+lt7dLkR5AH1wAmzFFztyO
- +CGQrtGzSwl6OyW8J7Fe+8e51+OFPyikWyYx0E2VBb4QZ8vsDXMqTcbP5NW/9mK3OJ/tjCRkl
- 4Bq5QWSszmkDsb+HlCIts86a9wnO2hKPQYh4cqAD3EJ/SQyBjvM5hATTAAHP/mvTUwVrpTBQB
- dhExvfnMhuBZMZOspg3801XgdViJHeUvBU1cPdl29mai9xZJCIZVfumFozQmXOEn8pgSjK7E8
- aWAB6H/6dF9I+VEBIlKLwWUjFO2jf6qVvJAtQKWXa2HTH3B8ilgzO85UdJm3CkszwI6E7w7Nw
- AdW5eKVnMxZcuC9ejqgyEvSkhZhvtwGM99X1bekvk8xp3BfnFdUyhm2oVgzVk1YMxmm+vW+C1
- V4oV5OHGVdX6QGKUVeItaBx0bgkx0xX3gN98dtXwBBgBpK9KSXX3cWT4nW/osCiQBVnewC+rU
- wo0Dcaro1VGr11M8ZM5AP4qIGpCleQzefn9EFnqN2w37jtGH8CNUl83Tyqz0fuO6FXiQDC84o
- 2FpHBH/dRMTeqSIG4HD5MZnh+VV53zr0VVMpZyh8jxQ2P+X1uoLFdlTP9bpQzewUaCVf2x8xF
- aGLDa58kPecaREg6AelbtP3n/l9PjkXLug/v5jZXdwT6Uek7GWCZtrOFw==
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a95623fc-19ef-4a74-288b-08da37d92721
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2022 07:45:02.9637
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +dz5wItyMFec4glj5NC3Le347Hgo79z2i6/NoBlGBQJ5IqGJtLaBsHgnq/CNeTCpSSk9dbocwjjGrx+HpLAsK+2/rxiTTfSgIpX9zdbAn8Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB7928
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/5/16 22:31, Johannes Thumshirn wrote:
-> In preparation for upcoming changes, move 'struct btrfs_io_context' to
-> volumes.h, so we can use it outside of volumes.c
-
-In fact I don't think the naming itself (from myself) is that good.
-
-It maybe a good idea to also do a rename here.
-
-I have some bad alternatives, but doesn't seem better than the current
-generic naming either:
-
-- btrfs_io_mapping
-- btrfs_mapping_context
-
-Thus I guess the current name is chosen mostly due to lack of better ones.
-
-Thanks,
-Qu
-
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/volumes.h | 90 +++++++++++++++++++++++-----------------------
->   1 file changed, 45 insertions(+), 45 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index bd297f23d19e..894d289a3b50 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -32,6 +32,51 @@ struct btrfs_io_geometry {
->   	u64 raid56_stripe_offset;
->   };
->
-> +struct btrfs_io_stripe {
-> +	struct btrfs_device *dev;
-> +	u64 physical;
-> +	u64 length; /* only used for discard mappings */
-> +};
-> +
-> +/*
-> + * Context for IO subsmission for device stripe.
-> + *
-> + * - Track the unfinished mirrors for mirror based profiles
-> + *   Mirror based profiles are SINGLE/DUP/RAID1/RAID10.
-> + *
-> + * - Contain the logical -> physical mapping info
-> + *   Used by submit_stripe_bio() for mapping logical bio
-> + *   into physical device address.
-> + *
-> + * - Contain device replace info
-> + *   Used by handle_ops_on_dev_replace() to copy logical bios
-> + *   into the new device.
-> + *
-> + * - Contain RAID56 full stripe logical bytenrs
-> + */
-> +struct btrfs_io_context {
-> +	refcount_t refs;
-> +	atomic_t stripes_pending;
-> +	struct btrfs_fs_info *fs_info;
-> +	u64 map_type; /* get from map_lookup->type */
-> +	bio_end_io_t *end_io;
-> +	struct bio *orig_bio;
-> +	void *private;
-> +	atomic_t error;
-> +	int max_errors;
-> +	int num_stripes;
-> +	int mirror_num;
-> +	int num_tgtdevs;
-> +	int *tgtdev_map;
-> +	/*
-> +	 * logical block numbers for the start of each stripe
-> +	 * The last one or two are p/q.  These are sorted,
-> +	 * so raid_map[0] is the start of our full stripe
-> +	 */
-> +	u64 *raid_map;
-> +	struct btrfs_io_stripe stripes[];
-> +};
-> +
->   /*
->    * Use sequence counter to get consistent device stat data on
->    * 32-bit processors.
-> @@ -354,51 +399,6 @@ static inline void btrfs_bio_free_csum(struct btrfs=
-_bio *bbio)
->   	}
->   }
->
-> -struct btrfs_io_stripe {
-> -	struct btrfs_device *dev;
-> -	u64 physical;
-> -	u64 length; /* only used for discard mappings */
-> -};
-> -
-> -/*
-> - * Context for IO subsmission for device stripe.
-> - *
-> - * - Track the unfinished mirrors for mirror based profiles
-> - *   Mirror based profiles are SINGLE/DUP/RAID1/RAID10.
-> - *
-> - * - Contain the logical -> physical mapping info
-> - *   Used by submit_stripe_bio() for mapping logical bio
-> - *   into physical device address.
-> - *
-> - * - Contain device replace info
-> - *   Used by handle_ops_on_dev_replace() to copy logical bios
-> - *   into the new device.
-> - *
-> - * - Contain RAID56 full stripe logical bytenrs
-> - */
-> -struct btrfs_io_context {
-> -	refcount_t refs;
-> -	atomic_t stripes_pending;
-> -	struct btrfs_fs_info *fs_info;
-> -	u64 map_type; /* get from map_lookup->type */
-> -	bio_end_io_t *end_io;
-> -	struct bio *orig_bio;
-> -	void *private;
-> -	atomic_t error;
-> -	int max_errors;
-> -	int num_stripes;
-> -	int mirror_num;
-> -	int num_tgtdevs;
-> -	int *tgtdev_map;
-> -	/*
-> -	 * logical block numbers for the start of each stripe
-> -	 * The last one or two are p/q.  These are sorted,
-> -	 * so raid_map[0] is the start of our full stripe
-> -	 */
-> -	u64 *raid_map;
-> -	struct btrfs_io_stripe stripes[];
-> -};
-> -
->   struct btrfs_device_info {
->   	struct btrfs_device *dev;
->   	u64 dev_offset;
+On 17/05/2022 09:39, Qu Wenruo wrote:=0A=
+>>=0A=
+>> +struct btrfs_stripe_extent {=0A=
+>> +	/* btrfs device-id this raid extent  lives on */=0A=
+>> +	__le64 devid;=0A=
+>> +	/* offset from  the devextent start */=0A=
+>> +	__le64 offset;=0A=
+> =0A=
+> Considering we have 1G stripe length limit (at least for now), u32 may=0A=
+> be large enough?=0A=
+> =0A=
+> Although u64 is definitely future proof.=0A=
+> =0A=
+>> +} __attribute__ ((__packed__));=0A=
+>> +=0A=
+> =0A=
+> Mind to mention the key format?=0A=
+> =0A=
+> My guess is, it's (<logical bytenr>, BTRFS_RAID_STRIPE_KEY, <length>)?=0A=
+=0A=
+Correct. I'll add a comment here.=0A=
+=0A=
+>> +struct btrfs_dp_stripe {=0A=
+>> +	/* array of stripe extents this stripe is comprised of */=0A=
+>> +	struct btrfs_stripe_extent extents;=0A=
+>> +} __attribute__ ((__packed__));=0A=
+>> +=0A=
+=0A=
+Another question, should I add the generation to the =0A=
+btrfs_dp_stripe? And does someone have a better name for the struct?=0A=
