@@ -2,153 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6EB52B1F3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 07:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A2B52B400
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 09:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbiERFiM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 May 2022 01:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S232415AbiERHqx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 May 2022 03:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbiERFiL (ORCPT
+        with ESMTP id S232399AbiERHqu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 May 2022 01:38:11 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F342FE4B
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 May 2022 22:38:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 18 May 2022 03:46:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA950165BD;
+        Wed, 18 May 2022 00:46:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E1CCC1F390
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 05:38:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652852288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=zUwmwdyCcCbUN/Ygi7PylvW/lExKAx9LLDO+kUZ63rU=;
-        b=NQCTpbwSFwrw3XQhJyzuc7chZ5tQ0ngYb2CqFHwUV7OxqZwE/KFvV044YO1D1ro80NpXM9
-        NrOfr/7T/XygR0zsnLP5wm94LSOFceiSxJ7FJ9QGoIUp44IY0pO0xNQAuB225zydZPJGXX
-        2TrIxeqpwc5by8phqlxgbVOvE5O3Log=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3B19013491
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 05:38:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id phs3AkCGhGKMIwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 05:38:08 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: doc: add more explanation on subapge limits
-Date:   Wed, 18 May 2022 13:37:50 +0800
-Message-Id: <6c11754df4341351769a0da4eaac8939aa82b700.1652852267.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.1
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7E1C1B81EC1;
+        Wed, 18 May 2022 07:46:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 362CDC34118;
+        Wed, 18 May 2022 07:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652860005;
+        bh=KUl7JvGgqkc1DfGhPQMhcKNc6+xW1iqiAC34dWUYIYI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dkK2VuiRazUYy/0raeMMGlNR4Tax1p2NGjBr/nBjKum21oFxmslWmUCU0VzoRu+cO
+         HmrzPveZdQjdv+cTPBR2V9tak/jiomNUfYBj5sw2dX2dKoC9xH7uM57L8jH4xYiIuM
+         08YqMdtOguRYHRonbNsRBlTLvM52Q+3TpvkwtUExXHPUUphUHyK569lWDbMs10HDjU
+         DyH3Js5U9VM/fgDmVN0asWG655mirLaZZDwLq2xvJajzBmBVBbWSRTWp5U0pCUQtsS
+         fyTFbdmkyAv0lZigt1Yr/42MgLcInpjxDL0ApYmAeUaT9QZgryC0kOix45ZHLnTsUi
+         zGfw+Eb+H8wvA==
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-2fee010f509so14978097b3.11;
+        Wed, 18 May 2022 00:46:45 -0700 (PDT)
+X-Gm-Message-State: AOAM530UikuK8/lBMYbxrkcX4CWLjCqv0vKRM1/+WSkWIIezy26JRWRm
+        0yD6bdVCRNHTy2+CCBvOglHafjI+rEsUr+uV6lA=
+X-Google-Smtp-Source: ABdhPJyhm2Dj408LoUWWmvAqhkBhAYE1RnSkeixOEh3zciq1RMr7OwAYsEs1iONJHOBW1KRcCiA1jSuvrZOus+J3c4c=
+X-Received: by 2002:a0d:cd06:0:b0:2f8:f39c:4cfc with SMTP id
+ p6-20020a0dcd06000000b002f8f39c4cfcmr29636586ywd.495.1652860004199; Wed, 18
+ May 2022 00:46:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220228103142.3301082-1-arnd@kernel.org> <20220516131023.GA2329080@roeck-us.net>
+ <YoJSF8T5K9pPx3Ap@kroah.com> <9510474d-5555-42b3-5a9c-90e3078df499@roeck-us.net>
+In-Reply-To: <9510474d-5555-42b3-5a9c-90e3078df499@roeck-us.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 18 May 2022 08:46:45 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1GmRqPTXFCoLH9h1sP76a-bVRsGYP-YvczoXM4Na3OVQ@mail.gmail.com>
+Message-ID: <CAK8P3a1GmRqPTXFCoLH9h1sP76a-bVRsGYP-YvczoXM4Na3OVQ@mail.gmail.com>
+Subject: Re: [greybus-dev] Re: [PATCH] [v2] Kbuild: move to -std=gnu11
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Alex Shi <alexs@kernel.org>, Hu Haowen <src.res@email.cn>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The current subpage support in v5.18 has several limits, the most
-obvious ones are:
+On Mon, May 16, 2022 at 3:19 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 5/16/22 06:31, Greg KH wrote:
+> > On Mon, May 16, 2022 at 06:10:23AM -0700, Guenter Roeck wrote:
+> >> On Mon, Feb 28, 2022 at 11:27:43AM +0100, Arnd Bergmann wrote:
+> >>> From: Arnd Bergmann <arnd@arndb.de>
+> >>>
+> >>> During a patch discussion, Linus brought up the option of changing
+> >>> the C standard version from gnu89 to gnu99, which allows using variab=
+le
+> >>> declaration inside of a for() loop. While the C99, C11 and later stan=
+dards
+> >>> introduce many other features, most of these are already available in
+> >>> gnu89 as GNU extensions as well.
+> >>
+> >> The downside is that backporting affected patches to older kernel bran=
+ches
+> >> now fails with error messages such as
+> >>
+> >> mm/kfence/core.c: In function =E2=80=98kfence_init_pool=E2=80=99:
+> >> mm/kfence/core.c:595:2: error: =E2=80=98for=E2=80=99 loop initial decl=
+arations are only allowed in C99 or C11 mode
+> >>
+> >> Just something to keep in mind when writing patches.
+> >
+> > I just ran across this very issue on this commit.  It's an easy fixup
+> > for 5.17.y to make this work, so I did that in my tree.  If this gets t=
+o
+> > be too much, we might need to reconsider adding c11 to older stable
+> > kernels.
+> >
+>
+> I think I'll do just that for ChromeOS; I don't want to have to deal
+> with the backports, and we are using recent compilers anyway.
 
-- Only support 64KiB page size
-- No RAID56 support
+I think it would be better not to have the --std=3Dgnu11 change in the olde=
+r
+stable kernels by default, as this has introduced build warnings and other
+smaller issues, as well as raising the minimum compiler version.
 
-The supports are already queued for v5.19.
+The users that are stuck on older kernels for some reason tend to
+overlap with those on older compilers. One example here is Android,
+which used to ship with a gcc-4.9 build as the only non-clang toolchain,
+and was using this for building their kernels. If someone wants to
+pull in stable updates into an older Android, this would fail with
+-std=3Dgnu11. Others may be in the same situation.
 
-And some minor ones:
+Changing some of the 5.x stable branches to -std=3Dgnu11 is probably
+less of a problem, but I would not know where to draw the line exactly.
+Maybe check with the Android team to see what the newest kernel is
+that they expect to be built with the old gcc-4.9.
 
-- No inline extent write support
-  Read is always supported.
-  Subpage mount will always just act as "max_inline=0".
-
-- Compression write is only for page aligned range.
-  Read is always supported, no matter the alignment.
-
-- Extra memory usage for scrub
-  Patchset is hanging there for a while though.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- Documentation/Subpage.rst | 59 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 56 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/Subpage.rst b/Documentation/Subpage.rst
-index 0aadf3c00b98..1f56b35f2e04 100644
---- a/Documentation/Subpage.rst
-+++ b/Documentation/Subpage.rst
-@@ -6,6 +6,59 @@ using a filesystem that has different size of data block size (*sectorsize*)
- and the host CPU page size. For easier implementation the support was limited
- to the exactly same size of the block and page. On x86_64 this is typically
- 4KiB, but there are other architectures commonly used that make use of larger
--pages, like 64KiB on 64bit ARM or PowerPC. A filesystem created on one cannot
--be mounted on the other.  The subpage support is still work in progress in 5.18
--but the support is incrementally added with each release.
-+pages, like 64KiB on 64bit ARM or PowerPC.  This means filesystems created
-+with 64KiB sector size can not be mounted on system with 4KiB page size.
-+
-+While with subpage support, systems with 64KiB page size can create (still needs
-+"-s 4k" option for mkfs.btrfs) and mount filesystems with 4KiB sectorsize,
-+allowing us to push 4KiB sectorsize as default sectorsize for all platforms in the
-+near-future.
-+
-+
-+Requirements, limitations
-+^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+The subpage support is initially added in v5.15, although it's still
-+considered as experimental at the time of writing (v5.18), most features are
-+already working without problems.
-+
-+End users can mount filesystems with 4KiB sectorsize and do their usual
-+workload, while should not notice any obvious change, as long as the initial
-+mount succeeded (there are cases btrfs will reject the subpage mount though).
-+
-+The following features has some limitations for subpage:
-+
-+- RAID56 support
-+  This support is already queued for v5.19 cycle.
-+  Any fs with RAID56 chunks will be rejected at mount time for now.
-+
-+- Support for page size other than 64KiB
-+  The support for other page sizes (16KiB, 32KiB and more) are already queued
-+  for v5.19 cycle.
-+  Initially the subpage support is only for 64KiB support, but the design makes
-+  it pretty easy to enable support for other page sizes.
-+
-+- No inline extent creation
-+  This is an artificial limit, to prevent mixed inline and regular extents.
-+
-+  It's possible to create mixed inline and regular extents even with
-+  non-subpage mount for certain corner cases, it's way easier to create such
-+  mixed extents for subpage.
-+
-+  Thus max_inline mount option will be sliently ignored for subpage mounts,
-+  and it always acts as "max_inline=0".
-+
-+- Compression write is limited to page aligned ranges
-+  Compression write for subpage is introduced in v5.16, with the limitation
-+  that only page aligned range can be compressed.
-+  This limitation is due to how btrfs handles delayed allocation.
-+
-+- No support for v1 space cache
-+  V1 space cache is considered deprecated, and we're defaulting to v2 cache
-+  in btrfs-progs already.
-+  The old v1 cache has quite some hard coded page size usage, and consider it
-+  is already deprecated, we force v2 cache for subpage.
-+
-+- Slightly higher memory usage for scrub
-+  This is due to how we allocate pages for scrub, and will be fixed in the coming
-+  releases soon.
--- 
-2.36.1
-
+         Arnd
