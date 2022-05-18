@@ -2,233 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4668952B6AE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 12:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D57852B78E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 12:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234521AbiERJmH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 May 2022 05:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
+        id S234538AbiERJmK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 May 2022 05:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbiERJkm (ORCPT
+        with ESMTP id S234935AbiERJly (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 May 2022 05:40:42 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B0714CDD1
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 02:40:27 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20220518094026euoutp02cc2439d64d8c1d4607b9e40730938448~wKZ8TGIZ61505715057euoutp02J
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 09:40:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20220518094026euoutp02cc2439d64d8c1d4607b9e40730938448~wKZ8TGIZ61505715057euoutp02J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1652866826;
-        bh=UINa+NuzB2qcwPdtYD8SfTNgCx/7Du9BqOastcKQAPY=;
-        h=Date:Subject:To:CC:From:In-Reply-To:References:From;
-        b=shqc2DtzVgGL/PdyLOUSepug1aiuw0mBybg1NT2V3WnWmbVQuRexEIIafnFyxk7nt
-         WPUU6OOI9wuFuorqEYxcy2f6RYhPb0JurLw+Rv2k676PySBqE5+qKMj9oxgjqTos9c
-         NDcZAb1vKrQWTX86ufx8KjR4YztPOe9IMsP7oaZY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20220518094026eucas1p14f9febe6d48605bfce997c4ca867a8aa~wKZ77YK3K1913319133eucas1p1B;
-        Wed, 18 May 2022 09:40:26 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 84.03.10009.90FB4826; Wed, 18
-        May 2022 10:40:25 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20220518094025eucas1p1a3e35a8f00348154d5ef60e61f69dfec~wKZ7bieyt1910619106eucas1p1C;
-        Wed, 18 May 2022 09:40:25 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20220518094025eusmtrp2690bb9439acf332022cabbb049548d8e~wKZ7U22Pu2765427654eusmtrp2c;
-        Wed, 18 May 2022 09:40:25 +0000 (GMT)
-X-AuditID: cbfec7f2-e95ff70000002719-52-6284bf09d4d0
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id AA.0D.09522.90FB4826; Wed, 18
-        May 2022 10:40:25 +0100 (BST)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20220518094025eusmtip208fc0da8c94d9d123d11609e50d861a3~wKZ7LAhz31670016700eusmtip2h;
-        Wed, 18 May 2022 09:40:25 +0000 (GMT)
-Received: from [192.168.8.130] (106.210.248.7) by CAMSVWEXC01.scsc.local
-        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Wed, 18 May 2022 10:40:23 +0100
-Message-ID: <2b169f03-11d6-9989-84cb-821d67eb6cae@samsung.com>
-Date:   Wed, 18 May 2022 11:40:22 +0200
+        Wed, 18 May 2022 05:41:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2F89E9C4
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 02:41:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 072F26169A
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 09:41:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E55E3C385AA
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 09:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652866912;
+        bh=XdpnJa3wFH+DCxpkKoM6oZ2DVsvd9w4gTLtNyq1EE+A=;
+        h=From:To:Subject:Date:From;
+        b=bus8VaKwdK8yks791dAla67gGjsaL2N4RuvDgD6cGWOif9COy6ILUE0erYgevBcxl
+         IleVaK9u1poIrx1EZRkEmspQzG0WuylWABlZAAANOZw5NnhQI7nyfr6Foc1lOHRuQ9
+         tJLMJjtN9wUhddcRvgbC3WSuLAPxayGgypIheMZytDT2FzRKqyJ+PV6prohm0ZvIQF
+         qciueEK+mSWjaN+De68nmwi8xcgkRG0In+t99lK/TjN9Hh+naZ2345kZJxjaFIgOtj
+         okYsoP2fwUETMlI3LZxl9PBWUKtPD2LHTn+vmblOu94kKlasw1xtEs/Y4y/MWqbNJ3
+         C9pxRwufEDssA==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix hang during unmount when block group reclaim task is running
+Date:   Wed, 18 May 2022 10:41:48 +0100
+Message-Id: <92362f3e34e6d742d25bd878fd4868e033f21d74.1652866724.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
-        Thunderbird/91.8.1
-Subject: Re: [PATCH v4 07/13] btrfs: zoned: use generic btrfs zone helpers
- to support npo2 zoned devices
-Content-Language: en-US
-To:     <dsterba@suse.cz>
-CC:     <axboe@kernel.dk>, <damien.lemoal@opensource.wdc.com>,
-        <pankydev8@gmail.com>, <dsterba@suse.com>, <hch@lst.de>,
-        <linux-nvme@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>, <jiangbo.365@bytedance.com>,
-        <linux-block@vger.kernel.org>, <gost.dev@samsung.com>,
-        <linux-kernel@vger.kernel.org>, <dm-devel@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-From:   Pankaj Raghav <p.raghav@samsung.com>
-In-Reply-To: <20220517123008.GC18596@twin.jikos.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [106.210.248.7]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLKsWRmVeSWpSXmKPExsWy7djP87qc+1uSDM4cMbdYfbefzeL32fPM
-        FnvfzWa1uPCjkcli8e/vLBYrVx9lsug58IHFYu8tbYtLj1ewW+zZe5LF4vKuOWwW85c9Zbe4
-        MeEpo8Wam09ZHPg8/p1Yw+axc9Zddo/LZ0s9Nq3qZPPYvKTeY/fNBqBw631Wj/f7rrJ5rN9y
-        lcXjzIIj7B6fN8kFcEdx2aSk5mSWpRbp2yVwZTT0PWEt2CRXcbzjJFsD4weJLkZODgkBE4kJ
-        O/YwdjFycQgJrGCUWPt5MRuE84VR4s35I+wgVUICnxklOppLYTrOnfnFDBFfzihx/Jw/RANQ
-        zexNn6FG7WSUeNCyixWkilfATuLYo3Y2EJtFQFVi95QtzBBxQYmTM5+wgNiiAhES02adAasR
-        FsiSmLJtI1gvs4C4xK0n85lAbBEBUYlL+1ewgCxgFpjILDHpxWSgbRwcbAJaEo2dYJdyChhL
-        rG09yQbRqynRuv03O4QtL7H97RxmiA8UJW6u/MUGYddKrD12hh1kpoTAPU6Jq7/PQxW5SFz+
-        v4QRwhaWeHV8CzuELSPxfyfEQRIC1RJPb/xmhmhuYZTo37meDeQgCQFrib4zORA1jhIzHu9l
-        hQjzSdx4KwhxD5/EpG3TmScwqs5CCopZSF6eheSFWUheWMDIsopRPLW0ODc9tdgwL7Vcrzgx
-        t7g0L10vOT93EyMwBZ7+d/zTDsa5rz7qHWJk4mA8xCjBwawkwsuY25IkxJuSWFmVWpQfX1Sa
-        k1p8iFGag0VJnDc5c0OikEB6YklqdmpqQWoRTJaJg1OqgalPhd+O73Je1X5TLlPObz8fT05U
-        M2iV2mW/5Ovduivb1mqt/3Nsx7XJC6JFDJ/MmqUaduRx1GIG46AYf6cNzWrCCUwreLit9z//
-        kG4v2jtD8Wqx7e2bdTVu0vYzLyXrJj74zDmxJ3jlIcsDnWtXPJ9ss3/Xec/S80XtAtvXGxp2
-        CL9Q9tnSoM1/6vaH1y9DJrxMmHjrwvpigeSNL5KPXNQSS1jgW5s6882a8IY5QT5z8++XzZHv
-        mtw/WUApr1Gq4aat3b8tmte75z+IYtz9zWJpYZaCobR+gc9fWZULqqrvmbatdvee7TDZVCrx
-        0duaFW2fDmYeuVXFfKr92fkNMkdd/3zOnmE5xUt5uez3Qi0lluKMREMt5qLiRABuMXZT8AMA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCKsWRmVeSWpSXmKPExsVy+t/xe7qc+1uSDBbPF7FYfbefzeL32fPM
-        FnvfzWa1uPCjkcli8e/vLBYrVx9lsug58IHFYu8tbYtLj1ewW+zZe5LF4vKuOWwW85c9Zbe4
-        MeEpo8Wam09ZHPg8/p1Yw+axc9Zddo/LZ0s9Nq3qZPPYvKTeY/fNBqBw631Wj/f7rrJ5rN9y
-        lcXjzIIj7B6fN8kFcEfp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvHWhmZKunb2aSk
-        5mSWpRbp2yXoZTT0PWEt2CRXcbzjJFsD4weJLkZODgkBE4lzZ34xdzFycQgJLGWUWPfoHiNE
-        Qkbi05WP7BC2sMSfa11sEEUfGSWu7z/NAuHsZJTYuKaZBaSKV8BO4tijdjYQm0VAVWL3lC3M
-        EHFBiZMzn4DViApESDzYfZYVxBYWyJJ4dncH2AZmAXGJW0/mM4HYIgKiEpf2r4Ba8IJR4t7O
-        OWD3MQtMZJaY9GIy0H0cHGwCWhKNnWDNnALGEmtbT7JBDNKUaN3+G2qovMT2t3OYIV5QlLi5
-        8hcbhF0r8er+bsYJjKKzkNw3C8kds5CMmoVk1AJGllWMIqmlxbnpucWGesWJucWleel6yfm5
-        mxiByWPbsZ+bdzDOe/VR7xAjEwfjIUYJDmYlEV7G3JYkId6UxMqq1KL8+KLSnNTiQ4ymwECa
-        yCwlmpwPTF95JfGGZgamhiZmlgamlmbGSuK8ngUdiUIC6YklqdmpqQWpRTB9TBycUg1MysxO
-        i9cVPvq+N+ltWGp05wv/qpSYo45sQv/mbJ0174TLhKLrEvpn/686/EK+Z17ZdA3TN8cLuSLk
-        N/F2OHZv3mpnI9gaMXvibIHA6u9Kby+uPbvF2jvCv/nxNbFNTicDlfMn9nFXGfUKdEYc+FRj
-        eunYLOvXs269CFY9Fm+ZVq8Ua/zzyw6Gkrc/65xmHZs7lZuDQ/T11O2clg7zP2f/q+TLb976
-        6kVrQYRTp9ej6Z0ZzIfy5iu2KbgHsn62iJi4p13utk4Lr/vP8zuVpRnOrrj5+5LPU3OPNMHV
-        p06snnng1/GIqrRdl5a+39bYGXFv9Yu4AxVChclr5kVXBqv/NPfoOxgdNLH4nIHVv213lViK
-        MxINtZiLihMBD9bssacDAAA=
-X-CMS-MailID: 20220518094025eucas1p1a3e35a8f00348154d5ef60e61f69dfec
-X-Msg-Generator: CA
-X-RootMTR: 20220516165428eucas1p1374b5f9592db3ca6a6551aff975537ce
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20220516165428eucas1p1374b5f9592db3ca6a6551aff975537ce
-References: <20220516165416.171196-1-p.raghav@samsung.com>
-        <CGME20220516165428eucas1p1374b5f9592db3ca6a6551aff975537ce@eucas1p1.samsung.com>
-        <20220516165416.171196-8-p.raghav@samsung.com>
-        <20220517123008.GC18596@twin.jikos.cz>
-X-Spam-Status: No, score=-9.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2022-05-17 14:30, David Sterba wrote:
-> On Mon, May 16, 2022 at 06:54:10PM +0200, Pankaj Raghav wrote:
->> Add helpers to calculate alignment, round up and round down
->> for zoned devices. These helpers encapsulates the necessary handling for
->> power_of_2 and non-power_of_2 zone sizes. Optimized calculations are
->> performed for zone sizes that are power_of_2 with log and shifts.
->>
->> btrfs_zoned_is_aligned() is added instead of reusing bdev_zone_aligned()
->> helper due to some use cases in btrfs where zone alignment is checked
->> before having access to the underlying block device such as in this
->> function: btrfs_load_block_group_zone_info().
->>
->> Use the generic btrfs zone helpers to calculate zone index, check zone
->> alignment, round up and round down operations.
->>
->> The zone_size_shift field is not needed anymore as generic helpers are
->> used for calculation.
-> 
-> Overall this looks reasonable to me.
-> 
->> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
->> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
->> ---
->>  fs/btrfs/volumes.c | 24 +++++++++-------
->>  fs/btrfs/zoned.c   | 72 ++++++++++++++++++++++------------------------
->>  fs/btrfs/zoned.h   | 43 +++++++++++++++++++++++----
->>  3 files changed, 85 insertions(+), 54 deletions(-)
->>
->> --- a/fs/btrfs/zoned.c
->> +++ b/fs/btrfs/zoned.c
->> @@ -1108,14 +1101,14 @@ int btrfs_reset_device_zone(struct btrfs_device *device, u64 physical,
->>  int btrfs_ensure_empty_zones(struct btrfs_device *device, u64 start, u64 size)
->>  {
->>  	struct btrfs_zoned_device_info *zinfo = device->zone_info;
->> -	const u8 shift = zinfo->zone_size_shift;
->> -	unsigned long begin = start >> shift;
->> -	unsigned long end = (start + size) >> shift;
->> +	unsigned long begin = bdev_zone_no(device->bdev, start >> SECTOR_SHIFT);
->> +	unsigned long end =
->> +		bdev_zone_no(device->bdev, (start + size) >> SECTOR_SHIFT);
-> 
-> There are unsinged long types here though I'd rather see u64, better for
-> a separate patch. Fixed width types are cleaner here and in the zoned
-> code as there's always some conversion to/from sectors.
-> 
-Ok. I will probably send a separate patch to convert them to fix width
-types. Is it ok if I do it as a separate patch instead of including it
-in this series?
->>  	u64 pos;
->>  	int ret;
->>  
->> -	ASSERT(IS_ALIGNED(start, zinfo->zone_size));
->> -	ASSERT(IS_ALIGNED(size, zinfo->zone_size));
->> +	ASSERT(btrfs_zoned_is_aligned(start, zinfo->zone_size));
->> +	ASSERT(btrfs_zoned_is_aligned(size, zinfo->zone_size));
->>  
->>  	if (end > zinfo->nr_zones)
->>  		return -ERANGE;
->> --- a/fs/btrfs/zoned.h
->> +++ b/fs/btrfs/zoned.h
->> @@ -30,6 +30,36 @@ struct btrfs_zoned_device_info {
->>  	u32 sb_zone_location[BTRFS_SUPER_MIRROR_MAX];
->>  };
->>  
->> +static inline bool btrfs_zoned_is_aligned(u64 pos, u64 zone_size)
->> +{
->> +	u64 remainder = 0;
->> +
->> +	if (is_power_of_two_u64(zone_size))
->> +		return IS_ALIGNED(pos, zone_size);
->> +
->> +	div64_u64_rem(pos, zone_size, &remainder);
->> +	return remainder == 0;
->> +}
->> +
->> +static inline u64 btrfs_zoned_roundup(u64 pos, u64 zone_size)
->> +{
->> +	if (is_power_of_two_u64(zone_size))
->> +		return ALIGN(pos, zone_size);
-> 
-> Please use round_up as the rounddown helper uses round_down
-> 
-Ah, good catch. I will use it instead. Thanks.
->> +
->> +	return div64_u64(pos + zone_size - 1, zone_size) * zone_size;
->> +}
->> +
->> +static inline u64 btrfs_zoned_rounddown(u64 pos, u64 zone_size)
->> +{
->> +	u64 remainder = 0;
->> +	if (is_power_of_two_u64(zone_size))
->> +		return round_down(pos, zone_size);
->> +
->> +	div64_u64_rem(pos, zone_size, &remainder);
->> +	pos -= remainder;
->> +	return pos;
->> +}
->> +
->>  #ifdef CONFIG_BLK_DEV_ZONED
->>  int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
->>  		       struct blk_zone *zone);
+From: Filipe Manana <fdmanana@suse.com>
+
+When we start an unmount, at close_ctree(), if we have the reclaim task
+running and in the middle of a data block group relocation, we can trigger
+a deadlock when stopping an async reclaim task, producing a trace like the
+following:
+
+[629724.498185] task:kworker/u16:7   state:D stack:    0 pid:681170 ppid:     2 flags:0x00004000
+[629724.499760] Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
+[629724.501267] Call Trace:
+[629724.501759]  <TASK>
+[629724.502174]  __schedule+0x3cb/0xed0
+[629724.502842]  schedule+0x4e/0xb0
+[629724.503447]  btrfs_wait_on_delayed_iputs+0x7c/0xc0 [btrfs]
+[629724.504534]  ? prepare_to_wait_exclusive+0xc0/0xc0
+[629724.505442]  flush_space+0x423/0x630 [btrfs]
+[629724.506296]  ? rcu_read_unlock_trace_special+0x20/0x50
+[629724.507259]  ? lock_release+0x220/0x4a0
+[629724.507932]  ? btrfs_get_alloc_profile+0xb3/0x290 [btrfs]
+[629724.508940]  ? do_raw_spin_unlock+0x4b/0xa0
+[629724.509688]  btrfs_async_reclaim_metadata_space+0x139/0x320 [btrfs]
+[629724.510922]  process_one_work+0x252/0x5a0
+[629724.511694]  ? process_one_work+0x5a0/0x5a0
+[629724.512508]  worker_thread+0x52/0x3b0
+[629724.513220]  ? process_one_work+0x5a0/0x5a0
+[629724.514021]  kthread+0xf2/0x120
+[629724.514627]  ? kthread_complete_and_exit+0x20/0x20
+[629724.515526]  ret_from_fork+0x22/0x30
+[629724.516236]  </TASK>
+[629724.516694] task:umount          state:D stack:    0 pid:719055 ppid:695412 flags:0x00004000
+[629724.518269] Call Trace:
+[629724.518746]  <TASK>
+[629724.519160]  __schedule+0x3cb/0xed0
+[629724.519835]  schedule+0x4e/0xb0
+[629724.520467]  schedule_timeout+0xed/0x130
+[629724.521221]  ? lock_release+0x220/0x4a0
+[629724.521946]  ? lock_acquired+0x19c/0x420
+[629724.522662]  ? trace_hardirqs_on+0x1b/0xe0
+[629724.523411]  __wait_for_common+0xaf/0x1f0
+[629724.524189]  ? usleep_range_state+0xb0/0xb0
+[629724.524997]  __flush_work+0x26d/0x530
+[629724.525698]  ? flush_workqueue_prep_pwqs+0x140/0x140
+[629724.526580]  ? lock_acquire+0x1a0/0x310
+[629724.527324]  __cancel_work_timer+0x137/0x1c0
+[629724.528190]  close_ctree+0xfd/0x531 [btrfs]
+[629724.529000]  ? evict_inodes+0x166/0x1c0
+[629724.529510]  generic_shutdown_super+0x74/0x120
+[629724.530103]  kill_anon_super+0x14/0x30
+[629724.530611]  btrfs_kill_super+0x12/0x20 [btrfs]
+[629724.531246]  deactivate_locked_super+0x31/0xa0
+[629724.531817]  cleanup_mnt+0x147/0x1c0
+[629724.532319]  task_work_run+0x5c/0xa0
+[629724.532984]  exit_to_user_mode_prepare+0x1a6/0x1b0
+[629724.533598]  syscall_exit_to_user_mode+0x16/0x40
+[629724.534200]  do_syscall_64+0x48/0x90
+[629724.534667]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[629724.535318] RIP: 0033:0x7fa2b90437a7
+[629724.535804] RSP: 002b:00007ffe0b7e4458 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+[629724.536912] RAX: 0000000000000000 RBX: 00007fa2b9182264 RCX: 00007fa2b90437a7
+[629724.538156] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000555d6cf20dd0
+[629724.539053] RBP: 0000555d6cf20ba0 R08: 0000000000000000 R09: 00007ffe0b7e3200
+[629724.539956] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[629724.540883] R13: 0000555d6cf20dd0 R14: 0000555d6cf20cb0 R15: 0000000000000000
+[629724.541796]  </TASK>
+
+This happens because:
+
+1) Before entering close_ctree() we have the async block group reclaim
+   task running and relocating a data block group;
+
+2) There's an async metadata (or data) space reclaim task running;
+
+3) We enter close_ctree() and park the cleaner kthread;
+
+4) The async space reclaim task is at flush_space() and runs all the
+   existing delayed iputs;
+
+5) Before the async space reclaim task calls
+   btrfs_wait_on_delayed_iputs(), the block group reclaim task which is
+   doing the data block group relocation, creates a delayed iput at
+   replace_file_extents() (called when COWing leaves that have file extent
+   items pointing to relocated data extents, during the merging phase
+   of relocation roots);
+
+6) The async reclaim space reclaim task blocks at
+   btrfs_wait_on_delayed_iputs(), since we have a new delayed iput;
+
+7) The task at close_ctree() then calls cancel_work_sync() to stop the
+   async space reclaim task, but it blocks since that task is waiting for
+   the delayed iput to be run;
+
+8) The delayed iput is never run because the cleaner kthread is parked,
+   and no one else runs delayed iputs, resulting in a hang.
+
+So fix this by stopping the async block group reclaim task before we
+park the cleaner kthread.
+
+Fixes: 18bb8bbf13c183 ("btrfs: zoned: automatically reclaim zones")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/disk-io.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 56d4d4db976b..b4f3d3c9e63c 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4636,6 +4636,17 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	int ret;
+ 
+ 	set_bit(BTRFS_FS_CLOSING_START, &fs_info->flags);
++
++	/*
++	 * We may have the reclaim task running and relocating a data block group,
++	 * in which case it may create delayed iputs. So stop it before we park
++	 * the cleaner kthread otherwise we can get new delayed iputs after
++	 * parking the cleaner, and that can make the async reclaim task to hang
++	 * if it's waiting for delayed iputs to complete, since the cleaner is
++	 * parked and can not run delayed iputs - this will make us hang when
++	 * trying to stop the async reclaim task.
++	 */
++	cancel_work_sync(&fs_info->reclaim_bgs_work);
+ 	/*
+ 	 * We don't want the cleaner to start new transactions, add more delayed
+ 	 * iputs, etc. while we're closing. We can't use kthread_stop() yet
+@@ -4676,8 +4687,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	cancel_work_sync(&fs_info->async_data_reclaim_work);
+ 	cancel_work_sync(&fs_info->preempt_reclaim_work);
+ 
+-	cancel_work_sync(&fs_info->reclaim_bgs_work);
+-
+ 	/* Cancel or finish ongoing discard work */
+ 	btrfs_discard_cleanup(fs_info);
+ 
+-- 
+2.35.1
+
