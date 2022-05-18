@@ -2,159 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E0A52B7D4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 12:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D3052B7F9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 12:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235129AbiERKVQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 May 2022 06:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        id S235142AbiERKit (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 May 2022 06:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235128AbiERKVL (ORCPT
+        with ESMTP id S231126AbiERKis (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 May 2022 06:21:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA791326EC
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 03:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652869258;
-        bh=S6VoJOZyFMksjOUVk4P8I+uTKSQK9IbB8QNoDt6P7/I=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=ADLYK5mK8xOcQxmtNTLtzFzi+T2gTforN69gV3qPjIAVTDAXCpKeOGiZ9VvWt50M8
-         +tQwa5StEUaCZYSP+9k38+UA8HMcVy+Ibn3z+cwhv7KUoA7HhQ4ZKbxJ1M05bgimux
-         wUwAetuJuMUf1pjg8jHS2UQBgibaYr7/B5rImecs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MS3mt-1oKeag1uIt-00TSEk; Wed, 18
- May 2022 12:20:58 +0200
-Message-ID: <779bd017-ad7c-10d0-0943-9c0080c55795@gmx.com>
-Date:   Wed, 18 May 2022 18:20:53 +0800
+        Wed, 18 May 2022 06:38:48 -0400
+Received: from mx2.b1-systems.de (mx2.b1-systems.de [159.69.135.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D28833EBF
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 03:38:46 -0700 (PDT)
+Message-ID: <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+Date:   Wed, 18 May 2022 12:38:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20220517145039.3202184-1-hch@lst.de>
- <20220517145039.3202184-13-hch@lst.de>
- <e2c4e54c-548b-2221-3bf7-31f6c14a03ee@gmx.com> <20220518085409.GG6933@lst.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 12/15] btrfs: add new read repair infrastructure
-In-Reply-To: <20220518085409.GG6933@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CBYvAVIGtWDnkGfbFa4UCospGQMnEeTPMC4ttyvrBuIqZg/slip
- jGE8Xwf46PntCt8L3jYPDmNGGRljoCPyIbqm4cNtW/HQlfazHIgIuJ+SUWAzM+d67d7Tqxk
- RDcUzYOTw16eWoJwyzXqB9/5hHk+CmFvw/rxryttzo3rVWMbpJM4/5gCCfYAGMmaTVEQU0C
- lfWOV6dMM9eqZlb9i6Vyw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9H1P16PdNdg=:zzQYr8Qk4MpmDUKTVuQ0qw
- 17TMWZA7+Z7ctzRMz97MTX8zFyhS+vqm+RsRmRCCa3M3t/ef3pvVOSYqez7wAEKel/fKLPIxD
- Z0Mbd4dLTv03h8rCSlg0twOyZZ9PCb2sO9ohCMh2Z9G/81fmfcpf5zrMn9WUREwAeoLPCJYh3
- 9BttyZ7Os38MclIhBrFzocBmLCPBdTlNqkb0AkJ0yeAwaTdUpt/EHnchjkXkbdZk/tOj6Z+Dw
- mPZ+f1j6feauOS/QdZcThSFCvoNAzVSZD5KoBsgBGtj4hIRWjprXU3/P3/vKvJ+TqX2IC8zng
- Tlf4vBRoUTWxKs/QkuNoOjPEtmbrzYUCDiBX4jMI0chZxiFxzbqOqv8TMzbESCNOA+8md2WXq
- lnv/19ja9vxkQ1C85GVrODRunoILYcYrKFYOwfRBMljr/q5O5NgEiCNFTqrSR1OwjeRewybAq
- qbdzAEoTFrrrmJl+pw3RJjUJl+olUOjBmWaMPGtk7qSjPjntoFS+Unm3MRzggO5VtYHJZX891
- GPxyS9G0gMmDrnYfJFygQ6HbdTydsdB1PAX0Hqm4MEljoRTzAUNrSoe5cm65A/vrecESK8xOF
- PGOCl7GvZxXVHk7tT6fi4nWMQdYxLFtWQIuGT4HIEtYZ6LgiTndVFG2bMk9suJbJZreNAEL1+
- kTccO3tchI9O9Ppz38en7I+ndidCl6J4OSWAxPB64L9BfFc04F+ijRC6ORT5Ch1SzYal99X3F
- JqYAz06MB67mduUGrqZPdxPO573NT7ZyJ7n/96nEFnmXKOXiaXIA7EpdJaso/coY8Eo3pP5r8
- DNp3axZzMWtL073Ixz0kI3iNNOuja32nXOf8/UWyRmBuGA5W+ALVctTDm3ldt4Iu10P1Wc/n5
- /pzy7cCXpcDOk/AF8uFr3biiWlNiIsnOTQKHHsd6Ep6uyq2xxF1v1Q/3m+jOXEePhw0ylvo0U
- A0DcTeYUWd+IXJRTy/vjAn2NLktqfMLcywtM1SCekR3xmu05Cf2NLqQH3eJo/QXvrwFiAwvgi
- U5F17oefPIcizckUXFBibqHOSt1Aac+38scJEYT6VuJUwHoAMb72Olfj8PqZtkgShcVwGIt4g
- Rz5bw4yXRXq26+TDdyEdh2ml2uo9y7PZzOhUD+lTbclaNKDzoIy2za7gQ==
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Language: de-DE
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+ <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+ <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
+From:   Johannes Kastl <kastl@b1-systems.de>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+In-Reply-To: <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------6QelmYaAx1KjT7VS04JaNfVJ"
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------6QelmYaAx1KjT7VS04JaNfVJ
+Content-Type: multipart/mixed; boundary="------------9q26yeYgb00h0n7tXDF0oxsD";
+ protected-headers="v1"
+From: Johannes Kastl <kastl@b1-systems.de>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Message-ID: <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+ <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+ <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
+In-Reply-To: <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
 
+--------------9q26yeYgb00h0n7tXDF0oxsD
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-On 2022/5/18 16:54, Christoph Hellwig wrote:
-> On Wed, May 18, 2022 at 07:04:22AM +0800, Qu Wenruo wrote:
->>> +static struct btrfs_bio *btrfs_repair_bio_clone(struct btrfs_bio *src=
-_bbio,
->>> +		u64 offset, u32 size, unsigned int op)
->>> +{
->>> +	struct btrfs_bio *bbio;
->>> +	struct bio *bio;
->>> +
->>> +	bio =3D bio_alloc_bioset(NULL, 0, op | REQ_SYNC, GFP_NOFS,
->>> +			       &read_repair_bioset);
->>> +	bio_set_flag(bio, BIO_CLONED);
->>
->> Do we need to bother setting the CLONED flag?
->
-> The CLONED flag should never be set.  Except for the one bogus check
-> in btrfs that I have a pending removal for it is only used for debugging
-> checks.
->
->> Without CLONED flag, we can easily go bio_for_each_segment_all() in the
->> endio function without the need of bbio->iter, thus can save some memor=
-y.
->
-> bio_for_each_segment_all ignores the iter and walks over bi_io_vec
-> directly.  And that is something we absolutely can't do here, as the
-> bio reuses the bio_vecs from the failed bio, and depending on what
-> failed reduces the size.
+SGkgUXUsDQoNClRMO0RSOiB0b29rIGEgd2hpbGUgdW50aWwgSSBoYWQgYWxsIG9mIHRoZSBk
+YXRhIGJhY2tlZCB1cCBwcm9wZXJseSBhbmQgaGFkIHNvbWUgDQp0aW1lIHRvIHRlc3QgdGhp
+cy4gVW5mb3J0dW5hdGVseSB0aGUgZmlsZXN5c3RlbSBpcyBub3cgbm8gbG9uZ2VyIG1vdW50
+YWJsZS4uLg0KDQpBbnkgaWRlYXM/DQoNCkpvaGFubmVzDQoNCk9uIDI0LjA0LjIyIGF0IDEx
+OjIxIFF1IFdlbnJ1byB3cm90ZToNCj4gT24gMjAyMi80LzI0IDE3OjEwLCBKb2hhbm5lcyBL
+YXN0bCB3cm90ZToNCg0KPj4gU28gd291bGQgcmVzaXppbmcgdGhlIGZpbGVzeXN0ZW0gKHRv
+IDhHaUIpIHdvcmthcm91bmQgdGhpcyAibGltaXRhdGlvbiIsDQo+PiBzbyBhZnRlcndhcmRz
+IGl0IGNvdWxkIHByb3Blcmx5IGZpeCB0aGUgZGV2aWNlIHNpemU/DQo+IA0KPiBJJ20gbm90
+IHlldCBzdXJlIGlmIGl0J3MgYSBidWcgaW4gcHJvZ3MgY2F1c2luZyBmYWxzZSBFTk9TUEMs
+IG9yIHJlYWxseQ0KPiB0aGVyZSBpc24ndCBtYW55IHNwYWNlIGxlZnQuDQo+IA0KPiBGb3Ig
+dGhlIGZvcm1lciBjYXNlLCBubyBtYXR0ZXIgaG93IG11Y2ggZnJlZSBzcGFjZSB5b3UgaGF2
+ZSwgaXQgd29uJ3QgaGVscC4NCj4gDQo+IEZvciB0aGUgbGF0dGVyIGNhc2UsIGl0IHdvdWxk
+IGRlZmluaXRlbHkgaGVscC4NCg0KU28sIEkgZGVsZXRlZCB0aGUgcGFydGl0aW9ucyBvbiBi
+b3RoIGRpc2tzIGFuZCByZS1jcmVhdGVkIHRoZW0gd2l0aCB0aGUgbmV3IA0KKGJpZ2dlciBz
+aXplKSwga2VlcGluZyB0aGUgc3RhcnQgc2VjdG9yIGFuZCB0aGUgYnRyZnMgc2lnbmF0dXJl
+IGludGFjdC4NCg0KSSBjb3VsZCB0aGVuIHJlc2l6ZSBib3RoIGRpc2tzIHRvIHRoZSBzYW1l
+IHZhbHVlIHN1Y2Nlc3NmdWxseS4gQXQgbGVhc3QsIHRoZSANCmNvbW1hbmRzIHJhbiB3aXRo
+b3V0IGVycm9ycy4NCg0KRml4aW5nIHRoZSBkZXZpY2Ugc2l6ZSBmYWlscyBub25ldGhlbGVz
+cyAoc2VlIGJlbG93KS4gQW5kIEkgY2FuIG5vIGxvbmdlciBtb3VudCANCnRoZSBmaWxlc3lz
+dGVtLCB3aGVuIEkgdHJ5IEkgZmluZCB0aGlzIGluIHRoZSBsb2dzOg0KDQo+IFs4NzM5Ni44
+ODkwNDNdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMSk6IHN1cGVyX3RvdGFsX2J5dGVzIDE1
+MzkzMTYyNzg0NzY4IG1pc21hdGNoIHdpdGggZnNfZGV2aWNlcyB0b3RhbF9yd19ieXRlcyAx
+NTM5MzE2Mjc4ODg2NA0KPiBbODczOTYuODg5OTc0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNk
+YjEpOiBmYWlsZWQgdG8gcmVhZCBjaHVuayB0cmVlOiAtMjINCj4gWzg3Mzk2Ljg5Mjc0MV0g
+QlRSRlMgZXJyb3IgKGRldmljZSBzZGIxKTogb3Blbl9jdHJlZSBmYWlsZWQNCg0KKERvbid0
+IGdldCBjb25mdXNlZCBieSBzZGIxLCB0aGlzIGlzIGZyb20gYSByZXNjdWUgc3lzdGVtIHdp
+dGggb25seSBzb21lIEhERHMgDQphdHRhY2hlZCkNCg0KRml4aW5nIHRoZSBkZXZpY2Utc2l6
+ZSBvbiBMZWFwIDE1LjM6DQo+ICMgYnRyZnMgZmlsZXN5c3RlbSBzaG93IC9tbnQvRFVNQk9f
+QkFDS1VQXzRUQi8NCj4gTGFiZWw6ICdEVU1CT19CQUNLVVBfNFRCJyAgdXVpZDogNTA2NTFi
+NDEtYmYzMy00N2U3LThhMDgtYWZiYzcxYmEwYmY4DQo+ICAgICAgICAgVG90YWwgZGV2aWNl
+cyAyIEZTIGJ5dGVzIHVzZWQgMy4xN1RpQg0KPiAgICAgICAgIGRldmlkICAgIDEgc2l6ZSA3
+LjAwVGlCIHVzZWQgMy42NFRpQiBwYXRoIC9kZXYvc2RkMQ0KPiAgICAgICAgIGRldmlkICAg
+IDIgc2l6ZSA3LjAwVGlCIHVzZWQgMy42M1RpQiBwYXRoIC9kZXYvc2RjMQ0KPiANCj4gIyB1
+bW91bnQgL21udC9EVU1CT19CQUNLVVBfNFRCDQo+ICMgYnRyZnMgcmVzY3VlIGZpeC1kZXZp
+Y2Utc2l6ZSAvZGV2L3NkZDENCj4gVW5hYmxlIHRvIGZpbmQgYmxvY2sgZ3JvdXAgZm9yIDAN
+Cj4gVW5hYmxlIHRvIGZpbmQgYmxvY2sgZ3JvdXAgZm9yIDANCj4gVW5hYmxlIHRvIGZpbmQg
+YmxvY2sgZ3JvdXAgZm9yIDANCj4gdHJhbnNhY3Rpb24uYzoxODk6IGJ0cmZzX2NvbW1pdF90
+cmFuc2FjdGlvbjogQlVHX09OIGByZXRgIHRyaWdnZXJlZCwgdmFsdWUgLTI4DQo+IGJ0cmZz
+KCsweDUxZjk5KVsweDU1ZWRmN2E0M2Y5OV0NCj4gYnRyZnMoKzB4NTI1YTkpWzB4NTVlZGY3
+YTQ0NWE5XQ0KPiBidHJmcyhidHJmc19maXhfc3VwZXJfc2l6ZSsweDk4KVsweDU1ZWRmN2Ey
+ZjQzOF0NCj4gYnRyZnMoYnRyZnNfZml4X2RldmljZV9hbmRfc3VwZXJfc2l6ZSsweDg0KVsw
+eDU1ZWRmN2EyZjU4NF0NCj4gYnRyZnMoKzB4NmNlZWUpWzB4NTVlZGY3YTVlZWVlXQ0KPiBi
+dHJmcyhtYWluKzB4OGUpWzB4NTVlZGY3YTExMDhlXQ0KPiAvbGliNjQvbGliYy5zby42KF9f
+bGliY19zdGFydF9tYWluKzB4ZWYpWzB4N2Y2NzJhZDk2MmJkXQ0KPiBidHJmcyhfc3RhcnQr
+MHgyYSlbMHg1NWVkZjdhMTEyOGFdDQo+IEFib3J0ZWQgKGNvcmUgZHVtcGVkKQ0KPiAjIA0K
+DQpJIHRlc3RlZCBmaXhpbmcgdGhlIGRldmljZS1pZCBieSBib290aW5nIGZyb20gYSBUdW1i
+bGV3ZWVkIHJlc2N1ZSBzdGljaywgcnVubmluZyANCmtlcm5lbCA1LjE2IHdpdGggYnRyZnNw
+cm9ncyA1LjE2LiBUaGlzIGFsc28gZmFpbHMsIGJ1dCBzcGl0cyBvdXQgYW4gZXJyb3IgDQpt
+ZXNzYWdlIHRoYXQgaXMgYSBsaXR0bGUgZGlmZmVyZW50Og0KDQogPiBbLi4uXQ0KPiBVbmFi
+bGUgdG8gZmluZCBibG9jayBncm91cCBmb3IgMA0KPiBFcnJvcjogZmFpbGVkIHRvIGNvbW1p
+dCBjdXJyZW50IHRyYW5zYWN0aW9uOiAtMjggKE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlKQ0K
+PiBObyBkZXZpY2Ugc2l6ZSByZWxhdGVkIHByb2JsZW0gZm91bmQNCj4gRVJST1I6IGNvbW1p
+dF9yb290IGFscmVhZHkgc2V0IHdoZW4gc3RhcnRpbmcgdHJhbnNhY3Rpb24NCj4gZXh0ZW50
+IGJ1ZmZlciBsZWFrOiBzdGFydCAuLi4gbGVuIDE2Mzg0DQoNCihJIGhhZCB0byB0eXBlIHRo
+aXMgb2ZmIG9mIHRoZSBzY3JlZW4pDQoNCkFzIHRoZSBtb3VudGluZyBmYWlsZWQgd2l0aCBh
+biBlcnJvciByZWxhdGVkIHRvIGNodW5rcywgSSB0cmllZCB0aGUgYnRyZnMgcmVzY3VlIA0K
+Y2h1bmstcmVjb3ZlciBjb21tYW5kLCBidXQgdGhhdCBhbHNvIGFib3J0cyBhbmQgZHVtcHMg
+YSBjb3JlLCBldmVuIG9uIFR1bWJsZXdlZWQgDQp3aXRoIGtlcm5lbCA1LjE2Li4uDQoNClRo
+ZSBlcnJvciBtZXNzYWdlcyBsb29rIHNvbWV0aGluZyBsaWtlIHRoaXM6DQogPiBVbmFibGUg
+dG8gZmluZCBibG9jayBncm91cCBmb3IgMA0KID4gVW5hYmxlIHRvIGZpbmQgYmxvY2sgZ3Jv
+dXAgZm9yIDANCiA+IFVuYWJsZSB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciAwDQoNCmZvbGxv
+d2VkIGJ5IGEgIi4uLkJVR19PTiBgcmV0YCB0cmlnZ2VyZWQsIHZhbHVlIC0yOCINCg0KU28g
+dGhpcyBjb3VsZCBhbGwgYmUgcmVsYXRlZCB0byAtMjggKE5vIHNwYWNlIGxlZnQgb24gZGV2
+aWNlKT8NCg0KLS0gDQpKb2hhbm5lcyBLYXN0bA0KTGludXggQ29uc3VsdGFudCAmIFRyYWlu
+ZXINClRlbC46ICs0OSAoMCkgMTUxIDIzNzIgNTgwMg0KTWFpbDoga2FzdGxAYjEtc3lzdGVt
+cy5kZQ0KDQpCMSBTeXN0ZW1zIEdtYkgNCk9zdGVyZmVsZHN0cmHDn2UgNyAvIDg1MDg4IFZv
+aGJ1cmcNCmh0dHA6Ly93d3cuYjEtc3lzdGVtcy5kZQ0KR0Y6IFJhbHBoIERlaG5lcg0KVW50
+ZXJuZWhtZW5zc2l0ejogVm9oYnVyZyAvIEFHOiBJbmdvbHN0YWR0LEhSQiAzNTM3DQo=
 
-My bad, I see the bio_alloc_bioset() but didn't check it's allocating a
-bi_io_vec with size 0, and soon utilize the original bi_io_vec.
+--------------9q26yeYgb00h0n7tXDF0oxsD--
 
-So the function matches its name, it's really bio clone.
+--------------6QelmYaAx1KjT7VS04JaNfVJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-And it's very different from my version, which really allocates a new
-bio with larger enough bi_io_vec then adding back the needed sectors
-from the original bio.
+-----BEGIN PGP SIGNATURE-----
 
-Then I guess the BIO_CLONE flag is completely fine.
+wsF5BAABCAAjFiEEOjtDOPXdIVAWcUziyeav2MG3z/wFAmKEzLMFAwAAAAAACgkQyeav2MG3z/zT
+Eg/8DrkRrismU3EPEclp3iWLJfduJE8LU6y5mDePhzx7hiutmAuD+K0frovAwGnFVSeu1Z4LvcNo
+prdY+2hym6EShoOAqzDloeY7kRrEA6EEZGYFVAVYnFTnPzENIwkaai7HKakkdHXLGzGvfRf4FiPD
+qru8X7eaYpuq+4eEwA9v2YG+suf1oa1KaqMXXuZ8+ywg/f8MFLu6nigqn9Fub3eevDOgtWOMao01
+JSX2GOK7qOxxREryzUV55bTa36WK9Q03nJUevbOmjxg/l9+Bx9nSG2Q/PfxrXue0A2oRAIw61Ik0
+KA3c7vYGnuElCkMjYvW48ce6STxk+3a89ySTr5pagw9p/T/kzp4HZgZ0Sj4hnoH5s9zwHSddk6C4
+zuMpk1KOWd7NUtEJgoXxEpHr5skQxwW4qFfa1iehRZboIofBlIA3XCYc06vdWB+Zx+rFqW4fxs8Q
+TDxxoFooKcldl12diMJwWIvG1ud8tKcQUZOBbsBefdpnejR853Y0dLD9Dc/eDgYfhH+JOhVeJTcc
+fCud9THIsUM8cQeQtuz/U1MeaYF1Em9tgYIkNLIHB9XS6RKByr4IyYP+bAw5hUvHOefutVgDfBPO
+fsVNtWh65o73sbwO6nW4o74RfcJSfvZFbzoXL8ikl9/IkaJtgQq6lJOlee20V+rkYLoAnv3Gvfzp
+Q20=
+=aH7E
+-----END PGP SIGNATURE-----
 
-But in that case, you may want to call bio_alloc_clone() directly? Which
-can handle bioset without problem.
->
->>> +	/*
->>> +	 * Otherwise just clone the whole bio and write it back to the
->>> +	 * previously bad mirror.
->>> +	 */
->>> +	write_bbio =3D btrfs_repair_bio_clone(read_bbio, 0,
->>> +			read_bbio->iter.bi_size, REQ_OP_WRITE);
->>
->> Do we need to clone the whole bio?
->>
->> Considering under most cases the read repair is already the cold path,
->> have more than one corruption is already rare.
->
-> The read bio is trimmed to only cover the bad area, so this already
-> potentially does not cover the whole failed bbio.  But except for
-> the case you note below we do need to write back the whole bio.
->
->>> +bool __btrfs_read_repair_end(struct btrfs_read_repair *rr,
->>> +		struct btrfs_bio *failed_bbio, struct inode *inode,
->>> +		u64 end_offset, repair_endio_t endio)
->>
->> The reason I don't use "end" in my patchset is, any thing related "end"
->> will let people to think it has something related with endio.
->
-> That seems like an odd conotation.  Without io in the word end just
-> conotates the end of a range in most of the Linux I/O stack.
-
-OK, thanks for explaining this, I guess it's my problem linking "end" to
-"end_io" or "endio".
-
-Then no problem using this current naming.
-
-Thanks,
-Qu
->
->> And in fact when checking the function, I really thought it's something
->> related to endio, but it's the equivalent of btrfs_read_repair_finish()=
-.
->
-> But if there is a strong preference I can use finish instead of end.
+--------------6QelmYaAx1KjT7VS04JaNfVJ--
