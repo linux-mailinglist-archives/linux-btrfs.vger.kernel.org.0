@@ -2,155 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D3052B7F9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 12:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DAA52B83D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 13:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235142AbiERKit (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 May 2022 06:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        id S235270AbiERK7U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 May 2022 06:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbiERKis (ORCPT
+        with ESMTP id S235152AbiERK7T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 May 2022 06:38:48 -0400
-Received: from mx2.b1-systems.de (mx2.b1-systems.de [159.69.135.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D28833EBF
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 03:38:46 -0700 (PDT)
-Message-ID: <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
-Date:   Wed, 18 May 2022 12:38:43 +0200
+        Wed, 18 May 2022 06:59:19 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B2B6278
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 03:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1652871553;
+        bh=bIHjORdFkFbnsFba8LXzyuwu7lAgA+3Co6schutC/dY=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=QLPENQaj1Q7bkHc6Wnrc4klAj8jxkq1/J41DWwZh7BjUuClWGppqbvp9q/diiqcYF
+         LqZGWuL+/ePl16+majzG/Hsu0+YbYx4Bv9v0ZhS5TUDNuL0r71ahbTOP/XDNykFk6d
+         G0bTOgu9qExex8vQQ/OIz5anSvkYZbZJKJEWr4eo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmDEg-1nQmHY3Xwe-00iGZv; Wed, 18
+ May 2022 12:59:13 +0200
+Message-ID: <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
+Date:   Wed, 18 May 2022 18:59:10 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Content-Language: de-DE
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Content-Language: en-US
+To:     Johannes Kastl <kastl@b1-systems.de>, linux-btrfs@vger.kernel.org
 References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
  <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
  <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
  <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
-From:   Johannes Kastl <kastl@b1-systems.de>
+ <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
  BTRFS RAID1 on (currently) openSUSE Leap 15.3
-In-Reply-To: <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------6QelmYaAx1KjT7VS04JaNfVJ"
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:EbHzEY9TWvQJgeRrDYQtD1ToFyfrqKf3ceqZ8cgwogwqYmYQPjK
+ 4nnAOfKQj3w72oUBzQOVZNraw9EXYFTRuLMYCmm41PDv6y7bftiKLCWh71JEA4xwUs08YCA
+ 76DtWMlLLU6b+IQLpoVndjB5TjxU2u1awObBMNkIRM1BOCa0XnEblL+r/7fhqNe0/6hSMKD
+ yuGX34YrCj46Kqda4iuIg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8OXgNjCun2s=:zeFnNqAnkpiIj7YGrBDI54
+ SPf42LVdDFFuewuiyeA9TLr5NkJ8mud8tQ26W6lGEWT5QWv1jJylm4CAHy7YQWAlDdL0u0xpX
+ 1PHyRk3AYamrPU/NRMjqqUPvtheX5WlGQaswxNZpAOqXgEDj8+FezvCSbl0VO95dA6VcuLPcx
+ vJJHc530NTektY/GVxxAcn59CwYoGTASvMoJ8rlK6INPGpVzwoRCh0eVhqGLxJ4MQlfHAUlcw
+ fhFuvok8R2iDCOviiLU0ZR/qU/Zw2y7L+vxSC5T5KiXM3PrtBNPvndahJSp75sz+qkg/PXBCo
+ JhQyxMvNLXs9irvMOO3fsYRggOk3mbKNhIk/p2Vm6IcK1R93951N8SfXNnssc1Zdcbed0IQ1z
+ ymwkaLSobIzJOdcqWUnyqYkR9lMTH1k1xZSgLlrxAsTz2jCHlc9TkbFj/st0ecBzi0xMWuncr
+ 03AIXM1IV3pXHGuilATyAPRSe8CigIBVnSrTn7S1qZinVI+lcgY3yL8i70+bB0DyG6+dILqq7
+ oFmMArKfmswsMOtwy52o2sh4ILdYFb/9cJoq7rukdbbiXUQyCAekvqJcZbkrq92y6JPXHvKmE
+ UALZuGGWOW15CQKgK6JWJvdYbe1QCfTkHYL6hlt+rG2mj2iBy1pDYgEEsIn/ZO6yFY7IPsM5j
+ fU/ou12yesjCfgpPXaU1jDtckL2BXCUUe8kCnSTSxSUlH5v6UcrjZj6NsRjx01Wtmu2RBbTs/
+ TmXPePPYp61gy4ebYIDZar68xF41CbIsRGVgBGKBYKydnV1iWLuw2SuiQs3geEBJsa5e0yNbx
+ nio/4p9aV7INFW/MyJCXT/aDs5ZIeSKNjPWtFFm5byb0feaPVqV3oYAgzRZ4vvcbj3Xmzi/Hw
+ OON01/BOj97kCl7aRyJSrHDXdEGPqjt12fm/nocH8vK2NqN4MUwTACUWS6jdcCb15Hdr0mrlV
+ H2VSYb9TJ4wbG5OtYdCqL2cA39R6Vku4j+TOrb1z2HvazypL/JLldTt+r7kwloNyU+F1BG5PP
+ Pt15zPIsntYG3tsnx2E1lwRnsPKk358hUroSChX+pdDXfARFxbX6Sx0EtCW0teE5ENSVs+lws
+ az1fPZ7IeBPWnIsjd8JNdx6SknQ4H72AzUDM8bDPBkRT8z8WvFSgD1CJQ==
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------6QelmYaAx1KjT7VS04JaNfVJ
-Content-Type: multipart/mixed; boundary="------------9q26yeYgb00h0n7tXDF0oxsD";
- protected-headers="v1"
-From: Johannes Kastl <kastl@b1-systems.de>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Message-ID: <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
-Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
- BTRFS RAID1 on (currently) openSUSE Leap 15.3
-References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
- <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
- <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
- <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
-In-Reply-To: <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
 
---------------9q26yeYgb00h0n7tXDF0oxsD
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
 
-SGkgUXUsDQoNClRMO0RSOiB0b29rIGEgd2hpbGUgdW50aWwgSSBoYWQgYWxsIG9mIHRoZSBk
-YXRhIGJhY2tlZCB1cCBwcm9wZXJseSBhbmQgaGFkIHNvbWUgDQp0aW1lIHRvIHRlc3QgdGhp
-cy4gVW5mb3J0dW5hdGVseSB0aGUgZmlsZXN5c3RlbSBpcyBub3cgbm8gbG9uZ2VyIG1vdW50
-YWJsZS4uLg0KDQpBbnkgaWRlYXM/DQoNCkpvaGFubmVzDQoNCk9uIDI0LjA0LjIyIGF0IDEx
-OjIxIFF1IFdlbnJ1byB3cm90ZToNCj4gT24gMjAyMi80LzI0IDE3OjEwLCBKb2hhbm5lcyBL
-YXN0bCB3cm90ZToNCg0KPj4gU28gd291bGQgcmVzaXppbmcgdGhlIGZpbGVzeXN0ZW0gKHRv
-IDhHaUIpIHdvcmthcm91bmQgdGhpcyAibGltaXRhdGlvbiIsDQo+PiBzbyBhZnRlcndhcmRz
-IGl0IGNvdWxkIHByb3Blcmx5IGZpeCB0aGUgZGV2aWNlIHNpemU/DQo+IA0KPiBJJ20gbm90
-IHlldCBzdXJlIGlmIGl0J3MgYSBidWcgaW4gcHJvZ3MgY2F1c2luZyBmYWxzZSBFTk9TUEMs
-IG9yIHJlYWxseQ0KPiB0aGVyZSBpc24ndCBtYW55IHNwYWNlIGxlZnQuDQo+IA0KPiBGb3Ig
-dGhlIGZvcm1lciBjYXNlLCBubyBtYXR0ZXIgaG93IG11Y2ggZnJlZSBzcGFjZSB5b3UgaGF2
-ZSwgaXQgd29uJ3QgaGVscC4NCj4gDQo+IEZvciB0aGUgbGF0dGVyIGNhc2UsIGl0IHdvdWxk
-IGRlZmluaXRlbHkgaGVscC4NCg0KU28sIEkgZGVsZXRlZCB0aGUgcGFydGl0aW9ucyBvbiBi
-b3RoIGRpc2tzIGFuZCByZS1jcmVhdGVkIHRoZW0gd2l0aCB0aGUgbmV3IA0KKGJpZ2dlciBz
-aXplKSwga2VlcGluZyB0aGUgc3RhcnQgc2VjdG9yIGFuZCB0aGUgYnRyZnMgc2lnbmF0dXJl
-IGludGFjdC4NCg0KSSBjb3VsZCB0aGVuIHJlc2l6ZSBib3RoIGRpc2tzIHRvIHRoZSBzYW1l
-IHZhbHVlIHN1Y2Nlc3NmdWxseS4gQXQgbGVhc3QsIHRoZSANCmNvbW1hbmRzIHJhbiB3aXRo
-b3V0IGVycm9ycy4NCg0KRml4aW5nIHRoZSBkZXZpY2Ugc2l6ZSBmYWlscyBub25ldGhlbGVz
-cyAoc2VlIGJlbG93KS4gQW5kIEkgY2FuIG5vIGxvbmdlciBtb3VudCANCnRoZSBmaWxlc3lz
-dGVtLCB3aGVuIEkgdHJ5IEkgZmluZCB0aGlzIGluIHRoZSBsb2dzOg0KDQo+IFs4NzM5Ni44
-ODkwNDNdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMSk6IHN1cGVyX3RvdGFsX2J5dGVzIDE1
-MzkzMTYyNzg0NzY4IG1pc21hdGNoIHdpdGggZnNfZGV2aWNlcyB0b3RhbF9yd19ieXRlcyAx
-NTM5MzE2Mjc4ODg2NA0KPiBbODczOTYuODg5OTc0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNk
-YjEpOiBmYWlsZWQgdG8gcmVhZCBjaHVuayB0cmVlOiAtMjINCj4gWzg3Mzk2Ljg5Mjc0MV0g
-QlRSRlMgZXJyb3IgKGRldmljZSBzZGIxKTogb3Blbl9jdHJlZSBmYWlsZWQNCg0KKERvbid0
-IGdldCBjb25mdXNlZCBieSBzZGIxLCB0aGlzIGlzIGZyb20gYSByZXNjdWUgc3lzdGVtIHdp
-dGggb25seSBzb21lIEhERHMgDQphdHRhY2hlZCkNCg0KRml4aW5nIHRoZSBkZXZpY2Utc2l6
-ZSBvbiBMZWFwIDE1LjM6DQo+ICMgYnRyZnMgZmlsZXN5c3RlbSBzaG93IC9tbnQvRFVNQk9f
-QkFDS1VQXzRUQi8NCj4gTGFiZWw6ICdEVU1CT19CQUNLVVBfNFRCJyAgdXVpZDogNTA2NTFi
-NDEtYmYzMy00N2U3LThhMDgtYWZiYzcxYmEwYmY4DQo+ICAgICAgICAgVG90YWwgZGV2aWNl
-cyAyIEZTIGJ5dGVzIHVzZWQgMy4xN1RpQg0KPiAgICAgICAgIGRldmlkICAgIDEgc2l6ZSA3
-LjAwVGlCIHVzZWQgMy42NFRpQiBwYXRoIC9kZXYvc2RkMQ0KPiAgICAgICAgIGRldmlkICAg
-IDIgc2l6ZSA3LjAwVGlCIHVzZWQgMy42M1RpQiBwYXRoIC9kZXYvc2RjMQ0KPiANCj4gIyB1
-bW91bnQgL21udC9EVU1CT19CQUNLVVBfNFRCDQo+ICMgYnRyZnMgcmVzY3VlIGZpeC1kZXZp
-Y2Utc2l6ZSAvZGV2L3NkZDENCj4gVW5hYmxlIHRvIGZpbmQgYmxvY2sgZ3JvdXAgZm9yIDAN
-Cj4gVW5hYmxlIHRvIGZpbmQgYmxvY2sgZ3JvdXAgZm9yIDANCj4gVW5hYmxlIHRvIGZpbmQg
-YmxvY2sgZ3JvdXAgZm9yIDANCj4gdHJhbnNhY3Rpb24uYzoxODk6IGJ0cmZzX2NvbW1pdF90
-cmFuc2FjdGlvbjogQlVHX09OIGByZXRgIHRyaWdnZXJlZCwgdmFsdWUgLTI4DQo+IGJ0cmZz
-KCsweDUxZjk5KVsweDU1ZWRmN2E0M2Y5OV0NCj4gYnRyZnMoKzB4NTI1YTkpWzB4NTVlZGY3
-YTQ0NWE5XQ0KPiBidHJmcyhidHJmc19maXhfc3VwZXJfc2l6ZSsweDk4KVsweDU1ZWRmN2Ey
-ZjQzOF0NCj4gYnRyZnMoYnRyZnNfZml4X2RldmljZV9hbmRfc3VwZXJfc2l6ZSsweDg0KVsw
-eDU1ZWRmN2EyZjU4NF0NCj4gYnRyZnMoKzB4NmNlZWUpWzB4NTVlZGY3YTVlZWVlXQ0KPiBi
-dHJmcyhtYWluKzB4OGUpWzB4NTVlZGY3YTExMDhlXQ0KPiAvbGliNjQvbGliYy5zby42KF9f
-bGliY19zdGFydF9tYWluKzB4ZWYpWzB4N2Y2NzJhZDk2MmJkXQ0KPiBidHJmcyhfc3RhcnQr
-MHgyYSlbMHg1NWVkZjdhMTEyOGFdDQo+IEFib3J0ZWQgKGNvcmUgZHVtcGVkKQ0KPiAjIA0K
-DQpJIHRlc3RlZCBmaXhpbmcgdGhlIGRldmljZS1pZCBieSBib290aW5nIGZyb20gYSBUdW1i
-bGV3ZWVkIHJlc2N1ZSBzdGljaywgcnVubmluZyANCmtlcm5lbCA1LjE2IHdpdGggYnRyZnNw
-cm9ncyA1LjE2LiBUaGlzIGFsc28gZmFpbHMsIGJ1dCBzcGl0cyBvdXQgYW4gZXJyb3IgDQpt
-ZXNzYWdlIHRoYXQgaXMgYSBsaXR0bGUgZGlmZmVyZW50Og0KDQogPiBbLi4uXQ0KPiBVbmFi
-bGUgdG8gZmluZCBibG9jayBncm91cCBmb3IgMA0KPiBFcnJvcjogZmFpbGVkIHRvIGNvbW1p
-dCBjdXJyZW50IHRyYW5zYWN0aW9uOiAtMjggKE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlKQ0K
-PiBObyBkZXZpY2Ugc2l6ZSByZWxhdGVkIHByb2JsZW0gZm91bmQNCj4gRVJST1I6IGNvbW1p
-dF9yb290IGFscmVhZHkgc2V0IHdoZW4gc3RhcnRpbmcgdHJhbnNhY3Rpb24NCj4gZXh0ZW50
-IGJ1ZmZlciBsZWFrOiBzdGFydCAuLi4gbGVuIDE2Mzg0DQoNCihJIGhhZCB0byB0eXBlIHRo
-aXMgb2ZmIG9mIHRoZSBzY3JlZW4pDQoNCkFzIHRoZSBtb3VudGluZyBmYWlsZWQgd2l0aCBh
-biBlcnJvciByZWxhdGVkIHRvIGNodW5rcywgSSB0cmllZCB0aGUgYnRyZnMgcmVzY3VlIA0K
-Y2h1bmstcmVjb3ZlciBjb21tYW5kLCBidXQgdGhhdCBhbHNvIGFib3J0cyBhbmQgZHVtcHMg
-YSBjb3JlLCBldmVuIG9uIFR1bWJsZXdlZWQgDQp3aXRoIGtlcm5lbCA1LjE2Li4uDQoNClRo
-ZSBlcnJvciBtZXNzYWdlcyBsb29rIHNvbWV0aGluZyBsaWtlIHRoaXM6DQogPiBVbmFibGUg
-dG8gZmluZCBibG9jayBncm91cCBmb3IgMA0KID4gVW5hYmxlIHRvIGZpbmQgYmxvY2sgZ3Jv
-dXAgZm9yIDANCiA+IFVuYWJsZSB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciAwDQoNCmZvbGxv
-d2VkIGJ5IGEgIi4uLkJVR19PTiBgcmV0YCB0cmlnZ2VyZWQsIHZhbHVlIC0yOCINCg0KU28g
-dGhpcyBjb3VsZCBhbGwgYmUgcmVsYXRlZCB0byAtMjggKE5vIHNwYWNlIGxlZnQgb24gZGV2
-aWNlKT8NCg0KLS0gDQpKb2hhbm5lcyBLYXN0bA0KTGludXggQ29uc3VsdGFudCAmIFRyYWlu
-ZXINClRlbC46ICs0OSAoMCkgMTUxIDIzNzIgNTgwMg0KTWFpbDoga2FzdGxAYjEtc3lzdGVt
-cy5kZQ0KDQpCMSBTeXN0ZW1zIEdtYkgNCk9zdGVyZmVsZHN0cmHDn2UgNyAvIDg1MDg4IFZv
-aGJ1cmcNCmh0dHA6Ly93d3cuYjEtc3lzdGVtcy5kZQ0KR0Y6IFJhbHBoIERlaG5lcg0KVW50
-ZXJuZWhtZW5zc2l0ejogVm9oYnVyZyAvIEFHOiBJbmdvbHN0YWR0LEhSQiAzNTM3DQo=
+On 2022/5/18 18:38, Johannes Kastl wrote:
+> Hi Qu,
+>
+> TL;DR: took a while until I had all of the data backed up properly and
+> had some time to test this. Unfortunately the filesystem is now no
+> longer mountable...
+>
+> Any ideas?
+>
+> Johannes
+>
+> On 24.04.22 at 11:21 Qu Wenruo wrote:
+>> On 2022/4/24 17:10, Johannes Kastl wrote:
+>
+>>> So would resizing the filesystem (to 8GiB) workaround this "limitation=
+",
+>>> so afterwards it could properly fix the device size?
+>>
+>> I'm not yet sure if it's a bug in progs causing false ENOSPC, or really
+>> there isn't many space left.
+>>
+>> For the former case, no matter how much free space you have, it won't
+>> help.
+>>
+>> For the latter case, it would definitely help.
+>
+> So, I deleted the partitions on both disks and re-created them with the
+> new (bigger size), keeping the start sector and the btrfs signature inta=
+ct.
+>
+> I could then resize both disks to the same value successfully. At least,
+> the commands ran without errors.
+>
+> Fixing the device size fails nonetheless (see below). And I can no
+> longer mount the filesystem, when I try I find this in the logs:
+>
+>> [87396.889043] BTRFS error (device sdb1): super_total_bytes
+>> 15393162784768 mismatch with fs_devices total_rw_bytes 15393162788864
+>> [87396.889974] BTRFS error (device sdb1): failed to read chunk tree: -2=
+2
+>> [87396.892741] BTRFS error (device sdb1): open_ctree failed
+>
+> (Don't get confused by sdb1, this is from a rescue system with only some
+> HDDs attached)
+>
+> Fixing the device-size on Leap 15.3:
+>> # btrfs filesystem show /mnt/DUMBO_BACKUP_4TB/
+>> Label: 'DUMBO_BACKUP_4TB'=C2=A0 uuid: 50651b41-bf33-47e7-8a08-afbc71ba0=
+bf8
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 2 FS bytes use=
+d 3.17TiB
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
+ze 7.00TiB used 3.64TiB path /dev/sdd1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 2 si=
+ze 7.00TiB used 3.63TiB path /dev/sdc1
 
---------------9q26yeYgb00h0n7tXDF0oxsD--
+That's super weird, we have tons of unallocated space.
 
---------------6QelmYaAx1KjT7VS04JaNfVJ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+So definitely something wrong in btrfs-progs.
+Normally `btrfs fi usage` would provide more info, but it needs the fs
+to be mountable.
 
------BEGIN PGP SIGNATURE-----
+Can you prepare a building environment for btrfs-progs?
 
-wsF5BAABCAAjFiEEOjtDOPXdIVAWcUziyeav2MG3z/wFAmKEzLMFAwAAAAAACgkQyeav2MG3z/zT
-Eg/8DrkRrismU3EPEclp3iWLJfduJE8LU6y5mDePhzx7hiutmAuD+K0frovAwGnFVSeu1Z4LvcNo
-prdY+2hym6EShoOAqzDloeY7kRrEA6EEZGYFVAVYnFTnPzENIwkaai7HKakkdHXLGzGvfRf4FiPD
-qru8X7eaYpuq+4eEwA9v2YG+suf1oa1KaqMXXuZ8+ywg/f8MFLu6nigqn9Fub3eevDOgtWOMao01
-JSX2GOK7qOxxREryzUV55bTa36WK9Q03nJUevbOmjxg/l9+Bx9nSG2Q/PfxrXue0A2oRAIw61Ik0
-KA3c7vYGnuElCkMjYvW48ce6STxk+3a89ySTr5pagw9p/T/kzp4HZgZ0Sj4hnoH5s9zwHSddk6C4
-zuMpk1KOWd7NUtEJgoXxEpHr5skQxwW4qFfa1iehRZboIofBlIA3XCYc06vdWB+Zx+rFqW4fxs8Q
-TDxxoFooKcldl12diMJwWIvG1ud8tKcQUZOBbsBefdpnejR853Y0dLD9Dc/eDgYfhH+JOhVeJTcc
-fCud9THIsUM8cQeQtuz/U1MeaYF1Em9tgYIkNLIHB9XS6RKByr4IyYP+bAw5hUvHOefutVgDfBPO
-fsVNtWh65o73sbwO6nW4o74RfcJSfvZFbzoXL8ikl9/IkaJtgQq6lJOlee20V+rkYLoAnv3Gvfzp
-Q20=
-=aH7E
------END PGP SIGNATURE-----
+I can update the code to skip transaction commit so that we won't be
+bother with -ENOSPC at all.
 
---------------6QelmYaAx1KjT7VS04JaNfVJ--
+And since we're not really doing any metadata update, we don't really
+need any new space.
+
+And after your building environment prepared, you can fetch this branch
+to compile the btrfs-progs and try to use the compiled `btrfs` command
+to rescue the device again.
+
+https://github.com/adam900710/btrfs-progs/tree/dirty_fix
+
+I did some local tests, it shows no problem, but not sure if it would
+work for you.
+
+Thanks,
+Qu
+
+>>
+>> # umount /mnt/DUMBO_BACKUP_4TB
+>> # btrfs rescue fix-device-size /dev/sdd1
+>> Unable to find block group for 0
+>> Unable to find block group for 0
+>> Unable to find block group for 0
+>> transaction.c:189: btrfs_commit_transaction: BUG_ON `ret` triggered,
+>> value -28
+>> btrfs(+0x51f99)[0x55edf7a43f99]
+>> btrfs(+0x525a9)[0x55edf7a445a9]
+>> btrfs(btrfs_fix_super_size+0x98)[0x55edf7a2f438]
+>> btrfs(btrfs_fix_device_and_super_size+0x84)[0x55edf7a2f584]
+>> btrfs(+0x6ceee)[0x55edf7a5eeee]
+>> btrfs(main+0x8e)[0x55edf7a1108e]
+>> /lib64/libc.so.6(__libc_start_main+0xef)[0x7f672ad962bd]
+>> btrfs(_start+0x2a)[0x55edf7a1128a]
+>> Aborted (core dumped)
+>> #
+>
+> I tested fixing the device-id by booting from a Tumbleweed rescue stick,
+> running kernel 5.16 with btrfsprogs 5.16. This also fails, but spits out
+> an error message that is a little different:
+>
+>  > [...]
+>> Unable to find block group for 0
+>> Error: failed to commit current transaction: -28 (No space left on
+>> device)
+>> No device size related problem found
+>> ERROR: commit_root already set when starting transaction
+>> extent buffer leak: start ... len 16384
+>
+> (I had to type this off of the screen)
+>
+> As the mounting failed with an error related to chunks, I tried the
+> btrfs rescue chunk-recover command, but that also aborts and dumps a
+> core, even on Tumbleweed with kernel 5.16...
+>
+> The error messages look something like this:
+>  > Unable to find block group for 0
+>  > Unable to find block group for 0
+>  > Unable to find block group for 0
+>
+> followed by a "...BUG_ON `ret` triggered, value -28"
+>
+> So this could all be related to -28 (No space left on device)?
+>
