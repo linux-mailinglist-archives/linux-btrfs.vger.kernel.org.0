@@ -2,162 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EAE52C636
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 00:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA4452C6E5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 00:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbiERWZk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 May 2022 18:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        id S231269AbiERW5H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 May 2022 18:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbiERWZi (ORCPT
+        with ESMTP id S230451AbiERW45 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 May 2022 18:25:38 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E19A20D248
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 15:25:37 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id i17so3092480pla.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 15:25:37 -0700 (PDT)
+        Wed, 18 May 2022 18:56:57 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C9DE87
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id f16so6165886ybk.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 15:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5zyEX9VRLTU6Wgrxklp343VSnob1yhTuTbII5cfVB5Q=;
-        b=ocjfCpy1WY4SsHr4uK9vY9q8ZCbxKBQlauyvOjo/+tBObHFSEJBTA5kkF39fWir88j
-         0QPO0uQsCDKxt1UnnQD6dDueIec+XUIKddvlfXP61TEiXkAJPX4B/chsEfCHRzl9unnl
-         fEi5j1WzQU3FAHuAD/DYq1O4JjYYUYXW6FC5Mr3i4BAE9V2XSdzH+r+P8xhvdpVPA8fW
-         D2lI6931mFGt8izcq2Rguq7LwlNIvW7RAU1uPXqzCT5hIYGaEu2WUsrZJoR/HHa4XJHg
-         sFx7qG4plqfkuVtysW8aACadR10g4wS8ao9kbLhg+PiLTA9runBP3b4pDFe1UPS/3rE9
-         UI5A==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
+        b=ovbcf3BPb/ZrA/FpQ+ZjErGDIEZ9sF3fYOxqsE4Z0xdiTlYY9UY36hS3ty6MLllddq
+         FdZzNc2PcFHW5cwKZ0FlQqx6F8uTY06Ab/cmT+eL89dkm6I4fHT5v6DDGzwY+fqIjM8b
+         RjeYQt93Ckr4p0lPVWY342OwWKznH6xDl4nV36uj7bwrBPcHFh3ePzF5GNEmu/mQBhIV
+         GwWDekgJIDWSV60014hyLdzt2NtjUStY8MI6SiwBWMH8LEBnRGkE0W6Db0zUE9IYWmDQ
+         Ifd6nbhkESdcIbQrjo3sdEfmdPtb1VAIHCw/LAZv1DOtvQwqLYnhML4dVDmuoYeMmVFn
+         q7TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5zyEX9VRLTU6Wgrxklp343VSnob1yhTuTbII5cfVB5Q=;
-        b=6MXY3YMZmikL5sY/PfwiT6dJvytZPS5MXK7yOnSPoZ7ZrAKnPlwckhBd2qjCyMNmjo
-         bVRrIhovF8RWVdwBNV+YJWLxOkxBPG4XgPJTusrT8Fw2JDUuLI9JA4LVO8yJuc539NyO
-         fqga7N3ZEAR/6hSxS5r1rxn6zwn2vQ6RykBXUgVCA1JD2DZsajtkdRL/Zk+6FSX6I+W1
-         7obabIV84HE+6ogNjsibqCe9KNaXCpRglPAZISOQyNJ7rdUiyLSIdIJ77yktUeMjKF4F
-         yApBD5EDZVRB9LaPLoMAvcVLj+NXgz6mZu4VIv1dFP4mTL1YC+T03qwqavlRRpCZIq9S
-         DLoQ==
-X-Gm-Message-State: AOAM532hX8I+OcwfF1qgX0x1wZ4bKgwNIjKKWD3N76SAPSse5iCPHkuh
-        7ZxhIdeHD0y43Myl3hpxxSqW86pewd8mCA==
-X-Google-Smtp-Source: ABdhPJy+MlbtWWrAzT3YxFrBE3RQ0LVIDEJlj8JtggLAXzsTmufwPxdE2vXTXmPq+1Kfu3FFo4uvsA==
-X-Received: by 2002:a17:90b:1d90:b0:1df:d0ae:1443 with SMTP id pf16-20020a17090b1d9000b001dfd0ae1443mr919930pjb.122.1652912736789;
-        Wed, 18 May 2022 15:25:36 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::4:2d0d])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170902d38400b001619b47ae61sm2205650pld.245.2022.05.18.15.25.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 May 2022 15:25:35 -0700 (PDT)
-Date:   Wed, 18 May 2022 15:25:34 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v15 3/7] btrfs: add send stream v2 definitions
-Message-ID: <YoVyXsuWEOX6dtXE@relinquished.localdomain>
-References: <cover.1649092662.git.osandov@fb.com>
- <abea9f460c7341361e58cbba8af355654eb94b5b.1649092662.git.osandov@fb.com>
- <20220518210003.GK18596@twin.jikos.cz>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
+        b=f3712l1DFbucZTlrRppdoWL84MY+bC7TAFRzVrYj8HI5fqu02HhO7ljuWV6U/Grwjp
+         ES7fl0QMIVs/kP6XIRViPb/ToSSPMmuTWDkxdaZqLbem7wz1yDtrDGYHLOuMQMn3I+tA
+         hXaPsE0OFAuweWb3UQhyPXJ20SGIMEBwtogkA+rHf3uMiwylG7G9TWiCA+WRImDI4pzc
+         UkWQqOOHIE9Kj3r3AjCAc9C5HpJ2nRsXvQecoG4H9gBA2OcVhwalGU8p9AUVKVJz3cXj
+         DyGLxM/wCJX2hJTrEYKf/+iZztSCNswO3jzknu4/52DkTlQxCbn9DrmLLTb0CssXCFnH
+         YWOw==
+X-Gm-Message-State: AOAM532xSVvSd21Cm7oKTI8m+f84yNNNyQxkR3YPreeg1/90ZKXOzLWt
+        A5uq5xlVQuaLdj27iZ23zZmDsxFhktgEKwVFxxw=
+X-Google-Smtp-Source: ABdhPJyyLDAg+sVdsLTxwEXiZ5avjedwK/uWMP/Y3UWcChEjwDE+iXuY4kOycHY8vIqM/rcV0hLTcVdg0IN0RAQYgBc=
+X-Received: by 2002:a5b:f87:0:b0:64a:9aa6:e181 with SMTP id
+ q7-20020a5b0f87000000b0064a9aa6e181mr1852277ybh.157.1652914614913; Wed, 18
+ May 2022 15:56:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518210003.GK18596@twin.jikos.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7000:7143:0:0:0:0 with HTTP; Wed, 18 May 2022 15:56:53
+ -0700 (PDT)
+Reply-To: tonywenn@asia.com
+From:   Tony Wen <weboutloock4@gmail.com>
+Date:   Thu, 19 May 2022 06:56:53 +0800
+Message-ID: <CAE2_YrD=5bo8j9+ah-xptEBBV-HEC4=Gb0SRHf996phiopc3WQ@mail.gmail.com>
+Subject: engage
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b32 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4933]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [weboutloock4[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [weboutloock4[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 18, 2022 at 11:00:03PM +0200, David Sterba wrote:
-> On Mon, Apr 04, 2022 at 10:29:05AM -0700, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > This adds the definitions of the new commands for send stream version 2
-> > and their respective attributes: fallocate, FS_IOC_SETFLAGS (a.k.a.
-> > chattr), and encoded writes. It also documents two changes to the send
-> > stream format in v2: the receiver shouldn't assume a maximum command
-> > size, and the DATA attribute is encoded differently to allow for writes
-> > larger than 64k. These will be implemented in subsequent changes, and
-> > then the ioctl will accept the new version and flag.
-> > 
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> > Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > ---
-> >  fs/btrfs/send.c            |  2 +-
-> >  fs/btrfs/send.h            | 40 ++++++++++++++++++++++++++++++++++----
-> >  include/uapi/linux/btrfs.h |  7 +++++++
-> >  3 files changed, 44 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > index 9363f625fa17..1f141de3a7d6 100644
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -7459,7 +7459,7 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
-> >  
-> >  	sctx->clone_roots_cnt = arg->clone_sources_count;
-> >  
-> > -	sctx->send_max_size = BTRFS_SEND_BUF_SIZE;
-> > +	sctx->send_max_size = BTRFS_SEND_BUF_SIZE_V1;
-> >  	sctx->send_buf = kvmalloc(sctx->send_max_size, GFP_KERNEL);
-> >  	if (!sctx->send_buf) {
-> >  		ret = -ENOMEM;
-> > diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
-> > index 67721e0281ba..805d8095209a 100644
-> > --- a/fs/btrfs/send.h
-> > +++ b/fs/btrfs/send.h
-> > @@ -12,7 +12,11 @@
-> >  #define BTRFS_SEND_STREAM_MAGIC "btrfs-stream"
-> >  #define BTRFS_SEND_STREAM_VERSION 1
-> >  
-> > -#define BTRFS_SEND_BUF_SIZE SZ_64K
-> > +/*
-> > + * In send stream v1, no command is larger than 64k. In send stream v2, no limit
-> > + * should be assumed.
-> > + */
-> > +#define BTRFS_SEND_BUF_SIZE_V1 SZ_64K
-> >  
-> >  enum btrfs_tlv_type {
-> >  	BTRFS_TLV_U8,
-> > @@ -80,16 +84,20 @@ enum btrfs_send_cmd {
-> >  	BTRFS_SEND_C_MAX_V1 = 22,
-> >  
-> >  	/* Version 2 */
-> > -	BTRFS_SEND_C_MAX_V2 = 22,
-> > +	BTRFS_SEND_C_FALLOCATE = 23,
-> > +	BTRFS_SEND_C_SETFLAGS = 24,
-> 
-> Do you have patches that implement the fallocate modes and setflags? I
-> don't see it in this patchset.
-
-Nope, as discussed before, in order to keep the patch series managable,
-this series adds the definitions and receive support for fallocate and
-setflags, but leaves the send side to be implemented at a later time.
-
-I implemented fallocate for send back in 2019:
-https://github.com/osandov/linux/commits/btrfs-send-v2. It passed some
-basic testing back then, but it'd need a big rebase and more testing.
-
-> The setflags should be switched to
-> something closer to the recent refactoring that unifies all the
-> flags/attrs to fileattr. I have a prototype patch for that, comparing
-> the inode flags in the same way as file mode, the tricky part is on the
-> receive side how to apply them correctly. On the sending side it's
-> simple though.
-
-The way this series documents (and implements in receive)
-BTRFS_SEND_C_SETFLAGS is that it's a simple call to FS_IOC_SETFLAGS with
-given flags. I don't think this is affected by the change to fileattr,
-unless I'm misunderstanding.
-
-This is in line with the other commands being straightforward system
-calls, but it does mean that the sending side has to deal with the
-complexities of an immutable or append-only file being modified between
-incremental sends (by temporarily clearing the flag), and of inherited
-flags (e.g., a COW file inside of a NOCOW directory). I suppose it'd
-also be possible to have SETFLAGS define the final flags and leave it up
-to receive to make that happen by temporarily setting/clearing flags as
-necessary, but that is a bit inconsistent with how we've handled other
-commands.
+Can I engage your services?
