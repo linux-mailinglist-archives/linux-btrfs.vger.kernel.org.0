@@ -2,171 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3E752E358
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 05:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D477A52E3D1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 06:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345202AbiETDrd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 May 2022 23:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S1345222AbiETEd3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 00:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345218AbiETDrT (ORCPT
+        with ESMTP id S231720AbiETEdR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 May 2022 23:47:19 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B183584D
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 20:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1653018437; x=1684554437;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6lc1EXDyRH/qdIBQrgfdid5K6UO5RT0eqtEDiI6MCtI=;
-  b=HESLF5CYQfhaF8O7InfBJx7nTsFfRyUVxy1UeOzFrD4oJo3mVLe39Bw6
-   kdcshbBAsg0i4rZYhsYU7EjOVJe/7CP7nmz8eMX7+lRIk9bBI7lLvyQVf
-   e7UzL+JmlBd73eX9+qewnBoLKKfNTY117hgofsPuwvv/vrnMhUoS3QY6J
-   6KV8QhxSDogjMAkWzt39Eaj2VyFWzYRGS/libAUhDJ+7evNFgY9usoSUn
-   YsN1byCM/BHC0w8OOn9M+0YuBBeIlxUjBIk3KkeixuO4ndxLAoem8nqh5
-   xc9DuL1dyRuDFzUQWAAElFM6OiP45doiLAif7exRYWOgnjIsRPQTATpoT
-   A==;
-X-IronPort-AV: E=Sophos;i="5.91,238,1647273600"; 
-   d="scan'208";a="305089255"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 20 May 2022 11:47:09 +0800
-IronPort-SDR: Woxmd4Ox6v8lFTIcZOZfK+gyTaVn0KXKTZM+aJ+C8mBgFOJ12lHjLpo6jnlyfQvcqryj+6BIoC
- lCuGvIMrdvipQ4AuWmI+KC/YHRCLbiXJrJoDkf1rmLH4QiQ/W8eMLc+/J7K8Ek0y+IShgdVa/X
- LTcrZF5qE59LfOkKX9IBjkr/nyr+FuqG+JHK9zgVPm1EYwKb3XipAOFKFiL3ldzXabBe+gzEd7
- fRDKP5MsR7ju1+1xcq+82zGlzpZtXZiHlMuoQ36XwrB57gpdYzvN8dqYiG/likHPL9PEgolp//
- Yx1CVzaHcyA+t/GPPspLbM7a
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 May 2022 20:12:33 -0700
-IronPort-SDR: +77sMW8qahUb4D4okdXFB8CnuZi0+8NZ1iaFdRd0WrOoInqMDVB2xQ4KogAiuTzLnwUBWPx5ZO
- 4tKs5EvwCrlq1Rh+vqfAZNGWhxM7B9+W/tpH8d72oiq5sqx7AGFdxPaLkM6RcX9EAj3VkL6IZm
- RfxqkPP2VAm527AY9W5WpK8bDyV9lJfEPuU+nXFseL6pS6ONcJLBk67EoOuHKx0JyZAhHS6c2J
- YNRDvA6vDGyNaRWlh/6C+vBKKBwbWrJMjyuLg9kB+X6dxARnxvzwswY6mnp1pjwVFNhELefdL4
- UOE=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 May 2022 20:47:09 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4L4CMw48YWz1SVp1
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 20:47:08 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1653018427; x=1655610428; bh=6lc1EXDyRH/qdIBQrgfdid5K6UO5RT0eqtE
-        DiI6MCtI=; b=Qs9M+NujlyY8B4k/o4j7hSbfG13ti0oADtMb/umY3xRCYTQNY3J
-        T2xdFmUh9CSB7RfRlgugV018loJtAR0z9EGT0S58D6UYUFDTmHf8P8VRWqemnD12
-        hS5OmTUPjVTzO+ZX5W6IdWB0kk6jh2k0nN3xK9Z0v3wpoOMnabK1LKBbkgGTqBxf
-        z7r3LFquTotFb5ib6u0lxv3Tw3J3qHygfRYrez3CbkQ5MZOQjEIeRlWkIKwHWt+R
-        TYFK2ggtvkfb8RaQH6RyquQyFCRfVmNQe16t3cZb3xRBq3AUFjgPefGP0/pWMal0
-        Ic2RxZWrwEWckGJNSitECSJ/V7Iv8+V+Fqg==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id cI2K8xOVAvj2 for <linux-btrfs@vger.kernel.org>;
-        Thu, 19 May 2022 20:47:07 -0700 (PDT)
-Received: from [10.225.163.45] (unknown [10.225.163.45])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4L4CMr5cBWz1Rvlc;
-        Thu, 19 May 2022 20:47:04 -0700 (PDT)
-Message-ID: <4a8f0e1b-0acb-1ed4-8d7a-c9ba93fcfd02@opensource.wdc.com>
-Date:   Fri, 20 May 2022 12:47:03 +0900
+        Fri, 20 May 2022 00:33:17 -0400
+X-Greylist: delayed 959 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 19 May 2022 21:33:14 PDT
+Received: from CN01-BJB-obe.outbound.protection.partner.outlook.cn (mail-bjbhn0106.outbound.protection.partner.outlook.cn [42.159.36.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7689857B24;
+        Thu, 19 May 2022 21:33:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FfiRGDolRxBbTPU/pW5r8wSRx822XdrEAsVxaJEH6IeqyAMWV+Z4Jw8Ad6X2ngxB4bI/3iSE6598xZy8rRmhdDNTkFgxzqsUZRD9/IGqGUPoN+q8pDFIcd1ThB4yp0PKoplGZwv97L2L+hQcunytsc0jVn19ZHi0L4VSqlGDhz6GvZMXqBdXLpr3XbdgFngjkXDRPd4S7QxFbmmATZ7wM8lTKSl+2QwAik74tBSFj7JRNZjY0ZG+1dPlwOyyaC+sxhQox4gP0jsHgdA+zLlxWFlDYmRW0+jVPlctd0kgsTO27m9TsPUwZqocAlGwqSCMjCfJxUQL/8jZleoMtGnL9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XHa7Vpxtm/u3S4otqoZTmpXUuVJNGmaT4A6UJUMDuKo=;
+ b=n/ga3Uv5bOysJiwFWtaASbc1sOVT/74FQDrkJ2T8Ux5DI/ZabOZC971JaHF4kuQ3K6lCbPiNC7HEABwD5zLxg9JNOyrLeOLguG/jQUvktm6lr7+2XdJDLwMweVB9sI74tto4TRLvb1AayvptZEGfujC9DBcewTiKwQirOdl8MmQPGHKPMfuJQsB3vHlkqyfLywSsTt4cexu/zSsGjfqKXO2BqB1tbmaB3YZ+z739+BN29/5UbiVaprQF3kTeGijgsLTVvix5Vy+tZ3Mb8QxFecsH4gwEFQnCAltBxiGp3/y6BB/pEyIRpVIIxs0Ptf+tneDUMg2CDnRkb/BhaA/PWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=gientech.com; dmarc=pass action=none header.from=gientech.com;
+ dkim=pass header.d=gientech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gientech.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XHa7Vpxtm/u3S4otqoZTmpXUuVJNGmaT4A6UJUMDuKo=;
+ b=XfVm/EubM6OiCQfN7/lg4sqD4IPx+r0/o1TwEmVWbLmvLortvEFcHt/UrT+2bjS5HnXyhykoFdj6kYO5fdpx6JqCFGwQwK3wUpUZ51hfTfzN2J+47ZR2SXZQrxs05rNMsn39e09+9PxmTTpfdC2FJmKHe97TEQf5NMuq6LKTKsaU7HKNsNXs2Tl/q0ZvwnBPibW+hxEFMq/oOhCCgjV3gD8FCaal4Dakx4u71iF8SI1ZyFAwgSGU6CUToVPaRcs7VMkCl0pHCLrLvvg+F8N4RkRBqGzd2wKmZ7wUJnnhPbuH0gAnPswrfdPgMirk2+aKzvaicl4m6lRIMEDJlBsI/Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=gientech.com;
+Received: from SHXPR01MB0623.CHNPR01.prod.partner.outlook.cn (10.43.110.19) by
+ SHXPR01MB0589.CHNPR01.prod.partner.outlook.cn (10.43.110.81) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5273.14; Fri, 20 May 2022 04:17:12 +0000
+Received: from SHXPR01MB0623.CHNPR01.prod.partner.outlook.cn ([10.43.110.19])
+ by SHXPR01MB0623.CHNPR01.prod.partner.outlook.cn ([10.43.110.19]) with mapi
+ id 15.20.5273.017; Fri, 20 May 2022 04:17:12 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Ree
+To:     Recipients <cuidong.liu@gientech.com>
+From:   "J Wu" <cuidong.liu@gientech.com>
+Date:   Wed, 18 May 2022 21:19:04 +0000
+Reply-To: contact@jimmywu.online
+X-ClientProxiedBy: BJSPR01CA0002.CHNPR01.prod.partner.outlook.cn
+ (10.43.34.142) To SHXPR01MB0623.CHNPR01.prod.partner.outlook.cn
+ (10.43.110.19)
+Message-ID: <SHXPR01MB06232172A0DC57B58CF67A4889D19@SHXPR01MB0623.CHNPR01.prod.partner.outlook.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [dm-devel] [PATCH v4 00/13] support non power of 2 zoned devices
-Content-Language: en-US
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "pankydev8@gmail.com" <pankydev8@gmail.com>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <CGME20220516165418eucas1p2be592d9cd4b35f6b71d39ccbe87f3fef@eucas1p2.samsung.com>
- <20220516165416.171196-1-p.raghav@samsung.com>
- <20220517081048.GA13947@lst.de> <YoPAnj9ufkt5nh1G@mit.edu>
- <7f9cb19b-621b-75ea-7273-2d2769237851@opensource.wdc.com>
- <20220519031237.sw45lvzrydrm7fpb@garbanzo>
- <69f06f90-d31b-620b-9009-188d1d641562@opensource.wdc.com>
- <PH0PR04MB74166C87F694B150A5AE0F009BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <PH0PR04MB74166C87F694B150A5AE0F009BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ba276e27-8720-4646-7691-08da3914169e
+X-MS-TrafficTypeDiagnostic: SHXPR01MB0589:EE_
+X-Microsoft-Antispam-PRVS: <SHXPR01MB05890B7A1489C9328D6E90E289D39@SHXPR01MB0589.CHNPR01.prod.partner.outlook.cn>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?Ec0EgrdeXOGmSK6mh447SC13OYa4/8Z1mL4OwOhTDN9QZ9LPcnPNGt9DEa?=
+ =?iso-8859-1?Q?2NvRQGN7Kj6GG3zgRHnC1s2ojzKoS9huHDbH6xPBcYfr8rQ2BLHvGhJYC5?=
+ =?iso-8859-1?Q?QGC14nnTvN8Tv94D3hnbEjPN2ShqBreptLwSImOxepo0rVVkkjODLLW/Yy?=
+ =?iso-8859-1?Q?lLhV/dLkk+6B7LgQHZpgWe2o8KBzkicZU97nV0w75cDz7lvmdkf11oO7m0?=
+ =?iso-8859-1?Q?f83eCZEKbuzHEg2yp4Bbigy2uGWV93cpd7IHgO19loFqtejuD1LyodYS+u?=
+ =?iso-8859-1?Q?LyUZikdUA99npGohUNAhb35tkMYtwGsKzxU7sQMTAVblgptHOONxEeD9dF?=
+ =?iso-8859-1?Q?WDkjPUJgZRPIVMK3H0I08b6jNFfw5048MGAZ/iHMDoMy3pz15U2FYHLdPo?=
+ =?iso-8859-1?Q?p2lvsO72zd8M+VH9P3H7WdYlUJIwC55xfEMIbvgs8N9pNh7zR5Aw54g7lV?=
+ =?iso-8859-1?Q?7Cwrc4l2kxxWyaeqigqHnTD0BXohZtKWJy9Gya1saaEzBMGxRk0R0rWONb?=
+ =?iso-8859-1?Q?tKLmMl6qizqnriRLslgcExuvyHeLniWQG0m7JuUtHAzlG/vYcQA1xAUFUW?=
+ =?iso-8859-1?Q?YE0iqoODGg4LpLkXRLIf7LVvpLGniJ0BfnXggh6KGsY3nbw/URQVZj2T9c?=
+ =?iso-8859-1?Q?u0/ETtCOL/RaoZg+o0MvDiWPTGbXleE1fnMcKEsQn4LQVYH0tCSjKw6BLA?=
+ =?iso-8859-1?Q?dszybQ1IT2T+e/Cisaj7RLi81h/BKwZyRsrzQA3XOuh2MDsadgJMuVcgTN?=
+ =?iso-8859-1?Q?611blMEgDhmf4HN/0dExa/oflS+MmMwCK4xMp0eisTYbnWgi7oQyz/glbn?=
+ =?iso-8859-1?Q?6Q5mAr2+OaXui5Zwcu33LGHYB2sdPkZZM5r7M2Uq4KxcxsnFX/tKgtx7LL?=
+ =?iso-8859-1?Q?wl5K4gc+XnA2IL5SshuaO71iZHIyqXs/I+XsR6JENqeXcpJvxNUWTK7mc5?=
+ =?iso-8859-1?Q?YZ09IT3Epr3INzM5nZNGwaD7oNjzOEw3vAI9jkgorOsXgNDiKOLtGVxTIL?=
+ =?iso-8859-1?Q?zpcn/8y2XyJeGCO78U/SwmQxOuk2MSjGK9FXEMi/SVy/aOcS/ssf36mcxb?=
+ =?iso-8859-1?Q?qg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:SHXPR01MB0623.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:OSPM;SFS:(13230001)(366004)(508600001)(6666004)(40160700002)(55016003)(52116002)(6200100001)(4270600006)(33656002)(8676002)(186003)(40180700001)(558084003)(7366002)(7696005)(7406005)(9686003)(66556008)(38350700002)(38100700002)(86362001)(3480700007)(6862004)(66946007)(66476007)(26005)(7416002)(2906002)(7116003)(19618925003)(8936002)(62346012);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?G4dPnVYrsaV28QqvBeJcU/CUn0munwo845DYnVyMiQHoC9ox7ePknkAWUB?=
+ =?iso-8859-1?Q?UxpzP+TNbh9VopEZSz/QyEFFAh2da5iLSU0wF9OnPvo6TvxLJVWVODBWIt?=
+ =?iso-8859-1?Q?buwDYpEIhKjENaVjlZQszzLb/8rE+xaheMTy7ZrdIYv3+wIKVC4wxIIJjB?=
+ =?iso-8859-1?Q?1VeDOtBvcYVqGHFzSGDM7HBafzGcFEbwR82efTVBnbNlxKTiZV3+1iN0OV?=
+ =?iso-8859-1?Q?THDqP+XYLNA2Te66brIu+bamVRcg4OkFBlIWMvRHIoVfII0s1EA+jHp3jx?=
+ =?iso-8859-1?Q?+sKC1SEqBC64u7aSkVue8EmBA/Cvx2LGhY0IkQWwEDlRxwawoYs8xS0IwO?=
+ =?iso-8859-1?Q?ppSkeuvx0YvDsU9kUpMo87Z0vEo91/KxG9Hlx9fBhbxRuiliEGkgDXCXcE?=
+ =?iso-8859-1?Q?mzxw3/OQp5xriZfNs880lGA83kszXEjY0YgNlOb52iUys2/CynahxIpEJq?=
+ =?iso-8859-1?Q?nXYWIGdl65meGWj/l6PoEAHwuFIx4Wd+cQbFR357NroNFOKbK3Jzj40obi?=
+ =?iso-8859-1?Q?KYzDY69FEGsF06ElZDoAab4Jux2pVHk9ku8UUIa2L4HoEccG8tq73llx2b?=
+ =?iso-8859-1?Q?lQ7ToCCdnxWW/eHtdVrzS4VfO0frKGvyvaYjcCFlLfCx4jFZt2adXxieP4?=
+ =?iso-8859-1?Q?820oiqT/ykARgWprWzUa5K66TqG7ZYTecc/VfUxKT3SO/gIRuXmCf+8U46?=
+ =?iso-8859-1?Q?OjUiGXvYAQ7Zt0l1EFRSPtlLtlPUhXuuyOipVIpGPb4jMJOgdqa3sudmgG?=
+ =?iso-8859-1?Q?VO7J561VxSPvOo65cwNkrFLd2B6WXnCDJBaE57L7HJVPSdHWHVu0VxIQPC?=
+ =?iso-8859-1?Q?L6Xj1oifuhvziRkM9H8b2+cCgkfARuUHyzUHAog1fnm2StqcFarEi2G7i7?=
+ =?iso-8859-1?Q?GhvlO3H36E4UnodqnQMUbU/HH6LcQGuBlh6b0eW1x1iuxQDvc4cr/XFUdh?=
+ =?iso-8859-1?Q?anGZ5h+dpWlhhsWxxkOlmUI5zOeXi+XhtqXYJaqSurv/pKzC5pNFgDmY04?=
+ =?iso-8859-1?Q?7Yx24Nhz3R9xb7CUvisG+tBLOtuQVtvmKQkYbcO8m4xU+gC+lgoWLNzE8s?=
+ =?iso-8859-1?Q?ZGjT+FWIIuZecxq5KImN+vOvW820lXFmiOrFeDjghL5nVNgvWuhlVAqWQh?=
+ =?iso-8859-1?Q?PQeONGJhgoP874yZzboivNC3H2cVltdsEzEBOaj7UDE0rs6rrtN89+p1rk?=
+ =?iso-8859-1?Q?FDiSaHY82p+GWPn9/Z/Py3E2y3lSNI+3m/0j548klrUd11wNPdRZdxp1FN?=
+ =?iso-8859-1?Q?BcAGaKJ7APy/Hu25IosgF0LWbRP0wgh75UE3T7yZoXr9OabfvvJ/Aorxrk?=
+ =?iso-8859-1?Q?GafC+zfUheEJd86Jfogv2apocVbnfjVbyQOn5DPJMLawJAvX82rgiJzxPD?=
+ =?iso-8859-1?Q?yFgm6NNqTfKbEVpOz2uWj0Apwp36GMrIzWuAfdTwQNeMOArbYs9ZqXBraN?=
+ =?iso-8859-1?Q?0HBU3jB82OlY5IAm13Omp1ckfUqqtvPHI3dkC0TwBiMOhuwsajY60Rbz39?=
+ =?iso-8859-1?Q?lS2z4tp5wukpEHLIrzG8SkjXCsddpUk/2ZSxuztWz7l2qXkm1p0y9dOY6C?=
+ =?iso-8859-1?Q?V52ua2FeZv6arFFrN0Mejbn2BLpD/8bHn36bFUBzHLh2JxxswfGUlxfeJR?=
+ =?iso-8859-1?Q?lCfUQgEuRazwS9zhKWpQV+NprpLPHtTnSsfTY1m1lZuS8wm0rehnqabX4S?=
+ =?iso-8859-1?Q?0r/6/gCBnb7dxEG0arZqksmck1Yt7feI31kvhRYJjTDgjfyLsJ+ae5eRHf?=
+ =?iso-8859-1?Q?oF9Q=3D=3D?=
+X-OriginatorOrg: gientech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba276e27-8720-4646-7691-08da3914169e
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0623.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2022 21:19:26.9053
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 89592e53-6f9d-4b93-82b1-9f8da689f1b4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SPwlG9RaRId1GHt0oyC+Vz4ha1/1VBXAT1+gMaxndMUIubukuE4KmClrXWoLXF4WU4sNb5xKyy8aJ7mEl75U6rPtSLtECRNGnFx4CZp8Mmo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0589
+X-Spam-Status: No, score=3.7 required=5.0 tests=BAYES_50,DATE_IN_PAST_24_48,
+        DKIM_INVALID,DKIM_SIGNED,RCVD_IN_BL_SPAMCOP_NET,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/19/22 16:34, Johannes Thumshirn wrote:
-> On 19/05/2022 05:19, Damien Le Moal wrote:
->> On 5/19/22 12:12, Luis Chamberlain wrote:
->>> On Thu, May 19, 2022 at 12:08:26PM +0900, Damien Le Moal wrote:
->>>> On 5/18/22 00:34, Theodore Ts'o wrote:
->>>>> On Tue, May 17, 2022 at 10:10:48AM +0200, Christoph Hellwig wrote:
->>>>>> I'm a little surprised about all this activity.
->>>>>>
->>>>>> I though the conclusion at LSF/MM was that for Linux itself there
->>>>>> is very little benefit in supporting this scheme.  It will massively
->>>>>> fragment the supported based of devices and applications, while only
->>>>>> having the benefit of supporting some Samsung legacy devices.
->>>>>
->>>>> FWIW,
->>>>>
->>>>> That wasn't my impression from that LSF/MM session, but once the
->>>>> videos become available, folks can decide for themselves.
->>>>
->>>> There was no real discussion about zone size constraint on the zone
->>>> storage BoF. Many discussions happened in the hallway track though.
->>>
->>> Right so no direct clear blockers mentioned at all during the BoF.
->>
->> Nor any clear OK.
-> 
-> So what about creating a device-mapper target, that's taking npo2 drives and
-> makes them po2 drives for the FS layers? It will be very similar code to 
-> dm-linear.
-
-+1
-
-This will simplify the support for FSes, at least for the initial drop (if
-accepted).
-
-And more importantly, this will also allow addressing any potential
-problem with user space breaking because of the non power of 2 zone size.
-
-> 
-> After all zoned support for FSes started with a device-mapper (dm-zoned) and 
-> as the need for a more integrated solution arose, it changed into natiive
-> support.
-> 
-> And all that is there is simple arithmetic and a bio_clone(), if this is the
-> slowest part of the stack involving a FS like f2fs or btrfs I'm throwing a
-> round of anyone's favorite beverage at next year's LSFMM.
-> 
-> Byte,
-> 	Johannes
-> 
-
-
--- 
-Damien Le Moal
-Western Digital Research
+Can you do a job with me?
