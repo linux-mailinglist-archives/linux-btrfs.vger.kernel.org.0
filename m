@@ -2,191 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC0152B8DF
+	by mail.lfdr.de (Postfix) with ESMTP id 82D0052B8DE
 	for <lists+linux-btrfs@lfdr.de>; Wed, 18 May 2022 13:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235564AbiERLXe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 May 2022 07:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
+        id S235638AbiERL3L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 May 2022 07:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235408AbiERLXX (ORCPT
+        with ESMTP id S235630AbiERL3J (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 May 2022 07:23:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223CE16D5C3
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 04:23:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 879071F37F
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 11:23:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652872998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=5ofKgkigc8rgJDSy+9zBlf3fnXHjy34R9COdc4rlJwQ=;
-        b=W4sqU3z4FWpNCxHvRFGjzomG/9PMw+5mJQFSrnt9sza1rUJk7Pg8OvweAa3UUPqBa4CSj3
-        lf176edGtqc+LA2r9Bxbrszg5QmD9d+RUyH2SDHV+KCJItPfipH5pSYEL/IwzHlJ2RW5xF
-        qtVjVPNwFhkKSlgT/yaViTbU9mV9P98=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0B6313A6D
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 11:23:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id VCIOMCXXhGK3TQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 11:23:17 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: do not abuse btrfs_commit_transaction() just to update super blocks
-Date:   Wed, 18 May 2022 19:23:00 +0800
-Message-Id: <4ee1030eb7d24d13ffa1bda98364de07258ca079.1652872975.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.1
+        Wed, 18 May 2022 07:29:09 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA51D1737FA
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 May 2022 04:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1652873349; x=1684409349;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=kWuDF8mm8J4vKIMLBLs/fju6EMIox6Ax5xeD+WGwSr8=;
+  b=gkYC9cnnrEfJY9ZNHMoKsnCIEXDT8ugEqK+m9D1jZHgaI7B7aXQDaDEN
+   it4vdlS5boflKtWGP7D6oF78SlaHf2GaEsH1PTZ+BxvYfBbnrkdlbLZ8s
+   TmicwWjzZ9mGU3IrXbN1RCvUQlHXeVAGvLZXYcROSYRsolGPd0+JoJgEJ
+   GlmyHjfcErjKClNO7ai5g4JzAU67Da6y3eyfsQ3C5E77eNJ/GfFiFPqC6
+   U3MarISs0IIBPLKZodR5ZsHCCB1iXfkvCWcTkOC0dwWBA9KtJ+VDJKhRQ
+   icBt0M9KoP1p6m53D4dbuH5AkyD0XU+uie6a8UeMvNu4HaNc3wx5K/sP0
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.91,234,1647273600"; 
+   d="scan'208";a="201524056"
+Received: from mail-dm6nam10lp2107.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.107])
+  by ob1.hgst.iphmx.com with ESMTP; 18 May 2022 19:29:08 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EU/qxOUGiTWEyq51ij7FH523JXKShbcZgHztf8dBqpw548JmwnawlKAKwi6LiX+rKPP44XA/N1C30UrYOIiMshMwgcLdW5Zlr2R7KkabJkJd5DNsY7SO0J1c6xwF9zXTw2gmRsnR7aL77lVMEukc1/W3gAw2S5MwwbTYwspHbl/wfRPPfXaIrn+qioOk8Bi4xpui7DKuqPFHfEytJ2qlExElkAc/fSkJYMMEfEIMyz4RAjXA7oLyXJlp8ja5ZkpzlQD412uKPJlco/aR63DvsDWmMR8WVrWTrMABqcpmJxcAknmm7kRJkGVkyg04ICuLvYp6xhziNkKr62w5ujPHqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kWuDF8mm8J4vKIMLBLs/fju6EMIox6Ax5xeD+WGwSr8=;
+ b=VdL0pRbmMtuF3/MpY6UVmazkraln/BLgzZ5hhHAxbCoLpEMJpifOYMh5Fk0/ih4oCMd04EuS/KV8V4w1045/b3PjOkbDTp3vmuMFPWh0XgI8Tox/J13w1nTI87eXfzAitS4Ko343oW0Wwe6GRZ4xrY8+W4OPhoqZZvMBQMPvY8u7vFjO9hzwFBfVP6O0owN1O/UAXTh8wn5COfzbCBXfRm4tBYPov9JMseve33hpJmHVSOBjWKZEeHcXeuk1W3UbWWxWtjzubYHO6OoN+609ENr2bBqeycjZBA5kW+Jo1bIoJiaXGVZuij8zMRdveHcbDp0JhDGgWg666fkfp13WNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kWuDF8mm8J4vKIMLBLs/fju6EMIox6Ax5xeD+WGwSr8=;
+ b=XuoSNicWwaUFcaoKeDsGhWe9Cy6Tvg+xUisxqMeMRWNRicAFAWV5ESQPksvjc3MfWRxHjwFJe6vrlbezzDayFTNfwcg9CIzW7Enue5/jqqydjPcJvB47T61spprOdJVgg1gEQnaiVabI/Cbrzl3ydM7NlNA42LsRJnPDab7eHKs=
+Received: from SA0PR04MB7418.namprd04.prod.outlook.com (2603:10b6:806:e7::18)
+ by SA1PR04MB8271.namprd04.prod.outlook.com (2603:10b6:806:1f2::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.14; Wed, 18 May
+ 2022 11:29:06 +0000
+Received: from SA0PR04MB7418.namprd04.prod.outlook.com
+ ([fe80::dfc:dff6:4f94:78e0]) by SA0PR04MB7418.namprd04.prod.outlook.com
+ ([fe80::dfc:dff6:4f94:78e0%4]) with mapi id 15.20.5273.014; Wed, 18 May 2022
+ 11:29:06 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC ONLY 3/8] btrfs: read raid-stripe-tree from disk
+Thread-Topic: [RFC ONLY 3/8] btrfs: read raid-stripe-tree from disk
+Thread-Index: AQHYaTGyleh77VsKp0OYSKTjOAeG6w==
+Date:   Wed, 18 May 2022 11:29:06 +0000
+Message-ID: <SA0PR04MB741858084F504990FE654F879BD19@SA0PR04MB7418.namprd04.prod.outlook.com>
+References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
+ <2ccf8b77759a80a09d083446d5adb3d03947394b.1652711187.git.johannes.thumshirn@wdc.com>
+ <6ddec77c-2aa5-d575-0320-3d5bb824bd04@gmx.com>
+ <PH0PR04MB7416E825D6F1AC99F8923B659BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <ab540ece-37b4-7cb5-216b-dad26ee75ccb@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4b34c6bb-e8e9-4b8c-e031-08da38c19e8d
+x-ms-traffictypediagnostic: SA1PR04MB8271:EE_
+x-microsoft-antispam-prvs: <SA1PR04MB8271E3810AC31262C05B2E3C9BD19@SA1PR04MB8271.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WCyz0pnIx23Symah+43JOtqIcFUFFtASCHtCLWWpWWYzEo7HvpX1D0avIEL+SrUnFe8mq3tu7ZPk7JYZ8q3e7XiIgFzmvIBFj3EFQnQPlsC43LZfjTwzgKaYgoJlIl3Qun1yZbwsxrc4awTi94Uf0IWgMG3futjCLky6T3pUsckSXbT2SmEJy8AhRVaNlPkAk3OES0m8fMlLeNzxyWM5mIRLilOGk3Fl5S4EEg1aWD2nEgN6HsB61sgmaI/9Fh1tH9d+ahrE+3z5GlJW7RrQbbLlfouQXCC0XKbRP782BPkAxZwLLo2ajqLUvnPdU5hZY5f4novCrbpm4rzE+QKCpofW0oLiUCS5iHpLDlcaSOOgJCy8Nf+C3BP5GxsSqow0hYPrn4rBH5KsSetT4s4eEY1sxvv0nTvjODDpi92npv1cbWwcGvLFUg2SUYdjoiRMi22rv4lXfqhJuxvQkJ25oV3qnlDEeKlykZaqnz98bEw/CCGhPHg7WGSD4D9NtkxT/G9L1Nq/d0tmujyL43oGatZNsqCrEWtlC5xFf1iT8A69J2uD1fyvNx6ac87iDGy+fx4THmThhQgRVD150PiDX+SJrGmklsUQZwQUPW9i0Vw6ziZebhD6lK3txxFSjb558zvcgUS6BCI1zIvHBPJwwkc6FaLs7SjYPR9SQIn1q/OrlUQZhKR5aSbBOWoWC3lXvlMlGhpBL9yiU5EyXeYBvA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR04MB7418.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(82960400001)(86362001)(9686003)(38070700005)(4744005)(38100700002)(7696005)(508600001)(2906002)(83380400001)(71200400001)(122000001)(8936002)(52536014)(76116006)(66946007)(66446008)(66476007)(66556008)(8676002)(91956017)(186003)(110136005)(5660300002)(6506007)(33656002)(316002)(53546011)(55016003)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NQkPFdHpFlxiToyISn8Pg3dOtKvbRoluAtWKrdp0vcIJlZESi7ukS+gN0MDB?=
+ =?us-ascii?Q?Oy6Gpatie+8ziBYawac2goQsDOB4ZM5RaIBS+GXHqHF7nQ8il+ZE0fjD2vHF?=
+ =?us-ascii?Q?5bkmxLxvRrYtcokTHOSPferkSoNbHWBCjLTx4UkCZGBbDRb1XaIKyBymq9Gu?=
+ =?us-ascii?Q?2NIR3xppTZqVURn4W2o+a+A5jJWA5hA+oQ7t7yofqownlJQhpvtJOWH3cNJD?=
+ =?us-ascii?Q?C67Kp9nmHNYrZxRQvoc02oeQlA2eMPg+pvX9iLMa9ymHsjZNirqCWDzp0xAM?=
+ =?us-ascii?Q?IKQeM7Qwjlof2eh50vH68EitFZOiN7FjCwv9Qgif3kpp8hk0Vi+7jp+oH5Vv?=
+ =?us-ascii?Q?xT4qodAibVel0D79HvDDG3FuSQuEi4tKAiqoHYTGwN6Lzm+B2KThWjkAkDyx?=
+ =?us-ascii?Q?8Iqsgd0qhNNBw+lmFWnovI+GFwAb7Te0dUYYhhL/aVixXAHPMZRyG30uxT8h?=
+ =?us-ascii?Q?CZcauMpsdw38m8nvUTPCIbt1pZR/F7ALBDPxrtk38AXBxPYdjCgRC3sZdgiH?=
+ =?us-ascii?Q?vn/DpSbI0DxXmTa92RuPFGRn9kiCbfo/0jfqah5EDPxVHOH1BtVc62pDbg90?=
+ =?us-ascii?Q?Olg/EHD3DQfwpZvlf+/TDhcTWvGFUOo2KkRZjxavRtcYtJwraxYMG4tKH3cF?=
+ =?us-ascii?Q?Zsc3A/sOSbsbslMSQK5rlJ1oCUYDato7ZofmLxuWx/WiLEIn+cUt9BVtxKG1?=
+ =?us-ascii?Q?MVy5ytKUvgjKBVzqgERIO3+Y+v5XNaM5Un9PHKoR6XLdNOjuzPHCIqyw3axh?=
+ =?us-ascii?Q?PIg3mbdXjsUcnsbaYUahXuMPI7Ws46jVpc58eiRIZmxQTBHtdaOAIZeoGzT7?=
+ =?us-ascii?Q?3pqkHYVYPLTurUKl+R/HHlkd2FI5GJGd/fr0UYlY8FzGDJTc/1gzRYo1WmUW?=
+ =?us-ascii?Q?pzXP+MHHXZssLckvQxVhyNBso2ArBUMsm7RAAwzRtl8OARZX5p68tQibIBy5?=
+ =?us-ascii?Q?wB9AzIGkUdw3sZMLH3IooCIAnd2cJUdwKCy4+JL1OYOJj43ufc6/T5sJ5ho3?=
+ =?us-ascii?Q?IaIbxysW/pc0wl3/HeqrF1yoYjHsUoBc307p4BeTgjwfOUS51HcUTUFgpppw?=
+ =?us-ascii?Q?cMZDBLrKhDmPub5fXFI84kO+NbwyPpXnXFPKT0JxHv1uu/QiJj1Lp5u2JIyI?=
+ =?us-ascii?Q?hityTqTrSiGW5Fwh2wmk5YIejj+bCHlXI8NmqCwYSH232YmfWYBKwYIy+zFT?=
+ =?us-ascii?Q?N4GorhadcxTPQrp10Ta/gFtL6Vp2DxmpN/qKEuGnvcO76Dx/KtsNPtTLxpnJ?=
+ =?us-ascii?Q?thQBnYJaJeG8Cm6fg3HarErXrrYm1DQ1zWxyEQOYPdeYQx5coPxY6HKQg8p+?=
+ =?us-ascii?Q?GNrGPHgKisF2ESMuBN9e8p+LNYnRIGmSG4vwjd9uHqKhL19Jy+NgI94Yi14d?=
+ =?us-ascii?Q?lQ/dN4/DY7m5Hf5QOSCClxABmXB6NNv1srWmot94oZUguMrNNAD6YnRtX7qo?=
+ =?us-ascii?Q?ciG4pubcOSZRfFVaJCsSSC4ujOmv00lywhUlTiaH9c6qjgKWKMSA4udmWJzO?=
+ =?us-ascii?Q?sdZyGpQA3/PvwOskeaByeSdsde+bDZ48C9ysND6ffKeY6iy75j/cYsPMu/Ml?=
+ =?us-ascii?Q?CeIEYe5rL0grYunnXRWbiCXSfEF9dNv0/QzXEP1xAG7HeHfn9ikasumnnvio?=
+ =?us-ascii?Q?duEPqMQdOxjDKhDFTV2ET+LnC/AztmKnqbvYv72BxezgIoWV8N1T0xW9HNcB?=
+ =?us-ascii?Q?EsiD+j7QIR//elhK1Tz4JosXURB/lPJhcuVmUlF1z1CXebasmXE3g/wxHWmQ?=
+ =?us-ascii?Q?rKyUgqWfy7NaSZ2DUZXl9h9OfikaLGIfVf1nUzl9chhzitud3/x83TKiShcI?=
+x-ms-exchange-antispam-messagedata-1: KRFXMpzrnGYi7DIWxvr3RvUbo1PwGmGQMr3Y5MIMItZ2DPOIfJC3sotI
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR04MB7418.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b34c6bb-e8e9-4b8c-e031-08da38c19e8d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2022 11:29:06.5975
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CJl5hE5XcYLar35ZDmCkyoAVwukgCLeT8J5bYuURX1CAElG156pX61gD8FiWdzjfR5SFv/su9dOuBk6KeNLTfGSa6svnjdm91CufRN8GHHc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR04MB8271
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are several call sites utilizing btrfs_commit_transaction() just
-to update members in super blocks, without any metadata update.
-
-This can be problematic for some simple call sites, like zero_log_tree()
-or check_and_repair_super_num_devs().
-
-If we have big problems preventing the fs to be mounted in the first
-place, and need to clear the log or super block size, but by some other
-problems in extent tree, we're unable to allocate new blocks.
-
-Then we fall into a deadlock that, we need to mount (even
-ro,rescue=all) to collect extra info, but btrfs-progs can not do any
-super block updates.
-
-Fix the problem by allowing the following super blocks only operations
-to be done without using btrfs_commit_transaction():
-
-- btrfs_fix_super_size()
-- check_and_repair_super_num_devs()
-- zero_log_tree().
-
-There are some exceptions in btrfstune.c, related to the csum type
-conversion and seed flags.
-
-In those btrfstune cases, we in fact wants to proper error report in
-btrfs_commit_transaction(), as those operations are not mount critical,
-and any early error can be helpful to expose any problems in the fs.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- check/main.c            |  8 +-------
- check/mode-common.c     | 16 +++-------------
- kernel-shared/volumes.c | 14 ++------------
- 3 files changed, 6 insertions(+), 32 deletions(-)
-
-diff --git a/check/main.c b/check/main.c
-index bcb016964e7a..03df343796c2 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -9659,17 +9659,11 @@ out:
- 
- static int zero_log_tree(struct btrfs_root *root)
- {
--	struct btrfs_trans_handle *trans;
- 	int ret;
- 
--	trans = btrfs_start_transaction(root, 1);
--	if (IS_ERR(trans)) {
--		ret = PTR_ERR(trans);
--		return ret;
--	}
- 	btrfs_set_super_log_root(gfs_info->super_copy, 0);
- 	btrfs_set_super_log_root_level(gfs_info->super_copy, 0);
--	ret = btrfs_commit_transaction(trans, root);
-+	ret = write_all_supers(fs_info);
- 	return ret;
- }
- 
-diff --git a/check/mode-common.c b/check/mode-common.c
-index 2a3018428fc8..f7cb00c0f7b2 100644
---- a/check/mode-common.c
-+++ b/check/mode-common.c
-@@ -1628,7 +1628,6 @@ static int get_num_devs_in_chunk_tree(struct btrfs_fs_info *fs_info)
- 
- int check_and_repair_super_num_devs(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_trans_handle *trans;
- 	int found_devs;
- 	int ret;
- 
-@@ -1651,22 +1650,13 @@ int check_and_repair_super_num_devs(struct btrfs_fs_info *fs_info)
- 
- 	/*
- 	 * Repair is pretty simple, just reset the super block value and
--	 * commit a new transaction.
-+	 * write back all the super blocks.
- 	 */
--	trans = btrfs_start_transaction(fs_info->tree_root, 0);
--	if (IS_ERR(trans)) {
--		ret = PTR_ERR(trans);
--		errno = -ret;
--		error("failed to start trans: %m");
--		return ret;
--	}
--
- 	btrfs_set_super_num_devices(fs_info->super_copy, found_devs);
--	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-+	ret = write_all_supers(fs_info);
- 	if (ret < 0) {
- 		errno = -ret;
--		error("failed to commit trans: %m");
--		btrfs_abort_transaction(trans, ret);
-+		error("failed to write super blocks: %m");
- 		return ret;
- 	}
- 	printf("Successfully reset super num devices to %u\n", found_devs);
-diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-index 97c09a1a4931..9a3b69903d32 100644
---- a/kernel-shared/volumes.c
-+++ b/kernel-shared/volumes.c
-@@ -2861,7 +2861,6 @@ err:
-  */
- int btrfs_fix_super_size(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_trans_handle *trans;
- 	struct btrfs_device *device;
- 	struct list_head *dev_list = &fs_info->fs_devices->devices;
- 	u64 total_bytes = 0;
-@@ -2886,19 +2885,10 @@ int btrfs_fix_super_size(struct btrfs_fs_info *fs_info)
- 		return 0;
- 
- 	btrfs_set_super_total_bytes(fs_info->super_copy, total_bytes);
--
--	/* Commit transaction to update all super blocks */
--	trans = btrfs_start_transaction(fs_info->tree_root, 1);
--	if (IS_ERR(trans)) {
--		ret = PTR_ERR(trans);
--		errno = -ret;
--		error("error starting transaction: %d (%m)", ret);
--		return ret;
--	}
--	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-+	ret = write_all_supers(fs_info);
- 	if (ret < 0) {
- 		errno = -ret;
--		error("failed to commit current transaction: %d (%m)", ret);
-+		error("failed to write super blocks: %d (%m)", ret);
- 		return ret;
- 	}
- 	printf("Fixed super total bytes, old size: %llu new size: %llu\n",
--- 
-2.36.1
-
+On 17/05/2022 10:28, Qu Wenruo wrote:=0A=
+>>=0A=
+>> Metadata on the stripe tree really is the main blocker right now.=0A=
+> =0A=
+> That's no doubt.=0A=
+=0A=
+What could be done and I think this is the only way forward, is to have=0A=
+the stripe tree in the system block group and force system to be RAID1=0A=
+on a fs with stripe tree.=0A=
+=0A=
+Thoughts?=0A=
