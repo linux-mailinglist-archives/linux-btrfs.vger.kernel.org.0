@@ -2,75 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BDB52D1C4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 13:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12C352D1C8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 13:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237529AbiESLsr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 May 2022 07:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        id S233452AbiESLuc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 May 2022 07:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbiESLsq (ORCPT
+        with ESMTP id S229878AbiESLub (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 May 2022 07:48:46 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA77B41FB
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 04:48:42 -0700 (PDT)
+        Thu, 19 May 2022 07:50:31 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F062B82C9
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 04:50:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652960917;
-        bh=/Q22iYrncIsznpfMX3tEV3deZYopEZJfVhJCBZKWS04=;
+        s=badeba3b8450; t=1652961027;
+        bh=3pwnfxzKRSDqpJuJXJVEWoYwycBlXq4o94AbW5LHoLM=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=KPmxGtQbGmovU0vc3KPL4sZhIiUZKsXYp+2PoEXSsUL49H6UvhMbKaqG1Zppz0cyE
-         1vOc/mbUK2J2ys4OgXxTAqO4WFIzcpcGg5adVz9sIlg/+VkmZRhcqGxnFWgsxyEu5V
-         srZtXd40N5+1apm05Gx/3s6TZjTNhRjGg7jc13Ec=
+        b=NwGJHaURykl1U+OkZs/yDfS1OFBoQEv0vT18LJk6DiXSw7z2rXygAhBN/VfzNnYzw
+         kX8SDk3iiIwUS7yAvZGfLEvHNzqrlcKZ/p/K2qWbQYQF1xSdRAVUlMQI7Gt6FUvRkJ
+         mrzL1+Nmnmrf2y7irxUqxaz+JnyLo4yQrCOaYGTk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFKGP-1o7IuD45gP-00FgWh; Thu, 19
- May 2022 13:48:37 +0200
-Message-ID: <e66ba88c-52f0-3db9-7284-f7a161542634@gmx.com>
-Date:   Thu, 19 May 2022 19:48:33 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MK3W0-1o9rFU495K-00LUfA; Thu, 19
+ May 2022 13:50:27 +0200
+Message-ID: <1ab9f2f0-f22c-f768-bcf4-5c48e8aa651a@gmx.com>
+Date:   Thu, 19 May 2022 19:50:24 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: [RFC ONLY 3/8] btrfs: read raid-stripe-tree from disk
+Subject: Re: can't boot into filesystem
 Content-Language: en-US
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <2ccf8b77759a80a09d083446d5adb3d03947394b.1652711187.git.johannes.thumshirn@wdc.com>
- <6ddec77c-2aa5-d575-0320-3d5bb824bd04@gmx.com>
- <PH0PR04MB7416E825D6F1AC99F8923B659BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
- <ab540ece-37b4-7cb5-216b-dad26ee75ccb@gmx.com>
- <SA0PR04MB741858084F504990FE654F879BD19@SA0PR04MB7418.namprd04.prod.outlook.com>
- <a1b876ca-6e6e-39df-ab70-0dd602229f0d@gmx.com>
- <PH0PR04MB74162E6BE1BB1F9519C440199BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
- <a6540b7b-409f-e931-dbfd-98145b48581c@suse.com>
- <PH0PR04MB741655C18EA13F9152DAEB509BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+To:     arnaud gaboury <arnaud.gaboury@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAK1hC9sdifM=m3iH7YVh6Cd1ZKHaW69B+6Hz9=aO_r1fh3D7Tg@mail.gmail.com>
+ <5679bb8d-d0af-187b-1bd0-fd8ccc85a867@gmx.com>
+ <8da3130c-94a7-3af2-1ad4-1ffa9bae6518@gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <PH0PR04MB741655C18EA13F9152DAEB509BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+In-Reply-To: <8da3130c-94a7-3af2-1ad4-1ffa9bae6518@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YDjeyIn874gqFG2/dXlbEud9nBVtVvI9A69924o8IW/O77mv2qm
- ws17g3Q8+DYNHcr5+TJHSXUUwpvY7R6u57PUFNS8XRMk/e4ADaOfmVaMWReiaV15hIEx2OX
- wEPwvMov5mxsImRXvtzAF0jG+lpXPYScXwB2+6OiTpfT2s3Src2MOt7RMXNwTQpVWIw4XKs
- DD0CVboYIPXU3GvEvEIkw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WMqdwiiHRwU=:5+0BC1uGD9OedGqgAlIqrR
- LVAH7XWKJRejlXu1wtxNw8sW3aP2XhjWHcQOmddOiRZ2tqjxhgGvViM1AE7EdqYlLNGgYcD3g
- JFIxyjTJls7qATFlen20HpqHznZAj/I3a7na5HSlUJ0kXnuYn0Qvc3rF82MBxEkPosyicII5x
- fNMKwsRkUE9k8VrfXxu+Ja0PE1NzxsAfyiSau/+2i/ZshncGHbmfXqW6OwXNikQXLoZFZRtqZ
- YpFlK7a51J8bbkye1ayFqnyMQ3xbX87aggMng4C/0lQhOT5JhjIHWRhLdxwKYPiiCuaarkX6t
- Cj772jE4f1E91mQXL+DK66UKP1b4dQrLuDk/2mM1wTL6VWGRgFjKg20hi+pPucdP3xzN+By6+
- N/EqiQom8p/uiG3FmrZGJ24OEU2p8+FugEpa26XLTL1Dc7z8a+0UVTkEYOWKcx+rxndSBiuQC
- aLFcLjvWiL5p4X1eGL866TyVj6ywyo00vu3KTCteZ/AF4XLFYHFk0keqd9c/v/sH+9M3+bE2T
- 3IolGp+0ZWdJKQmmDMnJXc0/l1k6myYWaPA0EbOPKBciT5JY9F2LAjdp99jRAPTaYdQBIz7gL
- yOREBFhVapYjBtbnnjRDq/tigGpGb7SGQieFwMFsei2CtHfbLZiv4lrhtBexm4I5P1tNX9eFB
- IG5bol8olVkEJcp4sJ0SuoO5sNKPtqbIHpz4tv9KojeEAep6dIBrCdWEn7w96ZWP4SjFu+XDt
- QVC1q5m192uJQKbeqf2rw2ENefh9HrLa9cqzFczsM8XfF0SkcUSWSTOC1oY3Qrm4IqXur6IWo
- PvGe99uK1dzRTssk9IS1xrMWJ4QE8QZ3zk+xlCwho2uEUJlS1kthQhrjLTJHIXjG2IqHXv/qh
- 2/RVc7+1IhhLjV1NIcXPNM9iqXpwVayqPb2PBwKsCRtS97P4yRIMDR0PqwW9xJQvXtdKDGBJ0
- 1U232qMk+PV3LeqUJXqQNWFFyRu7uDrpmVArp0Gqt1H2rq9QWt5yMFmOJFMn2gDeiBMJZgSus
- 5dlBoz6NCusuWT4WbC04/WmTjLPUHsKiWnDxJxczHF2TeiJUgfs2da/QV5IoXBrvGlrjNjB9i
- Cy5Z9LnDX4Ffwj9gT3g/RU4sWpnes+Gkdh4GASKlar00fjZ6m/hIXBYnQ==
+X-Provags-ID: V03:K1:kngOEoglw5JVYpmUwMzA8y1rGCquHTFY7ADe9iVug6Pu1/qhg/8
+ KJH3s44M+M5ODCAlPnbsrfJ5Nsn8BNfVrxWfOz2bTkn89ZtPSBEewAQVcQSSWHJKZ/gZaei
+ MXOIljXVMe5cZW/dgrClBGmS1RW73f5O5RoqHbrLiZEVIUvZAQ8TmSnExsa5y4ZeRhCQWcN
+ d4Y5iQVGfJVfiYJ7LHoYA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YJRpaCkgI7I=:AyhssgjqrHbvttmVfvisTa
+ sNnYPqmS/MIrGUon8VC5EutOkdsCiiuNyDdLcBZHLspKBXvam+gNIWpelsChVeRm9CoNSIwDI
+ 8ZnSC1fY2ba2YmD08OCJNjmlvIgqupkahFcr58pWAIASbHcP8zIJaQf8nEP8x0fR/vh+nPwKt
+ x/coXFXqXK2Ob2nWGVcgNufhTw1Z1bw2qChV8P+QkDx+5KUn7Us5fZowu22ISuuZXr2gn4v7E
+ 3ISNT/3sO3IO65HYdoFWprlzsK/PKK3H95gf5KikKg+XW4civFZkRbXtAqjcX6bl41Xxp27y6
+ 3JOSRE55EYoVVdQYYGEl4NeLjXxDSNt1wV6zCyvRebjSOUUiP2/tCbmOL4leUVdbgRqA7KtT0
+ fE+odpPBOCKK3jPk16Ts5horxhEkciPie0ahgXV0k+PVHaP2tVSmuZxcnAUSqdz101+/ZuSMv
+ lwWnnFpM6zPqX4xX5tqQkUh399d5/iBIpZ/yT3kgWK7OCacvL8xwhn0ghveubVKjuuHqCAhK3
+ kcbV1wP3cHZrS96SQXCsRxhp3dQZZ1l64RqDlLQcqvKlIWIf4YqZlDPvTGCwtlFM5OKgOVQ5B
+ xlrEsen62kezIvcV1+nEqnnkWV3WO8y/HzkoPzS1QgCZCW4PRkTuHHLd5ITuuHFUTN+52exV1
+ qT1eF7kqz3zQc3Od778mo27fg8IZd5McZXrjYLLL7HHFf6lB7N+LId+SXkLZK0Yfoe1NAt3ea
+ BmjCyJZiY00SlIWpY3b5pXmrbtcgXtxt6XbBDWy0G1PUrfSmC5DST08S3V8URlExVZPrEboeA
+ d1hmJVI6CDIvYmtBU+xGqe/lNJKT4AcBoNE9KKLDN1LNzOB9F/k1tWPF+rOqjmu1oWp4LEVky
+ JqgaUNTGEm9CoC9bEpPlZCgAjU7WZvhweaKjI0B4W9BlnaP7p7ckLwZaCko0LeTf/Q3cp494j
+ NBdbM+9bs787J+z//9Tf/7M/FW+tm89bvWjBPBZpSb8EpzNPR3ev/5ODKKo/8Udy3U5W9G0Ui
+ Mm29Q5zhz/ESoX6QoqtIfkrZFflAudpntMTdRptfR/zSziCavUCdMtZ8iQUHSepQSoiK3yzR5
+ 1oYCWuJDp0SGw0TAFumUYooTzyvCswxzj9BhVjuPmVQOfwWeCKBOQ+X7w==
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,39 +75,88 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/5/19 19:44, Johannes Thumshirn wrote:
-> On 19/05/2022 12:37, Qu Wenruo wrote:
->>> RAID1 on zoned only needs a stripe tree for data, not for meta-data/sy=
-stem,
->>> so it will work and we can bootstrap from it.
->>>
->> That sounds good.
->>
->> And in that case, we don't need to put stripe tree into system chunks a=
-t
->> all.
->>
->> So this method means, stripe tree is only useful for data.
->> Although it's less elegant, it's much saner.
+On 2022/5/19 19:44, arnaud gaboury wrote:
 >
-> Yes and no. People still might want to use different metadata profiles t=
-han
-> RAID1.
+> On 5/19/22 13:36, Qu Wenruo wrote:
+>>
+>>
+>> On 2022/5/19 17:58, arnaud gaboury wrote:
+>>> My OS has been freshly installed on a btrfs filesystem. I am quite new
+>>> to btrfs, especially when mounting specific partitions. After a change
+>>> in my fstab, I couldn't boot into the filesystem. Booting from a
+>>> rescue CD, I changed the fstab back to its original. Unfortunately I
+>>> still can't boot.
+>>> Here is part of the error message I have:
+>>> devid 2 uuid XXYYY is missing
+>>> failed to read chunk tree: -2
+>>
+>> This is the reason, your fs is across multiple-device (like using RAID1
+>> profiles).
+>>
+>> And on boot, you initramfs doesn't call 'btrfs dev scan' to let btrfs
+>> scan all devices and assemble the full device list.
+>>
+>> Thus it can only detect one disk of your multi-device btrfs, and failed
+>> to mount.
+>>
+>> That's why your rescue CD can mount the fs.
+>>
+>> You may want to check the manual of distro to make sure the initramfs i=
+s
+>> doing proper preparation work for btrfs (mostly just scan the devices).
+>>
+>> For example of Archlinux:
+>>
+>> https://wiki.archlinux.org/title/mkinitcpio
+>
+>
+> I am effectively on arch linux and the btrfs hook is on my
+> mkinitcpio.conf file.
+>
+> Now is there any solution to mount and add to my filesystem the external
+> device?
 
-For RAID1 variants like RAID1C3/4, I guess we don't need stripe tree eithe=
-r?
+External device you mean? Then I guess it's the problem of the drivers.
 
-What about DUP? If RAID1*/DUP/SINGLE all doesn't need stripe tree, I
-believe that's already a pretty good profile set for most zoned device
-users.
+Your initramfs may only have the driver for the internal devices,
+without the proper driver for your external devices.
 
-Personally speaking, it would be much simpler to avoid bothering the
-stripe tree for metadata.
+Thus it's not missing "btrfs dev scan", but really at initramfs it
+doesn't see the external one at all.
+
+You need to add all the drivers if mkinitcpio doesn't properly detect
+all the drivers needed.
 
 Thanks,
 Qu
-
-> I'd prefer to have system on RAID1 (forced) with stripe trees and
-> data/meta-data can be whatever. Of cause only RAID5/6 or higher level en=
-codings
-> which might need a stripe-tree should be accpeted with a stripe tree.
+>
+>> You need "btrfs" hook, which is doing exactly I mentioned, run "btrfs
+>> dev scan".
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> part of my fstab:
+>>> LABEL=3Dmagnolia=C2=A0=C2=A0 / btrfs=C2=A0 rw,noatime.....,subvol=3D@
+>>> LABEL=3Dmagnolia=C2=A0 /btrbk_pool=C2=A0 btrfs=C2=A0 noatime,....,subv=
+olid=3D5
+>>> LABEL=3Dmagnolia=C2=A0=C2=A0 /home=C2=A0=C2=A0 btrfs .....,subvol=3D/@=
+home
+>>> ......
+>>>
+>>>
+>>>
+>>> I am now back to rescue CD. I can mount my filesystem with no error:
+>>> # mount -t btrfs /dev/sdb2 /mnt
+>>> # ls -al /mnt/
+>>> @
+>>> btrbk_snapshots
+>>> @home
+>>> home
+>>>
+>>> I can see my filesystem when I ls the @ directory.
+>>> What can I do to boot my filesystem which is perfectly reproduced in
+>>> the @ subvolume? Shall I simply cp the whole filesystem stored in @ to
+>>> the root of /mnt=C2=A0 when my device sdb2 is mounted?
+>>> Sorry for the lack of formatting and info, but I can't use the browser
+>>> from the rescue CD so I am writing from another computer.
