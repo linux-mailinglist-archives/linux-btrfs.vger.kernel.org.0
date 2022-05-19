@@ -2,69 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8899852D9EB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 18:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8DE52DA15
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 18:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbiESQMM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 May 2022 12:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        id S241237AbiESQXD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 May 2022 12:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237790AbiESQMK (ORCPT
+        with ESMTP id S232805AbiESQXC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 May 2022 12:12:10 -0400
+        Thu, 19 May 2022 12:23:02 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3F0C9EC7
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 09:12:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B888EC1EE2
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 09:23:01 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 87F1B21B40;
-        Thu, 19 May 2022 16:12:08 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 72F8821B9D;
+        Thu, 19 May 2022 16:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1652976728;
+        t=1652977380;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=FbquoDNk8gOLgzEiCQTAfmx6tU3oqeIpPneQw9cKpZM=;
-        b=nQewjpIMkm13YugMjBcIeAdfTMmSueEyx1jNtEpeWi62ff0BpIgYFTePsvMZ3yg3GE3c+d
-        zJc2rP79SxZpOFAyYM80Y9uvCcFwVLZomjZ74fmObOxSrO3A2ekWqt4AxSF+eaDSXNb8Tt
-        BL93Ba9Bcc2yeYg3i3dECUA+gTQL+Y4=
+        bh=DBggyOaajpNrd6mhnIts5GW5diC3XMqVE2QtVv4VWHY=;
+        b=KrtlD3rpO++Fjczt7b2GG+JkViCxcho+Fg82pYEIjjt3/LpbqyUcOrEVlJZBjzMJX8CGSx
+        /brUFRq9GPDUIPm9HVxHjH0gwgogxpw9rzwP6xCu7oOZEJUxfILn0KnUFbtxk5feIl3HNC
+        X3xA5oh7RsXSL2vk6DljGplFa16IPRA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1652976728;
+        s=susede2_ed25519; t=1652977380;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=FbquoDNk8gOLgzEiCQTAfmx6tU3oqeIpPneQw9cKpZM=;
-        b=ELJytvpRwjJ/tlWkEHQQ8eb3/DEE4nL42xTyPi7aA404vEYHdHYZBICU99JX8SSvQsLuke
-        9cAMjtwr4B/J39Cw==
+        bh=DBggyOaajpNrd6mhnIts5GW5diC3XMqVE2QtVv4VWHY=;
+        b=VOrF7u9vHqu+Ff/AeDi/qU92pyc05GC4cv1aEp6AGmZ4RoS9MGP1oDkKtKKyMR2m7f3kHX
+        6SJ5Z2KLW2RKWcCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 47A7813AF8;
-        Thu, 19 May 2022 16:12:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3448213456;
+        Thu, 19 May 2022 16:23:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id xrlrEFhshmJcdgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 19 May 2022 16:12:08 +0000
-Date:   Thu, 19 May 2022 18:07:49 +0200
+        id iMLsC+RuhmIzewAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 19 May 2022 16:23:00 +0000
+Date:   Thu, 19 May 2022 18:18:40 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v15 3/7] btrfs: add send stream v2 definitions
-Message-ID: <20220519160748.GM18596@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Filipe Manana <fdmanana@kernel.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] btrfs: ensure pages are unlocked on cow_file_range()
+ failure
+Message-ID: <20220519161840.GN18596@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1649092662.git.osandov@fb.com>
- <abea9f460c7341361e58cbba8af355654eb94b5b.1649092662.git.osandov@fb.com>
- <20220518210003.GK18596@twin.jikos.cz>
- <YoVyXsuWEOX6dtXE@relinquished.localdomain>
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@kernel.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <20211213034338.949507-1-naohiro.aota@wdc.com>
+ <PH0PR04MB741660777362929B7E3D11DB9BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20220519133850.GA2735952@falcondesktop>
+ <PH0PR04MB74166AC3EE68193876D5171D9BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YoVyXsuWEOX6dtXE@relinquished.localdomain>
+In-Reply-To: <PH0PR04MB74166AC3EE68193876D5171D9BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -76,78 +90,18 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 18, 2022 at 03:25:34PM -0700, Omar Sandoval wrote:
-> On Wed, May 18, 2022 at 11:00:03PM +0200, David Sterba wrote:
-> > On Mon, Apr 04, 2022 at 10:29:05AM -0700, Omar Sandoval wrote:
-> > > @@ -80,16 +84,20 @@ enum btrfs_send_cmd {
-> > >  	BTRFS_SEND_C_MAX_V1 = 22,
-> > >  
-> > >  	/* Version 2 */
-> > > -	BTRFS_SEND_C_MAX_V2 = 22,
-> > > +	BTRFS_SEND_C_FALLOCATE = 23,
-> > > +	BTRFS_SEND_C_SETFLAGS = 24,
-> > 
-> > Do you have patches that implement the fallocate modes and setflags? I
-> > don't see it in this patchset.
+On Thu, May 19, 2022 at 01:51:34PM +0000, Johannes Thumshirn wrote:
+> On 19/05/2022 15:39, Filipe Manana wrote:
+> > On Thu, May 19, 2022 at 12:24:00PM +0000, Johannes Thumshirn wrote:
+> >> What's the status of this patch? It fixes actual errors 
+> >> (hung_tasks) for me.
+> > Well, there was previous review about it, and nothing was addressed in the
+> > meanwhile.
 > 
-> Nope, as discussed before, in order to keep the patch series managable,
-> this series adds the definitions and receive support for fallocate and
-> setflags, but leaves the send side to be implemented at a later time.
-> 
-> I implemented fallocate for send back in 2019:
-> https://github.com/osandov/linux/commits/btrfs-send-v2. It passed some
-> basic testing back then, but it'd need a big rebase and more testing.
+> The question was about the general status of it, not if we're going to merge
+> it. I know Josef's reply.
 
-The patches in the branch are partially cleanups and preparatory work,
-so at least avoiding sending the holes would be nice to have for v2 as
-it was one of the first bugs reported. The falllocate modes seem to be
-easy. The rest is about the versioning infrastructure that we already
-have merged.
-
-> > The setflags should be switched to
-> > something closer to the recent refactoring that unifies all the
-> > flags/attrs to fileattr. I have a prototype patch for that, comparing
-> > the inode flags in the same way as file mode, the tricky part is on the
-> > receive side how to apply them correctly. On the sending side it's
-> > simple though.
-> 
-> The way this series documents (and implements in receive)
-> BTRFS_SEND_C_SETFLAGS is that it's a simple call to FS_IOC_SETFLAGS with
-> given flags. I don't think this is affected by the change to fileattr,
-> unless I'm misunderstanding.
-
-The SETFLAGS ioctls are obsolete and I don't want to make them part of
-the protocol defition because the bit namespace contains flags we don't
-have implemented or are not releated to anything in btrfs.
-
-https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/fs.h#L220
-
-It's basically just naming and specifying what exactly is the value so
-we should pick the most recent interface name that superseded SETFLAGS
-and the XFLAGS.
-
-> This is in line with the other commands being straightforward system
-> calls, but it does mean that the sending side has to deal with the
-> complexities of an immutable or append-only file being modified between
-> incremental sends (by temporarily clearing the flag), and of inherited
-> flags (e.g., a COW file inside of a NOCOW directory).
-
-Yeah the receiving side needs to understand the constraints of the
-flags, it has only the information about the final state and not the
-order in which the flags get applied.
-
-> I suppose it'd
-> also be possible to have SETFLAGS define the final flags and leave it up
-> to receive to make that happen by temporarily setting/clearing flags as
-> necessary, but that is a bit inconsistent with how we've handled other
-> commands.
-
-I'm not sure we can always stick to 1:1 mapping to syscalls or ioctls,
-of course it's the best option, but the protocol can transfer eg.
-more complete information and it's up to the receiving side to apply it
-(like if a file has NODATASUM flag set).
-
-From the other side there are multiple actions for something that could
-be just one, like creating file first as an orphan and then renaming it.
-So I'd like to look at it from the protocol perspective and not
-necessarily blindly copy the OS interfaces.
+If I see comments that do not suggest there are only simple fixups
+needed I'm waiting either for a discussion to resolve the questions or
+an updated v2. We want a fix for the reported hang but the fix should be
+complete.
