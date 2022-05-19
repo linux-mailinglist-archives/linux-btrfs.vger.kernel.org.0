@@ -2,186 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD8852DFFE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 00:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0939052E024
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 00:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245493AbiESWcD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 May 2022 18:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
+        id S245586AbiESW4x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 May 2022 18:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbiESWcA (ORCPT
+        with ESMTP id S231392AbiESW4u (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 May 2022 18:32:00 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF687B41C2
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 15:31:59 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id oe17-20020a17090b395100b001df77d29587so9941617pjb.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 15:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kwKOiO93ksLuvRy5JF1IMCijph6M8ZEzmFOS1jGN7CU=;
-        b=WwoLmguzevEsPoFF0ggKQIrpr/bzs1pj1VCU/XUM4TTnFam+DKfrEF6ftFrTy3HR18
-         BZJgN31Y5f2Xhm7hOiCBbncovml9xg9d6nyX28ZIJHGMgwk5AXOAz/AKtWtv54WDqZ7J
-         /JbHGv24w6axpXvKijWQINAUs9uqifECEpZggaa1GZ8maQYAp+Ucev9ThGy5bkAwmu3p
-         Ash2ct32sHkK4d05NblDyo5ssRq5tfDXH2uOnDy3iCY+WESVJNg+mlT651zYF9PRcCN+
-         gXN1dWwgiZC/o/19FcLim71XhEH3YSKMpyXMDM0d2gXzZKZB3hIE5OSG3VbKLFmxIa5G
-         kXeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kwKOiO93ksLuvRy5JF1IMCijph6M8ZEzmFOS1jGN7CU=;
-        b=BJsUrp/xqvh9MqVWaROBVc4vr+/OkngbS2UTxfpVJhY9SBxtmsne/4urRzZrUCFUVo
-         zX6nBEgI+FMwwTJLDCXwGIWAjkM1u0DNrz+1E5wHJxadzL6RLuawFCsVSFz51o0kCiji
-         d6nhwabTCBsvKMlVQQqG23acm/UGVkmMQH1QBEqRY6QUgxxXE4djTxqU25gNx4qNoMae
-         mxV3CxJHmzBVwKEV9sF4m+tv8XbDMRttpZ9FEpBpQjzRbe7ZhYbfvddnQIlKcYQYaFrQ
-         EfaZRm1dE4L6HWmQvZEuvgV+CCfFw7ctnE6XfsEf/HpzSCQjWOSdctgDae7S7/HhjFfK
-         2BKw==
-X-Gm-Message-State: AOAM533pE4Qs8H/ygZYW3W9ZbQoEOadq9wwSRrTumpCAowdgyC9hsjHA
-        NdYWbFMko4f46ga1dgy2L/PiQkje5jYCrw==
-X-Google-Smtp-Source: ABdhPJxWaC4X4t2x1tzHiQq6YI0VPA1RLG8t9FervutJCgZEzW92JGbuAY/8dlpGo33GQcxncsq7qA==
-X-Received: by 2002:a17:90b:1d0b:b0:1df:b3dc:5140 with SMTP id on11-20020a17090b1d0b00b001dfb3dc5140mr7382662pjb.225.1652999518826;
-        Thu, 19 May 2022 15:31:58 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:500::1:1d15])
-        by smtp.gmail.com with ESMTPSA id c22-20020a17090abf1600b001d6a79768b6sm293252pjs.49.2022.05.19.15.31.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 May 2022 15:31:57 -0700 (PDT)
-Date:   Thu, 19 May 2022 15:31:56 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v15 3/7] btrfs: add send stream v2 definitions
-Message-ID: <YobFXNs0TVBV8xCc@relinquished.localdomain>
-References: <cover.1649092662.git.osandov@fb.com>
- <abea9f460c7341361e58cbba8af355654eb94b5b.1649092662.git.osandov@fb.com>
- <20220518210003.GK18596@twin.jikos.cz>
- <YoVyXsuWEOX6dtXE@relinquished.localdomain>
- <20220519160748.GM18596@suse.cz>
+        Thu, 19 May 2022 18:56:50 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372CD4ECC1
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 15:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1653001003;
+        bh=MsFSEeAg4KtqD/qPjdo+IF2KDaKbDPCwZwvU6rmqT1U=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=BeS/iHhXM3HxmWwlbpMGGZaCSpB8NBA2FVo7CgOq0ylBxcwAYEFV1uY2gRE0sFUr4
+         IJjC52tf8WkdLX7AS+TcIPcxKQensHrFC4Y7SOjHGtaP5/wanw70qG0SWzvFN8/ieD
+         GO6xS9KY0vnreNXMMY4Fx042X+0TTr1hELpKT7q8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mlf4S-1nQlmC3oKQ-00ikid; Fri, 20
+ May 2022 00:56:43 +0200
+Message-ID: <e14a2990-193d-024a-856a-c56ded756042@gmx.com>
+Date:   Fri, 20 May 2022 06:56:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220519160748.GM18596@suse.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [RFC ONLY 3/8] btrfs: read raid-stripe-tree from disk
+Content-Language: en-US
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
+ <2ccf8b77759a80a09d083446d5adb3d03947394b.1652711187.git.johannes.thumshirn@wdc.com>
+ <6ddec77c-2aa5-d575-0320-3d5bb824bd04@gmx.com>
+ <PH0PR04MB7416E825D6F1AC99F8923B659BCE9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <ab540ece-37b4-7cb5-216b-dad26ee75ccb@gmx.com>
+ <SA0PR04MB741858084F504990FE654F879BD19@SA0PR04MB7418.namprd04.prod.outlook.com>
+ <a1b876ca-6e6e-39df-ab70-0dd602229f0d@gmx.com>
+ <PH0PR04MB74162E6BE1BB1F9519C440199BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <a6540b7b-409f-e931-dbfd-98145b48581c@suse.com>
+ <PH0PR04MB741655C18EA13F9152DAEB509BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <e66ba88c-52f0-3db9-7284-f7a161542634@gmx.com>
+ <PH0PR04MB741660F84BFA0F9C4E0204A79BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <e0ba76bd-72c0-fa6e-212f-92e060d79d42@gmx.com>
+ <PH0PR04MB7416361C433278AAECFCF6A39BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <PH0PR04MB7416361C433278AAECFCF6A39BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yTAU04gwkiRxUkftho5FJGu8DGsTifYSs/29SJVsWj38572vREi
+ k8nsM6D5VaPbFUectBySQCO2OAMvF18HT2RbMYbzzJaiSSPa+B5iHhMiwvLRHfFoRwAhinS
+ 9py2gur668JVXxseEi7HSzJQ5CHCGML7gCHfw/z29s7SZq7cSjg8PCfINfP//vt7fKcfCem
+ RUqUcvNMs7kur+HC/ax1g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pt75I6l+Nhw=:detqtqrlRHt9PbpLDVcPCx
+ 0Tq6jyKx9fUmeTGqmqMrv3yxfDOP21cPIdimNBi93jRby02jtqPAaEmuTB9bC6qOBveRgswDC
+ 52mHm/ktIVwxmlqTncVPKQa6XdjGdurtJyKZOiZM+lMELPBYKEg7go5DDYYX5xKkYEpnchjCG
+ 1QrbzxW/CSaZL5KhmM4TSr6Kgj+oR/VXBAD3O91wkS0/lJ+Q2XVin8zeUCR0wecWobVTSoAww
+ EUHpSe6MH6vfUaHzeSwXK6pE66EOBRAoZ4mSq0tvCN67KR3uIAGS5sA/Xu3tC9J6QkZg8HvUF
+ XglVPFJqmXv47go66rUYS71QmOAhhNDk0PoaJvhMm7qd77ItTfUNb2GkalP2Fs8YeOi7djxXK
+ atD1fprgKlz3JCVU2kmrVqHGZ2ehP663Jt1IeeyjtVFvrhILu9ke2BHpwXRb8Rjgh4y/MeKGG
+ 0ZiWysS2gQ0fP/De3gZr/2gGdrIiux0QHjH5PK9gOARejWN6DMciuykTutP2sm5+1U8TjNOpO
+ HxAsa7GpZKJ6S8VsYPpmfsdNXlz011AAhA4liZ5ZHXY4OZMU50IPu0uwcFgW3YQa1vcY03+g7
+ l7074FkqLj2zmpnKcXc1s5Aqyz3tImJ8GlYnFDuINsqJSLVnPbcukBcQoPnT0BSr2GvHA+yY+
+ w3DP7MmaO8pdPo0nCd3elF0QpK3iWAv5kidP6AaUwwFF3TrxZS4NQF/woSx8TBuf9IEH2YvSa
+ 3vljy962TKMCdCkdJUb71GCwFtSEgrw1TosbUnzan2dSqtg3jjy3lQbbvq0wAcik6Jk/Xo5cQ
+ ARSQ01QOHzOVDCnB5XF08U+3HG35jTRlY/bNuwOAv6qMlM5aZheElCqfn8dK4/wpNC+5k3yNE
+ FN0HZE0C22sHvv3qtKN6EosEfU3Dg2jKp83QOeu4LDkZn3hTgrCJEmQ5MavbB0a1wUb2Q4Ut1
+ ZRG3gLCmt2qAif3c376Y6aWdC5cqvGB3Nxd7vkhXnhgqitqz8zb/e9Q1bfOxH3+t/6B2apmBT
+ vGB2nLv+J4li5ilwrJ8WQ9sxqqN57cl+6aTTa+uWnG/KYJBHJwStFz34j6B45pZ7tX7FxeCOG
+ bYaK81v+sHMcchZ5/Y8ubVB77Jc8ucMWAfba9Tdfsf/ZlpNB6FEG906bA==
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 19, 2022 at 06:07:49PM +0200, David Sterba wrote:
-> On Wed, May 18, 2022 at 03:25:34PM -0700, Omar Sandoval wrote:
-> > On Wed, May 18, 2022 at 11:00:03PM +0200, David Sterba wrote:
-> > > On Mon, Apr 04, 2022 at 10:29:05AM -0700, Omar Sandoval wrote:
-> > > > @@ -80,16 +84,20 @@ enum btrfs_send_cmd {
-> > > >  	BTRFS_SEND_C_MAX_V1 = 22,
-> > > >  
-> > > >  	/* Version 2 */
-> > > > -	BTRFS_SEND_C_MAX_V2 = 22,
-> > > > +	BTRFS_SEND_C_FALLOCATE = 23,
-> > > > +	BTRFS_SEND_C_SETFLAGS = 24,
-> > > 
-> > > Do you have patches that implement the fallocate modes and setflags? I
-> > > don't see it in this patchset.
-> > 
-> > Nope, as discussed before, in order to keep the patch series managable,
-> > this series adds the definitions and receive support for fallocate and
-> > setflags, but leaves the send side to be implemented at a later time.
-> > 
-> > I implemented fallocate for send back in 2019:
-> > https://github.com/osandov/linux/commits/btrfs-send-v2. It passed some
-> > basic testing back then, but it'd need a big rebase and more testing.
-> 
-> The patches in the branch are partially cleanups and preparatory work,
-> so at least avoiding sending the holes would be nice to have for v2 as
-> it was one of the first bugs reported. The falllocate modes seem to be
-> easy. The rest is about the versioning infrastructure that we already
-> have merged.
 
-I rebased the patches on this series:
-https://github.com/osandov/linux/commits/btrfs-send-v2-redux. It passes
-some basic testing, but it'll definitely need a lot of fstests.
 
-> > > The setflags should be switched to
-> > > something closer to the recent refactoring that unifies all the
-> > > flags/attrs to fileattr. I have a prototype patch for that, comparing
-> > > the inode flags in the same way as file mode, the tricky part is on the
-> > > receive side how to apply them correctly. On the sending side it's
-> > > simple though.
-> > 
-> > The way this series documents (and implements in receive)
-> > BTRFS_SEND_C_SETFLAGS is that it's a simple call to FS_IOC_SETFLAGS with
-> > given flags. I don't think this is affected by the change to fileattr,
-> > unless I'm misunderstanding.
-> 
-> The SETFLAGS ioctls are obsolete and I don't want to make them part of
-> the protocol defition because the bit namespace contains flags we don't
-> have implemented or are not releated to anything in btrfs.
-> 
-> https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/fs.h#L220
-> 
-> It's basically just naming and specifying what exactly is the value so
-> we should pick the most recent interface name that superseded SETFLAGS
-> and the XFLAGS.
+On 2022/5/19 21:49, Johannes Thumshirn wrote:
+> On 19/05/2022 15:27, Qu Wenruo wrote:
+>>
+>>
+>> Then let us consider the extra chunk type flag, like
+>> BTRFS_BLOCK_GROUP_HAS_STRIPE_TREE, and then expand the combination from
+>> the initial RAID1*|HAS_STRIPE_TREE to other profiles.
+>
+>
+> That would definitively work for me.
 
-This is the situation with FS_IOC_SETFLAGS, FS_IOC_FSSETXATTR, and
-fileattr as I understand it. Please correct me if I'm wrong:
+Just one thing to mention, does RAID10 also need stripe tree for
+metadata? Or since we're doing depth =3D 1 IO for metadata anyway, RAID10
+is also safe for metadata without using a stripe tree?
 
-- FS_IOC_SETFLAGS originally came from ext4 and was added to Btrfs very
-  early on (commit 6cbff00f4632 ("Btrfs: implement
-  FS_IOC_GETFLAGS/SETFLAGS/GETVERSION")).
-- FS_IOC_FSSETXATTR originally came from XFS and was added to Btrfs a
-  few years ago (in commit 025f2121488e ("btrfs: add FS_IOC_FSSETXATTR
-  ioctl")).
-- The two ioctls allow setting some of the same flags (e.g., IMMUTABLE,
-  APPEND), but some are only supported by SETFLAGS (e.g., NOCOW) and
-  some are only supported by FSSETXATTR (none of these are supported by
-  Btrfs, however).
-- fileattr is a recent VFS interface that is used to implement those two
-  ioctls. It basically passes through the arguments for whichever ioctl
-  was called and translates the equivalent flags between the two ioctls.
-  It is not a new UAPI and doesn't have its own set of flags.
-
-Is there another new UAPI that I'm missing that obsoletes SETFLAGS?
-
-I see your point about the irrelevant flags in SETFLAGS, however. Is
-your suggestion to have our own send protocol-specific set of flags that
-we translate to whatever ioctl we need to make?
-
-> > This is in line with the other commands being straightforward system
-> > calls, but it does mean that the sending side has to deal with the
-> > complexities of an immutable or append-only file being modified between
-> > incremental sends (by temporarily clearing the flag), and of inherited
-> > flags (e.g., a COW file inside of a NOCOW directory).
-> 
-> Yeah the receiving side needs to understand the constraints of the
-> flags, it has only the information about the final state and not the
-> order in which the flags get applied.
-
-If the sender only tells the receiver what the final flags are, then
-yes, the receiver would need to deal with, e.g., temporarily clearing
-and resetting flags. The way I envisioned it was that the sender would
-instead send commands for those intermediate flag operations. E.g., if
-the incremental send requires writing some data to a file that is
-immutable in both the source and the parent subvolume, the sender could
-send commands to: clear the immutable flag, write the data, set the
-immutable flag. This is a lot like the orphan renaming that you
-mentioned.
-
-If we want to have receive handle the intermediate states instead, then
-I would like to postpone SETFLAGS (or whatever we call it) to send
-protocol v3, since it'll be very tricky to get right and we can't add it
-to the protocol without having an implementation in the receiver.
-
-On the other hand, if send takes care of the intermediate states and
-receive just has to blindly apply the flags, then we can add SETFLAGS to
-the protocol and receive now and implement it in send later. That is
-exactly what this patch series does.
-
-I'm fine with either of those paths forward, but I don't want to block
-the compressed send/receive on SETFLAGS or fallocate.
+If so, I really believe the metadata has already a super good profile
+set already.
 
 Thanks,
-Omar
+Qu
