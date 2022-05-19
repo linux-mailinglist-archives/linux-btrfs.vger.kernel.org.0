@@ -2,120 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A13B52D175
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 13:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB3052D19D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 13:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbiESL1x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 May 2022 07:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
+        id S231908AbiESLhk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 May 2022 07:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiESL1w (ORCPT
+        with ESMTP id S231274AbiESLhg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 May 2022 07:27:52 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE98337A30
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 04:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652959662;
-        bh=cWvBMK+vxK11JyNuBVkpWw0WuYW0TWyB+Wehembkhv4=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=g/w3ysB1oXnVfoCEM6l6MYu3JphPLYhF7ZoEmvxFKjqjGTJBsy2KaOSbdklO+Bi4O
-         YZ0gnDxDRiF+xP8MTWfJPYz/z5o++dBUe4DT1DHJx9dFljIb2Ngk5Klt2w2DijtFV8
-         Yjc4XO2+gLItYm3eTiCW4BbiRSEkghSqzL7ZiKeo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhD6g-1nMSR52hWs-00eJq3; Thu, 19
- May 2022 13:27:42 +0200
-Message-ID: <28c36dab-c02f-281b-97a0-cfbe2c6ac850@gmx.com>
-Date:   Thu, 19 May 2022 19:27:35 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 12/15] btrfs: add new read repair infrastructure
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Qu Wenruo <wqu@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20220517145039.3202184-1-hch@lst.de>
- <20220517145039.3202184-13-hch@lst.de>
- <e2c4e54c-548b-2221-3bf7-31f6c14a03ee@gmx.com>
- <20220519093641.GA32623@lst.de>
- <d99b2ba3-23d2-0ea1-9aa4-13a898e77ab6@suse.com>
- <20220519105023.GA5891@lst.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220519105023.GA5891@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yQq6uPUj2jSfghX52Dn6T2hu0OqYEt8jNOf24XYeeGQbTGksO0e
- lSIaNQmBJ2ndzRpMZKFM+D+nPHKSzRsj2DP6JsftLkJM+N/S7nGQ3LtdbZHuV5tzbRAhkzc
- bsB3f+tjGZ/mOdk3dfT8NI0sOzKsuve/KAfVK/7vU/vfYyth7/BtVswhSCcpfzi9m8CH3kB
- rmep85beZiD7YO8amMhBg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9/lQ9Vs43UE=:0yXeMUqgt3n2G/I9ruqI3R
- kxY2XwRj6YRlOKW7yloBJVAOBfSyw6VmjttnaFEWPMRRqJKWbdDXST9uThccyuXN8yz/al8AP
- ww7IEuJqDz1DAfbM00pFDmhKSZeEGXEhDwoScxOu39Q+YdsFeMUbhN1pmdZjeodhyxYL0cTcQ
- KGIHWpBwJf/tCHsz1wdUQwHQIWKoHw8Uyoq+MgfgnNmoAxiDUUIpq028k0iiDkFa3q8M/95ir
- S+6FGN+e9h7MwcmE2bBtOFHCRMl98p3IfSlvAYKjCmt9W01abhW+dEG62BbJ+TBER7FxZECB9
- lAmav8tmmwEotzPhLMTHWcrh+6uCoe8BcuSzHOMQO7XK1XpgJmuxm2Moexs59NwzfQmqQpUH3
- zOvP6JbPG1sT2uGjPFESdBT0JbsFt+xKL2Ad5iQdzolRg4D7ddLKWDm2BkyR03dqGvBJFT5nf
- 1v4DP+O0LgdCut92NeGGDUig9NfsiXbk9X01icIxnLMOH7a31OXc2M7zSo4f9PId4Om/bwot8
- av812f2os/9d3EZifAczN9RkMiwayGZVm+WTG7ubTHLBbaFxxl+NZ6WIZ0AtJRjj8YC7f/TvV
- N1fMXB3fKocAnQfoFOjUWjdUP6/Ks9+6kFv9OGGFmbY2ETbUVVnFOsI4jTGP8+l4JFd7J3Mdz
- plKNGhkUJQ9iIsQA9ijbqzNvq1Alrie4Jp6BUodC4t6B0oKBgYoNhh7LVmgKR3m/jngDo/a2J
- Td/9Zyc1IbrKdXEzZVPCJx+IAAxtXaFjV6HR6E+ffE9FfZNgQYMeL3ptHUOe/OrWD1jRlzPX7
- nrXXbOeM//83g71Mqiy8FOrdaVvty+mUanVPX8ogl2hY2uPPtAQYZNkfbVXthnw7F1bhxBXXN
- WzqNBTn7jcHgmI1+O9SF8Hg7h+eyLXyJtsqJtFfuJUs2/T727DGIRkRvXe9ricc+flRIIiaDw
- 1Z5Rd3ouRY9kmiDJ7SM2/SCMWIDLna2/oqdU8JSjyVeVHYNuebLpB2Q22moY8RJSp8b7P+o1q
- 3DbLSeKaO246O06WK1eSaF+nm1++P5YMUq/wA3XKDiULw6lLYs5tiD7pV9Xf4JaiHerrIxLaY
- uxxLg3sUE9OYtWDwVDFLerCFjx/yhvFDv3TYMF9M5PaZHrnJhE8o++sMg==
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 19 May 2022 07:37:36 -0400
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1351C5C361
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 04:37:31 -0700 (PDT)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 7D66E9B806; Thu, 19 May 2022 12:37:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.me.uk; s=201703;
+        t=1652960247; bh=T2FQvaFShlLMEGDubd4AXYQLXGEYqZJXI5pxmjUiMnA=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+        b=FU3+IRyBZ8RUEVBuSjMN6FI724wiyKRvR5axlRuiMGqdBqQmWHdlR0OEnU+KlbXNN
+         lQQWzmFcISSamvZpZSjFKLwHiEHFCUUIEjCKx7duXV/V1ofT8b5X0ZK2ZA1dN6nvQz
+         QKkHA2By1JfQlLXopRRUAHVwjOp6JaXBaduR65LrvjgsPDBQH20YpvsohvmfJhWiSD
+         MSmO8v5Gzjp8uSriTmikPK/ft2owCMyMneN5f8H1jJ18nT7hiOEacZQhDkjFrqFnaS
+         1a8nEwAe9kbnqjMlzeuXELy8tEMydbpUValoXrVev7nzIIbEO69Zsp3bPDwHuwM3JG
+         wbVM6gf9/Nidw==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 88D319B6AE;
+        Thu, 19 May 2022 12:32:26 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.me.uk; s=201703;
+        t=1652959946; bh=T2FQvaFShlLMEGDubd4AXYQLXGEYqZJXI5pxmjUiMnA=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+        b=cAhBopxo0s49hAyNzVUxIQN5Wj60C+5N67/tjNX5YwOiDLOkziJTOsDdv9Qp/ZSYv
+         vfxHfC21cQX9YiFfr2lCXI2BXxa91xZWF/YwodYVG+4kVS7QCv/joWXYmcfyYAuWWf
+         ikxLin5NuBsHiTkExya9RkNmK2NGCr4JJJxnBwJL8j7ZyK3RCQr4rgpyvkrL0TS6iY
+         gvoiyq+8MGdKOMsleRM2u63NGUvqr5hHcXZJAS8/g+pgsJklyJFFRZM5LVtz2enHWa
+         tJ5xFgeuTbtnuaAHVOrBuT0esu03cyT/vpaK5xWK58CqrnLh7XmVTYUM5jUQVVsjvr
+         JZ5tCR3rhIFeg==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+        by black.home.cobb.me.uk (Postfix) with ESMTP id 4806616FC5C;
+        Thu, 19 May 2022 12:32:26 +0100 (BST)
+Message-ID: <fbc486d1-b798-c3f5-7dae-0f0cbf4613d9@cobb.uk.net>
+Date:   Thu, 19 May 2022 12:32:26 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+From:   Graham Cobb <g.btrfs@cobb.me.uk>
+Subject: Re: can't boot into filesystem
+Content-Language: en-US
+To:     arnaud gaboury <arnaud.gaboury@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAK1hC9sdifM=m3iH7YVh6Cd1ZKHaW69B+6Hz9=aO_r1fh3D7Tg@mail.gmail.com>
+ <275444b7-de43-d0b5-dd4b-41670164e351@cobb.uk.net>
+ <CAK1hC9usm5ArZEf3xd4Tnd730_EBU4zwv3tL5wopu=XP2a4gJA@mail.gmail.com>
+In-Reply-To: <CAK1hC9usm5ArZEf3xd4Tnd730_EBU4zwv3tL5wopu=XP2a4gJA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 19/05/2022 12:14, arnaud gaboury wrote:
+> the issue has been solved.
+> I chrooted the filesystem, then run btrfs filesystem show. There, I
+> saw the external device I tried to attach tomy btrfs filesystem. That
+> was the change in my fstab. But I realized that the device was still
+> in my filesystem.
+> I ran btrfs delete and now I Am Back to my OS.
+> My error came from the fact that going back to the original fstab was
+> not enough as the external device was still added tomy filesystem.
 
+Great. In fact, if you add a device to a btrfs filesystem you do not
+make any change to fstab - when mounting a multi-device filesystem,
+btrfs will search for all the devices involved (and fail to mount if any
+are missing, by default).
 
-On 2022/5/19 18:50, Christoph Hellwig wrote:
-> On Thu, May 19, 2022 at 06:41:52PM +0800, Qu Wenruo wrote:
->> So in that case, the best solution is to use "btrfs-map-logical -l
->> 343998464", which will directly return the physical offset of the wante=
-d
->> logical on each involved devices.
+For that reason, adding an external device to your root filesystem
+should be avoided if possible, as external devices, or their connectors
+or power supplies, are more likely to get damaged and then you can't boot.
+
+> 
+> On Thu, May 19, 2022 at 12:39 PM Graham Cobb <g.btrfs@cobb.me.uk> wrote:
 >>
->> Although we need to note:
+>> You will probably get a much more useful reply from a developer later
+>> but in the meantime...
 >>
->> - btrfs-map-logical may not always be shipped in progs in the future
->>    This tool really looks like a debug tool. I'm not sure if we will ke=
-ep
->>    shipping it (personally I really hope to)
+>> Probably your rescue CD has an older kernel - new kernels do more
+>> validation on the filesystem. In that case, there is something wrong
+>> with the filesystem but the old kernel hasn't noticed.
 >>
->> - btrfs-map-logical only return data stripes
->>    Thus it doesn't work for RAID56 just in case you want to use it.
+>> You might want to try a rescue CD based on a newer kernel. And/or you
+>> should do a "btrfs check" with the latest btrfs-progs that you can run.
+>> You could even chroot into /mnt/@ (bind mounting dev, proc and sys, of
+>> course) and see if you can run the btrfs image from /mnt/@/usr/bin/btrfs
+>> while booted in your rescue CD. If so, try using it to do a "btrfs
+>> check" on your filesystem. If not, use the btrfs check from the rescue
+>> CD itself. In either case, DO NOT SPECIFY --repair UNLESS A DEVELOPER
+>> TELLS YOU TO!!
 >>
->> Despite the weird extent logical bytenr, everything should be fine with
->> btrfs-map-logical.
->
->
-> Oh, nice, this is much better than the hackery in the existing tests.
->
-> That bein said the -c option does not seem to work.  No matter what
-> I specify it always returns all three mirrors.  I guess a little
-> awk will fix that, but the behavior seems odd.
+>> By the way, /mnt/@ IS your root - it isn't a copy of it. You can see in
+>> fstab that the "@" subvolume of your disk gets mounted into "/" on boot.
+>>
+>> On 19/05/2022 10:58, arnaud gaboury wrote:
+>>> My OS has been freshly installed on a btrfs filesystem. I am quite new
+>>> to btrfs, especially when mounting specific partitions. After a change
+>>> in my fstab, I couldn't boot into the filesystem. Booting from a
+>>> rescue CD, I changed the fstab back to its original. Unfortunately I
+>>> still can't boot.
+>>> Here is part of the error message I have:
+>>> devid 2 uuid XXYYY is missing
+>>> failed to read chunk tree: -2
+>>>
+>>> part of my fstab:
+>>> LABEL=magnolia   / btrfs  rw,noatime.....,subvol=@
+>>> LABEL=magnolia  /btrbk_pool  btrfs  noatime,....,subvolid=5
+>>> LABEL=magnolia   /home   btrfs .....,subvol=/@home
+>>> ......
+>>>
+>>>
+>>>
+>>> I am now back to rescue CD. I can mount my filesystem with no error:
+>>> # mount -t btrfs /dev/sdb2 /mnt
+>>> # ls -al /mnt/
+>>> @
+>>> btrbk_snapshots
+>>> @home
+>>> home
+>>>
+>>> I can see my filesystem when I ls the @ directory.
+>>> What can I do to boot my filesystem which is perfectly reproduced in
+>>> the @ subvolume? Shall I simply cp the whole filesystem stored in @ to
+>>> the root of /mnt  when my device sdb2 is mounted?
+>>> Sorry for the lack of formatting and info, but I can't use the browser
+>>> from the rescue CD so I am writing from another computer.
+>>
 
-Currently the copy number is only used for -o option, not for regular
-chunk mapping printing.
-
-Thus we still need awk to fix the awkward behavior. (no pun intended)
-
-Another problem related to btrfs-map-logical is it doesn't work if the
-range has no data/metadata extent there.
-
-So Nik is right, we need a better tool integrated into btrfs-ins, other
-than this historical one.
-
-Thanks,
-Qu
