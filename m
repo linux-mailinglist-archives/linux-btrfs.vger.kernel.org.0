@@ -2,86 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8DE52DA15
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 May 2022 18:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D2152DFF4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 00:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241237AbiESQXD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 May 2022 12:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        id S232476AbiESW3B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 May 2022 18:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbiESQXC (ORCPT
+        with ESMTP id S240545AbiESW27 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 May 2022 12:23:02 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B888EC1EE2
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 09:23:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 72F8821B9D;
-        Thu, 19 May 2022 16:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1652977380;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DBggyOaajpNrd6mhnIts5GW5diC3XMqVE2QtVv4VWHY=;
-        b=KrtlD3rpO++Fjczt7b2GG+JkViCxcho+Fg82pYEIjjt3/LpbqyUcOrEVlJZBjzMJX8CGSx
-        /brUFRq9GPDUIPm9HVxHjH0gwgogxpw9rzwP6xCu7oOZEJUxfILn0KnUFbtxk5feIl3HNC
-        X3xA5oh7RsXSL2vk6DljGplFa16IPRA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1652977380;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DBggyOaajpNrd6mhnIts5GW5diC3XMqVE2QtVv4VWHY=;
-        b=VOrF7u9vHqu+Ff/AeDi/qU92pyc05GC4cv1aEp6AGmZ4RoS9MGP1oDkKtKKyMR2m7f3kHX
-        6SJ5Z2KLW2RKWcCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3448213456;
-        Thu, 19 May 2022 16:23:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iMLsC+RuhmIzewAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 19 May 2022 16:23:00 +0000
-Date:   Thu, 19 May 2022 18:18:40 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Filipe Manana <fdmanana@kernel.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] btrfs: ensure pages are unlocked on cow_file_range()
- failure
-Message-ID: <20220519161840.GN18596@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Filipe Manana <fdmanana@kernel.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20211213034338.949507-1-naohiro.aota@wdc.com>
- <PH0PR04MB741660777362929B7E3D11DB9BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20220519133850.GA2735952@falcondesktop>
- <PH0PR04MB74166AC3EE68193876D5171D9BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+        Thu, 19 May 2022 18:28:59 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F1A66AF5
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 15:28:57 -0700 (PDT)
+Received: from wsip-24-120-54-100.lv.lv.cox.net ([24.120.54.100]:28748 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1nrodb-0002wV-P4 by authid <merlins.org> with srv_auth_plain; Thu, 19 May 2022 15:28:55 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1nrodb-009rVa-4K; Thu, 19 May 2022 15:28:55 -0700
+Date:   Thu, 19 May 2022 15:28:55 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220519222855.GL13006@merlins.org>
+References: <20220516153651.GG13006@merlins.org>
+ <20220516165327.GD8056@merlins.org>
+ <CAEzrpqfShQhaCVv1GY=JTTCO_T44ggidHFtbSABrcPCSNzY9hA@mail.gmail.com>
+ <CAEzrpqdsi63zgudjzbSa3QyMLuE5nD3+t9nOuzXEdWZGCbTcNA@mail.gmail.com>
+ <20220517202756.GK8056@merlins.org>
+ <CAEzrpqdgKtSDJj2QekYuS+M77wYrp6bvXv2Ue3xQ8Vm2bGGYAg@mail.gmail.com>
+ <20220517212223.GL8056@merlins.org>
+ <CAEzrpqcX3XEQGjoJCV1wARu=Od7vAypmzO4dCFgQ+_UBBuJdMA@mail.gmail.com>
+ <20220518191241.GI13006@merlins.org>
+ <CAEzrpqfPEU9Vt86ykVyxwvDXrihKfGc180oT7SUcQdwtYysquw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR04MB74166AC3EE68193876D5171D9BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <CAEzrpqfPEU9Vt86ykVyxwvDXrihKfGc180oT7SUcQdwtYysquw@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 24.120.54.100
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,18 +56,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 19, 2022 at 01:51:34PM +0000, Johannes Thumshirn wrote:
-> On 19/05/2022 15:39, Filipe Manana wrote:
-> > On Thu, May 19, 2022 at 12:24:00PM +0000, Johannes Thumshirn wrote:
-> >> What's the status of this patch? It fixes actual errors 
-> >> (hung_tasks) for me.
-> > Well, there was previous review about it, and nothing was addressed in the
-> > meanwhile.
+On Wed, May 18, 2022 at 03:17:55PM -0400, Josef Bacik wrote:
+> Yes sorry I meant to say that.  Because we have these dangling block
+> groups we'll suddenly have a bunch of files that no longer are
+> mappable and we'll need to delete them.  Looks to be about 7gib of
+> block groups so you're going to lose that stuff, it's going to be a
+> while but it's expected.  Thanks,
 > 
-> The question was about the general status of it, not if we're going to merge
-> it. I know Josef's reply.
+So, it's definitely deleting a lot
 
-If I see comments that do not suggest there are only simple fixups
-needed I'm waiting either for a discussion to resolve the questions or
-an updated v2. We want a fix for the reported hang but the fix should be
-complete.
+I think I'm at 81%
+
+searching 159785 for bad extents
+processed 78446592 of 95879168 possible bytes, 81%
+Found an extent we don't have a block group for in the file
+Performances/Magic/Diversion 08022019.mkv
+Deleting [70879, 108, 10708312064] root 6781246029824 path top 6781246029824 top slot 19 leaf 10678930079744 slot 34
+
+gargamel:~# grep -c Deleting /mnt/btrfs_space/ri1
+ 149583
+
+Ok, that's a lot of files, but let's see if it finishes
+
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
