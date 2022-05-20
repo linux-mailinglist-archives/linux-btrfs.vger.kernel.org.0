@@ -2,139 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A57352EE52
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 16:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F387F52EED9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 17:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345502AbiETOjD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 10:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+        id S1350672AbiETPOm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 11:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350401AbiETOjB (ORCPT
+        with ESMTP id S232969AbiETPOl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 10:39:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F5917067A
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 07:38:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7918321B6E;
-        Fri, 20 May 2022 14:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653057538;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9WNE/yjJMRscsN8M6BsO4vK+W82mnI/7khhpzrRttRA=;
-        b=GzaUzn/vNE39Qf3MRYQpcSeESGSD/2ww9Bigm3ANVsP1lb9LSt8XWd5KLrlu7NGvsFC8AU
-        31ZDWZYXeIMYAdZIZ29mPZuHcnUnsa1Q0F2gqdaLAvcD+59yewJo1MkNezCDtM0/QwT1DM
-        WTR9qXBy6m20PEi0Wqd8/sV6LWOc2JY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653057538;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9WNE/yjJMRscsN8M6BsO4vK+W82mnI/7khhpzrRttRA=;
-        b=KZKq5oMqCi+nFnNZN2G1Ii0dFLnwE2yI4Rh5PmOj9oO8mHDthnKyCO3cfCRcM0eGBFZvcQ
-        M701RyAoDjlcszCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45B5D13AF4;
-        Fri, 20 May 2022 14:38:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fykSEAKoh2K4BAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 14:38:58 +0000
-Date:   Fri, 20 May 2022 16:34:38 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs-progs: free space tree fixes
-Message-ID: <20220520143438.GQ18596@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1653009947.git.wqu@suse.com>
+        Fri, 20 May 2022 11:14:41 -0400
+Received: from mx2.b1-systems.de (mx2.b1-systems.de [159.69.135.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E255E17066D
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 08:14:39 -0700 (PDT)
+Message-ID: <16c8e141-f3b8-8a6b-1366-23b9dfbae343@b1-systems.de>
+Date:   Fri, 20 May 2022 17:14:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1653009947.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: de-DE
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+ <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+ <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
+ <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+ <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
+From:   Johannes Kastl <kastl@b1-systems.de>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+In-Reply-To: <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------HziO0ClMdyvzzxggsiYNm7Yj"
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 20, 2022 at 09:31:49AM +0800, Qu Wenruo wrote:
-> I was debugging a weird behavior that btrfs kernel chooses not to
-> allocate a new data extent at an empty data block group.
-> 
-> And when checking the free space tree, it turned out that, we always
-> use bitmaps in btrfs-progs no matter what.
-> 
-> This results some every concerning free space tree after mkfs:
-> 
->   $ mkfs.btrfs  -f -m raid1 -d raid0 /dev/test/scratch[1234]
->   btrfs-progs v5.17
->   [...]
->   Block group profiles:
->     Data:             RAID0             4.00GiB
->     Metadata:         RAID1           256.00MiB
->     System:           RAID1             8.00MiB
->   [..]
-> 
->   $ btrfs ins dump-tree -t free-space /dev/test/scratch1
->   btrfs-progs v5.17
->   free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
->   node 30441472 level 1 items 10 free space 483 generation 6 owner FREE_SPACE_TREE
->   node 30441472 flags 0x1(WRITTEN) backref revision 1
->   fs uuid deddccae-afd0-4160-9a12-48fe7b526fb1
->   chunk uuid 68f6cf98-afe3-4f47-9797-37fd9c610219
->           key (1048576 FREE_SPACE_INFO 4194304) block 30457856 gen 6
->           key (475004928 FREE_SPACE_BITMAP 8388608) block 30703616 gen 5
->           key (953155584 FREE_SPACE_BITMAP 8388608) block 30720000 gen 5
->           key (1431306240 FREE_SPACE_BITMAP 8388608) block 30736384 gen 5
->           key (1909456896 FREE_SPACE_BITMAP 8388608) block 30752768 gen 5
->           key (2387607552 FREE_SPACE_BITMAP 8388608) block 30769152 gen 5
->           key (2865758208 FREE_SPACE_BITMAP 8388608) block 30785536 gen 5
->           key (3343908864 FREE_SPACE_BITMAP 8388608) block 30801920 gen 5
->           key (3822059520 FREE_SPACE_BITMAP 8388608) block 30818304 gen 5
->           key (4300210176 FREE_SPACE_BITMAP 8388608) block 30834688 gen 5
->   [...]
->   ^^^ So many bitmaps that an empty fs will have two levels for free
->       space tree already
-> 
-> Thankfully, kernel can properly merge those bitmaps into a large extent
-> at mount, so it won't be that scary forever.
-> 
-> It turns out that, we never set btrfs_block_group::bitmap_high_thresh,
-> thus we always convert free space extents to bitmaps, and waste space
-> unnecessarily.
-> 
-> Fix it by cross-port the needed function
-> set_free_space_tree_thresholds() from kernel and call it at correct
-> timing.
-> 
-> And finally add a test case for it.
-> 
-> Unfortunately, even with this fixed, kernel is still doing its weird
-> behavior, as it's the cached un-clustered allocation code causing the
-> problem...
-> 
-> Qu Wenruo (2):
->   btrfs-progs: properly initialize btrfs_block_group::bitmap_high_thresh
->   btrfs-progs: mkfs-tests: add test case to make sure we don't create
->     bitmaps for empty fs
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------HziO0ClMdyvzzxggsiYNm7Yj
+Content-Type: multipart/mixed; boundary="------------KRDPGU0lqH3031z028m5kv5I";
+ protected-headers="v1"
+From: Johannes Kastl <kastl@b1-systems.de>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Message-ID: <16c8e141-f3b8-8a6b-1366-23b9dfbae343@b1-systems.de>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+ <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+ <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
+ <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+ <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
+In-Reply-To: <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
 
-Good catch, thanks. The free-space-tree.c has a high similarity with the
-kernel sources, there are possibly more changes missing in the progs
-implementation. Getting this file in sync would be desirable, function
-by function or small updates are fine, if anybody is interested.
+--------------KRDPGU0lqH3031z028m5kv5I
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+
+SGVsbG8gUXUsDQoNCk9uIDE4LjA1LjIyIGF0IDEyOjU5IFF1IFdlbnJ1byB3cm90ZToNCj4g
+T24gMjAyMi81LzE4IDE4OjM4LCBKb2hhbm5lcyBLYXN0bCB3cm90ZToNCj4+IEZpeGluZyB0
+aGUgZGV2aWNlIHNpemUgZmFpbHMgbm9uZXRoZWxlc3MgKHNlZSBiZWxvdykuIEFuZCBJIGNh
+biBubw0KPj4gbG9uZ2VyIG1vdW50IHRoZSBmaWxlc3lzdGVtLCB3aGVuIEkgdHJ5IEkgZmlu
+ZCB0aGlzIGluIHRoZSBsb2dzOg0KPj4NCj4+PiBbODczOTYuODg5MDQzXSBCVFJGUyBlcnJv
+ciAoZGV2aWNlIHNkYjEpOiBzdXBlcl90b3RhbF9ieXRlcw0KPj4+IDE1MzkzMTYyNzg0NzY4
+IG1pc21hdGNoIHdpdGggZnNfZGV2aWNlcyB0b3RhbF9yd19ieXRlcyAxNTM5MzE2Mjc4ODg2
+NA0KPj4+IFs4NzM5Ni44ODk5NzRdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMSk6IGZhaWxl
+ZCB0byByZWFkIGNodW5rIHRyZWU6IC0yMg0KPj4+IFs4NzM5Ni44OTI3NDFdIEJUUkZTIGVy
+cm9yIChkZXZpY2Ugc2RiMSk6IG9wZW5fY3RyZWUgZmFpbGVkDQo+Pg0KPj4gKERvbid0IGdl
+dCBjb25mdXNlZCBieSBzZGIxLCB0aGlzIGlzIGZyb20gYSByZXNjdWUgc3lzdGVtIHdpdGgg
+b25seSBzb21lDQo+PiBIRERzIGF0dGFjaGVkKQ0KPj4NCj4+IEZpeGluZyB0aGUgZGV2aWNl
+LXNpemUgb24gTGVhcCAxNS4zOg0KPj4+ICMgYnRyZnMgZmlsZXN5c3RlbSBzaG93IC9tbnQv
+RFVNQk9fQkFDS1VQXzRUQi8NCj4+PiBMYWJlbDogJ0RVTUJPX0JBQ0tVUF80VEInwqAgdXVp
+ZDogNTA2NTFiNDEtYmYzMy00N2U3LThhMDgtYWZiYzcxYmEwYmY4DQo+Pj4gwqDCoMKgwqDC
+oMKgwqAgVG90YWwgZGV2aWNlcyAyIEZTIGJ5dGVzIHVzZWQgMy4xN1RpQg0KPj4+IMKgwqDC
+oMKgwqDCoMKgIGRldmlkwqDCoMKgIDEgc2l6ZSA3LjAwVGlCIHVzZWQgMy42NFRpQiBwYXRo
+IC9kZXYvc2RkMQ0KPj4+IMKgwqDCoMKgwqDCoMKgIGRldmlkwqDCoMKgIDIgc2l6ZSA3LjAw
+VGlCIHVzZWQgMy42M1RpQiBwYXRoIC9kZXYvc2RjMQ0KPiANCj4gVGhhdCdzIHN1cGVyIHdl
+aXJkLCB3ZSBoYXZlIHRvbnMgb2YgdW5hbGxvY2F0ZWQgc3BhY2UuDQo+IA0KPiBTbyBkZWZp
+bml0ZWx5IHNvbWV0aGluZyB3cm9uZyBpbiBidHJmcy1wcm9ncy4NCj4gTm9ybWFsbHkgYGJ0
+cmZzIGZpIHVzYWdlYCB3b3VsZCBwcm92aWRlIG1vcmUgaW5mbywgYnV0IGl0IG5lZWRzIHRo
+ZSBmcw0KPiB0byBiZSBtb3VudGFibGUuDQo+IA0KPiBDYW4geW91IHByZXBhcmUgYSBidWls
+ZGluZyBlbnZpcm9ubWVudCBmb3IgYnRyZnMtcHJvZ3M/DQo+IA0KPiBJIGNhbiB1cGRhdGUg
+dGhlIGNvZGUgdG8gc2tpcCB0cmFuc2FjdGlvbiBjb21taXQgc28gdGhhdCB3ZSB3b24ndCBi
+ZQ0KPiBib3RoZXIgd2l0aCAtRU5PU1BDIGF0IGFsbC4NCj4gDQo+IEFuZCBzaW5jZSB3ZSdy
+ZSBub3QgcmVhbGx5IGRvaW5nIGFueSBtZXRhZGF0YSB1cGRhdGUsIHdlIGRvbid0IHJlYWxs
+eQ0KPiBuZWVkIGFueSBuZXcgc3BhY2UuDQo+IA0KPiBBbmQgYWZ0ZXIgeW91ciBidWlsZGlu
+ZyBlbnZpcm9ubWVudCBwcmVwYXJlZCwgeW91IGNhbiBmZXRjaCB0aGlzIGJyYW5jaA0KPiB0
+byBjb21waWxlIHRoZSBidHJmcy1wcm9ncyBhbmQgdHJ5IHRvIHVzZSB0aGUgY29tcGlsZWQg
+YGJ0cmZzYCBjb21tYW5kDQo+IHRvIHJlc2N1ZSB0aGUgZGV2aWNlIGFnYWluLg0KDQpUaGFu
+a3MgZm9yIHlvdXIgaGVscCENCg0KPiBodHRwczovL2dpdGh1Yi5jb20vYWRhbTkwMDcxMC9i
+dHJmcy1wcm9ncy90cmVlL2RpcnR5X2ZpeA0KPiANCj4gSSBkaWQgc29tZSBsb2NhbCB0ZXN0
+cywgaXQgc2hvd3Mgbm8gcHJvYmxlbSwgYnV0IG5vdCBzdXJlIGlmIGl0IHdvdWxkDQo+IHdv
+cmsgZm9yIHlvdS4NCg0KSSBhbSB0cnlpbmcgdG8gYnVpbGQgdGhpcyBhbmQgd2lsbCB0ZXN0
+IGl0LCBob3BlZnVsbHkgdG9tb3Jyb3cuIEknbGwgbGV0IHlvdSANCmtub3cgd2hhdCBoYXBw
+ZW5zLi4uDQoNCktpbmQgUmVnYXJkcywNCkpvaGFubmVzDQoNCi0tIA0KSm9oYW5uZXMgS2Fz
+dGwNCkxpbnV4IENvbnN1bHRhbnQgJiBUcmFpbmVyDQpUZWwuOiArNDkgKDApIDE1MSAyMzcy
+IDU4MDINCk1haWw6IGthc3RsQGIxLXN5c3RlbXMuZGUNCg0KQjEgU3lzdGVtcyBHbWJIDQpP
+c3RlcmZlbGRzdHJhw59lIDcgLyA4NTA4OCBWb2hidXJnDQpodHRwOi8vd3d3LmIxLXN5c3Rl
+bXMuZGUNCkdGOiBSYWxwaCBEZWhuZXINClVudGVybmVobWVuc3NpdHo6IFZvaGJ1cmcgLyBB
+RzogSW5nb2xzdGFkdCxIUkIgMzUzNw0K
+
+--------------KRDPGU0lqH3031z028m5kv5I--
+
+--------------HziO0ClMdyvzzxggsiYNm7Yj
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEOjtDOPXdIVAWcUziyeav2MG3z/wFAmKHsFoFAwAAAAAACgkQyeav2MG3z/zk
+vw/+IQR/aWku+qH5OA1URNyh3frf2R/XBOkdClOtRJun6OAW+n60mOQtbW6M+EkzbYY4Npvay6H+
+D1uZYInCf8YsyV2DxvoN9GwT9dCUPylFrvy+3ESAPotQvLrfkSSTfkEa9ZViejjhDVFj6JXHmEnP
++dYhEJv2U08ovWlQzZ7Ojd8LCTsgkWTZNOwAfNPxyVNF1x1w12lYDapH/Js5pyJPLix3f3DUP7N1
+Js1Sv0LQTe+/WFc8HTTtXn5pj6zCoRs+s8aIABhfurK8odFTaHo6rqEfmP76CuyQ0a/fhZ3Jo6vq
+TXpa0rCmy4Lm1Iig3Tlcwk4nQbbMB0uvUPJoYoWULSmWkX9q52DejrdFnyAM+8ddXdzADgi2JbJ7
+fY2y0OQVQ9YVg5t4xVZf+ZvsHyZnIukbg+9KTqUpvyNHs6WqrgDBRD3iNUVnG3vpJzampgN+Sy/u
+rO9UD0EATLsYdLeFRcZsffwOR/Dl8SJov9CVjqQbx2OiceGw/aZ4DVHjBarVOUxgmLO7g0tLE6yi
+oeZcEukA/oFYZGIXmD4Z2As9eRG91rDIinM/1a6cKL6Ml8ayh/apblqNSQSf5btx38d2xnv2EPGb
+IS+6C5mwnqvIqZ2FkcKoXohY431ABdjORi/OvZWfAjrB89D5f/TBLE41dHtxXYjvZ/tDnUrczMRq
+mVQ=
+=btCc
+-----END PGP SIGNATURE-----
+
+--------------HziO0ClMdyvzzxggsiYNm7Yj--
