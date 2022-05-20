@@ -2,114 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A785552F17E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 19:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CDA52F27B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 20:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352141AbiETRWy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 13:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
+        id S1352707AbiETSSA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 14:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345306AbiETRWx (ORCPT
+        with ESMTP id S1352635AbiETSR4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 13:22:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A70B16D4A9;
-        Fri, 20 May 2022 10:22:52 -0700 (PDT)
+        Fri, 20 May 2022 14:17:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26FE69B4D
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 11:16:42 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 050A01F899;
-        Fri, 20 May 2022 17:22:51 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 01F2521B28;
+        Fri, 20 May 2022 18:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653067371;
+        t=1653070601;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=U1vEEBx5l6lck/ZVYtVMS6/WSLGFTxzXzQhGy8n6n1Y=;
-        b=1K0EXYYgwzsP5pttWIVJPO7peR7LU+5/FGwrIehUJrgtYp1b2Z1gmnbsrlrvfd9lUvK2VA
-        zu24tnaYU76hI6QXg7nbkOeg0BgdflDuWpJoTzQjH360AGI4TCOxit8DE29sKLWYXVeAlH
-        Jl7ARw2GtOYQYSYYjCB3PhyECWDOHus=
+        bh=GhwClLlzshrF3Pp6Ph86SXPaNIhM071sLpne8IgR6M4=;
+        b=TO/LKLO2y7WWLKCrHsOjlmv1i+VOjWDW5xG5uUl2Cze7WJkn2Twdp8E8za1WYXE8COVtAF
+        5roe8DUwol88lmNAzCv5A/wSmcWG9aQhA6r7TFHO7MELRbvzHgjHw3zrAy/h6mFtxZ2v0A
+        NRgpodPemwY10uZYDpfMZuYkJSXxWSY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653067371;
+        s=susede2_ed25519; t=1653070601;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=U1vEEBx5l6lck/ZVYtVMS6/WSLGFTxzXzQhGy8n6n1Y=;
-        b=fdfW8UYvFzHZKAsM32Bd+yUPieD8tKqZpNTkU0+Ww4cQ9TxtNrH3v7+6LIxP4Bdiz6Gq/f
-        1Yvz9mmtz7ulOzDg==
+        bh=GhwClLlzshrF3Pp6Ph86SXPaNIhM071sLpne8IgR6M4=;
+        b=iXc1mrwZ2Klz/ffysc9pqv4V1L+RhAwHcN9MI/eySA0Fqn8Sf/DpXL3AwWrCGJAYB3+0FB
+        V9RrhFOQq1hsgzAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 83B7A13AF4;
-        Fri, 20 May 2022 17:22:50 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBEC413A5F;
+        Fri, 20 May 2022 18:16:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 53QXH2rOh2KIPwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 17:22:50 +0000
-Date:   Fri, 20 May 2022 19:18:30 +0200
+        id mY2/MAjbh2LmTgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 18:16:40 +0000
+Date:   Fri, 20 May 2022 20:12:21 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Pankaj Raghav <p.raghav@samsung.com>
-Cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "pankydev8@gmail.com" <pankydev8@gmail.com>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Keith Busch <kbusch@kernel.org>,
-        Adam Manzanares <a.manzanares@samsung.com>
-Subject: Re: [dm-devel] [PATCH v4 00/13] support non power of 2 zoned devices
-Message-ID: <20220520171830.GR18596@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: introduce inspect-internal map-logical
+ command
+Message-ID: <20220520181220.GS18596@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Pankaj Raghav <p.raghav@samsung.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Mike Snitzer <snitzer@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Luis Chamberlain <mcgrof@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "pankydev8@gmail.com" <pankydev8@gmail.com>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Keith Busch <kbusch@kernel.org>,
-        Adam Manzanares <a.manzanares@samsung.com>
-References: <YoPAnj9ufkt5nh1G@mit.edu>
- <7f9cb19b-621b-75ea-7273-2d2769237851@opensource.wdc.com>
- <20220519031237.sw45lvzrydrm7fpb@garbanzo>
- <69f06f90-d31b-620b-9009-188d1d641562@opensource.wdc.com>
- <PH0PR04MB74166C87F694B150A5AE0F009BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
- <4a8f0e1b-0acb-1ed4-8d7a-c9ba93fcfd02@opensource.wdc.com>
- <16f3f9ee-7db7-2173-840c-534f67bcaf04@suse.de>
- <20220520062720.wxdcp5lkscesppch@mpHalley-2.localdomain>
- <be429864-09cb-e3fb-2afe-46a3453c4d73@opensource.wdc.com>
- <aee22e8a-b89b-378c-3d5b-238c1215b01d@samsung.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <ff62eb10cbf38e53ac26f458644257f82daba47c.1653031397.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aee22e8a-b89b-378c-3d5b-238c1215b01d@samsung.com>
+In-Reply-To: <ff62eb10cbf38e53ac26f458644257f82daba47c.1653031397.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -121,22 +74,150 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 20, 2022 at 11:30:09AM +0200, Pankaj Raghav wrote:
-> On 5/20/22 08:41, Damien Le Moal wrote:
-> >> Note that for F2FS there is no blocker. Jaegeuk picked the initial
-> >> patches, and he agreed to add native support.
-> > 
-> > And until that is done, f2fs will not work with these new !po2 devices...
-> > Having the new dm will avoid that support fragmentation which I personally
-> > really dislike. With the new dm, we can keep support for *all* zoned block
-> > devices, albeit needing a different setup depending on the device. That is
-> > not nice at all but at least there is a way to make things work continuously.
+On Fri, May 20, 2022 at 03:23:26PM +0800, Qu Wenruo wrote:
+> This is a simpler version compared to btrfs-map-logical.
 > 
-> I see that many people in the community feel it is better to target the
-> dm layer for the initial support of npo2 devices. I can give it a shot
-> and maintain a native out-of-tree support for FSs for npo2 devices and
-> merge it upstream as we see fit later.
+> The differences are:
+> 
+> - No extent check
+>   Thus any bytenr which has chunk mapping can be mapped.
+> 
+> - No length specification
+>   Now it's fixed to sectorsize.
+>   Previously we use nodesize in btrfs-map-logical, which would only
+>   make the output more complex due as it may cross stripe boundary
+>   for data extent.
+> 
+>   Considering the main users of this functionality is data corruption,
+>   thus we really just want to resolve a single sector.
+> 
+> - No data write support nor mirror specification
+>   We always output all mirrors and call it a day.
+> 
+> - Ignore RAID56 parity manually
+> 
+> We still keep the old btrfs-map-logical, just in case there are some
+> usage of certain parameters.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  Documentation/btrfs-inspect-internal.rst |  7 +++
+>  cmds/inspect.c                           | 78 ++++++++++++++++++++++++
+>  2 files changed, 85 insertions(+)
+> 
+> diff --git a/Documentation/btrfs-inspect-internal.rst b/Documentation/btrfs-inspect-internal.rst
+> index 710a34fb0cb9..8a9264d3dc5b 100644
+> --- a/Documentation/btrfs-inspect-internal.rst
+> +++ b/Documentation/btrfs-inspect-internal.rst
+> @@ -169,6 +169,13 @@ logical-resolve [-Pvo] [-s <bufsize>] <logical> <path>
+>          -v
+>                  (deprecated) alias for global *-v* option
+>  
+> +map-logical <logical> <device>
+> +        map the sector at given *logical* address in the linear filesystem space into
+> +        physical address.
+> +
+> +        .. note::
+> +                For RAID56, this will only map the data stripe.
+> +
+>  min-dev-size [options] <path>
+>          (needs root privileges)
+>  
+> diff --git a/cmds/inspect.c b/cmds/inspect.c
+> index 1534f2040f4e..271adf8c6fd4 100644
+> --- a/cmds/inspect.c
+> +++ b/cmds/inspect.c
+> @@ -29,6 +29,7 @@
+>  #include "kernel-shared/ctree.h"
+>  #include "common/send-utils.h"
+>  #include "kernel-shared/disk-io.h"
+> +#include "kernel-shared/volumes.h"
+>  #include "cmds/commands.h"
+>  #include "common/help.h"
+>  #include "common/open-utils.h"
+> @@ -125,6 +126,7 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
+>  }
+>  static DEFINE_SIMPLE_COMMAND(inspect_inode_resolve, "inode-resolve");
+>  
+> +
+>  static const char * const cmd_inspect_logical_resolve_usage[] = {
+>  	"btrfs inspect-internal logical-resolve [-Pvo] [-s bufsize] <logical> <path>",
+>  	"Get file system paths for the given logical address",
+> @@ -348,6 +350,81 @@ out:
+>  }
+>  static DEFINE_SIMPLE_COMMAND(inspect_subvolid_resolve, "subvolid-resolve");
+>  
+> +static const char * const cmd_inspect_map_logical_usage[] = {
+> +	"btrfs inspect-internal map-logical <logical> <device>",
+> +	"Get the physical offset of a sector.",
+> +	NULL
+> +};
+> +
+> +static int print_mapping_info(struct btrfs_fs_info *fs_info, u64 logical)
+> +{
+> +	struct cache_extent *ce;
+> +	struct map_lookup *map;
+> +	int num_copies;
+> +	int cur_mirror;
+> +	int ret;
+> +
+> +	ce = search_cache_extent(&fs_info->mapping_tree.cache_tree, logical);
+> +	if (!ce) {
+> +		error("no chunk mapping found for logical %llu", logical);
+> +		return -ENOENT;
+> +	}
+> +	map = container_of(ce, struct map_lookup, ce);
+> +	/* For RAID56, we only return the data stripe. */
+> +	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
+> +		num_copies = 1;
+> +	else
+> +		num_copies = btrfs_num_copies(fs_info, logical,
+> +					      fs_info->sectorsize);
+> +
+> +	for (cur_mirror = 1; cur_mirror <= num_copies; cur_mirror++) {
+> +		struct btrfs_multi_bio *multi = NULL;
+> +		u64 len = fs_info->sectorsize;
+> +
+> +		ret = btrfs_map_block(fs_info, READ, logical, &len, &multi,
+> +				      cur_mirror, NULL);
+> +		if (ret < 0) {
+> +			errno = -ret;
+> +			error("failed to map logical %llu: %m", logical);
+> +			return ret;
+> +		}
+> +		/* We're using READ, which should only return one mirror. */
+> +		ASSERT(multi && multi->num_stripes == 1);
+> +		printf("mirror %d logical %llu phyiscal %llu device %s\n",
+> +			cur_mirror, logical, multi->stripes[0].physical,
+> +			multi->stripes[0].dev->name);
+> +		free(multi);
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int cmd_inspect_map_logical(const struct cmd_struct *cmd, int argc,
+> +				   char **argv)
+> +{
+> +	struct open_ctree_flags ocf = {0};
+> +	struct btrfs_fs_info *fs_info;
+> +	u64 logical;
+> +	int ret;
+> +
+> +	clean_args_no_options(cmd, argc, argv);
+> +
+> +	if (check_argc_exact(argc - optind, 2))
+> +		return 1;
+> +
+> +	ocf.filename = argv[optind + 1];
+> +	ocf.flags = OPEN_CTREE_CHUNK_ROOT_ONLY;
+> +	logical = arg_strtou64(argv[optind]);
+> +
+> +	fs_info = open_ctree_fs_info(&ocf);
 
-Some of the changes from your patchset are cleanups or abstracting the
-alignment and zone calculations, so this can be merged to minimize the
-out of tree code.
+So this is for images, not for mounted filesystem. The inspect-internal
+group has both but for the map-logical we could do both.
+
+I'd expect the primary use to be for the mounted fs.  The question is
+what for am I supposed to use map-logical for? See where a file is
+located, ok, that I'd like to see on a mounted filesystem. Running that
+on the block device while still mounted is unreliable.
