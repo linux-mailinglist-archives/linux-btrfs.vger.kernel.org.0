@@ -2,242 +2,219 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11DE52E57C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 09:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0255C52E62E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 09:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346116AbiETG7u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 02:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
+        id S1346417AbiETHXz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 03:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346121AbiETG7r (ORCPT
+        with ESMTP id S1346457AbiETHXs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 02:59:47 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BC214FCA1
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 May 2022 23:59:44 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20220520065942euoutp02e0c21dcb79a3c51df9035c69ffefe675~wvgLpUewf3166231662euoutp02f
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 06:59:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20220520065942euoutp02e0c21dcb79a3c51df9035c69ffefe675~wvgLpUewf3166231662euoutp02f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1653029982;
-        bh=mJkxTYPikvkdqTMnJ+Lh+vfvviEKxyPCWIK29LAgqws=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=swsxlRu1VxG+DdDzUzvU03+imNBl0+XdLJnfrOfxED07fxJ02FbQpAFkycPX3NJ9V
-         xwT+lYqttY2PLjzxx5OJF94sO0bRsM+pYtiKJNWFY0DYRiD/i8FP6iDKcEWABbacly
-         9AkvwNGliox3mt8vgfw+0BZV9TYYbIFCJFpt6iUQ=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20220520065942eucas1p2c8721732b62af59ccfc2110b4655da17~wvgLVSAmh0722907229eucas1p2_;
-        Fri, 20 May 2022 06:59:42 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 9C.29.10260.E5C37826; Fri, 20
-        May 2022 07:59:42 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20220520065941eucas1p105cf273ede995dc4bf92f3245fad09b1~wvgKPDE413192831928eucas1p1m;
-        Fri, 20 May 2022 06:59:41 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20220520065941eusmtrp119cec5b2f3eb4133ff4c909e1066456d~wvgKM9niN0344103441eusmtrp19;
-        Fri, 20 May 2022 06:59:41 +0000 (GMT)
-X-AuditID: cbfec7f5-bddff70000002814-c5-62873c5e7aec
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F4.76.09522.D5C37826; Fri, 20
-        May 2022 07:59:41 +0100 (BST)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20220520065941eusmtip2778dbf13ef9c02edb6e5f1e63237ea6b~wvgKAjsFg2107821078eusmtip2U;
-        Fri, 20 May 2022 06:59:41 +0000 (GMT)
-Received: from localhost (106.210.248.142) by CAMSVWEXC01.scsc.local
-        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Fri, 20 May 2022 07:59:40 +0100
-Date:   Fri, 20 May 2022 08:59:39 +0200
-From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier.gonz@samsung.com>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-CC:     Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "pankydev8@gmail.com" <pankydev8@gmail.com>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [dm-devel] [PATCH v4 00/13] support non power of 2 zoned
- devices
-Message-ID: <20220520065939.yjqlgsxs3qchpgzo@mpHalley-2.localdomain>
+        Fri, 20 May 2022 03:23:48 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4075D15AB24
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 00:23:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F164C1F975
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 07:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1653031425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=wPy+JHPyIjyOCaiyPscUWoH8x3QK6YL2Wj+WgXXS/t4=;
+        b=f7MVFOdJr2yZcT2r+T5z4nbwfwAluwLnZinEWHrPLoveampq3vqEBXCZY3BrkQzU+eI5O/
+        enapCWiKtNC4Sj6ozGs7yrpDDWS1Dn76dM73r4I0l381HPR8fVNb5uoQgxcX3wkZ4sJycc
+        KHbq54gfuP7jh3X7P1+LLvyHrRsw9Go=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5014B13AF4
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 07:23:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7r20BgFCh2JXLwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 07:23:45 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: introduce inspect-internal map-logical command
+Date:   Fri, 20 May 2022 15:23:26 +0800
+Message-Id: <ff62eb10cbf38e53ac26f458644257f82daba47c.1653031397.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <be429864-09cb-e3fb-2afe-46a3453c4d73@opensource.wdc.com>
-X-Originating-IP: [106.210.248.142]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTZxjG851bDzUlh+rgHTq3ISabOtCo29F6YRku5x8G2T+iTkehZ0Bo
-        i+ttg41ZblMoA2QLbIXgMhDQegsKEQdbZWuxAURoOinjoqHFDURBIRSnOMvRjf9+3/s8z/t9
-        T/LRuPQBGUqnqnW8Ri1XhlFiotk+3/PWoR1HEzeWT6xiLUMlFPtPdw/Ott2rJNkbvmyMbf2p
-        DGNPWWwY6zlvxtki6xTBPikcxti2gfVs32iDiG1tcxCs80oVxZ6o84rY/lIvYs+4vQSbXzQv
-        igriFq6dobgW85CIc3brucbTBRR3sfYI97PbSHE5XTaca8kfIbn7v7go7vwlF8Fd7PyCe9i4
-        mjtqNWFxkv3iHQpemWrgNZG7EsQpg1cH8MO21z+vscySRvQ4tBAF0MBsgUn7DaoQiWkp04Cg
-        ZnwQ+QUpM4PAeT1TEB4iGL5dK3qR+N5TjQShHoHn3hT6z5VjySWEQxOC6tFszB8hmLVQ98cE
-        7meK2Q19dQOLvILZCpNF+YsBnLlDQZ0zh/QLy5lYOH5lkPKzhImG7ptPCYGDwPGDZ5FxZjsU
-        TPn99DNeCfULtDB+FXKbKhf3BzDvw+UJJ+a3ALMG6itihAZZcNbeJfJfC8yjAHhc5aIEIRoq
-        TAtI4OUw3nHpeeVV0PltESFwGvR2mXCBdVBz344L+2VQ3KUUxu/CufwSShgHQv9kkPCyQChr
-        rnjulsCxr6WlKNy8pJZ5SS3z/7XMS2r9iIjTKITXa1XJvHazmv8sQitXafXq5IikdFUjevYt
-        Oxc6Zi+jhvHpiHaE0agdAY2HrZAgVV6iVKKQZ2TymvSPNXolr21HK2kiLESSlHpBLmWS5To+
-        jecP85oXKkYHhBqxN8669P2kwRMMzQdXv3lnzJm4VbxNYc3FNMF5LbH4oLPW/sF09ElRa4Li
-        6ga0mx+xpm0Xgel3dkbZc7c7yvfhLJC3quYOzZHmGXH8Xxv3pMorsyLSs7V7P32vXJEhXdb7
-        6JtiW9aEdVfksrsjjqdxke2h3t/c3k8mZXtePuAL7+tdqxoP37Dvz+vH/naLh+ZqGmbJkp3m
-        jLz1+6qJ8gLfS9iQWpN4arh5NObLlCgU/wANlJGS7+Y7Qhodrl8NbxvcTZm1N2+PXYu0+G5t
-        VmWkHNkrM2TGHgx0GF4jdPxJY85H72ySTSd4q7cUnwveZpR9FZM0EzetKx2Lt+18xfQkjNCm
-        yDetwzVa+b9FxuryBQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLKsWRmVeSWpSXmKPExsVy+t/xe7qxNu1JBj9nC1msvtvPZvH77Hlm
-        i73vZrNaXPjRyGSxZ9EkJouVq48yWTxZP4vZoufABxaLv133mCz23tK2uPR4BbvFnr0nWSwu
-        75rDZjF/2VN2ixsTnjJarLn5lMWitecnu4Ogx78Ta9g8ds66y+5x+Wypx6ZVnWwem5fUe+y+
-        2cDm0XTmKLPHztb7rB7v911l81i/5SqLx+bT1R6fN8l5tB/oZgrgjdKzKcovLUlVyMgvLrFV
-        ija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLuHPwFnPBUcWKxau/sjYw/pHq
-        YuTkkBAwkZjxZB5jFyMXh5DAUkaJf38Ws0IkZCQ+XfnIDmELS/y51sUGUfSRUeLozslsIAkh
-        ga2MEmsulYPYLAKqEsuuvWYGsdkE7CUuLbsFZosImEq87WllAWlmFnjKJnH+3U9GkISwgK/E
-        1SlvWEBsXgEXibPX/7NAbFjCInHp41JGiISgxMmZT8CKmAUsJGbOPw8U5wCypSWW/+OACMtL
-        NG+dDbaMU8BNYsfry0wgJRICyhLLp/tCPFAr8er+bsYJjCKzkAydhWToLIShs5AMXcDIsopR
-        JLW0ODc9t9hQrzgxt7g0L10vOT93EyMwnWw79nPzDsZ5rz7qHWJk4mA8xCjBwawkwsuY25Ik
-        xJuSWFmVWpQfX1Sak1p8iNEUGEQTmaVEk/OBCS2vJN7QzMDU0MTM0sDU0sxYSZzXs6AjUUgg
-        PbEkNTs1tSC1CKaPiYNTqoEpQNSsz/fuIQbdhzqvWlK3CRjn5c/2c+x4Ycs385PYpcz7fcdW
-        Fttc2X3ZJEIz0rlr9ivNI4a9ug217xYvX25flT7RM0//m3tC56tJbVoGR7y3Pn7w5GzL1ca2
-        /LgjzaHO99gbPPaHR+Ts5mxbZ6LBfkrCafY84Y9HZ00ROcL26VWOScYXph3nY3d7L79bePum
-        Pmv7niiejxPbH6npPtF5Om36va74CRlJJ/Vlgn3aXa0S/sy9WHc10ftm45HNSTYP2mV/VHod
-        Y7RJXG7avZjhyrZrJyItE6TObnPxyPwh2v5+gdB1uwnZ6xteGielz3NkmWaYsGbVy7L8qt6e
-        lgf3z6za/ZvrwqnsA+LdzNJKLMUZiYZazEXFiQDpv0hasAMAAA==
-X-CMS-MailID: 20220520065941eucas1p105cf273ede995dc4bf92f3245fad09b1
-X-Msg-Generator: CA
-X-RootMTR: 20220520065941eucas1p105cf273ede995dc4bf92f3245fad09b1
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20220520065941eucas1p105cf273ede995dc4bf92f3245fad09b1
-References: <20220517081048.GA13947@lst.de> <YoPAnj9ufkt5nh1G@mit.edu>
-        <7f9cb19b-621b-75ea-7273-2d2769237851@opensource.wdc.com>
-        <20220519031237.sw45lvzrydrm7fpb@garbanzo>
-        <69f06f90-d31b-620b-9009-188d1d641562@opensource.wdc.com>
-        <PH0PR04MB74166C87F694B150A5AE0F009BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
-        <4a8f0e1b-0acb-1ed4-8d7a-c9ba93fcfd02@opensource.wdc.com>
-        <16f3f9ee-7db7-2173-840c-534f67bcaf04@suse.de>
-        <20220520062720.wxdcp5lkscesppch@mpHalley-2.localdomain>
-        <be429864-09cb-e3fb-2afe-46a3453c4d73@opensource.wdc.com>
-        <CGME20220520065941eucas1p105cf273ede995dc4bf92f3245fad09b1@eucas1p1.samsung.com>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 20.05.2022 15:41, Damien Le Moal wrote:
->On 5/20/22 15:27, Javier González wrote:
->> On 20.05.2022 08:07, Hannes Reinecke wrote:
->>> On 5/19/22 20:47, Damien Le Moal wrote:
->>>> On 5/19/22 16:34, Johannes Thumshirn wrote:
->>>>> On 19/05/2022 05:19, Damien Le Moal wrote:
->>>>>> On 5/19/22 12:12, Luis Chamberlain wrote:
->>>>>>> On Thu, May 19, 2022 at 12:08:26PM +0900, Damien Le Moal wrote:
->>>>>>>> On 5/18/22 00:34, Theodore Ts'o wrote:
->>>>>>>>> On Tue, May 17, 2022 at 10:10:48AM +0200, Christoph Hellwig wrote:
->>>>>>>>>> I'm a little surprised about all this activity.
->>>>>>>>>>
->>>>>>>>>> I though the conclusion at LSF/MM was that for Linux itself there
->>>>>>>>>> is very little benefit in supporting this scheme.  It will massively
->>>>>>>>>> fragment the supported based of devices and applications, while only
->>>>>>>>>> having the benefit of supporting some Samsung legacy devices.
->>>>>>>>>
->>>>>>>>> FWIW,
->>>>>>>>>
->>>>>>>>> That wasn't my impression from that LSF/MM session, but once the
->>>>>>>>> videos become available, folks can decide for themselves.
->>>>>>>>
->>>>>>>> There was no real discussion about zone size constraint on the zone
->>>>>>>> storage BoF. Many discussions happened in the hallway track though.
->>>>>>>
->>>>>>> Right so no direct clear blockers mentioned at all during the BoF.
->>>>>>
->>>>>> Nor any clear OK.
->>>>>
->>>>> So what about creating a device-mapper target, that's taking npo2 drives and
->>>>> makes them po2 drives for the FS layers? It will be very similar code to
->>>>> dm-linear.
->>>>
->>>> +1
->>>>
->>>> This will simplify the support for FSes, at least for the initial drop (if
->>>> accepted).
->>>>
->>>> And more importantly, this will also allow addressing any potential
->>>> problem with user space breaking because of the non power of 2 zone size.
->>>>
->>> Seconded (or maybe thirded).
->>>
->>> The changes to support npo2 in the block layer are pretty simple, and
->>> really I don't have an issue with those.
->>> Then adding a device-mapper target transforming npo2 drives in po2
->>> block devices should be pretty trivial.
->>>
->>> And once that is in you can start arguing with the the FS folks on
->>> whether to implement it natively.
->>>
->>
->> So you are suggesting adding support for !PO2 in the block layer and
->> then a dm to present the device as a PO2 to the FS? This at least
->> addresses the hole issue for raw zoned block devices, so it can be a
->> first step.
->
->Yes, and it also allows supporting these new !po2 devices without
->regressions (read lack of) in the support at FS level.
->
->>
->> This said, it seems to me that the changes to the FS are not being a
->> real issue. In fact, we are exposing some bugs while we generalize the
->> zone size support.
->
->Not arguing with that. But since we are still stabilizing btrfs ZNS
->support, adding more code right now is a little painful.
->
->>
->> Could you point out what the challenges in btrfs are in the current
->> patches, that it makes sense to add an extra dm layer?
->
->See above. No real challenge, just needs to be done if a clear agreement
->can be reached on zone size alignment constraints. As mentioned above, the
->btrfs changes timing is not ideal right now though.
->
->Also please do not forget applications that may expect a power of 2 zone
->size. A dm-zsp2 would be a nice solution for these. So regardless of the
->FS work, that new DM target will be *very* nice to have.
->
->>
->> Note that for F2FS there is no blocker. Jaegeuk picked the initial
->> patches, and he agreed to add native support.
->
->And until that is done, f2fs will not work with these new !po2 devices...
->Having the new dm will avoid that support fragmentation which I personally
->really dislike. With the new dm, we can keep support for *all* zoned block
->devices, albeit needing a different setup depending on the device. That is
->not nice at all but at least there is a way to make things work continuously.
+This is a simpler version compared to btrfs-map-logical.
 
-All the above sounds very reasonable. Thanks Damien.
+The differences are:
 
-If we all can agree, we can address this in the next version and come
-maintain the native FS support off-tree until you see that general btrfs
-support for zoned devicse is stable. We will be happy to help with this
-too.
+- No extent check
+  Thus any bytenr which has chunk mapping can be mapped.
+
+- No length specification
+  Now it's fixed to sectorsize.
+  Previously we use nodesize in btrfs-map-logical, which would only
+  make the output more complex due as it may cross stripe boundary
+  for data extent.
+
+  Considering the main users of this functionality is data corruption,
+  thus we really just want to resolve a single sector.
+
+- No data write support nor mirror specification
+  We always output all mirrors and call it a day.
+
+- Ignore RAID56 parity manually
+
+We still keep the old btrfs-map-logical, just in case there are some
+usage of certain parameters.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ Documentation/btrfs-inspect-internal.rst |  7 +++
+ cmds/inspect.c                           | 78 ++++++++++++++++++++++++
+ 2 files changed, 85 insertions(+)
+
+diff --git a/Documentation/btrfs-inspect-internal.rst b/Documentation/btrfs-inspect-internal.rst
+index 710a34fb0cb9..8a9264d3dc5b 100644
+--- a/Documentation/btrfs-inspect-internal.rst
++++ b/Documentation/btrfs-inspect-internal.rst
+@@ -169,6 +169,13 @@ logical-resolve [-Pvo] [-s <bufsize>] <logical> <path>
+         -v
+                 (deprecated) alias for global *-v* option
+ 
++map-logical <logical> <device>
++        map the sector at given *logical* address in the linear filesystem space into
++        physical address.
++
++        .. note::
++                For RAID56, this will only map the data stripe.
++
+ min-dev-size [options] <path>
+         (needs root privileges)
+ 
+diff --git a/cmds/inspect.c b/cmds/inspect.c
+index 1534f2040f4e..271adf8c6fd4 100644
+--- a/cmds/inspect.c
++++ b/cmds/inspect.c
+@@ -29,6 +29,7 @@
+ #include "kernel-shared/ctree.h"
+ #include "common/send-utils.h"
+ #include "kernel-shared/disk-io.h"
++#include "kernel-shared/volumes.h"
+ #include "cmds/commands.h"
+ #include "common/help.h"
+ #include "common/open-utils.h"
+@@ -125,6 +126,7 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
+ }
+ static DEFINE_SIMPLE_COMMAND(inspect_inode_resolve, "inode-resolve");
+ 
++
+ static const char * const cmd_inspect_logical_resolve_usage[] = {
+ 	"btrfs inspect-internal logical-resolve [-Pvo] [-s bufsize] <logical> <path>",
+ 	"Get file system paths for the given logical address",
+@@ -348,6 +350,81 @@ out:
+ }
+ static DEFINE_SIMPLE_COMMAND(inspect_subvolid_resolve, "subvolid-resolve");
+ 
++static const char * const cmd_inspect_map_logical_usage[] = {
++	"btrfs inspect-internal map-logical <logical> <device>",
++	"Get the physical offset of a sector.",
++	NULL
++};
++
++static int print_mapping_info(struct btrfs_fs_info *fs_info, u64 logical)
++{
++	struct cache_extent *ce;
++	struct map_lookup *map;
++	int num_copies;
++	int cur_mirror;
++	int ret;
++
++	ce = search_cache_extent(&fs_info->mapping_tree.cache_tree, logical);
++	if (!ce) {
++		error("no chunk mapping found for logical %llu", logical);
++		return -ENOENT;
++	}
++	map = container_of(ce, struct map_lookup, ce);
++	/* For RAID56, we only return the data stripe. */
++	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
++		num_copies = 1;
++	else
++		num_copies = btrfs_num_copies(fs_info, logical,
++					      fs_info->sectorsize);
++
++	for (cur_mirror = 1; cur_mirror <= num_copies; cur_mirror++) {
++		struct btrfs_multi_bio *multi = NULL;
++		u64 len = fs_info->sectorsize;
++
++		ret = btrfs_map_block(fs_info, READ, logical, &len, &multi,
++				      cur_mirror, NULL);
++		if (ret < 0) {
++			errno = -ret;
++			error("failed to map logical %llu: %m", logical);
++			return ret;
++		}
++		/* We're using READ, which should only return one mirror. */
++		ASSERT(multi && multi->num_stripes == 1);
++		printf("mirror %d logical %llu phyiscal %llu device %s\n",
++			cur_mirror, logical, multi->stripes[0].physical,
++			multi->stripes[0].dev->name);
++		free(multi);
++	}
++	return 0;
++}
++
++static int cmd_inspect_map_logical(const struct cmd_struct *cmd, int argc,
++				   char **argv)
++{
++	struct open_ctree_flags ocf = {0};
++	struct btrfs_fs_info *fs_info;
++	u64 logical;
++	int ret;
++
++	clean_args_no_options(cmd, argc, argv);
++
++	if (check_argc_exact(argc - optind, 2))
++		return 1;
++
++	ocf.filename = argv[optind + 1];
++	ocf.flags = OPEN_CTREE_CHUNK_ROOT_ONLY;
++	logical = arg_strtou64(argv[optind]);
++
++	fs_info = open_ctree_fs_info(&ocf);
++	if (!fs_info) {
++		error("failed to open btrfs on %s", ocf.filename);
++		return 1;
++	}
++	ret = print_mapping_info(fs_info, logical);
++	return !!ret;
++}
++static DEFINE_SIMPLE_COMMAND(inspect_map_logical, "map-logical");
++
+ static const char* const cmd_inspect_rootid_usage[] = {
+ 	"btrfs inspect-internal rootid <path>",
+ 	"Get tree ID of the containing subvolume of path.",
+@@ -690,6 +767,7 @@ static const struct cmd_group inspect_cmd_group = {
+ 		&cmd_struct_inspect_inode_resolve,
+ 		&cmd_struct_inspect_logical_resolve,
+ 		&cmd_struct_inspect_subvolid_resolve,
++		&cmd_struct_inspect_map_logical,
+ 		&cmd_struct_inspect_rootid,
+ 		&cmd_struct_inspect_min_dev_size,
+ 		&cmd_struct_inspect_dump_tree,
+-- 
+2.36.1
 
