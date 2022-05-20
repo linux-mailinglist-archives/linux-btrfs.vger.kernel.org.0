@@ -2,67 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CDA52F27B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 20:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31D752F3D9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 21:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352707AbiETSSA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 14:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S242398AbiETTi4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 15:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352635AbiETSR4 (ORCPT
+        with ESMTP id S230186AbiETTix (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 14:17:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26FE69B4D
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 11:16:42 -0700 (PDT)
+        Fri, 20 May 2022 15:38:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C36A18C056
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 12:38:51 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 01F2521B28;
-        Fri, 20 May 2022 18:16:41 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EDCE81FA6F;
+        Fri, 20 May 2022 19:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653070601;
+        t=1653075529;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=GhwClLlzshrF3Pp6Ph86SXPaNIhM071sLpne8IgR6M4=;
-        b=TO/LKLO2y7WWLKCrHsOjlmv1i+VOjWDW5xG5uUl2Cze7WJkn2Twdp8E8za1WYXE8COVtAF
-        5roe8DUwol88lmNAzCv5A/wSmcWG9aQhA6r7TFHO7MELRbvzHgjHw3zrAy/h6mFtxZ2v0A
-        NRgpodPemwY10uZYDpfMZuYkJSXxWSY=
+        bh=PDOtjEeEMKB9NUahEoTbmLOWlKhUY4eMoWttJ3kNEWE=;
+        b=aTE4T9KoB0Eu2ikK6keHp7DLJ6lsNrrGyC57HOHJ8FgcY8VNjBnV/7MKR6b6PJJrPseUIU
+        UibmoZTnG2QoxwV0LZEY94stRwDzdnKr5kq1Uj2eCFQPQ39vJo5oxdRQvQKahuLtTEvQP6
+        9qkvlsGiW5ya6eHuHA7+umMWQr2xn5M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653070601;
+        s=susede2_ed25519; t=1653075529;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=GhwClLlzshrF3Pp6Ph86SXPaNIhM071sLpne8IgR6M4=;
-        b=iXc1mrwZ2Klz/ffysc9pqv4V1L+RhAwHcN9MI/eySA0Fqn8Sf/DpXL3AwWrCGJAYB3+0FB
-        V9RrhFOQq1hsgzAQ==
+        bh=PDOtjEeEMKB9NUahEoTbmLOWlKhUY4eMoWttJ3kNEWE=;
+        b=UDz5dxko0sjk/U1vNbhRt7jhl9E3iHZs/yIdcJbrm/ScCjBdBJa/ndaYV3hI6jZDJ3Gjgo
+        5Xq83yllGJmVjyDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBEC413A5F;
-        Fri, 20 May 2022 18:16:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD11E13AF4;
+        Fri, 20 May 2022 19:38:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mY2/MAjbh2LmTgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 18:16:40 +0000
-Date:   Fri, 20 May 2022 20:12:21 +0200
+        id FUsaLUnuh2IaZQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 19:38:49 +0000
+Date:   Fri, 20 May 2022 21:34:29 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: introduce inspect-internal map-logical
- command
-Message-ID: <20220520181220.GS18596@twin.jikos.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v15 3/7] btrfs: add send stream v2 definitions
+Message-ID: <20220520193429.GT18596@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <ff62eb10cbf38e53ac26f458644257f82daba47c.1653031397.git.wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1649092662.git.osandov@fb.com>
+ <abea9f460c7341361e58cbba8af355654eb94b5b.1649092662.git.osandov@fb.com>
+ <20220518210003.GK18596@twin.jikos.cz>
+ <YoVyXsuWEOX6dtXE@relinquished.localdomain>
+ <20220519160748.GM18596@suse.cz>
+ <YobFXNs0TVBV8xCc@relinquished.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ff62eb10cbf38e53ac26f458644257f82daba47c.1653031397.git.wqu@suse.com>
+In-Reply-To: <YobFXNs0TVBV8xCc@relinquished.localdomain>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -74,150 +78,99 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 20, 2022 at 03:23:26PM +0800, Qu Wenruo wrote:
-> This is a simpler version compared to btrfs-map-logical.
+On Thu, May 19, 2022 at 03:31:56PM -0700, Omar Sandoval wrote:
+> On Thu, May 19, 2022 at 06:07:49PM +0200, David Sterba wrote:
+> > The SETFLAGS ioctls are obsolete and I don't want to make them part of
+> > the protocol defition because the bit namespace contains flags we don't
+> > have implemented or are not releated to anything in btrfs.
+> > 
+> > https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/fs.h#L220
+> > 
+> > It's basically just naming and specifying what exactly is the value so
+> > we should pick the most recent interface name that superseded SETFLAGS
+> > and the XFLAGS.
 > 
-> The differences are:
+> This is the situation with FS_IOC_SETFLAGS, FS_IOC_FSSETXATTR, and
+> fileattr as I understand it. Please correct me if I'm wrong:
 > 
-> - No extent check
->   Thus any bytenr which has chunk mapping can be mapped.
+> - FS_IOC_SETFLAGS originally came from ext4 and was added to Btrfs very
+>   early on (commit 6cbff00f4632 ("Btrfs: implement
+>   FS_IOC_GETFLAGS/SETFLAGS/GETVERSION")).
+> - FS_IOC_FSSETXATTR originally came from XFS and was added to Btrfs a
+>   few years ago (in commit 025f2121488e ("btrfs: add FS_IOC_FSSETXATTR
+>   ioctl")).
+> - The two ioctls allow setting some of the same flags (e.g., IMMUTABLE,
+>   APPEND), but some are only supported by SETFLAGS (e.g., NOCOW) and
+>   some are only supported by FSSETXATTR (none of these are supported by
+>   Btrfs, however).
+> - fileattr is a recent VFS interface that is used to implement those two
+>   ioctls. It basically passes through the arguments for whichever ioctl
+>   was called and translates the equivalent flags between the two ioctls.
+>   It is not a new UAPI and doesn't have its own set of flags.
 > 
-> - No length specification
->   Now it's fixed to sectorsize.
->   Previously we use nodesize in btrfs-map-logical, which would only
->   make the output more complex due as it may cross stripe boundary
->   for data extent.
-> 
->   Considering the main users of this functionality is data corruption,
->   thus we really just want to resolve a single sector.
-> 
-> - No data write support nor mirror specification
->   We always output all mirrors and call it a day.
-> 
-> - Ignore RAID56 parity manually
-> 
-> We still keep the old btrfs-map-logical, just in case there are some
-> usage of certain parameters.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  Documentation/btrfs-inspect-internal.rst |  7 +++
->  cmds/inspect.c                           | 78 ++++++++++++++++++++++++
->  2 files changed, 85 insertions(+)
-> 
-> diff --git a/Documentation/btrfs-inspect-internal.rst b/Documentation/btrfs-inspect-internal.rst
-> index 710a34fb0cb9..8a9264d3dc5b 100644
-> --- a/Documentation/btrfs-inspect-internal.rst
-> +++ b/Documentation/btrfs-inspect-internal.rst
-> @@ -169,6 +169,13 @@ logical-resolve [-Pvo] [-s <bufsize>] <logical> <path>
->          -v
->                  (deprecated) alias for global *-v* option
->  
-> +map-logical <logical> <device>
-> +        map the sector at given *logical* address in the linear filesystem space into
-> +        physical address.
-> +
-> +        .. note::
-> +                For RAID56, this will only map the data stripe.
-> +
->  min-dev-size [options] <path>
->          (needs root privileges)
->  
-> diff --git a/cmds/inspect.c b/cmds/inspect.c
-> index 1534f2040f4e..271adf8c6fd4 100644
-> --- a/cmds/inspect.c
-> +++ b/cmds/inspect.c
-> @@ -29,6 +29,7 @@
->  #include "kernel-shared/ctree.h"
->  #include "common/send-utils.h"
->  #include "kernel-shared/disk-io.h"
-> +#include "kernel-shared/volumes.h"
->  #include "cmds/commands.h"
->  #include "common/help.h"
->  #include "common/open-utils.h"
-> @@ -125,6 +126,7 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
->  }
->  static DEFINE_SIMPLE_COMMAND(inspect_inode_resolve, "inode-resolve");
->  
-> +
->  static const char * const cmd_inspect_logical_resolve_usage[] = {
->  	"btrfs inspect-internal logical-resolve [-Pvo] [-s bufsize] <logical> <path>",
->  	"Get file system paths for the given logical address",
-> @@ -348,6 +350,81 @@ out:
->  }
->  static DEFINE_SIMPLE_COMMAND(inspect_subvolid_resolve, "subvolid-resolve");
->  
-> +static const char * const cmd_inspect_map_logical_usage[] = {
-> +	"btrfs inspect-internal map-logical <logical> <device>",
-> +	"Get the physical offset of a sector.",
-> +	NULL
-> +};
-> +
-> +static int print_mapping_info(struct btrfs_fs_info *fs_info, u64 logical)
-> +{
-> +	struct cache_extent *ce;
-> +	struct map_lookup *map;
-> +	int num_copies;
-> +	int cur_mirror;
-> +	int ret;
-> +
-> +	ce = search_cache_extent(&fs_info->mapping_tree.cache_tree, logical);
-> +	if (!ce) {
-> +		error("no chunk mapping found for logical %llu", logical);
-> +		return -ENOENT;
-> +	}
-> +	map = container_of(ce, struct map_lookup, ce);
-> +	/* For RAID56, we only return the data stripe. */
-> +	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
-> +		num_copies = 1;
-> +	else
-> +		num_copies = btrfs_num_copies(fs_info, logical,
-> +					      fs_info->sectorsize);
-> +
-> +	for (cur_mirror = 1; cur_mirror <= num_copies; cur_mirror++) {
-> +		struct btrfs_multi_bio *multi = NULL;
-> +		u64 len = fs_info->sectorsize;
-> +
-> +		ret = btrfs_map_block(fs_info, READ, logical, &len, &multi,
-> +				      cur_mirror, NULL);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to map logical %llu: %m", logical);
-> +			return ret;
-> +		}
-> +		/* We're using READ, which should only return one mirror. */
-> +		ASSERT(multi && multi->num_stripes == 1);
-> +		printf("mirror %d logical %llu phyiscal %llu device %s\n",
-> +			cur_mirror, logical, multi->stripes[0].physical,
-> +			multi->stripes[0].dev->name);
-> +		free(multi);
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int cmd_inspect_map_logical(const struct cmd_struct *cmd, int argc,
-> +				   char **argv)
-> +{
-> +	struct open_ctree_flags ocf = {0};
-> +	struct btrfs_fs_info *fs_info;
-> +	u64 logical;
-> +	int ret;
-> +
-> +	clean_args_no_options(cmd, argc, argv);
-> +
-> +	if (check_argc_exact(argc - optind, 2))
-> +		return 1;
-> +
-> +	ocf.filename = argv[optind + 1];
-> +	ocf.flags = OPEN_CTREE_CHUNK_ROOT_ONLY;
-> +	logical = arg_strtou64(argv[optind]);
-> +
-> +	fs_info = open_ctree_fs_info(&ocf);
+> Is there another new UAPI that I'm missing that obsoletes SETFLAGS?
 
-So this is for images, not for mounted filesystem. The inspect-internal
-group has both but for the map-logical we could do both.
+That was supposed to be FSSETXATTR, new flags have appeared there, the
+reason for btrfs was to allow the FS_XFLAG_DAX bit as people are were
+working on the DAX support, and potentially other bits like
+FS_XFLAG_NOSYMLINKS or FS_XFLAG_NODEFRAG. Or new flags that we want to
+be able to set, NODATASUM for example.
 
-I'd expect the primary use to be for the mounted fs.  The question is
-what for am I supposed to use map-logical for? See where a file is
-located, ok, that I'd like to see on a mounted filesystem. Running that
-on the block device while still mounted is unreliable.
+> I see your point about the irrelevant flags in SETFLAGS, however. Is
+> your suggestion to have our own send protocol-specific set of flags that
+> we translate to whatever ioctl we need to make?
+
+Yes, that's the idea, the flags are not protocol-specific but rather
+btrfs-specific, ie we want to support namely the bits that btrfs inodes
+can have.
+
+> > > This is in line with the other commands being straightforward system
+> > > calls, but it does mean that the sending side has to deal with the
+> > > complexities of an immutable or append-only file being modified between
+> > > incremental sends (by temporarily clearing the flag), and of inherited
+> > > flags (e.g., a COW file inside of a NOCOW directory).
+> > 
+> > Yeah the receiving side needs to understand the constraints of the
+> > flags, it has only the information about the final state and not the
+> > order in which the flags get applied.
+> 
+> If the sender only tells the receiver what the final flags are, then
+> yes, the receiver would need to deal with, e.g., temporarily clearing
+> and resetting flags. The way I envisioned it was that the sender would
+> instead send commands for those intermediate flag operations. E.g., if
+> the incremental send requires writing some data to a file that is
+> immutable in both the source and the parent subvolume, the sender could
+> send commands to: clear the immutable flag, write the data, set the
+> immutable flag. This is a lot like the orphan renaming that you
+> mentioned.
+
+I see, so the question is where do we want to put the logic. I'd go with
+userspace as lots of things are easier there, eg. maitaining some
+intermediate state or delayed application of bits/flags.
+
+> If we want to have receive handle the intermediate states instead, then
+> I would like to postpone SETFLAGS (or whatever we call it) to send
+> protocol v3, since it'll be very tricky to get right and we can't add it
+> to the protocol without having an implementation in the receiver.
+
+Yeah it would be tricky to generate the sequence right, while if it's on
+the receiving side we can simply ignore/report it or implement a subset
+where we know how to apply (eg. immutable) and don't need to postpone
+it.
+
+> On the other hand, if send takes care of the intermediate states and
+> receive just has to blindly apply the flags, then we can add SETFLAGS to
+> the protocol and receive now and implement it in send later. That is
+> exactly what this patch series does.
+
+It adds a command to the protocol but does not outline the plan how to
+use it, not counting this discussion.
+
+> I'm fine with either of those paths forward, but I don't want to block
+> the compressed send/receive on SETFLAGS or fallocate.
+
+I get that you care only about the encoded write, but I don't want to
+rev protocol every few releases because we did not bother to implement
+something we know is missing in the protocol. Anyway, encoded write will
+be in v2 scheduled for 5.20 and I'll implement the rest plus will have a
+look at your fallocate patches.
