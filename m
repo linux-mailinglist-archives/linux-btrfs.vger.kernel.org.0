@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E60552F10E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 18:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CA852F10B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 18:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351932AbiETQsG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 12:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
+        id S1351961AbiETQsF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 12:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351904AbiETQrx (ORCPT
+        with ESMTP id S1351960AbiETQr4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 12:47:53 -0400
+        Fri, 20 May 2022 12:47:56 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFB6185C99;
-        Fri, 20 May 2022 09:47:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933FA1862B9;
+        Fri, 20 May 2022 09:47:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Vxq3PG6dePl9+lE5uUMfQc1NUEfmmkbncsICDPs8GVw=; b=IkGn0/qAHgE/Y6RZiqZ7hL1oug
-        clLfkLD/DokyabazYTl3WY7f/AmyJDdjbFZJH5S0JmO6tFWJMqGfwa7BASEOG5qVa0NFiRmh1jEKV
-        cx32WSvt6e28GAJkH5B6Jpzy2QkKMzyxdrR7OfzvoN9SclhDjBvbHTa1O9J9StaUo7eyWIbtvXOZ2
-        jzFtrWmIFtCj6j/Y/NR8RRiq/Ytl1UgxB9oPp6LJtgVwDs3r2dkVGVS09U7Tu9IRd/dI2Xs2Q4fpk
-        oLdtLeBDsMEz3B5gs/ZjcKtIo4/PNbs8TMlvpkcIBBoz86vuoDadyIRZzVAR1W6GDCiXkA0nbf6MW
-        oCyw/nTg==;
+        bh=sGv5HpdiqUlOSsP2oaFDpSxQWLXKJWLJH2sFzgw0Hgc=; b=TMbJorOGYReHqxp7fCxTSbLrOA
+        4/2vofWDjrSvw0yarWihwaUu0izvb5OiMS8QYJASHfnYj7FD7RvseHCiz3dlYpvsrATaeqB5iCVvK
+        tBIEy0bTdU9NKV6cwJvld7+p4axh/y05IJ05EopwOAdbOvAxJOFL/kOJud4jiEkptJ6QiYEzqCQlZ
+        H/z4pU0XUGNHqyRGvB93vxyUuGK9bF2i9cow8dGfBS6aotY5Bme7k0l+fbKrGs0LTjHSYGQMjJ7k9
+        bhX5lPkDcd+u1S+xiSdnIMXJv4KvGyNSPO7+tZCVJfDz8xe6Zmv8HH6LhfQ8owJcCXI9mACGqLiW6
+        p+dQqsxg==;
 Received: from 213-147-165-123.nat.highway.webapn.at ([213.147.165.123] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ns5n4-00DoB8-UF; Fri, 20 May 2022 16:47:51 +0000
+        id 1ns5n7-00DoBI-Ot; Fri, 20 May 2022 16:47:54 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: test repair with sectors corrupted in multiple mirrors
-Date:   Fri, 20 May 2022 18:47:42 +0200
-Message-Id: <20220520164743.4023665-2-hch@lst.de>
+Subject: [PATCH 2/2] btrfs: test repair with corrupted sectors interleaved over multiple mirrors
+Date:   Fri, 20 May 2022 18:47:43 +0200
+Message-Id: <20220520164743.4023665-3-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220520164743.4023665-1-hch@lst.de>
 References: <20220520164743.4023665-1-hch@lst.de>
@@ -51,32 +51,34 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Test that repair handles the case where it needs to read from more than
-a single mirror on the raid1c3 profile.
+a single mirror on the raid1c3 profile and needs to take turns over the
+mirrors to recover data for the whole read.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- tests/btrfs/265     | 127 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/265.out |  75 ++++++++++++++++++++++++++
- 2 files changed, 202 insertions(+)
- create mode 100755 tests/btrfs/265
- create mode 100644 tests/btrfs/265.out
+ tests/btrfs/266     | 145 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/266.out | 109 +++++++++++++++++++++++++++++++++
+ 2 files changed, 254 insertions(+)
+ create mode 100755 tests/btrfs/266
+ create mode 100644 tests/btrfs/266.out
 
-diff --git a/tests/btrfs/265 b/tests/btrfs/265
+diff --git a/tests/btrfs/266 b/tests/btrfs/266
 new file mode 100755
-index 00000000..96f37989
+index 00000000..24c2b5fd
 --- /dev/null
-+++ b/tests/btrfs/265
-@@ -0,0 +1,127 @@
++++ b/tests/btrfs/266
+@@ -0,0 +1,145 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2017 Liu Bo.  All Rights Reserved.
 +# Copyright (c) 2022 Christoph Hellwig.
 +#
-+# FS QA Test 265
++# FS QA Test 266
 +#
-+# Test that btrfs raid repair on a raid1c3 profile can repair corruption on two
-+# mirrors for the same logical offset.
++# Test that btrfs raid repair on a raid1c3 profile can repair interleaving
++# errors on all mirrors.
 +#
++
 +. ./common/preamble
 +_begin_fstest auto quick read_repair
 +
@@ -132,30 +134,34 @@ index 00000000..96f37989
 +# ensure btrfs-map-logical sees the tree updates
 +sync
 +
-+# step 2, corrupt the first 64k of one copy (on SCRATCH_DEV which is the first
-+# one in $SCRATCH_DEV_POOL
++# step 2, corrupt 4k in each copy
 +echo "step 2......corrupt file extent"
 +
 +${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
-+logical_in_btrfs=`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_filefrag | cut -d '#' -f 1`
++logical=`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_filefrag | cut -d '#' -f 1`
 +
-+physical1=$(get_physical ${logical_in_btrfs} 1)
-+devpath1=$(get_device_path ${logical_in_btrfs} 1)
++physical1=$(get_physical ${logical} 1)
++devpath1=$(get_device_path ${logical} 1)
 +
-+physical2=$(get_physical ${logical_in_btrfs} 2)
-+devpath2=$(get_device_path ${logical_in_btrfs} 2)
++physical2=$(get_physical ${logical} 2)
++devpath2=$(get_device_path ${logical} 2)
++
++physical3=$(get_physical ${logical} 3)
++devpath3=$(get_device_path ${logical} 3)
 +
 +_scratch_unmount
 +
-+echo " corrupt stripe #1, devpath $devpath1 physical $physical1" \
-+	>> $seqres.full
-+$XFS_IO_PROG -d -c "pwrite -S 0xbf -b 64K $physical1 64K" $devpath1 \
++$XFS_IO_PROG -d -c "pwrite -S 0xbd -b 4K $physical3 4K" $devpath3 \
 +	> /dev/null
 +
-+echo " corrupt stripe #2, devpath $devpath2 physical $physical2" \
-+	>> $seqres.full
-+$XFS_IO_PROG -d -c "pwrite -S 0xbf -b 64K $physical2 64K" $devpath2 \
++$XFS_IO_PROG -d -c "pwrite -S 0xba -b 4K $physical1 8K" $devpath1 \
 +	> /dev/null
++
++$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 4K $((physical2 + 4096)) 8K" $devpath2 \
++	> /dev/null
++
++$XFS_IO_PROG -d -c "pwrite -S 0xbc -b 4K $((physical3 + (2 * 4096))) 8K"  \
++	$devpath3 > /dev/null
 +
 +_scratch_mount
 +
@@ -166,7 +172,8 @@ index 00000000..96f37989
 +# while the good copy lies the other stripes, the bad copy only gets accessed
 +# when the reader's pid % 3 is 1
 +while true; do
-+	$XFS_IO_PROG -d -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
++	echo 3 > /proc/sys/vm/drop_caches
++	$XFS_IO_PROG -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
 +	pid=$!
 +	wait
 +	if [ $((pid % 3)) == 1 ]; then
@@ -174,10 +181,20 @@ index 00000000..96f37989
 +	fi
 +done
 +while true; do
-+	$XFS_IO_PROG -d -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
++	echo 3 > /proc/sys/vm/drop_caches
++	$XFS_IO_PROG -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
 +	pid=$!
 +	wait
 +	if [ $((pid % 3)) == 2 ]; then
++	    break
++	fi
++done
++while true; do
++	echo 3 > /proc/sys/vm/drop_caches
++	$XFS_IO_PROG -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
++	pid=$!
++	wait
++	if [ $((pid % 3)) == 0 ]; then
 +	    break
 +	fi
 +done
@@ -189,24 +206,60 @@ index 00000000..96f37989
 +	_filter_xfs_io_offset
 +$XFS_IO_PROG -d -c "pread -v -b 512 $physical2 512" $devpath2 |\
 +	_filter_xfs_io_offset
++$XFS_IO_PROG -d -c "pread -v -b 512 $physical3 512" $devpath3 |\
++	_filter_xfs_io_offset
 +
 +_scratch_dev_pool_put
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/265.out b/tests/btrfs/265.out
+diff --git a/tests/btrfs/266.out b/tests/btrfs/266.out
 new file mode 100644
-index 00000000..4d3e7f80
+index 00000000..243d1e1d
 --- /dev/null
-+++ b/tests/btrfs/265.out
-@@ -0,0 +1,75 @@
-+QA output created by 265
++++ b/tests/btrfs/266.out
+@@ -0,0 +1,109 @@
++QA output created by 266
 +step 1......mkfs.btrfs
 +wrote 131072/131072 bytes
 +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
 +step 2......corrupt file extent
 +step 3......repair the bad copy
 +step 4......check if the repair works
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
++read 512/512 bytes
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
 +XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
 +XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
 +XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
