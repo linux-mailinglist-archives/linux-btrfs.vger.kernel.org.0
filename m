@@ -2,67 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB1C52ED8B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 15:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A57352EE52
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 16:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350012AbiETNwj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 09:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S1345502AbiETOjD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 10:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349998AbiETNwh (ORCPT
+        with ESMTP id S1350401AbiETOjB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 09:52:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D795E5E745
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 06:52:35 -0700 (PDT)
+        Fri, 20 May 2022 10:39:01 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F5917067A
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 07:38:59 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9563A1FAB7;
-        Fri, 20 May 2022 13:52:34 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7918321B6E;
+        Fri, 20 May 2022 14:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653054754;
+        t=1653057538;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gpIECTSDkD/YeoKQvO9nTqh3jCcmnaZ/+4XQGLJNj0A=;
-        b=salwKFe7r7vEQ2ROTXwnByvbFzBhFUD5PbzdGYE/VBt0UAm0JgzqkYpJsgJMDHazKOEl4o
-        xI3sYjASeGrp3q/8Bm61oa37gBu865r4FIZqnULInnpwJlvFugu61RWgGPGvLlsPD/oqLb
-        U0OHTiYbW1oYPQHAvkvGePeVzSqzuBg=
+        bh=9WNE/yjJMRscsN8M6BsO4vK+W82mnI/7khhpzrRttRA=;
+        b=GzaUzn/vNE39Qf3MRYQpcSeESGSD/2ww9Bigm3ANVsP1lb9LSt8XWd5KLrlu7NGvsFC8AU
+        31ZDWZYXeIMYAdZIZ29mPZuHcnUnsa1Q0F2gqdaLAvcD+59yewJo1MkNezCDtM0/QwT1DM
+        WTR9qXBy6m20PEi0Wqd8/sV6LWOc2JY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653054754;
+        s=susede2_ed25519; t=1653057538;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gpIECTSDkD/YeoKQvO9nTqh3jCcmnaZ/+4XQGLJNj0A=;
-        b=FiPX9onqeMJ6E2RX+9F5uGfsgxXN5dcDh3M1b6fb7tOGNV3W2/lOog0yVvxi46J0Jnl0Z/
-        pWCFdBdTTWYNAOCA==
+        bh=9WNE/yjJMRscsN8M6BsO4vK+W82mnI/7khhpzrRttRA=;
+        b=KZKq5oMqCi+nFnNZN2G1Ii0dFLnwE2yI4Rh5PmOj9oO8mHDthnKyCO3cfCRcM0eGBFZvcQ
+        M701RyAoDjlcszCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6C55713A5F;
-        Fri, 20 May 2022 13:52:34 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45B5D13AF4;
+        Fri, 20 May 2022 14:38:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id UvNMGSKdh2IKbwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 13:52:34 +0000
-Date:   Fri, 20 May 2022 15:48:14 +0200
+        id fykSEAKoh2K4BAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 14:38:58 +0000
+Date:   Fri, 20 May 2022 16:34:38 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix hang during unmount when block group reclaim
- task is running
-Message-ID: <20220520134814.GP18596@twin.jikos.cz>
+Subject: Re: [PATCH 0/2] btrfs-progs: free space tree fixes
+Message-ID: <20220520143438.GQ18596@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <92362f3e34e6d742d25bd878fd4868e033f21d74.1652866724.git.fdmanana@suse.com>
+References: <cover.1653009947.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <92362f3e34e6d742d25bd878fd4868e033f21d74.1652866724.git.fdmanana@suse.com>
+In-Reply-To: <cover.1653009947.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -74,105 +73,68 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 18, 2022 at 10:41:48AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Fri, May 20, 2022 at 09:31:49AM +0800, Qu Wenruo wrote:
+> I was debugging a weird behavior that btrfs kernel chooses not to
+> allocate a new data extent at an empty data block group.
 > 
-> When we start an unmount, at close_ctree(), if we have the reclaim task
-> running and in the middle of a data block group relocation, we can trigger
-> a deadlock when stopping an async reclaim task, producing a trace like the
-> following:
+> And when checking the free space tree, it turned out that, we always
+> use bitmaps in btrfs-progs no matter what.
 > 
-> [629724.498185] task:kworker/u16:7   state:D stack:    0 pid:681170 ppid:     2 flags:0x00004000
-> [629724.499760] Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
-> [629724.501267] Call Trace:
-> [629724.501759]  <TASK>
-> [629724.502174]  __schedule+0x3cb/0xed0
-> [629724.502842]  schedule+0x4e/0xb0
-> [629724.503447]  btrfs_wait_on_delayed_iputs+0x7c/0xc0 [btrfs]
-> [629724.504534]  ? prepare_to_wait_exclusive+0xc0/0xc0
-> [629724.505442]  flush_space+0x423/0x630 [btrfs]
-> [629724.506296]  ? rcu_read_unlock_trace_special+0x20/0x50
-> [629724.507259]  ? lock_release+0x220/0x4a0
-> [629724.507932]  ? btrfs_get_alloc_profile+0xb3/0x290 [btrfs]
-> [629724.508940]  ? do_raw_spin_unlock+0x4b/0xa0
-> [629724.509688]  btrfs_async_reclaim_metadata_space+0x139/0x320 [btrfs]
-> [629724.510922]  process_one_work+0x252/0x5a0
-> [629724.511694]  ? process_one_work+0x5a0/0x5a0
-> [629724.512508]  worker_thread+0x52/0x3b0
-> [629724.513220]  ? process_one_work+0x5a0/0x5a0
-> [629724.514021]  kthread+0xf2/0x120
-> [629724.514627]  ? kthread_complete_and_exit+0x20/0x20
-> [629724.515526]  ret_from_fork+0x22/0x30
-> [629724.516236]  </TASK>
-> [629724.516694] task:umount          state:D stack:    0 pid:719055 ppid:695412 flags:0x00004000
-> [629724.518269] Call Trace:
-> [629724.518746]  <TASK>
-> [629724.519160]  __schedule+0x3cb/0xed0
-> [629724.519835]  schedule+0x4e/0xb0
-> [629724.520467]  schedule_timeout+0xed/0x130
-> [629724.521221]  ? lock_release+0x220/0x4a0
-> [629724.521946]  ? lock_acquired+0x19c/0x420
-> [629724.522662]  ? trace_hardirqs_on+0x1b/0xe0
-> [629724.523411]  __wait_for_common+0xaf/0x1f0
-> [629724.524189]  ? usleep_range_state+0xb0/0xb0
-> [629724.524997]  __flush_work+0x26d/0x530
-> [629724.525698]  ? flush_workqueue_prep_pwqs+0x140/0x140
-> [629724.526580]  ? lock_acquire+0x1a0/0x310
-> [629724.527324]  __cancel_work_timer+0x137/0x1c0
-> [629724.528190]  close_ctree+0xfd/0x531 [btrfs]
-> [629724.529000]  ? evict_inodes+0x166/0x1c0
-> [629724.529510]  generic_shutdown_super+0x74/0x120
-> [629724.530103]  kill_anon_super+0x14/0x30
-> [629724.530611]  btrfs_kill_super+0x12/0x20 [btrfs]
-> [629724.531246]  deactivate_locked_super+0x31/0xa0
-> [629724.531817]  cleanup_mnt+0x147/0x1c0
-> [629724.532319]  task_work_run+0x5c/0xa0
-> [629724.532984]  exit_to_user_mode_prepare+0x1a6/0x1b0
-> [629724.533598]  syscall_exit_to_user_mode+0x16/0x40
-> [629724.534200]  do_syscall_64+0x48/0x90
-> [629724.534667]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [629724.535318] RIP: 0033:0x7fa2b90437a7
-> [629724.535804] RSP: 002b:00007ffe0b7e4458 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> [629724.536912] RAX: 0000000000000000 RBX: 00007fa2b9182264 RCX: 00007fa2b90437a7
-> [629724.538156] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000555d6cf20dd0
-> [629724.539053] RBP: 0000555d6cf20ba0 R08: 0000000000000000 R09: 00007ffe0b7e3200
-> [629724.539956] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> [629724.540883] R13: 0000555d6cf20dd0 R14: 0000555d6cf20cb0 R15: 0000000000000000
-> [629724.541796]  </TASK>
+> This results some every concerning free space tree after mkfs:
 > 
-> This happens because:
+>   $ mkfs.btrfs  -f -m raid1 -d raid0 /dev/test/scratch[1234]
+>   btrfs-progs v5.17
+>   [...]
+>   Block group profiles:
+>     Data:             RAID0             4.00GiB
+>     Metadata:         RAID1           256.00MiB
+>     System:           RAID1             8.00MiB
+>   [..]
 > 
-> 1) Before entering close_ctree() we have the async block group reclaim
->    task running and relocating a data block group;
+>   $ btrfs ins dump-tree -t free-space /dev/test/scratch1
+>   btrfs-progs v5.17
+>   free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
+>   node 30441472 level 1 items 10 free space 483 generation 6 owner FREE_SPACE_TREE
+>   node 30441472 flags 0x1(WRITTEN) backref revision 1
+>   fs uuid deddccae-afd0-4160-9a12-48fe7b526fb1
+>   chunk uuid 68f6cf98-afe3-4f47-9797-37fd9c610219
+>           key (1048576 FREE_SPACE_INFO 4194304) block 30457856 gen 6
+>           key (475004928 FREE_SPACE_BITMAP 8388608) block 30703616 gen 5
+>           key (953155584 FREE_SPACE_BITMAP 8388608) block 30720000 gen 5
+>           key (1431306240 FREE_SPACE_BITMAP 8388608) block 30736384 gen 5
+>           key (1909456896 FREE_SPACE_BITMAP 8388608) block 30752768 gen 5
+>           key (2387607552 FREE_SPACE_BITMAP 8388608) block 30769152 gen 5
+>           key (2865758208 FREE_SPACE_BITMAP 8388608) block 30785536 gen 5
+>           key (3343908864 FREE_SPACE_BITMAP 8388608) block 30801920 gen 5
+>           key (3822059520 FREE_SPACE_BITMAP 8388608) block 30818304 gen 5
+>           key (4300210176 FREE_SPACE_BITMAP 8388608) block 30834688 gen 5
+>   [...]
+>   ^^^ So many bitmaps that an empty fs will have two levels for free
+>       space tree already
 > 
-> 2) There's an async metadata (or data) space reclaim task running;
+> Thankfully, kernel can properly merge those bitmaps into a large extent
+> at mount, so it won't be that scary forever.
 > 
-> 3) We enter close_ctree() and park the cleaner kthread;
+> It turns out that, we never set btrfs_block_group::bitmap_high_thresh,
+> thus we always convert free space extents to bitmaps, and waste space
+> unnecessarily.
 > 
-> 4) The async space reclaim task is at flush_space() and runs all the
->    existing delayed iputs;
+> Fix it by cross-port the needed function
+> set_free_space_tree_thresholds() from kernel and call it at correct
+> timing.
 > 
-> 5) Before the async space reclaim task calls
->    btrfs_wait_on_delayed_iputs(), the block group reclaim task which is
->    doing the data block group relocation, creates a delayed iput at
->    replace_file_extents() (called when COWing leaves that have file extent
->    items pointing to relocated data extents, during the merging phase
->    of relocation roots);
+> And finally add a test case for it.
 > 
-> 6) The async reclaim space reclaim task blocks at
->    btrfs_wait_on_delayed_iputs(), since we have a new delayed iput;
+> Unfortunately, even with this fixed, kernel is still doing its weird
+> behavior, as it's the cached un-clustered allocation code causing the
+> problem...
 > 
-> 7) The task at close_ctree() then calls cancel_work_sync() to stop the
->    async space reclaim task, but it blocks since that task is waiting for
->    the delayed iput to be run;
-> 
-> 8) The delayed iput is never run because the cleaner kthread is parked,
->    and no one else runs delayed iputs, resulting in a hang.
-> 
-> So fix this by stopping the async block group reclaim task before we
-> park the cleaner kthread.
-> 
-> Fixes: 18bb8bbf13c183 ("btrfs: zoned: automatically reclaim zones")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Qu Wenruo (2):
+>   btrfs-progs: properly initialize btrfs_block_group::bitmap_high_thresh
+>   btrfs-progs: mkfs-tests: add test case to make sure we don't create
+>     bitmaps for empty fs
 
-Added to misc-next, thanks.
+Good catch, thanks. The free-space-tree.c has a high similarity with the
+kernel sources, there are possibly more changes missing in the progs
+implementation. Getting this file in sync would be desirable, function
+by function or small updates are fine, if anybody is interested.
