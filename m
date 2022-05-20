@@ -2,332 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CA852F10B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 18:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A785552F17E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 May 2022 19:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351961AbiETQsF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 12:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
+        id S1352141AbiETRWy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 13:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351960AbiETQr4 (ORCPT
+        with ESMTP id S1345306AbiETRWx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 12:47:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933FA1862B9;
-        Fri, 20 May 2022 09:47:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=sGv5HpdiqUlOSsP2oaFDpSxQWLXKJWLJH2sFzgw0Hgc=; b=TMbJorOGYReHqxp7fCxTSbLrOA
-        4/2vofWDjrSvw0yarWihwaUu0izvb5OiMS8QYJASHfnYj7FD7RvseHCiz3dlYpvsrATaeqB5iCVvK
-        tBIEy0bTdU9NKV6cwJvld7+p4axh/y05IJ05EopwOAdbOvAxJOFL/kOJud4jiEkptJ6QiYEzqCQlZ
-        H/z4pU0XUGNHqyRGvB93vxyUuGK9bF2i9cow8dGfBS6aotY5Bme7k0l+fbKrGs0LTjHSYGQMjJ7k9
-        bhX5lPkDcd+u1S+xiSdnIMXJv4KvGyNSPO7+tZCVJfDz8xe6Zmv8HH6LhfQ8owJcCXI9mACGqLiW6
-        p+dQqsxg==;
-Received: from 213-147-165-123.nat.highway.webapn.at ([213.147.165.123] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ns5n7-00DoBI-Ot; Fri, 20 May 2022 16:47:54 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: test repair with corrupted sectors interleaved over multiple mirrors
-Date:   Fri, 20 May 2022 18:47:43 +0200
-Message-Id: <20220520164743.4023665-3-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220520164743.4023665-1-hch@lst.de>
-References: <20220520164743.4023665-1-hch@lst.de>
+        Fri, 20 May 2022 13:22:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A70B16D4A9;
+        Fri, 20 May 2022 10:22:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 050A01F899;
+        Fri, 20 May 2022 17:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1653067371;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U1vEEBx5l6lck/ZVYtVMS6/WSLGFTxzXzQhGy8n6n1Y=;
+        b=1K0EXYYgwzsP5pttWIVJPO7peR7LU+5/FGwrIehUJrgtYp1b2Z1gmnbsrlrvfd9lUvK2VA
+        zu24tnaYU76hI6QXg7nbkOeg0BgdflDuWpJoTzQjH360AGI4TCOxit8DE29sKLWYXVeAlH
+        Jl7ARw2GtOYQYSYYjCB3PhyECWDOHus=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1653067371;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U1vEEBx5l6lck/ZVYtVMS6/WSLGFTxzXzQhGy8n6n1Y=;
+        b=fdfW8UYvFzHZKAsM32Bd+yUPieD8tKqZpNTkU0+Ww4cQ9TxtNrH3v7+6LIxP4Bdiz6Gq/f
+        1Yvz9mmtz7ulOzDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 83B7A13AF4;
+        Fri, 20 May 2022 17:22:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 53QXH2rOh2KIPwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 20 May 2022 17:22:50 +0000
+Date:   Fri, 20 May 2022 19:18:30 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Pankaj Raghav <p.raghav@samsung.com>
+Cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "pankydev8@gmail.com" <pankydev8@gmail.com>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Keith Busch <kbusch@kernel.org>,
+        Adam Manzanares <a.manzanares@samsung.com>
+Subject: Re: [dm-devel] [PATCH v4 00/13] support non power of 2 zoned devices
+Message-ID: <20220520171830.GR18596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Pankaj Raghav <p.raghav@samsung.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Luis Chamberlain <mcgrof@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "pankydev8@gmail.com" <pankydev8@gmail.com>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        "jiangbo.365@bytedance.com" <jiangbo.365@bytedance.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Keith Busch <kbusch@kernel.org>,
+        Adam Manzanares <a.manzanares@samsung.com>
+References: <YoPAnj9ufkt5nh1G@mit.edu>
+ <7f9cb19b-621b-75ea-7273-2d2769237851@opensource.wdc.com>
+ <20220519031237.sw45lvzrydrm7fpb@garbanzo>
+ <69f06f90-d31b-620b-9009-188d1d641562@opensource.wdc.com>
+ <PH0PR04MB74166C87F694B150A5AE0F009BD09@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <4a8f0e1b-0acb-1ed4-8d7a-c9ba93fcfd02@opensource.wdc.com>
+ <16f3f9ee-7db7-2173-840c-534f67bcaf04@suse.de>
+ <20220520062720.wxdcp5lkscesppch@mpHalley-2.localdomain>
+ <be429864-09cb-e3fb-2afe-46a3453c4d73@opensource.wdc.com>
+ <aee22e8a-b89b-378c-3d5b-238c1215b01d@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aee22e8a-b89b-378c-3d5b-238c1215b01d@samsung.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test that repair handles the case where it needs to read from more than
-a single mirror on the raid1c3 profile and needs to take turns over the
-mirrors to recover data for the whole read.
+On Fri, May 20, 2022 at 11:30:09AM +0200, Pankaj Raghav wrote:
+> On 5/20/22 08:41, Damien Le Moal wrote:
+> >> Note that for F2FS there is no blocker. Jaegeuk picked the initial
+> >> patches, and he agreed to add native support.
+> > 
+> > And until that is done, f2fs will not work with these new !po2 devices...
+> > Having the new dm will avoid that support fragmentation which I personally
+> > really dislike. With the new dm, we can keep support for *all* zoned block
+> > devices, albeit needing a different setup depending on the device. That is
+> > not nice at all but at least there is a way to make things work continuously.
+> 
+> I see that many people in the community feel it is better to target the
+> dm layer for the initial support of npo2 devices. I can give it a shot
+> and maintain a native out-of-tree support for FSs for npo2 devices and
+> merge it upstream as we see fit later.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- tests/btrfs/266     | 145 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/266.out | 109 +++++++++++++++++++++++++++++++++
- 2 files changed, 254 insertions(+)
- create mode 100755 tests/btrfs/266
- create mode 100644 tests/btrfs/266.out
-
-diff --git a/tests/btrfs/266 b/tests/btrfs/266
-new file mode 100755
-index 00000000..24c2b5fd
---- /dev/null
-+++ b/tests/btrfs/266
-@@ -0,0 +1,145 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2017 Liu Bo.  All Rights Reserved.
-+# Copyright (c) 2022 Christoph Hellwig.
-+#
-+# FS QA Test 266
-+#
-+# Test that btrfs raid repair on a raid1c3 profile can repair interleaving
-+# errors on all mirrors.
-+#
-+
-+. ./common/preamble
-+_begin_fstest auto quick read_repair
-+
-+# Import common functions.
-+. ./common/filter
-+
-+# real QA test starts here
-+
-+_supported_fs btrfs
-+_require_scratch_dev_pool 3
-+
-+BTRFS_MAP_LOGICAL_PROG=$(type -P btrfs-map-logical)
-+
-+_require_command "$BTRFS_MAP_LOGICAL_PROG" btrfs-map-logical
-+_require_command "$FILEFRAG_PROG" filefrag
-+_require_odirect
-+# Overwriting data is forbidden on a zoned block device
-+_require_non_zoned_device "${SCRATCH_DEV}"
-+
-+get_physical()
-+{
-+	local logical=$1
-+	local stripe=$2
-+
-+	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV >> $seqres.full 2>&1
-+	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
-+		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$6 }"
-+}
-+			
-+get_device_path()
-+{
-+	local logical=$1
-+	local stripe=$2
-+
-+	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
-+		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$8 }"
-+}
-+
-+_scratch_dev_pool_get 3
-+# step 1, create a raid1 btrfs which contains one 128k file.
-+echo "step 1......mkfs.btrfs"
-+
-+mkfs_opts="-d raid1c3 -b 1G"
-+_scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
-+
-+# make sure data is written to the start position of the data chunk
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
-+
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" \
-+	"$SCRATCH_MNT/foobar" | \
-+	_filter_xfs_io_offset
-+
-+# ensure btrfs-map-logical sees the tree updates
-+sync
-+
-+# step 2, corrupt 4k in each copy
-+echo "step 2......corrupt file extent"
-+
-+${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
-+logical=`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_filefrag | cut -d '#' -f 1`
-+
-+physical1=$(get_physical ${logical} 1)
-+devpath1=$(get_device_path ${logical} 1)
-+
-+physical2=$(get_physical ${logical} 2)
-+devpath2=$(get_device_path ${logical} 2)
-+
-+physical3=$(get_physical ${logical} 3)
-+devpath3=$(get_device_path ${logical} 3)
-+
-+_scratch_unmount
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xbd -b 4K $physical3 4K" $devpath3 \
-+	> /dev/null
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xba -b 4K $physical1 8K" $devpath1 \
-+	> /dev/null
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 4K $((physical2 + 4096)) 8K" $devpath2 \
-+	> /dev/null
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xbc -b 4K $((physical3 + (2 * 4096))) 8K"  \
-+	$devpath3 > /dev/null
-+
-+_scratch_mount
-+
-+# step 3, 128k dio read (this read can repair bad copy)
-+echo "step 3......repair the bad copy"
-+
-+# since raid1c3 consists of three copies, and the bad copy was put on stripe #1
-+# while the good copy lies the other stripes, the bad copy only gets accessed
-+# when the reader's pid % 3 is 1
-+while true; do
-+	echo 3 > /proc/sys/vm/drop_caches
-+	$XFS_IO_PROG -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
-+	pid=$!
-+	wait
-+	if [ $((pid % 3)) == 1 ]; then
-+	    break
-+	fi
-+done
-+while true; do
-+	echo 3 > /proc/sys/vm/drop_caches
-+	$XFS_IO_PROG -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
-+	pid=$!
-+	wait
-+	if [ $((pid % 3)) == 2 ]; then
-+	    break
-+	fi
-+done
-+while true; do
-+	echo 3 > /proc/sys/vm/drop_caches
-+	$XFS_IO_PROG -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar" > /dev/null &
-+	pid=$!
-+	wait
-+	if [ $((pid % 3)) == 0 ]; then
-+	    break
-+	fi
-+done
-+
-+_scratch_unmount
-+
-+echo "step 4......check if the repair works"
-+$XFS_IO_PROG -d -c "pread -v -b 512 $physical1 512" $devpath1 |\
-+	_filter_xfs_io_offset
-+$XFS_IO_PROG -d -c "pread -v -b 512 $physical2 512" $devpath2 |\
-+	_filter_xfs_io_offset
-+$XFS_IO_PROG -d -c "pread -v -b 512 $physical3 512" $devpath3 |\
-+	_filter_xfs_io_offset
-+
-+_scratch_dev_pool_put
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/266.out b/tests/btrfs/266.out
-new file mode 100644
-index 00000000..243d1e1d
---- /dev/null
-+++ b/tests/btrfs/266.out
-@@ -0,0 +1,109 @@
-+QA output created by 266
-+step 1......mkfs.btrfs
-+wrote 131072/131072 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+step 2......corrupt file extent
-+step 3......repair the bad copy
-+step 4......check if the repair works
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+read 512/512 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+read 512/512 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+read 512/512 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--- 
-2.30.2
-
+Some of the changes from your patchset are cleanups or abstracting the
+alignment and zone calculations, so this can be merged to minimize the
+out of tree code.
