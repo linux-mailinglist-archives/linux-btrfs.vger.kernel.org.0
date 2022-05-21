@@ -2,72 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E205652F746
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 May 2022 03:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964AB52F74A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 May 2022 03:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353604AbiEUBKj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 May 2022 21:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        id S1352830AbiEUBN1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 May 2022 21:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243528AbiEUBKi (ORCPT
+        with ESMTP id S234338AbiEUBN0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 May 2022 21:10:38 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740D51B12D6
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 18:10:36 -0700 (PDT)
+        Fri, 20 May 2022 21:13:26 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49AE21B12D8
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 May 2022 18:13:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1653095433;
-        bh=YMG4a7gjfz2MiZJKgUQkghdNeTeaIwTfALMJJ8WLG08=;
+        s=badeba3b8450; t=1653095600;
+        bh=xQgqz9+KaWgpk4EK1ZJpPF98VCoL6jPihl5dq/VTnoE=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=GFfy9gUp1tRkmHnB4guK4nBaGL+IwD+yHtbxIw804fA/hF+B3sbyPabqAE12WA7/R
-         sZ28cWNL3Ic1YyPxwrrEj6sJUJi2QnTvrOr24ZjPjTCUAHMosQGUq8oDcW8XBr22TJ
-         bXbbIi+ewzRP/WQtaygm/jHGCwz3g6tvnmRMzGYU=
+        b=dAe610rH0FehEBAvcQ/qnWkf5LAQt6C/llofsq6BozmR5E8UIHPMbgnwBGwXLFVe6
+         Wjt7pfHrwJToewE+4IYk9kUkIblmTfsKkLvneHvqkfm1VZgmWoqR22+v0PtAvG4LZE
+         rKfe6/qkEUU1cKLMjepG3dgye+HKMZ7IFMrBHl6g=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXp9Y-1oLvDI43Aa-00YBHH; Sat, 21
- May 2022 03:10:33 +0200
-Message-ID: <9941f4d1-4eb2-4efb-0e24-09b28f2e185d@gmx.com>
-Date:   Sat, 21 May 2022 09:10:29 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYNNy-1oNaSz49II-00VRsi; Sat, 21
+ May 2022 03:13:20 +0200
+Message-ID: <47554e1f-0cd5-0439-3f63-1173d2d4973d@gmx.com>
+Date:   Sat, 21 May 2022 09:13:16 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
- BTRFS RAID1 on (currently) openSUSE Leap 15.3
+Subject: Re: [PATCH] btrfs-progs: introduce inspect-internal map-logical
+ command
 Content-Language: en-US
-To:     Johannes Kastl <kastl@b1-systems.de>, linux-btrfs@vger.kernel.org
-References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
- <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
- <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
- <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
- <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
- <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
- <16c8e141-f3b8-8a6b-1366-23b9dfbae343@b1-systems.de>
- <ea73d6b6-4e91-438e-6f9a-7377bb461bc3@b1-systems.de>
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <ff62eb10cbf38e53ac26f458644257f82daba47c.1653031397.git.wqu@suse.com>
+ <20220520181220.GS18596@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <ea73d6b6-4e91-438e-6f9a-7377bb461bc3@b1-systems.de>
+In-Reply-To: <20220520181220.GS18596@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oIswbReLmdFZJa6Y5kGVZgglhwLzL7vg72KiSAHRl+1zCZfYZ8R
- u/Q4zZVCdsesDIOwzJZdpq/pOGBBV06PRdCRG0CYgHJf9uveMLN0rA+gMiiVpjYLb2FM364
- KXCUJzRzIdA6e5nmjm5tadr+yvDxL7t46i9+6/YekBdw+n2yPtZud1NbF5X3IALlump3M9y
- Vds9N7pLStr+RJEoE0ynA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UeHiq+5VlTs=:T7eXlpXXb4IuzLMeMBAfkc
- sY689R7kRMMZvNd4U4KvtTh5GfvGmZq2Elf6ZzG+e2l8v9FFyC5D+yuTwvxPMlLNLna+GQzEd
- Kgtx1+G5oz5CuQBQGPQO57o8I1+9rtd4AIByWBrhtPbmgwilVFwmZMR8E/Ep2Z+tGs9VFMyFS
- UkWiWLJo06FyJUubW5HLxcjTqdQOAXjouWretf0B560CPO2LLG8LUMhMP6YVEf64dIAcnYbAH
- wEp1359nPbiWSKchMHG+kAp29VeFW5c058JWOR59C/YHmWc6HBdC1JgMgy9rgJUMFnyag0l3h
- QRLNtNzzAb3G22kDT4MsKnEIgv6iL0HRxMTrUpeIN+0NVb+ytrGJkT6dBMTpkG6AvuVzrcPbC
- eoxN8YSOi2i85W5PGRMIRqrXdnyIAUhcPJaLqtv5VdzvLIiZ8LLA1P+wIYCB4oKQlokbC6t4q
- rCRFcWHlrtqG/BSV0x8T22uQ/45il6Zd6RIh39gpkemqVYhUQqK0B/lRP17F4TXgy8GRIwubJ
- 1EDyINszy4tL0RsOPoaMAhswOWzXBuSCCJ4s6zcCam7Sa1DtdTt9XbgWOHylbzY2RiGOJn88s
- V1TFyeveMHqsXQKX+33z8hsDrWxGv1XDQaFcG+L30w0FpsF0HUG8coAOxpDnoSJQItsnKulmE
- yrK/P/R1mH/L5XltZwvaAb4FwiqECWZA8A2hFnpWL4FUQOtv6P0wcHyCLJ+MFYE6iXKHJyf9h
- 196aoEMuEW/SIRiOmbtVtTE/Y4MdD4AepueHwfUp5I3iVKjFv2VhA/RF7/VnOyokiJ1fdPb58
- dYLlnPkKnR7Kw9rsYnpFY5vYfOmBkFniMjw67fDC8ef8YMxCcXW1sJwJ9/GdP8B7Uh9aTUjTF
- S7620fVmQuya59xQytNt3q+b0l6wk/nExwG51HKgA6rPTD7380qocsHywtHteWjG8qzB5QnHE
- VuK6npetpjwlruWxG5q23lfE/FOfVBXfz/vmW70coY5NNCKahP562Ce5DzbXCcWdxKWrgUeh7
- 7qkoi7BcI6Aqjyu6CF/JH20pOqZSZnjRCHzQLQ741EOaa47xsZKVz14nnP75lEJgYFY7HggCO
- BW8lpVXSGn9RklMpG8ulFUqsMvcefUJVTHHSX9fq9PhK9N+dH2awdFXvA==
+X-Provags-ID: V03:K1:AoVOS1kzLC0meCcdoQObTDwvBQt5gRdzmfQ98GxQEPRV2nPFdY4
+ W4PwsosV6RygF0ZnhoqPqZlNYYZQL8xxkDhGLGyxCncNbKHKoXxPDHEM7vBB9+kgF9Hq63F
+ L8mHlh/yA03Rh+kJMF7AMpggmb4fKMhaL0Kft1I09BRxTWESrgWrFML59W/PWie9dTPk9Pd
+ uttoNjv4vhu9ZBHqWVC9Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jstSqwKOn3o=:vtCDH+AftJiQegv02zQcDz
+ mF9k2mA+mvZ8wdoEYUQYu3UNMp4A9ZChOuR24I4gQciZbF1yio4Y0feDOMVSqEcEGs5+wPh/V
+ 2QptiMzvpmyn7xY24+qLrIMPKGZEAOWIkjJqAczk7imdtZWcUJQh6K9l/UaI8FGEmFP5K91xO
+ z9PC00A4HeHfyILS1jPq0mvV4AyYwgCw5Au4V+2zY6vbb7w2eyIrv9zJaQuCGqcdwwXIDRk57
+ kZh60uKe6amOdse7InQi4eWcdtq7veJOjBAw4d9MnYhs9mfeFJsUkqiDkHmJ8utuhxMyEd2kt
+ jsV6ZdEp2ynMxMuhbMhrrJJR2+P3FbSj9bRoOGXyCnaWoxxL4PRPm0xtdWF4GKn/oIk0NQvrA
+ 4rIM851RK/rCL2/+ZgoA/SNE4PvuMvaRfhRlns9z8CD3bPCpauGbj3MsEFxv1vPjrgtFY13xz
+ wi75r+K4qkZo3PX14Q2IdG4iSzEoId+7h0IW5Aky2zzQ9fjNMdQ87CSv3bFxSHDTMSXkufNUM
+ bWuPU/vwnOSTqZtjkCa39C8eJN9glAx0nq5jYpZXi49MfaIxz044yqvMqvlxDttieSV9PYCdn
+ SFMWh8JkluTLWcQBP1rC3YBThF4EOpnyT61NfWNEbfv3s2t1hBn0AGECXbScPu6jAYj0pjqvz
+ ko1NvBJ1pJ1xKNaj+84LAZoy7BFboMa/qowvXcyaLvt6pDsSuP3P2OtoF28YoHp9X0WDg15uJ
+ AGZV1Q4Bw0Xj8XMn+AnPoGyjoYdecaHhgsYUz3v99d1texkXBMdJW7DYXa6ZLE+Vp7AGdTkIY
+ gfkAWaUF20O6MSAvSnvs6k1MSWV3PiD6L8ikNjfZpAMqitjGr39itinpE17mF+zAA5S8rHBwd
+ bypgkLoFSwSvuPvG07pwuQpXFoLPy07RBuUdaTNASvBEIXKme8ccKXUBLgQ8rz0CySD1PSV6K
+ TNluEwj83v1Ai+cpvy4cewFUfqEvzYO4sglvq9/GDu2RaMv9f2sQPXGTg/hCrK/LE4ZGPiERK
+ ldLa0MbfmYVnxYyYUpdLNeRgFp4vZgyzlj3lDdqxskJShECWpSIP+ltJSugoq90dXwp/NuMPV
+ b1A9JX7kEB7IZYtvyPx5n3sqZaMEbfgwzpVw2tWxV7UR3a5gP7Ymi4VOw==
 X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,49 +75,176 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/5/21 04:21, Johannes Kastl wrote:
-> Hello Qu,
->
-> On 20.05.22 at 17:14 Johannes Kastl wrote:
->
->> I am trying to build this and will test it, hopefully tomorrow. I'll
->> let you know what happens...
->
-> I was able to build an RPM for Leap 15.3, based on your branch.
->
->> https://build.opensuse.org/project/show/home:ojkastl_buildservice:btrfs=
-_debugging
+On 2022/5/21 02:12, David Sterba wrote:
+> On Fri, May 20, 2022 at 03:23:26PM +0800, Qu Wenruo wrote:
+>> This is a simpler version compared to btrfs-map-logical.
 >>
+>> The differences are:
+>>
+>> - No extent check
+>>    Thus any bytenr which has chunk mapping can be mapped.
+>>
+>> - No length specification
+>>    Now it's fixed to sectorsize.
+>>    Previously we use nodesize in btrfs-map-logical, which would only
+>>    make the output more complex due as it may cross stripe boundary
+>>    for data extent.
+>>
+>>    Considering the main users of this functionality is data corruption,
+>>    thus we really just want to resolve a single sector.
+>>
+>> - No data write support nor mirror specification
+>>    We always output all mirrors and call it a day.
+>>
+>> - Ignore RAID56 parity manually
+>>
+>> We still keep the old btrfs-map-logical, just in case there are some
+>> usage of certain parameters.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   Documentation/btrfs-inspect-internal.rst |  7 +++
+>>   cmds/inspect.c                           | 78 +++++++++++++++++++++++=
++
+>>   2 files changed, 85 insertions(+)
+>>
+>> diff --git a/Documentation/btrfs-inspect-internal.rst b/Documentation/b=
+trfs-inspect-internal.rst
+>> index 710a34fb0cb9..8a9264d3dc5b 100644
+>> --- a/Documentation/btrfs-inspect-internal.rst
+>> +++ b/Documentation/btrfs-inspect-internal.rst
+>> @@ -169,6 +169,13 @@ logical-resolve [-Pvo] [-s <bufsize>] <logical> <p=
+ath>
+>>           -v
+>>                   (deprecated) alias for global *-v* option
+>>
+>> +map-logical <logical> <device>
+>> +        map the sector at given *logical* address in the linear filesy=
+stem space into
+>> +        physical address.
+>> +
+>> +        .. note::
+>> +                For RAID56, this will only map the data stripe.
+>> +
+>>   min-dev-size [options] <path>
+>>           (needs root privileges)
+>>
+>> diff --git a/cmds/inspect.c b/cmds/inspect.c
+>> index 1534f2040f4e..271adf8c6fd4 100644
+>> --- a/cmds/inspect.c
+>> +++ b/cmds/inspect.c
+>> @@ -29,6 +29,7 @@
+>>   #include "kernel-shared/ctree.h"
+>>   #include "common/send-utils.h"
+>>   #include "kernel-shared/disk-io.h"
+>> +#include "kernel-shared/volumes.h"
+>>   #include "cmds/commands.h"
+>>   #include "common/help.h"
+>>   #include "common/open-utils.h"
+>> @@ -125,6 +126,7 @@ static int cmd_inspect_inode_resolve(const struct c=
+md_struct *cmd,
+>>   }
+>>   static DEFINE_SIMPLE_COMMAND(inspect_inode_resolve, "inode-resolve");
+>>
+>> +
+>>   static const char * const cmd_inspect_logical_resolve_usage[] =3D {
+>>   	"btrfs inspect-internal logical-resolve [-Pvo] [-s bufsize] <logical=
+> <path>",
+>>   	"Get file system paths for the given logical address",
+>> @@ -348,6 +350,81 @@ out:
+>>   }
+>>   static DEFINE_SIMPLE_COMMAND(inspect_subvolid_resolve, "subvolid-reso=
+lve");
+>>
+>> +static const char * const cmd_inspect_map_logical_usage[] =3D {
+>> +	"btrfs inspect-internal map-logical <logical> <device>",
+>> +	"Get the physical offset of a sector.",
+>> +	NULL
+>> +};
+>> +
+>> +static int print_mapping_info(struct btrfs_fs_info *fs_info, u64 logic=
+al)
+>> +{
+>> +	struct cache_extent *ce;
+>> +	struct map_lookup *map;
+>> +	int num_copies;
+>> +	int cur_mirror;
+>> +	int ret;
+>> +
+>> +	ce =3D search_cache_extent(&fs_info->mapping_tree.cache_tree, logical=
+);
+>> +	if (!ce) {
+>> +		error("no chunk mapping found for logical %llu", logical);
+>> +		return -ENOENT;
+>> +	}
+>> +	map =3D container_of(ce, struct map_lookup, ce);
+>> +	/* For RAID56, we only return the data stripe. */
+>> +	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
+>> +		num_copies =3D 1;
+>> +	else
+>> +		num_copies =3D btrfs_num_copies(fs_info, logical,
+>> +					      fs_info->sectorsize);
+>> +
+>> +	for (cur_mirror =3D 1; cur_mirror <=3D num_copies; cur_mirror++) {
+>> +		struct btrfs_multi_bio *multi =3D NULL;
+>> +		u64 len =3D fs_info->sectorsize;
+>> +
+>> +		ret =3D btrfs_map_block(fs_info, READ, logical, &len, &multi,
+>> +				      cur_mirror, NULL);
+>> +		if (ret < 0) {
+>> +			errno =3D -ret;
+>> +			error("failed to map logical %llu: %m", logical);
+>> +			return ret;
+>> +		}
+>> +		/* We're using READ, which should only return one mirror. */
+>> +		ASSERT(multi && multi->num_stripes =3D=3D 1);
+>> +		printf("mirror %d logical %llu phyiscal %llu device %s\n",
+>> +			cur_mirror, logical, multi->stripes[0].physical,
+>> +			multi->stripes[0].dev->name);
+>> +		free(multi);
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +static int cmd_inspect_map_logical(const struct cmd_struct *cmd, int a=
+rgc,
+>> +				   char **argv)
+>> +{
+>> +	struct open_ctree_flags ocf =3D {0};
+>> +	struct btrfs_fs_info *fs_info;
+>> +	u64 logical;
+>> +	int ret;
+>> +
+>> +	clean_args_no_options(cmd, argc, argv);
+>> +
+>> +	if (check_argc_exact(argc - optind, 2))
+>> +		return 1;
+>> +
+>> +	ocf.filename =3D argv[optind + 1];
+>> +	ocf.flags =3D OPEN_CTREE_CHUNK_ROOT_ONLY;
+>> +	logical =3D arg_strtou64(argv[optind]);
+>> +
+>> +	fs_info =3D open_ctree_fs_info(&ocf);
 >
-> I installed it on my Leap 15.3 system, started the fix-device-size
-> and... after only a couple of seconds it was done.
->
-> No errors, just one line saying that it fixed something.
->
-> I could mount the filesystem directly afterwards.
+> So this is for images, not for mounted filesystem. The inspect-internal
+> group has both but for the map-logical we could do both.
 
-Great to know that.
+I'm afraid the map-logical tool will have the same requirement for
+dump-tree, the preferred method is to run on unmounted device/image.
 
->
-> I unmounted and am currently running a btrfscheck on the filesystem,
-> based on the code from your branch. I hope the filesystem is working
-> again, and I can start using it again (tomorrow, the check will take ~8
-> hours)...
-
-Hope no error from btrfsck.
+Running on mounted device is possible, but not recommended.
 
 >
-> I doubt that this will give valuable input to fix this error in
-> btrfsprogs...
+> I'd expect the primary use to be for the mounted fs.  The question is
+> what for am I supposed to use map-logical for?
 
-At least we know the new way to fix it is working.
+Mostly for fstests, to corrupt extents.
 
-BTW, mind to share things like `btrfs fi usage` and `btrfs fi df` when
-you can mount the fs?
+Thus we're completely capable to run it unmounted.
 
 Thanks,
 Qu
->
-> Kind Regards,
-> Johannes
->
+
+> See where a file is
+> located, ok, that I'd like to see on a mounted filesystem. Running that
+> on the block device while still mounted is unreliable.
