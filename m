@@ -2,50 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 774CD530746
+	by mail.lfdr.de (Postfix) with ESMTP id 2A681530745
 	for <lists+linux-btrfs@lfdr.de>; Mon, 23 May 2022 03:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351914AbiEWBs4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 May 2022 21:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
+        id S1351929AbiEWBs6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 May 2022 21:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351911AbiEWBsz (ORCPT
+        with ESMTP id S1351911AbiEWBs5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 May 2022 21:48:55 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C2613FB9
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 May 2022 18:48:54 -0700 (PDT)
+        Sun, 22 May 2022 21:48:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A46D13FB9
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 May 2022 18:48:56 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 01EEA1F385;
-        Mon, 23 May 2022 01:48:53 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EC65E21990;
+        Mon, 23 May 2022 01:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1653270533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1653270534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lm7PihVKbV+9QZsORzpyjvpOtsEvQ3YmWkfAcpKY6cU=;
-        b=gs5uYY1RCWmUdMMVZ67YBG2CUgijg7hlDv805RIfEfi3BdCuJ2sT6KgiWulhNI0glMHLa8
-        OArlmMP7X/3YS4+vLZ/AZ+H+b+XRBWmZes57M0xFhwzRViQJquSrGxgB6xpvCbs3RdNLR9
-        oyPNq6qQZVJ5hvqLdc5D23kYkbj4/lA=
+        bh=v6pbIBWZBoET/I9ctW3pYs7LiuphBF5fiG7QR710JeI=;
+        b=lH/jRd1nG00tk1TQGaBNk+eEFgY7WtTLYyJYClEdKo1wPf3UCpbUkvoD9qMzlazputRIzZ
+        I0XmhYY5qmDcVINJxOs3NbeKpp9JgwrMMod0zWWeM67K/JFHykIWKiYzchnudU3qhSBBPh
+        zWD5rBdHyKxGuB1+q4PpzOWBKG9Hoas=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B00113ADF;
-        Mon, 23 May 2022 01:48:51 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 672CC13ADF;
+        Mon, 23 May 2022 01:48:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6N8+NQPoimLzOQAAMHmgww
-        (envelope-from <wqu@suse.com>); Mon, 23 May 2022 01:48:51 +0000
+        id GN8kDAXoimLzOQAAMHmgww
+        (envelope-from <wqu@suse.com>); Mon, 23 May 2022 01:48:53 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 1/7] btrfs: save the original bi_iter into btrfs_bio for buffered read
-Date:   Mon, 23 May 2022 09:48:25 +0800
-Message-Id: <be8e94c5b3236cda374109f9af64f860f88804c4.1653270322.git.wqu@suse.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 2/7] btrfs: make repair_io_failure available outside of extent_io.c
+Date:   Mon, 23 May 2022 09:48:26 +0800
+Message-Id: <bd074de49da76033bbc1883e3019abc7984b3287.1653270322.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1653270322.git.wqu@suse.com>
 References: <cover.1653270322.git.wqu@suse.com>
@@ -61,67 +62,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although we have btrfs_bio::iter, it currently have very limited usage:
-
-- RAID56
-  Which is not needed at all
-
-- btrfs_bio_clone()
-  This is used mostly for direct IO.
-
-For the incoming read repair patches, we want to grab the original
-logical bytenr, and be able to iterate the range of the bio (no matter
-if it's cloned).
-
-So this patch will also save btrfs_bio::iter for buffered read bios at
-submit_one_bio().
-And for the sake of consistency, also save the btrfs_bio::iter for
-direct IO at btrfs_submit_dio_bio().
-
-The reason that we didn't save the iter in btrfs_map_bio() is,
-btrfs_map_bio() is going to handle various bios, with or without
-btrfs_bio bioset.
-And we  want to keep btrfs_map_bio() to handle and only handle plain bios
-without bother the bioset.
+Remove the static so that the function can be used by the new read
+repair code, and give it a btrfs_ prefix.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+[hch: split from a larger patch]
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/extent_io.c | 7 +++++++
- fs/btrfs/inode.c     | 2 ++
- 2 files changed, 9 insertions(+)
+ fs/btrfs/extent_io.c | 19 ++++++++++---------
+ fs/btrfs/extent_io.h |  3 +++
+ 2 files changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1d144f655f65..1bd1b1253f9d 100644
+index 1bd1b1253f9d..1083d6cfa858 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -188,6 +188,13 @@ static void submit_one_bio(struct bio *bio, int mirror_num,
- 	/* Caller should ensure the bio has at least some range added */
- 	ASSERT(bio->bi_iter.bi_size);
+@@ -2321,9 +2321,9 @@ int free_io_failure(struct extent_io_tree *failure_tree,
+  * currently, there can be no more than two copies of every data bit. thus,
+  * exactly one rewrite is required.
+  */
+-static int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+-			     u64 length, u64 logical, struct page *page,
+-			     unsigned int pg_offset, int mirror_num)
++int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
++			    u64 length, u64 logical, struct page *page,
++			    unsigned int pg_offset, int mirror_num)
+ {
+ 	struct btrfs_device *dev;
+ 	struct bio_vec bvec;
+@@ -2415,8 +2415,9 @@ int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num)
+ 	for (i = 0; i < num_pages; i++) {
+ 		struct page *p = eb->pages[i];
  
-+	/*
-+	 * Save the original bi_iter for read bios, as read repair wants the
-+	 * orignial logical bytenr.
-+	 */
-+	if (bio_op(bio) == REQ_OP_READ)
-+		btrfs_bio(bio)->iter = bio->bi_iter;
-+
- 	if (is_data_inode(tree->private_data))
- 		btrfs_submit_data_bio(tree->private_data, bio, mirror_num,
- 					    compress_type);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 34466b543ed9..dd0882e1b982 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7974,6 +7974,8 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
+-		ret = repair_io_failure(fs_info, 0, start, PAGE_SIZE, start, p,
+-					start - page_offset(p), mirror_num);
++		ret = btrfs_repair_io_failure(fs_info, 0, start, PAGE_SIZE,
++					      start, p, start - page_offset(p),
++					      mirror_num);
  		if (ret)
- 			goto err;
-+		/* Check submit_one_bio() for the reason. */
-+		btrfs_bio(bio)->iter = bio->bi_iter;
+ 			break;
+ 		start += PAGE_SIZE;
+@@ -2466,9 +2467,9 @@ int clean_io_failure(struct btrfs_fs_info *fs_info,
+ 		num_copies = btrfs_num_copies(fs_info, failrec->logical,
+ 					      failrec->len);
+ 		if (num_copies > 1)  {
+-			repair_io_failure(fs_info, ino, start, failrec->len,
+-					  failrec->logical, page, pg_offset,
+-					  failrec->failed_mirror);
++			btrfs_repair_io_failure(fs_info, ino, start,
++					failrec->len, failrec->logical,
++					page, pg_offset, failrec->failed_mirror);
+ 		}
  	}
  
- 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+@@ -2626,7 +2627,7 @@ static bool btrfs_check_repairable(struct inode *inode,
+ 	 *
+ 	 * Since we're only doing repair for one sector, we only need to get
+ 	 * a good copy of the failed sector and if we succeed, we have setup
+-	 * everything for repair_io_failure to do the rest for us.
++	 * everything for btrfs_repair_io_failure() to do the rest for us.
+ 	 */
+ 	ASSERT(failed_mirror);
+ 	failrec->failed_mirror = failed_mirror;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 956fa434df43..6cdcea1551a6 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -276,6 +276,9 @@ int btrfs_repair_one_sector(struct inode *inode,
+ 			    struct page *page, unsigned int pgoff,
+ 			    u64 start, int failed_mirror,
+ 			    submit_bio_hook_t *submit_bio_hook);
++int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
++			    u64 length, u64 logical, struct page *page,
++			    unsigned int pg_offset, int mirror_num);
+ 
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ bool find_lock_delalloc_range(struct inode *inode,
 -- 
 2.36.1
 
