@@ -2,140 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 519BF533067
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 20:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8131C53313A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 21:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239673AbiEXS02 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 May 2022 14:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        id S240974AbiEXTEm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 May 2022 15:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbiEXS0Z (ORCPT
+        with ESMTP id S240966AbiEXTEe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 May 2022 14:26:25 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7D41D0EF
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 11:26:23 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id a10so19172443ioe.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 11:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KIX+u6GZcqLRZ1LgtPBGXuVTPAA3ys7NCaeczSP7CzQ=;
-        b=cnC94j3KdxBGp5q2SD4aQS37QsMP139r9it3R5Pd2m+sd1XFGhx2fiK2bN3r1xHhE0
-         EHYLdnna5xo8cr7HtCut0BiXj4c2zarUO5NSsmqF5s/9N63zCs3oMvTn73BkGihYtNAr
-         kWswclS/AAdYJz3DvyaAHUdEzTKpCQmE9Iq04Yq09zwmgb2hDK1HLZLWYT1FsB2VHViY
-         EoULp5kjq6i32h15Vpx1Ez1vCMMg41tNg3h+N/qcQ9TixvaVxw7ZBJTikNFvt1hS9phr
-         xzppJXV1AnmrD7saMmAtWFUZHlwm9l3aVquzexQkxdgDGoSpfO8D5vd6s08ALvttToBS
-         P5+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KIX+u6GZcqLRZ1LgtPBGXuVTPAA3ys7NCaeczSP7CzQ=;
-        b=JlKVgMoIx8/VjRvxCMDcMaXSX+SYR7Vn2I+GROZDSIUvLSdigQLsJnm7X+W9ghxY6I
-         UfSOW4WLMxu4YVS7AZYsu0oLZUH1cy1zTzHrrO0vK2XAzYUp5uDP1/B0fvnwoEsRX3XA
-         wmwMhjl4+i5lrJ0TsiiL9O/FEqnngYTWMMcn1/WZGB4mknGHAJqe0Of6L1wvk6cmtz6L
-         JvIIfjngJ3Cg+3/rAO+Q1tkBp1bPjz9NYtm7GrX/ym9VjMQlk6hJ3NOsRSgCsLOqr4WE
-         A3vo7JpsL6XTx9unooo0S+0QuLnGoEYP/piw8cqpR/ehq+YGfYK6F+1pTS7dOTBQAV8A
-         iAiQ==
-X-Gm-Message-State: AOAM530ZHO4BbSeRdelrZXRESX+7nhWdupXDEv8M2Idt6HhF7vdOJnX6
-        6r3eImn+ITNAb1a5NihzwdI3jZQal/OrJMp2DXUAQxEhjxIVwg==
-X-Google-Smtp-Source: ABdhPJwYETbQfxaUOfllDRBJZck4W38c8Lsnk7uY4d8zLAhM7kaKCE9cMFjXCkWZUSgsrh/Ej9pXFW5gDuCiw9eP3Gw=
-X-Received: by 2002:a02:a609:0:b0:32e:7865:17f4 with SMTP id
- c9-20020a02a609000000b0032e786517f4mr14619583jam.313.1653416782626; Tue, 24
- May 2022 11:26:22 -0700 (PDT)
+        Tue, 24 May 2022 15:04:34 -0400
+Received: from libero.it (smtp-33.italiaonline.it [213.209.10.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB053ED24
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 12:03:18 -0700 (PDT)
+Received: from [192.168.1.27] ([78.12.14.90])
+        by smtp-33.iol.local with ESMTPA
+        id tZnmnDyUZtMz4tZnmnmCDB; Tue, 24 May 2022 21:02:42 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1653418962; bh=gyH00TqffGmaeqnisLqFQobpLC7yo/Qfw5Of8p89cH0=;
+        h=From;
+        b=thefg2zomnAbQyeFoG/fGnqs8WX9KaEODT60MAfMCHbU8++iAgKOTvXHKqm1hQnNQ
+         gCB1pwKMgVSeEA1O+X5eT9CmbWEDEAsddJGTi4oYG0ifbUzloW0+0u3IJVjlFCBsh5
+         UTvzikMCoUWDtKKpxhUqMjSB7NPys1XPBtbvwiTBk9n2ksnTVkKN7X8PjoRC/4N0s1
+         lstqqgRtnw9IZYaMUdsAk4wTFGIF7OoO0BOJHs3nah7Ogr+mcw2SnYHODKCm1k/u5z
+         CmvJa0ZcI3Do5xC3rJxvm1HBVsKrEuGTFP2Z4yDujCZ6rpK5VBBa4wSJrLDvnw//Xb
+         DsDRWjM69hBRg==
+X-CNFS-Analysis: v=2.4 cv=RvwAkAqK c=1 sm=1 tr=0 ts=628d2bd2 cx=a_exe
+ a=tzWkov1jpxwUGlXVT4HyzQ==:117 a=tzWkov1jpxwUGlXVT4HyzQ==:17
+ a=IkcTkHD0fZMA:10 a=ciYIJ-ledbM0H_Oy7lUA:9 a=QEXdDO2ut3YA:10
+Message-ID: <c6f55508-a0df-aea3-279d-75648793dfb2@libero.it>
+Date:   Tue, 24 May 2022 21:02:41 +0200
 MIME-Version: 1.0
-References: <20220516165327.GD8056@merlins.org> <CAEzrpqfShQhaCVv1GY=JTTCO_T44ggidHFtbSABrcPCSNzY9hA@mail.gmail.com>
- <CAEzrpqdsi63zgudjzbSa3QyMLuE5nD3+t9nOuzXEdWZGCbTcNA@mail.gmail.com>
- <20220517202756.GK8056@merlins.org> <CAEzrpqdgKtSDJj2QekYuS+M77wYrp6bvXv2Ue3xQ8Vm2bGGYAg@mail.gmail.com>
- <20220517212223.GL8056@merlins.org> <CAEzrpqcX3XEQGjoJCV1wARu=Od7vAypmzO4dCFgQ+_UBBuJdMA@mail.gmail.com>
- <20220518191241.GI13006@merlins.org> <CAEzrpqfPEU9Vt86ykVyxwvDXrihKfGc180oT7SUcQdwtYysquw@mail.gmail.com>
- <20220519222855.GL13006@merlins.org> <20220524011348.GR13006@merlins.org>
-In-Reply-To: <20220524011348.GR13006@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Tue, 24 May 2022 14:26:11 -0400
-Message-ID: <CAEzrpqd=G50pWKYJRD57ePVpfGNPu947zJXuZFdj0tF4yGzkbQ@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Reply-To: kreijack@inwind.it
+Content-Language: en-US
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Subject: cp --reflink and NOCOW files
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKNFmwHmgb2pbRWaKYRyyvkA7rLFL2yEjeWTDt2h1qlytnPNSkJyQc1BLLYhfeTx/4SQzZ11jYndNNLL0eGUUTWARlAmVnqwyvXljyNSan3brs7loiiG
+ oCR3wtJkqxQd0XyiPP71ioefHwoew9Es2KFlSau4KcFJm+tl5kI6z6PEfCg0Lst5sIj9J251x+uLhg==
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 23, 2022 at 9:13 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Thu, May 19, 2022 at 03:28:55PM -0700, Marc MERLIN wrote:
-> > On Wed, May 18, 2022 at 03:17:55PM -0400, Josef Bacik wrote:
-> > > Yes sorry I meant to say that.  Because we have these dangling block
-> > > groups we'll suddenly have a bunch of files that no longer are
-> > > mappable and we'll need to delete them.  Looks to be about 7gib of
-> > > block groups so you're going to lose that stuff, it's going to be a
-> > > while but it's expected.  Thanks,
-> > >
-> > So, it's definitely deleting a lot
-> >
-> > I think I'm at 81%
-> >
-> > searching 159785 for bad extents
-> > processed 78446592 of 95879168 possible bytes, 81%
-> > Found an extent we don't have a block group for in the file
-> > Performances/Magic/Diversion 08022019.mkv
-> > Deleting [70879, 108, 10708312064] root 6781246029824 path top 6781246029824 top slot 19 leaf 10678930079744 slot 34
-> >
-> > gargamel:~# grep -c Deleting /mnt/btrfs_space/ri1
-> >  149583
-> >
-> > Ok, that's a lot of files, but let's see if it finishes
->
-> mmmh, so I'm not sure if it's going to finish soon? still going after 5
-> days.
-> searching 162632 for bad extents
-> processed 78446592 of 99090432 possible bytes, 79%
-> Found an extent we don't have a block group for in the file
-> file
-> Deleting [70879, 108, 9305350144] root 6781246177280 path top 6781246177280 top slot 19 leaf 782788263936 slot 0
->
-> searching 162632 for bad extents
-> processed 78446592 of 99090432 possible bytes, 79%
-> Found an extent we don't have a block group for in the file
-> file
-> Deleting [70879, 108, 9305358336] root 6781246128128 path top 6781246128128 top slot 19 leaf 782788296704 slot 0
->
-> searching 162632 for bad extents
-> processed 78446592 of 99090432 possible bytes, 79%
-> Found an extent we don't have a block group for in the file
-> file
-> Deleting [70879, 108, 9305411584] root 6781246177280 path top 6781246177280 top slot 19 leaf 782788263936 slot 0
->
->
-> gargamel:~# grep -c Deleting /mnt/btrfs_space/ri1
-> 620577
->
-> over 600K files deleted, it's still moving forward though.
+Hi All,
 
-So it's 600k extents, not files.  Here you have the same file, just
-different offsets
+recently I discovered that BTRFS doesn't allow to reflink a file
+when the source is marked as NOCOW
 
-Deleting [70879, 108, 9305350144] root 6781246177280 path top
-6781246177280 top slot 19 leaf 782788263936 slot 0
-Deleting [70879, 108, 9305411584] root 6781246177280 path top
-6781246177280 top slot 19 leaf 782788263936 slot 0
+$ lsattr
+---------------C------ ./file-very-big-nocow
+$ cp --reflink file-very-big-nocow file2
+cp: failed to clone 'file2' from 'file-very-big-nocow': Invalid argument
+$ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
+ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
 
-I'm really wishing I had noticed this earlier, it would have been
-faster to put together the old block groups than to wait for this,
-sorry about that.
+My first thought was that it would be sufficient to remove the "nocow" flag.
+But I was unable to do that.
 
-Right now I feel like absolute crap, my kids gave me COVID so I've
-been fluctuating between dying and feeling ok.  Tomorrow if I'm
-feeling better I'll take a look at the chunk restore code and see if I
-can't just put the tree back the way it was easily.  Thanks,
+$ chattr -C file-very-big-nocow
 
-Josef
+$ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
+ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
+
+(I tried "chattr +C ..." too)
+
+Ok, now my question is: how we can remove the NOCOW flag from a file ?
+
+My use case is to move files between subvolumes some of which are marked as NOWCOW.
+The files are videos, so I want to avoid to copy the data.
+
+
+BR
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
