@@ -2,77 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B754F532AE5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 15:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA55532B20
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 15:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235655AbiEXNNr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 May 2022 09:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
+        id S237707AbiEXNT0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 May 2022 09:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbiEXNNq (ORCPT
+        with ESMTP id S237747AbiEXNTQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 May 2022 09:13:46 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C484B92D2E
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 06:13:42 -0700 (PDT)
+        Tue, 24 May 2022 09:19:16 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A799CF01;
+        Tue, 24 May 2022 06:18:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1653398015;
-        bh=jbMuaiMvKfN58NHdOhjmpPdsayF+Voe+qXgr9teRmws=;
+        s=badeba3b8450; t=1653398337;
+        bh=65EdXG8iYMrMIEQ7HLnTZMGlbH5pyG8cM0vD7JOgwbQ=;
         h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=CNyBdPVT1IHdyebUfJ5nHzQlp8EosmS3yEBR+qHBlugpf1bbd4UCM/z7vIus3qbM4
-         6+nsN6KDXU2om/3z8Ni7QPQxO4Fl4rHRl+mcOwjCHndMChqFpybaeE5BtHa7Orgu7i
-         C9TuNx1RdPgnDWlEUSPWR5E6a0SewlL9+NowBwlo=
+        b=dX+xbz59PNh/LqkZcOD+E1JekEohA1uba5qTHLDScx+Plwo4duB+12m6xZi/xelTm
+         iONwAgAlGow0SgIKcECsJd/BPAOEGwT/122cc4xdwnrnDHKd6RixBm43lA9zJguixZ
+         ggbLkd4zGTApL8gKF0VJbNKPxnEvBJBu34mlwXKM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEFzx-1o1V5n1FrR-00AGwC; Tue, 24
- May 2022 15:13:35 +0200
-Message-ID: <d966f776-79d7-1eec-efe0-bce1c771bc77@gmx.com>
-Date:   Tue, 24 May 2022 21:13:29 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgNh7-1nM3VH2vaJ-00hvo9; Tue, 24
+ May 2022 15:18:57 +0200
+Message-ID: <2f850377-0adf-cdf3-9fc6-02136b9a5282@gmx.com>
+Date:   Tue, 24 May 2022 21:18:53 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: [PATCH 8/8] btrfs: use btrfs_bio_for_each_sector in
- btrfs_check_read_dio_bio
+Subject: Re: [PATCH 1/9] btrfs: add a helpers for read repair testing
 Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <d3065bfe-c7ae-5182-84de-17101afbd39e@gmx.com>
- <20220522123108.GA23355@lst.de>
- <d7a1e588-7b2b-e85e-c204-a711d54ecc7c@gmx.com>
- <20220522125337.GB24032@lst.de>
- <8a6fb996-64c3-63b3-7f9c-aec78e83504e@gmx.com>
- <20220523062636.GA29750@lst.de>
- <84b022dc-6310-1d52-b8e3-33f915a4fee7@gmx.com>
- <20220524073216.GB26145@lst.de>
- <6047f29e-966d-1bf5-6052-915c1572d07a@gmx.com>
- <b78b6c09-eb70-68a7-7e69-e8481378b968@gmx.com>
- <20220524120847.GA18478@lst.de>
+To:     Christoph Hellwig <hch@lst.de>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220524071838.715013-1-hch@lst.de>
+ <20220524071838.715013-2-hch@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220524120847.GA18478@lst.de>
+In-Reply-To: <20220524071838.715013-2-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XQM8szGcNgC57zRMWpAX4CRLK2RR4j142bE4vFY4SAWEUd40f6n
- PIjw6zfvimdP4THIUIm/yMAkiiXcraeYRkksnFnY3HdTKhku0XMII7Ql/jQ8lITRogyTP4F
- 2yBBueScvxOCW7TNi10/19WpN6G2tUVh5HN8UwNVEiJkckr5Ahq1pgu1LYWLGUmDRTxMPNL
- IiDMy/uoum3zqo2rbsJHw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+5F5ecMFoC8=:7v4aA4wCZwkwPOw8MxJREz
- JNvxhRaDcrdcF5slLP17+aCa/Hy+0F14v25kJNSOe5o8dg4uaKOeL47sp7m9ggIiUPHZmXn+H
- 7JaYmwtg8qjahTu8/cu08U/w+chk5GsXIxfSxIA6E3nbY+z11aj1iT/konLfDn4qJqQKc6STf
- pi/FtUNXW1A3lyWlzzrM0UWZGKOkn/lEuEoUTw1H3zkeK/fazMe+cPJGRWO7Jtnvl+bwSv0Bs
- LE1b9VBg/fwA+pYoCDTCGRsrHnfrQ4/LAV0NoGsn7lMQfl2sPOM5PeKNm5fFtq5hGXIOFhzpG
- p2GkHLDGdutp/h9GQoRwg6K4MhSzBidGjqm3VHO59C10/MW0b0AfNsx4sl7H/Y5NfWjGbrWFC
- He334KEvaaFUHEFi0b+QSrzBhFJ4DKclIT6iJ74utaA/w7X3uY863uq8/YfVGZ+Q9aW0WKauE
- 3SF9Tbn6vKgbbaiQnNkNZSDFM5AjDIVbnTEsDZ8m9ZsdoM2FzB6/uMQm0prB93JjVecEomOy2
- JNr6vz0loFs2z8PrJGgkworUsktJE99fwD7cE1KTZMg2sFezqxAGOrEZ7R0YXG+9AuXo8wy3p
- bCbaHQiYiUQNBkNxEc9GavVVfOxRyltgwJWVaqRxH7qjTXiOC4/T/R6xoAOS0vjpttBFpLbgg
- 5QXZrNDF1WEdG+on6Np2HdOzL+ziK71mPOlXqhUd8nj42F5E5WOAt/bTgl8Gfm7IAjj6+ZWSJ
- 7gSScWckxSV3EGyFKXP0KYXPEPYqA8SgpE8UJXlsOOgjz1rCputhHQcpN/EY1Yepno+fnC1m3
- 6DHtthAO7UKkH7nsLjRP25K4rPCsgfH0K+ePP9x1v/hj64E9nnWK2lmyaW3IVLP7tH7h75U41
- 41Zx+EQkRZebtMj2lX2HWgZdNxZA8Nvd+4FgaNkdKjcfPGuaodzbq+UwOpuBBK5SYeF7lpU8L
- 0hzA1t6pekqIcT5a0JWCwW6fxXV1G894chkYchoW3xx9UhwKiH1aoQGtt7cTQiFhJero5rIVY
- hTq/Fk0TfUTdiRp4AnOe1ID5voWWnZFdxEsQreatQdV/9SpDsJdyl1Zm0bduMPpftB6e5wRxD
- ZVlJ8UKesXnVvLlOKS8DXbIsRd7r3TbpVbdV3ChMj/pHR+u61ayFG6cjw==
+X-Provags-ID: V03:K1:C8pNVj46ee9TCixlNoMksNkxN/gqS8s+osICdMnc3Wxn2xYMOYg
+ gQr6q9c5EGvuZjBbMsfd5FLgSZgWLyah7zWJtuXmegmtiqZh8+/42KkHWaeWKeZ6HYB5elp
+ cIDDL0BWiuWQ8VPsJdq2ky7/wJbDKQyxgWcvInfySydDoKgwrxMUQaORbIJQpeNQjMuF0j7
+ RSlGqDSTzGQxpHk10tXTg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mAGPqYuaeok=:7PsQ9h2W992VoufJeJ90wW
+ rPPnFyrA5C34P2n8SzJJcf9sDc+ly4mRoKO/ETk7QUfSGHrTGubXuAhG3rp+2s12kr8FetpPZ
+ knToPVnRJ+9oNZdotA2W4q7UhG9kUZd339FOWZa8mur5tw0Pgybzu0vzpN+M0MYHmziAn9JuL
+ A7V8Lhy6JzAnALW1tz0OGKWBndmSAuvy6FpOctxOmBG7WGrHq3Q6XUjOAD5/rwFTCAcqp4mTu
+ uAecp84KGiyfiyI0hZlmF1fCgkMVO2LbJhv4IxW0yEFzlxRyqSgFmM6j2DxZN0D5dG0JfrTT9
+ Im0Gb+4cPZSoV7NH7pV8KGDYybO7T08Jxow8TmBA3Y4LQ1xtkEiQe+E2PHyYga44ZOIaz3+rP
+ kilaRfx2sTiFH8jxpNsX+LMH4KqUCBGYy3bgFTix3giVtVo6mVqbNK1xJ308VL6kCzIYIwnZ4
+ YTjHkelMBOW9p+7NHkUOLfhguph9ejAcQhIFFldyr8SMEo+VRczTdMYmWdMeM1rNSd/j2j+sS
+ fp3qCJx/S9gs9lIkX6aLv2zFZMXC16mLqwER9s4Phl6A4r7UlgjBWXYPmyahoePigJFaf7inS
+ 5dBBxk1Kdps0P4qsiqEGKumLYOhUegNlUr+tO73JCbAONf5okkTJYWUhJ3PUz76qvdp100xHR
+ ManCPTqk/cU7GBACQvWgB3Sdvv9yDfBsLTzQQMLBvQMy1B7toG+jYLhqzgdelfUWKMHxzq161
+ MIBEbMZ+G1rEQm+C0xUlHsEfMgLoWp1WeGv4j0m3ryT+Q/FXWhQMGeSiZVTn1hoA+86Njejh2
+ z8N7HYJqAq+bBlu4NYog5+ZxFkRh7Fgvhj+sW7G+nCE7r0pJbI6OGvgzMk5KmYBziaBn9zcOi
+ bkJqwsn7ECuWlrApjdBcWcI4e7zTSVmCB9Ezx7sWy2jfpEkYwI+5Rv2w1IzsgVOMShd9Gcdw+
+ epM5fa8To6Lce1K/aYCMfO7yA6R0oesJ1vBopl5GUTAeSA8mNncku+z2mTB9afokXOmpo0vGS
+ x7SMKZ1K5XMhbJg7fERrP2NpSxPRr7+EvVLYGgiBu9GndEeJjwvHrc7hCBMPqhuTl/sEkXbpP
+ a1B1ZOh9X5p0pTFBZniKPwCPtA46qFhImMSvNMF+h1nKnaIV7Z7WcDKcQ==
 X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -85,35 +74,143 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/5/24 20:08, Christoph Hellwig wrote:
-> On Tue, May 24, 2022 at 04:21:38PM +0800, Qu Wenruo wrote:
->>> The things like resetting initial_mirror, making the naming "initial"
->>> meaningless.
->>> And the reset on the length part is also very quirky.
->>
->> In fact, if you didn't do the initial_mirror and length change (which i=
-s
->> a big disaster of readability, to change iterator in a loop, at least t=
-o
->> me),
+On 2022/5/24 15:18, Christoph Hellwig wrote:
+> Add a few helpers to consolidate code for btrfs read repair testing:
 >
-> So what is the big problem there?  Do I need more extensive documentatio=
-n
-> or as there anything in this concept that is just too confusing.
+>   - _btrfs_get_first_logical() gets the btrfs logical address for the
+>     first extent in a file
+>   - _btrfs_get_device_path and _btrfs_get_physical use the
+>     btrfs-map-logical tool to find the device path and physical address
+>     for btrfs logical address for a specific mirror
+>   - _btrfs_direct_read_on_mirror and _btrfs_buffered_read_on_mirror
+>     read the data from a specific mirror
+>
+> These will be used to consolidate the read repair tests and avoid
+> duplication for new tests.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Modifying the iterator inside a loop is the biggest problem to me.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Yes, extra comments can help, but that doesn't help the readability.
+Some some small nitpicks inlined below.
+> ---
+>   common/btrfs  | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>   common/config |  1 +
+>   2 files changed, 76 insertions(+)
+>
+> diff --git a/common/btrfs b/common/btrfs
+> index ac597ca4..129a83f7 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -505,3 +505,78 @@ _btrfs_metadump()
+>   	$BTRFS_IMAGE_PROG "$device" "$dumpfile"
+>   	[ -n "$DUMP_COMPRESSOR" ] && $DUMP_COMPRESSOR -f "$dumpfile" &> /dev/=
+null
+>   }
+> +
+> +# Return the btrfs logical address for the first block in a file
+> +_btrfs_get_first_logical()
+> +{
+> +	local file=3D$1
+> +	_require_command "$FILEFRAG_PROG" filefrag
+> +
+> +	${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
+> +	${FILEFRAG_PROG} -v $file | _filter_filefrag | cut -d '#' -f 1
+> +}
+> +
+> +# Find the device path for a btrfs logical offset
+> +_btrfs_get_device_path()
+> +{
+> +	local logical=3D$1
+> +	local stripe=3D$2
+> +
+> +	_require_command "$BTRFS_MAP_LOGICAL_PROG" btrfs-map-logical
+> +
+> +	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
+> +		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$8 }"
+> +}
+> +
+> +
+> +# Find the device physical sector for a btrfs logical offset
+> +_btrfs_get_physical()
+> +{
+> +	local logical=3D$1
+> +	local stripe=3D$2
+> +
+> +	_require_command "$BTRFS_MAP_LOGICAL_PROG" btrfs-map-logical
+> +
+> +	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV >> $seqres.full 2>&1
+> +	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
+> +		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$6 }"
 
-And that's why most of guys here prefer for () loop if we can.
+Since the map logical output is saved into seqres, maybe it's better to
+add "-b <sectorsize>" parameters.
+
+The default bytes is the nodesize (which is super werid), thus under
+corner cases, like at the stripe boundary, it can return multiple result
+groups and cause some confusion.
+
+Although we will need another helper to grab the sectorsize of a mounted
+btrfs though.
 
 Thanks,
 Qu
+> +}
+> +
+> +# Read from a specific stripe to test read recovery that corrupted a sp=
+ecific
+> +# stripe.  Btrfs uses the PID to select the mirror, so keep reading unt=
+il the
+> +# xfs_io process that performed the read was executed with a PID that e=
+nds up
+> +# on the intended mirror.
+> +_btrfs_direct_read_on_mirror()
+> +{
+> +	local mirror=3D$1
+> +	local nr_mirrors=3D$2
+> +	local file=3D$3
+> +	local offset=3D$4
+> +	local size=3D$5
+> +
+> +	while [[ -z $( (( BASHPID % nr_mirrors =3D=3D mirror )) &&
+> +		exec $XFS_IO_PROG -d \
+> +			-c "pread -b $size $offset $size" $file) ]]; do
+> +		:
+> +	done
+> +}
+> +
+> +# Read from a specific stripe to test read recovery that corrupted a sp=
+ecific
+> +# stripe.  Btrfs uses the PID to select the mirror, so keep reading unt=
+il the
+> +# xfs_io process that performed the read was executed with a PID that e=
+nds up
+> +# on the intended mirror.
+> +_btrfs_buffered_read_on_mirror()
+> +{
+> +	local mirror=3D$1
+> +	local nr_mirrors=3D$2
+> +	local file=3D$3
+> +	local offset=3D$4
+> +	local size=3D$5
+> +
+> +	echo 3 > /proc/sys/vm/drop_caches
+> +	while [[ -z $( (( BASHPID % nr_mirrors =3D=3D mirror )) &&
+> +		exec $XFS_IO_PROG \
+> +			-c "pread -b $size $offset $size" $file) ]]; do
+> +		:
+> +	done
+> +}
+> diff --git a/common/config b/common/config
+> index c6428f90..df20afc1 100644
+> --- a/common/config
+> +++ b/common/config
+> @@ -228,6 +228,7 @@ export E2IMAGE_PROG=3D"$(type -P e2image)"
+>   export BLKZONE_PROG=3D"$(type -P blkzone)"
+>   export GZIP_PROG=3D"$(type -P gzip)"
+>   export BTRFS_IMAGE_PROG=3D"$(type -P btrfs-image)"
+> +export BTRFS_MAP_LOGICAL_PROG=3D$(type -P btrfs-map-logical)
 >
->> and rely on the VFS re-read behavior to fall back to sector by
->> secot read, I would call it better readability...
->
-> I don't think relying on undocumented VFS behavior is a good idea.  It
-> will also not work for direct I/O if any single direct I/O bio has
-> ever more than a single page, which is something btrfs badly needs
-> if it wants to get any kind of performance out of direct I/O.
+>   # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
+>   # newer systems have udevadm command but older systems like RHEL5 don'=
+t.
