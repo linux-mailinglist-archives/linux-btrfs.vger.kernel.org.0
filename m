@@ -2,131 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C0A53241C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 09:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE09532457
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 09:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbiEXHca (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 May 2022 03:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S233238AbiEXHo6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 May 2022 03:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbiEXHcW (ORCPT
+        with ESMTP id S229451AbiEXHo5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 May 2022 03:32:22 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB01496B6
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 00:32:20 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E4E0A68AFE; Tue, 24 May 2022 09:32:16 +0200 (CEST)
-Date:   Tue, 24 May 2022 09:32:16 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 8/8] btrfs: use btrfs_bio_for_each_sector in
- btrfs_check_read_dio_bio
-Message-ID: <20220524073216.GB26145@lst.de>
-References: <20220522114754.173685-1-hch@lst.de> <20220522114754.173685-9-hch@lst.de> <d3065bfe-c7ae-5182-84de-17101afbd39e@gmx.com> <20220522123108.GA23355@lst.de> <d7a1e588-7b2b-e85e-c204-a711d54ecc7c@gmx.com> <20220522125337.GB24032@lst.de> <8a6fb996-64c3-63b3-7f9c-aec78e83504e@gmx.com> <20220523062636.GA29750@lst.de> <84b022dc-6310-1d52-b8e3-33f915a4fee7@gmx.com>
+        Tue, 24 May 2022 03:44:57 -0400
+Received: from mx2.b1-systems.de (mx2.b1-systems.de [159.69.135.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CC96EC58
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 00:44:55 -0700 (PDT)
+Message-ID: <88a253ee-4dfd-5e3f-8622-63321f7d6e35@b1-systems.de>
+Date:   Tue, 24 May 2022 09:44:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84b022dc-6310-1d52-b8e3-33f915a4fee7@gmx.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: de-DE
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+ <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+ <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
+ <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+ <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
+ <16c8e141-f3b8-8a6b-1366-23b9dfbae343@b1-systems.de>
+ <ea73d6b6-4e91-438e-6f9a-7377bb461bc3@b1-systems.de>
+ <9941f4d1-4eb2-4efb-0e24-09b28f2e185d@gmx.com>
+From:   Johannes Kastl <kastl@b1-systems.de>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+In-Reply-To: <9941f4d1-4eb2-4efb-0e24-09b28f2e185d@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------baxY9zEHRINkQZw7orWf3had"
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 23, 2022 at 03:46:02PM +0800, Qu Wenruo wrote:
->> Becasue btrfs_repair_io_failure can't handle multiple-page I/O.  It
->> is also is rather cumbersome because it bypassed the normal bio
->> mapping.  As a follow on I'd rather move it over to btrfs_map_bio
->> with a special flag for the single mirror parity write rather than that
->> hack.
->
-> In fact so far for all callers of btrfs_repair_io_failure(), we are
-> always handling things inside one stripe.
->
-> Thus we can easily enhance that function to handle multi page ranges.
->
-> Although a dedicated btrfs_map_bio() flags seems more generic and better.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------baxY9zEHRINkQZw7orWf3had
+Content-Type: multipart/mixed; boundary="------------tMp3OkT2UGqQPIy8XFnS2vG1";
+ protected-headers="v1"
+From: Johannes Kastl <kastl@b1-systems.de>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Message-ID: <88a253ee-4dfd-5e3f-8622-63321f7d6e35@b1-systems.de>
+Subject: Re: 'btrfs rescue' command (recommended by btrfs check) fails on old
+ BTRFS RAID1 on (currently) openSUSE Leap 15.3
+References: <17981e45-a182-60ce-5a02-31616609410a@b1-systems.de>
+ <21dd5ba9-8dc0-7792-d5f4-4cd1ea91d75e@gmx.com>
+ <53dabec5-14de-ed6f-1ef9-a300b96333a6@b1-systems.de>
+ <00dcf063-aa51-e8f3-9664-d6ca97306711@gmx.com>
+ <05775b94-7e69-99ce-f89e-5c7e634f5461@b1-systems.de>
+ <e62b429d-358e-ec38-30ca-671d43a5b5be@gmx.com>
+ <16c8e141-f3b8-8a6b-1366-23b9dfbae343@b1-systems.de>
+ <ea73d6b6-4e91-438e-6f9a-7377bb461bc3@b1-systems.de>
+ <9941f4d1-4eb2-4efb-0e24-09b28f2e185d@gmx.com>
+In-Reply-To: <9941f4d1-4eb2-4efb-0e24-09b28f2e185d@gmx.com>
 
-I did think of moving btrfs_repair_io_failure over to my new
-infrastructure in fact, because it seems inherently possible.  Just
-not the highest priority right now.
+--------------tMp3OkT2UGqQPIy8XFnS2vG1
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
->> Because the whole bio at this point is all the bad sectors.  There
->> is no point in writing only parts of the bio because that would leave
->> corruption on disk.
->>
->>>    The only reason I can think of is, we're still trying to do some
->>>    "optimization".
->>>
->>>    But all our bio submission is already synchronous, I doubt such
->>>    "optimization" would make much difference.
->>
->> Can you explain what you mean here?
->
-> We wait for the read bio anyway, I doubt the batched write part is that
-> important.
+SGkgUXUsDQoNCk9uIDIxLjA1LjIyIGF0IDAzOjEwIFF1IFdlbnJ1byB3cm90ZToNCg0KPiBB
+dCBsZWFzdCB3ZSBrbm93IHRoZSBuZXcgd2F5IHRvIGZpeCBpdCBpcyB3b3JraW5nLg0KPiAN
+Cj4gQlRXLCBtaW5kIHRvIHNoYXJlIHRoaW5ncyBsaWtlIGBidHJmcyBmaSB1c2FnZWAgYW5k
+IGBidHJmcyBmaSBkZmAgd2hlbg0KPiB5b3UgY2FuIG1vdW50IHRoZSBmcz8NCg0KU3VyZSwg
+aGVyZSB0aGV5IGFyZToNCg0KPj4gcm9vdCBkdW1ibzovcm9vdCAjIGJ0cmZzIGZpbGVzeXN0
+ZW0gZGYgL21udC9EVU1CT19CQUNLVVBfNFRCDQo+PiBEYXRhLCBSQUlEMTogdG90YWw9My4z
+NlRpQiwgdXNlZD0zLjI0VGlCDQo+PiBEYXRhLCBEVVA6IHRvdGFsPTEzLjUwTWlCLCB1c2Vk
+PTIuODFNaUINCj4+IERhdGEsIHNpbmdsZTogdG90YWw9MS4wMEdpQiwgdXNlZD0wLjAwQg0K
+Pj4gU3lzdGVtLCBSQUlEMTogdG90YWw9MzIuMDBNaUIsIHVzZWQ9NTYwLjAwS2lCDQo+PiBT
+eXN0ZW0sIHNpbmdsZTogdG90YWw9MzIuMDBNaUIsIHVzZWQ9MC4wMEINCj4+IE1ldGFkYXRh
+LCBSQUlEMTogdG90YWw9Mjg0Ljk0R2lCLCB1c2VkPTExMS44NEdpQg0KPj4gTWV0YWRhdGEs
+IERVUDogdG90YWw9NTEyLjAwTWlCLCB1c2VkPTQ4LjAwS2lCDQo+PiBNZXRhZGF0YSwgc2lu
+Z2xlOiB0b3RhbD0xLjAwR2lCLCB1c2VkPTAuMDBCDQo+PiBHbG9iYWxSZXNlcnZlLCBzaW5n
+bGU6IHRvdGFsPTUxMi4wME1pQiwgdXNlZD0wLjAwQg0KID4+IHJvb3QgZHVtYm86L3Jvb3Qg
+Iw0KDQo+PiByb290IGR1bWJvOi9yb290ICMgYnRyZnMgZmlsZXN5c3RlbSBzaG93IC9tbnQv
+RFVNQk9fQkFDS1VQXzRUQg0KPj4gTGFiZWw6ICdEVU1CT19CQUNLVVBfNFRCJyAgdXVpZDog
+NTA2NTFiNDEtYmYzMy00N2U3LThhMDgtYWZiYzcxYmEwYmY4DQo+PiAgICAgICAgIFRvdGFs
+IGRldmljZXMgMiBGUyBieXRlcyB1c2VkIDMuMzVUaUINCj4+ICAgICAgICAgZGV2aWQgICAg
+MSBzaXplIDcuMDBUaUIgdXNlZCAzLjY0VGlCIHBhdGggL2Rldi9zZGQxDQo+PiAgICAgICAg
+IGRldmlkICAgIDIgc2l6ZSA3LjAwVGlCIHVzZWQgMy42M1RpQiBwYXRoIC9kZXYvc2RjMQ0K
+Pj4NCj4+IHJvb3QgZHVtYm86L3Jvb3QgIw0KDQpOb3Qgc3VyZSB3aHkgb25lIG9mIHRoZSBk
+ZXZpY2VzIGhhcyAzLjY0VGlCIHVzZWQsIHRoZSBvdGhlciBvbmUgMy42M1RpQi4NCg0KPj4g
+cm9vdCBkdW1ibzovcm9vdCAjIGJ0cmZzIGZpbGVzeXN0ZW0gdXNhZ2UgL21udC9EVU1CT19C
+QUNLVVBfNFRCDQo+PiBPdmVyYWxsOg0KPj4gICAgIERldmljZSBzaXplOiAgICAgICAgICAg
+ICAgICAgIDE0LjAwVGlCDQo+PiAgICAgRGV2aWNlIGFsbG9jYXRlZDogICAgICAgICAgICAg
+IDcuMjdUaUINCj4+ICAgICBEZXZpY2UgdW5hbGxvY2F0ZWQ6ICAgICAgICAgICAgNi43M1Rp
+Qg0KPj4gICAgIERldmljZSBtaXNzaW5nOiAgICAgICAgICAgICAgICAgIDAuMDBCDQo+PiAg
+ICAgVXNlZDogICAgICAgICAgICAgICAgICAgICAgICAgIDYuNjlUaUINCj4+ICAgICBGcmVl
+IChlc3RpbWF0ZWQpOiAgICAgICAgICAgICAgMy40OFRpQiAgICAgIChtaW46IDMuNDhUaUIp
+DQo+PiAgICAgRGF0YSByYXRpbzogICAgICAgICAgICAgICAgICAgICAgIDIuMDANCj4+ICAg
+ICBNZXRhZGF0YSByYXRpbzogICAgICAgICAgICAgICAgICAgMi4wMA0KPj4gICAgIEdsb2Jh
+bCByZXNlcnZlOiAgICAgICAgICAgICAgNTEyLjAwTWlCICAgICAgKHVzZWQ6IDAuMDBCKQ0K
+Pj4NCj4+IERhdGEsc2luZ2xlOiBTaXplOjEuMDBHaUIsIFVzZWQ6MC4wMEINCj4+ICAgIC9k
+ZXYvc2RkMSAgICAgICAxLjAwR2lCDQo+Pg0KPj4gRGF0YSxSQUlEMTogU2l6ZTozLjM2VGlC
+LCBVc2VkOjMuMjRUaUINCj4+ICAgIC9kZXYvc2RjMSAgICAgICAzLjM2VGlCDQo+PiAgICAv
+ZGV2L3NkZDEgICAgICAgMy4zNlRpQg0KPj4NCj4+IERhdGEsRFVQOiBTaXplOjEzLjUwTWlC
+LCBVc2VkOjIuODFNaUINCj4+ICAgIC9kZXYvc2RkMSAgICAgIDI3LjAwTWlCDQo+Pg0KPj4g
+TWV0YWRhdGEsc2luZ2xlOiBTaXplOjEuMDBHaUIsIFVzZWQ6MC4wMEINCj4+ICAgIC9kZXYv
+c2RkMSAgICAgICAxLjAwR2lCDQo+Pg0KPj4gTWV0YWRhdGEsUkFJRDE6IFNpemU6Mjg0Ljk0
+R2lCLCBVc2VkOjExMS44NEdpQg0KPj4gICAgL2Rldi9zZGMxICAgICAyODQuOTRHaUINCj4+
+ICAgIC9kZXYvc2RkMSAgICAgMjg0Ljk0R2lCDQo+Pg0KPj4gTWV0YWRhdGEsRFVQOiBTaXpl
+OjUxMi4wME1pQiwgVXNlZDo0OC4wMEtpQg0KPj4gICAgL2Rldi9zZGQxICAgICAgIDEuMDBH
+aUINCj4+DQo+PiBTeXN0ZW0sc2luZ2xlOiBTaXplOjMyLjAwTWlCLCBVc2VkOjAuMDBCDQo+
+PiAgICAvZGV2L3NkZDEgICAgICAzMi4wME1pQg0KPj4NCj4+IFN5c3RlbSxSQUlEMTogU2l6
+ZTozMi4wME1pQiwgVXNlZDo1NjAuMDBLaUINCj4+ICAgIC9kZXYvc2RjMSAgICAgIDMyLjAw
+TWlCDQo+PiAgICAvZGV2L3NkZDEgICAgICAzMi4wME1pQg0KPj4NCj4+IFVuYWxsb2NhdGVk
+Og0KPj4gICAgL2Rldi9zZGMxICAgICAgIDMuMzZUaUINCj4+ICAgIC9kZXYvc2RkMSAgICAg
+ICAzLjM2VGlCDQo+PiByb290IGR1bWJvOi9yb290ICMNCg0KDQoNCg0KDQotLSANCkpvaGFu
+bmVzIEthc3RsDQpMaW51eCBDb25zdWx0YW50ICYgVHJhaW5lcg0KVGVsLjogKzQ5ICgwKSAx
+NTEgMjM3MiA1ODAyDQpNYWlsOiBrYXN0bEBiMS1zeXN0ZW1zLmRlDQoNCkIxIFN5c3RlbXMg
+R21iSA0KT3N0ZXJmZWxkc3RyYcOfZSA3IC8gODUwODggVm9oYnVyZw0KaHR0cDovL3d3dy5i
+MS1zeXN0ZW1zLmRlDQpHRjogUmFscGggRGVobmVyDQpVbnRlcm5laG1lbnNzaXR6OiBWb2hi
+dXJnIC8gQUc6IEluZ29sc3RhZHQsSFJCIDM1MzcNCg==
 
-I still don't understand the point.  Once we read more than a single
-page, writing it back as a patch is completely trivial as shown by
-this series.  Why would we not do it?
+--------------tMp3OkT2UGqQPIy8XFnS2vG1--
 
->
-> If you really want, I can try to make the write part asynchronous, while
-> still keep the read part synchronous, and easier to read.
+--------------baxY9zEHRINkQZw7orWf3had
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Asynchronous writes gets us back into all the I/O completion handler
-complexities, which was the whole reason to start on the synchronous
-repair.
+-----BEGIN PGP SIGNATURE-----
 
-> In your current version, the do {} while() loop iterates through all
-> mirrors.
->
-> But for the following case, we will hit problems thanks to RAID1C3 again:
->
-> Mirror 1 	|X|X|X|X|
-> Mirror 2	|X| |X| |
-> Mirror 3	| |X| |X|
->
-> We hit mirror 1 initially, thus @initial_mirror is 1.
->
-> Then when we try mirror 2, since the first sector is still bad, we jump
-> to the next mirror.
->
-> For mirror 3, we fixed the first sector only. Then 2nd sector is still
-> from mirror 3 and didn't pass.
-> Now we have no more mirrors, and still return -EIO.
+wsF5BAABCAAjFiEEOjtDOPXdIVAWcUziyeav2MG3z/wFAmKMjPMFAwAAAAAACgkQyeav2MG3z/wH
+uA//Uj38XF2bY3xc1pDU3UThtgj3QNOuzYC+BTlwPkL7B4sB6xwD8UB9SwaBPtpK+Fx7ZH3MF/ZY
+Msdsu6hxh2oszHbZfNkxI1r20+ElIgFj5dH3vCera9auM15nSGTMaPQnxJKoLgFUoVajL9xnXKfo
+pb123VigsB1aOUIlHIGANXWEjuCfA4+y2/20iRbS1ql6aLJ3MyWqCZJAvffPTK5iBY+GT1WDmzNM
+7PM1uNxnZMIVNKmhtxXsexrrpGTNhJgkWdk5xeXFbfLg18ye3ZYySRfUlsUXTPqL8g93EuqjFG4r
+O37gtQQM1yYHVLFXtyNqNdtTIhWOPRQnoj5UY0gtx6XfgApQ2k3v2BPS6WK5SANqX5K/Sh6UoJ7Z
++kNnENMasVP4zuYCBjHtXMyFaX3wznPuu6p29uox3RmlJ4153LOgd1uMdN4qeKWF4yiNIFKzQorW
+/oImbgWJ2Bup6OKLlFjW0nVApLVzjjmDqnPhb/Kf/MuAN0lSoFK/n12tM2NMPf5uhEfIMFf6JtC0
+8nn+1aJAMm1tfTlMvLzssWPVpOkVNdFVC7726Ehg/lG0DzPeEGOxc8ZfGhaKbuuUfZuWac4tG+3D
+8pUWDbwPBWizZYkbV+MYo0jiv8wroQcsOBRcCXtwO60KCGs0JXdEQPjuT/hYVhhgdXyKL6WAhedP
+XXc=
+=hjJH
+-----END PGP SIGNATURE-----
 
-Can you share a test case?  The code resets initial_mirror as soon as
-we made any progress so that should not happen.
-
-> So my points still stand, if we want to do batched handling, either we
-> go bitmap or we give up.
-
-Why?  For the very common case of clustered corruption or entirely
-failing reads it is significantly faster than a simple synchronous
-read of each sector, and also much better than the existing code.
-It also is a lot less code than the existing code base, and (maybe
-I'm biassed) a lot more readable.
-
-Bitmaps only help you with randomly splattered corruption, which simply
-is not how SSDs or hard drives actually fail.
-
-> Such hacky bandage seems to work at first glance and will pass your new
-> test cases, but it doesn't do it any better than sector-by-sector waiting.
-> (Forgot to mention, the new RAID1C3 test case may also be flawed, as any
-> read on other mirrors will cause read-repair, screwing up our later
-> retry, thus we must check pid first before doing any read.)
-
-The updated version uses the read from mirror loop from btrfs/142
-that cleverly used bash internals to not issue the read if it would
-be done using the wrong mirror.  Which also really nicely speeds up
-the tests including the exist 140 and 141 ones.
+--------------baxY9zEHRINkQZw7orWf3had--
