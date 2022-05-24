@@ -2,89 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8131C53313A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 21:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECD853319A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 May 2022 21:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240974AbiEXTEm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 May 2022 15:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        id S234771AbiEXTLb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 May 2022 15:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240966AbiEXTEe (ORCPT
+        with ESMTP id S230257AbiEXTLa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 May 2022 15:04:34 -0400
-Received: from libero.it (smtp-33.italiaonline.it [213.209.10.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB053ED24
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 12:03:18 -0700 (PDT)
-Received: from [192.168.1.27] ([78.12.14.90])
-        by smtp-33.iol.local with ESMTPA
-        id tZnmnDyUZtMz4tZnmnmCDB; Tue, 24 May 2022 21:02:42 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1653418962; bh=gyH00TqffGmaeqnisLqFQobpLC7yo/Qfw5Of8p89cH0=;
-        h=From;
-        b=thefg2zomnAbQyeFoG/fGnqs8WX9KaEODT60MAfMCHbU8++iAgKOTvXHKqm1hQnNQ
-         gCB1pwKMgVSeEA1O+X5eT9CmbWEDEAsddJGTi4oYG0ifbUzloW0+0u3IJVjlFCBsh5
-         UTvzikMCoUWDtKKpxhUqMjSB7NPys1XPBtbvwiTBk9n2ksnTVkKN7X8PjoRC/4N0s1
-         lstqqgRtnw9IZYaMUdsAk4wTFGIF7OoO0BOJHs3nah7Ogr+mcw2SnYHODKCm1k/u5z
-         CmvJa0ZcI3Do5xC3rJxvm1HBVsKrEuGTFP2Z4yDujCZ6rpK5VBBa4wSJrLDvnw//Xb
-         DsDRWjM69hBRg==
-X-CNFS-Analysis: v=2.4 cv=RvwAkAqK c=1 sm=1 tr=0 ts=628d2bd2 cx=a_exe
- a=tzWkov1jpxwUGlXVT4HyzQ==:117 a=tzWkov1jpxwUGlXVT4HyzQ==:17
- a=IkcTkHD0fZMA:10 a=ciYIJ-ledbM0H_Oy7lUA:9 a=QEXdDO2ut3YA:10
-Message-ID: <c6f55508-a0df-aea3-279d-75648793dfb2@libero.it>
-Date:   Tue, 24 May 2022 21:02:41 +0200
+        Tue, 24 May 2022 15:11:30 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254D625E94
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 12:11:29 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id u30so32395048lfm.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 12:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jSApa0MTb2bkzCjtaqvDg2Q5Mqsw+Q5XOdi5+HoyAZY=;
+        b=eeN6SiYIvIqmWaGpFkrJ7BeFTVjF6QVf2bFA86LKJjvrKaA6Ck0nsf9zYzyAVjQ5OP
+         AACtjumPiYj7Zj8a/FMgrSA+4Wsq6yfXDR27Qgo50kkLFG1sUUAClu9MECp7o+XznPUX
+         5JVJS0kZwRKTTKS8gqgz3Gm/WxR1fZnwFYJUkYNDTIjMViPiS4bcXNrA43RTP94VjUbP
+         3HgqLgMoSAfRIonQG4yDCmEEuA0Pk5b9Gf3fYoc9O28V3x15IsZESz6ujdYrfwQH6zAB
+         pLno2/F6AgVWLbbKbCm3TkPOo6UzNaI1CbxvIkWXXGwHFZsAcMXNnqIdnNF1XkWCCCuo
+         T38g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jSApa0MTb2bkzCjtaqvDg2Q5Mqsw+Q5XOdi5+HoyAZY=;
+        b=BTpc/3AyORQsQatyYUnJEaNWep2C2DCtGrGXLt3+vX4EDBIeP6d6PKxbOcBUk2nHDO
+         auVPEf7L29bsLKr5RjoyHjRHch7xCnuyeROnIzu34KzQvyylEjh9leiD8Z63T3b6pJEm
+         aKKQvHN6BaDBTnczoMllrhRgj+9bvVs2QSYM6cCpLeJcm2D17m16fbOKKiQSFhAm0j5R
+         Yf9Ac2JtXTLtGOV65gqzSRyvU7xL7md9nAw9+k/IhuoIA1EaylolxJPsxNhjjU8pAk4E
+         HlYIzXdbGw6SNzXDhJpfWekyQJ1qnZ9ZS+giRlal7NljLj4dcMfITLfoNSVjY+gblM+S
+         ItUA==
+X-Gm-Message-State: AOAM5316VrrVztiAJWgO7PF0tRSYX2jCW3EEewMAZ735Q1/i69zGfYQR
+        BlXZwKRJQNusQP4f1A+YpEPN6ywLj3RULcMPizXsOwWYQmoAOe5hWTA=
+X-Google-Smtp-Source: ABdhPJzEVB6OqS9rR46rVxNWp7GHUY7uPy8c5vXzmyhXXIHQ23YNgO4QInYDhFbqg4NN2hgMLBGpGZLKEVOqBO+4VOI=
+X-Received: by 2002:ac2:4bc5:0:b0:477:ae2d:a3d1 with SMTP id
+ o5-20020ac24bc5000000b00477ae2da3d1mr20091747lfq.473.1653419487280; Tue, 24
+ May 2022 12:11:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Reply-To: kreijack@inwind.it
-Content-Language: en-US
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Subject: cp --reflink and NOCOW files
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKNFmwHmgb2pbRWaKYRyyvkA7rLFL2yEjeWTDt2h1qlytnPNSkJyQc1BLLYhfeTx/4SQzZ11jYndNNLL0eGUUTWARlAmVnqwyvXljyNSan3brs7loiiG
- oCR3wtJkqxQd0XyiPP71ioefHwoew9Es2KFlSau4KcFJm+tl5kI6z6PEfCg0Lst5sIj9J251x+uLhg==
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <9a9d16a133c13bed724f2a6a406bd3b6@firemail.cc> <5fd50e9.def5d621.180f273d002@tnonline.net>
+ <f39a23c9fe32b5ae79ddbe67e1edb7a8@firemail.cc> <af34ef558ea7bbd414b5a076128b1011@firemail.cc>
+ <b713b9540ad29a83a3c2c672139d6e6f@firemail.cc>
+In-Reply-To: <b713b9540ad29a83a3c2c672139d6e6f@firemail.cc>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 24 May 2022 15:11:11 -0400
+Message-ID: <CAJCQCtT_PjKprryxHwsyn3qXc06qFFmnMR48CxZuvav8aQUOQQ@mail.gmail.com>
+Subject: Re: Tried to replace a drive in a raid 1 and all hell broke loose
+To:     efkf@firemail.cc
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi All,
+I suggest mounting with "mount -o ro,rescue=all" and copying
+everything you can out and check the most important files for
+corruption. At least this will get the data, such as it is, out.
+Hopefully. The rescue=all option includes ignoring data checksums so
+it *will* permit the copying of corrupt data. So you'll want to keep
+the data embargoed. This is a bit painful and tedious but it's a good
+early attempt to have available in case subsequent attempts don't work
+at all or are even worse.
 
-recently I discovered that BTRFS doesn't allow to reflink a file
-when the source is marked as NOCOW
+Do you have a complete dmesg that shows boot, mount, and the kernel
+errors while copying? This would be useful to see which device has all
+this corruption and if fixups are even being attempted.
 
-$ lsattr
----------------C------ ./file-very-big-nocow
-$ cp --reflink file-very-big-nocow file2
-cp: failed to clone 'file2' from 'file-very-big-nocow': Invalid argument
-$ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
-ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
+From one of your attached files:
 
-My first thought was that it would be sufficient to remove the "nocow" flag.
-But I was unable to do that.
+>Total devices 2 FS bytes used 772.76GiB
+>devid    2 size 1.82TiB used 334.00GiB path /dev/mapper/ST2000DL003-###############
+>devid    3 size 1.82TiB used 661.00GiB path /dev/mapper/ST3000VN007-###############
 
-$ chattr -C file-very-big-nocow
+This doesn't list a 3rd device so it suggests it's a 2x device raid1. However:
 
-$ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
-ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
+>#btrfs fi df /mnt/sd/
+>Data, RAID1: total=772.00GiB, used=771.22GiB
+>Data, single: total=1.00GiB, used=2.25MiB
+>System, RAID1: total=32.00MiB, used=96.00KiB
+>System, single: total=32.00MiB, used=48.00KiB
+>Metadata, RAID1: total=3.00GiB, used=1.54GiB
+>Metadata, single: total=1.00GiB, used=0.00B
 
-(I tried "chattr +C ..." too)
+This is not good. Some of the data and some of the metadata
+(specifically system profile which is the chunk tree) is only
+available on one drive and I can't tell from this if it's on a drive
+that is missing or is spewing errors. Anything that has a single copy
+that's also damaged, cannot be recovered. Unfortunately this file
+system is not completely raid1 and that's likely one source of the
+problem. The chunk tree is really critical so if any part of it is bad
+and not redundant (no good copy) the file system is not likely
+repairable. Get the data out as best you can. If rescue=all mount
+option doesn't work, the next opportunity is btrfs restore, but it too
+depends on the chunk tree being intact. There is a 'btrfs restore
+chunk-tree' option that will scan all the drives looking for plausible
+fragments of the chunk tree to try and recover it but it takes a long
+time (hours).
 
-Ok, now my question is: how we can remove the NOCOW flag from a file ?
+48KiB of chunk tree, if it's corrupt, is quite a lot and might prevent
+quite a lot of recovery. Some older kernels would create single
+profile chunks when a raid1 file system was mounted in degraded,rw
+mode with a missing device. This happens silently. And then when the
+raid1 is back to full strength again, there's no automatic conversion
+or even a warning by the kernel that this critical metadata isn't
+redundant still. The burden right now is unfortunately on the user to
+identify this reduction in redundancy and make sure to do a filtered
+balance to convert the single chunks into raid1 chunks.
 
-My use case is to move files between subvolumes some of which are marked as NOWCOW.
-The files are videos, so I want to avoid to copy the data.
 
-
-BR
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+--
+Chris Murphy
