@@ -2,74 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A388E533530
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 May 2022 04:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717AF533543
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 May 2022 04:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243781AbiEYCQh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 May 2022 22:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S241704AbiEYCUH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 May 2022 22:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243767AbiEYCQf (ORCPT
+        with ESMTP id S243576AbiEYCUF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 May 2022 22:16:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5454C19C09;
-        Tue, 24 May 2022 19:16:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E5CF261525;
-        Wed, 25 May 2022 02:16:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 54878C3411C;
-        Wed, 25 May 2022 02:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653444993;
-        bh=dfHMyOZnaARkoKk4YpvYbY/6wliduYj77zO1he9XM5M=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=vR9l16ab8nKM2vp1s85K3P+vyg+lwKn9JoyDAETpyjpionbZKWQmxDfSZ7wbKG84g
-         isudHDKr9DlDrtLDBHj9YC30177PHvzkIffLkM3LBYzXUqvlnrsygD2DomJzmW9CnC
-         hxS7B1USUfaa3crbAAlYoIMR3NH01YtmBr+5qsnS8vj07mw/CV9J+xr0GKcIR/9kJv
-         PUgMvxLISSZ6YxyV0b2qBMiL8T6HdKrFXxWunFjYHhS5/w2J/v+q4M42xL1ziHNfTi
-         IqOgo759VsCU7vtODY8mgBGlqweKyR4GKkz+6tfUuWc2TDm98YaCT0UfC6ZoX+mQIH
-         WZ/2dqW5W6l0g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44B41E8DD61;
-        Wed, 25 May 2022 02:16:33 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs updates for 5.19
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1653327652.git.dsterba@suse.com>
-References: <cover.1653327652.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1653327652.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.19-tag
-X-PR-Tracked-Commit-Id: 0a05fafe9def0d9f0fbef3dfc8094925af9e3185
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bd1b7c1384ec15294ee45bf3add7b7036e146dad
-Message-Id: <165344499327.22339.9929776118900178945.pr-tracker-bot@kernel.org>
-Date:   Wed, 25 May 2022 02:16:33 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 24 May 2022 22:20:05 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BB93ED25
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 19:20:04 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id s23so20085705iog.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 May 2022 19:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CUvnzAlUJFVDIbRY8BXBuYo/9zfk6JPDjEmCFsqz9jw=;
+        b=ZkXeHN/ZhTJEfXqA82OZ33YoQaxuIMrC2t/QPiJ1Wj5+hQvhrQMokePNh5nJ8fAqCY
+         zAW+Ox/UmmVPfHlp91Ky60d0B71LpYX9wPTe+Ci/yN1MPTo7Qm6Qjga6sjimlJfVSbUj
+         P+q4Y+xAjtFzdtMul4LYN+pj6YZhB4BK7Uq49CBrpP404WmlGcsweV1nkrNqWfnRx0lM
+         gQX4S9Vd+2T9VF2JOL2LOdyfSTsc/38xeCCOoqYZ18cx6jn+vCs6BbLpFj8Z5uJgqRSJ
+         gIFK2XPvNTSZ6b+ffmg8CJ3jXw2oKeF5minUoaVRwJ+tfTPfk5oSx0V4LaFC7xA7a1jH
+         OVWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CUvnzAlUJFVDIbRY8BXBuYo/9zfk6JPDjEmCFsqz9jw=;
+        b=4oTtinroq/YId6TxR9vJOHOuqS9BNZGutcKm5sio9f/vASFDJqQjpWJhJZUwsKSYh9
+         pU7YXDRsiJOHqbL3Au4alIZ8cG1oAX1pj8creUFo05PG1/8nxVz/h3HkBmmy6+JC/nKO
+         zRoUBCVrTe5+WGrRTsLVcmx7XifCsseJq8UUNxlN9A/M/dMJ9lq1AJwkgYL0eZ/QVedd
+         U5Y2SH7T8pzT3nNWeY6+LBZMLIx0fHqv9fOcY4OLltJPq8bbo9jwGA/VBD239WVwYv3h
+         BpndYKNHhOE1wLvfRf28PeNcp4aHt9963SaLG0lNeqvIhJW52zBBzDpBZY81heGPmw5R
+         TwGg==
+X-Gm-Message-State: AOAM533BzcvbKO3v7p1zSZWK6dHA/WmpYx9h4hBWey7tA09enhioLrXn
+        IAARDuwGFQkAKu2FdhEA4+GhyJuwj5uzzqcqNi3kzm3v
+X-Google-Smtp-Source: ABdhPJxPiTOupiHirW6vANEiusdD/nAiJUoYbMOI3GTMCvFnhb8ODoqZW8IQznEmoMtegsmoaoQQCfS+Ikh02UQcQ3M=
+X-Received: by 2002:a02:cca8:0:b0:32e:7683:2400 with SMTP id
+ t8-20020a02cca8000000b0032e76832400mr15975506jap.15.1653445203587; Tue, 24
+ May 2022 19:20:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <c6f55508-a0df-aea3-279d-75648793dfb2@libero.it>
+In-Reply-To: <c6f55508-a0df-aea3-279d-75648793dfb2@libero.it>
+From:   Matthew Warren <matthewwarren101010@gmail.com>
+Date:   Tue, 24 May 2022 21:19:52 -0500
+Message-ID: <CA+H1V9zNSiJgXj6w8i2syhm_4qeaxkYPZHuxLgjmfP-jjGMYBQ@mail.gmail.com>
+Subject: Re: cp --reflink and NOCOW files
+To:     kreijack@inwind.it
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Tue, 24 May 2022 17:50:53 +0200:
+Goffredo,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.19-tag
+You can only reflink files which are COW. If you want to reflink files
+which are NOCOW, you have to copy them to a COW file (eg. cp
+file-very-big-nocow file-very-big-cow) and then you can reflink it.
+It's recommended to keep everything COW unless it has many random
+writes like databases and virtual machines.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bd1b7c1384ec15294ee45bf3add7b7036e146dad
+Matthew Warren
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+On Tue, May 24, 2022 at 8:19 PM Goffredo Baroncelli <kreijack@libero.it> wrote:
+>
+> Hi All,
+>
+> recently I discovered that BTRFS doesn't allow to reflink a file
+> when the source is marked as NOCOW
+>
+> $ lsattr
+> ---------------C------ ./file-very-big-nocow
+> $ cp --reflink file-very-big-nocow file2
+> cp: failed to clone 'file2' from 'file-very-big-nocow': Invalid argument
+> $ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
+> ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
+>
+> My first thought was that it would be sufficient to remove the "nocow" flag.
+> But I was unable to do that.
+>
+> $ chattr -C file-very-big-nocow
+>
+> $ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
+> ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
+>
+> (I tried "chattr +C ..." too)
+>
+> Ok, now my question is: how we can remove the NOCOW flag from a file ?
+>
+> My use case is to move files between subvolumes some of which are marked as NOWCOW.
+> The files are videos, so I want to avoid to copy the data.
+>
+>
+> BR
+>
+> --
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
