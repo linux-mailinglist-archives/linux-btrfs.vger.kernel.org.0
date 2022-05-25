@@ -2,74 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC52753400F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 May 2022 17:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C121534134
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 May 2022 18:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244972AbiEYPMs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 May 2022 11:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
+        id S236615AbiEYQQb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 May 2022 12:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245136AbiEYPM2 (ORCPT
+        with ESMTP id S232640AbiEYQQ3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 May 2022 11:12:28 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6F4B0D2C
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 May 2022 08:12:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5B1B31F45B;
-        Wed, 25 May 2022 15:12:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1653491538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jwrUj+53M18BhhLAChJpQo0jqt6hE19WpHr4BwHnv30=;
-        b=k2pq7Jw7tAzZXeQkj5j8mzMOOpvcg7mSpngStWYo4uevNv9vl6NB0W9ov5D4vewg1jbyTq
-        i/8hy6Im92hBsmCFl4QGgng1UD1fYTCfTsi1fT+G3YxWaguRszIHBpA7NGgXkCj88ur2rG
-        4QwZOOJPX+3FyYu/5H/norM3mlJQMDE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2BA113ADF;
-        Wed, 25 May 2022 15:12:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mDf4NlFHjmIrAgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 25 May 2022 15:12:17 +0000
-Message-ID: <bc9b6b97-ee10-e5eb-f8ab-b533399dc772@suse.com>
-Date:   Wed, 25 May 2022 18:12:17 +0300
+        Wed, 25 May 2022 12:16:29 -0400
+X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 May 2022 09:16:26 PDT
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3FA6B09D
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 May 2022 09:16:26 -0700 (PDT)
+Received: from [192.168.1.27] ([78.12.14.90])
+        by smtp-16.iol.local with ESMTPA
+        id ttfNnSv91ajntttfOnrEt1; Wed, 25 May 2022 18:15:22 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1653495322; bh=MxwAZ/EMw5BibBktb63pxaiwa0MHDkKEMEsiyifo9Ig=;
+        h=From;
+        b=W5gJFIBusTuQ9bUd/ah2AK2P4hkD4HKQIG4xxHKa0u3rFYh9xLrHNMYdQMY7qWAA6
+         0PyBpJCoH175ic5usJeJWI+p4N45ZedwH73l+sR/679ZDkwo0StwQrgSd3qWt3S8pG
+         LTnfFQKcvAk/0UzJnqdGBb5yfQs2mb/Wioa03Ml1NOPzq/qGEgFaT6xEPHh/3i//NE
+         c7kogA6nQ4m/MUemAaPWTVOPRiqFIBiC2hsn5ru14snxjmdbw42/3k5lwhtfrChqOG
+         5ayVyeKJq21edxX0xCdhscDKdJUQoBzb72oka0IgX1QTCMhtyJD99EqYrIiEMEBO4d
+         Ds5xOVnHbOcUw==
+X-CNFS-Analysis: v=2.4 cv=Uvqmi88B c=1 sm=1 tr=0 ts=628e561a cx=a_exe
+ a=tzWkov1jpxwUGlXVT4HyzQ==:117 a=tzWkov1jpxwUGlXVT4HyzQ==:17
+ a=IkcTkHD0fZMA:10 a=MUaiHojgB2rHEMeO-RAA:9 a=QEXdDO2ut3YA:10
+Message-ID: <13c16692-9027-cfba-52b5-9993e10b0d20@inwind.it>
+Date:   Wed, 25 May 2022 18:15:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
-Subject: Re: [PATCH 8/8] btrfs: use btrfs_bio_for_each_sector in
- btrfs_check_read_dio_bio
+Reply-To: kreijack@inwind.it
+Subject: Re: cp --reflink and NOCOW files
 Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <d3065bfe-c7ae-5182-84de-17101afbd39e@gmx.com>
- <20220522123108.GA23355@lst.de>
- <d7a1e588-7b2b-e85e-c204-a711d54ecc7c@gmx.com>
- <20220522125337.GB24032@lst.de>
- <8a6fb996-64c3-63b3-7f9c-aec78e83504e@gmx.com>
- <20220523062636.GA29750@lst.de>
- <84b022dc-6310-1d52-b8e3-33f915a4fee7@gmx.com>
- <20220524073216.GB26145@lst.de>
- <6047f29e-966d-1bf5-6052-915c1572d07a@gmx.com>
- <b78b6c09-eb70-68a7-7e69-e8481378b968@gmx.com>
- <20220524120847.GA18478@lst.de>
- <d966f776-79d7-1eec-efe0-bce1c771bc77@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <d966f776-79d7-1eec-efe0-bce1c771bc77@gmx.com>
+To:     Forza <forza@tnonline.net>,
+        Matthew Warren <matthewwarren101010@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <c6f55508-a0df-aea3-279d-75648793dfb2@libero.it>
+ <CA+H1V9zNSiJgXj6w8i2syhm_4qeaxkYPZHuxLgjmfP-jjGMYBQ@mail.gmail.com>
+ <1e7afa05-3510-25c4-43d5-f1a6678ddcf8@tnonline.net>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <1e7afa05-3510-25c4-43d5-f1a6678ddcf8@tnonline.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfH2H6pk79yayo9hOeu6opaFrCzw3BJLjmkgiDAfPqJ2k2KJuKRKXYSlDq7Axm7wdpfNJRjv7QVi5XQ/k1b9Uifp4GTmXCiStyzfcFvNCRFdH1NUVDNwh
+ 0DIH9Tpy2QqxZOYOB0pJKwywBdUXGWWcWT3FhoFPhe6wviWwZL5kTIOB3+2lifb+bZ4wlTq1Rr/L95s5hqEmFxZhjcS3fP3bh18BjEI++wc86IxTFYpcfSXQ
+ UBGOc60a041kgMTbL+j6ppsfKRkjiNHttl0/IITPYiE=
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,44 +63,20 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 25/05/2022 06.34, Forza wrote:
+>  > You can only reflink files which are COW. If you want to reflink files
+>  > which are NOCOW, you have to copy them to a COW file (eg. cp
+>  > file-very-big-nocow file-very-big-cow) and then you can reflink it.
+>  > It's recommended to keep everything COW unless it has many random
+>  > writes like databases and virtual machines.
+>  >
+>  > Matthew Warren
+> 
+> The problem is with coreutils and 'cp', not Btrfs. It is possible to reflink copy nodatacow files. The requirement is that the target is also nodatacow. Deduplication of nodatacow files has the same limitation as well.
+> 
 
+Correct. More in another thread.
 
-On 24.05.22 г. 16:13 ч., Qu Wenruo wrote:
-> 
-> 
-> On 2022/5/24 20:08, Christoph Hellwig wrote:
->> On Tue, May 24, 2022 at 04:21:38PM +0800, Qu Wenruo wrote:
->>>> The things like resetting initial_mirror, making the naming "initial"
->>>> meaningless.
->>>> And the reset on the length part is also very quirky.
->>>
->>> In fact, if you didn't do the initial_mirror and length change (which is
->>> a big disaster of readability, to change iterator in a loop, at least to
->>> me),
->>
->> So what is the big problem there?  Do I need more extensive documentation
->> or as there anything in this concept that is just too confusing.
-> 
-> Modifying the iterator inside a loop is the biggest problem to me.
-
-What iterator gets modified? The code defines a local one, which gets 
-initialized by copying the state from the bbio. Then the loop works as 
-usual, that's not confusing and is in line with how the other bio vec 
-iterator macros work.
-
-> 
-> Yes, extra comments can help, but that doesn't help the readability.
-> 
-> And that's why most of guys here prefer for () loop if we can.
-> 
-> Thanks,
-> Qu
->>
->>> and rely on the VFS re-read behavior to fall back to sector by
->>> secot read, I would call it better readability...
->>
->> I don't think relying on undocumented VFS behavior is a good idea.  It
->> will also not work for direct I/O if any single direct I/O bio has
->> ever more than a single page, which is something btrfs badly needs
->> if it wants to get any kind of performance out of direct I/O.
-> 
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
