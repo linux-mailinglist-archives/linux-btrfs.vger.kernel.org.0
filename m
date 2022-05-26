@@ -2,119 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA13534A00
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 06:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6348B534ACC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 09:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240188AbiEZEj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 May 2022 00:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
+        id S1346400AbiEZHa2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 May 2022 03:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239088AbiEZEjz (ORCPT
+        with ESMTP id S1346409AbiEZHa1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 May 2022 00:39:55 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AFF8B0AC;
-        Wed, 25 May 2022 21:39:54 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id j21so384895pga.13;
-        Wed, 25 May 2022 21:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UCUt8Yc7zYDUiimWIGThGkhoILZPhzLlu5O82zOXa38=;
-        b=aV/SUigznehnPw3+KhLvXP9GGdbe7fXa3SEr7LmCQRdtBP1BGoPTF7nhfMxRJRPvLG
-         chrrAoNA9agcxvcBgPFG7SgaCthYTU1/oVj4DGy2iMzEnAergMIGbGyEMwoCxBQ2TvjF
-         vPKWfpoekXDqedNzarkKZrLTHsyLPK5mmiWOMPUTuEDD1HGzjcy71qKbf3WlOCNc78Cy
-         3Kfw2xwprpLWqp0Nitvj4/CcrAlhwAwPmhqPu778ox9eTnevytu/90q+Va8eSNv3Juk/
-         QIPJSzMM7OlUu35Zn5Vxe1ZHcU52ABuljc0HLW/rhvbTONxloZUyUp17j5oQiW8I6o8M
-         +nkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UCUt8Yc7zYDUiimWIGThGkhoILZPhzLlu5O82zOXa38=;
-        b=aBO/pGdb7Hg/1LpHORlHl8THhh+JNIOTjIQT7OoYo9/Lebwsl1zk7aBc/oymhmMdVR
-         M2Yf+BEQ90wuqfEVrZPBV/V9hLau/48Puss+fJBV6rsDxx7//UKOpYDg/ZR+j0LSS89b
-         IqS/Z21rrYI7FBMCxLgnu9kK2H0n6a50Ial1KW6xttcb+6jgWvSjPH4uXLhmrnIZlOBn
-         F20yS2h3fs6pvkadVnee4I87YYXAEWlb5xInvILN8XR5bLsQLt9q7kGGNrImogX5BWmG
-         KvaSDOVII1LN47j03ek8Vt+0d4VIUvXlPbtKzI/Q7jy1xZOSTF/ZW1wGny/np9D7Wc6S
-         2yFw==
-X-Gm-Message-State: AOAM5333sWgvntKiwsoJI8CH4Tqq1O5Y16CLfq4JfxRhaWuDBkpc3x99
-        17wscPTvLbmaCxDsOAk18SBCaJJv8eyJzw==
-X-Google-Smtp-Source: ABdhPJwPQn33e+P+y+ZoWsJAfI6MEG3HH+rRAybs8v8pNTXPZeJyfPF5jt7DA0zh5OepjFLZPdXIRg==
-X-Received: by 2002:a63:225b:0:b0:3fa:beab:211d with SMTP id t27-20020a63225b000000b003fabeab211dmr8387174pgm.350.1653539993959;
-        Wed, 25 May 2022 21:39:53 -0700 (PDT)
-Received: from debian.me (subs02-180-214-232-22.three.co.id. [180.214.232.22])
-        by smtp.gmail.com with ESMTPSA id 200-20020a6304d1000000b003f9eacd0684sm450834pge.3.2022.05.25.21.39.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 May 2022 21:39:53 -0700 (PDT)
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     linux-doc@vger.kernel.org
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Filipe Manana <fdmanana@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: add missing function name in btrfs_log_new_name() kernel-doc comment
-Date:   Thu, 26 May 2022 11:39:33 +0700
-Message-Id: <20220526043933.315937-1-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.36.0
+        Thu, 26 May 2022 03:30:27 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720F5814B8
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 00:30:26 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7E5A468AA6; Thu, 26 May 2022 09:30:22 +0200 (CEST)
+Date:   Thu, 26 May 2022 09:30:22 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 4/7] btrfs: introduce new read-repair infrastructure
+Message-ID: <20220526073022.GA25511@lst.de>
+References: <cover.1653476251.git.wqu@suse.com> <b014412ee0713e01f52269e553c0cff3487ca495.1653476251.git.wqu@suse.com> <531d3865-eb5b-d114-9ff2-c1b209902262@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <531d3865-eb5b-d114-9ff2-c1b209902262@suse.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-kernel test robot reported kernel-doc warning:
+On Thu, May 26, 2022 at 11:06:31AM +0800, Qu Wenruo wrote:
+> Hi Christoph, I'm pretty sure the non-continuous bio problem is here for 
+> all of our attempts to rework read-repair.
 
->> fs/btrfs/tree-log.c:6792: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Update the log after adding a new name for an inode.
+Why is it a problem?  Multiple discontiguous errors in the same bio
+are a very unusual error pattern.  We need to handle it obviously, but
+it doesn't need to be optimized as it is so rare.  The most common error
+pattern is that the entire read will return an error, followed by a single
+corrupted sector.
 
-This has side-effect warning when invoking kernel-doc script directly:
+> I'm wondering if there is some "dummy" page provided from block layer that 
+> we can utilize?
 
-fs/btrfs/tree-log.c:6957: warning: missing initial short description on line:
- * Update the log after adding a new name for an inode.
-
-These warnings above are caused by missing function name in the kernel-doc
-comment of btrfs_log_new_name().
-
-Fix these by adding the function name into short description on the comment
-block.
-
-Link: https://lore.kernel.org/linux-doc/202205260024.TLEp6Pj2-lkp@intel.com/
-Fixes: d5f5bd546552a9 ("btrfs: pass the dentry to btrfs_log_new_name() instead of the inode")
-Cc: Filipe Manana <fdmanana@suse.com>
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- fs/btrfs/tree-log.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 370388fadf960a..d25cbe61fdb669 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -6954,7 +6954,7 @@ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
- }
- 
- /**
-- * Update the log after adding a new name for an inode.
-+ * btrfs_log_new_name() - Update the log after adding a new name for an inode.
-  *
-  * @trans:              Transaction handle.
-  * @old_dentry:         The dentry associated with the old name and the old
-
-base-commit: babf0bb978e3c9fce6c4eba6b744c8754fd43d8e
--- 
-An old man doll... just what I always wanted! - Clara
-
+For reads nvme (and a few SCSI HBAs) support a bit bucket SGL for reads
+that discard parts of the data.  Right now upstream none of this is
+supported, altough Keith has been looking into it (for a rather different
+use case) in nvme.  This does not help with writes, never mind the fact
+that I would not want to use exotic and barely tested code and hardware
+features for a non time critical and rarely used error handling path..
