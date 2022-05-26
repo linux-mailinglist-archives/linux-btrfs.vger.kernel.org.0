@@ -2,81 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A715D5351E7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 18:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3323653526E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 19:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345463AbiEZQPO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 May 2022 12:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
+        id S244863AbiEZRKv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 May 2022 13:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240675AbiEZQPL (ORCPT
+        with ESMTP id S237309AbiEZRKu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 May 2022 12:15:11 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69C96A056
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 09:15:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 328901F8CB;
-        Thu, 26 May 2022 16:15:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1653581709;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=31BJfVyvlu20Gtk4zJPEKiNQGYXg9ttwh0osyYG/sH0=;
-        b=v79d6BDIqUf/eGULtZ5vI9wkdsSfvmvryR8o72QbHIGZQ7Ccp+cID2mRt0gIpBRGdDZhxe
-        Nw31R1Zn9kBNo7WeuuFjPqNfSwLx3KBSf6IdieFJyI/kwwj3A717x4zoE9ZcjduvD9rv1j
-        cjAwG9CXSgYkXhjxnijRUDZo3p39mVA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1653581709;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=31BJfVyvlu20Gtk4zJPEKiNQGYXg9ttwh0osyYG/sH0=;
-        b=pQDPR12b7b0vbIZWQmG3hwxs9oTJ/K33Ihy2TTYErKWBXTM+MT39CSTyhPQ12mn/CKdeXF
-        wVmcblr+oZmUuUBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED91213AE3;
-        Thu, 26 May 2022 16:15:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id F4/XOIynj2KxIwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 26 May 2022 16:15:08 +0000
-Date:   Thu, 26 May 2022 18:10:45 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     kreijack@inwind.it
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, waxhead@dirtcellar.net,
-        Christoph Hellwig <hch@infradead.org>, dsterba@suse.cz,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
-Message-ID: <20220526161045.GH22722@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, kreijack@inwind.it,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, waxhead@dirtcellar.net,
-        Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <f6679e0b681f9b1a74dfccbe05dcb5b6eb0878f6.1653372729.git.wqu@suse.com>
- <20220524170234.GW18596@twin.jikos.cz>
- <Yo3wRJO/h+Cx47bw@infradead.org>
- <bd6ac4d4-41bf-f662-e7c0-7841895554a6@gmx.com>
- <Yo32VXWO81PlccWH@infradead.org>
- <b8cbcac2-7e8b-e0fd-67a9-8a782e0afe23@gmx.com>
- <9d1e2fc6-9ee6-68f8-bda8-8dd7e59e74e5@dirtcellar.net>
- <50cb070b-2e2e-1987-3726-1e67eaf060cf@gmx.com>
- <4fde1fb7-b6ea-c6e5-7c04-f6c19e031354@libero.it>
+        Thu, 26 May 2022 13:10:50 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAB04F9F4
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 10:10:48 -0700 (PDT)
+Received: from [104.132.1.99] (port=48245 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1nuGIB-0005dW-Bh by authid <merlins.org> with srv_auth_plain; Thu, 26 May 2022 10:10:46 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1nuH0Y-00CbSl-7n; Thu, 26 May 2022 10:10:46 -0700
+Date:   Thu, 26 May 2022 10:10:46 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220526171046.GB1751747@merlins.org>
+References: <CAEzrpqdgKtSDJj2QekYuS+M77wYrp6bvXv2Ue3xQ8Vm2bGGYAg@mail.gmail.com>
+ <20220517212223.GL8056@merlins.org>
+ <CAEzrpqcX3XEQGjoJCV1wARu=Od7vAypmzO4dCFgQ+_UBBuJdMA@mail.gmail.com>
+ <20220518191241.GI13006@merlins.org>
+ <CAEzrpqfPEU9Vt86ykVyxwvDXrihKfGc180oT7SUcQdwtYysquw@mail.gmail.com>
+ <20220519222855.GL13006@merlins.org>
+ <20220524011348.GR13006@merlins.org>
+ <CAEzrpqd=G50pWKYJRD57ePVpfGNPu947zJXuZFdj0tF4yGzkbQ@mail.gmail.com>
+ <20220524191345.GA1751747@merlins.org>
+ <CAEzrpqdTpkvguQq+MGxYBb12-RF97dgW7cccz7o2HoSkrWt8gQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4fde1fb7-b6ea-c6e5-7c04-f6c19e031354@libero.it>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <CAEzrpqdTpkvguQq+MGxYBb12-RF97dgW7cccz7o2HoSkrWt8gQ@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-Broken-Reverse-DNS: no host name for IP address 104.132.1.99
+X-SA-Exim-Connect-IP: 104.132.1.99
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,14 +57,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 26, 2022 at 05:30:16PM +0200, Goffredo Baroncelli wrote:
-> On 26/05/2022 11.26, Qu Wenruo wrote:
-> [...]
-> > 
-> > Deprecation needs time, and RAID56J is not a drop-in replacement
-> > unfortunately, it needs on-disk format change, and is new RAID profiles.
-> > 
-> IIRC, the original idea was to dedicate a separate disk to the journal.
+On Wed, May 25, 2022 at 10:35:22AM -0400, Josef Bacik wrote:
+> At this point let's stop it and try and get the missing chunks back.
+> Looking at the chunk rescue code it looks like it should do the
+> correct thing, can you do
 
-And was rejected as it would be the single point of failure for drive
-setup that must survive failure of 1 or 2 devices.
+I stopped it here, can't tell how far it was after almost a week of running:
+ 
+searching 163316 for bad extents
+processed 74514432 of 108576768 possible bytes, 68%
+Found an extent we don't have a block group for in the file
+History/JeanMerlin_Picts/VACANCES/0320-052633.jpg
+Deleting [58726, 108, 0] root 6781246275584 path top 6781246275584 top slot 18 leaf 11160503386112 slot 80
+
+searching 163316 for bad extents
+processed 74514432 of 108576768 possible bytes, 68%
+Found an extent we don't have a block group for in the file
+History/JeanMerlin_Picts/VACANCES/0320-052720.jpg
+Deleting [58727, 108, 0] root 6781246226432 path top 6781246226432 top slot 18 leaf 11160503353344 slot 82
+
+searching 163316 for bad extents
+processed 74514432 of 108576768 possible bytes, 68%
+Found an extent we don't have a block group for in the file
+History/JeanMerlin_Picts/VACANCES/0320-053405.jpg
+Deleting [58728, 108, 0] root 6781246275584 path top 6781246275584 top slot 18 leaf 11160503386112 slot 84
+
+searching 163316 for bad extents
+processed ^Z515008 of 108576768 possible bytes, 67%
+
+> btrfs rescue chunk-recover <device>
+
+Took close to a day to run, and now I have this:
+
+./btrfs rescue chunk-recover /dev/mapper/dshelf1
+Scanning: DONE in dev0                          
+JOSEF: root 9
+Couldn't find the last root for 8
+We are going to rebuild the chunk tree on disk, it might destroy the old metadata on the disk, Are you sure? [y/N]: 
+
+Do I say 'y' ?
+
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
