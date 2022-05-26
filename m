@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C90534AE8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 09:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96197534AE2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 09:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345597AbiEZHhI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 May 2022 03:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
+        id S232118AbiEZHhJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 May 2022 03:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbiEZHhC (ORCPT
+        with ESMTP id S229898AbiEZHhE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 May 2022 03:37:02 -0400
+        Thu, 26 May 2022 03:37:04 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFB49BAD3
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 00:37:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9699BADD
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 00:37:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=XZnxvPxOpeU806h7fDTsiesSCrFpE4VTFCSshcbOVAA=; b=3TKWR9m90/Qw2tVKQ+3LnxshDL
-        zXJGXPL+x0tG+UiKWe+JjnS9EOsj9XQAxwChjIm0REKyL2Z8Jl6Z0tnrI66uQCbW4Tr0hyCVwkJkf
-        eoLpsEfWPinDgi5o40abMsZS5ocjiIgFIIqsbNZsnSQ0KTZtm4ExbuDLFdsEyOuJ0nzRSaxCZLTWK
-        jxa+Pximm+JdGCSDIVk28ghXp3fv3p+3TmufQKYqX2NFBbUSmM2WrbN81pWFLHTFY8G190zKn5Sjc
-        EDoLbEhCxnzCWfUfL3G0jNFyfB6HrM0PsqGWNjS05fybzfTClcftpi4t3EWlwcRkLiqd631Z4zfOK
-        dQ9ye/gA==;
+        bh=1kSheuga7wG9pXxyAiU4rlbiaqtUmJinuZbw4DkSYpU=; b=aSc7yfQrgiDCY7gp4LVs3Yeyi0
+        5E9j318Exc36vfGsdjwDr3cGA4CH17JzUSpcVIiroq79syYdJg01LeIcvWBmSHFFcDd/bfxOk4WNV
+        80M6DS2T26Fc2NHQTYEBJUJFWEuNLXFBmQPl3lE7iCtt1/EdYpIYnkAcaZEhhdDbGO8FiBiTx/94w
+        RzTCLoFGy9fOITd0BjtR2mRhvn45RHrQFHRUjqMLKfdBWQvUkRmhDVmLJQ/KWQOjzBnvaLyruSSfP
+        fOi3OsJcUbQQiArMap+BTqPSrRx4X5oujlSamuGaVJlefNLA1dVfCkxNBoRpe96jyEWUgBMMWAe+a
+        fTZ2P7IA==;
 Received: from [2001:4bb8:18c:7298:d94:e0f5:2d65:4015] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nu83H-00DpZa-Gi; Thu, 26 May 2022 07:36:59 +0000
+        id 1nu83J-00DpaR-W2; Thu, 26 May 2022 07:37:02 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     David Sterba <dsterba@suse.com>,
         Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/10] btrfs: don't use btrfs_bio_wq_end_io for compressed writes
-Date:   Thu, 26 May 2022 09:36:38 +0200
-Message-Id: <20220526073642.1773373-7-hch@lst.de>
+Subject: [PATCH 07/10] btrfs: centralize setting REQ_META
+Date:   Thu, 26 May 2022 09:36:39 +0200
+Message-Id: <20220526073642.1773373-8-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220526073642.1773373-1-hch@lst.de>
 References: <20220526073642.1773373-1-hch@lst.de>
@@ -51,238 +51,70 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Compressed write bio completion is the only user of btrfs_bio_wq_end_io
-for writes, and the use of btrfs_bio_wq_end_io is a little suboptimal
-here as we only real need user context for the final completion of a
-compressed_bio structure, and not every single bio completion.
-
-Add a work_struct to struct compressed_bio instead and use that to call
-finish_compressed_bio_write.  This allows to remove all handling of
-write bios in the btrfs_bio_wq_end_io infrastructure.
+Set REQ_META in btrfs_submit_metadata_bio instead of the various callers.
+We'll start relying on this flag inside of btrfs in a bit, and this
+ensures it is always set correctly.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 45 +++++++++++++++++++++---------------------
- fs/btrfs/compression.h |  7 +++++--
- fs/btrfs/ctree.h       |  2 +-
- fs/btrfs/disk-io.c     | 30 +++++++++++-----------------
- fs/btrfs/super.c       |  2 --
- 5 files changed, 41 insertions(+), 45 deletions(-)
+ fs/btrfs/disk-io.c   | 2 ++
+ fs/btrfs/extent_io.c | 8 ++++----
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 6ab82e142f1f8..d966d917a49ed 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -398,6 +398,14 @@ static void finish_compressed_bio_write(struct compressed_bio *cb)
- 	kfree(cb);
- }
- 
-+static void btrfs_finish_compressed_write_work(struct work_struct *work)
-+{
-+	struct compressed_bio *cb =
-+		container_of(work, struct compressed_bio, write_end_work);
-+
-+	finish_compressed_bio_write(cb);
-+}
-+
- /*
-  * Do the cleanup once all the compressed pages hit the disk.  This will clear
-  * writeback on the file pages and free the compressed pages.
-@@ -409,29 +417,16 @@ static void end_compressed_bio_write(struct bio *bio)
- {
- 	struct compressed_bio *cb = bio->bi_private;
- 
--	if (!dec_and_test_compressed_bio(cb, bio))
--		goto out;
--
--	btrfs_record_physical_zoned(cb->inode, cb->start, bio);
-+	if (dec_and_test_compressed_bio(cb, bio)) {
-+		struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
- 
--	finish_compressed_bio_write(cb);
--out:
-+		btrfs_record_physical_zoned(cb->inode, cb->start, bio);
-+		queue_work(fs_info->compressed_write_workers,
-+			   &cb->write_end_work);
-+	}
- 	bio_put(bio);
- }
- 
--static blk_status_t submit_compressed_bio(struct btrfs_fs_info *fs_info,
--					  struct bio *bio, int mirror_num)
--{
--	blk_status_t ret;
--
--	ASSERT(bio->bi_iter.bi_size);
--	ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
--	if (ret)
--		return ret;
--	ret = btrfs_map_bio(fs_info, bio, mirror_num);
--	return ret;
--}
--
- /*
-  * Allocate a compressed_bio, which will be used to read/write on-disk
-  * (aka, compressed) * data.
-@@ -528,7 +523,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	cb->compressed_pages = compressed_pages;
- 	cb->compressed_len = compressed_len;
- 	cb->writeback = writeback;
--	cb->orig_bio = NULL;
-+	INIT_WORK(&cb->write_end_work, btrfs_finish_compressed_write_work);
- 	cb->nr_pages = nr_pages;
- 
- 	if (blkcg_css)
-@@ -598,7 +593,8 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 					goto finish_cb;
- 			}
- 
--			ret = submit_compressed_bio(fs_info, bio, 0);
-+			ASSERT(bio->bi_iter.bi_size);
-+			ret = btrfs_map_bio(fs_info, bio, 0);
- 			if (ret)
- 				goto finish_cb;
- 			bio = NULL;
-@@ -936,7 +932,12 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 						  fs_info->sectorsize);
- 			sums += fs_info->csum_size * nr_sectors;
- 
--			ret = submit_compressed_bio(fs_info, comp_bio, mirror_num);
-+			ASSERT(comp_bio->bi_iter.bi_size);
-+			ret = btrfs_bio_wq_end_io(fs_info, comp_bio,
-+						  BTRFS_WQ_ENDIO_DATA);
-+			if (ret)
-+				goto finish_cb;
-+			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
- 			if (ret)
- 				goto finish_cb;
- 			comp_bio = NULL;
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 2707404389a5d..4a40725cbf1db 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -61,8 +61,11 @@ struct compressed_bio {
- 	blk_status_t status;
- 	int mirror_num;
- 
--	/* for reads, this is the bio we are copying the data into */
--	struct bio *orig_bio;
-+	union {
-+		/* for reads, this is the bio we are copying the data into */
-+		struct bio *orig_bio;
-+		struct work_struct write_end_work;
-+	};
- 
- 	/*
- 	 * the start of a variable length array of checksums only
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index a7baae1e8fc7d..b5a67cdd1dc2f 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -855,7 +855,7 @@ struct btrfs_fs_info {
- 	struct btrfs_workqueue *endio_meta_workers;
- 	struct workqueue_struct *endio_raid56_workers;
- 	struct workqueue_struct *rmw_workers;
--	struct btrfs_workqueue *endio_meta_write_workers;
-+	struct workqueue_struct *compressed_write_workers;
- 	struct btrfs_workqueue *endio_write_workers;
- 	struct btrfs_workqueue *endio_freespace_worker;
- 	struct btrfs_workqueue *caching_workers;
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index a05925dac3467..2598c347a4bea 100644
+index 2598c347a4bea..46de02ac11aac 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -748,19 +748,10 @@ static void end_workqueue_bio(struct bio *bio)
- 	fs_info = end_io_wq->info;
- 	end_io_wq->status = bio->bi_status;
+@@ -913,6 +913,8 @@ void btrfs_submit_metadata_bio(struct inode *inode, struct bio *bio, int mirror_
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	blk_status_t ret;
  
--	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
--		if (end_io_wq->metadata == BTRFS_WQ_ENDIO_METADATA)
--			wq = fs_info->endio_meta_write_workers;
--		else if (end_io_wq->metadata == BTRFS_WQ_ENDIO_FREE_SPACE)
--			wq = fs_info->endio_freespace_worker;
--		else
--			wq = fs_info->endio_write_workers;
--	} else {
--		if (end_io_wq->metadata)
--			wq = fs_info->endio_meta_workers;
--		else
--			wq = fs_info->endio_workers;
--	}
-+	if (end_io_wq->metadata)
-+		wq = fs_info->endio_meta_workers;
-+	else
-+		wq = fs_info->endio_workers;
- 
- 	btrfs_init_work(&end_io_wq->work, end_workqueue_fn, NULL, NULL);
- 	btrfs_queue_work(wq, &end_io_wq->work);
-@@ -771,6 +762,9 @@ blk_status_t btrfs_bio_wq_end_io(struct btrfs_fs_info *info, struct bio *bio,
- {
- 	struct btrfs_end_io_wq *end_io_wq;
- 
-+	if (WARN_ON_ONCE(btrfs_op(bio) != BTRFS_MAP_WRITE))
-+		return BLK_STS_IOERR;
++	bio->bi_opf |= REQ_META;
 +
- 	end_io_wq = kmem_cache_alloc(btrfs_end_io_wq_cache, GFP_NOFS);
- 	if (!end_io_wq)
- 		return BLK_STS_RESOURCE;
-@@ -2273,6 +2267,8 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
- 		destroy_workqueue(fs_info->endio_raid56_workers);
- 	if (fs_info->rmw_workers)
- 		destroy_workqueue(fs_info->rmw_workers);
-+	if (fs_info->compressed_write_workers)
-+		destroy_workqueue(fs_info->compressed_write_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_write_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_freespace_worker);
- 	btrfs_destroy_workqueue(fs_info->delayed_workers);
-@@ -2287,7 +2283,6 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
- 	 * queues can do metadata I/O operations.
- 	 */
- 	btrfs_destroy_workqueue(fs_info->endio_meta_workers);
--	btrfs_destroy_workqueue(fs_info->endio_meta_write_workers);
- }
+ 	if (btrfs_op(bio) != BTRFS_MAP_WRITE) {
+ 		/*
+ 		 * called for a read, do the setup so that checksum validation
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 00c38811ee0f5..cbe04b3decee9 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4571,7 +4571,7 @@ static int write_one_subpage_eb(struct extent_buffer *eb,
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	struct page *page = eb->pages[0];
+-	unsigned int write_flags = wbc_to_write_flags(wbc) | REQ_META;
++	unsigned int write_flags = wbc_to_write_flags(wbc);
+ 	bool no_dirty_ebs = false;
+ 	int ret;
  
- static void free_root_extent_buffers(struct btrfs_root *root)
-@@ -2468,15 +2463,14 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
- 	fs_info->endio_meta_workers =
- 		btrfs_alloc_workqueue(fs_info, "endio-meta", flags,
- 				      max_active, 4);
--	fs_info->endio_meta_write_workers =
--		btrfs_alloc_workqueue(fs_info, "endio-meta-write", flags,
--				      max_active, 2);
- 	fs_info->endio_raid56_workers =
- 		alloc_workqueue("btrfs-endio-raid56", flags, max_active);
- 	fs_info->rmw_workers = alloc_workqueue("btrfs-rmw", flags, max_active);
- 	fs_info->endio_write_workers =
- 		btrfs_alloc_workqueue(fs_info, "endio-write", flags,
- 				      max_active, 2);
-+	fs_info->compressed_write_workers =
-+		alloc_workqueue("btrfs-compressed-write", flags, max_active);
- 	fs_info->endio_freespace_worker =
- 		btrfs_alloc_workqueue(fs_info, "freespace-write", flags,
- 				      max_active, 0);
-@@ -2491,7 +2485,7 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
- 	if (!(fs_info->workers && fs_info->hipri_workers &&
- 	      fs_info->delalloc_workers && fs_info->flush_workers &&
- 	      fs_info->endio_workers && fs_info->endio_meta_workers &&
--	      fs_info->endio_meta_write_workers &&
-+	      fs_info->compressed_write_workers &&
- 	      fs_info->endio_write_workers && fs_info->endio_raid56_workers &&
- 	      fs_info->endio_freespace_worker && fs_info->rmw_workers &&
- 	      fs_info->caching_workers && fs_info->fixup_workers &&
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 9c202ad5e1262..2d5ac5f730a16 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1908,8 +1908,6 @@ static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
- 	btrfs_workqueue_set_max(fs_info->caching_workers, new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->endio_workers, new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->endio_meta_workers, new_pool_size);
--	btrfs_workqueue_set_max(fs_info->endio_meta_write_workers,
--				new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->endio_write_workers, new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->endio_freespace_worker, new_pool_size);
- 	btrfs_workqueue_set_max(fs_info->delayed_workers, new_pool_size);
+@@ -4616,7 +4616,7 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
+ {
+ 	u64 disk_bytenr = eb->start;
+ 	int i, num_pages;
+-	unsigned int write_flags = wbc_to_write_flags(wbc) | REQ_META;
++	unsigned int write_flags = wbc_to_write_flags(wbc);
+ 	int ret = 0;
+ 
+ 	prepare_eb_write(eb);
+@@ -6626,7 +6626,7 @@ static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
+ 	btrfs_subpage_clear_error(fs_info, page, eb->start, eb->len);
+ 
+ 	btrfs_subpage_start_reader(fs_info, page, eb->start, eb->len);
+-	ret = submit_extent_page(REQ_OP_READ | REQ_META, NULL, &bio_ctrl,
++	ret = submit_extent_page(REQ_OP_READ, NULL, &bio_ctrl,
+ 				 page, eb->start, eb->len,
+ 				 eb->start - page_offset(page),
+ 				 end_bio_extent_readpage, mirror_num, 0,
+@@ -6733,7 +6733,7 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+ 			}
+ 
+ 			ClearPageError(page);
+-			err = submit_extent_page(REQ_OP_READ | REQ_META, NULL,
++			err = submit_extent_page(REQ_OP_READ, NULL,
+ 					 &bio_ctrl, page, page_offset(page),
+ 					 PAGE_SIZE, 0, end_bio_extent_readpage,
+ 					 mirror_num, 0, false);
 -- 
 2.30.2
 
