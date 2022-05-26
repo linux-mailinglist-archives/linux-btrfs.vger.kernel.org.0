@@ -2,124 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 713CB5350B9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 16:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8A853516C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 May 2022 17:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244537AbiEZOgU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 May 2022 10:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
+        id S1347912AbiEZPa2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 May 2022 11:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbiEZOgS (ORCPT
+        with ESMTP id S1347907AbiEZPaX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 May 2022 10:36:18 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0AFC9ED2;
-        Thu, 26 May 2022 07:36:17 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-f2c8c0d5bdso2411510fac.4;
-        Thu, 26 May 2022 07:36:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mGmXtFgbTPU1yCec3GU23xwZY5DzGMqhXlSw9q55n50=;
-        b=qIVfm+NNZhtHs3fnFFry3R0/a44ajLeM/X7BY276Uxg+XJCNiaO9BXJ/462cbN3+5l
-         b8tWQdu+ihCEXx4798lXt6WNDFrL022EAqDFHt5bDQvoERd1dbzhNqL9bAep4orWuX6+
-         xvSkkqHt3ZxbGX8PuwUJOaCpDtdauIgvYVRFHw9bL7SCzNpDlmrFvtOq2vUc1s10yB0A
-         Rkbw7t+Ma1QmkU1ohAK9pFF0GyEvULjstLBnMbpOap4RpKn/b2PYOlvmOFeiCYzda+vV
-         R1EbtvItG4zHrk4CaemtFQk5Ba1SmaSuT28qQ5DSUaOAcyUP/L/IArGc/sPUWuFeo4Qz
-         fLlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mGmXtFgbTPU1yCec3GU23xwZY5DzGMqhXlSw9q55n50=;
-        b=oqYwIEyklCDdKwybFt7UL4QHSe6Slh3doja9rtET5fEzCjVoRSDVNBq35oK0rM65ei
-         Ial8qzDrKJadEkO4cs55j3lQr//phK6281mVfdolUWabx2El41W5qvO38TWO4zXXkfpO
-         37OhoUugJ5Mjc7Xp6seycEtBwoZHlsaq9qjrzYlLPTghWuILDfCrFTmsyZXg+ec1JgQ8
-         zO0uj9cMC9NN0Lpsi10PbmkMOfji7vWmrQcWsHMassY9cW9QH6WPs/meny4KEiNrM69h
-         P+iJmXsJlGpLm8LkHJ5LtTdo3eEUVq3tAct1TuH/ZiGHAWHWZXflSFwyb0NdnvrYciGX
-         ++sw==
-X-Gm-Message-State: AOAM530fXe7hgXHtu5RWQsmI/HL16BU1RpFQlopHDj1mjvHO58ptcW83
-        BHOya2otQIZ6wrhk1LageFivQ//Pm5gX7UdFVnM=
-X-Google-Smtp-Source: ABdhPJybuePShTJ6M0jxXdUEgg8rT4OeBlwenJy8NsdLACTZWZuUE3kvBHAlNS/9oEFFvfU8r8Ppzg==
-X-Received: by 2002:a05:6870:ea8b:b0:f1:f46f:515e with SMTP id s11-20020a056870ea8b00b000f1f46f515emr1435650oap.192.1653575776753;
-        Thu, 26 May 2022 07:36:16 -0700 (PDT)
-Received: from localhost ([199.180.249.178])
-        by smtp.gmail.com with ESMTPSA id s31-20020a056830439f00b0060613c844adsm684623otv.10.2022.05.26.07.36.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 May 2022 07:36:16 -0700 (PDT)
-From:   bh1scw@gmail.com
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Fanjun Kong <bh1scw@gmail.com>
-Subject: [PATCH] btrfs: use PAGE_ALIGNED instead of IS_ALIGNED
-Date:   Thu, 26 May 2022 22:35:40 +0800
-Message-Id: <20220526143539.1594769-1-bh1scw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 26 May 2022 11:30:23 -0400
+Received: from libero.it (smtp-33.italiaonline.it [213.209.10.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4589C0394
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 08:30:20 -0700 (PDT)
+Received: from [192.168.1.27] ([78.12.14.90])
+        by smtp-33.iol.local with ESMTPA
+        id uFRInyG44VQ1EuFRInHdeU; Thu, 26 May 2022 17:30:17 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1653579017; bh=tMN4gj8PJn1sTD8GJUtdDLMPC4WqNzrkOgJdpMgcBjs=;
+        h=From;
+        b=hGzxWejSE+gbLQcE3pA3p9wxrdwcMKIOW+wbfVp6KVwbsvmGPmDZ8G2dUMNZYAnT6
+         3EQowy9Ly19V0cfUg6iGrwaZSuKDyZ8U5PH6BtOP9RI8GuxVtwuscBJycG/BDnoRpe
+         JLgkf1Lde6c67EONutEHOiNiWKLad81nibSghX+o3ARFGBDfm6VaJlKsqhn8DRy5Pv
+         G3sOafhDdaNaPFtl/mJlMYjDJ7KLmXan/4t8WuOZybDkUq5VANHcViRSCAe7q1o1JF
+         WwpC9CfLT9c1KxuMrB00lEjYrWiQwKHuKKXu2zoNNtQWcm+aaca/L+Lreo7cI8Jgfs
+         PK75e4Tx0H9Kw==
+X-CNFS-Analysis: v=2.4 cv=RM52o6u+ c=1 sm=1 tr=0 ts=628f9d09 cx=a_exe
+ a=tzWkov1jpxwUGlXVT4HyzQ==:117 a=tzWkov1jpxwUGlXVT4HyzQ==:17
+ a=IkcTkHD0fZMA:10 a=oRc3nhalbNAmCApWfcMA:9 a=QEXdDO2ut3YA:10
+Message-ID: <4fde1fb7-b6ea-c6e5-7c04-f6c19e031354@libero.it>
+Date:   Thu, 26 May 2022 17:30:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, waxhead@dirtcellar.net,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <f6679e0b681f9b1a74dfccbe05dcb5b6eb0878f6.1653372729.git.wqu@suse.com>
+ <20220524170234.GW18596@twin.jikos.cz> <Yo3wRJO/h+Cx47bw@infradead.org>
+ <bd6ac4d4-41bf-f662-e7c0-7841895554a6@gmx.com>
+ <Yo32VXWO81PlccWH@infradead.org>
+ <b8cbcac2-7e8b-e0fd-67a9-8a782e0afe23@gmx.com>
+ <9d1e2fc6-9ee6-68f8-bda8-8dd7e59e74e5@dirtcellar.net>
+ <50cb070b-2e2e-1987-3726-1e67eaf060cf@gmx.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <50cb070b-2e2e-1987-3726-1e67eaf060cf@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLN34leJOA6aXVijturGVVKk9Ekvj/+uQ0QHTbKQNjZe9DI1g/24sgZF+7HJIr2+gaNQw0ta0GE7N+S87ltKTJNDaPxf88yB3Cw3BxLo/T7kOeQBtGIE
+ NROUvLRAdf/vzqvr4w9TNwDGhesr7FDU/7hVf9kc0ZPXWcgg+ArWc2JorRIG7qW6WZ159NS/aRkSPrFShNmsXJ6957Eh307v1YnaMhiV9GnmtfJMBgsCRB/Q
+ FFT/LkpQ/TNbP6dW1PdjFP/bF9gxFtBr7dCfTeZ2C0UhFcl9oceFrV+DB395umfMVFb6ZLx/0cyuWTgaEnm/O0AHV6Ujl9sczkfOQ2DDV6M=
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Fanjun Kong <bh1scw@gmail.com>
+On 26/05/2022 11.26, Qu Wenruo wrote:
+[...]
+> 
+> Deprecation needs time, and RAID56J is not a drop-in replacement
+> unfortunately, it needs on-disk format change, and is new RAID profiles.
+> 
+IIRC, the original idea was to dedicate a separate disk to the journal.
+Instead of a dedicated disk, we could create a new chunk type to store the journal.
+The main advantage is that the data/metadata are still stored in the "old"
+raid5/6 chunk type. And only the journal is stored in the new chunk type.
 
-The <linux/mm.h> already provides the PAGE_ALIGNED macro. Let's
-use this macro instead of IS_ALIGNED and passing PAGE_SIZE directly.
+This would simplify the forward compatibility (you can leave the already existing raid5/6 chunk, and enabling the journal mode only if the journal chunk exists)
 
-Signed-off-by: Fanjun Kong <bh1scw@gmail.com>
----
- fs/btrfs/extent_io.c | 2 +-
- fs/btrfs/inode.c     | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+And even the backward compatibility is simple: you need only to delete the journal chunk (via an external tool ?)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8f6b544ae616..1f9f31004d60 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -6201,7 +6201,7 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
- 		return -EINVAL;
- 	}
- 	if (fs_info->nodesize >= PAGE_SIZE &&
--	    !IS_ALIGNED(start, PAGE_SIZE)) {
-+	    !PAGE_ALIGNED(start)) {
- 		btrfs_err(fs_info,
- 		"tree block is not page aligned, start %llu nodesize %u",
- 			  start, fs_info->nodesize);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 81737eff92f3..0f6f62fa03c8 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -560,8 +560,8 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
- 	 * will unlock the full page.
- 	 */
- 	if (fs_info->sectorsize < PAGE_SIZE) {
--		if (!IS_ALIGNED(start, PAGE_SIZE) ||
--		    !IS_ALIGNED(end + 1, PAGE_SIZE))
-+		if (!PAGE_ALIGNED(start) ||
-+		    !PAGE_ALIGNED(end + 1))
- 			return 0;
- 	}
- 
-@@ -678,8 +678,8 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
- 	 * Thus we must also check against @actual_end, not just @end.
- 	 */
- 	if (blocksize < PAGE_SIZE) {
--		if (!IS_ALIGNED(start, PAGE_SIZE) ||
--		    !IS_ALIGNED(round_up(actual_end, blocksize), PAGE_SIZE))
-+		if (!PAGE_ALIGNED(start) ||
-+		    !PAGE_ALIGNED(round_up(actual_end, blocksize)))
- 			goto cleanup_and_bail_uncompressed;
- 	}
- 
+However I understand that at this phase of developing nobody want to introduce a so big change.
+
+> If the code is finished and properly tested (through several kernel
+> released), we may switch all raid56 to raid56J in mkfs.btrfs and balance
+> (aka, balance profile raid56j becomes the default one for raid56).
+
+If a balance is enough, I think that this can be considered a "drop-in" replacement.
+
+> 
+> For RST, it's harder to say with confidence now, a lot of things are not
+> yet determined...
+> 
+> Thanks,
+> Qu
+> 
+>>
+>> This way the raid56 code would seem to be fixed albeit getting slower
+>> (as I understand it), but the number of configurations available is not
+>> overwhelming for us regular people.
+>>
+>> PS! I understand that I sound like I am not to keen on the new raid56j
+>> mode which is sort of true, but that does not mean that I am ungrateful
+>> for it :)
+
+
 -- 
-2.36.0
-
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
