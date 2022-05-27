@@ -2,41 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F12F535B54
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 10:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990C2535BC9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 10:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349346AbiE0ITq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 04:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
+        id S1349582AbiE0Inb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 04:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349284AbiE0ITp (ORCPT
+        with ESMTP id S238691AbiE0In2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 04:19:45 -0400
+        Fri, 27 May 2022 04:43:28 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE410275F;
-        Fri, 27 May 2022 01:19:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F11C2AC53
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 01:43:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=OKtvuGgEIUMk04SUrRdhIG+w4dH+tQypQORLIUZ01YI=; b=czijI7G/NYPycVnrEeyNd4LuKs
-        NCmj/PqK8KHEOjHEJQU+pUIHclxThIgRWG7ranFRbxF39XI4Az0FVh0RorMIpy7GkSsp/leNaS3ZB
-        sXy0H2NXzLStNftlaM8HsNZy7p7UI4y4Hn5FpmgzOIOElbumCvg2+YLWPyApKJU+KA7+NieVO/oHO
-        NDekzoktuZYFr7b8xtcY4NuprpdVnl38g2PBrPIXzM/WiBbX5COvd1KmByJbbl4nX4a+aLbga5tJM
-        3Ii300qjPF8fNd49ATY7+YbAM3sz61qozR5TamqoZG5NmVs2ilCDX3px4sljdc2x8ILjmSBz5UCFJ
-        QHYem5GA==;
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=4ubUD/KztmzUYIfCwe1Ej5+W/j7gidL9uqmfeEVAktQ=; b=2WrhFiRWTU2Swt/9EIbaDnhs2y
+        yfCpLi7/e7zeRegZcM+k4Q51fX57WuRGAX6xvIuLO58Dh/CIUV5Q53EX02Ps8FcBGAIJNz6oIt7Ck
+        jIRCubyfX24bpWLcSi3fbYUP+cG1+5iT/aOQgVBj2pYVKjGSpwsNerS4erx9WNhxLuvHgVSJgqfhZ
+        doBtDzk9WHo3UU/nwBN8gxhyw1KDJ1wUEHEx1b586fGL2rD9gErfnVZLjbjwth1/vNymS9RbR5rbA
+        VQdp3TVDxS/jx9djZwS/Swiq3Efq2kmZdBz50PWzOLzrU/9UhMlm5QgpavW5jx6ACluYkukFt1qUP
+        SHlQT7/A==;
 Received: from [2001:4bb8:18c:7298:b5ab:7d49:c6be:2011] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nuVCB-00H04h-Bq; Fri, 27 May 2022 08:19:43 +0000
+        id 1nuVZ4-00H3Ts-8g; Fri, 27 May 2022 08:43:22 +0000
 From:   Christoph Hellwig <hch@lst.de>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 10/10] btrfs: test direct I/O read repair with interleaved corrupted sectors
-Date:   Fri, 27 May 2022 10:19:15 +0200
-Message-Id: <20220527081915.2024853-11-hch@lst.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: simple synchronous read repair v2
+Date:   Fri, 27 May 2022 10:43:11 +0200
+Message-Id: <20220527084320.2130831-1-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220527081915.2024853-1-hch@lst.de>
-References: <20220527081915.2024853-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
@@ -50,232 +49,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test that repair handles the case where it needs to read from more than
-a single mirror on the raid1c3 profile and needs to take turns over the
-mirrors to recover data for the whole read.
+Hi all,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- tests/btrfs/267     |  93 +++++++++++++++++++++++++++++++++++++
- tests/btrfs/267.out | 109 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 202 insertions(+)
- create mode 100755 tests/btrfs/267
- create mode 100644 tests/btrfs/267.out
+this is my take on the read repair code.  It borrow a lot of concepts
+and patches from Qu's attempt.  The big difference is that it does away
+with multiple in-flight repair bios, but instead just does one at a
+time, but tries to make it as big as possible.
 
-diff --git a/tests/btrfs/267 b/tests/btrfs/267
-new file mode 100755
-index 00000000..cf19fdc8
---- /dev/null
-+++ b/tests/btrfs/267
-@@ -0,0 +1,93 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2017 Liu Bo.  All Rights Reserved.
-+# Copyright (c) 2022 Christoph Hellwig.
-+#
-+# FS QA Test 267
-+#
-+# Test that btrfs buffered read repair on a raid1c3 profile can repair
-+# interleaving errors on all mirrors.
-+#
-+
-+. ./common/preamble
-+_begin_fstest auto quick read_repair
-+
-+# Import common functions.
-+. ./common/filter
-+
-+# real QA test starts here
-+
-+_supported_fs btrfs
-+_require_scratch_dev_pool 3
-+
-+_require_odirect
-+# Overwriting data is forbidden on a zoned block device
-+_require_non_zoned_device "${SCRATCH_DEV}"
-+
-+_scratch_dev_pool_get 3
-+# step 1, create a raid1 btrfs which contains one 128k file.
-+echo "step 1......mkfs.btrfs"
-+
-+mkfs_opts="-d raid1c3 -b 1G"
-+_scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
-+
-+_scratch_mount
-+
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 256K 0 256K" \
-+	"$SCRATCH_MNT/foobar" | \
-+	_filter_xfs_io_offset
-+
-+# step 2, corrupt 4k in each copy
-+echo "step 2......corrupt file extent"
-+
-+# ensure btrfs-map-logical sees the tree updates
-+sync
-+
-+logical=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
-+
-+physical1=$(_btrfs_get_physical ${logical} 1)
-+devpath1=$(_btrfs_get_device_path ${logical} 1)
-+
-+physical2=$(_btrfs_get_physical ${logical} 2)
-+devpath2=$(_btrfs_get_device_path ${logical} 2)
-+
-+physical3=$(_btrfs_get_physical ${logical} 3)
-+devpath3=$(_btrfs_get_device_path ${logical} 3)
-+
-+_scratch_unmount
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xbd -b 64K $physical3 64K" \
-+	$devpath3 > /dev/null
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xba -b 64K $physical1 128K" \
-+	$devpath1 > /dev/null
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $((physical2 + 65536)) 128K" \
-+	$devpath2 > /dev/null
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xbc -b 64K $((physical3 + (2 * 65536))) 128K"  \
-+	$devpath3 > /dev/null
-+
-+_scratch_mount
-+
-+# step 3, 128k dio read (this read can repair bad copy)
-+echo "step 3......repair the bad copy"
-+
-+_btrfs_direct_read_on_mirror 0 3 "$SCRATCH_MNT/foobar" 0 256K
-+_btrfs_direct_read_on_mirror 1 3 "$SCRATCH_MNT/foobar" 0 256K
-+_btrfs_direct_read_on_mirror 2 3 "$SCRATCH_MNT/foobar" 0 256K
-+
-+_scratch_unmount
-+
-+echo "step 4......check if the repair worked"
-+$XFS_IO_PROG -d -c "pread -v -b 512 $physical1 512" $devpath1 |\
-+	_filter_xfs_io_offset
-+$XFS_IO_PROG -d -c "pread -v -b 512 $physical2 512" $devpath2 |\
-+	_filter_xfs_io_offset
-+$XFS_IO_PROG -d -c "pread -v -b 512 $physical3 512" $devpath3 |\
-+	_filter_xfs_io_offset
-+
-+_scratch_dev_pool_put
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/267.out b/tests/btrfs/267.out
-new file mode 100644
-index 00000000..2bdd32ea
---- /dev/null
-+++ b/tests/btrfs/267.out
-@@ -0,0 +1,109 @@
-+QA output created by 267
-+step 1......mkfs.btrfs
-+wrote 262144/262144 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+step 2......corrupt file extent
-+step 3......repair the bad copy
-+step 4......check if the repair worked
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+read 512/512 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+read 512/512 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+read 512/512 bytes
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--- 
-2.30.2
+My aim here is mostly to fix up the messy I/O completions for the
+direct I/O path, that make further bio optimizations rather annoying,
+but it also gives better I/O patterns for repair (although I'm not sure
+anyone cares) and removes a fair chunk of code.
 
+[this is on top of a not commit yet series.  I kinda hate doing that, but
+ with all the hot repair discussion going on right now we might as well
+ have an uptodate version of this series out on the list]
+
+Git tree:
+
+   git://git.infradead.org/users/hch/misc.git btrfs-read_repair
+
+Gitweb:
+
+   http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/btrfs-read_repair
+
+Changes since v1:
+ - rebased on top of the "misc btrfs cleanups" series that contains
+   various patches previously in this series and the
+   "cleanup btrfs bio handling, part 2 v4" series
+ - handle partial reads due to checksum failures
+ - handle large I/O for parity RAID repair as well
+ - add a lot more comments
+ - rename btrfs_read_repair_end to btrfs_read_repair_finish
+
+Diffstat:
+ fs/btrfs/Makefile            |    2 
+ fs/btrfs/btrfs_inode.h       |    5 
+ fs/btrfs/extent-io-tree.h    |   15 -
+ fs/btrfs/extent_io.c         |  570 ++++---------------------------------------
+ fs/btrfs/extent_io.h         |   25 -
+ fs/btrfs/inode.c             |   55 +---
+ fs/btrfs/read-repair.c       |  248 ++++++++++++++++++
+ fs/btrfs/read-repair.h       |   33 ++
+ fs/btrfs/super.c             |    9 
+ fs/btrfs/volumes.c           |   97 +++++++
+ fs/btrfs/volumes.h           |    2 
+ include/trace/events/btrfs.h |    1 
+ 12 files changed, 467 insertions(+), 595 deletions(-)
