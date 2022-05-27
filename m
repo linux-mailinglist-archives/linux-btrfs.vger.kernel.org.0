@@ -2,94 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A07D536895
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 23:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390AA53692A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 May 2022 01:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351170AbiE0VhS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 27 May 2022 17:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
+        id S1355168AbiE0X0L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 19:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbiE0VhS (ORCPT
+        with ESMTP id S231590AbiE0X0L (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 17:37:18 -0400
-Received: from pio-pvt-msa2.bahnhof.se (pio-pvt-msa2.bahnhof.se [79.136.2.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8721D31D
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 14:37:16 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 598E83F37A;
-        Fri, 27 May 2022 23:37:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.91
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id igMCAfqSTg75; Fri, 27 May 2022 23:37:13 +0200 (CEST)
-Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 1E6573F318;
-        Fri, 27 May 2022 23:37:12 +0200 (CEST)
-Received: from [192.168.0.113] (port=57868)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1nuhds-0008RS-UG; Fri, 27 May 2022 23:37:12 +0200
-Date:   Fri, 27 May 2022 23:37:07 +0200 (GMT+02:00)
-From:   Forza <forza@tnonline.net>
-To:     efkf <efkf@firemail.cc>, linux-btrfs@vger.kernel.org
-Message-ID: <8c707c6.705b352d.1810773a14f@tnonline.net>
-In-Reply-To: <d76489d5-06eb-5737-17d7-98d02fce38f7@firemail.cc>
-References: <9a9d16a133c13bed724f2a6a406bd3b6@firemail.cc> <5fd50e9.def5d621.180f273d002@tnonline.net> <f39a23c9fe32b5ae79ddbe67e1edb7a8@firemail.cc> <af34ef558ea7bbd414b5a076128b1011@firemail.cc> <b713b9540ad29a83a3c2c672139d6e6f@firemail.cc> <CAJCQCtT_PjKprryxHwsyn3qXc06qFFmnMR48CxZuvav8aQUOQQ@mail.gmail.com> <4e7fdc9608777774595bf060a028b600@firemail.cc> <33e31083-99d5-b8d8-e082-a1260849b8da@tnonline.net> <d76489d5-06eb-5737-17d7-98d02fce38f7@firemail.cc>
-Subject: Re: Tried to replace a drive in a raid 1 and all hell broke loose
+        Fri, 27 May 2022 19:26:11 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C146B020
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 16:26:06 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nujLI-0007PU-AP by authid <merlin>; Fri, 27 May 2022 16:26:04 -0700
+Date:   Fri, 27 May 2022 16:26:04 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220527232604.GA22722@merlins.org>
+References: <CAEzrpqd_B13rDPCZLm9h0ji8f1oS7mCw=2d1-iiW=M26FfEcCw@mail.gmail.com>
+ <20220526173119.GC1751747@merlins.org>
+ <CAEzrpqemPU_=VTxGEQS2WtGiaGbHy+ssnj5MKyh=8JC36uyZ6Q@mail.gmail.com>
+ <20220526181246.GA28329@merlins.org>
+ <CAEzrpqfEmm0qGZkkdTgFYNjVvSn6SZwbdDUYLO2E3jV4DYELFQ@mail.gmail.com>
+ <20220526191512.GE28329@merlins.org>
+ <CAEzrpqetTskf-UtyfXHBajpJBci4vxdSaBXwDTm5cRs2QtNRkw@mail.gmail.com>
+ <20220526213924.GB2414966@merlins.org>
+ <20220527011622.GA24951@merlins.org>
+ <CAEzrpqdbuQGwwuCfYyVdiDtGDsPb=3FWmKrTEA5Xukk1ex514g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqdbuQGwwuCfYyVdiDtGDsPb=3FWmKrTEA5Xukk1ex514g@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, May 27, 2022 at 02:35:05PM -0400, Josef Bacik wrote:
+> I'm augmenting my tree-recover tool to go and find any missing chunks
+> and add them in, which is what the chunk recover thing was supposed to
+> do.  This is going to take a bit, but should be the last piece.
 
+And by that you mean you're working on it and will tell me when it's
+ready to pull, or did you forget git push?
 
----- From: efkf <efkf@firemail.cc> -- Sent: 2022-05-27 - 18:28 ----
-
-> On 5/27/22 16:25, Forza wrote
->> On 2022-05-27 17:13, efkf@firemail.cc wrote:
->>> I had mounted the fs with -o degraded and one drive a couple of times 
->>> just as a sanity check to make sure the data really is in both drives, 
->>> i assume this would mount it rw and fall into the category you described. 
->> 
->> With Btrfs, this is not good practice. If you mount RAID mirrors 
->> independently as degraded, the metadata could be updated differently and 
->> when you combine the drives again, the data would not be the same on 
->> each device - which would lead to corruption. This is true even for ro 
->> mounts. ro is a Linux VFS thing, Btrfs will still write to the disk for 
->> its internal things.
-> 
-> I don't know much about advanced filesystems but I can imagine scenarious where it would be beneficial to reintroduce an old drive into an array that maybe even has changed without whiping it, 
-
-The correct way to re-introduce an old device to Btrfs is to first wipe it with 'wipefs' first. 
-
-I do agree that this is perhaps counter-intuitive as some other raid systems allows to re-add old disks. Btrfs could handle this better, and I know there was a discussion on #btrfs about this a while back. 
-
->maybe it's the only one storing the intact copy of an old file. 
-
-You should mount this drive on another system to recover this file. It is likely to cause serious corruption to try to introduce a drive after changes has been made. (perhaps there is some protection against this, but I've not heard of it). 
-
-> Anyway, is there a way to check the data is really redundant without trusting the filesystem telling me it's so?
-
-Yes, you use 'btrfs scrub' to read all data and metadata blocks from all devices and compare the checksums. If there are problems, scrub will tell you. 
-
-https://btrfs.readthedocs.io/en/latest/btrfs-scrub.html
-https://wiki.tnonline.net/w/Btrfs/Scrub
-
-> 
->> Good to hear that you got most of your data back. :)
-> :)
-> 
-> I tried another client now, hopefully the attachment has gone through
-
-It did. Lots of mismatching metadata. Not sure that kind of problem can be fixed. 
-
+Thanks,
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
