@@ -2,79 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF445358AF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 07:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17A3535A67
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 09:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242780AbiE0FQI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 01:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
+        id S236369AbiE0H2l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 03:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237446AbiE0FQH (ORCPT
+        with ESMTP id S229925AbiE0H2j (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 01:16:07 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB59E2ED44;
-        Thu, 26 May 2022 22:16:02 -0700 (PDT)
+        Fri, 27 May 2022 03:28:39 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AF966AE0
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 00:28:39 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7B9A521A7B;
-        Fri, 27 May 2022 05:16:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B82DF1F946
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:28:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1653628560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EzbLluQjd6KK6SPAyIUBwWZX3q+gfRKwunO6deMWKos=;
-        b=DxD14upKJAXhS7VDN2ninE+oDV5FpbCP8NhDuflCUmSq0nPs46aRf3061A5BjeyBeqbPau
-        i/ku45lNjVm1SajGXrLkDwO1t4W6U/5vCIwQCBKBRaEXLdAT2mTnIQZ+dgPxm+Zg5z90qP
-        1kk5QikV7uu0T0r+pwLzN2uJ7YBfVKo=
+        t=1653636517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=l4m1suISxoHwjisJdYCwoMTFtBf0EWMuXBum4OxQt/8=;
+        b=YzMJcrforW+OChn4hF/zTFBZZXUiRXngts8SPEim6/CKvT1Pi235hY27+vA37UKI1oY5Ue
+        /AYzlr69XoiZMIYWofXzBcPAl71tUNerHLM6tSZ2QcxGQ3mNa8PlQHbO4EZY/jKkLmg4XN
+        XnS7aVyV9xg9vnlX3mra2j6iq1XOHSM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 144A81346B;
-        Fri, 27 May 2022 05:16:00 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2969913A84
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:28:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id MD1zAZBekGJfeAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 27 May 2022 05:16:00 +0000
-Message-ID: <89806931-08cb-ec8a-b888-a710a7a45a0e@suse.com>
-Date:   Fri, 27 May 2022 08:15:59 +0300
+        id EYrwOqR9kGLFIwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:28:36 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/3] btrfs: raid56: reduce unnecessary parity writes
+Date:   Fri, 27 May 2022 15:28:16 +0800
+Message-Id: <cover.1653636443.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH] btrfs: use PAGE_ALIGNED instead of IS_ALIGNED
-Content-Language: en-US
-To:     bh1scw@gmail.com, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20220526143539.1594769-1-bh1scw@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220526143539.1594769-1-bh1scw@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+If we have only 8K partial write at the beginning of a full RAID56
+stripe, we will write the following contents:
+
+                    0  8K           32K             64K
+Disk 1	(data):     |XX|            |               |
+Disk 2  (data):     |               |               |
+Disk 3  (parity):   |XXXXXXXXXXXXXXX|XXXXXXXXXXXXXXX|
+
+|X| means the sector will be written back to disk.
+
+This is due to the fact that we don't really check if the vertical
+stripe has any data (aka, range from higher level bio) for parity
+stripes.
+
+The patchset will convert it to the following write pattern:
+
+                    0  8K           32K             64K
+Disk 1	(data):     |XX|            |               |
+Disk 2  (data):     |               |               |
+Disk 3  (parity):   |XX|            |               |
+
+This is done by fully utilize btrfs_raid_bio::dbitmap which is only
+utilized by scrub path.
+
+Now write path (either partial or full write) will also populate
+btrfs_raid_bio::dbitmap, and then only assemble sectors marked in
+dbitmap for submission.
+
+The first two patches is just to make previous bitmap pointers into
+integrated bitmaps inside the bbtrfs_raid_bio and scrub_parity.
+
+This saves 8 bytes for each structure.
+
+The final patch does the most important work, by introducing a new
+helper, rbio_add_bio() to mark the btrfs_raid_bio::dbitmap.
+Then in finish_rmw() only add sectors which has bit in dbitmap marked to
+change the write pattern.
 
 
-On 26.05.22 г. 17:35 ч., bh1scw@gmail.com wrote:
-> From: Fanjun Kong <bh1scw@gmail.com>
-> 
-> The <linux/mm.h> already provides the PAGE_ALIGNED macro. Let's
-> use this macro instead of IS_ALIGNED and passing PAGE_SIZE directly.
-> 
-> Signed-off-by: Fanjun Kong <bh1scw@gmail.com>
+Qu Wenruo (3):
+  btrfs: use integrated bitmaps for btrfs_raid_bio::dbitmap and
+    finish_pbitmap
+  btrfs: use integrated bitmaps for scrub_parity::dbitmap and ebitmap
+  btrfs: only write the sectors in the vertical stripe which has data
+    stripes
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+ fs/btrfs/raid56.c | 89 ++++++++++++++++++++++++++++++++++-------------
+ fs/btrfs/scrub.c  | 32 +++++++----------
+ 2 files changed, 78 insertions(+), 43 deletions(-)
+
+-- 
+2.36.1
+
