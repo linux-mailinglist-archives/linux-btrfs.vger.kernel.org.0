@@ -2,142 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B9D536447
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 16:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979DC536463
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 16:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240916AbiE0Oha (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 10:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S1353311AbiE0Oy7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 10:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235254AbiE0Oh3 (ORCPT
+        with ESMTP id S1350969AbiE0Oy5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 10:37:29 -0400
-Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB72F2F01B
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:37:25 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id C77C43F3BB;
-        Fri, 27 May 2022 16:37:22 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -3.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jJYUGa6GSrQf; Fri, 27 May 2022 16:37:21 +0200 (CEST)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 9A3E53F6DF;
-        Fri, 27 May 2022 16:37:21 +0200 (CEST)
-Received: from [192.168.0.10] (port=50246)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1nub5a-0009xk-TG; Fri, 27 May 2022 16:37:20 +0200
-Message-ID: <dfdd1052-f00c-40cc-99f3-1a830d6df728@tnonline.net>
-Date:   Fri, 27 May 2022 16:37:18 +0200
+        Fri, 27 May 2022 10:54:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E482E13FD4B
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:54:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653663296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a3KQTNTent3DuSGsndELTjpAZfYQxl6ufSTMKVi760A=;
+        b=e5hMtROA3vg27tlEwiURGyhnBU9Kn7+c5pt1KhHO5HEHx8jfR/NzVftF3xg+INTKx90RUh
+        TztZj5OMInTCNZcIrWXQI3qII7nMewq6wsquXw2PKRQK44hu/XTyVlDDeSrI/wkAiIt+U5
+        2TzK1JXUuXflkVnFcOUFYu3kD4utfuI=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-110-z9-htCrkPpyQN9QnCKETNg-1; Fri, 27 May 2022 10:54:53 -0400
+X-MC-Unique: z9-htCrkPpyQN9QnCKETNg-1
+Received: by mail-ot1-f71.google.com with SMTP id s12-20020a05683004cc00b0060b0e876cafso1646690otd.17
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:54:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a3KQTNTent3DuSGsndELTjpAZfYQxl6ufSTMKVi760A=;
+        b=LGUoXKs43iDjqWkfWcUy7QdZXd7PET6QaNYY3+CGV+UqxvzecHU/Pdmqx+VynTAYvA
+         5/uTS0FIG2rk7cDDs6IwX8BIVP16SBuvHMopK1DyTTwUGamPHzALWIBu8jlPEXrJtgi6
+         az6p9WIiwLfnbqZWPs37h9+4zbq7ZbvV8+/n8Xixy0vNn2Kr85/lnlMKuSNBu17uOaMq
+         uRDvFkhLdP8cN+vlahCEJSmhTHpyCm1BUfEdpXwhjbGhn3D/pZyNMaAuA/XUSsnEpAF7
+         Ylutfn16WdMO0e7SMQsQfXsWnBfxNolto/6sb9iGQVm+Ooct/opZK9K4L4CwhXncYuzM
+         WrcA==
+X-Gm-Message-State: AOAM532Grai1f54Zc45cS0gQPtXJjHVs1aJtge50GKiLaczLlwHvVgs4
+        jQyI06iUx0CwErYPOB7FATJBYvf0W1vecZQXaNfYAQc1IZE490GjSO/KiFF+UQb2HMvxrLsjQyj
+        cC/HdHLr9HYZrNs3vf3XXKhU=
+X-Received: by 2002:a05:6808:13d0:b0:32b:d458:4979 with SMTP id d16-20020a05680813d000b0032bd4584979mr1631134oiw.72.1653663292112;
+        Fri, 27 May 2022 07:54:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwj1Of9TE63QeyJoCpqDqE/Gilr8xSEAED6JHKHY08lNcHQK8BJwDF1EmQWiRbQLWiTfmNERA==
+X-Received: by 2002:a05:6808:13d0:b0:32b:d458:4979 with SMTP id d16-20020a05680813d000b0032bd4584979mr1631125oiw.72.1653663291850;
+        Fri, 27 May 2022 07:54:51 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id bk40-20020a0568081a2800b0032b7a0c5da1sm1933519oib.27.2022.05.27.07.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 May 2022 07:54:51 -0700 (PDT)
+Date:   Fri, 27 May 2022 22:54:45 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH 01/10] btrfs: add a helpers for read repair testing
+Message-ID: <20220527145445.fyrp3anncqdxb7sl@zlang-mailbox>
+References: <20220527081915.2024853-1-hch@lst.de>
+ <20220527081915.2024853-2-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: cp --reflink and NOCOW files
-Content-Language: en-GB
-To:     kreijack@inwind.it, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <c6f55508-a0df-aea3-279d-75648793dfb2@libero.it>
-From:   Forza <forza@tnonline.net>
-In-Reply-To: <c6f55508-a0df-aea3-279d-75648793dfb2@libero.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220527081915.2024853-2-hch@lst.de>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Goffredo,
-
-On 2022-05-24 21:02, Goffredo Baroncelli wrote:
-> Hi All,
+On Fri, May 27, 2022 at 10:19:06AM +0200, Christoph Hellwig wrote:
+> Add a few helpers to consolidate code for btrfs read repair testing:
 > 
-> recently I discovered that BTRFS doesn't allow to reflink a file
-> when the source is marked as NOCOW
-
-You probably saw in the my earlier email to the mailing list that this 
-is a problem with the 'cp' tool, because it tries to set the +C after it 
-has appended data to the target file.
-
+>  - _btrfs_get_first_logical() gets the btrfs logical address for the
+>    first extent in a file
+>  - _btrfs_get_device_path and _btrfs_get_physical use the
+>    btrfs-map-logical tool to find the device path and physical address
+>    for btrfs logical address for a specific mirror
+>  - _btrfs_direct_read_on_mirror and _btrfs_buffered_read_on_mirror
+>    read the data from a specific mirror
 > 
-> $ lsattr
-> ---------------C------ ./file-very-big-nocow
-> $ cp --reflink file-very-big-nocow file2
-> cp: failed to clone 'file2' from 'file-very-big-nocow': Invalid argument
-> $ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
-> ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
+> These will be used to consolidate the read repair tests and avoid
+> duplication for new tests.
 > 
-> My first thought was that it would be sufficient to remove the "nocow" 
-> flag.
-> But I was unable to do that.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  common/btrfs  | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  common/config |  1 +
+>  2 files changed, 76 insertions(+)
 > 
-> $ chattr -C file-very-big-nocow
+> diff --git a/common/btrfs b/common/btrfs
+> index ac597ca4..b69feeee 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -505,3 +505,78 @@ _btrfs_metadump()
+>  	$BTRFS_IMAGE_PROG "$device" "$dumpfile"
+>  	[ -n "$DUMP_COMPRESSOR" ] && $DUMP_COMPRESSOR -f "$dumpfile" &> /dev/null
+>  }
+> +
+> +# Return the btrfs logical address for the first block in a file
+> +_btrfs_get_first_logical()
+> +{
+> +	local file=$1
+> +	_require_command "$FILEFRAG_PROG" filefrag
+> +
+> +	${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
+                              ^^
+                            $file
+
+You can send a single fixed patch for this one
+
+Thanks,
+Zorro
+
+> +	${FILEFRAG_PROG} -v $file | _filter_filefrag | cut -d '#' -f 1
+> +}
+> +
+> +# Find the device path for a btrfs logical offset
+> +_btrfs_get_device_path()
+> +{
+> +	local logical=$1
+> +	local stripe=$2
+> +
+> +	_require_command "$BTRFS_MAP_LOGICAL_PROG" btrfs-map-logical
+> +
+> +	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
+> +		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$8 }"
+> +}
+> +
+> +
+> +# Find the device physical sector for a btrfs logical offset
+> +_btrfs_get_physical()
+> +{
+> +	local logical=$1
+> +	local stripe=$2
+> +
+> +	_require_command "$BTRFS_MAP_LOGICAL_PROG" btrfs-map-logical
+> +
+> +	$BTRFS_MAP_LOGICAL_PROG -b -l $logical $SCRATCH_DEV >> $seqres.full 2>&1
+> +	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
+> +		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$6 }"
+> +}
+> +
+> +# Read from a specific stripe to test read recovery that corrupted a specific
+> +# stripe.  Btrfs uses the PID to select the mirror, so keep reading until the
+> +# xfs_io process that performed the read was executed with a PID that ends up
+> +# on the intended mirror.
+> +_btrfs_direct_read_on_mirror()
+> +{
+> +	local mirror=$1
+> +	local nr_mirrors=$2
+> +	local file=$3
+> +	local offset=$4
+> +	local size=$5
+> +
+> +	while [[ -z $( (( BASHPID % nr_mirrors == mirror )) &&
+> +		exec $XFS_IO_PROG -d \
+> +			-c "pread -b $size $offset $size" $file) ]]; do
+> +		:
+> +	done
+> +}
+> +
+> +# Read from a specific stripe to test read recovery that corrupted a specific
+> +# stripe.  Btrfs uses the PID to select the mirror, so keep reading until the
+> +# xfs_io process that performed the read was executed with a PID that ends up
+> +# on the intended mirror.
+> +_btrfs_buffered_read_on_mirror()
+> +{
+> +	local mirror=$1
+> +	local nr_mirrors=$2
+> +	local file=$3
+> +	local offset=$4
+> +	local size=$5
+> +
+> +	echo 3 > /proc/sys/vm/drop_caches
+> +	while [[ -z $( (( BASHPID % nr_mirrors == mirror )) &&
+> +		exec $XFS_IO_PROG \
+> +			-c "pread -b $size $offset $size" $file) ]]; do
+> +		:
+> +	done
+> +}
+> diff --git a/common/config b/common/config
+> index c6428f90..df20afc1 100644
+> --- a/common/config
+> +++ b/common/config
+> @@ -228,6 +228,7 @@ export E2IMAGE_PROG="$(type -P e2image)"
+>  export BLKZONE_PROG="$(type -P blkzone)"
+>  export GZIP_PROG="$(type -P gzip)"
+>  export BTRFS_IMAGE_PROG="$(type -P btrfs-image)"
+> +export BTRFS_MAP_LOGICAL_PROG=$(type -P btrfs-map-logical)
+>  
+>  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
+>  # newer systems have udevadm command but older systems like RHEL5 don't.
+> -- 
+> 2.30.2
 > 
-> $ strace cp --reflink file-very-big-nocow file2 2>&1 | egrep ioctl
-> ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EINVAL (Invalid argument)
-> 
-> (I tried "chattr +C ..." too)
-> 
-> Ok, now my question is: how we can remove the NOCOW flag from a file ?
-> 
 
-The issue here is that nocow also means nodatasum (no checksums). The 
-checksums are needed to verify the the integrity of the data blocks.
-
-So in order to turn off nocow, checksums would have to be created for 
-every block of data. Btrfs does not do this, because there is no way for 
-Btrfs to actually know if the data is correct. The result is that Btrfs 
-refuses to turn off the nocow fsattr.
-
-The solution is to make a normal copy as you just experienced.
-
-> My use case is to move files between subvolumes some of which are marked 
-> as NOWCOW.
-> The files are videos, so I want to avoid to copy the data.
-> 
-
-You can still reflink copy the files if you do something like:
-
-# touch target/foo
-# chattr +C target/foo
-# cp --reflink=always source/foo target/foo
-
-Target and source must be reachable from the same mountpoint. Easiest to
-manage such a situation is to mount toplevel (subvolid=5) in /mnt/btrfs/ 
-and handle the files from there.
-
-Video files are unusual to keep as nocow. From my own experience and 
-IMHO I think that nocow should always a last resort to take to in order 
-to solve an urgent performance issue. Certain workloads can cause lots 
-of extents and fragmentation due to the cow, but video editing or 
-similar is normally not such a use case.
-
-If you download large files to a spinning HDD, and they end up very 
-fragmented, I suggest you use 'btrfs filesystem defrag' before you 
-snapshot or reflink copy the files.
-
-There are a lot of guides on the internet that suggest turning on nocow, 
-but they rarely discuss the (potentially harmful) downsides with this 
-choice.
-
-You should now that because nocow also means nodatasum, Btrfs cannot 
-self-heal or even detect data corruption in nocow files, even when using 
-tools like 'scrub' or 'check'. In addition, there is no guaranteed 
-redundancy with RAID/DUP profiles for those files because Btrfs relies 
-on checksums to determine which device has a correct copy.
-
-I advice against nocow in most situations because I have myself had 
-corruption on precious photographs and videos due to bitrot. I have 
-written a little about this on https://wiki.tnonline.net/w/Btrfs/Scrub
-
-Good luck!
-
-> 
-> BR
-> 
