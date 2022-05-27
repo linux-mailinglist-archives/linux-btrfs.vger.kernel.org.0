@@ -2,206 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 979DC536463
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 16:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A0F536471
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 17:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353311AbiE0Oy7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 10:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        id S1352345AbiE0PAN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 11:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350969AbiE0Oy5 (ORCPT
+        with ESMTP id S1353557AbiE0PAF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 10:54:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E482E13FD4B
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653663296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a3KQTNTent3DuSGsndELTjpAZfYQxl6ufSTMKVi760A=;
-        b=e5hMtROA3vg27tlEwiURGyhnBU9Kn7+c5pt1KhHO5HEHx8jfR/NzVftF3xg+INTKx90RUh
-        TztZj5OMInTCNZcIrWXQI3qII7nMewq6wsquXw2PKRQK44hu/XTyVlDDeSrI/wkAiIt+U5
-        2TzK1JXUuXflkVnFcOUFYu3kD4utfuI=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-110-z9-htCrkPpyQN9QnCKETNg-1; Fri, 27 May 2022 10:54:53 -0400
-X-MC-Unique: z9-htCrkPpyQN9QnCKETNg-1
-Received: by mail-ot1-f71.google.com with SMTP id s12-20020a05683004cc00b0060b0e876cafso1646690otd.17
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 07:54:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a3KQTNTent3DuSGsndELTjpAZfYQxl6ufSTMKVi760A=;
-        b=LGUoXKs43iDjqWkfWcUy7QdZXd7PET6QaNYY3+CGV+UqxvzecHU/Pdmqx+VynTAYvA
-         5/uTS0FIG2rk7cDDs6IwX8BIVP16SBuvHMopK1DyTTwUGamPHzALWIBu8jlPEXrJtgi6
-         az6p9WIiwLfnbqZWPs37h9+4zbq7ZbvV8+/n8Xixy0vNn2Kr85/lnlMKuSNBu17uOaMq
-         uRDvFkhLdP8cN+vlahCEJSmhTHpyCm1BUfEdpXwhjbGhn3D/pZyNMaAuA/XUSsnEpAF7
-         Ylutfn16WdMO0e7SMQsQfXsWnBfxNolto/6sb9iGQVm+Ooct/opZK9K4L4CwhXncYuzM
-         WrcA==
-X-Gm-Message-State: AOAM532Grai1f54Zc45cS0gQPtXJjHVs1aJtge50GKiLaczLlwHvVgs4
-        jQyI06iUx0CwErYPOB7FATJBYvf0W1vecZQXaNfYAQc1IZE490GjSO/KiFF+UQb2HMvxrLsjQyj
-        cC/HdHLr9HYZrNs3vf3XXKhU=
-X-Received: by 2002:a05:6808:13d0:b0:32b:d458:4979 with SMTP id d16-20020a05680813d000b0032bd4584979mr1631134oiw.72.1653663292112;
-        Fri, 27 May 2022 07:54:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwj1Of9TE63QeyJoCpqDqE/Gilr8xSEAED6JHKHY08lNcHQK8BJwDF1EmQWiRbQLWiTfmNERA==
-X-Received: by 2002:a05:6808:13d0:b0:32b:d458:4979 with SMTP id d16-20020a05680813d000b0032bd4584979mr1631125oiw.72.1653663291850;
-        Fri, 27 May 2022 07:54:51 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id bk40-20020a0568081a2800b0032b7a0c5da1sm1933519oib.27.2022.05.27.07.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 May 2022 07:54:51 -0700 (PDT)
-Date:   Fri, 27 May 2022 22:54:45 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH 01/10] btrfs: add a helpers for read repair testing
-Message-ID: <20220527145445.fyrp3anncqdxb7sl@zlang-mailbox>
-References: <20220527081915.2024853-1-hch@lst.de>
- <20220527081915.2024853-2-hch@lst.de>
+        Fri, 27 May 2022 11:00:05 -0400
+Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DBD2657D
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 08:00:03 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id AA3EF3FB3E;
+        Fri, 27 May 2022 17:00:01 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -3.095
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1MD3Ud0vx6BN; Fri, 27 May 2022 17:00:00 +0200 (CEST)
+Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 084373F5A0;
+        Fri, 27 May 2022 16:59:59 +0200 (CEST)
+Received: from [192.168.0.10] (port=50425)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1nubRW-000B8W-G6; Fri, 27 May 2022 16:59:59 +0200
+Message-ID: <3b55058e-45c7-685e-433b-212d5eb45a42@tnonline.net>
+Date:   Fri, 27 May 2022 16:59:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220527081915.2024853-2-hch@lst.de>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+From:   Forza <forza@tnonline.net>
+Subject: Re: [RFC][PATCH][cp] btrfs, nocow and cp --reflink
+Content-Language: en-GB
+To:     =?UTF-8?Q?P=c3=a1draig_Brady?= <P@draigBrady.com>,
+        Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, coreutils@gnu.org
+Cc:     Matthew Warren <matthewwarren101010@gmail.com>,
+        Andrei Borzenkov <arvidjaar@gmail.com>
+References: <d1ccc0de-90b0-30ab-6798-42913933dbb2@libero.it>
+ <1b6a6413-963c-f612-7b1f-960190c3a323@draigBrady.com>
+In-Reply-To: <1b6a6413-963c-f612-7b1f-960190c3a323@draigBrady.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 27, 2022 at 10:19:06AM +0200, Christoph Hellwig wrote:
-> Add a few helpers to consolidate code for btrfs read repair testing:
-> 
->  - _btrfs_get_first_logical() gets the btrfs logical address for the
->    first extent in a file
->  - _btrfs_get_device_path and _btrfs_get_physical use the
->    btrfs-map-logical tool to find the device path and physical address
->    for btrfs logical address for a specific mirror
->  - _btrfs_direct_read_on_mirror and _btrfs_buffered_read_on_mirror
->    read the data from a specific mirror
-> 
-> These will be used to consolidate the read repair tests and avoid
-> duplication for new tests.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> ---
->  common/btrfs  | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  common/config |  1 +
->  2 files changed, 76 insertions(+)
-> 
-> diff --git a/common/btrfs b/common/btrfs
-> index ac597ca4..b69feeee 100644
-> --- a/common/btrfs
-> +++ b/common/btrfs
-> @@ -505,3 +505,78 @@ _btrfs_metadump()
->  	$BTRFS_IMAGE_PROG "$device" "$dumpfile"
->  	[ -n "$DUMP_COMPRESSOR" ] && $DUMP_COMPRESSOR -f "$dumpfile" &> /dev/null
->  }
-> +
-> +# Return the btrfs logical address for the first block in a file
-> +_btrfs_get_first_logical()
-> +{
-> +	local file=$1
-> +	_require_command "$FILEFRAG_PROG" filefrag
-> +
-> +	${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
-                              ^^
-                            $file
 
-You can send a single fixed patch for this one
+
+On 2022-05-27 16:00, Pádraig Brady wrote:
+> On 25/05/2022 18:05, Goffredo Baroncelli wrote:
+>> Hi All,
+>>
+>> recently I discovered that BTRFS allow to reflink a file only if the 
+>> flag FS_NOCOW_FL is the same on both source and destination.
+>> In the end of this email I added a patch to "cp" to set the 
+>> FS_NOCOW_FL flag according to the source.
+>>
+>> Even tough this works, I am wondering if this is the expected/the 
+>> least surprise behavior by/for any user. This is the reason why this 
+>> email is tagged as RFC.
+>>
+>> Without reflink, the default behavior is that the new file has the 
+>> FS_NOCOW_FL flag set according to the parent directory; with this 
+>> patch the flag would be the same as the source.
+>>
+>> I am not sure that this is the correct behviour without warning the 
+>> user of this change.
+>>
+>> Another possibility, is to flip the NOCOW flag only if 
+>> --reflink=always is passed.
+>>
+>> Thoughts ?
+> 
+> This flag corresponds to the 'C' chattr attribute,
+> to allow users to explicitly disable CoW on certain files
+> or files within certain dirs.
+> 
+> I don't think cp should be overriding that explicit config.  I.e.:
+>    cp --reflink=auto => try reflink but fall back to normal copy
+>    cp --reflink=always => try reflink and fail if not possible
+> 
+> We would need another option to bypass system config
+> (like --reflink=force), however I don't think that's
+> appropriate functionality for cp.
+> 
+> thanks,
+> Pádraig
+
+The solution is that 'cp' should set +C on the target file before 
+appending data to it. I don't think that we need any additional mode, 
+but the default should be that '--reflink=auto|always' sets the fsattrs 
+in the correct order on the target file. This is important for other 
+fsattrs as well, such as +i (immutable), +c (compress) and +m (nocompress).
+
+There is thread from two years about about the same issue:
+https://lists.gnu.org/archive/html/coreutils/2020-05/msg00014.html
+
+There is also an existing bug report about this issue:
+https://lists.gnu.org/r/bug-coreutils/2021-06/msg00003.html
 
 Thanks,
-Zorro
-
-> +	${FILEFRAG_PROG} -v $file | _filter_filefrag | cut -d '#' -f 1
-> +}
-> +
-> +# Find the device path for a btrfs logical offset
-> +_btrfs_get_device_path()
-> +{
-> +	local logical=$1
-> +	local stripe=$2
-> +
-> +	_require_command "$BTRFS_MAP_LOGICAL_PROG" btrfs-map-logical
-> +
-> +	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
-> +		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$8 }"
-> +}
-> +
-> +
-> +# Find the device physical sector for a btrfs logical offset
-> +_btrfs_get_physical()
-> +{
-> +	local logical=$1
-> +	local stripe=$2
-> +
-> +	_require_command "$BTRFS_MAP_LOGICAL_PROG" btrfs-map-logical
-> +
-> +	$BTRFS_MAP_LOGICAL_PROG -b -l $logical $SCRATCH_DEV >> $seqres.full 2>&1
-> +	$BTRFS_MAP_LOGICAL_PROG -l $logical $SCRATCH_DEV | \
-> +		$AWK_PROG "(\$1 ~ /mirror/ && \$2 ~ /$stripe/) { print \$6 }"
-> +}
-> +
-> +# Read from a specific stripe to test read recovery that corrupted a specific
-> +# stripe.  Btrfs uses the PID to select the mirror, so keep reading until the
-> +# xfs_io process that performed the read was executed with a PID that ends up
-> +# on the intended mirror.
-> +_btrfs_direct_read_on_mirror()
-> +{
-> +	local mirror=$1
-> +	local nr_mirrors=$2
-> +	local file=$3
-> +	local offset=$4
-> +	local size=$5
-> +
-> +	while [[ -z $( (( BASHPID % nr_mirrors == mirror )) &&
-> +		exec $XFS_IO_PROG -d \
-> +			-c "pread -b $size $offset $size" $file) ]]; do
-> +		:
-> +	done
-> +}
-> +
-> +# Read from a specific stripe to test read recovery that corrupted a specific
-> +# stripe.  Btrfs uses the PID to select the mirror, so keep reading until the
-> +# xfs_io process that performed the read was executed with a PID that ends up
-> +# on the intended mirror.
-> +_btrfs_buffered_read_on_mirror()
-> +{
-> +	local mirror=$1
-> +	local nr_mirrors=$2
-> +	local file=$3
-> +	local offset=$4
-> +	local size=$5
-> +
-> +	echo 3 > /proc/sys/vm/drop_caches
-> +	while [[ -z $( (( BASHPID % nr_mirrors == mirror )) &&
-> +		exec $XFS_IO_PROG \
-> +			-c "pread -b $size $offset $size" $file) ]]; do
-> +		:
-> +	done
-> +}
-> diff --git a/common/config b/common/config
-> index c6428f90..df20afc1 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -228,6 +228,7 @@ export E2IMAGE_PROG="$(type -P e2image)"
->  export BLKZONE_PROG="$(type -P blkzone)"
->  export GZIP_PROG="$(type -P gzip)"
->  export BTRFS_IMAGE_PROG="$(type -P btrfs-image)"
-> +export BTRFS_MAP_LOGICAL_PROG=$(type -P btrfs-map-logical)
->  
->  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
->  # newer systems have udevadm command but older systems like RHEL5 don't.
-> -- 
-> 2.30.2
-> 
-
+Forza
