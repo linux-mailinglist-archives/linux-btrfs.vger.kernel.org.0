@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4A0535BC2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 10:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC3D535BC8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 10:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349788AbiE0Inf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 04:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
+        id S1349799AbiE0Inh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 04:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238691AbiE0Ind (ORCPT
+        with ESMTP id S1346268AbiE0Ind (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 27 May 2022 04:43:33 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF5C2AC64
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 01:43:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1192AC53
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 01:43:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=q1WJFJG/fxQxNU+bCa3zOYf9I1HWEMKAcH1bhOogkRo=; b=fQoImXxn6883oYrB1VNjCL3wjW
-        C9KWKGrGDGiSPUa+6y+qA2I3Rv1fKSENTOuXEj13CUOG/m+ptcSbWpUQLyfTeWNajwS5FbqqiQWJ3
-        6Dha5Hv7Eg8T8WLaonJ+iNDEZUlhtQJzee5AX6xzesE/Qeoa4NtKVbr3PNr16nGZWvQkWB8gMDXgo
-        4rYtoekQF/1bwZKa2/CZIgYpnIhUY1rp51YBWa/SPEwRue+O6trsllZRnnizhrDk/bTJqjhm+MvNE
-        Okc+Ulec3274d/CJk9Wj4Ls+PDYtDzfoZXvB9FUbADeqgu7W4RHhrL7kxBkeofExd6+7ghLymkF68
-        rvjjRWow==;
+        bh=UhD5RxF+3M0A6imDKah3y64o23a8aOPSlCwhwsAxI6E=; b=JtDnxTGnwGJw6UJxEm8H6WWDvB
+        H6E/JG+X5IVnCioPpxbQCyEnyHX4ukiX9aEUUGLdpiU3V24oZuambBIXOyNE8hCi9e9fvK+gMt7g5
+        Sey8Ndae0sbinkkdgjR1ORYpvdxi/m/ayzzV572jbvYXwdQ716WyRH1la4uioEPQ310PB5taiHv2Q
+        w2bFi/NpnfjiSSbI40mpRFQcizIgkPxN1m2+0TSYJsSFZq82boAi13pqo967TRAHIcdWXCeBIwJ3q
+        s5RfmmTCaWuYs47NbUwsMUXNhiPFaon4h+igzeQQ9C/mDz1FARoay6blvJwqsWaNZXem8OfJtkVUo
+        VNocV6wg==;
 Received: from [2001:4bb8:18c:7298:b5ab:7d49:c6be:2011] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nuVZ9-00H3V0-Cu; Fri, 27 May 2022 08:43:27 +0000
+        id 1nuVZB-00H3Vf-VI; Fri, 27 May 2022 08:43:30 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/9] btrfs: set ->file_offset in end_bio_extent_readpage
-Date:   Fri, 27 May 2022 10:43:13 +0200
-Message-Id: <20220527084320.2130831-3-hch@lst.de>
+Subject: [PATCH 3/9] btrfs: factor out a btrfs_map_repair_bio helper
+Date:   Fri, 27 May 2022 10:43:14 +0200
+Message-Id: <20220527084320.2130831-4-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220527084320.2130831-1-hch@lst.de>
 References: <20220527084320.2130831-1-hch@lst.de>
@@ -51,78 +51,220 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new repair code expects ->file_offset to be set for all bios.  Set
-it just after entering end_bio_extent_readpage.  As that requires looking
-at the first vector before the first loop iteration also use that
-opportunity to set various file-wide variables just once instead of once
-per loop iteration.
+Factor out the guts of repair_io_failure so that we have a new helper
+to submit synchronous I/O for repair.  Unlike repair_io_failure itself
+this helper also handles reads.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ fs/btrfs/extent_io.c | 82 ++++++--------------------------------------
+ fs/btrfs/volumes.c   | 69 +++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.h   |  2 ++
+ 3 files changed, 81 insertions(+), 72 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 48463705ef0e6..54a0ec62c7b0d 100644
+index 54a0ec62c7b0d..27775031ed2d4 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3009,25 +3009,30 @@ static struct extent_buffer *find_extent_buffer_readpage(
-  */
- static void end_bio_extent_readpage(struct bio *bio)
+@@ -2308,27 +2308,13 @@ int free_io_failure(struct extent_io_tree *failure_tree,
+ 	return err;
+ }
+ 
+-/*
+- * this bypasses the standard btrfs submit functions deliberately, as
+- * the standard behavior is to write all copies in a raid setup. here we only
+- * want to write the one bad copy. so we do the mapping for ourselves and issue
+- * submit_bio directly.
+- * to avoid any synchronization issues, wait for the data after writing, which
+- * actually prevents the read that triggered the error from finishing.
+- * currently, there can be no more than two copies of every data bit. thus,
+- * exactly one rewrite is required.
+- */
+ static int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 			     u64 length, u64 logical, struct page *page,
+ 			     unsigned int pg_offset, int mirror_num)
  {
-+	struct bio_vec *first_vec = bio_first_bvec_all(bio);
-+	struct inode *inode = first_vec->bv_page->mapping->host;
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	const u32 sectorsize = fs_info->sectorsize;
- 	struct bio_vec *bvec;
- 	struct btrfs_bio *bbio = btrfs_bio(bio);
--	struct extent_io_tree *tree, *failure_tree;
-+	int mirror = bbio->mirror_num;
-+	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
-+	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
-+	bool uptodate = !bio->bi_status;
- 	struct processed_extent processed = { 0 };
- 	/*
- 	 * The offset to the beginning of a bio, since one bio can never be
- 	 * larger than UINT_MAX, u32 here is enough.
- 	 */
- 	u32 bio_offset = 0;
--	int mirror;
- 	struct bvec_iter_all iter_all;
+-	struct btrfs_device *dev;
+ 	struct bio_vec bvec;
+ 	struct bio bio;
+-	u64 map_length = 0;
+-	u64 sector;
+-	struct btrfs_io_context *bioc = NULL;
+-	int ret = 0;
++	int ret;
  
-+	btrfs_bio(bio)->file_offset =
-+		page_offset(first_vec->bv_page) + first_vec->bv_offset;
+ 	ASSERT(!(fs_info->sb->s_flags & SB_RDONLY));
+ 	BUG_ON(!mirror_num);
+@@ -2336,67 +2322,19 @@ static int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 	if (btrfs_repair_one_zone(fs_info, logical))
+ 		return 0;
+ 
+-	map_length = length;
+-
+-	/*
+-	 * Avoid races with device replace and make sure our bioc has devices
+-	 * associated to its stripes that don't go away while we are doing the
+-	 * read repair operation.
+-	 */
+-	btrfs_bio_counter_inc_blocked(fs_info);
+-	if (btrfs_is_parity_mirror(fs_info, logical, length)) {
+-		/*
+-		 * Note that we don't use BTRFS_MAP_WRITE because it's supposed
+-		 * to update all raid stripes, but here we just want to correct
+-		 * bad stripe, thus BTRFS_MAP_READ is abused to only get the bad
+-		 * stripe's dev and sector.
+-		 */
+-		ret = btrfs_map_block(fs_info, BTRFS_MAP_READ, logical,
+-				      &map_length, &bioc, 0);
+-		if (ret)
+-			goto out_counter_dec;
+-		ASSERT(bioc->mirror_num == 1);
+-	} else {
+-		ret = btrfs_map_block(fs_info, BTRFS_MAP_WRITE, logical,
+-				      &map_length, &bioc, mirror_num);
+-		if (ret)
+-			goto out_counter_dec;
+-		BUG_ON(mirror_num != bioc->mirror_num);
+-	}
+-
+-	sector = bioc->stripes[bioc->mirror_num - 1].physical >> 9;
+-	dev = bioc->stripes[bioc->mirror_num - 1].dev;
+-	btrfs_put_bioc(bioc);
+-
+-	if (!dev || !dev->bdev ||
+-	    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state)) {
+-		ret = -EIO;
+-		goto out_counter_dec;
+-	}
+-
+-	bio_init(&bio, dev->bdev, &bvec, 1, REQ_OP_WRITE | REQ_SYNC);
+-	bio.bi_iter.bi_sector = sector;
++	bio_init(&bio, NULL, &bvec, 1, REQ_OP_WRITE | REQ_SYNC);
++	bio.bi_iter.bi_sector = logical >> 9;
+ 	__bio_add_page(&bio, page, length, pg_offset);
++	ret = btrfs_map_repair_bio(fs_info, &bio, mirror_num);
++	bio_uninit(&bio);
+ 
+-	btrfsic_check_bio(&bio);
+-	ret = submit_bio_wait(&bio);
+-	if (ret) {
+-		/* try to remap that extent elsewhere? */
+-		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_WRITE_ERRS);
+-		goto out_bio_uninit;
+-	}
++	if (ret)
++		return ret;
+ 
+ 	btrfs_info_rl_in_rcu(fs_info,
+-		"read error corrected: ino %llu off %llu (dev %s sector %llu)",
+-				  ino, start,
+-				  rcu_str_deref(dev->name), sector);
+-	ret = 0;
+-
+-out_bio_uninit:
+-	bio_uninit(&bio);
+-out_counter_dec:
+-	btrfs_bio_counter_dec(fs_info);
+-	return ret;
++		"read error corrected: ino %llu off %llu (logical %llu)",
++			  ino, start, logical);
++	return 0;
+ }
+ 
+ int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num)
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 1954a3e1c93a9..515f5fccf3d17 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6805,6 +6805,75 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 	return errno_to_blk_status(ret);
+ }
+ 
++/*
++ * This bypasses the standard btrfs submit functions deliberately, as the
++ * standard behavior is to write all copies in a raid setup. Here we only want
++ * to write the one bad copy.  Sso do the mapping ourselves and submit directly
++ * and synchronously.
++ */
++int btrfs_map_repair_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
++		int mirror_num)
++{
++	u64 logical = bio->bi_iter.bi_sector << 9;
++	u64 map_length = bio->bi_iter.bi_size;
++	struct btrfs_io_context *bioc = NULL;
++	struct btrfs_device *dev;
++	u64 sector;
++	int ret;
 +
- 	ASSERT(!bio_flagged(bio, BIO_CLONED));
- 	bio_for_each_segment_all(bvec, bio, iter_all) {
--		bool uptodate = !bio->bi_status;
- 		struct page *page = bvec->bv_page;
--		struct inode *inode = page->mapping->host;
--		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--		const u32 sectorsize = fs_info->sectorsize;
- 		unsigned int error_bitmap = (unsigned int)-1;
- 		bool repair = false;
- 		u64 start;
-@@ -3037,9 +3042,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		btrfs_debug(fs_info,
- 			"end_bio_extent_readpage: bi_sector=%llu, err=%d, mirror=%u",
- 			bio->bi_iter.bi_sector, bio->bi_status,
--			bbio->mirror_num);
--		tree = &BTRFS_I(inode)->io_tree;
--		failure_tree = &BTRFS_I(inode)->io_failure_tree;
-+			mirror);
- 
- 		/*
- 		 * We always issue full-sector reads, but if some block in a
-@@ -3062,7 +3065,6 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		end = start + bvec->bv_len - 1;
- 		len = bvec->bv_len;
- 
--		mirror = bbio->mirror_num;
- 		if (likely(uptodate)) {
- 			if (is_data_inode(inode)) {
- 				error_bitmap = btrfs_verify_data_csum(bbio,
++	ASSERT(mirror_num);
++	ASSERT(bio_op(bio) == REQ_OP_WRITE);
++
++	/*
++	 * Avoid races with device replace and make sure our bioc has devices
++	 * associated to its stripes that don't go away while we are doing the
++	 * read repair operation.
++	 */
++	btrfs_bio_counter_inc_blocked(fs_info);
++	if (btrfs_is_parity_mirror(fs_info, logical, map_length)) {
++		/*
++		 * Note that we don't use BTRFS_MAP_WRITE because it's supposed
++		 * to update all raid stripes, but here we just want to correct
++		 * bad stripe, thus BTRFS_MAP_READ is abused to only get the bad
++		 * stripe's dev and sector.
++		 */
++		ret = btrfs_map_block(fs_info, BTRFS_MAP_READ, logical,
++				&map_length, &bioc, 0);
++		if (ret)
++			goto out_counter_dec;
++		ASSERT(bioc->mirror_num == 1);
++	} else {
++		ret = btrfs_map_block(fs_info, BTRFS_MAP_WRITE, logical,
++				&map_length, &bioc, mirror_num);
++		if (ret)
++			goto out_counter_dec;
++		BUG_ON(mirror_num != bioc->mirror_num);
++	}
++
++	sector = bioc->stripes[bioc->mirror_num - 1].physical >> 9;
++	dev = bioc->stripes[bioc->mirror_num - 1].dev;
++	btrfs_put_bioc(bioc);
++
++	if (!dev || !dev->bdev ||
++	    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state)) {
++		ret = -EIO;
++		goto out_counter_dec;
++	}
++
++	bio_set_dev(bio, dev->bdev);
++	bio->bi_iter.bi_sector = sector;
++
++	btrfsic_check_bio(bio);
++	submit_bio_wait(bio);
++
++	ret = blk_status_to_errno(bio->bi_status);
++	if (ret)
++		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_WRITE_ERRS);
++out_counter_dec:
++	btrfs_bio_counter_dec(fs_info);
++	return ret;
++}
++
+ static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
+ 				      const struct btrfs_fs_devices *fs_devices)
+ {
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 517288d46ecf5..00c87833ce841 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -565,6 +565,8 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
+ void btrfs_mapping_tree_free(struct extent_map_tree *tree);
+ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 			   int mirror_num);
++int btrfs_map_repair_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
++		int mirror_num);
+ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+ 		       fmode_t flags, void *holder);
+ struct btrfs_device *btrfs_scan_one_device(const char *path,
 -- 
 2.30.2
 
