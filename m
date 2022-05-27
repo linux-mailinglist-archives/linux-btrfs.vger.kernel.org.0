@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 563E2535B4E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 10:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F12F535B54
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 10:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349277AbiE0ITp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 04:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
+        id S1349346AbiE0ITq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 04:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349235AbiE0ITn (ORCPT
+        with ESMTP id S1349284AbiE0ITp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 04:19:43 -0400
+        Fri, 27 May 2022 04:19:45 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890EF10275F;
-        Fri, 27 May 2022 01:19:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE410275F;
+        Fri, 27 May 2022 01:19:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=QpHkmoIzOceoktT2k1JNOry3OQ+UDiFzBcJTBQdMTag=; b=YZMrR+74PxTnkIiLlO1gQQuSgX
-        uRaHFreeIAcUyebsBQIQCec6NvFMswA6Hq2AYoNLp2q+t2VAdkWXVGOcDDeaw86yf/9MmtCEY8KM4
-        ANgrzy9+hdjZEZOmNTPLzQbal+0YLqr2a8lY986yUPvJvhjrh10oSTHboHGLggzoFWED+pQdBYYbK
-        MTDMI2ZEcNvN1EY/9LOXrQ8QXjKNNkrn4sGxmS8LO96qfddZ/Nn3wQDM6IbveMUQxPIFEK7QAhUNo
-        V3vSD3sarnXKy8zAPM4HNTnbaGLtVBhGpSJLjY6Ul53wfn8RNNCKerw3yprx64Jx/MTdGDdKVW95b
-        11Zx4T5A==;
+        bh=OKtvuGgEIUMk04SUrRdhIG+w4dH+tQypQORLIUZ01YI=; b=czijI7G/NYPycVnrEeyNd4LuKs
+        NCmj/PqK8KHEOjHEJQU+pUIHclxThIgRWG7ranFRbxF39XI4Az0FVh0RorMIpy7GkSsp/leNaS3ZB
+        sXy0H2NXzLStNftlaM8HsNZy7p7UI4y4Hn5FpmgzOIOElbumCvg2+YLWPyApKJU+KA7+NieVO/oHO
+        NDekzoktuZYFr7b8xtcY4NuprpdVnl38g2PBrPIXzM/WiBbX5COvd1KmByJbbl4nX4a+aLbga5tJM
+        3Ii300qjPF8fNd49ATY7+YbAM3sz61qozR5TamqoZG5NmVs2ilCDX3px4sljdc2x8ILjmSBz5UCFJ
+        QHYem5GA==;
 Received: from [2001:4bb8:18c:7298:b5ab:7d49:c6be:2011] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nuVC8-00H03r-Pe; Fri, 27 May 2022 08:19:41 +0000
+        id 1nuVCB-00H04h-Bq; Fri, 27 May 2022 08:19:43 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
-Subject: [PATCH 09/10] btrfs: test buffered I/O read repair with interleaved corrupted sectors
-Date:   Fri, 27 May 2022 10:19:14 +0200
-Message-Id: <20220527081915.2024853-10-hch@lst.de>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 10/10] btrfs: test direct I/O read repair with interleaved corrupted sectors
+Date:   Fri, 27 May 2022 10:19:15 +0200
+Message-Id: <20220527081915.2024853-11-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220527081915.2024853-1-hch@lst.de>
 References: <20220527081915.2024853-1-hch@lst.de>
@@ -55,29 +55,28 @@ a single mirror on the raid1c3 profile and needs to take turns over the
 mirrors to recover data for the whole read.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/btrfs/266     |  93 +++++++++++++++++++++++++++++++++++++
- tests/btrfs/266.out | 109 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/267     |  93 +++++++++++++++++++++++++++++++++++++
+ tests/btrfs/267.out | 109 ++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 202 insertions(+)
- create mode 100755 tests/btrfs/266
- create mode 100644 tests/btrfs/266.out
+ create mode 100755 tests/btrfs/267
+ create mode 100644 tests/btrfs/267.out
 
-diff --git a/tests/btrfs/266 b/tests/btrfs/266
+diff --git a/tests/btrfs/267 b/tests/btrfs/267
 new file mode 100755
-index 00000000..c70e4b2e
+index 00000000..cf19fdc8
 --- /dev/null
-+++ b/tests/btrfs/266
++++ b/tests/btrfs/267
 @@ -0,0 +1,93 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2017 Liu Bo.  All Rights Reserved.
 +# Copyright (c) 2022 Christoph Hellwig.
 +#
-+# FS QA Test 266
++# FS QA Test 267
 +#
-+# Test that btrfs raid repair on a raid1c3 profile can repair interleaving
-+# errors on all mirrors.
++# Test that btrfs buffered read repair on a raid1c3 profile can repair
++# interleaving errors on all mirrors.
 +#
 +
 +. ./common/preamble
@@ -144,9 +143,9 @@ index 00000000..c70e4b2e
 +# step 3, 128k dio read (this read can repair bad copy)
 +echo "step 3......repair the bad copy"
 +
-+_btrfs_buffered_read_on_mirror 0 3 "$SCRATCH_MNT/foobar" 0 256K
-+_btrfs_buffered_read_on_mirror 1 3 "$SCRATCH_MNT/foobar" 0 256K
-+_btrfs_buffered_read_on_mirror 2 3 "$SCRATCH_MNT/foobar" 0 256K
++_btrfs_direct_read_on_mirror 0 3 "$SCRATCH_MNT/foobar" 0 256K
++_btrfs_direct_read_on_mirror 1 3 "$SCRATCH_MNT/foobar" 0 256K
++_btrfs_direct_read_on_mirror 2 3 "$SCRATCH_MNT/foobar" 0 256K
 +
 +_scratch_unmount
 +
@@ -162,13 +161,13 @@ index 00000000..c70e4b2e
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/266.out b/tests/btrfs/266.out
+diff --git a/tests/btrfs/267.out b/tests/btrfs/267.out
 new file mode 100644
-index 00000000..fcf2f5b8
+index 00000000..2bdd32ea
 --- /dev/null
-+++ b/tests/btrfs/266.out
++++ b/tests/btrfs/267.out
 @@ -0,0 +1,109 @@
-+QA output created by 266
++QA output created by 267
 +step 1......mkfs.btrfs
 +wrote 262144/262144 bytes
 +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
