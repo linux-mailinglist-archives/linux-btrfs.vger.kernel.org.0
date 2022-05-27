@@ -2,104 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6F2535744
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 03:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1DB53576E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 May 2022 04:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbiE0BQ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 May 2022 21:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
+        id S233583AbiE0CCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 May 2022 22:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbiE0BQ1 (ORCPT
+        with ESMTP id S233524AbiE0CCj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 May 2022 21:16:27 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A472BF3
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 18:16:24 -0700 (PDT)
-Received: from [76.132.34.178] (port=58988 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1nuNs7-0001Aw-Ka by authid <merlins.org> with srv_auth_plain; Thu, 26 May 2022 18:16:22 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1nuOaU-0006Wp-LS; Thu, 26 May 2022 18:16:22 -0700
-Date:   Thu, 26 May 2022 18:16:22 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220527011622.GA24951@merlins.org>
-References: <CAEzrpqdTpkvguQq+MGxYBb12-RF97dgW7cccz7o2HoSkrWt8gQ@mail.gmail.com>
- <20220526171046.GB1751747@merlins.org>
- <CAEzrpqd_B13rDPCZLm9h0ji8f1oS7mCw=2d1-iiW=M26FfEcCw@mail.gmail.com>
- <20220526173119.GC1751747@merlins.org>
- <CAEzrpqemPU_=VTxGEQS2WtGiaGbHy+ssnj5MKyh=8JC36uyZ6Q@mail.gmail.com>
- <20220526181246.GA28329@merlins.org>
- <CAEzrpqfEmm0qGZkkdTgFYNjVvSn6SZwbdDUYLO2E3jV4DYELFQ@mail.gmail.com>
- <20220526191512.GE28329@merlins.org>
- <CAEzrpqetTskf-UtyfXHBajpJBci4vxdSaBXwDTm5cRs2QtNRkw@mail.gmail.com>
- <20220526213924.GB2414966@merlins.org>
+        Thu, 26 May 2022 22:02:39 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41A7E277A
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 19:02:36 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id z7so5683545ybf.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 May 2022 19:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SLVM5M04ogJOWvvIUakGdD/7uvbrF0wvEXO55MVQn6o=;
+        b=MOzvEHzkfUJMgqFL+j5IV2q1nuRb2MtbMjiD+zYsp6mGt3oPmYgt1ld5HhMfnzHJFN
+         QLeRDnopafhZuYoyUF4/3g3L3+4PF1hy4f5zaW6pgR11Jp55KfmEpxFHS7IF0fpAxLz/
+         dOJtgRjUfUVbaIjMMcLgDuAO4151lQvQGYUoMjoISepzCqowRFXra3YCvTOGGLRbVRVa
+         YypGj9qC05pYDyfH4UMLBTo6QzkLqjT1SSCpamnRMm417otM2duLc3CDJP2PV1coIsF/
+         9nmHZcoTy4eJPdFNP9A91rnwrLoRDE73wEbL2F733jVp5lq4TkDrU2LzuDi8zOhxorGi
+         /5Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SLVM5M04ogJOWvvIUakGdD/7uvbrF0wvEXO55MVQn6o=;
+        b=PtAwmjxRVELVgqUxjhbL7R/jMotoF84DW1/OvjF7YsA6OuMDKgfYs56DkzZgYfutI5
+         WVGfXBj1Ymwaigmi0yHVvDk9QK4beZrfhGYV8KKDrLSdgUkfuFxojLaxBFshuUBWQdM+
+         BYTE1B8mlHzGvvcrhfg++z2VZFs6sVtOp12CIFqizjFCbu4bimQodMqtiZ1unibOY/8d
+         oVBKB/bn3exkeTYcXlNBDcUHWE4Cgwupci4JYVhxgpT77LujK7594Qs6LEFW6vUDjXpk
+         tLDRf1wq/L74cuLDR0dUZ+RSv9Cg5Mupp0OVbDas8oLW/ebPRHH9CO5TBxFZC1WGncv8
+         KhuQ==
+X-Gm-Message-State: AOAM533CKjO9vO+Z6Q0YV49AYu0oUDbiWlbplHn/o2w5eEvqtZUOR8rU
+        m9o7Cuvx1EIGU+wydApNMAUN/OyQmZSn3Y+Xl4bYzaB84IRf1uEf
+X-Google-Smtp-Source: ABdhPJzZJ4SKEJIIyQ1V+GQ0AHiSOcWquayOx6L9O9Y+qeoR6A2uIky13CXX7Mb+1uUiZShUvs7Z1gtchU5vCAX6Gmk=
+X-Received: by 2002:a05:6902:282:b0:64d:e139:c9b8 with SMTP id
+ v2-20020a056902028200b0064de139c9b8mr39788503ybh.6.1653616956223; Thu, 26 May
+ 2022 19:02:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220526213924.GB2414966@merlins.org>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
-X-SA-Exim-Connect-IP: 76.132.34.178
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220526143539.1594769-1-bh1scw@gmail.com>
+In-Reply-To: <20220526143539.1594769-1-bh1scw@gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 27 May 2022 10:01:58 +0800
+Message-ID: <CAMZfGtXj2jOQBAExT5B9BfmkO0Xo1KP-TQ3fzrhz_abUcegRYw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: use PAGE_ALIGNED instead of IS_ALIGNED
+To:     bh1scw@gmail.com
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 26, 2022 at 02:39:24PM -0700, Marc MERLIN wrote:
-> I thought we were getting so close, but it seems we'e made a few steps
-> back :-/
-> 
-> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs-find-root -o 3 /dev/mapper/dshelf1
-> checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-> checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-> checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-> Csum didn't match
-> ERROR: cannot read chunk root
-> WTF???
-> ERROR: open ctree failed
-> 
-> At some point, if the FS is starting to look like it was trashed to
-> start with, or kind of trashed now after some of the recovery attempts,
-> let me know and I'll wipe and restore.
-> That said, if there is still data useful to improving your tools, I'm
-> game for a bit more, although if we hit the 2 months mark since it went
-> down, I'll have to eventuallly recover :)
+On Thu, May 26, 2022 at 10:36 PM <bh1scw@gmail.com> wrote:
+>
+> From: Fanjun Kong <bh1scw@gmail.com>
+>
+> The <linux/mm.h> already provides the PAGE_ALIGNED macro. Let's
+> use this macro instead of IS_ALIGNED and passing PAGE_SIZE directly.
+>
+> Signed-off-by: Fanjun Kong <bh1scw@gmail.com>
 
-gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs-find-root -o 3 /dev/mapper/dshelf1
-checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-Csum didn't match
-WARNING: cannot read chunk root, continue anyway
-Superblock thinks the generation is 1739781
-Superblock thinks the level is 1
-Well block 22593536(gen: 1590219 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22560768(gen: 1590217 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22577152(gen: 1586277 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22495232(gen: 1572124 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22528000(gen: 1572115 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22446080(gen: 1571791 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22478848(gen: 1561557 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22544384(gen: 1556078 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22511616(gen: 1555799 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22609920(gen: 1551635 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-Well block 22462464(gen: 1479229 level: 0) seems good, AND HAS NO BAD ITEMS but generation/level doesn't match, want gen: 1739781 level: 1
-gargamel:/var/local/src/btrfs-progs-josefbacik# 
-
-Is that good?
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
