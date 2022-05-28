@@ -2,100 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 934BB536E4C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 May 2022 22:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE96536E63
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 May 2022 22:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbiE1UIj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 May 2022 16:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57820 "EHLO
+        id S229904AbiE1Ufg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 May 2022 16:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbiE1UIh (ORCPT
+        with ESMTP id S229828AbiE1Uff (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 May 2022 16:08:37 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0515010BC
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 May 2022 13:08:37 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id g15so2476143ilr.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 May 2022 13:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CBuWXEru4xnofJbJmNU8FgQoJMAHV9XS8a+rmE/UP9I=;
-        b=tv1XQvkgTqqqHsoGoC/gb+v+vvatU9+chiyyF1MQxJrYJAgkUh2XcqrQoonEQ/0DJ/
-         1PTd2MXZnTeuXOgFg3rqxlGalCpyIZ6BWr+y5aALLqx5W0n6hlEmwVpMngfCfeKSSoIf
-         WRILy3wBOZOuJcH2YDbnXEv1b6+1fRa9FVPvmDzLmwOR/2hNyiddjr96Ua6+s0aFbP9u
-         fUMKj/K7ZI080ZGbwxrJHXu6TXnH9cADqoWQJejLRYNZtYwmqZU2t/egM+wfvFlZhhP/
-         vZPN4X6pIC+7xSUN23CS9ReAwS1oBKcQXtYB7KZtnGKBDORol+6FKtKIQjCRWA+LLZga
-         nQaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CBuWXEru4xnofJbJmNU8FgQoJMAHV9XS8a+rmE/UP9I=;
-        b=4xle42FBtkowF30z27dMC0s5zqjqXJQkd3kJmhckbAO9Dt0Xk0zB5T5gIY4LEm2AcN
-         niA8NxkHhDSWF083vVTlZvWP5xg/73PXlBn+H2bIZdQ4ruFJ4n9kMy1DvPsKfRPxWwT6
-         zc2/FSpYYL46gMnQyoho7fhjquZic+CGC9t+DjpMmWT8tXsshlJR1YCG9prwQ+9fwVEA
-         zLd4IBw/EG7Zy84X4RLoHLZNQ7jJS99Hph4Y4E2tAfxH1rSd4I/NqO+wK3tnpbWsVd+j
-         KmOUsfC9d8RO49MnlFEhw8orBfBXBs65yEckyjuGAQdkkkh7/toKx4pflY5zBbLsnX8w
-         P40Q==
-X-Gm-Message-State: AOAM532DDWh5XeGTJNknUhq91KTWD8GM0mrsM27c9Av+3lc0k1XtGPNN
-        8I7VOlOsAeV8Jy+KY6jH7OyfiSel7phjb8myXj8h5JAdhMI=
-X-Google-Smtp-Source: ABdhPJx1xVt/2Viqc9TAO2AA5gCE3D81qeax4MI7KzfnD4ER4MJBSyJbw0MeSkJ5rYtBbil9jXopTeW1rDxzcGoIjVU=
-X-Received: by 2002:a92:d1c6:0:b0:2d3:96da:426e with SMTP id
- u6-20020a92d1c6000000b002d396da426emr1450677ilg.152.1653768516212; Sat, 28
- May 2022 13:08:36 -0700 (PDT)
+        Sat, 28 May 2022 16:35:35 -0400
+X-Greylist: delayed 299 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 28 May 2022 13:35:34 PDT
+Received: from cmx-mtlrgo002.bell.net (mta-mtl-002.bell.net [209.71.208.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03A7F43ADE
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 May 2022 13:35:33 -0700 (PDT)
+X-RG-CM-BuS: 0
+X-RG-CM-SC: 0
+X-RG-CM: Clean
+X-Originating-IP: [50.100.165.103]
+X-RG-Env-Sender: nick.steeves@bell.net
+X-RG-Rigid: 6284B4FF032C7BD4
+X-CM-Envelope: MS4xfHprFE0FQi6RcQlFeFaTmvK3wuioUscH098uXFaahJ1Z2AOousxXNCRtLpPGKeNF5zRlbrzPAHHI4EcMDSRe93FgF6T1rA4qRs9MXvvGaeSvcd6g1P8p
+ CrsgGk1OzXQktHP4j5SO1FkkouzinlpeFmnrGfcqzt10AnCC6nOqZcgkvdjiyEiaM0XKM37Q7Jwj5EBdovyUv2MBykhMGA+L2S0A9LG4xifgOeHhTXtz4yMk
+ 46ph4zug58zTpVtPuDSHnMKlKdPxfpEHRpSioNj7nhcvuDbYPgbeW18SgbAdN8JW+lz60/TOM65jTJgUco+JGvZFCNH08HLg4WuiY0O0nYMgEDSp24YmMk/X
+ R2cis0xo
+X-CM-Analysis: v=2.4 cv=FMx4e8ks c=1 sm=1 tr=0 ts=62928391
+ a=vswWDEstyRI1efcgUK+z7g==:117 a=vswWDEstyRI1efcgUK+z7g==:17
+ a=oZkIemNP1mAA:10 a=pGLkceISAAAA:8 a=VGN1SOTxtNvDN4kOGlwA:9 a=QEXdDO2ut3YA:10
+ a=SOQ05j2XoNk16DnxrhkA:9 a=FfaGCDsud1wA:10
+Received: from DigitalMercury.freeddns.org (50.100.165.103) by cmx-mtlrgo002.bell.net (5.8.807) (authenticated as nick.steeves@bell.net)
+        id 6284B4FF032C7BD4; Sat, 28 May 2022 16:18:25 -0400
+Received: by DigitalMercury.freeddns.org (Postfix, from userid 1000)
+        id C4972C570B1; Sat, 28 May 2022 16:18:24 -0400 (EDT)
+From:   Nicholas D Steeves <sten@debian.org>
+To:     John Center <jlcenter15@gmail.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Btrfs progs release 5.18
+In-Reply-To: <95422f7b-e0f9-c716-212e-ee1007176d7e@gmail.com>
+References: <20220525140644.21979-1-dsterba@suse.com>
+ <95422f7b-e0f9-c716-212e-ee1007176d7e@gmail.com>
+Date:   Sat, 28 May 2022 16:18:21 -0400
+Message-ID: <87v8tpe7hu.fsf@DigitalMercury.freeddns.org>
 MIME-Version: 1.0
-References: <CAEzrpqd_B13rDPCZLm9h0ji8f1oS7mCw=2d1-iiW=M26FfEcCw@mail.gmail.com>
- <20220526173119.GC1751747@merlins.org> <CAEzrpqemPU_=VTxGEQS2WtGiaGbHy+ssnj5MKyh=8JC36uyZ6Q@mail.gmail.com>
- <20220526181246.GA28329@merlins.org> <CAEzrpqfEmm0qGZkkdTgFYNjVvSn6SZwbdDUYLO2E3jV4DYELFQ@mail.gmail.com>
- <20220526191512.GE28329@merlins.org> <CAEzrpqetTskf-UtyfXHBajpJBci4vxdSaBXwDTm5cRs2QtNRkw@mail.gmail.com>
- <20220526213924.GB2414966@merlins.org> <20220527011622.GA24951@merlins.org>
- <CAEzrpqdbuQGwwuCfYyVdiDtGDsPb=3FWmKrTEA5Xukk1ex514g@mail.gmail.com>
- <20220527232604.GA22722@merlins.org> <CAEzrpqeJyupr02nUJkBBVCah46FN+znVczm-RtfBFauvJW9O6w@mail.gmail.com>
-In-Reply-To: <CAEzrpqeJyupr02nUJkBBVCah46FN+znVczm-RtfBFauvJW9O6w@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Sat, 28 May 2022 16:08:25 -0400
-Message-ID: <CAEzrpqfAYRUYttOAMmdth4mfi4e7MTM++s5WOQ+KAzg2Kv0Nsw@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        KHOP_HELO_FCRDNS,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 27, 2022 at 8:13 PM Josef Bacik <josef@toxicpanda.com> wrote:
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+John Center <jlcenter15@gmail.com> writes:
+
+> Hi,
 >
-> On Fri, May 27, 2022 at 7:26 PM Marc MERLIN <marc@merlins.org> wrote:
-> >
-> > On Fri, May 27, 2022 at 02:35:05PM -0400, Josef Bacik wrote:
-> > > I'm augmenting my tree-recover tool to go and find any missing chunks
-> > > and add them in, which is what the chunk recover thing was supposed to
-> > > do.  This is going to take a bit, but should be the last piece.
-> >
-> > And by that you mean you're working on it and will tell me when it's
-> > ready to pull, or did you forget git push?
-> >
+> I usually build the btrfs-progs when it comes out.=C2=A0 I've upgraded fr=
+om=20
+> Ubuntu 20.04 to 22.04 & I'm having a problem with configure looking for=20
+> ext2fs.=C2=A0 I have e2fsprogs & libext2fs2 installed, but it fails with =
+"No=20
+> package 'ext2fs' found".=C2=A0 What am I missing?
 >
-> Still typing, just didn't want you to think I'd disappeared.  I'll let
-> you know when you can pull.  Thanks,
+> Thanks!
+>
+>  =C2=A0=C2=A0=C2=A0 -John
 >
 
-Sorry my ability to think isn't doing so great right now.  I've wired
-up the detection stuff, but it won't actually fix anything yet.  I
-want to make sure I've got detection part right before I go messing
-with the file system.  If you can pull and build and then run
+You'll need e2fslibs-dev and other -dev packages.  The easiest way to
+get all of these dependencies in one go is probably to get a copy of the
+Debian/Ubuntu source package. To do this create "deb-src" lines based on
+the "deb" lines in your /etc/apt/sources.list, and
 
-btrfs rescue recover-chunks <device>
+  apt update
+  apt source btrfs-progs
 
-and capture the output that would be great.  Hopefully this shows the
-missing block groups and I can just copy them into place.  Thanks,
+Then
 
-Josef
+  cd btrfs-progs
+
+and finally
+
+  apt build-dep ./
+
+Then build the package as normal.  Note that this won't take care of any
+new dependencies (if any) added since the version of btrfs-progs
+released with 22.04.
+
+I think synaptic might be able to create the "deb-src" lines, and
+there's probably a GUI repository manager program that can do this, but
+I'm not familiar with these methods.  I'm sure you'll figure it out
+though!  Worst case scenario would be manually installing the -dev
+packages for all missing dependencies; there are at least eight or
+nine of these.
+
+Cheers,
+Nicholas
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJEBAEBCgAuFiEE4qYmHjkArtfNxmcIWogwR199EGEFAmKSg40QHHN0ZW5AZGVi
+aWFuLm9yZwAKCRBaiDBHX30QYXIGD/9+FOFI/Wpf8S5Np0OZoEDBNLZy6OKu9s/E
+TsqZPlbF8cnAJKIjmX2fi4kUa3qo1sfM+9AyEawG4US3Opa7+Dlsu2OrHDaGeY++
+u7cVGe0Z4wYHV9b62Ou/6cC+BeyQ54nhw0LvRIQhDEshplKBFHeDmURISVrtEKm2
+OkS0qbGVp8NdzszVUxp4DCkygHdy6+SxEv5WZmKTr+DSWJfB6cwrQWZyHb5L/9Of
+sNnnlzsDuoM44lGb/DjBLhBxnM3r6zi/jDUI/6zK8coGN0OibZRw7BjGINN3XZLg
+Rik4R4woX5eXGfCp0uVscBExCXmYiKZf9hnsavumy4LDuOLawrW+niZQg7TGLAi3
+Cb3nWcUW0bsqDZ0YoG2/ykIruKVCRVxfhe18cFaBT6sxRuxBLtaOGJEF57ZqAG9n
+IfBftI4RuMkIO8seJDLOrR3OHMtdh+XK4aHJXUK4TMSqOFplQtMAUVhR42eLbEAD
+dsNk/RXhROHbya+KJyrEdkGup56MRWp6tCvDa6P5cOFnqgTZzqRIZMuyCV4vrFoT
+WeulNNBGqFqasWdOtrphjy/1Hx+ZCSp+zCd/QP3gbQW1keB3LYaQwr5ckHdWgI7i
+G/qLut23TYOUUuNfEwE6v0/bmOudjzOs/reAQjZu0X6v4spuzOyu4FrsTqDwf8KM
+ST8/LNWprw==
+=1VcE
+-----END PGP SIGNATURE-----
+--=-=-=--
