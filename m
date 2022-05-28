@@ -2,67 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E64536951
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 May 2022 02:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C03E536957
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 May 2022 02:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355225AbiE1ANx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 20:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
+        id S1344768AbiE1AUo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 20:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239671AbiE1ANw (ORCPT
+        with ESMTP id S239671AbiE1AUn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 20:13:52 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA57C119046
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 17:13:48 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id 2so4079223ilg.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 17:13:48 -0700 (PDT)
+        Fri, 27 May 2022 20:20:43 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ED95DA02
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 17:20:42 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id f35so7325513qtb.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 17:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9l6acg1hu6P5EL6SXzSmI3BdGQFt+LJAAwTA8QBhiQY=;
-        b=8DXtRt2XWv2HW3iwshCd0iJFGU1523gUYNqirc3g0IqgD63D/yHR8yywpOPgqnxNSk
-         CtLlfkWLZi20JQYj+PJnZlVsOa10sKQuc18W09BCSP4+X4Vs7UMAhVpE/da3McQuqOgE
-         9pplkWgLeIHIljBkEBF0RXYmCqDwDmnltddKXOAqgpG9ZU8fvlzGB/ATlvAnarPeKKs6
-         qAolJ9wxM89yvVP43y5R6HSf91iSS2pZWhqSxcz9Ec+MxC8KESdBbie3k7Wn+4LgZxoY
-         w21v3A5GHkWJVhYG9Tx3lHMn2b8rZ5y/irRCvfcZRyQ7o90pYomn+MPqiIasNj6mfleP
-         y/mw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=HSBYnSWaAB3q+Uw5rjPw89F4rFHV+rblkmsWldtxPus=;
+        b=ZVQle2F+hNg/ns7nyZbLX9wR5Ti8Xj6dNPTsEiz5CnZgbQTLwFcDmv4Ix98z6TBje8
+         Ye7Q7C36z+tmq+DbMhffbg4q9WfYd0B9l2mbo/0rXGJ1Z6rFkFW7ipNRGjpMeZ0ROCTD
+         MBiIvHefTNg+RXcTS1MiPGvbUngpg3csptJNZs8lFRi2+wzgZEMzPRmUrhuV9/bDp2lZ
+         7rQWPvBWqC6YHNmLTESWqe48Yd9vzgPwBWtvn3QibUbLyW6Q4hytLe8VpRYCHV0NIpBo
+         Z4WdGsrqRzON7460vYqOTQ9D69/Fy/zzotmuYYQgBXHGs2bzZSMPUDX+Q5XR+2e49SEc
+         aSnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9l6acg1hu6P5EL6SXzSmI3BdGQFt+LJAAwTA8QBhiQY=;
-        b=ksFbLGDIrbQgDDaDjBLPF+hzPfOAcAX61yocLW+tJAtaDIrnCnKrMobG0bJHlWALdt
-         UGkQ5gC9C++ZYojxEhdYb1+GjCjvaXPJO+Nz3pg/fajISJ7E3r0tK2505xXS+EkjmnJd
-         D6xZSobM5BxBSUd0avGoixpa6bc7Uk15fcVHVpqymkqmZWXKgZE43Ybugol6mvVJIzbW
-         Ba6OQDPj43LfaXhKPND80Fd2k5w+aM15gQ1x1RThUJ/J/WupgBLJEXvrTjGyboSgLowC
-         IsheruLASYNo4ZzfZ5STThesna6WGTViTQi1IimGpZsWzV8f+qO/7Kjx82FWXZXEKB8p
-         9ZNg==
-X-Gm-Message-State: AOAM533l4Ce7NAmBtq+aJc3dhiCwhtH7VpatYdDIG+B2k9ocLve2OBnm
-        r+e/GWfqWP0m5D/GOCF8ofhHCmdiRWM1Wn8dBk03DBqreb4=
-X-Google-Smtp-Source: ABdhPJypgrbhYhb6MTVkcpBWGpYeeqfpkPHRCq/HibPaLhsMlHeSieMANANT2runD70yKoeEtTY0NRniYx35C97ktjA=
-X-Received: by 2002:a92:c641:0:b0:2d3:1865:12f5 with SMTP id
- 1-20020a92c641000000b002d3186512f5mr3596820ill.127.1653696828013; Fri, 27 May
- 2022 17:13:48 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HSBYnSWaAB3q+Uw5rjPw89F4rFHV+rblkmsWldtxPus=;
+        b=fZ3kpfRdnn8noiXz2QJrctjgrECbmgK5mC1tkfulQcDpaPwzGUERiBc4Q7GE9SmZSR
+         TxzQICpucIh7YnlsSlt0i0NafTldz+rbJndCi29UqZNYiwMA2WxuAHXZvYWJptfBvALp
+         A4NIcv+B6Z4nf3qwPohA2sgdxxa7FJ9dEG329FXXMfJeVV3C+E2ecrGVqWg+AmuL/Dla
+         5tephKT99pMSPSKUGGRIA5djwG4ppckJk94mD1TEy2wQBKYjYoa4w/eaKJRLUCLbbXui
+         xO51/I//MN/OmpKsJAZGA/NMTPISBq7NfZ/yWjWX3z9dhkJepQYSv+OF0xD7qDLpXWuG
+         8c7Q==
+X-Gm-Message-State: AOAM532ct/ikPDRziCoiSEQ4pzrZrKy3na1tj1cfjRxoJDcIR+kQBDOp
+        8h3Y5iZD1UWy9sqSwg/ABUAYC2eKa63idw==
+X-Google-Smtp-Source: ABdhPJx44z+i9Ft9T1ZeKUyQMHp2v5ZBWVPMIWDIDZw2oZ/m3aFpM8MkFBixD/ONCRwEll344sCClA==
+X-Received: by 2002:a05:622a:5cd:b0:2fe:c5e4:701f with SMTP id d13-20020a05622a05cd00b002fec5e4701fmr1405189qtb.683.1653697241138;
+        Fri, 27 May 2022 17:20:41 -0700 (PDT)
+Received: from ?IPV6:2601:46:c600:af85:8c40:e9db:35ac:5452? ([2601:46:c600:af85:8c40:e9db:35ac:5452])
+        by smtp.gmail.com with ESMTPSA id m190-20020a37a3c7000000b0069fca79fa3asm3592798qke.62.2022.05.27.17.20.40
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 May 2022 17:20:40 -0700 (PDT)
+Message-ID: <95422f7b-e0f9-c716-212e-ee1007176d7e@gmail.com>
+Date:   Fri, 27 May 2022 20:20:39 -0400
 MIME-Version: 1.0
-References: <CAEzrpqd_B13rDPCZLm9h0ji8f1oS7mCw=2d1-iiW=M26FfEcCw@mail.gmail.com>
- <20220526173119.GC1751747@merlins.org> <CAEzrpqemPU_=VTxGEQS2WtGiaGbHy+ssnj5MKyh=8JC36uyZ6Q@mail.gmail.com>
- <20220526181246.GA28329@merlins.org> <CAEzrpqfEmm0qGZkkdTgFYNjVvSn6SZwbdDUYLO2E3jV4DYELFQ@mail.gmail.com>
- <20220526191512.GE28329@merlins.org> <CAEzrpqetTskf-UtyfXHBajpJBci4vxdSaBXwDTm5cRs2QtNRkw@mail.gmail.com>
- <20220526213924.GB2414966@merlins.org> <20220527011622.GA24951@merlins.org>
- <CAEzrpqdbuQGwwuCfYyVdiDtGDsPb=3FWmKrTEA5Xukk1ex514g@mail.gmail.com> <20220527232604.GA22722@merlins.org>
-In-Reply-To: <20220527232604.GA22722@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Fri, 27 May 2022 20:13:37 -0400
-Message-ID: <CAEzrpqeJyupr02nUJkBBVCah46FN+znVczm-RtfBFauvJW9O6w@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: Btrfs progs release 5.18
+Content-Language: en-US
+To:     linux-btrfs@vger.kernel.org
+References: <20220525140644.21979-1-dsterba@suse.com>
+From:   John Center <jlcenter15@gmail.com>
+In-Reply-To: <20220525140644.21979-1-dsterba@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,18 +73,94 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 27, 2022 at 7:26 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Fri, May 27, 2022 at 02:35:05PM -0400, Josef Bacik wrote:
-> > I'm augmenting my tree-recover tool to go and find any missing chunks
-> > and add them in, which is what the chunk recover thing was supposed to
-> > do.  This is going to take a bit, but should be the last piece.
->
-> And by that you mean you're working on it and will tell me when it's
-> ready to pull, or did you forget git push?
->
+Hi,
 
-Still typing, just didn't want you to think I'd disappeared.  I'll let
-you know when you can pull.  Thanks,
+I usually build the btrfs-progs when it comes out.  I've upgraded from 
+Ubuntu 20.04 to 22.04 & I'm having a problem with configure looking for 
+ext2fs.  I have e2fsprogs & libext2fs2 installed, but it fails with "No 
+package 'ext2fs' found".  What am I missing?
 
-Josef
+Thanks!
+
+     -John
+
+
+On 5/25/22 10:06 AM, David Sterba wrote:
+> Hi,
+>
+> btrfs-progs version 5.18 have been released.
+>
+> Changelog:
+> * fixes:
+>    * dump-tree: don't print traling zeros in checksums
+>    * recognize paused balance as exclusive operation state, allow to start
+>      device add
+>    * convert: properly initialize target filesystem label
+>    * mkfs: don't create free space bitmaps for empty filesystem
+> * restore: make lzo support build-time configurable, print supported
+>    compression in help text
+> * update kernel-lib sources
+> * other:
+>    * documentation updates, finish conversion to RST, CHANGES and INSTALL
+>      could be included into RST
+>    * fix build detection of experimental mode
+>    * new tests
+>
+> Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+> Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+>
+> Shortlog:
+>
+> David Sterba (34):
+>        btrfs-progs: reformat CHANGES for RST
+>        btrfs-progs: unify CHANGES indentation
+>        btrfs-progs: make device add and paused balance work together
+>        btrfs-progs: btrfstune: fix build-time detection of experimental features
+>        btrfs-progs: docs: move glossary to overview sections
+>        btrfs-progs: kernel-lib: add rbtree_types.h from linux
+>        btrfs-progs: kernel-lib: add simplified READ_ONCE and WRITE_ONCE
+>        btrfs-progs: kernel-lib: add rb_root_cached helpers
+>        btrfs-progs: kernel-lib: sync lib/rbtree.c
+>        btrfs-progs: kernel-lib: sync include/overflow.h
+>        btrfs-progs: kernel-lib: sync include/list.h
+>        btrfs-progs: kernel-lib: sync include/rtree.h
+>        btrfs-progs: INSTALL: update dependencies for docs build
+>        btrfs-progs: docs: link INSTALL to docs
+>        btrfs-progs: INSTALL: drop reference to libattr
+>        btrfs-progs: docs: add note about ifdef EXPERIMENTAL
+>        btrfs-progs: delete commented exports from libbtrfs.sym
+>        btrfs-progs: docs: separate bootloaders chapter
+>        btrfs-progs: docs: document paused balance
+>        btrfs-progs: docs: separate filesystem limits chapter
+>        btrfs-progs: docs: move flexibility to Administration
+>        btrfs-progs: docs: separate chapter for hardware considerations
+>        btrfs-progs: docs: merge storage model to hardware chapter
+>        btrfs-progs: docs: copy more contents from wiki
+>        btrfs-progs: docs: add subpage feature page
+>        btrfs-progs: docs: convert Experimental.md to RST
+>        btrfs-progs: docs: convert btrfs-ioctl.asciidoc to RST
+>        btrfs-progs: docs: convert conventions to RST
+>        btrfs-progs: docs: fix superscript formatting
+>        btrfs-progs: docs: update header formatting
+>        btrfs-progs: restore: list the supported compression
+>        btrfs-progs: tests: remove ext3 tests
+>        btrfs-progs: update CHANGES for 5.18
+>        Btrfs progs v5.18
+>
+> Forza (1):
+>        btrfs-progs: docs: clarification on mixed profile
+>
+> Qu Wenruo (9):
+>        btrfs-progs: remove the unused btrfs_fs_info::seeding member
+>        btrfs-progs: print-tree: print the checksum of header without tailing zeros
+>        btrfs-progs: check: lowmem, fix path leak when dev extents are invalid
+>        btrfs-progs: convert: initialize the target fs label
+>        btrfs-progs: remove unused header check/btrfsck.h
+>        btrfs-progs: docs: add more explanation on subapge limits
+>        btrfs-progs: do not use btrfs_commit_transaction() just to update super blocks
+>        btrfs-progs: properly initialize block group thresholds
+>        btrfs-progs: tests: make sure we don't create bitmaps for empty fs
+>
+> Ross Burton (1):
+>        btrfs-progs: build: add option to disable LZO support for restore
+>
