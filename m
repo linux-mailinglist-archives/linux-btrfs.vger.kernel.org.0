@@ -2,100 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7142B53692B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 May 2022 01:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E64536951
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 May 2022 02:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352341AbiE0X1j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 May 2022 19:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
+        id S1355225AbiE1ANx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 May 2022 20:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235741AbiE0X1i (ORCPT
+        with ESMTP id S239671AbiE1ANw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 May 2022 19:27:38 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189A14C40B
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 16:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1653694053;
-        bh=xzYmHVbJBhwjoNZi0F3FD36BX4qjUwJbC2SjFKv0RRw=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=Cqle5BBRkXoTkGAtI5u6KgRfA4Tmyb17WFpdarrQbgsriSW1i5KvR57jIT+wKYQBI
-         tUrdK7x32vmXnCAnYjR45cVPs+5hNoDJ9XpnR9MoIgtC/6O8nYNRy3ViwbLFDaBw6T
-         7FrObpXoomvG3sGeDZMl/fuqCCCHTn/m5NA2mV0U=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7sHy-1nqrUE1SVe-004z9p; Sat, 28
- May 2022 01:27:33 +0200
-Message-ID: <e2fea10c-2188-5bd2-5e37-ca1662507a73@gmx.com>
-Date:   Sat, 28 May 2022 07:27:29 +0800
+        Fri, 27 May 2022 20:13:52 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA57C119046
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 17:13:48 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id 2so4079223ilg.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 May 2022 17:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9l6acg1hu6P5EL6SXzSmI3BdGQFt+LJAAwTA8QBhiQY=;
+        b=8DXtRt2XWv2HW3iwshCd0iJFGU1523gUYNqirc3g0IqgD63D/yHR8yywpOPgqnxNSk
+         CtLlfkWLZi20JQYj+PJnZlVsOa10sKQuc18W09BCSP4+X4Vs7UMAhVpE/da3McQuqOgE
+         9pplkWgLeIHIljBkEBF0RXYmCqDwDmnltddKXOAqgpG9ZU8fvlzGB/ATlvAnarPeKKs6
+         qAolJ9wxM89yvVP43y5R6HSf91iSS2pZWhqSxcz9Ec+MxC8KESdBbie3k7Wn+4LgZxoY
+         w21v3A5GHkWJVhYG9Tx3lHMn2b8rZ5y/irRCvfcZRyQ7o90pYomn+MPqiIasNj6mfleP
+         y/mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9l6acg1hu6P5EL6SXzSmI3BdGQFt+LJAAwTA8QBhiQY=;
+        b=ksFbLGDIrbQgDDaDjBLPF+hzPfOAcAX61yocLW+tJAtaDIrnCnKrMobG0bJHlWALdt
+         UGkQ5gC9C++ZYojxEhdYb1+GjCjvaXPJO+Nz3pg/fajISJ7E3r0tK2505xXS+EkjmnJd
+         D6xZSobM5BxBSUd0avGoixpa6bc7Uk15fcVHVpqymkqmZWXKgZE43Ybugol6mvVJIzbW
+         Ba6OQDPj43LfaXhKPND80Fd2k5w+aM15gQ1x1RThUJ/J/WupgBLJEXvrTjGyboSgLowC
+         IsheruLASYNo4ZzfZ5STThesna6WGTViTQi1IimGpZsWzV8f+qO/7Kjx82FWXZXEKB8p
+         9ZNg==
+X-Gm-Message-State: AOAM533l4Ce7NAmBtq+aJc3dhiCwhtH7VpatYdDIG+B2k9ocLve2OBnm
+        r+e/GWfqWP0m5D/GOCF8ofhHCmdiRWM1Wn8dBk03DBqreb4=
+X-Google-Smtp-Source: ABdhPJypgrbhYhb6MTVkcpBWGpYeeqfpkPHRCq/HibPaLhsMlHeSieMANANT2runD70yKoeEtTY0NRniYx35C97ktjA=
+X-Received: by 2002:a92:c641:0:b0:2d3:1865:12f5 with SMTP id
+ 1-20020a92c641000000b002d3186512f5mr3596820ill.127.1653696828013; Fri, 27 May
+ 2022 17:13:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 1/3] btrfs: use integrated bitmaps for
- btrfs_raid_bio::dbitmap and finish_pbitmap
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1653636443.git.wqu@suse.com>
- <354833cdd0b94908fc5a6064d2dee63f8ba0c175.1653636443.git.wqu@suse.com>
- <20220527140930.GD20633@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220527140930.GD20633@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bJdiJKfGevWHW+OEs3W+usKi8W2se7I2gsXkfEaXFK8ae0smaxC
- 0dEumB1aB1pkyjuf1+4VSWqkMjjFwyCaLRKKLR7k1LJzJ4UswIPmcjzUhLsGvdyqWmdg/Ig
- h7023ivKzwsgUS5jX1rpmE8glsTh9PvjT4I/EPatv/dC65LM4RUqxfNGeVBHIHBdLd5kBuO
- 36JNQiEh0T7y2S4P373jQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:y5i+sWQS9MU=:Fa1Ka03WZf0XK53FRg5ODQ
- PCjJTtQhbXRGT62wdoYGhtYDgYF7KCljQwNOZpDCW4n5wa/e/qt5bxQ0rgtK4TCKg6qtxJBS5
- eQMg9RQcYgTuv12z1WqKGAZsijbXhHXaGTs3fIwbSV/rQC5R0GHIm/OOOOcRbQu4Lp9UONVEi
- Vvqs9cqjyxSjYY5rR90r2V76Uq8SH+AjrsehMrSSIIsY3M0FmhjCgXkb3W3PduVN/BPb4YlCX
- zAWVbvjVxBmlsAeyEtmBEcjadVLhe9zew30PVR7ZT/gyKTmFstf5Fc5e7s55rbxySnOiPeh87
- lwaEOSsZLB2NoiYty8NtspEuRlz9bYE0synltBvGD77AnNZzAndujEnpcZRchG7L2IeoCpk/P
- QS5XeXovyIvRNEI0Bw5ejrN04rHmmW85uBAiL+Cxb1wwv9FJGVxfXCBat/17k9cf1XrS83KRF
- R7Y0aliD6meN/SR4aLoxNJH/jUtU+otK1Ns8sSstejboLUMO25jGygVR7U/vYhLtbGGTb0q1D
- xTsuxYZ7s54vs3SdD6xlLxJ3lYUCfx9GOwu9MEnbSWNR65nkwsr4At0Sf8CKIOtyPY9vpodGw
- QjgVroAayvy0lVVSb3q4rHObRwEzOHIKQgbDr/UfKNf3aRPkq+q4lIY0nQ8l3pmRJNk+yNkk0
- Klo/tEbGLr+lS0I/DzdoAuB0tCWTu30xkQ5pIdlM/wCxyPBMKhrpjZ6scBdGBl+MpSz1aOPVM
- KbY5MJmgd3OVZgMgwQBXwFKyWNn/0NH/CycRKNmNph4zvDZaoHlELa0PNTxqwCTv3umAsOPlc
- zOJqbkMvloM5KLDw6QG4FHKX6gbNMLR8dEphq2JzXe7cTPZjoijRtZ+5iCWlgtzARYtUJpc7Z
- lkDnAHLZvuJddYqFox39CUyuvw9ooDq1wPRD9Z450eMdIjPZWNffeBisZ7kMW2dCipzSkaAaP
- z41AUcZwMxSjnz0W0BB0tdkf87jRWadObF8XB4a3vl6bDkHMzSk4KRc/rwRPwAVEw/743Yix9
- hNrxdp1DWkYYsoJdUj381vUMTqhbUsUen58NzJP6A8+P7tM7fy7ZDIk3qQC287M4QyyNXGQU2
- ISfr3sEIbXi0DIA1z7nh1qOF76yj7g6zpAYkhA2UvE1bwkdiFxD/3728A==
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAEzrpqd_B13rDPCZLm9h0ji8f1oS7mCw=2d1-iiW=M26FfEcCw@mail.gmail.com>
+ <20220526173119.GC1751747@merlins.org> <CAEzrpqemPU_=VTxGEQS2WtGiaGbHy+ssnj5MKyh=8JC36uyZ6Q@mail.gmail.com>
+ <20220526181246.GA28329@merlins.org> <CAEzrpqfEmm0qGZkkdTgFYNjVvSn6SZwbdDUYLO2E3jV4DYELFQ@mail.gmail.com>
+ <20220526191512.GE28329@merlins.org> <CAEzrpqetTskf-UtyfXHBajpJBci4vxdSaBXwDTm5cRs2QtNRkw@mail.gmail.com>
+ <20220526213924.GB2414966@merlins.org> <20220527011622.GA24951@merlins.org>
+ <CAEzrpqdbuQGwwuCfYyVdiDtGDsPb=3FWmKrTEA5Xukk1ex514g@mail.gmail.com> <20220527232604.GA22722@merlins.org>
+In-Reply-To: <20220527232604.GA22722@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Fri, 27 May 2022 20:13:37 -0400
+Message-ID: <CAEzrpqeJyupr02nUJkBBVCah46FN+znVczm-RtfBFauvJW9O6w@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/5/27 22:09, David Sterba wrote:
-> On Fri, May 27, 2022 at 03:28:17PM +0800, Qu Wenruo wrote:
->> Previsouly we use "unsigned long *" for those two bitmaps.
->>
->> But since we only support fixed stripe length (64KiB, already checked i=
-n
->> tree-checker), "unsigned long *" is really a waste of memory, while we
->> can just use "unsigned long".
->>
->> This saves us 8 bytes in total for btrfs_raid_bio.
+On Fri, May 27, 2022 at 7:26 PM Marc MERLIN <marc@merlins.org> wrote:
 >
-> Nice, also the indirection of pointers and kmalloc, for 8 bytes it's an
-> overkill. If we ever implement bigger stripe size then it would have to
-> be reverted but the asserts make sure we'll notice.
+> On Fri, May 27, 2022 at 02:35:05PM -0400, Josef Bacik wrote:
+> > I'm augmenting my tree-recover tool to go and find any missing chunks
+> > and add them in, which is what the chunk recover thing was supposed to
+> > do.  This is going to take a bit, but should be the last piece.
+>
+> And by that you mean you're working on it and will tell me when it's
+> ready to pull, or did you forget git push?
+>
 
-In fact, even if we enlarge the STRIPE_LEN to 128K, the bitmap is still
-enough to contain them.
+Still typing, just didn't want you to think I'd disappeared.  I'll let
+you know when you can pull.  Thanks,
 
-Furthermore, in that enlarged case, tree-checker will be the first one
-to warn us.
-
-Thanks,
-Qu
+Josef
