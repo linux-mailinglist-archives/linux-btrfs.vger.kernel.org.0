@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2774537CFB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 May 2022 15:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7E8537F23
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 May 2022 16:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237475AbiE3Nhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 May 2022 09:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        id S238295AbiE3Nxo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 May 2022 09:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237586AbiE3Ngw (ORCPT
+        with ESMTP id S238421AbiE3NwT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 May 2022 09:36:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE1BBC8B;
-        Mon, 30 May 2022 06:30:31 -0700 (PDT)
+        Mon, 30 May 2022 09:52:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEC711447;
+        Mon, 30 May 2022 06:37:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C9D760EE0;
-        Mon, 30 May 2022 13:30:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3097C3411A;
-        Mon, 30 May 2022 13:30:28 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C0BF2B80D84;
+        Mon, 30 May 2022 13:37:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56321C3411C;
+        Mon, 30 May 2022 13:37:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917430;
-        bh=A3CivUUyS2UHd9YX6XuOP1Gz13QUVPcNKCp/bvnCo6Y=;
+        s=k20201202; t=1653917834;
+        bh=jAZ7dqfEeDobrOdTI8ufggj5s7R4RsJZydxUTGMo1yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lkO9RZxk7z8u/G5eMrMDs7tWe8c+lZRS/VwmOjIilhSgnWakxaVX0nRGNgpvYZlzx
-         uL1WGBzIyn/WwKSIwyOwV/MhGKHHSlDhwEJBC748baH76zXP60LpGe+AESLj3CgxK6
-         dns8iMC7qFBOsS74Le35rOWuRlCJiL7IgsQgMGkA37+InKHeYHGIBbWD5ExqBSH6Oe
-         k9HjY+mgrFEaeHLzFL5hp8HOyL3DhxOo+qY3lrrrmUGL7FiXE1zRnaK1LYtIqdgMmb
-         bmK7i5CgB8I2UCK39657CWzN50Th+tMtAH61nIRLaw0hpS7WEniVynHblmI03Ja3om
-         Jw6K9B/zChAag==
+        b=bZevX4HLI+RXjfnQxXXyW4B2nkLrhZRnafmMJKyIdRzWTkhQjQUKLf5ggAwLzAAol
+         ARW2lpCNbjHWHWitruNF4NltZh8AlilDX4qVIOfdw7xTRNGHBjbjIKHAKw3xO0dya3
+         Ky03X3cNh76g+9DktLF+Do3EBQLUP7unKi+n7Nel23TQfCU9rLKizZGyr2IGkS0AEq
+         ifk1YL0ii86u9RaISdXeH89T31hq6gbyaQ43JcfKkfUKC3fwo4VXmnhulWExtXHbsm
+         4jGwwPVgB7dm25KbDmoJPkerkPGaw7L+i6L6KVCqsLC2gjxXKC7qkJvn0CkrplF/gk
+         nnj1PYhZ3TcjQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Omar Sandoval <osandov@fb.com>,
@@ -39,12 +39,12 @@ Cc:     Omar Sandoval <osandov@fb.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 132/159] btrfs: fix anon_dev leak in create_subvol()
-Date:   Mon, 30 May 2022 09:23:57 -0400
-Message-Id: <20220530132425.1929512-132-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 110/135] btrfs: fix anon_dev leak in create_subvol()
+Date:   Mon, 30 May 2022 09:31:08 -0400
+Message-Id: <20220530133133.1931716-110-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
-References: <20220530132425.1929512-1-sashal@kernel.org>
+In-Reply-To: <20220530133133.1931716-1-sashal@kernel.org>
+References: <20220530133133.1931716-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -77,10 +77,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 23 insertions(+), 26 deletions(-)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index be6c24577dbe..777801902511 100644
+index 8fe9d55d6862..072cdcab3061 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -561,7 +561,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -544,7 +544,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  	struct timespec64 cur_time = current_time(dir);
  	struct inode *inode;
  	int ret;
@@ -89,7 +89,7 @@ index be6c24577dbe..777801902511 100644
  	u64 objectid;
  	u64 index = 0;
  
-@@ -571,11 +571,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -554,11 +554,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  
  	ret = btrfs_get_free_objectid(fs_info->tree_root, &objectid);
  	if (ret)
@@ -102,7 +102,7 @@ index be6c24577dbe..777801902511 100644
  
  	/*
  	 * Don't create subvolume whose level is not zero. Or qgroup will be
-@@ -583,9 +579,13 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -566,9 +562,13 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  	 */
  	if (btrfs_qgroup_level(objectid)) {
  		ret = -ENOSPC;
@@ -117,7 +117,7 @@ index be6c24577dbe..777801902511 100644
  	btrfs_init_block_rsv(&block_rsv, BTRFS_BLOCK_RSV_TEMP);
  	/*
  	 * The same as the snapshot creation, please see the comment
-@@ -593,26 +593,26 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -576,26 +576,26 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  	 */
  	ret = btrfs_subvolume_reserve_metadata(root, &block_rsv, 8, false);
  	if (ret)
@@ -148,7 +148,7 @@ index be6c24577dbe..777801902511 100644
  	}
  
  	btrfs_mark_buffer_dirty(leaf);
-@@ -667,7 +667,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -650,7 +650,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  		btrfs_tree_unlock(leaf);
  		btrfs_free_tree_block(trans, objectid, leaf, 0, 1);
  		free_extent_buffer(leaf);
@@ -157,7 +157,7 @@ index be6c24577dbe..777801902511 100644
  	}
  
  	free_extent_buffer(leaf);
-@@ -676,19 +676,18 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -659,19 +659,18 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  	key.offset = (u64)-1;
  	new_root = btrfs_get_new_fs_root(fs_info, objectid, anon_dev);
  	if (IS_ERR(new_root)) {
@@ -180,7 +180,7 @@ index be6c24577dbe..777801902511 100644
  	}
  
  	ret = btrfs_create_subvol_root(trans, new_root, root, mnt_userns);
-@@ -696,7 +695,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -679,7 +678,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  	if (ret) {
  		/* We potentially lose an unused inode item here */
  		btrfs_abort_transaction(trans, ret);
@@ -189,7 +189,7 @@ index be6c24577dbe..777801902511 100644
  	}
  
  	/*
-@@ -705,28 +704,28 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -688,28 +687,28 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  	ret = btrfs_set_inode_index(BTRFS_I(dir), &index);
  	if (ret) {
  		btrfs_abort_transaction(trans, ret);
@@ -222,7 +222,7 @@ index be6c24577dbe..777801902511 100644
  	}
  
  	ret = btrfs_uuid_tree_add(trans, root_item->uuid,
-@@ -734,8 +733,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -717,8 +716,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  	if (ret)
  		btrfs_abort_transaction(trans, ret);
  
@@ -232,7 +232,7 @@ index be6c24577dbe..777801902511 100644
  	trans->block_rsv = NULL;
  	trans->bytes_reserved = 0;
  	btrfs_subvolume_release_metadata(root, &block_rsv);
-@@ -751,11 +749,10 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
+@@ -734,11 +732,10 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
  			return PTR_ERR(inode);
  		d_instantiate(dentry, inode);
  	}
