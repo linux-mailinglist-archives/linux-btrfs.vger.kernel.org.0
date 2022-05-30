@@ -2,250 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7E8537F23
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 May 2022 16:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6C553875B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 May 2022 20:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238295AbiE3Nxo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 May 2022 09:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
+        id S242844AbiE3SdF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 May 2022 14:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238421AbiE3NwT (ORCPT
+        with ESMTP id S242865AbiE3SdE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 May 2022 09:52:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEC711447;
-        Mon, 30 May 2022 06:37:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C0BF2B80D84;
-        Mon, 30 May 2022 13:37:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56321C3411C;
-        Mon, 30 May 2022 13:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917834;
-        bh=jAZ7dqfEeDobrOdTI8ufggj5s7R4RsJZydxUTGMo1yg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZevX4HLI+RXjfnQxXXyW4B2nkLrhZRnafmMJKyIdRzWTkhQjQUKLf5ggAwLzAAol
-         ARW2lpCNbjHWHWitruNF4NltZh8AlilDX4qVIOfdw7xTRNGHBjbjIKHAKw3xO0dya3
-         Ky03X3cNh76g+9DktLF+Do3EBQLUP7unKi+n7Nel23TQfCU9rLKizZGyr2IGkS0AEq
-         ifk1YL0ii86u9RaISdXeH89T31hq6gbyaQ43JcfKkfUKC3fwo4VXmnhulWExtXHbsm
-         4jGwwPVgB7dm25KbDmoJPkerkPGaw7L+i6L6KVCqsLC2gjxXKC7qkJvn0CkrplF/gk
-         nnj1PYhZ3TcjQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Omar Sandoval <osandov@fb.com>,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 110/135] btrfs: fix anon_dev leak in create_subvol()
-Date:   Mon, 30 May 2022 09:31:08 -0400
-Message-Id: <20220530133133.1931716-110-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530133133.1931716-1-sashal@kernel.org>
-References: <20220530133133.1931716-1-sashal@kernel.org>
+        Mon, 30 May 2022 14:33:04 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9116AA7A
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 May 2022 11:32:58 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id k20so3816337ljc.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 May 2022 11:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZzNuGxaPV0ftRvKFIhs7bCDxtUwXngjqzKDl/1efc8k=;
+        b=G/x8IS5ZCUE6ADsPlvUPUXAaB04OyIqXMKm+KJSUw5StiEuv4cL1TAstOVlmqy3elm
+         5+9MF0hXubRSbX/CG1QqSGW8cFuki2/FPGJAo+jjtMBQfsyBdtVEQ3MaHNxJ4S83iRlb
+         zfFb29YmqW/jeQNrIzFUEQ7Nfby/ABolramFIffZ/O9bQAKSGOPNZdiRa3RQxvV9s+H/
+         9ZdOEFKXpgbMqpO3RpRdV/+uQ11egmtTr8zb6FCciQxAnQKcTAkHLX9OovDtWQxrV2eR
+         TWVSkBI6ePkiHyDRs44E93DbkAs98oWmgFt9mfcYjCrdm/FlazGbqsB0U/UAOgeHqOjc
+         nc/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=ZzNuGxaPV0ftRvKFIhs7bCDxtUwXngjqzKDl/1efc8k=;
+        b=CyJAfyOYhKhlZhUAlhdmm3W57KNM3rWacgXv70qN7RcCiflnXLnCjHLRLEDPGX654S
+         OfxJlbyDvWrb3Im0lq/XOXspYiF/9o43mIVwwqe7WKStjFniJWTKCxpae4U7faTQzlao
+         dy35CbkqlHZ7DbivJwMsSMwt5irDk8z4lyXXJXgguMwBYo37LfZiV3QwE7HVfDm5SMQ4
+         /0eX1oA9yRViIpa5aq+HZkUcONIEKp/LN3NU+rUT5Gpoi82QPRQG2I6wX+bHgpEiC7Uu
+         I8yxsZ1vNlg0REKaQIK9XTdzrr+ovlFa96sHuuuuZNexmfrZa+HQBYkzSHVpRCK+qeFJ
+         gHTw==
+X-Gm-Message-State: AOAM533vKZdAmCrPMOkrUvCJmuhlBiZ6IK9SHfrzKmBSp8XRhDbt7dec
+        C4ivzZdmxrzi3huolPTZovxkdmp9t30rpyNIzTf1BvEo
+X-Google-Smtp-Source: ABdhPJw+O9fZn3lsTfQsUTNd6DOKOx+zAbdO6bVFs153CXHn82RmZiCAFbxPxbBULq9B0u9JuMMKsSofqA3ZjaNfhoM=
+X-Received: by 2002:a2e:84c8:0:b0:24b:50bb:de7d with SMTP id
+ q8-20020a2e84c8000000b0024b50bbde7dmr32281593ljh.40.1653935577285; Mon, 30
+ May 2022 11:32:57 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAOfGOYy7c0T72AkL01fFDBOgMR2G+rb6doTZzApczR1xJBG+Rg@mail.gmail.com>
+In-Reply-To: <CAOfGOYy7c0T72AkL01fFDBOgMR2G+rb6doTZzApczR1xJBG+Rg@mail.gmail.com>
+From:   Hannes Schweizer <schweizer.hannes@gmail.com>
+Date:   Mon, 30 May 2022 20:32:40 +0200
+Message-ID: <CAOfGOYzdbrjfOjCHm62xWJZETym5UJ3iemELoOEpE6+89f5QVw@mail.gmail.com>
+Subject: Fwd: filesystem broken due to 'csum exists for <> but there is no
+ extent record' errors?
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+Hi,
 
-[ Upstream commit 2256e901f5bddc56e24089c96f27b77da932dfcc ]
+Here's my environment:
+Linux diablo 5.17.9-gentoo #2 SMP Sun May 29 00:02:20 CEST 2022 x86_64
+Intel(R) Core(TM) i5 CPU 760 @ 2.80GHz GenuineIntel GNU/Linux
+btrfs-progs v5.18
 
-When btrfs_qgroup_inherit(), btrfs_alloc_tree_block, or
-btrfs_insert_root() fail in create_subvol(), we return without freeing
-anon_dev. Reorganize the error handling in create_subvol() to fix this.
+Label: 'online'  uuid: 4a7da48d-2957-4ca0-b287-2d4c38bc223e
+       Total devices 3 FS bytes used 3.94TiB
+       devid    1 size 1.82TiB used 1.63TiB path /dev/mapper/online0
+       devid    2 size 1.82TiB used 1.63TiB path /dev/mapper/online1
+       devid    3 size 931.50GiB used 742.00GiB path /dev/mapper/online2
+Data, single: total=3D3.97TiB, used=3D3.93TiB
+System, RAID1: total=3D32.00MiB, used=3D464.00KiB
+Metadata, RAID1: total=3D11.00GiB, used=3D8.33GiB
+GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
 
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/ioctl.c | 49 +++++++++++++++++++++++-------------------------
- 1 file changed, 23 insertions(+), 26 deletions(-)
+After a power outage, I routinely ran a read-only btrfs check in an
+initramfs, which produced a lot of the following errors during the
+'checking extents' phase:
+backref <> parent <> not referenced back <>
+incorrect global backref count on <> found <> wanted <>
+backpointer mismatch on [<> <>]
+owner ref check failed [<> <>]
+ref mismatch on [<> <>] extent item <>, found <>
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 8fe9d55d6862..072cdcab3061 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -544,7 +544,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 	struct timespec64 cur_time = current_time(dir);
- 	struct inode *inode;
- 	int ret;
--	dev_t anon_dev = 0;
-+	dev_t anon_dev;
- 	u64 objectid;
- 	u64 index = 0;
- 
-@@ -554,11 +554,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 
- 	ret = btrfs_get_free_objectid(fs_info->tree_root, &objectid);
- 	if (ret)
--		goto fail_free;
--
--	ret = get_anon_bdev(&anon_dev);
--	if (ret < 0)
--		goto fail_free;
-+		goto out_root_item;
- 
- 	/*
- 	 * Don't create subvolume whose level is not zero. Or qgroup will be
-@@ -566,9 +562,13 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 	 */
- 	if (btrfs_qgroup_level(objectid)) {
- 		ret = -ENOSPC;
--		goto fail_free;
-+		goto out_root_item;
- 	}
- 
-+	ret = get_anon_bdev(&anon_dev);
-+	if (ret < 0)
-+		goto out_root_item;
-+
- 	btrfs_init_block_rsv(&block_rsv, BTRFS_BLOCK_RSV_TEMP);
- 	/*
- 	 * The same as the snapshot creation, please see the comment
-@@ -576,26 +576,26 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 	 */
- 	ret = btrfs_subvolume_reserve_metadata(root, &block_rsv, 8, false);
- 	if (ret)
--		goto fail_free;
-+		goto out_anon_dev;
- 
- 	trans = btrfs_start_transaction(root, 0);
- 	if (IS_ERR(trans)) {
- 		ret = PTR_ERR(trans);
- 		btrfs_subvolume_release_metadata(root, &block_rsv);
--		goto fail_free;
-+		goto out_anon_dev;
- 	}
- 	trans->block_rsv = &block_rsv;
- 	trans->bytes_reserved = block_rsv.size;
- 
- 	ret = btrfs_qgroup_inherit(trans, 0, objectid, inherit);
- 	if (ret)
--		goto fail;
-+		goto out;
- 
- 	leaf = btrfs_alloc_tree_block(trans, root, 0, objectid, NULL, 0, 0, 0,
- 				      BTRFS_NESTING_NORMAL);
- 	if (IS_ERR(leaf)) {
- 		ret = PTR_ERR(leaf);
--		goto fail;
-+		goto out;
- 	}
- 
- 	btrfs_mark_buffer_dirty(leaf);
-@@ -650,7 +650,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 		btrfs_tree_unlock(leaf);
- 		btrfs_free_tree_block(trans, objectid, leaf, 0, 1);
- 		free_extent_buffer(leaf);
--		goto fail;
-+		goto out;
- 	}
- 
- 	free_extent_buffer(leaf);
-@@ -659,19 +659,18 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 	key.offset = (u64)-1;
- 	new_root = btrfs_get_new_fs_root(fs_info, objectid, anon_dev);
- 	if (IS_ERR(new_root)) {
--		free_anon_bdev(anon_dev);
- 		ret = PTR_ERR(new_root);
- 		btrfs_abort_transaction(trans, ret);
--		goto fail;
-+		goto out;
- 	}
--	/* Freeing will be done in btrfs_put_root() of new_root */
-+	/* anon_dev is owned by new_root now. */
- 	anon_dev = 0;
- 
- 	ret = btrfs_record_root_in_trans(trans, new_root);
- 	if (ret) {
- 		btrfs_put_root(new_root);
- 		btrfs_abort_transaction(trans, ret);
--		goto fail;
-+		goto out;
- 	}
- 
- 	ret = btrfs_create_subvol_root(trans, new_root, root, mnt_userns);
-@@ -679,7 +678,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 	if (ret) {
- 		/* We potentially lose an unused inode item here */
- 		btrfs_abort_transaction(trans, ret);
--		goto fail;
-+		goto out;
- 	}
- 
- 	/*
-@@ -688,28 +687,28 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 	ret = btrfs_set_inode_index(BTRFS_I(dir), &index);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
--		goto fail;
-+		goto out;
- 	}
- 
- 	ret = btrfs_insert_dir_item(trans, name, namelen, BTRFS_I(dir), &key,
- 				    BTRFS_FT_DIR, index);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
--		goto fail;
-+		goto out;
- 	}
- 
- 	btrfs_i_size_write(BTRFS_I(dir), dir->i_size + namelen * 2);
- 	ret = btrfs_update_inode(trans, root, BTRFS_I(dir));
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
--		goto fail;
-+		goto out;
- 	}
- 
- 	ret = btrfs_add_root_ref(trans, objectid, root->root_key.objectid,
- 				 btrfs_ino(BTRFS_I(dir)), index, name, namelen);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
--		goto fail;
-+		goto out;
- 	}
- 
- 	ret = btrfs_uuid_tree_add(trans, root_item->uuid,
-@@ -717,8 +716,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 	if (ret)
- 		btrfs_abort_transaction(trans, ret);
- 
--fail:
--	kfree(root_item);
-+out:
- 	trans->block_rsv = NULL;
- 	trans->bytes_reserved = 0;
- 	btrfs_subvolume_release_metadata(root, &block_rsv);
-@@ -734,11 +732,10 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 			return PTR_ERR(inode);
- 		d_instantiate(dentry, inode);
- 	}
--	return ret;
--
--fail_free:
-+out_anon_dev:
- 	if (anon_dev)
- 		free_anon_bdev(anon_dev);
-+out_root_item:
- 	kfree(root_item);
- 	return ret;
- }
--- 
-2.35.1
+The filesystem still mounted OK though, and a subsequent online scrub
+showed no problems. Since everything is backed up, I took the risk and
+tried a check --repair run, which fixed the extent errors, but left me
+with these errors:
+btrfs check -p /dev/mapper/online0
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/online0
+UUID: 4a7da48d-2957=E2=80=944ca0-b287-2d4c38bc223e
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+there are no extents for csum range 6044207878144-6044207882240
+csum exists for 6044207878144-6045835227136 but there is no extent record
+there are no extents for csum range 7788082724864-7788082745344
+csum exists for 7788081930240-7788082745344 but there is no extent record
+there are no extents for csum range 7788761333760-7788761374720
+csum exists for 7788761333760-7788761645056 but there is no extent record
+[5/7] checking csums (without verifying data)
+ERROR: errors found in csum tree
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 4360122875904 bytes used, error(s) found
+total csum bytes: 4248374108
+total tree bytes: 9027862528
+total fs tree bytes: 4254793728
+total extent tree bytes: 254754816
+btree space waste bytes: 1295819354
+file data blocks allocated: 9082352828416
+ referenced 7722966454272
 
+According to
+https://github.com/kdave/btrfs-progs/issues/430
+these erros do not indicate any data problems, however according to Qu
+Wenruo: "The problem here is, when new data extent is allocated for
+that range, and it has csum, it will cause -EEXIST error and cause a
+failure."
+
+So I bravely went ahead and started an --init-csum-tree run, which ran
+for over 36h, with barely any disc activity after the 24h mark. I
+interrupted the process by sysrq syncing and rebooting.
+The filesystem still mounts OK, online scrub again shows no errors,
+but the above mentioned "csum exists... but there is not extent"
+errors still persist.
+
+- Is the filesystem stable long-term even with these problems?
+- Should I retry an --init-csum-tree run and wait longer? A progess
+inidicator would be nice...
+
+Any hints appreciated...
