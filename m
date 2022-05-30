@@ -2,89 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74EA5387AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 May 2022 21:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0495A53884D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 May 2022 22:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239814AbiE3TSj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 May 2022 15:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
+        id S237380AbiE3Uro (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 May 2022 16:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234367AbiE3TSi (ORCPT
+        with ESMTP id S233225AbiE3Urn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 May 2022 15:18:38 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1651A8722C
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 May 2022 12:18:35 -0700 (PDT)
-Received: from [76.132.34.178] (port=59078 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1nvkC3-0002lH-4r by authid <merlins.org> with srv_auth_plain; Mon, 30 May 2022 12:18:34 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1nvkuQ-006Mqg-5S; Mon, 30 May 2022 12:18:34 -0700
-Date:   Mon, 30 May 2022 12:18:34 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220530191834.GK24951@merlins.org>
-References: <20220529153312.GF24951@merlins.org>
- <CAEzrpqdEk-j2bMfBLEdkhHcq1hWLmHv_Nx-0mj1vh0yJgZuCZQ@mail.gmail.com>
- <20220529180510.GG24951@merlins.org>
- <CAEzrpqfqD8jkznVQR1SL-YpF0ALx7Pbg+ptz7dVgRecOXeDtPg@mail.gmail.com>
- <20220529194235.GH24951@merlins.org>
- <CAEzrpqfd2jPWxUayfqyYRDN25-etc4_jgzcHmZ3LhGkb4e7Tsw@mail.gmail.com>
- <20220529200415.GI24951@merlins.org>
- <CAEzrpqdpvnbzaH1gxWnvWLMWEKtOAdYsH25mBWhkF-urf7Zw3g@mail.gmail.com>
- <20220530003701.GJ24951@merlins.org>
- <CAEzrpqcPirk3AOi1vy+N_V3VY49mvUCiwYL4A_0XoT_jxjgOrg@mail.gmail.com>
+        Mon, 30 May 2022 16:47:43 -0400
+Received: from pio-pvt-msa1.bahnhof.se (pio-pvt-msa1.bahnhof.se [79.136.2.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BE851E75
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 May 2022 13:47:39 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id D9AFC3F7D6;
+        Mon, 30 May 2022 22:47:36 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -3.785
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id f_yHpO5mebqK; Mon, 30 May 2022 22:47:35 +0200 (CEST)
+Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id CC5583F55C;
+        Mon, 30 May 2022 22:47:35 +0200 (CEST)
+Received: from [192.168.0.10] (port=55009)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1nvmIV-000FID-9F; Mon, 30 May 2022 22:47:35 +0200
+Message-ID: <4bad94f3-7cf2-6224-6876-7a1e3fe5abcd@tnonline.net>
+Date:   Mon, 30 May 2022 22:47:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqcPirk3AOi1vy+N_V3VY49mvUCiwYL4A_0XoT_jxjgOrg@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
-X-SA-Exim-Connect-IP: 76.132.34.178
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+From:   Forza <forza@tnonline.net>
+Subject: Re: Tried to replace a drive in a raid 1 and all hell broke loose
+Content-Language: en-GB
+To:     efkf <efkf@firemail.cc>, Nicholas D Steeves <nsteeves@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <9a9d16a133c13bed724f2a6a406bd3b6@firemail.cc>
+ <5fd50e9.def5d621.180f273d002@tnonline.net>
+ <f39a23c9fe32b5ae79ddbe67e1edb7a8@firemail.cc>
+ <af34ef558ea7bbd414b5a076128b1011@firemail.cc>
+ <b713b9540ad29a83a3c2c672139d6e6f@firemail.cc>
+ <CAJCQCtT_PjKprryxHwsyn3qXc06qFFmnMR48CxZuvav8aQUOQQ@mail.gmail.com>
+ <87tu99h0ic.fsf@DigitalMercury.freeddns.org>
+ <6685a5e4-6d03-6108-1394-0f75f6433c9e@firemail.cc>
+In-Reply-To: <6685a5e4-6d03-6108-1394-0f75f6433c9e@firemail.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, May 29, 2022 at 09:14:23PM -0400, Josef Bacik wrote:
-> Ah ok that makes sense, fixed it, sorry about that.  Thanks,
 
-Same?
 
-gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
-WARNING: cannot read chunk root, continue anyway
-none of our backups was sufficient, scanning for a root
-scanning, best has 0 found 1 bad
-ret is 0 offset 20971520 len 8388608
-ret is -2 offset 20971520 len 8388608
-checking block 22495232 generation 1572124 fs info generation 0
-checking block 22462464 generation 1479229 fs info generation 0
-checking block 22528000 generation 1572115 fs info generation 0
-checking block 22446080 generation 1571791 fs info generation 0
-checking block 22544384 generation 1556078 fs info generation 0
-checking block 22511616 generation 1555799 fs info generation 0
-checking block 22577152 generation 1586277 fs info generation 0
-checking block 22478848 generation 1561557 fs info generation 0
-checking block 22593536 generation 1590219 fs info generation 0
-checking block 22609920 generation 1551635 fs info generation 0
-checking block 22560768 generation 1590217 fs info generation 0
-ERROR: Couldn't find a valid root block for 3, we're going to clear it and hope for the best
-Tree recover failed
-gargamel:/var/local/src/btrfs-progs-josefbacik# git pull
-Already up-to-date.
+On 2022-05-29 22:48, efkf wrote:
+> On 5/28/22 21:20, Nicholas D Steeves wrote:
+>> Efkf, would you please confirm if the filesystem was created with Linux
+>> and btrfs-progs 5.10.x? (please keep me in CC)
+> It was created under linux and I'm 99% sure kernel 5.10.0 and 
+> btrfs-progs 5.10.1
+> It was surely that configuration when I started messing with it.
+> Now that i think about it i had mounted degraded when i had initially 
+> created the filesystem so maybe single metadata got created and has been 
+> bitrotting away since.
+> If that's the case though it didn't cause any problems before running 
+> the first balance command after which everything went downhill.
+> 
+> 
+> On 5/27/22 22:37, Forza wrote:
+>>> Anyway, is there a way to check the data is really redundant without 
+>>> trusting the filesystem telling me it's so?
+>>
+>> Yes, you use 'btrfs scrub' to read all data and metadata blocks from 
+>> all devices and compare the checksums. If there are problems, scrub 
+>> will tell you.
+>>
+>> https://btrfs.readthedocs.io/en/latest/btrfs-scrub.html
+>> https://wiki.tnonline.net/w/Btrfs/Scrub
+>>
+> 
+> Yeah but that relies on me having actually set up RAID1.
+> The point I'm trying to make is that as a beginner who learns as they go 
+> you don't know what you don't know so maybe there is some detail you 
+> don't know about that's making your data unsafe . (in this case 
+> scrubbing without checking if the whole filesystem is raid1, I assumed 
+> it was set in stone from the fs's creation)
 
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Indeed. Btrfs supports multiple profiles, and a combination of profiles 
+as you discovered. Some Btrfs tools do show a warning on multiple 
+profiles detected.
+
+> I should have read more about it but i think there will be more new 
+> users that will try what i did to sanity check their setup so in my 
+> opinion it would be important to make it so that if you don't write to 
+> the FS, especially if you mount it read only it should be safe to mount 
+> degraded and not put any data in jeopardy.
+> 
+
+I had a discussion with some Windows users, and they did exactly the 
+same thing - yanked the mirror out and then inserted it again. 4 times 
+out of 5 it "worked" and they got upset when it didn't work the last time.
+
+So, with that said, there is room to improve documentation, man pages 
+and guides to help users find the information they need to check their 
+system correctly.
+
+For now, mounting each mirror independently and then combine them again 
+is not good for Btrfs. This use-case seems to be unhandled.
+
+> On 5/28/22 22:04, Forza wrote:
+>> I believe this is a problem of having degraded mounts.
+> So you think the single chunks from the degraded mount got corrupted due 
+> to something unrelated to btrfs and that caused the problem i had?
+> 
+
+It is possible the errors are older, but not surfacing until you tried 
+to do that full balance after adding the third drive. This could have 
+caused balance to fail, leading up to all the subsequent errors.
+
+> 
+> Either way does anyone want me to run something on the filesystem to 
+> provide any help for any possible debugging or can i wipe it and move 
+> on? (i kind of need the storage >
+> Thanks a lot again by the way to everyone who looked into it and 
+> especially for all the great help!
