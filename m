@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 782CB53939D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 May 2022 17:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AE25393A0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 May 2022 17:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344879AbiEaPHC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 May 2022 11:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
+        id S1345511AbiEaPHD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 May 2022 11:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345497AbiEaPG6 (ORCPT
+        with ESMTP id S1345513AbiEaPG7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 May 2022 11:06:58 -0400
+        Tue, 31 May 2022 11:06:59 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39D110D
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 08:06:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE73DDBD
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 08:06:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 801916132A
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C33A61343
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 15:06:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B669C3411D
         for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 15:06:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67064C3411F
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 15:06:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654009616;
-        bh=Kul8JZIfoT2xuD+DWxVbAsFOrY83Hi9Ndy+v7UrJCvw=;
+        s=k20201202; t=1654009617;
+        bh=1I0n3i6+SK34n0P2sJdyCZZJDMNdrmn158ujRCsCflc=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=YSC6KQiSEjYNjfA9PJfCxDZFQg9vdAdEMfS/7CSW8tcWFddpjn4yWaG76UddDGy7K
-         Z+kD7lz3wUH0AuhLo2q9PRoUDdqPhgubfB/oT/TW36hKxSgF0vg+aKEPjuh7naw1xC
-         CUDQAyCJ5x5MdpQF0aqUHnqlnP/9rWN2/heKTXyzmtHXcq+8hJ7Ks+1UahpJoXVuec
-         u/gNp+tkMPIY8Hk3nI1s/OU8aDrob8fqqBJmwBDjwaN00e2uJpU+JhxNdIkjEKJY1O
-         Ob4hGkASFoi9x9G3GEVDDmI3fmkksTstiSwlEzUBX6US/LLV2lwaDSBQTmGuw9qhcE
-         v8EilObRl7rrA==
+        b=CROkw5qBOe6GatWth1EybncgMUpwyvysTg5JS7nz4J4NEuJ0VTdMJeufmJm+hQYLM
+         HXazrOmpG+CbmemzVCvHcPUrJd27upoC8XtT1DZIU4s/XtZkIiirohb7BMUA+i4nqk
+         VKQPsvcXqW9Z0XbbkVQ65/nHpORJWlvmgoXGzPu4ETAiUaviViRV0Tdysrz0RedoNu
+         mR1DdTQbh0BetDI5IHQUnQzBbSrkItcynOVmnUBP/Oti4FtFTNXxp0/ZxAO1y989LK
+         rtdUaQaJpcrp5amKoXqlcYwm8Mx0Eyb2d3ojnxNJt0EBaDKxuOyvu2qXJ1QleiJmuP
+         /pZKiX09fVq+Q==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 10/12] btrfs: do not BUG_ON() on failure to reserve metadata for delayed item
-Date:   Tue, 31 May 2022 16:06:41 +0100
-Message-Id: <31228088666135f5b52eb5cfbabf72b955d754ae.1654009356.git.fdmanana@suse.com>
+Subject: [PATCH 11/12] btrfs: set delayed item type when initializing it
+Date:   Tue, 31 May 2022 16:06:42 +0100
+Message-Id: <5f892281a954183b1450d7479a5ac323fda9c039.1654009356.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1654009356.git.fdmanana@suse.com>
 References: <cover.1654009356.git.fdmanana@suse.com>
@@ -54,40 +54,116 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_insert_delayed_dir_index(), we don't expect the metadata
-reservation for the delayed dir index item insertion to fail, because the
-caller is supposed to have reserved 1 unit of metadata space for that.
-All callers are able to deal with an error in case that happens, so there
-is no need for something so drastic as a BUG_ON() in case of failure.
-Instead just emit a warning, so that's easily noticed during development
-(fstests in particular), and return the error to the caller.
+Currently we set the type of a delayed item only after successfully
+inserting it into its respective rbtree. This is fine, as the type
+is not used anywhere before that point, but for the next patch in the
+series, there will be the need to check the type of a delayed item
+before inserting it into a rbtree.
+
+So set the type of a delayed item immediately after allocating it.
+This also makes the trivial wrappers for adding insertion and deletion
+useless, so it removes them as well.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/delayed-inode.c | 30 ++++++++----------------------
+ 1 file changed, 8 insertions(+), 22 deletions(-)
 
 diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 2ad2a105244c..b6fee8f0f1cd 100644
+index b6fee8f0f1cd..814c20c90fe7 100644
 --- a/fs/btrfs/delayed-inode.c
 +++ b/fs/btrfs/delayed-inode.c
-@@ -1379,10 +1379,13 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+@@ -379,8 +379,7 @@ static struct btrfs_delayed_item *__btrfs_lookup_delayed_insertion_item(
+ }
  
- 	ret = btrfs_delayed_item_reserve_metadata(trans, dir->root, delayed_item);
- 	/*
--	 * we have reserved enough space when we start a new transaction,
--	 * so reserving metadata failure is impossible
-+	 * Space was reserved for a dir index item insertion when we started the
-+	 * transaction, so getting a failure here should be impossible.
- 	 */
--	BUG_ON(ret);
-+	if (WARN_ON(ret)) {
-+		btrfs_release_delayed_item(delayed_item);
-+		goto release_node;
-+	}
+ static int __btrfs_add_delayed_item(struct btrfs_delayed_node *delayed_node,
+-				    struct btrfs_delayed_item *ins,
+-				    int action)
++				    struct btrfs_delayed_item *ins)
+ {
+ 	struct rb_node **p, *node;
+ 	struct rb_node *parent_node = NULL;
+@@ -389,9 +388,9 @@ static int __btrfs_add_delayed_item(struct btrfs_delayed_node *delayed_node,
+ 	int cmp;
+ 	bool leftmost = true;
+ 
+-	if (action == BTRFS_DELAYED_INSERTION_ITEM)
++	if (ins->ins_or_del == BTRFS_DELAYED_INSERTION_ITEM)
+ 		root = &delayed_node->ins_root;
+-	else if (action == BTRFS_DELAYED_DELETION_ITEM)
++	else if (ins->ins_or_del == BTRFS_DELAYED_DELETION_ITEM)
+ 		root = &delayed_node->del_root;
+ 	else
+ 		BUG();
+@@ -417,12 +416,11 @@ static int __btrfs_add_delayed_item(struct btrfs_delayed_node *delayed_node,
+ 	rb_link_node(node, parent_node, p);
+ 	rb_insert_color_cached(node, root, leftmost);
+ 	ins->delayed_node = delayed_node;
+-	ins->ins_or_del = action;
+ 
+ 	/* Delayed items are always for dir index items. */
+ 	ASSERT(ins->key.type == BTRFS_DIR_INDEX_KEY);
+ 
+-	if (action == BTRFS_DELAYED_INSERTION_ITEM &&
++	if (ins->ins_or_del == BTRFS_DELAYED_INSERTION_ITEM &&
+ 	    ins->key.offset >= delayed_node->index_cnt)
+ 		delayed_node->index_cnt = ins->key.offset + 1;
+ 
+@@ -431,20 +429,6 @@ static int __btrfs_add_delayed_item(struct btrfs_delayed_node *delayed_node,
+ 	return 0;
+ }
+ 
+-static int __btrfs_add_delayed_insertion_item(struct btrfs_delayed_node *node,
+-					      struct btrfs_delayed_item *item)
+-{
+-	return __btrfs_add_delayed_item(node, item,
+-					BTRFS_DELAYED_INSERTION_ITEM);
+-}
+-
+-static int __btrfs_add_delayed_deletion_item(struct btrfs_delayed_node *node,
+-					     struct btrfs_delayed_item *item)
+-{
+-	return __btrfs_add_delayed_item(node, item,
+-					BTRFS_DELAYED_DELETION_ITEM);
+-}
+-
+ static void finish_one_item(struct btrfs_delayed_root *delayed_root)
+ {
+ 	int seq = atomic_inc_return(&delayed_root->items_seq);
+@@ -1368,6 +1352,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 	delayed_item->key.objectid = btrfs_ino(dir);
+ 	delayed_item->key.type = BTRFS_DIR_INDEX_KEY;
+ 	delayed_item->key.offset = index;
++	delayed_item->ins_or_del = BTRFS_DELAYED_INSERTION_ITEM;
+ 
+ 	dir_item = (struct btrfs_dir_item *)delayed_item->data;
+ 	dir_item->location = *disk_key;
+@@ -1388,7 +1373,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 	}
  
  	mutex_lock(&delayed_node->mutex);
- 	ret = __btrfs_add_delayed_insertion_item(delayed_node, delayed_item);
+-	ret = __btrfs_add_delayed_insertion_item(delayed_node, delayed_item);
++	ret = __btrfs_add_delayed_item(delayed_node, delayed_item);
+ 	if (unlikely(ret)) {
+ 		btrfs_err(trans->fs_info,
+ 			  "err add delayed dir index item(name: %.*s) into the insertion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)",
+@@ -1450,6 +1435,7 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 	}
+ 
+ 	item->key = item_key;
++	item->ins_or_del = BTRFS_DELAYED_DELETION_ITEM;
+ 
+ 	ret = btrfs_delayed_item_reserve_metadata(trans, dir->root, item);
+ 	/*
+@@ -1464,7 +1450,7 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 	}
+ 
+ 	mutex_lock(&node->mutex);
+-	ret = __btrfs_add_delayed_deletion_item(node, item);
++	ret = __btrfs_add_delayed_item(node, item);
+ 	if (unlikely(ret)) {
+ 		btrfs_err(trans->fs_info,
+ 			  "err add delayed dir index item(index: %llu) into the deletion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)",
 -- 
 2.35.1
 
