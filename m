@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D6953939B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 May 2022 17:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D815539397
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 May 2022 17:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345515AbiEaPHA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 May 2022 11:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
+        id S1345506AbiEaPG6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 May 2022 11:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345507AbiEaPG5 (ORCPT
+        with ESMTP id S1345504AbiEaPG5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 31 May 2022 11:06:57 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3AAEA3
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1077E10D
         for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 08:06:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6971EB81168
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A0DA26133A
         for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 15:06:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97102C385A9
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 15:06:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C264C3411D
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 15:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654009613;
-        bh=89hXQ/tqVwYMckqPTTQg2JZuSI5Z6UIxNB+9y6uWB7w=;
+        s=k20201202; t=1654009614;
+        bh=Ei/+bgeMAVDsrY4YNx9o2G8X8WZ407OCMceWhy38Dzo=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Jrh/7akX87oDrAPZyl9ID2oc3HmI3uJsejpsyFqIU2dXacfw0UdWmctFM/tXZH0zW
-         0SHxA4Zfsab10g7Shz3C17S3w0zNVD6KN7SPRevOyIFUuR5daXyHtuB1D/3ahb3eIQ
-         LuSeJ5eQkBE9paKhNg69BSU6yQCqZrtlQd157seBwNwyKm6zptmAbfUXbNyLoOJYia
-         s5x+PboSpspPmYUPOjtAOb26lEFt7jJTOVRYp3Att4vwVgGcK0zIYUeKKV14dAjlgA
-         Ao470hC8oQfhUSBKT0f6l5uHTBYveodR4tVJ81zAItkZEN/GmyF6uA9rodhydXQN5P
-         O0SzJw1bktKYA==
+        b=GSiIZKxh1XGdHtM6v4UeSRxqLp10JpLyoqKO9XjLbcKfeFD1iFZiP36Gz7oh2rCM+
+         KZyWdbDf7Rm4yXj+pabcgC0BWT7UOLN62IQfKpaEAqzj5lPmmcILxPObcmceaDIEBK
+         RtLMZ67eJuwDItTJcKlzUtx5o+ZkUpLJMSiIXayTnbeKVz7L/8D1HZRKMtIAzzI7Ws
+         I2nttnNKmycUdDVbqPFx4LK3xcoRAYKd7S/HDMJGnn1Be+FOwvNvRrVaxmHRrpPV5t
+         3xW6ATJTm/xa3t3TgT2nnOIYeH6mwa0rQKiSVHOrJRM2q56eth2Jvdf8Lu7SN6DWot
+         KZlv7tDSa0NVg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/12] btrfs: refactor the delayed item deletion entry point
-Date:   Tue, 31 May 2022 16:06:37 +0100
-Message-Id: <abca6c38b62815d6cde425fc089e7b78bbdc8981.1654009356.git.fdmanana@suse.com>
+Subject: [PATCH 07/12] btrfs: improve batch deletion of delayed dir index items
+Date:   Tue, 31 May 2022 16:06:38 +0100
+Message-Id: <ddec7fd521fe5b0158241a2e111a54bab253f6d3.1654009356.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1654009356.git.fdmanana@suse.com>
 References: <cover.1654009356.git.fdmanana@suse.com>
@@ -54,128 +54,209 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The delayed item deletion entry point, btrfs_delete_delayed_items(), is a
-bit convoluted for a few reasons:
+Currently we group delayed dir index items for deletion in a single batch
+(single btree operation) as long as they all exist in the same leaf and as
+long as their keys are sequential in the key space. For example if we have
+a leaf that has dir index items with offsets:
 
-1) It's really a loop disguised with labels and goto statements;
+    2, 3, 4, 6, 7, 10
 
-2) There's a 'delete_fail' label which isn't only for error cases, we can
-   jump to that label even if no error happened, if we simply don't have
-   more delayed items to delete;
+And we have delayed dir index items for deleting all these indexes, and
+no delayed items for any other index keys in between, then we end up
+deleting in 3 batches:
 
-3) Unnecessarily keeps track of the current and previous items for no
-   good reason, as after getting the next item and releasing the current
-   one, it just jumps to the 'again' label just to look again for the
-   first delayed item;
+1) First batch for indexes 2, 3 and 4;
+2) Second batch for indexes 6 and 7;
+3) Third batch for index 10.
 
-4) When a delayed item is not in the tree (because it was already deleted
-   before), it releases the item while holding a path locked, which is
-   not necessary and adds more contention to the tree, specially taking
-   into account that the path came from a deletion search, meaning we have
-   write locks for nodes at levels 2, 1 and 0. And releasing the item is
-   not computationally trivial (rb tree deletion, a kfree() and some
-   trivial things).
+This is a waste because we can delete all the index keys in a single
+batch. What matters is that each consecutive delayed index key matches
+each consecutive dir index key in a leaf.
 
-So refactor it to use a while loop and add some comments to make it more
-obvious why we can have delayed items without a matching item in the tree
-as well as why not keep the delayed node locked all the time when running
-all its deletion items. This is also a preparation for some upcoming work
-involving delayed items.
+So update the logic at btrfs_batch_delete_items() to check only for a
+key match between delayed dir index items and dir index items in a leaf.
+Also avoid the useless first iteration on comparing the key of the
+first slot to delete with the key of the first delayed item, as it's
+silly since they always match, as the delayed item's key was used for
+the btree search that gaves us the path we have.
+
+This is more efficient and reduces runtime of running delayed items, as
+well as lock contention on the subvolume's tree.
+
+For example, the following test script:
+
+  $ cat test.sh
+  #!/bin/bash
+
+  DEV=/dev/sdj
+  MNT=/mnt/sdj
+
+  mkfs.btrfs -f $DEV
+  mount $DEV $MNT
+
+  NUM_FILES=1000
+
+  mkdir $MNT/testdir
+  for ((i = 1; i <= $NUM_FILES; i++)); do
+      echo -n > $MNT/testdir/file_$i
+  done
+
+  # Now delete every other file, to create gaps in the dir index keys.
+  for ((i = 1; i <= $NUM_FILES; i += 2)); do
+      rm -f $MNT/testdir/file_$i
+  done
+
+  # Sync to force any delayed items to be flushed to the tree.
+  sync
+
+  start=$(date +%s%N)
+  rm -fr $MNT/testdir
+  end=$(date +%s%N)
+  dur=$(( (end - start) / 1000000 ))
+
+  echo -e "\nrm -fr took $dur milliseconds"
+
+  umount $MNT
+
+Running that test script while having the following bpftrace script
+running in another shell:
+
+  $ cat bpf-measure.sh
+  #!/usr/bin/bpftrace
+
+  /* Add 'noinline' to btrfs_delete_delayed_items()'s definition. */
+  k:btrfs_delete_delayed_items
+  {
+      @start_delete_delayed_items[tid] = nsecs;
+  }
+
+  k:btrfs_del_items
+  /@start_delete_delayed_items[tid]/
+  {
+      @delete_batches = count();
+  }
+
+  kr:btrfs_delete_delayed_items
+  /@start_delete_delayed_items[tid]/
+  {
+      $dur = (nsecs - @start_delete_delayed_items[tid]) / 1000;
+      @btrfs_delete_delayed_items_total_time = sum($dur);
+      delete(@start_delete_delayed_items[tid]);
+  }
+
+Before this change:
+
+@btrfs_delete_delayed_items_total_time: 9563
+@delete_batches: 1001
+
+After this change:
+
+@btrfs_delete_delayed_items_total_time: 7328
+@delete_batches: 509
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 71 ++++++++++++++++++++++------------------
- 1 file changed, 39 insertions(+), 32 deletions(-)
+ fs/btrfs/delayed-inode.c | 60 +++++++++++++++++-----------------------
+ 1 file changed, 25 insertions(+), 35 deletions(-)
 
 diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 3c6368c29bb9..0125586fd565 100644
+index 0125586fd565..74c806d3ab2a 100644
 --- a/fs/btrfs/delayed-inode.c
 +++ b/fs/btrfs/delayed-inode.c
-@@ -860,45 +860,52 @@ static int btrfs_delete_delayed_items(struct btrfs_trans_handle *trans,
- 				      struct btrfs_root *root,
- 				      struct btrfs_delayed_node *node)
+@@ -791,68 +791,58 @@ static int btrfs_batch_delete_items(struct btrfs_trans_handle *trans,
  {
--	struct btrfs_delayed_item *curr, *prev;
- 	int ret = 0;
+ 	struct btrfs_delayed_item *curr, *next;
+ 	struct extent_buffer *leaf = path->nodes[0];
+-	struct btrfs_key key;
+-	struct list_head head;
+-	int nitems, i, last_item;
+-	int ret = 0;
++	LIST_HEAD(batch_list);
++	int nitems, slot, last_slot;
++	int ret;
  
--do_again:
--	mutex_lock(&node->mutex);
--	curr = __btrfs_first_delayed_deletion_item(node);
--	if (!curr)
--		goto delete_fail;
-+	while (ret == 0) {
-+		struct btrfs_delayed_item *item;
-+
-+		mutex_lock(&node->mutex);
-+		item = __btrfs_first_delayed_deletion_item(node);
-+		if (!item) {
-+			mutex_unlock(&node->mutex);
-+			break;
-+		}
-+
-+		ret = btrfs_search_slot(trans, root, &item->key, path, -1, 1);
-+		if (ret > 0) {
-+			/*
-+			 * There's no matching item in the leaf. This means we
-+			 * have already deleted this item in a past run of the
-+			 * delayed items. We ignore errors when running delayed
-+			 * items from an async context, through a work queue job
-+			 * running btrfs_async_run_delayed_root(), and don't
-+			 * release delayed items that failed to complete. This
-+			 * is because we will retry later, and at transaction
-+			 * commit time we always run delayed items and will
-+			 * then deal with errors if they fail to run again.
-+			 *
-+			 * So just release delayed items for which we can't find
-+			 * an item in the tree, and move to the next item.
-+			 */
-+			btrfs_release_path(path);
-+			btrfs_release_delayed_item(item);
-+			ret = 0;
-+		} else if (ret == 0) {
-+			ret = btrfs_batch_delete_items(trans, root, path, item);
-+			btrfs_release_path(path);
-+		}
+ 	ASSERT(leaf != NULL);
  
--	ret = btrfs_search_slot(trans, root, &curr->key, path, -1, 1);
--	if (ret < 0)
--		goto delete_fail;
--	else if (ret > 0) {
- 		/*
--		 * can't find the item which the node points to, so this node
--		 * is invalid, just drop it.
-+		 * We unlock and relock on each iteration, this is to prevent
-+		 * blocking other tasks for too long while we are being run from
-+		 * the async context (work queue job). Those tasks are typically
-+		 * running system calls like creat/mkdir/rename/unlink/etc which
-+		 * need to add delayed items to this delayed node.
- 		 */
--		prev = curr;
--		curr = __btrfs_next_delayed_item(prev);
--		btrfs_release_delayed_item(prev);
--		ret = 0;
--		btrfs_release_path(path);
--		if (curr) {
--			mutex_unlock(&node->mutex);
--			goto do_again;
--		} else
--			goto delete_fail;
-+		mutex_unlock(&node->mutex);
+-	i = path->slots[0];
+-	last_item = btrfs_header_nritems(leaf) - 1;
++	slot = path->slots[0];
++	last_slot = btrfs_header_nritems(leaf) - 1;
+ 	/*
+ 	 * Our caller always gives us a path pointing to an existing item, so
+ 	 * this can not happen.
+ 	 */
+-	ASSERT(i <= last_item);
+-	if (WARN_ON(i > last_item))
++	ASSERT(slot <= last_slot);
++	if (WARN_ON(slot > last_slot))
+ 		return -ENOENT;
+ 
+-	next = item;
+-	INIT_LIST_HEAD(&head);
+-	btrfs_item_key_to_cpu(leaf, &key, i);
+-	nitems = 0;
++	nitems = 1;
++	curr = item;
++	list_add_tail(&curr->tree_list, &batch_list);
++
+ 	/*
+-	 * count the number of the dir index items that we can delete in batch
++	 * Keep checking if the next delayed item matches the next item in the
++	 * leaf - if so, we can add it to the batch of items to delete from the
++	 * leaf.
+ 	 */
+-	while (btrfs_comp_cpu_keys(&next->key, &key) == 0) {
+-		list_add_tail(&next->tree_list, &head);
+-		nitems++;
++	while (slot < last_slot) {
++		struct btrfs_key key;
+ 
+-		curr = next;
+ 		next = __btrfs_next_delayed_item(curr);
+ 		if (!next)
+ 			break;
+ 
+-		if (!btrfs_is_continuous_delayed_item(curr, next))
++		slot++;
++		btrfs_item_key_to_cpu(leaf, &key, slot);
++		if (btrfs_comp_cpu_keys(&next->key, &key) != 0)
+ 			break;
+-
+-		i++;
+-		if (i > last_item)
+-			break;
+-		btrfs_item_key_to_cpu(leaf, &key, i);
++		nitems++;
++		curr = next;
++		list_add_tail(&curr->tree_list, &batch_list);
  	}
  
--	ret = btrfs_batch_delete_items(trans, root, path, curr);
--	if (ret)
--		goto delete_fail;
--	btrfs_release_path(path);
--	mutex_unlock(&node->mutex);
--	goto do_again;
+-	/*
+-	 * Our caller always gives us a path pointing to an existing item, so
+-	 * this can not happen.
+-	 */
+-	ASSERT(nitems >= 1);
+-	if (nitems < 1)
+-		return -ENOENT;
 -
--delete_fail:
--	btrfs_release_path(path);
--	mutex_unlock(&node->mutex);
- 	return ret;
+ 	ret = btrfs_del_items(trans, root, path, path->slots[0], nitems);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+-	list_for_each_entry_safe(curr, next, &head, tree_list) {
++	list_for_each_entry_safe(curr, next, &batch_list, tree_list) {
+ 		btrfs_delayed_item_release_metadata(root, curr);
+ 		list_del(&curr->tree_list);
+ 		btrfs_release_delayed_item(curr);
+ 	}
+ 
+-out:
+-	return ret;
++	return 0;
  }
  
+ static int btrfs_delete_delayed_items(struct btrfs_trans_handle *trans,
 -- 
 2.35.1
 
