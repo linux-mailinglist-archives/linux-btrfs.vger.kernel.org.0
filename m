@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EDC538975
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 May 2022 03:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A99F538D9B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 May 2022 11:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239853AbiEaBMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 May 2022 21:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
+        id S242782AbiEaJXV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 May 2022 05:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243067AbiEaBMb (ORCPT
+        with ESMTP id S233986AbiEaJXU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 May 2022 21:12:31 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FFB27CFA
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 May 2022 18:12:27 -0700 (PDT)
-Received: from [76.132.34.178] (port=59098 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1nvpiT-0007di-M7 by authid <merlins.org> with srv_auth_plain; Mon, 30 May 2022 18:12:24 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1nvqQq-007K8B-Mh; Mon, 30 May 2022 18:12:24 -0700
-Date:   Mon, 30 May 2022 18:12:24 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220531011224.GA1745079@merlins.org>
-References: <20220529180510.GG24951@merlins.org>
- <CAEzrpqfqD8jkznVQR1SL-YpF0ALx7Pbg+ptz7dVgRecOXeDtPg@mail.gmail.com>
- <20220529194235.GH24951@merlins.org>
- <CAEzrpqfd2jPWxUayfqyYRDN25-etc4_jgzcHmZ3LhGkb4e7Tsw@mail.gmail.com>
- <20220529200415.GI24951@merlins.org>
- <CAEzrpqdpvnbzaH1gxWnvWLMWEKtOAdYsH25mBWhkF-urf7Zw3g@mail.gmail.com>
- <20220530003701.GJ24951@merlins.org>
- <CAEzrpqcPirk3AOi1vy+N_V3VY49mvUCiwYL4A_0XoT_jxjgOrg@mail.gmail.com>
- <20220530191834.GK24951@merlins.org>
- <CAEzrpqdRV8nYFshj85Cahj4VMQ+F0n6WOQ6Y8g7=Kq7X_1xMgw@mail.gmail.com>
+        Tue, 31 May 2022 05:23:20 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C55344CF
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 02:23:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2C88721AFD
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 09:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1653988995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=hfpMJB9/Ipar6Oqjoo/omUq+D9DU2New8CXBvO9T3vM=;
+        b=pE6Zn22bIst30Ppmzi5bbzrYZzZTOcLNjVUXFT0drj5jDQcfpNYsiGaDcWd+3OKaC7aAM0
+        n61FyoY64v9gYbghFMpwbQZphlkHnV6E/h4pDq7cmc7Lf6OIbCPPyOCbm6XNz1Tw6Ipdya
+        vCUyezydqyFzlCgSSmA4Yn4KAKzhArM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FC39132F9
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 09:23:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id D4yiEYLelWLIDwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 09:23:14 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add btrfs_debug() output for every bio submitted by btrfs RAID56
+Date:   Tue, 31 May 2022 17:22:56 +0800
+Message-Id: <de8cc48c6141a20fb2ccf2b774981b150caee27b.1653988869.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqdRV8nYFshj85Cahj4VMQ+F0n6WOQ6Y8g7=Kq7X_1xMgw@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
-X-SA-Exim-Connect-IP: 76.132.34.178
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,65 +57,179 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 30, 2022 at 04:53:13PM -0400, Josef Bacik wrote:
-> On Mon, May 30, 2022 at 3:18 PM Marc MERLIN <marc@merlins.org> wrote:
-> >
-> > On Sun, May 29, 2022 at 09:14:23PM -0400, Josef Bacik wrote:
-> > > Ah ok that makes sense, fixed it, sorry about that.  Thanks,
-> >
-> > Same?
-> 
-> Bah my bad, we fail earlier than I realized, should work now.  Thanks,
+For the later incoming RAID56J, it's better to know each bio we're
+submitting from btrfs RAID56 layer.
 
-gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
-WARNING: cannot read chunk root, continue anyway
-none of our backups was sufficient, scanning for a root
-scanning, best has 0 found 1 bad
-ret is 0 offset 20971520 len 8388608
-ret is -2 offset 20971520 len 8388608
-checking block 22495232 generation 1572124 fs info generation 2582703
-trying bytenr 22495232 got 1 blocks 0 bad
-checking block 22462464 generation 1479229 fs info generation 2582703
-trying bytenr 22462464 got 1 blocks 0 bad
-checking block 22528000 generation 1572115 fs info generation 2582703
-trying bytenr 22528000 got 1 blocks 0 bad
-checking block 22446080 generation 1571791 fs info generation 2582703
-trying bytenr 22446080 got 1 blocks 0 bad
-checking block 22544384 generation 1556078 fs info generation 2582703
-trying bytenr 22544384 got 1 blocks 0 bad
-checking block 22511616 generation 1555799 fs info generation 2582703
-trying bytenr 22511616 got 1 blocks 0 bad
-checking block 22577152 generation 1586277 fs info generation 2582703
-trying bytenr 22577152 got 1 blocks 0 bad
-checking block 22478848 generation 1561557 fs info generation 2582703
-trying bytenr 22478848 got 1 blocks 0 bad
-checking block 22593536 generation 1590219 fs info generation 2582703
-trying bytenr 22593536 got 1 blocks 0 bad
-checking block 22609920 generation 1551635 fs info generation 2582703
-trying bytenr 22609920 got 1 blocks 0 bad
-checking block 22560768 generation 1590217 fs info generation 2582703
-trying bytenr 22560768 got 1 blocks 0 bad
-No mapping for 15645202989056-15645203005440
-Couldn't map the block 15645202989056
-Couldn't map the block 15645202989056
-No mapping for 15645202907136-15645202923520
-Couldn't map the block 15645202907136
-Couldn't map the block 15645202907136
-No mapping for 15645202989056-15645203005440
-Couldn't map the block 15645202989056
-Couldn't map the block 15645202989056
-No mapping for 15645202989056-15645203005440
-Couldn't map the block 15645202989056
-Couldn't map the block 15645202989056
-No mapping for 15645202907136-15645202923520
-Couldn't map the block 15645202907136
-Couldn't map the block 15645202907136
-none of our backups was sufficient, scanning for a root
-scanning, best has 0 found 1 bad
-ERROR: Couldn't find a valid root block for 1, we're going to clear it and hope for the best
-Tree recover failed
+The output will look like this:
 
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ BTRFS debug (device dm-4): partial rmw, full stripe=389152768 opf=0x0 devid=3 type=1 offset=16384 physical=323043328 len=49152
+ BTRFS debug (device dm-4): partial rmw, full stripe=389152768 opf=0x0 devid=1 type=2 offset=0 physical=67174400 len=65536
+ BTRFS debug (device dm-4): full stripe rmw, full stripe=389152768 opf=0x1 devid=3 type=1 offset=0 physical=323026944 len=16384
+ BTRFS debug (device dm-4): full stripe rmw, full stripe=389152768 opf=0x1 devid=2 type=-1 offset=0 physical=323026944 len=16384
+
+The above debug output is from a 16K data write into an empty RAID56
+data chunk.
+
+Some explanation on them:
+ opf:		bio operation
+ devid:		btrfs devid
+ type:		raid stripe type.
+		>=1 are the Nth data stripe.
+		-1 for P stripe, -2 for Q stripe.
+		0 for error (btrfs device not found)
+ offset:	the offset inside the stripe.
+ physical:	the physical offset the bio is for
+ len:		the lenghth of the bio
+
+The first two lines are from partial RMW read, which is reading the
+remaining data stripes from disks.
+
+The last two lines are for full stripe RMW write, which is writing the
+involved two 16K stripes (one for data1, one for parity).
+The stripe for data2 is doesn't need to be written.
+
+To enable any btrfs_debug() output, it's recommended to use kernel
+dynamic debug interface.
+
+For this RAID56 example:
+
+  # echo 'file fs/btrfs/raid56.c +p' > /sys/kernel/debug/dynamic_debug/control
+
+Above command will enable all `btrfs_debug()` in fs/btrfs/raid56.c,
+currently there is only one callsite inside that file.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/raid56.c | 81 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 81 insertions(+)
+
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 88640f7e1622..65073abd92ab 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -1257,6 +1257,82 @@ static void index_rbio_pages(struct btrfs_raid_bio *rbio)
+ 	spin_unlock_irq(&rbio->bio_list_lock);
+ }
  
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
++/*
++ * Return 0 if we can not get the device for it.
++ * Return >=1 for the nth data stripe.
++ * Return -1 for P stripe.
++ * Return -2 for Q stripe.
++ */
++static int bio_get_stripe_type(struct btrfs_raid_bio *rbio, struct bio *bio)
++{
++	int i;
++
++	if (!bio->bi_bdev)
++		return 0;
++
++	for (i = 0; i < rbio->bioc->num_stripes; i++) {
++		if (bio->bi_bdev == rbio->bioc->stripes[i].dev->bdev) {
++			/* For data stripe, we need to add one. */
++			if (i < rbio->nr_data)
++				return i + 1;
++
++			/* P stripe. */
++			if (i == rbio->nr_data)
++				return -1;
++			/* Q stripe. */
++			return -2;
++		}
++	}
++	return 0;
++}
++
++/*
++ * Return the devid of a bio for RAID56 profile.
++ * Return (u64)-1 if we can not find the btrfs device for it.
++ */
++static u64 bio_get_btrfs_devid(struct btrfs_raid_bio *rbio, struct bio *bio)
++{
++	int i;
++
++	if (!bio->bi_bdev)
++		return -1;
++
++	for (i = 0; i < rbio->bioc->num_stripes; i++) {
++		if (bio->bi_bdev == rbio->bioc->stripes[i].dev->bdev)
++			return rbio->bioc->stripes[i].dev->devid;
++	}
++	return -1;
++}
++
++/* Return the offset inside its (data/P/Q) stripe */
++static int bio_get_offset(struct btrfs_raid_bio *rbio, struct bio *bio)
++{
++	int i;
++
++	if (!bio->bi_bdev)
++		return -1;
++
++	for (i = 0; i < rbio->bioc->num_stripes; i++) {
++		if (bio->bi_bdev == rbio->bioc->stripes[i].dev->bdev)
++			return (bio->bi_iter.bi_sector << SECTOR_SHIFT) -
++				rbio->bioc->stripes[i].physical;
++	}
++	return -1;
++}
++
++static void debug_raid_bio(struct btrfs_raid_bio *rbio, struct bio *bio,
++			   const char *prefix)
++{
++	btrfs_debug(rbio->bioc->fs_info,
++		"%s, full stripe=%llu opf=0x%x devid=%lld type=%d offset=%d physical=%llu len=%u",
++		prefix, rbio->bioc->raid_map[0], bio_op(bio),
++		bio_get_btrfs_devid(rbio, bio),
++		bio_get_stripe_type(rbio, bio),
++		bio_get_offset(rbio, bio),
++		bio->bi_iter.bi_sector << SECTOR_SHIFT,
++		bio->bi_iter.bi_size);
++}
++
+ /*
+  * this is called from one of two situations.  We either
+  * have a full stripe from the higher layers, or we've read all
+@@ -1422,6 +1498,7 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+ 	while ((bio = bio_list_pop(&bio_list))) {
+ 		bio->bi_end_io = raid_write_end_io;
+ 
++		debug_raid_bio(rbio, bio, "full stripe rmw");
+ 		submit_bio(bio);
+ 	}
+ 	return;
+@@ -1683,6 +1760,7 @@ static int raid56_rmw_stripe(struct btrfs_raid_bio *rbio)
+ 
+ 		btrfs_bio_wq_end_io(rbio->bioc->fs_info, bio, BTRFS_WQ_ENDIO_RAID56);
+ 
++		debug_raid_bio(rbio, bio, "partial rmw");
+ 		submit_bio(bio);
+ 	}
+ 	/* the actual write will happen once the reads are done */
+@@ -2256,6 +2334,7 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
+ 
+ 		btrfs_bio_wq_end_io(rbio->bioc->fs_info, bio, BTRFS_WQ_ENDIO_RAID56);
+ 
++		debug_raid_bio(rbio, bio, "parity recover");
+ 		submit_bio(bio);
+ 	}
+ 
+@@ -2625,6 +2704,7 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 	while ((bio = bio_list_pop(&bio_list))) {
+ 		bio->bi_end_io = raid_write_end_io;
+ 
++		debug_raid_bio(rbio, bio, "scrub parity");
+ 		submit_bio(bio);
+ 	}
+ 	return;
+@@ -2804,6 +2884,7 @@ static void raid56_parity_scrub_stripe(struct btrfs_raid_bio *rbio)
+ 
+ 		btrfs_bio_wq_end_io(rbio->bioc->fs_info, bio, BTRFS_WQ_ENDIO_RAID56);
+ 
++		debug_raid_bio(rbio, bio, "scrub stripe");
+ 		submit_bio(bio);
+ 	}
+ 	/* the actual write will happen once the reads are done */
+-- 
+2.36.1
+
