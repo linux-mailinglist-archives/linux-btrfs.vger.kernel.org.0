@@ -2,155 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7872553A78D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 16:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A927253A91E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 16:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354183AbiFAOCI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 10:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
+        id S1354978AbiFAOZt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 10:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354547AbiFAOAl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 10:00:41 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607CF10FCF
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 06:57:00 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z20so1793991iof.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jun 2022 06:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ld+i7oJ40SEWA4Mli6OSsqxa3RbbNFUpGDc/xfmigyU=;
-        b=KOnZd1TzW56Cj7qgcEatoMe7FkisZm9LUOhPVFucbj0DL5+L5kbjY0M0ujPfreAOlu
-         qCIytOBbK4GuchYvod/PQYbsLiAZiWoFSAuXt7Ce84kAYpxIoBzPWpBhES8Nc9R5z/Ri
-         D7DXVOK6/O0cz4ksj9NIR1WPyjO3lOmzExpD5rw451yZ7kWqjt0L49LIBpmBI2uaMJKs
-         lKh9GZ2Rct3rGGaDGgqaBuaIux1KqNEwsDR5/giofOhOu3oo2C5nuEXwI21s2NYTi4Mj
-         JGm22oALqQD693fOMdYLZaFogxQdezuZIUwMwjwxvtybNoi0YrntizdI23bqSVdCp+fC
-         pxlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ld+i7oJ40SEWA4Mli6OSsqxa3RbbNFUpGDc/xfmigyU=;
-        b=dKRm4veVsWnZvzYvuIAvym+hmSE3vkR66uH7AUIECh3vrNM6HYLjHqk10nAMZuBiom
-         RIdd/Ul6mltKqI9oN86MZCr7jzn4jg7mrORBswXobFYifcWAhiQA+XfkorAhrkmOIGZq
-         Khk0xh14fmjjbE6qiuG0dLLB+Rc6tL/nhkZdtz9ojQvHGCBHiHpnyvxuqleKXwqpITQP
-         428xmyQbLTobxrej0MPJaTP0Kwr3hgllx8jVvMtdCv+9j7/2nCW1JCQJ1f4MYh6oi+Om
-         kkig4Cfi1v2uiHZv2AxsWkrzyuGV9jP18PxeyUUE/Z7pGkA3shDZWkICjkemiBFHKLX9
-         3frw==
-X-Gm-Message-State: AOAM532DDY5YZaPwovbrsLw+1/wM7IjjWV32sTeDkJ93vYEINSqsgHRH
-        U0bwUcamaa5H/D52+WrxVvBRzpTxC8vIKqXWd6mdL3tmJjY=
-X-Google-Smtp-Source: ABdhPJwhM5HaR+MxhYKVAAvrs/E3HxVmAUKwd07mbCTV6uki8RgZhpugJy7BQimVDQ9sU1b5IyrnFMlGUmEeQcGnW3Q=
-X-Received: by 2002:a02:ccc2:0:b0:331:4f1f:1e9 with SMTP id
- k2-20020a02ccc2000000b003314f1f01e9mr18794jaq.218.1654091785210; Wed, 01 Jun
- 2022 06:56:25 -0700 (PDT)
+        with ESMTP id S1355507AbiFAOZh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 10:25:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F9F32EFF
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 07:16:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 33585219D0;
+        Wed,  1 Jun 2022 14:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654092996;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vhMYiKOG4U6IQqQf26YYVuqgJwChN7/cJjB18haHOag=;
+        b=D1W7L2l0fK2OYf3YmbdbGNQ/rzpNkmzlx+r9sdXL1UlOmim2Zy+3wcvA8h9lGMuUONw6cM
+        pHzc/Os7/Lzjf+8I+x97DrALTwRWwtR0hBfVl9OBfvLY9+wLQVTtt0SZaVA1mV0WD99FyT
+        MGAxyknEIc7iSuf5GxSB3bE5TG2e7qc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654092996;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vhMYiKOG4U6IQqQf26YYVuqgJwChN7/cJjB18haHOag=;
+        b=abJXKZTjjp6+2S+Zt41LiovyvKGxyU/MU7zF7RRLbiPzKTXMYFWkFCfRtcQ4U4zLAKBTXp
+        xeWNaeequw9n61Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0CE613A8F;
+        Wed,  1 Jun 2022 14:16:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tkaROcN0l2LvEAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 01 Jun 2022 14:16:35 +0000
+Date:   Wed, 1 Jun 2022 16:12:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add RAID56 submitted bio trace events
+Message-ID: <20220601141209.GO20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <56cbf892eb0bec3b26da3e26f46537e94fb358af.1654076723.git.wqu@suse.com>
 MIME-Version: 1.0
-References: <20220530191834.GK24951@merlins.org> <CAEzrpqdRV8nYFshj85Cahj4VMQ+F0n6WOQ6Y8g7=Kq7X_1xMgw@mail.gmail.com>
- <20220531011224.GA1745079@merlins.org> <CAEzrpqco_RyUBK=dngrv54u8WE2uhSGrJaB9aRY5nUmKNzN32Q@mail.gmail.com>
- <20220531224951.GC22722@merlins.org> <CAEzrpqcui3A42ogkas9pQfMqX0qE+MApPuiUw12uwpqhNq2RHg@mail.gmail.com>
- <20220601002552.GD22722@merlins.org> <CAEzrpqfkrD4aYA3vMToi+vfYeoyj=h4JAx+xnGQj836FP+pbjg@mail.gmail.com>
- <20220601012919.GE22722@merlins.org> <CAEzrpqc_sCu18+tfP9E1Z3+kj70ss7nH-YTnEu0Rw_QQxPWTUQ@mail.gmail.com>
- <20220601031536.GD1745079@merlins.org>
-In-Reply-To: <20220601031536.GD1745079@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 1 Jun 2022 09:56:14 -0400
-Message-ID: <CAEzrpqfw85GnLUq8=vywej1Gb6vjcgKUYucLw9DgoSaWEbyZbg@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56cbf892eb0bec3b26da3e26f46537e94fb358af.1654076723.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 31, 2022 at 11:15 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Tue, May 31, 2022 at 10:10:49PM -0400, Josef Bacik wrote:
-> > On Tue, May 31, 2022 at 9:29 PM Marc MERLIN <marc@merlins.org> wrote:
-> > >
-> > > On Tue, May 31, 2022 at 09:26:03PM -0400, Josef Bacik wrote:
-> > > > On Tue, May 31, 2022 at 8:25 PM Marc MERLIN <marc@merlins.org> wrote:
-> > > > >
-> > > > > On Tue, May 31, 2022 at 08:14:27PM -0400, Josef Bacik wrote:
-> > > > > > Wtf, we're clearly writing the chunk root properly because I have to
-> > > > > > re-open it to recover the tree root, and that's where it fails, but
-> > > > > > then the chunk restore can't open the root, despite it being correctly
-> > > > > > read in the tree recover.  I've pushed new code, try tree-recover and
-> > > > > > then recover-chunks again and capture the output please.  Thanks,
-> > > > >
-> > > > > gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue recover-chunks /dev/mapper/dshelf1
-> > > > > checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-> > > > > checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-> > > > > checksum verify failed on 21135360 wanted 0x00000000 found 0x3533f3b5
-> > > >
-> > > > Ah ok, I wasn't actually updating the pointer, fixed that, lets try
-> > > > the same sequence again.  Thanks,
-> > >
-> >
-> > Ok backup roots don't work if we didn't read them, try again please.  Thanks,
->
-> gargamel:/var/local/src/btrfs-progs-josefbacik# git pull
-> Already up-to-date.
-> gargamel:/var/local/src/btrfs-progs-josefbacik# gdb ./btrfs rescue tree-recover /dev/mapper/dshelf1
-> Excess command line arguments ignored. (tree-recover ...)
-> GNU gdb (Debian 7.12-6+b2) 7.12.0.20161007-git
-> Copyright (C) 2016 Free Software Foundation, Inc.
-> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-> and "show warranty" for details.
-> This GDB was configured as "x86_64-linux-gnu".
-> Type "show configuration" for configuration details.
-> For bug reporting instructions, please see:
-> <http://www.gnu.org/software/gdb/bugs/>.
-> Find the GDB manual and other documentation resources online at:
-> <http://www.gnu.org/software/gdb/documentation/>.
-> For help, type "help".
-> Type "apropos word" to search for commands related to "word"...
-> Reading symbols from ./btrfs...done.
-> /var/local/src/btrfs-progs-josefbacik/rescue: No such file or directory.
-> (gdb) run rescue tree-recover /dev/mapper/dshelf1
-> Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue tree-recover /dev/mapper/dshelf1
-> [Thread debugging using libthread_db enabled]
-> Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
-> WARNING: cannot read chunk root, continue anyway
-> none of our backups was sufficient, scanning for a root
-> scanning, best has 0 found 1 bad
-> ret is 0 offset 20971520 len 8388608
-> ret is -2 offset 20971520 len 8388608
-> checking block 22495232 generation 1572124 fs info generation 2582703
-> trying bytenr 22495232 got 1 blocks 0 bad
-> checking block 22462464 generation 1479229 fs info generation 2582703
-> trying bytenr 22462464 got 1 blocks 0 bad
-> checking block 22528000 generation 1572115 fs info generation 2582703
-> trying bytenr 22528000 got 1 blocks 0 bad
-> checking block 22446080 generation 1571791 fs info generation 2582703
-> trying bytenr 22446080 got 1 blocks 0 bad
-> checking block 22544384 generation 1556078 fs info generation 2582703
-> trying bytenr 22544384 got 1 blocks 0 bad
-> checking block 22511616 generation 1555799 fs info generation 2582703
-> trying bytenr 22511616 got 1 blocks 0 bad
-> checking block 22577152 generation 1586277 fs info generation 2582703
-> trying bytenr 22577152 got 1 blocks 0 bad
-> checking block 22478848 generation 1561557 fs info generation 2582703
-> trying bytenr 22478848 got 1 blocks 0 bad
-> checking block 22593536 generation 1590219 fs info generation 2582703
-> trying bytenr 22593536 got 1 blocks 0 bad
-> checking block 22609920 generation 1551635 fs info generation 2582703
-> trying bytenr 22609920 got 1 blocks 0 bad
-> checking block 22560768 generation 1590217 fs info generation 2582703
-> trying bytenr 22560768 got 1 blocks 0 bad
-> ret is 0 offset 20971520 len 8388608
-> ret is -2 offset 20971520 len 8388608
-> setting chunk root to 22593536
->
+On Wed, Jun 01, 2022 at 05:46:59PM +0800, Qu Wenruo wrote:
+> For the later incoming RAID56J, it's better to know each bio we're
+> submitting from btrfs RAID56 layer, so this patch will introduce the
+> trace events for every bio submitted by btrfs RAID56 layer.
 
-Sigh, try again please.  Thanks,
+I'd phrase that it's useful in general, not in connection with some RFC
+patchset.
 
-Josef
+> The output looks like this: (trace event header and UUID skipped)
+> 
+>    raid56_read_partial: full_stripe=389152768 devid=3 type=DATA1 offset=32768 opf=0x0 physical=323059712 len=32768
+>    raid56_read_partial: full_stripe=389152768 devid=1 type=DATA2 offset=0 opf=0x0 physical=67174400 len=65536
+>    raid56_write_stripe: full_stripe=389152768 devid=3 type=DATA1 offset=0 opf=0x1 physical=323026944 len=32768
+>    raid56_write_stripe: full_stripe=389152768 devid=2 type=PQ1 offset=0 opf=0x1 physical=323026944 len=32768
+> 
+> The above debug output is from a 32K data write into an empty RAID56
+> data chunk.
+> 
+> Some explanation on the event output:
+>  full_stripe:	the logical bytenr of the full stripe
+>  devid:		btrfs devid
+>  type:		raid stripe type.
+> 		DATA1:	the first data stripe
+> 		DATA2:	the second data stripe
+> 		PQ1:	the P stripe
+> 		PQ2:	the Q stripe
+>  offset:	the offset inside the stripe.
+>  opf:		the bio op type
+>  physical:	the physical offset the bio is for
+>  len:		the length of the bio
+> 
+> The first two lines are from partial RMW read, which is reading the
+> remaining data stripes from disks.
+> 
+> The last two lines are for full stripe RMW write, which is writing the
+> involved two 16K stripes (one for DATA1 stripe, one for P stripe).
+> The stripe for DATA2 doesn't need to be written.
+> 
+> There are 5 types of trace events:
+> - raid56_read_partial
+>   Read remaining data for regular read/write path.
+> 
+> - raid56_write_stripe
+>   Write the modified stripes for regular read/write path.
+> 
+> - raid56_scrub_read_recover
+>   Read remaining data for scrub recovery path.
+> 
+> - raid56_scrub_write_stripe
+>   Write the modified stripes for scrub path.
+> 
+> - raid56_scrub_read
+>   Read remaining data for scrub path.
+> 
+> Also, since the trace events are included at super.c, we have to export
+> needed structure definitions into "raid56.h" and include the header in
+> super.c, or we're unable to access those members.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+> @@ -1426,8 +1322,13 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+>  	BUG_ON(atomic_read(&rbio->stripes_pending) == 0);
+>  
+>  	while ((bio = bio_list_pop(&bio_list))) {
+> +		struct raid56_bio_trace_info trace_info = {0};
+
+						          { 0 }
+> +
+>  		bio->bi_end_io = raid_write_end_io;
+>  
+> +		if (trace_raid56_write_stripe_enabled())
+> +			bio_get_trace_info(rbio, bio, &trace_info);
+> +		trace_raid56_write_stripe(rbio, bio, &trace_info);
+
+The definition of trace_info and the call to trace_... should be inside
+the if body.
+
+>  		submit_bio(bio);
+>  	}
+>  	return;
+> --- a/fs/btrfs/raid56.h
+> +++ b/fs/btrfs/raid56.h
+> @@ -7,6 +7,163 @@
+>  #ifndef BTRFS_RAID56_H
+>  #define BTRFS_RAID56_H
+>  
+> +#include <linux/workqueue.h>
+> +#include "volumes.h"
+> +
+> +enum btrfs_rbio_ops {
+> +	BTRFS_RBIO_WRITE,
+> +	BTRFS_RBIO_READ_REBUILD,
+> +	BTRFS_RBIO_PARITY_SCRUB,
+> +	BTRFS_RBIO_REBUILD_MISSING,
+> +};
+> +
+> +struct btrfs_raid_bio {
+> +	struct btrfs_io_context *bioc;
+> +
+> +	/* while we're doing rmw on a stripe
+> +	 * we put it into a hash table so we can
+> +	 * lock the stripe and merge more rbios
+> +	 * into it.
+> +	 */
+
+Moved comments should be reformatted and fixed.
+
+> +/*
+> + * For trace event usage only. Records useful debug info for each bio submitted
+> + * by RAID56 to each physical device.
+> + *
+> + * No matter signed or not, (-1) is always the one indicating we can not grab
+> + * the proper stripe number.
+> + */
+> +struct raid56_bio_trace_info {
+> +	u64 devid;
+> +
+> +	/* The offset inside the stripe. (<= STRIPE_LEN) */
+> +	u32 offset;
+> +
+> +	/*
+> +	 * Stripe number.
+> +	 * 0 is the first data stripe, and nr_data for P stripe,
+> +	 * nr_data + 1 for Q stripe.
+> +	 * >= real_stripes for 
+
+This looks unfinished, please let me know what to write the I'll update
+the commit.
+
+> +	 */
+> +	u8 stripe_nr;
+
+Besides the above comment, I've reformatted the comments and moved the
+tracepoint under the _enabled() condition, patch in misc-next. Thanks.
