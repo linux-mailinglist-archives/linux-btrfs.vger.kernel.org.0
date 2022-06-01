@@ -2,47 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A6053AAE1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 18:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F4553AB06
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 18:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356058AbiFAQUr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 12:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
+        id S1347929AbiFAQZQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 12:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345836AbiFAQUq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 12:20:46 -0400
+        with ESMTP id S1345573AbiFAQZP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 12:25:15 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E4B7938A
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 09:20:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A758D6A5
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 09:25:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4C9AFB8190F
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 16:20:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99576C385A5;
-        Wed,  1 Jun 2022 16:20:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3A399B8190F
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 16:25:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86A86C385B8;
+        Wed,  1 Jun 2022 16:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654100443;
-        bh=aLkWtRRDmD6L8w53q9OOTlg1C+caQR92dnC1KgLUoC8=;
+        s=k20201202; t=1654100711;
+        bh=4BpFXtzX1gA1uqy4/JDRojTWEHRxPkxsDN1tqSov8u8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MN+lBwo3YE87GtJawBpOMCz+1ND8oL309xWi2kH4wdYACHBOSF+sjUbBdx6hgKEKw
-         9EYSnAzvZRHjv9aq4sy+cXgyRCDLlbppj809iyQvdvqPGLf370Xkh3Q94UHy7h7/6N
-         Y+X/WY8Vgdl9dEenYMdXWhu4Y6T+MtMQejDpkSFvPGs6j+v5nVcPVeLiX35ivx4xqt
-         8vj2uRDlt0VQ4tV8s89L5p7TgUq8fwokj6M85yO+KM/IPjLYYMYC/SaaN2jjTgz4pO
-         mEIJicRoNXekoZ8hUxmz3t+5RCGItosH/fcyIuVp0HhQ6vskXHjiJigCBOLBL+Wdsc
-         BkDGt7CYCQ+Fw==
-Date:   Wed, 1 Jun 2022 17:20:40 +0100
+        b=V9ro7WGXY8woMCsPiFVdqgtcIQUrzaE4fuak8HU1b9hDbxmk3CQTEgf3VCnyJf0kj
+         N9qGDAvHYyRgsWMYa0mai6SsFmmeL+qjY+37Kvn9yHSoIvLOeKjmmb9zcXGsZdS4ti
+         oszE4GxusG8vJqip+C7Qgx7y5se0DboaMxkMWcCADy6SuSDxEjloOgh7T6GicQ0vJL
+         0aSto98QrJF0JPRsxWnbCEuvFX2QJuITtnKsiqIQtZsoTsmBRh5gE8a3stuU7GHds9
+         fQdzqDb1cj3sXxvrK4xeS+adLF7FTPemmXx9M2n2JzGy2bqw/vDsfPxGI6tjdSJIXl
+         pHuV/5rb34ugQ==
+Date:   Wed, 1 Jun 2022 17:25:08 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs: fix deadlock with fsync+fiemap+full sync
-Message-ID: <20220601162040.GA3307738@falcondesktop>
+Subject: Re: [PATCH 1/2] btrfs: make the return value for log syncing
+ consistent
+Message-ID: <20220601162508.GB3307738@falcondesktop>
 References: <cover.1654096526.git.josef@toxicpanda.com>
- <b069a36b638b96c599b5d31d46d789039341ad9f.1654096526.git.josef@toxicpanda.com>
+ <249998ea8b056e9d69d85f32c1996a34a305c4c3.1654096526.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b069a36b638b96c599b5d31d46d789039341ad9f.1654096526.git.josef@toxicpanda.com>
+In-Reply-To: <249998ea8b056e9d69d85f32c1996a34a305c4c3.1654096526.git.josef@toxicpanda.com>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,150 +54,121 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 11:16:25AM -0400, Josef Bacik wrote:
-> We are hitting the following deadlock in production occasionally
-> 
-> Task 1		Task 2		Task 3		Task 4		Task 5
-> 		fsync(A)
-> 		 start trans
-> 						start commit
-> 				falloc(A)
-> 				 lock 5m-10m
-> 				 start trans
-> 				  wait for commit
-> fiemap(A)
->  lock 0-10m
->   wait for 5m-10m
->    (have 0-5m locked)
-> 
-> 		 have btrfs_need_log_full_commit
-> 		  !full_sync
-> 		  wait_ordered_extents
-> 								finish_ordered_io(A)
-> 								lock 0-5m
-> 								DEADLOCK
-> 
-> We have an existing dependency of file extent lock -> transaction.
-> However in fsync if we tried to do the fast logging, but then had to
-> fall back to committing the transaction, we will be forced to call
-> btrfs_wait_ordered_range() to make sure all of our extents are updated.
-> 
-> This creates a dependency of transaction -> file extent lock, because
-> btrfs_finish_ordered_io() will need to take the file extent lock in
-> order to run the ordered extents.
-> 
-> Fix this by stopping the transaction if we have to do the full commit
-> and we attempted to do the fast logging.  Then attach to the transaction
-> and commit it if we need to.
-
-The subject is confusing, it mentions deadlock with "full fsync". With that
-you mean a transaction commit, and not the slow fsync mode (related to the
-inode flag BTRFS_INODE_NEEDS_FULL_SYNC). And looking at the diagram and the
-code we mention !full_sync, the fast fsync path, so that makes it even more
-confusing.
-
-Can we replace "full fsync" with transaction commit (subject)?
-
+On Wed, Jun 01, 2022 at 11:16:24AM -0400, Josef Bacik wrote:
+> Currently we will return 1 or -EAGAIN if we decide we need to commit
+> the transaction rather than sync the log.  In practice this doesn't
+> really matter, we interpret any !0 and !BTRFS_NO_LOG_SYNC as needing to
+> commit the transaction.  However this makes it hard to figure out what
+> the correct thing to do is.  Fix this up by defining
+> BTRFS_LOG_FORCE_COMMIT and using this in all the places where we want to
+> force the transaction to be committed.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/file.c | 67 ++++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 52 insertions(+), 15 deletions(-)
+>  fs/btrfs/tree-log.c | 18 +++++++++---------
+>  fs/btrfs/tree-log.h |  3 +++
+>  2 files changed, 12 insertions(+), 9 deletions(-)
 > 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 1fd827b99c1b..9c799731cc70 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -2323,25 +2323,62 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
->  	 */
->  	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 1201f083d4db..d898ba13285f 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -171,7 +171,7 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+>  		int index = (root->log_transid + 1) % 2;
 >  
-> -	if (ret != BTRFS_NO_LOG_SYNC) {
-> +	if (ret == BTRFS_NO_LOG_SYNC) {
-> +		ret = btrfs_end_transaction(trans);
-> +		goto out;
-> +	}
-> +
-> +	/* We successfully logged the inode, attempt to sync the log. */
-> +	if (!ret) {
-> +		ret = btrfs_sync_log(trans, root, &ctx);
->  		if (!ret) {
-> -			ret = btrfs_sync_log(trans, root, &ctx);
-> -			if (!ret) {
-> -				ret = btrfs_end_transaction(trans);
-> -				goto out;
-> -			}
-> -		}
-> -		if (!full_sync) {
-> -			ret = btrfs_wait_ordered_range(inode, start, len);
-> -			if (ret) {
-> -				btrfs_end_transaction(trans);
-> -				goto out;
-> -			}
-> +			ret = btrfs_end_transaction(trans);
-> +			goto out;
+>  		if (btrfs_need_log_full_commit(trans)) {
+> -			ret = -EAGAIN;
+> +			ret = BTRFS_LOG_FORCE_COMMIT;
+>  			goto out;
 >  		}
-> -		ret = btrfs_commit_transaction(trans);
-> -	} else {
-> +	}
-> +
-> +	/*
-> +	 * At this point we need to commit the transaction because we had
-> +	 * btrfs_need_log_full_commit() or some other error.
-> +	 *
-> +	 * If we didn't do a full sync we have to stop the trans handle, wait on
-> +	 * the ordered extents, start it again and commit the transaction.  If
-> +	 * we attempt to wait on the ordered extents here we could deadlock with
-> +	 * something like fallocate() that is holding the extent lock trying to
-> +	 * start a transaction while some other thread is trying to commit the
-> +	 * transaction while we (fsync) are currently holding the transaction
-> +	 * open.
-> +	 */
-> +	if (!full_sync) {
->  		ret = btrfs_end_transaction(trans);
-> +		if (ret)
-> +			goto out;
-> +		ret = btrfs_wait_ordered_range(inode, start, len);
+>  
+> @@ -194,7 +194,7 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+>  		 * writing.
+>  		 */
+>  		if (zoned && !created) {
+> -			ret = -EAGAIN;
+> +			ret = BTRFS_LOG_FORCE_COMMIT;
+>  			goto out;
+>  		}
+>  
+> @@ -3121,7 +3121,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+>  
+>  	/* bail out if we need to do a full commit */
+>  	if (btrfs_need_log_full_commit(trans)) {
+> -		ret = -EAGAIN;
+> +		ret = BTRFS_LOG_FORCE_COMMIT;
+>  		mutex_unlock(&root->log_mutex);
+>  		goto out;
+>  	}
+> @@ -3222,7 +3222,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+>  		}
+>  		btrfs_wait_tree_log_extents(log, mark);
+>  		mutex_unlock(&log_root_tree->log_mutex);
+> -		ret = -EAGAIN;
+> +		ret = BTRFS_LOG_FORCE_COMMIT;
+>  		goto out;
+>  	}
+>  
+> @@ -3261,7 +3261,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+>  		blk_finish_plug(&plug);
+>  		btrfs_wait_tree_log_extents(log, mark);
+>  		mutex_unlock(&log_root_tree->log_mutex);
+> -		ret = -EAGAIN;
+> +		ret = BTRFS_LOG_FORCE_COMMIT;
+>  		goto out_wake_log_root;
+>  	}
+>  
+> @@ -5848,7 +5848,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+>  	    inode_only == LOG_INODE_ALL &&
+>  	    inode->last_unlink_trans >= trans->transid) {
+>  		btrfs_set_log_full_commit(trans);
+> -		ret = 1;
+> +		ret = BTRFS_LOG_FORCE_COMMIT;
+>  		goto out_unlock;
+>  	}
+>  
+> @@ -6562,12 +6562,12 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+>  	bool log_dentries = false;
+>  
+>  	if (btrfs_test_opt(fs_info, NOTREELOG)) {
+> -		ret = 1;
+> +		ret = BTRFS_LOG_FORCE_COMMIT;
+>  		goto end_no_trans;
+>  	}
+>  
+>  	if (btrfs_root_refs(&root->root_item) == 0) {
+> -		ret = 1;
+> +		ret = BTRFS_LOG_FORCE_COMMIT;
+>  		goto end_no_trans;
+>  	}
+>  
+> @@ -6665,7 +6665,7 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+>  end_trans:
+>  	if (ret < 0) {
+>  		btrfs_set_log_full_commit(trans);
+> -		ret = 1;
+> +		ret = BTRFS_LOG_FORCE_COMMIT;
+>  	}
+>  
+>  	if (ret)
+> diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+> index 1620f8170629..c3baa9d979a9 100644
+> --- a/fs/btrfs/tree-log.h
+> +++ b/fs/btrfs/tree-log.h
+> @@ -12,6 +12,9 @@
+>  /* return value for btrfs_log_dentry_safe that means we don't need to log it at all */
+>  #define BTRFS_NO_LOG_SYNC 256
+>  
+> +/* we can't use the tree log for whatever reason, force a transaction commit */
+> +#define BTRFS_LOG_FORCE_COMMIT 1
 
-We could wait only on the ordered extents collected at ctx.ordered_extents,
-like this it would avoid the need to flush and wait for any new writes that
-may have started after we unlocked the inode.
-
-There's no helper to just wait for a list of ordered extents, so that's
-probably why you made it like that, to make it as short as possible.
-
-But still, something to consider even if for later only.
-
+At btrfs_sync_file(), we shoudl also replace 1 with BTRFS_LOG_FORCE_COMMIT.
 Otherwise it looks good, thanks.
 
-> +		if (ret)
-> +			goto out;
 > +
-> +		/*
-> +		 * This is safe to use here because we're only interested in
-> +		 * making sure the transaction that had the ordered extents is
-> +		 * committed.  We aren't waiting on anything past this point,
-> +		 * we're purely getting the transaction and committing it.
-> +		 */
-> +		trans = btrfs_attach_transaction_barrier(root);
-> +		if (IS_ERR(trans)) {
-> +			ret = PTR_ERR(trans);
-> +
-> +			/*
-> +			 * We committed the transaction and there's no currently
-> +			 * running transaction, this means everything we care
-> +			 * about made it to disk and we are done.
-> +			 */
-> +			if (ret == -ENOENT)
-> +				ret = 0;
-> +			goto out;
-> +		}
->  	}
-> +
-> +	ret = btrfs_commit_transaction(trans);
->  out:
->  	ASSERT(list_empty(&ctx.list));
->  	err = file_check_and_advance_wb_err(file);
+>  struct btrfs_log_ctx {
+>  	int log_ret;
+>  	int log_transid;
 > -- 
 > 2.26.3
 > 
