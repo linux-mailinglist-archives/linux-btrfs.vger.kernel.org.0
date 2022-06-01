@@ -2,114 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF90653A08F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 11:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF0053A0A7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 11:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351131AbiFAJek (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 05:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
+        id S1351266AbiFAJg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 05:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344466AbiFAJek (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 05:34:40 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503A28FD67
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 02:34:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id BAEA1CE1A3F
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 09:34:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB643C3411D;
-        Wed,  1 Jun 2022 09:34:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654076076;
-        bh=1I0thsQTAHVl4c1iLaQa2Vbcdxj5quNgiycPajU/Vcc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gOjJCxz4UsdlCf6Oc3qrV9WP2Ca/kKV6sQDE9GcscPCovqUHhfoZDZCbjk5R1rfEd
-         bx8x3erN2Zm5UwtUTZGCA2Sy65qt9BBG6W8iO7dZM035rW4zSY2W9NNsdkdiRizK33
-         HFvdJXCsZbCx65n9pSs/bdPV0FIzed1JJiyKx7dpKhWl9Xi96RocrI3CD30i/eQWId
-         gOEStbV6FsBYExbMdiNVPRiQ1q1DtOsL9+/12f5Lap/aAhky9T9qP+bgKgGq35c1PD
-         68J3Fi3l92xyuIB+4uaPqPHaTjO+BbTYCDfQaqxQiJcotQ1zd+2m8aMZ3xmyFuNSef
-         5q2y5wXDyY3Dw==
-Date:   Wed, 1 Jun 2022 10:34:33 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 02/12] btrfs: free the path earlier when creating a new
- inode
-Message-ID: <20220601093433.GA3279070@falcondesktop>
-References: <cover.1654009356.git.fdmanana@suse.com>
- <b3c7ae5b6d09c442fc7546660dd5535302d11a7e.1654009356.git.fdmanana@suse.com>
- <44eeb8b2-e826-4aa0-56dd-5ec90e157018@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <44eeb8b2-e826-4aa0-56dd-5ec90e157018@oracle.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S1351254AbiFAJgZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 05:36:25 -0400
+Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A658FFA6
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 02:36:22 -0700 (PDT)
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
+        id 1nwKm4-000258-0R
+        for linux-btrfs@vger.kernel.org; Wed, 01 Jun 2022 11:36:20 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-btrfs@vger.kernel.org
+From:   Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: No space left errors on shutdown with systemd-homed /home dir
+Date:   Wed, 1 Jun 2022 10:36:11 +0100
+Message-ID: <t77bub$vp5$1@ciao.gmane.io>
+References: <9bdd0eb6-4a4f-e168-0fb0-77f4d753ec19@gmail.com>
+ <YfHCLhpkS+t8a8CG@zen> <4263e65e-f585-e7f6-b1aa-04885c0ed662@gmail.com>
+ <YfHXFfHMeqx4MowJ@zen>
+ <CAJCQCtR5ngU8oF6apChzBgFgX1W-9CVcF9kjvgStbkcAq_TsHQ@mail.gmail.com>
+ <042e75ab-ded2-009a-d9fc-95887c26d4d2@libero.it>
+ <CAJCQCtQv327wHwsT+j+mq3Fvt2fJwyC7SqFcj_+Ph80OuLKTAw@mail.gmail.com>
+ <295c62ca-1864-270f-c1b1-3e5cb8fc58dd@inwind.it>
+ <367f0891-f286-198b-617c-279dc61a2c3b@colin.guthr.ie>
+ <CAEg-Je9rr4Y7JQbD3iO1UqMy48j7feAXFFeaqpJc6eP7FSduEw@mail.gmail.com>
+ <t752jd$pjm$1@ciao.gmane.io> <24613105-faa7-8b0d-5d55-53d01a7c1172@libero.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Content-Language: en-GB
+In-Reply-To: <24613105-faa7-8b0d-5d55-53d01a7c1172@libero.it>
+Cc:     systemd-devel@lists.freedesktop.org
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 04:52:54AM +0530, Anand Jain wrote:
-> On 5/31/22 20:36, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > When creating an inode, through btrfs_create_new_inode(), we release the
-> > path we allocated before once we don't need it anymore. But we keep it
-> > allocated until we return from that function, which is wasteful because
-> > after we release the path we do several things that can allocate yet
-> > another path: inheriting properties, setting the xattrs used by ACLs and
-> > secutiry modules, adding an orphan item (O_TMPFILE case) or adding a
-> > dir item (for the non-O_TMPFILE case).
-> > 
-> > So instead of releasing the path once we don't need it anymore, free it
-> > instead. This way we avoid having two paths allocated until we return
-> > from btrfs_create_new_inode().
-> > 
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >   fs/btrfs/inode.c | 11 ++++++++---
-> >   1 file changed, 8 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 06d5bfa84d38..3ede3e873c2a 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -6380,7 +6380,13 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
-> >   	}
-> >   	btrfs_mark_buffer_dirty(path->nodes[0]);
-> > -	btrfs_release_path(path);
-> > +	/*
-> > +	 * We don't need the path anymore, plus inheriting properties, adding
-> > +	 * ACLs, security xattrs, orphan item or adding the link, will result in
-> > +	 * allocating yet another path. So just free our path.
-> > +	 */
-> > +	btrfs_free_path(path);
-> > +	path = NULL;
-> >   	if (args->subvol) {
-> >   		struct inode *parent;
+Goffredo Baroncelli wrote on 31/05/2022 19:12:
+> On 31/05/2022 14.44, Colin Guthrie wrote:
+>> Hi,
+>>
+>> Neal Gompa wrote on 01/02/2022 19:55:
+>>> On Tue, Feb 1, 2022 at 2:02 PM Colin Guthrie <colin@booksterhq.com> 
+>>> wrote:
+>>>>
+>>>> Goffredo Baroncelli wrote on 30/01/2022 09:27:
+>>>>> On 29/01/2022 19.01, Chris Murphy wrote:
+>>>>>> On Sat, Jan 29, 2022 at 2:53 AM Goffredo Baroncelli
+>>>>>> <kreijack@libero.it> wrote:
+>>>>>>>
+>>>>>>> I think that for the systemd uses cases (singled device FS), a 
+>>>>>>> simpler
+>>>>>>> approach would be:
+>>>>>>>
+>>>>>>>        fstatfs(fd, &sfs)
+>>>>>>>        needed = sfs.f_blocks - sfs.f_bavail;
+>>>>>>>        needed *= sfs.f_bsize
+>>>>>>>
+>>>>>>>        needed = roundup_64(needed, 3*(1024*1024*1024))
+>>>>>>>
+>>>>>>> Comparing the original systemd-homed code, I made the following 
+>>>>>>> changes
+>>>>>>> - 1) f_bfree is replaced by f_bavail (which seem to be more
+>>>>>>> consistent to the disk usage; to me it seems to consider also the
+>>>>>>> metadata chunk allocation)
+>>>>>>> - 2) the needing value is rounded up of 3GB in order to consider a
+>>>>>>> further 1 data chunk and 2 metadata chunk (DUP))
+>>>>>>>
+>>>>>>> Comments ?
+>>>>>>
+>>>>>> I'm still wondering if such a significant shrink is even 
+>>>>>> indicated, in
+>>>>>> lieu of trim. Isn't it sufficient to just trim on logout, thus
+>>>>>> returning unused blocks to the underlying filesystem?
+>>>>>
+>>>>> I agree with you. In Fedora 35, and the default is ext4+luks+trim
+>>>>> which provides the same results. However I remember that in the 
+>>>>> past the
+>>>>> default
+>>>>> was btrfs+luks+shrunk. I think that something is changed i.
+>>>>>
+>>>>> However, I want to provide do the systemd folks a suggestion ho change
+>>>>> the code.
+>>>>> Even a warning like: "it doesn't work that because this, please 
+>>>>> drop it"
+>>>>> would be sufficient.
+>>>>
+>>>>
+>>>> Out of curiosity (see other thread on the systemd list about this), 
+>>>> what
+>>>> it the current recommendation (by systemd/btrfs folks rather then 
+>>>> Fedora
+>>>> defaults) for homed machine partitioning?
+>>>>
+>>>
+>>> I'd probably recommend Btrfs with the /home subvolume set with
+>>> nodatacow if you're going to use loops of LUKS backed Btrfs homedir
+>>> images. The individual Btrfs loops will have their own COW anyway.
+>>>
+>>> Otherwise, the Fedora defaults for Btrfs should be sufficient.
+>>
+>> Thought I'd wait for Fedora 36 to be released with everything I need 
+>> to test this setup.
+>>
+>> Fell at the first hurdle of transferring my data in!
+>>
+>> I transferred a subset of my data (240Gb) onto an external disk and used:
+>>
+>>    homectl with colin -- rsync ...
+>>
+>>
+>> The transfer worked but the colin.home file grew to 394Gb. Only about 
+>> 184Gb used (I presume due to compression).
+>>
+>> Ultimately, this was then unmounted and while it said it could shrink 
+>> the filesystem with a "Ready to..." message this either didn't happen 
+>> or the backing file wasn't shrunk to match it. I did receive a message 
+>> later
 > 
 > 
+> I suppose that colin.home is a sparse file, so even it has a length of 
+> 394GB, it consumes only 184GB. So to me these are valid values. It 
+> doesn't matter the length of the files. What does matter is the value 
+> returned by "du -sh".
 > 
-> > @@ -6437,8 +6443,7 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
-> >   		goto discard;
-> >   	}
+> Below I create a file with a length of 1000GB. However being a sparse 
+> file, it doesn't consume any space and "du -sh" returns 0
 > 
-> At discard, we free path again and leads to double free.
+> $ truncate -s 1000GB foo
+> $ du -sh foo
+> 0    foo
+> $ ls -l foo
+> -rw-r--r-- 1 ghigo ghigo 1000000000000 May 31 19:29 foo
 
-No, there's no double free. The path was set to NULL after being freed.
+Yeah the file will be sparse.
 
-> 
-> Thanks, Anand
-> 
-> >  > -	ret = 0;
-> > -	goto out;
-> > +	return 0;
-> >   discard:
-> >   	/*
-> 
+That's not really an issue, I'm not worried about the fact it's not 
+consuming as much as it reports as that's all expected.
+
+The issue is that systemd-homed (or btrfs's fallocate) can't handle this 
+situation and that user is effectively bricked unless migrated to a host 
+with more storage space!
+
+Col
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+   Tribalogic Limited http://www.tribalogic.net/
+Open Source:
+   Mageia Contributor http://www.mageia.org/
+   PulseAudio Hacker http://www.pulseaudio.org/
+   Trac Hacker http://trac.edgewall.org/
+
