@@ -2,110 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4040353AC6A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 20:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5C153AC79
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 20:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356559AbiFASA5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 14:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
+        id S1356151AbiFASI3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 14:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356558AbiFASA4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 14:00:56 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586AE9CC9C
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 11:00:55 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id 2so2534830iou.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jun 2022 11:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z++FcfyL89hUQBg3NNn/kBGnI46WtPi/uokIeaDsASU=;
-        b=jx6IgOkj5fs2hJCUG+VkWN18aoR9kGKJCRxRMIt0JFeRZE3Mlftg5zqmeOWjXNHuDa
-         yzHjUXxZnFBiHi94cWOkQ/va2ID8XUH+Zwy23h9NhZ7ePxJNIOXVQSI079JqlP6U+4lM
-         RfC6qQrEvIb1jTbEQ6AX+P5kBBds3A/L7B04bbw19E7U9CWHkOMEkKKPBTSFIYpdiEQN
-         EDzylUJxW+cN/Irtq0QeqfQNvbyFS4NknQtfOmD6o1RTS8KA+AgpmGIIo4I+Z3zKhXm3
-         lcCzQBToO0MDyROsjt/GAcIQyBJfiKJPZVNRfteYPwZedTYG5bkXefJCCAM9A+wZHILN
-         SaUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z++FcfyL89hUQBg3NNn/kBGnI46WtPi/uokIeaDsASU=;
-        b=hseLZbtdRF4LFasqIn8jViTyJPs13yHQ1DWLDJxmqlU9D5OUvj/3MA70PWb1THS2Eq
-         Dqxba13neTZYEVx4A93tlALJXlwNZOs74BpAi++z7wTDl2gDJas5mvuZMMzsmZYxtrbs
-         E1ey1omDINZgRRRq8mSIN+amfHsI/6FEwLH14AlXiiwz1Tg2Jnlhqtq4Ouk2JfgRzUOI
-         BYQP1e9jdl2sKqJSqte92Y4GQIMUn6plR1ZnEqk97ZhLeBXCnxJSDhocpZ/j3lrtDnFg
-         MAQJVSb5wXpO4CDas3PiPgCOH/QDqjH53+I4FTk35D6rXGswUEMYyg4Y35ki6c+TX797
-         Vxpg==
-X-Gm-Message-State: AOAM533OdlsW6DjTOWfGxsrcwZiuj1o7kQPW6U4SHNKzq2psyIydi9+i
-        GiKuaHDZAjdPkk2poL3kzRI6iuxBjIqog9K+yw1AY8Q/AFQ=
-X-Google-Smtp-Source: ABdhPJx2XYELwbT0byD4eg8/E+alYX0qZ7qAaN+rfNRNfiTsdAJaMR0FsoDPSxCDShGT1JGymODTag462C0zeNdqek0=
-X-Received: by 2002:a6b:c9d6:0:b0:668:ee98:a835 with SMTP id
- z205-20020a6bc9d6000000b00668ee98a835mr664211iof.10.1654106454471; Wed, 01
- Jun 2022 11:00:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220531011224.GA1745079@merlins.org> <CAEzrpqco_RyUBK=dngrv54u8WE2uhSGrJaB9aRY5nUmKNzN32Q@mail.gmail.com>
- <20220531224951.GC22722@merlins.org> <CAEzrpqcui3A42ogkas9pQfMqX0qE+MApPuiUw12uwpqhNq2RHg@mail.gmail.com>
- <20220601002552.GD22722@merlins.org> <CAEzrpqfkrD4aYA3vMToi+vfYeoyj=h4JAx+xnGQj836FP+pbjg@mail.gmail.com>
- <20220601012919.GE22722@merlins.org> <CAEzrpqc_sCu18+tfP9E1Z3+kj70ss7nH-YTnEu0Rw_QQxPWTUQ@mail.gmail.com>
- <20220601031536.GD1745079@merlins.org> <CAEzrpqfw85GnLUq8=vywej1Gb6vjcgKUYucLw9DgoSaWEbyZbg@mail.gmail.com>
- <20220601163924.GE1745079@merlins.org>
-In-Reply-To: <20220601163924.GE1745079@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 1 Jun 2022 14:00:43 -0400
-Message-ID: <CAEzrpqd7=9JxgjC0pqikEo5o7RTsP9M-qLLcCps0Vx1RxRak-g@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
+        with ESMTP id S230345AbiFASI2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 14:08:28 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FD86C562
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 11:08:27 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nwSld-0001Ul-La by authid <merlin>; Wed, 01 Jun 2022 11:08:25 -0700
+Date:   Wed, 1 Jun 2022 11:08:25 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220601180824.GF22722@merlins.org>
+References: <20220531224951.GC22722@merlins.org>
+ <CAEzrpqcui3A42ogkas9pQfMqX0qE+MApPuiUw12uwpqhNq2RHg@mail.gmail.com>
+ <20220601002552.GD22722@merlins.org>
+ <CAEzrpqfkrD4aYA3vMToi+vfYeoyj=h4JAx+xnGQj836FP+pbjg@mail.gmail.com>
+ <20220601012919.GE22722@merlins.org>
+ <CAEzrpqc_sCu18+tfP9E1Z3+kj70ss7nH-YTnEu0Rw_QQxPWTUQ@mail.gmail.com>
+ <20220601031536.GD1745079@merlins.org>
+ <CAEzrpqfw85GnLUq8=vywej1Gb6vjcgKUYucLw9DgoSaWEbyZbg@mail.gmail.com>
+ <20220601163924.GE1745079@merlins.org>
+ <CAEzrpqd7=9JxgjC0pqikEo5o7RTsP9M-qLLcCps0Vx1RxRak-g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqd7=9JxgjC0pqikEo5o7RTsP9M-qLLcCps0Vx1RxRak-g@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 1, 2022 at 12:39 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Wed, Jun 01, 2022 at 09:56:14AM -0400, Josef Bacik wrote:
-> > Sigh, try again please.  Thanks,
->
-> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
-> WARNING: cannot read chunk root, continue anyway
-> none of our backups was sufficient, scanning for a root
-> scanning, best has 0 found 1 bad
-> ret is 0 offset 20971520 len 8388608
-> ret is -2 offset 20971520 len 8388608
-> checking block 22495232 generation 1572124 fs info generation 2582703
-> trying bytenr 22495232 got 1 blocks 0 bad
-> checking block 22462464 generation 1479229 fs info generation 2582703
-> trying bytenr 22462464 got 1 blocks 0 bad
-> checking block 22528000 generation 1572115 fs info generation 2582703
-> trying bytenr 22528000 got 1 blocks 0 bad
-> checking block 22446080 generation 1571791 fs info generation 2582703
-> trying bytenr 22446080 got 1 blocks 0 bad
-> checking block 22544384 generation 1556078 fs info generation 2582703
-> trying bytenr 22544384 got 1 blocks 0 bad
-> checking block 22511616 generation 1555799 fs info generation 2582703
-> trying bytenr 22511616 got 1 blocks 0 bad
-> checking block 22577152 generation 1586277 fs info generation 2582703
-> trying bytenr 22577152 got 1 blocks 0 bad
-> checking block 22478848 generation 1561557 fs info generation 2582703
-> trying bytenr 22478848 got 1 blocks 0 bad
-> checking block 22593536 generation 1590219 fs info generation 2582703
-> trying bytenr 22593536 got 1 blocks 0 bad
-> checking block 22609920 generation 1551635 fs info generation 2582703
-> trying bytenr 22609920 got 1 blocks 0 bad
-> checking block 22560768 generation 1590217 fs info generation 2582703
-> trying bytenr 22560768 got 1 blocks 0 bad
-> ret is 0 offset 20971520 len 8388608
-> ret is -2 offset 20971520 len 8388608
-> setting chunk root to 22593536
+On Wed, Jun 01, 2022 at 02:00:43PM -0400, Josef Bacik wrote:
+> Ok perfect, now try btrfs rescue recover-chunks <device>, thanks,
 
-Ok perfect, now try btrfs rescue recover-chunks <device>, thanks,
+(gdb) run rescue recover-chunks /dev/mapper/dshelf1
+Starting program: /var/local/src/btrfs-progs-josefbacik/btrfs rescue recover-chunks /dev/mapper/dshelf1
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+FS_INFO IS 0x55555564fbc0
+Invalid mapping for 15645202989056-15645203005440, got 15664345513984-15665419255808
+Couldn't map the block 15645202989056
+Couldn't map the block 15645202989056
+bad tree block 15645202989056, bytenr mismatch, want=15645202989056, have=0
+Couldn't read tree root
+FS_INFO AFTER IS 0x55555564fbc0
+Walking all our trees and pinning down the currently accessible blocks
 
-Josef
+Program received signal SIGSEGV, Segmentation fault.
+traverse_tree_blocks (tree=tree@entry=0x55555565a130, eb=0x0, tree_root=tree_root@entry=1) at common/repair.c:95
+95              struct btrfs_fs_info *fs_info = eb->fs_info;
+(gdb) bt
+#0  traverse_tree_blocks (tree=tree@entry=0x55555565a130, eb=0x0, tree_root=tree_root@entry=1) at common/repair.c:95
+#1  0x000055555559f6d4 in btrfs_mark_used_tree_blocks (fs_info=fs_info@entry=0x55555564fbc0, tree=tree@entry=0x55555565a130)
+    at common/repair.c:188
+#2  0x00005555555e2e18 in btrfs_find_recover_chunks (path=path@entry=0x7fffffffe1ce "/dev/mapper/dshelf1")
+    at cmds/rescue-recover-chunks.c:262
+#3  0x00005555555d7e81 in cmd_rescue_recover_chunks (cmd=<optimized out>, argc=<optimized out>, argv=<optimized out>)
+    at cmds/rescue.c:65
+#4  0x000055555556c17b in cmd_execute (argv=0x7fffffffdeb8, argc=2, cmd=0x555555645d40 <cmd_struct_rescue_recover_chunks>)
+    at cmds/commands.h:125
+#5  handle_command_group (cmd=<optimized out>, argc=2, argv=0x7fffffffdeb8) at btrfs.c:152
+#6  0x000055555556c275 in cmd_execute (argv=0x7fffffffdeb0, argc=3, cmd=0x555555646cc0 <cmd_struct_rescue>) at cmds/commands.h:125
+#7  main (argc=3, argv=0x7fffffffdeb0) at btrfs.c:405
+
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
