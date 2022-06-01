@@ -2,65 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA6553AFCE
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 00:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CC053AF5E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 00:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbiFAVgW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 17:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S231651AbiFAVhi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 17:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbiFAVgU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 17:36:20 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE571F615
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 14:36:17 -0700 (PDT)
+        with ESMTP id S231578AbiFAVha (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 17:37:30 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED611447A1
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 14:37:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1654119374;
-        bh=Es8RsQmnkKmIaHXRYhsynXMHVUjTVilbrjpn7wmodPY=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=Vkn9YIcXxyR98BdtxXdypvKFVE/yXExEokQ9kMzS9tULEBgDl5IAucXC72rzrYK+F
-         yE5qFeICqZZT5QNTt0RFfUorFbRs4GvWYzcE0RrqqiDhARtO0A5v4RuFYmgHMI8jiZ
-         wiui3D4d4ixXGcyu1OyQzuBR6W6aPFR1MGiLVLJw=
+        s=badeba3b8450; t=1654119436;
+        bh=pH8eoy05gytwlMtZEvz3Hi+5veazqI8R1SJBQc5vm/A=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=geZekmKfSXf4GsUGqvD5/MDKZNoDiEoJ+LsNuzYSQ1bBsmM2kGm9JGwmbX2TnJACN
+         qTSA03UhozkTrAw/vCEbnq7JhbyPVQWBl7+CkkdTJdr/5AzmfyJASasvc69Q4aFe/y
+         1KaRvQVQz06LlITos/R3Lz3R+FT9k5S4JG7MA3b4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlw3X-1nVBYE2GYt-00iyg0; Wed, 01
- Jun 2022 23:36:14 +0200
-Message-ID: <5bc82c0a-5dbe-58f3-9025-d02bf1c607be@gmx.com>
-Date:   Thu, 2 Jun 2022 05:36:10 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAfYm-1o7XaV3plI-00B0KN; Wed, 01
+ Jun 2022 23:37:16 +0200
+Message-ID: <f56d4b11-1788-e4b5-35fa-d17b46a46d00@gmx.com>
+Date:   Thu, 2 Jun 2022 05:37:11 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: [PATCH] btrfs: add RAID56 submitted bio trace events
+Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
 Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <56cbf892eb0bec3b26da3e26f46537e94fb358af.1654076723.git.wqu@suse.com>
- <20220601141209.GO20633@twin.jikos.cz>
+To:     Martin Raiber <martin@urbackup.org>,
+        Paul Jones <paul@pauljones.id.au>,
+        Wang Yugui <wangyugui@e16-tech.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20220601102532.D262.409509F4@e16-tech.com>
+ <49fb1216-189d-8801-d134-596284f62f1f@gmx.com>
+ <20220601170741.4B12.409509F4@e16-tech.com>
+ <5f49c12e-4655-48dd-0d73-49dc351eae15@gmx.com>
+ <SYCPR01MB4685030F15634C6C2FEC01369EDF9@SYCPR01MB4685.ausprd01.prod.outlook.com>
+ <6cbc718d-4afb-87e7-6f01-a1d06a74ab9e@gmx.com>
+ <01020181209a0f8e-b97fa255-3146-4ced-b9c9-a6627a21d6e1-000000@eu-west-1.amazonses.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220601141209.GO20633@twin.jikos.cz>
+In-Reply-To: <01020181209a0f8e-b97fa255-3146-4ced-b9c9-a6627a21d6e1-000000@eu-west-1.amazonses.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6J0mdLFBWB0qvGL6eRc51wmwClW7MqvNhQrG4Wwr0LWpgtjkRMg
- avDnDm3DXESWLDpuol6csw6L8F9U2ak6AAO49asZ7fQU4FwajIDUzQHxQCq3sUMQx8wpzeW
- I0R/W9Sw4vSKZLeFpsn+/gUTZqLKc5vOpv46hhTo6nrGPZbWAtvUh0XWcds7BxEf40Cs/9K
- Qmd3gjyDkOZmNSlFQizRw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YpBC3KMYiwI=:Df9AXkzKckUlGcOuM3n/U0
- RFS3nIJOR1aowgCV3Ow11w9gHvjqcslKUk+RArtDnk4NrwEkOVS54NmZI22rgJiuu0LuwdFSz
- oUwO/FCNDt4hwkiygEYmJGJ7ZrOrxqT3QfTnhQ+YAYno8AoPVisAPRHzsD0kLOkgJVn3mV7XR
- 5p3lfVmOGr1uzCVEjo7uv7iLTrr6kZkVfYpbA80o2z/+PYGbRADpn4Q3/ARHvfVILShj2sMhs
- XVWV1YeX9CBU0NiVUAsw9cygyad3ApTn0KVZUqc9umDD0cHqnWcjQYAU4I5W8Kr65hV2P7u+M
- 4ryQvBBxaJCFqMGde34BANk2rFn5drEPMNsg/shYkOT5A0PtuMRqCVrj1G34uXK1LzlOxymvw
- nZkhDlGXOYryvdiKt5rmQi0eEeow6APwEK0mIiKSbaeAZATBGkgdsRMZ5iRH8YMi7izHGJX16
- qrWo7HWHLUxdM2K4+VzzvsEx9z+c2FtJqFLsvl9m6+0a08/K6988s/v23Bo/EOVtNzclJqait
- 5zGGWDVWdIV3fBbVWhs748r7hTINtgQeRlYzEyEc4IqAR8C3ElEd8flgQDQelNdU1e7Aa0DH8
- VBcGod7WG4Y13mfTFR2HEvuIIl1JkM1iySCAezvJxIi0yBf11V/HFWz9C//BZ0YXCvWLy1ciO
- i+3O+xO3c0ZIQgTGpTKX0TEfAeOypXBuR0W6jlbUyU5hrseg8/0YB40+zl4l8vj6EDUZ49wHv
- YDJ7vK3kS/8UXntTN2kbvSaWIqHBm0GC6Z8DsRb1YlOoiEWCte4YwfdWhtD24B6UNcx0bdniK
- IvNiBMLrglfc4I+aPtSmXbhRr7f0MnxVKfLpjjvcL7OC0LtlV+KZxHzCUxkJMcPlI1RniKIjJ
- wROB0nJvwqPAk7ZkZXhgrDtLo2IV5J3uUmt6QCD7BZhsvxQOu/xN6bBExYhaLi+ma38p5i8B/
- 6Mm27HVj0KKHZw7C4mzul2ppqcq9hmoskMqDHguBlm9XT4yqfsI2ukDSmH8fga3OUnjhxpgJK
- 0NC0FBwBvjnJjVltr0+YKQMH6X/0KbR2QYtWeqhW2cfTcbG7UBA+aQwy/2Psm7I77QO6fwmAT
- AncYQ2K1eOmd0DBuDXNb1nrQF0YLuDaZm4NMmLURMPr+pdu4Lv/MYYRog==
+X-Provags-ID: V03:K1:FC05cKy8vc36mm9M2W6IcJCkWVjOBUh53N2vkpjSMyuq6jFX1af
+ NkkUm/9NNBuNtebUmKEAKgvIylNC+5GKx7ctABqTjllMg3oQ+HV1GY9PzAuClR99R1w7wOK
+ 4yMYA2OaeVDb7SmcsVYKxWbtsyG8nkVTZZpdTpmDijnLolAjoG3VTwUkYavqIubVCtjP1E6
+ XdX8TeVNmXWPYCrPM+s1A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:881nSW9bQqM=:oOEeYQzyZGDe08oQW/BL7y
+ MAQHBhHuQSOcQMrnfZ0DbKnS6W2QPRZV0y+JRr6iOd/KoNvrkXBEvbep0cdVnjlM1NkBGjoRE
+ fp03g/Mq2MrL+CONGD5LSpys0MngIY1Zq0Xc4IetdmTD0VcNdzVMraHQ7PIGgVVfjcdQAr7An
+ EirUI3PkS6PhQTJSDTVPKuKwCEeH300JiGwxjoRf0cjE/R38AwAedy4GrRfv3b5JH0EuX4TOn
+ SICheaA5b5m9zkHqDPFK6UFwjCJQnr06ewOHNkOAYWk1g3HiHUutP5WqJyz0P98I2VDjFqRb8
+ WpQ5E5QrvwOlxKqTNEHeK5rrudqukYeCKIInJi+sLiSmc76k3XLKpLFoxKFuuoF1RSh4a6Rxl
+ g9v80H2fPzyQK79xhcEzKCbr7ThvrBV2gTmAuJM7nNI0ToMrClE3wJRBvdNZLpactfY9RaUQu
+ zj282umD3ZdomRSOReh1vMgrGfAF0hxYhd3iasQRESWYJ7owF7HwP2j73RXYl4jq5eRiqCEtd
+ oZ9pgHsLJXBFEzBq02rJQ0Kxm68WVkRw/7gEdO0mKDVlLsilWl6O7LTlg0OOYe8MiDlCt2teZ
+ JWildkyEnFLzovJ4RXYjdZe4+uDGqdz+a62lEAzHCyFvdk4rTHD+NA8vvPArgrTq2BswR48/L
+ u1g/+XLa0gVwWOzFRM0KsdQ6AQGkqo17JdIdYeAbXwYAET3nlvANhyxfJiHbbAZK3PeFN7FEQ
+ l0I3Hy/KWUVnzqZ86+og6u/qrdcKRXJyulOqsu82iTnSGFKJuxhR7nAfQTpNw1RvEnA5RHaJF
+ TX3Zef50wCfXy7cy6ye3Ur1L6qi+bAYtXBtXK8mGsLMYwBh0x//bmUA1uYT2MRAXpwrUFfzUH
+ qQD363y5JIYSCyAztjom3CnGixiK2RJB/j3CR/k3g2+VwWa3a14evwcJOV+h03epa1Y7oKT6i
+ WI+NqNOUKv0eW/xzWSqiYi8RnYWxkXQc7BtRgFZidPu2KqjSRh03B47a/3EvKcszUl/5Secr8
+ iylt5lcQSoZK4uhwpQ8TMDX7xpAGwDG3g/nouMw8AzyJ74tKqZqtB6+pqM4B3zkHVX2dZQ1Zu
+ 8aV8768rumsk+/dMeXDv5EfKIhefi3bxCs0MHxx3zXPoQeWHmPGCh+88A==
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,150 +80,106 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/6/1 22:12, David Sterba wrote:
-> On Wed, Jun 01, 2022 at 05:46:59PM +0800, Qu Wenruo wrote:
->> For the later incoming RAID56J, it's better to know each bio we're
->> submitting from btrfs RAID56 layer, so this patch will introduce the
->> trace events for every bio submitted by btrfs RAID56 layer.
->
-> I'd phrase that it's useful in general, not in connection with some RFC
-> patchset.
->
->> The output looks like this: (trace event header and UUID skipped)
+On 2022/6/2 02:49, Martin Raiber wrote:
+> On 01.06.2022 12:12 Qu Wenruo wrote:
 >>
->>     raid56_read_partial: full_stripe=3D389152768 devid=3D3 type=3DDATA1=
- offset=3D32768 opf=3D0x0 physical=3D323059712 len=3D32768
->>     raid56_read_partial: full_stripe=3D389152768 devid=3D1 type=3DDATA2=
- offset=3D0 opf=3D0x0 physical=3D67174400 len=3D65536
->>     raid56_write_stripe: full_stripe=3D389152768 devid=3D3 type=3DDATA1=
- offset=3D0 opf=3D0x1 physical=3D323026944 len=3D32768
->>     raid56_write_stripe: full_stripe=3D389152768 devid=3D2 type=3DPQ1 o=
-ffset=3D0 opf=3D0x1 physical=3D323026944 len=3D32768
 >>
->> The above debug output is from a 32K data write into an empty RAID56
->> data chunk.
+>> On 2022/6/1 17:56, Paul Jones wrote:
+>>>
+>>>> -----Original Message-----
+>>>> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+>>>> Sent: Wednesday, 1 June 2022 7:27 PM
+>>>> To: Wang Yugui <wangyugui@e16-tech.com>
+>>>> Cc: linux-btrfs@vger.kernel.org
+>>>> Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draf=
+t
+>>>>
+>>>>
+>>>
+>>>>>>> If we save journal on every RAID56 HDD, it will always be very slo=
+w,
+>>>>>>> because journal data is in a different place than normal data, so
+>>>>>>> HDD seek is always happen?
+>>>>>>>
+>>>>>>> If we save journal on a device just like 'mke2fs -O journal_dev' o=
+r
+>>>>>>> 'mkfs.xfs -l logdev', then this device just works like NVDIMM?=C2=
+=A0 We
+>>>>>>> may not need
+>>>>>>> RAID56/RAID1 for journal data.
+>>>>>>
+>>>>>> That device is the single point of failure. You lost that device,
+>>>>>> write hole come again.
+>>>>>
+>>>>> The HW RAID card have 'single point of failure'=C2=A0 too, such as t=
+he
+>>>>> NVDIMM inside HW RAID card.
+>>>>>
+>>>>> but=C2=A0 power-lost frequency > hdd failure frequency=C2=A0 > NVDIM=
+M/ssd
+>>>>> failure frequency
+>>>>
+>>>> It's a completely different level.
+>>>>
+>>>> For btrfs RAID, we have no special treat for any disk.
+>>>> And our RAID is focusing on ensuring device tolerance.
+>>>>
+>>>> In your RAID card case, indeed the failure rate of the card is much l=
+ower.
+>>>> In journal device case, how do you ensure it's still true that the jo=
+urnal device
+>>>> missing possibility is way lower than all the other devices?
+>>>>
+>>>> So this doesn't make sense, unless you introduce the journal to somet=
+hing
+>>>> definitely not a regular disk.
+>>>>
+>>>> I don't believe this benefit most users.
+>>>> Just consider how many regular people use dedicated journal device fo=
+r
+>>>> XFS/EXT4 upon md/dm RAID56.
+>>>
+>>> A good solid state drive should be far less error prone than spinning =
+drives, so would be a good candidate. Not perfect, but better.
+>>>
+>>> As an end user I think focusing on stability and recovery tools is a b=
+etter use of time than fixing the write hole, as I wouldn't even consider =
+using Raid56 in it's current state. The write hole problem can be alleviat=
+ed by a UPS and not using Raid56 for a busy write load. It's still good to=
+ brainstorm the issue though, as it will need solving eventually.
 >>
->> Some explanation on the event output:
->>   full_stripe:	the logical bytenr of the full stripe
->>   devid:		btrfs devid
->>   type:		raid stripe type.
->> 		DATA1:	the first data stripe
->> 		DATA2:	the second data stripe
->> 		PQ1:	the P stripe
->> 		PQ2:	the Q stripe
->>   offset:	the offset inside the stripe.
->>   opf:		the bio op type
->>   physical:	the physical offset the bio is for
->>   len:		the length of the bio
+>> In fact, since write hole is only a problem for power loss (and explici=
+t
+>> degraded write), another solution is, only record if the fs is
+>> gracefully closed.
 >>
->> The first two lines are from partial RMW read, which is reading the
->> remaining data stripes from disks.
+>> If the fs is not gracefully closed (by a bit in superblock), then we
+>> just trigger a full scrub on all existing RAID56 block groups.
 >>
->> The last two lines are for full stripe RMW write, which is writing the
->> involved two 16K stripes (one for DATA1 stripe, one for P stripe).
->> The stripe for DATA2 doesn't need to be written.
+>> This should solve the problem, with the extra cost of slow scrub for
+>> each unclean shutdown.
 >>
->> There are 5 types of trace events:
->> - raid56_read_partial
->>    Read remaining data for regular read/write path.
+>> To be extra safe, during that scrub run, we really want user to wait fo=
+r
+>> the scrub to finish.
 >>
->> - raid56_write_stripe
->>    Write the modified stripes for regular read/write path.
->>
->> - raid56_scrub_read_recover
->>    Read remaining data for scrub recovery path.
->>
->> - raid56_scrub_write_stripe
->>    Write the modified stripes for scrub path.
->>
->> - raid56_scrub_read
->>    Read remaining data for scrub path.
->>
->> Also, since the trace events are included at super.c, we have to export
->> needed structure definitions into "raid56.h" and include the header in
->> super.c, or we're unable to access those members.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
->> @@ -1426,8 +1322,13 @@ static noinline void finish_rmw(struct btrfs_rai=
-d_bio *rbio)
->>   	BUG_ON(atomic_read(&rbio->stripes_pending) =3D=3D 0);
->>
->>   	while ((bio =3D bio_list_pop(&bio_list))) {
->> +		struct raid56_bio_trace_info trace_info =3D {0};
->
-> 						          { 0 }
->> +
->>   		bio->bi_end_io =3D raid_write_end_io;
->>
->> +		if (trace_raid56_write_stripe_enabled())
->> +			bio_get_trace_info(rbio, bio, &trace_info);
->> +		trace_raid56_write_stripe(rbio, bio, &trace_info);
->
-> The definition of trace_info and the call to trace_... should be inside
-> the if body.
->
->>   		submit_bio(bio);
->>   	}
->>   	return;
->> --- a/fs/btrfs/raid56.h
->> +++ b/fs/btrfs/raid56.h
->> @@ -7,6 +7,163 @@
->>   #ifndef BTRFS_RAID56_H
->>   #define BTRFS_RAID56_H
->>
->> +#include <linux/workqueue.h>
->> +#include "volumes.h"
->> +
->> +enum btrfs_rbio_ops {
->> +	BTRFS_RBIO_WRITE,
->> +	BTRFS_RBIO_READ_REBUILD,
->> +	BTRFS_RBIO_PARITY_SCRUB,
->> +	BTRFS_RBIO_REBUILD_MISSING,
->> +};
->> +
->> +struct btrfs_raid_bio {
->> +	struct btrfs_io_context *bioc;
->> +
->> +	/* while we're doing rmw on a stripe
->> +	 * we put it into a hash table so we can
->> +	 * lock the stripe and merge more rbios
->> +	 * into it.
->> +	 */
->
-> Moved comments should be reformatted and fixed.
->
->> +/*
->> + * For trace event usage only. Records useful debug info for each bio =
-submitted
->> + * by RAID56 to each physical device.
->> + *
->> + * No matter signed or not, (-1) is always the one indicating we can n=
-ot grab
->> + * the proper stripe number.
->> + */
->> +struct raid56_bio_trace_info {
->> +	u64 devid;
->> +
->> +	/* The offset inside the stripe. (<=3D STRIPE_LEN) */
->> +	u32 offset;
->> +
->> +	/*
->> +	 * Stripe number.
->> +	 * 0 is the first data stripe, and nr_data for P stripe,
->> +	 * nr_data + 1 for Q stripe.
->> +	 * >=3D real_stripes for
->
-> This looks unfinished, please let me know what to write the I'll update
-> the commit.
+>> But on the other hand, I totally understand user won't be happy to wait
+>> for 10+ hours just due to a unclean shutdown...
+> Would it be possible to put the stripe offsets/numbers into a journal/co=
+mmit them before write? Then, during mount you could scrub only those afte=
+r an unclean shutdown.
 
-Sorry, that's for dev replace target stripe.
+If we go that path, we can already do full journal, and only replay that
+journal without the need for scrub at all.
 
 Thanks,
 Qu
+
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> Paul.
 >
->> +	 */
->> +	u8 stripe_nr;
 >
-> Besides the above comment, I've reformatted the comments and moved the
-> tracepoint under the _enabled() condition, patch in misc-next. Thanks.
