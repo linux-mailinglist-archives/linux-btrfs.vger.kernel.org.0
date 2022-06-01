@@ -2,207 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A927253A91E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 16:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7746A53A988
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 17:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354978AbiFAOZt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 10:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        id S241776AbiFAPEc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 11:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355507AbiFAOZh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 10:25:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F9F32EFF
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 07:16:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 33585219D0;
-        Wed,  1 Jun 2022 14:16:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1654092996;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vhMYiKOG4U6IQqQf26YYVuqgJwChN7/cJjB18haHOag=;
-        b=D1W7L2l0fK2OYf3YmbdbGNQ/rzpNkmzlx+r9sdXL1UlOmim2Zy+3wcvA8h9lGMuUONw6cM
-        pHzc/Os7/Lzjf+8I+x97DrALTwRWwtR0hBfVl9OBfvLY9+wLQVTtt0SZaVA1mV0WD99FyT
-        MGAxyknEIc7iSuf5GxSB3bE5TG2e7qc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1654092996;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vhMYiKOG4U6IQqQf26YYVuqgJwChN7/cJjB18haHOag=;
-        b=abJXKZTjjp6+2S+Zt41LiovyvKGxyU/MU7zF7RRLbiPzKTXMYFWkFCfRtcQ4U4zLAKBTXp
-        xeWNaeequw9n61Bw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0CE613A8F;
-        Wed,  1 Jun 2022 14:16:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tkaROcN0l2LvEAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 01 Jun 2022 14:16:35 +0000
-Date:   Wed, 1 Jun 2022 16:12:09 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add RAID56 submitted bio trace events
-Message-ID: <20220601141209.GO20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <56cbf892eb0bec3b26da3e26f46537e94fb358af.1654076723.git.wqu@suse.com>
+        with ESMTP id S231872AbiFAPEb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 11:04:31 -0400
+X-Greylist: delayed 506 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Jun 2022 08:04:30 PDT
+Received: from mail.render-wahnsinn.de (render-wahnsinn.de [138.201.18.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B612E0BF
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 08:04:30 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 96E7F2F35FD
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 16:55:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=render-wahnsinn.de;
+        s=dkim; t=1654095359; h=from:subject:date:message-id:cc:mime-version:content-type:
+         content-transfer-encoding:content-language:in-reply-to:references;
+        bh=M9tlAJ2NUD6DZQJcn7UE1nLWQPF8Zby9nkUZWlRkTng=;
+        b=rbBfGBaBZ+Di8B2E05NPHl7VZBOJTuVreFbL9rLJCEFzBOdZ28iLvQbmZ51y621fQhToMA
+        IhC/SUomluLDvPHNhah15GjLBqdVFc7gQHvj+NcDrCw1SGIRsHvgIWZqd9cQBTLWFpBPxA
+        RGL7LnNDxFzgozbW6Dgc+HPi4fsIAK2IOxLAKzdb0/Gd01y4EbwYmp7wkhy/JZR7D1lLvR
+        tal3Use1TMDBLFJHUYX02+YsJ7eqksDvmvixG23+dsNXWroBvcTaNLBdlUnYC8K12GCRDr
+        t45i3hPNqg+QD8rDjdr3KHHhmV2Ep83az3YvxLNPau7mY9PVjb0jdOjFDI580g==
+Message-ID: <b668009a-35e1-48bc-fcf9-2d12b9966a2b@render-wahnsinn.de>
+Date:   Wed, 1 Jun 2022 16:55:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56cbf892eb0bec3b26da3e26f46537e94fb358af.1654076723.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
+Content-Language: en-US
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20220601102532.D262.409509F4@e16-tech.com>
+ <49fb1216-189d-8801-d134-596284f62f1f@gmx.com>
+ <20220601170741.4B12.409509F4@e16-tech.com>
+ <5f49c12e-4655-48dd-0d73-49dc351eae15@gmx.com>
+ <SYCPR01MB4685030F15634C6C2FEC01369EDF9@SYCPR01MB4685.ausprd01.prod.outlook.com>
+ <4ab469dd-eedd-e838-65b7-e3159128e758@gmx.com>
+From:   Robert Krig <robert.krig@render-wahnsinn.de>
+In-Reply-To: <4ab469dd-eedd-e838-65b7-e3159128e758@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 05:46:59PM +0800, Qu Wenruo wrote:
-> For the later incoming RAID56J, it's better to know each bio we're
-> submitting from btrfs RAID56 layer, so this patch will introduce the
-> trace events for every bio submitted by btrfs RAID56 layer.
+I guess you guys are probably aware, but I thought I'd mention it 
+anyway. With ZFS for example you can create mirrored log or cache disks, 
+using either whole disks or just partitions.
 
-I'd phrase that it's useful in general, not in connection with some RFC
-patchset.
+Wouldn't a mirrored journal device remove the single point of failure? 
+If you had the optional capability to create a raid1 journal on two 
+disks (let's assume SSDs or NVMEs).
 
-> The output looks like this: (trace event header and UUID skipped)
-> 
->    raid56_read_partial: full_stripe=389152768 devid=3 type=DATA1 offset=32768 opf=0x0 physical=323059712 len=32768
->    raid56_read_partial: full_stripe=389152768 devid=1 type=DATA2 offset=0 opf=0x0 physical=67174400 len=65536
->    raid56_write_stripe: full_stripe=389152768 devid=3 type=DATA1 offset=0 opf=0x1 physical=323026944 len=32768
->    raid56_write_stripe: full_stripe=389152768 devid=2 type=PQ1 offset=0 opf=0x1 physical=323026944 len=32768
-> 
-> The above debug output is from a 32K data write into an empty RAID56
-> data chunk.
-> 
-> Some explanation on the event output:
->  full_stripe:	the logical bytenr of the full stripe
->  devid:		btrfs devid
->  type:		raid stripe type.
-> 		DATA1:	the first data stripe
-> 		DATA2:	the second data stripe
-> 		PQ1:	the P stripe
-> 		PQ2:	the Q stripe
->  offset:	the offset inside the stripe.
->  opf:		the bio op type
->  physical:	the physical offset the bio is for
->  len:		the length of the bio
-> 
-> The first two lines are from partial RMW read, which is reading the
-> remaining data stripes from disks.
-> 
-> The last two lines are for full stripe RMW write, which is writing the
-> involved two 16K stripes (one for DATA1 stripe, one for P stripe).
-> The stripe for DATA2 doesn't need to be written.
-> 
-> There are 5 types of trace events:
-> - raid56_read_partial
->   Read remaining data for regular read/write path.
-> 
-> - raid56_write_stripe
->   Write the modified stripes for regular read/write path.
-> 
-> - raid56_scrub_read_recover
->   Read remaining data for scrub recovery path.
-> 
-> - raid56_scrub_write_stripe
->   Write the modified stripes for scrub path.
-> 
-> - raid56_scrub_read
->   Read remaining data for scrub path.
-> 
-> Also, since the trace events are included at super.c, we have to export
-> needed structure definitions into "raid56.h" and include the header in
-> super.c, or we're unable to access those members.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-> @@ -1426,8 +1322,13 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
->  	BUG_ON(atomic_read(&rbio->stripes_pending) == 0);
->  
->  	while ((bio = bio_list_pop(&bio_list))) {
-> +		struct raid56_bio_trace_info trace_info = {0};
 
-						          { 0 }
-> +
->  		bio->bi_end_io = raid_write_end_io;
->  
-> +		if (trace_raid56_write_stripe_enabled())
-> +			bio_get_trace_info(rbio, bio, &trace_info);
-> +		trace_raid56_write_stripe(rbio, bio, &trace_info);
-
-The definition of trace_info and the call to trace_... should be inside
-the if body.
-
->  		submit_bio(bio);
->  	}
->  	return;
-> --- a/fs/btrfs/raid56.h
-> +++ b/fs/btrfs/raid56.h
-> @@ -7,6 +7,163 @@
->  #ifndef BTRFS_RAID56_H
->  #define BTRFS_RAID56_H
->  
-> +#include <linux/workqueue.h>
-> +#include "volumes.h"
-> +
-> +enum btrfs_rbio_ops {
-> +	BTRFS_RBIO_WRITE,
-> +	BTRFS_RBIO_READ_REBUILD,
-> +	BTRFS_RBIO_PARITY_SCRUB,
-> +	BTRFS_RBIO_REBUILD_MISSING,
-> +};
-> +
-> +struct btrfs_raid_bio {
-> +	struct btrfs_io_context *bioc;
-> +
-> +	/* while we're doing rmw on a stripe
-> +	 * we put it into a hash table so we can
-> +	 * lock the stripe and merge more rbios
-> +	 * into it.
-> +	 */
-
-Moved comments should be reformatted and fixed.
-
-> +/*
-> + * For trace event usage only. Records useful debug info for each bio submitted
-> + * by RAID56 to each physical device.
-> + *
-> + * No matter signed or not, (-1) is always the one indicating we can not grab
-> + * the proper stripe number.
-> + */
-> +struct raid56_bio_trace_info {
-> +	u64 devid;
-> +
-> +	/* The offset inside the stripe. (<= STRIPE_LEN) */
-> +	u32 offset;
-> +
-> +	/*
-> +	 * Stripe number.
-> +	 * 0 is the first data stripe, and nr_data for P stripe,
-> +	 * nr_data + 1 for Q stripe.
-> +	 * >= real_stripes for 
-
-This looks unfinished, please let me know what to write the I'll update
-the commit.
-
-> +	 */
-> +	u8 stripe_nr;
-
-Besides the above comment, I've reformatted the comments and moved the
-tracepoint under the _enabled() condition, patch in misc-next. Thanks.
+On 01.06.22 14:21, Qu Wenruo wrote:
+>
+>
+> On 2022/6/1 17:56, Paul Jones wrote:
+>>
+>>> -----Original Message-----
+>>> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+>>> Sent: Wednesday, 1 June 2022 7:27 PM
+>>> To: Wang Yugui <wangyugui@e16-tech.com>
+>>> Cc: linux-btrfs@vger.kernel.org
+>>> Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
+>>>
+>>>
+>>
+>>>>>> If we save journal on every RAID56 HDD, it will always be very slow,
+>>>>>> because journal data is in a different place than normal data, so
+>>>>>> HDD seek is always happen?
+>>>>>>
+>>>>>> If we save journal on a device just like 'mke2fs -O journal_dev' or
+>>>>>> 'mkfs.xfs -l logdev', then this device just works like NVDIMM?  We
+>>>>>> may not need
+>>>>>> RAID56/RAID1 for journal data.
+>>>>>
+>>>>> That device is the single point of failure. You lost that device,
+>>>>> write hole come again.
+>>>>
+>>>> The HW RAID card have 'single point of failure'  too, such as the
+>>>> NVDIMM inside HW RAID card.
+>>>>
+>>>> but  power-lost frequency > hdd failure frequency  > NVDIMM/ssd
+>>>> failure frequency
+>>>
+>>> It's a completely different level.
+>>>
+>>> For btrfs RAID, we have no special treat for any disk.
+>>> And our RAID is focusing on ensuring device tolerance.
+>>>
+>>> In your RAID card case, indeed the failure rate of the card is much 
+>>> lower.
+>>> In journal device case, how do you ensure it's still true that the 
+>>> journal device
+>>> missing possibility is way lower than all the other devices?
+>>>
+>>> So this doesn't make sense, unless you introduce the journal to 
+>>> something
+>>> definitely not a regular disk.
+>>>
+>>> I don't believe this benefit most users.
+>>> Just consider how many regular people use dedicated journal device for
+>>> XFS/EXT4 upon md/dm RAID56.
+>>
+>> A good solid state drive should be far less error prone than spinning 
+>> drives, so would be a good candidate. Not perfect, but better.
+>
+> After more consideration, it looks like it's indeed better.
+>
+> Although we break the guarantee on bad devices, if the journal device is
+> missing, we just fall back to the old RAID56 behavior.
+>
+> It's not the best situation, but we still have all the content we have.
+> The problem is for future write, we may degrade the recovery ability
+> bytes by bytes.
+>
+> Thanks,
+> Qu
+>>
+>> As an end user I think focusing on stability and recovery tools is a 
+>> better use of time than fixing the write hole, as I wouldn't even 
+>> consider using Raid56 in it's current state. The write hole problem 
+>> can be alleviated by a UPS and not using Raid56 for a busy write 
+>> load. It's still good to brainstorm the issue though, as it will need 
+>> solving eventually.
+>>
+>> Paul.
