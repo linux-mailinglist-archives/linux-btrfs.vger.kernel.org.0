@@ -2,192 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5855539CD4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 07:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5DF539CF6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 08:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349751AbiFAFyw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 01:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        id S1349743AbiFAGHT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 02:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349750AbiFAFyv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 01:54:51 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A559548F
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 22:54:49 -0700 (PDT)
+        with ESMTP id S243583AbiFAGHT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 02:07:19 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286DB958E
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 May 2022 23:07:18 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0E1FF21B4F
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 05:54:48 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CCAD21F93E;
+        Wed,  1 Jun 2022 06:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654062888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=0PoqMGtCTqP42y5+Hp28TNBFPlwcGDmG7zc7AlYNwww=;
-        b=StMX6QRJryjWNGAamHyH+PUDrevJYONOs2NybkjTPMn7ES3b54VdUla9AZR/J3obTQ8kc7
-        5vRLWOVXcMojEjMjtUzQ8/27Az1Q4HdSCQ5tvNvY/3/U+fIql3f16LoEJ9eTKo18wvfXQ+
-        FiqqglPSO1ErWbe4t/zrhhky/fI5A/g=
+        t=1654063636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B/V3AUVNF/ntyPS+pKIwLNFMmgQES/LWVcIfOG2gttY=;
+        b=GPwEYePb+tff07Wm4RrHOTdf6Ilr83SJPiWEyIs/KyVDBBExbtRwaf3AhVVemj7URBSK1N
+        8crLUbmQzh5h6C1ltn/OtVUcIAxjWo524isXSVinr7CQwsNGoAtXpjSYB8mXNEoRwnv4xJ
+        cq7sEqsPU2gEWhzTy6FeQSzgiAT6z8s=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3710B13443
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 05:54:46 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 968191330F;
+        Wed,  1 Jun 2022 06:07:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id VhA4Oib/lmLeDQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jun 2022 05:54:46 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: update stripe_sectors[]->uptodate in steal_rbio
-Date:   Wed,  1 Jun 2022 13:54:28 +0800
-Message-Id: <e7fce81204d47e527e3d6d34ebcd9c9a1b281533.1654062760.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.1
+        id DonzIRQCl2LoEgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Wed, 01 Jun 2022 06:07:16 +0000
+Message-ID: <d1dd5698-52fd-3992-0233-f03ce2049d34@suse.com>
+Date:   Wed, 1 Jun 2022 09:07:16 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] btrfs: add btrfs_debug() output for every bio submitted
+ by btrfs RAID56
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org
+References: <de8cc48c6141a20fb2ccf2b774981b150caee27b.1653988869.git.wqu@suse.com>
+ <20220531144328.GI20633@twin.jikos.cz>
+ <a0a1b6af-30f4-d785-a905-60a053a60bc6@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <a0a1b6af-30f4-d785-a905-60a053a60bc6@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-With recent debug output patch, it turns out the following write
-sequence would cause extra read which is unnecessary:
 
-  # xfs_io -f -s -c "pwrite -b 32k 0 32k" -c "pwrite -b 32k 32k 32k" \
-		 -c "pwrite -b 32k 64k 32k" -c "pwrite -b 32k 96k 32k" \
-		 $mnt/file
 
-The debug message looks like this (btrfs header skipped):
+On 1.06.22 г. 2:12 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2022/5/31 22:43, David Sterba wrote:
+>> On Tue, May 31, 2022 at 05:22:56PM +0800, Qu Wenruo wrote:
+>>> For the later incoming RAID56J, it's better to know each bio we're
+>>> submitting from btrfs RAID56 layer.
+>>>
+>>> The output will look like this:
+>>>
+>>>   BTRFS debug (device dm-4): partial rmw, full stripe=389152768 
+>>> opf=0x0 devid=3 type=1 offset=16384 physical=323043328 len=49152
+>>>   BTRFS debug (device dm-4): partial rmw, full stripe=389152768 
+>>> opf=0x0 devid=1 type=2 offset=0 physical=67174400 len=65536
+>>>   BTRFS debug (device dm-4): full stripe rmw, full stripe=389152768 
+>>> opf=0x1 devid=3 type=1 offset=0 physical=323026944 len=16384
+>>>   BTRFS debug (device dm-4): full stripe rmw, full stripe=389152768 
+>>> opf=0x1 devid=2 type=-1 offset=0 physical=323026944 len=16384
+>>>
+>>> The above debug output is from a 16K data write into an empty RAID56
+>>> data chunk.
+>>>
+>>> Some explanation on them:
+>>>   opf:        bio operation
+>>>   devid:        btrfs devid
+>>>   type:        raid stripe type.
+>>>         >=1 are the Nth data stripe.
+>>>         -1 for P stripe, -2 for Q stripe.
+>>>         0 for error (btrfs device not found)
+>>>   offset:    the offset inside the stripe.
+>>>   physical:    the physical offset the bio is for
+>>>   len:        the lenghth of the bio
+>>>
+>>> The first two lines are from partial RMW read, which is reading the
+>>> remaining data stripes from disks.
+>>>
+>>> The last two lines are for full stripe RMW write, which is writing the
+>>> involved two 16K stripes (one for data1, one for parity).
+>>> The stripe for data2 is doesn't need to be written.
+>>>
+>>> To enable any btrfs_debug() output, it's recommended to use kernel
+>>> dynamic debug interface.
+>>>
+>>> For this RAID56 example:
+>>>
+>>>    # echo 'file fs/btrfs/raid56.c +p' > 
+>>> /sys/kernel/debug/dynamic_debug/control
+>>
+>> Have you considered using a tracepoint instead of dynamic debug?
+>>
+> 
+> I have considered, but there is still a problem I can not solve that well.
+> 
+> When using trace events, we have an advantage that everything in trace
+> event is only executed if that event is enabled.
+> 
+> But I'm not able to put the devid/stripe type search code into trace event.
+> It will need to iterate through the rbio->bioc->stripes[] array.
+> I'm not even sure if it's possible in trace events.
 
- partial rmw, full stripe=389152768 opf=0x0 devid=3 type=1 offset=32768 physical=323059712 len=32768
- partial rmw, full stripe=389152768 opf=0x0 devid=1 type=2 offset=0 physical=67174400 len=65536
- full stripe rmw, full stripe=389152768 opf=0x1 devid=3 type=1 offset=0 physical=323026944 len=32768
- full stripe rmw, full stripe=389152768 opf=0x1 devid=2 type=-1 offset=0 physical=323026944 len=32768
- partial rmw, full stripe=298844160 opf=0x0 devid=1 type=1 offset=32768 physical=22052864 len=32768
- partial rmw, full stripe=298844160 opf=0x0 devid=2 type=2 offset=0 physical=277872640 len=65536
- full stripe rmw, full stripe=298844160 opf=0x1 devid=1 type=1 offset=0 physical=22020096 len=32768
- full stripe rmw, full stripe=298844160 opf=0x1 devid=3 type=-1 offset=0 physical=277872640 len=32768
- partial rmw, full stripe=389152768 opf=0x0 devid=3 type=1 offset=0 physical=323026944 len=32768
- partial rmw, full stripe=389152768 opf=0x0 devid=1 type=2 offset=0 physical=67174400 len=65536
- ^^^^
-  Still partial read, even 389152768 is already cached by the first.
-  write.
+With the trace event you can do:
 
- full stripe rmw, full stripe=389152768 opf=0x1 devid=3 type=1 offset=32768 physical=323059712 len=32768
- full stripe rmw, full stripe=389152768 opf=0x1 devid=2 type=-1 offset=32768 physical=323059712 len=32768
- partial rmw, full stripe=298844160 opf=0x0 devid=1 type=1 offset=0 physical=22020096 len=32768
- partial rmw, full stripe=298844160 opf=0x0 devid=2 type=2 offset=0 physical=277872640 len=65536
- ^^^^
-  Still partial read for 298844160.
+if (trace_btrfs_raid56_enabled()) {
+	stripe = expensive_search_code()
 
- full stripe rmw, full stripe=298844160 opf=0x1 devid=1 type=1 offset=32768 physical=22052864 len=32768
- full stripe rmw, full stripe=298844160 opf=0x1 devid=3 type=-1 offset=32768 physical=277905408 len=32768
+}
 
-This means every 32K writes, even they are in the same full stripe,
-still trigger read for previously cached data.
 
-This would cause extra RAID56 IO, making the btrfs raid56 cache useless.
+trace_btrfs_raid56(..., stripe)
 
-[CAUSE]
-Commit d4e28d9b5f04 ("btrfs: raid56: make steal_rbio() subpage
-compatible") tries to make steal_rbio() subpage compatible, but during
-that conversion, there is one thing missing.
 
-We no longer rely on PageUptodate(rbio->stripe_pages[i]), but
-rbio->stripe_nsectors[i].uptodate to determine if a sector is uptodate.
+I.e execute the code iff that particular event is enabled and pass the 
+resulting information to the event. For reference you can lookup how 
+'start_ns' variable is assigned in __reserve_bytes and later passed to 
+handle_reserve_ticket which in turn passes it to 
+trace_btrfs_reserve_ticket.
 
-This means, previously if we switch the pointer, everything is done,
-as the PageUptodate flag is still bond to that page.
 
-But now we have to manually mark the involved sectors uptodate, or later
-raid56_rmw_stripe() will find the stolen sector is not uptodate, and
-assemble the read bio for it, wasting IO.
 
-[FIX]
-We can easily fix the bug, by also update the
-rbio->stripe_sectors[].uptodate in steal_rbio().
-
-With this fixed, now the same write patter no longer leads to the same
-unnecessary read:
-
- partial rmw, full stripe=389152768 opf=0x0 devid=3 type=1 offset=32768 physical=323059712 len=32768
- partial rmw, full stripe=389152768 opf=0x0 devid=1 type=2 offset=0 physical=67174400 len=65536
- full stripe rmw, full stripe=389152768 opf=0x1 devid=3 type=1 offset=0 physical=323026944 len=32768
- full stripe rmw, full stripe=389152768 opf=0x1 devid=2 type=-1 offset=0 physical=323026944 len=32768
- partial rmw, full stripe=298844160 opf=0x0 devid=1 type=1 offset=32768 physical=22052864 len=32768
- partial rmw, full stripe=298844160 opf=0x0 devid=2 type=2 offset=0 physical=277872640 len=65536
- full stripe rmw, full stripe=298844160 opf=0x1 devid=1 type=1 offset=0 physical=22020096 len=32768
- full stripe rmw, full stripe=298844160 opf=0x1 devid=3 type=-1 offset=0 physical=277872640 len=32768
- ^^^ No more partial read, directly into the write path.
- full stripe rmw, full stripe=389152768 opf=0x1 devid=3 type=1 offset=32768 physical=323059712 len=32768
- full stripe rmw, full stripe=389152768 opf=0x1 devid=2 type=-1 offset=32768 physical=323059712 len=32768
- full stripe rmw, full stripe=298844160 opf=0x1 devid=1 type=1 offset=32768 physical=22052864 len=32768
- full stripe rmw, full stripe=298844160 opf=0x1 devid=3 type=-1 offset=32768 physical=277905408 len=32768
-
-Fixes: d4e28d9b5f04 ("btrfs: raid56: make steal_rbio() subpage compatible")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/raid56.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index def0075e4938..db913eab9fa4 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -348,6 +348,24 @@ static void index_stripe_sectors(struct btrfs_raid_bio *rbio)
- 	}
- }
- 
-+static void steal_rbio_page(struct btrfs_raid_bio *src,
-+			    struct btrfs_raid_bio *dest, int page_nr)
-+{
-+	const u32 sectorsize = src->bioc->fs_info->sectorsize;
-+	const u32 sectors_per_page = PAGE_SIZE / sectorsize;
-+	int i;
-+
-+	if (dest->stripe_pages[page_nr])
-+		__free_page(dest->stripe_pages[page_nr]);
-+	dest->stripe_pages[page_nr] = src->stripe_pages[page_nr];
-+	src->stripe_pages[page_nr] = NULL;
-+
-+	/* Also update the sector->uptodate bits. */
-+	for (i = sectors_per_page * page_nr;
-+	     i < sectors_per_page * page_nr + sectors_per_page; i++)
-+		dest->stripe_sectors[i].uptodate = true;
-+}
-+
- /*
-  * Stealing an rbio means taking all the uptodate pages from the stripe array
-  * in the source rbio and putting them into the destination rbio.
-@@ -359,7 +377,6 @@ static void steal_rbio(struct btrfs_raid_bio *src, struct btrfs_raid_bio *dest)
- {
- 	int i;
- 	struct page *s;
--	struct page *d;
- 
- 	if (!test_bit(RBIO_CACHE_READY_BIT, &src->flags))
- 		return;
-@@ -369,12 +386,7 @@ static void steal_rbio(struct btrfs_raid_bio *src, struct btrfs_raid_bio *dest)
- 		if (!s || !full_page_sectors_uptodate(src, i))
- 			continue;
- 
--		d = dest->stripe_pages[i];
--		if (d)
--			__free_page(d);
--
--		dest->stripe_pages[i] = s;
--		src->stripe_pages[i] = NULL;
-+		steal_rbio_page(src, dest, i);
- 	}
- 	index_stripe_sectors(dest);
- 	index_stripe_sectors(src);
--- 
-2.36.1
-
+> 
+> So I go dynamic debug, with the extra cost of running devid/stripe
+> search every time even the debug code is not enabled.
+> 
+> Thanks,
+> Qu
+> 
