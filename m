@@ -2,683 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB75C53A12A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 11:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEB653A157
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 11:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351505AbiFAJro (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 05:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
+        id S237569AbiFAJ44 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 05:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351549AbiFAJr2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 05:47:28 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A635D195
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 02:47:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6EC3E1F980
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 09:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654076837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=sKe2e5uKUniXfEdX4RT523c5VbpwhxD8lnBD8mFawQM=;
-        b=bXDQehYga0VtgP5oLCsoEW0Y72rTzu0YClJ4Za/RpaDXyZ0Skc9P5QJwIBiQpaqBlWk+7P
-        uhWzjC8WM1Pa9QDMVATQVVq6OsOEpCs9ka+2yGHHCZOq80ct/lxjE9VvmbHYpfT8bYEXUK
-        BYvD93yPQIeMB3jMoc4PfdDAnKeGxMc=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B615E13A8F
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 09:47:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id naA1H6Q1l2KHegAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jun 2022 09:47:16 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: add RAID56 submitted bio trace events
-Date:   Wed,  1 Jun 2022 17:46:59 +0800
-Message-Id: <56cbf892eb0bec3b26da3e26f46537e94fb358af.1654076723.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.1
+        with ESMTP id S230171AbiFAJ4z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 05:56:55 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01on2056.outbound.protection.outlook.com [40.107.107.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39C26161
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 02:56:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fAN1F4za5jViLkng/gT270W/dVgR1BIlaGKygDF6PYej/yHrf8q7BFk9AH9mvjku12vNOhKx5iqMuJfmGZBLjhr8PfgAo8X/Efe/LGoVQRoMb4rdQPZIWPyYeqGJ1DCHCqVa81XdYBzhQVQonb6L+tkHXVaHrPVbvRinowYXI7NdY3gcfNP2G2LsYSf47I8tbiyvaMSn9+Hzd7jgPL0A1rKT/bHDrgKCSa+ibHqlsn0exUFj17HZOqBpI+FNNRWBECZstxligAutNQ+GqD4Jd6GO00093m3sIdnrW8uR9ksJwsMDqvgaG3aAfLkpYptbWVWa89ICRIWCH/8Xm5xzFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lVfx8CtHumbtnycd/hbwFbNZrISeDm0S8e4w65dQqow=;
+ b=bFe8BxRNfDkyU1SRiVHM+fwpr2qiSaac128QlXSRXah0aX87CkbDMKR7FckUvQuC8njUfpcosdNUQzJ21KcYcy90uBLBsb+RiPNVclojIgCPo1ZFU6RXQSwW/ovEx8yj0DvfMuVbDs9xLgQcRhv7r2IUMkoqKIxFWpg3lqPLVH0KlbLCDl9+tOkFSB5HZe2ypRZKa1BAiYjplLMQbQGkctzmRs5v8mTgI0BwoScPLCbUGis+0/7gzZm0oTO1Vo6B0RXilDzxXggnO41s+4uUczdPDz46WqFfFiG9rWZmv13IqBYoi5RyB+SsM/UPmnEvp7jRSvqh14QOkLgEv3W6ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
+ header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oakvillepondscapes.onmicrosoft.com;
+ s=selector2-oakvillepondscapes-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lVfx8CtHumbtnycd/hbwFbNZrISeDm0S8e4w65dQqow=;
+ b=Cfm+W7yT9Wqm4DZ6BRIkr/6ogEqRA+mCXLPJeiHVOUr02R73T24ipPoCQ+IxhphEKkFkzjANI+8MNkvxdmSojTHsbkWy5X5ziXO/yelwC/pGOxaZQLoioKEVNY5CHJcw/ruxyQztBhhDimyoJX6c27XuWoNAm519f8pBZaYdeRo=
+Received: from SYCPR01MB4685.ausprd01.prod.outlook.com (2603:10c6:10:4a::22)
+ by ME3PR01MB6452.ausprd01.prod.outlook.com (2603:10c6:220:10b::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.12; Wed, 1 Jun
+ 2022 09:56:47 +0000
+Received: from SYCPR01MB4685.ausprd01.prod.outlook.com
+ ([fe80::1d33:962c:6333:b28d]) by SYCPR01MB4685.ausprd01.prod.outlook.com
+ ([fe80::1d33:962c:6333:b28d%7]) with mapi id 15.20.5314.012; Wed, 1 Jun 2022
+ 09:56:47 +0000
+From:   Paul Jones <paul@pauljones.id.au>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Wang Yugui <wangyugui@e16-tech.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: RE: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
+Thread-Topic: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
+Thread-Index: AQHYdVw+MCjN3L24rUu6KafYRylN8a05z50AgAADZ4CAAAhQAIAAaAwAgAAFh4CAAAUt8A==
+Date:   Wed, 1 Jun 2022 09:56:47 +0000
+Message-ID: <SYCPR01MB4685030F15634C6C2FEC01369EDF9@SYCPR01MB4685.ausprd01.prod.outlook.com>
+References: <20220601102532.D262.409509F4@e16-tech.com>
+ <49fb1216-189d-8801-d134-596284f62f1f@gmx.com>
+ <20220601170741.4B12.409509F4@e16-tech.com>
+ <5f49c12e-4655-48dd-0d73-49dc351eae15@gmx.com>
+In-Reply-To: <5f49c12e-4655-48dd-0d73-49dc351eae15@gmx.com>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=pauljones.id.au;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a441eac5-544b-4ea9-2d93-08da43b50a95
+x-ms-traffictypediagnostic: ME3PR01MB6452:EE_
+x-microsoft-antispam-prvs: <ME3PR01MB64525FE23B54D3A94C287BFD9EDF9@ME3PR01MB6452.ausprd01.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YLsVg7KjMf9W86VvVOInfA8QZU0LbMZvPKyP7phjNkrLezQ7ytIx8l1fzzHj5URZOboOUpoRT62lJ1sqfwjt1rnudV4kdA30S59CTpKOVPQG6XUJAOjxbx6fJTUmh/8xVsZmoatBMIBXxewTKxLChjhiW0NhSnaMzLBc+w/cLrf/qN6di7fP8tobGmn3qjl0F3OPh7zuftJb80Gqxae2jrpuBB5N7OwTO0BbacUW3fvmkt4mEL3bIpKH+aBVCCvmRhDPAQ1pvzyPEXiXzYd/w/wjLCiJbbudhDntqq1BKEFOZRHtHRupM5I5NXhUd3yMdZBMkFiBA90Adjfh1h+jx5bB+l1jG1pqkiRlYfHBoSPTxHL7IuX8pijGZPV+LUXaboR8IuWC0us/kC5FzhizQ1auLmR5EEljIcc84nT4TFkYMFJ1+CIcCtdW1GzKqTT5K8Y/2xf1KS8Sn2wcF6EwjnmMj4Xj0qXT6VJ8YqUpznUSIE6QP/rest1UWZTMZhJGXTb9/9BxbCtdtpXUWy6GB1Ujl82awutBDbvNubrcUAWX54b1LFoCF0HCjtKpR5gv8c7QmXII3H6vooOYKn8SQONnHUx3VPCJopBJxvDCh9AjVsRAcoHUztkjc3kTms3WYScN9vgSgjmgutNG4ExPu3SGBms3s50eO1cQwU7og8FqsLAk8FmMzYPI+AQjSXiC1e1fCFz9qXunD6txI4d78w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYCPR01MB4685.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(396003)(346002)(136003)(376002)(39830400003)(366004)(38100700002)(26005)(7696005)(6506007)(83380400001)(52536014)(33656002)(41300700001)(53546011)(5660300002)(55016003)(8936002)(2906002)(8676002)(66556008)(4326008)(66446008)(122000001)(66476007)(64756008)(76116006)(38070700005)(66946007)(71200400001)(508600001)(9686003)(86362001)(186003)(110136005)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SHNpK3VJUzI3QnZrL3J1YXNEWHRFaEFwaStja1M4b0lxWWFvTlBMZSs1T3dq?=
+ =?utf-8?B?c21FME4wSk9jSm53ZGxIUi9pbGVWYmRtc3l3NEoxZTFFWXF4ZXJFVWdVc0Yw?=
+ =?utf-8?B?TTdOcHhCa0cwYU1QcktNaFVxR3NselhqOHg1WEliMHkzMUE5WC9zR1Y5ZnZU?=
+ =?utf-8?B?WTF2TCtoUkVqZUdpdjZQTllxay8yc0U0ZUZEZUJ1RFdQNGV1TGtMOUtQSjFU?=
+ =?utf-8?B?bHd1Z3Arb2NXd0NpYXBhZ2dzam53NUJSVkYxSVZjaHJRaDA5UFJNWXRGbklm?=
+ =?utf-8?B?RjFsWHZWaUc5UmRDS3VzSHA4ZkV2b0RwQlhFVXkzRDZJUnQzNGJHTDZVTit0?=
+ =?utf-8?B?RG1HQmFNem1XaUxwSjRJOUVjdVFXaXRuUS9sKzZjNWVRbFRidU1ja0VlVkhE?=
+ =?utf-8?B?T0t1V1VsRzFvVHpUTzhPMkhIQmFOV0VONXJDNFBINUNVOE02aHViT25uTDh4?=
+ =?utf-8?B?T2R5eTlJM3ZwMm1NTVVVSE8rS3hkQTNuMjQ0Mkt3aUgxU3NJSGJJN3Zrbm1D?=
+ =?utf-8?B?VHA3NFk4bWYvcHFlWEpmaUVxdGU3QjdVanpTODJMallwRWt1Nmw4Uy9SWE0v?=
+ =?utf-8?B?emlvd2c5NEF0VDR4NkRreWF0SmdNOTVIcS9BaWt0TFA5azdTWXpRZi9LcjVU?=
+ =?utf-8?B?R0JRRmwvakwxaUxyaU5RaUhNNVRwZllRM2k1cEZCdG1EZnZsSHlwdnFCejNJ?=
+ =?utf-8?B?UE02MWN1RytUTWM5NTh4YUxveVFqTjhTTnZZSWF3K0xyVFdqUk5ycmROczlE?=
+ =?utf-8?B?Q1J1WkVIMjhaTldhZjNDTyttTk5IWmtlbENGcUlmaFRSazJ3MHB4cGQ2WjFy?=
+ =?utf-8?B?T28vRDNtMzRMUDd2clZlL2ZTS0oySFV3UzNIL0h5SGRDcXg5Y0N6MUVkbm40?=
+ =?utf-8?B?V2Jna2V0WG8vazYzUTlRaW9NWVY3VWFqaUk3cUwyRm5KRXBtVC8xS3hXZ0Q1?=
+ =?utf-8?B?bXBLUXEzdzd0eFJGcUlIcHZGdy9XWWNDRjM3KzFDSk1NeHUzNmF5NW5TSGk3?=
+ =?utf-8?B?M09yNFkyNFlQbExLTm9Ec3lGTDNIOEh1M2VyV1VRS2VrcEVRcHUrR0M3SGV5?=
+ =?utf-8?B?K2FJUi9CTGROY0wzSEk5WGNuenBpZnF4RXVjYUFRSGxvdzdmV25yMVZ2VFNG?=
+ =?utf-8?B?TUY1UFpnNDJnUHUxM3lncjdScWhwamJRMzlEaFFyTnBTK05OZVA1Wmo3c0Vh?=
+ =?utf-8?B?YjgvZUpQUmMzM0RKYW44NGkvNGpzaDRsYkR4NGN5T05ZUExoc0dzRGZTMVE4?=
+ =?utf-8?B?SGM4Y3JIbUVKblJ0cHlnbjZkT0dURjQ0andWMTdzT1liait3Z1ZWd1dNSmVy?=
+ =?utf-8?B?S2Iya2dNcGFCOCtNSTl1Sk91dEZwYkR0OHdoWlArTUxjRDJQbXB3SC96ejBD?=
+ =?utf-8?B?cTlTdlFGeWw5RjBzN21YbitqS2REcmxzTW1TbHhuTmRHUkNaeWNuUDE5NzRP?=
+ =?utf-8?B?NDNkRS8wUHArdTkvZHhZTW1IOVBQTGhCSEVKeE0rN2xDbmtra1F4VzJIeFh3?=
+ =?utf-8?B?QjBjT0NYS2FaN1pjMmxkK3ZjUFR1WlJGdHFSV2Q0Q251QjBMeVJZNFhNOW50?=
+ =?utf-8?B?MkNqa3FXSFRWVitnZlR5VWM1R2NLSlJaT05Za3YzVE9xVVJyYitjSE9PSEli?=
+ =?utf-8?B?ZCt4U3pCYzBLeGRib1Z3TXd5V0UyL010Umk4cXVmK3FUM1AzSWtHdlg5dDZV?=
+ =?utf-8?B?M0VSWm52ZjVOZEhlT1RqSlpGMUREK1ZkSmp0S3RKalFudCtURWdFdXZHVEJQ?=
+ =?utf-8?B?NmZtcTNWTUJFTEN5aDM0eWNERG9BaXBtaEFyZmFTSVNTbWN3cm1xT0RXbTc5?=
+ =?utf-8?B?eWQ5MUc2eW1Qak5YSGtSSXJHakxHcldQaGRLL1FhbDF3RHVTS2VSbWtwRHB0?=
+ =?utf-8?B?eXk4bFhBOFBmcHlCNlV2bDBjMWNaYzR2MVlsOHh0QTJUUG52aURkd1MxcEVQ?=
+ =?utf-8?B?VmdielMvWVNFOWl5WWdRQUI1UDNJeG1BUUhGeDZCZnlsRVlGMkh5OG5oSzIr?=
+ =?utf-8?B?bkJhT3BsY2FvZkJhMXFpUFFSMy91MmFFYmUxYWI2cFR4bm5wbzBSbEVkdHla?=
+ =?utf-8?B?dDVZV2wvaUk4Z2c3VmFGd3Y5aVpveEV2WjFlTVZVa0dVTFRvMTgyUHhZRGdD?=
+ =?utf-8?B?TW94NjRnWEJGNnYxczhoaDhYeEs5R1ZhWlgyQ3o1N21tYzVsdEtPTzBMajNU?=
+ =?utf-8?B?ZlJ3ZmVTOTl0dXVlTSsvbnlCeVE1dHB1UHQ4R0VNTWtDTy9Bc3hnTWQyekln?=
+ =?utf-8?B?K3ZrcFN2KzB4TEhJK25GUDJnL2huZzdHQWZyaVg4bXFuK1ZEazNxaDR3bWxJ?=
+ =?utf-8?B?Ym4rTGZDWnR5emxVcGg2VFpGaEVmUTNMOWdkejBUbytqTjY3L3ZEZz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: pauljones.id.au
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SYCPR01MB4685.ausprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a441eac5-544b-4ea9-2d93-08da43b50a95
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2022 09:56:47.1880
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4lfLaVRMNt2hhIdUUFf8MlqyPTGWCb211l4iQMRg7188Keqw7d9m+rp4x+M/ktgfQajR01MXX73qtD+LUHIZSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ME3PR01MB6452
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For the later incoming RAID56J, it's better to know each bio we're
-submitting from btrfs RAID56 layer, so this patch will introduce the
-trace events for every bio submitted by btrfs RAID56 layer.
-
-The output looks like this: (trace event header and UUID skipped)
-
-   raid56_read_partial: full_stripe=389152768 devid=3 type=DATA1 offset=32768 opf=0x0 physical=323059712 len=32768
-   raid56_read_partial: full_stripe=389152768 devid=1 type=DATA2 offset=0 opf=0x0 physical=67174400 len=65536
-   raid56_write_stripe: full_stripe=389152768 devid=3 type=DATA1 offset=0 opf=0x1 physical=323026944 len=32768
-   raid56_write_stripe: full_stripe=389152768 devid=2 type=PQ1 offset=0 opf=0x1 physical=323026944 len=32768
-
-The above debug output is from a 32K data write into an empty RAID56
-data chunk.
-
-Some explanation on the event output:
- full_stripe:	the logical bytenr of the full stripe
- devid:		btrfs devid
- type:		raid stripe type.
-		DATA1:	the first data stripe
-		DATA2:	the second data stripe
-		PQ1:	the P stripe
-		PQ2:	the Q stripe
- offset:	the offset inside the stripe.
- opf:		the bio op type
- physical:	the physical offset the bio is for
- len:		the length of the bio
-
-The first two lines are from partial RMW read, which is reading the
-remaining data stripes from disks.
-
-The last two lines are for full stripe RMW write, which is writing the
-involved two 16K stripes (one for DATA1 stripe, one for P stripe).
-The stripe for DATA2 doesn't need to be written.
-
-There are 5 types of trace events:
-- raid56_read_partial
-  Read remaining data for regular read/write path.
-
-- raid56_write_stripe
-  Write the modified stripes for regular read/write path.
-
-- raid56_scrub_read_recover
-  Read remaining data for scrub recovery path.
-
-- raid56_scrub_write_stripe
-  Write the modified stripes for scrub path.
-
-- raid56_scrub_read
-  Read remaining data for scrub path.
-
-Also, since the trace events are included at super.c, we have to export
-needed structure definitions into "raid56.h" and include the header in
-super.c, or we're unable to access those members.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/raid56.c            | 186 ++++++++++-------------------------
- fs/btrfs/raid56.h            | 159 +++++++++++++++++++++++++++++-
- fs/btrfs/super.c             |   1 +
- include/trace/events/btrfs.h |  93 ++++++++++++++++++
- 4 files changed, 306 insertions(+), 133 deletions(-)
-
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index a4fcc60e45a0..edff167a2ca6 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -63,138 +63,6 @@ struct sector_ptr {
- 	unsigned int uptodate:8;
- };
- 
--enum btrfs_rbio_ops {
--	BTRFS_RBIO_WRITE,
--	BTRFS_RBIO_READ_REBUILD,
--	BTRFS_RBIO_PARITY_SCRUB,
--	BTRFS_RBIO_REBUILD_MISSING,
--};
--
--struct btrfs_raid_bio {
--	struct btrfs_io_context *bioc;
--
--	/* while we're doing rmw on a stripe
--	 * we put it into a hash table so we can
--	 * lock the stripe and merge more rbios
--	 * into it.
--	 */
--	struct list_head hash_list;
--
--	/*
--	 * LRU list for the stripe cache
--	 */
--	struct list_head stripe_cache;
--
--	/*
--	 * for scheduling work in the helper threads
--	 */
--	struct work_struct work;
--
--	/*
--	 * bio list and bio_list_lock are used
--	 * to add more bios into the stripe
--	 * in hopes of avoiding the full rmw
--	 */
--	struct bio_list bio_list;
--	spinlock_t bio_list_lock;
--
--	/* also protected by the bio_list_lock, the
--	 * plug list is used by the plugging code
--	 * to collect partial bios while plugged.  The
--	 * stripe locking code also uses it to hand off
--	 * the stripe lock to the next pending IO
--	 */
--	struct list_head plug_list;
--
--	/*
--	 * flags that tell us if it is safe to
--	 * merge with this bio
--	 */
--	unsigned long flags;
--
--	/*
--	 * set if we're doing a parity rebuild
--	 * for a read from higher up, which is handled
--	 * differently from a parity rebuild as part of
--	 * rmw
--	 */
--	enum btrfs_rbio_ops operation;
--
--	/* Size of each individual stripe on disk */
--	u32 stripe_len;
--
--	/* How many pages there are for the full stripe including P/Q */
--	u16 nr_pages;
--
--	/* How many sectors there are for the full stripe including P/Q */
--	u16 nr_sectors;
--
--	/* Number of data stripes (no p/q) */
--	u8 nr_data;
--
--	/* Numer of all stripes (including P/Q) */
--	u8 real_stripes;
--
--	/* How many pages there are for each stripe */
--	u8 stripe_npages;
--
--	/* How many sectors there are for each stripe */
--	u8 stripe_nsectors;
--
--	/* First bad stripe, -1 means no corruption */
--	s8 faila;
--
--	/* Second bad stripe (for RAID6 use) */
--	s8 failb;
--
--	/* Stripe number that we're scrubbing  */
--	u8 scrubp;
--
--	/*
--	 * size of all the bios in the bio_list.  This
--	 * helps us decide if the rbio maps to a full
--	 * stripe or not
--	 */
--	int bio_list_bytes;
--
--	int generic_bio_cnt;
--
--	refcount_t refs;
--
--	atomic_t stripes_pending;
--
--	atomic_t error;
--
--	/* Bitmap to record which horizontal stripe has data */
--	unsigned long dbitmap;
--
--	/* Allocated with stripe_nsectors-many bits for finish_*() calls */
--	unsigned long finish_pbitmap;
--
--	/*
--	 * these are two arrays of pointers.  We allocate the
--	 * rbio big enough to hold them both and setup their
--	 * locations when the rbio is allocated
--	 */
--
--	/* pointers to pages that we allocated for
--	 * reading/writing stripes directly from the disk (including P/Q)
--	 */
--	struct page **stripe_pages;
--
--	/* Pointers to the sectors in the bio_list, for faster lookup */
--	struct sector_ptr *bio_sectors;
--
--	/*
--	 * For subpage support, we need to map each sector to above
--	 * stripe_pages.
--	 */
--	struct sector_ptr *stripe_sectors;
--
--	/* allocated with real_stripes-many pointers for finish_*() calls */
--	void **finish_pointers;
--};
--
- static int __raid56_parity_recover(struct btrfs_raid_bio *rbio);
- static noinline void finish_rmw(struct btrfs_raid_bio *rbio);
- static void rmw_work(struct work_struct *work);
-@@ -1263,6 +1131,34 @@ static void index_rbio_pages(struct btrfs_raid_bio *rbio)
- 	spin_unlock_irq(&rbio->bio_list_lock);
- }
- 
-+static void bio_get_trace_info(struct btrfs_raid_bio *rbio, struct bio *bio,
-+			       struct raid56_bio_trace_info *trace_info)
-+{
-+	const struct btrfs_io_context *bioc = rbio->bioc;
-+	int i;
-+
-+	ASSERT(bioc);
-+
-+	/* We rely on bio->bi_bdev to find the stripe number. */
-+	if (!bio->bi_bdev)
-+		goto not_found;
-+
-+	for (i = 0; i < bioc->num_stripes; i++) {
-+		if (bio->bi_bdev != bioc->stripes[i].dev->bdev)
-+			continue;
-+		trace_info->stripe_nr = i;
-+		trace_info->devid = bioc->stripes[i].dev->devid;
-+		trace_info->offset = (bio->bi_iter.bi_sector << SECTOR_SHIFT) -
-+				     bioc->stripes[i].physical;
-+		return;
-+	}
-+
-+not_found:
-+	trace_info->devid = -1;
-+	trace_info->offset = -1;
-+	trace_info->stripe_nr = -1;
-+}
-+
- /*
-  * this is called from one of two situations.  We either
-  * have a full stripe from the higher layers, or we've read all
-@@ -1426,8 +1322,13 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
- 	BUG_ON(atomic_read(&rbio->stripes_pending) == 0);
- 
- 	while ((bio = bio_list_pop(&bio_list))) {
-+		struct raid56_bio_trace_info trace_info = {0};
-+
- 		bio->bi_end_io = raid_write_end_io;
- 
-+		if (trace_raid56_write_stripe_enabled())
-+			bio_get_trace_info(rbio, bio, &trace_info);
-+		trace_raid56_write_stripe(rbio, bio, &trace_info);
- 		submit_bio(bio);
- 	}
- 	return;
-@@ -1685,10 +1586,15 @@ static int raid56_rmw_stripe(struct btrfs_raid_bio *rbio)
- 	 */
- 	atomic_set(&rbio->stripes_pending, bios_to_read);
- 	while ((bio = bio_list_pop(&bio_list))) {
-+		struct raid56_bio_trace_info trace_info = {0};
-+
- 		bio->bi_end_io = raid_rmw_end_io;
- 
- 		btrfs_bio_wq_end_io(rbio->bioc->fs_info, bio, BTRFS_WQ_ENDIO_RAID56);
- 
-+		if (trace_raid56_read_partial_enabled())
-+			bio_get_trace_info(rbio, bio, &trace_info);
-+		trace_raid56_read_partial(rbio, bio, &trace_info);
- 		submit_bio(bio);
- 	}
- 	/* the actual write will happen once the reads are done */
-@@ -2258,10 +2164,15 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
- 	 */
- 	atomic_set(&rbio->stripes_pending, bios_to_read);
- 	while ((bio = bio_list_pop(&bio_list))) {
-+		struct raid56_bio_trace_info trace_info = {0};
-+
- 		bio->bi_end_io = raid_recover_end_io;
- 
- 		btrfs_bio_wq_end_io(rbio->bioc->fs_info, bio, BTRFS_WQ_ENDIO_RAID56);
- 
-+		if (trace_raid56_scrub_read_recover_enabled())
-+			bio_get_trace_info(rbio, bio, &trace_info);
-+		trace_raid56_scrub_read_recover(rbio, bio, &trace_info);
- 		submit_bio(bio);
- 	}
- 
-@@ -2629,8 +2540,13 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
- 	atomic_set(&rbio->stripes_pending, nr_data);
- 
- 	while ((bio = bio_list_pop(&bio_list))) {
-+		struct raid56_bio_trace_info trace_info = {0};
-+
- 		bio->bi_end_io = raid_write_end_io;
- 
-+		if (trace_raid56_scrub_write_stripe_enabled())
-+			bio_get_trace_info(rbio, bio, &trace_info);
-+		trace_raid56_scrub_write_stripe(rbio, bio, &trace_info);
- 		submit_bio(bio);
- 	}
- 	return;
-@@ -2806,10 +2722,16 @@ static void raid56_parity_scrub_stripe(struct btrfs_raid_bio *rbio)
- 	 */
- 	atomic_set(&rbio->stripes_pending, bios_to_read);
- 	while ((bio = bio_list_pop(&bio_list))) {
-+		struct raid56_bio_trace_info trace_info = {0};
-+
- 		bio->bi_end_io = raid56_parity_scrub_end_io;
- 
- 		btrfs_bio_wq_end_io(rbio->bioc->fs_info, bio, BTRFS_WQ_ENDIO_RAID56);
- 
-+		if (trace_raid56_scrub_read_enabled())
-+			bio_get_trace_info(rbio, bio, &trace_info);
-+		trace_raid56_scrub_read(rbio, bio, &trace_info);
-+
- 		submit_bio(bio);
- 	}
- 	/* the actual write will happen once the reads are done */
-diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
-index aaad08aefd7d..dae85717bb4a 100644
---- a/fs/btrfs/raid56.h
-+++ b/fs/btrfs/raid56.h
-@@ -7,6 +7,163 @@
- #ifndef BTRFS_RAID56_H
- #define BTRFS_RAID56_H
- 
-+#include <linux/workqueue.h>
-+#include "volumes.h"
-+
-+enum btrfs_rbio_ops {
-+	BTRFS_RBIO_WRITE,
-+	BTRFS_RBIO_READ_REBUILD,
-+	BTRFS_RBIO_PARITY_SCRUB,
-+	BTRFS_RBIO_REBUILD_MISSING,
-+};
-+
-+struct btrfs_raid_bio {
-+	struct btrfs_io_context *bioc;
-+
-+	/* while we're doing rmw on a stripe
-+	 * we put it into a hash table so we can
-+	 * lock the stripe and merge more rbios
-+	 * into it.
-+	 */
-+	struct list_head hash_list;
-+
-+	/*
-+	 * LRU list for the stripe cache
-+	 */
-+	struct list_head stripe_cache;
-+
-+	/*
-+	 * for scheduling work in the helper threads
-+	 */
-+	struct work_struct work;
-+
-+	/*
-+	 * bio list and bio_list_lock are used
-+	 * to add more bios into the stripe
-+	 * in hopes of avoiding the full rmw
-+	 */
-+	struct bio_list bio_list;
-+	spinlock_t bio_list_lock;
-+
-+	/* also protected by the bio_list_lock, the
-+	 * plug list is used by the plugging code
-+	 * to collect partial bios while plugged.  The
-+	 * stripe locking code also uses it to hand off
-+	 * the stripe lock to the next pending IO
-+	 */
-+	struct list_head plug_list;
-+
-+	/*
-+	 * flags that tell us if it is safe to
-+	 * merge with this bio
-+	 */
-+	unsigned long flags;
-+
-+	/*
-+	 * set if we're doing a parity rebuild
-+	 * for a read from higher up, which is handled
-+	 * differently from a parity rebuild as part of
-+	 * rmw
-+	 */
-+	enum btrfs_rbio_ops operation;
-+
-+	/* Size of each individual stripe on disk */
-+	u32 stripe_len;
-+
-+	/* How many pages there are for the full stripe including P/Q */
-+	u16 nr_pages;
-+
-+	/* How many sectors there are for the full stripe including P/Q */
-+	u16 nr_sectors;
-+
-+	/* Number of data stripes (no p/q) */
-+	u8 nr_data;
-+
-+	/* Numer of all stripes (including P/Q) */
-+	u8 real_stripes;
-+
-+	/* How many pages there are for each stripe */
-+	u8 stripe_npages;
-+
-+	/* How many sectors there are for each stripe */
-+	u8 stripe_nsectors;
-+
-+	/* First bad stripe, -1 means no corruption */
-+	s8 faila;
-+
-+	/* Second bad stripe (for RAID6 use) */
-+	s8 failb;
-+
-+	/* Stripe number that we're scrubbing  */
-+	u8 scrubp;
-+
-+	/*
-+	 * size of all the bios in the bio_list.  This
-+	 * helps us decide if the rbio maps to a full
-+	 * stripe or not
-+	 */
-+	int bio_list_bytes;
-+
-+	int generic_bio_cnt;
-+
-+	refcount_t refs;
-+
-+	atomic_t stripes_pending;
-+
-+	atomic_t error;
-+
-+	/* Bitmap to record which horizontal stripe has data */
-+	unsigned long dbitmap;
-+
-+	/* Allocated with stripe_nsectors-many bits for finish_*() calls */
-+	unsigned long finish_pbitmap;
-+
-+	/*
-+	 * these are two arrays of pointers.  We allocate the
-+	 * rbio big enough to hold them both and setup their
-+	 * locations when the rbio is allocated
-+	 */
-+
-+	/* pointers to pages that we allocated for
-+	 * reading/writing stripes directly from the disk (including P/Q)
-+	 */
-+	struct page **stripe_pages;
-+
-+	/* Pointers to the sectors in the bio_list, for faster lookup */
-+	struct sector_ptr *bio_sectors;
-+
-+	/*
-+	 * For subpage support, we need to map each sector to above
-+	 * stripe_pages.
-+	 */
-+	struct sector_ptr *stripe_sectors;
-+
-+	/* allocated with real_stripes-many pointers for finish_*() calls */
-+	void **finish_pointers;
-+};
-+
-+/*
-+ * For trace event usage only. Records useful debug info for each bio submitted
-+ * by RAID56 to each physical device.
-+ *
-+ * No matter signed or not, (-1) is always the one indicating we can not grab
-+ * the proper stripe number.
-+ */
-+struct raid56_bio_trace_info {
-+	u64 devid;
-+
-+	/* The offset inside the stripe. (<= STRIPE_LEN) */
-+	u32 offset;
-+
-+	/*
-+	 * Stripe number.
-+	 * 0 is the first data stripe, and nr_data for P stripe,
-+	 * nr_data + 1 for Q stripe.
-+	 * >= real_stripes for 
-+	 */
-+	u8 stripe_nr;
-+};
-+
- static inline int nr_parity_stripes(const struct map_lookup *map)
- {
- 	if (map->type & BTRFS_BLOCK_GROUP_RAID5)
-@@ -21,13 +178,13 @@ static inline int nr_data_stripes(const struct map_lookup *map)
- {
- 	return map->num_stripes - nr_parity_stripes(map);
- }
-+
- #define RAID5_P_STRIPE ((u64)-2)
- #define RAID6_Q_STRIPE ((u64)-1)
- 
- #define is_parity_stripe(x) (((x) == RAID5_P_STRIPE) ||		\
- 			     ((x) == RAID6_Q_STRIPE))
- 
--struct btrfs_raid_bio;
- struct btrfs_device;
- 
- int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bioc,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index b1fdc6a26c76..804386ee9318 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -48,6 +48,7 @@
- #include "block-group.h"
- #include "discard.h"
- #include "qgroup.h"
-+#include "raid56.h"
- #define CREATE_TRACE_POINTS
- #include <trace/events/btrfs.h>
- 
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 290f07eb050a..b7277291880c 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -30,6 +30,8 @@ struct btrfs_qgroup;
- struct extent_io_tree;
- struct prelim_ref;
- struct btrfs_space_info;
-+struct btrfs_raid_bio;
-+struct raid56_bio_trace_info;
- 
- #define show_ref_type(type)						\
- 	__print_symbolic(type,						\
-@@ -2258,6 +2260,97 @@ DEFINE_EVENT(btrfs__space_info_update, update_bytes_pinned,
- 	TP_ARGS(fs_info, sinfo, old, diff)
- );
- 
-+DECLARE_EVENT_CLASS(btrfs_raid56_bio,
-+
-+	TP_PROTO(const struct btrfs_raid_bio *rbio,
-+		 const struct bio *bio,
-+		 const struct raid56_bio_trace_info *trace_info),
-+
-+	TP_ARGS(rbio, bio, trace_info),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	full_stripe	)
-+		__field(	u64,	physical	)
-+		__field(	u64,	devid		)
-+		__field(	u32,	offset		)
-+		__field(	u32,	len		)
-+		__field(	u8,	opf		)
-+		__field(	u8,	total_stripes	)
-+		__field(	u8,	real_stripes	)
-+		__field(	u8,	nr_data		)
-+		__field(	u8,	stripe_nr	)
-+	),
-+
-+	TP_fast_assign_btrfs(rbio->bioc->fs_info,
-+		__entry->full_stripe	= rbio->bioc->raid_map[0];
-+		__entry->physical	= bio->bi_iter.bi_sector << SECTOR_SHIFT;
-+		__entry->len		= bio->bi_iter.bi_size;
-+		__entry->opf		= bio_op(bio);
-+		__entry->devid		= trace_info->devid;
-+		__entry->offset		= trace_info->offset;
-+		__entry->stripe_nr	= trace_info->stripe_nr;
-+		__entry->total_stripes	= rbio->bioc->num_stripes;
-+		__entry->real_stripes	= rbio->real_stripes;
-+		__entry->nr_data	= rbio->nr_data;
-+	),
-+	/*
-+	 * For type output, we need to output things like "DATA1"
-+	 * (the first data stripe), "DATA2" (the second data stripe),
-+	 * "PQ1" (P stripe),"PQ2" (Q stripe), "REPLACE0" (replace target device).
-+	 */
-+	TP_printk_btrfs("full_stripe=%llu devid=%lld type=%s%d offset=%d opf=0x%x physical=%llu len=%u",
-+		__entry->full_stripe, __entry->devid,
-+		(__entry->stripe_nr < __entry->nr_data) ? "DATA" :
-+			((__entry->stripe_nr < __entry->real_stripes) ? "PQ" :
-+			 "REPLACE"),
-+		(__entry->stripe_nr < __entry->nr_data) ?
-+			(__entry->stripe_nr + 1) :
-+			((__entry->stripe_nr < __entry->real_stripes) ?
-+		 		(__entry->stripe_nr - __entry->nr_data + 1) : 0),
-+		__entry->offset, __entry->opf, __entry->physical, __entry->len)
-+);
-+
-+DEFINE_EVENT(btrfs_raid56_bio, raid56_read_partial,
-+	TP_PROTO(const struct btrfs_raid_bio *rbio,
-+		 const struct bio *bio,
-+		 const struct raid56_bio_trace_info *trace_info),
-+
-+	TP_ARGS(rbio, bio, trace_info)
-+);
-+
-+DEFINE_EVENT(btrfs_raid56_bio, raid56_write_stripe,
-+	TP_PROTO(const struct btrfs_raid_bio *rbio,
-+		 const struct bio *bio,
-+		 const struct raid56_bio_trace_info *trace_info),
-+
-+	TP_ARGS(rbio, bio, trace_info)
-+);
-+
-+
-+DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_write_stripe,
-+	TP_PROTO(const struct btrfs_raid_bio *rbio,
-+		 const struct bio *bio,
-+		 const struct raid56_bio_trace_info *trace_info),
-+
-+	TP_ARGS(rbio, bio, trace_info)
-+);
-+
-+DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read,
-+	TP_PROTO(const struct btrfs_raid_bio *rbio,
-+		 const struct bio *bio,
-+		 const struct raid56_bio_trace_info *trace_info),
-+
-+	TP_ARGS(rbio, bio, trace_info)
-+);
-+
-+DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read_recover,
-+	TP_PROTO(const struct btrfs_raid_bio *rbio,
-+		 const struct bio *bio,
-+		 const struct raid56_bio_trace_info *trace_info),
-+
-+	TP_ARGS(rbio, bio, trace_info)
-+);
-+
- #endif /* _TRACE_BTRFS_H */
- 
- /* This part must be outside protection */
--- 
-2.36.1
-
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFF1IFdlbnJ1byA8cXV3ZW5y
+dW8uYnRyZnNAZ214LmNvbT4NCj4gU2VudDogV2VkbmVzZGF5LCAxIEp1bmUgMjAyMiA3OjI3IFBN
+DQo+IFRvOiBXYW5nIFl1Z3VpIDx3YW5neXVndWlAZTE2LXRlY2guY29tPg0KPiBDYzogbGludXgt
+YnRyZnNAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggRFJBRlRdIGJ0cmZz
+OiBSQUlENTZKIGpvdXJuYWwgb24tZGlzayBmb3JtYXQgZHJhZnQNCj4gDQo+IA0KDQo+ID4+PiBJ
+ZiB3ZSBzYXZlIGpvdXJuYWwgb24gZXZlcnkgUkFJRDU2IEhERCwgaXQgd2lsbCBhbHdheXMgYmUg
+dmVyeSBzbG93LA0KPiA+Pj4gYmVjYXVzZSBqb3VybmFsIGRhdGEgaXMgaW4gYSBkaWZmZXJlbnQg
+cGxhY2UgdGhhbiBub3JtYWwgZGF0YSwgc28NCj4gPj4+IEhERCBzZWVrIGlzIGFsd2F5cyBoYXBw
+ZW4/DQo+ID4+Pg0KPiA+Pj4gSWYgd2Ugc2F2ZSBqb3VybmFsIG9uIGEgZGV2aWNlIGp1c3QgbGlr
+ZSAnbWtlMmZzIC1PIGpvdXJuYWxfZGV2JyBvcg0KPiA+Pj4gJ21rZnMueGZzIC1sIGxvZ2Rldics
+IHRoZW4gdGhpcyBkZXZpY2UganVzdCB3b3JrcyBsaWtlIE5WRElNTT8gIFdlDQo+ID4+PiBtYXkg
+bm90IG5lZWQNCj4gPj4+IFJBSUQ1Ni9SQUlEMSBmb3Igam91cm5hbCBkYXRhLg0KPiA+Pg0KPiA+
+PiBUaGF0IGRldmljZSBpcyB0aGUgc2luZ2xlIHBvaW50IG9mIGZhaWx1cmUuIFlvdSBsb3N0IHRo
+YXQgZGV2aWNlLA0KPiA+PiB3cml0ZSBob2xlIGNvbWUgYWdhaW4uDQo+ID4NCj4gPiBUaGUgSFcg
+UkFJRCBjYXJkIGhhdmUgJ3NpbmdsZSBwb2ludCBvZiBmYWlsdXJlJyAgdG9vLCBzdWNoIGFzIHRo
+ZQ0KPiA+IE5WRElNTSBpbnNpZGUgSFcgUkFJRCBjYXJkLg0KPiA+DQo+ID4gYnV0ICBwb3dlci1s
+b3N0IGZyZXF1ZW5jeSA+IGhkZCBmYWlsdXJlIGZyZXF1ZW5jeSAgPiBOVkRJTU0vc3NkDQo+ID4g
+ZmFpbHVyZSBmcmVxdWVuY3kNCj4gDQo+IEl0J3MgYSBjb21wbGV0ZWx5IGRpZmZlcmVudCBsZXZl
+bC4NCj4gDQo+IEZvciBidHJmcyBSQUlELCB3ZSBoYXZlIG5vIHNwZWNpYWwgdHJlYXQgZm9yIGFu
+eSBkaXNrLg0KPiBBbmQgb3VyIFJBSUQgaXMgZm9jdXNpbmcgb24gZW5zdXJpbmcgZGV2aWNlIHRv
+bGVyYW5jZS4NCj4gDQo+IEluIHlvdXIgUkFJRCBjYXJkIGNhc2UsIGluZGVlZCB0aGUgZmFpbHVy
+ZSByYXRlIG9mIHRoZSBjYXJkIGlzIG11Y2ggbG93ZXIuDQo+IEluIGpvdXJuYWwgZGV2aWNlIGNh
+c2UsIGhvdyBkbyB5b3UgZW5zdXJlIGl0J3Mgc3RpbGwgdHJ1ZSB0aGF0IHRoZSBqb3VybmFsIGRl
+dmljZQ0KPiBtaXNzaW5nIHBvc3NpYmlsaXR5IGlzIHdheSBsb3dlciB0aGFuIGFsbCB0aGUgb3Ro
+ZXIgZGV2aWNlcz8NCj4gDQo+IFNvIHRoaXMgZG9lc24ndCBtYWtlIHNlbnNlLCB1bmxlc3MgeW91
+IGludHJvZHVjZSB0aGUgam91cm5hbCB0byBzb21ldGhpbmcNCj4gZGVmaW5pdGVseSBub3QgYSBy
+ZWd1bGFyIGRpc2suDQo+IA0KPiBJIGRvbid0IGJlbGlldmUgdGhpcyBiZW5lZml0IG1vc3QgdXNl
+cnMuDQo+IEp1c3QgY29uc2lkZXIgaG93IG1hbnkgcmVndWxhciBwZW9wbGUgdXNlIGRlZGljYXRl
+ZCBqb3VybmFsIGRldmljZSBmb3INCj4gWEZTL0VYVDQgdXBvbiBtZC9kbSBSQUlENTYuDQoNCkEg
+Z29vZCBzb2xpZCBzdGF0ZSBkcml2ZSBzaG91bGQgYmUgZmFyIGxlc3MgZXJyb3IgcHJvbmUgdGhh
+biBzcGlubmluZyBkcml2ZXMsIHNvIHdvdWxkIGJlIGEgZ29vZCBjYW5kaWRhdGUuIE5vdCBwZXJm
+ZWN0LCBidXQgYmV0dGVyLg0KDQpBcyBhbiBlbmQgdXNlciBJIHRoaW5rIGZvY3VzaW5nIG9uIHN0
+YWJpbGl0eSBhbmQgcmVjb3ZlcnkgdG9vbHMgaXMgYSBiZXR0ZXIgdXNlIG9mIHRpbWUgdGhhbiBm
+aXhpbmcgdGhlIHdyaXRlIGhvbGUsIGFzIEkgd291bGRuJ3QgZXZlbiBjb25zaWRlciB1c2luZyBS
+YWlkNTYgaW4gaXQncyBjdXJyZW50IHN0YXRlLiBUaGUgd3JpdGUgaG9sZSBwcm9ibGVtIGNhbiBi
+ZSBhbGxldmlhdGVkIGJ5IGEgVVBTIGFuZCBub3QgdXNpbmcgUmFpZDU2IGZvciBhIGJ1c3kgd3Jp
+dGUgbG9hZC4gSXQncyBzdGlsbCBnb29kIHRvIGJyYWluc3Rvcm0gdGhlIGlzc3VlIHRob3VnaCwg
+YXMgaXQgd2lsbCBuZWVkIHNvbHZpbmcgZXZlbnR1YWxseS4NCg0KUGF1bC4NCg==
