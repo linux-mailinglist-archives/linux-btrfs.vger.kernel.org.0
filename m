@@ -2,64 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C0453ADE2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 22:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEA353ADFD
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jun 2022 22:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbiFAUmR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 16:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
+        id S230035AbiFAUpt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 16:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbiFAUmR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 16:42:17 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E134219FD7B
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 13:22:43 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id u140so4123060oie.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jun 2022 13:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=Gk4nfCem3ECRa7Gml0J0mN/3RZoOAdfGaQAqyHPKtiI=;
-        b=RGd9c1aErSn0Z6Ze8KLoF3EWbTH/9kTlwI+HC+SAx7dzvBrwHHsKOlh0JbRb09xcBP
-         iM2OCHeO/Jrl9Xle2mDSw6T0q2WeDDZSG5qe5a4Dg+cUelC504vEzjOQufYXWP9aJXgI
-         V/LFJCahzAFFpJlr1tiv2Vp4M01X+B3LdrfN7rOxB8bGQcOq43FjV1KDwVfyhOisNkOG
-         FD6f0xHzXypVyOoc2S2G61yyKZweooFWr6HTnKbFSpcoQrcxWgeekfUkx9WrMRo9A/lx
-         1hTIaXz5Rg+fQ0IRlejP5CxzHN8QjtW4TV9t29PD5AzmW/wzytk4/unH4gfxTM3MusEo
-         OocQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=Gk4nfCem3ECRa7Gml0J0mN/3RZoOAdfGaQAqyHPKtiI=;
-        b=uS7n9zI8fsGyfEYmLGpoMFFNmsawKfBhS0+ivtsWm7r0PChgnU2MRSO679dVOG526P
-         EESPVYCjBUvpTyBXN3+D/OaIgKwZdJJ+A2SsfrDWiPZ+61gOvroGhGplBspFcTUev5xi
-         8Ps41mGkf1CNWjwQu6nGPCZ4e7RYqFCv5/3C69zAzTrhoepb8anKCUKGORM6bdB4jGsD
-         g1SvKB1MKvjnCY/i7wwjL/SWBeG7RDfvbpx1r2s9Lha6MKHF7Z5qGq1msvn17F4iqjpS
-         WIgZKnDyYOJrgvx+za9Uv8H5Iz/dvTVDbqgFys7NI5YT5TVpsU75uc16lGHfuIBuXwc6
-         8JUw==
-X-Gm-Message-State: AOAM533LrcdgeVpB6xC+oApGXu/vIEMqT8pXexiFDBcwoCtTPT41Q9wv
-        rM4p+QxhnFPiwXjTcbv+/tsjIHodEIR8rCtRor6OMuSV5+8=
-X-Google-Smtp-Source: ABdhPJw3lgUh0oxmgmjzAwlNNZ94ksw/9I0mOwLnUtgereG7iWZKY4s1I5RZI0o0mPKS7RYxDWrvjq+R1cXj2tliMpE=
-X-Received: by 2002:a05:6870:4619:b0:f1:e78d:fd54 with SMTP id
- z25-20020a056870461900b000f1e78dfd54mr18171419oao.195.1654111014269; Wed, 01
- Jun 2022 12:16:54 -0700 (PDT)
+        with ESMTP id S230043AbiFAUpW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 16:45:22 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3E52629FD
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 13:32:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 365D721A40;
+        Wed,  1 Jun 2022 19:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654112036;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J/aJMjdK7Tsu5dIdfdU/yfvdQuSF9VDQd7P4stoQDBA=;
+        b=DcD84l83vxH18kjyV2DLS5TM0ceqHTSGXc6lpYBibOLgYVfArElVC3G7zGfdryiFm7F+Lp
+        REB/NS7KtQ2uiZ3ER7wJl7I4+Ge10vY1A2rxRUxwtKTlmNP6vWhCmBfL5pFmGYf4QNwfGF
+        f0YcGnR6Hf2y/g6FWFOsq0+nqhrLWpc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654112036;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J/aJMjdK7Tsu5dIdfdU/yfvdQuSF9VDQd7P4stoQDBA=;
+        b=vRryYHcte/6R6CEJH8aJhQfGImKD5dErlKyzJHRBRlS4pIEgyjpqT1tSzhQm3InMZsJ5e4
+        VHc7dtzgwLPOPSAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 081F41330F;
+        Wed,  1 Jun 2022 19:33:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tMBzACS/l2LeFAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 01 Jun 2022 19:33:55 +0000
+Date:   Wed, 1 Jun 2022 21:29:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: cleanup btrfs bio handling, part 2 v4
+Message-ID: <20220601192929.GQ20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20220526073642.1773373-1-hch@lst.de>
 MIME-Version: 1.0
-Received: by 2002:a05:6358:3601:b0:a3:2139:251d with HTTP; Wed, 1 Jun 2022
- 12:16:53 -0700 (PDT)
-Reply-To: johnwinery@online.ee
-In-Reply-To: <CAFqHCSRskayxkisB-+u26DtbT6KFL5dAQ+X5s5W-kcBz_DGgTw@mail.gmail.com>
-References: <CAFqHCSRskayxkisB-+u26DtbT6KFL5dAQ+X5s5W-kcBz_DGgTw@mail.gmail.com>
-From:   johnwinery <alicejohnson8974@gmail.com>
-Date:   Wed, 1 Jun 2022 12:16:53 -0700
-Message-ID: <CAFqHCSSwNksOc4c+jJ+6tiF2b2hWGn9JARB6iPpgQJTeHU_7AA@mail.gmail.com>
-Subject: Re: good day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220526073642.1773373-1-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,4 +75,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greeting ,I had written an earlier mail to you but without response
+On Thu, May 26, 2022 at 09:36:32AM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series removes the need to allocate a separate object for I/O
+> completions for all read and some write I/Os, and reduced the memory
+> usage of the low-level bios cloned by btrfs_map_bio by using plain bios
+> instead of the much larger btrfs_bio.
+> 
+> Changes since v3:
+>  - rebased to the latest for-next tree
+>  - move "btrfs: don't double-defer bio completions for compressed reads"
+>    back to where it was before in the patch order
+
+This is a prerequisite for the raid-repair patches so I've added it to
+for-next. There's a minor conflict in patch 4 after the recent changes
+to raid56 from Qu, only in the context of the btrfs_bio_wq_end_io
+removal and usage of differen work queue. There are also some style
+comments I'll send as replies to the patches.
