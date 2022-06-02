@@ -2,47 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E7C53BB7D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 17:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE37553BB92
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 17:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbiFBPUR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jun 2022 11:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
+        id S236440AbiFBPax (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jun 2022 11:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbiFBPUQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 11:20:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9763A2A5515;
-        Thu,  2 Jun 2022 08:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bpvd1J1b0WtEe4XAB45cptIRNT3LAskrJazfccK+Ke0=; b=vmwGEc0Cc/yLViaTzRaFL5ig2s
-        pQgxUIPOIQBksyLkqEXjgfJ01HzvYvW0Mp10p8q6vlhk0x5gzYpGjjt9Qb8Q3hUpShcMQNg6KfmeF
-        J8OqwD+zl1nwFlwMGRGIj3g+FWscEHhCghzlY2GlfZrf/xMLBdXVFCb0K7dPaouyygVlfUUARQRWB
-        fz8LZek8EAmKnWdtNpUP0gS+rHouxPs7SgWZplAiuweJ/FEtq3hunEhqy5KIU7zY4I8gFHOBDrBnT
-        Nd9/1XDeScERELqRi6Cnds+lm0EUctZdvV3WMEvsNE9HMQtT9vEx3K7ndqvyqT7rlVmZSzXcrh8eQ
-        VXXSw93A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nwmcK-003gM1-Mi; Thu, 02 Jun 2022 15:20:08 +0000
-Date:   Thu, 2 Jun 2022 08:20:08 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: Replace kmap() with kmap_local_page()
-Message-ID: <YpjVKAGz+GuI4GB0@infradead.org>
-References: <20220531145335.13954-1-fmdefrancesco@gmail.com>
+        with ESMTP id S236439AbiFBPaw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 11:30:52 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506E022938F
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 08:30:51 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id n145so5143372iod.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jun 2022 08:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NpFIkLBGSwL+tQ40Bb1MlfFDjldxM6dfjT81j6URS6U=;
+        b=dO4T881JSGCnvYQOIihwAJs+RdEuLyMlJsa2Z7+up+/t5Utvc6mBK1Fq3wzkVRLfuS
+         y3yl2GggjZC59uTlX4W+QUyfYAMU8EAFGfWF22Tdmu7DdqEZEi3LQY42zMqNrDxwHFAz
+         6n95bqAfT6ZJnfRjWyP/SbDhWdRRiP07nv9zNKbDe/Ue7ORIcInx+ZbRfgFYbpG0Bpr5
+         b0ObtuJ6Ec2O42qfd2uhffX3wAjFLFdaHCG85c4NSiS/SPVI+OjDqaKl/v5oA9myrutx
+         05LSEvAJhTfpVSjVVbDRKFzQYpoUdD2qvj98NjWkfx7cqe/VNS2ufL4APwaGL91BgCdS
+         RlTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NpFIkLBGSwL+tQ40Bb1MlfFDjldxM6dfjT81j6URS6U=;
+        b=zGVhec0KHRvfD/O1iiBTrYYCJho+Yl9+iXhmT78y5eS0ickACjpSzsIpLp+Z9Bzc3q
+         /AQ0n9LBhBLDRo+nqgHOOrXziPMP0Pp2QomAbBiXj6qgDtNNn9+E/TZaCkY8Y1EovbHc
+         7xQwx/lG7WWQa966zLzgWDbEkgULOW3o4Yp58BlofKt7qr6BUWtn8XM2aD1fGWbn7gCU
+         nkKjCA2X2oQ6+v3v4q8bbtSa0NVh1ySjzRr9HjKAGb5QStiJvWmNdO2HQQFte9BFA2sO
+         LONYRDo1pkKtPIR9cGLkENJWuOAEv4kJwutOBd+w3Btv1n8IKA9wyyX9HKmxkDMH0WXX
+         1U6A==
+X-Gm-Message-State: AOAM533jcmoPH/MZg3PWAlMa+YIgyKIfH4C8mlw2e+wtFqGt6ClPOggY
+        nUMjx6+dCmu+doX6XMRBbrg1hzVCMCxFb5W+EcY=
+X-Google-Smtp-Source: ABdhPJye79VpNnz8KqBt+wL6Jp9p3iD7mFQtUqsR+VaFSNeshkG10I8qOq93ZX5oVMu4rcECNyGBm7wqUBwmZ1cUsJg=
+X-Received: by 2002:a05:6638:1925:b0:32e:dc08:ced3 with SMTP id
+ p37-20020a056638192500b0032edc08ced3mr3367001jal.212.1654183850734; Thu, 02
+ Jun 2022 08:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220531145335.13954-1-fmdefrancesco@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+References: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
+ <7762988d-0a64-695a-4ccd-ba7b51c0754a@gmx.com>
+In-Reply-To: <7762988d-0a64-695a-4ccd-ba7b51c0754a@gmx.com>
+From:   Matthew Warren <matthewwarren101010@gmail.com>
+Date:   Thu, 2 Jun 2022 10:30:40 -0500
+Message-ID: <CA+H1V9wSZXVrLdz9ZELx8gc3nOHOJz4b48DQMFcmc8cTEJgXAQ@mail.gmail.com>
+Subject: Re: Manual intervention options for csum errors
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,56 +65,20 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Turns out that while this looks good, it actually crashes when
-running xfstests.  I think this is due to the fact that kmap sets
-the page address, which kmap_local_page does not.
+> This is not a good sign.
+>
+> Such bitflip can only happen in memory, as if it's a bitflip from disk,
+> then it will cause the metadata csum mismatch.
+>
+> So this means, your memory is unreliable, and a memtest is strongly
+> recommended before doing anything.
 
-btrfs/150 1s ... [  168.252943] run fstests btrfs/150 at 2022-06-02 15:17:11
-[  169.462292] BTRFS info (device vdb): flagging fs with big metadata feature
-[  169.463728] BTRFS info (device vdb): disk space caching is enabled
-[  169.464953] BTRFS info (device vdb): has skinny extents
-[  170.596218] BTRFS: device fsid 37c6bae1-d3e5-47f8-87d5-87cd7240a1b4
-devid 1 transid 5 /dev)
-[  170.599471] BTRFS: device fsid 37c6bae1-d3e5-47f8-87d5-87cd7240a1b4 devid 2 transid 5 /dev)
-[  170.657170] BTRFS info (device vdc): flagging fs with big metadata feature
-[  170.659509] BTRFS info (device vdc): use zlib compression, level 3
-[  170.661190] BTRFS info (device vdc): disk space caching is enabled
-[  170.670706] BTRFS info (device vdc): has skinny extents
-[  170.714181] BTRFS info (device vdc): checking UUID tree
-[  170.735058] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[  170.736478] #PF: supervisor read access in kernel mode
-[  170.737457] #PF: error_code(0x0000) - not-present page
-[  170.738529] PGD 0 P4D 0 
-[  170.739211] Oops: 0000 [#1] PREEMPT SMP PTI
-[  170.740101] CPU: 0 PID: 43 Comm: kworker/u4:3 Not tainted 5.18.0-rc7+ #1539
-[  170.741478] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-[  170.743246] Workqueue: btrfs-delalloc btrfs_work_helper
-[  170.744282] RIP: 0010:zlib_compress_pages+0x128/0x670
-[  170.745346] Code: 00 00 00 16 00 00 48 01 e8 31 ed 48 c1 f8 06 48 c1 e0 0c 48 01 f8 49 89 0
-[  170.749042] RSP: 0018:ffffc9000038bc70 EFLAGS: 00010286
-[  170.750037] RAX: 0000000000000001 RBX: ffffc9000038bdb8 RCX: 0000000000000001
-[  170.751351] RDX: 0000000000002000 RSI: ffffffff82f532fb RDI: ffff888000000000
-[  170.752695] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-[  170.754106] R10: 0000000000000000 R11: ffff8881039a5b30 R12: ffff888107befb48
-[  170.755449] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-[  170.756922] FS:  0000000000000000(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
-[  170.758642] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  170.759714] CR2: 0000000000000008 CR3: 000000010ab60000 CR4: 00000000000006f0
-[  170.761082] Call Trace:
-[  170.761553]  <TASK>
-[  170.761968]  ? _raw_spin_unlock+0x24/0x40
-[  170.762776]  btrfs_compress_pages+0xda/0x120
-[  170.763682]  compress_file_range+0x3b9/0x840
-[  170.764570]  async_cow_start+0xd/0x30
-[  170.765308]  ? submit_compressed_extents+0x3c0/0x3c0
-[  170.766241]  btrfs_work_helper+0xf5/0x3f0
-[  170.767009]  ? lock_is_held_type+0xe2/0x140
-[  170.767817]  process_one_work+0x239/0x550
-[  170.768633]  ? process_one_work+0x550/0x550
-[  170.769447]  worker_thread+0x4d/0x3a0
-[  170.770210]  ? process_one_work+0x550/0x550
-[  170.771019]  kthread+0xe2/0x110
-[  170.771623]  ? kthread_complete_and_exit+0x20/0x20
-[  170.772697]  ret_from_fork+0x22/0x30
-[  170.773454]  </TASK>
+I don't think that's the case. The files were last modified all the
+way back in 2020, but there hasn't been any file modifications near
+them since the end of April this year. There's also been 2 scrubs
+before the last one where there were no issues at all. Does this mean
+that at some point in the last half month (since that's the time
+between the last successful scrub and the scrub which errored) BTRFS
+read and re-wrote the file to disk?
 
+Matthew Warren
