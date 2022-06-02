@@ -2,87 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A1953B184
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 04:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8312153B1A4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 04:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbiFBBuI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 21:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S233106AbiFBBz3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 21:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbiFBBuH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 21:50:07 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FBF21257D
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 18:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=dirtcellar.net; s=ds202112; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
-        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=X35WRI5N7OZ0VjJrTn2d2muO76eIyJ9ytJrganglfJ0=; b=F+JAppUwLN0LW1g3H7HBlcoUpI
-        xE820/aki8Tt2mYUEtSdFQPzCbb5KerEoA0nIxrdg7vCLCI8E+UkIuoWY0BhfDB1YnLAWz21AXjdW
-        NSUSQCpbpfP3kOo4z7h6SwCLofW1CjuwToOi/UG1r/rRLSiowIorTQDDGOW3XaHISzPOffHYELcrf
-        +4nb4O5xL3IDWLf1XqcemVMyYl2QRPEG0cffEk3bMjaFbI1PmzsmCUH8WZf4dYH9B+LwEQe6HUMXr
-        c773XGKIXSw3/KgXpRSuAVG0HXtZn476bHgOThDI6OFYNk7TQrDcpavMZXixwmuB0SvWx5cVCYfVN
-        u5v+JXFw==;
-Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:48934 helo=[10.0.0.41])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <waxhead@dirtcellar.net>)
-        id 1nwZyM-00040M-DZ; Thu, 02 Jun 2022 03:50:02 +0200
-Reply-To: waxhead@dirtcellar.net
-Subject: Re: Manual intervention options for csum errors
-To:     Matthew Warren <matthewwarren101010@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
-From:   waxhead <waxhead@dirtcellar.net>
-Message-ID: <85e0d09e-e1e4-6daf-2ee3-35efaac879b3@dirtcellar.net>
-Date:   Thu, 2 Jun 2022 03:50:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Firefox/68.0 SeaMonkey/2.53.12
+        with ESMTP id S232950AbiFBBz2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 21:55:28 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D093325F434
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 18:55:27 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nwa3a-00041d-2S by authid <merlin>; Wed, 01 Jun 2022 18:55:26 -0700
+Date:   Wed, 1 Jun 2022 18:55:26 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220602015526.GM22722@merlins.org>
+References: <20220601214054.GH22722@merlins.org>
+ <CAEzrpqduFy+7LkgWyyEnvYLgdJU6zDEWv25JM-niOg9tjmZ3Nw@mail.gmail.com>
+ <20220601223639.GI22722@merlins.org>
+ <CAEzrpqdfz5FMFDiBbb1mrUTXqxNvJ2RkuqJCdE2VQ6op01k61g@mail.gmail.com>
+ <20220601225643.GJ22722@merlins.org>
+ <CAEzrpqe7Fm8d62GnRs5EZeggkbXdsF2JCxkSOWnQAU+pzFtG9g@mail.gmail.com>
+ <20220601231008.GK22722@merlins.org>
+ <CAEzrpqen1AXAYBq0M0LVzB8AVXMhAD_ve1Yj_+e=kPyCfdUiow@mail.gmail.com>
+ <20220602000637.GL22722@merlins.org>
+ <CAEzrpqc_Z=aqbfNHL_r=8X1=-Kvdqrmdzrd04M-n=79s7Mi26A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqc_Z=aqbfNHL_r=8X1=-Kvdqrmdzrd04M-n=79s7Mi26A@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Matthew Warren wrote:
-> I have FS which is currently not in any sort of raid configuration and
-> occasionally a bit flip will occur somewhere on the disk. It would be
-> nice to be able to tell BTRFS to recalculate the checksum for that
-> specific block and assume the data is correct. For instance, I just
-> had this bit flip in the csum for a non-important file which I have an
-> external backup of.
-> 
-> Jun 01 15:58:04 planeptune kernel: BTRFS warning (device nvme0n1p2):
-> csum failed root 258 ino 63674380 off 208896 csum 0xa40b3c39 expected
-> csum 0xa40b2c39 mirror 1
-> 
-> This is a very clear case of a csum bitflip and I'd like to have the
-> ability to tell BTRFS that the data is correct.
-> 
-> Matthew Warren
-> 
-I am just the average user , if anyone picks up this idea I would like 
-to throw out an idea. Perhaps something like...
+On Wed, Jun 01, 2022 at 09:23:30PM -0400, Josef Bacik wrote:
+> Ah ok I'm not confused anymore, try that now.  Thanks,
 
-btrfs filesystem (or subvolume) list compromised /mnt which could list 
-all the files identified with a unrepairable csum error for example...
+Better:
 
-1: path/to/file/file1
-2: path/to/file/file2
-3: path/to/another/filename/somewhere
+(...)
+Found missing chunk 15672935448576-15674009190400 type 0
+Found missing chunk 15772793438208-15773867180032 type 0
+Found missing chunk 15773867180032-15774940921856 type 0
+Found missing chunk 15774940921856-15776014663680 type 0
+Found missing chunk 15776014663680-15777088405504 type 0
+Found missing chunk 15777088405504-15778162147328 type 0
+adding bg for 20971520 8388608
+Unable to find block group for 0
+Unable to find block group for 0
+Unable to find block group for 0
+Inserting chunk 14823605665792wtf transid 2582704 ret -28
+ERROR: Couldn't insert item
+doing close???
+ERROR: attempt to start transaction over already running one
+extent buffer leak: start 22593536 len 16384
+Recover chunks tree failed
+[Inferior 1 (process 1930) exited with code 0344]
 
-And then be able to mark damaged files by id as good somehow. Not sure 
-how to solve that , but perhaps a "damaged tree" / subvolume dirty bit 
-or something along the lines of that would need to be added before that 
-would even be possible.
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
