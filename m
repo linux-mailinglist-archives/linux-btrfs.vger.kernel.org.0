@@ -2,80 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAE553BAD6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 16:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E7C53BB7D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 17:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbiFBOgI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jun 2022 10:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
+        id S232736AbiFBPUR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jun 2022 11:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbiFBOgI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 10:36:08 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79446281850
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 07:36:07 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nwlvi-0006fQ-TC by authid <merlin>; Thu, 02 Jun 2022 07:36:06 -0700
-Date:   Thu, 2 Jun 2022 07:36:06 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220602143606.GR22722@merlins.org>
-References: <20220601231008.GK22722@merlins.org>
- <CAEzrpqen1AXAYBq0M0LVzB8AVXMhAD_ve1Yj_+e=kPyCfdUiow@mail.gmail.com>
- <20220602000637.GL22722@merlins.org>
- <CAEzrpqc_Z=aqbfNHL_r=8X1=-Kvdqrmdzrd04M-n=79s7Mi26A@mail.gmail.com>
- <20220602015526.GM22722@merlins.org>
- <CAEzrpqfMD1+c-datNzDWppr62NBz7vDHybeXqg55DVVDAiqAdQ@mail.gmail.com>
- <20220602021617.GP22722@merlins.org>
- <CAEzrpqfKbEvZh1td=UW6HGJ1x3htSVL1jo49KzcJPu+OSYt4jQ@mail.gmail.com>
- <20220602142112.GQ22722@merlins.org>
- <CAEzrpqdJHDte6jc7-ykD-wnuFe8_xB-Y4e97C-o5B-G-1Nnksw@mail.gmail.com>
+        with ESMTP id S229899AbiFBPUQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 11:20:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9763A2A5515;
+        Thu,  2 Jun 2022 08:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bpvd1J1b0WtEe4XAB45cptIRNT3LAskrJazfccK+Ke0=; b=vmwGEc0Cc/yLViaTzRaFL5ig2s
+        pQgxUIPOIQBksyLkqEXjgfJ01HzvYvW0Mp10p8q6vlhk0x5gzYpGjjt9Qb8Q3hUpShcMQNg6KfmeF
+        J8OqwD+zl1nwFlwMGRGIj3g+FWscEHhCghzlY2GlfZrf/xMLBdXVFCb0K7dPaouyygVlfUUARQRWB
+        fz8LZek8EAmKnWdtNpUP0gS+rHouxPs7SgWZplAiuweJ/FEtq3hunEhqy5KIU7zY4I8gFHOBDrBnT
+        Nd9/1XDeScERELqRi6Cnds+lm0EUctZdvV3WMEvsNE9HMQtT9vEx3K7ndqvyqT7rlVmZSzXcrh8eQ
+        VXXSw93A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nwmcK-003gM1-Mi; Thu, 02 Jun 2022 15:20:08 +0000
+Date:   Thu, 2 Jun 2022 08:20:08 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: Replace kmap() with kmap_local_page()
+Message-ID: <YpjVKAGz+GuI4GB0@infradead.org>
+References: <20220531145335.13954-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEzrpqdJHDte6jc7-ykD-wnuFe8_xB-Y4e97C-o5B-G-1Nnksw@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220531145335.13954-1-fmdefrancesco@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 02, 2022 at 10:27:59AM -0400, Josef Bacik wrote:
-> 
-> Ooops, helps if I use the new flag I added.  Thanks,
+Turns out that while this looks good, it actually crashes when
+running xfstests.  I think this is due to the fact that kmap sets
+the page address, which kmap_local_page does not.
 
-Good news?
+btrfs/150 1s ... [  168.252943] run fstests btrfs/150 at 2022-06-02 15:17:11
+[  169.462292] BTRFS info (device vdb): flagging fs with big metadata feature
+[  169.463728] BTRFS info (device vdb): disk space caching is enabled
+[  169.464953] BTRFS info (device vdb): has skinny extents
+[  170.596218] BTRFS: device fsid 37c6bae1-d3e5-47f8-87d5-87cd7240a1b4
+devid 1 transid 5 /dev)
+[  170.599471] BTRFS: device fsid 37c6bae1-d3e5-47f8-87d5-87cd7240a1b4 devid 2 transid 5 /dev)
+[  170.657170] BTRFS info (device vdc): flagging fs with big metadata feature
+[  170.659509] BTRFS info (device vdc): use zlib compression, level 3
+[  170.661190] BTRFS info (device vdc): disk space caching is enabled
+[  170.670706] BTRFS info (device vdc): has skinny extents
+[  170.714181] BTRFS info (device vdc): checking UUID tree
+[  170.735058] BUG: kernel NULL pointer dereference, address: 0000000000000008
+[  170.736478] #PF: supervisor read access in kernel mode
+[  170.737457] #PF: error_code(0x0000) - not-present page
+[  170.738529] PGD 0 P4D 0 
+[  170.739211] Oops: 0000 [#1] PREEMPT SMP PTI
+[  170.740101] CPU: 0 PID: 43 Comm: kworker/u4:3 Not tainted 5.18.0-rc7+ #1539
+[  170.741478] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+[  170.743246] Workqueue: btrfs-delalloc btrfs_work_helper
+[  170.744282] RIP: 0010:zlib_compress_pages+0x128/0x670
+[  170.745346] Code: 00 00 00 16 00 00 48 01 e8 31 ed 48 c1 f8 06 48 c1 e0 0c 48 01 f8 49 89 0
+[  170.749042] RSP: 0018:ffffc9000038bc70 EFLAGS: 00010286
+[  170.750037] RAX: 0000000000000001 RBX: ffffc9000038bdb8 RCX: 0000000000000001
+[  170.751351] RDX: 0000000000002000 RSI: ffffffff82f532fb RDI: ffff888000000000
+[  170.752695] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+[  170.754106] R10: 0000000000000000 R11: ffff8881039a5b30 R12: ffff888107befb48
+[  170.755449] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+[  170.756922] FS:  0000000000000000(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+[  170.758642] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  170.759714] CR2: 0000000000000008 CR3: 000000010ab60000 CR4: 00000000000006f0
+[  170.761082] Call Trace:
+[  170.761553]  <TASK>
+[  170.761968]  ? _raw_spin_unlock+0x24/0x40
+[  170.762776]  btrfs_compress_pages+0xda/0x120
+[  170.763682]  compress_file_range+0x3b9/0x840
+[  170.764570]  async_cow_start+0xd/0x30
+[  170.765308]  ? submit_compressed_extents+0x3c0/0x3c0
+[  170.766241]  btrfs_work_helper+0xf5/0x3f0
+[  170.767009]  ? lock_is_held_type+0xe2/0x140
+[  170.767817]  process_one_work+0x239/0x550
+[  170.768633]  ? process_one_work+0x550/0x550
+[  170.769447]  worker_thread+0x4d/0x3a0
+[  170.770210]  ? process_one_work+0x550/0x550
+[  170.771019]  kthread+0xe2/0x110
+[  170.771623]  ? kthread_complete_and_exit+0x20/0x20
+[  170.772697]  ret_from_fork+0x22/0x30
+[  170.773454]  </TASK>
 
-Inserting chunk 15486104371200
-Inserting chunk 15487178113024
-Inserting chunk 15488251854848
-Inserting chunk 15671861706752
-Inserting chunk 15672935448576
-Inserting chunk 15772793438208
-Inserting chunk 15773867180032
-Inserting chunk 15774940921856
-Inserting chunk 15776014663680
-Inserting chunk 15777088405504
-WARNING: reserved space leaked, transid=2582704 flag=0x2
-bytes_reserved=180224
-doing close???
-WARNING: reserved space leaked, flag=0x2 bytes_reserved=180224
-Recover chunks succeeded, you can run check now
-[Inferior 1 (process 21907) exited normally]
-
-What check do I run now?
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
