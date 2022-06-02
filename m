@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C940853B404
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 09:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC80953B405
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 09:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbiFBHHI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jun 2022 03:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
+        id S231560AbiFBHHK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jun 2022 03:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbiFBHHD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 03:07:03 -0400
+        with ESMTP id S231531AbiFBHHE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 03:07:04 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DBA62CC8
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 00:07:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4818362CEA
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 00:07:03 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D06B21F99E
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 07:07:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 04A5D1F8C7
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 07:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654153620; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1654153622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uZ0kwNgSA6XRAAY5IJb0ZW9u5dxh1MLKU9GkEvCFomA=;
-        b=gBvSMPpvtF8iRP5XTeB78IXWkglW2KJ6VGF5hqeOJVOIwerdyav5o6d2xzGnUmpKfBIXO9
-        mtq9u1qoStEiXVhySY0CvTVqz4Xxa5urhAcRmEIBOXJ85PbqQvRXNGKL8eEB1tL3UqGl2n
-        0nxUljaLb0EB7AXKY6ceE2FmkxEdmY4=
+        bh=7jQZQ9YlNCMHPSn7YwzsaKA0osCO+lm1SrAb1U8ZdgA=;
+        b=P/KuG3Rkgh1/uPGo/e8xXDZDtGKVM/ozv/YlIYO3J6CN2tBp6qZ5U6VCAz7GRtwy7VYJBp
+        my5tp9GMYA+hIv0Y8nhOHL3PTWSYTImwZPFJqWlqAbr0zYcOk326anrsIXY20LF2sfo2yP
+        DHcobgcFSERVrouXdzSDuSBjjcU8oJI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22038134F3
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 07:06:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48FBF134F3
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 07:07:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ULIhNpNhmGKSAgAAMHmgww
+        id qKncA5VhmGKSAgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jun 2022 07:06:59 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jun 2022 07:07:01 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/5] btrfs: avoid double for loop inside raid56_rmw_stripe()
-Date:   Thu,  2 Jun 2022 15:06:36 +0800
-Message-Id: <0cce40f4ffc7930298b064886975e05d970636b7.1654153382.git.wqu@suse.com>
+Subject: [PATCH 5/5] btrfs: avoid double for loop inside raid56_parity_scrub_stripe()
+Date:   Thu,  2 Jun 2022 15:06:37 +0800
+Message-Id: <495586854ea8de4a61858788e5613b8a9a9f684b.1654153382.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1654153382.git.wqu@suse.com>
 References: <cover.1654153382.git.wqu@suse.com>
@@ -60,19 +60,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This function doesn't even utilize full stripe skip, just iterate all
-the sectors is definitely enough.
+Originally it's iterating all the sectors which has dbitmap sector for
+the vertical stripe.
+
+It can be easily converted to sector bytenr iteration with an test_bit()
+call.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 58 ++++++++++++++++++++++-------------------------
- 1 file changed, 27 insertions(+), 31 deletions(-)
+ fs/btrfs/raid56.c | 63 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 32 insertions(+), 31 deletions(-)
 
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index ffb9ed9c625c..0e3be13b7d56 100644
+index 0e3be13b7d56..01a515c38081 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -1548,8 +1548,7 @@ static int raid56_rmw_stripe(struct btrfs_raid_bio *rbio)
+@@ -2681,8 +2681,7 @@ static void raid56_parity_scrub_stripe(struct btrfs_raid_bio *rbio)
  	int bios_to_read = 0;
  	struct bio_list bio_list;
  	int ret;
@@ -82,66 +85,70 @@ index ffb9ed9c625c..0e3be13b7d56 100644
  	struct bio *bio;
  
  	bio_list_init(&bio_list);
-@@ -1561,38 +1560,35 @@ static int raid56_rmw_stripe(struct btrfs_raid_bio *rbio)
- 	index_rbio_pages(rbio);
+@@ -2692,37 +2691,39 @@ static void raid56_parity_scrub_stripe(struct btrfs_raid_bio *rbio)
+ 		goto cleanup;
  
  	atomic_set(&rbio->error, 0);
 -	/*
 -	 * build a list of bios to read all the missing parts of this
 -	 * stripe
 -	 */
--	for (stripe = 0; stripe < rbio->nr_data; stripe++) {
--		for (sectornr = 0; sectornr < rbio->stripe_nsectors; sectornr++) {
+-	for (stripe = 0; stripe < rbio->real_stripes; stripe++) {
+-		for_each_set_bit(sectornr, &rbio->dbitmap, rbio->stripe_nsectors) {
 -			struct sector_ptr *sector;
-+	/* Build a list of bios to read all the missing parts. */
-+	for (total_sector_nr = 0; total_sector_nr < rbio->nr_sectors;
-+	     total_sector_nr++) {
-+		struct sector_ptr *sector;
-+		int stripe = total_sector_nr / rbio->stripe_nsectors;
-+		int sectornr = total_sector_nr % rbio->stripe_nsectors;
- 
 -			/*
 -			 * We want to find all the sectors missing from the
 -			 * rbio and read them from the disk.  If * sector_in_rbio()
--			 * finds a page in the bio list we don't need to read
+-			 * finds a sector in the bio list we don't need to read
 -			 * it off the stripe.
 -			 */
 -			sector = sector_in_rbio(rbio, stripe, sectornr, 1);
 -			if (sector)
 -				continue;
++	/* Build a list of bios to read all the missing parts. */
++	for (total_sector_nr = 0; total_sector_nr < rbio->nr_sectors;
++	     total_sector_nr++) {
++		int sectornr = total_sector_nr % rbio->stripe_nsectors;
++		int stripe = total_sector_nr / rbio->stripe_nsectors;
++		struct sector_ptr *sector;
+ 
+-			sector = rbio_stripe_sector(rbio, stripe, sectornr);
+-			/*
+-			 * The bio cache may have handed us an uptodate sector.
+-			 * If so, be happy and use it.
+-			 */
+-			if (sector->uptodate)
+-				continue;
++		/* No data in the vertical stripe, no need to read. */
++		if (!test_bit(sectornr, &rbio->dbitmap))
++			continue;
+ 
+-			ret = rbio_add_io_sector(rbio, &bio_list, sector,
+-						 stripe, sectornr, rbio->stripe_len,
+-						 REQ_OP_READ);
+-			if (ret)
+-				goto cleanup;
+-		}
 +		/*
 +		 * We want to find all the sectors missing from the rbio and
-+		 * read them from the disk.  If sector_in_rbio() finds a page
++		 * read them from the disk. If sector_in_rbio() finds a sector
 +		 * in the bio list we don't need to read it off the stripe.
 +		 */
 +		sector = sector_in_rbio(rbio, stripe, sectornr, 1);
 +		if (sector)
 +			continue;
- 
--			sector = rbio_stripe_sector(rbio, stripe, sectornr);
--			/*
--			 * The bio cache may have handed us an uptodate page.
--			 * If so, be happy and use it.
--			 */
--			if (sector->uptodate)
--				continue;
++
 +		sector = rbio_stripe_sector(rbio, stripe, sectornr);
 +		/*
-+		 * The bio cache may have handed us an uptodate page.
++		 * The bio cache may have handed us an uptodate sector.
 +		 * If so, be happy and use it.
 +		 */
 +		if (sector->uptodate)
 +			continue;
- 
--			ret = rbio_add_io_sector(rbio, &bio_list, sector,
--				       stripe, sectornr, rbio->stripe_len,
--				       REQ_OP_READ);
--			if (ret)
--				goto cleanup;
--		}
-+		ret = rbio_add_io_sector(rbio, &bio_list, sector,
-+			       stripe, sectornr, rbio->stripe_len,
-+			       REQ_OP_READ);
++
++		ret = rbio_add_io_sector(rbio, &bio_list, sector, stripe,
++					 sectornr, rbio->stripe_len,
++					 REQ_OP_READ);
 +		if (ret)
 +			goto cleanup;
  	}
