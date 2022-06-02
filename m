@@ -2,130 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADB753BFDB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 22:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD0A53C014
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 22:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237963AbiFBUcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jun 2022 16:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
+        id S239283AbiFBU40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jun 2022 16:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239089AbiFBUc1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 16:32:27 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6985110F4
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 13:32:26 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nwrUW-0002jB-G7 by authid <merlin>; Thu, 02 Jun 2022 13:32:24 -0700
-Date:   Thu, 2 Jun 2022 13:32:24 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220602203224.GV22722@merlins.org>
-References: <20220602142112.GQ22722@merlins.org>
- <CAEzrpqdJHDte6jc7-ykD-wnuFe8_xB-Y4e97C-o5B-G-1Nnksw@mail.gmail.com>
- <20220602143606.GR22722@merlins.org>
- <CAEzrpqdADZbOcz0iSoiYvOX=UVsbWybiRdcdtc4GJ-tmpJqdRg@mail.gmail.com>
- <20220602190848.GS22722@merlins.org>
- <CAEzrpqdKjjPW5Bvqkt2=U1_jmiBMGui775BC=Mdx6Ei5FWL1AQ@mail.gmail.com>
- <20220602195134.GT22722@merlins.org>
- <CAEzrpqciXfV0NZMTJoMjX_E_TzQ-j5sEpsACnEhnJdAXzbVOEg@mail.gmail.com>
- <20220602195623.GU22722@merlins.org>
- <CAEzrpqd6CHi2s5B7WPtRo+N0b++F95Qr-nrjYbx2NrD4xxMN=A@mail.gmail.com>
+        with ESMTP id S239197AbiFBU4Q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 16:56:16 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF6334B80
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 13:56:14 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-2ec42eae76bso64018867b3.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jun 2022 13:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=d+MLllrTnVLTVuNtzK3RkWrOuNSSWMmwIaiBnbLtjnI=;
+        b=bP2Bg9kPaoZeUOZTwDrCf0TcA+yFfRTyMPXiyBc1hgaOcOhU/7J6HXpUJAtG0vGXe2
+         HdiVuKHQ73+Sw6+AW2z0L7B1Zsq49m0EOs8HolvzyvIAHihXph0OX/EBNR9r+H2kwGg5
+         t0Tv6/pTSym6LNcptuCtK0UtS6rHSK3/p0HDzjbM35P+QVVx1b9hFaP01w4lpi2w19ri
+         CpgzaJ6JCIMU59184vXDSaP/UrOHUA/1xCZF0mJMj12N/l7Bbr0PLi7jJ04MvIc6tYCG
+         tcjfS5PI7JJFlAWRY4yMBNBphwLp9KqnO6CQ1HYhKtGa7S81lqwsIX6SVwOghQ5lGL5L
+         qKlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=d+MLllrTnVLTVuNtzK3RkWrOuNSSWMmwIaiBnbLtjnI=;
+        b=Rmha0vxK82jUY0DGGXCf2bYNXbNPUQdHr/vZ0MdV0lSAd9A7kvs325j/44F1AXBog2
+         lNatCNhrHmoyRfZel9kufxiisz+eGh7Y+E1g+nzdqEiayrGJHELuS1UXyeqIuZHnYR0J
+         pboFeFuYe+5+Fun6nRrHMfGRtc6BGrA9aK1PSKUeNP8WDpm4AAYZJocBaCFavR0PDKdg
+         sa8la1m/yFwxkTvn++i4KW8kKesfBb1Ys3ANWxADN7r5NoszYF0X+FKTbCtJeRk2jrJ4
+         W6pYUvvc6XHDkWgCzYoX9o7yYYGS8MlO216cWej9ldZzfr2Z33dQAwmhLdfJiecRi76b
+         K58Q==
+X-Gm-Message-State: AOAM533dhYxbbd3tW04amtjCJqH4vFNMZawAQffBz+o1HSQwfb5k6GHn
+        keeUgaFLjkBaprOQcATHwTWlfzylCf1aP4rafJA=
+X-Google-Smtp-Source: ABdhPJzz4CIFTzLwRd4bDwRghcuq8KmAMJuf1ZQNKj3c2Lo/OmAL2dCZKUleJ315pEcSs8xxcj3S1aQ8FnTEFw1HYHw=
+X-Received: by 2002:a81:1358:0:b0:30c:2e28:4050 with SMTP id
+ 85-20020a811358000000b0030c2e284050mr7698599ywt.206.1654203372355; Thu, 02
+ Jun 2022 13:56:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqd6CHi2s5B7WPtRo+N0b++F95Qr-nrjYbx2NrD4xxMN=A@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Sender: bbchitex6@gmail.com
+Received: by 2002:a81:d447:0:0:0:0:0 with HTTP; Thu, 2 Jun 2022 13:56:11 -0700 (PDT)
+From:   "Mr.Patrick Joseph" <patrickjos09@gmail.com>
+Date:   Thu, 2 Jun 2022 13:56:11 -0700
+X-Google-Sender-Auth: 2x_0MgxYCCazRZg9th9WovhcOhY
+Message-ID: <CADX4xg+gCaCydEs1Tz5F-66oRNkS3vNJUkBVhip+COD_if2nGA@mail.gmail.com>
+Subject: I expect your urgent reply
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
+        BAYES_95,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,URG_BIZ autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:1132 listed in]
+        [list.dnswl.org]
+        *  3.0 BAYES_95 BODY: Bayes spam probability is 95 to 99%
+        *      [score: 0.9755]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [bbchitex6[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [bbchitex6[at]gmail.com]
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.6 URG_BIZ Contains urgent matter
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
+        *  0.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 02, 2022 at 04:06:00PM -0400, Josef Bacik wrote:
-> On Thu, Jun 2, 2022 at 3:56 PM Marc MERLIN <marc@merlins.org> wrote:
-> >
-> > On Thu, Jun 02, 2022 at 03:53:00PM -0400, Josef Bacik wrote:
-> > > Ok it seems like we're still missing some chunks, hopefully re-running
-> > > btrfs rescue recover-chunks <device> will find the remaining, there
-> > > must have been system chunks that got discovered.  Thanks,
-> >
-> > gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue recover-chunks /dev/mapper/dshelf1
-> > FS_INFO IS 0x55f3efdd3bc0
-> > Couldn't find the last root for 8
-> > FS_INFO AFTER IS 0x55f3efdd3bc0
-> > Walking all our trees and pinning down the currently accessible blocks
-> > Invalid mapping for 11822437826560-11822437842944, got 14271702368256-14272776110080
-> > Couldn't map the block 11822437826560
-> > Couldn't map the block 11822437826560
-> > Error reading root block
-> > ERROR: Couldn't pin down excluded extents, if there were errors run btrfs rescue tree-recover
-> > doing close???
-> > Recover chunks tree failed
-> 
-> Pushed, try again please.  Thanks,
+Hello Friend,
 
-That worked:
-gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue
-recover-chunks /dev/mapper/dshelf1
-FS_INFO IS 0x5594c8305bc0
-Couldn't find the last root for 8
-FS_INFO AFTER IS 0x5594c8305bc0
-Walking all our trees and pinning down the currently accessible blocks
-No missing chunks, we're all done
-doing close???
-Recover chunks succeeded, you can run check now
+I apologize for contacting you this way, I am writing you this mail to
+solicit for your cooperation in a very confidential business
+transaction of $16.5 million. However, it is not authorized by the
+rules guiding our bank for a citizen of Burkina Faso to make the claim
+of the fund unless you are a foreigner, I ask you can we work
+together, I will be pleased to work with you I propose a 40% of the
+total amount to you after receiving the funds successfully, and I
+assure you that this transaction is 100% risks free. Reply me as soon
+as possible so that I will let you know the next steps and procedures
+to follow in order to finalize this transaction immediately.
 
+I expect your urgent reply
 
-gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
-FS_INFO IS 0x564be0ed2bc0
-Couldn't find the last root for 8
-FS_INFO AFTER IS 0x564be0ed2bc0
-Checking root 2 bytenr 15645200318464
-Checking root 4 bytenr 15645019078656
-Checking root 5 bytenr 15645740302336
-Checking root 7 bytenr 15645188767744
-Checking root 9 bytenr 15645740367872
-Checking root 161197 bytenr 15645190864896
-Checking root 161199 bytenr 15645198614528
-Checking root 161200 bytenr 15646048272384
-Checking root 161889 bytenr 15645940285440
-Checking root 162628 bytenr 15645764812800
-Checking root 162632 bytenr 15645196845056
-Checking root 163298 bytenr 15645124263936
-Checking root 163302 bytenr 15645198188544
-Checking root 163303 bytenr 15645199499264
-Checking root 163316 bytenr 15645199728640
-Checking root 163318 bytenr 15645980491776
-scanning, best has 0 found 0 bad
-checking block 15645980491776 generation 1597265 fs info generation 2582703
-trying bytenr 15645980491776 got 2 blocks 1 bad
-Repairing root 163318 bad_blocks 1 update 1
-deleting slot 0 in block 15645980491776
-bad tree block 15645980491776, invalid nr_items: 0
-kernel-shared/disk-io.c:553: write_tree_block: BUG_ON `1` triggered, value 1
-./btrfs(+0x25ae7)[0x564be025eae7]
-./btrfs(write_tree_block+0xb8)[0x564be0260ec9]
-./btrfs(+0x8aa3d)[0x564be02c3a3d]
-./btrfs(+0x8add0)[0x564be02c3dd0]
-./btrfs(btrfs_recover_trees+0x628)[0x564be02c4a40]
-./btrfs(+0x83f24)[0x564be02bcf24]
-./btrfs(handle_command_group+0x49)[0x564be025117b]
-./btrfs(main+0x94)[0x564be0251275]
-/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xcd)[0x7f55d1ef47fd]
-./btrfs(_start+0x2a)[0x564be0250e1a]
-Aborted
-
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Regards.
+Mr. Patrick Joseph.
