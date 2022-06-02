@@ -2,114 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BFC53B1CB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 04:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F3A53B2C6
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 06:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbiFBCQT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 1 Jun 2022 22:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
+        id S229842AbiFBEkR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jun 2022 00:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbiFBCQS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 22:16:18 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4110259CF1
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 19:16:17 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nwaNl-0006t6-BJ by authid <merlin>; Wed, 01 Jun 2022 19:16:17 -0700
-Date:   Wed, 1 Jun 2022 19:16:17 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220602021617.GP22722@merlins.org>
-References: <20220601223639.GI22722@merlins.org>
- <CAEzrpqdfz5FMFDiBbb1mrUTXqxNvJ2RkuqJCdE2VQ6op01k61g@mail.gmail.com>
- <20220601225643.GJ22722@merlins.org>
- <CAEzrpqe7Fm8d62GnRs5EZeggkbXdsF2JCxkSOWnQAU+pzFtG9g@mail.gmail.com>
- <20220601231008.GK22722@merlins.org>
- <CAEzrpqen1AXAYBq0M0LVzB8AVXMhAD_ve1Yj_+e=kPyCfdUiow@mail.gmail.com>
- <20220602000637.GL22722@merlins.org>
- <CAEzrpqc_Z=aqbfNHL_r=8X1=-Kvdqrmdzrd04M-n=79s7Mi26A@mail.gmail.com>
- <20220602015526.GM22722@merlins.org>
- <CAEzrpqfMD1+c-datNzDWppr62NBz7vDHybeXqg55DVVDAiqAdQ@mail.gmail.com>
+        with ESMTP id S229874AbiFBEkQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 00:40:16 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C921E2ACB44
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 21:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1654144809;
+        bh=P2kXtr9xv5VAYfwZDT36cHvcC8UA3h176QbYgjga83M=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=iJ4sCEdn2UdL5qpygEZTXVdiYdQA5/XZvAeLLQlTkwmol6D/GReX3h3WwVENqF7q2
+         LcWApqaKgpVf1vqblmZ9fSqAs4fKloCm96rBEI4MQ4C+7TX4JFHrbYVCVJo6vxr2rC
+         XPR/6+FgSLnTRSSlnuuT2L4SKS7nZnaxBHhqMcCg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MfpOd-1nHD8k0sJd-00gLFG; Thu, 02
+ Jun 2022 06:40:09 +0200
+Message-ID: <7762988d-0a64-695a-4ccd-ba7b51c0754a@gmx.com>
+Date:   Thu, 2 Jun 2022 12:39:51 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAEzrpqfMD1+c-datNzDWppr62NBz7vDHybeXqg55DVVDAiqAdQ@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: en-US
+To:     Matthew Warren <matthewwarren101010@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Manual intervention options for csum errors
+In-Reply-To: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gt73FoFnoSc97QtNxerCfaIHxqfijie+xiPpjbBpg2S+5QM/M7E
+ wcybYHEPvBVAD5mVeciQ5oWh9Lh7OI8liUHJTjWifM3pi3kgh5dvuLf104uW2ozgVItNvya
+ BIc/avxqB9X3b/VY5aCekItX5X67Ea1LA9K9aKih2N5hsgQLxXL5vz3CDNJZZmH0BzkvuS6
+ 2qIw7+7kkWTaMPvLYC9rg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MN4z7vGu1gU=:V0hMSR48dw3ff0Jv/eOQi8
+ ZeEpLZzCGfcVRUJdSCATwA856O6IQLnGfVxSUFtABUf1xzJypiV6txeuc2WBuq/ylfpl6gn0Q
+ AXXeZu8NRnMOeLUMFDBtGslFnRE/6ajOt8RPiRB+uck5DDONx5hw3w4G8hMSpKOTqb3CkhPHd
+ O23yIlSvSXyY/epagasJRgslZ+uEsRJ3w8PUQj9asYFyhWWu/eQljck5WHuRmSiqw29dcrnKF
+ oT/JJSDKNkHco82BBtIDZ48w0LVSjH9bQq3XCd/Dj/JO3+3ZJ1qa9hSbCWAHIMn6uP3dYXAWJ
+ ejoRfAdgn4nChE+fCp4Lvg8h56C0GhMGizDztMSMPZYVSvTtWLhJ/y2ssP0TuiTFHoYRxyZn3
+ 8K4LpTgd1+xmaB3GiLHW1ndLCGLTMQI5cviDBwza9CB23VGjPrENMzTFMxahdY2Ldbn+U2v3N
+ C71iuH+rNqmliRZBKxQUu9auwOJuk869o/RDAT6DjrxeRyhKfHH0Wk1Mkxx9YTyIcavS7AbLK
+ 1og0iqdeOMIj49vWzhfRBa3NQD6cgE7NQUcC+O1+i9/fiCYkzd+aShEEJrXWdKNubAh+L0VlO
+ /yS6gvGRw1Lw+diOiFHmWAiabcc2P7PBksjOo0O0z04RqsbEaXY1R0iAJzqSEx+Z3bpnnOWec
+ qoU5e+ImO+7g9DJ2XhiaAiTbQVf5VlyFJsnNZOFUqYNMhU2B0425/9Xo/kLQKRGWFtPx8qYqK
+ xzd3IrJDNWvPbZmLLWS4GGrZrCpptmNvOxYBWJOr+hhc3HGBOVPcoWCE9LYIqB66Xb2WgCwV2
+ KP/km8geqX+KUi8TCkgRhsRqWcKHCL9HlISvyYI+00u8gLkB0XqYxB0zuLVlPrqugPtuMcWqK
+ 3jrq+AmZs+euNIp3mHPYvkGe5C4r1U728YBLGUJ0PyriWNbNyuZrICz/NfOkyjjaJ7+x2lBkY
+ 7kZxuH1Zc3eWiZ7ma6G0LSfeOj2NNe170bgu1oV0UR7+bGNQGOiFguqrCtA7Rujeb15FrsP64
+ bZM2E3CdKg+eUNZ8fkN2ucH1CbEcgy97GmT8KT1/kXVi5YgsrXiEq/teyLO/heqmQNTqCXJTo
+ d3YU/C33lvDAy1Gy9RwrvLUhz9AlDzTU5HJANn4ZEZj+gAohOiPwhAMdg==
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 10:03:29PM -0400, Josef Bacik wrote:
-> On Wed, Jun 1, 2022 at 9:55 PM Marc MERLIN <marc@merlins.org> wrote:
-> >
-> > On Wed, Jun 01, 2022 at 09:23:30PM -0400, Josef Bacik wrote:
-> > > Ah ok I'm not confused anymore, try that now.  Thanks,
-> >
-> > Better:
-> >
-> 
-> Ah right, we don't actually use the normal free space cache.  Fixed
-> that up, thanks,
 
-ound missing chunk 14400551387136-14401625128960 type 0
-Found missing chunk 14401625128960-14402698870784 type 0
-Found missing chunk 14402698870784-14403772612608 type 0
-Found missing chunk 14403772612608-14404846354432 type 0
-Found missing chunk 14404846354432-14405920096256 type 0
-Found missing chunk 14405920096256-14406993838080 type 0
-ing chunk 11143322009600Inserting chunk 11144395751424Inserting chunk 11145469493248Inserting chunk 11146543235072Inserting chunk 11147616976896Inserting chunk 11148690718720Inserting chunk 11149764460544Inserting chunk 11150838202368Inserting chunk 11151911944192Inserting chunk 11152985686016Inserting chunk 11154059427840Inserting chunk 11155133169664Inserting chunk 11156206911488Inserting chunk 11157280653312Inserting chunk 11159428136960Inserting chunk 11160501878784Inserting chunk 11161038749696Inserting chunk 11162112491520Inserting chunk 11163186233344Inserting chunk (...)
-g chunk 15323969355776Inserting chunk 15325043097600Inserting chunk 15326116839424Inserting chunk 15327190581248Inserting chunk 15328264323072Inserting chunk 15329338064896Inserting chunk 15332559290368Inserting chunk 15333633032192Inserting chunk 15334706774016Inserting chunk 15355107868672Inserting chunk 15356181610496Inserting chunk 15357255352320Inserting chunk 15358329094144Inserting chunk 15359402835968Inserting chunk 15360476577792Inserting chunk 15361550319616Inserting chunk 15362624061440Inserting chunk 15363697803264Inserting chunk 15364771545088Inserting chunk 15365845286912Inserting chunk 15366919028736Inserting chunk 15395910057984Inserting chunk 15396983799808Inserting chunk 15400205025280Inserting chunk 15401278767104Inserting chunk 15402352508928Inserting chunk 15405573734400Inserting chunk 15408794959872Inserting chunk 15409868701696Inserting chunk 15410942443520Inserting chunk 15412016185344Inserting chunk 15413089927168Inserting chunk 15414163668992Inserting chunk 15415237410816Inserting chunk 15416311152640Inserting chunk 15417384894464Inserting chunk 15418458636288Inserting chunk 15419532378112Inserting chunk 15420606119936Inserting chunk 15421679861760Inserting chunk 15422753603584Inserting chunk 15423827345408Inserting chunk 15424901087232Inserting chunk 15425974829056Inserting chunk 15427048570880Inserting chunk 15428122312704Inserting chunk 15429196054528Inserting chunk 15430269796352Inserting chunk 15431343538176Inserting chunk 15432417280000Inserting chunk 15433491021824Inserting chunk 15434564763648Inserting chunk 15435638505472Inserting chunk 15436712247296Inserting chunk 15437785989120Inserting chunk 15438859730944Inserting chunk 15439933472768Inserting chunk 15441007214592Inserting chunk 15442080956416Inserting chunk 15443154698240Inserting chunk 15444228440064Inserting chunk 15445302181888Inserting chunk 15446375923712Inserting chunk 15447449665536Inserting chunk 15448523407360Inserting chunk 15449597149184Inserting chunk 15450670891008Inserting chunk 15451744632832Inserting chunk 15452818374656Inserting chunk 15453892116480Inserting chunk 15454965858304Inserting chunk 15456039600128Inserting chunk 15457113341952Inserting chunk 15458187083776Inserting chunk 15459260825600Inserting chunk 15460334567424Inserting chunk 15461408309248Inserting chunk 15462482051072Inserting chunk 15463555792896Inserting chunk 15464629534720Inserting chunk 15465703276544Inserting chunk 15466777018368Inserting chunk 15467850760192Inserting chunk 15468924502016Inserting chunk 15469998243840Inserting chunk 15471071985664Inserting chunk 15472145727488Inserting chunk 15473219469312Inserting chunk 15474293211136Inserting chunk 15475366952960Inserting chkernel-shared/extent-tree.c:2417: alloc_reserved_tree_block: Assertion `sinfo` failed, value 0
-/var/local/src/btrfs-progs-josefbacik/btrfs(+0x2981a)[0x55555557d81a]
-/var/local/src/btrfs-progs-josefbacik/btrfs(btrfs_run_delayed_refs+0x531)[0x555555583998]
-/var/local/src/btrfs-progs-josefbacik/btrfs(btrfs_commit_transaction+0x3b)[0x5555555928a8]
-/var/local/src/btrfs-progs-josefbacik/btrfs(btrfs_find_recover_chunks+0x594)[0x5555555e311d]
-/var/local/src/btrfs-progs-josefbacik/btrfs(+0x83c87)[0x5555555d7c87]
-/var/local/src/btrfs-progs-josefbacik/btrfs(handle_command_group+0x49)[0x55555556c17b]
-/var/local/src/btrfs-progs-josefbacik/btrfs(main+0x94)[0x55555556c275]
-/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xcd)[0x7ffff78617fd]
-/var/local/src/btrfs-progs-josefbacik/btrfs(_start+0x2a)[0x55555556be1a]
 
-Program received signal SIGABRT, Aborted.
-0x00007ffff78768a1 in raise () from /lib/x86_64-linux-gnu/libc.so.6
-(gdb) bt
-#0  0x00007ffff78768a1 in raise () from /lib/x86_64-linux-gnu/libc.so.6
-#1  0x00007ffff7860546 in abort () from /lib/x86_64-linux-gnu/libc.so.6
-#2  0x000055555558399d in assert_trace (val=0, line=2417, func=<synthetic pointer>, 
-    filename=0x55555560cef2 "kernel-shared/extent-tree.c", assertion=0x55555560d04b "sinfo") at ./kerncompat.h:338
-#3  alloc_reserved_tree_block (extent_op=0x555555652ae0, node=0x555555651ab0, trans=0x5555556620e0)
-    at kernel-shared/extent-tree.c:2417
-#4  run_delayed_tree_ref (insert_reserved=<optimized out>, extent_op=0x555555652ae0, node=0x555555651ab0, fs_info=0x55555564fbc0, 
-    trans=0x5555556620e0) at kernel-shared/extent-tree.c:3738
-#5  run_one_delayed_ref (insert_reserved=<optimized out>, extent_op=0x555555652ae0, node=0x555555651ab0, fs_info=0x55555564fbc0, 
-    trans=0x5555556620e0) at kernel-shared/extent-tree.c:3761
-#6  btrfs_run_delayed_refs (trans=trans@entry=0x5555556620e0, nr=nr@entry=18446744073709551615) at kernel-shared/extent-tree.c:3845
-#7  0x00005555555928a8 in btrfs_commit_transaction (trans=trans@entry=0x5555556620e0, root=0x555555650030)
-    at kernel-shared/transaction.c:181
-#8  0x00005555555e311d in restore_missing_chunks (fs_info=0x55555564fbc0) at cmds/rescue-recover-chunks.c:405
-#9  btrfs_find_recover_chunks (path=path@entry=0x7fffffffe1ce "/dev/mapper/dshelf1") at cmds/rescue-recover-chunks.c:460
-#10 0x00005555555d7c87 in cmd_rescue_recover_chunks (cmd=<optimized out>, argc=<optimized out>, argv=<optimized out>)
-    at cmds/rescue.c:65
-#11 0x000055555556c17b in cmd_execute (argv=0x7fffffffdeb8, argc=2, cmd=0x555555645d40 <cmd_struct_rescue_recover_chunks>)
-    at cmds/commands.h:125
-#12 handle_command_group (cmd=<optimized out>, argc=2, argv=0x7fffffffdeb8) at btrfs.c:152
-#13 0x000055555556c275 in cmd_execute (argv=0x7fffffffdeb0, argc=3, cmd=0x555555646cc0 <cmd_struct_rescue>) at cmds/commands.h:125
-#14 main (argc=3, argv=0x7fffffffdeb0) at btrfs.c:405
-(gdb) 
+On 2022/6/2 05:16, Matthew Warren wrote:
+> I have FS which is currently not in any sort of raid configuration and
+> occasionally a bit flip will occur somewhere on the disk.
 
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+This is not a good sign.
+
+Such bitflip can only happen in memory, as if it's a bitflip from disk,
+then it will cause the metadata csum mismatch.
+
+So this means, your memory is unreliable, and a memtest is strongly
+recommended before doing anything.
+
+> It would be
+> nice to be able to tell BTRFS to recalculate the checksum for that
+> specific block and assume the data is correct. For instance, I just
+> had this bit flip in the csum for a non-important file which I have an
+> external backup of.
+>
+> Jun 01 15:58:04 planeptune kernel: BTRFS warning (device nvme0n1p2):
+> csum failed root 258 ino 63674380 off 208896 csum 0xa40b3c39 expected
+> csum 0xa40b2c39 mirror 1
+>
+> This is a very clear case of a csum bitflip and I'd like to have the
+> ability to tell BTRFS that the data is correct.
+
+We have the ability to ignore csum mismatch and force read, but it's
+only for recovery purpose only.
+
+You can use "mount -o ro,rescue=3Didatacsums", which will completely
+ignore data csum and allow you read the data out.
+
+Unfortunately since it's a recovery mount option, it has to be used with
+read-only mount.
+So you can only read out the data and save it somewhere else, then copy
+it back.
+
+Thanks,
+Qu
+
+>
+> Matthew Warren
