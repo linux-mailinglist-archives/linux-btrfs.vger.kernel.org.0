@@ -2,100 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7314153B188
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 04:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A1953B184
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 04:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbiFBBXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jun 2022 21:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        id S232981AbiFBBuI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jun 2022 21:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbiFBBXn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 21:23:43 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CFC29564C
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 18:23:41 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id y8so3482540iof.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jun 2022 18:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eS9oSsvlb7H1c4Sr7xNPAHmnIY7oYXgsELY7P/icHqM=;
-        b=lLZpdflub546Lb/OsS8idFwbi5pt1EEiQDsGMbOT3DX3F5TwdS/4h3XLjwSb0m/PqS
-         uFQNsrrcpx184v4QP7zs0WUv6iYXoP2RNuS1/cKDLHCyx14rMbGTS031BtI9guC67MqB
-         Ar1qWwymEVYxj1BqY+YdZALWgT6b1bv9UtXFfuFtlr5yu61t30jOrF3LEb8ibmWFB6do
-         dQ0vVmDDBJi9LQBhccollh8xaWhTL9me+wWII/wPT6sQEGv3OAGD6yytKPmS6To4lyio
-         9Vt1RZE/GNKtFldD0Fy7FXij3Do+8a4arZbAd24C9r62qvyk45s70Ha6iKXZjFRhPayD
-         mDcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eS9oSsvlb7H1c4Sr7xNPAHmnIY7oYXgsELY7P/icHqM=;
-        b=a7KUoDrM8rRH/UvxPuFLi72cgkt7oFmX4r14VOkAJtRDU5GUOEyCPBwBHZtjatJcQK
-         9ZQkq/K40nMcoN3VoUfffvoqLUgXP5ZxZYERVvuNYfj3GUHm0rOVGgc95NDlqITFfx55
-         /y5EJuNgNnAsQi1JzUF/hxLc8vtFPxXKkfBBxE8jruSEfk+dMbXdE5WuAqbmqoaD/fcO
-         gKxOxRccICismNYZieTnBXBRd+BroqncpVoGfizgha1WylbvBHLC58R40AEyJdp9o09o
-         hVQCCoalWbRHwASnlXqrjN05CGDFt2/FAnUAl8NAyAQO6MeqUZi8b1nb8BmaDTHVJ/mW
-         jawQ==
-X-Gm-Message-State: AOAM530mrKBnbVMdtiEYQs8ag+UIpcv6Gqpq+l7Zq24bM9taup9I9oH3
-        DJqnloQHCcMJWZkABiiZnbAqtD9Yba+aA47t/8Vg6LRdvB4=
-X-Google-Smtp-Source: ABdhPJy12Yl/OxYGrQAcIRT+1/XNLB6UaAXyEqWgqQOkE4i014Vt1jtptpamvFKnxInE0+ml8LG9afE+UBZJtijloE0=
-X-Received: by 2002:a05:6602:80a:b0:665:7139:4c4b with SMTP id
- z10-20020a056602080a00b0066571394c4bmr1440658iow.134.1654133021115; Wed, 01
- Jun 2022 18:23:41 -0700 (PDT)
+        with ESMTP id S232949AbiFBBuH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jun 2022 21:50:07 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FBF21257D
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jun 2022 18:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds202112; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
+        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=X35WRI5N7OZ0VjJrTn2d2muO76eIyJ9ytJrganglfJ0=; b=F+JAppUwLN0LW1g3H7HBlcoUpI
+        xE820/aki8Tt2mYUEtSdFQPzCbb5KerEoA0nIxrdg7vCLCI8E+UkIuoWY0BhfDB1YnLAWz21AXjdW
+        NSUSQCpbpfP3kOo4z7h6SwCLofW1CjuwToOi/UG1r/rRLSiowIorTQDDGOW3XaHISzPOffHYELcrf
+        +4nb4O5xL3IDWLf1XqcemVMyYl2QRPEG0cffEk3bMjaFbI1PmzsmCUH8WZf4dYH9B+LwEQe6HUMXr
+        c773XGKIXSw3/KgXpRSuAVG0HXtZn476bHgOThDI6OFYNk7TQrDcpavMZXixwmuB0SvWx5cVCYfVN
+        u5v+JXFw==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:48934 helo=[10.0.0.41])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1nwZyM-00040M-DZ; Thu, 02 Jun 2022 03:50:02 +0200
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: Manual intervention options for csum errors
+To:     Matthew Warren <matthewwarren101010@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <85e0d09e-e1e4-6daf-2ee3-35efaac879b3@dirtcellar.net>
+Date:   Thu, 2 Jun 2022 03:50:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Firefox/68.0 SeaMonkey/2.53.12
 MIME-Version: 1.0
-References: <CAEzrpqcY-F4WOiaJcDfHykok0LB=JEX1DnZj53+KvM7a6j+daQ@mail.gmail.com>
- <CAEzrpqeTEuRzP_Nj1qoSerCObJLA4fJYDfR1u3XMatuG=RZf-g@mail.gmail.com>
- <20220601214054.GH22722@merlins.org> <CAEzrpqduFy+7LkgWyyEnvYLgdJU6zDEWv25JM-niOg9tjmZ3Nw@mail.gmail.com>
- <20220601223639.GI22722@merlins.org> <CAEzrpqdfz5FMFDiBbb1mrUTXqxNvJ2RkuqJCdE2VQ6op01k61g@mail.gmail.com>
- <20220601225643.GJ22722@merlins.org> <CAEzrpqe7Fm8d62GnRs5EZeggkbXdsF2JCxkSOWnQAU+pzFtG9g@mail.gmail.com>
- <20220601231008.GK22722@merlins.org> <CAEzrpqen1AXAYBq0M0LVzB8AVXMhAD_ve1Yj_+e=kPyCfdUiow@mail.gmail.com>
- <20220602000637.GL22722@merlins.org>
-In-Reply-To: <20220602000637.GL22722@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 1 Jun 2022 21:23:30 -0400
-Message-ID: <CAEzrpqc_Z=aqbfNHL_r=8X1=-Kvdqrmdzrd04M-n=79s7Mi26A@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 1, 2022 at 8:06 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Wed, Jun 01, 2022 at 08:04:03PM -0400, Josef Bacik wrote:
-> > > Found missing chunk 15772793438208-15773867180032 type 0
-> > > Found missing chunk 15773867180032-15774940921856 type 0
-> > > Found missing chunk 15774940921856-15776014663680 type 0
-> > > Found missing chunk 15776014663680-15777088405504 type 0
-> > > Found missing chunk 15777088405504-15778162147328 type 0
-> >
-> > This segfault makes no sense, we check to make sure any of this stuff
-> > is NULL.  I've added some debugging, hopefully that'll shed some
-> > light.  Thanks,
->
-> Found missing chunk 15486104371200-15487178113024 type 0
-> Found missing chunk 15487178113024-15488251854848 type 0
-> Found missing chunk 15488251854848-15489325596672 type 0
-> Found missing chunk 15671861706752-15672935448576 type 0
-> Found missing chunk 15672935448576-15674009190400 type 0
-> Found missing chunk 15772793438208-15773867180032 type 0
-> Found missing chunk 15773867180032-15774940921856 type 0
-> Found missing chunk 15774940921856-15776014663680 type 0
-> Found missing chunk 15776014663680-15777088405504 type 0
-> Found missing chunk 15777088405504-15778162147328 type 0
-> adding bg for 20971520 8388608
->
+Matthew Warren wrote:
+> I have FS which is currently not in any sort of raid configuration and
+> occasionally a bit flip will occur somewhere on the disk. It would be
+> nice to be able to tell BTRFS to recalculate the checksum for that
+> specific block and assume the data is correct. For instance, I just
+> had this bit flip in the csum for a non-important file which I have an
+> external backup of.
+> 
+> Jun 01 15:58:04 planeptune kernel: BTRFS warning (device nvme0n1p2):
+> csum failed root 258 ino 63674380 off 208896 csum 0xa40b3c39 expected
+> csum 0xa40b2c39 mirror 1
+> 
+> This is a very clear case of a csum bitflip and I'd like to have the
+> ability to tell BTRFS that the data is correct.
+> 
+> Matthew Warren
+> 
+I am just the average user , if anyone picks up this idea I would like 
+to throw out an idea. Perhaps something like...
 
-Ah ok I'm not confused anymore, try that now.  Thanks,
+btrfs filesystem (or subvolume) list compromised /mnt which could list 
+all the files identified with a unrepairable csum error for example...
 
-Josef
+1: path/to/file/file1
+2: path/to/file/file2
+3: path/to/another/filename/somewhere
+
+And then be able to mark damaged files by id as good somehow. Not sure 
+how to solve that , but perhaps a "damaged tree" / subvolume dirty bit 
+or something along the lines of that would need to be added before that 
+would even be possible.
