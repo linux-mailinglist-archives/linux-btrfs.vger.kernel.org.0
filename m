@@ -2,112 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD0A53C014
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jun 2022 22:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E09753C0B9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jun 2022 00:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239283AbiFBU40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jun 2022 16:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
+        id S239157AbiFBWQg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jun 2022 18:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239197AbiFBU4Q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 16:56:16 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF6334B80
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 13:56:14 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-2ec42eae76bso64018867b3.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jun 2022 13:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=d+MLllrTnVLTVuNtzK3RkWrOuNSSWMmwIaiBnbLtjnI=;
-        b=bP2Bg9kPaoZeUOZTwDrCf0TcA+yFfRTyMPXiyBc1hgaOcOhU/7J6HXpUJAtG0vGXe2
-         HdiVuKHQ73+Sw6+AW2z0L7B1Zsq49m0EOs8HolvzyvIAHihXph0OX/EBNR9r+H2kwGg5
-         t0Tv6/pTSym6LNcptuCtK0UtS6rHSK3/p0HDzjbM35P+QVVx1b9hFaP01w4lpi2w19ri
-         CpgzaJ6JCIMU59184vXDSaP/UrOHUA/1xCZF0mJMj12N/l7Bbr0PLi7jJ04MvIc6tYCG
-         tcjfS5PI7JJFlAWRY4yMBNBphwLp9KqnO6CQ1HYhKtGa7S81lqwsIX6SVwOghQ5lGL5L
-         qKlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=d+MLllrTnVLTVuNtzK3RkWrOuNSSWMmwIaiBnbLtjnI=;
-        b=Rmha0vxK82jUY0DGGXCf2bYNXbNPUQdHr/vZ0MdV0lSAd9A7kvs325j/44F1AXBog2
-         lNatCNhrHmoyRfZel9kufxiisz+eGh7Y+E1g+nzdqEiayrGJHELuS1UXyeqIuZHnYR0J
-         pboFeFuYe+5+Fun6nRrHMfGRtc6BGrA9aK1PSKUeNP8WDpm4AAYZJocBaCFavR0PDKdg
-         sa8la1m/yFwxkTvn++i4KW8kKesfBb1Ys3ANWxADN7r5NoszYF0X+FKTbCtJeRk2jrJ4
-         W6pYUvvc6XHDkWgCzYoX9o7yYYGS8MlO216cWej9ldZzfr2Z33dQAwmhLdfJiecRi76b
-         K58Q==
-X-Gm-Message-State: AOAM533dhYxbbd3tW04amtjCJqH4vFNMZawAQffBz+o1HSQwfb5k6GHn
-        keeUgaFLjkBaprOQcATHwTWlfzylCf1aP4rafJA=
-X-Google-Smtp-Source: ABdhPJzz4CIFTzLwRd4bDwRghcuq8KmAMJuf1ZQNKj3c2Lo/OmAL2dCZKUleJ315pEcSs8xxcj3S1aQ8FnTEFw1HYHw=
-X-Received: by 2002:a81:1358:0:b0:30c:2e28:4050 with SMTP id
- 85-20020a811358000000b0030c2e284050mr7698599ywt.206.1654203372355; Thu, 02
- Jun 2022 13:56:12 -0700 (PDT)
+        with ESMTP id S235072AbiFBWQf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jun 2022 18:16:35 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1933465B
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 15:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1654208191;
+        bh=ATWcba6FZmiGnYtcix6iNCjCTeS4WK4gHxJKol4JUhI=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=ZNpvNjJPjRjFy+MD0NhYeJ1kKv0yg0S9i5pXtoIrDEVynwtt949yOE44eGfGLOlBZ
+         JiUVBytbYk8DsGxf9MI3xC8xWrDNrMXMn/IToXOCWQxfVll2j7YQpnGWhedvhL90MR
+         X52zLHLjFY/S6ZdzyfSGuMWU60M7gQazN9rtLf60=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXp5a-1oHoAN0GDM-00Y8cn; Fri, 03
+ Jun 2022 00:16:31 +0200
+Message-ID: <760a98d8-3524-d24f-b5f9-3653ee46661d@gmx.com>
+Date:   Fri, 3 Jun 2022 06:16:24 +0800
 MIME-Version: 1.0
-Sender: bbchitex6@gmail.com
-Received: by 2002:a81:d447:0:0:0:0:0 with HTTP; Thu, 2 Jun 2022 13:56:11 -0700 (PDT)
-From:   "Mr.Patrick Joseph" <patrickjos09@gmail.com>
-Date:   Thu, 2 Jun 2022 13:56:11 -0700
-X-Google-Sender-Auth: 2x_0MgxYCCazRZg9th9WovhcOhY
-Message-ID: <CADX4xg+gCaCydEs1Tz5F-66oRNkS3vNJUkBVhip+COD_if2nGA@mail.gmail.com>
-Subject: I expect your urgent reply
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
-        BAYES_95,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,URG_BIZ autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:1132 listed in]
-        [list.dnswl.org]
-        *  3.0 BAYES_95 BODY: Bayes spam probability is 95 to 99%
-        *      [score: 0.9755]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [bbchitex6[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [bbchitex6[at]gmail.com]
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.6 URG_BIZ Contains urgent matter
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
-        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
-        *  0.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: Manual intervention options for csum errors
+Content-Language: en-US
+To:     Matthew Warren <matthewwarren101010@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CA+H1V9xQEDf0G-Nvcv3irtSPF+09dJ6VMs7F8LBLpUGEUSfxmg@mail.gmail.com>
+ <7762988d-0a64-695a-4ccd-ba7b51c0754a@gmx.com>
+ <CA+H1V9wSZXVrLdz9ZELx8gc3nOHOJz4b48DQMFcmc8cTEJgXAQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CA+H1V9wSZXVrLdz9ZELx8gc3nOHOJz4b48DQMFcmc8cTEJgXAQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:19QEPTtceMWwpPBtAvfGkOXmjmduEuHMmpfWeYlJrqw/1IpOBCP
+ R90XuSfnRMJ0Te7zxyw1AsxQVP8Y9tnFdhe5rNBxUOTbCaex/2OPlYXmzcfWoS0IOFpRPUv
+ wbmZ0wIP2jsX/1BXo2/YjmSoxVCuwWyQ1MWWCxyqAI4AR2d1GFU9ooJisQVb13ockfUDpN5
+ jdN3bYS/gFDoOBQqYHcpQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:feNtxPmIviE=:x2PbZLR6RLpgaB+oosPh6L
+ ycCatLQ/lc9vsBmpj1pMrGilq0Z2O8dXQQ1+fLnV+XjX9rE8X+9qqkb7W0jtgxBNNyCAAqfHt
+ fNwbTlmZLmaBFCFgkRszGiwmTjjoB0Ra11hQN6DDWRW9t+J1ZQqwuC7KksWPtfnV/T0wrdk/q
+ tcAm9hQXNPd4puAZBeSxFJ8QQPenQn2U1hlwH3+06FpP+4jDV3ySWYCDN1+XMvdUPugfVAR8u
+ 1WlnXrEJA9fj7rAZOhLcY6xoeLQLCYFoupa16RDJUv3N+TAgHCDpTDRxu6NIucXCHEl/i9xCc
+ jtFx27lZSOIh0zu9vrLqCBe8/WTInoFkc2Az7vgEl95/87l6YzZpF6SiYJpML705PbWWkUXf9
+ XLTvTP6mwIVFJm1+67X46w9UU1k5DAbEyW9Rc1xRgysMVx4AfXohgzA6mZ0hSAfbkcJkqQfk4
+ d3Q6P0xZd3gdJ08aGANOvS04O5cEv9qG8o5qxfw9J2qJzukX2nZD+wNyZGbaB9fJbbjxmVeBu
+ v5isgS6OwbgnI3HbMi42MMAk7v0vf9Os9LMGk2ML40iH6Tn806+xLoyl4qugMIW+PUGJkc7jg
+ 4vWpVaVgQIQ9Pdza0MDvveva66unF1TgIpzdcXV28H9Iqd6WKHDqZWUjHUXJZ4iKn8OaMH8LE
+ Xn6Tj3KNHuxBHJXSFWCjIZdm2Rpw/kHFJ1+kxcelVfonfvNq2iVLbl+hutwFQ6yXyrPd8ZBpO
+ 7Xqsr5XoXzNSU5xboXG6AqSn5EI/RCreZ7JO3jTGvJuoQ707iUMK0b21yAGYXGZeSwQ9jI77S
+ NYgBFCgNiBuXbz3zLZPTLxbuXuDyGoH0K8NAEl0e18fJBjk2SB5g0SSXplSKpMe0kDZgOSnqx
+ /dXiYWrulfKsw81W6Fc/SJo83sJ83H5B7trUkMjxpm6V3+jB4j7jNZrFZHI2vkmkSa+vXHvMH
+ ZeSFW899oParsuefWq9EjAJYPKwsGR8di1K3bqcOoLuh10hIjTup3lg2B2NR99Gc6Xkob3TH8
+ WpGz/E8Srhw8CwsPLshqzwEspa+4dmUTAaBMkm8rJMPV8iL1u3QD3N6Fg5s3ECDo8oxsAg9rC
+ mvZRHIlMINBhQalGsUwT9UrZdQ9g8m35wu/HHql/N7Vn1W3N0rMYf7k0Q==
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Friend,
 
-I apologize for contacting you this way, I am writing you this mail to
-solicit for your cooperation in a very confidential business
-transaction of $16.5 million. However, it is not authorized by the
-rules guiding our bank for a citizen of Burkina Faso to make the claim
-of the fund unless you are a foreigner, I ask you can we work
-together, I will be pleased to work with you I propose a 40% of the
-total amount to you after receiving the funds successfully, and I
-assure you that this transaction is 100% risks free. Reply me as soon
-as possible so that I will let you know the next steps and procedures
-to follow in order to finalize this transaction immediately.
 
-I expect your urgent reply
+On 2022/6/2 23:30, Matthew Warren wrote:
+>> This is not a good sign.
+>>
+>> Such bitflip can only happen in memory, as if it's a bitflip from disk,
+>> then it will cause the metadata csum mismatch.
+>>
+>> So this means, your memory is unreliable, and a memtest is strongly
+>> recommended before doing anything.
+>
+> I don't think that's the case. The files were last modified all the
+> way back in 2020, but there hasn't been any file modifications near
+> them since the end of April this year.
 
-Regards.
-Mr. Patrick Joseph.
+Since the bitflip is in csum tree, it doesn't matter if that specific
+file get modified.
+
+Any other file modification can trigger CoW on that csum tree block.
+
+> There's also been 2 scrubs
+> before the last one where there were no issues at all. Does this mean
+> that at some point in the last half month (since that's the time
+> between the last successful scrub and the scrub which errored) BTRFS
+> read and re-wrote the file to disk?
+
+I'd say yes. And it doesn't even need to modify that specific file.
+
+That's why memory bitflip is so concerning.
+
+Thanks,
+Qu
+>
+> Matthew Warren
