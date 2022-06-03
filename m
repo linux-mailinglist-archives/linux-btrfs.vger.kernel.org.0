@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1214653C57E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jun 2022 08:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D05153C5C2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jun 2022 09:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241999AbiFCG57 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jun 2022 02:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
+        id S242052AbiFCHLK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jun 2022 03:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241891AbiFCG5r (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jun 2022 02:57:47 -0400
+        with ESMTP id S242117AbiFCHLI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jun 2022 03:11:08 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37A4DFCD
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jun 2022 23:57:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD18A3633F
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Jun 2022 00:11:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=8Ub206OY7Z+VrJhjR2/ebMp8LC1Ob688gKwV+naqAKA=; b=KJ+YkmshuOy+gSE3dRwTmZ8zUC
-        VExjHjySA5p7B4xPWwAnVCltCHi5w64QqOfcYS9WYyp+FKqfh8H/+NXCBwMwYdHA0lGXNz+e9AOk/
-        R7hH540PBQmzF3oHR/6pocCrqZBvaBXzyDg9KndV6SePbfl9WuAWCU10tRW57mBbl9xR8s2frLl/6
-        SdW8Y1NoNr5GdP32KhraUq0tMpbPlrGmJJOG6NrcEpiv20WROKWGNFnl0jIu2NSBhpUZwMuQU19AB
-        RdcsLOT3YO3K/66J+M3crh3I1H4nm57B0FbEJizgaSXPJFz6HnjFMAE/U6GkZn6Ii7QkQGe3/8vL3
-        YZcV9J+A==;
+        bh=llXU7xuV/t5P3atIPWP3FeHZ7M/UkVuEPhPlL7hOIA4=; b=Bz+72VhNEj6iD25FytWk6aikm3
+        1QCBqJH8C/HzSwKzOD3F5YP99Mqy27PJutTpW67rSBBj6uOWNbqscTv88IhUy2i4HjpcghV9d158u
+        brX/2DK+AnVK9O6Nut3lfeF/COeE3CAizer2E9EtYpsoGA/A+ElNAid7kjz8P95uh4PgWVg1EUmrP
+        oyTkSIm9uBzBUUSW+Kypi1ylzyIGuExFwGURacHhEMf69scClMsvCqqrmyi0x4ZoDqUoe+I7Ogmse
+        ykQQVRsU0pPIkcjDMlqIp04UFR9Vbghao6/AhPbl2SYJT9PTqBZrSxUTywF7qm1F5Z3mrEqaXaf8q
+        iFwp6+LQ==;
 Received: from [2001:4bb8:185:a81e:b29a:8b56:eb9a:ca3b] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nx1Fg-0069JA-At; Fri, 03 Jun 2022 06:57:44 +0000
+        id 1nx1Sb-006ElS-7B; Fri, 03 Jun 2022 07:11:05 +0000
 From:   Christoph Hellwig <hch@lst.de>
-To:     josef@toxicpanda.com, dsterba@suse.com
+To:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: stop looking at btrfs_bio->iter in index_one_bio
-Date:   Fri,  3 Jun 2022 08:57:42 +0200
-Message-Id: <20220603065742.40931-1-hch@lst.de>
+Subject: extent_io bio submission cleanup
+Date:   Fri,  3 Jun 2022 09:11:00 +0200
+Message-Id: <20220603071103.43440-1-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -47,31 +47,10 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All the bios that index_one_bio operates on are the bios submitted by the
-upper layer.  These are never resubmitted to an actual device by the
-raid56 code, and thus the iter never changes from the initial state.
-Thus we can always just use bi_iter directly as it will be the same as
-the saved copy.
+Hi all,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/raid56.c | 3 ---
- 1 file changed, 3 deletions(-)
+this series cleans up how extent_io.c submits bios.
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 00cd9e8db7ae0..3c58869779375 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -1106,9 +1106,6 @@ static void index_one_bio(struct btrfs_raid_bio *rbio, struct bio *bio)
- 	u32 offset = (bio->bi_iter.bi_sector << SECTOR_SHIFT) -
- 		     rbio->bioc->raid_map[0];
- 
--	if (bio_flagged(bio, BIO_CLONED))
--		bio->bi_iter = btrfs_bio(bio)->iter;
--
- 	bio_for_each_segment(bvec, bio, iter) {
- 		u32 bvec_offset;
- 
--- 
-2.30.2
-
+Diffstat:
+ extent_io.c |  168 +++++++++++++++++++++---------------------------------------
+ 1 file changed, 61 insertions(+), 107 deletions(-)
