@@ -2,52 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0176653CD63
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jun 2022 18:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF08F53CD81
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jun 2022 18:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344025AbiFCQnA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jun 2022 12:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38220 "EHLO
+        id S1344082AbiFCQt2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jun 2022 12:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344023AbiFCQm7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jun 2022 12:42:59 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5103A3BBE9
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Jun 2022 09:42:57 -0700 (PDT)
-Received: from [76.132.34.178] (port=59168 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1nx9fZ-0005LK-Lv by authid <merlins.org> with srv_auth_plain; Fri, 03 Jun 2022 09:42:55 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1nxANw-00CH0d-KJ; Fri, 03 Jun 2022 09:42:52 -0700
-Date:   Fri, 3 Jun 2022 09:42:52 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220603164252.GH1745079@merlins.org>
-References: <20220602190848.GS22722@merlins.org>
- <CAEzrpqdKjjPW5Bvqkt2=U1_jmiBMGui775BC=Mdx6Ei5FWL1AQ@mail.gmail.com>
- <20220602195134.GT22722@merlins.org>
- <CAEzrpqciXfV0NZMTJoMjX_E_TzQ-j5sEpsACnEhnJdAXzbVOEg@mail.gmail.com>
- <20220602195623.GU22722@merlins.org>
- <CAEzrpqd6CHi2s5B7WPtRo+N0b++F95Qr-nrjYbx2NrD4xxMN=A@mail.gmail.com>
- <20220602203224.GV22722@merlins.org>
- <CAEzrpqdBHuJr85+TfSyRbXEOVY6jqKqZNJo42d8afATr=b9Gow@mail.gmail.com>
- <20220603144732.GG1745079@merlins.org>
- <CAEzrpqez1Ct8xrtCOaFtPxWQZ-0R6BUSYm2k=PN9pqChoKNMSw@mail.gmail.com>
+        with ESMTP id S1344078AbiFCQt1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jun 2022 12:49:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B0E4D62E
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Jun 2022 09:49:25 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 713EB219F3;
+        Fri,  3 Jun 2022 16:49:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654274964;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQmp/eW4J2f9grruGoyP3htwn0lfEvlOdIQ3KIxLwNg=;
+        b=NTxGRDlcFlq3sgrQqII5Z0Cz/E71/A+8lKkI+u+iZ+mfi0zTRKm+OAAmslC41IQxcrYl2z
+        D2WarBo26386G7U/TH/p20V8P80NlHNFQv/Zs6Q39leweX8k+KEOUL8b2v+1RWKeaJtHfv
+        /cRU0xaCvkAvoOCOzguAkM/MBYR4UVU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654274964;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQmp/eW4J2f9grruGoyP3htwn0lfEvlOdIQ3KIxLwNg=;
+        b=q56VzrQBstRgicnwWTn53lpUmmcnlQs90Z/acQ12O5utsd3V59dZcXZbTZfYENzRmcgU8w
+        KEXHfsmBNAgxEQCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D02613AA2;
+        Fri,  3 Jun 2022 16:49:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4IIdDpQ7mmK/SwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 03 Jun 2022 16:49:24 +0000
+Date:   Fri, 3 Jun 2022 18:44:56 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 05/10] btrfs: defer I/O completion based on the
+ btrfs_raid_bio
+Message-ID: <20220603164456.GW20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20220429143040.106889-1-hch@lst.de>
+ <20220429143040.106889-6-hch@lst.de>
+ <4e93a857-43f2-9e67-9ef8-4db00edd2f6c@gmx.com>
+ <6dba9162-c64d-2d27-12eb-d48ac6a4ac8a@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAEzrpqez1Ct8xrtCOaFtPxWQZ-0R6BUSYm2k=PN9pqChoKNMSw@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
-X-SA-Exim-Connect-IP: 76.132.34.178
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6dba9162-c64d-2d27-12eb-d48ac6a4ac8a@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,147 +83,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 03, 2022 at 12:17:15PM -0400, Josef Bacik wrote:
-> On Fri, Jun 3, 2022 at 10:47 AM Marc MERLIN <marc@merlins.org> wrote:
+On Sun, May 01, 2022 at 12:53:00PM +0800, Qu Wenruo wrote:
+> On 2022/5/1 12:40, Qu Wenruo wrote:
+> > On 2022/4/29 22:30, Christoph Hellwig wrote:
+> >> Instead of attaching a an extra allocation an indirect call to each
+> >> low-level bio issued by the RAID code, add a work_struct to struct
+> >> btrfs_raid_bio and only defer the per-rbio completion action.  The
+> >> per-bio action for all the I/Os are trivial and can be safely done
+> >> from interrupt context.
+> >>
+> >> As a nice side effect this also allows sharing the boilerplate code
+> >> for the per-bio completions
+> >>
+> >> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > >
-> > On Thu, Jun 02, 2022 at 10:20:13PM -0400, Josef Bacik wrote:
-> > > Sorry daughters graduation thing took forever, I've updated the code,
-> > > it should work now.  Thanks,
-> >
-> > Not sorry, congrats ;)
-> >
-> > It works better but seems to be looping on the same thing now (it has
-> > all night):
+> > It looks like this patch is causing test failure in btrfs/027, at least
+> > for subapge (64K page size, 4K sectorsize) cases.
 > 
-> Ok I think I know what it is, try again please.  Thanks,
+> Also confirmed the same hang on the same commit on x86_64 (4K page size
+> 4K sectorsize).
+> 
+> Also 100% reproducible.
 
-Woohoo, that worked:
-
-Invalid mapping for 365033668608-365033684992, got 11106814787584-11107888529408
-Couldn't map the block 365033668608
-Couldn't map the block 365033668608
-deleting slot 0 in block 15646000562176
-deleting slot 0 in block 15646000562176
-deleting slot 0 in block 15646000562176
-Root 164824 was completely cleared, deleting it
-Checking root 164825 bytenr 15646001872896
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164825, we're going to clear it and hope for the best
-We thought root 164825 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164910 bytenr 10194254020608
-Invalid mapping for 10194254020608-10194254036992, got 11106814787584-11107888529408
-Couldn't map the block 10194254020608
-Couldn't map the block 10194254020608
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164910, we're going to clear it and hope for the best
-We thought root 164910 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164911 bytenr 10194440339456
-Invalid mapping for 10194440339456-10194440355840, got 11106814787584-11107888529408
-Couldn't map the block 10194440339456
-Couldn't map the block 10194440339456
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164911, we're going to clear it and hope for the best
-We thought root 164911 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164912 bytenr 10194209554432
-Invalid mapping for 10194209554432-10194209570816, got 11106814787584-11107888529408
-Couldn't map the block 10194209554432
-Couldn't map the block 10194209554432
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164912, we're going to clear it and hope for the best
-We thought root 164912 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164913 bytenr 10194353700864
-Invalid mapping for 10194353700864-10194353717248, got 11106814787584-11107888529408
-Couldn't map the block 10194353700864
-Couldn't map the block 10194353700864
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164913, we're going to clear it and hope for the best
-We thought root 164913 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164914 bytenr 10194543017984
-Invalid mapping for 10194543017984-10194543034368, got 11106814787584-11107888529408
-Couldn't map the block 10194543017984
-Couldn't map the block 10194543017984
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164914, we're going to clear it and hope for the best
-We thought root 164914 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164915 bytenr 10678962552832
-Invalid mapping for 10678962552832-10678962569216, got 11106814787584-11107888529408
-Couldn't map the block 10678962552832
-Couldn't map the block 10678962552832
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164915, we're going to clear it and hope for the best
-We thought root 164915 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164916 bytenr 10679219617792
-Invalid mapping for 10679219617792-10679219634176, got 11106814787584-11107888529408
-Couldn't map the block 10679219617792
-Couldn't map the block 10679219617792
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164916, we're going to clear it and hope for the best
-We thought root 164916 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 164917 bytenr 10678998777856
-Invalid mapping for 10678998777856-10678998794240, got 11106814787584-11107888529408
-Couldn't map the block 10678998777856
-Couldn't map the block 10678998777856
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 164917, we're going to clear it and hope for the best
-We thought root 164917 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Checking root 18446744073709551607 bytenr 8733327196160
-Invalid mapping for 8733327196160-8733327212544, got 11106814787584-11107888529408
-Couldn't map the block 8733327196160
-Couldn't map the block 8733327196160
-scanning, best has 0 found 0 bad
-ERROR: Couldn't find a valid root block for 18446744073709551607, we're going to clear it and hope for the best
-We thought root 18446744073709551607 could be found at 18446744073709551615 level 255 but didn't find anything, deleting it.
-Tree recovery finished, you can run check now
-gargamel:/var/local/src/btrfs-progs-josefbacik# 
-
-Now running the next step:
-
-gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue init-extent-tree /dev/mapper/dshelf1
-FS_INFO IS 0x55d3c8ad6bc0
-Couldn't find the last root for 8
-FS_INFO AFTER IS 0x55d3c8ad6bc0
-Walking all our trees and pinning down the currently accessible blocks
-Clearing the extent root and re-init'ing the block groups
-deleting space cache for 11106814787584
-deleting space cache for 11108962271232
-deleting space cache for 11110036013056
-deleting space cache for 11111109754880
-deleting space cache for 11112183496704
-deleting space cache for 11113257238528
-deleting space cache for 11114330980352
-deleting space cache for 11115404722176
-deleting space cache for 11116478464000
-deleting space cache for 11118625947648
-deleting space cache for 11119699689472
-deleting space cache for 11120773431296
-deleting space cache for 11121847173120
-deleting space cache for 11122920914944
-deleting space cache for 11123994656768
-deleting space cache for 11125068398592
-deleting space cache for 11126142140416
-deleting space cache for 11127215882240
-deleting space cache for 11128289624064
-deleting space cache for 11129363365888
-deleting space cache for 11130437107712
-deleting space cache for 11131510849536
-deleting space cache for 11132584591360
-deleting space cache for 11133658333184
-(...)
-
-
-searching 1 for bad extents
-processed 81920 of 18446744073709518848 possible bytes, 0%
-Found an extent we don't have a block group for in the file
-Couldn't find any paths for this inode
-Deleting [4483, 108, 0] root 15645018226688 path top 15645018226688 top slot 5 leaf 15645018243072 slot 11
-
-searching 1 for bad extents
-processed 81920 of 18446744073709518848 possible bytes, 0%
-Found an extent we don't have a block group for in the file
-Couldn't find any paths for this inode
-Deleting [4484, 108, 0] root 15645018161152 path top 15645018161152 top slot 5 leaf 15645018177536 slot 12
-
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+The test passes on my VM setup, the whole suite was run on the patchset
+at least twice.
