@@ -2,191 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A6053E7C5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1296453E9CF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbiFFLM5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 07:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
+        id S235287AbiFFLYM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 07:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235017AbiFFLM4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 07:12:56 -0400
+        with ESMTP id S235288AbiFFLYL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 07:24:11 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C3E527E8;
-        Mon,  6 Jun 2022 04:12:50 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6857621A64;
-        Mon,  6 Jun 2022 11:12:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654513969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=YeYIPk1apoTTLgnmiValz725/dHCxKZfGsETM2bG6QM=;
-        b=Jq4aGCh3QooHfvwovKAqIejGv+fbI6srBCpAMewFIwfsYNXXvSiYzyX6G11hsnUie0PC0j
-        /PSLgWNikQVDf4F9/J0OaFffrDbMzkVVIYudMZT0vmHP7ek9wreB6BovzXsvFmpCHHphX7
-        HgP12sYVf6hvyi9Q1gH5sb2kxYsKDiw=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5FED22C141;
-        Mon,  6 Jun 2022 11:12:49 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E9789DA832; Mon,  6 Jun 2022 13:08:21 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, stable@vger.kernel.org
-Subject: [PATCH] btrfs: add error messages to all unrecognized mount options
-Date:   Mon,  6 Jun 2022 13:08:19 +0200
-Message-Id: <20220606110819.3943-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.36.1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5530495A21
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 04:24:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0E09221A4E;
+        Mon,  6 Jun 2022 11:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654514649;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o+qPlrVIxO0CpRa7Ct2UCBxj7LlmAzrf3UpPsju4+Vo=;
+        b=UpquHHDJHle94tKuafNAA/02tPfkVCne2rSgHfn4ofqcuNChNVwrOkGwfhqJKzrJWrmRDH
+        cNt9LY9c4IVOREXBMPrj0JGz/L+m8lk3MkDvdQq0TogK7x7DYC+mXsKUr0+2EKxqzyZMz/
+        29552auhPdJmfSfrZdvOouO0bfXGOz4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654514649;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o+qPlrVIxO0CpRa7Ct2UCBxj7LlmAzrf3UpPsju4+Vo=;
+        b=cs28cIy+iLYdk977VpvaDqNrWIFMH78lmZ62af+qElnsKc4ucorK/FBNehJAgCeqSIcYuw
+        nx06HvKIg/QA+/DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D879813A5F;
+        Mon,  6 Jun 2022 11:24:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VwrVM9jjnWJjKAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 06 Jun 2022 11:24:08 +0000
+Date:   Mon, 6 Jun 2022 13:19:40 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Lucas =?iso-8859-1?Q?R=FCckert?= <lucas.rueckert@gmx.de>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [HELP] open_ctree failed when mounting RAID1
+Message-ID: <20220606111940.GB20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Lucas =?iso-8859-1?Q?R=FCckert?= <lucas.rueckert@gmx.de>,
+        linux-btrfs@vger.kernel.org
+References: <9c3fec36-fc61-3a33-4977-a7e207c3fa4e@gmx.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <9c3fec36-fc61-3a33-4977-a7e207c3fa4e@gmx.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Almost none of the errors stemming from a valid mount option but wrong
-value prints a descriptive message which would help to identify why
-mount failed. Like in the linked report:
+On Tue, May 31, 2022 at 09:50:52PM +0200, Lucas Rückert wrote:
+> Hi,
+> 
+> i run two HHD's(sda;sdb) in RAID1.
+> 
+> Kernel: 4.9
+> 
+> Distro: Linux odroid 4.9.277-83 #1 SMP PREEMPT Mon Feb 28 15:16:26 UTC
+> 2022 aarch64 aarch64 aarch64 GNU/Linux
+> 
+> btrfs-progs: 5.4.1
+> 
+> I created the filesystem with:
+> 
+> mkfs.btrfs -d raid1 -m raid1 -L somelable -f /dev/sda /dev/sdb
+> 
+> 
+> And added it to my fstab:
+> 
+> UUID=<uuid>        /mnt/somefolder     btrfs compress=zstd   0       2
+> 
+> 
+> When running:
+> 
+> mount -a
+> 
+> i get an error:
+> 
+> mount: /mnt/backup: wrong fs type, bad option, bad superblock on
+> /dev/sda, missing codepage or helper program, or other error.
+> 
+> 
+> and dmesg reports:
+> 
+> BTRFS error (device sdb): open_ctree failed
 
-  $ uname -r
-  v4.19
-  $ mount -o compress=zstd /dev/sdb /mnt
-  mount: /mnt: wrong fs type, bad option, bad superblock on
-  /dev/sdb, missing codepage or helper program, or other error.
-  $ dmesg
-  ...
-  BTRFS error (device sdb): open_ctree failed
-
-Errors caused by memory allocation failures are left out as it's not a
-user error so reporting that would be confusing.
-
-Link: https://lore.kernel.org/linux-btrfs/9c3fec36-fc61-3a33-4977-a7e207c3fa4e@gmx.de/
-CC: stable@vger.kernel.org # 4.9+
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/super.c | 39 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 32 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index d8e2eac0417e..719dda57dc7a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -764,6 +764,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 				compress_force = false;
- 				no_compress++;
- 			} else {
-+				btrfs_err(info, "unrecognized compression value %s",
-+					  args[0].from);
- 				ret = -EINVAL;
- 				goto out;
- 			}
-@@ -822,8 +824,11 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 		case Opt_thread_pool:
- 			ret = match_int(&args[0], &intarg);
- 			if (ret) {
-+				btrfs_err(info, "unrecognized thread_pool value %s",
-+					  args[0].from);
- 				goto out;
- 			} else if (intarg == 0) {
-+				btrfs_err(info, "invalid value 0 for thread_pool");
- 				ret = -EINVAL;
- 				goto out;
- 			}
-@@ -884,8 +889,11 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			break;
- 		case Opt_ratio:
- 			ret = match_int(&args[0], &intarg);
--			if (ret)
-+			if (ret) {
-+				btrfs_err(info, "unrecognized metadata_ratio value %s",
-+					  args[0].from);
- 				goto out;
-+			}
- 			info->metadata_ratio = intarg;
- 			btrfs_info(info, "metadata ratio %u",
- 				   info->metadata_ratio);
-@@ -902,6 +910,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 				btrfs_set_and_info(info, DISCARD_ASYNC,
- 						   "turning on async discard");
- 			} else {
-+				btrfs_err(info, "unrecognized discard mode value %s",
-+					  args[0].from);
- 				ret = -EINVAL;
- 				goto out;
- 			}
-@@ -934,6 +944,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 				btrfs_set_and_info(info, FREE_SPACE_TREE,
- 						   "enabling free space tree");
- 			} else {
-+				btrfs_err(info, "unrecognized space_cache value %s",
-+					  args[0].from);
- 				ret = -EINVAL;
- 				goto out;
- 			}
-@@ -1015,8 +1027,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			break;
- 		case Opt_check_integrity_print_mask:
- 			ret = match_int(&args[0], &intarg);
--			if (ret)
-+			if (ret) {
-+				btrfs_err(info,
-+				"unrecognized check_integrity_print_mask value %s",
-+					args[0].from);
- 				goto out;
-+			}
- 			info->check_integrity_print_mask = intarg;
- 			btrfs_info(info, "check_integrity_print_mask 0x%x",
- 				   info->check_integrity_print_mask);
-@@ -1031,13 +1047,15 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			goto out;
- #endif
- 		case Opt_fatal_errors:
--			if (strcmp(args[0].from, "panic") == 0)
-+			if (strcmp(args[0].from, "panic") == 0) {
- 				btrfs_set_opt(info->mount_opt,
- 					      PANIC_ON_FATAL_ERROR);
--			else if (strcmp(args[0].from, "bug") == 0)
-+			} else if (strcmp(args[0].from, "bug") == 0) {
- 				btrfs_clear_opt(info->mount_opt,
- 					      PANIC_ON_FATAL_ERROR);
--			else {
-+			} else {
-+				btrfs_err(info, "unrecognized fatal_errors value %s",
-+					  args[0].from);
- 				ret = -EINVAL;
- 				goto out;
- 			}
-@@ -1045,8 +1063,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 		case Opt_commit_interval:
- 			intarg = 0;
- 			ret = match_int(&args[0], &intarg);
--			if (ret)
-+			if (ret) {
-+				btrfs_err(info, "unrecognized commit_interval value %s",
-+					  args[0].from);
-+				ret = -EINVAL;
- 				goto out;
-+			}
- 			if (intarg == 0) {
- 				btrfs_info(info,
- 					   "using default commit interval %us",
-@@ -1060,8 +1082,11 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			break;
- 		case Opt_rescue:
- 			ret = parse_rescue_options(info, args[0].from);
--			if (ret < 0)
-+			if (ret < 0) {
-+				btrfs_err(info, "unrecognized rescue value %s",
-+					  args[0].from);
- 				goto out;
-+			}
- 			break;
- #ifdef CONFIG_BTRFS_DEBUG
- 		case Opt_fragment_all:
--- 
-2.36.1
-
+I got pointed to this report. First I suspected that there are some
+lines missing from the dmesg log, like what was the error but it turns
+out that almost all invalid option values lack any message, which makes
+the error analysis hard. Thanks for your report, I've sent a patch that
+adds the missing messages, there's a lot of them.
