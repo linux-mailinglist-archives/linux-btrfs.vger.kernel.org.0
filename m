@@ -2,93 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A01AC53EC43
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A57053EAE5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239731AbiFFOdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 10:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
+        id S239816AbiFFOjX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 10:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239627AbiFFOdC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 10:33:02 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B7F2AC5E;
-        Mon,  6 Jun 2022 07:33:01 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id q15so12086125wrc.11;
-        Mon, 06 Jun 2022 07:33:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=T2WMsUxzc11zSP3SEaSzeZg0r4jEfgd/2nHBgyOqTNM=;
-        b=oPQMW767uSFPmkznlyNOwLkO1E+Py3pEiUAdu5aDoOx9B1P8D+xAgWXPm7Qhy7Ue1a
-         XC+0+nLLS6nWuaJ7HrmOuO2j1epyaQD/sm/m0sUNfE7NMgaGWn6RCNaJx30xgy2nWtb3
-         nik5QBQVlxZ8TdXo0cGSLZ2KstAI+3j4aNs/LI4RZd+TL5hAnOBSxcGNr3jPj8uhFujd
-         0aTha74diX4ObZ+TFbFzxjOcDtiFBKcI22AlVc2BZH5ip07FtZIena6BZLtruAxAOnio
-         Qca12p3StCU+L3hzjXUh8ORNZm3vI2TyyjfAp00x+VUF3xGUYaUfBNXZC7ZtX7kTDf2F
-         gp2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T2WMsUxzc11zSP3SEaSzeZg0r4jEfgd/2nHBgyOqTNM=;
-        b=2cQhA72DB5+7pEdbrqmXrK3kWvccF/tGNuo+8Yz0ofUwvUeUJMTleaDH5FDamTKxWa
-         UBlSRMfI/Ep/bCGeqpKy9oQK2lLz49SUgqEXZ0rJeaNSixCyoPZKieGuKwqUgluJNHq+
-         yrwBO7drsg0fyl0hLFhnu+wPlwSRf4faes88y7I92TvjYQTVqjOZW/mQgjfczM8zQR/g
-         sL8QG0agW5irxKhT1hftRGdQKpsAPgAP6OD9pC64iP5uc1roQZj2szo8H2XSgk3DroTq
-         KpkgwM9jgjARLwMH41w6R1an0baWFBtLlIZ3CsDlaN/jr+eUfSJ7wnJcEvs3UgE2I+tz
-         e1lw==
-X-Gm-Message-State: AOAM530UPE0gUp/aDBX4hB7t8xm5npKF3NDQKyAhETP6D091byjbpozP
-        ZCTN+O7G+V1qXAXjwtGGmEDmvkXbF9M=
-X-Google-Smtp-Source: ABdhPJzqN4cWZJ6Ag/jC5Ezs4cbaqkGE6PFX1fiQ+wVAcUBIwMFyV9pdT4P/LI0Z247Z2KIkNphKhQ==
-X-Received: by 2002:a05:6000:18a4:b0:210:7e22:cd07 with SMTP id b4-20020a05600018a400b002107e22cd07mr21611412wri.703.1654525979972;
-        Mon, 06 Jun 2022 07:32:59 -0700 (PDT)
-Received: from opensuse.localnet (host-79-13-108-3.retail.telecomitalia.it. [79.13.108.3])
-        by smtp.gmail.com with ESMTPSA id t187-20020a1c46c4000000b0039c45fc58c4sm8177822wma.21.2022.06.06.07.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jun 2022 07:32:58 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     dsterba@suse.cz, "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: Replace kmap() with kmap_local_page()
-Date:   Mon, 06 Jun 2022 16:32:57 +0200
-Message-ID: <2242021.ElGaqSPkdT@opensuse>
-In-Reply-To: <20220606103243.GZ20633@twin.jikos.cz>
-References: <20220531145335.13954-1-fmdefrancesco@gmail.com> <1793713.atdPhlSkOF@opensuse> <20220606103243.GZ20633@twin.jikos.cz>
+        with ESMTP id S239791AbiFFOjU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 10:39:20 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A221DFD37E
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 07:39:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5B21F21A1E;
+        Mon,  6 Jun 2022 14:39:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654526357;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q3mhOs5XOk7tBhrJx8LL1ji+cpKSbRdjmGLlS9UaqT0=;
+        b=FXpzppBoxrwUShWww4YIUMqwiLAn8NQ8UPoiM+xlGG8xdPl80iGrvTP3Z93bAz6TwYR6zD
+        NT1nddhfOG1QlTUD2jzUS46QB2X9xPw946DFVtbeSfAE/+VeFckLYV3x3Vy9NOP8g9RUN5
+        Z6IHt6RtyTE74ssH9N/7PcZ4UrxujLw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654526357;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q3mhOs5XOk7tBhrJx8LL1ji+cpKSbRdjmGLlS9UaqT0=;
+        b=ChBbyjWhJ+kNk3gm5ZbBCPfNK0uW5Xo7Aynl7Yk/DIWqpJ3xYTpEv2o2YrYHzYCwF+AtFb
+        4zoHkugtM9oye0Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39C91139F5;
+        Mon,  6 Jun 2022 14:39:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id UVLODJURnmJEZAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 06 Jun 2022 14:39:17 +0000
+Date:   Mon, 6 Jun 2022 16:34:48 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     =?iso-8859-1?Q?Torbj=F6rn?= Jansson <torbjorn@jansson.tech>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs-convert aborts with an assert
+Message-ID: <20220606143448.GC20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        =?iso-8859-1?Q?Torbj=F6rn?= Jansson <torbjorn@jansson.tech>,
+        linux-btrfs@vger.kernel.org
+References: <023b5ca9-0610-231b-fc4e-a72fe1377a5a@jansson.tech>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <023b5ca9-0610-231b-fc4e-a72fe1377a5a@jansson.tech>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On luned=C3=AC 6 giugno 2022 12:32:44 CEST David Sterba wrote:
->
-> [snip]=20
->=20
-> Yes I can pick 1 and 2. Removing the whole series is needed in case it
-> crashes tests as it affects everybody.
->=20
-Thanks!
+On Mon, Jun 06, 2022 at 04:03:33PM +0200, Torbjörn Jansson wrote:
+> Hello
+> 
+> i tried to do a btrfs-convert of a ext4 filesystem and after a short while 
+> after starting it i was greeted with:
+> 
+> # btrfs-convert /dev/xxxx
+> btrfs-convert from btrfs-progs v5.16.2
+> 
+> convert/main.c:1162: do_convert: Assertion `cctx.total_bytes != 0` failed, value 0
+> btrfs-convert(+0xffb0)[0x557defdabfb0]
+> btrfs-convert(main+0x6c5)[0x557defdaa125]
+> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f66e1f8bd0a]
+> btrfs-convert(_start+0x2a)[0x557defdab52a]
+> Aborted
 
-If everything goes smoothly, you will receive the remaining conversions=20
-within the next days. I still have to make several of them  (both from=20
-kmap() as well as from kmap_local()) and the ones already done and placed=20
-in my queue still need to be properly tested.
+Please open an issue on github, thanks.
 
-Again, thanks,
+> Any idea whats going on?
+> Is it a known bug?
+> Is the btrfs-progs that come with my dist too old?
 
-=46abio
+Two versions back is not that old, but there are bugfixes in each
+release, so it's better to stay up to date.
 
+> FYI the ext4 filesystem is a bit large ~10tb of used data on it.
 
+This looks similar to another issue that caused weird checksum errors
+(but no problems during conversion).
+https://github.com/kdave/btrfs-progs/issues/349 the common point here is
+thatt it's 2TB and a multiple in your case.
 
+> I assume the convert didn't even start in this case and nothing was modified on 
+> the ext4 filesystem, correct? or?
+
+Yeah, until the conversion is completely finished without errors, the
+old ext4 is left intact and the new partial btrfs structures are not
+recognized as a valid filesystem.
