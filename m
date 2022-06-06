@@ -2,98 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5BA53E95E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01AC53EC43
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239650AbiFFObv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 10:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S239731AbiFFOdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 10:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239575AbiFFObu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 10:31:50 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390C2F7483
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 07:31:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EBAFB21A83;
-        Mon,  6 Jun 2022 14:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654525907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A/fniPRm9yDxqChMHy4cAUHMYV5Pl/jRXtsv9sFvmHk=;
-        b=CRohzbfDODlRv1N7QnRDXQU/Xxb8kOCKIAODc4IEJmCZYldprLscmLBFf3GhLw6TQ18jVu
-        D1IWcXhv+jV36ZMn1rxJ5WqOPaolfB3Fg9Pau9HdClpxDgU+CFmBuBl7MaBSYCdbXfNjIU
-        PEtgNpYJDccctuJsH+1RoYMOb0D2c0s=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB6B8139F5;
-        Mon,  6 Jun 2022 14:31:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cP4TKtMPnmIwYgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 06 Jun 2022 14:31:47 +0000
-Message-ID: <445c4c65-9b94-4961-c498-5c3d9b140a3d@suse.com>
-Date:   Mon, 6 Jun 2022 17:31:47 +0300
+        with ESMTP id S239627AbiFFOdC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 10:33:02 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B7F2AC5E;
+        Mon,  6 Jun 2022 07:33:01 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id q15so12086125wrc.11;
+        Mon, 06 Jun 2022 07:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=T2WMsUxzc11zSP3SEaSzeZg0r4jEfgd/2nHBgyOqTNM=;
+        b=oPQMW767uSFPmkznlyNOwLkO1E+Py3pEiUAdu5aDoOx9B1P8D+xAgWXPm7Qhy7Ue1a
+         XC+0+nLLS6nWuaJ7HrmOuO2j1epyaQD/sm/m0sUNfE7NMgaGWn6RCNaJx30xgy2nWtb3
+         nik5QBQVlxZ8TdXo0cGSLZ2KstAI+3j4aNs/LI4RZd+TL5hAnOBSxcGNr3jPj8uhFujd
+         0aTha74diX4ObZ+TFbFzxjOcDtiFBKcI22AlVc2BZH5ip07FtZIena6BZLtruAxAOnio
+         Qca12p3StCU+L3hzjXUh8ORNZm3vI2TyyjfAp00x+VUF3xGUYaUfBNXZC7ZtX7kTDf2F
+         gp2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=T2WMsUxzc11zSP3SEaSzeZg0r4jEfgd/2nHBgyOqTNM=;
+        b=2cQhA72DB5+7pEdbrqmXrK3kWvccF/tGNuo+8Yz0ofUwvUeUJMTleaDH5FDamTKxWa
+         UBlSRMfI/Ep/bCGeqpKy9oQK2lLz49SUgqEXZ0rJeaNSixCyoPZKieGuKwqUgluJNHq+
+         yrwBO7drsg0fyl0hLFhnu+wPlwSRf4faes88y7I92TvjYQTVqjOZW/mQgjfczM8zQR/g
+         sL8QG0agW5irxKhT1hftRGdQKpsAPgAP6OD9pC64iP5uc1roQZj2szo8H2XSgk3DroTq
+         KpkgwM9jgjARLwMH41w6R1an0baWFBtLlIZ3CsDlaN/jr+eUfSJ7wnJcEvs3UgE2I+tz
+         e1lw==
+X-Gm-Message-State: AOAM530UPE0gUp/aDBX4hB7t8xm5npKF3NDQKyAhETP6D091byjbpozP
+        ZCTN+O7G+V1qXAXjwtGGmEDmvkXbF9M=
+X-Google-Smtp-Source: ABdhPJzqN4cWZJ6Ag/jC5Ezs4cbaqkGE6PFX1fiQ+wVAcUBIwMFyV9pdT4P/LI0Z247Z2KIkNphKhQ==
+X-Received: by 2002:a05:6000:18a4:b0:210:7e22:cd07 with SMTP id b4-20020a05600018a400b002107e22cd07mr21611412wri.703.1654525979972;
+        Mon, 06 Jun 2022 07:32:59 -0700 (PDT)
+Received: from opensuse.localnet (host-79-13-108-3.retail.telecomitalia.it. [79.13.108.3])
+        by smtp.gmail.com with ESMTPSA id t187-20020a1c46c4000000b0039c45fc58c4sm8177822wma.21.2022.06.06.07.32.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jun 2022 07:32:58 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     dsterba@suse.cz, "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: Replace kmap() with kmap_local_page()
+Date:   Mon, 06 Jun 2022 16:32:57 +0200
+Message-ID: <2242021.ElGaqSPkdT@opensuse>
+In-Reply-To: <20220606103243.GZ20633@twin.jikos.cz>
+References: <20220531145335.13954-1-fmdefrancesco@gmail.com> <1793713.atdPhlSkOF@opensuse> <20220606103243.GZ20633@twin.jikos.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: btrfs-convert aborts with an assert
-Content-Language: en-US
-To:     =?UTF-8?Q?Torbj=c3=b6rn_Jansson?= <torbjorn@jansson.tech>,
-        linux-btrfs@vger.kernel.org
-References: <023b5ca9-0610-231b-fc4e-a72fe1377a5a@jansson.tech>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <023b5ca9-0610-231b-fc4e-a72fe1377a5a@jansson.tech>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On luned=C3=AC 6 giugno 2022 12:32:44 CEST David Sterba wrote:
+>
+> [snip]=20
+>=20
+> Yes I can pick 1 and 2. Removing the whole series is needed in case it
+> crashes tests as it affects everybody.
+>=20
+Thanks!
+
+If everything goes smoothly, you will receive the remaining conversions=20
+within the next days. I still have to make several of them  (both from=20
+kmap() as well as from kmap_local()) and the ones already done and placed=20
+in my queue still need to be properly tested.
+
+Again, thanks,
+
+=46abio
 
 
-On 6.06.22 г. 17:03 ч., Torbjörn Jansson wrote:
-> Hello
-> 
-> i tried to do a btrfs-convert of a ext4 filesystem and after a short 
-> while after starting it i was greeted with:
-> 
-> # btrfs-convert /dev/xxxx
-> btrfs-convert from btrfs-progs v5.16.2
-> 
-> convert/main.c:1162: do_convert: Assertion `cctx.total_bytes != 0` 
-> failed, value 0
-> btrfs-convert(+0xffb0)[0x557defdabfb0]
-> btrfs-convert(main+0x6c5)[0x557defdaa125]
-> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f66e1f8bd0a]
-> btrfs-convert(_start+0x2a)[0x557defdab52a]
-> Aborted
-> 
-> Any idea whats going on?
-> Is it a known bug?
-> Is the btrfs-progs that come with my dist too old?
-> FYI the ext4 filesystem is a bit large ~10tb of used data on it.
-> 
-> I assume the convert didn't even start in this case and nothing was 
-> modified on the ext4 filesystem, correct? or?
-> 
 
-Care too run the following command and share the output:
-
-echo "show_super_stats -h" | debugfs -f /dev/stdin /dev/loop0
-
-change /dev/loop0 to wherever is your ext4 filesyste, however debugfs 
-require the fs to be unmounted.
