@@ -2,96 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368AD53EC84
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA5A53EA5C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbiFFJlb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 05:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
+        id S234089AbiFFKhS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 06:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233137AbiFFJl1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 05:41:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732DF1CEACC
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 02:41:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S234084AbiFFKhQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 06:37:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F8B36685;
+        Mon,  6 Jun 2022 03:37:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0498B61335
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 09:41:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2190C3411C
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 09:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654508485;
-        bh=mg7R0tu0C2jaGuLdqfGA5N1cOLIeL8YDbnAdin8sdY4=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=caaiSpX7iod2+3tXreVhuPPdwJ53WOt7FumHdxpPmIj0wzq1eXAn2qI+/yoKdsZu0
-         vKDKeJJB3RH9LrPa10js1tqB8tCOjCXkSy8SAzSET1DixYVpwbsoUUnKAAS5hKWbkK
-         +9OU2T5lglu6Oi1wNtr5cPZx4Isa5SW4M+BQfNkyPjTtMkytDvGEM1hW87E5thCkoH
-         ewWnU5FKT9PPt/sTx3UMCHUZumsXCdUW2AfCxgyYeDojKwHYaypiTnGARdp5cWB3nt
-         +jJg3nfo6lQPEToDTML/VjOrpjrNaTNRY5mZeoE9VCOlDsKsBZsFsfH/IyslxY9vQK
-         7JYbL4hDKGIvg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: do not BUG_ON() on failure to migrate space when replacing extents
-Date:   Mon,  6 Jun 2022 10:41:19 +0100
-Message-Id: <dc02b21c1afa5b0c7af14dc1d0b46a3855d5cd9a.1654508104.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1654508104.git.fdmanana@suse.com>
-References: <cover.1654508104.git.fdmanana@suse.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D01F01F8E0;
+        Mon,  6 Jun 2022 10:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654511832;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oh+d6xs/K5RIwfQPbMAzdhItVAYJFXKNL7LJl57ehAM=;
+        b=bPKpmiyhz5lNEZwWCzDasHkLoIUoLL62YrN/yZ34r7ZM4pf2D4HhO/xvEibPxInlEIGuh0
+        SAJQLM2tOvlPAAY7LbbAstor4eRXw5weUbAtg1DRHvnoYS/txMFv4YyhcOiNx7qpLdz5aX
+        63ikj2Mkt1jBQStstNqXYaxNRMvC7ms=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654511832;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oh+d6xs/K5RIwfQPbMAzdhItVAYJFXKNL7LJl57ehAM=;
+        b=IMgLerAkV7auCiJ3umE2EWX9E0t2J1XAeDV8xhe3la5pKfB0fz1f67ADla3hilkSGS7LEd
+        FoCkbsTLfIzdqhDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B790139F5;
+        Mon,  6 Jun 2022 10:37:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MKEXIdjYnWKlGQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 06 Jun 2022 10:37:12 +0000
+Date:   Mon, 6 Jun 2022 12:32:44 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     dsterba@suse.cz, Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: Replace kmap() with kmap_local_page()
+Message-ID: <20220606103243.GZ20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220531145335.13954-1-fmdefrancesco@gmail.com>
+ <YpjVKAGz+GuI4GB0@infradead.org>
+ <20220602162840.GV20633@twin.jikos.cz>
+ <1793713.atdPhlSkOF@opensuse>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1793713.atdPhlSkOF@opensuse>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Sun, Jun 05, 2022 at 05:11:48PM +0200, Fabio M. De Francesco wrote:
+> On giovedì 2 giugno 2022 18:28:40 CEST David Sterba wrote:
+> > On Thu, Jun 02, 2022 at 08:20:08AM -0700, Christoph Hellwig wrote:
+> > I've just hit the crash too, so I've removed the patches from misc-next
+> > until there's fixed version.
+> > 
+> Finally I've been able to run xfstests on a QEMU + KVM 32 bits VM. Since I 
+> have very little experience with filesystems it was a bit hard to setup and 
+> run.
+> 
+> I can confirm that the problems are only from conversions in patch 3/3. 
 
-At btrfs_replace_file_extents(), if we fail to migrate reserved metadata
-space from the transaction block reserve into the local block reserve,
-we trigger a BUG_ON(). This is because it should not be possible to have
-a failure here, as we reserved more space when we started the transaction
-than the space we want to migrate. However having a BUG_ON() is way too
-drastic, we can perfectly handle the failure and return the error to the
-caller. So just do that instead, and add a WARN_ON() to make it easier
-to notice the failure if it evers happens (which is particularly useful
-for fstests, and the warning will trigger a failure of a test case).
+Thanks.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> Since I've been spending long time to setup xfstests and make it run, I 
+> haven't yet had time to address the issued in patch 3/3 and making the 
+> further changes I've been asked for.
+> 
+> Can you please start with taking only patches 1/3 and 2/3 and dropping 3/3?
+> I'd really appreciate it because, if you can, I'll see that part of my work 
+> has already been helpful somewhat and have no need to carry those patches 
+> on to the next series :-) 
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 29de433b7804..da41a0c371bc 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2719,7 +2719,8 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
- 
- 	ret = btrfs_block_rsv_migrate(&fs_info->trans_block_rsv, rsv,
- 				      min_size, false);
--	BUG_ON(ret);
-+	if (WARN_ON(ret))
-+		goto out_trans;
- 	trans->block_rsv = rsv;
- 
- 	cur_offset = start;
-@@ -2838,7 +2839,8 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
- 
- 		ret = btrfs_block_rsv_migrate(&fs_info->trans_block_rsv,
- 					      rsv, min_size, false);
--		BUG_ON(ret);	/* shouldn't happen */
-+		if (WARN_ON(ret))
-+			break;
- 		trans->block_rsv = rsv;
- 
- 		cur_offset = drop_args.drop_end;
--- 
-2.35.1
-
+Yes I can pick 1 and 2. Removing the whole series is needed in case it
+crashes tests as it affects everybody.
