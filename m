@@ -2,147 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD60253F120
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 22:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A84853F122
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 22:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234505AbiFFUty (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 16:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
+        id S234838AbiFFUxY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 16:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234770AbiFFUsr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 16:48:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2659DAB0FE;
-        Mon,  6 Jun 2022 13:41:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=quK8OUavZ3OQPvhjOxFusobdtZi/WBT8qXGvQ++yDug=; b=tGIvKVNaAMu+xJKfT56my7OcDx
-        h9X6EZkV+3b6YmzNyoYE3J6PNxC8ld3BfaS12Hr37OHw34qvlxQU6NGjNQ/dhsoPlowRv53o4VZC8
-        91hwnrb/Zx7IV1o0tPxKat0n3HHdibhLf1anGJsS6EN4ly8FblGaD7fyrz5/ADem0hQXlXK2IoJvA
-        sPpCKXuC4FxWa83HkItcygw65l/Lm7ADmBY+uIWsBaElOylJp/RskeiJHQuGZ0eifLCpWGHHcEWMR
-        60Qcs3Ka1CFA2jYOxR4TNlZ/5Tzf5uG0HfDIKzfTaxNpzixl4yt2Na7VkKuOo78WUgHz+NeXqWgXa
-        nGtfT5aA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nyJWy-00B19w-6M; Mon, 06 Jun 2022 20:40:56 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
-        linux-mtd@lists.infradead.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH 20/20] mm/folio-compat: Remove migration compatibility functions
-Date:   Mon,  6 Jun 2022 21:40:50 +0100
-Message-Id: <20220606204050.2625949-21-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220606204050.2625949-1-willy@infradead.org>
-References: <20220606204050.2625949-1-willy@infradead.org>
+        with ESMTP id S234997AbiFFUws (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 16:52:48 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3F0338BF
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 13:42:42 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id y85so3168894iof.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jun 2022 13:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pv0C8gcpONxqFnyIqy16rU+SxSCdqxusIB5nVcpX9sc=;
+        b=7Dk//FAPgseZWiOjFPiG71ZYXtQH0RFn3JNFRR8TRT5UeJc2ndBwxe98nDgL7XXhGc
+         8clNrJL9WTUzJn3S1HMS31oJJkSoFoaJeJFijMJlANBIF78QHuyzIUs651YJ+jCp2QS1
+         6haAqC1NhjUHGR6lrxKRQxzv2OKPPz3dCPY/9Eg0KD/8yTCFtMJonRs6V1FAmelAYtMo
+         7+H/wjLu3+e/lS2IqYP8XrS4oM++RhpejI9Dqqp5ImFLWc0D6YJ9pTdcKVwcoAfmOC65
+         3eWbeSHZ/MMZ5AtbF8WpvjdfkxG7+bMtGCw88AUqULTf759nj5/7XQ6SXgZiu4j7ryhm
+         n6pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pv0C8gcpONxqFnyIqy16rU+SxSCdqxusIB5nVcpX9sc=;
+        b=hqIHfAr0qApGFH3uEKjsTTGFyKy9pZEWtz8VbnBG6eWI6FEG7TOHZ2Dt35vOVHMr2P
+         8vr1pGOd9pWt3MSuE8+U+79OwIWfIIXSASIFdkMqIJldI60AFtz7+02NnPzW46syuxr1
+         /uM6A+sXsanyUTUhG/VE+EjwLFSrzwJ+FDnDUThAncIRLdlSukzo3BxQj0r0QYzVsSnS
+         UrigsfbwKYAlgi51ygdDFGfbBUCiIys1ruDzH1/Z2KdqQ03Bb0xAxj+dz6FO42L0sv+s
+         FTfgTwYpoScRwh9kAkt0x+FiNJVPO6bUortEjtXDLlUlq+rmRM5qhJvB1Flj7j7R+HWD
+         w/NQ==
+X-Gm-Message-State: AOAM5304pqXK5tnNfiqZ/v+ILBGmU5e7iv42YYUOvpU8RVDOCsEPtujW
+        pyDVRrSXVnZnFTJKIuLPRBH979uFktAW15pCbTbdVXmbCkE=
+X-Google-Smtp-Source: ABdhPJxsn6Weawf27N0pzs2lOcMz4f8D7wcgZCtrJJFdyGKdeRgsNGm0nxSXsQDB84sOw9biT7hWAlImdxUw8b/uIlo=
+X-Received: by 2002:a05:6638:3784:b0:331:7f89:287c with SMTP id
+ w4-20020a056638378400b003317f89287cmr9194225jal.102.1654548161463; Mon, 06
+ Jun 2022 13:42:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220605001349.GJ1745079@merlins.org> <CAEzrpqfjDL=GtAn9cHQ2cOPMVZeNnuaQBLq6K-X-tGaipaAouA@mail.gmail.com>
+ <20220605201112.GN1745079@merlins.org> <CAEzrpqeW_-BJGwJLL+Rj_Eb7ht-A_5o-Lg+Y-MYWhgn0BqKHEQ@mail.gmail.com>
+ <20220605212637.GO1745079@merlins.org> <CAEzrpqdFEsTNPAqqrALcMLpeMUbc+H4WJZ9buSZMKSQ-YS1PVA@mail.gmail.com>
+ <20220605215036.GE22722@merlins.org> <CAEzrpqeYB0gC+pXr4UxL9TVipWDE2MFsg1tyrd7Nk+wEvV-zQQ@mail.gmail.com>
+ <20220606000548.GF22722@merlins.org> <CAEzrpqdL6rK+-OUhW2AR3jXhK8TTsTM77A1CUkh=-+Y7Q1av9Q@mail.gmail.com>
+ <20220606012204.GP1745079@merlins.org>
+In-Reply-To: <20220606012204.GP1745079@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Mon, 6 Jun 2022 16:42:30 -0400
+Message-ID: <CAEzrpqeOb4XnGxbeMXNcDHn+wMNC7sBS7eFdsTbUj8c7BUgcuA@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-migrate_page_move_mapping(), migrate_page_copy() and migrate_page_states()
-are all now unused after converting all the filesystems from
-aops->migratepage() to aops->migrate_folio().
+On Sun, Jun 5, 2022 at 9:22 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Sun, Jun 05, 2022 at 09:11:28PM -0400, Josef Bacik wrote:
+> > On Sun, Jun 5, 2022 at 8:05 PM Marc MERLIN <marc@merlins.org> wrote:
+> > >
+> > > On Sun, Jun 05, 2022 at 07:03:31PM -0400, Josef Bacik wrote:
+> > > > I wonder if our delete thing is corrupting stuff.  Can you re-run
+> > > > tree-recover, and then once that's done run init-extent-tree?  I put
+> > > > some stuff to check block all the time to see if we're introducing the
+> > > > problem.  Thanks,
+> > >
+> > >
+> > >
+> > > gargamel:/var/local/src/btrfs-progs-josefbacik# gdb./btrfs rescue tree-recover /dev/mapper/dshelf1
+> >
+> > Ok more targeted debugging to figure out where the problem is coming
+> > from specifically, but hooray I was right.  Thanks,
+>
+> searching 164623 for bad extents
+> processed 311296 of 63193088 possible bytes, 0%
+> searching 164624 for bad extents
+>
+> Found an extent we don't have a block group for in the file
+> file
+> corrupt node: root=164624 root bytenr 15645019570176 commit bytenr 15645019602944 block=15645019586560 physical=18446744073709551615 slot=38, bad key order, current (7819 1 0) next (7819 1 0)
+> corrupt node: root=164624 root bytenr 15645019570176 commit bytenr 15645019602944 block=15645019586560 physical=18446744073709551615 slot=38, bad key order, current (7819 1 0) next (7819 1 0)
+> cmds/rescue-init-extent-tree.c:197: delete_item: BUG_ON `check_path(&path)` triggered, value -5
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/migrate.h | 11 -----------
- mm/folio-compat.c       | 22 ----------------------
- mm/ksm.c                |  2 +-
- 3 files changed, 1 insertion(+), 34 deletions(-)
+Cool, must be in balance, lets try this again.  Thanks,
 
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index 088749471485..4670f3aec232 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -33,12 +33,8 @@ extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
- extern struct page *alloc_migration_target(struct page *page, unsigned long private);
- extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
- 
--extern void migrate_page_states(struct page *newpage, struct page *page);
--extern void migrate_page_copy(struct page *newpage, struct page *page);
- int migrate_huge_page_move_mapping(struct address_space *mapping,
- 		struct folio *dst, struct folio *src);
--extern int migrate_page_move_mapping(struct address_space *mapping,
--		struct page *newpage, struct page *page, int extra_count);
- void migration_entry_wait_on_locked(swp_entry_t entry, pte_t *ptep,
- 				spinlock_t *ptl);
- void folio_migrate_flags(struct folio *newfolio, struct folio *folio);
-@@ -59,13 +55,6 @@ static inline struct page *alloc_migration_target(struct page *page,
- static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
- 	{ return -EBUSY; }
- 
--static inline void migrate_page_states(struct page *newpage, struct page *page)
--{
--}
--
--static inline void migrate_page_copy(struct page *newpage,
--				     struct page *page) {}
--
- static inline int migrate_huge_page_move_mapping(struct address_space *mapping,
- 				  struct folio *dst, struct folio *src)
- {
-diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-index 20bc15b57d93..458618c7302c 100644
---- a/mm/folio-compat.c
-+++ b/mm/folio-compat.c
-@@ -51,28 +51,6 @@ void mark_page_accessed(struct page *page)
- }
- EXPORT_SYMBOL(mark_page_accessed);
- 
--#ifdef CONFIG_MIGRATION
--int migrate_page_move_mapping(struct address_space *mapping,
--		struct page *newpage, struct page *page, int extra_count)
--{
--	return folio_migrate_mapping(mapping, page_folio(newpage),
--					page_folio(page), extra_count);
--}
--EXPORT_SYMBOL(migrate_page_move_mapping);
--
--void migrate_page_states(struct page *newpage, struct page *page)
--{
--	folio_migrate_flags(page_folio(newpage), page_folio(page));
--}
--EXPORT_SYMBOL(migrate_page_states);
--
--void migrate_page_copy(struct page *newpage, struct page *page)
--{
--	folio_migrate_copy(page_folio(newpage), page_folio(page));
--}
--EXPORT_SYMBOL(migrate_page_copy);
--#endif
--
- bool set_page_writeback(struct page *page)
- {
- 	return folio_start_writeback(page_folio(page));
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 54f78c9eecae..e8f8c1a2bb39 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -712,7 +712,7 @@ static struct page *get_ksm_page(struct stable_node *stable_node,
- 	 * however, it might mean that the page is under page_ref_freeze().
- 	 * The __remove_mapping() case is easy, again the node is now stale;
- 	 * the same is in reuse_ksm_page() case; but if page is swapcache
--	 * in migrate_page_move_mapping(), it might still be our page,
-+	 * in folio_migrate_mapping(), it might still be our page,
- 	 * in which case it's essential to keep the node.
- 	 */
- 	while (!get_page_unless_zero(page)) {
--- 
-2.35.1
-
+Josef
