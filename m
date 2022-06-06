@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0AF53EAFE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B9953E64B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jun 2022 19:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241195AbiFFP7g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 11:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
+        id S241194AbiFFP7f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 11:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241168AbiFFP7c (ORCPT
+        with ESMTP id S241190AbiFFP7c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 11:59:32 -0400
 Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B185353B72
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 08:59:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F46A53E12
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 08:59:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1654531169; x=1686067169;
+  t=1654531170; x=1686067170;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=dbuB6J0vUduoE7b++79sQRHRTJgy330EXtGiv+vyNBE=;
-  b=eT3RnEO3xOfbAls/LZx+Krvk4RW3px41x3E983jqF5cI1ZuRvxDYRk8V
-   ruoS3qLR+6etaFtJx42jAqjCTOclrDVtOsElhE5wsIWbKkCSN3EgW8fv+
-   pVC0Dl/gkLburxbvAxWQgLWcHUsUBGyDnPG0M9E+UCELe7g4l/xBns4MW
-   rGsln9bnEjak5vjBwvfkBRodNnLy390FZKTvS5NfcgDks0FsCMjjFFQef
-   1Gt0X/dN0iEVcSh3hXzkNDQyb1iVByWm+YSJaWivnYO1Z4PCmKIU8mNsg
-   nH+q5Q6f6g6wxtliRfUox29JDlivANMmX56TjgFzxwKaEa9bi3d6hMNxg
+  bh=wy0ORLrGca7+Ftoe19p8DFQ8vB7g8VwzcdofwpBOVk8=;
+  b=YUb2EdLlnY3QaeW2sUcQkJgyyQcHYyv2qrJpv72gDGEPNb5+2o7RdROQ
+   Fq5QdkhzA6Gek9aWbaX81EtBQTmRqGDwGJ7jCYEAR1yguLhbAOOSF/OQo
+   KU+hSsyQfQhnJVUvAB9yNq/5e6JqeJ0PWgAHT5fwuCmDS/Wx1rT5aOe68
+   nFbrylAlzxtYp99hLpjvlvFvKb6eXoSJ6Hsc7Ca9Y3pQmnjcEEww4K2a1
+   +d4U5Y1by/qoIfVs985Y4iSf9FjSRFbZQ+gySjNPMv/NoQeIYOaLcULdb
+   xr9CMR7cu3qtgCHxGM/+upb9YfR4SMxyzhbdaH4+Z/xOkKV1Tn6tHvC37
    Q==;
 X-IronPort-AV: E=Sophos;i="5.91,280,1647273600"; 
-   d="scan'208";a="207245101"
+   d="scan'208";a="207245102"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Jun 2022 23:59:28 +0800
-IronPort-SDR: fLL5j7MUcUQ5/kspTmu9uE2rWNdP9MUCwtlNDrb2jM/lXiwn9rwaNB804NgFRz+5SRDnObTYDX
- X9znKT5mR1VELTGLIq+RVJf3OzcHlkZVF8VAo1gNTtaW4Jvu9TzZ27U5DRJzk18GFVjRNNBnCT
- zVOJMwcginQAiauHqnODzAqVEg6pq8bynfYgT98eZ5Z0KPWOz0YGDOd8m46KmDxnE0me60d9wg
- KkUArCsozwobrCflb1ClaWi+A16Og3kHW7ib4vE1VHmyPIiWJiOBmk/qW+ZC3zGVIl+xaMKvk0
- V01ZdKUTmp1iAh7RpdcVv8sK
+  by ob1.hgst.iphmx.com with ESMTP; 06 Jun 2022 23:59:30 +0800
+IronPort-SDR: iY7lpP2kS1iUJfMYb2YYYJQTYy0ciei2PL/XltaGFPoaDdooAqf9LMRxxtC1/S6bj4z4z3dKM2
+ qDkBR+l6C9pMM6IKQXMy9H4V4NSHESIDBnnOSfayJrg3CXc9GWZI2ab3gP6sL8yxaUJWZ5M67B
+ mCwHme/JJt58TyfO6SznfyPDGtkpH7PX2sAdgrA9Ars8cgnAefPeMO/W7gHjOAQyGdjFZML1Nn
+ 7HPYRMyarWqvxn23tAedpMmoKOEfWpPf8NypxcV6IuTKSD46XclGsCd2XI9v0IcoReBM0rQPRK
+ 4H34E/eIeoHIoGiVqmzb8IDG
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Jun 2022 08:18:27 -0700
-IronPort-SDR: RtC2FRyonPrakJC3tZcFIdGUkfYcSG8H166R/itYYRipfcTrNbV5f6sIhEYqWzuCsXQXAxv4Hk
- N/22y3etFPukm7fha+W06fyws3t3cxFZTK8qWN6hZ00UtEE7ZJKpcd70eOo1tmpRwnv1zLv5Ek
- u6e6k7GrZleW9zO9H5TJCQ0ila0CS3HwEJDav5NPqtWLP/gg6O9N9dKp3oMfyc4K+ci/qbbblP
- cZqT1A8Niq7bpqqRIII3OLQOSM0xj9qsSqA1eEwVsCUXPHgmVREqZtmrGhp0UeGaraUGxPfvzm
- yMs=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Jun 2022 08:18:29 -0700
+IronPort-SDR: 4KYJ+DnVIEdbLavCZX08+MwdxxNCBIe7w0TbQegk7Jy+2x7nK/U5TTzgSmQqo5DkdFVV4aEZ9j
+ fnd6Tna9kuZzbsjPxCDUK7bP3ZZTiE6RZkPr+zvLHzTNxgL4fEGcPB8/F3tDTn9te10mwRnq4s
+ gyFBzUBY137maHeY8MvRLtEUBNrNHhpz4GN8mORQylH3q6LQmEbjeYfXyMZ6BV+zRyxYqXSkHH
+ zchU4OdPNvpA1egZBsGKBi6RPJ5v0sW7f77f6cI7kGHkaR4qZLtxhHP78eSWaE00Yi0GkahFRy
+ WzM=
 WDCIronportException: Internal
 Received: from 5cg2012pz0.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.70])
-  by uls-op-cesaip01.wdc.com with ESMTP; 06 Jun 2022 08:59:29 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 06 Jun 2022 08:59:30 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/2] btrfs: zoned: prevent allocation from previous data relocation BG
-Date:   Tue,  7 Jun 2022 00:59:20 +0900
-Message-Id: <fd9c3af9cf148b18e6be8e301e1ff4414495d73e.1654529962.git.naohiro.aota@wdc.com>
+Subject: [PATCH 2/2] btrfs: zoned: fix critical section of relocation inode writeback
+Date:   Tue,  7 Jun 2022 00:59:21 +0900
+Message-Id: <ea2968f6fb505a90fdad8a9362f54e2121b55bc8.1654529962.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1654529962.git.naohiro.aota@wdc.com>
 References: <cover.1654529962.git.naohiro.aota@wdc.com>
@@ -67,190 +67,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-After commit 5f0addf7b890 ("btrfs: zoned: use dedicated lock for data
-relocation"), we observe IO errors on e.g, btrfs/232 like below.
+We use btrfs_zoned_data_reloc_{lock,unlock} to allow only one process to
+write out to the relocation inode. That critical section must include all
+the IO submission for the inode. However, flush_write_bio() in
+extent_writepages() is out of the critical section, causing an IO
+submission outside of the lock. This leads to an out of the order IO
+submission and fail the relocation process.
 
-   [99909.031820][T4038707] WARNING: CPU: 3 PID: 4038707 at fs/btrfs/extent-tree.c:2381 btrfs_cross_ref_exist+0xfc/0x120 [btrfs]
-   <snip>
-   [99909.268769][T4038707] Call Trace:
-   [99909.272105][T4038707]  <TASK>
-   [99909.275093][T4038707]  run_delalloc_nocow+0x7f1/0x11a0 [btrfs]
-   [99909.280996][T4038707]  ? test_range_bit+0x174/0x320 [btrfs]
-   [99909.286622][T4038707]  ? fallback_to_cow+0x980/0x980 [btrfs]
-   [99909.292333][T4038707]  ? find_lock_delalloc_range+0x33e/0x3e0 [btrfs]
-   [99909.298825][T4038707]  btrfs_run_delalloc_range+0x445/0x1320 [btrfs]
-   [99909.305222][T4038707]  ? test_range_bit+0x320/0x320 [btrfs]
-   [99909.310844][T4038707]  ? lock_downgrade+0x6a0/0x6a0
-   [99909.315732][T4038707]  ? orc_find.part.0+0x1ed/0x300
-   [99909.320705][T4038707]  ? __module_address.part.0+0x25/0x300
-   [99909.326280][T4038707]  writepage_delalloc+0x159/0x310 [btrfs]
-   <snip>
-   [99909.883814][    C3] sd 10:0:1:0: [sde] tag#2620 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
-   [99909.893855][    C3] sd 10:0:1:0: [sde] tag#2620 Sense Key : Illegal Request [current]
-   [99909.901819][    C3] sd 10:0:1:0: [sde] tag#2620 Add. Sense: Unaligned write command
-   [99909.909525][    C3] sd 10:0:1:0: [sde] tag#2620 CDB: Write(16) 8a 00 00 00 00 00 02 f3 63 87 00 00 00 2c 00 00
-   [99909.919544][    C3] critical target error, dev sde, sector 396041272 op 0x1:(WRITE) flags 0x800 phys_seg 3 prio class 0
-   [99909.930329][    C3] BTRFS error (device dm-1): bdev /dev/mapper/dml_102_2 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+Fix it by extending the critical section.
 
-The IO errors occur when we allocate a regular extent in a previous data
-relocation block group.
-
-On zoned btrfs, we use a dedicated block group to relocate a data
-extent. Thus, we allocate relocating data extents (pre-alloc) only from the
-dedicated block group and vice versa. Once the free space in the dedicated
-block group gets tight, a relocating extent may not fit into the block
-group. In that case, we need to switch the dedicated block group to the
-next one. Then, the previous one is now freed up for allocating a regular
-extent. The BG is already not enough to allocate the relocating extent, but
-there is still room to allocate a smaller extent. Now the problem
-happens. By allocating a regular extent while nocow IOs for the relocation
-is still on-going, we will issue WRITE IOs (for relocation) and ZONE APPEND
-IOs (for the regular writes) at the same time. That mixed IOs confuses the
-write pointer and arises the unaligned write errors.
-
-This commit introduces a new bit 'zoned_data_reloc_ongoing' to the
-btrfs_block_group. We set this bit before releasing the dedicated block
-group, and no extent are allocated from a block group having this bit
-set. This bit is similar to setting block_group->ro, but is different from
-it by allowing nocow writes to start.
-
-Once all the nocow IOs for relocation is done (hooked from
-btrfs_finish_ordered_io), we reset the bit to release the block group for
-further allocation.
-
-Fixes: c2707a255623 ("btrfs: zoned: add a dedicated data relocation block group")
+Fixes: 35156d852762 ("btrfs: zoned: only allow one process to add pages to a relocation inode")
 CC: stable@vger.kernel.org # 5.16+
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/block-group.h |  1 +
- fs/btrfs/extent-tree.c | 20 ++++++++++++++++++--
- fs/btrfs/inode.c       |  2 ++
- fs/btrfs/zoned.c       | 27 +++++++++++++++++++++++++++
- fs/btrfs/zoned.h       |  5 +++++
- 5 files changed, 53 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 3ac668ace50a..5787b3dd759c 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -104,6 +104,7 @@ struct btrfs_block_group {
- 	unsigned int relocating_repair:1;
- 	unsigned int chunk_item_inserted:1;
- 	unsigned int zone_is_active:1;
-+	unsigned int zoned_data_reloc_ongoing;
- 
- 	int disk_cache_state;
- 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index fb367689d9d2..abf7dc438409 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3832,7 +3832,7 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
- 	       block_group->start == fs_info->data_reloc_bg ||
- 	       fs_info->data_reloc_bg == 0);
- 
--	if (block_group->ro) {
-+	if (block_group->ro || block_group->zoned_data_reloc_ongoing) {
- 		ret = 1;
- 		goto out;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 4847e0471dbf..7a125b319a9f 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -5227,13 +5227,14 @@ int extent_writepages(struct address_space *mapping,
+ 	 */
+ 	btrfs_zoned_data_reloc_lock(BTRFS_I(inode));
+ 	ret = extent_write_cache_pages(mapping, wbc, &epd);
+-	btrfs_zoned_data_reloc_unlock(BTRFS_I(inode));
+ 	ASSERT(ret <= 0);
+ 	if (ret < 0) {
++		btrfs_zoned_data_reloc_unlock(BTRFS_I(inode));
+ 		end_write_bio(&epd, ret);
+ 		return ret;
  	}
-@@ -3894,8 +3894,24 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
- out:
- 	if (ret && ffe_ctl->for_treelog)
- 		fs_info->treelog_bg = 0;
--	if (ret && ffe_ctl->for_data_reloc)
-+	if (ret && ffe_ctl->for_data_reloc &&
-+	    fs_info->data_reloc_bg == block_group->start) {
-+		/*
-+		 * Do not allow further allocations from this block group.
-+		 * Compared to increasing the ->ro, setting the
-+		 * ->zoned_data_reloc_ongoing flag still allows nocow
-+		 *  writers to come in. See btrfs_inc_nocow_writers().
-+		 *
-+		 * We need to disable an allocation to avoid an allocation of
-+		 * regular (non relocation data) extent. With mixed of
-+		 * relocation extents and regular extents, we can dispatch WRITE
-+		 * commands (for relocation extents) and ZONE APPEND commands
-+		 * (for regular extents) at the same time to the same zone,
-+		 * which easily break the write pointer.
-+		 */
-+		block_group->zoned_data_reloc_ongoing = 1;
- 		fs_info->data_reloc_bg = 0;
-+	}
- 	spin_unlock(&fs_info->relocation_bg_lock);
- 	spin_unlock(&fs_info->treelog_bg_lock);
- 	spin_unlock(&block_group->lock);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f85503ccf106..0ab23bd1310a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3216,6 +3216,8 @@ static int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered_extent)
- 						ordered_extent->file_offset,
- 						ordered_extent->file_offset +
- 						logical_len);
-+		btrfs_zoned_release_data_reloc_bg(fs_info, ordered_extent->disk_bytenr,
-+						  ordered_extent->disk_num_bytes);
- 	} else {
- 		BUG_ON(root == fs_info->tree_root);
- 		ret = insert_ordered_extent_file_extent(trans, ordered_extent);
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index c09b1b0208c4..4930ab566e2c 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -2140,3 +2140,30 @@ bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
- 	factor = div64_u64(used * 100, total);
- 	return factor >= fs_info->bg_reclaim_threshold;
+ 	flush_write_bio(&epd);
++	btrfs_zoned_data_reloc_unlock(BTRFS_I(inode));
+ 	return ret;
  }
-+
-+void btrfs_zoned_release_data_reloc_bg(struct btrfs_fs_info *fs_info, u64 logical,
-+				       u64 length)
-+{
-+	struct btrfs_block_group *block_group;
-+
-+	if (!btrfs_is_zoned(fs_info))
-+		return;
-+
-+	block_group = btrfs_lookup_block_group(fs_info, logical);
-+	/* It should be called on a previous data relocation block group. */
-+	ASSERT(block_group && (block_group->flags & BTRFS_BLOCK_GROUP_DATA));
-+
-+	spin_lock(&block_group->lock);
-+	if (!block_group->zoned_data_reloc_ongoing)
-+		goto out;
-+
-+	/* All relocation extents are written. */
-+	if (block_group->start + block_group->alloc_offset == logical + length) {
-+		/* Now, release this block group for further allocations. */
-+		block_group->zoned_data_reloc_ongoing = 0;
-+	}
-+
-+out:
-+	spin_unlock(&block_group->lock);
-+	btrfs_put_block_group(block_group);
-+}
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index bb1a189e11f9..6b2eec99162b 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -77,6 +77,8 @@ void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
- void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg);
- void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info);
- bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info);
-+void btrfs_zoned_release_data_reloc_bg(struct btrfs_fs_info *fs_info, u64 logical,
-+				       u64 length);
- #else /* CONFIG_BLK_DEV_ZONED */
- static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
- 				     struct blk_zone *zone)
-@@ -243,6 +245,9 @@ static inline bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
- {
- 	return false;
- }
-+
-+static inline void btrfs_zoned_release_data_reloc_bg(struct btrfs_fs_info *fs_info,
-+						     u64 logical, u64 length) { }
- #endif
  
- static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
 -- 
 2.35.1
 
