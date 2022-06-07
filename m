@@ -2,194 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B68AF53FF6E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 14:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F218E54000C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 15:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244221AbiFGMv7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jun 2022 08:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
+        id S244708AbiFGNat (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jun 2022 09:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233403AbiFGMv5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 08:51:57 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EE01C136;
-        Tue,  7 Jun 2022 05:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1654606309;
-        bh=HzFWcgIGisyh0z7VYE8goP/Uy202HPcAMHiudtxqK/g=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=d7vcCvRcE4UKXED7OzF/gBn6I155B6AooTlbFWacd+SVpQO/rTzJj+qRMPr4JA255
-         Hj6ZmuPltUANgQF8TDM6yhcOCRNBoSZTNAHeaEYdkp/D87o/t/H7Xpf8TVfMG8vyrE
-         vc5EtH8oRhu2Dn2c0ifGlAS6iGtURv1XTBqMQFqQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N9dsV-1nk6hF3UIv-015Wke; Tue, 07
- Jun 2022 14:51:49 +0200
-Message-ID: <398607e9-5dab-8280-6ff1-73f2eaa5a701@gmx.com>
-Date:   Tue, 7 Jun 2022 20:51:45 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v2] btrfs: reject log replay if there is unsupported RO
- flag
+        with ESMTP id S243578AbiFGNas (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 09:30:48 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38369D2460
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 06:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1654608647; x=1686144647;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=CWciHdA2INpIZ7fgHdq7y7XY/reddbSGfFpPy7zF3/w=;
+  b=nWNGycra0efN1vNLol1+reI8juEWlGGf5exp22traQC2UPTXbHLniwXa
+   xFZ86mga5mu4JHuFnqpljM+iN7qRvzaLUzBDdnK8gww0qpEGS85fAbNX8
+   LEi2jfYNZlmj2qkOF/m9DXMy/eONnc1afWV2mXGlslFjbcxowYJvy+89k
+   a8kyuT4E1xXf6lorV0jTrYln5Sp3sITIMHTKmnEedaqT7k9OPArHWTwtV
+   lIrQzigp1xjj2cIb5F6E60wByaoaEpS93Q90xkgHmYcs1JAYMrrQwUPxF
+   i30QsJvkvKl7yGHvEcz4f1lQCvRNUKn9D+cpCRnqocaaYnvSi+UhRYbQO
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.91,284,1647273600"; 
+   d="scan'208";a="306759190"
+Received: from mail-bn8nam04lp2040.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.40])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Jun 2022 21:30:40 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lSbujMxq3eCv0UIGl1q2Zq5qoW7VXZ1N99D9Maic32xspVWhoempqlfd486VvQaVqpvn0Nn3fHk0fhY04gB7hSazRE6oqo1XaPW/R2i9fX/QtTQ9d1LoFxqtwmmiIUmRhSC+80pjoOMsIbNig2myQC6E0VO9LyYofX3Dv8mhsNQyFjDZ/qDWJ/JrloNtTqoGFzfMhLgBr0MmChjVQcQpASF8KmZ/lwraI4uFB2H2OX2SoogHx1YffTSmBTlrS9Aco7BKfmLO7MMNtPwI32kF2lQxGpSNAFrQ6rUOeNuMwDcqo0oBPL7WXUudzp3h4HnPO9cgKHUt3wp/fwEGix3jng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wWQ4rGRONkdS6MfpkUWMFk2IyfKOLivr6J/Y744WpJ4=;
+ b=kH3Amre2V/ITtTIAC1muQX57D72SLvmjnSL3MDZwIy37roEoDGdj7aLIUXGpsDL1oz1qkjiOdUFAzghIZnhjSeq/yibcgYXAvq2aQtEKdB8HrLb0CYTKvcGLUhXFCqcNUXrl1jIygkEUvFuu69SudEIFLt+4dN65GXXXe4hl84F2nxwGd7tGRDnhI3fcFloSJ1HTaM4yTNhgELcYxUpo16Z9oL6JKgRG4JGs47cqQ99aRj0OQHbbeJ8qsmBlJtuFptwy0exxHmy4z38BV5q2wNBGHKcczrta51R1kgHbKDwG6NFdkYNA1DrbwEm6PbuKLHPM7ud6D5rj+MB7l4aZfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wWQ4rGRONkdS6MfpkUWMFk2IyfKOLivr6J/Y744WpJ4=;
+ b=P5mc0DOTZHigbLpRtXynzLfbrQHaiiTuPF5T4jW1xTU7uHYkYWlFgjCkaTJehIVZyjS7Lmg9BDrQrdYO6i+J6qYuXTpG2DHcxQPnOv2g4nrVyGI1B5mYPMjWTiCjjNxHiyYWZjap77Cacy8Ljh2C7olMtrxdI1bMx5hLbdFMBW4=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by SN6PR04MB4525.namprd04.prod.outlook.com (2603:10b6:805:ad::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.13; Tue, 7 Jun
+ 2022 13:30:38 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::81de:9644:6159:cb38]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::81de:9644:6159:cb38%5]) with mapi id 15.20.5314.019; Tue, 7 Jun 2022
+ 13:30:38 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [RESEND PATCH 1/3] btrfs: wrap rdonly check into
+ btrfs_fs_is_rdonly
+Thread-Topic: [RESEND PATCH 1/3] btrfs: wrap rdonly check into
+ btrfs_fs_is_rdonly
+Thread-Index: AQHYdu5D1o+8BoVxXkCmw/M/kqtAAA==
+Date:   Tue, 7 Jun 2022 13:30:37 +0000
+Message-ID: <PH0PR04MB74161BAED56B59BE081159CF9BA59@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <cover.1654216941.git.anand.jain@oracle.com>
+ <0bd3d3777e34a5322fb4d3ec315df4090ee43399.1654216941.git.anand.jain@oracle.com>
+ <PH0PR04MB7416C47B4A55666510F7FDAA9BA19@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <95980806-b198-d75e-d50c-0c18486da9a6@oracle.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-References: <a6612cd9432b8ae6429cceee561c0259232cc554.1654602414.git.wqu@suse.com>
- <20220607123517.GB3568258@falcondesktop>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220607123517.GB3568258@falcondesktop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d967e910-e182-4b22-00e7-08da4889e8d1
+x-ms-traffictypediagnostic: SN6PR04MB4525:EE_
+x-microsoft-antispam-prvs: <SN6PR04MB4525586164CF3995C385A2F99BA59@SN6PR04MB4525.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ovtq0FSAu2CD1xOO0npxjGYLrRhbJ6L/UHwVUZXEPvj0FZUnZwIlJqGeQiQtVRauaZUnFKwxUig8qrvU2NnQvXZ08XyNXGfGeq72RbT/hnpfmr9VBD2BCZhTBOk+oIR0WOMDcEe6+qPHMNJ4/xox1NTLzWHQl5TjPSdFubHXulxKwj8aeOooiHstbmSKZiCIYXZSo/DLtFtdz4EowByukae2Bq4NlqgKjpY45xKNQAqonDnnpqGx0hczzOuQO0+z1H+LBxcYE4FpbXuxhuKeXg1zWEmWNIpFucAgycyDGUTqzge2O+PmYAzLoHLh62U3mu3rBzTIN4MPq0M6zdHlVpDcLZC1UgkHzg90tfawWIyyAtiMdbYFyATS1uNHEzOrTcIJxGrNbK1FvFmCR6tqX4i3ganfHGuDUa4Hmv6ddB8ZLhneeM3tHtXuxBoBqG8XRGQECaN9U5A/vg7P9At62EFqB+vMojVl8N4oFKRdkPBUIm1oz4/rfJhddxMORjAqBIzMHwsxyZrbrptkQooWzLrYySQFoy6kHRWgma+N794fCpCoEJ4s3k2zI/TxkbZ7s4f+jamLBa8c4oHVOr6ztjoE9fOAme/9zfdryFeSHVQ1RZiWGGCExYK5M351i+vZv4C27JT00Pgq4JK3L3Vtf4rL/5yaBSaklbioXl/ngaEbSKranRvjTSe78EWtyxwjkdxNHvMXIPGLSfsrC6sUCQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(33656002)(186003)(4744005)(8936002)(508600001)(122000001)(91956017)(82960400001)(8676002)(66476007)(83380400001)(66946007)(52536014)(71200400001)(76116006)(64756008)(66446008)(66556008)(5660300002)(2906002)(316002)(7696005)(9686003)(6506007)(53546011)(110136005)(86362001)(38100700002)(38070700005)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?noW/sfloitAWfUypL/xMCY+nlqpi5N7VJVSMui4HHdyWRxqd1enNQfHji9X3?=
+ =?us-ascii?Q?0+CdulUCsZnUUfjxgXB5561FfzLgyGSyocOYdRldijBCGuYNYl88cdiHgzfb?=
+ =?us-ascii?Q?Fbtu54Wdre6YBufb+0UqgniPwQOvKG/gI4bpBfihjKDwSDQftpXemwYAikQJ?=
+ =?us-ascii?Q?m0uHITBEjnqfyhpfscoztTk5dOC/V02qs/5Hi2dQLSytP5G/TTRbtqPM0TMS?=
+ =?us-ascii?Q?CMRcA76SFEVO1yxLC/Hp3amiNwSGBU08RjnfBjQd8bLx8U0MLTBUA+MmQGox?=
+ =?us-ascii?Q?bdMsqWIt/XolKQMnD9LGzCdiU0NHWa0l/uIBWRPRjjl6JKTV/nPxd+vcnrcJ?=
+ =?us-ascii?Q?OvVQ4n0mwJYD83Jk0uwrFWKsaIt/QHN5LiZyWylP6osvz9Iyp4IWS24U4JRB?=
+ =?us-ascii?Q?Lz3Tc63jf/VY9YZwTohoMtnLtiDeLOPj0CQMcD6FLEJ1J8wCRADC/562zBFv?=
+ =?us-ascii?Q?crHzLZ0FZFQnnnnkYGjKv+GZks0c6yov5ZKA9P8WrBuj7fIDpK/eBUGNj4xe?=
+ =?us-ascii?Q?eb7fJfiidqoA4Cxg4qmZJVQ9Ni599cNzsvrBYjBGb0DUdZ9HFNecZCueS9qU?=
+ =?us-ascii?Q?bZJ5L2SpqtQyBAW5EnZmt1uUyXmCvhhBqvKezCHbDaSiq0GhUiU93fPanacP?=
+ =?us-ascii?Q?IVMuHW0r41/F3j/KYcuxRTrDeKaLoHN/spx8+lXLDwQQ65e6xYU5tsbdiwFT?=
+ =?us-ascii?Q?RUHYGYCsuXs4Ogfeum15Eh3wtXk1qdSIqrmRDPUUt0PWVdsuW8U4ba5jTHTu?=
+ =?us-ascii?Q?rJjpkr0xJCacjGcw43XnhKjad6BmcSEirZFteVzxMaiv4vKSGvxJqVeRE40N?=
+ =?us-ascii?Q?LsI3kV8g92HMBLPr9MgRJG/JKVD73Eo2JiTmj2R9oBLsu+u8yb6L0J2adAN5?=
+ =?us-ascii?Q?EjmOUgKI52FFfyWtewWhZQm1MJRT20STJb34n3nAqlg1koMKMEvXka3BqRI/?=
+ =?us-ascii?Q?DCF8sA7z4d6Av9BOHk6quj89IbmIrHFya9RzmIthhifuELuY7fbPbkCab6ql?=
+ =?us-ascii?Q?jPqwpslpLO/NQ8RwczmdIaEEuELKPPmAe478xsFBDiHwZti4wknnG3PsRMeQ?=
+ =?us-ascii?Q?yaKYR6JsdXX36EWPjSvpdw6aAZEj5rlq1OELYJecVorSAyD2rGCCSgGceU1H?=
+ =?us-ascii?Q?2OqKs9nuXr3sfnapIfbBlvSNj7zn7xscGxDTbyj9r1Pcb+AXo43WfyDp7DRG?=
+ =?us-ascii?Q?KufDTcgMJopQafRCPYoC84PlpVbcbV6jbjhMJ+qj+zxKm3iqixXW/PQaOidL?=
+ =?us-ascii?Q?ZOA9FmG/i/0Pi2/TIlojTN0J/+9lbW8urTe57PGwX9DKIwTYnaefsF0YIpYn?=
+ =?us-ascii?Q?3JO9uQZONW5JDqmDH5YpXp4kLqmO6QjzF+9gi0PcSWPFiMymuCD8lGqwglL0?=
+ =?us-ascii?Q?/9aUgx/h+Yg/uNHWwid32cHGxBUlTyvbe99R+NUCkvZ/6jhEy+5MZt+99moA?=
+ =?us-ascii?Q?85QDzvkpLJTcLU3Ttse4cYxQnbqHgC/sIP//aHnbn031f+GpTE1jNqOafSBz?=
+ =?us-ascii?Q?sui5wjslm8tD6k4QXs0KXNIXS+DusvrZT3g6HSsuBuC4dhFEhkDzUR6s8EQN?=
+ =?us-ascii?Q?oPnye7UnaGBtI8XxfSI5reerzC2ot79ovBlXGtKOXngyEmnkZSaFVBudWx7l?=
+ =?us-ascii?Q?aXIBDpTOdM22T4/coGJvpO78YrfwyHTihMLKBj2yIJWta+X9sC8djUsy+Wgj?=
+ =?us-ascii?Q?QvWa9Fcgny0XwOKQlcRjOnqgPvX5kKaFJHNLt2PDSFrn91980l5D4b4OqlBm?=
+ =?us-ascii?Q?yCPXio4P0gBYvQlxS+2T5NUuqnzf1+bX6dqXoifF2IDSPiSrvThDmZi+CP2J?=
+x-ms-exchange-antispam-messagedata-1: UgsH1oovyROQJqmdsy+FTZd48fUvqZjfJbg1BAPd7uROpOwDVnNdf4Qf
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lwjcWiSjhsVZY1AGP6Dzf0vLlFySeja0u6wLUTDG/23OLFPyRbE
- CqfnKYKlNxHCnRNjI7RK/G/fFEAx9msrl81aiJkY4HcAtfYU/OHCK3w9iz7hsGqCGRUvDjV
- ZBNGNbrwFsxYvsXXNIfIeUE0SWma7YCLPaWUCM+uuuqKSolfROTsczF5ySSvKEimdQI2ojn
- pFzgRI2fnPR07EkyPV+oA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y+IT6xnmO9k=:YYOIkCiZtpqBVds01m7/PS
- G78UlRZobhVwhzhBGIXJiKJ6Cc/lpPGjlESQ65s5S4YsYBHO8QxSykJev9y3go0pfVsg53i8l
- /TUGVrqAz0AA2udcyes/8JVB5+nnszon2am02Ti+ag6pxCweDznLi6WAS2DELHNXFGI3XFDPG
- JmenJK1CkezDbsCyb8uYJ0DVZ22N/NXeRW8z2WeMLPU2iCaI+iomnmtpLBqfEq4QdmnsqKBqM
- Kl5li2C8iuFw/Yic/s8w+gq4+pA7LgCJaEgxysKJjxlD9kH9ODq8Z63V3NRzbJ/Ra/Ave6jhw
- etTafAdCjq9a6y6W4cXhG9ZcM0EhcsV1J91hUQPBw8c/iOUB/iz9nHIWQsaiYuZ6HN/hwJpj5
- TFiz1bCVdHWxRTkYvRvAAHSalR0PfIP60mIUxFjbZcq5o0MPfIUxY3dKYumI2KVeUNq8SdzN6
- wc9tfrcOWcJ8dBt3IjQftcqUOLPeAvYhqbSpWxJV8WAU5MtZJxYwIRYuJfJLVcnlhW3UQ6izi
- tI0RLNd5xSZ4ybEdCj8cEiYamk3uzoRjIQ+bgrsPpm3O3dYFauhd67+NennvDxddbm0Y5WhvV
- z4Klh+RTM6Uki1Nr1FjGYKIvFiyNhIGjVfieS5AHaTevS0F9uNQv3zsFMI1qWaXNktPal2xmJ
- bEftEXsDSKNytGKWl4j+Gga8kigT7WShcGnxmui4FgJXcDnSoVvahi//uFVqwDQIhAqtTcjYy
- psFjf1kecF98N5pdmBs+BSoU5+2NHvixr5V4Oow0xKDd8kOgR1Tzops2jS6K5mjvRccZTla4A
- VoxkrXcyOzjM23AHNcbcWnfWOHb4S8zxVqOmfdx9bnRhYV2hIYCju5NL78KET6Qn6/NhjWJJl
- vjmH1HsbkklEqfueqiekGpW65Hqvf4cnqLynmKfuM6ODLwFz8kcMo/gtGcRImulhXi7eowV6R
- Z3akuDa1IJPDuoWkGlCH2tuZtmy8Q3Ud2Df0jOvn/uddOy0tqrvXe9NwR/HQubII15dFt+6am
- 6ok026HtOuMyg3tJ1RGHoDXFKGIerWABEDVpzRnnkIXoT4HrK0mgxT6jWbOFnB60JiIFR1+7g
- J9BfSDZblvDoKdW69yqCZ10Bd2qSA5ZtrrtcaMJ600gfm7aiwGBvyexmQ==
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d967e910-e182-4b22-00e7-08da4889e8d1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2022 13:30:37.9452
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: InQd+5Z3T9oRVEQKwZ6K2jy1DKDrgOvEgAweStRIHsoqnJU+1KQeZoTF3vdfdYbumJIoqfLwyJSmLWRGvyOvjS68mQxBmGShSS2URAoNnBI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4525
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/6/7 20:35, Filipe Manana wrote:
-> On Tue, Jun 07, 2022 at 07:48:24PM +0800, Qu Wenruo wrote:
->> [BUG]
->> If we have a btrfs image with dirty log, along with an unsupported RO
->> compatible flag:
->>
->> log_root		30474240
->> ...
->> compat_flags		0x0
->> compat_ro_flags		0x40000003
->> 			( FREE_SPACE_TREE |
->> 			  FREE_SPACE_TREE_VALID |
->> 			  unknown flag: 0x40000000 )
->>
->> Then even if we can only mount it RO, we will still cause metadata
->> update for log replay:
->>
->>   BTRFS info (device dm-1): flagging fs with big metadata feature
->>   BTRFS info (device dm-1): using free space tree
->>   BTRFS info (device dm-1): has skinny extents
->>   BTRFS info (device dm-1): start tree-log replay
->>
->> This is definitely against RO compact flag requirement.
->>
->> [CAUSE]
->> RO compact flag only forces us to do RO mount, but we will still do log
->> replay for plain RO mount.
->>
->> Thus this will result us to do log replay and update metadata.
->>
->> This can be very problematic for new RO compat flag, for example older
->> kernel can not understand v2 cache, and if we allow metadata update on
->> RO mount and invalidate/corrupt v2 cache.
->>
->> [FIX]
->> Just reject the mount unless rescue=3Dnologreplay is provided:
->>
->>    BTRFS error (device dm-1): cannot replay dirty log with unsupport op=
-tional features (0x40000000), try rescue=3Dnologreplay instead
->>
->> We don't want to set rescue=3Dnologreply directly, as this would make t=
-he
->> end user to read the old data, and cause confusion.
->>
->> Since the such case is really rare, we're mostly fine to just reject th=
-e
->> mount with an error message, which also includes the proper workaround.
->>
->> Cc: stable@vger.kernel.org #4.9+
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Changelog:
->> v2:
->> - Reject the mount instead of setting nologreplay
->>    To avoid the confusion which can return old data.
->>    Unfortunately I don't have a better to shrink the new error message
->>    into one 80-char line.
->> ---
->>   fs/btrfs/disk-io.c | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index fe309db9f5ff..f20bd8024334 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -3655,6 +3655,20 @@ int __cold open_ctree(struct super_block *sb, st=
-ruct btrfs_fs_devices *fs_device
->>   		err =3D -EINVAL;
->>   		goto fail_alloc;
->>   	}
->> +	/*
->> +	 * We have unsupported RO compat features, although RO mounted, we
->> +	 * should not cause any metadata write, including log replay.
->> +	 * Or we can screw up whatever the new feature requires.
->> +	 */
->> +	if (unlikely(features && btrfs_super_log_root(disk_super) &&
->> +		     !btrfs_test_opt(fs_info, NOLOGREPLAY))) {
->> +		btrfs_err(fs_info,
->> +"cannot replay dirty log with unsupport optional features (0x%llx), tr=
-y rescue=3Dnologreplay instead",
->
-> unsupport -> unsupported
->
-> The "optional" sounds superfluous.
->
-> You are CC'ing stable 4.9+, but IIRC the rescue=3D mount option is relat=
-ively
-> recent, so the message will need to be updated (4.9, at least, doesn't h=
-ave it).
-
-Yep, thus when this get merged, I'll manually backport the patch to
-older kernels.
-
-Thanks,
-Qu
->
-> Other than that it looks fine to me.
->
-> It's clear that it's a problem with the free space tree, but with verity=
- (the only
-> other RO compat feature), I'm not sure we need this constraint, and it m=
-ay happen
-> more often since verity support is recent, unlike the free space tree wh=
-ich has
-> been around for years.
->
-> Thanks.
->
->> +			  features);
->> +		err =3D -EINVAL;
->> +		goto fail_alloc;
->> +	}
->> +
->>
->>   	if (sectorsize < PAGE_SIZE) {
->>   		struct btrfs_subpage_info *subpage_info;
->> --
->> 2.36.1
->>
+On 07.06.22 12:15, Anand Jain wrote:=0A=
+> On 6/3/22 14:13, Johannes Thumshirn wrote:=0A=
+>> On 03.06.22 04:04, Anand Jain wrote:=0A=
+>>> +static inline bool btrfs_fs_is_rdonly(const struct btrfs_fs_info *fs_i=
+nfo)=0A=
+>>> +{=0A=
+>>> +	bool rdonly =3D sb_rdonly(fs_info->sb);=0A=
+>>> +	bool fs_rdonly =3D test_bit(BTRFS_FS_STATE_RO, &fs_info->fs_state);=
+=0A=
+>>> +=0A=
+>>> +	BUG_ON(rdonly !=3D fs_rdonly);=0A=
+>>> +=0A=
+>>> +	return rdonly;=0A=
+>>> +}=0A=
+>>=0A=
+>>=0A=
+>> Do we really need a BUG_ON() here or can we make it an ASSERT()?=0A=
+> =0A=
+> =0A=
+> These two rdonly verification methods should match, but we have never =0A=
+> verified them. When this is through a few revisions, we can just remove =
+=0A=
+> it instead. I suggest we keep BUG_ON() a couple of revisions.=0A=
+=0A=
+But isn't this what an ASSERT() is for?=0A=
