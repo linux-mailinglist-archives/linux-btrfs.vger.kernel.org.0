@@ -2,52 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B2453F3F0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 04:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DDE53F3F9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 04:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235948AbiFGCcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 22:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        id S236000AbiFGCho (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 22:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbiFGCcH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 22:32:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8B28B09E;
-        Mon,  6 Jun 2022 19:32:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B4C1B1F897;
-        Tue,  7 Jun 2022 02:32:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654569124; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=rhZkitHnB5DxIbB2/J9K3uC95LKNlO8QwCZwYobee2g=;
-        b=LUUVPpHFZ/REReA82XLsZscvXQ6mNNwt6P2XzAtSOjIRWsJIDYVnJuzntkfZdDYZ4FEpgN
-        Lx9PqdTKyAUsj/i3/4PeyrSfVubQ3fQpyiuGgr5I2B3GUumVztuAjNo/St5aYa6f1gwUaG
-        DXDeMNgHlCNxX3Kw1edm+r4pxeeM4+c=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D078A13A15;
-        Tue,  7 Jun 2022 02:32:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fGxHJqO4nmJ8KQAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 07 Jun 2022 02:32:03 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH] btrfs: reject log replay if there is unsupported RO flag
-Date:   Tue,  7 Jun 2022 10:31:46 +0800
-Message-Id: <429396b1039ec416504bc2bffca36d66ec8b52e2.1654569076.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.1
+        with ESMTP id S233017AbiFGChn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 22:37:43 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD679488B2
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 19:37:41 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nyP6C-000386-8j by authid <merlin>; Mon, 06 Jun 2022 19:37:40 -0700
+Date:   Mon, 6 Jun 2022 19:37:40 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220607023740.GQ22722@merlins.org>
+References: <20220606012204.GP1745079@merlins.org>
+ <CAEzrpqeOb4XnGxbeMXNcDHn+wMNC7sBS7eFdsTbUj8c7BUgcuA@mail.gmail.com>
+ <20220606210855.GL22722@merlins.org>
+ <CAEzrpqe1_vbZ=+3C5=YPDJOCJGLAX9e4cmO_a+F1P3sdg9ubwQ@mail.gmail.com>
+ <20220606212301.GM22722@merlins.org>
+ <CAEzrpqdCpLsTqwBZ_W2sFZn9+uTrL88V=Cw6ZQe3XV0FxRO8nw@mail.gmail.com>
+ <20220606215013.GN22722@merlins.org>
+ <CAEzrpqcn_BRL7p3gPmS5OVn5D-m8hMB-5JcAHwEHwKpxGxOMqw@mail.gmail.com>
+ <20220606221755.GO22722@merlins.org>
+ <CAEzrpqcr08tHCesiwS9ysxrRQaadAeHyjSTg3Qp+CorvGz6psQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqcr08tHCesiwS9ysxrRQaadAeHyjSTg3Qp+CorvGz6psQ@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,72 +51,121 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-If we have a btrfs image with dirty log, along with an unsupported RO
-compatible flag:
+On Mon, Jun 06, 2022 at 10:28:25PM -0400, Josef Bacik wrote:
+> Ok I thought I caught this particular problem but I don't, so I fixed
+> tree-recover to handle unordered keys in different nodes.  Pull and
+> build, run tree-recover.  It's going to start deleting slots for
+> unordered keys, picking whichever node is newer as the source of
+> truth.  You should only see this happen on 164624, if you see it fire
+> a bunch right away stop it and send me the output so I can make sure I
+> didn't screw anything up.  I went over the code and diff a few times
+> to make sure I didn't mess anything up, but I could have missed
+> something.  If that runs and fixes stuff, run it again just to make
+> sure it doesn't find anything the second time.  It shouldn't since I
+> re-start the loop if we adjust things, but just in case.  I assume
+> this will blow up, but if it doesn't you can try running
+> init-extent-tree again and see how that goes.  Thanks,
 
-log_root		30474240
-...
-compat_flags		0x0
-compat_ro_flags		0x40000003
-			( FREE_SPACE_TREE |
-			  FREE_SPACE_TREE_VALID |
-			  unknown flag: 0x40000000 )
+gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue tree-recover /dev/mapper/dshelf1
+FS_INFO IS 0x557d47c7ebc0
+Couldn't find the last root for 8
+FS_INFO AFTER IS 0x557d47c7ebc0
+Checking root 2 bytenr 15645018587136
+Checking root 4 bytenr 15645019078656
+Checking root 5 bytenr 15645018161152
+Checking root 7 bytenr 15645018570752
+Checking root 9 bytenr 15645740367872
+Checking root 161197 bytenr 15645018341376
+Checking root 161199 bytenr 15645018652672
+Checking root 161200 bytenr 15645018750976
+Checking root 161889 bytenr 11160502124544
+Checking root 162628 bytenr 15645018931200
+Checking root 162632 bytenr 15645018210304
+Checking root 163298 bytenr 15645019045888
+Checking root 163302 bytenr 15645018685440
+Checking root 163303 bytenr 15645019095040
+Checking root 163316 bytenr 15645018996736
+Checking root 163920 bytenr 15645019144192
+Checking root 164620 bytenr 15645019275264
+Checking root 164623 bytenr 15645019226112
+Checking root 164624 bytenr 15645019602944
+Checking root 164629 bytenr 15645485137920
+Checking root 164631 bytenr 15645496983552
+Checking root 164633 bytenr 15645526884352
+Checking root 164823 bytenr 15645999005696
+Tree recovery finished, you can run check now
 
-Then even if we can only mount it RO, we will still cause metadata
-update for log replay:
+gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue init-extent-tree /dev/mapper/dshelf1
+FS_INFO IS 0x564088b52bc0
+Couldn't find the last root for 8
+FS_INFO AFTER IS 0x564088b52bc0
+Walking all our trees and pinning down the currently accessible blocks
+Clearing the extent root and re-init'ing the block groups
+deleting space cache for 11106814787584
+(...)
+inserting block group 15932780969984
+inserting block group 15933854711808
+ERROR: Error reading data reloc tree -2
 
- BTRFS info (device dm-1): flagging fs with big metadata feature
- BTRFS info (device dm-1): using free space tree
- BTRFS info (device dm-1): has skinny extents
- BTRFS info (device dm-1): start tree-log replay
+ERROR: failed to reinit the data reloc root
+searching 1 for bad extents
+processed 999424 of 0 possible bytes, 0%
+searching 4 for bad extents
+processed 163840 of 1064960 possible bytes, 15%
+searching 5 for bad extents
+processed 65536 of 10960896 possible bytes, 0%
+searching 7 for bad extents
+processed 16384 of 16570974208 possible bytes, 0%
+searching 9 for bad extents
+processed 16384 of 16384 possible bytes, 100%
+searching 161197 for bad extents
+processed 131072 of 108986368 possible bytes, 0%
+searching 161199 for bad extents
+processed 196608 of 49479680 possible bytes, 0%
+searching 161200 for bad extents
+processed 180224 of 254214144 possible bytes, 0%
+searching 161889 for bad extents
+processed 229376 of 49446912 possible bytes, 0%
+searching 162628 for bad extents
+processed 49152 of 49463296 possible bytes, 0%
+searching 162632 for bad extents
+processed 147456 of 94633984 possible bytes, 0%
+searching 163298 for bad extents
+processed 49152 of 49463296 possible bytes, 0%
+searching 163302 for bad extents
+processed 147456 of 94633984 possible bytes, 0%
+searching 163303 for bad extents
+processed 131072 of 76333056 possible bytes, 0%
+searching 163316 for bad extents
+processed 147456 of 108544000 possible bytes, 0%
+searching 163920 for bad extents
+processed 16384 of 108691456 possible bytes, 0%
+searching 164620 for bad extents
+processed 49152 of 49463296 possible bytes, 0%
+searching 164623 for bad extents
+processed 311296 of 63193088 possible bytes, 0%
+searching 164624 for bad extents
 
-This is definitely against RO compact flag requirement.
+Found an extent we don't have a block group for in the file
+file
+kernel-shared/ctree.c:1718: push_node_left: BUG_ON `check_sibling_keys(dst, src)` triggered, value 1
+./btrfs(+0x1cf51)[0x56090b357f51]
+./btrfs(+0x1ef96)[0x56090b359f96]
+./btrfs(btrfs_search_slot+0xee4)[0x56090b35d881]
+./btrfs(+0x8d592)[0x56090b3c8592]
+./btrfs(+0x8d2c1)[0x56090b3c82c1]
+./btrfs(+0x8d2c1)[0x56090b3c82c1]
+./btrfs(+0x8d8b0)[0x56090b3c88b0]
+./btrfs(+0x8d0bb)[0x56090b3c80bb]
+./btrfs(btrfs_init_extent_tree+0xc83)[0x56090b3c9e48]
+./btrfs(+0x8467e)[0x56090b3bf67e]
+./btrfs(handle_command_group+0x49)[0x56090b35317b]
+./btrfs(main+0x94)[0x56090b353275]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xcd)[0x7f37ada9c7fd]
+./btrfs(_start+0x2a)[0x56090b352e1a]
+Aborted
 
-[CAUSE]
-RO compact flag only forces us to do RO mount, but we will still do log
-replay for plain RO mount.
-
-Thus this will result us to do log replay and update metadata.
-
-This can be very problematic for new RO compat flag, for example older
-kernel can not understand v2 cache, and if we allow metadata update on
-RO mount and invalidate/corrupt v2 cache.
-
-[FIX]
-Just set the nologreplay flag if there is any unsupported RO compact
-flag.
-
-This will reject log replay no matter if we have dirty log or not, with
-the following message:
-
- BTRFS info (device dm-1): disabling log replay due to unsupported ro compat features
-
-Cc: stable@vger.kernel.org #4.9+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index fe309db9f5ff..d06f1a176b5b 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3655,6 +3655,14 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		err = -EINVAL;
- 		goto fail_alloc;
- 	}
-+	/*
-+	 * We have unsupported RO compat features, although RO mounted, we
-+	 * should any metadata write, including the log replay.
-+	 * Or we can screw up whatever the new feature requires.
-+	 */
-+	if (features)
-+		btrfs_set_and_info(fs_info, NOLOGREPLAY,
-+		"disabling log replay due to unsupported ro compat features");
- 
- 	if (sectorsize < PAGE_SIZE) {
- 		struct btrfs_subpage_info *subpage_info;
 -- 
-2.36.1
-
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
