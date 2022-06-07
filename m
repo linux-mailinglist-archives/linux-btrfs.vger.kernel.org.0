@@ -2,130 +2,212 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 040F753FB1C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 12:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2081B53FB3E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 12:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240432AbiFGKYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jun 2022 06:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
+        id S240495AbiFGKaT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jun 2022 06:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbiFGKY1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 06:24:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1E25AA50
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 03:24:25 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 80BDC21AB8;
-        Tue,  7 Jun 2022 10:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654597464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=uuXPKnv2F+MDakjUDyQSrSk0sElT3DovdgQupOWzb3E=;
-        b=nsImpNqlKrUCArHDrzSbaUJmTftDafCeddWvnx47WYgRx2Pl6QNrQsMkX5QD95E57oTZ/f
-        ej2Za9Zinhfn88n6YoytHvR5uLrO6/vnbWh31fApCqIa/eWs0Pj0AIM4VJnA9Y9gn0QlF2
-        zglvNcsbaoeMwfVar7kCfCtTMki8DkM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4F19513A88;
-        Tue,  7 Jun 2022 10:24:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UTObEFgnn2JJTQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 07 Jun 2022 10:24:24 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs-progs: convert: Properly work with large ext4 filesystems
-Date:   Tue,  7 Jun 2022 13:24:21 +0300
-Message-Id: <20220607102421.170419-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S241083AbiFGKaO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 06:30:14 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BF856205;
+        Tue,  7 Jun 2022 03:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1654597807;
+        bh=KXmvrCVmPTp9ETroo0GXYDXtE5AGQuVE2j1m4dG2o+k=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=HGmtUudUHxMdWG4UG8enWT++g9V6NYhFjfdl3L2orVfp0anulC2P2jQpa23sUth3W
+         KZfj4s5VD9z6dF8afmkKe42RzK2+G6aYyCku92aZ20t6bw6Ae2n/IzF4cS0f4WCThp
+         m4i/zxudANSs7iZ59ZXG7/Cunrs9oMR2R6xaaWB8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MCbIn-1o6Sx31pch-009hEa; Tue, 07
+ Jun 2022 12:30:07 +0200
+Message-ID: <532d5fd2-e93b-2fec-72d3-d0b0f099e541@gmx.com>
+Date:   Tue, 7 Jun 2022 18:30:03 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH] btrfs: correctly populate
+ btrfs_super_block::log_root_transid
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+References: <f7ae86f509d11d941ceac2a153b38a4f3bc5d342.1654578537.git.wqu@suse.com>
+ <20220607094055.GB3554947@falcondesktop>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220607094055.GB3554947@falcondesktop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/LcIXZubzgIkLmPUkUPkUJx3DyZ+T3OzDHH48uI6VwGqdpRJUqd
+ QJDAejZh8+RC+rvazGbQLNACgs9Umc/gd5b9JEJ61uhYsugEMLRb2iutAmHN7XcbB/JX3oS
+ E5ZMjn6SLKbGhtMMk+hcF1KI3WeMCM1F243qK48XFRrCGu7cMw1LReoo7YAYIXcXUYONYlP
+ lJHRdDaJz/pCre0WmKc6w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Szf3RQdGzEo=:gCUye8o1jFgHpPwbpi8ham
+ +x8qmCXChPlXeg4qk1hHVrNL3W01Kb+nnEjZgyN6DFMaQcPQQOmCF+VfgyIIsBi4Wqa24Trty
+ vCbm57jJwmcSfsbCIwnDRMHtfxnrF+5lATo3Gjt6OECVRzKBXQKOAxKoMJ0Tat/g9dlsMryZ5
+ 9jmNvAsOhthbPR4f45Z4IXPFyKwzei3un+VSpHslsNx77RHQ3pVRH5k2SxKaQSIZzDbSqXPE/
+ 6ytUlnZ+eat0/WvlVkoYytHOVTegdlwV8gOhJB7wlgvb++TflaSCX/pdRcLSUkO7XZwSXcE+Y
+ C+SJRujm09o7nZwfBpggsjV69r89MJt4gqlOZpqzQbjCshop22WvMbltkIqVunXhjMHVin89y
+ dE6g4EhhDQaGNMvKBAxM2LTyL6cRO5M4Vox3roN9mN6i8Euui2kRybFou1PlXplJ9GwCutl3D
+ C9pJAB1NztJiTuSw6TJ1NPrVFvGOH9LuIZDXOL9hhDDI7KeafdZdslgyQDyAYzNTXxtooXjlZ
+ getmCudWIRMyymHbB7zag3vokyuHUJ8HHhOeHCwSaGrW14RD2ahmN4Swox/qfk4Ass6g4lvjt
+ e0StbfsXmGiz/7bFLL6nxnd/fHeaUuscWREDUGH5hddgBbdoCrE3GrxIKxunu/rnv8CNVpsZ0
+ jCJ4Jq4yg7gc7nBgFApoCcIx2uyns3BcyR2w0IupYF7aG4ApEgPLFvsZa8svAR129szTgplEJ
+ hh9YeTu2hIrHYdP+W/XkOZo1qqUdvHWwnQniCQwsDy12XgqA3lkwaDhmfyyN6BRa5y/p9b2I2
+ Gm52TsUHfQL3kHhMzhEzwm1v/uK4q9QxAwYOQe4FhMxSXzKZMLvWMyno8VE8OqmK5sFClTUbQ
+ pWJS2hNgo5zH4AyXr2qZvb/MHccX6QGxxcR6jnuwBkfmLIiLn6VGMuG8+XtKydw7qfGNzYl8o
+ RZhRBEBsF0HWq6FFeNjJw/ftd9T/Y71paMqS8LgeAehQJ1d7Kp6KRGKwyFJgcSYiygE+aWYUT
+ WaacjV8meAhZl24fZ5sC4e1WG/5eZyzjlKw/DBkkWzgqqiDlR4X2ysZhPM+LwAjYcA0pb0pZ5
+ 3OwxWSpt6lU1jrCaFg/yA4ppq/6CFxz7Lah6A/QnYSMKlyalgpLSUvcTA==
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On large (blockcount > 32bit) filesystems reading directly
-super_block->s_blocks_count is not sufficient as the block count is held
-in 2 separate 32 bit variables. Instead always use the provided
-ext2fs_blocks_count to read the value. This can result in assertion
-failure, when the block count is only held in the high 32 bits, in this
-case s_block_counts would be zero, which would result in
-btrfs_convert_context::block_count/total_bytes to also be 0 and hit an
-assertion failure:
 
-    convert/main.c:1162: do_convert: Assertion `cctx.total_bytes != 0` failed, value 0
-    btrfs-convert(+0xffb0)[0x557defdabfb0]
-    btrfs-convert(main+0x6c5)[0x557defdaa125]
-    /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f66e1f8bd0a]
-    btrfs-convert(_start+0x2a)[0x557defdab52a]
-    Aborted
 
-What's worse it can also result in btrfs-conver mistakenly thinking that
-a filesystem is smaller than it actually is (ignoring the top 32 bits).
+On 2022/6/7 17:40, Filipe Manana wrote:
+> On Tue, Jun 07, 2022 at 01:09:13PM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> After creating a dirty log tree, although
+>> btrfs_super_block::log_root and log_root_level is correctly populated,
+>> its generation is still left 0:
+>>
+>>   log_root                30474240
+>>   log_root_transid        0 <<<
+>>   log_root_level          0
+>>
+>> [CAUSE]
+>> We just forgot to update btrfs_super_block::log_root_transid completely=
+.
+>>
+>> Thus it's always the original value (0) from the initial super block.
+>>
+>> Thankfully this old behavior won't break log replay, as in
+>> btrfs_read_tree(), parent generation 0 means we just skip the generatio=
+n
+>
+> btrfs_read_tree() does not exists, it's btrfs_read_tree_root().
+>
+> This is actually irrelevant, because we don't read the root log tree wit=
+h
+> btrfs_read_tree_root(). We use read_tree_block() for that (at btrfs_repl=
+ay_log()),
 
-Link: https://lore.kernel.org/linux-btrfs/023b5ca9-0610-231b-fc4e-a72fe1377a5a@jansson.tech/
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- convert/main.c        | 4 +---
- convert/source-ext2.c | 4 ++--
- 2 files changed, 3 insertions(+), 5 deletions(-)
+Oh, right, I forgot to check that code, and just assumed every root read
+from superblock would has its generation checked, but it's not the case
+for log tree root.
 
-diff --git a/convert/main.c b/convert/main.c
-index 73f919d25255..92ebb1acd181 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -1134,7 +1134,6 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
- 	int ret;
- 	int fd = -1;
- 	u32 blocksize;
--	u64 total_bytes;
- 	struct btrfs_root *root;
- 	struct btrfs_root *image_root;
- 	struct btrfs_convert_context cctx;
-@@ -1161,7 +1160,6 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+> and we use a generation matching the committed transaction + 1 (as it ca=
+n never
+> be anything else).
+>
+> For every other log tree, we use btrfs_read_tree_root(), but the generat=
+ion is
+> stored in the root's root item stored in the root log tree.
+>
+> The log_root_transid field was added to the super block by:
+>
+> commit c3027eb5523d6983f12628f3fe13d8a7576db701
+> Author: Chris Mason <chris.mason@oracle.com>
+> Date:   Mon Dec 8 16:40:21 2008 -0500
+>
+>      Btrfs: Add inode sequence number for NFS and reserved space in a fe=
+w structs
+>
+> But it was never used.
+>
+> So this change is not needed.
 
- 	ASSERT(cctx.total_bytes != 0);
- 	blocksize = cctx.blocksize;
--	total_bytes = (u64)blocksize * (u64)cctx.block_count;
- 	if (blocksize < 4096) {
- 		error("block size is too small: %u < 4096", blocksize);
- 		goto fail;
-@@ -1223,7 +1221,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+Then, considering we have never really set log_root_transid anywhere,
+and in theory we're always using btrfs_super_block::generation + 1, why
+not just deprecate that member?
 
- 	mkfs_cfg.csum_type = csum_type;
- 	mkfs_cfg.label = cctx.label;
--	mkfs_cfg.num_bytes = total_bytes;
-+	mkfs_cfg.num_bytes = cctx.total_bytes;
- 	mkfs_cfg.nodesize = nodesize;
- 	mkfs_cfg.sectorsize = blocksize;
- 	mkfs_cfg.stripesize = blocksize;
-diff --git a/convert/source-ext2.c b/convert/source-ext2.c
-index 9fad4c50e244..610db16b81aa 100644
---- a/convert/source-ext2.c
-+++ b/convert/source-ext2.c
-@@ -92,8 +92,8 @@ static int ext2_open_fs(struct btrfs_convert_context *cctx, const char *name)
+In fact, every time (thankfully not that many times for me) I checked
+log_root_transid, I can not help but to wonder why it's always 0.
 
- 	cctx->fs_data = ext2_fs;
- 	cctx->blocksize = ext2_fs->blocksize;
--	cctx->block_count = ext2_fs->super->s_blocks_count;
--	cctx->total_bytes = (u64)ext2_fs->super->s_blocks_count * ext2_fs->blocksize;
-+	cctx->block_count = ext2fs_blocks_count(ext2_fs->super);
-+	cctx->total_bytes = cctx->block_count * cctx->blocksize;
- 	cctx->label = strndup((char *)ext2_fs->super->s_volume_name, 16);
- 	cctx->first_data_block = ext2_fs->super->s_first_data_block;
- 	cctx->inodes_count = ext2_fs->super->s_inodes_count;
---
-2.17.1
+Thanks,
+Qu
 
+>
+> Thanks.
+>
+>
+>> check.
+>>
+>> And per-root log tree is still done properly using the root generation,
+>> so here we really only missed the generation check for log tree root,
+>> and even we fixed it, it should not cause any compatible problem.
+>>
+>> [FIX]
+>> Just update btrfs_super_block::log_root_transid properly.
+>
+> We don't need this.
+>
+> The log_root_transid field was added to the super block by:
+>
+> commit c3027eb5523d6983f12628f3fe13d8a7576db701
+> Author: Chris Mason <chris.mason@oracle.com>
+> Date:   Mon Dec 8 16:40:21 2008 -0500
+>
+>      Btrfs: Add inode sequence number for NFS and reserved space in a fe=
+w structs
+>
+> But it was never used.
+> For btrfs_read_tree_root(), what we use is the
+>
+>
+>
+>>
+>> Cc: stable@vger.kernel.org #4.9+
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/tree-log.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+>> index 370388fadf96..27a76d6fef8c 100644
+>> --- a/fs/btrfs/tree-log.c
+>> +++ b/fs/btrfs/tree-log.c
+>> @@ -3083,7 +3083,8 @@ int btrfs_sync_log(struct btrfs_trans_handle *tra=
+ns,
+>>   	struct btrfs_log_ctx root_log_ctx;
+>>   	struct blk_plug plug;
+>>   	u64 log_root_start;
+>> -	u64 log_root_level;
+>> +	u64 log_root_transid;
+>> +	u8 log_root_level;
+>>
+>>   	mutex_lock(&root->log_mutex);
+>>   	log_transid =3D ctx->log_transid;
+>> @@ -3297,6 +3298,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *tra=
+ns,
+>>
+>>   	log_root_start =3D log_root_tree->node->start;
+>>   	log_root_level =3D btrfs_header_level(log_root_tree->node);
+>> +	log_root_transid =3D btrfs_header_generation(log_root_tree->node);
+>>   	log_root_tree->log_transid++;
+>>   	mutex_unlock(&log_root_tree->log_mutex);
+>>
+>> @@ -3334,6 +3336,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *tra=
+ns,
+>>
+>>   	btrfs_set_super_log_root(fs_info->super_for_commit, log_root_start);
+>>   	btrfs_set_super_log_root_level(fs_info->super_for_commit, log_root_l=
+evel);
+>> +	btrfs_set_super_log_root_transid(fs_info->super_for_commit, log_root_=
+transid);
+>>   	ret =3D write_all_supers(fs_info, 1);
+>>   	mutex_unlock(&fs_info->tree_log_mutex);
+>>   	if (ret) {
+>> --
+>> 2.36.1
+>>
