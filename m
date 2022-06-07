@@ -2,134 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E021653F4A1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 05:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A12F53F579
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 07:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236355AbiFGDjA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 23:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        id S232834AbiFGFJh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jun 2022 01:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236186AbiFGDit (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 23:38:49 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B88387BA;
-        Mon,  6 Jun 2022 20:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654573128; x=1686109128;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=w4xeyqU+kOhDYzyqy82v69OYCHkAH6xk8Nd95qrz48A=;
-  b=cI2CtkAJJHCwTU24iLHMl95jI+TLyqQ/r3CzxiuMBsum3Zv2lOijhywx
-   7DQxnW0svepR7cp/Rauiczc3JEk/wEP7uw+iZJv1Ee5IL74PR6EiMkyxq
-   D7kbQjvry7tdZe4f42EZ/drgMjgpCADrgfxO3h3i3qQ1FeSLQWIkDJQYB
-   kieFIk5f/kvR16vOGkqCCcMAg/9btpMI1Y088XhRrhM/chcTLjbk9KAPd
-   Ho5/plGjKvI5ADJA8DLH/y62CuUwY1ISoqsWmZM36GUBflL+xLtTSWE3x
-   /dgtopIsWdfkoEzeAqYkJ9xLs+k8sMlFV0uH6o0ehNoz6lj9zRqRFrxQB
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="275480643"
-X-IronPort-AV: E=Sophos;i="5.91,282,1647327600"; 
-   d="scan'208";a="275480643"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2022 20:38:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,282,1647327600"; 
-   d="scan'208";a="579430786"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 06 Jun 2022 20:38:40 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nyQ3D-000DJf-KE;
-        Tue, 07 Jun 2022 03:38:39 +0000
-Date:   Tue, 7 Jun 2022 11:37:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
-        linux-mtd@lists.infradead.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 04/20] mm/migrate: Convert buffer_migrate_page() to
- buffer_migrate_folio()
-Message-ID: <202206071139.aWSx4GHH-lkp@intel.com>
-References: <20220606204050.2625949-5-willy@infradead.org>
+        with ESMTP id S229724AbiFGFJe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 01:09:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C3257B1B;
+        Mon,  6 Jun 2022 22:09:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 304281F9F5;
+        Tue,  7 Jun 2022 05:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1654578572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=qDIKDtXVCYFiCnGF1nhhtRoIST5+FaaMfXvgeyMv84I=;
+        b=EvWYQrCzi4tBXjVEAIKLUK5dfVHgFv9R2f6w8u/OrHhKtjgOEj+TEfnkcj0PdUq4ThXC6h
+        i8kGf92DO0yh3xDk56Gm17aLyx+dOp88Hp+p4mge5KBr4O60Z+Pp1PDG9+VJzKd6ZZPplF
+        B0NH3P2QAJF5WRCTn+kRnUnvw+/3jQQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EE4F13638;
+        Tue,  7 Jun 2022 05:09:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nGSCBovdnmJZUAAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 07 Jun 2022 05:09:31 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: [PATCH] btrfs: correctly populate btrfs_super_block::log_root_transid
+Date:   Tue,  7 Jun 2022 13:09:13 +0800
+Message-Id: <f7ae86f509d11d941ceac2a153b38a4f3bc5d342.1654578537.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220606204050.2625949-5-willy@infradead.org>
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi "Matthew,
+[BUG]
+After creating a dirty log tree, although
+btrfs_super_block::log_root and log_root_level is correctly populated,
+its generation is still left 0:
 
-I love your patch! Perhaps something to improve:
+ log_root                30474240
+ log_root_transid        0 <<<
+ log_root_level          0
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v5.19-rc1 next-20220606]
-[cannot apply to jaegeuk-f2fs/dev-test trondmy-nfs/linux-next kdave/for-next xfs-linux/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+[CAUSE]
+We just forgot to update btrfs_super_block::log_root_transid completely.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/Convert-aops-migratepage-to-aops-migrate_folio/20220607-044509
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f2906aa863381afb0015a9eb7fefad885d4e5a56
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20220607/202206071139.aWSx4GHH-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/96e64ba8b1be545885d89f44b1d8b968b22bdb4d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Matthew-Wilcox-Oracle/Convert-aops-migratepage-to-aops-migrate_folio/20220607-044509
-        git checkout 96e64ba8b1be545885d89f44b1d8b968b22bdb4d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+Thus it's always the original value (0) from the initial super block.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Thankfully this old behavior won't break log replay, as in
+btrfs_read_tree(), parent generation 0 means we just skip the generation
+check.
 
-All warnings (new ones prefixed by >>):
+And per-root log tree is still done properly using the root generation,
+so here we really only missed the generation check for log tree root,
+and even we fixed it, it should not cause any compatible problem.
 
->> mm/migrate.c:775: warning: expecting prototype for buffer_migrate_folio_noref(). Prototype was for buffer_migrate_folio_norefs() instead
+[FIX]
+Just update btrfs_super_block::log_root_transid properly.
 
+Cc: stable@vger.kernel.org #4.9+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/tree-log.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-vim +775 mm/migrate.c
-
-89cb0888ca1483a Jan Kara                2018-12-28  758  
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  759) /**
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  760)  * buffer_migrate_folio_noref() - Migration function for folios with buffers.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  761)  * @mapping: The address space containing @src.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  762)  * @dst: The folio to migrate to.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  763)  * @src: The folio to migrate from.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  764)  * @mode: How to migrate the folio.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  765)  *
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  766)  * Like buffer_migrate_folio() except that this variant is more careful
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  767)  * and checks that there are also no buffer head references. This function
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  768)  * is the right one for mappings where buffer heads are directly looked
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  769)  * up and referenced (such as block device mappings).
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  770)  *
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  771)  * Return: 0 on success or a negative errno on failure.
-89cb0888ca1483a Jan Kara                2018-12-28  772   */
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  773) int buffer_migrate_folio_norefs(struct address_space *mapping,
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  774) 		struct folio *dst, struct folio *src, enum migrate_mode mode)
-89cb0888ca1483a Jan Kara                2018-12-28 @775  {
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  776) 	return __buffer_migrate_folio(mapping, dst, src, mode, true);
-89cb0888ca1483a Jan Kara                2018-12-28  777  }
-9361401eb7619c0 David Howells           2006-09-30  778  #endif
-1d8b85ccf1ed53a Christoph Lameter       2006-06-23  779  
-
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 370388fadf96..27a76d6fef8c 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3083,7 +3083,8 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	struct btrfs_log_ctx root_log_ctx;
+ 	struct blk_plug plug;
+ 	u64 log_root_start;
+-	u64 log_root_level;
++	u64 log_root_transid;
++	u8 log_root_level;
+ 
+ 	mutex_lock(&root->log_mutex);
+ 	log_transid = ctx->log_transid;
+@@ -3297,6 +3298,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 
+ 	log_root_start = log_root_tree->node->start;
+ 	log_root_level = btrfs_header_level(log_root_tree->node);
++	log_root_transid = btrfs_header_generation(log_root_tree->node);
+ 	log_root_tree->log_transid++;
+ 	mutex_unlock(&log_root_tree->log_mutex);
+ 
+@@ -3334,6 +3336,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 
+ 	btrfs_set_super_log_root(fs_info->super_for_commit, log_root_start);
+ 	btrfs_set_super_log_root_level(fs_info->super_for_commit, log_root_level);
++	btrfs_set_super_log_root_transid(fs_info->super_for_commit, log_root_transid);
+ 	ret = write_all_supers(fs_info, 1);
+ 	mutex_unlock(&fs_info->tree_log_mutex);
+ 	if (ret) {
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.36.1
+
