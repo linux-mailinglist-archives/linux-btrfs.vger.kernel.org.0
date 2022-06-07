@@ -2,84 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 889D7541366
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 21:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822BB541418
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 22:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357739AbiFGT7z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jun 2022 15:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S1359406AbiFGUM7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jun 2022 16:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357741AbiFGT7P (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 15:59:15 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B301BC14B
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 11:24:30 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id y29so20163802ljd.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Jun 2022 11:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=P2AehPb23QTEH2o3gswHipp+fpQCeKD8+mTHUy+XWo0=;
-        b=HQ43BT246NtVUEyiqBOGM/Oeb1VrEOwujPXTdFdebima2WQ/v7KMUcJ2uL3wuAYrhu
-         4bZ8qMAYhgZlTDYMvitG2hJyA4ccqmacCB4qcpksXQVWtOS+PhrxZk7tj4nUVaYGC1bn
-         cchlBN0e14QObTSZnrWUfxgO9ULz32Grdl6MJ5hLLrZQhdcD1YJIbRLpA4sdrwXz2ZPB
-         /h/ctaOBYskFMmg3vvVgNLXlb10CW7AmHMqCO9rBGEql49kDHt8CiLES8WBO6kHvkZkN
-         UpxCx6O1tfiRT554o9FVdR01aT+QwTB1AWCBI7XSnI+auVw5P+l9CjAZQvdQSqUtNbPp
-         q1BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=P2AehPb23QTEH2o3gswHipp+fpQCeKD8+mTHUy+XWo0=;
-        b=UbuYfVzZmfZ6Sq/fzqZLmdGAfMpbuPTuN3AgOiBWmthjOtEJzUqTrElk6aEcM3/Tas
-         5Xeb8bosa6dFPCBQx/GeGgRh0i1GVnuKba+Vv4N86N/UsdvKzyWG6zH9q+QpJV023iXG
-         Ay5YRPGaOqvIOHcre3GCmVPLLDGFKjqYhkdX7gfzQYR922nkLFsxpVbwsgiYLp7Atq2y
-         iejV430cWdwikGdj3DsoujJUXjvKJ/Q8LNIG9iK7tQdpEfMuxwE9GZw+dnQ2Pmvaz9lZ
-         Fmt7kevf0aMVKx63wjTzyT52hq9YvMehoavbXBnRsrityrioJZjkODphA7POCfdL9/O7
-         PUDg==
-X-Gm-Message-State: AOAM533tLgi4+QpxUbQIl4sCnEIWezfnd0AQaR2V3ZjVdS7mDoK49OLB
-        XJVt/cjpuskG/ksnzu1s2IeC25xuHouWb+SoB+THzg==
-X-Google-Smtp-Source: ABdhPJxJknPbaevHVUOZ1Fb1sStfAAoF9qlpuBEQa3gCoea8KfQ1TREThJTTXKXXd81IN3jZ6deJkP1dMrna14nvmCc=
-X-Received: by 2002:a2e:3112:0:b0:24f:132a:fd71 with SMTP id
- x18-20020a2e3112000000b0024f132afd71mr55669780ljx.522.1654626264079; Tue, 07
- Jun 2022 11:24:24 -0700 (PDT)
+        with ESMTP id S1359566AbiFGUMO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 16:12:14 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1993BA5F
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 11:27:40 -0700 (PDT)
+Received: from [76.132.34.178] (port=59228 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1nydD8-0001r4-Db by authid <merlins.org> with srv_auth_plain; Tue, 07 Jun 2022 11:27:37 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1nydvV-001Xqm-FN; Tue, 07 Jun 2022 11:27:37 -0700
+Date:   Tue, 7 Jun 2022 11:27:37 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220607182737.GU1745079@merlins.org>
+References: <20220606221755.GO22722@merlins.org>
+ <CAEzrpqcr08tHCesiwS9ysxrRQaadAeHyjSTg3Qp+CorvGz6psQ@mail.gmail.com>
+ <20220607023740.GQ22722@merlins.org>
+ <CAEzrpqcStzdJt-17404FhAZKww2Y1o7tu6QOgtVGziroGE0pCw@mail.gmail.com>
+ <20220607032240.GS22722@merlins.org>
+ <CAEzrpqc8f3HzxUG0Ty1NQoQKAEEAW_3-+3ackv1fDk68qfyf6w@mail.gmail.com>
+ <20220607151829.GQ1745079@merlins.org>
+ <CAEzrpqftCCPw1J-jA-MTgoBDG6fNVJ-bJoXCh7NAbCeDptiwag@mail.gmail.com>
+ <20220607153257.GR1745079@merlins.org>
+ <CAEzrpqd9RJ8xoOQFWh_xLBdqeMYA+t=otXT4W5YcPkJqsPvG0A@mail.gmail.com>
 MIME-Version: 1.0
-References: <023b5ca9-0610-231b-fc4e-a72fe1377a5a@jansson.tech>
- <445c4c65-9b94-4961-c498-5c3d9b140a3d@suse.com> <db44a8ab-bfc1-667d-0c38-b04461768370@jansson.tech>
-In-Reply-To: <db44a8ab-bfc1-667d-0c38-b04461768370@jansson.tech>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 7 Jun 2022 14:24:07 -0400
-Message-ID: <CAJCQCtQ5W1CqiLedXt0ZzaVOnJ2d_nugFHyt879yOs3W_K=YjA@mail.gmail.com>
-Subject: Re: btrfs-convert aborts with an assert
-To:     =?UTF-8?Q?Torbj=C3=B6rn_Jansson?= <torbjorn@jansson.tech>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqd9RJ8xoOQFWh_xLBdqeMYA+t=otXT4W5YcPkJqsPvG0A@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
+X-SA-Exim-Connect-IP: 76.132.34.178
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 6, 2022 at 12:51 PM Torbj=C3=B6rn Jansson <torbjorn@jansson.tec=
-h> wrote:
+On Tue, Jun 07, 2022 at 01:56:38PM -0400, Josef Bacik wrote:
+> On Tue, Jun 7, 2022 at 11:32 AM Marc MERLIN <marc@merlins.org> wrote:
+> >
+> > On Tue, Jun 07, 2022 at 11:21:57AM -0400, Josef Bacik wrote:
+> > > Can you capture all of these lines and paste them?  We found a bunch
+> > > of old block groups but we may not have found everything.  I might
+> > > want to try manually going and looking for those chunks just so we can
+> > > avoid mass deleting things.  Thanks,
+> >
+> > https://pastebin.com/dPzJgVU9
+> 
+> Ok re-run it, it'll crash right as it tries to delete something, I
+> need the bytenr it's complaining about.  Thanks,
 
-> Filesystem features:      has_journal ext_attr dir_index filetype meta_bg
-> extent 64bit flex_bg casefold sparse_super large_file huge_file dir_nlink
-> extra_isize metadata_csum
+inserting block group 15929559744512
+inserting block group 15930633486336
+inserting block group 15931707228160
+inserting block group 15932780969984
+inserting block group 15933854711808
+ERROR: Error reading data reloc tree -2
 
-^^casefold
+ERROR: failed to reinit the data reloc root
+searching 1 for bad extents
+processed 999424 of 0 possible bytes, 0%
+searching 4 for bad extents
+processed 163840 of 1064960 possible bytes, 15%
+searching 5 for bad extents
+processed 65536 of 10960896 possible bytes, 0%
+searching 7 for bad extents
+processed 16384 of 16570974208 possible bytes, 0%
+searching 9 for bad extents
+processed 16384 of 16384 possible bytes, 100%
+searching 161197 for bad extents
+processed 131072 of 108986368 possible bytes, 0%
+searching 161199 for bad extents
+processed 196608 of 49479680 possible bytes, 0%
+searching 161200 for bad extents
+processed 180224 of 254214144 possible bytes, 0%
+searching 161889 for bad extents
+processed 229376 of 49446912 possible bytes, 0%
+searching 162628 for bad extents
+processed 49152 of 49463296 possible bytes, 0%
+searching 162632 for bad extents
+processed 147456 of 94633984 possible bytes, 0%
+searching 163298 for bad extents
+processed 49152 of 49463296 possible bytes, 0%
+searching 163302 for bad extents
+processed 147456 of 94633984 possible bytes, 0%
+searching 163303 for bad extents
+processed 131072 of 76333056 possible bytes, 0%
+searching 163316 for bad extents
+processed 147456 of 108544000 possible bytes, 0%
+searching 163920 for bad extents
+processed 16384 of 108691456 possible bytes, 0%
+searching 164620 for bad extents
+processed 49152 of 49463296 possible bytes, 0%
+searching 164623 for bad extents
+processed 311296 of 63193088 possible bytes, 0%
+searching 164624 for bad extents
+processed 49152 of 109264896 possible bytes, 0%
+Found an extent we don't have a block group for in the file 1258276585472
+cmds/rescue-init-extent-tree.c:246: process_leaf_item: BUG_ON `bytenr` triggered, value 1258276585472
+./btrfs(+0x8cef8)[0x5596c34b4ef8]
+./btrfs(+0x8d685)[0x5596c34b5685]
+./btrfs(+0x8d47c)[0x5596c34b547c]
+./btrfs(+0x8da64)[0x5596c34b5a64]
+./btrfs(+0x8d28c)[0x5596c34b528c]
+./btrfs(btrfs_init_extent_tree+0xc83)[0x5596c34b6ffc]
+./btrfs(+0x8467e)[0x5596c34ac67e]
+./btrfs(handle_command_group+0x49)[0x5596c344017b]
+./btrfs(main+0x94)[0x5596c3440275]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xcd)[0x7f4ff8fc97fd]
+./btrfs(_start+0x2a)[0x5596c343fe1a]
+Aborted
 
-I don't think this is related to the reported problem, but it occurs
-to me maybe btrfs-progs should check for this feature and warn? The
-feature being set means there could be behavioral expectations that
-Btrfs can't currently provide since it doesn't support casefolding.
-
-
---=20
-Chris Murphy
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
