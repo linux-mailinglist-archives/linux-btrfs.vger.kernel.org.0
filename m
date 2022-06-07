@@ -2,105 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B487053F3E8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 04:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B2453F3F0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 04:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235632AbiFGC2j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jun 2022 22:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
+        id S235948AbiFGCcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jun 2022 22:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbiFGC2i (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 22:28:38 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BE83BE
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jun 2022 19:28:37 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id h18so13266906ilj.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jun 2022 19:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=emYzr5B8fxm/cd0NmHZ1Sm+1PmQ6WkzYtnwAbaqBNo8=;
-        b=HTCmDLMPdolsXw4aMtqmgJn8lGTFA5Q7yMMjLkZRDhqDanBiEiCK6yzKvUO5i1HCc7
-         e4MpgLArGoWgcX/IHKabs+BT4Tole15X7+FFyaQuMM5ieZdSWH8FC9H2oDK/neQyQRlV
-         WCTQkJJpKglnpsFwIuOvRhHKywiztcet8S1VHiJLyIv363Ibug3Hk/g6ar/lY8g8YSA6
-         H8GAUpXbh+/hLGzwqvI3qeundUEkWZUN3t2Q6y1ccHTS6hHY1FbtsEINuKue5Geg+4rC
-         MGCNfDFX8jYonWUlwEShEjQOKlBsTZhZydEIXusObXZnqepzYSU3nx0SZ5f4aHOdpB7f
-         8+oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=emYzr5B8fxm/cd0NmHZ1Sm+1PmQ6WkzYtnwAbaqBNo8=;
-        b=mvvQnW4q1TEzokyvX7BY/4nRLI09vh9pwoTmqdHmCdKPmX1a0qhmWN3c7+ICLCsnsN
-         6ESGuLWSjN+Xy56/J0VKVlf6tFv5H8n0j1ExWaw70AhRhPSb5Jfhefeic1tTyaxSm24F
-         W8gKPXQiY/N+fUVrkn65G6DS1c+dzTFzWBvH1DKSKjzno9NkVOg25348mkchkUcuGikB
-         0Opo+96PUO7VTK7QIa9Tchmo960NeUAnK1hEGiBfNjjZV9lUzhEkgJXgw8z2XolUGRDd
-         C5JGYh0/qIEn9QgttTjU9VT1CWhEC4rhCwoBKNt5JZ9FgrhEdA4slMMBVfU0MnJLL/A+
-         sxeQ==
-X-Gm-Message-State: AOAM532C0eHRcbog+yvD0hyplR21veQhvd0VTlnrtOTfIQYfUwgSBYe9
-        oYjXZ2kSiInLSJ5zFRpxiif7J4WI86TlQzzginasGW2otymYKg==
-X-Google-Smtp-Source: ABdhPJzwXFHlhhSl7uY3WQ44ddZRX3UMVFi0uOhg/rUqGwze1hoS+ZQD9SbEOyc7GyaJBb/+VDhtqr+xuKkLcnYv3Hk=
-X-Received: by 2002:a92:ca49:0:b0:2d3:9e94:1af8 with SMTP id
- q9-20020a92ca49000000b002d39e941af8mr15637663ilo.127.1654568916140; Mon, 06
- Jun 2022 19:28:36 -0700 (PDT)
+        with ESMTP id S231431AbiFGCcH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jun 2022 22:32:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8B28B09E;
+        Mon,  6 Jun 2022 19:32:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B4C1B1F897;
+        Tue,  7 Jun 2022 02:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1654569124; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=rhZkitHnB5DxIbB2/J9K3uC95LKNlO8QwCZwYobee2g=;
+        b=LUUVPpHFZ/REReA82XLsZscvXQ6mNNwt6P2XzAtSOjIRWsJIDYVnJuzntkfZdDYZ4FEpgN
+        Lx9PqdTKyAUsj/i3/4PeyrSfVubQ3fQpyiuGgr5I2B3GUumVztuAjNo/St5aYa6f1gwUaG
+        DXDeMNgHlCNxX3Kw1edm+r4pxeeM4+c=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D078A13A15;
+        Tue,  7 Jun 2022 02:32:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fGxHJqO4nmJ8KQAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 07 Jun 2022 02:32:03 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: [PATCH] btrfs: reject log replay if there is unsupported RO flag
+Date:   Tue,  7 Jun 2022 10:31:46 +0800
+Message-Id: <429396b1039ec416504bc2bffca36d66ec8b52e2.1654569076.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-References: <20220606000548.GF22722@merlins.org> <CAEzrpqdL6rK+-OUhW2AR3jXhK8TTsTM77A1CUkh=-+Y7Q1av9Q@mail.gmail.com>
- <20220606012204.GP1745079@merlins.org> <CAEzrpqeOb4XnGxbeMXNcDHn+wMNC7sBS7eFdsTbUj8c7BUgcuA@mail.gmail.com>
- <20220606210855.GL22722@merlins.org> <CAEzrpqe1_vbZ=+3C5=YPDJOCJGLAX9e4cmO_a+F1P3sdg9ubwQ@mail.gmail.com>
- <20220606212301.GM22722@merlins.org> <CAEzrpqdCpLsTqwBZ_W2sFZn9+uTrL88V=Cw6ZQe3XV0FxRO8nw@mail.gmail.com>
- <20220606215013.GN22722@merlins.org> <CAEzrpqcn_BRL7p3gPmS5OVn5D-m8hMB-5JcAHwEHwKpxGxOMqw@mail.gmail.com>
- <20220606221755.GO22722@merlins.org>
-In-Reply-To: <20220606221755.GO22722@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Mon, 6 Jun 2022 22:28:25 -0400
-Message-ID: <CAEzrpqcr08tHCesiwS9ysxrRQaadAeHyjSTg3Qp+CorvGz6psQ@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 6, 2022 at 6:17 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Mon, Jun 06, 2022 at 06:00:10PM -0400, Josef Bacik wrote:
-> > > Found an extent we don't have a block group for in the file
-> > > file
-> > > push node left from right mid nritems 48 right nritems 0 parent 15645019684864 parent nritems 7
-> > > parent nritems is now 6
-> > > corrupt node: root=164624 root bytenr 15645019684864 commit bytenr 15645019602944 block=15645019717632 physical=18446744073709551615 slot=38, bad key order, current (7819 1 0) next (7819 1 0)
-> > > kernel-shared/ctree.c:1042: balance_level: BUG_ON `check_path(path)` triggered, value -5
-> >
-> > Hmm ok this may just be a new thing I have to check for in
-> > tree-recover.  Give this a shot please, thanks,
->
-> searching 164623 for bad extents
-> processed 311296 of 63193088 possible bytes, 0%
-> searching 164624 for bad extents
->
-> Found an extent we don't have a block group for in the file
-> file
+[BUG]
+If we have a btrfs image with dirty log, along with an unsupported RO
+compatible flag:
 
-Ok I thought I caught this particular problem but I don't, so I fixed
-tree-recover to handle unordered keys in different nodes.  Pull and
-build, run tree-recover.  It's going to start deleting slots for
-unordered keys, picking whichever node is newer as the source of
-truth.  You should only see this happen on 164624, if you see it fire
-a bunch right away stop it and send me the output so I can make sure I
-didn't screw anything up.  I went over the code and diff a few times
-to make sure I didn't mess anything up, but I could have missed
-something.  If that runs and fixes stuff, run it again just to make
-sure it doesn't find anything the second time.  It shouldn't since I
-re-start the loop if we adjust things, but just in case.  I assume
-this will blow up, but if it doesn't you can try running
-init-extent-tree again and see how that goes.  Thanks,
+log_root		30474240
+...
+compat_flags		0x0
+compat_ro_flags		0x40000003
+			( FREE_SPACE_TREE |
+			  FREE_SPACE_TREE_VALID |
+			  unknown flag: 0x40000000 )
 
-Josef
+Then even if we can only mount it RO, we will still cause metadata
+update for log replay:
+
+ BTRFS info (device dm-1): flagging fs with big metadata feature
+ BTRFS info (device dm-1): using free space tree
+ BTRFS info (device dm-1): has skinny extents
+ BTRFS info (device dm-1): start tree-log replay
+
+This is definitely against RO compact flag requirement.
+
+[CAUSE]
+RO compact flag only forces us to do RO mount, but we will still do log
+replay for plain RO mount.
+
+Thus this will result us to do log replay and update metadata.
+
+This can be very problematic for new RO compat flag, for example older
+kernel can not understand v2 cache, and if we allow metadata update on
+RO mount and invalidate/corrupt v2 cache.
+
+[FIX]
+Just set the nologreplay flag if there is any unsupported RO compact
+flag.
+
+This will reject log replay no matter if we have dirty log or not, with
+the following message:
+
+ BTRFS info (device dm-1): disabling log replay due to unsupported ro compat features
+
+Cc: stable@vger.kernel.org #4.9+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index fe309db9f5ff..d06f1a176b5b 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3655,6 +3655,14 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		err = -EINVAL;
+ 		goto fail_alloc;
+ 	}
++	/*
++	 * We have unsupported RO compat features, although RO mounted, we
++	 * should any metadata write, including the log replay.
++	 * Or we can screw up whatever the new feature requires.
++	 */
++	if (features)
++		btrfs_set_and_info(fs_info, NOLOGREPLAY,
++		"disabling log replay due to unsupported ro compat features");
+ 
+ 	if (sectorsize < PAGE_SIZE) {
+ 		struct btrfs_subpage_info *subpage_info;
+-- 
+2.36.1
+
