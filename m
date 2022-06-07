@@ -2,233 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3877B540456
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 19:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC77540752
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jun 2022 19:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237283AbiFGRG3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jun 2022 13:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
+        id S1347866AbiFGRq6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jun 2022 13:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234580AbiFGRG2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 13:06:28 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94138FF5B8
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 10:06:25 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4F0675C017E;
-        Tue,  7 Jun 2022 13:06:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 07 Jun 2022 13:06:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1654621583; x=1654707983; bh=4SUje2BtAp
-        QsbeFUsdBQ0ZdxuBs0KxyBcS21WQ5jbvA=; b=bqYffdihaB6OE0DjlXjlQrGaPI
-        f0fwAoHEt0+AAvHxqycuyK8gfmvOlV0Xdyi9R/yZD5Vn9ObLGgwve4CC5/Qx3x1S
-        GjWyRb4DCeOUsDuGchIGFUn/k/exrbk5DjFbIkv+FgyoZfJJ/JSg3YjRLRwkRHgr
-        0gLO08Amw5hb6FeLd679SjntiYLnZIwEU9kekcBsPW7VWO6Yqw/cObdHn3GOiVxW
-        xXrcnaV4FPofY2eG4tsRKU0LusP5l4oZHA/q6rhi8Z8q8jUMmFql+92y4eaeJlWt
-        Dt88J/4uQU1wHGKcuP44J1icKZRTp04mBAvC0XtxTP9JBtSkmaZchsT3N62w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1654621583; x=1654707983; bh=4SUje2BtApQsbeFUsdBQ0ZdxuBs0
-        KxyBcS21WQ5jbvA=; b=FvEwyeCH7M9DJYpofIgZYw2TOBRgAwvyae9T4i9MCupm
-        rfcTI4wqhqO+upB0Z06qB8C3KMy3hCkWpNUmW3JytfE2an2e63Z2hxG+Cw5iluQQ
-        i53yQ0YrBXuWnLpqUcq+2xKDnco/CrWwVxwPPPCNPgc5yss33SF8Ehe0krMvaWrY
-        ATA0Qdjimc37lzgwjezddQzUaAUbKh/FZEloea6cyiHrQmYxfSJLkHBl7cuKOYDA
-        a3wsDDmQu3+7oIyeQ/lPkA9blWiwd7muba3spuJzCq1yx7ryhKk1X4SGz6a86Q4K
-        y/KjxnNtTFG7g65vwvf0dvkMn26k7a0JlIy5tGujHw==
-X-ME-Sender: <xms:joWfYmj6RQ_RyC0Zdokk2VJVb87yxeuuZoNEouZxH4fG2ZFouqj8Fg>
-    <xme:joWfYnAqm6-xizGygMxL7SnnkgSDzsEFgC1ymFhhEX1js5NKDP5EFHJ8EbKBslui_
-    q26VUH0PXFgr9bJRA8>
-X-ME-Received: <xmr:joWfYuEJ0mOXsvLty4ZAxUW5lNECzs7MsE5mujm5nTq7OgCHjDDVAuz0QWQ0rNi_GwCCA82DV-3mvtD6F6b-VP1a80qgDw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddthedguddtkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    ephedthfevgffhtdevgffhlefhgfeuueegtdevudeiheeiheetleeghedvfeegfeegnecu
-    ffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:j4WfYvTGnbOaVsDKzydfMQip5HEO0ZkrVlRZ_alqeBjet_zSiN13ug>
-    <xmx:j4WfYjyyIHgrdDhFcmVqlm2eXscWhYdzH0IOPiCIP8AjMrpVUkYwGQ>
-    <xmx:j4WfYt5nRF7bcXNRlxbm79vprNDD_ScjeLLkzV72kS8ROdw9aaVQOA>
-    <xmx:j4WfYso8g45cdnE86ccmb0D1wDWN9TtRiXy7OIpAWdBRBU_VNoA0qQ>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Jun 2022 13:06:22 -0400 (EDT)
-Date:   Tue, 7 Jun 2022 10:06:20 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, willy@infradead.org
-Subject: Re: [PATCH] btrfs: use preallocated page for super block write
-Message-ID: <Yp+FjFF3kKvN07dw@zen>
-References: <20220607154229.9164-1-dsterba@suse.com>
+        with ESMTP id S1349096AbiFGRqp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jun 2022 13:46:45 -0400
+Received: from libero.it (smtp-17.italiaonline.it [213.209.10.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A82ADF9
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 10:36:36 -0700 (PDT)
+Received: from [192.168.1.27] ([78.12.29.176])
+        by smtp-17.iol.local with ESMTPA
+        id yd83nfN0wikHEyd83nvyvt; Tue, 07 Jun 2022 19:36:33 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1654623393; bh=s2+KPohPSi4S4YiAsCgx2ZShuEnIl3Lf399JZr9yuRI=;
+        h=From;
+        b=XEDNygQsnzyAyzL1NQ8wEOn/SdO9M2HSTirfA1lDmEWOgNVO7dyTeAGA5gg1Q//PU
+         0MHbsxjO/P4ah89pHPhS7x72hoB32llvlTxJEom6OHNwmhO7sjbz7ewKd1RjvOoU9Y
+         GSBFxkUGiGlfuxUdUTr1fIlCLJWGz5ogGTSYkaHJroCVDUdccF7C2H1ow93dWe4xTp
+         MyKs7KquNvsYJ43CmYOXwu8+vYN8aLFUVI5x62pcPzx0294S4K1xAlPR5yZEX5zrBr
+         OTC/BXAsSmLfGN7A6AlkDe97ASX5O1z2AwyPGXQbDyHNHLIiHHwIL4bs1olLqOsOul
+         UYq3z25wN3aBw==
+X-CNFS-Analysis: v=2.4 cv=Y7A9DjSN c=1 sm=1 tr=0 ts=629f8ca1 cx=a_exe
+ a=j3kPaYAfCNpxz33IBwghmg==:117 a=j3kPaYAfCNpxz33IBwghmg==:17
+ a=IkcTkHD0fZMA:10 a=g5KSERc4JarvlXtSQH8A:9 a=QEXdDO2ut3YA:10
+Message-ID: <f5bf7ecb-8cb1-4da1-6052-a2968d4dc6b1@inwind.it>
+Date:   Tue, 7 Jun 2022 19:36:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220607154229.9164-1-dsterba@suse.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Lukas Straub <lukasstraub2@web.de>
+Cc:     Martin Raiber <martin@urbackup.org>,
+        Paul Jones <paul@pauljones.id.au>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20220601102532.D262.409509F4@e16-tech.com>
+ <49fb1216-189d-8801-d134-596284f62f1f@gmx.com>
+ <20220601170741.4B12.409509F4@e16-tech.com>
+ <5f49c12e-4655-48dd-0d73-49dc351eae15@gmx.com>
+ <SYCPR01MB4685030F15634C6C2FEC01369EDF9@SYCPR01MB4685.ausprd01.prod.outlook.com>
+ <6cbc718d-4afb-87e7-6f01-a1d06a74ab9e@gmx.com>
+ <01020181209a0f8e-b97fa255-3146-4ced-b9c9-a6627a21d6e1-000000@eu-west-1.amazonses.com>
+ <f56d4b11-1788-e4b5-35fa-d17b46a46d00@gmx.com>
+ <20220603093207.6722d77a@gecko>
+ <8c318892-0d36-51bb-18e0-a762dd75b723@gmx.com>
+ <252577ba-1659-62f8-fc44-fea506eb97b7@gmx.com>
+ <c4c298bf-ca54-1915-c22f-a6d87fc5a78f@gmx.com>
+ <128e0119-088b-7a10-c874-551196df4c56@libero.it>
+ <2575376b-fbd9-8406-3684-7fbc3899ddf3@gmx.com>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <2575376b-fbd9-8406-3684-7fbc3899ddf3@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfF6Gk3yOnX+ANL7986ZYkd/yhzdRkeWTKXPzXC1PTzafWSXQAu3nLuR+YtZee957fbNl8R6Y1B9Cj4jhnvM6P6yyO+wmgNuB1dsLas8bvb95Yi86jqlS
+ APZ3inTsAwo5/Zxn+c4/pJog689+BNIfIRA2BTjL3eVlv59HkdGAtxkTFE0tcbiaXFbPEkNPZAhH9AVM3aTXchl1r8V4AMZXFCCKpQUwBqK8h3NHMPncSoOD
+ ASmFHEXIr4ZJ6EjxTWNnunPVYbcs74TO0Ndh6ZrlqNZ4h5EFhWutXqrUWxMpvGIOu8joTkYwQT/NNlglUAdsU8S1+JkwmJ3xlqqIC7J7g4u/dAo9RtmzRtya
+ HZOk12M6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 07, 2022 at 05:42:29PM +0200, David Sterba wrote:
-> Currently the super block page is from the mapping of the block device,
-> this is result of direct conversion from the previous buffer_head to bio
-> conversion.  We don't use the page cache or the mapping anywhere else,
-> the page is a temporary space for the associated bio.
+On 07/06/2022 03.27, Qu Wenruo wrote:
 > 
-> Allocate the page at device allocation time, also to avoid any later
-> allocation problems when writing the super block. This simplifies the
-> page reference tracking, but the page lock is still used as waiting
-> mechanism for the write and write error is tracked in the page.
 > 
-> This was inspired by Matthew's question
-> https://lore.kernel.org/all/Yn%2FtxWbij5voeGOB@casper.infradead.org/
+> On 2022/6/7 02:10, Goffredo Baroncelli wrote:
+[...]
+
+>>
+>> But with a battery backup (i.e. no power failure), the likelihood of b)
+>> became
+>> negligible.
+>>
+>> This to say that a write intent bitmap will provide an huge
+>> improvement of the resilience of a btrfs raid5, and in turn raid6.
+>>
+>> My only suggestions, is to find a way to store the bitmap intent not in the
+>> raid5/6 block group, but in a separate block group, with the appropriate
+>> level
+>> of redundancy.
 > 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-Reviewed-by: Boris Burkov <boris@bur.io>
-> ---
->  fs/btrfs/disk-io.c | 42 +++++++++++-------------------------------
->  fs/btrfs/volumes.c |  6 ++++++
->  fs/btrfs/volumes.h |  2 ++
->  3 files changed, 19 insertions(+), 31 deletions(-)
+> That's why I want to reject RAID56 as metadata, and just store the
+> write-intent tree into the metadata, like what we did for fsync (log tree).
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 0f926d18e6ca..d10ad62ba54d 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3873,7 +3873,6 @@ static void btrfs_end_super_write(struct bio *bio)
->  			SetPageUptodate(page);
->  		}
->  
-> -		put_page(page);
->  		unlock_page(page);
->  	}
->  
-> @@ -3960,7 +3959,6 @@ static int write_dev_supers(struct btrfs_device *device,
->  			    struct btrfs_super_block *sb, int max_mirrors)
->  {
->  	struct btrfs_fs_info *fs_info = device->fs_info;
-> -	struct address_space *mapping = device->bdev->bd_inode->i_mapping;
->  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->  	int i;
->  	int errors = 0;
-> @@ -3975,7 +3973,6 @@ static int write_dev_supers(struct btrfs_device *device,
->  	for (i = 0; i < max_mirrors; i++) {
->  		struct page *page;
->  		struct bio *bio;
-> -		struct btrfs_super_block *disk_super;
->  
->  		bytenr_orig = btrfs_sb_offset(i);
->  		ret = btrfs_sb_log_location(device, i, WRITE, &bytenr);
-> @@ -3998,21 +3995,17 @@ static int write_dev_supers(struct btrfs_device *device,
->  				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE,
->  				    sb->csum);
->  
-> -		page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT,
-> -					   GFP_NOFS);
-> -		if (!page) {
-> -			btrfs_err(device->fs_info,
-> -			    "couldn't get super block page for bytenr %llu",
-> -			    bytenr);
-> -			errors++;
-> -			continue;
-> -		}
-> -
-> -		/* Bump the refcount for wait_dev_supers() */
-> -		get_page(page);
-> +		/*
-> +		 * Super block is copied to a temporary page, which is locked
-> +		 * and submitted for write. Page is unlocked after IO finishes.
-> +		 * No page references are needed, write error is returned as
-> +		 * page Error bit.
-> +		 */
-> +		page = device->sb_write_page;
-> +		ClearPageError(page);
-> +		lock_page(page);
->  
-> -		disk_super = page_address(page);
-> -		memcpy(disk_super, sb, BTRFS_SUPER_INFO_SIZE);
-> +		memcpy(page_address(page), sb, BTRFS_SUPER_INFO_SIZE);
->  
->  		/*
->  		 * Directly use bios here instead of relying on the page cache
-> @@ -4079,14 +4072,7 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
->  		    device->commit_total_bytes)
->  			break;
->  
-> -		page = find_get_page(device->bdev->bd_inode->i_mapping,
-> -				     bytenr >> PAGE_SHIFT);
-> -		if (!page) {
-> -			errors++;
-> -			if (i == 0)
-> -				primary_failed = true;
-> -			continue;
-> -		}
-> +		page = device->sb_write_page;
->  		/* Page is submitted locked and unlocked once the IO completes */
->  		wait_on_page_locked(page);
->  		if (PageError(page)) {
-> @@ -4094,12 +4080,6 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
->  			if (i == 0)
->  				primary_failed = true;
->  		}
-> -
-> -		/* Drop our reference */
-> -		put_page(page);
-> -
-> -		/* Drop the reference from the writing run */
-> -		put_page(page);
->  	}
->  
->  	/* log error, force error return */
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 7513e45c0c42..a9588c52c1f3 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -394,6 +394,7 @@ void btrfs_free_device(struct btrfs_device *device)
->  	rcu_string_free(device->name);
->  	extent_io_tree_release(&device->alloc_state);
->  	btrfs_destroy_dev_zone_info(device);
-> +	__free_page(device->sb_write_page);
->  	kfree(device);
->  }
->  
-> @@ -6910,6 +6911,11 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
->  	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
->  	if (!dev)
->  		return ERR_PTR(-ENOMEM);
-> +	dev->sb_write_page = alloc_page(GFP_KERNEL);
-> +	if (!dev->sb_write_page) {
-> +		kfree(dev);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
->  
->  	INIT_LIST_HEAD(&dev->dev_list);
->  	INIT_LIST_HEAD(&dev->dev_alloc_list);
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index a3c3a0d716bd..4a6c4a5f6fe6 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -158,6 +158,8 @@ struct btrfs_device {
->  	/* Bio used for flushing device barriers */
->  	struct bio flush_bio;
->  	struct completion flush_wait;
-> +	/* Temporary page for writing the superblock */
-> +	struct page *sb_write_page;
->  
->  	/* per-device scrub information */
->  	struct scrub_ctx *scrub_ctx;
-> -- 
-> 2.36.1
+
+My suggestion was not to use the btrfs metadata to store the "write-intent", but
+to track the space used by the write-intent storage area with a bg. Then the
+write intent can be handled not with a btrfs btree, but (e.g.) simply
+writing a bitmap of the used blocks, or the pairs [starts, length]....
+
+I really like the idea to store the write intent in a btree. I find it very
+elegant. However I don't think that it is convenient.
+
+The write intent disk format is not performance related, you don't need to seek
+inside it; and it is small: you need to read it (entirerly) only in case of power
+failure, and in any case the biggest cost is to scrub the last updated blocks. So
+it is not needed a btree.
+
+Moreover, the handling of raid5/6 is a layer below the btree. I think that
+updating the write-intent btree would be a performance bottleneck. I am quite sure
+that the write intent likely requires less than one metadata page (16K today);
+however to store this page you need to update the metadata page tracking...
+
+>>
+>> This for two main reasons:
+>> 1) in future BTRFS may get the ability of allocating this block group in a
+>> dedicate disks set. I see two main cases:
+>> a) in case of raid6, we can store the intent bitmap (or the journal) in a
+>> raid1C3 BG allocated in the faster disks. The cons is that each block
+>> has to be
+>> written 3x2 times. But if you have an hybrid disks set (some ssd and
+>> some hdd,
+>> you got a noticeable gain of performance)
 > 
+> In fact, for 4 disk usage, RAID10 has good enough chance to tolerate 2
+> missing disks.
+> 
+> In fact, the chance to tolerate two missing devices for 4 disks RAID10 is:
+> 
+> 4 / 6 = 66.7%
+> 
+> 4 is the total valid combinations, no order involved, including:
+> (1, 3), (1, 4), (2, 3) (2, 4).
+> (Or 4C2 - 2)
+> 
+> 6 is the 4C2.
+> 
+> So really no need to go RAID1C3 unless you're really want to ensured 2
+> disks tolerance.
+
+I don't get the point: I started talking about raid6. The raid6 is two
+failures proof (you need three failure to see the problem... in theory).
+
+If P is the probability of a disk failure (with P << 1), the likelihood of
+a RAID6 failure is O(P^3). The same is RAID1C3.
+
+Instead RAID10 failure likelihood is only a bit lesser than two disk failure:
+RAID10 (4 disks) failure is O(0.66 * P^2) ~ O(P^2).
+
+Because P is << 1 then  P^3 << 0.66 * P^2.
+> 
+>> b) another option is to spread the intent bitmap (or the journal) in
+>> *all* disks,
+>> where each disks contains only the the related data (if we update only
+>> disk #1
+>> and disk #2, we have to update only the intent bitmap (or the journal) in
+>> disk #1 and  disk #2)
+> 
+> That's my initial per-device reservation method.
+> 
+> But for write-intent tree, I tend to not go that way, but with a
+> RO-compatible flag instead, as it's much simpler and more back compatible.
+> 
+> Thanks,
+> Qu
+>>
+>>
+>> 2) having a dedicate bg for the intent bitmap (or the journal), has
+>> another big
+>> advantage: you don't need to change the meaning of the raid5/6 bg. This
+>> means
+>> that an older kernel can read/write a raid5/6 filesystem: it sufficient
+>> to ignore
+>> the intent bitmap (or the journal)
+>>
+>>
+>>
+>>>
+>>> Furthermore, this even allows us to go something like bitmap tree, for
+>>> such write-intent bitmap.
+>>> And as long as the user is not using RAID56 for metadata (maybe even
+>>> it's OK to use RAID56 for metadata), it should be pretty safe against
+>>> most write-hole (for metadata and CoW data only though, nocow data is
+>>> still affected).
+>>>
+>>> Thus I believe this can be a valid path to explore, and even have a
+>>> higher priority than full journal.
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>
+>>
+>>
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
