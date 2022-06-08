@@ -2,204 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4219F542F95
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 13:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC09B543100
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 15:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238511AbiFHL70 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 07:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
+        id S239918AbiFHNG1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 09:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238500AbiFHL7O (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 07:59:14 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928EC24CCA4
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 04:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1654689547;
-        bh=PpoSfq+Fd2xrsVsQx/961s9VfxDnOwqvmFNGmwRFDrw=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=X7zQjVk3/1u0AsaHdX9lMk01rFroUbLNPXwjZgGMFW0om74P2CEXRdP73zd7uU/xl
-         kT+5SYNOMe/hgf1CkHvAiQ9kS38Yc0aFDx+11/Y0ZlDdMeEyiSdDW6MwiljmWoxoYE
-         Mo4FEG3JDpzrR1+YF8c6RUsXlrCCQi4XzYm2foZo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N2V0H-1ncaIv247z-013rso; Wed, 08
- Jun 2022 13:59:07 +0200
-Message-ID: <fbe7377e-fc7d-9993-74e4-8e2928d61168@gmx.com>
-Date:   Wed, 8 Jun 2022 19:59:03 +0800
+        with ESMTP id S239855AbiFHNGZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 09:06:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9917136E84
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 06:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654693582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=USUlEZ1UMdOAkVgNJKy6bNhyk03F1F+22jSwcfgVGi0=;
+        b=UoJHHshZaUShraxSBVjI9WRQAg6Q8lBYAs+8JFhFch1f8CMfyCw5VlBsPzd0X33miW+LTV
+        n+tFAzMZNP2w2mf/RoLa1qgjKmsiAzj7xWGHz0ugiGJ3JHWu1q5zh2oMRdIe+6x9O6Sb7q
+        dIDTMPpWOFo8ML+JcvJ3jH62YcKv8sA=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-355-K9BIPDhzOQCRXazWCzdcbg-1; Wed, 08 Jun 2022 09:06:21 -0400
+X-MC-Unique: K9BIPDhzOQCRXazWCzdcbg-1
+Received: by mail-qt1-f200.google.com with SMTP id c16-20020a05622a059000b002f93304d0d8so16323103qtb.14
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jun 2022 06:06:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=USUlEZ1UMdOAkVgNJKy6bNhyk03F1F+22jSwcfgVGi0=;
+        b=13QWTyX5V/bi52XlnBKTcDFugWAeAZzBWUCkUPNgw3s76AV1FYk9JCPQGT89pbBzmh
+         kUNOna6LPkzicaxZK6DkSKnYksuEZKxFd2GqvUe/ZZx6hfoog9+/F4rS5i7EshVnAFhY
+         P/qwDE+6ZohOzSNnjM0F46VCEiUrrtYVVtQN5pTixyx71c8d+yDufz+dA/nswGBiI2AX
+         6Fus+C5bfop31bvHqXUEGvvS8ZwGc3WG9mAv0jnA/cPp4OLZ9/7Y4uriLSvJj6GMCQgD
+         UQz7vLxVp7QCvL1ZtY2oM6WgyvNEtSFvVqgfc7jphjpQNGdIUJ3cBsgbs/6GA8272dvM
+         pM7A==
+X-Gm-Message-State: AOAM530Sn0cQ9fj7ZXkcuMFEOF1bgNTjRzadw3OcAOCY3MxzrbX7ZJzX
+        aqpxU/qTXZE1rHqQUbI/V9Ddeirio/5F19KfX65cBkjP56fQ2ZscroZuzsqHLMR8h0m9ijR0/2R
+        e3xd5sLBDJoInsv4EcTm6y/s=
+X-Received: by 2002:a05:622a:1013:b0:305:3c:232e with SMTP id d19-20020a05622a101300b00305003c232emr2957097qte.180.1654693580931;
+        Wed, 08 Jun 2022 06:06:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmMXLqnBI6Og+4P0GHsdMp3mdyP17UTS82rMH1Kp6fTALPnxZvoiZs7I0UncTVXHO0B2TwhQ==
+X-Received: by 2002:a05:622a:1013:b0:305:3c:232e with SMTP id d19-20020a05622a101300b00305003c232emr2957043qte.180.1654693580507;
+        Wed, 08 Jun 2022 06:06:20 -0700 (PDT)
+Received: from optiplex-fbsd (c-73-182-255-193.hsd1.nh.comcast.net. [73.182.255.193])
+        by smtp.gmail.com with ESMTPSA id v10-20020a05620a440a00b0069fc13ce217sm4216712qkp.72.2022.06.08.06.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jun 2022 06:06:20 -0700 (PDT)
+Date:   Wed, 8 Jun 2022 09:06:17 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH 15/20] balloon: Convert to migrate_folio
+Message-ID: <YqCeyZO77Oi1wvxt@optiplex-fbsd>
+References: <20220606204050.2625949-1-willy@infradead.org>
+ <20220606204050.2625949-16-willy@infradead.org>
+ <e4d017a4-556d-bb5f-9830-a8843591bc8d@redhat.com>
+ <Yp9fj/Si2qyb61Y3@casper.infradead.org>
+ <Yp+lU55H4igaV3pB@casper.infradead.org>
+ <36cc5e2b-b768-ce1c-fa30-72a932587289@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: What mechanisms protect against split brain?
-Content-Language: en-US
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     Forza <forza@tnonline.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <20220608185805.41ED.409509F4@e16-tech.com>
- <d1d47581-9003-2202-55ca-279b2ca4dba6@gmx.com>
- <20220608195524.7F1C.409509F4@e16-tech.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220608195524.7F1C.409509F4@e16-tech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HabJLa4ivn/6B+T87pGimIzm3B2UbWJHOo0TyIyjfU0eY7axNDQ
- JvioW5OsRREaw2OS6glUdZR/y5yvZSLPvRDqTuD7akW0c2zwxIfHpFE4I4PXnGdqB6Sp8in
- 9EZUqq7Nk4Rw+r5vkiT4KrdC+J4dSpQpS2EVMjcZYe40KRXRjXZQ5clWKqt0Mv4j4TXyXQM
- RFpokMHVf/XeRIOAtRd2Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WDG6alnBHEQ=:9ns8sn1lFwCtwdFkIvnj1M
- POoyVR+Q9lNzUe1Fi5QUK1TFzp4fYVHQ8N26YePer/TdgXqmvrJ8mg382vZeQ2pua0a/Hb/Ve
- Fe7TTT4Y3FfFhX9HrFAv5cwi7KEA+qQv/5WpwgNoRirn5O2hbXu4DDwfbc3NofQRXTeTsGNbv
- gNvIFArQR1YP+/DwHdEup0YDZCCKqjjUFyFBTF8/K0juvMqCkFJbtCWM6wLFsK+HkesJY9ltl
- W2dihJ+OkA3rS3Lf8NKkY6RIhafoYX3jmDPLdIQCUrcVDx1Wy/cQvU5z9I37rQD/0mFZNQMML
- RzFM7nV4hNOrma9mebYnjGd8mfCJwO0b5iFzBbG/YiqtBHW2lntP3tMuTWhR3umBVQH3SzVM/
- eV6bihpYz5bhQErhtD26Jpe8bKvUcyyJ9fuc/DUOEmHNdsC3H5gcc8BPwLyijdFTC87Y+taYR
- kjOylf4Gq3DRpx8O7WQybxf9ukLBg8SB1hAYKzJIJ4vj/SiiEIBCQrkEKskA0ONqxU4tkWq9W
- TmpDHUSERwzUv9JI2w+j5h/nMWa3WMmdVuo10ZrhvsMNa92bjP7wLFB6q514IquAJuYtiA658
- WGquYqwnJd5cuW9bisznSxr6DH6qu7c+8H11V52u3qXvGydJuDGKXTo3Y1qqeS4ZDHdLGtvIe
- mIGgqDY6CzTQEM0jfCo15MX04LrJ6su67ZCn8fcekTGr6wIXQqChjMUbg0AvYLYM/C3DkvleS
- 6VGi9s6N5dA5hpZKGEbevI43cVEc6Q5SxGi7dRPlZ1FGNJQ8rFjP2Z1L8kZvyWLqxpwKJHc0p
- SzRRledEDzFSh82JUWSZJ67LwQkpUyS3YrAmhVPrBPMTkQtcGiRvMFH06YiJKJGdoghvRt1iU
- ca93bpsWwsPDDU6uuQqyYDhpqy6sAftaA2XB1D+7EVt0D7x4gRqy6B8Uq1YT2fVavYR8ApsZV
- NjRgCIDfAVy91pC2vUFdr6Dm+st4frVrMVrRreuV7sNFUJ7jX72ZFHu2nxh3pKNpsjBDBt3bh
- 4cdmHd1Ktd8/PmQA46UAWoJAAgIBxBmRpKdwheXvCiKKMxP1MalAMQmroluS+VEEiFDeU5yGh
- w3j01AyctfE+7cUzHpXVh1AftdVKNNDT8zDdPjLuG0RzsJHl35yrBnrbw==
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36cc5e2b-b768-ce1c-fa30-72a932587289@redhat.com>
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Jun 08, 2022 at 11:59:31AM +0200, David Hildenbrand wrote:
+> On 07.06.22 21:21, Matthew Wilcox wrote:
+> > On Tue, Jun 07, 2022 at 03:24:15PM +0100, Matthew Wilcox wrote:
+> >> On Tue, Jun 07, 2022 at 09:36:21AM +0200, David Hildenbrand wrote:
+> >>> On 06.06.22 22:40, Matthew Wilcox (Oracle) wrote:
+> >>>>  const struct address_space_operations balloon_aops = {
+> >>>> -	.migratepage = balloon_page_migrate,
+> >>>> +	.migrate_folio = balloon_migrate_folio,
+> >>>>  	.isolate_page = balloon_page_isolate,
+> >>>>  	.putback_page = balloon_page_putback,
+> >>>>  };
+> >>>
+> >>> I assume you're working on conversion of the other callbacks as well,
+> >>> because otherwise, this ends up looking a bit inconsistent and confusing :)
+> >>
+> >> My intention was to finish converting aops for the next merge window.
+> >>
+> >> However, it seems to me that we goofed back in 2016 by merging
+> >> commit bda807d44454.  isolate_page() and putback_page() should
+> >> never have been part of address_space_operations.
+> >>
+> >> I'm about to embark on creating a new migrate_operations struct
+> >> for drivers to use that contains only isolate/putback/migrate.
+> >> No filesystem uses isolate/putback, so those can just be deleted.
+> >> Both migrate_operations & address_space_operations will contain a
+> >> migrate callback.
+> 
+> That makes sense to me. I wonder if there was a design
+> decision/discussion behind that. CCing Rafael.
+>
+
+None that I recollect. If memory still serves me, I think the idea behind
+bda807d44454 and friends was to provide a generic way to allow page
+mobility for drivers without adding complexity to the page isolation / putback
+paths, and since the migration callback was already part of the aops struct
+those new callbacks just followed suit.
 
 
-On 2022/6/8 19:55, Wang Yugui wrote:
-> Hi,
->
->> On 2022/6/8 18:58, Wang Yugui wrote:
->>> Hi,
->>>
->>>> On 2022/6/8 18:15, Wang Yugui wrote:
->>>>> Hi, Forza, Qu Wenruo
->>>>>
->>>>> I write a script to test RAID1 split brain base on Qu's work of raid=
-5(*1)
->>>>> *1: https://lore.kernel.org/linux-btrfs/53f7bace2ac75d88ace42dd811d4=
-8b7912647301.1654672140.git.wqu@suse.com/T/#u
->>>>
->>>> No no no, that is not to address split brain, but mostly to drop cach=
-e
->>>> for recovery path to maximize the chance of recovery.
->>>>
->>>> It's not designed to solve split brain problem at all, it's just one
->>>> case of such problem.
->>>>
->>>> In fact, fully split brain (both have the same generation, but
->>>> experienced their own degraded mount) case can not be solved by btrfs
->>>> itself at all.
->>>>
->>>> Btrfs can only solve partial split brain case (one device has higher
->>>> generation, thus btrfs can still determine which copy is the correct =
-one).
->>>>
->>>>>
->>>>> #!/bin/bash
->>>>> set -uxe -o pipefail
->>>>>
->>>>> mnt=3D/mnt/test
->>>>> dev1=3D/dev/vdb1
->>>>> dev2=3D/dev/vdb2
->>>>>
->>>>>      dmesg -C
->>>>>      mkdir -p $mnt
->>>>>
->>>>>      mkfs.btrfs -f -m raid1 -d raid1 $dev1 $dev2
->>>>>      mount $dev1 $mnt
->>>>>      xfs_io -f -c "pwrite -S 0xee 0 1M" $mnt/file1
->>>>>      sync
->>>>>      umount $mnt
->>>>>
->>>>>      btrfs dev scan -u $dev2
->>>>>      mount -o degraded $dev1 $mnt
->>>>>      #xfs_io -f -c "pwrite -S 0xff 0 128M" $mnt/file2
->>>>>      mkdir -p $mnt/branch1; /bin/cp -R /usr/bin $mnt/branch1 #comple=
-x than xfs_io
->>>>>      umount $mnt
->>>>>
->>>>>      btrfs dev scan
->>>>>      btrfs dev scan -u $dev1
->>>>>      mount -o degraded $dev2 $mnt
->>>>
->>>> Your case is the full split brain case.
->>>>
->>>> Not possible to solve.
->>>>
->>>> In fact, if you don't do the degraded mount on dev2, btrfs is complet=
-ely
->>>> fine to resilve the fs without any problem.
->>>
->>> step1: we mark btrfs/RAID1 with degraded write as not-clean-RAID1.
->>
->> Then when to clean?
->> Full scrub or some timing else?
->
-> 'full scrub' or 'full balance' is OK.
-> this is not the normal path, so no critical performance is required.
->
->>> step2: in that state, we default try to read copy 0 of RAID1
->>> 	current pid based i/o patch select policy
->>>              preferred_mirror =3D first + (current->pid % num_stripes)=
-;
->>
->> That's feasible, but still need an ondisk format change.
->
-> yes. we need to save something into the disks.
-> but maybe 1 byte per disk.  so maybe no ondisk format change.
->
->> Furthermore, this idea can also be done by a more generic way,
->> write-intent bitmap.
->>
->> In fact, DM layer uses this to speed up resilver, and handle split brai=
-n
->> cases.
->>
->> With write-intent bitmap, every degraded write will leave the record in
->> the write-intent bitmap until properly resilvered.
->
-> write-intent bitmap have the problem of performance,
-> so it is a little expensive for RAID1[C34]?
+-- Rafael
 
-For regular writes with all devices present, no update on write-intent tre=
-e.
-
-Only when degraded mounted, we start updating write-intent tree.
-
-And from some testing results, the drop in performance for sequential RW
-is mostly negligible, thus why DM-raid always go with write-intent bitmap.
-
-Since I'm going to (at least try to) implement write-intent tree mostly
-for RAID56, it may be a good idea to address the partial split brain
-case as well.
-
-Thanks,
-Qu
->
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2022/06/08
->
->> Thanks,
->> Qu
->>
->>>
->>> this idea seem to work?
->>>
->>> degraded RAID1 write is almost the same as full split brain?
->>>
->>> Best Regards
->>> Wang Yugui (wangyugui@e16-tech.com)
->>> 2022/06/08
->
->
