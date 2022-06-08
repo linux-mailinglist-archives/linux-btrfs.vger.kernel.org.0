@@ -2,482 +2,474 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34898543EB7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 23:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E9F543EE1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 23:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236145AbiFHViy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 17:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
+        id S232099AbiFHVyq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 17:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236147AbiFHViu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 17:38:50 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877FC156B76
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 14:38:46 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nz3O1-0004LX-Sx by authid <merlin>; Wed, 08 Jun 2022 14:38:45 -0700
-Date:   Wed, 8 Jun 2022 14:38:45 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220608213845.GH22722@merlins.org>
-References: <20220607233734.GA22722@merlins.org>
- <CAEzrpqcVO99HbrhmtABUENRCm4HEsyg3+T3oK33DZFuXamwqgA@mail.gmail.com>
- <20220608000700.GB22722@merlins.org>
- <CAEzrpqe79F=-0T7Q3dqb62J6+kcisOjnWP+aLkkY0z+EJY-m9Q@mail.gmail.com>
- <20220608004241.GC22722@merlins.org>
- <CAEzrpqdq8zTBQaw_VneL4rfZn0JseUiwvtfwXQx0jq=DYBCFFw@mail.gmail.com>
- <20220608021245.GD22722@merlins.org>
- <CAEzrpqeFFiHjbQ+VQ7zy9ZbV1MgaMT-V4ovJhB9iOan8Ao-cXg@mail.gmail.com>
- <20220608213030.GG22722@merlins.org>
- <CAEzrpqdxCycEEAVqu-hykG-qdoEyBBFuc5buKS631XDciVrs7A@mail.gmail.com>
+        with ESMTP id S229492AbiFHVyp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 17:54:45 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D273B011
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 14:54:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1654725275;
+        bh=8wefNPxmauePi1OG6JQk6xGmTZTBtrzoxfQ+bJJqN2A=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=PitBm+yK5y4vQscaHjg6lca0vd2exPgBjKDuzULKr7H0kMZ6Q0gdB6W7Aft9Y2OHi
+         hmGR7GbJvIE2UsdQR/r8/97tFAZ3/mJ1cQT1+/cBI0FwImLcn6cEMWBK8hjSsWeRo4
+         9qPmd2CulBBrFsaNSKsHqIBVcn+MQDVU4Pa+t4R8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MZktj-1oDim530Ip-00WpeN; Wed, 08
+ Jun 2022 23:54:35 +0200
+Message-ID: <4919754e-045d-9061-27dd-dea61e9e4cef@gmx.com>
+Date:   Thu, 9 Jun 2022 05:54:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqdxCycEEAVqu-hykG-qdoEyBBFuc5buKS631XDciVrs7A@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH] btrfs: don't trust any cached sector in
+ __raid56_parity_recover()
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <53f7bace2ac75d88ace42dd811d48b7912647301.1654672140.git.wqu@suse.com>
+ <20220608094751.GA3603651@falcondesktop>
+ <b4a9889a-2c9d-8f74-985b-f0b7b176a1fa@suse.com>
+ <CAL3q7H6emgApw9saZ3k7Eb7PDx46=-nLKTRBcYvqXCQ3d=0BVQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAL3q7H6emgApw9saZ3k7Eb7PDx46=-nLKTRBcYvqXCQ3d=0BVQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1duoMAG+5aBy9KdhDrMz2foVoc3bgzkgO3k4NAlYdsbUf/qGw2K
+ fe2FZ8OD7uQ3N+e3XY0MDqqEP0lV6CoZnOr934YqPDTx07zqVtah4rCL2WLtCJy56Nmo+Uw
+ lndEceCiHtTAkDxyubPSHwbmDI4znPRTpjJVY+clf3vhP4EvouYN9aVvH4L+MPdsXX/zJfq
+ d+1xrSlGTOqnBkoW/gS0A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cmE9VLez57U=:g1nXmc690aW+At79FRYTYC
+ RfG9T6qJB+Hpw0rFEvIy2fQ5W/loo0f2V0Fy24U3LRCkeaBp7nub7HzMb9QL3qXDHoUZm5H0k
+ btqy58sd0cZp4JgLJUNKsMNFiMAwHTAOVtZosY+kN3Cur14trksn058PZmzyMJyDlZettjp1q
+ 795KgERbC9UNjVP4T5EC2d48o+vmjrAnbXfYqNhU4BYqFVo/g/seOiDi1zwZyULDsvWohOcAy
+ JjYmE652CjldC9r38899QOu+FGSarA/H0C03yEo218DzSE7+3en+3qwbcotmzK8yUHDUCg/L9
+ v/IXsm5j7aHKXqC0KcN69rq7gTHzxkn7Ez5pkW/WGtnkPTpkhjt8Ra1c7dANWafpf6RhTXczJ
+ VSRt4XZh61dlEBPN09S/++RKi2w1FzxH9RNxp4m37eNPXGfeW8eFTIL3wsPZYIF7uNgVAZWDq
+ wIcRgkHNlQjZaeGDTcp1dV7Iz1IvAgqWpS1gjXv6ix0xcfMrLfJMfu5epLYXTd8ISC+3frBti
+ eBBnZR5V432sdRcfN/pMDX9DlyB54aW1rj0OtxOEHf8HlFM51G736AsPP0cPctc6NhQOkfLcQ
+ BN1hKc6gYgAL+Hso8Ptjt542aM5u7J0o6mP5fMEeniz0ruqVkrOp1hN1c6AQDusdi7NH/n4ci
+ Gmkp1q02eF1HK2UScb9/4mV0AELG94pUWccqyi3+eyCPfvkuvLQPEniQLUY4aYFPbzso7RSZX
+ 7ZbXGuNtDHXZieKTmw7fz21/3+A9AaeluHjLwghrbcQ5tRzxZirSZMP/iyF7hnGjeKV0Mv0fT
+ rnGF47FEWSXqC1B+9GfnaBqqVA3QRnWC+9ydbJDgquaQ7ug18TZoegWpzk+SLnEygnC1xmD/K
+ LJ1lhBnjHYw4VoRkOz3jAzbCW2WGKs2N0VBFNM+8Xp7m8uF9FXrkZaPRqc4QE3hW93JubQH2k
+ 5LE3SjEFTiXD2ep3s7W8esMTczcckTSl721frcdjbmNeoicB1FS1nuFU7t/cGxJxazxs2FLcK
+ Rc/fvEFW1ZRZh7a6LHgHS2P1P8khJMzHiMUL+WnJpbFszWjLfZeYWFJ8vbg8VCVnFfjdH1Mdw
+ vCCWkTHmEyt/BWhK5K3SwJKwsUKpm9bU0x88hBIsQpYCr6jUN4uOuMGhA==
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 05:33:42PM -0400, Josef Bacik wrote:
-> 
-> Just check, no --repair.  I want to make sure the only thing that is
-> missing is the corresponding device extents for the chunks we
-> recovered.  I'm going to start writing the code to do that now, but if
-> there's any errors other than missing device extents then we need to
-> figure out what those problems are and what to do about them.  Thanks,
 
-woah, it ran in less than 1 minute, that's amazing (I remember when it
-took days)
 
-Partial output
+On 2022/6/8 21:31, Filipe Manana wrote:
+> On Wed, Jun 8, 2022 at 11:06 AM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>>
+>>
+>> On 2022/6/8 17:47, Filipe Manana wrote:
+>>> On Wed, Jun 08, 2022 at 03:09:20PM +0800, Qu Wenruo wrote:
+>>>> [BUG]
+>>>> There is a small workload which is a shorter version extracted from
+>>>> btrfs/125:
+>>>>
+>>>>     mkfs.btrfs -f -m raid5 -d raid5 -b 1G $dev1 $dev2 $dev3
+>>>>     mount $dev1 $mnt
+>>>>     xfs_io -f -c "pwrite -S 0xee 0 1M" $mnt/file1
+>>>>     sync
+>>>>     umount $mnt
+>>>>     btrfs dev scan -u $dev3
+>>>>     mount -o degraded $dev1 $mnt
+>>>>     xfs_io -f -c "pwrite -S 0xff 0 128M" $mnt/file2
+>>>>     umount $mnt
+>>>>     btrfs dev scan
+>>>>     mount $dev1 $mnt
+>>>>     btrfs balance start --full-balance $mnt
+>>>>     umount $mnt
+>>>>
+>>>> In fact, after upstream commit d4e28d9b5f04 ("btrfs: raid56: make
+>>>> steal_rbio() subpage compatible") above script will always pass, just
+>>>> like btrfs/125.
+>>>
+>>> For me it still fails, very often.
+>>> Both before and after that commit.
+>>>
+>>>>
+>>>> But after a bug fix/optimization named "btrfs: update
+>>>> stripe_sectors::uptodate in steal_rbio", above test case and btrfs/12=
+5
+>>>> will always fail (just like the old behavior before upstream d4e28d9b=
+5f04).
+>>>
+>>> And I'm running a branch without that patch, which is just misc-next f=
+rom
+>>> about 2 weeks ago:
+>>>
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/log=
+/?h=3Dtest_branch
+>>
+>> My bad, the whole situation is more complex.
+>>
+>> The recent RAID56 is a hell of fixes and regressions.
+>>
+>> Firstly, there are 2 conditions need to be met:
+>>
+>> 1) No cached sector usage for recovery path
+>>      Patch "btrfs: raid56: make steal_rbio() subpage compatible"
+>>      incidentally make it possible.
+>>
+>>      But later patch "btrfs: update stripe_sectors::uptodate in
+>>      steal_rbio" will revert it.
+>>
+>> 2) No full P/Q stripe write for partial write
+>>      This is done by patch "btrfs: only write the sectors in the vertic=
+al
+>>      stripe which has data stripes".
+>>
+>>
+>> So in misc-next tree, the window is super small, just between patch
+>> "btrfs: only write the sectors in the vertical stripe which has data
+>> stripes" and "btrfs: update stripe_sectors::uptodate in steal_rbio".
+>>
+>> Which there is only one commit between them.
+>>
+>> To properly test that case, I have uploaded my branch for testing:
+>> https://github.com/adam900710/linux/tree/testing
+>
+> With that branch, it seems to work, it ran 108 times here and it never f=
+ailed.
+> So only the changelog needs to be updated to mention all the patches tha=
+t
+> are needed.
 
-[1/7] checking root items
-checksum verify failed on 15645959372800 wanted 0x847c08bf found 0x17a9e2f1
-checksum verify failed on 15645959389184 wanted 0x3cc757a7 found 0x3b4eff03
-checksum verify failed on 15645681451008 wanted 0x7516a3d9 found 0x97f7437d
-checksum verify failed on 15646003970048 wanted 0xf18cc579 found 0x1bc64584
-checksum verify failed on 15645867720704 wanted 0x14cc427a found 0x9f516106
-checksum verify failed on 15645529604096 wanted 0xd11e24d5 found 0x8d01bc00
-checksum verify failed on 15645781344256 wanted 0xb81e3df4 found 0xb5c70846
-checksum verify failed on 15645959356416 wanted 0x2fa8537e found 0x90ac1f4e
-(...)
-[2/7] checking extents
-checksum verify failed on 15645930487808 wanted 0xced0911a found 0x7124e4f9
-Chunk[256, 228, 11106814787584] stripe[1, 11121855561728] is not found in dev extent
-Chunk[256, 228, 11108962271232] stripe[1, 11124003045376] is not found in dev extent
-Chunk[256, 228, 11110036013056] stripe[1, 11125076787200] is not found in dev extent
-Chunk[256, 228, 11111109754880] stripe[1, 11126150529024] is not found in dev extent
-Chunk[256, 228, 11112183496704] stripe[1, 11127224270848] is not found in dev extent
-Chunk[256, 228, 11113257238528] stripe[1, 11128298012672] is not found in dev extent
-Chunk[256, 228, 11114330980352] stripe[1, 11129371754496] is not found in dev extent
-Chunk[256, 228, 11115404722176] stripe[1, 11130445496320] is not found in dev extent
-Chunk[256, 228, 11116478464000] stripe[1, 11131519238144] is not found in dev extent
-Chunk[256, 228, 11118625947648] stripe[1, 11133666721792] is not found in dev extent
-Chunk[256, 228, 11119699689472] stripe[1, 11134740463616] is not found in dev extent
-(...)
-Chunk[256, 228, 15931707228160] stripe[1, 14489109921792] is not found in dev extent
-Chunk[256, 228, 15932780969984] stripe[1, 14490183663616] is not found in dev extent
-Chunk[256, 228, 15933854711808] stripe[1, 14496626114560] is not found in dev extent
-Block group[20971520, 8388608] (flags = 34) didn't find the relative chunk.
-Device extent[1, 709781094400, 1073741824] didn't find the relative chunk.
-Device extent[1, 710854836224, 1073741824] didn't find the relative chunk.
-Device extent[1, 711928578048, 1073741824] didn't find the relative chunk.
-Device extent[1, 713002319872, 1073741824] didn't find the relative chunk.
-(...)
-Device extent[1, 14951892647936, 1073741824] didn't find its device.
-Device extent[1, 14952966389760, 1073741824] didn't find its device.
-Device extent[1, 14954040131584, 1073741824] didn't find its device.
-Device extent[1, 14955113873408, 1073741824] didn't find its device.
-Device extent[1, 14956187615232, 1073741824] didn't find its device.
-Device extent[1, 14957261357056, 1073741824] didn't find its device.
-Device extent[1, 14958335098880, 1073741824] didn't find its device.
-Device extent[1, 14959408840704, 1073741824] didn't find its device.
-Device extent[1, 14960482582528, 1073741824] didn't find its device.
-Device extent[1, 14961556324352, 1073741824] didn't find its device.
-Device extent[1, 14962630066176, 1073741824] didn't find its device.
-Device extent[1, 14963703808000, 1073741824] didn't find its device.
-Device extent[1, 14964777549824, 1073741824] didn't find its device.
-Device extent[1, 14965851291648, 1073741824] didn't find its device.
-Device extent[1, 14966925033472, 1073741824] didn't find its device.
-Device extent[1, 14967998775296, 1073741824] didn't find its device.
-Device extent[1, 14969072517120, 1073741824] didn't find its device.
-Device extent[1, 14970146258944, 1073741824] didn't find its device.
-Device extent[1, 14971220000768, 1073741824] didn't find its device.
-Device extent[1, 14972293742592, 1073741824] didn't find its device.
-Device extent[1, 14973367484416, 1073741824] didn't find its device.
-Device extent[1, 14974441226240, 1073741824] didn't find its device.
-Device extent[1, 14975514968064, 1073741824] didn't find its device.
-Device extent[1, 14976588709888, 1073741824] didn't find its device.
-Device extent[1, 14977662451712, 1073741824] didn't find its device.
-Device extent[1, 14978736193536, 1073741824] didn't find its device.
-Device extent[1, 14979809935360, 1073741824] didn't find its device.
-Device extent[1, 14980883677184, 1073741824] didn't find its device.
-Device extent[1, 14981957419008, 1073741824] didn't find its device.
-Device extent[1, 14983031160832, 1073741824] didn't find its device.
-Device extent[1, 14984104902656, 1073741824] didn't find its device.
-Device extent[1, 14985178644480, 1073741824] didn't find its device.
-Device extent[1, 14986252386304, 1073741824] didn't find its device.
-Device extent[1, 14987326128128, 1073741824] didn't find its device.
-Device extent[1, 14988399869952, 1073741824] didn't find its device.
-Device extent[1, 14989473611776, 1073741824] didn't find its device.
-Device extent[1, 14990547353600, 1073741824] didn't find its device.
-Device extent[1, 14991621095424, 1073741824] didn't find its device.
-Device extent[1, 14992694837248, 1073741824] didn't find its device.
-Device extent[1, 14993768579072, 1073741824] didn't find its device.
-Device extent[1, 14994842320896, 1073741824] didn't find its device.
-Device extent[1, 14995916062720, 1073741824] didn't find its device.
-Device extent[1, 14996989804544, 1073741824] didn't find its device.
-Device extent[1, 14998063546368, 1073741824] didn't find its device.
-Device extent[1, 14999137288192, 1073741824] didn't find its device.
-Device extent[1, 15000211030016, 1073741824] didn't find its device.
-Device extent[1, 15001284771840, 1073741824] didn't find its device.
-Device extent[1, 15002358513664, 1073741824] didn't find its device.
-Device extent[1, 15003432255488, 1073741824] didn't find its device.
-Device extent[1, 15004505997312, 1073741824] didn't find its device.
-Device extent[1, 15005579739136, 1073741824] didn't find its device.
-Device extent[1, 15006653480960, 1073741824] didn't find its device.
-Device extent[1, 15007727222784, 1073741824] didn't find its device.
-Device extent[1, 15008800964608, 1073741824] didn't find its device.
-Device extent[1, 15009874706432, 1073741824] didn't find its device.
-Device extent[1, 15010948448256, 1073741824] didn't find its device.
-Device extent[1, 15012022190080, 1073741824] didn't find its device.
-Device extent[1, 15013095931904, 1073741824] didn't find its device.
-Device extent[1, 15014169673728, 1073741824] didn't find its device.
-        unresolved ref dir 55138 index 46 namelen 26 name foo filetype 1 errors 5, no dir item, no inode ref 
-root 161199 inode 55184 errors 1, no inode item
-        unresolved ref dir 55138 index 47 namelen 47 name foo filetype 1 errors 5, no dir item, no inode ref
-root 161199 inode 55185 errors 1, no inode item 
-        unresolved ref dir 55138 index 48 namelen 45 name foo filetype 1 errors 5, no dir item, no inode ref
-root 161199 inode 55186 errors 1, no inode item 
-        unresolved ref dir 55138 index 49 namelen 42 name foo filetype 1 errors 5, no dir item, no inode ref
-root 161199 inode 55187 errors 1, no inode item 
-        unresolved ref dir 55138 index 50 namelen 51 name foo filetype 1 errors 5, no dir item, no inode ref
-root 161199 inode 55188 errors 1, no inode item
-        unresolved ref dir 55138 index 51 namelen 47 name foo filetype 1 errors 5, no dir item, no inode ref
-root 161199 inode 55403 errors 2500, file extent discount, nbytes wrong, link count wrong
-root 161889 inode 70800 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 33 namelen 15 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 71665 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 3327 index 35 namelen 13 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 71860 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 36 namelen 41 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 71905 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 37 namelen 69 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 72375 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 38 namelen 14 name foo filetype 2 errors 4, no inode ref 
-root 161889 inode 72543 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 39 namelen 12 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 72593 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 40 namelen 4 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 72723 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 3327 index 45 namelen 15 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 72724 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 46 namelen 29 name foo filetype 2 errors 4, no inode ref
-root 161889 inode 72738 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 47 namelen 25 name foo filetype 2 errors 4, no inode ref 
-root 161889 inode 72779 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 48 namelen 33 name foo filetype 1 errors 4, no inode ref
-root 161889 inode 72780 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 49 namelen 33 name foo filetype 1 errors 4, no inode ref
-root 161889 inode 72781 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 3327 index 50 namelen 33 name foo filetype 1 errors 4, no inode ref
-root 161889 inode 72782 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 51 namelen 21 name foo filetype 1 errors 4, no inode ref
-root 161889 inode 72783 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 52 namelen 40 name foo filetype 1 errors 4, no inode ref 
-root 161889 inode 72784 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3327 index 53 namelen 40 name foo filetype 1 errors 4, no inode ref
-root 162628 root dir 256 not found
-root 162628 inode 49389 errors 2500, file extent discount, nbytes wrong, link count wrong
-index, no inode ref
-root 163302 inode 11222 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 43 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11232 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 75 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11233 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 41 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11239 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 82 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11240 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 51 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11246 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 56 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11249 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 51 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11266 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 53 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11271 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 55 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11275 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 42 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11276 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 87 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11278 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 48 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11285 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 58 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11293 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 51 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11296 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 41 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11301 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 55 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11306 errors 2001, no inode item, link count wrong
-        unresolved ref dir 11179 index 0 namelen 49 name foo filetype 1 errors 6, no dir index, no inode ref
-root 163302 inode 11307 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 11179 index 0 namelen 60 name foo filetype 1 errorFound file extent holes:
-        start: 0, len: 260874240
-root 164623 inode 3682 errors 500, file extent discount, nbytes wrong
-Found file extent holes:
-        start: 0, len: 103227392
-root 164623 inode 3683 errors 500, file extent discount, nbytes wrong
-Found file extent holes:
-        start: 0, len: 58925056
-root 164623 inode 3684 errors 500, file extent discount, nbytes wrong
-Found file extent holes:
-        start: 0, len: 22671360
-root 164623 inode 3685 errors 500, file extent discount, nbytes wrong
-Found file extent holes:
-        start: 0, len: 55967744
-root 164623 inode 3686 errors 500, file extent discount, nbytes wrong
-Found file extent holes:
-        start: 0, len: 164442112
-        unresolved ref dir 3676 index 11 namelen 62 name foo filetype 1 errroot 164629 inode 859 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 65 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 860 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 63 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 861 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 66 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 862 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 59 name foo filetype 1 errors 6, no dir index, no inode ref 
-root 164629 inode 864 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 72 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 865 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 58 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 866 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 88 name foo filetype 7 errors 6, no dir index, no inode ref
-root 164629 inode 867 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 842 index 0 namelen 57 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 868 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 70 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 872 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 101 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 873 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 842 index 0 namelen 80 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 874 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 69 name foo filetype 1 errors 6, no dir index, no inode ref 
-root 164629 inode 875 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 79 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 876 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 51 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 877 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 95 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 878 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 87 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 879 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 842 index 0 namelen 75 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 880 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 44 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 881 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 67 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 884 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 70 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 885 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 84 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 887 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 87 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 888 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 74 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 890 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 80 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 891 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 87 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 892 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 91 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 904 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 79 name foo filetype 1 errors 6, no dir index, no inode ref 
-root 164629 inode 905 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 101 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 907 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 62 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 909 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 842 index 0 namelen 70 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 910 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 74 name foo filetype 1 errors 6, no dir index, no inode ref 
-root 164629 inode 911 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 63 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 912 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 84 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 913 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 93 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 914 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 68 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 917 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 79 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 918 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 89 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 921 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 87 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 922 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 72 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 923 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 87 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 925 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 80 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 926 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 70 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 927 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 70 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 928 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 72 name foo filetype 7 errors 6, no dir index, no inode ref
-root 164629 inode 1047 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 86 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 1050 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 88 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 1051 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 81 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 1052 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 91 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 1053 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 57 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 1054 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 67 name foo filetype 1 errors 6, no dir index, no inode ref
-root 164629 inode 1055 errors 2001, no inode item, link count wrong
-        unresolved ref dir 842 index 0 namelen 78 name foo froot 164629 inode 17822 errors 2001, no inode item, link count wrong
-        unresolved ref dir 791 index 144 namelen 58 name foo filetype 1 errors 4, no inode ref
-root 164629 inode 17824 errors 1, no inode item
-        unresolved ref dir 791 index 145 namelen 47 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17893 errors 1, no inode item
-root 164629 inode 17894 errors 2500, file extent discount, nbytes wrong, link count wrong 
-Found file extent holes:
-        start: 0, len: 9650176
-        unresolved ref dir 17893 index 2 namelen 50 name foo filetype 0 errors 3, no dir item, no dir index
-root 164629 inode 17895 errors 2500, file extent discount, nbytes wrong, link count wrong
-Found file extent holes: 
-        start: 0, len: 64696320
-root 164629 inode 17896 errors 1, no inode item
-        unresolved ref dir 17893 index 4 namelen 57 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17897 errors 1, no inode item
-        unresolved ref dir 17893 index 5 namelen 26 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17898 errors 1, no inode item
-        unresolved ref dir 17893 index 6 namelen 31 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17899 errors 1, no inode item
-        unresolved ref dir 17893 index 7 namelen 46 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17900 errors 1, no inode item
-        unresolved ref dir 17893 index 8 namelen 119 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17901 errors 1, no inode item
-        unresolved ref dir 17893 index 9 namelen 66 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17902 errors 1, no inode item
-        unresolved ref dir 17893 index 10 namelen 44 name foo filetype 1 errors 5, no dir item, no inode ref 
-root 164629 inode 17903 errors 1, no inode item
-        unresolved ref dir 17893 index 11 namelen 111 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17904 errors 1, no inode item
-        unresolved ref dir 17893 index 12 namelen 34 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17905 errors 1, no inode item
-        unresolved ref dir 17893 index 13 namelen 34 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17906 errors 1, no inode item
-        unresolved ref dir 17893 index 14 namelen 41 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17907 errors 1, no inode item
-        unresolved ref dir 17893 index 15 namelen 59 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17908 errors 1, no inode item
-        unresolved ref dir 17893 index 16 namelen 47 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17909 errors 1, no inode item 
-        unresolved ref dir 17893 index 17 namelen 25 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164629 inode 17910 errors 1, no inode item
-root 164823 inode 25244 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 34 namelen 9 name foo filetype 2 errors 4, no inode ref
-root 164823 inode 25246 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 842 index 296 namelen 70 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 27724 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 3654 index 35 namelen 5 name foo filetype 2 errors 4, no inode ref
-root 164823 inode 34022 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 39 namelen 3 name foo filetype 2 errors 4, no inode ref 
-root 164823 inode 34023 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 40 namelen 3 name foo filetype 2 errors 4, no inode ref
-root 164823 inode 34454 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 60 namelen 11 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 34455 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 3654 index 62 namelen 6 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 34471 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 76 namelen 11 name foo filetype 1 errors 4, no inode ref 
-root 164823 inode 34480 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 86 namelen 6 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 34482 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 3654 index 87 namelen 6 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 34508 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 98 namelen 11 name foo filetype 1 errors 4, no inode ref 
-root 164823 inode 34511 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 102 namelen 6 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 34512 errors 2001, no inode item, link count wrong 
-        unresolved ref dir 3654 index 103 namelen 11 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 35040 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 159 namelen 11 name foo filetype 1 errors 4, no inode ref 
-root 164823 inode 35142 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 209 namelen 6 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 35200 errors 1, no inode item 
-        unresolved ref dir 791 index 156 namelen 41 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164823 inode 35232 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3676 index 24 namelen 45 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 35241 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3676 index 25 namelen 62 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 36759 errors 1, no inode item
-        unresolved ref dir 791 index 157 namelen 44 name foo filetype 1 errors 5, no dir item, no inode ref
-root 164823 inode 37194 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 213 namelen 3 name foo filetype 2 errors 4, no inode ref
-root 164823 inode 38289 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 212 namelen 1 name foo filetype 7 errors 4, no inode ref
-root 164823 inode 39940 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3676 index 27 namelen 103 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 39950 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3676 index 26 namelen 117 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 39951 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3676 index 28 namelen 66 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 69105 errors 1, no inode item
-        unresolved ref dir 68739 index 151 namelen 66 name foo filetype 0 errors 3, no dir item, no dir index
-root 164823 inode 69135 errors 2000, link count wrong
-        unresolved ref dir 256 index 68892 namelen 4 name foo filetype 0 errors 3, no dir item, no dir index
-root 164823 inode 69136 errors 2200, dir isize wrong, link count wrong
-        unresolved ref dir 1938 index 4 namelen 40 name foo filetype 0 errors 3, no dir item, no dir index
-root 164823 inode 69252 errors 2001, no inode item, link count wrong
-        unresolved ref dir 69136 index 0 namelen 31 name foo filetype 2 errors 6, no dir index, no inode ref
-root 164823 inode 74108 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3280 index 12 namelen 44 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 74132 errors 2001, no inode item, link count wrong
-        unresolved ref dir 256 index 19071 namelen 4 name foo filetype 2 errors 4, no inode ref
-root 164823 inode 74193 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3654 index 214 namelen 4 name foo filetype 2 errors 4, no inode ref
-root 164823 inode 74838 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3280 index 13 namelen 21 name foo filetype 2 errors 4, no inode ref
-root 164823 inode 76221 errors 2001, no inode item, link count wrong
-        unresolved ref dir 791 index 161 namelen 41 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 76328 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3280 index 16 namelen 88 name foo filetype 1 errors 4, no inode ref
-root 164823 inode 76329 errors 2001, no inode item, link count wrong
-        unresolved ref dir 3280 index 17 namelen 88 name foo filetype 1 errors 4, no inode ref
-ERROR: errors found in fs roots
-found 21912809472 bytes used, error(s) found
-total csum bytes: 0
-total tree bytes: 5373952
-total fs tree bytes: 3424256
-total extent tree bytes: 573440
-btree space waste bytes: 1834949
-file data blocks allocated: 33614336000
- referenced 33612742656
+And a new problem is, would I need to push all of those patches to
+stable kernels?
+Especially there is a patch that doesn't make sense for stable (part of
+subpage support for RAID56)
 
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Although all the involved patches are not completely solving the
+destructive RMW, it greatly reduces the damage to the vertical stripe.
+Thus it may still make sense for stable kernels.
+
+Thanks,
+Qu
+>
+> Thanks.
+>
+>>
+>> It passed btrfs/125 16/16 times.
+>>
+>>>
+>>> This is still all due to the fundamental flaw we have with partial str=
+ipe
+>>> writes I pointed out long ago:
+>>>
+>>> https://lore.kernel.org/linux-btrfs/CAL3q7H4oa70DUhOFE7kot62KjxcbvvZKx=
+u62VfLpAcmgsinBFw@mail.gmail.com/
+>>
+>> Yes, that's completely correct.
+>>
+>> But for our metadata case, there is a small save.
+>>
+>> We will never write data back to good copy with metadata directly, due
+>> to forced metadata COW.
+>>
+>> With my latest patch (and above mentioned patches), in previous partial
+>> writes, we won't write P/Q out of the vertical stripes.
+>> So all untouched DATA and P are still safe on-disk. (Patch "btrfs: only
+>> write the sectors in the vertical stripe which has data stripes")
+>>
+>> So if our DATA1 and P is correct, only DATA2 is stale, then when readin=
+g
+>> DATA2, metadata validation failed, then we go recovery.
+>> And recovery won't trust any cached sector (this patch), we will read
+>> every sector from disk. In this case, we read DATA1 and P, and rebuild
+>> DATA2 correctly.
+>>
+>> Considering I missed condition 2) and the full roller coaster history, =
+I
+>> need to rework the commit message at least.
+>>
+>>
+>> This is not yet perfect, for example, if the metadata on DATA1 stripe
+>> get removed in transaction A. Then in transaction A+1 we can do partial
+>> write for DATA1, and cause the destructive RMW, removing the only chanc=
+e
+>> of recovery DATA2.
+>>
+>> Thankfully, the above fix is already good enough for btrfs/125 (mostly
+>> due to the lack of operation before doing balance, and metadata is the
+>> first two chunks).
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> Running it again:
+>>>
+>>> root 10:18:07 /home/fdmanana/git/hub/xfstests (for-next)> ./check btrf=
+s/125
+>>> FSTYP         -- btrfs
+>>> PLATFORM      -- Linux/x86_64 debian9 5.18.0-btrfs-next-119 #1 SMP PRE=
+EMPT_DYNAMIC Sat May 28 20:28:23 WEST 2022
+>>> MKFS_OPTIONS  -- /dev/sdb
+>>> MOUNT_OPTIONS -- /dev/sdb /home/fdmanana/btrfs-tests/scratch_1
+>>>
+>>> btrfs/125 5s ... - output mismatch (see /home/fdmanana/git/hub/xfstest=
+s/results//btrfs/125.out.bad)
+>>>       --- tests/btrfs/125.out  2020-06-10 19:29:03.818519162 +0100
+>>>       +++ /home/fdmanana/git/hub/xfstests/results//btrfs/125.out.bad  =
+ 2022-06-08 10:18:13.521948910 +0100
+>>>       @@ -3,5 +3,15 @@
+>>>        Write data with degraded mount
+>>>
+>>>        Mount normal and balance
+>>>       +ERROR: error during balancing '/home/fdmanana/btrfs-tests/scrat=
+ch_1': Input/output error
+>>>       +There may be more info in syslog - try dmesg | tail
+>>>       +md5sum: /home/fdmanana/btrfs-tests/scratch_1/tf2: Input/output =
+error
+>>>
+>>>       ...
+>>>       (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/125.ou=
+t /home/fdmanana/git/hub/xfstests/results//btrfs/125.out.bad'  to see the =
+entire diff)
+>>> Ran: btrfs/125
+>>> Failures: btrfs/125
+>>> Failed 1 of 1 tests
+>>>
+>>> root 10:18:17 /home/fdmanana/git/hub/xfstests (for-next)> dmesg
+>>> [777880.530807] run fstests btrfs/125 at 2022-06-08 10:18:09
+>>> [777881.341004] BTRFS: device fsid fc182050-867d-42b3-8b70-7a717d5d8c1=
+0 devid 1 transid 6 /dev/sdb scanned by mkfs.btrfs (3174370)
+>>> [777881.343023] BTRFS: device fsid fc182050-867d-42b3-8b70-7a717d5d8c1=
+0 devid 2 transid 6 /dev/sdd scanned by mkfs.btrfs (3174370)
+>>> [777881.343156] BTRFS: device fsid fc182050-867d-42b3-8b70-7a717d5d8c1=
+0 devid 3 transid 6 /dev/sde scanned by mkfs.btrfs (3174370)
+>>> [777881.360352] BTRFS info (device sdb): flagging fs with big metadata=
+ feature
+>>> [777881.360356] BTRFS info (device sdb): using free space tree
+>>> [777881.360357] BTRFS info (device sdb): has skinny extents
+>>> [777881.365900] BTRFS info (device sdb): checking UUID tree
+>>> [777881.459545] BTRFS: device fsid fc182050-867d-42b3-8b70-7a717d5d8c1=
+0 devid 2 transid 8 /dev/sdd scanned by mount (3174418)
+>>> [777881.459637] BTRFS: device fsid fc182050-867d-42b3-8b70-7a717d5d8c1=
+0 devid 1 transid 8 /dev/sdb scanned by mount (3174418)
+>>> [777881.460202] BTRFS info (device sdb): flagging fs with big metadata=
+ feature
+>>> [777881.460204] BTRFS info (device sdb): allowing degraded mounts
+>>> [777881.460206] BTRFS info (device sdb): using free space tree
+>>> [777881.460206] BTRFS info (device sdb): has skinny extents
+>>> [777881.466293] BTRFS warning (device sdb): devid 3 uuid a9540970-da42=
+-44f8-9e62-30e6fdf013af is missing
+>>> [777881.466568] BTRFS warning (device sdb): devid 3 uuid a9540970-da42=
+-44f8-9e62-30e6fdf013af is missing
+>>> [777881.923840] BTRFS: device fsid 57e10060-7318-4cd3-8e2d-4c3e481b1da=
+b devid 1 transid 16797 /dev/sda scanned by btrfs (3174443)
+>>> [777881.939421] BTRFS info (device sdb): flagging fs with big metadata=
+ feature
+>>> [777881.939425] BTRFS info (device sdb): using free space tree
+>>> [777881.939426] BTRFS info (device sdb): has skinny extents
+>>> [777881.959199] BTRFS info (device sdb): balance: start -d -m -s
+>>> [777881.959348] BTRFS info (device sdb): relocating block group 754581=
+504 flags data|raid5
+>>> [777882.352088] verify_parent_transid: 787 callbacks suppressed
+>>> [777882.352092] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.352327] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.352481] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.352692] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.352844] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.353066] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.353241] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.353567] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.353760] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.353982] BTRFS error (device sdb): parent transid verify failed=
+ on 38993920 wanted 9 found 5
+>>> [777882.455036] BTRFS info (device sdb): balance: ended with status: -=
+5
+>>> [777882.456202] BTRFS: error (device sdb: state A) in do_free_extent_a=
+ccounting:2864: errno=3D-5 IO failure
+>>>
+>>>
+>>>>
+>>>> In my case, it fails due to tree block read failure, mostly on bytenr
+>>>> 38993920:
+>>>>
+>>>>    BTRFS info (device dm-4): relocating block group 217710592 flags d=
+ata|raid5
+>>>>    BTRFS error (device dm-4): parent transid verify failed on 3899392=
+0 wanted 9 found 7
+>>>>    BTRFS error (device dm-4): parent transid verify failed on 3899392=
+0 wanted 9 found 7
+>>>>    ...
+>>>>
+>>>> [CAUSE]
+>>>> With the recently added debug output, we can see all RAID56 operation=
+s
+>>>> related to full stripe 38928384:
+>>>>
+>>>>    23256.118349: raid56_read_partial: full_stripe=3D38928384 devid=3D=
+2 type=3DDATA1 offset=3D0 opf=3D0x0 physical=3D9502720 len=3D65536
+>>>>    23256.118547: raid56_read_partial: full_stripe=3D38928384 devid=3D=
+3 type=3DDATA2 offset=3D16384 opf=3D0x0 physical=3D9519104 len=3D16384
+>>>>    23256.118562: raid56_read_partial: full_stripe=3D38928384 devid=3D=
+3 type=3DDATA2 offset=3D49152 opf=3D0x0 physical=3D9551872 len=3D16384
+>>>>    23256.118704: raid56_write_stripe: full_stripe=3D38928384 devid=3D=
+3 type=3DDATA2 offset=3D0 opf=3D0x1 physical=3D9502720 len=3D16384
+>>>>    23256.118867: raid56_write_stripe: full_stripe=3D38928384 devid=3D=
+3 type=3DDATA2 offset=3D32768 opf=3D0x1 physical=3D9535488 len=3D16384
+>>>>    23256.118887: raid56_write_stripe: full_stripe=3D38928384 devid=3D=
+1 type=3DPQ1 offset=3D0 opf=3D0x1 physical=3D30474240 len=3D16384
+>>>>    23256.118902: raid56_write_stripe: full_stripe=3D38928384 devid=3D=
+1 type=3DPQ1 offset=3D32768 opf=3D0x1 physical=3D30507008 len=3D16384
+>>>>    23256.121894: raid56_write_stripe: full_stripe=3D38928384 devid=3D=
+3 type=3DDATA2 offset=3D49152 opf=3D0x1 physical=3D9551872 len=3D16384
+>>>>    23256.121907: raid56_write_stripe: full_stripe=3D38928384 devid=3D=
+1 type=3DPQ1 offset=3D49152 opf=3D0x1 physical=3D30523392 len=3D16384
+>>>>    23256.272185: raid56_parity_recover: full stripe=3D38928384 eb=3D3=
+9010304 mirror=3D2
+>>>>    23256.272335: raid56_parity_recover: full stripe=3D38928384 eb=3D3=
+9010304 mirror=3D2
+>>>>    23256.272446: raid56_parity_recover: full stripe=3D38928384 eb=3D3=
+9010304 mirror=3D2
+>>>>
+>>>> Before we enter raid56_parity_recover(), we have triggered some metad=
+ata
+>>>> write for the full stripe 38928384, this leads to us to read all the
+>>>> sectors from disk.
+>>>>
+>>>> However the test case itself intentionally uses degraded mount to cre=
+ate
+>>>> stale metadata.
+>>>> Thus we read out the stale data and cached them.
+>>>>
+>>>> When we really need to recover certain range, aka in
+>>>> raid56_parity_recover(), we will use the cached rbio, along with its
+>>>> cached sectors.
+>>>>
+>>>> And since those sectors are already cached, we won't even bother to
+>>>> re-read them.
+>>>> This explains why we have no event raid56_scrub_read_recover()
+>>>> triggered.
+>>>>
+>>>> Since we use the staled sectors to recover, and obviously this
+>>>> will lead to incorrect data recovery.
+>>>>
+>>>> In our particular test case, it will always return the same incorrect
+>>>> metadata, thus causing the same error message "parent transid verify
+>>>> failed on 39010304 wanted 9 found 7" again and again.
+>>>>
+>>>> [FIX]
+>>>> Commit d4e28d9b5f04 ("btrfs: raid56: make steal_rbio() subpage
+>>>> compatible") has a bug that makes RAID56 to skip any cached sector, t=
+hus
+>>>> it incidentally fixed the failure of btrfs/125.
+>>>
+>>> As mentioned before, I still have the test failing very often even aft=
+er
+>>> that commit, and I don't see how that could ever fix the fundamental
+>>> problem raid56 has with partial stripe writes.
+>>>
+>>> Thanks.
+>>>
+>>>>
+>>>> But later patch "btrfs: update stripe_sectors::uptodate in steal_rbio=
+",
+>>>> reverted to the old trust-cache-unconditionally behavior, and
+>>>> re-introduced the bug.
+>>>>
+>>>> In fact, we should still trust the cache for cases where everything i=
+s
+>>>> fine.
+>>>>
+>>>> What we really need is, trust nothing if we're recovery the full stri=
+pe.
+>>>>
+>>>> So this patch will fix the behavior by not trust any cache in
+>>>> __raid56_parity_recover(), to solve the problem while still keep the
+>>>> cache useful.
+>>>>
+>>>> Now btrfs/125 and above test case can always pass, instead of the old
+>>>> random failure behavior.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>> I'm not sure how to push this patch.
+>>>>
+>>>> It's a bug fix for the very old trust-cache-unconditionally bug, but
+>>>> since upstream d4e28d9b5f04 incidentally fixed it (by never trusting =
+the
+>>>> cache), and later "btrfs: update stripe_sectors::uptodate in steal_rb=
+io"
+>>>> is really re-introducing the bad old behavior.
+>>>>
+>>>> Thus I guess it may be a good idea to fold this small fix into "btrfs=
+:
+>>>> update stripe_sectors::uptodate in steal_rbio" ?
+>>>> ---
+>>>>    fs/btrfs/raid56.c | 13 ++++++-------
+>>>>    1 file changed, 6 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+>>>> index c1f61d1708ee..be2f0ea81116 100644
+>>>> --- a/fs/btrfs/raid56.c
+>>>> +++ b/fs/btrfs/raid56.c
+>>>> @@ -2125,9 +2125,12 @@ static int __raid56_parity_recover(struct btrf=
+s_raid_bio *rbio)
+>>>>       atomic_set(&rbio->error, 0);
+>>>>
+>>>>       /*
+>>>> -     * read everything that hasn't failed.  Thanks to the
+>>>> -     * stripe cache, it is possible that some or all of these
+>>>> -     * pages are going to be uptodate.
+>>>> +     * Read everything that hasn't failed. However this time we will
+>>>> +     * not trust any cached sector.
+>>>> +     * As we may read out some stale data but higher layer is not re=
+ading
+>>>> +     * that stale part.
+>>>> +     *
+>>>> +     * So here we always re-read everything in recovery path.
+>>>>        */
+>>>>       for (total_sector_nr =3D 0; total_sector_nr < rbio->nr_sectors;
+>>>>            total_sector_nr++) {
+>>>> @@ -2142,11 +2145,7 @@ static int __raid56_parity_recover(struct btrf=
+s_raid_bio *rbio)
+>>>>                       total_sector_nr +=3D rbio->stripe_nsectors - 1;
+>>>>                       continue;
+>>>>               }
+>>>> -            /* The rmw code may have already read this page in. */
+>>>>               sector =3D rbio_stripe_sector(rbio, stripe, sectornr);
+>>>> -            if (sector->uptodate)
+>>>> -                    continue;
+>>>> -
+>>>>               ret =3D rbio_add_io_sector(rbio, &bio_list, sector, str=
+ipe,
+>>>>                                        sectornr, rbio->stripe_len,
+>>>>                                        REQ_OP_READ);
+>>>> --
+>>>> 2.36.1
+>>>>
+>>>
+>>
