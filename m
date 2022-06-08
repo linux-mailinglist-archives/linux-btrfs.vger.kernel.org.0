@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD11543952
+	by mail.lfdr.de (Postfix) with ESMTP id D0B87543954
 	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 18:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343558AbiFHQsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 12:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S1343564AbiFHQsL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 12:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343557AbiFHQsH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 12:48:07 -0400
+        with ESMTP id S1343557AbiFHQsK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 12:48:10 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964B248E61
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 09:48:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4E4248E0
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 09:48:08 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 539151F9B0;
-        Wed,  8 Jun 2022 16:48:05 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 81C341F997;
+        Wed,  8 Jun 2022 16:48:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654706885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1654706887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L41thX6tNasEa6Yf+2otxVCKAHqp132iPgR9LkRSBBk=;
-        b=ken+Pa/67SxmSY6NZjzN48av5hE4cfzHGjaM/KgRFVVqrhrFu9oJEUNJV5ha4BmpnTUp71
-        RvLXESJPMnYtIN1tCpUWsArfw1Fjc8MYwKwYl6ciL/Vtgztpo9lqa/SsFXRbdybM7ZqHXg
-        DeofS/YCwNEfy1AYhH+48fuE7+4P9nQ=
+        bh=DGF+m9+ytgvzLnxBj7K+2PBVyMlDvmWyaitVufRlArc=;
+        b=D/YXQspz9LOJ4o+6+lfJwRtnaBqJyKcazhV7MRGz5dmD5vkKMAbDb1jCCeQGX27mjqRqnz
+        xdH6IIhVEbrqg6zGHA4BANH7lmzRZeVj+fw18KGHc0fpL2uc2zFoDx1JpqcBlodvW4JGJ0
+        kiPH2oEYew0hvFDbUE9O1htwBnLzd2U=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 494F12C141;
-        Wed,  8 Jun 2022 16:48:05 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 77E992C141;
+        Wed,  8 Jun 2022 16:48:07 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BFAD2DA883; Wed,  8 Jun 2022 18:43:36 +0200 (CEST)
+        id E61A6DA883; Wed,  8 Jun 2022 18:43:38 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 8/9] btrfs: make tree search for insert more generic and use it for tree_search
-Date:   Wed,  8 Jun 2022 18:43:36 +0200
-Message-Id: <7c8a3f54c97b6c3bd57064d63501b35b1b1ccc4c.1654706034.git.dsterba@suse.com>
+Subject: [PATCH 9/9] btrfs: unify tree search helper returning prev and next nodes
+Date:   Wed,  8 Jun 2022 18:43:38 +0200
+Message-Id: <62221b54b299b54442187a9675e9a9532b6e4cbd.1654706034.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1654706034.git.dsterba@suse.com>
 References: <cover.1654706034.git.dsterba@suse.com>
@@ -52,67 +52,191 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With a slight extension of tree_search_for_insert (fill the return node
-and parent return parameters) we can avoid calling __etree_search from
-tree_search, that could be removed eventually in followup patches.
+Simplify helper to return only next and prev pointers, we don't need all
+the node/parent/prev/next pointers of __etree_search as there are now
+other specialized helpers. Rename parameters so they follow the naming.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_io.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ fs/btrfs/extent_io.c | 113 ++++++++++++++++++++++---------------------
+ 1 file changed, 57 insertions(+), 56 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index de0bd32d99e0..ae27b7a5e56c 100644
+index ae27b7a5e56c..48c5432a7c8f 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -443,20 +443,6 @@ tree_search_for_insert(struct extent_io_tree *tree,
- 		       u64 offset,
- 		       struct rb_node ***p_ret,
- 		       struct rb_node **parent_ret)
--{
--	struct rb_node *next= NULL;
--	struct rb_node *ret;
--
--	ret = __etree_search(tree, offset, &next, NULL, p_ret, parent_ret);
--	if (!ret)
--		return next;
--	return ret;
--}
--
--/*
-- * Inexact rb-tree search, return the next entry if @offset is not found
-- */
--static inline struct rb_node *tree_search(struct extent_io_tree *tree, u64 offset)
+@@ -374,9 +374,7 @@ void free_extent_state(struct extent_state *state)
+  *
+  * @tree:       the tree to search
+  * @offset:     offset that should fall within an entry in @tree
+- * @next_ret:   pointer to the first entry whose range ends after @offset
+- * @prev_ret:   pointer to the first entry whose range begins before @offset
+- * @p_ret:      pointer where new node should be anchored (used when inserting an
++ * @node_ret:   pointer where new node should be anchored (used when inserting an
+  *	        entry in the tree)
+  * @parent_ret: points to entry which would have been the parent of the entry,
+  *               containing @offset
+@@ -386,69 +384,76 @@ void free_extent_state(struct extent_state *state)
+  * pointer arguments to the function are filled, otherwise the found entry is
+  * returned and other pointers are left untouched.
+  */
+-static struct rb_node *__etree_search(struct extent_io_tree *tree, u64 offset,
+-				      struct rb_node **next_ret,
+-				      struct rb_node **prev_ret,
+-				      struct rb_node ***p_ret,
+-				      struct rb_node **parent_ret)
++static inline struct rb_node *tree_search_for_insert(struct extent_io_tree *tree,
++					             u64 offset,
++						     struct rb_node ***node_ret,
++						     struct rb_node **parent_ret)
  {
  	struct rb_root *root = &tree->state;
- 	struct rb_node **node = &root->rb_node;
-@@ -475,6 +461,11 @@ static inline struct rb_node *tree_search(struct extent_io_tree *tree, u64 offse
- 			return *node;
+-	struct rb_node **n = &root->rb_node;
++	struct rb_node **node = &root->rb_node;
+ 	struct rb_node *prev = NULL;
+-	struct rb_node *orig_prev = NULL;
+ 	struct tree_entry *entry;
+-	struct tree_entry *prev_entry = NULL;
+ 
+-	while (*n) {
+-		prev = *n;
++	while (*node) {
++		prev = *node;
+ 		entry = rb_entry(prev, struct tree_entry, rb_node);
+-		prev_entry = entry;
+ 
+ 		if (offset < entry->start)
+-			n = &(*n)->rb_left;
++			node = &(*node)->rb_left;
+ 		else if (offset > entry->end)
+-			n = &(*n)->rb_right;
++			node = &(*node)->rb_right;
+ 		else
+-			return *n;
++			return *node;
  	}
  
-+	if (p_ret)
-+		*p_ret = node;
-+	if (parent_ret)
-+		*parent_ret = prev;
-+
- 	/* Search neighbors until we find the first one past the end */
- 	while (prev && offset > entry->end) {
- 		prev = rb_next(prev);
-@@ -484,6 +475,14 @@ static inline struct rb_node *tree_search(struct extent_io_tree *tree, u64 offse
- 	return prev;
- }
+-	if (p_ret)
+-		*p_ret = n;
++	if (node_ret)
++		*node_ret = node;
+ 	if (parent_ret)
+ 		*parent_ret = prev;
  
+-	if (next_ret) {
+-		orig_prev = prev;
+-		while (prev && offset > prev_entry->end) {
+-			prev = rb_next(prev);
+-			prev_entry = rb_entry(prev, struct tree_entry, rb_node);
+-		}
+-		*next_ret = prev;
+-		prev = orig_prev;
++	/* Search neighbors until we find the first one past the end */
++	while (prev && offset > entry->end) {
++		prev = rb_next(prev);
++		entry = rb_entry(prev, struct tree_entry, rb_node);
+ 	}
+ 
+-	if (prev_ret) {
+-		prev_entry = rb_entry(prev, struct tree_entry, rb_node);
+-		while (prev && offset < prev_entry->start) {
+-			prev = rb_prev(prev);
+-			prev_entry = rb_entry(prev, struct tree_entry, rb_node);
+-		}
+-		*prev_ret = prev;
+-	}
+-	return NULL;
++	return prev;
++}
++
 +/*
 + * Inexact rb-tree search, return the next entry if @offset is not found
 + */
 +static inline struct rb_node *tree_search(struct extent_io_tree *tree, u64 offset)
 +{
 +	return tree_search_for_insert(tree, offset, NULL, NULL);
-+}
+ }
+ 
+-static inline struct rb_node *
+-tree_search_for_insert(struct extent_io_tree *tree,
+-		       u64 offset,
+-		       struct rb_node ***p_ret,
+-		       struct rb_node **parent_ret)
++/**
++ * Search offset in the tree or fill neighbor rbtree node pointers.
++ *
++ * @tree:      the tree to search
++ * @offset:    offset that should fall within an entry in @tree
++ * @next_ret:  pointer to the first entry whose range ends after @offset
++ * @prev_ret:  pointer to the first entry whose range begins before @offset
++ *
++ * Return a pointer to the entry that contains @offset byte address. If no
++ * such entry exists, then return NULL and fill @prev_ret and @next_ret.
++ * Otherwise return the found entry and other pointers are left untouched.
++ */
++static struct rb_node *tree_search_prev_next(struct extent_io_tree *tree,
++					     u64 offset,
++					     struct rb_node **prev_ret,
++					     struct rb_node **next_ret)
+ {
+ 	struct rb_root *root = &tree->state;
+ 	struct rb_node **node = &root->rb_node;
+ 	struct rb_node *prev = NULL;
++	struct rb_node *orig_prev = NULL;
+ 	struct tree_entry *entry;
+ 
++	ASSERT(prev_ret);
++	ASSERT(next_ret);
 +
+ 	while (*node) {
+ 		prev = *node;
+ 		entry = rb_entry(prev, struct tree_entry, rb_node);
+@@ -461,26 +466,22 @@ tree_search_for_insert(struct extent_io_tree *tree,
+ 			return *node;
+ 	}
+ 
+-	if (p_ret)
+-		*p_ret = node;
+-	if (parent_ret)
+-		*parent_ret = prev;
+-
+-	/* Search neighbors until we find the first one past the end */
++	orig_prev = prev;
+ 	while (prev && offset > entry->end) {
+ 		prev = rb_next(prev);
+ 		entry = rb_entry(prev, struct tree_entry, rb_node);
+ 	}
++	*next_ret = prev;
++	prev = orig_prev;
+ 
+-	return prev;
+-}
++	entry = rb_entry(prev, struct tree_entry, rb_node);
++	while (prev && offset < entry->start) {
++		prev = rb_prev(prev);
++		entry = rb_entry(prev, struct tree_entry, rb_node);
++	}
++	*prev_ret = prev;
+ 
+-/*
+- * Inexact rb-tree search, return the next entry if @offset is not found
+- */
+-static inline struct rb_node *tree_search(struct extent_io_tree *tree, u64 offset)
+-{
+-	return tree_search_for_insert(tree, offset, NULL, NULL);
++	return NULL;
+ }
+ 
  /*
-  * utility function to look for merge candidates inside a given range.
-  * Any extents with matching state are merged together into a single
+@@ -1687,7 +1688,7 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
+ 
+ 	/* Find first extent with bits cleared */
+ 	while (1) {
+-		node = __etree_search(tree, start, &next, &prev, NULL, NULL);
++		node = tree_search_prev_next(tree, start, &prev, &next);
+ 		if (!node && !next && !prev) {
+ 			/*
+ 			 * Tree is completely empty, send full range and let
 -- 
 2.36.1
 
