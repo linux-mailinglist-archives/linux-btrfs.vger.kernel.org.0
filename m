@@ -2,133 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C4A542F62
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 13:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4036B542F84
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 13:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238070AbiFHLkw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 07:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
+        id S238334AbiFHLzd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 07:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238310AbiFHLkv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 07:40:51 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18515EA6B
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 04:40:48 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id 134so12232868iou.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jun 2022 04:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=DVrzwyzzmDvYrHr9UqUnYLSk2sslhA9rOMMcd/bOFR4=;
-        b=A0JFpZiABtR1y7UWehtyiGOLBlWeScQGFx9xTn7X2/HKfYV4Eve+d+lbfrV4/ecD8I
-         xVFw1kR2anZ2Rw3l8l7cBREtzSYhrfqmD/Cp1zL8H5aRTfXqoS7OBkop4K1VKWqRihkd
-         NYfiuBvMB+xA+d5FOYOfnk955pk1qsgGQk7EFxOgMwUhFHVmNdCxW9JakEvMq9tlnSKP
-         EKKms9q28g3wq5tMsmS9S9k1IrZNof+nPNOO5AAKzP5BIFBnSpURuwHUv1gsx17Hz05i
-         fRlc3KM4lNkXek2+TWRF+NJWC31GnZ2sXf1CqTvZpaWYajPSutA0HQKw53KTZJRczN4M
-         /NTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=DVrzwyzzmDvYrHr9UqUnYLSk2sslhA9rOMMcd/bOFR4=;
-        b=GFEEj5dtRboFAE1H9W7Kw7yxIonMD4Dn0+0ZTOvzMlRDQZ9uiekodvoeGXwwCuBUbR
-         5tRLmXjSLoLn6WRiNGD0oCblHRFNZURp+nWLJFK42sJHOqfsOVJZWA7RFjxWyerdCjW2
-         ioEXU0+xh5KTbPaX7mOyEWl/3US4Y66boUVKAp2FV/60ZnqfIH+4XmWh/H5qdtwbZmxQ
-         WD80Oprd/H65SvrV4VBF/TJISpDflJ4H76LlOCC61/ov8McDg30ET/wnUaoFJjjJwMTg
-         vd0O+dEi3ZXDKoOxdfc/KngaoE2rLj+TN5Ax/jydMDxeTQj06shiaxcbCV+x9B2zMcPM
-         rxqA==
-X-Gm-Message-State: AOAM533ilVLGIkVROLGkaVyFjTNEaujF2yK9wqQXFn7CLQ6lT6UFXc4o
-        JIur/E7+dqwWa4jfZtNRjIAQ7Rh/4SQ=
-X-Google-Smtp-Source: ABdhPJwQ8e5LSbnMCXzK4KbO9fLrQd5+kOqbAJet+/hI/0cDWHNL/hbjfJo48Frl2gEJzJlpXdh+Ag==
-X-Received: by 2002:a5d:9bd3:0:b0:669:50b4:8762 with SMTP id d19-20020a5d9bd3000000b0066950b48762mr7755557ion.74.1654688447426;
-        Wed, 08 Jun 2022 04:40:47 -0700 (PDT)
-Received: from [192.168.50.106] (99-40-201-230.lightspeed.cntmoh.sbcglobal.net. [99.40.201.230])
-        by smtp.gmail.com with ESMTPSA id r11-20020a92760b000000b002d39719b34dsm8660955ilc.87.2022.06.08.04.40.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jun 2022 04:40:47 -0700 (PDT)
-Message-ID: <99585fd0-ba79-f03a-582d-db1c1b0e4e78@gmail.com>
-Date:   Wed, 8 Jun 2022 07:40:46 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
+        with ESMTP id S230107AbiFHLza (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 07:55:30 -0400
+Received: from out20-37.mail.aliyun.com (out20-37.mail.aliyun.com [115.124.20.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7085225885
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 04:55:22 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04439227|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.142673-0.0150993-0.842228;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.O02i.op_1654689319;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.O02i.op_1654689319)
+          by smtp.aliyun-inc.com;
+          Wed, 08 Jun 2022 19:55:20 +0800
+Date:   Wed, 08 Jun 2022 19:55:25 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: What mechanisms protect against split brain?
-Content-Language: en-US
-To:     Wang Yugui <wangyugui@e16-tech.com>,
+Cc:     Forza <forza@tnonline.net>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Forza <forza@tnonline.net>, Qu Wenruo <wqu@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <c31c664.705b352f.1810f98f3ee@tnonline.net>
- <20220608104421.3759.409509F4@e16-tech.com>
- <20220608181502.4AB1.409509F4@e16-tech.com>
- <a97ff3a3-7b14-e6a4-32e9-b9da8cec422e@gmx.com>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-In-Reply-To: <a97ff3a3-7b14-e6a4-32e9-b9da8cec422e@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <d1d47581-9003-2202-55ca-279b2ca4dba6@gmx.com>
+References: <20220608185805.41ED.409509F4@e16-tech.com> <d1d47581-9003-2202-55ca-279b2ca4dba6@gmx.com>
+Message-Id: <20220608195524.7F1C.409509F4@e16-tech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 08/06/2022 06.32, Qu Wenruo wrote:
-> In fact, fully split brain (both have the same generation, but
-> experienced their own degraded mount) case can not be solved by btrfs
-> itself at all.
+Hi,
+
+> On 2022/6/8 18:58, Wang Yugui wrote:
+> > Hi,
+> >
+> >> On 2022/6/8 18:15, Wang Yugui wrote:
+> >>> Hi, Forza, Qu Wenruo
+> >>>
+> >>> I write a script to test RAID1 split brain base on Qu's work of raid5(*1)
+> >>> *1: https://lore.kernel.org/linux-btrfs/53f7bace2ac75d88ace42dd811d48b7912647301.1654672140.git.wqu@suse.com/T/#u
+> >>
+> >> No no no, that is not to address split brain, but mostly to drop cache
+> >> for recovery path to maximize the chance of recovery.
+> >>
+> >> It's not designed to solve split brain problem at all, it's just one
+> >> case of such problem.
+> >>
+> >> In fact, fully split brain (both have the same generation, but
+> >> experienced their own degraded mount) case can not be solved by btrfs
+> >> itself at all.
+> >>
+> >> Btrfs can only solve partial split brain case (one device has higher
+> >> generation, thus btrfs can still determine which copy is the correct one).
+> >>
+> >>>
+> >>> #!/bin/bash
+> >>> set -uxe -o pipefail
+> >>>
+> >>> mnt=/mnt/test
+> >>> dev1=/dev/vdb1
+> >>> dev2=/dev/vdb2
+> >>>
+> >>>     dmesg -C
+> >>>     mkdir -p $mnt
+> >>>
+> >>>     mkfs.btrfs -f -m raid1 -d raid1 $dev1 $dev2
+> >>>     mount $dev1 $mnt
+> >>>     xfs_io -f -c "pwrite -S 0xee 0 1M" $mnt/file1
+> >>>     sync
+> >>>     umount $mnt
+> >>>
+> >>>     btrfs dev scan -u $dev2
+> >>>     mount -o degraded $dev1 $mnt
+> >>>     #xfs_io -f -c "pwrite -S 0xff 0 128M" $mnt/file2
+> >>>     mkdir -p $mnt/branch1; /bin/cp -R /usr/bin $mnt/branch1 #complex than xfs_io
+> >>>     umount $mnt
+> >>>
+> >>>     btrfs dev scan
+> >>>     btrfs dev scan -u $dev1
+> >>>     mount -o degraded $dev2 $mnt
+> >>
+> >> Your case is the full split brain case.
+> >>
+> >> Not possible to solve.
+> >>
+> >> In fact, if you don't do the degraded mount on dev2, btrfs is completely
+> >> fine to resilve the fs without any problem.
+> >
+> > step1: we mark btrfs/RAID1 with degraded write as not-clean-RAID1.
 > 
-> Btrfs can only solve partial split brain case (one device has higher
-> generation, thus btrfs can still determine which copy is the correct one).
-Of note, this is not unique to BTRFS. The quorum requirement that Ceph 
-and many other distributed storage systems impose on writes exists to 
-very specifically avoid this type of situation.
+> Then when to clean?
+> Full scrub or some timing else?
+
+'full scrub' or 'full balance' is OK.
+this is not the normal path, so no critical performance is required.
+
+> > step2: in that state, we default try to read copy 0 of RAID1
+> > 	current pid based i/o patch select policy
+> >             preferred_mirror = first + (current->pid % num_stripes);
 > 
->>
->> #!/bin/bash
->> set -uxe -o pipefail
->>
->> mnt=/mnt/test
->> dev1=/dev/vdb1
->> dev2=/dev/vdb2
->>
->>    dmesg -C
->>    mkdir -p $mnt
->>
->>    mkfs.btrfs -f -m raid1 -d raid1 $dev1 $dev2
->>    mount $dev1 $mnt
->>    xfs_io -f -c "pwrite -S 0xee 0 1M" $mnt/file1
->>    sync
->>    umount $mnt
->>
->>    btrfs dev scan -u $dev2
->>    mount -o degraded $dev1 $mnt
->>    #xfs_io -f -c "pwrite -S 0xff 0 128M" $mnt/file2
->>    mkdir -p $mnt/branch1; /bin/cp -R /usr/bin $mnt/branch1 #complex 
->> than xfs_io
->>    umount $mnt
->>
->>    btrfs dev scan
->>    btrfs dev scan -u $dev1
->>    mount -o degraded $dev2 $mnt
+> That's feasible, but still need an ondisk format change.
+
+yes. we need to save something into the disks.
+but maybe 1 byte per disk.  so maybe no ondisk format change.
+
+> Furthermore, this idea can also be done by a more generic way,
+> write-intent bitmap.
 > 
-> Your case is the full split brain case.
+> In fact, DM layer uses this to speed up resilver, and handle split brain
+> cases.
 > 
-> Not possible to solve.
+> With write-intent bitmap, every degraded write will leave the record in
+> the write-intent bitmap until properly resilvered.
+
+write-intent bitmap have the problem of performance, 
+so it is a little expensive for RAID1[C34]?
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/06/08
+
+> Thanks,
+> Qu
 > 
-> In fact, if you don't do the degraded mount on dev2, btrfs is completely
-> fine to resilve the fs without any problem.
-> 
-And this, in turn, is why BTRFS refuses to mount degraded without the 
-user explicitly asking for it, and why having `degraded` in your mount 
-options in `/etc/fstab` (or on the kernel command line) is so dangerous. 
-There’s no way for BTRFS (or the block layer for that matter) to 
-reliably differentiate between a missing device resulting from a device 
-failure and a missing device resulting from other issues, and those 
-other issues can easily result in one half of a two-device volume not 
-being present for one boot, and the other half not being present on the 
-next boot.
+> >
+> > this idea seem to work?
+> >
+> > degraded RAID1 write is almost the same as full split brain?
+> >
+> > Best Regards
+> > Wang Yugui (wangyugui@e16-tech.com)
+> > 2022/06/08
+
+
