@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B787543955
+	by mail.lfdr.de (Postfix) with ESMTP id 7A776543956
 	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 18:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343515AbiFHQr6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 12:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
+        id S1343522AbiFHQr7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 12:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245745AbiFHQry (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 12:47:54 -0400
+        with ESMTP id S1343510AbiFHQr4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 12:47:56 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48014504C
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 09:47:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3AC4507D
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 09:47:55 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7005B1F997;
-        Wed,  8 Jun 2022 16:47:52 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 998971F9B0;
+        Wed,  8 Jun 2022 16:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654706872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1654706874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8q0+qHN0/EHHXEkSojoc9/jN0w1B2YG/gnelxufubbg=;
-        b=S/yrvX9/H3y3eqkxQTQzBB9zLDOU9YS4WeqyoylaRGlGUAY0h9Iqumx51R/xIWHDwfNbeE
-        odpA/6+ORVafNR11pf2r21TJ2ct+Ula7MuqDT3ulfxLj+jZrGab6EDrdz2axIQVjHGfCip
-        CWKa1TDzxDXMOFE4C7H8ZuRMg3MGnRA=
+        bh=CYGutKqbyNZwAM0n9JDhJKaloPBuZvdjK8ApRRZvnm8=;
+        b=hPytwIs0D3VNgMTuL8tR/0ItRBrqCJrnkgDbUVgpzrOt7K91AaWHZVf6oVLvMa1NwHQQAL
+        3ZAqz9odGp/9htn67hswFWDhidvWboz464BvskjnkC8mYJBLQPtCxKoK6rt63yYY5iJwt9
+        unjdvcVHjMGbX0dB0DsHwd6QBC6u8cI=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 659272C141;
-        Wed,  8 Jun 2022 16:47:52 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 8FCD52C141;
+        Wed,  8 Jun 2022 16:47:54 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D585ADA883; Wed,  8 Jun 2022 18:43:23 +0200 (CEST)
+        id 05A95DA883; Wed,  8 Jun 2022 18:43:25 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/9] btrfs: open code rbtree search in insert_state
-Date:   Wed,  8 Jun 2022 18:43:23 +0200
-Message-Id: <3b36c2631779e51b57e8ded3ffd6b7f7e51b927e.1654706034.git.dsterba@suse.com>
+Subject: [PATCH 3/9] btrfs: lift start and end parameters to callers of insert_state
+Date:   Wed,  8 Jun 2022 18:43:25 +0200
+Message-Id: <1be84acd258f46425c4162fe3b34173be2512c20.1654706034.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1654706034.git.dsterba@suse.com>
 References: <cover.1654706034.git.dsterba@suse.com>
@@ -52,122 +52,99 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The rbtree search is a known pattern and can be open coded, allowing to
-remove the tree_insert and further cleanups.
+Let callers of insert_state to set up the extent state to allow further
+simplifications of the parameters.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_io.c | 80 ++++++++++++++++++--------------------------
- 1 file changed, 33 insertions(+), 47 deletions(-)
+ fs/btrfs/extent_io.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c39f8674b6ce..429096fc8899 100644
+index 429096fc8899..1411286e5ef2 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -368,42 +368,6 @@ void free_extent_state(struct extent_state *state)
- 	}
- }
- 
--static struct rb_node *tree_insert(struct rb_root *root,
--				   struct rb_node *search_start,
--				   u64 offset,
--				   struct rb_node *node,
--				   struct rb_node ***p_in,
--				   struct rb_node **parent_in)
--{
--	struct rb_node **p;
--	struct rb_node *parent = NULL;
--	struct tree_entry *entry;
--
--	if (p_in && parent_in) {
--		p = *p_in;
--		parent = *parent_in;
--		goto do_insert;
--	}
--
--	p = search_start ? &search_start : &root->rb_node;
--	while (*p) {
--		parent = *p;
--		entry = rb_entry(parent, struct tree_entry, rb_node);
--
--		if (offset < entry->start)
--			p = &(*p)->rb_left;
--		else if (offset > entry->end)
--			p = &(*p)->rb_right;
--		else
--			return parent;
--	}
--
--do_insert:
--	rb_link_node(node, parent, p);
--	rb_insert_color(node, root);
--	return NULL;
--}
--
- /**
-  * Search @tree for an entry that contains @offset. Such entry would have
-  * entry->start <= offset && entry->end >= offset.
-@@ -561,11 +525,12 @@ static void set_state_bits(struct extent_io_tree *tree,
+@@ -524,21 +524,14 @@ static void set_state_bits(struct extent_io_tree *tree,
+  * probably isn't what you want to call (see set/clear_extent_bit).
   */
  static int insert_state(struct extent_io_tree *tree,
- 			struct extent_state *state, u64 start, u64 end,
--			struct rb_node ***p,
--			struct rb_node **parent,
-+			struct rb_node ***node_in,
-+			struct rb_node **parent_in,
+-			struct extent_state *state, u64 start, u64 end,
++			struct extent_state *state,
+ 			struct rb_node ***node_in,
+ 			struct rb_node **parent_in,
  			u32 *bits, struct extent_changeset *changeset)
  {
--	struct rb_node *node;
-+	struct rb_node **node;
-+	struct rb_node *parent;
- 
- 	if (end < start) {
- 		btrfs_err(tree->fs_info,
-@@ -577,15 +542,36 @@ static int insert_state(struct extent_io_tree *tree,
+ 	struct rb_node **node;
+ 	struct rb_node *parent;
+-
+-	if (end < start) {
+-		btrfs_err(tree->fs_info,
+-			"insert state: end < start %llu %llu", end, start);
+-		WARN_ON(1);
+-	}
+-	state->start = start;
+-	state->end = end;
++	const u64 end = state->end;
  
  	set_state_bits(tree, state, bits, changeset);
  
--	node = tree_insert(&tree->state, NULL, end, &state->rb_node, p, parent);
--	if (node) {
--		struct extent_state *found;
--		found = rb_entry(node, struct extent_state, rb_node);
--		btrfs_err(tree->fs_info,
--		       "found node %llu %llu on insert of %llu %llu",
--		       found->start, found->end, start, end);
--		return -EEXIST;
-+	/* Caller provides the exact tree location */
-+	if (node_in && parent_in) {
-+		node = *node_in;
-+		parent = *parent_in;
-+		goto insert_new;
+@@ -563,7 +556,7 @@ static int insert_state(struct extent_io_tree *tree,
+ 		} else {
+ 			btrfs_err(tree->fs_info,
+ 			       "found node %llu %llu on insert of %llu %llu",
+-			       entry->start, entry->end, start, end);
++			       entry->start, entry->end, state->start, end);
+ 			return -EEXIST;
+ 		}
  	}
-+
-+	node = &tree->state.rb_node;
-+	while (*node) {
-+		struct tree_entry *entry;
-+
-+		parent = *node;
-+		entry = rb_entry(parent, struct tree_entry, rb_node);
-+
-+		if (end < entry->start) {
-+			node = &(*node)->rb_left;
-+		} else if (end > entry->end) {
-+			node = &(*node)->rb_right;
-+		} else {
-+			btrfs_err(tree->fs_info,
-+			       "found node %llu %llu on insert of %llu %llu",
-+			       entry->start, entry->end, start, end);
-+			return -EEXIST;
-+		}
-+	}
-+
-+insert_new:
-+	rb_link_node(&state->rb_node, parent, node);
-+	rb_insert_color(&state->rb_node, &tree->state);
-+
- 	merge_state(tree, state);
- 	return 0;
- }
+@@ -1027,8 +1020,9 @@ int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bits,
+ 	if (!node) {
+ 		prealloc = alloc_extent_state_atomic(prealloc);
+ 		BUG_ON(!prealloc);
+-		err = insert_state(tree, prealloc, start, end,
+-				   &p, &parent, &bits, changeset);
++		prealloc->start = start;
++		prealloc->end = end;
++		err = insert_state(tree, prealloc, &p, &parent, &bits, changeset);
+ 		if (err)
+ 			extent_io_tree_panic(tree, err);
+ 
+@@ -1144,8 +1138,9 @@ int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bits,
+ 		 * Avoid to free 'prealloc' if it can be merged with
+ 		 * the later extent.
+ 		 */
+-		err = insert_state(tree, prealloc, start, this_end,
+-				   NULL, NULL, &bits, changeset);
++		prealloc->start = start;
++		prealloc->end = this_end;
++		err = insert_state(tree, prealloc, NULL, NULL, &bits, changeset);
+ 		if (err)
+ 			extent_io_tree_panic(tree, err);
+ 
+@@ -1268,8 +1263,9 @@ int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 			err = -ENOMEM;
+ 			goto out;
+ 		}
+-		err = insert_state(tree, prealloc, start, end,
+-				   &p, &parent, &bits, NULL);
++		prealloc->start = start;
++		prealloc->end = end;
++		err = insert_state(tree, prealloc, &p, &parent, &bits, NULL);
+ 		if (err)
+ 			extent_io_tree_panic(tree, err);
+ 		cache_state(prealloc, cached_state);
+@@ -1366,8 +1362,9 @@ int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		 * Avoid to free 'prealloc' if it can be merged with
+ 		 * the later extent.
+ 		 */
+-		err = insert_state(tree, prealloc, start, this_end,
+-				   NULL, NULL, &bits, NULL);
++		prealloc->start = start;
++		prealloc->end = this_end;
++		err = insert_state(tree, prealloc, NULL, NULL, &bits, NULL);
+ 		if (err)
+ 			extent_io_tree_panic(tree, err);
+ 		cache_state(prealloc, cached_state);
 -- 
 2.36.1
 
