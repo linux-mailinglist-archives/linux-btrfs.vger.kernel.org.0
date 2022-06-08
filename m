@@ -2,73 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 568205424B4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 08:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B3A542651
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 08:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbiFHFEe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 01:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
+        id S232095AbiFHF2q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 01:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232777AbiFHFDY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 01:03:24 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433402EEBCE;
-        Tue,  7 Jun 2022 18:55:24 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LHqvW21W6zRnQp;
-        Wed,  8 Jun 2022 09:51:19 +0800 (CST)
-Received: from CHINA (10.175.102.38) by canpemm500009.china.huawei.com
- (7.192.105.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 8 Jun
- 2022 09:54:30 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <weiyongjun1@huawei.com>, Stefan Roesch <shr@fb.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>
-CC:     <linux-btrfs@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] btrfs: sysfs: fix return value check in btrfs_force_chunk_alloc_s()
-Date:   Wed, 8 Jun 2022 02:12:52 +0000
-Message-ID: <20220608021252.990374-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S231938AbiFHF1l (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 01:27:41 -0400
+Received: from out20-206.mail.aliyun.com (out20-206.mail.aliyun.com [115.124.20.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C5E18CA81
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 19:44:40 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0614546|-1;BR=01201311R101S92rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.0471917-0.00165341-0.951155;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.O.QbPwS_1654656257;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.O.QbPwS_1654656257)
+          by smtp.aliyun-inc.com;
+          Wed, 08 Jun 2022 10:44:17 +0800
+Date:   Wed, 08 Jun 2022 10:44:21 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Forza <forza@tnonline.net>
+Subject: Re: What mechanisms protect against split brain?
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+In-Reply-To: <c31c664.705b352f.1810f98f3ee@tnonline.net>
+References: <c31c664.705b352f.1810f98f3ee@tnonline.net>
+Message-Id: <20220608104421.3759.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.102.38]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In case of error, the function btrfs_start_transaction() returns
-ERR_PTR() and never returns NULL. The NULL test in the return value
-check should be replaced with IS_ERR().
+Hi,
 
-Fixes: 46e1bce0ac34 ("btrfs: sysfs: add force_chunk_alloc trigger to force allocation")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- fs/btrfs/sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I tried some test about this case.
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index ebe76d7a4a64..4186fdcbcdee 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -807,7 +807,7 @@ static ssize_t btrfs_force_chunk_alloc_store(struct kobject *kobj,
- 	 * unexpected problems.
- 	 */
- 	trans = btrfs_start_transaction(fs_info->tree_root, 0);
--	if (!trans)
-+	if (IS_ERR(trans))
- 		return PTR_ERR(trans);
- 	ret = btrfs_force_chunk_alloc(trans, space_info->flags);
- 	btrfs_end_transaction(trans);
+After the missing RAID1 device is re-introduced,
+1, mount/read seem to work.
+   checksum based error detect help.
+   current pid based i/o patch select policy may help too.
+       preferred_mirror = first + (current->pid % num_stripes);
+
+2, 'btrfs scrub' failed to finish.
+    Any advice to return to clean state?
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/06/08
+
+> Hi,
+> 
+> Recently there have been some discussions, both here on the mailing list and on #btrfs IRC, about the consequences of mounting one RAID1 mirror as degraded and then later re-introduce the missing device. But also on having degraded mount option in fstab and kernel command line.
+> 
+> So I wonder if Btrfs has some protective mechanisms against data loss/corruption if a drive is missing for a bit but later re-introduced. There is also the case of split brain where each mirror might be independently updated and then recombined.
+> 
+> Is there an official recommendation to have with regards to degraded mounts from kernel command line? I understand the use case as it allows the system to boot even if a device goes missing or dead after a reboot.
+> 
+> Thanks,
+> Forza
+
 
