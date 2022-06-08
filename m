@@ -2,132 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461CB542254
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 08:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568205424B4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 08:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbiFHFK5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 01:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
+        id S231794AbiFHFEe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 01:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233126AbiFHFKH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 01:10:07 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BFC1CE783
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jun 2022 19:12:46 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nylBd-0004K9-6V by authid <merlin>; Tue, 07 Jun 2022 19:12:45 -0700
-Date:   Tue, 7 Jun 2022 19:12:45 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
- transid verify failed + open_ctree failed)
-Message-ID: <20220608021245.GD22722@merlins.org>
-References: <20220607204406.GX22722@merlins.org>
- <CAEzrpqccYbdBNs6gYDzZRw17D1O6tPU=9w1vLvDVOjJeMDuazw@mail.gmail.com>
- <20220607212523.GZ22722@merlins.org>
- <CAEzrpqex0PRGZA3_gaoUhpPb-7cpi-gi_mo1S3F=0xxKNptpEA@mail.gmail.com>
- <20220607233734.GA22722@merlins.org>
- <CAEzrpqcVO99HbrhmtABUENRCm4HEsyg3+T3oK33DZFuXamwqgA@mail.gmail.com>
- <20220608000700.GB22722@merlins.org>
- <CAEzrpqe79F=-0T7Q3dqb62J6+kcisOjnWP+aLkkY0z+EJY-m9Q@mail.gmail.com>
- <20220608004241.GC22722@merlins.org>
- <CAEzrpqdq8zTBQaw_VneL4rfZn0JseUiwvtfwXQx0jq=DYBCFFw@mail.gmail.com>
+        with ESMTP id S232777AbiFHFDY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 01:03:24 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433402EEBCE;
+        Tue,  7 Jun 2022 18:55:24 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LHqvW21W6zRnQp;
+        Wed,  8 Jun 2022 09:51:19 +0800 (CST)
+Received: from CHINA (10.175.102.38) by canpemm500009.china.huawei.com
+ (7.192.105.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 8 Jun
+ 2022 09:54:30 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Stefan Roesch <shr@fb.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>
+CC:     <linux-btrfs@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] btrfs: sysfs: fix return value check in btrfs_force_chunk_alloc_s()
+Date:   Wed, 8 Jun 2022 02:12:52 +0000
+Message-ID: <20220608021252.990374-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEzrpqdq8zTBQaw_VneL4rfZn0JseUiwvtfwXQx0jq=DYBCFFw@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 07, 2022 at 09:31:28PM -0400, Josef Bacik wrote:
-> > doing close???
-> > extent buffer leak: start 11160502779904 len 16384
-> > extent buffer leak: start 15645018308608 len 16384
-> > Init extent tree failed
-> 
-> I swear first thing I'm doing after all this is updating the shared
-> code.  Try again please,
+In case of error, the function btrfs_start_transaction() returns
+ERR_PTR() and never returns NULL. The NULL test in the return value
+check should be replaced with IS_ERR().
 
-It went farther:
+Fixes: 46e1bce0ac34 ("btrfs: sysfs: add force_chunk_alloc trigger to force allocation")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ fs/btrfs/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-processed 163840 of 1064960 possible bytes, 15%
-Recording extents for root 5
-processed 65536 of 10960896 possible bytes, 0%
-Recording extents for root 7
-processed 16384 of 16570974208 possible bytes, 0%
-Recording extents for root 9
-processed 16384 of 16384 possible bytes, 100%
-Recording extents for root 161197
-processed 131072 of 108986368 possible bytes, 0%
-Recording extents for root 161199
-processed 196608 of 49479680 possible bytes, 0%
-Recording extents for root 161200
-processed 180224 of 254214144 possible bytes, 0%
-Recording extents for root 161889
-processed 196608 of 49446912 possible bytes, 0%
-Recording extents for root 162628
-processed 49152 of 49463296 possible bytes, 0%
-Recording extents for root 162632
-processed 114688 of 94633984 possible bytes, 0%
-Recording extents for root 163298
-processed 49152 of 49463296 possible bytes, 0%
-Recording extents for root 163302
-processed 98304 of 94633984 possible bytes, 0%
-Recording extents for root 163303
-processed 131072 of 76333056 possible bytes, 0%
-Recording extents for root 163316
-processed 98304 of 108544000 possible bytes, 0%
-Recording extents for root 163920
-processed 16384 of 108691456 possible bytes, 0%
-Recording extents for root 164620
-processed 49152 of 49463296 possible bytes, 0%
-Recording extents for root 164623
-processed 311296 of 63193088 possible bytes, 0%
-Recording extents for root 164624
-processed 933888 of 108822528 possible bytes, 0%
-Recording extents for root 164629
-processed 622592 of 108838912 possible bytes, 0%
-Recording extents for root 164631
-processed 16384 of 49430528 possible bytes, 0%
-Recording extents for root 164633
-processed 16384 of 75694080 possible bytes, 0%
-Recording extents for root 164823
-processed 131072 of 63193088 possible bytes, 0%
-Recording extents for root 18446744073709551607
-processed 16384 of 16384 possible bytes, 100%
-doing block accounting
-couldn't find a block group at bytenr 20971520 total left 180224
-cache 11106814787584 11107888529408 in range no
-cache 11108962271232 11110036013056 in range no
-cache 11110036013056 11111109754880 in range no
-(...)
-cache 15929559744512 15930633486336 in range no
-cache 15930633486336 15931707228160 in range no
-cache 15931707228160 15932780969984 in range no
-cache 15932780969984 15933854711808 in range no
-cache 15933854711808 15934928453632 in range no
-ERROR: update block group failed 20971520 180224 ret -1
-FIX BLOCK ACCOUNTING FAILED -1
-ERROR: The commit failed???? -1
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index ebe76d7a4a64..4186fdcbcdee 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -807,7 +807,7 @@ static ssize_t btrfs_force_chunk_alloc_store(struct kobject *kobj,
+ 	 * unexpected problems.
+ 	 */
+ 	trans = btrfs_start_transaction(fs_info->tree_root, 0);
+-	if (!trans)
++	if (IS_ERR(trans))
+ 		return PTR_ERR(trans);
+ 	ret = btrfs_force_chunk_alloc(trans, space_info->flags);
+ 	btrfs_end_transaction(trans);
 
-doing close???
-ERROR: commit_root already set when starting transaction
-extent buffer leak: start 15645020913664 len 16384
-Init extent tree failed
-
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
