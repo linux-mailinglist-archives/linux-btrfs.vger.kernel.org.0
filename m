@@ -2,76 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A6E54372E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 17:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEDC543759
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 17:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244192AbiFHPVe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 11:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        id S244399AbiFHP0n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 11:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343721AbiFHPUp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 11:20:45 -0400
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0F47E1F3
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 08:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1654701468;
-        bh=aXgcX1vos1PZO9Adq1pFJFDyJZeN4guv2+M5mEX91cM=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=VkUCSaNLmB/jTRSUHfKqHR7IEYj4bzM2fCPZ8THngy06tNAT/4y/SFEU2R2Tz6LPp
-         GCbR0Owx3GQtmR26d26MHXSKC9JqGTe2sOVVkMjxg68RaP4xu1y3E9S+hj54dcQc0S
-         JyPAf2meJX8Kpkaw8oE65hWjGv2/U14IfdRRzCXA=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from gecko ([93.95.236.146]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M3m59-1nzmeW3EKB-000mUL; Wed, 08
- Jun 2022 17:17:47 +0200
-Date:   Wed, 8 Jun 2022 15:17:36 +0000
-From:   Lukas Straub <lukasstraub2@web.de>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Martin Raiber <martin@urbackup.org>,
-        Paul Jones <paul@pauljones.id.au>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format draft
-Message-ID: <20220608151736.6731b1d9@gecko>
-In-Reply-To: <8c318892-0d36-51bb-18e0-a762dd75b723@gmx.com>
-References: <20220601102532.D262.409509F4@e16-tech.com>
- <49fb1216-189d-8801-d134-596284f62f1f@gmx.com>
- <20220601170741.4B12.409509F4@e16-tech.com>
- <5f49c12e-4655-48dd-0d73-49dc351eae15@gmx.com>
- <SYCPR01MB4685030F15634C6C2FEC01369EDF9@SYCPR01MB4685.ausprd01.prod.outlook.com>
- <6cbc718d-4afb-87e7-6f01-a1d06a74ab9e@gmx.com>
- <01020181209a0f8e-b97fa255-3146-4ced-b9c9-a6627a21d6e1-000000@eu-west-1.amazonses.com>
- <f56d4b11-1788-e4b5-35fa-d17b46a46d00@gmx.com>
- <20220603093207.6722d77a@gecko>
- <8c318892-0d36-51bb-18e0-a762dd75b723@gmx.com>
+        with ESMTP id S244751AbiFHP0Q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 11:26:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE68142AB5;
+        Wed,  8 Jun 2022 08:22:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 37F0360AE5;
+        Wed,  8 Jun 2022 15:22:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D62AC34116;
+        Wed,  8 Jun 2022 15:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654701776;
+        bh=SgYW51aN3OeqjU6+EIk8CHclo6M6cc2uvUEPUetN9AY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p7z+0eY7ntbEVxA2gI3ZDLWM0mQwSUHKo0XnCgV0chmlHkz2P/vCANEjmqGsAdwGb
+         EoSpjHFAP8n9bDzPCEYaP1TdvsHfTZs7ZO2YCb1PhaDgWMEewk0XhfG2S7DJV8N6Zq
+         6BFFHYmv/C0EtAhNH8ykQ23VCX1LuObfUCtnf/2zRNky8BKsi3YeFoHUI0AgtoZtnU
+         /s5ocIdJDBgJaNkjIJoR2ZyE63FMuzKBldotmlU9Pd6NrsbPX3n/4O3QNinmpI+xhS
+         eF/3KfLyFpQXF2Gi5KoPPct1DqMaQ4m32g9c7heF/cNtqM6cQYwdFJN5c8DpxFzwH1
+         PF1h9+AG7Xw/A==
+Date:   Wed, 8 Jun 2022 08:22:56 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 11/19] mm/migrate: Add filemap_migrate_folio()
+Message-ID: <YqC+0J9/P1siKkBk@magnolia>
+References: <20220608150249.3033815-1-willy@infradead.org>
+ <20220608150249.3033815-12-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LyR5PUoTI6a6P0Y+.QBqCXX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Provags-ID: V03:K1:qJffzErdDR1dr+SAA5WC1BqZKeF2fNe3IZyzmeFfnmHzPDcZHZL
- pl7Hgiqvi7NRsLB0TxiEFqzwcaX+SeWe7stunsXOU8jSAuvFB0rGU0hU3KDjKK7GI8KI40T
- IXOaDK0HwbgSHCXvZ7mZSRy/D8tEWLqEl0SKHhQPY7GwoFdgoRDY9o/wZC/cq/Svrj0jsJz
- 3YS+XWyH5j2lGqLv1knTw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:U1YWNDgRpEY=:YECcxJPRAFlA1ioASDRJyb
- gVe+XKYQp7j7aaEr0ZNtK3JEljQBj1Is6vCIKI0Lj1oi2LT/iu38ymiRBE5rueoeQwiEIzw8a
- xlbgFFcc80QH8CqH/N+Pr8nilPYJop7kgOBdpN5mX9yCExs+jbubKr7grSEn0IAb7+OMm0Gr/
- TV7IQEQ8NFilJ0ZoeVW08KfvT0T6xhaL3gVuM/6wSL6PJCqkZAtHywDI8sqsS5mT19nhUnAO5
- KXBq1EEuspWsUBD0lXS/a0qlZekw9gILsZTfR8kEbs/xltjuCmfqN7/37UVoR1fopyKUM70zS
- asaFk5ixwhauR8xvobYJF0ZZLnka4c2s75AOhO1sT8CgQFjJ0bQ0lke3e4S0te+zvexT2vVdb
- 6ILHQ/SieQLZd0BfZjxBN3qL7VCwJaYf/Rj+RvcVDfYMwNDwjbztAWQVxfAGRGtbwUgGyI5vz
- SVygaal0VjvcaA+9dg4Rxfnji6jTMF7iJHl2X5hXWzxuBuqRv5U8h08ac/jxTBsm+BU7I8ODL
- vbcHF5S9lHbc8kGMLhKzasiWnrjcPA0qH9XzaFIZ7/iOiFAnEK9aPPiagXaG67WSyGfVL2865
- Vd1FT+o4YCfhtKvESMbkHC3ig52cQSFWiV7eUWMprlXZ8qxMx0IdzxFxmvQCJefh8vGQ9yRlB
- YR9TfoV6fmLDQ6BPe44bb6UGdNleCPM67WU0tBQ99jVKSTctJG+YC9X1l5v3KIlxD66+96To5
- DEKYeLg6G39ewD2uRGGSNuvLMr8spAVOEGxW1eiSbCe9ykKCD4ukdK55KMI8ekD+hscizIVIo
- onS7F2ciOPY7nOh94/mSqfXVmImp6DdXQU7JmC79L49EIGOWziZX5bbteRxVE9JXfyJuQFGj7
- 65LqMErUXQxxcotGBP8+Ppw06aW43uoAyL7A6AJ820iv8gVhV6jWQgA9lAvYXoLOsb1JtFTos
- 74klhBiW6UBYEoQaw/Jc98qD3wiM02RoqACiRFgLvdC5PyOGDkxuRQ4jpEa6a3mC/LTMcH7oo
- 1XwGhUHicpF4bt97DoMss5sVYSPOtRTvpnSHxT3kuQrmqxk08Sdr1a/tgYAKdV4ZuL3sWPg/F
- nzhSKSoJhXkL2XT44y27dG2oFz90vn61dW5VGcfgLOJTrWz/kVNRDPgqw==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220608150249.3033815-12-willy@infradead.org>
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,214 +61,170 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---Sig_/LyR5PUoTI6a6P0Y+.QBqCXX
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 08, 2022 at 04:02:41PM +0100, Matthew Wilcox (Oracle) wrote:
+> There is nothing iomap-specific about iomap_migratepage(), and it fits
+> a pattern used by several other filesystems, so move it to mm/migrate.c,
+> convert it to be filemap_migrate_folio() and convert the iomap filesystems
+> to use it.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-On Fri, 3 Jun 2022 17:59:59 +0800
-Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+LGTM
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-> On 2022/6/3 17:32, Lukas Straub wrote:
-> > On Thu, 2 Jun 2022 05:37:11 +0800
-> > Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > =20
-> >> On 2022/6/2 02:49, Martin Raiber wrote: =20
-> >>> On 01.06.2022 12:12 Qu Wenruo wrote: =20
-> >>>>
-> >>>>
-> >>>> On 2022/6/1 17:56, Paul Jones wrote: =20
-> >>>>> =20
-> >>>>>> -----Original Message-----
-> >>>>>> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-> >>>>>> Sent: Wednesday, 1 June 2022 7:27 PM
-> >>>>>> To: Wang Yugui <wangyugui@e16-tech.com>
-> >>>>>> Cc: linux-btrfs@vger.kernel.org
-> >>>>>> Subject: Re: [PATCH DRAFT] btrfs: RAID56J journal on-disk format d=
-raft
-> >>>>>>
-> >>>>>> =20
-> >>>>> =20
-> >>>>>>>>> If we save journal on every RAID56 HDD, it will always be very =
-slow,
-> >>>>>>>>> because journal data is in a different place than normal data, =
-so
-> >>>>>>>>> HDD seek is always happen?
-> >>>>>>>>>
-> >>>>>>>>> If we save journal on a device just like 'mke2fs -O journal_dev=
-' or
-> >>>>>>>>> 'mkfs.xfs -l logdev', then this device just works like NVDIMM?=
-=C2=A0 We
-> >>>>>>>>> may not need
-> >>>>>>>>> RAID56/RAID1 for journal data. =20
-> >>>>>>>>
-> >>>>>>>> That device is the single point of failure. You lost that device,
-> >>>>>>>> write hole come again. =20
-> >>>>>>>
-> >>>>>>> The HW RAID card have 'single point of failure'=C2=A0 too, such a=
-s the
-> >>>>>>> NVDIMM inside HW RAID card.
-> >>>>>>>
-> >>>>>>> but=C2=A0 power-lost frequency > hdd failure frequency=C2=A0 > NV=
-DIMM/ssd
-> >>>>>>> failure frequency =20
-> >>>>>>
-> >>>>>> It's a completely different level.
-> >>>>>>
-> >>>>>> For btrfs RAID, we have no special treat for any disk.
-> >>>>>> And our RAID is focusing on ensuring device tolerance.
-> >>>>>>
-> >>>>>> In your RAID card case, indeed the failure rate of the card is muc=
-h lower.
-> >>>>>> In journal device case, how do you ensure it's still true that the=
- journal device
-> >>>>>> missing possibility is way lower than all the other devices?
-> >>>>>>
-> >>>>>> So this doesn't make sense, unless you introduce the journal to so=
-mething
-> >>>>>> definitely not a regular disk.
-> >>>>>>
-> >>>>>> I don't believe this benefit most users.
-> >>>>>> Just consider how many regular people use dedicated journal device=
- for
-> >>>>>> XFS/EXT4 upon md/dm RAID56. =20
-> >>>>>
-> >>>>> A good solid state drive should be far less error prone than spinni=
-ng drives, so would be a good candidate. Not perfect, but better.
-> >>>>>
-> >>>>> As an end user I think focusing on stability and recovery tools is =
-a better use of time than fixing the write hole, as I wouldn't even conside=
-r using Raid56 in it's current state. The write hole problem can be allevia=
-ted by a UPS and not using Raid56 for a busy write load. It's still good to=
- brainstorm the issue though, as it will need solving eventually. =20
-> >>>>
-> >>>> In fact, since write hole is only a problem for power loss (and expl=
-icit
-> >>>> degraded write), another solution is, only record if the fs is
-> >>>> gracefully closed.
-> >>>>
-> >>>> If the fs is not gracefully closed (by a bit in superblock), then we
-> >>>> just trigger a full scrub on all existing RAID56 block groups.
-> >>>>
-> >>>> This should solve the problem, with the extra cost of slow scrub for
-> >>>> each unclean shutdown.
-> >>>>
-> >>>> To be extra safe, during that scrub run, we really want user to wait=
- for
-> >>>> the scrub to finish.
-> >>>>
-> >>>> But on the other hand, I totally understand user won't be happy to w=
-ait
-> >>>> for 10+ hours just due to a unclean shutdown... =20
-> >>> Would it be possible to put the stripe offsets/numbers into a journal=
-/commit them before write? Then, during mount you could scrub only those af=
-ter an unclean shutdown. =20
-> >>
-> >> If we go that path, we can already do full journal, and only replay th=
-at
-> >> journal without the need for scrub at all. =20
-> >
-> > Hello Qu,
-> >
-> > If you don't care about the write-hole, you can also use a dirty bitmap
-> > like mdraid 5/6 does. There, one bit in the bitmap represents for
-> > example one gigabyte of the disk that _may_ be dirty, and the bit is le=
-ft
-> > dirty for a while and doesn't need to be set for each write. Or you
-> > could do a per-block-group dirty bit. =20
->=20
-> That would be a pretty good way for auto scrub after dirty close.
->=20
-> Currently we have quite some different ideas, but some are pretty
-> similar but at different side of a spectrum:
->=20
->      Easier to implement        ..     Harder to implement
-> |<- More on mount time scrub   ..     More on journal ->|
-> |					|	|	\- Full journal
-> |					|	\--- Per bg dirty bitmap
-> |					\----------- Per bg dirty flag
-> \--------------------------------------------------- Per sb dirty flag
->=20
-> In fact, the dirty bitmap is just a simplified version of journal (only
-> record the metadata, without data).
-> Unlike dm/dm-raid56, with btrfs scrub, we should be able to fully
-> recover the data without problem.
->=20
-> Even with per-bg dirty bitmap, we still need some extra location to
-> record the bitmap. Thus it needs a on-disk format change anyway.
->=20
-> Currently only sb dirty flag may be backward compatible.
->=20
-> And whether we should wait for the scrub to finish before allowing use
-> to do anything into the fs is also another concern.
->=20
-> Even using bitmap, we may have several GiB data needs to be scrubbed.
-> If we wait for the scrub to finish, it's the best and safest way, but
-> users won't be happy at all.
->=20
+--D
 
-Hmm, but it doesn't really make a difference in safety whether we allow
-use while scrub/resync is running: The disks have inconsistent data and
-if we now loose one disk, write-hole happens.
-
-The only thing to watch out for while scrub/resync is running and a
-write is submitted to the filesystem, is to scrub the stripe before
-writing to it.
-
-
-Regards,
-Lukas Straub
-
-> If we go scrub resume way, it's faster but still leaves a large window
-> to allow write-hole to reduce our tolerance.
->=20
-> Thanks,
-> Qu
-> >
-> > And while you're at it, add the same mechanism to all the other raid
-> > and dup modes to fix the inconsistency of NOCOW files after a crash.
-> >
-> > Regards,
-> > Lukas Straub
-> > =20
-> >> Thanks,
-> >> Qu
-> >> =20
-> >>>>
-> >>>> Thanks,
-> >>>> Qu
-> >>>> =20
-> >>>>>
-> >>>>> Paul. =20
-> >>>
-> >>> =20
-> >
-> >
-> > =20
-
-
-
---=20
-
-
---Sig_/LyR5PUoTI6a6P0Y+.QBqCXX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAmKgvZAACgkQNasLKJxd
-sliHkA/+IeZqBNFyAdFnrDzIXyRqqaVWYqe/QJQPqDPgy6ePt0pXxdMEXmOzj7VI
-+fp14bs/qrHd7k9lnhmMvkedCyrs8P9BZTEysOFJISEjXVQzFDIhdI/mYbcdowMA
-ytdgLd8v12/QE+FPEndcbN+r0PoRdSQYcLgrHFxK38/LJsSXugJbaAHoY/D+c5ls
-7/susTiIfXHz6D3Yc3dyUM8h4sbenNuhoNqr/I/7ngWVESFCPiUobmWyEL+jhUZV
-NTccim0kmrJNBJGKeMPx7AAVAOz7Qw84aNQUTNmeujnr4Lo2npnQefAi4YHJ+8iB
-r86Gk9XRA6MXKyR1nOb+V7pZTflroV1Jpknsxglh8LoRgUbWcV9vF/bWadzH30P0
-KHEB4p+d2s1lyvRLqtDAEVQ3gqtmVe6MDxTNLv8Y7tmMP2CFtfSAL8w3okrKaOvV
-tQnaYDKuxIgJByQ4LWplFTHC1T+tBQ3jQqsIbqWndNQNYxcVv7iF+hz2dEMeOlEX
-UsPg/08vhpoCG0dTYeaevAH5Jio3ZewsQvO13jQrD5Dlib2SpH4ZW+uOjfkeMzBy
-GxZKkiMUVlKn4fPAeK/euYGLm/K7NHk7TQOU7G9nkVOX1EA9OBDbbB4H2+3oEkcQ
-V7dRiq3AQGGbTGwmxNGMUWQXJ/we+rbHHs19Iml6eZoCGtb/u9A=
-=TeZ+
------END PGP SIGNATURE-----
-
---Sig_/LyR5PUoTI6a6P0Y+.QBqCXX--
+> ---
+>  fs/gfs2/aops.c          |  2 +-
+>  fs/iomap/buffered-io.c  | 25 -------------------------
+>  fs/xfs/xfs_aops.c       |  2 +-
+>  fs/zonefs/super.c       |  2 +-
+>  include/linux/iomap.h   |  6 ------
+>  include/linux/pagemap.h |  6 ++++++
+>  mm/migrate.c            | 20 ++++++++++++++++++++
+>  7 files changed, 29 insertions(+), 34 deletions(-)
+> 
+> diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
+> index 106e90a36583..57ff883d432c 100644
+> --- a/fs/gfs2/aops.c
+> +++ b/fs/gfs2/aops.c
+> @@ -774,7 +774,7 @@ static const struct address_space_operations gfs2_aops = {
+>  	.invalidate_folio = iomap_invalidate_folio,
+>  	.bmap = gfs2_bmap,
+>  	.direct_IO = noop_direct_IO,
+> -	.migratepage = iomap_migrate_page,
+> +	.migrate_folio = filemap_migrate_folio,
+>  	.is_partially_uptodate = iomap_is_partially_uptodate,
+>  	.error_remove_page = generic_error_remove_page,
+>  };
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 66278a14bfa7..5a91aa1db945 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -489,31 +489,6 @@ void iomap_invalidate_folio(struct folio *folio, size_t offset, size_t len)
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_invalidate_folio);
+>  
+> -#ifdef CONFIG_MIGRATION
+> -int
+> -iomap_migrate_page(struct address_space *mapping, struct page *newpage,
+> -		struct page *page, enum migrate_mode mode)
+> -{
+> -	struct folio *folio = page_folio(page);
+> -	struct folio *newfolio = page_folio(newpage);
+> -	int ret;
+> -
+> -	ret = folio_migrate_mapping(mapping, newfolio, folio, 0);
+> -	if (ret != MIGRATEPAGE_SUCCESS)
+> -		return ret;
+> -
+> -	if (folio_test_private(folio))
+> -		folio_attach_private(newfolio, folio_detach_private(folio));
+> -
+> -	if (mode != MIGRATE_SYNC_NO_COPY)
+> -		folio_migrate_copy(newfolio, folio);
+> -	else
+> -		folio_migrate_flags(newfolio, folio);
+> -	return MIGRATEPAGE_SUCCESS;
+> -}
+> -EXPORT_SYMBOL_GPL(iomap_migrate_page);
+> -#endif /* CONFIG_MIGRATION */
+> -
+>  static void
+>  iomap_write_failed(struct inode *inode, loff_t pos, unsigned len)
+>  {
+> diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+> index 8ec38b25187b..5d1a995b15f8 100644
+> --- a/fs/xfs/xfs_aops.c
+> +++ b/fs/xfs/xfs_aops.c
+> @@ -570,7 +570,7 @@ const struct address_space_operations xfs_address_space_operations = {
+>  	.invalidate_folio	= iomap_invalidate_folio,
+>  	.bmap			= xfs_vm_bmap,
+>  	.direct_IO		= noop_direct_IO,
+> -	.migratepage		= iomap_migrate_page,
+> +	.migrate_folio		= filemap_migrate_folio,
+>  	.is_partially_uptodate  = iomap_is_partially_uptodate,
+>  	.error_remove_page	= generic_error_remove_page,
+>  	.swap_activate		= xfs_iomap_swapfile_activate,
+> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+> index bcb21aea990a..d4c3f28f34ee 100644
+> --- a/fs/zonefs/super.c
+> +++ b/fs/zonefs/super.c
+> @@ -237,7 +237,7 @@ static const struct address_space_operations zonefs_file_aops = {
+>  	.dirty_folio		= filemap_dirty_folio,
+>  	.release_folio		= iomap_release_folio,
+>  	.invalidate_folio	= iomap_invalidate_folio,
+> -	.migratepage		= iomap_migrate_page,
+> +	.migrate_folio		= filemap_migrate_folio,
+>  	.is_partially_uptodate	= iomap_is_partially_uptodate,
+>  	.error_remove_page	= generic_error_remove_page,
+>  	.direct_IO		= noop_direct_IO,
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index e552097c67e0..758a1125e72f 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -231,12 +231,6 @@ void iomap_readahead(struct readahead_control *, const struct iomap_ops *ops);
+>  bool iomap_is_partially_uptodate(struct folio *, size_t from, size_t count);
+>  bool iomap_release_folio(struct folio *folio, gfp_t gfp_flags);
+>  void iomap_invalidate_folio(struct folio *folio, size_t offset, size_t len);
+> -#ifdef CONFIG_MIGRATION
+> -int iomap_migrate_page(struct address_space *mapping, struct page *newpage,
+> -		struct page *page, enum migrate_mode mode);
+> -#else
+> -#define iomap_migrate_page NULL
+> -#endif
+>  int iomap_file_unshare(struct inode *inode, loff_t pos, loff_t len,
+>  		const struct iomap_ops *ops);
+>  int iomap_zero_range(struct inode *inode, loff_t pos, loff_t len,
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 1caccb9f99aa..2a67c0ad7348 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -1078,6 +1078,12 @@ static inline int __must_check write_one_page(struct page *page)
+>  int __set_page_dirty_nobuffers(struct page *page);
+>  bool noop_dirty_folio(struct address_space *mapping, struct folio *folio);
+>  
+> +#ifdef CONFIG_MIGRATION
+> +int filemap_migrate_folio(struct address_space *mapping, struct folio *dst,
+> +		struct folio *src, enum migrate_mode mode);
+> +#else
+> +#define filemap_migrate_folio NULL
+> +#endif
+>  void page_endio(struct page *page, bool is_write, int err);
+>  
+>  void folio_end_private_2(struct folio *folio);
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 785e32d0cf1b..4d8115ca93bb 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -784,6 +784,26 @@ int buffer_migrate_folio_norefs(struct address_space *mapping,
+>  }
+>  #endif
+>  
+> +int filemap_migrate_folio(struct address_space *mapping,
+> +		struct folio *dst, struct folio *src, enum migrate_mode mode)
+> +{
+> +	int ret;
+> +
+> +	ret = folio_migrate_mapping(mapping, dst, src, 0);
+> +	if (ret != MIGRATEPAGE_SUCCESS)
+> +		return ret;
+> +
+> +	if (folio_get_private(src))
+> +		folio_attach_private(dst, folio_detach_private(src));
+> +
+> +	if (mode != MIGRATE_SYNC_NO_COPY)
+> +		folio_migrate_copy(dst, src);
+> +	else
+> +		folio_migrate_flags(dst, src);
+> +	return MIGRATEPAGE_SUCCESS;
+> +}
+> +EXPORT_SYMBOL_GPL(filemap_migrate_folio);
+> +
+>  /*
+>   * Writeback a folio to clean the dirty state
+>   */
+> -- 
+> 2.35.1
+> 
