@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD50543EB8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 23:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ECE543EBC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 23:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236310AbiFHVki (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 17:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
+        id S236235AbiFHVkj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 17:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbiFHVkh (ORCPT
+        with ESMTP id S236349AbiFHVkh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 17:40:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFE12BA417
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 14:40:34 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6152BC4C7
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 14:40:36 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 38C7921CAC;
-        Wed,  8 Jun 2022 21:40:33 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5AB6B1FD41;
+        Wed,  8 Jun 2022 21:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654724433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1654724435; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cHn9KgFLLoNKgJymByzK1XEx713+goT386Oss+S5Eus=;
-        b=mPHCLp/I7I9sAdQcIepF5yht1iYeadqqATMkiEhg6SRV5jSc7SeDtp65R15Jl9Kifl/BWL
-        Tqa8iwz9HCuTlvDmJ7pTZPk+3QI4QmP7FaTf/XixsFngnAiEBSAG5SLQoD7yQKuEc7W5h5
-        fMMWdkcioiscfqOjLo0CNuyKuw8He4w=
+        bh=Nj0KJLoM6ir6cX1OqOXg+hxML7f8N0dZY74GiNfOX2I=;
+        b=qgO2lCgcBIvbPdmngI0pcClU4nBLze5E+8zP/S3PZVEmExvpJP682VNZtaljL8wlrKuD8P
+        1atBgOthwU5BKuuQRn4BONS2+s0sfBfOfa5axjKeK+JgLO66UxmQMRvp8bZ8lTSr44KqND
+        VZHxKVtUwKOrLl6a7g7HXue6Z+oEB+E=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2F6F42C141;
-        Wed,  8 Jun 2022 21:40:33 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 5197A2C141;
+        Wed,  8 Jun 2022 21:40:35 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8432BDA883; Wed,  8 Jun 2022 23:36:04 +0200 (CEST)
+        id A68ABDA883; Wed,  8 Jun 2022 23:36:06 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 3/4] btrfs: sink iterator parameter to btrfs_ioctl_logical_to_ino
-Date:   Wed,  8 Jun 2022 23:36:04 +0200
-Message-Id: <50f2cf6559953bee816f5891c175c253054107ca.1654723641.git.dsterba@suse.com>
+Subject: [PATCH 4/4] btrfs: remove unused typedefs get_extent_t and btrfs_work_func_t
+Date:   Wed,  8 Jun 2022 23:36:06 +0200
+Message-Id: <19086c492dc4ba9fece368771cf56322f05b3b45.1654723641.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1654723641.git.dsterba@suse.com>
 References: <cover.1654723641.git.dsterba@suse.com>
@@ -52,116 +52,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's only one function we pass to iterate_inodes_from_logical as
-iterator, so we can drop the indirection and call it directly, after
-moving the function to backref.c
-
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/backref.c | 25 ++++++++++++++++++++++---
- fs/btrfs/backref.h |  3 +--
- fs/btrfs/ioctl.c   | 22 +---------------------
- 3 files changed, 24 insertions(+), 26 deletions(-)
+ fs/btrfs/async-thread.h | 1 -
+ fs/btrfs/extent_io.h    | 4 ----
+ 2 files changed, 5 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e62f142fd3e5..d385357e19b6 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -2028,10 +2028,29 @@ int iterate_extent_inodes(struct btrfs_fs_info *fs_info,
- 	return ret;
- }
+diff --git a/fs/btrfs/async-thread.h b/fs/btrfs/async-thread.h
+index 07960529b360..6e2596ddae10 100644
+--- a/fs/btrfs/async-thread.h
++++ b/fs/btrfs/async-thread.h
+@@ -13,7 +13,6 @@ struct btrfs_fs_info;
+ struct btrfs_workqueue;
+ struct btrfs_work;
+ typedef void (*btrfs_func_t)(struct btrfs_work *arg);
+-typedef void (*btrfs_work_func_t)(struct work_struct *arg);
  
-+static int build_ino_list(u64 inum, u64 offset, u64 root, void *ctx)
-+{
-+	struct btrfs_data_container *inodes = ctx;
-+	const size_t c = 3 * sizeof(u64);
-+
-+	if (inodes->bytes_left >= c) {
-+		inodes->bytes_left -= c;
-+		inodes->val[inodes->elem_cnt] = inum;
-+		inodes->val[inodes->elem_cnt + 1] = offset;
-+		inodes->val[inodes->elem_cnt + 2] = root;
-+		inodes->elem_cnt += 3;
-+	} else {
-+		inodes->bytes_missing += c - inodes->bytes_left;
-+		inodes->bytes_left = 0;
-+		inodes->elem_missed += 3;
-+	}
-+
-+	return 0;
-+}
-+
- int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
- 				struct btrfs_path *path,
--				iterate_extent_inodes_t *iterate, void *ctx,
--				bool ignore_offset)
-+				void *ctx, bool ignore_offset)
- {
- 	int ret;
- 	u64 extent_item_pos;
-@@ -2049,7 +2068,7 @@ int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
- 	extent_item_pos = logical - found_key.objectid;
- 	ret = iterate_extent_inodes(fs_info, found_key.objectid,
- 					extent_item_pos, search_commit_root,
--					iterate, ctx, ignore_offset);
-+					build_ino_list, ctx, ignore_offset);
+ struct btrfs_work {
+ 	btrfs_func_t func;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 72966cf21961..c0f1fb63eeae 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -142,10 +142,6 @@ static inline void extent_changeset_free(struct extent_changeset *changeset)
  
- 	return ret;
- }
-diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index ba454032dbe2..2759de7d324c 100644
---- a/fs/btrfs/backref.h
-+++ b/fs/btrfs/backref.h
-@@ -35,8 +35,7 @@ int iterate_extent_inodes(struct btrfs_fs_info *fs_info,
- 				bool ignore_offset);
+ struct extent_map_tree;
  
- int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
--				struct btrfs_path *path,
--				iterate_extent_inodes_t *iterate, void *ctx,
-+				struct btrfs_path *path, void *ctx,
- 				bool ignore_offset);
- 
- int paths_from_inode(u64 inum, struct inode_fs_paths *ipath);
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 679ce4c5c341..7e1b4b0fbd6c 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4243,26 +4243,6 @@ static long btrfs_ioctl_ino_to_path(struct btrfs_root *root, void __user *arg)
- 	return ret;
- }
- 
--static int build_ino_list(u64 inum, u64 offset, u64 root, void *ctx)
--{
--	struct btrfs_data_container *inodes = ctx;
--	const size_t c = 3 * sizeof(u64);
+-typedef struct extent_map *(get_extent_t)(struct btrfs_inode *inode,
+-					  struct page *page, size_t pg_offset,
+-					  u64 start, u64 len);
 -
--	if (inodes->bytes_left >= c) {
--		inodes->bytes_left -= c;
--		inodes->val[inodes->elem_cnt] = inum;
--		inodes->val[inodes->elem_cnt + 1] = offset;
--		inodes->val[inodes->elem_cnt + 2] = root;
--		inodes->elem_cnt += 3;
--	} else {
--		inodes->bytes_missing += c - inodes->bytes_left;
--		inodes->bytes_left = 0;
--		inodes->elem_missed += 3;
--	}
--
--	return 0;
--}
--
- static long btrfs_ioctl_logical_to_ino(struct btrfs_fs_info *fs_info,
- 					void __user *arg, int version)
- {
-@@ -4312,7 +4292,7 @@ static long btrfs_ioctl_logical_to_ino(struct btrfs_fs_info *fs_info,
- 	}
+ int try_release_extent_mapping(struct page *page, gfp_t mask);
+ int try_release_extent_buffer(struct page *page);
  
- 	ret = iterate_inodes_from_logical(loi->logical, fs_info, path,
--					  build_ino_list, inodes, ignore_offset);
-+					  inodes, ignore_offset);
- 	if (ret == -EINVAL)
- 		ret = -ENOENT;
- 	if (ret < 0)
 -- 
 2.36.1
 
