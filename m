@@ -2,123 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D9B543D7F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 22:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5868543E03
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jun 2022 22:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbiFHUWj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 8 Jun 2022 16:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
+        id S234322AbiFHU5W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 16:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbiFHUWh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 16:22:37 -0400
-Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A7B158758
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 13:22:34 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 95C703F78B;
-        Wed,  8 Jun 2022 22:22:31 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.91
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IEEl-R9iJEEd; Wed,  8 Jun 2022 22:22:30 +0200 (CEST)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 171B33F623;
-        Wed,  8 Jun 2022 22:22:30 +0200 (CEST)
-Received: from [192.168.0.113] (port=40330)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1nz2CD-000EiW-Gf; Wed, 08 Jun 2022 22:22:29 +0200
-Date:   Wed, 8 Jun 2022 22:22:33 +0200 (GMT+02:00)
-From:   Forza <forza@tnonline.net>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Wang Yugui <wangyugui@e16-tech.com>, Qu Wenruo <wqu@suse.com>,
-        Nicholas D Steeves <nsteeves@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <5532eba.f5bd40a9.18144fbad50@tnonline.net>
-In-Reply-To: <cf220242-25dd-9241-01d5-38555c262d9e@gmail.com>
-References: <c31c664.705b352f.1810f98f3ee@tnonline.net> <20220608104421.3759.409509F4@e16-tech.com> <20220608181502.4AB1.409509F4@e16-tech.com> <a97ff3a3-7b14-e6a4-32e9-b9da8cec422e@gmx.com> <cf220242-25dd-9241-01d5-38555c262d9e@gmail.com>
-Subject: Re: What mechanisms protect against split brain?
+        with ESMTP id S229904AbiFHU5V (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 16:57:21 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1187A20B14B
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 13:57:18 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id bg6so23950960ejb.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jun 2022 13:57:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yfzyol2qf3U5sPf4d3udShKvhZT0oSOCMomvSiEpNoQ=;
+        b=ZmEo6bEbTQ0dK089ZDbkAd6Tz+0aiLUPHcEXKjV+2BtXyLjWSyNB3+YrsGSwszMzie
+         FeNlWXRFmEKaO49aPHDPpBGOPXSHwMPSowOEf5XS9yRG8w//6sYAwxg0sEEByc5nBC30
+         oQLQruhWq9g7vrnNhB3rSjGmOVyYf1Kf4fPsDL6IJYPGLektuKqf62YzIrvwsPua3zR7
+         M/UhaEFDNKx3H+WASLGL/AnEVLk1dZwhUyNRSHF88fzEjnORoa4NLBw7TOIv9MJNaCDB
+         bQE1wyaONNpxkhWhk28vmZ59HwqXjeENSkz0BfF4G5FcbYkSWB4nmZ4n2BpGyeNpYMgZ
+         N3ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yfzyol2qf3U5sPf4d3udShKvhZT0oSOCMomvSiEpNoQ=;
+        b=wdPA3AXs+vz4XKax+THL/Nqsy1YSz5FLOUXiqifaLJFqCyxXGMWr6g+O9jQYDzvXDA
+         qtc2rzofTiWkkT4EAGd0SF6llY65BYSnGP0IIMl9bSX2OQIhb4X4cY8EH8wmhVp8cwTO
+         xJH3DkQRhhCA34hfv4RmGMmXVs5HfQYRRpREIwpsTtZDRWGYlIDft1j6Gze0s5zw2nS4
+         ssG59Lhd1S/do1v3GpCz3rx0yS9fCtKBhsbnsXde0VFR4pwjBK3rOlKbHEb+AOOX6NI+
+         hM59ZIOIfmxXJmYdQEPazY8X2hNmuPeJEEAug1DeuhRsmKGdRhhwJw+o5ppcUSdkUx0i
+         k2CQ==
+X-Gm-Message-State: AOAM533+iRQgCwW55olXsn0ZJj/CHsw9RrOpdptqqRtgL7PyDxxQZDyz
+        n+6IpGNm3X6vYRvu9vZp2b3GNsfIcD16B+O884BfMKkzXE4=
+X-Google-Smtp-Source: ABdhPJxFx7fMXXRZYfv6ga+etBZ9w62uRYUjljfg6dFra8UxJuwUjQDa8hdhSAkRkne6uzRTrRCQTJWoeX06T8mTv1o=
+X-Received: by 2002:a17:907:6090:b0:6fa:14ca:fba8 with SMTP id
+ ht16-20020a170907609000b006fa14cafba8mr33423795ejc.212.1654721836433; Wed, 08
+ Jun 2022 13:57:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+References: <20220607204406.GX22722@merlins.org> <CAEzrpqccYbdBNs6gYDzZRw17D1O6tPU=9w1vLvDVOjJeMDuazw@mail.gmail.com>
+ <20220607212523.GZ22722@merlins.org> <CAEzrpqex0PRGZA3_gaoUhpPb-7cpi-gi_mo1S3F=0xxKNptpEA@mail.gmail.com>
+ <20220607233734.GA22722@merlins.org> <CAEzrpqcVO99HbrhmtABUENRCm4HEsyg3+T3oK33DZFuXamwqgA@mail.gmail.com>
+ <20220608000700.GB22722@merlins.org> <CAEzrpqe79F=-0T7Q3dqb62J6+kcisOjnWP+aLkkY0z+EJY-m9Q@mail.gmail.com>
+ <20220608004241.GC22722@merlins.org> <CAEzrpqdq8zTBQaw_VneL4rfZn0JseUiwvtfwXQx0jq=DYBCFFw@mail.gmail.com>
+ <20220608021245.GD22722@merlins.org>
+In-Reply-To: <20220608021245.GD22722@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Wed, 8 Jun 2022 16:57:05 -0400
+Message-ID: <CAEzrpqeFFiHjbQ+VQ7zy9ZbV1MgaMT-V4ovJhB9iOan8Ao-cXg@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jun 7, 2022 at 10:12 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Tue, Jun 07, 2022 at 09:31:28PM -0400, Josef Bacik wrote:
+> > > doing close???
+> > > extent buffer leak: start 11160502779904 len 16384
+> > > extent buffer leak: start 15645018308608 len 16384
+> > > Init extent tree failed
+> >
+> > I swear first thing I'm doing after all this is updating the shared
+> > code.  Try again please,
+>
+> It went farther:
+>
+> processed 163840 of 1064960 possible bytes, 15%
+> Recording extents for root 5
+> processed 65536 of 10960896 possible bytes, 0%
+> Recording extents for root 7
+> processed 16384 of 16570974208 possible bytes, 0%
+> Recording extents for root 9
+> processed 16384 of 16384 possible bytes, 100%
+> Recording extents for root 161197
+> processed 131072 of 108986368 possible bytes, 0%
+> Recording extents for root 161199
+> processed 196608 of 49479680 possible bytes, 0%
+> Recording extents for root 161200
+> processed 180224 of 254214144 possible bytes, 0%
+> Recording extents for root 161889
+> processed 196608 of 49446912 possible bytes, 0%
+> Recording extents for root 162628
+> processed 49152 of 49463296 possible bytes, 0%
+> Recording extents for root 162632
+> processed 114688 of 94633984 possible bytes, 0%
+> Recording extents for root 163298
+> processed 49152 of 49463296 possible bytes, 0%
+> Recording extents for root 163302
+> processed 98304 of 94633984 possible bytes, 0%
+> Recording extents for root 163303
+> processed 131072 of 76333056 possible bytes, 0%
+> Recording extents for root 163316
+> processed 98304 of 108544000 possible bytes, 0%
+> Recording extents for root 163920
+> processed 16384 of 108691456 possible bytes, 0%
+> Recording extents for root 164620
+> processed 49152 of 49463296 possible bytes, 0%
+> Recording extents for root 164623
+> processed 311296 of 63193088 possible bytes, 0%
+> Recording extents for root 164624
+> processed 933888 of 108822528 possible bytes, 0%
+> Recording extents for root 164629
+> processed 622592 of 108838912 possible bytes, 0%
+> Recording extents for root 164631
+> processed 16384 of 49430528 possible bytes, 0%
+> Recording extents for root 164633
+> processed 16384 of 75694080 possible bytes, 0%
+> Recording extents for root 164823
+> processed 131072 of 63193088 possible bytes, 0%
+> Recording extents for root 18446744073709551607
+> processed 16384 of 16384 possible bytes, 100%
+> doing block accounting
+> couldn't find a block group at bytenr 20971520 total left 180224
+> cache 11106814787584 11107888529408 in range no
+> cache 11108962271232 11110036013056 in range no
+> cache 11110036013056 11111109754880 in range no
+> (...)
+> cache 15929559744512 15930633486336 in range no
+> cache 15930633486336 15931707228160 in range no
+> cache 15931707228160 15932780969984 in range no
+> cache 15932780969984 15933854711808 in range no
+> cache 15933854711808 15934928453632 in range no
+> ERROR: update block group failed 20971520 180224 ret -1
+> FIX BLOCK ACCOUNTING FAILED -1
 
-
----- From: Andrei Borzenkov <arvidjaar@gmail.com> -- Sent: 2022-06-08 - 16:11 ----
-
-> On 08.06.2022 13:32, Qu Wenruo wrote:
->> 
->> 
->> On 2022/6/8 18:15, Wang Yugui wrote:
->>> Hi, Forza, Qu Wenruo
->>>
->>> I write a script to test RAID1 split brain base on Qu's work of raid5(*1)
->>> *1: https://lore.kernel.org/linux-btrfs/53f7bace2ac75d88ace42dd811d48b7912647301.1654672140.git.wqu@suse.com/T/#u
->> 
->> No no no, that is not to address split brain, but mostly to drop cache
->> for recovery path to maximize the chance of recovery.
->> 
->> It's not designed to solve split brain problem at all, it's just one
->> case of such problem.
->> 
->> In fact, fully split brain (both have the same generation, but
->> experienced their own degraded mount) case can not be solved by btrfs
->> itself at all.
->> 
->> Btrfs can only solve partial split brain case (one device has higher
->> generation, thus btrfs can still determine which copy is the correct one).
->> 
-> 
-> Start with both devices having the same generation number N.
-> 
-> Mount device1 separately, do some writes, device has generation N+1.
-> 
-> Mount device2 separately, do some writes, device has generation N+2.
-> 
-> Applying changes between N+1 and N+2 to device1 is wrong because content
-> of N+1 is different on both devices.
-> 
-> So there is absolutely no difference between "same generation" and
-> "higher generation".
-> 
-> The only thing btrfs could do is to try to detect this and refuse to
-> integrate another device. One suggested rather radical approach was to
-> change UUID on degraded mount, but this is probably unfeasible in real life.
-> 
-> Removing missing device from device list in superblock (or at least
-> marking it as permanently missing until replaced) is probably another
-> option.
-> 
-> And write intent log as discussed further in this thread could be used
-> as well - if btrfs detects write intent log on device it should refuse
-> to add it to existing filesystem.
-
-
-Thank you all for the feedback on this topic. 
-
-My take away from this is that we need to;
-* clearly document the Btrfs cannot handle full split brain 
-* document best practices on how to recover from a temporary device loss 
-* add features that help btrfs handle both types of split brain in a safe way. 
-
-One such mechanism could be to write a simple hash on all existing devices during a degraded mount. If the old device is re-attached, the hash will mismatch and btrfs should reject this device.
-
-Then a special 'btrfs device add --reattach' command could be developed that would do what Qu said, run a full scrub and correct any differences on the reattached device. This avoids writing all data again, which is faster and saves TBW.
-
-Nicholas suggested a similar approach in another thread https://lore.kernel.org/linux-btrfs/87sfogkwbd.fsf@DigitalMercury.freeddns.org/T/#t
-
+Oops I think this is a system chunk, I've added some code to do the
+right thing, can you give this a whirl and see if it fixes it?
 Thanks,
-Forza
 
+Josef
