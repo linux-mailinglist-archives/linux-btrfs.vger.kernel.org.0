@@ -2,90 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBEC543F6B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 00:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D023F544193
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 04:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbiFHWrG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 18:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        id S236997AbiFICpO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 22:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbiFHWrF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 18:47:05 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652C511045F
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 15:47:04 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id n11so589215iod.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jun 2022 15:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jWl3k2iPjxscB5nzJbo/aXjzGrC81mINNRCXPmFYq1k=;
-        b=oFVqwbGD4IIf6jo6AzY29eNBHKMyJ2knbg4b9Cmphi2gxmVOlK+hMxWREhBMcjgnOy
-         FsaWEP5ZvP6sMFcGohETYPS88XXI7UxAAj9YEBzl2eYOTsoZ8Brkosz/Wah2ugb4Ujf/
-         0f71RvphLmtgUJsxr0cSICxXlFec69c5eFIKK4i+fy9GZwrHcnJE2VCITF1nC8TRe1e/
-         Wn/7xgBWsU7pqFZ5nhflKDyh1NpejPYUtmgAjSyOk9X18rW4Ojs5grNIWzVwhnXgZEjP
-         vZFU7Co0XZSz4JQmUsaWZUg94dnOXzaWhijMhF/Qp2Pyx8qBotnJ9ffFJQqE7oEO2FNO
-         T/zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jWl3k2iPjxscB5nzJbo/aXjzGrC81mINNRCXPmFYq1k=;
-        b=Os45j8tv4UTVlnmALmNEQhXwE8YDtB4JzcQaVf0UNWvKWBwfh8dlLK/G/gSXPW6OTS
-         SJ8uzuYG1raym2vbttwoXxXh31GabtEJZDWZ6ncpyHKBvyjG8VK0qqFRa6JN6SePqQGU
-         3KxEjEV+DLOQt9RwPpKntbT24BX3K3dGk25Tm+lhQwVZq4ZUALQ6TwqQvk4epscqLPHh
-         Ry9HYMUlmGNkpeEntkCQliM1yvpNM3DbBre/xRAXMJ07U35d0GWMAtynG+B6AX+3VvBj
-         OzSCiwArSv2WZJwQE/BdElb7K60T5k/8HJRDs3Ull8QWeW/gFZLD9LcSbl9QlUkAAh0T
-         23oA==
-X-Gm-Message-State: AOAM531YCXf6QCoE99nyU14J5DLDwAGmpdPEOa8feaIbWR0GM1XdUEhQ
-        F2GwpLUqZS4en1PCNS3eysFSTDktrUBMv0GU0n3h0gYR45Q=
-X-Google-Smtp-Source: ABdhPJwwBOqprWsC2gE3SUc32ti6eea5iE/MrlsoL7Nzglq0SO5TDivVdCeYTSLSUg5gG+uhhRs5h36ctC89rE9HO3E=
-X-Received: by 2002:a05:6638:2585:b0:331:fbb9:669c with SMTP id
- s5-20020a056638258500b00331fbb9669cmr856276jat.313.1654728423735; Wed, 08 Jun
- 2022 15:47:03 -0700 (PDT)
+        with ESMTP id S229590AbiFICpN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 22:45:13 -0400
+X-Greylist: delayed 328 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Jun 2022 19:45:10 PDT
+Received: from neville.hungrycats.org (unknown [207.192.69.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E4482A71C
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 19:45:09 -0700 (PDT)
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+Received: from waya.furryterror.org (waya.vpn7.hungrycats.org [10.132.226.63])
+        by neville.hungrycats.org (Postfix) with ESMTP id D9F656018B;
+        Wed,  8 Jun 2022 22:39:40 -0400 (EDT)
+Received: from zblaxell by waya.furryterror.org with local (Exim 4.94.2)
+        (envelope-from <zblaxell@waya.furryterror.org>)
+        id 1nz85E-0006E9-DK; Wed, 08 Jun 2022 22:39:40 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: don't set lock_owner when locking tree pages for reading
+Date:   Wed,  8 Jun 2022 22:39:36 -0400
+Message-Id: <20220609023936.6112-1-ce3g8jdj@umail.furryterror.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220607233734.GA22722@merlins.org> <CAEzrpqcVO99HbrhmtABUENRCm4HEsyg3+T3oK33DZFuXamwqgA@mail.gmail.com>
- <20220608000700.GB22722@merlins.org> <CAEzrpqe79F=-0T7Q3dqb62J6+kcisOjnWP+aLkkY0z+EJY-m9Q@mail.gmail.com>
- <20220608004241.GC22722@merlins.org> <CAEzrpqdq8zTBQaw_VneL4rfZn0JseUiwvtfwXQx0jq=DYBCFFw@mail.gmail.com>
- <20220608021245.GD22722@merlins.org> <CAEzrpqeFFiHjbQ+VQ7zy9ZbV1MgaMT-V4ovJhB9iOan8Ao-cXg@mail.gmail.com>
- <20220608213030.GG22722@merlins.org> <CAEzrpqdxCycEEAVqu-hykG-qdoEyBBFuc5buKS631XDciVrs7A@mail.gmail.com>
- <20220608213845.GH22722@merlins.org>
-In-Reply-To: <20220608213845.GH22722@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 8 Jun 2022 18:46:53 -0400
-Message-ID: <CAEzrpqejNj3qTtTJ7Godb0VMsxKt094vMw+iT4XR1B9aayO7Nw@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 8, 2022 at 5:38 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Wed, Jun 08, 2022 at 05:33:42PM -0400, Josef Bacik wrote:
-> >
-> > Just check, no --repair.  I want to make sure the only thing that is
-> > missing is the corresponding device extents for the chunks we
-> > recovered.  I'm going to start writing the code to do that now, but if
-> > there's any errors other than missing device extents then we need to
-> > figure out what those problems are and what to do about them.  Thanks,
->
-> woah, it ran in less than 1 minute, that's amazing (I remember when it
-> took days)
->
+In 196d59ab9ccc "btrfs: switch extent buffer tree lock to rw_semaphore"
+the functions for tree read locking were rewritten, and in the process
+the read lock functions started setting eb->lock_owner = current->pid.
+Previously lock_owner was only set in tree write lock functions.
 
-Ok I've added some stuff to fix the device extents.  Go ahead and run
-with --repair and lets see how that goes.  After that finishes run
-again without --repair so we can see what's still broken, I imagine
-I'll have to clean some other stuff up.  Thanks,
+Read locks are shared, so they don't have exclusive ownership of the
+underlying object, so setting lock_owner to any single value for a
+read lock makes no sense.  It's mostly harmless because write locks
+and read locks are mutually exclusive, and none of the existing code
+in btrfs (btrfs_init_new_buffer and print_eb_refs_lock) cares what
+nonsense is written in lock_owner when no writer is holding the lock.
 
-Josef
+KCSAN does care, and will complain about the data race incessantly.
+Remove the assignments in the read lock functions because they're
+useless noise.
+
+Fixes: 196d59ab9ccc ("btrfs: switch extent buffer tree lock to rw_semaphore")
+Signed-off-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+---
+ fs/btrfs/locking.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+index 313d9d685adb..33461b4f9c8b 100644
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -45,7 +45,6 @@ void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting ne
+ 		start_ns = ktime_get_ns();
+ 
+ 	down_read_nested(&eb->lock, nest);
+-	eb->lock_owner = current->pid;
+ 	trace_btrfs_tree_read_lock(eb, start_ns);
+ }
+ 
+@@ -62,7 +61,6 @@ void btrfs_tree_read_lock(struct extent_buffer *eb)
+ int btrfs_try_tree_read_lock(struct extent_buffer *eb)
+ {
+ 	if (down_read_trylock(&eb->lock)) {
+-		eb->lock_owner = current->pid;
+ 		trace_btrfs_try_tree_read_lock(eb);
+ 		return 1;
+ 	}
+@@ -90,7 +88,6 @@ int btrfs_try_tree_write_lock(struct extent_buffer *eb)
+ void btrfs_tree_read_unlock(struct extent_buffer *eb)
+ {
+ 	trace_btrfs_tree_read_unlock(eb);
+-	eb->lock_owner = 0;
+ 	up_read(&eb->lock);
+ }
+ 
+-- 
+2.30.2
+
