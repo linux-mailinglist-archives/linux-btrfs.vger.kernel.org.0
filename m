@@ -2,94 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D023F544193
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 04:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D655441BD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 05:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbiFICpO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 22:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S237369AbiFIDBe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jun 2022 23:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbiFICpN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 22:45:13 -0400
-X-Greylist: delayed 328 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Jun 2022 19:45:10 PDT
-Received: from neville.hungrycats.org (unknown [207.192.69.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E4482A71C
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 19:45:09 -0700 (PDT)
-X-Envelope-Mail-From: zblaxell@waya.furryterror.org
-X-Envelope-Mail-From: zblaxell@waya.furryterror.org
-Received: from waya.furryterror.org (waya.vpn7.hungrycats.org [10.132.226.63])
-        by neville.hungrycats.org (Postfix) with ESMTP id D9F656018B;
-        Wed,  8 Jun 2022 22:39:40 -0400 (EDT)
-Received: from zblaxell by waya.furryterror.org with local (Exim 4.94.2)
-        (envelope-from <zblaxell@waya.furryterror.org>)
-        id 1nz85E-0006E9-DK; Wed, 08 Jun 2022 22:39:40 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: don't set lock_owner when locking tree pages for reading
-Date:   Wed,  8 Jun 2022 22:39:36 -0400
-Message-Id: <20220609023936.6112-1-ce3g8jdj@umail.furryterror.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S232220AbiFIDBd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 23:01:33 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1043D6319
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 20:01:28 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nz8QK-0003yl-61 by authid <merlin>; Wed, 08 Jun 2022 20:01:28 -0700
+Date:   Wed, 8 Jun 2022 20:01:28 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220609030128.GJ22722@merlins.org>
+References: <20220608000700.GB22722@merlins.org>
+ <CAEzrpqe79F=-0T7Q3dqb62J6+kcisOjnWP+aLkkY0z+EJY-m9Q@mail.gmail.com>
+ <20220608004241.GC22722@merlins.org>
+ <CAEzrpqdq8zTBQaw_VneL4rfZn0JseUiwvtfwXQx0jq=DYBCFFw@mail.gmail.com>
+ <20220608021245.GD22722@merlins.org>
+ <CAEzrpqeFFiHjbQ+VQ7zy9ZbV1MgaMT-V4ovJhB9iOan8Ao-cXg@mail.gmail.com>
+ <20220608213030.GG22722@merlins.org>
+ <CAEzrpqdxCycEEAVqu-hykG-qdoEyBBFuc5buKS631XDciVrs7A@mail.gmail.com>
+ <20220608213845.GH22722@merlins.org>
+ <CAEzrpqejNj3qTtTJ7Godb0VMsxKt094vMw+iT4XR1B9aayO7Nw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqejNj3qTtTJ7Godb0VMsxKt094vMw+iT4XR1B9aayO7Nw@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In 196d59ab9ccc "btrfs: switch extent buffer tree lock to rw_semaphore"
-the functions for tree read locking were rewritten, and in the process
-the read lock functions started setting eb->lock_owner = current->pid.
-Previously lock_owner was only set in tree write lock functions.
+On Wed, Jun 08, 2022 at 06:46:53PM -0400, Josef Bacik wrote:
+> Ok I've added some stuff to fix the device extents.  Go ahead and run
+> with --repair and lets see how that goes.  After that finishes run
+> again without --repair so we can see what's still broken, I imagine
+> I'll have to clean some other stuff up.  Thanks,
 
-Read locks are shared, so they don't have exclusive ownership of the
-underlying object, so setting lock_owner to any single value for a
-read lock makes no sense.  It's mostly harmless because write locks
-and read locks are mutually exclusive, and none of the existing code
-in btrfs (btrfs_init_new_buffer and print_eb_refs_lock) cares what
-nonsense is written in lock_owner when no writer is holding the lock.
+Can't determine the filetype for inode 69105, assume it is a normal file
+Can't get file type for inode 69105, using FILE as fallback
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 69105
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 69135
+reset isize for dir 69136 root 164823
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 69136
+Trying to rebuild inode:69252
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 69252
+Trying to rebuild inode:74108
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 74108
+Trying to rebuild inode:74132
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 74132
+Trying to rebuild inode:74193
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 74193
+Trying to rebuild inode:74838
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 74838
+Trying to rebuild inode:76221
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 76221
+Trying to rebuild inode:76328
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 76328
+Trying to rebuild inode:76329
+Moving file f to 'lost+found' dir since it has no valid backref
+Fixed the nlink of inode 76329
+found 43825717248 bytes used, error(s) found
+total csum bytes: 0
+total tree bytes: 10846208
+total fs tree bytes: 6848512
+total extent tree bytes: 1146880
+btree space waste bytes: 3705949
+file data blocks allocated: 67228672000
+ referenced 67225485312
+gargamel:/var/local/src/btrfs-progs-josefbacik# mount -o ro,recovery /dev/mapper/dshelf1 /mnt/mnt
+mount: /mnt/mnt: wrong fs type, bad option, bad superblock on /dev/mapper/dshelf1, missing codepage or helper program, or other error.
+gargamel:/var/local/src/btrfs-progs-josefbacik# dmtail
+[3890613.672704] BTRFS info (device dm-1): flagging fs with big metadata feature
+[3890613.694891] BTRFS warning (device dm-1): 'recovery' is deprecated, use 'rescue=usebackuproot' instead
+[3890613.759915] BTRFS info (device dm-1): trying to use backup root at mount time
+[3890613.782884] BTRFS info (device dm-1): disk space caching is enabled
+[3890613.802960] BTRFS info (device dm-1): has skinny extents
+[3890613.826455] BTRFS error (device dm-1): super_num_devices 1 mismatch with num_devices 0 found here
+[3890613.855092] BTRFS error (device dm-1): failed to read chunk tree: -22
+[3890613.876716] BTRFS error (device dm-1): open_ctree failed
 
-KCSAN does care, and will complain about the data race incessantly.
-Remove the assignments in the read lock functions because they're
-useless noise.
+btrfs check ends with:
+root 164624 inode 73099 errors 1400, nbytes wrong, some csum missing
+root 164624 inode 73100 errors 1400, nbytes wrong, some csum missing
+        unresolved ref dir 791 index 0 namelen 25 name f filetype 1 errors 6, no dir index, no inode ref
+        unresolved ref dir 3676 index 0 namelen 62 name f filetype 1 errors 6, no dir index, no inode ref
+root 164629 inode 3752 errors 200, dir isize wrong
+        unresolved ref dir 73103 index 540 namelen 4 name f filetype mismatch
+root 164629 inode 3965 errors 200, dir isize wrong
+        unresolved ref dir 4179 index 0 namelen 10 name f filetype 1 errors 6, no dir index, no inode ref
+root 164629 inode 4549 errors 200, dir isize wrong
+        unresolved ref dir 4698 index 0 namelen 69 name f filetype 1 errors 6, no dir index, no inode ref
+        unresolved ref dir 5506 index 0 namelen 53 name f filetype 1 errors 6, no dir index, no inode ref
+        unresolved ref dir 5546 index 0 namelen 57 name f filetype 1 errors 6, no dir index, no inode ref 
+root 164629 inode 39921 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes:
+        start: 759824384, len: 2143326208
+        unresolved ref dir 10205 index 356 namelen 34 name f filetype 0 errors 3, no dir item, no dir index
+root 164629 inode 40537 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 72418 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 72429 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes:
+        start: 1333788672, len: 3217154048
+        unresolved ref dir 72438 index 4 namelen 49 name f filetype 0 errors 3, no dir item, no dir index
+root 164629 inode 72433 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes:
+        start: 892338176, len: 14957748224
+        unresolved ref dir 34951 index 13 namelen 46 name f filetype 0 errors 3, no dir item, no dir index
+root 164629 inode 72587 errors 200, dir isize wrong
+root 164629 inode 72588 errors 1000, some csum missing
+root 164629 inode 72592 errors 200, dir isize wrong
+root 164629 inode 72593 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes:
+        start: 42074112, len: 413642752
+        unresolved ref dir 75036 index 19 namelen 45 name f filetype 0 errors 3, no dir item, no dir index
+root 164629 inode 72639 errors 200, dir isize wrong
+root 164629 inode 72640 errors 200, dir isize wrong
+root 164629 inode 72672 errors 200, dir isize wrong
+        unresolved ref dir 73103 index 1386 namelen 5 name f filetype mismatch
+root 164629 inode 73001 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 73006 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 73009 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes:
+        start: 13869056, len: 53100544
+        unresolved ref dir 72672 index 134 namelen 26 name f filetype 1 errors 1, no dir item
+root 164629 inode 73045 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 73066 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 73067 errors 1000, some csum missing
+root 164629 inode 73082 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 73083 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes:
+        start: 197263360, len: 399777792 
+        unresolved ref dir 3747 index 30 namelen 70 name f filetype 0 errors 3, no dir item, no dir index
+root 164629 inode 73086 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 73094 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes:
+        start: 0, len: 524288 
+        unresolved ref dir 74963 index 32 namelen 56 name f filetype 0 errors 3, no dir item, no dir index 
+root 164629 inode 73097 errors 3500, file extent discount, nbytes wrong, some csum missing, link count wrong
+Found file extent holes: 
+        start: 0, len: 524288
+        unresolved ref dir 74963 index 36 namelen 56 name f filetype 0 errors 3, no dir item, no dir index
+root 164629 inode 73099 errors 1400, nbytes wrong, some csum missing
+root 164629 inode 73100 errors 1400, nbytes wrong, some csum missing
+        unresolved ref dir 791 index 0 namelen 25 name f filetype 1 errors 6, no dir index, no inode ref
+        unresolved ref dir 3676 index 0 namelen 62 name f filetype 1 errors 6, no dir index, no inode ref
+ERROR: errors found in fs roots
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/dshelf1
+UUID: 96539b8c-ccc9-47bf-9e6c-29305890941e
+cache and super generation don't match, space cache will be invalidated
+found 21916315648 bytes used, error(s) found
+total csum bytes: 0
+total tree bytes: 8880128
+total fs tree bytes: 6799360
+total extent tree bytes: 606208
+btree space waste bytes: 2518033
+file data blocks allocated: 36729012224
+ referenced 36727418880
 
-Fixes: 196d59ab9ccc ("btrfs: switch extent buffer tree lock to rw_semaphore")
-Signed-off-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
----
- fs/btrfs/locking.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-index 313d9d685adb..33461b4f9c8b 100644
---- a/fs/btrfs/locking.c
-+++ b/fs/btrfs/locking.c
-@@ -45,7 +45,6 @@ void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting ne
- 		start_ns = ktime_get_ns();
- 
- 	down_read_nested(&eb->lock, nest);
--	eb->lock_owner = current->pid;
- 	trace_btrfs_tree_read_lock(eb, start_ns);
- }
- 
-@@ -62,7 +61,6 @@ void btrfs_tree_read_lock(struct extent_buffer *eb)
- int btrfs_try_tree_read_lock(struct extent_buffer *eb)
- {
- 	if (down_read_trylock(&eb->lock)) {
--		eb->lock_owner = current->pid;
- 		trace_btrfs_try_tree_read_lock(eb);
- 		return 1;
- 	}
-@@ -90,7 +88,6 @@ int btrfs_try_tree_write_lock(struct extent_buffer *eb)
- void btrfs_tree_read_unlock(struct extent_buffer *eb)
- {
- 	trace_btrfs_tree_read_unlock(eb);
--	eb->lock_owner = 0;
- 	up_read(&eb->lock);
- }
- 
 -- 
-2.30.2
-
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
