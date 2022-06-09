@@ -2,223 +2,261 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D88454525E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 18:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8315452C7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 19:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344942AbiFIQvd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jun 2022 12:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
+        id S245409AbiFIRR1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jun 2022 13:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344950AbiFIQvP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jun 2022 12:51:15 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EFE10D302
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jun 2022 09:51:01 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9CB1B21FDA;
-        Thu,  9 Jun 2022 16:51:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654793460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=c/sBHe4vXjNln8lEs74cGwdNZ33sJqIHdtgdYztetcQ=;
-        b=OPjym6QsCYY7CyHu0Mb0/9v+mnaK/EKdCAkQzdY4gH7zUSah99f49f0f66DlJ1OxTMdtaI
-        ocYLnlMRJlK9U3mJnegCUNOVsvN7RUsImB760sFH9P1koP6W5NQWLqRl23TMPbA8HRr4aO
-        920OSm+spX5XCs9UTwtVrSEDFrJTfZA=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 924442C141;
-        Thu,  9 Jun 2022 16:51:00 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 28E73DA883; Thu,  9 Jun 2022 18:46:30 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     willy@infradead.org, nborisov@suse.com,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH v2] btrfs: use preallocated pages for super block write
-Date:   Thu,  9 Jun 2022 18:46:29 +0200
-Message-Id: <20220609164629.30316-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.36.1
+        with ESMTP id S243030AbiFIRR1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jun 2022 13:17:27 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B331846C8E
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jun 2022 10:17:25 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B8EF55C013C;
+        Thu,  9 Jun 2022 13:17:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 09 Jun 2022 13:17:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1654795042; x=1654881442; bh=XySuRvdPii
+        Qnrhm1TDv/LTsFNkNGC6HE7BTNI9rjsGo=; b=cbzm7P2jC/oQIE9oJdqOJmx8Jn
+        L8pTm4vp8D3XoK4b1t3zb008Ep7l85J7clMCqZuPYxUJauvsPuhkKJz88Q1HTDoL
+        tsyPP8NJdQqAYraJAzxKkLHrvThD2+vL/mAClZX+ei1hQAU6crOeBQ4iuwS9ebip
+        OlCoJ2KAnaM2hyzR86m5hvbxZkVIZvSex9nRbeaqAkGTGrX3ap6MMVAhPQ6V7uCV
+        tCmr74tpvoSGafkrygD5p+T4Hm/eoUXhPwPvOan6BJnlryPAr7Bj5tzGDA8/jpDp
+        FzEudw3F5o5pXM//kB/UM0aR7BpOTerhfa0sz9PgK2x5JCY/5wrIEqZGIFPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1654795042; x=1654881442; bh=XySuRvdPiiQnrhm1TDv/LTsFNkNG
+        C6HE7BTNI9rjsGo=; b=maBwGO0ivNC6JwkzENCypXEF0ZM6EyuTWFgd4Zn3ukGS
+        PvzTkQ4s9b/WDuPd4pr1GJpJNHZWbZUDx9vQBpttogCrJLCroJ5kDfeqx6B5GKvK
+        j4HNecgOuYl44QInLxs3zfE1Q5lhhFm/4+6ZP49oH9UYFgeUZkHQQhEcKhaV/GHL
+        KaLYyorz/tMThU5s6qF++xSsxulcUfrWcn9vPK2TJmRll1OshBIafpXHjek6UinS
+        VDjOHHDsBDQWSLNvUxUfFLjm0dY2kzO/1Fk+zY9iyK+eNITEdKdjb0yvFYWQHnFn
+        P+kAxhhvs/loMIyXZZcedB+vToVX3PCD/Gz62KEZpg==
+X-ME-Sender: <xms:IiuiYuweSwUmSP2Zh8owbn8qa62zJBLEM0A8XlUdjTxJfH4neZ4rzg>
+    <xme:IiuiYqROSjBLRiAHKWtZiEyRRClfYDF3iu2tAo9hA3MNCA_zvqTM2uum4-OaD7ONQ
+    efUJjfjhifqMWu1UTY>
+X-ME-Received: <xmr:IiuiYgUs2wBjtFjShwdjvlEjUJ0aBkWvbZJ1v9zmZrMHHRIC746bglSbymxfDnuMArxLeoPJ_vTxQylZqbD8kue97JCBUg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddtledguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:IiuiYkioXXZyPu_70zgpvG5EexsYpS7jHgCSyzqPyfXiBuzPFr5U4g>
+    <xmx:IiuiYgAbtVmNfpAab7X_v3C3PGUX4w642uUCAFKlcbYKIyV0CIF11Q>
+    <xmx:IiuiYlIbRU3vjpA498rIyMqdXFjtJ9Ll-QvL8_iWNhq3_NZyD5cSbQ>
+    <xmx:IiuiYp50VpNHzv5_Frib3M9T8j61m1TXdTFEOIL6QWhdy_m-2-6eCw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 9 Jun 2022 13:17:21 -0400 (EDT)
+Date:   Thu, 9 Jun 2022 10:17:20 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add tracepoints for ordered extents
+Message-ID: <YqIrIHrqTq/0BugE@zen>
+References: <6bd882fd0562b8b18600629f7d0504f98c560dcf.1654792073.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6bd882fd0562b8b18600629f7d0504f98c560dcf.1654792073.git.johannes.thumshirn@wdc.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently the super block page is from the mapping of the block device,
-this is result of direct conversion from the previous buffer_head to bio
-API.  We don't use the page cache or the mapping anywhere else, the page
-is a temporary space for the associated bio.
+On Thu, Jun 09, 2022 at 09:28:04AM -0700, Johannes Thumshirn wrote:
+> When debugging a reference counting issue with ordered extents, I've found
+> we're lacking a lot of tracepoint coverage in the ordered-extent code.
+> 
+> Close these gaps by adding tracepoints after every refcount_inc() in the
+> ordered-extent code.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Allocate pages for all super block copies at device allocation time,
-also to avoid any later allocation problems when writing the super
-block. This simplifies the page reference tracking, but the page lock is
-still used as waiting mechanism for the write and write error is tracked
-in the page.
+Looks good, I see the new tracepoints. I think it would be helpful for
+posterity to motivate why refcount_inc is what we want to trace.
 
-As there is a separate page for each super block copy all can be
-submitted in parallel, as before.
+Reviewed-by: Boris Burkov <boris@bur.io>
 
-This was inspired by Matthew's question
-https://lore.kernel.org/all/Yn%2FtxWbij5voeGOB@casper.infradead.org/
-
-Signed-off-by: David Sterba <dsterba@suse.com>
----
-
-v2:
-
-- allocate 3 pages per device to keep parallelism, otherwise the
-  submission would be serialized on the page lock
-
-fs/btrfs/disk-io.c | 42 +++++++++++-------------------------------
- fs/btrfs/volumes.c | 12 ++++++++++++
- fs/btrfs/volumes.h |  3 +++
- 3 files changed, 26 insertions(+), 31 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 800ad3a9c68e..8a9c7a868727 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3887,7 +3887,6 @@ static void btrfs_end_super_write(struct bio *bio)
- 			SetPageUptodate(page);
- 		}
- 
--		put_page(page);
- 		unlock_page(page);
- 	}
- 
-@@ -3974,7 +3973,6 @@ static int write_dev_supers(struct btrfs_device *device,
- 			    struct btrfs_super_block *sb, int max_mirrors)
- {
- 	struct btrfs_fs_info *fs_info = device->fs_info;
--	struct address_space *mapping = device->bdev->bd_inode->i_mapping;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	int i;
- 	int errors = 0;
-@@ -3989,7 +3987,6 @@ static int write_dev_supers(struct btrfs_device *device,
- 	for (i = 0; i < max_mirrors; i++) {
- 		struct page *page;
- 		struct bio *bio;
--		struct btrfs_super_block *disk_super;
- 
- 		bytenr_orig = btrfs_sb_offset(i);
- 		ret = btrfs_sb_log_location(device, i, WRITE, &bytenr);
-@@ -4012,21 +4009,17 @@ static int write_dev_supers(struct btrfs_device *device,
- 				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE,
- 				    sb->csum);
- 
--		page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT,
--					   GFP_NOFS);
--		if (!page) {
--			btrfs_err(device->fs_info,
--			    "couldn't get super block page for bytenr %llu",
--			    bytenr);
--			errors++;
--			continue;
--		}
--
--		/* Bump the refcount for wait_dev_supers() */
--		get_page(page);
-+		/*
-+		 * Super block is copied to a temporary page, which is locked
-+		 * and submitted for write. Page is unlocked after IO finishes.
-+		 * No page references are needed, write error is returned as
-+		 * page Error bit.
-+		 */
-+		page = device->sb_write_page[i];
-+		ClearPageError(page);
-+		lock_page(page);
- 
--		disk_super = page_address(page);
--		memcpy(disk_super, sb, BTRFS_SUPER_INFO_SIZE);
-+		memcpy(page_address(page), sb, BTRFS_SUPER_INFO_SIZE);
- 
- 		/*
- 		 * Directly use bios here instead of relying on the page cache
-@@ -4093,14 +4086,7 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		    device->commit_total_bytes)
- 			break;
- 
--		page = find_get_page(device->bdev->bd_inode->i_mapping,
--				     bytenr >> PAGE_SHIFT);
--		if (!page) {
--			errors++;
--			if (i == 0)
--				primary_failed = true;
--			continue;
--		}
-+		page = device->sb_write_page[i];
- 		/* Page is submitted locked and unlocked once the IO completes */
- 		wait_on_page_locked(page);
- 		if (PageError(page)) {
-@@ -4108,12 +4094,6 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 			if (i == 0)
- 				primary_failed = true;
- 		}
--
--		/* Drop our reference */
--		put_page(page);
--
--		/* Drop the reference from the writing run */
--		put_page(page);
- 	}
- 
- 	/* log error, force error return */
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 12a6150ee19d..a00546d2c7ea 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -394,6 +394,8 @@ void btrfs_free_device(struct btrfs_device *device)
- 	rcu_string_free(device->name);
- 	extent_io_tree_release(&device->alloc_state);
- 	btrfs_destroy_dev_zone_info(device);
-+	for (int i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++)
-+		__free_page(device->sb_write_page[i]);
- 	kfree(device);
- }
- 
-@@ -6898,6 +6900,16 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
- 	if (!dev)
- 		return ERR_PTR(-ENOMEM);
- 
-+	for (int i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
-+		dev->sb_write_page[i] = alloc_page(GFP_KERNEL);
-+		if (!dev->sb_write_page[i]) {
-+			while (--i >= 0)
-+				__free_page(dev->sb_write_page[i]);
-+			kfree(dev);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+	}
-+
- 	INIT_LIST_HEAD(&dev->dev_list);
- 	INIT_LIST_HEAD(&dev->dev_alloc_list);
- 	INIT_LIST_HEAD(&dev->post_commit_list);
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 588367c76c46..516709e1d9f8 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -10,6 +10,7 @@
- #include <linux/sort.h>
- #include <linux/btrfs.h>
- #include "async-thread.h"
-+#include "disk-io.h"
- 
- #define BTRFS_MAX_DATA_CHUNK_SIZE	(10ULL * SZ_1G)
- 
-@@ -158,6 +159,8 @@ struct btrfs_device {
- 	/* Bio used for flushing device barriers */
- 	struct bio flush_bio;
- 	struct completion flush_wait;
-+	/* Temporary pages for writing the super block copies */
-+	struct page *sb_write_page[BTRFS_SUPER_MIRROR_MAX];
- 
- 	/* per-device scrub information */
- 	struct scrub_ctx *scrub_ctx;
--- 
-2.36.1
-
+> ---
+>  fs/btrfs/ordered-data.c      | 19 +++++++++--
+>  include/trace/events/btrfs.h | 64 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 80 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index dc88d2b3721f..41b3bc44c92b 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -401,6 +401,7 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+>  			set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
+>  			cond_wake_up(&entry->wait);
+>  			refcount_inc(&entry->refs);
+> +			trace_btrfs_ordered_extent_mark_finished(inode, entry);
+>  			spin_unlock_irqrestore(&tree->lock, flags);
+>  			btrfs_init_work(&entry->work, finish_func, NULL, NULL);
+>  			btrfs_queue_work(wq, &entry->work);
+> @@ -473,6 +474,7 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
+>  	if (finished && cached && entry) {
+>  		*cached = entry;
+>  		refcount_inc(&entry->refs);
+> +		trace_btrfs_ordered_extent_dec_test_pending(inode, entry);
+>  	}
+>  	spin_unlock_irqrestore(&tree->lock, flags);
+>  	return finished;
+> @@ -807,8 +809,10 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *ino
+>  	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
+>  	if (!in_range(file_offset, entry->file_offset, entry->num_bytes))
+>  		entry = NULL;
+> -	if (entry)
+> +	if (entry) {
+>  		refcount_inc(&entry->refs);
+> +		trace_btrfs_ordered_extent_lookup(inode, entry);
+> +	}
+>  out:
+>  	spin_unlock_irqrestore(&tree->lock, flags);
+>  	return entry;
+> @@ -848,8 +852,10 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
+>  			break;
+>  	}
+>  out:
+> -	if (entry)
+> +	if (entry) {
+>  		refcount_inc(&entry->refs);
+> +		trace_btrfs_ordered_extent_lookup_range(inode, entry);
+> +	}
+>  	spin_unlock_irq(&tree->lock);
+>  	return entry;
+>  }
+> @@ -878,6 +884,7 @@ void btrfs_get_ordered_extents_for_logging(struct btrfs_inode *inode,
+>  		ASSERT(list_empty(&ordered->log_list));
+>  		list_add_tail(&ordered->log_list, list);
+>  		refcount_inc(&ordered->refs);
+> +		trace_btrfs_ordered_extent_lookup_for_logging(inode, ordered);
+>  	}
+>  	spin_unlock_irq(&tree->lock);
+>  }
+> @@ -901,6 +908,7 @@ btrfs_lookup_first_ordered_extent(struct btrfs_inode *inode, u64 file_offset)
+>  
+>  	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
+>  	refcount_inc(&entry->refs);
+> +	trace_btrfs_ordered_extent_lookup_first(inode, entry);
+>  out:
+>  	spin_unlock_irq(&tree->lock);
+>  	return entry;
+> @@ -975,8 +983,11 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+>  	/* No ordered extent in the range */
+>  	entry = NULL;
+>  out:
+> -	if (entry)
+> +	if (entry) {
+>  		refcount_inc(&entry->refs);
+> +		trace_btrfs_ordered_extent_lookup_first_range(inode, entry);
+> +	}
+> +
+>  	spin_unlock_irq(&tree->lock);
+>  	return entry;
+>  }
+> @@ -1055,6 +1066,8 @@ int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 pre,
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>  	int ret = 0;
+>  
+> +	trace_btrfs_ordered_extent_split(BTRFS_I(inode), ordered);
+> +
+>  	spin_lock_irq(&tree->lock);
+>  	/* Remove from tree once */
+>  	node = &ordered->rb_node;
+> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+> index 29fa8ea2cc0f..73df80d462dc 100644
+> --- a/include/trace/events/btrfs.h
+> +++ b/include/trace/events/btrfs.h
+> @@ -598,6 +598,70 @@ DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_put,
+>  	TP_ARGS(inode, ordered)
+>  );
+>  
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_lookup,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_lookup_range,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_lookup_first_range,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_lookup_for_logging,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_lookup_first,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_split,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_dec_test_pending,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+> +DEFINE_EVENT(btrfs__ordered_extent, btrfs_ordered_extent_mark_finished,
+> +
+> +	     TP_PROTO(const struct btrfs_inode *inode,
+> +		      const struct btrfs_ordered_extent *ordered),
+> +
+> +	     TP_ARGS(inode, ordered)
+> +);
+> +
+>  DECLARE_EVENT_CLASS(btrfs__writepage,
+>  
+>  	TP_PROTO(const struct page *page, const struct inode *inode,
+> -- 
+> 2.35.3
+> 
