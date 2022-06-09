@@ -2,85 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C86F6544C3F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 14:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8272E544C6E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 14:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238045AbiFIMhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jun 2022 08:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S239903AbiFIMq2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jun 2022 08:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbiFIMhU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jun 2022 08:37:20 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E867A22BCF
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jun 2022 05:37:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A9CDD21F42;
-        Thu,  9 Jun 2022 12:37:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654778237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S242897AbiFIMqU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jun 2022 08:46:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5104B21E310
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jun 2022 05:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654778778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZpFIPRsw7CvtFIdP9pG7YP/0yI5yYuTPyuSPy+RwlX0=;
-        b=YpTj072rtdMbTg9F5wvPWkJn1MXHtve0IvYqHvSajaEDr+BzxiO97yJioaYQHl4OdoPQSy
-        VSqLSWr6m1yg4Rvii1zRk16OM0ISK14WnOwAZ9NasTY4Xs9gubetUaiLESBDAV62TJTfxW
-        TB+gVn9ppkuqlPkb631K42970E6fdNk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 728BF13A8C;
-        Thu,  9 Jun 2022 12:37:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JpgsGX3poWIfQAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 09 Jun 2022 12:37:17 +0000
-Message-ID: <0a6872d8-889a-eff2-cce2-4a81b7aa4594@suse.com>
-Date:   Thu, 9 Jun 2022 15:37:16 +0300
+        bh=zufIRXqzWNkS/vBQ6LnlofDt3t0aO0GgELLgxZEV3qM=;
+        b=HIXsjEUnongSD1TjFqEGabC/TtCMCfxtF33KPnVnccTLEWb9ZONgCkysLzQQEE59oQn1wz
+        r83y6pqAxGyAXeeWQLdoeE+UkCPwJyJcLWGS8oPA5Srukkm9hzep24Se5Ow1BfbagYKE3O
+        eyR50mRPkiydgc+XkN6bm3AGrIPIV0A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-395-FtlbCoYEN9a3r1kpA3XcoQ-1; Thu, 09 Jun 2022 08:46:14 -0400
+X-MC-Unique: FtlbCoYEN9a3r1kpA3XcoQ-1
+Received: by mail-wm1-f72.google.com with SMTP id k32-20020a05600c1ca000b0039c4cf75023so6958058wms.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 Jun 2022 05:46:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=zufIRXqzWNkS/vBQ6LnlofDt3t0aO0GgELLgxZEV3qM=;
+        b=F7JHhBBazzalWZBqJf7upbiNnFL5uVBPh2WA/kY2YPDcEBQpPPxzqOQLfH0errw4Qj
+         OybPWZxkdl+WBV7hXEQNGEZBTuE35Miu7Fb5rGsGuq6PMJKBAd75knlh8KRbxYmFC1GF
+         Vvgni2z1WLdikh8i4VH+tmu8oMv4jhyYE01MG/4dLWU+D+3188eIShJD0gmhmnN9GNif
+         BANuLnYPmHKgpG/BKOmzgw1lzK6Lo3GOaeFBqZRv4j7yMQSKu6ivTimStvGGXYsDQllk
+         SQc7bRuqBhqo/78lrOMIb7Mje7b8bpm28fa086A6eWMc39EkjWzMk2Zq5TDZfRY+Xczf
+         QmWg==
+X-Gm-Message-State: AOAM531TLDDX2L+iWtqVnR/ZNBOV2+o2gsEi+079QX4r0spSYyVn4Jt+
+        ptXSzrpQ5rIL+o4bqk/Lcy9SvJSBrYSGVnkg6Ky5AXc/VbcI55K59VOyAelmeIcpN1Ifi7p4jOl
+        T7eRonc6LcCZ21rb3GjNZc/c=
+X-Received: by 2002:a05:6000:168b:b0:218:54da:90ba with SMTP id y11-20020a056000168b00b0021854da90bamr12022152wrd.283.1654778773731;
+        Thu, 09 Jun 2022 05:46:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFg5i2EPJ88Gv87gtw7EHVrLhSwsyQAltgpPZk1DxRKIUlDObIOhdmhH9jKki5ThpOI9Vqng==
+X-Received: by 2002:a05:6000:168b:b0:218:54da:90ba with SMTP id y11-20020a056000168b00b0021854da90bamr12022117wrd.283.1654778773451;
+        Thu, 09 Jun 2022 05:46:13 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:20af:34be:985b:b6c8? ([2a09:80c0:192:0:20af:34be:985b:b6c8])
+        by smtp.gmail.com with ESMTPSA id a7-20020a05600c224700b0039c693a54ecsm3854607wmm.23.2022.06.09.05.46.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jun 2022 05:46:12 -0700 (PDT)
+Message-ID: <c204c627-ec6b-cd8c-412d-57c8f55c61fa@redhat.com>
+Date:   Thu, 9 Jun 2022 14:46:11 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] btrfs: use preallocated page for super block write
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v2 01/19] secretmem: Remove isolate_page
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20220607154229.9164-1-dsterba@suse.com>
- <1c8faef3-6ccb-6eb8-6f42-d52faf8f74e1@suse.com>
- <YqHpOSWedxnjPWfP@casper.infradead.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <YqHpOSWedxnjPWfP@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
+        linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org
+References: <20220608150249.3033815-1-willy@infradead.org>
+ <20220608150249.3033815-2-willy@infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20220608150249.3033815-2-willy@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 9.06.22 г. 15:36 ч., Matthew Wilcox wrote:
-> On Thu, Jun 09, 2022 at 10:30:06AM +0300, Nikolay Borisov wrote:
->> nit: I think it's important to remark in the changelog that with this change
->> sb writing becomes sequential as opposed to parallel with the old code. This
->> also means that wait_dev_supers can be simplified because the max_mirror's
->> loop is not needed, at least for waiting, since for each device we at most
->> need to wait for the last write to it, as all previous ones have been
->> serialized by the pagelock.
+On 08.06.22 17:02, Matthew Wilcox (Oracle) wrote:
+> The isolate_page operation is never called for filesystems, only
+> for device drivers which call SetPageMovable.
 > 
-> I've just re-read the patch very carefully three times, and I don't
-> see the change that makes this happen.  Can you explain to me how it
-> happens?
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  mm/secretmem.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/mm/secretmem.c b/mm/secretmem.c
+> index 206ed6b40c1d..1c7f1775b56e 100644
+> --- a/mm/secretmem.c
+> +++ b/mm/secretmem.c
+> @@ -133,11 +133,6 @@ static const struct file_operations secretmem_fops = {
+>  	.mmap		= secretmem_mmap,
+>  };
+>  
+> -static bool secretmem_isolate_page(struct page *page, isolate_mode_t mode)
+> -{
+> -	return false;
+> -}
+> -
+>  static int secretmem_migratepage(struct address_space *mapping,
+>  				 struct page *newpage, struct page *page,
+>  				 enum migrate_mode mode)
+> @@ -155,7 +150,6 @@ const struct address_space_operations secretmem_aops = {
+>  	.dirty_folio	= noop_dirty_folio,
+>  	.free_folio	= secretmem_free_folio,
+>  	.migratepage	= secretmem_migratepage,
+> -	.isolate_page	= secretmem_isolate_page,
+>  };
+>  
+>  static int secretmem_setattr(struct user_namespace *mnt_userns,
 
-We now have a single page -per device, whereas the old code got a page 
-from pagecache based on the offset where the sb is written. SO what 
-happens now is that we send the first sb down the disk, then on the 2nd 
-iteration we'd block on lock_page etc.
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
