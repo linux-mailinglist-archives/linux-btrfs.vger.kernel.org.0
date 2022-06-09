@@ -2,85 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B9D54422B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 05:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF775442D1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jun 2022 07:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237676AbiFIDxI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jun 2022 23:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
+        id S237887AbiFIFDn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jun 2022 01:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbiFIDxH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jun 2022 23:53:07 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35EF1758A
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 20:53:05 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id h1so19259946plf.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jun 2022 20:53:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2koJarmzmGedHyxAL/i+lFQdd0Q5ZAFYaE5poQNe8+A=;
-        b=RQ0R70N1jS16HKNC0Ol/Snkv+fFPQxMu+sR7KyTPcd0AtJQdfRDJChe//d33ePjW42
-         NUwM+6AWLf4HFFg8nnACUzLphwGwod4E04VS00IvvGGhoglI/uAdn0OmVESO9k7YbA87
-         WXoB0WPSZJwIZQYNTDVCrIBlg3nJFEaNR0URvRoZ6V+qEZfc2gJFc0HlrIL1W1WW+rDF
-         1/Yc7ng+dbkR+XlDUC9pFMzh9gCVKqODsRZejDoKKLodOa0wkJ1V/grBLEapqp/wFCIH
-         /I5BMumfmT4H9nCNsQOMZJKoI5zjOM9KkgLVSCyM7AwYZxsmplXtAzqYRAkSkI1RVqcd
-         8nDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2koJarmzmGedHyxAL/i+lFQdd0Q5ZAFYaE5poQNe8+A=;
-        b=nNUZTplnUosaPdRhL7z03aweF4/dMhtJ7ntG3unGmIQL4FLjkhzgcGRmnvicy3F1IH
-         K81xutw9yrB3OjnXFjgqVdpVCb7Sj3Cb15xfkPKBWDIJWPyrj/tyBu+j9NRpJqRcIm9d
-         eZygGXd4iDbSYybf2r3ZhBIQtwxu6DPS1DxA1yoerSPV/x0jObdGkoXFKVwzaDoyId97
-         Z2IiK6bOFuwaVIOR8eF0usTfV0U5TeFr5RWznvlUOmXmfqymBwSUun9EOB93ngLfY9d0
-         rgy3QU6rEbmdWgiexOweEmF9l+scZp1rQZ7hDq0rMxtQTU12FnkQIQV+WcYHTSJ85xxb
-         Zsxg==
-X-Gm-Message-State: AOAM5315y2FDUXCuoNolj9UYnp+1lA/221Jp7jzZsFYY1uSU68oaUadA
-        k/Vd6xhQ2tqoM+ph75z3gtULdA==
-X-Google-Smtp-Source: ABdhPJz3/PMx3RZgt3QHHTiA/K9+ZXI01CeV4NC4DLpNFuQQZTFyqHCu1obpFa9lx3Ct5QRSUsQXvQ==
-X-Received: by 2002:a17:902:e748:b0:164:1b1e:28fe with SMTP id p8-20020a170902e74800b001641b1e28femr38251973plf.116.1654746785210;
-        Wed, 08 Jun 2022 20:53:05 -0700 (PDT)
-Received: from localhost ([139.177.225.238])
-        by smtp.gmail.com with ESMTPSA id a20-20020a170902b59400b001664ce47e11sm12584649pls.210.2022.06.08.20.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jun 2022 20:53:04 -0700 (PDT)
-Date:   Thu, 9 Jun 2022 11:53:00 +0800
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 16/19] hugetlb: Convert to migrate_folio
-Message-ID: <YqFunLBBKbZN9uD9@FVFYT0MHHV2J>
-References: <20220608150249.3033815-1-willy@infradead.org>
- <20220608150249.3033815-17-willy@infradead.org>
+        with ESMTP id S230510AbiFIFDm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jun 2022 01:03:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2DF219125
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jun 2022 22:03:40 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8547621B67;
+        Thu,  9 Jun 2022 05:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1654751019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8JPWy5Q3VXozuNSDBtWUCDwHVBxjVmR+aMy3lDMecp8=;
+        b=mt1tht7xmeNFpPK14NmcdnHyugG2L4EAC5l7e50GBEcMsw2rgNXBPgiOvsEfUMQussgAzH
+        9ELGyaSNXP9JEBtTaP4sx/XVOVNl4WCdbp/ANvzRISEoH0iIenrOlt3GtbiFOe2fiNa92m
+        2TuWmAO8soD/6ikD4uWWKPF4HfeiFCE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D387137FA;
+        Thu,  9 Jun 2022 05:03:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5gjfEyt/oWJVDwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 09 Jun 2022 05:03:39 +0000
+Message-ID: <63be7ae2-df2b-9cb4-1d48-1664ec63cfa6@suse.com>
+Date:   Thu, 9 Jun 2022 08:03:38 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220608150249.3033815-17-willy@infradead.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] btrfs: don't set lock_owner when locking tree pages for
+ reading
+Content-Language: en-US
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+References: <20220609023936.6112-1-ce3g8jdj@umail.furryterror.org>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220609023936.6112-1-ce3g8jdj@umail.furryterror.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 04:02:46PM +0100, Matthew Wilcox (Oracle) wrote:
-> This involves converting migrate_huge_page_move_mapping().  We also need a
-> folio variant of hugetlb_set_page_subpool(), but that's for a later patch.
+
+
+On 9.06.22 г. 5:39 ч., Zygo Blaxell wrote:
+> In 196d59ab9ccc "btrfs: switch extent buffer tree lock to rw_semaphore"
+> the functions for tree read locking were rewritten, and in the process
+> the read lock functions started setting eb->lock_owner = current->pid.
+> Previously lock_owner was only set in tree write lock functions.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Read locks are shared, so they don't have exclusive ownership of the
+> underlying object, so setting lock_owner to any single value for a
+> read lock makes no sense.  It's mostly harmless because write locks
+> and read locks are mutually exclusive, and none of the existing code
+> in btrfs (btrfs_init_new_buffer and print_eb_refs_lock) cares what
+> nonsense is written in lock_owner when no writer is holding the lock.
+> 
+> KCSAN does care, and will complain about the data race incessantly.
+> Remove the assignments in the read lock functions because they're
+> useless noise.
+> 
+> Fixes: 196d59ab9ccc ("btrfs: switch extent buffer tree lock to rw_semaphore")
+> Signed-off-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 
-Acked-by: Muchun Song <songmuchun@bytedance.com>
-
-Thanks.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
