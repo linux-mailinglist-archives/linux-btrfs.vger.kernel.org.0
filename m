@@ -2,172 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F0B54635C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jun 2022 12:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D04546363
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jun 2022 12:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348102AbiFJKRq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jun 2022 06:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        id S1348785AbiFJKSX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jun 2022 06:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344758AbiFJKRo (ORCPT
+        with ESMTP id S1348927AbiFJKSV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jun 2022 06:17:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7343E0E8
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 03:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654856258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ekvjf5YPr7Sjtvmnh5pMqvNXgm63w4q321GSzdMpiws=;
-        b=eLYgCVuG0zvOXKTmMaOwP6SNVlBXhzUjqF5QSpK4+tx/jRoHKlpj0rUkGC1UAleaOvghD6
-        AE/0HOJPP5GnBRt4/1/x0JpVZGbqBvQ6Kmysabbq6qdTsG6mfmaKpwhXHIhukQ24SaFFXb
-        l3d4Nrtesr/Vi4T7IjNKu95kj2hgdpE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-278-UqqWtGdMNLCPTsNpvpbnhg-1; Fri, 10 Jun 2022 06:17:36 -0400
-X-MC-Unique: UqqWtGdMNLCPTsNpvpbnhg-1
-Received: by mail-wr1-f72.google.com with SMTP id u18-20020adfb212000000b0021855847651so2500511wra.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 03:17:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=Ekvjf5YPr7Sjtvmnh5pMqvNXgm63w4q321GSzdMpiws=;
-        b=7bBxYHIeI4/ZkXxjSL7DnHre27BXpHx+9AG+JxlQpX0kApPoBYZfqsA9biFsUfYLJ+
-         7WX9JamQvi1b8LdMLOfXvESnoa1cxdwC5CgOw8KjsyG/Q1mztp1jINIkjOWbDXE2zOhF
-         QoKzkcXQM2FMO++AjzRzZqgrjMEt6lkOtgYaT+afnQ9xV03LDz+yZpwK79s+iuObYMdR
-         4jq7uWAx2q+EdMWICLxl29n8wsFfzkuw9JVsDB+ykHYiaYtrwPpX6AjK8wmzCFP1Dbik
-         q1jmo3nOAddr8Y+Oth9YousNuGEcbGwR4uuTY92utPN0vv7QcgOjBzUYRR88SBixwLEz
-         TLbw==
-X-Gm-Message-State: AOAM5325pfHu4txCdJPyTQvlF6+1koird4/PnbkL3ok1WM58Lvd/FkAc
-        nVygrOYLvMkqEx80Jf3mRrSf+I4gyFouewl3R1Acr3qWqa0bFQYkG7LJsMjGo95nZ8BumJUmg4w
-        agcO49GsFelkRhIgEoHH5snA=
-X-Received: by 2002:a05:6000:91:b0:217:8efc:f572 with SMTP id m17-20020a056000009100b002178efcf572mr29122729wrx.186.1654856255658;
-        Fri, 10 Jun 2022 03:17:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzMoCknlizO69Nl0wuEIzBALIZP/2+KDolU3ne+3dmHgzec6LJk/2XhtTIsrJ35XnXVn7hgfw==
-X-Received: by 2002:a05:6000:91:b0:217:8efc:f572 with SMTP id m17-20020a056000009100b002178efcf572mr29122693wrx.186.1654856255339;
-        Fri, 10 Jun 2022 03:17:35 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c705:1f00:4727:6420:1d4d:ca23? (p200300cbc7051f00472764201d4dca23.dip0.t-ipconnect.de. [2003:cb:c705:1f00:4727:6420:1d4d:ca23])
-        by smtp.gmail.com with ESMTPSA id m17-20020a05600c4f5100b0039c4f53c4fdsm3105741wmq.45.2022.06.10.03.17.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jun 2022 03:17:34 -0700 (PDT)
-Message-ID: <e287a12d-29d9-da69-9315-52414341cbd1@redhat.com>
-Date:   Fri, 10 Jun 2022 12:17:33 +0200
+        Fri, 10 Jun 2022 06:18:21 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DE740930
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 03:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1654856289;
+        bh=PaoKSmpRXRh+S4m1jLNOB5BF7RJmozlfR/RaLAU0nUU=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=eLRqX6VzVtQzgnzNAwLGYzaFwl2v54YCnHRylAuW1lAbbI+5ZUuq09XFus4bwFCRI
+         q2Teyh1UsbhZzhgAo/dJ/nmKpCofH5W/Ei6et7GNbFyhohR0sVQjmknTAcHeVfhEZJ
+         dWIQgFR2BliXo+dKQjgiDhwol9LjPBnkZNypEC3o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MD9XF-1nqZI92Lej-0097jM; Fri, 10
+ Jun 2022 12:18:09 +0200
+Message-ID: <3410bf6b-f5b7-5801-b10c-5e67354e0e40@gmx.com>
+Date:   Fri, 10 Jun 2022 18:18:04 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: [PATCH v2 03/19] fs: Add aops->migrate_folio
+Subject: Re: [PATCH] btrfs: add tracepoints for ordered extents
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20220608150249.3033815-1-willy@infradead.org>
- <20220608150249.3033815-4-willy@infradead.org>
- <b2a81248-03fc-afb3-1041-d8206e95e08a@redhat.com>
- <YqIFHPJZNMrmtXlh@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YqIFHPJZNMrmtXlh@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <6bd882fd0562b8b18600629f7d0504f98c560dcf.1654792073.git.johannes.thumshirn@wdc.com>
+ <2d623799-53ca-7c20-0433-c455683c5e83@gmx.com>
+ <PH0PR04MB7416CC44514F9954E39207249BA69@PH0PR04MB7416.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <PH0PR04MB7416CC44514F9954E39207249BA69@PH0PR04MB7416.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1xun559RNXbpTCWLv3GQx2NfaPiR1YV5XhiLbbTeryJ1Ke5YbdV
+ PkqpYzzyP5Pys7w4IGRLbJg2QxDdsi8tNoITBinxKxhYzfxBVjKcFUjXpKLRkzuI8zmrS14
+ vJOxh3S3BlwRAmUCNDUCEmwvNKtrWzFNNBrqrpm+na2DorGfeJGsNhDEyFemUVmHPyz4WZQ
+ koOF5gonujVutGwotY6/w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gI9eE429pos=:68klmIfxdeFGR9/45ns5QJ
+ N7AeFasWqr8zkU/szfRFrzsFRLTBSGlf7VdworfERXTMrijkCjV1wV78CQX+wwwmNeK0CC+Wr
+ mmd5CrsuYumx0ZU6D+oR/5Y5+Df+HD0hLQSfhowkG8inNfODqOK/XVfIsfZoMHMaOnA31nS28
+ rP2RJlPSIfTTa0pCoL4MKaBKcLUdhZFLEgYIUIui4Oz0afpKri+xRMBIa5+jfsdoVc4bfp2QV
+ dBXkGnlixtYDxm+22VgCgKK2eccFKztDxGAajKsWsZxnpcRfle8kZQLxXQ2tuAQxzAlxuGhJm
+ t8Z23hIsjZrUemwA4C/SA2Arp1xHdUmHkzY1rWBWTMefy3wvO5IKlZVLonPrT/BGAJLC8Uhq6
+ Y3m3k2HfsUVoFBYVC+MCN3LR+yo+rwxU9ikqacbx4Yi27+Bp8aehklYHK+AP7HjwJIeASk12g
+ sgcXmA1tMnTVE6IwW6PaOEbvaBGHIIL/o45sZURWPr6+/MeqcxrEIaNG+68LhzA0auUT/Pxzw
+ ng9y9VDbm6LgWtpmqFhndqbqK2yP3PfSEnjByAXLhHMMKbT3M4CF/f8aw/OS8pk3PfALWIHjZ
+ zWnzLsveoei68bhFK/Mwet7hIo1wI9i3lK4J324vvZJzA2rVbWQvdqumgreKCe/5/ejsXwl0i
+ Rs8sqSkUvhFBUs1o+YBuTB1sonGoxeCBq6sVPgDvvkElLH/sZ3PjrmphJ9qglWrhdr21H3+Zg
+ OS7N9mbkTsDfRN7Rtd3HYR1GJsczkfZWg6wnK1N3fnRSn0/xHzCzZYvXtzK0dHwqSBUsIoI/q
+ u5iyX1XgUxSUiapcJUhzJKqufq7ugfuEbCLCQWNckJJVx1R2fqYuIQlQGNqHgGSUj9FqrFATi
+ 4DZuHY9T8U6tfWyMnpo2VlGM+S34TIdFGJ71qe8fmxCq9fdELPrIcQrWIVkMyUo+ZABOEk+4O
+ TX+RGNVq1eKNZ/P2EWZcWWmW8lMQ0YGKqRmaPTwEFULSnMi9FkttvSHEM0yX+xfF2gXFc5emp
+ Mq1sTbaFuRaYuFe7I1Tj+i/Q6bsk9A2qJpga3CGQDACvjMJJ0D4wzCiHdlEt5JbJ4+kM5STcH
+ 8nfUn1FRylss3Fl/iQIz+jXDi6wv8KE5d03GrU/WtiQUQ2xHkNWa+Rj+g==
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09.06.22 16:35, Matthew Wilcox wrote:
-> On Thu, Jun 09, 2022 at 02:50:20PM +0200, David Hildenbrand wrote:
->> On 08.06.22 17:02, Matthew Wilcox (Oracle) wrote:
->>> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
->>> index c0fe711f14d3..3d28b23676bd 100644
->>> --- a/Documentation/filesystems/locking.rst
->>> +++ b/Documentation/filesystems/locking.rst
->>> @@ -253,7 +253,8 @@ prototypes::
->>>  	void (*free_folio)(struct folio *);
->>>  	int (*direct_IO)(struct kiocb *, struct iov_iter *iter);
->>>  	bool (*isolate_page) (struct page *, isolate_mode_t);
->>> -	int (*migratepage)(struct address_space *, struct page *, struct page *);
->>> +	int (*migrate_folio)(struct address_space *, struct folio *dst,
->>> +			struct folio *src, enum migrate_mode);
->>>  	void (*putback_page) (struct page *);
+
+
+On 2022/6/10 18:07, Johannes Thumshirn wrote:
+> On 10.06.22 11:17, Qu Wenruo wrote:
+>>> +	trace_btrfs_ordered_extent_split(BTRFS_I(inode), ordered);
 >>
->> isolate_page/putback_page are leftovers from the previous patch, no?
-> 
-> Argh, right, I completely forgot I needed to update the documentation in
-> that patch.
-> 
->>> +++ b/Documentation/vm/page_migration.rst
->>> @@ -181,22 +181,23 @@ which are function pointers of struct address_space_operations.
->>>     Once page is successfully isolated, VM uses page.lru fields so driver
->>>     shouldn't expect to preserve values in those fields.
->>>  
->>> -2. ``int (*migratepage) (struct address_space *mapping,``
->>> -|	``struct page *newpage, struct page *oldpage, enum migrate_mode);``
->>> -
->>> -   After isolation, VM calls migratepage() of driver with the isolated page.
->>> -   The function of migratepage() is to move the contents of the old page to the
->>> -   new page
->>> -   and set up fields of struct page newpage. Keep in mind that you should
->>> -   indicate to the VM the oldpage is no longer movable via __ClearPageMovable()
->>> -   under page_lock if you migrated the oldpage successfully and returned
->>> -   MIGRATEPAGE_SUCCESS. If driver cannot migrate the page at the moment, driver
->>> -   can return -EAGAIN. On -EAGAIN, VM will retry page migration in a short time
->>> -   because VM interprets -EAGAIN as "temporary migration failure". On returning
->>> -   any error except -EAGAIN, VM will give up the page migration without
->>> -   retrying.
->>> -
->>> -   Driver shouldn't touch the page.lru field while in the migratepage() function.
->>> +2. ``int (*migrate_folio) (struct address_space *mapping,``
->>> +|	``struct folio *dst, struct folio *src, enum migrate_mode);``
->>> +
->>> +   After isolation, VM calls the driver's migrate_folio() with the
->>> +   isolated folio.  The purpose of migrate_folio() is to move the contents
->>> +   of the source folio to the destination folio and set up the fields
->>> +   of destination folio.  Keep in mind that you should indicate to the
->>> +   VM the source folio is no longer movable via __ClearPageMovable()
->>> +   under folio if you migrated the source successfully and returned
->>> +   MIGRATEPAGE_SUCCESS.  If driver cannot migrate the folio at the
->>> +   moment, driver can return -EAGAIN. On -EAGAIN, VM will retry folio
->>> +   migration in a short time because VM interprets -EAGAIN as "temporary
->>> +   migration failure".  On returning any error except -EAGAIN, VM will
->>> +   give up the folio migration without retrying.
->>> +
->>> +   Driver shouldn't touch the folio.lru field while in the migrate_folio()
->>> +   function.
->>>  
->>>  3. ``void (*putback_page)(struct page *);``
+>> I guess this doesn't have all the info for this split event?
+>> Like pre/post values?
 >>
->> Hmm, here it's a bit more complicated now, because we essentially have
->> two paths: LRU+migrate_folio or !LRU+movable_ops
->> (isolate/migrate/putback page)
-> 
-> Oh ... actually, this is just documenting the driver side of things.
-> I don't really like how it's written.  Here, have some rewritten
-> documentation (which is now part of the previous patch):
-> 
+>> Although we will call clone_ordered_extent() which will call
+>> btrfs_add_ordered_extent() and trigger the event for add.
+>>
+>> It still doesn't really show the pre/post values directly.
+>>
+>
+> Yup, unfortunately you need to do the math on your own.
+>
+>> Is there better way to just add extra members for the existing trace
+>> event class?
+>> If not, I guess that's all what we can do right now...
+>>
+>
+> Not that I know of, hence why I had to do it this way.
 
-LGTM, thanks.
+OK, then it looks fine to me.
 
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
--- 
 Thanks,
-
-David / dhildenb
-
+Qu
