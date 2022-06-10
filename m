@@ -2,139 +2,235 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5319F545B5E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jun 2022 06:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33045545C19
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jun 2022 08:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243383AbiFJExY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jun 2022 00:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
+        id S237840AbiFJGJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jun 2022 02:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbiFJExT (ORCPT
+        with ESMTP id S235342AbiFJGJq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jun 2022 00:53:19 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCC031AE9E
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jun 2022 21:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1654836788;
-        bh=48Q4ZNNiidv2QVG8Jr36th6O9DeGUjjoPH+UicyvgWE=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=hlofNst+160y/WLYklegqodtT3DUSWrPjaEw4KqStT+wSUiFZnQhtiwCiz/bCi6l/
-         pgr2pDt7637FrM5DmMA2HGhVp0lcnNTH8Y1xSkxm7Zz02fGDC4qk8n4ufGUldwc8bp
-         pk5N8XwelAVVICMx+mYM0kYna8uDYgtFYcFu0cE4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8hZJ-1o4DbO1moz-004fxb; Fri, 10
- Jun 2022 06:53:08 +0200
-Message-ID: <bb7a1b32-07aa-c128-6df4-ac68611ad471@gmx.com>
-Date:   Fri, 10 Jun 2022 12:53:03 +0800
+        Fri, 10 Jun 2022 02:09:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D350E21D3E2
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jun 2022 23:09:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9267221F9B
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 06:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1654841382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=w6WSTmu4qkQ/odDBUHqxCD4yUyWRFGJl37Uf9nK/i+o=;
+        b=NSQL1+O30E4iQ8oQfhEO499bn2VOzE8Gok/0jSq6bz0YFfNHy8mfhQMj3jWFwFGsORPqhz
+        qr2x3f2mTitNIwCAzsKE5Q5382OixYo6o6dLRy1CEIJqdAj4iyFSacVxXai9k3nz5kYy0r
+        deSqFofiPO+rm7yqhc93YNBT8aVIrXM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2A4413941
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 06:09:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id vYujLyXgomI0GQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 06:09:41 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: properly record errors for super block writeback
+Date:   Fri, 10 Jun 2022 14:09:22 +0800
+Message-Id: <6726644169a9f4affbb6894a8a560c96072be9cf.1654841347.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v2] btrfs: use preallocated pages for super block write
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, nborisov@suse.com
-References: <20220609164629.30316-1-dsterba@suse.com>
- <17d8d373-f836-5d23-2939-d9dfcb65ae7e@gmx.com>
- <20220609225906.GX20633@twin.jikos.cz>
- <YqKhCDu0tOcdGpKA@casper.infradead.org>
- <60abd620-0ec0-9ab2-74ac-8fc06e21d193@gmx.com>
- <YqK7FZrz+xVxl541@casper.infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <YqK7FZrz+xVxl541@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1nKn0ojWNZg3p8PzD3+Sxk+mIUUHs9EVae90jWLnV2zKu93n1Wp
- lDkEi0asdSheWUIQg9DbWL4A8eueyrKjWS+J5XvSSihTx/C9VkrY3Mf1bdyIvPnsLtpxwQK
- iRDQ81BVSZN+H7hNOg9Uu7NRm/TETOlLSALVU8IZ/h0zq++zBL7lgVU6SbKyb/XKLqgx36z
- f7NplPUMKlGy5QuVbx6bQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QJ/pi+deD48=:Ityg+a8+s7TlqvLlCuydSN
- aieg5RDprd04IraK3U1ylkgk4EmKUXGMilIfA5UNVwX7UkdVVfL8BpCegkGIN6fseRltjWnXl
- WlOIRPQ46qTKkjQzJsmO/CqqnwCgeaFe175gTbydjcJL+97KFUZB0Ie3lt7yqkIG19aRdb7PY
- dAA0G5d+czV9cArhPC5UPLkHDwlaqqsPL6X3Eq5pPRC1dfSiUE84rBM+ZFKuv/MYfEHvdbmf8
- 8qJOOpmpLNXWgkotuw9E3ORsJ5Ci7rk9rKYnKY6aCOsaSzm8yuIuBRDN0uaDZlq3lw0MdNddT
- X/zKL8FPshZZyY/uKJivCEVUxxFsif+HPLaOMvu0Xt9u7DAJXJ/rRscRn7vla4xgoPYTi/U74
- DiRRGbW3LlrqnRignxdYzpyCr8Fq55Wxt5EhynXyYxLoIh2r6Bvy5jErGeY35w8y+jHsgQwuS
- mewPOP593nK+VlDnc93cp2XkcpZdp76mg+sdzBmHZphCKLQjw8nCHT7cIUwSzZgu5BqyuSGpS
- QhYfQMtMhZO3i2IdZDmrmvMm3D87vgcKNSaVsIsco8l4Sv4HrmulgbulpH+4J19+Xb1tycd2D
- fa356JHHopKY12tSnX7HtX2Ui9bSLONdekD318tHIKb5R6vU6m/3pguoSJZLEs6aFe1vmYl0H
- hvac7MWKUidD76KlUCMrwTRZf+6D55j/K18x0JTuGQvtuGyUPZmIlKoncyRafGi+H2GK38Y62
- YJ/zadg07EwpGXFrG/KJA7H3jDzqVFDKfocEsSOYGeL2MytqL+L7dS/pvWHx14T6MG5Li7miZ
- QP7EIPJUhrDu0fKleK9+uzOZdFUrZY/vekfhzPvcvFDmKJhUVthiMMRaVsSmoXZusCOtUYbQ4
- 91Bk9FD7QZz82Tip8+xW8buzfT1qO014E+fD3dBQmYD4DI8USTXmxDegqnN653s/DSMqMVS5y
- FKJoHztwhGncUJI+aLgnl4TtMKDSUO7N1X1y1pLnliU2aIFcFnyI6vq1Zfegat0cNu7CWXIJz
- kUVyjKsb74B/ITW+9zhFxEY8NU2PXjdxMhji3qgJcgvEgAbmLYMfu2T12C9qODc86QlC0O+O+
- BoHzwE8UOlUZAldst3sM29wnBVUpqIhXG7YsF1Dx89pgzxBtFdJt5y9gw==
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Although function write_dev_supers() will report error, it only report
+things like failed to grab the page, all those errors before we submit
+the bio.
 
+But if our bio really failed, due to real IO error, we just set the page
+error, output an error message, and call it a day.
 
-On 2022/6/10 11:31, Matthew Wilcox wrote:
-> On Fri, Jun 10, 2022 at 10:46:18AM +0800, Qu Wenruo wrote:
->> On 2022/6/10 09:40, Matthew Wilcox wrote:
->>> On Fri, Jun 10, 2022 at 12:59:06AM +0200, David Sterba wrote:
->>>> On Fri, Jun 10, 2022 at 06:58:00AM +0800, Qu Wenruo wrote:
->>>>>> v2:
->>>>>>
->>>>>> - allocate 3 pages per device to keep parallelism, otherwise the
->>>>>>      submission would be serialized on the page lock
->>>>>
->>>>> Wouldn't this cause extra memory overhead for non-4K page size syste=
-ms?
->>>>>
->>>>> Would simpler kmalloc() fulfill the requirement for both 4K and non-=
-4K
->>>>> page size systems?
->>>>
->>>> Yeah on pages larger than 4K it's a bit wasteful. kmalloc should be
->>>> possible, for bios we need the page pointer but we should be able to =
-get
->>>> it from the kmalloc address. I'd rather do that in a separate change
->>>> though.
->>>
->>> Slab uses the entirety of the struct page; if you use kmalloc, you
->>> need a separate side structure to keep your metadata in rather than
->>> using the struct page for your metadata.
->>
->> Any idea what structure in page we need for this super block write scen=
-ario?
->>
->> Currently in btrfs_end_super_write(), it only handle PageUptodate and
->> PageError.
->>
->> But we only set them, and never really utilize them, resulting btrfs to
->> ignore any IO error on superblocks.
->
-> Huh?  I see btrfs reporting errors using them.  eg write_all_supers()
-> sums up total_errors.
+This makes btrfs to completely ignore super block writeback error.
 
-Unfortunately, it doesn't take IO error into consideration.
+Thankfully, this is not that a big deal, as normally we should got error
+when flushing the device before we reached super block writeback.
 
-In btrfs_end_super_write() it just set PageError, output an error
-message for the error, and that's all.
+Anyway we should make write_dev_supers() to include the IO errors.
 
-The total_errors doesn't include the most important and common error...
+This patch will enhance the error reporting by:
 
->
-> I mean, it's your filesystem; you decide what information you need to
-> keep about each write.
->
+- Introduce a new on-stack structure to record all errors including IO
+  errors
+  The new strucuture, super_block_io_status, will have a wait queue and
+  accounting for flying bios along with errors we hit so far.
 
-But sometimes we can have such stupid bugs like missing error handling
-for super block writeback...
+- Output a human readable error message
+  Instead of something like:
 
-And thank you for touching this part of code, and let us find this
-hidden bug.
+   lost page write due to IO error on dm-1 (-5)
 
-Thanks,
-Qu
+  Now we will have:
+
+   failed to write super block at 65536 on dm-1 (-5)
+
+- Wait for all super block IO finished before returning
+  write_dev_supers()
+  So now write_dev_supers() will wait for all flying bios to finish, and
+  use real number of errors to determine if the write failed.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c | 54 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 40 insertions(+), 14 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 800ad3a9c68e..9ed88a921465 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3864,9 +3864,21 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ }
+ ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
+ 
++struct super_block_io_status {
++	struct btrfs_device *device;
++	wait_queue_head_t wait;
++
++	/* Pending sb bios. */
++	atomic_t pending;
++
++	/* Total errors, including both primary and backup sb writeback errors. */
++	atomic_t errors;
++};
++
+ static void btrfs_end_super_write(struct bio *bio)
+ {
+-	struct btrfs_device *device = bio->bi_private;
++	struct super_block_io_status *sbios = bio->bi_private;
++	struct btrfs_device *device = sbios->device;
+ 	struct bio_vec *bvec;
+ 	struct bvec_iter_all iter_all;
+ 	struct page *page;
+@@ -3875,21 +3887,29 @@ static void btrfs_end_super_write(struct bio *bio)
+ 		page = bvec->bv_page;
+ 
+ 		if (bio->bi_status) {
++			struct btrfs_super_block *sb;
++			void *addr;
++			u64 bytenr;
++
++			addr = kmap_local_page(page) + bvec->bv_offset;
++			sb = addr;
++			bytenr = btrfs_super_bytenr(sb);
++			kunmap_local(addr);
++
++
++			atomic_inc(&sbios->errors);
+ 			btrfs_warn_rl_in_rcu(device->fs_info,
+-				"lost page write due to IO error on %s (%d)",
+-				rcu_str_deref(device->name),
++				"failed to write super block at %llu on %s (%d)",
++				bytenr, rcu_str_deref(device->name),
+ 				blk_status_to_errno(bio->bi_status));
+-			ClearPageUptodate(page);
+-			SetPageError(page);
+ 			btrfs_dev_stat_inc_and_print(device,
+ 						     BTRFS_DEV_STAT_WRITE_ERRS);
+-		} else {
+-			SetPageUptodate(page);
+ 		}
+-
+ 		put_page(page);
+ 		unlock_page(page);
+ 	}
++	atomic_dec(&sbios->pending);
++	wake_up(&sbios->wait);
+ 
+ 	bio_put(bio);
+ }
+@@ -3975,9 +3995,9 @@ static int write_dev_supers(struct btrfs_device *device,
+ {
+ 	struct btrfs_fs_info *fs_info = device->fs_info;
+ 	struct address_space *mapping = device->bdev->bd_inode->i_mapping;
++	struct super_block_io_status sbios = {.device = device};
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	int i;
+-	int errors = 0;
+ 	int ret;
+ 	u64 bytenr, bytenr_orig;
+ 
+@@ -3986,6 +4006,10 @@ static int write_dev_supers(struct btrfs_device *device,
+ 
+ 	shash->tfm = fs_info->csum_shash;
+ 
++	atomic_set(&sbios.pending, 0);
++	atomic_set(&sbios.errors, 0);
++	init_waitqueue_head(&sbios.wait);
++
+ 	for (i = 0; i < max_mirrors; i++) {
+ 		struct page *page;
+ 		struct bio *bio;
+@@ -3999,7 +4023,7 @@ static int write_dev_supers(struct btrfs_device *device,
+ 			btrfs_err(device->fs_info,
+ 				"couldn't get super block location for mirror %d",
+ 				i);
+-			errors++;
++			atomic_inc(&sbios.errors);
+ 			continue;
+ 		}
+ 		if (bytenr + BTRFS_SUPER_INFO_SIZE >=
+@@ -4018,7 +4042,7 @@ static int write_dev_supers(struct btrfs_device *device,
+ 			btrfs_err(device->fs_info,
+ 			    "couldn't get super block page for bytenr %llu",
+ 			    bytenr);
+-			errors++;
++			atomic_inc(&sbios.errors);
+ 			continue;
+ 		}
+ 
+@@ -4028,6 +4052,7 @@ static int write_dev_supers(struct btrfs_device *device,
+ 		disk_super = page_address(page);
+ 		memcpy(disk_super, sb, BTRFS_SUPER_INFO_SIZE);
+ 
++		atomic_inc(&sbios.pending);
+ 		/*
+ 		 * Directly use bios here instead of relying on the page cache
+ 		 * to do I/O, so we don't lose the ability to do integrity
+@@ -4037,7 +4062,7 @@ static int write_dev_supers(struct btrfs_device *device,
+ 				REQ_OP_WRITE | REQ_SYNC | REQ_META | REQ_PRIO,
+ 				GFP_NOFS);
+ 		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+-		bio->bi_private = device;
++		bio->bi_private = &sbios;
+ 		bio->bi_end_io = btrfs_end_super_write;
+ 		__bio_add_page(bio, page, BTRFS_SUPER_INFO_SIZE,
+ 			       offset_in_page(bytenr));
+@@ -4054,9 +4079,10 @@ static int write_dev_supers(struct btrfs_device *device,
+ 		submit_bio(bio);
+ 
+ 		if (btrfs_advance_sb_log(device, i))
+-			errors++;
++			atomic_inc(&sbios.errors);
+ 	}
+-	return errors < i ? 0 : -1;
++	wait_event(sbios.wait, atomic_read(&sbios.pending) == 0);
++	return atomic_read(&sbios.errors) < i ? 0 : -EIO;
+ }
+ 
+ /*
+-- 
+2.36.1
+
