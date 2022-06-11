@@ -2,109 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 300BB5475DA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jun 2022 16:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570505476FA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jun 2022 19:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbiFKO7f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Jun 2022 10:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
+        id S229743AbiFKRy0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Jun 2022 13:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236853AbiFKO7c (ORCPT
+        with ESMTP id S229658AbiFKRyX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Jun 2022 10:59:32 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CAF2CDE4
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jun 2022 07:59:26 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id s1so1328940ilj.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jun 2022 07:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dNs2ZU/p3kDi1q6uff6E2qNKFNtg5VUoQn9JDGR07Vc=;
-        b=k6CWD2mSZaFJqVPIHFs6bs5++GuzIX/8wEBFmx4z2sqDD/104R+rIQTDKdrFYruK5s
-         OdoY24CU/vHrE6NXHLNGxFKfBuhnw74T1kH9p1kJYcw96y6YC3JpSQ9nQm6dw00XbcL3
-         oL3Heokge25uxOesBsMZFOuVgRLdcCr/P4gDaEYN2Wyzne2vtAKh386ntyuqa68gfut6
-         opN2HhHGXoEqk1v2vcwxI+U8dndJCITGpnOgQAISWEYfXzrlgIap9qrIrTgGjHpHSsZh
-         j6Ur5t7Tgmo9Xh6D/tnHbCBXFQhMj8J30Co1ld2qeik7HX44vd8VA9PtF1pziXk0X3vG
-         55FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dNs2ZU/p3kDi1q6uff6E2qNKFNtg5VUoQn9JDGR07Vc=;
-        b=Q0R5GshuLLsIirF9CjqMQwdt/d+qvj4iagyU5Sj5UgQeG/d4yNbzLubs3MrcdBFbr6
-         l3pLi3cpafm0HSG9x5Vk84nkkY/FwzsOlqtGWMIdEN8xlPh/n6FXVlvQ/goPFXuOoFt1
-         kNqIlrbV/st6+oLc03eIZfQ0UxJv5sfwtSUmcWOArejLsP8BK+Q/jBWa4uTRMG4RFAsj
-         tUrGwwARIDvYAN300q6Csv9is7LPB9VgdveZH9MSdhZb983ug5YmgWnbtJSh4ogIYJ/v
-         9gHvetweOeh9H5L/m69vre9Wwazoyda1I3GdQMvvQtoO5Q7p3cJLRrM+7DlxX/6fc+cE
-         tx/w==
-X-Gm-Message-State: AOAM533cJApquYTR7mjcHOXXeyEra7p6avTCLQAOIjF4kPTXOhSjy4xM
-        ld+Fowj0bVn6ai1zDeMKtABmM3/pYTT8I9SgvbHoEJagLSw=
-X-Google-Smtp-Source: ABdhPJzsAVQaWqNyd0vm9aTuT3NE1RNPSBlKbOKa9HwewAc+aq2rLmoYW5E93C0Cn2YBBUoj6CfuFxq7xC4BKFftimA=
-X-Received: by 2002:a92:d1c6:0:b0:2d3:96da:426e with SMTP id
- u6-20020a92d1c6000000b002d396da426emr29130155ilg.152.1654959565880; Sat, 11
- Jun 2022 07:59:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220608213030.GG22722@merlins.org> <CAEzrpqdxCycEEAVqu-hykG-qdoEyBBFuc5buKS631XDciVrs7A@mail.gmail.com>
- <20220608213845.GH22722@merlins.org> <CAEzrpqejNj3qTtTJ7Godb0VMsxKt094vMw+iT4XR1B9aayO7Nw@mail.gmail.com>
- <20220609030128.GJ22722@merlins.org> <CAEzrpqfy-sf_xGMohK1EVgtP58tLTso6e7s9iyd3t5XnM3zjCg@mail.gmail.com>
- <20220609211511.GW1745079@merlins.org> <CAEzrpqfhUMDjkaJaa4ZugSuKOWpLyTVJ8nLu9nep5n_qzo-PiA@mail.gmail.com>
- <20220610191156.GB1664812@merlins.org> <CAEzrpqfEj3c5wodYzibBXg34NxtXmQCB60=MtD+Nic2PN8i5bQ@mail.gmail.com>
- <20220611001404.GM22722@merlins.org>
-In-Reply-To: <20220611001404.GM22722@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Sat, 11 Jun 2022 10:59:15 -0400
-Message-ID: <CAEzrpqda3=rDV8eLPsSDHbvmbyTnceecNkQUNA6mfOMmik=xDw@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
+        Sat, 11 Jun 2022 13:54:23 -0400
+Received: from rin.romanrm.net (rin.romanrm.net [IPv6:2001:bc8:2dd2:1000::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEB72724
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jun 2022 10:54:21 -0700 (PDT)
+Received: from nvm (nvm2.home.romanrm.net [IPv6:fd39::4a:3cff:fe57:d6b5])
+        by rin.romanrm.net (Postfix) with SMTP id E5160688;
+        Sat, 11 Jun 2022 17:54:17 +0000 (UTC)
+Date:   Sat, 11 Jun 2022 22:54:16 +0500
+From:   Roman Mamedov <rm@romanrm.net>
 To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Andrea Gelmini <andrea.gelmini@gmail.com>,
+        Andrei Borzenkov <arvidjaar@gmail.com>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Suggestions for building new 44TB Raid5 array
+Message-ID: <20220611225416.25c8a8d6@nvm>
+In-Reply-To: <20220611145259.GF1664812@merlins.org>
+References: <CAK-xaQYc1PufsvksqP77HMe4ZVTkWuRDn2C3P-iMTQzrbQPLGQ@mail.gmail.com>
+        <20220611145259.GF1664812@merlins.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 8:14 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Fri, Jun 10, 2022 at 03:55:09PM -0400, Josef Bacik wrote:
-> > Soooooo I've fixed my idiocy and moved the code around.  Unfortunately
-> > my last fix deleted the stripes from the sys array, so we need to get
-> > those back.  So once again run
->
-> Thanks for looking into this
->
-> > btrfs rescue recover-chunks <device>
-> > btrfs rescue init-extent-tree <device>
-> > btrfs check --repair <device>
->
-> Let's go for another round :)
->
-> gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue recover-chunks /dev/mapper/dshelf1
-> FS_INFO IS 0x559bd17b9bc0
-> Couldn't find the last root for 8
-> FS_INFO AFTER IS 0x559bd17b9bc0
-> Walking all our trees and pinning down the currently accessible blocks
-> Found missing chunk in super block 20971520-29360128 type 34
-> adding bg for 20971520 8388608
-> kernel-shared/extent-tree.c:2829: btrfs_add_block_group: BUG_ON `ret` triggered, value -17
-> ./btrfs(+0x29f27)[0x559bd01a8f27]
-> ./btrfs(btrfs_add_block_group+0x1e0)[0x559bd01ad700]
-> ./btrfs(btrfs_find_recover_chunks+0x4fe)[0x559bd020fc44]
-> ./btrfs(+0x848ce)[0x559bd02038ce]
-> ./btrfs(handle_command_group+0x49)[0x559bd019717b]
-> ./btrfs(main+0x94)[0x559bd0197275]
-> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xcd)[0x7fe20f24a7fd]
-> ./btrfs(_start+0x2a)[0x559bd0196e1a]
-> Aborted
+On Sat, 11 Jun 2022 07:52:59 -0700
+Marc MERLIN <marc@merlins.org> wrote:
 
-Oops, sorry about that, fixed it up.  My wife is travelling this week
-so I'm going to be a little slower than normal, but hopefully we're
-getting close to the end here.  Thanks,
+> 1) mdadm --create /dev/md7 --level=5 --consistency-policy=ppl
+> --raid-devices=5 /dev/sd[abdef]1 --chunk=256 --bitmap=internal
 
-Josef
+One more thing I wanted to mention, did you have PPL on your previous array?
+Or it was not implemented yet back then? I know it is supposed to protect
+against the write hole, which could have caused your previous FS corruption.
+
+> > > 5) mkfs.btrfs -m dup -L dshelf1 /dev/mapper/dshelf1
+> > 
+> > Personally I have switched from Btrfs on MD to individual disks and MergerFS.
+>  
+> That gives you no redundancy if a drive disk, correct?
+
+Yes, but in MergerFS each file is stored entirely within a single disk,
+there's no striping. So only files which happened to be on the failed disk are
+lost and need to be restored from backups. For this it helps to keep track of
+what was where, with something like "find /mnt/ > `date`.lst" in crontab.
+
+-- 
+With respect,
+Roman
