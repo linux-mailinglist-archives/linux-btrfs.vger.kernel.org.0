@@ -2,41 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544CF547219
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jun 2022 06:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C93054725F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jun 2022 08:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347527AbiFKEva (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Jun 2022 00:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
+        id S229826AbiFKG1O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Jun 2022 02:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbiFKEvZ (ORCPT
+        with ESMTP id S229462AbiFKG1N (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Jun 2022 00:51:25 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD7A1109
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 21:51:23 -0700 (PDT)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1nzt5k-00088q-Dq by authid <merlin>; Fri, 10 Jun 2022 21:51:20 -0700
-Date:   Fri, 10 Jun 2022 21:51:20 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Chris Murphy <lists@colorremedies.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Suggestions for building new 44TB Raid5 array
-Message-ID: <20220611045120.GN22722@merlins.org>
+        Sat, 11 Jun 2022 02:27:13 -0400
+Received: from out20-159.mail.aliyun.com (out20-159.mail.aliyun.com [115.124.20.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E1FC74
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 23:27:03 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436285|-1;BR=01201311R151S88rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.0731014-0.00142533-0.925473;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.O298P3a_1654928790;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.O298P3a_1654928790)
+          by smtp.aliyun-inc.com;
+          Sat, 11 Jun 2022 14:26:31 +0800
+Date:   Sat, 11 Jun 2022 14:26:35 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: fstests btrfs/057 trigger a deadlock on 5.4.187
+In-Reply-To: <20220610172202.E0EB.409509F4@e16-tech.com>
+References: <20220610172202.E0EB.409509F4@e16-tech.com>
+Message-Id: <20220611142634.3F3C.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,FAKE_REPLY_C,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,42 +39,164 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-so, my apologies to all for the thread of death that is hopefully going
-to be over soon. I still want to help Josef fix the tools though,
-hopefully we'll get that filesystem back to a mountable state.
+Hi,
 
-That said, it's been over 2 months now, and I do need to get this
-filesystem back up from backup, so I ended up buying new drives (5x
-11TiB in raid5).
+this dead-lock is triggered by fstests btrfs/057 again on the lastest 5.4(5.4.197).
 
-Given the pretty massive corruption that happened in ways that I still 
-can't explain, I'll make sure to turn off all the drive write caches
-but I think I'm not sure I want to trust bcache anymore even though
-I had it in writethrough mode.
+Frequency: about 1/100.
 
-Here's the Email from March, questions still apply:
+The Call Trace on 5.4.197
 
-Kernel will be 5.16. Filesystem will be 24TB and contain mostly bigger
-files (100MB to 10GB).
+[  704.619697] sysrq: Show Blocked State
+[  704.624312]   task                        PC stack   pid father
+[  704.632499] btrfs-cleaner   D    0 33205      2 0x80004000
+[  704.639055] Call Trace:
+[  704.642239]  __schedule+0x284/0x6d0
+[  704.646595]  schedule+0x2f/0xa0
+[  704.650669]  wait_current_trans+0xb3/0xf0 [btrfs]
+[  704.656407]  ? finish_wait+0x80/0x80
+[  704.660916]  start_transaction+0x41c/0x4f0 [btrfs]
+[  704.666767]  btrfs_drop_snapshot+0x548/0x840 [btrfs]
+[  704.672778]  ? btrfs_run_defrag_inodes+0x79/0x380 [btrfs]
+[  704.679247]  ? down_write+0xe/0x40
+[  704.683524]  ? btrfs_delete_unused_bgs+0x35/0x5b0 [btrfs]
+[  704.690065]  ? btree_submit_bio_start+0x10/0x10 [btrfs]
+[  704.696366]  btrfs_clean_one_deleted_snapshot+0xba/0x110 [btrfs]
+[  704.703513]  cleaner_kthread+0xfa/0x120 [btrfs]
+[  704.709054]  kthread+0x112/0x130
+[  704.713104]  ? __kthread_cancel_work+0x40/0x40
+[  704.718511]  ret_from_fork+0x1f/0x40
 
-1) mdadm --create /dev/md7 --level=5 --consistency-policy=ppl --raid-devices=5 /dev/sd[abdef]1 --chunk=256 --bitmap=internal
-2) echo 0fb96f02-d8da-45ce-aba7-070a1a8420e3 >  /sys/block/bcache64/bcache/attach 
-   gargamel:/dev# cat /sys/block/md7/bcache/cache_mode
-   [writethrough] writeback writearound none
-3) cryptsetup luksFormat --align-payload=2048 -s 256 -c aes-xts-plain64  /dev/bcache64
-4) cryptsetup luksOpen /dev/bcache64 dshelf1
-5) mkfs.btrfs -m dup -L dshelf1 /dev/mapper/dshelf1
+[  704.722978] btrfs-transacti D    0 33206      2 0x80004000
+[  704.729585] Call Trace:
+[  704.732809]  __schedule+0x284/0x6d0
+[  704.737156]  schedule+0x2f/0xa0
+[  704.741123]  wait_current_trans+0xb3/0xf0 [btrfs]
+[  704.746823]  ? finish_wait+0x80/0x80
+[  704.751270]  start_transaction+0x315/0x4f0 [btrfs]
+[  704.757099]  transaction_kthread+0xa2/0x180 [btrfs]
+[  704.763001]  ? btrfs_cleanup_transaction+0x590/0x590 [btrfs]
+[  704.769776]  kthread+0x112/0x130
+[  704.773811]  ? __kthread_cancel_work+0x40/0x40
+[  704.779218]  ret_from_fork+0x1f/0x40
 
-Any other btrfs options I should set for format to improve reliability
-first and performance second?
-I'm told I should use space_cache=v2, is it default now with btrfs-progs 5.10.1-2 ?
+[  704.783650] umount          D    0 33243  33239 0x00004000
+[  704.790253] Call Trace:
+[  704.793423]  __schedule+0x284/0x6d0
+[  704.797788]  schedule+0x2f/0xa0
+[  704.801733]  schedule_timeout+0x20d/0x340
+[  704.806634]  wait_for_completion+0x11f/0x190
+[  704.811866]  ? wake_up_q+0x70/0x70
+[  704.816099]  __synchronize_srcu.part.20+0x81/0xb0
+[  704.821784]  ? __bpf_trace_rcu_utilization+0x10/0x10
+[  704.827787]  btrfs_drop_and_free_fs_root+0x87/0xe0 [btrfs]
+[  704.834350]  switch_commit_roots+0x186/0x1c0 [btrfs]
+[  704.840373]  btrfs_commit_transaction+0x5da/0xa20 [btrfs]
+[  704.846842]  ? finish_wait+0x80/0x80
+[  704.851265]  sync_filesystem+0x71/0x90
+[  704.855907]  generic_shutdown_super+0x22/0x100
+[  704.861342]  kill_anon_super+0x14/0x30
+[  704.866001]  btrfs_kill_super+0x12/0xa0 [btrfs]
+[  704.871487]  deactivate_locked_super+0x34/0x70
+[  704.876890]  cleanup_mnt+0xb8/0x140
+[  704.881190]  task_work_run+0x8a/0xb0
+[  704.885586]  exit_to_usermode_loop+0x103/0x120
+[  704.890981]  do_syscall_64+0x198/0x1a0
+[  704.895604]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  704.901698] RIP: 0033:0x7fc630348ba7
+[  704.906098] Code: Bad RIP value.
+[  704.910097] RSP: 002b:00007ffd612e8a18 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+[  704.918967] RAX: 0000000000000000 RBX: 0000555b85889060 RCX: 00007fc630348ba7
+[  704.927386] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000555b8588fb10
+[  704.935800] RBP: 0000555b8588fb10 R08: 0000000000000000 R09: 000000000000000d
+[  704.944185] R10: 00007ffd612e84a0 R11: 0000000000000246 R12: 00007fc6310f2ee4
+[  704.952559] R13: 0000000000000000 R14: 0000555b858892d0 R15: 00000000ffffffff
 
-As for bcache, I'm really thinking about droppping it, unless I'm told
-it should be safe to use.
 
-Thanks,
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/06/11
+
+> Hi,
+> 
+> fstests btrfs/057 trigger a deadlock on linux 5.4.187
+> 
+> Frequency: yet not able to reproduce it after 50 loops.
+> but it happen on a server with ECC memory.
+> 
+> Maybe the Call Trace info help.
+> 
+> [ 2437.005526] sysrq: Show Blocked State
+> [ 2437.009825]   task                        PC stack   pid father
+> [ 2437.017595] btrfs-cleaner   D    0 42617      2 0x80004000
+> [ 2437.023916] Call Trace:
+> [ 2437.026841]  __schedule+0x2e9/0x730
+> [ 2437.030921]  schedule+0x36/0xc0
+> [ 2437.034672]  wait_current_trans+0xd4/0x110 [btrfs]
+> [ 2437.040224]  ? finish_wait+0x80/0x80
+> [ 2437.044462]  start_transaction+0x42a/0x500 [btrfs]
+> [ 2437.050051]  btrfs_drop_snapshot+0x548/0x840 [btrfs]
+> [ 2437.055818]  ? btrfs_run_defrag_inodes+0x79/0x380 [btrfs]
+> [ 2437.062054]  ? down_write+0x21/0x50
+> [ 2437.066199]  ? btrfs_delete_unused_bgs+0x35/0x610 [btrfs]
+> [ 2437.072466]  ? cleaner_kthread+0xc8/0x150 [btrfs]
+> [ 2437.077950]  btrfs_clean_one_deleted_snapshot+0xc1/0x110 [btrfs]
+> [ 2437.084879]  cleaner_kthread+0x121/0x150 [btrfs]
+> [ 2437.090277]  ? btree_submit_bio_start+0x10/0x10 [btrfs]
+> [ 2437.096339]  kthread+0x12b/0x150
+> [ 2437.100190]  ? __kthread_cancel_work+0x40/0x40
+> [ 2437.105407]  ret_from_fork+0x1f/0x40
+> 
+> [ 2437.109652] btrfs-transacti D    0 42618      2 0x80004000
+> [ 2437.116048] Call Trace:
+> [ 2437.119052]  __schedule+0x2e9/0x730
+> [ 2437.123224]  schedule+0x36/0xc0
+> [ 2437.127046]  wait_current_trans+0xd4/0x110 [btrfs]
+> [ 2437.132671]  ? finish_wait+0x80/0x80
+> [ 2437.136972]  start_transaction+0x315/0x500 [btrfs]
+> [ 2437.142655]  transaction_kthread+0xa9/0x190 [btrfs]
+> [ 2437.148424]  ? btrfs_cleanup_transaction+0x610/0x610 [btrfs]
+> [ 2437.155048]  kthread+0x12b/0x150
+> [ 2437.158979]  ? __kthread_cancel_work+0x40/0x40
+> [ 2437.164279]  ret_from_fork+0x1f/0x40
+> [ 2437.168610] umount          D    0 42653  42649 0x00004000
+> [ 2437.175085] Call Trace:
+> [ 2437.178179]  __schedule+0x2e9/0x730
+> [ 2437.182444]  ? wait_for_completion+0x116/0x1c0
+> [ 2437.187768]  schedule+0x36/0xc0
+> [ 2437.191640]  schedule_timeout+0x222/0x350
+> [ 2437.196520]  ? wait_for_completion+0x116/0x1c0
+> [ 2437.201861]  wait_for_completion+0x14e/0x1c0
+> [ 2437.207017]  ? wake_up_q+0x70/0x70
+> [ 2437.211237]  __synchronize_srcu.part.20+0x94/0xc0
+> [ 2437.216912]  ? __bpf_trace_rcu_utilization+0x10/0x10
+> [ 2437.222847]  btrfs_drop_and_free_fs_root+0x8e/0xf0 [btrfs]
+> [ 2437.229393]  switch_commit_roots+0x18d/0x1d0 [btrfs]
+> [ 2437.235361]  btrfs_commit_transaction+0x615/0xa80 [btrfs]
+> [ 2437.241794]  ? finish_wait+0x80/0x80
+> [ 2437.246207]  sync_filesystem+0x71/0x90
+> [ 2437.250837]  generic_shutdown_super+0x22/0x110
+> [ 2437.256209]  kill_anon_super+0x14/0x30
+> [ 2437.260846]  btrfs_kill_super+0x12/0xa0 [btrfs]
+> [ 2437.266304]  deactivate_locked_super+0x34/0x70
+> [ 2437.271685]  cleanup_mnt+0xb8/0x140
+> [ 2437.276012]  task_work_run+0xa3/0xe0
+> [ 2437.280352]  exit_to_usermode_loop+0x103/0x120
+> [ 2437.285728]  do_syscall_64+0x198/0x1a0
+> [ 2437.290320]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 2437.296376] RIP: 0033:0x7f6d5b088ba7
+> [ 2437.300782] Code: Bad RIP value.
+> [ 2437.304780] RSP: 002b:00007ffdc69e0b08 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> [ 2437.313649] RAX: 0000000000000000 RBX: 000055d46fc65060 RCX: 00007f6d5b088ba7
+> [ 2437.322070] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055d46fc6bb10
+> [ 2437.330478] RBP: 000055d46fc6bb10 R08: 0000000000000000 R09: 000000000000000d
+> [ 2437.338864] R10: 00007ffdc69e0560 R11: 0000000000000246 R12: 00007f6d5be32ee4
+> [ 2437.347244] R13: 0000000000000000 R14: 000055d46fc652d0 R15: 00000000ffffffff
+> 
+> 
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2022/06/10
+> 
+
+
