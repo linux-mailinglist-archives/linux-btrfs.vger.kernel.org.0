@@ -2,60 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F4F546EDD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jun 2022 22:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD82547072
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jun 2022 02:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350759AbiFJUzg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jun 2022 16:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
+        id S245496AbiFKAOK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jun 2022 20:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350751AbiFJUzc (ORCPT
+        with ESMTP id S236391AbiFKAOJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jun 2022 16:55:32 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59493483AD
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 13:55:26 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25AHiCZ5023658
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 13:55:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=ZZHaCXj+hqBcu0oCoUKtIosYtcm+O84rPyychBRuwFM=;
- b=nbEW2kB4t2Z6vWt0zPe672LnCSyrw301aiIu+b01vhCpegcqyR8AaeEMmg2CQoFtvKJM
- qaiMuI1QIvy92J4u86rmMHLvDOFIF8bHFaxZOJxyI5nyYjSIa8BUcioPCvbYliprSto8
- enumngEHcJMloEvjYu2nd9q3L3QoqWfQTWk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gmam8s6n8-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 13:55:26 -0700
-Received: from twshared5131.09.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Fri, 10 Jun 2022 13:55:25 -0700
-Received: by devvm7778.ftw0.facebook.com (Postfix, from userid 558217)
-        id E03E4D39540; Fri, 10 Jun 2022 13:55:22 -0700 (PDT)
-From:   Ioannis Angelakopoulos <iangelak@fb.com>
-To:     <linux-btrfs@vger.kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH 2/2] btrfs: Expose the BTRFS commit stats through sysfs
-Date:   Fri, 10 Jun 2022 13:54:09 -0700
-Message-ID: <20220610205406.301397-3-iangelak@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220610205406.301397-1-iangelak@fb.com>
-References: <20220610205406.301397-1-iangelak@fb.com>
+        Fri, 10 Jun 2022 20:14:09 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D4210E3
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jun 2022 17:14:06 -0700 (PDT)
+Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
+        id 1nzolR-00006r-09 by authid <merlin>; Fri, 10 Jun 2022 17:14:05 -0700
+Date:   Fri, 10 Jun 2022 17:14:04 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent
+ transid verify failed + open_ctree failed)
+Message-ID: <20220611001404.GM22722@merlins.org>
+References: <20220608213030.GG22722@merlins.org>
+ <CAEzrpqdxCycEEAVqu-hykG-qdoEyBBFuc5buKS631XDciVrs7A@mail.gmail.com>
+ <20220608213845.GH22722@merlins.org>
+ <CAEzrpqejNj3qTtTJ7Godb0VMsxKt094vMw+iT4XR1B9aayO7Nw@mail.gmail.com>
+ <20220609030128.GJ22722@merlins.org>
+ <CAEzrpqfy-sf_xGMohK1EVgtP58tLTso6e7s9iyd3t5XnM3zjCg@mail.gmail.com>
+ <20220609211511.GW1745079@merlins.org>
+ <CAEzrpqfhUMDjkaJaa4ZugSuKOWpLyTVJ8nLu9nep5n_qzo-PiA@mail.gmail.com>
+ <20220610191156.GB1664812@merlins.org>
+ <CAEzrpqfEj3c5wodYzibBXg34NxtXmQCB60=MtD+Nic2PN8i5bQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: G9vyu-BdqotXKwdBmN5BaWYmAo2-iKKG
-X-Proofpoint-ORIG-GUID: G9vyu-BdqotXKwdBmN5BaWYmAo2-iKKG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-10_08,2022-06-09_02,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEzrpqfEj3c5wodYzibBXg34NxtXmQCB60=MtD+Nic2PN8i5bQ@mail.gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,90 +52,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Create a new sysfs entry named "commit_stats" for each mounted BTRFS
-filesystem. The entry exposes: 1) The number of commits so far, 2) The
-duration of the last commit in ms, 3) The maximum commit duration seen
-so far in ms and 4) The total duration for all commits so far in ms.
+On Fri, Jun 10, 2022 at 03:55:09PM -0400, Josef Bacik wrote:
+> Soooooo I've fixed my idiocy and moved the code around.  Unfortunately
+> my last fix deleted the stripes from the sys array, so we need to get
+> those back.  So once again run
 
-The function "btrfs_commit_stats_show" is responsible for exposing the
-stats to user space.
+Thanks for looking into this
+ 
+> btrfs rescue recover-chunks <device>
+> btrfs rescue init-extent-tree <device>
+> btrfs check --repair <device>
 
-The function "btrfs_commit_stats_store" is responsible for resetting the
-above values to zero.
+Let's go for another round :)
 
-Signed-off-by: Ioannis Angelakopoulos <iangelak@fb.com>
----
- fs/btrfs/sysfs.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+gargamel:/var/local/src/btrfs-progs-josefbacik# ./btrfs rescue recover-chunks /dev/mapper/dshelf1
+FS_INFO IS 0x559bd17b9bc0
+Couldn't find the last root for 8
+FS_INFO AFTER IS 0x559bd17b9bc0
+Walking all our trees and pinning down the currently accessible blocks
+Found missing chunk in super block 20971520-29360128 type 34
+adding bg for 20971520 8388608
+kernel-shared/extent-tree.c:2829: btrfs_add_block_group: BUG_ON `ret` triggered, value -17
+./btrfs(+0x29f27)[0x559bd01a8f27]
+./btrfs(btrfs_add_block_group+0x1e0)[0x559bd01ad700]
+./btrfs(btrfs_find_recover_chunks+0x4fe)[0x559bd020fc44]
+./btrfs(+0x848ce)[0x559bd02038ce]
+./btrfs(handle_command_group+0x49)[0x559bd019717b]
+./btrfs(main+0x94)[0x559bd0197275]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xcd)[0x7fe20f24a7fd]
+./btrfs(_start+0x2a)[0x559bd0196e1a]
+Aborted
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index b6cb5551050e..f68fc73006c0 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -991,6 +991,53 @@ static ssize_t btrfs_sectorsize_show(struct kobject =
-*kobj,
-=20
- BTRFS_ATTR(, sectorsize, btrfs_sectorsize_show);
-=20
-+static ssize_t btrfs_commit_stats_show(struct kobject *kobj,
-+				struct kobj_attribute *a, char *buf)
-+{
-+	struct btrfs_fs_info *fs_info =3D to_fs_info(kobj);
-+
-+	/*
-+	 * Expose the commits so far, the duration of the last commit, the
-+	 * maximum duration of a commit so far and the total duration of
-+	 * all the commits so far
-+	 */
-+	return sysfs_emit(buf, "Commits: %llu, Last: %llu ms, Max: %llu ms, Tot=
-al: %llu ms\n",
-+					  fs_info->commit_stats->commit_counter,
-+					  fs_info->commit_stats->last_commit_dur,
-+					  fs_info->commit_stats->max_commit_dur,
-+					  fs_info->commit_stats->total_commit_dur);
-+}
-+
-+static ssize_t btrfs_commit_stats_store(struct kobject *kobj,
-+						struct kobj_attribute *a,
-+						const char *buf, size_t len)
-+{
-+	struct btrfs_fs_info *fs_info =3D to_fs_info(kobj);
-+
-+	if (!fs_info)
-+		return -EPERM;
-+
-+	if (!capable(CAP_SYS_RESOURCE))
-+		return -EPERM;
-+
-+	/*
-+	 * Just reset everything
-+	 * Also take the trans_lock to avoid race conditions with the udpates
-+	 * in btrfs_commit_transaction()
-+	 */
-+	spin_lock(&fs_info->trans_lock);
-+	fs_info->commit_stats->commit_counter =3D 0;
-+	fs_info->commit_stats->last_commit_dur =3D 0;
-+	fs_info->commit_stats->max_commit_dur =3D 0;
-+	fs_info->commit_stats->total_commit_dur =3D 0;
-+	spin_unlock(&fs_info->trans_lock);
-+
-+	return len;
-+}
-+
-+BTRFS_ATTR_RW(, commit_stats, btrfs_commit_stats_show,
-+			  btrfs_commit_stats_store);
-+
- static ssize_t btrfs_clone_alignment_show(struct kobject *kobj,
- 				struct kobj_attribute *a, char *buf)
- {
-@@ -1230,6 +1277,7 @@ static const struct attribute *btrfs_attrs[] =3D {
- 	BTRFS_ATTR_PTR(, generation),
- 	BTRFS_ATTR_PTR(, read_policy),
- 	BTRFS_ATTR_PTR(, bg_reclaim_threshold),
-+	BTRFS_ATTR_PTR(, commit_stats),
- 	NULL,
- };
-=20
---=20
-2.30.2
-
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
