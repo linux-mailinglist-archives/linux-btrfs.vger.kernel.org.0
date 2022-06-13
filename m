@@ -2,133 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF80549EF7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 22:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E28549EFB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 22:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344499AbiFMUYF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jun 2022 16:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57494 "EHLO
+        id S238640AbiFMUZ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jun 2022 16:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346255AbiFMUXv (ORCPT
+        with ESMTP id S1345127AbiFMUZs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jun 2022 16:23:51 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CE9A26C2
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 12:05:16 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id ADF12320092A;
-        Mon, 13 Jun 2022 15:05:13 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 13 Jun 2022 15:05:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1655147113; x=1655233513; bh=1i5+gVMkKi
-        QadfDr57ivVBB9620vp2cZ2+jY7nC9GvU=; b=ALXzo7Ifaa2ASTs90Y2o+ktmbt
-        GIbO8CPPyrG+MRBVKQ+XA5aYHg3eZK/AMdyVWpGsnU+tW6rCmF3oOUnMzw70Nv5M
-        GIvgWlLZVK//c/jGu5BOjY7M68nHpvUapz/PHsHs1g3VY41cDdtxI7nGtUHXGXGK
-        nOLGPvHVivZ9eQmgOsS8/NUPW9XDRCKTyFhesfQSfloDn8vehehoA/QLDW0FMBXH
-        Stgw1BbfkIJN7HswLdP+6wLsHOjcGsQAWfOjZsF+zrr2xjOyLisuKYHUJ315NvtG
-        TSGphYJtNbsWlfTR9t4hA2930npgSGVXU8YuDl7qu39Fiz3AGxn9/x44icjA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1655147113; x=1655233513; bh=1i5+gVMkKiQadfDr57ivVBB9620v
-        p2cZ2+jY7nC9GvU=; b=lzvUPc5JP92VjT/kjATm5h7zbAL6pbhjr+Zbe9ew8oJ7
-        T5fyPauGtpxNb/N/4CO01qSM29PyJnwVWuEt854RpkBjxSy9AoqI5D5De//rP8b1
-        Ypr5O3rvEcZoRSUkL4bk12fCJgWlMRn/gngw7tyEgLiT9OfVauwWYbhQA1Fg8n0C
-        TROzaMZSip1dgR+sSPH8wZOeKSI3q7uZjqCOQrp/nYR/G+C/naB6BslE5+ESxh1k
-        8BaR+GBtpZiVN3gQoWFM6h4Gi4o7LqwDNZ1wzhqKvo1yxqF2bv/a3Jva/44IU0AY
-        RWlStUVlCRZNm0ZC3mICCllr0oGwci4MCOpnFrNHAQ==
-X-ME-Sender: <xms:aIqnYldCvxSOqhB_IJfPkOevSbBKthBnsDabbiPJTp2BUgdqwhYnlQ>
-    <xme:aIqnYjOFM43HUioP48Co-nouASVhQstJ9iM5ggtbvKyQCgN2IQsEIE8ohP3IsM0Tg
-    HvbGWdwvge0VSaWPN0>
-X-ME-Received: <xmr:aIqnYujg_2SLva-uvah3kfK6M8NhSmLFWjtWGVRuKsYXplAD_FoLD15gd0ucp1OleUwDPCl--DTG6z_ZB3OxUFZ1MhhxHA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddujedgudeftdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
-    essghurhdrihho
-X-ME-Proxy: <xmx:aYqnYu-exq_ucg9uBc0CNvrJt1NiXjptIJLRf2cl41arazXr6edA_w>
-    <xmx:aYqnYhsq9EwRjD-pPGSHgIb1S14YF8QJAbeb1Mg-UKpyrub6dkhmGg>
-    <xmx:aYqnYtHLlN1WDzh-SCBJVygrYS3Uiycq8U6Fa22h_B-OR3fsMpNEAQ>
-    <xmx:aYqnYv0ygbM6qNj2GElpxdlPtwBwKE4i6sxgBaCCminPeqYRjSPoug>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Jun 2022 15:05:12 -0400 (EDT)
-Date:   Mon, 13 Jun 2022 12:05:10 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: warn about dev extents that are inside the
- reserved range
-Message-ID: <YqeKZuET4MDe0D5w@zen>
-References: <cover.1655103954.git.wqu@suse.com>
- <c4b02ac7bf6e4171d8cfb13dcd11b3bad8d2e4df.1655103954.git.wqu@suse.com>
+        Mon, 13 Jun 2022 16:25:48 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C5FCD2
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 12:09:52 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id c83so4774939qke.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 12:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GzCvY3kKu+uZhnAiqlJreF55Vg8g452kFdwp12veySk=;
+        b=XBErKw8p3nnqrdwv5ugId0kPW/Xt4IHAeUoEfUZqP/bsTHzzmOKCba9HjweWkRgyXW
+         949u1X2xf1ZlWxFqO1zRM50g/+hHf2/YtfwdEg2Q7IPK/P1e8U4y7hpDO0aW6iRiZY7N
+         BOckiycEgD/uhDfdPckMMV/IcdIomGoKj9ir9LtGJnT+9XQZ+Za3NShVGS90Jg7E3hRd
+         OuXo3fg249as7bKZEi5G5mry+F3yGEfQk4BacWMkud3SfOzSvvXPZ70ZVvR9/SzqKBWM
+         eVJpPjylpDpKsCzyBCmhoVrjYCq+BveOweqNj8tXe3ENLFblG5pHzHOtcuabMFhCXE/C
+         JTCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GzCvY3kKu+uZhnAiqlJreF55Vg8g452kFdwp12veySk=;
+        b=Cz6PsgoBwMZzEUA7D/URjPw3GOD5vrncOF3JQ8raz8OdGSTVDFQ/eUS5osJ0XFC63w
+         W+KRZ15JYS0E0uXiQd5HXBjYBgcWb6BEIC+JeNsSz3XCagovyurxx0aNZdSpa2pXGnR1
+         KrZ8Ga8xz9xX+tVWmRbQE7vRSZ+y/tBnrgbLteGmEONzRl+OqtPWoShveQ1e6cYSjO26
+         4kXiu5LPa6ldswPiYh4cTgPJrYilWoYOVJhoYqJQblp8agPYImWJQATVMmDjGFlj4Y/s
+         REY/pZ/2Po3YFXCEV3h3peFBlQ2Lo78e+TBZbMx289PaPpmRQUjS5X9d8AY7BmCu7Mwe
+         zCHw==
+X-Gm-Message-State: AOAM532fFseUDU37V9Uw5HsQXYn6DQevjVIQKOJSXBX6N8V04heLRuIV
+        IiEUyqqWeVjj1APUh5YDBW/qOorO54e0QA==
+X-Google-Smtp-Source: ABdhPJwSdrKImBpw7uzAqur1yztQ7WEdimOZq9RSpGE2RMYWBS8E0XFsDCgakPjCTvoWKObvcWTwfA==
+X-Received: by 2002:a05:620a:2401:b0:6a7:60ce:89f8 with SMTP id d1-20020a05620a240100b006a760ce89f8mr1206286qkn.101.1655147391241;
+        Mon, 13 Jun 2022 12:09:51 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id gd8-20020a05622a5c0800b002f93554c009sm5413201qtb.59.2022.06.13.12.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 12:09:50 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 0/2] btrfs: fix deadlock with fsync and full sync
+Date:   Mon, 13 Jun 2022 15:09:47 -0400
+Message-Id: <cover.1655147296.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4b02ac7bf6e4171d8cfb13dcd11b3bad8d2e4df.1655103954.git.wqu@suse.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 03:06:35PM +0800, Qu Wenruo wrote:
-> Btrfs has reserved the first 1MiB for the primary super block (at 64KiB
-> offset) and legacy programs like older bootloaders.
-> 
-> This behavior is only introduced since v4.1 btrfs-progs release,
-> although kernel can ensure we never touch the reserved range of super
-> blocks, it's better to inform the end users, and a balance will resolve
-> the problem.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/volumes.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 051d124679d1..b39f4030d2ba 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7989,6 +7989,16 @@ static int verify_one_dev_extent(struct btrfs_fs_info *fs_info,
->  		goto out;
->  	}
->  
-> +	/*
-> +	 * Very old mkfs.btrfs (before v4.1) will not respect the reserved
-> +	 * space. Although kernel can handle it without problem, better to
-> +	 * warn the users.
-> +	 */
-> +	if (physical_offset < BTRFS_DEFAULT_RESERVED)
-> +		btrfs_warn(fs_info,
-> +"devid %llu physical %llu len %llu is inside the reserved space, balance is needed to solve this problem.",
+v1->v2:
+- Make btrfs_sync_file also use the new BTRFS_LOG_FORCE_COMMIT define.
+- Adjust the title of the second patch
 
-If I saw this warning, I wouldn't know what balance to run, and it's
-not obvious what to search for online either (if it's even documented).
-I think a more explicit instruction like "btrfs balance start XXXX"
-would be helpful.
+--- Original email ---
+Hello,
 
-If it's something we're ok with in general, then maybe a URL for a wiki
-page that explains the issue and the workaround would be the most
-useful.
+We've hit a pretty convoluted deadlock in production that Omar tracked down with
+drgn.  I've described the deadlock in the second patch, but generally it's a
+lock inversion where we have an existing dependency of extent lock ->
+transaction, but in fsync in a few cases we can end up with transaction ->
+extent lock, and the expected hilarity ensues.  Thanks,
 
-> +			   devid, physical_offset, physical_len);
-> +
->  	for (i = 0; i < map->num_stripes; i++) {
->  		if (map->stripes[i].dev->devid == devid &&
->  		    map->stripes[i].physical == physical_offset) {
-> -- 
-> 2.36.1
-> 
+Josef
+
+Josef Bacik (2):
+  btrfs: make the return value for log syncing consistent
+  btrfs: fix deadlock with fsync+fiemap+transaction commit
+
+ fs/btrfs/file.c     | 69 ++++++++++++++++++++++++++++++++++-----------
+ fs/btrfs/tree-log.c | 18 ++++++------
+ fs/btrfs/tree-log.h |  3 ++
+ 3 files changed, 65 insertions(+), 25 deletions(-)
+
+-- 
+2.26.3
+
