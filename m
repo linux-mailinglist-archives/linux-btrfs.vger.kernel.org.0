@@ -2,148 +2,277 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB96548333
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 11:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425B0548D39
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 18:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240867AbiFMJgg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jun 2022 05:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
+        id S1354928AbiFMLqn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jun 2022 07:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240304AbiFMJg1 (ORCPT
+        with ESMTP id S1356407AbiFMLob (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jun 2022 05:36:27 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF53911A24
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 02:36:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1655112983;
-        bh=UqZb1k8CmrUy1CrdhDvV5+zY+KAwdmY5rj9M5RLibKQ=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=Xmvnwjygpjnck2LecRREQhoaMKZEXZO3GFuJ/1Mnix5G9M5og965uVGda+cdObEVz
-         7ck84GyaJZ/y3Eojoc8JnJ8EEf+cYcriedy0aqnK3Pne96x+jkGkmyL984pJcqtzdZ
-         798Ag2SFD8y7GKUnKfv014IFKAph3eppjfivf5qQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHoNC-1nugU439PS-00EtDa; Mon, 13
- Jun 2022 11:36:23 +0200
-Message-ID: <2307850a-4f38-19ab-48fd-47246f11cb4b@gmx.com>
-Date:   Mon, 13 Jun 2022 17:36:19 +0800
+        Mon, 13 Jun 2022 07:44:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A95B4706A;
+        Mon, 13 Jun 2022 03:50:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E36760AEB;
+        Mon, 13 Jun 2022 10:50:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83CD0C34114;
+        Mon, 13 Jun 2022 10:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655117442;
+        bh=zI7Obfv9I65TgPrGJ0r7gD68/UPE4m+4TBoR4QX7pvw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XB04uMOYaJa5iQltYUyAMI3SXjcSLMyD0GCOdaPXgP6thDz8nApuWoTP7J1kRTMsW
+         /NfENp3HMLw2DOV91w1h+0RIIc8S1x+x52F6WwbAhT/TP6zbyW1LtwAyM5YvymOv68
+         Fx2yS0ffLNAqoV6ja7mEV90rVsevpILj93pLaEu3hqMsREd+08hwzZBAwhFTgYoEEN
+         PO8UjBOKT5laEIQoepd78juUBoqify2LShCuHdCCKTVF8Wqo9XJgv15OwVPvGXQttv
+         UzuRZbQ1/6n6VMNYGuOxfVictT8zZr1R6FIKeKV3KnPicAArEW5fFJZ5LAsUPdu21H
+         h/BKdN9AEccpw==
+Received: by mail-qk1-f179.google.com with SMTP id c144so3687070qkg.11;
+        Mon, 13 Jun 2022 03:50:42 -0700 (PDT)
+X-Gm-Message-State: AOAM531m9b+DF0gBAS3G5wjSaYDzWGrcZNWP8ecXhohfv5rZmizWrfXS
+        3jSvaEBlcgRKTtKtQhLXZHQWIdMO+lVcvBaSP3A=
+X-Google-Smtp-Source: ABdhPJwAwbZROoC0SYeViyXQyNH1xf573QHtCbpBXsuBKFM09uYLZPgd+dMH4VxPKOzl92C2bYLN5xhxavxuxDqiABY=
+X-Received: by 2002:a05:620a:142a:b0:6a6:8a05:f862 with SMTP id
+ k10-20020a05620a142a00b006a68a05f862mr36788042qkj.11.1655117441503; Mon, 13
+ Jun 2022 03:50:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 1/2] btrfs: introduce BTRFS_DEFAULT_RESERVED macro
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1655103954.git.wqu@suse.com>
- <51b17f7480724d528e709a920acd026acff447ea.1655103954.git.wqu@suse.com>
- <24bd65b9-d382-f55b-3640-add00b02f4e3@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <24bd65b9-d382-f55b-3640-add00b02f4e3@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3ZEcCBW6354y79s0du5qZwhKT2/wMSc0mVuilQx/aMSeTP+TBTA
- jFvf6kKzZxoVqgKWJ4ck+1nucj+7YgqP5h0L9Dfm5f0tZWNeJdS0ZnetQk5xiJuEW9bi1xZ
- MTP+E/1QmbS9zHBG4i7cUoGQOTb9i4xXqKf9kASqqCgUvXLwCli/XiNrBLkQGw4tdhu/LrL
- 8+U9uJ1eEdxPv6bxkVZwQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nSQD0e9XUr0=:H5pk4G3TcCVhntwnMIjr5e
- xXPLxL1ESc0xbe9qFmG4fShJBDOq2IZxqjHXV0W5vLO9dljlpIIB1HTLYBcvuudXk6Zu2r2iJ
- KtqQyQtA4padMPRTAQQxpRxiAGs9owN6tdarDfPTWJixYuBd2M7PJWrv85piows5wZ775qp4N
- uG9k21mpAmXAikbk7PAiKN1TloyXXr4uErHyXUXQ0bq2iTLWOf7B17Ktw5AW3cp5MDH4SyBIt
- /SNe+BT+hzBBcgybncrLkCu6wz+Cabi9J40LrQOFLxLn/kb/5l1vHRSIAnEVOhQBff5kMIKhR
- /KW5PlzUJGAHWee13IjrFh13nTRr4CBP42pxRuONDFFBTOEWTjxmuRt5Bj7oY7bo23o0y46GK
- Vt4NvuSK5rkrU7MBldpg6XBDqiXp8MJvZl9rIxxaaRCteUqzzQN1aIUdHjJF0LPnRIs/ysiyr
- 1pOxg2bcTDThbBBxhHpj1gH7Itj9Ez6wjAm9+o4Lmz1wQMsJ5t5a72DDj0ofdA0UCwB4s67cU
- tlKdjmuDMJMJNAt2cPrzAJB8dlelLBRRe7GdXUtTxnxwVYWAjAIP3Og6Oq5GiEPwzqo6haqMK
- S7XXe3YmlMzGroavRp8sP52v+Wz+XW+ofVLS/Ql9gdh+t8MHZYCMHbEBTX7UHpkEweO2abd2g
- 7SGHXzK5oVUz12y23e2URZ/jhIoD/0ZfgVeiVCNJb4vT7vI05CM9/L+PoyEIpkFbS7fNvIH4l
- /BhKtVRGjqqiOt4Y0eX0cUC0nwN4vR9zc931QrpEqXoRwz4HOciuwszTBSIaduwmWngfqM681
- agYQ9KFGk/vNXSVQDwut/641lOpKpkSz3XuIrjB83A2aMrPDot0ika/NSL6gpnSSYEEVyNPvx
- 3iqZP4/0BSPBtEhgwciDc6yIr2ayVGuUJao3arVkUIxah/hWQsDTRGHAdJU29XHlM5We4s2a0
- IA8F37/5N9LMdQe5O6xEevWBcDn6xX7Rpdm0JBHYEitjNh4LEO2bdgXQIWsLIB/bWZsi2HmHJ
- z2jnIXMWMXdnbBTUsFVMPFlM81ozyXDPwg1TRGvwYU3TxwR4ARUyxV0emAPjEDxEd9/4rPdkD
- ZjNjtHSDiyL25qNuHK7oX96rTePI7t1zvfIpi0aBqBwGE7wQ6yIS/fWFw==
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <bf924988687205627604f36cbd8ff13936e938ab.1654009356.git.fdmanana@suse.com>
+ <20220608152303.GB31193@xsang-OptiPlex-9020> <20220609094652.GB3668047@falcondesktop>
+ <20220610012659.GA6844@xsang-OptiPlex-9020> <20220612143646.GA35020@xsang-OptiPlex-9020>
+In-Reply-To: <20220612143646.GA35020@xsang-OptiPlex-9020>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 13 Jun 2022 11:50:05 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6mD=i_xBJbYD2JsK5EuHHKirbU8-9jtDoDjMqK2jKsjQ@mail.gmail.com>
+Message-ID: <CAL3q7H6mD=i_xBJbYD2JsK5EuHHKirbU8-9jtDoDjMqK2jKsjQ@mail.gmail.com>
+Subject: Re: [btrfs] 62bd8124e2: WARNING:at_fs/btrfs/block-rsv.c:#btrfs_release_global_block_rsv[btrfs]
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, lkp@lists.01.org
+Content-Type: multipart/mixed; boundary="00000000000029ed3d05e1520ffb"
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+--00000000000029ed3d05e1520ffb
+Content-Type: text/plain; charset="UTF-8"
 
-
-On 2022/6/13 17:13, Nikolay Borisov wrote:
+On Sun, Jun 12, 2022 at 3:37 PM Oliver Sang <oliver.sang@intel.com> wrote:
+>
+> hi, Filipe Manana,
+>
+> On Fri, Jun 10, 2022 at 09:26:59AM +0800, Oliver Sang wrote:
+> > hi, Filipe Manana,
+> >
+> > On Thu, Jun 09, 2022 at 10:46:52AM +0100, Filipe Manana wrote:
+> > >
+> > > I am unable to reproduce that on a 12 cores box.
+> > > I also don't see anything wrong that could lead to that by manual inspection.
+> > >
+> > > How easy is it for you to trigger it?
+> >
+> > we reproduced this upon 62bd8124e2 4 times out of 6 runs.
+> > but since the other 2 runs crash early due to other issues (below (1)), we
+> > cannot say they are clean.
+> > at the same time, the 6 runs for parent are clean.
+> >
+> > 7e2bb5b3f3bca223 62bd8124e2f17910fcd89568e50
+> > ---------------- ---------------------------
+> >        fail:runs  %reproduction    fail:runs
+> >            |             |             |
+> >            :6           67%           4:6     dmesg.RIP:btrfs_release_global_block_rsv[btrfs]
+> >            :6           67%           4:6     dmesg.WARNING:at_fs/btrfs/block-rsv.c:#btrfs_release_global_block_rsv[btrfs]
+> >            :6           33%           2:6     dmesg.kernel_BUG_at_fs/xfs/xfs_message.c  <----- (1)
+> >
+> >
+> > >
+> > > Can you also run it with CONFIG_BTRFS_ASSERT=y set in the kernel config?
+> >
+> > got it, we will enable this config and rerun tests, for both this commit and
+> > parent.
+>
+> we enabled CONFIG_BTRFS_ASSERT=y as attached config and rerun tests, still can
+> reproduce the issue, like:
 >
 >
-> On 13.06.22 =D0=B3. 10:06 =D1=87., Qu Wenruo wrote:
->> Since btrfs-progs v4.1, mkfs.btrfs will reserve the first 1MiB for the
->> primary super block (at offset 64KiB) and other legacy bootloaders whic=
-h
->> may want to store their data there.
->>
->> Kernel is doing the same behavior around the same time.
->>
->> However in kernel we just use SZ_1M to express the reserved space,
->> normally
->> with extra comments when using above SZ_1M.
->>
->> Here we introduce a new macro, BTRFS_DEFAULT_RESERVED to replace such
->> SZ_1M usage.
->>
->> This will make later enlarged per-dev reservation easier to implement.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 7 +=
-++++++
->> =C2=A0 fs/btrfs/extent-tree.c |=C2=A0 6 +++---
->> =C2=A0 fs/btrfs/super.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 10 +++++-=
-----
->> =C2=A0 fs/btrfs/volumes.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 7 +------
->> =C2=A0 4 files changed, 16 insertions(+), 14 deletions(-)
->>
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index f7afdfd0bae7..62028e7d5799 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -229,6 +229,13 @@ struct btrfs_root_backup {
->> =C2=A0 #define BTRFS_SUPER_INFO_OFFSET=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SZ_64K
->> =C2=A0 #define BTRFS_SUPER_INFO_SIZE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096
->> +/*
->> + * The default reserved space for each device.
->> + * This range covers the primary superblock, and some other legacy
->> programs like
->> + * older bootloader may want to store their data there.
->> + */
->> +#define BTRFS_DEFAULT_RESERVED=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 (SZ_1M)
->> +
+> 7e2bb5b3f3bca223 62bd8124e2f17910fcd89568e50
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :16          94%          15:16    dmesg.RIP:btrfs_release_global_block_rsv[btrfs]
+>            :16          94%          15:16    dmesg.WARNING:at_fs/btrfs/block-rsv.c:#btrfs_release_global_block_rsv[btrfs]
+>            :16           6%           1:16    dmesg.kernel_BUG_at_fs/xfs/xfs_message.c
 >
-> The name of this macros is too generic and uninformative. How about
-> BTRFS_BOOT_RESERVED or simply BTRFS_RESERVED_SPACE, because
-> BTRFS_DEFAULT_RESERVED implies=C2=A0 there is something else, apart from
-> "default" and there won't be ...
+>
+> attached one dmesg FYI
 
-BTRFS_RESERVED_SPACE sounds good. The "BOOT_RESERVED" part will
-definitely lose its meaning in the long run, since now there is no
-modern bootloader really doing that.
-(Either go full ESP, like systemd-boot, or extra reserved partition like
-GRUB2, or use unpartitioned space after MBR like the legacy GRUB1)
+Thanks for running the test again Oliver.
+Running the fxmark test on my machines, I can't trigger anything.
 
-But "DEFAULT" is here because later we will enlarge the reserved space
-(for write-intent map, and will introduce a new super block member to
-indicate exact how many bytes are reserved), and I don't want to add
-"DEFAULT" when we introduce that new reserved behavior.
+May I ask you to run again the test but with the attached debug patch
+on top of it?
 
-Any clue on the naming part?
+Also, if possible, with ftrace enabled like this:
 
-Thanks,
-Qu
+modprobe btrfs
+echo 0 > /sys/kernel/debug/tracing/tracing_on
+echo > /sys/kernel/debug/tracing/trace
+echo $((1 << 24)) > /sys/kernel/debug/tracing/buffer_size_kb
+echo nop > /sys/kernel/debug/tracing/current_tracer
+echo 1 > /sys/kernel/tracing/events/btrfs/btrfs_space_reservation/enable
+
+echo 1 > /sys/kernel/debug/tracing/tracing_on
+
+<run the test>
+
+echo 0 > /sys/kernel/debug/tracing/tracing_on
+
+Then collect the trace to a file and send it over to me:
+
+cat /sys/kernel/debug/tracing/trace | xz -9 > trace.txt.xz
+
+And of course, the dmesg result as well.
+
+Thanks!
+
+
 
 >
-> <snip>
+> >
+
+--00000000000029ed3d05e1520ffb
+Content-Type: text/x-patch; charset="US-ASCII"; name="btrfs_debug.patch"
+Content-Disposition: attachment; filename="btrfs_debug.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_l4clu7qs0>
+X-Attachment-Id: f_l4clu7qs0
+
+ZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2Jsb2NrLXJzdi5jIGIvZnMvYnRyZnMvYmxvY2stcnN2LmMK
+aW5kZXggYjNlZTQ5YjBiMWU4Li5mYWIwNjM4YjFmMWUgMTAwNjQ0Ci0tLSBhL2ZzL2J0cmZzL2Js
+b2NrLXJzdi5jCisrKyBiL2ZzL2J0cmZzL2Jsb2NrLXJzdi5jCkBAIC0xMTQsNiArMTE0LDkgQEAg
+c3RhdGljIHU2NCBibG9ja19yc3ZfcmVsZWFzZV9ieXRlcyhzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAq
+ZnNfaW5mbywKIAkJbnVtX2J5dGVzID0gYmxvY2tfcnN2LT5zaXplOwogCQlxZ3JvdXBfdG9fcmVs
+ZWFzZSA9IGJsb2NrX3Jzdi0+cWdyb3VwX3Jzdl9zaXplOwogCX0KKwlpZiAoV0FSTl9PTihudW1f
+Ynl0ZXMgPiBibG9ja19yc3YtPnNpemUpKQorCQlidHJmc19lcnIoZnNfaW5mbywgImJsb2NrX3Jz
+diByZWxlYXNlIHNpemU9JWxsdSByZXNlcnZlZD0lbGx1IHR5cGU9JWQgbnVtX2J5dGVzPSVsbHUi
+LAorCQkJICBibG9ja19yc3YtPnNpemUsIGJsb2NrX3Jzdi0+cmVzZXJ2ZWQsIGJsb2NrX3Jzdi0+
+dHlwZSwgbnVtX2J5dGVzKTsKIAlibG9ja19yc3YtPnNpemUgLT0gbnVtX2J5dGVzOwogCWlmIChi
+bG9ja19yc3YtPnJlc2VydmVkID49IGJsb2NrX3Jzdi0+c2l6ZSkgewogCQludW1fYnl0ZXMgPSBi
+bG9ja19yc3YtPnJlc2VydmVkIC0gYmxvY2tfcnN2LT5zaXplOwpAQCAtMzE2LDkgKzMxOSwxMiBA
+QCB2b2lkIGJ0cmZzX2Jsb2NrX3Jzdl9hZGRfYnl0ZXMoc3RydWN0IGJ0cmZzX2Jsb2NrX3JzdiAq
+YmxvY2tfcnN2LAogewogCXNwaW5fbG9jaygmYmxvY2tfcnN2LT5sb2NrKTsKIAlibG9ja19yc3Yt
+PnJlc2VydmVkICs9IG51bV9ieXRlczsKLQlpZiAodXBkYXRlX3NpemUpCisJaWYgKHVwZGF0ZV9z
+aXplKSB7CisJCWlmIChibG9ja19yc3YtPnNpemUgPT0gMCkKKwkJCXRyYWNlX3ByaW50aygiYmxv
+Y2tfcnN2IHR5cGU9JWQgc2l6ZSBiZWNhbWUgbm9uLXplcm8gKCVsbHUpXG4iLAorCQkJCSAgICAg
+YmxvY2tfcnN2LT50eXBlLCBudW1fYnl0ZXMpOwogCQlibG9ja19yc3YtPnNpemUgKz0gbnVtX2J5
+dGVzOwotCWVsc2UgaWYgKGJsb2NrX3Jzdi0+cmVzZXJ2ZWQgPj0gYmxvY2tfcnN2LT5zaXplKQor
+CX0gZWxzZSBpZiAoYmxvY2tfcnN2LT5yZXNlcnZlZCA+PSBibG9ja19yc3YtPnNpemUpCiAJCWJs
+b2NrX3Jzdi0+ZnVsbCA9IDE7CiAJc3Bpbl91bmxvY2soJmJsb2NrX3Jzdi0+bG9jayk7CiB9CkBA
+IC00NjAsMTggKzQ2NiwzMiBAQCB2b2lkIGJ0cmZzX2luaXRfZ2xvYmFsX2Jsb2NrX3JzdihzdHJ1
+Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbykKIAlidHJmc191cGRhdGVfZ2xvYmFsX2Jsb2NrX3Jz
+dihmc19pbmZvKTsKIH0KIAorc3RhdGljIHZvaWQgZHVtcF9ibG9ja19yc3Yoc3RydWN0IGJ0cmZz
+X2ZzX2luZm8gKmZzX2luZm8sIHN0cnVjdCBidHJmc19ibG9ja19yc3YgKnJzdikKK3sKKwlidHJm
+c19lcnIoZnNfaW5mbywgImJsb2NrX3JzdiB0eXBlPSVkIHNpemU9JWxsdSByZXNlcnZlZD0lbGx1
+IiwKKwkJICByc3YtPnR5cGUsIHJzdi0+c2l6ZSwgcnN2LT5yZXNlcnZlZCk7Cit9CisKIHZvaWQg
+YnRyZnNfcmVsZWFzZV9nbG9iYWxfYmxvY2tfcnN2KHN0cnVjdCBidHJmc19mc19pbmZvICpmc19p
+bmZvKQogewogCWJ0cmZzX2Jsb2NrX3Jzdl9yZWxlYXNlKGZzX2luZm8sICZmc19pbmZvLT5nbG9i
+YWxfYmxvY2tfcnN2LCAodTY0KS0xLAogCQkJCU5VTEwpOwotCVdBUk5fT04oZnNfaW5mby0+dHJh
+bnNfYmxvY2tfcnN2LnNpemUgPiAwKTsKLQlXQVJOX09OKGZzX2luZm8tPnRyYW5zX2Jsb2NrX3Jz
+di5yZXNlcnZlZCA+IDApOwotCVdBUk5fT04oZnNfaW5mby0+Y2h1bmtfYmxvY2tfcnN2LnNpemUg
+PiAwKTsKLQlXQVJOX09OKGZzX2luZm8tPmNodW5rX2Jsb2NrX3Jzdi5yZXNlcnZlZCA+IDApOwot
+CVdBUk5fT04oZnNfaW5mby0+ZGVsYXllZF9ibG9ja19yc3Yuc2l6ZSA+IDApOwotCVdBUk5fT04o
+ZnNfaW5mby0+ZGVsYXllZF9ibG9ja19yc3YucmVzZXJ2ZWQgPiAwKTsKLQlXQVJOX09OKGZzX2lu
+Zm8tPmRlbGF5ZWRfcmVmc19yc3YucmVzZXJ2ZWQgPiAwKTsKLQlXQVJOX09OKGZzX2luZm8tPmRl
+bGF5ZWRfcmVmc19yc3Yuc2l6ZSA+IDApOworCWlmIChXQVJOX09OKGZzX2luZm8tPnRyYW5zX2Js
+b2NrX3Jzdi5zaXplID4gMCkpCisJCWR1bXBfYmxvY2tfcnN2KGZzX2luZm8sICZmc19pbmZvLT50
+cmFuc19ibG9ja19yc3YpOworCWlmIChXQVJOX09OKGZzX2luZm8tPnRyYW5zX2Jsb2NrX3Jzdi5y
+ZXNlcnZlZCA+IDApKQorCQlkdW1wX2Jsb2NrX3Jzdihmc19pbmZvLCAmZnNfaW5mby0+dHJhbnNf
+YmxvY2tfcnN2KTsKKwlpZiAoV0FSTl9PTihmc19pbmZvLT5jaHVua19ibG9ja19yc3Yuc2l6ZSA+
+IDApKQorCQlkdW1wX2Jsb2NrX3Jzdihmc19pbmZvLCAmZnNfaW5mby0+Y2h1bmtfYmxvY2tfcnN2
+KTsKKwlpZiAoV0FSTl9PTihmc19pbmZvLT5jaHVua19ibG9ja19yc3YucmVzZXJ2ZWQgPiAwKSkK
+KwkJZHVtcF9ibG9ja19yc3YoZnNfaW5mbywgJmZzX2luZm8tPmNodW5rX2Jsb2NrX3Jzdik7CisJ
+aWYgKFdBUk5fT04oZnNfaW5mby0+ZGVsYXllZF9ibG9ja19yc3Yuc2l6ZSA+IDApKQorCQlkdW1w
+X2Jsb2NrX3Jzdihmc19pbmZvLCAmZnNfaW5mby0+ZGVsYXllZF9ibG9ja19yc3YpOworCWlmIChX
+QVJOX09OKGZzX2luZm8tPmRlbGF5ZWRfYmxvY2tfcnN2LnJlc2VydmVkID4gMCkpCisJCWR1bXBf
+YmxvY2tfcnN2KGZzX2luZm8sICZmc19pbmZvLT5kZWxheWVkX2Jsb2NrX3Jzdik7CisJaWYgKFdB
+Uk5fT04oZnNfaW5mby0+ZGVsYXllZF9yZWZzX3Jzdi5yZXNlcnZlZCA+IDApKQorCQlkdW1wX2Js
+b2NrX3Jzdihmc19pbmZvLCAmZnNfaW5mby0+ZGVsYXllZF9yZWZzX3Jzdik7CisJaWYgKFdBUk5f
+T04oZnNfaW5mby0+ZGVsYXllZF9yZWZzX3Jzdi5zaXplID4gMCkpCisJCWR1bXBfYmxvY2tfcnN2
+KGZzX2luZm8sICZmc19pbmZvLT5kZWxheWVkX3JlZnNfcnN2KTsKIH0KIAogc3RhdGljIHN0cnVj
+dCBidHJmc19ibG9ja19yc3YgKmdldF9ibG9ja19yc3YoCmRpZmYgLS1naXQgYS9mcy9idHJmcy9k
+ZWxheWVkLWlub2RlLmMgYi9mcy9idHJmcy9kZWxheWVkLWlub2RlLmMKaW5kZXggZTFlODU2NDM2
+YWQ1Li42OThhZThhOTE0MTUgMTAwNjQ0Ci0tLSBhL2ZzL2J0cmZzL2RlbGF5ZWQtaW5vZGUuYwor
+KysgYi9mcy9idHJmcy9kZWxheWVkLWlub2RlLmMKQEAgLTU3Miw2ICs1NzIsMTcgQEAgc3RhdGlj
+IHZvaWQgYnRyZnNfZGVsYXllZF9pdGVtX3JlbGVhc2VfbWV0YWRhdGEoc3RydWN0IGJ0cmZzX3Jv
+b3QgKnJvb3QsCiAJYnRyZnNfYmxvY2tfcnN2X3JlbGVhc2UoZnNfaW5mbywgcnN2LCBpdGVtLT5i
+eXRlc19yZXNlcnZlZCwgTlVMTCk7CiB9CiAKK3N0YXRpYyB2b2lkIGJ0cmZzX2RlbGF5ZWRfaXRl
+bV9yZWxlYXNlX2xlYXZlcyhzdHJ1Y3QgYnRyZnNfZGVsYXllZF9ub2RlICpub2RlLAorCQkJCQkg
+ICAgICB1bnNpZ25lZCBpbnQgbnVtX2xlYXZlcykKK3sKKwlzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAq
+ZnNfaW5mbyA9IG5vZGUtPnJvb3QtPmZzX2luZm87CisJY29uc3QgdTY0IGJ5dGVzID0gYnRyZnNf
+Y2FsY19pbnNlcnRfbWV0YWRhdGFfc2l6ZShmc19pbmZvLCBudW1fbGVhdmVzKTsKKworCXRyYWNl
+X2J0cmZzX3NwYWNlX3Jlc2VydmF0aW9uKGZzX2luZm8sICJkZWxheWVkX2l0ZW0iLCBub2RlLT5p
+bm9kZV9pZCwKKwkJCQkgICAgICBieXRlcywgMCk7CisJYnRyZnNfYmxvY2tfcnN2X3JlbGVhc2Uo
+ZnNfaW5mbywgJmZzX2luZm8tPmRlbGF5ZWRfYmxvY2tfcnN2LCBieXRlcywgTlVMTCk7Cit9CisK
+IHN0YXRpYyBpbnQgYnRyZnNfZGVsYXllZF9pbm9kZV9yZXNlcnZlX21ldGFkYXRhKAogCQkJCQlz
+dHJ1Y3QgYnRyZnNfdHJhbnNfaGFuZGxlICp0cmFucywKIAkJCQkJc3RydWN0IGJ0cmZzX3Jvb3Qg
+KnJvb3QsCkBAIC03NjEsOSArNzcyLDcgQEAgc3RhdGljIGludCBidHJmc19pbnNlcnRfZGVsYXll
+ZF9pdGVtKHN0cnVjdCBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zLAogCSAqIG1ldGFkYXRhIHNw
+YWNlIGZyb20gdGhlIGRlbGF5ZWQgYmxvY2sgcmVzZXJ2ZS4KIAkgKi8KIAlpZiAoIXRlc3RfYml0
+KEJUUkZTX0ZTX0xPR19SRUNPVkVSSU5HLCAmZnNfaW5mby0+ZmxhZ3MpKQotCQlidHJmc19ibG9j
+a19yc3ZfcmVsZWFzZShmc19pbmZvLCAmZnNfaW5mby0+ZGVsYXllZF9ibG9ja19yc3YsCi0JCQkJ
+CWJ0cmZzX2NhbGNfaW5zZXJ0X21ldGFkYXRhX3NpemUoZnNfaW5mbywgMSksCi0JCQkJCU5VTEwp
+OworCQlidHJmc19kZWxheWVkX2l0ZW1fcmVsZWFzZV9sZWF2ZXMobm9kZSwgMSk7CiAKIAlBU1NF
+UlQobm9kZS0+aW5kZXhfaXRlbXNfc2l6ZSA+PSB0b3RhbF9zaXplKTsKIAlub2RlLT5pbmRleF9p
+dGVtc19zaXplIC09IHRvdGFsX3NpemU7CkBAIC03ODUsNiArNzk0LDcgQEAgc3RhdGljIGludCBi
+dHJmc19pbnNlcnRfZGVsYXllZF9pdGVtcyhzdHJ1Y3QgYnRyZnNfdHJhbnNfaGFuZGxlICp0cmFu
+cywKIAkJbXV0ZXhfbG9jaygmbm9kZS0+bXV0ZXgpOwogCQljdXJyID0gX19idHJmc19maXJzdF9k
+ZWxheWVkX2luc2VydGlvbl9pdGVtKG5vZGUpOwogCQlpZiAoIWN1cnIpIHsKKwkJCUFTU0VSVChu
+b2RlLT5pbmRleF9pdGVtc19zaXplID09IDApOwogCQkJbXV0ZXhfdW5sb2NrKCZub2RlLT5tdXRl
+eCk7CiAJCQlicmVhazsKIAkJfQpAQCAtMTM2NiwxMyArMTM3Niw4IEBAIHN0YXRpYyB1bnNpZ25l
+ZCBpbnQgbnVtX2Rpcl9pbmRleF9sZWF2ZXMoY29uc3Qgc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZz
+X2luZm8sCiAJCQkJCSB1MzIgaW5kZXhfaXRlbXNfc2l6ZSkKIHsKIAljb25zdCB1bnNpZ25lZCBp
+bnQgbGVhZl9kYXRhX3NpemUgPSBCVFJGU19MRUFGX0RBVEFfU0laRShmc19pbmZvKTsKLQl1bnNp
+Z25lZCBpbnQgcmVzdWx0OwogCi0JcmVzdWx0ID0gaW5kZXhfaXRlbXNfc2l6ZSAvIGxlYWZfZGF0
+YV9zaXplOwotCWlmICgoaW5kZXhfaXRlbXNfc2l6ZSAlIGxlYWZfZGF0YV9zaXplKSAhPSAwKQot
+CQlyZXN1bHQrKzsKLQotCXJldHVybiByZXN1bHQ7CisJcmV0dXJuIERJVl9ST1VORF9VUChpbmRl
+eF9pdGVtc19zaXplLCBsZWFmX2RhdGFfc2l6ZSk7CiB9CiAKIC8qIFdpbGwgcmV0dXJuIDAgb3Ig
+LUVOT01FTSAqLwpAQCAtMTQ0OSw2ICsxNDU0LDggQEAgaW50IGJ0cmZzX2luc2VydF9kZWxheWVk
+X2Rpcl9pbmRleChzdHJ1Y3QgYnRyZnNfdHJhbnNfaGFuZGxlICp0cmFucywKIAkJICogdGhlIGNh
+c2Ugd2hlcmUgd2UgaGFkIGEgdHJhbnNhY3Rpb24gc3RhcnQgYW5kIGV4Y2x1ZGVzIHRoZQogCQkg
+KiB0cmFuc2FjdGlvbiBqb2luIGNhc2UgKHdoZW4gcmVwbGF5aW5nIGxvZyB0cmVlcykuCiAJCSAq
+LworCQl0cmFjZV9idHJmc19zcGFjZV9yZXNlcnZhdGlvbihmc19pbmZvLCAidHJhbnNhY3Rpb24i
+LAorCQkJCQkgICAgICB0cmFucy0+dHJhbnNpZCwgYnl0ZXMsIDApOwogCQlidHJmc19ibG9ja19y
+c3ZfcmVsZWFzZShmc19pbmZvLCB0cmFucy0+YmxvY2tfcnN2LCBieXRlcywgTlVMTCk7CiAJCUFT
+U0VSVCh0cmFucy0+Ynl0ZXNfcmVzZXJ2ZWQgPj0gYnl0ZXMpOwogCQl0cmFucy0+Ynl0ZXNfcmVz
+ZXJ2ZWQgLT0gYnl0ZXM7CkBAIC0xNTA1LDEyICsxNTEyLDggQEAgc3RhdGljIGludCBidHJmc19k
+ZWxldGVfZGVsYXllZF9pbnNlcnRpb25faXRlbShzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5m
+bywKIAlBU1NFUlQoKGxlYXZlc19iZWZvcmUgLSBsZWF2ZXNfYWZ0ZXIpIDw9IDEpOwogCiAJaWYg
+KGxlYXZlc19hZnRlciA8IGxlYXZlc19iZWZvcmUgJiYKLQkgICAgIXRlc3RfYml0KEJUUkZTX0ZT
+X0xPR19SRUNPVkVSSU5HLCAmZnNfaW5mby0+ZmxhZ3MpKSB7Ci0JCWNvbnN0IHU2NCBieXRlcyA9
+IGJ0cmZzX2NhbGNfaW5zZXJ0X21ldGFkYXRhX3NpemUoZnNfaW5mbywgMSk7Ci0KLQkJYnRyZnNf
+YmxvY2tfcnN2X3JlbGVhc2UoZnNfaW5mbywgJmZzX2luZm8tPmRlbGF5ZWRfYmxvY2tfcnN2LAot
+CQkJCQlieXRlcywgTlVMTCk7Ci0JfQorCSAgICAhdGVzdF9iaXQoQlRSRlNfRlNfTE9HX1JFQ09W
+RVJJTkcsICZmc19pbmZvLT5mbGFncykpCisJCWJ0cmZzX2RlbGF5ZWRfaXRlbV9yZWxlYXNlX2xl
+YXZlcyhub2RlLCAxKTsKIAogCWJ0cmZzX3JlbGVhc2VfZGVsYXllZF9pdGVtKGl0ZW0pOwogCW11
+dGV4X3VubG9jaygmbm9kZS0+bXV0ZXgpOwpAQCAtMTkzNiwxNCArMTkzOSwxMCBAQCBzdGF0aWMg
+dm9pZCBfX2J0cmZzX2tpbGxfZGVsYXllZF9ub2RlKHN0cnVjdCBidHJmc19kZWxheWVkX25vZGUg
+KmRlbGF5ZWRfbm9kZSkKIAlpZiAoIXRlc3RfYml0KEJUUkZTX0ZTX0xPR19SRUNPVkVSSU5HLCAm
+ZnNfaW5mby0+ZmxhZ3MpICYmCiAJICAgIGRlbGF5ZWRfbm9kZS0+aW5kZXhfaXRlbXNfc2l6ZSA+
+IDApIHsKIAkJdW5zaWduZWQgaW50IG51bV9sZWF2ZXM7Ci0JCXU2NCBieXRlczsKIAogCQludW1f
+bGVhdmVzID0gbnVtX2Rpcl9pbmRleF9sZWF2ZXMoZnNfaW5mbywKIAkJCQkJCSAgZGVsYXllZF9u
+b2RlLT5pbmRleF9pdGVtc19zaXplKTsKLQkJYnl0ZXMgPSBidHJmc19jYWxjX2luc2VydF9tZXRh
+ZGF0YV9zaXplKGZzX2luZm8sIG51bV9sZWF2ZXMpOwotCi0JCWJ0cmZzX2Jsb2NrX3Jzdl9yZWxl
+YXNlKGZzX2luZm8sICZmc19pbmZvLT5kZWxheWVkX2Jsb2NrX3JzdiwKLQkJCQkJYnl0ZXMsIE5V
+TEwpOworCQlidHJmc19kZWxheWVkX2l0ZW1fcmVsZWFzZV9sZWF2ZXMoZGVsYXllZF9ub2RlLCBu
+dW1fbGVhdmVzKTsKIAl9CiAJZGVsYXllZF9ub2RlLT5pbmRleF9pdGVtc19zaXplID0gMDsKIAo=
+--00000000000029ed3d05e1520ffb--
