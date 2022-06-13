@@ -2,67 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0792549F21
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 22:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6B3549FA4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 22:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbiFMUbo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jun 2022 16:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
+        id S234340AbiFMUnE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jun 2022 16:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351381AbiFMU3k (ORCPT
+        with ESMTP id S1346301AbiFMUmV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jun 2022 16:29:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36CC6560
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 12:18:41 -0700 (PDT)
+        Mon, 13 Jun 2022 16:42:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265E113F25;
+        Mon, 13 Jun 2022 12:43:46 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9D9ED1F933;
-        Mon, 13 Jun 2022 19:18:40 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CA43221AFC;
+        Mon, 13 Jun 2022 19:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655147920;
+        t=1655149424;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=h5NyIjwaBiF1Yddqsa4zaCfIxjzG0+c2TPhRtCiZYJs=;
-        b=KtmF+aOiG6X0Zb5FgHPQUR2rQvcnZb1UikOJLYpzI1Uy8NRPuCC8KBneyyUxpf5+0c+7zv
-        dkqjRFquAtRuCFIVx4Jic56OTzGptW1oyvAIKP7iH2etmlCYE34L9qy84oKkLnFzadyuhJ
-        /yxfffMDgL2NRKXKgDQ7wqr0vUWzkMc=
+        bh=tDlIv8k4YI9AeL8zTuC9Y9jHBJ5RQWlcpO0WYfw29GM=;
+        b=QYlBWgzCJ6lCxWp3gQ2Z3SxBRp998NEKsWzmGenXDPEfVxBop57Ws1nlUFD0NTb9nj2J1U
+        XFqvWHen/BxLTqci0hMrUCQAEuxeP+1O5zGCtE8sHpo8OzFa4m5PB0GRMkfkadYEfZOtJ4
+        mcIcxneT88NF/XRo8y5WU9xxDHnnFz0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655147920;
+        s=susede2_ed25519; t=1655149424;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=h5NyIjwaBiF1Yddqsa4zaCfIxjzG0+c2TPhRtCiZYJs=;
-        b=CkaCs2PLCi1dZiOc93fFRVLyLTSz2Eo9ou2Oeacsfm/lICp8a7U84k9gFzVA7Nd2vSidIr
-        tm3w3KrFje3GC3BA==
+        bh=tDlIv8k4YI9AeL8zTuC9Y9jHBJ5RQWlcpO0WYfw29GM=;
+        b=WxJzS6RsJwIE+51FIvF7osXGjc2WqiShjDo+rq6ZX5YPlk22LSRsagEVL8ljguIQVAH0D+
+        IrM0Uph/jbzMNSCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71A4813443;
-        Mon, 13 Jun 2022 19:18:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8279413443;
+        Mon, 13 Jun 2022 19:43:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id DQvAGpCNp2KaLQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 13 Jun 2022 19:18:40 +0000
-Date:   Mon, 13 Jun 2022 21:14:07 +0200
+        id FbzTHnCTp2I1NAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 13 Jun 2022 19:43:44 +0000
+Date:   Mon, 13 Jun 2022 21:39:12 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Ioannis Angelakopoulos <iangelak@fb.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs: Expose the BTRFS commit stats through sysfs
-Message-ID: <20220613191407.GH20633@twin.jikos.cz>
+To:     syzbot <syzbot+d2dd123304b4ae59f1bd@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
+        hch@lst.de, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        willy@infradead.org
+Subject: Re: [syzbot] KASAN: use-after-free Read in
+ copy_page_from_iter_atomic (2)
+Message-ID: <20220613193912.GI20633@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ioannis Angelakopoulos <iangelak@fb.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20220610205406.301397-1-iangelak@fb.com>
- <20220610205406.301397-3-iangelak@fb.com>
+Mail-Followup-To: dsterba@suse.cz,
+        syzbot <syzbot+d2dd123304b4ae59f1bd@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com, hch@lst.de,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        willy@infradead.org
+References: <0000000000003ce9d105e0db53c8@google.com>
+ <00000000000085068105e112a117@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220610205406.301397-3-iangelak@fb.com>
+In-Reply-To: <00000000000085068105e112a117@google.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -74,115 +84,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 01:54:09PM -0700, Ioannis Angelakopoulos wrote:
-> Create a new sysfs entry named "commit_stats" for each mounted BTRFS
-> filesystem. The entry exposes: 1) The number of commits so far, 2) The
-> duration of the last commit in ms, 3) The maximum commit duration seen
-> so far in ms and 4) The total duration for all commits so far in ms.
+On Fri, Jun 10, 2022 at 12:10:19AM -0700, syzbot wrote:
+> syzbot has bisected this issue to:
 > 
-> The function "btrfs_commit_stats_show" is responsible for exposing the
-> stats to user space.
-
-Please mention the actual path of the file, the callbacks are
-implementation detail. Also mention the path at the description at the
-beginning of sysfs.c.
-
-> The function "btrfs_commit_stats_store" is responsible for resetting the
-> above values to zero.
+> commit 4cd4aed63125ccd4efc35162627827491c2a7be7
+> Author: Christoph Hellwig <hch@lst.de>
+> Date:   Fri May 27 08:43:20 2022 +0000
 > 
-> Signed-off-by: Ioannis Angelakopoulos <iangelak@fb.com>
-> ---
->  fs/btrfs/sysfs.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index b6cb5551050e..f68fc73006c0 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -991,6 +991,53 @@ static ssize_t btrfs_sectorsize_show(struct kobject *kobj,
->  
->  BTRFS_ATTR(, sectorsize, btrfs_sectorsize_show);
->  
-> +static ssize_t btrfs_commit_stats_show(struct kobject *kobj,
-> +				struct kobj_attribute *a, char *buf)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +
-> +	/*
-> +	 * Expose the commits so far, the duration of the last commit, the
-> +	 * maximum duration of a commit so far and the total duration of
-> +	 * all the commits so far
-> +	 */
+>     btrfs: fold repair_io_failure into btrfs_repair_eb_io_failure
 
-Comment not necessary
+Josef also reported a crash and found a bug in the patch, now added as
+fixup that'll be in for-next:
 
-> +	return sysfs_emit(buf, "Commits: %llu, Last: %llu ms, Max: %llu ms, Total: %llu ms\n",
-
-So this is another format of sysfs output that does not follow any
-established format. There are two: one file per value, or list of
-"name space value newline" in one file (which is suitable for a set of
-stats as it allow to grab a consistent snapshot). See eg.
-btrfs_devinfo_error_stats_show .
-
-> +					  fs_info->commit_stats->commit_counter,
-> +					  fs_info->commit_stats->last_commit_dur,
-> +					  fs_info->commit_stats->max_commit_dur,
-> +					  fs_info->commit_stats->total_commit_dur);
-> +}
-> +
-> +static ssize_t btrfs_commit_stats_store(struct kobject *kobj,
-> +						struct kobj_attribute *a,
-> +						const char *buf, size_t len)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +
-> +	if (!fs_info)
-> +		return -EPERM;
-> +
-> +	if (!capable(CAP_SYS_RESOURCE))
-> +		return -EPERM;
-
-Should this accept only numeric value? Right now it would accept
-anything, that's not common.
-
-> +
-> +	/*
-> +	 * Just reset everything
-> +	 * Also take the trans_lock to avoid race conditions with the udpates
-> +	 * in btrfs_commit_transaction()
-
-Comment not necessary, this is obvious.
-
-> +	 */
-> +	spin_lock(&fs_info->trans_lock);
-
-Also I think the trans_lock is not the right one, it's a lock used for
-transaction locking and more related to the transaction itself, while
-the stats are a long term object and the super_lock is more sutable.
-
-> +	fs_info->commit_stats->commit_counter = 0;
-> +	fs_info->commit_stats->last_commit_dur = 0;
-> +	fs_info->commit_stats->max_commit_dur = 0;
-> +	fs_info->commit_stats->total_commit_dur = 0;
-> +	spin_unlock(&fs_info->trans_lock);
-> +
-> +	return len;
-> +}
-> +
-> +BTRFS_ATTR_RW(, commit_stats, btrfs_commit_stats_show,
-> +			  btrfs_commit_stats_store);
-> +
->  static ssize_t btrfs_clone_alignment_show(struct kobject *kobj,
->  				struct kobj_attribute *a, char *buf)
->  {
-> @@ -1230,6 +1277,7 @@ static const struct attribute *btrfs_attrs[] = {
->  	BTRFS_ATTR_PTR(, generation),
->  	BTRFS_ATTR_PTR(, read_policy),
->  	BTRFS_ATTR_PTR(, bg_reclaim_threshold),
-> +	BTRFS_ATTR_PTR(, commit_stats),
->  	NULL,
->  };
->  
-> -- 
-> 2.30.2
-> 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 89a319e65197..5eac9ffb7499 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2260,7 +2260,7 @@ int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num)
+		__bio_add_page(&bio, p, PAGE_SIZE, start - page_offset(p));
+		ret = btrfs_map_repair_bio(fs_info, &bio, mirror_num);
+		bio_uninit(&bio);
+-
++               start += PAGE_SIZE;
+		if (ret)
+			return ret;
+	}
+---
