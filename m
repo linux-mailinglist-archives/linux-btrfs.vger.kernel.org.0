@@ -2,71 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA92549EF6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 22:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF80549EF7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 22:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbiFMUXv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jun 2022 16:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        id S1344499AbiFMUYF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jun 2022 16:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351443AbiFMUXf (ORCPT
+        with ESMTP id S1346255AbiFMUXv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jun 2022 16:23:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE94F33
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 12:04:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9B89821C34;
-        Mon, 13 Jun 2022 19:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655147048;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iazwCmIZ4QhJVZx/Z/zRnt2s5+79HyTqUfnp95fUsv4=;
-        b=vgxamHcbrfvIA0j5LmIaaZ6bT1Gm2zA29q91EHoPdSCcH6gfcxjDuHYb2U8PbiDdvMfUqY
-        wfAf7CpUazYmk8lNhpU7guCUUdB31DMyYPiarBIntEoZf+PHLE9PzyGAFwe2cq+um7qmjz
-        eqpIr6LoS7n1pcGfyj8DZ0mm9zlgdok=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655147048;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iazwCmIZ4QhJVZx/Z/zRnt2s5+79HyTqUfnp95fUsv4=;
-        b=KQGSykSOaeccpRozVPiQrj/GjuLI6b9K6HqdOuQCaiqLhUgSo5dnunzkBTEXziM/HDtCk/
-        RIwtPnmm2zdn4NAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6217313443;
-        Mon, 13 Jun 2022 19:04:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AqoJFyiKp2JTKQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 13 Jun 2022 19:04:08 +0000
-Date:   Mon, 13 Jun 2022 20:59:35 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Ioannis Angelakopoulos <iangelak@fb.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 1/2] btrfs: Add the capability of getting commit stats in
- BTRFS
-Message-ID: <20220613185935.GG20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ioannis Angelakopoulos <iangelak@fb.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20220610205406.301397-1-iangelak@fb.com>
- <20220610205406.301397-2-iangelak@fb.com>
+        Mon, 13 Jun 2022 16:23:51 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CE9A26C2
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 12:05:16 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id ADF12320092A;
+        Mon, 13 Jun 2022 15:05:13 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 13 Jun 2022 15:05:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1655147113; x=1655233513; bh=1i5+gVMkKi
+        QadfDr57ivVBB9620vp2cZ2+jY7nC9GvU=; b=ALXzo7Ifaa2ASTs90Y2o+ktmbt
+        GIbO8CPPyrG+MRBVKQ+XA5aYHg3eZK/AMdyVWpGsnU+tW6rCmF3oOUnMzw70Nv5M
+        GIvgWlLZVK//c/jGu5BOjY7M68nHpvUapz/PHsHs1g3VY41cDdtxI7nGtUHXGXGK
+        nOLGPvHVivZ9eQmgOsS8/NUPW9XDRCKTyFhesfQSfloDn8vehehoA/QLDW0FMBXH
+        Stgw1BbfkIJN7HswLdP+6wLsHOjcGsQAWfOjZsF+zrr2xjOyLisuKYHUJ315NvtG
+        TSGphYJtNbsWlfTR9t4hA2930npgSGVXU8YuDl7qu39Fiz3AGxn9/x44icjA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1655147113; x=1655233513; bh=1i5+gVMkKiQadfDr57ivVBB9620v
+        p2cZ2+jY7nC9GvU=; b=lzvUPc5JP92VjT/kjATm5h7zbAL6pbhjr+Zbe9ew8oJ7
+        T5fyPauGtpxNb/N/4CO01qSM29PyJnwVWuEt854RpkBjxSy9AoqI5D5De//rP8b1
+        Ypr5O3rvEcZoRSUkL4bk12fCJgWlMRn/gngw7tyEgLiT9OfVauwWYbhQA1Fg8n0C
+        TROzaMZSip1dgR+sSPH8wZOeKSI3q7uZjqCOQrp/nYR/G+C/naB6BslE5+ESxh1k
+        8BaR+GBtpZiVN3gQoWFM6h4Gi4o7LqwDNZ1wzhqKvo1yxqF2bv/a3Jva/44IU0AY
+        RWlStUVlCRZNm0ZC3mICCllr0oGwci4MCOpnFrNHAQ==
+X-ME-Sender: <xms:aIqnYldCvxSOqhB_IJfPkOevSbBKthBnsDabbiPJTp2BUgdqwhYnlQ>
+    <xme:aIqnYjOFM43HUioP48Co-nouASVhQstJ9iM5ggtbvKyQCgN2IQsEIE8ohP3IsM0Tg
+    HvbGWdwvge0VSaWPN0>
+X-ME-Received: <xmr:aIqnYujg_2SLva-uvah3kfK6M8NhSmLFWjtWGVRuKsYXplAD_FoLD15gd0ucp1OleUwDPCl--DTG6z_ZB3OxUFZ1MhhxHA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddujedgudeftdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:aYqnYu-exq_ucg9uBc0CNvrJt1NiXjptIJLRf2cl41arazXr6edA_w>
+    <xmx:aYqnYhsq9EwRjD-pPGSHgIb1S14YF8QJAbeb1Mg-UKpyrub6dkhmGg>
+    <xmx:aYqnYtHLlN1WDzh-SCBJVygrYS3Uiycq8U6Fa22h_B-OR3fsMpNEAQ>
+    <xmx:aYqnYv0ygbM6qNj2GElpxdlPtwBwKE4i6sxgBaCCminPeqYRjSPoug>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 13 Jun 2022 15:05:12 -0400 (EDT)
+Date:   Mon, 13 Jun 2022 12:05:10 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: warn about dev extents that are inside the
+ reserved range
+Message-ID: <YqeKZuET4MDe0D5w@zen>
+References: <cover.1655103954.git.wqu@suse.com>
+ <c4b02ac7bf6e4171d8cfb13dcd11b3bad8d2e4df.1655103954.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220610205406.301397-2-iangelak@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <c4b02ac7bf6e4171d8cfb13dcd11b3bad8d2e4df.1655103954.git.wqu@suse.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,165 +84,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 01:54:07PM -0700, Ioannis Angelakopoulos wrote:
-> First we add  "struct btrfs_commit_stats" data structure under "fs_info"
-> to store the commit stats for BTRFS that will be exposed through sysfs
+On Mon, Jun 13, 2022 at 03:06:35PM +0800, Qu Wenruo wrote:
+> Btrfs has reserved the first 1MiB for the primary super block (at 64KiB
+> offset) and legacy programs like older bootloaders.
 > 
-> The stats exposed are: 1) The number of commits so far, 2) The duration of
-> the last commit in ms, 3) The maximum commit duration seen so far in ms
-> and 4) The total duration for all commits so far in ms.
+> This behavior is only introduced since v4.1 btrfs-progs release,
+> although kernel can ensure we never touch the reserved range of super
+> blocks, it's better to inform the end users, and a balance will resolve
+> the problem.
 > 
-> The update of the commit stats occurs after the commit thread has gone
-> through all the logic that checks if there is another thread committing
-> at the same time. This means that we only account for actual commit work
-> in the commit stats we report and not the time the thread spends waiting
-> until it is ready to do the commit work.
-> 
-> Signed-off-by: Ioannis Angelakopoulos <iangelak@fb.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/ctree.h       | 14 ++++++++++++++
->  fs/btrfs/disk-io.c     |  6 ++++++
->  fs/btrfs/transaction.c | 38 +++++++++++++++++++++++++++++++++++++-
->  3 files changed, 57 insertions(+), 1 deletion(-)
+>  fs/btrfs/volumes.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index f7afdfd0bae7..d4cc38451c7b 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -660,6 +660,18 @@ enum btrfs_exclusive_operation {
->  	BTRFS_EXCLOP_SWAP_ACTIVATE,
->  };
->  
-> +/* Storing data about btrfs commits. The data are accessible over sysfs */
-> +struct btrfs_commit_stats {
-> +	/* Total number of commits */
-> +	u64 commit_counter;
-> +	/* The maximum commit duration so far*/
-> +	u64 max_commit_dur;
-> +	/* The last commit duration */
-> +	u64 last_commit_dur;
-> +	/* The total commit duration */
-> +	u64 total_commit_dur;
-> +};
-> +
->  struct btrfs_fs_info {
->  	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
->  	unsigned long flags;
-> @@ -1082,6 +1094,8 @@ struct btrfs_fs_info {
->  	spinlock_t eb_leak_lock;
->  	struct list_head allocated_ebs;
->  #endif
-> +
-> +	struct btrfs_commit_stats *commit_stats;
-
-As long as this is in fs_info and reasonable size I don't see a reason
-to make the stats allocated dynamically, compared to being embedded
-either as a struct or array of u64.
-
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -10,6 +10,7 @@
->  #include <linux/pagemap.h>
->  #include <linux/blkdev.h>
->  #include <linux/uuid.h>
-> +#include <linux/timekeeping.h>
->  #include "misc.h"
->  #include "ctree.h"
->  #include "disk-io.h"
-> @@ -674,7 +675,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
->  	 * and then we deadlock with somebody doing a freeze.
->  	 *
->  	 * If we are ATTACH, it means we just want to catch the current
-> -	 * transaction and commit it, so we needn't do sb_start_intwrite(). 
-> +	 * transaction and commit it, so we needn't do sb_start_intwrite().
-
-Unrelated change.
-
->  	 */
->  	if (type & __TRANS_FREEZABLE)
->  		sb_start_intwrite(fs_info->sb);
-> @@ -2084,12 +2085,30 @@ static void add_pending_snapshot(struct btrfs_trans_handle *trans)
->  	list_add(&trans->pending_snapshot->list, &cur_trans->pending_snapshots);
->  }
->  
-> +static void update_commit_stats(struct btrfs_fs_info *fs_info,
-> +								ktime_t interval)
-> +{
-> +	/* Increase the successful commits counter */
-
-Such comments are really useless, it repeats in words what the code does
-not why and does not bring any new information for understanding. I'd
-not put any comment into this function at all, it's clear from the name
-and it's short.
-
-> +	fs_info->commit_stats->commit_counter += 1;
-> +	/* Update the last commit duration */
-> +	fs_info->commit_stats->last_commit_dur = interval / 1000000;
-> +	/* Update the maximum commit duration */
-> +	fs_info->commit_stats->max_commit_dur =
-> +				fs_info->commit_stats->max_commit_dur >	interval / 1000000 ?
-> +				fs_info->commit_stats->max_commit_dur :	interval / 1000000;
-> +	/* Update the total commit duration */
-> +	fs_info->commit_stats->total_commit_dur += interval / 1000000;
-
-4 times repeated 'interfal / 1000000' that converts the parameter from
-ns to ms, so that should be done already in the caller.
-
-> +}
-> +
->  int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->  {
->  	struct btrfs_fs_info *fs_info = trans->fs_info;
->  	struct btrfs_transaction *cur_trans = trans->transaction;
->  	struct btrfs_transaction *prev_trans = NULL;
->  	int ret;
-> +	ktime_t start_time;
-> +	ktime_t end_time;
-> +	ktime_t interval;
->  
->  	ASSERT(refcount_read(&trans->use_count) == 1);
->  
-> @@ -2214,6 +2233,12 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->  		}
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 051d124679d1..b39f4030d2ba 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7989,6 +7989,16 @@ static int verify_one_dev_extent(struct btrfs_fs_info *fs_info,
+>  		goto out;
 >  	}
 >  
 > +	/*
-> +	 * Get the time spent on the work done by the commit thread and not
-> +	 * the time spent on a previous commit
+> +	 * Very old mkfs.btrfs (before v4.1) will not respect the reserved
+> +	 * space. Although kernel can handle it without problem, better to
+> +	 * warn the users.
 > +	 */
-> +	start_time = ktime_get_ns();
+> +	if (physical_offset < BTRFS_DEFAULT_RESERVED)
+> +		btrfs_warn(fs_info,
+> +"devid %llu physical %llu len %llu is inside the reserved space, balance is needed to solve this problem.",
+
+If I saw this warning, I wouldn't know what balance to run, and it's
+not obvious what to search for online either (if it's even documented).
+I think a more explicit instruction like "btrfs balance start XXXX"
+would be helpful.
+
+If it's something we're ok with in general, then maybe a URL for a wiki
+page that explains the issue and the workaround would be the most
+useful.
+
+> +			   devid, physical_offset, physical_len);
 > +
->  	extwriter_counter_dec(cur_trans, trans->type);
->  
->  	ret = btrfs_start_delalloc_flush(fs_info);
-> @@ -2462,6 +2487,17 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->  
->  	kmem_cache_free(btrfs_trans_handle_cachep, trans);
->  
-> +	end_time = ktime_get_ns();
-
-I'm not sure the end time should be read here, there's a tracepoint a
-few lines above marking end of the transaction.
-
-> +	interval = end_time - start_time;
-
-end_time is used only once, not needed
-
-> +
-> +	/*
-> +	 * Protect the commit stats updates from concurrent updates through
-> +	 * sysfs.
-> +	 */
-> +	spin_lock(&fs_info->trans_lock);
-> +	update_commit_stats(fs_info, interval);
-
-So here pass interval/1000000
-
-> +	spin_unlock(&fs_info->trans_lock);
-> +
->  	return ret;
->  
->  unlock_reloc:
+>  	for (i = 0; i < map->num_stripes; i++) {
+>  		if (map->stripes[i].dev->devid == devid &&
+>  		    map->stripes[i].physical == physical_offset) {
 > -- 
-> 2.30.2
+> 2.36.1
 > 
