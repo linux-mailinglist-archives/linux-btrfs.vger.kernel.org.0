@@ -2,83 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E57549CD3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 21:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9185549DA4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jun 2022 21:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345322AbiFMTFZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jun 2022 15:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
+        id S1348822AbiFMT0q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jun 2022 15:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348075AbiFMTDi (ORCPT
+        with ESMTP id S1350372AbiFMT0K (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jun 2022 15:03:38 -0400
-Received: from mail-4027.protonmail.ch (mail-4027.protonmail.ch [185.70.40.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F02ADBD2
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 09:46:35 -0700 (PDT)
-Date:   Mon, 13 Jun 2022 16:46:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail3; t=1655138792; x=1655397992;
-        bh=xsI1YwOp/AhrN0sOCzdg8amKFpx7cl4xkciCNGq3mp4=;
-        h=Date:To:From:Reply-To:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID;
-        b=kncMgYXt03gLhi4814UZ90a0wXpohWO+SMI6O8LYI5gML5g639o0P+AOBjoVjXmYv
-         kCgaaIbTNbJgxqwNFiTEMxuEyDsTmztiqWDYNrwGMvqjvyMxzVWieINtaaEMxrEztE
-         E4bgEzRPE+bGnlKvQAI+DvZnBK9x3L8rdEcqLZcdi4JBc8epB/zspHJvo5v2uc7Dmc
-         c3a+YfvPlURbmxtFhhteV26G/FiamiqvVyBVaAYBri5TYHQzkY8sMix0ptI7v/+tfG
-         WlT6nwtBWJZNWsOZhFdzl7LerFL4sM0FXNoBgtDro8M8eUP9iCMIMVDdWGH9O9GsuZ
-         yEwiEIqM7uS2Q==
-To:     Forza <forza@tnonline.net>, Hugo Mills <hugo@carfax.org.uk>,
+        Mon, 13 Jun 2022 15:26:10 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908CC213
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jun 2022 10:46:55 -0700 (PDT)
+Received: from rrcs-173-197-119-179.west.biz.rr.com ([173.197.119.179]:32409 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1o0nQp-0004HE-6g by authid <merlins.org> with srv_auth_plain; Mon, 13 Jun 2022 10:46:42 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1o0o9A-00CBZl-L2; Mon, 13 Jun 2022 10:46:40 -0700
+Date:   Mon, 13 Jun 2022 10:46:40 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Roman Mamedov <rm@romanrm.net>
+Cc:     Andrea Gelmini <andrea.gelmini@gmail.com>,
+        Andrei Borzenkov <arvidjaar@gmail.com>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Neko-san <nekoNexus@proton.me>
-Reply-To: Neko-san <nekoNexus@proton.me>
-Subject: Re: [Help Please] Missing FIle Permissions Irrecoverably
-Message-ID: <EmTySX_q4q6PTbokDxBQq-fd67uligmNUgZkPtTi_PE13jz2i9st5R8YYH2RRDHicLXUUE_nec-pGVWmqT3zV601A1C-FMlAoTh1nErH_GE=@proton.me>
-In-Reply-To: <2N67hfOUtyAxwzQi9pHQi9q1nbVd-bgQY0_Yj88FCkbXbQMPoFza3VBLmrCj6FcPzWNJhAtlczURDXzu2oB-BvqDebve4KnV5R64VXyf97Y=@proton.me>
-References: <LQBIObJ0wXAJiClnJItZ5QlGJPGLx5G3_cbQYB6Yle5t7wg7-MX233_rkpCs_ybzN9-DWoQBSlPD6EZRa6HDjdo6PWJjFWO0qb4XB7UsK1E=@proton.me> <20220520212751.GE22627@savella.carfax.org.uk> <VHT1Yf4pw4jirz6QjpYj6bPb1zvJ06WStOXc4w1mSC1A7DsH5YQq-mqvzkzZSZriBXwCHuyF11thmlcgSLYFGaBeHGuA5XliXPJVJ3eXItE=@proton.me> <J6n7dr0d6RAArHrDWGrU_uNQsM56Npqpp_tuyXoY7q4rS_2dPzmd4sH14t_w-n_tE80HWdjyUKY2SqwV-iFwBoa55dLfJ3WI7LVsrjTRTVw=@proton.me> <uDip5WTKD2tJ6uP8N0eW91dNpbSShUrHBHPLczGV4l__Z_Wem9uWnG_pCYqcYjren8Gx8Va0iS3AGvCEiFTAC33Lgx_gOMs9KVqb1dh_lnc=@proton.me> <wztQTaGfQNKnobWabVzov7npkcVSeXD2Zth69WUFRit2NRq61hMN6a7t6R9mJntS0kyDryBabwpzmP4_q4nsO8y9WnUX35nOJ3ZF0agom9M=@proton.me> <98b7da2.8b0b192.1810759a875@tnonline.net> <2N67hfOUtyAxwzQi9pHQi9q1nbVd-bgQY0_Yj88FCkbXbQMPoFza3VBLmrCj6FcPzWNJhAtlczURDXzu2oB-BvqDebve4KnV5R64VXyf97Y=@proton.me>
-Feedback-ID: 45481095:user:proton
+Subject: Re: Suggestions for building new 44TB Raid5 array
+Message-ID: <20220613174640.GL1664812@merlins.org>
+References: <CAK-xaQYc1PufsvksqP77HMe4ZVTkWuRDn2C3P-iMTQzrbQPLGQ@mail.gmail.com>
+ <20220611145259.GF1664812@merlins.org>
+ <20220613022107.6eafbc1c@nvm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220613022107.6eafbc1c@nvm>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 173.197.119.179
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I was hoping I could get even a sliver of advice after providing that infor=
-mation by now...
+On Mon, Jun 13, 2022 at 02:21:07AM +0500, Roman Mamedov wrote:
+> On Sat, 11 Jun 2022 07:52:59 -0700
+> Marc MERLIN <marc@merlins.org> wrote:
+> 
+> > On Sat, Jun 11, 2022 at 02:30:33PM +0500, Roman Mamedov wrote:
+> > > > 2) echo 0fb96f02-d8da-45ce-aba7-070a1a8420e3 >  /sys/block/bcache64/bcache/attach 
+> > > >    gargamel:/dev# cat /sys/block/md7/bcache/cache_mode
+> > > >    [writethrough] writeback writearound none
+> > > 
+> > > Maybe try LVM Cache this time?
+> >  
+> > Hard to know either way, trading one layer for another, and LVM has
+> > always seemed heavier
+> 
+> I'd suggest to put the LUKS volume onto an LV still (in case you don't), so you
+> can add and remove cache just to see how it works; unlike with bcache, an LVM
+> cache can be added to an existing LV and then removed without a trace, all
+> without having to displace 44 TB of data for that.
 
-Is it even safe to run "btrfs check" normally to attempt to fix this?
-I haven't had an absurdly difficult to solve issue like this in a very long=
- time...
+Thanks. I've always felt that LVM was heavyweight and required extra
+steps and tools, so I've been avoiding it, but maybe that wasn't
+rational.
+bcache by the way, you can set it up without a backing device and then
+use it normally without the cache layer. I think it's actually pretty
+similar, but you have to set it up beforehand (just like LVM)
 
-------- Original Message -------
-On Wednesday, June 8th, 2022 at 2:09 PM, Neko-san <nekoNexus@proton.me> wro=
-te:
-
-
-> > Support is given by the community as and when they can and want to.
->
->
-> I'm aware... I just find it irrate that, as a supporter of BTRFS myself, =
-I can never seem to get help with it no matter where I go. It makes it an i=
-ncredible struggle for me to advocate for it when I, personally, never rece=
-ive support for it.
->
-> > Did you have some power loss or over temperature issues with the nvme d=
-rive before these problems?
->
->
-> No, I didn't
->
-> > Best is to try to boot with a live usb and run a 'btrfs check --readonl=
-y' on the unmounted drive. Check cannot reliably run on a mounted filesyste=
-m.
->
->
-> I'm attaching the log I made of having done that to this reply; hopefully=
- it helps somehow but my expectations are low
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
