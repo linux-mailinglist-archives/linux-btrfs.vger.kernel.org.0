@@ -2,49 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEC954BDF7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E1D54BDFC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356528AbiFNW44 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 18:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        id S1356250AbiFNW45 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jun 2022 18:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236992AbiFNW4z (ORCPT
+        with ESMTP id S1351095AbiFNW4z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 14 Jun 2022 18:56:55 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372255047C
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:56:54 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD8951593
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:56:55 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C21AE21B3C
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:52 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CE91B1F9C6
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1655247412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=+5avfL7BoB4s5IU8zlY2XlHhQvjxAG1g1rFUfDSLGIk=;
-        b=s2NGbYVINFyiBt271tEby/HiFTuZi+j0vcBjm55o8rdl6jw6Sr/JjtNPGus5kG2Ki/w02y
-        r3dECL8cxfynIvA7hU0pSOkvq/S93ybvUQHn/howDDAcyjMjAxr+6bPxBCTnZ3flAdbRO8
-        puV96uMZd1EToqMJD/Zk8pgdJ7T9Kxo=
+        t=1655247413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gRAtAPQK/ZYiUZDC2g+a+AvNRcbmZNqcqUWMf97yVF8=;
+        b=nbJzdvYriLSsLmRmpCgdTyy4s8GFJmwm/wF58cq45chSzsvv9jZ09tGL3BfohtT4sbyKyC
+        C/XDnEocXb+98meQrIGQqIDnd88XrGQXRpk6PAqVnKjdMHyunZvzzP8HcqcCM7qICl9e8I
+        RE0Y1rF5je/QABg5psqXy19cxT6dpY0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 225FE139EC
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:51 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F0E8139EC
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id fstbNzMSqWI3cAAAMHmgww
+        id uIetOjQSqWI3cAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:51 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:52 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH DRAFT 0/6] btrfs-progs: partial support for WRITE_INTENT_BITMAP compat RO flag
-Date:   Wed, 15 Jun 2022 06:56:28 +0800
-Message-Id: <cover.1655247047.git.wqu@suse.com>
+Subject: [PATCH DRAFT 1/6] btrfs-progs: introduce a new compat RO flag, EXTRA_SUPER_RESERVED
+Date:   Wed, 15 Jun 2022 06:56:29 +0800
+Message-Id: <ac2fe89eba762ec9ddf3dfe9bab236e78afc758f.1655247047.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <cover.1655247047.git.wqu@suse.com>
+References: <cover.1655247047.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -57,62 +61,116 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is the btrfs-progs counter-part to add placeholder for
-WRITE_INTENT_BITMAP compat RO flag.
+This new compat RO flag allows btrfs to reserve extra space other than
+the default 1MiB at the beginning of each device.
 
-The same as kernel, this will have two compat RO flags:
+Currently the new RO flag will enable the new super block member,
+reserved_bytes, to be utilized for chunk allocation, to avoid the
+specified byte range.
 
-- EXTRA_SUPER_RESERVED
-  To indicate exactly how many bytes are reserved at the beginning of
-  each device.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/ctree.h   | 24 ++++++++++++++++++++++--
+ kernel-shared/disk-io.c |  9 +++++++++
+ kernel-shared/volumes.c |  4 ++++
+ 3 files changed, 35 insertions(+), 2 deletions(-)
 
-  By default mkfs.btrfs will reserve another 1MiB in addition to the
-  existing 1MiB.
-
-  So that later write-intent-bitmap can utilize the extra space.
-  (although write-intent-bitmap may only utilize at most 64KiB).
-
-- WRITE_INTENT_BITMAP
-  Just to indicate if we have write intent bitmap.
-
-  Currently it doesn't do any real work (aka, just a place holder).
-
-Thus the patchset is mostly for EXTRA_SUPER_RESERVED, including the
-following part:
-
-- Add the needed definition
-- Add mkfs support
-- Add print-tree support
-- Add extra warning and solution for btrfsck
-  For EXTRA_SUPER_RESERVED only, it's no different than the initial
-  1MiB reservation, kernel can handle it without problem.
-
-  The extra check support will just do warning, and at the end, output
-  a solution (using balance with drange filter).
-
-Qu Wenruo (6):
-  btrfs-progs: introduce a new compat RO flag, EXTRA_SUPER_RESERVED
-  btrfs-progs: mkfs: add support for extra-super-reserved runtime flag
-  btrfs-progs: print-tree: remove duplicated definition for compat RO
-    flags
-  btrfs-progs: print-tree: support btrfs_super_block::reserved_bytes
-  btrfs-progs: check: add extra warning for dev extents inside the
-    reserved range
-  btrfs-progs: introduce the experimental compat RO flag,
-    WRITE_INTENT_BITMAP
-
- check/main.c               | 17 ++++++++++++++++
- check/mode-lowmem.c        | 22 +++++++++++++++++++++
- common/fsfeatures.c        | 19 ++++++++++++++++++
- common/fsfeatures.h        |  2 ++
- kernel-shared/ctree.h      | 40 ++++++++++++++++++++++++++++++++++++--
- kernel-shared/disk-io.c    | 18 +++++++++++++++++
- kernel-shared/print-tree.c | 11 ++++++++---
- kernel-shared/volumes.c    |  4 ++++
- mkfs/common.c              | 25 ++++++++++++++++++++++++
- mkfs/main.c                | 14 +++++++++++++
- 10 files changed, 167 insertions(+), 5 deletions(-)
-
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index fc8b61eda829..eb49aa8da919 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -466,8 +466,15 @@ struct btrfs_super_block {
+ 	__le64 reserved[24];
+ 	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
+ 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
++
++	/*
++	 * How many bytes are reserved at the beginning of a device.
++	 * Should be >= BTRFS_DEFAULT_RESERVED.
++	 */
++	__le32 reserved_bytes;
++
+ 	/* Padded to 4096 bytes */
+-	u8 padding[565];
++	u8 padding[561];
+ } __attribute__ ((__packed__));
+ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
+ 
+@@ -485,6 +492,16 @@ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
+  */
+ #define BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID	(1ULL << 1)
+ 
++/*
++ * Allow btrfs to have extra reserved space (other than the default 1MiB) at
++ * the beginning of each device.
++ *
++ * This feature will enable the usage of btrfs_super_block::reserved_bytes.
++ *
++ * This feature would only be available for non-zoned filesystems.
++ */
++#define BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED	(1ULL << 3)
++
+ #define BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF	(1ULL << 0)
+ #define BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL	(1ULL << 1)
+ #define BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS	(1ULL << 2)
+@@ -514,7 +531,8 @@ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
+  */
+ #define BTRFS_FEATURE_COMPAT_RO_SUPP			\
+ 	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
+-	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID)
++	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |\
++	 BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED)
+ 
+ #if EXPERIMENTAL
+ #define BTRFS_FEATURE_INCOMPAT_SUPP			\
+@@ -2374,6 +2392,8 @@ BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level,
+ 			 struct btrfs_super_block, block_group_root_level, 8);
+ BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
+ 			 nr_global_roots, 64);
++BTRFS_SETGET_STACK_FUNCS(super_reserved_bytes, struct btrfs_super_block,
++			 reserved_bytes, 32);
+ 
+ static inline unsigned long btrfs_leaf_data(struct extent_buffer *l)
+ {
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index 26b1c9aa192a..bf3ea5e63165 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -1848,6 +1848,15 @@ int btrfs_check_super(struct btrfs_super_block *sb, unsigned sbflags)
+ 		}
+ 	}
+ 
++	if (btrfs_super_compat_ro_flags(sb) &
++	    BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED &&
++	    btrfs_super_reserved_bytes(sb) < BTRFS_BLOCK_RESERVED_1M_FOR_SUPER) {
++		error("reserved bytes invalid, has %u expect >= %llu",
++			btrfs_super_reserved_bytes(sb),
++			BTRFS_BLOCK_RESERVED_1M_FOR_SUPER);
++		goto error_out;
++	}
++
+ 	if (btrfs_super_incompat_flags(sb) & BTRFS_FEATURE_INCOMPAT_METADATA_UUID)
+ 		metadata_uuid = sb->metadata_uuid;
+ 	else
+diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
+index 40032a4b4059..58254c9df5e1 100644
+--- a/kernel-shared/volumes.c
++++ b/kernel-shared/volumes.c
+@@ -562,10 +562,14 @@ int btrfs_scan_one_device(int fd, const char *path,
+ 
+ static u64 dev_extent_search_start(struct btrfs_device *device, u64 start)
+ {
++	struct btrfs_fs_info *fs_info = device->fs_info;
+ 	u64 zone_size;
+ 
+ 	switch (device->fs_devices->chunk_alloc_policy) {
+ 	case BTRFS_CHUNK_ALLOC_REGULAR:
++		if (btrfs_fs_compat_ro(fs_info, EXTRA_SUPER_RESERVED))
++			return max_t(u64, start,
++				btrfs_super_reserved_bytes(fs_info->super_copy));
+ 		/*
+ 		 * We don't want to overwrite the superblock on the drive nor
+ 		 * any area used by the boot loader (grub for example), so we
 -- 
 2.36.1
 
