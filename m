@@ -2,69 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2780454AEB3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jun 2022 12:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED2F54AEFC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jun 2022 13:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243119AbiFNKr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 06:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
+        id S1354897AbiFNLEQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jun 2022 07:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241449AbiFNKr1 (ORCPT
+        with ESMTP id S245560AbiFNLEJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 06:47:27 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8D42AC3;
-        Tue, 14 Jun 2022 03:47:24 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id m16-20020a7bca50000000b0039c8a224c95so3666893wml.2;
-        Tue, 14 Jun 2022 03:47:24 -0700 (PDT)
+        Tue, 14 Jun 2022 07:04:09 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4158F427C7
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 04:04:06 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id u99so14501977ybi.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 04:04:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5KSwZmhrKnCN2gxS26DQIFCRWDQgSCBeYWLBnRWBMuA=;
-        b=VmMQ4rebTlUKE0iOVD/8tCV2vAPw7Lfo8dUzd1IX1ULoRWlCxN8hn1qyb3cufpC+Vk
-         p7FfceW2OMz+ma3KCCOBIiYypOwS9GMBSMRwQ8TNHsTov3nXxwjCPnlmIGUZLCRY0Nqg
-         nDjQMfRPP92TUUHjNrnXAxrRTOt64i8mso8S8i7ImnIXB+UWehUdQVxiNbU/LYGn6UZw
-         liB+zKEZUNVOvEXxsbiIjy8Y2oV8K0VNfnnY5KT+nqGrMs/8bEBrQLuJW7mA27/Yv406
-         63Owh/YxIHEsdYgwR0pUImg5zS15mB5gmL5Xo+aTvV5j8zrXbh7D7eAv3QvdLRUmKumo
-         Lh7g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n4hlskbR8nwH1VZlqNfbmq7ueG19aNoVv/uwQuxMhVw=;
+        b=QDGqC9Km6rMieU/z5OJ+smduhkNEnsWyKcwAcKki8ruBeKEr40mlPYTU8Zldp7nwut
+         sD8ZQErJuwoSOwJ69SzRTgida8ry0GxRxHK1nN8JSeMhTkwmERbPbUl+RXm42lHoZo3T
+         orf7DdgsDK3wHx1G0cYKJGnfwwEVq6oMY02Dohe1xjwtNHZi8Hlodrpk+ZZ2pdDv8+w+
+         htRuzPienQDpqKYoMoRNtdFyXUdeLL9gli3ZGE8Q1zHBxowf0Z+HlLFnuaiSEmo1MvlX
+         FJjEQhhAHbUb+zvpxDJuIsubM8gs3Y+asa6poEmYaA9UtHz0nVawZliUQT8pZMRnDW6/
+         zHMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5KSwZmhrKnCN2gxS26DQIFCRWDQgSCBeYWLBnRWBMuA=;
-        b=thlesfEq41xG0LzAWmzjfkxXO8K4jJJq1gQH5gkIkZlFy8w1zyji5sqkNSuB7CmU9T
-         Yjll+trLeNI9KBANarwc7xC8P1ngN4twS7CUaMYwjLK6ZW8RrKWFnmc37lpKetm8To0U
-         Fp7r+7HD6nZih9EHU3yH4YIHFTJgciztkBmv9TDSfjMphxhG5l1D3bsWdEjY36aYf6eR
-         PNqUJ0BnkN5MegqUbY4etrKWvbeTWPpNwpbVSKIHaR8eqvfzmq8DckIjJe4tlokmmCr4
-         z1McMtqPzoqdRqnUqvIH9wYP6UY4eUUFSIjBZFWN5kKOQWlaimUq2ExUSEmQdkEYcpa6
-         hmNw==
-X-Gm-Message-State: AOAM532rQ5pgSYDuwKQISwduTFh5JSSonMab69j5rfYgJ8dX7ti+K5Xd
-        fgU5SQBB4Vc7E5TdXmKFrsI=
-X-Google-Smtp-Source: ABdhPJybdc1qySzdk6r0mnyppE7NbmLUaqumTHNFK054vG9ukuCFPM7Y1/SDa/3fVGDojsADkvjhDw==
-X-Received: by 2002:a1c:4682:0:b0:39c:4459:6a84 with SMTP id t124-20020a1c4682000000b0039c44596a84mr3391098wma.167.1655203643428;
-        Tue, 14 Jun 2022 03:47:23 -0700 (PDT)
-Received: from localhost.localdomain (host-87-16-96-199.retail.telecomitalia.it. [87.16.96.199])
-        by smtp.gmail.com with ESMTPSA id j20-20020adfa554000000b002100316b126sm11666256wrb.6.2022.06.14.03.47.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jun 2022 03:47:22 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Gabriel Niebler <gniebler@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: [RFC PATCH] btrfs: Replace kmap() with kmap_local_page() in zlib.c
-Date:   Tue, 14 Jun 2022 12:47:18 +0200
-Message-Id: <20220614104718.9193-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.36.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n4hlskbR8nwH1VZlqNfbmq7ueG19aNoVv/uwQuxMhVw=;
+        b=yfwJpQCZWicRnKrSQQiaHDP9r6lkdI51r0PYhD7tZ1U0rChWWbQaUbq2zIlB8KDBfC
+         ZvIkDBPfP7kdzshZ2xtW5uNt5ViOCMXJwfaU3nZPslWma+mJUZwsQfdF1xMQZQmO/u/6
+         5rlkl9NSzEpoxComa0L3hE0glnvYzV0KDsK/3vuZFpzFU5vtC22SLsfvm6Q0IKHXEzbB
+         kuMCmGpO6sb+iBcaZ+30JVCPjAs2XVru4c0d8aHCNCNYcYvba2z2ZH+mZxZ8M8SvTGmV
+         l7kpUGuneVAFehbhumL9ndJf7mLklATeJDVR1nP4qNGfq1rLRINFGLhZvhO3drlEyn+A
+         IZ+A==
+X-Gm-Message-State: AJIora/ialz4xw/WFNyNsym2kJnu7DlVHccm0UA+Z2xsS/Vj5FrKaoTy
+        FH/5ClagfAebNqKQYGWkNUtLwbb2O/z/4Ylkoqc=
+X-Google-Smtp-Source: AGRyM1sok7Pz0lLSth2bAS5PLpIOzdyqm4dXi3/iBqH7VqMbEI/ZiO0Q/+4XlumDMxevRK/4hK+g19svppO9gBOIkKg=
+X-Received: by 2002:a25:8892:0:b0:64d:d0c8:2460 with SMTP id
+ d18-20020a258892000000b0064dd0c82460mr4313378ybl.531.1655204645092; Tue, 14
+ Jun 2022 04:04:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220611045120.GN22722@merlins.org>
+In-Reply-To: <20220611045120.GN22722@merlins.org>
+From:   ronnie sahlberg <ronniesahlberg@gmail.com>
+Date:   Tue, 14 Jun 2022 21:03:53 +1000
+Message-ID: <CAN05THQs9BkQCd+TnqbGik1Yj-JjJ_Q6Of6pCn8tft873aBToQ@mail.gmail.com>
+Subject: Re: Suggestions for building new 44TB Raid5 array
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,218 +70,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The use of kmap() is being deprecated in favor of kmap_local_page(). With
-kmap_local_page(), the mapping is per thread, CPU local and not globally
-visible.
+On Sat, 11 Jun 2022 at 17:16, Marc MERLIN <marc@merlins.org> wrote:
+>
+> so, my apologies to all for the thread of death that is hopefully going
+> to be over soon. I still want to help Josef fix the tools though,
+> hopefully we'll get that filesystem back to a mountable state.
+>
+> That said, it's been over 2 months now, and I do need to get this
+> filesystem back up from backup, so I ended up buying new drives (5x
+> 11TiB in raid5).
+>
+> Given the pretty massive corruption that happened in ways that I still
+> can't explain, I'll make sure to turn off all the drive write caches
+> but I think I'm not sure I want to trust bcache anymore even though
+> I had it in writethrough mode.
+>
+> Here's the Email from March, questions still apply:
+>
+> Kernel will be 5.16. Filesystem will be 24TB and contain mostly bigger
+> files (100MB to 10GB).
+>
+> 1) mdadm --create /dev/md7 --level=5 --consistency-policy=ppl --raid-devices=5 /dev/sd[abdef]1 --chunk=256 --bitmap=internal
+> 2) echo 0fb96f02-d8da-45ce-aba7-070a1a8420e3 >  /sys/block/bcache64/bcache/attach
+>    gargamel:/dev# cat /sys/block/md7/bcache/cache_mode
+>    [writethrough] writeback writearound none
+> 3) cryptsetup luksFormat --align-payload=2048 -s 256 -c aes-xts-plain64  /dev/bcache64
+> 4) cryptsetup luksOpen /dev/bcache64 dshelf1
+> 5) mkfs.btrfs -m dup -L dshelf1 /dev/mapper/dshelf1
+>
+> Any other btrfs options I should set for format to improve reliability
+> first and performance second?
+> I'm told I should use space_cache=v2, is it default now with btrfs-progs 5.10.1-2 ?
+>
+> As for bcache, I'm really thinking about droppping it, unless I'm told
+> it should be safe to use.
+>
+> Thanks,
+> Marc
 
-Therefore, use kmap_local_page() / kunmap_local() in zlib.c because in
-this file the mappings are per thread and are not visible in other
-contexts; meanwhile refactor zlib_compress_pages() to comply with nested
-local mapping / unmapping ordering rules.
+My needs are much more basic.
+I have a LOT of large files. ISO images and QEMU disk images. I also
+have hundreds of thousands of photos.
 
-Tested with xfstests on QEMU + KVM 32 bits VM with 4GB of RAM and
-HIGHMEM64G enabled.
+I used different multi-disk solutions but found them all too fragile
+so now, last 8 years, I have used a setup that is basically
+5 disks each with their own EXT4 filesystem ontop of LUKS and two
+additional drives to have 2 disk parity in snapraid.
+Now, snapraid does not do in-line raid updates so I carefully manage
+how I handle the data.
+Audio, photos and QEMU base images are immutable so these files are
+not a problem.
+For VM images I have for each machine an immutable 'base' image that
+snapraid takes care of and I have live images based on that that are
+not
+handled by snapraid.  (qemu-img create -b base.img cow.img)
+If a live image goes corrupt due to a poweroutage or similar I just
+re-create it ontop of the latest archived base image.
+As I often do stuff to the VM images that cause kernel panics, this is
+a very convenient way to restore them quickly and with little effort
+to a known good state.
 
-This is an RFC PATCH because it passes all tests of the "compress"
-group, with the only two exceptions of tests/btrfs/138 (it freezes the
-VM) and tests/btrfs/251 (it runs forever but doesn't freeze the VM).
+If one disk has a catastrophic failure, I only lose the files on that
+particular disk and just have to restore them but nothing else.
+Now I do export them as 5 different filesystems/shares  but that is
+just because I am too lazy to set up some kind of "merge fs".
 
-Can anyone please take a look and tell me what I'm still overlooking
-after days of code inspections?
+If your use case is mostly-read and mostly-archive this might work for
+you too and it is VERY reliable.
+Ease of mind knowing that if a single disk dies I do not have a total
+dataloss scenario. If the Windows VM disk dies, I just restore those
+images while all the other disks are still online.
 
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- fs/btrfs/zlib.c | 75 ++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 50 insertions(+), 25 deletions(-)
 
-diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-index 767a0c6c9694..18f111bb2deb 100644
---- a/fs/btrfs/zlib.c
-+++ b/fs/btrfs/zlib.c
-@@ -97,8 +97,8 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- {
- 	struct workspace *workspace = list_entry(ws, struct workspace, list);
- 	int ret;
--	char *data_in;
--	char *cpage_out;
-+	char *data_in = NULL;
-+	char *cpage_out = NULL;
- 	int nr_pages = 0;
- 	struct page *in_page = NULL;
- 	struct page *out_page = NULL;
-@@ -126,7 +126,7 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 		ret = -ENOMEM;
- 		goto out;
- 	}
--	cpage_out = kmap(out_page);
-+	cpage_out = kmap_local_page(out_page);
- 	pages[0] = out_page;
- 	nr_pages = 1;
- 
-@@ -148,26 +148,26 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 				int i;
- 
- 				for (i = 0; i < in_buf_pages; i++) {
--					if (in_page) {
--						kunmap(in_page);
-+					if (data_in) {
-+						kunmap_local(data_in);
- 						put_page(in_page);
- 					}
- 					in_page = find_get_page(mapping,
- 								start >> PAGE_SHIFT);
--					data_in = kmap(in_page);
-+					data_in = kmap_local_page(in_page);
- 					memcpy(workspace->buf + i * PAGE_SIZE,
- 					       data_in, PAGE_SIZE);
- 					start += PAGE_SIZE;
- 				}
- 				workspace->strm.next_in = workspace->buf;
- 			} else {
--				if (in_page) {
--					kunmap(in_page);
-+				if (data_in) {
-+					kunmap_local(data_in);
- 					put_page(in_page);
- 				}
- 				in_page = find_get_page(mapping,
- 							start >> PAGE_SHIFT);
--				data_in = kmap(in_page);
-+				data_in = kmap_local_page(in_page);
- 				start += PAGE_SIZE;
- 				workspace->strm.next_in = data_in;
- 			}
-@@ -196,9 +196,14 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 		 * the stream end if required
- 		 */
- 		if (workspace->strm.avail_out == 0) {
--			kunmap(out_page);
-+			kunmap_local(data_in);
-+			data_in = NULL;
-+			put_page(in_page);
-+
-+			kunmap_local(cpage_out);
- 			if (nr_pages == nr_dest_pages) {
--				out_page = NULL;
-+				cpage_out = NULL;
-+				put_page(out_page);
- 				ret = -E2BIG;
- 				goto out;
- 			}
-@@ -207,7 +212,14 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 				ret = -ENOMEM;
- 				goto out;
- 			}
--			cpage_out = kmap(out_page);
-+			cpage_out = kmap_local_page(out_page);
-+
-+			in_page = find_get_page(mapping, start >> PAGE_SHIFT);
-+			data_in = kmap_local_page(in_page);
-+			workspace->strm.next_in = data_in;
-+			workspace->strm.avail_in = min(bytes_left,
-+						       (unsigned long)workspace->buf_size);
-+
- 			pages[nr_pages] = out_page;
- 			nr_pages++;
- 			workspace->strm.avail_out = PAGE_SIZE;
-@@ -233,10 +245,15 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 			ret = -EIO;
- 			goto out;
- 		} else if (workspace->strm.avail_out == 0) {
-+			kunmap_local(data_in);
-+			data_in = NULL;
-+			put_page(in_page);
-+
- 			/* get another page for the stream end */
--			kunmap(out_page);
-+			kunmap_local(cpage_out);
- 			if (nr_pages == nr_dest_pages) {
--				out_page = NULL;
-+				cpage_out = NULL;
-+				put_page(out_page);
- 				ret = -E2BIG;
- 				goto out;
- 			}
-@@ -245,7 +262,14 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 				ret = -ENOMEM;
- 				goto out;
- 			}
--			cpage_out = kmap(out_page);
-+			cpage_out = kmap_local_page(out_page);
-+
-+			in_page = find_get_page(mapping, start >> PAGE_SHIFT);
-+			data_in = kmap_local_page(in_page);
-+			workspace->strm.next_in = data_in;
-+			workspace->strm.avail_in = min(bytes_left,
-+						       (unsigned long)workspace->buf_size);
-+
- 			pages[nr_pages] = out_page;
- 			nr_pages++;
- 			workspace->strm.avail_out = PAGE_SIZE;
-@@ -264,13 +288,13 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 	*total_in = workspace->strm.total_in;
- out:
- 	*out_pages = nr_pages;
--	if (out_page)
--		kunmap(out_page);
--
--	if (in_page) {
--		kunmap(in_page);
-+	if (data_in) {
-+		kunmap_local(data_in);
- 		put_page(in_page);
- 	}
-+	if (cpage_out)
-+		kunmap_local(cpage_out);
-+
- 	return ret;
- }
- 
-@@ -287,7 +311,7 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 	unsigned long buf_start;
- 	struct page **pages_in = cb->compressed_pages;
- 
--	data_in = kmap(pages_in[page_in_index]);
-+	data_in = kmap_local_page(pages_in[page_in_index]);
- 	workspace->strm.next_in = data_in;
- 	workspace->strm.avail_in = min_t(size_t, srclen, PAGE_SIZE);
- 	workspace->strm.total_in = 0;
-@@ -309,7 +333,7 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 
- 	if (Z_OK != zlib_inflateInit2(&workspace->strm, wbits)) {
- 		pr_warn("BTRFS: inflateInit failed\n");
--		kunmap(pages_in[page_in_index]);
-+		kunmap_local(data_in);
- 		return -EIO;
- 	}
- 	while (workspace->strm.total_in < srclen) {
-@@ -336,13 +360,14 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 
- 		if (workspace->strm.avail_in == 0) {
- 			unsigned long tmp;
--			kunmap(pages_in[page_in_index]);
-+
-+			kunmap_local(data_in);
- 			page_in_index++;
- 			if (page_in_index >= total_pages_in) {
- 				data_in = NULL;
- 				break;
- 			}
--			data_in = kmap(pages_in[page_in_index]);
-+			data_in = kmap_local_page(pages_in[page_in_index]);
- 			workspace->strm.next_in = data_in;
- 			tmp = srclen - workspace->strm.total_in;
- 			workspace->strm.avail_in = min(tmp, PAGE_SIZE);
-@@ -355,7 +380,7 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- done:
- 	zlib_inflateEnd(&workspace->strm);
- 	if (data_in)
--		kunmap(pages_in[page_in_index]);
-+		kunmap_local(data_in);
- 	if (!ret)
- 		zero_fill_bio(cb->orig_bio);
- 	return ret;
--- 
-2.36.1
+It is simple, primitive and 1980 type of technology but it works. And
+it is reliable.
 
+> --
+> "A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+>
+> Home page: http://marc.merlins.org/
