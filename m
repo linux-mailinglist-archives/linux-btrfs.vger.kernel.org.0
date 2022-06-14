@@ -2,68 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EEC54BDC9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF5F54BDE4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353440AbiFNWjL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 18:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
+        id S236507AbiFNWug (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jun 2022 18:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352978AbiFNWjK (ORCPT
+        with ESMTP id S1354776AbiFNWue (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 18:39:10 -0400
-X-Greylist: delayed 526 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Jun 2022 15:39:08 PDT
-Received: from sv7476.xserver.jp (sv7476.xserver.jp [202.254.239.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F8E506D4
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:39:08 -0700 (PDT)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw7003.xserver.jp)
-Received: by sv7476.xserver.jp (Postfix, from userid 20108)
-        id BE3C3140B7523D; Wed, 15 Jun 2022 07:30:20 +0900 (JST)
+        Tue, 14 Jun 2022 18:50:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA9A51304
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:50:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1167D21BEF
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655247032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=0PfdeR0t8yALKjCLm6yoKlI9/gzWinOK4dTedZZ3t4w=;
+        b=Q3TZUHJEGqYBqDl9pFcPU8lXFs2W242yOt/QVLe1bwdiWQv5oLHNG8jVUux2WeBtnVL8jP
+        gouVuKD6hbVb1OTRDjxaoFonJSB1KNmQ1B4RBsJgeauQQOGjFyEKoAIOMwhVzpyaXkrnZQ
+        x7S6xZQbF81P1LqClNaXIPcUm9GO7Oc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6CF65139EC
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:50:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JldZDrcQqWKVbgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:50:31 +0000
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: =?ISO-2022-JP?B?GyRCJCpMZCQkOWckbyQ7JCQkPyRAJC0hIkA/JEskIiRqJCwkSCQmJDQkNiQkJF4kORsoQg==?=
-Date:   Tue, 14 Jun 2022 22:30:20 +0000
-From:   =?ISO-2022-JP?B?GyRCM3Q8MDJxPFIlLSVrJUg5KTddGyhC?= 
-        <no-reply@kilt.co.jp>
-Reply-To: linux-btrfs@vger.kernel.org
-Message-ID: <3944339b90079ff85eb1a396eae5dc29@kilt.co.jp>
-X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
+Subject: [PATCH DRAFT 0/4] btrfs: introduce the WRITE_INTENT_BITMAP compat RO flag and extra per-dev reserved space for it
+Date:   Wed, 15 Jun 2022 06:50:10 +0800
+Message-Id: <cover.1655246405.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_50,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-? Patsy want to meet you! More Info: https://sweet22.page.link/photos?iwv ? 様
+This series of patches will mainly introduce two new compat RO flags:
 
-お問合せいただき、誠にありがとうございます。
-お問い合わせ内容を確認次第、ご返答いたしますので、
-今しばらくお待ちくださいますよう、よろしくお願い申し上げます。
+- EXTRA_SUPER_RESERVED
+  This will add a new btrfs_super_block member, reserved_bytes, to tell
+  btrfs exactly how many bytes are reserved at the beginning of each
+  device.
 
-※当メールは自動送信です。
+  By default, with this compat RO specified, mkfs.btrfs will reserved
+  2MiB instead of the original 1MiB.
+  So that extra 1MiB can be used by other features.
 
---
+  In theory, EXTRA_SUPER_RESERVED doesn't require any extra space to be
+  reserved, thus we can even keep the old 1MiB reservation but just make
+  it explicit in the super block.
 
-お名前
-? Patsy want to meet you! More Info: https://sweet22.page.link/photos?iwv ?
+- WRITE_INTENT_BITMAP
+  Currently it's still just a place holder.
+  It will utilize the extra 1MiB space as a per-device write-intent
+  bitmap.
+  The idea will be the same as md-bitmap, but only for RAID56
+  profiles for now.
 
-会社名
-b95iy3
+  At mount time, even for RO mount, we will do a mandatory scrub for the
+  ranges involved in the bitmap, to close the RAID56 write-hole.
 
-メールアドレス
-linux-btrfs@vger.kernel.org
 
-電話番号
-682430803436
+  If this compat RO is set while not enough reserved space or without
+  EXTRA_SUPER_RESERVED compat RO, we may want to reject the mount and
+  provide a way to mount without write intent bitmap.
+  But that would be implemented when the feature is really implemented.
 
-内容
-bbpzf7
+The first 2 patches patches are just cleanup and add extra warning when
+the existing 1MiB reservation is not properly respected.
 
-添付画像
-rvbwsh
+More heavy-lifting work will be done in btrfs-progs.
+
+Qu Wenruo (4):
+  btrfs: introduce BTRFS_DEFAULT_RESERVED macro
+  btrfs: warn about dev extents that are inside the reserved range
+  btrfs: introduce new compat RO flag, EXTRA_SUPER_RESERVED
+  btrfs: introduce a new experimental compat RO flag,
+    WRITE_INTENT_BITMAP
+
+ fs/btrfs/ctree.h           | 30 +++++++++++++++++++++++---
+ fs/btrfs/disk-io.c         | 29 +++++++++++++++++++++++++
+ fs/btrfs/extent-tree.c     |  6 +++---
+ fs/btrfs/super.c           | 10 ++++-----
+ fs/btrfs/sysfs.c           |  2 ++
+ fs/btrfs/volumes.c         | 43 ++++++++++++++++++++++++++++++++------
+ fs/btrfs/zoned.c           |  8 +++++++
+ include/uapi/linux/btrfs.h | 17 +++++++++++++++
+ 8 files changed, 128 insertions(+), 17 deletions(-)
+
+-- 
+2.36.1
 
