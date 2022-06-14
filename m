@@ -2,69 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E2154B2B0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jun 2022 16:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3A554B2BD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jun 2022 16:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbiFNOAq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 10:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
+        id S234960AbiFNOFb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jun 2022 10:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbiFNOAq (ORCPT
+        with ESMTP id S229654AbiFNOFa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 10:00:46 -0400
+        Tue, 14 Jun 2022 10:05:30 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB15033E94
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 07:00:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06E53A724
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 07:05:27 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 926D321B21;
-        Tue, 14 Jun 2022 14:00:42 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AE5AF21B22;
+        Tue, 14 Jun 2022 14:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655215242;
+        t=1655215526;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kVXjMz3UxTg6WX4Xnuy+Hc54j0GDGYOU/FB605MVAPI=;
-        b=vOtYMYD5muIr+RLXJaHmTt7wGkXFzrlbbQeMVj5T0LZb7XnbSrgrKUeiW5aLCO90Wetu9e
-        lRYXn8wYRa9fWjLQMmtt4wrukBJYkS8MyWBSY6VN7flTET9uPG78as0glb3WNdBOM1Mbu2
-        sQoVVZNluX0wni+9K44kL71VQ9seI3s=
+        bh=tpwrcU7FUC8giJavt1yksuzGDaMkhv+HLL0aO11UYT8=;
+        b=rJabR4bB3xfxuYGp50vug9/gg1W2UUyAMIojVyZuTIcWrbcyqXrTkJVJbIG9Ts7uzJU+or
+        KQA4H1axZURJMzL7e/Hu0uUFCFfnoi+nk6CLnhSVPezy2cAvazoWjwFvxqAsj0v+EnhtsL
+        RUalHMDp75i65+wFVXxquDr5n1iC1kE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655215242;
+        s=susede2_ed25519; t=1655215526;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kVXjMz3UxTg6WX4Xnuy+Hc54j0GDGYOU/FB605MVAPI=;
-        b=QqaCxp3a8ffodJ1sHjTE+DtS9AYVvKD0uheLhxPe5/2Z9hILFbcBvtl8HTUEac2sHqR0rD
-        YhAOo3SCjHPtvnDg==
+        bh=tpwrcU7FUC8giJavt1yksuzGDaMkhv+HLL0aO11UYT8=;
+        b=ZGJjv7XAVe5KJy+8zdiyGOWJd+s9l8zBDZA54Es7ESjlpApIjSEa0bNF2+RxaUSNspa5Dy
+        EYbV+tkMmsDcX3BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A9E4139EC;
-        Tue, 14 Jun 2022 14:00:42 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7E49E139EC;
+        Tue, 14 Jun 2022 14:05:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5JkkGYqUqGLmOAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 14 Jun 2022 14:00:42 +0000
-Date:   Tue, 14 Jun 2022 15:56:09 +0200
+        id ZEXrHaaVqGLhOgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 14 Jun 2022 14:05:26 +0000
+Date:   Tue, 14 Jun 2022 16:00:53 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs: cleanup related to the 1MiB reserved space
-Message-ID: <20220614135609.GK20633@twin.jikos.cz>
+Cc:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: don't trust any cached sector in
+ __raid56_parity_recover()
+Message-ID: <20220614140053.GL20633@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1655103954.git.wqu@suse.com>
- <20220613182034.GC20633@twin.jikos.cz>
- <0441092d-db6d-000a-8652-026720bbb931@gmx.com>
+        Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <53f7bace2ac75d88ace42dd811d48b7912647301.1654672140.git.wqu@suse.com>
+ <20220608094751.GA3603651@falcondesktop>
+ <b4a9889a-2c9d-8f74-985b-f0b7b176a1fa@suse.com>
+ <CAL3q7H6emgApw9saZ3k7Eb7PDx46=-nLKTRBcYvqXCQ3d=0BVQ@mail.gmail.com>
+ <4919754e-045d-9061-27dd-dea61e9e4cef@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0441092d-db6d-000a-8652-026720bbb931@gmx.com>
+In-Reply-To: <4919754e-045d-9061-27dd-dea61e9e4cef@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -76,49 +80,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 14, 2022 at 07:50:25AM +0800, Qu Wenruo wrote:
-> My bad, kernel part is indeed doing the reservation from the very beginning.
-> 
-> >
-> >> But there are two small nitpicks:
+On Thu, Jun 09, 2022 at 05:54:31AM +0800, Qu Wenruo wrote:
+> >>      incidentally make it possible.
 > >>
-> >> - Kernel never has a unified MACRO for this
-> >>    We just use SZ_1M, with extra comments on this.
+> >>      But later patch "btrfs: update stripe_sectors::uptodate in
+> >>      steal_rbio" will revert it.
 > >>
-> >>    This makes later write-intent bitmap harder to implement, as the
-> >>    incoming write-intent bitmap will enlarge the reserved space to
-> >>    2MiB, and use the extra 1MiB for write-intent bitmap.
-> >>    (of course with extra RO compat flags)
+> >> 2) No full P/Q stripe write for partial write
+> >>      This is done by patch "btrfs: only write the sectors in the vertical
+> >>      stripe which has data stripes".
 > >>
-> >>    This will be addressed in the first patch, with a new
-> >>    BTRFS_DEFAULT_RESERVED macro.
+> >>
+> >> So in misc-next tree, the window is super small, just between patch
+> >> "btrfs: only write the sectors in the vertical stripe which has data
+> >> stripes" and "btrfs: update stripe_sectors::uptodate in steal_rbio".
+> >>
+> >> Which there is only one commit between them.
+> >>
+> >> To properly test that case, I have uploaded my branch for testing:
+> >> https://github.com/adam900710/linux/tree/testing
 > >
-> > Cleaning up the raw 1M value and the comments makes sense, but I'm not
-> > sure about making it dynamic. We used to have mount option and mkfs
-> > parameter alloc_offset and it got removed.
+> > With that branch, it seems to work, it ran 108 times here and it never failed.
+> > So only the changelog needs to be updated to mention all the patches that
+> > are needed.
 > 
-> The dynamic part will be done at mkfs time, and will introduce new RO
-> compat flags for it.
-> 
-> So no mount option to change that.
-> 
-> >
-> >>    Later write-intent bitmap code will use BTRFS_DEFAULT_RESERVED as a
-> >>    beacon to ensure btrfs never touches the enlarged reserved space.
-> >
-> > Ok, I'll wait with further comments until I see the patches.
-> 
-> So do I need to include those two patches in the incoming write-intent
-> series?
+> And a new problem is, would I need to push all of those patches to
+> stable kernels?
+> Especially there is a patch that doesn't make sense for stable (part of
+> subpage support for RAID56)
 
-For the preview series yes, so it can be applied and tested. The
-preparatory work or cleanups do not need to be perfect or finalized for
-that reason (though we might want to take them independently).
-
-You've sent several series tackling the raid56 problems but we don't
-have the final solution yet, so you don't need to spend too much time on
-the less important bits.
-
-The ro-compat bit can be a new one or we can reuse the raid56 incompat
-bit that's currently not used for anything, but I can't say which way to
-go until I see the patches.
+If a fix makes sense for an older stable but the code diverges too much,
+it should be OK to do a special version as long as it's reasonable
+(size or what code is touched). Also it does not need to be for all
+stable kernels, if it's eg. 5.15 or 5.10 that's IMO good enough.
