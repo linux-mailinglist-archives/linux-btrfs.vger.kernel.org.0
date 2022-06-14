@@ -2,209 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8A954B754
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jun 2022 19:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1382354BD72
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236491AbiFNRHs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 13:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
+        id S1356646AbiFNWMq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jun 2022 18:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234474AbiFNRHq (ORCPT
+        with ESMTP id S1358419AbiFNWMl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 13:07:46 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560D110579;
-        Tue, 14 Jun 2022 10:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655226466; x=1686762466;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=FJHj4D8RoHdg4/8+H1WeSmdT+eEmf7CsSbx9ZPYnWVA=;
-  b=ebsdpXCfmYKZO9P9CtKx1DaIDy80golMPpFwTu5CFMD7oN79A6ZNE0YN
-   EauoFPNFIho/JFFBdTIFH0uY2DsYZqS5tQQjB5McrPdBk1YBmP2DwRrHU
-   4x9uWeU7C+vh/lESXizOxkKTF9eov661dkXZuLhm51YKYiwwmlwQb5yEN
-   naCYKec/vOHkVjV5IefDWuCcebCae8YYOhaCH1snc7ZhOaCLMCS4ZuPMp
-   zVbeJcHi6JbJZT5ywXnxLMgZV3XjjuqkbRzCdhv63kaQGtVUKsSGoXn53
-   Q8GrILdIt+7xKnlDg1oD7HXcnvy84p/dJFjFFAPQwsw0pyLUWgTwGQPil
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10378"; a="276226911"
-X-IronPort-AV: E=Sophos;i="5.91,300,1647327600"; 
-   d="scan'208";a="276226911"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2022 10:07:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,300,1647327600"; 
-   d="scan'208";a="911106793"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Jun 2022 10:07:43 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 14 Jun 2022 10:07:43 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 14 Jun 2022 10:07:42 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Tue, 14 Jun 2022 10:07:42 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Tue, 14 Jun 2022 10:07:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k4CJ7veALMSAYhgR5qRgz1b6oqcr5YKNlrIyW7k3SBNyUoEhBVnTjPtf2Oc2yxET3dx4rDISTWk+ofJjBdRJ8a5FvEFAI/ivf8cgvn248ELfADyvMiALrAMGpC18NnbQLFlb41M9ladQI/e5LOEnVgd6kEeZTtVojK8rZFM6xs/xgNtofiBIABLWGaEV6DGHx1YjfaPseZjjl9ttT0bALIUrjXJ4b8KlisVa7XMwpaRL9IBEwBDXEFP1kGztvm2PuRtGj+TTaP92B+ocu3RFNwT4ydLPRYEeclLQOi9rYDQqAxEr70DS2M9Ssvv9CB+ayMskfSQWnBK30Bd7FtGgqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZLKU0S8hmg78rS38iLkfrGAMp7Nv51QG1DmG35Q3ILA=;
- b=ehztJ/Ry7Oeflkq5o7eSuWl4fRe0pFpTT8dP3GS3q+Wt7VS3yMtz3tH37b3KTni4KW79AWfe55/nHKP35LTGr23haLiY20XTmOM6dWmFAgPtjEwWg6AxdhVY3WiajPk+uuWE77bOSx75Ajnp6RLgcGt8n8XQuliRx1QJAngbJ+0prkCj8zonGOUT7fRyT+2JVdcfjf0RyEWrAjwsEeURIZv6sY18bNtdLWzAGjKH0NEXBuH9UNhUiy2ClbESOdYjEx0fKr2Epvs4iucZ1NRXe/H4c+U2OcOUmuHyoW0wBxki4MZXxWHSWPKIdZl6NuwkVXNXV8xB91eHLS4vNw4kOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6311.namprd11.prod.outlook.com (2603:10b6:8:a6::21) by
- PH7PR11MB6498.namprd11.prod.outlook.com (2603:10b6:510:1f1::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.13; Tue, 14 Jun
- 2022 17:07:39 +0000
-Received: from DM4PR11MB6311.namprd11.prod.outlook.com
- ([fe80::d4e9:9ae1:29b2:90c]) by DM4PR11MB6311.namprd11.prod.outlook.com
- ([fe80::d4e9:9ae1:29b2:90c%5]) with mapi id 15.20.5332.020; Tue, 14 Jun 2022
- 17:07:39 +0000
-Date:   Tue, 14 Jun 2022 10:07:34 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        David Sterba <dsterba@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <dsterba@suse.cz>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nick Terrell <terrelln@fb.com>, <linux-btrfs@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Filipe Manana <fdmanana@kernel.org>
-Subject: Re: [PATCH] btrfs: Replace kmap() with kmap_local_page() in zstd.c
-Message-ID: <YqjAVq+1PIpVIr0p@iweiny-desk3>
-References: <20220611135203.27992-1-fmdefrancesco@gmail.com>
- <1936552.usQuhbGJ8B@opensuse>
- <20220614142521.GN20633@twin.jikos.cz>
- <8952566.CDJkKcVGEf@opensuse>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8952566.CDJkKcVGEf@opensuse>
-X-ClientProxiedBy: MW4P222CA0022.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::27) To DM4PR11MB6311.namprd11.prod.outlook.com
- (2603:10b6:8:a6::21)
+        Tue, 14 Jun 2022 18:12:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D2E32053
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:12:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1655244753;
+        bh=kLQ0JTUfmBG0vicAIV8mIrt0TntCCOQp7Zss/4lWMvw=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=J1J3pMhlkNkw2fdsR2SrnObEJlrLUAGtssmzmvkyWjoQl4cJVR3G96JBP6ENZubkw
+         ZouoZ0+5d2N2oJyqKeZQSPTiRZDt2gQyiJPtSyiZocg6/vnVRhL1yxd9iDujD5TERB
+         s7Fm0Oa6RUAV6AI4MtQTY2+JWXgkfdK9hGR1m4Q0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHnm-1niCUM2R5u-00tmJR; Wed, 15
+ Jun 2022 00:12:33 +0200
+Message-ID: <4ee22ab7-6597-b254-d85d-fc8268fbfcd2@gmx.com>
+Date:   Wed, 15 Jun 2022 06:12:29 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1be6c581-83dd-44a0-5b54-08da4e2862c7
-X-MS-TrafficTypeDiagnostic: PH7PR11MB6498:EE_
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-Microsoft-Antispam-PRVS: <PH7PR11MB6498961F6218317610172CFEF7AA9@PH7PR11MB6498.namprd11.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6WYB2vMOYiECVXMfcIv5o2Jx/gDYl2M3lx23+LxAMhz2KKu9M0Zdp3hUWBbmTYW0d9Ufl2xMLpdAWzOcvO0/2xuG6gcYoINHDu2wT48qvXHJD7+hLh87aULYEQbVlUKCPCQFmfehb3zdR9iHi5vn8osgk46V7WBJVpaS2u3ueCOJ/uKhDD4EMRtY1GfBC4vRK1HlGnGSYfL8amd9oAzpznIWU+ooy9oy60ZpEsFeNr8Y66kQTpeO5GAR0vhXkg8VeYV0jLGsM86WA3zWwL54blqg6nc7+8Dwwn4uf8fEKdGP6t6klqguxJ/tiGE0Ek99YNQJk85f0uI7VdELA7CmQ1QhNgyE/Um28blbcpOb57IcbofjB5RXrKivxLOskOKxOtlHSx9GgwS5msb4+3ETw/0QZnTem+12FYbAVuQFqxEzh4dJu18ZKUx7ZVT3dSqoR/8RD9eQUrivgKFG9ORPy0GZwuD8MJtXz5fiWHUVQvR0gDqUzx8IgyP5kHJiLrE/bkY/hblWamvJ9QSQPSBAYBx8qLBIFhinZVeep85Xte59Yq0n8Vfv5DB8krTX/htFZEFTX5BRpWDFPLLAt7zfehZ9i1L02wodiIdoKgwPU7hoovZmjjyyiUsgkjEDbtFmLbZ5Nz7mVXwjzG51naiO/U1my3VZMnYwlI/Cfh6uypGnK4ovSncnf6i1QaZ+cC0C
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6311.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(366004)(4326008)(8676002)(66476007)(66556008)(54906003)(66946007)(2906002)(44832011)(6486002)(8936002)(86362001)(5660300002)(7416002)(508600001)(186003)(110136005)(6666004)(82960400001)(26005)(6512007)(9686003)(38100700002)(6506007)(316002)(33716001)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?0XhirqsNQTEOGCpWv91B+id4Lv54HJyLG9RRPYECO6ZaS4Of7fFVrk6WzG?=
- =?iso-8859-1?Q?cwGRNErC1sLisFUq8/CncnV5BuPB882SsUdDUZaWTWKq+UdD126giwQ2AB?=
- =?iso-8859-1?Q?H01Vrzo9CH8hJJF/JC6E10EZmWDcamcD3Rm6BtbhxafLzu5OGVT2ZGF9/8?=
- =?iso-8859-1?Q?XmbTsDRqnJn7ojLPEAea4qd4sKyQpXhhdZvls1Bl5ewqw3PwpQWntEEUlq?=
- =?iso-8859-1?Q?KMdqSpGdZaYH0zC5cGmyxJ2zV2siWqIW2yNwmG4T+OdPkG/ZuWRU+KBBU8?=
- =?iso-8859-1?Q?cS1VU3OAECzJwQj27LhJ5f+VU28KTs3wve9krd5XdVu3MvY14Vi0sFf2pc?=
- =?iso-8859-1?Q?gpZdCFMu3RrLJ1NTDHH4KhxT4k1Tye/nFI++mekEI4XPMha+WsY3b5gRTF?=
- =?iso-8859-1?Q?HYzdRTSckK8RrceHdiI7XgJdLwWqfRBWuxydNQTdTExBjNUgEC9XAZwYMi?=
- =?iso-8859-1?Q?I8zVs9JlH5jXvuO26J1V2dZ7eYApSZSfxYa5XTdn75CgcaJNWy/6a44nkg?=
- =?iso-8859-1?Q?UyHldtG0rt5CUMtX8/l5rVTeZLkoKaPDu2Vs8AuMXxG9ff5wIMmsnn+Glf?=
- =?iso-8859-1?Q?wtQzmU3ayUJdyyU06fT9WJ23X5n85/mrCm2+gz1dTjzEnQRKVGC6yI/bZk?=
- =?iso-8859-1?Q?YN0Znr+Pw5pDgNKTNDsFVZjwvqu4hhGipwU4byBXlm80IcBLdUDLnjs3dQ?=
- =?iso-8859-1?Q?fxfcKkBZnTod/F3FOXrn//VEapvdqJie+F0wIlcE8h7hRXhqUkhS8fgRn7?=
- =?iso-8859-1?Q?o7HZKosrQDWH5NnOO3UhcAtBNc6sQPOeB/1Ql6ADsvz3YPzycP9VPP3yUZ?=
- =?iso-8859-1?Q?pMbz/MhVmja73YqCZlFE5YeXnYOCoy5Dshu6Au0z1CBSRarc2XUFJDReX1?=
- =?iso-8859-1?Q?QxXS8RDXdKW9FMiLOvSl4MyJMUnAfApE4E7Ce2Fe7YL0LdedxeDTE2STD9?=
- =?iso-8859-1?Q?wFQewlc0Wk8XyqAB6BGkpQfw+x8MjREwgWzd9g3knY3lHKvCntr9vKSa0V?=
- =?iso-8859-1?Q?KSr86FcmnJAnVQWS3N3ksAAoSYeeAhTafEWioHzfn4ghxLr62exZcM8QdC?=
- =?iso-8859-1?Q?afvumM3IKs6nw/VDHj0aZe8y4ANT7gVyHJRS+Kd6ciAMPi3+b9dvnIVW7e?=
- =?iso-8859-1?Q?N2s45aGKskzsi2xPZhrZlKIvD2/qdFUg+IRXsNh40ZAPK1wKXAKApyPSw6?=
- =?iso-8859-1?Q?wZrZD3FNlJh11Vvu7RD6MRUzpasQg+HgTPc+iHCKfYgFpk2lzglVnYAjoW?=
- =?iso-8859-1?Q?V3oV6pIy8n5mDT7JDluOakdqx+XyShjtpxr5fYpKWXIpCSL0JvzyORsPmR?=
- =?iso-8859-1?Q?hDcTQ/tSd8Xl1x9VAoC3cTBvt2H0CDLpkWgwqil4/Q3OwMVath2h7n6kXf?=
- =?iso-8859-1?Q?JuPITAHsKV8s2C6PNemU8mUuOo2ID/pyxSOF5nJPmdlLlYI9+m23HFGjaa?=
- =?iso-8859-1?Q?fvwTFtvW+HunItRpTEq3GlaJj7unTl4mw03IK7kV/Mtn6NsVLnqPjQju+g?=
- =?iso-8859-1?Q?OY2VKdHv4Cdt7F/1GyIdHbhnnPce66jcpXBY+g+0sTWhvKBrapspSy2q5E?=
- =?iso-8859-1?Q?Ig977UgrnOl65OwZlIDdU6pa206CkOWWKTHnY4LUvkU1kPJl/MZfShiidE?=
- =?iso-8859-1?Q?nvgRt8ury35uhsj0tJx8fZB5iRWUVrAQ+SpTW19wGxrpWRVe1/WfMcHNc5?=
- =?iso-8859-1?Q?YmlX3KMdYQugPVkpiT+RJfdNc9tv/vea0VAZ8YVi6C8zud42N4fuj207h5?=
- =?iso-8859-1?Q?I6OzU2Z5HY7QfjuMEvz/MNRsV6rxpDjTdyRWx9sCXMbfWEQ2JgeneYqkSn?=
- =?iso-8859-1?Q?91ho46UCWsnpD8rqMhT8UAJmffuC1UA=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1be6c581-83dd-44a0-5b54-08da4e2862c7
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6311.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2022 17:07:39.0643
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R7LFjGPrEgT2/Mh8k93lEAfCBy4m6uAQLs3PauDl/tP7Zv52OYD5kQYsbIF+ZxdEKMf1JlyjCyq/CPMT/zDA/A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6498
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH 2/2] btrfs: warn about dev extents that are inside the
+ reserved range
+Content-Language: en-US
+To:     Boris Burkov <boris@bur.io>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1655103954.git.wqu@suse.com>
+ <c4b02ac7bf6e4171d8cfb13dcd11b3bad8d2e4df.1655103954.git.wqu@suse.com>
+ <YqeKZuET4MDe0D5w@zen> <7d764668-cb95-f410-4846-9a1a98e3b861@gmx.com>
+ <Yqiprewvw0q6OYza@zen>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <Yqiprewvw0q6OYza@zen>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TgH3hFIGZPTb2H98ZUEl+75dF68YC8xG98BTNJL4wbOpeWmnnnU
+ VfHWRPhBEk6gYrUK35DJ3qDvFg7m6Ozc76xLPnR1Y5htMpGKNxvPVw+g5m6+usKfqyvxMD7
+ Dd6YCVcFr8WrPDxmBSwSlpgnCBhqtm6nfy1db1QY1wxVc8GJP2ryow64lqFzegSokIjcy97
+ DdbBf0J4SY/JV5p9mlgzQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5CQA4abHrn0=:TAkLAfWqQYeOSr4FhLAC0j
+ gp0mD1lac/Qd3Mm2Y2vtYYuOqdngHCzdiq3b1TkwOIR1PDSB5vfyK7JlZ7mw8NNI2FgqFIcIo
+ LcGw6qOEYwHkkz1B3XT79DtN+h4mjWY4YQKvKuTb+f6U/QUdwmnwha5hNnEkBWrb7CyXHTHJR
+ FW6k8w97+l9NXJZ+dqKXeGioemrrTXRic6WBUnev/QObtZ27wnAf5S8woAx8Gu9JZtcf9eLF7
+ wnZddCfiqZ0lhywXbCvdv2O6GOU5UnS9o+TwkILRC+c1z550csEXIeuA7Ea79SoLc9/ItaYXI
+ muoxbWpsxHxzFh8FFGNtYYnyBRHaR1SEWXWcOEK/mydwQ2iCrl7qt88OWPk36jAWYRtSgJ59J
+ ZjPt3cDgCfZsre5exROLNjNpS8c0EocRzWRcMgiiWTxLA9rk1CAbNnCdEhvRJIfOyBbcggZ+N
+ Womj6ePIu0fXh2AcbknRjIxoT1UP0YvVNjSQ9qVzBHw1LTQRCC6SKvw9Aq857hJZma5taZHxW
+ WpxlIcTG3jxjuD9NXjvADAIb/ORQ1nOs6IBM0M2iduZcGdcwgxG0VxMYKGUCC7iK0KlkG9zrB
+ VShMlAMnUEDDLVS1J/arX4O4+3SsW+gj9deQfIh1Iwgw+YEifOxPbvVmv3VKVvMwuqNdXJ7MB
+ yC/x1DafXNC+Dc/FBvHMzaXTOhuDl4qZL/V01UaAQhPcwBDWUi4Km0LvR3pYWDYEVVvS4mAqo
+ BiuIU8wTwCcYq8lg9/nt9z8+jEzI+UsGQmcWthc1IMpabte1wsLAcUfnTd66GOflOb5gmkCWN
+ XKEHWDPdbdlNgZGvsQerM/hIM4IJasWbW8VWXmxzbexRGmpzx/JRzFHvYkrkItqakPvidNnAM
+ aJIdxZXI6kYCy3ygdFu198xCTZSnEFuimu5MmgJVsvRDNDw4anecpsz1ydREMl79DcnAfJJ8Y
+ 5gcF6FlK9DNdaDbXg/Qrok1DZZZ2JAUM+vfQQWSypAToZuO3EjJPsq1/u4JfIIGUVz1sk8Hzv
+ X4nZZJdf1gK9mi3r3hb4vjeSjyyFo8U2iEsY23oGfEg9rLfChvsAHwdd0gwuYu1qgQdnvICZ1
+ 0nytS/OOY0tf9Y43y7igsJm+bJV4O/MzV5VSphRbviubqjtHIfqFV/4Wg==
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 14, 2022 at 06:28:48PM +0200, Fabio M. De Francesco wrote:
-> On martedì 14 giugno 2022 16:25:21 CEST David Sterba wrote:
-> > On Tue, Jun 14, 2022 at 01:22:50AM +0200, Fabio M. De Francesco wrote:
-> > > On lunedì 13 giugno 2022 20:39:13 CEST David Sterba wrote:
-> > > > On Sat, Jun 11, 2022 at 03:52:03PM +0200, Fabio M. De Francesco 
-> > 
 
-[snip]
 
-> > > A better solution is changing the prototype of __kunmap_local(); I
-> > > suppose that Andrew won't object, but who knows?
-> > > 
-> > > (+Cc Andrew Morton).
-> > > 
-> > > I was waiting for your comments. At now I've done about 15 conversions 
-> > > across the kernel but it's the first time I had to pass a pointer to 
-> const 
-> > > void to kunmap_local(). Therefore, I was not sure if changing the API 
-> were 
-> > > better suited (however I have already discussed this with Ira).
-> > 
-> > IMHO it should be fixed in the API.
-> > 
-> I agree with you in full.
-> 
-> At the same time when you sent this email I submitted a patch to change 
-> kunmap_local() and kunmap_atomic().
-> 
-> After Andrew takes them I'll send v2 of this patch to zstd.c without those 
-> unnecessary casts.
+On 2022/6/14 23:30, Boris Burkov wrote:
+> On Tue, Jun 14, 2022 at 03:48:06PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2022/6/14 03:05, Boris Burkov wrote:
+>>> On Mon, Jun 13, 2022 at 03:06:35PM +0800, Qu Wenruo wrote:
+>>>> Btrfs has reserved the first 1MiB for the primary super block (at 64K=
+iB
+>>>> offset) and legacy programs like older bootloaders.
+>>>>
+>>>> This behavior is only introduced since v4.1 btrfs-progs release,
+>>>> although kernel can ensure we never touch the reserved range of super
+>>>> blocks, it's better to inform the end users, and a balance will resol=
+ve
+>>>> the problem.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>>    fs/btrfs/volumes.c | 10 ++++++++++
+>>>>    1 file changed, 10 insertions(+)
+>>>>
+>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>>> index 051d124679d1..b39f4030d2ba 100644
+>>>> --- a/fs/btrfs/volumes.c
+>>>> +++ b/fs/btrfs/volumes.c
+>>>> @@ -7989,6 +7989,16 @@ static int verify_one_dev_extent(struct btrfs_=
+fs_info *fs_info,
+>>>>    		goto out;
+>>>>    	}
+>>>>
+>>>> +	/*
+>>>> +	 * Very old mkfs.btrfs (before v4.1) will not respect the reserved
+>>>> +	 * space. Although kernel can handle it without problem, better to
+>>>> +	 * warn the users.
+>>>> +	 */
+>>>> +	if (physical_offset < BTRFS_DEFAULT_RESERVED)
+>>>> +		btrfs_warn(fs_info,
+>>>> +"devid %llu physical %llu len %llu is inside the reserved space, bal=
+ance is needed to solve this problem.",
+>>>
+>>> If I saw this warning, I wouldn't know what balance to run, and it's
+>>> not obvious what to search for online either (if it's even documented)=
+.
+>>> I think a more explicit instruction like "btrfs balance start XXXX"
+>>> would be helpful.
+>>
+>> Firstly, the balance command needs extra filters, thus the command can
+>> be pretty long, like:
+>>
+>> # btrfs balance start -mdrange=3D0..1048576 -ddrange=3D0..1048576
+>> -srange0..1048576 <mnt>
+>>
+>> I'm not sure if this is a good idea to put all these into the already
+>> long message.
+>>
+>>>
+>>> If it's something we're ok with in general, then maybe a URL for a wik=
+i
+>>> page that explains the issue and the workaround would be the most
+>>> useful.
+>>
+>> URL can be helpful but not always. Imagine a poor sysadmin in a noisy
+>> server room, seeing a URL in dmesg, and has to type the full URL into
+>> their phone, if the server has very limited network access.
+>
+> I don't see how the poor sysadmin would be any better off with "you need
+> to do a balance" vs "you need to do a balance: <URL>" or "you need to do
+> a balance using mdrange and ddrange to move the affected extents" etc..
+>
+> My high level point is that you clearly have something in mind that the
+> person needs to do in the unlikely event they hit this, but I have no
+> idea how they are supposed to figure it out. Send a mail to our mailing
+> list and hope you notice it?
 
-David,
+I guess you miss the point here.
 
-Would you be willing to take this through your tree as a pre-patch to the kmap
-changes in btrfs?
+First, this is really rare case, it need older mkfs.btrfs and never
+balanced the fs.
 
-That would be easier for Fabio and probably you and Andrew in the long run.
+Second, the warning message itself is fine, kernel is 100% fine handling
+it. The warning message can be ignored as long as there is no usage of
+legacy bootloader.
 
-Ira
+>
+>>
+>> In fact, this error message for now will be super rare already.
+>>
+>> The main usage of this message is for the incoming feature, which will
+>> allow btrfs to reserve extra space for its internal usage.
+>>
+>> In that case, we will allow btrfstune to set the reservation (even it's
+>> already used by some dev extent), and btrfstune would give a commandlin=
+e
+>> how to do the balance.
 
-> 
-> Thanks for your review,
-> 
-> Fabio
-> 
-> 
-> 
+In fact, that would be where the detailed balance command line to be shown=
+.
+
+Btrfs check and btrfstune would output the detailed command line to do tha=
+t.
+
+Thanks,
+Qu
+>>
+>> I guess I'd put all these preparation patches into the incoming on-disk
+>> format change patchset to make it clear.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>>> +			   devid, physical_offset, physical_len);
+>>>> +
+>>>>    	for (i =3D 0; i < map->num_stripes; i++) {
+>>>>    		if (map->stripes[i].dev->devid =3D=3D devid &&
+>>>>    		    map->stripes[i].physical =3D=3D physical_offset) {
+>>>> --
+>>>> 2.36.1
+>>>>
