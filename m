@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7AD54AD8D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jun 2022 11:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD9D54ADCE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jun 2022 11:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240121AbiFNJsA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 05:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33558 "EHLO
+        id S239917AbiFNJ4K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jun 2022 05:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239637AbiFNJr7 (ORCPT
+        with ESMTP id S239637AbiFNJ4J (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 05:47:59 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B79E4160A
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 02:47:59 -0700 (PDT)
+        Tue, 14 Jun 2022 05:56:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926193AA7B
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 02:56:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 74F9DCE19D1
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 09:47:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 180A4C3411B;
-        Tue, 14 Jun 2022 09:47:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 36E8561715
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 09:56:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B14CC3411B;
+        Tue, 14 Jun 2022 09:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655200075;
-        bh=x5MXaON1HY29ge4oURQdh+NgTlesWDZyQjJdzql0xdA=;
+        s=k20201202; t=1655200566;
+        bh=WgE2VOPqmSv5mlbYfnwjxxEWREQ4Nj4sVWHJGy1PbyQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FDFcx4n+e/uRLS4+OTgg0kEzP7kxfMv/Z529vxt1CyZxy74FAE1FmegthkRtwo2UI
-         yJJ/xDe1eEJf1/z3EX7alltTLjv/Wsb3s0QGB8nH0tUsBD7iNT47ci8yw20gan8G9u
-         CpkZpFSHEYs5oeDqPLowtJZQbSJ7rJir7uUIfjNnx3v2lGg5+2m4fiNInmPT8Hvz9o
-         DyIRUiQx+i1UdVo5tXNvnvJMGbqW7ils8du4DQMht6D7/vL09K3YkDUuH9JYleb1/G
-         hJq1bDgYanoBAGD3Z/+/FilXezOdV1A5zYcTi0PtV04Hn53JywVVDfthc2iuiKNiqd
-         mHcLPmBUE25Gg==
-Date:   Tue, 14 Jun 2022 10:47:52 +0100
+        b=fVn5KlWDR9iWiW9W6FBbvKtkzcfBKsTekLq3Sclj8jSbL1VmJSUwNM8Ol+Vp6ACqZ
+         f5Ur0qeVB7oMF4qSseTuoPTTxo6UDBZPNW8EJDmiJ3Rr8cEQvoJiCW5luZPXRinUjU
+         +PonfCohYpBEzPBdRegPN+9tn9l0XeQpKB2op+HlnWbYUzjxSuQZe3duDb7DuUIvXw
+         6J4bkKtPx3OoYC3YifmXoL4n3foKRsqVfBZQ/DUcR0tj/huo6i1QcAn8RsaHs4a0wu
+         UT4ErFG5FCuCEE/i7RHTHsUtiogw+Mos4/qyIjg6aRgjjbobme29rpYP/5UjKD3Kma
+         CGwQp6sAQfyrA==
+Date:   Tue, 14 Jun 2022 10:56:03 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: reset block group chunk force if we have to wait
-Message-ID: <20220614094752.GA3886393@falcondesktop>
-References: <26ea5e38363115b0a35bf7e56078a552075c9ca7.1655159467.git.josef@toxicpanda.com>
+Subject: Re: [PATCH v2 0/2] btrfs: fix deadlock with fsync and full sync
+Message-ID: <20220614095603.GB3886393@falcondesktop>
+References: <cover.1655147296.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <26ea5e38363115b0a35bf7e56078a552075c9ca7.1655159467.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1655147296.git.josef@toxicpanda.com>
 X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,38 +53,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 06:31:17PM -0400, Josef Bacik wrote:
-> If you try to force a chunk allocation, but you race with another chunk
-> allocation, you will end up waiting on the chunk allocation that just
-> occurred and then allocate another chunk.  If you have many threads all
-> doing this at once you can way over-allocate chunks.
+On Mon, Jun 13, 2022 at 03:09:47PM -0400, Josef Bacik wrote:
+> v1->v2:
+> - Make btrfs_sync_file also use the new BTRFS_LOG_FORCE_COMMIT define.
+> - Adjust the title of the second patch
 > 
-> Fix this by resetting force to NO_FORCE, that way if we think we need to
-> allocate we can, otherwise we don't force another chunk allocation if
-> one is already happening.
+> --- Original email ---
+> Hello,
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> We've hit a pretty convoluted deadlock in production that Omar tracked down with
+> drgn.  I've described the deadlock in the second patch, but generally it's a
+> lock inversion where we have an existing dependency of extent lock ->
+> transaction, but in fsync in a few cases we can end up with transaction ->
+> extent lock, and the expected hilarity ensues.  Thanks,
+> 
+> Josef
+> 
+> Josef Bacik (2):
+>   btrfs: make the return value for log syncing consistent
+>   btrfs: fix deadlock with fsync+fiemap+transaction commit
+> 
+>  fs/btrfs/file.c     | 69 ++++++++++++++++++++++++++++++++++-----------
+>  fs/btrfs/tree-log.c | 18 ++++++------
+>  fs/btrfs/tree-log.h |  3 ++
+>  3 files changed, 65 insertions(+), 25 deletions(-)
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 Looks good, thanks.
 
-> ---
->  fs/btrfs/block-group.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index ede389f2602d..13358fbc1629 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -3761,6 +3761,7 @@ int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
->  			 * attempt.
->  			 */
->  			wait_for_alloc = true;
-> +			force = CHUNK_ALLOC_NO_FORCE;
->  			spin_unlock(&space_info->lock);
->  			mutex_lock(&fs_info->chunk_mutex);
->  			mutex_unlock(&fs_info->chunk_mutex);
 > -- 
 > 2.26.3
 > 
