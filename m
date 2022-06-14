@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 597F254BDFB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B8254BDF6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356793AbiFNW47 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1356998AbiFNW47 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Tue, 14 Jun 2022 18:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351095AbiFNW45 (ORCPT
+        with ESMTP id S1354011AbiFNW46 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 18:56:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E643879E
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:56:57 -0700 (PDT)
+        Tue, 14 Jun 2022 18:56:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4620A36E34
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:56:58 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EAC3921B3C
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:55 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0319D1F9BD
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1655247415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1655247417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pb0pWgqh+XloG6uLmHSEsuxcpzByISClI/AhFBxLFQI=;
-        b=LcJe7klnoYZlb2tt1AFTZO9t5GEivasm1+UW3asP+hz/qmsyUHT5uk2TF+CJeU0v0qHOFN
-        n90WCJl+Eq6jDY+sq0lQ/3f36jRve62WPruOuUtY5bebMZrDOgKtIFH81FJwgoDHfPMCW1
-        X9z1K11F2Hu/yGj304Oua92THrgd0NI=
+        bh=4K3OOKL3xPcmTQ8M3SZS2NHCdqXLzRWaV7h5dGOjVyU=;
+        b=FSKdxjgD2nwAvMX36xA8qeCTSVIP+p7uczhmtEJZkkqUL82UKWYISCLTqVB3ILdakKartV
+        HbtCLp+EC3yYlkpTHWElZXHlARY1fSz029/48MTGe8mTPKIOk95I3/+UnUcPU8CYxV1ahh
+        xMA2UtiggKDf0fW7cPiOpko4XmBK/fU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B132139EC
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:55 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 574BA139EC
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WCHbBTcSqWI3cAAAMHmgww
+        id METnCDgSqWI3cAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:55 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:56 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH DRAFT 3/6] btrfs-progs: print-tree: remove duplicated definition for compat RO flags
-Date:   Wed, 15 Jun 2022 06:56:31 +0800
-Message-Id: <2dc05d30faf9cee819ec77a1cc9c8e7353f55abc.1655247047.git.wqu@suse.com>
+Subject: [PATCH DRAFT 4/6] btrfs-progs: print-tree: support btrfs_super_block::reserved_bytes
+Date:   Wed, 15 Jun 2022 06:56:32 +0800
+Message-Id: <0cbdab998ab2a6d42ab4a9763f432ef381ed2a57.1655247047.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1655247047.git.wqu@suse.com>
 References: <cover.1655247047.git.wqu@suse.com>
@@ -61,37 +61,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In print_readable_compat_ro_flag(), we provide
-BTRFS_FEATURE_COMPAT_RO_SUPP | BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
-BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID for supported flags.
+This only needs two things:
 
-However BTRFS_FEATURE_COMPAT_RO_SUPP already includes the latter two
-flags.
+- Add readable flags for EXTRA_SUPER_RESERVED flag
 
-Just remove the unnecessary flags.
+- Add optional output for reserved_bytes
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-t#
 ---
- kernel-shared/print-tree.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel-shared/print-tree.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index a5886ff602ee..db486553f448 100644
+index db486553f448..918ebe02144a 100644
 --- a/kernel-shared/print-tree.c
 +++ b/kernel-shared/print-tree.c
-@@ -1754,9 +1754,7 @@ static void print_readable_compat_ro_flag(u64 flag)
- 	 */
- 	return __print_readable_flag(flag, compat_ro_flags_array,
- 				     compat_ro_flags_num,
--				     BTRFS_FEATURE_COMPAT_RO_SUPP |
--				     BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
--				     BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID);
-+				     BTRFS_FEATURE_COMPAT_RO_SUPP);
- }
+@@ -1668,6 +1668,7 @@ struct readable_flag_entry {
+ static struct readable_flag_entry compat_ro_flags_array[] = {
+ 	DEF_COMPAT_RO_FLAG_ENTRY(FREE_SPACE_TREE),
+ 	DEF_COMPAT_RO_FLAG_ENTRY(FREE_SPACE_TREE_VALID),
++	DEF_COMPAT_RO_FLAG_ENTRY(EXTRA_SUPER_RESERVED),
+ };
+ static const int compat_ro_flags_num = sizeof(compat_ro_flags_array) /
+ 				       sizeof(struct readable_flag_entry);
+@@ -2051,6 +2052,11 @@ void btrfs_print_superblock(struct btrfs_super_block *sb, int full)
+ 	printf("block_group_root_level\t%llu\n",
+ 	       (unsigned long long)btrfs_super_block_group_root_level(sb));
  
- static void print_readable_incompat_flag(u64 flag)
++	if (btrfs_super_compat_ro_flags(sb) &
++	    BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED)
++		printf("reserved_bytes\t\t%u\n",
++			btrfs_super_reserved_bytes(sb));
++
+ 	uuid_unparse(sb->dev_item.uuid, buf);
+ 	printf("dev_item.uuid\t\t%s\n", buf);
+ 
 -- 
 2.36.1
 
