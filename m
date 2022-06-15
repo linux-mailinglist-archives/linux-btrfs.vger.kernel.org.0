@@ -2,66 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF054C757
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 13:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B9554C7BC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 13:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344353AbiFOLXt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jun 2022 07:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
+        id S237723AbiFOLuh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 07:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245341AbiFOLXr (ORCPT
+        with ESMTP id S1344720AbiFOLug (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jun 2022 07:23:47 -0400
+        Wed, 15 Jun 2022 07:50:36 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90B732EC9
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 04:23:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF704C403
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 04:50:34 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8B72B1F88E;
-        Wed, 15 Jun 2022 11:23:44 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 756A61F461;
+        Wed, 15 Jun 2022 11:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655292224;
+        t=1655293833;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+wBbdgUTazcnlZJaFQEYsFHgAogg6ZaOFaxjhcjmTjs=;
-        b=YaCZ4ifPEZBASHx/LmVckRTSuid9arEECAGDQYeXKDQAfwhVBr5ULSz8BExGEoo1Tny8D7
-        nJy1SQvPGmAs/JtvhzoaQ5FszUDUSp8ixgsraAWa/FM3SqvDktv247CgPs4uQg6ckLZAkN
-        lTwTeEdHkbl/K3u9GKsisVo+5fJaITs=
+        bh=pYcYZeHOOoZdivO2JPF2Zp5+Nc00bXcK6Y7HbfFIVUA=;
+        b=P063SiKA0RrkNmjVJ3UfJvUnX9uIMBLsNjy9qdHQEO4Zyv/purKJiGnW5pkOTsHkJyd0gV
+        UBlIIoe6R1w/qYMaQVn+u5JT2wpv/K/Wp/04sO5AoZgCY36IgdfSuTTKwfld+QcPmPhU/4
+        5KNleAiiigR5BW4/mJATryKFfaSFq2k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655292224;
+        s=susede2_ed25519; t=1655293833;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+wBbdgUTazcnlZJaFQEYsFHgAogg6ZaOFaxjhcjmTjs=;
-        b=k7o0GXYNRci4t07W3WMQKhUyO3Pnv2XJio+86wINM6q02GXH4WtckM3EkOaEUZMftWvWwH
-        k6UMK2650QWiEtDQ==
+        bh=pYcYZeHOOoZdivO2JPF2Zp5+Nc00bXcK6Y7HbfFIVUA=;
+        b=pB4eYDj1w3MRuRdDqWkeOsZjVZmIqV4bJUcJtcYS02bwv6miwrvXzjiwYSRf+lZ5JF2yKo
+        A7msXCM4yLnvRiAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72316139F3;
-        Wed, 15 Jun 2022 11:23:44 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 511E1139F3;
+        Wed, 15 Jun 2022 11:50:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id vr8EG0DBqWJzcAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 15 Jun 2022 11:23:44 +0000
-Date:   Wed, 15 Jun 2022 13:19:11 +0200
+        id YJbdEonHqWL2egAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 15 Jun 2022 11:50:33 +0000
+Date:   Wed, 15 Jun 2022 13:45:59 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     David Sterba <dsterba@suse.com>
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/9] Extent tree search cleanups
-Message-ID: <20220615111910.GR20633@twin.jikos.cz>
+Subject: Re: [PATCH 0/4] btrfs: cleanups and preparation for the incoming
+ RAID56J features
+Message-ID: <20220615114559.GS20633@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <cover.1654706034.git.dsterba@suse.com>
+References: <cover.1652428644.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1654706034.git.dsterba@suse.com>
+In-Reply-To: <cover.1652428644.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,26 +74,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 06:43:19PM +0200, David Sterba wrote:
-> The extent_io_tree search helpers take return parameters and many
-> callers pass just NULL, which are checked and add a conditionals to some
-> paths. Reorganize helpers to suit what callers need and drop unnecessary
-> parameters, open code rbtree search loops and clean up some other
-> parameters.
+On Fri, May 13, 2022 at 04:34:27PM +0800, Qu Wenruo wrote:
+> Since I'm going to introduce two new chunk profiles, RAID5J and RAID6J
+> (J for journal), if we're relying on ad-hoc if () else if () branches to
+> calculate thing like number of p/q stripes, it will cause a lot of
+> problems.
 > 
-> This could improve performance in some cases but it's mostly micro
-> optimizations and I haven't done any measurements.
+> In fact, during my development, I have hit tons of bugs related to this.
 > 
-> David Sterba (9):
->   btrfs: open code rbtree search into split_state
->   btrfs: open code rbtree search in insert_state
->   btrfs: lift start and end parameters to callers of insert_state
->   btrfs: pass bits by value not pointer for extent_state helpers
->   btrfs: add fast path for extent_state insertion
->   btrfs: remove node and parent parameters from insert_state
->   btrfs: open code inexact rbtree search in tree_search
->   btrfs: make tree search for insert more generic and use it for
->     tree_search
->   btrfs: unify tree search helper returning prev and next nodes
+> One example is alloc_rbio(), it will assign rbio->nr_data, if we forgot
+> to update the check for RAID5 and RAID6 profiles, we will got a bad
+> nr_data == num_stripes, and screw up later writeback.
+> 
+> 90% of my suffering comes from such ad-hoc usage doing manual checks on
+> RAID56.
+> 
+> Another example is, scrub_stripe() which due to the extra per-device
+> reservation, @dev_extent_len is no longer the same the data stripe
+> length calculated from extent_map.
+> 
+> So this patchset will do the following cleanups preparing for the
+> incoming RAID56J (already finished coding, functionality and on-disk
+> format are fine, although no journal yet):
+> 
+> - Calculate device stripe length in-house inside scrub_stripe()
+>   This removes one of the nasty mismatch which is less obvious.
+> 
+> - Use btrfs_raid_array[] based calculation instead of ad-hoc check
+>   The only exception is scrub_nr_raid_mirrors(), which has several
+>   difference against btrfs_num_copies():
+> 
+>   * No iteration on all RAID6 combinations
+>     No sure if it's planned or not.
+> 
+>   * Use bioc->num_stripes directly
+>     In that context, bioc is already all the mirrors for the same
+>     stripe, thus no need to lookup using btrfs_raid_array[].
+> 
+> With all these cleanups, the RAID56J will be much easier to implement.
+> 
+> Qu Wenruo (4):
+>   btrfs: remove @dev_extent_len argument from scrub_stripe() function
+>   btrfs: use btrfs_chunk_max_errors() to replace weird tolerance
+>     calculation
+>   btrfs: use btrfs_raid_array[] to calculate the number of parity
+>     stripes
+>   btrfs: use btrfs_raid_array[].ncopies in btrfs_num_copies()
 
-Added to misc-next.
+Added to misc-next, thanks.
