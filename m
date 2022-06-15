@@ -2,281 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D80954D0C5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 20:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC98F54D2E1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 22:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345877AbiFOSQS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jun 2022 14:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        id S234470AbiFOUtd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 16:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244186AbiFOSQR (ORCPT
+        with ESMTP id S232547AbiFOUtc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jun 2022 14:16:17 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA44544FD
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 11:16:15 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 666DC5C0129;
-        Wed, 15 Jun 2022 14:16:11 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 15 Jun 2022 14:16:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1655316971; x=1655403371; bh=JKNCP8rEMz
-        6SXC3Bmb4euVnVAjmqEKZN8czGVSyDE4o=; b=l0o5BmHVH/G1JRMqDr28hTUfQk
-        hFwbqoDBgLF7tXAvXkoYfGo31kRMWuiC+AHIMCItH75uNVHTIlSvC0W+LyyeoNbN
-        siPpNsxFI94UOexlkFHzi2oyJA2VW52CqTFdMC8WkDb4p/W9L6TR+o7NzuKohQRJ
-        lC2PrtPChaEMqPjyvX7OYlVlPp3MUKr0wnwQSQ43Xu1SyNbLfWAJNohCicQMG4ny
-        bFyINSpPYzdIL0RNhk0p2GP2lXcfE0tsiMxmni0nf9EG761T8/R0jxdHW7k7fP/V
-        TtI4urXQUiSuLMNhH7x7Gjfew9QV7nia0/i8Sckfez52jbFptL6uH117i1lw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1655316971; x=1655403371; bh=JKNCP8rEMz6SXC3Bmb4euVnVAjmq
-        EKZN8czGVSyDE4o=; b=iUItAF9jZYSKLKhkCWukcAHwiis54GZ1A8UE6/smD3al
-        2rTDI8qSbG0xZy6FcXAaX1upEAA2A76Vs+CbX2SalKHrlDWYkUI7pN6HejGxFPtW
-        pfz55depI7zPKg6S9VxPV08U9UbKW3e0Gp0kvSJisSD1Suktb4NdVLii6ug1rYB4
-        SztLIlCde1+0T54hlN+7LR3wghKXRmWzOlYfQ7/o3oADj7UuuFFvC/x9OZ6nddMr
-        yVnVA72wLznBEthbk0efMVFC3Qhd3kpUy77OAT4A9dJSX8PBb4t46pEV5H2PRIKY
-        zqC42ejutm06p1lmh+E54bM+FlR+E4RS11Ws0NEe5Q==
-X-ME-Sender: <xms:6iGqYlm9TyyH_-dRz5L9uWeAnDgyFHE0kaS5B563hnWZegbnvaVkgQ>
-    <xme:6iGqYg2xE4YCwqz9VFbL6OAyZ9pzhNcYPgsKB1Hw32lIOrbp-Up3B1EBvb8N9P6gH
-    fX-bwqpN16AiKJrnrk>
-X-ME-Received: <xmr:6iGqYrpo0Dwyu1pZ45i9UdUxAvZqCXk8MTaTRKnqo4csOOfTJ0kf45qlPGM38JNAZboNxHIvWwkr9YRU-9n71Ap8lXRatg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddvuddguddulecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
-    essghurhdrihho
-X-ME-Proxy: <xmx:6yGqYlkfLz86fqjrPs9aoE5BOUay-cIe24dJjBEoqDJ7bpUX3rxsYw>
-    <xmx:6yGqYj0Tio3pxVO7Bzwwv9VmJ6tmHl7yFbkDVL9zgVNyNtPg-QD_JQ>
-    <xmx:6yGqYkubNXS6wDl4CWyEF2iElEsZyWdt99DXp5M6ZW4WhGqY8QwXlQ>
-    <xmx:6yGqYkz_2zIJUvtDD1V70T6gYWkugAMvjxkfXibAEvuna4hPNm1WYg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 15 Jun 2022 14:16:10 -0400 (EDT)
-Date:   Wed, 15 Jun 2022 11:16:46 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 5/5] btrfs: remove bioc->stripes_pending
-Message-ID: <YqoiDrxfriDiW9Js@zen>
-References: <20220615151515.888424-1-hch@lst.de>
- <20220615151515.888424-6-hch@lst.de>
+        Wed, 15 Jun 2022 16:49:32 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B472654FA0
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 13:49:30 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id y19so25540676ejq.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 13:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=OS+TuHIIEmhhn+FJo6qNSFyLVwLCzFNvOeov1B2sZIQ=;
+        b=qZ1bIGfgoQXOGZkn3BBAVv+xf2ik9fu31nj8ATe3IOZ1gaRjr35jDLbMM1MGBC/xVt
+         KfVFgTDwh6oy76ZHZFaK97f+YpfSLzCasJoJZowFKxWyHZ7KgixLRIUHHsR2sU1BR9pp
+         iJY5S0WYZGthcaiLE3dARrPLtrnJhnqvGeZLiqAt16xBuuYetMSksj5+MzHjTDotmzfW
+         m7XZ2KVSDsBAGW7dGuSDmgi+yAFga2hkzAtUpKWWOYCSAnFvBrPafni8uG/q3ZDEkILl
+         EBCSX2Kf+13UnovKIxuigcfYYIwYEI5a9/p57ZpFtwRZK6w2Onxuvz9O4uJwFpQ0RMyq
+         3/sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=OS+TuHIIEmhhn+FJo6qNSFyLVwLCzFNvOeov1B2sZIQ=;
+        b=HPTJZXaZV01NS+O6gUOIf1FRbP6xDBYGCLF5r/8JPne94TwJalXSDI5C3QydXT0610
+         XTFaStGkbq/F1biyvmnr9fOkUz+Q2nzpvqBbYFrt2v+hx0j8ydJmU6j90tWQnad0wiod
+         CCci3gR8MNFHTf/DFN5NExp5WgHNPVd0QC+2bSO2OO9JVu32s4DoJvf+5RQnNh3x/1cF
+         F05DLMw/NRz+Fgrq2y6Zl8rBmvvly/W7OXOumVjFTXGPt+1R+GrWpP0SUWMOMi1fc9Vd
+         NjQnPD3zRdLsQAp+PGoTNfxhvYsOQ64tmw6WQNVUwqQ5rwZUGqt/SiJcoJK4ElkSHEks
+         gnMw==
+X-Gm-Message-State: AJIora8+Fps38pxgj0YdA8oTpBJmUMh/SpGjqANOS1Isx2jsozQ4+PN4
+        MsWyPBW43Vzjpw/JzrNyL9AOqfrvAbQc4XMhYPldY3duExO8lWyB
+X-Google-Smtp-Source: AGRyM1tYTrcDPE9P9LKfP+YiHR8ZHkkwrHAY0xkuiwLnveI0Wvp0tqXGC7Wmn8EJuUjWCHNZsKXcApnUCbwZ6SaMaFM=
+X-Received: by 2002:a17:906:99c5:b0:6df:8215:4ccd with SMTP id
+ s5-20020a17090699c500b006df82154ccdmr1538819ejn.684.1655326168909; Wed, 15
+ Jun 2022 13:49:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220615151515.888424-6-hch@lst.de>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   eyzrcd dcrzye <eyzrcd@gmail.com>
+Date:   Wed, 15 Jun 2022 14:49:17 -0600
+Message-ID: <CAPqeY=rKFBhC7aB8KZW1m=deVqpPQyBhZ3m+FF080W9zzW3i0w@mail.gmail.com>
+Subject: Failed balance leads to R/O disk and un-cancelable balance
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 05:15:15PM +0200, Christoph Hellwig wrote:
-> Replace the the stripes_pending field with the pending counter in the
-> bio.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/btrfs/volumes.c | 100 ++++++++++++++++++++++-----------------------
->  fs/btrfs/volumes.h |   1 -
->  2 files changed, 48 insertions(+), 53 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 3a8c437bdd65b..bf80a850347cd 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5889,7 +5889,6 @@ static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_
->  		sizeof(u64) * (total_stripes),
->  		GFP_NOFS|__GFP_NOFAIL);
->  
-> -	atomic_set(&bioc->error, 0);
->  	refcount_set(&bioc->refs, 1);
->  
->  	bioc->fs_info = fs_info;
-> @@ -6619,46 +6618,21 @@ static void btrfs_end_bio_work(struct work_struct *work)
->  	struct btrfs_bio *bbio =
->  		container_of(work, struct btrfs_bio, end_io_work);
->  
-> -	bio_endio(&bbio->bio);
-> -}
-> -
-> -static void btrfs_end_bioc(struct btrfs_io_context *bioc, bool async)
-> -{
-> -	struct bio *orig_bio = bioc->orig_bio;
-> -	struct btrfs_bio *bbio = btrfs_bio(orig_bio);
-> -
-> -	bbio->mirror_num = bioc->mirror_num;
-> -	orig_bio->bi_private = bioc->private;
-> -	orig_bio->bi_end_io = bioc->end_io;
-> -
-> -	/*
-> -	 * Only send an error to the higher layers if it is beyond the tolerance
-> -	 * threshold.
-> -	 */
-> -	if (atomic_read(&bioc->error) > bioc->max_errors)
-> -		orig_bio->bi_status = BLK_STS_IOERR;
-> -	else
-> -		orig_bio->bi_status = BLK_STS_OK;
-> -
-> -	if (btrfs_op(orig_bio) == BTRFS_MAP_READ && async) {
-> -		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
-> -		queue_work(btrfs_end_io_wq(bioc), &bbio->end_io_work);
-> -	} else {
-> -		bio_endio(orig_bio);
-> -	}
-> -
-> -	btrfs_put_bioc(bioc);
-> +	bbio->bio.bi_end_io(&bbio->bio);
->  }
->  
->  static void btrfs_end_bio(struct bio *bio)
->  {
->  	struct btrfs_io_stripe *stripe = bio->bi_private;
->  	struct btrfs_io_context *bioc = stripe->bioc;
-> +	struct bio *orig_bio = bioc->orig_bio;
-> +	struct btrfs_bio *bbio = btrfs_bio(orig_bio);
->  
->  	if (bio->bi_status) {
->  		atomic_inc(&bioc->error);
-> -		if (bio->bi_status == BLK_STS_IOERR ||
-> -		    bio->bi_status == BLK_STS_TARGET) {
-> +		if (stripe->dev && stripe->dev->bdev &&
-> +		    (bio->bi_status == BLK_STS_IOERR ||
-> +		     bio->bi_status == BLK_STS_TARGET)) {
->  			if (btrfs_op(bio) == BTRFS_MAP_WRITE)
->  				btrfs_dev_stat_inc_and_print(stripe->dev,
->  						BTRFS_DEV_STAT_WRITE_ERRS);
-> @@ -6671,12 +6645,35 @@ static void btrfs_end_bio(struct bio *bio)
->  		}
->  	}
->  
-> -	if (bio != bioc->orig_bio)
-> +	btrfs_bio_counter_dec(bioc->fs_info);
-> +
-> +	if (bio != orig_bio) {
-> +		bio_endio(orig_bio);
->  		bio_put(bio);
-> +		return;
-> +	}
->  
-> -	btrfs_bio_counter_dec(bioc->fs_info);
-> -	if (atomic_dec_and_test(&bioc->stripes_pending))
-> -		btrfs_end_bioc(bioc, true);
-> +	/*
-> +	 * Only send an error to the higher layers if it is beyond the tolerance
-> +	 * threshold.
-> +	 */
-> +	if (atomic_read(&bioc->error) > bioc->max_errors)
-> +		orig_bio->bi_status = BLK_STS_IOERR;
-> +	else
-> +		orig_bio->bi_status = BLK_STS_OK;
-> +
-> +	bbio->mirror_num = bioc->mirror_num;
-> +	orig_bio->bi_end_io = bioc->end_io;
-> +	orig_bio->bi_private = bioc->private;
-> +	if (btrfs_op(orig_bio) == BTRFS_MAP_READ) {
-> +		bbio->device = stripe->dev;
-> +		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
-> +		queue_work(btrfs_end_io_wq(bioc), &bbio->end_io_work);
-> +	} else {
-> +		orig_bio->bi_end_io(orig_bio);
-> +	}
-> +
-> +	btrfs_put_bioc(bioc);
->  }
->  
->  static void submit_stripe_bio(struct btrfs_io_context *bioc,
-> @@ -6687,28 +6684,30 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc,
->  	u64 physical = bioc->stripes[dev_nr].physical;
->  	struct bio *bio;
->  
-> -	if (!dev || !dev->bdev ||
-> -	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
-> -	    (btrfs_op(orig_bio) == BTRFS_MAP_WRITE &&
-> -	     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
-> -		atomic_inc(&bioc->error);
-> -		if (atomic_dec_and_test(&bioc->stripes_pending))
-> -			btrfs_end_bioc(bioc, false);
-> -		return;
-> -	}
-> -
->  	if (clone) {
-> -		bio = bio_alloc_clone(dev->bdev, orig_bio, GFP_NOFS, &fs_bio_set);
-> +		bio = bio_alloc_clone(NULL, orig_bio, GFP_NOFS, &fs_bio_set);
-> +		bio_inc_remaining(orig_bio);
->  	} else {
->  		bio = orig_bio;
-> -		bio_set_dev(bio, dev->bdev);
-> -		btrfs_bio(bio)->device = dev;
->  	}
->  
->  	bioc->stripes[dev_nr].bioc = bioc;
->  	bio->bi_private = &bioc->stripes[dev_nr];
->  	bio->bi_end_io = btrfs_end_bio;
->  	bio->bi_iter.bi_sector = physical >> 9;
-> +
-> +	btrfs_bio_counter_inc_noblocked(fs_info);
-> +
-> +	if (!dev || !dev->bdev ||
-> +	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
-> +	    (btrfs_op(bio) == BTRFS_MAP_WRITE &&
-> +	     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
-> +		bio_io_error(bio);
-> +		return;
-> +	}
-> +
-> +	bio_set_dev(bio, dev->bdev);
-> +	
+Mailing List:
 
-Extra tabbed newline. There's at least one more checkpatch failure like
-this one in the series.
+Yesterday, I tried to balance metadata from "single" to "DUP" on my
+laptop with a single SSD.  Laptop OS was Manjaro, and fully up to date
+as of yesterday morning, on kernel 5.18.1.
 
->  	/*
->  	 * For zone append writing, bi_sector must point the beginning of the
->  	 * zone
-> @@ -6729,8 +6728,6 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc,
->  		(unsigned long)dev->bdev->bd_dev, rcu_str_deref(dev->name),
->  		dev->devid, bio->bi_iter.bi_size);
->  
-> -	btrfs_bio_counter_inc_noblocked(fs_info);
-> -
->  	btrfsic_check_bio(bio);
->  	submit_bio(bio);
->  }
-> @@ -6760,7 +6757,6 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
->  	bioc->orig_bio = bio;
->  	bioc->private = bio->bi_private;
->  	bioc->end_io = bio->bi_end_io;
-> -	atomic_set(&bioc->stripes_pending, total_devs);
->  
->  	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
->  	    ((btrfs_op(bio) == BTRFS_MAP_WRITE) || (mirror_num > 1))) {
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index c0f5bbba9c6ac..ecbaf92323030 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -444,7 +444,6 @@ struct btrfs_discard_stripe {
->   */
->  struct btrfs_io_context {
->  	refcount_t refs;
-> -	atomic_t stripes_pending;
->  	struct btrfs_fs_info *fs_info;
->  	u64 map_type; /* get from map_lookup->type */
->  	bio_end_io_t *end_io;
-> -- 
-> 2.30.2
-> 
+Due to my misreading of the info BTRFS provided me, I thought I had
+enough space available to complete the balance.  However, I did not,
+and the balance stopped with an "out of space" message, and the
+filesystem was kicked into read-only.  I was unable to do anything in
+regards to remounting RW or canceling the balance, so I re-booted into
+an Arch LiveCD environment.
+
+In the live environment, I tried various mounting options to enable me
+to cancel the balance... fail with "error (device dm-1) in
+cleanup_transaction:1975: errno=-28 No space left" and "error (device
+dm-1) in reset_balance:3525: errno=-28 No space left"
+
+mount command used: "mount -o rw,clear_cache,skip_balance,noatime
+/dev/mapper/crypt /mnt"
+also tried adding "nospace_cache" to the options, with no change.
+
+Also tried "btrfs check --clear-space-cache v1 /dev/mapper/crypt"
+which cleared the cache, but did not allow me to mount RW
+
+I cannot add a device to the pool as there is "another exclusive
+operation 'balance' in progress".
+I cannot free up any space (delete files and/or snapshots) because the
+disk is immediately forced into read-only.
+
+Data has already been copied to another disk, in addition to my normal
+backups.  However, this seems to be a bug and/or bad failure mode in
+that the balance failed and hard locked the filesystem, rather than
+stopping the balance on a failure or otherwise allowing it to be
+cancelled.
+
+I have already reached out on reddit (
+https://www.reddit.com/r/btrfs/comments/vce30l/btrfs_balance_fail_cannot_resume_or_cancel_no/
+) without resolution.  Provided for more context.
+
+Any help is appreciated, thank you!
+
+####################
+
+Requested system information (this is from the Arch livecd):
+uname -a
+    Linux archiso 5.18.1-arch1-1 #1 SMP PREEMPT_DYNAMIC Mon, 30 May
+2022 17:53:11 +0000 x86_64 GNU/Linux
+
+btrfs --version
+    btrfs-progs v5.18
+
+btrfs fi show /mnt
+    Label: none  uuid: fcf1e06e-e432-4ea3-85dc-0fc66b368689
+        Total devices 1 FS bytes used 204.99GiB
+        devid    1 size 220.46GiB used 220.46GiB path /dev/mapper/crypt
+
+btrfs fi df /mnt
+    Data, single: total=215.45GiB, used=201.73GiB
+    System, single: total=4.00MiB, used=48.00KiB
+    Metadata, single: total=5.01GiB, used=3.26GiB
+    GlobalReserve, single: total=512.00MiB, used=0.00B
+
+Relevant portion of dmesg, full log is too large, but available on request:
+
+[  543.850450] BTRFS info (device dm-1): flagging fs with big metadata feature
+[  543.850464] BTRFS info (device dm-1): force clearing of disk cache
+[  543.850471] BTRFS info (device dm-1): disk space caching is enabled
+[  543.850475] BTRFS info (device dm-1): has skinny extents
+[  543.993472] BTRFS info (device dm-1): enabling ssd optimizations
+[  543.993751] BTRFS info (device dm-1): balance: resume skipped
+[  543.993753] BTRFS info (device dm-1): checking UUID tree
+[  544.091765] BTRFS warning (device dm-1): Skipping commit of aborted
+transaction.
+[  544.091777] ------------[ cut here ]------------
+[  544.091780] BTRFS: Transaction aborted (error -28)
+[  544.091820] WARNING: CPU: 7 PID: 8 at fs/btrfs/transaction.c:1982
+btrfs_commit_transaction.cold+0x21b/0x2f3 [btrfs]
+[  544.092038] Modules linked in: ext4 mbcache jbd2 btrfs
+blake2b_generic xor raid6_pq libcrc32c crc32c_generic dm_crypt
+encrypted_keys trusted asn1_encoder tee qrtr ccm algif_aead cbc
+des_generic libdes ecb algif_skcipher cmac md4 algif_hash af_alg
+intel_rapl_msr intel_rapl_common intel_tcc_cooling snd_hda_codec_hdmi
+snd_soc_skl x86_pkg_temp_thermal snd_soc_hdac_hda intel_powerclamp
+snd_ctl_led snd_hda_ext_core snd_soc_sst_ipc coretemp snd_soc_sst_dsp
+snd_soc_acpi_intel_match snd_soc_acpi snd_soc_core kvm_intel
+snd_hda_codec_realtek snd_compress iwlmvm ac97_bus
+snd_hda_codec_generic kvm ledtrig_audio snd_pcm_dmaengine irqbypass
+btusb mac80211 crct10dif_pclmul btrtl wl(POE) libarc4
+ghash_clmulni_intel uvcvideo snd_hda_intel btbcm btintel
+videobuf2_vmalloc iTCO_wdt snd_intel_dspcfg videobuf2_memops
+snd_intel_sdw_acpi intel_pmc_bxt btmtk hid_multitouch iwlwifi pktcdvd
+videobuf2_v4l2 at24 snd_hda_codec mei_hdcp mei_pxp iTCO_vendor_support
+rapl acer_wmi videobuf2_common intel_cstate iwlmei
+[  544.092185]  bluetooth intel_xhci_usb_role_switch snd_hda_core
+intel_uncore joydev pcspkr intel_wmi_thunderbolt mousedev
+sparse_keymap snd_hwdep tpm_crb wmi_bmof roles ecdh_generic videodev
+intel_lpss_pci snd_pcm cfg80211 snd_timer crc16 mc i2c_i801 tpm_tis
+mei_me i2c_hid_acpi intel_lpss snd tpm_tis_core acer_wireless
+i2c_smbus idma64 intel_pch_thermal soundcore mac_hid i2c_hid rfkill
+tpm mei rng_core acpi_pad pkcs8_key_parser fuse bpf_preload ip_tables
+x_tables overlay squashfs loop isofs dm_mod uas usb_storage usbhid
+i915 nouveau serio_raw atkbd libps2 drm_buddy rtsx_pci_sdmmc mxm_wmi
+r8169 crc32_pclmul drm_ttm_helper mmc_core crc32c_intel vivaldi_fmap
+ttm realtek aesni_intel mdio_devres drm_dp_helper crypto_simd libphy
+xhci_pci intel_gtt sr_mod cryptd rtsx_pci cdrom xhci_pci_renesas i8042
+serio wmi video
+[  544.092327] CPU: 7 PID: 8 Comm: kworker/u16:0 Tainted: P        W
+OE     5.18.1-arch1-1 #1 aeb6a372044721fe869dfc17901d8ed9fc452f1a
+[  544.092338] Hardware name: Acer Aspire E5-576G/Ironman_SK, BIOS
+V1.43 05/02/2018
+[  544.092342] Workqueue: events_unbound
+btrfs_async_reclaim_metadata_space [btrfs]
+[  544.092590] RIP: 0010:btrfs_commit_transaction.cold+0x21b/0x2f3 [btrfs]
+[  544.092853] Code: e9 e6 be f4 ff 49 8b 54 24 28 49 8b 44 24 30 48
+89 42 08 48 89 10 e9 0e ff ff ff 44 89 f6 48 c7 c7 d0 fc e9 c1 e8 82
+d1 cb eb <0f> 0b e9 43 fe ff ff 48 8b 7b 50 44 89 f2 48 c7 c6 00 fd e9
+c1 e8
+[  544.092863] RSP: 0018:ffffb33d400b3d28 EFLAGS: 00010282
+[  544.092873] RAX: 0000000000000000 RBX: ffff90c665a2f270 RCX: 0000000000000027
+[  544.092880] RDX: ffff90c99ede16a8 RSI: 0000000000000001 RDI: ffff90c99ede16a0
+[  544.092887] RBP: ffff90c665a2f2c8 R08: 0000000000000000 R09: ffffb33d400b3b38
+[  544.092894] R10: 0000000000000003 R11: ffffffffaeccaa08 R12: ffff90c644637200
+[  544.092900] R13: ffff90c6449a0000 R14: 00000000ffffffe4 R15: ffff90c665a2f1b8
+[  544.092907] FS:  0000000000000000(0000) GS:ffff90c99edc0000(0000)
+knlGS:0000000000000000
+[  544.092915] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  544.092923] CR2: 00007fed4c010c58 CR3: 000000018e010002 CR4: 00000000003706e0
+[  544.092931] Call Trace:
+[  544.092939]  <TASK>
+[  544.092949]  ? start_transaction+0xc3/0x5c0 [btrfs
+51c5e55142c29811cecfb2b5bc53d7ebe6efe7cc]
+[  544.093197]  flush_space+0xf5/0x5b0 [btrfs
+51c5e55142c29811cecfb2b5bc53d7ebe6efe7cc]
+[  544.093484]  ? psi_task_switch+0xc3/0x1f0
+[  544.093497]  ? __update_idle_core+0x1f/0xb0
+[  544.093511]  ? __switch_to_asm+0x46/0x70
+[  544.093524]  ? finish_task_switch.isra.0+0xac/0x290
+[  544.093541]  btrfs_async_reclaim_metadata_space+0x1a8/0x2a0 [btrfs
+51c5e55142c29811cecfb2b5bc53d7ebe6efe7cc]
+[  544.093831]  process_one_work+0x1c7/0x380
+[  544.093846]  worker_thread+0x51/0x380
+[  544.093857]  ? rescuer_thread+0x3a0/0x3a0
+[  544.093866]  kthread+0xde/0x110
+[  544.093881]  ? kthread_complete_and_exit+0x20/0x20
+[  544.093896]  ret_from_fork+0x22/0x30
+[  544.093915]  </TASK>
+[  544.093919] ---[ end trace 0000000000000000 ]---
+[  544.093928] BTRFS: error (device dm-1: state A) in
+cleanup_transaction:1982: errno=-28 No space left
+[  544.094070] BTRFS info (device dm-1: state EA): forced readonly
+[  544.094163] BTRFS warning (device dm-1: state EA):
+btrfs_uuid_scan_kthread failed -5
