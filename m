@@ -2,70 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 913F754C9EB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 15:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECCC54C9F1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 15:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245179AbiFONgI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jun 2022 09:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S1352387AbiFONg7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 09:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352588AbiFONgG (ORCPT
+        with ESMTP id S1351808AbiFONg6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jun 2022 09:36:06 -0400
+        Wed, 15 Jun 2022 09:36:58 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B331736683
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 06:36:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D17369DD;
+        Wed, 15 Jun 2022 06:36:58 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 755271F461;
-        Wed, 15 Jun 2022 13:36:04 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E90701F8D4;
+        Wed, 15 Jun 2022 13:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655300164;
+        t=1655300216;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hBeoMukhFAUtEAI4zXnCLn6aRNY5je3oPVVqo27QLd8=;
-        b=dPniwJLPoEspM+SMcuDhbwJ9VS8Xh8aQCkApacnU6+Oio0Xc4H2OULfF3y9ixHSJ00Yj5o
-        iWAnDnH6D4UayVGutgyM6AIdKzLFODoFXMQngIDUzTl/m4nRVETZdtNKaSaMwGLn3ZfMkC
-        ZO6AU3G7JCYoRTTeokc1pPnxL/5jtdY=
+        bh=chlBcacfv6bDY7l9ADHEqVc0e2MMXp3Bc7SWxZo9lOw=;
+        b=qG1a3bJ0rpAB27MsxPCkGdch35hSj6iNBr5c0hoi9DFBJfjLdL+sBrPLSGV0WWXGt3SkN1
+        IlgZAepRPquKFQSjkVnBgwjgfLsFqY8H8OnyxZ+MAj0t6s5CK5svYLv7VpRMqhjGge+xLA
+        NqJ7tjgY5bsm5aoiakQT4bPrhwinWz4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655300164;
+        s=susede2_ed25519; t=1655300216;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hBeoMukhFAUtEAI4zXnCLn6aRNY5je3oPVVqo27QLd8=;
-        b=JgZFRcdHiLtOJqiwwcUWb5ihV09KwL2s1EnH6kBlo9DNWSKlZXuubOmvHrxTIk0q7S0tFd
-        w0rCPRxVEFhcdSCg==
+        bh=chlBcacfv6bDY7l9ADHEqVc0e2MMXp3Bc7SWxZo9lOw=;
+        b=Tjphs/8pNqlDTkMTnuIL7gBZXnuK8rvaj8fb/ly6sHd42M/N20junSgmyyzJfj2P+uEywV
+        rEBYjrUVncefjCBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D9C113A35;
-        Wed, 15 Jun 2022 13:36:04 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 99E4913A35;
+        Wed, 15 Jun 2022 13:36:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id eJZ/DUTgqWIJKAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 15 Jun 2022 13:36:04 +0000
-Date:   Wed, 15 Jun 2022 15:31:30 +0200
+        id 0Gn1IXjgqWJgKAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 15 Jun 2022 13:36:56 +0000
+Date:   Wed, 15 Jun 2022 15:32:22 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Ioannis Angelakopoulos <iangelak@fb.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 2/2] btrfs: Expose the BTRFS commit stats through sysfs
-Message-ID: <20220615133130.GY20633@twin.jikos.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>, dsterba@suse.cz,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nick Terrell <terrelln@fb.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Filipe Manana <fdmanana@kernel.org>
+Subject: Re: [PATCH] btrfs: Replace kmap() with kmap_local_page() in zstd.c
+Message-ID: <20220615133222.GZ20633@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Ioannis Angelakopoulos <iangelak@fb.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20220614222231.2582876-1-iangelak@fb.com>
- <20220614222231.2582876-3-iangelak@fb.com>
- <916ea0a3-d3a0-6c60-1307-7873438286e3@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, Nick Terrell <terrelln@fb.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Filipe Manana <fdmanana@kernel.org>
+References: <20220611135203.27992-1-fmdefrancesco@gmail.com>
+ <1936552.usQuhbGJ8B@opensuse>
+ <20220614142521.GN20633@twin.jikos.cz>
+ <8952566.CDJkKcVGEf@opensuse>
+ <YqjAVq+1PIpVIr0p@iweiny-desk3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <916ea0a3-d3a0-6c60-1307-7873438286e3@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YqjAVq+1PIpVIr0p@iweiny-desk3>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -77,28 +90,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 03:47:51PM +0300, Nikolay Borisov wrote:
-> > +
-> > +	return sysfs_emit(buf,
-> > +		"commits %llu\n"
-> > +		"last_commit_dur %llu ms\n"
-> > +		"max_commit_dur %llu ms\n"
-> > +		"total_commit_dur %llu ms\n",
-> > +		fs_info->commit_stats.commit_counter,
-> > +		fs_info->commit_stats.last_commit_dur / NSEC_PER_MSEC,
-> > +		fs_info->commit_stats.max_commit_dur / NSEC_PER_MSEC,
-> > +		fs_info->commit_stats.total_commit_dur / NSEC_PER_MSEC);
-> > +}
-> > +
-> > +static ssize_t btrfs_commit_stats_store(struct kobject *kobj,
-> > +						struct kobj_attribute *a,
-> > +						const char *buf, size_t len)
-> > +{
+On Tue, Jun 14, 2022 at 10:07:34AM -0700, Ira Weiny wrote:
+> On Tue, Jun 14, 2022 at 06:28:48PM +0200, Fabio M. De Francesco wrote:
+> > On martedì 14 giugno 2022 16:25:21 CEST David Sterba wrote:
+> > > On Tue, Jun 14, 2022 at 01:22:50AM +0200, Fabio M. De Francesco wrote:
+> > > > On lunedì 13 giugno 2022 20:39:13 CEST David Sterba wrote:
+> > > > > On Sat, Jun 11, 2022 at 03:52:03PM +0200, Fabio M. De Francesco 
+> > > 
 > 
-> Is there really value in being able to zero out the current stats?
+> [snip]
+> 
+> > > > A better solution is changing the prototype of __kunmap_local(); I
+> > > > suppose that Andrew won't object, but who knows?
+> > > > 
+> > > > (+Cc Andrew Morton).
+> > > > 
+> > > > I was waiting for your comments. At now I've done about 15 conversions 
+> > > > across the kernel but it's the first time I had to pass a pointer to 
+> > const 
+> > > > void to kunmap_local(). Therefore, I was not sure if changing the API 
+> > were 
+> > > > better suited (however I have already discussed this with Ira).
+> > > 
+> > > IMHO it should be fixed in the API.
+> > > 
+> > I agree with you in full.
+> > 
+> > At the same time when you sent this email I submitted a patch to change 
+> > kunmap_local() and kunmap_atomic().
+> > 
+> > After Andrew takes them I'll send v2 of this patch to zstd.c without those 
+> > unnecessary casts.
+> 
+> David,
+> 
+> Would you be willing to take this through your tree as a pre-patch to the kmap
+> changes in btrfs?
+> 
+> That would be easier for Fabio and probably you and Andrew in the long run.
 
-I think it makes sense for the max commit time, one might want to track
-that for some workload and then reset. For the other it can go both
-ways, eg. a monitoring tool saves the stats completely and resets them.
-OTOH long term stats would be lost in case there's more than one
-application reading it.
+Yes, no problem if the patch has an ack. I could probably send all the
+kmap conversions after tests so it does not need to wait until the next
+cycle.
