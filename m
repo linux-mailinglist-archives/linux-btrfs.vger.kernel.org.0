@@ -2,85 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0024454BF62
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 03:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4C254C123
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 07:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241020AbiFOBoe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 21:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
+        id S233431AbiFOFaD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 01:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbiFOBoc (ORCPT
+        with ESMTP id S229595AbiFOFaA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 21:44:32 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E0331227
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 18:44:31 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id h7so7832852ila.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 18:44:31 -0700 (PDT)
+        Wed, 15 Jun 2022 01:30:00 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4931A49937;
+        Tue, 14 Jun 2022 22:29:59 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u12so20965843eja.8;
+        Tue, 14 Jun 2022 22:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5T0jkmVCOogGKLQtZpWkIgM4TNd4EnqtW+WXWmZ1g6Y=;
-        b=XO5ndbX6g7slCTtSLpU7LsgvNExUf6KEhDSh2IdcZikLXPF/glExn9mtJl3HCcrncA
-         sMbPsLDGuoIZlB0rFtC7XRKoW2jjzCgjORtzMNZzLKxFk825YWCZUtXU4OVnTYxtbtGv
-         8OKlI3AFCeoesQoDS6LYhwsBFMYxFEZ2/qI4j96/6sesrlJCNmDsrcoNrs7F+qGBjYI1
-         0Vq5cXqyd72YJO5GY27s2gcV011Ht2qKPXOm3RlK9IT3m5ZIJJvBBOGHFN4pO78medeT
-         UQjILEa8vd/DFKJkMDONiiraQDv/uWvMc5BpFGSqRKqBhA154JZfAiHq8tKYW/cF9xzj
-         cMdg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JIWkiD2gp+DIgZxu8gKOEwEpgQ5/8fbIKpBeO6X4A6Y=;
+        b=hwECM+53CVSf51IQ6pQMNyVuwW269uKlYHDfaAtqb/U8PafUKk+ORP/TmMgQsgYmoF
+         0PUSzwNQuXGCiSlf27SiPK6C08J6W85qbr6VfOBOc8bZ8inlYzp0faqG8DXQ/WUTfcdi
+         1pRq8aglD/nu4d6+kAzx/oYYjHOdBP++YBYv1ua0BdLRvj93XgbZxX5HVECeBSb4MdBv
+         ubegmtRNBVhfT3icGdh+OkmQEd/9epG6UQejAsD590cQrpXaNG+zHDXaPcJizstK0cec
+         TbFwZP0dEAHXnXS+yv1t60CD3anvCsakpJImS4WCYl9179sN7cC2M4eBAqE6u0l9xqXn
+         swYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5T0jkmVCOogGKLQtZpWkIgM4TNd4EnqtW+WXWmZ1g6Y=;
-        b=SfXgeL3mXbXUNCw53T6HYxaiQxwOb0plqiy8d2nJTAP98AZ8X/dVGLMzSeG2PHm+2G
-         mw93QAHJ5lhUslquCzvDFAkd/9uc5oTyxIA1MM3JJYMIzRnO03G2Mf8C0Izp8VM6GPgl
-         41Li4UyAtgxO1CLI7yXyF101kzpRcJqZVVlQLTTUvXh1ZwgnpBD/cSDi3r6uddK4ZMua
-         W2qdv0bsBY3g8C6BqsX30YdJIB78u6VJ5Ndp2XECTP4htVNkvHfqZ6vSILQScrxxBxF/
-         DKpKb9+xXgyFEVw9CO0O0QFAe+nui+zD8WGHY0B0F2PLBFP1/pWGbaT8c8YhC9/gxCom
-         kqOA==
-X-Gm-Message-State: AJIora+DNaVnq5avQna4ME3xX4CPBh8lLjGiK8n0GIiIacmVHFDo6hR0
-        Kiauy5vW46Z7zoq2X0GWIXAFo8rrm3UHA8DKfPN5uOCX+NyMFw==
-X-Google-Smtp-Source: AGRyM1tmRJ+SL63mbdeZzthMBANCgOEoYBdGkDWkecTkSDRK5ShRipvtRUbgY7aZf8X6jR4xF0ZA4MSQeXQChCtM2Kg=
-X-Received: by 2002:a92:ca49:0:b0:2d3:9e94:1af8 with SMTP id
- q9-20020a92ca49000000b002d39e941af8mr4586452ilo.127.1655257470547; Tue, 14
- Jun 2022 18:44:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JIWkiD2gp+DIgZxu8gKOEwEpgQ5/8fbIKpBeO6X4A6Y=;
+        b=flCeLDfcMDiooZ3pgjgvzEIABgIX9C2vYi65YfYtYmCF7nmywVrSRDWdjo1Qs25Lig
+         nZ1Dsh5P1vzC9mPGrj/uW+LoOoobrvPRGUo6K74OcG1tx7W1Z9QMR/8ApTWM+/H0YX1q
+         nroL9LOyUIIBJ3XOnpaaTxZ2355LullXZodc8Owqr2NdSdkUb9iSoZu5rjccR36TobV6
+         L85eKsS+Gc9vGl4nMw8OpZ/YwprNF/1aq+wZzcYKU34e7cqwRYoRO9nMc3vJxkP8+hvh
+         ysaJmlEoNVNf7eBz2PJJOya7CSd8BPlt7xbsPjZd2llCxCkNNg20mvelAiwQtruYudBD
+         9rGg==
+X-Gm-Message-State: AJIora9RW8Kndak8mL+MEbE2AWByo5WDqo+TmKINGM8tbKqBZIveGZz1
+        iFk7MUZf8W6yI//ZXZfEEYo=
+X-Google-Smtp-Source: AGRyM1vOxWpwOvHY531EZDcFsmLeInua4DAR00pDq3a/iwIic7gxOq6uSLiFrvNwTyn2QtaDZAL71A==
+X-Received: by 2002:a17:907:9605:b0:6f5:c66:7c13 with SMTP id gb5-20020a170907960500b006f50c667c13mr7101498ejc.66.1655270997850;
+        Tue, 14 Jun 2022 22:29:57 -0700 (PDT)
+Received: from opensuse.localnet (host-87-16-96-199.retail.telecomitalia.it. [87.16.96.199])
+        by smtp.gmail.com with ESMTPSA id i2-20020a170906444200b006fed8dfcf78sm5832838ejp.225.2022.06.14.22.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jun 2022 22:29:56 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     David Sterba <dsterba@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, dsterba@suse.cz,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nick Terrell <terrelln@fb.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Filipe Manana <fdmanana@kernel.org>
+Subject: Re: [PATCH] btrfs: Replace kmap() with kmap_local_page() in zstd.c
+Date:   Wed, 15 Jun 2022 07:29:55 +0200
+Message-ID: <3619537.MHq7AAxBmi@opensuse>
+In-Reply-To: <YqjAVq+1PIpVIr0p@iweiny-desk3>
+References: <20220611135203.27992-1-fmdefrancesco@gmail.com> <8952566.CDJkKcVGEf@opensuse> <YqjAVq+1PIpVIr0p@iweiny-desk3>
 MIME-Version: 1.0
-References: <20220609030128.GJ22722@merlins.org> <CAEzrpqfy-sf_xGMohK1EVgtP58tLTso6e7s9iyd3t5XnM3zjCg@mail.gmail.com>
- <20220609211511.GW1745079@merlins.org> <CAEzrpqfhUMDjkaJaa4ZugSuKOWpLyTVJ8nLu9nep5n_qzo-PiA@mail.gmail.com>
- <20220610191156.GB1664812@merlins.org> <CAEzrpqfEj3c5wodYzibBXg34NxtXmQCB60=MtD+Nic2PN8i5bQ@mail.gmail.com>
- <20220613175651.GM1664812@merlins.org> <CAEzrpqdrRJGKPe8C1VvbyPaV3iEDtD1kB_oMiUP=bCs37NfSZw@mail.gmail.com>
- <20220613204647.GO22722@merlins.org> <CAEzrpqdRiG9_O=JTy2LOtp4m470hMj1Ev-bk6RE_ArdRKauLGQ@mail.gmail.com>
- <20220613235242.GR1664812@merlins.org>
-In-Reply-To: <20220613235242.GR1664812@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Tue, 14 Jun 2022 21:44:19 -0400
-Message-ID: <CAEzrpqc7rHHp_D0wO7rRPnCcfJ4TBtVbyCSxzvyOOyA33UpRRA@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 7:52 PM Marc MERLIN <marc@merlins.org> wrote:
->
-> On Mon, Jun 13, 2022 at 06:19:05PM -0400, Josef Bacik wrote:
-> > Hmm that's not good, I've pushed a patch to see if what I think is
-> > happening is actually happening.  Thanks,
->
-> Same?
->
+On marted=C3=AC 14 giugno 2022 19:07:34 CEST Ira Weiny wrote:
+> On Tue, Jun 14, 2022 at 06:28:48PM +0200, Fabio M. De Francesco wrote:
+> > On marted=C3=AC 14 giugno 2022 16:25:21 CEST David Sterba wrote:
+> > > On Tue, Jun 14, 2022 at 01:22:50AM +0200, Fabio M. De Francesco=20
+wrote:
+> > > > On luned=C3=AC 13 giugno 2022 20:39:13 CEST David Sterba wrote:
+> > > > > On Sat, Jun 11, 2022 at 03:52:03PM +0200, Fabio M. De Francesco=20
+> > >=20
+>=20
+> [snip]
+>=20
+> > > > A better solution is changing the prototype of __kunmap_local(); I
+> > > > suppose that Andrew won't object, but who knows?
+> > > >=20
+> > > > (+Cc Andrew Morton).
+> > > >=20
+> > > > I was waiting for your comments. At now I've done about 15=20
+conversions=20
+> > > > across the kernel but it's the first time I had to pass a pointer=20
+to=20
+> > const=20
+> > > > void to kunmap_local(). Therefore, I was not sure if changing the=20
+API=20
+> > were=20
+> > > > better suited (however I have already discussed this with Ira).
+> > >=20
+> > > IMHO it should be fixed in the API.
+> > >=20
+> > I agree with you in full.
+> >=20
+> > At the same time when you sent this email I submitted a patch to change=
+=20
+> > kunmap_local() and kunmap_atomic().
+> >=20
+> > After Andrew takes them I'll send v2 of this patch to zstd.c without=20
+those=20
+> > unnecessary casts.
+>=20
+> David,
+>=20
+> Would you be willing to take this through your tree as a pre-patch to the=
+=20
+kmap
+> changes in btrfs?
+>=20
+> That would be easier for Fabio and probably you and Andrew in the long=20
+run.
+>=20
+> Ira
 
-Sorry Marc, saw this while putting kids to bed and immediately forgot
-it.  I think I've spotted the problem, you should be good now.
+David,
+
+Please drop the first version of the changes[1] to the API and instead take=
+=20
+my second version.[2] I've only reworked the commit message (and subject,=20
+but this was involuntary) to make explicit that the fundamental reason=20
+behind these changes are semantic correctness.
+
 Thanks,
 
-Josef
+=46abio
+
+[1] https://lore.kernel.org/lkml/20220614142531.16478-1-fmdefrancesco@gmail=
+=2Ecom/
+
+[2] https://lore.kernel.org/lkml/20220615051256.31466-1-fmdefrancesco@gmail=
+=2Ecom/
+
+
+
