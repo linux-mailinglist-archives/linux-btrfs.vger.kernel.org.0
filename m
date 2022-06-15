@@ -2,242 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 249FF54CC6B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 17:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A391054CC88
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 17:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbiFOPPp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jun 2022 11:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
+        id S1349113AbiFOPTR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 11:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344978AbiFOPPh (ORCPT
+        with ESMTP id S1349219AbiFOPTP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jun 2022 11:15:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7A829CAC
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 08:15:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=zzi5SbyXzqn0T72VCzOne8atSxMZTUN835WGPfibC7c=; b=jKlnhRMpusz4Ab9cOqz7krQHBn
-        0BtCrmwFVgB8xM3sBoW7aOG0TVciiEHZ6yqRsj6MzZ3vvGFqQzTYeJoAjH16hMufCz/2Nev6odauF
-        fEtJAWwaSF1vS3hV3HbUlrU4Fw7c5yf2CwhX5ZBC5+LHFZWPJ2McXwHlXVj2qlHbWgGih0La+WnWp
-        KZNeTTWADpMKZvoPHk8/lqaqw8ljKmDmzKFLrZuR4Bu7EHB8sPVO/w5M+yTIfRXeevk6CoY5fugUj
-        GqhbJHwGfe7pjv08YS9DnMQbt4sTMcl50d+y1IYsKMU64CwdLEtEbkvnNFELfdIvSuwuXg5/9nikI
-        nDvRBwmQ==;
-Received: from [2001:4bb8:180:36f6:5ab4:8a8:5e48:3d75] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o1Uk0-00F8u2-2Y; Wed, 15 Jun 2022 15:15:32 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/5] btrfs: remove bioc->stripes_pending
-Date:   Wed, 15 Jun 2022 17:15:15 +0200
-Message-Id: <20220615151515.888424-6-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220615151515.888424-1-hch@lst.de>
-References: <20220615151515.888424-1-hch@lst.de>
+        Wed, 15 Jun 2022 11:19:15 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877C53EF3E
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 08:19:14 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id y32so19452886lfa.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 08:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=uDvknv8d8riw/Fioa15Lo6uLbPdIIFNVNdkepeeWRC0=;
+        b=Y2kKGclh4N754L1XM51nCBjKVsJxqeVeNqeTkR9obwKWfoqKQE9rpTDF1HxxnQd0ZX
+         T1vnSlojo9Ud2+8wfx4eVYytiV5mcEkBINWeHmL04JwyFsYmjllXdjZdmcMZk0ra6L5L
+         3vg06hy8TLPE370TShsFgxUxUULeTJYXdr2ojMYAphT1k4ELkFjD9NvhIk0ABnv6uN2O
+         rpKri3K3maMln7KcFzdiery6Zm20/Jw5s1S4wd+DljSHN3XofuFohuo8bhslhjR3+Sak
+         1K6ahpM5x7JicYPWbUFwRlwzihF6CA2RCnCIFNOG4gm6kXnfcsGFUgUNfALbzVs8/MtH
+         eOSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=uDvknv8d8riw/Fioa15Lo6uLbPdIIFNVNdkepeeWRC0=;
+        b=o5SKB3z/cuAygbZ20z+cjg0HL9wT9AjHmLxKq7KzFKFsXFYIsUZZSqCV6UjuTldAYm
+         X/dt5ED7iclcBc/oI5v0PTc9DLqnS56iAqZgn0Ll/5AhcTLoiE/Fx7FDXf0wQ+tosEGN
+         kMHvCTYjLCxUA4kZ/Mtsufi1adOplGZ+hejNDSga15SN57jGfVCcW+88BTXwW7cIKyi9
+         QZf+OUbY6nmdozX6D350feUeO6IhwvcplD7AXC220RZjzF55RuNErvkG+NkRBvAczncb
+         DKjd8677JHJi8WdaBkDej+rKdif7ezodOBiQEhWQWqBG71ff0qqioVSQp0UHqFUqQVrQ
+         6LnA==
+X-Gm-Message-State: AJIora91DYHTGSygASgpJOl1Sqd2/9rjQP4zAveBH+5k2bERsptpjDM3
+        lB3eVPBrj8M+FdpEwKpvJQyo2nsN72bOZA==
+X-Google-Smtp-Source: AGRyM1unm6YtPGS4qovOqC2lXh3T6B8i5MWjLy/grQV4rt1VHDPVXUfonHwtNN1IhyrDB0cQGF1lvA==
+X-Received: by 2002:a05:6512:114e:b0:479:1e02:9318 with SMTP id m14-20020a056512114e00b004791e029318mr31425lfg.156.1655306352813;
+        Wed, 15 Jun 2022 08:19:12 -0700 (PDT)
+Received: from ?IPV6:2a00:1370:8182:326:3fa8:c2fa:fd55:caba? ([2a00:1370:8182:326:3fa8:c2fa:fd55:caba])
+        by smtp.gmail.com with ESMTPSA id s12-20020a2e83cc000000b002554673622esm1722154ljh.32.2022.06.15.08.19.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jun 2022 08:19:12 -0700 (PDT)
+Message-ID: <279f2c1e-52b0-3b9a-7427-147ce2271f8b@gmail.com>
+Date:   Wed, 15 Jun 2022 18:19:10 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: Missing UUID on BTRFS partition in some applications
+Content-Language: en-US
+To:     Jason Beazell <jbeazel@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CA+-mV7c_6Gu7VWKJcw9Tsr1BcjMTbHWNBOXpBwqVjc=vT4iuqw@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <CA+-mV7c_6Gu7VWKJcw9Tsr1BcjMTbHWNBOXpBwqVjc=vT4iuqw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Replace the the stripes_pending field with the pending counter in the
-bio.
+On 15.06.2022 15:59, Jason Beazell wrote:
+> I have an odd one that I haven't been able to find a good resolution
+> for.  I have a partition that suddenly lost its UUID, but seems to be
+> fine otherwise.  I can mount it by device, and btrfs check (cannot run
+> now as the partition is mounted doing a snapraid sync) and scrub
+> report no errors:
+> ~# btrfs scrub status /srv/Data3/
+> UUID:             1846f412-a17d-4e2e-b389-59fd9c7590c0
+> Scrub started:    Sat Jun  4 13:24:32 2022
+> Status:           finished
+> Duration:         5:43:21
+> Total to scrub:   2.76TiB
+> Rate:             183.27MiB/s
+> Error summary:    no errors found
+> 
+> Those both display the UUID, but lsblk -f does not and I cannot mount
+> the partition by UUID:
+> ~# lsblk -f
+> NAME   FSTYPE FSVER LABEL   UUID
+> FSAVAIL FSUSE% MOUNTPOINT
+> sda
+> └─sda1 btrfs        Data4   7a726017-4d75-40db-a90c-485f61209c56
+> 2.7T    51% /srv/Data4
+> sdb
+> └─sdb1 btrfs        Parity2 207ea593-b347-453a-bc5d-fce2a9d4c609
+> 1.5T    73% /srv/Parity1
+> sdc
+> └─sdc1
+> 2.7T    51% /srv/Data3
+> sdd
+> └─sdd1 btrfs        Data1   73c4599d-9d6d-4e4e-9453-cfb128523136
+> 3.9T    28% /srv/Data1
+> sde
+> ├─sde1 ext4   1.0           ff42a1af-db20-434f-b141-2ef2cb170e8c
+> 36.5G    27% /home
+> ├─sde2
+> └─sde5 swap   1             4c37f7d9-7011-430d-8988-a5c003950261
+>          [SWAP]
+> sdf
+> └─sdf1 btrfs        Data2   521987a6-f68e-4eab-ada0-9a3f265a1f89
+> 1.4T    60% /srv/Data2
+> sdh
+> └─sdh1 btrfs        Store   2d9182c0-db86-4d8e-b727-abc594c8f624
+> 1.2T    66% /srv/store
+> sdi
+> └─sdi1 ext4   1.0           ebd917ef-9f7d-45bd-b42d-31a0343d930b
+> 101.4G     8% /
+> 
+> Now that I look at that, I also note that the Label (Data3) is
+> missing. Snapraid complains that the UUID is unsupported when doing a
+> sync: "WARNING! UUID is unsupported for disks: 'Data3'. Not using
+> inodes to detect move operations."
+> 
+> any thoughts??
+> 
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/volumes.c | 100 ++++++++++++++++++++++-----------------------
- fs/btrfs/volumes.h |   1 -
- 2 files changed, 48 insertions(+), 53 deletions(-)
+lsblk normally takes information from udev. What says
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 3a8c437bdd65b..bf80a850347cd 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5889,7 +5889,6 @@ static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_
- 		sizeof(u64) * (total_stripes),
- 		GFP_NOFS|__GFP_NOFAIL);
- 
--	atomic_set(&bioc->error, 0);
- 	refcount_set(&bioc->refs, 1);
- 
- 	bioc->fs_info = fs_info;
-@@ -6619,46 +6618,21 @@ static void btrfs_end_bio_work(struct work_struct *work)
- 	struct btrfs_bio *bbio =
- 		container_of(work, struct btrfs_bio, end_io_work);
- 
--	bio_endio(&bbio->bio);
--}
--
--static void btrfs_end_bioc(struct btrfs_io_context *bioc, bool async)
--{
--	struct bio *orig_bio = bioc->orig_bio;
--	struct btrfs_bio *bbio = btrfs_bio(orig_bio);
--
--	bbio->mirror_num = bioc->mirror_num;
--	orig_bio->bi_private = bioc->private;
--	orig_bio->bi_end_io = bioc->end_io;
--
--	/*
--	 * Only send an error to the higher layers if it is beyond the tolerance
--	 * threshold.
--	 */
--	if (atomic_read(&bioc->error) > bioc->max_errors)
--		orig_bio->bi_status = BLK_STS_IOERR;
--	else
--		orig_bio->bi_status = BLK_STS_OK;
--
--	if (btrfs_op(orig_bio) == BTRFS_MAP_READ && async) {
--		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
--		queue_work(btrfs_end_io_wq(bioc), &bbio->end_io_work);
--	} else {
--		bio_endio(orig_bio);
--	}
--
--	btrfs_put_bioc(bioc);
-+	bbio->bio.bi_end_io(&bbio->bio);
- }
- 
- static void btrfs_end_bio(struct bio *bio)
- {
- 	struct btrfs_io_stripe *stripe = bio->bi_private;
- 	struct btrfs_io_context *bioc = stripe->bioc;
-+	struct bio *orig_bio = bioc->orig_bio;
-+	struct btrfs_bio *bbio = btrfs_bio(orig_bio);
- 
- 	if (bio->bi_status) {
- 		atomic_inc(&bioc->error);
--		if (bio->bi_status == BLK_STS_IOERR ||
--		    bio->bi_status == BLK_STS_TARGET) {
-+		if (stripe->dev && stripe->dev->bdev &&
-+		    (bio->bi_status == BLK_STS_IOERR ||
-+		     bio->bi_status == BLK_STS_TARGET)) {
- 			if (btrfs_op(bio) == BTRFS_MAP_WRITE)
- 				btrfs_dev_stat_inc_and_print(stripe->dev,
- 						BTRFS_DEV_STAT_WRITE_ERRS);
-@@ -6671,12 +6645,35 @@ static void btrfs_end_bio(struct bio *bio)
- 		}
- 	}
- 
--	if (bio != bioc->orig_bio)
-+	btrfs_bio_counter_dec(bioc->fs_info);
-+
-+	if (bio != orig_bio) {
-+		bio_endio(orig_bio);
- 		bio_put(bio);
-+		return;
-+	}
- 
--	btrfs_bio_counter_dec(bioc->fs_info);
--	if (atomic_dec_and_test(&bioc->stripes_pending))
--		btrfs_end_bioc(bioc, true);
-+	/*
-+	 * Only send an error to the higher layers if it is beyond the tolerance
-+	 * threshold.
-+	 */
-+	if (atomic_read(&bioc->error) > bioc->max_errors)
-+		orig_bio->bi_status = BLK_STS_IOERR;
-+	else
-+		orig_bio->bi_status = BLK_STS_OK;
-+
-+	bbio->mirror_num = bioc->mirror_num;
-+	orig_bio->bi_end_io = bioc->end_io;
-+	orig_bio->bi_private = bioc->private;
-+	if (btrfs_op(orig_bio) == BTRFS_MAP_READ) {
-+		bbio->device = stripe->dev;
-+		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
-+		queue_work(btrfs_end_io_wq(bioc), &bbio->end_io_work);
-+	} else {
-+		orig_bio->bi_end_io(orig_bio);
-+	}
-+
-+	btrfs_put_bioc(bioc);
- }
- 
- static void submit_stripe_bio(struct btrfs_io_context *bioc,
-@@ -6687,28 +6684,30 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc,
- 	u64 physical = bioc->stripes[dev_nr].physical;
- 	struct bio *bio;
- 
--	if (!dev || !dev->bdev ||
--	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
--	    (btrfs_op(orig_bio) == BTRFS_MAP_WRITE &&
--	     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
--		atomic_inc(&bioc->error);
--		if (atomic_dec_and_test(&bioc->stripes_pending))
--			btrfs_end_bioc(bioc, false);
--		return;
--	}
--
- 	if (clone) {
--		bio = bio_alloc_clone(dev->bdev, orig_bio, GFP_NOFS, &fs_bio_set);
-+		bio = bio_alloc_clone(NULL, orig_bio, GFP_NOFS, &fs_bio_set);
-+		bio_inc_remaining(orig_bio);
- 	} else {
- 		bio = orig_bio;
--		bio_set_dev(bio, dev->bdev);
--		btrfs_bio(bio)->device = dev;
- 	}
- 
- 	bioc->stripes[dev_nr].bioc = bioc;
- 	bio->bi_private = &bioc->stripes[dev_nr];
- 	bio->bi_end_io = btrfs_end_bio;
- 	bio->bi_iter.bi_sector = physical >> 9;
-+
-+	btrfs_bio_counter_inc_noblocked(fs_info);
-+
-+	if (!dev || !dev->bdev ||
-+	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
-+	    (btrfs_op(bio) == BTRFS_MAP_WRITE &&
-+	     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
-+		bio_io_error(bio);
-+		return;
-+	}
-+
-+	bio_set_dev(bio, dev->bdev);
-+	
- 	/*
- 	 * For zone append writing, bi_sector must point the beginning of the
- 	 * zone
-@@ -6729,8 +6728,6 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc,
- 		(unsigned long)dev->bdev->bd_dev, rcu_str_deref(dev->name),
- 		dev->devid, bio->bi_iter.bi_size);
- 
--	btrfs_bio_counter_inc_noblocked(fs_info);
--
- 	btrfsic_check_bio(bio);
- 	submit_bio(bio);
- }
-@@ -6760,7 +6757,6 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 	bioc->orig_bio = bio;
- 	bioc->private = bio->bi_private;
- 	bioc->end_io = bio->bi_end_io;
--	atomic_set(&bioc->stripes_pending, total_devs);
- 
- 	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
- 	    ((btrfs_op(bio) == BTRFS_MAP_WRITE) || (mirror_num > 1))) {
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index c0f5bbba9c6ac..ecbaf92323030 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -444,7 +444,6 @@ struct btrfs_discard_stripe {
-  */
- struct btrfs_io_context {
- 	refcount_t refs;
--	atomic_t stripes_pending;
- 	struct btrfs_fs_info *fs_info;
- 	u64 map_type; /* get from map_lookup->type */
- 	bio_end_io_t *end_io;
--- 
-2.30.2
+udevadm info --query property -n sdc1
+
+> thanks!
+> 
+> # uname -a
+> Linux Moirai 5.10.0-14-amd64 #1 SMP Debian 5.10.113-1 (2022-04-29)
+> x86_64 GNU/Linux
+> ~# btrfs --version
+> btrfs-progs v5.10.1
+> ~# btrfs fi show
+> Label: 'Data2'  uuid: 521987a6-f68e-4eab-ada0-9a3f265a1f89
+>         Total devices 1 FS bytes used 2.19TiB
+>         devid    1 size 3.64TiB used 2.93TiB path /dev/sdf1
+> 
+> Label: 'Data1'  uuid: 73c4599d-9d6d-4e4e-9453-cfb128523136
+>         Total devices 1 FS bytes used 1.52TiB
+>         devid    1 size 5.46TiB used 1.66TiB path /dev/sdd1
+> 
+> Label: 'Data3'  uuid: 1846f412-a17d-4e2e-b389-59fd9c7590c0
+>         Total devices 1 FS bytes used 2.76TiB
+>         devid    1 size 5.46TiB used 2.92TiB path /dev/sdc1
+> 
+> Label: 'Data4'  uuid: 7a726017-4d75-40db-a90c-485f61209c56
+>         Total devices 1 FS bytes used 2.78TiB
+>         devid    1 size 5.46TiB used 3.23TiB path /dev/sda1
+> 
+> Label: 'Store'  uuid: 2d9182c0-db86-4d8e-b727-abc594c8f624
+>         Total devices 1 FS bytes used 2.38TiB
+>         devid    1 size 3.64TiB used 2.77TiB path /dev/sdh1
+> 
+> Label: 'Parity2'  uuid: 207ea593-b347-453a-bc5d-fce2a9d4c609
+>         Total devices 1 FS bytes used 3.96TiB
+>         devid    1 size 5.46TiB used 3.96TiB path /dev/sdb1
+> 
+> ~# btrfs fi df /srv/Data3/
+> Data, single: total=2.91TiB, used=2.75TiB
+> System, DUP: total=8.00MiB, used=352.00KiB
+> Metadata, DUP: total=7.00GiB, used=4.76GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
 
