@@ -2,363 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21CC54D38A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 23:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4502554D3B1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 23:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349999AbiFOVTI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jun 2022 17:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
+        id S1349720AbiFOV1n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 17:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349978AbiFOVTH (ORCPT
+        with ESMTP id S1349710AbiFOV1l (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jun 2022 17:19:07 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CDF55490
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 14:19:05 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id z11so9667894ilq.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 14:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LuhlzdQOX4wZkoN22Th5dWjFj1pmKHIaVAFD+a7+5+8=;
-        b=RM7KAyghS13RzSzyc6OaRHo4nXZGMJGEQoKulDgCtDHT/Ec8jv1EQr7v9d4crmbz75
-         Zed3Jn87UQilSjTxliVwW1M709e71dO7S3xy+GSr2p3M17G4Oj1onisF81lLc99EEl3S
-         B/VkDd05N4Htt3bPoO4s9E09J1YmGIbqJirliRye+0k273CEPERy11IaOaN75VTbn/+/
-         yh5pjzIsAQj4zwNU407+3uFpG9jzGkUIWQtaIdeQo/hYFN6DvbJay7tGKOFhPSk+nlKF
-         2EOXh6u0raHxONqGvb+D4LGFDa/uicHdBUqIqAJx7yeE2afmjCl0XRep7PcgUdkn3ds/
-         km3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LuhlzdQOX4wZkoN22Th5dWjFj1pmKHIaVAFD+a7+5+8=;
-        b=orzqckzC5L8cda9Y1L/R5UFGUQ/0nbWi5o93h2LM2fp7c4ZTotjwb9vCF1RjW8UZnH
-         OPCAtEIkhuHIaY81uTIK4uBZJuXnt8TmHGV/iHv3LEEQYlyPjYTlhXOWUwc+wi8rduje
-         0JCvjiwaEv0WCLBVN+T1WFMofpeEz7znrI1+Hd4TcOSvMEAJR6G1J87QzuQp8eqFtucl
-         p/Q9VPIjgWobFQ4aYkEEU1fGfeKjJ1aUBrXf8RocRPgsiyMfh6lRjOp5JC3WmtaMaoon
-         FmTC7hyiZlJcPnGy4TRAUfcQHq4S5dKnXUHE0KlicUmSIT33VCJLIN8T7mg4AuHNybDg
-         ERNQ==
-X-Gm-Message-State: AJIora9GJRNRmCYKosnknCU/m9Ym36Hq+La5tib87txwDGGSN8vKQJVO
-        QfRcTwVQMwY+16zQOlEekw6KnVkSWfLbsAEi5l0aHOreLFo=
-X-Google-Smtp-Source: AGRyM1txOLjTFWJZwnjuTQk1cSy07t418bxbHbVfDuQdBg63mgvhY4TQOyqtZ1lAZFnzUyMquEqbXD7QwRedqkEnGd8=
-X-Received: by 2002:a05:6e02:156e:b0:2d1:c265:964f with SMTP id
- k14-20020a056e02156e00b002d1c265964fmr1034483ilu.153.1655327945117; Wed, 15
- Jun 2022 14:19:05 -0700 (PDT)
+        Wed, 15 Jun 2022 17:27:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BFC167C7;
+        Wed, 15 Jun 2022 14:27:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1655328434;
+        bh=sewS1k19E5zNFt7guGx8ADD0uovsZroqX/MykOeNoAw=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=ZaY29LgSeKsC0VKC0SfEO8gCT/mbD6Qy/5eG//rKUlfwQK32wCZyAB8p4+MeiczAs
+         wEnfd+sTmcT94yqzlRVJePYywnp5EvPECoxAhy5pRe56snX/8JFtBBgpCsKSUAfHNV
+         jL/7QpKzQmAvk0RCH/rLb4FqlMv8n1jXIqjxFB38=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHru-1nhIVP2ZLu-00tnF1; Wed, 15
+ Jun 2022 23:27:14 +0200
+Message-ID: <00bbda63-dc00-05c0-4244-343352591d98@gmx.com>
+Date:   Thu, 16 Jun 2022 05:27:04 +0800
 MIME-Version: 1.0
-References: <CAEzrpqejNj3qTtTJ7Godb0VMsxKt094vMw+iT4XR1B9aayO7Nw@mail.gmail.com>
- <20220609030128.GJ22722@merlins.org> <CAEzrpqfy-sf_xGMohK1EVgtP58tLTso6e7s9iyd3t5XnM3zjCg@mail.gmail.com>
- <20220609211511.GW1745079@merlins.org> <CAEzrpqfhUMDjkaJaa4ZugSuKOWpLyTVJ8nLu9nep5n_qzo-PiA@mail.gmail.com>
- <20220610191156.GB1664812@merlins.org> <CAEzrpqfEj3c5wodYzibBXg34NxtXmQCB60=MtD+Nic2PN8i5bQ@mail.gmail.com>
- <20220613175651.GM1664812@merlins.org> <CAEzrpqdrRJGKPe8C1VvbyPaV3iEDtD1kB_oMiUP=bCs37NfSZw@mail.gmail.com>
- <20220615142929.GP22722@merlins.org> <20220615145547.GQ22722@merlins.org>
-In-Reply-To: <20220615145547.GQ22722@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Wed, 15 Jun 2022 17:18:54 -0400
-Message-ID: <CAEzrpqdRn9mO0pDOogf37qWH07GryACqidHDbZcpoe7t73GDeQ@mail.gmail.com>
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [syzbot] KASAN: use-after-free Read in copy_page_from_iter_atomic
+ (2)
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dsterba@suse.cz,
+        syzbot <syzbot+d2dd123304b4ae59f1bd@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        willy@infradead.org
+References: <0000000000003ce9d105e0db53c8@google.com>
+ <00000000000085068105e112a117@google.com>
+ <20220613193912.GI20633@twin.jikos.cz> <20220614071757.GA1207@lst.de>
+ <2cc67037-cf90-cca2-1655-46b92b43eba8@gmx.com>
+ <20220615132147.GA18252@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220615132147.GA18252@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GzvWUv7j+dS6fGBh0O76pQHRuv0QctvPBDKfUco4+Y/GlL/5y5g
+ BXHYTJT9fnyYxlKhn1+btWdWvWOiF9BDnLfCq+EChmasKSAq6b9B1pCQq6ZQASuejlOodGV
+ HN32edj0jLN7bwq3m5m0D0pObpIh6RNHWquJ644IBNrDdnIdMTXGq0sbFfGfNtFwiDuTyIw
+ bbtKn1jfl54A+36cVRM4w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lmKkDBBaQN4=:jf9gSILfZGEkHNseXPaNRe
+ PvP7u+k40FY2CY2c0qVJJZBB/SSwTJDnZaUJ+SDpqeZrdOVsk4C8rtHyoZ8VARRoOxw5VTHmO
+ Ccz1d/+zDolUMSDJN/JxkTSUDCi2OKfQeM8YN7zQyU1v+Pg8h/hVzRfH+sXiLqZHpm7yImcXe
+ Zns22cRY5ahuRaE2oWaY1UC1+UNPve57Dv7F1pFGJQVGEqTOvkI1xzJuM8qT/ieBd55fD/oAs
+ +55imKkenFxKoBNFuRBqJtrb98zaAbF0NbNBl5pktTcEOsz1cjYh4KKWMFNa5qnu3lHRVjFW3
+ ONRUrJDpOunQSHpCP8sruk9PrSwAmxUHeIWZdGTY7XIfJUMs/ISyhdsYDW1cMmK2JGnUtyp0q
+ /5fzm0FFf6xdr6G9q4cwF1q2jsuHIV+y7uKkqGyNicAXak9LPk7aXkU6Mnw0WYUKFdBmMPYTJ
+ 8TvJRrLCXnJB4RQGlAe2KNe3jelUpxv0Ei6DJqn7gTb5tiESBPwTu7NHZ7EcZ+io2rjhfrJ7y
+ Y/FP/JpHG1b//XFXHUbQTCvbMJ/43T/wrLGtw3wwa2RDgtWGdP+XwIGL5sAlQODdEKXMR2hxa
+ L6yL2jOirN64cSOHfNuQ5aHJ9fhfqmezh1imJwI7+nWdkjiKYZMgucyVWFqTwZAyclAj4jLka
+ eSVL2A07OUVdeB6IDpq4LW4KFqX+HFtZD566Dw61X8vjl4W2kSyTdZknPV/eatpzAEQKJ+YA3
+ +wvPTCK/09H35naTvpU8cdM9FDkWK2rEQHZZpBSlCC0D6F+x3GT0XL2fj+v9j+51RUk2Q4Hbc
+ ByLPN/HiArHr1xbq6ktyJEjpMmjMQMv30Vq/4BM6ZqJty8OHCs7dnwqBo1RxgcaDcglFBAy6r
+ Wwsy3UqRjM3N3/IsstSmsF1f112zJKzsOYGBVU4n+YxJgSKiRC7yDB2VPVt3e6jdeK3Y8m5gg
+ qq53Pz/u7c4wKhvf5ASPAnB2ygA748E+2SLwxVHmnm0UFKhZJCJA+GnZsL21qOCyZ6N0bei8M
+ QRln+yhh05sPLbVNlsPEmewJAHICI57FsNDrKog79AJsQEEtviKYHZqb1O8GsrBevAn4KBoZi
+ Xr+vzv/l0huLKyq0FCz7buQROHIxWvDxZDm22i6sWCwe/AwVl79didzmQ==
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 10:55 AM Marc MERLIN <marc@merlins.org> wrote:
+
+
+On 2022/6/15 21:21, Christoph Hellwig wrote:
+> On Tue, Jun 14, 2022 at 04:50:22PM +0800, Qu Wenruo wrote:
+>> The same way as data?
+>>
+>> map-logical to find the location of a mirror, write 4 bytes of zero int=
+o
+>> the location, then call it a day.
+>>
+>> Although for metadata, you may want to choose a metadata that would
+>> definitely get read.
+>> Thus tree root is a good candidate.
 >
-> On Wed, Jun 15, 2022 at 07:29:29AM -0700, Marc MERLIN wrote:
-> > gargamel:/mnt/mnt# btrfs scrub start -B .
-> > running that now, I expect it will take a while.
->
-> Never mind, it was fast:
-> gargamel:/mnt/mnt# btrfs scrub start -B .
-> scrub done for 96539b8c-ccc9-47bf-9e6c-29305890941e
-> Scrub started:    Wed Jun 15 07:28:02 2022
-> Status:           finished
-> Duration:         0:03:33
-> Total to scrub:   111.00GiB
+> And how do I find out the logic address of the tree root?
 
-Hrm shit, this isn't good, don't you have a lot more data than 111gib?
+For tree root, "btrfs ins dump-super <dev> | grep '^root\s'.
 
-> Rate:             98.39MiB/s
-> Error summary:    verify=14
->   Corrected:      14
->   Uncorrectable:  0
->   Unverified:     0
-> WARNING: errors detected during scrubbing, corrected
->
-> > > The next thing is to fix the fs errors, which I imagine will cause
-> > > other problems like not being able to find directories and files and
-> > > such.  Once we've gotten the csum tree and the scrub done we can
-> > > tackle the remaining fs error problems which should be less terrifying
-> > > to mess with.  Thanks,
-> >
-> > would that be check --repair ?
->
-> here's check without repair:
->
-> [1/7] checking root items
-> [2/7] checking extents
-> ref mismatch on [11160501911552 16384] extent item 1, found 0
-> backref 11160501911552 root 7 not referenced back 0x56389bce5cd0
-> incorrect global backref count on 11160501911552 found 1 wanted 0
-> backpointer mismatch on [11160501911552 16384]
-> owner ref check failed [11160501911552 16384]
-> ref mismatch on [11160502042624 16384] extent item 1, found 0
-> backref 11160502042624 root 7 not referenced back 0x56389bce44d0
-> incorrect global backref count on 11160502042624 found 1 wanted 0
-> backpointer mismatch on [11160502042624 16384]
-> owner ref check failed [11160502042624 16384]
-> ref mismatch on [11160502845440 16384] extent item 1, found 0
-> backref 11160502845440 root 7 not referenced back 0x56389be42060
-> incorrect global backref count on 11160502845440 found 1 wanted 0
-> backpointer mismatch on [11160502845440 16384]
-> owner ref check failed [11160502845440 16384]
-> ref mismatch on [11160502927360 16384] extent item 1, found 0
-> backref 11160502927360 root 7 not referenced back 0x56389be42560
-> incorrect global backref count on 11160502927360 found 1 wanted 0
-> backpointer mismatch on [11160502927360 16384]
-> owner ref check failed [11160502927360 16384]
-> ref mismatch on [15645021241344 16384] extent item 1, found 0
-> backref 15645021241344 root 7 not referenced back 0x56389bdc98a0
-> incorrect global backref count on 15645021241344 found 1 wanted 0
-> backpointer mismatch on [15645021241344 16384]
-> owner ref check failed [15645021241344 16384]
+For other tree blocks, "btrfs ins dump-tree <dev>" then with other other
+keywords to grab.
 
-Oh oops, I must have missed this in the init-extent-tree.  Let me look
-into this and I'll let you know when you can run the code again.
-
-> ERROR: errors found in extent allocation tree or chunk allocation
-> [3/7] checking free space cache
-> Couldn't find free space inode 1
-> Couldn't find free space inode 1
-> (...)
-> Couldn't find free space inode 1
-> Couldn't find free space inode 1
-> [4/7] checking fs roots
-> root 161199 inode 54988 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 1572864
-> root 161199 inode 54989 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 16252928, len: 91824128
->         unresolved ref dir 54974 index 16 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161199 inode 55003 errors 500, file extent discount, nbytes wrong
-> Found file extent holes:
->         start: 0, len: 1048576
-> root 161199 inode 55004 errors 500, file extent discount, nbytes wrong
-> Found file extent holes:
->         start: 0, len: 1048576
->         unresolved ref dir 56235 index 12 name foo filetype mismatch
-> root 161199 inode 55409 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 55399 index 11 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161199 inode 55410 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 1572864
-> root 161199 inode 55411 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 55399 index 13 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161199 inode 55412 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 1048576
->         unresolved ref dir 55399 index 14 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161199 inode 55413 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 24117248, len: 34611200
->         unresolved ref dir 55399 index 15 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161199 inode 55459 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 56098816, len: 265449472
->         unresolved ref dir 55437 index 23 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161199 inode 55468 errors 100, file extent discount
-> Found file extent holes:
->         start: 27787264, len: 302174208
-> root 161199 inode 55475 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 1048576
-> root 161199 inode 55476 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 28803072, len: 459870208
->         unresolved ref dir 55437 index 40 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161199 inode 55526 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 524288
-> root 161199 inode 55527 errors 100, file extent discount
-> Found file extent holes:
->         start: 26738688, len: 462848
-> root 161199 inode 55528 errors 100, file extent discount
-> Found file extent holes:
->         start: 16252928, len: 184320
-> root 161199 inode 55530 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 524288
-> root 161199 inode 55531 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 4194304, len: 11001856
->         unresolved ref dir 55511 index 21 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 54988 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 1572864
-> root 161889 inode 54989 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 16252928, len: 91824128
->         unresolved ref dir 54974 index 16 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 55003 errors 500, file extent discount, nbytes wrong
-> Found file extent holes:
->         start: 0, len: 1048576
-> root 161889 inode 55004 errors 500, file extent discount, nbytes wrong
-> Found file extent holes:
->         start: 0, len: 1048576
->         unresolved ref dir 56235 index 48 name foo filetype mismatch
-> root 161889 inode 55409 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 55399 index 11 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 55410 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 1572864
-> root 161889 inode 55411 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 55399 index 13 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 55412 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 1048576
->         unresolved ref dir 55399 index 14 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 55413 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 24117248, len: 34611200
->         unresolved ref dir 55399 index 15 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 55459 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 56098816, len: 265449472
->         unresolved ref dir 55437 index 23 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 55468 errors 100, file extent discount
-> Found file extent holes:
->         start: 27787264, len: 302174208
-> root 161889 inode 55475 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 1048576
-> root 161889 inode 55476 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 28803072, len: 459870208
->         unresolved ref dir 55437 index 40 name foo filetype 0 errors 3, no dir item, no dir index
-> root 161889 inode 55526 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 524288
-> root 161889 inode 55527 errors 100, file extent discount
-> Found file extent holes:
->         start: 26738688, len: 462848
-> root 161889 inode 55528 errors 100, file extent discount
-> Found file extent holes:
->         start: 16252928, len: 184320
-> root 161889 inode 55530 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 524288
-> root 161889 inode 55531 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 4194304, len: 11001856
->         unresolved ref dir 55511 index 21 name foo filetype 0 errors 3, no dir item, no dir index
-> root 163920 inode 76551 errors 100, file extent discount
-> Found file extent holes:
->         start: 1037262848, len: 184238080
-> root 163920 inode 76556 errors 100, file extent discount
-> Found file extent holes:
->         start: 1639038976, len: 213225472
->         unresolved ref dir 791 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 3676 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 72785 index 720 name foo filetype mismatch
->         unresolved ref dir 791 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 3676 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 73103 index 544 name foo filetype mismatch
->         unresolved ref dir 73103 index 672 name foo filetype mismatch
->         unresolved ref dir 4179 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 4698 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 5506 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 5546 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
-> root 164624 inode 25918 errors 500, file extent discount, nbytes wrong
-> Found file extent holes:
->         start: 0, len: 1262850048
-> root 164624 inode 72429 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 1333788672, len: 3217154048
->         unresolved ref dir 72438 index 4 name foo filetype 0 errors 3, no dir item, no dir index
-> root 164624 inode 72433 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 892338176, len: 14957748224
->         unresolved ref dir 34951 index 13 name foo filetype 0 errors 3, no dir item, no dir index
-> root 164624 inode 72593 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 42074112, len: 413642752
->         unresolved ref dir 75036 index 19 name foo filetype 0 errors 3, no dir item, no dir index
->         unresolved ref dir 73103 index 1524 name foo filetype mismatch
-> root 164624 inode 73009 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 13869056, len: 53100544
->         unresolved ref dir 72672 index 134 name foo filetype 1 errors 1, no dir item
-> root 164624 inode 73083 errors 500, file extent discount, nbytes wrong
-> Found file extent holes:
->         start: 197263360, len: 399777792
-> root 164624 inode 73094 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 74963 index 32 name foo filetype 0 errors 3, no dir item, no dir index
-> root 164624 inode 73097 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 74963 index 36 name foo filetype 0 errors 3, no dir item, no dir index
->         unresolved ref dir 791 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 3676 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 73103 index 540 name foo filetype mismatch
->         unresolved ref dir 4179 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 4698 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 5506 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 5546 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
-> root 164629 inode 39921 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 759824384, len: 2143326208
->         unresolved ref dir 10205 index 356 name foo filetype 0 errors 3, no dir item, no dir index
-> root 164629 inode 72429 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 1333788672, len: 3217154048
->         unresolved ref dir 72438 index 4 name foo filetype 0 errors 3, no dir item, no dir index
-> root 164629 inode 72433 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 892338176, len: 14957748224
->         unresolved ref dir 34951 index 13 name foo filetype 0 errors 3, no dir item, no dir index
-> root 164629 inode 72593 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 42074112, len: 413642752
->         unresolved ref dir 75036 index 19 name foo filetype 0 errors 3, no dir item, no dir index
->         unresolved ref dir 73103 index 1386 name foo filetype mismatch
-> root 164629 inode 73009 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 13869056, len: 53100544
->         unresolved ref dir 72672 index 134 name foo filetype 1 errors 1, no dir item
-> root 164629 inode 73083 errors 500, file extent discount, nbytes wrong
-> Found file extent holes:
->         start: 197263360, len: 399777792
-> root 164629 inode 73094 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 74963 index 32 name foo filetype 0 errors 3, no dir item, no dir index
-> root 164629 inode 73097 errors 2500, file extent discount, nbytes wrong, link count wrong
-> Found file extent holes:
->         start: 0, len: 524288
->         unresolved ref dir 74963 index 36 name foo filetype 0 errors 3, no dir item, no dir index
->         unresolved ref dir 791 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
->         unresolved ref dir 3676 index 0 name foo filetype 1 errors 6, no dir index, no inode ref
-
-Ok the rest of these are going to take some work to fix up.  I'll work
-on that as well.  Thanks,
-
-Josef
+Thanks,
+Qu
