@@ -2,239 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 793D654BDF2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 00:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0024454BF62
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jun 2022 03:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357106AbiFNW5C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jun 2022 18:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        id S241020AbiFOBoe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jun 2022 21:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357081AbiFNW5B (ORCPT
+        with ESMTP id S232340AbiFOBoc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jun 2022 18:57:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D8936E34
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 15:57:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 18F0C21B3C
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1655247419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8UF4M/ialQLAparItA3vyL4bhn/IZHkuq62XubNTGG0=;
-        b=qkRW7xlaUNiyvr+9VyetACOZxyOa7EzIzlvKUC3V+suHXaxNcVakzTIXzMMQKnUUUPdIZn
-        DPi6K1vu9COrtMkVXLlH83g5szbTkQ7wAGrEd9UED/jAocZtp5TQ8GdsAyOSlMUpqXHUho
-        t2qGK2MWUgQT7nahVapP+EMR829T/Gw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E174139EC
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +FZ1DjoSqWI3cAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 22:56:58 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH DRAFT 6/6] btrfs-progs: introduce the experimental compat RO flag, WRITE_INTENT_BITMAP
-Date:   Wed, 15 Jun 2022 06:56:34 +0800
-Message-Id: <bea38e431c2919264d5ce0170e293a74a05154f6.1655247047.git.wqu@suse.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <cover.1655247047.git.wqu@suse.com>
-References: <cover.1655247047.git.wqu@suse.com>
+        Tue, 14 Jun 2022 21:44:32 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E0331227
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 18:44:31 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id h7so7832852ila.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jun 2022 18:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5T0jkmVCOogGKLQtZpWkIgM4TNd4EnqtW+WXWmZ1g6Y=;
+        b=XO5ndbX6g7slCTtSLpU7LsgvNExUf6KEhDSh2IdcZikLXPF/glExn9mtJl3HCcrncA
+         sMbPsLDGuoIZlB0rFtC7XRKoW2jjzCgjORtzMNZzLKxFk825YWCZUtXU4OVnTYxtbtGv
+         8OKlI3AFCeoesQoDS6LYhwsBFMYxFEZ2/qI4j96/6sesrlJCNmDsrcoNrs7F+qGBjYI1
+         0Vq5cXqyd72YJO5GY27s2gcV011Ht2qKPXOm3RlK9IT3m5ZIJJvBBOGHFN4pO78medeT
+         UQjILEa8vd/DFKJkMDONiiraQDv/uWvMc5BpFGSqRKqBhA154JZfAiHq8tKYW/cF9xzj
+         cMdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5T0jkmVCOogGKLQtZpWkIgM4TNd4EnqtW+WXWmZ1g6Y=;
+        b=SfXgeL3mXbXUNCw53T6HYxaiQxwOb0plqiy8d2nJTAP98AZ8X/dVGLMzSeG2PHm+2G
+         mw93QAHJ5lhUslquCzvDFAkd/9uc5oTyxIA1MM3JJYMIzRnO03G2Mf8C0Izp8VM6GPgl
+         41Li4UyAtgxO1CLI7yXyF101kzpRcJqZVVlQLTTUvXh1ZwgnpBD/cSDi3r6uddK4ZMua
+         W2qdv0bsBY3g8C6BqsX30YdJIB78u6VJ5Ndp2XECTP4htVNkvHfqZ6vSILQScrxxBxF/
+         DKpKb9+xXgyFEVw9CO0O0QFAe+nui+zD8WGHY0B0F2PLBFP1/pWGbaT8c8YhC9/gxCom
+         kqOA==
+X-Gm-Message-State: AJIora+DNaVnq5avQna4ME3xX4CPBh8lLjGiK8n0GIiIacmVHFDo6hR0
+        Kiauy5vW46Z7zoq2X0GWIXAFo8rrm3UHA8DKfPN5uOCX+NyMFw==
+X-Google-Smtp-Source: AGRyM1tmRJ+SL63mbdeZzthMBANCgOEoYBdGkDWkecTkSDRK5ShRipvtRUbgY7aZf8X6jR4xF0ZA4MSQeXQChCtM2Kg=
+X-Received: by 2002:a92:ca49:0:b0:2d3:9e94:1af8 with SMTP id
+ q9-20020a92ca49000000b002d39e941af8mr4586452ilo.127.1655257470547; Tue, 14
+ Jun 2022 18:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220609030128.GJ22722@merlins.org> <CAEzrpqfy-sf_xGMohK1EVgtP58tLTso6e7s9iyd3t5XnM3zjCg@mail.gmail.com>
+ <20220609211511.GW1745079@merlins.org> <CAEzrpqfhUMDjkaJaa4ZugSuKOWpLyTVJ8nLu9nep5n_qzo-PiA@mail.gmail.com>
+ <20220610191156.GB1664812@merlins.org> <CAEzrpqfEj3c5wodYzibBXg34NxtXmQCB60=MtD+Nic2PN8i5bQ@mail.gmail.com>
+ <20220613175651.GM1664812@merlins.org> <CAEzrpqdrRJGKPe8C1VvbyPaV3iEDtD1kB_oMiUP=bCs37NfSZw@mail.gmail.com>
+ <20220613204647.GO22722@merlins.org> <CAEzrpqdRiG9_O=JTy2LOtp4m470hMj1Ev-bk6RE_ArdRKauLGQ@mail.gmail.com>
+ <20220613235242.GR1664812@merlins.org>
+In-Reply-To: <20220613235242.GR1664812@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Tue, 14 Jun 2022 21:44:19 -0400
+Message-ID: <CAEzrpqc7rHHp_D0wO7rRPnCcfJ4TBtVbyCSxzvyOOyA33UpRRA@mail.gmail.com>
+Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
+ verify failed + open_ctree failed)
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This new compat RO flag will only be enabled through experimental
-features.
+On Mon, Jun 13, 2022 at 7:52 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Mon, Jun 13, 2022 at 06:19:05PM -0400, Josef Bacik wrote:
+> > Hmm that's not good, I've pushed a patch to see if what I think is
+> > happening is actually happening.  Thanks,
+>
+> Same?
+>
 
-Since this feature has no real code implementation yet, only the
-following code changes are added:
+Sorry Marc, saw this while putting kids to bed and immediately forgot
+it.  I think I've spotted the problem, you should be good now.
+Thanks,
 
-- New super block check
-  To ensure WRITE_INTENT_BITMAP is enabled along with
-  EXTRA_SUPER_RESERVED
-
-- New compat RO flag readable string output
-
-- New mkfs runtime features
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- common/fsfeatures.c        | 11 +++++++++++
- common/fsfeatures.h        |  1 +
- kernel-shared/ctree.h      | 15 +++++++++++++++
- kernel-shared/disk-io.c    |  9 +++++++++
- kernel-shared/print-tree.c |  1 +
- mkfs/common.c              |  9 +++++++++
- mkfs/main.c                |  5 +++++
- 7 files changed, 51 insertions(+)
-
-diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-index 057519c50c54..63258262437d 100644
---- a/common/fsfeatures.c
-+++ b/common/fsfeatures.c
-@@ -181,6 +181,17 @@ static const struct btrfs_feature runtime_features[] = {
- 		VERSION_NULL(default),
- 		.desc		= "extra super block reserved space for each device"
- 	},
-+#if EXPERIMENTAL
-+	{
-+		.name		= "write-intent-bitmap",
-+		.flag		= BTRFS_RUNTIME_FEATURE_WRITE_INTENT_BITMAP,
-+		.sysfs_name = "write_intent_bitmap",
-+		VERSION_NULL(compat),
-+		VERSION_NULL(safe),
-+		VERSION_NULL(default),
-+		.desc		= "write intent bitmap"
-+	},
-+#endif
- 	/* Keep this one last */
- 	{
- 		.name = "list-all",
-diff --git a/common/fsfeatures.h b/common/fsfeatures.h
-index 565873ec0e4f..c48aa5d05ac0 100644
---- a/common/fsfeatures.h
-+++ b/common/fsfeatures.h
-@@ -46,6 +46,7 @@
- #define BTRFS_RUNTIME_FEATURE_QUOTA		(1ULL << 0)
- #define BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE	(1ULL << 1)
- #define BTRFS_RUNTIME_FEATURE_EXTRA_SUPER_RESERVED (1ULL << 2)
-+#define BTRFS_RUNTIME_FEATURE_WRITE_INTENT_BITMAP  (1ULL << 3)
- 
- void btrfs_list_all_fs_features(u64 mask_disallowed);
- void btrfs_list_all_runtime_features(u64 mask_disallowed);
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 0b4a8d60ceb4..c746c0d3ab89 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -502,6 +502,13 @@ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
-  */
- #define BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED	(1ULL << 3)
- 
-+/*
-+ * Allow btrfs to have per-device write-intent bitmap.
-+ * Will be utilized to close the RAID56 write-hole (by forced scrub for dirty
-+ * partial written stripes at mount time).
-+ */
-+#define BTRFS_FEATURE_COMPAT_RO_WRITE_INTENT_BITMAP	(1ULL << 4)
-+
- #define BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF	(1ULL << 0)
- #define BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL	(1ULL << 1)
- #define BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS	(1ULL << 2)
-@@ -524,6 +531,13 @@ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
- 
- #define BTRFS_FEATURE_COMPAT_SUPP		0ULL
- 
-+#if EXPERIMENTAL
-+#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
-+	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
-+	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |\
-+	 BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED |	\
-+	 BTRFS_FEATURE_COMPAT_RO_WRITE_INTENT_BITMAP)
-+#else
- /*
-  * The FREE_SPACE_TREE and FREE_SPACE_TREE_VALID compat_ro bits must not be
-  * added here until read-write support for the free space tree is implemented in
-@@ -533,6 +547,7 @@ BUILD_ASSERT(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
- 	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
- 	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |\
- 	 BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED)
-+#endif
- 
- #if EXPERIMENTAL
- #define BTRFS_FEATURE_INCOMPAT_SUPP			\
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index bf3ea5e63165..843fe0e73940 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -1848,6 +1848,15 @@ int btrfs_check_super(struct btrfs_super_block *sb, unsigned sbflags)
- 		}
- 	}
- 
-+	if (btrfs_super_compat_ro_flags(sb) &
-+	    BTRFS_FEATURE_COMPAT_RO_WRITE_INTENT_BITMAP &&
-+	    !(btrfs_super_compat_ro_flags(sb) &
-+	      BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED)) {
-+		error(
-+"write intent bitmap feature enabled without extra super reserved feature");
-+		goto error_out;
-+	}
-+
- 	if (btrfs_super_compat_ro_flags(sb) &
- 	    BTRFS_FEATURE_COMPAT_RO_EXTRA_SUPER_RESERVED &&
- 	    btrfs_super_reserved_bytes(sb) < BTRFS_BLOCK_RESERVED_1M_FOR_SUPER) {
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 918ebe02144a..55875a7bc2d3 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -1669,6 +1669,7 @@ static struct readable_flag_entry compat_ro_flags_array[] = {
- 	DEF_COMPAT_RO_FLAG_ENTRY(FREE_SPACE_TREE),
- 	DEF_COMPAT_RO_FLAG_ENTRY(FREE_SPACE_TREE_VALID),
- 	DEF_COMPAT_RO_FLAG_ENTRY(EXTRA_SUPER_RESERVED),
-+	DEF_COMPAT_RO_FLAG_ENTRY(WRITE_INTENT_BITMAP),
- };
- static const int compat_ro_flags_num = sizeof(compat_ro_flags_array) /
- 				       sizeof(struct readable_flag_entry);
-diff --git a/mkfs/common.c b/mkfs/common.c
-index f3c00f08826d..98da10718e7b 100644
---- a/mkfs/common.c
-+++ b/mkfs/common.c
-@@ -316,6 +316,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 				 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2);
- 	bool extra_super_reserved = !!(cfg->runtime_features &
- 				 BTRFS_RUNTIME_FEATURE_EXTRA_SUPER_RESERVED);
-+	bool write_intent_bitmap = !!(cfg->runtime_features &
-+				 BTRFS_RUNTIME_FEATURE_WRITE_INTENT_BITMAP);
- 
- 	/* Don't include the free space tree in the blocks to process. */
- 	if (!free_space_tree)
-@@ -657,6 +659,13 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 		btrfs_set_super_reserved_bytes(&super, system_group_offset);
- 	}
- 
-+	if (write_intent_bitmap) {
-+		u64 ro_flags = btrfs_super_compat_ro_flags(&super) |
-+			       BTRFS_FEATURE_COMPAT_RO_WRITE_INTENT_BITMAP;
-+
-+		btrfs_set_super_compat_ro_flags(&super, ro_flags);
-+	}
-+
- 	if (extent_tree_v2) {
- 		ret = create_block_group_tree(fd, cfg, buf,
- 					      system_group_offset,
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 4ccf4e161d06..049d6f1dae2a 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1248,6 +1248,11 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		error("extra-super-reserved runtime feature conflicts with zoned devices");
- 		exit(1);
- 	}
-+
-+	/* Write intent bitmap must has extra reserved space. */
-+	if (runtime_features & BTRFS_RUNTIME_FEATURE_WRITE_INTENT_BITMAP)
-+		runtime_features |= BTRFS_RUNTIME_FEATURE_EXTRA_SUPER_RESERVED;
-+
- 	/*
- 	* Set default profiles according to number of added devices.
- 	* For mixed groups defaults are single/single.
--- 
-2.36.1
-
+Josef
