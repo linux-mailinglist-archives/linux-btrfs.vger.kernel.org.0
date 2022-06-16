@@ -2,75 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 444D554D604
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jun 2022 02:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7DF54D612
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jun 2022 02:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347096AbiFPAWW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jun 2022 20:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
+        id S241049AbiFPA1o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 20:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244376AbiFPAWV (ORCPT
+        with ESMTP id S239840AbiFPA1n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jun 2022 20:22:21 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7266E40E56
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 17:22:20 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id B81808066C;
-        Wed, 15 Jun 2022 20:22:19 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1655338940; bh=V5CcHRpjdF93vAs6zDWRPVC0eKwLYtnLzc0LSl5bKSQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=DHXduNol5tNdcMN1+bzbDcCVFkWkiZ1La+Yioa4ZGTpPU8P664uiHvqM/TAfCDeya
-         QD9Fa0y6l2LAntYi3fhjJMmJxEmZVkIdZzwKlUDENJn8awyo54Sq1DXDuvHhRCExJw
-         MSdIT6XAqDCU54jDVt+SBSTkmOmNXeq0+4Oe+/nLCtPca8j0DSLx0tdKBuiPWp6mP6
-         RPJGdiDkJ2cv7gR8pfYjKt6nlI2hGu9zOuHPpSq7sBvtMeigfqmZASlZzxH5Hvko4+
-         vcLs7fPWOhuN6av7y0KXuN7WAC3r4PLLEjqzKGx0qXLI/v+AyW3ceXBqI14Eputi2s
-         DV2hZHM5JEotw==
-Message-ID: <969bbc68-7dfa-dedf-55c3-da882c5bf0e3@dorminy.me>
-Date:   Wed, 15 Jun 2022 20:22:18 -0400
+        Wed, 15 Jun 2022 20:27:43 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290AE27172
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 17:27:42 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id v10so88147qvh.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 17:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=hcfGt2fOR3MfVRfYNfEqIsZz7XKJ8AtS8n9LSzmvQx8=;
+        b=kbdbto+/8n68g0OtlnMWxXDG8UxGtjaR6Gbs/YewZywtDZ++nQnfhwffwFNwP06ViK
+         9BdxS/13sw2jM1EexIuP+EyIEDxuyZ7iZpJTW1M14SSWCCnihrKc14pxjaF3kdfRdVP3
+         XQya5Ot0nJ8CJLhN9/CqhJEfDU05wcWd1nHqIcIhdc1xK2jxoQu1Z3cITSW7py3VE1AC
+         NuKvOfFLJIkiUoLo/PvNoo4u3Q+qk6s1I+fU2S+MMP2khI7Qz2vylurQRZVd6LCggwd2
+         67RiLVxplZiYaC5g+gISmEPSGCIhCaIHrPA8qN6882xyKeI9VYBk2rdV9jLVncBvaL2u
+         8xRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=hcfGt2fOR3MfVRfYNfEqIsZz7XKJ8AtS8n9LSzmvQx8=;
+        b=Lw93dYV+QbUOzG4rCjCoyT93oTFaVyA9X8RmH1cR8UqNiiPb8HP3Bcf6QAUHk1/Eq4
+         pxESrroSgj4piaKv6S9C0IpEv7HltIBmWZO3we+YOafj/FkuBwjyNBvzVpKB058UeByL
+         k5QFFq5ayyvWB7AYBFcQT3dY538ssLwxP+RvLS+0B1rWJZbDlEtO69RAnSkMnVs0RhbV
+         EREsXCzeul+KwvTyTIqfRX5xT5S6/BUfua7iaaF72u7vpYprCnsnjQjqY5DOIpBieAGy
+         Wti/KSCCGUhTDWG3DHZKRj6qSmK4mL82lcF/w9CyD4ZFhgYzp63IzKsCirpX9E6RK0cY
+         Y7JA==
+X-Gm-Message-State: AJIora91CiBTh2aD23KD2Bj1KntlLLwuHIKlmJwQ6XmhImXZpDiZJlsa
+        Gr3VZ3g9oIuMI7BPTLz6rI7UWu9nB93gJONil2g=
+X-Google-Smtp-Source: AGRyM1uJSdaAoNGV7lrZWy4iYWBrBvVJ0P6c55YnxIg9m4rIdBSSCv2CwRYiP/0Ox4uerLJUdVE2nfNKC4z31OVc0Z0=
+X-Received: by 2002:a05:622a:1817:b0:304:f82d:fabe with SMTP id
+ t23-20020a05622a181700b00304f82dfabemr1917068qtc.539.1655339261376; Wed, 15
+ Jun 2022 17:27:41 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Rebuilding 24TB Raid5 array (was btrfs corruption: parent transid
- verify failed + open_ctree failed)
-Content-Language: en-US
-To:     Eldon <btrfs@eldondev.com>, Marc MERLIN <marc@merlins.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20220610191156.GB1664812@merlins.org>
- <CAEzrpqfEj3c5wodYzibBXg34NxtXmQCB60=MtD+Nic2PN8i5bQ@mail.gmail.com>
- <20220613175651.GM1664812@merlins.org>
- <CAEzrpqdrRJGKPe8C1VvbyPaV3iEDtD1kB_oMiUP=bCs37NfSZw@mail.gmail.com>
- <20220615142929.GP22722@merlins.org> <20220615145547.GQ22722@merlins.org>
- <CAEzrpqdRn9mO0pDOogf37qWH07GryACqidHDbZcpoe7t73GDeQ@mail.gmail.com>
- <20220615215314.GW1664812@merlins.org>
- <CAEzrpqfZMA=NjqAaS1XKZgguD5L73kc7zKFL+cVHnMGxdK6rXw@mail.gmail.com>
- <20220615232141.GX1664812@merlins.org> <YqpqVSvxP8Dcz53V@invalid>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <YqpqVSvxP8Dcz53V@invalid>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Sender: falaismael56@gmail.com
+Received: by 2002:a05:620a:424a:0:0:0:0 with HTTP; Wed, 15 Jun 2022 17:27:41
+ -0700 (PDT)
+From:   Bella Williams <bellawilliams9060@gmail.com>
+Date:   Thu, 16 Jun 2022 00:27:41 +0000
+X-Google-Sender-Auth: j8qTIvTxpCgPJ8et-CaTyToGdo4
+Message-ID: <CAGdet0-nxkGAwctzzM-FxGC-3Od+kP4kwPGzk3UjmFOqhRxKRA@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I too found the back-and-forth very educational and suspenseful; many 
-thanks for keeping it on the mailing list.
+-- 
 
-On 6/15/22 19:26, Eldon wrote:
-> On Wed, Jun 15, 2022 at 04:21:41PM -0700, Marc MERLIN wrote:
->> Sorry to everyone else following along, hopefully it was somewhat
->> entertaining :)
-> 
-> You have no idea. Most entertaining thing this year. Popcorn, suspense,
-> joy, tragedy, redemption.
-> 
-> You really need to put out a tip jar or something.  ;D
-> 
-> Eldon
+Hello Dear,
+how are you today
+My name is Bella Williams
+I will share pictures and more details about me as soon as i hear from you
+Thanks
