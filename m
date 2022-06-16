@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4C754D6BB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jun 2022 03:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7C454D6BD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jun 2022 03:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346318AbiFPBFc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jun 2022 21:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
+        id S1347701AbiFPBHD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jun 2022 21:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346001AbiFPBFb (ORCPT
+        with ESMTP id S1346001AbiFPBHA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jun 2022 21:05:31 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047EA3467C
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 18:05:29 -0700 (PDT)
+        Wed, 15 Jun 2022 21:07:00 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA3035DC6
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jun 2022 18:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1655341526;
-        bh=apZE9l7iu9kZ8EB52YmjpN2QWVv5WVyzMwId2to81Vo=;
+        s=badeba3b8450; t=1655341615;
+        bh=xIIIWkx+hJrtTtJs/m4H4xmUUGP8R7eK1HlkDxYdJ78=;
         h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=ATt7WUILOLbmoZNqMD2em2/DVZLxw6ZMJBD9OVPdlc4dXggvlWoUEQGXdF8MHB+Dh
-         gLyf84zzOitbfaPdtK7h0SSZmuTiltJ2BEFR8XYFz0W/z68bzeyYnE5Aqbc38lX95f
-         6dXzEPNIc/hMLolIlxHquTVrD981yhRT6cx07JFs=
+        b=gzPHyZ+OMOD9Oip7naXsFjqh9ovezo+sx4SEFWFplyvTtVGI0lWoIBvD+tGV0ya2A
+         kS8ACN31CsfIoWGjXeiOd4VsrJKD5iH/Hnxu6Rzbi/LkbdOGmTp3ZndpfC8ICA498J
+         V10JFUbSkhBT2IJ1oon4nrMUt3OttqGJSHcoBjZs=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCbIx-1nsbXa2glf-009gL6; Thu, 16
- Jun 2022 03:05:26 +0200
-Message-ID: <281a06be-aba0-bcce-5681-dc81b0245124@gmx.com>
-Date:   Thu, 16 Jun 2022 09:05:22 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEm27-1nupPB16k7-00GFT4; Thu, 16
+ Jun 2022 03:06:55 +0200
+Message-ID: <e2d5e49f-28da-95de-20b6-b29c0ce00cf9@gmx.com>
+Date:   Thu, 16 Jun 2022 09:06:50 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
@@ -39,31 +39,32 @@ To:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
 Cc:     linux-btrfs@vger.kernel.org
 References: <20220615151515.888424-1-hch@lst.de>
  <20220615151515.888424-5-hch@lst.de>
+ <281a06be-aba0-bcce-5681-dc81b0245124@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220615151515.888424-5-hch@lst.de>
+In-Reply-To: <281a06be-aba0-bcce-5681-dc81b0245124@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6BgTuL5bunM+E8hGdnz7lB5C9o5BgStRdUxbZ5qOLoe6Ob1Nif5
- qtwWuCzborEG+PtIgdLj69u10VwcB82+2/MZAoXQArsT2PRLFNSJOtuoOYD3Mfv5mrtfLTt
- 1PKK46S91vhpKxg+cTP8gOx0MluH6T6hMaTiQIiny7K7kov3sDMUTEbNZIYIHxrOLpHBEyr
- 2SlBi3E2UiYz0LyTnrrjw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+oNFKtVzLQM=:0HjuB4OI39L/Qmd+Rs0Tki
- cKxR4ArX5RUcXnieDajU4p7S+XE+sM4xi6SYUYZWIZewkYFZmo/lRPC/C4MsHgVa5WGw/041H
- 7NsG3qlDcrqlqjfjYSsWO2h+5xHCGEdEQipTtCx4jXEqC3+BMSNAxiCjJVY0HTWjWXNoAKtXp
- lN/vvsM2PsneI2jsq5rHjIeWTr+bf1B8OZmS7GsoiPuZjJMJ/ZG+LMmJok4vp9ddhslMuoo2x
- kv594nnzakQ4BQ+DrUvewGCfllH3Lre62aYHGiCOoaXFytvFmNlIJ2uB6Gb3OOJK0M7+dm0H1
- c4w4yFhFyw7wgSnq3FiLF5dQ1a8LNRnNbgcbY47lZ+ERD+57Oa2lv70awaPuBPUY1x6dgSbXe
- AyUbH3Q+uHpJdsxsGEHjxFwSVp2aMxXpPZpEEUnttikZKzHxUe28fv/zCoxRnQWKBWgShaCFZ
- 1iOpZSau1wVOw5p93zoB6OpgClnyQhiSUU7BKV8fE8x3LSzQZltckZ1TpMHwMWQwhf+iyjj4j
- 5m26ZEdlCYOhx6S0yFgVUiIawWD8wciDA/nujzfk1vmMijFogxqmRRo6qZbM5qvY/EP7XhAum
- oXA44AFbt/agP1KZKmz2+IrApfgec/1yLdo+SasORFAlKXJlkRBY3z9uNieHYqrHDW/Eq3KEB
- SmWFwL0THJDJ9PU83vTaleZlEINab0Mc/N/E7O2QBeg50q/GHC956jYCoICh0966MJCnn1u7g
- OcCtIdSChUBY7VDCa8sFyoyKPlN3ikpQcigaGMlHzDtL16XeNmUSPDXkRSn482StpT4uBG78E
- EQgVkadVACRTY8+2wIOWvIgyk1rL8nzoCzq6a5rAXFOfhvutWVzRPD3TZPtHhszIqbMdWE2s8
- o91c9hISvV6vyUFiZL2RWxX3e2xND8m/avKYOPP+ROvzyCf0wx3Ou8qc2PVS2ioJopSpa74wW
- EgG8VXgpQw9Mva4IkLqWiy24HsP6TZW+njAie9iEdWbuffzWzHaFZ/b41B2dRa2F9w1WBw0Y0
- qOmkM1gm2/I9oGKfCgPINqcedMwsjvliW5j4IWhMpgJWIlIZiOawXIYO619qWvCHrSbyG+lxz
- mJOPKqFKiL5Nj/vp7g73D9NZ7RadXWouIDg9v3CJ06MR1r5r3a1b2R6Zw==
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:B59uM7KrZd9JpjA+w7A7S8ZG0w90IXIbBKV438O587SFVYsidvO
+ ECqRCsmv2eejtWLSflZdShfXxgAw4OIes+B5GSxRLx1Yhc5B9Xr5p0b4/iqbxM/5ooyWAKa
+ niMWWM3JhNzuxWIxsi/ZHDtzeVaM7Ef0VqGO7f4T/KrmCcvNVGUpqDT5HY5pqxHofzCWymj
+ XPxmWKeRLB7I3PVdUH6yg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pl6c4gRORsw=:L9p/7H78Da1J5NjOIB4wgJ
+ cu4LEbiQARv7WErtAnQRT4WOPd3ZKwALs93o6UN2TBPQHoA70tmYkNeE2240r3lQxefDwp6u7
+ 8WSlxhBI8q6/TlPalfJ47M7t6PROfpRL816s61vcTD+KWbBIA5wmz5GxrM8ipkshKUaRH/F/c
+ 52g3Zjch1jzTmESd+bnT8OjvVQV2h626XN18cAAVevRe+FLxU55sNvQOTiRUgaW3KJj3M8xrK
+ /e7NyMiXG1LAGhmyS+JJ41aUjg/O/12oM4spYln+mTAZeb51Cp24WhLETSOClJ4qv0Uxc6Exy
+ u13CwjIo+giGJ+tAnezgySRq/HNbq6AJ8q6vmBpof36x/Edyir8d3aGjwqEcGlQdEH+yZvXdB
+ U08d/w8OIa1WCwtiDIqsrehbcQh/DQL24L/fD80RLli0PZKrII+E+RcQnnFonr/w1q0muWYi6
+ g60wpZlekFdC96MCt/eZ1rqxxr3Dgs/BTNHwFKpRXIOSUPYMj9Sq0ohBvrgs5gKiuh/Bq0JRH
+ lRP9DWJMEoxjAHklY4ObJvrFV+BvegFIXjVbnp3w5I1neqlZyApeKgANtWYln/Nh5ZVD5Pppj
+ FEXPMuOKolaI+DBtajME1VofosDlLlx2mAQJPSPa8+T+TLi1QKUojp9KqTtbL2VSWYUY0IQ4K
+ dVFAt3fefLpsUXruCcHs8cyofpuu4VrYINOotbY4WH7BTfX5UBguOuyTZJRtHu2Nd/Dgp0DGX
+ FacMlIhqGC2f9NaRVRgw0fgA42fvYd4JZv5Ecs4qlxIpu9YHPjJATyZM/gQaKhrWLu9Y6xL5H
+ lHQIhPsv1pnse9Dcv2BokuyVfpWP2uycMVkcNu8wA/EGVPYUt0sIHCcuLpiMiz8JVEu7Hw3rm
+ zTt8aOS3E627xQ8GtnlVmEO63Mpx9GzCvNi4xqZsTRSMcd4N7ge1TGociGGg2q4z5kQFL6WdZ
+ bKxxl46ZrSwRHeI9POdXkoHYGX6ZTYXQdTgDXc79JSUiopDSUsS1x+oInmzE9X6GYsueRbwxP
+ imqCO9w6MGdA76CuqeFVX3PZp+xjKqbB2Yj2wJRLsFvwMSx/UIeRW2sLxg7qBQsvDyOyLKgGe
+ +YjykH8kDWTi08yCNa39OjStzba5ttAr2tKl9vRqadinqu+IxDsMyNlhQ==
 X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,279 +75,192 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/6/15 23:15, Christoph Hellwig wrote:
-> Follow the pattern of the main bio submission helper and do not return
-> an error and always consume the bio.  This allows these functions to
-> consume the btrfs_bio_counter_ from the caller and thus avoid additional
-> roundtrips on that counter.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   fs/btrfs/raid56.c  | 51 ++++++++++++++++++++++++----------------------
->   fs/btrfs/raid56.h  |  6 +++---
->   fs/btrfs/scrub.c   | 10 ++-------
->   fs/btrfs/volumes.c | 19 ++++++++---------
->   4 files changed, 41 insertions(+), 45 deletions(-)
->
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index e071648f2c591..bd64147bd8bab 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -1809,7 +1809,7 @@ static void rbio_add_bio(struct btrfs_raid_bio *rb=
-io, struct bio *orig_bio)
->   /*
->    * our main entry point for writes from the rest of the FS.
->    */
-> -int raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc)
-> +void raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc=
-)
->   {
->   	struct btrfs_fs_info *fs_info =3D bioc->fs_info;
->   	struct btrfs_raid_bio *rbio;
-> @@ -1820,12 +1820,12 @@ int raid56_parity_write(struct bio *bio, struct =
-btrfs_io_context *bioc)
->   	rbio =3D alloc_rbio(fs_info, bioc);
->   	if (IS_ERR(rbio)) {
->   		btrfs_put_bioc(bioc);
-> -		return PTR_ERR(rbio);
-> +		ret =3D PTR_ERR(rbio);
-> +		goto out_err;
-
-out_err will call btrfs_bio_counter_dec(fs_info);
-
-But at this branch, we don't yet have called
-`btrfs_bio_counter_inc_noblocked()`.
-
-Wouldn't this cause underflow?
-
-Thanks,
-Qu
->   	}
->   	rbio->operation =3D BTRFS_RBIO_WRITE;
->   	rbio_add_bio(rbio, bio);
->
-> -	btrfs_bio_counter_inc_noblocked(fs_info);
->   	rbio->generic_bio_cnt =3D 1;
->
->   	/*
-> @@ -1835,8 +1835,8 @@ int raid56_parity_write(struct bio *bio, struct bt=
-rfs_io_context *bioc)
->   	if (rbio_is_full(rbio)) {
->   		ret =3D full_stripe_write(rbio);
->   		if (ret)
-> -			btrfs_bio_counter_dec(fs_info);
-> -		return ret;
-> +			goto out_err;
-> +		return;
->   	}
->
->   	cb =3D blk_check_plugged(btrfs_raid_unplug, fs_info, sizeof(*plug));
-> @@ -1851,9 +1851,14 @@ int raid56_parity_write(struct bio *bio, struct b=
-trfs_io_context *bioc)
->   	} else {
->   		ret =3D __raid56_parity_write(rbio);
->   		if (ret)
-> -			btrfs_bio_counter_dec(fs_info);
-> +			goto out_err;
->   	}
-> -	return ret;
-> +	return;
-> +
-> +out_err:
-> +	btrfs_bio_counter_dec(fs_info);
-> +	bio->bi_status =3D errno_to_blk_status(ret);
-> +	bio_endio(bio);
->   }
->
->   /*
-> @@ -2199,8 +2204,8 @@ static int __raid56_parity_recover(struct btrfs_ra=
-id_bio *rbio)
->    * so we assume the bio they send down corresponds to a failed part
->    * of the drive.
->    */
-> -int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bio=
-c,
-> -			  int mirror_num, int generic_io)
-> +void raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bi=
-oc,
-> +			   int mirror_num, bool generic_io)
->   {
->   	struct btrfs_fs_info *fs_info =3D bioc->fs_info;
->   	struct btrfs_raid_bio *rbio;
-> @@ -2209,13 +2214,14 @@ int raid56_parity_recover(struct bio *bio, struc=
-t btrfs_io_context *bioc,
->   	if (generic_io) {
->   		ASSERT(bioc->mirror_num =3D=3D mirror_num);
->   		btrfs_bio(bio)->mirror_num =3D mirror_num;
-> +	} else {
-> +		btrfs_get_bioc(bioc);
->   	}
->
->   	rbio =3D alloc_rbio(fs_info, bioc);
->   	if (IS_ERR(rbio)) {
-> -		if (generic_io)
-> -			btrfs_put_bioc(bioc);
-> -		return PTR_ERR(rbio);
-> +		ret =3D PTR_ERR(rbio);
-> +		goto out_err;
->   	}
->
->   	rbio->operation =3D BTRFS_RBIO_READ_REBUILD;
-> @@ -2227,18 +2233,12 @@ int raid56_parity_recover(struct bio *bio, struc=
-t btrfs_io_context *bioc,
->   "%s could not find the bad stripe in raid56 so that we cannot recover =
-any more (bio has logical %llu len %llu, bioc has map_type %llu)",
->   			   __func__, bio->bi_iter.bi_sector << 9,
->   			   (u64)bio->bi_iter.bi_size, bioc->map_type);
-> -		if (generic_io)
-> -			btrfs_put_bioc(bioc);
->   		kfree(rbio);
-> -		return -EIO;
-> +		goto out_err;
->   	}
->
-> -	if (generic_io) {
-> -		btrfs_bio_counter_inc_noblocked(fs_info);
-> +	if (generic_io)
->   		rbio->generic_bio_cnt =3D 1;
-> -	} else {
-> -		btrfs_get_bioc(bioc);
-> -	}
->
->   	/*
->   	 * Loop retry:
-> @@ -2257,8 +2257,6 @@ int raid56_parity_recover(struct bio *bio, struct =
-btrfs_io_context *bioc,
->   			rbio->failb--;
->   	}
->
-> -	ret =3D lock_stripe_add(rbio);
-> -
->   	/*
->   	 * __raid56_parity_recover will end the bio with
->   	 * any errors it hits.  We don't want to return
-> @@ -2266,15 +2264,20 @@ int raid56_parity_recover(struct bio *bio, struc=
-t btrfs_io_context *bioc,
->   	 * will end up calling bio_endio with any nonzero
->   	 * return
->   	 */
-> -	if (ret =3D=3D 0)
-> +	if (lock_stripe_add(rbio) =3D=3D 0)
->   		__raid56_parity_recover(rbio);
-> +
->   	/*
->   	 * our rbio has been added to the list of
->   	 * rbios that will be handled after the
->   	 * currently lock owner is done
->   	 */
-> -	return 0;
-> +	return;
->
-> +out_err:
-> +	btrfs_put_bioc(bioc);
-> +	bio->bi_status =3D errno_to_blk_status(ret);
-> +	bio_endio(bio);
->   }
->
->   static void rmw_work(struct work_struct *work)
-> diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
-> index 9e4e0501e4e89..c94f503eb3832 100644
-> --- a/fs/btrfs/raid56.h
-> +++ b/fs/btrfs/raid56.h
-> @@ -175,9 +175,9 @@ static inline int nr_data_stripes(const struct map_l=
-ookup *map)
->
->   struct btrfs_device;
->
-> -int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bio=
-c,
-> -			  int mirror_num, int generic_io);
-> -int raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc)=
-;
-> +void raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bi=
-oc,
-> +			   int mirror_num, bool generic_io);
-> +void raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc=
-);
->
->   void raid56_add_scrub_pages(struct btrfs_raid_bio *rbio, struct page *=
-page,
->   			    unsigned int pgoff, u64 logical);
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 18986d062cf63..f091e57222082 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1376,18 +1376,12 @@ static int scrub_submit_raid56_bio_wait(struct b=
-trfs_fs_info *fs_info,
->   					struct scrub_sector *sector)
->   {
->   	DECLARE_COMPLETION_ONSTACK(done);
-> -	int ret;
-> -	int mirror_num;
->
->   	bio->bi_iter.bi_sector =3D sector->logical >> 9;
->   	bio->bi_private =3D &done;
->   	bio->bi_end_io =3D scrub_bio_wait_endio;
-> -
-> -	mirror_num =3D sector->sblock->sectors[0]->mirror_num;
-> -	ret =3D raid56_parity_recover(bio, sector->recover->bioc,
-> -				    mirror_num, 0);
-> -	if (ret)
-> -		return ret;
-> +	raid56_parity_recover(bio, sector->recover->bioc,
-> +			      sector->sblock->sectors[0]->mirror_num, false);
->
->   	wait_for_completion_io(&done);
->   	return blk_status_to_errno(bio->bi_status);
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 739676944e94d..3a8c437bdd65b 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6749,8 +6749,12 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_in=
-fo, struct bio *bio,
->   	btrfs_bio_counter_inc_blocked(fs_info);
->   	ret =3D __btrfs_map_block(fs_info, btrfs_op(bio), logical,
->   				&map_length, &bioc, mirror_num, 1);
-> -	if (ret)
-> -		goto out_dec;
-> +	if (ret) {
-> +		btrfs_bio_counter_dec(fs_info);
-> +		bio->bi_status =3D errno_to_blk_status(ret);
-> +		bio_endio(bio);
-> +		return;
-> +	}
->
->   	total_devs =3D bioc->num_stripes;
->   	bioc->orig_bio =3D bio;
-> @@ -6761,10 +6765,10 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_i=
-nfo, struct bio *bio,
->   	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
->   	    ((btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE) || (mirror_num > 1))) {
->   		if (btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE)
-> -			ret =3D raid56_parity_write(bio, bioc);
-> +			raid56_parity_write(bio, bioc);
->   		else
-> -			ret =3D raid56_parity_recover(bio, bioc, mirror_num, 1);
-> -		goto out_dec;
-> +			raid56_parity_recover(bio, bioc, mirror_num, true);
-> +		return;
->   	}
->
->   	if (map_length < length) {
-> @@ -6779,12 +6783,7 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_in=
-fo, struct bio *bio,
->
->   		submit_stripe_bio(bioc, bio, dev_nr, should_clone);
->   	}
-> -out_dec:
->   	btrfs_bio_counter_dec(fs_info);
-> -	if (ret) {
-> -		bio->bi_status =3D errno_to_blk_status(ret);
-> -		bio_endio(bio);
-> -	}
->   }
->
->   static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_ar=
-gs *args,
+DQoNCk9uIDIwMjIvNi8xNiAwOTowNSwgUXUgV2VucnVvIHdyb3RlOg0KPiANCj4gDQo+IE9uIDIw
+MjIvNi8xNSAyMzoxNSwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6DQo+PiBGb2xsb3cgdGhlIHBh
+dHRlcm4gb2YgdGhlIG1haW4gYmlvIHN1Ym1pc3Npb24gaGVscGVyIGFuZCBkbyBub3QgcmV0dXJu
+DQo+PiBhbiBlcnJvciBhbmQgYWx3YXlzIGNvbnN1bWUgdGhlIGJpby7CoCBUaGlzIGFsbG93cyB0
+aGVzZSBmdW5jdGlvbnMgdG8NCj4+IGNvbnN1bWUgdGhlIGJ0cmZzX2Jpb19jb3VudGVyXyBmcm9t
+IHRoZSBjYWxsZXIgYW5kIHRodXMgYXZvaWQgYWRkaXRpb25hbA0KPj4gcm91bmR0cmlwcyBvbiB0
+aGF0IGNvdW50ZXIuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhj
+aEBsc3QuZGU+DQo+PiAtLS0NCj4+IMKgIGZzL2J0cmZzL3JhaWQ1Ni5jwqAgfCA1MSArKysrKysr
+KysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+PiDCoCBmcy9idHJmcy9y
+YWlkNTYuaMKgIHzCoCA2ICsrKy0tLQ0KPj4gwqAgZnMvYnRyZnMvc2NydWIuY8KgwqAgfCAxMCAr
+Ky0tLS0tLS0NCj4+IMKgIGZzL2J0cmZzL3ZvbHVtZXMuYyB8IDE5ICsrKysrKysrLS0tLS0tLS0t
+DQo+PiDCoCA0IGZpbGVzIGNoYW5nZWQsIDQxIGluc2VydGlvbnMoKyksIDQ1IGRlbGV0aW9ucygt
+KQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9mcy9idHJmcy9yYWlkNTYuYyBiL2ZzL2J0cmZzL3JhaWQ1
+Ni5jDQo+PiBpbmRleCBlMDcxNjQ4ZjJjNTkxLi5iZDY0MTQ3YmQ4YmFiIDEwMDY0NA0KPj4gLS0t
+IGEvZnMvYnRyZnMvcmFpZDU2LmMNCj4+ICsrKyBiL2ZzL2J0cmZzL3JhaWQ1Ni5jDQo+PiBAQCAt
+MTgwOSw3ICsxODA5LDcgQEAgc3RhdGljIHZvaWQgcmJpb19hZGRfYmlvKHN0cnVjdCBidHJmc19y
+YWlkX2JpbyANCj4+ICpyYmlvLCBzdHJ1Y3QgYmlvICpvcmlnX2JpbykNCj4+IMKgIC8qDQo+PiDC
+oMKgICogb3VyIG1haW4gZW50cnkgcG9pbnQgZm9yIHdyaXRlcyBmcm9tIHRoZSByZXN0IG9mIHRo
+ZSBGUy4NCj4+IMKgwqAgKi8NCj4+IC1pbnQgcmFpZDU2X3Bhcml0eV93cml0ZShzdHJ1Y3QgYmlv
+ICpiaW8sIHN0cnVjdCBidHJmc19pb19jb250ZXh0ICpiaW9jKQ0KPj4gK3ZvaWQgcmFpZDU2X3Bh
+cml0eV93cml0ZShzdHJ1Y3QgYmlvICpiaW8sIHN0cnVjdCBidHJmc19pb19jb250ZXh0ICpiaW9j
+KQ0KPj4gwqAgew0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbyA9
+IGJpb2MtPmZzX2luZm87DQo+PiDCoMKgwqDCoMKgIHN0cnVjdCBidHJmc19yYWlkX2JpbyAqcmJp
+bzsNCj4+IEBAIC0xODIwLDEyICsxODIwLDEyIEBAIGludCByYWlkNTZfcGFyaXR5X3dyaXRlKHN0
+cnVjdCBiaW8gKmJpbywgDQo+PiBzdHJ1Y3QgYnRyZnNfaW9fY29udGV4dCAqYmlvYykNCj4+IMKg
+wqDCoMKgwqAgcmJpbyA9IGFsbG9jX3JiaW8oZnNfaW5mbywgYmlvYyk7DQo+PiDCoMKgwqDCoMKg
+IGlmIChJU19FUlIocmJpbykpIHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBidHJmc19wdXRfYmlv
+YyhiaW9jKTsNCj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gUFRSX0VSUihyYmlvKTsNCj4+ICvC
+oMKgwqDCoMKgwqDCoCByZXQgPSBQVFJfRVJSKHJiaW8pOw0KPj4gK8KgwqDCoMKgwqDCoMKgIGdv
+dG8gb3V0X2VycjsNCj4gDQo+IG91dF9lcnIgd2lsbCBjYWxsIGJ0cmZzX2Jpb19jb3VudGVyX2Rl
+Yyhmc19pbmZvKTsNCj4gDQo+IEJ1dCBhdCB0aGlzIGJyYW5jaCwgd2UgZG9uJ3QgeWV0IGhhdmUg
+Y2FsbGVkDQo+IGBidHJmc19iaW9fY291bnRlcl9pbmNfbm9ibG9ja2VkKClgLg0KPiANCj4gV291
+bGRuJ3QgdGhpcyBjYXVzZSB1bmRlcmZsb3c/DQo+IA0KPiBUaGFua3MsDQo+IFF1DQo+PiDCoMKg
+wqDCoMKgIH0NCj4+IMKgwqDCoMKgwqAgcmJpby0+b3BlcmF0aW9uID0gQlRSRlNfUkJJT19XUklU
+RTsNCj4+IMKgwqDCoMKgwqAgcmJpb19hZGRfYmlvKHJiaW8sIGJpbyk7DQo+Pg0KPj4gLcKgwqDC
+oCBidHJmc19iaW9fY291bnRlcl9pbmNfbm9ibG9ja2VkKGZzX2luZm8pOw0KDQpBbmQgdGhpcyBs
+aW5lIGlzIHJlbW92ZWQgY29tcGxldGVseSwgYW55IHJlYXNvbiBmb3IgdGhlIHJlbW92YWw/DQoN
+ClRoYW5rcywNClF1DQoNCj4+IMKgwqDCoMKgwqAgcmJpby0+Z2VuZXJpY19iaW9fY250ID0gMTsN
+Cj4+DQo+PiDCoMKgwqDCoMKgIC8qDQo+PiBAQCAtMTgzNSw4ICsxODM1LDggQEAgaW50IHJhaWQ1
+Nl9wYXJpdHlfd3JpdGUoc3RydWN0IGJpbyAqYmlvLCBzdHJ1Y3QgDQo+PiBidHJmc19pb19jb250
+ZXh0ICpiaW9jKQ0KPj4gwqDCoMKgwqDCoCBpZiAocmJpb19pc19mdWxsKHJiaW8pKSB7DQo+PiDC
+oMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gZnVsbF9zdHJpcGVfd3JpdGUocmJpbyk7DQo+PiDCoMKg
+wqDCoMKgwqDCoMKgwqAgaWYgKHJldCkNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZz
+X2Jpb19jb3VudGVyX2RlYyhmc19pbmZvKTsNCj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0
+Ow0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBvdXRfZXJyOw0KPj4gK8KgwqDCoMKg
+wqDCoMKgIHJldHVybjsNCj4+IMKgwqDCoMKgwqAgfQ0KPj4NCj4+IMKgwqDCoMKgwqAgY2IgPSBi
+bGtfY2hlY2tfcGx1Z2dlZChidHJmc19yYWlkX3VucGx1ZywgZnNfaW5mbywgc2l6ZW9mKCpwbHVn
+KSk7DQo+PiBAQCAtMTg1MSw5ICsxODUxLDE0IEBAIGludCByYWlkNTZfcGFyaXR5X3dyaXRlKHN0
+cnVjdCBiaW8gKmJpbywgc3RydWN0IA0KPj4gYnRyZnNfaW9fY29udGV4dCAqYmlvYykNCj4+IMKg
+wqDCoMKgwqAgfSBlbHNlIHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXQgPSBfX3JhaWQ1Nl9w
+YXJpdHlfd3JpdGUocmJpbyk7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKHJldCkNCj4+IC3C
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX2Jpb19jb3VudGVyX2RlYyhmc19pbmZvKTsNCj4+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0X2VycjsNCj4+IMKgwqDCoMKgwqAgfQ0K
+Pj4gLcKgwqDCoCByZXR1cm4gcmV0Ow0KPj4gK8KgwqDCoCByZXR1cm47DQo+PiArDQo+PiArb3V0
+X2VycjoNCj4+ICvCoMKgwqAgYnRyZnNfYmlvX2NvdW50ZXJfZGVjKGZzX2luZm8pOw0KPj4gK8Kg
+wqDCoCBiaW8tPmJpX3N0YXR1cyA9IGVycm5vX3RvX2Jsa19zdGF0dXMocmV0KTsNCj4+ICvCoMKg
+wqAgYmlvX2VuZGlvKGJpbyk7DQo+PiDCoCB9DQo+Pg0KPj4gwqAgLyoNCj4+IEBAIC0yMTk5LDgg
+KzIyMDQsOCBAQCBzdGF0aWMgaW50IF9fcmFpZDU2X3Bhcml0eV9yZWNvdmVyKHN0cnVjdCANCj4+
+IGJ0cmZzX3JhaWRfYmlvICpyYmlvKQ0KPj4gwqDCoCAqIHNvIHdlIGFzc3VtZSB0aGUgYmlvIHRo
+ZXkgc2VuZCBkb3duIGNvcnJlc3BvbmRzIHRvIGEgZmFpbGVkIHBhcnQNCj4+IMKgwqAgKiBvZiB0
+aGUgZHJpdmUuDQo+PiDCoMKgICovDQo+PiAtaW50IHJhaWQ1Nl9wYXJpdHlfcmVjb3ZlcihzdHJ1
+Y3QgYmlvICpiaW8sIHN0cnVjdCBidHJmc19pb19jb250ZXh0IA0KPj4gKmJpb2MsDQo+PiAtwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW50IG1pcnJvcl9udW0sIGludCBnZW5lcmljX2lvKQ0K
+Pj4gK3ZvaWQgcmFpZDU2X3Bhcml0eV9yZWNvdmVyKHN0cnVjdCBiaW8gKmJpbywgc3RydWN0IGJ0
+cmZzX2lvX2NvbnRleHQgDQo+PiAqYmlvYywNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIGludCBtaXJyb3JfbnVtLCBib29sIGdlbmVyaWNfaW8pDQo+PiDCoCB7DQo+PiDCoMKgwqDC
+oMKgIHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvID0gYmlvYy0+ZnNfaW5mbzsNCj4+IMKg
+wqDCoMKgwqAgc3RydWN0IGJ0cmZzX3JhaWRfYmlvICpyYmlvOw0KPj4gQEAgLTIyMDksMTMgKzIy
+MTQsMTQgQEAgaW50IHJhaWQ1Nl9wYXJpdHlfcmVjb3ZlcihzdHJ1Y3QgYmlvICpiaW8sIA0KPj4g
+c3RydWN0IGJ0cmZzX2lvX2NvbnRleHQgKmJpb2MsDQo+PiDCoMKgwqDCoMKgIGlmIChnZW5lcmlj
+X2lvKSB7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgQVNTRVJUKGJpb2MtPm1pcnJvcl9udW0gPT0g
+bWlycm9yX251bSk7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNfYmlvKGJpbyktPm1pcnJv
+cl9udW0gPSBtaXJyb3JfbnVtOw0KPj4gK8KgwqDCoCB9IGVsc2Ugew0KPj4gK8KgwqDCoMKgwqDC
+oMKgIGJ0cmZzX2dldF9iaW9jKGJpb2MpOw0KPj4gwqDCoMKgwqDCoCB9DQo+Pg0KPj4gwqDCoMKg
+wqDCoCByYmlvID0gYWxsb2NfcmJpbyhmc19pbmZvLCBiaW9jKTsNCj4+IMKgwqDCoMKgwqAgaWYg
+KElTX0VSUihyYmlvKSkgew0KPj4gLcKgwqDCoMKgwqDCoMKgIGlmIChnZW5lcmljX2lvKQ0KPj4g
+LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNfcHV0X2Jpb2MoYmlvYyk7DQo+PiAtwqDCoMKg
+wqDCoMKgwqAgcmV0dXJuIFBUUl9FUlIocmJpbyk7DQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0ID0g
+UFRSX0VSUihyYmlvKTsNCj4+ICvCoMKgwqDCoMKgwqDCoCBnb3RvIG91dF9lcnI7DQo+PiDCoMKg
+wqDCoMKgIH0NCj4+DQo+PiDCoMKgwqDCoMKgIHJiaW8tPm9wZXJhdGlvbiA9IEJUUkZTX1JCSU9f
+UkVBRF9SRUJVSUxEOw0KPj4gQEAgLTIyMjcsMTggKzIyMzMsMTIgQEAgaW50IHJhaWQ1Nl9wYXJp
+dHlfcmVjb3ZlcihzdHJ1Y3QgYmlvICpiaW8sIA0KPj4gc3RydWN0IGJ0cmZzX2lvX2NvbnRleHQg
+KmJpb2MsDQo+PiDCoCAiJXMgY291bGQgbm90IGZpbmQgdGhlIGJhZCBzdHJpcGUgaW4gcmFpZDU2
+IHNvIHRoYXQgd2UgY2Fubm90IA0KPj4gcmVjb3ZlciBhbnkgbW9yZSAoYmlvIGhhcyBsb2dpY2Fs
+ICVsbHUgbGVuICVsbHUsIGJpb2MgaGFzIG1hcF90eXBlIA0KPj4gJWxsdSkiLA0KPj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgX19mdW5jX18sIGJpby0+YmlfaXRlci5iaV9zZWN0
+b3IgPDwgOSwNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICh1NjQpYmlvLT5i
+aV9pdGVyLmJpX3NpemUsIGJpb2MtPm1hcF90eXBlKTsNCj4+IC3CoMKgwqDCoMKgwqDCoCBpZiAo
+Z2VuZXJpY19pbykNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3B1dF9iaW9jKGJp
+b2MpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGtmcmVlKHJiaW8pOw0KPj4gLcKgwqDCoMKgwqDC
+oMKgIHJldHVybiAtRUlPOw0KPj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gb3V0X2VycjsNCj4+IMKg
+wqDCoMKgwqAgfQ0KPj4NCj4+IC3CoMKgwqAgaWYgKGdlbmVyaWNfaW8pIHsNCj4+IC3CoMKgwqDC
+oMKgwqDCoCBidHJmc19iaW9fY291bnRlcl9pbmNfbm9ibG9ja2VkKGZzX2luZm8pOw0KPj4gK8Kg
+wqDCoCBpZiAoZ2VuZXJpY19pbykNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByYmlvLT5nZW5lcmlj
+X2Jpb19jbnQgPSAxOw0KPj4gLcKgwqDCoCB9IGVsc2Ugew0KPj4gLcKgwqDCoMKgwqDCoMKgIGJ0
+cmZzX2dldF9iaW9jKGJpb2MpOw0KPj4gLcKgwqDCoCB9DQo+Pg0KPj4gwqDCoMKgwqDCoCAvKg0K
+Pj4gwqDCoMKgwqDCoMKgICogTG9vcCByZXRyeToNCj4+IEBAIC0yMjU3LDggKzIyNTcsNiBAQCBp
+bnQgcmFpZDU2X3Bhcml0eV9yZWNvdmVyKHN0cnVjdCBiaW8gKmJpbywgDQo+PiBzdHJ1Y3QgYnRy
+ZnNfaW9fY29udGV4dCAqYmlvYywNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJiaW8t
+PmZhaWxiLS07DQo+PiDCoMKgwqDCoMKgIH0NCj4+DQo+PiAtwqDCoMKgIHJldCA9IGxvY2tfc3Ry
+aXBlX2FkZChyYmlvKTsNCj4+IC0NCj4+IMKgwqDCoMKgwqAgLyoNCj4+IMKgwqDCoMKgwqDCoCAq
+IF9fcmFpZDU2X3Bhcml0eV9yZWNvdmVyIHdpbGwgZW5kIHRoZSBiaW8gd2l0aA0KPj4gwqDCoMKg
+wqDCoMKgICogYW55IGVycm9ycyBpdCBoaXRzLsKgIFdlIGRvbid0IHdhbnQgdG8gcmV0dXJuDQo+
+PiBAQCAtMjI2NiwxNSArMjI2NCwyMCBAQCBpbnQgcmFpZDU2X3Bhcml0eV9yZWNvdmVyKHN0cnVj
+dCBiaW8gKmJpbywgDQo+PiBzdHJ1Y3QgYnRyZnNfaW9fY29udGV4dCAqYmlvYywNCj4+IMKgwqDC
+oMKgwqDCoCAqIHdpbGwgZW5kIHVwIGNhbGxpbmcgYmlvX2VuZGlvIHdpdGggYW55IG5vbnplcm8N
+Cj4+IMKgwqDCoMKgwqDCoCAqIHJldHVybg0KPj4gwqDCoMKgwqDCoMKgICovDQo+PiAtwqDCoMKg
+IGlmIChyZXQgPT0gMCkNCj4+ICvCoMKgwqAgaWYgKGxvY2tfc3RyaXBlX2FkZChyYmlvKSA9PSAw
+KQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIF9fcmFpZDU2X3Bhcml0eV9yZWNvdmVyKHJiaW8pOw0K
+Pj4gKw0KPj4gwqDCoMKgwqDCoCAvKg0KPj4gwqDCoMKgwqDCoMKgICogb3VyIHJiaW8gaGFzIGJl
+ZW4gYWRkZWQgdG8gdGhlIGxpc3Qgb2YNCj4+IMKgwqDCoMKgwqDCoCAqIHJiaW9zIHRoYXQgd2ls
+bCBiZSBoYW5kbGVkIGFmdGVyIHRoZQ0KPj4gwqDCoMKgwqDCoMKgICogY3VycmVudGx5IGxvY2sg
+b3duZXIgaXMgZG9uZQ0KPj4gwqDCoMKgwqDCoMKgICovDQo+PiAtwqDCoMKgIHJldHVybiAwOw0K
+Pj4gK8KgwqDCoCByZXR1cm47DQo+Pg0KPj4gK291dF9lcnI6DQo+PiArwqDCoMKgIGJ0cmZzX3B1
+dF9iaW9jKGJpb2MpOw0KPj4gK8KgwqDCoCBiaW8tPmJpX3N0YXR1cyA9IGVycm5vX3RvX2Jsa19z
+dGF0dXMocmV0KTsNCj4+ICvCoMKgwqAgYmlvX2VuZGlvKGJpbyk7DQo+PiDCoCB9DQo+Pg0KPj4g
+wqAgc3RhdGljIHZvaWQgcm13X3dvcmsoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPj4gZGlm
+ZiAtLWdpdCBhL2ZzL2J0cmZzL3JhaWQ1Ni5oIGIvZnMvYnRyZnMvcmFpZDU2LmgNCj4+IGluZGV4
+IDllNGUwNTAxZTRlODkuLmM5NGY1MDNlYjM4MzIgMTAwNjQ0DQo+PiAtLS0gYS9mcy9idHJmcy9y
+YWlkNTYuaA0KPj4gKysrIGIvZnMvYnRyZnMvcmFpZDU2LmgNCj4+IEBAIC0xNzUsOSArMTc1LDkg
+QEAgc3RhdGljIGlubGluZSBpbnQgbnJfZGF0YV9zdHJpcGVzKGNvbnN0IHN0cnVjdCANCj4+IG1h
+cF9sb29rdXAgKm1hcCkNCj4+DQo+PiDCoCBzdHJ1Y3QgYnRyZnNfZGV2aWNlOw0KPj4NCj4+IC1p
+bnQgcmFpZDU2X3Bhcml0eV9yZWNvdmVyKHN0cnVjdCBiaW8gKmJpbywgc3RydWN0IGJ0cmZzX2lv
+X2NvbnRleHQgDQo+PiAqYmlvYywNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbnQg
+bWlycm9yX251bSwgaW50IGdlbmVyaWNfaW8pOw0KPj4gLWludCByYWlkNTZfcGFyaXR5X3dyaXRl
+KHN0cnVjdCBiaW8gKmJpbywgc3RydWN0IGJ0cmZzX2lvX2NvbnRleHQgKmJpb2MpOw0KPj4gK3Zv
+aWQgcmFpZDU2X3Bhcml0eV9yZWNvdmVyKHN0cnVjdCBiaW8gKmJpbywgc3RydWN0IGJ0cmZzX2lv
+X2NvbnRleHQgDQo+PiAqYmlvYywNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlu
+dCBtaXJyb3JfbnVtLCBib29sIGdlbmVyaWNfaW8pOw0KPj4gK3ZvaWQgcmFpZDU2X3Bhcml0eV93
+cml0ZShzdHJ1Y3QgYmlvICpiaW8sIHN0cnVjdCBidHJmc19pb19jb250ZXh0IA0KPj4gKmJpb2Mp
+Ow0KPj4NCj4+IMKgIHZvaWQgcmFpZDU2X2FkZF9zY3J1Yl9wYWdlcyhzdHJ1Y3QgYnRyZnNfcmFp
+ZF9iaW8gKnJiaW8sIHN0cnVjdCBwYWdlIA0KPj4gKnBhZ2UsDQo+PiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHVuc2lnbmVkIGludCBwZ29mZiwgdTY0IGxvZ2ljYWwpOw0KPj4g
+ZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL3NjcnViLmMgYi9mcy9idHJmcy9zY3J1Yi5jDQo+PiBpbmRl
+eCAxODk4NmQwNjJjZjYzLi5mMDkxZTU3MjIyMDgyIDEwMDY0NA0KPj4gLS0tIGEvZnMvYnRyZnMv
+c2NydWIuYw0KPj4gKysrIGIvZnMvYnRyZnMvc2NydWIuYw0KPj4gQEAgLTEzNzYsMTggKzEzNzYs
+MTIgQEAgc3RhdGljIGludCBzY3J1Yl9zdWJtaXRfcmFpZDU2X2Jpb193YWl0KHN0cnVjdCANCj4+
+IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8sDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgc3RydWN0IHNjcnViX3NlY3RvciAqc2VjdG9yKQ0KPj4gwqAgew0KPj4g
+wqDCoMKgwqDCoCBERUNMQVJFX0NPTVBMRVRJT05fT05TVEFDSyhkb25lKTsNCj4+IC3CoMKgwqAg
+aW50IHJldDsNCj4+IC3CoMKgwqAgaW50IG1pcnJvcl9udW07DQo+Pg0KPj4gwqDCoMKgwqDCoCBi
+aW8tPmJpX2l0ZXIuYmlfc2VjdG9yID0gc2VjdG9yLT5sb2dpY2FsID4+IDk7DQo+PiDCoMKgwqDC
+oMKgIGJpby0+YmlfcHJpdmF0ZSA9ICZkb25lOw0KPj4gwqDCoMKgwqDCoCBiaW8tPmJpX2VuZF9p
+byA9IHNjcnViX2Jpb193YWl0X2VuZGlvOw0KPj4gLQ0KPj4gLcKgwqDCoCBtaXJyb3JfbnVtID0g
+c2VjdG9yLT5zYmxvY2stPnNlY3RvcnNbMF0tPm1pcnJvcl9udW07DQo+PiAtwqDCoMKgIHJldCA9
+IHJhaWQ1Nl9wYXJpdHlfcmVjb3ZlcihiaW8sIHNlY3Rvci0+cmVjb3Zlci0+YmlvYywNCj4+IC3C
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtaXJyb3JfbnVtLCAwKTsNCj4+
+IC3CoMKgwqAgaWYgKHJldCkNCj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0KPj4gK8Kg
+wqDCoCByYWlkNTZfcGFyaXR5X3JlY292ZXIoYmlvLCBzZWN0b3ItPnJlY292ZXItPmJpb2MsDQo+
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZWN0b3ItPnNibG9jay0+c2Vj
+dG9yc1swXS0+bWlycm9yX251bSwgZmFsc2UpOw0KPj4NCj4+IMKgwqDCoMKgwqAgd2FpdF9mb3Jf
+Y29tcGxldGlvbl9pbygmZG9uZSk7DQo+PiDCoMKgwqDCoMKgIHJldHVybiBibGtfc3RhdHVzX3Rv
+X2Vycm5vKGJpby0+Ymlfc3RhdHVzKTsNCj4+IGRpZmYgLS1naXQgYS9mcy9idHJmcy92b2x1bWVz
+LmMgYi9mcy9idHJmcy92b2x1bWVzLmMNCj4+IGluZGV4IDczOTY3Njk0NGU5NGQuLjNhOGM0Mzdi
+ZGQ2NWIgMTAwNjQ0DQo+PiAtLS0gYS9mcy9idHJmcy92b2x1bWVzLmMNCj4+ICsrKyBiL2ZzL2J0
+cmZzL3ZvbHVtZXMuYw0KPj4gQEAgLTY3NDksOCArNjc0OSwxMiBAQCB2b2lkIGJ0cmZzX3N1Ym1p
+dF9iaW8oc3RydWN0IGJ0cmZzX2ZzX2luZm8gDQo+PiAqZnNfaW5mbywgc3RydWN0IGJpbyAqYmlv
+LA0KPj4gwqDCoMKgwqDCoCBidHJmc19iaW9fY291bnRlcl9pbmNfYmxvY2tlZChmc19pbmZvKTsN
+Cj4+IMKgwqDCoMKgwqAgcmV0ID0gX19idHJmc19tYXBfYmxvY2soZnNfaW5mbywgYnRyZnNfb3Ao
+YmlvKSwgbG9naWNhbCwNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJm1h
+cF9sZW5ndGgsICZiaW9jLCBtaXJyb3JfbnVtLCAxKTsNCj4+IC3CoMKgwqAgaWYgKHJldCkNCj4+
+IC3CoMKgwqDCoMKgwqDCoCBnb3RvIG91dF9kZWM7DQo+PiArwqDCoMKgIGlmIChyZXQpIHsNCj4+
+ICvCoMKgwqDCoMKgwqDCoCBidHJmc19iaW9fY291bnRlcl9kZWMoZnNfaW5mbyk7DQo+PiArwqDC
+oMKgwqDCoMKgwqAgYmlvLT5iaV9zdGF0dXMgPSBlcnJub190b19ibGtfc3RhdHVzKHJldCk7DQo+
+PiArwqDCoMKgwqDCoMKgwqAgYmlvX2VuZGlvKGJpbyk7DQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0
+dXJuOw0KPj4gK8KgwqDCoCB9DQo+Pg0KPj4gwqDCoMKgwqDCoCB0b3RhbF9kZXZzID0gYmlvYy0+
+bnVtX3N0cmlwZXM7DQo+PiDCoMKgwqDCoMKgIGJpb2MtPm9yaWdfYmlvID0gYmlvOw0KPj4gQEAg
+LTY3NjEsMTAgKzY3NjUsMTAgQEAgdm9pZCBidHJmc19zdWJtaXRfYmlvKHN0cnVjdCBidHJmc19m
+c19pbmZvIA0KPj4gKmZzX2luZm8sIHN0cnVjdCBiaW8gKmJpbywNCj4+IMKgwqDCoMKgwqAgaWYg
+KChiaW9jLT5tYXBfdHlwZSAmIEJUUkZTX0JMT0NLX0dST1VQX1JBSUQ1Nl9NQVNLKSAmJg0KPj4g
+wqDCoMKgwqDCoMKgwqDCoMKgICgoYnRyZnNfb3AoYmlvKSA9PSBCVFJGU19NQVBfV1JJVEUpIHx8
+IChtaXJyb3JfbnVtID4gMSkpKSB7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGJ0cmZzX29w
+KGJpbykgPT0gQlRSRlNfTUFQX1dSSVRFKQ0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0
+ID0gcmFpZDU2X3Bhcml0eV93cml0ZShiaW8sIGJpb2MpOw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgcmFpZDU2X3Bhcml0eV93cml0ZShiaW8sIGJpb2MpOw0KPj4gwqDCoMKgwqDCoMKgwqDC
+oMKgIGVsc2UNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldCA9IHJhaWQ1Nl9wYXJpdHlf
+cmVjb3ZlcihiaW8sIGJpb2MsIG1pcnJvcl9udW0sIDEpOw0KPj4gLcKgwqDCoMKgwqDCoMKgIGdv
+dG8gb3V0X2RlYzsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJhaWQ1Nl9wYXJpdHlfcmVj
+b3ZlcihiaW8sIGJpb2MsIG1pcnJvcl9udW0sIHRydWUpOw0KPj4gK8KgwqDCoMKgwqDCoMKgIHJl
+dHVybjsNCj4+IMKgwqDCoMKgwqAgfQ0KPj4NCj4+IMKgwqDCoMKgwqAgaWYgKG1hcF9sZW5ndGgg
+PCBsZW5ndGgpIHsNCj4+IEBAIC02Nzc5LDEyICs2NzgzLDcgQEAgdm9pZCBidHJmc19zdWJtaXRf
+YmlvKHN0cnVjdCBidHJmc19mc19pbmZvIA0KPj4gKmZzX2luZm8sIHN0cnVjdCBiaW8gKmJpbywN
+Cj4+DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgc3VibWl0X3N0cmlwZV9iaW8oYmlvYywgYmlvLCBk
+ZXZfbnIsIHNob3VsZF9jbG9uZSk7DQo+PiDCoMKgwqDCoMKgIH0NCj4+IC1vdXRfZGVjOg0KPj4g
+wqDCoMKgwqDCoCBidHJmc19iaW9fY291bnRlcl9kZWMoZnNfaW5mbyk7DQo+PiAtwqDCoMKgIGlm
+IChyZXQpIHsNCj4+IC3CoMKgwqDCoMKgwqDCoCBiaW8tPmJpX3N0YXR1cyA9IGVycm5vX3RvX2Js
+a19zdGF0dXMocmV0KTsNCj4+IC3CoMKgwqDCoMKgwqDCoCBiaW9fZW5kaW8oYmlvKTsNCj4+IC3C
+oMKgwqAgfQ0KPj4gwqAgfQ0KPj4NCj4+IMKgIHN0YXRpYyBib29sIGRldl9hcmdzX21hdGNoX2Zz
+X2RldmljZXMoY29uc3Qgc3RydWN0IA0KPj4gYnRyZnNfZGV2X2xvb2t1cF9hcmdzICphcmdzLA0K
