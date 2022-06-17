@@ -2,115 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D0754ED18
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 00:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EE754EE65
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 02:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378961AbiFPWFu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jun 2022 18:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
+        id S231990AbiFQAV1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jun 2022 20:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379008AbiFPWFj (ORCPT
+        with ESMTP id S1379457AbiFQAVR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jun 2022 18:05:39 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667FD6129B;
-        Thu, 16 Jun 2022 15:05:13 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5C90F1F37E;
-        Thu, 16 Jun 2022 22:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655417111;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=60VPT8oMa+JleU+N4k5yeM0YGzH9c1yMuWkZXfIBx2Q=;
-        b=ca/Kx249PJn3ys4VBzyp8/pOEdhfXS0ESJyjgZfo2iKJgnaucGHtVdSkSkTpL+Hatc2Hh9
-        2TRztA2paZKxpaWGXRHRfayguUH53QpQEQlxBY7ul4RQ7/024zYecknQetmqgUm7Fw335m
-        rNMHYIrGj4aGKHsQtv6a0dm7auCkXgY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655417111;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=60VPT8oMa+JleU+N4k5yeM0YGzH9c1yMuWkZXfIBx2Q=;
-        b=FLgB+caB+gYGr0bWmD0mtEnjkKf/cqHeHwUYYI2sjy31hWj4InPzEe/GRSEa7I/U0epV5u
-        VZWRQL2/8E2wGTAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 277271344E;
-        Thu, 16 Jun 2022 22:05:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wcaJCBepq2ICRAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 16 Jun 2022 22:05:11 +0000
-Date:   Fri, 17 Jun 2022 00:00:36 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        David Sterba <dsterba@suse.com>, 0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org,
-        lkp@lists.01.org
-Subject: Re: [btrfs]  66a7a2412f: xfstests.btrfs.131.fail
-Message-ID: <20220616220036.GF20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Matthew Wilcox <willy@infradead.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        David Sterba <dsterba@suse.com>, 0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org,
-        lkp@lists.01.org
-References: <20220607154229.9164-1-dsterba@suse.com>
- <20220616143710.GF25633@xsang-OptiPlex-9020>
- <Yqud1/SooVDamiuP@casper.infradead.org>
+        Thu, 16 Jun 2022 20:21:17 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE5F63BD6
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jun 2022 17:21:10 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id q1-20020a056830018100b0060c2bfb668eso2102728ota.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jun 2022 17:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=iKSZB+z5a5vfPav0XS+3MpGE1/C2EVyTEygLy0XRThU=;
+        b=nhJEaV2snLFscmpURHmhFCLeq7HA1xaA1RMllYIBj3+ir/vEV5+U80ExxdGIP1dzf/
+         +thMOI5+apbZncxlQeKVNaVQyOqj2G0Q89nO3cd3LnyVjoe8hPUMoB8P6SlJu8sKhkgT
+         bFDTtBw8FlXEiMBNQuf4/KcUM6vMuk+z0pgpRrQT/77dZzyV7bkqDlly7Ho/ZmDW1vOe
+         nmxOXe1Xr94SM9Q0O0wEsyYtKfQDtzCgAhP9k2XZ99wixzsW0YZZqp8rah6f8lpDgxg7
+         G46k0PGxnaTC13ItoeCnGIZVFKPwcfWKdAhjlk7EP4Yv7deR/WTXU7muPF+kAll0KF7i
+         39Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=iKSZB+z5a5vfPav0XS+3MpGE1/C2EVyTEygLy0XRThU=;
+        b=ajRnAfykonUo+f98RzlmnuLcPoc0YqLa/kvc2pWFiHMRz7iT6hPVzDvFTkAno+UFDf
+         grrK5x2NVsxOYXkqUH5mVpHhI+URGnH/Oy1W9XPZBcXKoX7lCRYUZfXtUXLZLRp3M/In
+         IvirIbYHN7DhPJ/bSo3pNxZk7YuE+VGDg7ShSiJZZ3dHAwpQ8cDbsxW+d1K2IkELzMOo
+         cNhn0HVirPCBmJd+3je92UhLQ33hMHVmvegjYro2kyh30d2Q+W2PAbkWDSjWSNmhQUVm
+         st5kYI+t5fBT2rbswV4rhsXjzGfNk92HMiSnMP49wGPudXIlwhM39uFc7MsgpiCJBxKg
+         I3YQ==
+X-Gm-Message-State: AJIora+HW0IyCoN6WbGhfVCIlOVVf6IOD3j4DKGMKdhTgb/rnplR9ZCb
+        N3i9SVoN6McLaJfN/1tj99Qkzl79HMz0yG70+UBywt+Ahrw=
+X-Google-Smtp-Source: AGRyM1vINELKCQKsuHHdGIpMetngrEVFVCqmEXEBktrlF5dFMKG7uDAA9uCMuNC5D6Ank8ssx1I85WXSXsuXerk/sqk=
+X-Received: by 2002:a9d:684d:0:b0:60e:25e0:6fab with SMTP id
+ c13-20020a9d684d000000b0060e25e06fabmr3028061oto.381.1655425269588; Thu, 16
+ Jun 2022 17:21:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yqud1/SooVDamiuP@casper.infradead.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Fri, 17 Jun 2022 02:20:33 +0200
+Message-ID: <CAODFU0pspd_405HAxO+2MGneU8dbSVB9ZJFhqu9w2i86PczLYA@mail.gmail.com>
+Subject: Re: Btrfs autodefrag wrote 5TB in one day to a 0.5TB SSD without a
+ measurable benefit
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 10:17:11PM +0100, Matthew Wilcox wrote:
-> On Thu, Jun 16, 2022 at 10:37:10PM +0800, kernel test robot wrote:
-> > btrfs/131	- output mismatch (see /lkp/benchmarks/xfstests/results//btrfs/131.out.bad)
-> >     --- tests/btrfs/131.out	2022-06-13 17:10:24.000000000 +0000
-> >     +++ /lkp/benchmarks/xfstests/results//btrfs/131.out.bad	2022-06-15 18:54:06.505508542 +0000
-> >     @@ -2,9 +2,9 @@
-> >      Using free space cache
-> >      free space tree is disabled
-> >      Enabling free space tree
-> >     -free space tree is enabled
-> >     +free space tree is disabled
-> 
-> I think I know what's going on here:
-> 
->         compat_ro="$($BTRFS_UTIL_PROG inspect-internal dump-super "$SCRATCH_DEV"
->  | \
->                      sed -rn 's/^compat_ro_flags\s+(.*)$/\1/p')"
->         if ((compat_ro & 0x1)); then
->                 echo "free space tree is enabled"
->         else
->                 echo "free space tree is disabled"
->         fi
-> 
-> dump-super is reading the super block out of the page cache, but this
-> change makes the page cache incoherent with what's on disc.  We could
-> fix that by invalidating the page out of the page cache, but it may be
-> easier to just dump this patch and fix how we use the page cache to
-> write back the superblocks?
+This is a random update to previously reported btrfs fragmentation issues.
 
-The build bot picks up the branch with some delay, I've removed it from
-the pushed branches. It's interesting to see that using the page cache
-vs direct write does have effects in tests, so it would need to be
-unified in kernel and user space.
+Defragmenting a 79 GiB file increased the number of bytes allocated to
+the file in a btrfs filesystem from 118 GIB to 161 GiB:
+
+linux 5.17.5
+btrfs-progs 5.18.1
+
+$ compsize file.sqlite
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       99%      117G         118G          78G
+none       100%      116G         116G          77G
+zstd        30%      471M         1.5G         1.2G
+
+$ btrfs filesystem defragment -t 256K file.sqlite
+
+$ compsize file.sqlite
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       99%      160G         161G          78G
+none       100%      159G         159G          77G
+zstd        28%      405M         1.3G         1.3G
+
+$ dd if=file.sqlite of=file-1.sqlite bs=1M status=progress
+84659167232 bytes (85 GB, 79 GiB) copied, 122.376 s, 692 MB/s
+
+$ compsize file-1.sqlite
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       98%       77G          78G          78G
+none       100%       77G          77G          77G
+zstd        28%      361M         1.2G         1.2G
