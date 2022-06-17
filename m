@@ -2,102 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DD254F944
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 16:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2810F54F971
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 16:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382598AbiFQOg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jun 2022 10:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
+        id S1382809AbiFQOlo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jun 2022 10:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382594AbiFQOg0 (ORCPT
+        with ESMTP id S1382808AbiFQOln (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jun 2022 10:36:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB84E56211
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 07:36:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 17 Jun 2022 10:41:43 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A724AE19
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 07:41:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 985051F86A;
-        Fri, 17 Jun 2022 14:36:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655476583;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vRcEMM3wHHBXVvQgY8J4KGQcFEe+9hwmPFpVljsJbcU=;
-        b=nqJUTsNbiOuS7MrCVuxhRd4LqYxTYty0W/mpocHUunjRunfnoKIA878xxKdaE4KJFNhnKT
-        QJJTxfwskeEXPab+Zw4h1C0mDgMjYIN46smdX5PC0e5zmBihUcW4BQABIeomcZ9EmR0PH+
-        dPwAAKKjIt/3FFhVideOcNongPb9R8s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655476583;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vRcEMM3wHHBXVvQgY8J4KGQcFEe+9hwmPFpVljsJbcU=;
-        b=NItpdBSzQIjm1CR1yfWhGXwZaAFe4cHoi572LemKYRzO9qosDJmHszqHzqIfSwP1L9zqIO
-        J6ICBKE5eRYS57DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B1491348E;
-        Fri, 17 Jun 2022 14:36:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rD3SGGeRrGJEMwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 17 Jun 2022 14:36:23 +0000
-Date:   Fri, 17 Jun 2022 16:31:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, nborisov@suse.com
-Subject: Re: [PATCH] btrfs: don't limit direct reads to a single sector
-Message-ID: <20220617143148.GM20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, nborisov@suse.com
-References: <20220616080224.953968-1-hch@lst.de>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 579D3B82AC1
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 14:41:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88077C3411B;
+        Fri, 17 Jun 2022 14:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655476900;
+        bh=afaGdpuedtFFcULR+CRcjkF2mWG0oK/AIvWBo8g1HF0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n1bXfmWuxIxF+4Y5ZNjkjmNAfnPhCeBtJnHyCz0fn1gFyqDyVKUZ8Kiy4gDs2BWxk
+         n/MMnL3kgMEKfehqtM2W6QXJAZiEhgaiRaCOtTqo+3vC2uZHvZXKtsghuapEQTmtPI
+         fCheuh+6lwpbn40WD70iXzP7ZefrxCysaLCwDpTiz8yVfkI7Ma/qW+TJH49uJtfcBf
+         Wy1PdQbGhkrV8eM8rOcx57hLyfl1PpXJgYhbThgzv737+iSsc9eIp7MCceJSwoF8w4
+         fYjI+iuy1ZjZzLyni/1aiOroHuNVnPy+Otb5L28CXybvP42unQCuYESbxzqnJ/KwBX
+         +Whg45JeTQiaA==
+Date:   Fri, 17 Jun 2022 15:41:36 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3] btrfs: Batch up release of reserved metadata for
+ delayed items used for deletion
+Message-ID: <20220617144136.GA4066269@falcondesktop>
+References: <20220617125334.1067259-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220616080224.953968-1-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220617125334.1067259-1-nborisov@suse.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 10:02:24AM +0200, Christoph Hellwig wrote:
-> Btrfs currently limits direct I/O reads to a single sector, which goes
-> back to commit c329861da406 ("Btrfs: don't allocate a separate csums
-> array for direct reads") from Josef.  That commit changes the direct I/O
-> code to ".. use the private part of the io_tree for our csums.", but ten
-> years later that isn't how checksums for direct reads work, instead they
-> use a csums allocation on a per-btrfs_dio_private basis (which have their
-> own performane problem for small I/O, but that will be addressed later).
+On Fri, Jun 17, 2022 at 03:53:34PM +0300, Nikolay Borisov wrote:
+> With Filipe's recent rework of the delayed inode code one aspect which
+> isn't batched is the release of the reserved metadata of delayed inode's
+> delete items. With this patch on top of Filipe's rework and running the
+> same test as provided in the description of a patch titled
+> "btrfs: improve batch deletion of delayed dir index items" I observe
+> the following change of the number of calls to btrfs_block_rsv_release:
 > 
-> Lift this limit to improve performance for large direct reads.  For
-> example a fio run doing 1 MiB aio reads with a queue depth of 1 roughly
-> tripples the throughput:
+> Before this change:
+> @block_rsv_release: 1004
+> @btrfs_delete_delayed_items_total_time: 14602
+> @delete_batches: 505
 > 
-> Baseline:
+> After:
+> @block_rsv_release: 510
+> @btrfs_delete_delayed_items_total_time: 13643
+> @delete_batches: 507
 > 
-> READ: bw=65.3MiB/s (68.5MB/s), 65.3MiB/s-65.3MiB/s (68.5MB/s-68.5MB/s), io=19.1GiB (20.6GB), run=300013-300013msec
-> 
-> With this patch:
-> 
-> READ: bw=196MiB/s (206MB/s), 196MiB/s-196MiB/s (206MB/s-206MB/s), io=57.5GiB (61.7GB), run=300006-300006msc
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Nice catch, thanks.
+Looks good now, thanks.
 
-Nikolay, you did some experiments with larger dio, but IIRC it was on
-the bio layer. This looks like a fix for the same issue but I'm not
-sure.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+> ---
+> V3:
+>  * Print the inode number in the tracepoint (this time for real)
+> 
+>  * Ensure batch release is called iff total_reserve_size is a positive number,
+>  this implies space is released from non log recover context.
+> 
+> V2:
+>  * Improved subject wording to make it more clear (Filipe)
+> 
+>  * Print the inode number in the tracepoint (Filipe)
+> 
+>  * More explicit referal to the test case in Filipe's initial patch to make it
+>  more clear how those numbers are derived.
+>  fs/btrfs/delayed-inode.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> index e1e856436ad5..9d618226005b 100644
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -800,11 +800,13 @@ static int btrfs_batch_delete_items(struct btrfs_trans_handle *trans,
+>  				    struct btrfs_path *path,
+>  				    struct btrfs_delayed_item *item)
+>  {
+> +	struct btrfs_fs_info *fs_info = root->fs_info;
+>  	struct btrfs_delayed_item *curr, *next;
+>  	struct extent_buffer *leaf = path->nodes[0];
+>  	LIST_HEAD(batch_list);
+>  	int nitems, slot, last_slot;
+>  	int ret;
+> +	u64 total_reserved_size = item->bytes_reserved;
+> 
+>  	ASSERT(leaf != NULL);
+> 
+> @@ -841,14 +843,27 @@ static int btrfs_batch_delete_items(struct btrfs_trans_handle *trans,
+>  		nitems++;
+>  		curr = next;
+>  		list_add_tail(&curr->tree_list, &batch_list);
+> +		total_reserved_size += curr->bytes_reserved;
+>  	}
+> 
+>  	ret = btrfs_del_items(trans, root, path, path->slots[0], nitems);
+>  	if (ret)
+>  		return ret;
+> 
+> +	/* In case of BTRFS_FS_LOG_RECOVERING items won't have reserved space */
+> +	if (total_reserved_size > 0) {
+> +		/*
+> +		 * Check btrfs_delayed_item_reserve_metadata() to see why we don't need
+> +		 * to release/reserve qgroup space.
+> +		 */
+> +		trace_btrfs_space_reservation(fs_info, "delayed_item",
+> +					      item->key.objectid, total_reserved_size,
+> +					      0);
+> +		btrfs_block_rsv_release(fs_info, &fs_info->delayed_block_rsv,
+> +					total_reserved_size, NULL);
+> +	}
+> +
+>  	list_for_each_entry_safe(curr, next, &batch_list, tree_list) {
+> -		btrfs_delayed_item_release_metadata(root, curr);
+>  		list_del(&curr->tree_list);
+>  		btrfs_release_delayed_item(curr);
+>  	}
+> --
+> 2.25.1
+> 
