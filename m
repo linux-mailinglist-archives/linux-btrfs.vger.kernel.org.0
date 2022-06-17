@@ -2,66 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC4154F9E2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 17:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3191754F9F8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 17:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383044AbiFQPKj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jun 2022 11:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        id S1383109AbiFQPQL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jun 2022 11:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382971AbiFQPKi (ORCPT
+        with ESMTP id S1383088AbiFQPQK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jun 2022 11:10:38 -0400
+        Fri, 17 Jun 2022 11:16:10 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D780393EB
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 08:10:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F453CFFB
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 08:16:10 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5CA2321B1A;
-        Fri, 17 Jun 2022 15:10:36 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C873221B49;
+        Fri, 17 Jun 2022 15:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655478636;
+        t=1655478968;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MTHa9bFPJpt7dMpf52+WP6AacwvL6jx4PMHrQ8RZ8z8=;
-        b=agOIPsGA/h6jOaEwnxf/N9ufsh9vgyKAhRpSUlIuWtYbEa81KXm2b/3Pcfeq42cnnuF0BI
-        IA0G3GNru/dy6JfEnnVmAc5Fhb4n0azd3cfLJiAwocSP2Nc6OMd4C3v3+T1xKUT5+IWDRu
-        3wXXuRzkUHdITbUqzbJWfQZ3UW6Cmvs=
+        bh=7BrJsrS59VRPDG7NPkr8MsEFTzC+6IaTQxQMxzbdZxg=;
+        b=nCsmzJtakGDENDvrWT+tz2wdS+wO7qt/nin5XUYFHAMysvjUL21aqq40QDVFLEWqRWIVnY
+        Y/HBuOFyi3ILKVk4Tm3g4TdkUsJvuOwWcd9UoZ62I/Qb9Yjh1TcDQrypzI3I9WvZJjTe/F
+        mWbP8HzswyrpdXAwjPWnMjcsND+cAkI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655478636;
+        s=susede2_ed25519; t=1655478968;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MTHa9bFPJpt7dMpf52+WP6AacwvL6jx4PMHrQ8RZ8z8=;
-        b=7JZzlPD4OG+Js19IPMcyCoEgjFJHLU66qUJeyAn04uw3mvuYxBXMKFxDxlZf0erZx64sKc
-        w5ZjrF0o38RbvdAg==
+        bh=7BrJsrS59VRPDG7NPkr8MsEFTzC+6IaTQxQMxzbdZxg=;
+        b=ZTRr/5VziKZA26g2hxj46V6CVFO5AarHHr0j5HgYXLNPearNrb+UwBeizF3PaJGdyc742y
+        TlVheG4gK5X9N2Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 426FB1348E;
-        Fri, 17 Jun 2022 15:10:36 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD8841348E;
+        Fri, 17 Jun 2022 15:16:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id PDY7D2yZrGJ3QQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 17 Jun 2022 15:10:36 +0000
-Date:   Fri, 17 Jun 2022 17:06:01 +0200
+        id dpl4KbiarGLoQwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 17 Jun 2022 15:16:08 +0000
+Date:   Fri, 17 Jun 2022 17:11:33 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     David Sterba <dsterba@suse.com>
+To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] Remove indirect iterators for inode references
-Message-ID: <20220617150601.GN20633@twin.jikos.cz>
+Subject: Re: [PATCH v3] btrfs: Batch up release of reserved metadata for
+ delayed items used for deletion
+Message-ID: <20220617151133.GO20633@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <cover.1654723641.git.dsterba@suse.com>
+References: <20220617125334.1067259-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1654723641.git.dsterba@suse.com>
+In-Reply-To: <20220617125334.1067259-1-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,18 +74,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 11:35:57PM +0200, David Sterba wrote:
-> There's support for a generic iterator over inode references that is for
-> example used to resolve inode number to all paths but there's only one
-> such iterator implementation so it's not necessary, unless somebody has
-> an idea for more such iterators. There is a similar pattern used for
-> extent iterator utilizing the indirection, but I think we can remove it
-> for the inode refs.
+On Fri, Jun 17, 2022 at 03:53:34PM +0300, Nikolay Borisov wrote:
+> With Filipe's recent rework of the delayed inode code one aspect which
+> isn't batched is the release of the reserved metadata of delayed inode's
+> delete items. With this patch on top of Filipe's rework and running the
+> same test as provided in the description of a patch titled
+> "btrfs: improve batch deletion of delayed dir index items" I observe
+> the following change of the number of calls to btrfs_block_rsv_release:
 > 
-> David Sterba (4):
->   btrfs: call inode_to_path directly and drop indirection
->   btrfs: simplify parameters of backref iterators
->   btrfs: sink iterator parameter to btrfs_ioctl_logical_to_ino
->   btrfs: remove unused typedefs get_extent_t and btrfs_work_func_t
+> Before this change:
+> @block_rsv_release: 1004
+> @btrfs_delete_delayed_items_total_time: 14602
+> @delete_batches: 505
+> 
+> After:
+> @block_rsv_release: 510
+> @btrfs_delete_delayed_items_total_time: 13643
+> @delete_batches: 507
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Added to misc-next.
+Added to misc-next, thanks.
