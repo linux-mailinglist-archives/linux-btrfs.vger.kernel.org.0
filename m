@@ -2,72 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EED54F907
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 16:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D6854F924
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 16:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbiFQOTB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jun 2022 10:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
+        id S1382687AbiFQOZD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jun 2022 10:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234827AbiFQOTA (ORCPT
+        with ESMTP id S1382476AbiFQOZC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jun 2022 10:19:00 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150CE1129
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 07:18:59 -0700 (PDT)
+        Fri, 17 Jun 2022 10:25:02 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC0B515AC;
+        Fri, 17 Jun 2022 07:25:00 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C97D21FDEA;
-        Fri, 17 Jun 2022 14:18:57 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6919B21E44;
+        Fri, 17 Jun 2022 14:24:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655475537;
+        t=1655475899;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZTCkL43p1P6xP2lvzoMi9iwv0tORAjm0m5XLDVXIBK4=;
-        b=GyjHaXAascivTjfj0n6zUoKT6ctHSvziX+xVs32glwGeh33RDeGGkLcvvI/ady4ZUczrxd
-        HBdczzmbJM83I+KpPIjCvwvnqDpDysZ7GjuF22H1hqH3RfxwSUnUAInPUxQb+Jf7lBP0rh
-        p5WncrWQU+BohRy5K7bH5F7Jp/GSj/A=
+        bh=a9HpK8AQFCPpZGHqOflUkPRS+AfBo7nezyoDwo5EOxw=;
+        b=wON5Z+a8PY3NERVTywme/dw6SGBNU5E2zNjD+c2ZeDbwICsTtnV4w3RAuhibm88j/JmuGV
+        g8S70bLRewWvY75g9gCfu0RHBB3T3Sf3WShC3IdZZkTlLGIayCG9St8vhwG72ocTa25VmL
+        58dVm1pmwlVNQvWdEfcu/8XDtCq1DVU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655475537;
+        s=susede2_ed25519; t=1655475899;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZTCkL43p1P6xP2lvzoMi9iwv0tORAjm0m5XLDVXIBK4=;
-        b=wd5hiTDEQ8JTQPf5oqj0/rbD7ynCLWvfUIyH7kmUmTYqy9N1uKahCVoOi+pEShr/8owEgt
-        syN6xnRHDZqnonBg==
+        bh=a9HpK8AQFCPpZGHqOflUkPRS+AfBo7nezyoDwo5EOxw=;
+        b=Se/2b5X2lpR6pFkWpn6Hvd2pjIbTelvpE8uXqCZExx4u46Ub1zvNv6NMEnN8Wgx/B0w+D7
+        GeGj8iyXGisMmABA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EAA81348E;
-        Fri, 17 Jun 2022 14:18:57 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08E481348E;
+        Fri, 17 Jun 2022 14:24:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7FNTIVGNrGKAKwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 17 Jun 2022 14:18:57 +0000
-Date:   Fri, 17 Jun 2022 16:14:22 +0200
+        id +29EAbuOrGIdLgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 17 Jun 2022 14:24:59 +0000
+Date:   Fri, 17 Jun 2022 16:20:24 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Stefan Roesch <shr@fb.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, boris@bur.io
-Subject: Re: [PATCH v1 3/3] btrfs: add force_chunk_alloc sysfs entry to force
- allocation
-Message-ID: <20220617141422.GK20633@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Gabriel Niebler <gniebler@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/3] btrfs: Use kmap_local_page() on "in_page" in
+ zlib_compress_pages()
+Message-ID: <20220617142024.GL20633@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Stefan Roesch <shr@fb.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, boris@bur.io
-References: <20220208193122.492533-1-shr@fb.com>
- <20220208193122.492533-4-shr@fb.com>
- <20220404170221.GU15609@twin.jikos.cz>
- <3b9bd6b6-ac63-6f8f-85a0-30ddd86f47d8@fb.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Gabriel Niebler <gniebler@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220617120538.18091-1-fmdefrancesco@gmail.com>
+ <20220617120538.18091-4-fmdefrancesco@gmail.com>
+ <8cbfc1ff-f86d-f2cc-d37e-ef874f4600bc@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3b9bd6b6-ac63-6f8f-85a0-30ddd86f47d8@fb.com>
+In-Reply-To: <8cbfc1ff-f86d-f2cc-d37e-ef874f4600bc@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -79,34 +93,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 01:59:47PM -0700, Stefan Roesch wrote:
-> On 4/4/22 10:02 AM, David Sterba wrote:
-> > On Tue, Feb 08, 2022 at 11:31:22AM -0800, Stefan Roesch wrote:
-> > Starting transaction from sysfs callbacks is not considered safe due to
-> > potentially heavy operations going on, taking locks etc. and should be
-> > done in the follwing way:
-> > 
-> > 	btrfs_set_pending(fs_info, COMMIT);
-> > 	wake_up_process(fs_info->transaction_kthread);
-> > 
-> >> +	if (!trans)
-> >> +		return PTR_ERR(trans);
-> >> +	ret = btrfs_force_chunk_alloc(trans, space_info->flags);
-> > 
-> > Similar here, check the function, it does a lot of things, this is not
-> > safe from sysfs context.
-> > 
-> > This will need to be done somewhere early in the transaction commit
-> > after setting a new pending bit here in sysfs, like the
-> > btrfs_set_pending(..., COMMIT) does.
-> > 
+On Fri, Jun 17, 2022 at 09:09:47PM +0800, Qu Wenruo wrote:
+> On 2022/6/17 20:05, Fabio M. De Francesco wrote:
+> > @@ -126,6 +128,8 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+> >   		ret = -ENOMEM;
+> >   		goto out;
+> >   	}
+> > +	mstack[sind] = 'A';
+> > +	sind++;
+> >   	cpage_out = kmap_local_page(out_page);
+> >   	pages[0] = out_page;
+> >   	nr_pages = 1;
+> > @@ -148,26 +152,32 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+> >   				int i;
+> >
+> >   				for (i = 0; i < in_buf_pages; i++) {
+> > -					if (in_page) {
+> > -						kunmap(in_page);
 > 
-> I discussed this with Josef and Boris. Using a work queue to process these
-> requests seems to be more adequate then using pending transaction flags.
-> Any thoughts?
+> I don't think we really need to keep @in_page mapped for that long.
+> 
+> We only need the input pages (pages from inode page cache) when we run
+> out of input.
+> 
+> So what we really need is just to map the input, copy the data to
+> buffer, unmap the page.
+> 
+> > +					if (data_in) {
+> > +						sind--;
+> > +						kunmap_local(data_in);
+> >   						put_page(in_page);
+> >   					}
+> >   					in_page = find_get_page(mapping,
+> >   								start >> PAGE_SHIFT);
+> > -					data_in = kmap(in_page);
+> > +					mstack[sind] = 'B';
+> > +					sind++;
+> > +					data_in = kmap_local_page(in_page);
+> >   					memcpy(workspace->buf + i * PAGE_SIZE,
+> >   					       data_in, PAGE_SIZE);
+> >   					start += PAGE_SIZE;
+> >   				}
+> >   				workspace->strm.next_in = workspace->buf;
+> >   			} else {
+> 
+> I think we can clean up the code.
+> 
+> In fact the for loop can handle both case, I didn't see any special
+> reason to do different handling, we can always use workspace->buf,
+> instead of manually dancing using different paths.
+> 
+> I believe with all these cleanup, it should be much simpler to convert
+> to kmap_local_page().
+> 
+> I'm pretty happy to provide help on this refactor if you don't feel
+> confident enough on this part of btrfs.
 
-I've left is as is, commit from sysfs though it's not safe, the file is
-available only under debug.
-
-Otherwise, the patches have been in misc-next with my fixups so you
-don't need to resend.
+My first thought was "why to clean up zlib loop if we want to just
+replace kmap" but after seeing the whole stack and fiddling with the
+indexes I agree that a simplification should be done first.
