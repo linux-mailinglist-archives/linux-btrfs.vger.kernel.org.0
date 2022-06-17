@@ -2,49 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5785B54F541
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 12:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ECE54F559
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 12:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbiFQKVw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jun 2022 06:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S235175AbiFQKay (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jun 2022 06:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234937AbiFQKVu (ORCPT
+        with ESMTP id S232153AbiFQKax (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jun 2022 06:21:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9DC6A058
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 03:21:49 -0700 (PDT)
+        Fri, 17 Jun 2022 06:30:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5386A43C
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 03:30:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 85B3DB82853
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 10:21:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E24BFC3411B;
-        Fri, 17 Jun 2022 10:21:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BE5761DD1
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 10:30:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95604C3411F;
+        Fri, 17 Jun 2022 10:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655461307;
-        bh=D0/CxniUakwdN3SCKHiGK4G9gAZoGYX8LKoHxE713Ks=;
+        s=k20201202; t=1655461851;
+        bh=HMaccBSpypR03D2jqsGxzD/mIDqsvIPUbSn+K06CUL4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P5lzCo1OLxzaRW4z1C0rBR8PwiDSmCLqMoy9nZcKgFh7pOMWtzqLTh3qO5wHin9Uv
-         XxjgeOSJLI+ayfWslW1rboeF34864tzS9bRVpWfaaq8rvQXj+Iv+w7KT2lLiz2L9el
-         9x7hcGgWcFA9ft1k/rrCB8QXvphNVF3NO+Wijcs8mw49w7L0uiMBMUG1OzdHrCfn0N
-         662xmdoLgR3eesXQiCc9MW+KBlEEKdoI34qOWRctvz6u08HgIdKCBysW1oSaVkIn4L
-         J1PNzuYppFAncI+YZZgtiDjdZGQlYxAzMAAUiPlH7amKgi4NOjjhUH/R/YkDxOREH3
-         z9qNdkgEhY7MA==
-Date:   Fri, 17 Jun 2022 11:21:44 +0100
+        b=b3GWijfAsbyryLvvDTBEzUyHNRG6HrMuIjYxAvNYNwANsifiWAZlugnv6awqwry53
+         d9lrAAmN+O2MLUPoNHOl//CJBL64ZYQxJkqVKDvsQw2gKhzwdrjofwbBOfs0tUeUEf
+         Zn5Fud7XPl9mNzQ7IwlHjOO4c6z600S+BpEZ2KOZiMPfRjKiUBzF+hqZUd5Qi/muFU
+         tPKjuubBb3z147IEmNoge3qyq3lJuRptvrkv5W4RwUNd3dOVCZepqS8ZxZLQ3pBcXT
+         S0jcD0HPunkjmeHis+OfgitPMvT8cCF5f8/KIHyM0YcybUcmHR1TLAkJF0WP2CoFAn
+         cGFiHchl9p/rg==
+Date:   Fri, 17 Jun 2022 11:30:49 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
+To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/4] btrfs: fix error handling of fallbacked uncompress
- write
-Message-ID: <20220617102144.GD4041436@falcondesktop>
-References: <cover.1655391633.git.naohiro.aota@wdc.com>
- <f0ac3032fcd07344a84a9b1f7d05f8862aa60760.1655391633.git.naohiro.aota@wdc.com>
+Subject: Re: [PATCH] btrfs: Batch up release of delayed inode metadata
+Message-ID: <20220617103049.GE4041436@falcondesktop>
+References: <20220616133545.1001959-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0ac3032fcd07344a84a9b1f7d05f8862aa60760.1655391633.git.naohiro.aota@wdc.com>
+In-Reply-To: <20220616133545.1001959-1-nborisov@suse.com>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -55,82 +53,85 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 17, 2022 at 12:45:41AM +0900, Naohiro Aota wrote:
-> When cow_file_range() fails in the middle of the allocation loop, it
-> unlocks the pages but remains the ordered extents intact. Thus, we need to
-
-s/remains/leaves/
-
-> call btrfs_cleanup_ordered_extents() to finish the created ordered extents.
+On Thu, Jun 16, 2022 at 04:35:45PM +0300, Nikolay Borisov wrote:
+> With Filipe's recent rework of the delayed inode code one aspect which
+> isn't batched is the release of the reserved metadata of delayed inode's
+> delete items. With this batch on top of his rework I see the following
+> change of the number of calls to btrfs_block_rsv_release:
 > 
-> Also, we need to call end_extent_writepage() if locked_page is available
-> because btrfs_cleanup_ordered_extents() never process the region on the
-> locked_page.
+> Before this change:
+> @block_rsv_release: 1004
+> @btrfs_delete_delayed_items_total_time: 14602
+> @delete_batches: 505
 > 
-> Furthermore, we need to set the mapping as error if locked_page is
-> unavailable before unlocking the pages, so that the errno is properly
-> propagated to the userland.
+> After:
+> @block_rsv_release: 510
+> @btrfs_delete_delayed_items_total_time: 13643
+> @delete_batches: 507
+
+Placing here some numbers without any context is puzzling. Either paste
+the test and bpftrace script here, or mention it's for the same test and
+bpftrace script from the changelog of another patch (mentioning its subject).
+
 > 
-> CC: stable@vger.kernel.org
-
-It would be better to specify a version here.
-
-The delalloc paths for compression were (a bit heavily) refactored last year
-in preparation for the subpage sector size support, so blindly adding this
-to any stable releases might introduce regressions (assuming the patch does
-not fail to apply).
-
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > ---
->  fs/btrfs/inode.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
+>  fs/btrfs/delayed-inode.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 4e1100f84a88..cae15924fc99 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -934,8 +934,18 @@ static int submit_uncompressed_range(struct btrfs_inode *inode,
->  		goto out;
+> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> index e1e856436ad5..6c06ddba5a7a 100644
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -800,11 +800,13 @@ static int btrfs_batch_delete_items(struct btrfs_trans_handle *trans,
+>  				    struct btrfs_path *path,
+>  				    struct btrfs_delayed_item *item)
+>  {
+> +	struct btrfs_fs_info *fs_info = root->fs_info;
+>  	struct btrfs_delayed_item *curr, *next;
+>  	struct extent_buffer *leaf = path->nodes[0];
+>  	LIST_HEAD(batch_list);
+>  	int nitems, slot, last_slot;
+>  	int ret;
+> +	u64 total_reserved_size = item->bytes_reserved;
+>  
+>  	ASSERT(leaf != NULL);
+>  
+> @@ -841,14 +843,23 @@ static int btrfs_batch_delete_items(struct btrfs_trans_handle *trans,
+>  		nitems++;
+>  		curr = next;
+>  		list_add_tail(&curr->tree_list, &batch_list);
+> +		total_reserved_size += curr->bytes_reserved;
 >  	}
->  	if (ret < 0) {
-> -		if (locked_page)
-> +		btrfs_cleanup_ordered_extents(inode, locked_page, start, end - start + 1);
-> +		if (locked_page) {
-> +			u64 page_start = page_offset(locked_page);
-> +			u64 page_end = page_start + PAGE_SIZE - 1;
+>  
+>  	ret = btrfs_del_items(trans, root, path, path->slots[0], nitems);
+>  	if (ret)
+>  		return ret;
+>  
+> +	/*
+> +	 * Check btrfs_delayed_item_reserve_metadata() to see why we don't need
+> +	 * to release/reserve qgroup space.
+> +	 */
+> +	trace_btrfs_space_reservation(fs_info, "delayed_item", 0,
+> +				      total_reserved_size, 0);
+
+The tracepoint should include the number of the associated inode (item->key.objectid),
+just like every where else, so that during debugging we can match the release with
+the respective reservation call.
+
+Also the subject is misleading: it's not the release of delayed inode metadata,
+it's the release of reserved space for delayed items used for deletion.
+
+Otherwise it looks fine, thanks.
+
+> +	btrfs_block_rsv_release(fs_info, &fs_info->delayed_block_rsv,
+> +				total_reserved_size, NULL);
 > +
-> +			btrfs_page_set_error(inode->root->fs_info, locked_page,
-> +					     page_start, PAGE_SIZE);
-> +			set_page_writeback(locked_page);
-> +			end_page_writeback(locked_page);
-> +			end_extent_writepage(locked_page, ret, page_start, page_end);
->  			unlock_page(locked_page);
-> +		}
->  		goto out;
+>  	list_for_each_entry_safe(curr, next, &batch_list, tree_list) {
+> -		btrfs_delayed_item_release_metadata(root, curr);
+>  		list_del(&curr->tree_list);
+>  		btrfs_release_delayed_item(curr);
 >  	}
-
-So as I commented in the previous patch, something is missing here: the call to
-btrfs_cleanup_ordered_extents() at submit_uncompressed_range() in case cow_file_range()
-returns an error.
-
-Otherwise it looks fine.
-Thanks.
-
->  
-> @@ -1390,9 +1400,12 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
->  	 * However, in case of unlock == 0, we still need to unlock the pages
->  	 * (except @locked_page) to ensure all the pages are unlocked.
->  	 */
-> -	if (!unlock && orig_start < start)
-> +	if (!unlock && orig_start < start) {
-> +		if (!locked_page)
-> +			mapping_set_error(inode->vfs_inode.i_mapping, ret);
->  		extent_clear_unlock_delalloc(inode, orig_start, start - 1,
->  					     locked_page, 0, page_ops);
-> +	}
->  
->  	/*
->  	 * For the range (2). If we reserved an extent for our delalloc range
 > -- 
-> 2.35.1
+> 2.25.1
 > 
