@@ -2,190 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A47154F59F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 12:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE47854F6CB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jun 2022 13:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380871AbiFQKih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jun 2022 06:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
+        id S1381589AbiFQLgg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jun 2022 07:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381976AbiFQKiR (ORCPT
+        with ESMTP id S1380246AbiFQLgd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jun 2022 06:38:17 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60606006C
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 03:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1655462289;
-        bh=sjx8a0P6wP0DRACBY+2RKdPGtUBv5gr0PWnzpZ4ayZ8=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=BD+lxDj3duoSmD6oDxcyeIWpUvyKamNyJQcTALvFozj2esMZOLILwNo/zNOz9x2jT
-         mwg4m7mKMTS7DPrt/ThaGIR07aJLJUbIZdsfrE7tTETbEskgDPkxSftYRthq91ZdQ7
-         Gbh28IEUZZ3mRXr1mOZNEpMwqMZxpDI8MqGKWAWQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLi8g-1oJgFU3WSG-00HctP; Fri, 17
- Jun 2022 12:38:09 +0200
-Message-ID: <b64e0808-a3c7-b549-363e-d92640d4245f@gmx.com>
-Date:   Fri, 17 Jun 2022 18:38:04 +0800
+        Fri, 17 Jun 2022 07:36:33 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D861F4BFCE
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jun 2022 04:36:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 968AB219B0;
+        Fri, 17 Jun 2022 11:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655465791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=TY+MRGzxj2adEDBEATbCBB3vpNs8eCt2GitOc28x5Xo=;
+        b=LHOY6t1tYlGekz6fV6UpVniDv9EoeWJ203UmgTAOMoBoJGh3KZZ9ZTzyPmhn9mnrjPbegx
+        xC9tIUjUgxizjtbSjVb7GSXD8Bnzxb4kQxo7kKFwUEOsLK5BnX5+Bo/yi6DF/Ppix/Z4VP
+        ZmSmOEncj6oBx/FkgjiwaebXXyuAacY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6449513458;
+        Fri, 17 Jun 2022 11:36:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id m1yqFT9nrGJCZgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 17 Jun 2022 11:36:31 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2] btrfs: Batch up release of reserved metadata for delayed items used for deletion
+Date:   Fri, 17 Jun 2022 14:36:30 +0300
+Message-Id: <20220617113630.1060249-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 04/10] btrfs: remove the raid56_parity_write return value
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20220617100414.1159680-1-hch@lst.de>
- <20220617100414.1159680-5-hch@lst.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220617100414.1159680-5-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Bq9zc42o/ijHNVbs1ORmyD94PYR5gZtubfGCQzv7HL0fnuusr2c
- LkcDym4auuVVuvWWzaEwj5qAPvC68LCldvAGglWNzSV/+1FqYIjJN+Cc4plhNqoaSm1EzQE
- K90kXLNr+g0R2TxzG5IdxJcL7xEX0kinSVds15S3DN4/2E2Vt9OUO9bcPoJHpYJHDRo90kV
- m3F5mcbMQCvdWqbbcldug==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OTZNOH5I9IA=:eBMw24YYVEwbuRwwO9CiHn
- dUR08yOm7nFbARh8Mo+iNBgHaq6ZQlFZKnZJEKjyEkHfGAIQmnFSfOdDuBdICu/u1vwWuanU8
- rGkrGueRCg+fRnedjtN5cgE42XI6FS+BvjuKVIm03+mTX9APR1i4APCUWsvaLUJA85lVpnZTi
- tM8Xry53TGU3QfF1wpfzgM/EyZ9O/N0ezH0Q7xeWejEg9E/XXf6MZlOmBR58mcPLjtyis4eF9
- 1FlTpodY2UqmtkFl9agdNISTCwUFAUfjQ+nXQ7VYVJxZ6AkhSe4TX9A6ekCtiob9bwdAsugWq
- 8g9raGh494UhC8mBQCMcWAze+8wbriy3im/calr2VAVPF5wVbgPtv+Ing6iZIePchj4AqlibQ
- jgQDBXeIVtM9wpXrbYsoyKjo7K7VfER+NB+ARLL996S8m5krUV7Rs8mBDFKmv9pumErRcEbAY
- +ayxLjG3AOJaZgb1ewz2uG1SA2wXJwwmNm2EdkOPptRjZ8qPtmANdr22en5IWSAHxCQHOas3F
- 3rezDM/gjZwKTV33j1tbuM8ilnkqw5PSzUrpwMSmR48I/Scb9TMxRdr4tYQaJdiTP7Nr5cwnP
- WoUgfkXctkO5ICGqTVPFESCEbwrs2KBvhU3qLDQWtrkvfR71adIB2GNf6cukKCnao1gbVV1au
- Ucdxp2w//q7rI6pao5wUujerH6lTzp2kN02tJ6N3tQUafJKLSe5V9v78UIR2qsKxlGqnTcd+H
- gsj4Sniw5fJKQKyzDjBl10OQ7QACEAc3eBuQN0LqxWi2ls+ZYNMGrT0ls0O6P8slFnQAlrcWU
- JIJjWLKRFAxKv+uubhOVGhVlOFSOy3Yt6N4X3nwjW7I8CPR9YDEvNK7reBImCvoUyMCUvV5Jm
- FxEoiv686Re1t1xZ3k27pReWclrIzydgnrS5wtE2Mzverh3B75WKBlpgl4+6bkhHhNla6nZR/
- +Vu6H0aEih1jE6kkaH7aUk6wMKsnebT1OWRb4f4SeXWNTAVw4FvUjNV3jWN35INYQU6PKXzyd
- ZeuQ+Ld96Gm7BZJ2nC6r+tA7ZTJKA68Yk1esPY0vMx4Oz9qLrB9fTouho/rtv12s9FVj5E1/2
- WW8PawXmqYix7jPsXBKF42DHILqrqU+SNjgA5bPHchJ0HPFP4+OOiYA8w==
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+With Filipe's recent rework of the delayed inode code one aspect which
+isn't batched is the release of the reserved metadata of delayed inode's
+delete items. With this patch on top of Filipe's rework and running the
+same test as provided in the description of a patch titled
+"btrfs: improve batch deletion of delayed dir index items" I observe
+the following change of the number of calls to btrfs_block_rsv_release:
 
+Before this change:
+@block_rsv_release: 1004
+@btrfs_delete_delayed_items_total_time: 14602
+@delete_batches: 505
 
-On 2022/6/17 18:04, Christoph Hellwig wrote:
-> Always consume the bio and call the end_io handler on error instead of
-> returning an error and letting the caller handle it.  This matches what
-> the block layer submission does and avoids any confusion on who
-> needs to handle errors.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+After:
+@block_rsv_release: 510
+@btrfs_delete_delayed_items_total_time: 13643
+@delete_batches: 507
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/raid56.c  | 23 +++++++++++++++--------
->   fs/btrfs/raid56.h  |  2 +-
->   fs/btrfs/volumes.c |  2 +-
->   3 files changed, 17 insertions(+), 10 deletions(-)
->
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index 233dcef6ce3ad..c0cc2d99509c9 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -1803,18 +1803,19 @@ static void rbio_add_bio(struct btrfs_raid_bio *=
-rbio, struct bio *orig_bio)
->   /*
->    * our main entry point for writes from the rest of the FS.
->    */
-> -int raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc)
-> +void raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc=
-)
->   {
->   	struct btrfs_fs_info *fs_info =3D bioc->fs_info;
->   	struct btrfs_raid_bio *rbio;
->   	struct btrfs_plug_cb *plug =3D NULL;
->   	struct blk_plug_cb *cb;
-> -	int ret;
-> +	int ret =3D 0;
->
->   	rbio =3D alloc_rbio(fs_info, bioc);
->   	if (IS_ERR(rbio)) {
->   		btrfs_put_bioc(bioc);
-> -		return PTR_ERR(rbio);
-> +		ret =3D PTR_ERR(rbio);
-> +		goto out;
->   	}
->   	rbio->operation =3D BTRFS_RBIO_WRITE;
->   	rbio_add_bio(rbio, bio);
-> @@ -1829,8 +1830,8 @@ int raid56_parity_write(struct bio *bio, struct bt=
-rfs_io_context *bioc)
->   	if (rbio_is_full(rbio)) {
->   		ret =3D full_stripe_write(rbio);
->   		if (ret)
-> -			btrfs_bio_counter_dec(fs_info);
-> -		return ret;
-> +			goto out_dec_counter;
-> +		return;
->   	}
->
->   	cb =3D blk_check_plugged(btrfs_raid_unplug, fs_info, sizeof(*plug));
-> @@ -1841,13 +1842,19 @@ int raid56_parity_write(struct bio *bio, struct =
-btrfs_io_context *bioc)
->   			INIT_LIST_HEAD(&plug->rbio_list);
->   		}
->   		list_add_tail(&rbio->plug_list, &plug->rbio_list);
-> -		ret =3D 0;
->   	} else {
->   		ret =3D __raid56_parity_write(rbio);
->   		if (ret)
-> -			btrfs_bio_counter_dec(fs_info);
-> +			goto out_dec_counter;
->   	}
-> -	return ret;
-> +
-> +	return;
-> +
-> +out_dec_counter:
-> +	btrfs_bio_counter_dec(fs_info);
-> +out:
-> +	bio->bi_status =3D errno_to_blk_status(ret);
-> +	bio_endio(bio);
->   }
->
->   /*
-> diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
-> index 1dce205b79bf9..3f223ae39462a 100644
-> --- a/fs/btrfs/raid56.h
-> +++ b/fs/btrfs/raid56.h
-> @@ -167,7 +167,7 @@ struct btrfs_device;
->
->   int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bi=
-oc,
->   			  int mirror_num, int generic_io);
-> -int raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc)=
-;
-> +void raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc=
-);
->
->   void raid56_add_scrub_pages(struct btrfs_raid_bio *rbio, struct page *=
-page,
->   			    unsigned int pgoff, u64 logical);
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index bdcefc19cd51e..b30d4449ef18d 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6768,7 +6768,7 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_inf=
-o, struct bio *bio,
->   	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
->   	    ((btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE) || (mirror_num > 1))) {
->   		if (btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE)
-> -			ret =3D raid56_parity_write(bio, bioc);
-> +			raid56_parity_write(bio, bioc);
->   		else
->   			ret =3D raid56_parity_recover(bio, bioc, mirror_num, 1);
->   		goto out_dec;
+V2:
+ * Improved subject wording to make it more clear (Filipe)
+
+ * Print the inode number in the tracepoint (Filipe)
+
+ * More explicit referal to the test case in Filipe's initial patch to make it
+ more clear how those numbers are derived.
+
+ fs/btrfs/delayed-inode.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index e1e856436ad5..6c06ddba5a7a 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -800,11 +800,13 @@ static int btrfs_batch_delete_items(struct btrfs_trans_handle *trans,
+ 				    struct btrfs_path *path,
+ 				    struct btrfs_delayed_item *item)
+ {
++	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_delayed_item *curr, *next;
+ 	struct extent_buffer *leaf = path->nodes[0];
+ 	LIST_HEAD(batch_list);
+ 	int nitems, slot, last_slot;
+ 	int ret;
++	u64 total_reserved_size = item->bytes_reserved;
+
+ 	ASSERT(leaf != NULL);
+
+@@ -841,14 +843,23 @@ static int btrfs_batch_delete_items(struct btrfs_trans_handle *trans,
+ 		nitems++;
+ 		curr = next;
+ 		list_add_tail(&curr->tree_list, &batch_list);
++		total_reserved_size += curr->bytes_reserved;
+ 	}
+
+ 	ret = btrfs_del_items(trans, root, path, path->slots[0], nitems);
+ 	if (ret)
+ 		return ret;
+
++	/*
++	 * Check btrfs_delayed_item_reserve_metadata() to see why we don't need
++	 * to release/reserve qgroup space.
++	 */
++	trace_btrfs_space_reservation(fs_info, "delayed_item", 0,
++				      total_reserved_size, 0);
++	btrfs_block_rsv_release(fs_info, &fs_info->delayed_block_rsv,
++				total_reserved_size, NULL);
++
+ 	list_for_each_entry_safe(curr, next, &batch_list, tree_list) {
+-		btrfs_delayed_item_release_metadata(root, curr);
+ 		list_del(&curr->tree_list);
+ 		btrfs_release_delayed_item(curr);
+ 	}
+--
+2.25.1
+
