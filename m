@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9889D5503C9
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Jun 2022 11:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B6B5503C0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Jun 2022 11:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbiFRJE7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Jun 2022 05:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
+        id S232193AbiFRJTN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Jun 2022 05:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbiFRJEq (ORCPT
+        with ESMTP id S231927AbiFRJTJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Jun 2022 05:04:46 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C8533A2A;
-        Sat, 18 Jun 2022 02:04:45 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id fd6so6216939edb.5;
-        Sat, 18 Jun 2022 02:04:45 -0700 (PDT)
+        Sat, 18 Jun 2022 05:19:09 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76902654B;
+        Sat, 18 Jun 2022 02:19:08 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id ej4so5042700edb.7;
+        Sat, 18 Jun 2022 02:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Ui+mLR6kyF0wdfzo/EcLDO7dPFVHC367yFF81zcZVnY=;
-        b=XAuH02T5EIzLRo+0Emlpfbzofq9bEc3nwEmEHXtoMyhPmdUq3151bfVU2WDu4nEYSQ
-         htsj25WWdmJOAZ4SYEVDVCV8auPzn9wKR0b6SdmFi9X3YA2ZV3TqXuWpwyam2YWfNB+u
-         YVkwHR/UnRMvfpAiybtg6mkzTx2uOP28by+Driy4oO77l6OfBq8pWFCaSWBNS+xl2FT8
-         UXdtm9ifjZxCkPuhTBuIqJi9xPayl0pOE/o5vaDazBPpvWaqzLF5ON2gSW77gQqfmcrA
-         7JS4XKKzPhKxHJadVjt/QjSqtBk6w388kEElbMlRHplGJmsob+Flc8AMOPA1uUzn9vJX
-         qUtA==
+        bh=dnShuNCC7vJwyx79q/xFZV5Bswk3kI4OzmQoFoQnuVM=;
+        b=e/JcgF2akSWVnYgPWU/7toRYSXH0Ei2m6FY539tryc8COawWnTM5q1P5l3T4gWEHfd
+         vLRDXtG7XraEeEpTm9MGP8zzfmagqSTbwotmISuzb0DRhGaHQrCmK6n/IbX/QFl96dJL
+         TQiOo8Q+stPMK+jpgZv+Q/xp38EFksLxUos3jdudA1x5JVYQnLI0Yx1BT3BLW4wchsSv
+         N3dwe8/Lsu3oJvnpRKHsV4l4ixPZwmg9cN0hymnjkqLG7T1HyzVTBuXd2yArLYrN1ZUZ
+         UtNLosVgbL45q2t8zZ0cCQrntm9E2Aec6Xi5INR4+HtLOuNqfHUEJ1fryr9BGzzjz5cT
+         kG4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ui+mLR6kyF0wdfzo/EcLDO7dPFVHC367yFF81zcZVnY=;
-        b=JPE1xqB78Ieg4e00PD+4yy4gOAWqrlFNgSkXJ5COfF/50JCm+IpFobwyeXa6QBJfOw
-         o5C7zWT2ice+aXcvScC2qXKNGMaOyQtf8MQ4CTFGd3ZGZQiuOAcfhhu9QCXMXYEqapco
-         tQaVVqVdkQzfZyJCUHcqnH6hztaUe8SH8xCxK9dsOrsYbLu0goJ6PGYesoKa/PLfCIk0
-         IgNSk6Njgn1JRjo5Zui0cbxeU9b5bZmZJzsyqi2K33d+8xCh8G+yd2eN19YkP6EPlj1a
-         EeEUo1ozLLOkfjLCRyP8aGkjyEzIBH40KdinO4XPXPJOZ5p06QhUcasOGJa2UW4o5t0l
-         Ug/A==
-X-Gm-Message-State: AJIora+sdJ2Y7UCOdgcMNYVCS8n/qQi65V5T00mAcx1gWFPRzNgCJdqs
-        /YFg3DmrkxL4J/adUNR967k=
-X-Google-Smtp-Source: AGRyM1vHof1f/pHCzJetgr+4SQaiNH0PuIx3ZwW5OBZY15U+SDAD1SQz9uAvNJZzVn/mNc7fWqHZKg==
-X-Received: by 2002:a05:6402:31f6:b0:435:5a08:d5e0 with SMTP id dy22-20020a05640231f600b004355a08d5e0mr11206339edb.308.1655543083854;
-        Sat, 18 Jun 2022 02:04:43 -0700 (PDT)
-Received: from opensuse.localnet (host-87-6-98-182.retail.telecomitalia.it. [87.6.98.182])
-        by smtp.gmail.com with ESMTPSA id 27-20020a170906329b00b006fec3b2e4f3sm3146272ejw.205.2022.06.18.02.04.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dnShuNCC7vJwyx79q/xFZV5Bswk3kI4OzmQoFoQnuVM=;
+        b=rm6E6QcwBk5UDfdCwJsr9NL6XkgZbevZ6lw9hOiEcSaTdXBdCGeeNWYy2Y+EzXhQQI
+         hAwiDPZ2/r0KQMEEST97euaMoB1koVeviZmatQW5JgeCPXH7j1+qKEhlYAdnMPrBS3yl
+         41pjt0yQEdfrPAtj/UjMEi/5ruf+gKbECc8cn8tLZ4lMNQo+kSgQCZmQEQl6A48uyqSS
+         gSOGOFzVU0Cu9nyIDd0+eFTT1RytI+NFYrwKXqyJbGYgOF82lYHTxGbmxl3Qlq+22Y3t
+         JShc/dRSscoIk4hP+gK0I7Y+mG1SUpN3Ubdfwn1HPHrI35pyfsJKnonOp4sKi3NnaUE7
+         byxg==
+X-Gm-Message-State: AJIora8sn322mrOEFlD/9sHt+k01LCsFZjy/6sN2bOc6d6ulpNeBAt9B
+        TNSeh9vWmhv2hpByKJuYHvI=
+X-Google-Smtp-Source: AGRyM1uMBcKH+3IxoQvCC6JZfyD0aPNjvWdfndC8vZU7LL7keZtOqzsWzqlAIaDaQGT6X0XXrJ7xDw==
+X-Received: by 2002:a05:6402:403:b0:434:eb49:218f with SMTP id q3-20020a056402040300b00434eb49218fmr17442869edv.426.1655543947288;
+        Sat, 18 Jun 2022 02:19:07 -0700 (PDT)
+Received: from localhost.localdomain (host-87-6-98-182.retail.telecomitalia.it. [87.6.98.182])
+        by smtp.gmail.com with ESMTPSA id lb21-20020a170907785500b007219c20dcd8sm451956ejc.196.2022.06.18.02.19.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jun 2022 02:04:42 -0700 (PDT)
+        Sat, 18 Jun 2022 02:19:06 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -56,16 +56,15 @@ To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
         Nikolay Borisov <nborisov@suse.com>,
         Gabriel Niebler <gniebler@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [RFC PATCH v2 3/3] btrfs: Use kmap_local_page() on "in_page" in zlib_compress_pages()
-Date:   Sat, 18 Jun 2022 11:04:41 +0200
-Message-ID: <2057523.KlZ2vcFHjT@opensuse>
-In-Reply-To: <94f8d618-ec7a-f68e-c302-2639ae3d7549@gmx.com>
-References: <20220617120538.18091-1-fmdefrancesco@gmail.com> <14654011.tv2OnDr8pf@opensuse> <94f8d618-ec7a-f68e-c302-2639ae3d7549@gmx.com>
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH] btrfs: Convert zlib_decompress_bio() to use kmap_local_page()
+Date:   Sat, 18 Jun 2022 11:19:01 +0200
+Message-Id: <20220618091901.25034-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,59 +75,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On sabato 18 giugno 2022 00:16:15 CEST Qu Wenruo wrote:
-> 
-> On 2022/6/18 02:13, Fabio M. De Francesco wrote:
+The use of kmap() is being deprecated in favor of kmap_local_page(). With
+kmap_local_page(), the mapping is per thread, CPU local and not globally
+visible.
 
-[snip]
+Therefore, use kmap_local_page() / kunmap_local() in zlib_decompress_bio()
+because in this function the mappings are per thread and are not visible
+in other contexts.
 
-> 
-> Thanks for pointing to the doc, and that doc is enough to answer my
-> question.
-> 
+Tested with xfstests on QEMU + KVM 32-bits VM with 4GB of RAM and
+HIGHMEM64G enabled. This patch passes 26/26 tests of group "compress".
 
-Well, this confirms that my changes were quite helpful :-)
+Suggested-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ fs/btrfs/zlib.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-[snip]
-
-> > As I said in a recent email, I'm relatively new to kernel development,
-> > especially to Btrfs and other filesystems.
-> 
-> That's not a big deal, that's why we're here to provide help.
-> 
-> >
-> > However, I noted that this code does different handling depending 
-> > on how many "in_page" is going to map. I am not able to say why...
-> 
-> AFAIK the reason is optimization.
-> 
-> The idea is like this, if there are multiple pages left as input, we
-> copy the pages from page cache into the workspace buffer.
-> 
-> If there is no more than one page left, we use that page from page cache
-> directly.
-> 
-> I believe that's the problem causing the difficult in converting to
-> kmap_local_page().
-> 
-
-[snip]
-
-> 
-> I'll send out a cleanup for zlib_compress_pages(), mostly to make the
-> (strm.avail_in == 0) branch to call kmap() and kunmap() in pairs,
-> without holding @in_page mapped.
-> 
-> Would that make it easier?
-> 
-
-I was doubtful when you asked this question. However, when this morning I 
-saw your patch, I soon understood that it would make that task so easy that 
-a silly script could do a mechanical conversion.
-
-Thanks so much,
-
-Fabio
-
-
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index 2cd4f6fb1537..966e17cea981 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -284,7 +284,7 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ 	unsigned long buf_start;
+ 	struct page **pages_in = cb->compressed_pages;
+ 
+-	data_in = kmap(pages_in[page_in_index]);
++	data_in = kmap_local_page(pages_in[page_in_index]);
+ 	workspace->strm.next_in = data_in;
+ 	workspace->strm.avail_in = min_t(size_t, srclen, PAGE_SIZE);
+ 	workspace->strm.total_in = 0;
+@@ -306,7 +306,7 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ 
+ 	if (Z_OK != zlib_inflateInit2(&workspace->strm, wbits)) {
+ 		pr_warn("BTRFS: inflateInit failed\n");
+-		kunmap(pages_in[page_in_index]);
++		kunmap_local(data_in);
+ 		return -EIO;
+ 	}
+ 	while (workspace->strm.total_in < srclen) {
+@@ -333,13 +333,13 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ 
+ 		if (workspace->strm.avail_in == 0) {
+ 			unsigned long tmp;
+-			kunmap(pages_in[page_in_index]);
++			kunmap_local(data_in);
+ 			page_in_index++;
+ 			if (page_in_index >= total_pages_in) {
+ 				data_in = NULL;
+ 				break;
+ 			}
+-			data_in = kmap(pages_in[page_in_index]);
++			data_in = kmap_local_page(pages_in[page_in_index]);
+ 			workspace->strm.next_in = data_in;
+ 			tmp = srclen - workspace->strm.total_in;
+ 			workspace->strm.avail_in = min(tmp, PAGE_SIZE);
+@@ -352,7 +352,7 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ done:
+ 	zlib_inflateEnd(&workspace->strm);
+ 	if (data_in)
+-		kunmap(pages_in[page_in_index]);
++		kunmap_local(data_in);
+ 	if (!ret)
+ 		zero_fill_bio(cb->orig_bio);
+ 	return ret;
+-- 
+2.36.1
 
