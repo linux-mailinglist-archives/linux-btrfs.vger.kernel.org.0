@@ -2,76 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC586550D55
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jun 2022 23:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFD1550D58
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jun 2022 23:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbiFSVl0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Jun 2022 17:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
+        id S231753AbiFSVvE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Jun 2022 17:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbiFSVke (ORCPT
+        with ESMTP id S230180AbiFSVvD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Jun 2022 17:40:34 -0400
+        Sun, 19 Jun 2022 17:51:03 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20805AE70
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Jun 2022 14:40:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EABE45
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Jun 2022 14:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1655674830;
-        bh=2Qhuqp0Lcu9+pEv6ah4XJ3nE0gNX+x2CFZeydeRJN+w=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=iIsmX/09oSSyhGNTAC9QSxknUBwwkl+Bc7jaoBQArvxTNVHXDKMMaoYRmbRfP2CxX
-         +H0G2JCE7eKZHu6lAYyMqLgsFMCv8v560teEON8AWMyyh4abS4pRKKUV2+Rtc4QLOB
-         UBXbVLH9fmeZS2fsx9SYP4o14FB+3v1AQAwUMJfw=
+        s=badeba3b8450; t=1655675457;
+        bh=skRZJ7WW7XLXdo7QHX03ehVEUr+K4XAWFdwX2Jiamyg=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=Vgz5Hi4qCIK1D5DwAFaZsqqaN7DWOct2sKwQMTiEDzV4pHnrKPW3+wUUYM0TziwUP
+         xqdLLPgeDRp7Al3tqkaBizr8JAzMIIUSEJ4tvvtgHJlCQGqD+qxaheOTQUykYxDJRW
+         5D2r24P6Ueb7lSCmI1qv9WQWFOmJqCYLDN97XSw0=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McpJg-1nT9bj1H9O-00Zyn1; Sun, 19
- Jun 2022 23:40:30 +0200
-Message-ID: <aedc9eb7-20f4-49a5-f8c6-9a55353bc25f@gmx.com>
-Date:   Mon, 20 Jun 2022 05:40:26 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8GQs-1ngzjs2n0y-0149gv; Sun, 19
+ Jun 2022 23:50:57 +0200
+Message-ID: <1b21e3e9-cdd9-baa6-bd39-e9489de883ff@gmx.com>
+Date:   Mon, 20 Jun 2022 05:50:53 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
-Subject: Re: Problems with BTRFS formatted disk
 Content-Language: en-US
-To:     "David C. Partridge" <david.partridge@perdrix.co.uk>,
-        linux-btrfs@vger.kernel.org
-References: <001f01d88344$ed8aa1d0$c89fe570$@perdrix.co.uk>
- <603196b9-fa55-f5cc-d9b5-3cf69f19c6ef@gmx.com>
- <000001d8837c$91bc74e0$b5355ea0$@perdrix.co.uk>
- <838a65c7-214b-adc1-2c9e-3923da6575e2@gmx.com>
- <000001d883c7$698edad0$3cac9070$@perdrix.co.uk>
- <e7c18d33-4807-7d6f-53f5-6e3f59b687ef@gmx.com>
- <000401d883cd$cc588fc0$6509af40$@perdrix.co.uk>
- <393cf34a-0ae9-d34c-b2bb-ea74d906dfa5@gmx.com>
- <000201d883db$a22686e0$e67394a0$@perdrix.co.uk>
- <000901d883e0$289d73b0$79d85b10$@perdrix.co.uk>
- <b8579f1c-a277-2a01-2126-77ffcc0ab2d5@gmx.com>
- <000c01d883e7$1757e570$4607b050$@perdrix.co.uk>
+To:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220617100414.1159680-1-hch@lst.de>
+ <20220617100414.1159680-7-hch@lst.de>
+ <59dc5c97-36c6-9737-b7ab-1d4fcfaba2e3@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <000c01d883e7$1757e570$4607b050$@perdrix.co.uk>
+Subject: Re: [PATCH 06/10] btrfs: transfer the bio counter reference to the
+ raid submission helpers
+In-Reply-To: <59dc5c97-36c6-9737-b7ab-1d4fcfaba2e3@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FVShGo72gPZ0B6TWXf4noPAPMJeTRCJcwQul1OfnQIoUzUuymR3
- j0NcwhyZy2upiKJtk+w2Gz4j0/ooiUNZEy/+jZ57dwEk+YyzpWu6Q0YjUsmcC7wRVZh/w6B
- 5htd7VeR6JPr9gABw1lQ4QqnqzkXExroS/P3+RWB+3kBmwVFGTfPZCFsT6FeC6k6PXd82+J
- xKqnJAcU6ssZPBylb5SKQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EfkDUOvpPPc=:YXDsVbcaFjjLLGBwW2cszy
- uc0xG0iCIOLuV9HM2zs0/IZnyxV6K+2kAUP0gXxck/rC4fXL+E5VRP8moRZorBGH4Q0a/xVbt
- ThChWtiownMMTCI3UZbZuOn0kug6RFPjhNISOaZr9KytYYyx6hJcIEHvLs3yeVkwc5KHZ+0mV
- JZComJTDswwMd/RxBOAxS8WWpJHZH9dJounxPd0k6vOZCm10pnlhdsVdgNL/vHvwuypY8CK1I
- 4XCHIWZaMUBu8FaR4QH2TpSbIfXqcM7BxWkYQj0hEevSWj75NpQusWm75oc6Z4/q8EeF+pl05
- wcfTpfhIduoNfiTvDug7K4XdoZEcJoyGgCvOOMtmTPRWYU6pW9MBlkAsAaRTsYvA13Pvn77JW
- RbhERh4h8H7QTIut+95ymsk45CXtGe4R/UqodkfWTiZ0kljQzZBHE4MQn1H87xXplZeriKj/3
- 5Vw/UkhzFG+RJHn0zaEKpZO4J2+8p6l5aDoI5U17BkgcT0Rs/q9eIVyskzAYQiYfc8RHBzTQS
- X8CqzJrZhBMEj+zoHwCKsI26aMdeQxlQtEzk8up/THriOj/ho9+DYJrKpMHWoKXlmZwP9TN7A
- XaJX/OvZZWIiqyCzt2AYOpgLYERYocYyixP+EzAVR4kVJ4gKUyoyczOkDZwSD1rbDPSDy2bQB
- 4/HLrBDTNeVd30VK+y3lwjImCrrn1jbFhFv25Ket9Pjy/NAsdZ9Tg47mU4hJyawBvVi1Ecrvg
- pGrciPB0fQPdvJlCwPEVgsgWnF2zlKPrqpZ1KhLdzHug04XD3k//IuLtNWl8omg1fMSr6Gpu4
- d/QkvSCvPTWEAwEipr46tM37wys9g98T4xh/6kExStRTD6Cz7cfnw6wiwKtaleEUPFgfz2oO5
- I5cAXHBr/e+8Jsj+JEKQvI5gj+AHVRUReRKwkuiMigH/gcA2g1V6fIhmWRcB5TtmYujGON0zP
- 6xOzLDKeog4i9fqewPTaKQacyDUhxsJf8xAlr8DChuZrjQVl88a44PpYlI6PSzfk4wiuRJLMq
- u8j9m3JPJzqXZIE9Og1tIBRzniiiC2xKOTldbUl6HrJsjPRSm9kdoOcHFMHqAUwB/W5oWtjru
- ibhCAp+MFDLKTqPGRNF7hsuLbcQPUC/mdxypTbnQH40w+mNNZzy2EEaEw==
+X-Provags-ID: V03:K1:OcJXfndhG81h8pS4b1s9vIE9663gt9BPRfVQemdOM9Zg81fTe0Z
+ 7yet2sj0Gd0sqW7D5fSHfbx2U9JqUsoHQaIJ9yTTRCSW8SBPc5e8aG7p9H65EFD5w/R4QkA
+ cuM3p0Z+aLOQNwJ5bWsZO9dUz7hcbds8RqnPcqplMeP5f8bKXJGkzVCIfqYKkHGAF4nNfjP
+ /kjCQnmmyByY4fBPnHkiQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lv4xWx5PlY8=:i7psa6X3qltxMfAl6vc9W/
+ GITyF2clJghUHSTsIu2omvElKl/uHs0tGMKs4BMgbTVzfkRSK8ZAzUw2YLy4Tk9WxjAIazfuH
+ bkxRTjAOr20MOAgVm+FLURlM8ndilOcIeeUfXqZOPMTv5mBaz6pbLtirl1Z77Y4TqvaL4qTu0
+ wRwG1rG8aWHFpEyIAfwDht3znNvzt1yQb01JgCmfBB/HWN4q33SKdV6TF6ze4RDrkadEn6C8B
+ 4G184KjbU26Xufby8O4ftwThs6Ad1l6fxlMxHLzAgTctFaklEFiyV7Xtf9JfKepsoHWwu0KeE
+ +7l3UDvDLmvwRK3HblVW3KFwmj0/rCH95VSAP2tps+zxXCfu3nGLn1jG+1dwzy03B9fEixfsr
+ G177S1ldVpTzmHNmKWXyvCGeLYcJ01+0sKSWS6AmdSlVWQ8ZhY+81Hl6KNrMyOdeZb+ZIU63V
+ xtp7iDpIF53SfZbWcvxaSAHrXQBdelZb/Dn94Anjbg471dYE49jW62PGokxxfC/cik4eNc4k3
+ BJ3DZE1zpunpeeS4UMPdDJaBTim+ZDYxFJWZnyyL14WzdKlFe687QO4AVglbUWUUqd5arruh+
+ uVZvuECWaVcWCFp+5JZ99jn0IJ56Us/Bj/cafOPxu2JMunDbU5960Mr9rA9Vh4qXIbN58qMvA
+ JPxdHare0RGqVPJDg2JI+Kca5gdvLxmb9Gg7dRxLrvjuze+EAvQwBdzPgc/5iNfkbLp1cKMbT
+ A6i9+zwcMuiBsGJMcSgaUBGFSrK/2gWeTqxQOEiRa/URLY/TnLLqI5VI4QseX3yFzqwrtw1Xc
+ zCpZfV00iqkeacW4zMz76FOzzqK7h0liTbzobXk8MdJtgnRC+ynxyMw4dK7onVqKvq/YghLH5
+ jGF+6iZkpw1JDcdVa6KcqTPmXGU+FaCs+uoBzrQBJ6xonfUsHLDXmipeweJw2/F6Owz6xgvDj
+ OL7Sz+r0r9OWL9veSvcR+lh9Azcr+UvDD6RolWif+1aHge5wswygtLeJWMke3mZ9dNKTPbs/H
+ 23JLS9e0RMiS9HHD2E/kWXBDjqBvodBxpeQt+XiuW0Uv10OIIYep4+7fDIEc0BDezlob7FQrA
+ 2dgRctqk7prM2ew7rkcx1MLB6CRqd8ZhR4hQSsTruTnLT5g/Yg+sTWcUw==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,333 +77,176 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/6/19 22:15, David C. Partridge wrote:
-> I can't "grab what I can" as I don't have enough TB to copy the data I w=
-ant to save =E2=98=B9
+On 2022/6/19 18:45, Qu Wenruo wrote:
 >
-> Does it make any sense to try:
 >
->   mount -o remount,rw /mnt
-
-Nope, remount RW will be completely rejected for rescue=3Dall case.
-
->   btrfs subvolume delete /mnt/@
->   btrfs subvolume delete /mnt/@_daily.20220525_00:11:01
->   btrfs subvolume delete /mnt/@_daily.20220526_00:11:01
->   btrfs subvolume delete /mnt/@_hourly.20220526_06:00:01
->   btrfs subvolume delete /mnt/@_hourly.20220526_09:00:01
->   btrfs subvolume delete /mnt/@_hourly.20220526_12:00:01
-
-Deleting them won't help, the transid mismatch is affecting too many
-parts of the fs.
-
+> On 2022/6/17 18:04, Christoph Hellwig wrote:
+>> Transfer the bio counter reference acquired by btrfs_submit_bio to
+>> raid56_parity_write and raid56_parity_recovery together with the bio th=
+at
+>> the reference was acuired for instead of acquiring another reference in
+>> those helpers and dropping the original one in btrfs_submit_bio.
 >
->   mv /mnt/@_daily.20220524_00:11:01 /mnt/@
+> Btrfs_submit_bio() has called btrfs_bio_counter_inc_blocked(), then call
+> btrfs_bio_counter_dec() in its out_dec: tag.
 >
-> or is that doomed to total failure?
+> Thus the bio counter is already paired.
+>
+> Then why we want to dec the counter again in RAID56 path?
+>
+> Or did I miss some patches in the past modifying the behavior?
 
-Mostly yes. Thus the only thing can do is really data salvage.
+In fact, the bio counter for btrfs_map_bio() is just increased and to
+allow the real bios (either the RAID56 code, or submit_stripe_bio()) to
+grab extra counter to cover the full lifespan of the real bio.
+
+Thus I don't think there is any bio counter to be "transferred" here.
+
+Yes, you can argue in that case, btrfs_map_bio() should not grab the
+counter instead, but unfortunately I'm not able to answer if that's the
+case.
+
+But for now, all the existing call patterns are that, the real bios
+submission code grab the counter to cover the full lifespan of the bios,
+while the counter from btrfs_map_bio() really only covers its execution
+time (which is not covering the underlying bios)
 
 Thanks,
 Qu
-
->
-> The disks behind the raid card are all Western Digital WD4001FYYG SAS dr=
-ives
->
-> David
->
->
-> -----Original Message-----
-> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-> Sent: 19 June 2022 14:31
-> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger=
-.kernel.org
-> Subject: Re: Problems with BTRFS formatted disk
->
->
->
-> On 2022/6/19 21:26, David C. Partridge wrote:
->> Aha this is much more interesting:
->>
->> I issued: mount -t btrfs -o ro,rescue=3Dall /dev/sdc1 /mnt
->>
->> And got this in the system log:
->>
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): flagging fs w=
-ith big metadata feature
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): enabling all =
-of the rescue options
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): ignoring data=
- csums
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): ignoring bad =
-roots
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): disabling log=
- replay at mount time
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): disk space ca=
-ching is enabled
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): has skinny ex=
-tents
->> Jun 19 13:04:32 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 12554992156672 wanted 130582 found 127355
->> Jun 19 13:04:32 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 12554992156672 wanted 130582 found 127355
->> Jun 19 13:05:12 archiso systemd[1]: dev-virtio\x2dports-org.qemu.guest_=
-agent.0.device: Job dev-virtio\x2dports-org.qemu.guest_agent.0.device/star=
-t timed out.
->> Jun 19 13:05:12 archiso systemd[1]: Timed out waiting for device /dev/v=
-irtio-ports/org.qemu.guest_agent.0.
->> Jun 19 13:05:12 archiso systemd[1]: Dependency failed for QEMU Guest Ag=
-ent.
->> Jun 19 13:05:12 archiso systemd[1]: qemu-guest-agent.service: Job qemu-=
-guest-agent.service/start failed with result 'dependency'.
->> Jun 19 13:05:12 archiso systemd[1]: dev-virtio\x2dports-org.qemu.guest_=
-agent.0.device: Job dev-virtio\x2dports-org.qemu.guest_agent.0.device/star=
-t failed with result 'timeout'.
->> Jun 19 13:05:12 archiso systemd[1]: Reached target Multi-User System.
->> Jun 19 13:05:12 archiso systemd[1]: Reached target Graphical Interface.
->> Jun 19 13:05:12 archiso systemd[1]: Startup finished in 1min 4.847s (fi=
-rmware) + 4.837s (loader) + 9.433s (kernel) + 1min 31.546s (userspace) =3D=
- 2min 50.664s.
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): flagging fs w=
-ith big metadata feature
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): disk space ca=
-ching is enabled
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): has skinny ex=
-tents
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): enabling ssd =
-optimizations
->>
->> ll /mnt got me this:
->>
->> Jun 19 13:08:13 archiso kernel: verify_parent_transid: 4 callbacks supp=
-ressed
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): par=
-ent transid verify failed on 576192512 wanted 129948 found 122929
->
-> This is definitely not just *some* metadata didn't reach disk, but
-> *tons* of metadata didn't reach disk.
->
-> All expected transid > found transid.
->
-> Almost certain the RAID card is doing something incorrectly related to
-> FLUSH.
->
->>
->> ls: cannot access '/mnt/@': Input/output error
->> ls: cannot access '/mnt/@_daily.20220525_00:11:01': Input/output error
->> ls: cannot access '/mnt/@_daily.20220526_00:11:01': Input/output error
->> ls: cannot access '/mnt/@_hourly.20220526_06:00:01': Input/output error
->> ls: cannot access '/mnt/@_hourly.20220526_09:00:01': Input/output error
->> ls: cannot access '/mnt/@_hourly.20220526_12:00:01': Input/output error
->> total 0
->> d????????? ? ?    ?      ?            ? @
->> drwxrwxr-x 1 root 1000 204 May 15 16:27 @_daily.20220523_00:11:01
->> drwxrwxr-x 1 root 1000 204 May 15 16:27 @_daily.20220524_00:11:01
->> d????????? ? ?    ?      ?            ? @_daily.20220525_00:11:01
->> d????????? ? ?    ?      ?            ? @_daily.20220526_00:11:01
->> d????????? ? ?    ?      ?            ? @_hourly.20220526_06:00:01
->> d????????? ? ?    ?      ?            ? @_hourly.20220526_09:00:01
->> d????????? ? ?    ?      ?            ? @_hourly.20220526_12:00:01
->> drwxrwxr-x 1 root 1000 184 Dec 16  2021 @_weekly.20220424_00:12:01
->> drwxrwxr-x 1 root 1000 184 Dec 16  2021 @_weekly.20220508_00:12:01
->> drwxrwxr-x 1 root 1000 184 Dec 16  2021 @_weekly.20220515_00:12:01
->> drwxrwxr-x 1 root 1000 204 May 15 16:27 @_weekly.20220522_00:12:01
->>
->> So it appears that there may be recoverable sub-volumes there ...
->>
->> So if I can remount it rw after having mounted it ro,rescue=3Dall I sho=
-uld be able to delete the broken subvolumes and rename one of the @daily o=
-r @weekly ones that appear OK?
->
-> Nope, rescue=3Dall is really just let you to grab what you can, the fs h=
-as
-> so many transid mismatch, is definitely no way to save.
->
-> And I strongly recommend to do more testing on that RAID5 card later
-> (for power loss tests).
-> That card doesn't sound cheap at all, and if such card doesn't do FLUSH
-> correctly, the vendor really deserve tons of blame.
->
-> Or it can be the HDDs? Mind to provide the model too?
 >
 > Thanks,
 > Qu
 >
 >>
->> Or can I manipulate the subvolumes even if it is mounted ro?
+>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>> ---
+>> =C2=A0 fs/btrfs/raid56.c=C2=A0 | 16 ++++++----------
+>> =C2=A0 fs/btrfs/volumes.c | 15 +++++++--------
+>> =C2=A0 2 files changed, 13 insertions(+), 18 deletions(-)
 >>
->> Your guidance will be most welcome
+>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+>> index cd39c233dfdeb..00a0a2d472d88 100644
+>> --- a/fs/btrfs/raid56.c
+>> +++ b/fs/btrfs/raid56.c
+>> @@ -1815,12 +1815,11 @@ void raid56_parity_write(struct bio *bio,
+>> struct btrfs_io_context *bioc)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(rbio)) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_put_bioc(b=
+ioc);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D PTR_ERR(=
+rbio);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_dec_counter;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rbio->operation =3D BTRFS_RBIO_WRITE;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rbio_add_bio(rbio, bio);
 >>
->> D.
+>> -=C2=A0=C2=A0=C2=A0 btrfs_bio_counter_inc_noblocked(fs_info);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rbio->generic_bio_cnt =3D 1;
 >>
->> -----Original Message-----
->> From: David C. Partridge <david.partridge@perdrix.co.uk>
->> Sent: 19 June 2022 13:54
->> To: 'Qu Wenruo' <quwenruo.btrfs@gmx.com>; linux-btrfs@vger.kernel.org
->> Subject: RE: Problems with BTRFS formatted disk
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> @@ -1852,7 +1851,6 @@ void raid56_parity_write(struct bio *bio, struct
+>> btrfs_io_context *bioc)
 >>
->> Here's what the 2022.06.01 version of Archlinux had to say in the log w=
-hen I issued:
+>> =C2=A0 out_dec_counter:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_bio_counter_dec(fs_info);
+>> -out:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio->bi_status =3D errno_to_blk_status(r=
+et);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio_endio(bio);
+>> =C2=A0 }
+>> @@ -2209,6 +2207,8 @@ void raid56_parity_recover(struct bio *bio,
+>> struct btrfs_io_context *bioc,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (generic_io) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ASSERT(bioc->mir=
+ror_num =3D=3D mirror_num);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_bio(bio)->=
+mirror_num =3D mirror_num;
+>> +=C2=A0=C2=A0=C2=A0 } else {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_get_bioc(bioc);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
 >>
->> mount -t btrfs -o rescue=3Dall /dev/sdc1 /mnt
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rbio =3D alloc_rbio(fs_info, bioc);
+>> @@ -2231,12 +2231,8 @@ void raid56_parity_recover(struct bio *bio,
+>> struct btrfs_io_context *bioc,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_end_bio=
+;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
 >>
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): flagging fs w=
-ith big metadata feature
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): enabling all =
-of the rescue options
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): ignoring data=
- csums
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): ignoring bad =
-roots
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): disabling log=
- replay at mount time
->> Jun 19 12:43:01 archiso kernel: BTRFS error (device sdc1): nologreplay =
-must be used with ro mount option
->> Jun 19 12:43:01 archiso kernel: BTRFS error (device sdc1): open_ctree f=
-ailed
+>> -=C2=A0=C2=A0=C2=A0 if (generic_io) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_bio_counter_inc_noblo=
+cked(fs_info);
+>> +=C2=A0=C2=A0=C2=A0 if (generic_io)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rbio->generic_bi=
+o_cnt =3D 1;
+>> -=C2=A0=C2=A0=C2=A0 } else {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_get_bioc(bioc);
+>> -=C2=A0=C2=A0=C2=A0 }
 >>
->> Did I need to say:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Loop retry:
+>> @@ -2266,8 +2262,8 @@ void raid56_parity_recover(struct bio *bio,
+>> struct btrfs_io_context *bioc,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
 >>
->> mount -t btrfs -o ro,rescue=3Dall /dev/sdc1 /mnt
+>> =C2=A0 out_end_bio:
+>> -=C2=A0=C2=A0=C2=A0 if (generic_io)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_put_bioc(bioc);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_bio_counter_dec(fs_info);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_put_bioc(bioc);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio_endio(bio);
+>> =C2=A0 }
 >>
->> D.
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 844ad637a0269..fea139d628c04 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -6756,8 +6756,12 @@ void btrfs_submit_bio(struct btrfs_fs_info
+>> *fs_info, struct bio *bio,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_bio_counter_inc_blocked(fs_info);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D __btrfs_map_block(fs_info, btrfs=
+_op(bio), logical,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &map_length, &bioc, mirror_num, 1);
+>> -=C2=A0=C2=A0=C2=A0 if (ret)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_dec;
+>> +=C2=A0=C2=A0=C2=A0 if (ret) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_bio_counter_dec(fs_in=
+fo);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio->bi_status =3D errno_to=
+_blk_status(ret);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio_endio(bio);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+>> +=C2=A0=C2=A0=C2=A0 }
 >>
->> -----Original Message-----
->> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
->> Sent: 19 June 2022 12:51
->> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vge=
-r.kernel.org
->> Subject: Re: Problems with BTRFS formatted disk
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total_devs =3D bioc->num_stripes;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bioc->orig_bio =3D bio;
+>> @@ -6771,7 +6775,7 @@ void btrfs_submit_bio(struct btrfs_fs_info
+>> *fs_info, struct bio *bio,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 raid56_parity_write(bio, bioc);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 raid56_parity_recover(bio, bioc, mirror_num, true);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_dec;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
 >>
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (map_length < length) {
+>> @@ -6786,12 +6790,7 @@ void btrfs_submit_bio(struct btrfs_fs_info
+>> *fs_info, struct bio *bio,
 >>
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 submit_stripe_bi=
+o(bioc, bio, dev_nr, should_clone);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -out_dec:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_bio_counter_dec(fs_info);
+>> -=C2=A0=C2=A0=C2=A0 if (ret) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio->bi_status =3D errno_to=
+_blk_status(ret);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio_endio(bio);
+>> -=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0 }
 >>
->> On 2022/6/19 19:14, David C. Partridge wrote:
->>> LUbuntu 22.04 was definitely 5.15 kernel, what alternative distro do y=
-ou propose I use?
->>
->> I have no idea why 22.04 doesn't work here.
->>
->> The upstream commit is 2b29726c473b ("btrfs: rescue: allow ibadroots to
->> skip bad extent tree when reading block group items"), which is already
->> in v5.15 kernels.
->>
->> I double checked the current code base, as long as it's error reading
->> the block group items and rescue=3Dall (implies ibadroots), it should g=
-o
->> fill_dummy_bgs().
->>
->> For the alternative distros, OpenSUSE tumbleweed, Archlinux, etc. As
->> they are definitely upstream and v5.15+.
->>
->> For example, Archlinux 2022.06.01, it goes with 5.18 kernel:
->>
->> $ file arch/boot/x86_64/vmlinuz-linux
->> arch/boot/x86_64/vmlinuz-linux: Linux kernel x86 boot executable
->> bzImage, version 5.18.1-arch1-1 (linux@archlinux) #1 SMP PREEMPT_DYNAMI=
-C
->> Mon, 30 May 2022 17:53:11 +0000, RO-rootFS, swap_dev 0XA, Normal VGA
->>
->> If that still doesn't work, let me creating a similar fs with some bloc=
-k
->> groups items corrupted to see why it doesn't work.
->>
->> Thanks,
->> Qu
->>>
->>> -----Original Message-----
->>> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
->>> Sent: 19 June 2022 11:41
->>> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vg=
-er.kernel.org
->>> Subject: Re: Problems with BTRFS formatted disk
->>>
->>>
->>>
->>> On 2022/6/19 18:29, David C. Partridge wrote:
->>>> Booted from live USB 22.04 LUbuntu.
->>>
->>> Ubuntu kernel version doesn't seem to be that consistent even for its
->>> LTS releases:
->>>
->>> https://ubuntu.com/about/release-cycle#ubuntu-kernel-release-cycle
->>>
->>> Please use something rolling released distro/branch instead.
->>>
->>> Thanks,
->>> Qu
->>>>
->>>> root@lubuntu:/home/lubuntu# mount -t btrfs -o rescue=3Dall /dev/sdc1 =
-/mnt
->>>> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdc1, =
-missing codepage or helper program, or other error.
->>>> root@lubuntu:/home/lubuntu#
->>>>
->>>> Content of system journal
->>>>
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): flagging fs=
- with big metadata feature
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): disk space =
-caching is enabled
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): has skinny =
-extents
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent tra=
-nsid verify failed on 12554992156672 wanted 130582 found 127355
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent tra=
-nsid verify failed on 12554992156672 wanted 130582 found 127355
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): failed to =
-read block groups: -5
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): open_ctree=
- failed
->>>>
->>>> David
->>>>
->>>> -----Original Message-----
->>>> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
->>>> Sent: 19 June 2022 03:02
->>>> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@v=
-ger.kernel.org
->>>> Subject: Re: Problems with BTRFS formatted disk
->>>>
->>>>>> You can try rescue=3Dall mount option, which has the extra handling=
- on
->>>>>> corrupted extent tree.
->>>>>
->>>>>> Although you have to use kernels newer than v5.15 (including v5.15)=
- to
->>>>>> benefit from the change.
->>>>>
->>>>> Unfortunately:
->>>>> amonra@charon:~$ uname -a
->>>>> Linux charon 5.4.0-113-generic #127-Ubuntu SMP Wed May 18 14:30:56 U=
-TC 2022 x86_64 x86_64 x86_64 GNU/Linux
->>>>
->>>> Any special reason that you can not even use a liveUSB to boot a newe=
-r
->>>> kernel to do the salvage?
->>>>
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>
->>
->
+>> =C2=A0 static bool dev_args_match_fs_devices(const struct
+>> btrfs_dev_lookup_args *args,
