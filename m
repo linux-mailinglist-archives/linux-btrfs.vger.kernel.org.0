@@ -2,68 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B46B95509B4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jun 2022 12:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FFB5509C0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jun 2022 12:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234680AbiFSKfe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Jun 2022 06:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        id S229758AbiFSKko (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Jun 2022 06:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234518AbiFSKfb (ORCPT
+        with ESMTP id S233877AbiFSKkn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Jun 2022 06:35:31 -0400
+        Sun, 19 Jun 2022 06:40:43 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D49FD32
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Jun 2022 03:35:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB7B101FD
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Jun 2022 03:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1655634926;
-        bh=64qFq7I2y9kxDNzuPPixkwHw79z2Gq7vUbg4Mekgn/g=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=dpTqvro8zTZOPUvETz1rOOuJn1/TSVEX8u0q/7UNTClcGw71B228BT7mMylRqogVR
-         5rkc6SNeASB3cX3vdErPg+KUFkpg2zj6QNs2K3b2Bd3ux46Gq6UL3skkenYFlVbnna
-         vHBYF7/K2nuRyJaREQ5tjcGweeZMARuhH/U9th+Y=
+        s=badeba3b8450; t=1655635241;
+        bh=Vpx4VnvwgdHFP41ly7/1inJnBp/KIr9FxgKvrRW87qY=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=ZwIg8gZXcjuizdmtcvvrutx71wMxUFZmoneT/4xCJTUEiWwhHQxxY8aeKAkr0OJQh
+         ksDOskXsIqSPPKi4kfn1D/i6Eg32zDRns7edkAcffqPzQXQ5/vxVO9oJIsuXkZlqb7
+         vin3d4epI55l4GzDPdMdoe8EOpuvm6dNp7iksrXc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MxUnp-1nnW5M19FR-00xvyx; Sun, 19
- Jun 2022 12:35:25 +0200
-Message-ID: <b078a3e5-1020-1560-71f4-ca8dee0500bd@gmx.com>
-Date:   Sun, 19 Jun 2022 18:35:21 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MV63q-1o9v701RCQ-00SAmc; Sun, 19
+ Jun 2022 12:40:41 +0200
+Message-ID: <e7c18d33-4807-7d6f-53f5-6e3f59b687ef@gmx.com>
+Date:   Sun, 19 Jun 2022 18:40:36 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
-Subject: Re: [PATCH 05/10] btrfs: remove the raid56_parity_recover return
- value
+Subject: Re: Problems with BTRFS formatted disk
 Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20220617100414.1159680-1-hch@lst.de>
- <20220617100414.1159680-6-hch@lst.de>
+To:     "David C. Partridge" <david.partridge@perdrix.co.uk>,
+        linux-btrfs@vger.kernel.org
+References: <001f01d88344$ed8aa1d0$c89fe570$@perdrix.co.uk>
+ <603196b9-fa55-f5cc-d9b5-3cf69f19c6ef@gmx.com>
+ <000001d8837c$91bc74e0$b5355ea0$@perdrix.co.uk>
+ <838a65c7-214b-adc1-2c9e-3923da6575e2@gmx.com>
+ <000001d883c7$698edad0$3cac9070$@perdrix.co.uk>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220617100414.1159680-6-hch@lst.de>
+In-Reply-To: <000001d883c7$698edad0$3cac9070$@perdrix.co.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cS8OlZBPi5ownSYNDBYNlKPoSGzreC2ttKuGf/DmjW2a6UDRTxa
- Sjp50Xr11Zuuq1bCA7iH2wifIGbW02Nep6+ICkj7YHpg2fdY9OMGaCEIx7V1ytHOoqzeYSS
- QA48nszTKyuKM53Nzz+NwwmGLcCzWoqoXjGA2qUfolEU4kEBwdPQlUzNCHzarkikO9n6rWY
- NwIXgItdxJ0iY44f1T7uQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FSb36zg27eU=:Ia7Ebxu2MQOBSOx1wOqs2F
- ATN1M2q5VWI40TjAe0/ncmis9WWNx2N376KHxbxusl8nfe1OYysLtjUnmWM5omi0VmVlHUjEX
- b2ow0SvtlHGvW/QJxS/eH81XQwppOXOPc5shxcNsvt22EbG+md9v33/LAM0OiKpTbwpAgaLnH
- 8UMB+MhCFu5qvh9EwSm7HSIiT0t7pMiW90IZv1bkAJHqLB3Fa0UwfUTz6+YoyGUVpsjAtGeJA
- u6V+k4pDDja9cN7hZS/1MUZQ2wZVN0IhO9NWbC2wcNTTvRKJYpCdITu6fOSTN7o7+Vvph1MbG
- RIFkhA/WoPEp39OAtgBLQ8SA69slOR2Ss2gTfCyO56C0y5nUxATK3rGrt6c0HJkSert9J2VEn
- mAoC9fWBbwNdIATV1+K0KxuPxElcdB9UqpjRLJAODkMKvacPyzfllPnCz5oQrFddU/c4wQUFb
- /Mw23MISGjmitJM0vrB5vm0xpd5vPQLijTbleZLIPw5Ar22r7/83EsIZ08BgcU8jpJMG4v9ie
- 8hNcjVqM1/zr9OmA30nBSWtzNEC2l76DAKmeByDlP0Y2AjaBDiWmZgvHRykj3genGVAZdx77b
- mD+6KyFDKz9OzTTHv/t+J8e+DfnwlqN+fXOV5IYWYYy0F31NNVp+DHdjc1okcIBnuCGJboUx+
- HGp4w8WeyB8JcX0uNHMO2ainP3UwBIhJGNwzOAnpjD8yOazUzutSxw4D6zsZqLSKIBufpdBhI
- Hmjr+mW5wMXMjBy2iMaAQlPf+J2P4Why7FRpijV6W4xAGR26C/PYUIVmh/7FGiVHA0iytNeLG
- nU5YwomwSkgO++4nqiRXjiao7qiYuOXoiANbcCU9qieiZViFdyamF/PADxjGsr8LHl38MYQ7O
- 7ic+O27zDMXi9lWNXloIfeYp3+zNlrf/izqcipKbkyDvQWArKSYvTsMlnKGjQaQub2nR+GAHF
- rgncg1MrITYRR/Lt4HLzRsmvoMSn0NI7vv1EI7DgPsvRcNLo6oigA7A8nA9qyIJhl42iCruiC
- SPzYNxVMbERY55Y1X9JNB1TX0+hHyqYJvdN+HkNPU8Jv1ZZV2TqsWHK/QFJ7g/AAJUwPXsfa4
- RfcMyAXRDkuii7RuHA2vLATtx9W5mqSW/jDrudRbT13wyCw/GqY95SnVA==
+X-Provags-ID: V03:K1:hFzHtX81xqvN3VpQOMuSkwbgw6CDgl3dkiN4UUbyoXDWtEQ2E4T
+ D72Xxj3bp8KAxZHdBCiJp45sqEFi3rP72qz7pstJwIQf/uag+QuYro0Z1gynDHWtWGaj5Ke
+ z397om0YRocfHZ7xSqov6enOugWc2z+WCRA+Mfs8DCwcNjPiINZ5EPjWTZd4uycN2pTlmeE
+ qvhp2kzOEi9/KercFea/A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eqCvwbrmYCc=:RqvPqwwAXGvdPE6MO0ViZZ
+ NG9xszO9c++XUgKw1Eg/lnpoHzvHGk6BIw6GPYZ5V3+D0gNxf5n8ubybGoFfZzFgcJfkUWAjf
+ ZesmQB4ONFIgYUPeniEd5xlqKObM9O//YXHkwBmM1J1EoYWOccl7SxqNf1YDkAsBfxWew/ldz
+ sieezDg/d1BJe90s/CRk2KuqR1fIyQHmtLj6qgLj6F3YF4sGGF6QwMrK2f4Lj4o1RTh3brY65
+ yVgrnKl7N3wB1qJRFtzHVHjFwyM6T2bPuhQHPepijYuPBcCujI8UstfIHkuqvVF+qe/7JnX13
+ yKQfIoShb0+jb822t7wCeuHtlF6s0T4XPK8lSE6L/8iojJqmhUMxPcxblPj5CDDmImCLr9ShK
+ GjbvKN0unUGGMDYdYzBRZliNQhNadAx1qemNcLtrB+IcgaKliXYcudJ3wX+YSk6pHICX5AclV
+ Ha4f8ndvkyztIOb29LUh2PvsswkGUAEsA7mE4Zkgwf7Dmijt/fnT/+3sEu+FYkyErt0Ff/s8t
+ ZUK41PpDa86dhSBCaiKi0vvY2tNcM+qv+Xf9s03KT82DUYObVI2rMHd9GZMrY5YxCFz2lx7h0
+ puzCoOCy7cQF9w54rzylwD8rIOPFa1nGTiCoi860nvmiqNPTpNNhkQQtngPpzopwsxN2G6LFi
+ cFNPIvV219tBx4WoGVY5S0uO1TjljLWjanC9Spt2UEN8Ocz/RUKkUz0tthcuSgIoeRLCAqdlP
+ S1XTso1xkJuWCk17v2zyUEh2dxggSr0ih0H9vDR16qq1rLM2ay1NLDuR2ZTtzIvkprNRaV7Gj
+ YIC8uR88udWK+3qkiTcChH/NEkbY0mPOsCoew7levdaPzgoH21wfTWqlNW4gYQknQxj2h4VZj
+ A+uRIwbAfcs45JmeXTCRmMjIj8WDdOvNZQfyuUasm/aJoPuCXJZJe73jAsBpWR0ojzR8U3n0R
+ /uW6gRTj/adE5KWq+eoKewv07t31fcOf6QN48ZlIH6ZoECDo+B+mA1SOsDAq4ECustTCLOq4V
+ uWd8R0Smn/+ZSjfEQAlcTmTnEI5mHA0gJyMv2YjxwpP/QzXHojFVk9xFaf1mSQDTSH3Ulafxb
+ qSUP+BrQmFJx+dc0ehUcpfelFLHbi5oSQYntOA/dNGsjcsrjj6wAJoCSA==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,170 +77,66 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/6/17 18:04, Christoph Hellwig wrote:
-> Always consume the bio and call the end_io handler on error instead of
-> returning an error and letting the caller handle it.  This matches what
-> the block layer submission does and avoids any confusion on who
-> needs to handle errors.
->
-> Also use the proper bool type for the generic_io argument.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On 2022/6/19 18:29, David C. Partridge wrote:
+> Booted from live USB 22.04 LUbuntu.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Ubuntu kernel version doesn't seem to be that consistent even for its
+LTS releases:
+
+https://ubuntu.com/about/release-cycle#ubuntu-kernel-release-cycle
+
+Please use something rolling released distro/branch instead.
 
 Thanks,
 Qu
-> ---
->   fs/btrfs/raid56.c  | 39 ++++++++++++++++-----------------------
->   fs/btrfs/raid56.h  |  4 ++--
->   fs/btrfs/scrub.c   | 10 ++--------
->   fs/btrfs/volumes.c |  2 +-
->   4 files changed, 21 insertions(+), 34 deletions(-)
 >
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index c0cc2d99509c9..cd39c233dfdeb 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -2200,12 +2200,11 @@ static int __raid56_parity_recover(struct btrfs_=
-raid_bio *rbio)
->    * so we assume the bio they send down corresponds to a failed part
->    * of the drive.
->    */
-> -int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bio=
-c,
-> -			  int mirror_num, int generic_io)
-> +void raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bi=
-oc,
-> +			   int mirror_num, bool generic_io)
->   {
->   	struct btrfs_fs_info *fs_info =3D bioc->fs_info;
->   	struct btrfs_raid_bio *rbio;
-> -	int ret;
+> root@lubuntu:/home/lubuntu# mount -t btrfs -o rescue=3Dall /dev/sdc1 /mn=
+t
+> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdc1, mis=
+sing codepage or helper program, or other error.
+> root@lubuntu:/home/lubuntu#
 >
->   	if (generic_io) {
->   		ASSERT(bioc->mirror_num =3D=3D mirror_num);
-> @@ -2214,9 +2213,8 @@ int raid56_parity_recover(struct bio *bio, struct =
-btrfs_io_context *bioc,
+> Content of system journal
 >
->   	rbio =3D alloc_rbio(fs_info, bioc);
->   	if (IS_ERR(rbio)) {
-> -		if (generic_io)
-> -			btrfs_put_bioc(bioc);
-> -		return PTR_ERR(rbio);
-> +		bio->bi_status =3D errno_to_blk_status(PTR_ERR(rbio));
-> +		goto out_end_bio;
->   	}
+> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): flagging fs wi=
+th big metadata feature
+> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): disk space cac=
+hing is enabled
+> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): has skinny ext=
+ents
+> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent transi=
+d verify failed on 12554992156672 wanted 130582 found 127355
+> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent transi=
+d verify failed on 12554992156672 wanted 130582 found 127355
+> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): failed to rea=
+d block groups: -5
+> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): open_ctree fa=
+iled
 >
->   	rbio->operation =3D BTRFS_RBIO_READ_REBUILD;
-> @@ -2228,10 +2226,9 @@ int raid56_parity_recover(struct bio *bio, struct=
- btrfs_io_context *bioc,
->   "%s could not find the bad stripe in raid56 so that we cannot recover =
-any more (bio has logical %llu len %llu, bioc has map_type %llu)",
->   			   __func__, bio->bi_iter.bi_sector << 9,
->   			   (u64)bio->bi_iter.bi_size, bioc->map_type);
-> -		if (generic_io)
-> -			btrfs_put_bioc(bioc);
->   		kfree(rbio);
-> -		return -EIO;
-> +		bio->bi_status =3D BLK_STS_IOERR;
-> +		goto out_end_bio;
->   	}
+> David
 >
->   	if (generic_io) {
-> @@ -2258,24 +2255,20 @@ int raid56_parity_recover(struct bio *bio, struc=
-t btrfs_io_context *bioc,
->   			rbio->failb--;
->   	}
+> -----Original Message-----
+> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+> Sent: 19 June 2022 03:02
+> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger=
+.kernel.org
+> Subject: Re: Problems with BTRFS formatted disk
 >
-> -	ret =3D lock_stripe_add(rbio);
-> +	if (lock_stripe_add(rbio))
-> +		return;
+>>> You can try rescue=3Dall mount option, which has the extra handling on
+>>> corrupted extent tree.
+>>
+>>> Although you have to use kernels newer than v5.15 (including v5.15) to
+>>> benefit from the change.
+>>
+>> Unfortunately:
+>> amonra@charon:~$ uname -a
+>> Linux charon 5.4.0-113-generic #127-Ubuntu SMP Wed May 18 14:30:56 UTC =
+2022 x86_64 x86_64 x86_64 GNU/Linux
 >
->   	/*
-> -	 * __raid56_parity_recover will end the bio with
-> -	 * any errors it hits.  We don't want to return
-> -	 * its error value up the stack because our caller
-> -	 * will end up calling bio_endio with any nonzero
-> -	 * return
-> +	 * This adds our rbio to the list of rbios that will be handled after
-> +	 * the current lock owner is done.
->   	 */
-> -	if (ret =3D=3D 0)
-> -		__raid56_parity_recover(rbio);
-> -	/*
-> -	 * our rbio has been added to the list of
-> -	 * rbios that will be handled after the
-> -	 * currently lock owner is done
-> -	 */
-> -	return 0;
-> +	__raid56_parity_recover(rbio);
-> +	return;
+> Any special reason that you can not even use a liveUSB to boot a newer
+> kernel to do the salvage?
 >
-> +out_end_bio:
-> +	if (generic_io)
-> +		btrfs_put_bioc(bioc);
-> +	bio_endio(bio);
->   }
 >
->   static void rmw_work(struct work_struct *work)
-> diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
-> index 3f223ae39462a..6f48f9e4c8694 100644
-> --- a/fs/btrfs/raid56.h
-> +++ b/fs/btrfs/raid56.h
-> @@ -165,8 +165,8 @@ static inline int nr_data_stripes(const struct map_l=
-ookup *map)
->
->   struct btrfs_device;
->
-> -int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bio=
-c,
-> -			  int mirror_num, int generic_io);
-> +void raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bi=
-oc,
-> +			   int mirror_num, bool generic_io);
->   void raid56_parity_write(struct bio *bio, struct btrfs_io_context *bio=
-c);
->
->   void raid56_add_scrub_pages(struct btrfs_raid_bio *rbio, struct page *=
-page,
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index ad7958d18158f..3afe5fa50a631 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1376,18 +1376,12 @@ static int scrub_submit_raid56_bio_wait(struct b=
-trfs_fs_info *fs_info,
->   					struct scrub_sector *sector)
->   {
->   	DECLARE_COMPLETION_ONSTACK(done);
-> -	int ret;
-> -	int mirror_num;
->
->   	bio->bi_iter.bi_sector =3D sector->logical >> 9;
->   	bio->bi_private =3D &done;
->   	bio->bi_end_io =3D scrub_bio_wait_endio;
-> -
-> -	mirror_num =3D sector->sblock->sectors[0]->mirror_num;
-> -	ret =3D raid56_parity_recover(bio, sector->recover->bioc,
-> -				    mirror_num, 0);
-> -	if (ret)
-> -		return ret;
-> +	raid56_parity_recover(bio, sector->recover->bioc,
-> +			      sector->sblock->sectors[0]->mirror_num, false);
->
->   	wait_for_completion_io(&done);
->   	return blk_status_to_errno(bio->bi_status);
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index b30d4449ef18d..844ad637a0269 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6770,7 +6770,7 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_inf=
-o, struct bio *bio,
->   		if (btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE)
->   			raid56_parity_write(bio, bioc);
->   		else
-> -			ret =3D raid56_parity_recover(bio, bioc, mirror_num, 1);
-> +			raid56_parity_recover(bio, bioc, mirror_num, true);
->   		goto out_dec;
->   	}
+> Thanks,
+> Qu
 >
