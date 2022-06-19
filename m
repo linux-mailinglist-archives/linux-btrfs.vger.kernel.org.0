@@ -2,74 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4369A550A62
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jun 2022 13:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C85550AAF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jun 2022 14:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235739AbiFSLvg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Jun 2022 07:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
+        id S233109AbiFSMx7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 19 Jun 2022 08:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbiFSLvf (ORCPT
+        with ESMTP id S229472AbiFSMx6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Jun 2022 07:51:35 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF431209F
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Jun 2022 04:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1655639492;
-        bh=1t5AVtBUyJiU7L2IbzrjQ73yAePj1UFtO7k/eR9G9to=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=Wq9N9CQ/08amRKA53qSWVe6tooAmvTDVu0kBdEDikP7g5m6xfYItz3g/Mo4SsCYKD
-         9hH3rZIaGRvdonc6hbb3BVoADgFehMI/3Xv8S4P13ASxV93DHl14rEVadix/rh5JFa
-         9fHzj5u21vLMyhMZZn6lWf4WgXvURbU6WmF7yLTw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5wPb-1o4HJR46Xb-007RBt; Sun, 19
- Jun 2022 13:51:31 +0200
-Message-ID: <393cf34a-0ae9-d34c-b2bb-ea74d906dfa5@gmx.com>
-Date:   Sun, 19 Jun 2022 19:51:28 +0800
+        Sun, 19 Jun 2022 08:53:58 -0400
+Received: from avasout-ptp-004.plus.net (avasout-ptp-004.plus.net [84.93.230.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B24B86C
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Jun 2022 05:53:56 -0700 (PDT)
+Received: from APOLLO ([212.159.61.44])
+        by smtp with ESMTPA
+        id 2uR7oxltKAcBn2uR8oaUIg; Sun, 19 Jun 2022 13:53:54 +0100
+X-Clacks-Overhead: "GNU Terry Pratchett"
+X-CM-Score: 0.00
+X-CNFS-Analysis: v=2.4 cv=JPUoDuGb c=1 sm=1 tr=0 ts=62af1c62
+ a=AGp1duJPimIJhwGXxSk9fg==:117 a=AGp1duJPimIJhwGXxSk9fg==:17
+ a=IkcTkHD0fZMA:10 a=7YfXLusrAAAA:8 a=P1kZ4gAsAAAA:8 a=VwQbUJbxAAAA:8
+ a=fxJcL_dCAAAA:8 a=EpR4XU-WRCxB-EWqvUAA:9 a=QEXdDO2ut3YA:10
+ a=SLz71HocmBbuEhFRYD3r:22 a=fn9vMg-Z9CMH7MoVPInU:22 a=AjGcO6oz07-iQ99wixmX:22
+X-AUTH: perdrix52@:2500
+From:   "David C. Partridge" <david.partridge@perdrix.co.uk>
+To:     "'Qu Wenruo'" <quwenruo.btrfs@gmx.com>,
+        <linux-btrfs@vger.kernel.org>
+References: <001f01d88344$ed8aa1d0$c89fe570$@perdrix.co.uk> <603196b9-fa55-f5cc-d9b5-3cf69f19c6ef@gmx.com> <000001d8837c$91bc74e0$b5355ea0$@perdrix.co.uk> <838a65c7-214b-adc1-2c9e-3923da6575e2@gmx.com> <000001d883c7$698edad0$3cac9070$@perdrix.co.uk> <e7c18d33-4807-7d6f-53f5-6e3f59b687ef@gmx.com> <000401d883cd$cc588fc0$6509af40$@perdrix.co.uk> <393cf34a-0ae9-d34c-b2bb-ea74d906dfa5@gmx.com>
+In-Reply-To: <393cf34a-0ae9-d34c-b2bb-ea74d906dfa5@gmx.com>
+Subject: RE: Problems with BTRFS formatted disk
+Date:   Sun, 19 Jun 2022 13:53:53 +0100
+Message-ID: <000201d883db$a22686e0$e67394a0$@perdrix.co.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Content-Language: en-US
-To:     "David C. Partridge" <david.partridge@perdrix.co.uk>,
-        linux-btrfs@vger.kernel.org
-References: <001f01d88344$ed8aa1d0$c89fe570$@perdrix.co.uk>
- <603196b9-fa55-f5cc-d9b5-3cf69f19c6ef@gmx.com>
- <000001d8837c$91bc74e0$b5355ea0$@perdrix.co.uk>
- <838a65c7-214b-adc1-2c9e-3923da6575e2@gmx.com>
- <000001d883c7$698edad0$3cac9070$@perdrix.co.uk>
- <e7c18d33-4807-7d6f-53f5-6e3f59b687ef@gmx.com>
- <000401d883cd$cc588fc0$6509af40$@perdrix.co.uk>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Problems with BTRFS formatted disk
-In-Reply-To: <000401d883cd$cc588fc0$6509af40$@perdrix.co.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OY/0iVHWQV8A6nMWZoobwDFUVczn2nL9M8Qzm06mbWzhXgtsUI4
- Kmmn+cCP3GR4fGZdkHL/sWT8wrIJ0W0t39eDCgexfvk/q9Lh6xDOqC/MwNY7+oH6JpHqbVr
- 0sGDcXdwEXSXJS6y3bLN8y4W/IQg2iqPDM+KE6oLdUyUM2qF8xdAMPiom11PhEFuS20br+Y
- /zoc0g+RJhsbKJ2ubF/mg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WFubJditPCU=:OgE1fF15FMhPepuwiIPUCt
- HZEA9wB7N14rFFmmcWqSzMeyQB5uVP49PMc4ilOQZqZU/NimlyOtgjHmw/frktaFGJli1cOaI
- xVpDM0WRUuovjYJ8RlOsdwHKxhH50TIciDSJODN2xlt9lLX/sxKZ+X03rNXY7sx+fslCiJYRr
- BrPiRZ+22YgFScJdKkjKttClf8N6f5iXDO49GmLCZtOGr36sdHnrtiAyj0//k0QHNiKYC1rZF
- 4ng9IDH3RFv3fWZE1XM+y1/CIoXs7ucTeaLhf0+X6+fdAFtdggazaxPg71Y/ZEnqotLQ9FE39
- 8aS/7Ieo1ZXvy/UfTcUROQ9w3i8JEH62hAse5zJxmjzF0XdSMJ2v8SC/GKHnhKhfBL3amdyDX
- HCwv3KBvolJSDwlLZbb4WKkOs+JGRd/MQsrcvtRUFKZb3bHzwzJM0AXyuSOPUvEtyqlF4IuWO
- ojRIgJ+YcltGGrXkNH3IgN48JVy7XJrwbDxe74JroYp6P1tuch1ee0aqCAN6UnxAI2YzIebdq
- w4fMi1u2Bemah/CSVQ6FGbcGb42CrxvZWhjjlGrX6iZImL4mIgCm0gwEY4PMK8CA0W0MhgBcW
- DLfUD/JyBbLp0/aQMYWPqyd2y0BDY1Rhax3xVMejmOF7iHlZW+DHg5+hLQp1lxxJKSGrTkFAW
- TXJGKrwbnyOD/DmtMNmD98kvjqrcTD8YHmDCIkhwLCcpX38PDLlScYyDGS5E1UhpKLPtMub7N
- WXJzwMj01aNPVDEci+F6CvN2Mszi+GI59mIeM8PjvmoEUlQM9Vv2/uPDDAkICJ2Q8zYHKn14+
- l9NIPIPAHIooWZNEywiFwe+aEEwVPfFYNTHdyfMs6bkRj5bge8XYgxKjZOs97B1FkutNpy+D/
- HVPCEnIbPc27+jsT6Pq4G+ZewjR3dhixgp35CThODVyXaDfw7EhIkKhgaPU7ZzWTNmrtTdsH+
- lBEkx5Qo6PfmVatBdfkKE3qegc/iVuC4YxeBZ98pTbTBTharQGerUT27rPcUxa9z8N0aLORFL
- ftOmQ8NvQRNHt4bOFe4JYyZkyE+m/A2VayfJcYrUBRl09gwCp3aTRrgVu+ieH1p/pLkl0o5GF
- X91r70UszSS4dyUZz0DSvz5qlxBaKCOYbK6+mN1ZHKDWC+67l+ylfA8Uw==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQE6G7yNOJVUJ6Zum7z6uCsu/gieNwG3iWv+Afjb+GUCCjux4wI0aTcjAwQd14sByWWhmwIjQYotrhyAR/A=
+Content-Language: en-gb
+X-CMAE-Envelope: MS4xfBQW3yylksD2NJUi/cNoML5w8s6YvZ1MblvOXRzQhLCOikwixo56MrWKtz/XsgNJFnvDet+s92UNxaRm156At0s3YGFObj5Fk3gdQ11LAzsZugxw6hx/
+ GxSUBA6FOPrj8fkDSOEFTzK4Hwfvjet0ECWbhBVw+nvDvuYS79houkEOcSjvk6PmrHE6YF+KQWpe1OPCPjeJ+kNfvhzdDoKM/OU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,11 +52,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Here's what the 2022.06.01 version of Archlinux had to say in the log when I issued:
+
+mount -t btrfs -o rescue=all /dev/sdc1 /mnt
+
+Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): flagging fs with big metadata feature
+Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): enabling all of the rescue options
+Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): ignoring data csums
+Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): ignoring bad roots
+Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): disabling log replay at mount time
+Jun 19 12:43:01 archiso kernel: BTRFS error (device sdc1): nologreplay must be used with ro mount option
+Jun 19 12:43:01 archiso kernel: BTRFS error (device sdc1): open_ctree failed
+
+Did I need to say:
+
+mount -t btrfs -o ro,rescue=all /dev/sdc1 /mnt
+
+D.
+
+-----Original Message-----
+From: Qu Wenruo <quwenruo.btrfs@gmx.com> 
+Sent: 19 June 2022 12:51
+To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
+Subject: Re: Problems with BTRFS formatted disk
+
 
 
 On 2022/6/19 19:14, David C. Partridge wrote:
-> LUbuntu 22.04 was definitely 5.15 kernel, what alternative distro do you=
- propose I use?
+> LUbuntu 22.04 was definitely 5.15 kernel, what alternative distro do you propose I use?
 
 I have no idea why 22.04 doesn't work here.
 
@@ -90,7 +88,7 @@ skip bad extent tree when reading block group items"), which is already
 in v5.15 kernels.
 
 I double checked the current code base, as long as it's error reading
-the block group items and rescue=3Dall (implies ibadroots), it should go
+the block group items and rescue=all (implies ibadroots), it should go
 fill_dummy_bgs().
 
 For the alternative distros, OpenSUSE tumbleweed, Archlinux, etc. As
@@ -112,8 +110,7 @@ Qu
 > -----Original Message-----
 > From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 > Sent: 19 June 2022 11:41
-> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger=
-.kernel.org
+> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
 > Subject: Re: Problems with BTRFS formatted disk
 >
 >
@@ -131,50 +128,37 @@ Qu
 > Thanks,
 > Qu
 >>
->> root@lubuntu:/home/lubuntu# mount -t btrfs -o rescue=3Dall /dev/sdc1 /m=
-nt
->> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdc1, mi=
-ssing codepage or helper program, or other error.
+>> root@lubuntu:/home/lubuntu# mount -t btrfs -o rescue=all /dev/sdc1 /mnt
+>> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdc1, missing codepage or helper program, or other error.
 >> root@lubuntu:/home/lubuntu#
 >>
 >> Content of system journal
 >>
->> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): flagging fs w=
-ith big metadata feature
->> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): disk space ca=
-ching is enabled
->> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): has skinny ex=
-tents
->> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent trans=
-id verify failed on 12554992156672 wanted 130582 found 127355
->> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent trans=
-id verify failed on 12554992156672 wanted 130582 found 127355
->> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): failed to re=
-ad block groups: -5
->> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): open_ctree f=
-ailed
+>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): flagging fs with big metadata feature
+>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): disk space caching is enabled
+>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): has skinny extents
+>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent transid verify failed on 12554992156672 wanted 130582 found 127355
+>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent transid verify failed on 12554992156672 wanted 130582 found 127355
+>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): failed to read block groups: -5
+>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): open_ctree failed
 >>
 >> David
 >>
 >> -----Original Message-----
 >> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 >> Sent: 19 June 2022 03:02
->> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vge=
-r.kernel.org
+>> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
 >> Subject: Re: Problems with BTRFS formatted disk
 >>
->>>> You can try rescue=3Dall mount option, which has the extra handling o=
-n
+>>>> You can try rescue=all mount option, which has the extra handling on
 >>>> corrupted extent tree.
 >>>
->>>> Although you have to use kernels newer than v5.15 (including v5.15) t=
-o
+>>>> Although you have to use kernels newer than v5.15 (including v5.15) to
 >>>> benefit from the change.
 >>>
 >>> Unfortunately:
 >>> amonra@charon:~$ uname -a
->>> Linux charon 5.4.0-113-generic #127-Ubuntu SMP Wed May 18 14:30:56 UTC=
- 2022 x86_64 x86_64 x86_64 GNU/Linux
+>>> Linux charon 5.4.0-113-generic #127-Ubuntu SMP Wed May 18 14:30:56 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 >>
 >> Any special reason that you can not even use a liveUSB to boot a newer
 >> kernel to do the salvage?
@@ -184,3 +168,4 @@ o
 >> Qu
 >>
 >
+
