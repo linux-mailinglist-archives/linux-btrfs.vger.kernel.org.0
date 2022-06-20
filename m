@@ -2,47 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007555522BA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 19:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCC45522C9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 19:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242459AbiFTR0l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jun 2022 13:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S232421AbiFTRip (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jun 2022 13:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbiFTR0k (ORCPT
+        with ESMTP id S243607AbiFTRik (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jun 2022 13:26:40 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BE01EC69
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 10:26:39 -0700 (PDT)
-Received: from [76.132.34.178] (port=59374 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1o3KSD-0007zi-PQ by authid <merlins.org> with srv_auth_plain; Mon, 20 Jun 2022 10:26:37 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1o3LAa-0080YP-Ma; Mon, 20 Jun 2022 10:26:36 -0700
-Date:   Mon, 20 Jun 2022 10:26:36 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     Ghislain Adnet <gadnet@aqueos.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Suggestions for building new 44TB Raid5 array
-Message-ID: <20220620172636.GC1878147@merlins.org>
-References: <20220611045120.GN22722@merlins.org>
- <5e1733e6-471e-e7cb-9588-3280e659bfc2@aqueos.com>
- <20220620150132.GM1664812@merlins.org>
- <bef3cb0a-6128-8d4e-80e4-dc49770f4bf7@gmail.com>
+        Mon, 20 Jun 2022 13:38:40 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E036764C
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 10:38:39 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3536D68AA6; Mon, 20 Jun 2022 19:38:35 +0200 (CEST)
+Date:   Mon, 20 Jun 2022 19:38:34 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH 01/10] btrfs: remove a bunch of pointles stripe_len
+ arguments
+Message-ID: <20220620173834.GA23580@lst.de>
+References: <20220617100414.1159680-1-hch@lst.de> <20220617100414.1159680-2-hch@lst.de> <20220620171608.GU20633@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bef3cb0a-6128-8d4e-80e4-dc49770f4bf7@gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
-X-SA-Exim-Connect-IP: 76.132.34.178
-X-SA-Exim-Mail-From: marc@merlins.org
+In-Reply-To: <20220620171608.GU20633@twin.jikos.cz>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,24 +42,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 20, 2022 at 08:02:59PM +0300, Andrei Borzenkov wrote:
-> ZFS on Linux is not owned by Oracle to my best knowledge.
+On Mon, Jun 20, 2022 at 07:16:08PM +0200, David Sterba wrote:
+> On Fri, Jun 17, 2022 at 12:04:05PM +0200, Christoph Hellwig wrote:
+> > The raid56 code assumes a fixed stripe length.
 > 
-> https://openzfs.github.io/openzfs-docs/License.html
- 
-Oracle bought Sun and its patent portfolio in the process, including all
-claims to any patents in ZFS. I simply will never trust them given what
-they've already done.
-I did give a full talk about this issue years ago.
-https://marc.merlins.org/linux/talks/Btrfs-LC2014-JP/Btrfs.pdf
-and go to page #5 and
-https://www.theregister.com/2010/09/09/oracle_netapp_zfs_dismiss/
-basically there likely are Netapp patents in ZFS too, but I'm less
-worried about Netapp suing others for patents, and they did settle 
-with Sun back in the days.
+> The code does because it was part of the initial implementation but
+> raid56 as a feature wants a configurable stripe size, we have a super
+> block member for that. So the question is if passing the parameter is
+> such a burden so we'd rather remove it or keep it there though it's a
+> fixed value but still part of the design.
+> 
+> I'd rather keep it there so it gets used eventually, we have ongoing
+> work to fix the corner cases of raid56 so removing and adding it back
+> causes churn, but I'll give it another thought.
 
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Well, right now it is very much dead code and complicates a lot
+of the argument passing as well as bloating the code size.
+
+IFF the superblock member were to be actually used in the future,
+it would make sense to expose it in the btrfs_fs_info and use that
+instead of the constant, but still skip all the argument passing.
+
+hch@brick:~/work/linux$ size btrfs.o.*
+   text	   data	    bss	    dec	    hex	filename
+1502453	 125590	  28776	1656819	 1947f3	btrfs.o.new
+1502599	 125590	  28776	1656965	 194885	btrfs.o.old
+
