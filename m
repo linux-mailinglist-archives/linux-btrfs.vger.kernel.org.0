@@ -2,85 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE2A55219F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 17:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E775521B4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 17:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242462AbiFTPxv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jun 2022 11:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        id S243888AbiFTP6J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jun 2022 11:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiFTPxu (ORCPT
+        with ESMTP id S244265AbiFTP6D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jun 2022 11:53:50 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FBB1D31E
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 08:53:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 20 Jun 2022 11:58:03 -0400
+X-Greylist: delayed 335 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Jun 2022 08:57:52 PDT
+Received: from mail02.aqueos.net (mail02.aqueos.net [94.125.164.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9391271F
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 08:57:52 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail02.aqueos.net (Postfix) with ESMTP id 82FCD7DFC3F;
+        Mon, 20 Jun 2022 17:52:15 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at mail02.aqueos.net
+Received: from mail02.aqueos.net ([127.0.0.1])
+        by localhost (mail02.aqueos.net [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id pqmADZXcC21R; Mon, 20 Jun 2022 17:52:15 +0200 (CEST)
+Received: from [10.10.10.12] (adsl2.aqueos.com [185.63.173.51])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5191921B7B;
-        Mon, 20 Jun 2022 15:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655740428;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tlQxbXlkLudwSAZIxIldgQgHgg/66CFLYtqYx8Rb9sA=;
-        b=OhF3lKKlXgD+KDO6R37RW9XkB1nheRPndNleNxvW8EnqKYFrod393NvdgaKaUFisnpeGrK
-        LgYGna0EK0vZZ/2RweJonRVDrj832aEBS6oBJpUse17Nr/KPorlPZnHX5QjIA+N5ao79R5
-        ll2OGynfRrySf48DPxQ/030XT3qy/UU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655740428;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tlQxbXlkLudwSAZIxIldgQgHgg/66CFLYtqYx8Rb9sA=;
-        b=Bxtdd0HseyUJ9Y/EbcQIE3emud1fYsP0z2soKCzVNdjHGrRKrdxamDSPH7WQmyoOfX6Gcb
-        jVXTBLhnRsgsgkDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29332134CA;
-        Mon, 20 Jun 2022 15:53:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gKKNCAyYsGJSCQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 20 Jun 2022 15:53:48 +0000
-Date:   Mon, 20 Jun 2022 17:49:10 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove the finish_func argument to
- btrfs_mark_ordered_io_finished
-Message-ID: <20220620154910.GR20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-References: <20220619060705.1850530-1-hch@lst.de>
+        by mail02.aqueos.net (Postfix) with ESMTPSA id 2FEED7DFC38;
+        Mon, 20 Jun 2022 17:52:14 +0200 (CEST)
+Message-ID: <8d54c3c5-a0b5-fdca-f31d-f9b5c3eea655@aqueos.com>
+Date:   Mon, 20 Jun 2022 17:52:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220619060705.1850530-1-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: Suggestions for building new 44TB Raid5 array
+Content-Language: fr
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220611045120.GN22722@merlins.org>
+ <5e1733e6-471e-e7cb-9588-3280e659bfc2@aqueos.com>
+ <20220620150132.GM1664812@merlins.org>
+From:   Ghislain Adnet <gadnet@aqueos.com>
+Organization: AQUEOS
+In-Reply-To: <20220620150132.GM1664812@merlins.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_20,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 19, 2022 at 08:07:05AM +0200, Christoph Hellwig wrote:
-> finish_func is always set to finish_ordered_fn, so remove it and also
-> the now pointless and somewhat confusingly named
-> __endio_write_update_ordered wrapper.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Added to misc-next, thanks.
+> 
+> It has a few of its own issues, but yes, if it were actually GPL
+> compatible and in the linux kernel source tree, I'd consider it.
+> 
+> It's also owned by a company (Oracle) that has tried to sue others for
+> billions of dollars over software patents, or even an algorithm, i.e.
+> not a company I'm willing to trust by any means.
+> 
+
+well i completly understand i use btrfs for the same reason but it seems on your side that this use case is a little far from the features provided.
+The more layer i use the more i fear a Pise tower syndrome :)
+
+good luck for the setup !
+
+-- 
+cordialement,
+Ghislain
+
