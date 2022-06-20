@@ -2,44 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B637C552001
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 17:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE2A55219F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 17:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243329AbiFTPMG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jun 2022 11:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        id S242462AbiFTPxv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jun 2022 11:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242437AbiFTPLl (ORCPT
+        with ESMTP id S229487AbiFTPxu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jun 2022 11:11:41 -0400
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2577A1F2E3
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 08:01:33 -0700 (PDT)
-Received: from [76.132.34.178] (port=59366 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1o3IBp-0006tC-0l by authid <merlins.org> with srv_auth_plain; Mon, 20 Jun 2022 08:01:32 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1o3IuC-007oB8-1V; Mon, 20 Jun 2022 08:01:32 -0700
-Date:   Mon, 20 Jun 2022 08:01:32 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Ghislain Adnet <gadnet@aqueos.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Suggestions for building new 44TB Raid5 array
-Message-ID: <20220620150132.GM1664812@merlins.org>
-References: <20220611045120.GN22722@merlins.org>
- <5e1733e6-471e-e7cb-9588-3280e659bfc2@aqueos.com>
+        Mon, 20 Jun 2022 11:53:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FBB1D31E
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 08:53:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5191921B7B;
+        Mon, 20 Jun 2022 15:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1655740428;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tlQxbXlkLudwSAZIxIldgQgHgg/66CFLYtqYx8Rb9sA=;
+        b=OhF3lKKlXgD+KDO6R37RW9XkB1nheRPndNleNxvW8EnqKYFrod393NvdgaKaUFisnpeGrK
+        LgYGna0EK0vZZ/2RweJonRVDrj832aEBS6oBJpUse17Nr/KPorlPZnHX5QjIA+N5ao79R5
+        ll2OGynfRrySf48DPxQ/030XT3qy/UU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1655740428;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tlQxbXlkLudwSAZIxIldgQgHgg/66CFLYtqYx8Rb9sA=;
+        b=Bxtdd0HseyUJ9Y/EbcQIE3emud1fYsP0z2soKCzVNdjHGrRKrdxamDSPH7WQmyoOfX6Gcb
+        jVXTBLhnRsgsgkDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29332134CA;
+        Mon, 20 Jun 2022 15:53:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gKKNCAyYsGJSCQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 20 Jun 2022 15:53:48 +0000
+Date:   Mon, 20 Jun 2022 17:49:10 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove the finish_func argument to
+ btrfs_mark_ordered_io_finished
+Message-ID: <20220620154910.GR20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+References: <20220619060705.1850530-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e1733e6-471e-e7cb-9588-3280e659bfc2@aqueos.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
-X-SA-Exim-Connect-IP: 76.132.34.178
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+In-Reply-To: <20220619060705.1850530-1-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -48,26 +76,11 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
->  I have a stupid question to ask : Why use btrfs here ? Is not mdamd+xfs good enough ?
- 
-I use btrfs for historical snapshots and btrfs send/receive remote
-backups.
+On Sun, Jun 19, 2022 at 08:07:05AM +0200, Christoph Hellwig wrote:
+> finish_func is always set to finish_ordered_fn, so remove it and also
+> the now pointless and somewhat confusingly named
+> __endio_write_update_ordered wrapper.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
->  If you want snapshot why not use ZFS then ? i try to use btrfs myself and meet a lot of issues with it that i did not had with mdadm+ext4. Perhaps btrfs is not suited to that use (here raid5) ?
-
-ZFS is not GPL compatible and out of tree.
-
->  ZFS has crypt, raid5 like array and snapshot and LARC cache allready so no need to add 4 layer on it. It seems a solution for you.
-
-It has a few of its own issues, but yes, if it were actually GPL
-compatible and in the linux kernel source tree, I'd consider it.
-
-It's also owned by a company (Oracle) that has tried to sue others for
-billions of dollars over software patents, or even an algorithm, i.e.
-not a company I'm willing to trust by any means.
-
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Added to misc-next, thanks.
