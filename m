@@ -2,327 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA43551269
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 10:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48C4551279
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 10:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239831AbiFTIRt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 20 Jun 2022 04:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
+        id S239845AbiFTISH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jun 2022 04:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239825AbiFTIRs (ORCPT
+        with ESMTP id S239850AbiFTISH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jun 2022 04:17:48 -0400
-Received: from avasout-peh-004.plus.net (avasout-peh-004.plus.net [212.159.14.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F0A11829
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 01:17:45 -0700 (PDT)
-Received: from APOLLO ([212.159.61.44])
-        by smtp with ESMTPA
-        id 3CbOoYvXjuTE03CbQoHFgo; Mon, 20 Jun 2022 09:17:44 +0100
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=DfIEF9hW c=1 sm=1 tr=0 ts=62b02d28
- a=AGp1duJPimIJhwGXxSk9fg==:117 a=AGp1duJPimIJhwGXxSk9fg==:17
- a=IkcTkHD0fZMA:10 a=7YfXLusrAAAA:8 a=P1kZ4gAsAAAA:8 a=VwQbUJbxAAAA:8
- a=fxJcL_dCAAAA:8 a=9AC1NQAuQnyAEtF8_RUA:9 a=QEXdDO2ut3YA:10
- a=SLz71HocmBbuEhFRYD3r:22 a=fn9vMg-Z9CMH7MoVPInU:22 a=AjGcO6oz07-iQ99wixmX:22
-X-AUTH: perdrix52@:2500
-From:   "David C. Partridge" <david.partridge@perdrix.co.uk>
-To:     "'Qu Wenruo'" <quwenruo.btrfs@gmx.com>,
-        <linux-btrfs@vger.kernel.org>
-References: <001f01d88344$ed8aa1d0$c89fe570$@perdrix.co.uk> <603196b9-fa55-f5cc-d9b5-3cf69f19c6ef@gmx.com> <000001d8837c$91bc74e0$b5355ea0$@perdrix.co.uk> <838a65c7-214b-adc1-2c9e-3923da6575e2@gmx.com> <000001d883c7$698edad0$3cac9070$@perdrix.co.uk> <e7c18d33-4807-7d6f-53f5-6e3f59b687ef@gmx.com> <000401d883cd$cc588fc0$6509af40$@perdrix.co.uk> <393cf34a-0ae9-d34c-b2bb-ea74d906dfa5@gmx.com> <000201d883db$a22686e0$e67394a0$@perdrix.co.uk> <000901d883e0$289d73b0$79d85b10$@perdrix.co.uk> <b8579f1c-a277-2a01-2126-77ffcc0ab2d5@gmx.com> <000c01d883e7$1757e570$4607b050$@perdrix.co.uk> <aedc9eb7-20f4-49a5-f8c6-9a55353bc25f@gmx.com>
-In-Reply-To: <aedc9eb7-20f4-49a5-f8c6-9a55353bc25f@gmx.com>
-Subject: RE: Problems with BTRFS formatted disk
-Date:   Mon, 20 Jun 2022 09:17:42 +0100
-Message-ID: <009601d8847e$37a58610$a6f09230$@perdrix.co.uk>
+        Mon, 20 Jun 2022 04:18:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3A511A27
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 01:18:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C5F2B1F896;
+        Mon, 20 Jun 2022 08:18:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655713084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=di41xd9o8K4yGx25hoAH/bgX4NWJswv9lqyhPpGiiIA=;
+        b=NyZMPTA20syfL1tv41p4soIkT7Q9NjgadZAtq64JiewrV1bKkvC2q3iQ6WJcD180rWn/oD
+        Dv6F/3XG9mzfrbNrJn+Y+NBKAkpkJFUKbM3fEauPxbtS5YdbomYotCasj4hkUG+Wxkg4OG
+        oFuksGkgy5Kz0Nrwze8uMj9EHmSXeBk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AF1513638;
+        Mon, 20 Jun 2022 08:18:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8oFaGzwtsGI1HwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 20 Jun 2022 08:18:04 +0000
+Message-ID: <bc18e270-371c-98ee-28c2-fd4305206d7a@suse.com>
+Date:   Mon, 20 Jun 2022 11:18:03 +0300
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-gb
-Thread-Index: AQE6G7yNOJVUJ6Zum7z6uCsu/gieNwG3iWv+Afjb+GUCCjux4wI0aTcjAwQd14sByWWhmwIjQYotAgDDGGgCPmdhdAFAo2axApahge4BT5mz563Slhtw
-X-CMAE-Envelope: MS4xfAbXHetd6r2a7eW89EIqE08nNdE1JMRnUCqS186mWV1rjF/5KC1fHaxTVHlj3eWR/f6jyFo7BP7yxpLrDXd9FfMrSJNCj8mGIzFTMGJqv5M7xrbDW+hh
- rdOAyzNwOtKds+sleemaZO5T6bSCw6Hy61nV5qqHvXvZYlHUQ8+4EMuFJJzsUMY30o+cwa3zp26svPuu5n67S8nouBpM4cuBsUA=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 10/10] btrfs: remove bioc->stripes_pending
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220617100414.1159680-1-hch@lst.de>
+ <20220617100414.1159680-11-hch@lst.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220617100414.1159680-11-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-OK 16TB USB disk on order ...
-
------Original Message-----
-From: Qu Wenruo <quwenruo.btrfs@gmx.com> 
-Sent: 19 June 2022 22:40
-To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
-Subject: Re: Problems with BTRFS formatted disk
 
 
+On 17.06.22 г. 13:04 ч., Christoph Hellwig wrote:
+> Replace the stripes_pending field with the pending counter in the bio.
+> This avoid an extra field and prepares splitting the btrfs_bio at the
+> stripe boundary.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   fs/btrfs/volumes.c | 100 ++++++++++++++++++++++-----------------------
+>   fs/btrfs/volumes.h |   1 -
+>   2 files changed, 48 insertions(+), 53 deletions(-)
+> 
 
-On 2022/6/19 22:15, David C. Partridge wrote:
-> I can't "grab what I can" as I don't have enough TB to copy the data I want to save ☹
->
-> Does it make any sense to try:
->
->   mount -o remount,rw /mnt
+<snip>
 
-Nope, remount RW will be completely rejected for rescue=all case.
+>   
+>   static void btrfs_end_bio(struct bio *bio)
+>   {
+>   	struct btrfs_io_stripe *stripe = bio->bi_private;
+>   	struct btrfs_io_context *bioc = stripe->bioc;
+> +	struct bio *orig_bio = bioc->orig_bio;
+> +	struct btrfs_bio *bbio = btrfs_bio(orig_bio);
+>   
+>   	if (bio->bi_status) {
+>   		atomic_inc(&bioc->error);
+> -		if (bio->bi_status == BLK_STS_IOERR ||
+> -		    bio->bi_status == BLK_STS_TARGET) {
+> +		if (stripe->dev && stripe->dev->bdev &&
+> +		    (bio->bi_status == BLK_STS_IOERR ||
+> +		     bio->bi_status == BLK_STS_TARGET)) {
+>   			if (btrfs_op(bio) == BTRFS_MAP_WRITE)
+>   				btrfs_dev_stat_inc_and_print(stripe->dev,
+>   						BTRFS_DEV_STAT_WRITE_ERRS);
+> @@ -6678,12 +6652,35 @@ static void btrfs_end_bio(struct bio *bio)
+>   		}
+>   	}
+>   
+> -	if (bio != bioc->orig_bio)
+> +	btrfs_bio_counter_dec(bioc->fs_info);
+> +
+> +	if (bio != orig_bio) {
+> +		bio_endio(orig_bio);
+>   		bio_put(bio);
+> +		return;
+> +	}
 
->   btrfs subvolume delete /mnt/@
->   btrfs subvolume delete /mnt/@_daily.20220525_00:11:01
->   btrfs subvolume delete /mnt/@_daily.20220526_00:11:01
->   btrfs subvolume delete /mnt/@_hourly.20220526_06:00:01
->   btrfs subvolume delete /mnt/@_hourly.20220526_09:00:01
->   btrfs subvolume delete /mnt/@_hourly.20220526_12:00:01
+What if the the currently completed stripe bio is the last - then 
+bio_endio would be called for orig_bio, which will executed bi_end_io() 
+in softirq context, but for reads we want to execute this in process 
+context (as per the below code) ?
 
-Deleting them won't help, the transid mismatch is affecting too many
-parts of the fs.
 
->
->   mv /mnt/@_daily.20220524_00:11:01 /mnt/@
->
-> or is that doomed to total failure?
+>   
+> -	btrfs_bio_counter_dec(bioc->fs_info);
+> -	if (atomic_dec_and_test(&bioc->stripes_pending))
+> -		btrfs_end_bioc(bioc, true);
+> +	/*
+> +	 * Only send an error to the higher layers if it is beyond the tolerance
+> +	 * threshold.
+> +	 */
+> +	if (atomic_read(&bioc->error) > bioc->max_errors)
+> +		orig_bio->bi_status = BLK_STS_IOERR;
+> +	else
+> +		orig_bio->bi_status = BLK_STS_OK;
+> +
+> +	bbio->mirror_num = bioc->mirror_num;
+> +	orig_bio->bi_end_io = bioc->end_io;
+> +	orig_bio->bi_private = bioc->private;
+> +	if (btrfs_op(orig_bio) == BTRFS_MAP_READ) {
+> +		bbio->device = stripe->dev;
+> +		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
+> +		queue_work(btrfs_end_io_wq(bioc), &bbio->end_io_work);
+> +	} else {
+> +		orig_bio->bi_end_io(orig_bio);
+> +	}
+> +
+> +	btrfs_put_bioc(bioc);
 
-Mostly yes. Thus the only thing can do is really data salvage.
+The old code guaranteed that btrfs_end_bioc() is executed when the last 
+stripe bio was completed. With this new scheme, say we have 3 bios - 2 
+cloned, 1 being the orig, what guarantees that the orig_bio won't be 
+finished before the remaining 2 (or 1) cloned/stripe bios thus calling 
+btrfs_end_bio() on orig bio with __bi_remaining potentially being 2 or 1 
+and finally calling orig_bio->bi_end_io() again with __bi_remaining 
+being elevated?
 
-Thanks,
-Qu
+>   }
+>   
+>   static void submit_stripe_bio(struct btrfs_io_context *bioc,
+> @@ -6694,28 +6691,30 @@ static void submit_stripe_bio(struct btrfs_io_context *bioc,
+>   	u64 physical = bioc->stripes[dev_nr].physical;
+>   	struct bio *bio;
+>   
+> -	if (!dev || !dev->bdev ||
+> -	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
+> -	    (btrfs_op(orig_bio) == BTRFS_MAP_WRITE &&
+> -	     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
+> -		atomic_inc(&bioc->error);
+> -		if (atomic_dec_and_test(&bioc->stripes_pending))
+> -			btrfs_end_bioc(bioc, false);
+> -		return;
+> -	}
+> -
+>   	if (clone) {
+> -		bio = bio_alloc_clone(dev->bdev, orig_bio, GFP_NOFS, &fs_bio_set);
+> +		bio = bio_alloc_clone(NULL, orig_bio, GFP_NOFS, &fs_bio_set);
+> +		bio_inc_remaining(orig_bio);
 
->
-> The disks behind the raid card are all Western Digital WD4001FYYG SAS drives
->
-> David
->
->
-> -----Original Message-----
-> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-> Sent: 19 June 2022 14:31
-> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
-> Subject: Re: Problems with BTRFS formatted disk
->
->
->
-> On 2022/6/19 21:26, David C. Partridge wrote:
->> Aha this is much more interesting:
->>
->> I issued: mount -t btrfs -o ro,rescue=all /dev/sdc1 /mnt
->>
->> And got this in the system log:
->>
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): flagging fs with big metadata feature
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): enabling all of the rescue options
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): ignoring data csums
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): ignoring bad roots
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): disabling log replay at mount time
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): disk space caching is enabled
->> Jun 19 13:04:32 archiso kernel: BTRFS info (device sdc1): has skinny extents
->> Jun 19 13:04:32 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 12554992156672 wanted 130582 found 127355
->> Jun 19 13:04:32 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 12554992156672 wanted 130582 found 127355
->> Jun 19 13:05:12 archiso systemd[1]: dev-virtio\x2dports-org.qemu.guest_agent.0.device: Job dev-virtio\x2dports-org.qemu.guest_agent.0.device/start timed out.
->> Jun 19 13:05:12 archiso systemd[1]: Timed out waiting for device /dev/virtio-ports/org.qemu.guest_agent.0.
->> Jun 19 13:05:12 archiso systemd[1]: Dependency failed for QEMU Guest Agent.
->> Jun 19 13:05:12 archiso systemd[1]: qemu-guest-agent.service: Job qemu-guest-agent.service/start failed with result 'dependency'.
->> Jun 19 13:05:12 archiso systemd[1]: dev-virtio\x2dports-org.qemu.guest_agent.0.device: Job dev-virtio\x2dports-org.qemu.guest_agent.0.device/start failed with result 'timeout'.
->> Jun 19 13:05:12 archiso systemd[1]: Reached target Multi-User System.
->> Jun 19 13:05:12 archiso systemd[1]: Reached target Graphical Interface.
->> Jun 19 13:05:12 archiso systemd[1]: Startup finished in 1min 4.847s (firmware) + 4.837s (loader) + 9.433s (kernel) + 1min 31.546s (userspace) = 2min 50.664s.
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): flagging fs with big metadata feature
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): disk space caching is enabled
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): has skinny extents
->> Jun 19 13:05:38 archiso kernel: BTRFS info (device sda2): enabling ssd optimizations
->>
->> ll /mnt got me this:
->>
->> Jun 19 13:08:13 archiso kernel: verify_parent_transid: 4 callbacks suppressed
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->> Jun 19 13:08:13 archiso kernel: BTRFS error (device sdc1: state C): parent transid verify failed on 576192512 wanted 129948 found 122929
->
-> This is definitely not just *some* metadata didn't reach disk, but
-> *tons* of metadata didn't reach disk.
->
-> All expected transid > found transid.
->
-> Almost certain the RAID card is doing something incorrectly related to
-> FLUSH.
->
->>
->> ls: cannot access '/mnt/@': Input/output error
->> ls: cannot access '/mnt/@_daily.20220525_00:11:01': Input/output error
->> ls: cannot access '/mnt/@_daily.20220526_00:11:01': Input/output error
->> ls: cannot access '/mnt/@_hourly.20220526_06:00:01': Input/output error
->> ls: cannot access '/mnt/@_hourly.20220526_09:00:01': Input/output error
->> ls: cannot access '/mnt/@_hourly.20220526_12:00:01': Input/output error
->> total 0
->> d????????? ? ?    ?      ?            ? @
->> drwxrwxr-x 1 root 1000 204 May 15 16:27 @_daily.20220523_00:11:01
->> drwxrwxr-x 1 root 1000 204 May 15 16:27 @_daily.20220524_00:11:01
->> d????????? ? ?    ?      ?            ? @_daily.20220525_00:11:01
->> d????????? ? ?    ?      ?            ? @_daily.20220526_00:11:01
->> d????????? ? ?    ?      ?            ? @_hourly.20220526_06:00:01
->> d????????? ? ?    ?      ?            ? @_hourly.20220526_09:00:01
->> d????????? ? ?    ?      ?            ? @_hourly.20220526_12:00:01
->> drwxrwxr-x 1 root 1000 184 Dec 16  2021 @_weekly.20220424_00:12:01
->> drwxrwxr-x 1 root 1000 184 Dec 16  2021 @_weekly.20220508_00:12:01
->> drwxrwxr-x 1 root 1000 184 Dec 16  2021 @_weekly.20220515_00:12:01
->> drwxrwxr-x 1 root 1000 204 May 15 16:27 @_weekly.20220522_00:12:01
->>
->> So it appears that there may be recoverable sub-volumes there ...
->>
->> So if I can remount it rw after having mounted it ro,rescue=all I should be able to delete the broken subvolumes and rename one of the @daily or @weekly ones that appear OK?
->
-> Nope, rescue=all is really just let you to grab what you can, the fs has
-> so many transid mismatch, is definitely no way to save.
->
-> And I strongly recommend to do more testing on that RAID5 card later
-> (for power loss tests).
-> That card doesn't sound cheap at all, and if such card doesn't do FLUSH
-> correctly, the vendor really deserve tons of blame.
->
-> Or it can be the HDDs? Mind to provide the model too?
->
-> Thanks,
-> Qu
->
->>
->> Or can I manipulate the subvolumes even if it is mounted ro?
->>
->> Your guidance will be most welcome
->>
->> D.
->>
->> -----Original Message-----
->> From: David C. Partridge <david.partridge@perdrix.co.uk>
->> Sent: 19 June 2022 13:54
->> To: 'Qu Wenruo' <quwenruo.btrfs@gmx.com>; linux-btrfs@vger.kernel.org
->> Subject: RE: Problems with BTRFS formatted disk
->>
->> Here's what the 2022.06.01 version of Archlinux had to say in the log when I issued:
->>
->> mount -t btrfs -o rescue=all /dev/sdc1 /mnt
->>
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): flagging fs with big metadata feature
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): enabling all of the rescue options
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): ignoring data csums
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): ignoring bad roots
->> Jun 19 12:43:01 archiso kernel: BTRFS info (device sdc1): disabling log replay at mount time
->> Jun 19 12:43:01 archiso kernel: BTRFS error (device sdc1): nologreplay must be used with ro mount option
->> Jun 19 12:43:01 archiso kernel: BTRFS error (device sdc1): open_ctree failed
->>
->> Did I need to say:
->>
->> mount -t btrfs -o ro,rescue=all /dev/sdc1 /mnt
->>
->> D.
->>
->> -----Original Message-----
->> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
->> Sent: 19 June 2022 12:51
->> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
->> Subject: Re: Problems with BTRFS formatted disk
->>
->>
->>
->> On 2022/6/19 19:14, David C. Partridge wrote:
->>> LUbuntu 22.04 was definitely 5.15 kernel, what alternative distro do you propose I use?
->>
->> I have no idea why 22.04 doesn't work here.
->>
->> The upstream commit is 2b29726c473b ("btrfs: rescue: allow ibadroots to
->> skip bad extent tree when reading block group items"), which is already
->> in v5.15 kernels.
->>
->> I double checked the current code base, as long as it's error reading
->> the block group items and rescue=all (implies ibadroots), it should go
->> fill_dummy_bgs().
->>
->> For the alternative distros, OpenSUSE tumbleweed, Archlinux, etc. As
->> they are definitely upstream and v5.15+.
->>
->> For example, Archlinux 2022.06.01, it goes with 5.18 kernel:
->>
->> $ file arch/boot/x86_64/vmlinuz-linux
->> arch/boot/x86_64/vmlinuz-linux: Linux kernel x86 boot executable
->> bzImage, version 5.18.1-arch1-1 (linux@archlinux) #1 SMP PREEMPT_DYNAMIC
->> Mon, 30 May 2022 17:53:11 +0000, RO-rootFS, swap_dev 0XA, Normal VGA
->>
->> If that still doesn't work, let me creating a similar fs with some block
->> groups items corrupted to see why it doesn't work.
->>
->> Thanks,
->> Qu
->>>
->>> -----Original Message-----
->>> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
->>> Sent: 19 June 2022 11:41
->>> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
->>> Subject: Re: Problems with BTRFS formatted disk
->>>
->>>
->>>
->>> On 2022/6/19 18:29, David C. Partridge wrote:
->>>> Booted from live USB 22.04 LUbuntu.
->>>
->>> Ubuntu kernel version doesn't seem to be that consistent even for its
->>> LTS releases:
->>>
->>> https://ubuntu.com/about/release-cycle#ubuntu-kernel-release-cycle
->>>
->>> Please use something rolling released distro/branch instead.
->>>
->>> Thanks,
->>> Qu
->>>>
->>>> root@lubuntu:/home/lubuntu# mount -t btrfs -o rescue=all /dev/sdc1 /mnt
->>>> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdc1, missing codepage or helper program, or other error.
->>>> root@lubuntu:/home/lubuntu#
->>>>
->>>> Content of system journal
->>>>
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): flagging fs with big metadata feature
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): disk space caching is enabled
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS info (device sdc1): has skinny extents
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent transid verify failed on 12554992156672 wanted 130582 found 127355
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): parent transid verify failed on 12554992156672 wanted 130582 found 127355
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): failed to read block groups: -5
->>>> Jun 19 10:08:03 lubuntu kernel: BTRFS error (device sdc1): open_ctree failed
->>>>
->>>> David
->>>>
->>>> -----Original Message-----
->>>> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
->>>> Sent: 19 June 2022 03:02
->>>> To: David C. Partridge <david.partridge@perdrix.co.uk>; linux-btrfs@vger.kernel.org
->>>> Subject: Re: Problems with BTRFS formatted disk
->>>>
->>>>>> You can try rescue=all mount option, which has the extra handling on
->>>>>> corrupted extent tree.
->>>>>
->>>>>> Although you have to use kernels newer than v5.15 (including v5.15) to
->>>>>> benefit from the change.
->>>>>
->>>>> Unfortunately:
->>>>> amonra@charon:~$ uname -a
->>>>> Linux charon 5.4.0-113-generic #127-Ubuntu SMP Wed May 18 14:30:56 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
->>>>
->>>> Any special reason that you can not even use a liveUSB to boot a newer
->>>> kernel to do the salvage?
->>>>
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>
->>
->
+When cloning why aren't you passing dev->bdev but instead set it after 
+the checks via bio_set_dev ? Is it because of the
 
+if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION))
+
+check inside bio_endio in case bio_io_error is called in submit_stripe_bio?
+
+<snip>
