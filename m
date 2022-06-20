@@ -2,92 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC73552219
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 18:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70CA55223E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jun 2022 18:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242381AbiFTQTZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jun 2022 12:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        id S241044AbiFTQ1l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jun 2022 12:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236809AbiFTQTY (ORCPT
+        with ESMTP id S237807AbiFTQ1k (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jun 2022 12:19:24 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AF71A071
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 09:19:24 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d5so10156815plo.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 09:19:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=a8wdhWvMzlWxFbPZTvdrC2XqzvaHwRlMO1Fj/Y4tCKk=;
-        b=h8K0bpIiOX9ZHOUofIbD/TwqXx4TwBac8J4TZuRZw0dlShND/nzWKcDZRz4kPpfA99
-         XN4MotXtUkN6SUydgpUXirXUVUMkEokGshmtJuAV973JSheI5xgCO01rEh/PdOFEakyN
-         4nRa3GmidIp6meuzfuf4p+I+G88VaJ/ACKgSF2wy+Xq3P7AxSTpLHVfg9e0FUoIjFQaO
-         xlSL6/H+1Bcg4myXsEC6eSNj3/4xDDnmrNwBzEY8Xa9KrNMwIkPDJLHuJa13mNlPeY8B
-         ml6xry2LGOr5QDCpgHhcoXe0PHOKRt3/j5BH9383/1Kbpm4Oe4aw1/5Q+Ga3pBIZvreq
-         QFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=a8wdhWvMzlWxFbPZTvdrC2XqzvaHwRlMO1Fj/Y4tCKk=;
-        b=m5VRDmC4ntmPA2n+lxANQkHUdy7BKUtxbR2zb9/VLS2d7SWELdyIbtqLnJDlwwyB59
-         5yljd+Yqd502HMGEP8DZ61ucjEawPpBKiYRpebYhYv+oT97jRvwxNPOIa/pUY7mCAcdQ
-         rWJW5Lu64ElbzoaUbde5pXe7CgL2emQ1f10FbQfem4NQw9FJnBmy4YZhhTDZGg/jcyXR
-         4lODmulCQSU5e2dXhtOX/F1hVelKAO7t7Kh4EqXmYntk9rKOycgf96Dw1QlqzO93bt0t
-         jd/cOYpCmVWop87ZrosHHVmrpvrs93usGiC6aSTLrUpkI/fYHtmeGcDKO2a/UI4HMFbI
-         6dPw==
-X-Gm-Message-State: AJIora8v60WweHxjt8CFjh8q7VRm/sj6wz8itL7OTx+Dt4hA9Qx0L5v4
-        MkJuhJRAoA1Hkj5m27J2KrNO5hvEQ0TsiRoYzWs=
-X-Google-Smtp-Source: AGRyM1si7+z3y6KVXh8b+R4TrSQRmSc73bxwCYUYARAekz9URMha6qCYRZynKmCh/4n4SitNZXAeQVhEfWgaIwxCdxw=
-X-Received: by 2002:a17:902:d4c2:b0:166:46c9:577b with SMTP id
- o2-20020a170902d4c200b0016646c9577bmr24226466plg.66.1655741963336; Mon, 20
- Jun 2022 09:19:23 -0700 (PDT)
+        Mon, 20 Jun 2022 12:27:40 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6C720BDE
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jun 2022 09:27:38 -0700 (PDT)
+Received: from [76.132.34.178] (port=59372 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1o3JX7-000451-A9 by authid <merlins.org> with srv_auth_plain; Mon, 20 Jun 2022 09:27:36 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1o3KFU-007uzY-B3; Mon, 20 Jun 2022 09:27:36 -0700
+Date:   Mon, 20 Jun 2022 09:27:36 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Ghislain Adnet <gadnet@aqueos.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Suggestions for building new 44TB Raid5 array
+Message-ID: <20220620162736.GB1878147@merlins.org>
+References: <20220611045120.GN22722@merlins.org>
+ <5e1733e6-471e-e7cb-9588-3280e659bfc2@aqueos.com>
+ <20220620150132.GM1664812@merlins.org>
+ <8d54c3c5-a0b5-fdca-f31d-f9b5c3eea655@aqueos.com>
 MIME-Version: 1.0
-From:   pay pal <paypalhelp6464@gmail.com>
-Date:   Mon, 20 Jun 2022 09:19:16 -0700
-Message-ID: <CAJVkwdiT965qK9fSyhTw54YaLG1pwecgBLa0MT-EuYnNbBJa1Q@mail.gmail.com>
-Subject: PRODUCT INFORMOTION
-To:     paypalinc608@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d54c3c5-a0b5-fdca-f31d-f9b5c3eea655@aqueos.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-Broken-Reverse-DNS: no host name for IP address 76.132.34.178
+X-SA-Exim-Connect-IP: 76.132.34.178
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This email confirms that you have done a compensation.
+On Mon, Jun 20, 2022 at 05:52:14PM +0200, Ghislain Adnet wrote:
+> well i completly understand i use btrfs for the same reason but
+> it seems on your side that this use case is a little far from the
+> features provided.
+> The more layer i use the more i fear a Pise tower syndrome :)
 
-As confirmed,
+I share that worry, but using ZFS simply isn't an option to me for the
+reasons explained.
+But indeed, I removed bcache as a layer.
 
-
- Thank you for choosing paypal for pick up your order for bitcoin.
-  Your pick up has been happily done.
-
-The compensation will be shown in less than 5 to 10 hours pn paypal.
-
-Order summury
-
-Item Name         :    BITCOIN(BTC)
-
-
-Memo No            : JTDG564GDH
-Item Price         : 253.56
-
-Pick Up Date       : 20th June 2022
-Mode of payment     : Pp INC
-
-If you desire to cancel then please feel free to contact our Billing
-Department as soon as Possible.
-
-You can reach us on +1 (8 2 8) - (4 3 6) - (8 7 0 1)
-
-
-Regards,
-
-Pp Billing Department
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
